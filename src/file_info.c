@@ -132,7 +132,7 @@ show_rva2(struct id3_tag * tag, GtkWidget * table, int * cnt) {
 				voladj_float = (double) voladj_fixed / 512;
 
 				snprintf(str, MAXLEN-1, "%+.1f dB (%s)", voladj_float, id);
-				append_table(table, cnt, "Relative Volume", str);
+				append_table(table, cnt, _("Relative Volume"), str);
 				break;
 			}
 
@@ -473,7 +473,8 @@ show_file_info(char * name, char * file) {
 		struct id3_tag * id3tag;
 		int cnt = 0;
 
-		if ((id3file = id3_file_open(file, ID3_FILE_MODE_READONLY)) != NULL) {
+		if ((id3file = id3_file_open(g_locale_from_utf8(file, -1, NULL, NULL, NULL),
+					     ID3_FILE_MODE_READONLY)) != NULL) {
 			if ((id3tag = id3_file_tag(id3file)) != NULL) {
 
 				/* ID3v2 notebook page */
@@ -547,10 +548,12 @@ show_file_info(char * name, char * file) {
 		FLAC__StreamMetadata * flacmeta = NULL;
 		int cnt = 0;
 
-		if (!FLAC__metadata_simple_iterator_init(iter, file, false, false)) {
+		if (!FLAC__metadata_simple_iterator_init(iter,
+		    g_locale_from_utf8(file, -1, NULL, NULL, NULL), false, false)) {
 			fprintf(stderr,
 				"show_file_info(): error: "
-				"FLAC__metadata_simple_iterator_init() failed on %s\n", file);
+				"FLAC__metadata_simple_iterator_init() failed on %s\n",
+				g_locale_from_utf8(file, -1, NULL, NULL, NULL));
 			return;
 		}
 

@@ -168,7 +168,7 @@ create_about_window() {
 
 	gtk_text_buffer_insert_at_cursor(buffer, _("File format support:"), -1);
 					 
-	gtk_text_buffer_insert_at_cursor(buffer, "\n\t\tsndfile (WAV, AIFF, etc.)\t\t\t: ", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\n\t\tsndfile (WAV, AIFF, etc.)\t\t\t: "), -1);
 #ifdef HAVE_SNDFILE
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -177,7 +177,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 #endif /* HAVE_SNDFILE */
 	
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\tFree Lossless Audio Codec (FLAC)\t\t: ", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tFree Lossless Audio Codec (FLAC)\t\t: "), -1);
 #ifdef HAVE_FLAC
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -186,7 +186,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 #endif /* HAVE_FLAC */
 	
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\tOgg Vorbis\t\t\t\t\t: ", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tOgg Vorbis\t\t\t\t\t: "), -1);
 #ifdef HAVE_OGG_VORBIS
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -195,7 +195,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 #endif /* HAVE_OGG_VORBIS */
 	
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\tMPEG Audio (MPEG 1-2.5 Layer I-III)\t\t: ", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tMPEG Audio (MPEG 1-2.5 Layer I-III)\t\t: "), -1);
 #ifdef HAVE_MPEG
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -204,7 +204,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 #endif /* HAVE_MPEG */
 	
-        gtk_text_buffer_insert_at_cursor(buffer, "\t\tMOD Audio (MOD, S3M, XM, IT, etc.)\t\t: ", -1);
+        gtk_text_buffer_insert_at_cursor(buffer, _("\t\tMOD Audio (MOD, S3M, XM, IT, etc.)\t\t: "), -1);
 #ifdef HAVE_MOD
         gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -213,10 +213,19 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 #endif /* HAVE_MOD */
 
+        gtk_text_buffer_insert_at_cursor(buffer, _("\t\tID3 tags\t\t\t\t\t: "), -1);
+#ifdef HAVE_ID3
+        gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+#else
+        gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+#endif /* HAVE_ID3 */
+
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Output driver support:"), -1);
 	
-	gtk_text_buffer_insert_at_cursor(buffer, "\n\t\tOSS Audio\t\t\t\t\t: ", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\n\t\tOSS Audio\t\t\t\t\t: "), -1);
 #ifdef HAVE_OSS
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -225,7 +234,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 #endif /* HAVE_OSS */
 	
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\tALSA Audio\t\t\t\t\t: ", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tALSA Audio\t\t\t\t\t: "), -1);
 #ifdef HAVE_ALSA
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -235,7 +244,7 @@ create_about_window() {
 #endif /* HAVE_ALSA */
 	
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "JACK Audio Server\t\t\t\t: ", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("JACK Audio Server\t\t\t\t: "), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes (always)"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Internal Sample Rate Converter support\t\t\t: "), -1);
@@ -261,7 +270,8 @@ We would like to thank the authors of these software packages:\n\n\
 * libvorbis & libvorbisfile, for decoding Ogg Vorbis audio\n\
 * libFLAC, the Free Lossless Audio Codec library\n\
 * libMAD, a GPL'ed MPEG Audio Decoder library\n\
-* libmodplug, a MOD decoder library in the public domain"), -1);
+* libmodplug, a MOD decoder library in the public domain\n\
+* libid3tag, a library for accessing ID3v2 tags"), -1);
 
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n\n", -1);

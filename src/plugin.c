@@ -82,13 +82,12 @@ int added_plugin = 0;
 static int
 rdf_filter(const struct dirent64 * de) {
 
-#ifndef BROKEN_PLUGINLOADER_FIX
-	if (de->d_type != DT_REG)
+	if (de->d_type != DT_UNKNOWN && de->d_type != DT_REG && de->d_type != DT_LNK)
 		return 0;
 
 	if (de->d_name[0] == '.')
 		return 0;
-#endif
+
 	return (((strlen(de->d_name) >= 4) && (strcmp(de->d_name + strlen(de->d_name) - 3, ".n3") == 0)) ||
 		((strlen(de->d_name) >= 5) && (strcmp(de->d_name + strlen(de->d_name) - 4, ".rdf") == 0)) ||
 		((strlen(de->d_name) >= 6) && (strcmp(de->d_name + strlen(de->d_name) - 5, ".rdfs") == 0)));
@@ -97,13 +96,12 @@ rdf_filter(const struct dirent64 * de) {
 static int
 so_filter(const struct dirent64 * de) {
 
-#ifndef BROKEN_PLUGINLOADER_FIX
-	if (de->d_type != DT_REG)
+	if (de->d_type != DT_UNKNOWN && de->d_type != DT_REG && de->d_type != DT_LNK)
 		return 0;
 
 	if (de->d_name[0] == '.')
 		return 0;
-#endif
+
 	return ((strlen(de->d_name) >= 4) && (strcmp(de->d_name + strlen(de->d_name) - 3, ".so") == 0));
 }
 

@@ -310,20 +310,6 @@ else
 fi
 
 
-AC_MSG_CHECKING(for broken plugin loader fix)
-AC_ARG_WITH(
-	brokenplfix,
-	[  --with-brokenplfix=yes,no    compile with fix for broken plugin loader on a ReiserFS filesystem (default: no)],
-	brokenplfix="$withval",
-	brokenplfix="no")
-if test "$brokenplfix" = "yes"; then
-	AC_DEFINE([BROKEN_PLUGINLOADER_FIX], [1], [Defined if compile with fix for broken plugin loader on a ReiserFS filesystem])
-	AC_MSG_RESULT(yes)
-else
-	AC_MSG_RESULT(no)
-fi
-
-
 # Compiler and linker variables
 gtk_CFLAGS=`pkg-config --cflags gtk+-2.0`
 gtk_LIBS=`pkg-config --libs gtk+-2.0`

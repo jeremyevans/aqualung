@@ -1,0 +1,629 @@
+# Hungarian translations for aqualung package.
+# Copyright (C) 2004 Tom Szilagyi
+# This file is distributed under the same license as the aqualung package.
+# Peter Szilagyi <szilagyi.peter@index.hu>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: aqualung 0.9beta3\n"
+"POT-Creation-Date: 2004-11-22 22:13+0100\n"
+"PO-Revision-Date: 2004-11-16 17:47GMT\n"
+"Last-Translator: Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
+"Language-Team: Hungarian <hu@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 0.9.5\n"
+
+#: ../about.c:80 ../gui_main.c:1778
+msgid "About"
+msgstr "Névjegy"
+
+#: ../about.c:90
+msgid "Dismiss"
+msgstr "Bezárás"
+
+#: ../about.c:136
+msgid "Build version: "
+msgstr "Fordítási verzió:  "
+
+#: ../about.c:142
+msgid "Homepage:"
+msgstr "Honlap:"
+
+#: ../about.c:148
+msgid "Authors:"
+msgstr "Szerzõk:"
+
+#: ../about.c:150
+msgid "Core design, engineering & programming:"
+msgstr "Architektúra, tervezés & programozás:"
+
+#: ../about.c:152
+msgid "Skin support, look & feel, GUI hacks:"
+msgstr "Skin támogatás, kinézet, jusztírozás:"
+
+#: ../about.c:157
+msgid "This Aqualung binary is compiled with:"
+msgstr "Ez az Aqualung bináris a következõ opciókat támogatja:"
+
+#: ../about.c:161
+msgid "File format support:"
+msgstr "Támogatott fájltípusok:"
+
+#: ../about.c:165 ../about.c:174 ../about.c:183 ../about.c:192 ../about.c:201
+#: ../about.c:213 ../about.c:222 ../about.c:235
+msgid "yes"
+msgstr "igen"
+
+#: ../about.c:168 ../about.c:177 ../about.c:186 ../about.c:195 ../about.c:204
+#: ../about.c:216 ../about.c:225 ../about.c:238
+msgid "no"
+msgstr "nem"
+
+#: ../about.c:209
+msgid "Output driver support:"
+msgstr "Kimeneti meghajtók:"
+
+#: ../about.c:231
+msgid "yes (always)"
+msgstr "igen (mindig)"
+
+#: ../about.c:233
+msgid "Internal Sample Rate Converter support\t\t\t: "
+msgstr "Beépített mintavételi frekvencia konverter\t\t: "
+
+#: ../about.c:245
+msgid ""
+"Aqualung could not be functional without the following libraries.\n"
+"We would like to thank the authors of these software packages:\n"
+"\n"
+"* The GIMP Toolkit (GTK+), version 2.0\n"
+"* libXML2, the XML C parser and toolkit of Gnome\n"
+"* libJACK, the JACK Audio Connection Kit support library\n"
+"* liblrdf, a library for manipulating RDF files about LADSPA plugins\n"
+"* libsamplerate (aka Secret Rabbit Code), a high quality Sample Rate "
+"Converter\n"
+"* libsndfile, a library for accessing audio files containing sampled sound\n"
+"* libvorbis & libvorbisfile, for decoding Ogg Vorbis audio\n"
+"* libFLAC, the Free Lossless Audio Codec library\n"
+"* libMAD, a GPL'ed MPEG Audio Decoder library\n"
+"* libmodplug, a MOD decoder library in the public domain"
+msgstr ""
+"Az Aqualung nem mûködhetne a következõ könyvtárak támogatása nélkül.\n"
+"Szeretnénk köszönetet mondani e programcsomagok szerzõinek:\n"
+"\n"
+"* The GIMP Toolkit (GTK+), 2.0-ás verzió\n"
+"* libXML2, a Gnome C nyelvû XML-értelmezõ könyvtára\n"
+"* libJACK, a JACK Audio Connection Kit könyvtára\n"
+"* liblrdf, a LADSPA effektek RDF fájljait manipuláló könyvtár\n"
+"* libsamplerate (más néven Secret Rabbit Code), jó minõségû mintavételi "
+"frekvencia konverter\n"
+"* libsndfile, hangminta alapú fájlok hozzáférését biztosító könyvtár\n"
+"* libvorbis & libvorbisfile, Ogg Vorbis hangfájlok dekódolásához\n"
+"* libFLAC, a Szabad Veszteségmentes Hangtömörítõ Kodek könyvtára\n"
+"* libMAD, GPL licenszû MPEG dekóder könyvtár\n"
+"* libmodplug, egy public domain-beli MOD dekóder könyvtár"
+
+#: ../about.c:261
+msgid ""
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 2 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program; if not, write to the Free Software\n"
+"Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+msgstr ""
+
+#: ../gui_main.c:353
+msgid "Unrecognized"
+msgstr "Ismeretlen"
+
+#: ../gui_main.c:364 ../gui_main.c:370 ../gui_main.c:373 ../gui_main.c:376
+msgid "bit signed"
+msgstr "bites elõjeles egész"
+
+#: ../gui_main.c:367
+msgid "bit unsigned"
+msgstr "bites elõjel nélküli egész"
+
+#: ../gui_main.c:379
+msgid "bit float"
+msgstr "bites lebegõpontos"
+
+#: ../gui_main.c:382
+msgid "bit double"
+msgstr "bites dupla pontosságú lebegõpontos"
+
+#: ../gui_main.c:385 ../gui_main.c:388 ../gui_main.c:391 ../gui_main.c:394
+#: ../gui_main.c:397 ../gui_main.c:400 ../gui_main.c:403 ../gui_main.c:406
+#: ../gui_main.c:409 ../gui_main.c:412 ../gui_main.c:415 ../gui_main.c:418
+#: ../gui_main.c:421
+msgid "encoding"
+msgstr "kódolású"
+
+#: ../gui_main.c:434
+msgid "Layer I"
+msgstr "I. Réteg"
+
+#: ../gui_main.c:437
+msgid "Layer II"
+msgstr "II. Réteg"
+
+#: ../gui_main.c:440
+msgid "Layer III"
+msgstr "III. Réteg"
+
+#: ../gui_main.c:450
+msgid "Single channel"
+msgstr "Egycsatornás"
+
+#: ../gui_main.c:453
+msgid "Dual channel"
+msgstr "Kétcsatornás"
+
+#: ../gui_main.c:456
+msgid "Joint stereo"
+msgstr "Kapcsolt sztereó"
+
+#: ../gui_main.c:459
+msgid "Stereo"
+msgstr "Sztereó"
+
+#: ../gui_main.c:469
+msgid "Emphasis: none"
+msgstr "Kiemelés: nincs"
+
+#: ../gui_main.c:472 ../gui_main.c:475
+msgid "Emphasis:"
+msgstr "Kiemelés:"
+
+#: ../gui_main.c:478
+msgid "Emphasis: reserved"
+msgstr "Kiemelés: fenntartott"
+
+#: ../gui_main.c:523
+msgid "MONO"
+msgstr ""
+
+#: ../gui_main.c:525
+msgid "STEREO"
+msgstr ""
+
+#: ../gui_main.c:540 ../gui_main.c:545 ../gui_main.c:549
+msgid "Output:"
+msgstr "Kimenet:"
+
+#: ../gui_main.c:562
+msgid "SRC Type: "
+msgstr "SRC Típus: "
+
+#: ../gui_main.c:566
+msgid "None"
+msgstr "Nincs"
+
+#: ../gui_main.c:1108 ../gui_main.c:1137
+msgid "Mute"
+msgstr ""
+
+#: ../gui_main.c:1110 ../gui_main.c:1139
+#, c-format
+msgid "%d dB"
+msgstr ""
+
+#: ../gui_main.c:1170 ../gui_main.c:1202
+#, c-format
+msgid "%d%% R"
+msgstr ""
+
+#: ../gui_main.c:1172 ../gui_main.c:1204
+#, c-format
+msgid "%d%% L"
+msgstr ""
+
+#: ../gui_main.c:1175 ../gui_main.c:1207
+msgid "C"
+msgstr ""
+
+#: ../gui_main.c:1699
+msgid "JACK connection lost"
+msgstr "Megszakadt a JACK összeköttetés"
+
+#: ../gui_main.c:1702
+msgid ""
+"JACK has either been shutdown or it\n"
+"disconnected Aqualung because it was\n"
+"not fast enough. All you can do now\n"
+"is restart both JACK and Aqualung.\n"
+msgstr ""
+"A JACK szerver leállt, vagy kidobta\n"
+"az Aqualungot, mert az nem volt elég\n"
+"gyors. Mindkettõt újra kell indítani.\n"
+
+#: ../gui_main.c:1774 ../options.c:141
+msgid "Options"
+msgstr "Opciók"
+
+#: ../gui_main.c:1775 ../skin.c:103
+msgid "Skin chooser"
+msgstr "Szkin-választó"
+
+#: ../gui_main.c:1776
+msgid "JACK port setup"
+msgstr "JACK port beállítás"
+
+#: ../music_browser.c:259
+msgid "Add Artist"
+msgstr "Elõadó hozzáadása"
+
+#: ../music_browser.c:269 ../music_browser.c:364 ../music_browser.c:520
+#: ../music_browser.c:675 ../music_browser.c:804 ../music_browser.c:923
+msgid ""
+"\n"
+"Visible name:"
+msgstr ""
+"\n"
+"Látható név:"
+
+#: ../music_browser.c:276 ../music_browser.c:371 ../music_browser.c:527
+#: ../music_browser.c:682 ../music_browser.c:811 ../music_browser.c:930
+msgid ""
+"\n"
+"Name to sort by:"
+msgstr ""
+"\n"
+"Rendezési kulcs:"
+
+#: ../music_browser.c:283 ../music_browser.c:378 ../music_browser.c:566
+#: ../music_browser.c:689 ../music_browser.c:836 ../music_browser.c:955
+msgid ""
+"\n"
+"Comments:"
+msgstr ""
+"\n"
+"Megjegyzések:"
+
+#: ../music_browser.c:354
+msgid "Edit Artist"
+msgstr "Elõadó szerkesztése"
+
+#: ../music_browser.c:440
+msgid "Please select the audio files for this record."
+msgstr "Válaszd ki az albumhoz adandó hangfájlokat."
+
+#: ../music_browser.c:510
+msgid "Add Record"
+msgstr "Album hozzáadása"
+
+#: ../music_browser.c:535
+msgid ""
+"\n"
+"Auto-create tracks from these files:"
+msgstr ""
+"\n"
+"Számok automatikus létrehozása a következõ fájlokból:"
+
+#: ../music_browser.c:554 ../playlist.c:518
+msgid "Clear list"
+msgstr "Lista törlése"
+
+#: ../music_browser.c:561 ../playlist.c:525
+msgid "Add files..."
+msgstr "Fájlok hozzáadása..."
+
+#: ../music_browser.c:665
+msgid "Edit Record"
+msgstr "Album szerkesztése"
+
+#: ../music_browser.c:748
+msgid "Please select the audio file for this track."
+msgstr "Add meg a számhoz tartozó fájlt."
+
+#: ../music_browser.c:794
+msgid "Add Track"
+msgstr "Szám hozzáadása"
+
+#: ../music_browser.c:818 ../music_browser.c:937
+msgid ""
+"\n"
+"Filename:"
+msgstr ""
+"\n"
+"Fájlnév:"
+
+#: ../music_browser.c:830 ../music_browser.c:949
+msgid "Browse..."
+msgstr "Tallózás..."
+
+#: ../music_browser.c:913
+msgid "Edit Track"
+msgstr "Szám szerkesztése"
+
+#: ../music_browser.c:1295 ../music_browser.c:1471 ../music_browser.c:1629
+#, c-format
+msgid "Really remove \"%s\" from the Music Store?"
+msgstr "Biztosan eltávolítod a Zenetárból a következõt: \"%s\" ?"
+
+#: ../music_browser.c:1296
+msgid "Remove Artist"
+msgstr "Elõadó eltávolítása"
+
+#: ../music_browser.c:1472
+msgid "Remove Record"
+msgstr "Album eltávolítása"
+
+#: ../music_browser.c:1630
+msgid "Remove Track"
+msgstr "Szám eltávolítása"
+
+#: ../music_browser.c:1666
+msgid "(no comment)"
+msgstr "(nincs megjegyzés)"
+
+#: ../music_browser.c:1745
+msgid "Music Store"
+msgstr "Zenetár"
+
+#: ../music_browser.c:1811 ../music_browser.c:1820
+msgid "Add new artist..."
+msgstr "Új elõadó hozzáadása..."
+
+#: ../music_browser.c:1818 ../music_browser.c:1850 ../music_browser.c:1882
+msgid "Add to playlist"
+msgstr "Lejátszólistába"
+
+#: ../music_browser.c:1821
+msgid "Edit artist..."
+msgstr "Elõadó szerkesztése..."
+
+#: ../music_browser.c:1822
+msgid "Add new record to this artist..."
+msgstr "Új album hozzáadása ehhez az elõadóhoz..."
+
+#: ../music_browser.c:1824
+msgid "Remove artist"
+msgstr "Elõadó eltávolítása"
+
+#: ../music_browser.c:1852
+msgid "Add new record..."
+msgstr "Új album hozzáadása..."
+
+#: ../music_browser.c:1853
+msgid "Edit record..."
+msgstr "Album szerkesztése..."
+
+#: ../music_browser.c:1854
+msgid "Add new track to this record..."
+msgstr "Új szám hozzáadása ehhez az albumhoz..."
+
+#: ../music_browser.c:1856
+msgid "Remove record"
+msgstr "Album eltávolítása"
+
+#: ../music_browser.c:1884
+msgid "Add new track..."
+msgstr "Új szám hozzáadása..."
+
+#: ../music_browser.c:1885
+msgid "Edit track..."
+msgstr "Szám szerkesztése..."
+
+#: ../music_browser.c:1887
+msgid "Remove track"
+msgstr "Szám eltávolítása"
+
+#: ../options.c:150
+msgid "Title format"
+msgstr "Címformátum"
+
+#: ../options.c:157
+msgid ""
+"\n"
+"The template string you enter here will be used to\n"
+"construct a single title line from an Artist, a Record\n"
+"and a Track name. These are denoted by %a, %r and %t,\n"
+"respectively. Everything else you enter here will be\n"
+"literally copied into the resulting string.\n"
+msgstr ""
+
+#: ../options.c:169
+msgid "Implicit command line"
+msgstr "Implicit parancssor"
+
+#: ../options.c:176
+msgid ""
+"\n"
+"The string you enter here will be parsed as a command\n"
+"line before parsing the actual command line parameters.\n"
+"What you enter here will act as a default setting and may\n"
+"or may not be overrided from the 'real' command line.\n"
+"Example: enter '-o alsa -R' below to use ALSA output\n"
+"running realtime as a default.\n"
+msgstr ""
+
+#: ../options.c:189
+msgid "Auto-save playlist"
+msgstr "Automatikus lejátszólista-mentés"
+
+#: ../options.c:196
+msgid "Save and restore the playlist automatically on exit/startup"
+msgstr ""
+"Lejátszólista automatikus mentése és visszatöltése kilépéskor/indításkor"
+
+#: ../options.c:206
+msgid "LADSPA plugin processing"
+msgstr "LADSPA effekt processzálás"
+
+#: ../options.c:220
+msgid "Pre Fader (before Volume & Balance)"
+msgstr "Pre Fader (Hangerõ- és balanszszabályozó elõtt)"
+
+#: ../options.c:224
+msgid "Post Fader (after Volume & Balance)"
+msgstr "Post Fader (Hangerõ és balanszszabályozó után)"
+
+#: ../options.c:237
+msgid "Sample Rate Converter type"
+msgstr "Mintavételi frekvencia konverter típusa"
+
+#: ../options.c:271
+msgid ""
+"Aqualung is compiled without Sample Rate Converter support.\n"
+"See the About box and the documentation for details."
+msgstr ""
+
+#: ../options.c:282 ../skin.c:179
+msgid "Cancel"
+msgstr "Mégse"
+
+#: ../options.c:287
+msgid "OK"
+msgstr "OK"
+
+#: ../playlist.c:300
+msgid "Please specify the file to save the playlist to."
+msgstr "Add meg az elmentendõ lejátszólista fájlt."
+
+#: ../playlist.c:331
+msgid "Please specify the file to load the playlist from."
+msgstr "Add meg a betöltendõ lejátszólista fájlt."
+
+#: ../playlist.c:431
+msgid "Please select the audio files for direct adding."
+msgstr "Add meg a közvetlenül hozzáadandó hangfájlokat."
+
+#: ../playlist.c:489 ../playlist.c:759
+msgid "Direct add"
+msgstr "Közvetlen hozzáadás"
+
+#: ../playlist.c:499
+msgid ""
+"\n"
+"Directly add these files to playlist:"
+msgstr ""
+"\n"
+"A következõ fájlok közvetlen hozzáadása a lejátszólistához:"
+
+#: ../playlist.c:683
+msgid "Playlist"
+msgstr "Lejátszólista"
+
+#: ../playlist.c:694
+msgid "Save playlist"
+msgstr "Lejátszólista mentése"
+
+#: ../playlist.c:695
+msgid "Load playlist"
+msgstr "Lejátszólista betöltése"
+
+#: ../playlist.c:696
+msgid "Enqueue playlist"
+msgstr "Lejátszólista hozzáfûzése"
+
+#: ../playlist.c:763 ../playlist.c:781
+msgid "Select all"
+msgstr "Összes elem kijelölése"
+
+#: ../playlist.c:767 ../playlist.c:801
+msgid "Remove selected"
+msgstr "Kijelölt elemek törlése"
+
+#: ../playlist.c:776
+msgid "Select none"
+msgstr "Kijelölés megszüntetése"
+
+#: ../playlist.c:786
+msgid "Invert selection"
+msgstr "Kijelölés megfordítása"
+
+#: ../playlist.c:796
+msgid "Remove all"
+msgstr "Mindent eltávolít"
+
+#: ../plugin.c:1652
+msgid "LADSPA patch builder"
+msgstr "LADSPA effekt szerkesztõ"
+
+#: ../plugin.c:1660
+msgid "Available plugins"
+msgstr "Rendelkezésre álló effektek"
+
+#: ../plugin.c:1670
+msgid "Add"
+msgstr "Hozzáadás"
+
+#: ../plugin.c:1735
+msgid "ID"
+msgstr ""
+
+#: ../plugin.c:1740 ../plugin.c:1825
+msgid "Name"
+msgstr "Név"
+
+#: ../plugin.c:1745
+msgid "Category"
+msgstr "Kategória"
+
+#: ../plugin.c:1750
+msgid "Inputs"
+msgstr "Bemenetek"
+
+#: ../plugin.c:1755 ../ports.c:470
+msgid "Outputs"
+msgstr "Kimenetek"
+
+#: ../plugin.c:1761
+msgid "Running plugins"
+msgstr "Mûködõ effektek"
+
+#: ../plugin.c:1774
+msgid "Remove"
+msgstr "Eltávolítás"
+
+#: ../plugin.c:1778
+msgid "Configure"
+msgstr "Beállítás"
+
+#: ../ports.c:448
+msgid "JACK Port Setup"
+msgstr "JACK port beállítás"
+
+#: ../ports.c:460
+msgid "Rescan"
+msgstr "Újraolvas"
+
+#: ../ports.c:465
+msgid "Close"
+msgstr "Bezárás"
+
+#: ../ports.c:474
+msgid "Available connections"
+msgstr "Elérhetõ összeköttetések"
+
+#: ../ports.c:486
+msgid "Clear connections"
+msgstr "Összeköttetések törlése"
+
+#: ../ports.c:549
+msgid " out L"
+msgstr ""
+
+#: ../ports.c:550
+msgid " out R"
+msgstr ""
+
+#: ../skin.c:126
+msgid "Available skins"
+msgstr "Elérhetõ szkinek"
+
+#: ../skin.c:184
+msgid "Apply"
+msgstr "Alkalmaz"

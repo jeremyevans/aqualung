@@ -1,0 +1,623 @@
+# German translations for aqualung package
+# German messages for aqualung.
+# Copyright (C) 2004 Tom Szilagyi
+# This file is distributed under the same license as the aqualung package.
+# Peter Szilagyi <sailor@crux>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: aqualung 0.9beta3\n"
+"POT-Creation-Date: 2004-11-22 22:13+0100\n"
+"PO-Revision-Date: 2004-09-16 17:47+0200\n"
+"Last-Translator: Peter Szilagyi <sailor@crux>\n"
+"Language-Team: German <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../about.c:80 ../gui_main.c:1778
+msgid "About"
+msgstr "Über Aqualung"
+
+#: ../about.c:90
+msgid "Dismiss"
+msgstr "Schließen"
+
+#: ../about.c:136
+msgid "Build version: "
+msgstr "Version: "
+
+#: ../about.c:142
+msgid "Homepage:"
+msgstr ""
+
+#: ../about.c:148
+msgid "Authors:"
+msgstr "Autoren:"
+
+#: ../about.c:150
+msgid "Core design, engineering & programming:"
+msgstr "Kern, Teknische Planung & Programmierung:"
+
+#: ../about.c:152
+msgid "Skin support, look & feel, GUI hacks:"
+msgstr "Skin Unterstützung, Aussehen, Gefühl:"
+
+#: ../about.c:157
+msgid "This Aqualung binary is compiled with:"
+msgstr "Dieser Aqualung Binärcode wurde kompiliert mit:"
+
+#: ../about.c:161
+msgid "File format support:"
+msgstr "Unterstützte Dateiformat:"
+
+#: ../about.c:165 ../about.c:174 ../about.c:183 ../about.c:192 ../about.c:201
+#: ../about.c:213 ../about.c:222 ../about.c:235
+msgid "yes"
+msgstr "ja"
+
+#: ../about.c:168 ../about.c:177 ../about.c:186 ../about.c:195 ../about.c:204
+#: ../about.c:216 ../about.c:225 ../about.c:238
+msgid "no"
+msgstr "nein"
+
+#: ../about.c:209
+msgid "Output driver support:"
+msgstr "Ausgabe Treiber Unterstützung:"
+
+#: ../about.c:231
+msgid "yes (always)"
+msgstr "ja (immer)"
+
+#: ../about.c:233
+msgid "Internal Sample Rate Converter support\t\t\t: "
+msgstr "Intern Sample Rate Konverter Unterstützung\t\t: "
+
+#: ../about.c:245
+msgid ""
+"Aqualung could not be functional without the following libraries.\n"
+"We would like to thank the authors of these software packages:\n"
+"\n"
+"* The GIMP Toolkit (GTK+), version 2.0\n"
+"* libXML2, the XML C parser and toolkit of Gnome\n"
+"* libJACK, the JACK Audio Connection Kit support library\n"
+"* liblrdf, a library for manipulating RDF files about LADSPA plugins\n"
+"* libsamplerate (aka Secret Rabbit Code), a high quality Sample Rate "
+"Converter\n"
+"* libsndfile, a library for accessing audio files containing sampled sound\n"
+"* libvorbis & libvorbisfile, for decoding Ogg Vorbis audio\n"
+"* libFLAC, the Free Lossless Audio Codec library\n"
+"* libMAD, a GPL'ed MPEG Audio Decoder library\n"
+"* libmodplug, a MOD decoder library in the public domain"
+msgstr ""
+
+#: ../about.c:261
+msgid ""
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 2 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program; if not, write to the Free Software\n"
+"Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+msgstr ""
+
+#: ../gui_main.c:353
+msgid "Unrecognized"
+msgstr "Unbekannt"
+
+#: ../gui_main.c:364 ../gui_main.c:370 ../gui_main.c:373 ../gui_main.c:376
+msgid "bit signed"
+msgstr "bit gezeichnet"
+
+#: ../gui_main.c:367
+msgid "bit unsigned"
+msgstr "bit vorzeichenlos"
+
+#: ../gui_main.c:379
+msgid "bit float"
+msgstr "Floß"
+
+#: ../gui_main.c:382
+msgid "bit double"
+msgstr "bit Doppelt"
+
+#: ../gui_main.c:385 ../gui_main.c:388 ../gui_main.c:391 ../gui_main.c:394
+#: ../gui_main.c:397 ../gui_main.c:400 ../gui_main.c:403 ../gui_main.c:406
+#: ../gui_main.c:409 ../gui_main.c:412 ../gui_main.c:415 ../gui_main.c:418
+#: ../gui_main.c:421
+msgid "encoding"
+msgstr "Kodierung"
+
+#: ../gui_main.c:434
+msgid "Layer I"
+msgstr "Schicht I"
+
+#: ../gui_main.c:437
+msgid "Layer II"
+msgstr "Schicht II"
+
+#: ../gui_main.c:440
+msgid "Layer III"
+msgstr "Schicht III"
+
+#: ../gui_main.c:450
+msgid "Single channel"
+msgstr "Einzelkanal"
+
+#: ../gui_main.c:453
+msgid "Dual channel"
+msgstr "Doppelkanal"
+
+#: ../gui_main.c:456
+msgid "Joint stereo"
+msgstr ""
+
+#: ../gui_main.c:459
+msgid "Stereo"
+msgstr ""
+
+#: ../gui_main.c:469
+msgid "Emphasis: none"
+msgstr "Betonung: none"
+
+#: ../gui_main.c:472 ../gui_main.c:475
+msgid "Emphasis:"
+msgstr "Betonung:"
+
+#: ../gui_main.c:478
+msgid "Emphasis: reserved"
+msgstr "Betonung: reserviert"
+
+#: ../gui_main.c:523
+msgid "MONO"
+msgstr ""
+
+#: ../gui_main.c:525
+msgid "STEREO"
+msgstr ""
+
+#: ../gui_main.c:540 ../gui_main.c:545 ../gui_main.c:549
+msgid "Output:"
+msgstr "Ausgabe:"
+
+#: ../gui_main.c:562
+msgid "SRC Type: "
+msgstr "SRC Typ: "
+
+#: ../gui_main.c:566
+msgid "None"
+msgstr "Keine"
+
+#: ../gui_main.c:1108 ../gui_main.c:1137
+msgid "Mute"
+msgstr ""
+
+#: ../gui_main.c:1110 ../gui_main.c:1139
+#, c-format
+msgid "%d dB"
+msgstr ""
+
+#: ../gui_main.c:1170 ../gui_main.c:1202
+#, c-format
+msgid "%d%% R"
+msgstr ""
+
+#: ../gui_main.c:1172 ../gui_main.c:1204
+#, c-format
+msgid "%d%% L"
+msgstr ""
+
+#: ../gui_main.c:1175 ../gui_main.c:1207
+msgid "C"
+msgstr ""
+
+#: ../gui_main.c:1699
+msgid "JACK connection lost"
+msgstr "JACK Anschluss verloren"
+
+#: ../gui_main.c:1702
+msgid ""
+"JACK has either been shutdown or it\n"
+"disconnected Aqualung because it was\n"
+"not fast enough. All you can do now\n"
+"is restart both JACK and Aqualung.\n"
+msgstr ""
+"JACK wurde entweder geschlossen, oder es\n"
+"hat Aqualung ausgeschaltet, weil er nicht\n"
+"schnell genug war. Alles zu machen jetzt\n"
+"ist neustarten beide JACK und Aqualung.\n"
+
+#: ../gui_main.c:1774 ../options.c:141
+msgid "Options"
+msgstr "Optionen"
+
+#: ../gui_main.c:1775 ../skin.c:103
+msgid "Skin chooser"
+msgstr "Skin Wählender"
+
+#: ../gui_main.c:1776
+msgid "JACK port setup"
+msgstr "JACK Port Einrichtung"
+
+#: ../music_browser.c:259
+msgid "Add Artist"
+msgstr "Artist hinzufügen"
+
+#: ../music_browser.c:269 ../music_browser.c:364 ../music_browser.c:520
+#: ../music_browser.c:675 ../music_browser.c:804 ../music_browser.c:923
+msgid ""
+"\n"
+"Visible name:"
+msgstr ""
+"\n"
+"Sichtbar Name:"
+
+#: ../music_browser.c:276 ../music_browser.c:371 ../music_browser.c:527
+#: ../music_browser.c:682 ../music_browser.c:811 ../music_browser.c:930
+msgid ""
+"\n"
+"Name to sort by:"
+msgstr ""
+"\n"
+"Sortiere nach:"
+
+#: ../music_browser.c:283 ../music_browser.c:378 ../music_browser.c:566
+#: ../music_browser.c:689 ../music_browser.c:836 ../music_browser.c:955
+msgid ""
+"\n"
+"Comments:"
+msgstr ""
+"\n"
+"Bemerkung:"
+
+#: ../music_browser.c:354
+msgid "Edit Artist"
+msgstr "Artist editieren"
+
+#: ../music_browser.c:440
+msgid "Please select the audio files for this record."
+msgstr "Bitte wahl die audio Dateien für diese Album aus."
+
+#: ../music_browser.c:510
+msgid "Add Record"
+msgstr "Album hinzufügen"
+
+#: ../music_browser.c:535
+msgid ""
+"\n"
+"Auto-create tracks from these files:"
+msgstr ""
+"\n"
+"Tonspuren aus dieser Dateien automatische erstellen:"
+
+#: ../music_browser.c:554 ../playlist.c:518
+msgid "Clear list"
+msgstr "Liste aufklären"
+
+#: ../music_browser.c:561 ../playlist.c:525
+msgid "Add files..."
+msgstr "Dateien hinzufügen..."
+
+#: ../music_browser.c:665
+msgid "Edit Record"
+msgstr "Album editieren"
+
+#: ../music_browser.c:748
+msgid "Please select the audio file for this track."
+msgstr "Bitte wahl die audio Datei für diese Tonspur aus."
+
+#: ../music_browser.c:794
+msgid "Add Track"
+msgstr "Tonspur hinzufügen"
+
+#: ../music_browser.c:818 ../music_browser.c:937
+msgid ""
+"\n"
+"Filename:"
+msgstr ""
+"\n"
+"Dateiname:"
+
+#: ../music_browser.c:830 ../music_browser.c:949
+msgid "Browse..."
+msgstr "Blättern..."
+
+#: ../music_browser.c:913
+msgid "Edit Track"
+msgstr "Tonspur editieren"
+
+#: ../music_browser.c:1295 ../music_browser.c:1471 ../music_browser.c:1629
+#, c-format
+msgid "Really remove \"%s\" from the Music Store?"
+msgstr "Wirklich entfernen \"%s\" aus dem Musikladen?"
+
+#: ../music_browser.c:1296
+msgid "Remove Artist"
+msgstr "Artist entfernen"
+
+#: ../music_browser.c:1472
+msgid "Remove Record"
+msgstr "Album entfernen"
+
+#: ../music_browser.c:1630
+msgid "Remove Track"
+msgstr "Tonspur entfernen"
+
+#: ../music_browser.c:1666
+msgid "(no comment)"
+msgstr "(keine Bemerkung)"
+
+#: ../music_browser.c:1745
+msgid "Music Store"
+msgstr "Musikladen"
+
+#: ../music_browser.c:1811 ../music_browser.c:1820
+msgid "Add new artist..."
+msgstr "Neu Artist hinzufügen..."
+
+#: ../music_browser.c:1818 ../music_browser.c:1850 ../music_browser.c:1882
+msgid "Add to playlist"
+msgstr "Zur Playliste hinzufügen"
+
+#: ../music_browser.c:1821
+msgid "Edit artist..."
+msgstr "Artist editieren..."
+
+#: ../music_browser.c:1822
+msgid "Add new record to this artist..."
+msgstr "Neu Album zu diesem Artist hinzufügen..."
+
+#: ../music_browser.c:1824
+msgid "Remove artist"
+msgstr "Artist entfernen"
+
+#: ../music_browser.c:1852
+msgid "Add new record..."
+msgstr "Neu Album hinzufügen..."
+
+#: ../music_browser.c:1853
+msgid "Edit record..."
+msgstr "Album editieren..."
+
+#: ../music_browser.c:1854
+msgid "Add new track to this record..."
+msgstr "Neue Tonspur zu diesem Album hinzufügen..."
+
+#: ../music_browser.c:1856
+msgid "Remove record"
+msgstr "Album entfernen"
+
+#: ../music_browser.c:1884
+msgid "Add new track..."
+msgstr "Neue Tonspur hinzufügen..."
+
+#: ../music_browser.c:1885
+msgid "Edit track..."
+msgstr "Tonspur editieren..."
+
+#: ../music_browser.c:1887
+msgid "Remove track"
+msgstr "Tonspur entfernen"
+
+#: ../options.c:150
+msgid "Title format"
+msgstr "Titelformat"
+
+#: ../options.c:157
+msgid ""
+"\n"
+"The template string you enter here will be used to\n"
+"construct a single title line from an Artist, a Record\n"
+"and a Track name. These are denoted by %a, %r and %t,\n"
+"respectively. Everything else you enter here will be\n"
+"literally copied into the resulting string.\n"
+msgstr ""
+"\n"
+"Diese Schablone Zeichenkette wird für die Konstruktion des\n"
+"Titels aus einem Artist, einem Album und einer Tonspur benutzt.\n"
+"Sie sind von %a, %r und %t bezeichnet, respektive.\n"
+"Alles andere wird in die ergebende Zeichenkette wörtlich\n"
+"kopiert werden.\n"
+
+#: ../options.c:169
+msgid "Implicit command line"
+msgstr "Implizite Kommandleine"
+
+#: ../options.c:176
+msgid ""
+"\n"
+"The string you enter here will be parsed as a command\n"
+"line before parsing the actual command line parameters.\n"
+"What you enter here will act as a default setting and may\n"
+"or may not be overrided from the 'real' command line.\n"
+"Example: enter '-o alsa -R' below to use ALSA output\n"
+"running realtime as a default.\n"
+msgstr ""
+
+#: ../options.c:189
+msgid "Auto-save playlist"
+msgstr "Playliste auto-speichern"
+
+#: ../options.c:196
+msgid "Save and restore the playlist automatically on exit/startup"
+msgstr "Automatische speichern die Playliste beim Anfang/Beendung"
+
+#: ../options.c:206
+msgid "LADSPA plugin processing"
+msgstr "LADSPA Plugin Verarbeitung"
+
+#: ../options.c:220
+msgid "Pre Fader (before Volume & Balance)"
+msgstr "Pre Fader (bevor Volume & Balance)"
+
+#: ../options.c:224
+msgid "Post Fader (after Volume & Balance)"
+msgstr "Post Fader (nach Volume & Balance)"
+
+#: ../options.c:237
+msgid "Sample Rate Converter type"
+msgstr "Sample Rate Konterter Typ"
+
+#: ../options.c:271
+msgid ""
+"Aqualung is compiled without Sample Rate Converter support.\n"
+"See the About box and the documentation for details."
+msgstr ""
+"Aqualung wurde ohne Sample Rate Konverter Unterstützung kompiliert.\n"
+"Lies die Über Aqualung box und die Dokumentation für Details."
+
+#: ../options.c:282 ../skin.c:179
+msgid "Cancel"
+msgstr "Abbruch"
+
+#: ../options.c:287
+msgid "OK"
+msgstr "OK"
+
+#: ../playlist.c:300
+msgid "Please specify the file to save the playlist to."
+msgstr "Playliste speichern"
+
+#: ../playlist.c:331
+msgid "Please specify the file to load the playlist from."
+msgstr "Playliste laden"
+
+#: ../playlist.c:431
+msgid "Please select the audio files for direct adding."
+msgstr "Bitte wähle die audio Dateien für Direkt Beigabe aus."
+
+#: ../playlist.c:489 ../playlist.c:759
+msgid "Direct add"
+msgstr "Direkt Beigabe"
+
+#: ../playlist.c:499
+msgid ""
+"\n"
+"Directly add these files to playlist:"
+msgstr ""
+"\n"
+"Ausgewählte Dateien hinzufügen:"
+
+#: ../playlist.c:683
+msgid "Playlist"
+msgstr "Playliste"
+
+#: ../playlist.c:694
+msgid "Save playlist"
+msgstr "Playliste speichern"
+
+#: ../playlist.c:695
+msgid "Load playlist"
+msgstr "Playliste laden"
+
+#: ../playlist.c:696
+msgid "Enqueue playlist"
+msgstr "Playliste einreihen"
+
+#: ../playlist.c:763 ../playlist.c:781
+msgid "Select all"
+msgstr "Alles auswählen"
+
+#: ../playlist.c:767 ../playlist.c:801
+msgid "Remove selected"
+msgstr "Markierte entfernen"
+
+#: ../playlist.c:776
+msgid "Select none"
+msgstr "Nichts auswählen"
+
+#: ../playlist.c:786
+msgid "Invert selection"
+msgstr "Markierungen invertieren"
+
+#: ../playlist.c:796
+msgid "Remove all"
+msgstr "Alle entfernen"
+
+#: ../plugin.c:1652
+msgid "LADSPA patch builder"
+msgstr "LADSPA Patch Bauer"
+
+#: ../plugin.c:1660
+msgid "Available plugins"
+msgstr "Verfügbare Plugins"
+
+#: ../plugin.c:1670
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: ../plugin.c:1735
+msgid "ID"
+msgstr ""
+
+#: ../plugin.c:1740 ../plugin.c:1825
+msgid "Name"
+msgstr "Name"
+
+#: ../plugin.c:1745
+msgid "Category"
+msgstr "Kategorie"
+
+#: ../plugin.c:1750
+msgid "Inputs"
+msgstr "Eingaben"
+
+#: ../plugin.c:1755 ../ports.c:470
+msgid "Outputs"
+msgstr "Ausgaben"
+
+#: ../plugin.c:1761
+msgid "Running plugins"
+msgstr "Laufende Plugins"
+
+#: ../plugin.c:1774
+msgid "Remove"
+msgstr "Entfernen"
+
+#: ../plugin.c:1778
+msgid "Configure"
+msgstr "Konfigurieren"
+
+#: ../ports.c:448
+msgid "JACK Port Setup"
+msgstr "JACK Port Einrichtung"
+
+#: ../ports.c:460
+msgid "Rescan"
+msgstr "Neu abtasten"
+
+#: ../ports.c:465
+msgid "Close"
+msgstr "Schließen"
+
+#: ../ports.c:474
+msgid "Available connections"
+msgstr "Anschlussmöglichkeiten"
+
+#: ../ports.c:486
+msgid "Clear connections"
+msgstr "Anschlüsse aufklären"
+
+#: ../ports.c:549
+msgid " out L"
+msgstr " aus L"
+
+#: ../ports.c:550
+msgid " out R"
+msgstr " aus R"
+
+#: ../skin.c:126
+msgid "Available skins"
+msgstr "Verfügbare Skins"
+
+#: ../skin.c:184
+msgid "Apply"
+msgstr "Übernehmen"

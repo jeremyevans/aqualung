@@ -1655,6 +1655,7 @@ void
 add_to_playlist(char * filename, int enqueue) {
 
 	char fullname[MAXLEN];
+	char * fullname_utf8;
 	char * endname;
 	char * home;
 	char * path = filename;
@@ -1705,7 +1706,9 @@ add_to_playlist(char * filename, int enqueue) {
 
 		voladj = 0.0f;
 		voladj2str(voladj, voladj_str);
-		duration = get_file_duration(fullname);
+		fullname_utf8 = g_locale_to_utf8(fullname, -1, NULL, NULL, NULL);
+		duration = get_file_duration(fullname_utf8);
+		g_free(fullname_utf8);
 		time2time(duration, duration_str);
 
                 gtk_list_store_append(play_store, &iter);

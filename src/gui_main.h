@@ -23,6 +23,8 @@
 #define _GUI_MAIN_H
 
 
+void deflicker(void);
+
 void create_gui(int argc, char ** argv, int optind, int enqueue,
 		unsigned long rate, unsigned long rb_audio_size);
 

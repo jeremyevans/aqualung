@@ -157,6 +157,7 @@ extern GtkWidget * fxbuilder_window;
 extern GtkWidget * ports_window;
 extern GtkWidget * info_window;
 extern GtkWidget * vol_window;
+extern GtkWidget * browser_paned;
 
 int main_pos_x;
 int main_pos_y;
@@ -168,6 +169,7 @@ extern int browser_pos_y;
 extern int browser_size_x;
 extern int browser_size_y;
 extern int browser_on;
+extern int browser_paned_pos;
 
 extern int playlist_pos_x;
 extern int playlist_pos_y;
@@ -262,6 +264,14 @@ gint next_event(GtkWidget * widget, GdkEvent * event, gpointer data);
 
 void save_config(void);
 void load_config(void);
+
+
+void
+deflicker(void) {
+
+	while (gtk_events_pending())
+		gtk_main_iteration();
+}
 
 
 /* returns (hh:mm:ss) or (mm:ss) format time string from sample position */
@@ -709,6 +719,8 @@ save_window_position(void) {
 	gtk_window_get_size(GTK_WINDOW(main_window), &main_size_x, &main_size_y);
 	gtk_window_get_size(GTK_WINDOW(browser_window), &browser_size_x, &browser_size_y);
 	gtk_window_get_size(GTK_WINDOW(playlist_window), &playlist_size_x, &playlist_size_y);
+
+	browser_paned_pos = gtk_paned_get_position(GTK_PANED(browser_paned));
 }
 
 
@@ -716,12 +728,21 @@ void
 restore_window_position(void) {
 
 	gtk_window_move(GTK_WINDOW(main_window), main_pos_x, main_pos_y);
+	deflicker();
 	gtk_window_move(GTK_WINDOW(browser_window), browser_pos_x, browser_pos_y);
+	deflicker();
 	gtk_window_move(GTK_WINDOW(playlist_window), playlist_pos_x, playlist_pos_y);
+	deflicker();
 	
 	gtk_window_resize(GTK_WINDOW(main_window), main_size_x, main_size_y);
+	deflicker();
 	gtk_window_resize(GTK_WINDOW(browser_window), browser_size_x, browser_size_y);
+	deflicker();
 	gtk_window_resize(GTK_WINDOW(playlist_window), playlist_size_x, playlist_size_y);
+	deflicker();
+
+	gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
+	deflicker();
 }
 
 
@@ -747,17 +768,25 @@ change_skin(char * path) {
 	save_window_position();
 
 	gtk_widget_destroy(main_window);
+	deflicker();
 	gtk_widget_destroy(playlist_window);
+	deflicker();
 	gtk_widget_destroy(browser_window);
+	deflicker();
 	gtk_widget_destroy(fxbuilder_window);
+	deflicker();
 	
 	sprintf(rcpath, "%s/rc", path);
 	gtk_rc_parse(rcpath);
 
 	create_main_window(path);
+	deflicker();
 	create_playlist();
+	deflicker();
 	create_music_browser();
+	deflicker();
 	create_fxbuilder();
+	deflicker();
 	
 	g_signal_handler_block(G_OBJECT(play_button), play_id);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), st_play);
@@ -775,6 +804,7 @@ change_skin(char * path) {
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle), st_plist);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(plugin_toggle), st_fx);
 	gtk_widget_show_all(main_window);
+	deflicker();
 
         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, i) &&
 		i < MAX_PLUGINS) {
@@ -782,6 +812,7 @@ change_skin(char * path) {
 		gtk_tree_model_get(GTK_TREE_MODEL(running_store), &iter, 1, &gp_instance, -1);
 		gtk_widget_reset_rc_styles(((plugin_instance *)gp_instance)->window);
 		gtk_widget_queue_draw(((plugin_instance *)gp_instance)->window);
+		deflicker();
 		++i;
 	}
 
@@ -789,22 +820,29 @@ change_skin(char * path) {
 		gtk_widget_reset_rc_styles(info_window);
 		gtk_widget_queue_draw(info_window);
 		gtk_window_present(GTK_WINDOW(info_window));
+		deflicker();
 	}
 
 	if (vol_window) {
 		gtk_widget_reset_rc_styles(vol_window);
 		gtk_widget_queue_draw(vol_window);
 		gtk_window_present(GTK_WINDOW(vol_window));
+		deflicker();
 	}
 
 	restore_window_position();
+	deflicker();
 	refresh_displays();
 	set_playlist_color();
 	
 	GTK_SCALE(scale_vol)->range.slider_size_fixed = 1;
 	GTK_SCALE(scale_vol)->range.min_slider_size = 11;
+	gtk_widget_queue_draw(scale_vol);
+	deflicker();
 	GTK_SCALE(scale_bal)->range.slider_size_fixed = 1;
 	GTK_SCALE(scale_bal)->range.min_slider_size = 11;
+	gtk_widget_queue_draw(scale_bal);
+	deflicker();
 	
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), vol);
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
@@ -2296,12 +2334,18 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), TRUE);
 
 
-	if (browser_on)
+	if (browser_on) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(musicstore_toggle), TRUE);
-	if (playlist_on)
+		deflicker();
+	}
+
+	if (playlist_on) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle), TRUE);
+		deflicker();
+	}
 
 	gtk_widget_show_all(main_window);
+	deflicker();
 
 	zero_displays();
 
@@ -2311,8 +2355,12 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	GTK_SCALE(scale_vol)->range.slider_size_fixed = 1;
 	GTK_SCALE(scale_vol)->range.min_slider_size = 11;
+	gtk_widget_queue_draw(scale_vol);
+	deflicker();
 	GTK_SCALE(scale_bal)->range.slider_size_fixed = 1;
 	GTK_SCALE(scale_bal)->range.min_slider_size = 11;
+	gtk_widget_queue_draw(scale_bal);
+	deflicker();
 
 
 	/* read command line filenames */
@@ -2768,6 +2816,8 @@ save_config(void) {
         xmlNewTextChild(root, NULL, "browser_size_y", str);
 	snprintf(str, 31, "%d", browser_on);
         xmlNewTextChild(root, NULL, "browser_is_visible", str);
+	snprintf(str, 31, "%d", browser_paned_pos);
+        xmlNewTextChild(root, NULL, "browser_paned_pos", str);
 
 	snprintf(str, 31, "%d", playlist_pos_x);
         xmlNewTextChild(root, NULL, "playlist_pos_x", str);
@@ -2879,6 +2929,8 @@ load_config(void) {
 	skin[0] = '\0';
 	vol = 0.0f;
 	bal = 0.0f;
+	browser_paned_pos = 250;
+
 
         cur = cur->xmlChildrenNode;
         while (cur != NULL) {
@@ -3050,6 +3102,12 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
                                 sscanf(key, "%d", &browser_on);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_paned_pos"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf(key, "%d", &browser_paned_pos);
                         xmlFree(key);
                 }
 

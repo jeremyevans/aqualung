@@ -67,6 +67,7 @@ int browser_pos_y;
 int browser_size_x;
 int browser_size_y;
 int browser_on;
+int browser_paned_pos;
 
 extern int drift_x;
 extern int drift_y;
@@ -85,6 +86,7 @@ GtkTreeStore * music_store = 0;
 GtkTreeSelection * music_select;
 
 GtkWidget * comment_view;
+GtkWidget * browser_paned;
 
 extern GtkListStore * play_store;
 
@@ -2274,8 +2276,6 @@ browser_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer use
 void
 create_music_browser(void) {
 	
-	GtkWidget * vpaned;
-
 	GtkWidget * viewport1;
 	GtkWidget * viewport2;
 	GtkWidget * scrolled_win1;
@@ -2295,8 +2295,8 @@ create_music_browser(void) {
 	gtk_container_set_border_width(GTK_CONTAINER(browser_window), 2);
         gtk_widget_set_size_request(browser_window, 200, 300);
 
-	vpaned = gtk_vpaned_new();
-        gtk_container_add(GTK_CONTAINER(browser_window), vpaned);
+	browser_paned = gtk_vpaned_new();
+        gtk_container_add(GTK_CONTAINER(browser_window), browser_paned);
 
 	/* create music store tree */
 	if (!music_store) {
@@ -2323,7 +2323,7 @@ create_music_browser(void) {
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(music_tree), FALSE);
 
 	viewport1 = gtk_viewport_new(NULL, NULL);
-	gtk_paned_pack1(GTK_PANED(vpaned), viewport1, TRUE, TRUE);
+	gtk_paned_pack1(GTK_PANED(browser_paned), viewport1, TRUE, TRUE);
 
 	scrolled_win1 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_set_size_request(scrolled_win1, -1, 1);
@@ -2490,11 +2490,11 @@ create_music_browser(void) {
 
 	viewport2 = gtk_viewport_new(NULL, NULL);
 
-	gtk_paned_pack2(GTK_PANED(vpaned), viewport2, FALSE, TRUE);
+	gtk_paned_pack2(GTK_PANED(browser_paned), viewport2, FALSE, TRUE);
 	gtk_container_add(GTK_CONTAINER(viewport2), scrolled_win2);
 	gtk_container_add(GTK_CONTAINER(scrolled_win2), comment_view);
 
-	gtk_paned_set_position(GTK_PANED(vpaned), 250);
+	gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
 }
 
 
@@ -2505,6 +2505,7 @@ show_music_browser(void) {
 	gtk_widget_show_all(browser_window);
 	gtk_window_move(GTK_WINDOW(browser_window), browser_pos_x, browser_pos_y);
 	gtk_window_resize(GTK_WINDOW(browser_window), browser_size_x, browser_size_y);
+	gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
 }
 
 

@@ -268,7 +268,8 @@ show_rva2(struct id3_tag * tag, GtkWidget * table, int * cnt,
 
 				voladj_float = (double) voladj_fixed / 512;
 
-				snprintf(str, MAXLEN-1, "%+.1f dB (%s)", voladj_float, id);
+				snprintf(str, MAXLEN-1, "%+.1f dB (tagged by %s)",
+					 voladj_float, id);
 
 				if (!is_called_from_browser) {
 					append_table(table, cnt, _("Relative Volume"), str, NULL, NULL);
@@ -307,22 +308,22 @@ show_id3(struct id3_tag const * tag, GtkWidget * table, int * cnt,
 		char const * id;
 		char const * label;
 	} const info[] = {
-		{ ID3_FRAME_TITLE,  "Title" },
+		{ ID3_FRAME_TITLE,  X_("Title") },
 		{ "TIT3",           0 },  /* Subtitle */
 		{ "TCOP",           0 },  /* Copyright */
 		{ "TPRO",           0 },  /* Produced */
-		{ "TCOM",           "Composer" },
-		{ ID3_FRAME_ARTIST, "Artist" },
-		{ "TPE2",           "Orchestra" },
-		{ "TPE3",           "Conductor" },
-		{ "TEXT",           "Lyricist" },
-		{ ID3_FRAME_ALBUM,  "Album" },
-		{ ID3_FRAME_TRACK,  "Track" },
-		{ ID3_FRAME_YEAR,   "Year" },
-		{ "TPUB",           "Publisher" },
-		{ ID3_FRAME_GENRE,  "Genre" },
-		{ "TRSN",           "Station" },
-		{ "TENC",           "Encoder" }
+		{ "TCOM",           X_("Composer") },
+		{ ID3_FRAME_ARTIST, X_("Artist") },
+		{ "TPE2",           X_("Orchestra") },
+		{ "TPE3",           X_("Conductor") },
+		{ "TEXT",           X_("Lyricist") },
+		{ ID3_FRAME_ALBUM,  X_("Album") },
+		{ ID3_FRAME_TRACK,  X_("Track") },
+		{ ID3_FRAME_YEAR,   X_("Year") },
+		{ "TPUB",           X_("Publisher") },
+		{ ID3_FRAME_GENRE,  X_("Genre") },
+		{ "TRSN",           X_("Station") },
+		{ "TENC",           X_("Encoder") }
 	};
 
 	/* text information */
@@ -351,7 +352,7 @@ show_id3(struct id3_tag const * tag, GtkWidget * table, int * cnt,
 				goto fail;
 
 			if (j == 0 && info[i].label) {
-				snprintf(str, MAXLEN-1, "%s:", info[i].label);
+				snprintf(str, MAXLEN-1, "%s:", gettext(info[i].label));
 				if (!is_called_from_browser) {
 					append_table(table, cnt, str, utf8, NULL, NULL);
 				} else {

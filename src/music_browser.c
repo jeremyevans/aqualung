@@ -36,6 +36,7 @@
 #include "file_decoder.h"
 #include "gui_main.h"
 #include "volume.h"
+#include "playlist.h"
 #include "i18n.h"
 #include "music_browser.h"
 
@@ -1139,6 +1140,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
                          GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
 	check_button = gtk_check_button_new_with_label(_("Use manual RVA value [dB]"));
+	gtk_widget_set_name(check_button, "check_on_window");
         gtk_table_attach(GTK_TABLE(table2), check_button, 0, 1, 0, 1,
                          GTK_FILL, GTK_FILL, 5, 3);
 
@@ -1380,10 +1382,13 @@ artist__addlist_cb(gpointer data) {
 	char list_str[MAXLEN];
 	int i, j;
 
+	float duration;
 	float volume;
 	float rva;
 	float use_rva;
 	float voladj;
+	char voladj_str[32];
+	char duration_str[32];
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_artist)) {
 
@@ -1402,7 +1407,7 @@ artist__addlist_cb(gpointer data) {
 			while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, j++)) {
 				
 				gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
-						   5, &volume, 6, &rva, 7, &use_rva, -1);
+						   4, &duration, 5, &volume, 6, &rva, 7, &use_rva, -1);
 				strncpy(track_name, ptrack_name, MAXLEN-1);
 				strncpy(file, pfile, MAXLEN-1);
 				g_free(ptrack_name);
@@ -1410,6 +1415,12 @@ artist__addlist_cb(gpointer data) {
 
 				make_title_string(list_str, title_format,
 						  artist_name, record_name, track_name);
+
+				if (duration == 0.0f) {
+					duration = get_file_duration(file);
+					gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
+				}
+				time2time(duration, duration_str);
 
 				if (rva_is_enabled) {
 					if (use_rva >= 0.0f) {
@@ -1429,8 +1440,11 @@ artist__addlist_cb(gpointer data) {
 							     &list_iter,
 							     (GtkTreeIter *)data);
 
+				voladj2str(voladj, voladj_str);
 				gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
-						   2, pl_color_inactive, 3, voladj, -1);
+						   2, pl_color_inactive,
+						   3, voladj, 4, voladj_str,
+						   5, duration, 6, duration_str, -1);
 			}
 		}
 	}
@@ -1584,10 +1598,13 @@ record__addlist_cb(gpointer data) {
 	char list_str[MAXLEN];
 	int i;
 
+	float duration;
 	float volume;
 	float rva;
 	float use_rva;
 	float voladj;
+	char voladj_str[32];
+	char duration_str[32];
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_record)) {
 
@@ -1606,7 +1623,7 @@ record__addlist_cb(gpointer data) {
 		while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, i++)) {
 
 			gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
-					   5, &volume, 6, &rva, 7, &use_rva, -1);
+					   4, &duration, 5, &volume, 6, &rva, 7, &use_rva, -1);
 			strncpy(track_name, ptrack_name, MAXLEN-1);
 			strncpy(file, pfile, MAXLEN-1);
 			g_free(ptrack_name);
@@ -1614,6 +1631,12 @@ record__addlist_cb(gpointer data) {
 			
 			make_title_string(list_str, title_format,
 					  artist_name, record_name, track_name);
+
+			if (duration == 0.0f) {
+				duration = get_file_duration(file);
+				gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
+			}
+			time2time(duration, duration_str);
 
 			if (rva_is_enabled) {
 				if (use_rva >= 0.0f) {
@@ -1633,8 +1656,10 @@ record__addlist_cb(gpointer data) {
 						     &list_iter,
 						     (GtkTreeIter *)data);
 
+			voladj2str(voladj, voladj_str);
 			gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
-					   2, pl_color_inactive, 3, voladj, -1);
+					   2, pl_color_inactive, 3, voladj, 4, voladj_str,
+					   5, duration, 6, duration_str, -1);
 		}
 	}
 }
@@ -1823,15 +1848,18 @@ track__addlist_cb(gpointer data) {
         char file[MAXLEN];
 	char list_str[MAXLEN];
 
+	float duration;
 	float volume;
 	float rva;
 	float use_rva;
 	float voladj;
+	char voladj_str[32];
+	char duration_str[32];
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
 
                 gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
-				   5, &volume, 6, &rva, 7, &use_rva, -1);
+				   4, &duration, 5, &volume, 6, &rva, 7, &use_rva, -1);
                 strncpy(track_name, ptrack_name, MAXLEN-1);
                 strncpy(file, pfile, MAXLEN-1);
                 g_free(ptrack_name);
@@ -1849,6 +1877,12 @@ track__addlist_cb(gpointer data) {
 
 		make_title_string(list_str, title_format,
 				  artist_name, record_name, track_name);
+
+		if (duration == 0.0f) {
+			duration = get_file_duration(file);
+			gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
+		}
+		time2time(duration, duration_str);
 
 		if (rva_is_enabled) {
 			if (use_rva >= 0.0f) {
@@ -1868,8 +1902,10 @@ track__addlist_cb(gpointer data) {
 					     &list_iter,
 					     (GtkTreeIter *)data);
 
+		voladj2str(voladj, voladj_str);
 		gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
-				   2, pl_color_inactive, 3, voladj, -1);
+				   2, pl_color_inactive, 3, voladj, 4, voladj_str,
+				   5, duration, 6, duration_str, -1);
 	}
 }
 
@@ -2160,7 +2196,7 @@ browser_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer use
 
 void
 create_music_browser(void) {
-
+	
 	GtkWidget * vpaned;
 
 	GtkWidget * viewport1;
@@ -2183,7 +2219,6 @@ create_music_browser(void) {
         gtk_widget_set_size_request(browser_window, 200, 300);
 
 	vpaned = gtk_vpaned_new();
-	gtk_paned_set_position(GTK_PANED(vpaned), 230);
         gtk_container_add(GTK_CONTAINER(browser_window), vpaned);
 
 	/* create music store tree */
@@ -2381,6 +2416,8 @@ create_music_browser(void) {
 	gtk_paned_pack2(GTK_PANED(vpaned), viewport2, FALSE, TRUE);
 	gtk_container_add(GTK_CONTAINER(viewport2), scrolled_win2);
 	gtk_container_add(GTK_CONTAINER(scrolled_win2), comment_view);
+
+	gtk_paned_set_position(GTK_PANED(vpaned), 250);
 }
 
 

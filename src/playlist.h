@@ -23,7 +23,9 @@
 #define _PLAYLIST_H
 
 
+void voladj2str(float voladj, char * str);
 long get_playing_pos(GtkListStore * store);
+gint playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event);
 void create_playlist(void);
 void show_playlist(void);
 void hide_playlist(void);

@@ -22,6 +22,7 @@
 
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
 
@@ -31,6 +32,7 @@
 
 #include "common.h"
 #include "gui_main.h"
+#include "playlist.h"
 #include "i18n.h"
 #include "options.h"
 
@@ -48,15 +50,25 @@ GtkWidget * optmenu_src;
 extern int ladspa_is_postfader;
 extern GtkWidget * main_window;
 extern int auto_save_playlist;
+extern int show_rva_in_playlist;
+extern int show_length_in_playlist;
+extern int plcol_idx[3];
 extern int rva_is_enabled;
 extern int rva_env;
 extern float rva_refvol;
 extern float rva_steepness;
 int auto_save_playlist_shadow;
+int show_rva_in_playlist_shadow;
+int show_length_in_playlist_shadow;
 int rva_is_enabled_shadow;
 int rva_env_shadow;
 float rva_refvol_shadow;
 float rva_steepness_shadow;
+
+extern GtkWidget * play_list;
+extern GtkTreeViewColumn * track_column;
+extern GtkTreeViewColumn * rva_column;
+extern GtkTreeViewColumn * length_column;
 
 GtkWidget * options_window;
 GtkWidget * optmenu_ladspa;
@@ -65,6 +77,8 @@ GtkWidget * entry_title;
 GtkWidget * entry_param;
 GtkWidget * label_src;
 GtkWidget * check_autoplsave;
+GtkWidget * check_show_rva_in_playlist;
+GtkWidget * check_show_length_in_playlist;
 GtkWidget * check_rva_is_enabled;
 GtkObject * adj_refvol;
 GtkObject * adj_steepness;
@@ -76,12 +90,17 @@ GtkWidget * spin_steepness;
 GtkWidget * label_listening_env;
 GtkWidget * label_refvol;
 GtkWidget * label_steepness;
+GtkListStore * plistcol_store;
 
 
 void draw_rva_diagram(void);
 
 static gint
 ok(GtkWidget * widget, gpointer data) {
+
+	int i;
+	int n;
+	int n_prev = 3;
 
 	strncpy(title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)), MAXLEN - 1);
 	strncpy(default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN - 1);
@@ -90,6 +109,49 @@ ok(GtkWidget * widget, gpointer data) {
 	rva_env = rva_env_shadow;
 	rva_refvol = rva_refvol_shadow;
 	rva_steepness = rva_steepness_shadow;
+
+	show_rva_in_playlist = show_rva_in_playlist_shadow;
+	if (show_rva_in_playlist) {
+		gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(rva_column), TRUE);
+	} else {
+		gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(rva_column), FALSE);
+	}
+
+	show_length_in_playlist = show_length_in_playlist_shadow;
+	if (show_length_in_playlist) {
+		gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(length_column), TRUE);
+	} else {
+		gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(length_column), FALSE);
+	}
+
+	for (i = 0; i < 3; i++) {
+
+		GtkTreeIter iter;
+		GtkTreeViewColumn * cols[4];
+		char * pnumstr;
+
+		cols[0] = track_column;
+		cols[1] = rva_column;
+		cols[2] = length_column;
+		cols[3] = NULL;
+
+		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(plistcol_store), &iter, NULL, i);
+		
+		gtk_tree_model_get(GTK_TREE_MODEL(plistcol_store), &iter, 1, &pnumstr, -1);
+		n = atoi(pnumstr);
+		g_free(pnumstr);
+
+		gtk_tree_view_move_column_after(GTK_TREE_VIEW(play_list),
+						cols[n], cols[n_prev]);
+
+		plcol_idx[i] = n;
+		n_prev = n;
+	}	
+
+	playlist_size_allocate(NULL, NULL);
+	playlist_size_allocate(NULL, NULL);
+	playlist_size_allocate(NULL, NULL);
+	playlist_size_allocate(NULL, NULL);
 
 	gtk_widget_destroy(options_window);
 	return TRUE;
@@ -111,6 +173,28 @@ autoplsave_toggled(GtkWidget * widget, gpointer * data) {
 		auto_save_playlist_shadow = 1;
 	} else {
 		auto_save_playlist_shadow = 0;
+	}
+}
+
+
+void
+check_show_rva_in_playlist_toggled(GtkWidget * widget, gpointer * data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_rva_in_playlist))) {
+		show_rva_in_playlist_shadow = 1;
+	} else {
+		show_rva_in_playlist_shadow = 0;
+	}
+}
+
+
+void
+check_show_length_in_playlist_toggled(GtkWidget * widget, gpointer * data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_length_in_playlist))) {
+		show_length_in_playlist_shadow = 1;
+	} else {
+		show_length_in_playlist_shadow = 0;
 	}
 }
 
@@ -344,12 +428,22 @@ create_options_window(void) {
 	GtkWidget * vbox_general;
 	GtkWidget * frame_title;
 	GtkWidget * frame_param;
-	GtkWidget * frame_autoplsave;
 	GtkWidget * vbox_title;
 	GtkWidget * vbox_param;
-	GtkWidget * vbox_autoplsave;
 	GtkWidget * label_title;
 	GtkWidget * label_param;
+
+	GtkWidget * label_pl;
+	GtkWidget * vbox_pl;
+	GtkWidget * frame_plistcol;
+	GtkWidget * vbox_plistcol;
+	GtkWidget * label_plistcol;
+	GtkWidget * viewport;
+	GtkCellRenderer * renderer;
+	GtkTreeViewColumn * column;
+	//GtkTreeSelection * plistcol_select;
+	GtkTreeIter iter;
+	GtkWidget * plistcol_list;
 
 	GtkWidget * label_dsp;
 	GtkWidget * vbox_dsp;
@@ -368,7 +462,9 @@ create_options_window(void) {
 	GtkWidget * hbox;
 	GtkWidget * ok_btn;
 	GtkWidget * cancel_btn;
+
 	int status;
+	int i;
 
 
 	options_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -431,21 +527,99 @@ running realtime as a default.\n"));
 	gtk_box_pack_start(GTK_BOX(vbox_param), entry_param, TRUE, TRUE, 0);
 
 
-	frame_autoplsave = gtk_frame_new(_("Auto-save playlist"));
-	gtk_box_pack_start(GTK_BOX(vbox_general), frame_autoplsave, FALSE, TRUE, 5);
+	/* "Playlist" notebook page */
 
-        vbox_autoplsave = gtk_vbox_new(FALSE, 3);
-        gtk_container_set_border_width(GTK_CONTAINER(vbox_autoplsave), 10);
-        gtk_container_add(GTK_CONTAINER(frame_autoplsave), vbox_autoplsave);
+	label_pl = gtk_label_new(_("Playlist"));
+	vbox_pl = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox_pl), 8);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_pl, label_pl);
 
-	check_autoplsave = gtk_check_button_new_with_label(_("Save and restore the playlist \
-automatically on exit/startup"));
+	check_autoplsave =
+	    gtk_check_button_new_with_label(_("Save and restore the playlist on exit/startup"));
+	gtk_widget_set_name(check_autoplsave, "check_on_notebook");
 	if (auto_save_playlist) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_autoplsave), TRUE);
 	}
 	auto_save_playlist_shadow = auto_save_playlist;
-	g_signal_connect(G_OBJECT(check_autoplsave), "toggled", G_CALLBACK(autoplsave_toggled), NULL);
-        gtk_box_pack_start(GTK_BOX(vbox_autoplsave), check_autoplsave, TRUE, TRUE, 0);
+	g_signal_connect(G_OBJECT(check_autoplsave), "toggled",
+			 G_CALLBACK(autoplsave_toggled), NULL);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_autoplsave, FALSE, TRUE, 3);
+
+	check_show_rva_in_playlist =
+		gtk_check_button_new_with_label(_("Show RVA values in playlist"));
+	gtk_widget_set_name(check_show_rva_in_playlist, "check_on_notebook");
+	if (show_rva_in_playlist) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_rva_in_playlist), TRUE);
+	}
+	show_rva_in_playlist_shadow = show_rva_in_playlist;
+	g_signal_connect(G_OBJECT(check_show_rva_in_playlist), "toggled",
+			 G_CALLBACK(check_show_rva_in_playlist_toggled), NULL);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_rva_in_playlist, FALSE, TRUE, 3);
+
+	check_show_length_in_playlist =
+		gtk_check_button_new_with_label(_("Show track lengths in playlist"));
+	gtk_widget_set_name(check_show_length_in_playlist, "check_on_notebook");
+	if (show_length_in_playlist) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_length_in_playlist), TRUE);
+	}
+	show_length_in_playlist_shadow = show_length_in_playlist;
+	g_signal_connect(G_OBJECT(check_show_length_in_playlist), "toggled",
+			 G_CALLBACK(check_show_length_in_playlist_toggled), NULL);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_length_in_playlist, FALSE, TRUE, 3);
+
+	
+	frame_plistcol = gtk_frame_new(_("Playlist column order"));
+        gtk_box_pack_start(GTK_BOX(vbox_pl), frame_plistcol, TRUE, TRUE, 5);
+
+        vbox_plistcol = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox_plistcol), 8);
+        gtk_container_add(GTK_CONTAINER(frame_plistcol), vbox_plistcol);
+	
+	label_plistcol = gtk_label_new(_("Drag and drop columns in the list below \n\
+to set the column order in the Playlist."));
+        gtk_box_pack_start(GTK_BOX(vbox_plistcol), label_plistcol, FALSE, TRUE, 5);
+
+
+	plistcol_store = gtk_list_store_new(2,
+					    G_TYPE_STRING,   /* Column name */
+					    G_TYPE_STRING);  /* Column index */
+
+        plistcol_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(plistcol_store));
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Column"),
+							  renderer,
+							  "text", 0,
+							  NULL);
+        gtk_tree_view_append_column(GTK_TREE_VIEW(plistcol_list), column);
+        gtk_tree_view_set_reorderable(GTK_TREE_VIEW(plistcol_list), TRUE);
+        //plistcol_select = gtk_tree_view_get_selection(GTK_TREE_VIEW(plistcol_list));
+        //gtk_tree_selection_set_mode(plistcol_select, GTK_SELECTION_SINGLE);
+
+        viewport = gtk_viewport_new(NULL, NULL);
+        gtk_box_pack_start(GTK_BOX(vbox_plistcol), viewport, TRUE, TRUE, 5);
+
+        gtk_container_add(GTK_CONTAINER(viewport), plistcol_list);
+
+	for (i = 0; i < 3; i++) {
+		switch (plcol_idx[i]) {
+		case 0:
+			gtk_list_store_append(plistcol_store, &iter);
+			gtk_list_store_set(plistcol_store, &iter,
+					   0, _("Track titles"), 1, "0", -1);
+			break;
+		case 1:
+			gtk_list_store_append(plistcol_store, &iter);
+			gtk_list_store_set(plistcol_store, &iter,
+					   0, _("RVA values"), 1, "1", -1);
+			break;
+		case 2:
+			gtk_list_store_append(plistcol_store, &iter);
+			gtk_list_store_set(plistcol_store, &iter,
+					   0, _("Track lengths"), 1, "2", -1);
+			break;
+		}
+	}
+
 
 
 	/* "DSP" notebook page */
@@ -536,6 +710,7 @@ See the About box and the documentation for details."));
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_rva, label_rva);
 
 	check_rva_is_enabled = gtk_check_button_new_with_label(_("Enable playback RVA"));
+	gtk_widget_set_name(check_rva_is_enabled, "check_on_notebook");
 	if (rva_is_enabled) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_rva_is_enabled), TRUE);
 	}

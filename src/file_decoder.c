@@ -1072,7 +1072,7 @@ get_file_duration(char * file) {
 	float duration;
 
 	if ((fdec = file_decoder_new()) == NULL) {
-                fprintf(stderr, "show_file_info: error: file_decoder_new() returned NULL\n");
+                fprintf(stderr, "get_file_duration: error: file_decoder_new() returned NULL\n");
                 return 0.0f;
         }
 

@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(aqualung, 0.9beta3, http://aqualung.sf.net/mantis)
-AM_INIT_AUTOMAKE(aqualung, 0.9beta3)
+AC_INIT(aqualung, 0.9beta4, http://aqualung.sf.net/mantis)
+AM_INIT_AUTOMAKE(aqualung, 0.9beta4)
 AC_CONFIG_SRCDIR([src/core.c])
 AM_CONFIG_HEADER([config.h])
 
@@ -349,6 +349,10 @@ AC_OUTPUT([Makefile \
 	   doc/Makefile \
 	   doc/html/Makefile \
 	   skin/Makefile \
+	   skin/dark/Makefile \
+	   skin/default/Makefile \
+	   skin/metal/Makefile \
+	   skin/woody/Makefile \
 	   src/Makefile \
 	   src/po/Makefile])
 

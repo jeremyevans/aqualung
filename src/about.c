@@ -66,13 +66,6 @@ create_about_window() {
 
 	GtkTextTag * tag;
 
-	PangoFontDescription * font_desc = pango_font_description_new();
-
-
-	pango_font_description_set_family(font_desc, "Courier");
-	pango_font_description_set_weight(font_desc, PANGO_WEIGHT_BOLD);
-	pango_font_description_set_size(font_desc, 1);
-
 
 	about_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_transient_for(GTK_WINDOW(about_window), GTK_WINDOW(main_window));
@@ -89,7 +82,6 @@ create_about_window() {
 
 
 	label = gtk_label_new(_("Dismiss"));
-	gtk_widget_modify_font(label, font_desc);
 
 	ok_btn = gtk_button_new();
 	gtk_widget_set_name(ok_btn, "");
@@ -120,7 +112,6 @@ create_about_window() {
 	gtk_widget_set_name(view, "");
 
 	gtk_widget_modify_base(view, GTK_STATE_NORMAL, &blue3);
-	gtk_widget_modify_font(view, font_desc);
 	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(view), 3);
 	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(view), 3);
         gtk_text_view_set_editable(GTK_TEXT_VIEW(view), FALSE);
@@ -142,7 +133,7 @@ create_about_window() {
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Homepage:"), -1, tag, NULL);
 	gtk_text_buffer_insert_at_cursor(buffer, " http://aqualung.sf.net\n", -1);
 
-	gtk_text_buffer_insert_at_cursor(buffer, "\nCopyright (C) 2004 Tom Szilagyi\n\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\nCopyright (C) 2004-2005 Tom Szilagyi\n\n\n", -1);
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Authors:"), -1, tag, NULL);
@@ -150,15 +141,15 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, _("Core design, engineering & programming:"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\tTom Szilagyi <tszilagyi@users.sourceforge.net>\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Skin support, look & feel, GUI hacks:"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tPeter Szilagyi <szilagyi.peter@index.hu>\n\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\tPeter Szilagyi <peterszilagyi@users.sourceforge.net>\n\n\n", -1);
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Translators:"), -1, tag, NULL);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("German,\nHungarian:"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tPeter Szilagyi <szilagyi.peter@index.hu>\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tPeter Szilagyi <peterszilagyi@users.sourceforge.net>\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Ukrainian:"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tSergiy Niskorodov <sgh_punk@users.sourceforge.net>\n\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\tSergiy Niskorodov <sgh_punk@users.sourceforge.net>\n\n\n", -1);
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter,
@@ -168,7 +159,7 @@ create_about_window() {
 
 	gtk_text_buffer_insert_at_cursor(buffer, _("File format support:"), -1);
 					 
-	gtk_text_buffer_insert_at_cursor(buffer, _("\n\t\tsndfile (WAV, AIFF, etc.)\t\t\t: "), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\n\t\tsndfile (WAV, AIFF, etc.)\t\t\t\t\t: "), -1);
 #ifdef HAVE_SNDFILE
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -177,7 +168,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 #endif /* HAVE_SNDFILE */
 	
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tFree Lossless Audio Codec (FLAC)\t\t: "), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tFree Lossless Audio Codec (FLAC)\t\t\t: "), -1);
 #ifdef HAVE_FLAC
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -186,7 +177,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 #endif /* HAVE_FLAC */
 	
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tOgg Vorbis\t\t\t\t\t: "), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tOgg Vorbis\t\t\t\t\t\t\t: "), -1);
 #ifdef HAVE_OGG_VORBIS
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -213,7 +204,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 #endif /* HAVE_MOD */
 
-        gtk_text_buffer_insert_at_cursor(buffer, _("\t\tID3 tags\t\t\t\t\t: "), -1);
+        gtk_text_buffer_insert_at_cursor(buffer, _("\t\tID3 tags\t\t\t\t\t\t\t\t: "), -1);
 #ifdef HAVE_ID3
         gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -225,7 +216,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Output driver support:"), -1);
 	
-	gtk_text_buffer_insert_at_cursor(buffer, _("\n\t\tOSS Audio\t\t\t\t\t: "), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\n\t\tOSS Audio\t\t\t\t\t\t\t: "), -1);
 #ifdef HAVE_OSS
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -234,7 +225,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 #endif /* HAVE_OSS */
 	
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tALSA Audio\t\t\t\t\t: "), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tALSA Audio\t\t\t\t\t\t\t: "), -1);
 #ifdef HAVE_ALSA
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -244,7 +235,7 @@ create_about_window() {
 #endif /* HAVE_ALSA */
 	
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("JACK Audio Server\t\t\t\t: "), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("JACK Audio Server\t\t\t\t\t\t: "), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes (always)"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Internal Sample Rate Converter support\t\t\t: "), -1);

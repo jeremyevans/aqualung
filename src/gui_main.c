@@ -122,6 +122,9 @@ int immediate_start = 0; /* this flag set to 1 in core.c if --play
 
 extern int ladspa_is_postfader;
 extern int auto_save_playlist;
+extern int show_rva_in_playlist;
+extern int show_length_in_playlist;
+extern int plcol_idx[3];
 
 int rva_is_enabled = 0;
 int rva_env = 0;
@@ -286,10 +289,15 @@ time2time(float seconds, char * str) {
 	m = seconds / 60 - h * 60;
 	s = seconds - h * 3600 - m * 60;
 
-	if (h > 0)
-		sprintf(str, "%02d:%02d:%02d", h, m, s);
-	else
+	if (h > 0) {
+		if (h > 9) {
+			sprintf(str, "%02d:%02d:%02d", h, m, s);
+		} else {
+			sprintf(str, "%1d:%02d:%02d", h, m, s);
+		}
+	} else {
 		sprintf(str, "%02d:%02d", m, s);
+	}
 }
 
 
@@ -2253,7 +2261,10 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
 
 	create_playlist();
+        playlist_size_allocate(NULL, NULL);
+
 	create_music_browser();
+
 	create_fxbuilder();
 
 	load_plugin_data();
@@ -2704,9 +2715,12 @@ save_config(void) {
 
 	snprintf(str, 31, "%d", ladspa_is_postfader);
         xmlNewTextChild(root, NULL, "ladspa_is_postfader", str);
-
 	snprintf(str, 31, "%d", auto_save_playlist);
         xmlNewTextChild(root, NULL, "auto_save_playlist", str);
+	snprintf(str, 31, "%d", show_rva_in_playlist);
+        xmlNewTextChild(root, NULL, "show_rva_in_playlist", str);
+	snprintf(str, 31, "%d", show_length_in_playlist);
+        xmlNewTextChild(root, NULL, "show_length_in_playlist", str);
 
 	snprintf(str, 31, "%f", vol);
         xmlNewTextChild(root, NULL, "volume", str);
@@ -2766,6 +2780,13 @@ save_config(void) {
         xmlNewTextChild(root, NULL, "time_idx_1", str);
 	snprintf(str, 31, "%d", time_idx[2]);
         xmlNewTextChild(root, NULL, "time_idx_2", str);
+
+	snprintf(str, 31, "%d", plcol_idx[0]);
+        xmlNewTextChild(root, NULL, "plcol_idx_0", str);
+	snprintf(str, 31, "%d", plcol_idx[1]);
+        xmlNewTextChild(root, NULL, "plcol_idx_1", str);
+	snprintf(str, 31, "%d", plcol_idx[2]);
+        xmlNewTextChild(root, NULL, "plcol_idx_2", str);
 
 
         sprintf(tmpname, "%s/config.xml.temp", confdir);
@@ -2883,6 +2904,18 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
 				sscanf(key, "%d", &auto_save_playlist);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_rva_in_playlist"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+				sscanf(key, "%d", &show_rva_in_playlist);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_length_in_playlist"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+				sscanf(key, "%d", &show_length_in_playlist);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"volume"))) {
@@ -3052,6 +3085,25 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
                                 sscanf(key, "%d", &(time_idx[2]));
+                        xmlFree(key);
+                }
+
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"plcol_idx_0"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf(key, "%d", &(plcol_idx[0]));
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"plcol_idx_1"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf(key, "%d", &(plcol_idx[1]));
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"plcol_idx_2"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf(key, "%d", &(plcol_idx[2]));
                         xmlFree(key);
                 }
                 cur = cur->next;

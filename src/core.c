@@ -1415,7 +1415,7 @@ main(int argc, char ** argv) {
 		fprintf(stderr,	"Aqualung -- Music player for GNU/Linux\n");
 		fprintf(stderr, "Build version: %s\n", aqualung_version);
 		fprintf(stderr,
-			"(C) 2004 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
+			"(C) 2004-2005 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
 			"This is free software, and you are welcome to redistribute it\n"
 			"under certain conditions; see the file COPYING for details.\n");
 

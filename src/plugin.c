@@ -1675,14 +1675,13 @@ create_fxbuilder(void) {
 	/* create store of available plugins */
 	if (!avail_store) {
 		avail_store = gtk_list_store_new(7,
-						 G_TYPE_STRING, /* 0: ID */
-						 G_TYPE_STRING, /* 1: Name */
-						 G_TYPE_STRING, /* 2: category */
-						 G_TYPE_STRING, /* 3: n_ins */
-						 G_TYPE_STRING, /* 4: n_outs */
-						 G_TYPE_STRING, /* 5: filename */
-						 G_TYPE_STRING, /* 6: index */
-						 -1);
+						 G_TYPE_STRING,  /* 0: ID */
+						 G_TYPE_STRING,  /* 1: Name */
+						 G_TYPE_STRING,  /* 2: category */
+						 G_TYPE_STRING,  /* 3: n_ins */
+						 G_TYPE_STRING,  /* 4: n_outs */
+						 G_TYPE_STRING,  /* 5: filename */
+						 G_TYPE_STRING); /* 6: index */
 
 		gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(avail_store), 1, GTK_SORT_ASCENDING);
 
@@ -1782,9 +1781,8 @@ create_fxbuilder(void) {
 	/* create store of running plugins */
 	if (!running_store) {
 		running_store = gtk_list_store_new(2,
-						   G_TYPE_STRING,  /* Name */
-						   G_TYPE_POINTER, /* instance */
-						   -1);
+						   G_TYPE_STRING,   /* Name */
+						   G_TYPE_POINTER); /* instance */
 
 		g_signal_connect(G_OBJECT(running_store), "row_inserted",
 				 G_CALLBACK(running_list_row_inserted), NULL);

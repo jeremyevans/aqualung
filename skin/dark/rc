@@ -1,0 +1,330 @@
+# --- windows
+
+style "window"
+{
+	bg_pixmap[NORMAL] = "<none>"
+	bg_pixmap[PRELIGHT] = "<none>"
+	bg_pixmap[ACTIVE] = "<none>"
+
+	bg[NORMAL] = { 0.18, 0.18, 0.18 }
+	bg[PRELIGHT] = { 0.18, 0.18, 0.18 }
+	bg[ACTIVE] = { 0.18, 0.18, 0.18 }
+
+	fg[NORMAL] = { 1.0, 1.0, 1.0 }
+	fg[PRELIGHT] = { 1.0, 1.0, 1.0 }
+	fg[ACTIVE] = { 1.0, 1.0, 1.0 }
+
+	font_name = "Sans Bold 10"
+}
+
+style "main_window" = "window"
+{
+}
+
+style "plugin_scrwin" = "window"
+{
+	bg_pixmap[NORMAL] = "<none>"
+	bg[NORMAL] = { 0.28, 0.28, 0.28 }
+
+	fg[NORMAL] = { 1.0, 1.0, 1.0 }
+}
+
+widget "*GtkWindow*" style "window"
+widget "*Dialog*" style "window"
+widget "*FileSelection*" style "window"
+widget "*main_window" style "main_window"
+
+
+# --- common widgets
+
+style "button"
+{
+	bg_pixmap[NORMAL] = "btn_bg1.xpm"
+	bg_pixmap[PRELIGHT] = "btn_bg2.xpm"
+	bg_pixmap[ACTIVE] = "btn_bg3.xpm"
+
+	bg[NORMAL] = { 0.04, 0.07, 0.04 }
+	bg[PRELIGHT] = { 0.14, 0.17, 0.14 }
+	bg[ACTIVE] = { 0.24, 0.27, 0.24 }
+
+	fg[NORMAL] = { 1.0, 1.0, 1.0 }
+	fg[PRELIGHT] = { 1.0, 1.0, 1.0 }
+	fg[ACTIVE] = { 1.0, 1.0, 1.0 }
+
+	font_name = "Sans Bold 10"
+}
+
+style "view"
+{
+	text[NORMAL] = { 0.14, 0.6, 1.0 }
+	text[SELECTED] = { 0.12, 0.56, 1.0 }
+	text[ACTIVE] = { 0.14, 0.6, 1.0 }
+
+	base[NORMAL] = { 0.04, 0.07, 0.04 }
+	base[SELECTED] = { 0.04, 0.07, 0.3 }
+	base[ACTIVE] = { 0.04, 0.07, 0.15 }
+
+	fg[NORMAL] = { 0.8, 0.73, 0.8 }
+	fg[SELECTED] = { 0.04, 0.07, 0.04 }
+}
+
+style "scrollbar"
+{
+	bg_pixmap[NORMAL] = "<none>"
+	bg_pixmap[PRELIGHT] = "<none>"
+	bg_pixmap[ACTIVE] = "<none>"
+
+	bg[NORMAL] = { 0.09, 0.12, 0.09 }
+	bg[PRELIGHT] = { 0.14, 0.17, 0.14 }
+	bg[ACTIVE] = { 0.24, 0.27, 0.24 }
+
+	fg[NORMAL] = { 1.0, 1.0, 1.0 }
+	fg[PRELIGHT] = { 1.0, 1.0, 1.0 }
+	fg[ACTIVE] = { 1.0, 1.0, 1.0 }
+}
+
+style "progressbar"
+{
+	bg[NORMAL] = { 0.05, 0.0, 0.0 }
+	bg[PRELIGHT] = { 0.35, 0.4, 0.45 }
+}
+
+style "notebook"
+{
+	bg[NORMAL] = { 0.28, 0.30, 0.28 }
+	bg[PRELIGHT] = { 0.28, 0.30, 0.28 }
+	bg[ACTIVE] = { 0.15, 0.15, 0.15 }
+}
+
+style "entry" = "view"
+{
+	text[NORMAL] = { 0.0, 0.0, 0.0 }
+	text[SELECTED] = { 1.0, 1.0, 1.0 }
+	text[ACTIVE] = { 0.0, 0.0, 0.0 }
+
+	base[NORMAL] = { 0.54, 0.57, 0.54 }
+	base[SELECTED] = { 0.14, 0.17, 0.14 }
+	base[ACTIVE] = { 0.14, 0.17, 0.14 }
+
+	font_name = "Lucida 12"
+}
+
+style "menu"
+{
+	bg_pixmap[NORMAL] = "<none>"
+	bg_pixmap[PRELIGHT] = "<none>"
+
+	bg[NORMAL] = { 0.14, 0.17, 0.14 }
+	bg[PRELIGHT] = { 0.24, 0.27, 0.24 }
+
+	fg[NORMAL] = { 1.0, 1.0, 1.0 }
+	fg[PRELIGHT] = { 1.0, 1.0, 1.0 }
+}
+
+style "spin_button" = "button"
+{
+	text[NORMAL] = { 0.0, 0.0, 0.0 }
+	text[SELECTED] = { 1.0, 1.0, 1.0 }
+	text[ACTIVE] = { 0.0, 0.0, 0.0 }
+
+	base[NORMAL] = { 0.54, 0.57, 0.54 }
+	base[SELECTED] = { 0.14, 0.17, 0.14 }
+	base[ACTIVE] = { 0.14, 0.17, 0.14 }
+}
+
+style "scale"
+{
+	bg[NORMAL] = { 0.29, 0.32, 0.35 }
+	bg[PRELIGHT] = { 0.34, 0.37, 0.4 }
+	bg[ACTIVE] = { 0.04, 0.07, 0.1 }
+
+	bg_pixmap[ACTIVE] = "scale_bg.xpm"
+
+	fg[NORMAL] = { 0.18, 0.18, 0.18 }
+}
+
+style "nostyle"
+{
+	bg_pixmap[NORMAL] = "<none>"
+	bg_pixmap[PRELIGHT] = "<none>"
+	bg_pixmap[ACTIVE] = "<none>"
+
+	fg[NORMAL] = { 0.0, 0.0, 0.0 }
+	fg[PRELIGHT] = { 0.0, 0.0, 0.0 }
+	fg[ACTIVE] = { 0.0, 0.0, 0.0 }
+}
+
+widget "*ScrolledWindow*" style "scrollbar"
+widget "*plugin_scrwin*" style "plugin_scrwin"
+
+widget "*TreeView*" style "view"
+widget "*TextView*" style "entry"
+widget "*List*" style "view"
+
+widget "*Scrollbar*" style "scrollbar"
+widget "*Separator*" style "scrollbar"
+widget "*Progress*" style "progressbar"
+widget "*Notebook*" style "notebook"
+
+widget "*OptionMenu*" style "button"
+widget "*Menu*" style "menu"
+
+widget "*SpinButton*" style "spin_button"
+widget "*Scale*" style "scale"
+widget "*Button*" style "button"
+widget "*GtkEntry*" style "entry"
+
+widget "*nostyle" style "nostyle"
+
+# --- checkbutton
+
+widget "*check_on_window" style "window"
+widget "*check_on_notebook" style "notebook"
+
+# --- main window
+
+style "viewport"
+{
+	bg[NORMAL] = { 0.18, 0.18, 0.18 }
+}
+
+style "time_viewport" = "viewport"
+{
+	bg_pixmap[NORMAL] = "time_bg.xpm"
+}
+
+style "title_viewport" = "viewport"
+{
+	bg_pixmap[NORMAL] = "title_bg.xpm"
+}
+
+style "info_viewport" = "title_viewport"
+{
+}
+
+style "big_timer_label"
+{
+	fg[NORMAL] = { 0.14 , 0.6, 1.0 }
+	font_name = "Courier 19"
+}
+
+style "small_timer_label"
+{
+	fg[NORMAL] = { 0.14, 0.6, 1.0 }
+	font_name = "Courier 11"
+}
+
+style "label_title"
+{
+	fg[NORMAL] = { 0.9, 0.83, 0.9 }
+	font_name = "Sans Bold 12"
+}
+
+style "label_info"
+{
+	fg[NORMAL] = { 0.14, 0.6, 1.0 }
+	font_name = "Sans 8"
+}
+
+style "scale_pos" = "scale"
+{
+}
+
+style "scale_vol" = "scale_pos"
+{
+}
+
+style "scale_bal" = "scale_pos"
+{
+}
+
+widget "*time_viewport" style "time_viewport"
+widget "*title_viewport" style "title_viewport"
+widget "*info_viewport" style "info_viewport"
+
+widget "*big_timer_label" style "big_timer_label"
+widget "*small_timer_label" style "small_timer_label"
+widget "*label_title" style "label_title"
+widget "*label_info" style "label_info"
+
+widget "*scale_pos" style "scale_pos"
+widget "*scale_vol" style "scale_vol"
+widget "*scale_bal" style "scale_bal"
+
+
+# --- music store
+
+style "music_tree" = "view"
+{
+	text[SELECTED] = { 1.0, 0.93, 1.0 }
+
+	font_name = "Lucida 12"	
+}
+
+style "comment_view" = "view"
+{
+	font_name = "Lucida 10"
+}
+
+widget "*music_tree" style "music_tree"
+widget "*comment_view" style "comment_view"
+
+
+# --- playlist
+
+style "play_list" = "view"
+{
+	fg[SELECTED] = { 1.0, 0.93, 1.0 }
+	fg[INSENSITIVE] = { 0.14, 0.6, 1.0 }
+
+	font_name = "Lucida 12"	
+}
+
+widget "*play_list" style "play_list"
+
+
+# --- plugins
+
+style "plugin_name"
+{
+	font_name = "Lucida Bold 14"
+}
+
+style "plugin_maker"
+{
+	font_name = "Lucida Bold 12"
+}
+
+style "plugin_bypass_button" = "button"
+{
+	bg_pixmap[ACTIVE] = "<none>"
+
+	bg[ACTIVE] = { 1.0, 0.0, 0.0 }
+
+	fg[NORMAL] = { 1.0, 1.0, 1.0 }
+	fg[PRELIGHT] = { 1.0, 1.0, 1.0 }
+	fg[ACTIVE] = { 1.0, 1.0, 1.0 }
+}
+
+style "plugin_scale" = "scale"
+{
+	bg_pixmap[ACTIVE] = "<none>"
+	bg[ACTIVE] = { 0.6, 0.6, 0.7 }
+}
+
+style "plugin_toggled" = "button"
+{
+	bg_pixmap[NORMAL] = "<none>"
+	bg_pixmap[PRELIGHT] = "<none>"
+	bg_pixmap[ACTIVE] = "<none>"
+
+	bg[NORMAL] = { 0.6, 0.6, 0.7 }
+	bg[PRELIGHT] = { 0.65, 0.65, 0.75 }
+	bg[ACTIVE] = { 0.7, 0.6, 0.6 }
+}
+
+widget "*plugin_name" style "plugin_name"
+widget "*plugin_maker" style "plugin_maker"
+widget "*plugin_bypass_button*" style "plugin_bypass_button"
+widget "*plugin_scale" style "plugin_scale"
+widget "*plugin_toggled" style "plugin_toggled"

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 MAJOR=0
-MINOR=111
+MINOR=112
 MICRO=0
 
 if [ $# -eq 0 ] ; then

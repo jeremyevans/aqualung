@@ -23,6 +23,12 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
+
+#ifdef HAVE_FLAC
+#include <FLAC/format.h>
+#include <FLAC/metadata.h>
+#endif /* HAVE_FLAC */
 
 #include "common.h"
 #include "file_decoder.h"
@@ -236,28 +242,131 @@ show_file_info(char * name, char * file) {
 	/* TODO */
 
 
-	/* Vorbis comments notebook page */
+#ifdef HAVE_OGG_VORBIS
+	if (fdec->file_lib == VORBIS_LIB) {
 
-	vbox_vorbis = gtk_vbox_new(FALSE, 4);
-	table_vorbis = gtk_table_new(6, 2, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox_vorbis), table_vorbis, TRUE, TRUE, 10);
-	label_vorbis = gtk_label_new(_("Vorbis comments"));
-	gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_vorbis, label_vorbis);
+		/* Vorbis comments notebook page */
 
-	/* TODO */
+		vorbis_comment * vc = ov_comment(&(fdec->vf), -1);
+		char field[MAXLEN];
+		int cnt;
+		int i, j;
+		
+		vbox_vorbis = gtk_vbox_new(FALSE, 4);
+		table_vorbis = gtk_table_new(6, 2, FALSE);
+		gtk_box_pack_start(GTK_BOX(vbox_vorbis), table_vorbis, TRUE, TRUE, 10);
+		label_vorbis = gtk_label_new(_("Vorbis comments"));
+		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_vorbis, label_vorbis);
+	
+		for (cnt = 0; cnt < vc->comments; cnt++) {
 
+			for (i = 0; (vc->user_comments[cnt][i] != '=') &&
+				     (vc->user_comments[cnt][i] != '\0') &&
+				     (i < MAXLEN-2); i++) {
 
-	/* FLAC metadata notebook page */
+				field[i] = (i == 0) ? toupper(vc->user_comments[cnt][i]) :
+					tolower(vc->user_comments[cnt][i]);
+			}
+			field[i++] = ':';
+			field[i] = '\0';
+			for (j = 0; (vc->user_comments[cnt][i] != '\0') && (j < MAXLEN-1); i++) {
+				str[j++] = vc->user_comments[cnt][i];
+			}
+			str[j] = '\0';
 
-	vbox_flac = gtk_vbox_new(FALSE, 4);
-	table_flac = gtk_table_new(6, 2, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox_flac), table_flac, TRUE, TRUE, 10);
-	label_flac = gtk_label_new(_("FLAC metadata"));
-	gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_flac, label_flac);
+			hbox = gtk_hbox_new(FALSE, 0);
+			label = gtk_label_new(field);
+			gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+			gtk_table_attach(GTK_TABLE(table_vorbis), hbox, 0, 1, cnt, cnt+1,
+					 GTK_FILL, GTK_FILL, 5, 3);
+			entry = gtk_entry_new();
+			gtk_entry_set_text(GTK_ENTRY(entry), str);
+			gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
+			gtk_table_attach(GTK_TABLE(table_vorbis), entry, 1, 2, cnt, cnt+1,
+					 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+		}
 
-	/* TODO */
+		hbox = gtk_hbox_new(FALSE, 0);
+		label = gtk_label_new(_("Vendor:"));
+		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+		gtk_table_attach(GTK_TABLE(table_vorbis), hbox, 0, 1, cnt, cnt+1,
+				 GTK_FILL, GTK_FILL, 5, 3);
+		entry = gtk_entry_new();
+		strncpy(str, vc->vendor, MAXLEN-1);
+		gtk_entry_set_text(GTK_ENTRY(entry), str);
+		gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
+		gtk_table_attach(GTK_TABLE(table_vorbis), entry, 1, 2, cnt, cnt+1,
+				 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+		
 
+	}
+#endif /* HAVE_OGG_VORBIS */
 
+#ifdef HAVE_FLAC
+	if (fdec->file_lib == FLAC_LIB) {
+
+		/* FLAC metadata notebook page */
+		
+		FLAC__Metadata_SimpleIterator * iter = FLAC__metadata_simple_iterator_new();
+		FLAC__StreamMetadata * flacmeta = NULL;
+
+		file_decoder_close(fdec);
+		file_decoder_delete(fdec);
+		fdec = NULL;
+
+		if (!FLAC__metadata_simple_iterator_init(iter, file, false, false)) {
+			fprintf(stderr,
+				"show_file_info(): error: "
+				"FLAC__metadata_simple_iterator_init() failed on %s\n", file);
+			return;
+		}
+
+		vbox_flac = gtk_vbox_new(FALSE, 4);
+		table_flac = gtk_table_new(6, 2, FALSE);
+		gtk_box_pack_start(GTK_BOX(vbox_flac), table_flac, TRUE, TRUE, 10);
+		label_flac = gtk_label_new(_("FLAC metadata"));
+		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_flac, label_flac);
+
+		while (1) {
+			flacmeta = FLAC__metadata_simple_iterator_get_block(iter);
+			if (flacmeta == NULL)
+				break;
+
+			/* process metadata block */
+			printf("metadata block: ");
+			switch (flacmeta->type) {
+			case FLAC__METADATA_TYPE_STREAMINFO:
+				printf("FLAC__METADATA_TYPE_STREAMINFO\n");
+				break;
+			case FLAC__METADATA_TYPE_PADDING:
+				printf("FLAC__METADATA_TYPE_PADDING\n");
+				break;
+			case FLAC__METADATA_TYPE_APPLICATION:
+				printf("FLAC__METADATA_TYPE_APPLICATION\n");
+				break;
+			case FLAC__METADATA_TYPE_SEEKTABLE:
+				printf("FLAC__METADATA_TYPE_SEEKTABLE\n");
+				break;
+			case FLAC__METADATA_TYPE_VORBIS_COMMENT:
+				printf("FLAC__METADATA_TYPE_VORBIS_COMMENT\n");
+				break;
+			case FLAC__METADATA_TYPE_CUESHEET:
+				printf("FLAC__METADATA_TYPE_CUESHEET\n");
+				break;
+			case FLAC__METADATA_TYPE_UNDEFINED:
+				printf("FLAC__METADATA_TYPE_UNDEFINED\n");
+				break;
+			}
+
+			FLAC__metadata_object_delete(flacmeta);
+			if (!FLAC__metadata_simple_iterator_next(iter))
+				break;
+		}
+
+		FLAC__metadata_simple_iterator_delete(iter);
+
+	}
+#endif /* HAVE_FLAC */
 
 	/* end of notebook stuff */
 
@@ -267,6 +376,8 @@ show_file_info(char * name, char * file) {
 
 	gtk_widget_show_all(info_window);
 
-	file_decoder_close(fdec);
-	file_decoder_delete(fdec);
+	if (fdec != NULL) {
+		file_decoder_close(fdec);
+		file_decoder_delete(fdec);
+	}
 }

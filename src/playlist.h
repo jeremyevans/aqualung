@@ -29,7 +29,8 @@ void show_playlist(void);
 void hide_playlist(void);
 void set_playlist_color(void);
 void save_playlist(char * filename);
-void load_playlist(char * filename);
+void load_playlist(char * filename, int enqueue);
+void add_to_playlist(char * filename, int enqueue);
 
 
 #endif /* _PLAYLIST_H */

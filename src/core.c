@@ -30,6 +30,7 @@
 #include <time.h>
 #include <pthread.h>
 #include <getopt.h>
+#include <sys/stat.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 
@@ -66,18 +67,18 @@
 /* for MPEG Audio support */
 #ifdef HAVE_MPEG
 #include <mad.h>
-#include <sys/stat.h>
 #include <sys/mman.h>
 #endif /* HAVE_MPEG */
 
 /* for MOD Audio support */
 #ifdef HAVE_MOD
 #include <libmodplug/modplug.h>
-#include <sys/stat.h>
 #include <sys/mman.h>
 #endif /* HAVE_MOD */
 
 #include "common.h"
+#include "version.h"
+#include "transceiver.h"
 #include "gui_main.h"
 #include "plugin.h"
 #include "core.h"
@@ -204,6 +205,12 @@ LADSPA_Data * r_buf = NULL;
 int n_plugins = 0;
 plugin_instance * plugin_vect[MAX_PLUGINS];
 
+/* remote control */
+extern int aqualung_session_id;
+extern int aqualung_socket_fd;
+extern char aqualung_socket_filename[256];
+
+extern char cwd[MAXLEN];
 
 
 #ifdef HAVE_FLAC
@@ -706,6 +713,19 @@ open_file(void * arg, char * filename) {
 			goto no_open;
 		}
 
+		{
+			int fd;
+			struct stat stat;
+			
+			fd = open(filename, O_RDONLY);
+			fstat(fd, &stat);
+			close(fd);
+			if (stat.st_size < 2 * MAD_BUFSIZE + 1) {
+				fclose(mpeg_file);
+				goto no_mpeg;
+			}
+		}
+
 		mpeg_SR = mpeg_channels = mpeg_bitrate = 0;
 		mpeg_err = mpeg_again = 0;
 		mad_decoder_init(&mpeg_decoder, NULL, mpeg_input_explore,
@@ -761,6 +781,7 @@ open_file(void * arg, char * filename) {
 			fileinfo.bps = mpeg_bitrate;
 		}
 	}
+ no_mpeg:
 #endif /* HAVE_MPEG */
 
 #ifdef HAVE_MOD
@@ -1141,6 +1162,8 @@ seek_file(void * arg, unsigned long long seek_to_pos) {
 
 #ifdef HAVE_MOD
 	case MOD_LIB:
+                if (seek_to_pos == fileinfo.total_samples)
+                        --seek_to_pos;
 		ModPlug_Seek(mpf, (double)seek_to_pos / mp_settings.mFrequency * 1000.0f);
 		disk_thread_samples_left = fileinfo.total_samples - seek_to_pos;
                 /* empty mod decoder ringbuffer */
@@ -2195,7 +2218,25 @@ main(int argc, char ** argv) {
 	int try_realtime = 0;
 	int priority = 1;
 
-	char * optstring = "vho:d:c:n:p:r:aRP:s::";
+	char rcmd;
+	int no_session = -1;
+	int back = 0;
+	int play = 0;
+	int pause = 0;
+	int stop = 0;
+	int fwd = 0;
+	int enqueue = 0;
+
+
+	setup_app_socket();
+
+	if (getcwd(cwd, MAXLEN) == NULL) {
+		fprintf(stderr, "main(): warning: getcwd() returned NULL, using . as cwd\n");
+		strcpy(cwd, ".");
+	}
+
+
+	char * optstring = "vho:d:c:n:p:r:aRP:s::N:BLUTFE";
 	struct option long_options[] = {
 		{ "version", 0, 0, 'v' },
 		{ "help", 0, 0, 'h' },
@@ -2209,6 +2250,15 @@ main(int argc, char ** argv) {
 		{ "realtime", 0, 0, 'R' },
 		{ "priority", 1, 0, 'P' },
 		{ "srctype", 2, 0, 's' },
+
+		{ "session", 1, 0, 'N' },
+		{ "back", 0, 0, 'B' },
+		{ "play", 0, 0, 'L' },
+		{ "pause", 0, 0, 'U' },
+		{ "stop", 0, 0, 'T' },
+		{ "fwd", 0, 0, 'F' },
+		{ "enqueue", 0, 0, 'E' },
+
 		{ 0, 0, 0, 0 }
 	};
 
@@ -2350,6 +2400,29 @@ main(int argc, char ** argv) {
 				exit(1);
 #endif /* HAVE_SRC */
 				break;
+				
+			case 'N':
+				no_session = atoi(optarg);
+				break;
+			case 'B':
+				back++;
+				break;
+			case 'L':
+				play++;
+				break;
+			case 'U':
+				pause++;
+				break;
+			case 'T':
+				stop++;
+				break;
+			case 'F':
+				fwd++;
+				break;
+			case 'E':
+				enqueue++;
+				break;
+
 			default:
 				show_usage++;
 				break;
@@ -2359,7 +2432,7 @@ main(int argc, char ** argv) {
 	
 	if (show_version) {
 		fprintf(stderr,	"Aqualung -- Music player for GNU/Linux\n");
-		fprintf(stderr, "Build version: %s\n", VERSION);
+		fprintf(stderr, "Build version: %s\n", aqualung_version);
 		fprintf(stderr,
 			"(C) 2004 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
 			"This is free software, and you are welcome to redistribute it\n"
@@ -2431,9 +2504,95 @@ main(int argc, char ** argv) {
 		exit(1);
 	}
 
+	if (show_usage)
+		goto show_usage_;
+
+
+	if (back) {
+		if (no_session == -1)
+			no_session = 0;
+		rcmd = RCMD_BACK;
+		send_message_to_session(no_session, &rcmd, 1);
+		exit(0);
+	}
+	if (play) {
+		if (no_session == -1)
+			no_session = 0;
+		rcmd = RCMD_PLAY;
+		send_message_to_session(no_session, &rcmd, 1);
+		exit(0);
+	}
+	if (pause) {
+		if (no_session == -1)
+			no_session = 0;
+		rcmd = RCMD_PAUSE;
+		send_message_to_session(no_session, &rcmd, 1);
+		exit(0);
+	}
+	if (stop) {
+		if (no_session == -1)
+			no_session = 0;
+		rcmd = RCMD_STOP;
+		send_message_to_session(no_session, &rcmd, 1);
+		exit(0);
+	}
+	if (fwd) {
+		if (no_session == -1)
+			no_session = 0;
+		rcmd = RCMD_FWD;
+		send_message_to_session(no_session, &rcmd, 1);
+		exit(0);
+	}
+
+	{
+		int i;
+		char buffer[MAXLEN];
+		char fullname[MAXLEN];
+		char * home;
+		char * path;
+
+		if (no_session != -1) {
+			for (i = optind; argv[i] != NULL; i++) {
+				
+				switch (argv[i][0]) {
+				case '/':
+					strcpy(fullname, argv[i]);
+					break;
+				case '~':
+					path = argv[i];
+					++path;
+					if (!(home = getenv("HOME"))) {
+						fprintf(stderr,	"main(): cannot resolve home directory\n");
+						return 1;
+					}
+					snprintf(fullname, MAXLEN-1, "%s/%s", home, path);
+					break;
+				default:
+					snprintf(fullname, MAXLEN-1, "%s/%s", cwd, argv[i]);
+					break;
+				}
+
+				if (enqueue) {
+					buffer[0] = RCMD_ENQUEUE;
+					buffer[1] = '\0';
+					strncat(buffer, fullname, MAXLEN-1);
+					send_message_to_session(no_session, buffer, strlen(buffer));
+				} else {
+					buffer[0] = RCMD_LOAD;
+					buffer[1] = '\0';
+					strncat(buffer, fullname, MAXLEN-1);
+					send_message_to_session(no_session, buffer, strlen(buffer));
+				}
+			}
+			exit(0);
+		}
+	}
+
+
+ show_usage_:
 	if (show_usage || (output == 0)) {
 		fprintf(stderr,	"Aqualung -- Music player for GNU/Linux\n");
-		fprintf(stderr, "Build version: %s\n", VERSION);
+		fprintf(stderr, "Build version: %s\n", aqualung_version);
 		fprintf(stderr,
 			"(C) 2004 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
 			"This is free software, and you are welcome to redistribute it\n"
@@ -2441,34 +2600,49 @@ main(int argc, char ** argv) {
 
 		fprintf(stderr,
 			"\nInvocation:\n"
-			"\taqualung --output (oss|alsa|jack) [optional parameters]\n"
-			"\taqualung --help\n"
-			"\taqualung --version\n"
+			"aqualung --output (oss|alsa|jack) [options] [file1 [file2 ...]]\n"
+			"aqualung --help\n"
+			"aqualung --version\n"
 
-			"\nOptional parameters usable with alsa:\n"
-			"\t-d, --device <name>: set the output device (defaults to plughw:0,0)\n"
-			"\t-p, --period <int>: set ALSA period size (defaults to 8192)\n"
-			"\t-n, --nperiods <int>: specify the number of periods in hardware buffer (defaults to 2)\n"
-			"\t-r, --rate <int>: set the output sample rate\n"
-			"\t-R, --realtime: try to use realtime (SCHED_FIFO) scheduling for ALSA output thread\n"
-			"\t-P, --priority <int>: when running --realtime, set scheduler priority to <int> (defaults to 1).\n"
+			"\nOptions relevant to ALSA output:\n"
+			"-d, --device <name>: Set the output device (defaults to plughw:0,0).\n"
+			"-p, --period <int>: Set ALSA period size (defaults to 8192).\n"
+			"-n, --nperiods <int>: Specify the number of periods in hardware buffer (defaults to 2).\n"
+			"-r, --rate <int>: Set the output sample rate.\n"
+			"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for ALSA output thread.\n"
+			"-P, --priority <int>: When running --realtime, set scheduler priority to <int> (defaults to 1).\n"
 
-			"\nOptional parameters usable with oss:\n"
-			"\t-d, --device <name>: set the output device (defaults to /dev/dsp)\n"
-			"\t-r, --rate <int>: set the output sample rate\n"
+			"\nOptions relevant to OSS output:\n"
+			"-d, --device <name>: Set the output device (defaults to /dev/dsp).\n"
+			"-r, --rate <int>: Set the output sample rate.\n"
 			
-			"\nOptional parameters usable with jack:\n"
-			"\t-a, --auto: auto-connect output ports to first two hardware playback ports\n"
-			"\t-c, --client <name>: set client name (needed if you want to run multiple instances of the program)\n"
+			"\nOptions relevant to JACK output:\n"
+			"-a, --auto: Auto-connect output ports to first two hardware playback ports.\n"
+			"-c, --client <name>: Set client name (needed if you want to run multiple instances of the program).\n"
 
-			"\nOptional misc. parameters:\n"
-			"\t-s, --srctype [<int>]: choose the SRC type, or print the list of available types "
-			"if no number given.\n"
-			"\t\tThe default is SRC type 4 (Linear Interpolator).\n"
+			"\nOptions relevant to the Sample Rate Converter:\n"
+			"-s[<int>], --srctype[=<int>]: Choose the SRC type, or print the list of available\n"
+			"types if no number given. The default is SRC type 4 (Linear Interpolator).\n"
+
+			"\nOptions for remote cue control:\n"
+			"-N, --session <int>: Number of Aqualung instance to control.\n"
+			"-B, --back: Jump to previous track.\n"
+			"-F, --fwd: Jump to next track.\n"
+			"-L, --play: Start playing.\n"
+			"-U, --pause: Pause playback, or resume if already paused.\n"
+			"-T, --stop: Stop playback.\n"
+
+			"\nOptions for file loading:\n"
+			"-E, --enqueue: Don't clear the contents of the playlist when adding new items.\n"
+
+			"\nIf you don't specify a session number via --session, the files will be opened by "
+			"the new\ninstance, otherwise they will be sent to the already running instance you "
+			"specify.\n"
 
 			"\nExamples:\n"
-			"\t$ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2\n"
-			"\t$ aqualung --srctype=1 --output oss --rate 96000\n");
+			"$ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2\n"
+			"$ aqualung --srctype=1 --output oss --rate 96000\n"
+			"$ aqualung -o jack -a -E `find ./ledzeppelin/ -name \"*.flac\"`\n");
 
 		fprintf(stderr, 
 			"\nDepending on the compile-time options, not all file formats\n"
@@ -2478,7 +2652,7 @@ main(int argc, char ** argv) {
 		exit (0);
 	}
 
-
+	
 	if ((output == JACK_DRIVER) && (rate > 0)) {
 		fprintf(stderr,
 			"You attempted to set the output rate for the JACK output.\n"
@@ -2636,7 +2810,7 @@ main(int argc, char ** argv) {
 	}
 
 
-	create_gui(argc, argv, rate, RB_AUDIO_SIZE * rate / 44100.0);
+	create_gui(argc, argv, optind, enqueue, rate, RB_AUDIO_SIZE * rate / 44100.0);
 	run_gui(); /* control stays here until user exits program */
 
 	pthread_join(thread_info.disk_thread_id, NULL);

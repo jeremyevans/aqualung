@@ -1,3 +1,19 @@
+2004-09-09	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
+
+	* Added support for remotely controlling running instances as well
+	  as adding new files to their playlists.
+
+	* Added support for adding files to playlist from the command
+	  line.
+
+	* Display instance numbers in title bar (except for the first
+	  instance)
+
+	* Minor fixes to the internal cueing logic.
+
+	* Aqualung 0.9beta3
+	
+	
 2004-09-06	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
 
 	* Added support for MOD file formats (MOD, S3M, XM, IT, etc.)

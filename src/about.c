@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 
 #include "about.h"
+#include "version.h"
 #include "logo.xpm"
 
 GtkWidget * about_window;
@@ -133,7 +134,7 @@ create_about_window() {
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter, "Build version: ", -1, tag, NULL);
-	gtk_text_buffer_insert_at_cursor(buffer, VERSION, -1);
+	gtk_text_buffer_insert_at_cursor(buffer, aqualung_version, -1);
 
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);

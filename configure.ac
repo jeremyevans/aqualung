@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(aqualung, 0.9beta2, tszilagyi@users.sourceforge.net)
-AM_INIT_AUTOMAKE(aqualung, 0.9beta2)
+AC_INIT(aqualung, 0.9beta3, tszilagyi@users.sourceforge.net)
+AM_INIT_AUTOMAKE(aqualung, 0.9beta3)
 AC_CONFIG_SRCDIR([src/core.c])
 AM_CONFIG_HEADER([config.h])
 

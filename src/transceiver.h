@@ -19,20 +19,28 @@
 */
 
 
-#ifndef _GUI_MAIN_H
-#define _GUI_MAIN_H
+#ifndef _TRANSCEIVER_H
+#define _TRANSCEIVER_H
 
 
-void create_gui(int argc, char ** argv, int optind, int enqueue,
-		unsigned long rate, unsigned long rb_audio_size);
+/* valid remote command codes */
+#define RCMD_PING     1
+#define RCMD_BACK     2
+#define RCMD_PLAY     3
+#define RCMD_PAUSE    4
+#define RCMD_STOP     5
+#define RCMD_FWD      6
+#define RCMD_LOAD     7
+#define RCMD_ENQUEUE  8
 
-void run_gui(void);
 
-void save_window_position(void);
-void restore_window_position(void);
-void change_skin(char * skin_path);
+int create_socket(const char * filename);
+char receive_message(int fd, char * cmd_arg);
+void setup_app_socket(void);
+void close_app_socket(void);
+void send_message(const char * filename, char * message, int len);
+void send_message_to_session(int session_id, char * message, int len);
 
-void set_src_type_label(int src_type);
 
 
-#endif /* _GUI_MAIN_H */
+#endif /* _TRANSCEIVER_H */

@@ -42,6 +42,7 @@ extern char pl_color_active[14];
 extern char pl_color_inactive[14];
 
 extern char currdir[MAXLEN];
+extern char cwd[MAXLEN];
 
 int auto_save_playlist = 1;
 
@@ -82,6 +83,7 @@ GtkWidget * rem__sel;
 GtkWidget * plist_menu;
 GtkWidget * plist__save;
 GtkWidget * plist__load;
+GtkWidget * plist__enqueue;
 
 char command[RB_CONTROL_SIZE];
 
@@ -334,7 +336,37 @@ plist__load_cb(gpointer data) {
                 selected_filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_selector));
 
 		strncpy(filename, selected_filename, MAXLEN-1);
-		load_playlist(filename);
+		load_playlist(filename, 0);
+                strncpy(currdir, gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_selector)),
+                                                                 MAXLEN-1);
+                if (currdir[strlen(currdir)-1] != '/') {
+                        c = strrchr(currdir, '/');
+                        if (*(++c))
+                                *c = '\0';
+                }
+        }
+        gtk_widget_destroy(file_selector);
+}
+
+
+void
+plist__enqueue_cb(gpointer data) {
+
+        GtkWidget * file_selector;
+        const gchar * selected_filename;
+	char filename[MAXLEN];
+        char * c;
+
+        file_selector = gtk_file_selection_new("Please specify the file to load the playlist from.");
+        gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), currdir);
+        gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(file_selector));
+        gtk_widget_show(file_selector);
+
+        if (gtk_dialog_run(GTK_DIALOG(file_selector)) == GTK_RESPONSE_OK) {
+                selected_filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_selector));
+
+		strncpy(filename, selected_filename, MAXLEN-1);
+		load_playlist(filename, 1);
                 strncpy(currdir, gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_selector)),
                                                                  MAXLEN-1);
                 if (currdir[strlen(currdir)-1] != '/') {
@@ -660,15 +692,19 @@ create_playlist(void) {
 
 	plist__save = gtk_menu_item_new_with_label("Save playlist");
 	plist__load = gtk_menu_item_new_with_label("Load playlist");
+	plist__enqueue = gtk_menu_item_new_with_label("Enqueue playlist");
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__save);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__load);
+	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__enqueue);
 
 	g_signal_connect_swapped(G_OBJECT(plist__save), "activate", G_CALLBACK(plist__save_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__load), "activate", G_CALLBACK(plist__load_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(plist__enqueue), "activate", G_CALLBACK(plist__enqueue_cb), NULL);
 
 	gtk_widget_show(plist__save);
 	gtk_widget_show(plist__load);
+	gtk_widget_show(plist__enqueue);
 
         vbox = gtk_vbox_new(FALSE, 2);
         gtk_container_add(GTK_CONTAINER(playlist_window), vbox);
@@ -842,7 +878,7 @@ save_playlist(char * filename) {
 
 
 void
-parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur) {
+parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, int sel_ok) {
 
         xmlChar * key;
 	GtkTreeIter iter;
@@ -869,7 +905,7 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur) {
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"is_active"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				if (xmlStrcmp(key, (const xmlChar *)"yes")) {
+				if ((xmlStrcmp(key, (const xmlChar *)"yes")) || (!sel_ok)) {
 					strncpy(color, pl_color_inactive, 31);
 				} else {
 					strncpy(color, pl_color_active, 31);
@@ -890,11 +926,12 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur) {
 
 
 void
-load_playlist(char * filename) {
+load_playlist(char * filename, int enqueue) {
 
         xmlDocPtr doc;
         xmlNodePtr cur;
 	FILE * f;
+	int sel_ok = 0;
 
         if ((f = fopen(filename, "rt")) == NULL) {
                 return;
@@ -926,15 +963,98 @@ load_playlist(char * filename) {
 	if (pl_color_inactive[0] == '\0')
 		strcpy(pl_color_inactive, "#000000");
 
-	gtk_list_store_clear(play_store);
+	if (!enqueue)
+		gtk_list_store_clear(play_store);
 
+	if (get_playing_pos(play_store) == -1)
+		sel_ok = 1;
+		
         cur = cur->xmlChildrenNode;
         while (cur != NULL) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"track"))) {
-                        parse_playlist_track(doc, cur);
+                        parse_playlist_track(doc, cur, sel_ok);
                 }
                 cur = cur->next;
         }
 
         xmlFreeDoc(doc);
+}
+
+
+int
+is_playlist(char * filename) {
+
+	FILE * f;
+	char buf[] = "<?xml version=\"1.0\"?>\n<aqualung_playlist>\0";
+	char inbuf[64];
+
+	if ((f = fopen(filename, "rb")) == NULL) {
+		return 0;
+	}
+	if (fread(inbuf, 1, strlen(buf)+1, f) != strlen(buf)+1) {
+		fclose(f);
+		return 0;
+	}
+	fclose(f);
+	inbuf[strlen(buf)] = '\0';
+
+	if (strcmp(buf, inbuf) == 0) {
+		return 1;
+	}
+
+	return 0;
+}
+
+
+void
+add_to_playlist(char * filename, int enqueue) {
+
+	char fullname[MAXLEN];
+	char * endname;
+	char * home;
+	char * path = filename;
+	GtkTreeIter iter;
+
+
+	if (!filename)
+		return;
+
+
+	switch (filename[0]) {
+	case '/':
+		strcpy(fullname, filename);
+		break;
+	case '~':
+		++path;
+		if (!(home = getenv("HOME"))) {
+			fprintf(stderr, "add_to_playlist(): cannot resolve home directory\n");
+			return;
+		}
+		snprintf(fullname, MAXLEN-1, "%s/%s", home, path);
+		break;
+	default:
+		snprintf(fullname, MAXLEN-1, "%s/%s", cwd, filename);
+		break;
+	}
+
+
+        if (pl_color_active[0] == '\0')
+                strcpy(pl_color_active, "#ffffff");
+        if (pl_color_inactive[0] == '\0')
+                strcpy(pl_color_inactive, "#000000");
+
+	if (is_playlist(fullname)) {
+		load_playlist(fullname, enqueue);
+	} else {
+		if (!enqueue)
+			gtk_list_store_clear(play_store);
+
+		if ((endname = strrchr(fullname, '/')) == NULL) {
+			endname = fullname;
+		} else {
+			++endname;
+		}
+                gtk_list_store_append(play_store, &iter);
+                gtk_list_store_set(play_store, &iter, 0, endname, 1, fullname, 2, pl_color_inactive, -1);
+	}
 }

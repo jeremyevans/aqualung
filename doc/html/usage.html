@@ -26,6 +26,15 @@ charset=iso-8859-1">
 <a href="qa.html">[ Q & A ]</a>
 <a href="misc.html">[ Misc ]</a>
 
+<br>
+
+<a href="http://sourceforge.net/projects/aqualung">[ SF Project page
+]</a> <a href="http://cvs.sourceforge.net/viewcvs.py/aqualung">[ CVS
+Viewer ]</a> <a
+href="http://lists.sourceforge.net/mailman/listinfo/aqualung-friends">[
+Mailing list ]</a> <a href="http://aqualung.sf.net/mantis/">[
+Bugtracker ]</a>
+
 </center>
 <!-- Aqualung standard header ends -->
 
@@ -51,44 +60,73 @@ specify this all the time, see the later section about configuration
 options. A listing of the command line options follows here.
 </p>
 
+<h4>Invocation</h4>
 <code>
-Invocation:<br>
-aqualung --output (oss|alsa|jack) [optional parameters]<br>
+aqualung --output (oss|alsa|jack) [options] [file1 [file2 ...]]<br>
 aqualung --help<br>
-aqualung --version<br>
-<br>
-Optional parameters usable with alsa:<br>
-        -d, --device &lt;name&gt;: set the output device (defaults to
-        plughw:0,0)<br>
-        -p, --period &lt;int&gt;: set ALSA period size (defaults to 8192)<br>
-        -n, --nperiods &lt;int&gt;: specify the number of periods in
-        hardware buffer (defaults to 2)<br>
-        -r, --rate &lt;int&gt;: set the output sample rate<br>
-        -R, --realtime: try to use realtime (SCHED_FIFO) scheduling
-        for ALSA output thread<br>
-        -P, --priority &lt;int&gt;: when running --realtime, set scheduler
-        priority to &lt;int&gt; (defaults to 1).<br>
-<br>
-Optional parameters usable with oss:<br>
-        -d, --device &lt;name&gt;: set the output device (defaults to
-        /dev/dsp)<br>
-        -r, --rate &lt;int&gt;: set the output sample rate<br>
-<br>
-Optional parameters usable with jack:<br>
-        -a, --auto: auto-connect output ports to first two hardware
-        playback ports<br>
-        -c, --client &lt;name&gt;: set client name (needed if you want to
-        run multiple instances of the program)<br>
-<br>
-Optional misc. parameters:<br>
-        -s, --srctype [&lt;int&gt;]: choose the SRC type, or print the list
-        of available types if no number given.<br>
-                The default is SRC type 4 (Linear Interpolator).<br>
-<br>
-Examples:<br>
-        $ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2<br>
-        $ aqualung --srctype=1 --output oss --rate 96000<br>
-<br>
+aqualung --version
+</code>
+
+<h4>Options relevant to ALSA output</h4>
+<code>
+-d, --device &lt;name&gt;: Set the output device (defaults to plughw:0,0).<br>
+-p, --period &lt;int&gt;: Set ALSA period size (defaults to 8192).<br>
+-n, --nperiods &lt;int&gt;: Specify the number of periods in hardware buffer
+(defaults to 2).<br>
+-r, --rate &lt;int&gt;: Set the output sample rate.<br>
+-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for ALSA
+output thread.<br>
+-P, --priority &lt;int&gt;: When running --realtime, set scheduler priority
+to &lt;int&gt; (defaults to 1).
+</code>
+
+<h4>Options relevant to OSS output</h4>
+<code>
+-d, --device &lt;name&gt;: Set the output device (defaults to /dev/dsp).<br>
+-r, --rate &lt;int&gt;: Set the output sample rate.
+</code>
+
+<h4>Options relevant to JACK output</h4>
+<code>
+-a, --auto: Auto-connect output ports to first two hardware playback
+ports.<br>
+-c, --client &lt;name&gt;: Set client name (needed if you want to run
+multiple instances of the program).</code>
+
+<h4>Options relevant to the Sample Rate Converter</h4>
+<code>
+-s[&lt;int&gt;], --srctype[=&lt;int&gt;]: Choose the SRC type, or print the list
+of available types if no number given. The default is SRC type 4 (Linear
+Interpolator).
+</code>
+
+<h4>Options for remote cue control</h4>
+<code>
+-N, --session &lt;int&gt;: Number of Aqualung instance to control.<br>
+-B, --back: Jump to previous track.<br>
+-F, --fwd: Jump to next track.<br>
+-L, --play: Start playing.<br>
+-U, --pause: Pause playback, or resume if already paused.<br>
+-T, --stop: Stop playback.
+</code>
+
+<h4>Options for file loading</h4>
+<code>
+-E, --enqueue: Don't clear the contents of the playlist when adding
+new items.
+</code>
+
+<p>
+If you don't specify a session number via <code>--session</code>, the
+files will be opened by the new instance, otherwise they will be sent
+to the already running instance you specify.<br>
+</p>
+
+<h4>Examples</h4>
+<code>
+$ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2<br>
+$ aqualung --srctype=1 --output oss --rate 96000<br>
+$ aqualung -o jack -a -E `find ./ledzeppelin/ -name "*.flac"`
 </code>
 
 <p>
@@ -119,7 +157,7 @@ The ~/.aqualung directory contains the music store and other user settings.<br>
 ~/.aqualung/playlist.xml: Automatically saved and restored playlist (if you enable this feature)<br>
 ~/.aqualung/&lt;skin-name&gt;: Locally available skin &lt;skin-name&gt;<br>
 <br>
-System-wide skin directory is $prefix/share/aqualung/skin.<br>
+System-wide skin directory is ${prefix}/share/aqualung/skin.<br>
 </code>
 </blockquote>
 
@@ -666,7 +704,7 @@ This dialog lets you choose from installed skins at any time. When you
 <code>.tar.gz</code> file, just untar it in your
 <code>~/.aqualung</code> directory.  You may also install it for all
 users by untarring it in the system-wide Aqualung skin directory
-(<code>$prefix/share/aqualung/skin</code>) if you have the rights to
+(<code>${prefix}/share/aqualung/skin</code>) if you have the rights to
 do so.
 </p>
 

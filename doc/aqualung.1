@@ -1,4 +1,4 @@
-.TH AQUALUNG 1 "1 Sep 2004"
+.TH AQUALUNG 1 "9 Sep 2004"
 
 
 .SH NAME
@@ -7,7 +7,7 @@ aqualung \- Music player for GNU/Linux
 
 .SH SYNOPSIS
 
-\fBaqualung\fR \-\-output (oss|alsa|jack) [optional parameters]
+\fBaqualung\fR \-\-output (oss|alsa|jack) [options] [file1 [file2 ...]]
 .br
 \fBaqualung\fR \-\-help
 .br
@@ -39,6 +39,10 @@ it was when you closed it, including playback modes, volume & balance
 settings, currently processing LADSPA plugins, window sizes, positions
 & visibility, and other miscellaneous options.
 
+You can control any running instance of the program remotely from the
+command line (start, stop, pause etc.). Remote loading or enqueueing
+soundfiles as well as complete playlists is also supported.
+
 In addition to all this, Aqualung provides a so-called Music Store
 that is an XML-based music database, capable of storing various
 metadata about music on your computer (including, but not limited to,
@@ -60,64 +64,136 @@ Normally, you have to tell the program which output device you want to
 use. This is possible with the -o (--output) option. There are
 specific optional parameters for all three output drivers. You can
 also specify which sample rate converter you want to use, or request a
-list of available converters.
+list of available converters. You may also control another instance of
+the program remotely, or add files to the playlist.
 
 .TP
-.B Optional parameters usable with alsa:
+.B Options relevant to ALSA output:
 .TP
 \-d, \-\-device <name>
 .br
-set the output device (defaults to plughw:0,0)
+Set the output device (defaults to plughw:0,0).
 .TP
 \-p, \-\-period <int>
 .br
-set ALSA period size (defaults to 8192)
+Set ALSA period size (defaults to 8192).
 .TP
 \-n, \-\-nperiods <int>
 .br
-specify the number of periods in hardware buffer (defaults to 2)
+Specify the number of periods in hardware buffer (defaults to 2).
 .TP
 \-r, \-\-rate <int>
 .br
-set the output sample rate
+Set the output sample rate.
 .TP
 \-R, \-\-realtime
 .br
-try to use realtime (SCHED_FIFO) scheduling for ALSA output thread
+Try to use realtime (SCHED_FIFO) scheduling for ALSA output thread.
 .TP
 \-P, \-\-priority <int>
 .br
-when running \-\-realtime, set scheduler priority to <int> (defaults to 1).
+When running \-\-realtime, set scheduler priority to <int> (defaults to 1).
 
 .TP
-.B Optional parameters usable with oss:
+.B Options relevant to OSS output:
 .TP
 \-d, \-\-device <name>
 .br
-set the output device (defaults to /dev/dsp)
+Set the output device (defaults to /dev/dsp).
 .TP
 \-r, \-\-rate <int>
 .br
-set the output sample rate
+Set the output sample rate.
 
 .TP
-.B Optional parameters usable with jack:
+.B Options relevant to JACK output:
 .TP
 \-a, \-\-auto
 .br
-auto-connect output ports to first two hardware playback ports
+Auto-connect output ports to first two hardware playback ports.
 .TP
 \-c, \-\-client <name>
 .br
-set client name (needed if you want to run multiple instances of the program)
+Set client name (needed if you want to run multiple instances of the program).
 
 .TP
-.B Optional misc. parameters:
+.B Options relevant to the Sample Rate Converter:
 .TP
-\-s, \-\-srctype [<int>]
+\-s[<int>], \-\-srctype[=<int>]
 .br
-choose the SRC type, or print the list of available types if no number
+Choose the SRC type, or print the list of available types if no number
 given. The default is SRC type 4 (Linear Interpolator).
+
+.TP
+.B Options for remote cue control:
+
+.PP
+Note that remote controlling of instances is only possible if the
+instance you want to send a command to is running as the same user as
+you are when you issue the remote command.
+
+.TP
+\-N, \-\-session <int>
+.br
+Specify the instance number to send the remote command to. Instances
+are numbered on a per user basis, starting with 0. Except for the
+zero-th instance (started first), the instance number is displayed in
+the title bar of the main window (e.g.: Aqualung.3). If you don't use
+this option, the following options will control the zero-th instance
+by default.
+
+.TP
+\-B, \-\-back
+.br
+Jump to previous track.
+
+.TP
+\-F, \-\-fwd
+.br
+Jump to next track.
+
+.TP
+\-L, \-\-play
+.br
+Start playing.
+
+.TP
+\-U, \-\-pause
+.br
+Pause playback, or resume if already paused.
+
+.TP
+\-T, \-\-back
+.br
+Stop playback.
+
+
+.TP
+.B Options for file loading:
+
+.PP
+You may specify filenames on the command line. These may be ordinary
+soundfiles playable by Aqualung, or playlist files you saved
+earlier. The program will decide if a file is a playlist, and add its
+contents accordingly.
+
+If you used the --session option (see above), the files will be sent
+to the Aqualung instance you specified. Otherwise a new instance will
+start up with the files you specified. Note that if you enabled the
+"Save and restore the playlist automatically on exit/startup" option
+in the program setup dialog, the files you specify will be loaded
+\fBafter\fR the automatically loaded ones.
+
+.TP
+\-E, \-\-enqueue
+.br
+Enqueue added files to the playlist instead of loading them (which
+removes the previous contents of the playlist). Use this if you want
+to add more than one files at once, and/or you want to keep the
+existing items in the playlist. Note that you do \fBnot\fR have to use
+this option if you want to load a playlist with more than one file in
+it.
+
 
 .TP
 .B Examples:
@@ -125,10 +201,14 @@ given. The default is SRC type 4 (Linear Interpolator).
 $ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2
 .br
 $ aqualung --srctype=1 --output oss --rate 96000
+.br
+$ aqualung -o jack -a -E `find ./ledzeppelin/ -name "*.flac"`
+
 
 .PP
 Depending on the compile-time options, not all file formats
-and output drivers may be usable.
+and output drivers may be usable. Use the --version option to see the
+list of compiled-in features.
 
 .SH FILES
 
@@ -161,7 +241,7 @@ Automatically saved and restored playlist (if you enable this feature)
 Locally available skin <skin-name>
 
 .TP
-System-wide skin directory is $prefix/share/aqualung/skin.
+System-wide skin directory is ${prefix}/share/aqualung/skin.
 
 
 .SH ENVIRONMENT
@@ -190,16 +270,19 @@ Peter Szilagyi <szilagyi.peter@index.hu>
 
 .SH BUGS
 
-Yes. Report them to <tszilagyi@users.sourceforge.net>
+Yes. Report them to our bugtracker at <http://aqualung.sf.net/mantis>
+or write to our mailing list (the subscription interface is accessible
+from the project homepage).
 
 .SH HOMEPAGE
 
 Please go to http://aqualung.sf.net to download the latest version,
-get additional skins or read the docs.
+get additional skins or read the docs. You can access the Aqualung
+bugtracker and subscribe to the mailing list as well.
 
 .SH SEE ALSO
 
 If you installed Aqualung from source, the HTML documentation should
 be available at
 .br
-$prefix/share/aqualung/html/
+${prefix}/share/aqualung/html/

@@ -46,6 +46,7 @@
 
 #include "common.h"
 #include "core.h"
+#include "transceiver.h"
 #include "about.h"
 #include "options.h"
 #include "skin.h"
@@ -56,6 +57,10 @@
 #include "icon_16.xpm"
 #include "icon_64.xpm"
 #include "gui_main.h"
+
+
+/* receive at most this much remote messages in one run of timeout_callback() */
+#define MAX_RCV_COUNT 32
 
 
 char pl_color_active[14];
@@ -74,6 +79,9 @@ extern char * client_name;
 extern int jack_is_shutdown;
 extern const size_t sample_size;
 
+extern int aqualung_socket_fd;
+extern int aqualung_session_id;
+
 extern GtkListStore * play_store;
 extern GtkListStore * running_store;
 
@@ -81,6 +89,8 @@ extern GtkListStore * running_store;
 char confdir[MAXLEN];
 /* to keep track of file selector dialogs; starts with $HOME */
 char currdir[MAXLEN];
+/* current working directory when program is started */
+char cwd[MAXLEN];
 
 extern char title_format[MAXLEN];
 extern char default_param[MAXLEN];
@@ -898,15 +908,11 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
                         return TRUE;
                         break;
 		case GDK_Down:
-			if (!is_paused) {
-				next_event(NULL, NULL, NULL);
-			}
+			next_event(NULL, NULL, NULL);
 			return TRUE;
 			break;
 		case GDK_Up:
-			if (!is_paused) {
-				prev_event(NULL, NULL, NULL);
-			}
+			prev_event(NULL, NULL, NULL);
 			return TRUE;
 			break;
 		case GDK_s:
@@ -1223,10 +1229,9 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	long n_items;
 	char * str;
 
-	if (!allow_seeks)
+	if (!allow_seeks || is_paused)
 		return FALSE;
 
-	
 	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
 		/* normal or repeat mode */
 		n = get_playing_pos(play_store);
@@ -1291,7 +1296,7 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	long n_items;
 	char * str;
 
-	if (!allow_seeks)
+	if (!allow_seeks || is_paused)
 		return FALSE;
 
 	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
@@ -1733,9 +1738,14 @@ create_main_window(char * skin_path) {
 	GtkWidget * sr_table;
 
 	char path[MAXLEN];
+	char str_session_id[32];
 	char title[MAXLEN];
 
 	strcpy(title, "Aqualung");
+	if (aqualung_session_id > 0) {
+		sprintf(str_session_id, ".%d", aqualung_session_id);
+		strcat(title, str_session_id);
+	}
 	if ((output == JACK_DRIVER) && (strcmp(client_name, "aqualung") != 0)) {
 		strcat(title, " [");
 		strcat(title, client_name);
@@ -2057,7 +2067,23 @@ create_main_window(char * skin_path) {
 
 
 void
-create_gui(int argc, char ** argv, unsigned long rate, unsigned long rb_audio_size) {
+process_filenames(char ** argv, int optind, int enqueue) {
+	
+	int i;
+	
+	for (i = optind; argv[i] != NULL; i++) {
+		if (enqueue) {
+			add_to_playlist(argv[i], 1);
+		} else {
+			add_to_playlist(argv[i], 0);
+		}
+	}
+}	
+
+
+void
+create_gui(int argc, char ** argv, int optind, int enqueue,
+	   unsigned long rate, unsigned long rb_audio_size) {
 
 	char * home;
 	char rcfile[MAXLEN];
@@ -2136,7 +2162,7 @@ create_gui(int argc, char ** argv, unsigned long rate, unsigned long rb_audio_si
 		char playlist_name[MAXLEN];
 
 		snprintf(playlist_name, MAXLEN-1, "%s/%s", confdir, "playlist.xml");
-		load_playlist(playlist_name);
+		load_playlist(playlist_name, 0);
 	}
 
 	glist = g_list_append(glist, gdk_pixbuf_new_from_xpm_data((const char **)icon_16_xpm));
@@ -2171,6 +2197,11 @@ create_gui(int argc, char ** argv, unsigned long rate, unsigned long rb_audio_si
 	GTK_SCALE(scale_bal)->range.slider_size_fixed = 1;
 	GTK_SCALE(scale_bal)->range.min_slider_size = 11;
 
+
+	/* read command line filenames */
+	process_filenames(argv, optind, enqueue);
+
+
 	/* set timeout function */
 	timeout_tag = gtk_timeout_add(100, timeout_callback, NULL);
 }
@@ -2187,6 +2218,9 @@ gint timeout_callback(gpointer data) {
 	static double right_gain_shadow;
 	static int update_pending = 0;
 	static int jack_popup_beenthere = 0;
+	char rcmd;
+	static char cmdbuf[MAXLEN];
+	int rcv_count;
 
 	while (jack_ringbuffer_read_space(rb_disk2gui)) {
 		jack_ringbuffer_read(rb_disk2gui, &recv_cmd, 1);
@@ -2427,6 +2461,36 @@ gint timeout_callback(gpointer data) {
 		}
 	}
 
+	/* receive and execute remote commands, if any */
+	rcv_count = 0;
+	while (((rcmd = receive_message(aqualung_socket_fd, cmdbuf)) != 0) && (rcv_count < MAX_RCV_COUNT)) {
+		switch (rcmd) {
+		case RCMD_BACK:
+			prev_event(NULL, NULL, NULL);
+			break;
+		case RCMD_PLAY:
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
+			        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
+			break;
+		case RCMD_PAUSE:
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
+			        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
+			break;
+		case RCMD_STOP:
+			stop_event(NULL, NULL, NULL);
+			break;
+		case RCMD_FWD:
+			next_event(NULL, NULL, NULL);
+			break;
+		case RCMD_LOAD:
+			add_to_playlist(cmdbuf, 0);
+			break;
+		case RCMD_ENQUEUE:
+			add_to_playlist(cmdbuf, 1);
+			break;
+		}
+		++rcv_count;
+	}
 
 	/* check for JACK shutdown condition */
 	if (output == JACK_DRIVER) {

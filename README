@@ -30,6 +30,10 @@ it was when you closed it, including playback modes, volume & balance
 settings, currently processing LADSPA plugins, window sizes, positions
 & visibility, and other miscellaneous options.
 
+You can control any running instance of the program remotely from the
+command line (start, stop, pause etc.). Remote loading or enqueueing
+soundfiles as well as complete playlists is also supported.
+
 In addition to all this, Aqualung provides a so-called Music Store
 that is an XML-based music database, capable of storing various
 metadata about music on your computer (including, but not limited to,
@@ -69,5 +73,17 @@ well as usage information are covered by the HTML documentation in
 greater detail.
 
 
-Enjoy the program, and send your feedback to:
+Please consider subscribing to the project's mailing list at:
+http://lists.sourceforge.net/lists/listinfo/aqualung-friends
+
+General questions about compiling, usage etc. should go to this list
+rather than the developer's private address. This is also the place
+for development discussions.
+
+The primary place for bugreports is the project's web-based
+bugtracker at: http://aqualung.sf.net/mantis
+
+
+Enjoy,
+
 Tom Szilagyi <tszilagyi@users.sourceforge.net>

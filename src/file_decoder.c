@@ -1066,7 +1066,8 @@ void file_decoder_seek(file_decoder_t * fdec, unsigned long long seek_to_pos) {
 	}
 }
  
- 
+
+/* expects to get an UTF8 filename */ 
 float
 get_file_duration(char * file) {
 

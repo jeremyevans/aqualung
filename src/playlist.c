@@ -49,10 +49,17 @@ extern char pl_color_inactive[14];
 extern char currdir[MAXLEN];
 extern char cwd[MAXLEN];
 
+extern char title_format[MAXLEN];
+
 int auto_save_playlist = 1;
 int show_rva_in_playlist = 0;
 int show_length_in_playlist = 1;
 int plcol_idx[3] = { 0, 1, 2 };
+
+int auto_use_ext_meta_artist = 0;
+int auto_use_ext_meta_record = 0;
+int auto_use_ext_meta_track = 0;
+
 
 GtkWidget * playlist_window;
 
@@ -620,8 +627,6 @@ direct_add(GtkWidget * widget, gpointer * data) {
 	gchar * substr;
         int n, i;
 
-	metadata * meta;
-
 
         dialog = gtk_dialog_new_with_buttons(_("Direct add"),
                                              GTK_WINDOW(playlist_window),
@@ -685,6 +690,12 @@ direct_add(GtkWidget * widget, gpointer * data) {
 				char voladj_str[32];
 				float duration = 0.0f;
 				char duration_str[32];
+				char artist_name[MAXLEN];
+				char record_name[MAXLEN];
+				char track_name[MAXLEN];
+				char display_name[MAXLEN];
+				metadata * meta = NULL;
+
 
                                 gtk_tree_model_get(GTK_TREE_MODEL(model), &iter, 0, &str, -1);
                                 gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
@@ -693,6 +704,52 @@ direct_add(GtkWidget * widget, gpointer * data) {
 					substr = str;
 				else
 					++substr;
+
+				artist_name[0] = '\0';
+				record_name[0] = '\0';
+				track_name[0] = '\0';
+
+				if (auto_use_ext_meta_artist ||
+				    auto_use_ext_meta_record ||
+				    auto_use_ext_meta_track) {
+
+					meta = meta_new();
+					if (!meta_read(meta, str)) {
+						meta_free(meta);
+						meta = NULL;
+					}
+				}
+
+				if ((meta != NULL) && auto_use_ext_meta_artist) {
+					meta_get_artist(meta, artist_name);
+				}
+
+				if ((meta != NULL) && auto_use_ext_meta_record) {
+					meta_get_record(meta, record_name);
+				}
+
+				if ((meta != NULL) && auto_use_ext_meta_track) {
+					meta_get_title(meta, track_name);
+				}
+
+				if (artist_name[0] == '\0') {
+					strcpy(artist_name, _("Unknown"));
+				}
+				if (record_name[0] == '\0') {
+					strcpy(record_name, _("Unknown"));
+				}
+				if (track_name[0] == '\0') {
+					strcpy(track_name, _("Unknown"));
+				}
+
+				if (meta != NULL) {
+					meta_free(meta);
+					meta = NULL;
+					make_title_string(display_name, title_format,
+							  artist_name, record_name, track_name);
+				} else {
+					strcpy(display_name, substr);
+				}
 
 
 				if (rva_is_enabled) {
@@ -714,7 +771,7 @@ direct_add(GtkWidget * widget, gpointer * data) {
 				time2time(duration, duration_str);
 
 				gtk_list_store_append(play_store, &play_iter);
-				gtk_list_store_set(play_store, &play_iter, 0, substr, 1, str,
+				gtk_list_store_set(play_store, &play_iter, 0, display_name, 1, str,
 						   2, pl_color_inactive,
 						   3, voladj, 4, voladj_str,
 						   5, duration, 6, duration_str, -1);
@@ -1317,7 +1374,12 @@ load_m3u(char * filename, int enqueue) {
 	float duration;
 	char duration_str[32];
 
-	metadata * meta;
+	char artist_name[MAXLEN];
+	char record_name[MAXLEN];
+	char track_name[MAXLEN];
+	char display_name[MAXLEN];
+	metadata * meta = NULL;
+	int use_meta;
 
 
 	if ((str = strrchr(filename, '/')) == NULL) {
@@ -1402,13 +1464,13 @@ load_m3u(char * filename, int enqueue) {
 						snprintf(name, MAXLEN-1, "%s", ch);
 					} else {
 						fprintf(stderr,
-						  "warning: ain't this a directory? : %s\n", path);
+							"warning: ain't this a directory? : %s\n", path);
 						snprintf(name, MAXLEN-1, "%s", path);
 					}
 				}
 				have_name = 0;
 
-				duration = get_file_duration(path);
+				duration = get_file_duration(g_locale_to_utf8(path, -1, NULL, NULL, NULL));
 				time2time(duration, duration_str);
 
 				if (rva_is_enabled) {
@@ -1421,16 +1483,79 @@ load_m3u(char * filename, int enqueue) {
 						voladj = 0.0f;
 					}
 					meta_free(meta);
+					meta = NULL;
 				} else {
 					voladj = 0.0f;
 				}
 				
 				voladj2str(voladj, voladj_str);
 
+				artist_name[0] = '\0';
+                                record_name[0] = '\0';
+                                track_name[0] = '\0';
+
+                                if (auto_use_ext_meta_artist ||
+                                    auto_use_ext_meta_record ||
+                                    auto_use_ext_meta_track) {
+
+                                        meta = meta_new();
+                                        if (!meta_read(meta, g_locale_to_utf8(path, -1, NULL, NULL, NULL))) {
+                                                meta_free(meta);
+                                                meta = NULL;
+                                        }
+                                }
+
+				use_meta = 0;
+                                if ((meta != NULL) && auto_use_ext_meta_artist) {
+                                        meta_get_artist(meta, artist_name);
+					if (artist_name[0] != '\0') {
+						use_meta = 1;
+					}
+                                }
+
+                                if ((meta != NULL) && auto_use_ext_meta_record) {
+                                        meta_get_record(meta, record_name);
+					if (record_name[0] != '\0') {
+						use_meta = 1;
+					}
+                                }
+
+                                if ((meta != NULL) && auto_use_ext_meta_track) {
+                                        meta_get_title(meta, track_name);
+					if (track_name[0] != '\0') {
+						use_meta = 1;
+					}
+                                }
+
+                                if (artist_name[0] == '\0') {
+                                        strcpy(artist_name, _("Unknown"));
+                                }
+                                if (record_name[0] == '\0') {
+                                        strcpy(record_name, _("Unknown"));
+                                }
+                                if (track_name[0] == '\0') {
+                                        strcpy(track_name, _("Unknown"));
+                                }
+
+                                if (meta != NULL) {
+                                        meta_free(meta);
+                                        meta = NULL;
+					if (use_meta) {
+						make_title_string(display_name, title_format,
+								  artist_name, record_name, track_name);
+					} else {
+						strcpy(display_name, g_locale_to_utf8(name, -1,
+										      NULL, NULL, NULL));
+					}
+                                } else {
+                                        strcpy(display_name, g_locale_to_utf8(name, -1, NULL, NULL, NULL));
+                                }
+
+
 
 				gtk_list_store_append(play_store, &iter);
 				gtk_list_store_set(play_store, &iter,
-						   0, g_locale_to_utf8(name, -1, NULL, NULL, NULL),
+						   0, display_name,
 						   1, g_locale_to_utf8(path, -1, NULL, NULL, NULL),
 						   2, pl_color_inactive,
 						   3, voladj, 4, voladj_str,
@@ -1465,7 +1590,12 @@ load_pls(char * filename, int enqueue) {
 	float duration;
 	char duration_str[32];
 
-	metadata * meta;
+        char artist_name[MAXLEN];
+        char record_name[MAXLEN];
+        char track_name[MAXLEN];
+        char display_name[MAXLEN];
+	metadata * meta = NULL;
+	int use_meta;
 
 
 	if ((str = strrchr(filename, '/')) == NULL) {
@@ -1618,7 +1748,7 @@ load_pls(char * filename, int enqueue) {
 
 			have_file = have_title = 0;
 
-			duration = get_file_duration(file);
+			duration = get_file_duration(g_locale_to_utf8(file, -1, NULL, NULL, NULL));
 			time2time(duration, duration_str);
 
 			if (rva_is_enabled) {
@@ -1631,16 +1761,78 @@ load_pls(char * filename, int enqueue) {
 					voladj = 0.0f;
 				}
 				meta_free(meta);
+				meta = NULL;
 			} else {
 				voladj = 0.0f;
 			}
 
 			voladj2str(voladj, voladj_str);
 
+			artist_name[0] = '\0';
+			record_name[0] = '\0';
+			track_name[0] = '\0';
+
+			if (auto_use_ext_meta_artist ||
+			    auto_use_ext_meta_record ||
+			    auto_use_ext_meta_track) {
+
+				meta = meta_new();
+				if (!meta_read(meta, g_locale_to_utf8(file, -1, NULL, NULL, NULL))) {
+					meta_free(meta);
+					meta = NULL;
+				}
+			}
+
+			use_meta = 0;
+			if ((meta != NULL) && auto_use_ext_meta_artist) {
+				meta_get_artist(meta, artist_name);
+				if (artist_name[0] != '\0') {
+					use_meta = 1;
+				}
+			}
+
+			if ((meta != NULL) && auto_use_ext_meta_record) {
+				meta_get_record(meta, record_name);
+				if (record_name[0] != '\0') {
+					use_meta = 1;
+				}
+			}
+
+			if ((meta != NULL) && auto_use_ext_meta_track) {
+				meta_get_title(meta, track_name);
+				if (track_name[0] != '\0') {
+					use_meta = 1;
+				}
+			}
+
+
+			if (artist_name[0] == '\0') {
+				strcpy(artist_name, _("Unknown"));
+			}
+			if (record_name[0] == '\0') {
+				strcpy(record_name, _("Unknown"));
+			}
+			if (track_name[0] == '\0') {
+				strcpy(track_name, _("Unknown"));
+			}
+
+			if (meta != NULL) {
+				meta_free(meta);
+				meta = NULL;
+				if (use_meta) {
+					make_title_string(display_name, title_format,
+							  artist_name, record_name, track_name);
+				} else {
+					strcpy(display_name, g_locale_to_utf8(file, -1, NULL, NULL, NULL));
+				}
+			} else {
+				strcpy(display_name, g_locale_to_utf8(file, -1, NULL, NULL, NULL));
+			}
+
 
 			gtk_list_store_append(play_store, &iter);
 			gtk_list_store_set(play_store, &iter,
-					   0, g_locale_to_utf8(title, -1, NULL, NULL, NULL),
+					   0, display_name,
 					   1, g_locale_to_utf8(file, -1, NULL, NULL, NULL),
 					   2, pl_color_inactive,
 					   3, voladj, 4, voladj_str,
@@ -1717,7 +1909,12 @@ add_to_playlist(char * filename, int enqueue) {
 	float duration;
 	char duration_str[32];
 
+        char artist_name[MAXLEN];
+        char record_name[MAXLEN];
+        char track_name[MAXLEN];
+        char display_name[MAXLEN];
 	metadata * meta = NULL;
+	int use_meta;
 
 
 	if (!filename)
@@ -1759,7 +1956,6 @@ add_to_playlist(char * filename, int enqueue) {
 		}
 
 
-
 		fullname_utf8 = g_locale_to_utf8(fullname, -1, NULL, NULL, NULL);
 		duration = get_file_duration(fullname_utf8);
 
@@ -1773,20 +1969,86 @@ add_to_playlist(char * filename, int enqueue) {
 				voladj = 0.0f;
 			}
 			meta_free(meta);
+			meta = NULL;
 		} else {
 			voladj = 0.0f;
 		}
 
 		voladj2str(voladj, voladj_str);
-		g_free(fullname_utf8);
+
+
+		artist_name[0] = '\0';
+		record_name[0] = '\0';
+		track_name[0] = '\0';
+
+		if (auto_use_ext_meta_artist ||
+		    auto_use_ext_meta_record ||
+		    auto_use_ext_meta_track) {
+
+			meta = meta_new();
+			if (!meta_read(meta, fullname_utf8)) {
+				meta_free(meta);
+				meta = NULL;
+			}
+		}
+
+		use_meta = 0;
+		if ((meta != NULL) && auto_use_ext_meta_artist) {
+			meta_get_artist(meta, artist_name);
+			if (artist_name[0] != '\0') {
+				use_meta = 1;
+			}
+		}
+
+		if ((meta != NULL) && auto_use_ext_meta_record) {
+			meta_get_record(meta, record_name);
+			if (record_name[0] != '\0') {
+				use_meta = 1;
+			}
+		}
+
+		if ((meta != NULL) && auto_use_ext_meta_track) {
+			meta_get_title(meta, track_name);
+			if (track_name[0] != '\0') {
+				use_meta = 1;
+			}
+		}
+
+		if (artist_name[0] == '\0') {
+			strcpy(artist_name, _("Unknown"));
+		}
+		if (record_name[0] == '\0') {
+			strcpy(record_name, _("Unknown"));
+		}
+		if (track_name[0] == '\0') {
+			strcpy(track_name, _("Unknown"));
+		}
+
+
+		if (meta != NULL) {
+			meta_free(meta);
+			meta = NULL;
+			if (use_meta) {
+				make_title_string(display_name, title_format,
+						  artist_name, record_name, track_name);
+			} else {
+				strcpy(display_name, g_locale_to_utf8(endname, -1, NULL, NULL, NULL));
+			}
+		} else {
+			strcpy(display_name, g_locale_to_utf8(endname, -1, NULL, NULL, NULL));
+		}
+
+
 		time2time(duration, duration_str);
 
                 gtk_list_store_append(play_store, &iter);
                 gtk_list_store_set(play_store, &iter,
-				   0, g_locale_to_utf8(endname, -1, NULL, NULL, NULL),
-				   1, g_locale_to_utf8(fullname, -1, NULL, NULL, NULL),
+				   0, display_name,
+				   1, fullname_utf8,
 				   2, pl_color_inactive,
 				   3, voladj, 4, voladj_str, 5, duration, 6, duration_str, -1);
+
+		g_free(fullname_utf8);
 
 		delayed_playlist_rearrange(100);
 		break;

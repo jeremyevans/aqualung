@@ -852,7 +852,7 @@ meta_get_record(metadata * meta, char * str) {
 		oggv = oggv->next;
 		while (oggv != NULL) {
 
-			if (strcmp(oggv->label, "Record:") == 0) {
+			if (strcmp(oggv->label, "Album:") == 0) {
 				if (str != NULL) {
 					strncpy(str, oggv->str, MAXLEN-1);
 				}
@@ -869,7 +869,7 @@ meta_get_record(metadata * meta, char * str) {
 		oggv = oggv->next;
 		while (oggv != NULL) {
 
-			if (strcmp(oggv->label, "Record:") == 0) {
+			if (strcmp(oggv->label, "Album:") == 0) {
 				if (str != NULL) {
 					strncpy(str, oggv->str, MAXLEN-1);
 				}

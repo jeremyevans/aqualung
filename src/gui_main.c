@@ -115,6 +115,10 @@ int src_type = 0;
 int src_type_parsed = 0;
 #endif /* HAVE_SRC */
 
+int immediate_start = 0; /* this flag set to 1 in core.c if --play
+			  * for current instance is specified.
+			  */
+
 extern int ladspa_is_postfader;
 extern int auto_save_playlist;
 
@@ -2073,7 +2077,7 @@ process_filenames(char ** argv, int optind, int enqueue) {
 	int i;
 	
 	for (i = optind; argv[i] != NULL; i++) {
-		if (enqueue) {
+		if ((enqueue) || (i > optind)) {
 			add_to_playlist(argv[i], 1);
 		} else {
 			add_to_playlist(argv[i], 0);
@@ -2489,8 +2493,17 @@ gint timeout_callback(gpointer data) {
 		case RCMD_ENQUEUE:
 			add_to_playlist(cmdbuf, 1);
 			break;
+		case RCMD_QUIT:
+			main_window_close(NULL, NULL);
+			break;
 		}
 		++rcv_count;
+	}
+
+	if (immediate_start) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
+		        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
+		immediate_start = 0;
 	}
 
 	/* check for JACK shutdown condition */

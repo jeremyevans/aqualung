@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta3\n"
-"POT-Creation-Date: 2004-11-22 22:13+0100\n"
+"POT-Creation-Date: 2004-12-01 15:58+0100\n"
 "PO-Revision-Date: 2004-11-16 17:47GMT\n"
 "Last-Translator: Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -16,15 +16,15 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: KBabel 0.9.5\n"
 
-#: ../about.c:80 ../gui_main.c:1778
+#: ../about.c:81 ../gui_main.c:1782
 msgid "About"
 msgstr "Névjegy"
 
-#: ../about.c:90
+#: ../about.c:91
 msgid "Dismiss"
 msgstr "Bezárás"
 
-#: ../about.c:136
+#: ../about.c:137
 msgid "Build version: "
 msgstr "Fordítási verzió:  "
 
@@ -123,121 +123,121 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../gui_main.c:353
+#: ../gui_main.c:357
 msgid "Unrecognized"
 msgstr "Ismeretlen"
 
-#: ../gui_main.c:364 ../gui_main.c:370 ../gui_main.c:373 ../gui_main.c:376
+#: ../gui_main.c:368 ../gui_main.c:374 ../gui_main.c:377 ../gui_main.c:380
 msgid "bit signed"
 msgstr "bites elõjeles egész"
 
-#: ../gui_main.c:367
+#: ../gui_main.c:371
 msgid "bit unsigned"
 msgstr "bites elõjel nélküli egész"
 
-#: ../gui_main.c:379
+#: ../gui_main.c:383
 msgid "bit float"
 msgstr "bites lebegõpontos"
 
-#: ../gui_main.c:382
+#: ../gui_main.c:386
 msgid "bit double"
 msgstr "bites dupla pontosságú lebegõpontos"
 
-#: ../gui_main.c:385 ../gui_main.c:388 ../gui_main.c:391 ../gui_main.c:394
-#: ../gui_main.c:397 ../gui_main.c:400 ../gui_main.c:403 ../gui_main.c:406
-#: ../gui_main.c:409 ../gui_main.c:412 ../gui_main.c:415 ../gui_main.c:418
-#: ../gui_main.c:421
+#: ../gui_main.c:389 ../gui_main.c:392 ../gui_main.c:395 ../gui_main.c:398
+#: ../gui_main.c:401 ../gui_main.c:404 ../gui_main.c:407 ../gui_main.c:410
+#: ../gui_main.c:413 ../gui_main.c:416 ../gui_main.c:419 ../gui_main.c:422
+#: ../gui_main.c:425
 msgid "encoding"
 msgstr "kódolású"
 
-#: ../gui_main.c:434
+#: ../gui_main.c:438
 msgid "Layer I"
 msgstr "I. Réteg"
 
-#: ../gui_main.c:437
+#: ../gui_main.c:441
 msgid "Layer II"
 msgstr "II. Réteg"
 
-#: ../gui_main.c:440
+#: ../gui_main.c:444
 msgid "Layer III"
 msgstr "III. Réteg"
 
-#: ../gui_main.c:450
+#: ../gui_main.c:454
 msgid "Single channel"
 msgstr "Egycsatornás"
 
-#: ../gui_main.c:453
+#: ../gui_main.c:457
 msgid "Dual channel"
 msgstr "Kétcsatornás"
 
-#: ../gui_main.c:456
+#: ../gui_main.c:460
 msgid "Joint stereo"
 msgstr "Kapcsolt sztereó"
 
-#: ../gui_main.c:459
+#: ../gui_main.c:463
 msgid "Stereo"
 msgstr "Sztereó"
 
-#: ../gui_main.c:469
+#: ../gui_main.c:473
 msgid "Emphasis: none"
 msgstr "Kiemelés: nincs"
 
-#: ../gui_main.c:472 ../gui_main.c:475
+#: ../gui_main.c:476 ../gui_main.c:479
 msgid "Emphasis:"
 msgstr "Kiemelés:"
 
-#: ../gui_main.c:478
+#: ../gui_main.c:482
 msgid "Emphasis: reserved"
 msgstr "Kiemelés: fenntartott"
 
-#: ../gui_main.c:523
+#: ../gui_main.c:527
 msgid "MONO"
 msgstr ""
 
-#: ../gui_main.c:525
+#: ../gui_main.c:529
 msgid "STEREO"
 msgstr ""
 
-#: ../gui_main.c:540 ../gui_main.c:545 ../gui_main.c:549
+#: ../gui_main.c:544 ../gui_main.c:549 ../gui_main.c:553
 msgid "Output:"
 msgstr "Kimenet:"
 
-#: ../gui_main.c:562
+#: ../gui_main.c:566
 msgid "SRC Type: "
 msgstr "SRC Típus: "
 
-#: ../gui_main.c:566
+#: ../gui_main.c:570
 msgid "None"
 msgstr "Nincs"
 
-#: ../gui_main.c:1108 ../gui_main.c:1137
+#: ../gui_main.c:1112 ../gui_main.c:1141
 msgid "Mute"
 msgstr ""
 
-#: ../gui_main.c:1110 ../gui_main.c:1139
+#: ../gui_main.c:1114 ../gui_main.c:1143
 #, c-format
 msgid "%d dB"
 msgstr ""
 
-#: ../gui_main.c:1170 ../gui_main.c:1202
+#: ../gui_main.c:1174 ../gui_main.c:1206
 #, c-format
 msgid "%d%% R"
 msgstr ""
 
-#: ../gui_main.c:1172 ../gui_main.c:1204
+#: ../gui_main.c:1176 ../gui_main.c:1208
 #, c-format
 msgid "%d%% L"
 msgstr ""
 
-#: ../gui_main.c:1175 ../gui_main.c:1207
+#: ../gui_main.c:1179 ../gui_main.c:1211
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:1699
+#: ../gui_main.c:1703
 msgid "JACK connection lost"
 msgstr "Megszakadt a JACK összeköttetés"
 
-#: ../gui_main.c:1702
+#: ../gui_main.c:1706
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -248,15 +248,15 @@ msgstr ""
 "az Aqualungot, mert az nem volt elég\n"
 "gyors. Mindkettõt újra kell indítani.\n"
 
-#: ../gui_main.c:1774 ../options.c:141
+#: ../gui_main.c:1778 ../options.c:141
 msgid "Options"
 msgstr "Opciók"
 
-#: ../gui_main.c:1775 ../skin.c:103
+#: ../gui_main.c:1779 ../skin.c:103
 msgid "Skin chooser"
 msgstr "Szkin-választó"
 
-#: ../gui_main.c:1776
+#: ../gui_main.c:1780
 msgid "JACK port setup"
 msgstr "JACK port beállítás"
 

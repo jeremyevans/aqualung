@@ -96,6 +96,7 @@ receive_message(int fd, char * cmdarg) {
 	case RCMD_PAUSE:
 	case RCMD_STOP:
 	case RCMD_FWD:
+	case RCMD_QUIT:
 		return rcmd;
 		break;
 	case RCMD_LOAD:

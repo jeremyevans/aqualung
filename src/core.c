@@ -207,6 +207,7 @@ int n_plugins = 0;
 plugin_instance * plugin_vect[MAX_PLUGINS];
 
 /* remote control */
+extern int immediate_start;
 extern int aqualung_session_id;
 extern int aqualung_socket_fd;
 extern char aqualung_socket_filename[256];
@@ -2227,6 +2228,7 @@ main(int argc, char ** argv) {
 	int stop = 0;
 	int fwd = 0;
 	int enqueue = 0;
+	int remote_quit = 0;
 
 
 	setlocale(LC_ALL, "");
@@ -2241,7 +2243,7 @@ main(int argc, char ** argv) {
 	}
 
 
-	char * optstring = "vho:d:c:n:p:r:aRP:s::N:BLUTFE";
+	char * optstring = "vho:d:c:n:p:r:aRP:s::N:BLUTFEQ";
 	struct option long_options[] = {
 		{ "version", 0, 0, 'v' },
 		{ "help", 0, 0, 'h' },
@@ -2263,6 +2265,7 @@ main(int argc, char ** argv) {
 		{ "stop", 0, 0, 'T' },
 		{ "fwd", 0, 0, 'F' },
 		{ "enqueue", 0, 0, 'E' },
+		{ "quit", 0, 0, 'Q' },
 
 		{ 0, 0, 0, 0 }
 	};
@@ -2427,6 +2430,9 @@ main(int argc, char ** argv) {
 			case 'E':
 				enqueue++;
 				break;
+			case 'Q':
+				remote_quit++;
+				break;
 
 			default:
 				show_usage++;
@@ -2521,11 +2527,13 @@ main(int argc, char ** argv) {
 		exit(0);
 	}
 	if (play) {
-		if (no_session == -1)
-			no_session = 0;
-		rcmd = RCMD_PLAY;
-		send_message_to_session(no_session, &rcmd, 1);
-		exit(0);
+		if (no_session == -1) {
+			immediate_start = 1;
+		} else {
+			rcmd = RCMD_PLAY;
+			send_message_to_session(no_session, &rcmd, 1);
+			exit(0);
+		}
 	}
 	if (pause) {
 		if (no_session == -1)
@@ -2547,6 +2555,14 @@ main(int argc, char ** argv) {
 		rcmd = RCMD_FWD;
 		send_message_to_session(no_session, &rcmd, 1);
 		exit(0);
+	}
+
+	if ((remote_quit) && (no_session != -1)) {
+		if (no_session == -1)
+			no_session = 0;
+		rcmd = RCMD_QUIT;
+		send_message_to_session(no_session, &rcmd, 1);
+		exit(1);
 	}
 
 	{
@@ -2577,7 +2593,7 @@ main(int argc, char ** argv) {
 					break;
 				}
 
-				if (enqueue) {
+				if ((enqueue) || (i > optind)) {
 					buffer[0] = RCMD_ENQUEUE;
 					buffer[1] = '\0';
 					strncat(buffer, fullname, MAXLEN-1);
@@ -2636,6 +2652,11 @@ main(int argc, char ** argv) {
 			"-L, --play: Start playing.\n"
 			"-U, --pause: Pause playback, or resume if already paused.\n"
 			"-T, --stop: Stop playback.\n"
+			"-Q, --quit: Terminate remote instance.\n"
+
+			"Note that these options default to the 0-th instance when no -N option is given,\n"
+			"except for -L which defaults to the present instance (so as to be able to start\n"
+			"playback immediately from the command line).\n"
 
 			"\nOptions for file loading:\n"
 			"-E, --enqueue: Don't clear the contents of the playlist when adding new items.\n"

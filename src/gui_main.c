@@ -1467,6 +1467,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	if (!is_paused) {
 		cmd = CMD_CUE;
+		cue.filename = NULL;
 
 		n = get_playing_pos(play_store);
 		if (n != -1) {

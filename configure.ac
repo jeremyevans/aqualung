@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(aqualung, 0.9beta4, http://aqualung.sf.net/mantis)
-AM_INIT_AUTOMAKE(aqualung, 0.9beta4)
+AC_INIT(aqualung, 0.9beta4.1, http://aqualung.sf.net/mantis)
+AM_INIT_AUTOMAKE(aqualung, 0.9beta4.1)
 AC_CONFIG_SRCDIR([src/core.c])
 AM_CONFIG_HEADER([config.h])
 

@@ -40,6 +40,7 @@
 #include "file_decoder.h"
 #include "music_browser.h"
 #include "gui_main.h"
+#include "trashlist.h"
 #include "i18n.h"
 #include "file_info.h"
 
@@ -66,6 +67,7 @@ extern GtkTreeSelection * music_select;
 extern GtkWidget * music_tree;
 
 GtkWidget * info_window = NULL;
+trashlist_t * fileinfo_trash = NULL;
 
 
 float convf(char * s) {
@@ -107,6 +109,8 @@ dismiss(GtkWidget * widget, gpointer data) {
 
 	gtk_widget_destroy(info_window);
 	info_window = NULL;
+	trashlist_free(fileinfo_trash);
+	fileinfo_trash = NULL;
 	return TRUE;
 }
 
@@ -115,6 +119,8 @@ int
 info_window_close(GtkWidget * widget, gpointer * data) {
 
 	info_window = NULL;
+	trashlist_free(fileinfo_trash);
+	fileinfo_trash = NULL;
 	return 0;
 }
 
@@ -268,6 +274,7 @@ show_rva2(struct id3_tag * tag, GtkWidget * table, int * cnt,
 					append_table(table, cnt, _("Relative Volume"), str, NULL, NULL);
 				} else {
 					import_data_t * data = import_data_new();
+					trashlist_add(fileinfo_trash, data);
 
 					data->model = model;
 					data->track_iter = track_iter;
@@ -349,6 +356,7 @@ show_id3(struct id3_tag const * tag, GtkWidget * table, int * cnt,
 					append_table(table, cnt, str, utf8, NULL, NULL);
 				} else {
 					import_data_t * data = import_data_new();
+					trashlist_add(fileinfo_trash, data);
 
 					if (strcmp(info[i].id, ID3_FRAME_TITLE) == 0) {
 
@@ -421,6 +429,8 @@ show_id3(struct id3_tag const * tag, GtkWidget * table, int * cnt,
 						import_data_t * data = import_data_new();
 						char tmp[MAXLEN];
 						
+						trashlist_add(fileinfo_trash, data);
+
 						snprintf(tmp, MAXLEN-1, "%s: %s", str, utf8);
 						data->model = model;
 						data->track_iter = track_iter;
@@ -434,6 +444,7 @@ show_id3(struct id3_tag const * tag, GtkWidget * table, int * cnt,
 						append_table(table, cnt, "", utf8, NULL, NULL);
 					} else {
 						import_data_t * data = import_data_new();
+						trashlist_add(fileinfo_trash, data);
 						
 						data->model = model;
 						data->track_iter = track_iter;
@@ -471,6 +482,8 @@ show_id3(struct id3_tag const * tag, GtkWidget * table, int * cnt,
 		} else {
 			import_data_t * data = import_data_new();
 			char tmp[MAXLEN];
+			
+			trashlist_add(fileinfo_trash, data);
 			
 			snprintf(tmp, MAXLEN-1, "%s %s", str, utf8);
 			data->model = model;
@@ -523,6 +536,7 @@ build_flac_vc(FLAC__StreamMetadata * flacmeta, GtkWidget * table_flac, int * cnt
 			append_table(table_flac, cnt, field, str, NULL, NULL);
 		} else {
 			import_data_t * data = import_data_new();
+			trashlist_add(fileinfo_trash, data);
 			
 			if (strcmp(field, "Title:") == 0) {
 				
@@ -581,6 +595,8 @@ build_flac_vc(FLAC__StreamMetadata * flacmeta, GtkWidget * table_flac, int * cnt
 		import_data_t * data = import_data_new();
 		char tmp[MAXLEN];
 		
+		trashlist_add(fileinfo_trash, data);
+
 		snprintf(tmp, MAXLEN-1, "%s %s", _("Vendor:"), field);
 		data->model = model;
 		data->track_iter = track_iter;
@@ -640,6 +656,12 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		gtk_widget_destroy(info_window);
 		info_window = NULL;
 	}
+
+	if (fileinfo_trash != NULL) {
+		trashlist_free(fileinfo_trash);
+		fileinfo_trash = NULL;
+	}
+	fileinfo_trash = trashlist_new();
 
 	if ((fdec = file_decoder_new()) == NULL) {
 		fprintf(stderr, "show_file_info: error: file_decoder_new() returned NULL\n");
@@ -842,6 +864,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 				append_table(table_vorbis, &cnt, field, str, NULL, NULL);
 			} else {
 				import_data_t * data = import_data_new();
+				trashlist_add(fileinfo_trash, data);
 				
 				if (strcmp(field, "Title:") == 0) {
 					
@@ -899,6 +922,8 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 			import_data_t * data = import_data_new();
 			char tmp[MAXLEN];
 			
+			trashlist_add(fileinfo_trash, data);
+
 			snprintf(tmp, MAXLEN-1, "%s %s", _("Vendor:"), str);
 			data->model = model;
 			data->track_iter = track_iter;

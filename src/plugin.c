@@ -36,6 +36,7 @@
 
 #include "common.h"
 #include "i18n.h"
+#include "trashlist.h"
 #include "plugin.h"
 
 
@@ -386,6 +387,7 @@ instantiate(char * filename, int index) {
 	instance->shift_pressed = 0;
 	instance->window = NULL;
 	instance->bypass_button = NULL;
+	instance->trashlist = trashlist_new();
 
 	return instance;
 }
@@ -1027,11 +1029,11 @@ build_plugin_window(plugin_instance * instance) {
 					}
 				}
 
-				/* XXX we won't free this piece of memory */
 				if ((optdata = malloc(sizeof(optdata_t))) == NULL) {
 					fprintf(stderr, "plugin.c: build_plugin_window(): malloc error\n");
 					return;
 				}
+				trashlist_add(instance->trashlist, optdata);
 
 				optdata->instance = instance;
 				optdata->index = k;
@@ -1058,12 +1060,12 @@ build_plugin_window(plugin_instance * instance) {
 					if (req.height > max_height)
 						max_height = req.height;
 
-					/* XXX we won't free this piece of memory */
 					if ((btnpdata = malloc(sizeof(btnpdata_t))) == NULL) {
 						fprintf(stderr,
 							"plugin.c: build_plugin_window(): malloc error\n");
 						return;
 					}
+					trashlist_add(instance->trashlist, btnpdata);
 					btnpdata->instance = instance;
 					btnpdata->start = default_val;
 					g_signal_connect(G_OBJECT(widget), "button_press_event",
@@ -1492,6 +1494,7 @@ remove_clicked(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		if (instance->window)
 			gtk_widget_destroy(instance->window);
 
+		trashlist_free(instance->trashlist);
 		free(instance);
 	}
 	return TRUE;

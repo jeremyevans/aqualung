@@ -18,45 +18,19 @@
     $Id$
 */
 
-#ifndef _PLUGIN_H
-#define _PLUGIN_H
 
-#include <gtk/gtk.h>
+#ifndef _TRASHLIST_H
+#define _TRASHLIST_H
 
-#include <ladspa.h>
-
-#include "trashlist.h"
-
-#define MAX_PLUGINS 128
-#define MAX_KNOBS 128
-
-typedef struct {
-	char filename[MAXLEN];
-	int index;
-	void * library;
-	int is_restored;
-	int is_mono;
-	int is_bypassed;
-	int shift_pressed;
-	const LADSPA_Descriptor * descriptor;
-	LADSPA_Handle * handle;
-	LADSPA_Handle * handle2;
-	GtkWidget * window;
-	GtkWidget * bypass_button;
-	gint timeout;
-	GtkAdjustment * adjustments[MAX_KNOBS];
-	LADSPA_Data knobs[MAX_KNOBS];
-	trashlist_t * trashlist;
-} plugin_instance;
+typedef struct _trashlist_t {
+  void * ptr;
+  struct _trashlist_t * next;
+} trashlist_t;
 
 
+trashlist_t * trashlist_new(void);
+void trashlist_add(trashlist_t * root, void * ptr);
+void trashlist_free(trashlist_t * root);
 
 
-void create_fxbuilder(void);
-void show_fxbuilder(void);
-void hide_fxbuilder(void);
-void save_plugin_data(void);
-void load_plugin_data(void);
-
-
-#endif /* _PLUGIN_H */
+#endif /* _TRASHLIST_H */

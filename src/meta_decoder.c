@@ -39,9 +39,6 @@
 
 #include "common.h"
 #include "core.h"
-//#include "music_browser.h"
-//#include "gui_main.h"
-//#include "trashlist.h"
 #include "i18n.h"
 #include "file_decoder.h"
 #include "meta_decoder.h"
@@ -600,6 +597,7 @@ meta_free(metadata * meta) {
 }
 
 
+/* for DEBUG purposes */
 void
 meta_list(metadata * meta) {
 
@@ -652,4 +650,67 @@ meta_list(metadata * meta) {
 		}
 	}
 
+}
+
+
+/* ret: 1 if found, 0 if no RVA data */
+/* can be called with fval == NULL only to see if RVA is available */
+int
+meta_get_rva(metadata * meta, float * fval) {
+
+	id3_tag_data * id3;
+	oggv_comment * oggv;
+
+
+	if (meta == NULL) {
+		fprintf(stderr, "meta_get_rva(): assertion meta != NULL failed\n");
+		return 0;
+	}
+
+	oggv = meta->flac_root;
+	if (oggv->next != NULL) {
+		oggv = oggv->next;
+		while (oggv != NULL) {
+
+			if (strcmp(oggv->label, "Replaygain_track_gain:") == 0) {
+				if (fval != NULL) {
+					*fval = oggv->fval;
+				}
+				return 1;
+			}
+			oggv = oggv->next;
+		}
+	}
+
+	oggv = meta->oggv_root;
+	if (oggv->next != NULL) {
+		oggv = oggv->next;
+		while (oggv != NULL) {
+
+			if (strcmp(oggv->label, "Replaygain_track_gain:") == 0) {
+				if (fval != NULL) {
+					*fval = oggv->fval;
+				}
+				return 1;
+			}
+			oggv = oggv->next;
+		}
+	}
+
+	id3 = meta->id3_root;
+	if (id3->next != NULL) {
+		id3 = id3->next;
+		while (id3 != NULL) {
+
+			if (strcmp(id3->id, "RVA2") == 0) {
+				if (fval != NULL) {
+					*fval = id3->fval;
+				}
+				return 1;
+			}
+			id3 = id3->next;
+		}
+	}
+
+	return 0;
 }

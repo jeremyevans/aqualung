@@ -35,6 +35,7 @@
 #include "core.h"
 #include "file_info.h"
 #include "file_decoder.h"
+#include "meta_decoder.h"
 #include "gui_main.h"
 #include "volume.h"
 #include "playlist.h"
@@ -1467,8 +1468,17 @@ artist__addlist_cb(gpointer data) {
 					} else {
 						if (volume <= 0.1f) {
 							voladj = rva_from_volume(volume, rva_refvol, rva_steepness);
-						} else { /* unmeasured */
-							voladj = 0.0f;
+						} else { /* unmeasured, see if there is RVA data in the file*/
+							metadata * meta = meta_new();
+							if (meta_read(meta, file)) {
+								if (!meta_get_rva(meta, &voladj)) {
+									voladj = 0.0f;
+								} else {
+								}
+							} else {
+								voladj = 0.0f;
+							}
+							meta_free(meta);
 						}
 					}
 				} else if (!rva_is_enabled) {
@@ -1718,8 +1728,17 @@ record__addlist_cb(gpointer data) {
 				} else {
 					if (volume <= 0.1f) {
 						voladj = rva_from_volume(volume, rva_refvol, rva_steepness);
-					} else { /* unmeasured */
-						voladj = 0.0f;
+					} else { /* unmeasured, see if there is RVA data in the file */
+						metadata * meta = meta_new();
+						if (meta_read(meta, file)) {
+							if (!meta_get_rva(meta, &voladj)) {
+								voladj = 0.0f;
+							} else {
+							}
+						} else {
+							voladj = 0.0f;
+						}
+						meta_free(meta);
 					}
 				}
 
@@ -1967,8 +1986,17 @@ track__addlist_cb(gpointer data) {
 			} else {
 				if (volume <= 0.1f) {
 					voladj = rva_from_volume(volume, rva_refvol, rva_steepness);
-				} else { /* unmeasured */
-					voladj = 0.0f;
+				} else { /* unmeasured, see if there is RVA data in the file */
+					metadata * meta = meta_new();
+					if (meta_read(meta, file)) {
+						if (!meta_get_rva(meta, &voladj)) {
+							voladj = 0.0f;
+						} else {
+						}
+					} else {
+						voladj = 0.0f;
+					}
+					meta_free(meta);
 				}
 			}
 		} else {

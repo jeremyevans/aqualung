@@ -85,5 +85,7 @@ int meta_read(metadata * meta, char * filename);
 void meta_free(metadata * meta);
 void meta_list(metadata * meta);
 
+int meta_get_rva(metadata * meta, float * fval);
+
 
 #endif /* _META_DECODER_H */

@@ -130,7 +130,7 @@ void
 voladj2str(float voladj, char * str) {
 
 	if (fabs(voladj) < 0.05f) {
-		strcpy(str, " 0.0 dB");
+		sprintf(str, " %.1f dB", 0.0f);
 	} else {
 		if (voladj >= 0.0f) {
 			sprintf(str, " %.1f dB", voladj);

@@ -21,10 +21,18 @@
 #ifndef _VOLUME_H
 #define _VOLUME_H
 
+#include <gtk/gtk.h>
 
-int calculate_volume(char * file, float * vol);
+
+typedef struct _vol_queue_t {
+        char * file;
+        GtkTreeIter iter;
+        struct _vol_queue_t * next;
+} vol_queue_t;
 
 
+vol_queue_t * vol_queue_push(vol_queue_t * q, char * file, GtkTreeIter iter);
+void calculate_volume(vol_queue_t * q);
 
 
 #endif /* _VOLUME_H */

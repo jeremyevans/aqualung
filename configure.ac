@@ -60,10 +60,18 @@ AC_CHECK_LIB(xml2,
 	[AC_MSG_ERROR(You do not appear to have libxml2 installed. Grab it from http://xmlsoft.org)])
 
 
+AC_MSG_CHECKING(jack development library)
+if pkg-config --exists 'jack'; then
+        AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+	AC_MSG_ERROR(You do not appear to have libjack (the JACK library) installed. Grab it from http://jackit.sf.net)
+fi
+
 AC_CHECK_LIB(jack,
 	jack_client_new,
 	[],
-	[AC_MSG_ERROR(You do not appear to have the JACK library installed. Grab it from http://jackit.sf.net)])
+	[AC_MSG_ERROR(You do not appear to have JACK installed. Grab it from http://jackit.sf.net)])
 
 
 AC_CHECK_LIB(pthread,

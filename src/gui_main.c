@@ -271,6 +271,22 @@ sample2time(unsigned long SR, unsigned long long sample, char * str, int sign) {
 		sprintf(str, (sign)?("-%02d:%02d"):("%02d:%02d"), m, s);
 }
 
+/* converts a length measured in seconds to the appropriate string */
+void
+time2time(float seconds, char * str) {
+
+	char h, m, s;
+
+	h = seconds / 3600;
+	m = seconds / 60 - h * 60;
+	s = seconds - h * 3600 - m * 60;
+
+	if (h > 0)
+		sprintf(str, "%02d:%02d:%02d", h, m, s);
+	else
+		sprintf(str, "%02d:%02d", m, s);
+}
+
 
 void
 set_title_label(char * str) {

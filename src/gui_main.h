@@ -29,6 +29,7 @@ void create_gui(int argc, char ** argv, int optind, int enqueue,
 void run_gui(void);
 
 void sample2time(unsigned long SR, unsigned long long sample, char * str, int sign);
+void time2time(float samples, char * str);
 void assembly_format_label(char * str, int v_major, int v_minor);
 
 void save_window_position(void);

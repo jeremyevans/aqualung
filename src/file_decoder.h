@@ -260,5 +260,7 @@ void file_decoder_close(file_decoder_t * fdec);
 unsigned int file_decoder_read(file_decoder_t * fdec, float * dest, int num);
 void file_decoder_seek(file_decoder_t * fdec, unsigned long long seek_to_pos);
 
+float get_file_duration(char * file);
+
 
 #endif /* _FILE_DECODER_H */

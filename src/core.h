@@ -45,6 +45,10 @@
 #define MAD_LIB     4
 #endif /* HAVE_MPEG */
 
+#ifdef HAVE_MOD
+#define MOD_LIB     5
+#endif /* HAVE_MOD */
+
 /* output drivers */
 #ifdef HAVE_OSS
 #define OSS_DRIVER  1
@@ -86,6 +90,13 @@
 /* size of ringbuffer for decoded MPEG Audio data (in frames) */
 #define RB_MAD_SIZE 262144
 #endif /* HAVE_MPEG */
+
+#ifdef HAVE_MOD
+/* Decoding buffer size for libmodplug */
+#define MOD_BUFSIZE 8192
+/* size of ringbuffer for decoded MOD Audio data (in frames) */
+#define RB_MOD_SIZE 262144
+#endif /* HAVE_MOD */
 
 
 /* SRC settings */
@@ -172,6 +183,9 @@ typedef struct _thread_info {
 #define MPEG_EMPH_MASK   0xF00
 #endif /* HAVE_MPEG */
 
+#ifdef HAVE_MOD
+#define FORMAT_MOD   0x8000000
+#endif /* HAVE_MOD */
 
 
 typedef struct _fileinfo {

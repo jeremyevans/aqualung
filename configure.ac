@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(aqualung, 0.9beta1, tszilagyi@users.sourceforge.net)
-AM_INIT_AUTOMAKE(aqualung, 0.9beta1)
+AC_INIT(aqualung, 0.9beta2, tszilagyi@users.sourceforge.net)
+AM_INIT_AUTOMAKE(aqualung, 0.9beta2)
 AC_CONFIG_SRCDIR([src/core.c])
 AM_CONFIG_HEADER([config.h])
 
@@ -129,6 +129,26 @@ else
 fi
 
 
+AC_MSG_CHECKING(for Sample Rate Converter support)
+AC_ARG_WITH(
+	src,
+	[  --with-src=yes,no       compile with Sample Rate Converter support (default: yes)],
+	src="$withval",
+	src="yes")
+if test "$src" = "yes"; then
+
+	AC_CHECK_LIB(samplerate,
+		src_new,
+		[],
+		[AC_MSG_ERROR(You do not appear to have libsamplerate (aka. Secret Rabbit Code) installed. Grab it from  http://www.mega-nerd.com/SRC/ )])
+        src_LIBS=`pkg-config --libs samplerate`
+	AC_DEFINE([HAVE_SRC], [1], [Defined if compile with Sample Rate Converter support])
+else
+        src_LIBS=""
+	AC_MSG_RESULT(no)
+fi
+
+
 AC_MSG_CHECKING(for sndfile support)
 AC_ARG_WITH(
 	sndfile,
@@ -207,22 +227,22 @@ else
 fi
 
 
-AC_MSG_CHECKING(for Sample Rate Converter support)
+AC_MSG_CHECKING(for MOD audio support)
 AC_ARG_WITH(
-	src,
-	[  --with-src=yes,no       compile with Sample Rate Converter support (default: yes)],
-	src="$withval",
-	src="yes")
-if test "$src" = "yes"; then
-
-	AC_CHECK_LIB(samplerate,
-		src_new,
+	mod,
+	[  --with-mod=yes,no       compile with MOD Audio support (default: yes)],
+	mod="$withval",
+	mod="yes")
+if test "$mod" = "yes"; then
+	AC_CHECK_LIB(modplug,
+		ModPlug_Load,
 		[],
-		[AC_MSG_ERROR(You do not appear to have libsamplerate (aka. Secret Rabbit Code) installed. Grab it from  http://www.mega-nerd.com/SRC/ )])
-        src_LIBS=`pkg-config --libs samplerate`
-	AC_DEFINE([HAVE_SRC], [1], [Defined if compile with Sample Rate Converter support])
+		[AC_MSG_ERROR(You do not appear to have the libmodplug library installed. Grab it from http://modplug-xmms.sourceforge.net/)],
+		[-lstdc++ -lm])
+        mod_LIBS=`pkg-config --libs libmodplug`
+	AC_DEFINE([HAVE_MOD], [1], [Defined if compile with MOD Audio support])
 else
-        src_LIBS=""
+        mod_LIBS=""
 	AC_MSG_RESULT(no)
 fi
 
@@ -246,7 +266,7 @@ SKINDIR="-DSKINDIR=\\\"$datadir/aqualung/skin\\\""
 
 CFLAGS="-O3 -Wall $SKINDIR"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS"
-LIBS="$gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $mad_LIBS"
+LIBS="$gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $mad_LIBS $mod_LIBS"
 
 AC_CONFIG_FILES([Makefile \
 		 doc/Makefile \
@@ -265,6 +285,7 @@ echo "      sndfile (WAV, AIFF, etc.)           :  $sndfile"
 echo "      Free Lossless Audio Codec (FLAC)    :  $flac"
 echo "      Ogg Vorbis                          :  $ogg"
 echo "      MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg"
+echo "      MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod"
 echo
 echo "  Output driver support:"
 echo "      OSS Audio                           :  $oss"

@@ -70,6 +70,7 @@ extern jack_ringbuffer_t * rb_disk2gui;
 
 extern pthread_mutex_t output_thread_lock;
 
+extern char * client_name;
 extern int jack_is_shutdown;
 extern const size_t sample_size;
 
@@ -330,6 +331,12 @@ set_format_label(int v_major, int v_minor) {
 		strcpy(str, "MPEG Audio");
 		break;
 #endif /* HAVE_MPEG */
+
+#ifdef HAVE_MOD
+        case FORMAT_MOD:
+                strcpy(str, "MOD Audio");
+                break;
+#endif /* HAVE_MOD */
 
 	default:
 		strcpy(str, "Unrecognized");
@@ -1726,11 +1733,18 @@ create_main_window(char * skin_path) {
 	GtkWidget * sr_table;
 
 	char path[MAXLEN];
+	char title[MAXLEN];
 
+	strcpy(title, "Aqualung");
+	if ((output == JACK_DRIVER) && (strcmp(client_name, "aqualung") != 0)) {
+		strcat(title, " [");
+		strcat(title, client_name);
+		strcat(title, "]");
+	}
 
 	main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_name(main_window, "main_window");
-	gtk_window_set_title(GTK_WINDOW(main_window), "Aqualung");
+	gtk_window_set_title(GTK_WINDOW(main_window), title);
 	gtk_window_set_gravity(GTK_WINDOW(main_window), GDK_GRAVITY_STATIC);
         g_signal_connect(G_OBJECT(main_window), "delete_event", G_CALLBACK(main_window_close), NULL);
         g_signal_connect(G_OBJECT(main_window), "key_press_event", G_CALLBACK(main_window_key_pressed), NULL);

@@ -184,6 +184,13 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "no\n", -1);
 #endif /* HAVE_MPEG */
 	
+        gtk_text_buffer_insert_at_cursor(buffer, "\t\tMOD Audio (MOD, S3M, XM, IT, etc.)\t\t: ", -1);
+#ifdef HAVE_MOD
+        gtk_text_buffer_insert_at_cursor(buffer, "yes\n", -1);
+#else
+        gtk_text_buffer_insert_at_cursor(buffer, "no\n", -1);
+#endif /* HAVE_MOD */
+
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\tOutput driver support:\n", -1);
 	
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\tOSS Audio\t\t\t\t\t: ", -1);
@@ -222,7 +229,8 @@ create_about_window() {
 			 "* libsndfile, a library for accessing audio files containing sampled sound\n"
 			 "* libvorbis & libvorbisfile, for decoding Ogg Vorbis audio\n"
 			 "* libFLAC, the Free Lossless Audio Codec library\n"
-			 "* libMAD, a GPL'ed MPEG Audio Decoder library\n\n", -1);
+			 "* libMAD, a GPL'ed MPEG Audio Decoder library\n"
+			 "* libmodplug, a MOD decoder library in the public domain\n\n", -1);
 
 
 	gtk_text_buffer_insert_at_cursor(buffer,

@@ -115,9 +115,15 @@ homepage.</li>
 <li><a href="http://www.xiph.org/ogg/vorbis">Ogg Vorbis</a> audio
 files are supported.</li>
 
-<li>MPEG Audio files are suppored. This includes MPEG 1-2-2.5, Layer
-I-II-III encoded audio, including the infamous MPEG-1 Layer III
-format also known as MP3.</li>
+<li>MPEG Audio files are supported. This includes MPEG 1-2-2.5, Layer
+I-II-III encoded audio, including the infamous MPEG-1 Layer III format
+also known as MP3. libMAD (which Aqualung uses) provides noticeably
+higher quality output than mpg123 (which XMMS relies upon).</li>
+
+<li>MOD audio files (MOD, S3M, XM, IT, etc.) are supported via the
+libmodplug library. This provides higher quality than MikMod (used by
+XMMS as the default MOD decoder) and <i>much</i> higher quality than
+Winamp.</li>
 
 <li>Naturally, any of these files can be mono or stereo.</li>
 

@@ -13,9 +13,11 @@ when necessary.
 
 Almost all sample-based, uncompressed formats (eg. WAV, AIFF, AU etc.)
 are supported.  Files encoded with FLAC (the Free Lossless Audio
-Codec), Ogg Vorbis and MPEG Audio (including the infamous MP3 format)
-are also supported.  The program can play the music through OSS, ALSA
-or the JACK Audio Connection Kit.
+Codec), Ogg Vorbis, MPEG Audio (including the infamous MP3 format) and
+MOD files (MOD, S3M, XM, IT, etc.) are also supported.
+
+The program can play the music through OSS, ALSA or the JACK Audio
+Connection Kit.
 
 Aqualung supports the LADSPA 1.1 plugin standard.  You can use any
 suitable plugin to enhance the music you are listening to.
@@ -43,7 +45,8 @@ Any Browser).
 
 To compile the program, you will need to have the following libraries
 installed. It is possible to compile the program without some of these
-packages by sacrificing some of the program's functionality.
+packages by sacrificing some of the program's functionality (eg. not
+including support for unneeded file formats).
 
 
 name				where to get it
@@ -57,6 +60,7 @@ libsndfile			http://www.mega-nerd.com/libsndfile
 libFLAC				http://flac.sourceforge.net
 libvorbis, libvorbisfile	http://www.xiph.org/ogg/vorbis
 libMAD				http://www.underbit.com/products/mad
+libmodplug			http://modplug-xmms.sourceforge.net
 libsamplerate			http://www.mega-nerd.com/SRC
 
 

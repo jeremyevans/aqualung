@@ -70,6 +70,13 @@
 #include <sys/mman.h>
 #endif /* HAVE_MPEG */
 
+/* for MOD Audio support */
+#ifdef HAVE_MOD
+#include <libmodplug/modplug.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+#endif /* HAVE_MOD */
+
 #include "common.h"
 #include "gui_main.h"
 #include "plugin.h"
@@ -106,6 +113,7 @@ unsigned long long disk_thread_samples_left;
 unsigned long long disk_thread_sample_offset;
 status_t disk_thread_status;
 int output = 0; /* oss/alsa/jack */
+
 #ifdef HAVE_SRC
 int src_type = 4;
 int src_type_parsed = 0;
@@ -159,6 +167,17 @@ struct mad_stream mpeg_stream;
 struct mad_frame mpeg_frame;
 struct mad_synth mpeg_synth;
 #endif /* HAVE_MPEG */
+
+/* for MOD Audio decoding (private to disk thread) */
+#ifdef HAVE_MOD
+jack_ringbuffer_t * rb_mod;
+ModPlug_Settings mp_settings;
+ModPlugFile * mpf;
+int mod_fd;
+void * mod_fdm;
+struct stat mod_st;
+int mod_EOS;
+#endif /* HAVE_MOD */
 
 
 /* Synchronization between process thread and disk thread */
@@ -469,6 +488,28 @@ decode_mpeg() {
 #endif /* HAVE_MPEG */
 
 
+#ifdef HAVE_MOD
+/* MOD decoder: return 1 if reached end of stream, 0 else */
+int
+decode_mod(void) {
+
+        float fbuffer[MOD_BUFSIZE / 2];
+        char buffer[MOD_BUFSIZE];
+        long bytes_read;
+        int i;
+
+        if ((bytes_read = ModPlug_Read(mpf, buffer, MOD_BUFSIZE)) > 0) {
+                for (i = 0; i < bytes_read/2; i++)
+                        fbuffer[i] = *((short *)(buffer + 2*i)) / 32768.f;
+                jack_ringbuffer_write(rb_mod, (char *)fbuffer, bytes_read/2 * sample_size);
+                return 0;
+        } else
+                return 1;
+}
+#endif /* HAVE_MOD */
+
+
+
 int close_file(void * arg);
 
 /* return: =0 on OK, >0 on error */
@@ -722,6 +763,79 @@ open_file(void * arg, char * filename) {
 	}
 #endif /* HAVE_MPEG */
 
+#ifdef HAVE_MOD
+	/* try opening with libmodplug */
+	if (!file_lib) {
+
+		if ((mod_fd = open(filename, O_RDONLY)) == -1) {
+			fprintf(stderr, "open_file: nonexistent or non-accessible file: %s\n", filename);
+			goto no_open;
+		}
+
+		if (fstat(mod_fd, &mod_st) == -1 || mod_st.st_size == 0) {
+			fprintf(stderr, "open_file: fstat error or zero-length file: %s\n", filename);
+			close(mod_fd);
+			goto no_open;
+		}
+
+		mod_fdm = mmap(0, mod_st.st_size, PROT_READ, MAP_SHARED, mod_fd, 0);
+		if (mod_fdm == MAP_FAILED) {
+			fprintf(stderr, "open_file: mmap() failed for MOD file %s\n", filename);
+			close(mod_fd);
+			goto no_open;
+		}
+
+		/* set libmodplug decoder parameters */
+		mp_settings.mFlags = MODPLUG_ENABLE_OVERSAMPLING | MODPLUG_ENABLE_NOISE_REDUCTION;
+		mp_settings.mChannels = 2;
+		mp_settings.mBits = 16;
+		mp_settings.mFrequency = 44100;
+		mp_settings.mResamplingMode = MODPLUG_RESAMPLE_FIR;
+		mp_settings.mReverbDepth = 100;
+		mp_settings.mReverbDelay = 100;
+		mp_settings.mBassAmount = 100;
+		mp_settings.mBassRange = 100;
+		mp_settings.mSurroundDepth = 100;
+		mp_settings.mSurroundDelay = 40;
+		mp_settings.mLoopCount = 0;
+
+		ModPlug_SetSettings(&mp_settings);
+		if ((mpf = ModPlug_Load(mod_fdm, mod_st.st_size)) != NULL) {
+
+			if (mod_st.st_size * 8000.0f / ModPlug_GetLength(mpf) >= 1000000.0f) {
+				fprintf(stderr,
+					"MOD bitrate greater than 1 Mbit/s, "
+					"very likely not a MOD file: %s\n", filename);
+
+				ModPlug_Unload(mpf);
+				if (munmap(mod_fdm, mod_st.st_size) == -1)
+					fprintf(stderr, "Error while munmap()'ing MOD Audio file mapping\n");
+				close(mod_fd);
+			} else {
+				
+				mod_EOS = 0;
+				rb_mod = jack_ringbuffer_create(mp_settings.mChannels * sample_size
+								* RB_MOD_SIZE);
+				channels = mp_settings.mChannels;
+				SR = mp_settings.mFrequency;
+				file_lib = MOD_LIB;
+				
+				fileinfo.total_samples = ModPlug_GetLength(mpf) / 1000.0f *
+					mp_settings.mFrequency;
+				fileinfo.format_major = FORMAT_MOD;
+				fileinfo.format_minor = 0;
+				fileinfo.bps = mod_st.st_size * 8000.0f / ModPlug_GetLength(mpf);
+
+			}
+		} else {
+                        if (munmap(mod_fdm, mod_st.st_size) == -1)
+                                fprintf(stderr, "Error while munmap()'ing MOD Audio file mapping\n");
+			close(mod_fd);
+		}
+
+	}
+#endif /* HAVE_MOD */
+
 
 	if (!file_lib) {
 	        goto no_open;
@@ -844,6 +958,17 @@ close_file(void * arg) {
 			break;
 #endif /* HAVE_MPEG */
 
+#ifdef HAVE_MOD
+		case MOD_LIB:
+			ModPlug_Unload(mpf);
+                        if (munmap(mod_fdm, mod_st.st_size) == -1)
+                                fprintf(stderr, "Error while munmap()'ing MOD Audio file mapping\n");
+                        close(mod_fd);
+                        jack_ringbuffer_free(rb_mod);
+                        file_lib = 0;
+			break;
+#endif /* HAVE_MOD */
+
 		default:
 			fprintf(stderr,
 				"close_file: programmer error: unexpected value file_lib=%d\n", file_lib);
@@ -925,6 +1050,21 @@ unsigned int read_file(void * arg, float * dest, int num) {
 		break;
 #endif /* HAVE_MPEG */
 
+#ifdef HAVE_MOD
+        case MOD_LIB:
+                while ((jack_ringbuffer_read_space(rb_mod) < num * mp_settings.mChannels * sample_size) &&
+                       (!mod_EOS)) {
+                        mod_EOS = decode_mod();
+                }
+
+                n_avail = jack_ringbuffer_read_space(rb_mod) / (mp_settings.mChannels * sample_size);
+                if (n_avail > num)
+                        n_avail = num;
+                jack_ringbuffer_read(rb_mod, (char *)dest, n_avail * mp_settings.mChannels * sample_size);
+                numread = n_avail;
+                break;
+#endif /* HAVE_MOD */
+
 	default:
 		fprintf(stderr, "read_file: programmer error: unexpected file_lib=%d value\n", file_lib);
 		break;
@@ -998,6 +1138,16 @@ seek_file(void * arg, unsigned long long seek_to_pos) {
 			jack_ringbuffer_read(rb_mpeg, &flush_dest, sizeof(char));
 		break;
 #endif /* HAVE_MPEG */
+
+#ifdef HAVE_MOD
+	case MOD_LIB:
+		ModPlug_Seek(mpf, (double)seek_to_pos / mp_settings.mFrequency * 1000.0f);
+		disk_thread_samples_left = fileinfo.total_samples - seek_to_pos;
+                /* empty mod decoder ringbuffer */
+                while (jack_ringbuffer_read_space(rb_mod))
+                        jack_ringbuffer_read(rb_mod, &flush_dest, sizeof(char));
+		break;
+#endif /* HAVE_MOD */
 
         default:
                 fprintf(stderr, "seek_file: programmer error: unexpected file_lib=%d value\n", file_lib);
@@ -2245,6 +2395,13 @@ main(int argc, char ** argv) {
 #else
 		fprintf(stderr, "no\n");
 #endif /* HAVE_MPEG */
+
+                fprintf(stderr, "\t\tMOD Audio (MOD, S3M, XM, IT, etc.)  : ");
+#ifdef HAVE_MOD
+                fprintf(stderr, "yes\n");
+#else
+                fprintf(stderr, "no\n");
+#endif /* HAVE_MOD */
 
 		fprintf(stderr, "\n\tOutput driver support:\n");
 

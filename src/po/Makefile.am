@@ -9,7 +9,7 @@ MSGMERGE = /usr/bin/msgmerge
 POFILES = $(wildcard *.po)
 MOFILES = $(wildcard *.mo)
 
-EXTRA_DIST = $(DOMAIN).pot $(POFILES) $(MOFILES) Makevars
+EXTRA_DIST = $(DOMAIN).pot $(POFILES) $(MOFILES) Makevars ABOUT-NLS
 
 all: 
 	for i in $(POFILES); do $(MAKE) `echo $$i | sed 's/\.po/\.mo/'`; done
@@ -40,5 +40,3 @@ uninstall:
 		rm -f $(localedir)/$$lang/LC_MESSAGES/$(DOMAIN).mo; \
 	done
 
-clean:
-	rm -f $(MOFILES)

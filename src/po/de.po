@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-27 11:57+0100\n"
+"POT-Creation-Date: 2005-01-27 22:02+0100\n"
 "PO-Revision-Date: 2004-09-16 17:47+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: German <de@li.org>\n"
@@ -181,6 +181,58 @@ msgstr "Relative Lautstärke"
 #: ../file_info.c:265 ../file_info.c:552 ../file_info.c:884
 msgid "Import as RVA"
 msgstr "Als RVA importieren"
+
+#: ../file_info.c:291
+msgid "Title"
+msgstr "Titel:"
+
+#: ../file_info.c:295
+msgid "Composer"
+msgstr "Komponist"
+
+#: ../file_info.c:296
+msgid "Artist"
+msgstr "Artist"
+
+#: ../file_info.c:297
+msgid "Orchestra"
+msgstr "Orchester"
+
+#: ../file_info.c:298
+msgid "Conductor"
+msgstr "Dirigent"
+
+#: ../file_info.c:299
+msgid "Lyricist"
+msgstr "Lyriker"
+
+#: ../file_info.c:300
+msgid "Album"
+msgstr "Album"
+
+#: ../file_info.c:301
+msgid "Track"
+msgstr "Track"
+
+#: ../file_info.c:302
+msgid "Year"
+msgstr "Jahr"
+
+#: ../file_info.c:303
+msgid "Publisher"
+msgstr "Herausgeber"
+
+#: ../file_info.c:304
+msgid "Genre"
+msgstr "Genre"
+
+#: ../file_info.c:305
+msgid "Station"
+msgstr "Sender"
+
+#: ../file_info.c:306
+msgid "Encoder"
+msgstr "Kodier"
 
 #: ../file_info.c:349 ../file_info.c:528 ../file_info.c:857
 msgid "Import as Title"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-27 11:57+0100\n"
+"POT-Creation-Date: 2005-01-27 22:02+0100\n"
 "PO-Revision-Date: 2004-12-24 01:51+0200\n"
 "Last-Translator: Sergiy Niskorodov <sgh_punk@users.sourceforge.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -185,6 +185,65 @@ msgstr ""
 
 #: ../file_info.c:265 ../file_info.c:552 ../file_info.c:884
 msgid "Import as RVA"
+msgstr ""
+
+#: ../file_info.c:291
+#, fuzzy
+msgid "Title"
+msgstr ""
+"\n"
+"Назва файлу:"
+
+#: ../file_info.c:295
+#, fuzzy
+msgid "Composer"
+msgstr "Закрити"
+
+#: ../file_info.c:296
+#, fuzzy
+msgid "Artist"
+msgstr "Додати виконавця"
+
+#: ../file_info.c:297
+msgid "Orchestra"
+msgstr ""
+
+#: ../file_info.c:298
+msgid "Conductor"
+msgstr ""
+
+#: ../file_info.c:299
+msgid "Lyricist"
+msgstr ""
+
+#: ../file_info.c:300
+#, fuzzy
+msgid "Album"
+msgstr "Про програму"
+
+#: ../file_info.c:301
+#, fuzzy
+msgid "Track"
+msgstr "Додати дор╕жку"
+
+#: ../file_info.c:302
+msgid "Year"
+msgstr ""
+
+#: ../file_info.c:303
+msgid "Publisher"
+msgstr ""
+
+#: ../file_info.c:304
+msgid "Genre"
+msgstr ""
+
+#: ../file_info.c:305
+msgid "Station"
+msgstr ""
+
+#: ../file_info.c:306
+msgid "Encoder"
 msgstr ""
 
 #: ../file_info.c:349 ../file_info.c:528 ../file_info.c:857

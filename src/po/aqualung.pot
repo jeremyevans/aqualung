@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-27 11:57+0100\n"
+"POT-Creation-Date: 2005-01-27 22:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -170,6 +170,58 @@ msgstr ""
 
 #: ../file_info.c:265 ../file_info.c:552 ../file_info.c:884
 msgid "Import as RVA"
+msgstr ""
+
+#: ../file_info.c:291
+msgid "Title"
+msgstr ""
+
+#: ../file_info.c:295
+msgid "Composer"
+msgstr ""
+
+#: ../file_info.c:296
+msgid "Artist"
+msgstr ""
+
+#: ../file_info.c:297
+msgid "Orchestra"
+msgstr ""
+
+#: ../file_info.c:298
+msgid "Conductor"
+msgstr ""
+
+#: ../file_info.c:299
+msgid "Lyricist"
+msgstr ""
+
+#: ../file_info.c:300
+msgid "Album"
+msgstr ""
+
+#: ../file_info.c:301
+msgid "Track"
+msgstr ""
+
+#: ../file_info.c:302
+msgid "Year"
+msgstr ""
+
+#: ../file_info.c:303
+msgid "Publisher"
+msgstr ""
+
+#: ../file_info.c:304
+msgid "Genre"
+msgstr ""
+
+#: ../file_info.c:305
+msgid "Station"
+msgstr ""
+
+#: ../file_info.c:306
+msgid "Encoder"
 msgstr ""
 
 #: ../file_info.c:349 ../file_info.c:528 ../file_info.c:857

@@ -70,13 +70,15 @@ am__quote = @am__quote@
 install_sh = @install_sh@
 var = @var@
 
-XGETTEXT_OPTS = --keyword=_ --keyword=N_
+XGETTEXT_OPTS = --keyword=_ --keyword=N_ --keyword=X_
 
 DOMAIN = aqualung
 COPYRIGHT_HOLDER = Tom Szilagyi
 
 POTFILES = \
 ../about.c \
+../core.c \
+../file_decoder.c \
 ../file_info.c \
 ../gui_main.c \
 ../music_browser.c \
@@ -85,6 +87,8 @@ POTFILES = \
 ../plugin.c \
 ../ports.c \
 ../skin.c \
+../transceiver.c \
+../trashlist.c \
 ../volume.c
 
 
@@ -97,7 +101,7 @@ MSGMERGE = /usr/bin/msgmerge
 POFILES = $(wildcard *.po)
 MOFILES = $(wildcard *.mo)
 
-EXTRA_DIST = $(DOMAIN).pot $(POFILES) $(MOFILES) Makevars
+EXTRA_DIST = $(DOMAIN).pot $(POFILES) $(MOFILES) Makevars ABOUT-NLS
 subdir = src/po
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -239,9 +243,6 @@ uninstall:
 		lang=`echo $$i | sed 's/\.mo$$//'`; \
 		rm -f $(localedir)/$$lang/LC_MESSAGES/$(DOMAIN).mo; \
 	done
-
-clean:
-	rm -f $(MOFILES)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

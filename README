@@ -64,7 +64,7 @@ libsndfile			http://www.mega-nerd.com/libsndfile
 libFLAC				http://flac.sourceforge.net
 libvorbis, libvorbisfile	http://www.xiph.org/ogg/vorbis
 libMAD				http://www.underbit.com/products/mad
-libid3tag			http://www.underbit.com/products/mad
+libid3tag			http://sourceforge.net/project/showfiles.php?group_id=12349
 libmodplug			http://modplug-xmms.sourceforge.net
 libsamplerate			http://www.mega-nerd.com/SRC
 

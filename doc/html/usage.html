@@ -47,6 +47,11 @@ which there are a few not-so-obvious to find things, as well as
 keyboard shortcuts that will make your life much easier. So read on.
 </p>
 
+<p>
+We are planning to convert this page into a complete reference manual
+written in LyX that could be rendered in HTML and PDF formats.
+</p>
+
 <br>
 <h3>Program startup</h3>
 
@@ -294,10 +299,20 @@ limiter plugin</a> as the last one in the processing chain, but only
 if you know what you are doing.
 </p>
 
-
 <p>
-Shortcuts for this window:
+Right-clicking almost anywhere in the window will bring up a menu that
+allows access to the Settings dialog, the skin chooser, the JACK port
+setup dialog (enabled only when running the program with JACK output),
+and the About box. The latter may be useful to see which features have
+been compiled into the program. (If you haven't read the page about <a
+href="compiling.html">compiling</a> yet: the configuration of the
+program can be adapted so as not to require certain libraries when
+compiling, and not provide certain features accordingly.)
 </p>
+
+
+
+<h4>Shortcuts for this window</h4>
 
 <table cellspacing="1" cellpadding="5" border="1">
 <tr><th>up arrow</th><td>jump to previous track</td></tr>
@@ -316,17 +331,6 @@ Shortcuts for this window:
 <tr><th>Alt+x</th><td>show/hide LADSPA patch builder</td></tr>
 </table>
 
-<p>
-Right-clicking almost anywhere in the window will bring up a menu that
-allows access to the Settings dialog, the skin chooser, the JACK port
-setup dialog (enabled only when running the program with JACK output),
-and the About box. The latter may be useful to see which features have
-been compiled into the program. (If you haven't read the page about <a
-href="compiling.html">compiling</a> yet: the configuration of the
-program can be adapted so as not to require certain libraries when
-compiling, and not provide certain features accordingly.)
-</p>
-
 
 
 <br>
@@ -338,14 +342,15 @@ compiling, and not provide certain features accordingly.)
 This window has relatively few surprising features. It normally
 receives its contents from the Music Store (see below). However, you
 can put any file in the playlist regardless of the contents of your
-Music Store, using the Direct add button at the bottom of the window.
+Music Store, using the <i>Direct add</i> button at the bottom of the
+window.
 </p>
 
 <p>
-The other two buttons (Select all, Remove selected) function as you
-would expect them when clicked with the left mouse button. However,
-clicking with the right mouse button brings up small menus that
-contain further options such as Invert selection.
+The other two buttons (<i>Select all</i>, <i>Remove selected</i>)
+function as you would expect them when clicked with the left mouse
+button. However, clicking with the right mouse button brings up small
+menus that contain further options such as <i>Invert selection</i>.
 </p>
 
 <p>
@@ -363,23 +368,21 @@ whenever possible.
 </p>
 
 <p>
-Shortcuts for this window:
+You can rearrange the list at any time by dragging and dropping items
+with the mouse.
 </p>
+
+<h4>Shortcuts for this window</h4>
 
 <table cellspacing="1" cellpadding="5" border="1">
 <tr><th>up/down arrow</th><td>navigation in the list</td></tr>
 <tr><th>delete</th><td>remove selected track(s)</td></tr>
 <tr><th>enter, double click</th><td>start playback of the selected or
 double-clicked track, or jump to it if already playing</td></tr>
-<tr><th>i or I</th><td>bring up File info dialog (also accessible from
+<tr><th>i or I</th><td>bring up the File info dialog (also accessible from
 the right-click popup menu)</td></tr>
 <tr><th>q or Q</th><td>hide window (same as Alt+l or Alt+L in main
 window)</td></tr> </table>
-
-<p>
-You can rearrange the list at any time by dragging and dropping items
-with the mouse.
-</p>
 
 
 
@@ -397,20 +400,21 @@ an entire hard drive or a separate partition) to store all your music
 files. This is not necessary for the program to work. The audio files
 can be scattered around your system as long as you have read
 permissions to them. However, it is strongly recommended that you
-devote a separate directory for all the music (for example, /music
-would be a convenient place to store files that are owned by root, but
-readable by all users).
+devote a separate directory for all the music (for example,
+<code>/music</code> would be a convenient place to store files that
+are owned by root, but readable by all users).
 </p>
 
 <p>
 In this central directory, create subdirectories for each artist you
 have records from. The directory names do not have to contain the
-exact names, you can for example create /music/ledzep for Led
-Zeppelin, /music/crimson for King Crimson, /music/hendrix for Jimi
-Hendrix and so on. In these directories, create subdirectories for
-each record you have. Once again, the directory names for the records
-do not need to fully contain the record titles; they can be short and
-without spaces and special characters.
+exact names, you can for example create <code>/music/ledzep</code> for
+Led Zeppelin, <code>/music/crimson</code> for King Crimson,
+<code>/music/hendrix</code> for Jimi Hendrix and so on. In these
+directories, create subdirectories for each record you have. Once
+again, the directory names for the records do not need to fully
+contain the record titles; they can be short and without spaces and
+special characters.
 </p>
 
 <p>
@@ -454,6 +458,13 @@ will be in the right order without further attention.
 Now all you have to do is set the correct names of the tracks, which
 is a bit of work, but should be doable fairly quickly due to keyboard
 shortcuts.
+</p>
+
+<p>
+<i>NOTE: We are seeking ways to make building that music database in
+the first place a much easier task. Future versions will support
+recursive searching of your HD for playable files, and adding them
+automatically. Freedb support is also likely to appear someday.</i>
 </p>
 
 
@@ -500,22 +511,137 @@ tracks that have them (see the above screenshot for this latter case).
 
 <h4>Importing file metadata into the Music Store</h4>
 
+<p>
+The program can read and display FLAC stream metadata, Ogg Vorbis
+comments and ID3v2 tags present in the files themselves. To see such
+metadata for a particular track, you will utilize the 'File info'
+dialog accessible from the Music Store (right-click popup menus for
+Tracks, or press [<code>i</code>]) and the Playlist (right-click popup
+menu for playlist entries, or press [<code>i</code>]).
+</p>
+<p>
+When you open the 'File info' dialog from the Music Store, you will
+find buttons to the right of every metadata field that was read from
+the file. By pressing these buttons, the associated data will be
+imported into the corresponding field of the relevant Track.
+</p>
+<p>
+For metadata fields that don't have a corresponding field in the Music
+Store, you can append their contents to the 'Comment' field as a
+catch-all solution.
+</p>
+
 <img src="file_info.png" alt="[File info]">
 
 
 <h4>Using the RVA system</h4>
 
+<p>
+RVA stands for <i>Relative Volume Adjustment</i>, and refers to a
+system that is supposed to compensate for the fact that the perceived
+volume levels of tracks from different records are sometimes quite
+different. With usual players, you are left with the possibility to
+adjust the volume manually, when necessary; but not with Aqualung.
+</p>
+
+<p>
+You have to do two things prior to using RVA in Aqualung. First, you
+have to calculate the volume of the tracks you want affected by the
+RVA system. To do this, use the 'Calculate volume' option found in the
+right-click popup menus of Artists, Records and Tracks. When you
+activate this option, a small window will pop up with a progress bar.
+You can move this window out of your way, and proceed with using
+Aqualung. Processing will be carried out in the background, and should
+not affect your ability to play music at all. Calculated volume levels
+will be saved and restored with the rest of the Music Store. The
+values are shown in the 'Edit track' dialog.
+</p>
+
+<p>
+When you are done with this, open the 'Settings' dialog (right-click
+almost anywhere in the main window), and select the 'Playback RVA'
+notebook page.  You will see something like this:
+</p>
+
 <img src="rva_settings.png" alt="[Playback RVA settings dialog]">
 
+<p>
+If 'Enable playback RVA' is unchecked, the whole RVA system is turned
+off. No tracks receive adjustment. If playback RVA is enabled, you can
+select a listening environment that matches your setup. The idea is
+that the better your environment, the smaller adjustment you need to
+enjoy the music. If you work in a noisy workshop (and listen to
+Aqualung-played music) then it is best to minimize the volume
+differences between tracks so all tracks will be uniformy audible at a
+particular volume setting. If you can afford to listen to music in a
+silent room with high quality headphones or good near-field monitors,
+you should choose 'Audiophile' which will yield no change to volumes.
+</p>
+
+<p>
+The diagram shows the input/output transfer function applied to the
+previously measured track loudness to obtain the needed adjustment
+needed for a particular track. The diagram is 24 dB large in both
+directions, with the (0, 0) point being in the upper right corner.
+The blue line shows the identity function (no change), while the red
+line shows the output volume (the actual transfer function). The
+adjustment applied at a particular track volume is the vertical
+distance between the two lines at that position.  The transfer
+function is linear. You can use the 'Reference volume' and 'Steepness'
+controls to change its position.
+</p>
+
+<p>
+In most cases, it is desirable that tracks of the same record receive
+the same adjustment, so as to preserve the volume differences internal
+to the record. This can be enabled by checking 'Apply averaged RVA to
+tracks of the same record'. When enabled, volume levels of the same
+record will be averaged and all tracks will be adjusted by an average
+value. Please note that measured volume levels are converted to RVA
+values when you add something from the Music Store to the
+Playlist. Therefore, this feature works only when you add an Artist or
+a Record. If you add a record by adding all the Tracks manually one
+after another, they will all receive independent RVA values.  Also,
+changing RVA settings will not affect entries already in the Playlist.
+</p>
+
+<p>
+There are many records having one or two tracks that really stand out
+of the average volume level. (For example, there is one very silent
+track on an otherwise loud record.)  In this case, these tracks would
+'pull down' the average volume. To get around this, you can adjust a
+threshold that will be used to sort out tracks that stand out too much
+and will be disregarded when computing the average volume.
+</p>
+
+<p>
+You can select whether you want to specify a threshold in linear
+volume units [dBFS] or you want to specify a percentage of the
+standard deviation of the set of individual track volumes to use as a
+threshold. The default values should work well for the vast majority
+of records. If you always want every track's volume to count in the
+average adjustment of the record, choose the linear threshold and set
+it to a really big value (say, 30 dB) so all tracks will be within
+this range.
+</p>
+
+<p>
+You also have the possibility to always use a manually specified,
+fixed value as RVA for a particular track. In the 'Edit track' dialog
+for that track, check the 'Use manual RVA value' checkbox and set the
+value with the spinbutton on its right. If you import an ID3v2.4 RVA
+tag from an MP3 file, it will also set this field thereby
+circumventing Aqualung's own RVA calculation.
+</p>
 
 
-<p>Shortcuts for this window:</p>
+<h4>Shortcuts for this window</h4>
 
 <table cellspacing="1" cellpadding="5" border="1">
 <tr><th>double click, a or A</th><td>add artist/record/track to playlist</td></tr>
 <tr><th>n or N</th><td>new artist/record/track</td></tr>
 <tr><th>e or E</th><td>edit artist/record/track</td></tr>
-<tr><th>i or I</th><td>bring up the File info dialog</td></tr>
+<tr><th>i or I</th><td>bring up the File info dialog (for Tracks only)</td></tr>
 <tr><th>v or V</th><td>start volume calculation for the selected item
 (recursive for Artists and Records)</td></tr>
 <tr><th>delete</th><td>remove artist/record/track</td></tr>
@@ -539,21 +665,27 @@ just append to the end of the list.
 
 
 <br>
-<h3>Options</h3>
+<h3>Settings</h3>
 
-<img src="options.png" alt="[options editor]">
+<img src="options.png" alt="[settings editor]">
 
 <p>
-This dialog lets you set some defaults that affect the behavior of the
-program. The 'Title format' can be set to fit your personal
-taste. Such strings may be "%a: %t [%r]", "%a / %r / %t", "%a :: %r ::
-%t", or just about anything else you can think of. Note that once you
-add something from the Music Store to the playlist, the strings in the
-Playlist window will not update if you change this setting
-afterwards. This is because creating the one-line title string from
-the artist, record and track titles is a one-way operation, and though
-one could think of workarounds, they are just not elegant and
-practically needed.
+This dialog lets you set some options that affect the behavior of the
+program. It is split into multiple notebook pages to make arranging
+and accessing all the options easier.
+</p>
+
+<p>
+On the 'General' tab, the 'Title format' can be set to fit your
+personal taste. Such strings may be "%a: %t [%r]", "%a / %r / %t", "%a
+:: %r :: %t", or just about anything else you can think of. Note that
+once you add something from the Music Store to the playlist, the
+strings in the Playlist window will not update if you change this
+setting afterwards. This is because creating the one-line title string
+from the artist, record and track titles is a one-way operation, and
+though one could think of workarounds, they are just not elegant and
+practically needed. <i>(We might change this in the future, so if this
+is a problem for you, contact us.)</i>
 </p>
 
 <p>
@@ -578,15 +710,23 @@ it between &lt;default_param&gt; and &lt;/default_param&gt;.
 </p>
 
 <p>
-The option to save/restore the playlist when exiting ard starting the
-program is turned on by default. If you prefer starting with an empty
-page every time, turn it off.
+Now on to the 'Playlist' notebook page. The option to save/restore the
+playlist when exiting ard starting the program is turned on by
+default. If you prefer starting with an empty playlist every time,
+turn it off.
 </p>
 
 <p>
-When changed, the remaining two options take effect immediately, and
-stay that way regardless of whether you leave the dialog with the OK
-or Cancel button.
+Here you can also set the visibility of track lengths and RVA values
+in the playlist. By dragging and dropping entries in the list, you can
+rearrange the columns. The position of those that are not shown is of
+course irrelevant.
+</p>
+
+<p>
+Changing the two options on the 'DSP' page takes effect immediately,
+and stays that way regardless of whether you leave the dialog with the
+OK or Cancel button.
 </p>
 
 <p>
@@ -599,10 +739,10 @@ very likely be choppy. If this is the case, you will have to pick
 another converter.  'Fastest Sinc Interpolator' is usable on today's
 most machines. If not, use 'Linear Interpolator' instead of 'ZOH'
 since both are blindingly fast, but linear is naturally much better
-than zero-order (that is, constant). It should also be noted that the
-CPU usage of sample rate conversion is greatly affected by the
-difference between the two sample rates: upsampling 32k to 96k will be
-much more expensive than, say, upsampling from 44.1k to 48k.
+than zero-order (constant hold). It should also be noted that the CPU
+usage of sample rate conversion is greatly affected by the difference
+between the two sample rates: upsampling 32k to 96k will be much more
+expensive than, say, upsampling from 44.1k to 48k.
 </p>
 
 <p>
@@ -614,6 +754,10 @@ situation is when you have 44.1k files grabbed from CD and play back
 at 48k.
 </p>
 
+<p>
+The last notebook page is 'Playback RVA', which we have already
+described.
+</p>
 
 <br>
 <h3>LADSPA plugins</h3>

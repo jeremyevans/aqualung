@@ -1478,6 +1478,13 @@ main(int argc, char ** argv) {
                 fprintf(stderr, "no\n");
 #endif /* HAVE_MOD */
 
+                fprintf(stderr, "\t\tMusepack                            : ");
+#ifdef HAVE_MPC
+                fprintf(stderr, "yes\n");
+#else
+                fprintf(stderr, "no\n");
+#endif /* HAVE_MPC */
+
                 fprintf(stderr, "\t\tID3 tags                            : ");
 #ifdef HAVE_ID3
                 fprintf(stderr, "yes\n");

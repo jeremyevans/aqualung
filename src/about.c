@@ -204,6 +204,15 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 #endif /* HAVE_MOD */
 
+        gtk_text_buffer_insert_at_cursor(buffer, _("\t\tMusepack\t\t\t\t\t\t\t\t: "), -1);
+#ifdef HAVE_MPC
+        gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+#else
+        gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+#endif /* HAVE_MPC */
+
         gtk_text_buffer_insert_at_cursor(buffer, _("\t\tID3 tags\t\t\t\t\t\t\t\t: "), -1);
 #ifdef HAVE_ID3
         gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);

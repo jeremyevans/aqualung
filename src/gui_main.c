@@ -44,6 +44,11 @@
 #include <samplerate.h>
 #endif /* HAVE_SRC */
 
+#ifdef HAVE_MPC
+#include <musepack/musepack.h>
+#endif /* HAVE_MPC */
+
+
 #include "common.h"
 #include "core.h"
 #include "transceiver.h"
@@ -394,6 +399,12 @@ assembly_format_label(char * str, int v_major, int v_minor) {
 		break;
 #endif /* HAVE_OGG_VORBIS */
 
+#ifdef HAVE_MPC
+	case FORMAT_MPC:
+		strcpy(str, "Musepack");
+		break;
+#endif /* HAVE_MPC */
+
 #ifdef HAVE_MPEG
 	case FORMAT_MAD:
 		strcpy(str, "MPEG Audio");
@@ -411,11 +422,8 @@ assembly_format_label(char * str, int v_major, int v_minor) {
 		break;
 	}
 
-#ifdef HAVE_MPEG
-	if (v_major != FORMAT_MAD) {
-#endif /* HAVE_MPEG */
-
 #ifdef HAVE_SNDFILE
+	if (v_major < 0x1000000) {
 		switch (v_minor) {
 		case SF_FORMAT_PCM_S8:
 			sprintf(str, "%s %s%s%s", str, "(8 ", _("bit signed"), ")");
@@ -478,29 +486,60 @@ assembly_format_label(char * str, int v_major, int v_minor) {
 			sprintf(str, "%s %s%s%s", str, "(N bit DWVW ", _("encoding"), ")");
 			break;
 		}
+	}
 #endif /* HAVE_SNDFILE */
 
-
-#ifdef HAVE_MPEG
-	} else if (v_minor & 0x7ff) {
-
-		strcat(str, " (");
-
-		switch (v_minor & MPEG_LAYER_MASK) {
-		case MPEG_LAYER_I:
-			strcat(str, _("Layer I"));
+#ifdef HAVE_MPC
+	if (v_major == FORMAT_MPC) {
+		
+		switch (v_minor) {
+		case 7:
+			sprintf(str, "%s (%s)", str, _("Profile: Telephone"));
 			break;
-		case MPEG_LAYER_II:
-			strcat(str, _("Layer II"));
+		case 8:
+			sprintf(str, "%s (%s)", str, _("Profile: Thumb"));
 			break;
-		case MPEG_LAYER_III:
-			strcat(str, _("Layer III"));
+		case 9:
+			sprintf(str, "%s (%s)", str, _("Profile: Radio"));
+			break;
+		case 10:
+			sprintf(str, "%s (%s)", str, _("Profile: Standard"));
+			break;
+		case 11:
+			sprintf(str, "%s (%s)", str, _("Profile: Xtreme"));
+			break;
+		case 12:
+			sprintf(str, "%s (%s)", str, _("Profile: Insane"));
+			break;
+		case 13:
+			sprintf(str, "%s (%s)", str, _("Profile: Braindead"));
 			break;
 		}
+	}
+#endif /* HAVE_MPC */
 
-		if ((v_minor & MPEG_LAYER_MASK) && (v_minor & (MPEG_MODE_MASK | MPEG_EMPH_MASK)))
+#ifdef HAVE_MPEG
+	if (v_major == FORMAT_MAD) {
+		
+		if (v_minor & 0xff7) {
+			
+			strcat(str, " (");
+			
+			switch (v_minor & MPEG_LAYER_MASK) {
+			case MPEG_LAYER_I:
+				strcat(str, _("Layer I"));
+				break;
+			case MPEG_LAYER_II:
+				strcat(str, _("Layer II"));
+				break;
+			case MPEG_LAYER_III:
+				strcat(str, _("Layer III"));
+				break;
+			}
+		}
+
+	        if ((v_minor & MPEG_LAYER_MASK) && (v_minor & (MPEG_MODE_MASK | MPEG_EMPH_MASK)))
 			strcat(str, ", ");
-
 
 		switch (v_minor & MPEG_MODE_MASK) {
 		case MPEG_MODE_SINGLE:
@@ -1054,8 +1093,12 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			return TRUE;
 			break;
 			
+		case GDK_i:
+		case GDK_I:
+			conf__fileinfo_cb(NULL);
+			return TRUE;
+			break;
 		}
-
 	}
 
 	return FALSE;

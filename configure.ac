@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(aqualung, 0.9beta4.1, http://aqualung.sf.net/mantis)
-AM_INIT_AUTOMAKE(aqualung, 0.9beta4.1)
+AC_INIT(aqualung, 0.9beta5, http://aqualung.sf.net/mantis)
+AM_INIT_AUTOMAKE(aqualung, 0.9beta5)
 AC_CONFIG_SRCDIR([src/core.c])
 AM_CONFIG_HEADER([config.h])
 
@@ -310,6 +310,29 @@ else
 fi
 
 
+AC_MSG_CHECKING(for Musepack support)
+AC_ARG_WITH(
+	mpc,
+	[  --with-mpc=yes,no       compile with Musepack support (default: yes)],
+	mpc="$withval",
+	mpc="detect")
+if test "$mpc" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(musepack, mpc_streaminfo_init, [lib=yes], [lib=no], [-lstdc++])
+	if test "$lib" = "yes"; then
+	        mpc_LIBS="-lmusepack -lstdc++"
+		AC_DEFINE([HAVE_MPC], [1], [Defined if compile with Musepack support])
+	fi
+	if test "$lib" = "no" -a "$mpc" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the Musepack decoder library installed. Grab it from http://www.musepack.net)
+	fi
+	if test "$mpc" = "detect"; then
+		mpc=$lib
+	fi
+fi
+
+
 # Compiler and linker variables
 gtk_CFLAGS=`pkg-config --cflags gtk+-2.0`
 gtk_LIBS=`pkg-config --libs gtk+-2.0`
@@ -329,7 +352,7 @@ LOCALEDIR="-DLOCALEDIR=\\\"$datadir/locale\\\""
 
 CFLAGS="-O3 -Wall $SKINDIR $LOCALEDIR -D_GNU_SOURCE"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS"
-LIBS="$gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $mad_LIBS $id3_LIBS $mod_LIBS"
+LIBS="$gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS"
 
 AC_OUTPUT([Makefile \
 	   doc/Makefile \
@@ -353,6 +376,7 @@ echo "      Free Lossless Audio Codec (FLAC)    :  $flac"
 echo "      Ogg Vorbis                          :  $ogg"
 echo "      MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg"
 echo "      MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod"
+echo "      Musepack                            :  $mpc"
 echo "      ID3 tags                            :  $id3"
 echo
 echo "  Output driver support:"

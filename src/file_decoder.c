@@ -363,6 +363,40 @@ decode_mod(file_decoder_t * fdec) {
 #endif /* HAVE_MOD */
 
 
+#ifdef HAVE_MPC
+/* Musepack decoder: return 1 if reached end of stream, 0 else */
+int
+decode_mpc(file_decoder_t * fdec) {
+
+	fdec->mpc_status = mpc_decoder_decode(&fdec->mpc_d, fdec->mpc_sample_buffer, NULL, NULL);
+        if (fdec->mpc_status == (unsigned)(-1)) {
+		fprintf(stderr, "file_decoder: decode_mpc reported mpc decoder error\n");
+		return 1; /* ignore the rest of the stream */
+        } else if (fdec->mpc_status == 0) {
+		return 1; /* end of stream */
+        }
+
+        for (fdec->mpc_n = 0; fdec->mpc_n < fdec->mpc_status * fdec->mpc_i.channels;
+	     fdec->mpc_n++) {
+#ifdef MPC_FIXED_POINT
+		fdec->mpc_fval = fdec->mpc_sample_buffer[fdec->mpc_n]
+			/ (double)MPC_FIXED_POINT_SCALE;
+#else
+		fdec->mpc_fval = fdec->mpc_sample_buffer[fdec->mpc_n];
+#endif /* MPC_FIXED_POINT */
+
+		if (fdec->mpc_fval < -1.0f) {
+			fdec->mpc_fval = -1.0f;
+		} else if (fdec->mpc_fval > 1.0f) {
+			fdec->mpc_fval = 1.0f;
+		}
+
+                jack_ringbuffer_write(fdec->rb_mpc, (char *)&fdec->mpc_fval, sample_size);
+        }
+	return 0;
+}
+#endif /* HAVE_MPC */
+
 
 file_decoder_t * file_decoder_new(void) {
 
@@ -566,6 +600,46 @@ int file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_S
 		}
 	}
 #endif /* HAVE_OGG_VORBIS */
+
+#ifdef HAVE_MPC
+	if (!fdec->file_lib) {
+		if ((fdec->mpc_file = fopen(filename, "rb")) == NULL) {
+			fprintf(stderr, "file_decoder_open: fopen() failed for Musepack file\n");
+			goto no_open;
+		}
+		fdec->mpc_seekable = 1;
+		fseek(fdec->mpc_file, 0, SEEK_END);
+		fdec->mpc_size = ftell(fdec->mpc_file);
+		fseek(fdec->mpc_file, 0, SEEK_SET);
+
+		mpc_reader_setup_file_reader(&fdec->mpc_r, fdec->mpc_file);
+
+		mpc_streaminfo_init(&fdec->mpc_i);
+		if (mpc_streaminfo_read(&fdec->mpc_i, &fdec->mpc_r) != ERROR_CODE_OK) {
+			goto no_mpc;
+		}
+
+		mpc_decoder_setup(&fdec->mpc_d, &fdec->mpc_r);
+		if (!mpc_decoder_initialize(&fdec->mpc_d, &fdec->mpc_i)) {
+			goto no_mpc;
+		}
+
+		fdec->mpc_EOS = 0;
+		fdec->rb_mpc = jack_ringbuffer_create(fdec->mpc_i.channels * sample_size
+						      * RB_VORBIS_SIZE);
+
+		fdec->channels = fdec->mpc_i.channels;
+		fdec->SR = fdec->mpc_i.sample_freq;
+		fdec->file_lib = MPC_LIB;
+			
+		fdec->fileinfo.total_samples =
+			mpc_streaminfo_get_length_samples(&fdec->mpc_i);
+		fdec->fileinfo.format_major = FORMAT_MPC;
+		fdec->fileinfo.format_minor = fdec->mpc_i.profile;
+		fdec->fileinfo.bps = fdec->mpc_i.average_bitrate;
+	}
+ no_mpc:
+#endif /* HAVE_MPC */
 
 #ifdef HAVE_MPEG
 	/* try opening with libMAD */
@@ -844,6 +918,15 @@ void file_decoder_close(file_decoder_t * fdec) {
 			break;
 #endif /* HAVE_OGG_VORBIS */
 
+#ifdef HAVE_MPC
+		case MPC_LIB:
+			jack_ringbuffer_free(fdec->rb_mpc);
+			fclose(fdec->mpc_file);
+			fdec->file_open = 0;
+			fdec->file_lib = 0;
+			break;
+#endif /* HAVE_MPC */
+
 #ifdef HAVE_MPEG
 		case MAD_LIB:
 			mad_synth_finish(&(fdec->mpeg_synth));
@@ -935,6 +1018,24 @@ unsigned int file_decoder_read(file_decoder_t * fdec, float * dest, int num) {
 		fdec->numread = fdec->n_avail;
 		break;
 #endif /* HAVE_OGG_VORBIS */
+
+#ifdef HAVE_MPC
+	case MPC_LIB:
+		while ((jack_ringbuffer_read_space(fdec->rb_mpc) <
+			num * fdec->mpc_i.channels * sample_size) && (!fdec->mpc_EOS)) {
+
+			fdec->mpc_EOS = decode_mpc(fdec);
+		}
+
+		fdec->n_avail = jack_ringbuffer_read_space(fdec->rb_mpc) /
+			(fdec->mpc_i.channels * sample_size);
+		if (fdec->n_avail > num)
+			fdec->n_avail = num;
+		jack_ringbuffer_read(fdec->rb_mpc, (char *)dest, fdec->n_avail *
+				     fdec->mpc_i.channels * sample_size);
+		fdec->numread = fdec->n_avail;
+		break;
+#endif /* HAVE_MPC */
 
 #ifdef HAVE_MPEG
 	case MAD_LIB:
@@ -1028,6 +1129,21 @@ void file_decoder_seek(file_decoder_t * fdec, unsigned long long seek_to_pos) {
 		}
 		break;
 #endif /* HAVE_OGG_VORBIS */
+
+#ifdef HAVE_MPC
+        case MPC_LIB:
+		if (mpc_decoder_seek_sample(&fdec->mpc_d, seek_to_pos)) {
+                        fdec->samples_left = fdec->fileinfo.total_samples - seek_to_pos;
+			/* empty musepack decoder ringbuffer */
+			while (jack_ringbuffer_read_space(fdec->rb_mpc))
+				jack_ringbuffer_read(fdec->rb_mpc, &(fdec->flush_dest),
+						     sizeof(char));
+		} else {
+			fprintf(stderr,
+				"file_decoder_seek: warning: mpc_decoder_seek_sample() failed\n");
+		}
+		break;
+#endif /* HAVE_MPC */
 
 #ifdef HAVE_MPEG
 	case MAD_LIB:

@@ -54,6 +54,10 @@
 #include <sys/mman.h>
 #endif /* HAVE_MOD */
 
+/* for Musepack support */
+#ifdef HAVE_MPC
+#include <musepack/musepack.h>
+#endif /* HAVE_MPC */
 
 /* input libs */
 #ifdef HAVE_SNDFILE
@@ -75,6 +79,10 @@
 #ifdef HAVE_MOD
 #define MOD_LIB     5
 #endif /* HAVE_MOD */
+
+#ifdef HAVE_MPC
+#define MPC_LIB     6
+#endif /* HAVE_MPC */
 
 
 #ifdef HAVE_FLAC
@@ -102,6 +110,13 @@
 /* size of ringbuffer for decoded MOD Audio data (in frames) */
 #define RB_MOD_SIZE 262144
 #endif /* HAVE_MOD */
+
+#ifdef HAVE_MPC
+/* Decoding buffer size for musepack */
+#define MPC_BUFSIZE 8192
+/* size of ringbuffer for decoded Musepack audio data (in frames) */
+#define RB_MPC_SIZE 262144
+#endif /* HAVE_MPC */
 
 
 /* formats that are not supported by libsndfile */
@@ -135,6 +150,10 @@
 #ifdef HAVE_MOD
 #define FORMAT_MOD   0x8000000
 #endif /* HAVE_MOD */
+
+#ifdef HAVE_MPC
+#define FORMAT_MPC   0x10000000
+#endif /* HAVE_MPC */
 
 
 typedef struct _fileinfo {
@@ -251,6 +270,22 @@ typedef struct _file_decoder_t {
         long mod_bytes_read;
         int mod_i;
 #endif /* HAVE_MOD */
+
+#ifdef HAVE_MPC
+	jack_ringbuffer_t * rb_mpc;
+	FILE * mpc_file;
+	long int mpc_size;
+	int mpc_seekable;
+	int mpc_status;
+	int mpc_EOS;
+	int mpc_n;
+	float mpc_fval;
+
+	mpc_decoder mpc_d;
+	mpc_reader mpc_r;
+	mpc_streaminfo mpc_i;
+	MPC_SAMPLE_FORMAT mpc_sample_buffer[MPC_DECODER_BUFFER_LENGTH];
+#endif /* HAVE_MPC */
 
 } file_decoder_t;
 

@@ -44,6 +44,8 @@
 #include "meta_decoder.h"
 
 
+
+#ifdef HAVE_ID3
 id3_tag_data *
 id3_new(void) {
 
@@ -62,6 +64,7 @@ id3_new(void) {
 
 	return new;
 }
+#endif /* HAVE_ID3 */
 
 
 oggv_comment *
@@ -93,14 +96,21 @@ meta_new(void) {
 		return NULL;
 	}
 
+#ifdef HAVE_ID3
 	new->id3_root = id3_new();
+#endif /* HAVE_ID3 */
+#ifdef HAVE_FLAC
 	new->flac_root = oggv_new();
+#endif /* HAVE_FLAC */
+#ifdef HAVE_OGG_VORBIS
 	new->oggv_root = oggv_new();
+#endif /* HAVE_OGG_VORBIS */
 
 	return new;
 }
 
 
+#ifdef HAVE_ID3
 void
 append_id3(metadata * meta, id3_tag_data * id3) {
 
@@ -122,8 +132,10 @@ append_id3(metadata * meta, id3_tag_data * id3) {
 	}
 	id3_prev->next = id3;
 }
+#endif /* HAVE_ID3 */
 
 
+#ifdef HAVE_FLAC
 void
 append_flac(metadata * meta, oggv_comment * oggv) {
 
@@ -145,8 +157,10 @@ append_flac(metadata * meta, oggv_comment * oggv) {
 	}
 	oggv_prev->next = oggv;
 }
+#endif /* HAVE_FLAC */
 
 
+#ifdef HAVE_OGG_VORBIS
 void
 append_oggv(metadata * meta, oggv_comment * oggv) {
 
@@ -168,6 +182,7 @@ append_oggv(metadata * meta, oggv_comment * oggv) {
 	}
 	oggv_prev->next = oggv;
 }
+#endif /* HAVE_OGG_VORBIS */
 
 
 #ifdef HAVE_ID3
@@ -427,7 +442,9 @@ int
 meta_read(metadata * meta, char * file) {
 
         file_decoder_t * fdec = NULL;
+#ifdef HAVE_OGG_VORBIS
         char str[MAXLEN];
+#endif /* HAVE_OGG_VORBIS */
 
 
         if ((fdec = file_decoder_new()) == NULL) {
@@ -569,12 +586,15 @@ meta_read(metadata * meta, char * file) {
 void
 meta_free(metadata * meta) {
 
+#ifdef HAVE_ID3
 	id3_tag_data * id3;
 	id3_tag_data * id3_next;
+#endif /* HAVE_ID3 */
 	oggv_comment * oggv;
 	oggv_comment * oggv_next;
 
 
+#ifdef HAVE_ID3
 	id3 = meta->id3_root;
 	while (id3 != NULL) {
 		id3_next = id3->next;
@@ -583,7 +603,9 @@ meta_free(metadata * meta) {
 		free(id3);
 		id3 = id3_next;
 	}
+#endif /* HAVE_ID3 */
 
+#ifdef HAVE_FLAC
 	oggv = meta->flac_root;
 	while (oggv != NULL) {
 		oggv_next = oggv->next;
@@ -592,7 +614,9 @@ meta_free(metadata * meta) {
 		free(oggv);
 		oggv = oggv_next;
 	}
+#endif /* HAVE_FLAC */
 
+#ifdef HAVE_OGG_VORBIS
 	oggv = meta->oggv_root;
 	while (oggv != NULL) {
 		oggv_next = oggv->next;
@@ -601,12 +625,14 @@ meta_free(metadata * meta) {
 		free(oggv);
 		oggv = oggv_next;
 	}
+#endif /* HAVE_OGG_VORBIS */
 
 	free(meta);
 }
 
 
 /* for DEBUG purposes */
+/*
 void
 meta_list(metadata * meta) {
 
@@ -658,8 +684,8 @@ meta_list(metadata * meta) {
 			oggv = oggv->next;
 		}
 	}
-
 }
+*/
 
 
 /* ret: 1 if found, 0 if no RVA data */
@@ -667,7 +693,9 @@ meta_list(metadata * meta) {
 int
 meta_get_rva(metadata * meta, float * fval) {
 
+#ifdef HAVE_ID3
 	id3_tag_data * id3;
+#endif /* HAVE_ID3 */
 	oggv_comment * oggv;
 
 
@@ -676,6 +704,7 @@ meta_get_rva(metadata * meta, float * fval) {
 		return 0;
 	}
 
+#ifdef HAVE_FLAC
 	oggv = meta->flac_root;
 	if (oggv->next != NULL) {
 		oggv = oggv->next;
@@ -690,7 +719,9 @@ meta_get_rva(metadata * meta, float * fval) {
 			oggv = oggv->next;
 		}
 	}
+#endif /* HAVE_FLAC */
 
+#ifdef HAVE_OGG_VORBIS
 	oggv = meta->oggv_root;
 	if (oggv->next != NULL) {
 		oggv = oggv->next;
@@ -705,7 +736,9 @@ meta_get_rva(metadata * meta, float * fval) {
 			oggv = oggv->next;
 		}
 	}
+#endif /* HAVE_OGG_VORBIS */
 
+#ifdef HAVE_ID3
 	id3 = meta->id3_root;
 	if (id3->next != NULL) {
 		id3 = id3->next;
@@ -720,6 +753,7 @@ meta_get_rva(metadata * meta, float * fval) {
 			id3 = id3->next;
 		}
 	}
+#endif /* HAVE_ID3 */
 
 	return 0;
 }
@@ -730,7 +764,9 @@ meta_get_rva(metadata * meta, float * fval) {
 int
 meta_get_title(metadata * meta, char * str) {
 
+#ifdef HAVE_ID3
 	id3_tag_data * id3;
+#endif /* HAVE_ID3 */
 	oggv_comment * oggv;
 
 
@@ -739,6 +775,7 @@ meta_get_title(metadata * meta, char * str) {
 		return 0;
 	}
 
+#ifdef HAVE_FLAC
 	oggv = meta->flac_root;
 	if (oggv->next != NULL) {
 		oggv = oggv->next;
@@ -753,7 +790,9 @@ meta_get_title(metadata * meta, char * str) {
 			oggv = oggv->next;
 		}
 	}
+#endif /* HAVE_FLAC */
 
+#ifdef HAVE_OGG_VORBIS
 	oggv = meta->oggv_root;
 	if (oggv->next != NULL) {
 		oggv = oggv->next;
@@ -768,7 +807,9 @@ meta_get_title(metadata * meta, char * str) {
 			oggv = oggv->next;
 		}
 	}
+#endif /* HAVE_OGG_VORBIS */
 
+#ifdef HAVE_ID3
 	id3 = meta->id3_root;
 	if (id3->next != NULL) {
 		id3 = id3->next;
@@ -783,6 +824,7 @@ meta_get_title(metadata * meta, char * str) {
 			id3 = id3->next;
 		}
 	}
+#endif /* HAVE_ID3 */
 
 	return 0;
 }
@@ -793,7 +835,9 @@ meta_get_title(metadata * meta, char * str) {
 int
 meta_get_record(metadata * meta, char * str) {
 
+#ifdef HAVE_ID3
 	id3_tag_data * id3;
+#endif /* HAVE_ID3 */
 	oggv_comment * oggv;
 
 
@@ -802,6 +846,7 @@ meta_get_record(metadata * meta, char * str) {
 		return 0;
 	}
 
+#ifdef HAVE_FLAC
 	oggv = meta->flac_root;
 	if (oggv->next != NULL) {
 		oggv = oggv->next;
@@ -816,7 +861,9 @@ meta_get_record(metadata * meta, char * str) {
 			oggv = oggv->next;
 		}
 	}
+#endif /* HAVE_FLAC */
 
+#ifdef HAVE_OGG_VORBIS
 	oggv = meta->oggv_root;
 	if (oggv->next != NULL) {
 		oggv = oggv->next;
@@ -831,7 +878,9 @@ meta_get_record(metadata * meta, char * str) {
 			oggv = oggv->next;
 		}
 	}
+#endif /* HAVE_OGG_VORBIS */
 
+#ifdef HAVE_ID3
 	id3 = meta->id3_root;
 	if (id3->next != NULL) {
 		id3 = id3->next;
@@ -846,6 +895,7 @@ meta_get_record(metadata * meta, char * str) {
 			id3 = id3->next;
 		}
 	}
+#endif /* HAVE_ID3 */
 
 	return 0;
 }
@@ -856,7 +906,9 @@ meta_get_record(metadata * meta, char * str) {
 int
 meta_get_artist(metadata * meta, char * str) {
 
+#ifdef HAVE_ID3
 	id3_tag_data * id3;
+#endif /* HAVE_ID3 */
 	oggv_comment * oggv;
 
 
@@ -865,6 +917,7 @@ meta_get_artist(metadata * meta, char * str) {
 		return 0;
 	}
 
+#ifdef HAVE_FLAC
 	oggv = meta->flac_root;
 	if (oggv->next != NULL) {
 		oggv = oggv->next;
@@ -879,7 +932,9 @@ meta_get_artist(metadata * meta, char * str) {
 			oggv = oggv->next;
 		}
 	}
+#endif /* HAVE_FLAC */
 
+#ifdef HAVE_OGG_VORBIS
 	oggv = meta->oggv_root;
 	if (oggv->next != NULL) {
 		oggv = oggv->next;
@@ -894,7 +949,9 @@ meta_get_artist(metadata * meta, char * str) {
 			oggv = oggv->next;
 		}
 	}
+#endif /* HAVE_OGG_VORBIS */
 
+#ifdef HAVE_ID3
 	id3 = meta->id3_root;
 	if (id3->next != NULL) {
 		id3 = id3->next;
@@ -909,6 +966,7 @@ meta_get_artist(metadata * meta, char * str) {
 			id3 = id3->next;
 		}
 	}
+#endif /* HAVE_ID3 */
 
 	return 0;
 }

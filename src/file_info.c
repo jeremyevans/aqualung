@@ -227,20 +227,28 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	GtkWidget * label;
 	GtkWidget * entry;
 
+#ifdef HAVE_ID3
 	GtkWidget * vbox_id3v2;
 	GtkWidget * label_id3v2;
 	GtkWidget * table_id3v2;
+#endif /* HAVE_ID3 */
 
+#ifdef HAVE_OGG_VORBIS
 	GtkWidget * vbox_vorbis;
 	GtkWidget * label_vorbis;
 	GtkWidget * table_vorbis;
+#endif /* HAVE_OGG_VORBIS */
 
+#ifdef HAVE_FLAC
 	GtkWidget * vbox_flac;
 	GtkWidget * label_flac;
 	GtkWidget * table_flac;
+#endif /* HAVE_FLAC */
 
 	metadata * meta = meta_new();
+#ifdef HAVE_ID3
 	id3_tag_data * id3;
+#endif /* HAVE_ID3 */
 	oggv_comment * oggv;
 	int cnt;
 
@@ -380,6 +388,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
 
 
+#ifdef HAVE_ID3
 	cnt = 0;
 	id3 = meta->id3_root;
 	if (id3->next != NULL) {
@@ -469,7 +478,9 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 			id3 = id3->next;
 		}
 	}
+#endif /* HAVE_ID3 */
 
+#ifdef HAVE_OGG_VORBIS
 	cnt = 0;
 	oggv = meta->oggv_root;
 	if (oggv->next != NULL) {
@@ -546,7 +557,9 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 			oggv = oggv->next;
 		}
 	}
-	
+#endif /* HAVE_OGG_VORBIS */
+
+#ifdef HAVE_FLAC
 	cnt = 0;
 	oggv = meta->flac_root;
 	if (oggv->next != NULL) {
@@ -623,6 +636,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 			oggv = oggv->next;
 		}
 	}
+#endif /* HAVE_FLAC */
 	
 	/* end of notebook stuff */
 

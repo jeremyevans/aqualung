@@ -467,8 +467,7 @@ show_file_info(char * name, char * file) {
 
 
 #ifdef HAVE_ID3
-#ifdef HAVE_MPEG
-	if (fdec->file_lib == MAD_LIB) {
+	{
 
 		struct id3_file * id3file;
 		struct id3_tag * id3tag;
@@ -497,7 +496,6 @@ show_file_info(char * name, char * file) {
 			}
 		}
 	}
-#endif /* HAVE_MPEG */
 #endif /* HAVE_ID3 */
 
 #ifdef HAVE_OGG_VORBIS

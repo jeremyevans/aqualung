@@ -160,6 +160,7 @@ struct keybinds track_keybinds[] = {
 	{track__add_cb, GDK_n, GDK_N},
 	{track__edit_cb, GDK_e, GDK_E},
 	{track__remove_cb, GDK_Delete, GDK_KP_Delete},
+	{track__fileinfo_cb, GDK_i, GDK_I},
 	{NULL, 0}
 };
 

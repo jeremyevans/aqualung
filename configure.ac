@@ -98,13 +98,20 @@ AC_ARG_WITH(
 	oss,
 	[  --with-oss=yes,no       compile with OSS support (default: yes)],
 	oss="$withval",
-	oss="yes")
-if test "$oss" = "yes"; then
-	AC_CHECK_HEADER([linux/soundcard.h],
-			[AC_DEFINE([HAVE_OSS], [1], [Defined if compile with OSS support])],
-			[AC_MSG_ERROR(You do not appear to have linux/soundcard.h needed by OSS sound support.)])
-else
+	oss="detect")
+if test "$oss" = no; then
 	AC_MSG_RESULT(no)
+else
+	AC_CHECK_HEADER([linux/soundcard.h], [hdr=yes], [hdr=no])
+	if test "$hdr" = "yes"; then
+		AC_DEFINE([HAVE_OSS], [1], [Defined if compile with OSS support])
+	fi
+	if test "$hdr" = "no" -a "$oss" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have linux/soundcard.h needed by OSS sound support.)
+	fi
+	if test "$oss" = "detect"; then
+	        oss=$hdr
+	fi
 fi
 
 
@@ -113,19 +120,23 @@ AC_ARG_WITH(
 	alsa,
 	[  --with-alsa=yes,no      compile with ALSA support (default: yes)],
 	alsa="$withval",
-	alsa="yes")
-if test "$alsa" = "yes"; then
-	AC_CHECK_LIB(asound,
-		snd_pcm_open,
-		[],
-		[AC_MSG_ERROR(You do not appear to have the ALSA library installed)])
-        alsa_CFLAGS=`pkg-config --cflags alsa`
-        alsa_LIBS=`pkg-config --libs alsa`
-	AC_DEFINE([HAVE_ALSA], [1], [Defined if compile with ALSA support])
-else
-        alsa_CFLAGS=""
-        alsa_LIBS=""
+	alsa="detect")
+
+if test "$alsa" = "no"; then
 	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(asound, snd_pcm_open, [lib=yes], [lib=no])
+	if test "$lib" = "yes"; then
+	        alsa_CFLAGS=`pkg-config --cflags alsa`
+		alsa_LIBS=`pkg-config --libs alsa`
+		AC_DEFINE([HAVE_ALSA], [1], [Defined if compile with ALSA support])
+	fi
+	if test "$lib" = "no" -a "$alsa" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the ALSA library installed)
+	fi
+	if test "$alsa" = "detect"; then
+	        alsa=$lib
+	fi
 fi
 
 
@@ -134,18 +145,22 @@ AC_ARG_WITH(
 	src,
 	[  --with-src=yes,no       compile with Sample Rate Converter support (default: yes)],
 	src="$withval",
-	src="yes")
-if test "$src" = "yes"; then
+	src="detect")
 
-	AC_CHECK_LIB(samplerate,
-		src_new,
-		[],
-		[AC_MSG_ERROR(You do not appear to have libsamplerate (aka. Secret Rabbit Code) installed. Grab it from  http://www.mega-nerd.com/SRC/ )])
-        src_LIBS=`pkg-config --libs samplerate`
-	AC_DEFINE([HAVE_SRC], [1], [Defined if compile with Sample Rate Converter support])
-else
-        src_LIBS=""
+if test "$src" = "no"; then
 	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(samplerate, src_new, [lib=yes], [lib=no])
+	if test "$lib" = "yes"; then
+	        src_LIBS=`pkg-config --libs samplerate`
+		AC_DEFINE([HAVE_SRC], [1], [Defined if compile with Sample Rate Converter support])
+	fi
+	if test "$lib" = "no" -a "$src" = "yes"; then
+	        AC_MSG_ERROR(You do not appear to have libsamplerate (aka. Secret Rabbit Code) installed. Grab it from  http://www.mega-nerd.com/SRC/ )
+	fi
+	if test "$src" = "detect"; then
+	        src=$lib
+	fi
 fi
 
 
@@ -154,19 +169,22 @@ AC_ARG_WITH(
 	sndfile,
 	[  --with-sndfile=yes,no   compile with sndfile (WAV, AIFF, etc.) support (default: yes)],
 	sndfile="$withval",
-	sndfile="yes")
-if test "$sndfile" = "yes"; then
-        AC_CHECK_LIB(sndfile,
-		sf_open,
-		[],
-		[AC_MSG_ERROR(You do not appear to have the sndfile library installed. Grab it from  http://www.mega-nerd.com/libsndfile/ )])
-	sndfile_LIBS=`pkg-config --libs sndfile`
-	AC_DEFINE([HAVE_SNDFILE], [1], [Defined if compile with sndfile (WAV, AIFF, etc.) support])
-else
-	sndfile_LIBS=""
+	sndfile="detect")
+if test "$sndfile" = "no"; then
 	AC_MSG_RESULT(no)
+else
+        AC_CHECK_LIB(sndfile, sf_open, [lib=yes], [lib=no])
+	if test "$lib" = "yes"; then
+		sndfile_LIBS=`pkg-config --libs sndfile`
+		AC_DEFINE([HAVE_SNDFILE], [1], [Defined if compile with sndfile (WAV, AIFF, etc.) support])
+	fi
+	if test "$lib" = "no" -a "$sndfile" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the sndfile library installed. Grab it from  http://www.mega-nerd.com/libsndfile/ )
+	fi
+	if test "$sndfile" = "detect"; then
+	        sndfile=$lib
+	fi
 fi
-
 
 
 AC_MSG_CHECKING(for FLAC support)
@@ -174,17 +192,21 @@ AC_ARG_WITH(
 	flac,
 	[  --with-flac=yes,no      compile with FLAC support (default: yes)],
 	flac="$withval",
-	flac="yes")
-if test "$flac" = "yes"; then
-	AC_CHECK_LIB(FLAC,
-		FLAC__file_decoder_new,
-		[],
-		[AC_MSG_ERROR(You do not appear to have the FLAC library installed. Grab it from http://flac.sourceforge.net)])
-        flac_LIBS="-lFLAC"
-	AC_DEFINE([HAVE_FLAC], [1], [Defined if compile with FLAC support])
-else
-        flac_LIBS=""
+	flac="detect")
+if test "$flac" = "no"; then
 	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(FLAC, FLAC__file_decoder_new, [lib=yes], [lib=no])
+	if test "$lib" = "yes"; then
+	        flac_LIBS="-lFLAC"
+		AC_DEFINE([HAVE_FLAC], [1], [Defined if compile with FLAC support])
+	fi
+	if test "$lib" = "no" -a "$flac" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the FLAC library installed. Grab it from http://flac.sourceforge.net)
+	fi
+	if test "$flac" = "detect"; then
+		flac=$lib
+	fi
 fi
 
 
@@ -193,18 +215,21 @@ AC_ARG_WITH(
 	ogg,
 	[  --with-ogg=yes,no       compile with Ogg Vorbis support (default: yes)],
 	ogg="$withval",
-	ogg="yes")
-if test "$ogg" = "yes"; then
-	AC_CHECK_LIB(vorbis,
-		ov_open,
-		[],
-		[AC_MSG_ERROR(You do not appear to have the vorbis and vorbisfile libraries installed. Grab them from http://www.xiph.org/ogg/vorbis)],
-		[-lvorbisfile])
-        ogg_LIBS="-lvorbis -lvorbisfile"
-	AC_DEFINE([HAVE_OGG_VORBIS], [1], [Defined if compile with Ogg Vorbis support])
-else
-        ogg_LIBS=""
+	ogg="detect")
+if test "$ogg" = "no"; then
 	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(vorbis, ov_open, [lib=yes], [lib=no], [-lvorbisfile])
+	if test "$lib" = "yes"; then
+		ogg_LIBS="-lvorbis -lvorbisfile"
+		AC_DEFINE([HAVE_OGG_VORBIS], [1], [Defined if compile with Ogg Vorbis support])
+	fi
+	if test "$lib" = "no" -a "$ogg" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the vorbis and vorbisfile libraries installed. Grab them from http://www.xiph.org/ogg/vorbis)
+	fi
+	if test "$ogg" = "detect"; then
+		ogg=$lib
+	fi
 fi
 
 
@@ -213,17 +238,21 @@ AC_ARG_WITH(
 	mpeg,
 	[  --with-mpeg=yes,no      compile with MPEG Audio support (default: yes)],
 	mpeg="$withval",
-	mpeg="yes")
-if test "$mpeg" = "yes"; then
-	AC_CHECK_LIB(mad,
-		mad_decoder_init,
-		[],
-		[AC_MSG_ERROR(You do not appear to have the MAD library installed. Grab it from http://www.underbit.com/products/mad/)])
-        mad_LIBS="-lmad"
-	AC_DEFINE([HAVE_MPEG], [1], [Defined if compile with MPEG Audio support])
-else
-        mad_LIBS=""
+	mpeg="detect")
+if test "$mpeg" = "no"; then
 	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(mad, mad_decoder_init, [lib=yes], [lib=no])
+	if test "$lib" = "yes"; then
+	        mad_LIBS="-lmad"
+		AC_DEFINE([HAVE_MPEG], [1], [Defined if compile with MPEG Audio support])
+	fi
+	if test "$lib" = "no" -a "$mpeg" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the MAD library installed. Grab it from http://www.underbit.com/products/mad/)
+	fi
+	if test "$mpeg" = "detect"; then
+		mpeg=$lib
+	fi
 fi
 
 
@@ -232,17 +261,21 @@ AC_ARG_WITH(
 	id3,
 	[  --with-id3=yes,no       compile with ID3 tags support (default: yes)],
 	id3="$withval",
-	id3="yes")
-if test "$id3" = "yes"; then
-	AC_CHECK_LIB(id3tag,
-		id3_tag_parse,
-		[],
-		[AC_MSG_ERROR(You do not appear to have the id3tag library installed. Grab it from http://www.underbit.com/products/mad/)])
-        id3_LIBS="-lid3tag"
-	AC_DEFINE([HAVE_ID3], [1], [Defined if compile with ID3 tags support])
-else
-        id3_LIBS=""
+	id3="detect")
+if test "$id3" = "no"; then
 	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(id3tag, id3_tag_parse, [lib=yes], [lib=no])
+	if test "$lib" = "yes"; then
+	        id3_LIBS="-lid3tag"
+		AC_DEFINE([HAVE_ID3], [1], [Defined if compile with ID3 tags support])
+	fi
+	if test "$lib" = "no" -a "$id3" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the id3tag library installed. Grab it from http://www.underbit.com/products/mad/)
+	fi
+	if test "$id3" = "detect"; then
+		id3=$lib
+	fi
 fi
 
 
@@ -251,18 +284,21 @@ AC_ARG_WITH(
 	mod,
 	[  --with-mod=yes,no       compile with MOD Audio support (default: yes)],
 	mod="$withval",
-	mod="yes")
-if test "$mod" = "yes"; then
-	AC_CHECK_LIB(modplug,
-		ModPlug_Load,
-		[],
-		[AC_MSG_ERROR(You do not appear to have the libmodplug library installed. Grab it from http://modplug-xmms.sourceforge.net/)],
-		[-lstdc++ -lm])
-        mod_LIBS=`pkg-config --libs libmodplug`
-	AC_DEFINE([HAVE_MOD], [1], [Defined if compile with MOD Audio support])
-else
-        mod_LIBS=""
+	mod="detect")
+if test "$mod" = "no"; then
 	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(modplug, ModPlug_Load, [lib=yes], [lib=no], [-lstdc++ -lm])
+	if test "$lib" = "yes"; then
+	        mod_LIBS=`pkg-config --libs libmodplug`
+		AC_DEFINE([HAVE_MOD], [1], [Defined if compile with MOD Audio support])
+	fi
+	if test "$lib" = "no" -a "$mod" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the libmodplug library installed. Grab it from http://modplug-xmms.sourceforge.net/)
+	fi
+	if test "$mod" = "detect"; then
+		mod=$lib
+	fi
 fi
 
 

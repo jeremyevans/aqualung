@@ -242,6 +242,8 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	GtkTreePath * path;
 	GtkTreeViewColumn * column;
 	GtkTreeIter iter;
+	char * pname;
+	char * pfile;
 
 	int i;
 
@@ -249,6 +251,24 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	case GDK_q:
 	case GDK_Q:
 		playlist_window_close(NULL, NULL, NULL);
+		return TRUE;
+		break;
+	case GDK_i:
+	case GDK_I:
+		gtk_tree_view_get_cursor(GTK_TREE_VIEW(play_list), &path, &column);
+
+		if (path && gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path)) {
+			
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
+					   0, &pname, 1, &pfile, -1);
+			
+			strncpy(fileinfo_name, pname, MAXLEN-1);
+			strncpy(fileinfo_file, pfile, MAXLEN-1);
+			free(pname);
+			free(pfile);
+			show_file_info(fileinfo_name, fileinfo_file);
+		}
+
 		return TRUE;
 		break;
 	case GDK_Return:

@@ -2075,12 +2075,14 @@ void
 process_filenames(char ** argv, int optind, int enqueue) {
 	
 	int i;
+	char buf[MAXLEN];
 	
 	for (i = optind; argv[i] != NULL; i++) {
+		strncpy(buf, argv[i], MAXLEN);
 		if ((enqueue) || (i > optind)) {
-			add_to_playlist(g_locale_to_utf8(argv[i], -1, NULL, NULL, NULL), 1);
+			add_to_playlist(g_locale_to_utf8(buf, -1, NULL, NULL, NULL), 1);
 		} else {
-			add_to_playlist(g_locale_to_utf8(argv[i], -1, NULL, NULL, NULL), 0);
+			add_to_playlist(g_locale_to_utf8(buf, -1, NULL, NULL, NULL), 0);
 		}
 	}
 }	

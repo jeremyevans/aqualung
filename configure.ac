@@ -72,12 +72,12 @@ AC_CHECK_LIB(pthread,
 	[AC_MSG_ERROR(You do not appear to have a usable pthread library)])
 
 
-AC_MSG_CHECKING(whether liblrdf version >= 0.3.7)
-if pkg-config --exists 'lrdf >= 0.3.7'; then
+AC_MSG_CHECKING(whether liblrdf version >= 0.4.0)
+if pkg-config --exists 'lrdf >= 0.4.0'; then
         AC_MSG_RESULT(yes)
 else
 	AC_MSG_RESULT(no)
-	AC_MSG_ERROR(LRDF not found or too old (version < 0.3.7))
+	AC_MSG_ERROR(LRDF not found or too old (version < 0.4.0))
 fi
 
 AC_CHECK_LIB(lrdf,

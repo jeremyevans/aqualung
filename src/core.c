@@ -2547,7 +2547,7 @@ main(int argc, char ** argv) {
 		exit(0);
 	}
 
-	if ((remote_quit) && (no_session != -1)) {
+	if (remote_quit) {
 		if (no_session == -1)
 			no_session = 0;
 		rcmd = RCMD_QUIT;

@@ -86,6 +86,9 @@ void meta_free(metadata * meta);
 void meta_list(metadata * meta);
 
 int meta_get_rva(metadata * meta, float * fval);
+int meta_get_title(metadata * meta, char * str);
+int meta_get_record(metadata * meta, char * str);
+int meta_get_artist(metadata * meta, char * str);
 
 
 #endif /* _META_DECODER_H */

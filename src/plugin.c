@@ -300,11 +300,17 @@ compare_func(GtkTreeModel * model, GtkTreeIter * a, GtkTreeIter * b, gpointer us
 	int col = (int) user_data;
 	char * sa;
 	char * sb;
+	int ret;
 
 	gtk_tree_model_get(model, a, col, &sa, -1);
 	gtk_tree_model_get(model, b, col, &sb, -1);
 
-	return strcmp(sa, sb);
+	ret = strcmp(sa, sb);
+
+	g_free(sa);
+	g_free(sb);
+
+	return ret;
 }
 
 

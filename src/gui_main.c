@@ -125,6 +125,10 @@ extern int auto_save_playlist;
 extern int show_rva_in_playlist;
 extern int show_length_in_playlist;
 extern int plcol_idx[3];
+extern int auto_use_meta_artist;
+extern int auto_use_meta_record;
+extern int auto_use_meta_track;
+
 
 int rva_is_enabled = 0;
 int rva_env = 0;
@@ -2775,6 +2779,13 @@ save_config(void) {
 	snprintf(str, 31, "%d", show_length_in_playlist);
         xmlNewTextChild(root, NULL, "show_length_in_playlist", str);
 
+	snprintf(str, 31, "%d", auto_use_meta_artist);
+        xmlNewTextChild(root, NULL, "auto_use_meta_artist", str);
+	snprintf(str, 31, "%d", auto_use_meta_record);
+        xmlNewTextChild(root, NULL, "auto_use_meta_record", str);
+	snprintf(str, 31, "%d", auto_use_meta_track);
+        xmlNewTextChild(root, NULL, "auto_use_meta_track", str);
+
 	snprintf(str, 31, "%f", vol);
         xmlNewTextChild(root, NULL, "volume", str);
 	snprintf(str, 31, "%f", bal);
@@ -2968,6 +2979,24 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
 				sscanf(key, "%d", &auto_save_playlist);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_meta_artist"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+				sscanf(key, "%d", &auto_use_meta_artist);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_meta_record"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+				sscanf(key, "%d", &auto_use_meta_record);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_meta_track"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+				sscanf(key, "%d", &auto_use_meta_track);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_rva_in_playlist"))) {

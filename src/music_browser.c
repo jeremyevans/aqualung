@@ -70,6 +70,11 @@ int browser_size_y;
 int browser_on;
 int browser_paned_pos;
 
+int auto_use_meta_artist = 0;
+int auto_use_meta_record = 0;
+int auto_use_meta_track = 0;
+
+
 extern int drift_x;
 extern int drift_y;
 
@@ -1445,6 +1450,9 @@ artist__addlist_cb(gpointer data) {
 			
 			j = 0;
 			while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, j++)) {
+
+				metadata * meta = NULL;
+
 				
 				gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
 						   4, &duration, 5, &volume, 6, &rva, 7, &use_rva, -1);
@@ -1453,6 +1461,31 @@ artist__addlist_cb(gpointer data) {
 				g_free(ptrack_name);
 				g_free(pfile);
 
+				if (auto_use_meta_artist || auto_use_meta_record || auto_use_meta_track) {
+					meta = meta_new();
+					if (!meta_read(meta, file)) {
+						meta_free(meta);
+						meta = NULL;
+					}
+				}
+				
+				if ((meta != NULL) && auto_use_meta_artist) {
+					meta_get_artist(meta, artist_name);
+				}
+				
+				if ((meta != NULL) && auto_use_meta_record) {
+					meta_get_record(meta, record_name);
+				}
+				
+				if ((meta != NULL) && auto_use_meta_track) {
+					meta_get_title(meta, track_name);
+				}
+				
+				if (meta != NULL) {
+					meta_free(meta);
+					meta = NULL;
+				}
+				
 				make_title_string(list_str, title_format,
 						  artist_name, record_name, track_name);
 
@@ -1494,6 +1527,10 @@ artist__addlist_cb(gpointer data) {
 						   2, pl_color_inactive,
 						   3, voladj, 4, voladj_str,
 						   5, duration, 6, duration_str, -1);
+
+				if ((j % 3) == 0) {
+					deflicker();
+				}
 			}
 		}
 		delayed_playlist_rearrange(100);
@@ -1705,6 +1742,9 @@ record__addlist_cb(gpointer data) {
 		i = 0;
 		while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, i++)) {
 
+			metadata * meta = NULL;
+
+
 			gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
 					   4, &duration, 5, &volume, 6, &rva, 7, &use_rva, -1);
 			strncpy(track_name, ptrack_name, MAXLEN-1);
@@ -1712,6 +1752,31 @@ record__addlist_cb(gpointer data) {
 			g_free(ptrack_name);
 			g_free(pfile);
 			
+			if (auto_use_meta_artist || auto_use_meta_record || auto_use_meta_track) {
+				meta = meta_new();
+				if (!meta_read(meta, file)) {
+					meta_free(meta);
+					meta = NULL;
+				}
+			}
+			
+			if ((meta != NULL) && auto_use_meta_artist) {
+				meta_get_artist(meta, artist_name);
+			}
+			
+			if ((meta != NULL) && auto_use_meta_record) {
+				meta_get_record(meta, record_name);
+			}
+			
+			if ((meta != NULL) && auto_use_meta_track) {
+				meta_get_title(meta, track_name);
+			}
+			
+			if (meta != NULL) {
+				meta_free(meta);
+				meta = NULL;
+			}
+
 			make_title_string(list_str, title_format,
 					  artist_name, record_name, track_name);
 
@@ -1755,6 +1820,9 @@ record__addlist_cb(gpointer data) {
 					   2, pl_color_inactive, 3, voladj, 4, voladj_str,
 					   5, duration, 6, duration_str, -1);
 
+			if ((i % 3) == 0) {
+				deflicker();
+			}
 		}
 		delayed_playlist_rearrange(100);
 	}
@@ -1952,6 +2020,9 @@ track__addlist_cb(gpointer data) {
 	char voladj_str[32];
 	char duration_str[32];
 
+	metadata * meta = NULL;
+
+
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
 
                 gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
@@ -1970,6 +2041,31 @@ track__addlist_cb(gpointer data) {
                 gtk_tree_model_get(model, &iter_artist, 0, &partist_name, -1);
                 strncpy(artist_name, partist_name, MAXLEN-1);
                 g_free(partist_name);
+
+		if (auto_use_meta_artist || auto_use_meta_record || auto_use_meta_track) {
+			meta = meta_new();
+			if (!meta_read(meta, file)) {
+				meta_free(meta);
+				meta = NULL;
+			}
+		}
+
+		if ((meta != NULL) && auto_use_meta_artist) {
+			meta_get_artist(meta, artist_name);
+		}
+
+		if ((meta != NULL) && auto_use_meta_record) {
+			meta_get_record(meta, record_name);
+		}
+
+		if ((meta != NULL) && auto_use_meta_track) {
+			meta_get_title(meta, track_name);
+		}
+
+		if (meta != NULL) {
+			meta_free(meta);
+			meta = NULL;
+		}
 
 		make_title_string(list_str, title_format,
 				  artist_name, record_name, track_name);
@@ -2008,6 +2104,7 @@ track__addlist_cb(gpointer data) {
 					     (GtkTreeIter *)data);
 
 		voladj2str(voladj, voladj_str);
+
 		gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
 				   2, pl_color_inactive, 3, voladj, 4, voladj_str,
 				   5, duration, 6, duration_str, -1);

@@ -431,13 +431,15 @@ meta_read(metadata * meta, char * file) {
 
 
         if ((fdec = file_decoder_new()) == NULL) {
-                fprintf(stderr, "show_file_info: error: file_decoder_new() returned NULL\n");
+                fprintf(stderr, "meta_read: error: file_decoder_new() returned NULL\n");
+		file_decoder_delete(fdec);
                 return 0;
         }
 
         if (file_decoder_open(fdec, g_locale_from_utf8(file, -1, NULL, NULL, NULL), 44100)) {
                 fprintf(stderr, "file_decoder_open() failed on %s\n",
                         g_locale_from_utf8(file, -1, NULL, NULL, NULL));
+		file_decoder_delete(fdec);
                 return 0;
         }
 
@@ -461,7 +463,7 @@ meta_read(metadata * meta, char * file) {
                                 meta_read_rva2(meta, id3tag);
                         }
                 }
-
+		id3_file_close(id3file);
 	}
 #endif /* HAVE_ID3 */
 
@@ -521,12 +523,19 @@ meta_read(metadata * meta, char * file) {
                 FLAC__StreamMetadata * flacmeta = NULL;
 
                 if (!FLAC__metadata_simple_iterator_init(iter,
-		        g_locale_from_utf8(file, -1, NULL, NULL, NULL), false, false)) {
+		        g_locale_from_utf8(file, -1, NULL, NULL, NULL), true, true)) {
 
                         fprintf(stderr,
                                 "meta_read(): error: "
                                 "FLAC__metadata_simple_iterator_init() failed on %s\n",
                                 g_locale_from_utf8(file, -1, NULL, NULL, NULL));
+
+			fprintf(stderr, "%s\n",
+				FLAC__Metadata_SimpleIteratorStatusString[FLAC__metadata_simple_iterator_status(iter)]);
+			FLAC__metadata_simple_iterator_delete(iter);
+
+			file_decoder_close(fdec);
+			file_decoder_delete(fdec);
                         return 0;
                 }
 
@@ -705,6 +714,195 @@ meta_get_rva(metadata * meta, float * fval) {
 			if (strcmp(id3->id, "RVA2") == 0) {
 				if (fval != NULL) {
 					*fval = id3->fval;
+				}
+				return 1;
+			}
+			id3 = id3->next;
+		}
+	}
+
+	return 0;
+}
+
+
+/* ret: 1 if found, 0 if no Title data */
+/* can be called with str == NULL only to see if data is found */
+int
+meta_get_title(metadata * meta, char * str) {
+
+	id3_tag_data * id3;
+	oggv_comment * oggv;
+
+
+	if (meta == NULL) {
+		fprintf(stderr, "meta_get_title(): assertion meta != NULL failed\n");
+		return 0;
+	}
+
+	oggv = meta->flac_root;
+	if (oggv->next != NULL) {
+		oggv = oggv->next;
+		while (oggv != NULL) {
+
+			if (strcmp(oggv->label, "Title:") == 0) {
+				if (str != NULL) {
+					strncpy(str, oggv->str, MAXLEN-1);
+				}
+				return 1;
+			}
+			oggv = oggv->next;
+		}
+	}
+
+	oggv = meta->oggv_root;
+	if (oggv->next != NULL) {
+		oggv = oggv->next;
+		while (oggv != NULL) {
+
+			if (strcmp(oggv->label, "Title:") == 0) {
+				if (str != NULL) {
+					strncpy(str, oggv->str, MAXLEN-1);
+				}
+				return 1;
+			}
+			oggv = oggv->next;
+		}
+	}
+
+	id3 = meta->id3_root;
+	if (id3->next != NULL) {
+		id3 = id3->next;
+		while (id3 != NULL) {
+
+			if (strcmp(id3->id, ID3_FRAME_TITLE) == 0) {
+				if (str != NULL) {
+					strncpy(str, id3->utf8, MAXLEN-1);
+				}
+				return 1;
+			}
+			id3 = id3->next;
+		}
+	}
+
+	return 0;
+}
+
+
+/* ret: 1 if found, 0 if no Record data */
+/* can be called with str == NULL only to see if data is found */
+int
+meta_get_record(metadata * meta, char * str) {
+
+	id3_tag_data * id3;
+	oggv_comment * oggv;
+
+
+	if (meta == NULL) {
+		fprintf(stderr, "meta_get_record(): assertion meta != NULL failed\n");
+		return 0;
+	}
+
+	oggv = meta->flac_root;
+	if (oggv->next != NULL) {
+		oggv = oggv->next;
+		while (oggv != NULL) {
+
+			if (strcmp(oggv->label, "Record:") == 0) {
+				if (str != NULL) {
+					strncpy(str, oggv->str, MAXLEN-1);
+				}
+				return 1;
+			}
+			oggv = oggv->next;
+		}
+	}
+
+	oggv = meta->oggv_root;
+	if (oggv->next != NULL) {
+		oggv = oggv->next;
+		while (oggv != NULL) {
+
+			if (strcmp(oggv->label, "Record:") == 0) {
+				if (str != NULL) {
+					strncpy(str, oggv->str, MAXLEN-1);
+				}
+				return 1;
+			}
+			oggv = oggv->next;
+		}
+	}
+
+	id3 = meta->id3_root;
+	if (id3->next != NULL) {
+		id3 = id3->next;
+		while (id3 != NULL) {
+
+			if (strcmp(id3->id, ID3_FRAME_ALBUM) == 0) {
+				if (str != NULL) {
+					strncpy(str, id3->utf8, MAXLEN-1);
+				}
+				return 1;
+			}
+			id3 = id3->next;
+		}
+	}
+
+	return 0;
+}
+
+
+/* ret: 1 if found, 0 if no Artist data */
+/* can be called with str == NULL only to see if data is found */
+int
+meta_get_artist(metadata * meta, char * str) {
+
+	id3_tag_data * id3;
+	oggv_comment * oggv;
+
+
+	if (meta == NULL) {
+		fprintf(stderr, "meta_get_artist(): assertion meta != NULL failed\n");
+		return 0;
+	}
+
+	oggv = meta->flac_root;
+	if (oggv->next != NULL) {
+		oggv = oggv->next;
+		while (oggv != NULL) {
+
+			if (strcmp(oggv->label, "Artist:") == 0) {
+				if (str != NULL) {
+					strncpy(str, oggv->str, MAXLEN-1);
+				}
+				return 1;
+			}
+			oggv = oggv->next;
+		}
+	}
+
+	oggv = meta->oggv_root;
+	if (oggv->next != NULL) {
+		oggv = oggv->next;
+		while (oggv != NULL) {
+
+			if (strcmp(oggv->label, "Artist:") == 0) {
+				if (str != NULL) {
+					strncpy(str, oggv->str, MAXLEN-1);
+				}
+				return 1;
+			}
+			oggv = oggv->next;
+		}
+	}
+
+	id3 = meta->id3_root;
+	if (id3->next != NULL) {
+		id3 = id3->next;
+		while (id3 != NULL) {
+
+			if (strcmp(id3->id, ID3_FRAME_ARTIST) == 0) {
+				if (str != NULL) {
+					strncpy(str, id3->utf8, MAXLEN-1);
 				}
 				return 1;
 			}

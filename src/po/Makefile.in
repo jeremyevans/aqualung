@@ -209,6 +209,9 @@ uninstall-am: uninstall-info-am
 	mostlyclean-generic uninstall uninstall-am uninstall-info-am
 
 
+all:
+	for i in $(POFILES); do $(MAKE) `echo $$i | sed 's/\.po/\.mo/'`; done
+
 %.mo: %.po
 	cp $< $<.utf8; \
 	recode ..utf8 $<.utf8; \
@@ -234,6 +237,9 @@ uninstall:
 		lang=`echo $$i | sed 's/\.mo$$//'`; \
 		rm -f $(localedir)/$$lang/LC_MESSAGES/$(DOMAIN).mo; \
 	done
+
+clean:
+	rm -f $(MOFILES)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

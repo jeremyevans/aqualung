@@ -29,6 +29,7 @@
 #include <jack/jack.h>
 
 #include "common.h"
+#include "i18n.h"
 #include "ports.h"
 
 
@@ -444,7 +445,7 @@ port_setup_dialog(void) {
 	store_out_R = gtk_list_store_new(1, G_TYPE_STRING);
 
 	ports_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(ports_window), "JACK Port Setup");
+        gtk_window_set_title(GTK_WINDOW(ports_window), _("JACK Port Setup"));
         gtk_window_set_position(GTK_WINDOW(ports_window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(ports_window), TRUE);
 	gtk_window_set_transient_for(GTK_WINDOW(ports_window), GTK_WINDOW(main_window));
@@ -456,21 +457,21 @@ port_setup_dialog(void) {
         table = gtk_table_new(2, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 2);
 
-        button_rescan = gtk_button_new_with_label("Rescan");
+        button_rescan = gtk_button_new_with_label(_("Rescan"));
         gtk_table_attach(GTK_TABLE(table), button_rescan, 0, 1, 1, 2,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
         g_signal_connect(G_OBJECT(button_rescan), "clicked", G_CALLBACK(clicked_rescan), NULL);
 
-        button_close = gtk_button_new_with_label("Close");
+        button_close = gtk_button_new_with_label(_("Close"));
         gtk_table_attach(GTK_TABLE(table), button_close, 1, 2, 1, 2,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
         g_signal_connect(G_OBJECT(button_close), "clicked", G_CALLBACK(ports_clicked_close), NULL);
 	
-	frame_dl = gtk_frame_new("Outputs");
+	frame_dl = gtk_frame_new(_("Outputs"));
         gtk_table_attach(GTK_TABLE(table), frame_dl, 0, 1, 0, 1,
                          GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 5);
 
-	frame_dr = gtk_frame_new("Available connections");
+	frame_dr = gtk_frame_new(_("Available connections"));
         gtk_table_attach(GTK_TABLE(table), frame_dr, 1, 2, 0, 1,
                          GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 5);
 
@@ -482,7 +483,7 @@ port_setup_dialog(void) {
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_dr), 8);
 	gtk_container_add(GTK_CONTAINER(frame_dr), vbox_dr);
 
-	button_clear_outs = gtk_button_new_with_label("Clear connections");
+	button_clear_outs = gtk_button_new_with_label(_("Clear connections"));
         gtk_box_pack_start(GTK_BOX(vbox_dl), button_clear_outs, FALSE, TRUE, 2);
         g_signal_connect(G_OBJECT(button_clear_outs), "clicked", G_CALLBACK(clear_outs), NULL);
 	
@@ -545,8 +546,8 @@ port_setup_dialog(void) {
 	hbox_L = gtk_hbox_new(FALSE, 0);
 	hbox_R = gtk_hbox_new(FALSE, 0);
 
-	label_L = gtk_label_new(" out L");
-	label_R = gtk_label_new(" out R");
+	label_L = gtk_label_new(_(" out L"));
+	label_R = gtk_label_new(_(" out R"));
 
 	gtk_container_add(GTK_CONTAINER(column_out_L->button), hbox_L);
 	gtk_container_add(GTK_CONTAINER(column_out_R->button), hbox_R);

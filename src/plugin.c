@@ -18,13 +18,20 @@
     $Id$
 */
 
+
+/* Uncomment this if you store your LADSPA plugins on a ReiserFS filesystem
+ * and Aqualung fails to load them. This is a workaround for a bug that we
+ * do not fully understand. */
+/* #define WORKAROUND_BROKEN_PLUGINLOADER */
+
+
 #include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <dirent.h>
 #include <dlfcn.h>
 #include <unistd.h>
+#include <dirent.h>
 #include <lrdf.h>
 #include <pthread.h>
 #include <libxml/xmlmemory.h>
@@ -34,6 +41,7 @@
 
 
 #include "common.h"
+#include "i18n.h"
 #include "plugin.h"
 
 
@@ -77,28 +85,30 @@ int added_plugin = 0;
 
 
 static int
-rdf_filter(const struct dirent * de) {
+rdf_filter(const struct dirent64 * de) {
 
+#ifndef WORKAROUND_BROKEN_PLUGINLOADER
 	if (de->d_type != DT_REG)
 		return 0;
 
 	if (de->d_name[0] == '.')
 		return 0;
-
+#endif
 	return (((strlen(de->d_name) >= 4) && (strcmp(de->d_name + strlen(de->d_name) - 3, ".n3") == 0)) ||
 		((strlen(de->d_name) >= 5) && (strcmp(de->d_name + strlen(de->d_name) - 4, ".rdf") == 0)) ||
 		((strlen(de->d_name) >= 6) && (strcmp(de->d_name + strlen(de->d_name) - 5, ".rdfs") == 0)));
 }
 
 static int
-so_filter(const struct dirent * de) {
+so_filter(const struct dirent64 * de) {
 
+#ifndef WORKAROUND_BROKEN_PLUGINLOADER
 	if (de->d_type != DT_REG)
 		return 0;
 
 	if (de->d_name[0] == '.')
 		return 0;
-
+#endif
 	return ((strlen(de->d_name) >= 4) && (strcmp(de->d_name + strlen(de->d_name) - 3, ".so") == 0));
 }
 
@@ -110,12 +120,12 @@ parse_lrdf_data(void) {
 	char rdf_path[MAXLEN];
 	char fileuri[MAXLEN];
 	int i, j = 0;
-	struct dirent ** de;
+	struct dirent64 ** de;
 	int n;
 
 	if (!(lrdf_path = getenv("LADSPA_RDF_PATH"))) {
                 lrdf_path = strdup("/usr/local/share/ladspa/rdf:/usr/share/ladspa/rdf");
-        }
+	}
 
 	strcat(lrdf_path, ":");
 	for (i = 0; lrdf_path[i] != '\0'; i++) {
@@ -123,7 +133,7 @@ parse_lrdf_data(void) {
 			rdf_path[j] = '\0';
 			j = 0;
 
-			n = scandir(rdf_path, &de, rdf_filter, alphasort);
+			n = scandir64(rdf_path, &de, rdf_filter, alphasort64);
 			if (n >= 0) {
 				int c;
 				
@@ -188,7 +198,7 @@ find_plugins(char * path_entry) {
 	char lib_name[MAXLEN];
 	LADSPA_Descriptor_Function descriptor_fn;
 	const LADSPA_Descriptor * descriptor;
-	struct dirent ** de;
+	struct dirent64 ** de;
 	int n, k, c;
 	long int port, n_ins, n_outs;
 	GtkTreeIter iter;
@@ -198,7 +208,7 @@ find_plugins(char * path_entry) {
 	char c_str[32];
 	char category[MAXLEN];
 
-	n = scandir(path_entry, &de, so_filter, alphasort);
+	n = scandir64(path_entry, &de, so_filter, alphasort64);
 	if (n >= 0) {
 		for (c = 0; c < n; ++c) {
 			snprintf(lib_name, MAXLEN-1, "%s/%s", path_entry, de[c]->d_name);
@@ -231,7 +241,7 @@ find_plugins(char * path_entry) {
 				snprintf(n_ins_str, 31, "%ld", n_ins);
 				snprintf(n_outs_str, 31, "%ld", n_outs);
 				snprintf(c_str, 31, "%d", k);
-				
+
                                 gtk_list_store_append(avail_store, &iter);
                                 gtk_list_store_set(avail_store, &iter, 0, id_str, 1, descriptor->Name,
 						   2, category, 3, n_ins_str, 4, n_outs_str,
@@ -1639,7 +1649,7 @@ create_fxbuilder(void) {
 
         /* window creating stuff */
         fxbuilder_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(fxbuilder_window), "LADSPA patch builder");
+        gtk_window_set_title(GTK_WINDOW(fxbuilder_window), _("LADSPA patch builder"));
 	gtk_window_set_position(GTK_WINDOW(fxbuilder_window), GTK_WIN_POS_CENTER);
         g_signal_connect(G_OBJECT(fxbuilder_window), "delete_event", G_CALLBACK(fxbuilder_close), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(fxbuilder_window), 2);
@@ -1647,7 +1657,7 @@ create_fxbuilder(void) {
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_container_add(GTK_CONTAINER(fxbuilder_window), hbox);
 
-        frame_avail = gtk_frame_new("Available plugins");
+        frame_avail = gtk_frame_new(_("Available plugins"));
         gtk_box_pack_start(GTK_BOX(hbox), frame_avail, TRUE, TRUE, 5);
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -1657,7 +1667,7 @@ create_fxbuilder(void) {
 	viewport_avail = gtk_viewport_new(NULL, NULL);
         gtk_box_pack_start(GTK_BOX(vbox), viewport_avail, TRUE, TRUE, 3);
 	
-	add_button = gtk_button_new_with_label("Add");
+	add_button = gtk_button_new_with_label(_("Add"));
         g_signal_connect(add_button, "clicked", G_CALLBACK(add_clicked), NULL);
         gtk_box_pack_start(GTK_BOX(vbox), add_button, FALSE, TRUE, 3);
 
@@ -1722,33 +1732,33 @@ create_fxbuilder(void) {
 
 	renderer = gtk_cell_renderer_text_new();
 
-	column = gtk_tree_view_column_new_with_attributes("ID", renderer, "text", 0, NULL);
+	column = gtk_tree_view_column_new_with_attributes(_("ID"), renderer, "text", 0, NULL);
 	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
 	gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(column), 0);
 
-	column = gtk_tree_view_column_new_with_attributes("Name", renderer, "text", 1, NULL);
+	column = gtk_tree_view_column_new_with_attributes(_("Name"), renderer, "text", 1, NULL);
 	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
 	gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(column), 1);
 
-	column = gtk_tree_view_column_new_with_attributes("Category", renderer, "text", 2, NULL);
+	column = gtk_tree_view_column_new_with_attributes(_("Category"), renderer, "text", 2, NULL);
 	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
 	gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(column), 2);
 
-	column = gtk_tree_view_column_new_with_attributes("Inputs", renderer, "text", 3, NULL);
+	column = gtk_tree_view_column_new_with_attributes(_("Inputs"), renderer, "text", 3, NULL);
 	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
 	gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(column), 3);
 
-	column = gtk_tree_view_column_new_with_attributes("Outputs", renderer, "text", 4, NULL);
+	column = gtk_tree_view_column_new_with_attributes(_("Outputs"), renderer, "text", 4, NULL);
 	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
 	gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(column), 4);
 
 
-        frame_running = gtk_frame_new("Running plugins");
+        frame_running = gtk_frame_new(_("Running plugins"));
         gtk_box_pack_start(GTK_BOX(hbox), frame_running, TRUE, TRUE, 5);
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -1761,11 +1771,11 @@ create_fxbuilder(void) {
 	hbox_buttons = gtk_hbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_buttons, FALSE, TRUE, 3);
 
-	remove_button = gtk_button_new_with_label("Remove");
+	remove_button = gtk_button_new_with_label(_("Remove"));
         g_signal_connect(remove_button, "clicked", G_CALLBACK(remove_clicked), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_buttons), remove_button, TRUE, TRUE, 0);
 
-	conf_button = gtk_button_new_with_label("Configure");
+	conf_button = gtk_button_new_with_label(_("Configure"));
         g_signal_connect(conf_button, "clicked", G_CALLBACK(conf_clicked), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_buttons), conf_button, TRUE, TRUE, 0);
 
@@ -1812,7 +1822,7 @@ create_fxbuilder(void) {
 
 	renderer = gtk_cell_renderer_text_new();
 
-	column = gtk_tree_view_column_new_with_attributes("Name", renderer, "text", 0, NULL);
+	column = gtk_tree_view_column_new_with_attributes(_("Name"), renderer, "text", 0, NULL);
 	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);
         gtk_tree_view_append_column(GTK_TREE_VIEW(running_list), column);
 

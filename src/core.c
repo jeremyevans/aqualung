@@ -81,6 +81,7 @@
 #include "transceiver.h"
 #include "gui_main.h"
 #include "plugin.h"
+#include "i18n.h"
 #include "core.h"
 
 
@@ -2227,6 +2228,10 @@ main(int argc, char ** argv) {
 	int fwd = 0;
 	int enqueue = 0;
 
+
+	setlocale(LC_ALL, "");
+	bindtextdomain(PACKAGE, LOCALEDIR);
+	textdomain(PACKAGE);
 
 	setup_app_socket();
 

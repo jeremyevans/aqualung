@@ -1,3 +1,5 @@
+SUBDIRS = po
+
 bin_PROGRAMS = aqualung
 
 EXTRA_DIST = drag.xpm icon_16.xpm icon_64.xpm logo.xpm version.sh version.h.in

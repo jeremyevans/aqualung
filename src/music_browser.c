@@ -33,6 +33,7 @@
 #include "common.h"
 #include "drag.xpm"
 #include "gui_main.h"
+#include "i18n.h"
 #include "music_browser.h"
 
 
@@ -255,7 +256,7 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
 
         int ret;
 
-        dialog = gtk_dialog_new_with_buttons("Add Artist",
+        dialog = gtk_dialog_new_with_buttons(_("Add Artist"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
@@ -265,21 +266,21 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
 
-	name_label = gtk_label_new("\nVisible name:");
+	name_label = gtk_label_new(_("\nVisible name:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), name_label, FALSE, TRUE, 2);
 
         name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), name_entry, FALSE, TRUE, 2);
 
-	sort_name_label = gtk_label_new("\nName to sort by:");
+	sort_name_label = gtk_label_new(_("\nName to sort by:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), sort_name_label, FALSE, TRUE, 2);
 
         sort_name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(sort_name_entry), sort_name);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), sort_name_entry, FALSE, TRUE, 2);
 
-	comment_label = gtk_label_new("\nComments:");
+	comment_label = gtk_label_new(_("\nComments:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), comment_label, FALSE, TRUE, 2);
 
 
@@ -350,7 +351,7 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
 
         int ret;
 
-        dialog = gtk_dialog_new_with_buttons("Edit Artist",
+        dialog = gtk_dialog_new_with_buttons(_("Edit Artist"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
@@ -360,21 +361,21 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
 
-	name_label = gtk_label_new("\nVisible name:");
+	name_label = gtk_label_new(_("\nVisible name:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), name_label, FALSE, TRUE, 2);
 
         name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), name_entry, FALSE, TRUE, 2);
 
-	sort_name_label = gtk_label_new("\nName to sort by:");
+	sort_name_label = gtk_label_new(_("\nName to sort by:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), sort_name_label, FALSE, TRUE, 2);
 
         sort_name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(sort_name_entry), sort_name);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), sort_name_entry, FALSE, TRUE, 2);
 
-	comment_label = gtk_label_new("\nComments:");
+	comment_label = gtk_label_new(_("\nComments:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), comment_label, FALSE, TRUE, 2);
 
 	viewport = gtk_viewport_new(NULL, NULL);
@@ -436,7 +437,7 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
 	int i;
 	char * c;
 
-	file_selector = gtk_file_selection_new("Please select the audio files for this record.");
+	file_selector = gtk_file_selection_new(_("Please select the audio files for this record."));
 	gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), currdir);
 	gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(file_selector));
 	gtk_file_selection_set_select_multiple(GTK_FILE_SELECTION(file_selector), TRUE);
@@ -506,7 +507,7 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 
         int ret;
 
-        dialog = gtk_dialog_new_with_buttons("Add Record",
+        dialog = gtk_dialog_new_with_buttons(_("Add Record"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
@@ -516,14 +517,14 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
 
-	name_label = gtk_label_new("\nVisible name:");
+	name_label = gtk_label_new(_("\nVisible name:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), name_label, FALSE, TRUE, 2);
 
         name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), name_entry, FALSE, TRUE, 2);
 
-	sort_name_label = gtk_label_new("\nName to sort by:");
+	sort_name_label = gtk_label_new(_("\nName to sort by:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), sort_name_label, FALSE, TRUE, 2);
 
         sort_name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
@@ -531,7 +532,7 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), sort_name_entry, FALSE, TRUE, 2);
 
 
-	list_label = gtk_label_new("\nAuto-create tracks from these files:");
+	list_label = gtk_label_new(_("\nAuto-create tracks from these files:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), list_label, FALSE, TRUE, 2);
 
 	viewport1 = gtk_viewport_new(NULL, NULL);
@@ -550,19 +551,19 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 	gtk_widget_set_size_request(tracklist_tree, 250, 50);
 
 	cell = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes("Clear list", cell, "text", 0, NULL);
+	column = gtk_tree_view_column_new_with_attributes(_("Clear list"), cell, "text", 0, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tracklist_tree), GTK_TREE_VIEW_COLUMN(column));
 	gtk_tree_view_set_headers_clickable(GTK_TREE_VIEW(tracklist_tree), TRUE);
         g_signal_connect(G_OBJECT(column->button), "clicked", G_CALLBACK(clicked_tracklist_header),
 			 (gpointer *)model);
         gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), 0, GTK_SORT_ASCENDING);
 
-	browse_button = gtk_button_new_with_label("Add files...");
+	browse_button = gtk_button_new_with_label(_("Add files..."));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), browse_button, FALSE, TRUE, 2);
         g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_record_clicked),
 			 (gpointer *)model);
 
-	comment_label = gtk_label_new("\nComments:");
+	comment_label = gtk_label_new(_("\nComments:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), comment_label, FALSE, TRUE, 2);
 
 
@@ -661,7 +662,7 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
 
         int ret;
 
-        dialog = gtk_dialog_new_with_buttons("Edit Record",
+        dialog = gtk_dialog_new_with_buttons(_("Edit Record"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
@@ -671,21 +672,21 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
 
-	name_label = gtk_label_new("\nVisible name:");
+	name_label = gtk_label_new(_("\nVisible name:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), name_label, FALSE, TRUE, 2);
 
         name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), name_entry, FALSE, TRUE, 2);
 
-	sort_name_label = gtk_label_new("\nName to sort by:");
+	sort_name_label = gtk_label_new(_("\nName to sort by:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), sort_name_label, FALSE, TRUE, 2);
 
         sort_name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(sort_name_entry), sort_name);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), sort_name_entry, FALSE, TRUE, 2);
 
-	comment_label = gtk_label_new("\nComments:");
+	comment_label = gtk_label_new(_("\nComments:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), comment_label, FALSE, TRUE, 2);
 
 
@@ -744,7 +745,7 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
 	const gchar * selected_filename = gtk_entry_get_text(GTK_ENTRY(data));
 	char * c;
 
-	file_selector = gtk_file_selection_new("Please select the audio file for this track.");
+	file_selector = gtk_file_selection_new(_("Please select the audio file for this track."));
 	gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), currdir);
 	gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(file_selector));
 	gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), selected_filename);
@@ -790,7 +791,7 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 
         int ret;
 
-        dialog = gtk_dialog_new_with_buttons("Add Track",
+        dialog = gtk_dialog_new_with_buttons(_("Add Track"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
@@ -800,21 +801,21 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
 
-	name_label = gtk_label_new("\nVisible name:");
+	name_label = gtk_label_new(_("\nVisible name:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), name_label, FALSE, TRUE, 2);
 
         name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), name_entry, FALSE, TRUE, 2);
 
-	sort_name_label = gtk_label_new("\nName to sort by:");
+	sort_name_label = gtk_label_new(_("\nName to sort by:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), sort_name_label, FALSE, TRUE, 2);
 
         sort_name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(sort_name_entry), sort_name);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), sort_name_entry, FALSE, TRUE, 2);
 
-	file_label = gtk_label_new("\nFilename:");
+	file_label = gtk_label_new(_("\nFilename:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), file_label, FALSE, TRUE, 2);
 
 
@@ -826,13 +827,13 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
         gtk_box_pack_start(GTK_BOX(hbox), file_entry, TRUE, TRUE, 2);
 
 
-	browse_button = gtk_button_new_with_label("Browse...");
+	browse_button = gtk_button_new_with_label(_("Browse..."));
         gtk_box_pack_start(GTK_BOX(hbox), browse_button, FALSE, TRUE, 2);
         g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_track_clicked),
 			 (gpointer *)file_entry);
 	
 
-	comment_label = gtk_label_new("\nComments:");
+	comment_label = gtk_label_new(_("\nComments:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), comment_label, FALSE, TRUE, 2);
 
 	viewport = gtk_viewport_new(NULL, NULL);
@@ -909,7 +910,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 
         int ret;
 
-        dialog = gtk_dialog_new_with_buttons("Edit Track",
+        dialog = gtk_dialog_new_with_buttons(_("Edit Track"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
@@ -919,21 +920,21 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
 
-	name_label = gtk_label_new("\nVisible name:");
+	name_label = gtk_label_new(_("\nVisible name:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), name_label, FALSE, TRUE, 2);
 
         name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), name_entry, FALSE, TRUE, 2);
 
-	sort_name_label = gtk_label_new("\nName to sort by:");
+	sort_name_label = gtk_label_new(_("\nName to sort by:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), sort_name_label, FALSE, TRUE, 2);
 
         sort_name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(sort_name_entry), sort_name);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), sort_name_entry, FALSE, TRUE, 2);
 
-	file_label = gtk_label_new("\nFilename:");
+	file_label = gtk_label_new(_("\nFilename:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), file_label, FALSE, TRUE, 2);
 
 
@@ -945,13 +946,13 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment) {
         gtk_box_pack_start(GTK_BOX(hbox), file_entry, TRUE, TRUE, 2);
 
 
-	browse_button = gtk_button_new_with_label("Browse...");
+	browse_button = gtk_button_new_with_label(_("Browse..."));
         gtk_box_pack_start(GTK_BOX(hbox), browse_button, FALSE, TRUE, 2);
         g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_track_clicked),
 			 (gpointer *)file_entry);
 	
 
-	comment_label = gtk_label_new("\nComments:");
+	comment_label = gtk_label_new(_("\nComments:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), comment_label, FALSE, TRUE, 2);
 
 	viewport = gtk_viewport_new(NULL, NULL);
@@ -1291,8 +1292,8 @@ artist__remove_cb(gpointer data) {
 		strncpy(name, pname, MAXLEN-1);
                 g_free(pname);
 		
-		snprintf(text, MAXLEN-1, "Really remove \"%s\" from the Music Store?", name);
-		if (confirm_dialog("Remove Artist", text)) {
+		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
+		if (confirm_dialog(_("Remove Artist"), text)) {
 			gtk_tree_store_remove(music_store, &iter);
 			tree_selection_changed_cb(music_select, NULL);
 		}
@@ -1467,8 +1468,8 @@ record__remove_cb(gpointer data) {
 		strncpy(name, pname, MAXLEN-1);
                 g_free(pname);
 		
-		snprintf(text, MAXLEN-1, "Really remove \"%s\" from the Music Store?", name);
-		if (confirm_dialog("Remove Record", text)) {
+		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
+		if (confirm_dialog(_("Remove Record"), text)) {
 			gtk_tree_store_remove(music_store, &iter);
 			gtk_tree_selection_unselect_all(music_select);
 			tree_selection_changed_cb(music_select, NULL);
@@ -1625,8 +1626,8 @@ track__remove_cb(gpointer data) {
 		strncpy(name, pname, MAXLEN-1);
                 g_free(pname);
 		
-		snprintf(text, MAXLEN-1, "Really remove \"%s\" from the Music Store?", name);
-		if (confirm_dialog("Remove Track", text)) {
+		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
+		if (confirm_dialog(_("Remove Track"), text)) {
 			gtk_tree_store_remove(music_store, &iter);
 			gtk_tree_selection_unselect_all(music_select);
 			tree_selection_changed_cb(music_select, NULL);
@@ -1662,7 +1663,7 @@ tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
 		if (comment[0] != '\0') {
 			set_comment_text(comment);
 		} else {
-			set_comment_text("(no comment)");
+			set_comment_text(_("(no comment)"));
 		}
                 g_free(comment);
 
@@ -1741,7 +1742,7 @@ create_music_browser(void) {
 
 	/* window creating stuff */
 	browser_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(browser_window), "Music Store");
+	gtk_window_set_title(GTK_WINDOW(browser_window), _("Music Store"));
 	gtk_window_set_gravity(GTK_WINDOW(browser_window), GDK_GRAVITY_STATIC);
 	g_signal_connect(G_OBJECT(browser_window), "delete_event", G_CALLBACK(browser_window_close), NULL);
 	g_signal_connect(G_OBJECT(browser_window), "key_press_event",
@@ -1807,20 +1808,20 @@ create_music_browser(void) {
 
 	/* create popup menu for blank space */
 	blank_menu = gtk_menu_new();
-	blank__add = gtk_menu_item_new_with_label("Add new artist...");
+	blank__add = gtk_menu_item_new_with_label(_("Add new artist..."));
 	gtk_menu_shell_append(GTK_MENU_SHELL(blank_menu), blank__add);
 	g_signal_connect_swapped(G_OBJECT(blank__add), "activate", G_CALLBACK(artist__add_cb), NULL);
 	gtk_widget_show(blank__add);
 
 	/* create popup menu for artist tree items */
 	artist_menu = gtk_menu_new();
-	artist__addlist = gtk_menu_item_new_with_label("Add to playlist");
+	artist__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	artist__separator1 = gtk_separator_menu_item_new();
-	artist__add = gtk_menu_item_new_with_label("Add new artist...");
-	artist__edit = gtk_menu_item_new_with_label("Edit artist...");
-	artist__addrec = gtk_menu_item_new_with_label("Add new record to this artist...");
+	artist__add = gtk_menu_item_new_with_label(_("Add new artist..."));
+	artist__edit = gtk_menu_item_new_with_label(_("Edit artist..."));
+	artist__addrec = gtk_menu_item_new_with_label(_("Add new record to this artist..."));
 	artist__separator2 = gtk_separator_menu_item_new();
-	artist__remove = gtk_menu_item_new_with_label("Remove artist");
+	artist__remove = gtk_menu_item_new_with_label(_("Remove artist"));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__separator1);
@@ -1846,13 +1847,13 @@ create_music_browser(void) {
 
 	/* create popup menu for record tree items */
 	record_menu = gtk_menu_new();
-	record__addlist = gtk_menu_item_new_with_label("Add to playlist");
+	record__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	record__separator1 = gtk_separator_menu_item_new();
-	record__add = gtk_menu_item_new_with_label("Add new record...");
-	record__edit = gtk_menu_item_new_with_label("Edit record...");
-	record__addtrk = gtk_menu_item_new_with_label("Add new track to this record...");
+	record__add = gtk_menu_item_new_with_label(_("Add new record..."));
+	record__edit = gtk_menu_item_new_with_label(_("Edit record..."));
+	record__addtrk = gtk_menu_item_new_with_label(_("Add new track to this record..."));
 	record__separator2 = gtk_separator_menu_item_new();
-	record__remove = gtk_menu_item_new_with_label("Remove record");
+	record__remove = gtk_menu_item_new_with_label(_("Remove record"));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator1);
@@ -1878,12 +1879,12 @@ create_music_browser(void) {
 
 	/* create popup menu for track tree items */
 	track_menu = gtk_menu_new();
-	track__addlist = gtk_menu_item_new_with_label("Add to playlist");
+	track__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	track__separator1 = gtk_separator_menu_item_new();
-	track__add = gtk_menu_item_new_with_label("Add new track...");
-	track__edit = gtk_menu_item_new_with_label("Edit track...");
+	track__add = gtk_menu_item_new_with_label(_("Add new track..."));
+	track__edit = gtk_menu_item_new_with_label(_("Edit track..."));
 	track__separator2 = gtk_separator_menu_item_new();
-	track__remove = gtk_menu_item_new_with_label("Remove track");
+	track__remove = gtk_menu_item_new_with_label(_("Remove track"));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__separator1);

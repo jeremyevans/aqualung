@@ -31,6 +31,7 @@
 
 #include "common.h"
 #include "gui_main.h"
+#include "i18n.h"
 #include "options.h"
 
 
@@ -137,7 +138,7 @@ create_options_window() {
 
 	options_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_transient_for(GTK_WINDOW(options_window), GTK_WINDOW(main_window));
-        gtk_window_set_title(GTK_WINDOW(options_window), "Options");
+        gtk_window_set_title(GTK_WINDOW(options_window), _("Options"));
 	gtk_window_set_position(GTK_WINDOW(options_window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(options_window), TRUE);
         gtk_container_set_border_width(GTK_CONTAINER(options_window), 5);
@@ -146,18 +147,18 @@ create_options_window() {
 	gtk_container_add(GTK_CONTAINER(options_window), vbox);
 
 
-	frame_title = gtk_frame_new("Title format");
+	frame_title = gtk_frame_new(_("Title format"));
 	gtk_box_pack_start(GTK_BOX(vbox), frame_title, TRUE, TRUE, 0);
 
 	vbox_title = gtk_vbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_title), 10);
 	gtk_container_add(GTK_CONTAINER(frame_title), vbox_title);
 
-	label_title = gtk_label_new("\nThe template string you enter here will be used to\n"
-				    "construct a single title line from an Artist, a Record\n"
-				    "and a Track name. These are denoted by %a, %r and %t,\n"
-				    "respectively. Everything else you enter here will be\n"
-				    "literally copied into the resulting string.\n");
+	label_title = gtk_label_new(_("\nThe template string you enter here will be used to\n\
+construct a single title line from an Artist, a Record\n\
+and a Track name. These are denoted by %a, %r and %t,\n\
+respectively. Everything else you enter here will be\n\
+literally copied into the resulting string.\n"));
 	gtk_box_pack_start(GTK_BOX(vbox_title), label_title, TRUE, TRUE, 0);
 
 	entry_title = gtk_entry_new_with_max_length(MAXLEN - 1);
@@ -165,19 +166,19 @@ create_options_window() {
 	gtk_box_pack_start(GTK_BOX(vbox_title), entry_title, TRUE, TRUE, 0);
 
 
-	frame_param = gtk_frame_new("Implicit command line");
+	frame_param = gtk_frame_new(_("Implicit command line"));
 	gtk_box_pack_start(GTK_BOX(vbox), frame_param, TRUE, TRUE, 0);
 
 	vbox_param = gtk_vbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_param), 10);
 	gtk_container_add(GTK_CONTAINER(frame_param), vbox_param);
 
-	label_param = gtk_label_new("\nThe string you enter here will be parsed as a command\n"
-				    "line before parsing the actual command line parameters.\n"
-				    "What you enter here will act as a default setting and may\n"
-				    "or may not be overrided from the 'real' command line.\n"
-				    "Example: enter '-o alsa -R' below to use ALSA output\n"
-				    "running realtime as a default.\n");
+	label_param = gtk_label_new(_("\nThe string you enter here will be parsed as a command\n\
+line before parsing the actual command line parameters.\n\
+What you enter here will act as a default setting and may\n\
+or may not be overrided from the 'real' command line.\n\
+Example: enter '-o alsa -R' below to use ALSA output\n\
+running realtime as a default.\n"));
 	gtk_box_pack_start(GTK_BOX(vbox_param), label_param, TRUE, TRUE, 0);
 
 	entry_param = gtk_entry_new_with_max_length(MAXLEN - 1);
@@ -185,15 +186,15 @@ create_options_window() {
 	gtk_box_pack_start(GTK_BOX(vbox_param), entry_param, TRUE, TRUE, 0);
 
 
-	frame_autoplsave = gtk_frame_new("Auto-save playlist");
+	frame_autoplsave = gtk_frame_new(_("Auto-save playlist"));
 	gtk_box_pack_start(GTK_BOX(vbox), frame_autoplsave, TRUE, TRUE, 0);
 
         vbox_autoplsave = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_autoplsave), 10);
         gtk_container_add(GTK_CONTAINER(frame_autoplsave), vbox_autoplsave);
 
-	check_autoplsave = gtk_check_button_new_with_label("Save and restore the playlist "
-							   "automatically on exit/startup");
+	check_autoplsave = gtk_check_button_new_with_label(_("Save and restore the playlist \
+automatically on exit/startup"));
 	if (auto_save_playlist) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_autoplsave), TRUE);
 	}
@@ -202,7 +203,7 @@ create_options_window() {
         gtk_box_pack_start(GTK_BOX(vbox_autoplsave), check_autoplsave, TRUE, TRUE, 0);
 
 
-	frame_ladspa = gtk_frame_new("LADSPA plugin processing");
+	frame_ladspa = gtk_frame_new(_("LADSPA plugin processing"));
 	gtk_box_pack_start(GTK_BOX(vbox), frame_ladspa, TRUE, TRUE, 0);
 
 	vbox_ladspa = gtk_vbox_new(FALSE, 3);
@@ -216,11 +217,11 @@ create_options_window() {
 		GtkWidget * menu = gtk_menu_new();
 		GtkWidget * item;
 
-		item = gtk_menu_item_new_with_label("Pre Fader (before Volume & Balance)");
+		item = gtk_menu_item_new_with_label(_("Pre Fader (before Volume & Balance)"));
 		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 		gtk_widget_show(item);
 
-		item = gtk_menu_item_new_with_label("Post Fader (after Volume & Balance)");
+		item = gtk_menu_item_new_with_label(_("Post Fader (after Volume & Balance)"));
 		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 		gtk_widget_show(item);
 
@@ -233,7 +234,7 @@ create_options_window() {
         g_signal_connect(optmenu_ladspa, "changed", G_CALLBACK(changed_ladspa_prepost), NULL);
 
 
-	frame_src = gtk_frame_new("Sample Rate Converter type");
+	frame_src = gtk_frame_new(_("Sample Rate Converter type"));
 	gtk_box_pack_start(GTK_BOX(vbox), frame_src, TRUE, TRUE, 0);
 
 	vbox_src = gtk_vbox_new(FALSE, 3);
@@ -267,8 +268,8 @@ create_options_window() {
 	gtk_label_set_text(GTK_LABEL(label_src), src_get_description(src_type));
 #else
 	gtk_label_set_text(GTK_LABEL(label_src),
-			   "Aqualung is compiled without Sample Rate Converter support.\n"
-			   "See the About box and the documentation for details.");
+			   _("Aqualung is compiled without Sample Rate Converter support.\n\
+See the About box and the documentation for details."));
 
 #endif /* HAVE_SRC */
 
@@ -278,12 +279,12 @@ create_options_window() {
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 6);
 
-	cancel_btn = gtk_button_new_with_label("Cancel");
+	cancel_btn = gtk_button_new_with_label(_("Cancel"));
 	gtk_widget_set_size_request(cancel_btn, 60, 30);
 	g_signal_connect(cancel_btn, "clicked", G_CALLBACK(cancel), NULL);
 	gtk_box_pack_end(GTK_BOX(hbox), cancel_btn, FALSE, FALSE, 6);
 
-	ok_btn = gtk_button_new_with_label("OK");
+	ok_btn = gtk_button_new_with_label(_("OK"));
 	gtk_widget_set_size_request(ok_btn, 60, 30);
 	g_signal_connect(ok_btn, "clicked", G_CALLBACK(ok), NULL);
 	gtk_box_pack_end(GTK_BOX(hbox), ok_btn, FALSE, FALSE, 6);

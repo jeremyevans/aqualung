@@ -56,6 +56,7 @@
 #include "plugin.h"
 #include "icon_16.xpm"
 #include "icon_64.xpm"
+#include "i18n.h"
 #include "gui_main.h"
 
 
@@ -349,7 +350,7 @@ set_format_label(int v_major, int v_minor) {
 #endif /* HAVE_MOD */
 
 	default:
-		strcpy(str, "Unrecognized");
+		strcpy(str, _("Unrecognized"));
 		break;
 	}
 
@@ -360,64 +361,64 @@ set_format_label(int v_major, int v_minor) {
 #ifdef HAVE_SNDFILE
 		switch (v_minor) {
 		case SF_FORMAT_PCM_S8:
-			strcat(str, " (8 bit signed)");
+			sprintf(str, "%s %s%s%s", str, "(8 ", _("bit signed"), ")");
 			break;
 		case SF_FORMAT_PCM_U8:
-			strcat(str, " (8 bit unsigned)");
+			sprintf(str, "%s %s%s%s", str, "(16 ", _("bit unsigned"), ")");
 			break;
 		case SF_FORMAT_PCM_16:
-			strcat(str, " (16 bit signed)");
+			sprintf(str, "%s %s%s%s", str, "(16 ", _("bit signed"), ")");
 			break;
 		case SF_FORMAT_PCM_24:
-			strcat(str, " (24 bit signed)");
+			sprintf(str, "%s %s%s%s", str, "(24 ", _("bit signed"), ")");
 			break;
 		case SF_FORMAT_PCM_32:
-			strcat(str, " (32 bit signed)");
+			sprintf(str, "%s %s%s%s", str, "(32 ", _("bit signed"), ")");
 			break;
 		case SF_FORMAT_FLOAT:
-			strcat(str, " (32 bit float)");
+			sprintf(str, "%s %s%s%s", str, "(32 ", _("bit float"), ")");
 			break;
 		case SF_FORMAT_DOUBLE:
-			strcat(str, " (64 bit double)");
+			sprintf(str, "%s %s%s%s", str, "(64 ", _("bit double"), ")");
 			break;
 		case SF_FORMAT_ULAW:
-			strcat(str, " (u-Law encoding)");
+			sprintf(str, "%s %s%s%s", str, "(u-Law ", _("encoding"), ")");
 			break;
 		case SF_FORMAT_ALAW:
-			strcat(str, " (A-Law encoding)");
+			sprintf(str, "%s %s%s%s", str, "(A-Law ", _("encoding"), ")");
 			break;
 		case SF_FORMAT_IMA_ADPCM:
-			strcat(str, " (IMA ADPCM encoding)");
+			sprintf(str, "%s %s%s%s", str, "(IMA ADPCM ", _("encoding"), ")");
 			break;
 		case SF_FORMAT_MS_ADPCM:
-			strcat(str, " (Microsoft ADPCM encoding)");
+			sprintf(str, "%s %s%s%s", str, "(Microsoft ADPCM ", _("encoding"), ")");
 			break;
 		case SF_FORMAT_GSM610:
-			strcat(str, " (GSM 6.10 encoding)");
+			sprintf(str, "%s %s%s%s", str, "(GSM 6.10 ", _("encoding"), ")");
 			break;
 		case SF_FORMAT_VOX_ADPCM:
-			strcat(str, " (Oki Dialogic ADPCM encoding)");
+			sprintf(str, "%s %s%s%s", str, "(Oki Dialogic ADPCM ", _("encoding"), ")");
 			break;
 		case SF_FORMAT_G721_32:
-			strcat(str, " (32kbps G721 ADPCM encoding)");
+			sprintf(str, "%s %s%s%s", str, "(32kbps G721 ADPCM ", _("encoding"), ")");
 			break;
 		case SF_FORMAT_G723_24:
-			strcat(str, " (24kbps G723 ADPCM encoding)");
+			sprintf(str, "%s %s%s%s", str, "(24kbps G723 ADPCM ", _("encoding"), ")");
 			break;
 		case SF_FORMAT_G723_40:
-			strcat(str, " (40kbps G723 ADPCM encoding)");
+			sprintf(str, "%s %s%s%s", str, "(40kbps G723 ADPCM ", _("encoding"), ")");
 			break;
 		case SF_FORMAT_DWVW_12:
-			strcat(str, " (12 bit DWVW encoding)");
+			sprintf(str, "%s %s%s%s", str, "(12 bit DWVW ", _("encoding"), ")");
 			break;
 		case SF_FORMAT_DWVW_16:
-			strcat(str, " (16 bit DWVW encoding)");
+			sprintf(str, "%s %s%s%s", str, "(16 bit DWVW ", _("encoding"), ")");
 			break;
 		case SF_FORMAT_DWVW_24:
-			strcat(str, " (24 bit DWVW encoding)");
+			sprintf(str, "%s %s%s%s", str, "(24 bit DWVW ", _("encoding"), ")");
 			break;
 		case SF_FORMAT_DWVW_N:
-			strcat(str, " (N bit DWVW encoding)");
+			sprintf(str, "%s %s%s%s", str, "(N bit DWVW ", _("encoding"), ")");
 			break;
 		}
 #endif /* HAVE_SNDFILE */
@@ -430,13 +431,13 @@ set_format_label(int v_major, int v_minor) {
 
 		switch (v_minor & MPEG_LAYER_MASK) {
 		case MPEG_LAYER_I:
-			strcat(str, "Layer I");
+			strcat(str, _("Layer I"));
 			break;
 		case MPEG_LAYER_II:
-			strcat(str, "Layer II");
+			strcat(str, _("Layer II"));
 			break;
 		case MPEG_LAYER_III:
-			strcat(str, "Layer III");
+			strcat(str, _("Layer III"));
 			break;
 		}
 
@@ -446,16 +447,16 @@ set_format_label(int v_major, int v_minor) {
 
 		switch (v_minor & MPEG_MODE_MASK) {
 		case MPEG_MODE_SINGLE:
-			strcat(str, "Single channel");
+			strcat(str, _("Single channel"));
 			break;
 		case MPEG_MODE_DUAL:
-			strcat(str, "Dual channel");
+			strcat(str, _("Dual channel"));
 			break;
 		case MPEG_MODE_JOINT:
-			strcat(str, "Joint stereo");
+			strcat(str, _("Joint stereo"));
 			break;
 		case MPEG_MODE_STEREO:
-			strcat(str, "Stereo");
+			strcat(str, _("Stereo"));
 			break;
 		}
 
@@ -465,16 +466,16 @@ set_format_label(int v_major, int v_minor) {
 
 		switch (v_minor & MPEG_EMPH_MASK) {
 		case MPEG_EMPH_NONE:
-			strcat(str, "Emphasis: none");
+			strcat(str, _("Emphasis: none"));
 			break;
 		case MPEG_EMPH_5015:
-			strcat(str, "Emphasis: 50/15 us");
+			sprintf(str, "%s%s 50/15 us", str, _("Emphasis:"));
 			break;
 		case MPEG_EMPH_J_17:
-			strcat(str, "Emphasis: CCITT J.17");
+			sprintf(str, "%s%s CCITT J.17", str, _("Emphasis:"));
 			break;
 		case MPEG_EMPH_RES:
-			strcat(str, "Emphasis: reserved");
+			strcat(str, _("Emphasis: reserved"));
 			break;
 		}
 		
@@ -519,9 +520,9 @@ set_mono_label(int is_mono) {
 
 	if (is_file_loaded) {
 		if (is_mono)
-			gtk_label_set_text(GTK_LABEL(label_mono), "MONO");
+			gtk_label_set_text(GTK_LABEL(label_mono), _("MONO"));
 		else
-			gtk_label_set_text(GTK_LABEL(label_mono), "STEREO");
+			gtk_label_set_text(GTK_LABEL(label_mono), _("STEREO"));
 	} else
 		gtk_label_set_text(GTK_LABEL(label_mono), "");
 }
@@ -536,16 +537,16 @@ set_output_label(int output, int out_SR) {
 	switch (output) {
 #ifdef HAVE_OSS
 	case OSS_DRIVER:
-		sprintf(str, "Output: OSS @ %d Hz", out_SR);
+		sprintf(str, "%s OSS @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_OSS */
 #ifdef HAVE_ALSA
 	case ALSA_DRIVER:
-		sprintf(str, "Output: ALSA @ %d Hz", out_SR);
+		sprintf(str, "%s ALSA @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_ALSA */
 	case JACK_DRIVER:
-		sprintf(str, "Output: JACK @ %d Hz", out_SR);
+		sprintf(str, "%s JACK @ %d Hz", _("Output:"), out_SR);
 		break;
 	}
 	
@@ -558,11 +559,11 @@ set_src_type_label(int src_type) {
 	
 	char str[MAXLEN];
 	
-	strcpy(str, "SRC Type: ");
+	strcpy(str, _("SRC Type: "));
 #ifdef HAVE_SRC
 	strcat(str, src_get_name(src_type));
 #else
-	strcat(str, "None");
+	strcat(str, _("None"));
 #endif /* HAVE_SRC */
 
 	gtk_label_set_text(GTK_LABEL(label_src_type), str);
@@ -1104,9 +1105,9 @@ scale_vol_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 	}
 
 	if (vol < -40.5f) {
-		sprintf(str, "Mute");
+		sprintf(str, _("Mute"));
 	} else {
-		sprintf(str, "%d dB", (int)vol);
+		sprintf(str, _("%d dB"), (int)vol);
 	}
 
 	gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
@@ -1133,9 +1134,9 @@ changed_vol(GtkAdjustment * adj, gpointer date) {
 
 	if (!shift_L && !shift_R && !refresh_time_label) {
 		if (vol < -40.5f) {
-			sprintf(str, "Mute");
+			sprintf(str, _("Mute"));
 		} else {
-			sprintf(str, "%d dB", (int)vol);
+			sprintf(str, _("%d dB"), (int)vol);
 		}
 
 		gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
@@ -1166,12 +1167,12 @@ scale_bal_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 	
 	if (bal != 0.0f) {
 		if (bal > 0.0f) {
-			sprintf(str, "%d%% R", (int)bal);
+			sprintf(str, _("%d%% R"), (int)bal);
 		} else {
-			sprintf(str, "%d%% L", -1*(int)bal);
+			sprintf(str, _("%d%% L"), -1*(int)bal);
 		}
 	} else {
-		sprintf(str, "C");
+		sprintf(str, _("C"));
 	}
 
 	gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
@@ -1198,12 +1199,12 @@ changed_bal(GtkAdjustment * adj, gpointer date) {
 	if (!shift_L && !shift_R && !refresh_time_label) {
 		if (bal != 0.0f) {
 			if (bal > 0.0f) {
-				sprintf(str, "%d%% R", (int)bal);
+				sprintf(str, _("%d%% R"), (int)bal);
 			} else {
-				sprintf(str, "%d%% L", -1*(int)bal);
+				sprintf(str, _("%d%% L"), -1*(int)bal);
 			}
 		} else {
-			sprintf(str, "C");
+			sprintf(str, _("C"));
 		}
 
 		gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
@@ -1695,13 +1696,13 @@ jack_shutdown_window(void) {
 	GtkWidget * label;
 
         window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(window), "JACK connection lost");
+        gtk_window_set_title(GTK_WINDOW(window), _("JACK connection lost"));
         gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 
-	label = gtk_label_new("JACK has either been shutdown or it\n"
-			      "disconnected Aqualung because it was\n"
-			      "not fast enough. All you can do now\n"
-			      "is restart both JACK and Aqualung.\n");
+	label = gtk_label_new(_("JACK has either been shutdown or it\n\
+disconnected Aqualung because it was\n\
+not fast enough. All you can do now\n\
+is restart both JACK and Aqualung.\n"));
         gtk_container_add(GTK_CONTAINER(window), label);
 	gtk_widget_show_all(window);
 }
@@ -1770,11 +1771,11 @@ create_main_window(char * skin_path) {
 
 	conf_menu = gtk_menu_new();
 
-	conf__options = gtk_menu_item_new_with_label("Options");
-	conf__skin = gtk_menu_item_new_with_label("Skin chooser");
-	conf__jack = gtk_menu_item_new_with_label("JACK port setup");
+	conf__options = gtk_menu_item_new_with_label(_("Options"));
+	conf__skin = gtk_menu_item_new_with_label(_("Skin chooser"));
+	conf__jack = gtk_menu_item_new_with_label(_("JACK port setup"));
 	conf__separator = gtk_separator_menu_item_new();
-	conf__about = gtk_menu_item_new_with_label("About");
+	conf__about = gtk_menu_item_new_with_label(_("About"));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__options);
 	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__skin);

@@ -35,6 +35,7 @@
 #include "core.h"
 #include "gui_main.h"
 #include "music_browser.h"
+#include "i18n.h"
 #include "playlist.h"
 
 
@@ -296,7 +297,7 @@ plist__save_cb(gpointer data) {
 	char filename[MAXLEN];
         char * c;
 
-        file_selector = gtk_file_selection_new("Please specify the file to save the playlist to.");
+        file_selector = gtk_file_selection_new(_("Please specify the file to save the playlist to."));
         gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), currdir);
         gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(file_selector));
         gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), "playlist.xml");
@@ -327,7 +328,7 @@ plist__load_cb(gpointer data) {
 	char filename[MAXLEN];
         char * c;
 
-        file_selector = gtk_file_selection_new("Please specify the file to load the playlist from.");
+        file_selector = gtk_file_selection_new(_("Please specify the file to load the playlist from."));
         gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), currdir);
         gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(file_selector));
         gtk_widget_show(file_selector);
@@ -427,7 +428,7 @@ browse_direct_clicked(GtkWidget * widget, gpointer * data) {
         int i;
 	char * c;
 
-        file_selector = gtk_file_selection_new("Please select the audio files for direct adding.");
+        file_selector = gtk_file_selection_new(_("Please select the audio files for direct adding."));
         gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), currdir);
         gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(file_selector));
         gtk_file_selection_set_select_multiple(GTK_FILE_SELECTION(file_selector), TRUE);
@@ -485,7 +486,7 @@ direct_add(GtkWidget * widget, gpointer * data) {
         int n, i;
 
 
-        dialog = gtk_dialog_new_with_buttons("Direct add",
+        dialog = gtk_dialog_new_with_buttons(_("Direct add"),
                                              GTK_WINDOW(playlist_window),
                                              GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                                              GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
@@ -495,7 +496,7 @@ direct_add(GtkWidget * widget, gpointer * data) {
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
 
-        list_label = gtk_label_new("\nDirectly add these files to playlist:");
+        list_label = gtk_label_new(_("\nDirectly add these files to playlist:"));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), list_label, FALSE, TRUE, 2);
 
         viewport = gtk_viewport_new(NULL, NULL);
@@ -514,14 +515,14 @@ direct_add(GtkWidget * widget, gpointer * data) {
         gtk_widget_set_size_request(tracklist_tree, 250, 50);
 
         cell = gtk_cell_renderer_text_new();
-        column = gtk_tree_view_column_new_with_attributes("Clear list", cell, "text", 0, NULL);
+        column = gtk_tree_view_column_new_with_attributes(_("Clear list"), cell, "text", 0, NULL);
         gtk_tree_view_append_column(GTK_TREE_VIEW(tracklist_tree), GTK_TREE_VIEW_COLUMN(column));
         gtk_tree_view_set_headers_clickable(GTK_TREE_VIEW(tracklist_tree), TRUE);
         g_signal_connect(G_OBJECT(column->button), "clicked", G_CALLBACK(clicked_direct_list_header),
                          (gpointer *)model);
         gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), 0, GTK_SORT_ASCENDING);
 
-        browse_button = gtk_button_new_with_label("Add files...");
+        browse_button = gtk_button_new_with_label(_("Add files..."));
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), browse_button, FALSE, TRUE, 2);
         g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_direct_clicked),
                          (gpointer *)model);
@@ -679,7 +680,7 @@ create_playlist(void) {
 
         /* window creating stuff */
         playlist_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(playlist_window), "Playlist");
+        gtk_window_set_title(GTK_WINDOW(playlist_window), _("Playlist"));
 	gtk_window_set_gravity(GTK_WINDOW(playlist_window), GDK_GRAVITY_STATIC);
         g_signal_connect(G_OBJECT(playlist_window), "delete_event", G_CALLBACK(playlist_window_close), NULL);
         g_signal_connect(G_OBJECT(playlist_window), "key_press_event",
@@ -690,9 +691,9 @@ create_playlist(void) {
 
 	plist_menu = gtk_menu_new();
 
-	plist__save = gtk_menu_item_new_with_label("Save playlist");
-	plist__load = gtk_menu_item_new_with_label("Load playlist");
-	plist__enqueue = gtk_menu_item_new_with_label("Enqueue playlist");
+	plist__save = gtk_menu_item_new_with_label(_("Save playlist"));
+	plist__load = gtk_menu_item_new_with_label(_("Load playlist"));
+	plist__enqueue = gtk_menu_item_new_with_label(_("Enqueue playlist"));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__save);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__load);
@@ -755,15 +756,15 @@ create_playlist(void) {
         hbox_bottom = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox), hbox_bottom, FALSE, TRUE, 0);
 
-	direct_button = gtk_button_new_with_label("Direct add");
+	direct_button = gtk_button_new_with_label(_("Direct add"));
         gtk_box_pack_start(GTK_BOX(hbox_bottom), direct_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(direct_button), "clicked", G_CALLBACK(direct_add), NULL);
 
-	selall_button = gtk_button_new_with_label("Select all");
+	selall_button = gtk_button_new_with_label(_("Select all"));
         gtk_box_pack_start(GTK_BOX(hbox_bottom), selall_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(selall_button), "clicked", G_CALLBACK(select_all), NULL);
 	
-	remsel_button = gtk_button_new_with_label("Remove selected");
+	remsel_button = gtk_button_new_with_label(_("Remove selected"));
         gtk_box_pack_start(GTK_BOX(hbox_bottom), remsel_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(remsel_button), "clicked", G_CALLBACK(remove_sel), NULL);
 	
@@ -772,17 +773,17 @@ create_playlist(void) {
 	/* create popup menus */
         sel_menu = gtk_menu_new();
 
-        sel__none = gtk_menu_item_new_with_label("Select none");
+        sel__none = gtk_menu_item_new_with_label(_("Select none"));
         gtk_menu_shell_append(GTK_MENU_SHELL(sel_menu), sel__none);
         g_signal_connect_swapped(G_OBJECT(sel__none), "activate", G_CALLBACK(sel__none_cb), NULL);
 	gtk_widget_show(sel__none);
 
-        sel__all = gtk_menu_item_new_with_label("Select all");
+        sel__all = gtk_menu_item_new_with_label(_("Select all"));
         gtk_menu_shell_append(GTK_MENU_SHELL(sel_menu), sel__all);
         g_signal_connect_swapped(G_OBJECT(sel__all), "activate", G_CALLBACK(sel__all_cb), NULL);
 	gtk_widget_show(sel__all);
 
-        sel__inv = gtk_menu_item_new_with_label("Invert selection");
+        sel__inv = gtk_menu_item_new_with_label(_("Invert selection"));
         gtk_menu_shell_append(GTK_MENU_SHELL(sel_menu), sel__inv);
         g_signal_connect_swapped(G_OBJECT(sel__inv), "activate", G_CALLBACK(sel__inv_cb), NULL);
 	gtk_widget_show(sel__inv);
@@ -792,12 +793,12 @@ create_playlist(void) {
 
         rem_menu = gtk_menu_new();
 
-        rem__all = gtk_menu_item_new_with_label("Remove all");
+        rem__all = gtk_menu_item_new_with_label(_("Remove all"));
         gtk_menu_shell_append(GTK_MENU_SHELL(rem_menu), rem__all);
         g_signal_connect_swapped(G_OBJECT(rem__all), "activate", G_CALLBACK(rem__all_cb), NULL);
 	gtk_widget_show(rem__all);
 
-        rem__sel = gtk_menu_item_new_with_label("Remove selected");
+        rem__sel = gtk_menu_item_new_with_label(_("Remove selected"));
         gtk_menu_shell_append(GTK_MENU_SHELL(rem_menu), rem__sel);
         g_signal_connect_swapped(G_OBJECT(rem__sel), "activate", G_CALLBACK(rem__sel_cb), NULL);
 	gtk_widget_show(rem__sel);

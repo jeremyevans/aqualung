@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(aqualung, 0.9beta3, tszilagyi@users.sourceforge.net)
+AC_INIT(aqualung, 0.9beta3, http://aqualung.sf.net/mantis)
 AM_INIT_AUTOMAKE(aqualung, 0.9beta3)
 AC_CONFIG_SRCDIR([src/core.c])
 AM_CONFIG_HEADER([config.h])
@@ -263,18 +263,19 @@ jack_LIBS=`pkg-config --libs jack`
 lrdf_LIBS=`pkg-config --libs lrdf`
 
 SKINDIR="-DSKINDIR=\\\"$datadir/aqualung/skin\\\""
+LOCALEDIR="-DLOCALEDIR=\\\"$datadir/locale\\\""
 
-CFLAGS="-O3 -Wall $SKINDIR"
+CFLAGS="-O3 -Wall $SKINDIR $LOCALEDIR -D_GNU_SOURCE"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS"
 LIBS="$gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $mad_LIBS $mod_LIBS"
 
-AC_CONFIG_FILES([Makefile \
-		 doc/Makefile \
-		 doc/html/Makefile \
-		 skin/Makefile \
-		 src/Makefile])
+AC_OUTPUT([Makefile \
+	   doc/Makefile \
+	   doc/html/Makefile \
+	   skin/Makefile \
+	   src/Makefile \
+	   src/po/Makefile])
 
-AC_OUTPUT
 
 echo "----------------------------------------------------------------------"
 echo "  Configuration summary"

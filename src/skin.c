@@ -25,6 +25,7 @@
 
 #include "common.h"
 #include "gui_main.h"
+#include "i18n.h"
 #include "skin.h"
 
 
@@ -99,7 +100,7 @@ create_skin_window() {
 	skin_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_transient_for(GTK_WINDOW(skin_window), GTK_WINDOW(main_window));
 	gtk_widget_set_size_request(skin_window, 250, 150);
-        gtk_window_set_title(GTK_WINDOW(skin_window), "Skin chooser");
+        gtk_window_set_title(GTK_WINDOW(skin_window), _("Skin chooser"));
 	gtk_window_set_position(GTK_WINDOW(skin_window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(skin_window), TRUE);
         gtk_container_set_border_width(GTK_CONTAINER(skin_window), 2);
@@ -122,7 +123,7 @@ create_skin_window() {
         skin_select = gtk_tree_view_get_selection(GTK_TREE_VIEW(skin_list));
 
 	renderer = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes("Available skins", renderer, "text", 0, NULL);
+	column = gtk_tree_view_column_new_with_attributes(_("Available skins"), renderer, "text", 0, NULL);
         gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(skin_store), 0, GTK_SORT_ASCENDING);
   
 	gtk_tree_view_append_column(GTK_TREE_VIEW(skin_list), column);
@@ -175,12 +176,12 @@ create_skin_window() {
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 
-	cancel_btn = gtk_button_new_with_label("Cancel");
+	cancel_btn = gtk_button_new_with_label(_("Cancel"));
 	gtk_widget_set_size_request(cancel_btn, 60, 30);
 	g_signal_connect(cancel_btn, "clicked", G_CALLBACK(cancel), NULL);
 	gtk_box_pack_end(GTK_BOX(hbox), cancel_btn, FALSE, FALSE, 3);
 
-	apply_btn = gtk_button_new_with_label("Apply");
+	apply_btn = gtk_button_new_with_label(_("Apply"));
 	gtk_widget_set_size_request(apply_btn, 60, 30);
 	g_signal_connect(apply_btn, "clicked", G_CALLBACK(apply), NULL);
 	gtk_box_pack_end(GTK_BOX(hbox), apply_btn, FALSE, FALSE, 3);

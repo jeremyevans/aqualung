@@ -706,7 +706,7 @@ alsa_thread(void * arg) {
 					l_buf[i] = 1.0;
 				else if (l_buf[i] < -1.0)
 					l_buf[i] = -1.0;
-				
+
 				if (r_buf[i] > 1.0)
 					r_buf[i] = 1.0;
 				else if (r_buf[i] < -1.0)
@@ -735,8 +735,8 @@ alsa_thread(void * arg) {
 				else if (r_buf[i] < -1.0)
 					r_buf[i] = -1.0;
 
-				alsa_short_buf[2*i] = floorf(32768.0 * l_buf[i]);
-				alsa_short_buf[2*i+1] = floorf(32768.0 * r_buf[i]);
+				alsa_short_buf[2*i] = floorf(32767.0 * l_buf[i]);
+				alsa_short_buf[2*i+1] = floorf(32767.0 * r_buf[i]);
 			}
 
 			/* write data to audio device */

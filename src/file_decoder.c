@@ -264,7 +264,7 @@ mpeg_output(void * data, struct mad_header const * header, struct mad_pcm * pcm)
 
 	file_decoder_t * fdec = (file_decoder_t *) data;
 
-	fdec->mpeg_scale = 1 << 28;
+	fdec->mpeg_scale = 322122547; /* (1 << 28) * 1.2 */
 
         for (fdec->mpeg_i = 0; fdec->mpeg_i < pcm->length; fdec->mpeg_i++) {
 		for (fdec->mpeg_j = 0; fdec->mpeg_j < fdec->mpeg_channels; fdec->mpeg_j++) {

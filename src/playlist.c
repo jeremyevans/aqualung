@@ -654,6 +654,7 @@ direct_add(GtkWidget * widget, gpointer * data) {
         model = gtk_list_store_new(1, G_TYPE_STRING);
         tracklist_tree = gtk_tree_view_new();
         gtk_tree_view_set_model(GTK_TREE_VIEW(tracklist_tree), GTK_TREE_MODEL(model));
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(tracklist_tree), FALSE);
         gtk_container_add(GTK_CONTAINER(scrolled_win), tracklist_tree);
         gtk_widget_set_size_request(tracklist_tree, 250, 50);
 

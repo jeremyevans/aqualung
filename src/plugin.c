@@ -1721,6 +1721,7 @@ create_fxbuilder(void) {
 
 
 	avail_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(avail_store));
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(avail_list), FALSE);
         gtk_widget_set_size_request(avail_list, 400, 300);
 	gtk_container_add(GTK_CONTAINER(scrolled_win_avail), avail_list);
 

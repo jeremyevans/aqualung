@@ -730,6 +730,7 @@ to set the column order in the Playlist."));
 					    G_TYPE_STRING);  /* Column index */
 
         plistcol_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(plistcol_store));
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(plistcol_list), FALSE);
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes(_("Column"),
 							  renderer,

@@ -329,6 +329,7 @@ setup_tree_out(void) {
 	GtkWidget * scrwin;
 
 	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store_out_nb[n_clients]));
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(tree), FALSE);
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes("inputs", renderer, "text", 0, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
@@ -494,7 +495,9 @@ port_setup_dialog(void) {
 	scan_connections(out_R_port, store_out_R);
 
 	tree_out_L = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store_out_L));
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(tree_out_L), FALSE);
 	tree_out_R = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store_out_R));
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(tree_out_R), FALSE);
 	renderer_out_L = gtk_cell_renderer_text_new();
 	renderer_out_R = gtk_cell_renderer_text_new();
 	column_out_L = gtk_tree_view_column_new_with_attributes(NULL, renderer_out_L, "text", 0, NULL);

@@ -1206,6 +1206,9 @@ main(int argc, char ** argv) {
 	char * output_str = NULL;
 	int rate = 0;
 	int auto_connect = 0;
+	int default_ports = 1;
+	char * user_port1 = NULL;
+	char * user_port2 = NULL;
 	int try_realtime = 0;
 	int priority = 1;
 
@@ -1220,7 +1223,7 @@ main(int argc, char ** argv) {
 	int remote_quit = 0;
 	char * voladj_arg = NULL;
 
-	char * optstring = "vho:d:c:n:p:r:aRP:s::N:BLUTFEV:Q";
+	char * optstring = "vho:d:c:n:p:r:a::RP:s::N:BLUTFEV:Q";
 	struct option long_options[] = {
 		{ "version", 0, 0, 'v' },
 		{ "help", 0, 0, 'h' },
@@ -1230,7 +1233,7 @@ main(int argc, char ** argv) {
 		{ "nperiods", 1, 0, 'n'},
 		{ "period", 1, 0, 'p'},
 		{ "rate", 1, 0, 'r' },
-		{ "auto", 0, 0, 'a' },
+		{ "auto", 2, 0, 'a' },
 		{ "realtime", 0, 0, 'R' },
 		{ "priority", 1, 0, 'P' },
 		{ "srctype", 2, 0, 's' },
@@ -1347,6 +1350,35 @@ main(int argc, char ** argv) {
 				break;
 			case 'a':
 				auto_connect = 1;
+				if (optarg) {
+					char * s;
+
+					if (strstr(optarg, ",") == NULL) {
+						fprintf(stderr, "Invalid ports specification: %s\n", optarg);
+						exit(0);
+					}
+
+					s = strtok(optarg, ",");
+					if (s != NULL) {
+						user_port1 = strdup(s);
+					} else {
+						fprintf(stderr, "Invalid ports specification: argument "
+							"contains too few ports\n");
+						exit(0);
+					}
+
+					s = strtok(NULL, ",");
+					if (s != NULL) {
+						user_port2 = strdup(s);
+					} else {
+						fprintf(stderr, "Invalid ports specification: argument "
+							"contains too few ports\n");
+						exit(0);
+					}
+
+					default_ports = 0;
+				}
+
 				break;
 			case 'R':
 				try_realtime = 1;
@@ -1660,7 +1692,8 @@ main(int argc, char ** argv) {
 			"-r, --rate <int>: Set the output sample rate.\n"
 			
 			"\nOptions relevant to JACK output:\n"
-			"-a, --auto: Auto-connect output ports to first two hardware playback ports.\n"
+			"-a[<port_L>,<port_R>], --auto[=<port_L>,<port_R>]: Auto-connect output ports to\n"
+			"given JACK ports (defaults to first two hardware playback ports).\n"
 			"-c, --client <name>: Set client name (needed if you want to run multiple instances of the program).\n"
 
 			"\nOptions relevant to the Sample Rate Converter:\n"
@@ -1837,23 +1870,40 @@ main(int argc, char ** argv) {
 		}
 		
 		if (auto_connect) {
-			if ((ports_out = jack_get_ports(jack_client, NULL, NULL,
-							JackPortIsPhysical|JackPortIsInput)) == NULL) {
-				fprintf(stderr, "Cannot find any physical playback ports.\n");
+			if (default_ports) {
+				if ((ports_out = jack_get_ports(jack_client, NULL, NULL,
+						 JackPortIsPhysical|JackPortIsInput)) == NULL) {
+					fprintf(stderr, "Cannot find any physical playback ports.\n");
+				} else {
+					if (jack_connect(jack_client, jack_port_name(out_L_port),
+							 ports_out[0])) {
+						fprintf(stderr, "Cannot connect out_L port to %s.\n",
+							ports_out[0]);
+					} else {
+						fprintf(stderr, "Connected out_L to %s\n", ports_out[0]);
+					}
+					if (jack_connect(jack_client, jack_port_name(out_R_port),
+							 ports_out[1])) {
+						fprintf(stderr, "Cannot connect out_R port to %s.\n",
+							ports_out[1]);
+					} else {
+						fprintf(stderr, "Connected out_R to %s\n", ports_out[1]);
+					}
+					free(ports_out);
+				}
 			} else {
 				if (jack_connect(jack_client, jack_port_name(out_L_port),
-						 ports_out[0])) {
-					fprintf(stderr, "Cannot connect out_L port.\n");
+						 user_port1)) {
+					fprintf(stderr, "Cannot connect out_L port to %s.\n", user_port1);
 				} else {
-					fprintf(stderr, "Connected out_L to %s\n", ports_out[0]);
+					fprintf(stderr, "Connected out_L to %s\n", user_port1);
 				}
 				if (jack_connect(jack_client, jack_port_name(out_R_port),
-						 ports_out[1])) {
-					fprintf(stderr, "Cannot connect out_R port.\n");
+						 user_port2)) {
+					fprintf(stderr, "Cannot connect out_R port to %s.\n", user_port2);
 				} else {
-					fprintf(stderr, "Connected out_R to %s\n", ports_out[1]);
+					fprintf(stderr, "Connected out_R to %s\n", user_port2);
 				}
-				free(ports_out);
 			}
 		}
 	}

@@ -139,6 +139,7 @@ create_skin_window() {
 					G_TYPE_STRING,  /* skin name */
 					G_TYPE_STRING); /* path */
         skin_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(skin_store));
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(skin_list), FALSE);
         skin_select = gtk_tree_view_get_selection(GTK_TREE_VIEW(skin_list));
 
 	renderer = gtk_cell_renderer_text_new();

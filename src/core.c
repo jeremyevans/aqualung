@@ -2230,18 +2230,6 @@ main(int argc, char ** argv) {
 	int enqueue = 0;
 	int remote_quit = 0;
 
-	setlocale(LC_ALL, "");
-	bindtextdomain(PACKAGE, LOCALEDIR);
-	textdomain(PACKAGE);
-	
-	setup_app_socket();
-
-	if (getcwd(cwd, MAXLEN) == NULL) {
-		fprintf(stderr, "main(): warning: getcwd() returned NULL, using . as cwd\n");
-		strcpy(cwd, ".");
-	}
-
-
 	char * optstring = "vho:d:c:n:p:r:aRP:s::N:BLUTFEQ";
 	struct option long_options[] = {
 		{ "version", 0, 0, 'v' },
@@ -2269,6 +2257,16 @@ main(int argc, char ** argv) {
 		{ 0, 0, 0, 0 }
 	};
 
+	setlocale(LC_ALL, "");
+	bindtextdomain(PACKAGE, LOCALEDIR);
+	textdomain(PACKAGE);
+	
+	setup_app_socket();
+
+	if (getcwd(cwd, MAXLEN) == NULL) {
+		fprintf(stderr, "main(): warning: getcwd() returned NULL, using . as cwd\n");
+		strcpy(cwd, ".");
+	}
 
 	load_default_cl(&argc_def, &argv_def);
 

@@ -1751,7 +1751,7 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		pthread_cond_signal(&disk_thread_wake);
 		pthread_mutex_unlock(&disk_thread_lock);
 	}
-
+	
 	return FALSE;
 }
 
@@ -2532,6 +2532,9 @@ gint timeout_callback(gpointer data) {
 			cmd = CMD_CUE;
 			cue.filename = NULL;
 			cue.voladj = 0.0f;
+
+			if (!is_file_loaded)
+				break; /* ignore leftover filereq message */
 
 			n = get_playing_pos(play_store);
 			if (n != -1) {

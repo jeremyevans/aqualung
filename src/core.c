@@ -201,7 +201,7 @@ disk_thread(void * arg) {
 		if (jack_ringbuffer_read_space(rb_gui2disk) > 0) {
 			jack_ringbuffer_read(rb_gui2disk, &recv_cmd, 1);
 			switch (recv_cmd) {
-			case CMD_CUE: 
+			case CMD_CUE:
 				/* read the string */
 				while (jack_ringbuffer_read_space(rb_gui2disk) < sizeof(cue_t))
 					;

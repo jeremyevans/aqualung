@@ -101,13 +101,33 @@ Interpolator).
 </code>
 
 <h4>Options for remote cue control</h4>
+
+<p>
+Note that remote controlling of instances is only possible if the
+instance you want to send a command to is running as the same user as
+you are when you issue the remote command.
+</p>
+
 <code>
--N, --session &lt;int&gt;: Number of Aqualung instance to control.<br>
+-N, --session &lt;int&gt;: Specify the instance number to send the
+remote command to. Instances
+are numbered on a per user basis, starting with 0. Except for the
+zero-th instance (started first), the instance number is displayed in
+the title bar of the main window (e.g.: Aqualung.3). If you don't use
+this option, the following options will control the zero-th instance
+by default, except for -L which defaults to the present instance (so
+as to be able to start playback immediately from the command line).
+<br>
 -B, --back: Jump to previous track.<br>
 -F, --fwd: Jump to next track.<br>
 -L, --play: Start playing.<br>
 -U, --pause: Pause playback, or resume if already paused.<br>
--T, --stop: Stop playback.
+-T, --stop: Stop playback.<br>
+-V, --volume [m|M]|[=]&lt;val&gt; :
+              Adjust  the  volume.  m/M means mute; if = is present, the remote instance's
+              volume control will be set to the value  specified,  otherwise,  the  volume
+              will be adjusted by the supplied (signed) value. The values are in dB units.<br>
+-Q, --quit: Terminate remote instance.
 </code>
 
 <h4>Options for file loading</h4>
@@ -116,11 +136,6 @@ Interpolator).
 new items.
 </code>
 
-<p>
-If you don't specify a session number via <code>--session</code>, the
-files will be opened by the new instance, otherwise they will be sent
-to the already running instance you specify.<br>
-</p>
 
 <h4>Examples</h4>
 <code>
@@ -269,7 +284,7 @@ On a related note, another thing to watch out for is LADSPA plugins
 (in case you use them). It is very common that the signal level
 leaving a plugin is greater than the signal level the plugin gets on
 its input. So it is best to leave a few dB's of headroom if you do
-that. (A very typical case is boosting some frequency bands a few dB's
+that. A very typical case is boosting some frequency bands a few dB's
 with an EQ plugin. You should decrease the overall volume level with
 as much dB's as the largest boost (or even more), or you are risking
 that the signal will get chopped causing bad distortion.
@@ -303,12 +318,12 @@ Shortcuts for this window:
 
 <p>
 Right-clicking almost anywhere in the window will bring up a menu that
-allows access to configuration options, the skin chooser, the JACK
-port setup dialog (enabled only when running the program with JACK
-output), and the About box. The latter may be useful to see which
-features have been compiled into the program. (If you haven't read the
-page about <a href="compiling.html">compiling</a> yet: the compilation
-can be configured so as not to require certain libraries when
+allows access to the Settings dialog, the skin chooser, the JACK port
+setup dialog (enabled only when running the program with JACK output),
+and the About box. The latter may be useful to see which features have
+been compiled into the program. (If you haven't read the page about <a
+href="compiling.html">compiling</a> yet: the configuration of the
+program can be adapted so as not to require certain libraries when
 compiling, and not provide certain features accordingly.)
 </p>
 
@@ -341,9 +356,10 @@ save the playlist manually at any time, or load a previously saved
 playlist file. To do this, right click in the playlist area, which
 will bring up a popup menu with these features. The playlist is saved
 as an XML file, so you should normally end your filename with .xml --
-however, this is only good practice and not necessary. <i>Note that
-the playlist file format is not compatible with Winamp/XMMS .m3u
-files.</i>
+however, this is only good practice and not necessary. Note that the
+playlist file format is not compatible with Winamp/XMMS .m3u
+files. However, Aqualung will open playlists in .m3u and .pls format
+whenever possible.
 </p>
 
 <p>
@@ -355,9 +371,10 @@ Shortcuts for this window:
 <tr><th>delete</th><td>remove selected track(s)</td></tr>
 <tr><th>enter, double click</th><td>start playback of the selected or
 double-clicked track, or jump to it if already playing</td></tr>
+<tr><th>i or I</th><td>bring up File info dialog (also accessible from
+the right-click popup menu)</td></tr>
 <tr><th>q or Q</th><td>hide window (same as Alt+l or Alt+L in main
-window)</td></tr>
-</table>
+window)</td></tr> </table>
 
 <p>
 You can rearrange the list at any time by dragging and dropping items
@@ -376,10 +393,10 @@ with the mouse.
 <p>
 The Music Store is a simple database of all your music. The central
 philosophy of this program is that you have a large storage (ideally
-an entire hard drive or a sepatare partition) to store all your music
+an entire hard drive or a separate partition) to store all your music
 files. This is not necessary for the program to work. The audio files
 can be scattered around your system as long as you have read
-parmissions to them. However, it is strongly recommended that you
+permissions to them. However, it is strongly recommended that you
 devote a separate directory for all the music (for example, /music
 would be a convenient place to store files that are owned by root, but
 readable by all users).
@@ -481,12 +498,26 @@ tracks that have them (see the above screenshot for this latter case).
 </p>
 
 
+<h4>Importing file metadata into the Music Store</h4>
+
+<img src="file_info.png" alt="[File info]">
+
+
+<h4>Using the RVA system</h4>
+
+<img src="rva_settings.png" alt="[Playback RVA settings dialog]">
+
+
+
 <p>Shortcuts for this window:</p>
 
 <table cellspacing="1" cellpadding="5" border="1">
 <tr><th>double click, a or A</th><td>add artist/record/track to playlist</td></tr>
 <tr><th>n or N</th><td>new artist/record/track</td></tr>
 <tr><th>e or E</th><td>edit artist/record/track</td></tr>
+<tr><th>i or I</th><td>bring up the File info dialog</td></tr>
+<tr><th>v or V</th><td>start volume calculation for the selected item
+(recursive for Artists and Records)</td></tr>
 <tr><th>delete</th><td>remove artist/record/track</td></tr>
 <tr><th>+</th><td>add new record/track to this artist/record</td></tr>
 <tr><th>shift + right arrow</th><td>expand current row recursively</td></tr>
@@ -526,7 +557,7 @@ practically needed.
 </p>
 
 <p>
-The so-called 'implicit commad line' is something you should pay
+The so-called 'implicit command line' is something you should pay
 attention to. It exists mainly for those who have a stable sound setup
 and always use the program with the same output device, eg. they have
 only OSS and don't plan to upgrade. For such users it may be
@@ -659,7 +690,7 @@ don't have a slider displayed for them).</li>
 <p>
 If you use JACK output, you need this dialog to route the outputs of
 the program somewhere (most likely to the playback ports representing
-the soundcard drivers). If you want the outputs to be connected
+the soundcard driver). If you want the outputs to be connected
 automatically to the first two hardware playback devices, use the -a
 (or --auto) command line option.
 </p>

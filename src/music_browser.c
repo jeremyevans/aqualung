@@ -297,7 +297,7 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
 	table = gtk_table_new(2, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
 
-	name_label = gtk_label_new(_("\nVisible name:"));
+	name_label = gtk_label_new(_("Visible name:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
@@ -307,7 +307,7 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
-	sort_name_label = gtk_label_new(_("\nName to sort by:"));
+	sort_name_label = gtk_label_new(_("Name to sort by:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), sort_name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
@@ -317,7 +317,7 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), sort_name_entry, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
-	comment_label = gtk_label_new(_("\nComments:"));
+	comment_label = gtk_label_new(_("Comments:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), comment_label, FALSE, FALSE, 5);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, TRUE, 2);
@@ -405,7 +405,7 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
 	table = gtk_table_new(2, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
 
-	name_label = gtk_label_new(_("\nVisible name:"));
+	name_label = gtk_label_new(_("Visible name:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
@@ -415,7 +415,7 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
-	sort_name_label = gtk_label_new(_("\nName to sort by:"));
+	sort_name_label = gtk_label_new(_("Name to sort by:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), sort_name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
@@ -425,7 +425,7 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), sort_name_entry, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
-	comment_label = gtk_label_new(_("\nComments:"));
+	comment_label = gtk_label_new(_("Comments:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), comment_label, FALSE, FALSE, 5);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, TRUE, 2);
@@ -574,7 +574,7 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 	table = gtk_table_new(2, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
 
-	name_label = gtk_label_new(_("\nVisible name:"));
+	name_label = gtk_label_new(_("Visible name:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
@@ -584,7 +584,7 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
-	sort_name_label = gtk_label_new(_("\nName to sort by:"));
+	sort_name_label = gtk_label_new(_("Name to sort by:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), sort_name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
@@ -595,7 +595,7 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
 
-	list_label = gtk_label_new(_("\nAuto-create tracks from these files:"));
+	list_label = gtk_label_new(_("Auto-create tracks from these files:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), list_label, FALSE, FALSE, 5);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, TRUE, 2);
@@ -628,7 +628,7 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
         g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_record_clicked),
 			 (gpointer *)model);
 
-	comment_label = gtk_label_new(_("\nComments:"));
+	comment_label = gtk_label_new(_("Comments:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), comment_label, FALSE, FALSE, 5);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, TRUE, 2);
@@ -744,7 +744,7 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
 	table = gtk_table_new(2, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
 
-	name_label = gtk_label_new(_("\nVisible name:"));
+	name_label = gtk_label_new(_("Visible name:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
@@ -754,7 +754,7 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
-	sort_name_label = gtk_label_new(_("\nName to sort by:"));
+	sort_name_label = gtk_label_new(_("Name to sort by:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), sort_name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
@@ -764,7 +764,7 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), sort_name_entry, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
-	comment_label = gtk_label_new(_("\nComments:"));
+	comment_label = gtk_label_new(_("Comments:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), comment_label, FALSE, FALSE, 5);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, TRUE, 2);
@@ -886,7 +886,7 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 	table = gtk_table_new(3, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
 
-	name_label = gtk_label_new(_("\nVisible name:"));
+	name_label = gtk_label_new(_("Visible name:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
@@ -896,7 +896,7 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
-	sort_name_label = gtk_label_new(_("\nName to sort by:"));
+	sort_name_label = gtk_label_new(_("Name to sort by:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), sort_name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
@@ -906,7 +906,7 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), sort_name_entry, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
-	file_label = gtk_label_new(_("\nFilename:"));
+	file_label = gtk_label_new(_("Filename:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), file_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 5);
@@ -926,7 +926,7 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 			 (gpointer *)file_entry);
 	
 
-	comment_label = gtk_label_new(_("\nComments:"));
+	comment_label = gtk_label_new(_("Comments:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), comment_label, FALSE, FALSE, 5);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, TRUE, 2);
@@ -1041,7 +1041,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 	table = gtk_table_new(3, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
 
-	name_label = gtk_label_new(_("\nVisible name:"));
+	name_label = gtk_label_new(_("Visible name:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
@@ -1051,7 +1051,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
-	sort_name_label = gtk_label_new(_("\nName to sort by:"));
+	sort_name_label = gtk_label_new(_("Name to sort by:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), sort_name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
@@ -1061,7 +1061,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 	gtk_table_attach(GTK_TABLE(table), sort_name_entry, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
-	file_label = gtk_label_new(_("\nFilename:"));
+	file_label = gtk_label_new(_("Filename:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), file_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 5);
@@ -1082,7 +1082,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 			 (gpointer *)file_entry);
 	
 
-	comment_label = gtk_label_new(_("\nComments:"));
+	comment_label = gtk_label_new(_("Comments:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), comment_label, FALSE, FALSE, 5);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, TRUE, 2);
@@ -1109,7 +1109,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
         table = gtk_table_new(3, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, FALSE, 4);
 
-	duration_label = gtk_label_new(_("\nDuration:"));
+	duration_label = gtk_label_new(_("Duration:"));
         duration_hbox = gtk_hbox_new(FALSE, 3);
         gtk_box_pack_start(GTK_BOX(duration_hbox), duration_label, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table), duration_hbox, 0, 1, 0, 1,
@@ -1123,7 +1123,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
                          GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 3);
 
 
-	volume_label = gtk_label_new(_("\nVolume level:"));
+	volume_label = gtk_label_new(_("Volume level:"));
         volume_hbox = gtk_hbox_new(FALSE, 3);
         gtk_box_pack_start(GTK_BOX(volume_hbox), volume_label, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table), volume_hbox, 0, 1, 1, 2,

@@ -5,10 +5,12 @@ COPYRIGHT_HOLDER = Tom Szilagyi
 
 POTFILES = \
 ../about.c \
+../file_info.c \
 ../gui_main.c \
 ../music_browser.c \
 ../options.c \
 ../playlist.c \
 ../plugin.c \
 ../ports.c \
-../skin.c
+../skin.c \
+../volume.c

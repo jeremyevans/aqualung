@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-26 16:52+0100\n"
+"POT-Creation-Date: 2005-01-27 11:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: ../about.c:84
+#: ../about.c:84 ../file_info.c:965
 msgid "Dismiss"
 msgstr ""
 
@@ -164,6 +164,122 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
+#: ../file_info.c:255 ../file_info.c:264
+msgid "Relative Volume"
+msgstr ""
+
+#: ../file_info.c:265 ../file_info.c:552 ../file_info.c:884
+msgid "Import as RVA"
+msgstr ""
+
+#: ../file_info.c:349 ../file_info.c:528 ../file_info.c:857
+msgid "Import as Title"
+msgstr ""
+
+#: ../file_info.c:358 ../file_info.c:544 ../file_info.c:875
+msgid "Import as Artist"
+msgstr ""
+
+#: ../file_info.c:367 ../file_info.c:536 ../file_info.c:866
+msgid "Import as Record"
+msgstr ""
+
+#: ../file_info.c:376
+msgid "Import as Track number"
+msgstr ""
+
+#: ../file_info.c:396 ../file_info.c:421 ../file_info.c:435 ../file_info.c:474
+#: ../file_info.c:562 ../file_info.c:586 ../file_info.c:894 ../file_info.c:913
+msgid "Add to Comments"
+msgstr ""
+
+#: ../file_info.c:405
+msgid "Copyright (C)"
+msgstr ""
+
+#: ../file_info.c:405
+msgid "Produced (P)"
+msgstr ""
+
+#: ../file_info.c:460
+msgid "Comment"
+msgstr ""
+
+#: ../file_info.c:574 ../file_info.c:581 ../file_info.c:586 ../file_info.c:901
+#: ../file_info.c:908 ../file_info.c:913
+msgid "Vendor:"
+msgstr ""
+
+#: ../file_info.c:659
+msgid "File info"
+msgstr ""
+
+#: ../file_info.c:673
+msgid "Track:"
+msgstr ""
+
+#: ../file_info.c:685
+msgid "File:"
+msgstr ""
+
+#: ../file_info.c:704
+msgid "Audio data"
+msgstr ""
+
+#: ../file_info.c:708
+msgid "Format:"
+msgstr ""
+
+#: ../file_info.c:719
+msgid "Length:"
+msgstr ""
+
+#: ../file_info.c:730
+msgid "Samplerate:"
+msgstr ""
+
+#: ../file_info.c:734
+#, c-format
+msgid "%ld Hz"
+msgstr ""
+
+#: ../file_info.c:741
+msgid "Channel count:"
+msgstr ""
+
+#: ../file_info.c:746 ../gui_main.c:568
+msgid "MONO"
+msgstr ""
+
+#: ../file_info.c:748 ../gui_main.c:570
+msgid "STEREO"
+msgstr ""
+
+#: ../file_info.c:755
+msgid "Bandwidth:"
+msgstr ""
+
+#: ../file_info.c:759
+#, c-format
+msgid "%.1f kbit/s"
+msgstr ""
+
+#: ../file_info.c:766
+msgid "Total samples:"
+msgstr ""
+
+#: ../file_info.c:794
+msgid "ID3v2 tags"
+msgstr ""
+
+#: ../file_info.c:825
+msgid "Vorbis comments"
+msgstr ""
+
+#: ../file_info.c:939
+msgid "FLAC metadata"
+msgstr ""
+
 #: ../gui_main.c:386
 msgid "Unrecognized"
 msgstr ""
@@ -231,14 +347,6 @@ msgstr ""
 msgid "Emphasis: reserved"
 msgstr ""
 
-#: ../gui_main.c:568
-msgid "MONO"
-msgstr ""
-
-#: ../gui_main.c:570
-msgid "STEREO"
-msgstr ""
-
 #: ../gui_main.c:585 ../gui_main.c:590 ../gui_main.c:594
 msgid "Output:"
 msgstr ""
@@ -304,23 +412,17 @@ msgstr ""
 
 #: ../music_browser.c:300 ../music_browser.c:408 ../music_browser.c:577
 #: ../music_browser.c:747 ../music_browser.c:889 ../music_browser.c:1044
-msgid ""
-"\n"
-"Visible name:"
+msgid "Visible name:"
 msgstr ""
 
 #: ../music_browser.c:310 ../music_browser.c:418 ../music_browser.c:587
 #: ../music_browser.c:757 ../music_browser.c:899 ../music_browser.c:1054
-msgid ""
-"\n"
-"Name to sort by:"
+msgid "Name to sort by:"
 msgstr ""
 
 #: ../music_browser.c:320 ../music_browser.c:428 ../music_browser.c:631
 #: ../music_browser.c:767 ../music_browser.c:929 ../music_browser.c:1085
-msgid ""
-"\n"
-"Comments:"
+msgid "Comments:"
 msgstr ""
 
 #: ../music_browser.c:395
@@ -336,9 +438,7 @@ msgid "Add Record"
 msgstr ""
 
 #: ../music_browser.c:598
-msgid ""
-"\n"
-"Auto-create tracks from these files:"
+msgid "Auto-create tracks from these files:"
 msgstr ""
 
 #: ../music_browser.c:619 ../playlist.c:644
@@ -362,9 +462,7 @@ msgid "Add Track"
 msgstr ""
 
 #: ../music_browser.c:909 ../music_browser.c:1064
-msgid ""
-"\n"
-"Filename:"
+msgid "Filename:"
 msgstr ""
 
 #: ../music_browser.c:923 ../music_browser.c:1079
@@ -376,15 +474,11 @@ msgid "Edit Track"
 msgstr ""
 
 #: ../music_browser.c:1112
-msgid ""
-"\n"
-"Duration:"
+msgid "Duration:"
 msgstr ""
 
 #: ../music_browser.c:1126
-msgid ""
-"\n"
-"Volume level:"
+msgid "Volume level:"
 msgstr ""
 
 #: ../music_browser.c:1136
@@ -783,4 +877,17 @@ msgstr ""
 
 #: ../skin.c:184
 msgid "Apply"
+msgstr ""
+
+#: ../volume.c:149
+msgid "Processing..."
+msgstr ""
+
+#: ../volume.c:166
+msgid "Abort"
+msgstr ""
+
+#: ../volume.c:210
+#, c-format
+msgid "Calculating volume level of %s"
 msgstr ""

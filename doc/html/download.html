@@ -49,15 +49,18 @@ page</a>.
 </p>
 
 <p>
-The latest release tarball version is 0.9beta3. You can read the <a
-href="ChangeLog">ChangeLog</a> to decide whether you want to upgrade
-from a previous version.
+The latest release tarball version is <code>0.9beta4</code>. You can
+read the <a href="ChangeLog">ChangeLog</a> to decide whether you want
+to upgrade from a previous version.
 </p>
 
 <p>
-You can also make use of the anonymous CVS access provided by
-SourceForge.net. To do this, follow these steps (<code>%</code> is
-meant to be your prompt):
+Most development happens in CVS, so if you want to take part in the
+development process, or try the very latest version, you have to get
+the CVS version. This is possible by means of the anonymous CVS access
+provided by SourceForge.net. To obtain a copy of the Aqualung source
+repository, follow these steps (<code>%</code> is meant to be your
+prompt):
 </p>
 
 <blockquote>
@@ -87,7 +90,6 @@ browser</a>. Nice to see if there is anything new.
 </p>
 
 
-
 <br>
 <h2>Get additional skins</h2>
 
@@ -102,10 +104,16 @@ needed, nor is it necessary to restart the program.
 </p>
 
 <p>
-The Aqualung source contains the default skin, which provides a very
-simple, neutral look. (It is automatically installed as part of the
-<code>make install</code> process.) The following table shows
-additional (richer looking) skins. These are distributed as
+The Aqualung source contains the four basic skins (dark, default,
+metal, woody) supported by the developers. Supported means that these
+skins will be kept up to date with regard to the latest developments
+(new dialogs, new, formerly unused widgets etc.) These four skins are
+part of the Aqualung source distribution, and are automatically
+installed as part of the <code>make install</code> process.
+</p>
+
+<p>
+The following table shows additional skins. These are distributed as
 <code>.tar.gz</code> archives. After downloading any of these, all you
 need to do is unpack it either in your <code>~/.aqualung</code>
 directory, or the system-wide Aqualung skin directory (which is
@@ -113,6 +121,7 @@ directory, or the system-wide Aqualung skin directory (which is
 <code>${prefix}</code> is the prefix you used when installing Aqualung
 itself; it is likely to be <code>/usr</code> or
 <code>/usr/local</code>).
+</p>
 
 <p>
 The program may be running when you install the new skin (that is, you
@@ -121,22 +130,23 @@ will be immediately available after you reopen the skin chooser
 dialog.
 </p>
 
+<p>
+The skins in the following table are authored by indepent
+contributors.  We accept no responsibility and offer no support
+concerning their use.  As Aqualung development proceeds, skins
+generally (but not always) need to be updated to keep up with newer
+GUI components. We are happy to receive updated versions of these
+skins from their authors at any time, and will update the downloadable
+version.
+</p>
+
 <table cellspacing="1" cellpadding="5" border="1">
-<tr><th>skin name</th><th>download link</th><th>description</th><th>author</th></tr>
+<tr><th>skin name</th><th>current as of Aqualung version</th><th>download link</th><th>description</th><th>author</th></tr>
 
-<tr><td>dark</td><td><a
-href="http://aqualung.sf.net/skins/aqualung-dark.tar.gz">http://aqualung.sf.net/skins/aqualung-dark.tar.gz</a>
-</td><td>Dark, XMMS-like colors. Your eye won't get
-burned.</td><td>Peter Szilagyi</td></tr>
-
-<tr><td>metal</td><td><a
-href="http://aqualung.sf.net/skins/aqualung-metal.tar.gz">http://aqualung.sf.net/skins/aqualung-metal.tar.gz</a>
-</td><td>Modern looking, shining metal colors.</td><td>Peter Szilagyi</td></tr>
-
-<tr><td>woody</td><td><a
-href="http://aqualung.sf.net/skins/aqualung-woody.tar.gz">http://aqualung.sf.net/skins/aqualung-woody.tar.gz</a>
-</td><td>Warm look&amp;feel, for those who like natural
-surfaces.</td><td>Peter Szilagyi</td></tr>
+<tr><td>plain</td><td>0.9beta3</td><td><a
+href="http://aqualung.sf.net/skins/aqualung-plain.tar.gz">http://aqualung.sf.net/skins/aqualung-plain.tar.gz</a>
+</td><td>A simple skin using the default GTK 2.4.x color scheme and
+GTK 2.5.x stock icons.</td><td>pasp</td></tr>
 
 </table>
 
@@ -144,7 +154,8 @@ surfaces.</td><td>Peter Szilagyi</td></tr>
 Creating new skins is easy if you are familiar with the usual GTK+
 stuff concerning rc files, pixmaps etc. Look at the existing skins to
 find out about their internals. You are encouraged to create new skins
-of your style, and send them to us. Your contribution will be welcome.
+of your style, and send them to us. Your contribution will be welcome,
+and most probably added to the above table.
 </p>
 
 <p>

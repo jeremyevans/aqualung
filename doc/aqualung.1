@@ -1,4 +1,4 @@
-.TH AQUALUNG 1 "9 Sep 2004"
+.TH AQUALUNG 1 "28 Jan 2005"
 
 
 .SH NAME
@@ -37,7 +37,9 @@ random seeking during playback, track repeat, list repeat and shuffle
 mode (besides normal playback). It will come up in the same state as
 it was when you closed it, including playback modes, volume & balance
 settings, currently processing LADSPA plugins, window sizes, positions
-& visibility, and other miscellaneous options.
+& visibility, and other miscellaneous options. Aqualung has the
+ability to display FLAC stream metadata, Ogg Vorbis comments and ID3v2
+tags found in MP3 and other files.
 
 You can control any running instance of the program remotely from the
 command line (start, stop, pause etc.). Remote loading or enqueueing
@@ -49,7 +51,8 @@ metadata about music on your computer (including, but not limited to,
 the names of artists, and the titles of records and tracks). You can
 (and should) organize your music into a tree of
 Artists/Records/Tracks, thereby making life easier than with the
-all-in-one Winamp/XMMS playlist.
+all-in-one Winamp/XMMS playlist. Importing file metadata (ID3v2 tags,
+Ogg Vorbis comments, FLAC metadata) into the Music Store is supported.
 
 Please refer to the HTML documentation provided with the program for a
 detailed description of features, usage tips and troubleshooting
@@ -140,7 +143,8 @@ are numbered on a per user basis, starting with 0. Except for the
 zero-th instance (started first), the instance number is displayed in
 the title bar of the main window (e.g.: Aqualung.3). If you don't use
 this option, the following options will control the zero-th instance
-by default.
+by default, except for -L which defaults to the present instance (so
+as to be able to start playback immediately from the command line).
 
 .TP
 \-B, \-\-back
@@ -167,6 +171,19 @@ Pause playback, or resume if already paused.
 .br
 Stop playback.
 
+.TP
+\-V, \-\-volume [m|M]|[=]<val>
+.br
+Adjust the volume. m/M means mute; if = is present, the remote
+instance's volume control will be set to the value specified,
+otherwise, the volume will be adjusted by the supplied (signed)
+value. The values are in dB units.
+
+.TP
+\-Q, \-\-quit
+.br
+Terminate remote instance.
+
 
 .TP
 .B Options for file loading:
@@ -175,24 +192,22 @@ Stop playback.
 You may specify filenames on the command line. These may be ordinary
 soundfiles playable by Aqualung, or playlist files you saved
 earlier. The program will decide if a file is a playlist, and add its
-contents accordingly.
+contents accordingly. In addition to Aqualung's native (XML) playlist
+format, the program will load M3U and PLS playlists whenever possible.
 
 If you used the --session option (see above), the files will be sent
 to the Aqualung instance you specified. Otherwise a new instance will
 start up with the files you specified. Note that if you enabled the
-"Save and restore the playlist automatically on exit/startup" option
-in the program setup dialog, the files you specify will be loaded
-\fBafter\fR the automatically loaded ones.
+"Save and restore the playlist on exit/startup" option in the program
+setup dialog, the files you specify will be loaded \fBafter\fR the
+automatically loaded ones.
 
 .TP
 \-E, \-\-enqueue
 .br
 Enqueue added files to the playlist instead of loading them (which
 removes the previous contents of the playlist). Use this if you want
-to add more than one files at once, and/or you want to keep the
-existing items in the playlist. Note that you do \fBnot\fR have to use
-this option if you want to load a playlist with more than one file in
-it.
+to keep the existing items in the playlist.
 
 
 .TP

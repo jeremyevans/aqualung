@@ -63,6 +63,9 @@ typedef struct _import_data_t {
         float fval;
 } import_data_t;
 
+
+extern int replaygain_tag_to_use;
+
 extern GtkWidget * main_window;
 extern GtkTreeStore * music_store;
 extern GtkTreeSelection * music_select;
@@ -530,16 +533,47 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 					append_table(table_vorbis, &cnt,
 						     oggv->label, oggv->str,
 						     _("Import as Artist"), data);
-				} else
-				if (strcmp(oggv->label, "Replaygain_track_gain:") == 0) {
+
+				} else if ((strcmp(oggv->label, "Replaygain_track_gain:") == 0) ||
+					   (strcmp(oggv->label, "Replaygain_album_gain:") == 0)) {
+
+					char replaygain_label[MAXLEN];
+
+					switch (replaygain_tag_to_use) {
+					case 0:
+						strcpy(replaygain_label, "Replaygain_track_gain:");
+						break;
+					case 1:
+						strcpy(replaygain_label, "Replaygain_album_gain:");
+						break;
+					default:
+						fprintf(stderr, "file_info.c: illegal "
+							"replaygain_tag_to_use value -- "
+							"please see the programmers\n");
+					}
 					
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_RVA;
-					data->fval = oggv->fval;
-					append_table(table_vorbis, &cnt,
-						     oggv->label, oggv->str,
-						     _("Import as RVA"), data);
+					if (strcmp(oggv->label, replaygain_label) == 0) {
+						
+						data->model = model;
+						data->track_iter = track_iter;
+						data->dest_type = IMPORT_DEST_RVA;
+						data->fval = oggv->fval;
+						append_table(table_vorbis, &cnt,
+							     oggv->label, oggv->str,
+							     _("Import as RVA"), data);
+					} else {
+						char tmp[MAXLEN];
+						
+						snprintf(tmp, MAXLEN-1, "%s %s",
+							 oggv->label, oggv->str);
+						data->model = model;
+						data->track_iter = track_iter;
+						data->dest_type = IMPORT_DEST_COMMENT;
+						strncpy(data->str, tmp, MAXLEN-1);
+						append_table(table_vorbis, &cnt,
+							     oggv->label, oggv->str,
+							     _("Add to Comments"), data);
+					}
 				} else {
 					char tmp[MAXLEN];
 					
@@ -609,16 +643,46 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 					append_table(table_flac, &cnt,
 						     oggv->label, oggv->str,
 						     _("Import as Artist"), data);
-				} else
-				if (strcmp(oggv->label, "Replaygain_track_gain:") == 0) {
+
+				} else if ((strcmp(oggv->label, "Replaygain_track_gain:") == 0) ||
+					   (strcmp(oggv->label, "Replaygain_album_gain:") == 0)) {
+
+					char replaygain_label[MAXLEN];
+
+					switch (replaygain_tag_to_use) {
+					case 0:
+						strcpy(replaygain_label, "Replaygain_track_gain:");
+						break;
+					case 1:
+						strcpy(replaygain_label, "Replaygain_album_gain:");
+						break;
+					default:
+						fprintf(stderr, "illegal replaygain_tag_to_use value -- "
+							"please see the programmers\n");
+					}
 					
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_RVA;
-					data->fval = oggv->fval;
-					append_table(table_flac, &cnt,
-						     oggv->label, oggv->str,
-						     _("Import as RVA"), data);
+					if (strcmp(oggv->label, replaygain_label) == 0) {
+						
+						data->model = model;
+						data->track_iter = track_iter;
+						data->dest_type = IMPORT_DEST_RVA;
+						data->fval = oggv->fval;
+						append_table(table_flac, &cnt,
+							     oggv->label, oggv->str,
+							     _("Import as RVA"), data);
+					} else {
+						char tmp[MAXLEN];
+						
+						snprintf(tmp, MAXLEN-1, "%s %s",
+							 oggv->label, oggv->str);
+						data->model = model;
+						data->track_iter = track_iter;
+						data->dest_type = IMPORT_DEST_COMMENT;
+						strncpy(data->str, tmp, MAXLEN-1);
+						append_table(table_flac, &cnt,
+							     oggv->label, oggv->str,
+							     _("Add to Comments"), data);
+					}
 				} else {
 					char tmp[MAXLEN];
 					

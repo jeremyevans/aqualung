@@ -67,6 +67,7 @@ extern int auto_use_meta_track;
 extern int auto_use_ext_meta_artist;
 extern int auto_use_ext_meta_record;
 extern int auto_use_ext_meta_track;
+extern int replaygain_tag_to_use;
 int auto_save_playlist_shadow;
 int show_rva_in_playlist_shadow;
 int show_length_in_playlist_shadow;
@@ -88,6 +89,7 @@ GtkWidget * options_window;
 GtkWidget * optmenu_ladspa;
 GtkWidget * optmenu_listening_env;
 GtkWidget * optmenu_threshold;
+GtkWidget * optmenu_replaygain;
 GtkWidget * entry_title;
 GtkWidget * entry_param;
 GtkWidget * label_src;
@@ -195,6 +197,7 @@ ok(GtkWidget * widget, gpointer data) {
 		auto_use_ext_meta_track = 0;
 	}
 
+	replaygain_tag_to_use = gtk_option_menu_get_history(GTK_OPTION_MENU(optmenu_replaygain));
 
 	for (i = 0; i < 3; i++) {
 
@@ -597,6 +600,10 @@ create_options_window(void) {
 	GtkWidget * hbox_linthresh;
 	GtkWidget * hbox_stdthresh;
 
+	GtkWidget * label_meta;
+	GtkWidget * vbox_meta;
+
+
 	GtkWidget * hbox;
 	GtkWidget * ok_btn;
 	GtkWidget * cancel_btn;
@@ -755,76 +762,6 @@ to set the column order in the Playlist."));
 			break;
 		}
 	}
-
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), hbox, FALSE, TRUE, 3);
-
-	label = gtk_label_new(_("When adding to playlist, use file metadata (if available) "
-				"instead of\ninformation from the Music Store for:"));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), hbox, FALSE, TRUE, 3);
-	check_auto_use_meta_artist = gtk_check_button_new_with_label(_("Artist name"));
-	gtk_widget_set_name(check_auto_use_meta_artist, "check_on_notebook");
-	if (auto_use_meta_artist) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_artist), TRUE);
-	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_artist, FALSE, TRUE, 20);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), hbox, FALSE, TRUE, 3);
-	check_auto_use_meta_record = gtk_check_button_new_with_label(_("Record name"));
-	gtk_widget_set_name(check_auto_use_meta_record, "check_on_notebook");
-	if (auto_use_meta_record) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_record), TRUE);
-	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_record, FALSE, TRUE, 20);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), hbox, FALSE, TRUE, 3);
-	check_auto_use_meta_track = gtk_check_button_new_with_label(_("Track name"));
-	gtk_widget_set_name(check_auto_use_meta_track, "check_on_notebook");
-	if (auto_use_meta_track) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_track), TRUE);
-	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_track, FALSE, TRUE, 20);
-
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), hbox, FALSE, TRUE, 3);
-
-	label = gtk_label_new(_("When adding external files to playlist, use file metadata "
-				"(if available) for:"));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), hbox, FALSE, TRUE, 3);
-	check_auto_use_ext_meta_artist = gtk_check_button_new_with_label(_("Artist name"));
-	gtk_widget_set_name(check_auto_use_ext_meta_artist, "check_on_notebook");
-	if (auto_use_ext_meta_artist) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_artist), TRUE);
-	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_artist, FALSE, TRUE, 20);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), hbox, FALSE, TRUE, 3);
-	check_auto_use_ext_meta_record = gtk_check_button_new_with_label(_("Record name"));
-	gtk_widget_set_name(check_auto_use_ext_meta_record, "check_on_notebook");
-	if (auto_use_ext_meta_record) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_record), TRUE);
-	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_record, FALSE, TRUE, 20);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), hbox, FALSE, TRUE, 3);
-	check_auto_use_ext_meta_track = gtk_check_button_new_with_label(_("Track name"));
-	gtk_widget_set_name(check_auto_use_ext_meta_track, "check_on_notebook");
-	if (auto_use_ext_meta_track) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_track), TRUE);
-	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_track, FALSE, TRUE, 20);
 
 
 	/* "DSP" notebook page */
@@ -1115,6 +1052,113 @@ See the About box and the documentation for details."));
 		gtk_widget_set_sensitive(spin_stdthresh, FALSE);
 		gtk_widget_set_sensitive(label_stdthresh, FALSE);
 	}
+
+	/* "Metadata" notebook page */
+
+	label_meta = gtk_label_new(_("Metadata"));
+	vbox_meta = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox_meta), 8);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_meta, label_meta);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+
+	label = gtk_label_new(_("When adding to playlist, use file metadata (if available) "
+				"instead of\ninformation from the Music Store for:"));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+	check_auto_use_meta_artist = gtk_check_button_new_with_label(_("Artist name"));
+	gtk_widget_set_name(check_auto_use_meta_artist, "check_on_notebook");
+	if (auto_use_meta_artist) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_artist), TRUE);
+	}
+        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_artist, FALSE, TRUE, 20);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+	check_auto_use_meta_record = gtk_check_button_new_with_label(_("Record name"));
+	gtk_widget_set_name(check_auto_use_meta_record, "check_on_notebook");
+	if (auto_use_meta_record) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_record), TRUE);
+	}
+        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_record, FALSE, TRUE, 20);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+	check_auto_use_meta_track = gtk_check_button_new_with_label(_("Track name"));
+	gtk_widget_set_name(check_auto_use_meta_track, "check_on_notebook");
+	if (auto_use_meta_track) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_track), TRUE);
+	}
+        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_track, FALSE, TRUE, 20);
+
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+
+	label = gtk_label_new(_("When adding external files to playlist, use file metadata "
+				"(if available) for:"));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+	check_auto_use_ext_meta_artist = gtk_check_button_new_with_label(_("Artist name"));
+	gtk_widget_set_name(check_auto_use_ext_meta_artist, "check_on_notebook");
+	if (auto_use_ext_meta_artist) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_artist), TRUE);
+	}
+        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_artist, FALSE, TRUE, 20);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+	check_auto_use_ext_meta_record = gtk_check_button_new_with_label(_("Record name"));
+	gtk_widget_set_name(check_auto_use_ext_meta_record, "check_on_notebook");
+	if (auto_use_ext_meta_record) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_record), TRUE);
+	}
+        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_record, FALSE, TRUE, 20);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+	check_auto_use_ext_meta_track = gtk_check_button_new_with_label(_("Track name"));
+	gtk_widget_set_name(check_auto_use_ext_meta_track, "check_on_notebook");
+	if (auto_use_ext_meta_track) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_track), TRUE);
+	}
+        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_track, FALSE, TRUE, 20);
+
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+
+	label = gtk_label_new(_("Replaygain tag to use in Ogg Vorbis and FLAC files: "));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+
+	optmenu_replaygain = gtk_option_menu_new();
+        gtk_box_pack_start(GTK_BOX(hbox), optmenu_replaygain, FALSE, FALSE, 20);
+
+	{
+		GtkWidget * menu = gtk_menu_new();
+		GtkWidget * item;
+
+		item = gtk_menu_item_new_with_label(_("Replaygain_track_gain"));
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		gtk_widget_show(item);
+
+		item = gtk_menu_item_new_with_label(_("Replaygain_album_gain"));
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		gtk_widget_show(item);
+
+		gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_replaygain), menu);
+	}
+	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_replaygain), replaygain_tag_to_use);
+
 
 	/* end of notebook */
 

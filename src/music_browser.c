@@ -2454,6 +2454,7 @@ create_music_browser(void) {
 
 	music_tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(music_store));
 	gtk_widget_set_name(music_tree, "music_tree");
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(music_tree), FALSE);
 
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes("Artist / Record / Track",

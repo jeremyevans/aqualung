@@ -142,6 +142,7 @@ extern int auto_use_ext_meta_record;
 extern int auto_use_ext_meta_track;
 
 
+int replaygain_tag_to_use = 0;
 int rva_is_enabled = 0;
 int rva_env = 0;
 float rva_refvol = -12.0f;
@@ -2950,6 +2951,9 @@ save_config(void) {
 	snprintf(str, 31, "%d", auto_use_ext_meta_track);
         xmlNewTextChild(root, NULL, "auto_use_ext_meta_track", str);
 
+	snprintf(str, 31, "%d", replaygain_tag_to_use);
+        xmlNewTextChild(root, NULL, "replaygain_tag_to_use", str);
+
 	snprintf(str, 31, "%f", vol);
         xmlNewTextChild(root, NULL, "volume", str);
 	snprintf(str, 31, "%f", bal);
@@ -3191,6 +3195,12 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
 				sscanf(key, "%d", &show_length_in_playlist);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"replaygain_tag_to_use"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+				sscanf(key, "%d", &replaygain_tag_to_use);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"volume"))) {

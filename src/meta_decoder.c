@@ -44,6 +44,8 @@
 #include "meta_decoder.h"
 
 
+extern int replaygain_tag_to_use;
+
 
 #ifdef HAVE_ID3
 id3_tag_data *
@@ -412,7 +414,9 @@ meta_read_flac(metadata * meta, FLAC__StreamMetadata * flacmeta) {
 		oggv->label = strdup(field);
 		oggv->str = strdup(str);
 
-		if (strcmp(field, "Replaygain_track_gain:") == 0) {
+		if ((strcmp(field, "Replaygain_track_gain:") == 0) ||
+		    (strcmp(field, "Replaygain_album_gain:") == 0)) {
+
 			oggv->fval = convf(str);
 		} else {
 			oggv->fval = 0.0f;
@@ -514,7 +518,9 @@ meta_read(metadata * meta, char * file) {
 			oggv->label = strdup(field);
 			oggv->str = strdup(str);
 
-			if (strcmp(field, "Replaygain_track_gain:") == 0) {
+			if ((strcmp(field, "Replaygain_track_gain:") == 0) ||
+			    (strcmp(field, "Replaygain_album_gain:") == 0)) {
+
 				oggv->fval = convf(str);
 			} else {
 				oggv->fval = 0.0f;
@@ -698,10 +704,24 @@ meta_get_rva(metadata * meta, float * fval) {
 #endif /* HAVE_ID3 */
 	oggv_comment * oggv;
 
+	char replaygain_label[MAXLEN];
+
 
 	if (meta == NULL) {
 		fprintf(stderr, "meta_get_rva(): assertion meta != NULL failed\n");
 		return 0;
+	}
+
+	switch (replaygain_tag_to_use) {
+	case 0:
+		strcpy(replaygain_label, "Replaygain_track_gain:");
+		break;
+	case 1:
+		strcpy(replaygain_label, "Replaygain_album_gain:");
+		break;
+	default:
+		fprintf(stderr, "meta_decoder.c: illegal replaygain_tag_to_use value -- "
+			"please see the programmers\n");
 	}
 
 #ifdef HAVE_FLAC
@@ -710,7 +730,7 @@ meta_get_rva(metadata * meta, float * fval) {
 		oggv = oggv->next;
 		while (oggv != NULL) {
 
-			if (strcmp(oggv->label, "Replaygain_track_gain:") == 0) {
+			if (strcmp(oggv->label, replaygain_label) == 0) {
 				if (fval != NULL) {
 					*fval = oggv->fval;
 				}
@@ -727,7 +747,7 @@ meta_get_rva(metadata * meta, float * fval) {
 		oggv = oggv->next;
 		while (oggv != NULL) {
 
-			if (strcmp(oggv->label, "Replaygain_track_gain:") == 0) {
+			if (strcmp(oggv->label, replaygain_label) == 0) {
 				if (fval != NULL) {
 					*fval = oggv->fval;
 				}

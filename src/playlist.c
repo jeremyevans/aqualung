@@ -50,6 +50,8 @@ int auto_save_playlist = 1;
 
 GtkWidget * playlist_window;
 
+extern GtkWidget * info_window;
+
 int playlist_pos_x;
 int playlist_pos_y;
 int playlist_size_x;

@@ -153,6 +153,14 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\tPeter Szilagyi <szilagyi.peter@index.hu>\n\n\n", -1);
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
+	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Translators:"), -1, tag, NULL);
+	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("German,\nHungarian:"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tPeter Szilagyi <szilagyi.peter@index.hu>\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("Ukrainian:"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tSergiy Niskorodov <sgh_punk@users.sourceforge.net>\n\n\n", -1);
+
+	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter,
 					 _("This Aqualung binary is compiled with:"), -1, tag, NULL);
 

@@ -33,13 +33,21 @@
 
 extern GtkWidget * main_window;
 
-GtkWidget * info_window;
+GtkWidget * info_window = NULL;
 
 static gint
 dismiss(GtkWidget * widget, gpointer data) {
 
 	gtk_widget_destroy(info_window);
+	info_window = NULL;
 	return TRUE;
+}
+
+int
+info_window_close(GtkWidget * widget, gpointer * data) {
+
+	info_window = NULL;
+	return 0;
 }
 
 
@@ -80,6 +88,11 @@ show_file_info(char * name, char * file) {
 	GtkWidget * table_flac;
 
 
+	if (info_window != NULL) {
+		gtk_widget_destroy(info_window);
+		info_window = NULL;
+	}
+
 	if ((fdec = file_decoder_new()) == NULL) {
 		fprintf(stderr, "show_file_info: error: file_decoder_new() returned NULL\n");
 		return;
@@ -92,11 +105,13 @@ show_file_info(char * name, char * file) {
 	}
 
 	info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_transient_for(GTK_WINDOW(info_window), GTK_WINDOW(main_window));
+	/*gtk_window_set_transient_for(GTK_WINDOW(info_window), GTK_WINDOW(main_window));
+	gtk_window_set_modal(GTK_WINDOW(info_window), TRUE);*/
         gtk_window_set_title(GTK_WINDOW(info_window), _("File info"));
 	gtk_window_set_position(GTK_WINDOW(info_window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(info_window), TRUE);
-        gtk_container_set_border_width(GTK_CONTAINER(info_window), 5);
+	g_signal_connect(G_OBJECT(info_window), "delete_event",
+			 G_CALLBACK(info_window_close), NULL);
+	gtk_container_set_border_width(GTK_CONTAINER(info_window), 5);
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(info_window), vbox);

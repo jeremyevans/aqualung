@@ -18,6 +18,7 @@ options.h options.c \
 playlist.h playlist.c \
 plugin.h plugin.c \
 ports.h ports.c \
+search.h search.c \
 skin.h skin.c \
 transceiver.c transceiver.h \
 trashlist.c trashlist.h \

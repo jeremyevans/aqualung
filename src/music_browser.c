@@ -39,6 +39,7 @@
 #include "gui_main.h"
 #include "volume.h"
 #include "playlist.h"
+#include "search.h"
 #include "i18n.h"
 #include "music_browser.h"
 
@@ -108,6 +109,8 @@ GtkWidget * artist__addrec;
 GtkWidget * artist__volume;
 GtkWidget * artist__separator2;
 GtkWidget * artist__remove;
+GtkWidget * artist__separator3;
+GtkWidget * artist__search;
 
 GtkWidget * record_menu;
 GtkWidget * record__addlist;
@@ -118,6 +121,8 @@ GtkWidget * record__addtrk;
 GtkWidget * record__volume;
 GtkWidget * record__separator2;
 GtkWidget * record__remove;
+GtkWidget * record__separator3;
+GtkWidget * record__search;
 
 GtkWidget * track_menu;
 GtkWidget * track__addlist;
@@ -128,9 +133,12 @@ GtkWidget * track__fileinfo;
 GtkWidget * track__volume;
 GtkWidget * track__separator2;
 GtkWidget * track__remove;
+GtkWidget * track__separator3;
+GtkWidget * track__search;
 
 GtkWidget * blank_menu;
 GtkWidget * blank__add;
+GtkWidget * blank__search;
 
 
 /* prototypes, when we need them */
@@ -153,6 +161,8 @@ static void track__edit_cb(gpointer data);
 static void track__fileinfo_cb(gpointer data);
 static void track__volume_cb(gpointer data);
 static void track__remove_cb(gpointer data);
+
+static void search_cb(gpointer data);
 
 gint playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, gint x,
 				 gint y, GtkSelectionData  * data, guint info, guint time);
@@ -2306,6 +2316,14 @@ track__remove_cb(gpointer data) {
 }
 
 
+
+static void
+search_cb(gpointer data) {
+
+	search_dialog();
+}
+
+
 /************************************/
 
 
@@ -2480,9 +2498,13 @@ create_music_browser(void) {
 	/* create popup menu for blank space */
 	blank_menu = gtk_menu_new();
 	blank__add = gtk_menu_item_new_with_label(_("Add new artist..."));
+	blank__search = gtk_menu_item_new_with_label(_("Search..."));
 	gtk_menu_shell_append(GTK_MENU_SHELL(blank_menu), blank__add);
+	gtk_menu_shell_append(GTK_MENU_SHELL(blank_menu), blank__search);
 	g_signal_connect_swapped(G_OBJECT(blank__add), "activate", G_CALLBACK(artist__add_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(blank__search), "activate", G_CALLBACK(search_cb), NULL);
 	gtk_widget_show(blank__add);
+	gtk_widget_show(blank__search);
 
 	/* create popup menu for artist tree items */
 	artist_menu = gtk_menu_new();
@@ -2494,6 +2516,8 @@ create_music_browser(void) {
 	artist__volume = gtk_menu_item_new_with_label(_("Calculate volume (recursive)"));
 	artist__separator2 = gtk_separator_menu_item_new();
 	artist__remove = gtk_menu_item_new_with_label(_("Remove artist"));
+	artist__separator3 = gtk_separator_menu_item_new();
+	artist__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__separator1);
@@ -2503,6 +2527,8 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__volume);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__remove);
+	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__separator3);
+	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__search);
 
 	g_signal_connect_swapped(G_OBJECT(artist__addlist), "activate", G_CALLBACK(artist__addlist_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__add), "activate", G_CALLBACK(artist__add_cb), NULL);
@@ -2510,6 +2536,7 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(artist__addrec), "activate", G_CALLBACK(record__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__volume), "activate", G_CALLBACK(artist__volume_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__remove), "activate", G_CALLBACK(artist__remove_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(artist__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(artist__addlist);
 	gtk_widget_show(artist__separator1);
@@ -2519,6 +2546,8 @@ create_music_browser(void) {
 	gtk_widget_show(artist__volume);
 	gtk_widget_show(artist__separator2);
 	gtk_widget_show(artist__remove);
+	gtk_widget_show(artist__separator3);
+	gtk_widget_show(artist__search);
 
 	/* create popup menu for record tree items */
 	record_menu = gtk_menu_new();
@@ -2530,6 +2559,8 @@ create_music_browser(void) {
 	record__volume = gtk_menu_item_new_with_label(_("Calculate volume (recursive)"));
 	record__separator2 = gtk_separator_menu_item_new();
 	record__remove = gtk_menu_item_new_with_label(_("Remove record"));
+	record__separator3 = gtk_separator_menu_item_new();
+	record__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator1);
@@ -2539,6 +2570,8 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__volume);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__remove);
+	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator3);
+	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__search);
 
 	g_signal_connect_swapped(G_OBJECT(record__addlist), "activate", G_CALLBACK(record__addlist_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__add), "activate", G_CALLBACK(record__add_cb), NULL);
@@ -2546,6 +2579,7 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(record__addtrk), "activate", G_CALLBACK(track__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__volume), "activate", G_CALLBACK(record__volume_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__remove), "activate", G_CALLBACK(record__remove_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(record__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(record__addlist);
 	gtk_widget_show(record__separator1);
@@ -2555,6 +2589,8 @@ create_music_browser(void) {
 	gtk_widget_show(record__volume);
 	gtk_widget_show(record__separator2);
 	gtk_widget_show(record__remove);
+	gtk_widget_show(record__separator3);
+	gtk_widget_show(record__search);
 
 	/* create popup menu for track tree items */
 	track_menu = gtk_menu_new();
@@ -2566,6 +2602,8 @@ create_music_browser(void) {
 	track__volume = gtk_menu_item_new_with_label(_("Calculate volume"));
 	track__separator2 = gtk_separator_menu_item_new();
 	track__remove = gtk_menu_item_new_with_label(_("Remove track"));
+	track__separator3 = gtk_separator_menu_item_new();
+	track__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__separator1);
@@ -2575,6 +2613,8 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__volume);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__remove);
+	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__separator3);
+	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__search);
 
 	g_signal_connect_swapped(G_OBJECT(track__addlist), "activate", G_CALLBACK(track__addlist_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__add), "activate", G_CALLBACK(track__add_cb), NULL);
@@ -2582,6 +2622,7 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(track__fileinfo), "activate", G_CALLBACK(track__fileinfo_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__volume), "activate", G_CALLBACK(track__volume_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__remove), "activate", G_CALLBACK(track__remove_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(track__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(track__addlist);
 	gtk_widget_show(track__separator1);
@@ -2591,6 +2632,8 @@ create_music_browser(void) {
 	gtk_widget_show(track__volume);
 	gtk_widget_show(track__separator2);
 	gtk_widget_show(track__remove);
+	gtk_widget_show(track__separator3);
+	gtk_widget_show(track__search);
 
 	/* attach event handler that will popup the menus */
 	g_signal_connect_swapped(G_OBJECT(music_tree), "event", G_CALLBACK(music_tree_event_cb), NULL);

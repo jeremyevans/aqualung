@@ -33,7 +33,7 @@
 #define RCMD_LOAD     7
 #define RCMD_ENQUEUE  8
 #define RCMD_QUIT     9
-
+#define RCMD_VOLADJ  10
 
 int create_socket(const char * filename);
 char receive_message(int fd, char * cmd_arg);

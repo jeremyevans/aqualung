@@ -34,9 +34,13 @@
 #include "drag.xpm"
 #include "file_info.h"
 #include "gui_main.h"
+#include "volume.h"
 #include "i18n.h"
 #include "music_browser.h"
 
+
+
+extern GtkWidget * vol_window;
 
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
@@ -101,6 +105,7 @@ GtkWidget * track__separator1;
 GtkWidget * track__add;
 GtkWidget * track__edit;
 GtkWidget * track__fileinfo;
+GtkWidget * track__volume;
 GtkWidget * track__separator2;
 GtkWidget * track__remove;
 
@@ -125,6 +130,7 @@ static void record__remove_cb(gpointer data);
 static void track__add_cb(gpointer data);
 static void track__edit_cb(gpointer data);
 static void track__fileinfo_cb(gpointer data);
+static void track__volume_cb(gpointer data);
 static void track__remove_cb(gpointer data);
 
 gint playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, gint x,
@@ -1663,6 +1669,33 @@ track__fileinfo_cb(gpointer data) {
 
 
 static void
+track__volume_cb(gpointer data) {
+
+        GtkTreeIter iter_track;
+        GtkTreeModel * model;
+        char * ptrack_name;
+	char * pfile;
+        char track_name[MAXLEN];
+	char file[MAXLEN];
+
+	float vol = 0.0f;
+
+        if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
+
+                gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile, -1);
+                strncpy(track_name, ptrack_name, MAXLEN-1);
+                strncpy(file, pfile, MAXLEN-1);
+                g_free(ptrack_name);
+                g_free(pfile);
+
+		if (vol_window == NULL) {
+			calculate_volume(file, &vol);
+		}
+        }
+}
+
+
+static void
 track__remove_cb(gpointer data) {
 
 	GtkTreeIter iter;
@@ -1935,6 +1968,7 @@ create_music_browser(void) {
 	track__add = gtk_menu_item_new_with_label(_("Add new track..."));
 	track__edit = gtk_menu_item_new_with_label(_("Edit track..."));
 	track__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
+	track__volume = gtk_menu_item_new_with_label(_("Calculate volume"));
 	track__separator2 = gtk_separator_menu_item_new();
 	track__remove = gtk_menu_item_new_with_label(_("Remove track"));
 
@@ -1943,6 +1977,7 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__add);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__edit);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__fileinfo);
+	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__volume);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__remove);
 
@@ -1950,6 +1985,7 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(track__add), "activate", G_CALLBACK(track__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__edit), "activate", G_CALLBACK(track__edit_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__fileinfo), "activate", G_CALLBACK(track__fileinfo_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(track__volume), "activate", G_CALLBACK(track__volume_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__remove), "activate", G_CALLBACK(track__remove_cb), NULL);
 
 	gtk_widget_show(track__addlist);
@@ -1957,6 +1993,7 @@ create_music_browser(void) {
 	gtk_widget_show(track__add);
 	gtk_widget_show(track__edit);
 	gtk_widget_show(track__fileinfo);
+	gtk_widget_show(track__volume);
 	gtk_widget_show(track__separator2);
 	gtk_widget_show(track__remove);
 

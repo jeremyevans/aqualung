@@ -18,4 +18,5 @@ skin.h skin.c \
 plugin.h plugin.c \
 ports.h ports.c \
 transceiver.c transceiver.h \
+volume.c volume.h \
 version.h

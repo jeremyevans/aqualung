@@ -144,6 +144,7 @@ extern GtkWidget * playlist_window;
 extern GtkWidget * fxbuilder_window;
 extern GtkWidget * ports_window;
 extern GtkWidget * info_window;
+extern GtkWidget * vol_window;
 
 int main_pos_x;
 int main_pos_y;
@@ -755,6 +756,12 @@ change_skin(char * path) {
 		gtk_widget_reset_rc_styles(info_window);
 		gtk_widget_queue_draw(info_window);
 		gtk_window_present(GTK_WINDOW(info_window));
+	}
+
+	if (vol_window) {
+		gtk_widget_reset_rc_styles(vol_window);
+		gtk_widget_queue_draw(vol_window);
+		gtk_window_present(GTK_WINDOW(vol_window));
 	}
 
 	restore_window_position();
@@ -2269,6 +2276,37 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 }
 
 
+void
+adjust_remote_volume(char * str) {
+
+	char * endptr = NULL;
+	int val = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_vol));
+
+	switch (str[0]) {
+	case 'm':
+	case 'M':
+		val = -41;
+		break;
+	case '=':
+		val = strtol(str + 1, &endptr, 10);
+		if (endptr[0] != '\0') {
+			fprintf(stderr, "Cannot convert to integer value: %s\n", str + 1);
+			return;
+		}
+		break;
+	default:
+		val += strtol(str, &endptr, 10);
+		if (endptr[0] != '\0') {
+			fprintf(stderr, "Cannot convert to integer value: %s\n", str);
+			return;
+		}
+		break;
+	}
+
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), val);
+}
+
+
 gint timeout_callback(gpointer data) {
 
 	long pos;
@@ -2550,6 +2588,9 @@ gint timeout_callback(gpointer data) {
 			break;
 		case RCMD_ENQUEUE:
 			add_to_playlist(cmdbuf, 1);
+			break;
+		case RCMD_VOLADJ:
+			adjust_remote_volume(cmdbuf);
 			break;
 		case RCMD_QUIT:
 			main_window_close(NULL, NULL);

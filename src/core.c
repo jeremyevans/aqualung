@@ -1191,8 +1191,9 @@ main(int argc, char ** argv) {
 	int fwd = 0;
 	int enqueue = 0;
 	int remote_quit = 0;
+	char * voladj_arg = NULL;
 
-	char * optstring = "vho:d:c:n:p:r:aRP:s::N:BLUTFEQ";
+	char * optstring = "vho:d:c:n:p:r:aRP:s::N:BLUTFEV:Q";
 	struct option long_options[] = {
 		{ "version", 0, 0, 'v' },
 		{ "help", 0, 0, 'h' },
@@ -1214,6 +1215,7 @@ main(int argc, char ** argv) {
 		{ "stop", 0, 0, 'T' },
 		{ "fwd", 0, 0, 'F' },
 		{ "enqueue", 0, 0, 'E' },
+		{ "volume", 1, 0, 'V' },
 		{ "quit", 0, 0, 'Q' },
 
 		{ 0, 0, 0, 0 }
@@ -1389,6 +1391,9 @@ main(int argc, char ** argv) {
 			case 'E':
 				enqueue++;
 				break;
+			case 'V':
+				voladj_arg = strdup(optarg);
+				break;
 			case 'Q':
 				remote_quit++;
 				break;
@@ -1522,6 +1527,18 @@ main(int argc, char ** argv) {
 		exit(1);
 	}
 
+	if (voladj_arg) {
+		char buf[MAXLEN];
+
+		if (no_session == -1)
+			no_session = 0;
+		buf[0] = RCMD_VOLADJ;
+		buf[1] = '\0';
+		strncat(buf, voladj_arg, MAXLEN-1);
+		send_message_to_session(no_session, buf, strlen(buf));
+		exit(1);
+	}
+
 	{
 		int i;
 		char buffer[MAXLEN];
@@ -1623,6 +1640,7 @@ main(int argc, char ** argv) {
 			"-L, --play: Start playing.\n"
 			"-U, --pause: Pause playback, or resume if already paused.\n"
 			"-T, --stop: Stop playback.\n"
+			"-V, --volume [m|M]|[=]<val>: Set, adjust or mute volume.\n"
 			"-Q, --quit: Terminate remote instance.\n"
 
 			"Note that these options default to the 0-th instance when no -N option is given,\n"

@@ -351,6 +351,7 @@ show_file_info(char * name, char * file) {
 	info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(info_window), _("File info"));
 	gtk_window_set_position(GTK_WINDOW(info_window), GTK_WIN_POS_CENTER);
+	gtk_widget_set_size_request(GTK_WIDGET(info_window), 400, -1);
 	g_signal_connect(G_OBJECT(info_window), "delete_event",
 			 G_CALLBACK(info_window_close), NULL);
 	gtk_container_set_border_width(GTK_CONTAINER(info_window), 5);

@@ -101,6 +101,7 @@ receive_message(int fd, char * cmdarg) {
 		break;
 	case RCMD_LOAD:
 	case RCMD_ENQUEUE:
+	case RCMD_VOLADJ:
 		for (i = 1; i < MAXLEN && buffer[i] != '\0'; i++)
 			buffer[i-1] = buffer[i];
 		buffer[i-1] = '\0';

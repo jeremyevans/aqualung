@@ -1,0 +1,204 @@
+.TH AQUALUNG 1 "1 Sep 2004"
+
+
+.SH NAME
+aqualung \- Music player for GNU/Linux
+
+
+.SH SYNOPSIS
+
+\fBaqualung\fR \-\-output (oss|alsa|jack) [optional parameters]
+.br
+\fBaqualung\fR \-\-help
+.br
+\fBaqualung\fR \-\-version
+
+.SH DESCRIPTION
+
+Aqualung is a music player for the GNU/Linux operating system. It
+plays audio files from your filesystem and has the feature of
+inserting \fBno gaps\fR between adjacent tracks. It also supports high
+quality sample rate conversion between the file and the output device,
+when necessary.
+
+Almost all sample-based, uncompressed formats (eg. WAV, AIFF, AU etc.)
+are supported. Files encoded with FLAC (the Free Lossless Audio
+Codec), Ogg Vorbis and MPEG Audio (including the infamous MP3 format)
+are also supported. The program can play the music through OSS, ALSA
+or the JACK Audio Connection Kit.
+
+Aqualung supports the LADSPA 1.1 plugin standard. You can use any
+suitable plugin to enhance the music you are listening to.
+
+Other features of the program: internally working volume and balance
+controls (not touching the soundcard mixer), multiple skin support,
+random seeking during playback, track repeat, list repeat and shuffle
+mode (besides normal playback). It will come up in the same state as
+it was when you closed it, including playback modes, volume & balance
+settings, currently processing LADSPA plugins, window sizes, positions
+& visibility, and other miscellaneous options.
+
+In addition to all this, Aqualung provides a so-called Music Store
+that is an XML-based music database, capable of storing various
+metadata about music on your computer (including, but not limited to,
+the names of artists, and the titles of records and tracks). You can
+(and should) organize your music into a tree of
+Artists/Records/Tracks, thereby making life easier than with the
+all-in-one Winamp/XMMS playlist.
+
+Please refer to the HTML documentation provided with the program for a
+detailed description of features, usage tips and troubleshooting
+issues. This manual page is only an abstract from the documentation,
+and documents only the program's command line interface for quick
+reference.
+
+
+.SH OPTIONS
+
+Normally, you have to tell the program which output device you want to
+use. This is possible with the -o (--output) option. There are
+specific optional parameters for all three output drivers. You can
+also specify which sample rate converter you want to use, or request a
+list of available converters.
+
+.TP
+.B Optional parameters usable with alsa:
+.TP
+\-d, \-\-device <name>
+.br
+set the output device (defaults to plughw:0,0)
+.TP
+\-p, \-\-period <int>
+.br
+set ALSA period size (defaults to 8192)
+.TP
+\-n, \-\-nperiods <int>
+.br
+specify the number of periods in hardware buffer (defaults to 2)
+.TP
+\-r, \-\-rate <int>
+.br
+set the output sample rate
+.TP
+\-R, \-\-realtime
+.br
+try to use realtime (SCHED_FIFO) scheduling for ALSA output thread
+.TP
+\-P, \-\-priority <int>
+.br
+when running \-\-realtime, set scheduler priority to <int> (defaults to 1).
+
+.TP
+.B Optional parameters usable with oss:
+.TP
+\-d, \-\-device <name>
+.br
+set the output device (defaults to /dev/dsp)
+.TP
+\-r, \-\-rate <int>
+.br
+set the output sample rate
+
+.TP
+.B Optional parameters usable with jack:
+.TP
+\-a, \-\-auto
+.br
+auto-connect output ports to first two hardware playback ports
+.TP
+\-c, \-\-client <name>
+.br
+set client name (needed if you want to run multiple instances of the program)
+
+.TP
+.B Optional misc. parameters:
+.TP
+\-s, \-\-srctype [<int>]
+.br
+choose the SRC type, or print the list of available types if no number
+given. The default is SRC type 4 (Linear Interpolator).
+
+.TP
+.B Examples:
+.br
+$ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2
+.br
+$ aqualung --srctype=1 --output oss --rate 96000
+
+.PP
+Depending on the compile-time options, not all file formats
+and output drivers may be usable.
+
+.SH FILES
+
+The ~/.aqualung directory contains the music store and other user
+settings.
+
+.TP
+~/.aqualung/music_store.xml
+.br
+Music database, stores various metadata about music on your computer
+
+.TP
+~/.aqualung/config.xml
+.br
+GUI (skin, window size/position, etc.) and other settings
+
+.TP
+~/.aqualung/plugin.xml
+.br
+List of running plugins and all their settings
+
+.TP
+~/.aqualung/playlist.xml
+.br
+Automatically saved and restored playlist (if you enable this feature)
+
+.TP
+~/.aqualung/<skin-name>
+.br
+Locally available skin <skin-name>
+
+.TP
+System-wide skin directory is $prefix/share/aqualung/skin.
+
+
+.SH ENVIRONMENT
+Aqualung obeys two environment variables concerning LADSPA plugins.
+
+.TP
+.B LADSPA_PATH
+LADSPA_PATH should contain a colon-separated list of paths to search
+for LADSPA plugin .so files.
+
+.TP
+.B LADSPA_RDF_PATH
+LADSPA_RDF_PATH should contain a colon-separated list of paths to RDF
+metadata files about these plugins.
+
+.PP
+When any of these is not specified, the program will use sensible
+defaults and look in the obvious places.
+
+.SH AUTHORS
+
+.br
+Tom Szilagyi <tszilagyi@users.sourceforge.net>
+.br
+Peter Szilagyi <szilagyi.peter@index.hu>
+
+.SH BUGS
+
+Yes. Report them to <tszilagyi@users.sourceforge.net>
+
+.SH HOMEPAGE
+
+Please go to http://aqualung.sf.net to download the latest version,
+get additional skins or read the docs.
+
+.SH SEE ALSO
+
+If you installed Aqualung from source, the HTML documentation should
+be available at
+.br
+$prefix/share/aqualung/html/

@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>Aqualung</title>
+<meta name="generator" content="GNU Emacs 21.2.1">
+<meta http-equiv="Content-Type" content="text/html;
+charset=iso-8859-1">
+<meta name="description" content="Aqualung, Music player for GNU/Linux">
+<meta name="keywords" content="Aqualung Music player GNU Linux GNU/Linux">
+<meta name="author" content="Tom Szilagyi">
+</head>
+
+<body bgcolor=#ffffff>
+
+<center>
+<img src="aqualung.png" alt="Aqualung Logo">
+<hr>
+
+<a href="index.html">[ Home ]</a>
+<a href="screenshots.html">[ Screenshots ]</a>
+<a href="download.html">[ Download ]</a>
+<a href="compiling.html">[ Compiling ]</a>
+<a href="usage.html">[ Usage Tips ]</a>
+<a href="qa.html">[ Q & A ]</a>
+<a href="misc.html">[ Misc ]</a>
+
+</center>
+<!-- Aqualung standard header ends -->
+
+<br>
+<h2>Questions and Answers</h2>
+
+<p>
+Please read these before reporting a bug, complaining about missing
+features or misfeatures, sending patches etc. Some of the points below
+are here to state the developer's concepts about what this software is
+and what it is not. Some other issues are also covered.
+</p>
+
+
+<br>
+<p><i>Can I play CD's, or listen to streaming media (HTTP,
+*cast)?</i></p>
+<p>
+Not with this program. Aqualung is designed solely to play audio files
+within the reach of your local computer filesystem. Note: you can have
+a computer that stores your music and listen to it from all other
+machines on the same LAN by mounting it via NFS. (I have actually
+verified that such setup works flawlessly.) If you have CD's, you
+should grab them onboard and encode them with FLAC (that's what I do)
+or Ogg Vorbis (if you don't mind the lossy compression).  Then add the
+music to your Music Store, and you should never need to touch that CD
+again. It will serve well as an archive copy. If you really want to
+directly play a CD, you need (guess what) a CD player program.
+</p>
+
+
+<br>
+<p><i>Do I really have to type in all the track titles by hand?
+Haven't you heard about freedb.org?</i></p>
+<p>
+I have, but it's not as trivial as it may seem. (Let me not go into
+details about it now. Before you ask, it has very little to do with my
+personal skills; I can handle UNIX network programming.) For now,
+there is no freedb or other such support in the program. I am strongly
+considering this functionality to be added, and it is likely to happen
+sometime. Don't hold back your breath, though. If you want to help, I
+am open to discussions and happy to receive patches.
+</p>
+
+
+
+<br>
+<p><i>The program uses large amounts of CPU. Why?</i></p>
+<p>
+If you use Sample Rate Conversion on a not too fast machine, problems
+may arise when choosing a high quality converter. (That means choppy
+playback, as the computer can't do the processing in real time.) High
+quality resampling with bandlimited sinc interpolation is just very
+CPU intensive. If you have a slower machine, try running the "Fastest
+Sinc Interpolator". Not as CPU-hungry as the higher quality ones, but
+still not too bad to listen to.  Also, if you have many LADSPA plugins
+running, you may run out of CPU power. There is really no need to run
+so much plugins. As a side note, some LADSPA plugins (those that have
+feedback loops in themselves, such as echoes and recursive filters)
+may have so-called denormal floating point bugs that cause exponential
+increasing of the CPU usage until all of it is used up. It usually
+occurs when the signal level gets very low at song endings and such
+places. If this happens to you, try to track it down to a single
+plugin, and contact the author of that plugin.
+</p>
+
+
+<br>
+<p><i>I did hear very short dropouts when changing tracks! You
+lied!</i></p>
+<p>
+I did indeed. But you were listening to MP3's, weren't you? If not,
+send me a bug report. If yes, read on. MP3 (MPEG 1 Layer III audio
+compression) is an old format now completely obsoleted by better ones
+(notably Ogg Vorbis). One of the shortcomings of MP3 (and MPEG Audio
+in general) is that you cannot encode audio streams of arbitrary
+lengths. To encode, the stream has to be padded so its length will be
+an integer multiple of the MPEG frame length (so as to encode it into
+an integer number of frames). So encoders pad the ends of tracks, and
+when they are played back, the silence is also decoded since there is
+no way to tell where in the last frame audio stops and padding
+begins. The MPEG decoder library returns the decoded stream with the
+silence at the end; the silence is not inserted by Aqualung. This is a
+shortcoming of MPEG Audio, and you won't experience it with Ogg Vorbis
+or FLAC.
+</p>
+
+
+<br>
+<p><i>Seeking in MP3 files is a bit fuzzy. Sometimes when I release
+the seek slider, it jumps to another position and plays from
+there.</i></p>
+<p>
+Another MP3 issue. MPEG Audio has no built-in support for seeking; a
+decoder would have to read through the whole stream before actually
+playing anything and build a seeking table internally that contains
+the legal positions where seeking is possible. At present, Aqualung
+just seeks the bitstream and hopes that the MPEG decoder will be able
+to recover not too far from the desired position. This mostly works
+for properly encoded files, but may fail badly on others. Please
+understand that I included MP3 support solely to deal with legacy
+issues; you should never encode newly ripped music into MP3 (use Ogg
+Vorbis instead). Therefore I'm not willing to spend much time on
+improving the MPEG playback interface; after all, you can playback the
+files without seeking (and seeking also works on most files, most of
+the time). However, if you have a patch, I will be happy to accept it.
+</p>
+
+
+<br>
+<p><i>The program was playing a track when I cleared the playlist. The
+playlist got empty, but the program is still playing. What the
+heck?</i></p>
+<p>
+This is consciously chosen behaviour. The other possibility would be
+to stop playback every time the currently playing track is removed
+from the playlist. Instead of that, playback proceeds (which is
+natural, since once playback started, the engine can proceed with it
+regardless of the contents of the playlist). Playback will stop only
+when the track ends and playback would move to the next track. This
+gives you the possibility to change playlists without ever needing to
+stop playback.
+</p>
+
+
+<br>
+<p><i>Where is the spectrum analyzer? Where are the visualization
+plugins?</i></p>
+<p>
+Dude, if you feel like gaining information about the spectral content
+of the music that's playing, you simply got to <i>listen</i> to it.
+No 20-bar "spectrum analyzer" will give you information of that
+density and accuracy. The human ear is one of the most sensitive
+instruments ever made, outperforming any ordinary measurement
+technology. Besides that, the author believes that music is for
+listening, not for viewing. If you want idiotic flashing lights that
+have no real connection to the sound but perhaps look nice to some
+people (that being the only acceptable excuse for their existance), go
+find some other program. Note that I will not accept patches that
+would add such (mis)features to the program.
+</p>
+
+
+</body>
+</html>

@@ -1,0 +1,680 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>Aqualung</title>
+<meta name="generator" content="GNU Emacs 21.2.1">
+<meta http-equiv="Content-Type" content="text/html;
+charset=iso-8859-1">
+<meta name="description" content="Aqualung, Music player for GNU/Linux">
+<meta name="keywords" content="Aqualung Music player GNU Linux GNU/Linux">
+<meta name="author" content="Tom Szilagyi">
+</head>
+
+<body bgcolor=#ffffff>
+
+<center>
+<img src="aqualung.png" alt="Aqualung Logo">
+<hr>
+
+<a href="index.html">[ Home ]</a>
+<a href="screenshots.html">[ Screenshots ]</a>
+<a href="download.html">[ Download ]</a>
+<a href="compiling.html">[ Compiling ]</a>
+<a href="usage.html">[ Usage Tips ]</a>
+<a href="qa.html">[ Q & A ]</a>
+<a href="misc.html">[ Misc ]</a>
+
+</center>
+<!-- Aqualung standard header ends -->
+
+<br>
+<h2>Usage Tips</h2>
+
+<p>
+On this page we attempt to uncover most features of the program, of
+which there are a few not-so-obvious to find things, as well as
+keyboard shortcuts that will make your life much easier. So read on.
+</p>
+
+<br>
+<h3>Program startup</h3>
+
+<p>
+You will need to know about command line options before anything
+else. If you start Aqualung without command line parameters the first
+time, it will print a help message with valid parameters and example
+invocations. As a minimum, you will have to specify which output
+device (OSS, ALSA or JACK) do you want to use. It is possible to not
+specify this all the time, see the later section about configuration
+options. A listing of the command line options follows here.
+</p>
+
+<code>
+Invocation:<br>
+aqualung --output (oss|alsa|jack) [optional parameters]<br>
+aqualung --help<br>
+aqualung --version<br>
+<br>
+Optional parameters usable with alsa:<br>
+        -d, --device &lt;name&gt;: set the output device (defaults to
+        plughw:0,0)<br>
+        -p, --period &lt;int&gt;: set ALSA period size (defaults to 8192)<br>
+        -n, --nperiods &lt;int&gt;: specify the number of periods in
+        hardware buffer (defaults to 2)<br>
+        -r, --rate &lt;int&gt;: set the output sample rate<br>
+        -R, --realtime: try to use realtime (SCHED_FIFO) scheduling
+        for ALSA output thread<br>
+        -P, --priority &lt;int&gt;: when running --realtime, set scheduler
+        priority to &lt;int&gt; (defaults to 1).<br>
+<br>
+Optional parameters usable with oss:<br>
+        -d, --device &lt;name&gt;: set the output device (defaults to
+        /dev/dsp)<br>
+        -r, --rate &lt;int&gt;: set the output sample rate<br>
+<br>
+Optional parameters usable with jack:<br>
+        -a, --auto: auto-connect output ports to first two hardware
+        playback ports<br>
+        -c, --client &lt;name&gt;: set client name (needed if you want to
+        run multiple instances of the program)<br>
+<br>
+Optional misc. parameters:<br>
+        -s, --srctype [&lt;int&gt;]: choose the SRC type, or print the list
+        of available types if no number given.<br>
+                The default is SRC type 4 (Linear Interpolator).<br>
+<br>
+Examples:<br>
+        $ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2<br>
+        $ aqualung --srctype=1 --output oss --rate 96000<br>
+<br>
+</code>
+
+<p>
+Depending on the compile-time options, not all file formats and output
+drivers may be usable. Type <code>aqualung -v</code> to get a list of
+all the compiled-in features.
+</p>
+
+<p>
+Aqualung obeys two environment variables concerning LADSPA
+plugins. LADSPA_PATH should contain a colon-separated list of paths to
+search for LADSPA plugin .so files. LADSPA_RDF_PATH should contain a
+colon-separated list of paths to RDF metadata files about these
+plugins. When any of these is not specified, the program will use
+sensible defaults and look in the obvious places.
+</p>
+
+<p>
+Here is a list of files that Aqualung creates, reads and relies on.
+</p>
+
+<blockquote>
+<code>
+The ~/.aqualung directory contains the music store and other user settings.<br>
+~/.aqualung/music_store.xml: Music database, stores various metadata about music on your computer<br>
+~/.aqualung/config.xml: GUI (skin, window size/position, etc.) and other settings<br>
+~/.aqualung/plugin.xml: List of running plugins and all their settings<br>
+~/.aqualung/playlist.xml: Automatically saved and restored playlist (if you enable this feature)<br>
+~/.aqualung/&lt;skin-name&gt;: Locally available skin &lt;skin-name&gt;<br>
+<br>
+System-wide skin directory is $prefix/share/aqualung/skin.<br>
+</code>
+</blockquote>
+
+
+<p>
+The rest of this page assumes you managed to compile, install and
+start the program successfully.
+</p>
+
+
+
+<br>
+<h3>Main window</h3>
+
+<img src="main_window.png" alt="[main window]">
+
+<p>
+You can control most of the program from this window. The cue controls
+in the down-left corner are fairly obvious. You can drag the large
+slider in the middle for seeking. There are two smaller sliders above
+that, the left one is for adjusting the volume and the right one for
+adjusting the balance. Above these, there are two horizontal text
+areas showing information about the currently playing track, and
+input/output parameters such as sample rate, mono/stereo, bitrate,
+output driver (eg. OSS, ALSA, JACK) etc. The first trick to learn is
+that these lines are horizontally draggable with the mouse if the text
+does not fit in the available visible space. However, they don't
+scroll automatically (as in XMMS), and for a very good reason.
+</p>
+
+<p>
+In the upper left corner, you find one bigger and two smaller displays
+that show track times: elapsed time <i>and</i> remaining time
+<i>and</i> total track time. The big display also shows the current
+volume and balance setting when appropriate, too. By clicking in these
+displays with the left or right mouse button, you can rearrange the
+displays as you want them. The following table may seem a bit
+confusing at first, but once you realize the point, it becomes
+blindingly obvious.
+</p>
+
+<table cellspacing="1" cellpadding="5" border="1">
+<tr><td colspan="2"><center>A</center></td></tr>
+<tr><td><center>&nbsp;&nbsp;&nbsp;B&nbsp;&nbsp;&nbsp;</center></td>
+<td><center>&nbsp;&nbsp;&nbsp;C&nbsp;&nbsp;&nbsp;</center></td></tr>
+</table>
+
+<br>
+
+<table cellspacing="1" cellpadding="5" border="1">
+<tr><th rowspan="2">mouse button</th><th colspan="3">clicked
+into</th></tr>
+<tr><th>A</th><th>B</th><th>C</th></tr>
+<tr><td>left</td><td>A <--> B</td><td>B <--> A</td><td>C <--> B</td></tr>
+<tr><td>right</td><td>A <--> C</td><td>B <--> C</td><td>C <--> A</td></tr>
+</tr>
+</table>
+
+<p>
+In the right down corner there are additional buttons. The buttons
+with the letters display or hide additional windows of the program:
+</p>
+
+<table cellspacing="1" cellpadding="5" border="1">
+<tr><td>FX</td><td>LADSPA patch builder</td></tr>
+<tr><td>MS</td><td>Music Store</td></tr>
+<tr><td>PL</td><td>Playlist</td></tr>
+</table>
+
+<p>
+The remaining three buttons are to select the playback mode. When none
+of these buttons is depressed, playback goes the normal way. The
+buttons are mutually exclusive, and select track repeat, list repeat
+or shuffle mode. I'm sure you can figure out which is which. ;-)
+</p>
+
+<p>
+Volume and balance slider tricks:
+</p>
+
+<ul>
+
+<li>Shift + any mouse button sets the volume and balance sliders back
+to 0 dB and Center position, respectively.</li>
+
+<li>Clicking and holding the right mouse button on these sliders shows
+their position in the big time display without altering the
+value.</li>
+
+</ul>
+
+<p>
+An additional thing to know about the volume control is that it ranges
+up to +6 dB. This means you can send a bigger signal to the audio
+device than in the original file. With 0 dB corresponding to 100%
+signal level, +6 dB is almost exactly 200% signal level (and 4 times
+signal power as well). This means you can overdrive your output
+device, and since clipping will occur at 100% anyway, it will cause
+nasty digital distortion much worse than simple analog overdrive. If
+you have a track with a reasonably low level, you can go above 0 dB
+with the volume control. But today most CD's are mastered to keep the
+average volume level very close to the 0 dB (or 100%) top, and so they
+will likely distort with as little as +1 dB additional gain.  The
+moral is: if you want it loud, turn up your external amp.
+</p>
+
+<p>
+On a related note, another thing to watch out for is LADSPA plugins
+(in case you use them). It is very common that the signal level
+leaving a plugin is greater than the signal level the plugin gets on
+its input. So it is best to leave a few dB's of headroom if you do
+that. (A very typical case is boosting some frequency bands a few dB's
+with an EQ plugin. You should decrease the overall volume level with
+as much dB's as the largest boost (or even more), or you are risking
+that the signal will get chopped causing bad distortion.
+Alternatively, apply <a
+href="http://tap-plugins.sourceforge.net/ladspa/limiter.html">this
+limiter plugin</a> as the last one in the processing chain, but only
+if you know what you are doing.
+</p>
+
+
+<p>
+Shortcuts for this window:
+</p>
+
+<table cellspacing="1" cellpadding="5" border="1">
+<tr><th>up arrow</th><td>jump to previous track</td></tr>
+<tr><th>down arrow</th><td>jump to next track</td></tr>
+<tr><th>left arrow</th><td>jump (seek) backwards in current track</td></tr>
+<tr><th>right arrow</th><td>jump (seek) forward in current track</td></tr>
+<tr><th>p or P</th><td>play</td></tr>
+<tr><th>s or S</th><td>stop</td></tr>
+<tr><th>space</th><td>pause</td></tr>
+<tr><th>/</th><td>volume down</td></tr>
+<tr><th>*</th><td>volume up</td></tr>
+<tr><th>Alt+/</th><td>balance towards left</td></tr>
+<tr><th>Alt+*</th><td>balance towards right</td></tr>
+<tr><th>Alt+s</th><td>show/hide Music Store</td></tr>
+<tr><th>Alt+l</th><td>show/hide Playlist</td></tr>
+<tr><th>Alt+x</th><td>show/hide LADSPA patch builder</td></tr>
+</table>
+
+<p>
+Right-clicking almost anywhere in the window will bring up a menu that
+allows access to configuration options, the skin chooser, the JACK
+port setup dialog (enabled only when running the program with JACK
+output), and the About box. The latter may be useful to see which
+features have been compiled into the program. (If you haven't read the
+page about <a href="compiling.html">compiling</a> yet: the compilation
+can be configured so as not to require certain libraries when
+compiling, and not provide certain features accordingly.)
+</p>
+
+
+
+<br>
+<h3>Playlist</h3>
+
+<img src="playlist.png" alt="[Playlist]">
+
+<p>
+This window has relatively few surprising features. It normally
+receives its contents from the Music Store (see below). However, you
+can put any file in the playlist regardless of the contents of your
+Music Store, using the Direct add button at the bottom of the window.
+</p>
+
+<p>
+The other two buttons (Select all, Remove selected) function as you
+would expect them when clicked with the left mouse button. However,
+clicking with the right mouse button brings up small menus that
+contain further options such as Invert selection.
+</p>
+
+<p>
+The contents of the playlist can be saved and restored automatically
+when the program exits and starts up. (Whether this should be done is
+a configuration option, covered later.) In addition to this, you can
+save the playlist manually at any time, or load a previously saved
+playlist file. To do this, right click in the playlist area, which
+will bring up a popup menu with these features. The playlist is saved
+as an XML file, so you should normally end your filename with .xml --
+however, this is only good practice and not necessary. <i>Note that
+the playlist file format is not compatible with Winamp/XMMS .m3u
+files.</i>
+</p>
+
+<p>
+Shortcuts for this window:
+</p>
+
+<table cellspacing="1" cellpadding="5" border="1">
+<tr><th>up/down arrow</th><td>navigation in the list</td></tr>
+<tr><th>delete</th><td>remove selected track(s)</td></tr>
+<tr><th>enter, double click</th><td>start playback of the selected or
+double-clicked track, or jump to it if already playing</td></tr>
+<tr><th>q or Q</th><td>hide window (same as Alt+l or Alt+L in main
+window)</td></tr>
+</table>
+
+<p>
+You can rearrange the list at any time by dragging and dropping items
+with the mouse.
+</p>
+
+
+
+<br>
+<h3>Music Store</h3>
+
+<img src="music_store.png" alt="[Music Store]">
+
+<h4>Overview</h4>
+
+<p>
+The Music Store is a simple database of all your music. The central
+philosophy of this program is that you have a large storage (ideally
+an entire hard drive or a sepatare partition) to store all your music
+files. This is not necessary for the program to work. The audio files
+can be scattered around your system as long as you have read
+parmissions to them. However, it is strongly recommended that you
+devote a separate directory for all the music (for example, /music
+would be a convenient place to store files that are owned by root, but
+readable by all users).
+</p>
+
+<p>
+In this central directory, create subdirectories for each artist you
+have records from. The directory names do not have to contain the
+exact names, you can for example create /music/ledzep for Led
+Zeppelin, /music/crimson for King Crimson, /music/hendrix for Jimi
+Hendrix and so on. In these directories, create subdirectories for
+each record you have. Once again, the directory names for the records
+do not need to fully contain the record titles; they can be short and
+without spaces and special characters.
+</p>
+
+<p>
+In the directories of records, you should <code>cdparanoia</code> the
+records, and have the resulting file names intact. Yes, you don't need
+to rename <code>track01.cdda.wav</code> to <code>01_Lark's Tongues In
+Aspic, Part One.wav</code> -- this would be very unhealthy to do
+anyway.
+</p>
+
+<p>
+So you have a bunch of directories containing lots of tracks. Now you
+can add all this to the Music Store, additionally specifying metadata
+about Artists, Records and Tracks. One such metadata is the actual
+name of these items instead of the directory and file names you have
+on your filesystem.
+</p>
+
+<p>
+To do so, you will utilize the popup menus in the Music Store
+window. When you have nothing initially, all that pops up is an option
+to add a new artist. When you have at least one artist, clicking on
+them with the right mouse button will let you add a record to them.
+When you have a record, the popup menu for it will have the option to
+add tracks to the record.
+</p>
+
+<p>
+Now you may think: what a tremendously hard work it will be to add all
+the tracks to all records, one by one. True, so the program has
+something slightly better to offer. When you are adding a record to an
+artist, the dialog that comes up has an option that says 'Auto-create
+tracks from these files', where you can select a bunch of
+files. Ideally, when you have the tracks of a record in one directory
+as described above, this will be quite easy. And if you didn't mess
+with the cdparanoia-given names <code>trackXX.*</code>, the tracks
+will be in the right order without further attention.
+</p>
+
+<p>
+Now all you have to do is set the correct names of the tracks, which
+is a bit of work, but should be doable fairly quickly due to keyboard
+shortcuts.
+</p>
+
+
+<h4>Arranging your collection</h4>
+
+<p>
+Every Artist, Record and Track has fields you can fill in via bringing
+up the Edit dialog for that item. The 'Visible name' is obviously the
+string that will appear in the Music Store tree, and in the
+Playlist. The 'Name to sort by' is a string used to sort items on the
+same level of hierarchy (all artists, records of a given artist, and
+tracks of a given record).
+</p>
+
+<p>
+For artists, you should enter the same here as the 'Visible name' for
+ordinary band names (you can use copy&amp;paste to do that). However,
+for some artists you will enter a slightly modified string: "Mayall,
+John" or just "Mayall" for "John Mayall", for example. This is to
+ensure that "John Mayall" (which is the visible name) appears between
+Mahavishnu and Morphine, and not somewhere near Jethro Tull.
+</p>
+
+<p>
+For records and tracks, the 'Name to sort by' should be a decimal
+numbering of the items. If you added tracks to the records using the
+aforementioned 'Auto-create tracks from these files' feature of the
+Record add dialog, the tracks will be automatically numbered for you
+this way.
+</p>
+
+<p>
+Last but not least, every item has a 'Comment' field that may contain
+multiple lines of text, and is perfectly optional to use for any
+artist, record or track. When you have entered something in this
+field, it will be displayed in the lower area of the Music Store
+window when the corresponding item is selected in the tree. Use this
+to store miscellaneous data, such as birth dates of artists, release
+dates or comments like "Recorded live at Royal Albert Hall, ..." or
+"Digitized from original LP" for records, and movement subtitles for
+tracks that have them (see the above screenshot for this latter case).
+</p>
+
+
+<p>Shortcuts for this window:</p>
+
+<table cellspacing="1" cellpadding="5" border="1">
+<tr><th>double click, a or A</th><td>add artist/record/track to playlist</td></tr>
+<tr><th>n or N</th><td>new artist/record/track</td></tr>
+<tr><th>e or E</th><td>edit artist/record/track</td></tr>
+<tr><th>delete</th><td>remove artist/record/track</td></tr>
+<tr><th>+</th><td>add new record/track to this artist/record</td></tr>
+<tr><th>shift + right arrow</th><td>expand current row recursively</td></tr>
+<tr><th>shift + left arrow</th><td>collapse current row recursively</td></tr>
+<tr><th>enter</th><td>expand/collapse current row non-recursively</td></tr>
+<tr><th>up/down arrow</th><td>navigation in the tree</td></tr>
+<tr><th>q or Q</th><td>hide window (same as Alt+s or Alt+S in main
+window)</td></tr>
+</table>
+
+<p>
+In addition to the popup menu items and keyboard shortcuts, you can
+also add an item to the playlist by dragging and dropping from the
+Music Store window into the Playlist. This method has a further
+advantage: you can place the newly added items in any position, not
+just append to the end of the list.
+</p>
+
+
+
+<br>
+<h3>Options</h3>
+
+<img src="options.png" alt="[options editor]">
+
+<p>
+This dialog lets you set some defaults that affect the behavior of the
+program. The 'Title format' can be set to fit your personal
+taste. Such strings may be "%a: %t [%r]", "%a / %r / %t", "%a :: %r ::
+%t", or just about anything else you can think of. Note that once you
+add something from the Music Store to the playlist, the strings in the
+Playlist window will not update if you change this setting
+afterwards. This is because creating the one-line title string from
+the artist, record and track titles is a one-way operation, and though
+one could think of workarounds, they are just not elegant and
+practically needed.
+</p>
+
+<p>
+The so-called 'implicit commad line' is something you should pay
+attention to. It exists mainly for those who have a stable sound setup
+and always use the program with the same output device, eg. they have
+only OSS and don't plan to upgrade. For such users it may be
+cumbersome to always specify the desired output device on the command
+line, along with its optional parameters if needed. So here you may
+enter something that you would otherwise enter on the command line
+every time.
+</p>
+
+<p>But beware: you cannot override or turn off every option, so for
+example if you enter "--help" here, the program will always display
+the standard message and exit immediately; and there is no way to
+override that from the command line. Now you won't do that, since you
+are a smart user, aren't you? But if your sister does, all you have to
+(or can) do is grab a text editor and hack it out of
+<code>~/.aqualung/config.xml</code> where it is stored. You will find
+it between &lt;default_param&gt; and &lt;/default_param&gt;.
+</p>
+
+<p>
+The option to save/restore the playlist when exiting ard starting the
+program is turned on by default. If you prefer starting with an empty
+page every time, turn it off.
+</p>
+
+<p>
+When changed, the remaining two options take effect immediately, and
+stay that way regardless of whether you leave the dialog with the OK
+or Cancel button.
+</p>
+
+<p>
+The sample rate converter type should be chosen to fit the resources
+of your computer, and provide the best affordable quality at the same
+time. So fire up <code>top</code> or something similar on a spare
+terminal, and start with the best converter. If your machine is not
+very new, this will consume huge amounts of CPU, and the playback will
+very likely be choppy. If this is the case, you will have to pick
+another converter.  'Fastest Sinc Interpolator' is usable on today's
+most machines. If not, use 'Linear Interpolator' instead of 'ZOH'
+since both are blindingly fast, but linear is naturally much better
+than zero-order (that is, constant). It should also be noted that the
+CPU usage of sample rate conversion is greatly affected by the
+difference between the two sample rates: upsampling 32k to 96k will be
+much more expensive than, say, upsampling from 44.1k to 48k.
+</p>
+
+<p>
+Of course, sample rate conversion springs into action only when the
+output sample rate (the sample rate you specified in case of OSS or
+ALSA, or the sample rate the JACK server specified in case of JACK)
+does not match the sample rate of the track you are playing. A typical
+situation is when you have 44.1k files grabbed from CD and play back
+at 48k.
+</p>
+
+
+<br>
+<h3>LADSPA plugins</h3>
+
+<img src="ladspa_patch.png" alt="[LADSPA patch builder]">
+
+<p>
+One great feature of the program is that you can apply LADSPA plugins
+to the music. You can use the equalizer of your choice instead of a
+built-in one, along with other plugins. You can process your sound
+with Aqualung in ways that the author of this program never thought
+of.
+</p>
+
+<p>
+Of course, faithful reproduction of music does not require or permit
+pervasive signal processing, since that is not the purpose of such
+activity. However, the technology is at your disposal and it's up to
+you to use or misuse it. It may be necessary to adapt your listening
+gear to the acoustic environment, using small amounts of equalization
+preferably in a subtractive manner. In addition to this, I also like
+to spice my tracks with a small amount of <a
+href="http://tap-plugins.sourceforge.net/ladspa/tubewarmth.html">tubewarmth</a>
+to feel that warm tube sound even with my transistor amplifiers, and
+to bring out even the finest details of the music.
+</p>
+
+<p>
+The plugin chain you build is automatically saved and restored, so
+once you get it right for your listening environment, you should
+rarely need to touch it.
+</p>
+
+<p>Some tricks concerning the LADSPA patch builder:</p>
+
+<ul>
+
+<li>Multiple plugins can be selected from the available plugins list
+and added at once by clicking on the Add button or pressing
+<code>a</code> or <code>A</code>.</li>
+
+<li>A single plugin can be added immediately by double-clicking it in
+the available plugins list.</li>
+
+<li>Plugins in the running list can be (un)bypassed with the middle
+mouse button.</li>
+
+<li>Running plugins' configuration window can be brought up by
+double-clicking on them (same as clicking on the Configure
+button).</li>
+
+<li>If a plugin is selected in the running plugins list, pressing
+<code>delete</code> will remove it (same as pressing the Remove
+button).</li>
+
+<li>Running plugins can be rearranged at any time (changing the order
+in which they are processed) via dragging them with the mouse.</li>
+
+<li>In the configuration windows of plugins, setting input controls
+back to their default value is possible by shift-clicking on the
+slider. This does not work for toggled or integer inputs (those that
+don't have a slider displayed for them).</li>
+
+</ul>
+
+
+
+<br>
+<h3>JACK Port Setup</h3>
+
+<img src="jack_ports.png" alt="[JACK port setup]">
+
+
+<p>
+If you use JACK output, you need this dialog to route the outputs of
+the program somewhere (most likely to the playback ports representing
+the soundcard drivers). If you want the outputs to be connected
+automatically to the first two hardware playback devices, use the -a
+(or --auto) command line option.
+</p>
+
+<p>
+On the left, each output port has a list of its current connections. By
+clicking on any list item, that connection will be removed. The Clear
+connections button removes all connections from the output ports.
+</p>
+
+<p>
+The notebook on the right has a page for all client programs and
+hardware devices available to the JACK server. Naturally only those
+are shown which are data sinks (hardware playback devices or inputs of
+JACK clients), thus connectable to outputs which are data sources. By
+selecting a notebook page, you will see a list of that client's input
+ports. Clicking on a list item connects the port to the currently
+selected Aqualung output port (which has a blue header). You can
+change the selected output port by clicking on the unselected (grey)
+list header. When you add connections to the output ports, the
+selection alters between the two outputs so connecting both outputs is
+very fast and easy.
+</p>
+
+<p>
+If you start up another JACK client while the dialog is open, you may
+press the Rescan button to make it appear in the notebook. Closing and
+re-opening the dialog has the same effect, since JACK ports are
+re-read and a new dialog instance is built every time.
+</p>
+
+
+
+<br>
+<h3>Skin chooser</h3>
+
+<img src="skinchooser.png" alt="[Skin chooser]">
+
+<p>
+This dialog lets you choose from installed skins at any time. When you
+<a href="download.html">download a new skin</a> in the form of a
+<code>.tar.gz</code> file, just untar it in your
+<code>~/.aqualung</code> directory.  You may also install it for all
+users by untarring it in the system-wide Aqualung skin directory
+(<code>$prefix/share/aqualung/skin</code>) if you have the rights to
+do so.
+</p>
+
+<p>
+The screenshots on this page were taken with the woody and the metal
+skins.
+</p>
+
+
+</body>
+</html>

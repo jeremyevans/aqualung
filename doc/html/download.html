@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>Aqualung</title>
+<meta name="generator" content="GNU Emacs 21.2.1">
+<meta http-equiv="Content-Type" content="text/html;
+charset=iso-8859-1">
+<meta name="description" content="Aqualung, Music player for GNU/Linux">
+<meta name="keywords" content="Aqualung Music player GNU Linux GNU/Linux">
+<meta name="author" content="Tom Szilagyi">
+</head>
+
+<body bgcolor=#ffffff>
+
+<center>
+<img src="aqualung.png" alt="Aqualung Logo">
+<hr>
+
+<a href="index.html">[ Home ]</a>
+<a href="screenshots.html">[ Screenshots ]</a>
+<a href="download.html">[ Download ]</a>
+<a href="compiling.html">[ Compiling ]</a>
+<a href="usage.html">[ Usage Tips ]</a>
+<a href="qa.html">[ Q & A ]</a>
+<a href="misc.html">[ Misc ]</a>
+
+</center>
+<!-- Aqualung standard header ends -->
+
+<br>
+<h2>Download Aqualung</h2>
+
+<p>
+Aqualung is primarily released as a source code tarball
+archive. Download the latest one from the <a
+href="http://sourceforge.net/projects/aqualung">SourceForge project
+page</a>.
+</p>
+
+<p>
+You can also make use of the anonymous CVS access provided by
+SourceForge.net. To do this, follow these steps (<code>%</code> is
+meant to be your prompt):
+</p>
+
+<blockquote>
+<p>
+<code>% cd /usr/local/src</code><br>
+(just an example, it can be anywhere)
+</p>
+
+<p>
+<code>% cvs
+-d:pserver:anonymous@cvs.aqualung.sf.net:/cvsroot/aqualung
+login</code><br>
+(just press enter when prompted for a password)
+</p>
+
+<p>
+<code>% cvs
+-d:pserver:anonymous@cvs.aqualung.sf.net:/cvsroot/aqualung -z3
+co aqualung</code>
+</p>
+</blockquote>
+
+<p>
+There is also an online <a
+href="http://cvs.sourceforge.net/viewcvs.py/aqualung">web-based CVS
+browser</a>. Nice to see if there is anything new.
+</p>
+
+
+
+<br>
+<h2>Get additional skins</h2>
+
+<p>
+Skins greatly alter the appearance of the program (just check out our
+<a href="screenshots.html">screenshots</a>). You can change the skin
+currently in use at any time, simply by selecting it from the
+program's corresponding setup dialog. (Hint: right-click almost
+anywhere in the main window.) The program will then re-skin itself
+immediately, and stay that way. No configuration file editing is
+needed, nor is it necessary to restart the program.
+</p>
+
+<p>
+The Aqualung source contains the default skin, which provides a very
+simple, neutral look. (It is automatically installed as part of the
+<code>make install</code> process.) The following table shows
+additional (richer looking) skins. These are distributed as
+<code>.tar.gz</code> archives. After downloading any of these, all you
+need to do is unpack it either in your <code>~/.aqualung</code>
+directory, or the system-wide Aqualung skin directory (which is
+<code>$prefix/share/aqualung/skin</code> where <code>$prefix</code> is
+the prefix you used when installing Aqualung itself; it is likely to
+be <code>/usr</code> or <code>/usr/local</code>).
+
+<p>
+The program may be running when you install the new skin (that is, you
+need not close the program before you unpack a skin). The new skin
+will be immediately available after you reopen the skin chooser
+dialog.
+</p>
+
+<table cellspacing="1" cellpadding="5" border="1">
+<tr><th>skin name</th><th>download link</th><th>description</th><th>author</th></tr>
+
+<tr><td>dark</td><td><a
+href="http://aqualung.sf.net/skins/aqualung-dark.tar.gz">http://aqualung.sf.net/skins/aqualung-dark.tar.gz</a>
+</td><td>Dark, XMMS-like colors. Your eye won't get
+burned.</td><td>Peter Szilagyi</td></tr>
+
+<tr><td>metal</td><td><a
+href="http://aqualung.sf.net/skins/aqualung-metal.tar.gz">http://aqualung.sf.net/skins/aqualung-metal.tar.gz</a>
+</td><td>Modern looking, shining metal colors.</td><td>Peter Szilagyi</td></tr>
+
+<tr><td>woody</td><td><a
+href="http://aqualung.sf.net/skins/aqualung-woody.tar.gz">http://aqualung.sf.net/skins/aqualung-woody.tar.gz</a>
+</td><td>Warm look&amp;feel, for those who like natural
+surfaces.</td><td>Peter Szilagyi</td></tr>
+
+</table>
+
+<p>
+Creating new skins is easy if you are familiar with the usual GTK+
+stuff concerning rc files, pixmaps etc. Look at the existing skins to
+find out about their internals. You are encouraged to create new skins
+of your style, and send them to us. Your contribution will be welcome.
+</p>
+
+<p>
+Skins are considered to be non-necessary components of Aqualung
+itself, and they are freely redistributable under the same conditions
+as the main program. See the <a href="misc.html">Misc</a> page for
+details.
+</p>
+
+
+</body>
+</html>

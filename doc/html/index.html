@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>Aqualung</title>
+<meta name="generator" content="GNU Emacs 21.2.1">
+<meta http-equiv="Content-Type" content="text/html;
+charset=iso-8859-1">
+<meta name="description" content="Aqualung, Music player for GNU/Linux">
+<meta name="keywords" content="Aqualung Music player GNU Linux GNU/Linux">
+<meta name="author" content="Tom Szilagyi">
+</head>
+
+<body bgcolor=#ffffff>
+
+<center>
+<img src="aqualung.png" alt="Aqualung Logo">
+<hr>
+
+<a href="index.html">[ Home ]</a>
+<a href="screenshots.html">[ Screenshots ]</a>
+<a href="download.html">[ Download ]</a>
+<a href="compiling.html">[ Compiling ]</a>
+<a href="usage.html">[ Usage Tips ]</a>
+<a href="qa.html">[ Q & A ]</a>
+<a href="misc.html">[ Misc ]</a>
+
+</center>
+<!-- Aqualung standard header ends -->
+
+<br><br>
+<center>
+<table cellspacing="2" cellpadding="2" border="0">
+<tr>
+<td rowspan="2">
+<img src="aqualung_small.png" alt="[small Aqualung logo]">
+</td><td valign="bottom">
+<font size="6">Welcome to Aqualung,</font>
+</td></tr><tr><td valign="top">
+<center><i>a music player for GNU/Linux</i></center>
+</td></tr></table>
+</center>
+
+<br>
+<p><font size="5" color="#0044aa">
+<i>Aqualung</i> </font><font size="4" color="#0044aa">is a new music
+player for the GNU/Linux operating system. It plays audio files from
+your filesystem and has the feature of </font><font size="5"
+color="#0044aa"><i>inserting no gaps</i> </font><font size="4"
+color="#0044aa"> between adjacent tracks.  </font></p>
+
+<p>
+<b>Here's how the test looks like.</b> Pick a song that you know
+really well, something that's in your bones like <i>Siberian
+Khatru</i>. Grab it from CD using <code>cdparanoia</code> to have it
+as a WAV file. Now open your favourite wave editor and slice the file
+up into multiple consecutive sections. Be careful not to insert
+silence, delete samples or alter any sample data. Save the slices to
+separate files. Now convert the sample rate of some pieces to random
+values (the example program shipped with the <a
+href="http://www.mega-nerd.com/SRC/">libsamplerate</a> library will
+let you do this in very good quality). Pick some pieces and convert
+them to <a href="http://www.xiph.org/ogg/vorbis">Ogg Vorbis</a>
+format. Pick some others and encode them to <a
+href="http://flac.sourceforge.net">FLAC</a>. Pick a few and convert
+them to mono. Now open up the playlist editor of the music player in
+question and add the files in order. <b>Push play, and listen</b>.
+</p>
+
+<p>
+You are probably nodding your head, but today's popular music player
+software: Winamp (on that other OS), XMMS, FreeAmp, Zinf and
+AlsaPlayer <b>all fail this test</b>. These programs are completely
+unusable to the serious listener because they fail to provide one
+humble feature: <i>the ability to play back a list of consecutive
+audio files without terrible gaps in between tracks</i>.
+</p>
+
+<p>
+That's right. But fortunately enough, Aqualung is here to fix all the
+mess. It is a music player designed from the ground up to provide
+continuous, absolutely transparent, gap-free playback across a variety
+of input formats and a wide range of sample rates thereby allowing for
+enjoying quality music: concert recordings and "non-best-of" albums
+containing gapless transitions between some tracks. (Multiple
+movements long compositions are often broken into separate but
+gaplessly flowing tracks when mastered to CD). Obvious examples are
+<i>The Song Remains The Same</i> (Led Zeppelin), <i>The Dark Side Of
+The Moon</i> (Pink Floyd), and
+<i>Yessongs</i> (Yes). Besides the ability to play the music from
+these records without a defect, Aqualung provides high quality sample
+rate conversion, a feature that is essential when building large
+digital music archives containing input sources conforming to various
+standards. <b>Aqualung passed our test -- and it will pass yours,
+too.</b>
+</p>
+
+
+<br>
+<h2>Features at a glance</h2>
+
+
+<i>On the input side:</i>
+<ul>
+
+<li>Almost all sample-based, uncompressed formats (eg. WAV, AIFF, AU
+etc.) are supported. For the full list of these formats, visit the <a
+href="http://www.mega-nerd.com/libsndfile/">libsndfile</a>
+homepage.</li>
+
+<li>Files encoded with <a href="http://flac.sourceforge.net">FLAC</a>
+(the Free Lossless Audio Codec) are supported.</li>
+
+<li><a href="http://www.xiph.org/ogg/vorbis">Ogg Vorbis</a> audio
+files are supported.</li>
+
+<li>MPEG Audio files are suppored. This includes MPEG 1-2-2.5, Layer
+I-II-III encoded audio, including the infamous MPEG-1 Layer III
+format also known as MP3.</li>
+
+<li>Naturally, any of these files can be mono or stereo.</li>
+
+</ul>
+
+
+<i>On the output side:</i>
+<ul>
+
+<li>OSS driver support</li>
+
+<li>ALSA driver support</li>
+
+<li><a href="http://jackit.sourceforge.net">JACK</a> Audio Server support</li>
+
+</ul>
+
+
+<i>In between:</i>
+<ul>
+
+<li>Continuous, gap-free playback of consecutive tracks. Your ears get
+exactly what is in the files -- no silence inserted in between.</li>
+
+<li>Ability to convert sample rates between the input file and the
+output device, from downsampling by a factor of 12 to upsampling by
+the same factor. The best converter provides a signal-to-noise ratio
+of 97dB with -3dB passband extending from DC to 96% of the theoretical
+best bandwidth for a given pair of input and output sample rates.</li>
+
+<li><a href="http://www.ladspa.org">LADSPA</a> plugin support -- you
+can use any suitable LADSPA plugin to enhance the music you are
+listening to. There are many different equalizer, spatial enhancer,
+tube preamp simulator etc. plugins out there. If you don't have any,
+<a href="http://tap-plugins.sf.net">grab these</a>.</li>
+
+</ul>
+
+
+<i>Other niceties:</i>
+
+<ul>
+
+<li>Internally working volume and balance controls (not touching the
+soundcard mixer).</li>
+
+<li>Support for multiple skins; changing them is possible at any time.</li>
+
+<li>Support for random seeking during playback.</li>
+
+<li>Track repeat, List repeat and Shuffle mode (besides normal playback)</li>
+
+<li>All windows are sizable. You can stretch the main window
+horizontally for more accurate seeking.</li>
+
+<li>State persistence via XML config files. Aqualung will come up in
+the same state as it was when you closed it, including playback modes,
+volume & balance settings, currently processing LADSPA plugins, window
+sizes, positions & visibility, and other miscellaneous options.</li>
+
+</ul>
+
+
+<p>
+In addition to all this, Aqualung comes with a <i>Music Store</i> that
+is an XML-based music database, capable of storing various metadata
+about music on your computer (including, but not limited to, the names
+of artists, and the titles of records and tracks). You can (and
+should) organize your music into a tree of Artists/Records/Tracks,
+thereby making life easier than with the all-in-one Winamp/XMMS
+playlist.
+</p>
+
+<p>
+Aqualung is released under the GNU General Public License. For more
+info, see the <a href="misc.html">Misc</a> page.
+</p>
+
+
+<br>
+<hr>
+Hosted by<br><A href="http://sourceforge.net"><IMG
+src="sflogo.png"
+width="210" height="62" border="0" alt="SourceForge.net Logo" /></A>
+
+</body>
+</html>

@@ -106,6 +106,7 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 	int track_yes = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_track)) ? 1 : 0;
 	int comment_yes = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_comment)) ? 1 : 0;
 
+	int valid;
 	char * key_string = gtk_entry_get_text(GTK_ENTRY(searchkey_entry));
 	char key[MAXLEN];
 	GPatternSpec * pattern;
@@ -117,6 +118,17 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 
 
 	clear_search_store();
+
+	valid = 0;
+	for (i = 0; key_string[i] != '\0'; i++) {
+		if ((key_string[i] != '?') && (key_string[i] != '*')) {
+			valid = 1;
+			break;
+		}
+	}
+	if (!valid) {
+		return TRUE;
+	}
 
 	if (!casesens) {
 		key_string = g_utf8_strup(key_string, -1);
@@ -309,10 +321,13 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 				}
 				g_free(comment);
 				g_free(track_name);
+				deflicker();
 			}
 			g_free(record_name);
+			deflicker();
 		}
 		g_free(artist_name);
+		deflicker();
 	}
 
 	g_pattern_spec_free(pattern);

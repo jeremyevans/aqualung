@@ -693,9 +693,6 @@ direct_add(GtkWidget * widget, gpointer * data) {
 						   3, voladj, 4, voladj_str,
 						   5, duration, 6, duration_str, -1);
 
-				/* XXX DEBUG */
-				printf("filename from Direct Add = '%s'\n", str);
-
                                 g_free(str);
                         }			
 			delayed_playlist_rearrange(100);

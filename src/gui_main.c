@@ -751,9 +751,11 @@ change_skin(char * path) {
 		++i;
 	}
 
-	gtk_widget_reset_rc_styles(info_window);
-	gtk_widget_queue_draw(info_window);
-	gtk_window_present(GTK_WINDOW(info_window));
+	if (info_window) {
+		gtk_widget_reset_rc_styles(info_window);
+		gtk_widget_queue_draw(info_window);
+		gtk_window_present(GTK_WINDOW(info_window));
+	}
 
 	restore_window_position();
 	refresh_displays();

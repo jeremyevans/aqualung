@@ -290,7 +290,7 @@ mpeg_header(void * data, struct mad_header const * header) {
 	file_decoder_t * fdec = (file_decoder_t *) data;
 
 	fdec->mpeg_bitrate = header->bitrate;
-	
+
 	return MAD_FLOW_CONTINUE;
 }
 
@@ -935,6 +935,7 @@ unsigned int file_decoder_read(file_decoder_t * fdec, float * dest, int num) {
 		jack_ringbuffer_read(fdec->rb_mpeg, (char *)dest, fdec->n_avail *
 				     fdec->mpeg_channels * sample_size);
 		fdec->numread = fdec->n_avail;
+
 		break;
 #endif /* HAVE_MPEG */
 

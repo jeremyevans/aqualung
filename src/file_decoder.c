@@ -323,8 +323,8 @@ decode_mpeg(file_decoder_t * fdec) {
 			fprintf(stderr, "libMAD: unrecoverable error in MPEG Audio stream\n");
 
 		mpeg_error((void *)fdec, &(fdec->mpeg_stream), &(fdec->mpeg_frame));
-		mpeg_header((void *)fdec, &(fdec->mpeg_frame.header));
 	}
+	mpeg_header((void *)fdec, &(fdec->mpeg_frame.header));
 
 	if (mad_frame_decode(&(fdec->mpeg_frame), &(fdec->mpeg_stream)) == -1) {
 		if (fdec->mpeg_stream.error == MAD_ERROR_BUFLEN)
@@ -668,6 +668,8 @@ int file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_S
 			fclose(fdec->mpeg_file);
 			goto no_mpeg;
 		}
+
+		fdec->mpeg_filesize = fdec->mpeg_exp_stat.st_size;
 
 		fdec->mpeg_SR = fdec->mpeg_channels = fdec->mpeg_bitrate = 0;
 		fdec->mpeg_err = fdec->mpeg_again = 0;
@@ -1147,9 +1149,17 @@ void file_decoder_seek(file_decoder_t * fdec, unsigned long long seek_to_pos) {
 
 #ifdef HAVE_MPEG
 	case MAD_LIB:
+		fdec->mpeg_stream.next_frame = fdec->mpeg_stream.buffer;
+		mad_stream_sync(&(fdec->mpeg_stream));
+		mad_stream_skip(&(fdec->mpeg_stream),
+				fdec->mpeg_filesize *
+				(double)seek_to_pos / fdec->mpeg_total_samples_est);
+		mad_stream_sync(&(fdec->mpeg_stream));
+/*
 		fdec->mpeg_stream.next_frame = fdec->mpeg_stream.buffer +
 			seek_to_pos * fdec->mpeg_bitrate / 8 / fdec->mpeg_SR;
 		mad_stream_sync(&(fdec->mpeg_stream));
+*/
 		fdec->mpeg_EOS = decode_mpeg(fdec);
 		/* report the real position of the decoder */
 		fdec->samples_left = fdec->fileinfo.total_samples -

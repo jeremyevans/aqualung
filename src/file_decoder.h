@@ -240,6 +240,7 @@ typedef struct _file_decoder_t {
 	int mpeg_err;
 	int mpeg_EOS;
 	struct stat mpeg_stat;
+	long long int mpeg_filesize;
 	int mpeg_fd;
 	struct stat mpeg_exp_stat;
 	int mpeg_exp_fd;

@@ -1066,6 +1066,9 @@ add_to_playlist(char * filename, int enqueue) {
 			++endname;
 		}
                 gtk_list_store_append(play_store, &iter);
-                gtk_list_store_set(play_store, &iter, 0, endname, 1, fullname, 2, pl_color_inactive, -1);
+                gtk_list_store_set(play_store, &iter,
+				   0, g_locale_to_utf8(endname, -1, NULL, NULL, NULL),
+				   1, g_locale_to_utf8(fullname, -1, NULL, NULL, NULL),
+				   2, pl_color_inactive, -1);
 	}
 }

@@ -2119,14 +2119,12 @@ void
 process_filenames(char ** argv, int optind, int enqueue) {
 	
 	int i;
-	char buf[MAXLEN];
 	
 	for (i = optind; argv[i] != NULL; i++) {
-		strncpy(buf, argv[i], MAXLEN);
 		if ((enqueue) || (i > optind)) {
-			add_to_playlist(g_locale_to_utf8(buf, -1, NULL, NULL, NULL), 1);
+			add_to_playlist(argv[i], 1);
 		} else {
-			add_to_playlist(g_locale_to_utf8(buf, -1, NULL, NULL, NULL), 0);
+			add_to_playlist(argv[i], 0);
 		}
 	}
 }	
@@ -2535,10 +2533,10 @@ gint timeout_callback(gpointer data) {
 			next_event(NULL, NULL, NULL);
 			break;
 		case RCMD_LOAD:
-			add_to_playlist(g_locale_to_utf8(cmdbuf, -1, NULL, NULL, NULL), 0);
+			add_to_playlist(cmdbuf, 0);
 			break;
 		case RCMD_ENQUEUE:
-			add_to_playlist(g_locale_to_utf8(cmdbuf, -1, NULL, NULL, NULL), 1);
+			add_to_playlist(cmdbuf, 1);
 			break;
 		case RCMD_QUIT:
 			main_window_close(NULL, NULL);

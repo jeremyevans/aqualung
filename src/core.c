@@ -1972,7 +1972,6 @@ alsa_init(thread_info_t * info) {
 	unsigned rate;
 	int dir = 0;
 
-
 	info->stream = SND_PCM_STREAM_PLAYBACK;
 	snd_pcm_hw_params_alloca(&info->hwparams);
 	if (snd_pcm_open(&info->pcm_handle, info->pcm_name, info->stream, 0) < 0) {

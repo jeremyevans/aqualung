@@ -117,7 +117,6 @@ GtkWidget * blank__add;
 
 /* prototypes, when we need them */
 void load_music_store(void);
-static void tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data);
 
 static gboolean music_tree_event_cb(GtkWidget * widget, GdkEvent * event);
 
@@ -900,9 +899,19 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 }
 
 
+void use_rva_check_button_cb(GtkWidget * widget, gpointer data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
+		gtk_widget_set_sensitive((GtkWidget *)data, TRUE);
+    	} else {
+		gtk_widget_set_sensitive((GtkWidget *)data, FALSE);
+	}
+}
+
+
 int
 edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
-		  float duration, float volume) {
+		  float duration, float volume, float * rva, float * use_rva) {
 
         GtkWidget * dialog;
         GtkWidget * name_entry;
@@ -921,12 +930,16 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 	GtkTextIter iter_start;
 	GtkTextIter iter_end;
 	GtkWidget * table;
+	GtkWidget * table2;
 	GtkWidget * duration_label;
 	GtkWidget * duration_hbox;
 	GtkWidget * duration_entry;
 	GtkWidget * volume_label;
 	GtkWidget * volume_hbox;
 	GtkWidget * volume_entry;
+	GtkWidget * check_button;
+	GtkObject * adj_manual_rva;
+	GtkWidget * spin_button;
 	char str[MAXLEN];
         int ret;
 
@@ -994,7 +1007,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
         gtk_container_add(GTK_CONTAINER(scrolled_window), comment_view);
 
 
-        table = gtk_table_new(2, 2, FALSE);
+        table = gtk_table_new(3, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, FALSE, 4);
 
 	duration_label = gtk_label_new(_("\nDuration:"));
@@ -1028,6 +1041,31 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
                          GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 2);
 
 
+        table2 = gtk_table_new(1, 2, FALSE);
+        gtk_table_attach(GTK_TABLE(table), table2, 0, 2, 2, 3,
+                         GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+
+	check_button = gtk_check_button_new_with_label(_("Use manual RVA value [dB]"));
+        gtk_table_attach(GTK_TABLE(table2), check_button, 0, 1, 0, 1,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+	adj_manual_rva = gtk_adjustment_new(*rva, -70.0f, 20.0f, 0.1f, 1.0f, 0.0f);
+	spin_button = gtk_spin_button_new(GTK_ADJUSTMENT(adj_manual_rva), 0.3, 1);
+	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_button), TRUE);
+	gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_button), FALSE);
+        gtk_table_attach(GTK_TABLE(table2), spin_button, 1, 2, 0, 1,
+                         GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 2);
+
+	g_signal_connect(G_OBJECT(check_button), "toggled", G_CALLBACK(use_rva_check_button_cb),
+			 (gpointer)spin_button);
+
+	if (*use_rva >= 0.0f) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_button), TRUE);
+	} else {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_button), FALSE);
+		gtk_widget_set_sensitive(spin_button, FALSE);
+	}
+
 	gtk_widget_grab_focus(name_entry);
 
 	gtk_widget_show_all(dialog);
@@ -1044,10 +1082,19 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 		strcpy(comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
 							 &iter_start, &iter_end, TRUE));
 
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_button))) {
+			*use_rva = 1.0f;
+			*rva = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_manual_rva));
+		} else {
+			*use_rva = -1.0f;
+			*rva = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_manual_rva));
+		}
+
 		if ((name[0] != '\0') && (file[0] != '\0'))
 			ret = 1;
 		else
 			ret = 0;
+
         } else {
                 name[0] = '\0';
                 sort_name[0] = '\0';
@@ -1726,11 +1773,14 @@ track__edit_cb(gpointer data) {
         char comment[MAXLEN];
 	float duration;
 	float volume;
+	float rva;
+	float use_rva;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
-                gtk_tree_model_get(model, &iter, 0, &pname, 1, &psort_name,
-				   2, &pfile, 3, &pcomment, 4, &duration, 5, &volume, -1);
+                gtk_tree_model_get(model, &iter,
+				   0, &pname, 1, &psort_name, 2, &pfile, 3, &pcomment,
+				   4, &duration, 5, &volume, 6, &rva, 7, &use_rva, -1);
 
                 strncpy(name, pname, MAXLEN-1);
                 strncpy(sort_name, psort_name, MAXLEN-1);
@@ -1748,10 +1798,10 @@ track__edit_cb(gpointer data) {
 			gtk_tree_store_set(music_store, &iter, 4, duration, -1);
 		}
 
-                if (edit_track_dialog(name, sort_name, file, comment, duration, volume)) {
+                if (edit_track_dialog(name, sort_name, file, comment, duration, volume, &rva, &use_rva)) {
 
                         gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name,
-					   2, file, 3, comment, -1);
+					   2, file, 3, comment, 6, rva, 7, use_rva, -1);
                         tree_selection_changed_cb(music_select, NULL);
                 }
         }
@@ -1799,7 +1849,7 @@ track__fileinfo_cb(gpointer data) {
 		make_title_string(list_str, title_format,
 				  artist_name, record_name, track_name);
 
-		show_file_info(list_str, file);
+		show_file_info(list_str, file, 1, model, iter_track);
         }
 }
 
@@ -1873,7 +1923,7 @@ set_comment_text(char * str) {
 }
 
 
-static void
+void
 tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
 
         GtkTreeIter iter;
@@ -1979,13 +2029,15 @@ create_music_browser(void) {
 
 	/* create music store tree */
 	if (!music_store) {
-		music_store = gtk_tree_store_new(6,
+		music_store = gtk_tree_store_new(8,
 						 G_TYPE_STRING,  /* visible name */
 						 G_TYPE_STRING,  /* string to sort by */
 						 G_TYPE_STRING,  /* physical filename (tracks only) */
 						 G_TYPE_STRING,  /* user comments */
 						 G_TYPE_FLOAT,   /* track length in seconds */
-						 G_TYPE_FLOAT);  /* track average volume in dBFS */
+						 G_TYPE_FLOAT,   /* track average volume in dBFS */
+						 G_TYPE_FLOAT,   /* track volume adjustment, dB */
+						 G_TYPE_FLOAT);  /* if >= 0: use track RVA, if < 0: auto */
 	}
 
 	music_tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(music_store));
@@ -2124,8 +2176,8 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__separator1);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__add);
-	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__edit);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__fileinfo);
+	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__edit);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__volume);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__remove);
@@ -2207,6 +2259,8 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record) {
 	char comment[MAXLEN];
 	float duration = 0.0f;
 	float volume = 0.0f;
+	float rva = 0.0f;
+	float use_rva = -1.0f;
 
 	name[0] = '\0';
 	sort_name[0] = '\0';
@@ -2247,7 +2301,20 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record) {
                                 sscanf(key, "%f", &volume);
                         }
                         xmlFree(key);
+		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva"))) {
+                        key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+                                sscanf(key, "%f", &rva);
+                        }
+                        xmlFree(key);
+		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"use_rva"))) {
+                        key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+                                sscanf(key, "%f", &use_rva);
+                        }
+                        xmlFree(key);
                 }
+                
 		cur = cur->next;
 	}
 
@@ -2260,6 +2327,8 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record) {
 				   3, comment,
 				   4, duration,
 				   5, volume,
+				   6, rva,
+				   7, use_rva,
 				   -1);
 	} else {
 		if (name[0] == '\0')
@@ -2440,10 +2509,14 @@ save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track) {
 	char * comment;
 	float duration;
 	float volume;
+	float rva;
+	float use_rva;
 	char str[32];
 
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter_track, 0, &name,
-			   1, &sort_name, 2, &file, 3, &comment, 4, &duration, 5, &volume, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter_track,
+			   0, &name, 1, &sort_name, 2, &file, 3, &comment,
+			   4, &duration, 5, &volume, 6, &rva, 7, &use_rva,
+			   -1);
 	
 	node = xmlNewTextChild(node_track, NULL, "track", NULL);
 	if (name[0] == '\0')
@@ -2465,6 +2538,16 @@ save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track) {
 	if (volume != 0.0f) {
 		snprintf(str, 31, "%.1f", volume);
 		xmlNewTextChild(node, NULL, "volume", str);
+	}
+
+	if (rva != 0.0f) {
+		snprintf(str, 31, "%.1f", rva);
+		xmlNewTextChild(node, NULL, "rva", str);
+	}
+
+	if (use_rva >= 0.0f) {
+		snprintf(str, 31, "%.1f", use_rva);
+		xmlNewTextChild(node, NULL, "use_rva", str);
 	}
 
 	g_free(name);

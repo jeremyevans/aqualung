@@ -21,6 +21,11 @@
 #ifndef _FILE_INFO_H
 #define _FILE_INFO_H
 
-void show_file_info(char * name, char * file);
+#include <gtk/gtk.h>
+
+
+void show_file_info(char * name, char * file, int is_called_from_browser,
+		    GtkTreeModel * model, GtkTreeIter iter_track);
+
 
 #endif /* _FILE_INFO_H */

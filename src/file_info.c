@@ -38,14 +38,69 @@
 
 #include "common.h"
 #include "file_decoder.h"
+#include "music_browser.h"
 #include "gui_main.h"
 #include "i18n.h"
 #include "file_info.h"
 
 
+/* import destination codes */
+#define IMPORT_DEST_ARTIST   1
+#define IMPORT_DEST_RECORD   2
+#define IMPORT_DEST_TITLE    3
+#define IMPORT_DEST_NUMBER   4
+#define IMPORT_DEST_COMMENT  5
+#define IMPORT_DEST_RVA      6
+
+typedef struct _import_data_t {
+        GtkTreeModel * model;
+        GtkTreeIter track_iter;
+        int dest_type; /* one of the above codes */
+        char str[MAXLEN];
+        float fval;
+} import_data_t;
+
 extern GtkWidget * main_window;
+extern GtkTreeStore * music_store;
+extern GtkTreeSelection * music_select;
+extern GtkWidget * music_tree;
 
 GtkWidget * info_window = NULL;
+
+
+float convf(char * s) {
+
+        float val, pow;
+        int i, sign;
+
+        for (i = 0; s[i] == ' ' || s[i] == '\n' || s[i] == '\t'; i++);
+        sign = 1;
+        if (s[i] == '+' || s[i] == '-')
+                sign = (s[i++] == '+') ? 1 : -1;
+        for (val = 0; s[i] >= '0' && s[i] <= '9'; i++)
+                val = 10 * val + s[i] - '0';
+        if ((s[i] == '.') || (s[i] == ','))
+                i++;
+        for (pow = 1; s[i] >= '0' && s[i] <= '9'; i++) {
+                val = 10 * val + s[i] - '0';
+                pow *= 10;
+        }
+        return(sign * val / pow);
+}
+
+
+import_data_t *
+import_data_new(void) {
+
+	import_data_t * data;
+
+	if ((data = calloc(1, sizeof(import_data_t))) == NULL) {
+		fprintf(stderr, "error: import_data_new(): calloc error\n");
+		return NULL;
+	}
+	return data;
+}
+
 
 static gint
 dismiss(GtkWidget * widget, gpointer data) {
@@ -55,6 +110,7 @@ dismiss(GtkWidget * widget, gpointer data) {
 	return TRUE;
 }
 
+
 int
 info_window_close(GtkWidget * widget, gpointer * data) {
 
@@ -63,12 +119,74 @@ info_window_close(GtkWidget * widget, gpointer * data) {
 }
 
 
+static void
+import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
+
+	import_data_t * data = (import_data_t *)gptr_data;
+	GtkTreeIter record_iter;
+	GtkTreeIter artist_iter;
+	GtkTreePath * path;
+	char tmp[MAXLEN];
+	char * ptmp;
+	float ftmp;
+
+	switch (data->dest_type) {
+	case IMPORT_DEST_TITLE:
+		gtk_tree_store_set(music_store, &(data->track_iter), 0, data->str, -1);
+		break;
+	case IMPORT_DEST_RECORD:
+		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
+		gtk_tree_store_set(music_store, &record_iter, 0, data->str, -1);
+		break;
+	case IMPORT_DEST_ARTIST:
+		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
+		gtk_tree_model_iter_parent(data->model, &artist_iter, &record_iter);
+		gtk_tree_store_set(music_store, &artist_iter, 0, data->str, -1);
+		gtk_tree_store_set(music_store, &artist_iter, 1, data->str, -1);
+		path = gtk_tree_model_get_path(data->model, &(data->track_iter));
+		gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(music_tree), path, NULL, TRUE, 0.5f, 0.0f);
+		break;
+	case IMPORT_DEST_NUMBER:
+		if (data->str[0] != '0') {
+			tmp[0] = '0';
+			tmp[1] = '\0';
+		} else {
+			tmp[0] = '\0';
+		}
+		strncat(tmp, data->str, MAXLEN-1);
+		gtk_tree_store_set(music_store, &(data->track_iter), 1, tmp, -1);
+		break;
+	case IMPORT_DEST_COMMENT:
+		gtk_tree_model_get(data->model, &(data->track_iter), 3, &ptmp, -1);
+		tmp[0] = '\0';
+		if (ptmp != NULL) {
+			strncat(tmp, ptmp, MAXLEN-1);
+		}
+		if ((tmp[strlen(tmp)-1] != '\n') && (tmp[0] != '\0')) {
+			strncat(tmp, "\n", MAXLEN-1);
+		}
+		strncat(tmp, data->str, MAXLEN-1);
+		gtk_tree_store_set(music_store, &(data->track_iter), 3, tmp, -1);
+		tree_selection_changed_cb(music_select, NULL);
+		break;
+	case IMPORT_DEST_RVA:
+		ftmp = 1.0f;
+		gtk_tree_store_set(music_store, &(data->track_iter), 6, data->fval, -1);
+		gtk_tree_store_set(music_store, &(data->track_iter), 7, ftmp, -1);
+		break;
+	}
+}
+
+
 void
-append_table(GtkWidget * table, int * cnt, char * field, char * value) {
+append_table(GtkWidget * table, int * cnt, char * field, char * value,
+	     char * importbtn_text, import_data_t * data) {
 
 	GtkWidget * hbox;
 	GtkWidget * entry;
 	GtkWidget * label;
+
+	GtkWidget * button;
 
 	gtk_table_resize(GTK_TABLE(table), *cnt + 1, 2);
 
@@ -76,11 +194,23 @@ append_table(GtkWidget * table, int * cnt, char * field, char * value) {
 	label = gtk_label_new(field);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, *cnt, *cnt+1, GTK_FILL, GTK_FILL, 5, 3);
+
 	entry = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(entry), value);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table), entry, 1, 2, *cnt, *cnt+1,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+
+	if (importbtn_text == NULL) {
+		gtk_table_attach(GTK_TABLE(table), entry, 1, 3, *cnt, *cnt+1,
+				 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+	} else {
+		button = gtk_button_new_with_label(importbtn_text);
+		g_signal_connect(G_OBJECT(button), "clicked",
+				 G_CALLBACK(import_button_pressed), (gpointer)data);
+		gtk_table_attach(GTK_TABLE(table), entry, 1, 2, *cnt, *cnt+1,
+				 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+		gtk_table_attach(GTK_TABLE(table), button, 2, 3, *cnt, *cnt+1,
+				 GTK_FILL, GTK_FILL, 5, 3);
+	}
 	
 	(*cnt)++;
 }
@@ -88,7 +218,8 @@ append_table(GtkWidget * table, int * cnt, char * field, char * value) {
 
 #ifdef HAVE_ID3
 static void
-show_rva2(struct id3_tag * tag, GtkWidget * table, int * cnt) {
+show_rva2(struct id3_tag * tag, GtkWidget * table, int * cnt,
+	  int is_called_from_browser, GtkTreeModel * model, GtkTreeIter track_iter) {
 
 	struct id3_frame * frame;
 	char str[MAXLEN];
@@ -132,7 +263,19 @@ show_rva2(struct id3_tag * tag, GtkWidget * table, int * cnt) {
 				voladj_float = (double) voladj_fixed / 512;
 
 				snprintf(str, MAXLEN-1, "%+.1f dB (%s)", voladj_float, id);
-				append_table(table, cnt, _("Relative Volume"), str);
+
+				if (!is_called_from_browser) {
+					append_table(table, cnt, _("Relative Volume"), str, NULL, NULL);
+				} else {
+					import_data_t * data = import_data_new();
+
+					data->model = model;
+					data->track_iter = track_iter;
+					data->dest_type = IMPORT_DEST_RVA;
+					data->fval = voladj_float;
+					append_table(table, cnt, _("Relative Volume"), str,
+						     _("Import as RVA"), data);
+				}
 				break;
 			}
 
@@ -144,7 +287,8 @@ show_rva2(struct id3_tag * tag, GtkWidget * table, int * cnt) {
 
 
 static void
-show_id3(struct id3_tag const * tag, GtkWidget * table, int * cnt) {
+show_id3(struct id3_tag const * tag, GtkWidget * table, int * cnt,
+	 int is_called_from_browser, GtkTreeModel * model, GtkTreeIter track_iter) {
 
 	unsigned int i;
 	struct id3_frame const * frame;
@@ -201,7 +345,68 @@ show_id3(struct id3_tag const * tag, GtkWidget * table, int * cnt) {
 
 			if (j == 0 && info[i].label) {
 				snprintf(str, MAXLEN-1, "%s:", info[i].label);
-				append_table(table, cnt, str, utf8);
+				if (!is_called_from_browser) {
+					append_table(table, cnt, str, utf8, NULL, NULL);
+				} else {
+					import_data_t * data = import_data_new();
+
+					if (strcmp(info[i].id, ID3_FRAME_TITLE) == 0) {
+
+						data->model = model;
+						data->track_iter = track_iter;
+						data->dest_type = IMPORT_DEST_TITLE;
+						strncpy(data->str, utf8, MAXLEN-1);
+						append_table(table, cnt, str, utf8,
+							     _("Import as Title"), data);
+					} else
+					if (strcmp(info[i].id, ID3_FRAME_ARTIST) == 0) {
+
+						data->model = model;
+						data->track_iter = track_iter;
+						data->dest_type = IMPORT_DEST_ARTIST;
+						strncpy(data->str, utf8, MAXLEN-1);
+						append_table(table, cnt, str, utf8,
+							     _("Import as Artist"), data);
+					} else
+					if (strcmp(info[i].id, ID3_FRAME_ALBUM) == 0) {
+
+						data->model = model;
+						data->track_iter = track_iter;
+						data->dest_type = IMPORT_DEST_RECORD;
+						strncpy(data->str, utf8, MAXLEN-1);
+						append_table(table, cnt, str, utf8,
+							     _("Import as Record"), data);
+					} else
+					if (strcmp(info[i].id, ID3_FRAME_TRACK) == 0) {
+
+						data->model = model;
+						data->track_iter = track_iter;
+						data->dest_type = IMPORT_DEST_NUMBER;
+						strncpy(data->str, utf8, MAXLEN-1);
+						append_table(table, cnt, str, utf8,
+							     _("Import as Track number"), data);
+					} else
+					if ((strcmp(info[i].id, "TCOM") == 0) ||
+					    (strcmp(info[i].id, "TPE2") == 0) ||
+					    (strcmp(info[i].id, "TPE3") == 0) ||
+					    (strcmp(info[i].id, "TEXT") == 0) ||
+					    (strcmp(info[i].id, ID3_FRAME_YEAR) == 0) ||
+					    (strcmp(info[i].id, "TPUB") == 0) ||
+					    (strcmp(info[i].id, ID3_FRAME_GENRE) == 0) ||
+					    (strcmp(info[i].id, "TRSN") == 0) ||
+					    (strcmp(info[i].id, "TENC") == 0)) {
+
+						char tmp[MAXLEN];
+						
+						snprintf(tmp, MAXLEN-1, "%s %s", str, utf8);
+						data->model = model;
+						data->track_iter = track_iter;
+						data->dest_type = IMPORT_DEST_COMMENT;
+						strncpy(data->str, tmp, MAXLEN-1);
+						append_table(table, cnt, str, utf8,
+							     _("Add to Comments"), data);
+					}
+				}
 			} else {
 				if (strcmp(info[i].id, "TCOP") == 0 ||
 				    strcmp(info[i].id, "TPRO") == 0) {
@@ -209,9 +414,34 @@ show_id3(struct id3_tag const * tag, GtkWidget * table, int * cnt) {
 					snprintf(str, MAXLEN-1, "%s",
 						 (info[i].id[1] == 'C') ?
                                                _("Copyright (C)") : _("Produced (P)"));
-					append_table(table, cnt, str, utf8);
+
+					if (!is_called_from_browser) {
+						append_table(table, cnt, str, utf8, NULL, NULL);
+					} else {
+						import_data_t * data = import_data_new();
+						char tmp[MAXLEN];
+						
+						snprintf(tmp, MAXLEN-1, "%s: %s", str, utf8);
+						data->model = model;
+						data->track_iter = track_iter;
+						data->dest_type = IMPORT_DEST_COMMENT;
+						strncpy(data->str, tmp, MAXLEN-1);
+						append_table(table, cnt, str, utf8,
+							     _("Add to Comments"), data);
+					}
 				} else {
-					append_table(table, cnt, "", utf8);
+					if (!is_called_from_browser) {
+						append_table(table, cnt, "", utf8, NULL, NULL);
+					} else {
+						import_data_t * data = import_data_new();
+						
+						data->model = model;
+						data->track_iter = track_iter;
+						data->dest_type = IMPORT_DEST_COMMENT;
+						strncpy(data->str, utf8, MAXLEN-1);
+						append_table(table, cnt, "", utf8,
+							     _("Add to Comments"), data);
+					}
 				}
 			}
 			free(utf8);
@@ -236,7 +466,19 @@ show_id3(struct id3_tag const * tag, GtkWidget * table, int * cnt) {
 			goto fail;
 
 		sprintf(str, "%s:", _("Comment"));
-		append_table(table, cnt, str, utf8);
+		if (!is_called_from_browser) {
+			append_table(table, cnt, str, utf8, NULL, NULL);
+		} else {
+			import_data_t * data = import_data_new();
+			char tmp[MAXLEN];
+			
+			snprintf(tmp, MAXLEN-1, "%s %s", str, utf8);
+			data->model = model;
+			data->track_iter = track_iter;
+			data->dest_type = IMPORT_DEST_COMMENT;
+			strncpy(data->str, tmp, MAXLEN-1);
+			append_table(table, cnt, str, utf8, _("Add to Comments"), data);
+		}
 		free(utf8);
 		break;
 	}
@@ -251,7 +493,8 @@ show_id3(struct id3_tag const * tag, GtkWidget * table, int * cnt) {
 
 #ifdef HAVE_FLAC
 void
-build_flac_vc(FLAC__StreamMetadata * flacmeta, GtkWidget * table_flac, int * cnt) {
+build_flac_vc(FLAC__StreamMetadata * flacmeta, GtkWidget * table_flac, int * cnt,
+	      int is_called_from_browser, GtkTreeModel * model, GtkTreeIter track_iter) {
 
 	char field[MAXLEN];
 	char str[MAXLEN];
@@ -275,7 +518,55 @@ build_flac_vc(FLAC__StreamMetadata * flacmeta, GtkWidget * table_flac, int * cnt
 			str[k++] = flacmeta->data.vorbis_comment.comments[i].entry[j];
 		}
 		str[k] = '\0';
-		append_table(table_flac, cnt, field, str);
+
+		if (!is_called_from_browser) {
+			append_table(table_flac, cnt, field, str, NULL, NULL);
+		} else {
+			import_data_t * data = import_data_new();
+			
+			if (strcmp(field, "Title:") == 0) {
+				
+				data->model = model;
+				data->track_iter = track_iter;
+				data->dest_type = IMPORT_DEST_TITLE;
+				strncpy(data->str, str, MAXLEN-1);
+				append_table(table_flac, cnt, field, str, _("Import as Title"), data);
+			} else
+			if (strcmp(field, "Album:") == 0) {
+				
+				data->model = model;
+				data->track_iter = track_iter;
+				data->dest_type = IMPORT_DEST_RECORD;
+				strncpy(data->str, str, MAXLEN-1);
+				append_table(table_flac, cnt, field, str, _("Import as Record"), data);
+			} else
+			if (strcmp(field, "Artist:") == 0) {
+				
+				data->model = model;
+				data->track_iter = track_iter;
+				data->dest_type = IMPORT_DEST_ARTIST;
+				strncpy(data->str, str, MAXLEN-1);
+				append_table(table_flac, cnt, field, str, _("Import as Artist"), data);
+			} else
+			if (strcmp(field, "Replaygain_track_gain:") == 0) {
+				
+				data->model = model;
+				data->track_iter = track_iter;
+				data->dest_type = IMPORT_DEST_RVA;
+				data->fval = convf(str);
+				append_table(table_flac, cnt, field, str, _("Import as RVA"), data);
+			} else {
+				char tmp[MAXLEN];
+				
+				snprintf(tmp, MAXLEN-1, "%s %s", field, str);
+				data->model = model;
+				data->track_iter = track_iter;
+				data->dest_type = IMPORT_DEST_COMMENT;
+				strncpy(data->str, tmp, MAXLEN-1);
+				append_table(table_flac, cnt, field, str,
+					     _("Add to Comments"), data);
+			}
+		}
 	}
 
 
@@ -284,13 +575,26 @@ build_flac_vc(FLAC__StreamMetadata * flacmeta, GtkWidget * table_flac, int * cnt
 		field[j] = flacmeta->data.vorbis_comment.vendor_string.entry[j];
 	}
 	field[j] = '\0';
-	append_table(table_flac, cnt, _("Vendor:"), field);
+	if (!is_called_from_browser) {
+		append_table(table_flac, cnt, _("Vendor:"), field, NULL, NULL);
+	} else {
+		import_data_t * data = import_data_new();
+		char tmp[MAXLEN];
+		
+		snprintf(tmp, MAXLEN-1, "%s %s", _("Vendor:"), field);
+		data->model = model;
+		data->track_iter = track_iter;
+		data->dest_type = IMPORT_DEST_COMMENT;
+		strncpy(data->str, tmp, MAXLEN-1);
+		append_table(table_flac, cnt, _("Vendor:"), field, _("Add to Comments"), data);
+	}
 }
 #endif /* HAVE_FLAC */
 
 
 void
-show_file_info(char * name, char * file) {
+show_file_info(char * name, char * file, int is_called_from_browser,
+	       GtkTreeModel * model, GtkTreeIter track_iter) {
 
         file_decoder_t * fdec = NULL;
         char str[MAXLEN];
@@ -351,7 +655,7 @@ show_file_info(char * name, char * file) {
 	info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(info_window), _("File info"));
 	gtk_window_set_position(GTK_WINDOW(info_window), GTK_WIN_POS_CENTER);
-	gtk_widget_set_size_request(GTK_WIDGET(info_window), 400, -1);
+	gtk_widget_set_size_request(GTK_WIDGET(info_window), 500, -1);
 	g_signal_connect(G_OBJECT(info_window), "delete_event",
 			 G_CALLBACK(info_window_close), NULL);
 	gtk_container_set_border_width(GTK_CONTAINER(info_window), 5);
@@ -481,15 +785,17 @@ show_file_info(char * name, char * file) {
 				/* ID3v2 notebook page */
 				
 				vbox_id3v2 = gtk_vbox_new(FALSE, 4);
-				table_id3v2 = gtk_table_new(0, 2, FALSE);
+				table_id3v2 = gtk_table_new(0, 3, FALSE);
 				gtk_box_pack_start(GTK_BOX(vbox_id3v2), table_id3v2,
 						   TRUE, TRUE, 10);
 				label_id3v2 = gtk_label_new(_("ID3v2 tags"));
 				gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_id3v2,
 							 label_id3v2);
 
-				show_id3(id3tag, table_id3v2, &cnt);
-				show_rva2(id3tag, table_id3v2, &cnt);
+				show_id3(id3tag, table_id3v2, &cnt,
+					 is_called_from_browser, model, track_iter);
+				show_rva2(id3tag, table_id3v2, &cnt,
+					  is_called_from_browser, model, track_iter);
 
 				if (cnt == 0) {
 					gtk_notebook_remove_page(GTK_NOTEBOOK(nb),
@@ -511,7 +817,7 @@ show_file_info(char * name, char * file) {
 		int i, j;
 		
 		vbox_vorbis = gtk_vbox_new(FALSE, 4);
-		table_vorbis = gtk_table_new(0, 2, FALSE);
+		table_vorbis = gtk_table_new(0, 3, FALSE);
 		gtk_box_pack_start(GTK_BOX(vbox_vorbis), table_vorbis, TRUE, TRUE, 10);
 		label_vorbis = gtk_label_new(_("Vorbis comments"));
 		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_vorbis, label_vorbis);
@@ -532,11 +838,74 @@ show_file_info(char * name, char * file) {
 			}
 			str[j] = '\0';
 
-			append_table(table_vorbis, &cnt, field, str);
+			if (!is_called_from_browser) {
+				append_table(table_vorbis, &cnt, field, str, NULL, NULL);
+			} else {
+				import_data_t * data = import_data_new();
+				
+				if (strcmp(field, "Title:") == 0) {
+					
+					data->model = model;
+					data->track_iter = track_iter;
+					data->dest_type = IMPORT_DEST_TITLE;
+					strncpy(data->str, str, MAXLEN-1);
+					append_table(table_vorbis, &cnt, field, str,
+						     _("Import as Title"), data);
+				} else
+				if (strcmp(field, "Album:") == 0) {
+						
+					data->model = model;
+					data->track_iter = track_iter;
+					data->dest_type = IMPORT_DEST_RECORD;
+					strncpy(data->str, str, MAXLEN-1);
+					append_table(table_vorbis, &cnt, field, str,
+						     _("Import as Record"), data);
+				} else
+				if (strcmp(field, "Artist:") == 0) {
+					
+					data->model = model;
+					data->track_iter = track_iter;
+					data->dest_type = IMPORT_DEST_ARTIST;
+					strncpy(data->str, str, MAXLEN-1);
+					append_table(table_vorbis, &cnt, field, str,
+						     _("Import as Artist"), data);
+				} else
+				if (strcmp(field, "Replaygain_track_gain:") == 0) {
+						
+					data->model = model;
+					data->track_iter = track_iter;
+					data->dest_type = IMPORT_DEST_RVA;
+					data->fval = convf(str);
+					append_table(table_vorbis, &cnt, field, str,
+						     _("Import as RVA"), data);
+				} else {
+					char tmp[MAXLEN];
+					
+					snprintf(tmp, MAXLEN-1, "%s %s", field, str);
+					data->model = model;
+					data->track_iter = track_iter;
+					data->dest_type = IMPORT_DEST_COMMENT;
+					strncpy(data->str, tmp, MAXLEN-1);
+					append_table(table_vorbis, &cnt, field, str,
+						     _("Add to Comments"), data);
+				}
+			}
 		}
 
 		strncpy(str, vc->vendor, MAXLEN-1);
-		append_table(table_vorbis, &cnt, _("Vendor:"), str);
+		if (!is_called_from_browser) {
+			append_table(table_vorbis, &cnt, _("Vendor:"), str, NULL, NULL);
+		} else {
+			import_data_t * data = import_data_new();
+			char tmp[MAXLEN];
+			
+			snprintf(tmp, MAXLEN-1, "%s %s", _("Vendor:"), str);
+			data->model = model;
+			data->track_iter = track_iter;
+			data->dest_type = IMPORT_DEST_COMMENT;
+			strncpy(data->str, tmp, MAXLEN-1);
+			append_table(table_vorbis, &cnt, _("Vendor:"), str, _("Add to Comments"), data);
+		}
 	}
 #endif /* HAVE_OGG_VORBIS */
 
@@ -559,7 +928,7 @@ show_file_info(char * name, char * file) {
 		}
 
 		vbox_flac = gtk_vbox_new(FALSE, 4);
-		table_flac = gtk_table_new(0, 2, FALSE);
+		table_flac = gtk_table_new(0, 3, FALSE);
 		gtk_box_pack_start(GTK_BOX(vbox_flac), table_flac, TRUE, TRUE, 10);
 		label_flac = gtk_label_new(_("FLAC metadata"));
 		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_flac, label_flac);
@@ -572,7 +941,8 @@ show_file_info(char * name, char * file) {
 			/* process a VORBIS_COMMENT metadata block */
 			if (flacmeta->type == FLAC__METADATA_TYPE_VORBIS_COMMENT) {
 
-				build_flac_vc(flacmeta, table_flac, &cnt);
+				build_flac_vc(flacmeta, table_flac, &cnt,
+					      is_called_from_browser, model, track_iter);
 			}
 
 			FLAC__metadata_object_delete(flacmeta);

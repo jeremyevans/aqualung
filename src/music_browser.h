@@ -22,6 +22,7 @@
 #ifndef _MUSIC_BROWSER_H
 #define _MUSIC_BROWSER_H
 
+void tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data);
 
 void create_music_browser(void);
 void show_music_browser(void);

@@ -346,7 +346,21 @@ plist__load_cb(gpointer data) {
                 selected_filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_selector));
 
 		strncpy(filename, selected_filename, MAXLEN-1);
-		load_playlist(filename, 0);
+		switch (is_playlist(filename)) {
+		case 0:
+			fprintf(stderr,
+				"error: %s does not appear to be a valid playlist\n", filename);
+			break;
+		case 1:
+			load_playlist(filename, 0);
+			break;
+		case 2:
+			load_m3u(filename, 0);
+			break;
+		case 3:
+			load_pls(filename, 0);
+			break;
+		}
                 strncpy(currdir, gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_selector)),
                                                                  MAXLEN-1);
                 if (currdir[strlen(currdir)-1] != '/') {
@@ -376,7 +390,21 @@ plist__enqueue_cb(gpointer data) {
                 selected_filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_selector));
 
 		strncpy(filename, selected_filename, MAXLEN-1);
-		load_playlist(filename, 1);
+		switch (is_playlist(filename)) {
+		case 0:
+			fprintf(stderr,
+				"error: %s does not appear to be a valid playlist\n", filename);
+			break;
+		case 1:
+			load_playlist(filename, 1);
+			break;
+		case 2:
+			load_m3u(filename, 1);
+			break;
+		case 3:
+			load_pls(filename, 1);
+			break;
+		}
                 strncpy(currdir, gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_selector)),
                                                                  MAXLEN-1);
                 if (currdir[strlen(currdir)-1] != '/') {
@@ -992,25 +1020,348 @@ load_playlist(char * filename, int enqueue) {
 }
 
 
+void
+load_m3u(char * filename, int enqueue) {
+
+	FILE * f;
+	int c;
+	int i = 0;
+	int n;
+	char * str;
+	char pl_dir[MAXLEN];
+	char line[MAXLEN];
+	char name[MAXLEN];
+	char path[MAXLEN];
+	char tmp[MAXLEN];
+	int have_name = 0;
+	GtkTreeIter iter;
+
+
+	if ((str = strrchr(filename, '/')) == NULL) {
+		printf("load_m3u(): programmer error: playlist path is not absolute\n");
+	}
+	for (i = 0; (i < (str - filename)) && (i < MAXLEN-1); i++) {
+		pl_dir[i] = filename[i];
+	}
+	pl_dir[i] = '\0';
+
+	if ((f = fopen(filename, "rb")) == NULL) {
+		fprintf(stderr, "unable to open .m3u playlist: %s\n", filename);
+		return;
+	}
+
+	if (!enqueue)
+		gtk_list_store_clear(play_store);
+
+	i = 0;
+	while ((c = fgetc(f)) != EOF) {
+		if ((c != '\n') && (c != '\r') && (i < MAXLEN)) {
+			if ((i > 0) || ((c != ' ') && (c != '\t'))) {
+				line[i++] = c;
+			}
+		} else {
+			line[i] = '\0';
+			if (i == 0)
+				continue;
+			i = 0;
+
+			if (strstr(line, "#EXTM3U") == line) {
+				continue;
+			}
+			
+			if (strstr(line, "#EXTINF:") == line) {
+
+				char str_duration[64];
+				int cnt = 0;
+				
+				/* We parse the timing, but throw it away. 
+				   This may change in the future. */
+				while ((line[cnt+8] >= '0') && (line[cnt+8] <= '9')) {
+					str_duration[cnt] = line[cnt+8];
+					++cnt;
+				}
+				str_duration[cnt] = '\0';
+				snprintf(name, MAXLEN-1, "%s", line+cnt+9);
+				have_name = 1;
+
+			} else {
+				/* safeguard against http:// and C:\ stuff */
+				if (strstr(line, "http://") == line) {
+					fprintf(stderr, "Ignoring playlist item: %s\n", line);
+					i = 0;
+					have_name = 0;
+					continue;
+				}
+				if ((line[1] == ':') && (line[2] == '\\')) {
+					fprintf(stderr, "Ignoring playlist item: %s\n", line);
+					i = 0;
+					have_name = 0;
+					continue;
+				}
+
+				snprintf(path, MAXLEN-1, "%s", line);
+
+				/* path curing: turn \-s into /-s */
+				for (n = 0; n < strlen(path); n++) {
+					if (path[n] == '\\')
+						path[n] = '/';
+				}
+				
+				if (path[0] != '/') {
+					strncpy(tmp, path, MAXLEN-1);
+					snprintf(path, MAXLEN-1, "%s/%s", pl_dir, tmp);
+				}
+
+				if (!have_name) {
+					char * ch;
+					if ((ch = strrchr(path, '/')) != NULL) {
+						++ch;
+						snprintf(name, MAXLEN-1, "%s", ch);
+					} else {
+						fprintf(stderr,
+						  "warning: ain't this a directory? : %s\n", path);
+						snprintf(name, MAXLEN-1, "%s", path);
+					}
+				}
+				have_name = 0;
+
+				gtk_list_store_append(play_store, &iter);
+				gtk_list_store_set(play_store, &iter,
+						   0, g_locale_to_utf8(name, -1, NULL, NULL, NULL),
+						   1, g_locale_to_utf8(path, -1, NULL, NULL, NULL),
+						   2, pl_color_inactive, -1);
+			}
+		}
+	}
+}
+
+
+void
+load_pls(char * filename, int enqueue) {
+
+	FILE * f;
+	int c;
+	int i = 0;
+	int n;
+	char * str;
+	char pl_dir[MAXLEN];
+	char line[MAXLEN];
+	char file[MAXLEN];
+	char title[MAXLEN];
+	char tmp[MAXLEN];
+	int have_file = 0;
+	int have_title = 0;
+	char numstr_file[10];
+	char numstr_title[10];
+	GtkTreeIter iter;
+
+
+	if ((str = strrchr(filename, '/')) == NULL) {
+		printf("load_pls(): programmer error: playlist path is not absolute\n");
+	}
+	for (i = 0; (i < (str - filename)) && (i < MAXLEN-1); i++) {
+		pl_dir[i] = filename[i];
+	}
+	pl_dir[i] = '\0';
+
+	if ((f = fopen(filename, "rb")) == NULL) {
+		fprintf(stderr, "unable to open .pls playlist: %s\n", filename);
+		return;
+	}
+
+	if (!enqueue)
+		gtk_list_store_clear(play_store);
+
+	i = 0;
+	while ((c = fgetc(f)) != EOF) {
+		if ((c != '\n') && (c != '\r') && (i < MAXLEN)) {
+			if ((i > 0) || ((c != ' ') && (c != '\t'))) {
+				line[i++] = c;
+			}
+		} else {
+			line[i] = '\0';
+			if (i == 0)
+				continue;
+			i = 0;
+
+			if (strstr(line, "[playlist]") == line) {
+				continue;
+			}
+			if (strstr(line, "NumberOfEntries") == line) {
+				continue;
+			}
+			if (strstr(line, "Version") == line) {
+				continue;
+			}
+			
+			if (strstr(line, "File") == line) {
+
+				char numstr[10];
+				char * ch;
+				int m;
+
+				if ((ch = strstr(line, "=")) == NULL) {
+					fprintf(stderr, "Syntax error in %s\n", filename);
+					return;
+				}
+				
+				++ch;
+				while ((*ch == ' ') || (*ch == '\t'))
+					++ch;
+
+				m = 0;
+				for (n = 0; (line[n+4] != '=') && (m < sizeof(numstr)); n++) {
+					if ((line[n+4] != ' ') && (line[n+4] != '\t'))
+						numstr[m++] = line[n+4];
+				}
+				numstr[m] = '\0';
+				strncpy(numstr_file, numstr, sizeof(numstr_file));
+
+				/* safeguard against http:// and C:\ stuff */
+				if (strstr(ch, "http://") == ch) {
+					fprintf(stderr, "Ignoring playlist item: %s\n", ch);
+					i = 0;
+					have_file = have_title = 0;
+					continue;
+				}
+				if ((ch[1] == ':') && (ch[2] == '\\')) {
+					fprintf(stderr, "Ignoring playlist item: %s\n", ch);
+					i = 0;
+					have_file = have_title = 0;
+					continue;
+				}
+
+				snprintf(file, MAXLEN-1, "%s", ch);
+
+				/* path curing: turn \-s into /-s */
+
+				for (n = 0; n < strlen(file); n++) {
+					if (file[n] == '\\')
+						file[n] = '/';
+				}
+
+				if (file[0] != '/') {
+					strncpy(tmp, file, MAXLEN-1);
+					snprintf(file, MAXLEN-1, "%s/%s", pl_dir, tmp);
+				}
+
+				have_file = 1;
+				
+
+			} else if (strstr(line, "Title") == line) {
+
+				char numstr[10];
+				char * ch;
+				int m;
+
+				if ((ch = strstr(line, "=")) == NULL) {
+					fprintf(stderr, "Syntax error in %s\n", filename);
+					return;
+				}
+				
+				++ch;
+				while ((*ch == ' ') || (*ch == '\t'))
+					++ch;
+
+				m = 0;
+				for (n = 0; (line[n+5] != '=') && (m < sizeof(numstr)); n++) {
+					if ((line[n+5] != ' ') && (line[n+5] != '\t'))
+						numstr[m++] = line[n+5];
+				}
+				numstr[m] = '\0';
+				strncpy(numstr_title, numstr, sizeof(numstr_title));
+
+				snprintf(title, MAXLEN-1, "%s", ch);
+				have_title = 1;
+
+
+			} else if (strstr(line, "Length") == line) {
+
+				/* We parse the timing, but throw it away. 
+				   This may change in the future. */
+
+				char * ch;
+				if ((ch = strstr(line, "=")) == NULL) {
+					fprintf(stderr, "Syntax error in %s\n", filename);
+					return;
+				}
+				
+				++ch;
+				while ((*ch == ' ') || (*ch == '\t'))
+					++ch;
+
+			} else {
+				fprintf(stderr, 
+					"Syntax error: invalid line in playlist: %s\n", line);
+				return;
+			}
+
+			if (!have_file || !have_title) {
+				continue;
+			}
+			
+			if (strcmp(numstr_file, numstr_title) != 0) {
+				continue;
+			}
+
+			have_file = have_title = 0;
+
+			gtk_list_store_append(play_store, &iter);
+			gtk_list_store_set(play_store, &iter,
+					   0, g_locale_to_utf8(title, -1, NULL, NULL, NULL),
+					   1, g_locale_to_utf8(file, -1, NULL, NULL, NULL),
+					   2, pl_color_inactive, -1);
+		}
+	}
+}
+
+
+/* return values: 
+ *   0: not a playlist 
+ *   1: native aqualung (XML)
+ *   2: .m3u
+ *   3: .pls
+ */
 int
 is_playlist(char * filename) {
 
 	FILE * f;
 	char buf[] = "<?xml version=\"1.0\"?>\n<aqualung_playlist>\0";
 	char inbuf[64];
+	int len;
 
 	if ((f = fopen(filename, "rb")) == NULL) {
 		return 0;
 	}
 	if (fread(inbuf, 1, strlen(buf)+1, f) != strlen(buf)+1) {
 		fclose(f);
-		return 0;
+		goto _readext;
 	}
 	fclose(f);
 	inbuf[strlen(buf)] = '\0';
 
 	if (strcmp(buf, inbuf) == 0) {
 		return 1;
+	}
+
+ _readext:
+	len = strlen(filename);
+	if (len < 5) {
+		return 0;
+	}
+
+	if ((filename[len-4] == '.') &&
+	    ((filename[len-3] == 'm') || (filename[len-3] == 'M')) &&
+	    (filename[len-2] == '3') &&
+	    ((filename[len-1] == 'u') || (filename[len-1] == 'U'))) {
+		return 2;
+	}
+
+	if ((filename[len-4] == '.') &&
+	    ((filename[len-3] == 'p') || (filename[len-3] == 'P')) &&
+	    ((filename[len-2] == 'l') || (filename[len-2] == 'L')) &&
+	    ((filename[len-1] == 's') || (filename[len-1] == 'S'))) {
+		return 3;
 	}
 
 	return 0;
@@ -1029,7 +1380,6 @@ add_to_playlist(char * filename, int enqueue) {
 
 	if (!filename)
 		return;
-
 
 	switch (filename[0]) {
 	case '/':
@@ -1054,9 +1404,9 @@ add_to_playlist(char * filename, int enqueue) {
         if (pl_color_inactive[0] == '\0')
                 strcpy(pl_color_inactive, "#000000");
 
-	if (is_playlist(fullname)) {
-		load_playlist(fullname, enqueue);
-	} else {
+	switch (is_playlist(fullname)) {
+
+	case 0: /* not a playlist -- load the file itself */
 		if (!enqueue)
 			gtk_list_store_clear(play_store);
 
@@ -1070,5 +1420,18 @@ add_to_playlist(char * filename, int enqueue) {
 				   0, g_locale_to_utf8(endname, -1, NULL, NULL, NULL),
 				   1, g_locale_to_utf8(fullname, -1, NULL, NULL, NULL),
 				   2, pl_color_inactive, -1);
+		break;
+
+	case 1: /* native aqualung playlist (XML) */
+		load_playlist(fullname, enqueue);
+		break;
+
+	case 2: /* .m3u */
+		load_m3u(fullname, enqueue);
+		break;
+
+	case 3: /* .pls */
+		load_pls(fullname, enqueue);
+		break;
 	}
 }

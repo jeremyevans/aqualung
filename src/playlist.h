@@ -30,6 +30,9 @@ void hide_playlist(void);
 void set_playlist_color(void);
 void save_playlist(char * filename);
 void load_playlist(char * filename, int enqueue);
+void load_m3u(char * filename, int enqueue);
+void load_pls(char * filename, int enqueue);
+int is_playlist(char * filename);
 void add_to_playlist(char * filename, int enqueue);
 
 

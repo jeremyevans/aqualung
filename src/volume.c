@@ -111,7 +111,11 @@ rms_env_process(rms_env * r, const float x) {
         r->sum -= r->buffer[r->pos];
         r->sum += x;
         r->buffer[r->pos] = x;
-        r->pos = (r->pos + 1) & (RMSSIZE - 1);
+
+	r->pos++;
+        if (r->pos == RMSSIZE) {
+		r->pos = 0;
+	}
 
         return sqrt(r->sum / (float)RMSSIZE);
 }
@@ -258,7 +262,7 @@ process_volume(gpointer data) {
 		return FALSE;
 	}
 
-	if ((samples = malloc(vol_chunk_size * fdec_vol->channels * sizeof(float))) == NULL) {
+	if ((samples = (float *)malloc(vol_chunk_size * fdec_vol->channels * sizeof(float))) == NULL) {
 
 		fprintf(stderr, "process_volume(): error: malloc() returned NULL\n");
 		vol_queue_cleanup(vol_queue_save);
@@ -295,6 +299,7 @@ process_volume(gpointer data) {
 			chunk_power /= numread * fdec_vol->channels;
 			
 			rms = rms_env_process(rms_vol, chunk_power);
+
 			if (rms > vol_result)
 				vol_result = rms;
 		}
@@ -303,7 +308,7 @@ process_volume(gpointer data) {
 
 			if (!vol_cancelled) {
 				
-				vol_result = 10.0f * log10f(vol_result);
+				vol_result = 20.0f * log10f(vol_result);
 				gtk_tree_store_set(music_store, &(vol_queue->iter), 5, vol_result, -1);
 			}
 			file_decoder_close(fdec_vol);

@@ -138,7 +138,7 @@ create_options_window() {
 
 	options_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_transient_for(GTK_WINDOW(options_window), GTK_WINDOW(main_window));
-        gtk_window_set_title(GTK_WINDOW(options_window), _("Options"));
+        gtk_window_set_title(GTK_WINDOW(options_window), _("Settings"));
 	gtk_window_set_position(GTK_WINDOW(options_window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(options_window), TRUE);
         gtk_container_set_border_width(GTK_CONTAINER(options_window), 5);

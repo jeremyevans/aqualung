@@ -1855,7 +1855,7 @@ create_main_window(char * skin_path) {
 
 	conf_menu = gtk_menu_new();
 
-	conf__options = gtk_menu_item_new_with_label(_("Options"));
+	conf__options = gtk_menu_item_new_with_label(_("Settings"));
 	conf__skin = gtk_menu_item_new_with_label(_("Skin chooser"));
 	conf__jack = gtk_menu_item_new_with_label(_("JACK port setup"));
 	conf__separator = gtk_separator_menu_item_new();

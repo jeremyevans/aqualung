@@ -185,6 +185,8 @@ extern int playlist_size_x;
 extern int playlist_size_y;
 extern int playlist_on;
 
+extern int fxbuilder_on;
+
 GtkObject * adj_pos;
 GtkObject * adj_vol;
 GtkObject * adj_bal;
@@ -835,7 +837,6 @@ change_skin(char * path) {
 	if (vol_window) {
 		gtk_widget_reset_rc_styles(vol_window);
 		gtk_widget_queue_draw(vol_window);
-		gtk_window_present(GTK_WINDOW(vol_window));
 		deflicker();
 	}
 
@@ -902,6 +903,16 @@ conf__about_cb(gpointer data) {
 }
 
 
+gint
+vol_bal_timeout_callback(gpointer data) {
+
+	refresh_time_label = 1;
+	vol_bal_timeout_tag = 0;
+	refresh_time_displays();
+
+	return FALSE;
+}
+
 
 void
 main_window_close(GtkWidget * widget, gpointer data) {
@@ -928,17 +939,6 @@ main_window_close(GtkWidget * widget, gpointer data) {
 	lrdf_cleanup();
 
 	gtk_main_quit();
-}
-
-
-gint
-vol_bal_timeout_callback(gpointer data) {
-
-	refresh_time_label = 1;
-	vol_bal_timeout_tag = 0;
-	refresh_time_displays();
-
-	return FALSE;
 }
 
 
@@ -1108,6 +1108,60 @@ main_window_focus_out(GtkWidget * widget, GdkEventFocus * event, gpointer data) 
 
         refresh_scale = 1;
 
+        return FALSE;
+}
+
+
+gint
+main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpointer data) {
+	
+	if (event->new_window_state == GDK_WINDOW_STATE_ICONIFIED) {
+		if (browser_on)
+			gtk_window_iconify(GTK_WINDOW(browser_window));
+
+		if (playlist_on)
+			gtk_window_iconify(GTK_WINDOW(playlist_window));
+
+		if (vol_window)
+			gtk_window_iconify(GTK_WINDOW(vol_window));
+
+		if (info_window)
+			gtk_window_iconify(GTK_WINDOW(info_window));
+
+		if (fxbuilder_on) {
+			GtkTreeIter iter;
+			gpointer gp_instance;
+			int i = 0;
+
+			gtk_window_iconify(GTK_WINDOW(fxbuilder_window));
+
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, i) &&
+			       i < MAX_PLUGINS) {
+				gtk_tree_model_get(GTK_TREE_MODEL(running_store), &iter, 1, &gp_instance, -1);
+				gtk_widget_hide(((plugin_instance *)gp_instance)->window);
+				++i;
+			}
+		}
+	}
+
+	if (event->new_window_state == 0) {
+		if (browser_on)
+			gtk_window_deiconify(GTK_WINDOW(browser_window));
+
+		if (playlist_on)
+			gtk_window_deiconify(GTK_WINDOW(playlist_window));
+
+		if (vol_window)
+			gtk_window_deiconify(GTK_WINDOW(vol_window));
+
+		if (info_window)
+			gtk_window_deiconify(GTK_WINDOW(info_window));
+
+		if (fxbuilder_on)
+			gtk_window_deiconify(GTK_WINDOW(fxbuilder_window));
+
+	}
+	
         return FALSE;
 }
 
@@ -1954,6 +2008,9 @@ create_main_window(char * skin_path) {
 			 G_CALLBACK(main_window_button_pressed), NULL);
         g_signal_connect(G_OBJECT(main_window), "focus_out_event",
                          G_CALLBACK(main_window_focus_out), NULL);
+        g_signal_connect(G_OBJECT(main_window), "window-state-event",
+                         G_CALLBACK(main_window_state_changed), NULL);
+	
 	gtk_widget_set_events(main_window, GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 	gtk_container_set_border_width(GTK_CONTAINER(main_window), 5);
 

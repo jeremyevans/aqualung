@@ -52,6 +52,8 @@ extern LADSPA_Data * r_buf;
 
 extern unsigned long out_SR;
 
+int fxbuilder_on;
+
 GtkWidget * fxbuilder_window;
 GtkWidget * avail_list;
 GtkListStore * avail_store = NULL;
@@ -273,7 +275,6 @@ static gboolean
 fxbuilder_close(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(plugin_toggle), FALSE);
-
         return TRUE;
 }
 
@@ -281,6 +282,7 @@ void
 show_fxbuilder(void) {
 
 	gtk_widget_show_all(fxbuilder_window);
+	fxbuilder_on = 1;
 }
 
 
@@ -288,6 +290,7 @@ void
 hide_fxbuilder(void) {
 
 	gtk_widget_hide(fxbuilder_window);
+	fxbuilder_on = 0;
 }
 
 
@@ -1631,18 +1634,12 @@ create_fxbuilder(void) {
 	GtkWidget * vbox;
 	GtkWidget * frame_avail;
 	GtkWidget * viewport_avail;
-	GtkWidget * table;
-	GtkWidget * vscroll_avail;
-	GtkObject * vadj_avail;
-	GtkWidget * hscroll_avail;
-	GtkObject * hadj_avail;
+	GtkWidget * scrolled_win_avail;
 
 	GtkWidget * frame_running;
 	GtkWidget * viewport_running;
-	GtkWidget * vscroll_running;
-	GtkObject * vadj_running;
-	GtkWidget * hscroll_running;
-	GtkObject * hadj_running;
+	GtkWidget * scrolled_win_running;
+
 	GtkWidget * hbox_buttons;
 
         GtkCellRenderer * renderer;
@@ -1672,9 +1669,10 @@ create_fxbuilder(void) {
         g_signal_connect(add_button, "clicked", G_CALLBACK(add_clicked), NULL);
         gtk_box_pack_start(GTK_BOX(vbox), add_button, FALSE, TRUE, 3);
 
-	table = gtk_table_new(2, 2, FALSE);
-	gtk_container_add(GTK_CONTAINER(viewport_avail), table);
-
+	scrolled_win_avail = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win_avail),
+				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_container_add(GTK_CONTAINER(viewport_avail), scrolled_win_avail);
 
 	/* create store of available plugins */
 	if (!avail_store) {
@@ -1708,18 +1706,7 @@ create_fxbuilder(void) {
 
 	avail_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(avail_store));
         gtk_widget_set_size_request(avail_list, 400, 300);
-        gtk_table_attach(GTK_TABLE(table), avail_list, 0, 1, 0, 1,
-                         GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	vadj_avail = gtk_adjustment_new(0.0f, 0.0f, 100.0f, 1.0f, 10.0f, 0.0f);
-	gtk_tree_view_set_vadjustment(GTK_TREE_VIEW(avail_list), GTK_ADJUSTMENT(vadj_avail));
-	vscroll_avail = gtk_vscrollbar_new(GTK_ADJUSTMENT(vadj_avail));
-	hadj_avail = gtk_adjustment_new(0.0f, 0.0f, 100.0f, 1.0f, 10.0f, 0.0f);
-	gtk_tree_view_set_hadjustment(GTK_TREE_VIEW(avail_list), GTK_ADJUSTMENT(hadj_avail));
-	hscroll_avail = gtk_hscrollbar_new(GTK_ADJUSTMENT(hadj_avail));
-        gtk_table_attach(GTK_TABLE(table), vscroll_avail, 1, 2, 0, 1,
-                         GTK_FILL, GTK_FILL, 0, 0);
-        gtk_table_attach(GTK_TABLE(table), hscroll_avail, 0, 1, 1, 2,
-                         GTK_FILL, GTK_FILL, 0, 0);
+	gtk_container_add(GTK_CONTAINER(scrolled_win_avail), avail_list);
 
         gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(avail_list), TRUE);
 
@@ -1779,8 +1766,10 @@ create_fxbuilder(void) {
         g_signal_connect(conf_button, "clicked", G_CALLBACK(conf_clicked), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_buttons), conf_button, TRUE, TRUE, 0);
 
-	table = gtk_table_new(2, 2, FALSE);
-	gtk_container_add(GTK_CONTAINER(viewport_running), table);
+	scrolled_win_running = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win_running),
+				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_container_add(GTK_CONTAINER(viewport_running), scrolled_win_running);
 
 	/* create store of running plugins */
 	if (!running_store) {
@@ -1794,18 +1783,7 @@ create_fxbuilder(void) {
 
 	running_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(running_store));
         gtk_widget_set_size_request(running_list, 200, 300);
-        gtk_table_attach(GTK_TABLE(table), running_list, 0, 1, 0, 1,
-                         GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	vadj_running = gtk_adjustment_new(0.0f, 0.0f, 100.0f, 1.0f, 10.0f, 0.0f);
-	gtk_tree_view_set_vadjustment(GTK_TREE_VIEW(running_list), GTK_ADJUSTMENT(vadj_running));
-	vscroll_running = gtk_vscrollbar_new(GTK_ADJUSTMENT(vadj_running));
-	hadj_running = gtk_adjustment_new(0.0f, 0.0f, 100.0f, 1.0f, 10.0f, 0.0f);
-	gtk_tree_view_set_hadjustment(GTK_TREE_VIEW(running_list), GTK_ADJUSTMENT(hadj_running));
-	hscroll_running = gtk_hscrollbar_new(GTK_ADJUSTMENT(hadj_running));
-        gtk_table_attach(GTK_TABLE(table), vscroll_running, 1, 2, 0, 1,
-                         GTK_FILL, GTK_FILL, 0, 0);
-        gtk_table_attach(GTK_TABLE(table), hscroll_running, 0, 1, 1, 2,
-                         GTK_FILL, GTK_FILL, 0, 0);
+	gtk_container_add(GTK_CONTAINER(scrolled_win_running), running_list);
 
         gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(running_list), TRUE);
 	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(running_list), TRUE);

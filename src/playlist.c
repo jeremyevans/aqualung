@@ -885,16 +885,13 @@ create_playlist(void) {
 
 	GtkWidget * vbox;
 
-	GtkWidget * table;
-	GtkObject * vadj;
-	GtkWidget * vscroll;
-
 	GtkWidget * hbox_bottom;
 	GtkWidget * direct_button;
 	GtkWidget * selall_button;
 	GtkWidget * remsel_button;
 
 	GtkWidget * viewport;
+	GtkWidget * scrolled_win;
 	int i;
 
 
@@ -1028,18 +1025,12 @@ create_playlist(void) {
 	viewport = gtk_viewport_new(NULL, NULL);
         gtk_box_pack_start(GTK_BOX(vbox), viewport, TRUE, TRUE, 0);
 
-	table = gtk_table_new(1, 2, FALSE);
-        gtk_container_add(GTK_CONTAINER(viewport), table);
+	scrolled_win = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
+				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+        gtk_container_add(GTK_CONTAINER(viewport), scrolled_win);
 
-        vadj = gtk_adjustment_new(0.0f, 0.0f, 100.0f, 1.0f, 10.0f, 0.0f);
-        gtk_tree_view_set_vadjustment(GTK_TREE_VIEW(play_list), GTK_ADJUSTMENT(vadj));
-        vscroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(vadj));
-
-	gtk_table_attach(GTK_TABLE(table), play_list, 0, 1, 0, 1,
-                         GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-        gtk_table_attach(GTK_TABLE(table), vscroll, 1, 2, 0, 1,
-                         GTK_FILL, GTK_FILL, 0, 0);
-
+	gtk_container_add(GTK_CONTAINER(scrolled_win), play_list);
 
 
 	/* bottom area of playlist window */

@@ -1869,6 +1869,7 @@ main(int argc, char ** argv) {
 	if (output == OSS_DRIVER) {
 		pthread_cancel(thread_info.oss_thread_id);
 		free(thread_info.oss_short_buf);
+		ioctl(thread_info.fd_oss, SNDCTL_DSP_RESET, 0);
 		close(thread_info.fd_oss);
 	}
 #endif /* HAVE_OSS */

@@ -2551,7 +2551,8 @@ adjust_remote_volume(char * str) {
 }
 
 
-gint timeout_callback(gpointer data) {
+gint
+timeout_callback(gpointer data) {
 
 	long pos;
 	long n;
@@ -2832,8 +2833,10 @@ gint timeout_callback(gpointer data) {
 			prev_event(NULL, NULL, NULL);
 			break;
 		case RCMD_PLAY:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
-			        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
+			if (!is_file_loaded || is_paused) {
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
+				        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
+			}
 			break;
 		case RCMD_PAUSE:
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),

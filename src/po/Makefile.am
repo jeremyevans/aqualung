@@ -11,7 +11,7 @@ MOFILES = $(wildcard *.mo)
 
 EXTRA_DIST = $(DOMAIN).pot $(POFILES) $(MOFILES) Makevars
 
-all:
+all: 
 	for i in $(POFILES); do $(MAKE) `echo $$i | sed 's/\.po/\.mo/'`; done
 
 %.mo: %.po
@@ -24,7 +24,7 @@ all:
 	$(MSGMERGE) $@ $< -o $@.in; \
 	mv $@.in $@
 
-$(DOMAIN).pot: $(POTFILES)
+pot:
 	$(XGETTEXT) $(XGETTEXT_OPTS) --copyright-holder='$(COPYRIGHT_HOLDER)' $(POTFILES) -o $(DOMAIN).pot
 
 install:

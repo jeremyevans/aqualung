@@ -198,7 +198,7 @@ start_playback_from_playlist(GtkTreePath * path) {
 	
 	command[0] = CMD_CUE;
 	command[1] = '\0';
-	strcat(command, str);
+	strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 	g_free(str);
 	
 	jack_ringbuffer_write(rb_gui2disk, command, strlen(command));
@@ -439,7 +439,8 @@ browse_direct_clicked(GtkWidget * widget, gpointer * data) {
                 for (i = 0; selected_filenames[i] != NULL; i++) {
                         if (selected_filenames[i][strlen(selected_filenames[i])-1] != '/') {
                                 gtk_list_store_append(model, &iter);
-                                gtk_list_store_set(model, &iter, 0, selected_filenames[i], -1);
+                                gtk_list_store_set(model, &iter, 0,
+				        g_locale_to_utf8(selected_filenames[i], -1, NULL, NULL, NULL), -1);
                         }
                 }
                 g_strfreev(selected_filenames);
@@ -492,7 +493,7 @@ direct_add(GtkWidget * widget, gpointer * data) {
                                              GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
                                              NULL);
-        gtk_widget_set_size_request(GTK_WIDGET(dialog), 300, 300);
+        gtk_widget_set_size_request(GTK_WIDGET(dialog), 320, 300);
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
 

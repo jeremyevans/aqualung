@@ -19,12 +19,6 @@
 */
 
 
-/* Uncomment this if you store your LADSPA plugins on a ReiserFS filesystem
- * and Aqualung fails to load them. This is a workaround for a bug that we
- * do not fully understand. */
-/* #define WORKAROUND_BROKEN_PLUGINLOADER */
-
-
 #include <config.h>
 
 #include <stdio.h>
@@ -87,7 +81,7 @@ int added_plugin = 0;
 static int
 rdf_filter(const struct dirent64 * de) {
 
-#ifndef WORKAROUND_BROKEN_PLUGINLOADER
+#ifndef BROKEN_PLUGINLOADER_FIX
 	if (de->d_type != DT_REG)
 		return 0;
 
@@ -102,7 +96,7 @@ rdf_filter(const struct dirent64 * de) {
 static int
 so_filter(const struct dirent64 * de) {
 
-#ifndef WORKAROUND_BROKEN_PLUGINLOADER
+#ifndef BROKEN_PLUGINLOADER_FIX
 	if (de->d_type != DT_REG)
 		return 0;
 

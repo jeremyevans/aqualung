@@ -1279,7 +1279,7 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 		command[0] = CMD_CUE;
 		command[1] = '\0';
-		strcat(command, str);
+		strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 		g_free(str);
 
 		jack_ringbuffer_write(rb_gui2disk, command, strlen(command));
@@ -1346,7 +1346,7 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 		command[0] = CMD_CUE;
 		command[1] = '\0';
-		strcat(command, str);
+		strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 		g_free(str);
 
 		jack_ringbuffer_write(rb_gui2disk, command, strlen(command));
@@ -1377,7 +1377,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 
 			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, -1);
-			strcat(command, str);
+			strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 			g_free(str);
 			is_file_loaded = 1;
 			g_signal_handler_block(G_OBJECT(play_button), play_id);
@@ -1390,7 +1390,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 				if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
 					gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
 					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, -1);
-					strcat(command, str);
+					strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 					g_free(str);
 					is_file_loaded = 1;
 					g_signal_handler_block(G_OBJECT(play_button), play_id);
@@ -1414,7 +1414,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 								      NULL, n);
 					gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
 					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, -1);
-					strcat(command, str);
+					strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 					g_free(str);
 					is_file_loaded = 1;
 					g_signal_handler_block(G_OBJECT(play_button), play_id);
@@ -2078,9 +2078,9 @@ process_filenames(char ** argv, int optind, int enqueue) {
 	
 	for (i = optind; argv[i] != NULL; i++) {
 		if ((enqueue) || (i > optind)) {
-			add_to_playlist(argv[i], 1);
+			add_to_playlist(g_locale_to_utf8(argv[i], -1, NULL, NULL, NULL), 1);
 		} else {
-			add_to_playlist(argv[i], 0);
+			add_to_playlist(g_locale_to_utf8(argv[i], -1, NULL, NULL, NULL), 0);
 		}
 	}
 }	
@@ -2247,7 +2247,7 @@ gint timeout_callback(gpointer data) {
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, -1);
-						strcat(command, str);
+						strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						g_free(str);
 						is_file_loaded = 1;
 					} else {
@@ -2272,7 +2272,8 @@ gint timeout_callback(gpointer data) {
 										   pl_color_active, -1);
 								gtk_tree_model_get(GTK_TREE_MODEL(play_store),
 								   &iter, 1, &str, -1);
-								strcat(command, str);
+								strcat(command, 
+								 g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 								g_free(str);
 							} else {
 								is_file_loaded = 0;
@@ -2295,7 +2296,7 @@ gint timeout_callback(gpointer data) {
 								      NULL, n);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, -1);
-						strcat(command, str);
+						strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						g_free(str);
 						is_file_loaded = 1;
 				} else {
@@ -2315,7 +2316,7 @@ gint timeout_callback(gpointer data) {
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1,
 								   &str, -1);
-						strcat(command, str);
+						strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						g_free(str);
 						is_file_loaded = 1;
 					} else {
@@ -2334,7 +2335,7 @@ gint timeout_callback(gpointer data) {
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, -1);
-						strcat(command, str);
+						strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						g_free(str);
 					} else {
 						is_file_loaded = 0;
@@ -2358,7 +2359,7 @@ gint timeout_callback(gpointer data) {
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1,
 								   &str, -1);
-						strcat(command, str);
+						strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						g_free(str);
 						is_file_loaded = 1;
 					} else {
@@ -2488,10 +2489,10 @@ gint timeout_callback(gpointer data) {
 			next_event(NULL, NULL, NULL);
 			break;
 		case RCMD_LOAD:
-			add_to_playlist(cmdbuf, 0);
+			add_to_playlist(g_locale_to_utf8(cmdbuf, -1, NULL, NULL, NULL), 0);
 			break;
 		case RCMD_ENQUEUE:
-			add_to_playlist(cmdbuf, 1);
+			add_to_playlist(g_locale_to_utf8(cmdbuf, -1, NULL, NULL, NULL), 1);
 			break;
 		case RCMD_QUIT:
 			main_window_close(NULL, NULL);

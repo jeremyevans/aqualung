@@ -2230,11 +2230,10 @@ main(int argc, char ** argv) {
 	int enqueue = 0;
 	int remote_quit = 0;
 
-
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
-
+	
 	setup_app_socket();
 
 	if (getcwd(cwd, MAXLEN) == NULL) {

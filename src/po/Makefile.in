@@ -209,7 +209,7 @@ uninstall-am: uninstall-info-am
 	mostlyclean-generic uninstall uninstall-am uninstall-info-am
 
 
-all:
+all: 
 	for i in $(POFILES); do $(MAKE) `echo $$i | sed 's/\.po/\.mo/'`; done
 
 %.mo: %.po
@@ -222,7 +222,7 @@ all:
 	$(MSGMERGE) $@ $< -o $@.in; \
 	mv $@.in $@
 
-$(DOMAIN).pot: $(POTFILES)
+pot:
 	$(XGETTEXT) $(XGETTEXT_OPTS) --copyright-holder='$(COPYRIGHT_HOLDER)' $(POTFILES) -o $(DOMAIN).pot
 
 install:

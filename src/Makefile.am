@@ -12,6 +12,7 @@ file_decoder.h file_decoder.c \
 file_info.h file_info.c \
 gui_main.h gui_main.c \
 i18n.h \
+meta_decoder.h meta_decoder.c \
 music_browser.h music_browser.c \
 options.h options.c \
 playlist.h playlist.c \

@@ -47,6 +47,7 @@
 #include "common.h"
 #include "core.h"
 #include "transceiver.h"
+#include "file_decoder.h"
 #include "about.h"
 #include "options.h"
 #include "skin.h"
@@ -279,14 +280,7 @@ set_title_label(char * str) {
 }
 
 void
-set_format_label(int v_major, int v_minor) {
-
-	char str[MAXLEN];
-
-	if (!is_file_loaded) {
-		gtk_label_set_text(GTK_LABEL(label_format), "");
-		return;
-	}
+assembly_format_label(char * str, int v_major, int v_minor) {
 
 	switch (v_major) {
 	case 0:
@@ -486,10 +480,22 @@ set_format_label(int v_major, int v_minor) {
 		strcat(str, ")");
 	}
 #endif /* HAVE_MPEG */
-		
-	gtk_label_set_text(GTK_LABEL(label_format), str);
 }
 
+void
+set_format_label(int v_major, int v_minor) {
+
+	char str[MAXLEN];
+
+	if (!is_file_loaded) {
+		gtk_label_set_text(GTK_LABEL(label_format), "");
+		return;
+	}
+
+	assembly_format_label(str, v_major, v_minor);
+
+	gtk_label_set_text(GTK_LABEL(label_format), str);
+}
 
 void
 set_bps_label(int bps) {

@@ -35,6 +35,7 @@
 #include "core.h"
 #include "gui_main.h"
 #include "music_browser.h"
+#include "file_info.h"
 #include "i18n.h"
 #include "playlist.h"
 
@@ -87,9 +88,13 @@ GtkWidget * plist_menu;
 GtkWidget * plist__save;
 GtkWidget * plist__load;
 GtkWidget * plist__enqueue;
+GtkWidget * plist__separator;
+GtkWidget * plist__fileinfo;
 
 char command[RB_CONTROL_SIZE];
 
+char fileinfo_name[MAXLEN];
+char fileinfo_file[MAXLEN];
 
 extern int is_file_loaded;
 extern int is_paused;
@@ -279,6 +284,9 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_da
 
 	GtkTreePath * path;
 	GtkTreeViewColumn * column;
+	GtkTreeIter iter;
+	char * pname;
+	char * pfile;
 
 	if (event->type == GDK_2BUTTON_PRESS && event->button == 1) {
 		
@@ -289,6 +297,24 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_da
 	}
 
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
+		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(play_list), event->x, event->y,
+						  &path, &column, NULL, NULL)) {
+
+			if (gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path)) {
+
+				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
+						   0, &pname, 1, &pfile, -1);
+
+				strncpy(fileinfo_name, pname, MAXLEN-1);
+				strncpy(fileinfo_file, pfile, MAXLEN-1);
+				free(pname);
+				free(pfile);
+				gtk_widget_set_sensitive(plist__fileinfo, TRUE);
+			}
+		} else {
+			gtk_widget_set_sensitive(plist__fileinfo, FALSE);
+		}
+
 		gtk_menu_popup(GTK_MENU(plist_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);
 		return TRUE;
@@ -414,6 +440,13 @@ plist__enqueue_cb(gpointer data) {
                 }
         }
         gtk_widget_destroy(file_selector);
+}
+
+
+void
+plist__fileinfo_cb(gpointer data) {
+
+	show_file_info(fileinfo_name, fileinfo_file);
 }
 
 
@@ -732,18 +765,25 @@ create_playlist(void) {
 	plist__save = gtk_menu_item_new_with_label(_("Save playlist"));
 	plist__load = gtk_menu_item_new_with_label(_("Load playlist"));
 	plist__enqueue = gtk_menu_item_new_with_label(_("Enqueue playlist"));
+	plist__separator = gtk_separator_menu_item_new();
+	plist__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__save);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__load);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__enqueue);
+	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__separator);
+	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__fileinfo);
 
 	g_signal_connect_swapped(G_OBJECT(plist__save), "activate", G_CALLBACK(plist__save_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__load), "activate", G_CALLBACK(plist__load_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__enqueue), "activate", G_CALLBACK(plist__enqueue_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(plist__fileinfo), "activate", G_CALLBACK(plist__fileinfo_cb), NULL);
 
 	gtk_widget_show(plist__save);
 	gtk_widget_show(plist__load);
 	gtk_widget_show(plist__enqueue);
+	gtk_widget_show(plist__separator);
+	gtk_widget_show(plist__fileinfo);
 
         vbox = gtk_vbox_new(FALSE, 2);
         gtk_container_add(GTK_CONTAINER(playlist_window), vbox);

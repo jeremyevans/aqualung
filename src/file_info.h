@@ -18,24 +18,9 @@
     $Id$
 */
 
+#ifndef _FILE_INFO_H
+#define _FILE_INFO_H
 
-#ifndef _GUI_MAIN_H
-#define _GUI_MAIN_H
+void show_file_info(char * name, char * file);
 
-
-void create_gui(int argc, char ** argv, int optind, int enqueue,
-		unsigned long rate, unsigned long rb_audio_size);
-
-void run_gui(void);
-
-void sample2time(unsigned long SR, unsigned long long sample, char * str, int sign);
-void assembly_format_label(char * str, int v_major, int v_minor);
-
-void save_window_position(void);
-void restore_window_position(void);
-void change_skin(char * skin_path);
-
-void set_src_type_label(int src_type);
-
-
-#endif /* _GUI_MAIN_H */
+#endif /* _FILE_INFO_H */

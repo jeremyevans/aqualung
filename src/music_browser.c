@@ -32,6 +32,7 @@
 
 #include "common.h"
 #include "drag.xpm"
+#include "file_info.h"
 #include "gui_main.h"
 #include "i18n.h"
 #include "music_browser.h"
@@ -99,6 +100,7 @@ GtkWidget * track__addlist;
 GtkWidget * track__separator1;
 GtkWidget * track__add;
 GtkWidget * track__edit;
+GtkWidget * track__fileinfo;
 GtkWidget * track__separator2;
 GtkWidget * track__remove;
 
@@ -122,6 +124,7 @@ static void record__remove_cb(gpointer data);
 
 static void track__add_cb(gpointer data);
 static void track__edit_cb(gpointer data);
+static void track__fileinfo_cb(gpointer data);
 static void track__remove_cb(gpointer data);
 
 gint playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, gint x,
@@ -1589,7 +1592,8 @@ track__edit_cb(gpointer data) {
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
-                gtk_tree_model_get(model, &iter, 0, &pname, 1, &psort_name, 2, &pfile, 3, &pcomment, -1);
+                gtk_tree_model_get(model, &iter, 0, &pname, 1, &psort_name,
+				   2, &pfile, 3, &pcomment, -1);
 
                 strncpy(name, pname, MAXLEN-1);
                 strncpy(sort_name, psort_name, MAXLEN-1);
@@ -1607,6 +1611,52 @@ track__edit_cb(gpointer data) {
 					   2, file, 3, comment, -1);
                         tree_selection_changed_cb(music_select, NULL);
                 }
+        }
+}
+
+
+static void
+track__fileinfo_cb(gpointer data) {
+
+        GtkTreeIter iter_track;
+        GtkTreeIter iter_record;
+        GtkTreeIter iter_artist;
+        GtkTreeModel * model;
+
+        char * ptrack_name;
+        char * precord_name;
+        char * partist_name;
+	char * pfile;
+
+        char track_name[MAXLEN];
+        char record_name[MAXLEN];
+        char artist_name[MAXLEN];
+	char file[MAXLEN];
+
+	char list_str[MAXLEN];
+
+        if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
+
+                gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile, -1);
+                strncpy(track_name, ptrack_name, MAXLEN-1);
+                strncpy(file, pfile, MAXLEN-1);
+                g_free(ptrack_name);
+                g_free(pfile);
+		
+		gtk_tree_model_iter_parent(model, &iter_record, &iter_track);
+                gtk_tree_model_get(model, &iter_record, 0, &precord_name, -1);
+                strncpy(record_name, precord_name, MAXLEN-1);
+                g_free(precord_name);
+
+		gtk_tree_model_iter_parent(model, &iter_artist, &iter_record);
+                gtk_tree_model_get(model, &iter_artist, 0, &partist_name, -1);
+                strncpy(artist_name, partist_name, MAXLEN-1);
+                g_free(partist_name);
+
+		make_title_string(list_str, title_format,
+				  artist_name, record_name, track_name);
+
+		show_file_info(list_str, file);
         }
 }
 
@@ -1883,6 +1933,7 @@ create_music_browser(void) {
 	track__separator1 = gtk_separator_menu_item_new();
 	track__add = gtk_menu_item_new_with_label(_("Add new track..."));
 	track__edit = gtk_menu_item_new_with_label(_("Edit track..."));
+	track__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
 	track__separator2 = gtk_separator_menu_item_new();
 	track__remove = gtk_menu_item_new_with_label(_("Remove track"));
 
@@ -1890,18 +1941,21 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__separator1);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__add);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__edit);
+	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__fileinfo);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__remove);
 
 	g_signal_connect_swapped(G_OBJECT(track__addlist), "activate", G_CALLBACK(track__addlist_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__add), "activate", G_CALLBACK(track__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__edit), "activate", G_CALLBACK(track__edit_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(track__fileinfo), "activate", G_CALLBACK(track__fileinfo_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__remove), "activate", G_CALLBACK(track__remove_cb), NULL);
 
 	gtk_widget_show(track__addlist);
 	gtk_widget_show(track__separator1);
 	gtk_widget_show(track__add);
 	gtk_widget_show(track__edit);
+	gtk_widget_show(track__fileinfo);
 	gtk_widget_show(track__separator2);
 	gtk_widget_show(track__remove);
 

@@ -34,10 +34,6 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 
-#ifdef HAVE_SNDFILE
-#include <sndfile.h>
-#endif /* HAVE_SNDFILE */
-
 #ifdef HAVE_SRC
 #include <samplerate.h>
 #endif /* HAVE_SRC */
@@ -53,37 +49,14 @@
 #include <jack/jack.h>
 #include <jack/ringbuffer.h>
 
-/* for FLAC format support */
-#ifdef HAVE_FLAC
-#include <FLAC/format.h>
-#include <FLAC/file_decoder.h>
-#endif /* HAVE_FLAC */
-
-/* for Ogg Vorbis support */
-#ifdef HAVE_OGG_VORBIS
-#include <vorbis/vorbisfile.h>
-#endif /* HAVE_OGG_VORBIS */
-
-/* for MPEG Audio support */
-#ifdef HAVE_MPEG
-#include <mad.h>
-#include <sys/mman.h>
-#endif /* HAVE_MPEG */
-
-/* for MOD Audio support */
-#ifdef HAVE_MOD
-#include <libmodplug/modplug.h>
-#include <sys/mman.h>
-#endif /* HAVE_MOD */
-
 #include "common.h"
 #include "version.h"
+#include "file_decoder.h"
 #include "transceiver.h"
 #include "gui_main.h"
 #include "plugin.h"
 #include "i18n.h"
 #include "core.h"
-
 
 
 /* JACK data */
@@ -108,11 +81,7 @@ char * device_name = NULL;
 
 
 /***** disk thread stuff *****/
-int file_open = 0;
-int file_lib;
-fileinfo_t fileinfo;
-unsigned long long disk_thread_samples_left;
-unsigned long long disk_thread_sample_offset;
+unsigned long long sample_offset;
 status_t disk_thread_status;
 int output = 0; /* oss/alsa/jack */
 
@@ -121,68 +90,7 @@ int src_type = 4;
 int src_type_parsed = 0;
 #endif /* HAVE_SRC */
 
-/* for sndfile decoding (private to disk thread) */
-#ifdef HAVE_SNDFILE
-SF_INFO sf_info;
-SNDFILE * sf;
-#endif /* HAVE_SNDFILE */
-
-/* for FLAC decoding (private to disk thread) */
-#ifdef HAVE_FLAC
-FLAC__FileDecoder * flac_decoder;
-jack_ringbuffer_t * rb_flac;
-int flac_channels;
-int flac_SR;
-unsigned flac_bits_per_sample;
-FLAC__uint64 flac_total_samples;
-int flac_probing; /* whether we are reading for probing the file, or for real */
-int flac_error;
-#endif /* HAVE_FLAC */
-
-/* for Ogg Vorbis decoding (private to disk thread) */
-#ifdef HAVE_OGG_VORBIS
-jack_ringbuffer_t * rb_vorbis;
-FILE * vorbis_file;
-OggVorbis_File vf;
-vorbis_info * vi;
-int vorbis_EOS;
-#endif /* HAVE_OGG_VORBIS */
-
-/* for MPEG Audio decoding (private to disk thread) */
-#ifdef HAVE_MPEG
-struct mad_decoder mpeg_decoder;
-jack_ringbuffer_t * rb_mpeg;
-FILE * mpeg_file;
-int mpeg_channels;
-int mpeg_SR;
-unsigned mpeg_bitrate;
-int mpeg_is_exploring; /* 1 if we are doing a decode run to get SR, bitrate, etc. */
-int mpeg_again; /* to guard against multiple invocations of mpeg_input_explore() */
-int mpeg_err;
-int mpeg_EOS;
-struct stat mpeg_stat;
-int mpeg_fd;
-void * mpeg_fdm;
-unsigned long mpeg_total_samples_est;
-int mpeg_subformat; /* used as v_minor */
-struct mad_stream mpeg_stream;
-struct mad_frame mpeg_frame;
-struct mad_synth mpeg_synth;
-#endif /* HAVE_MPEG */
-
-/* for MOD Audio decoding (private to disk thread) */
-#ifdef HAVE_MOD
-jack_ringbuffer_t * rb_mod;
-ModPlug_Settings mp_settings;
-ModPlugFile * mpf;
-int mod_fd;
-void * mod_fdm;
-struct stat mod_st;
-int mod_EOS;
-#endif /* HAVE_MOD */
-
-
-/* Synchronization between process thread and disk thread */
+/* Synchronization between disk thread and output thread */
 jack_ringbuffer_t * rb;
 pthread_mutex_t disk_thread_lock = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t  disk_thread_wake = PTHREAD_COND_INITIALIZER;
@@ -215,978 +123,11 @@ extern char aqualung_socket_filename[256];
 extern char cwd[MAXLEN];
 
 
-#ifdef HAVE_FLAC
-/* FLAC write callback */
-FLAC__StreamDecoderWriteStatus
-write_callback(const FLAC__FileDecoder * decoder,
-               const FLAC__Frame * frame,
-               const FLAC__int32 * const buffer[],
-               void * client_data) {
-
-        int i, j;
-        long int blocksize;
-	long int flac_scale;
-        FLAC__int32 buf[2];
-        float fbuf[2];
-
-	if (flac_probing)
-		return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
-
-        blocksize = frame->header.blocksize;
-        flac_scale = 1 << (flac_bits_per_sample - 1);
-
-        for (i = 0; i < blocksize; i++) {
-		for (j = 0; j < flac_channels; j++) {
-			buf[j] = *(buffer[j] + i);
-			fbuf[j] = (float)buf[j] / flac_scale;
-		}
-		jack_ringbuffer_write(rb_flac, (char *)fbuf, flac_channels * sample_size);
-        }
-
-        return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
-}
-
-
-/* FLAC metadata callback */
-void
-metadata_callback(const FLAC__FileDecoder * decoder,
-                  const FLAC__StreamMetadata * metadata,
-                  void * client_data) {
-
-        if (metadata->type == FLAC__METADATA_TYPE_STREAMINFO) {
-                flac_SR = metadata->data.stream_info.sample_rate;
-                flac_bits_per_sample = metadata->data.stream_info.bits_per_sample;
-                flac_channels = metadata->data.stream_info.channels;
-		flac_total_samples = metadata->data.stream_info.total_samples;
-        } else
-                fprintf(stderr, "FLAC metadata callback: ignoring unexpected header\n");
-}
-
-
-/* FLAC error callback */
-void
-error_callback(const FLAC__FileDecoder * decoder,
-               FLAC__StreamDecoderErrorStatus status,
-               void * client_data) {
-
-        flac_error = 1;
-}
-#endif /* HAVE_FLAC */
-
-
-#ifdef HAVE_OGG_VORBIS
-/* Ogg Vorbis: return 1 if reached end of stream, 0 else */
-int
-decode_vorbis(void) {
-
-	float fbuffer[VORBIS_BUFSIZE / 2];
-	char buffer[VORBIS_BUFSIZE];
-	int current_section;
-	long bytes_read;
-	int i;
-	
-	if ((bytes_read = ov_read(&vf, buffer, VORBIS_BUFSIZE, 0, 2, 1, &current_section)) > 0) {
-                for (i = 0; i < bytes_read/2; i++)
-                        fbuffer[i] = *((short *)(buffer + 2*i)) / 32768.f;
-                jack_ringbuffer_write(rb_vorbis, (char *)fbuffer, bytes_read/2 * sample_size);
-		return 0;
-        } else
-		return 1;
-}
-#endif /* HAVE_OGG_VORBIS */
-
-
-#ifdef HAVE_MPEG
-/* MPEG Audio decoder input callback for exploring */
-static
-enum mad_flow
-mpeg_input_explore(void * data, struct mad_stream * stream) {
-
-	char file_data[MAD_BUFSIZE];
-	int n_read;
-	
-	if (mpeg_again)
-		return MAD_FLOW_STOP;
-
-	mpeg_again = 1;
-
-	fseek(mpeg_file, MAD_BUFSIZE, SEEK_SET);
-	if ((n_read = fread(file_data, sizeof(char), MAD_BUFSIZE, mpeg_file)) != MAD_BUFSIZE) {
-		mpeg_EOS = 1;
-		fclose(mpeg_file);
-	}
-
-	if (n_read) {
-		mad_stream_buffer(stream, file_data, n_read);
-	}
-	
-	return MAD_FLOW_CONTINUE;
-}
-
-
-/* MPEG Audio decoder output callback for exploring */
-static
-enum mad_flow
-mpeg_output_explore(void * data, struct mad_header const * header, struct mad_pcm * pcm) {
-
-	mpeg_channels = pcm->channels;
-	mpeg_SR = pcm->samplerate;
-	return MAD_FLOW_STOP;
-}
-
-
-/* MPEG Audio decoder header callback for exploring */
-static
-enum mad_flow
-mpeg_header_explore(void * data, struct mad_header const * header) {
-
-	mpeg_bitrate = header->bitrate;
-
-	mpeg_subformat = 0;
-	switch (header->layer) {
-	case MAD_LAYER_I:
-		mpeg_subformat |= MPEG_LAYER_I;
-		break;
-	case MAD_LAYER_II:
-		mpeg_subformat |= MPEG_LAYER_II;
-		break;
-	case MAD_LAYER_III:
-		mpeg_subformat |= MPEG_LAYER_III;
-		break;
-	}
-
-	switch (header->mode) {
-	case MAD_MODE_SINGLE_CHANNEL:
-		mpeg_subformat |= MPEG_MODE_SINGLE;
-		break;
-	case MAD_MODE_DUAL_CHANNEL:
-		mpeg_subformat |= MPEG_MODE_DUAL;
-		break;
-	case MAD_MODE_JOINT_STEREO:
-		mpeg_subformat |= MPEG_MODE_JOINT;
-		break;
-	case MAD_MODE_STEREO:
-		mpeg_subformat |= MPEG_MODE_STEREO;
-		break;
-	}
-
-	switch (header->emphasis) {
-	case MAD_EMPHASIS_NONE:
-		mpeg_subformat |= MPEG_EMPH_NONE;
-		break;
-	case MAD_EMPHASIS_50_15_US:
-		mpeg_subformat |= MPEG_EMPH_5015;
-		break;
-	case MAD_EMPHASIS_CCITT_J_17:
-		mpeg_subformat |= MPEG_EMPH_J_17;
-		break;
-	default:
-		mpeg_subformat |= MPEG_EMPH_RES;
-		break;
-	}
-
-	return MAD_FLOW_CONTINUE;
-}
-
-
-/* MPEG Audio decoder error callback for exploring */
-static
-enum mad_flow
-mpeg_error_explore(void * data, struct mad_stream * stream, struct mad_frame * frame) {
-
-	mpeg_err = 1;
-
-	return MAD_FLOW_CONTINUE;
-}
-
-
-/* MPEG Audio decoder input callback for playback */
-static
-enum mad_flow
-mpeg_input(void * data, struct mad_stream * stream) {
-	
-	if (fstat(mpeg_fd, &mpeg_stat) == -1 || mpeg_stat.st_size == 0)
-		return MAD_FLOW_STOP;
-	
-	mpeg_fdm = mmap(0, mpeg_stat.st_size, PROT_READ, MAP_SHARED, mpeg_fd, 0);
-	if (mpeg_fdm == MAP_FAILED)
-		return MAD_FLOW_STOP;
-	
-	mad_stream_buffer(stream, mpeg_fdm, mpeg_stat.st_size);
-
-	return MAD_FLOW_CONTINUE;
-}
-
-
-/* MPEG Audio decoder output callback for playback */
-static
-enum mad_flow
-mpeg_output(void * data, struct mad_header const * header, struct mad_pcm * pcm) {
-
-	int i, j;
-	unsigned long mpeg_scale = 1 << 28;
-        int buf[2];
-        float fbuf[2];
-
-        for (i = 0; i < pcm->length; i++) {
-		for (j = 0; j < mpeg_channels; j++) {
-			buf[j] = mpeg_err ? 0 : *(pcm->samples[j] + i);
-			fbuf[j] = (double)buf[j] / mpeg_scale;
-		}
-		if (jack_ringbuffer_write_space(rb_mpeg) >= mpeg_channels * sample_size)
-			jack_ringbuffer_write(rb_mpeg, (char *)fbuf, mpeg_channels * sample_size);
-        }
-	mpeg_err = 0;
-
-	return MAD_FLOW_CONTINUE;
-}
-
-
-/* MPEG Audio decoder header callback for playback */
-static
-enum mad_flow
-mpeg_header(void * data, struct mad_header const * header) {
-
-	mpeg_bitrate = header->bitrate;
-	
-	return MAD_FLOW_CONTINUE;
-}
-
-
-/* MPEG Audio decoder error callback for playback */
-static
-enum mad_flow
-mpeg_error(void * data, struct mad_stream * stream, struct mad_frame * frame) {
-
-	mpeg_err = 1;
-
-	return MAD_FLOW_CONTINUE;
-}
-
-
-/* Main MPEG Audio decode loop: return 1 if reached end of stream, 0 else */
-int
-decode_mpeg() {
-
-	if (mad_header_decode(&mpeg_frame.header, &mpeg_stream) == -1) {
-		if (mpeg_stream.error == MAD_ERROR_BUFLEN)
-		        return 1;
-
-		if (!MAD_RECOVERABLE(mpeg_stream.error))
-			fprintf(stderr, "libMAD: unrecoverable error in MPEG Audio stream\n");
-
-		mpeg_error(NULL, &mpeg_stream, &mpeg_frame);
-		mpeg_header(NULL, &mpeg_frame.header);
-	}
-
-	if (mad_frame_decode(&mpeg_frame, &mpeg_stream) == -1) {
-		if (mpeg_stream.error == MAD_ERROR_BUFLEN)
-			return 1;
-
-		if (!MAD_RECOVERABLE(mpeg_stream.error))
-			fprintf(stderr, "libMAD: unrecoverable error in MPEG Audio stream\n");
-
-		mpeg_error(NULL, &mpeg_stream, &mpeg_frame);
-	}
-
-	mad_synth_frame(&mpeg_synth, &mpeg_frame);
-	mpeg_output(NULL, &mpeg_frame.header, &mpeg_synth.pcm);
-	
-	return 0;
-}
-#endif /* HAVE_MPEG */
-
-
-#ifdef HAVE_MOD
-/* MOD decoder: return 1 if reached end of stream, 0 else */
-int
-decode_mod(void) {
-
-        float fbuffer[MOD_BUFSIZE / 2];
-        char buffer[MOD_BUFSIZE];
-        long bytes_read;
-        int i;
-
-        if ((bytes_read = ModPlug_Read(mpf, buffer, MOD_BUFSIZE)) > 0) {
-                for (i = 0; i < bytes_read/2; i++)
-                        fbuffer[i] = *((short *)(buffer + 2*i)) / 32768.f;
-                jack_ringbuffer_write(rb_mod, (char *)fbuffer, bytes_read/2 * sample_size);
-                return 0;
-        } else
-                return 1;
-}
-#endif /* HAVE_MOD */
-
-
-
-int close_file(void * arg);
-
-/* return: =0 on OK, >0 on error */
-int
-open_file(void * arg, char * filename) {
-
-        thread_info_t * info = (thread_info_t *)arg;
-	int channels = 0;
-	unsigned long SR = 0;
-	char cmd;
-#ifdef HAVE_SRC
-	double src_ratio;
-#endif /* HAVE_SRC */
-#ifdef HAVE_FLAC
-	FLAC__FileDecoderState flac_state;
-	int tried_flac = 0;
-#endif /* HAVE_FLAC */
-
-	file_lib = 0;
-
-#ifdef HAVE_SNDFILE
-	/* try opening with libsndfile */
-	sf_info.format = 0;
-	if ((sf = sf_open(filename, SFM_READ, &sf_info)) != NULL) {
-		if ((sf_info.channels != 1) && (sf_info.channels != 2)) {
-			fprintf(stderr,
-				"open_file: sndfile with %d channels is unsupported\n", sf_info.channels);
-			goto no_open;
-		}
-		channels = sf_info.channels;
-		SR = sf_info.samplerate;
-		file_lib = SNDFILE_LIB;
-
-		fileinfo.total_samples = sf_info.frames;
-		fileinfo.format_major = sf_info.format & SF_FORMAT_TYPEMASK;
-		fileinfo.format_minor = sf_info.format & SF_FORMAT_SUBMASK;
-
-		switch (fileinfo.format_minor) {
-		case SF_FORMAT_PCM_S8:
-		case SF_FORMAT_PCM_U8:
-			fileinfo.bps = 8;
-			break;
-		case SF_FORMAT_PCM_16:
-			fileinfo.bps = 16;
-			break;
-		case SF_FORMAT_PCM_24:
-			fileinfo.bps = 24;
-			break;
-		case SF_FORMAT_PCM_32:
-		case SF_FORMAT_FLOAT:
-			fileinfo.bps = 32;
-			break;
-		case SF_FORMAT_DOUBLE:
-			fileinfo.bps = 64;
-			break;
-		default:
-			/* XXX libsndfile knows some more formats apart from the ones above,
-			   but i don't know their bits/sample... perhaps i'm stupid. */
-			fileinfo.bps = 0;
-			break;
-		}
-		fileinfo.bps *= SR * channels;
-	}
-#endif /* HAVE_SNDFILE */
-
-#ifdef HAVE_FLAC
-	/* try opening with libFLAC */
- try_flac:
-	if (!file_lib) {
-		flac_error = 0;
-		flac_decoder = FLAC__file_decoder_new();
-		FLAC__file_decoder_set_write_callback(flac_decoder,
-						      (FLAC__StreamDecoderWriteStatus
-						       (*)(const FLAC__FileDecoder *,
-							   const FLAC__Frame *,
-							   const FLAC__int32 * const [],
-							   void *))write_callback);
-		FLAC__file_decoder_set_metadata_callback(flac_decoder,
-							 (void (*)(const FLAC__FileDecoder *,
-								   const FLAC__StreamMetadata *,
-								   void *))metadata_callback);
-		FLAC__file_decoder_set_error_callback(flac_decoder,
-						      (void (*)(const FLAC__FileDecoder *,
-								FLAC__StreamDecoderErrorStatus,
-								void *))error_callback);
-		FLAC__file_decoder_set_filename(flac_decoder, filename);
-
-		if (FLAC__file_decoder_init(flac_decoder)) {
-			fprintf(stderr,
-				"open_file: nonexistent or non-accessible file: %s\n", filename);
-			FLAC__file_decoder_delete(flac_decoder);
-			goto no_open;
-		}
-
-		FLAC__file_decoder_process_until_end_of_metadata(flac_decoder);
-		if ((!flac_error) && (flac_channels > 0)) {
-			if ((flac_channels != 1) && (flac_channels != 2)) {
-				fprintf(stderr, "open_file: FLAC file with %d channels is unsupported\n",
-				       flac_channels);
-				goto no_open;
-			} else {
-				if (!tried_flac) {
-					/* we need a real read test (some MP3's get to this point) */
-					flac_probing = 1;
-					FLAC__file_decoder_process_single(flac_decoder);
-					flac_state = FLAC__file_decoder_get_state(flac_decoder);
-					
-					if ((flac_state != FLAC__FILE_DECODER_OK) &&
-					    (flac_state != FLAC__FILE_DECODER_END_OF_FILE)) {
-						goto no_flac;
-					}
-
-					flac_probing = 0;
-					tried_flac = 1;
-					FLAC__file_decoder_finish(flac_decoder);
-					FLAC__file_decoder_delete(flac_decoder);
-					goto try_flac;
-				}
-
-				rb_flac = jack_ringbuffer_create(flac_channels * sample_size * RB_FLAC_SIZE);
-				channels = flac_channels;
-				SR = flac_SR;
-				file_lib = FLAC_LIB;
-				
-				fileinfo.total_samples = flac_total_samples;
-				fileinfo.format_major = FORMAT_FLAC;
-				fileinfo.format_minor = 0;
-				fileinfo.bps = flac_bits_per_sample * SR * channels;
-			}
-		} else {
-			FLAC__file_decoder_finish(flac_decoder);
-			FLAC__file_decoder_delete(flac_decoder);
-		}
-	}
- no_flac:
-#endif /* HAVE_FLAC */
-
-#ifdef HAVE_OGG_VORBIS
-	/* try opening with libvorbis */
-	if (!file_lib) {
-		if ((vorbis_file = fopen(filename, "rb")) == NULL) {
-			fprintf(stderr, "open_file: fopen failed for Ogg Vorbis file\n");
-			goto no_open;
-		}
-		if (ov_open(vorbis_file, &vf, NULL, 0) != 0) {
-			/* not an Ogg Vorbis file */
-			fclose(vorbis_file);
-		} else {
-			vi = ov_info(&vf, -1);
-			if ((vi->channels != 1) && (vi->channels != 2)) {
-				fprintf(stderr,
-					"open_file: Ogg Vorbis file with %d channels is unsupported\n",
-					vi->channels);
-				goto no_open;
-			}
-			if (ov_streams(&vf) != 1) {
-				fprintf(stderr,
-					"open_file: This Ogg Vorbis file contains multiple logical streams.\n"
-					"Currently such a file is not supported.\n");
-				goto no_open;
-			}
-			
-			vorbis_EOS = 0;
-			rb_vorbis = jack_ringbuffer_create(vi->channels * sample_size * RB_VORBIS_SIZE);
-			channels = vi->channels;
-			SR = vi->rate;
-			file_lib = VORBIS_LIB;
-			
-			fileinfo.total_samples = ov_pcm_total(&vf, -1);
-			fileinfo.format_major = FORMAT_VORBIS;
-			fileinfo.format_minor = 0;
-			fileinfo.bps = ov_bitrate(&vf, -1);
-		}
-	}
-#endif /* HAVE_OGG_VORBIS */
-
-#ifdef HAVE_MPEG
-	/* try opening with libMAD */
-	if (!file_lib) {
-
-#ifndef HAVE_SNDFILE
-		/* some wav files get recognized as valid, so quick hack based on file extension. */
-		/* this may only happen if compiled without libsndfile support */
-		if (strrchr(filename, '.')) {
-			if ((strcmp(strrchr(filename, '.'), ".wav") == 0) ||
-			    (strcmp(strrchr(filename, '.'), ".WAV") == 0)) {
-				goto no_open;
-			}
-		}
-#endif /* !HAVE_SNDFILE */
-
-		if ((mpeg_file = fopen(filename, "rb")) == NULL) {
-			fprintf(stderr, "open_file: fopen failed for MPEG Audio file\n");
-			goto no_open;
-		}
-
-		{
-			int fd;
-			struct stat stat;
-			
-			fd = open(filename, O_RDONLY);
-			fstat(fd, &stat);
-			close(fd);
-			if (stat.st_size < 2 * MAD_BUFSIZE + 1) {
-				fclose(mpeg_file);
-				goto no_mpeg;
-			}
-		}
-
-		mpeg_SR = mpeg_channels = mpeg_bitrate = 0;
-		mpeg_err = mpeg_again = 0;
-		mad_decoder_init(&mpeg_decoder, NULL, mpeg_input_explore,
-				 mpeg_header_explore, 0, mpeg_output_explore, mpeg_error_explore, 0);
-		mad_decoder_run(&mpeg_decoder, MAD_DECODER_MODE_SYNC);
-		mad_decoder_finish(&mpeg_decoder);
-
-		fclose(mpeg_file);
-
-		if ((mpeg_SR) && (mpeg_channels) && (mpeg_bitrate)) {
-			
-			if ((mpeg_channels != 1) && (mpeg_channels != 2)) {
-				fprintf(stderr,
-					"open_file: MPEG Audio file with %d channels is unsupported\n",
-					mpeg_channels);
-				goto no_open;
-			}
-
-			{ /* get a rough estimate of the total decoded length of the file */
-			  /* XXX this may as well be considered a hack. (what about VBR ???) */
-				int fd;
-				struct stat stat;
-
-				fd = open(filename, O_RDONLY);
-				fstat(fd, &stat);
-				close(fd);
-				mpeg_total_samples_est = (double)stat.st_size / mpeg_bitrate * 8 * mpeg_SR;
-			}
-
-			/* setup playback */
-			mpeg_fd = open(filename, O_RDONLY);
-			mad_stream_init(&mpeg_stream);
-			mad_frame_init(&mpeg_frame);
-			mad_synth_init(&mpeg_synth);
-
-			if (mpeg_input(NULL, &mpeg_stream) == MAD_FLOW_STOP) {
-				mad_synth_finish(&mpeg_synth);
-				mad_frame_finish(&mpeg_frame);
-				mad_stream_finish(&mpeg_stream);
-				goto no_open;
-			}
-
-			mpeg_err = 0;
-			mpeg_EOS = 0;
-			rb_mpeg = jack_ringbuffer_create(mpeg_channels * sample_size * RB_MAD_SIZE);
-			channels = mpeg_channels;
-			SR = mpeg_SR;
-			file_lib = MAD_LIB;
-
-			fileinfo.total_samples = mpeg_total_samples_est;
-			fileinfo.format_major = FORMAT_MAD;
-			fileinfo.format_minor = mpeg_subformat;
-			fileinfo.bps = mpeg_bitrate;
-		}
-	}
- no_mpeg:
-#endif /* HAVE_MPEG */
-
-#ifdef HAVE_MOD
-	/* try opening with libmodplug */
-	if (!file_lib) {
-
-		if ((mod_fd = open(filename, O_RDONLY)) == -1) {
-			fprintf(stderr, "open_file: nonexistent or non-accessible file: %s\n", filename);
-			goto no_open;
-		}
-
-		if (fstat(mod_fd, &mod_st) == -1 || mod_st.st_size == 0) {
-			fprintf(stderr, "open_file: fstat error or zero-length file: %s\n", filename);
-			close(mod_fd);
-			goto no_open;
-		}
-
-		mod_fdm = mmap(0, mod_st.st_size, PROT_READ, MAP_SHARED, mod_fd, 0);
-		if (mod_fdm == MAP_FAILED) {
-			fprintf(stderr, "open_file: mmap() failed for MOD file %s\n", filename);
-			close(mod_fd);
-			goto no_open;
-		}
-
-		/* set libmodplug decoder parameters */
-		mp_settings.mFlags = MODPLUG_ENABLE_OVERSAMPLING | MODPLUG_ENABLE_NOISE_REDUCTION;
-		mp_settings.mChannels = 2;
-		mp_settings.mBits = 16;
-		mp_settings.mFrequency = 44100;
-		mp_settings.mResamplingMode = MODPLUG_RESAMPLE_FIR;
-		mp_settings.mReverbDepth = 100;
-		mp_settings.mReverbDelay = 100;
-		mp_settings.mBassAmount = 100;
-		mp_settings.mBassRange = 100;
-		mp_settings.mSurroundDepth = 100;
-		mp_settings.mSurroundDelay = 40;
-		mp_settings.mLoopCount = 0;
-
-		ModPlug_SetSettings(&mp_settings);
-		if ((mpf = ModPlug_Load(mod_fdm, mod_st.st_size)) != NULL) {
-
-			if (mod_st.st_size * 8000.0f / ModPlug_GetLength(mpf) >= 1000000.0f) {
-				fprintf(stderr,
-					"MOD bitrate greater than 1 Mbit/s, "
-					"very likely not a MOD file: %s\n", filename);
-
-				ModPlug_Unload(mpf);
-				if (munmap(mod_fdm, mod_st.st_size) == -1)
-					fprintf(stderr, "Error while munmap()'ing MOD Audio file mapping\n");
-				close(mod_fd);
-			} else {
-				
-				mod_EOS = 0;
-				rb_mod = jack_ringbuffer_create(mp_settings.mChannels * sample_size
-								* RB_MOD_SIZE);
-				channels = mp_settings.mChannels;
-				SR = mp_settings.mFrequency;
-				file_lib = MOD_LIB;
-				
-				fileinfo.total_samples = ModPlug_GetLength(mpf) / 1000.0f *
-					mp_settings.mFrequency;
-				fileinfo.format_major = FORMAT_MOD;
-				fileinfo.format_minor = 0;
-				fileinfo.bps = mod_st.st_size * 8000.0f / ModPlug_GetLength(mpf);
-
-			}
-		} else {
-                        if (munmap(mod_fdm, mod_st.st_size) == -1)
-                                fprintf(stderr, "Error while munmap()'ing MOD Audio file mapping\n");
-			close(mod_fd);
-		}
-
-	}
-#endif /* HAVE_MOD */
-
-
-	if (!file_lib) {
-	        goto no_open;
-	}
-
-
-	if (channels == 1) {
-		info->is_mono = 1;
-		fileinfo.is_mono = 1;
-#ifdef HAVE_SRC
-		src_ratio = 1.0 * info->out_SR / SR;
-		if (!src_is_valid_ratio(src_ratio) || src_ratio > MAX_RATIO || src_ratio < 1.0/MAX_RATIO) {
-			fprintf(stderr, "open_file: too big difference between input and "
-				"output sample rate!\n");
-#else
-	        if (info->out_SR != SR) {
-			fprintf(stderr,
-				"Input file's samplerate (%ld Hz) and output samplerate (%ld Hz) differ, "
-				"and\nAqualung is compiled without Sample Rate Converter support. To play "
-				"this file,\nyou have to build Aqualung with internal Sample Rate Converter "
-				"support,\nor set the playback sample rate to match the file's sample rate."
-				"\n", SR, info->out_SR);
-#endif /* HAVE_SRC */
-			file_open = 1; /* to get close_file() working */
-			close_file(arg);
-			file_open = 0;
-			goto no_open;
-		} else
-			goto ok_open;
-
-	} else if (channels == 2) {
-		info->is_mono = 0;
-		fileinfo.is_mono = 0;
-#ifdef HAVE_SRC
-		src_ratio = 1.0 * info->out_SR / SR;
-		if (!src_is_valid_ratio(src_ratio) || src_ratio > MAX_RATIO || src_ratio < 1.0/MAX_RATIO) {
-			fprintf(stderr, "open_file: too big difference between input and "
-			       "output sample rate!\n");
-#else
-	        if (info->out_SR != SR) {
-			fprintf(stderr,
-				"Input file's samplerate (%ld Hz) and output samplerate (%ld Hz) differ, "
-				"and\nAqualung is compiled without Sample Rate Converter support. To play "
-				"this file,\nyou have to build Aqualung with internal Sample Rate Converter "
-				"support,\nor set the playback sample rate to match the file's sample rate."
-				"\n", SR, info->out_SR);
-#endif /* HAVE_SRC */
-			file_open = 1; /* to get close_file() working */
-			close_file(arg);
-			file_open = 0;
-			goto no_open;
-		} else
-			goto ok_open;
-
-	} else {
-		fprintf(stderr, "open_file: programmer error: "
-		       "soundfile with %d\n channels is unsupported.\n", channels);
-		goto no_open;
-	}
-
- ok_open:
-	info->in_SR_prev = info->in_SR;
-	info->in_SR = SR;
-	fileinfo.sample_rate = SR;
-	file_open = 1;
-	disk_thread_samples_left = fileinfo.total_samples;
-	disk_thread_sample_offset = 0;
-	cmd = CMD_FILEINFO;
-	jack_ringbuffer_write(rb_disk2gui, &cmd, sizeof(cmd));
-	jack_ringbuffer_write(rb_disk2gui, (char *)&fileinfo, sizeof(fileinfo_t));
-	return 0;
-
- no_open:
-	fprintf(stderr, "open_file: unable to open %s\n", filename);
-	disk_thread_samples_left = 0;
-	return 1;
-}
-
-
-int
-close_file(void * arg) {
-
-	if (file_open) {
-		switch (file_lib) {
-
-#ifdef HAVE_SNDFILE
-		case SNDFILE_LIB:
-			sf_close(sf);
-			file_lib = 0;
-			break;
-#endif /* HAVE_SNDFILE */
-
-#ifdef HAVE_FLAC
-		case FLAC_LIB:
-			FLAC__file_decoder_finish(flac_decoder);
-			FLAC__file_decoder_delete(flac_decoder);
-			jack_ringbuffer_free(rb_flac);
-			file_lib = 0;
-			break;
-#endif /* HAVE_FLAC */
-
-#ifdef HAVE_OGG_VORBIS
-		case VORBIS_LIB:
-			ov_clear(&vf);
-			jack_ringbuffer_free(rb_vorbis);
-			file_lib = 0;
-			break;
-#endif /* HAVE_OGG_VORBIS */
-
-#ifdef HAVE_MPEG
-		case MAD_LIB:
-			mad_synth_finish(&mpeg_synth);
-			mad_frame_finish(&mpeg_frame);
-			mad_stream_finish(&mpeg_stream);
-			if (munmap(mpeg_fdm, mpeg_stat.st_size) == -1)
-				fprintf(stderr, "Error while munmap()'ing MPEG Audio file mapping\n");
-			close(mpeg_fd);
-			jack_ringbuffer_free(rb_mpeg);
-			file_lib = 0;
-			break;
-#endif /* HAVE_MPEG */
-
-#ifdef HAVE_MOD
-		case MOD_LIB:
-			ModPlug_Unload(mpf);
-                        if (munmap(mod_fdm, mod_st.st_size) == -1)
-                                fprintf(stderr, "Error while munmap()'ing MOD Audio file mapping\n");
-                        close(mod_fd);
-                        jack_ringbuffer_free(rb_mod);
-                        file_lib = 0;
-			break;
-#endif /* HAVE_MOD */
-
-		default:
-			fprintf(stderr,
-				"close_file: programmer error: unexpected value file_lib=%d\n", file_lib);
-			break;
-		}
-	}
-	return 0;
-}
-
-
-/* return the number of samples actually placed in dest */
-unsigned int read_file(void * arg, float * dest, int num) {
-
-	unsigned int numread = 0;
-	unsigned int n_avail;
-#ifdef HAVE_FLAC
-	FLAC__FileDecoderState flac_state;
-#endif /* HAVE_FLAC */
-
-	switch (file_lib) {
-
-#ifdef HAVE_SNDFILE
-	case SNDFILE_LIB:
-		numread = sf_readf_float(sf, dest, num);
-		break;
-#endif /* HAVE_SNDFILE */
-
-#ifdef HAVE_FLAC
-	case FLAC_LIB:
-		flac_state = FLAC__file_decoder_get_state(flac_decoder);
-		while ((jack_ringbuffer_read_space(rb_flac) < num * flac_channels * sample_size) &&
-		       (flac_state == FLAC__FILE_DECODER_OK)){
-			FLAC__file_decoder_process_single(flac_decoder);
-			flac_state = FLAC__file_decoder_get_state(flac_decoder);
-		}
-
-		if ((flac_state != FLAC__FILE_DECODER_OK) &&
-		    (flac_state != FLAC__FILE_DECODER_END_OF_FILE)) {
-			fprintf(stderr, "read_file/FLAC: decoder error: %s\n",
-			       FLAC__FileDecoderStateString[flac_state]);
-			return 0; /* this means that a new file will be opened */
-		}
-
-		n_avail = jack_ringbuffer_read_space(rb_flac) / (flac_channels * sample_size);
-		if (n_avail > num)
-			n_avail = num;
-		jack_ringbuffer_read(rb_flac, (char *)dest, n_avail * flac_channels * sample_size);
-		numread = n_avail;
-		break;
-#endif /* HAVE_FLAC */
-
-#ifdef HAVE_OGG_VORBIS
-	case VORBIS_LIB:
-		while ((jack_ringbuffer_read_space(rb_vorbis) < num * vi->channels * sample_size) &&
-		       (!vorbis_EOS)) {
-			vorbis_EOS = decode_vorbis();
-		}
-
-		n_avail = jack_ringbuffer_read_space(rb_vorbis) / (vi->channels * sample_size);
-		if (n_avail > num)
-			n_avail = num;
-		jack_ringbuffer_read(rb_vorbis, (char *)dest, n_avail * vi->channels * sample_size);
-		numread = n_avail;
-		break;
-#endif /* HAVE_OGG_VORBIS */
-
-#ifdef HAVE_MPEG
-	case MAD_LIB:
-		while ((jack_ringbuffer_read_space(rb_mpeg) < num * mpeg_channels * sample_size) &&
-		       (!mpeg_EOS)) {
-			mpeg_EOS = decode_mpeg();
-		}
-
-		n_avail = jack_ringbuffer_read_space(rb_mpeg) / (mpeg_channels * sample_size);
-		if (n_avail > num)
-			n_avail = num;
-		jack_ringbuffer_read(rb_mpeg, (char *)dest, n_avail * mpeg_channels * sample_size);
-		numread = n_avail;
-		break;
-#endif /* HAVE_MPEG */
-
-#ifdef HAVE_MOD
-        case MOD_LIB:
-                while ((jack_ringbuffer_read_space(rb_mod) < num * mp_settings.mChannels * sample_size) &&
-                       (!mod_EOS)) {
-                        mod_EOS = decode_mod();
-                }
-
-                n_avail = jack_ringbuffer_read_space(rb_mod) / (mp_settings.mChannels * sample_size);
-                if (n_avail > num)
-                        n_avail = num;
-                jack_ringbuffer_read(rb_mod, (char *)dest, n_avail * mp_settings.mChannels * sample_size);
-                numread = n_avail;
-                break;
-#endif /* HAVE_MOD */
-
-	default:
-		fprintf(stderr, "read_file: programmer error: unexpected file_lib=%d value\n", file_lib);
-		break;
-	}
-
-	return numread;
-}
-
-
-
-/* seek currently open file to given sample pos */
-void
-seek_file(void * arg, unsigned long long seek_to_pos) {
-
-#ifdef HAVE_SNDFILE
-	unsigned int nframes;
-#endif /* HAVE_SNDFILE */
-
-	char flush_dest;
-
-	switch (file_lib) {
-
-#ifdef HAVE_SNDFILE
-        case SNDFILE_LIB:
-		if ((nframes = sf_seek(sf, seek_to_pos, SEEK_SET)) != -1) {
-			disk_thread_samples_left = fileinfo.total_samples - nframes;
-		} else {
-			fprintf(stderr, "Warning: in seek_file: sf_seek() failed\n");
-		}
-		break;
-#endif /* HAVE_SNDFILE */
-
-#ifdef HAVE_FLAC
-        case FLAC_LIB:
-		if (seek_to_pos == fileinfo.total_samples)
-			--seek_to_pos;
-		if (FLAC__file_decoder_seek_absolute(flac_decoder, seek_to_pos)) {
-			disk_thread_samples_left = fileinfo.total_samples - seek_to_pos;
-			/* empty flac decoder ringbuffer */
-			while (jack_ringbuffer_read_space(rb_flac))
-				jack_ringbuffer_read(rb_flac, &flush_dest, sizeof(char));
-		} else {
-			fprintf(stderr, "Warning: in seek_file: FLAC__file_decoder_seek_absolute() failed\n");
-		}
-		break;
-#endif /* HAVE_FLAC */
-
-#ifdef HAVE_OGG_VORBIS
-        case VORBIS_LIB:
-		if (ov_pcm_seek(&vf, seek_to_pos) == 0) {
-			disk_thread_samples_left = fileinfo.total_samples - seek_to_pos;
-			/* empty vorbis decoder ringbuffer */
-			while (jack_ringbuffer_read_space(rb_vorbis))
-				jack_ringbuffer_read(rb_vorbis, &flush_dest, sizeof(char));
-		} else {
-			fprintf(stderr, "Warning: in seek_file: ov_pcm_seek() failed\n");
-		}
-		break;
-#endif /* HAVE_OGG_VORBIS */
-
-#ifdef HAVE_MPEG
-	case MAD_LIB:
-		mpeg_stream.next_frame = mpeg_stream.buffer + seek_to_pos * mpeg_bitrate / 8 / mpeg_SR;
-		mad_stream_sync(&mpeg_stream);
-		mpeg_EOS = decode_mpeg();
-		/* report the real position of the decoder */
-		disk_thread_samples_left = fileinfo.total_samples -
-			(mpeg_stream.next_frame - mpeg_stream.buffer) / mpeg_bitrate * 8 * mpeg_SR;
-		/* empty mpeg decoder ringbuffer */
-		while (jack_ringbuffer_read_space(rb_mpeg))
-			jack_ringbuffer_read(rb_mpeg, &flush_dest, sizeof(char));
-		break;
-#endif /* HAVE_MPEG */
-
-#ifdef HAVE_MOD
-	case MOD_LIB:
-                if (seek_to_pos == fileinfo.total_samples)
-                        --seek_to_pos;
-		ModPlug_Seek(mpf, (double)seek_to_pos / mp_settings.mFrequency * 1000.0f);
-		disk_thread_samples_left = fileinfo.total_samples - seek_to_pos;
-                /* empty mod decoder ringbuffer */
-                while (jack_ringbuffer_read_space(rb_mod))
-                        jack_ringbuffer_read(rb_mod, &flush_dest, sizeof(char));
-		break;
-#endif /* HAVE_MOD */
-
-        default:
-                fprintf(stderr, "seek_file: programmer error: unexpected file_lib=%d value\n", file_lib);
-                break;
-	}
-}
-
-
-
-
 void *
 disk_thread(void * arg) {
 
 	thread_info_t * info = (thread_info_t *)arg;
+	file_decoder_t * fdec = NULL;
 	unsigned int n_read = 0;
 	unsigned int want_read;
 	int n_src = 0;
@@ -1202,18 +143,24 @@ disk_thread(void * arg) {
 	int i;
 
 
-#ifdef HAVE_SRC	
+#ifdef HAVE_SRC
 	int src_type_prev;
 	SRC_STATE * src_state;
 	SRC_DATA src_data;
 	int src_error;
 
         if ((src_state = src_new(src_type, 2, &src_error)) == NULL) {
-		fprintf(stderr, "disk thread: error: src_new() failed: %s.\n", src_strerror(src_error));
+		fprintf(stderr, "disk thread: error: src_new() failed: %s.\n",
+			src_strerror(src_error));
 		exit(1);
 	}
 	src_type_prev = src_type;
 #endif /* HAVE_SRC */
+
+	if ((fdec = file_decoder_new()) == NULL) {
+		fprintf(stderr, "disk thread: error: file_decoder_new() failed\n");
+		exit(1);
+	}
 
 	if ((!readbuf) || (!framebuf)) {
 		fprintf(stderr, "disk thread: malloc error\n");
@@ -1235,21 +182,37 @@ disk_thread(void * arg) {
 			case CMD_CUE: 
 				/* read the string */
 				i = 0;
-				while ((jack_ringbuffer_read_space(rb_gui2disk)) && (i < RB_CONTROL_SIZE)) {
+				while ((jack_ringbuffer_read_space(rb_gui2disk)) &&
+				       (i < RB_CONTROL_SIZE)) {
+
 					jack_ringbuffer_read(rb_gui2disk, filename + i, 1);
 					i++;
 				}
 				filename[i] = '\0';
-				if (file_lib != 0)
-					close_file(arg);
+				if (fdec->file_lib != 0)
+					file_decoder_close(fdec);
 				if (filename[0] != '\0') {
-					if (open_file(arg, filename)) {
+					if (file_decoder_open(fdec, filename, info->out_SR)) {
+						fdec->samples_left = 0;
 						info->is_streaming = 0;
 						end_of_file = 1;
 						send_cmd = CMD_FILEREQ;
 						jack_ringbuffer_write(rb_disk2gui, &send_cmd, 1);
 						goto sleep;
 					} else {
+						info->in_SR_prev = info->in_SR;
+						info->in_SR = fdec->SR;
+						info->is_mono = (fdec->channels == 1) ? 1 : 0;
+
+						sample_offset = 0;
+
+						send_cmd = CMD_FILEINFO;
+						jack_ringbuffer_write(rb_disk2gui, &send_cmd,
+								      sizeof(send_cmd));
+						jack_ringbuffer_write(rb_disk2gui,
+								      (char *)&(fdec->fileinfo),
+								      sizeof(fileinfo_t));
+
 						info->is_streaming = 1;
 						end_of_file = 0;
 					}
@@ -1274,14 +237,15 @@ disk_thread(void * arg) {
 				jack_ringbuffer_write(rb_disk2out, &send_cmd, 1);
 
 				/* roll back sample_offset samples, if possible */
-				disk_thread_sample_offset =
-					jack_ringbuffer_read_space(rb) / (2 * sample_size) * src_ratio;
-				if (disk_thread_sample_offset <
-				    fileinfo.total_samples - disk_thread_samples_left)
-					seek_file(arg, fileinfo.total_samples - disk_thread_samples_left
-						  - disk_thread_sample_offset);
+				sample_offset = jack_ringbuffer_read_space(rb) /
+					(2 * sample_size) * src_ratio;
+				if (sample_offset <
+				    fdec->fileinfo.total_samples - fdec->samples_left)
+					file_decoder_seek(fdec,
+					   fdec->fileinfo.total_samples - fdec->samples_left
+					   - sample_offset);
 				else
-					seek_file(arg, 0);
+				        file_decoder_seek(fdec, 0);
 				break;
 			case CMD_RESUME:
 				info->is_streaming = 1;
@@ -1293,8 +257,8 @@ disk_thread(void * arg) {
 				while (jack_ringbuffer_read_space(rb_gui2disk) < sizeof(seek_t))
 					;
 				jack_ringbuffer_read(rb_gui2disk, (char *)&seek, sizeof(seek_t));
-				if (file_lib != 0) {
-					seek_file(arg, seek.seek_to_pos);
+				if (fdec->file_lib != 0) {
+					file_decoder_seek(fdec, seek.seek_to_pos);
 					/* send a FLUSH command to output thread */
 					send_cmd = CMD_FLUSH;
 					jack_ringbuffer_write(rb_disk2out, &send_cmd, 1);
@@ -1329,7 +293,7 @@ disk_thread(void * arg) {
 			if (want_read > MAX_RATIO * info->rb_size)
 				want_read = MAX_RATIO * info->rb_size;
 			
-			n_read = read_file(arg, readbuf, want_read);
+			n_read = file_decoder_read(fdec, readbuf, want_read);
 			if (n_read < want_read)
 				end_of_file = 1;
 			
@@ -1377,8 +341,7 @@ disk_thread(void * arg) {
 			
 			if (end_of_file) {
 
-				close_file(arg);
-				file_open = 0;
+				file_decoder_close(fdec);
 
 				/* send request for a new filename */
 				send_cmd = CMD_FILEREQ;
@@ -1391,11 +354,10 @@ disk_thread(void * arg) {
 		jack_ringbuffer_write(rb, framebuf, n_src * 2*sample_size);
 
 		/* update & send STATUS */
-		disk_thread_samples_left -= n_read;
-		disk_thread_sample_offset =
-			jack_ringbuffer_read_space(rb) / (2 * sample_size);
-		disk_thread_status.samples_left = disk_thread_samples_left;
-		disk_thread_status.sample_offset = disk_thread_sample_offset / src_ratio;
+		fdec->samples_left -= n_read;
+		sample_offset =	jack_ringbuffer_read_space(rb) / (2 * sample_size);
+		disk_thread_status.samples_left = fdec->samples_left;
+		disk_thread_status.sample_offset = sample_offset / src_ratio;
 		if (disk_thread_status.samples_left < 0) {
 			disk_thread_status.samples_left = 0;
 		}
@@ -1421,6 +383,7 @@ disk_thread(void * arg) {
 #ifdef HAVE_SRC
 	src_state = src_delete(src_state);
 #endif /* HAVE_SRC */
+	file_decoder_delete(fdec);
 	pthread_mutex_unlock(&disk_thread_lock);
 	return 0;
 }

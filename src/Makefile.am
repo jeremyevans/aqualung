@@ -10,6 +10,8 @@ common.h \
 core.h core.c \
 options.h options.c \
 gui_main.h gui_main.c \
+file_decoder.h file_decoder.c \
+file_info.h file_info.c \
 music_browser.h music_browser.c \
 playlist.h playlist.c \
 skin.h skin.c \

@@ -14,9 +14,21 @@ EXTRA_DIST = $(DOMAIN).pot $(POFILES) $(MOFILES) Makevars ABOUT-NLS
 all: 
 	for i in $(POFILES); do $(MAKE) `echo $$i | sed 's/\.po/\.mo/'`; done
 
-%.mo: %.po
+hu.mo: hu.po
 	cp $< $<.utf8; \
-	recode ..utf8 $<.utf8; \
+	recode iso8859-2..utf8 $<.utf8; \
+	msgfmt $<.utf8 -o $@; \
+	rm $<.utf8
+
+de.mo: de.po
+	cp $< $<.utf8; \
+	recode iso8859-1..utf8 $<.utf8; \
+	msgfmt $<.utf8 -o $@; \
+	rm $<.utf8
+
+uk.mo: uk.po
+	cp $< $<.utf8; \
+	recode koi8-u..utf8 $<.utf8; \
 	msgfmt $<.utf8 -o $@; \
 	rm $<.utf8
 

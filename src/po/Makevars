@@ -3,18 +3,4 @@ XGETTEXT_OPTS = --keyword=_ --keyword=N_ --keyword=X_
 DOMAIN = aqualung
 COPYRIGHT_HOLDER = Tom Szilagyi
 
-POTFILES = \
-../about.c \
-../core.c \
-../file_decoder.c \
-../file_info.c \
-../gui_main.c \
-../music_browser.c \
-../options.c \
-../playlist.c \
-../plugin.c \
-../ports.c \
-../skin.c \
-../transceiver.c \
-../trashlist.c \
-../volume.c
+POTFILES = $(wildcard ../*.c)

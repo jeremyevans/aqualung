@@ -35,4 +35,7 @@ vol_queue_t * vol_queue_push(vol_queue_t * q, char * file, GtkTreeIter iter);
 void calculate_volume(vol_queue_t * q);
 
 
+float rva_from_volume(float volume, float rva_refvol, float rva_steepness);
+
+
 #endif /* _VOLUME_H */

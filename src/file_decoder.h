@@ -158,6 +158,9 @@ typedef struct _file_decoder_t {
 	fileinfo_t fileinfo;
 	unsigned long long samples_left;
 
+	float voladj_db;
+	float voladj_lin;
+
 
 	/* private */
 
@@ -256,6 +259,7 @@ file_decoder_t * file_decoder_new(void);
 void file_decoder_delete(file_decoder_t * fdec);
 
 int file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_SR);
+void file_decoder_set_rva(file_decoder_t * fdec, float voladj);
 void file_decoder_close(file_decoder_t * fdec);
 unsigned int file_decoder_read(file_decoder_t * fdec, float * dest, int num);
 void file_decoder_seek(file_decoder_t * fdec, unsigned long long seek_to_pos);

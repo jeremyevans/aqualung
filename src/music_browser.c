@@ -42,6 +42,10 @@
 
 extern GtkWidget * vol_window;
 
+extern float rva_is_enabled;
+extern float rva_refvol;
+extern float rva_steepness;
+
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
 
@@ -122,10 +126,12 @@ static gboolean music_tree_event_cb(GtkWidget * widget, GdkEvent * event);
 
 static void artist__add_cb(gpointer data);
 static void artist__edit_cb(gpointer data);
+static void artist__volume_cb(gpointer data);
 static void artist__remove_cb(gpointer data);
 
 static void record__add_cb(gpointer data);
 static void record__edit_cb(gpointer data);
+static void record__volume_cb(gpointer data);
 static void record__remove_cb(gpointer data);
 
 static void track__add_cb(gpointer data);
@@ -148,6 +154,7 @@ struct keybinds artist_keybinds[] = {
 	{artist__addlist_cb, GDK_a, GDK_A},
 	{artist__add_cb, GDK_n, GDK_N},
 	{artist__edit_cb, GDK_e, GDK_E},
+	{artist__volume_cb, GDK_v, GDK_V},
 	{artist__remove_cb, GDK_Delete, GDK_KP_Delete},
 	{record__add_cb, GDK_plus, GDK_KP_Add},
 	{NULL, 0}
@@ -157,6 +164,7 @@ struct keybinds record_keybinds[] = {
 	{record__addlist_cb, GDK_a, GDK_A},
 	{record__add_cb, GDK_n, GDK_N},
 	{record__edit_cb, GDK_e, GDK_E},
+	{record__volume_cb, GDK_v, GDK_V},
 	{record__remove_cb, GDK_Delete, GDK_KP_Delete},
 	{track__add_cb, GDK_plus, GDK_KP_Add},
 	{NULL, 0}
@@ -166,6 +174,7 @@ struct keybinds track_keybinds[] = {
 	{track__addlist_cb, GDK_a, GDK_A},
 	{track__add_cb, GDK_n, GDK_N},
 	{track__edit_cb, GDK_e, GDK_E},
+	{track__volume_cb, GDK_v, GDK_V},
 	{track__remove_cb, GDK_Delete, GDK_KP_Delete},
 	{track__fileinfo_cb, GDK_i, GDK_I},
 	{NULL, 0}
@@ -1371,6 +1380,11 @@ artist__addlist_cb(gpointer data) {
 	char list_str[MAXLEN];
 	int i, j;
 
+	float volume;
+	float rva;
+	float use_rva;
+	float voladj;
+
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_artist)) {
 
                 gtk_tree_model_get(model, &iter_artist, 0, &partist_name, -1);
@@ -1387,7 +1401,8 @@ artist__addlist_cb(gpointer data) {
 			j = 0;
 			while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, j++)) {
 				
-				gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile, -1);
+				gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
+						   5, &volume, 6, &rva, 7, &use_rva, -1);
 				strncpy(track_name, ptrack_name, MAXLEN-1);
 				strncpy(file, pfile, MAXLEN-1);
 				g_free(ptrack_name);
@@ -1396,12 +1411,26 @@ artist__addlist_cb(gpointer data) {
 				make_title_string(list_str, title_format,
 						  artist_name, record_name, track_name);
 
+				if (rva_is_enabled) {
+					if (use_rva >= 0.0f) {
+						voladj = rva;
+					} else {
+						if (volume <= 0.1f) {
+							voladj = rva_from_volume(volume, rva_refvol, rva_steepness);
+						} else { /* unmeasured */
+							voladj = 0.0f;
+						}
+					}
+				} else {
+					voladj = 0.0f;
+				}
+
 				gtk_list_store_insert_before(play_store,
 							     &list_iter,
 							     (GtkTreeIter *)data);
 
 				gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
-						   2, pl_color_inactive, -1);
+						   2, pl_color_inactive, 3, voladj, -1);
 			}
 		}
 	}
@@ -1555,6 +1584,11 @@ record__addlist_cb(gpointer data) {
 	char list_str[MAXLEN];
 	int i;
 
+	float volume;
+	float rva;
+	float use_rva;
+	float voladj;
+
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_record)) {
 
                 gtk_tree_model_get(model, &iter_record, 0, &precord_name, -1);
@@ -1571,7 +1605,8 @@ record__addlist_cb(gpointer data) {
 		i = 0;
 		while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, i++)) {
 
-			gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile, -1);
+			gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
+					   5, &volume, 6, &rva, 7, &use_rva, -1);
 			strncpy(track_name, ptrack_name, MAXLEN-1);
 			strncpy(file, pfile, MAXLEN-1);
 			g_free(ptrack_name);
@@ -1580,12 +1615,26 @@ record__addlist_cb(gpointer data) {
 			make_title_string(list_str, title_format,
 					  artist_name, record_name, track_name);
 
+			if (rva_is_enabled) {
+				if (use_rva >= 0.0f) {
+					voladj = rva;
+				} else {
+					if (volume <= 0.1f) {
+						voladj = rva_from_volume(volume, rva_refvol, rva_steepness);
+					} else { /* unmeasured */
+						voladj = 0.0f;
+					}
+				}
+			} else {
+				voladj = 0.0f;
+			}
+
 			gtk_list_store_insert_before(play_store,
 						     &list_iter,
 						     (GtkTreeIter *)data);
 
 			gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
-					   2, pl_color_inactive, -1);
+					   2, pl_color_inactive, 3, voladj, -1);
 		}
 	}
 }
@@ -1772,12 +1821,17 @@ track__addlist_cb(gpointer data) {
         char record_name[MAXLEN];
         char track_name[MAXLEN];
         char file[MAXLEN];
-
 	char list_str[MAXLEN];
+
+	float volume;
+	float rva;
+	float use_rva;
+	float voladj;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
 
-                gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile, -1);
+                gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
+				   5, &volume, 6, &rva, 7, &use_rva, -1);
                 strncpy(track_name, ptrack_name, MAXLEN-1);
                 strncpy(file, pfile, MAXLEN-1);
                 g_free(ptrack_name);
@@ -1796,12 +1850,26 @@ track__addlist_cb(gpointer data) {
 		make_title_string(list_str, title_format,
 				  artist_name, record_name, track_name);
 
+		if (rva_is_enabled) {
+			if (use_rva >= 0.0f) {
+				voladj = rva;
+			} else {
+				if (volume <= 0.1f) {
+					voladj = rva_from_volume(volume, rva_refvol, rva_steepness);
+				} else { /* unmeasured */
+					voladj = 0.0f;
+				}
+			}
+		} else {
+			voladj = 0.0f;
+		}
+		
 		gtk_list_store_insert_before(play_store,
 					     &list_iter,
 					     (GtkTreeIter *)data);
 
 		gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
-				   2, pl_color_inactive, -1);
+				   2, pl_color_inactive, 3, voladj, -1);
 	}
 }
 
@@ -2127,8 +2195,8 @@ create_music_browser(void) {
 						 G_TYPE_STRING,  /* user comments */
 						 G_TYPE_FLOAT,   /* track length in seconds */
 						 G_TYPE_FLOAT,   /* track average volume in dBFS */
-						 G_TYPE_FLOAT,   /* track volume adjustment, dB */
-						 G_TYPE_FLOAT);  /* if >= 0: use track RVA, if < 0: auto */
+						 G_TYPE_FLOAT,   /* track manual volume adjustment, dB */
+						 G_TYPE_FLOAT);  /* if >= 0: use track manual RVA, if < 0: auto (compute from avg. loudness) */
 	}
 
 	music_tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(music_store));

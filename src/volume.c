@@ -335,3 +335,10 @@ calculate_volume(vol_queue_t * q) {
 	process_volume_setup(vol_queue);
 	g_idle_add(process_volume, NULL);
 }
+
+
+float
+rva_from_volume(float volume, float rva_refvol, float rva_steepness) {
+
+	return ((volume - rva_refvol) * (rva_steepness - 1.0f));
+}

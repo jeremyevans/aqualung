@@ -67,7 +67,7 @@ write_callback(const FLAC__FileDecoder * decoder,
 		for (fdec->flac_j = 0; fdec->flac_j < fdec->flac_channels; fdec->flac_j++) {
 			fdec->flac_buf[fdec->flac_j] = *(buffer[fdec->flac_j] + fdec->flac_i);
 			fdec->flac_fbuf[fdec->flac_j] = (float)fdec->flac_buf[fdec->flac_j]
-				/ fdec->flac_scale;
+				* fdec->voladj_lin / fdec->flac_scale;
 		}
 		jack_ringbuffer_write(fdec->rb_flac, (char *)fdec->flac_fbuf,
 				      fdec->flac_channels * sample_size);
@@ -116,7 +116,8 @@ decode_vorbis(file_decoder_t * fdec) {
 					     0, 2, 1, &(fdec->oggv_current_section))) > 0) {
                 for (fdec->oggv_i = 0; fdec->oggv_i < fdec->oggv_bytes_read/2; fdec->oggv_i++)
                         fdec->oggv_fbuffer[fdec->oggv_i] =
-				*((short *)(fdec->oggv_buffer + 2*fdec->oggv_i)) / 32768.f;
+				*((short *)(fdec->oggv_buffer + 2*fdec->oggv_i))
+				* fdec->voladj_lin / 32768.f;
                 jack_ringbuffer_write(fdec->rb_vorbis, (char *)fdec->oggv_fbuffer,
 				      fdec->oggv_bytes_read/2 * sample_size);
 		return 0;
@@ -270,7 +271,8 @@ mpeg_output(void * data, struct mad_header const * header, struct mad_pcm * pcm)
 			fdec->mpeg_buf[fdec->mpeg_j] =
 				fdec->mpeg_err ? 0 : *(pcm->samples[fdec->mpeg_j] + fdec->mpeg_i);
 			fdec->mpeg_fbuf[fdec->mpeg_j] =
-				(double)fdec->mpeg_buf[fdec->mpeg_j] / fdec->mpeg_scale;
+				(double)fdec->mpeg_buf[fdec->mpeg_j] *
+				fdec->voladj_lin / fdec->mpeg_scale;
 		}
 		if (jack_ringbuffer_write_space(fdec->rb_mpeg) >=
 		    fdec->mpeg_channels * sample_size)
@@ -350,7 +352,8 @@ decode_mod(file_decoder_t * fdec) {
         if ((fdec->mod_bytes_read = ModPlug_Read(fdec->mpf, fdec->mod_buffer, MOD_BUFSIZE)) > 0) {
                 for (fdec->mod_i = 0; fdec->mod_i < fdec->mod_bytes_read/2; fdec->mod_i++)
                         fdec->mod_fbuffer[fdec->mod_i] =
-				*((short *)(fdec->mod_buffer + 2*fdec->mod_i)) / 32768.f;
+				*((short *)(fdec->mod_buffer + 2*fdec->mod_i)) *
+				fdec->voladj_lin / 32768.f;
                 jack_ringbuffer_write(fdec->rb_mod, (char *)fdec->mod_fbuffer,
 				      fdec->mod_bytes_read/2 * sample_size);
                 return 0;
@@ -371,6 +374,9 @@ file_decoder_t * file_decoder_new(void) {
 	}
 	
 	fdec->file_open = 0;
+
+	fdec->voladj_db = 0.0f;
+	fdec->voladj_lin = 1.0f;
 
 	return fdec;
 }
@@ -794,6 +800,13 @@ int file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_S
  no_open:
 	fprintf(stderr, "file_decoder_open: unable to open %s\n", filename);
 	return 1;
+}
+
+
+void file_decoder_set_rva(file_decoder_t * fdec, float voladj) {
+
+	fdec->voladj_db = voladj;
+	fdec->voladj_lin = db2lin(voladj);
 }
 
 

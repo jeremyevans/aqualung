@@ -107,13 +107,18 @@ typedef struct _thread_info {
 #define CMD_FLUSH      10
 
 
-typedef struct _status {
+typedef struct _cue_t {
+	char * filename;
+	float voladj;
+} cue_t;
+
+typedef struct _status_t {
 	long long samples_left;
 	long long sample_offset;
 } status_t;
 
 
-typedef struct _seek {
+typedef struct _seek_t {
 	long long seek_to_pos;
 } seek_t;
 

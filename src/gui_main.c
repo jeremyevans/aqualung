@@ -123,6 +123,11 @@ int immediate_start = 0; /* this flag set to 1 in core.c if --play
 extern int ladspa_is_postfader;
 extern int auto_save_playlist;
 
+int rva_is_enabled = 0;
+int rva_env = 0;
+float rva_refvol = -12.0f;
+float rva_steepness = 1.0f;
+
 /* volume & balance sliders */
 double vol = 0.0f;
 double vol_prev = 0.0f;
@@ -1268,6 +1273,8 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	GtkTreeIter iter;
 	long n;
 	long n_items;
+	char cmd;
+	cue_t cue;
 	char * str;
 
 	if (!allow_seeks)
@@ -1324,7 +1331,9 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		}
 
 		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-		gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, 3, &(cue.voladj), -1);
+		cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+		g_free(str);
 
 		if (is_paused) {
 			is_paused = 0;
@@ -1333,12 +1342,9 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 			g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
 		}
 
-		command[0] = CMD_CUE;
-		command[1] = '\0';
-		strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-		g_free(str);
-
-		jack_ringbuffer_write(rb_gui2disk, command, strlen(command));
+		cmd = CMD_CUE;
+		jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
+		jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 		if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
 			pthread_cond_signal(&disk_thread_wake);
 			pthread_mutex_unlock(&disk_thread_lock);
@@ -1355,6 +1361,8 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	GtkTreeIter iter;
 	long n;
 	long n_items;
+	char cmd;
+	cue_t cue;
 	char * str;
 
 	if (!allow_seeks)
@@ -1411,7 +1419,9 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		}
 
 		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-		gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, 3, &(cue.voladj), -1);
+		cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+		g_free(str);
 
 		if (is_paused) {
 			is_paused = 0;
@@ -1420,12 +1430,9 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 			g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
 		}
 
-		command[0] = CMD_CUE;
-		command[1] = '\0';
-		strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-		g_free(str);
-
-		jack_ringbuffer_write(rb_gui2disk, command, strlen(command));
+		cmd = CMD_CUE;
+		jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
+		jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 		if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
 			pthread_cond_signal(&disk_thread_wake);
 			pthread_mutex_unlock(&disk_thread_lock);
@@ -1442,18 +1449,20 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	GtkTreeIter iter;
 	long n;
 	long n_items;
+	char cmd;
+	cue_t cue;
 	char * str;
 
 	if (!is_paused) {
-		command[0] = CMD_CUE;
-		command[1] = '\0';
+		cmd = CMD_CUE;
 
 		n = get_playing_pos(play_store);
 		if (n != -1) {
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 
-			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, -1);
-			strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
+					   3, &(cue.voladj), -1);
+			cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 			g_free(str);
 			is_file_loaded = 1;
 			g_signal_handler_block(G_OBJECT(play_button), play_id);
@@ -1465,8 +1474,9 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
                                 /* normal or repeat mode */
 				if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
 					gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, -1);
-					strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
+							   3, &(cue.voladj), -1);
+					cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 					g_free(str);
 					is_file_loaded = 1;
 					g_signal_handler_block(G_OBJECT(play_button), play_id);
@@ -1489,8 +1499,9 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
 								      NULL, n);
 					gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, -1);
-					strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
+							   3, &(cue.voladj), -1);
+					strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 					g_free(str);
 					is_file_loaded = 1;
 					g_signal_handler_block(G_OBJECT(play_button), play_id);
@@ -1505,7 +1516,8 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 				}
 			}
 		}
-		jack_ringbuffer_write(rb_gui2disk, command, strlen(command));
+		jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
+		jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 			
 	} else {
 		is_paused = 0;
@@ -1564,6 +1576,9 @@ pause_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 gint
 stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
+	char cmd;
+	cue_t cue;
+
 	is_file_loaded = 0;
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
 	zero_displays();
@@ -1581,9 +1596,10 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
                 g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
         }
 
-	command[0] = CMD_CUE;
-	command[1] = '\0';
-	jack_ringbuffer_write(rb_gui2disk, command, strlen(command));
+	cmd = CMD_CUE;
+	cue.filename = NULL;
+        jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
+        jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 
 	if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
 		pthread_cond_signal(&disk_thread_wake);
@@ -2329,6 +2345,8 @@ gint timeout_callback(gpointer data) {
 	long n;
 	long n_items;
 	char * str;
+	char cmd;
+	cue_t cue;
 	GtkTreeIter iter;
 	static double left_gain_shadow;
 	static double right_gain_shadow;
@@ -2343,8 +2361,9 @@ gint timeout_callback(gpointer data) {
 		switch (recv_cmd) {
 
 		case CMD_FILEREQ:
-			command[0] = CMD_CUE;
-			command[1] = '\0';
+			cmd = CMD_CUE;
+			cue.filename = NULL;
+			cue.voladj = 0.0f;
 
 			n = get_playing_pos(play_store);
 			if (n != -1) {
@@ -2357,8 +2376,8 @@ gint timeout_callback(gpointer data) {
 					if (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter)) {
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
-								   1, &str, -1);
-						strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+								   1, &str, 3, &(cue.voladj), -1);
+						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						g_free(str);
 						is_file_loaded = 1;
 					} else {
@@ -2382,9 +2401,9 @@ gint timeout_callback(gpointer data) {
 								gtk_list_store_set(play_store, &iter, 2,
 										   pl_color_active, -1);
 								gtk_tree_model_get(GTK_TREE_MODEL(play_store),
-								   &iter, 1, &str, -1);
-								strcat(command, 
-								 g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+								   &iter, 1, &str, 3, &(cue.voladj), -1);
+								cue.filename = strdup(
+									g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 								g_free(str);
 							} else {
 								is_file_loaded = 0;
@@ -2406,8 +2425,8 @@ gint timeout_callback(gpointer data) {
 					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
 								      NULL, n);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
-								   1, &str, -1);
-						strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+								   1, &str, 3, &(cue.voladj), -1);
+						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						g_free(str);
 						is_file_loaded = 1;
 				} else {
@@ -2425,9 +2444,9 @@ gint timeout_callback(gpointer data) {
 						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
 									      &iter, NULL, n);
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1,
-								   &str, -1);
-						strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
+								   1, &str, 3, &(cue.voladj), -1);
+						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						g_free(str);
 						is_file_loaded = 1;
 					} else {
@@ -2445,8 +2464,8 @@ gint timeout_callback(gpointer data) {
 					if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store),&iter)) {
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
-								   1, &str, -1);
-						strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+								   1, &str, 3, &(cue.voladj), -1);
+						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						g_free(str);
 					} else {
 						is_file_loaded = 0;
@@ -2468,9 +2487,9 @@ gint timeout_callback(gpointer data) {
 						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
 									      &iter, NULL, n);
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1,
-								   &str, -1);
-						strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
+								   1, &str, 3, &(cue.voladj), -1);
+						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						g_free(str);
 						is_file_loaded = 1;
 					} else {
@@ -2484,8 +2503,9 @@ gint timeout_callback(gpointer data) {
 				}
 			}
 
-			if (command[1] != '\0') {
-				jack_ringbuffer_write(rb_gui2disk, command, strlen(command));
+			if (cue.filename != NULL) {
+				jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
+				jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 			} else {
 				send_cmd = CMD_STOPWOFL;
 				jack_ringbuffer_write(rb_gui2disk, &send_cmd, sizeof(char));
@@ -2690,9 +2710,17 @@ save_config(void) {
 
 	snprintf(str, 31, "%f", vol);
         xmlNewTextChild(root, NULL, "volume", str);
-
 	snprintf(str, 31, "%f", bal);
         xmlNewTextChild(root, NULL, "balance", str);
+
+	snprintf(str, 31, "%d", rva_is_enabled);
+        xmlNewTextChild(root, NULL, "rva_is_enabled", str);
+	snprintf(str, 31, "%d", rva_env);
+        xmlNewTextChild(root, NULL, "rva_env", str);
+	snprintf(str, 31, "%f", rva_refvol);
+        xmlNewTextChild(root, NULL, "rva_refvol", str);
+	snprintf(str, 31, "%f", rva_steepness);
+        xmlNewTextChild(root, NULL, "rva_steepness", str);
 
 	snprintf(str, 31, "%d", main_pos_x);
         xmlNewTextChild(root, NULL, "main_pos_x", str);
@@ -2870,6 +2898,34 @@ load_config(void) {
                         if (key != NULL) {
                                 sscanf(key, "%f", &fval);
 				bal = fval;
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_is_enabled"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+				sscanf(key, "%d", &rva_is_enabled);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_env"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+				sscanf(key, "%d", &rva_env);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_refvol"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+                                sscanf(key, "%f", &fval);
+				rva_refvol = fval;
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_steepness"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+                                sscanf(key, "%f", &fval);
+				rva_steepness = fval;
 			}
                         xmlFree(key);
                 }

@@ -184,6 +184,8 @@ start_playback_from_playlist(GtkTreePath * path) {
 	GtkTreeIter iter;
 	char * str;
 	long n;
+	char cmd;
+	cue_t cue;
 
 	if (!allow_seeks)
 		return;
@@ -199,8 +201,10 @@ start_playback_from_playlist(GtkTreePath * path) {
 	
 	n = get_playing_pos(play_store);
 	gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-	gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, -1);
-	
+	gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, 3, &(cue.voladj), -1);
+	cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+	g_free(str);
+
 	g_signal_handler_block(G_OBJECT(play_button), play_id);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), TRUE);
 	g_signal_handler_unblock(G_OBJECT(play_button), play_id);
@@ -211,13 +215,10 @@ start_playback_from_playlist(GtkTreePath * path) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
 		g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
 	}
-	
-	command[0] = CMD_CUE;
-	command[1] = '\0';
-	strcat(command, g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-	g_free(str);
-	
-	jack_ringbuffer_write(rb_gui2disk, command, strlen(command));
+		
+	cmd = CMD_CUE;
+	jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
+	jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 	if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
 		pthread_cond_signal(&disk_thread_wake);
 		pthread_mutex_unlock(&disk_thread_lock);
@@ -816,10 +817,11 @@ create_playlist(void) {
 
         /* create playlist */
 	if (!play_store) {
-		play_store = gtk_list_store_new(3,
+		play_store = gtk_list_store_new(4,
 						G_TYPE_STRING,  /* track name */
 						G_TYPE_STRING,  /* physical filename */
-						G_TYPE_STRING); /* color for selections */
+						G_TYPE_STRING,  /* color for selections */
+						G_TYPE_FLOAT);  /* volume adjustment [dB] */
 	}
 
         play_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(play_store));
@@ -948,6 +950,7 @@ save_playlist(char * filename) {
         xmlDocPtr doc;
         xmlNodePtr root;
         xmlNodePtr node;
+	float voladj;
         char str[32];
 
 
@@ -958,7 +961,7 @@ save_playlist(char * filename) {
         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i)) {
 
                 gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
-				   0, &track_name, 1, &phys_name, 2, &color, -1);
+				   0, &track_name, 1, &phys_name, 2, &color, 3, &voladj, -1);
 
                 node = xmlNewTextChild(root, NULL, "track", NULL);
 
@@ -970,8 +973,10 @@ save_playlist(char * filename) {
 		} else {
 			strcpy(str, "no");
 		}
-
                 xmlNewTextChild(node, NULL, "is_active", str);
+
+		snprintf(str, 31, "%f", voladj);
+		xmlNewTextChild(node, NULL, "voladj", str);
 
 		g_free(track_name);
 		g_free(phys_name);
@@ -990,6 +995,7 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, int sel_ok) {
 	char track_name[MAXLEN];
 	char phys_name[MAXLEN];
 	char color[32];
+	float voladj = 0.0f;
 
 	track_name[0] = '\0';
 	phys_name[0] = '\0';
@@ -1017,13 +1023,20 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, int sel_ok) {
 				}
 			}
                         xmlFree(key);
+                } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"voladj"))) {
+                        key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+                                sscanf(key, "%f", &voladj);
+                        }
+                        xmlFree(key);
                 }
 		cur = cur->next;
 	}
 
 	if ((track_name[0] != '\0') && (phys_name[0] != '\0') && (color[0] != '\0')) {
 		gtk_list_store_append(play_store, &iter);
-		gtk_list_store_set(play_store, &iter, 0, track_name, 1, phys_name, 2, color, -1);
+		gtk_list_store_set(play_store, &iter, 0, track_name, 1, phys_name,
+				   2, color, 3, voladj, -1);
 	} else {
 		fprintf(stderr, "warning: parse_playlist_track: incomplete data in playlist XML\n");
 	}

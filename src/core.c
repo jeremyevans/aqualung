@@ -140,6 +140,7 @@ disk_thread(void * arg) {
 	char send_cmd, recv_cmd;
 	char filename[RB_CONTROL_SIZE];
 	seek_t seek;
+	cue_t cue;
 	int i;
 
 
@@ -181,14 +182,18 @@ disk_thread(void * arg) {
 			switch (recv_cmd) {
 			case CMD_CUE: 
 				/* read the string */
-				i = 0;
-				while ((jack_ringbuffer_read_space(rb_gui2disk)) &&
-				       (i < RB_CONTROL_SIZE)) {
+				while (jack_ringbuffer_read_space(rb_gui2disk) < sizeof(cue_t))
+					;
 
-					jack_ringbuffer_read(rb_gui2disk, filename + i, 1);
-					i++;
+				jack_ringbuffer_read(rb_gui2disk, (void *)&cue, sizeof(cue_t));
+				
+				if (cue.filename != NULL) {
+					strncpy(filename, cue.filename, MAXLEN-1);
+					free(cue.filename);
+				} else {
+					filename[0] = '\0';
 				}
-				filename[i] = '\0';
+
 				if (fdec->file_lib != 0)
 					file_decoder_close(fdec);
 				if (filename[0] != '\0') {
@@ -200,6 +205,7 @@ disk_thread(void * arg) {
 						jack_ringbuffer_write(rb_disk2gui, &send_cmd, 1);
 						goto sleep;
 					} else {
+						file_decoder_set_rva(fdec, cue.voladj);
 						info->in_SR_prev = info->in_SR;
 						info->in_SR = fdec->SR;
 						info->is_mono = (fdec->channels == 1) ? 1 : 0;

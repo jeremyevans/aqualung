@@ -48,15 +48,37 @@ GtkWidget * optmenu_src;
 extern int ladspa_is_postfader;
 extern GtkWidget * main_window;
 extern int auto_save_playlist;
+extern int rva_is_enabled;
+extern int rva_env;
+extern float rva_refvol;
+extern float rva_steepness;
 int auto_save_playlist_shadow;
+int rva_is_enabled_shadow;
+int rva_env_shadow;
+float rva_refvol_shadow;
+float rva_steepness_shadow;
 
 GtkWidget * options_window;
 GtkWidget * optmenu_ladspa;
+GtkWidget * optmenu_listening_env;
 GtkWidget * entry_title;
 GtkWidget * entry_param;
 GtkWidget * label_src;
 GtkWidget * check_autoplsave;
+GtkWidget * check_rva_is_enabled;
+GtkObject * adj_refvol;
+GtkObject * adj_steepness;
+GtkWidget * rva_drawing_area;
+GdkPixmap * rva_pixmap = NULL;
+GtkWidget * rva_viewport;
+GtkWidget * spin_refvol;
+GtkWidget * spin_steepness;
+GtkWidget * label_listening_env;
+GtkWidget * label_refvol;
+GtkWidget * label_steepness;
 
+
+void draw_rva_diagram(void);
 
 static gint
 ok(GtkWidget * widget, gpointer data) {
@@ -64,6 +86,10 @@ ok(GtkWidget * widget, gpointer data) {
 	strncpy(title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)), MAXLEN - 1);
 	strncpy(default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN - 1);
 	auto_save_playlist = auto_save_playlist_shadow;
+	rva_is_enabled = rva_is_enabled_shadow;
+	rva_env = rva_env_shadow;
+	rva_refvol = rva_refvol_shadow;
+	rva_steepness = rva_steepness_shadow;
 
 	gtk_widget_destroy(options_window);
 	return TRUE;
@@ -111,24 +137,233 @@ changed_src_type(GtkWidget * widget, gpointer * data) {
 
 
 void
-create_options_window() {
+check_rva_is_enabled_toggled(GtkWidget * widget, gpointer * data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_rva_is_enabled))) {
+		rva_is_enabled_shadow = 1;
+		gtk_widget_set_sensitive(optmenu_listening_env, TRUE);
+		gtk_widget_set_sensitive(label_listening_env, TRUE);
+		gtk_widget_set_sensitive(spin_refvol, TRUE);
+		gtk_widget_set_sensitive(label_refvol, TRUE);
+		gtk_widget_set_sensitive(spin_steepness, TRUE);
+		gtk_widget_set_sensitive(label_steepness, TRUE);
+	} else {
+		rva_is_enabled_shadow = 0;
+		gtk_widget_set_sensitive(optmenu_listening_env, FALSE);
+		gtk_widget_set_sensitive(label_listening_env, FALSE);
+		gtk_widget_set_sensitive(spin_refvol, FALSE);
+		gtk_widget_set_sensitive(label_refvol, FALSE);
+		gtk_widget_set_sensitive(spin_steepness, FALSE);
+		gtk_widget_set_sensitive(label_steepness, FALSE);
+	}
+
+	draw_rva_diagram();
+}
+
+
+void
+changed_listening_env(GtkWidget * widget, gpointer * data) {
+
+	rva_env_shadow = gtk_option_menu_get_history(GTK_OPTION_MENU(optmenu_listening_env));
+
+	switch (rva_env_shadow) {
+	case 0: /* Audiophile */
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_refvol), -12.0f);
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_steepness), 1.0f);
+		break;
+	case 1: /* Living room */
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_refvol), -12.0f);
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_steepness), 0.7f);
+		break;
+	case 2: /* Office */
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_refvol), -12.0f);
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_steepness), 0.4f);
+		break;
+	case 3: /* Workshop */
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_refvol), -12.0f);
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_steepness), 0.1f);
+		break;
+	default:
+		fprintf(stderr, "programmer error: options.c/changed_listening_env(): "
+			"invalid rva_env_shadow value.\nPlease report this to the programmers!\n");
+		break;
+	}
+}
+
+
+void
+draw_rva_diagram(void) {
+
+	GdkGC * gc;
+	GdkColor fg_color;
+	int i;
+	int width = rva_viewport->allocation.width - 4;
+	int height = rva_viewport->allocation.height - 4;
+	int dw = width / 24;
+	int dh = height / 24;
+	int xoffs = (width - 24*dw) / 2 - 1;
+	int yoffs = (height - 24*dh) / 2 - 1;
+	float volx, voly;
+	int px1, py1, px2, py2;
+
+
+	gdk_draw_rectangle(rva_pixmap,
+			   rva_drawing_area->style->black_gc,
+			   TRUE,
+			   0, 0,
+			   rva_drawing_area->allocation.width,
+			   rva_drawing_area->allocation.height);
+	
+	gc = gdk_gc_new(rva_pixmap);
+	if (rva_is_enabled_shadow) {
+		fg_color.red = 10000;
+		fg_color.green = 10000;
+		fg_color.blue = 10000;
+	} else {
+		fg_color.red = 5000;
+		fg_color.green = 5000;
+		fg_color.blue = 5000;
+	}
+	gdk_gc_set_rgb_fg_color(gc, &fg_color);
+
+	for (i = 0; i <= 24; i++) {
+		gdk_draw_line(rva_pixmap, gc,
+			      xoffs + i * dw, yoffs,
+			      xoffs + i * dw, yoffs + 24 * dh);
+	}
+
+	for (i = 0; i <= 24; i++) {
+		gdk_draw_line(rva_pixmap, gc,
+			      xoffs, yoffs + i * dh,
+			      xoffs + 24 * dw, yoffs + i * dh);
+	}
+
+	if (rva_is_enabled_shadow) {
+		fg_color.red = 0;
+		fg_color.green = 0;
+		fg_color.blue = 65535;
+	} else {
+		fg_color.red = 0;
+		fg_color.green = 0;
+		fg_color.blue = 30000;
+	}
+	gdk_gc_set_rgb_fg_color(gc, &fg_color);
+	gdk_draw_line(rva_pixmap, gc, xoffs, yoffs + 24 * dh, xoffs + 24 * dw, yoffs);
+
+	if (rva_is_enabled_shadow) {
+		fg_color.red = 65535;
+		fg_color.green = 0;
+		fg_color.blue = 0;
+	} else {
+		fg_color.red = 30000;
+		fg_color.green = 0;
+		fg_color.blue = 0;
+	}
+	gdk_gc_set_rgb_fg_color(gc, &fg_color);
+
+
+	volx = -24.0f;
+	voly = volx + (volx - rva_refvol_shadow) * (rva_steepness_shadow - 1.0f);
+	px1 = xoffs;
+	py1 = yoffs - (voly * dh);
+
+	volx = 0.0f;
+	voly = volx + (volx - rva_refvol_shadow) * (rva_steepness_shadow - 1.0f);
+	px2 = xoffs + 24*dw;
+	py2 = yoffs - (voly * dh);
+
+	gdk_draw_line(rva_pixmap, gc, px1, py1, px2, py2);
+
+	gdk_draw_pixmap(rva_drawing_area->window,
+			rva_drawing_area->style->fg_gc[GTK_WIDGET_STATE(rva_drawing_area)],
+			rva_pixmap,
+			0, 0, 0, 0,
+			width, height);
+
+	g_object_unref(gc);
+}
+
+
+void
+refvol_changed(GtkWidget * widget, gpointer * data) {
+
+	rva_refvol_shadow = gtk_adjustment_get_value(GTK_ADJUSTMENT(widget));
+	draw_rva_diagram();
+}
+
+
+void
+steepness_changed(GtkWidget * widget, gpointer * data) {
+
+	rva_steepness_shadow = gtk_adjustment_get_value(GTK_ADJUSTMENT(widget));
+	draw_rva_diagram();
+}
+
+
+static gint
+rva_configure_event(GtkWidget * widget, GdkEventConfigure * event) {
+
+	if (rva_pixmap)
+		gdk_pixmap_unref(rva_pixmap);
+
+	rva_pixmap = gdk_pixmap_new(widget->window,
+				    widget->allocation.width,
+				    widget->allocation.height,
+				    -1);
+	gdk_draw_rectangle(rva_pixmap,
+			   widget->style->black_gc,
+			   TRUE,
+			   0, 0,
+			   widget->allocation.width,
+			   widget->allocation.height);
+	draw_rva_diagram();
+	return TRUE;
+}
+
+
+static gint
+rva_expose_event(GtkWidget * widget, GdkEventExpose * event) {
+
+	gdk_draw_pixmap(widget->window,
+			widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
+			rva_pixmap,
+			event->area.x, event->area.y,
+			event->area.x, event->area.y,
+			event->area.width, event->area.height);
+	return FALSE;
+}
+
+
+void
+create_options_window(void) {
 
 	GtkWidget * vbox;
+	GtkWidget * notebook;
 
+	GtkWidget * label_general;
+	GtkWidget * vbox_general;
 	GtkWidget * frame_title;
 	GtkWidget * frame_param;
 	GtkWidget * frame_autoplsave;
-	GtkWidget * frame_ladspa;
-	GtkWidget * frame_src;
-
 	GtkWidget * vbox_title;
 	GtkWidget * vbox_param;
 	GtkWidget * vbox_autoplsave;
+	GtkWidget * label_title;
+	GtkWidget * label_param;
+
+	GtkWidget * label_dsp;
+	GtkWidget * vbox_dsp;
+	GtkWidget * frame_ladspa;
+	GtkWidget * frame_src;
 	GtkWidget * vbox_ladspa;
 	GtkWidget * vbox_src;
 
-	GtkWidget * label_title;
-	GtkWidget * label_param;
+	GtkWidget * label_rva;
+	GtkWidget * vbox_rva;
+	GtkWidget * table_rva;
+	GtkWidget * hbox_listening_env;
+	GtkWidget * hbox_refvol;
+	GtkWidget * hbox_steepness;
 
 	GtkWidget * hbox;
 	GtkWidget * ok_btn;
@@ -146,9 +381,19 @@ create_options_window() {
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(options_window), vbox);
 
+	notebook = gtk_notebook_new();
+	gtk_container_add(GTK_CONTAINER(vbox), notebook);
+
+
+	/* "General" notebook page */
+
+	label_general = gtk_label_new(_("General"));
+	vbox_general = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox_general), 8);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_general, label_general);
 
 	frame_title = gtk_frame_new(_("Title format"));
-	gtk_box_pack_start(GTK_BOX(vbox), frame_title, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_general), frame_title, FALSE, TRUE, 5);
 
 	vbox_title = gtk_vbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_title), 10);
@@ -167,7 +412,7 @@ literally copied into the resulting string.\n"));
 
 
 	frame_param = gtk_frame_new(_("Implicit command line"));
-	gtk_box_pack_start(GTK_BOX(vbox), frame_param, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_general), frame_param, FALSE, TRUE, 5);
 
 	vbox_param = gtk_vbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_param), 10);
@@ -187,7 +432,7 @@ running realtime as a default.\n"));
 
 
 	frame_autoplsave = gtk_frame_new(_("Auto-save playlist"));
-	gtk_box_pack_start(GTK_BOX(vbox), frame_autoplsave, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_general), frame_autoplsave, FALSE, TRUE, 5);
 
         vbox_autoplsave = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_autoplsave), 10);
@@ -203,8 +448,15 @@ automatically on exit/startup"));
         gtk_box_pack_start(GTK_BOX(vbox_autoplsave), check_autoplsave, TRUE, TRUE, 0);
 
 
+	/* "DSP" notebook page */
+
+	label_dsp = gtk_label_new(_("DSP"));
+	vbox_dsp = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox_dsp), 8);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_dsp, label_dsp);
+
 	frame_ladspa = gtk_frame_new(_("LADSPA plugin processing"));
-	gtk_box_pack_start(GTK_BOX(vbox), frame_ladspa, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_dsp), frame_ladspa, FALSE, TRUE, 5);
 
 	vbox_ladspa = gtk_vbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_ladspa), 10);
@@ -235,7 +487,7 @@ automatically on exit/startup"));
 
 
 	frame_src = gtk_frame_new(_("Sample Rate Converter type"));
-	gtk_box_pack_start(GTK_BOX(vbox), frame_src, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_dsp), frame_src, FALSE, TRUE, 5);
 
 	vbox_src = gtk_vbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_src), 10);
@@ -275,6 +527,120 @@ See the About box and the documentation for details."));
 
 	gtk_box_pack_start(GTK_BOX(vbox_src), label_src, TRUE, TRUE, 0);
 
+
+	/* "Playback RVA" notebook page */
+
+	label_rva = gtk_label_new(_("Playback RVA"));
+	vbox_rva = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox_rva), 8);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_rva, label_rva);
+
+	check_rva_is_enabled = gtk_check_button_new_with_label(_("Enable playback RVA"));
+	if (rva_is_enabled) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_rva_is_enabled), TRUE);
+	}
+	rva_is_enabled_shadow = rva_is_enabled;
+	g_signal_connect(G_OBJECT(check_rva_is_enabled), "toggled",
+			 G_CALLBACK(check_rva_is_enabled_toggled), NULL);
+        gtk_box_pack_start(GTK_BOX(vbox_rva), check_rva_is_enabled, FALSE, TRUE, 5);
+
+
+	table_rva = gtk_table_new(4, 2, FALSE);
+	gtk_box_pack_start(GTK_BOX(vbox_rva), table_rva, TRUE, TRUE, 3);
+
+	rva_viewport = gtk_viewport_new(NULL, NULL);
+	gtk_widget_set_size_request(rva_viewport, 244, 244);
+        gtk_table_attach(GTK_TABLE(table_rva), rva_viewport, 0, 2, 0, 1,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 2);
+	
+	rva_drawing_area = gtk_drawing_area_new();
+	gtk_drawing_area_size(GTK_DRAWING_AREA(rva_drawing_area), 240, 240);
+	gtk_container_add(GTK_CONTAINER(rva_viewport), rva_drawing_area);
+	
+	g_signal_connect(G_OBJECT(rva_drawing_area), "configure_event",
+			 G_CALLBACK(rva_configure_event), NULL);
+	g_signal_connect(G_OBJECT(rva_drawing_area), "expose_event",
+			 G_CALLBACK(rva_expose_event), NULL);
+	
+        hbox_listening_env = gtk_hbox_new(FALSE, 0);
+        label_listening_env = gtk_label_new(_("Listening environment:"));
+        gtk_box_pack_start(GTK_BOX(hbox_listening_env), label_listening_env, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_rva), hbox_listening_env, 0, 1, 1, 2,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+	optmenu_listening_env = gtk_option_menu_new();
+        gtk_table_attach(GTK_TABLE(table_rva), optmenu_listening_env, 1, 2, 1, 2,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 2);
+
+	{
+		GtkWidget * menu = gtk_menu_new();
+		GtkWidget * item;
+
+		item = gtk_menu_item_new_with_label(_("Audiophile"));
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		gtk_widget_show(item);
+
+		item = gtk_menu_item_new_with_label(_("Living room"));
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		gtk_widget_show(item);
+
+		item = gtk_menu_item_new_with_label(_("Office"));
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		gtk_widget_show(item);
+
+		item = gtk_menu_item_new_with_label(_("Workshop"));
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		gtk_widget_show(item);
+
+		gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_listening_env), menu);
+	}
+
+	rva_env_shadow = rva_env;
+	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_listening_env), rva_env);
+	g_signal_connect(optmenu_listening_env, "changed", G_CALLBACK(changed_listening_env), NULL);
+
+        hbox_refvol = gtk_hbox_new(FALSE, 0);
+        label_refvol = gtk_label_new(_("Reference volume [dBFS] :"));
+        gtk_box_pack_start(GTK_BOX(hbox_refvol), label_refvol, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_rva), hbox_refvol, 0, 1, 2, 3,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+	rva_refvol_shadow = rva_refvol;
+        adj_refvol = gtk_adjustment_new(rva_refvol, -24.0f, 0.0f, 0.1f, 1.0f, 0.0f);
+        spin_refvol = gtk_spin_button_new(GTK_ADJUSTMENT(adj_refvol), 0.1, 1);
+        gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_refvol), TRUE);
+        gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_refvol), FALSE);
+	g_signal_connect(G_OBJECT(adj_refvol), "value_changed",
+			 G_CALLBACK(refvol_changed), NULL);
+        gtk_table_attach(GTK_TABLE(table_rva), spin_refvol, 1, 2, 2, 3,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+        hbox_steepness = gtk_hbox_new(FALSE, 0);
+        label_steepness = gtk_label_new(_("Steepness [dB/dB] :"));
+        gtk_box_pack_start(GTK_BOX(hbox_steepness), label_steepness, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_rva), hbox_steepness, 0, 1, 3, 4,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+	rva_steepness_shadow = rva_steepness;
+        adj_steepness = gtk_adjustment_new(rva_steepness, 0.0f, 1.0f, 0.01f, 0.1f, 0.0f);
+        spin_steepness = gtk_spin_button_new(GTK_ADJUSTMENT(adj_steepness), 0.02, 2);
+        gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_steepness), TRUE);
+        gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_steepness), FALSE);
+	g_signal_connect(G_OBJECT(adj_steepness), "value_changed",
+			 G_CALLBACK(steepness_changed), NULL);
+        gtk_table_attach(GTK_TABLE(table_rva), spin_steepness, 1, 2, 3, 4,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+	if (!rva_is_enabled_shadow) {
+		gtk_widget_set_sensitive(optmenu_listening_env, FALSE);
+		gtk_widget_set_sensitive(label_listening_env, FALSE);
+		gtk_widget_set_sensitive(spin_refvol, FALSE);
+		gtk_widget_set_sensitive(label_refvol, FALSE);
+		gtk_widget_set_sensitive(spin_steepness, FALSE);
+		gtk_widget_set_sensitive(label_steepness, FALSE);
+	}
+
+	/* end of notebook */
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 6);

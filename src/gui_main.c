@@ -1234,7 +1234,7 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	long n_items;
 	char * str;
 
-	if (!allow_seeks || is_paused)
+	if (!allow_seeks)
 		return FALSE;
 
 	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
@@ -1270,12 +1270,32 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		}
 	}
 
-	if ((is_file_loaded) && (!is_paused)) {
+	if (is_file_loaded) {
 
-		if ((n = get_playing_pos(play_store)) == -1)
+		if ((n = get_playing_pos(play_store)) == -1) {
+
+			if (is_paused) {
+
+				is_paused = 0;
+				g_signal_handler_block(G_OBJECT(pause_button), pause_id);
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
+				g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+
+				stop_event(NULL, NULL, NULL);
+			}
+
 			return FALSE;
+		}
+
 		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 		gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, -1);
+
+		if (is_paused) {
+			is_paused = 0;
+			g_signal_handler_block(G_OBJECT(pause_button), pause_id);
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
+			g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+		}
 
 		command[0] = CMD_CUE;
 		command[1] = '\0';
@@ -1301,7 +1321,7 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	long n_items;
 	char * str;
 
-	if (!allow_seeks || is_paused)
+	if (!allow_seeks)
 		return FALSE;
 
 	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
@@ -1337,12 +1357,32 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		}
 	}
 
-	if ((is_file_loaded) && (!is_paused)) {
+	if (is_file_loaded) {
 
-		if ((n = get_playing_pos(play_store)) == -1)
+		if ((n = get_playing_pos(play_store)) == -1) {
+
+			if (is_paused) {
+
+				is_paused = 0;
+				g_signal_handler_block(G_OBJECT(pause_button), pause_id);
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
+				g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+
+				stop_event(NULL, NULL, NULL);
+			}
+
 			return FALSE;
+		}
+
 		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 		gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, -1);
+
+		if (is_paused) {
+			is_paused = 0;
+			g_signal_handler_block(G_OBJECT(pause_button), pause_id);
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
+			g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+		}
 
 		command[0] = CMD_CUE;
 		command[1] = '\0';
@@ -1488,9 +1528,6 @@ pause_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 gint
 stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
-	if (is_paused)
-		return FALSE;
-
 	is_file_loaded = 0;
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
 	zero_displays();
@@ -1500,6 +1537,13 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
 	g_signal_handler_unblock(G_OBJECT(play_button), play_id);
 	g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+
+        if (is_paused) {
+                is_paused = 0;
+                g_signal_handler_block(G_OBJECT(pause_button), pause_id);
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
+                g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+        }
 
 	command[0] = CMD_CUE;
 	command[1] = '\0';

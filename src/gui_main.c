@@ -55,6 +55,7 @@
 #include "music_browser.h"
 #include "playlist.h"
 #include "plugin.h"
+#include "file_info.h"
 #include "icon_16.xpm"
 #include "icon_64.xpm"
 #include "i18n.h"
@@ -97,6 +98,9 @@ char cwd[MAXLEN];
 extern char title_format[MAXLEN];
 extern char default_param[MAXLEN];
 extern char skin[MAXLEN];
+
+/* the physical name of the file that is playing, or a '\0'. */
+char current_file[MAXLEN];
 
 char send_cmd, recv_cmd;
 char command[RB_CONTROL_SIZE];
@@ -254,6 +258,7 @@ GtkWidget * conf_menu;
 GtkWidget * conf__options;
 GtkWidget * conf__skin;
 GtkWidget * conf__jack;
+GtkWidget * conf__fileinfo;
 GtkWidget * conf__separator;
 GtkWidget * conf__about;
 
@@ -876,6 +881,20 @@ conf__jack_cb(gpointer data) {
 	port_setup_dialog();
 }
 
+
+void
+conf__fileinfo_cb(gpointer data) {
+
+	if (is_file_loaded) {
+
+		GtkTreeIter dummy;
+		const char * name = gtk_label_get_text(GTK_LABEL(label_title));
+	
+		show_file_info((const char *)name, current_file, 0, NULL, dummy);
+	}
+}
+
+
 void
 conf__about_cb(gpointer data) {
 
@@ -1097,6 +1116,13 @@ gint
 main_window_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 
 	if (event->button == 3) {
+
+		if (is_file_loaded && (current_file[0] != '\0')) {
+			gtk_widget_set_sensitive(conf__fileinfo, TRUE);
+		} else {
+			gtk_widget_set_sensitive(conf__fileinfo, FALSE);
+		}
+
 		gtk_menu_popup(GTK_MENU(conf_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);
 	}
@@ -1387,6 +1413,7 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 		gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, 3, &(cue.voladj), -1);
 		cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+		strncpy(current_file, str, MAXLEN-1);
 		g_free(str);
 
 		if (is_paused) {
@@ -1475,6 +1502,7 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 		gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, 3, &(cue.voladj), -1);
 		cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+		strncpy(current_file, str, MAXLEN-1);
 		g_free(str);
 
 		if (is_paused) {
@@ -1518,6 +1546,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
 					   3, &(cue.voladj), -1);
 			cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+			strncpy(current_file, str, MAXLEN-1);
 			g_free(str);
 			is_file_loaded = 1;
 			g_signal_handler_block(G_OBJECT(play_button), play_id);
@@ -1532,6 +1561,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
 							   3, &(cue.voladj), -1);
 					cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+					strncpy(current_file, str, MAXLEN-1);
 					g_free(str);
 					is_file_loaded = 1;
 					g_signal_handler_block(G_OBJECT(play_button), play_id);
@@ -1539,6 +1569,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 					g_signal_handler_unblock(G_OBJECT(play_button), play_id);
 				} else {
 					is_file_loaded = 0;
+					current_file[0] = '\0';
 					zero_displays();
 					g_signal_handler_block(G_OBJECT(play_button), play_id);
 					gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), FALSE);
@@ -1557,6 +1588,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
 							   3, &(cue.voladj), -1);
 					strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+					strncpy(current_file, str, MAXLEN-1);
 					g_free(str);
 					is_file_loaded = 1;
 					g_signal_handler_block(G_OBJECT(play_button), play_id);
@@ -1564,6 +1596,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 					g_signal_handler_unblock(G_OBJECT(play_button), play_id);
 				} else {
 					is_file_loaded = 0;
+					current_file[0] = '\0';
 					zero_displays();
 					g_signal_handler_block(G_OBJECT(play_button), play_id);
 					gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), FALSE);
@@ -1635,6 +1668,7 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	cue_t cue;
 
 	is_file_loaded = 0;
+	current_file[0] = '\0';
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
 	zero_displays();
 	g_signal_handler_block(G_OBJECT(play_button), play_id);
@@ -1929,26 +1963,32 @@ create_main_window(char * skin_path) {
 	conf__options = gtk_menu_item_new_with_label(_("Settings"));
 	conf__skin = gtk_menu_item_new_with_label(_("Skin chooser"));
 	conf__jack = gtk_menu_item_new_with_label(_("JACK port setup"));
+	conf__fileinfo = gtk_menu_item_new_with_label(_("File info"));
 	conf__separator = gtk_separator_menu_item_new();
 	conf__about = gtk_menu_item_new_with_label(_("About"));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__options);
 	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__skin);
 	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__jack);
+	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__fileinfo);
 	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__separator);
 	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__about);
 
 	g_signal_connect_swapped(G_OBJECT(conf__options), "activate", G_CALLBACK(conf__options_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(conf__skin), "activate", G_CALLBACK(conf__skin_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(conf__jack), "activate", G_CALLBACK(conf__jack_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(conf__fileinfo), "activate", G_CALLBACK(conf__fileinfo_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(conf__about), "activate", G_CALLBACK(conf__about_cb), NULL);
 
 	if (output != JACK_DRIVER)
 		gtk_widget_set_sensitive(conf__jack, FALSE);
 
+	gtk_widget_set_sensitive(conf__fileinfo, FALSE);
+
 	gtk_widget_show(conf__options);
 	gtk_widget_show(conf__skin);
 	gtk_widget_show(conf__jack);
+	gtk_widget_show(conf__fileinfo);
 	gtk_widget_show(conf__separator);
 	gtk_widget_show(conf__about);
 
@@ -2446,6 +2486,7 @@ gint timeout_callback(gpointer data) {
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+						strncpy(current_file, str, MAXLEN-1);
 						g_free(str);
 						is_file_loaded = 1;
 					} else {
@@ -2453,6 +2494,7 @@ gint timeout_callback(gpointer data) {
 							    GTK_TOGGLE_BUTTON(repeat_all_button))) {
 							/* normal mode */
 							is_file_loaded = 0;
+							current_file[0] = '\0';
 							allow_seeks = 1;
 							changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
 							zero_displays();
@@ -2472,9 +2514,11 @@ gint timeout_callback(gpointer data) {
 								   &iter, 1, &str, 3, &(cue.voladj), -1);
 								cue.filename = strdup(
 									g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+								strncpy(current_file, str, MAXLEN-1);
 								g_free(str);
 							} else {
 								is_file_loaded = 0;
+								current_file[0] = '\0';
 								allow_seeks = 1;
 								changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
 								zero_displays();
@@ -2495,6 +2539,7 @@ gint timeout_callback(gpointer data) {
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+						strncpy(current_file, str, MAXLEN-1);
 						g_free(str);
 						is_file_loaded = 1;
 				} else {
@@ -2515,10 +2560,12 @@ gint timeout_callback(gpointer data) {
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+						strncpy(current_file, str, MAXLEN-1);
 						g_free(str);
 						is_file_loaded = 1;
 					} else {
 						is_file_loaded = 0;
+						current_file[0] = '\0';
 						zero_displays();
 						g_signal_handler_block(G_OBJECT(play_button), play_id);
 						gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
@@ -2534,9 +2581,11 @@ gint timeout_callback(gpointer data) {
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+						strncpy(current_file, str, MAXLEN-1);
 						g_free(str);
 					} else {
 						is_file_loaded = 0;
+						current_file[0] = '\0';
 						allow_seeks = 1;
 						changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
 						zero_displays();
@@ -2558,10 +2607,12 @@ gint timeout_callback(gpointer data) {
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+						strncpy(current_file, str, MAXLEN-1);
 						g_free(str);
 						is_file_loaded = 1;
 					} else {
 						is_file_loaded = 0;
+						current_file[0] = '\0';
 						zero_displays();
 						g_signal_handler_block(G_OBJECT(play_button), play_id);
 						gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),

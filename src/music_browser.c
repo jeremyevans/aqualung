@@ -1506,7 +1506,6 @@ artist__addlist_cb(gpointer data) {
 							if (meta_read(meta, file)) {
 								if (!meta_get_rva(meta, &voladj)) {
 									voladj = 0.0f;
-								} else {
 								}
 							} else {
 								voladj = 0.0f;
@@ -1798,7 +1797,6 @@ record__addlist_cb(gpointer data) {
 						if (meta_read(meta, file)) {
 							if (!meta_get_rva(meta, &voladj)) {
 								voladj = 0.0f;
-							} else {
 							}
 						} else {
 							voladj = 0.0f;
@@ -2087,7 +2085,6 @@ track__addlist_cb(gpointer data) {
 					if (meta_read(meta, file)) {
 						if (!meta_get_rva(meta, &voladj)) {
 							voladj = 0.0f;
-						} else {
 						}
 					} else {
 						voladj = 0.0f;

@@ -22,6 +22,8 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 #include "common.h"
 #include "gui_main.h"
@@ -32,6 +34,7 @@
 extern char confdir[MAXLEN];
 extern GtkWidget * main_window;
 
+char * pdir;
 char skin[MAXLEN];
 
 GtkWidget * skin_window;
@@ -42,7 +45,23 @@ GtkTreeSelection * skin_select;
 static int
 filter(const struct dirent * de) {
 
-	return de->d_type == DT_DIR && de->d_name[0] != '.';
+	struct stat st_file;
+	char dirname[MAXLEN];
+
+
+	if (de->d_name[0] == '.') {
+		return 0;
+	}
+
+	snprintf(dirname, MAXLEN-1, "%s/%s", pdir, de->d_name);
+	if (stat(dirname, &st_file) == -1) {
+		fprintf(stderr,
+			"error %s: skin.c/filter(): stat() failed on %s [likely cause: nonexistent file]\n",
+			strerror(errno), dirname);
+		return 0;
+	}
+
+	return S_ISDIR(st_file.st_mode);
 }
 
 
@@ -130,6 +149,7 @@ create_skin_window() {
 	gtk_container_add(GTK_CONTAINER(scrolledwin), skin_list);
 
 	/* per-user skins */
+	pdir = confdir;
 	n = scandir(confdir, &ent, filter, alphasort);
 	if (n >= 0) {
 		int c;
@@ -143,6 +163,7 @@ create_skin_window() {
 	}
 
 	/* system wide skins */
+	pdir = SKINDIR;
 	n = scandir(SKINDIR, &ent, filter, alphasort);
 	if (n >= 0) {
 		int c;

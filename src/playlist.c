@@ -38,6 +38,7 @@
 #include "music_browser.h"
 #include "file_info.h"
 #include "file_decoder.h"
+#include "meta_decoder.h"
 #include "i18n.h"
 #include "playlist.h"
 
@@ -63,6 +64,10 @@ int playlist_size_x;
 int playlist_size_y;
 int playlist_on;
 int playlist_color_is_set;
+
+extern int rva_is_enabled;
+extern float rva_refvol;
+extern float rva_steepness;
 
 extern int drift_x;
 extern int drift_y;
@@ -113,6 +118,9 @@ char fileinfo_file[MAXLEN];
 extern int is_file_loaded;
 extern int is_paused;
 extern int allow_seeks;
+
+extern char current_file[MAXLEN];
+
 
 extern pthread_mutex_t disk_thread_lock;
 extern pthread_cond_t  disk_thread_wake;
@@ -230,6 +238,7 @@ start_playback_from_playlist(GtkTreePath * path) {
 	gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 	gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, 3, &(cue.voladj), -1);
 	cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+	strncpy(current_file, str, MAXLEN-1);
 	g_free(str);
 
 	g_signal_handler_block(G_OBJECT(play_button), play_id);
@@ -611,6 +620,8 @@ direct_add(GtkWidget * widget, gpointer * data) {
 	gchar * substr;
         int n, i;
 
+	metadata * meta;
+
 
         dialog = gtk_dialog_new_with_buttons(_("Direct add"),
                                              GTK_WINDOW(playlist_window),
@@ -683,7 +694,22 @@ direct_add(GtkWidget * widget, gpointer * data) {
 				else
 					++substr;
 
+
+				if (rva_is_enabled) {
+					meta = meta_new();
+					if (meta_read(meta, str)) {
+						if (!meta_get_rva(meta, &voladj)) {
+							voladj = 0.0f;
+						}
+					} else {
+						voladj = 0.0f;
+					}
+					meta_free(meta);
+				} else {
+					voladj = 0.0f;
+				}
 				voladj2str(voladj, voladj_str);
+
 				duration = get_file_duration(str);
 				time2time(duration, duration_str);
 
@@ -1300,6 +1326,9 @@ load_m3u(char * filename, int enqueue) {
 	float duration;
 	char duration_str[32];
 
+	metadata * meta;
+
+
 	if ((str = strrchr(filename, '/')) == NULL) {
 		printf("load_m3u(): programmer error: playlist path is not absolute\n");
 	}
@@ -1388,10 +1417,25 @@ load_m3u(char * filename, int enqueue) {
 				}
 				have_name = 0;
 
-				voladj = 0.0f;
-				voladj2str(voladj, voladj_str);
 				duration = get_file_duration(path);
 				time2time(duration, duration_str);
+
+				if (rva_is_enabled) {
+					meta = meta_new();
+					if (meta_read(meta, g_locale_to_utf8(path, -1, NULL, NULL, NULL))) {
+						if (!meta_get_rva(meta, &voladj)) {
+							voladj = 0.0f;
+						}
+					} else {
+						voladj = 0.0f;
+					}
+					meta_free(meta);
+				} else {
+					voladj = 0.0f;
+				}
+				
+				voladj2str(voladj, voladj_str);
+
 
 				gtk_list_store_append(play_store, &iter);
 				gtk_list_store_set(play_store, &iter,
@@ -1429,6 +1473,8 @@ load_pls(char * filename, int enqueue) {
 	char voladj_str[32];
 	float duration;
 	char duration_str[32];
+
+	metadata * meta;
 
 
 	if ((str = strrchr(filename, '/')) == NULL) {
@@ -1581,10 +1627,25 @@ load_pls(char * filename, int enqueue) {
 
 			have_file = have_title = 0;
 
-			voladj = 0.0f;
-			voladj2str(voladj, voladj_str);
 			duration = get_file_duration(file);
 			time2time(duration, duration_str);
+
+			if (rva_is_enabled) {
+				meta = meta_new();
+				if (meta_read(meta, g_locale_to_utf8(file, -1, NULL, NULL, NULL))) {
+					if (!meta_get_rva(meta, &voladj)) {
+						voladj = 0.0f;
+					}
+				} else {
+					voladj = 0.0f;
+				}
+				meta_free(meta);
+			} else {
+				voladj = 0.0f;
+			}
+
+			voladj2str(voladj, voladj_str);
+
 
 			gtk_list_store_append(play_store, &iter);
 			gtk_list_store_set(play_store, &iter,
@@ -1665,6 +1726,8 @@ add_to_playlist(char * filename, int enqueue) {
 	float duration;
 	char duration_str[32];
 
+	metadata * meta = NULL;
+
 
 	if (!filename)
 		return;
@@ -1704,10 +1767,26 @@ add_to_playlist(char * filename, int enqueue) {
 			++endname;
 		}
 
-		voladj = 0.0f;
-		voladj2str(voladj, voladj_str);
+
+
 		fullname_utf8 = g_locale_to_utf8(fullname, -1, NULL, NULL, NULL);
 		duration = get_file_duration(fullname_utf8);
+
+		if (rva_is_enabled) {
+			meta = meta_new();
+			if (meta_read(meta, fullname_utf8)) {
+				if (!meta_get_rva(meta, &voladj)) {
+					voladj = 0.0f;
+				}
+			} else {
+				voladj = 0.0f;
+			}
+			meta_free(meta);
+		} else {
+			voladj = 0.0f;
+		}
+
+		voladj2str(voladj, voladj_str);
 		g_free(fullname_utf8);
 		time2time(duration, duration_str);
 

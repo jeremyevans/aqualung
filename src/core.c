@@ -2526,15 +2526,6 @@ main(int argc, char ** argv) {
 		send_message_to_session(no_session, &rcmd, 1);
 		exit(0);
 	}
-	if (play) {
-		if (no_session == -1) {
-			immediate_start = 1;
-		} else {
-			rcmd = RCMD_PLAY;
-			send_message_to_session(no_session, &rcmd, 1);
-			exit(0);
-		}
-	}
 	if (pause) {
 		if (no_session == -1)
 			no_session = 0;
@@ -2605,6 +2596,20 @@ main(int argc, char ** argv) {
 					send_message_to_session(no_session, buffer, strlen(buffer));
 				}
 			}
+			if (play) {
+				rcmd = RCMD_PLAY;
+				send_message_to_session(no_session, &rcmd, 1);
+			}
+			exit(0);
+		}
+	}
+
+	if (play) {
+		if (no_session == -1) {
+			immediate_start = 1;
+		} else {
+			rcmd = RCMD_PLAY;
+			send_message_to_session(no_session, &rcmd, 1);
 			exit(0);
 		}
 	}

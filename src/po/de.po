@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta3\n"
-"POT-Creation-Date: 2004-12-01 15:58+0100\n"
+"POT-Creation-Date: 2004-12-01 17:21+0100\n"
 "PO-Revision-Date: 2004-09-16 17:47+0200\n"
 "Last-Translator: Peter Szilagyi <sailor@crux>\n"
 "Language-Team: German <de@li.org>\n"

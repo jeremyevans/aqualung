@@ -473,6 +473,8 @@ int file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_S
 			fprintf(stderr,
 				"file_decoder_open: nonexistent or non-accessible file: %s\n",
 				filename);
+			fprintf(stderr, "FLAC decoder status: %s\n",
+				FLAC__FileDecoderStateString[FLAC__file_decoder_get_state(fdec->flac_decoder)]);
 			FLAC__file_decoder_delete(fdec->flac_decoder);
 			goto no_open;
 		}
@@ -657,7 +659,7 @@ int file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_S
 
 		if ((fdec->mod_fd = open(filename, O_RDONLY)) == -1) {
 			fprintf(stderr, 
-				"file_decoder_open: nonexistent or non-accessible file: %s\n",
+				"file_decoder_open: nonexistent or non-accessible file (tried MOD opening): %s\n",
 				filename);
 			goto no_open;
 		}

@@ -1482,6 +1482,8 @@ artist__addlist_cb(gpointer data) {
 						   2, pl_color_inactive,
 						   3, voladj, 4, voladj_str,
 						   5, duration, 6, duration_str, -1);
+				/* XXX DEBUG */
+				printf("filename from Music Store = '%s'\n", file);
 			}
 		}
 		delayed_playlist_rearrange(100);
@@ -1733,6 +1735,10 @@ record__addlist_cb(gpointer data) {
 			gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
 					   2, pl_color_inactive, 3, voladj, 4, voladj_str,
 					   5, duration, 6, duration_str, -1);
+
+			/* XXX DEBUG */
+			printf("filename from Music Store = '%s'\n", file);
+
 		}
 		delayed_playlist_rearrange(100);
 	}
@@ -1980,6 +1986,9 @@ track__addlist_cb(gpointer data) {
 		gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
 				   2, pl_color_inactive, 3, voladj, 4, voladj_str,
 				   5, duration, 6, duration_str, -1);
+
+		/* XXX DEBUG */
+		printf("filename from Music Store = '%s'\n", file);
 
 		delayed_playlist_rearrange(100);
 	}

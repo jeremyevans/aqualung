@@ -15,20 +15,17 @@ all:
 	for i in $(POFILES); do $(MAKE) `echo $$i | sed 's/\.po/\.mo/'`; done
 
 hu.mo: hu.po
-	cp $< $<.utf8; \
-	recode iso8859-2..utf8 $<.utf8; \
+	iconv -f iso8859-2 -t utf-8 -o $<.utf8 $<; \
 	msgfmt $<.utf8 -o $@; \
 	rm $<.utf8
 
 de.mo: de.po
-	cp $< $<.utf8; \
-	recode iso8859-1..utf8 $<.utf8; \
+	iconv -f iso8859-1 -t utf-8 -o $<.utf8 $<; \
 	msgfmt $<.utf8 -o $@; \
 	rm $<.utf8
 
 uk.mo: uk.po
-	cp $< $<.utf8; \
-	recode koi8-u..utf8 $<.utf8; \
+	iconv -f koi8-u -t utf-8 -o $<.utf8 $<; \
 	msgfmt $<.utf8 -o $@; \
 	rm $<.utf8
 

@@ -22,8 +22,14 @@
 
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <assert.h>
+
+#ifdef HAVE_ID3
+#include <id3tag.h>
+#endif /* HAVE_ID3 */
 
 #ifdef HAVE_FLAC
 #include <FLAC/format.h>
@@ -58,6 +64,232 @@ info_window_close(GtkWidget * widget, gpointer * data) {
 
 
 void
+append_table(GtkWidget * table, int * cnt, char * field, char * value) {
+
+	GtkWidget * hbox;
+	GtkWidget * entry;
+	GtkWidget * label;
+
+	gtk_table_resize(GTK_TABLE(table), *cnt + 1, 2);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(field);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, *cnt, *cnt+1, GTK_FILL, GTK_FILL, 5, 3);
+	entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry), value);
+	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
+	gtk_table_attach(GTK_TABLE(table), entry, 1, 2, *cnt, *cnt+1,
+			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+	
+	(*cnt)++;
+}
+
+
+#ifdef HAVE_ID3
+static void
+show_rva2(struct id3_tag * tag, GtkWidget * table, int * cnt) {
+
+	struct id3_frame * frame;
+	char str[MAXLEN];
+
+	frame = id3_tag_findframe(tag, "RVA2", 0);
+	if (frame) {
+		id3_latin1_t const * id;
+		id3_byte_t const * data;
+		id3_length_t length;
+
+		enum {
+			CHANNEL_OTHER         = 0x00,
+			CHANNEL_MASTER_VOLUME = 0x01,
+			CHANNEL_FRONT_RIGHT   = 0x02,
+			CHANNEL_FRONT_LEFT    = 0x03,
+			CHANNEL_BACK_RIGHT    = 0x04,
+			CHANNEL_BACK_LEFT     = 0x05,
+			CHANNEL_FRONT_CENTRE  = 0x06,
+			CHANNEL_BACK_CENTRE   = 0x07,
+			CHANNEL_SUBWOOFER     = 0x08
+		};
+
+		id = id3_field_getlatin1(id3_frame_field(frame, 0));
+		data = id3_field_getbinarydata(id3_frame_field(frame, 1), &length);
+
+		assert(id && data);
+		while (length >= 4) {
+			unsigned int peak_bytes;
+
+			peak_bytes = (data[3] + 7) / 8;
+			if (4 + peak_bytes > length)
+				break;
+
+			if (data[0] == CHANNEL_MASTER_VOLUME) {
+				signed int voladj_fixed;
+				double voladj_float;
+
+				voladj_fixed = (data[1] << 8) | (data[2] << 0);
+				voladj_fixed |= -(voladj_fixed & 0x8000);
+
+				voladj_float = (double) voladj_fixed / 512;
+
+				snprintf(str, MAXLEN-1, "%+.1f dB (%s)", voladj_float, id);
+				append_table(table, cnt, "Relative Volume", str);
+				break;
+			}
+
+			data   += 4 + peak_bytes;
+			length -= 4 + peak_bytes;
+		}
+	}
+}
+
+
+static void
+show_id3(struct id3_tag const * tag, GtkWidget * table, int * cnt) {
+
+	unsigned int i;
+	struct id3_frame const * frame;
+	id3_ucs4_t const * ucs4;
+	id3_utf8_t * utf8;
+	char str[MAXLEN];
+
+	static struct {
+		char const * id;
+		char const * label;
+	} const info[] = {
+		{ ID3_FRAME_TITLE,  "Title" },
+		{ "TIT3",           0 },  /* Subtitle */
+		{ "TCOP",           0 },  /* Copyright */
+		{ "TPRO",           0 },  /* Produced */
+		{ "TCOM",           "Composer" },
+		{ ID3_FRAME_ARTIST, "Artist" },
+		{ "TPE2",           "Orchestra" },
+		{ "TPE3",           "Conductor" },
+		{ "TEXT",           "Lyricist" },
+		{ ID3_FRAME_ALBUM,  "Album" },
+		{ ID3_FRAME_TRACK,  "Track" },
+		{ ID3_FRAME_YEAR,   "Year" },
+		{ "TPUB",           "Publisher" },
+		{ ID3_FRAME_GENRE,  "Genre" },
+		{ "TRSN",           "Station" },
+		{ "TENC",           "Encoder" }
+	};
+
+	/* text information */
+
+	for (i = 0; i < sizeof(info) / sizeof(info[0]); ++i) {
+
+		union id3_field const * field;
+		unsigned int nstrings, j;
+
+		frame = id3_tag_findframe(tag, info[i].id, 0);
+		if (frame == 0)
+			continue;
+
+		field = id3_frame_field(frame, 1);
+		nstrings = id3_field_getnstrings(field);
+
+		for (j = 0; j < nstrings; ++j) {
+			ucs4 = id3_field_getstrings(field, j);
+			assert(ucs4);
+
+			if (strcmp(info[i].id, ID3_FRAME_GENRE) == 0)
+				ucs4 = id3_genre_name(ucs4);
+
+			utf8 = id3_ucs4_utf8duplicate(ucs4);
+			if (utf8 == 0)
+				goto fail;
+
+			if (j == 0 && info[i].label) {
+				snprintf(str, MAXLEN-1, "%s:", info[i].label);
+				append_table(table, cnt, str, utf8);
+			} else {
+				if (strcmp(info[i].id, "TCOP") == 0 ||
+				    strcmp(info[i].id, "TPRO") == 0) {
+
+					snprintf(str, MAXLEN-1, "%s",
+						 (info[i].id[1] == 'C') ?
+                                               _("Copyright (C)") : _("Produced (P)"));
+					append_table(table, cnt, str, utf8);
+				} else {
+					append_table(table, cnt, "", utf8);
+				}
+			}
+			free(utf8);
+		}
+	}
+
+	/* comments */
+
+	i = 0;
+	while ((frame = id3_tag_findframe(tag, ID3_FRAME_COMMENT, i++))) {
+		ucs4 = id3_field_getstring(id3_frame_field(frame, 2));
+		assert(ucs4);
+
+		if (*ucs4)
+			continue;
+
+		ucs4 = id3_field_getfullstring(id3_frame_field(frame, 3));
+		assert(ucs4);
+
+		utf8 = id3_ucs4_utf8duplicate(ucs4);
+		if (utf8 == 0)
+			goto fail;
+
+		sprintf(str, "%s:", _("Comment"));
+		append_table(table, cnt, str, utf8);
+		free(utf8);
+		break;
+	}
+
+	if (0) {
+	fail:
+		fprintf(stderr, "show_id3(): error: memory allocation error in libid3\n");
+	}
+}
+#endif /* HAVE_ID3 */
+
+
+#ifdef HAVE_FLAC
+void
+build_flac_vc(FLAC__StreamMetadata * flacmeta, GtkWidget * table_flac, int * cnt) {
+
+	char field[MAXLEN];
+	char str[MAXLEN];
+	int i,j,k;
+
+	for (i = 0; i < flacmeta->data.vorbis_comment.num_comments; i++) {
+		
+		for (j = 0; (flacmeta->data.vorbis_comment.comments[i].entry[j] != '=') &&
+			     (j < MAXLEN-1); j++) {
+			
+			field[j] = (j == 0) ?
+				toupper(flacmeta->data.vorbis_comment.comments[i].entry[j]) :
+				tolower(flacmeta->data.vorbis_comment.comments[i].entry[j]);
+		}
+		field[j++] = ':';
+		field[j] = '\0';
+
+		for (k = 0; (j < flacmeta->data.vorbis_comment.comments[i].length) &&
+			     (k < MAXLEN-1); j++) {
+
+			str[k++] = flacmeta->data.vorbis_comment.comments[i].entry[j];
+		}
+		str[k] = '\0';
+		append_table(table_flac, cnt, field, str);
+	}
+
+
+	for (j = 0; j < flacmeta->data.vorbis_comment.vendor_string.length; j++) {
+		
+		field[j] = flacmeta->data.vorbis_comment.vendor_string.entry[j];
+	}
+	field[j] = '\0';
+	append_table(table_flac, cnt, _("Vendor:"), field);
+}
+#endif /* HAVE_FLAC */
+
+
+void
 show_file_info(char * name, char * file) {
 
         file_decoder_t * fdec = NULL;
@@ -81,17 +313,23 @@ show_file_info(char * name, char * file) {
 	GtkWidget * label;
 	GtkWidget * entry;
 
+#ifdef HAVE_ID3
 	GtkWidget * vbox_id3v2;
 	GtkWidget * label_id3v2;
 	GtkWidget * table_id3v2;
+#endif /* HAVE_ID3 */
 
+#ifdef HAVE_OGG_VORBIS
 	GtkWidget * vbox_vorbis;
 	GtkWidget * label_vorbis;
 	GtkWidget * table_vorbis;
+#endif /* HAVE_OGG_VORBIS */
 
+#ifdef HAVE_FLAC
 	GtkWidget * vbox_flac;
 	GtkWidget * label_flac;
 	GtkWidget * table_flac;
+#endif /* HAVE_FLAC */
 
 
 	if (info_window != NULL) {
@@ -111,8 +349,6 @@ show_file_info(char * name, char * file) {
 	}
 
 	info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	/*gtk_window_set_transient_for(GTK_WINDOW(info_window), GTK_WINDOW(main_window));
-	gtk_window_set_modal(GTK_WINDOW(info_window), TRUE);*/
         gtk_window_set_title(GTK_WINDOW(info_window), _("File info"));
 	gtk_window_set_position(GTK_WINDOW(info_window), GTK_WIN_POS_CENTER);
 	g_signal_connect(G_OBJECT(info_window), "delete_event",
@@ -230,17 +466,39 @@ show_file_info(char * name, char * file) {
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
 
 
-	/* ID3v2 notebook page */
+#ifdef HAVE_ID3
+#ifdef HAVE_MPEG
+	if (fdec->file_lib == MAD_LIB) {
 
-	vbox_id3v2 = gtk_vbox_new(FALSE, 4);
-	table_id3v2 = gtk_table_new(6, 2, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox_id3v2), table_id3v2, TRUE, TRUE, 10);
-	label_id3v2 = gtk_label_new(_("ID3v2 tags"));
-	gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_id3v2, label_id3v2);
+		struct id3_file * id3file;
+		struct id3_tag * id3tag;
+		int cnt = 0;
 
+		if ((id3file = id3_file_open(file, ID3_FILE_MODE_READONLY)) != NULL) {
+			if ((id3tag = id3_file_tag(id3file)) != NULL) {
 
-	/* TODO */
+				/* ID3v2 notebook page */
+				
+				vbox_id3v2 = gtk_vbox_new(FALSE, 4);
+				table_id3v2 = gtk_table_new(0, 2, FALSE);
+				gtk_box_pack_start(GTK_BOX(vbox_id3v2), table_id3v2,
+						   TRUE, TRUE, 10);
+				label_id3v2 = gtk_label_new(_("ID3v2 tags"));
+				gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_id3v2,
+							 label_id3v2);
 
+				show_id3(id3tag, table_id3v2, &cnt);
+				show_rva2(id3tag, table_id3v2, &cnt);
+
+				if (cnt == 0) {
+					gtk_notebook_remove_page(GTK_NOTEBOOK(nb),
+					  gtk_notebook_get_current_page(GTK_NOTEBOOK(nb)));
+				}
+			}
+		}
+	}
+#endif /* HAVE_MPEG */
+#endif /* HAVE_ID3 */
 
 #ifdef HAVE_OGG_VORBIS
 	if (fdec->file_lib == VORBIS_LIB) {
@@ -253,12 +511,12 @@ show_file_info(char * name, char * file) {
 		int i, j;
 		
 		vbox_vorbis = gtk_vbox_new(FALSE, 4);
-		table_vorbis = gtk_table_new(6, 2, FALSE);
+		table_vorbis = gtk_table_new(0, 2, FALSE);
 		gtk_box_pack_start(GTK_BOX(vbox_vorbis), table_vorbis, TRUE, TRUE, 10);
 		label_vorbis = gtk_label_new(_("Vorbis comments"));
 		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_vorbis, label_vorbis);
 	
-		for (cnt = 0; cnt < vc->comments; cnt++) {
+		for (cnt = 0; cnt < vc->comments; ) {
 
 			for (i = 0; (vc->user_comments[cnt][i] != '=') &&
 				     (vc->user_comments[cnt][i] != '\0') &&
@@ -274,31 +532,11 @@ show_file_info(char * name, char * file) {
 			}
 			str[j] = '\0';
 
-			hbox = gtk_hbox_new(FALSE, 0);
-			label = gtk_label_new(field);
-			gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-			gtk_table_attach(GTK_TABLE(table_vorbis), hbox, 0, 1, cnt, cnt+1,
-					 GTK_FILL, GTK_FILL, 5, 3);
-			entry = gtk_entry_new();
-			gtk_entry_set_text(GTK_ENTRY(entry), str);
-			gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
-			gtk_table_attach(GTK_TABLE(table_vorbis), entry, 1, 2, cnt, cnt+1,
-					 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+			append_table(table_vorbis, &cnt, field, str);
 		}
 
-		hbox = gtk_hbox_new(FALSE, 0);
-		label = gtk_label_new(_("Vendor:"));
-		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-		gtk_table_attach(GTK_TABLE(table_vorbis), hbox, 0, 1, cnt, cnt+1,
-				 GTK_FILL, GTK_FILL, 5, 3);
-		entry = gtk_entry_new();
 		strncpy(str, vc->vendor, MAXLEN-1);
-		gtk_entry_set_text(GTK_ENTRY(entry), str);
-		gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
-		gtk_table_attach(GTK_TABLE(table_vorbis), entry, 1, 2, cnt, cnt+1,
-				 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
-		
-
+		append_table(table_vorbis, &cnt, _("Vendor:"), str);
 	}
 #endif /* HAVE_OGG_VORBIS */
 
@@ -309,10 +547,7 @@ show_file_info(char * name, char * file) {
 		
 		FLAC__Metadata_SimpleIterator * iter = FLAC__metadata_simple_iterator_new();
 		FLAC__StreamMetadata * flacmeta = NULL;
-
-		file_decoder_close(fdec);
-		file_decoder_delete(fdec);
-		fdec = NULL;
+		int cnt = 0;
 
 		if (!FLAC__metadata_simple_iterator_init(iter, file, false, false)) {
 			fprintf(stderr,
@@ -322,7 +557,7 @@ show_file_info(char * name, char * file) {
 		}
 
 		vbox_flac = gtk_vbox_new(FALSE, 4);
-		table_flac = gtk_table_new(6, 2, FALSE);
+		table_flac = gtk_table_new(0, 2, FALSE);
 		gtk_box_pack_start(GTK_BOX(vbox_flac), table_flac, TRUE, TRUE, 10);
 		label_flac = gtk_label_new(_("FLAC metadata"));
 		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_flac, label_flac);
@@ -332,30 +567,10 @@ show_file_info(char * name, char * file) {
 			if (flacmeta == NULL)
 				break;
 
-			/* process metadata block */
-			printf("metadata block: ");
-			switch (flacmeta->type) {
-			case FLAC__METADATA_TYPE_STREAMINFO:
-				printf("FLAC__METADATA_TYPE_STREAMINFO\n");
-				break;
-			case FLAC__METADATA_TYPE_PADDING:
-				printf("FLAC__METADATA_TYPE_PADDING\n");
-				break;
-			case FLAC__METADATA_TYPE_APPLICATION:
-				printf("FLAC__METADATA_TYPE_APPLICATION\n");
-				break;
-			case FLAC__METADATA_TYPE_SEEKTABLE:
-				printf("FLAC__METADATA_TYPE_SEEKTABLE\n");
-				break;
-			case FLAC__METADATA_TYPE_VORBIS_COMMENT:
-				printf("FLAC__METADATA_TYPE_VORBIS_COMMENT\n");
-				break;
-			case FLAC__METADATA_TYPE_CUESHEET:
-				printf("FLAC__METADATA_TYPE_CUESHEET\n");
-				break;
-			case FLAC__METADATA_TYPE_UNDEFINED:
-				printf("FLAC__METADATA_TYPE_UNDEFINED\n");
-				break;
+			/* process a VORBIS_COMMENT metadata block */
+			if (flacmeta->type == FLAC__METADATA_TYPE_VORBIS_COMMENT) {
+
+				build_flac_vc(flacmeta, table_flac, &cnt);
 			}
 
 			FLAC__metadata_object_delete(flacmeta);
@@ -364,7 +579,6 @@ show_file_info(char * name, char * file) {
 		}
 
 		FLAC__metadata_simple_iterator_delete(iter);
-
 	}
 #endif /* HAVE_FLAC */
 
@@ -376,8 +590,6 @@ show_file_info(char * name, char * file) {
 
 	gtk_widget_show_all(info_window);
 
-	if (fdec != NULL) {
-		file_decoder_close(fdec);
-		file_decoder_delete(fdec);
-	}
+	file_decoder_close(fdec);
+	file_decoder_delete(fdec);
 }

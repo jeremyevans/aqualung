@@ -227,6 +227,25 @@ else
 fi
 
 
+AC_MSG_CHECKING(for ID3 tags support)
+AC_ARG_WITH(
+	id3,
+	[  --with-id3=yes,no       compile with ID3 tags support (default: yes)],
+	id3="$withval",
+	id3="yes")
+if test "$id3" = "yes"; then
+	AC_CHECK_LIB(id3tag,
+		id3_tag_parse,
+		[],
+		[AC_MSG_ERROR(You do not appear to have the id3tag library installed. Grab it from http://www.underbit.com/products/mad/)])
+        id3_LIBS="-lid3tag"
+	AC_DEFINE([HAVE_ID3], [1], [Defined if compile with ID3 tags support])
+else
+        id3_LIBS=""
+	AC_MSG_RESULT(no)
+fi
+
+
 AC_MSG_CHECKING(for MOD audio support)
 AC_ARG_WITH(
 	mod,
@@ -280,7 +299,7 @@ LOCALEDIR="-DLOCALEDIR=\\\"$datadir/locale\\\""
 
 CFLAGS="-O3 -Wall $SKINDIR $LOCALEDIR -D_GNU_SOURCE"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS"
-LIBS="$gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $mad_LIBS $mod_LIBS"
+LIBS="$gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $mad_LIBS $id3_LIBS $mod_LIBS"
 
 AC_OUTPUT([Makefile \
 	   doc/Makefile \
@@ -299,6 +318,7 @@ echo "      sndfile (WAV, AIFF, etc.)           :  $sndfile"
 echo "      Free Lossless Audio Codec (FLAC)    :  $flac"
 echo "      Ogg Vorbis                          :  $ogg"
 echo "      MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg"
+echo "          ID3 tags                        :  $id3"
 echo "      MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod"
 echo
 echo "  Output driver support:"

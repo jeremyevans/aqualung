@@ -57,6 +57,10 @@ extern int rva_is_enabled;
 extern int rva_env;
 extern float rva_refvol;
 extern float rva_steepness;
+extern int rva_use_averaging;
+extern int rva_use_linear_thresh;
+extern float rva_avg_linear_thresh;
+extern float rva_avg_stddev_thresh;
 int auto_save_playlist_shadow;
 int show_rva_in_playlist_shadow;
 int show_length_in_playlist_shadow;
@@ -64,6 +68,10 @@ int rva_is_enabled_shadow;
 int rva_env_shadow;
 float rva_refvol_shadow;
 float rva_steepness_shadow;
+int rva_use_averaging_shadow;
+int rva_use_linear_thresh_shadow;
+float rva_avg_linear_thresh_shadow;
+float rva_avg_stddev_thresh_shadow;
 
 extern GtkWidget * play_list;
 extern GtkTreeViewColumn * track_column;
@@ -73,6 +81,7 @@ extern GtkTreeViewColumn * length_column;
 GtkWidget * options_window;
 GtkWidget * optmenu_ladspa;
 GtkWidget * optmenu_listening_env;
+GtkWidget * optmenu_threshold;
 GtkWidget * entry_title;
 GtkWidget * entry_param;
 GtkWidget * label_src;
@@ -80,16 +89,24 @@ GtkWidget * check_autoplsave;
 GtkWidget * check_show_rva_in_playlist;
 GtkWidget * check_show_length_in_playlist;
 GtkWidget * check_rva_is_enabled;
+GtkWidget * check_rva_use_averaging;
 GtkObject * adj_refvol;
 GtkObject * adj_steepness;
+GtkObject * adj_linthresh;
+GtkObject * adj_stdthresh;
 GtkWidget * rva_drawing_area;
 GdkPixmap * rva_pixmap = NULL;
 GtkWidget * rva_viewport;
 GtkWidget * spin_refvol;
 GtkWidget * spin_steepness;
+GtkWidget * spin_linthresh;
+GtkWidget * spin_stdthresh;
 GtkWidget * label_listening_env;
 GtkWidget * label_refvol;
 GtkWidget * label_steepness;
+GtkWidget * label_threshold;
+GtkWidget * label_linthresh;
+GtkWidget * label_stdthresh;
 GtkListStore * plistcol_store;
 
 
@@ -109,6 +126,10 @@ ok(GtkWidget * widget, gpointer data) {
 	rva_env = rva_env_shadow;
 	rva_refvol = rva_refvol_shadow;
 	rva_steepness = rva_steepness_shadow;
+	rva_use_averaging = rva_use_averaging_shadow;
+	rva_use_linear_thresh = rva_use_linear_thresh_shadow;
+	rva_avg_linear_thresh = rva_avg_linear_thresh_shadow;
+	rva_avg_stddev_thresh = rva_avg_stddev_thresh_shadow;
 
 	show_rva_in_playlist = show_rva_in_playlist_shadow;
 	if (show_rva_in_playlist) {
@@ -149,9 +170,7 @@ ok(GtkWidget * widget, gpointer data) {
 	}	
 
 	playlist_size_allocate(NULL, NULL);
-	playlist_size_allocate(NULL, NULL);
-	playlist_size_allocate(NULL, NULL);
-	playlist_size_allocate(NULL, NULL);
+	delayed_playlist_rearrange(100);
 
 	gtk_widget_destroy(options_window);
 	return TRUE;
@@ -231,6 +250,17 @@ check_rva_is_enabled_toggled(GtkWidget * widget, gpointer * data) {
 		gtk_widget_set_sensitive(label_refvol, TRUE);
 		gtk_widget_set_sensitive(spin_steepness, TRUE);
 		gtk_widget_set_sensitive(label_steepness, TRUE);
+
+		gtk_widget_set_sensitive(check_rva_use_averaging, TRUE);
+
+		if (rva_use_averaging_shadow) {
+			gtk_widget_set_sensitive(optmenu_threshold, TRUE);
+			gtk_widget_set_sensitive(label_threshold, TRUE);
+			gtk_widget_set_sensitive(spin_linthresh, TRUE);
+			gtk_widget_set_sensitive(label_linthresh, TRUE);
+			gtk_widget_set_sensitive(spin_stdthresh, TRUE);
+			gtk_widget_set_sensitive(label_stdthresh, TRUE);
+		}
 	} else {
 		rva_is_enabled_shadow = 0;
 		gtk_widget_set_sensitive(optmenu_listening_env, FALSE);
@@ -239,9 +269,40 @@ check_rva_is_enabled_toggled(GtkWidget * widget, gpointer * data) {
 		gtk_widget_set_sensitive(label_refvol, FALSE);
 		gtk_widget_set_sensitive(spin_steepness, FALSE);
 		gtk_widget_set_sensitive(label_steepness, FALSE);
+
+		gtk_widget_set_sensitive(check_rva_use_averaging, FALSE);
+		gtk_widget_set_sensitive(optmenu_threshold, FALSE);
+		gtk_widget_set_sensitive(label_threshold, FALSE);
+		gtk_widget_set_sensitive(spin_linthresh, FALSE);
+		gtk_widget_set_sensitive(label_linthresh, FALSE);
+		gtk_widget_set_sensitive(spin_stdthresh, FALSE);
+		gtk_widget_set_sensitive(label_stdthresh, FALSE);
 	}
 
 	draw_rva_diagram();
+}
+
+
+void
+check_rva_use_averaging_toggled(GtkWidget * widget, gpointer * data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_rva_use_averaging))) {
+		rva_use_averaging_shadow = 1;
+		gtk_widget_set_sensitive(optmenu_threshold, TRUE);
+		gtk_widget_set_sensitive(label_threshold, TRUE);
+		gtk_widget_set_sensitive(spin_linthresh, TRUE);
+		gtk_widget_set_sensitive(label_linthresh, TRUE);
+		gtk_widget_set_sensitive(spin_stdthresh, TRUE);
+		gtk_widget_set_sensitive(label_stdthresh, TRUE);
+	} else {
+		rva_use_averaging_shadow = 0;
+		gtk_widget_set_sensitive(optmenu_threshold, FALSE);
+		gtk_widget_set_sensitive(label_threshold, FALSE);
+		gtk_widget_set_sensitive(spin_linthresh, FALSE);
+		gtk_widget_set_sensitive(label_linthresh, FALSE);
+		gtk_widget_set_sensitive(spin_stdthresh, FALSE);
+		gtk_widget_set_sensitive(label_stdthresh, FALSE);
+	}
 }
 
 
@@ -263,7 +324,7 @@ changed_listening_env(GtkWidget * widget, gpointer * data) {
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_refvol), -12.0f);
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_steepness), 0.4f);
 		break;
-	case 3: /* Workshop */
+	case 3: /* Noisy workshop */
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_refvol), -12.0f);
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_steepness), 0.1f);
 		break;
@@ -419,6 +480,28 @@ rva_expose_event(GtkWidget * widget, GdkEventExpose * event) {
 
 
 void
+changed_threshold(GtkWidget * widget, gpointer * data) {
+
+	rva_use_linear_thresh_shadow =
+		gtk_option_menu_get_history(GTK_OPTION_MENU(optmenu_threshold));
+}
+
+
+void
+linthresh_changed(GtkWidget * widget, gpointer * data) {
+
+	rva_avg_linear_thresh_shadow = gtk_adjustment_get_value(GTK_ADJUSTMENT(widget));
+}
+
+
+void
+stdthresh_changed(GtkWidget * widget, gpointer * data) {
+
+	rva_avg_stddev_thresh_shadow = gtk_adjustment_get_value(GTK_ADJUSTMENT(widget)) / 100.0f;
+}
+
+
+void
 create_options_window(void) {
 
 	GtkWidget * vbox;
@@ -441,7 +524,6 @@ create_options_window(void) {
 	GtkWidget * viewport;
 	GtkCellRenderer * renderer;
 	GtkTreeViewColumn * column;
-	//GtkTreeSelection * plistcol_select;
 	GtkTreeIter iter;
 	GtkWidget * plistcol_list;
 
@@ -458,6 +540,10 @@ create_options_window(void) {
 	GtkWidget * hbox_listening_env;
 	GtkWidget * hbox_refvol;
 	GtkWidget * hbox_steepness;
+	GtkWidget * table_avg;
+	GtkWidget * hbox_threshold;
+	GtkWidget * hbox_linthresh;
+	GtkWidget * hbox_stdthresh;
 
 	GtkWidget * hbox;
 	GtkWidget * ok_btn;
@@ -575,7 +661,7 @@ running realtime as a default.\n"));
         gtk_container_set_border_width(GTK_CONTAINER(vbox_plistcol), 8);
         gtk_container_add(GTK_CONTAINER(frame_plistcol), vbox_plistcol);
 	
-	label_plistcol = gtk_label_new(_("Drag and drop columns in the list below \n\
+	label_plistcol = gtk_label_new(_("Drag and drop entries in the list below \n\
 to set the column order in the Playlist."));
         gtk_box_pack_start(GTK_BOX(vbox_plistcol), label_plistcol, FALSE, TRUE, 5);
 
@@ -592,8 +678,6 @@ to set the column order in the Playlist."));
 							  NULL);
         gtk_tree_view_append_column(GTK_TREE_VIEW(plistcol_list), column);
         gtk_tree_view_set_reorderable(GTK_TREE_VIEW(plistcol_list), TRUE);
-        //plistcol_select = gtk_tree_view_get_selection(GTK_TREE_VIEW(plistcol_list));
-        //gtk_tree_selection_set_mode(plistcol_select, GTK_SELECTION_SINGLE);
 
         viewport = gtk_viewport_new(NULL, NULL);
         gtk_box_pack_start(GTK_BOX(vbox_plistcol), viewport, TRUE, TRUE, 5);
@@ -619,7 +703,6 @@ to set the column order in the Playlist."));
 			break;
 		}
 	}
-
 
 
 	/* "DSP" notebook page */
@@ -763,7 +846,7 @@ See the About box and the documentation for details."));
 		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 		gtk_widget_show(item);
 
-		item = gtk_menu_item_new_with_label(_("Workshop"));
+		item = gtk_menu_item_new_with_label(_("Noisy workshop"));
 		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 		gtk_widget_show(item);
 
@@ -806,6 +889,95 @@ See the About box and the documentation for details."));
         gtk_table_attach(GTK_TABLE(table_rva), spin_steepness, 1, 2, 3, 4,
                          GTK_FILL, GTK_FILL, 5, 2);
 
+
+
+	check_rva_use_averaging =
+	    gtk_check_button_new_with_label(_("Apply averaged RVA to tracks of the same record"));
+	gtk_widget_set_name(check_rva_use_averaging, "check_on_notebook");
+	if (rva_use_averaging) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_rva_use_averaging), TRUE);
+	}
+	rva_use_averaging_shadow = rva_use_averaging;
+	g_signal_connect(G_OBJECT(check_rva_use_averaging), "toggled",
+			 G_CALLBACK(check_rva_use_averaging_toggled), NULL);
+        gtk_box_pack_start(GTK_BOX(vbox_rva), check_rva_use_averaging, FALSE, TRUE, 5);
+
+
+	table_avg = gtk_table_new(3, 2, FALSE);
+	gtk_box_pack_start(GTK_BOX(vbox_rva), table_avg, FALSE, TRUE, 3);
+
+        hbox_threshold = gtk_hbox_new(FALSE, 0);
+        label_threshold = gtk_label_new(_("Drop statistical aberrations based on"));
+        gtk_box_pack_start(GTK_BOX(hbox_threshold), label_threshold, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_avg), hbox_threshold, 0, 1, 0, 1,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+	optmenu_threshold = gtk_option_menu_new();
+        gtk_table_attach(GTK_TABLE(table_avg), optmenu_threshold, 1, 2, 0, 1,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 2);
+
+	{
+		GtkWidget * menu = gtk_menu_new();
+		GtkWidget * item;
+
+		item = gtk_menu_item_new_with_label(_("% of standard deviation"));
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		gtk_widget_show(item);
+
+		item = gtk_menu_item_new_with_label(_("Linear threshold [dB]"));
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		gtk_widget_show(item);
+
+		gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_threshold), menu);
+	}
+
+	rva_use_linear_thresh_shadow = rva_use_linear_thresh;
+	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_threshold), rva_use_linear_thresh);
+	g_signal_connect(optmenu_threshold, "changed", G_CALLBACK(changed_threshold), NULL);
+
+        hbox_linthresh = gtk_hbox_new(FALSE, 0);
+        label_linthresh = gtk_label_new(_("Linear threshold [dB] :"));
+        gtk_box_pack_start(GTK_BOX(hbox_linthresh), label_linthresh, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_avg), hbox_linthresh, 0, 1, 1, 2,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+	rva_avg_linear_thresh_shadow = rva_avg_linear_thresh;
+        adj_linthresh = gtk_adjustment_new(rva_avg_linear_thresh, 0.0f, 60.0f, 0.1f, 1.0f, 0.0f);
+        spin_linthresh = gtk_spin_button_new(GTK_ADJUSTMENT(adj_linthresh), 0.1, 1);
+        gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_linthresh), TRUE);
+        gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_linthresh), FALSE);
+	g_signal_connect(G_OBJECT(adj_linthresh), "value_changed",
+			 G_CALLBACK(linthresh_changed), NULL);
+        gtk_table_attach(GTK_TABLE(table_avg), spin_linthresh, 1, 2, 1, 2,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+        hbox_stdthresh = gtk_hbox_new(FALSE, 0);
+        label_stdthresh = gtk_label_new(_("% of standard deviation :"));
+        gtk_box_pack_start(GTK_BOX(hbox_stdthresh), label_stdthresh, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_avg), hbox_stdthresh, 0, 1, 2, 3,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+	rva_avg_stddev_thresh_shadow = rva_avg_stddev_thresh;
+        adj_stdthresh = gtk_adjustment_new(rva_avg_stddev_thresh * 100.0f,
+					   0.0f, 500.0f, 1.0f, 10.0f, 0.0f);
+        spin_stdthresh = gtk_spin_button_new(GTK_ADJUSTMENT(adj_stdthresh), 0.5, 0);
+        gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_stdthresh), TRUE);
+        gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_stdthresh), FALSE);
+	g_signal_connect(G_OBJECT(adj_stdthresh), "value_changed",
+			 G_CALLBACK(stdthresh_changed), NULL);
+        gtk_table_attach(GTK_TABLE(table_avg), spin_stdthresh, 1, 2, 2, 3,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+
+	if (!rva_use_averaging_shadow) {
+		gtk_widget_set_sensitive(optmenu_threshold, FALSE);
+		gtk_widget_set_sensitive(label_threshold, FALSE);
+		gtk_widget_set_sensitive(spin_linthresh, FALSE);
+		gtk_widget_set_sensitive(label_linthresh, FALSE);
+		gtk_widget_set_sensitive(spin_stdthresh, FALSE);
+		gtk_widget_set_sensitive(label_stdthresh, FALSE);
+	}
+
 	if (!rva_is_enabled_shadow) {
 		gtk_widget_set_sensitive(optmenu_listening_env, FALSE);
 		gtk_widget_set_sensitive(label_listening_env, FALSE);
@@ -813,6 +985,13 @@ See the About box and the documentation for details."));
 		gtk_widget_set_sensitive(label_refvol, FALSE);
 		gtk_widget_set_sensitive(spin_steepness, FALSE);
 		gtk_widget_set_sensitive(label_steepness, FALSE);
+		gtk_widget_set_sensitive(check_rva_use_averaging, FALSE);
+		gtk_widget_set_sensitive(optmenu_threshold, FALSE);
+		gtk_widget_set_sensitive(label_threshold, FALSE);
+		gtk_widget_set_sensitive(spin_linthresh, FALSE);
+		gtk_widget_set_sensitive(label_linthresh, FALSE);
+		gtk_widget_set_sensitive(spin_stdthresh, FALSE);
+		gtk_widget_set_sensitive(label_stdthresh, FALSE);
 	}
 
 	/* end of notebook */

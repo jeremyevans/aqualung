@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2004-12-13 17:14+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-01-26 16:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,65 +16,119 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../about.c:81 ../gui_main.c:1782
+#: ../about.c:74 ../gui_main.c:1890
 msgid "About"
 msgstr ""
 
-#: ../about.c:91
+#: ../about.c:84
 msgid "Dismiss"
 msgstr ""
 
-#: ../about.c:137
+#: ../about.c:128
 msgid "Build version: "
 msgstr ""
 
-#: ../about.c:142
+#: ../about.c:133
 msgid "Homepage:"
 msgstr ""
 
-#: ../about.c:148
+#: ../about.c:139
 msgid "Authors:"
 msgstr ""
 
-#: ../about.c:150
+#: ../about.c:141
 msgid "Core design, engineering & programming:"
 msgstr ""
 
-#: ../about.c:152
+#: ../about.c:143
 msgid "Skin support, look & feel, GUI hacks:"
 msgstr ""
 
-#: ../about.c:157
+#: ../about.c:147
+msgid "Translators:"
+msgstr ""
+
+#: ../about.c:149
+msgid ""
+"German,\n"
+"Hungarian:"
+msgstr ""
+
+#: ../about.c:151
+msgid "Ukrainian:"
+msgstr ""
+
+#: ../about.c:156
 msgid "This Aqualung binary is compiled with:"
 msgstr ""
 
-#: ../about.c:161
+#: ../about.c:160
 msgid "File format support:"
 msgstr ""
 
-#: ../about.c:165 ../about.c:174 ../about.c:183 ../about.c:192 ../about.c:201
-#: ../about.c:213 ../about.c:222 ../about.c:235
+#: ../about.c:162
+msgid ""
+"\n"
+"\t\tsndfile (WAV, AIFF, etc.)\t\t\t\t\t: "
+msgstr ""
+
+#: ../about.c:164 ../about.c:173 ../about.c:182 ../about.c:191 ../about.c:200
+#: ../about.c:209 ../about.c:221 ../about.c:230 ../about.c:243
 msgid "yes"
 msgstr ""
 
-#: ../about.c:168 ../about.c:177 ../about.c:186 ../about.c:195 ../about.c:204
-#: ../about.c:216 ../about.c:225 ../about.c:238
+#: ../about.c:167 ../about.c:176 ../about.c:185 ../about.c:194 ../about.c:203
+#: ../about.c:212 ../about.c:224 ../about.c:233 ../about.c:246
 msgid "no"
 msgstr ""
 
-#: ../about.c:209
+#: ../about.c:171
+msgid "\t\tFree Lossless Audio Codec (FLAC)\t\t\t: "
+msgstr ""
+
+#: ../about.c:180
+msgid "\t\tOgg Vorbis\t\t\t\t\t\t\t: "
+msgstr ""
+
+#: ../about.c:189
+msgid "\t\tMPEG Audio (MPEG 1-2.5 Layer I-III)\t\t: "
+msgstr ""
+
+#: ../about.c:198
+msgid "\t\tMOD Audio (MOD, S3M, XM, IT, etc.)\t\t: "
+msgstr ""
+
+#: ../about.c:207
+msgid "\t\tID3 tags\t\t\t\t\t\t\t\t: "
+msgstr ""
+
+#: ../about.c:217
 msgid "Output driver support:"
 msgstr ""
 
-#: ../about.c:231
+#: ../about.c:219
+msgid ""
+"\n"
+"\t\tOSS Audio\t\t\t\t\t\t\t: "
+msgstr ""
+
+#: ../about.c:228
+msgid "\t\tALSA Audio\t\t\t\t\t\t\t: "
+msgstr ""
+
+#: ../about.c:238
+msgid "JACK Audio Server\t\t\t\t\t\t: "
+msgstr ""
+
+#: ../about.c:239
 msgid "yes (always)"
 msgstr ""
 
-#: ../about.c:233
+#: ../about.c:241
 msgid "Internal Sample Rate Converter support\t\t\t: "
 msgstr ""
 
-#: ../about.c:245
+#: ../about.c:253
 msgid ""
 "Aqualung could not be functional without the following libraries.\n"
 "We would like to thank the authors of these software packages:\n"
@@ -88,10 +143,11 @@ msgid ""
 "* libvorbis & libvorbisfile, for decoding Ogg Vorbis audio\n"
 "* libFLAC, the Free Lossless Audio Codec library\n"
 "* libMAD, a GPL'ed MPEG Audio Decoder library\n"
-"* libmodplug, a MOD decoder library in the public domain"
+"* libmodplug, a MOD decoder library in the public domain\n"
+"* libid3tag, a library for accessing ID3v2 tags"
 msgstr ""
 
-#: ../about.c:261
+#: ../about.c:270
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -108,121 +164,121 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../gui_main.c:357
+#: ../gui_main.c:386
 msgid "Unrecognized"
 msgstr ""
 
-#: ../gui_main.c:368 ../gui_main.c:374 ../gui_main.c:377 ../gui_main.c:380
+#: ../gui_main.c:397 ../gui_main.c:403 ../gui_main.c:406 ../gui_main.c:409
 msgid "bit signed"
 msgstr ""
 
-#: ../gui_main.c:371
+#: ../gui_main.c:400
 msgid "bit unsigned"
 msgstr ""
 
-#: ../gui_main.c:383
+#: ../gui_main.c:412
 msgid "bit float"
 msgstr ""
 
-#: ../gui_main.c:386
+#: ../gui_main.c:415
 msgid "bit double"
 msgstr ""
 
-#: ../gui_main.c:389 ../gui_main.c:392 ../gui_main.c:395 ../gui_main.c:398
-#: ../gui_main.c:401 ../gui_main.c:404 ../gui_main.c:407 ../gui_main.c:410
-#: ../gui_main.c:413 ../gui_main.c:416 ../gui_main.c:419 ../gui_main.c:422
-#: ../gui_main.c:425
+#: ../gui_main.c:418 ../gui_main.c:421 ../gui_main.c:424 ../gui_main.c:427
+#: ../gui_main.c:430 ../gui_main.c:433 ../gui_main.c:436 ../gui_main.c:439
+#: ../gui_main.c:442 ../gui_main.c:445 ../gui_main.c:448 ../gui_main.c:451
+#: ../gui_main.c:454
 msgid "encoding"
 msgstr ""
 
-#: ../gui_main.c:438
+#: ../gui_main.c:467
 msgid "Layer I"
 msgstr ""
 
-#: ../gui_main.c:441
+#: ../gui_main.c:470
 msgid "Layer II"
 msgstr ""
 
-#: ../gui_main.c:444
+#: ../gui_main.c:473
 msgid "Layer III"
 msgstr ""
 
-#: ../gui_main.c:454
+#: ../gui_main.c:483
 msgid "Single channel"
 msgstr ""
 
-#: ../gui_main.c:457
+#: ../gui_main.c:486
 msgid "Dual channel"
 msgstr ""
 
-#: ../gui_main.c:460
+#: ../gui_main.c:489
 msgid "Joint stereo"
 msgstr ""
 
-#: ../gui_main.c:463
+#: ../gui_main.c:492
 msgid "Stereo"
 msgstr ""
 
-#: ../gui_main.c:473
+#: ../gui_main.c:502
 msgid "Emphasis: none"
 msgstr ""
 
-#: ../gui_main.c:476 ../gui_main.c:479
+#: ../gui_main.c:505 ../gui_main.c:508
 msgid "Emphasis:"
 msgstr ""
 
-#: ../gui_main.c:482
+#: ../gui_main.c:511
 msgid "Emphasis: reserved"
 msgstr ""
 
-#: ../gui_main.c:527
+#: ../gui_main.c:568
 msgid "MONO"
 msgstr ""
 
-#: ../gui_main.c:529
+#: ../gui_main.c:570
 msgid "STEREO"
 msgstr ""
 
-#: ../gui_main.c:544 ../gui_main.c:549 ../gui_main.c:553
+#: ../gui_main.c:585 ../gui_main.c:590 ../gui_main.c:594
 msgid "Output:"
 msgstr ""
 
-#: ../gui_main.c:566
+#: ../gui_main.c:607
 msgid "SRC Type: "
 msgstr ""
 
-#: ../gui_main.c:570
+#: ../gui_main.c:611
 msgid "None"
 msgstr ""
 
-#: ../gui_main.c:1112 ../gui_main.c:1141
+#: ../gui_main.c:1165 ../gui_main.c:1194
 msgid "Mute"
 msgstr ""
 
-#: ../gui_main.c:1114 ../gui_main.c:1143
+#: ../gui_main.c:1167 ../gui_main.c:1196
 #, c-format
 msgid "%d dB"
 msgstr ""
 
-#: ../gui_main.c:1174 ../gui_main.c:1206
+#: ../gui_main.c:1227 ../gui_main.c:1259
 #, c-format
 msgid "%d%% R"
 msgstr ""
 
-#: ../gui_main.c:1176 ../gui_main.c:1208
+#: ../gui_main.c:1229 ../gui_main.c:1261
 #, c-format
 msgid "%d%% L"
 msgstr ""
 
-#: ../gui_main.c:1179 ../gui_main.c:1211
+#: ../gui_main.c:1232 ../gui_main.c:1264
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:1703
+#: ../gui_main.c:1811
 msgid "JACK connection lost"
 msgstr ""
 
-#: ../gui_main.c:1706
+#: ../gui_main.c:1814
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -230,173 +286,209 @@ msgid ""
 "is restart both JACK and Aqualung.\n"
 msgstr ""
 
-#: ../gui_main.c:1778 ../options.c:141
-msgid "Options"
+#: ../gui_main.c:1886 ../options.c:558
+msgid "Settings"
 msgstr ""
 
-#: ../gui_main.c:1779 ../skin.c:103
+#: ../gui_main.c:1887 ../skin.c:103
 msgid "Skin chooser"
 msgstr ""
 
-#: ../gui_main.c:1780
+#: ../gui_main.c:1888
 msgid "JACK port setup"
 msgstr ""
 
-#: ../music_browser.c:259
+#: ../music_browser.c:287
 msgid "Add Artist"
 msgstr ""
 
-#: ../music_browser.c:269 ../music_browser.c:364 ../music_browser.c:520
-#: ../music_browser.c:675 ../music_browser.c:804 ../music_browser.c:923
+#: ../music_browser.c:300 ../music_browser.c:408 ../music_browser.c:577
+#: ../music_browser.c:747 ../music_browser.c:889 ../music_browser.c:1044
 msgid ""
 "\n"
 "Visible name:"
 msgstr ""
 
-#: ../music_browser.c:276 ../music_browser.c:371 ../music_browser.c:527
-#: ../music_browser.c:682 ../music_browser.c:811 ../music_browser.c:930
+#: ../music_browser.c:310 ../music_browser.c:418 ../music_browser.c:587
+#: ../music_browser.c:757 ../music_browser.c:899 ../music_browser.c:1054
 msgid ""
 "\n"
 "Name to sort by:"
 msgstr ""
 
-#: ../music_browser.c:283 ../music_browser.c:378 ../music_browser.c:566
-#: ../music_browser.c:689 ../music_browser.c:836 ../music_browser.c:955
+#: ../music_browser.c:320 ../music_browser.c:428 ../music_browser.c:631
+#: ../music_browser.c:767 ../music_browser.c:929 ../music_browser.c:1085
 msgid ""
 "\n"
 "Comments:"
 msgstr ""
 
-#: ../music_browser.c:354
+#: ../music_browser.c:395
 msgid "Edit Artist"
 msgstr ""
 
-#: ../music_browser.c:440
+#: ../music_browser.c:492
 msgid "Please select the audio files for this record."
 msgstr ""
 
-#: ../music_browser.c:510
+#: ../music_browser.c:564
 msgid "Add Record"
 msgstr ""
 
-#: ../music_browser.c:535
+#: ../music_browser.c:598
 msgid ""
 "\n"
 "Auto-create tracks from these files:"
 msgstr ""
 
-#: ../music_browser.c:554 ../playlist.c:518
+#: ../music_browser.c:619 ../playlist.c:644
 msgid "Clear list"
 msgstr ""
 
-#: ../music_browser.c:561 ../playlist.c:525
+#: ../music_browser.c:626 ../playlist.c:651
 msgid "Add files..."
 msgstr ""
 
-#: ../music_browser.c:665
+#: ../music_browser.c:734
 msgid "Edit Record"
 msgstr ""
 
-#: ../music_browser.c:748
+#: ../music_browser.c:828
 msgid "Please select the audio file for this track."
 msgstr ""
 
-#: ../music_browser.c:794
+#: ../music_browser.c:876
 msgid "Add Track"
 msgstr ""
 
-#: ../music_browser.c:818 ../music_browser.c:937
+#: ../music_browser.c:909 ../music_browser.c:1064
 msgid ""
 "\n"
 "Filename:"
 msgstr ""
 
-#: ../music_browser.c:830 ../music_browser.c:949
+#: ../music_browser.c:923 ../music_browser.c:1079
 msgid "Browse..."
 msgstr ""
 
-#: ../music_browser.c:913
+#: ../music_browser.c:1031
 msgid "Edit Track"
 msgstr ""
 
-#: ../music_browser.c:1295 ../music_browser.c:1471 ../music_browser.c:1629
+#: ../music_browser.c:1112
+msgid ""
+"\n"
+"Duration:"
+msgstr ""
+
+#: ../music_browser.c:1126
+msgid ""
+"\n"
+"Volume level:"
+msgstr ""
+
+#: ../music_browser.c:1136
+msgid "Unmeasured"
+msgstr ""
+
+#: ../music_browser.c:1147
+msgid "Use manual RVA value [dB]"
+msgstr ""
+
+#: ../music_browser.c:1606 ../music_browser.c:1892 ../music_browser.c:2173
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
 msgstr ""
 
-#: ../music_browser.c:1296
+#: ../music_browser.c:1607
 msgid "Remove Artist"
 msgstr ""
 
-#: ../music_browser.c:1472
+#: ../music_browser.c:1893
 msgid "Remove Record"
 msgstr ""
 
-#: ../music_browser.c:1630
+#: ../music_browser.c:2174
 msgid "Remove Track"
 msgstr ""
 
-#: ../music_browser.c:1666
+#: ../music_browser.c:2210
 msgid "(no comment)"
 msgstr ""
 
-#: ../music_browser.c:1745
+#: ../music_browser.c:2289
 msgid "Music Store"
 msgstr ""
 
-#: ../music_browser.c:1811 ../music_browser.c:1820
+#: ../music_browser.c:2358 ../music_browser.c:2367
 msgid "Add new artist..."
 msgstr ""
 
-#: ../music_browser.c:1818 ../music_browser.c:1850 ../music_browser.c:1882
+#: ../music_browser.c:2365 ../music_browser.c:2401 ../music_browser.c:2437
 msgid "Add to playlist"
 msgstr ""
 
-#: ../music_browser.c:1821
+#: ../music_browser.c:2368
 msgid "Edit artist..."
 msgstr ""
 
-#: ../music_browser.c:1822
+#: ../music_browser.c:2369
 msgid "Add new record to this artist..."
 msgstr ""
 
-#: ../music_browser.c:1824
+#: ../music_browser.c:2370 ../music_browser.c:2406
+msgid "Calculate volume (recursive)"
+msgstr ""
+
+#: ../music_browser.c:2372
 msgid "Remove artist"
 msgstr ""
 
-#: ../music_browser.c:1852
+#: ../music_browser.c:2403
 msgid "Add new record..."
 msgstr ""
 
-#: ../music_browser.c:1853
+#: ../music_browser.c:2404
 msgid "Edit record..."
 msgstr ""
 
-#: ../music_browser.c:1854
+#: ../music_browser.c:2405
 msgid "Add new track to this record..."
 msgstr ""
 
-#: ../music_browser.c:1856
+#: ../music_browser.c:2408
 msgid "Remove record"
 msgstr ""
 
-#: ../music_browser.c:1884
+#: ../music_browser.c:2439
 msgid "Add new track..."
 msgstr ""
 
-#: ../music_browser.c:1885
+#: ../music_browser.c:2440
 msgid "Edit track..."
 msgstr ""
 
-#: ../music_browser.c:1887
+#: ../music_browser.c:2441 ../playlist.c:891
+msgid "File info..."
+msgstr ""
+
+#: ../music_browser.c:2442
+msgid "Calculate volume"
+msgstr ""
+
+#: ../music_browser.c:2444
 msgid "Remove track"
 msgstr ""
 
-#: ../options.c:150
+#: ../options.c:572
+msgid "General"
+msgstr ""
+
+#: ../options.c:577
 msgid "Title format"
 msgstr ""
 
-#: ../options.c:157
+#: ../options.c:584
 msgid ""
 "\n"
 "The template string you enter here will be used to\n"
@@ -406,11 +498,11 @@ msgid ""
 "literally copied into the resulting string.\n"
 msgstr ""
 
-#: ../options.c:169
+#: ../options.c:596
 msgid "Implicit command line"
 msgstr ""
 
-#: ../options.c:176
+#: ../options.c:603
 msgid ""
 "\n"
 "The string you enter here will be parsed as a command\n"
@@ -421,143 +513,239 @@ msgid ""
 "running realtime as a default.\n"
 msgstr ""
 
-#: ../options.c:189
-msgid "Auto-save playlist"
+#: ../options.c:618 ../playlist.c:877
+msgid "Playlist"
 msgstr ""
 
-#: ../options.c:196
-msgid "Save and restore the playlist automatically on exit/startup"
+#: ../options.c:624
+msgid "Save and restore the playlist on exit/startup"
 msgstr ""
 
-#: ../options.c:206
+#: ../options.c:635
+msgid "Show RVA values in playlist"
+msgstr ""
+
+#: ../options.c:646
+msgid "Show track lengths in playlist"
+msgstr ""
+
+#: ../options.c:657
+msgid "Playlist column order"
+msgstr ""
+
+#: ../options.c:664
+msgid ""
+"Drag and drop entries in the list below \n"
+"to set the column order in the Playlist."
+msgstr ""
+
+#: ../options.c:675
+msgid "Column"
+msgstr ""
+
+#: ../options.c:692
+msgid "Track titles"
+msgstr ""
+
+#: ../options.c:697
+msgid "RVA values"
+msgstr ""
+
+#: ../options.c:702
+msgid "Track lengths"
+msgstr ""
+
+#: ../options.c:710
+msgid "DSP"
+msgstr ""
+
+#: ../options.c:715
 msgid "LADSPA plugin processing"
 msgstr ""
 
-#: ../options.c:220
+#: ../options.c:729
 msgid "Pre Fader (before Volume & Balance)"
 msgstr ""
 
-#: ../options.c:224
+#: ../options.c:733
 msgid "Post Fader (after Volume & Balance)"
 msgstr ""
 
-#: ../options.c:237
+#: ../options.c:746
 msgid "Sample Rate Converter type"
 msgstr ""
 
-#: ../options.c:271
+#: ../options.c:780
 msgid ""
 "Aqualung is compiled without Sample Rate Converter support.\n"
 "See the About box and the documentation for details."
 msgstr ""
 
-#: ../options.c:282 ../skin.c:179
+#: ../options.c:790
+msgid "Playback RVA"
+msgstr ""
+
+#: ../options.c:795
+msgid "Enable playback RVA"
+msgstr ""
+
+#: ../options.c:824
+msgid "Listening environment:"
+msgstr ""
+
+#: ../options.c:837
+msgid "Audiophile"
+msgstr ""
+
+#: ../options.c:841
+msgid "Living room"
+msgstr ""
+
+#: ../options.c:845
+msgid "Office"
+msgstr ""
+
+#: ../options.c:849
+msgid "Noisy workshop"
+msgstr ""
+
+#: ../options.c:861
+msgid "Reference volume [dBFS] :"
+msgstr ""
+
+#: ../options.c:877
+msgid "Steepness [dB/dB] :"
+msgstr ""
+
+#: ../options.c:895
+msgid "Apply averaged RVA to tracks of the same record"
+msgstr ""
+
+#: ../options.c:910
+msgid "Drop statistical aberrations based on"
+msgstr ""
+
+#: ../options.c:923
+#, c-format
+msgid "% of standard deviation"
+msgstr ""
+
+#: ../options.c:927
+msgid "Linear threshold [dB]"
+msgstr ""
+
+#: ../options.c:939
+msgid "Linear threshold [dB] :"
+msgstr ""
+
+#: ../options.c:955
+#, c-format
+msgid "% of standard deviation :"
+msgstr ""
+
+#: ../options.c:1002 ../skin.c:179
 msgid "Cancel"
 msgstr ""
 
-#: ../options.c:287
+#: ../options.c:1007
 msgid "OK"
 msgstr ""
 
-#: ../playlist.c:300
+#: ../playlist.c:387
 msgid "Please specify the file to save the playlist to."
 msgstr ""
 
-#: ../playlist.c:331
+#: ../playlist.c:418
 msgid "Please specify the file to load the playlist from."
 msgstr ""
 
-#: ../playlist.c:431
+#: ../playlist.c:555
 msgid "Please select the audio files for direct adding."
 msgstr ""
 
-#: ../playlist.c:489 ../playlist.c:759
+#: ../playlist.c:615 ../playlist.c:1023
 msgid "Direct add"
 msgstr ""
 
-#: ../playlist.c:499
+#: ../playlist.c:625
 msgid ""
 "\n"
 "Directly add these files to playlist:"
 msgstr ""
 
-#: ../playlist.c:683
-msgid "Playlist"
-msgstr ""
-
-#: ../playlist.c:694
+#: ../playlist.c:887
 msgid "Save playlist"
 msgstr ""
 
-#: ../playlist.c:695
+#: ../playlist.c:888
 msgid "Load playlist"
 msgstr ""
 
-#: ../playlist.c:696
+#: ../playlist.c:889
 msgid "Enqueue playlist"
 msgstr ""
 
-#: ../playlist.c:763 ../playlist.c:781
+#: ../playlist.c:1027 ../playlist.c:1045
 msgid "Select all"
 msgstr ""
 
-#: ../playlist.c:767 ../playlist.c:801
+#: ../playlist.c:1031 ../playlist.c:1065
 msgid "Remove selected"
 msgstr ""
 
-#: ../playlist.c:776
+#: ../playlist.c:1040
 msgid "Select none"
 msgstr ""
 
-#: ../playlist.c:786
+#: ../playlist.c:1050
 msgid "Invert selection"
 msgstr ""
 
-#: ../playlist.c:796
+#: ../playlist.c:1060
 msgid "Remove all"
 msgstr ""
 
-#: ../plugin.c:1652
+#: ../plugin.c:1649
 msgid "LADSPA patch builder"
 msgstr ""
 
-#: ../plugin.c:1660
+#: ../plugin.c:1657
 msgid "Available plugins"
 msgstr ""
 
-#: ../plugin.c:1670
+#: ../plugin.c:1667
 msgid "Add"
 msgstr ""
 
-#: ../plugin.c:1735
+#: ../plugin.c:1731
 msgid "ID"
 msgstr ""
 
-#: ../plugin.c:1740 ../plugin.c:1825
+#: ../plugin.c:1736 ../plugin.c:1820
 msgid "Name"
 msgstr ""
 
-#: ../plugin.c:1745
+#: ../plugin.c:1741
 msgid "Category"
 msgstr ""
 
-#: ../plugin.c:1750
+#: ../plugin.c:1746
 msgid "Inputs"
 msgstr ""
 
-#: ../plugin.c:1755 ../ports.c:470
+#: ../plugin.c:1751 ../ports.c:470
 msgid "Outputs"
 msgstr ""
 
-#: ../plugin.c:1761
+#: ../plugin.c:1757
 msgid "Running plugins"
 msgstr ""
 
-#: ../plugin.c:1774
+#: ../plugin.c:1770
 msgid "Remove"
 msgstr ""
 
-#: ../plugin.c:1778
+#: ../plugin.c:1774
 msgid "Configure"
 msgstr ""
 

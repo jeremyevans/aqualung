@@ -27,6 +27,8 @@
 #include <alsa/asoundlib.h>
 #endif /* HAVE_ALSA */
 
+#include <jack/jack.h>
+#include <jack/ringbuffer.h>
 
 /* output drivers */
 #ifdef HAVE_OSS
@@ -122,6 +124,8 @@ typedef struct _seek_t {
 	long long seek_to_pos;
 } seek_t;
 
+
+float convf(char * s);
 
 #define db2lin(x) ((x) > -90.0f ? powf(10.0f, (x) * 0.05f) : 0.0f)
 

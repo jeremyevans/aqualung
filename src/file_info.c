@@ -37,6 +37,7 @@
 #endif /* HAVE_FLAC */
 
 #include "common.h"
+#include "core.h"
 #include "file_decoder.h"
 #include "music_browser.h"
 #include "gui_main.h"
@@ -68,27 +69,6 @@ extern GtkWidget * music_tree;
 
 GtkWidget * info_window = NULL;
 trashlist_t * fileinfo_trash = NULL;
-
-
-float convf(char * s) {
-
-        float val, pow;
-        int i, sign;
-
-        for (i = 0; s[i] == ' ' || s[i] == '\n' || s[i] == '\t'; i++);
-        sign = 1;
-        if (s[i] == '+' || s[i] == '-')
-                sign = (s[i++] == '+') ? 1 : -1;
-        for (val = 0; s[i] >= '0' && s[i] <= '9'; i++)
-                val = 10 * val + s[i] - '0';
-        if ((s[i] == '.') || (s[i] == ','))
-                i++;
-        for (pow = 1; s[i] >= '0' && s[i] <= '9'; i++) {
-                val = 10 * val + s[i] - '0';
-                pow *= 10;
-        }
-        return(sign * val / pow);
-}
 
 
 import_data_t *

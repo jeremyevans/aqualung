@@ -666,9 +666,10 @@ direct_add(GtkWidget * widget, gpointer * data) {
                                 n++;
                 }
                 if (n) {
-
                         gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
+
                         for (i = 0; i < n; i++) {
+
 				float voladj = 0.0f;
 				char voladj_str[32];
 				float duration = 0.0f;
@@ -693,7 +694,8 @@ direct_add(GtkWidget * widget, gpointer * data) {
 						   5, duration, 6, duration_str, -1);
 
                                 g_free(str);
-                        }
+                        }			
+			delayed_playlist_rearrange(100);
                 }
         }
 
@@ -796,6 +798,22 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 	}
 
 	return FALSE;
+}
+
+
+gint
+playlist_rearrange_timeout_cb(gpointer data) {
+
+	playlist_size_allocate(NULL, NULL);
+
+	return FALSE;
+}
+
+
+void
+delayed_playlist_rearrange(int delay) {
+
+	gtk_timeout_add(delay, playlist_rearrange_timeout_cb, NULL);
 }
 
 
@@ -1178,13 +1196,13 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, int sel_ok) {
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"voladj"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf(key, "%f", &voladj);
+				voladj = convf(key);
                         }
                         xmlFree(key);
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"duration"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf(key, "%f", &duration);
+				duration = convf(key);
                         }
                         xmlFree(key);
 		}
@@ -1257,6 +1275,8 @@ load_playlist(char * filename, int enqueue) {
         }
 
         xmlFreeDoc(doc);
+
+	delayed_playlist_rearrange(100);
 }
 
 
@@ -1383,6 +1403,7 @@ load_m3u(char * filename, int enqueue) {
 			}
 		}
 	}
+	delayed_playlist_rearrange(100);
 }
 
 
@@ -1574,6 +1595,7 @@ load_pls(char * filename, int enqueue) {
 					   5, duration, 6, duration_str, -1);
 		}
 	}
+	delayed_playlist_rearrange(100);
 }
 
 
@@ -1692,6 +1714,8 @@ add_to_playlist(char * filename, int enqueue) {
 				   1, g_locale_to_utf8(fullname, -1, NULL, NULL, NULL),
 				   2, pl_color_inactive,
 				   3, voladj, 4, voladj_str, 5, duration, 6, duration_str, -1);
+
+		delayed_playlist_rearrange(100);
 		break;
 
 	case 1: /* native aqualung playlist (XML) */

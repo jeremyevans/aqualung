@@ -27,6 +27,7 @@
 #include <math.h>
 
 #include "common.h"
+#include "core.h"
 #include "file_decoder.h"
 #include "i18n.h"
 #include "volume.h"
@@ -347,17 +348,15 @@ rva_from_volume(float volume, float rva_refvol, float rva_steepness) {
 }
 
 
-/*
 float
-rva_from_multiple_volumes(int nlevels, float * volumes, float lin_thresh, float stddev_thresh,
+rva_from_multiple_volumes(int nlevels, float * volumes,
+			  int use_lin_thresh, float lin_thresh, float stddev_thresh,
 			  float rva_refvol, float rva_steepness) {
 
 	int i, files_to_avg;
 	char * badlevels;
-	double sum;
-	double level, mean_level, variance, std_dev;
-	double level_difference;
-	double threshold;
+	double sum, level, mean_level, variance, std_dev;
+	double level_difference, threshold;
 
 	if ((badlevels = (char *)calloc(nlevels, sizeof(char))) == NULL) {
 		fprintf(stderr, "rva_from_multiple_volumes() : calloc error\n");
@@ -370,7 +369,7 @@ rva_from_multiple_volumes(int nlevels, float * volumes, float lin_thresh, float 
 	}
 	mean_level = sum / nlevels;
 
-	if (lin_thresh < 0.0) { *//* use stddev_thresh *//*
+	if (!use_lin_thresh) { /* use stddev_thresh */
 
 		sum = 0;
 		for (i = 0; i < nlevels; i++) {
@@ -379,7 +378,7 @@ rva_from_multiple_volumes(int nlevels, float * volumes, float lin_thresh, float 
 		}
 		variance = sum / nlevels;
 
-							 *//* get standard deviation *//*
+		/* get standard deviation */
 		if (variance < EPSILON)
 			std_dev = 0.0;
 		else
@@ -396,32 +395,28 @@ rva_from_multiple_volumes(int nlevels, float * volumes, float lin_thresh, float 
 		for (i = 0; i < nlevels; i++) {
 			level_difference = fabs(20.0 * log10(mean_level / db2lin(volumes[i])));
 			if (level_difference > threshold) {
-				badlevels[i] = TRUE;
+				badlevels[i] = 1;
 			}
 		}
 	}
 
-										       *//* throw out the levels marked as bad *//*
+	/* throw out the levels marked as bad */
 	files_to_avg = 0;
 	sum = 0;
-	for (i = 0; i < nlevels; i++)
+	for (i = 0; i < nlevels; i++) {
 		if (!badlevels[i]) {
 			sum += db2lin(volumes[i]);
 			files_to_avg++;
 		}
-
-																 *//* XXX unfinished from here *//*
+	}
+	free(badlevels);
 
 	if (files_to_avg == 0) {
-		fprintf(stderr, _("%s: all files ignored, try using -t 100\n"), progname);
-		exit(1);
+		fprintf(stderr,
+			"rva_from_multiple_volumes: all files ignored, using mean value.\n");
+		return rva_from_volume(20 * log10(mean_level), rva_refvol, rva_steepness);
 	}
-*/
-/*	free(badlevels);
 
 	level = sum / files_to_avg;
 	return rva_from_volume(20 * log10(level), rva_refvol, rva_steepness);
-
-
 }
-*/

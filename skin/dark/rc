@@ -119,6 +119,8 @@ style "menu"
 
 	fg[NORMAL] = { 1.0, 1.0, 1.0 }
 	fg[PRELIGHT] = { 1.0, 1.0, 1.0 }
+
+	font_name = "Sans Bold 10"
 }
 
 style "spin_button" = "button"

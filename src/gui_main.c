@@ -130,6 +130,10 @@ int rva_is_enabled = 0;
 int rva_env = 0;
 float rva_refvol = -12.0f;
 float rva_steepness = 1.0f;
+int rva_use_averaging = 1;
+int rva_use_linear_thresh = 0;
+float rva_avg_linear_thresh = 3.0f;
+float rva_avg_stddev_thresh = 2.0f;
 
 /* volume & balance sliders */
 double vol = 0.0f;
@@ -2735,6 +2739,14 @@ save_config(void) {
         xmlNewTextChild(root, NULL, "rva_refvol", str);
 	snprintf(str, 31, "%f", rva_steepness);
         xmlNewTextChild(root, NULL, "rva_steepness", str);
+	snprintf(str, 31, "%d", rva_use_averaging);
+        xmlNewTextChild(root, NULL, "rva_use_averaging", str);
+	snprintf(str, 31, "%d", rva_use_linear_thresh);
+        xmlNewTextChild(root, NULL, "rva_use_linear_thresh", str);
+	snprintf(str, 31, "%f", rva_avg_linear_thresh);
+        xmlNewTextChild(root, NULL, "rva_avg_linear_thresh", str);
+	snprintf(str, 31, "%f", rva_avg_stddev_thresh);
+        xmlNewTextChild(root, NULL, "rva_avg_stddev_thresh", str);
 
 	snprintf(str, 31, "%d", main_pos_x);
         xmlNewTextChild(root, NULL, "main_pos_x", str);
@@ -2827,7 +2839,6 @@ load_config(void) {
 	xmlChar * key;
         char config_file[MAXLEN];
         FILE * f;
-	float fval;
 
         sprintf(config_file, "%s/config.xml", confdir);
 
@@ -2921,16 +2932,14 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"volume"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf(key, "%f", &fval);
-				vol = fval;
+				vol = convf(key);;
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"balance"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf(key, "%f", &fval);
-				bal = fval;
+				bal = convf(key);
 			}
                         xmlFree(key);
                 }
@@ -2949,16 +2958,40 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_refvol"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf(key, "%f", &fval);
-				rva_refvol = fval;
+				rva_refvol = convf(key);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_steepness"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf(key, "%f", &fval);
-				rva_steepness = fval;
+				rva_steepness = convf(key);
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_use_averaging"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+				sscanf(key, "%d", &rva_use_averaging);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_use_linear_thresh"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+				sscanf(key, "%d", &rva_use_linear_thresh);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_avg_linear_thresh"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				rva_avg_linear_thresh = convf(key);
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_avg_stddev_thresh"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				rva_avg_stddev_thresh = convf(key);
 			}
                         xmlFree(key);
                 }

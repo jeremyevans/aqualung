@@ -105,6 +105,8 @@ style "menu" = "button"
 
 	bg[NORMAL] = { 0.1, 0.1, 0.0 }
 	bg[PRELIGHT] = { 0.2, 0.2, 0.0 }
+
+	font_name = "Sans Bold 10"
 }
 
 style "spin_button" = "button"

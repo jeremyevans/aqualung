@@ -123,6 +123,27 @@ extern char aqualung_socket_filename[256];
 extern char cwd[MAXLEN];
 
 
+float convf(char * s) {
+
+        float val, pow;
+        int i, sign;
+
+        for (i = 0; s[i] == ' ' || s[i] == '\n' || s[i] == '\t'; i++);
+        sign = 1;
+        if (s[i] == '+' || s[i] == '-')
+                sign = (s[i++] == '+') ? 1 : -1;
+        for (val = 0; s[i] >= '0' && s[i] <= '9'; i++)
+                val = 10 * val + s[i] - '0';
+        if ((s[i] == '.') || (s[i] == ','))
+                i++;
+        for (pow = 1; s[i] >= '0' && s[i] <= '9'; i++) {
+                val = 10 * val + s[i] - '0';
+                pow *= 10;
+        }
+        return(sign * val / pow);
+}
+
+
 void *
 disk_thread(void * arg) {
 

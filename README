@@ -57,13 +57,14 @@ name				where to get it
 ----------------------------------------------------------------------
 GTK+-2.0			http://www.gtk.org
 libXML2				http://xmlsoft.org
-liblrdf				http://plugin.org.uk/releases/lrdf
+liblrdf				http://lrdf.sourceforge.net
 JACK				http://jackit.sf.net
 libasound			http://www.alsa-project.org
 libsndfile			http://www.mega-nerd.com/libsndfile
 libFLAC				http://flac.sourceforge.net
 libvorbis, libvorbisfile	http://www.xiph.org/ogg/vorbis
 libMAD				http://www.underbit.com/products/mad
+libid3tag			http://www.underbit.com/products/mad
 libmodplug			http://modplug-xmms.sourceforge.net
 libsamplerate			http://www.mega-nerd.com/SRC
 

@@ -32,6 +32,7 @@
 
 #include "common.h"
 #include "drag.xpm"
+#include "core.h"
 #include "file_info.h"
 #include "file_decoder.h"
 #include "gui_main.h"
@@ -46,6 +47,10 @@ extern GtkWidget * vol_window;
 extern float rva_is_enabled;
 extern float rva_refvol;
 extern float rva_steepness;
+extern int rva_use_averaging;
+extern int rva_use_linear_thresh;
+extern float rva_avg_linear_thresh;
+extern float rva_avg_stddev_thresh;
 
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
@@ -1380,13 +1385,14 @@ artist__addlist_cb(gpointer data) {
         char file[MAXLEN];
 
 	char list_str[MAXLEN];
-	int i, j;
+	int i, j, k;
+	int nlevels;
 
 	float duration;
 	float volume;
 	float rva;
 	float use_rva;
-	float voladj;
+	float voladj = 0.0f;
 	char voladj_str[32];
 	char duration_str[32];
 
@@ -1402,6 +1408,37 @@ artist__addlist_cb(gpointer data) {
 			gtk_tree_model_get(model, &iter_record, 0, &precord_name, -1);
 			strncpy(record_name, precord_name, MAXLEN-1);
 			g_free(precord_name);
+
+			if (rva_is_enabled && rva_use_averaging) { /* save track volumes */
+				
+				float * volumes = NULL;
+				k = 0;
+				nlevels = 0;
+				
+				while (gtk_tree_model_iter_nth_child(model, &iter_track,
+								     &iter_record, k++)) {
+					gtk_tree_model_get(model, &iter_track, 5, &volume, -1);
+					
+					if (volume > 0.1f) { /* unmeasured */
+						volume = rva_refvol;
+					}
+					
+					nlevels++;
+					if ((volumes = realloc(volumes, nlevels * sizeof(float))) == NULL) {
+						fprintf(stderr,
+							"artist__addlist_cb: realloc error\n");
+						return;
+					}
+					volumes[nlevels-1] = volume;
+				}
+				
+				voladj = rva_from_multiple_volumes(nlevels, volumes,
+								   rva_use_linear_thresh,
+								   rva_avg_linear_thresh,
+								   rva_avg_stddev_thresh,
+								   rva_refvol, rva_steepness);
+				free(volumes);
+			}
 			
 			j = 0;
 			while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, j++)) {
@@ -1422,7 +1459,7 @@ artist__addlist_cb(gpointer data) {
 				}
 				time2time(duration, duration_str);
 
-				if (rva_is_enabled) {
+				if (rva_is_enabled && !rva_use_averaging) {
 					if (use_rva >= 0.0f) {
 						voladj = rva;
 					} else {
@@ -1432,7 +1469,7 @@ artist__addlist_cb(gpointer data) {
 							voladj = 0.0f;
 						}
 					}
-				} else {
+				} else if (!rva_is_enabled) {
 					voladj = 0.0f;
 				}
 
@@ -1447,6 +1484,7 @@ artist__addlist_cb(gpointer data) {
 						   5, duration, 6, duration_str, -1);
 			}
 		}
+		delayed_playlist_rearrange(100);
 	}
 }
 
@@ -1597,12 +1635,13 @@ record__addlist_cb(gpointer data) {
 
 	char list_str[MAXLEN];
 	int i;
+	int nlevels;
 
 	float duration;
 	float volume;
 	float rva;
 	float use_rva;
-	float voladj;
+	float voladj = 0.0f;
 	char voladj_str[32];
 	char duration_str[32];
 
@@ -1618,6 +1657,38 @@ record__addlist_cb(gpointer data) {
                 gtk_tree_model_get(model, &iter_artist, 0, &partist_name, -1);
                 strncpy(artist_name, partist_name, MAXLEN-1);
                 g_free(partist_name);
+
+
+		if (rva_is_enabled && rva_use_averaging) { /* save track volumes */
+
+			float * volumes = NULL;
+			i = 0;
+			nlevels = 0;
+
+			while (gtk_tree_model_iter_nth_child(model, &iter_track,
+							     &iter_record, i++)) {
+				gtk_tree_model_get(model, &iter_track, 5, &volume, -1);
+
+				if (volume > 0.1f) { /* unmeasured */
+					volume = rva_refvol;
+				}
+
+				nlevels++;
+				if ((volumes = realloc(volumes, nlevels * sizeof(float))) == NULL) {
+					fprintf(stderr, "record__addlist_cb: realloc error\n");
+					return;
+				}
+				volumes[nlevels-1] = volume;
+			}
+
+			voladj = rva_from_multiple_volumes(nlevels, volumes,
+							   rva_use_linear_thresh,
+							   rva_avg_linear_thresh,
+							   rva_avg_stddev_thresh,
+							   rva_refvol, rva_steepness);
+			
+			free(volumes);
+		}
 
 		i = 0;
 		while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, i++)) {
@@ -1638,7 +1709,8 @@ record__addlist_cb(gpointer data) {
 			}
 			time2time(duration, duration_str);
 
-			if (rva_is_enabled) {
+			if (rva_is_enabled && !rva_use_averaging) {
+				
 				if (use_rva >= 0.0f) {
 					voladj = rva;
 				} else {
@@ -1648,7 +1720,8 @@ record__addlist_cb(gpointer data) {
 						voladj = 0.0f;
 					}
 				}
-			} else {
+
+			} else if (!rva_is_enabled) {
 				voladj = 0.0f;
 			}
 
@@ -1661,6 +1734,7 @@ record__addlist_cb(gpointer data) {
 					   2, pl_color_inactive, 3, voladj, 4, voladj_str,
 					   5, duration, 6, duration_str, -1);
 		}
+		delayed_playlist_rearrange(100);
 	}
 }
 
@@ -1906,6 +1980,8 @@ track__addlist_cb(gpointer data) {
 		gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
 				   2, pl_color_inactive, 3, voladj, 4, voladj_str,
 				   5, duration, 6, duration_str, -1);
+
+		delayed_playlist_rearrange(100);
 	}
 }
 
@@ -2488,25 +2564,25 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record) {
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"duration"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf(key, "%f", &duration);
+                                duration = convf(key);
                         }
                         xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"volume"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf(key, "%f", &volume);
+                                volume = convf(key);
                         }
                         xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf(key, "%f", &rva);
+                                rva = convf(key);
                         }
                         xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"use_rva"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf(key, "%f", &use_rva);
+                                use_rva = convf(key);
                         }
                         xmlFree(key);
                 }

@@ -37,5 +37,8 @@ void calculate_volume(vol_queue_t * q);
 
 float rva_from_volume(float volume, float rva_refvol, float rva_steepness);
 
+float rva_from_multiple_volumes(int nlevels, float * volumes,
+				int use_lin_thresh, float lin_thresh, float stddev_thresh,
+				float rva_refvol, float rva_steepness);
 
 #endif /* _VOLUME_H */

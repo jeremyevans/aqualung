@@ -294,6 +294,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	switch (kevent->keyval) {
 	case GDK_q:
 	case GDK_Q:
+	case GDK_Escape:
 		playlist_window_close(NULL, NULL, NULL);
 		return TRUE;
 		break;

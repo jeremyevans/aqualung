@@ -294,6 +294,21 @@ hide_fxbuilder(void) {
 }
 
 
+gint
+fxbuilder_key_pressed(GtkWidget * widget, GdkEventKey * event, gpointer * data) {
+
+        switch (event->keyval) {
+	case GDK_q:
+	case GDK_Q:
+	case GDK_Escape:
+		fxbuilder_close(NULL, NULL, NULL);
+		return TRUE;
+	};
+
+	return FALSE;
+}
+
+
 /* we need this because the default gtk sort func doesn't obey spaces in strings
    eg. "ABCE" gets in between "ABC D" and "ABC F" and not after them.
 */
@@ -1650,6 +1665,7 @@ create_fxbuilder(void) {
         gtk_window_set_title(GTK_WINDOW(fxbuilder_window), _("LADSPA patch builder"));
 	gtk_window_set_position(GTK_WINDOW(fxbuilder_window), GTK_WIN_POS_CENTER);
         g_signal_connect(G_OBJECT(fxbuilder_window), "delete_event", G_CALLBACK(fxbuilder_close), NULL);
+        g_signal_connect(G_OBJECT(fxbuilder_window), "key_press_event", G_CALLBACK(fxbuilder_key_pressed), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(fxbuilder_window), 2);
 
 	hbox = gtk_hbox_new(FALSE, 0);

@@ -216,6 +216,7 @@ browser_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	switch (event->keyval) {
 	case GDK_q:
 	case GDK_Q:
+	case GDK_Escape:
 		browser_window_close(NULL, NULL, NULL);
 		return TRUE;
 		break;

@@ -67,7 +67,9 @@ extern int browser_pos_y;
 extern int browser_on;
 
 extern gulong play_id;
+extern gulong pause_id;
 extern GtkWidget * play_button;
+extern GtkWidget * pause_button;
 
 GtkWidget * play_list;
 GtkListStore * play_store = 0;
@@ -107,7 +109,7 @@ void rem__sel_cb(gpointer data);
 
 void
 set_playlist_color() {
-
+	
 	GtkTreeIter iter;
 	char * str;
 	char active[14];
@@ -176,9 +178,9 @@ start_playback_from_playlist(GtkTreePath * path) {
 	char * str;
 	long n;
 
-	if ((is_paused) || (!allow_seeks))
+	if (!allow_seeks)
 		return;
-	
+
 	n = get_playing_pos(play_store);
 	if (n != -1) {
 		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
@@ -195,6 +197,13 @@ start_playback_from_playlist(GtkTreePath * path) {
 	g_signal_handler_block(G_OBJECT(play_button), play_id);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), TRUE);
 	g_signal_handler_unblock(G_OBJECT(play_button), play_id);
+
+	if (is_paused) {
+		is_paused = 0;
+		g_signal_handler_block(G_OBJECT(pause_button), pause_id);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
+		g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+	}
 	
 	command[0] = CMD_CUE;
 	command[1] = '\0';

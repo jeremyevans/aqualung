@@ -74,7 +74,8 @@ int browser_paned_pos;
 int auto_use_meta_artist = 0;
 int auto_use_meta_record = 0;
 int auto_use_meta_track = 0;
-
+int hide_comment_pane = 0;
+int hide_comment_pane_shadow = 0;
 
 extern int drift_x;
 extern int drift_y;
@@ -2451,8 +2452,10 @@ create_music_browser(void) {
 	gtk_container_set_border_width(GTK_CONTAINER(browser_window), 2);
         gtk_widget_set_size_request(browser_window, 200, 300);
 
-	browser_paned = gtk_vpaned_new();
-        gtk_container_add(GTK_CONTAINER(browser_window), browser_paned);
+	if (!hide_comment_pane) {
+		browser_paned = gtk_vpaned_new();
+		gtk_container_add(GTK_CONTAINER(browser_window), browser_paned);
+	}
 
 	/* create music store tree */
 	if (!music_store) {
@@ -2480,7 +2483,11 @@ create_music_browser(void) {
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(music_tree), FALSE);
 
 	viewport1 = gtk_viewport_new(NULL, NULL);
-	gtk_paned_pack1(GTK_PANED(browser_paned), viewport1, TRUE, TRUE);
+	if (!hide_comment_pane) {
+		gtk_paned_pack1(GTK_PANED(browser_paned), viewport1, TRUE, TRUE);
+	} else {
+		gtk_container_add(GTK_CONTAINER(browser_window), viewport1);
+	}
 
 	scrolled_win1 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_set_size_request(scrolled_win1, -1, 1);
@@ -2671,12 +2678,15 @@ create_music_browser(void) {
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 	viewport2 = gtk_viewport_new(NULL, NULL);
-
-	gtk_paned_pack2(GTK_PANED(browser_paned), viewport2, FALSE, TRUE);
+	if (!hide_comment_pane) {
+		gtk_paned_pack2(GTK_PANED(browser_paned), viewport2, FALSE, TRUE);
+	}
 	gtk_container_add(GTK_CONTAINER(viewport2), scrolled_win2);
 	gtk_container_add(GTK_CONTAINER(scrolled_win2), comment_view);
 
-	gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
+	if (!hide_comment_pane) {
+		gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
+	}
 }
 
 
@@ -2687,7 +2697,9 @@ show_music_browser(void) {
 	gtk_widget_show_all(browser_window);
 	gtk_window_move(GTK_WINDOW(browser_window), browser_pos_x, browser_pos_y);
 	gtk_window_resize(GTK_WINDOW(browser_window), browser_size_x, browser_size_y);
-	gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
+	if (!hide_comment_pane) {
+		gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
+	}
 }
 
 
@@ -2697,6 +2709,9 @@ hide_music_browser(void) {
 	browser_on = 0;
 	gtk_window_get_position(GTK_WINDOW(browser_window), &browser_pos_x, &browser_pos_y);
 	gtk_window_get_size(GTK_WINDOW(browser_window), &browser_size_x, &browser_size_y);
+	if (!hide_comment_pane) {
+		browser_paned_pos = gtk_paned_get_position(GTK_PANED(browser_paned));
+	}
 	gtk_widget_hide(browser_window);
 }
 

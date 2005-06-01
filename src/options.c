@@ -68,6 +68,7 @@ extern int auto_use_ext_meta_artist;
 extern int auto_use_ext_meta_record;
 extern int auto_use_ext_meta_track;
 extern int replaygain_tag_to_use;
+extern int hide_comment_pane_shadow;
 int auto_save_playlist_shadow;
 int show_rva_in_playlist_shadow;
 int show_length_in_playlist_shadow;
@@ -104,6 +105,7 @@ GtkWidget * check_auto_use_meta_track;
 GtkWidget * check_auto_use_ext_meta_artist;
 GtkWidget * check_auto_use_ext_meta_record;
 GtkWidget * check_auto_use_ext_meta_track;
+GtkWidget * check_hide_comment_pane;
 GtkObject * adj_refvol;
 GtkObject * adj_steepness;
 GtkObject * adj_linthresh;
@@ -195,6 +197,12 @@ ok(GtkWidget * widget, gpointer data) {
 		auto_use_ext_meta_track = 1;
 	} else {
 		auto_use_ext_meta_track = 0;
+	}
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_hide_comment_pane))) {
+		hide_comment_pane_shadow = 1;
+	} else {
+	        hide_comment_pane_shadow = 0;
 	}
 
 	replaygain_tag_to_use = gtk_option_menu_get_history(GTK_OPTION_MENU(optmenu_replaygain));
@@ -670,6 +678,16 @@ running realtime as a default.\n"));
 	entry_param = gtk_entry_new_with_max_length(MAXLEN - 1);
 	gtk_entry_set_text(GTK_ENTRY(entry_param), default_param);
 	gtk_box_pack_start(GTK_BOX(vbox_param), entry_param, TRUE, TRUE, 0);
+
+
+	check_hide_comment_pane =
+		gtk_check_button_new_with_label(_("Hide the Music Store comment pane\n"
+						  "(takes effect after restarting Aqualung)"));
+	gtk_widget_set_name(check_hide_comment_pane, "check_on_notebook");
+	if (hide_comment_pane_shadow) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_hide_comment_pane), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_general), check_hide_comment_pane, FALSE, FALSE, 0);
 
 
 	/* "Playlist" notebook page */

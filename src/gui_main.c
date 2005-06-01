@@ -140,6 +140,8 @@ extern int auto_use_meta_track;
 extern int auto_use_ext_meta_artist;
 extern int auto_use_ext_meta_record;
 extern int auto_use_ext_meta_track;
+extern int hide_comment_pane;
+extern int hide_comment_pane_shadow;
 
 
 int replaygain_tag_to_use = 0;
@@ -774,7 +776,9 @@ save_window_position(void) {
 	gtk_window_get_size(GTK_WINDOW(browser_window), &browser_size_x, &browser_size_y);
 	gtk_window_get_size(GTK_WINDOW(playlist_window), &playlist_size_x, &playlist_size_y);
 
-	browser_paned_pos = gtk_paned_get_position(GTK_PANED(browser_paned));
+	if (!hide_comment_pane) {
+		browser_paned_pos = gtk_paned_get_position(GTK_PANED(browser_paned));
+	}
 }
 
 
@@ -795,8 +799,11 @@ restore_window_position(void) {
 	gtk_window_resize(GTK_WINDOW(playlist_window), playlist_size_x, playlist_size_y);
 	deflicker();
 
-	gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
-	deflicker();
+
+	if (!hide_comment_pane) {
+		gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
+		deflicker();
+	}
 }
 
 
@@ -2954,6 +2961,9 @@ save_config(void) {
 	snprintf(str, 31, "%d", auto_use_ext_meta_track);
         xmlNewTextChild(root, NULL, "auto_use_ext_meta_track", str);
 
+	snprintf(str, 31, "%d", hide_comment_pane_shadow);
+        xmlNewTextChild(root, NULL, "hide_comment_pane", str);
+
 	snprintf(str, 31, "%d", replaygain_tag_to_use);
         xmlNewTextChild(root, NULL, "replaygain_tag_to_use", str);
 
@@ -3112,6 +3122,7 @@ load_config(void) {
 	vol = 0.0f;
 	bal = 0.0f;
 	browser_paned_pos = 250;
+	hide_comment_pane = hide_comment_pane_shadow = 0;
 
 
         cur = cur->xmlChildrenNode;
@@ -3198,6 +3209,14 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
 				sscanf(key, "%d", &show_length_in_playlist);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"hide_comment_pane"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				sscanf(key, "%d", &hide_comment_pane);
+				hide_comment_pane_shadow = hide_comment_pane;
+			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"replaygain_tag_to_use"))) {

@@ -20,11 +20,11 @@
 
 #include <config.h>
 
-#include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "common.h"
 #include "music_browser.h"
@@ -359,6 +359,29 @@ search_selection_changed(GtkTreeSelection * treeselection, gpointer user_data) {
 }
 
 
+gint
+search_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
+
+	switch (kevent->keyval) {
+
+	case GDK_q:
+	case GDK_Q:
+	case GDK_Escape:
+		close_button_clicked(NULL, NULL);
+		return TRUE;
+		break;
+
+	case GDK_Return:
+	case GDK_KP_Enter:
+		search_button_clicked(NULL, NULL);
+		return TRUE;
+		break;
+	}
+
+	return FALSE;
+}
+
+
 void
 search_dialog(void) {
 
@@ -377,10 +400,6 @@ search_dialog(void) {
 
         if (search_window != NULL) {
 		return;
-/*
-                gtk_widget_destroy(search_window);
-                search_window = NULL;
-*/
         }
 
         search_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -388,6 +407,8 @@ search_dialog(void) {
         gtk_window_set_position(GTK_WINDOW(search_window), GTK_WIN_POS_CENTER);
         g_signal_connect(G_OBJECT(search_window), "delete_event",
                          G_CALLBACK(search_window_close), NULL);
+        g_signal_connect(G_OBJECT(search_window), "key_press_event",
+			 G_CALLBACK(search_window_key_pressed), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(search_window), 5);
 
         vbox = gtk_vbox_new(FALSE, 0);

@@ -20,12 +20,13 @@
 
 #include <config.h>
 
-#include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
+#include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 
 #ifdef HAVE_ID3
 #include <id3tag.h>
@@ -206,6 +207,23 @@ append_table(GtkWidget * table, int * cnt, char * field, char * value,
 }
 
 
+gint
+info_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
+
+	switch (kevent->keyval) {
+
+	case GDK_q:
+	case GDK_Q:
+	case GDK_Escape:
+		dismiss(NULL, NULL);
+		return TRUE;
+		break;
+	}
+
+	return FALSE;
+}
+
+
 void
 show_file_info(char * name, char * file, int is_called_from_browser,
 	       GtkTreeModel * model, GtkTreeIter track_iter) {
@@ -278,6 +296,8 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_widget_set_size_request(GTK_WIDGET(info_window), 500, -1);
 	g_signal_connect(G_OBJECT(info_window), "delete_event",
 			 G_CALLBACK(info_window_close), NULL);
+        g_signal_connect(G_OBJECT(info_window), "key_press_event",
+			 G_CALLBACK(info_window_key_pressed), NULL);
 	gtk_container_set_border_width(GTK_CONTAINER(info_window), 5);
 
 	vbox = gtk_vbox_new(FALSE, 0);

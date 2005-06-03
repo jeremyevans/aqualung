@@ -69,6 +69,8 @@ extern int auto_use_ext_meta_record;
 extern int auto_use_ext_meta_track;
 extern int replaygain_tag_to_use;
 extern int hide_comment_pane_shadow;
+extern int playlist_is_embedded_shadow;
+
 int auto_save_playlist_shadow;
 int show_rva_in_playlist_shadow;
 int show_length_in_playlist_shadow;
@@ -106,6 +108,8 @@ GtkWidget * check_auto_use_ext_meta_artist;
 GtkWidget * check_auto_use_ext_meta_record;
 GtkWidget * check_auto_use_ext_meta_track;
 GtkWidget * check_hide_comment_pane;
+GtkWidget * check_playlist_is_embedded;
+
 GtkObject * adj_refvol;
 GtkObject * adj_steepness;
 GtkObject * adj_linthresh;
@@ -203,6 +207,12 @@ ok(GtkWidget * widget, gpointer data) {
 		hide_comment_pane_shadow = 1;
 	} else {
 	        hide_comment_pane_shadow = 0;
+	}
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded))) {
+		playlist_is_embedded_shadow = 1;
+	} else {
+	        playlist_is_embedded_shadow = 0;
 	}
 
 	replaygain_tag_to_use = gtk_option_menu_get_history(GTK_OPTION_MENU(optmenu_replaygain));
@@ -688,6 +698,16 @@ running realtime as a default.\n"));
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_hide_comment_pane), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_general), check_hide_comment_pane, FALSE, FALSE, 0);
+
+
+	check_playlist_is_embedded =
+		gtk_check_button_new_with_label(_("Embed playlist into main window\n"
+						  "(takes effect after restarting Aqualung)"));
+	gtk_widget_set_name(check_playlist_is_embedded, "check_on_notebook");
+	if (playlist_is_embedded_shadow) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_general), check_playlist_is_embedded, FALSE, FALSE, 0);
 
 
 	/* "Playlist" notebook page */

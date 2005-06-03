@@ -138,18 +138,18 @@ create_about_window() {
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Authors:"), -1, tag, NULL);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Core design, engineering & programming:"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tTom Szilagyi <tszilagyi@users.sourceforge.net>\n", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Skin support, look & feel, GUI hacks:"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\tPeter Szilagyi <peterszilagyi@users.sourceforge.net>\n\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("Core design, engineering & programming:\n"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tTom Szilagyi <tszilagyi@users.sourceforge.net>\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("Skin support, look & feel, GUI hacks:\n"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tPeter Szilagyi <peterszilagyi@users.sourceforge.net>\n\n\n", -1);
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Translators:"), -1, tag, NULL);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("German,\nHungarian:"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tPeter Szilagyi <peterszilagyi@users.sourceforge.net>\n", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Ukrainian:"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\tSergiy Niskorodov <sgh_punk@users.sourceforge.net>\n\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("German, Hungarian:\n"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tPeter Szilagyi <peterszilagyi@users.sourceforge.net>\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("Ukrainian:\n"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tSergiy Niskorodov <sgh_punk@users.sourceforge.net>\n\n\n", -1);
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter,
@@ -158,106 +158,129 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n\t", -1);
 
 	gtk_text_buffer_insert_at_cursor(buffer, _("File format support:"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 					 
-	gtk_text_buffer_insert_at_cursor(buffer, _("\n\t\tsndfile (WAV, AIFF, etc.)\t\t\t\t\t: "), -1);
 #ifdef HAVE_SNDFILE
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #else
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #endif /* HAVE_SNDFILE */
+	gtk_text_buffer_insert_at_cursor(buffer, _("sndfile (WAV, AIFF, etc.)\n"), -1);
 	
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tFree Lossless Audio Codec (FLAC)\t\t\t: "), -1);
 #ifdef HAVE_FLAC
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #else
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #endif /* HAVE_FLAC */
+	gtk_text_buffer_insert_at_cursor(buffer, _("Free Lossless Audio Codec (FLAC)\n"), -1);
 	
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tOgg Vorbis\t\t\t\t\t\t\t: "), -1);
 #ifdef HAVE_OGG_VORBIS
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #else
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #endif /* HAVE_OGG_VORBIS */
+	gtk_text_buffer_insert_at_cursor(buffer, _("Ogg Vorbis\n"), -1);
 	
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tMPEG Audio (MPEG 1-2.5 Layer I-III)\t\t: "), -1);
 #ifdef HAVE_MPEG
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #else
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #endif /* HAVE_MPEG */
+	gtk_text_buffer_insert_at_cursor(buffer, _("MPEG Audio (MPEG 1-2.5 Layer I-III)\n"), -1);
 	
-        gtk_text_buffer_insert_at_cursor(buffer, _("\t\tMOD Audio (MOD, S3M, XM, IT, etc.)\t\t: "), -1);
 #ifdef HAVE_MOD
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
         gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #else
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
         gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #endif /* HAVE_MOD */
+        gtk_text_buffer_insert_at_cursor(buffer, _("MOD Audio (MOD, S3M, XM, IT, etc.)\n"), -1);
 
-        gtk_text_buffer_insert_at_cursor(buffer, _("\t\tMusepack\t\t\t\t\t\t\t\t: "), -1);
 #ifdef HAVE_MPC
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
         gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #else
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
         gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #endif /* HAVE_MPC */
+        gtk_text_buffer_insert_at_cursor(buffer, _("Musepack\n"), -1);
 
-        gtk_text_buffer_insert_at_cursor(buffer, _("\t\tID3 tags\t\t\t\t\t\t\t\t: "), -1);
 #ifdef HAVE_ID3
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
         gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #else
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
         gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #endif /* HAVE_ID3 */
+        gtk_text_buffer_insert_at_cursor(buffer, _("ID3 tags\n"), -1);
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Output driver support:"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 	
-	gtk_text_buffer_insert_at_cursor(buffer, _("\n\t\tOSS Audio\t\t\t\t\t\t\t: "), -1);
 #ifdef HAVE_OSS
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #else
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #endif /* HAVE_OSS */
+	gtk_text_buffer_insert_at_cursor(buffer, _("OSS Audio\n"), -1);
 	
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\tALSA Audio\t\t\t\t\t\t\t: "), -1);
 #ifdef HAVE_ALSA
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #else
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #endif /* HAVE_ALSA */
+	gtk_text_buffer_insert_at_cursor(buffer, _("ALSA Audio\n"), -1);
 	
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("JACK Audio Server\t\t\t\t\t\t: "), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("yes (always)"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n\n\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Internal Sample Rate Converter support\t\t\t: "), -1);
-#ifdef HAVE_SRC
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("JACK Audio Server\n"), -1);
+
+#ifdef HAVE_SRC
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #else
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #endif /* HAVE_SRC */
+	gtk_text_buffer_insert_at_cursor(buffer, _("Internal Sample Rate Converter support\n"), -1);
 
 
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer,
 		       _("Aqualung could not be functional without the following libraries.\n\
 We would like to thank the authors of these software packages:\n\n\
@@ -271,6 +294,7 @@ We would like to thank the authors of these software packages:\n\n\
 * libFLAC, the Free Lossless Audio Codec library\n\
 * libMAD, a GPL'ed MPEG Audio Decoder library\n\
 * libmodplug, a MOD decoder library in the public domain\n\
+* libmusepack, a GPL'ed Musepack decoder library\n\
 * libid3tag, a library for accessing ID3v2 tags"), -1);
 
 

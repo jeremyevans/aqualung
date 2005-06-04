@@ -129,6 +129,7 @@ decode_vorbis(file_decoder_t * fdec) {
 
 #ifdef HAVE_MPEG
 /* MPEG Audio decoder input callback for exploring */
+/*
 static
 enum mad_flow
 mpeg_input_explore(void * data, struct mad_stream * stream) {
@@ -153,9 +154,10 @@ mpeg_input_explore(void * data, struct mad_stream * stream) {
 	
 	return MAD_FLOW_CONTINUE;
 }
-
+*/
 
 /* MPEG Audio decoder output callback for exploring */
+/*
 static
 enum mad_flow
 mpeg_output_explore(void * data, struct mad_header const * header, struct mad_pcm * pcm) {
@@ -166,9 +168,10 @@ mpeg_output_explore(void * data, struct mad_header const * header, struct mad_pc
 	fdec->mpeg_SR = pcm->samplerate;
 	return MAD_FLOW_STOP;
 }
-
+*/
 
 /* MPEG Audio decoder header callback for exploring */
+/*
 static
 enum mad_flow
 mpeg_header_explore(void * data, struct mad_header const * header) {
@@ -222,9 +225,10 @@ mpeg_header_explore(void * data, struct mad_header const * header) {
 
 	return MAD_FLOW_CONTINUE;
 }
-
+*/
 
 /* MPEG Audio decoder error callback for exploring */
+/*
 static
 enum mad_flow
 mpeg_error_explore(void * data, struct mad_stream * stream, struct mad_frame * frame) {
@@ -235,7 +239,7 @@ mpeg_error_explore(void * data, struct mad_stream * stream, struct mad_frame * f
 
 	return MAD_FLOW_CONTINUE;
 }
-
+*/
 
 /* MPEG Audio decoder input callback for playback */
 static
@@ -308,6 +312,190 @@ mpeg_error(void * data, struct mad_stream * stream, struct mad_frame * frame) {
 	fdec->mpeg_err = 1;
 
 	return MAD_FLOW_CONTINUE;
+}
+
+
+/* MPEG bitrate index tables */
+int bri_V1_L1[15] = {0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448};
+int bri_V1_L2[15] = {0, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384};
+int bri_V1_L3[15] = {0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320};
+int bri_V2_L1[15] = {0, 32, 48, 56, 64, 80, 96, 112, 128, 144, 160, 176, 192, 224, 256};
+int bri_V2_L23[15] = {0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160};
+
+/* ret: 0 = valid MPEG file, >0: error */
+int
+mpeg_explore(file_decoder_t * fdec) {
+
+	int buf = 0;
+	int pos = 0;
+	int byte1 = 0;
+	int byte2 = 0;
+	int byte3 = 0;
+	int ver = 0;
+	int layer = 0;
+	int bri = 0; /* bitrate index */
+	int padding = 0;
+	int chmode = 0;
+	int emph = 0;
+
+	do {
+		do {
+			if (read(fdec->mpeg_exp_fd, &buf, 1) != 1) {
+				return 1;
+			}
+			++pos;
+			if (pos > 8192) {
+				return 1;
+			}
+		} while (buf != 0xff);
+		
+		if (read(fdec->mpeg_exp_fd, &buf, 1) != 1) {
+			return 1;
+		}
+		++pos;
+	} while ((buf & 0xe0) != 0xe0);
+
+	byte1 = buf;
+
+	if (read(fdec->mpeg_exp_fd, &byte2, 1) != 1) {
+		return 1;
+	}
+	++pos;
+	
+	if (read(fdec->mpeg_exp_fd, &byte3, 1) != 1) {
+		return 1;
+	}
+	++pos;
+	
+	ver = (byte1 >> 3) & 0x3;
+	
+	layer = (byte1 >> 1) & 0x3;
+	switch (layer) {
+	case 0: return 1;
+		break;
+	case 1: fdec->mpeg_subformat |= MPEG_LAYER_III;
+		break;
+	case 2: fdec->mpeg_subformat |= MPEG_LAYER_II;
+		break;
+	case 3: fdec->mpeg_subformat |= MPEG_LAYER_I;
+		break;
+	}
+	
+	bri = (byte2 >> 4) & 0x0f;
+	switch (bri) {
+	case 0: fdec->mpeg_bitrate = 256000; /* XXX random value so it's not zero */
+		printf("Warning: free-format MPEG detected. Be prepared for weird errors.\n");
+		break;
+	case 15:
+		return 1;
+		break;
+	default:
+		switch (layer) {
+		case 3:
+			switch (ver) {
+			case 3:
+				fdec->mpeg_bitrate = bri_V1_L1[bri] * 1000;
+				break;
+			case 0:
+			case 2:
+				fdec->mpeg_bitrate = bri_V2_L1[bri] * 1000;
+				break;
+			}
+			break;
+		case 2:
+			switch (ver) {
+			case 3:
+				fdec->mpeg_bitrate = bri_V1_L2[bri] * 1000;
+				break;
+			case 0:
+			case 2:
+				fdec->mpeg_bitrate = bri_V2_L23[bri] * 1000;
+				break;
+			}
+			break;
+		case 1:
+			switch (ver) {
+			case 3:
+				fdec->mpeg_bitrate = bri_V1_L3[bri] * 1000;
+				break;
+			case 0:
+			case 2:
+				fdec->mpeg_bitrate = bri_V2_L23[bri] * 1000;
+				break;
+			}
+			break;
+		}
+		break;
+	}
+	
+	
+	switch ((byte2 >> 2) & 0x03) {
+	case 0:
+		switch (ver) {
+		case 0: fdec->mpeg_SR = 11025;
+			break;
+		case 2: fdec->mpeg_SR = 22050;
+			break;
+		case 3: fdec->mpeg_SR = 44100;
+			break;
+		}
+		break;
+	case 1:
+		switch (ver) {
+		case 0: fdec->mpeg_SR = 12000;
+			break;
+		case 2: fdec->mpeg_SR = 24000;
+			break;
+		case 3: fdec->mpeg_SR = 48000;
+			break;
+		}
+		break;
+	case 2:
+		switch (ver) {
+		case 0: fdec->mpeg_SR = 8000;
+			break;
+		case 2: fdec->mpeg_SR = 16000;
+			break;
+		case 3: fdec->mpeg_SR = 32000;
+			break;
+		}
+		break;
+	case 3:
+		return 1;
+		break;
+	}
+	
+	padding = (byte2 >> 1) & 0x01;
+	
+	chmode = (byte3 >> 6) & 0x03;
+	switch (chmode) {
+	case 0: fdec->mpeg_subformat |= MPEG_MODE_STEREO;
+		fdec->mpeg_channels = 2;
+		break;
+	case 1: fdec->mpeg_subformat |= MPEG_MODE_JOINT;
+		fdec->mpeg_channels = 2;
+		break;
+	case 2: fdec->mpeg_subformat |= MPEG_MODE_DUAL;
+		fdec->mpeg_channels = 2;
+		break;
+	case 3: fdec->mpeg_subformat |= MPEG_MODE_SINGLE;
+		fdec->mpeg_channels = 1;
+		break;
+	}
+	
+	emph = byte3 & 0x03;
+	switch (emph) {
+	case 0: fdec->mpeg_subformat |= MPEG_EMPH_NONE;
+		break;
+	case 1: fdec->mpeg_subformat |= MPEG_EMPH_5015;
+		break;
+	case 2: fdec->mpeg_subformat |= MPEG_EMPH_RES;
+		break;
+	case 3: fdec->mpeg_subformat |= MPEG_EMPH_J_17;
+		break;
+	}
+
+	return 0;
 }
 
 
@@ -655,24 +843,32 @@ int file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_S
 			}
 		}
 #endif /* !HAVE_SNDFILE */
-
+/*
 		if ((fdec->mpeg_file = fopen(filename, "rb")) == NULL) {
 			fprintf(stderr, "file_decoder_open: fopen() failed for MPEG Audio file\n");
 			goto no_open;
 		}
+*/
+		if ((fdec->mpeg_exp_fd = open(filename, O_RDONLY)) == 0) {
+			fprintf(stderr, "file_decoder_open: open() failed for MPEG Audio file\n");
+			goto no_open;
+		}
 
-		fdec->mpeg_exp_fd = open(filename, O_RDONLY);
 		fstat(fdec->mpeg_exp_fd, &(fdec->mpeg_exp_stat));
+		fdec->mpeg_filesize = fdec->mpeg_exp_stat.st_size;
+		fdec->mpeg_SR = fdec->mpeg_channels = fdec->mpeg_bitrate = fdec->mpeg_subformat = 0;
+		fdec->mpeg_err = fdec->mpeg_again = 0;
+		if (mpeg_explore(fdec) != 0) {
+			close(fdec->mpeg_exp_fd);
+			goto no_mpeg;
+		}
 		close(fdec->mpeg_exp_fd);
+/*
 		if (fdec->mpeg_exp_stat.st_size < 2 * MAD_BUFSIZE + 1) {
 			fclose(fdec->mpeg_file);
 			goto no_mpeg;
 		}
 
-		fdec->mpeg_filesize = fdec->mpeg_exp_stat.st_size;
-
-		fdec->mpeg_SR = fdec->mpeg_channels = fdec->mpeg_bitrate = 0;
-		fdec->mpeg_err = fdec->mpeg_again = 0;
 		mad_decoder_init(&(fdec->mpeg_decoder), (void *)fdec, mpeg_input_explore,
 				 mpeg_header_explore, 0, mpeg_output_explore,
 				 mpeg_error_explore, 0);
@@ -680,6 +876,7 @@ int file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_S
 		mad_decoder_finish(&(fdec->mpeg_decoder));
 
 		fclose(fdec->mpeg_file);
+*/
 
 		if ((fdec->mpeg_SR) && (fdec->mpeg_channels) && (fdec->mpeg_bitrate)) {
 			
@@ -692,12 +889,13 @@ int file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_S
 
 			/* get a rough estimate of the total decoded length of the file */
 			/* XXX this may as well be considered a hack. (what about VBR ???) */
+/*
 			fdec->mpeg_exp_fd = open(filename, O_RDONLY);
 			fstat(fdec->mpeg_exp_fd, &(fdec->mpeg_exp_stat));
 			close(fdec->mpeg_exp_fd);
+*/
 			fdec->mpeg_total_samples_est =
-				(double)fdec->mpeg_exp_stat.st_size /
-				fdec->mpeg_bitrate * 8 * fdec->mpeg_SR;
+				(double)fdec->mpeg_filesize / fdec->mpeg_bitrate * 8 * fdec->mpeg_SR;
 
 			/* setup playback */
 			fdec->mpeg_fd = open(filename, O_RDONLY);

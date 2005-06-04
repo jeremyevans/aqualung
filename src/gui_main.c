@@ -729,7 +729,7 @@ refresh_time_displays(void) {
 		}
 	} else {
 		int i;
-		for (i = 0; i < 2; i++) {
+		for (i = 0; i < 3; i++) {
 			if (GTK_IS_LABEL(time_labels[i]))
 				gtk_label_set_text(GTK_LABEL(time_labels[i]), "     ");
 		}

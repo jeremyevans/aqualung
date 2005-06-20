@@ -35,6 +35,7 @@
 extern GtkTreeStore * music_store;
 extern GtkWidget * music_tree;
 
+extern GtkWidget * browser_window;
 
 GtkWidget * search_window = NULL;
 GtkWidget * searchkey_entry;
@@ -364,8 +365,6 @@ search_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 
 	switch (kevent->keyval) {
 
-	case GDK_q:
-	case GDK_Q:
 	case GDK_Escape:
 		close_button_clicked(NULL, NULL);
 		return TRUE;
@@ -405,6 +404,8 @@ search_dialog(void) {
         search_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(search_window), _("Search the Music Store"));
         gtk_window_set_position(GTK_WINDOW(search_window), GTK_WIN_POS_CENTER);
+	gtk_window_set_transient_for(GTK_WINDOW(search_window), GTK_WINDOW(browser_window));
+	gtk_window_set_modal(GTK_WINDOW(search_window), TRUE);
         g_signal_connect(G_OBJECT(search_window), "delete_event",
                          G_CALLBACK(search_window_close), NULL);
         g_signal_connect(G_OBJECT(search_window), "key_press_event",

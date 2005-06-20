@@ -64,7 +64,6 @@ typedef struct _import_data_t {
         float fval;
 } import_data_t;
 
-
 extern int replaygain_tag_to_use;
 
 extern GtkWidget * main_window;
@@ -75,6 +74,8 @@ extern GtkWidget * music_tree;
 GtkWidget * info_window = NULL;
 trashlist_t * fileinfo_trash = NULL;
 
+gint page = 0;     /* current notebook page */
+GtkWidget * nb;     /* notebook widget */
 
 import_data_t *
 import_data_new(void) {
@@ -218,6 +219,12 @@ info_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		dismiss(NULL, NULL);
 		return TRUE;
 		break;
+		
+	case GDK_Return:
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(nb), page);
+		page = (page+1) % gtk_notebook_get_n_pages(GTK_NOTEBOOK(nb));
+		break;
+		
 	}
 
 	return FALSE;
@@ -238,7 +245,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	GtkWidget * hbox_path;
 	GtkWidget * label_path;
 	GtkWidget * entry_path;
-	GtkWidget * nb;
+	GtkWidget * hbuttonbox;
 	GtkWidget * dismiss_btn;
 
 	GtkWidget * vbox_file;
@@ -292,6 +299,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
 	info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(info_window), _("File info"));
+	gtk_window_set_transient_for(GTK_WINDOW(info_window), GTK_WINDOW(main_window));
 	gtk_window_set_position(GTK_WINDOW(info_window), GTK_WIN_POS_CENTER);
 	gtk_widget_set_size_request(GTK_WIDGET(info_window), 500, -1);
 	g_signal_connect(G_OBJECT(info_window), "delete_event",
@@ -332,6 +340,8 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
 	nb = gtk_notebook_new();
 	gtk_box_pack_start(GTK_BOX(vbox), nb, TRUE, TRUE, 10);
+	page = 0;
+
 
 	/* Audio data notebook page */
 
@@ -424,7 +434,8 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		label_id3v2 = gtk_label_new(_("ID3v2 tags"));
 		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_id3v2,
 					 label_id3v2);
-		
+		page++;
+
 		while (id3 != NULL) {
 			
 			if (!is_called_from_browser) {
@@ -514,6 +525,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		gtk_box_pack_start(GTK_BOX(vbox_vorbis), table_vorbis, TRUE, TRUE, 10);
 		label_vorbis = gtk_label_new(_("Vorbis comments"));
 		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_vorbis, label_vorbis);
+		page++;
 		
 		while (oggv != NULL) {
 			
@@ -624,6 +636,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		gtk_box_pack_start(GTK_BOX(vbox_flac), table_flac, TRUE, TRUE, 10);
 		label_flac = gtk_label_new(_("FLAC metadata"));
 		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_flac, label_flac);
+		page++;
 		
 		while (oggv != NULL) {
 			
@@ -721,12 +734,18 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		}
 	}
 #endif /* HAVE_FLAC */
-	
+
 	/* end of notebook stuff */
+
+	gtk_widget_grab_focus(nb);
+
+	hbuttonbox = gtk_hbutton_box_new();
+	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, TRUE, TRUE, 0);
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
 	dismiss_btn = gtk_button_new_with_label(_("Dismiss"));
 	g_signal_connect(dismiss_btn, "clicked", G_CALLBACK(dismiss), NULL);
-	gtk_box_pack_end(GTK_BOX(vbox), dismiss_btn, FALSE, FALSE, 4);
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), dismiss_btn);   
 
 	gtk_widget_show_all(info_window);
 

@@ -231,17 +231,21 @@ find_plugins(char * path_entry) {
 							++n_outs;
 					}
 				}
-				get_ladspa_category(descriptor->UniqueID, category);
-				snprintf(id_str, 31, "%ld", descriptor->UniqueID);
-				snprintf(n_ins_str, 31, "%ld", n_ins);
-				snprintf(n_outs_str, 31, "%ld", n_outs);
-				snprintf(c_str, 31, "%d", k);
 
-                                gtk_list_store_append(avail_store, &iter);
-                                gtk_list_store_set(avail_store, &iter, 0, id_str, 1, descriptor->Name,
-						   2, category, 3, n_ins_str, 4, n_outs_str,
-						   5, lib_name, 6, c_str, -1);
-				
+				if ((n_ins == 1 && n_outs == 1) || (n_ins == 2 && n_outs == 2)) {
+					
+					get_ladspa_category(descriptor->UniqueID, category);
+					snprintf(id_str, 31, "%ld", descriptor->UniqueID);
+					snprintf(n_ins_str, 31, "%ld", n_ins);
+					snprintf(n_outs_str, 31, "%ld", n_outs);
+					snprintf(c_str, 31, "%d", k);
+					
+					gtk_list_store_append(avail_store, &iter);
+					gtk_list_store_set(avail_store, &iter, 0, id_str,
+							   1, descriptor->Name, 2, category,
+							   3, n_ins_str, 4, n_outs_str,
+							   5, lib_name, 6, c_str, -1);
+				}
 			}
 			dlclose(library);
 		}

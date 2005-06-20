@@ -113,6 +113,7 @@ GtkWidget * sel__none;
 GtkWidget * sel__all;
 GtkWidget * sel__inv;
 GtkWidget * rem_menu;
+GtkWidget * cut__sel;
 GtkWidget * rem__all;
 GtkWidget * rem__sel;
 GtkWidget * plist_menu;
@@ -889,6 +890,28 @@ remove_sel(GtkWidget * widget, gpointer * data) {
 }
 
 
+/* cut selected callback */
+void
+cut__sel_cb(gpointer data) {
+
+	GtkTreeIter iter;
+	int i = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+
+		if (gtk_tree_selection_iter_is_selected(play_select, &iter))
+			gtk_tree_selection_unselect_iter(play_select, &iter);
+		else
+			gtk_tree_selection_select_iter(play_select, &iter);
+			
+		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+			gtk_list_store_remove(play_store, &iter);
+			--i;
+		}
+	}
+}
+
+
 gint
 playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, gint x, gint y, 
 			    GtkSelectionData  * data, guint info, guint time) {
@@ -1181,22 +1204,26 @@ create_playlist(void) {
 
         rem_menu = gtk_menu_new();
 
+        cut__sel = gtk_menu_item_new_with_label(_("Cut selected"));
+        gtk_menu_shell_append(GTK_MENU_SHELL(rem_menu), cut__sel);
+        g_signal_connect_swapped(G_OBJECT(cut__sel), "activate", G_CALLBACK(cut__sel_cb), NULL);
+    	gtk_widget_show(cut__sel);
+
         rem__all = gtk_menu_item_new_with_label(_("Remove all"));
         gtk_menu_shell_append(GTK_MENU_SHELL(rem_menu), rem__all);
         g_signal_connect_swapped(G_OBJECT(rem__all), "activate", G_CALLBACK(rem__all_cb), NULL);
-	gtk_widget_show(rem__all);
+    	gtk_widget_show(rem__all);
 
         rem__sel = gtk_menu_item_new_with_label(_("Remove selected"));
         gtk_menu_shell_append(GTK_MENU_SHELL(rem_menu), rem__sel);
         g_signal_connect_swapped(G_OBJECT(rem__sel), "activate", G_CALLBACK(rem__sel_cb), NULL);
-	gtk_widget_show(rem__sel);
+    	gtk_widget_show(rem__sel);
 
         g_signal_connect_swapped(G_OBJECT(remsel_button), "event", G_CALLBACK(rem_cb), NULL);
 
 
         g_signal_connect(G_OBJECT(playlist_window), "size_allocate",
 			 G_CALLBACK(playlist_size_allocate), NULL);
-
 }
 
 

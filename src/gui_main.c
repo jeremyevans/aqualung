@@ -296,8 +296,7 @@ void playlist_toggled(GtkWidget * widget, gpointer data);
 void
 deflicker(void) {
 
-	while (gtk_events_pending())
-		gtk_main_iteration();
+	while (g_main_context_iteration(NULL, FALSE));
 }
 
 
@@ -1167,9 +1166,29 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			conf__fileinfo_cb(NULL);
 			return TRUE;
 			break;
+
+		case GDK_BackSpace:
+			if (allow_seeks) {
+				seek_t seek;
+				
+				send_cmd = CMD_SEEKTO;
+				seek.seek_to_pos = 0.0f;
+				jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
+				jack_ringbuffer_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
+				
+				if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
+					pthread_cond_signal(&disk_thread_wake);
+					pthread_mutex_unlock(&disk_thread_lock);
+				}
+			}
+			
+			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)))
+				gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
+			
+			return TRUE;
+			break;
 		}
 	}
-
 	return FALSE;
 }
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-14 09:22+0200\n"
+"POT-Creation-Date: 2005-06-27 14:07+0200\n"
 "PO-Revision-Date: 2004-12-24 01:51+0200\n"
 "Last-Translator: Sergiy Niskorodov <sgh_punk@users.sourceforge.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=koi8-u\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../about.c:74 ../gui_main.c:2140
+#: ../about.c:74 ../gui_main.c:2159
 msgid "About"
 msgstr "Про програму"
 
-#: ../about.c:84 ../file_info.c:727
+#: ../about.c:84 ../file_info.c:746
 msgid "Dismiss"
 msgstr "В╕дхилити"
 
@@ -46,87 +46,91 @@ msgstr "Головний дизайн, розробка та програмування:"
 msgid "Skin support, look & feel, GUI hacks:\n"
 msgstr "П╕дтримка жупан╕в, розробка Г╤К:"
 
-#: ../about.c:147
+#: ../about.c:148
+msgid "Contributors:"
+msgstr ""
+
+#: ../about.c:154
 msgid "Translators:"
 msgstr ""
 
-#: ../about.c:149
+#: ../about.c:156
 msgid "German, Hungarian:\n"
 msgstr ""
 
-#: ../about.c:151
+#: ../about.c:158
 msgid "Ukrainian:\n"
 msgstr ""
 
-#: ../about.c:156
+#: ../about.c:163
 msgid "This Aqualung binary is compiled with:"
 msgstr "Цей Aqualung скомп╕льовано з:"
 
-#: ../about.c:160
+#: ../about.c:167
 msgid "File format support:"
 msgstr "П╕дтримка формат╕в файл╕в:"
 
-#: ../about.c:165 ../about.c:176 ../about.c:187 ../about.c:198 ../about.c:209
-#: ../about.c:220 ../about.c:231 ../about.c:246 ../about.c:257 ../about.c:267
-#: ../about.c:273
+#: ../about.c:172 ../about.c:183 ../about.c:194 ../about.c:205 ../about.c:216
+#: ../about.c:227 ../about.c:238 ../about.c:253 ../about.c:264 ../about.c:274
+#: ../about.c:280
 msgid "yes"
 msgstr "так"
 
-#: ../about.c:169 ../about.c:180 ../about.c:191 ../about.c:202 ../about.c:213
-#: ../about.c:224 ../about.c:235 ../about.c:250 ../about.c:261 ../about.c:277
+#: ../about.c:176 ../about.c:187 ../about.c:198 ../about.c:209 ../about.c:220
+#: ../about.c:231 ../about.c:242 ../about.c:257 ../about.c:268 ../about.c:284
 msgid "no"
 msgstr "н╕"
 
-#: ../about.c:172
+#: ../about.c:179
 msgid "sndfile (WAV, AIFF, etc.)\n"
 msgstr ""
 
-#: ../about.c:183
+#: ../about.c:190
 msgid "Free Lossless Audio Codec (FLAC)\n"
 msgstr ""
 
-#: ../about.c:194
+#: ../about.c:201
 msgid "Ogg Vorbis\n"
 msgstr ""
 
-#: ../about.c:205
+#: ../about.c:212
 msgid "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
 msgstr ""
 
-#: ../about.c:216
+#: ../about.c:223
 msgid "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
 msgstr ""
 
-#: ../about.c:227
+#: ../about.c:234
 msgid "Musepack\n"
 msgstr ""
 
-#: ../about.c:238
+#: ../about.c:245
 msgid "ID3 tags\n"
 msgstr ""
 
-#: ../about.c:241
+#: ../about.c:248
 msgid "Output driver support:"
 msgstr "П╕дтримка драйвер╕в виводу:"
 
-#: ../about.c:253
+#: ../about.c:260
 msgid "OSS Audio\n"
 msgstr ""
 
-#: ../about.c:264
+#: ../about.c:271
 msgid "ALSA Audio\n"
 msgstr ""
 
-#: ../about.c:269
+#: ../about.c:276
 msgid "JACK Audio Server\n"
 msgstr ""
 
-#: ../about.c:280
+#: ../about.c:287
 #, fuzzy
 msgid "Internal Sample Rate Converter support\n"
 msgstr "П╕дримка внутр╕шньо╖ конвертац╕╖ частоти семплювання\t\t\t: "
 
-#: ../about.c:285
+#: ../about.c:292
 #, fuzzy
 msgid ""
 "Aqualung could not be functional without the following libraries.\n"
@@ -161,7 +165,7 @@ msgstr ""
 "* libMAD, a GPL'ed MPEG Audio Decoder library\n"
 "* libmodplug, a MOD decoder library in the public domain"
 
-#: ../about.c:303
+#: ../about.c:310
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -178,253 +182,253 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../file_info.c:294 ../gui_main.c:2138
+#: ../file_info.c:301 ../gui_main.c:2157
 msgid "File info"
 msgstr ""
 
-#: ../file_info.c:310
+#: ../file_info.c:318
 #, fuzzy
 msgid "Track:"
 msgstr "Додати дор╕жку"
 
-#: ../file_info.c:322
+#: ../file_info.c:330
 #, fuzzy
 msgid "File:"
 msgstr ""
 "\n"
 "Назва файлу:"
 
-#: ../file_info.c:341
+#: ../file_info.c:351
 msgid "Audio data"
 msgstr ""
 
-#: ../file_info.c:345
+#: ../file_info.c:355
 msgid "Format:"
 msgstr ""
 
-#: ../file_info.c:356
+#: ../file_info.c:366
 msgid "Length:"
 msgstr ""
 
-#: ../file_info.c:367
+#: ../file_info.c:377
 msgid "Samplerate:"
 msgstr ""
 
-#: ../file_info.c:371
+#: ../file_info.c:381
 #, c-format
 msgid "%ld Hz"
 msgstr ""
 
-#: ../file_info.c:378
+#: ../file_info.c:388
 msgid "Channel count:"
 msgstr ""
 
-#: ../file_info.c:383 ../gui_main.c:651
+#: ../file_info.c:393 ../gui_main.c:650
 msgid "MONO"
 msgstr "МОНО"
 
-#: ../file_info.c:385 ../gui_main.c:654
+#: ../file_info.c:395 ../gui_main.c:653
 msgid "STEREO"
 msgstr "СТЕРЕО"
 
-#: ../file_info.c:392
+#: ../file_info.c:402
 msgid "Bandwidth:"
 msgstr ""
 
-#: ../file_info.c:396
+#: ../file_info.c:406
 #, c-format
 msgid "%.1f kbit/s"
 msgstr ""
 
-#: ../file_info.c:403
+#: ../file_info.c:413
 msgid "Total samples:"
 msgstr ""
 
-#: ../file_info.c:424
+#: ../file_info.c:434
 msgid "ID3v2 tags"
 msgstr ""
 
-#: ../file_info.c:445 ../file_info.c:535 ../file_info.c:645
+#: ../file_info.c:456 ../file_info.c:547 ../file_info.c:658
 msgid "Import as Title"
 msgstr ""
 
-#: ../file_info.c:455 ../file_info.c:555 ../file_info.c:665
+#: ../file_info.c:466 ../file_info.c:567 ../file_info.c:678
 #, fuzzy
 msgid "Import as Artist"
 msgstr "Прибрати виконавця"
 
-#: ../file_info.c:465 ../file_info.c:545 ../file_info.c:655
+#: ../file_info.c:476 ../file_info.c:557 ../file_info.c:668
 #, fuzzy
 msgid "Import as Record"
 msgstr "Прибрати запис"
 
-#: ../file_info.c:475
+#: ../file_info.c:486
 msgid "Import as Track number"
 msgstr ""
 
-#: ../file_info.c:484 ../meta_decoder.c:245
+#: ../file_info.c:495 ../meta_decoder.c:245
 msgid "Relative Volume"
 msgstr ""
 
-#: ../file_info.c:485 ../file_info.c:583 ../file_info.c:692
+#: ../file_info.c:496 ../file_info.c:595 ../file_info.c:705
 msgid "Import as RVA"
 msgstr ""
 
-#: ../file_info.c:498 ../file_info.c:595 ../file_info.c:608 ../file_info.c:704
-#: ../file_info.c:717
+#: ../file_info.c:509 ../file_info.c:607 ../file_info.c:620 ../file_info.c:717
+#: ../file_info.c:730
 #, fuzzy
 msgid "Add to Comments"
 msgstr ""
 "\n"
 "Коментар╕:"
 
-#: ../file_info.c:515
+#: ../file_info.c:526
 #, fuzzy
 msgid "Vorbis comments"
 msgstr "(без коментаря)"
 
-#: ../file_info.c:625
+#: ../file_info.c:637
 msgid "FLAC metadata"
 msgstr ""
 
-#: ../gui_main.c:432
+#: ../gui_main.c:431
 msgid "Unrecognized"
 msgstr "Нерозп╕знано"
 
-#: ../gui_main.c:440 ../gui_main.c:446 ../gui_main.c:449 ../gui_main.c:452
+#: ../gui_main.c:439 ../gui_main.c:445 ../gui_main.c:448 ../gui_main.c:451
 msgid "bit signed"
 msgstr ""
 
-#: ../gui_main.c:443
+#: ../gui_main.c:442
 msgid "bit unsigned"
 msgstr ""
 
-#: ../gui_main.c:455
+#: ../gui_main.c:454
 msgid "bit float"
 msgstr ""
 
-#: ../gui_main.c:458
+#: ../gui_main.c:457
 msgid "bit double"
 msgstr ""
 
-#: ../gui_main.c:461 ../gui_main.c:464 ../gui_main.c:467 ../gui_main.c:470
-#: ../gui_main.c:473 ../gui_main.c:476 ../gui_main.c:479 ../gui_main.c:482
-#: ../gui_main.c:485 ../gui_main.c:488 ../gui_main.c:491 ../gui_main.c:494
-#: ../gui_main.c:497
+#: ../gui_main.c:460 ../gui_main.c:463 ../gui_main.c:466 ../gui_main.c:469
+#: ../gui_main.c:472 ../gui_main.c:475 ../gui_main.c:478 ../gui_main.c:481
+#: ../gui_main.c:484 ../gui_main.c:487 ../gui_main.c:490 ../gui_main.c:493
+#: ../gui_main.c:496
 msgid "encoding"
 msgstr ""
 
-#: ../gui_main.c:508
+#: ../gui_main.c:507
 msgid "Profile: Telephone"
 msgstr ""
 
-#: ../gui_main.c:511
+#: ../gui_main.c:510
 msgid "Profile: Thumb"
 msgstr ""
 
-#: ../gui_main.c:514
+#: ../gui_main.c:513
 msgid "Profile: Radio"
 msgstr ""
 
-#: ../gui_main.c:517
+#: ../gui_main.c:516
 msgid "Profile: Standard"
 msgstr ""
 
-#: ../gui_main.c:520
+#: ../gui_main.c:519
 msgid "Profile: Xtreme"
 msgstr ""
 
-#: ../gui_main.c:523
+#: ../gui_main.c:522
 msgid "Profile: Insane"
 msgstr ""
 
-#: ../gui_main.c:526
+#: ../gui_main.c:525
 msgid "Profile: Braindead"
 msgstr ""
 
-#: ../gui_main.c:541
+#: ../gui_main.c:540
 msgid "Layer I"
 msgstr ""
 
-#: ../gui_main.c:544
+#: ../gui_main.c:543
 msgid "Layer II"
 msgstr ""
 
-#: ../gui_main.c:547
+#: ../gui_main.c:546
 msgid "Layer III"
 msgstr ""
 
-#: ../gui_main.c:557
+#: ../gui_main.c:556
 msgid "Single channel"
 msgstr "Один канал"
 
-#: ../gui_main.c:560
+#: ../gui_main.c:559
 msgid "Dual channel"
 msgstr "Два канала"
 
-#: ../gui_main.c:563
+#: ../gui_main.c:562
 msgid "Joint stereo"
 msgstr "Об'╓днане стерео"
 
-#: ../gui_main.c:566
+#: ../gui_main.c:565
 msgid "Stereo"
 msgstr "Стерео"
 
-#: ../gui_main.c:576
+#: ../gui_main.c:575
 msgid "Emphasis: none"
 msgstr "Наголос: нема╓"
 
-#: ../gui_main.c:579 ../gui_main.c:582
+#: ../gui_main.c:578 ../gui_main.c:581
 msgid "Emphasis:"
 msgstr "Наголос:"
 
-#: ../gui_main.c:585
+#: ../gui_main.c:584
 #, fuzzy
 msgid "Emphasis: reserved"
 msgstr "Наголос: нема╓"
 
-#: ../gui_main.c:672 ../gui_main.c:677 ../gui_main.c:681
+#: ../gui_main.c:671 ../gui_main.c:676 ../gui_main.c:680
 msgid "Output:"
 msgstr "Вив╕д:"
 
-#: ../gui_main.c:695
+#: ../gui_main.c:694
 msgid "SRC Type: "
 msgstr "SRC Тип: "
 
-#: ../gui_main.c:699
+#: ../gui_main.c:698
 msgid "None"
 msgstr "Нема╓"
 
-#: ../gui_main.c:1402 ../gui_main.c:1431
+#: ../gui_main.c:1421 ../gui_main.c:1450
 #, c-format
 msgid "Mute"
 msgstr "Приглушити"
 
-#: ../gui_main.c:1404 ../gui_main.c:1433
+#: ../gui_main.c:1423 ../gui_main.c:1452
 #, c-format
 msgid "%d dB"
 msgstr "%d Дб"
 
-#: ../gui_main.c:1464 ../gui_main.c:1496
+#: ../gui_main.c:1483 ../gui_main.c:1515
 #, c-format
 msgid "%d%% R"
 msgstr "%d%% П"
 
-#: ../gui_main.c:1466 ../gui_main.c:1498
+#: ../gui_main.c:1485 ../gui_main.c:1517
 #, c-format
 msgid "%d%% L"
 msgstr "%d%% Л"
 
-#: ../gui_main.c:1469 ../gui_main.c:1501
+#: ../gui_main.c:1488 ../gui_main.c:1520
 #, c-format
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:2057
+#: ../gui_main.c:2076
 msgid "JACK connection lost"
 msgstr "JACK п╕д'╓днання втрачено"
 
-#: ../gui_main.c:2060
+#: ../gui_main.c:2079
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -436,15 +440,15 @@ msgstr ""
 "швидкий. Все що ви можете тепер зробити\n"
 "це перезапустити обидва JACK та Aqualung.\n"
 
-#: ../gui_main.c:2135 ../options.c:635
+#: ../gui_main.c:2154 ../options.c:635
 msgid "Settings"
 msgstr ""
 
-#: ../gui_main.c:2136 ../skin.c:122
+#: ../gui_main.c:2155 ../skin.c:122
 msgid "Skin chooser"
 msgstr "Виб╕р жупан╕в"
 
-#: ../gui_main.c:2137
+#: ../gui_main.c:2156
 msgid "JACK port setup"
 msgstr "Налаштування порту JACK"
 
@@ -467,7 +471,7 @@ msgstr ""
 msgid "Composer"
 msgstr "Закрити"
 
-#: ../meta_decoder.c:277 ../search.c:504
+#: ../meta_decoder.c:277 ../search.c:505
 #, fuzzy
 msgid "Artist"
 msgstr "Додати виконавця"
@@ -489,7 +493,7 @@ msgstr ""
 msgid "Album"
 msgstr "Про програму"
 
-#: ../meta_decoder.c:282 ../search.c:526
+#: ../meta_decoder.c:282 ../search.c:527
 #, fuzzy
 msgid "Track"
 msgstr "Додати дор╕жку"
@@ -580,11 +584,11 @@ msgstr ""
 "\n"
 "Автостворення дор╕жок з цих файл╕в:"
 
-#: ../music_browser.c:648 ../playlist.c:674
+#: ../music_browser.c:648 ../playlist.c:675
 msgid "Clear list"
 msgstr "Очистити список"
 
-#: ../music_browser.c:655 ../playlist.c:681
+#: ../music_browser.c:655 ../playlist.c:682
 msgid "Add files..."
 msgstr "Додати файли..."
 
@@ -710,7 +714,7 @@ msgstr "Додати нову дор╕жку..."
 msgid "Edit track..."
 msgstr "Редагувати дор╕жку..."
 
-#: ../music_browser.c:2624 ../playlist.c:1016
+#: ../music_browser.c:2624 ../playlist.c:1039
 msgid "File info..."
 msgstr ""
 
@@ -780,7 +784,7 @@ msgid ""
 "(takes effect after restarting Aqualung)"
 msgstr ""
 
-#: ../options.c:715 ../playlist.c:998
+#: ../options.c:715 ../playlist.c:1021
 msgid "Playlist"
 msgstr "Список програвання"
 
@@ -812,7 +816,7 @@ msgstr ""
 msgid "Column"
 msgstr ""
 
-#: ../options.c:790 ../search.c:461
+#: ../options.c:790 ../search.c:462
 msgid "Track titles"
 msgstr ""
 
@@ -832,19 +836,19 @@ msgstr ""
 msgid "LADSPA plugin processing"
 msgstr "Обробка LADSPA втулок"
 
-#: ../options.c:827
+#: ../options.c:824
 msgid "Pre Fader (before Volume & Balance)"
 msgstr "Пре-згасання (перед Гучн╕стю та Балансом)"
 
-#: ../options.c:831
+#: ../options.c:825
 msgid "Post Fader (after Volume & Balance)"
 msgstr "П╕сля-згасання (п╕сля Гучност╕ та Баланса)"
 
-#: ../options.c:844
+#: ../options.c:835
 msgid "Sample Rate Converter type"
 msgstr "Тип перетворювача частоти семплювання"
 
-#: ../options.c:878
+#: ../options.c:864
 msgid ""
 "Aqualung is compiled without Sample Rate Converter support.\n"
 "See the About box and the documentation for details."
@@ -852,134 +856,134 @@ msgstr ""
 "Aqualung скомп╕льовано без п╕дтримки Перетворювача Частоти Семплювання.\n"
 "Дивись в╕кно 'Про програму' та документац╕ю для подробиць."
 
-#: ../options.c:888
+#: ../options.c:874
 msgid "Playback RVA"
 msgstr ""
 
-#: ../options.c:893
+#: ../options.c:879
 msgid "Enable playback RVA"
 msgstr ""
 
-#: ../options.c:922
+#: ../options.c:908
 msgid "Listening environment:"
 msgstr ""
 
-#: ../options.c:935
+#: ../options.c:919
 msgid "Audiophile"
 msgstr ""
 
-#: ../options.c:939
+#: ../options.c:920
 msgid "Living room"
 msgstr ""
 
-#: ../options.c:943
+#: ../options.c:921
 msgid "Office"
 msgstr ""
 
-#: ../options.c:947
+#: ../options.c:922
 msgid "Noisy workshop"
 msgstr ""
 
-#: ../options.c:959
+#: ../options.c:931
 msgid "Reference volume [dBFS] :"
 msgstr ""
 
-#: ../options.c:975
+#: ../options.c:947
 msgid "Steepness [dB/dB] :"
 msgstr ""
 
-#: ../options.c:993
+#: ../options.c:965
 msgid "Apply averaged RVA to tracks of the same record"
 msgstr ""
 
-#: ../options.c:1008
+#: ../options.c:980
 msgid "Drop statistical aberrations based on"
 msgstr ""
 
-#: ../options.c:1021
+#: ../options.c:991
 #, c-format
 msgid "% of standard deviation"
 msgstr ""
 
-#: ../options.c:1025
+#: ../options.c:992
 msgid "Linear threshold [dB]"
 msgstr ""
 
-#: ../options.c:1037
+#: ../options.c:1001
 msgid "Linear threshold [dB] :"
 msgstr ""
 
-#: ../options.c:1053
+#: ../options.c:1017
 #, c-format
 msgid "% of standard deviation :"
 msgstr ""
 
-#: ../options.c:1097
+#: ../options.c:1061
 msgid "Metadata"
 msgstr ""
 
-#: ../options.c:1105
+#: ../options.c:1069
 msgid ""
 "When adding to playlist, use file metadata (if available) instead of\n"
 "information from the Music Store for:"
 msgstr ""
 
-#: ../options.c:1111 ../options.c:1146
+#: ../options.c:1075 ../options.c:1110
 #, fuzzy
 msgid "Artist name"
 msgstr "Додати виконавця"
 
-#: ../options.c:1120 ../options.c:1155
+#: ../options.c:1084 ../options.c:1119
 msgid "Record name"
 msgstr ""
 
-#: ../options.c:1129 ../options.c:1164
+#: ../options.c:1093 ../options.c:1128
 #, fuzzy
 msgid "Track name"
 msgstr "Додати дор╕жку"
 
-#: ../options.c:1140
+#: ../options.c:1104
 msgid ""
 "When adding external files to playlist, use file metadata (if available) for:"
 msgstr ""
 
-#: ../options.c:1175
+#: ../options.c:1139
 msgid "Replaygain tag to use in Ogg Vorbis and FLAC files: "
 msgstr ""
 
-#: ../options.c:1189
+#: ../options.c:1151
 msgid "Replaygain_track_gain"
 msgstr ""
 
-#: ../options.c:1193
+#: ../options.c:1152
 msgid "Replaygain_album_gain"
 msgstr ""
 
-#: ../options.c:1207 ../skin.c:201
+#: ../options.c:1163 ../skin.c:201
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: ../options.c:1212
+#: ../options.c:1168
 msgid "OK"
 msgstr "Гаразд"
 
-#: ../playlist.c:409
+#: ../playlist.c:410
 msgid "Please specify the file to save the playlist to."
 msgstr "Будьласка вкаж╕ть файл куди буде записано список програвання."
 
-#: ../playlist.c:440
+#: ../playlist.c:441
 msgid "Please specify the file to load the playlist from."
 msgstr "Будьласка вкаж╕ть файл зв╕дки буде завантажено список програвання."
 
-#: ../playlist.c:577
+#: ../playlist.c:578
 msgid "Please select the audio files for direct adding."
 msgstr "Будьласка обер╕ть звуков╕ файли для безпосереднього додавання."
 
-#: ../playlist.c:644 ../playlist.c:1147
+#: ../playlist.c:645 ../playlist.c:1170
 msgid "Direct add"
 msgstr "Безпосередн╓ додавання"
 
-#: ../playlist.c:654
+#: ../playlist.c:655
 msgid ""
 "\n"
 "Directly add these files to playlist:"
@@ -987,85 +991,90 @@ msgstr ""
 "\n"
 "Безпосередньо додати ц╕ файли до списку програвання:"
 
-#: ../playlist.c:764 ../playlist.c:767 ../playlist.c:770 ../playlist.c:1602
-#: ../playlist.c:1605 ../playlist.c:1608 ../playlist.c:1888 ../playlist.c:1891
-#: ../playlist.c:1894 ../playlist.c:2103 ../playlist.c:2106 ../playlist.c:2109
+#: ../playlist.c:765 ../playlist.c:768 ../playlist.c:771 ../playlist.c:1629
+#: ../playlist.c:1632 ../playlist.c:1635 ../playlist.c:1915 ../playlist.c:1918
+#: ../playlist.c:1921 ../playlist.c:2130 ../playlist.c:2133 ../playlist.c:2136
 msgid "Unknown"
 msgstr ""
 
-#: ../playlist.c:1012
+#: ../playlist.c:1035
 msgid "Save playlist"
 msgstr "Зберегти список програвання"
 
-#: ../playlist.c:1013
+#: ../playlist.c:1036
 msgid "Load playlist"
 msgstr "Завантажити список програвання"
 
-#: ../playlist.c:1014
+#: ../playlist.c:1037
 msgid "Enqueue playlist"
 msgstr "Поставити в чергу список програвання"
 
-#: ../playlist.c:1151 ../playlist.c:1169
+#: ../playlist.c:1174 ../playlist.c:1192
 msgid "Select all"
 msgstr "Обрати все"
 
-#: ../playlist.c:1155 ../playlist.c:1189
+#: ../playlist.c:1178 ../playlist.c:1217
 msgid "Remove selected"
 msgstr "Прибрати обране"
 
-#: ../playlist.c:1164
+#: ../playlist.c:1187
 msgid "Select none"
 msgstr "Зняти виб╕р"
 
-#: ../playlist.c:1174
+#: ../playlist.c:1197
 msgid "Invert selection"
 msgstr "Перевернути виб╕р"
 
-#: ../playlist.c:1184
+#: ../playlist.c:1207
+#, fuzzy
+msgid "Cut selected"
+msgstr "Прибрати обране"
+
+#: ../playlist.c:1212
 msgid "Remove all"
 msgstr "Прибрати все"
 
-#: ../plugin.c:1665
+#: ../plugin.c:1669
 msgid "LADSPA patch builder"
 msgstr "Буд╕вельник шлях╕в LADSPA"
 
-#: ../plugin.c:1674
+#: ../plugin.c:1678
 msgid "Available plugins"
 msgstr "Наявн╕ втулки"
 
-#: ../plugin.c:1684
+#: ../plugin.c:1688
 msgid "Add"
 msgstr "Додати"
 
-#: ../plugin.c:1739
+#: ../plugin.c:1743
 msgid "ID"
 msgstr ""
 
-#: ../plugin.c:1744 ../plugin.c:1819
+#: ../plugin.c:1748 ../plugin.c:1823
 msgid "Name"
 msgstr "╤м'я"
 
-#: ../plugin.c:1749
+#: ../plugin.c:1753
 msgid "Category"
 msgstr "Категор╕я"
 
-#: ../plugin.c:1754
+#: ../plugin.c:1758
 msgid "Inputs"
 msgstr "Входи"
 
-#: ../plugin.c:1759 ../ports.c:471
+#: ../plugin.c:1763 ../ports.c:471
 msgid "Outputs"
 msgstr "Виходи"
 
-#: ../plugin.c:1765
+#: ../plugin.c:1769
 msgid "Running plugins"
 msgstr "Запущен╕ втулки"
 
-#: ../plugin.c:1778
+#: ../plugin.c:1782
 msgid "Remove"
 msgstr "Пибрати"
 
-#: ../plugin.c:1782
+#: ../plugin.c:1786
 msgid "Configure"
 msgstr "Налаштувати"
 
@@ -1077,7 +1086,7 @@ msgstr "Налаштування порту JACK"
 msgid "Rescan"
 msgstr "Пресканувати"
 
-#: ../ports.c:466 ../search.c:544
+#: ../ports.c:466 ../search.c:545
 msgid "Close"
 msgstr "Закрити"
 
@@ -1097,49 +1106,49 @@ msgstr " вих╕д Л"
 msgid " out R"
 msgstr " вих╕д Р"
 
-#: ../search.c:406
+#: ../search.c:405
 #, fuzzy
 msgid "Search the Music Store"
 msgstr "Музичний Склад"
 
-#: ../search.c:421
+#: ../search.c:422
 msgid "Key: "
 msgstr ""
 
-#: ../search.c:431
+#: ../search.c:432
 msgid "Case sensitive"
 msgstr ""
 
-#: ../search.c:436
+#: ../search.c:437
 msgid "Exact matches only"
 msgstr ""
 
-#: ../search.c:443
+#: ../search.c:444
 msgid "Search in:"
 msgstr ""
 
-#: ../search.c:449
+#: ../search.c:450
 #, fuzzy
 msgid "Artist names"
 msgstr "Додати виконавця"
 
-#: ../search.c:455
+#: ../search.c:456
 msgid "Record titles"
 msgstr ""
 
-#: ../search.c:467
+#: ../search.c:468
 #, fuzzy
 msgid "Comments"
 msgstr ""
 "\n"
 "Коментар╕:"
 
-#: ../search.c:515
+#: ../search.c:516
 #, fuzzy
 msgid "Record"
 msgstr "Додати запис"
 
-#: ../search.c:540
+#: ../search.c:541
 msgid "Search"
 msgstr ""
 

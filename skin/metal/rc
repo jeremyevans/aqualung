@@ -99,6 +99,12 @@ style "entry" = "view"
 	font_name = "Lucida 12"
 }
 
+style "combo_box"
+{
+	text[NORMAL] = { 0.0, 0.0, 0.0 }
+	fg[NORMAL] = { 0.0, 0.0, 0.0 }
+}
+
 style "menu"
 {
 	bg_pixmap[NORMAL] = "bg5.xpm"
@@ -109,6 +115,9 @@ style "menu"
 
 	fg[NORMAL] = { 0.0, 0.0, 0.0 }
 	fg[PRELIGHT] = { 0.0, 0.0, 0.0 }
+
+	text[NORMAL] = { 0.0, 0.0, 0.0 }
+	text[PRELIGHT] = { 0.0, 0.0, 0.0 }
 
 	font_name = "Sans Bold 10"
 }
@@ -185,6 +194,7 @@ widget "*SpinButton*" style "spin_button"
 widget "*Scale*" style "scale"
 widget "*Button*" style "button"
 widget "*GtkEntry*" style "entry"
+widget "*Combo*" style "combo_box"
 
 widget "*EventBox*" style "eventbox"
 

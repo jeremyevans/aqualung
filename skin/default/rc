@@ -91,8 +91,16 @@ style "entry" = "view"
 	font_name = "Lucida 12"
 }
 
+style "combo_box"
+{
+	text[NORMAL] = { 0.0, 0.0, 0.0 }
+	fg[NORMAL] = { 0.0, 0.0, 0.0 }
+}
+
 style "menu" = "button"
 {
+	text[NORMAL] = { 0.0, 0.0, 0.0 }
+	text[PRELIGHT] = { 0.0, 0.0, 0.0 }
 }
 
 style "spin_button" = "button"
@@ -149,6 +157,7 @@ widget "*SpinButton*" style "spin_button"
 widget "*Scale*" style "scale"
 widget "*Button*" style "button"
 widget "*GtkEntry*" style "entry"
+widget "*Combo*" style "combo_box"
 
 widget "*nostyle" style "nostyle"
 

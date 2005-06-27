@@ -84,7 +84,7 @@ style "scrollbar"
 	base[SELECTED] = { 1.0, 0.0, 0.0 }
 	base[INSENSITIVE] = { 1.0, 0.0, 0.0 }
 
-	fg[NORMAL] = { 1.0, 1.0, 1.0 }
+	fg[NORMAL] = { 1.0, 1.0, 0.8 }
 	fg[PRELIGHT] = { 1.0, 1.0, 1.0 }
 	fg[ACTIVE] = { 1.0, 1.0, 1.0 }
 }
@@ -115,6 +115,12 @@ style "entry" = "view"
 	font_name = "Lucida 12"
 }
 
+style "combo_box"
+{
+	text[NORMAL] = { 1.0, 1.0, 1.0 }
+	fg[NORMAL] = { 1.0, 1.0, 0.8 }
+}
+
 style "menu"
 {
 	bg_pixmap[NORMAL] = "<none>"
@@ -125,6 +131,9 @@ style "menu"
 
 	fg[NORMAL] = { 1.0, 1.0, 1.0 }
 	fg[PRELIGHT] = { 1.0, 1.0, 1.0 }
+
+	text[NORMAL] = { 1.0, 1.0, 1.0 }
+	text[PRELIGHT] = { 1.0, 1.0, 1.0 }
 
 	font_name = "Sans Bold 10"
 }
@@ -174,13 +183,14 @@ widget "*Separator*" style "scrollbar"
 widget "*Progress*" style "progressbar"
 widget "*Notebook*" style "notebook"
 
-widget "*OptionMenu*" style "button"
 widget "*Menu*" style "menu"
+widget "*OptionMenu*" style "button"
 
 widget "*SpinButton*" style "spin_button"
 widget "*Scale*" style "scale"
 widget "*Button*" style "button"
 widget "*GtkEntry*" style "entry"
+widget "*Combo*" style "combo_box"
 
 widget "*nostyle" style "nostyle"
 

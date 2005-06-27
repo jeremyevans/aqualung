@@ -72,7 +72,7 @@ create_about_window() {
 	gtk_window_set_modal(GTK_WINDOW(about_window), TRUE);
 	gtk_widget_set_name(about_window, "");
         gtk_window_set_title(GTK_WINDOW(about_window), _("About"));
-	gtk_widget_set_size_request(about_window, -1, 350);
+        gtk_widget_set_size_request(about_window, -1, 350);
 	gtk_window_set_position(GTK_WINDOW(about_window), GTK_WIN_POS_CENTER);
 	gtk_widget_modify_bg(about_window, GTK_STATE_NORMAL, &white);
 
@@ -337,4 +337,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."), -1);
 	gtk_box_pack_end(GTK_BOX(vbox), xpm, FALSE, FALSE, 0);
 
 	gtk_widget_show(xpm);
+
+        gtk_widget_grab_focus(ok_btn);
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

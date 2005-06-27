@@ -215,9 +215,9 @@ ok(GtkWidget * widget, gpointer data) {
 	        playlist_is_embedded_shadow = 0;
 	}
 
-	replaygain_tag_to_use = gtk_option_menu_get_history(GTK_OPTION_MENU(optmenu_replaygain));
+	replaygain_tag_to_use = gtk_combo_box_get_active(GTK_COMBO_BOX(optmenu_replaygain));
 
-	for (i = 0; i < 3; i++) {
+        for (i = 0; i < 3; i++) {
 
 		GtkTreeIter iter;
 		GtkTreeViewColumn * cols[4];
@@ -293,7 +293,7 @@ check_show_length_in_playlist_toggled(GtkWidget * widget, gpointer * data) {
 void
 changed_ladspa_prepost(GtkWidget * widget, gpointer * data) {
 
-	int status = gtk_option_menu_get_history(GTK_OPTION_MENU(optmenu_ladspa));
+	int status = gtk_combo_box_get_active(GTK_COMBO_BOX(optmenu_ladspa));
 	pthread_mutex_lock(&output_thread_lock);
 	ladspa_is_postfader = status;
 	pthread_mutex_unlock(&output_thread_lock);
@@ -304,7 +304,7 @@ changed_ladspa_prepost(GtkWidget * widget, gpointer * data) {
 void
 changed_src_type(GtkWidget * widget, gpointer * data) {
 
-	src_type = gtk_option_menu_get_history(GTK_OPTION_MENU(optmenu_src));
+	src_type = gtk_combo_box_get_active(GTK_COMBO_BOX(optmenu_src));
 	gtk_label_set_text(GTK_LABEL(label_src), src_get_description(src_type));
 	set_src_type_label(src_type);
 }
@@ -381,7 +381,7 @@ check_rva_use_averaging_toggled(GtkWidget * widget, gpointer * data) {
 void
 changed_listening_env(GtkWidget * widget, gpointer * data) {
 
-	rva_env_shadow = gtk_option_menu_get_history(GTK_OPTION_MENU(optmenu_listening_env));
+	rva_env_shadow = gtk_combo_box_get_active(GTK_COMBO_BOX(optmenu_listening_env));
 
 	switch (rva_env_shadow) {
 	case 0: /* Audiophile */
@@ -555,7 +555,7 @@ void
 changed_threshold(GtkWidget * widget, gpointer * data) {
 
 	rva_use_linear_thresh_shadow =
-		gtk_option_menu_get_history(GTK_OPTION_MENU(optmenu_threshold));
+	        gtk_combo_box_get_active(GTK_COMBO_BOX(optmenu_threshold));
 }
 
 
@@ -817,27 +817,18 @@ to set the column order in the Playlist."));
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_ladspa), 10);
 	gtk_container_add(GTK_CONTAINER(frame_ladspa), vbox_ladspa);
 
-	optmenu_ladspa = gtk_option_menu_new();
+        optmenu_ladspa = gtk_combo_box_new_text (); 
         gtk_box_pack_start(GTK_BOX(vbox_ladspa), optmenu_ladspa, TRUE, TRUE, 0);
 
 	{
-		GtkWidget * menu = gtk_menu_new();
-		GtkWidget * item;
+	        gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_ladspa), _("Pre Fader (before Volume & Balance)"));
+        	gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_ladspa), _("Post Fader (after Volume & Balance)"));
 
-		item = gtk_menu_item_new_with_label(_("Pre Fader (before Volume & Balance)"));
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-		gtk_widget_show(item);
-
-		item = gtk_menu_item_new_with_label(_("Post Fader (after Volume & Balance)"));
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-		gtk_widget_show(item);
-
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_ladspa), menu);
 	}
 	pthread_mutex_lock(&output_thread_lock);
 	status = ladspa_is_postfader;
 	pthread_mutex_unlock(&output_thread_lock);
-        gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_ladspa), status);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_ladspa), status);
         g_signal_connect(optmenu_ladspa, "changed", G_CALLBACK(changed_ladspa_prepost), NULL);
 
 
@@ -851,25 +842,20 @@ to set the column order in the Playlist."));
 	label_src = gtk_label_new("");
 
 #ifdef HAVE_SRC
-	optmenu_src = gtk_option_menu_new();
+	optmenu_src = gtk_combo_box_new_text ();
 	gtk_box_pack_start(GTK_BOX(vbox_src), optmenu_src, TRUE, TRUE, 0);
 
 	{
-		GtkWidget * menu = gtk_menu_new();
-		GtkWidget * item;
 		int i = 0;
 
 		while (src_get_name(i)) {
-			item = gtk_menu_item_new_with_label(src_get_name(i));
-			gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-			gtk_widget_show(item);
+                        gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_src), src_get_name(i));
 			++i;
 		}
 
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_src), menu);
 	}
 
-	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_src), src_type);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_src), src_type);
 	g_signal_connect(optmenu_src, "changed", G_CALLBACK(changed_src_type), NULL);
 
 	gtk_label_set_text(GTK_LABEL(label_src), src_get_description(src_type));
@@ -924,35 +910,21 @@ See the About box and the documentation for details."));
         gtk_table_attach(GTK_TABLE(table_rva), hbox_listening_env, 0, 1, 1, 2,
                          GTK_FILL, GTK_FILL, 5, 2);
 
-	optmenu_listening_env = gtk_option_menu_new();
+	optmenu_listening_env = gtk_combo_box_new_text ();
         gtk_table_attach(GTK_TABLE(table_rva), optmenu_listening_env, 1, 2, 1, 2,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 2);
 
 	{
-		GtkWidget * menu = gtk_menu_new();
-		GtkWidget * item;
 
-		item = gtk_menu_item_new_with_label(_("Audiophile"));
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-		gtk_widget_show(item);
+                gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_listening_env), _("Audiophile"));
+                gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_listening_env), _("Living room"));
+                gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_listening_env), _("Office"));
+                gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_listening_env), _("Noisy workshop"));
 
-		item = gtk_menu_item_new_with_label(_("Living room"));
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-		gtk_widget_show(item);
-
-		item = gtk_menu_item_new_with_label(_("Office"));
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-		gtk_widget_show(item);
-
-		item = gtk_menu_item_new_with_label(_("Noisy workshop"));
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-		gtk_widget_show(item);
-
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_listening_env), menu);
 	}
 
 	rva_env_shadow = rva_env;
-	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_listening_env), rva_env);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_listening_env), rva_env);
 	g_signal_connect(optmenu_listening_env, "changed", G_CALLBACK(changed_listening_env), NULL);
 
         hbox_refvol = gtk_hbox_new(FALSE, 0);
@@ -1010,27 +982,19 @@ See the About box and the documentation for details."));
         gtk_table_attach(GTK_TABLE(table_avg), hbox_threshold, 0, 1, 0, 1,
                          GTK_FILL, GTK_FILL, 5, 2);
 
-	optmenu_threshold = gtk_option_menu_new();
+	optmenu_threshold = gtk_combo_box_new_text ();
         gtk_table_attach(GTK_TABLE(table_avg), optmenu_threshold, 1, 2, 0, 1,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 2);
 
 	{
-		GtkWidget * menu = gtk_menu_new();
-		GtkWidget * item;
 
-		item = gtk_menu_item_new_with_label(_("% of standard deviation"));
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-		gtk_widget_show(item);
+                gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_threshold), _("% of standard deviation"));
+                gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_threshold), _("Linear threshold [dB]"));
 
-		item = gtk_menu_item_new_with_label(_("Linear threshold [dB]"));
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-		gtk_widget_show(item);
-
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_threshold), menu);
 	}
 
 	rva_use_linear_thresh_shadow = rva_use_linear_thresh;
-	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_threshold), rva_use_linear_thresh);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_threshold), rva_use_linear_thresh);
 	g_signal_connect(optmenu_threshold, "changed", G_CALLBACK(changed_threshold), NULL);
 
         hbox_linthresh = gtk_hbox_new(FALSE, 0);
@@ -1179,24 +1143,16 @@ See the About box and the documentation for details."));
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
 
-	optmenu_replaygain = gtk_option_menu_new();
+	optmenu_replaygain = gtk_combo_box_new_text ();
         gtk_box_pack_start(GTK_BOX(hbox), optmenu_replaygain, FALSE, FALSE, 20);
 
 	{
-		GtkWidget * menu = gtk_menu_new();
-		GtkWidget * item;
 
-		item = gtk_menu_item_new_with_label(_("Replaygain_track_gain"));
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-		gtk_widget_show(item);
+                gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_replaygain), _("Replaygain_track_gain"));
+                gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_replaygain), _("Replaygain_album_gain"));
 
-		item = gtk_menu_item_new_with_label(_("Replaygain_album_gain"));
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-		gtk_widget_show(item);
-
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_replaygain), menu);
 	}
-	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_replaygain), replaygain_tag_to_use);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_replaygain), replaygain_tag_to_use);
 
 
 	/* end of notebook */
@@ -1216,3 +1172,6 @@ See the About box and the documentation for details."));
 
 	gtk_widget_show_all(options_window);
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

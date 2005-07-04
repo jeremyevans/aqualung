@@ -408,6 +408,9 @@ plist__save_cb(gpointer data) {
         char * c;
 
         file_selector = gtk_file_selection_new(_("Please specify the file to save the playlist to."));
+        gtk_window_set_transient_for(GTK_WINDOW(file_selector),
+				     playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window));
+        gtk_window_set_position(GTK_WINDOW(file_selector), GTK_WIN_POS_MOUSE);
         gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), currdir);
         gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(file_selector));
         gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), "playlist.xml");
@@ -439,6 +442,9 @@ plist__load_cb(gpointer data) {
         char * c;
 
         file_selector = gtk_file_selection_new(_("Please specify the file to load the playlist from."));
+        gtk_window_set_transient_for(GTK_WINDOW(file_selector),
+				     playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window));
+        gtk_window_set_position(GTK_WINDOW(file_selector), GTK_WIN_POS_MOUSE);
         gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), currdir);
         gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(file_selector));
         gtk_widget_show(file_selector);
@@ -483,6 +489,9 @@ plist__enqueue_cb(gpointer data) {
         char * c;
 
         file_selector = gtk_file_selection_new("Please specify the file to load the playlist from.");
+        gtk_window_set_transient_for(GTK_WINDOW(file_selector),
+				     playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window));
+        gtk_window_set_position(GTK_WINDOW(file_selector), GTK_WIN_POS_MOUSE);
         gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), currdir);
         gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(file_selector));
         gtk_widget_show(file_selector);
@@ -576,6 +585,9 @@ browse_direct_clicked(GtkWidget * widget, gpointer * data) {
 	char * c;
 
         file_selector = gtk_file_selection_new(_("Please select the audio files for direct adding."));
+        gtk_window_set_transient_for(GTK_WINDOW(file_selector),
+				     playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window));
+        gtk_window_set_position(GTK_WINDOW(file_selector), GTK_WIN_POS_MOUSE);
         gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), currdir);
         gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(file_selector));
         gtk_file_selection_set_select_multiple(GTK_FILE_SELECTION(file_selector), TRUE);
@@ -954,7 +966,7 @@ playlist_rearrange_timeout_cb(gpointer data) {
 void
 delayed_playlist_rearrange(int delay) {
 
-	gtk_timeout_add(delay, playlist_rearrange_timeout_cb, NULL);
+	g_timeout_add(delay, playlist_rearrange_timeout_cb, NULL);
 }
 
 
@@ -2180,3 +2192,6 @@ add_to_playlist(char * filename, int enqueue) {
 		break;
 	}
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

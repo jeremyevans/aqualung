@@ -40,6 +40,7 @@
 #include "plugin.h"
 
 
+extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern pthread_mutex_t plugin_lock;
 
 extern char confdir[MAXLEN];
@@ -614,7 +615,7 @@ changed_combo(GtkWidget * widget, gpointer * data) {
 	optdata_t * optdata = (optdata_t *) data;
 	plugin_instance * instance = optdata->instance;
 	int k = optdata->index;
-	const char * str = gtk_entry_get_text(GTK_ENTRY(widget));
+	const char * str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
 	int i;
 	LADSPA_Data value = 0.0f;
 
@@ -1030,16 +1031,15 @@ build_plugin_window(plugin_instance * instance) {
 			defs = lrdf_get_scale_values(plugin->UniqueID, k);
 			if ((defs) && (defs->count > 0)) { /* have scale values */
 
-				combo = gtk_combo_new();
+                                combo = gtk_combo_box_new_text (); 
 				gtk_widget_set_name(combo, "plugin_combo");
 				glist = NULL;
 				gtk_table_attach(GTK_TABLE(table), combo, 1, 3, i, i+1,
 						 GTK_FILL | GTK_EXPAND, GTK_FILL, 2, 2);
 
 				for (j = 0; j < defs->count; j++) {
-					glist = g_list_append(glist, defs->items[j].label);
+	                                gtk_combo_box_append_text (GTK_COMBO_BOX (combo), defs->items[j].label);
 				}
-				gtk_combo_set_popdown_strings(GTK_COMBO(combo), glist);
 
 				gtk_widget_size_request(combo, &req);
 				req.height += 2;
@@ -1049,8 +1049,7 @@ build_plugin_window(plugin_instance * instance) {
 				/* now if we have an option that corresponds to 'start', choose that. */
 				for (j = 0; j < defs->count; j++) {
 					if (defs->items[j].value == start) {
-						gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry),
-								   defs->items[j].label);
+	                                        gtk_combo_box_set_active (GTK_COMBO_BOX (combo), start);
 						break;
 					}
 				}
@@ -1063,8 +1062,7 @@ build_plugin_window(plugin_instance * instance) {
 
 				optdata->instance = instance;
 				optdata->index = k;
-				g_signal_connect(GTK_COMBO(combo)->entry, "changed",
-						 G_CALLBACK(changed_combo), optdata);
+                                g_signal_connect(combo, "changed", G_CALLBACK(changed_combo), optdata);
 
 			} else { /* no scale values */
 
@@ -1685,7 +1683,7 @@ create_fxbuilder(void) {
 	viewport_avail = gtk_viewport_new(NULL, NULL);
         gtk_box_pack_start(GTK_BOX(vbox), viewport_avail, TRUE, TRUE, 3);
 	
-	add_button = gtk_button_new_with_label(_("Add"));
+        add_button = gtk_button_new_from_stock (GTK_STOCK_ADD); 
         g_signal_connect(add_button, "clicked", G_CALLBACK(add_clicked), NULL);
         gtk_box_pack_start(GTK_BOX(vbox), add_button, FALSE, TRUE, 3);
 
@@ -1779,11 +1777,11 @@ create_fxbuilder(void) {
 	hbox_buttons = gtk_hbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_buttons, FALSE, TRUE, 3);
 
-	remove_button = gtk_button_new_with_label(_("Remove"));
+        remove_button = gtk_button_new_from_stock (GTK_STOCK_REMOVE); 
         g_signal_connect(remove_button, "clicked", G_CALLBACK(remove_clicked), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_buttons), remove_button, TRUE, TRUE, 0);
 
-	conf_button = gtk_button_new_with_label(_("Configure"));
+	conf_button = gui_stock_label_button(_("_Configure"), GTK_STOCK_PREFERENCES);
         g_signal_connect(conf_button, "clicked", G_CALLBACK(conf_clicked), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_buttons), conf_button, TRUE, TRUE, 0);
 
@@ -2071,3 +2069,6 @@ load_plugin_data(void) {
         xmlFreeDoc(doc);
         return;
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

@@ -144,7 +144,7 @@ extern int auto_use_ext_meta_track;
 extern int hide_comment_pane;
 extern int hide_comment_pane_shadow;
 
-
+int enable_tooltips = 1;
 int replaygain_tag_to_use = 0;
 int rva_is_enabled = 0;
 int rva_env = 0;
@@ -171,6 +171,8 @@ fileinfo_t disp_info;
 unsigned long disp_samples;
 unsigned long disp_pos;
 
+/* tooltips group */
+GtkTooltips * aqualung_tooltips;
 
 GtkWidget * main_window;
 extern GtkWidget * browser_window;
@@ -992,7 +994,7 @@ conf__fileinfo_cb(gpointer data) {
 		GtkTreeIter dummy;
 		const char * name = gtk_label_get_text(GTK_LABEL(label_title));
 	
-		show_file_info((const char *)name, current_file, 0, NULL, dummy);
+		show_file_info((char *)name, current_file, 0, NULL, dummy);
 	}
 }
 
@@ -1067,10 +1069,10 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		case GDK_KP_Divide:
 			refresh_time_label = 0;
 			if (vol_bal_timeout_tag) {
-				gtk_timeout_remove(vol_bal_timeout_tag);
+				g_source_remove(vol_bal_timeout_tag);
 			}
 
-			vol_bal_timeout_tag = gtk_timeout_add(1000, vol_bal_timeout_callback, NULL);
+			vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
 			g_signal_emit_by_name(G_OBJECT(scale_bal), "move-slider",
 					      GTK_SCROLL_STEP_BACKWARD, NULL);
 			return TRUE;
@@ -1078,10 +1080,10 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		case GDK_KP_Multiply:
 			refresh_time_label = 0;
 			if (vol_bal_timeout_tag) {
-				gtk_timeout_remove(vol_bal_timeout_tag);
+				g_source_remove(vol_bal_timeout_tag);
 			}
 			
-			vol_bal_timeout_tag = gtk_timeout_add(1000, vol_bal_timeout_callback, NULL);
+			vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
 			g_signal_emit_by_name(G_OBJECT(scale_bal),
 					      "move-slider", GTK_SCROLL_STEP_FORWARD, NULL);
 			break;
@@ -1092,10 +1094,10 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		case GDK_KP_Divide:
 			refresh_time_label = 0;
 			if (vol_bal_timeout_tag) {
-				gtk_timeout_remove(vol_bal_timeout_tag);
+				g_source_remove(vol_bal_timeout_tag);
 			}
 			
-			vol_bal_timeout_tag = gtk_timeout_add(1000, vol_bal_timeout_callback, NULL);
+			vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
 			g_signal_emit_by_name(G_OBJECT(scale_vol), "move-slider",
 					      GTK_SCROLL_STEP_BACKWARD, NULL);
 			return TRUE;
@@ -1103,10 +1105,10 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		case GDK_KP_Multiply:
 			refresh_time_label = 0;
 			if (vol_bal_timeout_tag) {
-				gtk_timeout_remove(vol_bal_timeout_tag);
+				g_source_remove(vol_bal_timeout_tag);
 			}
 			
-			vol_bal_timeout_tag = gtk_timeout_add(1000, vol_bal_timeout_callback, NULL);
+			vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
 			g_signal_emit_by_name(G_OBJECT(scale_vol),
 					      "move-slider", GTK_SCROLL_STEP_FORWARD, NULL);
 			return TRUE;
@@ -2050,19 +2052,32 @@ shuffle_toggled(GtkWidget * widget, gpointer data) {
 
 
 GtkWidget *
-create_button_with_xpm(char * path, int toggle) {
+create_button_with_image(char * path, int toggle) {
 
-     GtkWidget * button;
-     GtkWidget * xpm;
+        GtkWidget * button;
+        GdkPixbuf * pixbuf;
+        GtkWidget * image;
 
-     xpm = gtk_image_new_from_file(path);
-     if (toggle)
-	     button = gtk_toggle_button_new();
-     else
-	     button = gtk_button_new();
-     gtk_container_add(GTK_CONTAINER(button), xpm);
+        gchar tmp_path[MAXLEN];
 
-     return button;
+        sprintf(tmp_path, "%s.xpm", path);
+
+        pixbuf = gdk_pixbuf_new_from_file(tmp_path, NULL);
+
+        if(!pixbuf) {
+                sprintf(tmp_path, "%s.png", path);
+                pixbuf = gdk_pixbuf_new_from_file(tmp_path, NULL);
+        }
+
+        image = gtk_image_new_from_pixbuf(pixbuf);
+
+        if (toggle)
+                button = gtk_toggle_button_new();
+        else
+                button = gtk_button_new();
+        gtk_container_add(GTK_CONTAINER(button), image);
+
+        return button;
 }
 
 
@@ -2148,6 +2163,7 @@ create_main_window(char * skin_path) {
 	gtk_widget_set_events(main_window, GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 	gtk_container_set_border_width(GTK_CONTAINER(main_window), 5);
 
+        aqualung_tooltips = gtk_tooltips_new();
 
 	conf_menu = gtk_menu_new();
 
@@ -2325,9 +2341,9 @@ create_main_window(char * skin_path) {
 	g_signal_connect(G_OBJECT(adj_vol), "value_changed", G_CALLBACK(changed_vol), NULL);
 	scale_vol = gtk_hscale_new(GTK_ADJUSTMENT(adj_vol));
 	gtk_widget_set_name(scale_vol, "scale_vol");
-	gtk_signal_connect(GTK_OBJECT(scale_vol), "button_press_event",
+	g_signal_connect(GTK_OBJECT(scale_vol), "button_press_event",
 			   (GtkSignalFunc)scale_vol_button_press_event, NULL);
-	gtk_signal_connect(GTK_OBJECT(scale_vol), "button_release_event",
+	g_signal_connect(GTK_OBJECT(scale_vol), "button_release_event",
 			   (GtkSignalFunc)scale_vol_button_release_event, NULL);
 	gtk_widget_set_size_request(scale_vol, -1, 8);
 	gtk_scale_set_digits(GTK_SCALE(scale_vol), 0);
@@ -2341,9 +2357,9 @@ create_main_window(char * skin_path) {
 	gtk_scale_set_digits(GTK_SCALE(scale_bal), 0);
 	gtk_widget_set_size_request(scale_bal, -1, 8);
 	gtk_widget_set_name(scale_bal, "scale_bal");
-	gtk_signal_connect(GTK_OBJECT(scale_bal), "button_press_event",
+	g_signal_connect(GTK_OBJECT(scale_bal), "button_press_event",
 			   (GtkSignalFunc)scale_bal_button_press_event, NULL);
-	gtk_signal_connect(GTK_OBJECT(scale_bal), "button_release_event",
+	g_signal_connect(GTK_OBJECT(scale_bal), "button_release_event",
 			   (GtkSignalFunc)scale_bal_button_release_event, NULL);
         gtk_scale_set_draw_value(GTK_SCALE(scale_bal), FALSE);
 	gtk_table_attach(GTK_TABLE(vb_table), scale_bal, 2, 3, 0, 1,
@@ -2355,9 +2371,9 @@ create_main_window(char * skin_path) {
         g_signal_connect(G_OBJECT(adj_pos), "value_changed", G_CALLBACK(changed_pos), NULL);
         scale_pos = gtk_hscale_new(GTK_ADJUSTMENT(adj_pos));
 	gtk_widget_set_name(scale_pos, "scale_pos");
-	gtk_signal_connect(GTK_OBJECT(scale_pos), "button_press_event",
+	g_signal_connect(GTK_OBJECT(scale_pos), "button_press_event",
 			   (GtkSignalFunc)scale_button_press_event, NULL);
-	gtk_signal_connect(GTK_OBJECT(scale_pos), "button_release_event",
+	g_signal_connect(GTK_OBJECT(scale_pos), "button_release_event",
 			   (GtkSignalFunc)scale_button_release_event, NULL);
 	gtk_scale_set_digits(GTK_SCALE(scale_pos), 0);
         gtk_scale_set_draw_value(GTK_SCALE(scale_pos), FALSE);
@@ -2379,16 +2395,25 @@ create_main_window(char * skin_path) {
 	btns_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), btns_hbox, FALSE, FALSE, 0);
 
-	sprintf(path, "%s/%s", skin_path, "prev.xpm");
-	prev_button = create_button_with_xpm(path, 0);
-	sprintf(path, "%s/%s", skin_path, "stop.xpm");
-	stop_button = create_button_with_xpm(path, 0);
-	sprintf(path, "%s/%s", skin_path, "next.xpm");
-	next_button = create_button_with_xpm(path, 0);
-	sprintf(path, "%s/%s", skin_path, "play.xpm");
-	play_button = create_button_with_xpm(path, 1);
-	sprintf(path, "%s/%s", skin_path, "pause.xpm");
-	pause_button = create_button_with_xpm(path, 1);
+	sprintf(path, "%s/%s", skin_path, "prev");
+	prev_button = create_button_with_image(path, 0);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), prev_button, _("Previous song (up)"), NULL);
+
+	sprintf(path, "%s/%s", skin_path, "stop");
+	stop_button = create_button_with_image(path, 0);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), stop_button, _("Stop (s)"), NULL);
+
+	sprintf(path, "%s/%s", skin_path, "next");
+	next_button = create_button_with_image(path, 0);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), next_button, _("Next song (down)"), NULL);
+
+	sprintf(path, "%s/%s", skin_path, "play");
+	play_button = create_button_with_image(path, 1);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), play_button, _("Play (p)"), NULL);
+
+	sprintf(path, "%s/%s", skin_path, "pause");
+	pause_button = create_button_with_image(path, 1);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), pause_button, _("Pause (space)"), NULL);
 
 	GTK_WIDGET_UNSET_FLAGS(prev_button, GTK_CAN_FOCUS);
 	GTK_WIDGET_UNSET_FLAGS(stop_button, GTK_CAN_FOCUS);
@@ -2412,22 +2437,25 @@ create_main_window(char * skin_path) {
 	/* toggle buttons for shuffle and repeat */
 	sr_table = gtk_table_new(2, 2, FALSE);
 
-	sprintf(path, "%s/%s", skin_path, "repeat.xpm");
-	repeat_button = create_button_with_xpm(path, 1);
+	sprintf(path, "%s/%s", skin_path, "repeat");
+	repeat_button = create_button_with_image(path, 1);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), repeat_button, _("Repeat current song"), NULL);
 	gtk_widget_set_size_request(repeat_button, -1, 1);
 	gtk_table_attach(GTK_TABLE(sr_table), repeat_button, 0, 1, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 0);
 	g_signal_connect(repeat_button, "toggled", G_CALLBACK(repeat_toggled), NULL);
 
-	sprintf(path, "%s/%s", skin_path, "repeat_all.xpm");
-	repeat_all_button = create_button_with_xpm(path, 1);
+	sprintf(path, "%s/%s", skin_path, "repeat_all");
+	repeat_all_button = create_button_with_image(path, 1);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), repeat_all_button, _("Repeat all songs"), NULL);
 	gtk_widget_set_size_request(repeat_all_button, -1, 1);
 	gtk_table_attach(GTK_TABLE(sr_table), repeat_all_button, 0, 1, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 0);
 	g_signal_connect(repeat_all_button, "toggled", G_CALLBACK(repeat_all_toggled), NULL);
 
-	sprintf(path, "%s/%s", skin_path, "shuffle.xpm");
-	shuffle_button = create_button_with_xpm(path, 1);
+	sprintf(path, "%s/%s", skin_path, "shuffle");
+	shuffle_button = create_button_with_image(path, 1);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), shuffle_button, _("Shuffle songs"), NULL);
 	gtk_widget_set_size_request(shuffle_button, -1, 1);
 	gtk_table_attach(GTK_TABLE(sr_table), shuffle_button, 1, 2, 0, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 0);
@@ -2439,12 +2467,15 @@ create_main_window(char * skin_path) {
 
         /* toggle buttons for sub-windows visibility */
 	playlist_toggle = gtk_toggle_button_new_with_mnemonic("P_L");
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), playlist_toggle, _("Toggle playlist"), NULL);
 	gtk_box_pack_end(GTK_BOX(btns_hbox), playlist_toggle, FALSE, FALSE, 0);
 	
 	musicstore_toggle = gtk_toggle_button_new_with_mnemonic("M_S");
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), musicstore_toggle, _("Toggle music store"), NULL);
 	gtk_box_pack_end(GTK_BOX(btns_hbox), musicstore_toggle, FALSE, FALSE, 3);
 
 	plugin_toggle = gtk_toggle_button_new_with_mnemonic("F_X");
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), plugin_toggle, _("Toggle LADSPA patch builder"), NULL);
 	gtk_box_pack_end(GTK_BOX(btns_hbox), plugin_toggle, FALSE, FALSE, 0);
 
 	g_signal_connect(playlist_toggle, "toggled", G_CALLBACK(playlist_toggled), NULL);
@@ -2456,6 +2487,12 @@ create_main_window(char * skin_path) {
 	GTK_WIDGET_UNSET_FLAGS(plugin_toggle, GTK_CAN_FOCUS);
 
 	gtk_box_pack_end(GTK_BOX(btns_hbox), sr_table, FALSE, FALSE, 3);
+
+        if(enable_tooltips) {
+                gtk_tooltips_enable(aqualung_tooltips);
+        } else {
+                gtk_tooltips_disable(aqualung_tooltips);
+        }
 }
 
 
@@ -2619,7 +2656,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 
 	/* set timeout function */
-	timeout_tag = gtk_timeout_add(100, timeout_callback, NULL);
+	timeout_tag = g_timeout_add(100, timeout_callback, NULL);
 }
 
 
@@ -3057,6 +3094,9 @@ save_config(void) {
 	snprintf(str, 31, "%d", auto_use_ext_meta_track);
         xmlNewTextChild(root, NULL, "auto_use_ext_meta_track", str);
 
+	snprintf(str, 31, "%d", enable_tooltips);
+        xmlNewTextChild(root, NULL, "enable_tooltips", str);
+
 	snprintf(str, 31, "%d", hide_comment_pane_shadow);
         xmlNewTextChild(root, NULL, "hide_comment_pane", str);
 
@@ -3225,6 +3265,7 @@ load_config(void) {
 	vol = 0.0f;
 	bal = 0.0f;
 	browser_paned_pos = 250;
+        enable_tooltips = 1;
 	hide_comment_pane = hide_comment_pane_shadow = 0;
 
 
@@ -3312,6 +3353,13 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
 				sscanf(key, "%d", &show_length_in_playlist);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_tooltips"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				sscanf(key, "%d", &enable_tooltips);
+			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"hide_comment_pane"))) {
@@ -3558,3 +3606,36 @@ load_config(void) {
         xmlFreeDoc(doc);
         return;
 }
+
+
+GtkWidget* 
+gui_stock_label_button(gchar *blabel, const gchar *bstock) {
+
+GtkWidget *button;
+GtkWidget *alignment;
+GtkWidget *hbox;
+GtkWidget *image;
+
+	button = g_object_new (GTK_TYPE_BUTTON, "visible", TRUE, NULL);
+
+	alignment = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+	hbox = gtk_hbox_new (FALSE, 2);
+	gtk_container_add (GTK_CONTAINER (alignment), hbox);
+
+	image = gtk_image_new_from_stock (bstock, GTK_ICON_SIZE_BUTTON);
+	if (image)
+		gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, TRUE, 0);
+
+	if (blabel)
+	gtk_box_pack_start (GTK_BOX (hbox),
+		g_object_new (GTK_TYPE_LABEL, "label", blabel, "use_underline", TRUE, NULL),
+		FALSE, TRUE, 0);
+
+	gtk_widget_show_all (alignment);
+	gtk_container_add (GTK_CONTAINER (button), alignment);
+
+	return button;
+}
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

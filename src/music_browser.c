@@ -331,7 +331,8 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
         gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
-        name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
@@ -341,7 +342,8 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
         gtk_box_pack_start(GTK_BOX(hbox), sort_name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
 
-        sort_name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        sort_name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(sort_name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(sort_name_entry), sort_name);
 	gtk_table_attach(GTK_TABLE(table), sort_name_entry, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
@@ -439,7 +441,8 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
         gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
-        name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
@@ -449,7 +452,8 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
         gtk_box_pack_start(GTK_BOX(hbox), sort_name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
 
-        sort_name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        sort_name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(sort_name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(sort_name_entry), sort_name);
 	gtk_table_attach(GTK_TABLE(table), sort_name_entry, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
@@ -608,7 +612,8 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
         gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
-        name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
@@ -618,7 +623,8 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
         gtk_box_pack_start(GTK_BOX(hbox), sort_name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
 
-        sort_name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        sort_name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(sort_name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(sort_name_entry), sort_name);
 	gtk_table_attach(GTK_TABLE(table), sort_name_entry, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
@@ -778,7 +784,8 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
         gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
-        name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
@@ -788,7 +795,8 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
         gtk_box_pack_start(GTK_BOX(hbox), sort_name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
 
-        sort_name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        sort_name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(sort_name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(sort_name_entry), sort_name);
 	gtk_table_attach(GTK_TABLE(table), sort_name_entry, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
@@ -920,7 +928,8 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
         gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
-        name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
@@ -930,7 +939,8 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
         gtk_box_pack_start(GTK_BOX(hbox), sort_name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
 
-        sort_name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        sort_name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(sort_name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(sort_name_entry), sort_name);
 	gtk_table_attach(GTK_TABLE(table), sort_name_entry, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
@@ -944,7 +954,8 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), hbox2, 1, 2, 2, 3,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
-        file_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        file_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(file_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(file_entry), file);
         gtk_box_pack_start(GTK_BOX(hbox2), file_entry, TRUE, TRUE, 0);
 
@@ -1075,7 +1086,8 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
         gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
-        name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
@@ -1085,7 +1097,8 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
         gtk_box_pack_start(GTK_BOX(hbox), sort_name_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
 
-        sort_name_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        sort_name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(sort_name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(sort_name_entry), sort_name);
 	gtk_table_attach(GTK_TABLE(table), sort_name_entry, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
@@ -1100,7 +1113,8 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 	gtk_table_attach(GTK_TABLE(table), hbox2, 1, 2, 2, 3,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
-        file_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        file_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(file_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(file_entry), file);
         gtk_box_pack_start(GTK_BOX(hbox2), file_entry, TRUE, TRUE, 0);
 
@@ -1144,7 +1158,8 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
         gtk_table_attach(GTK_TABLE(table), duration_hbox, 0, 1, 0, 1,
                          GTK_FILL, GTK_EXPAND | GTK_FILL, 5, 3);
 
-        duration_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        duration_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(duration_entry), MAXLEN - 1);
 	time2time(duration, str);
         gtk_entry_set_text(GTK_ENTRY(duration_entry), str);
         gtk_editable_set_editable(GTK_EDITABLE(duration_entry), FALSE);
@@ -1158,7 +1173,8 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
         gtk_table_attach(GTK_TABLE(table), volume_hbox, 0, 1, 1, 2,
                          GTK_FILL, GTK_EXPAND | GTK_FILL, 5, 3);
 
-        volume_entry = gtk_entry_new_with_max_length(MAXLEN - 1);
+        volume_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(volume_entry), MAXLEN - 1);
 	if (volume <= 0.1f)
 		snprintf(str, MAXLEN-1, "%.1f dBFS", volume);
 	else
@@ -3141,3 +3157,6 @@ save_music_store(void) {
 	fclose(fout);
 	unlink(tmpname);
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

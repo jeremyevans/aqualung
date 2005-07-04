@@ -32,6 +32,8 @@
 #include "i18n.h"
 
 
+extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
+
 extern GtkTreeStore * music_store;
 extern GtkWidget * music_tree;
 
@@ -538,13 +540,17 @@ search_dialog(void) {
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 3);
 
-	button = gtk_button_new_with_label(_("Search"));
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(search_button_clicked), NULL);
+        button = gui_stock_label_button(_("Search"), GTK_STOCK_FIND);
+        g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(search_button_clicked), NULL);
         gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
 
-	button = gtk_button_new_with_label(_("Close"));
+        button = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(close_button_clicked), NULL);
         gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
 
 	gtk_widget_show_all(search_window);
 }
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

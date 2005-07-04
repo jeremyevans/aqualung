@@ -743,7 +743,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, TRUE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
-	dismiss_btn = gtk_button_new_with_label(_("Dismiss"));
+        dismiss_btn = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
 	g_signal_connect(dismiss_btn, "clicked", G_CALLBACK(dismiss), NULL);
   	gtk_container_add(GTK_CONTAINER(hbuttonbox), dismiss_btn);   
 
@@ -751,3 +751,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
 	meta_free(meta);
 }
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

@@ -49,6 +49,7 @@ GtkWidget * optmenu_src;
 
 extern int ladspa_is_postfader;
 extern GtkWidget * main_window;
+extern GtkTooltips * aqualung_tooltips;
 extern int auto_save_playlist;
 extern int show_rva_in_playlist;
 extern int show_length_in_playlist;
@@ -68,6 +69,7 @@ extern int auto_use_ext_meta_artist;
 extern int auto_use_ext_meta_record;
 extern int auto_use_ext_meta_track;
 extern int replaygain_tag_to_use;
+extern int enable_tooltips;
 extern int hide_comment_pane_shadow;
 extern int playlist_is_embedded_shadow;
 
@@ -107,6 +109,7 @@ GtkWidget * check_auto_use_meta_track;
 GtkWidget * check_auto_use_ext_meta_artist;
 GtkWidget * check_auto_use_ext_meta_record;
 GtkWidget * check_auto_use_ext_meta_track;
+GtkWidget * check_enable_tooltips;
 GtkWidget * check_hide_comment_pane;
 GtkWidget * check_playlist_is_embedded;
 
@@ -201,6 +204,14 @@ ok(GtkWidget * widget, gpointer data) {
 		auto_use_ext_meta_track = 1;
 	} else {
 		auto_use_ext_meta_track = 0;
+	}
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_tooltips))) {
+		enable_tooltips = 1;
+                gtk_tooltips_enable(aqualung_tooltips);
+	} else {
+	        enable_tooltips = 0;
+                gtk_tooltips_disable(aqualung_tooltips);
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_hide_comment_pane))) {
@@ -491,7 +502,7 @@ draw_rva_diagram(void) {
 
 	gdk_draw_line(rva_pixmap, gc, px1, py1, px2, py2);
 
-	gdk_draw_pixmap(rva_drawing_area->window,
+	gdk_draw_drawable(rva_drawing_area->window,
 			rva_drawing_area->style->fg_gc[GTK_WIDGET_STATE(rva_drawing_area)],
 			rva_pixmap,
 			0, 0, 0, 0,
@@ -521,7 +532,7 @@ static gint
 rva_configure_event(GtkWidget * widget, GdkEventConfigure * event) {
 
 	if (rva_pixmap)
-		gdk_pixmap_unref(rva_pixmap);
+		g_object_unref(rva_pixmap);
 
 	rva_pixmap = gdk_pixmap_new(widget->window,
 				    widget->allocation.width,
@@ -541,7 +552,7 @@ rva_configure_event(GtkWidget * widget, GdkEventConfigure * event) {
 static gint
 rva_expose_event(GtkWidget * widget, GdkEventExpose * event) {
 
-	gdk_draw_pixmap(widget->window,
+	gdk_draw_drawable(widget->window,
 			widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
 			rva_pixmap,
 			event->area.x, event->area.y,
@@ -583,8 +594,10 @@ create_options_window(void) {
 	GtkWidget * vbox_general;
 	GtkWidget * frame_title;
 	GtkWidget * frame_param;
+	GtkWidget * frame_misc;
 	GtkWidget * vbox_title;
 	GtkWidget * vbox_param;
+	GtkWidget * vbox_misc;
 	GtkWidget * label_title;
 	GtkWidget * label_param;
 
@@ -665,7 +678,8 @@ respectively. Everything else you enter here will be\n\
 literally copied into the resulting string.\n"));
 	gtk_box_pack_start(GTK_BOX(vbox_title), label_title, TRUE, TRUE, 0);
 
-	entry_title = gtk_entry_new_with_max_length(MAXLEN - 1);
+	entry_title = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(entry_title), MAXLEN - 1);
 	gtk_entry_set_text(GTK_ENTRY(entry_title), title_format);
 	gtk_box_pack_start(GTK_BOX(vbox_title), entry_title, TRUE, TRUE, 0);
 
@@ -685,10 +699,27 @@ Example: enter '-o alsa -R' below to use ALSA output\n\
 running realtime as a default.\n"));
 	gtk_box_pack_start(GTK_BOX(vbox_param), label_param, TRUE, TRUE, 0);
 
-	entry_param = gtk_entry_new_with_max_length(MAXLEN - 1);
+	entry_param = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(entry_param), MAXLEN - 1);
 	gtk_entry_set_text(GTK_ENTRY(entry_param), default_param);
 	gtk_box_pack_start(GTK_BOX(vbox_param), entry_param, TRUE, TRUE, 0);
 
+
+	frame_misc = gtk_frame_new(_("Miscellaneous"));
+	gtk_box_pack_start(GTK_BOX(vbox_general), frame_misc, FALSE, TRUE, 5);
+
+	vbox_misc = gtk_vbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_misc), 10);
+	gtk_container_add(GTK_CONTAINER(frame_misc), vbox_misc);
+
+	check_enable_tooltips =
+		gtk_check_button_new_with_label(_("Enable tooltips"));
+
+        gtk_widget_set_name(check_enable_tooltips, "check_on_notebook");
+	if (enable_tooltips) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_tooltips), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_enable_tooltips, FALSE, FALSE, 0);
 
 	check_hide_comment_pane =
 		gtk_check_button_new_with_label(_("Hide the Music Store comment pane\n"
@@ -697,7 +728,7 @@ running realtime as a default.\n"));
 	if (hide_comment_pane_shadow) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_hide_comment_pane), TRUE);
 	}
-	gtk_box_pack_start(GTK_BOX(vbox_general), check_hide_comment_pane, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_hide_comment_pane, FALSE, FALSE, 0);
 
 
 	check_playlist_is_embedded =
@@ -707,7 +738,7 @@ running realtime as a default.\n"));
 	if (playlist_is_embedded_shadow) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded), TRUE);
 	}
-	gtk_box_pack_start(GTK_BOX(vbox_general), check_playlist_is_embedded, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_playlist_is_embedded, FALSE, FALSE, 0);
 
 
 	/* "Playlist" notebook page */
@@ -896,7 +927,7 @@ See the About box and the documentation for details."));
                          GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 2);
 	
 	rva_drawing_area = gtk_drawing_area_new();
-	gtk_drawing_area_size(GTK_DRAWING_AREA(rva_drawing_area), 240, 240);
+	gtk_widget_set_size_request(GTK_WIDGET(rva_drawing_area), 240, 240);
 	gtk_container_add(GTK_CONTAINER(rva_viewport), rva_drawing_area);
 	
 	g_signal_connect(G_OBJECT(rva_drawing_area), "configure_event",
@@ -1160,13 +1191,13 @@ See the About box and the documentation for details."));
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 6);
 
-	cancel_btn = gtk_button_new_with_label(_("Cancel"));
-	gtk_widget_set_size_request(cancel_btn, 60, 30);
+        cancel_btn = gtk_button_new_from_stock (GTK_STOCK_CANCEL); 
+	gtk_widget_set_size_request(cancel_btn, 70, 30);
 	g_signal_connect(cancel_btn, "clicked", G_CALLBACK(cancel), NULL);
 	gtk_box_pack_end(GTK_BOX(hbox), cancel_btn, FALSE, FALSE, 6);
 
-	ok_btn = gtk_button_new_with_label(_("OK"));
-	gtk_widget_set_size_request(ok_btn, 60, 30);
+        ok_btn = gtk_button_new_from_stock (GTK_STOCK_OK); 
+	gtk_widget_set_size_request(ok_btn, 70, 30);
 	g_signal_connect(ok_btn, "clicked", G_CALLBACK(ok), NULL);
 	gtk_box_pack_end(GTK_BOX(hbox), ok_btn, FALSE, FALSE, 6);
 

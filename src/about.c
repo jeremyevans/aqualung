@@ -46,9 +46,7 @@ create_about_window() {
 	GtkWidget * vbox;
 
 	GtkWidget * xpm;
-	GdkPixmap * pixmap;
-	GdkBitmap * mask;
-	GtkStyle * style;
+	GdkPixbuf * pixmap;
 
 	GtkWidget * frame;
 	GtkWidget * scrolled_win;
@@ -72,7 +70,7 @@ create_about_window() {
 	gtk_window_set_modal(GTK_WINDOW(about_window), TRUE);
 	gtk_widget_set_name(about_window, "");
         gtk_window_set_title(GTK_WINDOW(about_window), _("About"));
-        gtk_widget_set_size_request(about_window, -1, 350);
+        gtk_widget_set_size_request(about_window, 540, 350);
 	gtk_window_set_position(GTK_WINDOW(about_window), GTK_WIN_POS_CENTER);
 	gtk_widget_modify_bg(about_window, GTK_STATE_NORMAL, &white);
 
@@ -116,6 +114,7 @@ create_about_window() {
 	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(view), 3);
         gtk_text_view_set_editable(GTK_TEXT_VIEW(view), FALSE);
 	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(view), FALSE);
+        gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(view), GTK_WRAP_WORD);
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
         gtk_text_view_set_buffer(GTK_TEXT_VIEW(view), buffer);
 
@@ -329,12 +328,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."), -1);
 
 	gtk_widget_show_all(about_window);
 
-	style = gtk_widget_get_style(about_window);
-	pixmap = gdk_pixmap_create_from_xpm_d(about_window->window, &mask,
-					      &style->bg[GTK_STATE_NORMAL],
-					      (gchar **)logo_xpm);
-	xpm = gtk_pixmap_new(pixmap, mask);
-	gtk_box_pack_end(GTK_BOX(vbox), xpm, FALSE, FALSE, 0);
+        pixmap = gdk_pixbuf_new_from_xpm_data ((const char **)logo_xpm);
+
+        xpm = gtk_image_new_from_pixbuf (pixmap);
+        gtk_box_pack_end(GTK_BOX(vbox), xpm, FALSE, FALSE, 0);
 
 	gtk_widget_show(xpm);
 

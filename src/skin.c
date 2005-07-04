@@ -118,7 +118,7 @@ create_skin_window() {
 
 	skin_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_transient_for(GTK_WINDOW(skin_window), GTK_WINDOW(main_window));
-	gtk_widget_set_size_request(skin_window, 250, 150);
+	gtk_widget_set_size_request(skin_window, 250, 190);
         gtk_window_set_title(GTK_WINDOW(skin_window), _("Skin chooser"));
 	gtk_window_set_position(GTK_WINDOW(skin_window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(skin_window), TRUE);
@@ -198,13 +198,11 @@ create_skin_window() {
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 
-	cancel_btn = gtk_button_new_with_label(_("Cancel"));
-	gtk_widget_set_size_request(cancel_btn, 60, 30);
+        cancel_btn = gtk_button_new_from_stock (GTK_STOCK_CANCEL); 
 	g_signal_connect(cancel_btn, "clicked", G_CALLBACK(cancel), NULL);
 	gtk_box_pack_end(GTK_BOX(hbox), cancel_btn, FALSE, FALSE, 3);
 
-	apply_btn = gtk_button_new_with_label(_("Apply"));
-	gtk_widget_set_size_request(apply_btn, 60, 30);
+        apply_btn = gtk_button_new_from_stock (GTK_STOCK_APPLY); 
 	g_signal_connect(apply_btn, "clicked", G_CALLBACK(apply), NULL);
 	gtk_box_pack_end(GTK_BOX(hbox), apply_btn, FALSE, FALSE, 3);
 
@@ -227,3 +225,6 @@ create_skin_window() {
 		} while (i++, gtk_tree_model_iter_next(GTK_TREE_MODEL(skin_store), &iter));
 	}
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

@@ -1,1 +1,1 @@
-SUBDIRS = dark default metal woody
+SUBDIRS = dark default metal plain woody

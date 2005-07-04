@@ -361,6 +361,7 @@ AC_OUTPUT([Makefile \
 	   skin/dark/Makefile \
 	   skin/default/Makefile \
 	   skin/metal/Makefile \
+	   skin/plain/Makefile \
 	   skin/woody/Makefile \
 	   src/Makefile \
 	   src/po/Makefile])

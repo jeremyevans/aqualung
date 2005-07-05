@@ -1777,7 +1777,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 					gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
 					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
 							   3, &(cue.voladj), -1);
-					strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+					cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 					strncpy(current_file, str, MAXLEN-1);
 					g_free(str);
 					is_file_loaded = 1;
@@ -2708,6 +2708,8 @@ timeout_callback(gpointer data) {
 	char rcmd;
 	static char cmdbuf[MAXLEN];
 	int rcv_count;
+	static int last_rcmd_loadenq = 0;
+
 
 	while (jack_ringbuffer_read_space(rb_disk2gui)) {
 		jack_ringbuffer_read(rb_disk2gui, &recv_cmd, 1);
@@ -2971,34 +2973,44 @@ timeout_callback(gpointer data) {
 		switch (rcmd) {
 		case RCMD_BACK:
 			prev_event(NULL, NULL, NULL);
+			last_rcmd_loadenq = 0;
 			break;
 		case RCMD_PLAY:
-			if (!is_file_loaded || is_paused) {
+			if (last_rcmd_loadenq != 2) {
 				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
 				        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
 			}
+			last_rcmd_loadenq = 0;
 			break;
 		case RCMD_PAUSE:
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
 			        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
+			last_rcmd_loadenq = 0;
 			break;
 		case RCMD_STOP:
 			stop_event(NULL, NULL, NULL);
+			last_rcmd_loadenq = 0;
 			break;
 		case RCMD_FWD:
 			next_event(NULL, NULL, NULL);
+			last_rcmd_loadenq = 0;
 			break;
 		case RCMD_LOAD:
 			add_to_playlist(cmdbuf, 0);
+			last_rcmd_loadenq = 1;
 			break;
 		case RCMD_ENQUEUE:
 			add_to_playlist(cmdbuf, 1);
+			if (last_rcmd_loadenq != 1)
+				last_rcmd_loadenq = 2;
 			break;
 		case RCMD_VOLADJ:
 			adjust_remote_volume(cmdbuf);
+			last_rcmd_loadenq = 0;
 			break;
 		case RCMD_QUIT:
 			main_window_close(NULL, NULL);
+			last_rcmd_loadenq = 0;
 			break;
 		}
 		++rcv_count;

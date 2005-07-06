@@ -2977,8 +2977,11 @@ timeout_callback(gpointer data) {
 			break;
 		case RCMD_PLAY:
 			if (last_rcmd_loadenq != 2) {
+				if (is_paused) {
+					stop_event(NULL, NULL, NULL);
+				}
 				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
-				        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
+					!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
 			}
 			last_rcmd_loadenq = 0;
 			break;
@@ -3623,10 +3626,10 @@ load_config(void) {
 GtkWidget* 
 gui_stock_label_button(gchar *blabel, const gchar *bstock) {
 
-GtkWidget *button;
-GtkWidget *alignment;
-GtkWidget *hbox;
-GtkWidget *image;
+	GtkWidget *button;
+	GtkWidget *alignment;
+	GtkWidget *hbox;
+	GtkWidget *image;
 
 	button = g_object_new (GTK_TYPE_BUTTON, "visible", TRUE, NULL);
 
@@ -3639,7 +3642,7 @@ GtkWidget *image;
 		gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, TRUE, 0);
 
 	if (blabel)
-	gtk_box_pack_start (GTK_BOX (hbox),
+		gtk_box_pack_start (GTK_BOX (hbox),
 		g_object_new (GTK_TYPE_LABEL, "label", blabel, "use_underline", TRUE, NULL),
 		FALSE, TRUE, 0);
 

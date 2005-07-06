@@ -615,23 +615,18 @@ changed_combo(GtkWidget * widget, gpointer * data) {
 	optdata_t * optdata = (optdata_t *) data;
 	plugin_instance * instance = optdata->instance;
 	int k = optdata->index;
-	const char * str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
-	int i;
+	
+	int i = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
 	LADSPA_Data value = 0.0f;
 
 	lrdf_defaults * defs = lrdf_get_scale_values(instance->descriptor->UniqueID, k);
-	for (i = 0; i < defs->count; i++) {
-		if (strcmp(str, defs->items[i].label) == 0) {
-			value = defs->items[i].value;
-			break;
-		}
-	}
+	value = defs->items[i].value;
+
 	lrdf_free_setting_values(defs);
 
 	pthread_mutex_lock(&plugin_lock);
 	instance->knobs[k] = value;
 	pthread_mutex_unlock(&plugin_lock);
-
 }
 
 

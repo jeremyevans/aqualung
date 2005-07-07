@@ -497,19 +497,27 @@ get_bypassed_name(plugin_instance * instance, char * str) {
 
 
 void
-refresh_plugin_vect(void) {
+refresh_plugin_vect(int diff) {
 	
-	int i = 0;
+	int i = 0, j = 0;
 	GtkTreeIter iter;
 	gpointer gp_instance;
+	plugin_instance * plugin_vect_shadow[MAX_PLUGINS];
 
         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, i) &&
 		i < MAX_PLUGINS) {
 
 		gtk_tree_model_get(GTK_TREE_MODEL(running_store), &iter, 1, &gp_instance, -1);
-		plugin_vect[i] = (plugin_instance *) gp_instance;
+		plugin_vect_shadow[i] = (plugin_instance *) gp_instance;
 		++i;
 	}
+
+	pthread_mutex_lock(&plugin_lock);
+	n_plugins += diff;
+	for (j = 0; j < i; j++) {
+		plugin_vect[j] = plugin_vect_shadow[j];
+	}
+	pthread_mutex_unlock(&plugin_lock);
 }
 
 
@@ -1455,10 +1463,7 @@ foreach_plugin_to_add(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter * it
 			gtk_list_store_set(running_store, &running_iter,
 					   0, bypassed_name, 1, (gpointer)instance, -1);
 
-			pthread_mutex_lock(&plugin_lock);
-			++n_plugins;
-			refresh_plugin_vect();
-			pthread_mutex_unlock(&plugin_lock);
+			refresh_plugin_vect(1);
 		}
 	} else {
 		fprintf(stderr,
@@ -1488,10 +1493,7 @@ remove_clicked(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
                 gtk_tree_model_get(GTK_TREE_MODEL(running_store), &iter, 1, &gp_instance, -1);
 		gtk_list_store_remove(running_store, &iter);
-		pthread_mutex_lock(&plugin_lock);
-		--n_plugins;
-		refresh_plugin_vect();
-		pthread_mutex_unlock(&plugin_lock);
+		refresh_plugin_vect(-1);
 
 		instance = (plugin_instance *) gp_instance;
 		if (instance->handle) {
@@ -1577,7 +1579,7 @@ running_list_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 			if (instance->bypass_button) {
 				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(instance->bypass_button),
 				       !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(
-									     instance->bypass_button)));
+				               instance->bypass_button)));
 			}
 		}
 	}
@@ -1593,9 +1595,7 @@ running_list_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 gint
 refresh_on_list_changed_cb(gpointer data) {
 
-	pthread_mutex_lock(&plugin_lock);
-	refresh_plugin_vect();
-	pthread_mutex_unlock(&plugin_lock);
+	refresh_plugin_vect(0);
 
 	return FALSE;
 }
@@ -1816,7 +1816,6 @@ create_fxbuilder(void) {
 	column = gtk_tree_view_column_new_with_attributes(_("Name"), renderer, "text", 0, NULL);
 	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);
         gtk_tree_view_append_column(GTK_TREE_VIEW(running_list), column);
-
 }
 
 
@@ -2001,10 +2000,7 @@ parse_plugin(xmlDocPtr doc, xmlNodePtr cur) {
 			gtk_list_store_set(running_store, &running_iter,
 					   0, bypassed_name, 1, (gpointer)instance, -1);
 
-			pthread_mutex_lock(&plugin_lock);
-			++n_plugins;
-			refresh_plugin_vect();
-			pthread_mutex_unlock(&plugin_lock);
+			refresh_plugin_vect(1);
 		}
 	}
 	return;

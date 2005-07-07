@@ -83,6 +83,7 @@ extern jack_ringbuffer_t * rb_disk2gui;
 
 extern pthread_mutex_t output_thread_lock;
 
+extern jack_client_t * jack_client;
 extern char * client_name;
 extern int jack_is_shutdown;
 extern const size_t sample_size;
@@ -2654,6 +2655,10 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	/* read command line filenames */
 	process_filenames(argv, optind, enqueue);
 
+	/* activate jack client and connect ports */
+	if (output == JACK_DRIVER) {
+		jack_client_start();
+	}
 
 	/* set timeout function */
 	timeout_tag = g_timeout_add(100, timeout_callback, NULL);

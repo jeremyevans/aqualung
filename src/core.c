@@ -66,6 +66,10 @@ jack_port_t * out_R_port;
 char * client_name = NULL;
 jack_nframes_t jack_nframes;
 int jack_is_shutdown;
+int auto_connect = 0;
+int default_ports = 1;
+char * user_port1 = NULL;
+char * user_port2 = NULL;
 
 const size_t sample_size = sizeof(float);
 
@@ -774,56 +778,48 @@ process(jack_nframes_t nframes, void * arg) {
 	jack_default_audio_sample_t * out1 = jack_port_get_buffer(out_L_port, nframes);
 	jack_default_audio_sample_t * out2 = jack_port_get_buffer(out_R_port, nframes);
 
-	int flushing = 0;
+	static int flushing = 0;
+	static int flushcnt = 0;
 	char recv_cmd;
 
 	pthread_mutex_lock(&output_thread_lock);
-
-	if (jack_nframes != nframes) {
-		if ((l_buf = realloc(l_buf, nframes * sizeof(LADSPA_Data))) == NULL) {
-			fprintf(stderr, "jack process: realloc error\n");
-			exit(1);
-		}
-		if ((r_buf = realloc(r_buf, nframes * sizeof(LADSPA_Data))) == NULL) {
-			fprintf(stderr, "jack process: realloc error\n");
-			exit(1);
-		}
-		ladspa_buflen = jack_nframes = nframes;
-	}
-
+	
+	ladspa_buflen = jack_nframes = nframes;
+	
 	while (jack_ringbuffer_read_space(rb_disk2out)) {
 		jack_ringbuffer_read(rb_disk2out, &recv_cmd, 1);
 		switch (recv_cmd) {
 		case CMD_FLUSH:
 			flushing = 1;
+			flushcnt = jack_ringbuffer_read_space(rb)/nframes/
+				(2*sample_size) * 1.1f;
 			break;
 		default:
 			fprintf(stderr, "jack process(): recv'd unknown command %d\n", recv_cmd);
 			break;
 		}
 	}
-
- flush_begin:
+	
 	n_avail = jack_ringbuffer_read_space(rb) / (2*sample_size);
 	if (n_avail > nframes)
 		n_avail = nframes;
-
+	
 	for (i = 0; i < n_avail; i++) {
 		jack_ringbuffer_read(rb, (char *)&(l_buf[i]), sample_size);
 		jack_ringbuffer_read(rb, (char *)&(r_buf[i]), sample_size);
 	}
-
+	
 	if (n_avail < nframes) {
 		for (i = n_avail; i < nframes; i++) {
 			l_buf[i] = 0.0f;
 			r_buf[i] = 0.0f;
 		}
 	}
-
+	
 	if (flushing) {
 		for (i = 0; i < n_avail; i++) {
-                        l_buf[i] = 0.0f;
-                        r_buf[i] = 0.0f;
+			l_buf[i] = 0.0f;
+			r_buf[i] = 0.0f;
 		}
 	} else {
 		if (ladspa_is_postfader) {
@@ -832,7 +828,7 @@ process(jack_nframes_t nframes, void * arg) {
 				r_buf[i] *= right_gain;
 			}
 		}
-
+		
 		/* plugin processing */
 		pthread_mutex_lock(&plugin_lock);
 		for (i = 0; i < n_plugins; i++) {
@@ -847,7 +843,7 @@ process(jack_nframes_t nframes, void * arg) {
 			}
 		}
 		pthread_mutex_unlock(&plugin_lock);
-
+		
 		if (!ladspa_is_postfader) {
 			for (i = 0; i < nframes; i++) {
 				l_buf[i] *= left_gain;
@@ -855,16 +851,17 @@ process(jack_nframes_t nframes, void * arg) {
 			}
 		}
 	}
-
+	
 	for (i = 0; i < nframes; i++) {
 		out1[i] = l_buf[i];
 		out2[i] = r_buf[i];
 	}
-
-
-	if ((flushing) && (jack_ringbuffer_read_space(rb)))
-		goto flush_begin;
-
+	
+	
+	if ((flushing) && (!jack_ringbuffer_read_space(rb) || (--flushcnt == 0))) {
+		flushing = 0;
+	}
+	
 	pthread_mutex_unlock(&output_thread_lock);
 
 	/* wake up disk thread if 1/4 of rb data has been read */
@@ -1033,7 +1030,8 @@ alsa_init(thread_info_t * info) {
 #endif /* HAVE_ALSA */
 
 
-void jack_init(thread_info_t * info) {
+void
+jack_init(thread_info_t * info) {
 
 	if (client_name == NULL)
 		client_name = strdup("aqualung");
@@ -1064,8 +1062,7 @@ void jack_init(thread_info_t * info) {
         out_L_port = jack_port_register(jack_client, "out_L", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
         out_R_port = jack_port_register(jack_client, "out_R", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 
-
-	jack_nframes = 1024;
+	jack_nframes = jack_get_buffer_size(jack_client);
 	if ((l_buf = malloc(jack_nframes * sizeof(LADSPA_Data))) == NULL) {
 		fprintf(stderr, "jack_init: malloc error\n");
 		exit(1);
@@ -1076,7 +1073,55 @@ void jack_init(thread_info_t * info) {
 	}
 	ladspa_buflen = jack_nframes;
 }
- 
+
+
+void
+jack_client_start(void) {
+
+	const char ** ports_out;
+
+	if (jack_activate(jack_client)) {
+		fprintf(stderr, "Cannot activate JACK client.\n");
+		exit(1);
+	}
+	if (auto_connect) {
+		if (default_ports) {
+			if ((ports_out = jack_get_ports(jack_client, NULL, NULL,
+							JackPortIsPhysical|JackPortIsInput)) == NULL) {
+				fprintf(stderr, "Cannot find any physical playback ports.\n");
+			} else {
+				if (jack_connect(jack_client, jack_port_name(out_L_port),
+						 ports_out[0])) {
+					fprintf(stderr, "Cannot connect out_L port to %s.\n",
+						ports_out[0]);
+				} else {
+					fprintf(stderr, "Connected out_L to %s\n", ports_out[0]);
+				}
+				if (jack_connect(jack_client, jack_port_name(out_R_port),
+						 ports_out[1])) {
+					fprintf(stderr, "Cannot connect out_R port to %s.\n",
+						ports_out[1]);
+				} else {
+					fprintf(stderr, "Connected out_R to %s\n", ports_out[1]);
+				}
+				free(ports_out);
+			}
+		} else {
+			if (jack_connect(jack_client, jack_port_name(out_L_port),
+					 user_port1)) {
+				fprintf(stderr, "Cannot connect out_L port to %s.\n", user_port1);
+			} else {
+				fprintf(stderr, "Connected out_L to %s\n", user_port1);
+			}
+			if (jack_connect(jack_client, jack_port_name(out_R_port),
+					 user_port2)) {
+				fprintf(stderr, "Cannot connect out_R port to %s.\n", user_port2);
+			} else {
+				fprintf(stderr, "Connected out_R to %s\n", user_port2);
+			}
+		}
+	}
+}
  
  
 void
@@ -1197,7 +1242,6 @@ main(int argc, char ** argv) {
 	thread_info_t thread_info;
 	struct sched_param param;
 
-	const char ** ports_out;
 	int c;
 	int longopt_index = 0;
 	extern int optind, opterr;
@@ -1205,10 +1249,6 @@ main(int argc, char ** argv) {
 	int show_usage = 0;
 	char * output_str = NULL;
 	int rate = 0;
-	int auto_connect = 0;
-	int default_ports = 1;
-	char * user_port1 = NULL;
-	char * user_port2 = NULL;
 	int try_realtime = 0;
 	int priority = 1;
 
@@ -1861,52 +1901,6 @@ main(int argc, char ** argv) {
 		}
 	}
 #endif /* HAVE_ALSA */
-
-
-	/* JACK */
-	if (output == JACK_DRIVER) {
-		if (jack_activate(jack_client)) {
-			fprintf(stderr, "Cannot activate JACK client.\n");
-		}
-		
-		if (auto_connect) {
-			if (default_ports) {
-				if ((ports_out = jack_get_ports(jack_client, NULL, NULL,
-						 JackPortIsPhysical|JackPortIsInput)) == NULL) {
-					fprintf(stderr, "Cannot find any physical playback ports.\n");
-				} else {
-					if (jack_connect(jack_client, jack_port_name(out_L_port),
-							 ports_out[0])) {
-						fprintf(stderr, "Cannot connect out_L port to %s.\n",
-							ports_out[0]);
-					} else {
-						fprintf(stderr, "Connected out_L to %s\n", ports_out[0]);
-					}
-					if (jack_connect(jack_client, jack_port_name(out_R_port),
-							 ports_out[1])) {
-						fprintf(stderr, "Cannot connect out_R port to %s.\n",
-							ports_out[1]);
-					} else {
-						fprintf(stderr, "Connected out_R to %s\n", ports_out[1]);
-					}
-					free(ports_out);
-				}
-			} else {
-				if (jack_connect(jack_client, jack_port_name(out_L_port),
-						 user_port1)) {
-					fprintf(stderr, "Cannot connect out_L port to %s.\n", user_port1);
-				} else {
-					fprintf(stderr, "Connected out_L to %s\n", user_port1);
-				}
-				if (jack_connect(jack_client, jack_port_name(out_R_port),
-						 user_port2)) {
-					fprintf(stderr, "Cannot connect out_R port to %s.\n", user_port2);
-				} else {
-					fprintf(stderr, "Connected out_R to %s\n", user_port2);
-				}
-			}
-		}
-	}
 
 
 	create_gui(argc, argv, optind, enqueue, rate, RB_AUDIO_SIZE * rate / 44100.0);

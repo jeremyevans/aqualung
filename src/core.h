@@ -126,6 +126,7 @@ typedef struct _seek_t {
 
 
 float convf(char * s);
+void jack_client_start(void);
 
 #define db2lin(x) ((x) > -90.0f ? powf(10.0f, (x) * 0.05f) : 0.0f)
 

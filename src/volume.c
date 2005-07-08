@@ -61,6 +61,8 @@ unsigned long vol_chunks_read;
 float vol_result;
 int vol_running;
 int vol_cancelled;
+int vol_finished;
+int vol_index;
 
 rms_env * rms_vol;
 
@@ -229,6 +231,7 @@ process_volume(gpointer data) {
 	float rms;
 	unsigned long i;
 	int runs;
+	float * volumes = (float *)data;
 
 	if (!vol_running) {
 
@@ -241,6 +244,7 @@ process_volume(gpointer data) {
 		} else {
 			vol_queue_cleanup(vol_queue_save);
 			vol_queue_save = vol_queue = NULL;
+			vol_finished = 1;
 			gtk_window_get_position(GTK_WINDOW(vol_window), &vol_x, &vol_y);
 			gtk_widget_destroy(vol_window);
 			vol_window = NULL;
@@ -252,6 +256,7 @@ process_volume(gpointer data) {
 	if (vol_cancelled) {
 		vol_queue_cleanup(vol_queue_save);
 		vol_queue_save = vol_queue = NULL;
+		vol_finished = 1;
 		file_decoder_close(fdec_vol);
 		file_decoder_delete(fdec_vol);
 		if (vol_window != NULL) {
@@ -268,6 +273,7 @@ process_volume(gpointer data) {
 		fprintf(stderr, "process_volume(): error: malloc() returned NULL\n");
 		vol_queue_cleanup(vol_queue_save);
 		vol_queue_save = vol_queue = NULL;
+		vol_finished = 1;
 		file_decoder_close(fdec_vol);
 		file_decoder_delete(fdec_vol);
 		gtk_window_get_position(GTK_WINDOW(vol_window), &vol_x, &vol_y);
@@ -313,7 +319,12 @@ process_volume(gpointer data) {
 			if (!vol_cancelled) {
 				
 				vol_result = 20.0f * log10f(vol_result);
-				gtk_tree_store_set(music_store, &(vol_queue->iter), 5, vol_result, -1);
+
+				if (volumes == NULL) {
+					gtk_tree_store_set(music_store, &(vol_queue->iter), 5, vol_result, -1);
+				} else {
+					volumes[vol_index++] = vol_result;
+				}
 			}
 			file_decoder_close(fdec_vol);
 			file_decoder_delete(fdec_vol);
@@ -328,16 +339,19 @@ process_volume(gpointer data) {
 }
 
 
+/* volumes == NULL: store in music_store, else: store in result vector */
 void
-calculate_volume(vol_queue_t * q) {
+calculate_volume(vol_queue_t * q, float * volumes) {
 
 	if (q == NULL)
 		return;
 	
 	vol_queue_save = vol_queue = q;
 	volume_window();
+	vol_index = 0;
+	vol_finished = 0;
 	process_volume_setup(vol_queue);
-	g_idle_add(process_volume, NULL);
+	g_idle_add(process_volume, (gpointer)volumes);
 }
 
 

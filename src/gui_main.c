@@ -1041,7 +1041,7 @@ main_window_close(GtkWidget * widget, gpointer data) {
 	}
 
 	lrdf_cleanup();
-
+	close_app_socket();
 	gtk_main_quit();
 }
 

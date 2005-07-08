@@ -39,6 +39,7 @@
 #include "file_info.h"
 #include "file_decoder.h"
 #include "meta_decoder.h"
+#include "volume.h"
 #include "i18n.h"
 #include "playlist.h"
 
@@ -65,6 +66,7 @@ GtkWidget * playlist_window;
 
 extern GtkWidget * main_window;
 extern GtkWidget * info_window;
+extern GtkWidget * vol_window;
 
 int playlist_pos_x;
 int playlist_pos_y;
@@ -80,6 +82,10 @@ extern int playlist_is_embedded;
 extern int rva_is_enabled;
 extern float rva_refvol;
 extern float rva_steepness;
+extern int rva_use_averaging;
+extern int rva_use_linear_thresh;
+extern float rva_avg_linear_thresh;
+extern float rva_avg_stddev_thresh;
 
 extern int drift_x;
 extern int drift_y;
@@ -96,6 +102,11 @@ extern gulong pause_id;
 extern GtkWidget * play_button;
 extern GtkWidget * pause_button;
 
+extern int vol_finished;
+extern int vol_index;
+int vol_n_tracks;
+int vol_is_average;
+
 GtkWidget * play_list;
 GtkListStore * play_store = 0;
 GtkTreeSelection * play_select;
@@ -105,7 +116,6 @@ GtkTreeViewColumn * length_column;
 GtkCellRenderer * track_renderer;
 GtkCellRenderer * rva_renderer;
 GtkCellRenderer * length_renderer;
-
 
 /* popup menus */
 GtkWidget * sel_menu;
@@ -120,7 +130,10 @@ GtkWidget * plist_menu;
 GtkWidget * plist__save;
 GtkWidget * plist__load;
 GtkWidget * plist__enqueue;
-GtkWidget * plist__separator;
+GtkWidget * plist__separator1;
+GtkWidget * plist__rva_separate;
+GtkWidget * plist__rva_average;
+GtkWidget * plist__separator2;
 GtkWidget * plist__fileinfo;
 
 char command[RB_CONTROL_SIZE];
@@ -524,6 +537,139 @@ plist__enqueue_cb(gpointer data) {
                 }
         }
         gtk_widget_destroy(file_selector);
+}
+
+
+gint
+watch_vol_calc(gpointer data) {
+
+        float * volumes = (float *)data;
+	GtkTreeIter iter;
+
+        if (!vol_finished) {
+                return TRUE;
+        }
+
+	if (vol_index != vol_n_tracks) {
+		free(volumes);
+		return FALSE;
+	}
+
+	if (vol_is_average) {
+		char voladj_str[32];
+		float voladj = rva_from_multiple_volumes(vol_n_tracks, volumes,
+							 rva_use_linear_thresh,
+							 rva_avg_linear_thresh,
+							 rva_avg_stddev_thresh,
+							 rva_refvol, rva_steepness);
+
+		int i = 0;
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+			if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+
+				voladj2str(voladj, voladj_str);
+				gtk_list_store_set(play_store, &iter,
+						   3, voladj, 4, voladj_str, -1);
+			}
+		}
+	} else {
+		float voladj;
+		char voladj_str[32];
+
+		int i = 0;
+		int j = 0;
+
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
+						     NULL, i++) && (j < vol_n_tracks)) {
+			if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+
+				voladj = rva_from_volume(volumes[j++], rva_refvol, rva_steepness);
+				voladj2str(voladj, voladj_str);
+				gtk_list_store_set(play_store, &iter,
+						   3, voladj, 4, voladj_str, -1);
+			}
+		}
+	}
+
+	free(volumes);
+        return FALSE;
+}
+
+
+void
+plist_setup_vol_calc(void) {
+
+	GtkTreeIter iter;
+	int i;
+
+        char * pfile;
+        char file[MAXLEN];
+
+	vol_queue_t * q = NULL;
+	float * volumes = NULL;
+
+
+        if (vol_window != NULL) {
+                return;
+        }
+
+	i = 0;
+	vol_n_tracks = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+
+                        gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &pfile, -1);
+                        strncpy(file, pfile, MAXLEN-1);
+                        g_free(pfile);
+
+                        if (q == NULL) {
+                                q = vol_queue_push(NULL, file, iter/*dummy*/);
+                        } else {
+                                vol_queue_push(q, file, iter/*dummy*/);
+                        }
+			++vol_n_tracks;
+		}
+	}
+
+	if (vol_n_tracks == 0)
+		return;
+
+	if (!rva_is_enabled) {
+		GtkWidget * dialog = gtk_message_dialog_new(playlist_is_embedded ?
+				         GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
+					 GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_INFO,
+					 GTK_BUTTONS_CLOSE,
+					 _("Playback RVA is currently disabled. "
+					   "Enable it at Settings->Playback RVA."));
+		gtk_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
+		return;
+	}
+
+	if ((volumes = calloc(vol_n_tracks, sizeof(float))) == NULL) {
+		fprintf(stderr, "calloc error in plist__rva_separate_cb()\n");
+		return;
+	}
+
+	calculate_volume(q, volumes);
+	gtk_timeout_add(200, watch_vol_calc, (gpointer)volumes);
+}
+
+
+void
+plist__rva_separate_cb(gpointer data) {
+
+	vol_is_average = 0;
+	plist_setup_vol_calc();
+}
+
+
+void
+plist__rva_average_cb(gpointer data) {
+
+	vol_is_average = 1;
+	plist_setup_vol_calc();
 }
 
 
@@ -1047,24 +1193,35 @@ create_playlist(void) {
 	plist__save = gtk_menu_item_new_with_label(_("Save playlist"));
 	plist__load = gtk_menu_item_new_with_label(_("Load playlist"));
 	plist__enqueue = gtk_menu_item_new_with_label(_("Enqueue playlist"));
-	plist__separator = gtk_separator_menu_item_new();
+	plist__separator1 = gtk_separator_menu_item_new();
+	plist__rva_separate = gtk_menu_item_new_with_label(_("Calculate separate RVA for selected tracks"));
+	plist__rva_average = gtk_menu_item_new_with_label(_("Calculate average RVA for selected tracks"));
+	plist__separator2 = gtk_separator_menu_item_new();
 	plist__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__save);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__load);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__enqueue);
-	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__separator);
+	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__separator1);
+	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__rva_separate);
+	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__rva_average);
+	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__fileinfo);
 
 	g_signal_connect_swapped(G_OBJECT(plist__save), "activate", G_CALLBACK(plist__save_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__load), "activate", G_CALLBACK(plist__load_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__enqueue), "activate", G_CALLBACK(plist__enqueue_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(plist__rva_separate), "activate", G_CALLBACK(plist__rva_separate_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(plist__rva_average), "activate", G_CALLBACK(plist__rva_average_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__fileinfo), "activate", G_CALLBACK(plist__fileinfo_cb), NULL);
 
 	gtk_widget_show(plist__save);
 	gtk_widget_show(plist__load);
 	gtk_widget_show(plist__enqueue);
-	gtk_widget_show(plist__separator);
+	gtk_widget_show(plist__separator1);
+	gtk_widget_show(plist__rva_separate);
+	gtk_widget_show(plist__rva_average);
+	gtk_widget_show(plist__separator2);
 	gtk_widget_show(plist__fileinfo);
 
         vbox = gtk_vbox_new(FALSE, 2);

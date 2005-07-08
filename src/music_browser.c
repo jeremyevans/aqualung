@@ -46,7 +46,7 @@
 
 extern GtkWidget * vol_window;
 
-extern float rva_is_enabled;
+extern int rva_is_enabled;
 extern float rva_refvol;
 extern float rva_steepness;
 extern int rva_use_averaging;
@@ -1674,7 +1674,7 @@ artist__volume_cb(gpointer data) {
 			}
 		}
 
-		calculate_volume(q);
+		calculate_volume(q, NULL);
 	}
 }
 
@@ -2000,7 +2000,7 @@ record__volume_cb(gpointer data) {
 			}
 		}
 
-		calculate_volume(q);
+		calculate_volume(q, NULL);
 	}
 }
 
@@ -2318,7 +2318,7 @@ track__volume_cb(gpointer data) {
                 g_free(pfile);
 
 		q = vol_queue_push(NULL, file, iter_track);
-		calculate_volume(q);
+		calculate_volume(q, NULL);
         }
 }
 

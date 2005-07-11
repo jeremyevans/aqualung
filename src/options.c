@@ -72,6 +72,7 @@ extern int replaygain_tag_to_use;
 extern int enable_tooltips;
 extern int hide_comment_pane_shadow;
 extern int playlist_is_embedded_shadow;
+extern int buttons_at_the_bottom;
 
 int auto_save_playlist_shadow;
 int show_rva_in_playlist_shadow;
@@ -112,6 +113,7 @@ GtkWidget * check_auto_use_ext_meta_track;
 GtkWidget * check_enable_tooltips;
 GtkWidget * check_hide_comment_pane;
 GtkWidget * check_playlist_is_embedded;
+GtkWidget * check_buttons_at_the_bottom;
 
 GtkObject * adj_refvol;
 GtkObject * adj_steepness;
@@ -212,6 +214,12 @@ ok(GtkWidget * widget, gpointer data) {
 	} else {
 	        enable_tooltips = 0;
                 gtk_tooltips_disable(aqualung_tooltips);
+	}
+
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_buttons_at_the_bottom))) {
+		buttons_at_the_bottom = 1;
+	} else {
+	        buttons_at_the_bottom = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_hide_comment_pane))) {
@@ -741,7 +749,16 @@ running realtime as a default.\n"));
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_playlist_is_embedded, FALSE, FALSE, 0);
 
 
-	/* "Playlist" notebook page */
+	check_buttons_at_the_bottom =
+		gtk_check_button_new_with_label(_("Put control buttons at the bottom of playlist\n"
+						  "(takes effect after restarting Aqualung)"));
+	gtk_widget_set_name(check_buttons_at_the_bottom, "check_on_notebook");
+	if (buttons_at_the_bottom) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_buttons_at_the_bottom), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_buttons_at_the_bottom, FALSE, FALSE, 0);
+
+        /* "Playlist" notebook page */
 
 	label_pl = gtk_label_new(_("Playlist"));
 	vbox_pl = gtk_vbox_new(FALSE, 0);

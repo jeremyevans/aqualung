@@ -60,9 +60,12 @@ extern char pl_color_inactive[14];
 extern char confdir[MAXLEN];
 extern char currdir[MAXLEN];
 
+extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
+
 char title_format[MAXLEN];
 
 GtkWidget * browser_window;
+GtkWidget * dialog;
 
 int browser_pos_x;
 int browser_pos_y;
@@ -296,7 +299,6 @@ make_title_string(char * dest, char * template, char * artist, char * record, ch
 int
 add_artist_dialog(char * name, char * sort_name, char * comment) {
 
-        GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -406,7 +408,6 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
 int
 edit_artist_dialog(char * name, char * sort_name, char * comment) {
 
-        GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -523,6 +524,8 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
 	char * c;
 
 	file_selector = gtk_file_selection_new(_("Please select the audio files for this record."));
+        gtk_window_set_transient_for(GTK_WINDOW(file_selector), GTK_WINDOW(dialog));
+        gtk_window_set_position(GTK_WINDOW(file_selector), GTK_WIN_POS_MOUSE);
 	gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), currdir);
 	gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(file_selector));
 	gtk_file_selection_set_select_multiple(GTK_FILE_SELECTION(file_selector), TRUE);
@@ -564,7 +567,6 @@ clicked_tracklist_header(GtkWidget * widget, gpointer * data) {
 int
 add_record_dialog(char * name, char * sort_name, char *** strings, char * comment) {
 
-        GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -658,7 +660,7 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 			 (gpointer *)model);
         gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), 0, GTK_SORT_ASCENDING);
 
-	browse_button = gtk_button_new_with_label(_("Add files..."));
+	browse_button = gui_stock_label_button(_("Add files..."), GTK_STOCK_ADD);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), browse_button, FALSE, TRUE, 2);
         g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_record_clicked),
 			 (gpointer *)model);
@@ -749,7 +751,6 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 int
 edit_record_dialog(char * name, char * sort_name, char * comment) {
 
-        GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -889,7 +890,6 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
 int
 add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 
-        GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -1037,7 +1037,6 @@ int
 edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 		  float duration, float volume, float * rva, float * use_rva) {
 
-        GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -1257,7 +1256,6 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 int
 confirm_dialog(char * title, char * text) {
 
-        GtkWidget * dialog;
         GtkWidget * label;
         int ret;
 

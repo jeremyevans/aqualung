@@ -61,8 +61,10 @@ style "view"
 	text[ACTIVE] = "#000000"
 
 	base[NORMAL] = "#dbdbcc"
-	base[SELECTED] = "#807d74"
-	base[ACTIVE] = "#ccc7b9"
+#	base[SELECTED] = "#807d74"
+	base[SELECTED] = "#306090"
+#	base[ACTIVE] = "#ccc7b9"
+	base[ACTIVE] = "#b0cade"
 
 	fg[NORMAL] = "#000000"
 	fg[SELECTED] = "#dbdbcc"
@@ -271,7 +273,8 @@ widget "*comment_view" style "comment_view"
 
 style "play_list" = "view"
 {
-	fg[SELECTED] = "#1a4289"
+#	fg[SELECTED] = "#1a4289"
+	fg[SELECTED] = "#0505b8"
 	fg[INSENSITIVE] = "#000000"
 
 	font_name = "Sans 9"

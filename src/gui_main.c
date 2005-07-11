@@ -145,7 +145,6 @@ extern int auto_use_ext_meta_track;
 extern int hide_comment_pane;
 extern int hide_comment_pane_shadow;
 
-int enable_tooltips = 1;
 int replaygain_tag_to_use = 0;
 int rva_is_enabled = 0;
 int rva_env = 0;
@@ -155,8 +154,10 @@ int rva_use_averaging = 1;
 int rva_use_linear_thresh = 0;
 float rva_avg_linear_thresh = 3.0f;
 float rva_avg_stddev_thresh = 2.0f;
+int enable_tooltips = 1;
 int playlist_is_embedded = 0;
 int playlist_is_embedded_shadow = 0;
+int buttons_at_the_bottom = 1;
 
 /* volume & balance sliders */
 double vol = 0.0f;
@@ -2386,7 +2387,7 @@ create_main_window(char * skin_path) {
         GTK_WIDGET_UNSET_FLAGS(scale_pos, GTK_CAN_FOCUS);
 
 	/* Embedded playlist */
-	if (playlist_is_embedded) {
+	if (playlist_is_embedded && buttons_at_the_bottom) {
 		playlist_window = gtk_vbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), playlist_window, TRUE, TRUE, 3);
 	}
@@ -2488,6 +2489,12 @@ create_main_window(char * skin_path) {
 	GTK_WIDGET_UNSET_FLAGS(plugin_toggle, GTK_CAN_FOCUS);
 
 	gtk_box_pack_end(GTK_BOX(btns_hbox), sr_table, FALSE, FALSE, 3);
+
+	/* Embedded playlist */
+	if (playlist_is_embedded && !buttons_at_the_bottom) {
+		playlist_window = gtk_vbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), playlist_window, TRUE, TRUE, 3);
+	}
 
         if(enable_tooltips) {
                 gtk_tooltips_enable(aqualung_tooltips);
@@ -3117,6 +3124,9 @@ save_config(void) {
 	snprintf(str, 31, "%d", enable_tooltips);
         xmlNewTextChild(root, NULL, "enable_tooltips", str);
 
+	snprintf(str, 31, "%d", buttons_at_the_bottom);
+        xmlNewTextChild(root, NULL, "buttons_at_the_bottom", str);
+
 	snprintf(str, 31, "%d", hide_comment_pane_shadow);
         xmlNewTextChild(root, NULL, "hide_comment_pane", str);
 
@@ -3287,6 +3297,7 @@ load_config(void) {
 	browser_paned_pos = 250;
         enable_tooltips = 1;
 	hide_comment_pane = hide_comment_pane_shadow = 0;
+        buttons_at_the_bottom = 1;
 
 
         cur = cur->xmlChildrenNode;
@@ -3379,6 +3390,13 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
 				sscanf(key, "%d", &enable_tooltips);
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"buttons_at_the_bottom"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				sscanf(key, "%d", &buttons_at_the_bottom);
 			}
                         xmlFree(key);
                 }

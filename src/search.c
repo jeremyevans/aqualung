@@ -110,7 +110,7 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 	int comment_yes = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_comment)) ? 1 : 0;
 
 	int valid;
-	char * key_string = gtk_entry_get_text(GTK_ENTRY(searchkey_entry));
+	const char * key_string = gtk_entry_get_text(GTK_ENTRY(searchkey_entry));
 	char key[MAXLEN];
 	GPatternSpec * pattern;
 

@@ -41,6 +41,7 @@
 #include "meta_decoder.h"
 #include "volume.h"
 #include "i18n.h"
+#include "search_playlist.h"
 #include "playlist.h"
 
 
@@ -147,6 +148,7 @@ GtkWidget * plist__rva_separate;
 GtkWidget * plist__rva_average;
 GtkWidget * plist__separator2;
 GtkWidget * plist__fileinfo;
+GtkWidget * plist__search;
 
 char command[RB_CONTROL_SIZE];
 
@@ -172,6 +174,7 @@ extern int drag_info;
 void rem__sel_cb(gpointer data);
 void add__single_cb(gpointer data);
 void cut__sel_cb(gpointer data);
+void plist__search_cb(gpointer data);
 void direct_add(GtkWidget * widget, gpointer * data);
 
 
@@ -439,6 +442,11 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                 if (ctrl_L || ctrl_R) {
                         cut__sel_cb(NULL);
                 }                                                
+		return TRUE;
+		break;
+	case GDK_s:
+	case GDK_S:
+		plist__search_cb(NULL);
 		return TRUE;
 		break;
         
@@ -784,6 +792,12 @@ plist__fileinfo_cb(gpointer data) {
 	GtkTreeIter dummy;
 
 	show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy);
+}
+
+void
+plist__search_cb(gpointer data) {
+	
+	search_playlist_dialog();
 }
 
 
@@ -1383,6 +1397,7 @@ create_playlist(void) {
 	plist__rva_average = gtk_menu_item_new_with_label(_("Calculate average RVA for selected tracks"));
 	plist__separator2 = gtk_separator_menu_item_new();
 	plist__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
+	plist__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__save);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__load);
@@ -1392,6 +1407,7 @@ create_playlist(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__rva_average);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__fileinfo);
+	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__search);
 
 	g_signal_connect_swapped(G_OBJECT(plist__save), "activate", G_CALLBACK(plist__save_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__load), "activate", G_CALLBACK(plist__load_cb), NULL);
@@ -1399,6 +1415,7 @@ create_playlist(void) {
 	g_signal_connect_swapped(G_OBJECT(plist__rva_separate), "activate", G_CALLBACK(plist__rva_separate_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__rva_average), "activate", G_CALLBACK(plist__rva_average_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__fileinfo), "activate", G_CALLBACK(plist__fileinfo_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(plist__search), "activate", G_CALLBACK(plist__search_cb), NULL);
 
 	gtk_widget_show(plist__save);
 	gtk_widget_show(plist__load);
@@ -1408,6 +1425,7 @@ create_playlist(void) {
 	gtk_widget_show(plist__rva_average);
 	gtk_widget_show(plist__separator2);
 	gtk_widget_show(plist__fileinfo);
+	gtk_widget_show(plist__search);
 
         vbox = gtk_vbox_new(FALSE, 2);
         gtk_container_add(GTK_CONTAINER(playlist_window), vbox);

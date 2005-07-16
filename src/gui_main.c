@@ -1147,6 +1147,9 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			break;
 		case GDK_s:
 		case GDK_S:
+			if (playlist_is_embedded && gtk_widget_is_focus(play_list)) {
+				return FALSE;
+			}
 			stop_event(NULL, NULL, NULL);
 			return TRUE;
 			break;

@@ -2,6 +2,7 @@
 #define _I18N_H
 
 #include <libintl.h>
+#include <locale.h>
 
 #define  _(Text) gettext(Text)
 #define N_(Text) gettext_noop(Text)

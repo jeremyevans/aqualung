@@ -140,14 +140,9 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, _("Core design, engineering & programming:\n"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\tTom Szilagyi <tszilagyi@users.sourceforge.net>\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Skin support, look & feel, GUI hacks:\n"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tPeter Szilagyi <peterszilagyi@users.sourceforge.net>\n\n\n", -1);
-
-
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Contributors:"), -1, tag, NULL);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tTomasz Maka <pasp@ll.pl>\n", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tPeter Szilagyi <peterszilagyi@users.sourceforge.net>\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("Programming, GUI engineering:\n"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tTomasz Maka <pasp@ll.pl>\n\n\n", -1);
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Translators:"), -1, tag, NULL);

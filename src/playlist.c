@@ -1397,8 +1397,8 @@ create_playlist(void) {
 	plist__load = gtk_menu_item_new_with_label(_("Load playlist"));
 	plist__enqueue = gtk_menu_item_new_with_label(_("Enqueue playlist"));
 	plist__separator1 = gtk_separator_menu_item_new();
-	plist__rva_separate = gtk_menu_item_new_with_label(_("Calculate separate RVA for selected tracks"));
-	plist__rva_average = gtk_menu_item_new_with_label(_("Calculate average RVA for selected tracks"));
+	plist__rva_separate = gtk_menu_item_new_with_label(_("Calculate separate RVA"));
+	plist__rva_average = gtk_menu_item_new_with_label(_("Calculate average RVA"));
 	plist__separator2 = gtk_separator_menu_item_new();
 	plist__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
 	plist__search = gtk_menu_item_new_with_label(_("Search..."));

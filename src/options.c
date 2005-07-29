@@ -93,6 +93,7 @@ float rva_avg_linear_thresh_shadow;
 float rva_avg_stddev_thresh_shadow;
 
 int restart_flag;
+int override_past_state;
 
 extern GtkWidget * music_tree;
 
@@ -100,6 +101,8 @@ extern GtkWidget * play_list;
 extern GtkTreeViewColumn * track_column;
 extern GtkTreeViewColumn * rva_column;
 extern GtkTreeViewColumn * length_column;
+
+extern char skin[MAXLEN];
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
@@ -146,6 +149,8 @@ GtkWidget * label_threshold;
 GtkWidget * label_linthresh;
 GtkWidget * label_stdthresh;
 GtkListStore * plistcol_store;
+
+#define DEFAULT_FONT_NAME "Sans 11"
 
 GtkWidget * entry_ms_font;
 GtkWidget * entry_pl_font;
@@ -305,6 +310,11 @@ ok(GtkWidget * widget, gpointer data) {
                 gtk_widget_modify_font (music_tree, fd_browser);
                 gtk_widget_modify_font (play_list, fd_playlist);
 
+        } else if(override_past_state) {
+
+                /* reload skin */
+                change_skin(skin);
+                override_past_state = 0;
         }
 
         if (restart_flag) {
@@ -1358,6 +1368,8 @@ See the About box and the documentation for details."));
 
         /* Appearance notebook page */
 
+        override_past_state = override_skin_settings;
+
 	label_appearance = gtk_label_new(_("Appearance"));
 	vbox_appearance = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_appearance), 8);
@@ -1392,7 +1404,16 @@ See the About box and the documentation for details."));
         entry_pl_font = gtk_entry_new();
         gtk_box_pack_start(GTK_BOX(hbox), entry_pl_font, TRUE, TRUE, 3);
         gtk_editable_set_editable(GTK_EDITABLE(entry_pl_font), FALSE);
-	gtk_entry_set_text(GTK_ENTRY(entry_pl_font), playlist_font);
+
+        if(strlen(playlist_font)) {
+
+                gtk_entry_set_text(GTK_ENTRY(entry_pl_font), playlist_font);
+
+        } else {
+
+                gtk_entry_set_text(GTK_ENTRY(entry_pl_font), DEFAULT_FONT_NAME);
+                strcpy(playlist_font, DEFAULT_FONT_NAME);
+        }
 
         button_pl_font =  gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
         gtk_box_pack_start(GTK_BOX(hbox), button_pl_font, FALSE, FALSE, 3);
@@ -1410,7 +1431,17 @@ See the About box and the documentation for details."));
         entry_ms_font = gtk_entry_new();
         gtk_box_pack_start(GTK_BOX(hbox), entry_ms_font, TRUE, TRUE, 3);
         gtk_editable_set_editable(GTK_EDITABLE(entry_pl_font), FALSE);
-	gtk_entry_set_text(GTK_ENTRY(entry_ms_font), browser_font);
+
+        if(strlen(browser_font)) {
+
+	        gtk_entry_set_text(GTK_ENTRY(entry_ms_font), browser_font);
+
+        } else {
+
+                gtk_entry_set_text(GTK_ENTRY(entry_ms_font), DEFAULT_FONT_NAME);
+                strcpy(browser_font, DEFAULT_FONT_NAME);
+
+        }
 
         button_ms_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
         gtk_box_pack_start(GTK_BOX(hbox), button_ms_font, FALSE, FALSE, 3);

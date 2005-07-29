@@ -62,6 +62,8 @@ extern char currdir[MAXLEN];
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
+extern PangoFontDescription *fd_browser;
+
 char title_format[MAXLEN];
 
 GtkWidget * browser_window;
@@ -102,6 +104,8 @@ GtkWidget * browser_paned;
 extern GtkListStore * play_store;
 
 extern GtkWidget * musicstore_toggle;
+
+extern int override_skin_settings;
 
 /* popup menus for tree items */
 GtkWidget * artist_menu;
@@ -2488,7 +2492,11 @@ create_music_browser(void) {
 	gtk_widget_set_name(music_tree, "music_tree");
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(music_tree), FALSE);
 
-	renderer = gtk_cell_renderer_text_new();
+        if(override_skin_settings) {
+                gtk_widget_modify_font (music_tree, fd_browser);
+        }
+
+        renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes("Artist / Record / Track",
 							  renderer,
 							  "text", 0,

@@ -73,6 +73,12 @@ extern int enable_tooltips;
 extern int hide_comment_pane_shadow;
 extern int playlist_is_embedded_shadow;
 extern int buttons_at_the_bottom;
+extern int override_skin_settings;
+
+extern char playlist_font[MAX_FONTNAME_LEN];
+extern char browser_font[MAX_FONTNAME_LEN];
+extern PangoFontDescription *fd_playlist;
+extern PangoFontDescription *fd_browser;
 
 int auto_save_playlist_shadow;
 int show_rva_in_playlist_shadow;
@@ -86,10 +92,16 @@ int rva_use_linear_thresh_shadow;
 float rva_avg_linear_thresh_shadow;
 float rva_avg_stddev_thresh_shadow;
 
+int restart_flag;
+
+extern GtkWidget * music_tree;
+
 extern GtkWidget * play_list;
 extern GtkTreeViewColumn * track_column;
 extern GtkTreeViewColumn * rva_column;
 extern GtkTreeViewColumn * length_column;
+
+extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 GtkWidget * options_window;
 GtkWidget * optmenu_ladspa;
@@ -114,6 +126,7 @@ GtkWidget * check_enable_tooltips;
 GtkWidget * check_hide_comment_pane;
 GtkWidget * check_playlist_is_embedded;
 GtkWidget * check_buttons_at_the_bottom;
+GtkWidget * check_override_skin;
 
 GtkObject * adj_refvol;
 GtkObject * adj_steepness;
@@ -134,8 +147,22 @@ GtkWidget * label_linthresh;
 GtkWidget * label_stdthresh;
 GtkListStore * plistcol_store;
 
+GtkWidget * entry_ms_font;
+GtkWidget * entry_pl_font;
+GtkWidget * button_pl_font;
+GtkWidget * button_ms_font;
 
 void draw_rva_diagram(void);
+void show_restart_info(void);
+
+
+void open_font_desc(void)
+{
+        if(fd_playlist) pango_font_description_free(fd_playlist);
+	fd_playlist = pango_font_description_from_string(playlist_font);
+        if(fd_browser) pango_font_description_free(fd_browser);
+	fd_browser = pango_font_description_from_string(browser_font);
+}
 
 static gint
 ok(GtkWidget * widget, gpointer data) {
@@ -222,6 +249,12 @@ ok(GtkWidget * widget, gpointer data) {
 	        buttons_at_the_bottom = 0;
 	}
 
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_override_skin))) {
+		override_skin_settings = 1;
+	} else {
+	        override_skin_settings = 0;
+	}
+
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_hide_comment_pane))) {
 		hide_comment_pane_shadow = 1;
 	} else {
@@ -262,6 +295,21 @@ ok(GtkWidget * widget, gpointer data) {
 
 	playlist_size_allocate(NULL, NULL);
 	delayed_playlist_rearrange(100);
+
+        /* apply fonts */
+
+        if(override_skin_settings) {
+
+                open_font_desc();
+
+                gtk_widget_modify_font (music_tree, fd_browser);
+                gtk_widget_modify_font (play_list, fd_playlist);
+
+        }
+
+        if (restart_flag) {
+                show_restart_info();            
+        }
 
 	gtk_widget_destroy(options_window);
 	return TRUE;
@@ -591,6 +639,103 @@ stdthresh_changed(GtkWidget * widget, gpointer * data) {
 	rva_avg_stddev_thresh_shadow = gtk_adjustment_get_value(GTK_ADJUSTMENT(widget)) / 100.0f;
 }
 
+void show_restart_info(void)
+{
+GtkWidget *info_dialog;
+
+        info_dialog = gtk_message_dialog_new (GTK_WINDOW (options_window),
+       					GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+					GTK_MESSAGE_INFO,
+					GTK_BUTTONS_OK,
+					_("You will need to restart Aqualung for changes to take effect."));
+
+	gtk_widget_show (info_dialog);
+        gtk_dialog_run(GTK_DIALOG(info_dialog));
+        gtk_widget_destroy(info_dialog);
+
+}
+
+void playlist_font_select(GtkWidget *widget)
+{
+gchar *s;
+GtkWidget *font_selector;
+gint response;
+
+	font_selector = gtk_font_selection_dialog_new ("Select a font...");
+	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
+	gtk_window_set_transient_for(GTK_WINDOW(font_selector), GTK_WINDOW(options_window));
+	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(font_selector), playlist_font);
+	gtk_widget_show (font_selector);
+	response = gtk_dialog_run (GTK_DIALOG (font_selector));
+
+	if (response == GTK_RESPONSE_OK) {
+
+		s = gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG(font_selector));
+		strncpy(playlist_font, s, MAX_FONTNAME_LEN);
+		gtk_entry_set_text(GTK_ENTRY(entry_pl_font), s);
+		g_free (s);
+
+	}
+
+	gtk_widget_destroy (font_selector);
+
+}
+
+void browser_font_select(GtkWidget *widget)
+{
+gchar *s;
+GtkWidget *font_selector;
+gint response;
+
+	font_selector = gtk_font_selection_dialog_new ("Select a font...");
+	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
+	gtk_window_set_transient_for(GTK_WINDOW(font_selector), GTK_WINDOW(options_window));
+	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(font_selector), browser_font);
+	gtk_widget_show (font_selector);
+	response = gtk_dialog_run (GTK_DIALOG (font_selector));
+
+	if (response == GTK_RESPONSE_OK) {
+
+		s = gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG(font_selector));
+		strncpy(browser_font, s, MAX_FONTNAME_LEN);
+		gtk_entry_set_text(GTK_ENTRY(entry_ms_font), s);
+		g_free (s);
+
+	}
+
+	gtk_widget_destroy (font_selector);
+
+}
+
+void  restart_active (GtkToggleButton *togglebutton, gpointer user_data)
+{
+        restart_flag = 1;
+}
+
+void set_sensitive_font_part(void) {
+
+        if(override_skin_settings) {
+
+                gtk_widget_set_sensitive(entry_ms_font, TRUE);
+                gtk_widget_set_sensitive(entry_pl_font, TRUE);
+                gtk_widget_set_sensitive(button_ms_font, TRUE);
+                gtk_widget_set_sensitive(button_pl_font, TRUE);
+
+        } else {
+
+                gtk_widget_set_sensitive(entry_ms_font, FALSE);
+                gtk_widget_set_sensitive(entry_pl_font, FALSE);
+                gtk_widget_set_sensitive(button_ms_font, FALSE);
+                gtk_widget_set_sensitive(button_pl_font, FALSE);
+
+        }
+}
+
+void  cb_toggle_override_skin (GtkToggleButton *togglebutton, gpointer user_data)
+{
+        override_skin_settings = override_skin_settings ? 0 : 1;
+        set_sensitive_font_part();
+}
 
 void
 create_options_window(void) {
@@ -606,8 +751,10 @@ create_options_window(void) {
 	GtkWidget * vbox_title;
 	GtkWidget * vbox_param;
 	GtkWidget * vbox_misc;
+	GtkWidget * vbox_appearance;
 	GtkWidget * label_title;
 	GtkWidget * label_param;
+	GtkWidget * label_appearance;
 
 	GtkWidget * label_pl;
 	GtkWidget * vbox_pl;
@@ -625,8 +772,10 @@ create_options_window(void) {
 	GtkWidget * vbox_dsp;
 	GtkWidget * frame_ladspa;
 	GtkWidget * frame_src;
+	GtkWidget * frame_fonts;
 	GtkWidget * vbox_ladspa;
 	GtkWidget * vbox_src;
+	GtkWidget * vbox_fonts;
 
 	GtkWidget * label_rva;
 	GtkWidget * vbox_rva;
@@ -642,6 +791,7 @@ create_options_window(void) {
 	GtkWidget * label_meta;
 	GtkWidget * vbox_meta;
 
+        GtkSizeGroup * label_size;
 
 	GtkWidget * hbox;
 	GtkWidget * ok_btn;
@@ -650,6 +800,7 @@ create_options_window(void) {
 	int status;
 	int i;
 
+        restart_flag = 0;
 
 	options_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_transient_for(GTK_WINDOW(options_window), GTK_WINDOW(main_window));
@@ -664,6 +815,7 @@ create_options_window(void) {
 	notebook = gtk_notebook_new();
 	gtk_container_add(GTK_CONTAINER(vbox), notebook);
 
+        label_size = gtk_size_group_new(GTK_SIZE_GROUP_BOTH);
 
 	/* "General" notebook page */
 
@@ -730,33 +882,34 @@ running realtime as a default.\n"));
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_enable_tooltips, FALSE, FALSE, 0);
 
 	check_hide_comment_pane =
-		gtk_check_button_new_with_label(_("Hide the Music Store comment pane\n"
-						  "(takes effect after restarting Aqualung)"));
+		gtk_check_button_new_with_label(_("Hide the Music Store comment pane"));
 	gtk_widget_set_name(check_hide_comment_pane, "check_on_notebook");
 	if (hide_comment_pane_shadow) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_hide_comment_pane), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_hide_comment_pane, FALSE, FALSE, 0);
-
+	g_signal_connect (G_OBJECT (check_hide_comment_pane), "toggled",
+						G_CALLBACK (restart_active), NULL);
 
 	check_playlist_is_embedded =
-		gtk_check_button_new_with_label(_("Embed playlist into main window\n"
-						  "(takes effect after restarting Aqualung)"));
+		gtk_check_button_new_with_label(_("Embed playlist into main window"));
 	gtk_widget_set_name(check_playlist_is_embedded, "check_on_notebook");
 	if (playlist_is_embedded_shadow) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_playlist_is_embedded, FALSE, FALSE, 0);
-
+	g_signal_connect (G_OBJECT (check_playlist_is_embedded), "toggled",
+						G_CALLBACK (restart_active), NULL);
 
 	check_buttons_at_the_bottom =
-		gtk_check_button_new_with_label(_("Put control buttons at the bottom of playlist\n"
-						  "(takes effect after restarting Aqualung)"));
+		gtk_check_button_new_with_label(_("Put control buttons at the bottom of playlist"));
 	gtk_widget_set_name(check_buttons_at_the_bottom, "check_on_notebook");
 	if (buttons_at_the_bottom) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_buttons_at_the_bottom), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_buttons_at_the_bottom, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (check_buttons_at_the_bottom), "toggled",
+						G_CALLBACK (restart_active), NULL);
 
         /* "Playlist" notebook page */
 
@@ -1203,7 +1356,70 @@ See the About box and the documentation for details."));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_replaygain), replaygain_tag_to_use);
 
 
-	/* end of notebook */
+        /* Appearance notebook page */
+
+	label_appearance = gtk_label_new(_("Appearance"));
+	vbox_appearance = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox_appearance), 8);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_appearance, label_appearance);
+
+        check_override_skin =
+		gtk_check_button_new_with_label(_("Override skin settings"));
+
+        gtk_widget_set_name(check_override_skin, "check_on_notebook");
+	if (override_skin_settings) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_override_skin), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_appearance), check_override_skin, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (check_override_skin), "toggled",
+						G_CALLBACK (cb_toggle_override_skin), NULL);
+
+	frame_fonts = gtk_frame_new(_("Fonts"));
+	gtk_box_pack_start(GTK_BOX(vbox_appearance), frame_fonts, FALSE, TRUE, 5);
+
+	vbox_fonts = gtk_vbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_fonts), 10);
+	gtk_container_add(GTK_CONTAINER(frame_fonts), vbox_fonts);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, FALSE, 3);
+
+	label = gtk_label_new(_("Playlist font: "));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+        gtk_size_group_add_widget(label_size, label);
+        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+
+        entry_pl_font = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_pl_font, TRUE, TRUE, 3);
+        gtk_editable_set_editable(GTK_EDITABLE(entry_pl_font), FALSE);
+	gtk_entry_set_text(GTK_ENTRY(entry_pl_font), playlist_font);
+
+        button_pl_font =  gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
+        gtk_box_pack_start(GTK_BOX(hbox), button_pl_font, FALSE, FALSE, 3);
+	g_signal_connect (G_OBJECT (button_pl_font), "clicked",
+						G_CALLBACK (playlist_font_select), NULL);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
+
+	label = gtk_label_new(_("Music Store font: "));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+        gtk_size_group_add_widget(label_size, label);
+        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+
+        entry_ms_font = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_ms_font, TRUE, TRUE, 3);
+        gtk_editable_set_editable(GTK_EDITABLE(entry_pl_font), FALSE);
+	gtk_entry_set_text(GTK_ENTRY(entry_ms_font), browser_font);
+
+        button_ms_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
+        gtk_box_pack_start(GTK_BOX(hbox), button_ms_font, FALSE, FALSE, 3);
+	g_signal_connect (G_OBJECT (button_ms_font), "clicked",
+						G_CALLBACK (browser_font_select), NULL);
+
+        set_sensitive_font_part();
+
+        /* end of notebook */
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 6);

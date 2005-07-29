@@ -70,10 +70,14 @@
 /* receive at most this much remote messages in one run of timeout_callback() */
 #define MAX_RCV_COUNT 32
 
-
 char pl_color_active[14];
 char pl_color_inactive[14];
 
+char playlist_font[MAX_FONTNAME_LEN];
+char browser_font[MAX_FONTNAME_LEN];
+
+PangoFontDescription *fd_playlist;
+PangoFontDescription *fd_browser;
 
 /* Communication between gui thread and disk thread */
 extern pthread_mutex_t disk_thread_lock;
@@ -158,6 +162,7 @@ int enable_tooltips = 1;
 int playlist_is_embedded = 0;
 int playlist_is_embedded_shadow = 0;
 int buttons_at_the_bottom = 1;
+int override_skin_settings = 0;
 
 /* volume & balance sliders */
 double vol = 0.0f;
@@ -1040,6 +1045,9 @@ main_window_close(GtkWidget * widget, gpointer data) {
 		snprintf(playlist_name, MAXLEN-1, "%s/%s", confdir, "playlist.xml");
 		save_playlist(playlist_name);
 	}
+
+        pango_font_description_free(fd_playlist);
+        pango_font_description_free(fd_browser);
 
 	lrdf_cleanup();
 	close_app_socket();
@@ -2168,6 +2176,12 @@ create_main_window(char * skin_path) {
 	gtk_widget_set_events(main_window, GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 	gtk_container_set_border_width(GTK_CONTAINER(main_window), 5);
 
+        /* initialize fonts */
+
+	fd_playlist = pango_font_description_from_string(playlist_font);
+ 	fd_browser = pango_font_description_from_string(browser_font);
+
+
         aqualung_tooltips = gtk_tooltips_new();
 
 	conf_menu = gtk_menu_new();
@@ -3133,6 +3147,9 @@ save_config(void) {
 	snprintf(str, 31, "%d", hide_comment_pane_shadow);
         xmlNewTextChild(root, NULL, "hide_comment_pane", str);
 
+	snprintf(str, 31, "%d", override_skin_settings);
+        xmlNewTextChild(root, NULL, "override_skin_settings", str);
+
 	snprintf(str, 31, "%d", replaygain_tag_to_use);
         xmlNewTextChild(root, NULL, "replaygain_tag_to_use", str);
 
@@ -3184,6 +3201,8 @@ save_config(void) {
         xmlNewTextChild(root, NULL, "browser_is_visible", str);
 	snprintf(str, 31, "%d", browser_paned_pos);
         xmlNewTextChild(root, NULL, "browser_paned_pos", str);
+	snprintf(str, MAX_FONTNAME_LEN, "%s", browser_font);
+        xmlNewTextChild(root, NULL, "browser_font", str);
 
 	snprintf(str, 31, "%d", playlist_pos_x);
         xmlNewTextChild(root, NULL, "playlist_pos_x", str);
@@ -3197,6 +3216,8 @@ save_config(void) {
         xmlNewTextChild(root, NULL, "playlist_is_visible", str);
 	snprintf(str, 31, "%d", playlist_is_embedded_shadow);
         xmlNewTextChild(root, NULL, "playlist_is_embedded", str);
+	snprintf(str, MAX_FONTNAME_LEN, "%s", playlist_font);
+        xmlNewTextChild(root, NULL, "playlist_font", str);
 
 	snprintf(str, 31, "%d", repeat_on);
         xmlNewTextChild(root, NULL, "repeat_on", str);
@@ -3301,6 +3322,7 @@ load_config(void) {
         enable_tooltips = 1;
 	hide_comment_pane = hide_comment_pane_shadow = 0;
         buttons_at_the_bottom = 1;
+        override_skin_settings = 0;
 
 
         cur = cur->xmlChildrenNode;
@@ -3408,6 +3430,13 @@ load_config(void) {
                         if (key != NULL) {
 				sscanf(key, "%d", &hide_comment_pane);
 				hide_comment_pane_shadow = hide_comment_pane;
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"override_skin_settings"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				sscanf(key, "%d", &override_skin_settings);
 			}
                         xmlFree(key);
                 }
@@ -3545,6 +3574,12 @@ load_config(void) {
                                 sscanf(key, "%d", &browser_paned_pos);
                         xmlFree(key);
                 }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_font"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                strncpy(browser_font, key, MAX_FONTNAME_LEN-1);
+                        xmlFree(key);
+                }
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_pos_x"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
@@ -3582,6 +3617,12 @@ load_config(void) {
                                 sscanf(key, "%d", &playlist_is_embedded);
 				playlist_is_embedded_shadow = playlist_is_embedded;
 			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_font"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                strncpy(playlist_font, key, MAX_FONTNAME_LEN-1);
                         xmlFree(key);
                 }
 

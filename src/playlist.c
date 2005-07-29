@@ -55,6 +55,10 @@ extern char title_format[MAXLEN];
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
+extern PangoFontDescription *fd_playlist;
+
+extern int override_skin_settings;
+
 int auto_save_playlist = 1;
 int show_rva_in_playlist = 0;
 int show_length_in_playlist = 1;
@@ -1446,7 +1450,12 @@ create_playlist(void) {
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(play_list), FALSE);
 	gtk_widget_set_name(play_list, "play_list");
 	gtk_widget_set_size_request(play_list, 100, 100);
-	playlist_color_is_set = 0;
+
+        if(override_skin_settings) {
+                gtk_widget_modify_font (play_list, fd_playlist);
+        }
+
+        playlist_color_is_set = 0;
 
 	if (playlist_is_embedded) {
 		g_signal_connect(G_OBJECT(play_list), "key_press_event",

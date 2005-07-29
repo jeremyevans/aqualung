@@ -22,6 +22,8 @@
 #ifndef _GUI_MAIN_H
 #define _GUI_MAIN_H
 
+/* maximum length of font description */
+#define MAX_FONTNAME_LEN 256
 
 void deflicker(void);
 

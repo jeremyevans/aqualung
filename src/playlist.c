@@ -370,6 +370,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	GtkTreeIter iter;
 	char * pname;
 	char * pfile;
+        gboolean k;
 
 	int i;
 
@@ -464,16 +465,19 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 
                         i = 0;
                         do {
-                                gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++);
-                        } while (!gtk_tree_selection_iter_is_selected(play_select, &iter));
+                                k = gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++);
+                        } while (k && !gtk_tree_selection_iter_is_selected(play_select, &iter));
 
-                        path = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), &iter);
+                        if(k) {
 
-                        rem__sel_cb(NULL);
+                                path = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), &iter);
 
-                        gtk_tree_selection_select_path(play_select, path);
-                        gtk_tree_view_set_cursor(GTK_TREE_VIEW(play_list), path, NULL, FALSE);
+                                rem__sel_cb(NULL);
 
+                                gtk_tree_selection_select_path(play_select, path);
+                                gtk_tree_view_set_cursor(GTK_TREE_VIEW(play_list), path, NULL, FALSE);
+
+                        }
                 }
 
                 return TRUE;

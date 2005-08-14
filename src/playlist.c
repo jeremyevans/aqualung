@@ -177,6 +177,10 @@ extern GtkWidget * playlist_toggle;
 extern int drag_info;
 
 
+/* used to store array of sequence numbers of tracks selected for RVA calc */
+int * seqnums = NULL;
+
+
 void rem__sel_cb(gpointer data);
 void add__single_cb(gpointer data);
 void cut__sel_cb(gpointer data);
@@ -675,6 +679,7 @@ watch_vol_calc(gpointer data) {
 
 	if (vol_index != vol_n_tracks) {
 		free(volumes);
+		volumes = NULL;
 		return FALSE;
 	}
 
@@ -686,11 +691,19 @@ watch_vol_calc(gpointer data) {
 							 rva_avg_stddev_thresh,
 							 rva_refvol, rva_steepness);
 
+		voladj2str(voladj, voladj_str);
+
 		int i = 0;
 		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
-			if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+			int j, k = -1;
 
-				voladj2str(voladj, voladj_str);
+			for (j = 0; j < vol_n_tracks; j++) {
+				if (seqnums[j] == i) {
+					k = j;
+				}
+			}
+
+			if (k != -1) {
 				gtk_list_store_set(play_store, &iter,
 						   3, voladj, 4, voladj_str, -1);
 			}
@@ -700,21 +713,32 @@ watch_vol_calc(gpointer data) {
 		char voladj_str[32];
 
 		int i = 0;
-		int j = 0;
 
 		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
-						     NULL, i++) && (j < vol_n_tracks)) {
-			if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+						     NULL, i++)) {
+			
+			int j, k = -1;
 
-				voladj = rva_from_volume(volumes[j++], rva_refvol, rva_steepness);
+			for (j = 0; j < vol_n_tracks; j++) {
+				if (seqnums[j] == i) {
+					k = j;
+				}
+			}
+
+			if (k != -1) {
+				
+				voladj = rva_from_volume(volumes[k], rva_refvol, rva_steepness);
 				voladj2str(voladj, voladj_str);
-				gtk_list_store_set(play_store, &iter,
-						   3, voladj, 4, voladj_str, -1);
+				gtk_list_store_set(play_store, &iter, 3, voladj,
+						   4, voladj_str, -1);
 			}
 		}
 	}
 
 	free(volumes);
+	volumes = NULL;
+	free(seqnums);
+	seqnums = NULL;
         return FALSE;
 }
 
@@ -751,6 +775,13 @@ plist_setup_vol_calc(void) {
                                 vol_queue_push(q, file, iter/*dummy*/);
                         }
 			++vol_n_tracks;
+
+			seqnums = (int *)realloc(seqnums, vol_n_tracks * sizeof(int));
+			if (!seqnums) {
+				fprintf(stderr, "realloc error in plist_setup_vol_calc()\n");
+				return;
+			}
+			seqnums[vol_n_tracks-1] = i;
 		}
 	}
 
@@ -767,11 +798,16 @@ plist_setup_vol_calc(void) {
 					   "Enable it at Settings->Playback RVA."));
 		gtk_dialog_run(GTK_DIALOG(dialog));
 		gtk_widget_destroy(dialog);
+
+		free(seqnums);
+		seqnums = NULL;
 		return;
 	}
 
 	if ((volumes = calloc(vol_n_tracks, sizeof(float))) == NULL) {
 		fprintf(stderr, "calloc error in plist__rva_separate_cb()\n");
+		free(seqnums);
+		seqnums = NULL;
 		return;
 	}
 

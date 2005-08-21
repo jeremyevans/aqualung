@@ -51,7 +51,7 @@
 
 #include "common.h"
 #include "version.h"
-#include "file_decoder.h"
+#include "decoder/file_decoder.h"
 #include "transceiver.h"
 #include "gui_main.h"
 #include "plugin.h"

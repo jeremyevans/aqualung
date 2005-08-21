@@ -39,7 +39,7 @@
 
 #include "common.h"
 #include "core.h"
-#include "file_decoder.h"
+#include "decoder/file_decoder.h"
 #include "music_browser.h"
 #include "gui_main.h"
 #include "trashlist.h"

@@ -34,7 +34,7 @@
 #include "drag.xpm"
 #include "core.h"
 #include "file_info.h"
-#include "file_decoder.h"
+#include "decoder/file_decoder.h"
 #include "meta_decoder.h"
 #include "gui_main.h"
 #include "volume.h"
@@ -1986,24 +1986,25 @@ record__volume_cb(gpointer data) {
 		return;
 	}
 
-        if (gtk_tree_selection_get_selected(music_select, &model, &iter_record)) {
-
-		i = 0;
-		while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, i++)) {
-
-			gtk_tree_model_get(model, &iter_track, 2, &pfile, -1);
-			strncpy(file, pfile, MAXLEN-1);
-			g_free(pfile);
-
-			if (q == NULL) {
-				q = vol_queue_push(NULL, file, iter_track);
-			} else {
-				vol_queue_push(q, file, iter_track);
-			}
-		}
-
-		calculate_volume(q, NULL);
+        if (!gtk_tree_selection_get_selected(music_select, &model, &iter_record)) {
+		return;
 	}
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, i++)) {
+		
+		gtk_tree_model_get(model, &iter_track, 2, &pfile, -1);
+		strncpy(file, pfile, MAXLEN-1);
+		g_free(pfile);
+		
+		if (q == NULL) {
+			q = vol_queue_push(NULL, file, iter_track);
+		} else {
+			vol_queue_push(q, file, iter_track);
+		}
+	}
+	
+	calculate_volume(q, NULL);
 }
 
 

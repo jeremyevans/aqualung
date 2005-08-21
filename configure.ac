@@ -9,7 +9,7 @@ AM_CONFIG_HEADER([config.h])
 
 # Checks for programs.
 AC_PROG_CC
-
+AC_PROG_RANLIB
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -350,9 +350,9 @@ lrdf_LIBS=`pkg-config --libs lrdf`
 SKINDIR="-DSKINDIR=\\\"$datadir/aqualung/skin\\\""
 LOCALEDIR="-DLOCALEDIR=\\\"$datadir/locale\\\""
 
-CFLAGS="-O3 -Wall $SKINDIR $LOCALEDIR -D_GNU_SOURCE"
+CFLAGS="-O2 -Wall $SKINDIR $LOCALEDIR -D_GNU_SOURCE"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS"
-LIBS="$gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS"
+LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS"
 
 AC_OUTPUT([Makefile \
 	   doc/Makefile \
@@ -364,6 +364,7 @@ AC_OUTPUT([Makefile \
 	   skin/plain/Makefile \
 	   skin/woody/Makefile \
 	   src/Makefile \
+	   src/decoder/Makefile \
 	   src/po/Makefile])
 
 

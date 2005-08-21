@@ -37,7 +37,7 @@
 #include "gui_main.h"
 #include "music_browser.h"
 #include "file_info.h"
-#include "file_decoder.h"
+#include "decoder/file_decoder.h"
 #include "meta_decoder.h"
 #include "volume.h"
 #include "i18n.h"

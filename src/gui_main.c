@@ -52,7 +52,7 @@
 #include "common.h"
 #include "core.h"
 #include "transceiver.h"
-#include "file_decoder.h"
+#include "decoder/file_decoder.h"
 #include "about.h"
 #include "options.h"
 #include "skin.h"

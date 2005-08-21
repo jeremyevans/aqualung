@@ -1,4 +1,4 @@
-SUBDIRS = po
+SUBDIRS = decoder po
 
 bin_PROGRAMS = aqualung
 
@@ -8,7 +8,6 @@ aqualung_SOURCES = \
 about.h about.c \
 common.h \
 core.h core.c \
-file_decoder.h file_decoder.c \
 file_info.h file_info.c \
 gui_main.h gui_main.c \
 i18n.h \

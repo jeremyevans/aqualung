@@ -37,10 +37,17 @@
 #include <FLAC/metadata.h>
 #endif /* HAVE_FLAC */
 
+#ifdef HAVE_OGG_VORBIS
+#include <vorbis/vorbisfile.h>
+#endif /* HAVE_OGG_VORBIS */
+
 #include "common.h"
 #include "core.h"
 #include "i18n.h"
-#include "file_decoder.h"
+#include "decoder/file_decoder.h"
+#ifdef HAVE_OGG_VORBIS
+#include "decoder/dec_vorbis.h"
+#endif /* HAVE_OGG_VORBIS */
 #include "meta_decoder.h"
 
 
@@ -491,7 +498,9 @@ meta_read(metadata * meta, char * file) {
 #ifdef HAVE_OGG_VORBIS
         if (fdec->file_lib == VORBIS_LIB) {
 
-                vorbis_comment * vc = ov_comment(&(fdec->vf), -1);
+		decoder_t * dec = (decoder_t *)(fdec->pdec);
+		vorbis_pdata_t * pd = (vorbis_pdata_t *)dec->pdata;
+                vorbis_comment * vc = ov_comment(&(pd->vf), -1);
                 char field[MAXLEN];
                 int cnt;
                 int i, j;

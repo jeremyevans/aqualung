@@ -28,7 +28,7 @@
 
 #include "common.h"
 #include "core.h"
-#include "file_decoder.h"
+#include "decoder/file_decoder.h"
 #include "i18n.h"
 #include "volume.h"
 

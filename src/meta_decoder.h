@@ -32,7 +32,7 @@
 #include <FLAC/metadata.h>
 #endif /* HAVE_FLAC */
 
-#include "file_decoder.h"
+#include "decoder/file_decoder.h"
 
 
 #ifdef HAVE_ID3

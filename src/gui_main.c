@@ -70,6 +70,9 @@
 /* receive at most this much remote messages in one run of timeout_callback() */
 #define MAX_RCV_COUNT 32
 
+/* period of main timeout callback [ms] */
+#define TIMEOUT_PERIOD 100
+
 char pl_color_active[14];
 char pl_color_inactive[14];
 
@@ -871,6 +874,9 @@ change_skin(char * path) {
 	char rcpath[MAXLEN];
 
 
+	g_source_remove(timeout_tag);
+
+
 	save_window_position();
 
 	gtk_widget_destroy(main_window);
@@ -966,6 +972,9 @@ change_skin(char * path) {
 	
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), vol);
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
+
+
+	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
 }
 
 
@@ -2685,7 +2694,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	}
 
 	/* set timeout function */
-	timeout_tag = g_timeout_add(100, timeout_callback, NULL);
+	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
 }
 
 

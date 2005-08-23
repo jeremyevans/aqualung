@@ -153,6 +153,12 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\tSergiy Niskorodov <sgh_punk@users.sourceforge.net>\n\n\n", -1);
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
+	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Graphics:"), -1, tag, NULL);
+	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("Logo by Maja Kocon <ironya@ll.pl>\n\n\n"), -1);
+
+
+	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter,
 					 _("This Aqualung binary is compiled with:"), -1, tag, NULL);
 

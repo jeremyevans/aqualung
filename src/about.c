@@ -57,10 +57,10 @@ create_about_window() {
 	GtkWidget * ok_btn;
 	GtkWidget * label;
 
-	GdkColor white = { 0, 65535, 65535, 65535 };
-	GdkColor blue1 = { 0, 60000, 60000, 65535 };
-	GdkColor blue2 = { 0, 62500, 62500, 65535 };
-	GdkColor blue3 = { 0, 63000, 63000, 65535 };
+	GdkColor white = { 0, 49152, 51118, 52429 };
+	GdkColor blue1 = { 0, 41288, 47841, 55050 };
+	GdkColor blue2 = { 0, 45288, 51841, 60050 };
+	GdkColor blue3 = { 0, 55706, 57016, 57672 };
 
 	GtkTextTag * tag;
 
@@ -86,10 +86,10 @@ create_about_window() {
 	gtk_widget_set_size_request(ok_btn, 50, 30);
 	gtk_container_add(GTK_CONTAINER(ok_btn), label);
 	g_signal_connect(ok_btn, "clicked", G_CALLBACK(ok), NULL);
-	gtk_box_pack_end(GTK_BOX(vbox), ok_btn, FALSE, FALSE, 6);
+	gtk_box_pack_end(GTK_BOX(vbox), ok_btn, FALSE, FALSE, 0);
 	gtk_widget_modify_bg(ok_btn, GTK_STATE_NORMAL, &blue1);
 	gtk_widget_modify_bg(ok_btn, GTK_STATE_PRELIGHT, &blue2);
-	gtk_widget_modify_bg(ok_btn, GTK_STATE_ACTIVE, &blue3);
+	gtk_widget_modify_bg(ok_btn, GTK_STATE_ACTIVE, &blue2);
 
 
 	frame = gtk_frame_new(NULL);
@@ -317,7 +317,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."), -1);
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
 	gtk_text_buffer_place_cursor(buffer, &iter);
 
-	gtk_box_pack_end(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX(vbox), frame, TRUE, TRUE, 6);
 	gtk_container_add(GTK_CONTAINER(frame), scrolled_win);
 	gtk_container_add(GTK_CONTAINER(scrolled_win), view);
 

@@ -218,6 +218,8 @@ file_decoder_close(file_decoder_t * fdec) {
 
 	dec = (decoder_t *)(fdec->pdec);
 	dec->close(dec);
+	free(fdec->pdec);
+	fdec->pdec = NULL;
 	fdec->file_open = 0;
 	fdec->file_lib = 0;
 }

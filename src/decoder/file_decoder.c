@@ -220,8 +220,7 @@ file_decoder_close(file_decoder_t * fdec) {
 
 	dec = (decoder_t *)(fdec->pdec);
 	dec->close(dec);
-	//dec->destroy(dec);
-	free(fdec->pdec);
+	dec->destroy(dec);
 	fdec->pdec = NULL;
 	fdec->file_open = 0;
 	fdec->file_lib = 0;

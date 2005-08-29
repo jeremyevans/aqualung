@@ -60,9 +60,9 @@ typedef struct _mpeg_pdata_t {
 #endif /* HAVE_MPEG */
 
 
-decoder_t * mpeg_decoder_new(file_decoder_t * fdec);
+decoder_t * mpeg_decoder_init(file_decoder_t * fdec);
 #ifdef HAVE_MPEG
-void mpeg_decoder_delete(decoder_t * dec);
+void mpeg_decoder_destroy(decoder_t * dec);
 int mpeg_decoder_open(decoder_t * dec, char * filename);
 void mpeg_decoder_close(decoder_t * dec);
 unsigned int mpeg_decoder_read(decoder_t * dec, float * dest, int num);

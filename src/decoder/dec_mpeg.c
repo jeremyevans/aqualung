@@ -340,7 +340,7 @@ decode_mpeg(decoder_t * dec) {
 
 
 decoder_t *
-mpeg_decoder_new(file_decoder_t * fdec) {
+mpeg_decoder_init(file_decoder_t * fdec) {
 
         decoder_t * dec = NULL;
 
@@ -356,8 +356,8 @@ mpeg_decoder_new(file_decoder_t * fdec) {
                 return NULL;
         }
 
-	dec->new = mpeg_decoder_new;
-	dec->delete = mpeg_decoder_delete;
+	dec->init = mpeg_decoder_init;
+	dec->destroy = mpeg_decoder_destroy;
 	dec->open = mpeg_decoder_open;
 	dec->close = mpeg_decoder_close;
 	dec->read = mpeg_decoder_read;
@@ -368,7 +368,7 @@ mpeg_decoder_new(file_decoder_t * fdec) {
 
 
 void
-mpeg_decoder_delete(decoder_t * dec) {
+mpeg_decoder_destroy(decoder_t * dec) {
 
 	free(dec->pdata);
 	free(dec);

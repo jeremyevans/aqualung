@@ -233,6 +233,17 @@ create_about_window() {
 #endif /* HAVE_MPC */
         gtk_text_buffer_insert_at_cursor(buffer, _("Musepack\n"), -1);
 
+#ifdef HAVE_MAC
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
+        gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
+#else
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
+        gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
+#endif /* HAVE_MAC */
+        gtk_text_buffer_insert_at_cursor(buffer, _("Monkey's Audio Codec\n"), -1);
+
 #ifdef HAVE_ID3
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
         gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);

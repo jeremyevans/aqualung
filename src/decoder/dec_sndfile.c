@@ -29,7 +29,7 @@
 
 #ifdef HAVE_SNDFILE
 decoder_t *
-sndfile_decoder_new(file_decoder_t * fdec) {
+sndfile_decoder_init(file_decoder_t * fdec) {
 
         decoder_t * dec = NULL;
 
@@ -45,8 +45,8 @@ sndfile_decoder_new(file_decoder_t * fdec) {
                 return NULL;
         }
 
-	dec->new = sndfile_decoder_new;
-	dec->delete = sndfile_decoder_delete;
+	dec->init = sndfile_decoder_init;
+	dec->destroy = sndfile_decoder_destroy;
 	dec->open = sndfile_decoder_open;
 	dec->close = sndfile_decoder_close;
 	dec->read = sndfile_decoder_read;
@@ -57,7 +57,7 @@ sndfile_decoder_new(file_decoder_t * fdec) {
 
 
 void
-sndfile_decoder_delete(decoder_t * dec) {
+sndfile_decoder_destroy(decoder_t * dec) {
 
 	free(dec->pdata);
 	free(dec);

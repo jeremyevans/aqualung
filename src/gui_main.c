@@ -439,6 +439,12 @@ assembly_format_label(char * str, int v_major, int v_minor) {
                 break;
 #endif /* HAVE_MOD */
 
+#ifdef HAVE_MAC
+        case FORMAT_MAC:
+                strcpy(str, "Monkey's Audio");
+                break;
+#endif /* HAVE_MAC */
+
 	default:
 		strcpy(str, _("Unrecognized"));
 		break;
@@ -600,6 +606,29 @@ assembly_format_label(char * str, int v_major, int v_minor) {
 		strcat(str, ")");
 	}
 #endif /* HAVE_MPEG */
+
+#ifdef HAVE_MAC
+	if (v_major == FORMAT_MAC) {
+
+		switch (v_minor) {
+		case MAC_COMP_FAST:
+			sprintf(str, "%s (%s)", str, _("Compression: Fast"));
+			break;
+		case MAC_COMP_NORMAL:
+			sprintf(str, "%s (%s)", str, _("Compression: Normal"));
+			break;
+		case MAC_COMP_HIGH:
+			sprintf(str, "%s (%s)", str, _("Compression: High"));
+			break;
+		case MAC_COMP_EXTRA:
+			sprintf(str, "%s (%s)", str, _("Compression: Extra High"));
+			break;
+		case MAC_COMP_INSANE:
+			sprintf(str, "%s (%s)", str, _("Compression: Insane"));
+			break;
+		}
+	}
+#endif /* HAVE_MAC */
 }
 
 void

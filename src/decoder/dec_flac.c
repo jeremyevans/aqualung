@@ -101,7 +101,7 @@ error_callback(const FLAC__FileDecoder * decoder,
 
 
 decoder_t *
-flac_decoder_new(file_decoder_t * fdec) {
+flac_decoder_init(file_decoder_t * fdec) {
 
         decoder_t * dec = NULL;
 
@@ -117,8 +117,8 @@ flac_decoder_new(file_decoder_t * fdec) {
                 return NULL;
         }
 
-	dec->new = flac_decoder_new;
-	dec->delete = flac_decoder_delete;
+	dec->init = flac_decoder_init;
+	dec->destroy = flac_decoder_destroy;
 	dec->open = flac_decoder_open;
 	dec->close = flac_decoder_close;
 	dec->read = flac_decoder_read;
@@ -129,7 +129,7 @@ flac_decoder_new(file_decoder_t * fdec) {
 
 
 void
-flac_decoder_delete(decoder_t * dec) {
+flac_decoder_destroy(decoder_t * dec) {
 
 	free(dec->pdata);
 	free(dec);

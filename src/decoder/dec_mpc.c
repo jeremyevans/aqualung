@@ -72,7 +72,7 @@ decode_mpc(decoder_t * dec) {
 
 
 decoder_t *
-mpc_decoder_new(file_decoder_t * fdec) {
+mpc_decoder_init(file_decoder_t * fdec) {
 
         decoder_t * dec = NULL;
 
@@ -88,8 +88,8 @@ mpc_decoder_new(file_decoder_t * fdec) {
                 return NULL;
         }
 
-	dec->new = mpc_decoder_new;
-	dec->delete = mpc_decoder_delete;
+	dec->init = mpc_decoder_init;
+	dec->destroy = mpc_decoder_destroy;
 	dec->open = mpc_decoder_open;
 	dec->close = mpc_decoder_close;
 	dec->read = mpc_decoder_read;
@@ -100,7 +100,7 @@ mpc_decoder_new(file_decoder_t * fdec) {
 
 
 void
-mpc_decoder_delete(decoder_t * dec) {
+mpc_decoder_destroy(decoder_t * dec) {
 
 	free(dec->pdata);
 	free(dec);

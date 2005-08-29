@@ -49,22 +49,24 @@
 #include "dec_mpc.h"
 #include "dec_mpeg.h"
 #include "dec_mod.h"
+#include "dec_mac.h"
 
 
 extern size_t sample_size;
 
 
-typedef decoder_t * decoder_new(file_decoder_t * fdec);
+typedef decoder_t * decoder_init_t(file_decoder_t * fdec);
 
 /* this controls the order in which decoders are probed for a file */
-decoder_new * decoder_new_v[N_DECODERS] = {
-	null_decoder_new,
-	sndfile_decoder_new,
-	flac_decoder_new,
-	vorbis_decoder_new,
-	mpc_decoder_new,
-	mpeg_decoder_new,
-	mod_decoder_new
+decoder_init_t * decoder_init_v[N_DECODERS] = {
+	null_decoder_init,
+	sndfile_decoder_init,
+	flac_decoder_init,
+	vorbis_decoder_init,
+	mpc_decoder_init,
+	mpeg_decoder_init,
+	mac_decoder_init,
+	mod_decoder_init
 };
 
 
@@ -108,7 +110,7 @@ file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_SR) {
 	decoder_t * dec;
 
 	for (i = 0; i < N_DECODERS; i++) {
-		dec = decoder_new_v[i](fdec);
+		dec = decoder_init_v[i](fdec);
 		if (!dec) {
 			continue;
 		}
@@ -218,6 +220,7 @@ file_decoder_close(file_decoder_t * fdec) {
 
 	dec = (decoder_t *)(fdec->pdec);
 	dec->close(dec);
+	//dec->destroy(dec);
 	free(fdec->pdec);
 	fdec->pdec = NULL;
 	fdec->file_open = 0;

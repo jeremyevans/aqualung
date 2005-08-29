@@ -31,8 +31,8 @@ typedef struct _null_pdata_t {
 
 
 
-decoder_t * null_decoder_new(file_decoder_t * fdec);
-void null_decoder_delete(decoder_t * dec);
+decoder_t * null_decoder_init(file_decoder_t * fdec);
+void null_decoder_destroy(decoder_t * dec);
 int null_decoder_open(decoder_t * dec, char * filename);
 void null_decoder_close(decoder_t * dec);
 unsigned int null_decoder_read(decoder_t * dec, float * dest, int num);

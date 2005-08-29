@@ -62,7 +62,7 @@ decode_mod(decoder_t * dec) {
 
 
 decoder_t *
-mod_decoder_new(file_decoder_t * fdec) {
+mod_decoder_init(file_decoder_t * fdec) {
 
         decoder_t * dec = NULL;
 
@@ -78,8 +78,8 @@ mod_decoder_new(file_decoder_t * fdec) {
                 return NULL;
         }
 
-	dec->new = mod_decoder_new;
-	dec->delete = mod_decoder_delete;
+	dec->init = mod_decoder_init;
+	dec->destroy = mod_decoder_destroy;
 	dec->open = mod_decoder_open;
 	dec->close = mod_decoder_close;
 	dec->read = mod_decoder_read;
@@ -90,7 +90,7 @@ mod_decoder_new(file_decoder_t * fdec) {
 
 
 void
-mod_decoder_delete(decoder_t * dec) {
+mod_decoder_destroy(decoder_t * dec) {
 
 	free(dec->pdata);
 	free(dec);

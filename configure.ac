@@ -10,6 +10,8 @@ AM_CONFIG_HEADER([config.h])
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_RANLIB
+AC_PROG_CXX
+
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -333,6 +335,29 @@ else
 fi
 
 
+AC_MSG_CHECKING(for Monkey's Audio Codec support)
+AC_ARG_WITH(
+	mac,
+	[  --with-mac=yes,no       compile with Monkey's Audio Codec support (default: yes)],
+	mac="$withval",
+	mac="detect")
+if test "$mac" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(mac, CreateIAPEDecompress, [lib=yes], [lib=no], [-lstdc++])
+	if test "$lib" = "yes"; then
+	        mac_LIBS="-lmac -lstdc++"
+		AC_DEFINE([HAVE_MAC], [1], [Defined if compile with Monkey's Audio Codec support])
+	fi
+	if test "$lib" = "no" -a "$mac" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the Monkey's Audio Codec decoder library installed. Grab it from http://sourceforge.net/projects/mac-port/)
+	fi
+	if test "$mac" = "detect"; then
+		mac=$lib
+	fi
+fi
+
+
 # Compiler and linker variables
 gtk_CFLAGS=`pkg-config --cflags gtk+-2.0`
 gtk_LIBS=`pkg-config --libs gtk+-2.0`
@@ -352,7 +377,8 @@ LOCALEDIR="-DLOCALEDIR=\\\"$datadir/locale\\\""
 
 CFLAGS="-O2 -Wall $SKINDIR $LOCALEDIR -D_GNU_SOURCE"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS"
-LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS"
+LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS"
+
 
 AC_OUTPUT([Makefile \
 	   doc/Makefile \
@@ -379,6 +405,7 @@ echo "      Ogg Vorbis                          :  $ogg"
 echo "      MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg"
 echo "      MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod"
 echo "      Musepack                            :  $mpc"
+echo "      Monkey's Audio Codec                :  $mac"
 echo "      ID3 tags                            :  $id3"
 echo
 echo "  Output driver support:"

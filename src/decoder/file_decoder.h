@@ -35,8 +35,9 @@
 #define MPC_LIB     4
 #define MAD_LIB     5
 #define MOD_LIB     6
+#define MAC_LIB     7
 
-#define N_DECODERS  7
+#define N_DECODERS  8
 
 
 /* formats other than libsndfile internal formats */
@@ -74,6 +75,16 @@
 #ifdef HAVE_MPC
 #define FORMAT_MPC   0x10000000
 #endif /* HAVE_MPC */
+
+#ifdef HAVE_MAC
+#define FORMAT_MAC   0x20000000
+/* Monkey's Audio subformats */
+#define MAC_COMP_FAST   1
+#define MAC_COMP_NORMAL 2
+#define MAC_COMP_HIGH   3
+#define MAC_COMP_EXTRA  4
+#define MAC_COMP_INSANE 5
+#endif /* HAVE_MAC */
 
 
 typedef struct _fileinfo_t {
@@ -117,8 +128,8 @@ typedef struct _decoder_t {
 	file_decoder_t * fdec;
 	void * pdata; /* opaque pointer to decoder-dependent struct */
 
-	struct _decoder_t * (* new)(file_decoder_t * fdec);
-	void (* delete)(struct _decoder_t * dec);
+	struct _decoder_t * (* init)(file_decoder_t * fdec);
+	void (* destroy)(struct _decoder_t * dec);
 	int (* open)(struct _decoder_t * dec, char * filename);
 	void (* set_rva)(struct _decoder_t * dec, float voladj);
 	void (* close)(struct _decoder_t * dec);

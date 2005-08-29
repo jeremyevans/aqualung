@@ -50,9 +50,9 @@ typedef struct _mpc_pdata_t {
 #endif /* HAVE_MPC */
 
 
-decoder_t * mpc_decoder_new(file_decoder_t * fdec);
+decoder_t * mpc_decoder_init(file_decoder_t * fdec);
 #ifdef HAVE_MPC
-void mpc_decoder_delete(decoder_t * dec);
+void mpc_decoder_destroy(decoder_t * dec);
 int mpc_decoder_open(decoder_t * dec, char * filename);
 void mpc_decoder_close(decoder_t * dec);
 unsigned int mpc_decoder_read(decoder_t * dec, float * dest, int num);

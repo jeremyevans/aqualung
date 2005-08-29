@@ -47,9 +47,9 @@ typedef struct _flac_pdata_t {
 #endif /* HAVE_FLAC */
 
 
-decoder_t * flac_decoder_new(file_decoder_t * fdec);
+decoder_t * flac_decoder_init(file_decoder_t * fdec);
 #ifdef HAVE_FLAC
-void flac_decoder_delete(decoder_t * dec);
+void flac_decoder_destroy(decoder_t * dec);
 int flac_decoder_open(decoder_t * dec, char * filename);
 void flac_decoder_close(decoder_t * dec);
 unsigned int flac_decoder_read(decoder_t * dec, float * dest, int num);

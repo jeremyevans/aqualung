@@ -61,7 +61,7 @@ decode_vorbis(decoder_t * dec) {
 
 
 decoder_t *
-vorbis_decoder_new(file_decoder_t * fdec) {
+vorbis_decoder_init(file_decoder_t * fdec) {
 
         decoder_t * dec = NULL;
 
@@ -77,8 +77,8 @@ vorbis_decoder_new(file_decoder_t * fdec) {
                 return NULL;
         }
 
-	dec->new = vorbis_decoder_new;
-	dec->delete = vorbis_decoder_delete;
+	dec->init = vorbis_decoder_init;
+	dec->destroy = vorbis_decoder_destroy;
 	dec->open = vorbis_decoder_open;
 	dec->close = vorbis_decoder_close;
 	dec->read = vorbis_decoder_read;
@@ -89,7 +89,7 @@ vorbis_decoder_new(file_decoder_t * fdec) {
 
 
 void
-vorbis_decoder_delete(decoder_t * dec) {
+vorbis_decoder_destroy(decoder_t * dec) {
 
 	free(dec->pdata);
 	free(dec);

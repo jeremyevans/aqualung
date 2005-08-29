@@ -28,7 +28,7 @@
 
 
 decoder_t *
-null_decoder_new(file_decoder_t * fdec) {
+null_decoder_init(file_decoder_t * fdec) {
 
         decoder_t * dec = NULL;
 
@@ -44,8 +44,8 @@ null_decoder_new(file_decoder_t * fdec) {
                 return NULL;
         }
 
-	dec->new = null_decoder_new;
-	dec->delete = null_decoder_delete;
+	dec->init = null_decoder_init;
+	dec->destroy = null_decoder_destroy;
 	dec->open = null_decoder_open;
 	dec->close = null_decoder_close;
 	dec->read = null_decoder_read;
@@ -56,7 +56,7 @@ null_decoder_new(file_decoder_t * fdec) {
 
 
 void
-null_decoder_delete(decoder_t * dec) {
+null_decoder_destroy(decoder_t * dec) {
 
 	free(dec->pdata);
 	free(dec);

@@ -1557,6 +1557,13 @@ main(int argc, char ** argv) {
                 fprintf(stderr, "no\n");
 #endif /* HAVE_MPC */
 
+                fprintf(stderr, "\t\tMonkey's Audio Codec                : ");
+#ifdef HAVE_MAC
+                fprintf(stderr, "yes\n");
+#else
+                fprintf(stderr, "no\n");
+#endif /* HAVE_MAC */
+
                 fprintf(stderr, "\t\tID3 tags                            : ");
 #ifdef HAVE_ID3
                 fprintf(stderr, "yes\n");

@@ -320,6 +320,13 @@ process_volume(gpointer data) {
 				
 				vol_result = 20.0f * log10f(vol_result);
 
+#ifdef HAVE_MPEG
+				/* compensate for anti-clip vol.reduction in dec_mpeg.c/mpeg_output() */
+				if (fdec_vol->file_lib == MAD_LIB) {
+					vol_result += 1.8f;
+				}
+#endif /* HAVE_MPEG */
+
 				if (volumes == NULL) {
 					gtk_tree_store_set(music_store, &(vol_queue->iter), 5, vol_result, -1);
 				} else {

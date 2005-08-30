@@ -212,7 +212,7 @@ mpc_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 
 #else
 decoder_t *
-mpc_decoder_new(file_decoder_t * fdec) {
+mpc_decoder_init(file_decoder_t * fdec) {
 
         return NULL;
 }

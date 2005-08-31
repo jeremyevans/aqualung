@@ -11,7 +11,7 @@ MOFILES = $(wildcard *.mo)
 
 EXTRA_DIST = $(DOMAIN).pot $(POFILES) $(MOFILES) Makevars ABOUT-NLS
 
-all: 
+all: aqualung.pot
 	for i in $(POFILES); do $(MAKE) `echo $$i | sed 's/\.po/\.mo/'`; done
 
 hu.mo: hu.po
@@ -33,7 +33,7 @@ uk.mo: uk.po
 	$(MSGMERGE) $@ $< -o $@.in; \
 	mv $@.in $@
 
-pot:
+aqualung.pot: $(POTFILES)
 	$(XGETTEXT) $(XGETTEXT_OPTS) --copyright-holder='$(COPYRIGHT_HOLDER)' $(POTFILES) -o $(DOMAIN).pot
 
 install:

@@ -3,4 +3,4 @@ XGETTEXT_OPTS = --keyword=_ --keyword=N_ --keyword=X_
 DOMAIN = aqualung
 COPYRIGHT_HOLDER = Tom Szilagyi
 
-POTFILES = $(wildcard ../*.c)
+POTFILES = $(wildcard ../*.c ../decoder/*.c ../decoder/*.cpp)

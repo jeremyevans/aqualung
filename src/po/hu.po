@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-05 19:52+0200\n"
+"POT-Creation-Date: 2005-08-31 11:09+0200\n"
 "PO-Revision-Date: 2005-06-27 14:08+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../about.c:72 ../gui_main.c:2194
+#: ../about.c:72 ../gui_main.c:2232
 msgid "About"
 msgstr "Névjegy"
 
@@ -61,74 +61,90 @@ msgstr "Német, Magyar:\n"
 msgid "Ukrainian:\n"
 msgstr "Ukrán:\n"
 
-#: ../about.c:157
+#: ../about.c:156
+msgid "Graphics:"
+msgstr ""
+
+#: ../about.c:158
+msgid ""
+"Logo by Maja Kocon <ironya@ll.pl>\n"
+"\n"
+"\n"
+msgstr ""
+
+#: ../about.c:163
 msgid "This Aqualung binary is compiled with:"
 msgstr "Ez az Aqualung bináris a következõ opciókat támogatja:"
 
-#: ../about.c:161
+#: ../about.c:167
 msgid "File format support:"
 msgstr "Támogatott fájltípusok:"
 
-#: ../about.c:166 ../about.c:177 ../about.c:188 ../about.c:199 ../about.c:210
-#: ../about.c:221 ../about.c:232 ../about.c:247 ../about.c:258 ../about.c:268
-#: ../about.c:274
+#: ../about.c:172 ../about.c:183 ../about.c:194 ../about.c:205 ../about.c:216
+#: ../about.c:227 ../about.c:238 ../about.c:249 ../about.c:264 ../about.c:275
+#: ../about.c:285 ../about.c:291
 msgid "yes"
 msgstr "igen"
 
-#: ../about.c:170 ../about.c:181 ../about.c:192 ../about.c:203 ../about.c:214
-#: ../about.c:225 ../about.c:236 ../about.c:251 ../about.c:262 ../about.c:278
+#: ../about.c:176 ../about.c:187 ../about.c:198 ../about.c:209 ../about.c:220
+#: ../about.c:231 ../about.c:242 ../about.c:253 ../about.c:268 ../about.c:279
+#: ../about.c:295
 msgid "no"
 msgstr "nem"
 
-#: ../about.c:173
+#: ../about.c:179
 msgid "sndfile (WAV, AIFF, etc.)\n"
 msgstr ""
 
-#: ../about.c:184
+#: ../about.c:190
 msgid "Free Lossless Audio Codec (FLAC)\n"
 msgstr ""
 
-#: ../about.c:195
+#: ../about.c:201
 msgid "Ogg Vorbis\n"
 msgstr ""
 
-#: ../about.c:206
+#: ../about.c:212
 msgid "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
 msgstr ""
 
-#: ../about.c:217
+#: ../about.c:223
 msgid "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
 msgstr ""
 
-#: ../about.c:228
+#: ../about.c:234
 msgid "Musepack\n"
 msgstr ""
 
-#: ../about.c:239
+#: ../about.c:245
+msgid "Monkey's Audio Codec\n"
+msgstr ""
+
+#: ../about.c:256
 msgid "ID3 tags\n"
 msgstr "ID3v2 tagek\n"
 
-#: ../about.c:242
+#: ../about.c:259
 msgid "Output driver support:"
 msgstr "Kimeneti meghajtók:"
 
-#: ../about.c:254
+#: ../about.c:271
 msgid "OSS Audio\n"
 msgstr ""
 
-#: ../about.c:265
+#: ../about.c:282
 msgid "ALSA Audio\n"
 msgstr ""
 
-#: ../about.c:270
+#: ../about.c:287
 msgid "JACK Audio Server\n"
 msgstr "JACK Audio Szerver\n"
 
-#: ../about.c:281
+#: ../about.c:298
 msgid "Internal Sample Rate Converter support\n"
 msgstr "Beépített mintavételi frekvencia konverter\n"
 
-#: ../about.c:286
+#: ../about.c:303
 msgid ""
 "Aqualung could not be functional without the following libraries.\n"
 "We would like to thank the authors of these software packages:\n"
@@ -164,7 +180,7 @@ msgstr ""
 "* libmusepack, GPL licenszû Musepack dekóder könyvtár\n"
 "* libid3tag, könyvtár az ID3v2 tagek olvasásához"
 
-#: ../about.c:304
+#: ../about.c:321
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -193,7 +209,7 @@ msgstr ""
 "Szabad Szoftver Alapítvány címére: Free Software Foundation, Inc., 675\n"
 "Mass Ave, Cambridge, MA 02139, USA."
 
-#: ../file_info.c:301 ../gui_main.c:2192
+#: ../file_info.c:301 ../gui_main.c:2230
 msgid "File info"
 msgstr "Fájl infó"
 
@@ -230,11 +246,11 @@ msgstr ""
 msgid "Channel count:"
 msgstr "Csatornák száma:"
 
-#: ../file_info.c:393 ../gui_main.c:659
+#: ../file_info.c:393 ../gui_main.c:691
 msgid "MONO"
 msgstr ""
 
-#: ../file_info.c:395 ../gui_main.c:662
+#: ../file_info.c:395 ../gui_main.c:694
 msgid "STEREO"
 msgstr ""
 
@@ -271,7 +287,7 @@ msgstr "Importálás albumként"
 msgid "Import as Track number"
 msgstr "Importálás sorszámként"
 
-#: ../file_info.c:495 ../meta_decoder.c:245
+#: ../file_info.c:495 ../meta_decoder.c:252
 msgid "Relative Volume"
 msgstr "Relatív hangosság"
 
@@ -292,143 +308,163 @@ msgstr "Vorbis kommentek"
 msgid "FLAC metadata"
 msgstr "FLAC metaadatok"
 
-#: ../gui_main.c:440
+#: ../gui_main.c:449
 msgid "Unrecognized"
 msgstr "Ismeretlen"
 
-#: ../gui_main.c:448 ../gui_main.c:454 ../gui_main.c:457 ../gui_main.c:460
+#: ../gui_main.c:457 ../gui_main.c:463 ../gui_main.c:466 ../gui_main.c:469
 msgid "bit signed"
 msgstr "bites elõjeles egész"
 
-#: ../gui_main.c:451
+#: ../gui_main.c:460
 msgid "bit unsigned"
 msgstr "bites elõjel nélküli egész"
 
-#: ../gui_main.c:463
+#: ../gui_main.c:472
 msgid "bit float"
 msgstr "bites lebegõpontos"
 
-#: ../gui_main.c:466
+#: ../gui_main.c:475
 msgid "bit double"
 msgstr "bites dupla pontosságú lebegõpontos"
 
-#: ../gui_main.c:469 ../gui_main.c:472 ../gui_main.c:475 ../gui_main.c:478
-#: ../gui_main.c:481 ../gui_main.c:484 ../gui_main.c:487 ../gui_main.c:490
-#: ../gui_main.c:493 ../gui_main.c:496 ../gui_main.c:499 ../gui_main.c:502
-#: ../gui_main.c:505
+#: ../gui_main.c:478 ../gui_main.c:481 ../gui_main.c:484 ../gui_main.c:487
+#: ../gui_main.c:490 ../gui_main.c:493 ../gui_main.c:496 ../gui_main.c:499
+#: ../gui_main.c:502 ../gui_main.c:505 ../gui_main.c:508 ../gui_main.c:511
+#: ../gui_main.c:514
 msgid "encoding"
 msgstr "kódolású"
 
-#: ../gui_main.c:516
+#: ../gui_main.c:525
 msgid "Profile: Telephone"
 msgstr ""
 
-#: ../gui_main.c:519
+#: ../gui_main.c:528
 msgid "Profile: Thumb"
 msgstr ""
 
-#: ../gui_main.c:522
+#: ../gui_main.c:531
 msgid "Profile: Radio"
 msgstr ""
 
-#: ../gui_main.c:525
+#: ../gui_main.c:534
 msgid "Profile: Standard"
 msgstr ""
 
-#: ../gui_main.c:528
+#: ../gui_main.c:537
 msgid "Profile: Xtreme"
 msgstr ""
 
-#: ../gui_main.c:531
+#: ../gui_main.c:540
 msgid "Profile: Insane"
 msgstr ""
 
-#: ../gui_main.c:534
+#: ../gui_main.c:543
 msgid "Profile: Braindead"
 msgstr ""
 
-#: ../gui_main.c:549
+#: ../gui_main.c:558
 msgid "Layer I"
 msgstr "I. Réteg"
 
-#: ../gui_main.c:552
+#: ../gui_main.c:561
 msgid "Layer II"
 msgstr "II. Réteg"
 
-#: ../gui_main.c:555
+#: ../gui_main.c:564
 msgid "Layer III"
 msgstr "III. Réteg"
 
-#: ../gui_main.c:565
+#: ../gui_main.c:574
 msgid "Single channel"
 msgstr "Egycsatornás"
 
-#: ../gui_main.c:568
+#: ../gui_main.c:577
 msgid "Dual channel"
 msgstr "Kétcsatornás"
 
-#: ../gui_main.c:571
+#: ../gui_main.c:580
 msgid "Joint stereo"
 msgstr "Kapcsolt sztereó"
 
-#: ../gui_main.c:574
+#: ../gui_main.c:583
 msgid "Stereo"
 msgstr "Sztereó"
 
-#: ../gui_main.c:584
+#: ../gui_main.c:593
 msgid "Emphasis: none"
 msgstr "Elõkiemelés: nincs"
 
-#: ../gui_main.c:587 ../gui_main.c:590
+#: ../gui_main.c:596 ../gui_main.c:599
 msgid "Emphasis:"
 msgstr "Elõkiemelés:"
 
-#: ../gui_main.c:593
+#: ../gui_main.c:602
 msgid "Emphasis: reserved"
 msgstr "Elõkiemelés: fenntartott"
 
-#: ../gui_main.c:680 ../gui_main.c:685 ../gui_main.c:689
+#: ../gui_main.c:615
+msgid "Compression: Fast"
+msgstr ""
+
+#: ../gui_main.c:618
+msgid "Compression: Normal"
+msgstr ""
+
+#: ../gui_main.c:621
+msgid "Compression: High"
+msgstr ""
+
+#: ../gui_main.c:624
+msgid "Compression: Extra High"
+msgstr ""
+
+#: ../gui_main.c:627
+msgid "Compression: Insane"
+msgstr ""
+
+#: ../gui_main.c:712 ../gui_main.c:717 ../gui_main.c:721
 msgid "Output:"
 msgstr "Kimenet:"
 
-#: ../gui_main.c:703
+#: ../gui_main.c:735
 msgid "SRC Type: "
 msgstr "SRC Típus: "
 
-#: ../gui_main.c:707
+#: ../gui_main.c:739
 msgid "None"
 msgstr "Nincs"
 
-#: ../gui_main.c:1436 ../gui_main.c:1465
+#: ../gui_main.c:1474 ../gui_main.c:1503
 #, c-format
 msgid "Mute"
 msgstr "Néma"
 
-#: ../gui_main.c:1438 ../gui_main.c:1467
+#: ../gui_main.c:1476 ../gui_main.c:1505
 #, c-format
 msgid "%d dB"
 msgstr ""
 
-#: ../gui_main.c:1498 ../gui_main.c:1530
+#: ../gui_main.c:1536 ../gui_main.c:1568
 #, c-format
 msgid "%d%% R"
 msgstr ""
 
-#: ../gui_main.c:1500 ../gui_main.c:1532
+#: ../gui_main.c:1538 ../gui_main.c:1570
 #, c-format
 msgid "%d%% L"
 msgstr ""
 
-#: ../gui_main.c:1503 ../gui_main.c:1535
+#: ../gui_main.c:1541 ../gui_main.c:1573
 #, c-format
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:2104
+#: ../gui_main.c:2142
 msgid "JACK connection lost"
 msgstr "Megszakadt a JACK összeköttetés"
 
-#: ../gui_main.c:2107
+#: ../gui_main.c:2145
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -439,134 +475,134 @@ msgstr ""
 "az Aqualungot, mert nem volt elég gyors. Újra\n"
 "kell indítani a JACK-et és az Aqualungot is.\n"
 
-#: ../gui_main.c:2189 ../options.c:817
+#: ../gui_main.c:2227 ../options.c:817
 msgid "Settings"
 msgstr "Beállítások"
 
-#: ../gui_main.c:2190 ../skin.c:122
+#: ../gui_main.c:2228 ../skin.c:122
 msgid "Skin chooser"
 msgstr "Szkin-választó"
 
-#: ../gui_main.c:2191
+#: ../gui_main.c:2229
 msgid "JACK port setup"
 msgstr "JACK port beállítás"
 
-#: ../gui_main.c:2419
+#: ../gui_main.c:2457
 msgid "Previous song (up)"
 msgstr ""
 
-#: ../gui_main.c:2423
+#: ../gui_main.c:2461
 msgid "Stop (s)"
 msgstr ""
 
-#: ../gui_main.c:2427
+#: ../gui_main.c:2465
 msgid "Next song (down)"
 msgstr ""
 
-#: ../gui_main.c:2431
+#: ../gui_main.c:2469
 msgid "Play (p)"
 msgstr ""
 
-#: ../gui_main.c:2435
+#: ../gui_main.c:2473
 msgid "Pause (space)"
 msgstr ""
 
-#: ../gui_main.c:2461
+#: ../gui_main.c:2499
 msgid "Repeat current song"
 msgstr ""
 
-#: ../gui_main.c:2469
+#: ../gui_main.c:2507
 msgid "Repeat all songs"
 msgstr ""
 
-#: ../gui_main.c:2477
+#: ../gui_main.c:2515
 msgid "Shuffle songs"
 msgstr ""
 
-#: ../gui_main.c:2489
+#: ../gui_main.c:2527
 #, fuzzy
 msgid "Toggle playlist"
 msgstr "Lejátszólista mentése"
 
-#: ../gui_main.c:2493
+#: ../gui_main.c:2531
 #, fuzzy
 msgid "Toggle music store"
 msgstr "Zenetár"
 
-#: ../gui_main.c:2497
+#: ../gui_main.c:2535
 #, fuzzy
 msgid "Toggle LADSPA patch builder"
 msgstr "LADSPA effekt szerkesztõ"
 
-#: ../meta_decoder.c:272 ../search_playlist.c:310
+#: ../meta_decoder.c:279 ../search_playlist.c:310
 msgid "Title"
 msgstr "Cím"
 
-#: ../meta_decoder.c:273
+#: ../meta_decoder.c:280
 msgid "Subtitle"
 msgstr "Alcím"
 
-#: ../meta_decoder.c:276
+#: ../meta_decoder.c:283
 msgid "Composer"
 msgstr "Zeneszerzõ"
 
-#: ../meta_decoder.c:277 ../search.c:507
+#: ../meta_decoder.c:284 ../search.c:507
 msgid "Artist"
 msgstr "Elõadó"
 
-#: ../meta_decoder.c:278
+#: ../meta_decoder.c:285
 msgid "Orchestra"
 msgstr "Zenekar"
 
-#: ../meta_decoder.c:279
+#: ../meta_decoder.c:286
 msgid "Conductor"
 msgstr "Karmester"
 
-#: ../meta_decoder.c:280
+#: ../meta_decoder.c:287
 msgid "Lyricist"
 msgstr "Szövegíró"
 
-#: ../meta_decoder.c:281
+#: ../meta_decoder.c:288
 msgid "Album"
 msgstr "Lemez"
 
-#: ../meta_decoder.c:282 ../search.c:529
+#: ../meta_decoder.c:289 ../search.c:529
 msgid "Track"
 msgstr "Szám"
 
-#: ../meta_decoder.c:283
+#: ../meta_decoder.c:290
 msgid "Year"
 msgstr "Év"
 
-#: ../meta_decoder.c:284
+#: ../meta_decoder.c:291
 msgid "Publisher"
 msgstr "Kiadó"
 
-#: ../meta_decoder.c:285
+#: ../meta_decoder.c:292
 msgid "Genre"
 msgstr "Mûfaj"
 
-#: ../meta_decoder.c:286
+#: ../meta_decoder.c:293
 msgid "Station"
 msgstr "Adóállomás"
 
-#: ../meta_decoder.c:287
+#: ../meta_decoder.c:294
 msgid "Encoder"
 msgstr "Kódoló"
 
-#: ../meta_decoder.c:323
+#: ../meta_decoder.c:330
 msgid "Copyright (C)"
 msgstr ""
 
-#: ../meta_decoder.c:323
+#: ../meta_decoder.c:330
 msgid "Produced (P)"
 msgstr ""
 
-#: ../meta_decoder.c:359
+#: ../meta_decoder.c:366
 msgid "Comment"
 msgstr "Komment"
 
-#: ../meta_decoder.c:435 ../meta_decoder.c:535
+#: ../meta_decoder.c:442 ../meta_decoder.c:544
 msgid "Vendor:"
 msgstr ""
 
@@ -605,7 +641,7 @@ msgstr "Album hozzáadása"
 msgid "Auto-create tracks from these files:"
 msgstr "Számok automatikus létrehozása a következõ fájlokból:"
 
-#: ../music_browser.c:660 ../playlist.c:1107
+#: ../music_browser.c:660 ../playlist.c:1143
 msgid "Clear list"
 msgstr "Lista törlése"
 
@@ -654,7 +690,7 @@ msgstr "Ismeretlen"
 msgid "Use manual RVA value [dB]"
 msgstr "Rögzített RVA használata [dB]"
 
-#: ../music_browser.c:1699 ../music_browser.c:2025 ../music_browser.c:2343
+#: ../music_browser.c:1699 ../music_browser.c:2026 ../music_browser.c:2344
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
 msgstr "Biztosan eltávolítod a Zenetárból a következõt: \"%s\" ?"
@@ -663,84 +699,84 @@ msgstr "Biztosan eltávolítod a Zenetárból a következõt: \"%s\" ?"
 msgid "Remove Artist"
 msgstr "Elõadó eltávolítása"
 
-#: ../music_browser.c:2026
+#: ../music_browser.c:2027
 msgid "Remove Record"
 msgstr "Album eltávolítása"
 
-#: ../music_browser.c:2344
+#: ../music_browser.c:2345
 msgid "Remove Track"
 msgstr "Szám eltávolítása"
 
-#: ../music_browser.c:2388
+#: ../music_browser.c:2389
 msgid "(no comment)"
 msgstr "(nincs megjegyzés)"
 
-#: ../music_browser.c:2465
+#: ../music_browser.c:2466
 msgid "Music Store"
 msgstr "Zenetár"
 
-#: ../music_browser.c:2545 ../music_browser.c:2558
+#: ../music_browser.c:2546 ../music_browser.c:2559
 msgid "Add new artist..."
 msgstr "Új elõadó hozzáadása..."
 
-#: ../music_browser.c:2546 ../music_browser.c:2565 ../music_browser.c:2608
-#: ../music_browser.c:2651 ../playlist.c:1412
+#: ../music_browser.c:2547 ../music_browser.c:2566 ../music_browser.c:2609
+#: ../music_browser.c:2652 ../playlist.c:1448
 msgid "Search..."
 msgstr "Keresés..."
 
-#: ../music_browser.c:2556 ../music_browser.c:2599 ../music_browser.c:2642
+#: ../music_browser.c:2557 ../music_browser.c:2600 ../music_browser.c:2643
 msgid "Add to playlist"
 msgstr "Lejátszólistába"
 
-#: ../music_browser.c:2559
+#: ../music_browser.c:2560
 msgid "Edit artist..."
 msgstr "Elõadó szerkesztése..."
 
-#: ../music_browser.c:2560
+#: ../music_browser.c:2561
 msgid "Add new record to this artist..."
 msgstr "Új album hozzáadása ehhez az elõadóhoz..."
 
-#: ../music_browser.c:2561 ../music_browser.c:2604
+#: ../music_browser.c:2562 ../music_browser.c:2605
 msgid "Calculate volume (recursive)"
 msgstr "Hangosság meghatározása (rekurzív)"
 
-#: ../music_browser.c:2563
+#: ../music_browser.c:2564
 msgid "Remove artist"
 msgstr "Elõadó eltávolítása"
 
-#: ../music_browser.c:2601
+#: ../music_browser.c:2602
 msgid "Add new record..."
 msgstr "Új album hozzáadása..."
 
-#: ../music_browser.c:2602
+#: ../music_browser.c:2603
 msgid "Edit record..."
 msgstr "Album szerkesztése..."
 
-#: ../music_browser.c:2603
+#: ../music_browser.c:2604
 msgid "Add new track to this record..."
 msgstr "Új szám hozzáadása ehhez az albumhoz..."
 
-#: ../music_browser.c:2606
+#: ../music_browser.c:2607
 msgid "Remove record"
 msgstr "Album eltávolítása"
 
-#: ../music_browser.c:2644
+#: ../music_browser.c:2645
 msgid "Add new track..."
 msgstr "Új szám hozzáadása..."
 
-#: ../music_browser.c:2645
+#: ../music_browser.c:2646
 msgid "Edit track..."
 msgstr "Szám szerkesztése..."
 
-#: ../music_browser.c:2646 ../playlist.c:1411
+#: ../music_browser.c:2647 ../playlist.c:1447
 msgid "File info..."
 msgstr "Fájl infó..."
 
-#: ../music_browser.c:2647
+#: ../music_browser.c:2648
 msgid "Calculate volume"
 msgstr "Hangosság meghatározása"
 
-#: ../music_browser.c:2649
+#: ../music_browser.c:2650
 msgid "Remove track"
 msgstr "Szám eltávolítása"
 
@@ -805,7 +841,7 @@ msgstr ""
 msgid "Put control buttons at the bottom of playlist"
 msgstr ""
 
-#: ../options.c:926 ../playlist.c:1382
+#: ../options.c:926 ../playlist.c:1418
 msgid "Playlist"
 msgstr "Lejátszólista"
 
@@ -1010,34 +1046,34 @@ msgstr "Összes elem kijelölése"
 msgid "Music Store font: "
 msgstr "Zenetár"
 
-#: ../playlist.c:546
+#: ../playlist.c:550
 msgid "Please specify the file to save the playlist to."
 msgstr "Add meg az elmentendõ lejátszólista fájlt."
 
-#: ../playlist.c:580
+#: ../playlist.c:584
 msgid "Please specify the file to load the playlist from."
 msgstr "Add meg a betöltendõ lejátszólista fájlt."
 
-#: ../playlist.c:766
+#: ../playlist.c:797
 msgid ""
 "Playback RVA is currently disabled. Enable it at Settings->Playback RVA."
 msgstr ""
 
-#: ../playlist.c:880
+#: ../playlist.c:916
 msgid "Please select the audio files for direct adding."
 msgstr "Add meg a közvetlenül hozzáadandó hangfájlokat."
 
-#: ../playlist.c:986 ../playlist.c:989 ../playlist.c:992 ../playlist.c:2036
-#: ../playlist.c:2039 ../playlist.c:2042 ../playlist.c:2322 ../playlist.c:2325
-#: ../playlist.c:2328 ../playlist.c:2537 ../playlist.c:2540 ../playlist.c:2543
+#: ../playlist.c:1022 ../playlist.c:1025 ../playlist.c:1028 ../playlist.c:2072
+#: ../playlist.c:2075 ../playlist.c:2078 ../playlist.c:2358 ../playlist.c:2361
+#: ../playlist.c:2364 ../playlist.c:2573 ../playlist.c:2576 ../playlist.c:2579
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: ../playlist.c:1074 ../playlist.c:1561 ../playlist.c:1584
+#: ../playlist.c:1110 ../playlist.c:1597 ../playlist.c:1620
 msgid "Direct add"
 msgstr "Közvetlen hozzáadás"
 
-#: ../playlist.c:1087
+#: ../playlist.c:1123
 msgid ""
 "\n"
 "Directly add these files to playlist:"
@@ -1045,68 +1081,68 @@ msgstr ""
 "\n"
 "A következõ fájlok közvetlen hozzáadása a lejátszólistához:"
 
-#: ../playlist.c:1114
+#: ../playlist.c:1150
 #, fuzzy
 msgid "_Add files..."
 msgstr "Fájlok hozzáadása..."
 
-#: ../playlist.c:1158
+#: ../playlist.c:1194
 #, fuzzy
 msgid "Please select the audio file."
 msgstr "Add meg a számhoz tartozó fájlt."
 
-#: ../playlist.c:1402
+#: ../playlist.c:1438
 msgid "Save playlist"
 msgstr "Lejátszólista mentése"
 
-#: ../playlist.c:1403
+#: ../playlist.c:1439
 msgid "Load playlist"
 msgstr "Lejátszólista betöltése"
 
-#: ../playlist.c:1404
+#: ../playlist.c:1440
 msgid "Enqueue playlist"
 msgstr "Lejátszólista hozzáfûzése"
 
-#: ../playlist.c:1406
+#: ../playlist.c:1442
 #, fuzzy
 msgid "Calculate RVA"
 msgstr "Hangosság meghatározása"
 
-#: ../playlist.c:1408
+#: ../playlist.c:1444
 #, fuzzy
 msgid "Separate"
 msgstr "Mintavételi frekvencia:"
 
-#: ../playlist.c:1409
+#: ../playlist.c:1445
 msgid "Average"
 msgstr ""
 
-#: ../playlist.c:1565 ../playlist.c:1598
+#: ../playlist.c:1601 ../playlist.c:1634
 msgid "Select all"
 msgstr "Összes elem kijelölése"
 
-#: ../playlist.c:1569 ../playlist.c:1623
+#: ../playlist.c:1605 ../playlist.c:1659
 msgid "Remove selected"
 msgstr "Kijelölt elemek törlése"
 
-#: ../playlist.c:1579
+#: ../playlist.c:1615
 msgid "Add single file"
 msgstr ""
 
-#: ../playlist.c:1593
+#: ../playlist.c:1629
 msgid "Select none"
 msgstr "Kijelölés megszüntetése"
 
-#: ../playlist.c:1603
+#: ../playlist.c:1639
 msgid "Invert selection"
 msgstr "Kijelölés megfordítása"
 
-#: ../playlist.c:1613
+#: ../playlist.c:1649
 #, fuzzy
 msgid "Cut selected"
 msgstr "Kijelölt elemek törlése"
 
-#: ../playlist.c:1618
+#: ../playlist.c:1654
 msgid "Remove all"
 msgstr "Mindent eltávolít"
 

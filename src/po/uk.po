@@ -62,7 +62,7 @@ msgstr "Укра╖нська:\n"
 
 #: ../about.c:156
 msgid "Graphics:"
-msgstr ""
+msgstr "Граф╕ка:"
 
 #: ../about.c:158
 msgid ""
@@ -70,6 +70,9 @@ msgid ""
 "\n"
 "\n"
 msgstr ""
+"Дизайн Логотипу: Maja Kocon <ironya@ll.pl>\n"
+"\n"
+"\n"
 
 #: ../about.c:163
 msgid "This Aqualung binary is compiled with:"
@@ -393,23 +396,23 @@ msgstr "Наголос: резервний"
 
 #: ../gui_main.c:615
 msgid "Compression: Fast"
-msgstr ""
+msgstr "Ступ╕нь стиснення: Швидка"
 
 #: ../gui_main.c:618
 msgid "Compression: Normal"
-msgstr ""
+msgstr "Ступ╕нь стиснення: Нормальна"
 
 #: ../gui_main.c:621
 msgid "Compression: High"
-msgstr ""
+msgstr "Ступ╕нь стиснення: Висока"
 
 #: ../gui_main.c:624
 msgid "Compression: Extra High"
-msgstr ""
+msgstr "Ступ╕нь стиснення: Дуже висока"
 
 #: ../gui_main.c:627
 msgid "Compression: Insane"
-msgstr ""
+msgstr "Ступ╕нь стиснення: Божев╕льна"
 
 #: ../gui_main.c:712 ../gui_main.c:717 ../gui_main.c:721
 msgid "Output:"
@@ -788,10 +791,10 @@ msgid ""
 "literally copied into the resulting string.\n"
 msgstr ""
 "\n"
-"Рядки шаблону, що ви впишете сюди, будуть використан╕ для\n"
+"Рядки шаблону, що ви впишете сюди, буде використано для\n"
 "складання одн╕╓╖ назви з Виконавця, Запису\n"
 "та назви Дор╕жки. Це означа╓ться %a, %r та %t,\n"
-"в╕дпов╕дно. Все ╕нше, що в впишете сюди буде\n"
+"в╕дпов╕дно. Все ╕нше, що ви впишете сюди буде\n"
 "скоп╕йовано до рядку-результату.\n"
 
 #: ../options.c:857
@@ -886,7 +889,7 @@ msgstr "ЦОС"
 
 #: ../options.c:1024
 msgid "LADSPA plugin processing"
-msgstr "Обробка LADSPA втулок (Цифрова Обробка Сигналу)"
+msgstr "Обробка LADSPA втулками (Цифрова Обробка Сигналу)"
 
 #: ../options.c:1035
 msgid "Pre Fader (before Volume & Balance)"
@@ -1145,7 +1148,7 @@ msgstr "Наявн╕ втулки"
 
 #: ../plugin.c:1736
 msgid "ID"
-msgstr ""
+msgstr "╤дентиф╕катор"
 
 #: ../plugin.c:1741 ../plugin.c:1816
 msgid "Name"
@@ -1193,7 +1196,7 @@ msgstr " вих╕д Л"
 
 #: ../ports.c:555
 msgid " out R"
-msgstr " вих╕д Р"
+msgstr " вих╕д П"
 
 #: ../search.c:407
 msgid "Search the Music Store"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-02 15:50+0200\n"
+"POT-Creation-Date: 2005-09-02 16:21+0200\n"
 "PO-Revision-Date: 2004-12-24 01:51+0200\n"
 "Last-Translator: Sergiy Niskorodov <sgh_punk@users.sourceforge.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -630,7 +630,7 @@ msgstr "Додати запис"
 msgid "Auto-create tracks from these files:"
 msgstr "Автостворення дор╕жок з цих файл╕в:"
 
-#: ../music_browser.c:660 ../playlist.c:1154
+#: ../music_browser.c:660 ../playlist.c:1153
 msgid "Clear list"
 msgstr "Очистити список"
 
@@ -679,93 +679,93 @@ msgstr "Невим╕ряно"
 msgid "Use manual RVA value [dB]"
 msgstr "Використовувати значення ПВР встановлен╕ вручну [dB]"
 
-#: ../music_browser.c:1699 ../music_browser.c:2026 ../music_browser.c:2344
+#: ../music_browser.c:1701 ../music_browser.c:2030 ../music_browser.c:2350
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
 msgstr "Справд╕ прибрати \"%s\" з Музичного Складу?"
 
-#: ../music_browser.c:1700
+#: ../music_browser.c:1702
 msgid "Remove Artist"
 msgstr "Прибрати виконавця"
 
-#: ../music_browser.c:2027
+#: ../music_browser.c:2031
 msgid "Remove Record"
 msgstr "Прибрати запис"
 
-#: ../music_browser.c:2345
+#: ../music_browser.c:2351
 msgid "Remove Track"
 msgstr "Прибрати дор╕жку"
 
-#: ../music_browser.c:2389
+#: ../music_browser.c:2395
 msgid "(no comment)"
 msgstr "(без коментаря)"
 
-#: ../music_browser.c:2466
+#: ../music_browser.c:2472
 msgid "Music Store"
 msgstr "Музичний Склад"
 
-#: ../music_browser.c:2546 ../music_browser.c:2559
+#: ../music_browser.c:2552 ../music_browser.c:2565
 msgid "Add new artist..."
 msgstr "Додати нового виконавця..."
 
-#: ../music_browser.c:2547 ../music_browser.c:2566 ../music_browser.c:2609
-#: ../music_browser.c:2652 ../playlist.c:1545
+#: ../music_browser.c:2553 ../music_browser.c:2572 ../music_browser.c:2615
+#: ../music_browser.c:2658 ../playlist.c:1542
 msgid "Search..."
 msgstr "Шукати..."
 
-#: ../music_browser.c:2557 ../music_browser.c:2600 ../music_browser.c:2643
+#: ../music_browser.c:2563 ../music_browser.c:2606 ../music_browser.c:2649
 msgid "Add to playlist"
 msgstr "Додати до списку програвання"
 
-#: ../music_browser.c:2560
+#: ../music_browser.c:2566
 msgid "Edit artist..."
 msgstr "редагувати виконавця..."
 
-#: ../music_browser.c:2561
+#: ../music_browser.c:2567
 msgid "Add new record to this artist..."
 msgstr "Додати новий запис до цього виконавця..."
 
-#: ../music_browser.c:2562 ../music_browser.c:2605
+#: ../music_browser.c:2568 ../music_browser.c:2611
 msgid "Calculate volume (recursive)"
 msgstr "П╕драхувати гучн╕сть (рекурсивно)"
 
-#: ../music_browser.c:2564
+#: ../music_browser.c:2570
 msgid "Remove artist"
 msgstr "прибрати виконавця"
 
-#: ../music_browser.c:2602
+#: ../music_browser.c:2608
 msgid "Add new record..."
 msgstr "Додати новий запис..."
 
-#: ../music_browser.c:2603
+#: ../music_browser.c:2609
 msgid "Edit record..."
 msgstr "Редагувати запис..."
 
-#: ../music_browser.c:2604
+#: ../music_browser.c:2610
 msgid "Add new track to this record..."
 msgstr "Додати нову дор╕жку до цього запису..."
 
-#: ../music_browser.c:2607
+#: ../music_browser.c:2613
 msgid "Remove record"
 msgstr "Прибрати запис"
 
-#: ../music_browser.c:2645
+#: ../music_browser.c:2651
 msgid "Add new track..."
 msgstr "Додати нову дор╕жку..."
 
-#: ../music_browser.c:2646
+#: ../music_browser.c:2652
 msgid "Edit track..."
 msgstr "Редагувати дор╕жку..."
 
-#: ../music_browser.c:2647 ../playlist.c:1544
+#: ../music_browser.c:2653 ../playlist.c:1541
 msgid "File info..."
 msgstr "╤нформац╕я про файл"
 
-#: ../music_browser.c:2648
+#: ../music_browser.c:2654
 msgid "Calculate volume"
 msgstr "П╕драхувати гучн╕сть"
 
-#: ../music_browser.c:2650
+#: ../music_browser.c:2656
 msgid "Remove track"
 msgstr "Прибрати дор╕жку"
 
@@ -839,7 +839,7 @@ msgstr "Вбудувати список програвання у головне в╕кно"
 msgid "Put control buttons at the bottom of playlist"
 msgstr "Кнопки керування знизу списку програвання"
 
-#: ../options.c:936 ../playlist.c:1515
+#: ../options.c:936 ../playlist.c:1512
 msgid "Playlist"
 msgstr "Список програвання"
 
@@ -1046,35 +1046,35 @@ msgstr "Вибрати"
 msgid "Music Store font: "
 msgstr "Шрифт Музичного Складу"
 
-#: ../playlist.c:557
+#: ../playlist.c:556
 msgid "Please specify the file to save the playlist to."
 msgstr "Будьласка вкаж╕ть файл куди буде записано список програвання."
 
-#: ../playlist.c:591
+#: ../playlist.c:590
 msgid "Please specify the file to load the playlist from."
 msgstr "Будьласка вкаж╕ть файл зв╕дки буде завантажено список програвання."
 
-#: ../playlist.c:808
+#: ../playlist.c:807
 msgid ""
 "Playback RVA is currently disabled. Enable it at Settings->Playback RVA."
 msgstr ""
 "ПВР програвання зараз вимкнено. Ув╕мкн╕ть ╖╖ в Налаштування->ПВР програвання."
 
-#: ../playlist.c:927
+#: ../playlist.c:926
 msgid "Please select the audio files for direct adding."
 msgstr "Будьласка обер╕ть звуков╕ файли для безпосереднього додавання."
 
-#: ../playlist.c:1033 ../playlist.c:1036 ../playlist.c:1039 ../playlist.c:2206
-#: ../playlist.c:2209 ../playlist.c:2212 ../playlist.c:2492 ../playlist.c:2495
-#: ../playlist.c:2498 ../playlist.c:2707 ../playlist.c:2710 ../playlist.c:2713
+#: ../playlist.c:1032 ../playlist.c:1035 ../playlist.c:1038 ../playlist.c:2203
+#: ../playlist.c:2206 ../playlist.c:2209 ../playlist.c:2489 ../playlist.c:2492
+#: ../playlist.c:2495 ../playlist.c:2704 ../playlist.c:2707 ../playlist.c:2710
 msgid "Unknown"
 msgstr "Нев╕домо"
 
-#: ../playlist.c:1121 ../playlist.c:1732 ../playlist.c:1754
+#: ../playlist.c:1120 ../playlist.c:1729 ../playlist.c:1751
 msgid "Direct add"
 msgstr "Безпосередн╓ додавання"
 
-#: ../playlist.c:1134
+#: ../playlist.c:1133
 msgid ""
 "\n"
 "Directly add these files to playlist:"
@@ -1082,82 +1082,82 @@ msgstr ""
 "\n"
 "Безпосередньо додати ц╕ файли до списку програвання:"
 
-#: ../playlist.c:1161
+#: ../playlist.c:1160
 msgid "_Add files..."
 msgstr "_Додати файли..."
 
-#: ../playlist.c:1207
+#: ../playlist.c:1206
 msgid "Please select the audio file."
 msgstr "Будьласка обер╕ть звуковий файл."
 
-#: ../playlist.c:1455 ../playlist.c:1484
+#: ../playlist.c:1452 ../playlist.c:1481
 #, c-format
 msgid "%d track [%s]"
 msgstr ""
 
-#: ../playlist.c:1457 ../playlist.c:1486
+#: ../playlist.c:1454 ../playlist.c:1483
 #, c-format
 msgid "%d tracks [%s]"
 msgstr ""
 
-#: ../playlist.c:1535
+#: ../playlist.c:1532
 msgid "Save playlist"
 msgstr "Зберегти список програвання"
 
-#: ../playlist.c:1536
+#: ../playlist.c:1533
 msgid "Load playlist"
 msgstr "Завантажити список програвання"
 
-#: ../playlist.c:1537
+#: ../playlist.c:1534
 msgid "Enqueue playlist"
 msgstr "Поставити в чергу список програвання"
 
-#: ../playlist.c:1539
+#: ../playlist.c:1536
 msgid "Calculate RVA"
 msgstr "П╕драхувати ПВР"
 
-#: ../playlist.c:1541
+#: ../playlist.c:1538
 msgid "Separate"
 msgstr "Окрем╕"
 
-#: ../playlist.c:1542
+#: ../playlist.c:1539
 msgid "Average"
 msgstr "Середн╕"
 
-#: ../playlist.c:1709
+#: ../playlist.c:1706
 #, fuzzy
 msgid "Selected: "
 msgstr "Вибрати"
 
-#: ../playlist.c:1719
+#: ../playlist.c:1716
 msgid "Total: "
 msgstr ""
 
-#: ../playlist.c:1736 ../playlist.c:1768
+#: ../playlist.c:1733 ../playlist.c:1765
 msgid "Select all"
 msgstr "Вибрати все"
 
-#: ../playlist.c:1740 ../playlist.c:1793
+#: ../playlist.c:1737 ../playlist.c:1790
 msgid "Remove selected"
 msgstr "Прибрати вибране"
 
-#: ../playlist.c:1749
+#: ../playlist.c:1746
 msgid "Add single file"
 msgstr "Додати один файл"
 
-#: ../playlist.c:1763
+#: ../playlist.c:1760
 msgid "Select none"
 msgstr "Зняти виб╕р"
 
-#: ../playlist.c:1773
+#: ../playlist.c:1770
 msgid "Invert selection"
 msgstr "Перевернути виб╕р"
 
-#: ../playlist.c:1783
+#: ../playlist.c:1780
 msgid "Cut selected"
 msgstr "Прибрати обране"
 
-#: ../playlist.c:1788
+#: ../playlist.c:1785
 msgid "Remove all"
 msgstr "Прибрати все"
 

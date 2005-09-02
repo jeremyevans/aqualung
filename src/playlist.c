@@ -193,7 +193,6 @@ void cut__sel_cb(gpointer data);
 void plist__search_cb(gpointer data);
 void direct_add(GtkWidget * widget, gpointer * data);
 
-void playlist_content_changed(void);
 
 void
 voladj2str(float voladj, char * str) {
@@ -1354,8 +1353,6 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 		track__addlist_cb(piter);
 		break;
 	}
-
-	playlist_content_changed();
 
 	return FALSE;
 }

@@ -37,6 +37,7 @@ void load_m3u(char * filename, int enqueue);
 void load_pls(char * filename, int enqueue);
 int is_playlist(char * filename);
 void add_to_playlist(char * filename, int enqueue);
+void playlist_content_changed(void);
 
 
 #endif /* _PLAYLIST_H */

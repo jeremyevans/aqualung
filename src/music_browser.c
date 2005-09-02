@@ -1579,6 +1579,8 @@ artist__addlist_cb(gpointer data) {
 		}
 		delayed_playlist_rearrange(100);
 	}
+
+	playlist_content_changed();
 }
 
 
@@ -1869,6 +1871,8 @@ record__addlist_cb(gpointer data) {
 		}
 		delayed_playlist_rearrange(100);
 	}
+
+	playlist_content_changed();
 }
 
 
@@ -2154,6 +2158,8 @@ track__addlist_cb(gpointer data) {
 
 		delayed_playlist_rearrange(100);
 	}
+
+	playlist_content_changed();
 }
 
 

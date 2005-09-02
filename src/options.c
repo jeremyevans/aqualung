@@ -74,6 +74,8 @@ extern int hide_comment_pane_shadow;
 extern int playlist_is_embedded_shadow;
 extern int buttons_at_the_bottom;
 extern int override_skin_settings;
+extern int enable_playlist_statusbar;
+extern int enable_playlist_statusbar_shadow;
 
 extern char playlist_font[MAX_FONTNAME_LEN];
 extern char browser_font[MAX_FONTNAME_LEN];
@@ -128,6 +130,7 @@ GtkWidget * check_auto_use_ext_meta_track;
 GtkWidget * check_enable_tooltips;
 GtkWidget * check_hide_comment_pane;
 GtkWidget * check_playlist_is_embedded;
+GtkWidget * check_enable_playlist_statusbar;
 GtkWidget * check_buttons_at_the_bottom;
 GtkWidget * check_override_skin;
 
@@ -187,6 +190,7 @@ ok(GtkWidget * widget, gpointer data) {
 	rva_use_linear_thresh = rva_use_linear_thresh_shadow;
 	rva_avg_linear_thresh = rva_avg_linear_thresh_shadow;
 	rva_avg_stddev_thresh = rva_avg_stddev_thresh_shadow;
+
 
 	show_rva_in_playlist = show_rva_in_playlist_shadow;
 	if (show_rva_in_playlist) {
@@ -270,6 +274,12 @@ ok(GtkWidget * widget, gpointer data) {
 		playlist_is_embedded_shadow = 1;
 	} else {
 	        playlist_is_embedded_shadow = 0;
+	}
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_playlist_statusbar))) {
+		enable_playlist_statusbar_shadow = 1;
+	} else {
+	        enable_playlist_statusbar_shadow = 0;
 	}
 
 	replaygain_tag_to_use = gtk_combo_box_get_active(GTK_COMBO_BOX(optmenu_replaygain));
@@ -1012,6 +1022,17 @@ to set the column order in the Playlist."));
 			break;
 		}
 	}
+
+	check_enable_playlist_statusbar =
+		gtk_check_button_new_with_label(_("Enable statusbar in playlist"));
+	gtk_widget_set_name(check_enable_playlist_statusbar, "check_on_notebook");
+	if (enable_playlist_statusbar_shadow) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_playlist_statusbar), TRUE);
+	}
+	enable_playlist_statusbar_shadow = enable_playlist_statusbar;
+	g_signal_connect(G_OBJECT(check_enable_playlist_statusbar), "toggled",
+			 G_CALLBACK(restart_active), NULL);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_playlist_statusbar, FALSE, TRUE, 3);
 
 
 	/* "DSP" notebook page */

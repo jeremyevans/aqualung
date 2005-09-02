@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-31 11:09+0200\n"
+"POT-Creation-Date: 2005-09-02 15:50+0200\n"
 "PO-Revision-Date: 2005-06-27 14:10+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: German <de@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../about.c:72 ../gui_main.c:2232
+#: ../about.c:72 ../gui_main.c:2236
 msgid "About"
 msgstr "Über Aqualung"
 
@@ -203,7 +203,7 @@ msgstr ""
 "diesem Programm erhalten haben. Falls nicht, schreiben Sie an die Free\n"
 "Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 
-#: ../file_info.c:301 ../gui_main.c:2230
+#: ../file_info.c:301 ../gui_main.c:2234
 msgid "File info"
 msgstr "Datei-Info"
 
@@ -240,11 +240,11 @@ msgstr ""
 msgid "Channel count:"
 msgstr "Kanalanzahl:"
 
-#: ../file_info.c:393 ../gui_main.c:691
+#: ../file_info.c:393 ../gui_main.c:695
 msgid "MONO"
 msgstr ""
 
-#: ../file_info.c:395 ../gui_main.c:694
+#: ../file_info.c:395 ../gui_main.c:698
 msgid "STEREO"
 msgstr ""
 
@@ -302,163 +302,163 @@ msgstr "Vorbis Kommentare"
 msgid "FLAC metadata"
 msgstr "FLAC-Metadaten"
 
-#: ../gui_main.c:449
+#: ../gui_main.c:453
 msgid "Unrecognized"
 msgstr "Unbekannt"
 
-#: ../gui_main.c:457 ../gui_main.c:463 ../gui_main.c:466 ../gui_main.c:469
+#: ../gui_main.c:461 ../gui_main.c:467 ../gui_main.c:470 ../gui_main.c:473
 msgid "bit signed"
 msgstr "bit gezeichnet"
 
-#: ../gui_main.c:460
+#: ../gui_main.c:464
 msgid "bit unsigned"
 msgstr "bit vorzeichenlos"
 
-#: ../gui_main.c:472
+#: ../gui_main.c:476
 msgid "bit float"
 msgstr "Floß"
 
-#: ../gui_main.c:475
+#: ../gui_main.c:479
 msgid "bit double"
 msgstr "bit Doppelt"
 
-#: ../gui_main.c:478 ../gui_main.c:481 ../gui_main.c:484 ../gui_main.c:487
-#: ../gui_main.c:490 ../gui_main.c:493 ../gui_main.c:496 ../gui_main.c:499
-#: ../gui_main.c:502 ../gui_main.c:505 ../gui_main.c:508 ../gui_main.c:511
-#: ../gui_main.c:514
+#: ../gui_main.c:482 ../gui_main.c:485 ../gui_main.c:488 ../gui_main.c:491
+#: ../gui_main.c:494 ../gui_main.c:497 ../gui_main.c:500 ../gui_main.c:503
+#: ../gui_main.c:506 ../gui_main.c:509 ../gui_main.c:512 ../gui_main.c:515
+#: ../gui_main.c:518
 msgid "encoding"
 msgstr "Kodierung"
 
-#: ../gui_main.c:525
+#: ../gui_main.c:529
 msgid "Profile: Telephone"
 msgstr ""
 
-#: ../gui_main.c:528
+#: ../gui_main.c:532
 msgid "Profile: Thumb"
 msgstr ""
 
-#: ../gui_main.c:531
+#: ../gui_main.c:535
 msgid "Profile: Radio"
 msgstr ""
 
-#: ../gui_main.c:534
+#: ../gui_main.c:538
 msgid "Profile: Standard"
 msgstr ""
 
-#: ../gui_main.c:537
+#: ../gui_main.c:541
 msgid "Profile: Xtreme"
 msgstr ""
 
-#: ../gui_main.c:540
+#: ../gui_main.c:544
 msgid "Profile: Insane"
 msgstr ""
 
-#: ../gui_main.c:543
+#: ../gui_main.c:547
 msgid "Profile: Braindead"
 msgstr ""
 
-#: ../gui_main.c:558
+#: ../gui_main.c:562
 msgid "Layer I"
 msgstr "Schicht I"
 
-#: ../gui_main.c:561
+#: ../gui_main.c:565
 msgid "Layer II"
 msgstr "Schicht II"
 
-#: ../gui_main.c:564
+#: ../gui_main.c:568
 msgid "Layer III"
 msgstr "Schicht III"
 
-#: ../gui_main.c:574
+#: ../gui_main.c:578
 msgid "Single channel"
 msgstr "Einzelkanal"
 
-#: ../gui_main.c:577
+#: ../gui_main.c:581
 msgid "Dual channel"
 msgstr "Doppelkanal"
 
-#: ../gui_main.c:580
+#: ../gui_main.c:584
 msgid "Joint stereo"
 msgstr ""
 
-#: ../gui_main.c:583
+#: ../gui_main.c:587
 msgid "Stereo"
 msgstr ""
 
-#: ../gui_main.c:593
+#: ../gui_main.c:597
 msgid "Emphasis: none"
 msgstr "Betonung: none"
 
-#: ../gui_main.c:596 ../gui_main.c:599
+#: ../gui_main.c:600 ../gui_main.c:603
 msgid "Emphasis:"
 msgstr "Betonung:"
 
-#: ../gui_main.c:602
+#: ../gui_main.c:606
 msgid "Emphasis: reserved"
 msgstr "Betonung: reserviert"
 
-#: ../gui_main.c:615
+#: ../gui_main.c:619
 msgid "Compression: Fast"
 msgstr ""
 
-#: ../gui_main.c:618
+#: ../gui_main.c:622
 msgid "Compression: Normal"
 msgstr ""
 
-#: ../gui_main.c:621
+#: ../gui_main.c:625
 msgid "Compression: High"
 msgstr ""
 
-#: ../gui_main.c:624
+#: ../gui_main.c:628
 msgid "Compression: Extra High"
 msgstr ""
 
-#: ../gui_main.c:627
+#: ../gui_main.c:631
 msgid "Compression: Insane"
 msgstr ""
 
-#: ../gui_main.c:712 ../gui_main.c:717 ../gui_main.c:721
+#: ../gui_main.c:716 ../gui_main.c:721 ../gui_main.c:725
 msgid "Output:"
 msgstr "Ausgabe:"
 
-#: ../gui_main.c:735
+#: ../gui_main.c:739
 msgid "SRC Type: "
 msgstr "SRC Typ: "
 
-#: ../gui_main.c:739
+#: ../gui_main.c:743
 msgid "None"
 msgstr "Keine"
 
-#: ../gui_main.c:1474 ../gui_main.c:1503
+#: ../gui_main.c:1478 ../gui_main.c:1507
 #, c-format
 msgid "Mute"
 msgstr ""
 
-#: ../gui_main.c:1476 ../gui_main.c:1505
+#: ../gui_main.c:1480 ../gui_main.c:1509
 #, c-format
 msgid "%d dB"
 msgstr ""
 
-#: ../gui_main.c:1536 ../gui_main.c:1568
+#: ../gui_main.c:1540 ../gui_main.c:1572
 #, c-format
 msgid "%d%% R"
 msgstr ""
 
-#: ../gui_main.c:1538 ../gui_main.c:1570
+#: ../gui_main.c:1542 ../gui_main.c:1574
 #, c-format
 msgid "%d%% L"
 msgstr ""
 
-#: ../gui_main.c:1541 ../gui_main.c:1573
+#: ../gui_main.c:1545 ../gui_main.c:1577
 #, c-format
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:2142
+#: ../gui_main.c:2146
 msgid "JACK connection lost"
 msgstr "JACK Verbindung verloren"
 
-#: ../gui_main.c:2145
+#: ../gui_main.c:2149
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -470,61 +470,61 @@ msgstr ""
 "nicht schnell genug war. Sie sollten JACK\n"
 "sowie Aqualung neu starten.\n"
 
-#: ../gui_main.c:2227 ../options.c:817
+#: ../gui_main.c:2231 ../options.c:827
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: ../gui_main.c:2228 ../skin.c:122
+#: ../gui_main.c:2232 ../skin.c:122
 msgid "Skin chooser"
 msgstr "Skin-Browser"
 
-#: ../gui_main.c:2229
+#: ../gui_main.c:2233
 msgid "JACK port setup"
 msgstr "JACK Port Einrichtung"
 
-#: ../gui_main.c:2457
+#: ../gui_main.c:2461
 msgid "Previous song (up)"
 msgstr ""
 
-#: ../gui_main.c:2461
+#: ../gui_main.c:2465
 msgid "Stop (s)"
 msgstr ""
 
-#: ../gui_main.c:2465
+#: ../gui_main.c:2469
 msgid "Next song (down)"
 msgstr ""
 
-#: ../gui_main.c:2469
+#: ../gui_main.c:2473
 msgid "Play (p)"
 msgstr ""
 
-#: ../gui_main.c:2473
+#: ../gui_main.c:2477
 msgid "Pause (space)"
 msgstr ""
 
-#: ../gui_main.c:2499
+#: ../gui_main.c:2503
 msgid "Repeat current song"
 msgstr ""
 
-#: ../gui_main.c:2507
+#: ../gui_main.c:2511
 msgid "Repeat all songs"
 msgstr ""
 
-#: ../gui_main.c:2515
+#: ../gui_main.c:2519
 msgid "Shuffle songs"
 msgstr ""
 
-#: ../gui_main.c:2527
+#: ../gui_main.c:2531
 #, fuzzy
 msgid "Toggle playlist"
 msgstr "Playliste speichern"
 
-#: ../gui_main.c:2531
+#: ../gui_main.c:2535
 #, fuzzy
 msgid "Toggle music store"
 msgstr "Musikladen"
 
-#: ../gui_main.c:2535
+#: ../gui_main.c:2539
 #, fuzzy
 msgid "Toggle LADSPA patch builder"
 msgstr "LADSPA Patch Bauer"
@@ -636,7 +636,7 @@ msgstr "Album hinzufügen"
 msgid "Auto-create tracks from these files:"
 msgstr "Tracks aus dieser Dateien automatische erstellen:"
 
-#: ../music_browser.c:660 ../playlist.c:1143
+#: ../music_browser.c:660 ../playlist.c:1154
 msgid "Clear list"
 msgstr "Liste aufklären"
 
@@ -715,7 +715,7 @@ msgid "Add new artist..."
 msgstr "Neuen Artist hinzufügen..."
 
 #: ../music_browser.c:2547 ../music_browser.c:2566 ../music_browser.c:2609
-#: ../music_browser.c:2652 ../playlist.c:1448
+#: ../music_browser.c:2652 ../playlist.c:1545
 msgid "Search..."
 msgstr "Suche..."
 
@@ -763,7 +763,7 @@ msgstr "Neues Track hinzufügen..."
 msgid "Edit track..."
 msgstr "Track editieren..."
 
-#: ../music_browser.c:2647 ../playlist.c:1447
+#: ../music_browser.c:2647 ../playlist.c:1544
 msgid "File info..."
 msgstr "Datei-Info..."
 
@@ -775,19 +775,19 @@ msgstr "Lautstärke bestimmen"
 msgid "Remove track"
 msgstr "Track entfernen"
 
-#: ../options.c:660
+#: ../options.c:670
 msgid "You will need to restart Aqualung for changes to take effect."
 msgstr ""
 
-#: ../options.c:832
+#: ../options.c:842
 msgid "General"
 msgstr "Generell"
 
-#: ../options.c:837
+#: ../options.c:847
 msgid "Title format"
 msgstr "Namensformat"
 
-#: ../options.c:844
+#: ../options.c:854
 msgid ""
 "\n"
 "The template string you enter here will be used to\n"
@@ -803,11 +803,11 @@ msgstr ""
 "Alles andere wird in die ergebende Zeichenkette wörtlich\n"
 "kopiert werden.\n"
 
-#: ../options.c:857
+#: ../options.c:867
 msgid "Implicit command line"
 msgstr "Implizite Kommandlinie"
 
-#: ../options.c:864
+#: ../options.c:874
 msgid ""
 "\n"
 "The string you enter here will be parsed as a command\n"
@@ -825,93 +825,97 @@ msgstr ""
 "Beispiel: eingabe Sie '-o alsa -R' zu benutzen ALSA Ausgabe\n"
 "in Echtzeit als eine Voreinstellung.\n"
 
-#: ../options.c:878
+#: ../options.c:888
 msgid "Miscellaneous"
 msgstr ""
 
-#: ../options.c:886
+#: ../options.c:896
 msgid "Enable tooltips"
 msgstr ""
 
-#: ../options.c:895
+#: ../options.c:905
 #, fuzzy
 msgid "Hide the Music Store comment pane"
 msgstr "Suchen im Musikladen"
 
-#: ../options.c:905
+#: ../options.c:915
 #, fuzzy
 msgid "Embed playlist into main window"
 msgstr ""
 "Playliste ins Hauptfenster einbetten\n"
 "(wirkt nachdem Aqualung neu gestartet worden ist)"
 
-#: ../options.c:915
+#: ../options.c:925
 msgid "Put control buttons at the bottom of playlist"
 msgstr ""
 
-#: ../options.c:926 ../playlist.c:1418
+#: ../options.c:936 ../playlist.c:1515
 msgid "Playlist"
 msgstr "Playliste"
 
-#: ../options.c:932
+#: ../options.c:942
 msgid "Save and restore the playlist on exit/startup"
 msgstr "Laden und speichern die Playliste beim Anfang/Beendung"
 
-#: ../options.c:943
+#: ../options.c:953
 msgid "Show RVA values in playlist"
 msgstr "Zeige RVA in Playliste"
 
-#: ../options.c:954
+#: ../options.c:964
 msgid "Show track lengths in playlist"
 msgstr "Zeige Trackslänge in Playliste"
 
-#: ../options.c:965
+#: ../options.c:975
 msgid "Playlist column order"
 msgstr "Reihenfolge der Kolumnen in Playliste"
 
-#: ../options.c:972
+#: ../options.c:982
 msgid ""
 "Drag and drop entries in the list below \n"
 "to set the column order in the Playlist."
 msgstr ""
 
-#: ../options.c:984
+#: ../options.c:994
 msgid "Column"
 msgstr "Kolumne"
 
-#: ../options.c:1001 ../search.c:464
+#: ../options.c:1011 ../search.c:464
 msgid "Track titles"
 msgstr "Track Titel"
 
-#: ../options.c:1006
+#: ../options.c:1016
 msgid "RVA values"
 msgstr ""
 
-#: ../options.c:1011
+#: ../options.c:1021
 msgid "Track lengths"
 msgstr "Trackslänge"
 
-#: ../options.c:1019
+#: ../options.c:1027
+msgid "Enable statusbar in playlist"
+msgstr ""
+
+#: ../options.c:1040
 msgid "DSP"
 msgstr ""
 
-#: ../options.c:1024
+#: ../options.c:1045
 msgid "LADSPA plugin processing"
 msgstr "LADSPA Plugin Verarbeitung"
 
-#: ../options.c:1035
+#: ../options.c:1056
 msgid "Pre Fader (before Volume & Balance)"
 msgstr "Pre Fader (bevor Volume & Balance)"
 
-#: ../options.c:1036
+#: ../options.c:1057
 msgid "Post Fader (after Volume & Balance)"
 msgstr "Post Fader (nach Volume & Balance)"
 
-#: ../options.c:1046
+#: ../options.c:1067
 msgid "Sample Rate Converter type"
 msgstr "Samplerate Konverter Typ"
 
-#: ../options.c:1075
+#: ../options.c:1096
 msgid ""
 "Aqualung is compiled without Sample Rate Converter support.\n"
 "See the About box and the documentation for details."
@@ -919,163 +923,163 @@ msgstr ""
 "Aqualung wurde ohne Samplerate Konverter Unterstützung kompiliert.\n"
 "Details finden Sie in der Über Aqualung Box und in der Dokumentation."
 
-#: ../options.c:1085
+#: ../options.c:1106
 msgid "Playback RVA"
 msgstr "RVA durch Abspiel"
 
-#: ../options.c:1090
+#: ../options.c:1111
 msgid "Enable playback RVA"
 msgstr "RVA durch Abspiel erlauben"
 
-#: ../options.c:1119
+#: ../options.c:1140
 msgid "Listening environment:"
 msgstr "Anhörensumwelt:"
 
-#: ../options.c:1130
+#: ../options.c:1151
 msgid "Audiophile"
 msgstr "Audiophil"
 
-#: ../options.c:1131
+#: ../options.c:1152
 msgid "Living room"
 msgstr "Wohnzimmer"
 
-#: ../options.c:1132
+#: ../options.c:1153
 msgid "Office"
 msgstr "Büro"
 
-#: ../options.c:1133
+#: ../options.c:1154
 msgid "Noisy workshop"
 msgstr "Laute Werkstatt"
 
-#: ../options.c:1142
+#: ../options.c:1163
 msgid "Reference volume [dBFS] :"
 msgstr "Referenzlautstärke [dBFS] :"
 
-#: ../options.c:1158
+#: ../options.c:1179
 msgid "Steepness [dB/dB] :"
 msgstr "Steilheit [dB/dB] :"
 
-#: ../options.c:1176
+#: ../options.c:1197
 msgid "Apply averaged RVA to tracks of the same record"
 msgstr "Durchschnittlich RVA auf dieselbes Album anwenden"
 
-#: ../options.c:1191
+#: ../options.c:1212
 msgid "Drop statistical aberrations based on"
 msgstr "Abwerfen der statistische Aberration basiert auf"
 
-#: ../options.c:1202
+#: ../options.c:1223
 #, c-format
 msgid "% of standard deviation"
 msgstr "% der Standardabweichung"
 
-#: ../options.c:1203
+#: ../options.c:1224
 msgid "Linear threshold [dB]"
 msgstr "Linearschwelle [dB]"
 
-#: ../options.c:1212
+#: ../options.c:1233
 msgid "Linear threshold [dB] :"
 msgstr "Linearschwelle [dB] :"
 
-#: ../options.c:1228
+#: ../options.c:1249
 #, c-format
 msgid "% of standard deviation :"
 msgstr "% der Standardabweichung :"
 
-#: ../options.c:1272
+#: ../options.c:1293
 msgid "Metadata"
 msgstr "Metadaten"
 
-#: ../options.c:1280
+#: ../options.c:1301
 msgid ""
 "When adding to playlist, use file metadata (if available) instead of\n"
 "information from the Music Store for:"
 msgstr ""
 
-#: ../options.c:1286 ../options.c:1321
+#: ../options.c:1307 ../options.c:1342
 msgid "Artist name"
 msgstr "Artist"
 
-#: ../options.c:1295 ../options.c:1330
+#: ../options.c:1316 ../options.c:1351
 msgid "Record name"
 msgstr "Album"
 
-#: ../options.c:1304 ../options.c:1339
+#: ../options.c:1325 ../options.c:1360
 msgid "Track name"
 msgstr "Track"
 
-#: ../options.c:1315
+#: ../options.c:1336
 msgid ""
 "When adding external files to playlist, use file metadata (if available) for:"
 msgstr ""
 
-#: ../options.c:1350
+#: ../options.c:1371
 msgid "Replaygain tag to use in Ogg Vorbis and FLAC files: "
 msgstr "Replaygain tag in Ogg Vorbis und FLAC Dateien benutzen: "
 
-#: ../options.c:1362
+#: ../options.c:1383
 msgid "Replaygain_track_gain"
 msgstr ""
 
-#: ../options.c:1363
+#: ../options.c:1384
 msgid "Replaygain_album_gain"
 msgstr ""
 
-#: ../options.c:1373
+#: ../options.c:1394
 msgid "Appearance"
 msgstr ""
 
-#: ../options.c:1379
+#: ../options.c:1400
 msgid "Override skin settings"
 msgstr ""
 
-#: ../options.c:1389
+#: ../options.c:1410
 #, fuzzy
 msgid "Fonts"
 msgstr "Kommentar"
 
-#: ../options.c:1399
+#: ../options.c:1420
 #, fuzzy
 msgid "Playlist font: "
 msgstr "Playliste"
 
-#: ../options.c:1418 ../options.c:1446
+#: ../options.c:1439 ../options.c:1467
 #, fuzzy
 msgid "Select"
 msgstr "Alles auswählen"
 
-#: ../options.c:1426
+#: ../options.c:1447
 #, fuzzy
 msgid "Music Store font: "
 msgstr "Musikladen"
 
-#: ../playlist.c:550
+#: ../playlist.c:557
 msgid "Please specify the file to save the playlist to."
 msgstr "Playliste speichern"
 
-#: ../playlist.c:584
+#: ../playlist.c:591
 msgid "Please specify the file to load the playlist from."
 msgstr "Playliste laden"
 
-#: ../playlist.c:797
+#: ../playlist.c:808
 msgid ""
 "Playback RVA is currently disabled. Enable it at Settings->Playback RVA."
 msgstr ""
 
-#: ../playlist.c:916
+#: ../playlist.c:927
 msgid "Please select the audio files for direct adding."
 msgstr "Bitte wählen Sie die audio Dateien für Direkt Beigabe aus."
 
-#: ../playlist.c:1022 ../playlist.c:1025 ../playlist.c:1028 ../playlist.c:2072
-#: ../playlist.c:2075 ../playlist.c:2078 ../playlist.c:2358 ../playlist.c:2361
-#: ../playlist.c:2364 ../playlist.c:2573 ../playlist.c:2576 ../playlist.c:2579
+#: ../playlist.c:1033 ../playlist.c:1036 ../playlist.c:1039 ../playlist.c:2206
+#: ../playlist.c:2209 ../playlist.c:2212 ../playlist.c:2492 ../playlist.c:2495
+#: ../playlist.c:2498 ../playlist.c:2707 ../playlist.c:2710 ../playlist.c:2713
 msgid "Unknown"
 msgstr "Unnbekannt"
 
-#: ../playlist.c:1110 ../playlist.c:1597 ../playlist.c:1620
+#: ../playlist.c:1121 ../playlist.c:1732 ../playlist.c:1754
 msgid "Direct add"
 msgstr "Direkt Beigabe"
 
-#: ../playlist.c:1123
+#: ../playlist.c:1134
 msgid ""
 "\n"
 "Directly add these files to playlist:"
@@ -1083,67 +1087,86 @@ msgstr ""
 "\n"
 "Ausgewählte Dateien hinzufügen:"
 
-#: ../playlist.c:1150
+#: ../playlist.c:1161
 #, fuzzy
 msgid "_Add files..."
 msgstr "Dateien hinzufügen..."
 
-#: ../playlist.c:1194
+#: ../playlist.c:1207
 #, fuzzy
 msgid "Please select the audio file."
 msgstr "Bitte wählen Sie die audio Datei für dieses Track aus."
 
-#: ../playlist.c:1438
+#: ../playlist.c:1455 ../playlist.c:1484
+#, c-format
+msgid "%d track [%s]"
+msgstr ""
+
+#: ../playlist.c:1457 ../playlist.c:1486
+#, c-format
+msgid "%d tracks [%s]"
+msgstr ""
+
+#: ../playlist.c:1535
 msgid "Save playlist"
 msgstr "Playliste speichern"
 
-#: ../playlist.c:1439
+#: ../playlist.c:1536
 msgid "Load playlist"
 msgstr "Playliste laden"
 
-#: ../playlist.c:1440
+#: ../playlist.c:1537
 msgid "Enqueue playlist"
 msgstr "Playliste einreihen"
 
-#: ../playlist.c:1442
+#: ../playlist.c:1539
 #, fuzzy
 msgid "Calculate RVA"
 msgstr "Lautstärke bestimmen"
 
-#: ../playlist.c:1444
+#: ../playlist.c:1541
 msgid "Separate"
 msgstr ""
 
-#: ../playlist.c:1445
+#: ../playlist.c:1542
 msgid "Average"
 msgstr ""
 
-#: ../playlist.c:1601 ../playlist.c:1634
+#: ../playlist.c:1709
+#, fuzzy
+msgid "Selected: "
+msgstr "Alles auswählen"
+
+#: ../playlist.c:1719
+msgid "Total: "
+msgstr ""
+
+#: ../playlist.c:1736 ../playlist.c:1768
 msgid "Select all"
 msgstr "Alles auswählen"
 
-#: ../playlist.c:1605 ../playlist.c:1659
+#: ../playlist.c:1740 ../playlist.c:1793
 msgid "Remove selected"
 msgstr "Markierte entfernen"
 
-#: ../playlist.c:1615
+#: ../playlist.c:1749
 msgid "Add single file"
 msgstr ""
 
-#: ../playlist.c:1629
+#: ../playlist.c:1763
 msgid "Select none"
 msgstr "Nichts auswählen"
 
-#: ../playlist.c:1639
+#: ../playlist.c:1773
 msgid "Invert selection"
 msgstr "Markierungen invertieren"
 
-#: ../playlist.c:1649
+#: ../playlist.c:1783
 #, fuzzy
 msgid "Cut selected"
 msgstr "Markierte entfernen"
 
-#: ../playlist.c:1654
+#: ../playlist.c:1788
 msgid "Remove all"
 msgstr "Alle entfernen"
 

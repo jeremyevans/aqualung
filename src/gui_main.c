@@ -151,6 +151,8 @@ extern int auto_use_ext_meta_record;
 extern int auto_use_ext_meta_track;
 extern int hide_comment_pane;
 extern int hide_comment_pane_shadow;
+extern int enable_playlist_statusbar;
+extern int enable_playlist_statusbar_shadow;
 
 int replaygain_tag_to_use = 0;
 int rva_is_enabled = 0;
@@ -316,7 +318,8 @@ deflicker(void) {
 void
 sample2time(unsigned long SR, unsigned long long sample, char * str, int sign) {
 
-	char h, m, s;
+	int h;
+	char m, s;
 
 	if (!SR)
 		SR = 1;
@@ -335,7 +338,8 @@ sample2time(unsigned long SR, unsigned long long sample, char * str, int sign) {
 void
 time2time(float seconds, char * str) {
 
-	char h, m, s;
+	int h;
+	char m, s;
 
 	h = seconds / 3600;
 	m = seconds / 60 - h * 60;
@@ -3254,6 +3258,8 @@ save_config(void) {
         xmlNewTextChild(root, NULL, "playlist_is_visible", str);
 	snprintf(str, 31, "%d", playlist_is_embedded_shadow);
         xmlNewTextChild(root, NULL, "playlist_is_embedded", str);
+	snprintf(str, 31, "%d", enable_playlist_statusbar_shadow);
+        xmlNewTextChild(root, NULL, "enable_playlist_statusbar", str);
 	snprintf(str, MAX_FONTNAME_LEN, "%s", playlist_font);
         xmlNewTextChild(root, NULL, "playlist_font", str);
 
@@ -3654,6 +3660,14 @@ load_config(void) {
                         if (key != NULL) {
                                 sscanf(key, "%d", &playlist_is_embedded);
 				playlist_is_embedded_shadow = playlist_is_embedded;
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_playlist_statusbar"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+                                sscanf(key, "%d", &enable_playlist_statusbar);
+				enable_playlist_statusbar_shadow = enable_playlist_statusbar;
 			}
                         xmlFree(key);
                 }

@@ -68,6 +68,9 @@ int auto_use_ext_meta_artist = 0;
 int auto_use_ext_meta_record = 0;
 int auto_use_ext_meta_track = 0;
 
+int enable_playlist_statusbar = 1;
+int enable_playlist_statusbar_shadow = 1;
+
 int alt_L;
 int alt_R;
 int shift_L;
@@ -131,6 +134,9 @@ GtkCellRenderer * track_renderer;
 GtkCellRenderer * rva_renderer;
 GtkCellRenderer * length_renderer;
 
+GtkWidget * statusbar_total;
+GtkWidget * statusbar_selected;
+
 /* popup menus */
 GtkWidget * add_menu;
 GtkWidget * add__single;
@@ -187,6 +193,7 @@ void cut__sel_cb(gpointer data);
 void plist__search_cb(gpointer data);
 void direct_add(GtkWidget * widget, gpointer * data);
 
+void playlist_content_changed(void);
 
 void
 voladj2str(float voladj, char * str) {
@@ -617,6 +624,8 @@ plist__load_cb(gpointer data) {
                 }
         }
         gtk_widget_destroy(file_selector);
+	
+	playlist_content_changed();
 }
 
 
@@ -664,6 +673,8 @@ plist__enqueue_cb(gpointer data) {
                 }
         }
         gtk_widget_destroy(file_selector);
+
+	playlist_content_changed();
 }
 
 
@@ -1181,6 +1192,8 @@ direct_add(GtkWidget * widget, gpointer * data) {
         }
 
         gtk_widget_destroy(da_dialog);
+
+	playlist_content_changed();
 }
 
 
@@ -1217,6 +1230,8 @@ add__single_cb(gpointer data) {
         delayed_playlist_rearrange(100);
         
         gtk_widget_destroy(file_selector);
+
+	playlist_content_changed();
 }
 
 void
@@ -1261,6 +1276,7 @@ void
 rem__all_cb(gpointer data) {
 
 	gtk_list_store_clear(play_store);
+	playlist_content_changed();
 }
 
 
@@ -1277,6 +1293,8 @@ rem__sel_cb(gpointer data) {
 			--i;
 		}
 	}
+
+	playlist_content_changed();
 }
 
 
@@ -1306,6 +1324,8 @@ cut__sel_cb(gpointer data) {
 			--i;
 		}
 	}
+
+	playlist_content_changed();
 }
 
 
@@ -1334,6 +1354,8 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 		track__addlist_cb(piter);
 		break;
 	}
+
+	playlist_content_changed();
 
 	return FALSE;
 }
@@ -1388,14 +1410,84 @@ playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event) {
 	gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(rva_column), rva_width);
 	gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(length_column), length_width);
 
-	if (playlist_window->window != NULL) {
-		gtk_widget_queue_draw(playlist_window);
-		deflicker();
+
+	if (playlist_is_embedded) {
+		if (main_window->window != NULL) {
+			gtk_widget_queue_draw(main_window);
+			deflicker();
+		}
+	} else {
+		if (playlist_window->window != NULL) {
+			gtk_widget_queue_draw(playlist_window);
+			deflicker();
+		}
 	}
 
         return TRUE;
 }
 
+
+void
+playlist_selection_changed(GtkTreeSelection * sel, gpointer data) {
+
+	GtkTreeIter iter;
+	int i = 0;
+
+	int count = 0;
+	float duration = 0;
+	float len = 0;
+	char str[MAXLEN];
+	char time[16];
+
+	if (!enable_playlist_statusbar) return;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+
+		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 5, &len, -1);
+			duration += len;
+			count++;
+		}
+	}
+
+	time2time(duration, time);
+	if (count == 1) {
+		sprintf(str, _("%d track [%s]"), count, time);
+	} else {
+		sprintf(str, _("%d tracks [%s]"), count, time);
+	}
+
+	gtk_label_set_text(GTK_LABEL(statusbar_selected), str);
+}
+
+
+void
+playlist_content_changed(void) {
+
+	GtkTreeIter iter;
+	int i = 0;
+
+	float duration = 0;
+	float len = 0;
+	char str[MAXLEN];
+	char time[16];
+
+	if (!enable_playlist_statusbar) return;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 5, &len, -1);
+			duration += len;
+	}
+
+	time2time(duration, time);
+	if (i == 2) {
+		sprintf(str, _("%d track [%s]"), i - 1, time);
+	} else {
+		sprintf(str, _("%d tracks [%s]"), i - 1, time);
+	}
+
+	gtk_label_set_text(GTK_LABEL(statusbar_total), str);
+}
 
 void
 create_playlist(void) {
@@ -1409,6 +1501,11 @@ create_playlist(void) {
 
 	GtkWidget * viewport;
 	GtkWidget * scrolled_win;
+
+	GtkWidget * statusbar;
+	GtkWidget * statusbar_viewport;
+	GtkWidget * statusbar_label;
+
 	int i;
 
 
@@ -1575,6 +1672,10 @@ create_playlist(void) {
         play_select = gtk_tree_view_get_selection(GTK_TREE_VIEW(play_list));
         gtk_tree_selection_set_mode(play_select, GTK_SELECTION_MULTIPLE);
 
+	g_signal_connect(G_OBJECT(play_select), "changed",
+			 G_CALLBACK(playlist_selection_changed), NULL);
+
+
 	g_signal_connect(G_OBJECT(play_list), "button_press_event",
 			 G_CALLBACK(doubleclick_handler), NULL);
 	g_signal_connect(G_OBJECT(play_list), "drag_data_received",
@@ -1589,6 +1690,40 @@ create_playlist(void) {
         gtk_container_add(GTK_CONTAINER(viewport), scrolled_win);
 
 	gtk_container_add(GTK_CONTAINER(scrolled_win), play_list);
+
+
+	/* statusbar */
+	if (enable_playlist_statusbar) {
+		statusbar_viewport = gtk_viewport_new(NULL, NULL);
+		gtk_widget_set_name(statusbar_viewport, "info_viewport");
+		gtk_box_pack_start(GTK_BOX(vbox), statusbar_viewport, FALSE, TRUE, 2);
+		
+		statusbar = gtk_hbox_new(FALSE, 0);
+		gtk_container_set_border_width(GTK_CONTAINER(statusbar), 1);
+		gtk_container_add(GTK_CONTAINER(statusbar_viewport), statusbar);
+		
+		statusbar_selected = gtk_label_new("");
+		gtk_widget_set_name(statusbar_selected, "label_info");
+		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_selected, FALSE, TRUE, 0);
+		
+		statusbar_label = gtk_label_new(_("Selected: "));
+		gtk_widget_set_name(statusbar_label, "label_info");
+		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_label, FALSE, TRUE, 0);
+		
+		gtk_box_pack_end(GTK_BOX(statusbar), gtk_vseparator_new(), FALSE, TRUE, 5);
+		
+		statusbar_total = gtk_label_new("");
+		gtk_widget_set_name(statusbar_total, "label_info");
+		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_total, FALSE, TRUE, 0);
+		
+		statusbar_label = gtk_label_new(_("Total: "));
+		gtk_widget_set_name(statusbar_label, "label_info");
+		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_label, FALSE, TRUE, 0);
+		
+		playlist_selection_changed(NULL, NULL);
+		playlist_content_changed();
+	}
+	
 
 	/* bottom area of playlist window */
         hbox_bottom = gtk_hbox_new(FALSE, 0);
@@ -1605,7 +1740,6 @@ create_playlist(void) {
 	remsel_button = gtk_button_new_with_label(_("Remove selected"));
         gtk_box_pack_start(GTK_BOX(hbox_bottom), remsel_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(remsel_button), "clicked", G_CALLBACK(remove_sel), NULL);
-	
 	
 
 	/* create popup menus */
@@ -1887,7 +2021,7 @@ load_playlist(char * filename, int enqueue) {
         xmlFreeDoc(doc);
 
 	delayed_playlist_rearrange(100);
-
+	playlist_content_changed();
 }
 
 
@@ -2622,6 +2756,8 @@ add_to_playlist(char * filename, int enqueue) {
 		load_pls(fullname, enqueue);
 		break;
 	}
+
+	playlist_content_changed();
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

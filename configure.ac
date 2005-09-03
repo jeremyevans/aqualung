@@ -343,11 +343,14 @@ AC_ARG_WITH(
 	mac="detect")
 if test "$mac" = "no"; then
 	AC_MSG_RESULT(no)
+        mac_LIBS="-lstdc++"
 else
 	AC_CHECK_LIB(mac, CreateIAPEDecompress, [lib=yes], [lib=no], [-lstdc++])
 	if test "$lib" = "yes"; then
 	        mac_LIBS="-lmac -lstdc++"
 		AC_DEFINE([HAVE_MAC], [1], [Defined if compile with Monkey's Audio Codec support])
+	else
+	        mac_LIBS="-lstdc++"
 	fi
 	if test "$lib" = "no" -a "$mac" = "yes"; then
 		AC_MSG_ERROR(You do not appear to have the Monkey's Audio Codec decoder library installed. Grab it from http://sourceforge.net/projects/mac-port/)

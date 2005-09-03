@@ -2107,7 +2107,7 @@ shuffle_toggled(GtkWidget * widget, gpointer data) {
 
 
 GtkWidget *
-create_button_with_image(char * path, int toggle) {
+create_button_with_image(char * path, int toggle, char * alt) {
 
         GtkWidget * button;
         GdkPixbuf * pixbuf;
@@ -2124,13 +2124,22 @@ create_button_with_image(char * path, int toggle) {
                 pixbuf = gdk_pixbuf_new_from_file(tmp_path, NULL);
         }
 
-        image = gtk_image_new_from_pixbuf(pixbuf);
-
-        if (toggle)
-                button = gtk_toggle_button_new();
-        else
-                button = gtk_button_new();
-        gtk_container_add(GTK_CONTAINER(button), image);
+	if (pixbuf) {
+		image = gtk_image_new_from_pixbuf(pixbuf);
+		
+		if (toggle) {
+			button = gtk_toggle_button_new();
+		} else {
+			button = gtk_button_new();
+		}
+		gtk_container_add(GTK_CONTAINER(button), image);
+	} else {
+		if (toggle) {
+			button = gtk_toggle_button_new_with_mnemonic(alt);
+		} else {
+			button = gtk_button_new_with_mnemonic(alt);
+		}
+	}
 
         return button;
 }
@@ -2457,23 +2466,23 @@ create_main_window(char * skin_path) {
 	gtk_box_pack_start(GTK_BOX(vbox), btns_hbox, FALSE, FALSE, 0);
 
 	sprintf(path, "%s/%s", skin_path, "prev");
-	prev_button = create_button_with_image(path, 0);
+	prev_button = create_button_with_image(path, 0, "prev");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), prev_button, _("Previous song (up)"), NULL);
 
 	sprintf(path, "%s/%s", skin_path, "stop");
-	stop_button = create_button_with_image(path, 0);
+	stop_button = create_button_with_image(path, 0, "stop");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), stop_button, _("Stop (s)"), NULL);
 
 	sprintf(path, "%s/%s", skin_path, "next");
-	next_button = create_button_with_image(path, 0);
+	next_button = create_button_with_image(path, 0, "next");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), next_button, _("Next song (down)"), NULL);
 
 	sprintf(path, "%s/%s", skin_path, "play");
-	play_button = create_button_with_image(path, 1);
+	play_button = create_button_with_image(path, 1, "play");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), play_button, _("Play (p)"), NULL);
 
 	sprintf(path, "%s/%s", skin_path, "pause");
-	pause_button = create_button_with_image(path, 1);
+	pause_button = create_button_with_image(path, 1, "pause");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), pause_button, _("Pause (space)"), NULL);
 
 	GTK_WIDGET_UNSET_FLAGS(prev_button, GTK_CAN_FOCUS);
@@ -2499,7 +2508,7 @@ create_main_window(char * skin_path) {
 	sr_table = gtk_table_new(2, 2, FALSE);
 
 	sprintf(path, "%s/%s", skin_path, "repeat");
-	repeat_button = create_button_with_image(path, 1);
+	repeat_button = create_button_with_image(path, 1, "repeat");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), repeat_button, _("Repeat current song"), NULL);
 	gtk_widget_set_size_request(repeat_button, -1, 1);
 	gtk_table_attach(GTK_TABLE(sr_table), repeat_button, 0, 1, 0, 1,
@@ -2507,7 +2516,7 @@ create_main_window(char * skin_path) {
 	g_signal_connect(repeat_button, "toggled", G_CALLBACK(repeat_toggled), NULL);
 
 	sprintf(path, "%s/%s", skin_path, "repeat_all");
-	repeat_all_button = create_button_with_image(path, 1);
+	repeat_all_button = create_button_with_image(path, 1, "rep_all");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), repeat_all_button, _("Repeat all songs"), NULL);
 	gtk_widget_set_size_request(repeat_all_button, -1, 1);
 	gtk_table_attach(GTK_TABLE(sr_table), repeat_all_button, 0, 1, 1, 2,
@@ -2515,7 +2524,7 @@ create_main_window(char * skin_path) {
 	g_signal_connect(repeat_all_button, "toggled", G_CALLBACK(repeat_all_toggled), NULL);
 
 	sprintf(path, "%s/%s", skin_path, "shuffle");
-	shuffle_button = create_button_with_image(path, 1);
+	shuffle_button = create_button_with_image(path, 1, "shuffle");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), shuffle_button, _("Shuffle songs"), NULL);
 	gtk_widget_set_size_request(shuffle_button, -1, 1);
 	gtk_table_attach(GTK_TABLE(sr_table), shuffle_button, 1, 2, 0, 2,
@@ -2527,15 +2536,18 @@ create_main_window(char * skin_path) {
 	GTK_WIDGET_UNSET_FLAGS(shuffle_button, GTK_CAN_FOCUS);
 
         /* toggle buttons for sub-windows visibility */
-	playlist_toggle = gtk_toggle_button_new_with_mnemonic("P_L");
+	sprintf(path, "%s/%s", skin_path, "pl");
+	playlist_toggle = create_button_with_image(path, 1, "P_L");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), playlist_toggle, _("Toggle playlist"), NULL);
 	gtk_box_pack_end(GTK_BOX(btns_hbox), playlist_toggle, FALSE, FALSE, 0);
 	
-	musicstore_toggle = gtk_toggle_button_new_with_mnemonic("M_S");
+	sprintf(path, "%s/%s", skin_path, "ms");
+	musicstore_toggle = create_button_with_image(path, 1, "M_S");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), musicstore_toggle, _("Toggle music store"), NULL);
 	gtk_box_pack_end(GTK_BOX(btns_hbox), musicstore_toggle, FALSE, FALSE, 3);
 
-	plugin_toggle = gtk_toggle_button_new_with_mnemonic("F_X");
+	sprintf(path, "%s/%s", skin_path, "fx");
+	plugin_toggle = create_button_with_image(path, 1, "F_X");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), plugin_toggle, _("Toggle LADSPA patch builder"), NULL);
 	gtk_box_pack_end(GTK_BOX(btns_hbox), plugin_toggle, FALSE, FALSE, 0);
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-02 16:21+0200\n"
+"POT-Creation-Date: 2005-09-03 11:34+0200\n"
 "PO-Revision-Date: 2004-12-24 01:51+0200\n"
 "Last-Translator: Sergiy Niskorodov <sgh_punk@users.sourceforge.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=koi8-u\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../about.c:72 ../gui_main.c:2236
+#: ../about.c:72 ../gui_main.c:2245
 msgid "About"
 msgstr "Про програму"
 
@@ -200,7 +200,7 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../file_info.c:301 ../gui_main.c:2234
+#: ../file_info.c:301 ../gui_main.c:2243
 msgid "File info"
 msgstr "╤нформац╕я про файл"
 
@@ -451,11 +451,11 @@ msgstr "%d%% Л"
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:2146
+#: ../gui_main.c:2155
 msgid "JACK connection lost"
 msgstr "JACK п╕д'╓днання втрачено"
 
-#: ../gui_main.c:2149
+#: ../gui_main.c:2158
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -467,59 +467,59 @@ msgstr ""
 "швидкий. Все що ви можете тепер зробити\n"
 "це перезапустити обидва JACK та Aqualung.\n"
 
-#: ../gui_main.c:2231 ../options.c:827
+#: ../gui_main.c:2240 ../options.c:827
 msgid "Settings"
 msgstr "Налаштування"
 
-#: ../gui_main.c:2232 ../skin.c:122
+#: ../gui_main.c:2241 ../skin.c:122
 msgid "Skin chooser"
 msgstr "Виб╕р жупан╕в"
 
-#: ../gui_main.c:2233
+#: ../gui_main.c:2242
 msgid "JACK port setup"
 msgstr "Налаштування порту JACK"
 
-#: ../gui_main.c:2461
+#: ../gui_main.c:2470
 msgid "Previous song (up)"
 msgstr "Попередня п╕сня (вгору)"
 
-#: ../gui_main.c:2465
+#: ../gui_main.c:2474
 msgid "Stop (s)"
 msgstr "Зупинити (s)"
 
-#: ../gui_main.c:2469
+#: ../gui_main.c:2478
 msgid "Next song (down)"
 msgstr "Наступна п╕сня (вниз)"
 
-#: ../gui_main.c:2473
+#: ../gui_main.c:2482
 msgid "Play (p)"
 msgstr "Грати (p)"
 
-#: ../gui_main.c:2477
+#: ../gui_main.c:2486
 msgid "Pause (space)"
 msgstr "Пауза (проб╕л)"
 
-#: ../gui_main.c:2503
+#: ../gui_main.c:2512
 msgid "Repeat current song"
 msgstr "Повторювати поточну п╕сню"
 
-#: ../gui_main.c:2511
+#: ../gui_main.c:2520
 msgid "Repeat all songs"
 msgstr "Повторювати вс╕ п╕сн╕"
 
-#: ../gui_main.c:2519
+#: ../gui_main.c:2528
 msgid "Shuffle songs"
 msgstr "Перем╕шати п╕сн╕"
 
-#: ../gui_main.c:2531
+#: ../gui_main.c:2541
 msgid "Toggle playlist"
 msgstr "Перемкнути список програвання"
 
-#: ../gui_main.c:2535
+#: ../gui_main.c:2546
 msgid "Toggle music store"
 msgstr "Перемкнути музичний склад"
 
-#: ../gui_main.c:2539
+#: ../gui_main.c:2551
 msgid "Toggle LADSPA patch builder"
 msgstr "Перемкнути буд╕вельник шлях╕в LADSPA"
 

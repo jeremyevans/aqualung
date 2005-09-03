@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-02 16:21+0200\n"
-"PO-Revision-Date: 2005-09-02 15:51+0200\n"
+"POT-Creation-Date: 2005-09-03 11:34+0200\n"
+"PO-Revision-Date: 2005-09-02 19:40+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../about.c:72 ../gui_main.c:2236
+#: ../about.c:72 ../gui_main.c:2245
 msgid "About"
 msgstr "Névjegy"
 
@@ -212,7 +212,7 @@ msgstr ""
 "Szabad Szoftver Alapítvány címére: Free Software Foundation, Inc., 675\n"
 "Mass Ave, Cambridge, MA 02139, USA."
 
-#: ../file_info.c:301 ../gui_main.c:2234
+#: ../file_info.c:301 ../gui_main.c:2243
 msgid "File info"
 msgstr "Fájl infó"
 
@@ -463,11 +463,11 @@ msgstr "%d%% L"
 msgid "C"
 msgstr "C"
 
-#: ../gui_main.c:2146
+#: ../gui_main.c:2155
 msgid "JACK connection lost"
 msgstr "Megszakadt a JACK összeköttetés"
 
-#: ../gui_main.c:2149
+#: ../gui_main.c:2158
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -478,59 +478,59 @@ msgstr ""
 "az Aqualungot, mert nem volt elég gyors. Újra\n"
 "kell indítani a JACK-et és az Aqualungot is.\n"
 
-#: ../gui_main.c:2231 ../options.c:827
+#: ../gui_main.c:2240 ../options.c:827
 msgid "Settings"
 msgstr "Beállítások"
 
-#: ../gui_main.c:2232 ../skin.c:122
+#: ../gui_main.c:2241 ../skin.c:122
 msgid "Skin chooser"
 msgstr "Szkin-választó"
 
-#: ../gui_main.c:2233
+#: ../gui_main.c:2242
 msgid "JACK port setup"
 msgstr "JACK port beállítás"
 
-#: ../gui_main.c:2461
+#: ../gui_main.c:2470
 msgid "Previous song (up)"
 msgstr "Elõzõ szám (fel)"
 
-#: ../gui_main.c:2465
+#: ../gui_main.c:2474
 msgid "Stop (s)"
 msgstr "Megállítás (s)"
 
-#: ../gui_main.c:2469
+#: ../gui_main.c:2478
 msgid "Next song (down)"
 msgstr "Következõ szám (le)"
 
-#: ../gui_main.c:2473
+#: ../gui_main.c:2482
 msgid "Play (p)"
 msgstr "Lejátszás (p)"
 
-#: ../gui_main.c:2477
+#: ../gui_main.c:2486
 msgid "Pause (space)"
 msgstr "Szünet (szóköz)"
 
-#: ../gui_main.c:2503
+#: ../gui_main.c:2512
 msgid "Repeat current song"
 msgstr "Aktuális szám ismétlése"
 
-#: ../gui_main.c:2511
+#: ../gui_main.c:2520
 msgid "Repeat all songs"
 msgstr "Összes szám ismétlése"
 
-#: ../gui_main.c:2519
+#: ../gui_main.c:2528
 msgid "Shuffle songs"
 msgstr "Véletlenszerû sorrend"
 
-#: ../gui_main.c:2531
+#: ../gui_main.c:2541
 msgid "Toggle playlist"
 msgstr "Lejátszólista"
 
-#: ../gui_main.c:2535
+#: ../gui_main.c:2546
 msgid "Toggle music store"
 msgstr "Zenetár"
 
-#: ../gui_main.c:2539
+#: ../gui_main.c:2551
 msgid "Toggle LADSPA patch builder"
 msgstr "LADSPA effekt szerkesztõ"
 
@@ -805,7 +805,7 @@ msgstr ""
 "Az alábbi sablon az elõadó nevébõl, valamint a lemez- és\n"
 "számcímekbõl összeállított címsor formátumát adja meg.\n"
 "A %a, %r és %t vezérlõk rendre az elõadót, a lemezt és a\n"
-"szám címet jelölik. A sablonban szereplõ egyéb karakterek\n"
+"szám címét jelölik. A sablonban szereplõ egyéb karakterek\n"
 "változtatás nélkül jelennek meg a címsorban.\n"
 
 #: ../options.c:867

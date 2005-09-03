@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-02 16:21+0200\n"
+"POT-Creation-Date: 2005-09-03 11:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../about.c:72 ../gui_main.c:2236
+#: ../about.c:72 ../gui_main.c:2245
 msgid "About"
 msgstr ""
 
@@ -180,7 +180,7 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../file_info.c:301 ../gui_main.c:2234
+#: ../file_info.c:301 ../gui_main.c:2243
 msgid "File info"
 msgstr ""
 
@@ -431,11 +431,11 @@ msgstr ""
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:2146
+#: ../gui_main.c:2155
 msgid "JACK connection lost"
 msgstr ""
 
-#: ../gui_main.c:2149
+#: ../gui_main.c:2158
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -443,59 +443,59 @@ msgid ""
 "is restart both JACK and Aqualung.\n"
 msgstr ""
 
-#: ../gui_main.c:2231 ../options.c:827
+#: ../gui_main.c:2240 ../options.c:827
 msgid "Settings"
 msgstr ""
 
-#: ../gui_main.c:2232 ../skin.c:122
+#: ../gui_main.c:2241 ../skin.c:122
 msgid "Skin chooser"
 msgstr ""
 
-#: ../gui_main.c:2233
+#: ../gui_main.c:2242
 msgid "JACK port setup"
 msgstr ""
 
-#: ../gui_main.c:2461
+#: ../gui_main.c:2470
 msgid "Previous song (up)"
 msgstr ""
 
-#: ../gui_main.c:2465
+#: ../gui_main.c:2474
 msgid "Stop (s)"
 msgstr ""
 
-#: ../gui_main.c:2469
+#: ../gui_main.c:2478
 msgid "Next song (down)"
 msgstr ""
 
-#: ../gui_main.c:2473
+#: ../gui_main.c:2482
 msgid "Play (p)"
 msgstr ""
 
-#: ../gui_main.c:2477
+#: ../gui_main.c:2486
 msgid "Pause (space)"
 msgstr ""
 
-#: ../gui_main.c:2503
+#: ../gui_main.c:2512
 msgid "Repeat current song"
 msgstr ""
 
-#: ../gui_main.c:2511
+#: ../gui_main.c:2520
 msgid "Repeat all songs"
 msgstr ""
 
-#: ../gui_main.c:2519
+#: ../gui_main.c:2528
 msgid "Shuffle songs"
 msgstr ""
 
-#: ../gui_main.c:2531
+#: ../gui_main.c:2541
 msgid "Toggle playlist"
 msgstr ""
 
-#: ../gui_main.c:2535
+#: ../gui_main.c:2546
 msgid "Toggle music store"
 msgstr ""
 
-#: ../gui_main.c:2539
+#: ../gui_main.c:2551
 msgid "Toggle LADSPA patch builder"
 msgstr ""
 

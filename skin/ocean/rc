@@ -1,0 +1,321 @@
+# --- windows
+
+style "window"
+{
+	bg_pixmap[NORMAL] = "bg.png"
+	bg_pixmap[PRELIGHT] = "bg.png"
+	bg_pixmap[ACTIVE] = "bg.png"
+
+	bg[NORMAL] = "#1a5f78" 
+    bg[PRELIGHT] = "#1a5f78" 
+    bg[ACTIVE] = "#1a5f78" 
+
+    fg[NORMAL] =  "#000000" 
+    fg[PRELIGHT] = "#000000"   
+	fg[ACTIVE] = "#000000"
+
+	font_name = "Sans 10"
+}
+
+style "main_window" = "window"
+{
+}
+
+style "plugin_scrwin" = "window"
+{
+	bg_pixmap[NORMAL] = "<none>"
+	bg[NORMAL] = "#b0cdd3"
+	fg[NORMAL] = "#000000"
+}
+
+widget "*GtkWindow*" style "window"
+widget "*Dialog*" style "window"
+widget "*FileSelection*" style "window"
+widget "*main_window" style "main_window"
+
+
+# --- common widgets
+
+style "button"
+{
+    bg_pixmap[NORMAL] = "bg2.png"
+    bg_pixmap[PRELIGHT] = "<none>"
+    bg_pixmap[ACTIVE] = "<none>"  
+
+	bg[NORMAL] = "#608893"				  
+	bg[PRELIGHT] = "#b4d8e1" 
+	bg[ACTIVE] = "#97a6b1"
+	
+    fg[NORMAL] = "#000000"
+    fg[PRELIGHT] = "#000000"
+    fg[ACTIVE] = "#000000"
+
+	font_name = "Sans Bold 9"
+}
+
+style "view"
+{
+   text[NORMAL] = "#000000"
+   text[SELECTED] = "#ffffff"
+   text[ACTIVE] = "#000000"
+
+	base[NORMAL] = "#b8ced3"
+	base[SELECTED] = "#7f9ba2"
+	base[ACTIVE] = "#a5c0c8"
+
+	fg[NORMAL] = "red"
+	fg[SELECTED] = "#556f93"
+}
+
+style "scrollbar"
+{
+	bg_pixmap[NORMAL] = "<none>"
+	bg_pixmap[PRELIGHT] = "<none>"
+	bg_pixmap[ACTIVE] = "<none>"
+
+	bg[NORMAL] = "#94b3bb"
+	bg[PRELIGHT] = "#b4d8e1"
+	bg[ACTIVE] = "#8eb3bb"
+
+	fg[NORMAL] = "#246371"
+	fg[PRELIGHT] = "#000000"
+}
+
+style "progressbar"     
+{
+
+	bg[NORMAL] = "#8eb3bb"
+	bg[PRELIGHT] = "#85a0a8"
+ 
+	fg[PRELIGHT] = "#eeeeee"   
+}
+
+style "entry" = "view"
+{
+	font_name = "Sans 10"
+}
+
+style "combo_box"
+{
+	text[NORMAL] = "#000000"
+	fg[NORMAL] = "#000000"
+}
+
+style "menu" = "button"
+{
+	text[NORMAL] = "#000000"
+	text[PRELIGHT] = "#000000"
+}
+
+style "spin_button" = "button"
+{
+       
+	base[NORMAL] = "#d9dee1"
+	base[SELECTED] = "#97a6b1"
+	base[ACTIVE] = "#b9cfe6" 
+}
+
+style "scale"
+{
+
+	bg[NORMAL] = "#94b3bb" 
+	bg[PRELIGHT] = "#b4d8e1" 
+	bg[ACTIVE] = "#8eb3bb"
+
+	bg_pixmap[NORMAL] = "<none>"
+	bg_pixmap[PRELIGHT] = "<none>"
+	bg_pixmap[ACTIVE] = "<none>"
+
+	fg[NORMAL] = "#287693"
+}
+
+style "nostyle"
+{
+	bg_pixmap[NORMAL] = "<none>"
+	bg_pixmap[PRELIGHT] = "<none>"
+	bg_pixmap[ACTIVE] = "<none>"
+
+	fg[NORMAL] = "#000000"
+	fg[PRELIGHT] = "#000000"
+	fg[ACTIVE] = "#000000"
+}
+
+widget "*ScrolledWindow*" style "scrollbar"
+widget "*plugin_scrwin*" style "plugin_scrwin"
+
+widget "*TreeView*" style "view"
+widget "*TextView*" style "view"
+widget "*List*" style "view"
+
+widget "*Scrollbar*" style "scrollbar"
+widget "*Separator*" style "scrollbar"
+widget "*Progress*" style "progressbar"
+widget "*Notebook*" style "button"
+
+widget "*OptionMenu*" style "button"
+widget "*Menu*" style "menu"
+
+widget "*SpinButton*" style "spin_button"
+widget "*Scale*" style "scale"
+widget "*Button*" style "button"
+widget "*GtkEntry*" style "entry"
+widget "*Combo*" style "combo_box"
+
+widget "*nostyle" style "nostyle"
+
+
+# --- checkbutton
+
+style "check_window" = "window"
+{
+	bg_pixmap[PRELIGHT] = "bg2.png"
+}
+
+style "check_notebook" = "button"
+{
+	bg_pixmap[PRELIGHT] = "bg3.png"
+
+}
+
+widget "*check_on_window" style "check_window"
+widget "*check_on_notebook" style "check_notebook"
+
+
+# --- main window
+
+style "viewport"
+{
+	bg[NORMAL] = "#8eb3bb"
+	bg_pixmap[NORMAL] = "<none>"
+}
+
+style "time_viewport" = "viewport"
+{
+	bg_pixmap[NORMAL] = "<none>"   
+}
+
+style "title_viewport" = "viewport"
+{
+	bg_pixmap[NORMAL] = "<none>" 
+}
+
+style "info_viewport" = "title_viewport"
+{
+}
+
+style "big_timer_label"
+{
+	fg[NORMAL] = "#000000"
+	font_name = "Courier 10 Pitch 12"
+}
+
+style "small_timer_label"
+{
+	fg[NORMAL] = "#000000"
+	font_name = "Courier 10 Pitch 10"
+}
+
+style "label_title"
+{
+	fg[NORMAL] = "#000000"
+	font_name = "Sans Bold 12"
+}
+
+style "label_info"
+{
+	fg[NORMAL] = "#000000"
+	font_name = "Sans 8"
+}
+
+style "scale_pos" = "scale"
+{
+}
+
+style "scale_vol" = "scale_pos"
+{
+}
+
+style "scale_bal" = "scale_pos"
+{
+}
+
+widget "*time_viewport" style "time_viewport"
+widget "*title_viewport" style "title_viewport"
+widget "*info_viewport" style "info_viewport"
+
+widget "*big_timer_label" style "big_timer_label"
+widget "*small_timer_label" style "small_timer_label"
+widget "*label_title" style "label_title"
+widget "*label_info" style "label_info"
+
+widget "*scale_pos" style "scale_pos"
+widget "*scale_vol" style "scale_vol"
+widget "*scale_bal" style "scale_bal"
+
+
+# --- music store
+
+style "music_tree" = "view"
+{
+	fg[NORMAL] = "#000000" 
+	font_name = "Sans 10"	
+}
+
+style "comment_view" = "view"
+{
+	font_name = "Sans 10"
+}
+
+widget "*music_tree" style "music_tree"
+widget "*comment_view" style "comment_view"
+
+
+# --- playlist
+
+style "play_list" = "view"
+{
+	
+	fg[SELECTED] = "#198ca5"				   		   
+ 	fg[INSENSITIVE] = "#000000"
+	font_name = "Sans 10"	
+}
+
+widget "*play_list" style "play_list"
+
+
+# --- plugins
+
+style "plugin_name"
+{
+	font_name = "Sans Bold 12"
+}
+
+style "plugin_maker"
+{
+	font_name = "Sans Bold 10"
+}
+
+style "plugin_bypass_button" = "button"
+{
+	bg_pixmap[ACTIVE] = "<none>"
+
+	bg[ACTIVE] = "#97a6b1"
+	fg[NORMAL] = "#000000"
+	fg[ACTIVE] = "#2a3d53"
+}
+
+style "plugin_scale" = "scale"
+{
+	bg_pixmap[ACTIVE] = "<none>"
+	bg[ACTIVE] = "#8eb3bb"
+}
+
+style "plugin_toggled" = "button"
+{
+}
+
+widget "*plugin_name" style "plugin_name"
+widget "*plugin_maker" style "plugin_maker"
+widget "*plugin_bypass_button*" style "plugin_bypass_button"
+widget "*plugin_scale" style "plugin_scale"
+widget "*plugin_toggled" style "plugin_toggled"

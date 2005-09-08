@@ -61,8 +61,6 @@
 #include "playlist.h"
 #include "plugin.h"
 #include "file_info.h"
-#include "icon_16.xpm"
-#include "icon_64.xpm"
 #include "i18n.h"
 #include "gui_main.h"
 
@@ -2595,8 +2593,9 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	   unsigned long rate, unsigned long rb_audio_size) {
 
 	char * home;
-	char rcfile[MAXLEN];
+	char path[MAXLEN];
 	GList * glist = NULL;
+	GdkPixbuf * pixbuf = NULL;
 
 	srand(time(0));
 	sample_pos = 0;
@@ -2650,8 +2649,8 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	if (src_type == -1)
 		src_type = 4;
 
-	sprintf(rcfile, "%s/rc", skin);
-	gtk_rc_parse(rcfile);
+	sprintf(path, "%s/rc", skin);
+	gtk_rc_parse(path);
 
 	create_main_window(skin);
 
@@ -2677,9 +2676,24 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		load_playlist(playlist_name, 0);
 	}
 
-	glist = g_list_append(glist, gdk_pixbuf_new_from_xpm_data((const char **)icon_16_xpm));
-	glist = g_list_append(glist, gdk_pixbuf_new_from_xpm_data((const char **)icon_64_xpm));
-	gtk_window_set_default_icon_list(glist);
+	sprintf(path, "%s/icon_16.png", DATADIR);
+	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
+		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
+	}
+
+	sprintf(path, "%s/icon_32.png", DATADIR);
+	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
+		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
+	}
+
+	sprintf(path, "%s/icon_64.png", DATADIR);
+	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
+		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
+	}
+
+	if (glist != NULL) {
+		gtk_window_set_default_icon_list(glist);
+	}
 
 	if (repeat_on)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_button), TRUE);

@@ -2,9 +2,9 @@
 
 style "window"
 {
-	bg_pixmap[NORMAL] = "wood5.xpm"
-	bg_pixmap[PRELIGHT] = "wood5.xpm"
-	bg_pixmap[ACTIVE] = "wood5.xpm"
+	bg_pixmap[NORMAL] = "wood5.png"
+	bg_pixmap[PRELIGHT] = "wood5.png"
+	bg_pixmap[ACTIVE] = "wood5.png"
 
 	bg[NORMAL] = { 0.3, 0.2, 0.0 }
 	bg[PRELIGHT] = { 0.3, 0.2, 0.0 }
@@ -19,7 +19,7 @@ style "window"
 
 style "main_window" = "window"
 {
-	bg_pixmap[NORMAL] = "wood2.xpm"
+	bg_pixmap[NORMAL] = "wood2.png"
 }
 
 style "plugin_scrwin" = "window"
@@ -40,9 +40,9 @@ widget "*main_window" style "main_window"
 
 style "button"
 {
-	bg_pixmap[NORMAL] = "wood4.xpm"
-	bg_pixmap[PRELIGHT] = "wood3.xpm"
-	bg_pixmap[ACTIVE] = "wood1.xpm"
+	bg_pixmap[NORMAL] = "wood4.png"
+	bg_pixmap[PRELIGHT] = "wood3.png"
+	bg_pixmap[ACTIVE] = "wood1.png"
 
 	bg[NORMAL] = { 0.1, 0.1, 0.0 }
 	bg[PRELIGHT] = { 0.2, 0.2, 0.0 }
@@ -106,8 +106,8 @@ style "combo_box"
 
 style "menu" = "button"
 {
-	bg_pixmap[NORMAL] = "wood3.xpm"
-	bg_pixmap[PRELIGHT] = "wood6.xpm"
+	bg_pixmap[NORMAL] = "wood3.png"
+	bg_pixmap[PRELIGHT] = "wood6.png"
 
 	bg[NORMAL] = { 0.1, 0.1, 0.0 }
 	bg[PRELIGHT] = { 0.2, 0.2, 0.0 }
@@ -137,7 +137,7 @@ style "scale"
 
 	bg_pixmap[NORMAL] = "<none>"
 	bg_pixmap[PRELIGHT] = "<none>"
-	bg_pixmap[ACTIVE] = "scale_bg.xpm"
+	bg_pixmap[ACTIVE] = "scale_bg.png"
 
 	fg[NORMAL] = { 0.3, 0.2, 0.0 }
 }
@@ -180,9 +180,9 @@ widget "*nostyle" style "nostyle"
 
 style "check_notebook" = "button"
 {
-	bg_pixmap[NORMAL] = "wood4.xpm"
-	bg_pixmap[PRELIGHT] = "wood4.xpm"
-	bg_pixmap[ACTIVE] = "wood4.xpm"
+	bg_pixmap[NORMAL] = "wood4.png"
+	bg_pixmap[PRELIGHT] = "wood4.png"
+	bg_pixmap[ACTIVE] = "wood4.png"
 }
 
 widget "*check_on_window" style "window"
@@ -197,12 +197,12 @@ style "viewport"
 
 style "time_viewport" = "viewport"
 {
-	bg_pixmap[NORMAL] = "time_bg.xpm"
+	bg_pixmap[NORMAL] = "time_bg.png"
 }
 
 style "title_viewport" = "viewport"
 {
-	bg_pixmap[NORMAL] = "pine.xpm"
+	bg_pixmap[NORMAL] = "pine.png"
 }
 
 style "info_viewport" = "title_viewport"

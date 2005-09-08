@@ -23,8 +23,8 @@
 
 #include <gtk/gtk.h>
 
+#include "common.h"
 #include "version.h"
-#include "logo.xpm"
 #include "i18n.h"
 #include "about.h"
 
@@ -46,7 +46,7 @@ create_about_window() {
 	GtkWidget * vbox;
 
 	GtkWidget * xpm;
-	GdkPixbuf * pixmap;
+	GdkPixbuf * pixbuf;
 
 	GtkWidget * frame;
 	GtkWidget * scrolled_win;
@@ -64,6 +64,7 @@ create_about_window() {
 
 	GtkTextTag * tag;
 
+	char path[MAXLEN];
 
 	about_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_transient_for(GTK_WINDOW(about_window), GTK_WINDOW(main_window));
@@ -340,12 +341,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."), -1);
 
 	gtk_widget_show_all(about_window);
 
-        pixmap = gdk_pixbuf_new_from_xpm_data ((const char **)logo_xpm);
-
-        xpm = gtk_image_new_from_pixbuf (pixmap);
-        gtk_box_pack_end(GTK_BOX(vbox), xpm, FALSE, FALSE, 0);
-
-	gtk_widget_show(xpm);
+	sprintf(path, "%s/logo.png", DATADIR);
+        if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
+		xpm = gtk_image_new_from_pixbuf (pixbuf);
+		gtk_box_pack_end(GTK_BOX(vbox), xpm, FALSE, FALSE, 0);
+		gtk_widget_show(xpm);
+	}
 
         gtk_widget_grab_focus(ok_btn);
 }

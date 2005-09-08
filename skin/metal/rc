@@ -2,8 +2,8 @@
 
 style "window"
 {
-	bg_pixmap[NORMAL] = "bg5.xpm"
-	bg_pixmap[PRELIGHT] = "bg5.xpm"
+	bg_pixmap[NORMAL] = "bg5.png"
+	bg_pixmap[PRELIGHT] = "bg5.png"
 	bg_pixmap[ACTIVE] = "<none>"
 
 	bg[NORMAL] = { 0.5, 0.5, 0.5 }
@@ -19,7 +19,7 @@ style "window"
 
 style "main_window" = "window"
 {
-	bg_pixmap[NORMAL] = "bg2.xpm"
+	bg_pixmap[NORMAL] = "bg2.png"
 }
 
 style "plugin_scrwin" = "window"
@@ -38,9 +38,9 @@ widget "*main_window" style "main_window"
 
 style "button"
 {
-	bg_pixmap[NORMAL] = "bg1.xpm"
-	bg_pixmap[PRELIGHT] = "bg6.xpm"
-	bg_pixmap[ACTIVE] = "bg3.xpm"
+	bg_pixmap[NORMAL] = "bg1.png"
+	bg_pixmap[PRELIGHT] = "bg6.png"
+	bg_pixmap[ACTIVE] = "bg3.png"
 
 	bg[NORMAL] = { 0.5, 0.55, 0.5 }
 	bg[PRELIGHT] = { 0.5, 0.55, 0.55 }
@@ -107,8 +107,8 @@ style "combo_box"
 
 style "menu"
 {
-	bg_pixmap[NORMAL] = "bg5.xpm"
-	bg_pixmap[PRELIGHT] = "bg5.xpm"
+	bg_pixmap[NORMAL] = "bg5.png"
+	bg_pixmap[PRELIGHT] = "bg5.png"
 
 	bg[NORMAL] = { 0.8, 0.75, 0.7 }
 	bg[PRELIGHT] = { 0.7, 0.75, 0.8 }
@@ -137,7 +137,7 @@ style "scale"
 {
 	bg_pixmap[NORMAL] = "<none>"
 	bg_pixmap[PRELIGHT] = "<none>"
-	bg_pixmap[ACTIVE] = "scale_bg.xpm"
+	bg_pixmap[ACTIVE] = "scale_bg.png"
 
 	bg[NORMAL] = { 0.4, 0.4, 0.5 }
 	bg[PRELIGHT] = { 0.45, 0.45, 0.55 }
@@ -209,12 +209,12 @@ widget "*check_on_notebook" style "notebook"
 
 style "time_viewport" = "viewport"
 {
-	bg_pixmap[NORMAL] = "bg2.xpm"
+	bg_pixmap[NORMAL] = "bg2.png"
 }
 
 style "title_viewport" = "viewport"
 {
-	bg_pixmap[NORMAL] = "bg4.xpm"
+	bg_pixmap[NORMAL] = "bg4.png"
 }
 
 style "info_viewport" = "title_viewport"

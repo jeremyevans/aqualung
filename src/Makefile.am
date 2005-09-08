@@ -2,7 +2,10 @@ SUBDIRS = decoder po
 
 bin_PROGRAMS = aqualung
 
-EXTRA_DIST = drag.xpm icon_16.xpm icon_64.xpm logo.xpm version.sh version.h.in
+imagedir = $(pkgdatadir)
+image_DATA = drag.png icon_16.png icon_32.png icon_64.png logo.png
+
+EXTRA_DIST = version.sh version.h.in
 
 aqualung_SOURCES = \
 about.h about.c \

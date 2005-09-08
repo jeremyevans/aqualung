@@ -39,9 +39,9 @@ widget "*main_window" style "main_window"
 
 style "button"
 {
-	bg_pixmap[NORMAL] = "btn_bg1.xpm"
-	bg_pixmap[PRELIGHT] = "btn_bg2.xpm"
-	bg_pixmap[ACTIVE] = "btn_bg3.xpm"
+	bg_pixmap[NORMAL] = "btn_bg1.png"
+	bg_pixmap[PRELIGHT] = "btn_bg2.png"
+	bg_pixmap[ACTIVE] = "btn_bg3.png"
 
 	bg[NORMAL] = { 0.04, 0.07, 0.04 }
 	bg[PRELIGHT] = { 0.14, 0.17, 0.14 }
@@ -118,6 +118,7 @@ style "entry" = "view"
 style "combo_box"
 {
 	text[NORMAL] = { 1.0, 1.0, 1.0 }
+	text[PRELIGHT] = { 1.0, 1.0, 1.0 }
 	fg[NORMAL] = { 1.0, 1.0, 0.8 }
 }
 
@@ -155,7 +156,7 @@ style "scale"
 	bg[PRELIGHT] = { 0.34, 0.37, 0.4 }
 	bg[ACTIVE] = { 0.04, 0.07, 0.1 }
 
-	bg_pixmap[ACTIVE] = "scale_bg.xpm"
+	bg_pixmap[ACTIVE] = "scale_bg.png"
 
 	fg[NORMAL] = { 0.18, 0.18, 0.18 }
 }
@@ -208,12 +209,12 @@ style "viewport"
 
 style "time_viewport" = "viewport"
 {
-	bg_pixmap[NORMAL] = "time_bg.xpm"
+	bg_pixmap[NORMAL] = "time_bg.png"
 }
 
 style "title_viewport" = "viewport"
 {
-	bg_pixmap[NORMAL] = "title_bg.xpm"
+	bg_pixmap[NORMAL] = "title_bg.png"
 }
 
 style "info_viewport" = "title_viewport"

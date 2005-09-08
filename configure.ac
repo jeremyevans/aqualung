@@ -377,8 +377,9 @@ lrdf_LIBS=`pkg-config --libs lrdf`
 
 SKINDIR="-DSKINDIR=\\\"$datadir/aqualung/skin\\\""
 LOCALEDIR="-DLOCALEDIR=\\\"$datadir/locale\\\""
+DATADIR="-DDATADIR=\\\"$datadir/aqualung\\\""
 
-CFLAGS="-O2 -Wall $SKINDIR $LOCALEDIR -D_GNU_SOURCE"
+CFLAGS="-O2 -Wall $SKINDIR $LOCALEDIR $DATADIR -D_GNU_SOURCE"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS"
 LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS"
 

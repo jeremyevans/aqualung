@@ -31,7 +31,6 @@
 #include <libxml/parser.h>
 
 #include "common.h"
-#include "drag.xpm"
 #include "core.h"
 #include "file_info.h"
 #include "decoder/file_decoder.h"
@@ -2467,6 +2466,9 @@ create_music_browser(void) {
 	GtkTreeViewColumn * column;
 	GtkTextBuffer * buffer;
 
+	GdkPixbuf * pixbuf;
+	char path[MAXLEN];
+
 	/* window creating stuff */
 	browser_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(browser_window), _("Music Store"));
@@ -2540,8 +2542,10 @@ create_music_browser(void) {
 			    1,
 			    GDK_ACTION_COPY);
 
-	gtk_drag_source_set_icon_pixbuf(music_tree,
-					gdk_pixbuf_new_from_xpm_data((const char **)drag_xpm));
+	sprintf(path, "%s/drag.png", DATADIR);
+	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
+		gtk_drag_source_set_icon_pixbuf(music_tree, pixbuf);
+	}	
 
 	g_signal_connect(G_OBJECT(music_tree), "drag_begin", G_CALLBACK(browser_drag_begin), NULL);
 	g_signal_connect(G_OBJECT(music_tree), "drag_data_get", G_CALLBACK(browser_drag_data_get), NULL);

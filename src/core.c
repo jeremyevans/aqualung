@@ -1161,8 +1161,8 @@ load_default_cl(int * argc, char *** argv) {
         if ((f = fopen(config_file, "rt")) == NULL) {
                 fprintf(stderr, "No config.xml -- creating empty one: %s\n", config_file);
                 fprintf(stderr, "Wired-in defaults will be used.\n");
-                doc = xmlNewDoc("1.0");
-                root = xmlNewNode(NULL, "aqualung_config");
+                doc = xmlNewDoc((const xmlChar *) "1.0");
+                root = xmlNewNode(NULL, (const xmlChar *) "aqualung_config");
                 xmlDocSetRootElement(doc, root);
                 xmlSaveFormatFile(config_file, doc, 1);
 		*argc = 1;
@@ -1196,7 +1196,7 @@ load_default_cl(int * argc, char *** argv) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"default_param"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(default_param, key, MAXLEN-1);
+                                strncpy(default_param, (char *) key, MAXLEN-1);
                         xmlFree(key);
                 }
                 cur = cur->next;

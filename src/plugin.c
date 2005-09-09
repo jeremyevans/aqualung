@@ -1841,8 +1841,8 @@ save_plugin_data(void) {
 
         sprintf(plugin_file, "%s/plugin.xml", confdir);
 
-        doc = xmlNewDoc("1.0");
-        root = xmlNewNode(NULL, "aqualung_plugin");
+        doc = xmlNewDoc((const xmlChar*) "1.0");
+        root = xmlNewNode(NULL, (const xmlChar*) "aqualung_plugin");
         xmlDocSetRootElement(doc, root);
 
         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, i)) {
@@ -1850,15 +1850,15 @@ save_plugin_data(void) {
                 gtk_tree_model_get(GTK_TREE_MODEL(running_store), &iter, 1, &gp_instance, -1);
                 instance = (plugin_instance *) gp_instance;
 
-		plugin_node = xmlNewTextChild(root, NULL, "plugin", NULL);
+		plugin_node = xmlNewTextChild(root, NULL, (const xmlChar*) "plugin", NULL);
 
-		xmlNewTextChild(plugin_node, NULL, "filename", instance->filename);
+		xmlNewTextChild(plugin_node, NULL, (const xmlChar*) "filename", (xmlChar*) instance->filename);
 
 		snprintf(str, 31, "%d", instance->index);
-		xmlNewTextChild(plugin_node, NULL, "index", str);
+		xmlNewTextChild(plugin_node, NULL, (const xmlChar*) "index", (xmlChar*) str);
 
 		snprintf(str, 31, "%d", instance->is_bypassed);
-		xmlNewTextChild(plugin_node, NULL, "is_bypassed", str);
+		xmlNewTextChild(plugin_node, NULL, (const xmlChar*) "is_bypassed", (xmlChar*) str);
 
                 for (k = 0; k < MAX_KNOBS && k < instance->descriptor->PortCount; ++k) {
 
@@ -1867,13 +1867,13 @@ save_plugin_data(void) {
                         if (LADSPA_IS_PORT_OUTPUT(instance->descriptor->PortDescriptors[k]))
                                 continue;
 
-			port_node = xmlNewTextChild(plugin_node, NULL, "port", NULL);
+			port_node = xmlNewTextChild(plugin_node, NULL, (const xmlChar*) "port", NULL);
 
 			snprintf(str, 31, "%d", k);
-			xmlNewTextChild(port_node, NULL, "index", str);
+			xmlNewTextChild(port_node, NULL, (const xmlChar*) "index", (xmlChar*) str);
 
 			snprintf(str, 31, "%f", instance->knobs[k]);
-			xmlNewTextChild(port_node, NULL, "value", str);
+			xmlNewTextChild(port_node, NULL, (const xmlChar*) "value", (xmlChar*) str);
 		}
                 ++i;
         }
@@ -1927,7 +1927,7 @@ parse_plugin(xmlDocPtr doc, xmlNodePtr cur) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"filename"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(filename, key, MAXLEN-1);
+                                strncpy(filename, (char *) key, MAXLEN-1);
                         xmlFree(key);
                         if (filename[0] == '\0') {
                                 fprintf(stderr, "Error in XML aqualung_plugin: "
@@ -1936,12 +1936,12 @@ parse_plugin(xmlDocPtr doc, xmlNodePtr cur) {
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"index"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &index);
+                                sscanf((char *) key, "%d", &index);
                         xmlFree(key);
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"is_bypassed"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &is_bypassed);
+                                sscanf((char *) key, "%d", &is_bypassed);
                         xmlFree(key);
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"port"))) {
 			int port_index = -1;
@@ -1952,12 +1952,12 @@ parse_plugin(xmlDocPtr doc, xmlNodePtr cur) {
 				if ((!xmlStrcmp(port_node->name, (const xmlChar *)"index"))) {
 					key = xmlNodeListGetString(doc, port_node->xmlChildrenNode, 1);
 					if (key != NULL)
-						sscanf(key, "%d", &port_index);
+						sscanf((char *) key, "%d", &port_index);
 					xmlFree(key);
 				} else if ((!xmlStrcmp(port_node->name, (const xmlChar *)"value"))) {
 					key = xmlNodeListGetString(doc, port_node->xmlChildrenNode, 1);
 					if (key != NULL)
-						sscanf(key, "%f", &port_value);
+						sscanf((char *) key, "%f", &port_value);
 					xmlFree(key);
 				}
 				port_node = port_node->next;
@@ -2020,8 +2020,8 @@ load_plugin_data(void) {
 
         if ((f = fopen(plugin_file, "rt")) == NULL) {
                 fprintf(stderr, "No plugin.xml -- creating empty one: %s\n", plugin_file);
-                doc = xmlNewDoc("1.0");
-                root = xmlNewNode(NULL, "aqualung_plugin");
+                doc = xmlNewDoc((const xmlChar*) "1.0");
+                root = xmlNewNode(NULL, (const xmlChar*) "aqualung_plugin");
                 xmlDocSetRootElement(doc, root);
                 xmlSaveFormatFile(plugin_file, doc, 1);
                 return;

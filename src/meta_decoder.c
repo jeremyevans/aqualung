@@ -250,7 +250,7 @@ meta_read_rva2(metadata * meta, struct id3_tag * tag) {
 
 			strcpy(id3->id, "RVA2");
 			id3->label = strdup(_("Relative Volume"));
-			id3->utf8 = strdup(str);
+			id3->utf8 = (signed char *) strdup((char *) str);
 			id3->fval = voladj_float;
 			append_id3(meta, id3);
 
@@ -338,7 +338,7 @@ meta_read_id3(metadata * meta, struct id3_tag * tag) {
 
 				strcpy(id3->id, info[i].id);
 				id3->label = strdup(str);
-				id3->utf8 = strdup(utf8);
+				id3->utf8 = (signed char *) strdup((char *) utf8);
 				append_id3(meta, id3);
 			}
 
@@ -370,7 +370,7 @@ meta_read_id3(metadata * meta, struct id3_tag * tag) {
 			
 			strcpy(id3->id, "XCOM");
 			id3->label = strdup(str);
-			id3->utf8 = strdup(utf8);
+			id3->utf8 = (signed char *) strdup((char *) utf8);
 			append_id3(meta, id3);
 		}
 
@@ -846,7 +846,7 @@ meta_get_title(metadata * meta, char * str) {
 
 			if (strcmp(id3->id, ID3_FRAME_TITLE) == 0) {
 				if (str != NULL) {
-					strncpy(str, id3->utf8, MAXLEN-1);
+					strncpy(str, (char *) id3->utf8, MAXLEN-1);
 				}
 				return 1;
 			}
@@ -917,7 +917,7 @@ meta_get_record(metadata * meta, char * str) {
 
 			if (strcmp(id3->id, ID3_FRAME_ALBUM) == 0) {
 				if (str != NULL) {
-					strncpy(str, id3->utf8, MAXLEN-1);
+					strncpy(str, (char *) id3->utf8, MAXLEN-1);
 				}
 				return 1;
 			}
@@ -988,7 +988,7 @@ meta_get_artist(metadata * meta, char * str) {
 
 			if (strcmp(id3->id, ID3_FRAME_ARTIST) == 0) {
 				if (str != NULL) {
-					strncpy(str, id3->utf8, MAXLEN-1);
+					strncpy(str, (char *) id3->utf8, MAXLEN-1);
 				}
 				return 1;
 			}

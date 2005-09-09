@@ -1858,8 +1858,8 @@ save_playlist(char * filename) {
         char str[32];
 
 
-        doc = xmlNewDoc("1.0");
-        root = xmlNewNode(NULL, "aqualung_playlist");
+        doc = xmlNewDoc((const xmlChar*) "1.0");
+        root = xmlNewNode(NULL, (const xmlChar*) "aqualung_playlist");
         xmlDocSetRootElement(doc, root);
 
         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i)) {
@@ -1868,23 +1868,23 @@ save_playlist(char * filename) {
 				   0, &track_name, 1, &phys_name, 2, &color,
 				   3, &voladj, 5, &duration, -1);
 
-                node = xmlNewTextChild(root, NULL, "track", NULL);
+                node = xmlNewTextChild(root, NULL, (const xmlChar*) "track", NULL);
 
-                xmlNewTextChild(node, NULL, "track_name", track_name);
-                xmlNewTextChild(node, NULL, "phys_name", phys_name);
+                xmlNewTextChild(node, NULL, (const xmlChar*) "track_name", (const xmlChar*) track_name);
+                xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) phys_name);
 
 		if (strcmp(color, pl_color_active) == 0) {
 			strcpy(str, "yes");
 		} else {
 			strcpy(str, "no");
 		}
-                xmlNewTextChild(node, NULL, "is_active", str);
+                xmlNewTextChild(node, NULL, (const xmlChar*) "is_active", (const xmlChar*) str);
 
 		snprintf(str, 31, "%f", voladj);
-		xmlNewTextChild(node, NULL, "voladj", str);
+		xmlNewTextChild(node, NULL, (const xmlChar*) "voladj", (const xmlChar*) str);
 
 		snprintf(str, 31, "%f", duration);
-		xmlNewTextChild(node, NULL, "duration", str);
+		xmlNewTextChild(node, NULL, (const xmlChar*) "duration", (const xmlChar*) str);
 
 		g_free(track_name);
 		g_free(phys_name);
@@ -1917,12 +1917,12 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, int sel_ok) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"track_name"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(track_name, key, MAXLEN-1);
+                                strncpy(track_name, (char *) key, MAXLEN-1);
                         xmlFree(key);
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"phys_name"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(phys_name, key, MAXLEN-1);
+                                strncpy(phys_name, (char *) key, MAXLEN-1);
                         xmlFree(key);
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"is_active"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
@@ -1937,13 +1937,13 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, int sel_ok) {
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"voladj"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				voladj = convf(key);
+				voladj = convf((char *) key);
                         }
                         xmlFree(key);
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"duration"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				duration = convf(key);
+				duration = convf((char *) key);
                         }
                         xmlFree(key);
 		}

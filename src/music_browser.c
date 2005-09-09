@@ -2440,7 +2440,7 @@ void
 browser_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
 		      GtkSelectionData * data, guint info, guint time, gpointer user_data) {
 
-	gtk_selection_data_set(data, data->target, 8, "\0", 1);
+	gtk_selection_data_set(data, data->target, 8, (const guchar *) "\0", 1);
 }
 
 
@@ -2776,45 +2776,45 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL)
-				strncpy(name, key, MAXLEN-1);
+				strncpy(name, (char *) key, MAXLEN-1);
 			xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"sort_name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL)
-				strncpy(sort_name, key, MAXLEN-1);
+				strncpy(sort_name, (char *) key, MAXLEN-1);
 			xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"file"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL)
-				strncpy(file, key, MAXLEN-1);
+				strncpy(file, (char *) key, MAXLEN-1);
 			xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"comment"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL)
-				strncpy(comment, key, MAXLEN-1);
+				strncpy(comment, (char *) key, MAXLEN-1);
 			xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"duration"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                duration = convf(key);
+                                duration = convf((char *) key);
                         }
                         xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"volume"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                volume = convf(key);
+                                volume = convf((char *) key);
                         }
                         xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                rva = convf(key);
+                                rva = convf((char *) key);
                         }
                         xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"use_rva"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                use_rva = convf(key);
+                                use_rva = convf((char *) key);
                         }
                         xmlFree(key);
                 }
@@ -2866,7 +2866,7 @@ parse_record(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_artist) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL)
-				strncpy(name, key, MAXLEN-1);
+				strncpy(name, (char *) key, MAXLEN-1);
 			xmlFree(key);
 			if (name[0] == '\0') {
 				fprintf(stderr, "Error in XML music_store: "
@@ -2876,13 +2876,13 @@ parse_record(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_artist) {
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"sort_name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL)
-				strncpy(sort_name, key, MAXLEN-1);
+				strncpy(sort_name, (char *) key, MAXLEN-1);
 			xmlFree(key);
 			gtk_tree_store_set(music_store, &iter_record, 1, sort_name, -1);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"comment"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL)
-				strncpy(comment, key, MAXLEN-1);
+				strncpy(comment, (char *) key, MAXLEN-1);
 			xmlFree(key);
 			gtk_tree_store_set(music_store, &iter_record, 3, comment, -1);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"track"))) {
@@ -2917,7 +2917,7 @@ parse_artist(xmlDocPtr doc, xmlNodePtr cur) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL)
-				strncpy(name, key, MAXLEN-1);
+				strncpy(name, (char *) key, MAXLEN-1);
 			xmlFree(key);
 			if (name[0] == '\0') {
 				fprintf(stderr, "Error in XML music_store: "
@@ -2927,13 +2927,13 @@ parse_artist(xmlDocPtr doc, xmlNodePtr cur) {
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"sort_name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL)
-				strncpy(sort_name, key, MAXLEN-1);
+				strncpy(sort_name, (char *) key, MAXLEN-1);
 			xmlFree(key);
 			gtk_tree_store_set(music_store, &iter_artist, 1, sort_name, -1);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"comment"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL)
-				strncpy(comment, key, MAXLEN-1);
+				strncpy(comment, (char *) key, MAXLEN-1);
 			xmlFree(key);
 			gtk_tree_store_set(music_store, &iter_artist, 3, comment, -1);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"record"))) {
@@ -2960,8 +2960,8 @@ load_music_store(void) {
 
 	if ((f = fopen(store_file, "rt")) == NULL) {
 		fprintf(stderr, "No music store found, creating empty one: %s\n", store_file);
-		doc = xmlNewDoc("1.0");
-		root = xmlNewNode(NULL, "music_store");
+		doc = xmlNewDoc((const xmlChar *) "1.0");
+		root = xmlNewNode(NULL, (const xmlChar *) "music_store");
 		xmlDocSetRootElement(doc, root);
 		xmlSaveFormatFile(store_file, doc, 1);
 		return;
@@ -3022,36 +3022,36 @@ save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track) {
 			   4, &duration, 5, &volume, 6, &rva, 7, &use_rva,
 			   -1);
 	
-	node = xmlNewTextChild(node_track, NULL, "track", NULL);
+	node = xmlNewTextChild(node_track, NULL, (const xmlChar *) "track", NULL);
 	if (name[0] == '\0')
 		fprintf(stderr, "saving music_store XML: warning: track node with empty <name>\n");
-	xmlNewTextChild(node, NULL, "name", name);
+	xmlNewTextChild(node, NULL, (const xmlChar *) "name", (const xmlChar *) name);
 	if (sort_name[0] != '\0')
-		xmlNewTextChild(node, NULL, "sort_name", sort_name);
+		xmlNewTextChild(node, NULL, (const xmlChar *) "sort_name", (const xmlChar *) sort_name);
 	if (file[0] == '\0')
 		fprintf(stderr, "saving music_store XML: warning: track node with empty <file>\n");
-	xmlNewTextChild(node, NULL, "file", file);
+	xmlNewTextChild(node, NULL, (const xmlChar *) "file", (const xmlChar *) file);
 	if (comment[0] != '\0')
-		xmlNewTextChild(node, NULL, "comment", comment);
+		xmlNewTextChild(node, NULL, (const xmlChar *) "comment", (const xmlChar *) comment);
 
 	if (duration != 0.0f) {
 		snprintf(str, 31, "%.1f", duration);
-		xmlNewTextChild(node, NULL, "duration", str);
+		xmlNewTextChild(node, NULL, (const xmlChar *) "duration", (const xmlChar *) str);
 	}
 
 	if (volume <= 0.1f) {
 		snprintf(str, 31, "%.1f", volume);
-		xmlNewTextChild(node, NULL, "volume", str);
+		xmlNewTextChild(node, NULL, (const xmlChar *) "volume", (const xmlChar *) str);
 	}
 
 	if (rva != 0.0f) {
 		snprintf(str, 31, "%.1f", rva);
-		xmlNewTextChild(node, NULL, "rva", str);
+		xmlNewTextChild(node, NULL, (const xmlChar *) "rva", (const xmlChar *) str);
 	}
 
 	if (use_rva >= 0.0f) {
 		snprintf(str, 31, "%.1f", use_rva);
-		xmlNewTextChild(node, NULL, "use_rva", str);
+		xmlNewTextChild(node, NULL, (const xmlChar *) "use_rva", (const xmlChar *) str);
 	}
 
 	g_free(name);
@@ -3074,14 +3074,14 @@ save_record(xmlDocPtr doc, xmlNodePtr node_record, GtkTreeIter * iter_record) {
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter_record,
 			   0, &name, 1, &sort_name, 3, &comment, -1);
 	
-	node = xmlNewTextChild(node_record, NULL, "record", NULL);
+	node = xmlNewTextChild(node_record, NULL, (const xmlChar *) "record", NULL);
 	if (name[0] == '\0')
 		fprintf(stderr, "saving music_store XML: warning: record node with empty <name>\n");
-	xmlNewTextChild(node, NULL, "name", name);
+	xmlNewTextChild(node, NULL, (const xmlChar *) "name", (const xmlChar *) name);
 	if (sort_name[0] != '\0')
-		xmlNewTextChild(node, NULL, "sort_name", sort_name);
+		xmlNewTextChild(node, NULL, (const xmlChar *) "sort_name", (const xmlChar *) sort_name);
 	if (comment[0] != '\0')
-		xmlNewTextChild(node, NULL, "comment", comment);
+		xmlNewTextChild(node, NULL, (const xmlChar *) "comment", (const xmlChar *) comment);
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track, iter_record, i++))
 		save_track(doc, node, &iter_track);
@@ -3105,14 +3105,14 @@ save_artist(xmlDocPtr doc, xmlNodePtr root, GtkTreeIter * iter_artist) {
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter_artist,
 			   0, &name, 1, &sort_name, 3, &comment, -1);
 	
-	node = xmlNewTextChild(root, NULL, "artist", NULL);
+	node = xmlNewTextChild(root, NULL, (const xmlChar *) "artist", NULL);
 	if (name[0] == '\0')
 		fprintf(stderr, "saving music_store XML: warning: artist node with empty <name>\n");
-	xmlNewTextChild(node, NULL, "name", name);
+	xmlNewTextChild(node, NULL, (const xmlChar *) "name", (const xmlChar *) name);
 	if (sort_name[0] != '\0')
-		xmlNewTextChild(node, NULL, "sort_name", sort_name);
+		xmlNewTextChild(node, NULL, (const xmlChar *) "sort_name", (const xmlChar *) sort_name);
 	if (comment[0] != '\0')
-		xmlNewTextChild(node, NULL, "comment", comment);
+		xmlNewTextChild(node, NULL, (const xmlChar *) "comment", (const xmlChar *) comment);
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_record, iter_artist, i++))
 		save_record(doc, node, &iter_record);
@@ -3139,8 +3139,8 @@ save_music_store(void) {
 
 	sprintf(store_file, "%s/music_store.xml", confdir);
 
-	doc = xmlNewDoc("1.0");
-	root = xmlNewNode(NULL, "music_store");
+	doc = xmlNewDoc((const xmlChar *) "1.0");
+	root = xmlNewNode(NULL, (const xmlChar *) "music_store");
 	xmlDocSetRootElement(doc, root);
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, NULL, i++))

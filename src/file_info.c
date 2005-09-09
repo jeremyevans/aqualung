@@ -439,7 +439,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		while (id3 != NULL) {
 			
 			if (!is_called_from_browser) {
-				append_table(table_id3v2, &cnt, id3->label, id3->utf8,
+				append_table(table_id3v2, &cnt, (char *) id3->label, (char *) id3->utf8,
 					     NULL, NULL);
 			} else {
 				import_data_t * data = import_data_new();
@@ -450,9 +450,9 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 					data->model = model;
 					data->track_iter = track_iter;
 					data->dest_type = IMPORT_DEST_TITLE;
-					strncpy(data->str, id3->utf8, MAXLEN-1);
+					strncpy(data->str, (char *) id3->utf8, MAXLEN-1);
 					append_table(table_id3v2, &cnt,
-						     id3->label, id3->utf8,
+						     id3->label, (char *) id3->utf8,
 						     _("Import as Title"), data);
 				} else
 				if (strcmp(id3->id, ID3_FRAME_ARTIST) == 0) {
@@ -460,9 +460,9 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 					data->model = model;
 					data->track_iter = track_iter;
 					data->dest_type = IMPORT_DEST_ARTIST;
-					strncpy(data->str, id3->utf8, MAXLEN-1);
+					strncpy(data->str, (char *) id3->utf8, MAXLEN-1);
 					append_table(table_id3v2, &cnt,
-						     id3->label, id3->utf8,
+						     id3->label, (char *) id3->utf8,
 						     _("Import as Artist"), data);
 				} else
 				if (strcmp(id3->id, ID3_FRAME_ALBUM) == 0) {
@@ -470,9 +470,9 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 					data->model = model;
 					data->track_iter = track_iter;
 					data->dest_type = IMPORT_DEST_RECORD;
-					strncpy(data->str, id3->utf8, MAXLEN-1);
+					strncpy(data->str, (char *) id3->utf8, MAXLEN-1);
 					append_table(table_id3v2, &cnt,
-						     id3->label, id3->utf8,
+						     id3->label, (char *) id3->utf8,
 						     _("Import as Record"), data);
 				} else
 				if (strcmp(id3->id, ID3_FRAME_TRACK) == 0) {
@@ -480,9 +480,9 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 					data->model = model;
 					data->track_iter = track_iter;
 					data->dest_type = IMPORT_DEST_NUMBER;
-					strncpy(data->str, id3->utf8, MAXLEN-1);
+					strncpy(data->str, (char *) id3->utf8, MAXLEN-1);
 					append_table(table_id3v2, &cnt,
-						     id3->label, id3->utf8,
+						     id3->label, (char *) id3->utf8,
 						     _("Import as Track number"), data);
 				} else
 				if (strcmp(id3->id, "RVA2") == 0) {
@@ -492,7 +492,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 					data->dest_type = IMPORT_DEST_RVA;
 					data->fval = id3->fval;
 					append_table(table_id3v2, &cnt,
-						     _("Relative Volume"), id3->utf8,
+						     _("Relative Volume"), (char *) id3->utf8,
 						     _("Import as RVA"), data);
 					
 				} else {
@@ -505,7 +505,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 					data->dest_type = IMPORT_DEST_COMMENT;
 					strncpy(data->str, tmp, MAXLEN-1);
 					append_table(table_id3v2, &cnt,
-						     id3->label, id3->utf8,
+						     id3->label, (char *) id3->utf8,
 						     _("Add to Comments"), data);
 				}
 			}

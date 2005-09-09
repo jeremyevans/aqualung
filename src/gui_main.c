@@ -3171,144 +3171,144 @@ save_config(void) {
 
         sprintf(config_file, "%s/config.xml", confdir);
 
-        doc = xmlNewDoc("1.0");
-        root = xmlNewNode(NULL, "aqualung_config");
+        doc = xmlNewDoc((const xmlChar *) "1.0");
+        root = xmlNewNode(NULL, (const xmlChar *) "aqualung_config");
         xmlDocSetRootElement(doc, root);
 
 
-        xmlNewTextChild(root, NULL, "default_param", default_param);
-        xmlNewTextChild(root, NULL, "title_format", title_format);
-        xmlNewTextChild(root, NULL, "skin", skin);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "default_param", (xmlChar *) default_param);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "title_format", (xmlChar *) title_format);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "skin", (xmlChar *) skin);
 
 	snprintf(str, 31, "%d", src_type);
-        xmlNewTextChild(root, NULL, "src_type", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "src_type", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", ladspa_is_postfader);
-        xmlNewTextChild(root, NULL, "ladspa_is_postfader", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "ladspa_is_postfader", (xmlChar *) str);
 	snprintf(str, 31, "%d", auto_save_playlist);
-        xmlNewTextChild(root, NULL, "auto_save_playlist", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_save_playlist", (xmlChar *) str);
 	snprintf(str, 31, "%d", show_rva_in_playlist);
-        xmlNewTextChild(root, NULL, "show_rva_in_playlist", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "show_rva_in_playlist", (xmlChar *) str);
 	snprintf(str, 31, "%d", show_length_in_playlist);
-        xmlNewTextChild(root, NULL, "show_length_in_playlist", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "show_length_in_playlist", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", auto_use_meta_artist);
-        xmlNewTextChild(root, NULL, "auto_use_meta_artist", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_meta_artist", (xmlChar *) str);
 	snprintf(str, 31, "%d", auto_use_meta_record);
-        xmlNewTextChild(root, NULL, "auto_use_meta_record", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_meta_record", (xmlChar *) str);
 	snprintf(str, 31, "%d", auto_use_meta_track);
-        xmlNewTextChild(root, NULL, "auto_use_meta_track", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_meta_track", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", auto_use_ext_meta_artist);
-        xmlNewTextChild(root, NULL, "auto_use_ext_meta_artist", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_ext_meta_artist", (xmlChar *) str);
 	snprintf(str, 31, "%d", auto_use_ext_meta_record);
-        xmlNewTextChild(root, NULL, "auto_use_ext_meta_record", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_ext_meta_record", (xmlChar *) str);
 	snprintf(str, 31, "%d", auto_use_ext_meta_track);
-        xmlNewTextChild(root, NULL, "auto_use_ext_meta_track", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_ext_meta_track", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", enable_tooltips);
-        xmlNewTextChild(root, NULL, "enable_tooltips", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_tooltips", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", buttons_at_the_bottom);
-        xmlNewTextChild(root, NULL, "buttons_at_the_bottom", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "buttons_at_the_bottom", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", hide_comment_pane_shadow);
-        xmlNewTextChild(root, NULL, "hide_comment_pane", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "hide_comment_pane", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", override_skin_settings);
-        xmlNewTextChild(root, NULL, "override_skin_settings", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "override_skin_settings", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", replaygain_tag_to_use);
-        xmlNewTextChild(root, NULL, "replaygain_tag_to_use", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "replaygain_tag_to_use", (xmlChar *) str);
 
 	snprintf(str, 31, "%f", vol);
-        xmlNewTextChild(root, NULL, "volume", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "volume", (xmlChar *) str);
 	snprintf(str, 31, "%f", bal);
-        xmlNewTextChild(root, NULL, "balance", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "balance", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", rva_is_enabled);
-        xmlNewTextChild(root, NULL, "rva_is_enabled", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_is_enabled", (xmlChar *) str);
 	snprintf(str, 31, "%d", rva_env);
-        xmlNewTextChild(root, NULL, "rva_env", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_env", (xmlChar *) str);
 	snprintf(str, 31, "%f", rva_refvol);
-        xmlNewTextChild(root, NULL, "rva_refvol", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_refvol", (xmlChar *) str);
 	snprintf(str, 31, "%f", rva_steepness);
-        xmlNewTextChild(root, NULL, "rva_steepness", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_steepness", (xmlChar *) str);
 	snprintf(str, 31, "%d", rva_use_averaging);
-        xmlNewTextChild(root, NULL, "rva_use_averaging", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_use_averaging", (xmlChar *) str);
 	snprintf(str, 31, "%d", rva_use_linear_thresh);
-        xmlNewTextChild(root, NULL, "rva_use_linear_thresh", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_use_linear_thresh", (xmlChar *) str);
 	snprintf(str, 31, "%f", rva_avg_linear_thresh);
-        xmlNewTextChild(root, NULL, "rva_avg_linear_thresh", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_avg_linear_thresh", (xmlChar *) str);
 	snprintf(str, 31, "%f", rva_avg_stddev_thresh);
-        xmlNewTextChild(root, NULL, "rva_avg_stddev_thresh", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_avg_stddev_thresh", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", main_pos_x);
-        xmlNewTextChild(root, NULL, "main_pos_x", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "main_pos_x", (xmlChar *) str);
 	snprintf(str, 31, "%d", main_pos_y);
-        xmlNewTextChild(root, NULL, "main_pos_y", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "main_pos_y", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", main_size_x);
-        xmlNewTextChild(root, NULL, "main_size_x", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "main_size_x", (xmlChar *) str);
 	if (playlist_is_embedded && !playlist_is_embedded_shadow && playlist_on) {
 		snprintf(str, 31, "%d", main_size_y - playlist_window->allocation.height - 6);
 	} else {
 		snprintf(str, 31, "%d", main_size_y);
 	}
-        xmlNewTextChild(root, NULL, "main_size_y", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "main_size_y", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", browser_pos_x);
-        xmlNewTextChild(root, NULL, "browser_pos_x", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_pos_x", (xmlChar *) str);
 	snprintf(str, 31, "%d", browser_pos_y);
-        xmlNewTextChild(root, NULL, "browser_pos_y", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_pos_y", (xmlChar *) str);
 	snprintf(str, 31, "%d", browser_size_x);
-        xmlNewTextChild(root, NULL, "browser_size_x", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_size_x", (xmlChar *) str);
 	snprintf(str, 31, "%d", browser_size_y);
-        xmlNewTextChild(root, NULL, "browser_size_y", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_size_y", (xmlChar *) str);
 	snprintf(str, 31, "%d", browser_on);
-        xmlNewTextChild(root, NULL, "browser_is_visible", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_is_visible", (xmlChar *) str);
 	snprintf(str, 31, "%d", browser_paned_pos);
-        xmlNewTextChild(root, NULL, "browser_paned_pos", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_paned_pos", (xmlChar *) str);
 	snprintf(str, MAX_FONTNAME_LEN, "%s", browser_font);
-        xmlNewTextChild(root, NULL, "browser_font", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_font", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", playlist_pos_x);
-        xmlNewTextChild(root, NULL, "playlist_pos_x", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_pos_x", (xmlChar *) str);
 	snprintf(str, 31, "%d", playlist_pos_y);
-        xmlNewTextChild(root, NULL, "playlist_pos_y", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_pos_y", (xmlChar *) str);
 	snprintf(str, 31, "%d", playlist_size_x);
-        xmlNewTextChild(root, NULL, "playlist_size_x", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_size_x", (xmlChar *) str);
 	snprintf(str, 31, "%d", playlist_size_y);
-        xmlNewTextChild(root, NULL, "playlist_size_y", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_size_y", (xmlChar *) str);
 	snprintf(str, 31, "%d", playlist_on);
-        xmlNewTextChild(root, NULL, "playlist_is_visible", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_is_visible", (xmlChar *) str);
 	snprintf(str, 31, "%d", playlist_is_embedded_shadow);
-        xmlNewTextChild(root, NULL, "playlist_is_embedded", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_is_embedded", (xmlChar *) str);
 	snprintf(str, 31, "%d", enable_playlist_statusbar_shadow);
-        xmlNewTextChild(root, NULL, "enable_playlist_statusbar", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_playlist_statusbar", (xmlChar *) str);
 	snprintf(str, MAX_FONTNAME_LEN, "%s", playlist_font);
-        xmlNewTextChild(root, NULL, "playlist_font", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_font", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", repeat_on);
-        xmlNewTextChild(root, NULL, "repeat_on", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "repeat_on", (xmlChar *) str);
 	snprintf(str, 31, "%d", repeat_all_on);
-        xmlNewTextChild(root, NULL, "repeat_all_on", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "repeat_all_on", (xmlChar *) str);
 	snprintf(str, 31, "%d", shuffle_on);
-        xmlNewTextChild(root, NULL, "shuffle_on", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "shuffle_on", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", time_idx[0]);
-        xmlNewTextChild(root, NULL, "time_idx_0", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "time_idx_0", (xmlChar *) str);
 	snprintf(str, 31, "%d", time_idx[1]);
-        xmlNewTextChild(root, NULL, "time_idx_1", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "time_idx_1", (xmlChar *) str);
 	snprintf(str, 31, "%d", time_idx[2]);
-        xmlNewTextChild(root, NULL, "time_idx_2", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "time_idx_2", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", plcol_idx[0]);
-        xmlNewTextChild(root, NULL, "plcol_idx_0", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "plcol_idx_0", (xmlChar *) str);
 	snprintf(str, 31, "%d", plcol_idx[1]);
-        xmlNewTextChild(root, NULL, "plcol_idx_1", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "plcol_idx_1", (xmlChar *) str);
 	snprintf(str, 31, "%d", plcol_idx[2]);
-        xmlNewTextChild(root, NULL, "plcol_idx_2", str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "plcol_idx_2", (xmlChar *) str);
 
 
         sprintf(tmpname, "%s/config.xml.temp", confdir);
@@ -3354,8 +3354,8 @@ load_config(void) {
 
         if ((f = fopen(config_file, "rt")) == NULL) {
 		/* no warning -- done that in core.c::load_default_cl() */
-                doc = xmlNewDoc("1.0");
-                root = xmlNewNode(NULL, "aqualung_config");
+                doc = xmlNewDoc((const xmlChar *) "1.0");
+                root = xmlNewNode(NULL, (const xmlChar *) "aqualung_config");
                 xmlDocSetRootElement(doc, root);
                 xmlSaveFormatFile(config_file, doc, 1);
                 return;
@@ -3400,105 +3400,105 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"default_param"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(default_param, key, MAXLEN-1);
+                                strncpy(default_param, (char *) key, MAXLEN-1);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"title_format"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(title_format, key, MAXLEN-1);
+                                strncpy(title_format, (char *) key, MAXLEN-1);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"skin"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(skin, key, MAXLEN-1);
+                                strncpy(skin, (char *) key, MAXLEN-1);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"src_type"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if ((key != NULL) && (!src_type_parsed))
-				sscanf(key, "%d", &src_type);
+				sscanf((char *) key, "%d", &src_type);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"ladspa_is_postfader"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &ladspa_is_postfader);
+				sscanf((char *) key, "%d", &ladspa_is_postfader);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_save_playlist"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &auto_save_playlist);
+				sscanf((char *) key, "%d", &auto_save_playlist);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_meta_artist"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &auto_use_meta_artist);
+				sscanf((char *) key, "%d", &auto_use_meta_artist);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_meta_record"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &auto_use_meta_record);
+				sscanf((char *) key, "%d", &auto_use_meta_record);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_meta_track"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &auto_use_meta_track);
+				sscanf((char *) key, "%d", &auto_use_meta_track);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_ext_meta_artist"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &auto_use_ext_meta_artist);
+				sscanf((char *) key, "%d", &auto_use_ext_meta_artist);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_ext_meta_record"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &auto_use_ext_meta_record);
+				sscanf((char *) key, "%d", &auto_use_ext_meta_record);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_ext_meta_track"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &auto_use_ext_meta_track);
+				sscanf((char *) key, "%d", &auto_use_ext_meta_track);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_rva_in_playlist"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &show_rva_in_playlist);
+				sscanf((char *) key, "%d", &show_rva_in_playlist);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_length_in_playlist"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &show_length_in_playlist);
+				sscanf((char *) key, "%d", &show_length_in_playlist);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_tooltips"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				sscanf(key, "%d", &enable_tooltips);
+				sscanf((char *) key, "%d", &enable_tooltips);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"buttons_at_the_bottom"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				sscanf(key, "%d", &buttons_at_the_bottom);
+				sscanf((char *) key, "%d", &buttons_at_the_bottom);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"hide_comment_pane"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				sscanf(key, "%d", &hide_comment_pane);
+				sscanf((char *) key, "%d", &hide_comment_pane);
 				hide_comment_pane_shadow = hide_comment_pane;
 			}
                         xmlFree(key);
@@ -3506,79 +3506,79 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"override_skin_settings"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				sscanf(key, "%d", &override_skin_settings);
+				sscanf((char *) key, "%d", &override_skin_settings);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"replaygain_tag_to_use"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &replaygain_tag_to_use);
+				sscanf((char *) key, "%d", &replaygain_tag_to_use);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"volume"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				vol = convf(key);;
+				vol = convf((char *) key);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"balance"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				bal = convf(key);
+				bal = convf((char *) key);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_is_enabled"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &rva_is_enabled);
+				sscanf((char *) key, "%d", &rva_is_enabled);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_env"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &rva_env);
+				sscanf((char *) key, "%d", &rva_env);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_refvol"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				rva_refvol = convf(key);
+				rva_refvol = convf((char *) key);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_steepness"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				rva_steepness = convf(key);
+				rva_steepness = convf((char *) key);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_use_averaging"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &rva_use_averaging);
+				sscanf((char *) key, "%d", &rva_use_averaging);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_use_linear_thresh"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf(key, "%d", &rva_use_linear_thresh);
+				sscanf((char *) key, "%d", &rva_use_linear_thresh);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_avg_linear_thresh"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				rva_avg_linear_thresh = convf(key);
+				rva_avg_linear_thresh = convf((char *) key);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_avg_stddev_thresh"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				rva_avg_stddev_thresh = convf(key);
+				rva_avg_stddev_thresh = convf((char *) key);
 			}
                         xmlFree(key);
                 }
@@ -3586,105 +3586,105 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"main_pos_x"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &main_pos_x);
+                                sscanf((char *) key, "%d", &main_pos_x);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"main_pos_y"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &main_pos_y);
+                                sscanf((char *) key, "%d", &main_pos_y);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"main_size_x"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &main_size_x);
+                                sscanf((char *) key, "%d", &main_size_x);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"main_size_y"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &main_size_y);
+                                sscanf((char *) key, "%d", &main_size_y);
                         xmlFree(key);
                 }
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_pos_x"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &browser_pos_x);
+                                sscanf((char *) key, "%d", &browser_pos_x);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_pos_y"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &browser_pos_y);
+                                sscanf((char *) key, "%d", &browser_pos_y);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_size_x"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &browser_size_x);
+                                sscanf((char *) key, "%d", &browser_size_x);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_size_y"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &browser_size_y);
+                                sscanf((char *) key, "%d", &browser_size_y);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_is_visible"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &browser_on);
+                                sscanf((char *) key, "%d", &browser_on);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_paned_pos"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &browser_paned_pos);
+                                sscanf((char *) key, "%d", &browser_paned_pos);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_font"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(browser_font, key, MAX_FONTNAME_LEN-1);
+                                strncpy(browser_font, (char *) key, MAX_FONTNAME_LEN-1);
                         xmlFree(key);
                 }
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_pos_x"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &playlist_pos_x);
+                                sscanf((char *) key, "%d", &playlist_pos_x);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_pos_y"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &playlist_pos_y);
+                                sscanf((char *) key, "%d", &playlist_pos_y);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_size_x"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &playlist_size_x);
+                                sscanf((char *) key, "%d", &playlist_size_x);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_size_y"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &playlist_size_y);
+                                sscanf((char *) key, "%d", &playlist_size_y);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_is_visible"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &playlist_on);
+                                sscanf((char *) key, "%d", &playlist_on);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_is_embedded"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf(key, "%d", &playlist_is_embedded);
+                                sscanf((char *) key, "%d", &playlist_is_embedded);
 				playlist_is_embedded_shadow = playlist_is_embedded;
 			}
                         xmlFree(key);
@@ -3692,7 +3692,7 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_playlist_statusbar"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf(key, "%d", &enable_playlist_statusbar);
+                                sscanf((char *) key, "%d", &enable_playlist_statusbar);
 				enable_playlist_statusbar_shadow = enable_playlist_statusbar;
 			}
                         xmlFree(key);
@@ -3700,64 +3700,64 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_font"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(playlist_font, key, MAX_FONTNAME_LEN-1);
+                                strncpy(playlist_font, (char *) key, MAX_FONTNAME_LEN-1);
                         xmlFree(key);
                 }
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"repeat_on"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &repeat_on);
+                                sscanf((char *) key, "%d", &repeat_on);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"repeat_all_on"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &repeat_all_on);
+                                sscanf((char *) key, "%d", &repeat_all_on);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"shuffle_on"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &shuffle_on);
+                                sscanf((char *) key, "%d", &shuffle_on);
                         xmlFree(key);
                 }
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"time_idx_0"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &(time_idx[0]));
+                                sscanf((char *) key, "%d", &(time_idx[0]));
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"time_idx_1"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &(time_idx[1]));
+                                sscanf((char *) key, "%d", &(time_idx[1]));
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"time_idx_2"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &(time_idx[2]));
+                                sscanf((char *) key, "%d", &(time_idx[2]));
                         xmlFree(key);
                 }
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"plcol_idx_0"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &(plcol_idx[0]));
+                                sscanf((char *) key, "%d", &(plcol_idx[0]));
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"plcol_idx_1"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &(plcol_idx[1]));
+                                sscanf((char *) key, "%d", &(plcol_idx[1]));
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"plcol_idx_2"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf(key, "%d", &(plcol_idx[2]));
+                                sscanf((char *) key, "%d", &(plcol_idx[2]));
                         xmlFree(key);
                 }
                 cur = cur->next;

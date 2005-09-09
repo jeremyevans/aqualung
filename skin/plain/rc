@@ -1,3 +1,11 @@
+
+#----------------------------------------------------
+# plain skin for aqualung
+#
+# icons by ironya <ironya@ll.pl>
+#----------------------------------------------------
+
+
 # --- windows
 
 style "window"
@@ -14,7 +22,7 @@ style "window"
 	fg[PRELIGHT] = "#000000"
 	fg[ACTIVE] = "#000000"
 
-	font_name = "Sans 10"
+	font_name = "Sans 11"
 }
 
 style "main_window" = "window"
@@ -51,7 +59,7 @@ style "button"
 	fg[PRELIGHT] = "#000000"
 	fg[ACTIVE] = "#000000"
 
-	font_name = "Monospace 9"
+	font_name = "Sans Bold 9"
 }
 
 style "view"
@@ -61,10 +69,8 @@ style "view"
 	text[ACTIVE] = "#000000"
 
 	base[NORMAL] = "#dbdbcc"
-#	base[SELECTED] = "#807d74"
 	base[SELECTED] = "#306090"
-#	base[ACTIVE] = "#ccc7b9"
-	base[ACTIVE] = "#b0cade"
+	base[ACTIVE] = "#b0c0d0"
 
 	fg[NORMAL] = "#000000"
 	fg[SELECTED] = "#dbdbcc"
@@ -256,13 +262,12 @@ widget "*scale_bal" style "scale_bal"
 
 style "music_tree" = "view"
 {
-	font_name = "Sans 10"
-#	font_name = "Frutiger 10"
+	font_name = "Sans 11"
 }
 
 style "comment_view" = "view"
 {
-	font_name = "Sans 10"
+	font_name = "Sans 11"
 }
 
 widget "*music_tree" style "music_tree"
@@ -273,12 +278,10 @@ widget "*comment_view" style "comment_view"
 
 style "play_list" = "view"
 {
-#	fg[SELECTED] = "#1a4289"
 	fg[SELECTED] = "#0505b8"
 	fg[INSENSITIVE] = "#000000"
 
 	font_name = "Sans 9"
-#	font_name = "Frutiger 9"
 }
 
 widget "*play_list" style "play_list"

@@ -63,6 +63,8 @@ extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 extern PangoFontDescription *fd_browser;
 
+extern void set_sliders_width(void);
+
 char title_format[MAXLEN];
 
 GtkWidget * browser_window;
@@ -519,40 +521,66 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
 int
 browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
 
-	GtkWidget * file_selector;
-	gchar ** selected_filenames;
+        GtkWidget * file_selector;
+        const gchar * selected_filename;
 	GtkListStore * model = (GtkListStore *)data;
 	GtkTreeIter iter;
-	int i;
-	char * c;
+        GSList *lfiles, *node;
 
-	file_selector = gtk_file_selection_new(_("Please select the audio files for this record."));
-        gtk_window_set_transient_for(GTK_WINDOW(file_selector), GTK_WINDOW(dialog));
-        gtk_window_set_position(GTK_WINDOW(file_selector), GTK_WIN_POS_MOUSE);
-	gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), currdir);
-	gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(file_selector));
-	gtk_file_selection_set_select_multiple(GTK_FILE_SELECTION(file_selector), TRUE);
-	gtk_widget_show(file_selector);
 
-        if (gtk_dialog_run(GTK_DIALOG(file_selector)) == GTK_RESPONSE_OK) {
-		selected_filenames = gtk_file_selection_get_selections(GTK_FILE_SELECTION(file_selector));
-		for (i = 0; selected_filenames[i] != NULL; i++) {
-			if (selected_filenames[i][strlen(selected_filenames[i])-1] != '/') {
+        file_selector = gtk_file_chooser_dialog_new(_("Please select the audio files for this record."), 
+                                                     GTK_WINDOW(dialog), 
+                                                     GTK_FILE_CHOOSER_ACTION_OPEN, 
+                                                     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
+                                                     GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+
+        gtk_widget_hide(GTK_WIDGET(file_selector));
+        deflicker();
+
+/*        gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(file_selector), currdir);*/
+/*        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), currdir);*/
+
+        gtk_window_set_position(GTK_WINDOW(file_selector), GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_default_size(GTK_WINDOW(file_selector), 580, 390);
+        gtk_dialog_set_default_response(GTK_DIALOG(file_selector), GTK_RESPONSE_ACCEPT);
+        gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(file_selector), TRUE);
+        gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(file_selector), currdir);
+
+        set_sliders_width();
+
+        gtk_widget_show(GTK_WIDGET(file_selector));
+
+
+        if (gtk_dialog_run(GTK_DIALOG(file_selector)) == GTK_RESPONSE_ACCEPT) {
+
+                gtk_widget_hide(GTK_WIDGET(file_selector));
+                deflicker();
+
+                strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_selector)),
+                                                                         MAXLEN-1);
+
+                lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(file_selector));
+
+                node = lfiles;
+
+                while(node) {
+
+                        selected_filename = (char *) node->data;
+
+			if (selected_filename[strlen(selected_filename)-1] != '/') {
 				gtk_list_store_append(model, &iter);
-				gtk_list_store_set(model, &iter, 0, selected_filenames[i], -1);
+				gtk_list_store_set(model, &iter, 0, selected_filename, -1);
 			}
-		}
-		g_strfreev(selected_filenames);
 
-		strncpy(currdir, gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_selector)),
-								 MAXLEN-1);
-		if (currdir[strlen(currdir)-1] != '/') {
-			c = strrchr(currdir, '/');
-			if (*(++c))
-				*c = '\0';
-		}
-	}
-	gtk_widget_destroy(file_selector);
+                        g_free(node->data);
+
+                        node = node->next;
+                }
+
+                g_slist_free(lfiles);
+        }
+                                                         
+        gtk_widget_destroy(file_selector);
 
 	return 0;
 }
@@ -663,7 +691,7 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 			 (gpointer *)model);
         gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), 0, GTK_SORT_ASCENDING);
 
-	browse_button = gui_stock_label_button(_("Add files..."), GTK_STOCK_ADD);
+	browse_button = gui_stock_label_button(_("_Add files..."), GTK_STOCK_ADD);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), browse_button, FALSE, TRUE, 2);
         g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_record_clicked),
 			 (gpointer *)model);
@@ -862,29 +890,46 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
 int
 browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
 
-	GtkWidget * file_selector;
+        GtkWidget * dialog;
 	const gchar * selected_filename = gtk_entry_get_text(GTK_ENTRY(data));
-	char * c;
 
-	file_selector = gtk_file_selection_new(_("Please select the audio file for this track."));
-	gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), currdir);
-	gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(file_selector));
-	gtk_file_selection_set_filename(GTK_FILE_SELECTION(file_selector), selected_filename);
-	gtk_widget_show(file_selector);
 
-        if (gtk_dialog_run(GTK_DIALOG(file_selector)) == GTK_RESPONSE_OK) {
-		selected_filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_selector));
+        dialog = gtk_file_chooser_dialog_new(_("Please select the audio file for this track."), 
+                                             GTK_WINDOW(browser_window), 
+                                             GTK_FILE_CHOOSER_ACTION_OPEN, 
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
+                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+
+        gtk_widget_hide(GTK_WIDGET(dialog));
+        deflicker();
+
+        if(strlen(selected_filename))
+                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), selected_filename);
+        else
+                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), currdir);
+
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+        set_sliders_width();
+
+        gtk_widget_show(GTK_WIDGET(dialog));
+
+        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+
+                gtk_widget_hide(GTK_WIDGET(dialog));
+                deflicker();
+
+                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		gtk_entry_set_text(GTK_ENTRY(data), selected_filename);
 
-		strncpy(currdir, gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_selector)),
-								 MAXLEN-1);
-		if (currdir[strlen(currdir)-1] != '/') {
-			c = strrchr(currdir, '/');
-			if (*(++c))
-				*c = '\0';
-		}
-	}
-	gtk_widget_destroy(file_selector);
+                strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+                                                                         MAXLEN-1);
+        }
+
+
+        gtk_widget_destroy(dialog);
 
 	return 0;
 }
@@ -963,7 +1008,7 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
         gtk_box_pack_start(GTK_BOX(hbox2), file_entry, TRUE, TRUE, 0);
 
 
-	browse_button = gtk_button_new_with_label(_("Browse..."));
+	browse_button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
         gtk_box_pack_start(GTK_BOX(hbox2), browse_button, FALSE, TRUE, 2);
         g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_track_clicked),
 			 (gpointer *)file_entry);
@@ -1121,7 +1166,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
         gtk_box_pack_start(GTK_BOX(hbox2), file_entry, TRUE, TRUE, 0);
 
 
-	browse_button = gtk_button_new_with_label(_("Browse..."));
+	browse_button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
         gtk_box_pack_start(GTK_BOX(hbox2), browse_button, FALSE, TRUE, 2);
         g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_track_clicked),
 			 (gpointer *)file_entry);
@@ -2472,7 +2517,7 @@ create_music_browser(void) {
 	/* window creating stuff */
 	browser_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(browser_window), _("Music Store"));
-	gtk_window_set_gravity(GTK_WINDOW(browser_window), GDK_GRAVITY_STATIC);
+/*	gtk_window_set_gravity(GTK_WINDOW(browser_window), GDK_GRAVITY_STATIC);*/
 	g_signal_connect(G_OBJECT(browser_window), "delete_event", G_CALLBACK(browser_window_close), NULL);
 	g_signal_connect(G_OBJECT(browser_window), "key_press_event",
 			 G_CALLBACK(browser_window_key_pressed), NULL);
@@ -2727,9 +2772,9 @@ void
 show_music_browser(void) {
 
 	browser_on = 1;
-	gtk_widget_show_all(browser_window);
 	gtk_window_move(GTK_WINDOW(browser_window), browser_pos_x, browser_pos_y);
 	gtk_window_resize(GTK_WINDOW(browser_window), browser_size_x, browser_size_y);
+	gtk_widget_show_all(browser_window);
 	if (!hide_comment_pane) {
 		gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
 	}

@@ -63,6 +63,7 @@
 #include "file_info.h"
 #include "i18n.h"
 #include "gui_main.h"
+/*#include "version.h"*/
 
 
 /* receive at most this much remote messages in one run of timeout_callback() */
@@ -249,7 +250,7 @@ int alt_L;
 int alt_R;
 int shift_L;
 int shift_R;
-int x_scroll_start;
+int x_scroll_start;          
 int x_scroll_pos;
 int scroll_btn;
 
@@ -304,6 +305,8 @@ void load_config(void);
 
 void playlist_toggled(GtkWidget * widget, gpointer data);
 
+void set_sliders_width(void);
+
 
 void
 deflicker(void) {
@@ -357,14 +360,18 @@ time2time(float seconds, char * str) {
 
 void
 set_title_label(char * str) {
+/*gchar default_title[MAXLEN];*/
 
 	if (is_file_loaded) {
 		if (GTK_IS_LABEL(label_title))
 			gtk_label_set_text(GTK_LABEL(label_title), str);
 	} else {
-		if (GTK_IS_LABEL(label_title))
+		if (GTK_IS_LABEL(label_title)) {
+/*                        sprintf(default_title, "Aqualung %s", aqualung_version);*/
+/*			gtk_label_set_text(GTK_LABEL(label_title), default_title);*/
 			gtk_label_set_text(GTK_LABEL(label_title), "");
-	}
+                }
+        }
 }
 
 void
@@ -773,7 +780,8 @@ refresh_time_displays(void) {
 		int i;
 		for (i = 0; i < 3; i++) {
 			if (GTK_IS_LABEL(time_labels[i]))
-				gtk_label_set_text(GTK_LABEL(time_labels[i]), "     ");
+/*				gtk_label_set_text(GTK_LABEL(time_labels[i]), "--:--");*/
+				gtk_label_set_text(GTK_LABEL(time_labels[i]), "       ");
 		}
 	}
 }
@@ -991,15 +999,7 @@ change_skin(char * path) {
 	deflicker();
 	refresh_displays();
 	set_playlist_color();
-	
-	GTK_SCALE(scale_vol)->range.slider_size_fixed = 1;
-	GTK_SCALE(scale_vol)->range.min_slider_size = 11;
-	gtk_widget_queue_draw(scale_vol);
-	deflicker();
-	GTK_SCALE(scale_bal)->range.slider_size_fixed = 1;
-	GTK_SCALE(scale_bal)->range.min_slider_size = 11;
-	gtk_widget_queue_draw(scale_bal);
-	deflicker();
+        set_sliders_width();
 	
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), vol);
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
@@ -2210,7 +2210,6 @@ create_main_window(char * skin_path) {
 	main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_name(main_window, "main_window");
 	gtk_window_set_title(GTK_WINDOW(main_window), title);
-	gtk_window_set_gravity(GTK_WINDOW(main_window), GDK_GRAVITY_STATIC);
         g_signal_connect(G_OBJECT(main_window), "delete_event", G_CALLBACK(main_window_close), NULL);
         g_signal_connect(G_OBJECT(main_window), "key_press_event", G_CALLBACK(main_window_key_pressed), NULL);
         g_signal_connect(G_OBJECT(main_window), "key_release_event",
@@ -2610,7 +2609,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		home = ".";
 	}
 
-	sprintf(currdir, "%s/", home);
+	sprintf(currdir, "%s/*", home);
 	sprintf(confdir, "%s/.aqualung", home);
 
 	if (chdir(confdir) != 0) {
@@ -2719,6 +2718,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 			g_signal_handlers_unblock_by_func(G_OBJECT(playlist_toggle), playlist_toggled, NULL);
 	}
 
+	restore_window_position();
 	gtk_widget_show_all(main_window);
 	deflicker();
 
@@ -2731,18 +2731,8 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	}
 
 	zero_displays();
-	restore_window_position();
 	set_playlist_color();
-
-	GTK_SCALE(scale_vol)->range.slider_size_fixed = 1;
-	GTK_SCALE(scale_vol)->range.min_slider_size = 11;
-	gtk_widget_queue_draw(scale_vol);
-	deflicker();
-	GTK_SCALE(scale_bal)->range.slider_size_fixed = 1;
-	GTK_SCALE(scale_bal)->range.min_slider_size = 11;
-	gtk_widget_queue_draw(scale_bal);
-	deflicker();
-
+        set_sliders_width();
 
 	/* read command line filenames */
 	process_filenames(argv, optind, enqueue);
@@ -3795,6 +3785,21 @@ gui_stock_label_button(gchar *blabel, const gchar *bstock) {
 	gtk_container_add (GTK_CONTAINER (button), alignment);
 
 	return button;
+}
+
+
+void
+set_sliders_width(void) {
+
+        GTK_SCALE(scale_vol)->range.slider_size_fixed = 1;
+	GTK_SCALE(scale_vol)->range.min_slider_size = 11;
+	gtk_widget_queue_draw(scale_vol);
+	deflicker();
+	GTK_SCALE(scale_bal)->range.slider_size_fixed = 1;
+	GTK_SCALE(scale_bal)->range.min_slider_size = 11;
+	gtk_widget_queue_draw(scale_bal);
+	deflicker();
+
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

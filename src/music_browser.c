@@ -531,8 +531,9 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
         file_selector = gtk_file_chooser_dialog_new(_("Please select the audio files for this record."), 
                                                      GTK_WINDOW(dialog), 
                                                      GTK_FILE_CHOOSER_ACTION_OPEN, 
+                                                     GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
                                                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
-                                                     GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+                                                     NULL);
 
         set_sliders_width();
 
@@ -886,8 +887,9 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
         dialog = gtk_file_chooser_dialog_new(_("Please select the audio file for this track."), 
                                              GTK_WINDOW(browser_window), 
                                              GTK_FILE_CHOOSER_ACTION_OPEN, 
+                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
-                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+                                             NULL);
 
         set_sliders_width();
 

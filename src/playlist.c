@@ -551,8 +551,9 @@ plist__save_cb(gpointer data) {
         dialog = gtk_file_chooser_dialog_new(_("Please specify the file to save the playlist to."), 
                                              playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
                                              GTK_FILE_CHOOSER_ACTION_SAVE, 
+                                             GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
-                                             GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT, NULL);
+                                             NULL);
 
         set_sliders_width();
 
@@ -592,8 +593,9 @@ plist__load_cb(gpointer data) {
         dialog = gtk_file_chooser_dialog_new(_("Please specify the file to load the playlist from."), 
                                              playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
                                              GTK_FILE_CHOOSER_ACTION_OPEN, 
+                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
-                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+                                             NULL);
 
         set_sliders_width();
 
@@ -647,8 +649,9 @@ plist__enqueue_cb(gpointer data) {
         dialog = gtk_file_chooser_dialog_new(_("Please specify the file to load the playlist from."), 
                                              playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
                                              GTK_FILE_CHOOSER_ACTION_OPEN, 
+                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
-                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+                                             NULL);
 
         set_sliders_width();
 
@@ -1046,8 +1049,9 @@ direct_add(GtkWidget * widget, gpointer * data) {
         dialog = gtk_file_chooser_dialog_new(_("Select files..."), 
                                              playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
                                              GTK_FILE_CHOOSER_ACTION_OPEN, 
+                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
-                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+                                             NULL);
 
         set_sliders_width();
 

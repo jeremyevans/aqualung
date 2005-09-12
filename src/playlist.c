@@ -554,10 +554,8 @@ plist__save_cb(gpointer data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT, NULL);
 
-        gtk_widget_hide(GTK_WIDGET(dialog));
-        deflicker();
+        set_sliders_width();
 
-/*        gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), currdir);*/
         gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), currdir);
         gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "playlist.xml");
 
@@ -565,14 +563,8 @@ plist__save_cb(gpointer data) {
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
-        set_sliders_width();
-
-        gtk_widget_show(GTK_WIDGET(dialog));
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-                gtk_widget_hide(GTK_WIDGET(dialog));
-                deflicker();
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
@@ -603,8 +595,7 @@ plist__load_cb(gpointer data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 
-        gtk_widget_hide(GTK_WIDGET(dialog));
-        deflicker();
+        set_sliders_width();
 
         gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), currdir);
 
@@ -612,15 +603,8 @@ plist__load_cb(gpointer data) {
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
-        set_sliders_width();
-
-        gtk_widget_show(GTK_WIDGET(dialog));
-
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-                gtk_widget_hide(GTK_WIDGET(dialog));
-                deflicker();
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
@@ -666,8 +650,7 @@ plist__enqueue_cb(gpointer data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 
-        gtk_widget_hide(GTK_WIDGET(dialog));
-        deflicker();
+        set_sliders_width();
 
         gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), currdir);
 
@@ -675,15 +658,8 @@ plist__enqueue_cb(gpointer data) {
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
-        set_sliders_width();
-
-        gtk_widget_show(GTK_WIDGET(dialog));
-
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-                gtk_widget_hide(GTK_WIDGET(dialog));
-                deflicker();
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
@@ -1073,8 +1049,7 @@ direct_add(GtkWidget * widget, gpointer * data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 
-        gtk_widget_hide(GTK_WIDGET(dialog));
-        deflicker();
+        set_sliders_width();
 
         gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
         gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), currdir);
@@ -1083,14 +1058,7 @@ direct_add(GtkWidget * widget, gpointer * data) {
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
-        set_sliders_width();
-
-        gtk_widget_show(GTK_WIDGET(dialog));
-
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-                gtk_widget_hide(GTK_WIDGET(dialog));
-                deflicker();
 
                 strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
                                                                          MAXLEN-1);

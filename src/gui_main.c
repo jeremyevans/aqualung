@@ -65,7 +65,6 @@
 #include "gui_main.h"
 /*#include "version.h"*/
 
-
 /* receive at most this much remote messages in one run of timeout_callback() */
 #define MAX_RCV_COUNT 32
 
@@ -225,6 +224,7 @@ GtkWidget * time_labels[3];
 int time_idx[3] = { 0, 1, 2 };
 int refresh_time_label = 1;
 
+
 gulong play_id;
 gulong pause_id;
 
@@ -263,7 +263,6 @@ guint vol_bal_timeout_tag = 0;
 
 
 gint timeout_callback(gpointer data);
-
 
 /* whether we are refreshing the scale on STATUS commands recv'd from disk thread */
 int refresh_scale = 1;
@@ -761,20 +760,23 @@ refresh_time_displays(void) {
 	if (is_file_loaded) {
 		if (refresh_time_label || time_idx[0] != 0) {
 			sample2time(disp_info.sample_rate, disp_pos, str, 0);
-			if (GTK_IS_LABEL(time_labels[0]))
+			if (GTK_IS_LABEL(time_labels[0])) 
 				gtk_label_set_text(GTK_LABEL(time_labels[0]), str);
+                        
 		}
 
 		if (refresh_time_label || time_idx[0] != 1) {
 			sample2time(disp_info.sample_rate, disp_samples - disp_pos, str, 1);
-			if (GTK_IS_LABEL(time_labels[1]))
+			if (GTK_IS_LABEL(time_labels[1])) 
 				gtk_label_set_text(GTK_LABEL(time_labels[1]), str);
+                        
 		}
 		
 		if (refresh_time_label || time_idx[0] != 2) {
 			sample2time(disp_info.sample_rate, disp_samples, str, 0);
-			if (GTK_IS_LABEL(time_labels[2]))
+			if (GTK_IS_LABEL(time_labels[2])) 
 				gtk_label_set_text(GTK_LABEL(time_labels[2]), str);
+                        
 		}
 	} else {
 		int i;
@@ -784,6 +786,7 @@ refresh_time_displays(void) {
 				gtk_label_set_text(GTK_LABEL(time_labels[i]), "       ");
 		}
 	}
+
 }
 
 
@@ -995,11 +998,11 @@ change_skin(char * path) {
 		deflicker();
 	}
 
+        set_sliders_width();
 	restore_window_position();
 	deflicker();
 	refresh_displays();
 	set_playlist_color();
-        set_sliders_width();
 	
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), vol);
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
@@ -1456,8 +1459,15 @@ scale_button_release_event(GtkWidget * widget, GdkEventButton * event) {
 void
 changed_pos(GtkAdjustment * adj, gpointer data) {
 
+        char str[16];
+
 	if (!is_file_loaded)
 		gtk_adjustment_set_value(adj, 0.0f);
+
+        if(enable_tooltips) {
+                sprintf(str, "Position: %d%%", (gint)gtk_adjustment_get_value(GTK_ADJUSTMENT(adj))); 
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), scale_pos, str, NULL);
+        }
 }
 
 
@@ -1493,22 +1503,24 @@ scale_vol_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 void
 changed_vol(GtkAdjustment * adj, gpointer date) {
 
-	char str[10];
+	char str[10], str2[32];
 
 	vol = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_vol));
 	vol = (int)vol;
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), vol);
 
+        if (vol < -40.5f) {
+                sprintf(str, _("Mute"));
+        } else {
+                sprintf(str, _("%d dB"), (int)vol);
+        }
 
-	if (!shift_L && !shift_R && !refresh_time_label) {
-		if (vol < -40.5f) {
-			sprintf(str, _("Mute"));
-		} else {
-			sprintf(str, _("%d dB"), (int)vol);
-		}
-
+        if (!shift_L && !shift_R && !refresh_time_label) {
 		gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
-	}
+        }
+
+        sprintf(str2, "Volume: %s", str);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), scale_vol, str2, NULL);
 }
 
 
@@ -1558,25 +1570,28 @@ scale_bal_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 void
 changed_bal(GtkAdjustment * adj, gpointer date) {
 
-	char str[10];
+	char str[10], str2[32];
 
 	bal = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_bal));
 	bal = (int)bal;
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
 
-	if (!shift_L && !shift_R && !refresh_time_label) {
-		if (bal != 0.0f) {
-			if (bal > 0.0f) {
-				sprintf(str, _("%d%% R"), (int)bal);
-			} else {
-				sprintf(str, _("%d%% L"), -1*(int)bal);
-			}
-		} else {
-			sprintf(str, _("C"));
-		}
-
+        if (bal != 0.0f) {
+                if (bal > 0.0f) {
+                        sprintf(str, _("%d%% R"), (int)bal);
+                } else {
+                        sprintf(str, _("%d%% L"), -1*(int)bal);
+                }
+        } else {
+                sprintf(str, _("C"));
+        }
+	
+        if (!shift_L && !shift_R && !refresh_time_label) {
 		gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
 	}
+
+        sprintf(str2, "Balance: %s", str);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), scale_bal, str2, NULL);
 }
 
 
@@ -2281,11 +2296,9 @@ create_main_window(char * skin_path) {
 	gtk_box_pack_start(GTK_BOX(disp_hbox), time_table, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(disp_hbox), disp_vbox, TRUE, TRUE, 0);
 
-
 	time0_viewp = gtk_viewport_new(NULL, NULL);
-	time1_viewp = gtk_viewport_new(NULL, NULL);
+        time1_viewp = gtk_viewport_new(NULL, NULL);
 	time2_viewp = gtk_viewport_new(NULL, NULL);
-
 
 	gtk_widget_set_name(time0_viewp, "time_viewport");
 	gtk_widget_set_name(time1_viewp, "time_viewport");
@@ -2295,9 +2308,9 @@ create_main_window(char * skin_path) {
 	g_signal_connect(G_OBJECT(time1_viewp), "button_press_event", G_CALLBACK(time_label1_clicked), NULL);
 	g_signal_connect(G_OBJECT(time2_viewp), "button_press_event", G_CALLBACK(time_label2_clicked), NULL);
 
+
 	gtk_table_attach(GTK_TABLE(time_table), time0_viewp, 0, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, 0, 0, 0);
-
 	gtk_table_attach(GTK_TABLE(time_table), time1_viewp, 0, 1, 1, 2,
 			 GTK_FILL | GTK_EXPAND, 0, 0, 0);
 	gtk_table_attach(GTK_TABLE(time_table), time2_viewp, 1, 2, 1, 2,
@@ -2451,13 +2464,15 @@ create_main_window(char * skin_path) {
         GTK_WIDGET_UNSET_FLAGS(scale_bal, GTK_CAN_FOCUS);
         GTK_WIDGET_UNSET_FLAGS(scale_pos, GTK_CAN_FOCUS);
 
-	/* Embedded playlist */
+
+        /* Embedded playlist */
 	if (playlist_is_embedded && buttons_at_the_bottom) {
 		playlist_window = gtk_vbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), playlist_window, TRUE, TRUE, 3);
 	}
 
-	/* Button box with prev, play, pause, stop, next buttons */
+
+        /* Button box with prev, play, pause, stop, next buttons */
 
 	btns_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), btns_hbox, FALSE, FALSE, 0);
@@ -2480,6 +2495,7 @@ create_main_window(char * skin_path) {
 
 	sprintf(path, "%s/%s", skin_path, "pause");
 	pause_button = create_button_with_image(path, 1, "pause");
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), time_labels[time_idx[0]], "dupa1", NULL);
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), pause_button, _("Pause (space)"), NULL);
 
 	GTK_WIDGET_UNSET_FLAGS(prev_button, GTK_CAN_FOCUS);
@@ -2744,6 +2760,14 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	/* set timeout function */
 	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
+
+        /* Update sliders tooltips */
+
+        if(enable_tooltips) {
+                changed_vol(GTK_ADJUSTMENT(adj_vol), NULL);
+                changed_bal(GTK_ADJUSTMENT(adj_bal), NULL);
+	        changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
+        }
 }
 
 

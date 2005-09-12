@@ -534,11 +534,7 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
                                                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                                      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 
-        gtk_widget_hide(GTK_WIDGET(file_selector));
-        deflicker();
-
-/*        gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(file_selector), currdir);*/
-/*        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), currdir);*/
+        set_sliders_width();
 
         gtk_window_set_position(GTK_WINDOW(file_selector), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(file_selector), 580, 390);
@@ -546,15 +542,8 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
         gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(file_selector), TRUE);
         gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(file_selector), currdir);
 
-        set_sliders_width();
-
-        gtk_widget_show(GTK_WIDGET(file_selector));
-
 
         if (gtk_dialog_run(GTK_DIALOG(file_selector)) == GTK_RESPONSE_ACCEPT) {
-
-                gtk_widget_hide(GTK_WIDGET(file_selector));
-                deflicker();
 
                 strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_selector)),
                                                                          MAXLEN-1);
@@ -900,8 +889,7 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 
-        gtk_widget_hide(GTK_WIDGET(dialog));
-        deflicker();
+        set_sliders_width();
 
         if(strlen(selected_filename))
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), selected_filename);
@@ -912,14 +900,8 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
-        set_sliders_width();
-
-        gtk_widget_show(GTK_WIDGET(dialog));
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-                gtk_widget_hide(GTK_WIDGET(dialog));
-                deflicker();
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		gtk_entry_set_text(GTK_ENTRY(data), selected_filename);

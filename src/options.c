@@ -79,8 +79,18 @@ extern int enable_playlist_statusbar_shadow;
 
 extern char playlist_font[MAX_FONTNAME_LEN];
 extern char browser_font[MAX_FONTNAME_LEN];
+extern char bigtimer_font[MAX_FONTNAME_LEN];
+extern char smalltimer_font[MAX_FONTNAME_LEN];
 extern PangoFontDescription *fd_playlist;
 extern PangoFontDescription *fd_browser;
+extern PangoFontDescription *fd_bigtimer;
+extern PangoFontDescription *fd_smalltimer;
+
+extern GtkWidget * bigtimer_label;
+extern GtkWidget * smalltimer_label_1;
+extern GtkWidget * smalltimer_label_2;
+
+extern char activesong_color[MAX_COLORNAME_LEN];
 
 int auto_save_playlist_shadow;
 int show_rva_in_playlist_shadow;
@@ -155,10 +165,17 @@ GtkListStore * plistcol_store;
 
 #define DEFAULT_FONT_NAME "Sans 11"
 
-GtkWidget * entry_ms_font;
 GtkWidget * entry_pl_font;
+GtkWidget * entry_ms_font;
+GtkWidget * entry_bt_font;
+GtkWidget * entry_st_font;
 GtkWidget * button_pl_font;
 GtkWidget * button_ms_font;
+GtkWidget * button_bt_font;
+GtkWidget * button_st_font;
+
+GdkColor color;
+GtkWidget * color_picker;
 
 void draw_rva_diagram(void);
 void show_restart_info(void);
@@ -170,6 +187,10 @@ void open_font_desc(void)
 	fd_playlist = pango_font_description_from_string(playlist_font);
         if(fd_browser) pango_font_description_free(fd_browser);
 	fd_browser = pango_font_description_from_string(browser_font);
+        if(fd_bigtimer) pango_font_description_free(fd_bigtimer);
+	fd_bigtimer = pango_font_description_from_string(bigtimer_font);
+        if(fd_smalltimer) pango_font_description_free(fd_smalltimer);
+	fd_smalltimer = pango_font_description_from_string(smalltimer_font);
 }
 
 static gint
@@ -178,6 +199,7 @@ ok(GtkWidget * widget, gpointer data) {
 	int i;
 	int n;
 	int n_prev = 3;
+        GdkColor color;
 
 	strncpy(title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)), MAXLEN - 1);
 	strncpy(default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN - 1);
@@ -311,14 +333,29 @@ ok(GtkWidget * widget, gpointer data) {
 	playlist_size_allocate(NULL, NULL);
 	delayed_playlist_rearrange(100);
 
-        /* apply fonts */
+        /* apply changes */
 
         if(override_skin_settings) {
+
+                /* apply fonts */
 
                 open_font_desc();
 
                 gtk_widget_modify_font (music_tree, fd_browser);
                 gtk_widget_modify_font (play_list, fd_playlist);
+                gtk_widget_modify_font (bigtimer_label, fd_bigtimer);
+                gtk_widget_modify_font (smalltimer_label_1, fd_smalltimer);
+                gtk_widget_modify_font (smalltimer_label_2, fd_smalltimer);
+
+                /* apply colors */               
+
+                if(gdk_color_parse(activesong_color, &color) == TRUE) {
+
+                        play_list->style->fg[SELECTED].red = color.red;
+                        play_list->style->fg[SELECTED].green = color.green;
+                        play_list->style->fg[SELECTED].blue = color.blue;
+                        set_playlist_color();
+                }
 
         } else if(override_past_state) {
 
@@ -727,26 +764,88 @@ gint response;
 
 }
 
+void bigtimer_font_select(GtkWidget *widget)
+{
+gchar *s;
+GtkWidget *font_selector;
+gint response;
+
+	font_selector = gtk_font_selection_dialog_new ("Select a font...");
+	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
+	gtk_window_set_transient_for(GTK_WINDOW(font_selector), GTK_WINDOW(options_window));
+	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(font_selector), bigtimer_font);
+	gtk_widget_show (font_selector);
+	response = gtk_dialog_run (GTK_DIALOG (font_selector));
+
+	if (response == GTK_RESPONSE_OK) {
+
+		s = gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG(font_selector));
+		strncpy(bigtimer_font, s, MAX_FONTNAME_LEN);
+		gtk_entry_set_text(GTK_ENTRY(entry_bt_font), s);
+		g_free (s);
+
+	}
+
+	gtk_widget_destroy (font_selector);
+
+}
+
+void smalltimer_font_select(GtkWidget *widget)
+{
+gchar *s;
+GtkWidget *font_selector;
+gint response;
+
+	font_selector = gtk_font_selection_dialog_new ("Select a font...");
+	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
+	gtk_window_set_transient_for(GTK_WINDOW(font_selector), GTK_WINDOW(options_window));
+	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(font_selector), smalltimer_font);
+	gtk_widget_show (font_selector);
+	response = gtk_dialog_run (GTK_DIALOG (font_selector));
+
+	if (response == GTK_RESPONSE_OK) {
+
+		s = gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG(font_selector));
+		strncpy(smalltimer_font, s, MAX_FONTNAME_LEN);
+		gtk_entry_set_text(GTK_ENTRY(entry_st_font), s);
+		g_free (s);
+
+	}
+
+	gtk_widget_destroy (font_selector);
+
+}
+
 void  restart_active (GtkToggleButton *togglebutton, gpointer user_data)
 {
         restart_flag = 1;
 }
 
-void set_sensitive_font_part(void) {
+void set_sensitive_part(void) {
 
         if(override_skin_settings) {
 
                 gtk_widget_set_sensitive(entry_ms_font, TRUE);
                 gtk_widget_set_sensitive(entry_pl_font, TRUE);
+                gtk_widget_set_sensitive(entry_bt_font, TRUE);
+                gtk_widget_set_sensitive(entry_st_font, TRUE);
                 gtk_widget_set_sensitive(button_ms_font, TRUE);
                 gtk_widget_set_sensitive(button_pl_font, TRUE);
+                gtk_widget_set_sensitive(button_bt_font, TRUE);
+                gtk_widget_set_sensitive(button_st_font, TRUE);
+                gtk_widget_set_sensitive(color_picker, TRUE);
 
         } else {
 
                 gtk_widget_set_sensitive(entry_ms_font, FALSE);
                 gtk_widget_set_sensitive(entry_pl_font, FALSE);
+                gtk_widget_set_sensitive(entry_bt_font, FALSE);
+                gtk_widget_set_sensitive(entry_st_font, FALSE);
                 gtk_widget_set_sensitive(button_ms_font, FALSE);
                 gtk_widget_set_sensitive(button_pl_font, FALSE);
+                gtk_widget_set_sensitive(button_bt_font, FALSE);
+                gtk_widget_set_sensitive(button_st_font, FALSE);
+                gtk_widget_set_sensitive(color_picker, FALSE);
 
         }
 }
@@ -754,7 +853,18 @@ void set_sensitive_font_part(void) {
 void  cb_toggle_override_skin (GtkToggleButton *togglebutton, gpointer user_data)
 {
         override_skin_settings = override_skin_settings ? 0 : 1;
-        set_sensitive_font_part();
+        set_sensitive_part();
+}
+
+void color_selected (GtkColorButton *widget, gpointer user_data)
+{
+GdkColor c;
+gchar str[MAX_COLORNAME_LEN];
+
+        gtk_color_button_get_color(widget, &c);
+        sprintf(str, "#%02X%02X%02X", c.red * 256 / 65536, c.green * 256 / 65536, c.blue * 256 / 65536);
+
+        strncpy(activesong_color, str, MAX_COLORNAME_LEN);
 }
 
 void
@@ -793,9 +903,11 @@ create_options_window(void) {
 	GtkWidget * frame_ladspa;
 	GtkWidget * frame_src;
 	GtkWidget * frame_fonts;
+	GtkWidget * frame_colors;
 	GtkWidget * vbox_ladspa;
 	GtkWidget * vbox_src;
 	GtkWidget * vbox_fonts;
+	GtkWidget * vbox_colors;
 
 	GtkWidget * label_rva;
 	GtkWidget * vbox_rva;
@@ -814,8 +926,11 @@ create_options_window(void) {
         GtkSizeGroup * label_size;
 
 	GtkWidget * hbox;
+	GtkWidget * hbox_s;
 	GtkWidget * ok_btn;
 	GtkWidget * cancel_btn;
+
+/*        GdkColor c;*/
 
 	int status;
 	int i;
@@ -911,16 +1026,6 @@ running realtime as a default.\n"));
 	g_signal_connect (G_OBJECT (check_hide_comment_pane), "toggled",
 						G_CALLBACK (restart_active), NULL);
 
-	check_playlist_is_embedded =
-		gtk_check_button_new_with_label(_("Embed playlist into main window"));
-	gtk_widget_set_name(check_playlist_is_embedded, "check_on_notebook");
-	if (playlist_is_embedded_shadow) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_misc), check_playlist_is_embedded, FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (check_playlist_is_embedded), "toggled",
-						G_CALLBACK (restart_active), NULL);
-
 	check_buttons_at_the_bottom =
 		gtk_check_button_new_with_label(_("Put control buttons at the bottom of playlist"));
 	gtk_widget_set_name(check_buttons_at_the_bottom, "check_on_notebook");
@@ -937,7 +1042,16 @@ running realtime as a default.\n"));
 	vbox_pl = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_pl), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_pl, label_pl);
-
+	
+        check_playlist_is_embedded =
+		gtk_check_button_new_with_label(_("Embed playlist into main window"));
+	gtk_widget_set_name(check_playlist_is_embedded, "check_on_notebook");
+	if (playlist_is_embedded_shadow) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_embedded, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (check_playlist_is_embedded), "toggled",
+						G_CALLBACK (restart_active), NULL);
 	check_autoplsave =
 	    gtk_check_button_new_with_label(_("Save and restore the playlist on exit/startup"));
 	gtk_widget_set_name(check_autoplsave, "check_on_notebook");
@@ -948,6 +1062,17 @@ running realtime as a default.\n"));
 	g_signal_connect(G_OBJECT(check_autoplsave), "toggled",
 			 G_CALLBACK(autoplsave_toggled), NULL);
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_autoplsave, FALSE, TRUE, 3);
+
+	check_enable_playlist_statusbar =
+		gtk_check_button_new_with_label(_("Enable statusbar in playlist"));
+	gtk_widget_set_name(check_enable_playlist_statusbar, "check_on_notebook");
+	if (enable_playlist_statusbar_shadow) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_playlist_statusbar), TRUE);
+	}
+	enable_playlist_statusbar_shadow = enable_playlist_statusbar;
+	g_signal_connect(G_OBJECT(check_enable_playlist_statusbar), "toggled",
+			 G_CALLBACK(restart_active), NULL);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_playlist_statusbar, FALSE, TRUE, 3);
 
 	check_show_rva_in_playlist =
 		gtk_check_button_new_with_label(_("Show RVA values in playlist"));
@@ -1022,17 +1147,6 @@ to set the column order in the Playlist."));
 			break;
 		}
 	}
-
-	check_enable_playlist_statusbar =
-		gtk_check_button_new_with_label(_("Enable statusbar in playlist"));
-	gtk_widget_set_name(check_enable_playlist_statusbar, "check_on_notebook");
-	if (enable_playlist_statusbar_shadow) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_playlist_statusbar), TRUE);
-	}
-	enable_playlist_statusbar_shadow = enable_playlist_statusbar;
-	g_signal_connect(G_OBJECT(check_enable_playlist_statusbar), "toggled",
-			 G_CALLBACK(restart_active), NULL);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_playlist_statusbar, FALSE, TRUE, 3);
 
 
 	/* "DSP" notebook page */
@@ -1414,6 +1528,8 @@ See the About box and the documentation for details."));
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_fonts), 10);
 	gtk_container_add(GTK_CONTAINER(frame_fonts), vbox_fonts);
 
+        /* playlist font */
+
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, FALSE, 3);
 
@@ -1441,6 +1557,8 @@ See the About box and the documentation for details."));
 	g_signal_connect (G_OBJECT (button_pl_font), "clicked",
 						G_CALLBACK (playlist_font_select), NULL);
 
+        /* music store font */
+
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
 
@@ -1451,7 +1569,7 @@ See the About box and the documentation for details."));
 
         entry_ms_font = gtk_entry_new();
         gtk_box_pack_start(GTK_BOX(hbox), entry_ms_font, TRUE, TRUE, 3);
-        gtk_editable_set_editable(GTK_EDITABLE(entry_pl_font), FALSE);
+        gtk_editable_set_editable(GTK_EDITABLE(entry_ms_font), FALSE);
 
         if(strlen(browser_font)) {
 
@@ -1469,7 +1587,106 @@ See the About box and the documentation for details."));
 	g_signal_connect (G_OBJECT (button_ms_font), "clicked",
 						G_CALLBACK (browser_font_select), NULL);
 
-        set_sensitive_font_part();
+
+        /* big timer font */
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
+
+	label = gtk_label_new(_("Big timer font: "));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+        gtk_size_group_add_widget(label_size, label);
+        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+
+        entry_bt_font = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_bt_font, TRUE, TRUE, 3);
+        gtk_editable_set_editable(GTK_EDITABLE(entry_bt_font), FALSE);
+
+        if(strlen(bigtimer_font)) {
+
+	        gtk_entry_set_text(GTK_ENTRY(entry_bt_font), bigtimer_font);
+
+        } else {
+
+                gtk_entry_set_text(GTK_ENTRY(entry_bt_font), DEFAULT_FONT_NAME);
+                strcpy(bigtimer_font, DEFAULT_FONT_NAME);
+
+        }
+
+        button_bt_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
+        gtk_box_pack_start(GTK_BOX(hbox), button_bt_font, FALSE, FALSE, 3);
+	g_signal_connect (G_OBJECT (button_bt_font), "clicked",
+						G_CALLBACK (bigtimer_font_select), NULL);
+
+        /* small timer font */
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
+
+	label = gtk_label_new(_("Small timer font: "));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+        gtk_size_group_add_widget(label_size, label);
+        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+
+        entry_st_font = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_st_font, TRUE, TRUE, 3);
+        gtk_editable_set_editable(GTK_EDITABLE(entry_st_font), FALSE);
+
+        if(strlen(smalltimer_font)) {
+
+	        gtk_entry_set_text(GTK_ENTRY(entry_st_font), smalltimer_font);
+
+        } else {
+
+                gtk_entry_set_text(GTK_ENTRY(entry_st_font), DEFAULT_FONT_NAME);
+                strcpy(smalltimer_font, DEFAULT_FONT_NAME);
+
+        }
+
+        button_st_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
+        gtk_box_pack_start(GTK_BOX(hbox), button_st_font, FALSE, FALSE, 3);
+	g_signal_connect (G_OBJECT (button_st_font), "clicked",
+						G_CALLBACK (smalltimer_font_select), NULL);
+
+
+        /* colors */
+
+	frame_colors = gtk_frame_new(_("Colors"));
+	gtk_box_pack_start(GTK_BOX(vbox_appearance), frame_colors, FALSE, TRUE, 5);
+
+	vbox_colors = gtk_vbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_colors), 10);
+	gtk_container_add(GTK_CONTAINER(frame_colors), vbox_colors);
+
+        /* active song */
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_colors), hbox, FALSE, TRUE, 3);
+
+	label = gtk_label_new(_("Active song in playlist: "));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+        gtk_size_group_add_widget(label_size, label);
+        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+
+	hbox_s = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 3);
+
+        if(gdk_color_parse(activesong_color, &color) == FALSE) {
+
+                color.red = play_list->style->fg[SELECTED].red; 
+                color.green = play_list->style->fg[SELECTED].green; 
+                color.blue = play_list->style->fg[SELECTED].blue; 
+                color.pixel = (gulong)((color.red & 0xff00)*256 + (color.green & 0xff00) + (color.blue & 0xff00)/256); 
+        }
+
+        color_picker = gtk_color_button_new_with_color (&color);
+        gtk_widget_set_size_request(GTK_WIDGET(color_picker), 70, -1);
+        gtk_box_pack_start(GTK_BOX(hbox), color_picker, FALSE, TRUE, 3);
+	g_signal_connect (G_OBJECT (color_picker), "color-set",
+						G_CALLBACK (color_selected), NULL);
+
+
+        set_sensitive_part();
 
         /* end of notebook */
 

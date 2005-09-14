@@ -76,9 +76,15 @@ char pl_color_inactive[14];
 
 char playlist_font[MAX_FONTNAME_LEN];
 char browser_font[MAX_FONTNAME_LEN];
+char bigtimer_font[MAX_FONTNAME_LEN];
+char smalltimer_font[MAX_FONTNAME_LEN];
 
 PangoFontDescription *fd_playlist;
 PangoFontDescription *fd_browser;
+PangoFontDescription *fd_bigtimer;
+PangoFontDescription *fd_smalltimer;
+
+char activesong_color[MAX_COLORNAME_LEN];
 
 /* Communication between gui thread and disk thread */
 extern pthread_mutex_t disk_thread_lock;
@@ -290,6 +296,9 @@ GtkWidget * conf__fileinfo;
 GtkWidget * conf__separator;
 GtkWidget * conf__about;
 
+GtkWidget * bigtimer_label;
+GtkWidget * smalltimer_label_1;
+GtkWidget * smalltimer_label_2;
 
 void create_main_window(char * skin_path);
 
@@ -2243,6 +2252,8 @@ create_main_window(char * skin_path) {
 
 	fd_playlist = pango_font_description_from_string(playlist_font);
  	fd_browser = pango_font_description_from_string(browser_font);
+ 	fd_bigtimer = pango_font_description_from_string(bigtimer_font);
+ 	fd_smalltimer = pango_font_description_from_string(smalltimer_font);
 
 
         aqualung_tooltips = gtk_tooltips_new();
@@ -2360,24 +2371,39 @@ create_main_window(char * skin_path) {
 	gtk_box_pack_start(GTK_BOX(disp_vbox), info_scrolledwin, TRUE, FALSE, 0);
 
 	/* labels */
-	time_labels[time_idx[0]] = gtk_label_new("");
-	gtk_widget_set_name(time_labels[time_idx[0]], "big_timer_label");
+	bigtimer_label = time_labels[time_idx[0]] = gtk_label_new("");
+
+        if(override_skin_settings) {
+                gtk_widget_modify_font (bigtimer_label, fd_bigtimer);
+        }
+
+        gtk_widget_set_name(time_labels[time_idx[0]], "big_timer_label");
 	gtk_container_add(GTK_CONTAINER(time0_viewp), time_labels[time_idx[0]]);
 
 	time_hbox1 = gtk_hbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(time_hbox1), 2);
 	gtk_container_add(GTK_CONTAINER(time1_viewp), time_hbox1);
 
-	time_labels[time_idx[1]] = gtk_label_new("");
-	gtk_widget_set_name(time_labels[time_idx[1]], "small_timer_label");
+	smalltimer_label_1 = time_labels[time_idx[1]] = gtk_label_new("");
+
+        if(override_skin_settings) {
+                gtk_widget_modify_font (smalltimer_label_1, fd_smalltimer);
+        }
+
+        gtk_widget_set_name(time_labels[time_idx[1]], "small_timer_label");
 	gtk_box_pack_start(GTK_BOX(time_hbox1), time_labels[time_idx[1]], TRUE, TRUE, 0);
 
 	time_hbox2 = gtk_hbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(time_hbox2), 2);
 	gtk_container_add(GTK_CONTAINER(time2_viewp), time_hbox2);
 
-	time_labels[time_idx[2]] = gtk_label_new("");
-	gtk_widget_set_name(time_labels[time_idx[2]], "small_timer_label");
+	smalltimer_label_2 = time_labels[time_idx[2]] = gtk_label_new("");
+
+        if(override_skin_settings) {
+                gtk_widget_modify_font (smalltimer_label_2, fd_smalltimer);
+        }
+
+        gtk_widget_set_name(time_labels[time_idx[2]], "small_timer_label");
 	gtk_box_pack_start(GTK_BOX(time_hbox2), time_labels[time_idx[2]], TRUE, TRUE, 0);
 
 	label_title = gtk_label_new("");
@@ -2585,6 +2611,7 @@ create_main_window(char * skin_path) {
         } else {
                 gtk_tooltips_disable(aqualung_tooltips);
         }
+
 }
 
 
@@ -2611,6 +2638,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	char path[MAXLEN];
 	GList * glist = NULL;
 	GdkPixbuf * pixbuf = NULL;
+        GdkColor color;
 
 	srand(time(0));
 	sample_pos = 0;
@@ -2761,13 +2789,21 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	/* set timeout function */
 	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
 
-        /* Update sliders tooltips */
-
+        /* update sliders' tooltips */
         if(enable_tooltips) {
                 changed_vol(GTK_ADJUSTMENT(adj_vol), NULL);
                 changed_bal(GTK_ADJUSTMENT(adj_bal), NULL);
 	        changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
         }
+
+        /* change color of active song in playlist */
+        if(override_skin_settings && (gdk_color_parse(activesong_color, &color) == TRUE)) {
+                play_list->style->fg[SELECTED].red = color.red;
+                play_list->style->fg[SELECTED].green = color.green;
+                play_list->style->fg[SELECTED].blue = color.blue;
+                set_playlist_color();
+        }
+
 }
 
 
@@ -3303,6 +3339,14 @@ save_config(void) {
 	snprintf(str, MAX_FONTNAME_LEN, "%s", playlist_font);
         xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_font", (xmlChar *) str);
 
+	snprintf(str, MAX_FONTNAME_LEN, "%s", bigtimer_font);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "bigtimer_font", (xmlChar *) str);
+	snprintf(str, MAX_FONTNAME_LEN, "%s", smalltimer_font);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "smalltimer_font", (xmlChar *) str);
+
+	snprintf(str, MAX_COLORNAME_LEN, "%s", activesong_color);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "activesong_color", (xmlChar *) str);
+
 	snprintf(str, 31, "%d", repeat_on);
         xmlNewTextChild(root, NULL, (const xmlChar *) "repeat_on", (xmlChar *) str);
 	snprintf(str, 31, "%d", repeat_all_on);
@@ -3715,6 +3759,27 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
                                 strncpy(playlist_font, (char *) key, MAX_FONTNAME_LEN-1);
+                        xmlFree(key);
+                }
+
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"bigtimer_font"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                strncpy(bigtimer_font, (char *) key, MAX_FONTNAME_LEN-1);
+                        xmlFree(key);
+                }
+
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"smalltimer_font"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                strncpy(smalltimer_font, (char *) key, MAX_FONTNAME_LEN-1);
+                        xmlFree(key);
+                }
+
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"activesong_color"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                strncpy(activesong_color, (char *) key, MAX_COLORNAME_LEN-1);
                         xmlFree(key);
                 }
 

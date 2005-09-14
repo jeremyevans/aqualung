@@ -218,7 +218,7 @@ set_playlist_color() {
 	char inactive[14];
 	int i = 0;
 
-	sprintf(active, "#%04X%04X%04X",
+        sprintf(active, "#%04X%04X%04X",
 		play_list->style->fg[SELECTED].red,
 		play_list->style->fg[SELECTED].green,
 		play_list->style->fg[SELECTED].blue);
@@ -1055,11 +1055,12 @@ direct_add(GtkWidget * widget, gpointer * data) {
 
         set_sliders_width();
 
-        gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
-        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), currdir);
-
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
+        deflicker();
+
+        gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), currdir);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
@@ -1364,7 +1365,6 @@ create_playlist(void) {
 
 	int i;
 
-
         /* window creating stuff */
 	if (!playlist_is_embedded) {
 		playlist_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -1639,7 +1639,9 @@ create_playlist(void) {
 
         g_signal_connect(G_OBJECT(playlist_window), "size_allocate",
 			 G_CALLBACK(playlist_size_allocate), NULL);
-}
+
+}        
+        
 
 
 void
@@ -1658,7 +1660,7 @@ show_playlist(void) {
         gtk_widget_show_all(playlist_window);
 
 	if (!playlist_color_is_set) {
-		set_playlist_color();
+        	set_playlist_color();
 		playlist_color_is_set = 1;
 	}
 }

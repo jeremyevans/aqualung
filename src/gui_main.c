@@ -791,7 +791,7 @@ refresh_time_displays(void) {
 		int i;
 		for (i = 0; i < 3; i++) {
 			if (GTK_IS_LABEL(time_labels[i]))
-/*				gtk_label_set_text(GTK_LABEL(time_labels[i]), "--:--");*/
+/*				gtk_label_set_text(GTK_LABEL(time_labels[i]), "-  :  -");*/
 				gtk_label_set_text(GTK_LABEL(time_labels[i]), "       ");
 		}
 	}
@@ -924,6 +924,7 @@ change_skin(char * path) {
 
 	char rcpath[MAXLEN];
 
+        GdkColor color;
 
 	g_source_remove(timeout_tag);
 
@@ -975,6 +976,7 @@ change_skin(char * path) {
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(plugin_toggle), st_fx);
 	gtk_widget_show_all(main_window);
 	deflicker();
+	deflicker();
 
 	if (playlist_is_embedded) {
 		if (!playlist_on) {
@@ -1011,11 +1013,17 @@ change_skin(char * path) {
 	restore_window_position();
 	deflicker();
 	refresh_displays();
+
+        if(override_skin_settings && (gdk_color_parse(activesong_color, &color) == TRUE)) {
+                play_list->style->fg[SELECTED].red = color.red;
+                play_list->style->fg[SELECTED].green = color.green;
+                play_list->style->fg[SELECTED].blue = color.blue;
+        }
+
 	set_playlist_color();
 	
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), vol);
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
-
 
 	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
 }
@@ -1633,14 +1641,17 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		if (n != -1) {
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_inactive, -1);
+                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
 			if (n == 0)
 				n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n-1);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 			
 		} else {
 			if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
 				gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+                                gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 			}
 		}
 	} else {
@@ -1649,6 +1660,7 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		if (n != -1) {
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_inactive, -1);
+                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
 		}
 		n_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
 		if (n_items) {
@@ -1657,6 +1669,7 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 				--n;
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 		}
 	}
 
@@ -1722,14 +1735,17 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		if (n != -1) {
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_inactive, -1);
+                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
 			if (n == (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL) - 1))
 				n = -1;
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n+1);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 			
 		} else {
 			if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
 				gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+                                gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 			}
 		}
 	} else {
@@ -1738,6 +1754,7 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		if (n != -1) {
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_inactive, -1);
+                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
 		}
 		n_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
 		if (n_items) {
@@ -1746,6 +1763,7 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 				--n;
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 		}
 	}
 
@@ -1825,6 +1843,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
                                 /* normal or repeat mode */
 				if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
 					gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+                                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
 							   3, &(cue.voladj), -1);
 					cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
@@ -1852,6 +1871,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
 								      NULL, n);
 					gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+                                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
 							   3, &(cue.voladj), -1);
 					cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
@@ -2878,8 +2898,10 @@ timeout_callback(gpointer data) {
 					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
 								      NULL, n);
 					gtk_list_store_set(play_store, &iter, 2, pl_color_inactive, -1);
+                                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
 					if (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter)) {
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+                                                gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
@@ -2907,6 +2929,8 @@ timeout_callback(gpointer data) {
 								    GTK_TREE_MODEL(play_store),&iter)) {
 								gtk_list_store_set(play_store, &iter, 2,
 										   pl_color_active, -1);
+                                                                gtk_list_store_set(play_store, &iter, 7, 
+                                                                                   PANGO_WEIGHT_BOLD, -1);
 								gtk_tree_model_get(GTK_TREE_MODEL(play_store),
 								   &iter, 1, &str, 3, &(cue.voladj), -1);
 								cue.filename = strdup(
@@ -2944,6 +2968,7 @@ timeout_callback(gpointer data) {
 					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
 								      NULL, n);
 					gtk_list_store_set(play_store, &iter, 2, pl_color_inactive, -1);
+                                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
 
 					n_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store),
 										 NULL);
@@ -2954,6 +2979,7 @@ timeout_callback(gpointer data) {
 						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
 									      &iter, NULL, n);
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+                                                gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
@@ -2975,6 +3001,7 @@ timeout_callback(gpointer data) {
 					/* normal or repeat mode */
 					if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store),&iter)) {
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+                                                gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
@@ -3001,6 +3028,7 @@ timeout_callback(gpointer data) {
 						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
 									      &iter, NULL, n);
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+                                                gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));

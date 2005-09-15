@@ -234,19 +234,23 @@ set_playlist_color() {
 
 			if (strcmp(str, pl_color_active) == 0) {
 				gtk_list_store_set(play_store, &iter, 2, active, -1);
+				gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 				g_free(str);
-			}
+                        }
 
 			if (strcmp(str, pl_color_inactive) == 0) {
 				gtk_list_store_set(play_store, &iter, 2, inactive, -1);
+				gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
 				g_free(str);
 			}
 
 		} while (i++, gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter));
-	}
 
-	strcpy(pl_color_active, active);
+        }
+
+        strcpy(pl_color_active, active);
 	strcpy(pl_color_inactive, inactive);
+        
 }
 
 
@@ -289,10 +293,12 @@ start_playback_from_playlist(GtkTreePath * path) {
 	if (n != -1) {
 		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 		gtk_list_store_set(play_store, &iter, 2, pl_color_inactive, -1);
+                gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
 	}
 	
 	gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path);
 	gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 	
 	n = get_playing_pos(play_store);
 	gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
@@ -1022,7 +1028,7 @@ add_file_to_playlist(gchar *filename) {
         gtk_list_store_set(play_store, &play_iter, 0, display_name, 1, filename,
                            2, pl_color_inactive,
                            3, voladj, 4, voladj_str,
-                           5, duration, 6, duration_str, -1);
+                           5, duration, 6, duration_str, 7, PANGO_WEIGHT_NORMAL, -1);
 }
 
 gint
@@ -1219,7 +1225,7 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 
 
 gint
-playlist_rearrange_timeout_cb(gpointer data) {
+playlist_rearrange_timeout_cb(gpointer data) {   
 
 	playlist_size_allocate(NULL, NULL);
 
@@ -1435,14 +1441,15 @@ create_playlist(void) {
 
         /* create playlist */
 	if (!play_store) {
-		play_store = gtk_list_store_new(7,
-						G_TYPE_STRING,  /* track name */
-						G_TYPE_STRING,  /* physical filename */
-						G_TYPE_STRING,  /* color for selections */
-						G_TYPE_FLOAT,   /* volume adjustment [dB] */
-						G_TYPE_STRING,  /* volume adj. displayed */
-						G_TYPE_FLOAT,   /* duration (in secs) */
-						G_TYPE_STRING); /* duration displayed */
+		play_store = gtk_list_store_new(8,
+						G_TYPE_STRING,          /* track name */
+						G_TYPE_STRING,          /* physical filename */
+						G_TYPE_STRING,          /* color for selections */
+						G_TYPE_FLOAT,           /* volume adjustment [dB] */
+						G_TYPE_STRING,          /* volume adj. displayed */
+						G_TYPE_FLOAT,           /* duration (in secs) */
+						G_TYPE_STRING,          /* duration displayed */
+                                                G_TYPE_INT);            /* font weight */
 	}
 
         play_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(play_store));
@@ -1469,6 +1476,7 @@ create_playlist(void) {
 										track_renderer,
 										"text", 0,
 										"foreground", 2,
+                                                                                "weight", 7,
 										NULL);
 			gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(track_column),
 							GTK_TREE_VIEW_COLUMN_FIXED);
@@ -1484,6 +1492,7 @@ create_playlist(void) {
 									      rva_renderer,
 									      "text", 4,
 									      "foreground", 2,
+                                                                              "weight", 7,
 									      NULL);
 			gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(rva_column),
 							GTK_TREE_VIEW_COLUMN_FIXED);
@@ -1505,6 +1514,7 @@ create_playlist(void) {
 										 length_renderer,
 										 "text", 6,
 										 "foreground", 2,
+                                                                                 "weight", 7,
 										 NULL);
 			gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(length_column),
 							GTK_TREE_VIEW_COLUMN_FIXED);
@@ -1535,6 +1545,8 @@ create_playlist(void) {
 			 G_CALLBACK(doubleclick_handler), NULL);
 	g_signal_connect(G_OBJECT(play_list), "drag_data_received",
 			 G_CALLBACK(playlist_drag_data_received), NULL);
+
+
 
 	viewport = gtk_viewport_new(NULL, NULL);
         gtk_box_pack_start(GTK_BOX(vbox), viewport, TRUE, TRUE, 0);
@@ -2079,7 +2091,7 @@ load_m3u(char * filename, int enqueue) {
 						   1, g_locale_to_utf8(path, -1, NULL, NULL, NULL),
 						   2, pl_color_inactive,
 						   3, voladj, 4, voladj_str,
-						   5, duration, 6, duration_str, -1);
+						   5, duration, 6, duration_str, 7, PANGO_WEIGHT_NORMAL, -1);
 			}
 		}
 	}

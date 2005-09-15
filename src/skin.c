@@ -118,7 +118,7 @@ create_skin_window() {
 
 	skin_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_transient_for(GTK_WINDOW(skin_window), GTK_WINDOW(main_window));
-	gtk_widget_set_size_request(skin_window, 250, 190);
+	gtk_widget_set_size_request(skin_window, 250, 210);
         gtk_window_set_title(GTK_WINDOW(skin_window), _("Skin chooser"));
 	gtk_window_set_position(GTK_WINDOW(skin_window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(skin_window), TRUE);

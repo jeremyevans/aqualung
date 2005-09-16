@@ -31,6 +31,16 @@
 #include "gui_main.h"
 #include "i18n.h"
 
+/* search flags */
+#define SEARCH_F_CS (1 << 0)    /* case sensitive */
+#define SEARCH_F_EM (1 << 1)    /* exact matches only */
+#define SEARCH_F_SF (1 << 2)    /* select first and close */
+#define SEARCH_F_AN (1 << 3)    /* artist names */
+#define SEARCH_F_RT (1 << 4)    /* record titles */
+#define SEARCH_F_TT (1 << 5)    /* track titles */
+#define SEARCH_F_CO (1 << 6)    /* comments */
+
+extern int search_ms_flags;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
@@ -44,6 +54,7 @@ GtkWidget * searchkey_entry;
 
 GtkWidget * check_case;
 GtkWidget * check_exact;
+GtkWidget * check_sfac;
 
 GtkWidget * check_artist;
 GtkWidget * check_record;
@@ -53,6 +64,25 @@ GtkWidget * check_comment;
 GtkListStore * search_store;
 GtkTreeSelection * search_select;
 
+int casesens;
+int exactonly;
+int selectfc;
+int artist_yes;
+int record_yes;
+int track_yes;
+int comment_yes;
+
+static void
+get_toggle_buttons_state(void) {
+
+        casesens = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_case)) ? 1 : 0;
+	exactonly = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_exact)) ? 1 : 0;
+	selectfc = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_sfac)) ? 1 : 0;
+	artist_yes = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_artist)) ? 1 : 0;
+	record_yes = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_record)) ? 1 : 0;
+	track_yes = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_track)) ? 1 : 0;
+	comment_yes = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_comment)) ? 1 : 0;
+}
 
 void
 clear_search_store(void) {
@@ -83,6 +113,11 @@ clear_search_store(void) {
 static gint
 close_button_clicked(GtkWidget * widget, gpointer data) {
 
+        get_toggle_buttons_state();
+        search_ms_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF) |
+                          (artist_yes * SEARCH_F_AN) | (record_yes * SEARCH_F_RT) | (track_yes * SEARCH_F_TT) |
+                          (comment_yes * SEARCH_F_CO);
+
 	clear_search_store();
         gtk_widget_destroy(search_window);
         search_window = NULL;
@@ -93,6 +128,11 @@ close_button_clicked(GtkWidget * widget, gpointer data) {
 int
 search_window_close(GtkWidget * widget, gpointer * data) {
 
+        get_toggle_buttons_state();
+        search_ms_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF) |
+                          (artist_yes * SEARCH_F_AN) | (record_yes * SEARCH_F_RT) | (track_yes * SEARCH_F_TT) |
+                          (comment_yes * SEARCH_F_CO);
+
 	clear_search_store();
         search_window = NULL;
         return 0;
@@ -101,13 +141,6 @@ search_window_close(GtkWidget * widget, gpointer * data) {
 
 static gint
 search_button_clicked(GtkWidget * widget, gpointer data) {
-
-	int casesens = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_case)) ? 1 : 0;
-	int exactonly = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_exact)) ? 1 : 0;
-	int artist_yes = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_artist)) ? 1 : 0;
-	int record_yes = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_record)) ? 1 : 0;
-	int track_yes = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_track)) ? 1 : 0;
-	int comment_yes = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_comment)) ? 1 : 0;
 
 	int valid;
 	const char * key_string = gtk_entry_get_text(GTK_ENTRY(searchkey_entry));
@@ -118,7 +151,9 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 	GtkTreeIter artist_iter;
 	GtkTreeIter record_iter;
 	GtkTreeIter track_iter;
+	GtkTreeIter sfac_iter;
 
+        get_toggle_buttons_state();
 
 	clear_search_store();
 
@@ -335,6 +370,9 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 
 	g_pattern_spec_free(pattern);
 
+        if(selectfc && (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(search_store), &sfac_iter) == TRUE))
+                gtk_tree_selection_select_iter(search_select, &sfac_iter);
+
         return TRUE;
 }
 
@@ -375,6 +413,8 @@ search_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	case GDK_Return:
 	case GDK_KP_Enter:
 		search_button_clicked(NULL, NULL);
+                if(selectfc)
+                        close_button_clicked(NULL, NULL);
 		return TRUE;
 		break;
 	}
@@ -428,51 +468,65 @@ search_dialog(void) {
         gtk_box_pack_start(GTK_BOX(hbox), searchkey_entry, TRUE, TRUE, 5);
 
 
-	table = gtk_table_new(4, 2, FALSE);
+	table = gtk_table_new(5, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, TRUE, 3);
 
 	check_case = gtk_check_button_new_with_label(_("Case sensitive"));
 	gtk_widget_set_name(check_case, "check_on_window");
 	gtk_table_attach(GTK_TABLE(table), check_case, 0, 1, 0, 1,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 4);
+			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 5);
 
 	check_exact = gtk_check_button_new_with_label(_("Exact matches only"));
 	gtk_widget_set_name(check_exact, "check_on_window");
 	gtk_table_attach(GTK_TABLE(table), check_exact, 1, 2, 0, 1,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 4);
+			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 5);
 
+	check_sfac = gtk_check_button_new_with_label(_("Select first and close window"));
+	gtk_widget_set_name(check_sfac, "check_on_window");
+	gtk_table_attach(GTK_TABLE(table), check_sfac, 0, 1, 1, 2,
+			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 5);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("Search in:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 1, 2,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 4);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 2, 3,
+			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 5);
 
 
 	check_artist = gtk_check_button_new_with_label(_("Artist names"));
 	gtk_widget_set_name(check_artist, "check_on_window");
-	gtk_table_attach(GTK_TABLE(table), check_artist, 0, 1, 2, 3,
+	gtk_table_attach(GTK_TABLE(table), check_artist, 0, 1, 3, 4,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 1);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_artist), TRUE);
 
 	check_record = gtk_check_button_new_with_label(_("Record titles"));
 	gtk_widget_set_name(check_record, "check_on_window");
-	gtk_table_attach(GTK_TABLE(table), check_record, 0, 1, 3, 4,
+	gtk_table_attach(GTK_TABLE(table), check_record, 0, 1, 4, 5,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 1);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_record), TRUE);
 
 	check_track = gtk_check_button_new_with_label(_("Track titles"));
 	gtk_widget_set_name(check_track, "check_on_window");
-	gtk_table_attach(GTK_TABLE(table), check_track, 1, 2, 2, 3,
+	gtk_table_attach(GTK_TABLE(table), check_track, 1, 2, 3, 4,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 1);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_track), TRUE);
 
 	check_comment = gtk_check_button_new_with_label(_("Comments"));
 	gtk_widget_set_name(check_comment, "check_on_window");
-	gtk_table_attach(GTK_TABLE(table), check_comment, 1, 2, 3, 4,
+	gtk_table_attach(GTK_TABLE(table), check_comment, 1, 2, 4, 5,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 1);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_comment), TRUE);
-	
+
+        if(search_ms_flags & SEARCH_F_CS)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_case), TRUE);
+        if(search_ms_flags & SEARCH_F_EM)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_exact), TRUE);
+        if(search_ms_flags & SEARCH_F_SF)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_sfac), TRUE);
+        if(search_ms_flags & SEARCH_F_AN)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_artist), TRUE);
+        if(search_ms_flags & SEARCH_F_RT)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_record), TRUE);
+        if(search_ms_flags & SEARCH_F_TT)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_track), TRUE);
+        if(search_ms_flags & SEARCH_F_CO)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_comment), TRUE);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 3);

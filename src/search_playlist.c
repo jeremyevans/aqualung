@@ -31,6 +31,12 @@
 #include "gui_main.h"
 #include "i18n.h"
 
+/* search flags */
+#define SEARCH_F_CS (1 << 0)    /* case sensitive */
+#define SEARCH_F_EM (1 << 1)    /* exact matches only */
+#define SEARCH_F_SF (1 << 2)    /* select first and close */
+
+extern int search_pl_flags;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
@@ -46,10 +52,22 @@ static GtkWidget * searchkey_entry;
 
 static GtkWidget * check_case;
 static GtkWidget * check_exact;
+static GtkWidget * check_sfac;
 
 static GtkListStore * search_store;
 static GtkTreeSelection * search_select;
 
+static int casesens;
+static int exactonly;
+static int selectfc;
+
+static void
+get_toggle_buttons_state(void) {
+
+        casesens = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_case)) ? 1 : 0;
+	exactonly = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_exact)) ? 1 : 0;
+	selectfc = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_sfac)) ? 1 : 0;
+}
 
 static void
 clear_search_store(void) {
@@ -79,6 +97,9 @@ clear_search_store(void) {
 static gint
 close_button_clicked(GtkWidget * widget, gpointer data) {
 
+        get_toggle_buttons_state();
+        search_pl_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF);
+
 	clear_search_store();
         gtk_widget_destroy(search_window);
         search_window = NULL;
@@ -89,6 +110,9 @@ close_button_clicked(GtkWidget * widget, gpointer data) {
 static int
 search_window_close(GtkWidget * widget, gpointer * data) {
 
+        get_toggle_buttons_state();
+        search_pl_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF);
+
 	clear_search_store();
         search_window = NULL;
         return 0;
@@ -98,9 +122,6 @@ search_window_close(GtkWidget * widget, gpointer * data) {
 static gint
 search_button_clicked(GtkWidget * widget, gpointer data) {
 
-	int casesens = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_case)) ? 1 : 0;
-	int exactonly = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_exact)) ? 1 : 0;
-
 	int valid;
 	const char * key_string = gtk_entry_get_text(GTK_ENTRY(searchkey_entry));
 	char key[MAXLEN];
@@ -108,6 +129,9 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 
 	int i;
 	GtkTreeIter list_iter;
+	GtkTreeIter sfac_iter;
+
+        get_toggle_buttons_state();
 
 	clear_search_store();
 
@@ -149,7 +173,7 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 		}
 		if (g_pattern_match_string(pattern, tmp)) {
 
-			GtkTreeIter iter;
+                        GtkTreeIter iter;
 			GtkTreePath * path;
 
 			path = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), &list_iter);
@@ -166,6 +190,9 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 	}
 
 	g_pattern_spec_free(pattern);
+
+        if(selectfc && (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(search_store), &sfac_iter) == TRUE))
+                gtk_tree_selection_select_iter(search_select, &sfac_iter);
 
         return TRUE;
 }
@@ -204,7 +231,9 @@ search_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	case GDK_Return:
 	case GDK_KP_Enter:
 		search_button_clicked(NULL, NULL);
-		return TRUE;
+                if(selectfc)
+                        close_button_clicked(NULL, NULL);
+                return TRUE;
 		break;
 	}
 
@@ -278,6 +307,17 @@ search_playlist_dialog(void) {
 	gtk_table_attach(GTK_TABLE(table), check_exact, 1, 2, 0, 1,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 4);
 
+	check_sfac = gtk_check_button_new_with_label(_("Select first and close window"));
+	gtk_widget_set_name(check_sfac, "check_on_window");
+	gtk_table_attach(GTK_TABLE(table), check_sfac, 0, 1, 1, 2,
+			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 4);
+
+        if(search_pl_flags & SEARCH_F_CS)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_case), TRUE);
+        if(search_pl_flags & SEARCH_F_EM)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_exact), TRUE);
+        if(search_pl_flags & SEARCH_F_SF)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_sfac), TRUE);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 3);

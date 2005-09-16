@@ -63,6 +63,7 @@ extern int override_skin_settings;
 int auto_save_playlist = 1;
 int show_rva_in_playlist = 0;
 int show_length_in_playlist = 1;
+int show_track_name_using_bold = 1;
 int plcol_idx[3] = { 0, 1, 2 };
 
 int auto_use_ext_meta_artist = 0;
@@ -208,6 +209,19 @@ voladj2str(float voladj, char * str) {
 	}
 }
 
+void
+disable_bold_font_in_playlist() {
+
+        GtkTreeIter iter;
+	int i = 0;
+
+	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
+		do {
+        		gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
+		} while (i++, gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter));
+        }
+
+}
 
 void
 set_playlist_color() {
@@ -234,7 +248,8 @@ set_playlist_color() {
 
 			if (strcmp(str, pl_color_active) == 0) {
 				gtk_list_store_set(play_store, &iter, 2, active, -1);
-				gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
+                                if(show_track_name_using_bold)
+                                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 				g_free(str);
                         }
 
@@ -298,7 +313,8 @@ start_playback_from_playlist(GtkTreePath * path) {
 	
 	gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path);
 	gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
+        if(show_track_name_using_bold)
+                gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 	
 	n = get_playing_pos(play_store);
 	gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);

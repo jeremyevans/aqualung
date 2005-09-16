@@ -53,6 +53,7 @@ extern GtkTooltips * aqualung_tooltips;
 extern int auto_save_playlist;
 extern int show_rva_in_playlist;
 extern int show_length_in_playlist;
+extern int show_track_name_using_bold;
 extern int plcol_idx[3];
 extern int rva_is_enabled;
 extern int rva_env;
@@ -95,6 +96,7 @@ extern char activesong_color[MAX_COLORNAME_LEN];
 int auto_save_playlist_shadow;
 int show_rva_in_playlist_shadow;
 int show_length_in_playlist_shadow;
+int show_track_name_using_bold_shadow;
 int rva_is_enabled_shadow;
 int rva_env_shadow;
 float rva_refvol_shadow;
@@ -117,6 +119,7 @@ extern GtkTreeViewColumn * length_column;
 extern char skin[MAXLEN];
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
+extern void disable_bold_font_in_playlist(void);
 
 GtkWidget * options_window;
 GtkWidget * optmenu_ladspa;
@@ -129,6 +132,7 @@ GtkWidget * label_src;
 GtkWidget * check_autoplsave;
 GtkWidget * check_show_rva_in_playlist;
 GtkWidget * check_show_length_in_playlist;
+GtkWidget * check_show_track_name_using_bold;
 GtkWidget * check_rva_is_enabled;
 GtkWidget * check_rva_use_averaging;
 GtkWidget * check_auto_use_meta_artist;
@@ -228,6 +232,12 @@ ok(GtkWidget * widget, gpointer data) {
 		gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(length_column), FALSE);
 	}
 
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_track_name_using_bold))) {
+		show_track_name_using_bold = 1;
+	} else {
+		show_track_name_using_bold = 0;
+                disable_bold_font_in_playlist();
+	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_artist))) {
 		auto_use_meta_artist = 1;
@@ -413,6 +423,15 @@ check_show_length_in_playlist_toggled(GtkWidget * widget, gpointer * data) {
 	}
 }
 
+void
+check_show_track_name_using_bold_toggled(GtkWidget * widget, gpointer * data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_track_name_using_bold))) {
+		show_track_name_using_bold_shadow = 1;
+	} else {
+		show_track_name_using_bold_shadow = 0;
+	}
+}
 
 void
 changed_ladspa_prepost(GtkWidget * widget, gpointer * data) {
@@ -930,8 +949,6 @@ create_options_window(void) {
 	GtkWidget * ok_btn;
 	GtkWidget * cancel_btn;
 
-/*        GdkColor c;*/
-
 	int status;
 	int i;
 
@@ -1095,9 +1112,20 @@ running realtime as a default.\n"));
 	g_signal_connect(G_OBJECT(check_show_length_in_playlist), "toggled",
 			 G_CALLBACK(check_show_length_in_playlist_toggled), NULL);
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_length_in_playlist, FALSE, TRUE, 3);
-
 	
-	frame_plistcol = gtk_frame_new(_("Playlist column order"));
+	check_show_track_name_using_bold =
+		gtk_check_button_new_with_label(_("Show track name using bold font"));
+	gtk_widget_set_name(check_show_track_name_using_bold, "check_on_notebook");
+	if (show_track_name_using_bold) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_track_name_using_bold), TRUE);
+	}
+	show_track_name_using_bold_shadow = show_track_name_using_bold;
+	g_signal_connect(G_OBJECT(check_show_track_name_using_bold), "toggled",
+			 G_CALLBACK(check_show_track_name_using_bold_toggled), NULL);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_track_name_using_bold, FALSE, TRUE, 3);
+
+
+        frame_plistcol = gtk_frame_new(_("Playlist column order"));
         gtk_box_pack_start(GTK_BOX(vbox_pl), frame_plistcol, FALSE, TRUE, 5);
 
         vbox_plistcol = gtk_vbox_new(FALSE, 0);

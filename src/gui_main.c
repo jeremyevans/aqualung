@@ -442,6 +442,12 @@ assembly_format_label(char * str, int v_major, int v_minor) {
 		break;
 #endif /* HAVE_OGG_VORBIS */
 
+#ifdef HAVE_SPEEX
+	case FORMAT_SPEEX:
+		strcpy(str, "Ogg Speex");
+		break;
+#endif /* HAVE_SPEEX */
+
 #ifdef HAVE_MPC
 	case FORMAT_MPC:
 		strcpy(str, "Musepack");

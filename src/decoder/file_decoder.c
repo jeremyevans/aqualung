@@ -46,6 +46,7 @@
 #include "dec_sndfile.h"
 #include "dec_flac.h"
 #include "dec_vorbis.h"
+#include "dec_speex.h"
 #include "dec_mpc.h"
 #include "dec_mpeg.h"
 #include "dec_mod.h"
@@ -63,6 +64,7 @@ decoder_init_t * decoder_init_v[N_DECODERS] = {
 	sndfile_decoder_init,
 	flac_decoder_init,
 	vorbis_decoder_init,
+	speex_dec_init,
 	mpc_decoder_init,
 	mpeg_decoder_init,
 	mac_decoder_init,

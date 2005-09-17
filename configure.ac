@@ -243,6 +243,37 @@ else
 fi
 
 
+AC_MSG_CHECKING(for Ogg Speex support)
+AC_ARG_WITH(
+	speex,
+	[  --with-speex=yes,no     compile with Ogg Speex support (default: yes)],
+	speex="$withval",
+	speex="detect")
+if test "$speex" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(oggz, oggz_open, [oggzlib=yes], [oggzlib=no], [-loggz])
+	AC_CHECK_LIB(speex, speex_bits_init, [speexlib=yes], [speexlib=no], [-lspeex])
+	if test "$oggzlib" = "yes"; then
+		if test "$speexlib" = "yes"; then
+			speex_LIBS="-loggz -lspeex"
+			lib="yes"
+			AC_DEFINE([HAVE_SPEEX], [1], [Defined if compile with Ogg Speex support])
+		else
+			lib="no"
+		fi
+	else
+		lib="no"
+	fi
+	if test "$lib" = "no" -a "$speex" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the oggz and speex libraries installed. Grab them from http://www.annodex.net/software/liboggz and http://speex.org)
+	fi
+	if test "$speex" = "detect"; then
+		speex=$lib
+	fi
+fi
+
+
 AC_MSG_CHECKING(for MPEG audio support)
 AC_ARG_WITH(
 	mpeg,
@@ -381,7 +412,7 @@ DATADIR="-DDATADIR=\\\"$datadir/aqualung\\\""
 
 CFLAGS="-O2 -Wall $SKINDIR $LOCALEDIR $DATADIR -D_GNU_SOURCE"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS"
-LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS"
+LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS"
 
 
 AC_OUTPUT([Makefile \
@@ -407,6 +438,7 @@ echo "  File format support:"
 echo "      sndfile (WAV, AIFF, etc.)           :  $sndfile"
 echo "      Free Lossless Audio Codec (FLAC)    :  $flac"
 echo "      Ogg Vorbis                          :  $ogg"
+echo "      Ogg Speex                           :  $speex"
 echo "      MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg"
 echo "      MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod"
 echo "      Musepack                            :  $mpc"

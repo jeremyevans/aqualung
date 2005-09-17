@@ -32,12 +32,13 @@
 #define SNDFILE_LIB 1
 #define FLAC_LIB    2
 #define VORBIS_LIB  3
-#define MPC_LIB     4
-#define MAD_LIB     5
-#define MOD_LIB     6
-#define MAC_LIB     7
+#define SPEEX_LIB   4
+#define MPC_LIB     5
+#define MAD_LIB     6
+#define MOD_LIB     7
+#define MAC_LIB     8
 
-#define N_DECODERS  8
+#define N_DECODERS  9
 
 
 /* formats other than libsndfile internal formats */
@@ -85,6 +86,10 @@
 #define MAC_COMP_EXTRA  4
 #define MAC_COMP_INSANE 5
 #endif /* HAVE_MAC */
+
+#ifdef HAVE_SPEEX
+#define FORMAT_SPEEX 0x40000000
+#endif /* HAVE_SPEEX */
 
 
 typedef struct _fileinfo_t {

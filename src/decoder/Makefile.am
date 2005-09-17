@@ -8,5 +8,6 @@ dec_mpc.h dec_mpc.c \
 dec_mpeg.h dec_mpeg.c \
 dec_null.h dec_null.c \
 dec_sndfile.h dec_sndfile.c \
+dec_speex.h dec_speex.c \
 dec_vorbis.h dec_vorbis.c \
 file_decoder.h file_decoder.c

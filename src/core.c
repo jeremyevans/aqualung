@@ -1536,6 +1536,13 @@ main(int argc, char ** argv) {
 		fprintf(stderr, "no\n");
 #endif /* HAVE_OGG_VORBIS */
 
+		fprintf(stderr, "\t\tOgg Speex                           : ");
+#ifdef HAVE_SPEEX
+		fprintf(stderr, "yes\n");
+#else
+		fprintf(stderr, "no\n");
+#endif /* HAVE_SPEEX */
+
 		fprintf(stderr, "\t\tMPEG Audio (MPEG 1-2.5 Layer I-III) : ");
 #ifdef HAVE_MPEG
 		fprintf(stderr, "yes\n");

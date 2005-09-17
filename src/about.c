@@ -201,6 +201,17 @@ create_about_window() {
 #endif /* HAVE_OGG_VORBIS */
 	gtk_text_buffer_insert_at_cursor(buffer, _("Ogg Vorbis\n"), -1);
 	
+#ifdef HAVE_SPEEX
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
+#else
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
+#endif /* HAVE_SPEEX */
+	gtk_text_buffer_insert_at_cursor(buffer, _("Ogg Speex\n"), -1);
+	
 #ifdef HAVE_MPEG
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
@@ -310,6 +321,7 @@ We would like to thank the authors of these software packages:\n\n\
 * libsamplerate (aka Secret Rabbit Code), a high quality Sample Rate Converter\n\
 * libsndfile, a library for accessing audio files containing sampled sound\n\
 * libvorbis & libvorbisfile, for decoding Ogg Vorbis audio\n\
+* liboggz & libspeex, for decoding Ogg Speex\n\
 * libFLAC, the Free Lossless Audio Codec library\n\
 * libMAD, a GPL'ed MPEG Audio Decoder library\n\
 * libmodplug, a MOD decoder library in the public domain\n\

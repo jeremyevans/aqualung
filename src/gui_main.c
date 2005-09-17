@@ -146,7 +146,7 @@ extern int ladspa_is_postfader;
 extern int auto_save_playlist;
 extern int show_rva_in_playlist;
 extern int show_length_in_playlist;
-extern int show_track_name_using_bold;
+extern int show_active_track_name_in_bold;
 extern int plcol_idx[3];
 extern int auto_use_meta_artist;
 extern int auto_use_meta_record;
@@ -1650,13 +1650,13 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 				n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n-1);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                        if(show_track_name_using_bold)
+                        if(show_active_track_name_in_bold)
                                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 			
 		} else {
 			if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
 				gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                if(show_track_name_using_bold)
+                                if(show_active_track_name_in_bold)
                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 			}
 		}
@@ -1675,7 +1675,7 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 				--n;
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                        if(show_track_name_using_bold)
+                        if(show_active_track_name_in_bold)
                                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 		}
 	}
@@ -1747,13 +1747,13 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 				n = -1;
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n+1);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                        if(show_track_name_using_bold)
+                        if(show_active_track_name_in_bold)
                                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 			
 		} else {
 			if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
 				gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                if(show_track_name_using_bold)
+                                if(show_active_track_name_in_bold)
                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 			}
 		}
@@ -1772,7 +1772,7 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 				--n;
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                        if(show_track_name_using_bold)
+                        if(show_active_track_name_in_bold)
                                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 		}
 	}
@@ -1853,7 +1853,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
                                 /* normal or repeat mode */
 				if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
 					gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                        if(show_track_name_using_bold)
+                                        if(show_active_track_name_in_bold)
                                                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
 							   3, &(cue.voladj), -1);
@@ -1882,7 +1882,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
 								      NULL, n);
 					gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                        if(show_track_name_using_bold)
+                                        if(show_active_track_name_in_bold)
                                                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
 							   3, &(cue.voladj), -1);
@@ -2913,7 +2913,7 @@ timeout_callback(gpointer data) {
                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
 					if (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter)) {
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                                if(show_track_name_using_bold)
+                                                if(show_active_track_name_in_bold)
                                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
@@ -2942,7 +2942,7 @@ timeout_callback(gpointer data) {
 								    GTK_TREE_MODEL(play_store),&iter)) {
 								gtk_list_store_set(play_store, &iter, 2,
 										   pl_color_active, -1);
-                                                                if(show_track_name_using_bold)
+                                                                if(show_active_track_name_in_bold)
                                                                         gtk_list_store_set(play_store, &iter, 7, 
                                                                                            PANGO_WEIGHT_BOLD, -1);
 								gtk_tree_model_get(GTK_TREE_MODEL(play_store),
@@ -2993,7 +2993,7 @@ timeout_callback(gpointer data) {
 						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
 									      &iter, NULL, n);
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                                if(show_track_name_using_bold)
+                                                if(show_active_track_name_in_bold)
                                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
@@ -3016,7 +3016,7 @@ timeout_callback(gpointer data) {
 					/* normal or repeat mode */
 					if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store),&iter)) {
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                                if(show_track_name_using_bold)
+                                                if(show_active_track_name_in_bold)
                                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
@@ -3044,7 +3044,7 @@ timeout_callback(gpointer data) {
 						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
 									      &iter, NULL, n);
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                                if(show_track_name_using_bold)
+                                                if(show_active_track_name_in_bold)
                                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
@@ -3286,8 +3286,8 @@ save_config(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) "show_rva_in_playlist", (xmlChar *) str);
 	snprintf(str, 31, "%d", show_length_in_playlist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "show_length_in_playlist", (xmlChar *) str);
-	snprintf(str, 31, "%d", show_track_name_using_bold);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "show_track_name_using_bold", (xmlChar *) str);
+	snprintf(str, 31, "%d", show_active_track_name_in_bold);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "show_active_track_name_in_bold", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", auto_use_meta_artist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_meta_artist", (xmlChar *) str);
@@ -3502,7 +3502,7 @@ load_config(void) {
 	hide_comment_pane = hide_comment_pane_shadow = 0;
         buttons_at_the_bottom = 1;
         override_skin_settings = 0;
-        show_track_name_using_bold = 1;
+        show_active_track_name_in_bold = 1;
 
 
         cur = cur->xmlChildrenNode;
@@ -3591,10 +3591,10 @@ load_config(void) {
 				sscanf((char *) key, "%d", &show_length_in_playlist);
                         xmlFree(key);
                 }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_track_name_using_bold"))) {
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_active_track_name_in_bold"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &show_track_name_using_bold);
+				sscanf((char *) key, "%d", &show_active_track_name_in_bold);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_tooltips"))) {

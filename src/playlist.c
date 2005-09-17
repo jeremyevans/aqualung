@@ -63,7 +63,7 @@ extern int override_skin_settings;
 int auto_save_playlist = 1;
 int show_rva_in_playlist = 0;
 int show_length_in_playlist = 1;
-int show_track_name_using_bold = 1;
+int show_active_track_name_in_bold = 1;
 int plcol_idx[3] = { 0, 1, 2 };
 
 int auto_use_ext_meta_artist = 0;
@@ -248,7 +248,7 @@ set_playlist_color() {
 
 			if (strcmp(str, pl_color_active) == 0) {
 				gtk_list_store_set(play_store, &iter, 2, active, -1);
-                                if(show_track_name_using_bold)
+                                if(show_active_track_name_in_bold)
                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 				g_free(str);
                         }
@@ -313,7 +313,7 @@ start_playback_from_playlist(GtkTreePath * path) {
 	
 	gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path);
 	gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-        if(show_track_name_using_bold)
+        if(show_active_track_name_in_bold)
                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 	
 	n = get_playing_pos(play_store);

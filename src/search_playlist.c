@@ -191,8 +191,13 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 
 	g_pattern_spec_free(pattern);
 
-        if(selectfc && (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(search_store), &sfac_iter) == TRUE))
-                gtk_tree_selection_select_iter(search_select, &sfac_iter);
+        if(selectfc) {
+                
+                if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(search_store), &sfac_iter) == TRUE)
+                        gtk_tree_selection_select_iter(search_select, &sfac_iter);
+
+                close_button_clicked(NULL, NULL);
+        }
 
         return TRUE;
 }
@@ -231,8 +236,6 @@ search_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	case GDK_Return:
 	case GDK_KP_Enter:
 		search_button_clicked(NULL, NULL);
-                if(selectfc)
-                        close_button_clicked(NULL, NULL);
                 return TRUE;
 		break;
 	}

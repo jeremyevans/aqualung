@@ -42,6 +42,9 @@
 #include "i18n.h"
 #include "music_browser.h"
 
+#define COVER_WIDTH             200
+#define COVER_HEIGHT            200
+#define DEFAULT_COVER_FILE      "cover.jpg"
 
 extern GtkWidget * vol_window;
 
@@ -375,6 +378,7 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
 	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(comment_view), 3);
         gtk_text_view_set_editable(GTK_TEXT_VIEW(comment_view), TRUE);
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
+ 
         gtk_text_buffer_set_text(GTK_TEXT_BUFFER(buffer), comment, -1);
         gtk_text_view_set_buffer(GTK_TEXT_VIEW(comment_view), buffer);
         gtk_container_add(GTK_CONTAINER(scrolled_window), comment_view);
@@ -2326,6 +2330,7 @@ track__fileinfo_cb(gpointer data) {
 				  artist_name, record_name, track_name);
 
 		show_file_info(list_str, file, 1, model, iter_track);
+
         }
 }
 
@@ -2399,11 +2404,84 @@ search_cb(gpointer data) {
 static void
 set_comment_text(char * str) {
 
+        GtkTreeModel * model;
+        GtkTreeIter r_iter, t_iter;
+        GtkTreePath * path;
 	GtkTextBuffer * buffer;
+        GtkTextIter iter, a_iter, b_iter;
+        GdkPixbuf *pixbuf;
+        GdkPixbuf *scaled;
+        gchar *filename, cover_filename[2048];
+
+        gint k, i;
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
-	gtk_text_buffer_set_text(GTK_TEXT_BUFFER(buffer), str, -1);
-	gtk_text_view_set_buffer(GTK_TEXT_VIEW(comment_view), buffer);
+
+        gtk_text_buffer_get_bounds (buffer, &a_iter, &b_iter);
+	gtk_text_buffer_delete (buffer, &a_iter, &b_iter);  
+
+        gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
+
+        /* get cover path */
+        
+        if (gtk_tree_selection_get_selected(music_select, &model, &r_iter)) {
+
+                path = gtk_tree_model_get_path(GTK_TREE_MODEL(model), &r_iter);
+                i = gtk_tree_path_get_depth(path);
+
+                /* check if we at 2nd level (album) or 3rd level (track) */
+
+                if(i == 2 || i == 3) {
+
+                        if(i == 2) { /* album selected */
+
+                                gtk_tree_model_iter_nth_child(model, &t_iter, &r_iter, 0);
+                                gtk_tree_model_get(GTK_TREE_MODEL(model), &t_iter, 2, &filename, -1);
+
+                        } else { /* track selected */
+
+                                gtk_tree_model_get(GTK_TREE_MODEL(model), &r_iter, 2, &filename, -1);
+
+                        }
+
+                        /* create cover path */
+
+                        k = strlen(filename)-1;
+                        while(filename[k--]!='/');
+
+                        for(i=0; k!=-2; i++, k--)
+                                cover_filename[i] = filename[i];
+                        cover_filename[i] = '\0';
+
+                        strcat(cover_filename, DEFAULT_COVER_FILE);
+
+                        /* load and display cover */
+
+                        pixbuf = gdk_pixbuf_new_from_file (cover_filename, NULL);
+
+                        if(pixbuf != NULL) {
+
+                                scaled = gdk_pixbuf_scale_simple (pixbuf, COVER_WIDTH, COVER_HEIGHT, GDK_INTERP_TILES);
+                                g_object_unref (pixbuf);
+                                pixbuf = scaled;
+                                gtk_text_buffer_insert (buffer, &iter, "\n", -1);
+                                gtk_text_buffer_insert_pixbuf (buffer, &iter, pixbuf);
+                                gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
+
+                                g_object_unref (pixbuf);
+                        }
+
+                }
+
+                gtk_tree_path_free(path);
+
+        }
+
+        /* insert comment */
+
+        gtk_text_buffer_insert (buffer, &iter, str, -1);
+        gtk_text_view_set_buffer(GTK_TEXT_VIEW(comment_view), buffer);
+
 }
 
 

@@ -44,13 +44,13 @@ typedef struct {
 
 
 GtkWidget * vol_window = NULL;
-GtkWidget * vol_label;
 GtkWidget * progress;
 GtkWidget * cancel_button;
-int vol_x = -1000;
-int vol_y = -1000;
+GtkWidget * file_entry;
 
 extern GtkTreeStore * music_store;
+
+extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 vol_queue_t * vol_queue = NULL;
 vol_queue_t * vol_queue_save = NULL;
@@ -66,6 +66,7 @@ int vol_index;
 
 rms_env * rms_vol;
 
+void set_filename_text (gchar *filename);
 
 vol_queue_t *
 vol_queue_push(vol_queue_t * q, char * file, GtkTreeIter iter) {
@@ -140,16 +141,29 @@ cancel_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
         return TRUE;
 }
 
+void
+set_filename_text (gchar *filename) {
+
+        gtk_entry_set_text(GTK_ENTRY(file_entry), filename);
+        gtk_editable_set_position(GTK_EDITABLE(file_entry), -1);
+
+        gtk_widget_grab_focus(cancel_button);
+}
+
 
 void
 volume_window(void) {
 
 	GtkWidget * vbox;
+	GtkWidget * hbox;
+	GtkWidget * hbuttonbox;
+	GtkWidget * label;
 
 
 	vol_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(vol_window), _("Processing..."));
         gtk_window_set_position(GTK_WINDOW(vol_window), GTK_WIN_POS_CENTER);
+        gtk_window_resize(GTK_WINDOW(vol_window), 450, 160);
         g_signal_connect(G_OBJECT(vol_window), "delete_event",
                          G_CALLBACK(vol_window_close), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(vol_window), 10);
@@ -157,22 +171,44 @@ volume_window(void) {
         vbox = gtk_vbox_new(FALSE, 0);
         gtk_container_add(GTK_CONTAINER(vol_window), vbox);
 
-        vol_label = gtk_label_new("");
-        gtk_box_pack_start(GTK_BOX(vbox), vol_label, FALSE, FALSE, 5);
+        hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 10);
+
+        label = gtk_label_new("");
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
+        gtk_label_set_markup(GTK_LABEL(label), _("<b>Calculating volume level</b>"));
+
+        hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 5);
+
+        label = gtk_label_new(_("Filename:"));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 2);
+
+        file_entry = gtk_entry_new();
+        gtk_editable_set_editable(GTK_EDITABLE(file_entry), FALSE);
+        gtk_box_pack_start(GTK_BOX(hbox), file_entry, TRUE, TRUE, 2);
+
+        hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 5);
+
+        label = gtk_label_new(_("Progress:"));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 2);
 
 	progress = gtk_progress_bar_new();
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.0f);
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress), "0%");
-        gtk_box_pack_start(GTK_BOX(vbox), progress, FALSE, FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(hbox), progress, TRUE, TRUE, 2);
 
-	cancel_button = gtk_button_new_with_label(_("Abort"));
+	hbuttonbox = gtk_hbutton_box_new();
+	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
+
+        cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL); 
         g_signal_connect(cancel_button, "clicked", G_CALLBACK(cancel_event), NULL);
-        gtk_box_pack_start(GTK_BOX(vbox), cancel_button, FALSE, FALSE, 5);
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), cancel_button);   
 
+        gtk_widget_grab_focus(cancel_button);
 
-	if ((vol_x > -1000) && (vol_y > -1000)) {
-		gtk_window_move(GTK_WINDOW(vol_window), vol_x, vol_y);
-	}
         gtk_widget_show_all(vol_window);
 }
 
@@ -209,8 +245,8 @@ process_volume_setup(vol_queue_t * q) {
 	vol_n_chunks = fdec_vol->fileinfo.total_samples / vol_chunk_size + 1;
 	vol_chunks_read = 0;
 	
-	snprintf(msg, MAXLEN-1, _("Calculating volume level of %s"), q->file);
-	gtk_label_set_text(GTK_LABEL(vol_label), msg);
+	snprintf(msg, MAXLEN-1, _("%s"), q->file);
+        set_filename_text(msg);
 
 	vol_running = 1;
 	vol_cancelled = 0;
@@ -245,7 +281,6 @@ process_volume(gpointer data) {
 			vol_queue_cleanup(vol_queue_save);
 			vol_queue_save = vol_queue = NULL;
 			vol_finished = 1;
-			gtk_window_get_position(GTK_WINDOW(vol_window), &vol_x, &vol_y);
 			gtk_widget_destroy(vol_window);
 			vol_window = NULL;
 			return FALSE;
@@ -260,7 +295,6 @@ process_volume(gpointer data) {
 		file_decoder_close(fdec_vol);
 		file_decoder_delete(fdec_vol);
 		if (vol_window != NULL) {
-			gtk_window_get_position(GTK_WINDOW(vol_window), &vol_x, &vol_y);
 			gtk_widget_destroy(vol_window);
 			vol_window = NULL;
 			free(rms_vol);
@@ -276,7 +310,6 @@ process_volume(gpointer data) {
 		vol_finished = 1;
 		file_decoder_close(fdec_vol);
 		file_decoder_delete(fdec_vol);
-		gtk_window_get_position(GTK_WINDOW(vol_window), &vol_x, &vol_y);
 		gtk_widget_destroy(vol_window);
 		vol_window = NULL;
 		free(rms_vol);
@@ -441,3 +474,6 @@ rva_from_multiple_volumes(int nlevels, float * volumes,
 	level = sum / files_to_avg;
 	return rva_from_volume(20 * log10(level), rva_refvol, rva_steepness);
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

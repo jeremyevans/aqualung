@@ -54,8 +54,8 @@ create_about_window() {
 	GtkTextBuffer * buffer;
 	GtkTextIter iter;
 
+	GtkWidget * hbuttonbox;
 	GtkWidget * ok_btn;
-	GtkWidget * label;
 
 	GdkColor white = { 0, 49152, 51118, 52429 };
 	GdkColor blue1 = { 0, 41288, 47841, 55050 };
@@ -71,7 +71,7 @@ create_about_window() {
 	gtk_window_set_modal(GTK_WINDOW(about_window), TRUE);
 	gtk_widget_set_name(about_window, "");
         gtk_window_set_title(GTK_WINDOW(about_window), _("About"));
-        gtk_widget_set_size_request(about_window, 540, 350);
+        gtk_widget_set_size_request(about_window, 500, 430);
 	gtk_window_set_position(GTK_WINDOW(about_window), GTK_WIN_POS_CENTER);
 	gtk_widget_modify_bg(about_window, GTK_STATE_NORMAL, &white);
 
@@ -79,19 +79,18 @@ create_about_window() {
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
         gtk_container_add(GTK_CONTAINER(about_window), vbox);
 
+	hbuttonbox = gtk_hbutton_box_new();
+	gtk_widget_set_name(hbuttonbox, "");
+	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
-	label = gtk_label_new(_("Dismiss"));
-
-	ok_btn = gtk_button_new();
+        ok_btn = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
 	gtk_widget_set_name(ok_btn, "");
-	gtk_widget_set_size_request(ok_btn, 50, 30);
-	gtk_container_add(GTK_CONTAINER(ok_btn), label);
-	g_signal_connect(ok_btn, "clicked", G_CALLBACK(ok), NULL);
-	gtk_box_pack_end(GTK_BOX(vbox), ok_btn, FALSE, FALSE, 0);
+        g_signal_connect(ok_btn, "clicked", G_CALLBACK(ok), NULL);
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), ok_btn);   
 	gtk_widget_modify_bg(ok_btn, GTK_STATE_NORMAL, &blue1);
 	gtk_widget_modify_bg(ok_btn, GTK_STATE_PRELIGHT, &blue2);
 	gtk_widget_modify_bg(ok_btn, GTK_STATE_ACTIVE, &blue2);
-
 
 	frame = gtk_frame_new(NULL);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);

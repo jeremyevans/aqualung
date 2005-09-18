@@ -47,6 +47,8 @@ extern char confdir[MAXLEN];
 extern int n_plugins;
 extern plugin_instance * plugin_vect[MAX_PLUGINS];
 
+extern int simple_view_in_fx;
+
 extern unsigned long ladspa_buflen;
 extern LADSPA_Data * l_buf;
 extern LADSPA_Data * r_buf;
@@ -66,6 +68,8 @@ GtkTreeSelection * running_select;
 GtkWidget * add_button;
 GtkWidget * remove_button;
 GtkWidget * conf_button;
+
+GtkWidget * rp_menu;
 
 extern GtkWidget * plugin_toggle;
 
@@ -1588,6 +1592,13 @@ running_list_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 		conf_clicked(NULL, NULL, NULL);
 	}
 
+	if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
+
+		gtk_menu_popup(GTK_MENU(rp_menu), NULL, NULL, NULL, NULL,
+			       event->button, event->time);
+		return TRUE;
+        }
+
 	return FALSE;
 }
 
@@ -1638,6 +1649,91 @@ avail_dblclicked(GtkWidget * widget, GdkEventButton * event) {
 	return FALSE;
 }
 
+void
+set_all_plugins_status(gint status) {
+
+        GtkTreeIter iter;
+        gpointer gp_instance;
+	plugin_instance * instance;
+        int i = 0;
+
+        if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(running_store), &iter)) {
+		do {
+			gtk_tree_model_get(GTK_TREE_MODEL(running_store), &iter, 1, &gp_instance, -1);
+			instance = (plugin_instance *) gp_instance;
+			if (instance->bypass_button) {
+		
+                                if (status != -1)
+                                        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(instance->bypass_button), status);
+                                else
+                                        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(instance->bypass_button), 
+                                                                     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(instance->bypass_button)));
+                        }
+
+                } while (i++, gtk_tree_model_iter_next(GTK_TREE_MODEL(running_store), &iter));
+        }
+}
+
+void
+rp__enable_all_cb(gpointer data) {
+
+        set_all_plugins_status(FALSE);
+}
+
+void
+rp__disable_all_cb(gpointer data) {
+
+        set_all_plugins_status(TRUE);
+}
+
+void
+rp__toggle_all_cb(gpointer data) {
+
+        set_all_plugins_status(-1);
+}
+
+void
+rp__clear_list_cb(gpointer data) {
+
+        GtkTreeIter iter;
+	gpointer gp_instance;
+	plugin_instance * instance;
+        int i = 0;
+
+        if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(running_store), &iter)) {
+		do {
+
+                        gtk_tree_model_get(GTK_TREE_MODEL(running_store), &iter, 1, &gp_instance, -1);
+                        refresh_plugin_vect(-1);
+
+                        instance = (plugin_instance *) gp_instance;
+                        if (instance->handle) {
+                                if (instance->descriptor->deactivate) {
+                                        instance->descriptor->deactivate(instance->handle);
+                                }
+                                instance->descriptor->cleanup(instance->handle);
+                                instance->handle = NULL;
+                        }
+                        if (instance->handle2) {
+                                if (instance->descriptor->deactivate) {
+                                        instance->descriptor->deactivate(instance->handle2);
+                                }
+                                instance->descriptor->cleanup(instance->handle2);
+                                instance->handle2 = NULL;
+                        }
+                        if (instance->timeout)
+                                g_source_remove(instance->timeout);
+                        if (instance->window)
+                                gtk_widget_destroy(instance->window);
+
+                        trashlist_free(instance->trashlist);
+                        free(instance);
+                        
+                } while (i++, gtk_tree_model_iter_next(GTK_TREE_MODEL(running_store), &iter));
+
+                gtk_list_store_clear(running_store);           
+        }                                                            
+}
 
 void
 create_fxbuilder(void) {
@@ -1653,6 +1749,13 @@ create_fxbuilder(void) {
 	GtkWidget * scrolled_win_running;
 
 	GtkWidget * hbox_buttons;
+
+        GtkWidget * rp__enable_all;
+        GtkWidget * rp__disable_all;
+        GtkWidget * rp__toggle_all;
+        GtkWidget * rp__separator1;
+        GtkWidget * rp__separator2;
+        GtkWidget * rp__clear_list;
 
         GtkCellRenderer * renderer;
         GtkTreeViewColumn * column;
@@ -1738,6 +1841,9 @@ create_fxbuilder(void) {
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
 	gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(column), 0);
 
+        if(simple_view_in_fx)
+                gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN (column), FALSE);
+
 	column = gtk_tree_view_column_new_with_attributes(_("Name"), renderer, "text", 1, NULL);
 	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
@@ -1748,16 +1854,24 @@ create_fxbuilder(void) {
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
 	gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(column), 2);
 
+        if(simple_view_in_fx)
+                gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN (column), FALSE);
+
 	column = gtk_tree_view_column_new_with_attributes(_("Inputs"), renderer, "text", 3, NULL);
 	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
 	gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(column), 3);
+        
+        if(simple_view_in_fx)
+                gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN (column), FALSE);
 
 	column = gtk_tree_view_column_new_with_attributes(_("Outputs"), renderer, "text", 4, NULL);
 	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
 	gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(column), 4);
-
+        
+        if(simple_view_in_fx)
+                gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN (column), FALSE);
 
         frame_running = gtk_frame_new(_("Running plugins"));
         gtk_box_pack_start(GTK_BOX(hbox), frame_running, TRUE, TRUE, 5);
@@ -1816,6 +1930,36 @@ create_fxbuilder(void) {
 	column = gtk_tree_view_column_new_with_attributes(_("Name"), renderer, "text", 0, NULL);
 	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);
         gtk_tree_view_append_column(GTK_TREE_VIEW(running_list), column);
+
+        /* running plugins menu */
+
+        rp_menu = gtk_menu_new();
+                
+	rp__enable_all = gtk_menu_item_new_with_label(_("Enable all plugins"));
+	rp__disable_all = gtk_menu_item_new_with_label(_("Disable all plugins"));
+	rp__separator1 = gtk_separator_menu_item_new();
+	rp__toggle_all = gtk_menu_item_new_with_label(_("Invert current state"));
+	rp__separator2 = gtk_separator_menu_item_new();
+	rp__clear_list = gtk_menu_item_new_with_label(_("Clear list"));
+
+	gtk_menu_shell_append(GTK_MENU_SHELL(rp_menu), rp__enable_all);
+	gtk_menu_shell_append(GTK_MENU_SHELL(rp_menu), rp__disable_all);
+	gtk_menu_shell_append(GTK_MENU_SHELL(rp_menu), rp__separator1);
+	gtk_menu_shell_append(GTK_MENU_SHELL(rp_menu), rp__toggle_all);
+	gtk_menu_shell_append(GTK_MENU_SHELL(rp_menu), rp__separator2);
+	gtk_menu_shell_append(GTK_MENU_SHELL(rp_menu), rp__clear_list);
+
+        g_signal_connect_swapped(G_OBJECT(rp__enable_all), "activate", G_CALLBACK(rp__enable_all_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(rp__disable_all), "activate", G_CALLBACK(rp__disable_all_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(rp__toggle_all), "activate", G_CALLBACK(rp__toggle_all_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(rp__clear_list), "activate", G_CALLBACK(rp__clear_list_cb), NULL);
+
+	gtk_widget_show(rp__enable_all);
+	gtk_widget_show(rp__disable_all);
+	gtk_widget_show(rp__separator1);
+	gtk_widget_show(rp__toggle_all);
+	gtk_widget_show(rp__separator2);
+	gtk_widget_show(rp__clear_list);
 }
 
 

@@ -63,7 +63,7 @@
 #include "file_info.h"
 #include "i18n.h"
 #include "gui_main.h"
-/*#include "version.h"*/
+#include "version.h"
 
 /* receive at most this much remote messages in one run of timeout_callback() */
 #define MAX_RCV_COUNT 32
@@ -175,6 +175,7 @@ int enable_tooltips = 1;
 int playlist_is_embedded = 0;
 int playlist_is_embedded_shadow = 0;
 int buttons_at_the_bottom = 1;
+int simple_view_in_fx = 0;
 int override_skin_settings = 0;
 
 /* volume & balance sliders */
@@ -372,16 +373,16 @@ time2time(float seconds, char * str) {
 
 void
 set_title_label(char * str) {
-/*gchar default_title[MAXLEN];*/
+gchar default_title[MAXLEN];
 
 	if (is_file_loaded) {
 		if (GTK_IS_LABEL(label_title))
 			gtk_label_set_text(GTK_LABEL(label_title), str);
 	} else {
 		if (GTK_IS_LABEL(label_title)) {
-/*                        sprintf(default_title, "Aqualung %s", aqualung_version);*/
-/*			gtk_label_set_text(GTK_LABEL(label_title), default_title);*/
-			gtk_label_set_text(GTK_LABEL(label_title), "");
+                        sprintf(default_title, "aqualung %s", aqualung_version);
+			gtk_label_set_text(GTK_LABEL(label_title), default_title);
+/*			gtk_label_set_text(GTK_LABEL(label_title), "");*/
                 }
         }
 }
@@ -801,8 +802,8 @@ refresh_time_displays(void) {
 		int i;
 		for (i = 0; i < 3; i++) {
 			if (GTK_IS_LABEL(time_labels[i]))
-/*				gtk_label_set_text(GTK_LABEL(time_labels[i]), "-  :  -");*/
-				gtk_label_set_text(GTK_LABEL(time_labels[i]), "       ");
+				gtk_label_set_text(GTK_LABEL(time_labels[i]), " 00:00 ");
+/*				gtk_label_set_text(GTK_LABEL(time_labels[i]), "       ");*/
 		}
 	}
 
@@ -3315,6 +3316,9 @@ save_config(void) {
 	snprintf(str, 31, "%d", buttons_at_the_bottom);
         xmlNewTextChild(root, NULL, (const xmlChar *) "buttons_at_the_bottom", (xmlChar *) str);
 
+        snprintf(str, 31, "%d", simple_view_in_fx);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "simple_view_in_fx", (xmlChar *) str);
+
 	snprintf(str, 31, "%d", hide_comment_pane_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "hide_comment_pane", (xmlChar *) str);
 
@@ -3507,6 +3511,7 @@ load_config(void) {
         enable_tooltips = 1;
 	hide_comment_pane = hide_comment_pane_shadow = 0;
         buttons_at_the_bottom = 1;
+        simple_view_in_fx = 0;
         override_skin_settings = 0;
         show_active_track_name_in_bold = 1;
 
@@ -3614,6 +3619,13 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
 				sscanf((char *) key, "%d", &buttons_at_the_bottom);
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"simple_view_in_fx"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				sscanf((char *) key, "%d", &simple_view_in_fx);
 			}
                         xmlFree(key);
                 }

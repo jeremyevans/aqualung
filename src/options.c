@@ -93,6 +93,8 @@ extern GtkWidget * smalltimer_label_2;
 
 extern char activesong_color[MAX_COLORNAME_LEN];
 
+extern int simple_view_in_fx;
+
 int auto_save_playlist_shadow;
 int show_rva_in_playlist_shadow;
 int show_length_in_playlist_shadow;
@@ -146,6 +148,7 @@ GtkWidget * check_hide_comment_pane;
 GtkWidget * check_playlist_is_embedded;
 GtkWidget * check_enable_playlist_statusbar;
 GtkWidget * check_buttons_at_the_bottom;
+GtkWidget * check_simple_view_in_fx;
 GtkWidget * check_override_skin;
 
 GtkObject * adj_refvol;
@@ -288,6 +291,12 @@ ok(GtkWidget * widget, gpointer data) {
 		buttons_at_the_bottom = 1;
 	} else {
 	        buttons_at_the_bottom = 0;
+	}
+
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_simple_view_in_fx))) {
+		simple_view_in_fx = 1;
+	} else {
+	        simple_view_in_fx = 0;
 	}
 
         if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_override_skin))) {
@@ -1052,6 +1061,17 @@ running realtime as a default.\n"));
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_buttons_at_the_bottom, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_buttons_at_the_bottom), "toggled",
 						G_CALLBACK (restart_active), NULL);
+
+	check_simple_view_in_fx =
+		gtk_check_button_new_with_label(_("Simple view in LADSPA patch builder"));
+	gtk_widget_set_name(check_simple_view_in_fx, "check_on_notebook");
+	if (simple_view_in_fx) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_simple_view_in_fx), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_simple_view_in_fx, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (check_simple_view_in_fx), "toggled",
+						G_CALLBACK (restart_active), NULL);
+
 
         /* "Playlist" notebook page */
 

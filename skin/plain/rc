@@ -105,8 +105,8 @@ style "entry" = "view"
 
 style "combo_box"
 {
-	text[NORMAL] = { 0.0, 0.0, 0.0 }
-	fg[NORMAL] = { 0.0, 0.0, 0.0 }
+	text[NORMAL] = "#000000"
+	fg[NORMAL] = "#000000"
 }
 
 style "menu" = "button"
@@ -136,7 +136,7 @@ style "scale"
 	bg_pixmap[PRELIGHT] = "<none>"
 	bg_pixmap[ACTIVE] = "<none>"
 
-	fg[NORMAL] = { 1.0, 0.0, 0.0 }
+	fg[NORMAL] = "#404040"
 }
 
 style "checkbutton"

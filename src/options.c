@@ -1581,7 +1581,7 @@ See the About box and the documentation for details."));
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, FALSE, 3);
 
-	label = gtk_label_new(_("Playlist font: "));
+	label = gtk_label_new(_("Playlist: "));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
@@ -1610,7 +1610,7 @@ See the About box and the documentation for details."));
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
 
-	label = gtk_label_new(_("Music Store font: "));
+	label = gtk_label_new(_("Music Store: "));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
@@ -1641,7 +1641,7 @@ See the About box and the documentation for details."));
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
 
-	label = gtk_label_new(_("Big timer font: "));
+	label = gtk_label_new(_("Big timer: "));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
@@ -1671,7 +1671,7 @@ See the About box and the documentation for details."));
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
 
-	label = gtk_label_new(_("Small timer font: "));
+	label = gtk_label_new(_("Small timer: "));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
@@ -1742,12 +1742,10 @@ See the About box and the documentation for details."));
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 6);
 
         cancel_btn = gtk_button_new_from_stock (GTK_STOCK_CANCEL); 
-	gtk_widget_set_size_request(cancel_btn, 70, 30);
 	g_signal_connect(cancel_btn, "clicked", G_CALLBACK(cancel), NULL);
 	gtk_box_pack_end(GTK_BOX(hbox), cancel_btn, FALSE, FALSE, 6);
 
         ok_btn = gtk_button_new_from_stock (GTK_STOCK_OK); 
-	gtk_widget_set_size_request(ok_btn, 70, 30);
 	g_signal_connect(ok_btn, "clicked", G_CALLBACK(ok), NULL);
 	gtk_box_pack_end(GTK_BOX(hbox), ok_btn, FALSE, FALSE, 6);
 

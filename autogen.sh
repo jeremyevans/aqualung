@@ -2,7 +2,7 @@ echo "
 checking basic compilation tools ...
 "
 
-for tool in pkg-config aclocal autoheader autoconf automake gettext
+for tool in pkg-config aclocal autoheader autoconf automake gettext msgfmt
 do
     if which $tool >/dev/null 2>&1 ; then
 	echo "	$tool: found."

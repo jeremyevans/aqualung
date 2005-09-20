@@ -24,8 +24,8 @@
 
 #ifdef HAVE_SPEEX
 #include <oggz/oggz.h>
-#include <speex.h>
-#include <speex_header.h>
+#include <speex/speex.h>
+#include <speex/speex_header.h>
 #endif /* HAVE_SPEEX */
 
 #include "file_decoder.h"

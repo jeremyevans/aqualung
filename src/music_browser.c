@@ -42,8 +42,8 @@
 #include "i18n.h"
 #include "music_browser.h"
 
-#define COVER_WIDTH             200
-#define COVER_HEIGHT            200
+/*#define COVER_WIDTH             200*/
+/*#define COVER_HEIGHT            200*/
 #define DEFAULT_COVER_FILE      "cover.jpg"
 
 extern GtkWidget * vol_window;
@@ -69,6 +69,11 @@ extern PangoFontDescription *fd_browser;
 extern void set_sliders_width(void);
 
 char title_format[MAXLEN];
+
+int magnify_smaller_images = 0;
+int cover_width = 2;    /* 200 px */
+
+gint cover_widths[5] = { 50, 100, 200, 300, -1 };       /* widths in pixels */
 
 GtkWidget * browser_window;
 GtkWidget * dialog;
@@ -2402,7 +2407,7 @@ search_cb(gpointer data) {
 
 
 static void
-set_comment_text(char * str) {
+set_comment_text_and_cover(char * str) {
 
         GtkTreeModel * model;
         GtkTreeIter r_iter, t_iter;
@@ -2411,15 +2416,17 @@ set_comment_text(char * str) {
         GtkTextIter iter, a_iter, b_iter;
         GdkPixbuf *pixbuf;
         GdkPixbuf *scaled;
-        gchar *filename, cover_filename[2048];
-
+        GdkPixbufFormat *format;
+        gchar *filename, cover_filename[PATH_MAX];
         gint k, i;
+        gint width, height;
+        gint d_cover_width, d_cover_height;
+        gint scaled_width, scaled_height;
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
 
         gtk_text_buffer_get_bounds (buffer, &a_iter, &b_iter);
 	gtk_text_buffer_delete (buffer, &a_iter, &b_iter);  
-
         gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
 
         /* get cover path */
@@ -2457,18 +2464,64 @@ set_comment_text(char * str) {
 
                         /* load and display cover */
 
+                        k = cover_widths[cover_width % 5];
+
+                        if (k == -1) {
+
+                                /* FIXME  34 is space for scrollbar width, window  
+                                 * border and it is theme dependent
+                                 */  
+
+                                d_cover_width = d_cover_height = browser_size_x - 34;      
+
+                        } else {
+
+                                d_cover_width = d_cover_height = k;
+                        }
+
                         pixbuf = gdk_pixbuf_new_from_file (cover_filename, NULL);
 
                         if(pixbuf != NULL) {
 
-                                scaled = gdk_pixbuf_scale_simple (pixbuf, COVER_WIDTH, COVER_HEIGHT, GDK_INTERP_TILES);
-                                g_object_unref (pixbuf);
-                                pixbuf = scaled;
-                                gtk_text_buffer_insert (buffer, &iter, "\n", -1);
+                                format = gdk_pixbuf_get_file_info(cover_filename, &width, &height);
+
+                                /* don't scale when orginal size is smaller than cover defaults */
+
+                                scaled_width =  d_cover_width;
+                                scaled_height = d_cover_height;
+
+                                if(width > d_cover_width || height > d_cover_height) {
+
+                                        if(width >= height) {
+
+                                                scaled_height = (height * d_cover_width) / width;
+
+                                        } else {
+
+                                                scaled_width = (width * d_cover_height) / height;
+
+                                        }
+
+                                        scaled = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_TILES);
+                                        g_object_unref (pixbuf);
+                                        pixbuf = scaled;
+
+                                } else
+                                        if(magnify_smaller_images) {
+
+                                                scaled_height = (height * d_cover_width) / width;
+
+                                                scaled = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_TILES);
+                                                g_object_unref (pixbuf);
+                                                pixbuf = scaled;
+
+                                        }                                
+
                                 gtk_text_buffer_insert_pixbuf (buffer, &iter, pixbuf);
                                 gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
 
                                 g_object_unref (pixbuf);
+
                         }
 
                 }
@@ -2496,14 +2549,14 @@ tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
 
                 gtk_tree_model_get(model, &iter, 3, &comment, -1);
 		if (comment[0] != '\0') {
-			set_comment_text(comment);
+			set_comment_text_and_cover(comment);
 		} else {
-			set_comment_text(_("(no comment)"));
+			set_comment_text_and_cover(_("(no comment)"));
 		}
                 g_free(comment);
 
         } else {
-		set_comment_text("");
+		set_comment_text_and_cover("");
 	}
 }
 
@@ -2515,7 +2568,7 @@ row_collapsed_cb(GtkTreeView *view, GtkTreeIter * iter1, GtkTreePath * path1) {
         GtkTreeModel * model;
 
         if (!gtk_tree_selection_get_selected(music_select, &model, &iter2)) {
-			set_comment_text("");
+			set_comment_text_and_cover("");
 	}
 
 	return FALSE;
@@ -2808,6 +2861,7 @@ create_music_browser(void) {
 	comment_view = gtk_text_view_new();
 	gtk_widget_set_name(comment_view, "comment_view");
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(comment_view), FALSE);
+	gtk_text_view_set_pixels_above_lines(GTK_TEXT_VIEW(comment_view), 3);
 	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(comment_view), 3);
 	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(comment_view), 3);
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));

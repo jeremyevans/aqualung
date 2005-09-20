@@ -159,6 +159,9 @@ extern int hide_comment_pane_shadow;
 extern int enable_playlist_statusbar;
 extern int enable_playlist_statusbar_shadow;
 
+extern int magnify_smaller_images;
+extern int cover_width;
+
 int search_pl_flags = 0;
 int search_ms_flags = 120; /* check search flags in search.c for initial value :) */
 
@@ -803,7 +806,6 @@ refresh_time_displays(void) {
 		for (i = 0; i < 3; i++) {
 			if (GTK_IS_LABEL(time_labels[i]))
 				gtk_label_set_text(GTK_LABEL(time_labels[i]), " 00:00 ");
-/*				gtk_label_set_text(GTK_LABEL(time_labels[i]), "       ");*/
 		}
 	}
 
@@ -2813,6 +2815,20 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		}
 	}
 
+        /* update sliders' tooltips */
+        if(enable_tooltips) {
+                changed_vol(GTK_ADJUSTMENT(adj_vol), NULL);
+                changed_bal(GTK_ADJUSTMENT(adj_bal), NULL);
+	        changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
+        }
+
+        /* change color of active song in playlist */
+        if(override_skin_settings && (gdk_color_parse(activesong_color, &color) == TRUE)) {
+                play_list->style->fg[SELECTED].red = color.red;
+                play_list->style->fg[SELECTED].green = color.green;
+                play_list->style->fg[SELECTED].blue = color.blue;
+        }
+
 	zero_displays();
 	set_playlist_color();
         set_sliders_width();
@@ -2827,22 +2843,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	/* set timeout function */
 	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
-
-        /* update sliders' tooltips */
-        if(enable_tooltips) {
-                changed_vol(GTK_ADJUSTMENT(adj_vol), NULL);
-                changed_bal(GTK_ADJUSTMENT(adj_bal), NULL);
-	        changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
-        }
-
-        /* change color of active song in playlist */
-        if(override_skin_settings && (gdk_color_parse(activesong_color, &color) == TRUE)) {
-                play_list->style->fg[SELECTED].red = color.red;
-                play_list->style->fg[SELECTED].green = color.green;
-                play_list->style->fg[SELECTED].blue = color.blue;
-                set_playlist_color();
-        }
-
 }
 
 
@@ -3319,6 +3319,12 @@ save_config(void) {
         snprintf(str, 31, "%d", simple_view_in_fx);
         xmlNewTextChild(root, NULL, (const xmlChar *) "simple_view_in_fx", (xmlChar *) str);
 
+        snprintf(str, 31, "%d", magnify_smaller_images);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "magnify_smaller_images", (xmlChar *) str);
+
+        snprintf(str, 31, "%d", cover_width);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cover_width", (xmlChar *) str);
+
 	snprintf(str, 31, "%d", hide_comment_pane_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "hide_comment_pane", (xmlChar *) str);
 
@@ -3512,6 +3518,8 @@ load_config(void) {
 	hide_comment_pane = hide_comment_pane_shadow = 0;
         buttons_at_the_bottom = 1;
         simple_view_in_fx = 0;
+        magnify_smaller_images = 0;
+        cover_width = 2;
         override_skin_settings = 0;
         show_active_track_name_in_bold = 1;
 
@@ -3626,6 +3634,20 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
 				sscanf((char *) key, "%d", &simple_view_in_fx);
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"magnify_smaller_images"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				sscanf((char *) key, "%d", &magnify_smaller_images);
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cover_width"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				sscanf((char *) key, "%d", &cover_width);
 			}
                         xmlFree(key);
                 }

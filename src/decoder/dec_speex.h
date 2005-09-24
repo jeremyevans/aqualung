@@ -56,6 +56,7 @@ typedef struct _speex_pdata_t {
 	int exploring;
 	int error;
 	long packetno;
+	int granulepos;
 
         int is_eos;
 } speex_pdata_t;

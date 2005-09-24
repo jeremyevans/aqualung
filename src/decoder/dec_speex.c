@@ -103,31 +103,35 @@ read_ogg_packet(OGGZ * oggz, ogg_packet * op, long serialno, void * user_data) {
                 speex_decoder_ctl(pd->decoder, SPEEX_GET_FRAME_SIZE, &(pd->frame_size));
                 speex_decoder_ctl(pd->decoder, SPEEX_SET_ENH, &enh);
 
-	} else if (!pd->exploring && (pd->packetno >= 2)) {
+	} else if (pd->packetno >= 2) {
 
 		int j;
 		float output_frame[SPEEX_BUFSIZE];
 
-                speex_bits_read_from(&(pd->bits), op->packet, op->bytes);
+		pd->granulepos = op->granulepos;
 
-                for (j = 0; j < pd->nframes; j++) {
-
-                        int k;
-
-                        speex_decode(pd->decoder, &(pd->bits), output_frame);
-
-                        for (k = 0; k < pd->frame_size * pd->channels; k++) {
-                                output_frame[k] /= 32768.0f;
-                                if (output_frame[k] > 1.0f) {
-                                        output_frame[k] = 1.0f;
-                                } else if (output_frame[k] < -1.0f) {
-                                        output_frame[k] = -1.0f;
-                                }
-                        }
-
-                        jack_ringbuffer_write(pd->rb, (char *)output_frame,
-					      pd->channels * pd->frame_size * sample_size);
-                }
+		if (!pd->exploring) {
+			speex_bits_read_from(&(pd->bits), op->packet, op->bytes);
+			
+			for (j = 0; j < pd->nframes; j++) {
+				
+				int k;
+				
+				speex_decode(pd->decoder, &(pd->bits), output_frame);
+				
+				for (k = 0; k < pd->frame_size * pd->channels; k++) {
+					output_frame[k] /= 32768.0f;
+					if (output_frame[k] > 1.0f) {
+						output_frame[k] = 1.0f;
+					} else if (output_frame[k] < -1.0f) {
+						output_frame[k] = -1.0f;
+					}
+				}
+				
+				jack_ringbuffer_write(pd->rb, (char *)output_frame,
+						      pd->channels * pd->frame_size * sample_size);
+			}
+		}
 	}
 	
 	++pd->packetno;
@@ -194,8 +198,8 @@ speex_dec_open(decoder_t * dec, char * filename) {
 
 	int enh = 1;
 	char ogg_sig[4];
-	long length_in_ms = 0;
 	long length_in_bytes = 0;
+	long length_in_samples = 0;
 
 
 	if ((pd->speex_file = fopen(filename, "rb")) == NULL) {
@@ -237,16 +241,10 @@ speex_dec_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_BADLIB;
 	}
 
-	oggz_seek_units(pd->oggz, 0L, SEEK_END);
-	length_in_ms = oggz_tell_units(pd->oggz);
-	switch (pd->sample_rate) { /* XXX empirical compensations */
-	case 8000: length_in_ms *= 1.0868317f;
-		break;
-	case 16000: length_in_ms *= 1.0421704f;
-		break;
-	case 32000: length_in_ms *= 1.0207854f;
-		break;
-	}
+	/* parse ogg packets till eof to get the last granulepos */
+	while (oggz_read(pd->oggz, 1024) > 0)
+		;
+
 	length_in_bytes = oggz_tell(pd->oggz);
 
 	oggz_close(pd->oggz);
@@ -273,10 +271,11 @@ speex_dec_open(decoder_t * dec, char * filename) {
 	fdec->SR = pd->sample_rate;
 	fdec->file_lib = SPEEX_LIB;
 
-	fdec->fileinfo.total_samples = length_in_ms * pd->sample_rate / 1000.0f;
+	length_in_samples = pd->granulepos + pd->nframes - 1;
+	fdec->fileinfo.total_samples = length_in_samples;
 	fdec->fileinfo.format_major = FORMAT_SPEEX;
 	fdec->fileinfo.format_minor = 0;
-	fdec->fileinfo.bps = 8 * length_in_bytes / (length_in_ms / 1000.0f);
+	fdec->fileinfo.bps = 8 * length_in_bytes / (length_in_samples / pd->sample_rate);
 
 	return DECODER_OPEN_SUCCESS;
 }

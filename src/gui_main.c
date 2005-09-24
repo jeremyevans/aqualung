@@ -383,7 +383,7 @@ gchar default_title[MAXLEN];
 			gtk_label_set_text(GTK_LABEL(label_title), str);
 	} else {
 		if (GTK_IS_LABEL(label_title)) {
-                        sprintf(default_title, "aqualung %s", aqualung_version);
+                        sprintf(default_title, "Aqualung %s", aqualung_version);
 			gtk_label_set_text(GTK_LABEL(label_title), default_title);
 /*			gtk_label_set_text(GTK_LABEL(label_title), "");*/
                 }

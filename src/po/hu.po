@@ -722,7 +722,7 @@ msgid "Add new artist..."
 msgstr "Új elõadó hozzáadása..."
 
 #: ../music_browser.c:2717 ../music_browser.c:2736 ../music_browser.c:2779
-#: ../music_browser.c:2822 ../playlist.c:1422
+#: ../music_browser.c:2822 ../playlist.c:1476
 msgid "Search..."
 msgstr "Keresés..."
 
@@ -770,7 +770,7 @@ msgstr "Új szám hozzáadása..."
 msgid "Edit track..."
 msgstr "Szám szerkesztése..."
 
-#: ../music_browser.c:2817 ../playlist.c:1421
+#: ../music_browser.c:2817 ../playlist.c:1475
 msgid "File info..."
 msgstr "Fájl infó..."
 
@@ -848,7 +848,7 @@ msgstr "Vezérlõgombok elhelyezése a lejátszólista alján"
 msgid "Simple view in LADSPA patch builder"
 msgstr "Egyszerû nézet a LADSPA effekt szerkesztõben"
 
-#: ../options.c:1093 ../playlist.c:1393
+#: ../options.c:1093 ../playlist.c:1447
 msgid "Playlist"
 msgstr "Lejátszólista"
 
@@ -1119,98 +1119,96 @@ msgstr "Színek"
 msgid "Active song in playlist: "
 msgstr "Aktív szám a lejátszólistában: "
 
-#: ../playlist.c:573
+#: ../playlist.c:583
 msgid "Please specify the file to save the playlist to."
 msgstr "Add meg az elmentendõ lejátszólista fájlt."
 
-#: ../playlist.c:615 ../playlist.c:671
+#: ../playlist.c:625 ../playlist.c:681
 msgid "Please specify the file to load the playlist from."
 msgstr "Add meg a betöltendõ lejátszólista fájlt."
 
-#: ../playlist.c:845
+#: ../playlist.c:855
 msgid ""
 "Playback RVA is currently disabled. Enable it at Settings->Playback RVA."
 msgstr ""
 "A lejátszáskori RVA jelenleg nem engedélyezett.\n"
 "Engedélyezd a Beállítások->Lejátszáskori RVA helyen."
 
-#: ../playlist.c:999 ../playlist.c:1002 ../playlist.c:1005 ../playlist.c:2076
-#: ../playlist.c:2079 ../playlist.c:2082 ../playlist.c:2362 ../playlist.c:2365
-#: ../playlist.c:2368 ../playlist.c:2577 ../playlist.c:2580 ../playlist.c:2583
+#: ../playlist.c:1030 ../playlist.c:1033 ../playlist.c:1036
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: ../playlist.c:1071
+#: ../playlist.c:1125
 msgid "Select files..."
 msgstr "Fájlok kiválasztása..."
 
-#: ../playlist.c:1334 ../playlist.c:1363
+#: ../playlist.c:1388 ../playlist.c:1417
 #, c-format
 msgid "%d track [%s]"
 msgstr "%d szám [%s]"
 
-#: ../playlist.c:1336 ../playlist.c:1365
+#: ../playlist.c:1390 ../playlist.c:1419
 #, c-format
 msgid "%d tracks [%s]"
 msgstr "%d szám [%s]"
 
-#: ../playlist.c:1412
+#: ../playlist.c:1466
 msgid "Save playlist"
 msgstr "Lejátszólista mentése"
 
-#: ../playlist.c:1413
+#: ../playlist.c:1467
 msgid "Load playlist"
 msgstr "Lejátszólista betöltése"
 
-#: ../playlist.c:1414
+#: ../playlist.c:1468
 msgid "Enqueue playlist"
 msgstr "Lejátszólista hozzáfûzése"
 
-#: ../playlist.c:1416
+#: ../playlist.c:1470
 msgid "Calculate RVA"
 msgstr "Hangosság meghatározása"
 
-#: ../playlist.c:1418
+#: ../playlist.c:1472
 msgid "Separate"
 msgstr "Egyéni"
 
-#: ../playlist.c:1419
+#: ../playlist.c:1473
 msgid "Average"
 msgstr "Átlagos"
 
-#: ../playlist.c:1592
+#: ../playlist.c:1646
 msgid "Selected: "
 msgstr "Kijelölve: "
 
-#: ../playlist.c:1602
+#: ../playlist.c:1656
 msgid "Total: "
 msgstr "Összesen: "
 
-#: ../playlist.c:1615
+#: ../playlist.c:1669
 msgid "Add files..."
 msgstr "Fájlok hozzáadása..."
 
-#: ../playlist.c:1619 ../playlist.c:1635
+#: ../playlist.c:1673 ../playlist.c:1689
 msgid "Select all"
 msgstr "Összes elem kijelölése"
 
-#: ../playlist.c:1623 ../playlist.c:1660
+#: ../playlist.c:1677 ../playlist.c:1714
 msgid "Remove selected"
 msgstr "Kijelölt elemek törlése"
 
-#: ../playlist.c:1630
+#: ../playlist.c:1684
 msgid "Select none"
 msgstr "Kijelölés megszüntetése"
 
-#: ../playlist.c:1640
+#: ../playlist.c:1694
 msgid "Invert selection"
 msgstr "Kijelölés megfordítása"
 
-#: ../playlist.c:1650
+#: ../playlist.c:1704
 msgid "Cut selected"
 msgstr "Kijelölt elemek megtartása"
 
-#: ../playlist.c:1655
+#: ../playlist.c:1709
 msgid "Remove all"
 msgstr "Mindent eltávolít"
 

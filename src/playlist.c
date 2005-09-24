@@ -189,6 +189,16 @@ extern int drag_info;
 int * seqnums = NULL;
 
 
+typedef struct _playlist_filemeta {
+        char * title;
+        float duration;
+        float voladj;
+} playlist_filemeta;
+
+playlist_filemeta * playlist_filemeta_get(char * physical_name, char * alt_name);
+void playlist_filemeta_free(playlist_filemeta * plfm);
+
+
 void rem__sel_cb(gpointer data);
 void cut__sel_cb(gpointer data);
 void plist__search_cb(gpointer data);
@@ -933,119 +943,162 @@ rem_cb(GtkWidget * widget, GdkEvent * event) {
 }
 
 
-void
-add_file_to_playlist(gchar *filename) {
+/* physical name should be UTF8 coded */
+/* if alt_name != NULL, it will be used as title if no meta is found */
+playlist_filemeta *
+playlist_filemeta_get(char * physical_name, char * alt_name) {
 
-        float voladj = 0.0f;
-	char voladj_str[32];
-	float duration = 0.0f;
-	char duration_str[32];
+/* XXX */
+	char display_name[MAXLEN];
 	char artist_name[MAXLEN];
 	char record_name[MAXLEN];
 	char track_name[MAXLEN];
-	char display_name[MAXLEN];
 	metadata * meta = NULL;
 	int use_meta = 0;
-	GtkTreeIter play_iter;
 	gchar * substr;
 
+	playlist_filemeta * plfm = calloc(1, sizeof(playlist_filemeta));
+	if (!plfm) {
+		fprintf(stderr, "calloc error in playlist_filemeta_get()\n");
+		return NULL;
+	}
 
-        if ((substr = strrchr(filename, '/')) == NULL)
-                substr = filename;
+        if ((substr = strrchr(physical_name, '/')) == NULL)
+                substr = physical_name;
         else
                 ++substr;
 
-        artist_name[0] = '\0';
-        record_name[0] = '\0';
-        track_name[0] = '\0';
+	plfm->duration = get_file_duration(physical_name);
 
-        if (auto_use_ext_meta_artist ||
-            auto_use_ext_meta_record ||
-            auto_use_ext_meta_track) {
+	if (rva_is_enabled) {
+		meta = meta_new();
+		if (meta_read(meta, physical_name)) {
+			if (!meta_get_rva(meta, &(plfm->voladj))) {
+				plfm->voladj = 0.0f;
+			}
+		} else {
+			plfm->voladj = 0.0f;
+		}
+		meta_free(meta);
+		meta = NULL;
+	} else {
+		plfm->voladj = 0.0f;
+	}
+	
+	artist_name[0] = '\0';
+	record_name[0] = '\0';
+	track_name[0] = '\0';
 
-                meta = meta_new();
-                if (!meta_read(meta, filename)) {
-                        meta_free(meta);
-                        meta = NULL;
-                }
-        }
+	if (auto_use_ext_meta_artist ||
+	    auto_use_ext_meta_record ||
+	    auto_use_ext_meta_track) {
+		
+		meta = meta_new();
+		if (!meta_read(meta, physical_name)) {
+			meta_free(meta);
+			meta = NULL;
+		}
+	}
+	
+	use_meta = 0;
+	if ((meta != NULL) && auto_use_ext_meta_artist) {
+		meta_get_artist(meta, artist_name);
+		if (artist_name[0] != '\0') {
+			use_meta = 1;
+		}
+	}
+	
+	if ((meta != NULL) && auto_use_ext_meta_record) {
+		meta_get_record(meta, record_name);
+		if (record_name[0] != '\0') {
+			use_meta = 1;
+		}
+	}
+	
+	if ((meta != NULL) && auto_use_ext_meta_track) {
+		meta_get_title(meta, track_name);
+		if (track_name[0] != '\0') {
+			use_meta = 1;
+		}
+	}
+	
+	if ((artist_name[0] != '\0') ||
+	    (record_name[0] != '\0') ||
+	    (track_name[0] != '\0')) {
+		
+		if (artist_name[0] == '\0') {
+			strcpy(artist_name, _("Unknown"));
+		}
+		if (record_name[0] == '\0') {
+			strcpy(record_name, _("Unknown"));
+		}
+		if (track_name[0] == '\0') {
+			strcpy(track_name, _("Unknown"));
+		}
+	} else {
+		use_meta = 0;
+	}
+	
+	if (meta != NULL) {
+		meta_free(meta);
+		meta = NULL;
+		if (use_meta) {
+			make_title_string(display_name, title_format,
+					  artist_name, record_name, track_name);
+		} else {
+			if (alt_name != NULL) {
+				strcpy(display_name, alt_name);
+			} else {
+				strcpy(display_name, substr);
+			} 
+		}
+	} else {
+		if (alt_name != NULL) {
+			strcpy(display_name, alt_name);
+		} else {
+			strcpy(display_name, substr);
+		}
+	}
 
-        if ((meta != NULL) && auto_use_ext_meta_artist) {
-                meta_get_artist(meta, artist_name);
-                if (artist_name[0] != '\0') {
-                        use_meta = 1;
-                }
-        }
+	plfm->title = strdup(display_name);
 
-        if ((meta != NULL) && auto_use_ext_meta_record) {
-                meta_get_record(meta, record_name);
-                if (record_name[0] != '\0') {
-                        use_meta = 1;
-                }
-        }
-
-        if ((meta != NULL) && auto_use_ext_meta_track) {
-                meta_get_title(meta, track_name);
-                if (track_name[0] != '\0') {
-                        use_meta = 1;
-                }
-        }
-
-        if ((artist_name[0] != '\0') ||
-            (record_name[0] != '\0') ||
-            (track_name[0] != '\0')) {
-
-                if (artist_name[0] == '\0') {
-                        strcpy(artist_name, _("Unknown"));
-                }
-                if (record_name[0] == '\0') {
-                        strcpy(record_name, _("Unknown"));
-                }
-                if (track_name[0] == '\0') {
-                        strcpy(track_name, _("Unknown"));
-                }
-        } else {
-                use_meta = 0;
-        }
-
-        if (meta != NULL) {
-                meta_free(meta);
-                meta = NULL;
-                if (use_meta) {
-                        make_title_string(display_name, title_format,
-                                          artist_name, record_name, track_name);
-                } else {
-                        strcpy(display_name, substr);
-                }
-        } else {
-                strcpy(display_name, substr);
-        }
+	return plfm;
+}
 
 
-        if (rva_is_enabled) {
-                meta = meta_new();
-                if (meta_read(meta, filename)) {
-                        if (!meta_get_rva(meta, &voladj)) {
-                                voladj = 0.0f;
-                        }
-                } else {
-                        voladj = 0.0f;
-                }
-                meta_free(meta);
-        } else {
-                voladj = 0.0f;
-        }
-        voladj2str(voladj, voladj_str);
+void
+playlist_filemeta_free(playlist_filemeta * plfm) {
 
-        duration = get_file_duration(filename);
-        time2time(duration, duration_str);
+	free(plfm->title);
+	free(plfm);
+}
+
+
+void
+add_file_to_playlist(gchar *filename) {
+
+	char voladj_str[32];
+	char duration_str[32];
+	GtkTreeIter play_iter;
+	playlist_filemeta * plfm = NULL;
+
+	if ((plfm = playlist_filemeta_get(filename, NULL)) == NULL) {
+		fprintf(stderr, "add_file_to_playlist(): playlist_filemeta_get() returned NULL\n");
+		return;
+	}
+
+        voladj2str(plfm->voladj, voladj_str);
+        time2time(plfm->duration, duration_str);
 
         gtk_list_store_append(play_store, &play_iter);
-        gtk_list_store_set(play_store, &play_iter, 0, display_name, 1, filename,
+        gtk_list_store_set(play_store, &play_iter, 0, plfm->title, 1, filename,
                            2, pl_color_inactive,
-                           3, voladj, 4, voladj_str,
-                           5, duration, 6, duration_str, 7, PANGO_WEIGHT_NORMAL, -1);
+                           3, plfm->voladj, 4, voladj_str,
+                           5, plfm->duration, 6, duration_str, 7, PANGO_WEIGHT_NORMAL, -1);
+
+	playlist_filemeta_free(plfm);
 }
+
 
 gint
 dialog_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
@@ -1060,6 +1113,7 @@ dialog_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 
         return FALSE;
 }
+
 
 void
 direct_add(GtkWidget * widget, gpointer * data) {
@@ -1910,17 +1964,9 @@ load_m3u(char * filename, int enqueue) {
 	char tmp[MAXLEN];
 	int have_name = 0;
 	GtkTreeIter iter;
-	float voladj;
 	char voladj_str[32];
-	float duration;
 	char duration_str[32];
-
-	char artist_name[MAXLEN];
-	char record_name[MAXLEN];
-	char track_name[MAXLEN];
-	char display_name[MAXLEN];
-	metadata * meta = NULL;
-	int use_meta;
+	playlist_filemeta * plfm = NULL;
 
 
 	if ((str = strrchr(filename, '/')) == NULL) {
@@ -2011,103 +2057,28 @@ load_m3u(char * filename, int enqueue) {
 				}
 				have_name = 0;
 
-				duration = get_file_duration(g_locale_to_utf8(path, -1, NULL, NULL, NULL));
-				time2time(duration, duration_str);
-
-				if (rva_is_enabled) {
-					meta = meta_new();
-					if (meta_read(meta, g_locale_to_utf8(path, -1, NULL, NULL, NULL))) {
-						if (!meta_get_rva(meta, &voladj)) {
-							voladj = 0.0f;
-						}
-					} else {
-						voladj = 0.0f;
-					}
-					meta_free(meta);
-					meta = NULL;
-				} else {
-					voladj = 0.0f;
-				}
 				
-				voladj2str(voladj, voladj_str);
-
-				artist_name[0] = '\0';
-                                record_name[0] = '\0';
-                                track_name[0] = '\0';
-
-                                if (auto_use_ext_meta_artist ||
-                                    auto_use_ext_meta_record ||
-                                    auto_use_ext_meta_track) {
-
-                                        meta = meta_new();
-                                        if (!meta_read(meta, g_locale_to_utf8(path, -1, NULL, NULL, NULL))) {
-                                                meta_free(meta);
-                                                meta = NULL;
-                                        }
-                                }
-
-				use_meta = 0;
-                                if ((meta != NULL) && auto_use_ext_meta_artist) {
-                                        meta_get_artist(meta, artist_name);
-					if (artist_name[0] != '\0') {
-						use_meta = 1;
-					}
-                                }
-
-                                if ((meta != NULL) && auto_use_ext_meta_record) {
-                                        meta_get_record(meta, record_name);
-					if (record_name[0] != '\0') {
-						use_meta = 1;
-					}
-                                }
-
-                                if ((meta != NULL) && auto_use_ext_meta_track) {
-                                        meta_get_title(meta, track_name);
-					if (track_name[0] != '\0') {
-						use_meta = 1;
-					}
-                                }
-
-				if ((artist_name[0] != '\0') ||
-				    (record_name[0] != '\0') ||
-				    (track_name[0] != '\0')) {
-
-					if (artist_name[0] == '\0') {
-						strcpy(artist_name, _("Unknown"));
-					}
-					if (record_name[0] == '\0') {
-						strcpy(record_name, _("Unknown"));
-					}
-					if (track_name[0] == '\0') {
-						strcpy(track_name, _("Unknown"));
-					}
-				} else {
-					use_meta = 0;
+				plfm = playlist_filemeta_get(g_locale_to_utf8(path, -1, NULL, NULL, NULL),
+							     have_name ? name : NULL);
+				if (plfm == NULL) {
+					fprintf(stderr, "load_m3u(): playlist_filemeta_get() returned NULL\n");
+					continue;
 				}
 
-                                if (meta != NULL) {
-                                        meta_free(meta);
-                                        meta = NULL;
-					if (use_meta) {
-						make_title_string(display_name, title_format,
-								  artist_name, record_name, track_name);
-					} else {
-						strcpy(display_name, g_locale_to_utf8(name, -1,
-										      NULL, NULL, NULL));
-					}
-                                } else {
-                                        strcpy(display_name, g_locale_to_utf8(name, -1, NULL, NULL, NULL));
-                                }
-
-
+				time2time(plfm->duration, duration_str);
+				voladj2str(plfm->voladj, voladj_str);
 
 				gtk_list_store_append(play_store, &iter);
 				gtk_list_store_set(play_store, &iter,
-						   0, display_name,
+						   0, plfm->title,
 						   1, g_locale_to_utf8(path, -1, NULL, NULL, NULL),
 						   2, pl_color_inactive,
-						   3, voladj, 4, voladj_str,
-						   5, duration, 6, duration_str, 7, PANGO_WEIGHT_NORMAL, -1);
+						   3, plfm->voladj, 4, voladj_str,
+						   5, plfm->duration, 6, duration_str,
+						   7, PANGO_WEIGHT_NORMAL, -1);
+
+				playlist_filemeta_free(plfm);
+				plfm = NULL;
 			}
 		}
 	}
@@ -2133,17 +2104,9 @@ load_pls(char * filename, int enqueue) {
 	char numstr_file[10];
 	char numstr_title[10];
 	GtkTreeIter iter;
-	float voladj;
 	char voladj_str[32];
-	float duration;
 	char duration_str[32];
-
-        char artist_name[MAXLEN];
-        char record_name[MAXLEN];
-        char track_name[MAXLEN];
-        char display_name[MAXLEN];
-	metadata * meta = NULL;
-	int use_meta;
+	playlist_filemeta * plfm = NULL;
 
 
 	if ((str = strrchr(filename, '/')) == NULL) {
@@ -2296,102 +2259,26 @@ load_pls(char * filename, int enqueue) {
 
 			have_file = have_title = 0;
 
-			duration = get_file_duration(g_locale_to_utf8(file, -1, NULL, NULL, NULL));
-			time2time(duration, duration_str);
-
-			if (rva_is_enabled) {
-				meta = meta_new();
-				if (meta_read(meta, g_locale_to_utf8(file, -1, NULL, NULL, NULL))) {
-					if (!meta_get_rva(meta, &voladj)) {
-						voladj = 0.0f;
-					}
-				} else {
-					voladj = 0.0f;
-				}
-				meta_free(meta);
-				meta = NULL;
-			} else {
-				voladj = 0.0f;
+			plfm = playlist_filemeta_get(g_locale_to_utf8(file, -1, NULL, NULL, NULL),
+						     have_title ? title : NULL);
+			if (plfm == NULL) {
+				fprintf(stderr, "load_pls(): playlist_filemeta_get() returned NULL\n");
+				continue;
 			}
 
-			voladj2str(voladj, voladj_str);
-
-			artist_name[0] = '\0';
-			record_name[0] = '\0';
-			track_name[0] = '\0';
-
-			if (auto_use_ext_meta_artist ||
-			    auto_use_ext_meta_record ||
-			    auto_use_ext_meta_track) {
-
-				meta = meta_new();
-				if (!meta_read(meta, g_locale_to_utf8(file, -1, NULL, NULL, NULL))) {
-					meta_free(meta);
-					meta = NULL;
-				}
-			}
-
-			use_meta = 0;
-			if ((meta != NULL) && auto_use_ext_meta_artist) {
-				meta_get_artist(meta, artist_name);
-				if (artist_name[0] != '\0') {
-					use_meta = 1;
-				}
-			}
-
-			if ((meta != NULL) && auto_use_ext_meta_record) {
-				meta_get_record(meta, record_name);
-				if (record_name[0] != '\0') {
-					use_meta = 1;
-				}
-			}
-
-			if ((meta != NULL) && auto_use_ext_meta_track) {
-				meta_get_title(meta, track_name);
-				if (track_name[0] != '\0') {
-					use_meta = 1;
-				}
-			}
-
-
-			if ((artist_name[0] != '\0') ||
-			    (record_name[0] != '\0') ||
-			    (track_name[0] != '\0')) {
-				
-				if (artist_name[0] == '\0') {
-					strcpy(artist_name, _("Unknown"));
-				}
-				if (record_name[0] == '\0') {
-					strcpy(record_name, _("Unknown"));
-				}
-				if (track_name[0] == '\0') {
-					strcpy(track_name, _("Unknown"));
-				}
-			} else {
-				use_meta = 0;
-			}
-
-			if (meta != NULL) {
-				meta_free(meta);
-				meta = NULL;
-				if (use_meta) {
-					make_title_string(display_name, title_format,
-							  artist_name, record_name, track_name);
-				} else {
-					strcpy(display_name, g_locale_to_utf8(file, -1, NULL, NULL, NULL));
-				}
-			} else {
-				strcpy(display_name, g_locale_to_utf8(file, -1, NULL, NULL, NULL));
-			}
-
+			time2time(plfm->duration, duration_str);
+			voladj2str(plfm->voladj, voladj_str);
 
 			gtk_list_store_append(play_store, &iter);
 			gtk_list_store_set(play_store, &iter,
-					   0, display_name,
+					   0, plfm->title,
 					   1, g_locale_to_utf8(file, -1, NULL, NULL, NULL),
 					   2, pl_color_inactive,
-					   3, voladj, 4, voladj_str,
-					   5, duration, 6, duration_str, -1);
+					   3, plfm->voladj, 4, voladj_str,
+					   5, plfm->duration, 6, duration_str, -1);
+
+			playlist_filemeta_free(plfm);
+			plfm = NULL;
 		}
 	}
 	delayed_playlist_rearrange(100);
@@ -2454,22 +2341,12 @@ void
 add_to_playlist(char * filename, int enqueue) {
 
 	char fullname[MAXLEN];
-	char * fullname_utf8;
-	char * endname;
 	char * home;
 	char * path = filename;
 	GtkTreeIter iter;
-	float voladj;
 	char voladj_str[32];
-	float duration;
 	char duration_str[32];
-
-        char artist_name[MAXLEN];
-        char record_name[MAXLEN];
-        char track_name[MAXLEN];
-        char display_name[MAXLEN];
-	metadata * meta = NULL;
-	int use_meta;
+	playlist_filemeta * plfm = NULL;
 
 
 	if (!filename)
@@ -2504,112 +2381,26 @@ add_to_playlist(char * filename, int enqueue) {
 		if (!enqueue)
 			gtk_list_store_clear(play_store);
 
-		if ((endname = strrchr(fullname, '/')) == NULL) {
-			endname = fullname;
-		} else {
-			++endname;
+		plfm = playlist_filemeta_get(g_locale_to_utf8(fullname, -1, NULL, NULL, NULL), NULL);
+		if (plfm == NULL) {
+			fprintf(stderr, "add_to_playlist(): playlist_filemeta_get() returned NULL\n");
+			return;
 		}
 
-
-		fullname_utf8 = g_locale_to_utf8(fullname, -1, NULL, NULL, NULL);
-		duration = get_file_duration(fullname_utf8);
-
-		if (rva_is_enabled) {
-			meta = meta_new();
-			if (meta_read(meta, fullname_utf8)) {
-				if (!meta_get_rva(meta, &voladj)) {
-					voladj = 0.0f;
-				}
-			} else {
-				voladj = 0.0f;
-			}
-			meta_free(meta);
-			meta = NULL;
-		} else {
-			voladj = 0.0f;
-		}
-
-		voladj2str(voladj, voladj_str);
-
-
-		artist_name[0] = '\0';
-		record_name[0] = '\0';
-		track_name[0] = '\0';
-
-		if (auto_use_ext_meta_artist ||
-		    auto_use_ext_meta_record ||
-		    auto_use_ext_meta_track) {
-
-			meta = meta_new();
-			if (!meta_read(meta, fullname_utf8)) {
-				meta_free(meta);
-				meta = NULL;
-			}
-		}
-
-		use_meta = 0;
-		if ((meta != NULL) && auto_use_ext_meta_artist) {
-			meta_get_artist(meta, artist_name);
-			if (artist_name[0] != '\0') {
-				use_meta = 1;
-			}
-		}
-
-		if ((meta != NULL) && auto_use_ext_meta_record) {
-			meta_get_record(meta, record_name);
-			if (record_name[0] != '\0') {
-				use_meta = 1;
-			}
-		}
-
-		if ((meta != NULL) && auto_use_ext_meta_track) {
-			meta_get_title(meta, track_name);
-			if (track_name[0] != '\0') {
-				use_meta = 1;
-			}
-		}
-
-		if ((artist_name[0] != '\0') ||
-		    (record_name[0] != '\0') ||
-		    (track_name[0] != '\0')) {
-			
-			if (artist_name[0] == '\0') {
-				strcpy(artist_name, _("Unknown"));
-			}
-			if (record_name[0] == '\0') {
-				strcpy(record_name, _("Unknown"));
-			}
-			if (track_name[0] == '\0') {
-				strcpy(track_name, _("Unknown"));
-			}
-		} else {
-			use_meta = 0;
-		}
-
-		if (meta != NULL) {
-			meta_free(meta);
-			meta = NULL;
-			if (use_meta) {
-				make_title_string(display_name, title_format,
-						  artist_name, record_name, track_name);
-			} else {
-				strcpy(display_name, g_locale_to_utf8(endname, -1, NULL, NULL, NULL));
-			}
-		} else {
-			strcpy(display_name, g_locale_to_utf8(endname, -1, NULL, NULL, NULL));
-		}
-
-
-		time2time(duration, duration_str);
+		voladj2str(plfm->voladj, voladj_str);
+		time2time(plfm->duration, duration_str);
 
                 gtk_list_store_append(play_store, &iter);
                 gtk_list_store_set(play_store, &iter,
-				   0, display_name,
-				   1, fullname_utf8,
+				   0, plfm->title,
+				   1, g_locale_to_utf8(fullname, -1, NULL, NULL, NULL),
 				   2, pl_color_inactive,
-				   3, voladj, 4, voladj_str, 5, duration, 6, duration_str, -1);
+				   3, plfm->voladj, 4, voladj_str,
+				   5, plfm->duration, 6, duration_str,
+				   -1);
 
-		g_free(fullname_utf8);
+		playlist_filemeta_free(plfm);
+		plfm = NULL;
 
 		delayed_playlist_rearrange(100);
 		break;

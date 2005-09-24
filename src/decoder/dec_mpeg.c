@@ -107,8 +107,8 @@ mpeg_explore(decoder_t * dec) {
 
         bri = (byte2 >> 4) & 0x0f;
         switch (bri) {
-        case 0: pd->bitrate = 256000; /* XXX random value so it's not zero */
-                printf("Warning: free-format MPEG detected. Be prepared for weird errors.\n");
+        case 0: printf("Unsupported free-format MPEG detected.\n");
+		return 1;
                 break;
         case 15:
                 return 1;

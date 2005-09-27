@@ -1,9 +1,6 @@
-SUBDIRS = decoder po
+SUBDIRS = decoder img po
 
 bin_PROGRAMS = aqualung
-
-imagedir = $(pkgdatadir)
-image_DATA = drag.png icon_16.png icon_32.png icon_64.png logo.png
 
 EXTRA_DIST = version.sh version.h.in
 

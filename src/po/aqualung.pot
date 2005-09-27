@@ -659,7 +659,7 @@ msgstr ""
 msgid "(no comment)"
 msgstr ""
 
-#: ../music_browser.c:2634
+#: ../music_browser.c:2634 ../options.c:1217
 msgid "Music Store"
 msgstr ""
 
@@ -833,10 +833,6 @@ msgstr ""
 
 #: ../options.c:1209
 msgid "Track lengths"
-msgstr ""
-
-#: ../options.c:1217
-msgid "Music store"
 msgstr ""
 
 #: ../options.c:1223
@@ -1031,7 +1027,7 @@ msgid "Big timer: "
 msgstr ""
 
 #: ../options.c:1742
-msgid "Small timer: "
+msgid "Small timers: "
 msgstr ""
 
 #: ../options.c:1770

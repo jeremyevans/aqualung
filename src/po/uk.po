@@ -701,7 +701,7 @@ msgstr "Прибрати дор╕жку"
 msgid "(no comment)"
 msgstr "(без коментаря)"
 
-#: ../music_browser.c:2634
+#: ../music_browser.c:2634 ../options.c:1217
 msgid "Music Store"
 msgstr "Музичний Склад"
 
@@ -892,11 +892,6 @@ msgstr "Значення ПВР"
 #: ../options.c:1209
 msgid "Track lengths"
 msgstr "Тривал╕сть дор╕жок"
-
-#: ../options.c:1217
-#, fuzzy
-msgid "Music store"
-msgstr "Музичний Склад"
 
 #: ../options.c:1223
 msgid "Hide the Music Store comment pane"
@@ -1103,7 +1098,7 @@ msgstr "Великий шрифт таймера: "
 
 #: ../options.c:1742
 #, fuzzy
-msgid "Small timer: "
+msgid "Small timers: "
 msgstr "Маленький шрифт таймера:"
 
 #: ../options.c:1770
@@ -1354,6 +1349,10 @@ msgstr "Перервати"
 #, c-format
 msgid "%s"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Music store"
+#~ msgstr "Музичний Склад"
 
 #~ msgid "Dismiss"
 #~ msgstr "В╕дхилити"

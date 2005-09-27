@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2005-09-19 12:53+0200\n"
+"PO-Revision-Date: 2005-09-27 17:02+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -713,7 +713,7 @@ msgstr "Szám eltávolítása"
 msgid "(no comment)"
 msgstr "(nincs megjegyzés)"
 
-#: ../music_browser.c:2634
+#: ../music_browser.c:2634 ../options.c:1217
 msgid "Music Store"
 msgstr "Zenetár"
 
@@ -842,7 +842,7 @@ msgstr "Buboréksúgók engedélyezése"
 
 #: ../options.c:1071
 msgid "Put control buttons at the bottom of playlist"
-msgstr "Vezérlõgombok elhelyezése a lejátszólista alján"
+msgstr "Vezérlõgombok elhelyezése a Lejátszólista alján"
 
 #: ../options.c:1081
 msgid "Simple view in LADSPA patch builder"
@@ -866,11 +866,11 @@ msgstr "Állapotsor engedélyezése a Lejátszólistában"
 
 #: ../options.c:1130
 msgid "Show RVA values in playlist"
-msgstr "RVA értékek megjelenítése a lejátszólistában"
+msgstr "RVA értékek megjelenítése a Lejátszólistában"
 
 #: ../options.c:1141
 msgid "Show track lengths in playlist"
-msgstr "Számok hosszának megjelenítése a lejátszólistában"
+msgstr "Számok hosszának megjelenítése a Lejátszólistában"
 
 #: ../options.c:1152
 msgid "Show active track name in bold"
@@ -878,7 +878,7 @@ msgstr "Aktív szám megjelenítése félkövérrel"
 
 #: ../options.c:1163
 msgid "Playlist column order"
-msgstr "Oszlopok sorrendje a lejátszólistában"
+msgstr "Oszlopok sorrendje a Lejátszólistában"
 
 #: ../options.c:1170
 msgid ""
@@ -904,47 +904,41 @@ msgstr "RVA értékek"
 msgid "Track lengths"
 msgstr "Szám hosszak"
 
-#: ../options.c:1217
-#, fuzzy
-msgid "Music store"
-msgstr "Zenetár"
-
 #: ../options.c:1223
 msgid "Hide the Music Store comment pane"
 msgstr "A Zenetár komment mezõjének elrejtése"
 
 #: ../options.c:1232
-#, fuzzy
 msgid "Cover art"
-msgstr "Elõadó eltávolítása"
+msgstr "Lemezborító"
 
 #: ../options.c:1241
 msgid "Default cover width:"
-msgstr ""
+msgstr "Alapértelmezett borítóméret:"
 
 #: ../options.c:1249
 msgid "50 pixels"
-msgstr ""
+msgstr "50 képpont"
 
 #: ../options.c:1250
 msgid "100 pixels"
-msgstr ""
+msgstr "100 képpont"
 
 #: ../options.c:1251
 msgid "200 pixels"
-msgstr ""
+msgstr "200 képpont"
 
 #: ../options.c:1252
 msgid "300 pixels"
-msgstr ""
+msgstr "300 képpont"
 
 #: ../options.c:1253
 msgid "use browser window width"
-msgstr ""
+msgstr "ablak szélességéhez igazít"
 
 #: ../options.c:1260
 msgid "Don't magnify images with smaller width"
-msgstr ""
+msgstr "A kisebb képeket ne nagyítsa"
 
 #: ../options.c:1270
 msgid "DSP"
@@ -1108,8 +1102,8 @@ msgid "Big timer: "
 msgstr "Nagy idõkijelzõ: "
 
 #: ../options.c:1742
-msgid "Small timer: "
-msgstr "Kis idõkijelzõ: "
+msgid "Small timers: "
+msgstr "Kis idõkijelzõk: "
 
 #: ../options.c:1770
 msgid "Colors"
@@ -1117,7 +1111,7 @@ msgstr "Színek"
 
 #: ../options.c:1782
 msgid "Active song in playlist: "
-msgstr "Aktív szám a lejátszólistában: "
+msgstr "Aktív szám a Lejátszólistában: "
 
 #: ../playlist.c:583
 msgid "Please specify the file to save the playlist to."

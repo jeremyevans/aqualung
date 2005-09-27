@@ -427,6 +427,7 @@ AC_OUTPUT([Makefile \
 	   skin/woody/Makefile \
 	   src/Makefile \
 	   src/decoder/Makefile \
+	   src/img/Makefile \
 	   src/po/Makefile])
 
 

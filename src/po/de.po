@@ -709,7 +709,7 @@ msgstr "Track entfernen"
 msgid "(no comment)"
 msgstr "(kein Kommentar)"
 
-#: ../music_browser.c:2634
+#: ../music_browser.c:2634 ../options.c:1217
 msgid "Music Store"
 msgstr "Musikladen"
 
@@ -901,11 +901,6 @@ msgstr ""
 #: ../options.c:1209
 msgid "Track lengths"
 msgstr "Tracksl‰nge"
-
-#: ../options.c:1217
-#, fuzzy
-msgid "Music store"
-msgstr "Musikladen"
 
 #: ../options.c:1223
 #, fuzzy
@@ -1109,7 +1104,7 @@ msgstr "Musikladen"
 
 #: ../options.c:1742
 #, fuzzy
-msgid "Small timer: "
+msgid "Small timers: "
 msgstr "Playliste"
 
 #: ../options.c:1770
@@ -1366,6 +1361,10 @@ msgstr "Abbrechen"
 #, c-format
 msgid "%s"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Music store"
+#~ msgstr "Musikladen"
 
 #~ msgid "Dismiss"
 #~ msgstr "Schlieﬂen"

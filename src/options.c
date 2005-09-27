@@ -913,13 +913,41 @@ gchar str[MAX_COLORNAME_LEN];
         strncpy(activesong_color, str, MAX_COLORNAME_LEN);
 }
 
+GtkWidget *
+create_notebook_tab(char * text, char * imgfile) {
+
+	GtkWidget * vbox;
+        GdkPixbuf * pixbuf;
+        GtkWidget * image;
+	GtkWidget * label;
+
+        char path[MAXLEN];
+
+	vbox = gtk_vbox_new(FALSE, 0);
+
+	label = gtk_label_new(text);
+	gtk_box_pack_end(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+
+	sprintf(path, "%s/%s", DATADIR, imgfile);
+
+        pixbuf = gdk_pixbuf_new_from_file(path, NULL);
+
+	if (pixbuf) {
+		image = gtk_image_new_from_pixbuf(pixbuf);
+		gtk_box_pack_end(GTK_BOX(vbox), image, FALSE, FALSE, 0);
+	}
+
+	gtk_widget_show_all(vbox);
+
+	return vbox;
+}
+
 void
 create_options_window(void) {
 
         GtkWidget * notebook;
 	GtkWidget * vbox;
 
-	GtkWidget * label_general;
 	GtkWidget * vbox_general;
 	GtkWidget * frame_title;
 	GtkWidget * frame_param;
@@ -932,11 +960,8 @@ create_options_window(void) {
 	GtkWidget * vbox_appearance;
 	GtkWidget * label_title;
 	GtkWidget * label_param;
-	GtkWidget * label_appearance;
 
-	GtkWidget * label_pl;
 	GtkWidget * vbox_pl;
-	GtkWidget * label_ms;
 	GtkWidget * vbox_ms;
 	GtkWidget * frame_plistcol;
 	GtkWidget * vbox_plistcol;
@@ -948,7 +973,6 @@ create_options_window(void) {
 	GtkWidget * plistcol_list;
 	GtkWidget * label;
 
-	GtkWidget * label_dsp;
 	GtkWidget * vbox_dsp;
 	GtkWidget * frame_ladspa;
 	GtkWidget * frame_src;
@@ -959,7 +983,6 @@ create_options_window(void) {
 	GtkWidget * vbox_fonts;
 	GtkWidget * vbox_colors;
 
-	GtkWidget * label_rva;
 	GtkWidget * vbox_rva;
 	GtkWidget * table_rva;
 	GtkWidget * hbox_listening_env;
@@ -972,7 +995,6 @@ create_options_window(void) {
         GtkWidget * label_cwidth;
 	GtkWidget * hbox_cwidth;
 
-	GtkWidget * label_meta;
 	GtkWidget * vbox_meta;
 
         GtkSizeGroup * label_size;
@@ -999,16 +1021,16 @@ create_options_window(void) {
 	gtk_container_add(GTK_CONTAINER(options_window), vbox);
 
 	notebook = gtk_notebook_new();
+	gtk_notebook_set_tab_pos(GTK_NOTEBOOK(notebook), GTK_POS_LEFT);
 	gtk_container_add(GTK_CONTAINER(vbox), notebook);
 
         label_size = gtk_size_group_new(GTK_SIZE_GROUP_BOTH);
 
 	/* "General" notebook page */
 
-	label_general = gtk_label_new(_("General"));
 	vbox_general = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_general), 8);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_general, label_general);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_general, create_notebook_tab(_("General"), "general.png"));
 
 	frame_title = gtk_frame_new(_("Title format"));
 	gtk_box_pack_start(GTK_BOX(vbox_general), frame_title, FALSE, TRUE, 5);
@@ -1090,10 +1112,9 @@ running realtime as a default.\n"));
 
         /* "Playlist" notebook page */
 
-	label_pl = gtk_label_new(_("Playlist"));
 	vbox_pl = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_pl), 8);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_pl, label_pl);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_pl, create_notebook_tab(_("Playlist"), "playlist.png"));
 	
         check_playlist_is_embedded =
 		gtk_check_button_new_with_label(_("Embed playlist into main window"));
@@ -1214,10 +1235,9 @@ to set the column order in the Playlist."));
 
         /* "Music store" notebook page */
 
-	label_ms = gtk_label_new(_("Music store"));
 	vbox_ms = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_ms), 8);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_ms, label_ms);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_ms, create_notebook_tab(_("Music Store"), "music_store.png"));
 
 	check_hide_comment_pane =
 		gtk_check_button_new_with_label(_("Hide the Music Store comment pane"));
@@ -1267,10 +1287,9 @@ to set the column order in the Playlist."));
 
 	/* "DSP" notebook page */
 
-	label_dsp = gtk_label_new(_("DSP"));
 	vbox_dsp = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_dsp), 8);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_dsp, label_dsp);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_dsp, create_notebook_tab(_("DSP"), "dsp.png"));
 
 	frame_ladspa = gtk_frame_new(_("LADSPA plugin processing"));
 	gtk_box_pack_start(GTK_BOX(vbox_dsp), frame_ladspa, FALSE, TRUE, 5);
@@ -1333,10 +1352,9 @@ See the About box and the documentation for details."));
 
 	/* "Playback RVA" notebook page */
 
-	label_rva = gtk_label_new(_("Playback RVA"));
 	vbox_rva = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_rva), 8);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_rva, label_rva);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_rva, create_notebook_tab(_("Playback RVA"), "rva.png"));
 
 	check_rva_is_enabled = gtk_check_button_new_with_label(_("Enable playback RVA"));
 	gtk_widget_set_name(check_rva_is_enabled, "check_on_notebook");
@@ -1520,10 +1538,9 @@ See the About box and the documentation for details."));
 
 	/* "Metadata" notebook page */
 
-	label_meta = gtk_label_new(_("Metadata"));
 	vbox_meta = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_meta), 8);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_meta, label_meta);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_meta, create_notebook_tab(_("Metadata"), "metadata.png"));
 
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
@@ -1621,10 +1638,9 @@ See the About box and the documentation for details."));
 
         override_past_state = override_skin_settings;
 
-	label_appearance = gtk_label_new(_("Appearance"));
 	vbox_appearance = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_appearance), 8);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_appearance, label_appearance);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_appearance, create_notebook_tab(_("Appearance"), "appearance.png"));
 
         check_override_skin =
 		gtk_check_button_new_with_label(_("Override skin settings"));
@@ -1739,7 +1755,7 @@ See the About box and the documentation for details."));
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
 
-	label = gtk_label_new(_("Small timer: "));
+	label = gtk_label_new(_("Small timers: "));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);

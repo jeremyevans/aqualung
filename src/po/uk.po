@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2004-12-24 01:51+0200\n"
+"POT-Creation-Date: 2005-09-19 18:04+0300\n"
+"PO-Revision-Date: 2005-09-19 01:51+0200\n"
 "Last-Translator: Sergiy Niskorodov <sgh_punk@users.sourceforge.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -66,7 +66,7 @@ msgid ""
 "\n"
 "\n"
 msgstr ""
-"Дизайн Логотипу: Maja Kocon <ironya@ll.pl>\n"
+"Розробка Логотипу: Maja Kocon <ironya@ll.pl>\n"
 "\n"
 "\n"
 
@@ -815,10 +815,10 @@ msgstr ""
 "\n"
 "Рядок, що ви введете тут буде проанал╕зовано як командний\n"
 "рядок перед анал╕зом параметр╕в справжнього командного рядку.\n"
-"Що ви впишете тут буде д╕яти як налаштування по замовчанню, та може бути,\n"
-"або не бути в╕дкинуте з╕ 'справжнього' командного рядку.\n"
-"Приклад: впиш╕ть '-o alsa -R' нижче щоб використовувати ALSA вив╕д\n"
-"запущений з приор╕тетом реального часу по замовчанню.\n"
+"Що ви впишете тут буде д╕яти як налаштування по замовчанню, та\n"
+"може бути, або не бути скасовано 'справжн╕м' командним рядком.\n"
+"Приклад: впиш╕ть '-o alsa -R' нижче щоб використовувати по\n"
+"замовчанню ALSA вив╕д запущений з приор╕тетом реального часу.\n"
 
 #: ../options.c:1054
 msgid "Miscellaneous"
@@ -833,9 +833,8 @@ msgid "Put control buttons at the bottom of playlist"
 msgstr "Кнопки керування знизу списку програвання"
 
 #: ../options.c:1081
-#, fuzzy
 msgid "Simple view in LADSPA patch builder"
-msgstr "Вимикач буд╕вельника шлях╕в LADSPA"
+msgstr "Спрощений вигляд буд╕вельника шлях╕в LADSPA"
 
 #: ../options.c:1093 ../playlist.c:1447
 msgid "Playlist"
@@ -898,37 +897,36 @@ msgid "Hide the Music Store comment pane"
 msgstr "Приховати панель коментар╕в Музичного Складу"
 
 #: ../options.c:1232
-#, fuzzy
 msgid "Cover art"
-msgstr "прибрати виконавця"
+msgstr "Обкладинка"
 
 #: ../options.c:1241
 msgid "Default cover width:"
-msgstr ""
+msgstr "Ширина обкладинки по замовчанню:"
 
 #: ../options.c:1249
 msgid "50 pixels"
-msgstr ""
+msgstr "50 п╕ксел╕в"
 
 #: ../options.c:1250
 msgid "100 pixels"
-msgstr ""
+msgstr "100 п╕ксел╕в"
 
 #: ../options.c:1251
 msgid "200 pixels"
-msgstr ""
+msgstr "200 п╕ксел╕в"
 
 #: ../options.c:1252
 msgid "300 pixels"
-msgstr ""
+msgstr "300 п╕ксел╕в"
 
 #: ../options.c:1253
 msgid "use browser window width"
-msgstr ""
+msgstr "використовувати ширину в╕кна оглядача"
 
 #: ../options.c:1260
 msgid "Don't magnify images with smaller width"
-msgstr ""
+msgstr "Не зб╕льшувати зображення меншого розм╕ру"
 
 #: ../options.c:1270
 msgid "DSP"
@@ -1078,28 +1076,24 @@ msgid "Fonts"
 msgstr "Шрифти"
 
 #: ../options.c:1652
-#, fuzzy
 msgid "Playlist: "
-msgstr "Список програвання"
+msgstr "Список програвання: "
 
 #: ../options.c:1671 ../options.c:1701 ../options.c:1732 ../options.c:1762
 msgid "Select"
 msgstr "Вибрати"
 
 #: ../options.c:1681
-#, fuzzy
 msgid "Music Store: "
-msgstr "Музичний Склад"
+msgstr "Музичний Склад: "
 
 #: ../options.c:1712
-#, fuzzy
 msgid "Big timer: "
-msgstr "Великий шрифт таймера: "
+msgstr "Великий таймер: "
 
 #: ../options.c:1742
-#, fuzzy
 msgid "Small timers: "
-msgstr "Маленький шрифт таймера:"
+msgstr "Маленьк╕ таймери:"
 
 #: ../options.c:1770
 msgid "Colors"
@@ -1238,19 +1232,16 @@ msgid "_Configure"
 msgstr "_Налаштувати"
 
 #: ../plugin.c:1938
-#, fuzzy
 msgid "Enable all plugins"
-msgstr "Наявн╕ втулки"
+msgstr "Зад╕яти ус╕ втулки"
 
 #: ../plugin.c:1939
-#, fuzzy
 msgid "Disable all plugins"
-msgstr "Наявн╕ втулки"
+msgstr "Вимкнути ус╕ втулки"
 
 #: ../plugin.c:1941
-#, fuzzy
 msgid "Invert current state"
-msgstr "Повторювати поточну п╕сню"
+msgstr "╤нвертувати поточний стан"
 
 #: ../ports.c:451
 msgid "JACK Port Setup"
@@ -1333,13 +1324,12 @@ msgid "Processing..."
 msgstr "Обробка..."
 
 #: ../volume.c:179
-#, fuzzy
 msgid "<b>Calculating volume level</b>"
 msgstr "П╕драховую р╕вень гучност╕ %s"
 
 #: ../volume.c:194
 msgid "Progress:"
-msgstr ""
+msgstr "Прогрес:"
 
 #: ../volume.c:206
 msgid "Abort"
@@ -1349,16 +1339,3 @@ msgstr "Перервати"
 #, c-format
 msgid "%s"
 msgstr ""
-
-#, fuzzy
-#~ msgid "Music store"
-#~ msgstr "Музичний Склад"
-
-#~ msgid "Dismiss"
-#~ msgstr "В╕дхилити"
-
-#~ msgid "Playlist font: "
-#~ msgstr "Шрифт списку програвання:"
-
-#~ msgid "Music Store font: "
-#~ msgstr "Шрифт Музичного Складу"

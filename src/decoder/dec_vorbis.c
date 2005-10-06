@@ -45,18 +45,31 @@ decode_vorbis(decoder_t * dec) {
 	int current_section;
 
 
-        if ((bytes_read = ov_read(&(pd->vf), buffer, VORBIS_BUFSIZE,
-				  0, 2, 1, &current_section)) > 0) {
+        bytes_read = ov_read(&(pd->vf), buffer, VORBIS_BUFSIZE, 0, 2, 1, &current_section);
 
+	switch (bytes_read) {
+	case 0:
+		/* end of file */
+                return 1;
+		break;
+	case OV_HOLE:
+		printf("dec_vorbis.c/decode_vorbis(): ov_read() returned OV_HOLE\n");
+		printf("This indicates an interruption in the Vorbis data (one of:\n");
+		printf("garbage between Ogg pages, loss of sync, or corrupt page).\n");
+		break;
+	case OV_EBADLINK:
+		printf("dec_vorbis.c/decode_vorbis(): ov_read() returned OV_EBADLINK\n");
+		printf("An invalid stream section was supplied to libvorbisfile.\n");
+		break;
+	default:
                 for (i = 0; i < bytes_read/2; i++) {
                         fbuffer[i] = *((short *)(buffer + 2*i)) * fdec->voladj_lin / 32768.f;
 		}
                 jack_ringbuffer_write(pd->rb, (char *)fbuffer,
                                       bytes_read/2 * sample_size);
-                return 0;
-        } else {
-                return 1;
+		break;
 	}
+	return 0;
 }
 
 

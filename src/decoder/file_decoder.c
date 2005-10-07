@@ -111,6 +111,12 @@ file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_SR) {
 	int i, ret;
 	decoder_t * dec;
 
+	if (filename == NULL) {
+		fprintf(stderr, "Warning: filename == NULL passed to file_decoder_open()\n");
+		fprintf(stderr, "This is likely to be a programmer error, please report.\n");
+		return 1;
+	}
+
 	for (i = 0; i < N_DECODERS; i++) {
 		dec = decoder_init_v[i](fdec);
 		if (!dec) {
@@ -253,15 +259,22 @@ get_file_duration(char * file) {
 
 	file_decoder_t * fdec;
 	float duration;
+	gchar * file_locale = NULL;
+	GError * error = NULL;
 
 	if ((fdec = file_decoder_new()) == NULL) {
                 fprintf(stderr, "get_file_duration: error: file_decoder_new() returned NULL\n");
                 return 0.0f;
         }
 
-        if (file_decoder_open(fdec, g_locale_from_utf8(file, -1, NULL, NULL, NULL), 44100)) {
-                fprintf(stderr, "file_decoder_open() failed on %s\n",
-                        g_locale_from_utf8(file, -1, NULL, NULL, NULL));
+	file_locale = g_locale_from_utf8(file, -1, NULL, NULL, &error);
+	if (file_locale == NULL) {
+		printf("get_file_duration(): Error during g_locale_from_utf8(): %s\n", error->message);
+		return 0.0f;
+	}
+
+        if (file_decoder_open(fdec, file_locale, 44100)) {
+                fprintf(stderr, "file_decoder_open() failed on %s\n", file_locale);
                 return 0.0f;
         }
 

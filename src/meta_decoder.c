@@ -456,17 +456,23 @@ meta_read(metadata * meta, char * file) {
 #ifdef HAVE_OGG_VORBIS
         char str[MAXLEN];
 #endif /* HAVE_OGG_VORBIS */
-
+	gchar * file_locale = NULL;
+	GError * error = NULL;
 
         if ((fdec = file_decoder_new()) == NULL) {
-                fprintf(stderr, "meta_read: error: file_decoder_new() returned NULL\n");
+                fprintf(stderr, "meta_read(): error: file_decoder_new() returned NULL\n");
 		file_decoder_delete(fdec);
                 return 0;
         }
 
-        if (file_decoder_open(fdec, g_locale_from_utf8(file, -1, NULL, NULL, NULL), 44100)) {
-                fprintf(stderr, "file_decoder_open() failed on %s\n",
-                        g_locale_from_utf8(file, -1, NULL, NULL, NULL));
+	file_locale = g_locale_from_utf8(file, -1, NULL, NULL, &error);
+        if (file_locale == NULL) {
+                printf("meta_read(): Error during g_locale_from_utf8(): %s\n", error->message);
+                return 0;
+        }
+
+        if (file_decoder_open(fdec, file_locale, 44100)) {
+                fprintf(stderr, "file_decoder_open() failed on %s\n", file_locale);
 		file_decoder_delete(fdec);
                 return 0;
         }

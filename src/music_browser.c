@@ -2438,12 +2438,18 @@ set_comment_text_and_cover(char * str) {
 
                 /* check if we at 2nd level (album) or 3rd level (track) */
 
-                if(i == 2 || i == 3) {
+                if (i == 2 || i == 3) {
 
-                        if(i == 2) { /* album selected */
+                        if (i == 2) { /* album selected */
 
-                                gtk_tree_model_iter_nth_child(model, &t_iter, &r_iter, 0);
-                                gtk_tree_model_get(GTK_TREE_MODEL(model), &t_iter, 2, &filename, -1);
+                                if (gtk_tree_model_iter_nth_child(model, &t_iter, &r_iter, 0)) {
+					gtk_tree_model_get(GTK_TREE_MODEL(model), &t_iter, 2, &filename, -1);
+				} else {
+					/* no tracks - set comment text and leave */
+					gtk_text_buffer_insert (buffer, &iter, str, -1);
+					gtk_text_view_set_buffer(GTK_TEXT_VIEW(comment_view), buffer);
+					return;
+				}
 
                         } else { /* track selected */
 
@@ -2453,10 +2459,10 @@ set_comment_text_and_cover(char * str) {
 
                         /* create cover path */
 
-                        k = strlen(filename)-1;
-                        while(filename[k--]!='/');
+                        k = strlen(filename) - 1;
+                        while (filename[k--] != '/');
 
-                        for(i=0; k!=-2; i++, k--)
+                        for (i = 0; k != -2; i++, k--)
                                 cover_filename[i] = filename[i];
                         cover_filename[i] = '\0';
 
@@ -2481,7 +2487,7 @@ set_comment_text_and_cover(char * str) {
 
                         pixbuf = gdk_pixbuf_new_from_file (cover_filename, NULL);
 
-                        if(pixbuf != NULL) {
+                        if (pixbuf != NULL) {
 
                                 format = gdk_pixbuf_get_file_info(cover_filename, &width, &height);
 
@@ -2490,9 +2496,9 @@ set_comment_text_and_cover(char * str) {
                                 scaled_width =  d_cover_width;
                                 scaled_height = d_cover_height;
 
-                                if(width > d_cover_width || height > d_cover_height) {
+                                if (width > d_cover_width || height > d_cover_height) {
 
-                                        if(width >= height) {
+                                        if (width >= height) {
 
                                                 scaled_height = (height * d_cover_width) / width;
 
@@ -2506,8 +2512,8 @@ set_comment_text_and_cover(char * str) {
                                         g_object_unref (pixbuf);
                                         pixbuf = scaled;
 
-                                } else
-                                        if(magnify_smaller_images) {
+                                } else {
+                                        if (magnify_smaller_images) {
 
                                                 scaled_height = (height * d_cover_width) / width;
 
@@ -2516,6 +2522,7 @@ set_comment_text_and_cover(char * str) {
                                                 pixbuf = scaled;
 
                                         }                                
+				}
 
                                 gtk_text_buffer_insert_pixbuf (buffer, &iter, pixbuf);
                                 gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
@@ -2527,14 +2534,12 @@ set_comment_text_and_cover(char * str) {
                 }
 
                 gtk_tree_path_free(path);
-
         }
 
         /* insert comment */
 
         gtk_text_buffer_insert (buffer, &iter, str, -1);
         gtk_text_view_set_buffer(GTK_TEXT_VIEW(comment_view), buffer);
-
 }
 
 

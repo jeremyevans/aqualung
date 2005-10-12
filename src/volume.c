@@ -49,6 +49,7 @@ GtkWidget * cancel_button;
 GtkWidget * file_entry;
 
 extern GtkTreeStore * music_store;
+extern int music_store_changed;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
@@ -362,6 +363,7 @@ process_volume(gpointer data) {
 
 				if (volumes == NULL) {
 					gtk_tree_store_set(music_store, &(vol_queue->iter), 5, vol_result, -1);
+					music_store_changed = 1;
 				} else {
 					volumes[vol_index++] = vol_result;
 				}

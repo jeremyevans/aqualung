@@ -103,14 +103,17 @@ extern int playlist_on;
 
 extern GtkWidget * play_list;
 
+int music_store_changed = 0;
+
 GtkWidget * music_tree;
-GtkTreeStore * music_store = 0;
+GtkTreeStore * music_store = NULL;
 GtkTreeSelection * music_select;
 
 GtkWidget * comment_view;
 GtkWidget * browser_paned;
 
 extern GtkListStore * play_store;
+extern GtkListStore * ms_pathlist_store;
 
 extern GtkWidget * musicstore_toggle;
 
@@ -122,11 +125,11 @@ GtkWidget * artist__addlist;
 GtkWidget * artist__separator1;
 GtkWidget * artist__add;
 GtkWidget * artist__edit;
-GtkWidget * artist__addrec;
-GtkWidget * artist__volume;
-GtkWidget * artist__separator2;
 GtkWidget * artist__remove;
+GtkWidget * artist__separator2;
+GtkWidget * artist__addrec;
 GtkWidget * artist__separator3;
+GtkWidget * artist__volume;
 GtkWidget * artist__search;
 
 GtkWidget * record_menu;
@@ -134,11 +137,11 @@ GtkWidget * record__addlist;
 GtkWidget * record__separator1;
 GtkWidget * record__add;
 GtkWidget * record__edit;
-GtkWidget * record__addtrk;
-GtkWidget * record__volume;
-GtkWidget * record__separator2;
 GtkWidget * record__remove;
+GtkWidget * record__separator2;
+GtkWidget * record__addtrk;
 GtkWidget * record__separator3;
+GtkWidget * record__volume;
 GtkWidget * record__search;
 
 GtkWidget * track_menu;
@@ -146,16 +149,31 @@ GtkWidget * track__addlist;
 GtkWidget * track__separator1;
 GtkWidget * track__add;
 GtkWidget * track__edit;
-GtkWidget * track__fileinfo;
-GtkWidget * track__volume;
-GtkWidget * track__separator2;
 GtkWidget * track__remove;
+GtkWidget * track__separator2;
+GtkWidget * track__fileinfo;
 GtkWidget * track__separator3;
+GtkWidget * track__volume;
 GtkWidget * track__search;
+
+GtkWidget * store_menu;
+GtkWidget * store__addlist;
+GtkWidget * store__separator1;
+GtkWidget * store__add;
+GtkWidget * store__edit;
+GtkWidget * store__remove;
+GtkWidget * store__separator2;
+GtkWidget * store__addart;
+GtkWidget * store__separator3;
+GtkWidget * store__volume;
+GtkWidget * store__search;
+GtkWidget * store__separator4;
+GtkWidget * store__save;
 
 GtkWidget * blank_menu;
 GtkWidget * blank__add;
 GtkWidget * blank__search;
+GtkWidget * blank__save;
 
 
 /* prototypes, when we need them */
@@ -163,21 +181,26 @@ void load_music_store(void);
 
 static gboolean music_tree_event_cb(GtkWidget * widget, GdkEvent * event);
 
+static void store__add_cb(gpointer data);
+static void store__edit_cb(gpointer data);
+static void store__volume_cb(gpointer data);
+static void store__remove_cb(gpointer data);
+
 static void artist__add_cb(gpointer data);
 static void artist__edit_cb(gpointer data);
-static void artist__volume_cb(gpointer data);
 static void artist__remove_cb(gpointer data);
+static void artist__volume_cb(gpointer data);
 
 static void record__add_cb(gpointer data);
 static void record__edit_cb(gpointer data);
-static void record__volume_cb(gpointer data);
 static void record__remove_cb(gpointer data);
+static void record__volume_cb(gpointer data);
 
 static void track__add_cb(gpointer data);
 static void track__edit_cb(gpointer data);
+static void track__remove_cb(gpointer data);
 static void track__fileinfo_cb(gpointer data);
 static void track__volume_cb(gpointer data);
-static void track__remove_cb(gpointer data);
 
 static void search_cb(gpointer data);
 
@@ -224,10 +247,21 @@ struct keybinds track_keybinds[] = {
 	{NULL, 0}
 };
 
-struct keybinds blank_keybinds[] = {
-	{artist__add_cb, GDK_n, GDK_N},
+struct keybinds store_keybinds[] = {
+	{store__addlist_cb, GDK_a, GDK_A},
+	{store__add_cb, GDK_n, GDK_N},
+	{store__edit_cb, GDK_e, GDK_E},
+	{store__volume_cb, GDK_v, GDK_V},
+	{store__remove_cb, GDK_Delete, GDK_KP_Delete},
+	{artist__add_cb, GDK_plus, GDK_KP_Add},
 	{search_cb, GDK_s, GDK_S},
 	{NULL, 0}
+};
+
+struct keybinds blank_keybinds[] = {
+        {store__add_cb, GDK_n, GDK_N},
+        {search_cb, GDK_s, GDK_S},
+        {NULL, 0}
 };
 
 
@@ -307,6 +341,279 @@ make_title_string(char * dest, char * template, char * artist, char * record, ch
 	
 	snprintf(dest, MAXLEN - 1, temp, arg[0], arg[1], arg[2]);
 }
+
+
+int
+browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
+
+        GtkWidget * dialog;
+	const gchar * selected_filename = gtk_entry_get_text(GTK_ENTRY(data));
+
+
+        dialog = gtk_file_chooser_dialog_new(_("Please select the xml file for this store."), 
+                                             GTK_WINDOW(browser_window), 
+                                             GTK_FILE_CHOOSER_ACTION_SAVE, 
+                                             GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT, 
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
+                                             NULL);
+
+        set_sliders_width();
+
+        if(strlen(selected_filename))
+                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), selected_filename);
+        else
+                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), currdir);
+
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+
+        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+
+                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		gtk_entry_set_text(GTK_ENTRY(data), selected_filename);
+
+                strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+                                                                         MAXLEN-1);
+        }
+
+
+        gtk_widget_destroy(dialog);
+
+	return 0;
+}
+
+
+int
+add_store_dialog(char * name, char * file, char * comment) {
+
+	GtkWidget * table;
+	GtkWidget * hbox;
+        GtkWidget * name_entry;
+	GtkWidget * name_label;
+	GtkWidget * hbox2;
+	GtkWidget * file_entry;
+	GtkWidget * file_label;
+	GtkWidget * browse_button;
+	GtkWidget * viewport;
+        GtkWidget * scrolled_window;
+	GtkWidget * comment_label;
+	GtkWidget * comment_view;
+        GtkTextBuffer * buffer;
+	GtkTextIter iter_start;
+	GtkTextIter iter_end;
+
+        int ret;
+
+        dialog = gtk_dialog_new_with_buttons(_("Add Store"),
+					     GTK_WINDOW(browser_window),
+					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					     NULL);
+        gtk_widget_set_size_request(GTK_WIDGET(dialog), 400, 300);
+	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
+
+	table = gtk_table_new(3, 2, FALSE);
+        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
+
+	name_label = gtk_label_new(_("Name:"));
+        hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
+
+        name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
+        gtk_entry_set_text(GTK_ENTRY(name_entry), name);
+	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
+
+
+	file_label = gtk_label_new(_("Filename:"));
+        hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), file_label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 5);
+
+	hbox2 = gtk_hbox_new(FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox2, 1, 2, 2, 3,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
+
+        file_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(file_entry), MAXLEN - 1);
+        gtk_entry_set_text(GTK_ENTRY(file_entry), file);
+        gtk_box_pack_start(GTK_BOX(hbox2), file_entry, TRUE, TRUE, 0);
+
+
+	browse_button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
+        gtk_box_pack_start(GTK_BOX(hbox2), browse_button, FALSE, TRUE, 2);
+        g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_store_clicked),
+			 (gpointer *)file_entry);
+	
+
+	comment_label = gtk_label_new(_("Comments:"));
+        hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), comment_label, FALSE, FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, TRUE, 2);
+
+	viewport = gtk_viewport_new(NULL, NULL);
+        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), viewport, TRUE, TRUE, 2);
+
+        scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+        gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+                                       GTK_POLICY_AUTOMATIC,
+                                       GTK_POLICY_AUTOMATIC);
+        gtk_container_add(GTK_CONTAINER(viewport), scrolled_window);
+
+        comment_view = gtk_text_view_new();
+	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(comment_view), 3);
+	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(comment_view), 3);
+        gtk_text_view_set_editable(GTK_TEXT_VIEW(comment_view), TRUE);
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
+        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(buffer), comment, -1);
+        gtk_text_view_set_buffer(GTK_TEXT_VIEW(comment_view), buffer);
+        gtk_container_add(GTK_CONTAINER(scrolled_window), comment_view);
+
+	gtk_widget_grab_focus(name_entry);
+
+	gtk_widget_show_all(dialog);
+
+        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+
+                strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
+                strcpy(file, gtk_entry_get_text(GTK_ENTRY(file_entry)));
+
+		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
+		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);
+		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
+		strcpy(comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
+							 &iter_start, &iter_end, TRUE));
+
+		if ((name[0] != '\0') && (file[0] != '\0'))
+			ret = 1;
+		else
+			ret = 0;
+        } else {
+                name[0] = '\0';
+                file[0] = '\0';
+                comment[0] = '\0';
+                ret = 0;
+        }
+
+        gtk_widget_destroy(dialog);
+
+        return ret;
+}
+
+
+int
+edit_store_dialog(char * name, char * file, char * comment) {
+
+	GtkWidget * table;
+	GtkWidget * hbox;
+        GtkWidget * name_entry;
+	GtkWidget * name_label;
+	GtkWidget * file_entry;
+	GtkWidget * file_label;
+	GtkWidget * viewport;
+        GtkWidget * scrolled_window;
+	GtkWidget * comment_label;
+	GtkWidget * comment_view;
+        GtkTextBuffer * buffer;
+	GtkTextIter iter_start;
+	GtkTextIter iter_end;
+
+        int ret;
+
+        dialog = gtk_dialog_new_with_buttons(_("Edit Store"),
+					     GTK_WINDOW(browser_window),
+					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					     NULL);
+        gtk_widget_set_size_request(GTK_WIDGET(dialog), 350, 250);
+	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
+
+	table = gtk_table_new(2, 2, FALSE);
+        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
+
+	name_label = gtk_label_new(_("Name:"));
+        hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
+
+        name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
+        gtk_entry_set_text(GTK_ENTRY(name_entry), name);
+	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
+
+	file_label = gtk_label_new(_("Filename:"));
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), file_label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
+
+	file_entry = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(file_entry), MAXLEN - 1);
+	gtk_entry_set_text(GTK_ENTRY(file_entry), file);
+	gtk_editable_set_editable(GTK_EDITABLE(file_entry), FALSE);
+	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, 1, 2,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
+
+	comment_label = gtk_label_new(_("Comments:"));
+        hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), comment_label, FALSE, FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, TRUE, 2);
+
+	viewport = gtk_viewport_new(NULL, NULL);
+        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), viewport, TRUE, TRUE, 2);
+
+        scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+        gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+                                       GTK_POLICY_AUTOMATIC,
+                                       GTK_POLICY_AUTOMATIC);
+        gtk_container_add(GTK_CONTAINER(viewport), scrolled_window);
+
+
+        comment_view = gtk_text_view_new();
+	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(comment_view), 3);
+	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(comment_view), 3);
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(comment_view), TRUE);
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
+        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(buffer), comment, -1);
+        gtk_text_view_set_buffer(GTK_TEXT_VIEW(comment_view), buffer);
+        gtk_container_add(GTK_CONTAINER(scrolled_window), comment_view);
+
+	gtk_widget_grab_focus(name_entry);
+
+	gtk_widget_show_all(dialog);
+
+        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+                strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
+
+		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
+		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);
+		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
+		strcpy(comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
+							 &iter_start, &iter_end, TRUE));
+		if (name[0] != '\0')
+			ret = 1;
+		else
+			ret = 0;
+        } else {
+                name[0] = '\0';
+                comment[0] = '\0';
+                ret = 0;
+        }
+
+        gtk_widget_destroy(dialog);
+
+        return ret;
+}
+
 
 
 int
@@ -1308,6 +1615,7 @@ confirm_dialog(char * title, char * text) {
 					     NULL);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
+	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 
 	label = gtk_label_new(text);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
@@ -1343,21 +1651,25 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 
 				switch (gtk_tree_path_get_depth(path)) {
 				case 1:
-					gtk_menu_popup(GTK_MENU(artist_menu), NULL, NULL, NULL, NULL,
+					gtk_menu_popup(GTK_MENU(store_menu), NULL, NULL, NULL, NULL,
 						       bevent->button, bevent->time);
 					break;
 				case 2:
-					gtk_menu_popup(GTK_MENU(record_menu), NULL, NULL, NULL, NULL,
+					gtk_menu_popup(GTK_MENU(artist_menu), NULL, NULL, NULL, NULL,
 						       bevent->button, bevent->time);
 					break;
 				case 3:
+					gtk_menu_popup(GTK_MENU(record_menu), NULL, NULL, NULL, NULL,
+						       bevent->button, bevent->time);
+					break;
+				case 4:
 					gtk_menu_popup(GTK_MENU(track_menu), NULL, NULL, NULL, NULL,
 						       bevent->button, bevent->time);
 					break;
 				}
 			} else {
 				gtk_menu_popup(GTK_MENU(blank_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
+                                               bevent->button, bevent->time);
 			}
 			return TRUE;
 		}
@@ -1386,19 +1698,25 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 			}
 
 			switch (gtk_tree_path_get_depth(path)) {
-			case 1:
+			case 1: 
+				for (i = 0; store_keybinds[i].callback; ++i)
+					if (kevent->keyval == store_keybinds[i].keyval1 ||
+					    kevent->keyval == store_keybinds[i].keyval2)
+						(store_keybinds[i].callback)(NULL);
+				break;
+			case 2:
 				for (i = 0; artist_keybinds[i].callback; ++i)
 					if (kevent->keyval == artist_keybinds[i].keyval1 ||
 					    kevent->keyval == artist_keybinds[i].keyval2)
 						(artist_keybinds[i].callback)(NULL);
 				break;
-			case 2:
+			case 3:
 				for (i = 0; record_keybinds[i].callback; ++i)
 					if (kevent->keyval == record_keybinds[i].keyval1 ||
 					    kevent->keyval == record_keybinds[i].keyval2)
 						(record_keybinds[i].callback)(NULL);
 				break;
-			case 3:
+			case 4:
 				for (i = 0; track_keybinds[i].callback; ++i)
 					if (kevent->keyval == track_keybinds[i].keyval1 ||
 					    kevent->keyval == track_keybinds[i].keyval2)
@@ -1407,10 +1725,10 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 			}
 		} else {
 			int i;
-			for (i = 0; blank_keybinds[i].callback; ++i)
-				if (kevent->keyval == blank_keybinds[i].keyval1 ||
-				    kevent->keyval == blank_keybinds[i].keyval2)
-					(blank_keybinds[i].callback)(NULL);
+                        for (i = 0; blank_keybinds[i].callback; ++i)
+                                if (kevent->keyval == blank_keybinds[i].keyval1 ||
+                                    kevent->keyval == blank_keybinds[i].keyval2)
+                                        (blank_keybinds[i].callback)(NULL);
 		}
 		return FALSE;
 	}
@@ -1431,14 +1749,18 @@ dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data)
 			
 			switch (gtk_tree_path_get_depth(path)) {
 			case 1:
-				artist__addlist_cb(NULL);
+				store__addlist_cb(NULL);
 				return TRUE;
 				break;
 			case 2:
-				record__addlist_cb(NULL);
+				artist__addlist_cb(NULL);
 				return TRUE;
 				break;
 			case 3:
+				record__addlist_cb(NULL);
+				return TRUE;
+				break;
+			case 4:
 				track__addlist_cb(NULL);
 				return TRUE;
 				break;
@@ -1451,6 +1773,382 @@ dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data)
 	return FALSE;
 }
 
+
+/****************************************/
+
+void
+store__addlist_cb(gpointer data) {
+
+        GtkTreeIter iter_store;
+        GtkTreeIter iter_artist;
+        GtkTreeIter iter_record;
+        GtkTreeIter iter_track;
+	GtkTreeIter list_iter;
+        GtkTreeModel * model;
+
+        char * partist_name;
+        char * precord_name;
+        char * ptrack_name;
+        char * pfile;
+
+        char artist_name[MAXLEN];
+        char record_name[MAXLEN];
+        char track_name[MAXLEN];
+        char file[MAXLEN];
+
+	char list_str[MAXLEN];
+	int h, i, j, k;
+	int nlevels;
+
+	float duration;
+	float volume;
+	float rva;
+	float use_rva;
+	float voladj = 0.0f;
+	char voladj_str[32];
+	char duration_str[32];
+
+
+        if (gtk_tree_selection_get_selected(music_select, &model, &iter_store)) {
+		h = 0;
+		while (gtk_tree_model_iter_nth_child(model, &iter_artist, &iter_store, h++)) {
+
+			gtk_tree_model_get(model, &iter_artist, 0, &partist_name, -1);
+			strncpy(artist_name, partist_name, MAXLEN-1);
+			g_free(partist_name);
+
+			i = 0;
+			while (gtk_tree_model_iter_nth_child(model, &iter_record, &iter_artist, i++)) {
+
+				gtk_tree_model_get(model, &iter_record, 0, &precord_name, -1);
+				strncpy(record_name, precord_name, MAXLEN-1);
+				g_free(precord_name);
+
+				if (rva_is_enabled && rva_use_averaging) { /* save track volumes */
+				
+					float * volumes = NULL;
+					k = 0;
+					nlevels = 0;
+				
+					while (gtk_tree_model_iter_nth_child(model, &iter_track,
+									     &iter_record, k++)) {
+						gtk_tree_model_get(model, &iter_track, 5, &volume, -1);
+					
+						if (volume > 0.1f) { /* unmeasured */
+							volume = rva_refvol;
+						}
+					
+						nlevels++;
+						if ((volumes = realloc(volumes, nlevels * sizeof(float))) == NULL) {
+							fprintf(stderr,
+								"atore__addlist_cb: realloc error\n");
+							return;
+						}
+						volumes[nlevels-1] = volume;
+					}
+				
+					voladj = rva_from_multiple_volumes(nlevels, volumes,
+									   rva_use_linear_thresh,
+									   rva_avg_linear_thresh,
+									   rva_avg_stddev_thresh,
+									   rva_refvol, rva_steepness);
+					free(volumes);
+				}
+			
+				j = 0;
+				while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, j++)) {
+
+					metadata * meta = NULL;
+
+				
+					gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
+							   4, &duration, 5, &volume, 6, &rva, 7, &use_rva, -1);
+					strncpy(track_name, ptrack_name, MAXLEN-1);
+					strncpy(file, pfile, MAXLEN-1);
+					g_free(ptrack_name);
+					g_free(pfile);
+
+					if (auto_use_meta_artist || auto_use_meta_record || auto_use_meta_track) {
+						meta = meta_new();
+						if (!meta_read(meta, file)) {
+							meta_free(meta);
+							meta = NULL;
+						}
+					}
+				
+					if ((meta != NULL) && auto_use_meta_artist) {
+						meta_get_artist(meta, artist_name);
+					}
+				
+					if ((meta != NULL) && auto_use_meta_record) {
+						meta_get_record(meta, record_name);
+					}
+				
+					if ((meta != NULL) && auto_use_meta_track) {
+						meta_get_title(meta, track_name);
+					}
+				
+					if (meta != NULL) {
+						meta_free(meta);
+						meta = NULL;
+					}
+				
+					make_title_string(list_str, title_format,
+							  artist_name, record_name, track_name);
+
+					if (duration == 0.0f) {
+						duration = get_file_duration(file);
+						gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
+					}
+					time2time(duration, duration_str);
+
+					if (rva_is_enabled && !rva_use_averaging) {
+						if (use_rva >= 0.0f) {
+							voladj = rva;
+						} else {
+							if (volume <= 0.1f) {
+								voladj = rva_from_volume(volume, rva_refvol, rva_steepness);
+							} else { /* unmeasured, see if there is RVA data in the file*/
+								metadata * meta = meta_new();
+								if (meta_read(meta, file)) {
+									if (!meta_get_rva(meta, &voladj)) {
+										voladj = 0.0f;
+									}
+								} else {
+									voladj = 0.0f;
+								}
+								meta_free(meta);
+							}
+						}
+					} else if (!rva_is_enabled) {
+						voladj = 0.0f;
+					}
+
+					gtk_list_store_insert_before(play_store,
+								     &list_iter,
+								     (GtkTreeIter *)data);
+
+					voladj2str(voladj, voladj_str);
+					gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
+							   2, pl_color_inactive,
+							   3, voladj, 4, voladj_str,
+							   5, duration, 6, duration_str, -1);
+
+					if ((j % 3) == 0) {
+						deflicker();
+					}
+				}
+			}
+		}
+		delayed_playlist_rearrange(100);
+	}
+
+	playlist_content_changed();
+}
+
+
+static void
+store__add_cb(gpointer data) {
+
+	GtkTreeIter iter;
+
+	char name[MAXLEN];
+	char file[MAXLEN];
+	char comment[MAXLEN];
+
+	xmlDocPtr doc;
+	xmlNodePtr root;
+
+
+	name[0] = '\0';
+	file[0] = '\0';
+	comment[0] = '\0';
+
+	if (add_store_dialog(name, file, comment)) {
+		gtk_tree_store_append(music_store, &iter, NULL);
+		gtk_tree_store_set(music_store, &iter, 0, name, 2, file, 3, comment, -1);
+
+		doc = xmlNewDoc((const xmlChar *) "1.0");
+		root = xmlNewNode(NULL, (const xmlChar *) "music_store");
+		xmlDocSetRootElement(doc, root);
+		xmlSaveFormatFile(file, doc, 1);
+
+		gtk_list_store_append(ms_pathlist_store, &iter);
+		gtk_list_store_set(ms_pathlist_store, &iter, 0, file, 1, _("rw"), -1);
+	}
+}
+
+
+static void
+store__edit_cb(gpointer data) {
+
+	GtkTreeIter iter;
+	GtkTreeModel * model;
+
+	char * pname;
+	char * pcomment;
+	char * pfile = NULL;
+
+	char name[MAXLEN];
+	char comment[MAXLEN];
+	char file[MAXLEN];
+	float state;
+
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
+
+                gtk_tree_model_get(model, &iter, 0, &pname, 2, &pfile, 3, &pcomment, 7, &state, -1);
+
+		if (state < 0) {
+			g_free(pname);
+			g_free(pcomment);
+			g_free(pfile);
+			return;
+		}
+
+		strncpy(name, pname, MAXLEN-1);
+		strncpy(comment, pcomment, MAXLEN-1);
+		strncpy(file, pfile, MAXLEN-1);
+
+		g_free(pname);
+                g_free(pcomment);
+		g_free(pfile);
+
+		if (edit_store_dialog(name, file, comment)) {
+			gtk_tree_store_set(music_store, &iter, 0, name, 3, comment, -1);
+			tree_selection_changed_cb(music_select, NULL);
+			music_store_changed = 1;
+		}
+        }
+}
+
+
+static void
+store__volume_cb(gpointer data) {
+
+        GtkTreeIter iter_store;
+        GtkTreeIter iter_artist;
+        GtkTreeIter iter_record;
+        GtkTreeIter iter_track;
+        GtkTreeModel * model;
+
+	float state;
+        char * pfile;
+        char file[MAXLEN];
+	int h, i, j;
+
+	vol_queue_t * q = NULL;
+
+
+	if (vol_window != NULL) {
+		return;
+	}
+
+        if (gtk_tree_selection_get_selected(music_select, &model, &iter_store)) {
+
+                gtk_tree_model_get(model, &iter_store, 7, &state, -1);
+
+		if (state < 0) {
+			return;
+		}
+
+		h = 0;
+		while (gtk_tree_model_iter_nth_child(model, &iter_artist, &iter_store, h++)) {
+
+			i = 0;
+			while (gtk_tree_model_iter_nth_child(model, &iter_record, &iter_artist, i++)) {
+
+				j = 0;
+				while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, j++)) {
+				
+					gtk_tree_model_get(model, &iter_track, 2, &pfile, -1);
+					strncpy(file, pfile, MAXLEN-1);
+					g_free(pfile);
+
+					if (q == NULL) {
+						q = vol_queue_push(NULL, file, iter_track);
+					} else {
+						vol_queue_push(q, file, iter_track);
+					}
+				}
+			}
+		}
+
+		calculate_volume(q, NULL);
+	}
+}
+
+
+static void
+store__remove_cb(gpointer data) {
+
+	GtkTreeIter iter;
+	GtkTreeModel * model;
+	char * pname;
+	char * pfile;
+	char name[MAXLEN];
+	char file[MAXLEN];
+	char text[MAXLEN];
+	float state;
+	int i = 0;
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
+
+                gtk_tree_model_get(model, &iter, 0, &pname, 2, &pfile, 7, &state, -1);
+
+		if (state < 0) {
+			g_free(pname);
+			g_free(pfile);
+			return;
+		}
+
+		strncpy(name, pname, MAXLEN-1);
+		strncpy(file, pfile, MAXLEN-1);
+                g_free(pname);
+                g_free(pfile);
+		
+		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
+		if (confirm_dialog(_("Remove Store"), text)) {
+			gtk_tree_store_remove(music_store, &iter);
+			tree_selection_changed_cb(music_select, NULL);
+			
+			i = 0;
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store),
+							     &iter, NULL, i++)) {
+				gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &pname, -1);
+				if (!strcmp(file, pname)) {
+					gtk_list_store_remove(ms_pathlist_store, &iter);
+				}
+			}
+		}
+	}
+}
+
+
+static void
+store__save_cb(gpointer data) {
+	save_music_store();
+}
+
+
+int
+is_store_readonly(GtkTreeModel * model, GtkTreeIter iter) {
+
+	GtkTreePath * path;
+	float state;
+
+	path = gtk_tree_model_get_path(model, &iter);
+
+	while (gtk_tree_path_get_depth(path) > 1) {
+		gtk_tree_path_up(path);
+	}
+
+	gtk_tree_model_get_iter(model, &iter, path);
+	
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 7, &state, -1);
+
+	return state < 0;
+}
 
 /****************************************/
 
@@ -1485,6 +2183,7 @@ artist__addlist_cb(gpointer data) {
 	float voladj = 0.0f;
 	char voladj_str[32];
 	char duration_str[32];
+
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_artist)) {
 
@@ -1625,6 +2324,10 @@ static void
 artist__add_cb(gpointer data) {
 
 	GtkTreeIter iter;
+	GtkTreeIter parent_iter;
+	GtkTreePath * parent_path;
+	GtkTreeModel * model;
+
 	char name[MAXLEN];
 	char sort_name[MAXLEN];
 	char comment[MAXLEN];
@@ -1633,10 +2336,25 @@ artist__add_cb(gpointer data) {
 	sort_name[0] = '\0';
 	comment[0] = '\0';
 
-	if (add_artist_dialog(name, sort_name, comment)) {
 
-		gtk_tree_store_append(music_store, &iter, NULL);
-		gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name, 2, "", 3, comment, -1);
+	if (gtk_tree_selection_get_selected(music_select, &model, &parent_iter)) {
+
+		if (is_store_readonly(model, parent_iter)) {
+			return;
+		}
+
+		/* get iter to music store (parent) */
+		parent_path = gtk_tree_model_get_path(model, &parent_iter);
+		if (gtk_tree_path_get_depth(parent_path) == 2)
+			gtk_tree_path_up(parent_path);
+		gtk_tree_model_get_iter(model, &parent_iter, parent_path);
+
+
+		if (add_artist_dialog(name, sort_name, comment)) {
+			gtk_tree_store_append(music_store, &iter, &parent_iter);
+			gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name, 2, "", 3, comment, -1);
+			music_store_changed = 1;
+		}
 	}
 }
 
@@ -1657,6 +2375,10 @@ artist__edit_cb(gpointer data) {
 	
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
+		if (is_store_readonly(model, iter)) {
+			return;
+		}
+
                 gtk_tree_model_get(model, &iter, 0, &pname, 1, &psort_name, 3, &pcomment, -1);
 
 		strncpy(name, pname, MAXLEN-1);
@@ -1671,6 +2393,7 @@ artist__edit_cb(gpointer data) {
 
 			gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name, 2, "", 3, comment, -1);
 			tree_selection_changed_cb(music_select, NULL);
+			music_store_changed = 1;
 		}
         }
 }
@@ -1696,6 +2419,10 @@ artist__volume_cb(gpointer data) {
 	}
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_artist)) {
+
+		if (is_store_readonly(model, iter_artist)) {
+			return;
+		}
 
 		i = 0;
 		while (gtk_tree_model_iter_nth_child(model, &iter_record, &iter_artist, i++)) {
@@ -1731,6 +2458,10 @@ artist__remove_cb(gpointer data) {
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
+		if (is_store_readonly(model, iter)) {
+			return;
+		}
+
                 gtk_tree_model_get(model, &iter, 0, &pname, -1);
 		strncpy(name, pname, MAXLEN-1);
                 g_free(pname);
@@ -1739,6 +2470,7 @@ artist__remove_cb(gpointer data) {
 		if (confirm_dialog(_("Remove Artist"), text)) {
 			gtk_tree_store_remove(music_store, &iter);
 			tree_selection_changed_cb(music_select, NULL);
+			music_store_changed = 1;
 		}
 	}
 }
@@ -1937,9 +2669,13 @@ record__add_cb(gpointer data) {
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &parent_iter)) {
 
+		if (is_store_readonly(model, parent_iter)) {
+			return;
+		}
+
 		/* get iter to artist (parent) */
 		parent_path = gtk_tree_model_get_path(model, &parent_iter);
-		if (gtk_tree_path_get_depth(parent_path) == 2)
+		if (gtk_tree_path_get_depth(parent_path) == 3)
 			gtk_tree_path_up(parent_path);
 		gtk_tree_model_get_iter(model, &parent_iter, parent_path);
 		
@@ -1969,6 +2705,8 @@ record__add_cb(gpointer data) {
 				}
 				free(strings);
 			}
+
+			music_store_changed = 1;
 		}
 	}
 }
@@ -1990,6 +2728,10 @@ record__edit_cb(gpointer data) {
 	
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
+		if (is_store_readonly(model, iter)) {
+			return;
+		}
+
                 gtk_tree_model_get(model, &iter, 0, &pname, 1, &psort_name, 3, &pcomment, -1);
 
 		strncpy(name, pname, MAXLEN-1);
@@ -2004,6 +2746,7 @@ record__edit_cb(gpointer data) {
 
 			gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name, 2, "", 3, comment, -1);
 			tree_selection_changed_cb(music_select, NULL);
+			music_store_changed = 1;
 		}
         }
 }
@@ -2028,6 +2771,10 @@ record__volume_cb(gpointer data) {
 	}
 
         if (!gtk_tree_selection_get_selected(music_select, &model, &iter_record)) {
+		return;
+	}
+
+	if (is_store_readonly(model, iter_record)) {
 		return;
 	}
 
@@ -2060,6 +2807,10 @@ record__remove_cb(gpointer data) {
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
+		if (is_store_readonly(model, iter)) {
+			return;
+		}
+
                 gtk_tree_model_get(model, &iter, 0, &pname, -1);
 		strncpy(name, pname, MAXLEN-1);
                 g_free(pname);
@@ -2069,6 +2820,7 @@ record__remove_cb(gpointer data) {
 			gtk_tree_store_remove(music_store, &iter);
 			gtk_tree_selection_unselect_all(music_select);
 			tree_selection_changed_cb(music_select, NULL);
+			music_store_changed = 1;
 		}
 	}
 }
@@ -2223,9 +2975,13 @@ track__add_cb(gpointer data) {
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &parent_iter)) {
 
+		if (is_store_readonly(model, parent_iter)) {
+			return;
+		}
+
 		/* get iter to artist (parent) */
 		parent_path = gtk_tree_model_get_path(model, &parent_iter);
-		if (gtk_tree_path_get_depth(parent_path) == 3)
+		if (gtk_tree_path_get_depth(parent_path) == 4)
 			gtk_tree_path_up(parent_path);
 		gtk_tree_model_get_iter(model, &parent_iter, parent_path);
 		
@@ -2234,9 +2990,9 @@ track__add_cb(gpointer data) {
 			gtk_tree_store_append(music_store, &iter, &parent_iter);
 			gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name,
 					   2, file, 3, comment, 5, volume, 7, use_rva, -1);
+
+			music_store_changed = 1;
 		}
-
-
 	}
 }
 
@@ -2263,6 +3019,10 @@ track__edit_cb(gpointer data) {
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
+		if (is_store_readonly(model, iter)) {
+			return;
+		}
+
                 gtk_tree_model_get(model, &iter,
 				   0, &pname, 1, &psort_name, 2, &pfile, 3, &pcomment,
 				   4, &duration, 5, &volume, 6, &rva, 7, &use_rva, -1);
@@ -2288,6 +3048,8 @@ track__edit_cb(gpointer data) {
                         gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name,
 					   2, file, 3, comment, 6, rva, 7, use_rva, -1);
                         tree_selection_changed_cb(music_select, NULL);
+
+			music_store_changed = 1;
                 }
         }
 }
@@ -2335,7 +3097,6 @@ track__fileinfo_cb(gpointer data) {
 				  artist_name, record_name, track_name);
 
 		show_file_info(list_str, file, 1, model, iter_track);
-
         }
 }
 
@@ -2357,6 +3118,10 @@ track__volume_cb(gpointer data) {
 	}
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
+
+		if (is_store_readonly(model, iter_track)) {
+			return;
+		}
 
                 gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile, -1);
                 strncpy(track_name, ptrack_name, MAXLEN-1);
@@ -2381,6 +3146,10 @@ track__remove_cb(gpointer data) {
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
+		if (is_store_readonly(model, iter)) {
+			return;
+		}
+
                 gtk_tree_model_get(model, &iter, 0, &pname, -1);
 		strncpy(name, pname, MAXLEN-1);
                 g_free(pname);
@@ -2390,6 +3159,7 @@ track__remove_cb(gpointer data) {
 			gtk_tree_store_remove(music_store, &iter);
 			gtk_tree_selection_unselect_all(music_select);
 			tree_selection_changed_cb(music_select, NULL);
+			music_store_changed = 1;
 		}
 	}
 }
@@ -2423,6 +3193,7 @@ set_comment_text_and_cover(char * str) {
         gint d_cover_width, d_cover_height;
         gint scaled_width, scaled_height;
 
+
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
 
         gtk_text_buffer_get_bounds (buffer, &a_iter, &b_iter);
@@ -2436,25 +3207,22 @@ set_comment_text_and_cover(char * str) {
                 path = gtk_tree_model_get_path(GTK_TREE_MODEL(model), &r_iter);
                 i = gtk_tree_path_get_depth(path);
 
-                /* check if we at 2nd level (album) or 3rd level (track) */
+                /* check if we at 3rd level (album) or 4th level (track) */
 
-                if (i == 2 || i == 3) {
+                if (i == 3 || i == 4) {
 
-                        if (i == 2) { /* album selected */
+                        if (i == 3) { /* album selected */
 
                                 if (gtk_tree_model_iter_nth_child(model, &t_iter, &r_iter, 0)) {
 					gtk_tree_model_get(GTK_TREE_MODEL(model), &t_iter, 2, &filename, -1);
 				} else {
-					/* no tracks - set comment text and leave */
 					gtk_text_buffer_insert (buffer, &iter, str, -1);
 					gtk_text_view_set_buffer(GTK_TEXT_VIEW(comment_view), buffer);
 					return;
 				}
 
                         } else { /* track selected */
-
                                 gtk_tree_model_get(GTK_TREE_MODEL(model), &r_iter, 2, &filename, -1);
-
                         }
 
                         /* create cover path */
@@ -2464,9 +3232,12 @@ set_comment_text_and_cover(char * str) {
 
                         for (i = 0; k != -2; i++, k--)
                                 cover_filename[i] = filename[i];
+
                         cover_filename[i] = '\0';
 
+
                         strcat(cover_filename, DEFAULT_COVER_FILE);
+
 
                         /* load and display cover */
 
@@ -2528,13 +3299,14 @@ set_comment_text_and_cover(char * str) {
                                 gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
 
                                 g_object_unref (pixbuf);
-
                         }
 
                 }
 
                 gtk_tree_path_free(path);
+
         }
+
 
         /* insert comment */
 
@@ -2637,7 +3409,6 @@ create_music_browser(void) {
 	/* window creating stuff */
 	browser_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(browser_window), _("Music Store"));
-/*	gtk_window_set_gravity(GTK_WINDOW(browser_window), GDK_GRAVITY_STATIC);*/
 	g_signal_connect(G_OBJECT(browser_window), "delete_event", G_CALLBACK(browser_window_close), NULL);
 	g_signal_connect(G_OBJECT(browser_window), "key_press_event",
 			 G_CALLBACK(browser_window_key_pressed), NULL);
@@ -2653,13 +3424,16 @@ create_music_browser(void) {
 	if (!music_store) {
 		music_store = gtk_tree_store_new(8,
 						 G_TYPE_STRING,  /* visible name */
-						 G_TYPE_STRING,  /* string to sort by */
-						 G_TYPE_STRING,  /* physical filename (tracks only) */
+						 G_TYPE_STRING,  /* string to sort by (except stores) */
+						 G_TYPE_STRING,  /* physical filename (stores&tracks) */
 						 G_TYPE_STRING,  /* user comments */
 						 G_TYPE_FLOAT,   /* track length in seconds */
 						 G_TYPE_FLOAT,   /* track average volume in dBFS */
 						 G_TYPE_FLOAT,   /* track manual volume adjustment, dB */
-						 G_TYPE_FLOAT);  /* if >= 0: use track manual RVA, if < 0: auto (compute from avg. loudness) */
+						 G_TYPE_FLOAT);  /* if >= 0: use track manual RVA, 
+								    if < 0: auto (compute from avg. loudness);
+								    if >= 0: writable store,
+								    if < 0: readonly store */
 	}
 
 	music_tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(music_store));
@@ -2716,16 +3490,71 @@ create_music_browser(void) {
 	g_signal_connect(G_OBJECT(music_tree), "drag_data_get", G_CALLBACK(browser_drag_data_get), NULL);
 	g_signal_connect(G_OBJECT(music_tree), "drag_end", G_CALLBACK(browser_drag_end), NULL);
 
-	/* create popup menu for blank space */
-	blank_menu = gtk_menu_new();
-	blank__add = gtk_menu_item_new_with_label(_("Add new artist..."));
-	blank__search = gtk_menu_item_new_with_label(_("Search..."));
-	gtk_menu_shell_append(GTK_MENU_SHELL(blank_menu), blank__add);
-	gtk_menu_shell_append(GTK_MENU_SHELL(blank_menu), blank__search);
-	g_signal_connect_swapped(G_OBJECT(blank__add), "activate", G_CALLBACK(artist__add_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(blank__search), "activate", G_CALLBACK(search_cb), NULL);
-	gtk_widget_show(blank__add);
-	gtk_widget_show(blank__search);
+
+        /* create popup menu for blank space */
+        blank_menu = gtk_menu_new();
+        blank__add = gtk_menu_item_new_with_label(_("Add new store..."));
+        blank__search = gtk_menu_item_new_with_label(_("Search..."));
+        blank__save = gtk_menu_item_new_with_label(_("Save Music Store"));
+        gtk_menu_shell_append(GTK_MENU_SHELL(blank_menu), blank__add);
+        gtk_menu_shell_append(GTK_MENU_SHELL(blank_menu), blank__search);
+        gtk_menu_shell_append(GTK_MENU_SHELL(blank_menu), blank__save);
+        g_signal_connect_swapped(G_OBJECT(blank__add), "activate", G_CALLBACK(store__add_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(blank__search), "activate", G_CALLBACK(search_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(blank__save), "activate", G_CALLBACK(store__save_cb), NULL);
+        gtk_widget_show(blank__add);
+        gtk_widget_show(blank__search);
+        gtk_widget_show(blank__save);
+
+	/* create popup menu for music store tree items */
+	store_menu = gtk_menu_new();
+	store__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
+	store__separator1 = gtk_separator_menu_item_new();
+	store__add = gtk_menu_item_new_with_label(_("Add new store..."));
+	store__edit = gtk_menu_item_new_with_label(_("Edit store..."));
+	store__remove = gtk_menu_item_new_with_label(_("Remove store"));
+	store__separator2 = gtk_separator_menu_item_new();
+	store__addart = gtk_menu_item_new_with_label(_("Add new artist to this store..."));
+	store__separator3 = gtk_separator_menu_item_new();
+	store__volume = gtk_menu_item_new_with_label(_("Calculate volume (recursive)"));
+	store__search = gtk_menu_item_new_with_label(_("Search..."));
+	store__separator4 = gtk_separator_menu_item_new();
+	store__save = gtk_menu_item_new_with_label(_("Save Music Store"));
+
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__addlist);
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__separator1);
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__add);
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__edit);
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__remove);
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__separator2);
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__addart);
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__separator3);
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__volume);
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__search);
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__separator4);
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__save);
+
+	g_signal_connect_swapped(G_OBJECT(store__addlist), "activate", G_CALLBACK(store__addlist_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(store__add), "activate", G_CALLBACK(store__add_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(store__edit), "activate", G_CALLBACK(store__edit_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(store__remove), "activate", G_CALLBACK(store__remove_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(store__addart), "activate", G_CALLBACK(artist__add_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(store__volume), "activate", G_CALLBACK(store__volume_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(store__search), "activate", G_CALLBACK(search_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(store__save), "activate", G_CALLBACK(store__save_cb), NULL);
+
+	gtk_widget_show(store__addlist);
+	gtk_widget_show(store__separator1);
+	gtk_widget_show(store__add);
+	gtk_widget_show(store__edit);
+	gtk_widget_show(store__remove);
+	gtk_widget_show(store__separator2);
+	gtk_widget_show(store__addart);
+	gtk_widget_show(store__separator3);
+	gtk_widget_show(store__volume);
+	gtk_widget_show(store__search);
+	gtk_widget_show(store__separator4);
+	gtk_widget_show(store__save);
 
 	/* create popup menu for artist tree items */
 	artist_menu = gtk_menu_new();
@@ -2733,41 +3562,41 @@ create_music_browser(void) {
 	artist__separator1 = gtk_separator_menu_item_new();
 	artist__add = gtk_menu_item_new_with_label(_("Add new artist..."));
 	artist__edit = gtk_menu_item_new_with_label(_("Edit artist..."));
-	artist__addrec = gtk_menu_item_new_with_label(_("Add new record to this artist..."));
-	artist__volume = gtk_menu_item_new_with_label(_("Calculate volume (recursive)"));
-	artist__separator2 = gtk_separator_menu_item_new();
 	artist__remove = gtk_menu_item_new_with_label(_("Remove artist"));
+	artist__separator2 = gtk_separator_menu_item_new();
+	artist__addrec = gtk_menu_item_new_with_label(_("Add new record to this artist..."));
 	artist__separator3 = gtk_separator_menu_item_new();
+	artist__volume = gtk_menu_item_new_with_label(_("Calculate volume (recursive)"));
 	artist__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__separator1);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__add);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__edit);
-	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__addrec);
-	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__volume);
-	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__remove);
+	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__separator2);
+	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__addrec);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__separator3);
+	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__volume);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__search);
 
 	g_signal_connect_swapped(G_OBJECT(artist__addlist), "activate", G_CALLBACK(artist__addlist_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__add), "activate", G_CALLBACK(artist__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__edit), "activate", G_CALLBACK(artist__edit_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(artist__remove), "activate", G_CALLBACK(artist__remove_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__addrec), "activate", G_CALLBACK(record__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__volume), "activate", G_CALLBACK(artist__volume_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(artist__remove), "activate", G_CALLBACK(artist__remove_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(artist__addlist);
 	gtk_widget_show(artist__separator1);
 	gtk_widget_show(artist__add);
 	gtk_widget_show(artist__edit);
-	gtk_widget_show(artist__addrec);
-	gtk_widget_show(artist__volume);
-	gtk_widget_show(artist__separator2);
 	gtk_widget_show(artist__remove);
+	gtk_widget_show(artist__separator2);
+	gtk_widget_show(artist__addrec);
 	gtk_widget_show(artist__separator3);
+	gtk_widget_show(artist__volume);
 	gtk_widget_show(artist__search);
 
 	/* create popup menu for record tree items */
@@ -2776,41 +3605,41 @@ create_music_browser(void) {
 	record__separator1 = gtk_separator_menu_item_new();
 	record__add = gtk_menu_item_new_with_label(_("Add new record..."));
 	record__edit = gtk_menu_item_new_with_label(_("Edit record..."));
-	record__addtrk = gtk_menu_item_new_with_label(_("Add new track to this record..."));
-	record__volume = gtk_menu_item_new_with_label(_("Calculate volume (recursive)"));
-	record__separator2 = gtk_separator_menu_item_new();
 	record__remove = gtk_menu_item_new_with_label(_("Remove record"));
+	record__separator2 = gtk_separator_menu_item_new();
+	record__addtrk = gtk_menu_item_new_with_label(_("Add new track to this record..."));
 	record__separator3 = gtk_separator_menu_item_new();
+	record__volume = gtk_menu_item_new_with_label(_("Calculate volume (recursive)"));
 	record__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator1);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__add);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__edit);
-	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addtrk);
-	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__volume);
-	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__remove);
+	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator2);
+	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addtrk);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator3);
+	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__volume);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__search);
 
 	g_signal_connect_swapped(G_OBJECT(record__addlist), "activate", G_CALLBACK(record__addlist_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__add), "activate", G_CALLBACK(record__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__edit), "activate", G_CALLBACK(record__edit_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(record__remove), "activate", G_CALLBACK(record__remove_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__addtrk), "activate", G_CALLBACK(track__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__volume), "activate", G_CALLBACK(record__volume_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(record__remove), "activate", G_CALLBACK(record__remove_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(record__addlist);
 	gtk_widget_show(record__separator1);
 	gtk_widget_show(record__add);
 	gtk_widget_show(record__edit);
-	gtk_widget_show(record__addtrk);
-	gtk_widget_show(record__volume);
-	gtk_widget_show(record__separator2);
 	gtk_widget_show(record__remove);
+	gtk_widget_show(record__separator2);
+	gtk_widget_show(record__addtrk);
 	gtk_widget_show(record__separator3);
+	gtk_widget_show(record__volume);
 	gtk_widget_show(record__search);
 
 	/* create popup menu for track tree items */
@@ -2819,41 +3648,41 @@ create_music_browser(void) {
 	track__separator1 = gtk_separator_menu_item_new();
 	track__add = gtk_menu_item_new_with_label(_("Add new track..."));
 	track__edit = gtk_menu_item_new_with_label(_("Edit track..."));
-	track__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
-	track__volume = gtk_menu_item_new_with_label(_("Calculate volume"));
-	track__separator2 = gtk_separator_menu_item_new();
 	track__remove = gtk_menu_item_new_with_label(_("Remove track"));
+	track__separator2 = gtk_separator_menu_item_new();
+	track__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
 	track__separator3 = gtk_separator_menu_item_new();
+	track__volume = gtk_menu_item_new_with_label(_("Calculate volume"));
 	track__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__separator1);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__add);
-	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__fileinfo);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__edit);
-	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__volume);
-	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__remove);
+	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__separator2);
+	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__fileinfo);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__separator3);
+	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__volume);
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__search);
 
 	g_signal_connect_swapped(G_OBJECT(track__addlist), "activate", G_CALLBACK(track__addlist_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__add), "activate", G_CALLBACK(track__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__edit), "activate", G_CALLBACK(track__edit_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(track__remove), "activate", G_CALLBACK(track__remove_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__fileinfo), "activate", G_CALLBACK(track__fileinfo_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__volume), "activate", G_CALLBACK(track__volume_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(track__remove), "activate", G_CALLBACK(track__remove_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(track__addlist);
 	gtk_widget_show(track__separator1);
 	gtk_widget_show(track__add);
 	gtk_widget_show(track__edit);
-	gtk_widget_show(track__fileinfo);
-	gtk_widget_show(track__volume);
-	gtk_widget_show(track__separator2);
 	gtk_widget_show(track__remove);
+	gtk_widget_show(track__separator2);
+	gtk_widget_show(track__fileinfo);
 	gtk_widget_show(track__separator3);
+	gtk_widget_show(track__volume);
 	gtk_widget_show(track__search);
 
 	/* attach event handler that will popup the menus */
@@ -3063,7 +3892,7 @@ parse_record(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_artist) {
 
 
 void
-parse_artist(xmlDocPtr doc, xmlNodePtr cur) {
+parse_artist(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_store) {
 
 	GtkTreeIter iter_artist;
 	xmlChar * key;
@@ -3077,7 +3906,7 @@ parse_artist(xmlDocPtr doc, xmlNodePtr cur) {
 	comment[0] = '\0';
 
 	cur = cur->xmlChildrenNode;
-	gtk_tree_store_append(music_store, &iter_artist, NULL);
+	gtk_tree_store_append(music_store, &iter_artist, iter_store);
 	gtk_tree_store_set(music_store, &iter_artist, 0, "", 1, "", 2, "", 3, "", -1);
 	while (cur != NULL) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"name"))) {
@@ -3103,7 +3932,6 @@ parse_artist(xmlDocPtr doc, xmlNodePtr cur) {
 			xmlFree(key);
 			gtk_tree_store_set(music_store, &iter_artist, 3, comment, -1);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"record"))) {
-
 			parse_record(doc, cur, &iter_artist);
 		}
 		cur = cur->next;
@@ -3116,54 +3944,82 @@ parse_artist(xmlDocPtr doc, xmlNodePtr cur) {
 void
 load_music_store(void) {
 
+	char name[MAXLEN];
+	char comment[MAXLEN];
+
+	name[0] = '\0';
+	comment[0] = '\0';
+
 	xmlDocPtr doc;
 	xmlNodePtr cur;
-	xmlNodePtr root;
-	char store_file[MAXLEN];
-	FILE * f;
+	xmlChar * key;
 
-	sprintf(store_file, "%s/music_store.xml", confdir);
+	GtkTreeIter iter_store;
+	char * store_file;
+	int i = 0;
 
-	if ((f = fopen(store_file, "rt")) == NULL) {
-		fprintf(stderr, "No music store found, creating empty one: %s\n", store_file);
-		doc = xmlNewDoc((const xmlChar *) "1.0");
-		root = xmlNewNode(NULL, (const xmlChar *) "music_store");
-		xmlDocSetRootElement(doc, root);
-		xmlSaveFormatFile(store_file, doc, 1);
-		return;
-	}
-	fclose(f);
-	
-	doc = xmlParseFile(store_file);
-	if (doc == NULL) {
-		fprintf(stderr, "An XML error occured while parsing %s\n", store_file);
-		return;
-	}
-	
-	cur = xmlDocGetRootElement(doc);
-	if (cur == NULL) {
-		fprintf(stderr, "load_music_store: empty XML document\n");
-		xmlFreeDoc(doc);
-		return;
-	}
 
-	if (xmlStrcmp(cur->name, (const xmlChar *)"music_store")) {
-		fprintf(stderr, "load_music_store: XML document of the wrong type, "
-			"root node != music_store\n");
-		xmlFreeDoc(doc);
-		return;
-	}
-	
-	cur = cur->xmlChildrenNode;
-	while (cur != NULL) {
-		if ((!xmlStrcmp(cur->name, (const xmlChar *)"artist"))){
-			parse_artist(doc, cur);
+        while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter_store, NULL, i++)) {
+                gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter_store, 0, &store_file, -1);
+
+		if (access(store_file, R_OK) != 0) continue;
+
+		gtk_tree_store_append(music_store, &iter_store, NULL);
+		gtk_tree_store_set(music_store, &iter_store, 0, _("Music Store"), 1, "",
+				   2, store_file, 3, "", 7, -10.0f, -1);
+
+		if (access(store_file, W_OK) == 0) {
+			gtk_tree_store_set(music_store, &iter_store, 7, 10.0f, -1);
 		}
-		cur = cur->next;
-	}
 	
-	xmlFreeDoc(doc);
-	return;
+		doc = xmlParseFile(store_file);
+		if (doc == NULL) {
+			fprintf(stderr, "An XML error occured while parsing %s\n", store_file);
+			continue;
+		}
+	
+		cur = xmlDocGetRootElement(doc);
+		if (cur == NULL) {
+			fprintf(stderr, "load_music_store: empty XML document\n");
+			xmlFreeDoc(doc);
+			continue;
+		}
+
+		if (xmlStrcmp(cur->name, (const xmlChar *)"music_store")) {
+			fprintf(stderr, "load_music_store: XML document of the wrong type, "
+				"root node != music_store\n");
+			xmlFreeDoc(doc);
+			continue;
+		}
+	
+		cur = cur->xmlChildrenNode;
+		while (cur != NULL) {
+			if ((!xmlStrcmp(cur->name, (const xmlChar *)"name"))) {
+				key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+				if (key != NULL)
+					strncpy(name, (char *) key, MAXLEN-1);
+				xmlFree(key);
+				if (name[0] == '\0') {
+					fprintf(stderr, "Error in XML music_store: "
+						"Music Store <name> is required, but NULL\n");
+				}
+				gtk_tree_store_set(music_store, &iter_store, 0, name, -1);
+			} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"comment"))) {
+				key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+				if (key != NULL)
+					strncpy(comment, (char *) key, MAXLEN-1);
+				xmlFree(key);
+				gtk_tree_store_set(music_store, &iter_store, 3, comment, -1);
+			} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"artist"))) {
+				parse_artist(doc, cur, &iter_store);
+			}
+			cur = cur->next;
+		}
+	
+		xmlFreeDoc(doc);
+
+                g_free(store_file);
+        }
 }
 
 /**********************************************************************************/
@@ -3290,55 +4146,90 @@ save_artist(xmlDocPtr doc, xmlNodePtr root, GtkTreeIter * iter_artist) {
 
 
 void
+save_store(xmlDocPtr doc, xmlNodePtr root, GtkTreeIter * iter_store) {
+
+	char * name;
+	char * comment;
+	GtkTreeIter iter_artist;
+	int i = 0;
+
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter_store,
+			   0, &name, 3, &comment, -1);
+	
+	if (name[0] == '\0')
+		fprintf(stderr, "saving music_store XML: warning: empty <name>\n");
+	xmlNewTextChild(root, NULL, (const xmlChar *) "name", (const xmlChar *) name);
+	if (comment[0] != '\0')
+		xmlNewTextChild(root, NULL, (const xmlChar *) "comment", (const xmlChar *) comment);
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, iter_store, i++))
+		save_artist(doc, root, &iter_artist);
+
+	g_free(name);
+	g_free(comment);
+}
+
+
+void
 save_music_store(void) {
 
 	xmlDocPtr doc;
 	xmlNodePtr root;
-	GtkTreeIter iter_artist;
+	GtkTreeIter iter_store;
 	int i = 0;
-	char c, d;
+	char c, d, diff;
 	FILE * fin;
 	FILE * fout;
 	char tmpname[MAXLEN];
-	char store_file[MAXLEN];
+	char * store_file;
+	float state;
 
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_store, NULL, i++)) {
 
-	sprintf(store_file, "%s/music_store.xml", confdir);
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_store, 2, &store_file, 7, &state, -1);
 
-	doc = xmlNewDoc((const xmlChar *) "1.0");
-	root = xmlNewNode(NULL, (const xmlChar *) "music_store");
-	xmlDocSetRootElement(doc, root);
+		if (state < 0) continue;
 
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, NULL, i++))
-		save_artist(doc, root, &iter_artist);
+		doc = xmlNewDoc((const xmlChar *) "1.0");
+		root = xmlNewNode(NULL, (const xmlChar *) "music_store");
+		xmlDocSetRootElement(doc, root);
 
+		save_store(doc, root, &iter_store);
 
-	sprintf(tmpname, "%s/music_store.xml.temp", confdir);
-	xmlSaveFormatFile(tmpname, doc, 1);
+		sprintf(tmpname, "%s.temp", store_file);
+		xmlSaveFormatFile(tmpname, doc, 1);
 	
-	if ((fin = fopen(store_file, "rt")) == NULL) {
-		fprintf(stderr, "Error opening file: %s\n", store_file);
-		return;
-	}
-	if ((fout = fopen(tmpname, "rt")) == NULL) {
-		fprintf(stderr, "Error opening file: %s\n", tmpname);
-		return;
-	}
+		if ((fin = fopen(store_file, "rt")) == NULL) {
+			fprintf(stderr, "Error opening file: %s\n", store_file);
+			continue;
+		}
+		if ((fout = fopen(tmpname, "rt")) == NULL) {
+			fprintf(stderr, "Error opening file: %s\n", tmpname);
+			continue;
+		}
 	
-	c = 0; d = 0;
-	while (((c = fgetc(fin)) != EOF) && ((d = fgetc(fout)) != EOF)) {
-		if (c != d) {
-			fclose(fin);
-			fclose(fout);
+		c = 0; d = 0; diff = 0;
+		while (((c = fgetc(fin)) != EOF) && ((d = fgetc(fout)) != EOF)) {
+			if (c != d) {
+				diff = 1;
+				break;
+			}
+		}
+
+		fclose(fin);
+		fclose(fout);
+
+		if (diff) {
 			unlink(store_file);
 			rename(tmpname, store_file);
-			return;
+		} else {
+			unlink(tmpname);
 		}
+
+		g_free(store_file);
 	}
-	
-	fclose(fin);
-	fclose(fout);
-	unlink(tmpname);
+
+	music_store_changed = 0;
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

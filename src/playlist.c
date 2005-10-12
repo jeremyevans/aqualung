@@ -1280,12 +1280,15 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 
 	switch (drag_info) {
 	case 1:
-		artist__addlist_cb(piter);
+		store__addlist_cb(piter);
 		break;
 	case 2:
-		record__addlist_cb(piter);
+		artist__addlist_cb(piter);
 		break;
 	case 3:
+		record__addlist_cb(piter);
+		break;
+	case 4:
 		track__addlist_cb(piter);
 		break;
 	}

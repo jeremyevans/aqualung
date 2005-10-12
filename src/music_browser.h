@@ -33,6 +33,7 @@ void hide_music_browser(void);
 void load_music_store(void);
 void save_music_store(void);
 
+void store__addlist_cb(gpointer data);
 void artist__addlist_cb(gpointer data);
 void record__addlist_cb(gpointer data);
 void track__addlist_cb(gpointer data);

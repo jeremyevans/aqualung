@@ -102,6 +102,7 @@ extern const size_t sample_size;
 extern int aqualung_socket_fd;
 extern int aqualung_session_id;
 
+extern GtkListStore * ms_pathlist_store;
 extern GtkListStore * play_store;
 extern GtkListStore * running_store;
 extern GtkWidget * play_list;
@@ -211,6 +212,8 @@ int main_pos_x;
 int main_pos_y;
 int main_size_x;
 int main_size_y;
+
+extern int music_store_changed;
 
 extern int browser_pos_x;
 extern int browser_pos_y;
@@ -1107,7 +1110,32 @@ main_window_close(GtkWidget * widget, gpointer data) {
                 pthread_mutex_unlock(&disk_thread_lock);
         }
 
-	save_music_store();
+	if (music_store_changed) {
+		GtkWidget * dialog;
+		GtkWidget * label;
+		
+		dialog = gtk_dialog_new_with_buttons(_("Warning"),
+						     GTK_WINDOW(main_window),
+						     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+						     GTK_STOCK_YES, GTK_RESPONSE_ACCEPT,
+						     GTK_STOCK_NO, GTK_RESPONSE_REJECT,
+						     NULL);
+		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+		
+		label = gtk_label_new(_("Music Store has been changed.\n"
+					"Do you want to save it before exiting?"));
+		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
+		gtk_widget_show(label);
+		
+		if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+			save_music_store();
+		}
+		
+		gtk_widget_destroy(dialog);
+	}
+	
 	save_window_position();
 	save_config();
 	save_plugin_data();
@@ -3270,6 +3298,9 @@ save_config(void) {
         char config_file[MAXLEN];
 	char str[32];
 
+	GtkTreeIter iter;
+	int i = 0;
+	char * path;
 
         sprintf(config_file, "%s/config.xml", confdir);
 
@@ -3436,6 +3467,15 @@ save_config(void) {
 	snprintf(str, 31, "%d", search_ms_flags);
         xmlNewTextChild(root, NULL, (const xmlChar *) "search_ms_flags", (xmlChar *) str);
 
+	
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
+		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &path, -1);
+		xmlNewTextChild(root, NULL, (const xmlChar *) "music_store", (xmlChar *) path);
+		g_free(path);
+	}
+
+	
         sprintf(tmpname, "%s/config.xml.temp", confdir);
         xmlSaveFormatFile(tmpname, doc, 1);
 
@@ -3474,6 +3514,10 @@ load_config(void) {
 	xmlChar * key;
         char config_file[MAXLEN];
         FILE * f;
+
+	char path[MAXLEN];
+	GtkTreeIter iter;
+
 
         sprintf(config_file, "%s/config.xml", confdir);
 
@@ -3951,6 +3995,30 @@ load_config(void) {
                         xmlFree(key);
                 }
 
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				snprintf(path, MAXLEN - 1, "%s", (char *)key);
+
+				if (!ms_pathlist_store) {
+					ms_pathlist_store = gtk_list_store_new(2,
+						    G_TYPE_STRING,     /* path */
+						    G_TYPE_STRING);    /* state (rw, r, unreachable) */
+				}
+
+				gtk_list_store_append(ms_pathlist_store, &iter);
+				gtk_list_store_set(ms_pathlist_store, &iter, 0, path, -1);
+				if (access(path, R_OK | W_OK) == 0) {
+					gtk_list_store_set(ms_pathlist_store, &iter, 1, _("rw"), -1);
+				} else if (access(path, R_OK) == 0) {
+					gtk_list_store_set(ms_pathlist_store, &iter, 1, _("r"), -1);
+				} else {
+					gtk_list_store_set(ms_pathlist_store, &iter, 1, _("unreachable"), -1);
+				}
+			}
+
+                        xmlFree(key);
+		}
                 cur = cur->next;
         }
 

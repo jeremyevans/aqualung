@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <unistd.h>
 
 #ifdef HAVE_SRC
 #include <samplerate.h>
@@ -32,6 +33,7 @@
 
 #include "common.h"
 #include "gui_main.h"
+#include "music_browser.h"
 #include "playlist.h"
 #include "i18n.h"
 #include "options.h"
@@ -41,6 +43,7 @@ extern pthread_mutex_t output_thread_lock;
 
 char title_format[MAXLEN];
 char default_param[MAXLEN];
+extern char currdir[MAXLEN];
 
 #ifdef HAVE_SRC
 extern int src_type;
@@ -115,7 +118,10 @@ int cover_width_shadow;
 int restart_flag;
 int override_past_state;
 
+extern int music_store_changed;
+
 extern GtkWidget * music_tree;
+extern GtkTreeStore * music_store;
 
 extern GtkWidget * play_list;
 extern GtkTreeViewColumn * track_column;
@@ -156,6 +162,10 @@ GtkWidget * check_buttons_at_the_bottom;
 GtkWidget * check_simple_view_in_fx;
 GtkWidget * check_override_skin;
 GtkWidget * check_magnify_smaller_images;
+
+GtkListStore * ms_pathlist_store = NULL;
+GtkTreeSelection * ms_pathlist_select;
+GtkWidget * entry_ms_pathlist;
 
 GtkObject * adj_refvol;
 GtkObject * adj_steepness;
@@ -943,6 +953,132 @@ create_notebook_tab(char * text, char * imgfile) {
 }
 
 void
+add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
+
+	char path[MAXLEN];
+	GtkTreeIter iter;
+
+	snprintf(path, MAXLEN - 1, "%s", gtk_entry_get_text(GTK_ENTRY(entry_ms_pathlist)));
+
+	if (path[0] == '\0') return;
+
+	gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), "");
+	gtk_list_store_append(ms_pathlist_store, &iter);
+	gtk_list_store_set(ms_pathlist_store, &iter, 0, path, -1);
+
+	if (access(path, R_OK | W_OK) == 0) {
+		gtk_list_store_set(ms_pathlist_store, &iter, 1, _("rw"), -1);
+	} else if (access(path, R_OK) == 0) {
+		gtk_list_store_set(ms_pathlist_store, &iter, 1, _("r"), -1);
+	} else {
+		gtk_list_store_set(ms_pathlist_store, &iter, 1, _("unreachable"), -1);
+	}
+}
+
+
+void
+remove_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
+
+	GtkTreeIter iter;
+	int i = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
+
+		if (gtk_tree_selection_iter_is_selected(ms_pathlist_select, &iter)) {
+			gtk_list_store_remove(ms_pathlist_store, &iter);
+			--i;
+		}
+	}
+}
+
+
+void
+browse_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
+
+        GtkWidget * dialog;
+        const gchar * selected_filename;
+
+
+        dialog = gtk_file_chooser_dialog_new(_("Please select a Music Store database."),
+                                             GTK_WINDOW(options_window),
+                                             GTK_FILE_CHOOSER_ACTION_OPEN,
+                                             GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT,
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                             NULL);
+
+	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), currdir);
+
+        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+
+                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+                gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), selected_filename);
+
+                strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+			MAXLEN-1);
+        }
+
+        gtk_widget_destroy(dialog);
+}
+
+
+void
+refresh_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
+
+	GtkTreeIter iter;
+	int i = 0;
+	char * path;
+
+	if (music_store_changed) {
+		GtkWidget * dialog;
+		GtkWidget * label;
+		
+		dialog = gtk_dialog_new_with_buttons(_("Warning"),
+						     GTK_WINDOW(options_window),
+						     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+						     GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+						     _("Discard changes"), GTK_RESPONSE_REJECT,
+						     NULL);
+		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+		
+		label = gtk_label_new(_("Music Store has been changed. You have to save it before\n"
+					"refreshing if you want to keep the changes."));
+		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
+		gtk_widget_show(label);
+		
+		if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+			save_music_store();
+		}
+		
+		gtk_widget_destroy(dialog);
+	}
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store),
+					     &iter, NULL, i++)) {
+		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &path, -1);
+		
+		if (access(path, R_OK | W_OK) == 0) {
+			gtk_list_store_set(ms_pathlist_store, &iter, 1, _("rw"), -1);
+		} else if (access(path, R_OK) == 0) {
+			gtk_list_store_set(ms_pathlist_store, &iter, 1, _("r"), -1);
+		} else {
+			gtk_list_store_set(ms_pathlist_store, &iter, 1, _("unreachable"), -1);
+		}
+		
+		g_free(path);
+	}
+	
+	gtk_tree_store_clear(music_store);
+	load_music_store();
+	music_store_changed = 0;
+}
+
+
+void
 create_options_window(void) {
 
         GtkWidget * notebook;
@@ -963,10 +1099,19 @@ create_options_window(void) {
 
 	GtkWidget * vbox_pl;
 	GtkWidget * vbox_ms;
+	GtkWidget * frame_ms_pathlist;
+	GtkWidget * ms_pathlist_view;
+	GtkWidget * vbox_ms_pathlist;
+	GtkWidget * hbox_ms_pathlist;
+	GtkWidget * add_ms_pathlist;
+	GtkWidget * browse_ms_pathlist;
+	GtkWidget * remove_ms_pathlist;
+	GtkWidget * refresh_ms_pathlist;
 	GtkWidget * frame_plistcol;
 	GtkWidget * vbox_plistcol;
 	GtkWidget * label_plistcol;
 	GtkWidget * viewport;
+	GtkWidget * scrolled_win;
 	GtkCellRenderer * renderer;
 	GtkTreeViewColumn * column;
 	GtkTreeIter iter;
@@ -1284,6 +1429,78 @@ to set the column order in the Playlist."));
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_cart), check_magnify_smaller_images, FALSE, FALSE, 0);
 
+
+	frame_ms_pathlist = gtk_frame_new(_("Paths to Music Store databases"));
+	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_ms_pathlist, FALSE, TRUE, 5);
+	
+	vbox_ms_pathlist = gtk_vbox_new(FALSE, FALSE);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_ms_pathlist), 10);
+	gtk_container_add(GTK_CONTAINER(frame_ms_pathlist), vbox_ms_pathlist);
+
+	if (!ms_pathlist_store) {
+		ms_pathlist_store = gtk_list_store_new(2,
+						    G_TYPE_STRING,     /* path */
+						    G_TYPE_STRING);    /* state (rw, r, unreachable) */
+	}
+
+	ms_pathlist_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(ms_pathlist_store));
+	ms_pathlist_select = gtk_tree_view_get_selection(GTK_TREE_VIEW(ms_pathlist_view));
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Path"), renderer,
+							  "text", 0,
+							  NULL);
+	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(ms_pathlist_view), column);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Access"), renderer,
+							  "text", 1,
+							  NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(ms_pathlist_view), column);
+
+	gtk_widget_set_size_request(ms_pathlist_view, -1, 100);
+        gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(ms_pathlist_view), TRUE);
+        gtk_tree_view_set_reorderable(GTK_TREE_VIEW(ms_pathlist_view), TRUE);
+
+	viewport = gtk_viewport_new(NULL, NULL);
+	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), viewport, FALSE, FALSE, 0);
+
+        scrolled_win = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
+				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_container_add(GTK_CONTAINER(viewport), scrolled_win);
+	gtk_container_add(GTK_CONTAINER(scrolled_win), ms_pathlist_view);
+
+	
+	hbox_ms_pathlist = gtk_hbox_new(FALSE, FALSE);
+	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist, FALSE, FALSE, 0);
+	
+	entry_ms_pathlist = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), entry_ms_pathlist, FALSE, FALSE, 0);
+
+	add_ms_pathlist = gtk_button_new_with_label(_("Add"));
+	g_signal_connect (G_OBJECT(add_ms_pathlist), "clicked",
+			  G_CALLBACK(add_ms_pathlist_clicked), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), add_ms_pathlist, FALSE, FALSE, 5);
+
+	browse_ms_pathlist = gtk_button_new_with_label(_("Browse"));
+	g_signal_connect (G_OBJECT(browse_ms_pathlist), "clicked",
+			  G_CALLBACK(browse_ms_pathlist_clicked), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), browse_ms_pathlist, FALSE, FALSE, 0);
+
+	remove_ms_pathlist = gtk_button_new_with_label(_("Remove"));
+	g_signal_connect (G_OBJECT(remove_ms_pathlist), "clicked",
+			  G_CALLBACK(remove_ms_pathlist_clicked), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), remove_ms_pathlist, FALSE, FALSE, 5);
+
+	refresh_ms_pathlist = gtk_button_new_with_label(_("Refresh"));
+	g_signal_connect (G_OBJECT(refresh_ms_pathlist), "clicked",
+			  G_CALLBACK(refresh_ms_pathlist_clicked), NULL);
+	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist), refresh_ms_pathlist, FALSE, FALSE, 0);
+	
+
+	
 
 	/* "DSP" notebook page */
 

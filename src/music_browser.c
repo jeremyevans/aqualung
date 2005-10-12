@@ -3958,6 +3958,11 @@ load_music_store(void) {
 	char * store_file;
 	int i = 0;
 
+	if (!ms_pathlist_store) {
+		ms_pathlist_store = gtk_list_store_new(2,
+						       G_TYPE_STRING,     /* path */
+						       G_TYPE_STRING);    /* state (rw, r, unreachable) */
+	}
 
         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter_store, NULL, i++)) {
                 gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter_store, 0, &store_file, -1);
@@ -4183,6 +4188,7 @@ save_music_store(void) {
 	char tmpname[MAXLEN];
 	char * store_file;
 	float state;
+
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_store, NULL, i++)) {
 

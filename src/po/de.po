@@ -760,7 +760,7 @@ msgstr "Track entfernen"
 msgid "(no comment)"
 msgstr "(kein Kommentar)"
 
-#: ../music_browser.c:3411 ../music_browser.c:3968 ../options.c:1385
+#: ../music_browser.c:3411 ../music_browser.c:3973 ../options.c:1385
 msgid "Music Store"
 msgstr "Musikladen"
 

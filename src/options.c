@@ -1474,7 +1474,7 @@ to set the column order in the Playlist."));
 
 	
 	hbox_ms_pathlist = gtk_hbox_new(FALSE, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist, FALSE, FALSE, 5);
 	
 	entry_ms_pathlist = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), entry_ms_pathlist, FALSE, FALSE, 0);

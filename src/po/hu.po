@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2005-09-27 17:02+0200\n"
+"PO-Revision-Date: 2005-10-13 21:15+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -442,13 +442,15 @@ msgstr "Nincs"
 
 #: ../gui_main.c:1117 ../options.c:1038
 msgid "Warning"
-msgstr ""
+msgstr "Figyelmeztetés"
 
 #: ../gui_main.c:1127
 msgid ""
 "Music Store has been changed.\n"
 "Do you want to save it before exiting?"
 msgstr ""
+"A Zenetár tartalma megváltozott.\n"
+"Szeretnéd elmenteni kilépés elõtt?"
 
 #: ../gui_main.c:1544 ../gui_main.c:1571
 #, c-format
@@ -549,15 +551,15 @@ msgstr "LADSPA effekt szerkesztõ"
 #: ../gui_main.c:4012 ../music_browser.c:1977 ../options.c:970
 #: ../options.c:1065
 msgid "rw"
-msgstr ""
+msgstr "rw"
 
 #: ../gui_main.c:4014 ../options.c:972 ../options.c:1067
 msgid "r"
-msgstr ""
+msgstr "r"
 
 #: ../gui_main.c:4016 ../options.c:974 ../options.c:1069
 msgid "unreachable"
-msgstr ""
+msgstr "nem elérhetõ"
 
 #: ../meta_decoder.c:279 ../search_playlist.c:353
 msgid "Title"
@@ -632,19 +634,16 @@ msgid "Vendor:"
 msgstr "Vendor:"
 
 #: ../music_browser.c:353
-#, fuzzy
 msgid "Please select the xml file for this store."
-msgstr "Add meg a számhoz tartozó fájlt."
+msgstr "Add meg a tárolóhoz tartozó xml fájlt."
 
 #: ../music_browser.c:409
-#, fuzzy
 msgid "Add Store"
-msgstr "Album hozzáadása"
+msgstr "Tároló hozzáadása"
 
 #: ../music_browser.c:422 ../music_browser.c:542
-#, fuzzy
 msgid "Name:"
-msgstr "Név"
+msgstr "Név:"
 
 #: ../music_browser.c:434 ../music_browser.c:553 ../music_browser.c:1296
 #: ../music_browser.c:1453 ../volume.c:185
@@ -662,9 +661,8 @@ msgid "Comments:"
 msgstr "Megjegyzések:"
 
 #: ../music_browser.c:529
-#, fuzzy
 msgid "Edit Store"
-msgstr "Zenetár"
+msgstr "Tároló szerkesztése"
 
 #: ../music_browser.c:638
 msgid "Add Artist"
@@ -744,9 +742,8 @@ msgid "Really remove \"%s\" from the Music Store?"
 msgstr "Biztosan eltávolítod a Zenetárból a következõt: \"%s\" ?"
 
 #: ../music_browser.c:2111
-#, fuzzy
 msgid "Remove Store"
-msgstr "Szám eltávolítása"
+msgstr "Tároló eltávolítása"
 
 #: ../music_browser.c:2470
 msgid "Remove Artist"
@@ -769,9 +766,8 @@ msgid "Music Store"
 msgstr "Zenetár"
 
 #: ../music_browser.c:3496 ../music_browser.c:3513
-#, fuzzy
 msgid "Add new store..."
-msgstr "Új szám hozzáadása..."
+msgstr "Új tároló hozzáadása..."
 
 #: ../music_browser.c:3497 ../music_browser.c:3520 ../music_browser.c:3570
 #: ../music_browser.c:3613 ../music_browser.c:3656 ../playlist.c:1479
@@ -779,9 +775,8 @@ msgid "Search..."
 msgstr "Keresés..."
 
 #: ../music_browser.c:3498 ../music_browser.c:3522
-#, fuzzy
 msgid "Save Music Store"
-msgstr "Zenetár"
+msgstr "Zenetár mentése"
 
 #: ../music_browser.c:3511 ../music_browser.c:3561 ../music_browser.c:3604
 #: ../music_browser.c:3647
@@ -789,19 +784,16 @@ msgid "Add to playlist"
 msgstr "Lejátszólistába"
 
 #: ../music_browser.c:3514
-#, fuzzy
 msgid "Edit store..."
-msgstr "Szám szerkesztése..."
+msgstr "Tároló szerkesztése..."
 
 #: ../music_browser.c:3515
-#, fuzzy
 msgid "Remove store"
-msgstr "Szám eltávolítása"
+msgstr "Tároló eltávolítása"
 
 #: ../music_browser.c:3517
-#, fuzzy
 msgid "Add new artist to this store..."
-msgstr "Új szám hozzáadása ehhez az albumhoz..."
+msgstr "Új elõadó hozzáadása ehhez a tárolóhoz..."
 
 #: ../music_browser.c:3519 ../music_browser.c:3569 ../music_browser.c:3612
 msgid "Calculate volume (recursive)"
@@ -864,19 +856,20 @@ msgid "You will need to restart Aqualung for changes to take effect."
 msgstr "A változtatások az Aqualung újraindítása után jutnak érvényre."
 
 #: ../options.c:1002
-#, fuzzy
 msgid "Please select a Music Store database."
-msgstr "Válaszd ki az albumhoz adandó hangfájlokat."
+msgstr "Válassz egy adatbázist."
 
 #: ../options.c:1042
 msgid "Discard changes"
-msgstr ""
+msgstr "Változások eldobása"
 
 #: ../options.c:1048
 msgid ""
 "Music Store has been changed. You have to save it before\n"
 "refreshing if you want to keep the changes."
 msgstr ""
+"A Zenetár tartalma megváltozott. Frissítés elõtt el kell\n"
+"menteni, ha meg akarod tartani a változtatásokat."
 
 #: ../options.c:1178
 msgid "General"
@@ -1033,35 +1026,32 @@ msgid "Don't magnify images with smaller width"
 msgstr "A kisebb képeket ne nagyítsa"
 
 #: ../options.c:1433
-#, fuzzy
 msgid "Paths to Music Store databases"
-msgstr "Keresés a Zenetárban"
+msgstr "A Zenetár adatbázisok elérési útja"
 
 #: ../options.c:1450
 msgid "Path"
-msgstr ""
+msgstr "Elérési út"
 
 #: ../options.c:1457
 msgid "Access"
-msgstr ""
+msgstr "Hozzáférés"
 
 #: ../options.c:1482
 msgid "Add"
-msgstr ""
+msgstr "Hozzáadás"
 
 #: ../options.c:1487
-#, fuzzy
 msgid "Browse"
-msgstr "_Tallózás..."
+msgstr "Tallózás"
 
 #: ../options.c:1492
-#, fuzzy
 msgid "Remove"
-msgstr "Mindent eltávolít"
+msgstr "Eltávolítás"
 
 #: ../options.c:1497
 msgid "Refresh"
-msgstr ""
+msgstr "Frissítés"
 
 #: ../options.c:1509
 msgid "DSP"

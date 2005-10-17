@@ -298,6 +298,11 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("JACK Audio Server\n"), -1);
 
+
+	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("Miscellaneous:"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+
 #ifdef HAVE_SRC
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
@@ -308,11 +313,6 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 #endif /* HAVE_SRC */
 	gtk_text_buffer_insert_at_cursor(buffer, _("Internal Sample Rate Converter support\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Miscellaneous:"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
 
 #ifdef HAVE_CDDB
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);

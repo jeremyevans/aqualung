@@ -395,7 +395,7 @@ fi
 AC_MSG_CHECKING(for CDDB support)
 AC_ARG_WITH(
 	cddb,
-	[  --with-cddb=yes,no       compile with CDDB support (default: yes)],
+	[  --with-cddb=yes,no      compile with CDDB support (default: yes)],
 	cddb="$withval",
 	cddb="detect")
 if test "$cddb" = "no"; then
@@ -475,6 +475,5 @@ echo "      ALSA Audio                          :  $alsa"
 echo "      JACK Audio Server                   :  yes (always)"
 echo
 echo "  Internal Sample Rate Converter support  :  $src"
-echo
 echo "  CDDB support                            :  $cddb"
 echo "----------------------------------------------------------------------"

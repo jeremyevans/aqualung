@@ -59,13 +59,13 @@ msgstr ""
 
 #: ../about.c:172 ../about.c:183 ../about.c:194 ../about.c:205 ../about.c:216
 #: ../about.c:227 ../about.c:238 ../about.c:249 ../about.c:260 ../about.c:276
-#: ../about.c:287 ../about.c:297 ../about.c:303 ../about.c:319
+#: ../about.c:287 ../about.c:297 ../about.c:308 ../about.c:319
 msgid "yes"
 msgstr ""
 
 #: ../about.c:176 ../about.c:187 ../about.c:198 ../about.c:209 ../about.c:220
 #: ../about.c:231 ../about.c:242 ../about.c:253 ../about.c:264 ../about.c:280
-#: ../about.c:291 ../about.c:307 ../about.c:323
+#: ../about.c:291 ../about.c:312 ../about.c:323
 msgid "no"
 msgstr ""
 
@@ -121,12 +121,12 @@ msgstr ""
 msgid "JACK Audio Server\n"
 msgstr ""
 
-#: ../about.c:310
-msgid "Internal Sample Rate Converter support\n"
+#: ../about.c:303
+msgid "Miscellaneous:"
 msgstr ""
 
-#: ../about.c:314
-msgid "Miscellaneous:"
+#: ../about.c:315
+msgid "Internal Sample Rate Converter support\n"
 msgstr ""
 
 #: ../about.c:326

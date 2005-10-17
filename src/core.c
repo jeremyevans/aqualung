@@ -1598,10 +1598,17 @@ main(int argc, char ** argv) {
 
 		fprintf(stderr, "\n\tInternal Sample Rate Converter support      : ");
 #ifdef HAVE_SRC
+		fprintf(stderr, "yes\n");
+#else
+		fprintf(stderr, "no\n");
+#endif /* HAVE_SRC */
+
+		fprintf(stderr, "\tCDDB support                                : ");
+#ifdef HAVE_CDDB
 		fprintf(stderr, "yes\n\n");
 #else
 		fprintf(stderr, "no\n\n");
-#endif /* HAVE_SRC */
+#endif /* HAVE_CDDB */
 
 		exit(1);
 	}

@@ -7,6 +7,7 @@ EXTRA_DIST = version.sh version.h.in
 aqualung_SOURCES = \
 about.h about.c \
 common.h \
+cddb_lookup.h cddb_lookup.c \
 core.h core.c \
 file_info.h file_info.c \
 gui_main.h gui_main.c \

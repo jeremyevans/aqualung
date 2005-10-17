@@ -266,6 +266,7 @@ create_about_window() {
 #endif /* HAVE_ID3 */
         gtk_text_buffer_insert_at_cursor(buffer, _("ID3 tags\n"), -1);
 
+
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Output driver support:"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
@@ -308,6 +309,22 @@ create_about_window() {
 #endif /* HAVE_SRC */
 	gtk_text_buffer_insert_at_cursor(buffer, _("Internal Sample Rate Converter support\n"), -1);
 
+
+	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("Miscellaneous:"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+
+#ifdef HAVE_CDDB
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("yes"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
+#else
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("no"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
+#endif /* HAVE_CDDB */
+	gtk_text_buffer_insert_at_cursor(buffer, _("CDDB support\n"), -1);
+	
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer,

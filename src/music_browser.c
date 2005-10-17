@@ -31,6 +31,7 @@
 #include <libxml/parser.h>
 
 #include "common.h"
+#include "cddb_lookup.h"
 #include "core.h"
 #include "file_info.h"
 #include "decoder/file_decoder.h"
@@ -77,7 +78,6 @@ gint cover_widths[5] = { 50, 100, 200, 300, -1 };       /* widths in pixels */
 
 GtkWidget * browser_window;
 GtkWidget * dialog;
-
 int browser_pos_x;
 int browser_pos_y;
 int browser_size_x;
@@ -140,6 +140,7 @@ GtkWidget * record__edit;
 GtkWidget * record__remove;
 GtkWidget * record__separator2;
 GtkWidget * record__addtrk;
+GtkWidget * record__cddb;
 GtkWidget * record__separator3;
 GtkWidget * record__volume;
 GtkWidget * record__search;
@@ -2826,6 +2827,23 @@ record__remove_cb(gpointer data) {
 }
 
 
+#ifdef HAVE_CDDB
+
+static void
+record__cddb_cb(gpointer data) {
+	GtkTreeIter iter;
+	GtkTreeModel * model;
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
+		if (!is_store_readonly(model, iter)) {
+			cddb_get();
+		}
+	}
+}
+
+#endif /* HAVE_CDDB */
+
+
 /************************************/
 
 
@@ -3608,6 +3626,9 @@ create_music_browser(void) {
 	record__remove = gtk_menu_item_new_with_label(_("Remove record"));
 	record__separator2 = gtk_separator_menu_item_new();
 	record__addtrk = gtk_menu_item_new_with_label(_("Add new track to this record..."));
+#ifdef HAVE_CDDB
+	record__cddb = gtk_menu_item_new_with_label(_("CDDB query for this record..."));
+#endif /* HAVE_CDDB */
 	record__separator3 = gtk_separator_menu_item_new();
 	record__volume = gtk_menu_item_new_with_label(_("Calculate volume (recursive)"));
 	record__search = gtk_menu_item_new_with_label(_("Search..."));
@@ -3619,6 +3640,9 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__remove);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addtrk);
+#ifdef HAVE_CDDB
+	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__cddb);
+#endif /* HAVE_CDDB */
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator3);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__volume);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__search);
@@ -3628,6 +3652,9 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(record__edit), "activate", G_CALLBACK(record__edit_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__remove), "activate", G_CALLBACK(record__remove_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__addtrk), "activate", G_CALLBACK(track__add_cb), NULL);
+#ifdef HAVE_CDDB
+	g_signal_connect_swapped(G_OBJECT(record__cddb), "activate", G_CALLBACK(record__cddb_cb), NULL);
+#endif /* HAVE_CDDB */
 	g_signal_connect_swapped(G_OBJECT(record__volume), "activate", G_CALLBACK(record__volume_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__search), "activate", G_CALLBACK(search_cb), NULL);
 
@@ -3638,6 +3665,9 @@ create_music_browser(void) {
 	gtk_widget_show(record__remove);
 	gtk_widget_show(record__separator2);
 	gtk_widget_show(record__addtrk);
+#ifdef HAVE_CDDB
+	gtk_widget_show(record__cddb);
+#endif /* HAVE_CDDB */
 	gtk_widget_show(record__separator3);
 	gtk_widget_show(record__volume);
 	gtk_widget_show(record__search);

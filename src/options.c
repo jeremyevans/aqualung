@@ -38,7 +38,6 @@
 #include "i18n.h"
 #include "options.h"
 
-
 extern pthread_mutex_t output_thread_lock;
 
 char title_format[MAXLEN];
@@ -89,6 +88,12 @@ extern PangoFontDescription *fd_playlist;
 extern PangoFontDescription *fd_browser;
 extern PangoFontDescription *fd_bigtimer;
 extern PangoFontDescription *fd_smalltimer;
+
+#ifdef HAVE_CDDB
+extern char cddb_server[MAXLEN];
+extern int cddb_use_http;
+extern int cddb_timeout;
+#endif /* HAVE_CDDB */
 
 extern GtkWidget * bigtimer_label;
 extern GtkWidget * smalltimer_label_1;
@@ -166,6 +171,10 @@ GtkWidget * check_magnify_smaller_images;
 GtkListStore * ms_pathlist_store = NULL;
 GtkTreeSelection * ms_pathlist_select;
 GtkWidget * entry_ms_pathlist;
+
+GtkWidget * cddb_server_entry;
+GtkWidget * cddb_tout_spinner;
+GtkWidget * cddb_proto_combo;
 
 GtkObject * adj_refvol;
 GtkObject * adj_steepness;
@@ -348,6 +357,13 @@ ok(GtkWidget * widget, gpointer data) {
 
 	replaygain_tag_to_use = gtk_combo_box_get_active(GTK_COMBO_BOX(optmenu_replaygain));
 
+
+#ifdef HAVE_CDDB
+	cddb_use_http = gtk_combo_box_get_active(GTK_COMBO_BOX(cddb_proto_combo));
+	strncpy(cddb_server, gtk_entry_get_text(GTK_ENTRY(cddb_server_entry)), MAXLEN-1);
+	cddb_timeout = gtk_spin_button_get_value(GTK_SPIN_BUTTON(cddb_tout_spinner));
+#endif /* HAVE_CDDB */
+
         for (i = 0; i < 3; i++) {
 
 		GtkTreeIter iter;
@@ -377,7 +393,7 @@ ok(GtkWidget * widget, gpointer data) {
 
         /* apply changes */
 
-        if(override_skin_settings) {
+        if (override_skin_settings) {
 
                 /* apply fonts */
 
@@ -391,7 +407,7 @@ ok(GtkWidget * widget, gpointer data) {
 
                 /* apply colors */               
 
-                if(gdk_color_parse(activesong_color, &color) == TRUE) {
+                if (gdk_color_parse(activesong_color, &color) == TRUE) {
 
                         play_list->style->fg[SELECTED].red = color.red;
                         play_list->style->fg[SELECTED].green = color.green;
@@ -399,7 +415,7 @@ ok(GtkWidget * widget, gpointer data) {
                         set_playlist_color();
                 }
 
-        } else if(override_past_state) {
+        } else if (override_past_state) {
 
                 /* reload skin */
                 change_skin(skin);
@@ -1141,6 +1157,7 @@ create_options_window(void) {
 	GtkWidget * hbox_cwidth;
 
 	GtkWidget * vbox_meta;
+	GtkWidget * vbox_cddb;
 
         GtkSizeGroup * label_size;
 
@@ -1850,6 +1867,59 @@ See the About box and the documentation for details."));
 	}
 	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_replaygain), replaygain_tag_to_use);
 
+
+	/* CDDB notebook page */
+
+	vbox_cddb = gtk_vbox_new(FALSE, 10);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox_cddb), 8);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_cddb, create_notebook_tab(_("CDDB"), "cddb.png"));
+
+#ifdef HAVE_CDDB
+	hbox = gtk_hbox_new(FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_cddb), hbox, FALSE, TRUE, 0);
+
+	label = gtk_label_new(_("CDDB server:"));
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
+
+	cddb_server_entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(cddb_server_entry), cddb_server);
+	gtk_box_pack_start(GTK_BOX(hbox), cddb_server_entry, TRUE, TRUE, 5);
+
+
+	hbox = gtk_hbox_new(FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_cddb), hbox, FALSE, TRUE, 0);
+
+	label = gtk_label_new(_("Connection timeout [sec]:"));
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
+
+	cddb_tout_spinner = gtk_spin_button_new_with_range(1, 60, 1);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cddb_tout_spinner), cddb_timeout);
+	gtk_box_pack_start(GTK_BOX(hbox), cddb_tout_spinner, FALSE, FALSE, 5);
+
+
+	hbox = gtk_hbox_new(FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_cddb), hbox, FALSE, TRUE, 0);
+
+	label = gtk_label_new(_("Protocol:"));
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
+
+	cddb_proto_combo = gtk_combo_box_new_text();
+	gtk_combo_box_append_text(GTK_COMBO_BOX(cddb_proto_combo), _("CDDBP (port 888)"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(cddb_proto_combo), _("HTTP (port 80)"));
+	if (cddb_use_http) {
+		gtk_combo_box_set_active(GTK_COMBO_BOX(cddb_proto_combo), 1);
+	} else {
+		gtk_combo_box_set_active(GTK_COMBO_BOX(cddb_proto_combo), 0);
+	}
+	gtk_box_pack_start(GTK_BOX(hbox), cddb_proto_combo, FALSE, FALSE, 5);
+
+#else
+
+	label = gtk_label_new(_("Aqualung is compiled without CDDB support.\n\
+See the About box and the documentation for details."));
+	gtk_box_pack_start(GTK_BOX(vbox_cddb), label, FALSE, FALSE, 5);
+
+#endif /* HAVE_CDDB */
 
         /* Appearance notebook page */
 

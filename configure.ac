@@ -392,6 +392,29 @@ else
 fi
 
 
+AC_MSG_CHECKING(for CDDB support)
+AC_ARG_WITH(
+	cddb,
+	[  --with-cddb=yes,no       compile with CDDB support (default: yes)],
+	cddb="$withval",
+	cddb="detect")
+if test "$cddb" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(cddb, cddb_new, [lib=yes], [lib=no], [-lstdc++])
+	if test "$lib" = "yes"; then
+	        cddb_LIBS=`pkg-config --libs libcddb`
+		AC_DEFINE([HAVE_CDDB], [1], [Defined if compile with CDDB support])
+	fi
+	if test "$lib" = "no" -a "$cddb" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the CDDB library installed. Grab it from http://sourceforge.net/projects/libcddb/)
+	fi
+	if test "$cddb" = "detect"; then
+		cddb=$lib
+	fi
+fi
+
+
 # Compiler and linker variables
 gtk_CFLAGS=`pkg-config --cflags gtk+-2.0`
 gtk_LIBS=`pkg-config --libs gtk+-2.0`
@@ -412,7 +435,7 @@ DATADIR="-DDATADIR=\\\"$datadir/aqualung\\\""
 
 CFLAGS="-g -O0 -Wall $SKINDIR $LOCALEDIR $DATADIR -D_GNU_SOURCE"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS"
-LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS"
+LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $cddb_LIBS"
 
 
 AC_OUTPUT([Makefile \
@@ -452,4 +475,6 @@ echo "      ALSA Audio                          :  $alsa"
 echo "      JACK Audio Server                   :  yes (always)"
 echo
 echo "  Internal Sample Rate Converter support  :  $src"
+echo
+echo "  CDDB support                            :  $cddb"
 echo "----------------------------------------------------------------------"

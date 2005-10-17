@@ -48,7 +48,6 @@
 #include <musepack/musepack.h>
 #endif /* HAVE_MPC */
 
-
 #include "common.h"
 #include "core.h"
 #include "transceiver.h"
@@ -64,6 +63,7 @@
 #include "i18n.h"
 #include "gui_main.h"
 #include "version.h"
+
 
 /* receive at most this much remote messages in one run of timeout_callback() */
 #define MAX_RCV_COUNT 32
@@ -162,6 +162,11 @@ extern int enable_playlist_statusbar_shadow;
 
 extern int magnify_smaller_images;
 extern int cover_width;
+
+extern char cddb_server[MAXLEN];
+extern int cddb_use_http;
+extern int cddb_timeout;
+
 
 int search_pl_flags = 0;
 int search_ms_flags = 120; /* check search flags in search.c for initial value :) */
@@ -3467,7 +3472,14 @@ save_config(void) {
 	snprintf(str, 31, "%d", search_ms_flags);
         xmlNewTextChild(root, NULL, (const xmlChar *) "search_ms_flags", (xmlChar *) str);
 
-	
+#ifdef HAVE_CDDB
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_server", (xmlChar *) cddb_server);
+	snprintf(str, 31, "%d", cddb_timeout);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_timeout", (xmlChar *) str);
+	snprintf(str, 31, "%d", cddb_use_http);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_use_http", (xmlChar *) str);
+#endif /* HAVE_CDDB */
+
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
 		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &path, -1);
@@ -3994,6 +4006,29 @@ load_config(void) {
                                 sscanf((char *) key, "%d", &search_ms_flags);
                         xmlFree(key);
                 }
+
+#ifdef HAVE_CDDB
+
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_server"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                strncpy(cddb_server, (char *) key, MAXLEN-1);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_timeout"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf((char *) key, "%d", &cddb_timeout);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_use_http"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf((char *) key, "%d", &cddb_use_http);
+                        xmlFree(key);
+                }
+
+#endif /* HAVE_CDDB */
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);

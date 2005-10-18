@@ -1090,7 +1090,7 @@ refresh_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 	
 	gtk_tree_store_clear(music_store);
 	load_music_store();
-	music_store_changed = 0;
+	music_store_mark_saved();
 }
 
 

@@ -151,10 +151,11 @@ msgid ""
 "* libMAD, a GPL'ed MPEG Audio Decoder library\n"
 "* libmodplug, a MOD decoder library in the public domain\n"
 "* libmusepack, a GPL'ed Musepack decoder library\n"
-"* libid3tag, a library for accessing ID3v2 tags"
+"* libid3tag, a library for accessing ID3v2 tags\n"
+"* libcddb, a CDDB server access library"
 msgstr ""
 
-#: ../about.c:350
+#: ../about.c:351
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -171,59 +172,86 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../cddb_lookup.c:158 ../cddb_lookup.c:183 ../gui_main.c:1122
-#: ../options.c:1054
-msgid "Warning"
-msgstr ""
-
-#: ../cddb_lookup.c:168
-msgid "An error occurred while attempting to connect to the CDDB server."
-msgstr ""
-
-#: ../cddb_lookup.c:193
-msgid "No matching record found."
-msgstr ""
-
-#: ../cddb_lookup.c:319
+#: ../cddb_lookup.c:95 ../cddb_lookup.c:322
 msgid "CDDB query"
 msgstr ""
 
-#: ../cddb_lookup.c:333
+#: ../cddb_lookup.c:116 ../volume.c:207
+msgid "Abort"
+msgstr ""
+
+#: ../cddb_lookup.c:140
+#, c-format
+msgid "%d of %d"
+msgstr ""
+
+#: ../cddb_lookup.c:338
 msgid "Matches:"
 msgstr ""
 
-#: ../cddb_lookup.c:351
+#: ../cddb_lookup.c:358
 msgid "Artist:"
 msgstr ""
 
-#: ../cddb_lookup.c:359
+#: ../cddb_lookup.c:364 ../file_info.c:466 ../file_info.c:567
+#: ../file_info.c:678
+msgid "Import as Artist"
+msgstr ""
+
+#: ../cddb_lookup.c:372
 msgid "Title:"
 msgstr ""
 
-#: ../cddb_lookup.c:366
+#: ../cddb_lookup.c:378 ../file_info.c:456 ../file_info.c:547
+#: ../file_info.c:658
+msgid "Import as Title"
+msgstr ""
+
+#: ../cddb_lookup.c:386
 msgid "Year:"
 msgstr ""
 
-#: ../cddb_lookup.c:371 ../cddb_lookup.c:382 ../cddb_lookup.c:393
-#: ../cddb_lookup.c:404 ../file_info.c:509 ../file_info.c:607
+#: ../cddb_lookup.c:392 ../cddb_lookup.c:406 ../cddb_lookup.c:420
+#: ../cddb_lookup.c:434 ../file_info.c:509 ../file_info.c:607
 #: ../file_info.c:620 ../file_info.c:717 ../file_info.c:730
 msgid "Add to Comments"
 msgstr ""
 
-#: ../cddb_lookup.c:377
+#: ../cddb_lookup.c:400
 msgid "Category:"
 msgstr ""
 
-#: ../cddb_lookup.c:388
+#: ../cddb_lookup.c:414
 msgid "Genre:"
 msgstr ""
 
-#: ../cddb_lookup.c:399
+#: ../cddb_lookup.c:428
 msgid "Extended data:"
 msgstr ""
 
-#: ../cddb_lookup.c:416
+#: ../cddb_lookup.c:446
 msgid "Tracks"
+msgstr ""
+
+#: ../cddb_lookup.c:500
+msgid "Connecting to CDDB server..."
+msgstr ""
+
+#: ../cddb_lookup.c:529
+msgid "Retrieving matches from server..."
+msgstr ""
+
+#: ../cddb_lookup.c:609 ../cddb_lookup.c:635 ../gui_main.c:1122
+#: ../options.c:1054
+msgid "Warning"
+msgstr ""
+
+#: ../cddb_lookup.c:619
+msgid "An error occurred while attempting to connect to the CDDB server."
+msgstr ""
+
+#: ../cddb_lookup.c:645
+msgid "No matching record found."
 msgstr ""
 
 #: ../file_info.c:301 ../gui_main.c:2340
@@ -286,14 +314,6 @@ msgstr ""
 
 #: ../file_info.c:434
 msgid "ID3v2 tags"
-msgstr ""
-
-#: ../file_info.c:456 ../file_info.c:547 ../file_info.c:658
-msgid "Import as Title"
-msgstr ""
-
-#: ../file_info.c:466 ../file_info.c:567 ../file_info.c:678
-msgid "Import as Artist"
 msgstr ""
 
 #: ../file_info.c:476 ../file_info.c:557 ../file_info.c:668
@@ -759,7 +779,8 @@ msgstr ""
 msgid "(no comment)"
 msgstr ""
 
-#: ../music_browser.c:3429 ../music_browser.c:4003 ../options.c:1402
+#: ../music_browser.c:3429 ../music_browser.c:4003 ../music_browser.c:4069
+#: ../options.c:1402
 msgid "Music Store"
 msgstr ""
 
@@ -851,6 +872,10 @@ msgstr ""
 
 #: ../music_browser.c:3685
 msgid "Calculate volume"
+msgstr ""
+
+#: ../music_browser.c:4063
+msgid "*Music Store"
 msgstr ""
 
 #: ../options.c:779
@@ -1460,10 +1485,6 @@ msgstr ""
 
 #: ../volume.c:195
 msgid "Progress:"
-msgstr ""
-
-#: ../volume.c:207
-msgid "Abort"
 msgstr ""
 
 #: ../volume.c:249

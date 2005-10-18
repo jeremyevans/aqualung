@@ -342,7 +342,8 @@ We would like to thank the authors of these software packages:\n\n\
 * libMAD, a GPL'ed MPEG Audio Decoder library\n\
 * libmodplug, a MOD decoder library in the public domain\n\
 * libmusepack, a GPL'ed Musepack decoder library\n\
-* libid3tag, a library for accessing ID3v2 tags"), -1);
+* libid3tag, a library for accessing ID3v2 tags\n\
+* libcddb, a CDDB server access library"), -1);
 
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n\n", -1);

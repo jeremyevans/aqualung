@@ -156,6 +156,7 @@ msgid "CDDB support\n"
 msgstr ""
 
 #: ../about.c:331
+#, fuzzy
 msgid ""
 "Aqualung could not be functional without the following libraries.\n"
 "We would like to thank the authors of these software packages:\n"
@@ -173,7 +174,8 @@ msgid ""
 "* libMAD, a GPL'ed MPEG Audio Decoder library\n"
 "* libmodplug, a MOD decoder library in the public domain\n"
 "* libmusepack, a GPL'ed Musepack decoder library\n"
-"* libid3tag, a library for accessing ID3v2 tags"
+"* libid3tag, a library for accessing ID3v2 tags\n"
+"* libcddb, a CDDB server access library"
 msgstr ""
 "Aqualung не працюватиме без наступних б╕бл╕отек.\n"
 "ми б хот╕ли подякувати авторам цих програмних продукт╕в:\n"
@@ -193,7 +195,7 @@ msgstr ""
 "* libmusepack, a GPL'ed Musepack decoder library\n"
 "* libid3tag, a library for accessing ID3v2 tags"
 
-#: ../about.c:350
+#: ../about.c:351
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -210,67 +212,94 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../cddb_lookup.c:158 ../cddb_lookup.c:183 ../gui_main.c:1122
-#: ../options.c:1054
-msgid "Warning"
-msgstr ""
-
-#: ../cddb_lookup.c:168
-msgid "An error occurred while attempting to connect to the CDDB server."
-msgstr ""
-
-#: ../cddb_lookup.c:193
-#, fuzzy
-msgid "No matching record found."
-msgstr "Додати нову дор╕жку до цього запису..."
-
-#: ../cddb_lookup.c:319
+#: ../cddb_lookup.c:95 ../cddb_lookup.c:322
 msgid "CDDB query"
 msgstr ""
 
-#: ../cddb_lookup.c:333
+#: ../cddb_lookup.c:116 ../volume.c:207
+msgid "Abort"
+msgstr "Перервати"
+
+#: ../cddb_lookup.c:140
+#, fuzzy, c-format
+msgid "%d of %d"
+msgstr "%d Дб"
+
+#: ../cddb_lookup.c:338
 msgid "Matches:"
 msgstr ""
 
-#: ../cddb_lookup.c:351
+#: ../cddb_lookup.c:358
 #, fuzzy
 msgid "Artist:"
 msgstr "Виконавець"
 
-#: ../cddb_lookup.c:359
+#: ../cddb_lookup.c:364 ../file_info.c:466 ../file_info.c:567
+#: ../file_info.c:678
+msgid "Import as Artist"
+msgstr "╤мпортувати як Виконавця"
+
+#: ../cddb_lookup.c:372
 #, fuzzy
 msgid "Title:"
 msgstr "Назва"
 
-#: ../cddb_lookup.c:366
+#: ../cddb_lookup.c:378 ../file_info.c:456 ../file_info.c:547
+#: ../file_info.c:658
+msgid "Import as Title"
+msgstr "╤мпортувати як Альбом"
+
+#: ../cddb_lookup.c:386
 #, fuzzy
 msgid "Year:"
 msgstr "Р╕к"
 
-#: ../cddb_lookup.c:371 ../cddb_lookup.c:382 ../cddb_lookup.c:393
-#: ../cddb_lookup.c:404 ../file_info.c:509 ../file_info.c:607
+#: ../cddb_lookup.c:392 ../cddb_lookup.c:406 ../cddb_lookup.c:420
+#: ../cddb_lookup.c:434 ../file_info.c:509 ../file_info.c:607
 #: ../file_info.c:620 ../file_info.c:717 ../file_info.c:730
 msgid "Add to Comments"
 msgstr "Додати до коментар╕в"
 
-#: ../cddb_lookup.c:377
+#: ../cddb_lookup.c:400
 #, fuzzy
 msgid "Category:"
 msgstr "Категор╕я"
 
-#: ../cddb_lookup.c:388
+#: ../cddb_lookup.c:414
 #, fuzzy
 msgid "Genre:"
 msgstr "Жанр"
 
-#: ../cddb_lookup.c:399
+#: ../cddb_lookup.c:428
 msgid "Extended data:"
 msgstr ""
 
-#: ../cddb_lookup.c:416
+#: ../cddb_lookup.c:446
 #, fuzzy
 msgid "Tracks"
 msgstr "Дор╕жка"
+
+#: ../cddb_lookup.c:500
+msgid "Connecting to CDDB server..."
+msgstr ""
+
+#: ../cddb_lookup.c:529
+msgid "Retrieving matches from server..."
+msgstr ""
+
+#: ../cddb_lookup.c:609 ../cddb_lookup.c:635 ../gui_main.c:1122
+#: ../options.c:1054
+msgid "Warning"
+msgstr ""
+
+#: ../cddb_lookup.c:619
+msgid "An error occurred while attempting to connect to the CDDB server."
+msgstr ""
+
+#: ../cddb_lookup.c:645
+#, fuzzy
+msgid "No matching record found."
+msgstr "Додати нову дор╕жку до цього запису..."
 
 #: ../file_info.c:301 ../gui_main.c:2340
 msgid "File info"
@@ -333,14 +362,6 @@ msgstr "Всього семпл╕в:"
 #: ../file_info.c:434
 msgid "ID3v2 tags"
 msgstr "ID3v2 теги"
-
-#: ../file_info.c:456 ../file_info.c:547 ../file_info.c:658
-msgid "Import as Title"
-msgstr "╤мпортувати як Альбом"
-
-#: ../file_info.c:466 ../file_info.c:567 ../file_info.c:678
-msgid "Import as Artist"
-msgstr "╤мпортувати як Виконавця"
 
 #: ../file_info.c:476 ../file_info.c:557 ../file_info.c:668
 msgid "Import as Record"
@@ -814,7 +835,8 @@ msgstr "Прибрати дор╕жку"
 msgid "(no comment)"
 msgstr "(без коментаря)"
 
-#: ../music_browser.c:3429 ../music_browser.c:4003 ../options.c:1402
+#: ../music_browser.c:3429 ../music_browser.c:4003 ../music_browser.c:4069
+#: ../options.c:1402
 msgid "Music Store"
 msgstr "Музичний Склад"
 
@@ -913,6 +935,11 @@ msgstr "╤нформац╕я про файл"
 #: ../music_browser.c:3685
 msgid "Calculate volume"
 msgstr "П╕драхувати гучн╕сть"
+
+#: ../music_browser.c:4063
+#, fuzzy
+msgid "*Music Store"
+msgstr "Музичний Склад"
 
 #: ../options.c:779
 msgid "You will need to restart Aqualung for changes to take effect."
@@ -1554,11 +1581,11 @@ msgstr "П╕драховую р╕вень гучност╕ %s"
 msgid "Progress:"
 msgstr "Прогрес:"
 
-#: ../volume.c:207
-msgid "Abort"
-msgstr "Перервати"
-
 #: ../volume.c:249
 #, c-format
 msgid "%s"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Imoprt as Artist"
+#~ msgstr "╤мпортувати як Виконавця"

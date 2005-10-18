@@ -1900,6 +1900,7 @@ store__addlist_cb(gpointer data) {
 					if (duration == 0.0f) {
 						duration = get_file_duration(file);
 						gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
+						music_store_mark_changed();
 					}
 					time2time(duration, duration_str);
 
@@ -2018,7 +2019,7 @@ store__edit_cb(gpointer data) {
 		if (edit_store_dialog(name, file, comment)) {
 			gtk_tree_store_set(music_store, &iter, 0, name, 3, comment, -1);
 			tree_selection_changed_cb(music_select, NULL);
-			music_store_changed = 1;
+			music_store_mark_changed();
 		}
         }
 }
@@ -2274,6 +2275,7 @@ artist__addlist_cb(gpointer data) {
 				if (duration == 0.0f) {
 					duration = get_file_duration(file);
 					gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
+					music_store_mark_changed();
 				}
 				time2time(duration, duration_str);
 
@@ -2354,7 +2356,7 @@ artist__add_cb(gpointer data) {
 		if (add_artist_dialog(name, sort_name, comment)) {
 			gtk_tree_store_append(music_store, &iter, &parent_iter);
 			gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name, 2, "", 3, comment, -1);
-			music_store_changed = 1;
+			music_store_mark_changed();
 		}
 	}
 }
@@ -2394,7 +2396,7 @@ artist__edit_cb(gpointer data) {
 
 			gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name, 2, "", 3, comment, -1);
 			tree_selection_changed_cb(music_select, NULL);
-			music_store_changed = 1;
+			music_store_mark_changed();
 		}
         }
 }
@@ -2471,7 +2473,7 @@ artist__remove_cb(gpointer data) {
 		if (confirm_dialog(_("Remove Artist"), text)) {
 			gtk_tree_store_remove(music_store, &iter);
 			tree_selection_changed_cb(music_select, NULL);
-			music_store_changed = 1;
+			music_store_mark_changed();
 		}
 	}
 }
@@ -2599,6 +2601,7 @@ record__addlist_cb(gpointer data) {
 			if (duration == 0.0f) {
 				duration = get_file_duration(file);
 				gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
+				music_store_mark_changed();
 			}
 			time2time(duration, duration_str);
 
@@ -2707,7 +2710,7 @@ record__add_cb(gpointer data) {
 				free(strings);
 			}
 
-			music_store_changed = 1;
+			music_store_mark_changed();
 		}
 	}
 }
@@ -2747,7 +2750,7 @@ record__edit_cb(gpointer data) {
 
 			gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name, 2, "", 3, comment, -1);
 			tree_selection_changed_cb(music_select, NULL);
-			music_store_changed = 1;
+			music_store_mark_changed();
 		}
         }
 }
@@ -2821,7 +2824,7 @@ record__remove_cb(gpointer data) {
 			gtk_tree_store_remove(music_store, &iter);
 			gtk_tree_selection_unselect_all(music_select);
 			tree_selection_changed_cb(music_select, NULL);
-			music_store_changed = 1;
+			music_store_mark_changed();
 		}
 	}
 }
@@ -2928,6 +2931,7 @@ track__addlist_cb(gpointer data) {
 		if (duration == 0.0f) {
 			duration = get_file_duration(file);
 			gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
+			music_store_mark_changed();
 		}
 		time2time(duration, duration_str);
 
@@ -3009,7 +3013,7 @@ track__add_cb(gpointer data) {
 			gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name,
 					   2, file, 3, comment, 5, volume, 7, use_rva, -1);
 
-			music_store_changed = 1;
+			music_store_mark_changed();
 		}
 	}
 }
@@ -3067,7 +3071,7 @@ track__edit_cb(gpointer data) {
 					   2, file, 3, comment, 6, rva, 7, use_rva, -1);
                         tree_selection_changed_cb(music_select, NULL);
 
-			music_store_changed = 1;
+			music_store_mark_changed();
                 }
         }
 }
@@ -3177,7 +3181,7 @@ track__remove_cb(gpointer data) {
 			gtk_tree_store_remove(music_store, &iter);
 			gtk_tree_selection_unselect_all(music_select);
 			tree_selection_changed_cb(music_select, NULL);
-			music_store_changed = 1;
+			music_store_mark_changed();
 		}
 	}
 }
@@ -4057,6 +4061,18 @@ load_music_store(void) {
         }
 }
 
+void music_store_mark_changed(void) {
+
+	music_store_changed = 1;
+	gtk_window_set_title(GTK_WINDOW(browser_window), _("*Music Store"));
+}
+
+void music_store_mark_saved(void) {
+
+	music_store_changed = 0;
+	gtk_window_set_title(GTK_WINDOW(browser_window), _("Music Store"));
+}
+
 /**********************************************************************************/
 
 
@@ -4265,7 +4281,7 @@ save_music_store(void) {
 		g_free(store_file);
 	}
 
-	music_store_changed = 0;
+	music_store_mark_saved();
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

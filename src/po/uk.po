@@ -212,91 +212,92 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../cddb_lookup.c:95 ../cddb_lookup.c:322
+#: ../cddb_lookup.c:96 ../cddb_lookup.c:309
 msgid "CDDB query"
 msgstr ""
 
-#: ../cddb_lookup.c:116 ../volume.c:207
+#: ../cddb_lookup.c:106
+msgid "Retrieving matches from server..."
+msgstr ""
+
+#: ../cddb_lookup.c:110
+#, fuzzy
+msgid "Connecting to CDDB server..."
+msgstr "JACK п╕д'╓днання втрачено"
+
+#: ../cddb_lookup.c:119 ../volume.c:207
 msgid "Abort"
 msgstr "Перервати"
 
-#: ../cddb_lookup.c:140
-#, fuzzy, c-format
-msgid "%d of %d"
-msgstr "%d Дб"
-
-#: ../cddb_lookup.c:338
+#: ../cddb_lookup.c:325
 msgid "Matches:"
 msgstr ""
 
-#: ../cddb_lookup.c:358
+#: ../cddb_lookup.c:345
 #, fuzzy
 msgid "Artist:"
 msgstr "Виконавець"
 
-#: ../cddb_lookup.c:364 ../file_info.c:466 ../file_info.c:567
+#: ../cddb_lookup.c:351 ../file_info.c:466 ../file_info.c:567
 #: ../file_info.c:678
 msgid "Import as Artist"
 msgstr "╤мпортувати як Виконавця"
 
-#: ../cddb_lookup.c:372
+#: ../cddb_lookup.c:359
 #, fuzzy
 msgid "Title:"
 msgstr "Назва"
 
-#: ../cddb_lookup.c:378 ../file_info.c:456 ../file_info.c:547
+#: ../cddb_lookup.c:365 ../file_info.c:456 ../file_info.c:547
 #: ../file_info.c:658
 msgid "Import as Title"
 msgstr "╤мпортувати як Альбом"
 
-#: ../cddb_lookup.c:386
+#: ../cddb_lookup.c:373
 #, fuzzy
 msgid "Year:"
 msgstr "Р╕к"
 
-#: ../cddb_lookup.c:392 ../cddb_lookup.c:406 ../cddb_lookup.c:420
-#: ../cddb_lookup.c:434 ../file_info.c:509 ../file_info.c:607
+#: ../cddb_lookup.c:379 ../cddb_lookup.c:393 ../cddb_lookup.c:407
+#: ../cddb_lookup.c:421 ../file_info.c:509 ../file_info.c:607
 #: ../file_info.c:620 ../file_info.c:717 ../file_info.c:730
 msgid "Add to Comments"
 msgstr "Додати до коментар╕в"
 
-#: ../cddb_lookup.c:400
+#: ../cddb_lookup.c:387
 #, fuzzy
 msgid "Category:"
 msgstr "Категор╕я"
 
-#: ../cddb_lookup.c:414
+#: ../cddb_lookup.c:401
 #, fuzzy
 msgid "Genre:"
 msgstr "Жанр"
 
-#: ../cddb_lookup.c:428
+#: ../cddb_lookup.c:415
 msgid "Extended data:"
 msgstr ""
 
-#: ../cddb_lookup.c:446
+#: ../cddb_lookup.c:433
 #, fuzzy
 msgid "Tracks"
 msgstr "Дор╕жка"
 
-#: ../cddb_lookup.c:500
-msgid "Connecting to CDDB server..."
-msgstr ""
+#: ../cddb_lookup.c:612
+#, fuzzy, c-format
+msgid "%d of %d"
+msgstr "%d Дб"
 
-#: ../cddb_lookup.c:529
-msgid "Retrieving matches from server..."
-msgstr ""
-
-#: ../cddb_lookup.c:609 ../cddb_lookup.c:635 ../gui_main.c:1122
+#: ../cddb_lookup.c:626 ../cddb_lookup.c:652 ../gui_main.c:1122
 #: ../options.c:1054
 msgid "Warning"
 msgstr ""
 
-#: ../cddb_lookup.c:619
+#: ../cddb_lookup.c:636
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr ""
 
-#: ../cddb_lookup.c:645
+#: ../cddb_lookup.c:662
 #, fuzzy
 msgid "No matching record found."
 msgstr "Додати нову дор╕жку до цього запису..."
@@ -617,7 +618,7 @@ msgstr "Вимикач музичного складу"
 msgid "Toggle LADSPA patch builder"
 msgstr "Вимикач буд╕вельника шлях╕в LADSPA"
 
-#: ../gui_main.c:4047 ../music_browser.c:1978 ../options.c:986
+#: ../gui_main.c:4047 ../music_browser.c:1979 ../options.c:986
 #: ../options.c:1081
 msgid "rw"
 msgstr ""
@@ -808,135 +809,135 @@ msgstr "Невим╕ряно"
 msgid "Use manual RVA value [dB]"
 msgstr "Використовувати значення ПВР встановлен╕ вручну [dB]"
 
-#: ../music_browser.c:2111 ../music_browser.c:2470 ../music_browser.c:2819
-#: ../music_browser.c:3175
+#: ../music_browser.c:2112 ../music_browser.c:2472 ../music_browser.c:2822
+#: ../music_browser.c:3179
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
 msgstr "Справд╕ прибрати \"%s\" з Музичного Складу?"
 
-#: ../music_browser.c:2112
+#: ../music_browser.c:2113
 #, fuzzy
 msgid "Remove Store"
 msgstr "Прибрати дор╕жку"
 
-#: ../music_browser.c:2471
+#: ../music_browser.c:2473
 msgid "Remove Artist"
 msgstr "Прибрати виконавця"
 
-#: ../music_browser.c:2820
+#: ../music_browser.c:2823
 msgid "Remove Record"
 msgstr "Прибрати запис"
 
-#: ../music_browser.c:3176
+#: ../music_browser.c:3180
 msgid "Remove Track"
 msgstr "Прибрати дор╕жку"
 
-#: ../music_browser.c:3349
+#: ../music_browser.c:3353
 msgid "(no comment)"
 msgstr "(без коментаря)"
 
-#: ../music_browser.c:3429 ../music_browser.c:4003 ../music_browser.c:4069
+#: ../music_browser.c:3433 ../music_browser.c:4007 ../music_browser.c:4073
 #: ../options.c:1402
 msgid "Music Store"
 msgstr "Музичний Склад"
 
-#: ../music_browser.c:3514 ../music_browser.c:3531
+#: ../music_browser.c:3518 ../music_browser.c:3535
 #, fuzzy
 msgid "Add new store..."
 msgstr "Додати нову дор╕жку..."
 
-#: ../music_browser.c:3515 ../music_browser.c:3538 ../music_browser.c:3588
-#: ../music_browser.c:3634 ../music_browser.c:3686 ../playlist.c:1479
+#: ../music_browser.c:3519 ../music_browser.c:3542 ../music_browser.c:3592
+#: ../music_browser.c:3638 ../music_browser.c:3690 ../playlist.c:1479
 msgid "Search..."
 msgstr "Шукати..."
 
-#: ../music_browser.c:3516 ../music_browser.c:3540
+#: ../music_browser.c:3520 ../music_browser.c:3544
 #, fuzzy
 msgid "Save Music Store"
 msgstr "Музичний Склад"
 
-#: ../music_browser.c:3529 ../music_browser.c:3579 ../music_browser.c:3622
-#: ../music_browser.c:3677
+#: ../music_browser.c:3533 ../music_browser.c:3583 ../music_browser.c:3626
+#: ../music_browser.c:3681
 msgid "Add to playlist"
 msgstr "Додати до списку програвання"
 
-#: ../music_browser.c:3532
+#: ../music_browser.c:3536
 #, fuzzy
 msgid "Edit store..."
 msgstr "Редагувати дор╕жку..."
 
-#: ../music_browser.c:3533
+#: ../music_browser.c:3537
 #, fuzzy
 msgid "Remove store"
 msgstr "Прибрати дор╕жку"
 
-#: ../music_browser.c:3535
+#: ../music_browser.c:3539
 #, fuzzy
 msgid "Add new artist to this store..."
 msgstr "Додати нову дор╕жку до цього запису..."
 
-#: ../music_browser.c:3537 ../music_browser.c:3587 ../music_browser.c:3633
+#: ../music_browser.c:3541 ../music_browser.c:3591 ../music_browser.c:3637
 msgid "Calculate volume (recursive)"
 msgstr "П╕драхувати гучн╕сть (рекурсивно)"
 
-#: ../music_browser.c:3581
+#: ../music_browser.c:3585
 msgid "Add new artist..."
 msgstr "Додати нового виконавця..."
 
-#: ../music_browser.c:3582
+#: ../music_browser.c:3586
 msgid "Edit artist..."
 msgstr "редагувати виконавця..."
 
-#: ../music_browser.c:3583
+#: ../music_browser.c:3587
 msgid "Remove artist"
 msgstr "прибрати виконавця"
 
-#: ../music_browser.c:3585
+#: ../music_browser.c:3589
 msgid "Add new record to this artist..."
 msgstr "Додати новий запис до цього виконавця..."
 
-#: ../music_browser.c:3624
+#: ../music_browser.c:3628
 msgid "Add new record..."
 msgstr "Додати новий запис..."
 
-#: ../music_browser.c:3625
+#: ../music_browser.c:3629
 msgid "Edit record..."
 msgstr "Редагувати запис..."
 
-#: ../music_browser.c:3626
+#: ../music_browser.c:3630
 msgid "Remove record"
 msgstr "Прибрати запис"
 
-#: ../music_browser.c:3628
+#: ../music_browser.c:3632
 msgid "Add new track to this record..."
 msgstr "Додати нову дор╕жку до цього запису..."
 
-#: ../music_browser.c:3630
+#: ../music_browser.c:3634
 #, fuzzy
 msgid "CDDB query for this record..."
 msgstr "Додати нову дор╕жку до цього запису..."
 
-#: ../music_browser.c:3679
+#: ../music_browser.c:3683
 msgid "Add new track..."
 msgstr "Додати нову дор╕жку..."
 
-#: ../music_browser.c:3680
+#: ../music_browser.c:3684
 msgid "Edit track..."
 msgstr "Редагувати дор╕жку..."
 
-#: ../music_browser.c:3681
+#: ../music_browser.c:3685
 msgid "Remove track"
 msgstr "Прибрати дор╕жку"
 
-#: ../music_browser.c:3683 ../playlist.c:1478
+#: ../music_browser.c:3687 ../playlist.c:1478
 msgid "File info..."
 msgstr "╤нформац╕я про файл"
 
-#: ../music_browser.c:3685
+#: ../music_browser.c:3689
 msgid "Calculate volume"
 msgstr "П╕драхувати гучн╕сть"
 
-#: ../music_browser.c:4063
+#: ../music_browser.c:4067
 #, fuzzy
 msgid "*Music Store"
 msgstr "Музичний Склад"
@@ -1585,6 +1586,10 @@ msgstr "Прогрес:"
 #, c-format
 msgid "%s"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Searching..."
+#~ msgstr "Шукати..."
 
 #, fuzzy
 #~ msgid "Imoprt as Artist"

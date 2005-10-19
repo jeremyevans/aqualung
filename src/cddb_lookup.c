@@ -56,6 +56,7 @@ GtkTreeIter iter_record;
 GtkWidget * progress_win = NULL;
 GtkWidget * progress_label;
 GtkWidget * progbar;
+int progress_counter = 0;
 
 GtkWidget * combo;
 GtkListStore * track_store;
@@ -89,7 +90,7 @@ create_progress_window(void) {
 	GtkWidget * hbox;
 	GtkWidget * sep;
 	GtkWidget * abort_button;
-	
+
 
 	progress_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(progress_win), _("CDDB query"));
@@ -102,10 +103,11 @@ create_progress_window(void) {
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(progress_win), vbox);
 
-	progress_label = gtk_label_new("");
+	progress_label = gtk_label_new(_("Retrieving matches from server..."));
 	gtk_box_pack_start(GTK_BOX(vbox), progress_label, FALSE, FALSE, 0);
 	
 	progbar = gtk_progress_bar_new();
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progbar), _("Connecting to CDDB server..."));
 	gtk_box_pack_start(GTK_BOX(vbox), progbar, FALSE, FALSE, 6);
 	
 	sep = gtk_hseparator_new();
@@ -124,33 +126,12 @@ create_progress_window(void) {
 
 
 static void
-set_progress_msg(char * msg) {
-
-	if (progress_win) {
-		gtk_label_set_text(GTK_LABEL(progress_label), msg);
-	}
-}
-
-
-static void
-set_progress_frac(int val, int max) {
-
-	if (progress_win) {
-		char text[MAXLEN];
-
-		snprintf(text, MAXLEN, _("%d of %d"), val, max);
-
-		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progbar), (double)val / max);
-		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progbar), text);
-	}
-}
-
-static void
 destroy_progress_window() {
 
 	gtk_widget_destroy(progress_win);
 	progress_win = NULL;
 }
+
 
 static int
 init_query_data() {
@@ -186,8 +167,11 @@ init_query_data() {
 			g_free(pfile);
 
 			if (duration == 0.0f) {
-				duration = get_file_duration(file);
+				if ((duration = get_file_duration(file)) == 0.0f) {
+					return 1;
+				}
 				gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
+				music_store_mark_changed();
 			}
 
 			frames[i] = (int)fr_offset;
@@ -498,10 +482,8 @@ cddb_thread(void * arg) {
 	int i;
 
 
-	set_progress_msg(_("Connecting to CDDB server..."));
-
 	if ((conn = cddb_new()) == NULL) {
-		fprintf(stderr, "cddb_lookup.c: get_records(): cddb_new error\n");
+		fprintf(stderr, "cddb_lookup.c: cddb_thread(): cddb_new error\n");
 		cddb_thread_state = -1;
 		return 0;
 	}
@@ -515,10 +497,11 @@ cddb_thread(void * arg) {
 	}
 
 	if ((disc = cddb_disc_new()) == NULL) {
-		fprintf(stderr, "cddb_lookup.c: get_records(): cddb_disc_new error\n");
+		fprintf(stderr, "cddb_lookup.c: cddb_thread(): cddb_disc_new error\n");
 		cddb_thread_state = -1;
 		return 0;
 	}
+
 	cddb_disc_set_length(disc, record_length);
 
 	for (i = 0; i < track_count; i++) {
@@ -526,8 +509,6 @@ cddb_thread(void * arg) {
 		cddb_track_set_frame_offset(track, frames[i]);
 		cddb_disc_add_track(disc, track);
 	}
-
-	set_progress_msg(_("Retrieving matches from server..."));
 
 	record_count = cddb_query(conn, disc);
 
@@ -537,51 +518,54 @@ cddb_thread(void * arg) {
 	}
 
 	if (record_count == 0) {
+		cddb_destroy(conn);
+		cddb_disc_destroy(disc);
+
+		if (cddb_query_aborted) {
+			free(frames);
+		}
+
+		libcddb_shutdown();
+
 		cddb_thread_state = 1;
 		return 0;
 	}
 
 	if ((records = (cddb_disc_t **)malloc(sizeof(cddb_disc_t *) * record_count)) == NULL) {
-		fprintf(stderr, "cddb_lookup.c: get_records(): malloc error\n");
+		fprintf(stderr, "cddb_lookup.c: cddb_thread(): malloc error\n");
 		cddb_thread_state = -1;
 		return 0;
 	}
 
 	cddb_read(conn, disc);
+	records[0] = cddb_disc_clone(disc);
 
-	set_progress_frac(1, record_count);
+	progress_counter = 1;
 
-	for (i = 0; i < record_count; i++) {
-
-		if (cddb_query_aborted) {
-
-			int j;
-			for (j = 0; j < i; j++) {
-				cddb_disc_destroy(records[j]);
-			}
-
-			cddb_destroy(conn);
-			cddb_disc_destroy(disc);
-
-			free(records);
-			free(frames);
-
-			libcddb_shutdown();
-
-			return 0;
-		}
-
+	for (i = 1; i < record_count && !cddb_query_aborted; i++) {
+		cddb_query_next(conn, disc);
+		cddb_read(conn, disc);
 		records[i] = cddb_disc_clone(disc);
 
-		if (i < record_count - 1) {
-			cddb_query_next(conn, disc);
-			cddb_read(conn, disc);
-			set_progress_frac(i + 2, record_count);
-		}
+		progress_counter = i + 1;
 	}
 
 	cddb_destroy(conn);
 	cddb_disc_destroy(disc);
+
+	if (cddb_query_aborted) {
+		int j;
+		for (j = 0; j < i; j++) {
+			cddb_disc_destroy(records[j]);
+		}
+
+		libcddb_shutdown();
+
+		free(records);
+		free(frames);
+		
+		return 0;
+	}
 
 	cddb_thread_state = 1;
 	return 0;
@@ -592,6 +576,8 @@ static gint
 cddb_timeout_callback(gpointer data) {
 
 	int i;
+	int progress_prev = 0;
+	char text[MAXLEN];
 
 	if (cddb_query_aborted) {
 		destroy_progress_window();
@@ -599,6 +585,13 @@ cddb_timeout_callback(gpointer data) {
 	}
 
 	if (cddb_thread_state == 0) {
+		if (progress_prev < progress_counter) {
+			snprintf(text, MAXLEN, _("%d of %d"), progress_counter, record_count);
+			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progbar),
+						      (double)progress_counter / record_count);
+			gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progbar), text);
+			progress_prev = progress_counter;
+		}
 		return TRUE;
 	} else {
 		destroy_progress_window();
@@ -658,15 +651,14 @@ cddb_timeout_callback(gpointer data) {
 				for (i = 0; i < record_count; i++) {
 					cddb_disc_destroy(records[i]);
 				}
+
+				free(records);
+				libcddb_shutdown();
 			}
 		}
 	}
 
-
-	free(records);
 	free(frames);
-
-	libcddb_shutdown();
 
 	return FALSE;
 }
@@ -674,12 +666,15 @@ cddb_timeout_callback(gpointer data) {
 
 void cddb_get() {
 
-	create_progress_window();
+	if (init_query_data()) {
+		return;
+	}
 
-	init_query_data();
+	create_progress_window();
 
 	cddb_thread_state = 0;
 	cddb_query_aborted = 0;
+	progress_counter = 0;
 	pthread_create(&cddb_thread_id, NULL, cddb_thread, NULL);
 
 	g_timeout_add(100, cddb_timeout_callback, NULL);

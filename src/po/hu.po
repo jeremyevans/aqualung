@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2005-10-18 22:27+0200\n"
+"PO-Revision-Date: 2005-10-19 20:04+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -183,7 +183,8 @@ msgstr ""
 "* libXML2, a Gnome C nyelvû XML-értelmezõ könyvtára\n"
 "* libJACK, a JACK Audio Connection Kit könyvtára\n"
 "* liblrdf, a LADSPA effektek RDF fájljait manipuláló könyvtár\n"
-"* libsamplerate (más néven Secret Rabbit Code), mintavételi frekvencia konverter\n"
+"* libsamplerate (más néven Secret Rabbit Code), mintavételi frekvencia "
+"konverter\n"
 "* libsndfile, hangminta alapú fájlok hozzáférését biztosító könyvtár\n"
 "* libvorbis & libvorbisfile, Ogg Vorbis hangfájlok dekódolásához\n"
 "* liboggz & libspeex, Ogg Speex dekódolásához\n"
@@ -223,85 +224,85 @@ msgstr ""
 "Szabad Szoftver Alapítvány címére: Free Software Foundation, Inc., 675\n"
 "Mass Ave, Cambridge, MA 02139, USA."
 
-#: ../cddb_lookup.c:95 ../cddb_lookup.c:322
+#: ../cddb_lookup.c:96 ../cddb_lookup.c:309
 msgid "CDDB query"
 msgstr "CDDB lekérdezés"
 
-#: ../cddb_lookup.c:116 ../volume.c:207
+#: ../cddb_lookup.c:106
+msgid "Retrieving matches from server..."
+msgstr "Találatok letöltése a szerverrõl..."
+
+#: ../cddb_lookup.c:110
+msgid "Connecting to CDDB server..."
+msgstr "Kapcsolódás a CDDB szerverhez..."
+
+#: ../cddb_lookup.c:119 ../volume.c:207
 msgid "Abort"
 msgstr "Megszakítás"
 
-#: ../cddb_lookup.c:140
-#, c-format
-msgid "%d of %d"
-msgstr "%d / %d"
-
-#: ../cddb_lookup.c:338
+#: ../cddb_lookup.c:325
 msgid "Matches:"
 msgstr "Találatok:"
 
-#: ../cddb_lookup.c:358
+#: ../cddb_lookup.c:345
 msgid "Artist:"
 msgstr "Elõadó:"
 
-#: ../cddb_lookup.c:364 ../file_info.c:466 ../file_info.c:567
+#: ../cddb_lookup.c:351 ../file_info.c:466 ../file_info.c:567
 #: ../file_info.c:678
 msgid "Import as Artist"
 msgstr "Importálás elõadóként"
 
-#: ../cddb_lookup.c:372
+#: ../cddb_lookup.c:359
 msgid "Title:"
 msgstr "Cím:"
 
-#: ../cddb_lookup.c:378 ../file_info.c:456 ../file_info.c:547
+#: ../cddb_lookup.c:365 ../file_info.c:456 ../file_info.c:547
 #: ../file_info.c:658
 msgid "Import as Title"
 msgstr "Importálás címként"
 
-#: ../cddb_lookup.c:386
+#: ../cddb_lookup.c:373
 msgid "Year:"
 msgstr "Év:"
 
-#: ../cddb_lookup.c:392 ../cddb_lookup.c:406 ../cddb_lookup.c:420
-#: ../cddb_lookup.c:434 ../file_info.c:509 ../file_info.c:607
+#: ../cddb_lookup.c:379 ../cddb_lookup.c:393 ../cddb_lookup.c:407
+#: ../cddb_lookup.c:421 ../file_info.c:509 ../file_info.c:607
 #: ../file_info.c:620 ../file_info.c:717 ../file_info.c:730
 msgid "Add to Comments"
 msgstr "Hozzáadás a kommentekhez"
 
-#: ../cddb_lookup.c:400
+#: ../cddb_lookup.c:387
 msgid "Category:"
 msgstr "Kategória:"
 
-#: ../cddb_lookup.c:414
+#: ../cddb_lookup.c:401
 msgid "Genre:"
 msgstr "Mûfaj:"
 
-#: ../cddb_lookup.c:428
+#: ../cddb_lookup.c:415
 msgid "Extended data:"
 msgstr "Egyéb adat:"
 
-#: ../cddb_lookup.c:446
+#: ../cddb_lookup.c:433
 msgid "Tracks"
 msgstr "Számok"
 
-#: ../cddb_lookup.c:500
-msgid "Connecting to CDDB server..."
-msgstr "Kapcsolódás a CDDB szerverhez..."
+#: ../cddb_lookup.c:612
+#, c-format
+msgid "%d of %d"
+msgstr "%d / %d"
 
-#: ../cddb_lookup.c:529
-msgid "Retrieving matches from server..."
-msgstr "Találatok letöltése a szerverrõl..."
-
-#: ../cddb_lookup.c:609 ../cddb_lookup.c:635 ../gui_main.c:1122
+#: ../cddb_lookup.c:626 ../cddb_lookup.c:652 ../gui_main.c:1122
 #: ../options.c:1054
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
-#: ../cddb_lookup.c:619
+#: ../cddb_lookup.c:636
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr "Hiba történt a CDDB szerverhez való kapcsolódás közben."
 
-#: ../cddb_lookup.c:645
+#: ../cddb_lookup.c:662
 msgid "No matching record found."
 msgstr "Az album nem található az adatbázisban."
 
@@ -622,7 +623,7 @@ msgstr "Zenetár"
 msgid "Toggle LADSPA patch builder"
 msgstr "LADSPA effekt szerkesztõ"
 
-#: ../gui_main.c:4047 ../music_browser.c:1978 ../options.c:986
+#: ../gui_main.c:4047 ../music_browser.c:1979 ../options.c:986
 #: ../options.c:1081
 msgid "rw"
 msgstr "rw"
@@ -809,128 +810,128 @@ msgstr "Ismeretlen"
 msgid "Use manual RVA value [dB]"
 msgstr "Rögzített RVA használata [dB]"
 
-#: ../music_browser.c:2111 ../music_browser.c:2470 ../music_browser.c:2819
-#: ../music_browser.c:3175
+#: ../music_browser.c:2112 ../music_browser.c:2472 ../music_browser.c:2822
+#: ../music_browser.c:3179
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
 msgstr "Biztosan eltávolítod a Zenetárból a következõt: \"%s\" ?"
 
-#: ../music_browser.c:2112
+#: ../music_browser.c:2113
 msgid "Remove Store"
 msgstr "Tároló eltávolítása"
 
-#: ../music_browser.c:2471
+#: ../music_browser.c:2473
 msgid "Remove Artist"
 msgstr "Elõadó eltávolítása"
 
-#: ../music_browser.c:2820
+#: ../music_browser.c:2823
 msgid "Remove Record"
 msgstr "Album eltávolítása"
 
-#: ../music_browser.c:3176
+#: ../music_browser.c:3180
 msgid "Remove Track"
 msgstr "Szám eltávolítása"
 
-#: ../music_browser.c:3349
+#: ../music_browser.c:3353
 msgid "(no comment)"
 msgstr "(nincs megjegyzés)"
 
-#: ../music_browser.c:3429 ../music_browser.c:4003 ../music_browser.c:4069
+#: ../music_browser.c:3433 ../music_browser.c:4007 ../music_browser.c:4073
 #: ../options.c:1402
 msgid "Music Store"
 msgstr "Zenetár"
 
-#: ../music_browser.c:3514 ../music_browser.c:3531
+#: ../music_browser.c:3518 ../music_browser.c:3535
 msgid "Add new store..."
 msgstr "Új tároló hozzáadása..."
 
-#: ../music_browser.c:3515 ../music_browser.c:3538 ../music_browser.c:3588
-#: ../music_browser.c:3634 ../music_browser.c:3686 ../playlist.c:1479
+#: ../music_browser.c:3519 ../music_browser.c:3542 ../music_browser.c:3592
+#: ../music_browser.c:3638 ../music_browser.c:3690 ../playlist.c:1479
 msgid "Search..."
 msgstr "Keresés..."
 
-#: ../music_browser.c:3516 ../music_browser.c:3540
+#: ../music_browser.c:3520 ../music_browser.c:3544
 msgid "Save Music Store"
 msgstr "Zenetár mentése"
 
-#: ../music_browser.c:3529 ../music_browser.c:3579 ../music_browser.c:3622
-#: ../music_browser.c:3677
+#: ../music_browser.c:3533 ../music_browser.c:3583 ../music_browser.c:3626
+#: ../music_browser.c:3681
 msgid "Add to playlist"
 msgstr "Lejátszólistába"
 
-#: ../music_browser.c:3532
+#: ../music_browser.c:3536
 msgid "Edit store..."
 msgstr "Tároló szerkesztése..."
 
-#: ../music_browser.c:3533
+#: ../music_browser.c:3537
 msgid "Remove store"
 msgstr "Tároló eltávolítása"
 
-#: ../music_browser.c:3535
+#: ../music_browser.c:3539
 msgid "Add new artist to this store..."
 msgstr "Új elõadó hozzáadása ehhez a tárolóhoz..."
 
-#: ../music_browser.c:3537 ../music_browser.c:3587 ../music_browser.c:3633
+#: ../music_browser.c:3541 ../music_browser.c:3591 ../music_browser.c:3637
 msgid "Calculate volume (recursive)"
 msgstr "Hangosság meghatározása (rekurzív)"
 
-#: ../music_browser.c:3581
+#: ../music_browser.c:3585
 msgid "Add new artist..."
 msgstr "Új elõadó hozzáadása..."
 
-#: ../music_browser.c:3582
+#: ../music_browser.c:3586
 msgid "Edit artist..."
 msgstr "Elõadó szerkesztése..."
 
-#: ../music_browser.c:3583
+#: ../music_browser.c:3587
 msgid "Remove artist"
 msgstr "Elõadó eltávolítása"
 
-#: ../music_browser.c:3585
+#: ../music_browser.c:3589
 msgid "Add new record to this artist..."
 msgstr "Új album hozzáadása ehhez az elõadóhoz..."
 
-#: ../music_browser.c:3624
+#: ../music_browser.c:3628
 msgid "Add new record..."
 msgstr "Új album hozzáadása..."
 
-#: ../music_browser.c:3625
+#: ../music_browser.c:3629
 msgid "Edit record..."
 msgstr "Album szerkesztése..."
 
-#: ../music_browser.c:3626
+#: ../music_browser.c:3630
 msgid "Remove record"
 msgstr "Album eltávolítása"
 
-#: ../music_browser.c:3628
+#: ../music_browser.c:3632
 msgid "Add new track to this record..."
 msgstr "Új szám hozzáadása ehhez az albumhoz..."
 
-#: ../music_browser.c:3630
+#: ../music_browser.c:3634
 msgid "CDDB query for this record..."
 msgstr "Album lekérdezése CDDB adatbázisból..."
 
-#: ../music_browser.c:3679
+#: ../music_browser.c:3683
 msgid "Add new track..."
 msgstr "Új szám hozzáadása..."
 
-#: ../music_browser.c:3680
+#: ../music_browser.c:3684
 msgid "Edit track..."
 msgstr "Szám szerkesztése..."
 
-#: ../music_browser.c:3681
+#: ../music_browser.c:3685
 msgid "Remove track"
 msgstr "Szám eltávolítása"
 
-#: ../music_browser.c:3683 ../playlist.c:1478
+#: ../music_browser.c:3687 ../playlist.c:1478
 msgid "File info..."
 msgstr "Fájl infó..."
 
-#: ../music_browser.c:3685
+#: ../music_browser.c:3689
 msgid "Calculate volume"
 msgstr "Hangosság meghatározása"
 
-#: ../music_browser.c:4063
+#: ../music_browser.c:4067
 msgid "*Music Store"
 msgstr "*Zenetár"
 

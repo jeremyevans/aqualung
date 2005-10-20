@@ -401,13 +401,20 @@ AC_ARG_WITH(
 if test "$cddb" = "no"; then
 	AC_MSG_RESULT(no)
 else
-	AC_CHECK_LIB(cddb, cddb_new, [lib=yes], [lib=no], [-lstdc++])
+	AC_CHECK_LIB(cddb, cddb_new, [lib=yes], [lib=no])
 	if test "$lib" = "yes"; then
-	        cddb_LIBS=`pkg-config --libs libcddb`
-		AC_DEFINE([HAVE_CDDB], [1], [Defined if compile with CDDB support])
+		AC_MSG_CHECKING(whether libcddb version >= 1.2.1)
+		if `pkg-config --exists 'libcddb >= 1.2.1'`; then
+			AC_MSG_RESULT(yes)
+		        cddb_LIBS=`pkg-config --libs libcddb`
+			AC_DEFINE([HAVE_CDDB], [1], [Defined if compile with CDDB support])
+		else
+			AC_MSG_RESULT(no)
+			lib="no"
+		fi
 	fi
 	if test "$lib" = "no" -a "$cddb" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the CDDB library installed. Grab it from http://sourceforge.net/projects/libcddb/)
+		AC_MSG_ERROR(CDDB library not found or too old (version < 1.2.1). Grab it from http://libcddb.sf.net/)
 	fi
 	if test "$cddb" = "detect"; then
 		cddb=$lib

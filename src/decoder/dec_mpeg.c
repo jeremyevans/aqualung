@@ -68,9 +68,12 @@ mpeg_explore(decoder_t * dec) {
                                 return 1;
                         }
                         ++pos;
+/*
                         if (pos > 8192) {
+				printf("invalid mpeg: ret 2\n");
                                 return 1;
                         }
+*/
                 } while (buf != 0xff);
 
                 if (read(pd->exp_fd, &buf, 1) != 1) {
@@ -95,7 +98,8 @@ mpeg_explore(decoder_t * dec) {
 
         layer = (byte1 >> 1) & 0x3;
         switch (layer) {
-        case 0: return 1;
+        case 0:
+		return 1;
                 break;
         case 1: pd->mpeg_subformat |= MPEG_LAYER_III;
                 break;
@@ -394,8 +398,14 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	pd->SR = pd->channels = pd->bitrate = pd->mpeg_subformat = 0;
 	pd->error = 0;
 	if (mpeg_explore(dec) != 0) {
-		close(pd->exp_fd);
-		return DECODER_OPEN_BADLIB;
+		printf("MPEG explore failed for frame 1, searching for frame 2\n");
+		if (mpeg_explore(dec) != 0) {
+			printf("MPEG explore failed for frame 2, searching for frame 3\n");
+			if (mpeg_explore(dec) != 0) {
+				close(pd->exp_fd);
+				return DECODER_OPEN_BADLIB;
+			}
+		}
 	}
 	close(pd->exp_fd);
 

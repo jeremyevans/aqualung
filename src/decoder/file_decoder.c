@@ -32,15 +32,9 @@
 #include <sys/stat.h>
 #include <gtk/gtk.h>
 
-#include <jack/jack.h>
 #include <jack/ringbuffer.h>
 
-#ifdef HAVE_SRC
-#include <samplerate.h>
-#endif /* HAVE_SRC */
 
-
-#include "../core.h"
 #include "file_decoder.h"
 #include "dec_null.h"
 #include "dec_sndfile.h"
@@ -106,7 +100,7 @@ file_decoder_delete(file_decoder_t * fdec) {
 
 /* return: 0 is OK, >0 is error */
 int
-file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_SR) {
+file_decoder_open(file_decoder_t * fdec, char * filename) {
 
 	int i, ret;
 	decoder_t * dec;
@@ -143,53 +137,11 @@ file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_SR) {
 
 	if (fdec->channels == 1) {
 		fdec->fileinfo.is_mono = 1;
-#ifdef HAVE_SRC
-		fdec->src_ratio = 1.0 * out_SR / fdec->SR;
-		if (!src_is_valid_ratio(fdec->src_ratio) ||
-		    fdec->src_ratio > MAX_RATIO || fdec->src_ratio < 1.0/MAX_RATIO) {
-			fprintf(stderr, "file_decoder_open: too big difference between input and "
-				"output sample rate!\n");
-#else
-	        if (out_SR != fdec->SR) {
-			fprintf(stderr,
-				"Input file's samplerate (%ld Hz) and output samplerate (%ld Hz) differ, "
-				"and\nAqualung is compiled without Sample Rate Converter support. To play "
-				"this file,\nyou have to build Aqualung with internal Sample Rate Converter "
-				"support,\nor set the playback sample rate to match the file's sample rate."
-				"\n", fdec->SR, out_SR);
-#endif /* HAVE_SRC */
-			
-			fdec->file_open = 1; /* to get close_file() working */
-			file_decoder_close(fdec);
-			fdec->file_open = 0;
-			goto no_open;
-		} else
-			goto ok_open;
+		goto ok_open;
 
 	} else if (fdec->channels == 2) {
 		fdec->fileinfo.is_mono = 0;
-#ifdef HAVE_SRC
-		fdec->src_ratio = 1.0 * out_SR / fdec->SR;
-		if (!src_is_valid_ratio(fdec->src_ratio) ||
-		    fdec->src_ratio > MAX_RATIO || fdec->src_ratio < 1.0/MAX_RATIO) {
-			fprintf(stderr, "file_decoder_open: too big difference between input and "
-			       "output sample rate!\n");
-#else
-	        if (out_SR != fdec->SR) {
-			fprintf(stderr,
-				"Input file's samplerate (%ld Hz) and output samplerate (%ld Hz) differ, "
-				"and\nAqualung is compiled without Sample Rate Converter support. To play "
-				"this file,\nyou have to build Aqualung with internal Sample Rate Converter "
-				"support,\nor set the playback sample rate to match the file's sample rate."
-				"\n", fdec->SR, out_SR);
-#endif /* HAVE_SRC */
-
-			fdec->file_open = 1; /* to get close_file() working */
-			file_decoder_close(fdec);
-			fdec->file_open = 0;
-			goto no_open;
-		} else
-			goto ok_open;
+		goto ok_open;
 
 	} else {
 		fprintf(stderr, "file_decoder_open: programmer error: "
@@ -273,7 +225,7 @@ get_file_duration(char * file) {
 		return 0.0f;
 	}
 
-        if (file_decoder_open(fdec, file_locale, 44100)) {
+        if (file_decoder_open(fdec, file_locale)) {
                 fprintf(stderr, "file_decoder_open() failed on %s\n", file_locale);
                 return 0.0f;
         }

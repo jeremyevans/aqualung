@@ -212,7 +212,7 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../cddb_lookup.c:96 ../cddb_lookup.c:309
+#: ../cddb_lookup.c:96 ../cddb_lookup.c:307
 msgid "CDDB query"
 msgstr ""
 
@@ -229,75 +229,75 @@ msgstr "JACK п╕д'╓днання втрачено"
 msgid "Abort"
 msgstr "Перервати"
 
-#: ../cddb_lookup.c:325
+#: ../cddb_lookup.c:323
 msgid "Matches:"
 msgstr ""
 
-#: ../cddb_lookup.c:345
+#: ../cddb_lookup.c:343
 #, fuzzy
 msgid "Artist:"
 msgstr "Виконавець"
 
-#: ../cddb_lookup.c:351 ../file_info.c:466 ../file_info.c:567
+#: ../cddb_lookup.c:349 ../file_info.c:466 ../file_info.c:567
 #: ../file_info.c:678
 msgid "Import as Artist"
 msgstr "╤мпортувати як Виконавця"
 
-#: ../cddb_lookup.c:359
+#: ../cddb_lookup.c:357
 #, fuzzy
 msgid "Title:"
 msgstr "Назва"
 
-#: ../cddb_lookup.c:365 ../file_info.c:456 ../file_info.c:547
+#: ../cddb_lookup.c:363 ../file_info.c:456 ../file_info.c:547
 #: ../file_info.c:658
 msgid "Import as Title"
 msgstr "╤мпортувати як Альбом"
 
-#: ../cddb_lookup.c:373
+#: ../cddb_lookup.c:371
 #, fuzzy
 msgid "Year:"
 msgstr "Р╕к"
 
-#: ../cddb_lookup.c:379 ../cddb_lookup.c:393 ../cddb_lookup.c:407
-#: ../cddb_lookup.c:421 ../file_info.c:509 ../file_info.c:607
+#: ../cddb_lookup.c:377 ../cddb_lookup.c:391 ../cddb_lookup.c:405
+#: ../cddb_lookup.c:419 ../file_info.c:509 ../file_info.c:607
 #: ../file_info.c:620 ../file_info.c:717 ../file_info.c:730
 msgid "Add to Comments"
 msgstr "Додати до коментар╕в"
 
-#: ../cddb_lookup.c:387
+#: ../cddb_lookup.c:385
 #, fuzzy
 msgid "Category:"
 msgstr "Категор╕я"
 
-#: ../cddb_lookup.c:401
+#: ../cddb_lookup.c:399
 #, fuzzy
 msgid "Genre:"
 msgstr "Жанр"
 
-#: ../cddb_lookup.c:415
+#: ../cddb_lookup.c:413
 msgid "Extended data:"
 msgstr ""
 
-#: ../cddb_lookup.c:433
+#: ../cddb_lookup.c:431
 #, fuzzy
 msgid "Tracks"
 msgstr "Дор╕жка"
 
-#: ../cddb_lookup.c:612
+#: ../cddb_lookup.c:589
 #, fuzzy, c-format
 msgid "%d of %d"
 msgstr "%d Дб"
 
-#: ../cddb_lookup.c:626 ../cddb_lookup.c:652 ../gui_main.c:1122
+#: ../cddb_lookup.c:603 ../cddb_lookup.c:629 ../gui_main.c:1122
 #: ../options.c:1054
 msgid "Warning"
 msgstr ""
 
-#: ../cddb_lookup.c:636
+#: ../cddb_lookup.c:613
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr ""
 
-#: ../cddb_lookup.c:662
+#: ../cddb_lookup.c:639
 #, fuzzy
 msgid "No matching record found."
 msgstr "Додати нову дор╕жку до цього запису..."
@@ -847,7 +847,7 @@ msgid "Add new store..."
 msgstr "Додати нову дор╕жку..."
 
 #: ../music_browser.c:3519 ../music_browser.c:3542 ../music_browser.c:3592
-#: ../music_browser.c:3638 ../music_browser.c:3690 ../playlist.c:1479
+#: ../music_browser.c:3638 ../music_browser.c:3690 ../playlist.c:1488
 msgid "Search..."
 msgstr "Шукати..."
 
@@ -929,7 +929,7 @@ msgstr "Редагувати дор╕жку..."
 msgid "Remove track"
 msgstr "Прибрати дор╕жку"
 
-#: ../music_browser.c:3687 ../playlist.c:1478
+#: ../music_browser.c:3687 ../playlist.c:1487
 msgid "File info..."
 msgstr "╤нформац╕я про файл"
 
@@ -1023,7 +1023,7 @@ msgstr "Кнопки керування знизу списку програвання"
 msgid "Simple view in LADSPA patch builder"
 msgstr "Спрощений вигляд буд╕вельника шлях╕в LADSPA"
 
-#: ../options.c:1279 ../playlist.c:1450
+#: ../options.c:1279 ../playlist.c:1458
 msgid "Playlist"
 msgstr "Список програвання"
 
@@ -1354,95 +1354,99 @@ msgstr "Кольори"
 msgid "Active song in playlist: "
 msgstr "Активна п╕сня у списку програвання: "
 
-#: ../playlist.c:583
+#: ../playlist.c:584
 msgid "Please specify the file to save the playlist to."
 msgstr "Будьласка вкаж╕ть файл куди буде записано список програвання."
 
-#: ../playlist.c:625 ../playlist.c:681
+#: ../playlist.c:626 ../playlist.c:682
 msgid "Please specify the file to load the playlist from."
 msgstr "Будьласка вкаж╕ть файл зв╕дки буде завантажено список програвання."
 
-#: ../playlist.c:855
+#: ../playlist.c:856
 msgid ""
 "Playback RVA is currently disabled. Enable it at Settings->Playback RVA."
 msgstr ""
 "ПВР програвання зараз вимкнено. Ув╕мкн╕ть ╖╖ в Налаштування->ПВР програвання."
 
-#: ../playlist.c:1030 ../playlist.c:1033 ../playlist.c:1036
+#: ../playlist.c:1038 ../playlist.c:1041 ../playlist.c:1044
 msgid "Unknown"
 msgstr "Нев╕домо"
 
-#: ../playlist.c:1125
+#: ../playlist.c:1133
 msgid "Select files..."
 msgstr "Вибрати файли..."
 
-#: ../playlist.c:1391 ../playlist.c:1420
+#: ../playlist.c:1399 ../playlist.c:1428
 #, c-format
 msgid "%d track [%s]"
 msgstr "%d дор╕жка [%s]"
 
-#: ../playlist.c:1393 ../playlist.c:1422
+#: ../playlist.c:1401 ../playlist.c:1430
 #, c-format
 msgid "%d tracks [%s]"
 msgstr "%d дор╕жок [%s]"
 
-#: ../playlist.c:1469
+#: ../playlist.c:1477
 msgid "Save playlist"
 msgstr "Зберегти список програвання"
 
-#: ../playlist.c:1470
+#: ../playlist.c:1478
 msgid "Load playlist"
 msgstr "Завантажити список програвання"
 
-#: ../playlist.c:1471
+#: ../playlist.c:1479
 msgid "Enqueue playlist"
 msgstr "Поставити в чергу список програвання"
 
-#: ../playlist.c:1473
+#: ../playlist.c:1481
 msgid "Calculate RVA"
 msgstr "П╕драхувати ПВР"
 
-#: ../playlist.c:1475
+#: ../playlist.c:1483
 msgid "Separate"
 msgstr "Окрем╕"
 
-#: ../playlist.c:1476
+#: ../playlist.c:1484
 msgid "Average"
 msgstr "Середн╕"
 
-#: ../playlist.c:1649
+#: ../playlist.c:1485
+msgid "Reread file metadata"
+msgstr ""
+
+#: ../playlist.c:1661
 msgid "Selected: "
 msgstr "Вибрано: "
 
-#: ../playlist.c:1659
+#: ../playlist.c:1671
 msgid "Total: "
 msgstr "Разом: "
 
-#: ../playlist.c:1672
+#: ../playlist.c:1684
 msgid "Add files..."
 msgstr "Додати файли..."
 
-#: ../playlist.c:1676 ../playlist.c:1692
+#: ../playlist.c:1688 ../playlist.c:1704
 msgid "Select all"
 msgstr "Вибрати все"
 
-#: ../playlist.c:1680 ../playlist.c:1717
+#: ../playlist.c:1692 ../playlist.c:1729
 msgid "Remove selected"
 msgstr "Прибрати вибране"
 
-#: ../playlist.c:1687
+#: ../playlist.c:1699
 msgid "Select none"
 msgstr "Зняти виб╕р"
 
-#: ../playlist.c:1697
+#: ../playlist.c:1709
 msgid "Invert selection"
 msgstr "Перевернути виб╕р"
 
-#: ../playlist.c:1707
+#: ../playlist.c:1719
 msgid "Cut selected"
 msgstr "Прибрати обране"
 
-#: ../playlist.c:1712
+#: ../playlist.c:1724
 msgid "Remove all"
 msgstr "Прибрати все"
 

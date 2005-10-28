@@ -22,8 +22,6 @@
 #ifndef _FILE_DECODER_H
 #define _FILE_DECODER_H
 
-
-#include <sys/stat.h>
 #include <jack/jack.h>
 #include <jack/ringbuffer.h>
 
@@ -105,24 +103,16 @@ typedef struct _fileinfo_t {
 typedef struct _file_decoder_t {
 
 	/* public */
-
 	int file_open;
 	int file_lib;
 	int channels;
 	unsigned long SR;
 	fileinfo_t fileinfo;
 	unsigned long long samples_left;
-
 	float voladj_db;
 	float voladj_lin;
 
-
 	/* private */
-
-#ifdef HAVE_SRC
-        double src_ratio;
-#endif /* HAVE_SRC */
-
 	void * pdec; /* actually, it's (decoder_t *) */
 
 } file_decoder_t;
@@ -144,7 +134,7 @@ typedef struct _decoder_t {
 } decoder_t;
 
 
-/* return values from decoder_t open() -- see dec_null.c for explanation */
+/* return values from decoder_t.open() -- see dec_null.c for explanation */
 #define DECODER_OPEN_SUCCESS 0
 #define DECODER_OPEN_BADLIB  1
 #define DECODER_OPEN_FERROR  2
@@ -153,13 +143,16 @@ typedef struct _decoder_t {
 file_decoder_t * file_decoder_new(void);
 void file_decoder_delete(file_decoder_t * fdec);
 
-int file_decoder_open(file_decoder_t * fdec, char * filename, unsigned int out_SR);
+int file_decoder_open(file_decoder_t * fdec, char * filename);
 void file_decoder_set_rva(file_decoder_t * fdec, float voladj);
 void file_decoder_close(file_decoder_t * fdec);
 unsigned int file_decoder_read(file_decoder_t * fdec, float * dest, int num);
 void file_decoder_seek(file_decoder_t * fdec, unsigned long long seek_to_pos);
 
 float get_file_duration(char * file);
+
+
+#define db2lin(x) ((x) > -90.0f ? powf(10.0f, (x) * 0.05f) : 0.0f)
 
 
 #endif /* _FILE_DECODER_H */

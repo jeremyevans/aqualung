@@ -160,6 +160,7 @@ GtkWidget * plist__rva;
 GtkWidget * plist__rva_menu;
 GtkWidget * plist__rva_separate;
 GtkWidget * plist__rva_average;
+GtkWidget * plist__reread_file_meta;
 GtkWidget * plist__separator2;
 GtkWidget * plist__fileinfo;
 GtkWidget * plist__search;
@@ -891,6 +892,53 @@ plist__rva_average_cb(gpointer data) {
 
 
 void
+plist__reread_file_meta_cb(gpointer data) {
+
+	int i;
+	GtkTreeIter iter;
+	gchar * title;
+	gchar * fullname;
+	char voladj_str[32];
+	char duration_str[32];
+	playlist_filemeta * plfm = NULL;
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
+					   0, &title,
+					   1, &fullname,
+					   -1);
+
+			plfm = playlist_filemeta_get(fullname, title);
+			if (plfm == NULL) {
+				fprintf(stderr, "plist__reread_file_meta_cb(): "
+					"playlist_filemeta_get() returned NULL\n");
+				return;
+			}
+			
+			voladj2str(plfm->voladj, voladj_str);
+			time2time(plfm->duration, duration_str);
+			
+			gtk_list_store_set(play_store, &iter,
+					   0, plfm->title,
+					   1, fullname,
+					   3, plfm->voladj, 4, voladj_str,
+					   5, plfm->duration, 6, duration_str,
+					   -1);
+			
+			playlist_filemeta_free(plfm);
+			plfm = NULL;
+			g_free(title);
+			g_free(fullname);
+		}
+	}
+	delayed_playlist_rearrange(100);
+}
+
+
+void
 plist__fileinfo_cb(gpointer data) {
 
 	GtkTreeIter dummy;
@@ -943,12 +991,11 @@ rem_cb(GtkWidget * widget, GdkEvent * event) {
 }
 
 
-/* physical name should be UTF8 coded */
+/* physical_name should be UTF8 coded */
 /* if alt_name != NULL, it will be used as title if no meta is found */
 playlist_filemeta *
 playlist_filemeta_get(char * physical_name, char * alt_name) {
 
-/* XXX */
 	char display_name[MAXLEN];
 	char artist_name[MAXLEN];
 	char record_name[MAXLEN];
@@ -1474,6 +1521,7 @@ create_playlist(void) {
 	plist__rva_menu = gtk_menu_new();
 	plist__rva_separate = gtk_menu_item_new_with_label(_("Separate"));
 	plist__rva_average = gtk_menu_item_new_with_label(_("Average"));
+	plist__reread_file_meta = gtk_menu_item_new_with_label(_("Reread file metadata"));
 	plist__separator2 = gtk_separator_menu_item_new();
 	plist__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
 	plist__search = gtk_menu_item_new_with_label(_("Search..."));
@@ -1486,6 +1534,7 @@ create_playlist(void) {
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(plist__rva), plist__rva_menu);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist__rva_menu), plist__rva_separate);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist__rva_menu), plist__rva_average);
+	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__reread_file_meta);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__fileinfo);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__search);
@@ -1495,6 +1544,7 @@ create_playlist(void) {
 	g_signal_connect_swapped(G_OBJECT(plist__enqueue), "activate", G_CALLBACK(plist__enqueue_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__rva_separate), "activate", G_CALLBACK(plist__rva_separate_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__rva_average), "activate", G_CALLBACK(plist__rva_average_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(plist__reread_file_meta), "activate", G_CALLBACK(plist__reread_file_meta_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__fileinfo), "activate", G_CALLBACK(plist__fileinfo_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__search), "activate", G_CALLBACK(plist__search_cb), NULL);
 
@@ -1505,6 +1555,7 @@ create_playlist(void) {
 	gtk_widget_show(plist__rva);
 	gtk_widget_show(plist__rva_separate);
 	gtk_widget_show(plist__rva_average);
+	gtk_widget_show(plist__reread_file_meta);
 	gtk_widget_show(plist__separator2);
 	gtk_widget_show(plist__fileinfo);
 	gtk_widget_show(plist__search);

@@ -471,7 +471,7 @@ meta_read(metadata * meta, char * file) {
                 return 0;
         }
 
-        if (file_decoder_open(fdec, file_locale, 44100)) {
+        if (file_decoder_open(fdec, file_locale)) {
                 fprintf(stderr, "file_decoder_open() failed on %s\n", file_locale);
 		file_decoder_delete(fdec);
                 return 0;

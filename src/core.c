@@ -148,6 +148,33 @@ float convf(char * s) {
 }
 
 
+/* return 1 if conversion is possible, 0 if not */
+int
+sample_rates_ok(int out_SR, int file_SR) {
+
+#ifdef HAVE_SRC
+	float src_ratio;
+
+	src_ratio = 1.0 * out_SR / file_SR;
+	if (!src_is_valid_ratio(src_ratio) ||
+	    src_ratio > MAX_RATIO || src_ratio < 1.0/MAX_RATIO) {
+		fprintf(stderr, "core.c/sample_rates_ok(): too big difference between input and "
+			"output sample rate!\n");
+#else
+        if (out_SR != file_SR) {
+		fprintf(stderr,
+			"Input file's samplerate (%ld Hz) and output samplerate (%ld Hz) differ, "
+			"and\nAqualung is compiled without Sample Rate Converter support. To play "
+			"this file,\nyou have to build Aqualung with internal Sample Rate Converter "
+			"support,\nor set the playback sample rate to match the file's sample rate."
+			"\n", file_SR, out_SR);             
+#endif /* HAVE_SRC */
+		return 0;
+	}
+	return 1;
+}
+
+
 void *
 disk_thread(void * arg) {
 
@@ -222,7 +249,18 @@ disk_thread(void * arg) {
 				if (fdec->file_lib != 0)
 					file_decoder_close(fdec);
 				if (filename[0] != '\0') {
-					if (file_decoder_open(fdec, filename, info->out_SR)) {
+					if (file_decoder_open(fdec, filename)) {
+						fdec->samples_left = 0;
+						info->is_streaming = 0;
+						end_of_file = 1;
+						send_cmd = CMD_FILEREQ;
+						jack_ringbuffer_write(rb_disk2gui, &send_cmd, 1);
+						goto sleep;
+					} else if (!sample_rates_ok(info->out_SR, fdec->SR)) {
+						fdec->file_open = 1; /* to get close_file() working */
+						file_decoder_close(fdec);
+						fdec->file_open = 0;
+
 						fdec->samples_left = 0;
 						info->is_streaming = 0;
 						end_of_file = 1;

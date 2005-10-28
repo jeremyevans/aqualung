@@ -224,7 +224,7 @@ msgstr ""
 "Szabad Szoftver Alapítvány címére: Free Software Foundation, Inc., 675\n"
 "Mass Ave, Cambridge, MA 02139, USA."
 
-#: ../cddb_lookup.c:96 ../cddb_lookup.c:309
+#: ../cddb_lookup.c:96 ../cddb_lookup.c:307
 msgid "CDDB query"
 msgstr "CDDB lekérdezés"
 
@@ -240,69 +240,69 @@ msgstr "Kapcsolódás a CDDB szerverhez..."
 msgid "Abort"
 msgstr "Megszakítás"
 
-#: ../cddb_lookup.c:325
+#: ../cddb_lookup.c:323
 msgid "Matches:"
 msgstr "Találatok:"
 
-#: ../cddb_lookup.c:345
+#: ../cddb_lookup.c:343
 msgid "Artist:"
 msgstr "Elõadó:"
 
-#: ../cddb_lookup.c:351 ../file_info.c:466 ../file_info.c:567
+#: ../cddb_lookup.c:349 ../file_info.c:466 ../file_info.c:567
 #: ../file_info.c:678
 msgid "Import as Artist"
 msgstr "Importálás elõadóként"
 
-#: ../cddb_lookup.c:359
+#: ../cddb_lookup.c:357
 msgid "Title:"
 msgstr "Cím:"
 
-#: ../cddb_lookup.c:365 ../file_info.c:456 ../file_info.c:547
+#: ../cddb_lookup.c:363 ../file_info.c:456 ../file_info.c:547
 #: ../file_info.c:658
 msgid "Import as Title"
 msgstr "Importálás címként"
 
-#: ../cddb_lookup.c:373
+#: ../cddb_lookup.c:371
 msgid "Year:"
 msgstr "Év:"
 
-#: ../cddb_lookup.c:379 ../cddb_lookup.c:393 ../cddb_lookup.c:407
-#: ../cddb_lookup.c:421 ../file_info.c:509 ../file_info.c:607
+#: ../cddb_lookup.c:377 ../cddb_lookup.c:391 ../cddb_lookup.c:405
+#: ../cddb_lookup.c:419 ../file_info.c:509 ../file_info.c:607
 #: ../file_info.c:620 ../file_info.c:717 ../file_info.c:730
 msgid "Add to Comments"
 msgstr "Hozzáadás a kommentekhez"
 
-#: ../cddb_lookup.c:387
+#: ../cddb_lookup.c:385
 msgid "Category:"
 msgstr "Kategória:"
 
-#: ../cddb_lookup.c:401
+#: ../cddb_lookup.c:399
 msgid "Genre:"
 msgstr "Mûfaj:"
 
-#: ../cddb_lookup.c:415
+#: ../cddb_lookup.c:413
 msgid "Extended data:"
 msgstr "Egyéb adat:"
 
-#: ../cddb_lookup.c:433
+#: ../cddb_lookup.c:431
 msgid "Tracks"
 msgstr "Számok"
 
-#: ../cddb_lookup.c:612
+#: ../cddb_lookup.c:589
 #, c-format
 msgid "%d of %d"
 msgstr "%d / %d"
 
-#: ../cddb_lookup.c:626 ../cddb_lookup.c:652 ../gui_main.c:1122
+#: ../cddb_lookup.c:603 ../cddb_lookup.c:629 ../gui_main.c:1122
 #: ../options.c:1054
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
-#: ../cddb_lookup.c:636
+#: ../cddb_lookup.c:613
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr "Hiba történt a CDDB szerverhez való kapcsolódás közben."
 
-#: ../cddb_lookup.c:662
+#: ../cddb_lookup.c:639
 msgid "No matching record found."
 msgstr "Az album nem található az adatbázisban."
 
@@ -846,7 +846,7 @@ msgid "Add new store..."
 msgstr "Új tároló hozzáadása..."
 
 #: ../music_browser.c:3519 ../music_browser.c:3542 ../music_browser.c:3592
-#: ../music_browser.c:3638 ../music_browser.c:3690 ../playlist.c:1479
+#: ../music_browser.c:3638 ../music_browser.c:3690 ../playlist.c:1488
 msgid "Search..."
 msgstr "Keresés..."
 
@@ -923,7 +923,7 @@ msgstr "Szám szerkesztése..."
 msgid "Remove track"
 msgstr "Szám eltávolítása"
 
-#: ../music_browser.c:3687 ../playlist.c:1478
+#: ../music_browser.c:3687 ../playlist.c:1487
 msgid "File info..."
 msgstr "Fájl infó..."
 
@@ -1017,7 +1017,7 @@ msgstr "Vezérlõgombok elhelyezése a Lejátszólista alján"
 msgid "Simple view in LADSPA patch builder"
 msgstr "Egyszerû nézet a LADSPA effekt szerkesztõben"
 
-#: ../options.c:1279 ../playlist.c:1450
+#: ../options.c:1279 ../playlist.c:1458
 msgid "Playlist"
 msgstr "Lejátszólista"
 
@@ -1342,96 +1342,100 @@ msgstr "Színek"
 msgid "Active song in playlist: "
 msgstr "Aktív szám a Lejátszólistában: "
 
-#: ../playlist.c:583
+#: ../playlist.c:584
 msgid "Please specify the file to save the playlist to."
 msgstr "Add meg az elmentendõ lejátszólista fájlt."
 
-#: ../playlist.c:625 ../playlist.c:681
+#: ../playlist.c:626 ../playlist.c:682
 msgid "Please specify the file to load the playlist from."
 msgstr "Add meg a betöltendõ lejátszólista fájlt."
 
-#: ../playlist.c:855
+#: ../playlist.c:856
 msgid ""
 "Playback RVA is currently disabled. Enable it at Settings->Playback RVA."
 msgstr ""
 "A lejátszáskori RVA jelenleg nem engedélyezett.\n"
 "Engedélyezd a Beállítások->Lejátszáskori RVA helyen."
 
-#: ../playlist.c:1030 ../playlist.c:1033 ../playlist.c:1036
+#: ../playlist.c:1038 ../playlist.c:1041 ../playlist.c:1044
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: ../playlist.c:1125
+#: ../playlist.c:1133
 msgid "Select files..."
 msgstr "Fájlok kiválasztása..."
 
-#: ../playlist.c:1391 ../playlist.c:1420
+#: ../playlist.c:1399 ../playlist.c:1428
 #, c-format
 msgid "%d track [%s]"
 msgstr "%d szám [%s]"
 
-#: ../playlist.c:1393 ../playlist.c:1422
+#: ../playlist.c:1401 ../playlist.c:1430
 #, c-format
 msgid "%d tracks [%s]"
 msgstr "%d szám [%s]"
 
-#: ../playlist.c:1469
+#: ../playlist.c:1477
 msgid "Save playlist"
 msgstr "Lejátszólista mentése"
 
-#: ../playlist.c:1470
+#: ../playlist.c:1478
 msgid "Load playlist"
 msgstr "Lejátszólista betöltése"
 
-#: ../playlist.c:1471
+#: ../playlist.c:1479
 msgid "Enqueue playlist"
 msgstr "Lejátszólista hozzáfûzése"
 
-#: ../playlist.c:1473
+#: ../playlist.c:1481
 msgid "Calculate RVA"
 msgstr "Hangosság meghatározása"
 
-#: ../playlist.c:1475
+#: ../playlist.c:1483
 msgid "Separate"
 msgstr "Egyéni"
 
-#: ../playlist.c:1476
+#: ../playlist.c:1484
 msgid "Average"
 msgstr "Átlagos"
 
-#: ../playlist.c:1649
+#: ../playlist.c:1485
+msgid "Reread file metadata"
+msgstr ""
+
+#: ../playlist.c:1661
 msgid "Selected: "
 msgstr "Kijelölve: "
 
-#: ../playlist.c:1659
+#: ../playlist.c:1671
 msgid "Total: "
 msgstr "Összesen: "
 
-#: ../playlist.c:1672
+#: ../playlist.c:1684
 msgid "Add files..."
 msgstr "Fájlok hozzáadása..."
 
-#: ../playlist.c:1676 ../playlist.c:1692
+#: ../playlist.c:1688 ../playlist.c:1704
 msgid "Select all"
 msgstr "Összes elem kijelölése"
 
-#: ../playlist.c:1680 ../playlist.c:1717
+#: ../playlist.c:1692 ../playlist.c:1729
 msgid "Remove selected"
 msgstr "Kijelölt elemek törlése"
 
-#: ../playlist.c:1687
+#: ../playlist.c:1699
 msgid "Select none"
 msgstr "Kijelölés megszüntetése"
 
-#: ../playlist.c:1697
+#: ../playlist.c:1709
 msgid "Invert selection"
 msgstr "Kijelölés megfordítása"
 
-#: ../playlist.c:1707
+#: ../playlist.c:1719
 msgid "Cut selected"
 msgstr "Kijelölt elemek megtartása"
 
-#: ../playlist.c:1712
+#: ../playlist.c:1724
 msgid "Remove all"
 msgstr "Mindent eltávolít"
 

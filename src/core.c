@@ -1711,7 +1711,7 @@ main(int argc, char ** argv) {
 		char * home;
 		char * path;
 
-		if (no_session != -1) {
+		if ((no_session != -1) && (no_session != aqualung_session_id)) {
 			for (i = optind; argv[i] != NULL; i++) {
 				
 				switch (argv[i][0]) {
@@ -1753,7 +1753,7 @@ main(int argc, char ** argv) {
 	}
 
 	if (play) {
-		if (no_session == -1) {
+		if ((no_session == -1) || (no_session == aqualung_session_id)) {
 			immediate_start = 1;
 		} else {
 			rcmd = RCMD_PLAY;

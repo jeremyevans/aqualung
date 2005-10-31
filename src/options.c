@@ -212,6 +212,8 @@ GtkWidget * color_picker;
 void draw_rva_diagram(void);
 void show_restart_info(void);
 
+GtkListStore * restart_list_store = NULL;
+
 
 void open_font_desc(void)
 {
@@ -768,17 +770,36 @@ stdthresh_changed(GtkWidget * widget, gpointer * data) {
 	rva_avg_stddev_thresh_shadow = gtk_adjustment_get_value(GTK_ADJUSTMENT(widget)) / 100.0f;
 }
 
-void show_restart_info(void)
-{
-GtkWidget *info_dialog;
+void show_restart_info(void) {
 
-        info_dialog = gtk_message_dialog_new (GTK_WINDOW (options_window),
-       					GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-					GTK_MESSAGE_INFO,
-					GTK_BUTTONS_OK,
-					_("You will need to restart Aqualung for changes to take effect."));
+	GtkWidget * info_dialog;
+	GtkWidget * list;
+	GtkWidget * viewport;
+	GtkCellRenderer * renderer;
+	GtkTreeViewColumn * column;
 
-	gtk_widget_show (info_dialog);
+        info_dialog = gtk_message_dialog_new(GTK_WINDOW (options_window),
+					     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+					     GTK_MESSAGE_INFO,
+					     GTK_BUTTONS_OK,
+					     _("You will need to restart Aqualung for the following changes to take effect:"));
+
+
+        list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(restart_list_store));
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes("",
+							  renderer,
+							  "text", 0,
+							  NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list), column);
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(list), FALSE);
+
+	viewport = gtk_viewport_new(NULL, NULL);
+	gtk_container_add(GTK_CONTAINER(viewport), list);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(info_dialog)->vbox), viewport, FALSE, FALSE, 6);
+
+
+	gtk_widget_show_all(info_dialog);
         gtk_dialog_run(GTK_DIALOG(info_dialog));
         gtk_widget_destroy(info_dialog);
 
@@ -888,9 +909,22 @@ gint response;
 
 }
 
-void  restart_active (GtkToggleButton *togglebutton, gpointer user_data)
-{
+void restart_active(GtkToggleButton * togglebutton, gpointer data) {
+
+	GtkTreeIter iter;
+	char * text;
+	int i = 0;
+
+
         restart_flag = 1;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(restart_list_store), &iter, NULL, i++)) {
+		gtk_tree_model_get(GTK_TREE_MODEL(restart_list_store), &iter, 0, &text, -1);
+		if (!strcmp(text, (char *)data)) return;
+	}
+
+	gtk_list_store_append(restart_list_store, &iter);
+	gtk_list_store_set(restart_list_store, &iter, 0, (char *)data, -1);
 }
 
 void set_sensitive_part(void) {
@@ -1170,7 +1204,14 @@ create_options_window(void) {
 	int status;
 	int i;
 
+
         restart_flag = 0;
+	if (!restart_list_store) {
+		restart_list_store = gtk_list_store_new(1, G_TYPE_STRING);
+	} else {
+		gtk_list_store_clear(restart_list_store);
+	}
+
 
 	options_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_transient_for(GTK_WINDOW(options_window), GTK_WINDOW(main_window));
@@ -1259,7 +1300,7 @@ running realtime as a default.\n"));
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_buttons_at_the_bottom, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_buttons_at_the_bottom), "toggled",
-						G_CALLBACK (restart_active), NULL);
+						G_CALLBACK (restart_active), _("Put control buttons at the bottom of playlist"));
 
 	check_simple_view_in_fx =
 		gtk_check_button_new_with_label(_("Simple view in LADSPA patch builder"));
@@ -1269,7 +1310,7 @@ running realtime as a default.\n"));
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_simple_view_in_fx, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_simple_view_in_fx), "toggled",
-						G_CALLBACK (restart_active), NULL);
+						G_CALLBACK (restart_active), _("Simple view in LADSPA patch builder"));
 
 
         /* "Playlist" notebook page */
@@ -1286,7 +1327,7 @@ running realtime as a default.\n"));
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_embedded, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_playlist_is_embedded), "toggled",
-						G_CALLBACK (restart_active), NULL);
+						G_CALLBACK (restart_active), _("Embed playlist into main window"));
 	check_autoplsave =
 	    gtk_check_button_new_with_label(_("Save and restore the playlist on exit/startup"));
 	gtk_widget_set_name(check_autoplsave, "check_on_notebook");
@@ -1306,7 +1347,7 @@ running realtime as a default.\n"));
 	}
 	enable_playlist_statusbar_shadow = enable_playlist_statusbar;
 	g_signal_connect(G_OBJECT(check_enable_playlist_statusbar), "toggled",
-			 G_CALLBACK(restart_active), NULL);
+			 G_CALLBACK(restart_active), _("Enable statusbar in playlist"));
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_playlist_statusbar, FALSE, TRUE, 3);
 
 	check_show_rva_in_playlist =
@@ -1409,7 +1450,7 @@ to set the column order in the Playlist."));
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_ms), check_hide_comment_pane, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_hide_comment_pane), "toggled",
-						G_CALLBACK (restart_active), NULL);
+						G_CALLBACK (restart_active), _("Hide the Music Store comment pane"));
 
 	frame_cart = gtk_frame_new(_("Cover art"));
 	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_cart, FALSE, TRUE, 5);

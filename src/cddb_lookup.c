@@ -680,5 +680,9 @@ void cddb_get() {
 	g_timeout_add(100, cddb_timeout_callback, NULL);
 }
 
+#else
+
+void cddb_get() {
+}
 
 #endif /* HAVE_CDDB */

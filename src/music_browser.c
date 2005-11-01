@@ -360,10 +360,11 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
 
         set_sliders_width();
 
-        if(strlen(selected_filename))
+        if (strlen(selected_filename)) {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), selected_filename);
-        else
+	} else {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), currdir);
+	}
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
@@ -1634,6 +1635,84 @@ confirm_dialog(char * title, char * text) {
 }
 
 
+static int
+is_store_iter_readonly(GtkTreeIter * i) {
+
+	GtkTreeIter iter;
+        GtkTreePath * path;
+        float state;
+
+        path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), i);
+
+        while (gtk_tree_path_get_depth(path) > 1) {
+                gtk_tree_path_up(path);
+        }
+
+        gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 7, &state, -1);
+
+        return state < 0;
+}
+
+static int
+is_store_path_readonly(GtkTreePath * p) {
+
+	GtkTreeIter iter;
+        GtkTreePath * path;
+        float state;
+
+	path = gtk_tree_path_copy(p);
+
+        while (gtk_tree_path_get_depth(path) > 1) {
+                gtk_tree_path_up(path);
+        }
+
+        gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 7, &state, -1);
+	gtk_tree_path_free(path);
+
+        return state < 0;
+}
+
+
+static void
+set_popup_sensitivity(GtkTreePath * path) {
+
+	gboolean val;
+
+	if (is_store_path_readonly(path)) {
+		val = FALSE;
+	} else {
+		val = TRUE;
+	}
+
+	gtk_widget_set_sensitive(store__edit, val);
+	gtk_widget_set_sensitive(store__remove, val);
+	gtk_widget_set_sensitive(store__addart, val);
+	gtk_widget_set_sensitive(store__volume, val);
+
+	gtk_widget_set_sensitive(artist__add, val);
+	gtk_widget_set_sensitive(artist__edit, val);
+	gtk_widget_set_sensitive(artist__remove, val);
+	gtk_widget_set_sensitive(artist__addrec, val);
+	gtk_widget_set_sensitive(artist__volume, val);
+
+	gtk_widget_set_sensitive(record__add, val);
+	gtk_widget_set_sensitive(record__edit, val);
+	gtk_widget_set_sensitive(record__remove, val);
+	gtk_widget_set_sensitive(record__addtrk, val);
+#ifdef HAVE_CDDB
+	gtk_widget_set_sensitive(record__cddb, val);
+#endif /* HAVE_CDDB */
+	gtk_widget_set_sensitive(record__volume, val);
+
+	gtk_widget_set_sensitive(track__add, val);
+	gtk_widget_set_sensitive(track__edit, val);
+	gtk_widget_set_sensitive(track__remove, val);
+	gtk_widget_set_sensitive(track__volume, val);
+}
+
+
 static gboolean
 music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 
@@ -1647,6 +1726,8 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 
 			if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(music_tree), bevent->x, bevent->y,
 							  &path, &column, NULL, NULL)) {
+
+				set_popup_sensitivity(path);
 				
 				gtk_tree_view_set_cursor(GTK_TREE_VIEW(music_tree), path, NULL, FALSE);
 
@@ -1686,6 +1767,8 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 		if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 			GtkTreePath * path = gtk_tree_model_get_path(model, &iter);
 			int i;
+
+			set_popup_sensitivity(path);
 			
 			switch (kevent->keyval) {
 			case GDK_KP_Enter:
@@ -1899,8 +1982,11 @@ store__addlist_cb(gpointer data) {
 
 					if (duration == 0.0f) {
 						duration = get_file_duration(file);
-						gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
-						music_store_mark_changed();
+						if (!is_store_iter_readonly(&iter_track)) {
+							gtk_tree_store_set(music_store, &iter_track,
+									   4, duration, -1);
+							music_store_mark_changed();
+						}
 					}
 					time2time(duration, duration_str);
 
@@ -2133,25 +2219,6 @@ store__save_cb(gpointer data) {
 }
 
 
-int
-is_store_readonly(GtkTreeModel * model, GtkTreeIter iter) {
-
-	GtkTreePath * path;
-	float state;
-
-	path = gtk_tree_model_get_path(model, &iter);
-
-	while (gtk_tree_path_get_depth(path) > 1) {
-		gtk_tree_path_up(path);
-	}
-
-	gtk_tree_model_get_iter(model, &iter, path);
-	
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 7, &state, -1);
-
-	return state < 0;
-}
-
 /****************************************/
 
 
@@ -2217,7 +2284,7 @@ artist__addlist_cb(gpointer data) {
 					nlevels++;
 					if ((volumes = realloc(volumes, nlevels * sizeof(float))) == NULL) {
 						fprintf(stderr,
-							"artist__addlist_cb: realloc error\n");
+							"artist__addlist_c: brealloc error\n");
 						return;
 					}
 					volumes[nlevels-1] = volume;
@@ -2274,8 +2341,10 @@ artist__addlist_cb(gpointer data) {
 
 				if (duration == 0.0f) {
 					duration = get_file_duration(file);
-					gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
-					music_store_mark_changed();
+					if (!is_store_iter_readonly(&iter_track)) {
+						gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
+						music_store_mark_changed();
+					}
 				}
 				time2time(duration, duration_str);
 
@@ -2342,10 +2411,6 @@ artist__add_cb(gpointer data) {
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &parent_iter)) {
 
-		if (is_store_readonly(model, parent_iter)) {
-			return;
-		}
-
 		/* get iter to music store (parent) */
 		parent_path = gtk_tree_model_get_path(model, &parent_iter);
 		if (gtk_tree_path_get_depth(parent_path) == 2)
@@ -2377,10 +2442,6 @@ artist__edit_cb(gpointer data) {
 	char comment[MAXLEN];
 	
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
-
-		if (is_store_readonly(model, iter)) {
-			return;
-		}
 
                 gtk_tree_model_get(model, &iter, 0, &pname, 1, &psort_name, 3, &pcomment, -1);
 
@@ -2423,10 +2484,6 @@ artist__volume_cb(gpointer data) {
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_artist)) {
 
-		if (is_store_readonly(model, iter_artist)) {
-			return;
-		}
-
 		i = 0;
 		while (gtk_tree_model_iter_nth_child(model, &iter_record, &iter_artist, i++)) {
 
@@ -2460,10 +2517,6 @@ artist__remove_cb(gpointer data) {
 	char text[MAXLEN];
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
-
-		if (is_store_readonly(model, iter)) {
-			return;
-		}
 
                 gtk_tree_model_get(model, &iter, 0, &pname, -1);
 		strncpy(name, pname, MAXLEN-1);
@@ -2600,8 +2653,10 @@ record__addlist_cb(gpointer data) {
 
 			if (duration == 0.0f) {
 				duration = get_file_duration(file);
-				gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
-				music_store_mark_changed();
+				if (!is_store_iter_readonly(&iter_track)) {
+					gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
+					music_store_mark_changed();
+				}
 			}
 			time2time(duration, duration_str);
 
@@ -2673,10 +2728,6 @@ record__add_cb(gpointer data) {
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &parent_iter)) {
 
-		if (is_store_readonly(model, parent_iter)) {
-			return;
-		}
-
 		/* get iter to artist (parent) */
 		parent_path = gtk_tree_model_get_path(model, &parent_iter);
 		if (gtk_tree_path_get_depth(parent_path) == 3)
@@ -2732,10 +2783,6 @@ record__edit_cb(gpointer data) {
 	
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
-		if (is_store_readonly(model, iter)) {
-			return;
-		}
-
                 gtk_tree_model_get(model, &iter, 0, &pname, 1, &psort_name, 3, &pcomment, -1);
 
 		strncpy(name, pname, MAXLEN-1);
@@ -2778,10 +2825,6 @@ record__volume_cb(gpointer data) {
 		return;
 	}
 
-	if (is_store_readonly(model, iter_record)) {
-		return;
-	}
-
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, i++)) {
 		
@@ -2811,10 +2854,6 @@ record__remove_cb(gpointer data) {
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
-		if (is_store_readonly(model, iter)) {
-			return;
-		}
-
                 gtk_tree_model_get(model, &iter, 0, &pname, -1);
 		strncpy(name, pname, MAXLEN-1);
                 g_free(pname);
@@ -2830,21 +2869,15 @@ record__remove_cb(gpointer data) {
 }
 
 
-#ifdef HAVE_CDDB
-
 static void
 record__cddb_cb(gpointer data) {
 	GtkTreeIter iter;
 	GtkTreeModel * model;
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
-		if (!is_store_readonly(model, iter)) {
-			cddb_get();
-		}
+		cddb_get();
 	}
 }
-
-#endif /* HAVE_CDDB */
 
 
 /************************************/
@@ -2930,8 +2963,10 @@ track__addlist_cb(gpointer data) {
 
 		if (duration == 0.0f) {
 			duration = get_file_duration(file);
-			gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
-			music_store_mark_changed();
+			if (!is_store_iter_readonly(&iter_track)) {
+				gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
+				music_store_mark_changed();
+			}
 		}
 		time2time(duration, duration_str);
 
@@ -2997,10 +3032,6 @@ track__add_cb(gpointer data) {
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &parent_iter)) {
 
-		if (is_store_readonly(model, parent_iter)) {
-			return;
-		}
-
 		/* get iter to artist (parent) */
 		parent_path = gtk_tree_model_get_path(model, &parent_iter);
 		if (gtk_tree_path_get_depth(parent_path) == 4)
@@ -3040,10 +3071,6 @@ track__edit_cb(gpointer data) {
 	float use_rva;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
-
-		if (is_store_readonly(model, iter)) {
-			return;
-		}
 
                 gtk_tree_model_get(model, &iter,
 				   0, &pname, 1, &psort_name, 2, &pfile, 3, &pcomment,
@@ -3118,7 +3145,11 @@ track__fileinfo_cb(gpointer data) {
 		make_title_string(list_str, title_format,
 				  artist_name, record_name, track_name);
 
-		show_file_info(list_str, file, 1, model, iter_track);
+		if (is_store_iter_readonly(&iter_track)) {
+			show_file_info(list_str, file, 0, model, iter_track);
+		} else {
+			show_file_info(list_str, file, 1, model, iter_track);
+		}
         }
 }
 
@@ -3140,10 +3171,6 @@ track__volume_cb(gpointer data) {
 	}
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
-
-		if (is_store_readonly(model, iter_track)) {
-			return;
-		}
 
                 gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile, -1);
                 strncpy(track_name, ptrack_name, MAXLEN-1);
@@ -3167,10 +3194,6 @@ track__remove_cb(gpointer data) {
 	char text[MAXLEN];
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
-
-		if (is_store_readonly(model, iter)) {
-			return;
-		}
 
                 gtk_tree_model_get(model, &iter, 0, &pname, -1);
 		strncpy(name, pname, MAXLEN-1);
@@ -3630,9 +3653,7 @@ create_music_browser(void) {
 	record__remove = gtk_menu_item_new_with_label(_("Remove record"));
 	record__separator2 = gtk_separator_menu_item_new();
 	record__addtrk = gtk_menu_item_new_with_label(_("Add new track to this record..."));
-#ifdef HAVE_CDDB
 	record__cddb = gtk_menu_item_new_with_label(_("CDDB query for this record..."));
-#endif /* HAVE_CDDB */
 	record__separator3 = gtk_separator_menu_item_new();
 	record__volume = gtk_menu_item_new_with_label(_("Calculate volume (recursive)"));
 	record__search = gtk_menu_item_new_with_label(_("Search..."));
@@ -3644,9 +3665,7 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__remove);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addtrk);
-#ifdef HAVE_CDDB
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__cddb);
-#endif /* HAVE_CDDB */
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator3);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__volume);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__search);
@@ -3656,9 +3675,7 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(record__edit), "activate", G_CALLBACK(record__edit_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__remove), "activate", G_CALLBACK(record__remove_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__addtrk), "activate", G_CALLBACK(track__add_cb), NULL);
-#ifdef HAVE_CDDB
 	g_signal_connect_swapped(G_OBJECT(record__cddb), "activate", G_CALLBACK(record__cddb_cb), NULL);
-#endif /* HAVE_CDDB */
 	g_signal_connect_swapped(G_OBJECT(record__volume), "activate", G_CALLBACK(record__volume_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__search), "activate", G_CALLBACK(search_cb), NULL);
 
@@ -3669,12 +3686,14 @@ create_music_browser(void) {
 	gtk_widget_show(record__remove);
 	gtk_widget_show(record__separator2);
 	gtk_widget_show(record__addtrk);
-#ifdef HAVE_CDDB
 	gtk_widget_show(record__cddb);
-#endif /* HAVE_CDDB */
 	gtk_widget_show(record__separator3);
 	gtk_widget_show(record__volume);
 	gtk_widget_show(record__search);
+
+#ifndef HAVE_CDDB
+	gtk_widget_set_sensitive(record__cddb, FALSE);
+#endif /* HAVE_CDDB */
 
 	/* create popup menu for track tree items */
 	track_menu = gtk_menu_new();

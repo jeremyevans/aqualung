@@ -2,7 +2,7 @@
 
 MAJOR=0
 MINOR=167
-MICRO=3
+MICRO=4
 
 if [ $# -eq 0 ] ; then
     echo $MAJOR.$MINOR.$MICRO

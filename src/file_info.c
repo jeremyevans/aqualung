@@ -167,6 +167,8 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 		gtk_tree_store_set(music_store, &(data->track_iter), 7, ftmp, -1);
 		break;
 	}
+
+	music_store_mark_changed();
 }
 
 

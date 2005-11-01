@@ -21,10 +21,6 @@
 #ifndef _CDDB_LOOKUP_H
 #define _CDDB_LOOKUP_H
 
-#ifdef HAVE_CDDB
-
 void cddb_get(void);
-
-#endif /* HAVE_CDDB */
 
 #endif /* _CDDB_LOOKUP_H */

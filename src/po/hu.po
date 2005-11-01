@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aqualung 0.9beta4\n"
+"Project-Id-Version: aqualung 0.9beta5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2005-10-31 19:57+0100\n"
+"PO-Revision-Date: 2005-11-01 09:19+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -62,100 +62,94 @@ msgid "Graphics:"
 msgstr "Grafika:"
 
 #: ../about.c:158
-msgid ""
-"Logo by Maja Kocon <ironya@ll.pl>\n"
-"\n"
-"\n"
-msgstr ""
-"Logo: Maja Kocon <ironya@ll.pl>\n"
-"\n"
-"\n"
+msgid "Logo:\n"
+msgstr "Logo:\n"
 
-#: ../about.c:163
+#: ../about.c:164
 msgid "This Aqualung binary is compiled with:"
 msgstr "Ez az Aqualung bináris a következõ opciókat támogatja:"
 
-#: ../about.c:167
+#: ../about.c:168
 msgid "File format support:"
 msgstr "Támogatott fájltípusok:"
 
-#: ../about.c:172 ../about.c:183 ../about.c:194 ../about.c:205 ../about.c:216
-#: ../about.c:227 ../about.c:238 ../about.c:249 ../about.c:260 ../about.c:276
-#: ../about.c:287 ../about.c:297 ../about.c:308 ../about.c:319
+#: ../about.c:173 ../about.c:184 ../about.c:195 ../about.c:206 ../about.c:217
+#: ../about.c:228 ../about.c:239 ../about.c:250 ../about.c:261 ../about.c:277
+#: ../about.c:288 ../about.c:298 ../about.c:309 ../about.c:320
 msgid "yes"
 msgstr "igen"
 
-#: ../about.c:176 ../about.c:187 ../about.c:198 ../about.c:209 ../about.c:220
-#: ../about.c:231 ../about.c:242 ../about.c:253 ../about.c:264 ../about.c:280
-#: ../about.c:291 ../about.c:312 ../about.c:323
+#: ../about.c:177 ../about.c:188 ../about.c:199 ../about.c:210 ../about.c:221
+#: ../about.c:232 ../about.c:243 ../about.c:254 ../about.c:265 ../about.c:281
+#: ../about.c:292 ../about.c:313 ../about.c:324
 msgid "no"
 msgstr "nem"
 
-#: ../about.c:179
+#: ../about.c:180
 msgid "sndfile (WAV, AIFF, etc.)\n"
 msgstr "sndfile (WAV, AIFF, stb.)\n"
 
-#: ../about.c:190
+#: ../about.c:191
 msgid "Free Lossless Audio Codec (FLAC)\n"
 msgstr "Free Lossless Audio Codec (FLAC)\n"
 
-#: ../about.c:201
+#: ../about.c:202
 msgid "Ogg Vorbis\n"
 msgstr "Ogg Vorbis\n"
 
-#: ../about.c:212
+#: ../about.c:213
 msgid "Ogg Speex\n"
 msgstr "Ogg Speex\n"
 
-#: ../about.c:223
+#: ../about.c:224
 msgid "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
 msgstr "MPEG Audio (MPEG 1-2.5 I-III. Réteg)\n"
 
-#: ../about.c:234
+#: ../about.c:235
 msgid "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
 msgstr "MOD Audio (MOD, S3M, XM, IT, stb.)\n"
 
-#: ../about.c:245
+#: ../about.c:246
 msgid "Musepack\n"
 msgstr "Musepack\n"
 
-#: ../about.c:256
+#: ../about.c:257
 msgid "Monkey's Audio Codec\n"
 msgstr "Monkey's Audio Codec\n"
 
-#: ../about.c:267
+#: ../about.c:268
 msgid "ID3 tags\n"
 msgstr "ID3v2 tagek\n"
 
-#: ../about.c:271
+#: ../about.c:272
 msgid "Output driver support:"
 msgstr "Kimeneti meghajtók:"
 
-#: ../about.c:283
+#: ../about.c:284
 msgid "OSS Audio\n"
 msgstr "OSS Audio\n"
 
-#: ../about.c:294
+#: ../about.c:295
 msgid "ALSA Audio\n"
 msgstr "ALSA Audio\n"
 
-#: ../about.c:299
+#: ../about.c:300
 msgid "JACK Audio Server\n"
 msgstr "JACK Audio Szerver\n"
 
-#: ../about.c:303
+#: ../about.c:304
 msgid "Miscellaneous:"
 msgstr "Egyéb:"
 
-#: ../about.c:315
+#: ../about.c:316
 msgid "Internal Sample Rate Converter support\n"
 msgstr "Beépített mintavételi frekvencia konverter\n"
 
-#: ../about.c:326
+#: ../about.c:327
 msgid "CDDB support\n"
 msgstr "CDDB támogatás\n"
 
-#: ../about.c:331
+#: ../about.c:332
 msgid ""
 "Aqualung could not be functional without the following libraries.\n"
 "We would like to thank the authors of these software packages:\n"
@@ -195,7 +189,7 @@ msgstr ""
 "* libid3tag, könyvtár az ID3v2 tagek olvasásához\n"
 "* libcddb, egy CDDB szerver elérést támogató könyvtár"
 
-#: ../about.c:351
+#: ../about.c:352
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -836,7 +830,7 @@ msgstr "Szám eltávolítása"
 msgid "(no comment)"
 msgstr "(nincs megjegyzés)"
 
-#: ../music_browser.c:3433 ../music_browser.c:4007 ../music_browser.c:4073
+#: ../music_browser.c:3433 ../music_browser.c:4008 ../music_browser.c:4083
 #: ../options.c:1443
 msgid "Music Store"
 msgstr "Zenetár"
@@ -931,14 +925,15 @@ msgstr "Fájl infó..."
 msgid "Calculate volume"
 msgstr "Hangosság meghatározása"
 
-#: ../music_browser.c:4067
+#: ../music_browser.c:4077
 msgid "*Music Store"
 msgstr "*Zenetár"
 
 #: ../options.c:785
 msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
-msgstr "A következõ változtatások az Aqualung újraindítása után jutnak érvényre:"
+msgstr ""
+"A következõ változtatások az Aqualung újraindítása után jutnak érvényre:"
 
 #: ../options.c:1052
 msgid "Please select a Music Store database."

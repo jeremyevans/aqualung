@@ -62,100 +62,94 @@ msgid "Graphics:"
 msgstr "Graphik:"
 
 #: ../about.c:158
-msgid ""
-"Logo by Maja Kocon <ironya@ll.pl>\n"
-"\n"
-"\n"
+msgid "Logo:\n"
 msgstr ""
-"Logo von <Maja Kocon <ironya@ll.pl>\n"
-"\n"
-"\n"
 
-#: ../about.c:163
+#: ../about.c:164
 msgid "This Aqualung binary is compiled with:"
 msgstr "Dieser Aqualung Binärcode wurde kompiliert mit:"
 
-#: ../about.c:167
+#: ../about.c:168
 msgid "File format support:"
 msgstr "Unterstützte Dateiformat:"
 
-#: ../about.c:172 ../about.c:183 ../about.c:194 ../about.c:205 ../about.c:216
-#: ../about.c:227 ../about.c:238 ../about.c:249 ../about.c:260 ../about.c:276
-#: ../about.c:287 ../about.c:297 ../about.c:308 ../about.c:319
+#: ../about.c:173 ../about.c:184 ../about.c:195 ../about.c:206 ../about.c:217
+#: ../about.c:228 ../about.c:239 ../about.c:250 ../about.c:261 ../about.c:277
+#: ../about.c:288 ../about.c:298 ../about.c:309 ../about.c:320
 msgid "yes"
 msgstr "ja"
 
-#: ../about.c:176 ../about.c:187 ../about.c:198 ../about.c:209 ../about.c:220
-#: ../about.c:231 ../about.c:242 ../about.c:253 ../about.c:264 ../about.c:280
-#: ../about.c:291 ../about.c:312 ../about.c:323
+#: ../about.c:177 ../about.c:188 ../about.c:199 ../about.c:210 ../about.c:221
+#: ../about.c:232 ../about.c:243 ../about.c:254 ../about.c:265 ../about.c:281
+#: ../about.c:292 ../about.c:313 ../about.c:324
 msgid "no"
 msgstr "nein"
 
-#: ../about.c:179
+#: ../about.c:180
 msgid "sndfile (WAV, AIFF, etc.)\n"
 msgstr ""
 
-#: ../about.c:190
+#: ../about.c:191
 msgid "Free Lossless Audio Codec (FLAC)\n"
 msgstr ""
 
-#: ../about.c:201
+#: ../about.c:202
 msgid "Ogg Vorbis\n"
 msgstr ""
 
-#: ../about.c:212
+#: ../about.c:213
 msgid "Ogg Speex\n"
 msgstr ""
 
-#: ../about.c:223
+#: ../about.c:224
 msgid "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
 msgstr ""
 
-#: ../about.c:234
+#: ../about.c:235
 msgid "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
 msgstr ""
 
-#: ../about.c:245
+#: ../about.c:246
 msgid "Musepack\n"
 msgstr ""
 
-#: ../about.c:256
+#: ../about.c:257
 msgid "Monkey's Audio Codec\n"
 msgstr ""
 
-#: ../about.c:267
+#: ../about.c:268
 msgid "ID3 tags\n"
 msgstr ""
 
-#: ../about.c:271
+#: ../about.c:272
 msgid "Output driver support:"
 msgstr "Ausgabe Treiber Unterstützung:"
 
-#: ../about.c:283
+#: ../about.c:284
 msgid "OSS Audio\n"
 msgstr ""
 
-#: ../about.c:294
+#: ../about.c:295
 msgid "ALSA Audio\n"
 msgstr ""
 
-#: ../about.c:299
+#: ../about.c:300
 msgid "JACK Audio Server\n"
 msgstr ""
 
-#: ../about.c:303
+#: ../about.c:304
 msgid "Miscellaneous:"
 msgstr "Sonstiges:"
 
-#: ../about.c:315
+#: ../about.c:316
 msgid "Internal Sample Rate Converter support\n"
 msgstr "Interner Samplerate Konverter Unterstützung\n"
 
-#: ../about.c:326
+#: ../about.c:327
 msgid "CDDB support\n"
 msgstr "CDDB Unterstützung\n"
 
-#: ../about.c:331
+#: ../about.c:332
 #, fuzzy
 msgid ""
 "Aqualung could not be functional without the following libraries.\n"
@@ -184,7 +178,7 @@ msgstr ""
 "* libXML2, der XML C Syntaxanalysierer und Werkzeugsatz für Gnome\n"
 "* libJACK, die JACK Audio Verbindungssatz support library"
 
-#: ../about.c:351
+#: ../about.c:352
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -847,7 +841,7 @@ msgstr "Track entfernen"
 msgid "(no comment)"
 msgstr "(kein Kommentar)"
 
-#: ../music_browser.c:3433 ../music_browser.c:4007 ../music_browser.c:4073
+#: ../music_browser.c:3433 ../music_browser.c:4008 ../music_browser.c:4083
 #: ../options.c:1443
 msgid "Music Store"
 msgstr "Musikladen"
@@ -948,7 +942,7 @@ msgstr "Datei-Info..."
 msgid "Calculate volume"
 msgstr "Lautstärke bestimmen"
 
-#: ../music_browser.c:4067
+#: ../music_browser.c:4077
 #, fuzzy
 msgid "*Music Store"
 msgstr "Musikladen"
@@ -1618,6 +1612,15 @@ msgstr ""
 #, c-format
 msgid "%s"
 msgstr ""
+
+#~ msgid ""
+#~ "Logo by Maja Kocon <ironya@ll.pl>\n"
+#~ "\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Logo von <Maja Kocon <ironya@ll.pl>\n"
+#~ "\n"
+#~ "\n"
 
 #, fuzzy
 #~ msgid "Searching..."

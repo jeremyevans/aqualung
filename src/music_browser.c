@@ -3989,6 +3989,7 @@ load_music_store(void) {
 	xmlChar * key;
 
 	GtkTreeIter iter_store;
+	GtkTreePath * path;
 	char * store_file;
 	int i = 0;
 
@@ -4059,6 +4060,15 @@ load_music_store(void) {
 
                 g_free(store_file);
         }
+
+	
+	i = 0;
+        while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_store, NULL, i++)) {
+		path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), &iter_store);
+		gtk_tree_view_expand_row(GTK_TREE_VIEW(music_tree), path, FALSE);
+	}
+
+	gtk_tree_path_free(path);
 }
 
 void music_store_mark_changed(void) {

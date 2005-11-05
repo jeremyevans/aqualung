@@ -1,4 +1,4 @@
-.TH AQUALUNG 1 "28 Jan 2005"
+.TH AQUALUNG 1 "5 Nov 2005"
 
 
 .SH NAME
@@ -23,10 +23,10 @@ when necessary.
 
 Almost all sample-based, uncompressed formats (eg. WAV, AIFF, AU etc.)
 are supported. Files encoded with FLAC (the Free Lossless Audio
-Codec), Ogg Vorbis, MPEG Audio (including the infamous MP3 format) and
-MOD audio formats (MOD, S3M, XM, IT, etc.) are also supported. The
-program can play the music through OSS, ALSA or the JACK Audio
-Connection Kit.
+Codec), Ogg Vorbis, Ogg Speex, MPEG Audio (including the infamous MP3
+format) and MOD audio formats (MOD, S3M, XM, IT, etc.), Musepack and
+Monkey's Audio Codec are also supported. The program can play the
+music through OSS, ALSA or the JACK Audio Connection Kit.
 
 Aqualung supports the LADSPA 1.1 plugin standard. You can use any
 suitable plugin to enhance the music you are listening to.
@@ -45,16 +45,18 @@ You can control any running instance of the program remotely from the
 command line (start, stop, pause etc.). Remote loading or enqueueing
 soundfiles as well as complete playlists is also supported.
 
+
 In addition to all this, Aqualung provides a so-called Music Store
 that is an XML-based music database, capable of storing various
 metadata about music on your computer (including, but not limited to,
 the names of artists, and the titles of records and tracks). You can
-(and should) organize your music into a tree of
-Artists/Records/Tracks, thereby making life easier than with the
-all-in-one Winamp/XMMS playlist. Importing file metadata (ID3v2 tags,
-Ogg Vorbis comments, FLAC metadata) into the Music Store is supported.
+(and should) organize your music into trees of Artists/Records/Tracks,
+thereby making life easier than with the all-in-one Winamp/XMMS
+playlist. Importing file metadata (ID3v2 tags, Ogg Vorbis comments,
+FLAC metadata) into the Music Store as well as getting track names
+from a CDDB/Freedb database is supported.
 
-Please refer to the HTML documentation provided with the program for a
+Please refer to the documentation provided with the program for a
 detailed description of features, usage tips and troubleshooting
 issues. This manual page is only an abstract from the documentation,
 and documents only the program's command line interface for quick
@@ -111,9 +113,11 @@ Set the output sample rate.
 .TP
 .B Options relevant to JACK output:
 .TP
-\-a, \-\-auto
+\-a[<port_L>,<port_R>], \-\-auto[=<port_L>,<port_R>]
 .br
-Auto-connect output ports to first two hardware playback ports.
+Auto-connect output ports to given JACK ports (defaults to first two
+hardware playback ports).
+
 .TP
 \-c, \-\-client <name>
 .br
@@ -227,36 +231,35 @@ list of compiled-in features.
 
 .SH FILES
 
-The ~/.aqualung directory contains the music store and other user
-settings.
-
 .TP
-~/.aqualung/music_store.xml
+~/.aqualung
 .br
-Music database, stores various metadata about music on your computer
+Directory containing user settings.
 
 .TP
 ~/.aqualung/config.xml
 .br
-GUI (skin, window size/position, etc.) and other settings
+GUI (skin, window size/position, etc.) and other settings.
 
 .TP
 ~/.aqualung/plugin.xml
 .br
-List of running plugins and all their settings
+List of running plugins and all their settings.
 
 .TP
 ~/.aqualung/playlist.xml
 .br
-Automatically saved and restored playlist (if you enable this feature)
+Automatically saved and restored playlist (if you enable this feature).
 
 .TP
 ~/.aqualung/<skin-name>
 .br
-Locally available skin <skin-name>
+Locally available skin <skin-name>.
 
 .TP
-System-wide skin directory is ${prefix}/share/aqualung/skin.
+${prefix}/share/aqualung/skin
+.br
+System-wide skin directory.
 
 
 .SH ENVIRONMENT
@@ -281,7 +284,9 @@ defaults and look in the obvious places.
 .br
 Tom Szilagyi <tszilagyi@users.sourceforge.net>
 .br
-Peter Szilagyi <szilagyi.peter@index.hu>
+Peter Szilagyi <peterszilagyi@users.sourceforge.net>
+.br
+Tomasz Maka <pasp@ll.pl>
 
 .SH BUGS
 
@@ -292,12 +297,9 @@ from the project homepage).
 .SH HOMEPAGE
 
 Please go to http://aqualung.sf.net to download the latest version,
-get additional skins or read the docs. You can access the Aqualung
-bugtracker and subscribe to the mailing list as well.
+access the Aqualung bugtracker and subscribe to the mailing list.
 
-.SH SEE ALSO
+.SH USER'S MANUAL
 
-If you installed Aqualung from source, the HTML documentation should
-be available at
-.br
-${prefix}/share/aqualung/html/
+The User's Manual is available at ${prefix}/share/aqualung/doc in LyX
+and PDF formats.

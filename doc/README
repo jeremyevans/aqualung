@@ -1,0 +1,12 @@
+Aqualung User's Manual
+----------------------
+
+'manual.lyx' is the User's Manual written in LyX. This is the only
+file to modify when the documentation is updated -- other formats will
+be generated from this one.
+
+'manual.pdf' is the manual in PDF format.
+
+You can generate several other formats including PS, HTML, DocBook and
+others from 'manual.lyx'. See the LyX homepage for more information:
+http://www.lyx.org

@@ -1,0 +1,2957 @@
+#LyX 1.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 221
+\textclass article
+\begin_preamble
+\sloppy
+
+\usepackage[bookmarks, bookmarksopen=true, bookmarksopenlevel=2, colorlinks=true, urlcolor=blue, linkcolor=blue, pdftitle={Aqualung User's Manual}]{hyperref}
+\usepackage{fancyhdr}
+\lhead{Aqualung}
+\chead{User's Manual}
+\rhead{\thepage}
+\lfoot{}
+\cfoot{}
+\rfoot{}
+\end_preamble
+\language english
+\inputencoding default
+\fontscheme ae
+\graphics default
+\paperfontsize 10
+\spacing single 
+\papersize a4paper
+\paperpackage a4
+\use_geometry 1
+\use_amsmath 0
+\use_natbib 0
+\use_numerical_citations 0
+\paperorientation portrait
+\leftmargin 2.5cm
+\topmargin 3.5cm
+\rightmargin 2.5cm
+\bottommargin 3cm
+\headsep 1cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\quotes_times 1
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+
+\layout Standard
+
+
+\begin_inset ERT
+status Open
+
+\layout Standard
+
+\backslash 
+begin{titlepage}
+\layout Standard
+
+\backslash 
+begin{center}
+\layout Standard
+
+\backslash 
+hspace{0mm}
+\layout Standard
+
+\backslash 
+vspace{10mm}
+\layout Standard
+
+\backslash 
+Huge{
+\backslash 
+bf Aqualung}
+\layout Standard
+
+\backslash 
+vspace{3mm}
+\layout Standard
+
+\backslash 
+LARGE{Music Player for GNU/Linux}
+\layout Standard
+
+\backslash 
+vspace{10mm}
+\layout Standard
+
+\backslash 
+today
+\layout Standard
+
+\backslash 
+vspace{80mm}
+\layout Standard
+
+\backslash 
+Huge{User's Manual}
+\layout Standard
+
+\backslash 
+end{center}
+\layout Standard
+
+\backslash 
+end{titlepage}
+\end_inset 
+
+
+\layout Standard
+\pagebreak_bottom 
+
+\begin_inset LatexCommand \tableofcontents{}
+
+\end_inset 
+
+
+\layout Section
+
+Introduction
+\layout Standard
+
+Aqualung is a music player for the GNU/Linux operating system.
+ It plays audio files from your filesystem and has the feature of inserting
+ no gaps between adjacent tracks.
+ It also supports high quality sample rate conversion between the file and
+ the output device, when necessary.
+\layout Standard
+
+Almost all sample-based, uncompressed formats (e.g.\SpecialChar ~
+WAV, AIFF, AU etc.)\SpecialChar ~
+are supported.
+ Files encoded with FLAC (the Free Lossless Audio Codec), Ogg Vorbis, Ogg
+ Speex, MPEG Audio (including the infamous MP3 format), MOD audio formats
+ (MOD, S3M, XM, IT, etc.), Musepack and Monkey's Audio Codec are also supported.
+ The program can play the music through OSS, ALSA or the JACK Audio Connection
+ Kit.
+ Depending on the compile-time options, not all file formats and output
+ drivers may be usable.
+ Type `aqualung -v' to get a list of all the compiled-in features.
+\layout Standard
+
+Aqualung supports the LADSPA 1.1 plugin standard.
+ You can use any suitable plugin to enhance the music you are listening
+ to.
+\layout Standard
+
+Other features of the program: internally working volume and balance controls
+ (not touching the soundcard mixer), multiple skin support, random seeking
+ during playback, track repeat, list repeat and shuffle mode (besides normal
+ playback).
+ It will come up in the same state as it was when you closed it, including
+ playback modes, volume & balance settings, currently processing LADSPA
+ plugins, window sizes, positions & visibility, and other miscellaneous
+ options.
+ Aqualung has the ability to display FLAC stream metadata, Ogg Vorbis comments
+ and ID3v2 tags found in MP3 and other files.
+\layout Standard
+
+You can control any running instance of the program remotely from the command
+ line (start, stop, pause etc.).
+ Remote loading or enqueueing soundfiles as well as complete playlists is
+ also supported.
+\layout Standard
+
+In addition to all this, Aqualung provides a so-called Music Store that
+ is an XML-based music database, capable of storing various metadata about
+ music on your computer (including, but not limited to, the names of artists,
+ and the titles of records and tracks).
+ You can (and should) organize your music into trees of Artists/Records/Tracks,
+ thereby making life easier than with the all-in-one Winamp/XMMS playlist.
+ Importing file metadata (ID3v2 tags, Ogg Vorbis comments, FLAC metadata)
+ into the Music Store as well as getting track names from a CDDB/Freedb
+ database is supported.
+\layout Section
+
+Command Line Interface
+\layout Subsection
+
+Invocation
+\layout Description
+
+aqualung\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+output\SpecialChar ~
+(oss|alsa|jack)\SpecialChar ~
+[options]\SpecialChar ~
+[file1\SpecialChar ~
+[file2\SpecialChar ~
+\SpecialChar \ldots{}
+]]
+\layout Description
+
+aqualung\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+help Print help message with valid parameters and example invocations.
+\layout Description
+
+aqualung\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+version Print version information and list of compiled-in features.
+\layout Subsection
+
+Output specific options
+\layout Subsubsection
+
+ALSA
+\layout Description
+
+-d,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+device\SpecialChar ~
+<name> Set the output device (defaults to plughw:0,0).
+\layout Description
+
+-p,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+period\SpecialChar ~
+<int> Set ALSA period size (defaults to 8192).
+\layout Description
+
+-n,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+nperiods\SpecialChar ~
+<int> Specify the number of periods in hardware buffer (defaults
+ to 2).
+\layout Description
+
+-r,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+rate\SpecialChar ~
+<int> Set the output sample rate.
+\layout Description
+
+-R,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+realtime Try to use realtime (SCHED_FIFO) scheduling for ALSA output thread.
+\layout Description
+
+-P,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+priority\SpecialChar ~
+<int> When running 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+realtime, set scheduler priority to <int> (defaults to 1).
+\layout Subsubsection
+
+OSS
+\layout Description
+
+-d,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+device\SpecialChar ~
+<name> Set the output device (defaults to /dev/dsp).
+\layout Description
+
+-r,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+rate\SpecialChar ~
+<int> Set the output sample rate.
+ 
+\layout Subsubsection
+
+JACK
+\layout Description
+
+-a[<port_L>,<port_R>],\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+auto[=<port_L>,<port_R>] Auto-connect output ports to given JACK ports (defaults
+ to first two hardware playback ports).
+\layout Description
+
+-c,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+client\SpecialChar ~
+<name> Set client name (needed if you want to run multiple instances
+ of the program).
+\layout Subsection
+
+Options relevant to the Sample Rate Converter
+\layout Description
+
+-s[<int>],\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+srctype[=<int>] Choose the SRC type, or print the list of available types
+ if no number given.
+ The default is SRC type 4 (Linear Interpolator).
+\layout Subsection
+
+Options for remote cue control
+\layout Description
+
+-N,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+session\SpecialChar ~
+<int> Specify the instance number to send the remote command to.
+ Instances are numbered on a per user basis, starting with 0.
+ Except for the zero-th instance (started first), the instance number is
+ displayed in the title bar of the main window (e.g.: Aqualung.3).
+ If you don't use this option, the following options will control the zero-th
+ instance by default, except for -L which defaults to the present instance
+ (so as to be able to start playback immediately from the command line).
+\layout Description
+
+-B,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+back Jump to previous track.
+\layout Description
+
+-F,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+fwd Jump to next track.
+\layout Description
+
+-L,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+play Start playing.
+\layout Description
+
+-U,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+pause Pause playback, or resume if already paused.
+\layout Description
+
+-T,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+stop Stop playback.
+\layout Description
+
+-V,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+volume\SpecialChar ~
+[m|M]|[=]<val> Adjust the volume.
+ m/M means mute; if = is present, the remote instance's volume control will
+ be set to the value specified, otherwise, the volume will be adjusted by
+ the supplied (signed) value.
+ The values are in dB units.
+\layout Description
+
+-Q,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+quit Terminate remote instance.
+\layout Subsection
+
+Options for file loading
+\layout Description
+
+-E,\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+enqueue Don't clear the contents of the playlist when adding new items.
+ 
+\layout Subsection
+
+Examples
+\layout Description
+
+$\SpecialChar ~
+aqualung\SpecialChar ~
+-s3\SpecialChar ~
+-o\SpecialChar ~
+alsa\SpecialChar ~
+-R\SpecialChar ~
+-r\SpecialChar ~
+48000\SpecialChar ~
+-d\SpecialChar ~
+hw:0,0\SpecialChar ~
+-p\SpecialChar ~
+2048\SpecialChar ~
+-n\SpecialChar ~
+2
+\layout Description
+
+$\SpecialChar ~
+aqualung\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+srctype=1\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+output\SpecialChar ~
+oss\SpecialChar ~
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+rate\SpecialChar ~
+96000
+\layout Description
+
+$\SpecialChar ~
+aqualung\SpecialChar ~
+-o\SpecialChar ~
+jack\SpecialChar ~
+-a\SpecialChar ~
+-E\SpecialChar ~
+`find\SpecialChar ~
+./ledzeppelin/\SpecialChar ~
+-name\SpecialChar ~
+
+\backslash 
+*.flac`
+\layout Subsection
+
+Environment
+\layout Standard
+
+Aqualung obeys two environment variables concerning LADSPA plugins.
+ LADSPA_PATH should contain a colon-separated list of paths to search for
+ LADSPA plugin .so files.
+ LADSPA_RDF_PATH should contain a colon-separated list of paths to RDF metadata
+ files about these plugins.
+ When any of these is not specified, the program will use sensible defaults
+ and look in the obvious places.
+\layout Subsection
+
+Files
+\layout Standard
+
+Here is a list of files that Aqualung creates, reads and relies on.
+\layout Description
+
+~/.aqualung Directory containing user settings.
+\layout Description
+
+~/.aqualung/config.xml GUI (skin, window size/position, etc.)\SpecialChar ~
+and other settings.
+\layout Description
+
+~/.aqualung/plugin.xml List of running plugins and all their settings.
+\layout Description
+
+~/.aqualung/playlist.xml Automatically saved and restored playlist (if you
+ enable this feature).
+\layout Description
+
+~/.aqualung/<skin-name> Locally available skin <skin-name> (useful for skin
+ development).
+\layout Description
+
+${prefix}/share/aqualung/skin System-wide skin directory.
+\layout Section
+
+Graphical Interface
+\layout Subsection
+
+Main window
+\layout Standard
+
+You can control most of the program from this window.
+ The cue controls in the down-left corner are fairly obvious.
+ You can drag the large slider in the middle for seeking.
+ There are two smaller sliders above that, the left one is for adjusting
+ the volume and the right one for adjusting the balance.
+ Above these, there are two horizontal text areas showing information about
+ the currently playing track, and input/output parameters such as sample
+ rate, mono/stereo, bitrate, output driver (e.g.\SpecialChar ~
+OSS, ALSA, JACK) etc.
+ The first trick to learn is that these lines are horizontally draggable
+ with the mouse if the text does not fit in the available visible space.
+ However, they don't scroll automatically (as in XMMS), and for a very good
+ reason.
+\layout Standard
+
+In the upper left corner, you find one bigger and two smaller displays that
+ show track times: elapsed time and remaining time and total track time.
+ The big display also shows the current volume and balance setting when
+ appropriate.
+ By clicking in these displays with the left or right mouse button, you
+ can rearrange the displays as you want them.
+ The following table may seem a bit confusing at first, but once you realize
+ the point, it becomes blindingly obvious.
+ 
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="2" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0">
+<row topline="true">
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+A
+\end_inset 
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+B
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+C
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+
+\backslash 
+hspace{2cm}
+\end_inset 
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="4" columns="4">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0">
+<row>
+<cell multicolumn="1" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+clicked into
+\end_inset 
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+mouse button
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+A
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+B
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+C
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+left
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+A
+\begin_inset Formula $\Longleftrightarrow$
+\end_inset 
+
+B
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+B
+\begin_inset Formula $\Longleftrightarrow$
+\end_inset 
+
+A
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+C
+\begin_inset Formula $\Longleftrightarrow$
+\end_inset 
+
+B
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+right
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+A
+\begin_inset Formula $\Longleftrightarrow$
+\end_inset 
+
+C
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+B
+\begin_inset Formula $\Longleftrightarrow$
+\end_inset 
+
+C
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+C
+\begin_inset Formula $\Longleftrightarrow$
+\end_inset 
+
+A
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Standard
+
+In the bottom right corner there are additional buttons.
+ The buttons with the letters display or hide additional windows of the
+ program:
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="left" valignment="top" leftline="true" rightline="true" width="0">
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+FX
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Ladspa Patch Builder
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+MS
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Music Store
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+PL
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Playlist
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Standard
+
+The remaining three buttons are to select the playback mode.
+ When none of these buttons is depressed, playback goes the normal way.
+ The buttons are mutually exclusive, and select track repeat, list repeat
+ or shuffle mode.
+ I'm sure you can figure out which is which.
+\layout Standard
+
+Volume and balance slider tricks:
+\layout Itemize
+
+Shift + any mouse button sets the volume and balance sliders back to 0 dB
+ and Center position, respectively.
+\layout Itemize
+
+Clicking and holding the right mouse button on these sliders shows their
+ position in the big time display without altering the value.
+\layout Standard
+
+An additional thing to know about the volume control is that it ranges up
+ to +6 dB.
+ This means you can send a bigger signal to the audio device than in the
+ original file.
+ With 0 dB corresponding to 100% signal level, +6 dB is almost exactly 200%
+ signal level (and 4 times signal power as well).
+ This means you can overdrive your output device, and since clipping will
+ occur at 100% anyway, it will cause nasty digital distortion much worse
+ than simple analog overdrive.
+ If you have a track with a reasonably low level, you can go above 0 dB
+ with the volume control.
+ But today most CD's are mastered to keep the average volume level very
+ close to the 0 dB (or 100%) top, and so they will likely distort with as
+ little as +1 dB additional gain.
+ The moral is: if you want it loud, turn up your external amp.
+\layout Standard
+
+On a related note, another thing to watch out for is LADSPA plugins (in
+ case you use them).
+ It is very common that the signal level leaving a plugin is greater than
+ the signal level the plugin gets on its input.
+ So it is best to leave a few dB's of headroom if you do that.
+ A very typical case is boosting some frequency bands a few dB's with an
+ EQ plugin.
+ You should decrease the overall volume level with as much dB's as the largest
+ boost (or even more), or you are risking that the signal will get chopped
+ causing bad distortion.
+ Alternatively, apply 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+
+\backslash 
+href{http://tap-plugins.sourceforge.net/ladspa/limiter.html}{this limiter plugin}
+\end_inset 
+
+ as the last one in the processing chain, but only if you know what you
+ are doing.
+\layout Standard
+
+Right-clicking almost anywhere in the window will bring up a menu that allows
+ access to the `Settings' dialog, the `Skin Chooser', the `JACK Port Setup'
+ dialog (enabled only when running the program with JACK output), and the
+ `About' box.
+ The latter may be useful to see which features have been compiled into
+ the program.
+ (If you haven't read 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+
+\backslash 
+href{http://aqualung.sourceforge.net/index.php?tab=compiling}{the page about compiling}
+\end_inset 
+
+ yet: the configuration of the program can be adapted so as not to require
+ certain libraries when compiling, and not provide certain features accordingly.)
+ 
+\layout Subsubsection
+
+Shortcuts for this window
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="14" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="left" valignment="top" leftline="true" rightline="true" width="0">
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+up arrow
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+jump to previous track
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+down arrow
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+jump to next track
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+left arrow
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+jump (seek) backwards in current track
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+right arrow
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+jump (seek) forward in current track
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+p or P
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+play
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+s or S
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+stop
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+space
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+pause
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+/
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+volume down
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+*
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+volume up
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+Alt+/
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+balance towards left
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+Alt+*
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+balance towards right
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+Alt+s
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+show/hide Music Store
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+Alt+l
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+show/hide Playlist
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+Alt+x
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+show/hide LADSPA patch builder
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Subsection
+
+Music Store
+\layout Subsubsection
+
+Overview
+\layout Standard
+
+The Music Store is a simple database of all your music.
+ The central philosophy of this program is that you have a large storage
+ (ideally an entire hard drive or a separate partition) to store all your
+ music files.
+ This is not necessary for the program to work.
+ The audio files can be scattered around your system as long as you have
+ read permissions to them.
+ However, it is strongly recommended that you devote a separate directory
+ for all the music (for example, /music would be a convenient place to store
+ files that are owned by root, but readable by all users).
+ Moreover, you can maintain several collections on different machines this
+ way, and share them with other users via nfs, while keeping a (probably
+ smaller) collection on your local hard drive.
+\layout Standard
+
+In these central directories, create subdirectories for each artist you
+ have records from.
+ The directory names do not have to contain the exact names, you can for
+ example create /music/ledzep for Led Zeppelin, /music/crimson for King
+ Crimson, /music/hendrix for Jimi Hendrix and so on.
+ In these directories, create subdirectories for each record you have.
+ Once again, the directory names for the records do not need to fully contain
+ the record titles; they can be short and without spaces and special characters.
+\layout Standard
+
+In the directories of records, you should cdparanoia the records, and have
+ the resulting file names intact.
+ Yes, you don't need to rename track01.cdda.wav to 01_Lark's Tongues In Aspic,
+ Part One.wav -- this would be very unhealthy to do anyway.
+\layout Standard
+
+So you have a bunch of directories containing lots of tracks.
+ Now you can add all this to the Music Store, additionally specifying metadata
+ about Artists, Records and Tracks.
+ One such metadata is the actual name of these items instead of the directory
+ and file names you have on your filesystem.
+\layout Standard
+
+To do so, you will utilize the popup menus in the Music Store window.
+ When you have nothing initially, all that pops up is an option to add a
+ new store, which is a top-level element holding artists.
+ When creating a new store, you have to specify a file on your filesystem
+ to hold all data about the artists, records and tracks in this store.
+ We suggest that you place this file somewhere next to the audio files,
+ so it will be available along with the music.
+ This is particularly beneficial if you plan to share the music directory
+ among other users.
+\layout Standard
+
+Now clicking on the store with the right mouse button will let you add an
+ artist to it.
+ When you have at least one artist in a store, right-clicking on it will
+ let you add a record to them.
+ When you have a record, the popup menu will have the option to add tracks
+ to the record.
+\layout Standard
+
+You don't have to add all the tracks to all records one by one, if you already
+ have the audio files from which you want to create the record.
+ When adding a record to an artist, the dialog that comes up has an option
+ that says `Auto-create tracks from these files', where you can select a
+ bunch of files.
+ Ideally, when you have the tracks of a record in one directory as described
+ above, this will be quite easy.
+ And if you didn't mess with the cdparanoia-given names trackXX.*, the tracks
+ will be in the right order without further attention.
+\layout Standard
+
+Now all you have to do is set the correct visible names for the tracks,
+ which is quite easy due to the CDDB/Freedb support.
+\layout Subsubsection
+
+Arranging your collection
+\layout Standard
+
+Each store, artist, record and track has fields you can fill in via bringing
+ up the `Edit' dialog for that item.
+ The `Visible name' is obviously the string that will appear in the Music
+ Store tree, and in the Playlist.
+ The `Name to sort by' is a string used to sort items on the same level
+ of hierarchy (all artists, records of a given artist, and tracks of a given
+ record).
+\layout Standard
+
+For artists, you should enter the same here as the `Visible name' for ordinary
+ band names (you can use copy&paste to do that).
+ However, for some artists you will enter a slightly modified string: `Mayall,
+ John' or just `Mayall' for John Mayall, for example.
+ This is to ensure that `John Mayall' (which is the visible name) appears
+ between `Mahavishnu' and `Morphine', and not somewhere near `Jethro Tull'.
+\layout Standard
+
+For records and tracks, the `Name to sort by' should be a decimal numbering
+ of the items.
+ If you added tracks to the records using the aforementioned `Auto-create
+ tracks from these files' feature of the Record add dialog, the tracks will
+ be automatically numbered for you this way.
+\layout Standard
+
+Last but not least, every item has a `Comment' field that may contain multiple
+ lines of text, and is perfectly optional to use for any store, artist,
+ record or track.
+ When you have entered something in this field, it will be displayed in
+ the lower area of the Music Store window when the corresponding item is
+ selected in the tree.
+ Use this to store miscellaneous data, such as birth dates of artists, release
+ dates or comments like `Recorded live at Royal Albert Hall, \SpecialChar \ldots{}
+' or `Digitized
+ from original LP' for records, and movement subtitles for tracks that have
+ them.
+ 
+\layout Subsubsection
+
+Dealing with multiple stores
+\layout Standard
+
+As mentioned before, you may maintain several collections of audio files
+ on several machines.
+ Each collection is arranged in an artist/record/track hierarchy, and appears
+ under a store item in the Music Store tree.
+ The metadata describing one collection is located in a file on your filesystem.
+\layout Standard
+
+On the Settings/Music Store page you can specify several database files
+ whose content is intended to appear in your Music Store.
+ If a given file is unavailable, the corresponding store item will be missing
+ from the Music Store.
+ If the file is readonly, you can play the music, but you won't be allowed
+ to change (add, edit, remove, etc.)\SpecialChar ~
+the items in the store.
+ Finally, if you have write permission on the file, you will be allowed
+ to change the items.
+ When adding or removing files, you need to press the `Refresh' button for
+ the changes to take effect.
+\layout Subsubsection
+
+Importing file metadata into the Music Store
+\layout Standard
+
+The program can read and display FLAC stream metadata, Ogg Vorbis comments
+ and ID3v2 tags present in the files themselves.
+ To see such metadata for a particular track, you will utilize the `File
+ info' dialog accessible from the Music Store (right-click popup menus for
+ Tracks, or press `i') and the Playlist (right-click popup menu for playlist
+ entries, or press `i').
+\layout Standard
+
+When you open the `File info' dialog from the Music Store, you will find
+ buttons to the right of every metadata field that was read from the file.
+ By pressing these buttons, the associated data will be imported into the
+ corresponding field of the relevant Track.
+\layout Standard
+
+For metadata fields that don't have a corresponding field in the Music Store,
+ you can append their contents to the `Comment' field as a catch-all solution.
+ 
+\layout Subsubsection
+
+Using the RVA system
+\layout Standard
+
+RVA stands for Relative Volume Adjustment, and refers to a system that is
+ supposed to compensate for the fact that the perceived volume levels of
+ tracks from different records are sometimes quite different.
+ With usual players, you are left with the possibility to adjust the volume
+ manually, when necessary; but not with Aqualung.
+\layout Standard
+
+You have to do two things prior to using RVA in Aqualung.
+ First, you have to calculate the volume of the tracks you want affected
+ by the RVA system.
+ To do this, use the `Calculate volume' option found in the right-click
+ popup menus of Stores, Artists, Records and Tracks.
+ When you activate this option, a small window will pop up with a progress
+ bar.
+ You can move this window out of your way, and proceed with using Aqualung.
+ Processing will be carried out in the background, and should not affect
+ your ability to play music at all.
+ Calculated volume levels will be saved and restored with the rest of the
+ Music Store.
+ The values are shown in the `Edit track' dialog.
+\layout Standard
+
+When you are done with this, open the `Settings' dialog (right-click almost
+ anywhere in the main window), and select the `Playback RVA' notebook page.
+ You will see something like this: 
+\layout Standard
+
+If `Enable playback RVA' is unchecked, the whole RVA system is turned off.
+ No tracks receive adjustment.
+ If playback RVA is enabled, you can select a listening environment that
+ matches your setup.
+ The idea is that the better your environment, the smaller adjustment you
+ need to enjoy the music.
+ If you work in a noisy workshop (and listen to Aqualung-played music) then
+ it is best to minimize the volume differences between tracks so all tracks
+ will be uniformy audible at a particular volume setting.
+ If you can afford to listen to music in a silent room with high quality
+ headphones or good near-field monitors, you should choose `Audiophile'
+ which will yield no change to volumes.
+\layout Standard
+
+The diagram shows the input/output transfer function applied to the previously
+ measured track loudness to obtain the needed adjustment needed for a particular
+ track.
+ The diagram is 24 dB large in both directions, with the (0, 0) point being
+ in the upper right corner.
+ The blue line shows the identity function (no change), while the red line
+ shows the output volume (the actual transfer function).
+ The adjustment applied at a particular track volume is the vertical distance
+ between the two lines at that position.
+ The transfer function is linear.
+ You can use the `Reference volume' and `Steepness' controls to change its
+ position.
+\layout Standard
+
+In most cases, it is desirable that tracks of the same record receive the
+ same adjustment, so as to preserve the volume differences internal to the
+ record.
+ This can be enabled by checking `Apply averaged RVA to tracks of the same
+ record'.
+ When enabled, volume levels of the same record will be averaged and all
+ tracks will be adjusted by an average value.
+ Please note that measured volume levels are converted to RVA values when
+ you add something from the Music Store to the Playlist.
+ Therefore, this feature works only when you add an Artist or a Record.
+ If you add a record by adding all the Tracks manually one after another,
+ they will all receive independent RVA values.
+ Also, changing RVA settings will not affect entries already in the Playlist.
+\layout Standard
+
+There are many records having one or two tracks that really stand out of
+ the average volume level.
+ (For example, there is one very silent track on an otherwise loud record.)
+ In this case, these tracks would `pull down' the average volume.
+ To get around this, you can adjust a threshold that will be used to sort
+ out tracks that stand out too much and will be disregarded when computing
+ the average volume.
+ 
+\layout Standard
+
+You can select whether you want to specify a threshold in linear volume
+ units [dBFS] or you want to specify a percentage of the standard deviation
+ of the set of individual track volumes to use as a threshold.
+ The default values should work well for the vast majority of records.
+ If you always want every track's volume to count in the average adjustment
+ of the record, choose the linear threshold and set it to a really big value
+ (say, 30 dB) so all tracks will be within this range.
+\layout Standard
+
+You also have the possibility to always use a manually specified, fixed
+ value as RVA for a particular track.
+ In the `Edit track' dialog for that track, check the `Use manual RVA value'
+ checkbox and set the value with the spinbutton on its right.
+ If you import an ID3v2.4 RVA tag from an MP3 file, it will also set this
+ field thereby circumventing Aqualung's own RVA calculation.
+ 
+\layout Subsubsection
+
+CDDB Support
+\layout Standard
+
+This feature is available by right-clicking on an existing record in the
+ Music Store.
+ It starts a CDDB query for the record (which can last a bit long if there
+ are a lot of matches), and displays a dialog with the search results.
+ It works even if you have already encoded your audio files in a lossy format.
+\layout Standard
+
+If there are multiple matches, you can select any of them using the combo
+ box at the top of the dialog.
+ The displayed fields are all editable, which is useful in case you find
+ no fully acceptable match, but want to use one that is almost perfect.
+ The track names can be edited by double-clicking on the desired track,
+ or single clicking on an already selected entry.
+\layout Standard
+
+The default CDDB database server address is freedb.org.
+ You can specify another server on the Settings/CDDB page.
+ The connection timeout and the protocol (CDDBP or HTTP) can also be set
+ there.
+\layout Standard
+
+By pressing the `OK' button the track names of the currently selected lookup
+ results will be propagated into the Music Store.
+ The artist name and record title are not automatically set, but can be
+ imported using the `Import as Artist' and `Import as Title' buttons on
+ the right.
+ Other data (year, category, genre and extended data) can be appended to
+ the comment field of the record in question using the `Add to Comments'
+ button next to the appropriate text entry.
+\layout Subsubsection
+
+Shortcuts for this window
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="12" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="block" valignment="top" leftline="true" rightline="true" width="10cm">
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+double click
+\family default 
+\series default 
+\shape default 
+\size default 
+\emph default 
+\bar default 
+\noun default 
+\color default
+,
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+ a 
+\family default 
+\series default 
+\shape default 
+\size default 
+\emph default 
+\bar default 
+\noun default 
+\color default
+or
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+ A
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+add 
+\family default 
+\series default 
+\shape default 
+\size default 
+\emph default 
+\bar default 
+\noun default 
+\color default
+store/
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+artist/record/track to playlist
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+n 
+\family default 
+\series default 
+\shape default 
+\size default 
+\emph default 
+\bar default 
+\noun default 
+\color default
+or
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+ N
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+new 
+\family default 
+\series default 
+\shape default 
+\size default 
+\emph default 
+\bar default 
+\noun default 
+\color default
+store/
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+artist/record/track
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+e or E
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+edit 
+\family default 
+\series default 
+\shape default 
+\size default 
+\emph default 
+\bar default 
+\noun default 
+\color default
+store/
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+artist/record/track
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+i or I
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+bring up the File info dialog (for Tracks only)
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+v or V
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+start volume calculation for the selected item (recursive for 
+\family default 
+\series default 
+\shape default 
+\size default 
+\emph default 
+\bar default 
+\noun default 
+\color default
+stores, a
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+rtists and 
+\family default 
+\series default 
+\shape default 
+\size default 
+\emph default 
+\bar default 
+\noun default 
+\color default
+r
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+ecords)
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+delete
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+remove 
+\family default 
+\series default 
+\shape default 
+\size default 
+\emph default 
+\bar default 
+\noun default 
+\color default
+store/
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+artist/record/track
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
++
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+add new 
+\family default 
+\series default 
+\shape default 
+\size default 
+\emph default 
+\bar default 
+\noun default 
+\color default
+artist/
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+record/track to this 
+\family default 
+\series default 
+\shape default 
+\size default 
+\emph default 
+\bar default 
+\noun default 
+\color default
+store/
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+artist/record
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+shift + right arrow
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+expand current row recursively
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+shift + left arrow
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+collapse current row recursively
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+enter
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+expand/collapse current row non-recursively
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+up/down arrow
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+navigation in the tree
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+q or Q
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+hide window (same as Alt+s or Alt+S in main window)
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Standard
+
+In addition to the popup menu items and keyboard shortcuts, you can also
+ add an item to the playlist by dragging and dropping from the Music Store
+ window into the Playlist.
+ This method has a further advantage: you can place the newly added items
+ in any position, not just append to the end of the list.
+\layout Subsection
+
+Playlist
+\layout Standard
+
+This window has relatively few surprising features.
+ It normally receives its contents from the Music Store.
+ However, you can put any file in the playlist regardless of the contents
+ of your Music Store, using the `Add files\SpecialChar \ldots{}
+' button at the bottom of the
+ window.
+\layout Standard
+
+The other two buttons (`Select all', `Remove selected') function as you
+ would expect them when clicked with the left mouse button.
+ However, clicking with the right mouse button brings up small menus that
+ contain further options such as `Invert selection'.
+\layout Standard
+
+There is a statusbar under the list showing the total time of the playlist
+ and the duration of the selected tracks.
+\layout Standard
+
+The contents of the playlist can be saved and restored automatically when
+ the program exits and starts up.
+ (Whether this should be done is a configuration option, covered later.)
+ In addition to this, you can save the playlist manually at any time, or
+ load a previously saved playlist file.
+ To do this, right click in the playlist area, which will bring up a popup
+ menu with these features.
+ The playlist is saved as an XML file, so you should normally end your filename
+ with .xml -- however, this is only good practice and not necessary.
+ Note that the playlist file format is not compatible with Winamp/XMMS .m3u
+ files.
+ However, Aqualung will open playlists in .m3u and .pls format whenever possible.
+\layout Standard
+
+You can rearrange the list at any time by dragging and dropping items with
+ the mouse.
+\layout Subsubsection
+
+Shortcuts for this window
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="block" valignment="top" leftline="true" rightline="true" width="10cm">
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+up/down arrow
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+navigation in the list
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+delete
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+remove selected track(s)
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+enter, double click
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+start playback of the selected or double-clicked track, or jump to it if
+ already playing
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+i or I
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+bring up the File info dialog (also accessible from the right-click popup
+ menu)
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+q or Q
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\family roman 
+\series medium 
+\shape up 
+\size normal 
+\emph off 
+\bar no 
+\noun off 
+\color none
+hide window (same as Alt+l or Alt+L in main window)
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Subsection
+
+Settings
+\layout Standard
+
+This dialog lets you set some options that affect the behavior of the program.
+ It is split into multiple notebook pages to make arranging and accessing
+ all the options easier.
+\layout Standard
+
+On the `General' tab, the `Title format' can be set to fit your personal
+ taste.
+ Such strings may be `%a: %t [%r]', `%a / %r / %t', `%a :: %r :: %t', or
+ just about anything else you can think of.
+ Note that once you add something from the Music Store to the playlist,
+ the strings in the Playlist window will not update if you change this setting
+ afterwards.
+ This is because creating the one-line title string from the artist, record
+ and track titles is a one-way operation, and though one could think of
+ workarounds, they are just not elegant and practically needed.
+ (We might change this in the future, so if this is a problem for you, contact
+ us.)
+\layout Standard
+
+The so-called `implicit command line' is something you should pay attention
+ to.
+ It exists mainly for those who have a stable sound setup and always use
+ the program with the same output device, e.g.\SpecialChar ~
+they have only OSS and don't
+ plan to upgrade.
+ For such users it may be cumbersome to always specify the desired output
+ device on the command line, along with its optional parameters if needed.
+ So here you may enter something that you would otherwise enter on the command
+ line every time.
+\layout Standard
+
+But beware: you cannot override or turn off every option, so for example
+ if you enter `
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+help' here, the program will always display the standard message and exit
+ immediately; and there is no way to override that from the command line.
+ Now you won't do that, since you are a smart user, aren't you? But if your
+ sister does, all you have to (or can) do is grab a text editor and hack
+ it out of ~/.aqualung/config.xml where it is stored.
+ You will find it between `<default_param>' and `</default_param>'.
+\layout Standard
+
+Now on to the `Playlist' notebook page.
+ The option to save/restore the playlist when exiting and starting the program
+ is turned on by default.
+ If you prefer starting with an empty playlist every time, turn it off.
+ Here you can also set the visibility of the strack lengths and RVA values
+ in the playlist.
+ By dragging and dropping entries in the list, you can rearrange the columns.
+ The position of those that are not shown is of course irrelevant.
+ Other options: embedding the playlist in the Main window, hiding the statusbar,
+ and showing active track name in bold.
+\layout Standard
+
+Changing the two options on the `DSP' page takes effect immediately, and
+ stays that way regardless of whether you leave the dialog with the `OK'
+ or `Cancel' button.
+\layout Standard
+
+The sample rate converter type should be chosen to fit the resources of
+ your computer, and provide the best affordable quality at the same time.
+ So fire up top or something similar on a spare terminal, and start with
+ the best converter.
+ If your machine is not very new, this will consume huge amounts of CPU,
+ and the playback will very likely be choppy.
+ If this is the case, you will have to pick another converter.
+ `Fastest Sinc Interpolator' is usable on today's most machines.
+ If not, use `Linear Interpolator' instead of `ZOH' since both are blindingly
+ fast, but linear is naturally much better than zero-order (constant hold).
+ It should also be noted that the CPU usage of sample rate conversion is
+ greatly affected by the difference between the two sample rates: upsampling
+ 32k to 96k will be much more expensive than, say, upsampling from 44.1k
+ to 48k.
+\layout Standard
+
+Of course, sample rate conversion springs into action only when the output
+ sample rate (the sample rate you specified in case of OSS or ALSA, or the
+ sample rate the JACK server specified in case of JACK) does not match the
+ sample rate of the track you are playing.
+ A typical situation is when you have 44.1k files grabbed from CD and play
+ back at 48k.
+\layout Standard
+
+On the `Metadata' page you can decide whether you prefer using file metadata
+ (if available) instead of information from the Music Store.
+ Metadata can also be used when adding external files to Playlist.
+\layout Standard
+
+The last page is `Appearance'.
+ You can change the font of the Music Store, Playlist and the timer labels,
+ and set the color of the active track in Playlist.
+\layout Standard
+
+The left two notebook pages, `Playback RVA' and `CDDB' have already been
+ described.
+\layout Subsection
+
+LADSPA Plugins
+\layout Standard
+
+One great feature of the program is that you can apply LADSPA plugins to
+ the music.
+ You can use the equalizer of your choice instead of a built-in one, along
+ with other plugins.
+ You can process your sound with Aqualung in ways that the author of this
+ program never thought of.
+\layout Standard
+
+Of course, faithful reproduction of music does not require or permit pervasive
+ signal processing, since that is not the purpose of such activity.
+ However, the technology is at your disposal and it's up to you to use or
+ misuse it.
+ It may be necessary to adapt your listening gear to the acoustic environment,
+ using small amounts of equalization preferably in a subtractive manner.
+ In addition to this, I also like to spice my tracks with a small amount
+ of tubewarmth to feel that warm tube sound even with my transistor amplifiers,
+ and to bring out even the finest details of the music.
+\layout Standard
+
+The plugin chain you build is automatically saved and restored, so once
+ you get it right for your listening environment, you should rarely need
+ to touch it.
+\layout Standard
+
+Some tricks concerning the LADSPA patch builder:
+\layout Itemize
+
+Multiple plugins can be selected from the available plugins list and added
+ at once by clicking on the `Add button' or pressing `a' or `A'.
+\layout Itemize
+
+A single plugin can be added immediately by double-clicking it in the available
+ plugins list.
+\layout Itemize
+
+Plugins in the running list can be (un)bypassed with the middle mouse button.
+\layout Itemize
+
+Running plugins' configuration window can be brought up by double-clicking
+ on them (same as clicking on the `Configure' button).
+\layout Itemize
+
+If a plugin is selected in the running plugins list, pressing delete will
+ remove it (same as pressing the `Remove' button).
+\layout Itemize
+
+Running plugins can be rearranged at any time (changing the order in which
+ they are processed) via dragging them with the mouse.
+\layout Itemize
+
+In the configuration windows of plugins, setting input controls back to
+ their default value is possible by shift-clicking on the slider.
+ This does not work for toggled or integer inputs (those that don't have
+ a slider displayed for them).
+ 
+\layout Subsection
+
+JACK Port Setup
+\layout Standard
+
+If you use JACK output, you need this dialog to route the outputs of the
+ program somewhere (most likely to the playback ports representing the soundcard
+ driver).
+ If you want the outputs to be connected automatically to the first two
+ hardware playback devices, use the -a (or 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{-}{-}
+\end_inset 
+
+auto) command line option.
+\layout Standard
+
+On the left, each output port has a list of its current connections.
+ By clicking on any list item, that connection will be removed.
+ The `Clear connections' button removes all connections from the output
+ ports.
+\layout Standard
+
+The notebook on the right has a page for all client programs and hardware
+ devices available to the JACK server.
+ Naturally only those are shown which are data sinks (hardware playback
+ devices or inputs of JACK clients), thus connectable to outputs which are
+ data sources.
+ By selecting a notebook page, you will see a list of that client's input
+ ports.
+ Clicking on a list item connects the port to the currently selected Aqualung
+ output port (which has a blue header).
+ You can change the selected output port by clicking on the unselected (grey)
+ list header.
+ When you add connections to the output ports, the selection alters between
+ the two outputs so connecting both outputs is very fast and easy.
+\layout Standard
+
+If you start up another JACK client while the dialog is open, you may press
+ the `Rescan' button to make it appear in the notebook.
+ Closing and re-opening the dialog has the same effect, since JACK ports
+ are re-read and a new dialog instance is built every time.
+ 
+\layout Subsection
+
+Skin Chooser
+\layout Standard
+
+This dialog lets you choose from the available skins at any time.
+ All officially supported skins are shipped with Aqualung, and installed
+ in the system-wide skin directory during `make install'.
+ Skins placed in the local skin directory will only be locally available,
+ which is useful for developing new skins or experimenting with the existing
+ ones.
+ If there are skins in the system-wide directory and the local directory
+ having the same name, the local one takes precedence.
+\the_end

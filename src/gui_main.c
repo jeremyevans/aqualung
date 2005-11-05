@@ -157,6 +157,7 @@ extern int auto_use_ext_meta_record;
 extern int auto_use_ext_meta_track;
 extern int hide_comment_pane;
 extern int hide_comment_pane_shadow;
+extern int expand_stores_on_startup;
 extern int enable_playlist_statusbar;
 extern int enable_playlist_statusbar_shadow;
 
@@ -3364,6 +3365,9 @@ save_config(void) {
 	snprintf(str, 31, "%d", hide_comment_pane_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "hide_comment_pane", (xmlChar *) str);
 
+	snprintf(str, 31, "%d", expand_stores_on_startup);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "expand_stores", (xmlChar *) str);
+
 	snprintf(str, 31, "%d", override_skin_settings);
         xmlNewTextChild(root, NULL, (const xmlChar *) "override_skin_settings", (xmlChar *) str);
 
@@ -3712,6 +3716,13 @@ load_config(void) {
                         if (key != NULL) {
 				sscanf((char *) key, "%d", &hide_comment_pane);
 				hide_comment_pane_shadow = hide_comment_pane;
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"expand_stores"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				sscanf((char *) key, "%d", &expand_stores_on_startup);
 			}
                         xmlFree(key);
                 }

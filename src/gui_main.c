@@ -69,22 +69,19 @@
 #define MAX_RCV_COUNT 32
 
 /* period of main timeout callback [ms] */
+
 #define TIMEOUT_PERIOD 100
+
+extern options_t options;
 
 char pl_color_active[14];
 char pl_color_inactive[14];
-
-char playlist_font[MAX_FONTNAME_LEN];
-char browser_font[MAX_FONTNAME_LEN];
-char bigtimer_font[MAX_FONTNAME_LEN];
-char smalltimer_font[MAX_FONTNAME_LEN];
 
 PangoFontDescription *fd_playlist;
 PangoFontDescription *fd_browser;
 PangoFontDescription *fd_bigtimer;
 PangoFontDescription *fd_smalltimer;
 
-char activesong_color[MAX_COLORNAME_LEN];
 
 /* Communication between gui thread and disk thread */
 extern pthread_mutex_t disk_thread_lock;
@@ -107,16 +104,6 @@ extern GtkListStore * play_store;
 extern GtkListStore * running_store;
 extern GtkWidget * play_list;
 
-/* normally $HOME/.aqualung */
-char confdir[MAXLEN];
-/* to keep track of file selector dialogs; starts with $HOME */
-char currdir[MAXLEN];
-/* current working directory when program is started */
-char cwd[MAXLEN];
-
-extern char title_format[MAXLEN];
-extern char default_param[MAXLEN];
-extern char skin[MAXLEN];
 
 /* the physical name of the file that is playing, or a '\0'. */
 char current_file[MAXLEN];
@@ -143,50 +130,9 @@ int immediate_start = 0; /* this flag set to 1 in core.c if --play
 			  * for current instance is specified.
 			  */
 
-extern int ladspa_is_postfader;
-extern int auto_save_playlist;
-extern int show_rva_in_playlist;
-extern int show_length_in_playlist;
-extern int show_active_track_name_in_bold;
-extern int plcol_idx[3];
-extern int auto_use_meta_artist;
-extern int auto_use_meta_record;
-extern int auto_use_meta_track;
-extern int auto_use_ext_meta_artist;
-extern int auto_use_ext_meta_record;
-extern int auto_use_ext_meta_track;
-extern int hide_comment_pane;
-extern int hide_comment_pane_shadow;
-extern int expand_stores_on_startup;
-extern int enable_playlist_statusbar;
-extern int enable_playlist_statusbar_shadow;
-
-extern int magnify_smaller_images;
-extern int cover_width;
-
-extern char cddb_server[MAXLEN];
-extern int cddb_use_http;
-extern int cddb_timeout;
-
-
 int search_pl_flags = 0;
 int search_ms_flags = 120; /* check search flags in search.c for initial value :) */
 
-int replaygain_tag_to_use = 0;
-int rva_is_enabled = 0;
-int rva_env = 0;
-float rva_refvol = -12.0f;
-float rva_steepness = 1.0f;
-int rva_use_averaging = 1;
-int rva_use_linear_thresh = 0;
-float rva_avg_linear_thresh = 3.0f;
-float rva_avg_stddev_thresh = 2.0f;
-int enable_tooltips = 1;
-int playlist_is_embedded = 0;
-int playlist_is_embedded_shadow = 0;
-int buttons_at_the_bottom = 1;
-int simple_view_in_fx = 0;
-int override_skin_settings = 0;
 
 /* volume & balance sliders */
 double vol = 0.0f;
@@ -876,7 +822,7 @@ save_window_position(void) {
 
 	gtk_window_get_position(GTK_WINDOW(main_window), &main_pos_x, &main_pos_y);
 
-	if (!playlist_is_embedded && playlist_on) {
+	if (!options.playlist_is_embedded && playlist_on) {
 		gtk_window_get_position(GTK_WINDOW(playlist_window), &playlist_pos_x, &playlist_pos_y);
 	}
 
@@ -887,14 +833,14 @@ save_window_position(void) {
 	gtk_window_get_size(GTK_WINDOW(main_window), &main_size_x, &main_size_y);
 	gtk_window_get_size(GTK_WINDOW(browser_window), &browser_size_x, &browser_size_y);
 
-	if (!playlist_is_embedded) {
+	if (!options.playlist_is_embedded) {
 		gtk_window_get_size(GTK_WINDOW(playlist_window), &playlist_size_x, &playlist_size_y);
 	} else {
 		playlist_size_x = playlist_window->allocation.width;
 		playlist_size_y = playlist_window->allocation.height;
 	}
 
-	if (!hide_comment_pane) {
+	if (!options.hide_comment_pane) {
 		browser_paned_pos = gtk_paned_get_position(GTK_PANED(browser_paned));
 	}
 }
@@ -907,7 +853,7 @@ restore_window_position(void) {
 	deflicker();
 	gtk_window_move(GTK_WINDOW(browser_window), browser_pos_x, browser_pos_y);
 	deflicker();
-	if (!playlist_is_embedded) {
+	if (!options.playlist_is_embedded) {
 		gtk_window_move(GTK_WINDOW(playlist_window), playlist_pos_x, playlist_pos_y);
 		deflicker();
 	}
@@ -916,12 +862,12 @@ restore_window_position(void) {
 	deflicker();
 	gtk_window_resize(GTK_WINDOW(browser_window), browser_size_x, browser_size_y);
 	deflicker();
-	if (!playlist_is_embedded) {
+	if (!options.playlist_is_embedded) {
 		gtk_window_resize(GTK_WINDOW(playlist_window), playlist_size_x, playlist_size_y);
 		deflicker();
 	}
 
-	if (!hide_comment_pane) {
+	if (!options.hide_comment_pane) {
 		gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
 		deflicker();
 	}
@@ -955,7 +901,7 @@ change_skin(char * path) {
 
 	gtk_widget_destroy(main_window);
 	deflicker();
-	if (!playlist_is_embedded) {
+	if (!options.playlist_is_embedded) {
 		gtk_widget_destroy(playlist_window);
 		deflicker();
 	}
@@ -988,10 +934,10 @@ change_skin(char * path) {
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_all_button), st_r_all);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), st_shuffle);
 
-	if (playlist_is_embedded)
+	if (options.playlist_is_embedded)
 		g_signal_handlers_block_by_func(G_OBJECT(playlist_toggle), playlist_toggled, NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle), st_plist);
-	if (playlist_is_embedded)
+	if (options.playlist_is_embedded)
 		g_signal_handlers_unblock_by_func(G_OBJECT(playlist_toggle), playlist_toggled, NULL);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(musicstore_toggle), st_mstore);
@@ -1000,7 +946,7 @@ change_skin(char * path) {
 	deflicker();
 	deflicker();
 
-	if (playlist_is_embedded) {
+	if (options.playlist_is_embedded) {
 		if (!playlist_on) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle), FALSE);
 			gtk_widget_hide(playlist_window);
@@ -1036,7 +982,7 @@ change_skin(char * path) {
 	deflicker();
 	refresh_displays();
 
-        if(override_skin_settings && (gdk_color_parse(activesong_color, &color) == TRUE)) {
+        if (options.override_skin_settings && (gdk_color_parse(options.activesong_color, &color) == TRUE)) {
                 play_list->style->fg[SELECTED].red = color.red;
                 play_list->style->fg[SELECTED].green = color.green;
                 play_list->style->fg[SELECTED].blue = color.blue;
@@ -1146,10 +1092,10 @@ main_window_close(GtkWidget * widget, gpointer data) {
 	save_config();
 	save_plugin_data();
 
-	if (auto_save_playlist) {
+	if (options.auto_save_playlist) {
 		char playlist_name[MAXLEN];
 
-		snprintf(playlist_name, MAXLEN-1, "%s/%s", confdir, "playlist.xml");
+		snprintf(playlist_name, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
 		save_playlist(playlist_name);
 	}
 
@@ -1247,14 +1193,14 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
                         return TRUE;
                         break;
 		case GDK_Down:
-			if (playlist_is_embedded && gtk_widget_is_focus(play_list)) {
+			if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
 				return FALSE;
 			}
 			next_event(NULL, NULL, NULL);
 			return TRUE;
 			break;
 		case GDK_Up:
-			if (playlist_is_embedded && gtk_widget_is_focus(play_list)) {
+			if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
 				return FALSE;
 			}
 			prev_event(NULL, NULL, NULL);
@@ -1262,7 +1208,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			break;
 		case GDK_s:
 		case GDK_S:
-			if (playlist_is_embedded && gtk_widget_is_focus(play_list)) {
+			if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
 				return FALSE;
 			}
 			stop_event(NULL, NULL, NULL);
@@ -1282,7 +1228,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			
 		case GDK_i:
 		case GDK_I:
-			if (playlist_is_embedded && gtk_widget_is_focus(play_list)) {
+			if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
 				return FALSE;
 			}
 			conf__fileinfo_cb(NULL);
@@ -1375,7 +1321,7 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
 		if (browser_on)
 			gtk_window_iconify(GTK_WINDOW(browser_window));
 
-		if (!playlist_is_embedded && playlist_on)
+		if (!options.playlist_is_embedded && playlist_on)
 			gtk_window_iconify(GTK_WINDOW(playlist_window));
 
 		if (vol_window)
@@ -1404,7 +1350,7 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
 		if (browser_on)
 			gtk_window_deiconify(GTK_WINDOW(browser_window));
 
-		if (!playlist_is_embedded && playlist_on)
+		if (!options.playlist_is_embedded && playlist_on)
 			gtk_window_deiconify(GTK_WINDOW(playlist_window));
 
 		if (vol_window)
@@ -1528,7 +1474,7 @@ changed_pos(GtkAdjustment * adj, gpointer data) {
 	if (!is_file_loaded)
 		gtk_adjustment_set_value(adj, 0.0f);
 
-        if(enable_tooltips) {
+        if (options.enable_tooltips) {
                 sprintf(str, "Position: %d%%", (gint)gtk_adjustment_get_value(GTK_ADJUSTMENT(adj))); 
                 gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), scale_pos, str, NULL);
         }
@@ -1693,13 +1639,13 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 				n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n-1);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                        if(show_active_track_name_in_bold)
+                        if (options.show_active_track_name_in_bold)
                                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 			
 		} else {
 			if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
 				gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                if(show_active_track_name_in_bold)
+                                if (options.show_active_track_name_in_bold)
                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 			}
 		}
@@ -1718,7 +1664,7 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 				--n;
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                        if(show_active_track_name_in_bold)
+                        if (options.show_active_track_name_in_bold)
                                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 		}
 	}
@@ -1790,13 +1736,13 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 				n = -1;
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n+1);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                        if(show_active_track_name_in_bold)
+                        if (options.show_active_track_name_in_bold)
                                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 			
 		} else {
 			if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
 				gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                if(show_active_track_name_in_bold)
+                                if (options.show_active_track_name_in_bold)
                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 			}
 		}
@@ -1815,7 +1761,7 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 				--n;
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
 			gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                        if(show_active_track_name_in_bold)
+                        if (options.show_active_track_name_in_bold)
                                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 		}
 	}
@@ -1896,7 +1842,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
                                 /* normal or repeat mode */
 				if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
 					gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                        if(show_active_track_name_in_bold)
+                                        if (options.show_active_track_name_in_bold)
                                                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
 							   3, &(cue.voladj), -1);
@@ -1925,7 +1871,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
 								      NULL, n);
 					gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                        if(show_active_track_name_in_bold)
+                                        if (options.show_active_track_name_in_bold)
                                                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
 							   3, &(cue.voladj), -1);
@@ -2216,7 +2162,7 @@ create_button_with_image(char * path, int toggle, char * alt) {
 
         pixbuf = gdk_pixbuf_new_from_file(tmp_path, NULL);
 
-        if(!pixbuf) {
+        if (!pixbuf) {
                 sprintf(tmp_path, "%s.png", path);
                 pixbuf = gdk_pixbuf_new_from_file(tmp_path, NULL);
         }
@@ -2325,10 +2271,10 @@ create_main_window(char * skin_path) {
 
         /* initialize fonts */
 
-	fd_playlist = pango_font_description_from_string(playlist_font);
- 	fd_browser = pango_font_description_from_string(browser_font);
- 	fd_bigtimer = pango_font_description_from_string(bigtimer_font);
- 	fd_smalltimer = pango_font_description_from_string(smalltimer_font);
+	fd_playlist = pango_font_description_from_string(options.playlist_font);
+ 	fd_browser = pango_font_description_from_string(options.browser_font);
+ 	fd_bigtimer = pango_font_description_from_string(options.bigtimer_font);
+ 	fd_smalltimer = pango_font_description_from_string(options.smalltimer_font);
 
 
         aqualung_tooltips = gtk_tooltips_new();
@@ -2448,7 +2394,7 @@ create_main_window(char * skin_path) {
 	/* labels */
 	bigtimer_label = time_labels[time_idx[0]] = gtk_label_new("");
 
-        if(override_skin_settings) {
+        if (options.override_skin_settings) {
                 gtk_widget_modify_font (bigtimer_label, fd_bigtimer);
         }
 
@@ -2461,7 +2407,7 @@ create_main_window(char * skin_path) {
 
 	smalltimer_label_1 = time_labels[time_idx[1]] = gtk_label_new("");
 
-        if(override_skin_settings) {
+        if (options.override_skin_settings) {
                 gtk_widget_modify_font (smalltimer_label_1, fd_smalltimer);
         }
 
@@ -2474,7 +2420,7 @@ create_main_window(char * skin_path) {
 
 	smalltimer_label_2 = time_labels[time_idx[2]] = gtk_label_new("");
 
-        if(override_skin_settings) {
+        if (options.override_skin_settings) {
                 gtk_widget_modify_font (smalltimer_label_2, fd_smalltimer);
         }
 
@@ -2567,7 +2513,7 @@ create_main_window(char * skin_path) {
 
 
         /* Embedded playlist */
-	if (playlist_is_embedded && buttons_at_the_bottom) {
+	if (options.playlist_is_embedded && options.buttons_at_the_bottom) {
 		playlist_window = gtk_vbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), playlist_window, TRUE, TRUE, 3);
 	}
@@ -2676,12 +2622,12 @@ create_main_window(char * skin_path) {
 	gtk_box_pack_end(GTK_BOX(btns_hbox), sr_table, FALSE, FALSE, 3);
 
 	/* Embedded playlist */
-	if (playlist_is_embedded && !buttons_at_the_bottom) {
+	if (options.playlist_is_embedded && !options.buttons_at_the_bottom) {
 		playlist_window = gtk_vbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), playlist_window, TRUE, TRUE, 3);
 	}
 
-        if(enable_tooltips) {
+        if (options.enable_tooltips) {
                 gtk_tooltips_enable(aqualung_tooltips);
         } else {
                 gtk_tooltips_disable(aqualung_tooltips);
@@ -2728,26 +2674,26 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		home = ".";
 	}
 
-	sprintf(currdir, "%s/*", home);
-	sprintf(confdir, "%s/.aqualung", home);
+	sprintf(options.currdir, "%s/*", home);
+	sprintf(options.confdir, "%s/.aqualung", home);
 
-	if (chdir(confdir) != 0) {
+	if (chdir(options.confdir) != 0) {
 		if (errno == ENOENT) {
-			fprintf(stderr, "Creating directory %s\n", confdir);
-			mkdir(confdir, S_IRUSR | S_IWUSR | S_IXUSR);
-			chdir(confdir);
+			fprintf(stderr, "Creating directory %s\n", options.confdir);
+			mkdir(options.confdir, S_IRUSR | S_IWUSR | S_IXUSR);
+			chdir(options.confdir);
 		} else {
 			fprintf(stderr, "An error occured while attempting chdir(\"%s\"). errno = %d\n",
-				confdir, errno);
+				options.confdir, errno);
 		}
 	}
 	
 	load_config();
 
-	if (title_format[0] == '\0')
-		sprintf(title_format, "%%a: %%t [%%r]");
-	if (skin[0] == '\0') {
-		sprintf(skin, "%s/default", SKINDIR);
+	if (options.title_format[0] == '\0')
+		sprintf(options.title_format, "%%a: %%t [%%r]");
+	if (options.skin[0] == '\0') {
+		sprintf(options.skin, "%s/default", SKINDIR);
 		main_pos_x = 30;
 		main_pos_y = 30;
 		main_size_x = 530;
@@ -2764,13 +2710,17 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		playlist_on = 1;
 	}
 
+	if (options.cddb_server[0] == '\0') {
+		sprintf(options.cddb_server, "freedb.org");
+	}
+
 	if (src_type == -1)
 		src_type = 4;
 
-	sprintf(path, "%s/rc", skin);
+	sprintf(path, "%s/rc", options.skin);
 	gtk_rc_parse(path);
 
-	create_main_window(skin);
+	create_main_window(options.skin);
 
 	vol_prev = -101.0f;
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), vol);
@@ -2787,10 +2737,10 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	load_plugin_data();
 	load_music_store();
 
-	if (auto_save_playlist) {
+	if (options.auto_save_playlist) {
 		char playlist_name[MAXLEN];
 
-		snprintf(playlist_name, MAXLEN-1, "%s/%s", confdir, "playlist.xml");
+		snprintf(playlist_name, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
 		load_playlist(playlist_name, 0);
 	}
 
@@ -2829,11 +2779,11 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	}
 
 	if (playlist_on) {
-		if (playlist_is_embedded)
+		if (options.playlist_is_embedded)
 			g_signal_handlers_block_by_func(G_OBJECT(playlist_toggle), playlist_toggled, NULL);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle), TRUE);
 		deflicker();
-		if (playlist_is_embedded)
+		if (options.playlist_is_embedded)
 			g_signal_handlers_unblock_by_func(G_OBJECT(playlist_toggle), playlist_toggled, NULL);
 	}
 
@@ -2841,7 +2791,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	gtk_widget_show_all(main_window);
 	deflicker();
 
-	if (playlist_is_embedded) {
+	if (options.playlist_is_embedded) {
 		if (!playlist_on) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle), FALSE);
 			gtk_widget_hide(playlist_window);
@@ -2850,14 +2800,14 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	}
 
         /* update sliders' tooltips */
-        if(enable_tooltips) {
+        if (options.enable_tooltips) {
                 changed_vol(GTK_ADJUSTMENT(adj_vol), NULL);
                 changed_bal(GTK_ADJUSTMENT(adj_bal), NULL);
 	        changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
         }
 
         /* change color of active song in playlist */
-        if(override_skin_settings && (gdk_color_parse(activesong_color, &color) == TRUE)) {
+        if (options.override_skin_settings && (gdk_color_parse(options.activesong_color, &color) == TRUE)) {
                 play_list->style->fg[SELECTED].red = color.red;
                 play_list->style->fg[SELECTED].green = color.green;
                 play_list->style->fg[SELECTED].blue = color.blue;
@@ -2954,7 +2904,7 @@ timeout_callback(gpointer data) {
                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
 					if (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter)) {
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                                if(show_active_track_name_in_bold)
+                                                if (options.show_active_track_name_in_bold)
                                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
@@ -2983,7 +2933,7 @@ timeout_callback(gpointer data) {
 								    GTK_TREE_MODEL(play_store),&iter)) {
 								gtk_list_store_set(play_store, &iter, 2,
 										   pl_color_active, -1);
-                                                                if(show_active_track_name_in_bold)
+                                                                if (options.show_active_track_name_in_bold)
                                                                         gtk_list_store_set(play_store, &iter, 7, 
                                                                                            PANGO_WEIGHT_BOLD, -1);
 								gtk_tree_model_get(GTK_TREE_MODEL(play_store),
@@ -3034,7 +2984,7 @@ timeout_callback(gpointer data) {
 						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
 									      &iter, NULL, n);
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                                if(show_active_track_name_in_bold)
+                                                if (options.show_active_track_name_in_bold)
                                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
@@ -3057,7 +3007,7 @@ timeout_callback(gpointer data) {
 					/* normal or repeat mode */
 					if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store),&iter)) {
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                                if(show_active_track_name_in_bold)
+                                                if (options.show_active_track_name_in_bold)
                                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
@@ -3085,7 +3035,7 @@ timeout_callback(gpointer data) {
 						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
 									      &iter, NULL, n);
 						gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                                if(show_active_track_name_in_bold)
+                                                if (options.show_active_track_name_in_bold)
                                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 								   1, &str, 3, &(cue.voladj), -1);
@@ -3308,70 +3258,70 @@ save_config(void) {
 	int i = 0;
 	char * path;
 
-        sprintf(config_file, "%s/config.xml", confdir);
+        sprintf(config_file, "%s/config.xml", options.confdir);
 
         doc = xmlNewDoc((const xmlChar *) "1.0");
         root = xmlNewNode(NULL, (const xmlChar *) "aqualung_config");
         xmlDocSetRootElement(doc, root);
 
 
-        xmlNewTextChild(root, NULL, (const xmlChar *) "default_param", (xmlChar *) default_param);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "title_format", (xmlChar *) title_format);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "skin", (xmlChar *) skin);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "default_param", (xmlChar *) options.default_param);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "title_format", (xmlChar *) options.title_format);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "skin", (xmlChar *) options.skin);
 
 	snprintf(str, 31, "%d", src_type);
         xmlNewTextChild(root, NULL, (const xmlChar *) "src_type", (xmlChar *) str);
 
-	snprintf(str, 31, "%d", ladspa_is_postfader);
+	snprintf(str, 31, "%d", options.ladspa_is_postfader);
         xmlNewTextChild(root, NULL, (const xmlChar *) "ladspa_is_postfader", (xmlChar *) str);
-	snprintf(str, 31, "%d", auto_save_playlist);
+	snprintf(str, 31, "%d", options.auto_save_playlist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "auto_save_playlist", (xmlChar *) str);
-	snprintf(str, 31, "%d", show_rva_in_playlist);
+	snprintf(str, 31, "%d", options.show_rva_in_playlist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "show_rva_in_playlist", (xmlChar *) str);
-	snprintf(str, 31, "%d", show_length_in_playlist);
+	snprintf(str, 31, "%d", options.show_length_in_playlist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "show_length_in_playlist", (xmlChar *) str);
-	snprintf(str, 31, "%d", show_active_track_name_in_bold);
+	snprintf(str, 31, "%d", options.show_active_track_name_in_bold);
         xmlNewTextChild(root, NULL, (const xmlChar *) "show_active_track_name_in_bold", (xmlChar *) str);
 
-	snprintf(str, 31, "%d", auto_use_meta_artist);
+	snprintf(str, 31, "%d", options.auto_use_meta_artist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_meta_artist", (xmlChar *) str);
-	snprintf(str, 31, "%d", auto_use_meta_record);
+	snprintf(str, 31, "%d", options.auto_use_meta_record);
         xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_meta_record", (xmlChar *) str);
-	snprintf(str, 31, "%d", auto_use_meta_track);
+	snprintf(str, 31, "%d", options.auto_use_meta_track);
         xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_meta_track", (xmlChar *) str);
 
-	snprintf(str, 31, "%d", auto_use_ext_meta_artist);
+	snprintf(str, 31, "%d", options.auto_use_ext_meta_artist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_ext_meta_artist", (xmlChar *) str);
-	snprintf(str, 31, "%d", auto_use_ext_meta_record);
+	snprintf(str, 31, "%d", options.auto_use_ext_meta_record);
         xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_ext_meta_record", (xmlChar *) str);
-	snprintf(str, 31, "%d", auto_use_ext_meta_track);
+	snprintf(str, 31, "%d", options.auto_use_ext_meta_track);
         xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_ext_meta_track", (xmlChar *) str);
 
-	snprintf(str, 31, "%d", enable_tooltips);
+	snprintf(str, 31, "%d", options.enable_tooltips);
         xmlNewTextChild(root, NULL, (const xmlChar *) "enable_tooltips", (xmlChar *) str);
 
-	snprintf(str, 31, "%d", buttons_at_the_bottom);
+	snprintf(str, 31, "%d", options.buttons_at_the_bottom);
         xmlNewTextChild(root, NULL, (const xmlChar *) "buttons_at_the_bottom", (xmlChar *) str);
 
-        snprintf(str, 31, "%d", simple_view_in_fx);
+        snprintf(str, 31, "%d", options.simple_view_in_fx);
         xmlNewTextChild(root, NULL, (const xmlChar *) "simple_view_in_fx", (xmlChar *) str);
 
-        snprintf(str, 31, "%d", magnify_smaller_images);
+        snprintf(str, 31, "%d", options.magnify_smaller_images);
         xmlNewTextChild(root, NULL, (const xmlChar *) "magnify_smaller_images", (xmlChar *) str);
 
-        snprintf(str, 31, "%d", cover_width);
+        snprintf(str, 31, "%d", options.cover_width);
         xmlNewTextChild(root, NULL, (const xmlChar *) "cover_width", (xmlChar *) str);
 
-	snprintf(str, 31, "%d", hide_comment_pane_shadow);
+	snprintf(str, 31, "%d", options.hide_comment_pane_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "hide_comment_pane", (xmlChar *) str);
 
-	snprintf(str, 31, "%d", expand_stores_on_startup);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "expand_stores", (xmlChar *) str);
+	snprintf(str, 31, "%d", options.autoexpand_stores);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "autoexpand_stores", (xmlChar *) str);
 
-	snprintf(str, 31, "%d", override_skin_settings);
+	snprintf(str, 31, "%d", options.override_skin_settings);
         xmlNewTextChild(root, NULL, (const xmlChar *) "override_skin_settings", (xmlChar *) str);
 
-	snprintf(str, 31, "%d", replaygain_tag_to_use);
+	snprintf(str, 31, "%d", options.replaygain_tag_to_use);
         xmlNewTextChild(root, NULL, (const xmlChar *) "replaygain_tag_to_use", (xmlChar *) str);
 
 	snprintf(str, 31, "%f", vol);
@@ -3379,21 +3329,21 @@ save_config(void) {
 	snprintf(str, 31, "%f", bal);
         xmlNewTextChild(root, NULL, (const xmlChar *) "balance", (xmlChar *) str);
 
-	snprintf(str, 31, "%d", rva_is_enabled);
+	snprintf(str, 31, "%d", options.rva_is_enabled);
         xmlNewTextChild(root, NULL, (const xmlChar *) "rva_is_enabled", (xmlChar *) str);
-	snprintf(str, 31, "%d", rva_env);
+	snprintf(str, 31, "%d", options.rva_env);
         xmlNewTextChild(root, NULL, (const xmlChar *) "rva_env", (xmlChar *) str);
-	snprintf(str, 31, "%f", rva_refvol);
+	snprintf(str, 31, "%f", options.rva_refvol);
         xmlNewTextChild(root, NULL, (const xmlChar *) "rva_refvol", (xmlChar *) str);
-	snprintf(str, 31, "%f", rva_steepness);
+	snprintf(str, 31, "%f", options.rva_steepness);
         xmlNewTextChild(root, NULL, (const xmlChar *) "rva_steepness", (xmlChar *) str);
-	snprintf(str, 31, "%d", rva_use_averaging);
+	snprintf(str, 31, "%d", options.rva_use_averaging);
         xmlNewTextChild(root, NULL, (const xmlChar *) "rva_use_averaging", (xmlChar *) str);
-	snprintf(str, 31, "%d", rva_use_linear_thresh);
+	snprintf(str, 31, "%d", options.rva_use_linear_thresh);
         xmlNewTextChild(root, NULL, (const xmlChar *) "rva_use_linear_thresh", (xmlChar *) str);
-	snprintf(str, 31, "%f", rva_avg_linear_thresh);
+	snprintf(str, 31, "%f", options.rva_avg_linear_thresh);
         xmlNewTextChild(root, NULL, (const xmlChar *) "rva_avg_linear_thresh", (xmlChar *) str);
-	snprintf(str, 31, "%f", rva_avg_stddev_thresh);
+	snprintf(str, 31, "%f", options.rva_avg_stddev_thresh);
         xmlNewTextChild(root, NULL, (const xmlChar *) "rva_avg_stddev_thresh", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", main_pos_x);
@@ -3403,7 +3353,7 @@ save_config(void) {
 
 	snprintf(str, 31, "%d", main_size_x);
         xmlNewTextChild(root, NULL, (const xmlChar *) "main_size_x", (xmlChar *) str);
-	if (playlist_is_embedded && !playlist_is_embedded_shadow && playlist_on) {
+	if (options.playlist_is_embedded && !options.playlist_is_embedded_shadow && playlist_on) {
 		snprintf(str, 31, "%d", main_size_y - playlist_window->allocation.height - 6);
 	} else {
 		snprintf(str, 31, "%d", main_size_y);
@@ -3422,7 +3372,7 @@ save_config(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) "browser_is_visible", (xmlChar *) str);
 	snprintf(str, 31, "%d", browser_paned_pos);
         xmlNewTextChild(root, NULL, (const xmlChar *) "browser_paned_pos", (xmlChar *) str);
-	snprintf(str, MAX_FONTNAME_LEN, "%s", browser_font);
+	snprintf(str, MAX_FONTNAME_LEN, "%s", options.browser_font);
         xmlNewTextChild(root, NULL, (const xmlChar *) "browser_font", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", playlist_pos_x);
@@ -3435,19 +3385,19 @@ save_config(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_size_y", (xmlChar *) str);
 	snprintf(str, 31, "%d", playlist_on);
         xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_is_visible", (xmlChar *) str);
-	snprintf(str, 31, "%d", playlist_is_embedded_shadow);
+	snprintf(str, 31, "%d", options.playlist_is_embedded_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_is_embedded", (xmlChar *) str);
-	snprintf(str, 31, "%d", enable_playlist_statusbar_shadow);
+	snprintf(str, 31, "%d", options.enable_playlist_statusbar_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "enable_playlist_statusbar", (xmlChar *) str);
-	snprintf(str, MAX_FONTNAME_LEN, "%s", playlist_font);
+	snprintf(str, MAX_FONTNAME_LEN, "%s", options.playlist_font);
         xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_font", (xmlChar *) str);
 
-	snprintf(str, MAX_FONTNAME_LEN, "%s", bigtimer_font);
+	snprintf(str, MAX_FONTNAME_LEN, "%s", options.bigtimer_font);
         xmlNewTextChild(root, NULL, (const xmlChar *) "bigtimer_font", (xmlChar *) str);
-	snprintf(str, MAX_FONTNAME_LEN, "%s", smalltimer_font);
+	snprintf(str, MAX_FONTNAME_LEN, "%s", options.smalltimer_font);
         xmlNewTextChild(root, NULL, (const xmlChar *) "smalltimer_font", (xmlChar *) str);
 
-	snprintf(str, MAX_COLORNAME_LEN, "%s", activesong_color);
+	snprintf(str, MAX_COLORNAME_LEN, "%s", options.activesong_color);
         xmlNewTextChild(root, NULL, (const xmlChar *) "activesong_color", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", repeat_on);
@@ -3464,11 +3414,11 @@ save_config(void) {
 	snprintf(str, 31, "%d", time_idx[2]);
         xmlNewTextChild(root, NULL, (const xmlChar *) "time_idx_2", (xmlChar *) str);
 
-	snprintf(str, 31, "%d", plcol_idx[0]);
+	snprintf(str, 31, "%d", options.plcol_idx[0]);
         xmlNewTextChild(root, NULL, (const xmlChar *) "plcol_idx_0", (xmlChar *) str);
-	snprintf(str, 31, "%d", plcol_idx[1]);
+	snprintf(str, 31, "%d", options.plcol_idx[1]);
         xmlNewTextChild(root, NULL, (const xmlChar *) "plcol_idx_1", (xmlChar *) str);
-	snprintf(str, 31, "%d", plcol_idx[2]);
+	snprintf(str, 31, "%d", options.plcol_idx[2]);
         xmlNewTextChild(root, NULL, (const xmlChar *) "plcol_idx_2", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", search_pl_flags);
@@ -3476,13 +3426,13 @@ save_config(void) {
 	snprintf(str, 31, "%d", search_ms_flags);
         xmlNewTextChild(root, NULL, (const xmlChar *) "search_ms_flags", (xmlChar *) str);
 
-#ifdef HAVE_CDDB
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_server", (xmlChar *) cddb_server);
-	snprintf(str, 31, "%d", cddb_timeout);
+	//#ifdef HAVE_CDDB
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_server", (xmlChar *) options.cddb_server);
+	snprintf(str, 31, "%d", options.cddb_timeout);
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_timeout", (xmlChar *) str);
-	snprintf(str, 31, "%d", cddb_use_http);
+	snprintf(str, 31, "%d", options.cddb_use_http);
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_use_http", (xmlChar *) str);
-#endif /* HAVE_CDDB */
+	//#endif /* HAVE_CDDB */
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
@@ -3492,7 +3442,7 @@ save_config(void) {
 	}
 
 	
-        sprintf(tmpname, "%s/config.xml.temp", confdir);
+        sprintf(tmpname, "%s/config.xml.temp", options.confdir);
         xmlSaveFormatFile(tmpname, doc, 1);
 
         if ((fin = fopen(config_file, "rt")) == NULL) {
@@ -3535,7 +3485,7 @@ load_config(void) {
 	GtkTreeIter iter;
 
 
-        sprintf(config_file, "%s/config.xml", confdir);
+        sprintf(config_file, "%s/config.xml", options.confdir);
 
         if ((f = fopen(config_file, "rt")) == NULL) {
 		/* no warning -- done that in core.c::load_default_cl() */
@@ -3568,20 +3518,42 @@ load_config(void) {
         }
 
 
-	default_param[0] = '\0';
-	title_format[0] = '\0';
-	skin[0] = '\0';
 	vol = 0.0f;
 	bal = 0.0f;
 	browser_paned_pos = 250;
-        enable_tooltips = 1;
-	hide_comment_pane = hide_comment_pane_shadow = 0;
-        buttons_at_the_bottom = 1;
-        simple_view_in_fx = 0;
-        magnify_smaller_images = 0;
-        cover_width = 2;
-        override_skin_settings = 0;
-        show_active_track_name_in_bold = 1;
+
+	options.skin[0] = '\0';
+
+	options.default_param[0] = '\0';
+	options.title_format[0] = '\0';
+        options.enable_tooltips = 1;
+        options.simple_view_in_fx = 0;
+
+	options.hide_comment_pane = options.hide_comment_pane_shadow = 0;
+        options.magnify_smaller_images = 0;
+        options.cover_width = 2;
+
+        options.override_skin_settings = 0;
+        options.show_active_track_name_in_bold = 1;
+	options.autoexpand_stores = 1;
+
+	options.auto_save_playlist = 1;
+	options.show_length_in_playlist = 1;
+	options.enable_playlist_statusbar = options.enable_playlist_statusbar_shadow = 1;
+
+	options.rva_refvol = -12.0f;
+	options.rva_steepness = 1.0f;
+	options.rva_use_averaging = 1;
+	options.rva_use_linear_thresh = 0;
+	options.rva_avg_linear_thresh = 3.0f;
+	options.rva_avg_stddev_thresh = 2.0f;
+
+	options.cddb_server[0] = '\0';
+	options.cddb_timeout = 10;
+
+	options.plcol_idx[0] = 0;
+	options.plcol_idx[1] = 1;
+	options.plcol_idx[2] = 2;
 
 
         cur = cur->xmlChildrenNode;
@@ -3589,19 +3561,19 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"default_param"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(default_param, (char *) key, MAXLEN-1);
+                                strncpy(options.default_param, (char *) key, MAXLEN-1);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"title_format"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(title_format, (char *) key, MAXLEN-1);
+                                strncpy(options.title_format, (char *) key, MAXLEN-1);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"skin"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(skin, (char *) key, MAXLEN-1);
+                                strncpy(options.skin, (char *) key, MAXLEN-1);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"src_type"))) {
@@ -3613,130 +3585,130 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"ladspa_is_postfader"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &ladspa_is_postfader);
+				sscanf((char *) key, "%d", &options.ladspa_is_postfader);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_save_playlist"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &auto_save_playlist);
+				sscanf((char *) key, "%d", &options.auto_save_playlist);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_meta_artist"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &auto_use_meta_artist);
+				sscanf((char *) key, "%d", &options.auto_use_meta_artist);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_meta_record"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &auto_use_meta_record);
+				sscanf((char *) key, "%d", &options.auto_use_meta_record);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_meta_track"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &auto_use_meta_track);
+				sscanf((char *) key, "%d", &options.auto_use_meta_track);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_ext_meta_artist"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &auto_use_ext_meta_artist);
+				sscanf((char *) key, "%d", &options.auto_use_ext_meta_artist);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_ext_meta_record"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &auto_use_ext_meta_record);
+				sscanf((char *) key, "%d", &options.auto_use_ext_meta_record);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_ext_meta_track"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &auto_use_ext_meta_track);
+				sscanf((char *) key, "%d", &options.auto_use_ext_meta_track);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_rva_in_playlist"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &show_rva_in_playlist);
+				sscanf((char *) key, "%d", &options.show_rva_in_playlist);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_length_in_playlist"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &show_length_in_playlist);
+				sscanf((char *) key, "%d", &options.show_length_in_playlist);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_active_track_name_in_bold"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &show_active_track_name_in_bold);
+				sscanf((char *) key, "%d", &options.show_active_track_name_in_bold);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_tooltips"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				sscanf((char *) key, "%d", &enable_tooltips);
+				sscanf((char *) key, "%d", &options.enable_tooltips);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"buttons_at_the_bottom"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				sscanf((char *) key, "%d", &buttons_at_the_bottom);
+				sscanf((char *) key, "%d", &options.buttons_at_the_bottom);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"simple_view_in_fx"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				sscanf((char *) key, "%d", &simple_view_in_fx);
+				sscanf((char *) key, "%d", &options.simple_view_in_fx);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"magnify_smaller_images"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				sscanf((char *) key, "%d", &magnify_smaller_images);
+				sscanf((char *) key, "%d", &options.magnify_smaller_images);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"cover_width"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				sscanf((char *) key, "%d", &cover_width);
+				sscanf((char *) key, "%d", &options.cover_width);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"hide_comment_pane"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				sscanf((char *) key, "%d", &hide_comment_pane);
-				hide_comment_pane_shadow = hide_comment_pane;
+				sscanf((char *) key, "%d", &options.hide_comment_pane);
+				options.hide_comment_pane_shadow = options.hide_comment_pane;
 			}
                         xmlFree(key);
                 }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"expand_stores"))) {
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"autoexpand_stores"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				sscanf((char *) key, "%d", &expand_stores_on_startup);
+				sscanf((char *) key, "%d", &options.autoexpand_stores);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"override_skin_settings"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				sscanf((char *) key, "%d", &override_skin_settings);
+				sscanf((char *) key, "%d", &options.override_skin_settings);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"replaygain_tag_to_use"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &replaygain_tag_to_use);
+				sscanf((char *) key, "%d", &options.replaygain_tag_to_use);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"volume"))) {
@@ -3756,52 +3728,52 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_is_enabled"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &rva_is_enabled);
+				sscanf((char *) key, "%d", &options.rva_is_enabled);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_env"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &rva_env);
+				sscanf((char *) key, "%d", &options.rva_env);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_refvol"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				rva_refvol = convf((char *) key);
+				options.rva_refvol = convf((char *) key);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_steepness"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				rva_steepness = convf((char *) key);
+				options.rva_steepness = convf((char *) key);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_use_averaging"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &rva_use_averaging);
+				sscanf((char *) key, "%d", &options.rva_use_averaging);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_use_linear_thresh"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &rva_use_linear_thresh);
+				sscanf((char *) key, "%d", &options.rva_use_linear_thresh);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_avg_linear_thresh"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				rva_avg_linear_thresh = convf((char *) key);
+				options.rva_avg_linear_thresh = convf((char *) key);
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_avg_stddev_thresh"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				rva_avg_stddev_thresh = convf((char *) key);
+				options.rva_avg_stddev_thresh = convf((char *) key);
 			}
                         xmlFree(key);
                 }
@@ -3870,7 +3842,7 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_font"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(browser_font, (char *) key, MAX_FONTNAME_LEN-1);
+                                strncpy(options.browser_font, (char *) key, MAX_FONTNAME_LEN-1);
                         xmlFree(key);
                 }
 
@@ -3907,44 +3879,44 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_is_embedded"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf((char *) key, "%d", &playlist_is_embedded);
-				playlist_is_embedded_shadow = playlist_is_embedded;
+                                sscanf((char *) key, "%d", &options.playlist_is_embedded);
+				options.playlist_is_embedded_shadow = options.playlist_is_embedded;
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_playlist_statusbar"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                sscanf((char *) key, "%d", &enable_playlist_statusbar);
-				enable_playlist_statusbar_shadow = enable_playlist_statusbar;
+                                sscanf((char *) key, "%d", &options.enable_playlist_statusbar);
+				options.enable_playlist_statusbar_shadow = options.enable_playlist_statusbar;
 			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_font"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(playlist_font, (char *) key, MAX_FONTNAME_LEN-1);
+                                strncpy(options.playlist_font, (char *) key, MAX_FONTNAME_LEN-1);
                         xmlFree(key);
                 }
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"bigtimer_font"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(bigtimer_font, (char *) key, MAX_FONTNAME_LEN-1);
+                                strncpy(options.bigtimer_font, (char *) key, MAX_FONTNAME_LEN-1);
                         xmlFree(key);
                 }
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"smalltimer_font"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(smalltimer_font, (char *) key, MAX_FONTNAME_LEN-1);
+                                strncpy(options.smalltimer_font, (char *) key, MAX_FONTNAME_LEN-1);
                         xmlFree(key);
                 }
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"activesong_color"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(activesong_color, (char *) key, MAX_COLORNAME_LEN-1);
+                                strncpy(options.activesong_color, (char *) key, MAX_COLORNAME_LEN-1);
                         xmlFree(key);
                 }
 
@@ -3989,19 +3961,19 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"plcol_idx_0"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf((char *) key, "%d", &(plcol_idx[0]));
+                                sscanf((char *) key, "%d", &(options.plcol_idx[0]));
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"plcol_idx_1"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf((char *) key, "%d", &(plcol_idx[1]));
+                                sscanf((char *) key, "%d", &(options.plcol_idx[1]));
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"plcol_idx_2"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf((char *) key, "%d", &(plcol_idx[2]));
+                                sscanf((char *) key, "%d", &(options.plcol_idx[2]));
                         xmlFree(key);
                 }
 
@@ -4018,28 +3990,24 @@ load_config(void) {
                         xmlFree(key);
                 }
 
-#ifdef HAVE_CDDB
-
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_server"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(cddb_server, (char *) key, MAXLEN-1);
+                                strncpy(options.cddb_server, (char *) key, MAXLEN-1);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_timeout"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf((char *) key, "%d", &cddb_timeout);
+                                sscanf((char *) key, "%d", &options.cddb_timeout);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_use_http"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf((char *) key, "%d", &cddb_use_http);
+                                sscanf((char *) key, "%d", &options.cddb_use_http);
                         xmlFree(key);
                 }
-
-#endif /* HAVE_CDDB */
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);

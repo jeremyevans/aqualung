@@ -26,6 +26,8 @@
 #include <string.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
 
 #ifdef HAVE_SRC
 #include <samplerate.h>
@@ -38,74 +40,30 @@
 #include "i18n.h"
 #include "options.h"
 
+
+options_t options;
+
 extern pthread_mutex_t output_thread_lock;
 
-char title_format[MAXLEN];
-char default_param[MAXLEN];
-extern char currdir[MAXLEN];
 
 #ifdef HAVE_SRC
 extern int src_type;
 GtkWidget * optmenu_src;
 #endif /* HAVE_SRC */
 
-extern int ladspa_is_postfader;
 extern GtkWidget * main_window;
 extern GtkTooltips * aqualung_tooltips;
-extern int auto_save_playlist;
-extern int show_rva_in_playlist;
-extern int show_length_in_playlist;
-extern int show_active_track_name_in_bold;
-extern int plcol_idx[3];
-extern int rva_is_enabled;
-extern int rva_env;
-extern float rva_refvol;
-extern float rva_steepness;
-extern int rva_use_averaging;
-extern int rva_use_linear_thresh;
-extern float rva_avg_linear_thresh;
-extern float rva_avg_stddev_thresh;
-extern int auto_use_meta_artist;
-extern int auto_use_meta_record;
-extern int auto_use_meta_track;
-extern int auto_use_ext_meta_artist;
-extern int auto_use_ext_meta_record;
-extern int auto_use_ext_meta_track;
-extern int replaygain_tag_to_use;
-extern int enable_tooltips;
-extern int hide_comment_pane_shadow;
-extern int playlist_is_embedded_shadow;
-extern int buttons_at_the_bottom;
-extern int override_skin_settings;
-extern int enable_playlist_statusbar;
-extern int enable_playlist_statusbar_shadow;
 
-extern char playlist_font[MAX_FONTNAME_LEN];
-extern char browser_font[MAX_FONTNAME_LEN];
-extern char bigtimer_font[MAX_FONTNAME_LEN];
-extern char smalltimer_font[MAX_FONTNAME_LEN];
 extern PangoFontDescription *fd_playlist;
 extern PangoFontDescription *fd_browser;
 extern PangoFontDescription *fd_bigtimer;
 extern PangoFontDescription *fd_smalltimer;
 
-#ifdef HAVE_CDDB
-extern char cddb_server[MAXLEN];
-extern int cddb_use_http;
-extern int cddb_timeout;
-#endif /* HAVE_CDDB */
-
 extern GtkWidget * bigtimer_label;
 extern GtkWidget * smalltimer_label_1;
 extern GtkWidget * smalltimer_label_2;
 
-extern char activesong_color[MAX_COLORNAME_LEN];
-
-extern int simple_view_in_fx;
-
-extern int magnify_smaller_images;
-extern int cover_width;
-extern int expand_stores_on_startup;
+//extern char activesong_color[MAX_COLORNAME_LEN];
 
 int auto_save_playlist_shadow;
 int show_rva_in_playlist_shadow;
@@ -134,7 +92,6 @@ extern GtkTreeViewColumn * track_column;
 extern GtkTreeViewColumn * rva_column;
 extern GtkTreeViewColumn * length_column;
 
-extern char skin[MAXLEN];
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern void disable_bold_font_in_playlist(void);
@@ -220,13 +177,13 @@ GtkListStore * restart_list_store = NULL;
 void open_font_desc(void)
 {
         if (fd_playlist) pango_font_description_free(fd_playlist);
-	fd_playlist = pango_font_description_from_string(playlist_font);
+	fd_playlist = pango_font_description_from_string(options.playlist_font);
         if (fd_browser) pango_font_description_free(fd_browser);
-	fd_browser = pango_font_description_from_string(browser_font);
+	fd_browser = pango_font_description_from_string(options.browser_font);
         if (fd_bigtimer) pango_font_description_free(fd_bigtimer);
-	fd_bigtimer = pango_font_description_from_string(bigtimer_font);
+	fd_bigtimer = pango_font_description_from_string(options.bigtimer_font);
         if (fd_smalltimer) pango_font_description_free(fd_smalltimer);
-	fd_smalltimer = pango_font_description_from_string(smalltimer_font);
+	fd_smalltimer = pango_font_description_from_string(options.smalltimer_font);
 }
 
 static gint
@@ -237,141 +194,141 @@ ok(GtkWidget * widget, gpointer data) {
 	int n_prev = 3;
         GdkColor color;
 
-	strncpy(title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)), MAXLEN - 1);
-	strncpy(default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN - 1);
-	auto_save_playlist = auto_save_playlist_shadow;
-	rva_is_enabled = rva_is_enabled_shadow;
-	rva_env = rva_env_shadow;
-	rva_refvol = rva_refvol_shadow;
-	rva_steepness = rva_steepness_shadow;
-	rva_use_averaging = rva_use_averaging_shadow;
-	rva_use_linear_thresh = rva_use_linear_thresh_shadow;
-	rva_avg_linear_thresh = rva_avg_linear_thresh_shadow;
-	rva_avg_stddev_thresh = rva_avg_stddev_thresh_shadow;
-	cover_width = cover_width_shadow;
+	strncpy(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)), MAXLEN - 1);
+	strncpy(options.default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN - 1);
+	options.auto_save_playlist = auto_save_playlist_shadow;
+	options.rva_is_enabled = rva_is_enabled_shadow;
+	options.rva_env = rva_env_shadow;
+	options.rva_refvol = rva_refvol_shadow;
+	options.rva_steepness = rva_steepness_shadow;
+	options.rva_use_averaging = rva_use_averaging_shadow;
+	options.rva_use_linear_thresh = rva_use_linear_thresh_shadow;
+	options.rva_avg_linear_thresh = rva_avg_linear_thresh_shadow;
+	options.rva_avg_stddev_thresh = rva_avg_stddev_thresh_shadow;
+	options.cover_width = cover_width_shadow;
 
 
-	show_rva_in_playlist = show_rva_in_playlist_shadow;
-	if (show_rva_in_playlist) {
+	options.show_rva_in_playlist = show_rva_in_playlist_shadow;
+	if (options.show_rva_in_playlist) {
 		gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(rva_column), TRUE);
 	} else {
 		gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(rva_column), FALSE);
 	}
 
-	show_length_in_playlist = show_length_in_playlist_shadow;
-	if (show_length_in_playlist) {
+	options.show_length_in_playlist = show_length_in_playlist_shadow;
+	if (options.show_length_in_playlist) {
 		gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(length_column), TRUE);
 	} else {
 		gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(length_column), FALSE);
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_active_track_name_in_bold))) {
-		show_active_track_name_in_bold = 1;
+		options.show_active_track_name_in_bold = 1;
 	} else {
-		show_active_track_name_in_bold = 0;
+		options.show_active_track_name_in_bold = 0;
                 disable_bold_font_in_playlist();
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_artist))) {
-		auto_use_meta_artist = 1;
+		options.auto_use_meta_artist = 1;
 	} else {
-		auto_use_meta_artist = 0;
+		options.auto_use_meta_artist = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_record))) {
-		auto_use_meta_record = 1;
+		options.auto_use_meta_record = 1;
 	} else {
-		auto_use_meta_record = 0;
+		options.auto_use_meta_record = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_track))) {
-		auto_use_meta_track = 1;
+		options.auto_use_meta_track = 1;
 	} else {
-		auto_use_meta_track = 0;
+		options.auto_use_meta_track = 0;
 	}
 
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_artist))) {
-		auto_use_ext_meta_artist = 1;
+		options.auto_use_ext_meta_artist = 1;
 	} else {
-		auto_use_ext_meta_artist = 0;
+		options.auto_use_ext_meta_artist = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_record))) {
-		auto_use_ext_meta_record = 1;
+		options.auto_use_ext_meta_record = 1;
 	} else {
-		auto_use_ext_meta_record = 0;
+		options.auto_use_ext_meta_record = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_track))) {
-		auto_use_ext_meta_track = 1;
+		options.auto_use_ext_meta_track = 1;
 	} else {
-		auto_use_ext_meta_track = 0;
+		options.auto_use_ext_meta_track = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_tooltips))) {
-		enable_tooltips = 1;
+		options.enable_tooltips = 1;
                 gtk_tooltips_enable(aqualung_tooltips);
 	} else {
-	        enable_tooltips = 0;
+	        options.enable_tooltips = 0;
                 gtk_tooltips_disable(aqualung_tooltips);
 	}
 
         if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_buttons_at_the_bottom))) {
-		buttons_at_the_bottom = 1;
+		options.buttons_at_the_bottom = 1;
 	} else {
-	        buttons_at_the_bottom = 0;
+	        options.buttons_at_the_bottom = 0;
 	}
 
         if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_simple_view_in_fx))) {
-		simple_view_in_fx = 1;
+		options.simple_view_in_fx = 1;
 	} else {
-	        simple_view_in_fx = 0;
+	        options.simple_view_in_fx = 0;
 	}
 
         if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_override_skin))) {
-		override_skin_settings = 1;
+		options.override_skin_settings = 1;
 	} else {
-	        override_skin_settings = 0;
+	        options.override_skin_settings = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_hide_comment_pane))) {
-		hide_comment_pane_shadow = 1;
+		options.hide_comment_pane_shadow = 1;
 	} else {
-	        hide_comment_pane_shadow = 0;
+	        options.hide_comment_pane_shadow = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_expand_stores))) {
-		expand_stores_on_startup = 1;
+		options.autoexpand_stores = 1;
 	} else {
-		expand_stores_on_startup = 0;
+		options.autoexpand_stores = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded))) {
-		playlist_is_embedded_shadow = 1;
+		options.playlist_is_embedded_shadow = 1;
 	} else {
-	        playlist_is_embedded_shadow = 0;
+	        options.playlist_is_embedded_shadow = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_playlist_statusbar))) {
-		enable_playlist_statusbar_shadow = 1;
+		options.enable_playlist_statusbar_shadow = 1;
 	} else {
-	        enable_playlist_statusbar_shadow = 0;
+	        options.enable_playlist_statusbar_shadow = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_magnify_smaller_images))) {
-		magnify_smaller_images = 0;
+		options.magnify_smaller_images = 0;
 	} else {
-	        magnify_smaller_images = 1;
+	        options.magnify_smaller_images = 1;
 	}
 
-	replaygain_tag_to_use = gtk_combo_box_get_active(GTK_COMBO_BOX(optmenu_replaygain));
+	options.replaygain_tag_to_use = gtk_combo_box_get_active(GTK_COMBO_BOX(optmenu_replaygain));
 
 
 #ifdef HAVE_CDDB
-	cddb_use_http = gtk_combo_box_get_active(GTK_COMBO_BOX(cddb_proto_combo));
-	strncpy(cddb_server, gtk_entry_get_text(GTK_ENTRY(cddb_server_entry)), MAXLEN-1);
-	cddb_timeout = gtk_spin_button_get_value(GTK_SPIN_BUTTON(cddb_tout_spinner));
+	options.cddb_use_http = gtk_combo_box_get_active(GTK_COMBO_BOX(cddb_proto_combo));
+	strncpy(options.cddb_server, gtk_entry_get_text(GTK_ENTRY(cddb_server_entry)), MAXLEN-1);
+	options.cddb_timeout = gtk_spin_button_get_value(GTK_SPIN_BUTTON(cddb_tout_spinner));
 #endif /* HAVE_CDDB */
 
         for (i = 0; i < 3; i++) {
@@ -394,7 +351,7 @@ ok(GtkWidget * widget, gpointer data) {
 		gtk_tree_view_move_column_after(GTK_TREE_VIEW(play_list),
 						cols[n], cols[n_prev]);
 
-		plcol_idx[i] = n;
+		options.plcol_idx[i] = n;
 		n_prev = n;
 	}	
 
@@ -403,7 +360,7 @@ ok(GtkWidget * widget, gpointer data) {
 
         /* apply changes */
 
-        if (override_skin_settings) {
+        if (options.override_skin_settings) {
 
                 /* apply fonts */
 
@@ -417,7 +374,7 @@ ok(GtkWidget * widget, gpointer data) {
 
                 /* apply colors */               
 
-                if (gdk_color_parse(activesong_color, &color) == TRUE) {
+                if (gdk_color_parse(options.activesong_color, &color) == TRUE) {
 
                         play_list->style->fg[SELECTED].red = color.red;
                         play_list->style->fg[SELECTED].green = color.green;
@@ -428,7 +385,7 @@ ok(GtkWidget * widget, gpointer data) {
         } else if (override_past_state) {
 
                 /* reload skin */
-                change_skin(skin);
+                change_skin(options.skin);
                 override_past_state = 0;
         }
 
@@ -496,7 +453,7 @@ changed_ladspa_prepost(GtkWidget * widget, gpointer * data) {
 
 	int status = gtk_combo_box_get_active(GTK_COMBO_BOX(optmenu_ladspa));
 	pthread_mutex_lock(&output_thread_lock);
-	ladspa_is_postfader = status;
+	options.ladspa_is_postfader = status;
 	pthread_mutex_unlock(&output_thread_lock);
 }
 
@@ -822,14 +779,14 @@ gint response;
 	font_selector = gtk_font_selection_dialog_new ("Select a font...");
 	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
 	gtk_window_set_transient_for(GTK_WINDOW(font_selector), GTK_WINDOW(options_window));
-	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(font_selector), playlist_font);
+	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(font_selector), options.playlist_font);
 	gtk_widget_show (font_selector);
 	response = gtk_dialog_run (GTK_DIALOG (font_selector));
 
 	if (response == GTK_RESPONSE_OK) {
 
 		s = gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG(font_selector));
-		strncpy(playlist_font, s, MAX_FONTNAME_LEN);
+		strncpy(options.playlist_font, s, MAX_FONTNAME_LEN);
 		gtk_entry_set_text(GTK_ENTRY(entry_pl_font), s);
 		g_free (s);
 
@@ -848,14 +805,14 @@ gint response;
 	font_selector = gtk_font_selection_dialog_new ("Select a font...");
 	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
 	gtk_window_set_transient_for(GTK_WINDOW(font_selector), GTK_WINDOW(options_window));
-	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(font_selector), browser_font);
+	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(font_selector), options.browser_font);
 	gtk_widget_show (font_selector);
 	response = gtk_dialog_run (GTK_DIALOG (font_selector));
 
 	if (response == GTK_RESPONSE_OK) {
 
 		s = gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG(font_selector));
-		strncpy(browser_font, s, MAX_FONTNAME_LEN);
+		strncpy(options.browser_font, s, MAX_FONTNAME_LEN);
 		gtk_entry_set_text(GTK_ENTRY(entry_ms_font), s);
 		g_free (s);
 
@@ -874,14 +831,14 @@ gint response;
 	font_selector = gtk_font_selection_dialog_new ("Select a font...");
 	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
 	gtk_window_set_transient_for(GTK_WINDOW(font_selector), GTK_WINDOW(options_window));
-	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(font_selector), bigtimer_font);
+	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(font_selector), options.bigtimer_font);
 	gtk_widget_show (font_selector);
 	response = gtk_dialog_run (GTK_DIALOG (font_selector));
 
 	if (response == GTK_RESPONSE_OK) {
 
 		s = gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG(font_selector));
-		strncpy(bigtimer_font, s, MAX_FONTNAME_LEN);
+		strncpy(options.bigtimer_font, s, MAX_FONTNAME_LEN);
 		gtk_entry_set_text(GTK_ENTRY(entry_bt_font), s);
 		g_free (s);
 
@@ -900,14 +857,14 @@ gint response;
 	font_selector = gtk_font_selection_dialog_new ("Select a font...");
 	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
 	gtk_window_set_transient_for(GTK_WINDOW(font_selector), GTK_WINDOW(options_window));
-	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(font_selector), smalltimer_font);
+	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(font_selector), options.smalltimer_font);
 	gtk_widget_show (font_selector);
 	response = gtk_dialog_run (GTK_DIALOG (font_selector));
 
 	if (response == GTK_RESPONSE_OK) {
 
 		s = gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG(font_selector));
-		strncpy(smalltimer_font, s, MAX_FONTNAME_LEN);
+		strncpy(options.smalltimer_font, s, MAX_FONTNAME_LEN);
 		gtk_entry_set_text(GTK_ENTRY(entry_st_font), s);
 		g_free (s);
 
@@ -937,7 +894,7 @@ void restart_active(GtkToggleButton * togglebutton, gpointer data) {
 
 void set_sensitive_part(void) {
 
-        if (override_skin_settings) {
+        if (options.override_skin_settings) {
 
                 gtk_widget_set_sensitive(entry_ms_font, TRUE);
                 gtk_widget_set_sensitive(entry_pl_font, TRUE);
@@ -966,7 +923,7 @@ void set_sensitive_part(void) {
 
 void  cb_toggle_override_skin (GtkToggleButton *togglebutton, gpointer user_data)
 {
-        override_skin_settings = override_skin_settings ? 0 : 1;
+        options.override_skin_settings = options.override_skin_settings ? 0 : 1;
         set_sensitive_part();
 }
 
@@ -978,7 +935,7 @@ gchar str[MAX_COLORNAME_LEN];
         gtk_color_button_get_color(widget, &c);
         sprintf(str, "#%02X%02X%02X", c.red * 256 / 65536, c.green * 256 / 65536, c.blue * 256 / 65536);
 
-        strncpy(activesong_color, str, MAX_COLORNAME_LEN);
+        strncpy(options.activesong_color, str, MAX_COLORNAME_LEN);
 }
 
 GtkWidget *
@@ -1067,14 +1024,14 @@ browse_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), currdir);
+	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
                 gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), selected_filename);
 
-                strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
 			MAXLEN-1);
         }
 
@@ -1259,7 +1216,7 @@ literally copied into the resulting string.\n"));
 
 	entry_title = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(entry_title), MAXLEN - 1);
-	gtk_entry_set_text(GTK_ENTRY(entry_title), title_format);
+	gtk_entry_set_text(GTK_ENTRY(entry_title), options.title_format);
 	gtk_box_pack_start(GTK_BOX(vbox_title), entry_title, TRUE, TRUE, 0);
 
 
@@ -1280,7 +1237,7 @@ running realtime as a default.\n"));
 
 	entry_param = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(entry_param), MAXLEN - 1);
-	gtk_entry_set_text(GTK_ENTRY(entry_param), default_param);
+	gtk_entry_set_text(GTK_ENTRY(entry_param), options.default_param);
 	gtk_box_pack_start(GTK_BOX(vbox_param), entry_param, TRUE, TRUE, 0);
 
 
@@ -1295,7 +1252,7 @@ running realtime as a default.\n"));
 		gtk_check_button_new_with_label(_("Enable tooltips"));
 
         gtk_widget_set_name(check_enable_tooltips, "check_on_notebook");
-	if (enable_tooltips) {
+	if (options.enable_tooltips) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_tooltips), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_enable_tooltips, FALSE, FALSE, 0);
@@ -1303,7 +1260,7 @@ running realtime as a default.\n"));
 	check_buttons_at_the_bottom =
 		gtk_check_button_new_with_label(_("Put control buttons at the bottom of playlist"));
 	gtk_widget_set_name(check_buttons_at_the_bottom, "check_on_notebook");
-	if (buttons_at_the_bottom) {
+	if (options.buttons_at_the_bottom) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_buttons_at_the_bottom), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_buttons_at_the_bottom, FALSE, FALSE, 0);
@@ -1313,7 +1270,7 @@ running realtime as a default.\n"));
 	check_simple_view_in_fx =
 		gtk_check_button_new_with_label(_("Simple view in LADSPA patch builder"));
 	gtk_widget_set_name(check_simple_view_in_fx, "check_on_notebook");
-	if (simple_view_in_fx) {
+	if (options.simple_view_in_fx) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_simple_view_in_fx), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_simple_view_in_fx, FALSE, FALSE, 0);
@@ -1330,7 +1287,7 @@ running realtime as a default.\n"));
         check_playlist_is_embedded =
 		gtk_check_button_new_with_label(_("Embed playlist into main window"));
 	gtk_widget_set_name(check_playlist_is_embedded, "check_on_notebook");
-	if (playlist_is_embedded_shadow) {
+	if (options.playlist_is_embedded_shadow) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_embedded, FALSE, FALSE, 0);
@@ -1339,10 +1296,10 @@ running realtime as a default.\n"));
 	check_autoplsave =
 	    gtk_check_button_new_with_label(_("Save and restore the playlist on exit/startup"));
 	gtk_widget_set_name(check_autoplsave, "check_on_notebook");
-	if (auto_save_playlist) {
+	if (options.auto_save_playlist) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_autoplsave), TRUE);
 	}
-	auto_save_playlist_shadow = auto_save_playlist;
+	auto_save_playlist_shadow = options.auto_save_playlist;
 	g_signal_connect(G_OBJECT(check_autoplsave), "toggled",
 			 G_CALLBACK(autoplsave_toggled), NULL);
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_autoplsave, FALSE, TRUE, 3);
@@ -1350,10 +1307,10 @@ running realtime as a default.\n"));
 	check_enable_playlist_statusbar =
 		gtk_check_button_new_with_label(_("Enable statusbar"));
 	gtk_widget_set_name(check_enable_playlist_statusbar, "check_on_notebook");
-	if (enable_playlist_statusbar_shadow) {
+	if (options.enable_playlist_statusbar_shadow) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_playlist_statusbar), TRUE);
 	}
-	enable_playlist_statusbar_shadow = enable_playlist_statusbar;
+	options.enable_playlist_statusbar_shadow = options.enable_playlist_statusbar;
 	g_signal_connect(G_OBJECT(check_enable_playlist_statusbar), "toggled",
 			 G_CALLBACK(restart_active), _("Enable statusbar in playlist"));
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_playlist_statusbar, FALSE, TRUE, 3);
@@ -1361,10 +1318,10 @@ running realtime as a default.\n"));
 	check_show_rva_in_playlist =
 		gtk_check_button_new_with_label(_("Show RVA values"));
 	gtk_widget_set_name(check_show_rva_in_playlist, "check_on_notebook");
-	if (show_rva_in_playlist) {
+	if (options.show_rva_in_playlist) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_rva_in_playlist), TRUE);
 	}
-	show_rva_in_playlist_shadow = show_rva_in_playlist;
+	show_rva_in_playlist_shadow = options.show_rva_in_playlist;
 	g_signal_connect(G_OBJECT(check_show_rva_in_playlist), "toggled",
 			 G_CALLBACK(check_show_rva_in_playlist_toggled), NULL);
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_rva_in_playlist, FALSE, TRUE, 3);
@@ -1372,10 +1329,10 @@ running realtime as a default.\n"));
 	check_show_length_in_playlist =
 		gtk_check_button_new_with_label(_("Show track lengths"));
 	gtk_widget_set_name(check_show_length_in_playlist, "check_on_notebook");
-	if (show_length_in_playlist) {
+	if (options.show_length_in_playlist) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_length_in_playlist), TRUE);
 	}
-	show_length_in_playlist_shadow = show_length_in_playlist;
+	show_length_in_playlist_shadow = options.show_length_in_playlist;
 	g_signal_connect(G_OBJECT(check_show_length_in_playlist), "toggled",
 			 G_CALLBACK(check_show_length_in_playlist_toggled), NULL);
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_length_in_playlist, FALSE, TRUE, 3);
@@ -1383,10 +1340,10 @@ running realtime as a default.\n"));
 	check_show_active_track_name_in_bold =
 		gtk_check_button_new_with_label(_("Show active track name in bold"));
 	gtk_widget_set_name(check_show_active_track_name_in_bold, "check_on_notebook");
-	if (show_active_track_name_in_bold) {
+	if (options.show_active_track_name_in_bold) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_active_track_name_in_bold), TRUE);
 	}
-	show_active_track_name_in_bold_shadow = show_active_track_name_in_bold;
+	show_active_track_name_in_bold_shadow = options.show_active_track_name_in_bold;
 	g_signal_connect(G_OBJECT(check_show_active_track_name_in_bold), "toggled",
 			 G_CALLBACK(check_show_active_track_name_in_bold_toggled), NULL);
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_active_track_name_in_bold, FALSE, TRUE, 3);
@@ -1424,7 +1381,7 @@ to set the column order in the Playlist."));
         gtk_container_add(GTK_CONTAINER(viewport), plistcol_list);
 
 	for (i = 0; i < 3; i++) {
-		switch (plcol_idx[i]) {
+		switch (options.plcol_idx[i]) {
 		case 0:
 			gtk_list_store_append(plistcol_store, &iter);
 			gtk_list_store_set(plistcol_store, &iter,
@@ -1453,7 +1410,7 @@ to set the column order in the Playlist."));
 	check_hide_comment_pane =
 		gtk_check_button_new_with_label(_("Hide the Music Store comment pane"));
 	gtk_widget_set_name(check_hide_comment_pane, "check_on_notebook");
-	if (hide_comment_pane_shadow) {
+	if (options.hide_comment_pane_shadow) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_hide_comment_pane), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_ms), check_hide_comment_pane, FALSE, FALSE, 0);
@@ -1463,7 +1420,7 @@ to set the column order in the Playlist."));
 
 	check_expand_stores = gtk_check_button_new_with_label(_("Expand Stores on startup"));
 	gtk_widget_set_name(check_expand_stores, "check_on_notebook");
-	if (expand_stores_on_startup) {
+	if (options.autoexpand_stores) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_expand_stores), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_ms), check_expand_stores, FALSE, FALSE, 0);
@@ -1492,14 +1449,14 @@ to set the column order in the Playlist."));
         gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_cwidth), _("300 pixels"));
         gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_cwidth), _("use browser window width"));
 
-        cover_width_shadow = cover_width;
-        gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_cwidth), cover_width);
+        cover_width_shadow = options.cover_width;
+        gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_cwidth), options.cover_width);
 	g_signal_connect(optmenu_cwidth, "changed", G_CALLBACK(changed_cover_width), NULL);
 
         check_magnify_smaller_images =
 		gtk_check_button_new_with_label(_("Don't magnify images with smaller width"));
 	gtk_widget_set_name(check_magnify_smaller_images, "check_on_notebook");
-	if (!magnify_smaller_images) {
+	if (!options.magnify_smaller_images) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_magnify_smaller_images), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_cart), check_magnify_smaller_images, FALSE, FALSE, 0);
@@ -1599,7 +1556,7 @@ to set the column order in the Playlist."));
 
 	}
 	pthread_mutex_lock(&output_thread_lock);
-	status = ladspa_is_postfader;
+	status = options.ladspa_is_postfader;
 	pthread_mutex_unlock(&output_thread_lock);
 	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_ladspa), status);
         g_signal_connect(optmenu_ladspa, "changed", G_CALLBACK(changed_ladspa_prepost), NULL);
@@ -1650,10 +1607,10 @@ See the About box and the documentation for details."));
 
 	check_rva_is_enabled = gtk_check_button_new_with_label(_("Enable playback RVA"));
 	gtk_widget_set_name(check_rva_is_enabled, "check_on_notebook");
-	if (rva_is_enabled) {
+	if (options.rva_is_enabled) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_rva_is_enabled), TRUE);
 	}
-	rva_is_enabled_shadow = rva_is_enabled;
+	rva_is_enabled_shadow = options.rva_is_enabled;
 	g_signal_connect(G_OBJECT(check_rva_is_enabled), "toggled",
 			 G_CALLBACK(check_rva_is_enabled_toggled), NULL);
         gtk_box_pack_start(GTK_BOX(vbox_rva), check_rva_is_enabled, FALSE, TRUE, 5);
@@ -1695,8 +1652,8 @@ See the About box and the documentation for details."));
 
 	}
 
-	rva_env_shadow = rva_env;
-	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_listening_env), rva_env);
+	rva_env_shadow = options.rva_env;
+	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_listening_env), options.rva_env);
 	g_signal_connect(optmenu_listening_env, "changed", G_CALLBACK(changed_listening_env), NULL);
 
         hbox_refvol = gtk_hbox_new(FALSE, 0);
@@ -1705,8 +1662,8 @@ See the About box and the documentation for details."));
         gtk_table_attach(GTK_TABLE(table_rva), hbox_refvol, 0, 1, 2, 3,
                          GTK_FILL, GTK_FILL, 5, 2);
 
-	rva_refvol_shadow = rva_refvol;
-        adj_refvol = gtk_adjustment_new(rva_refvol, -24.0f, 0.0f, 0.1f, 1.0f, 0.0f);
+	rva_refvol_shadow = options.rva_refvol;
+        adj_refvol = gtk_adjustment_new(options.rva_refvol, -24.0f, 0.0f, 0.1f, 1.0f, 0.0f);
         spin_refvol = gtk_spin_button_new(GTK_ADJUSTMENT(adj_refvol), 0.1, 1);
         gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_refvol), TRUE);
         gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_refvol), FALSE);
@@ -1721,8 +1678,8 @@ See the About box and the documentation for details."));
         gtk_table_attach(GTK_TABLE(table_rva), hbox_steepness, 0, 1, 3, 4,
                          GTK_FILL, GTK_FILL, 5, 2);
 
-	rva_steepness_shadow = rva_steepness;
-        adj_steepness = gtk_adjustment_new(rva_steepness, 0.0f, 1.0f, 0.01f, 0.1f, 0.0f);
+	rva_steepness_shadow = options.rva_steepness;
+        adj_steepness = gtk_adjustment_new(options.rva_steepness, 0.0f, 1.0f, 0.01f, 0.1f, 0.0f);
         spin_steepness = gtk_spin_button_new(GTK_ADJUSTMENT(adj_steepness), 0.02, 2);
         gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_steepness), TRUE);
         gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_steepness), FALSE);
@@ -1736,10 +1693,10 @@ See the About box and the documentation for details."));
 	check_rva_use_averaging =
 	    gtk_check_button_new_with_label(_("Apply averaged RVA to tracks of the same record"));
 	gtk_widget_set_name(check_rva_use_averaging, "check_on_notebook");
-	if (rva_use_averaging) {
+	if (options.rva_use_averaging) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_rva_use_averaging), TRUE);
 	}
-	rva_use_averaging_shadow = rva_use_averaging;
+	rva_use_averaging_shadow = options.rva_use_averaging;
 	g_signal_connect(G_OBJECT(check_rva_use_averaging), "toggled",
 			 G_CALLBACK(check_rva_use_averaging_toggled), NULL);
         gtk_box_pack_start(GTK_BOX(vbox_rva), check_rva_use_averaging, FALSE, TRUE, 5);
@@ -1765,8 +1722,8 @@ See the About box and the documentation for details."));
 
 	}
 
-	rva_use_linear_thresh_shadow = rva_use_linear_thresh;
-	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_threshold), rva_use_linear_thresh);
+	rva_use_linear_thresh_shadow = options.rva_use_linear_thresh;
+	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_threshold), options.rva_use_linear_thresh);
 	g_signal_connect(optmenu_threshold, "changed", G_CALLBACK(changed_threshold), NULL);
 
         hbox_linthresh = gtk_hbox_new(FALSE, 0);
@@ -1775,8 +1732,8 @@ See the About box and the documentation for details."));
         gtk_table_attach(GTK_TABLE(table_avg), hbox_linthresh, 0, 1, 1, 2,
                          GTK_FILL, GTK_FILL, 5, 2);
 
-	rva_avg_linear_thresh_shadow = rva_avg_linear_thresh;
-        adj_linthresh = gtk_adjustment_new(rva_avg_linear_thresh, 0.0f, 60.0f, 0.1f, 1.0f, 0.0f);
+	rva_avg_linear_thresh_shadow = options.rva_avg_linear_thresh;
+        adj_linthresh = gtk_adjustment_new(options.rva_avg_linear_thresh, 0.0f, 60.0f, 0.1f, 1.0f, 0.0f);
         spin_linthresh = gtk_spin_button_new(GTK_ADJUSTMENT(adj_linthresh), 0.1, 1);
         gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_linthresh), TRUE);
         gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_linthresh), FALSE);
@@ -1791,8 +1748,8 @@ See the About box and the documentation for details."));
         gtk_table_attach(GTK_TABLE(table_avg), hbox_stdthresh, 0, 1, 2, 3,
                          GTK_FILL, GTK_FILL, 5, 2);
 
-	rva_avg_stddev_thresh_shadow = rva_avg_stddev_thresh;
-        adj_stdthresh = gtk_adjustment_new(rva_avg_stddev_thresh * 100.0f,
+	rva_avg_stddev_thresh_shadow = options.rva_avg_stddev_thresh;
+        adj_stdthresh = gtk_adjustment_new(options.rva_avg_stddev_thresh * 100.0f,
 					   0.0f, 500.0f, 1.0f, 10.0f, 0.0f);
         spin_stdthresh = gtk_spin_button_new(GTK_ADJUSTMENT(adj_stdthresh), 0.5, 0);
         gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_stdthresh), TRUE);
@@ -1845,7 +1802,7 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
 	check_auto_use_meta_artist = gtk_check_button_new_with_label(_("Artist name"));
 	gtk_widget_set_name(check_auto_use_meta_artist, "check_on_notebook");
-	if (auto_use_meta_artist) {
+	if (options.auto_use_meta_artist) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_artist), TRUE);
 	}
         gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_artist, FALSE, TRUE, 20);
@@ -1854,7 +1811,7 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
 	check_auto_use_meta_record = gtk_check_button_new_with_label(_("Record name"));
 	gtk_widget_set_name(check_auto_use_meta_record, "check_on_notebook");
-	if (auto_use_meta_record) {
+	if (options.auto_use_meta_record) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_record), TRUE);
 	}
         gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_record, FALSE, TRUE, 20);
@@ -1863,7 +1820,7 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
 	check_auto_use_meta_track = gtk_check_button_new_with_label(_("Track name"));
 	gtk_widget_set_name(check_auto_use_meta_track, "check_on_notebook");
-	if (auto_use_meta_track) {
+	if (options.auto_use_meta_track) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_track), TRUE);
 	}
         gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_track, FALSE, TRUE, 20);
@@ -1880,7 +1837,7 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
 	check_auto_use_ext_meta_artist = gtk_check_button_new_with_label(_("Artist name"));
 	gtk_widget_set_name(check_auto_use_ext_meta_artist, "check_on_notebook");
-	if (auto_use_ext_meta_artist) {
+	if (options.auto_use_ext_meta_artist) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_artist), TRUE);
 	}
         gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_artist, FALSE, TRUE, 20);
@@ -1889,7 +1846,7 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
 	check_auto_use_ext_meta_record = gtk_check_button_new_with_label(_("Record name"));
 	gtk_widget_set_name(check_auto_use_ext_meta_record, "check_on_notebook");
-	if (auto_use_ext_meta_record) {
+	if (options.auto_use_ext_meta_record) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_record), TRUE);
 	}
         gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_record, FALSE, TRUE, 20);
@@ -1898,7 +1855,7 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
 	check_auto_use_ext_meta_track = gtk_check_button_new_with_label(_("Track name"));
 	gtk_widget_set_name(check_auto_use_ext_meta_track, "check_on_notebook");
-	if (auto_use_ext_meta_track) {
+	if (options.auto_use_ext_meta_track) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_track), TRUE);
 	}
         gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_track, FALSE, TRUE, 20);
@@ -1923,7 +1880,7 @@ See the About box and the documentation for details."));
                 gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_replaygain), _("Replaygain_album_gain"));
 
 	}
-	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_replaygain), replaygain_tag_to_use);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_replaygain), options.replaygain_tag_to_use);
 
 
 	/* CDDB notebook page */
@@ -1940,7 +1897,7 @@ See the About box and the documentation for details."));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
 
 	cddb_server_entry = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(cddb_server_entry), cddb_server);
+	gtk_entry_set_text(GTK_ENTRY(cddb_server_entry), options.cddb_server);
 	gtk_box_pack_start(GTK_BOX(hbox), cddb_server_entry, TRUE, TRUE, 5);
 
 
@@ -1951,7 +1908,7 @@ See the About box and the documentation for details."));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
 
 	cddb_tout_spinner = gtk_spin_button_new_with_range(1, 60, 1);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cddb_tout_spinner), cddb_timeout);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cddb_tout_spinner), options.cddb_timeout);
 	gtk_box_pack_start(GTK_BOX(hbox), cddb_tout_spinner, FALSE, FALSE, 5);
 
 
@@ -1964,7 +1921,7 @@ See the About box and the documentation for details."));
 	cddb_proto_combo = gtk_combo_box_new_text();
 	gtk_combo_box_append_text(GTK_COMBO_BOX(cddb_proto_combo), _("CDDBP (port 888)"));
 	gtk_combo_box_append_text(GTK_COMBO_BOX(cddb_proto_combo), _("HTTP (port 80)"));
-	if (cddb_use_http) {
+	if (options.cddb_use_http) {
 		gtk_combo_box_set_active(GTK_COMBO_BOX(cddb_proto_combo), 1);
 	} else {
 		gtk_combo_box_set_active(GTK_COMBO_BOX(cddb_proto_combo), 0);
@@ -1981,7 +1938,7 @@ See the About box and the documentation for details."));
 
         /* Appearance notebook page */
 
-        override_past_state = override_skin_settings;
+        override_past_state = options.override_skin_settings;
 
 	vbox_appearance = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_appearance), 8);
@@ -1991,7 +1948,7 @@ See the About box and the documentation for details."));
 		gtk_check_button_new_with_label(_("Override skin settings"));
 
         gtk_widget_set_name(check_override_skin, "check_on_notebook");
-	if (override_skin_settings) {
+	if (options.override_skin_settings) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_override_skin), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_appearance), check_override_skin, FALSE, FALSE, 0);
@@ -2019,14 +1976,14 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(hbox), entry_pl_font, TRUE, TRUE, 3);
         gtk_editable_set_editable(GTK_EDITABLE(entry_pl_font), FALSE);
 
-        if (strlen(playlist_font)) {
+        if (strlen(options.playlist_font)) {
 
-                gtk_entry_set_text(GTK_ENTRY(entry_pl_font), playlist_font);
+                gtk_entry_set_text(GTK_ENTRY(entry_pl_font), options.playlist_font);
 
         } else {
 
                 gtk_entry_set_text(GTK_ENTRY(entry_pl_font), DEFAULT_FONT_NAME);
-                strcpy(playlist_font, DEFAULT_FONT_NAME);
+                strcpy(options.playlist_font, DEFAULT_FONT_NAME);
         }
 
         button_pl_font =  gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
@@ -2048,14 +2005,14 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(hbox), entry_ms_font, TRUE, TRUE, 3);
         gtk_editable_set_editable(GTK_EDITABLE(entry_ms_font), FALSE);
 
-        if (strlen(browser_font)) {
+        if (strlen(options.browser_font)) {
 
-	        gtk_entry_set_text(GTK_ENTRY(entry_ms_font), browser_font);
+	        gtk_entry_set_text(GTK_ENTRY(entry_ms_font), options.browser_font);
 
         } else {
 
                 gtk_entry_set_text(GTK_ENTRY(entry_ms_font), DEFAULT_FONT_NAME);
-                strcpy(browser_font, DEFAULT_FONT_NAME);
+                strcpy(options.browser_font, DEFAULT_FONT_NAME);
 
         }
 
@@ -2079,14 +2036,14 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(hbox), entry_bt_font, TRUE, TRUE, 3);
         gtk_editable_set_editable(GTK_EDITABLE(entry_bt_font), FALSE);
 
-        if (strlen(bigtimer_font)) {
+        if (strlen(options.bigtimer_font)) {
 
-	        gtk_entry_set_text(GTK_ENTRY(entry_bt_font), bigtimer_font);
+	        gtk_entry_set_text(GTK_ENTRY(entry_bt_font), options.bigtimer_font);
 
         } else {
 
                 gtk_entry_set_text(GTK_ENTRY(entry_bt_font), DEFAULT_FONT_NAME);
-                strcpy(bigtimer_font, DEFAULT_FONT_NAME);
+                strcpy(options.bigtimer_font, DEFAULT_FONT_NAME);
 
         }
 
@@ -2109,14 +2066,14 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(hbox), entry_st_font, TRUE, TRUE, 3);
         gtk_editable_set_editable(GTK_EDITABLE(entry_st_font), FALSE);
 
-        if (strlen(smalltimer_font)) {
+        if (strlen(options.smalltimer_font)) {
 
-	        gtk_entry_set_text(GTK_ENTRY(entry_st_font), smalltimer_font);
+	        gtk_entry_set_text(GTK_ENTRY(entry_st_font), options.smalltimer_font);
 
         } else {
 
                 gtk_entry_set_text(GTK_ENTRY(entry_st_font), DEFAULT_FONT_NAME);
-                strcpy(smalltimer_font, DEFAULT_FONT_NAME);
+                strcpy(options.smalltimer_font, DEFAULT_FONT_NAME);
 
         }
 
@@ -2148,7 +2105,7 @@ See the About box and the documentation for details."));
 	hbox_s = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 3);
 
-        if (gdk_color_parse(activesong_color, &color) == FALSE) {
+        if (gdk_color_parse(options.activesong_color, &color) == FALSE) {
 
                 color.red = play_list->style->fg[SELECTED].red; 
                 color.green = play_list->style->fg[SELECTED].green; 

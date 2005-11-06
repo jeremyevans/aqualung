@@ -51,6 +51,7 @@
 
 #include "common.h"
 #include "version.h"
+#include "options.h"
 #include "decoder/file_decoder.h"
 #include "transceiver.h"
 #include "gui_main.h"
@@ -58,6 +59,7 @@
 #include "i18n.h"
 #include "core.h"
 
+extern options_t options;
 
 /* JACK data */
 jack_client_t * jack_client;
@@ -110,7 +112,6 @@ double left_gain = 1.0;
 double right_gain = 1.0;
 
 /* LADSPA stuff */
-int ladspa_is_postfader = 0;
 pthread_mutex_t plugin_lock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long ladspa_buflen = 0;
 LADSPA_Data * l_buf = NULL;
@@ -123,8 +124,6 @@ extern int immediate_start;
 extern int aqualung_session_id;
 extern int aqualung_socket_fd;
 extern char aqualung_socket_filename[256];
-
-extern char cwd[MAXLEN];
 
 
 float convf(char * s) {
@@ -535,7 +534,7 @@ oss_thread(void * arg) {
 			jack_ringbuffer_read(rb, (char *)&(r_buf[i]), sample_size);
 		}
 
-		if (ladspa_is_postfader) {
+		if (options.ladspa_is_postfader) {
 			for (i = 0; i < n_avail; i++) {
 				l_buf[i] *= left_gain;
 				r_buf[i] *= right_gain;
@@ -564,7 +563,7 @@ oss_thread(void * arg) {
 		}
 		pthread_mutex_unlock(&plugin_lock);
 
-		if (!ladspa_is_postfader) {
+		if (!options.ladspa_is_postfader) {
 			for (i = 0; i < bufsize; i++) {
 				l_buf[i] *= left_gain;
 				r_buf[i] *= right_gain;
@@ -706,7 +705,7 @@ alsa_thread(void * arg) {
 			jack_ringbuffer_read(rb, (char *)&(r_buf[i]), sample_size);
 		}
 
-		if (ladspa_is_postfader) {
+		if (options.ladspa_is_postfader) {
 			for (i = 0; i < n_avail; i++) {
 				l_buf[i] *= left_gain;
 				r_buf[i] *= right_gain;
@@ -735,7 +734,7 @@ alsa_thread(void * arg) {
 		}
 		pthread_mutex_unlock(&plugin_lock);
 		
-		if (!ladspa_is_postfader) {
+		if (!options.ladspa_is_postfader) {
 			for (i = 0; i < bufsize; i++) {
 				l_buf[i] *= left_gain;
 				r_buf[i] *= right_gain;
@@ -860,7 +859,7 @@ process(jack_nframes_t nframes, void * arg) {
 			r_buf[i] = 0.0f;
 		}
 	} else {
-		if (ladspa_is_postfader) {
+		if (options.ladspa_is_postfader) {
 			for (i = 0; i < n_avail; i++) {
 				l_buf[i] *= left_gain;
 				r_buf[i] *= right_gain;
@@ -882,7 +881,7 @@ process(jack_nframes_t nframes, void * arg) {
 		}
 		pthread_mutex_unlock(&plugin_lock);
 		
-		if (!ladspa_is_postfader) {
+		if (!options.ladspa_is_postfader) {
 			for (i = 0; i < nframes; i++) {
 				l_buf[i] *= left_gain;
 				r_buf[i] *= right_gain;
@@ -1335,9 +1334,9 @@ main(int argc, char ** argv) {
 	
 	setup_app_socket();
 
-	if (getcwd(cwd, MAXLEN) == NULL) {
+	if (getcwd(options.cwd, MAXLEN) == NULL) {
 		fprintf(stderr, "main(): warning: getcwd() returned NULL, using . as cwd\n");
-		strcpy(cwd, ".");
+		strcpy(options.cwd, ".");
 	}
 
 	load_default_cl(&argc_def, &argv_def);
@@ -1728,7 +1727,7 @@ main(int argc, char ** argv) {
 					snprintf(fullname, MAXLEN-1, "%s/%s", home, path);
 					break;
 				default:
-					snprintf(fullname, MAXLEN-1, "%s/%s", cwd, argv[i]);
+					snprintf(fullname, MAXLEN-1, "%s/%s", options.cwd, argv[i]);
 					break;
 				}
 

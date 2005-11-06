@@ -27,15 +27,15 @@
 
 #include "common.h"
 #include "gui_main.h"
+#include "options.h"
 #include "i18n.h"
 #include "skin.h"
 
+extern options_t options;
 
-extern char confdir[MAXLEN];
 extern GtkWidget * main_window;
 
 char * pdir;
-char skin[MAXLEN];
 
 GtkWidget * skin_window;
 GtkListStore * skin_store;
@@ -87,10 +87,10 @@ apply(GtkWidget * widget, gpointer data) {
 	gtk_tree_model_get(GTK_TREE_MODEL(skin_store), &iter, 1, &str, -1);
 
 	gtk_widget_destroy(skin_window);
-	strcpy(skin, str);
+	strcpy(options.skin, str);
 	g_free(str);
 
-	change_skin(skin);
+	change_skin(options.skin);
 
 	return TRUE;
 }
@@ -150,15 +150,15 @@ create_skin_window() {
 	gtk_container_add(GTK_CONTAINER(scrolledwin), skin_list);
 
 	/* per-user skins */
-	pdir = confdir;
-	n = scandir(confdir, &ent, filter, alphasort);
+	pdir = options.confdir;
+	n = scandir(options.confdir, &ent, filter, alphasort);
 	if (n >= 0) {
 		int c;
 		char path[MAXLEN];
 
 		for (c = 0; c < n; ++c) {
 			gtk_list_store_append(skin_store, &iter);
-			snprintf(path, MAXLEN - 1, "%s/%s", confdir, ent[c]->d_name);
+			snprintf(path, MAXLEN - 1, "%s/%s", options.confdir, ent[c]->d_name);
 			gtk_list_store_set(skin_store, &iter, 0, ent[c]->d_name, 1, path, -1);
 		}
 	}
@@ -214,7 +214,7 @@ create_skin_window() {
 		
 		do {
 			gtk_tree_model_get(GTK_TREE_MODEL(skin_store), &iter, 1, &str, -1);
-			if (strcmp(str, skin) == 0) {
+			if (strcmp(str, options.skin) == 0) {
 				gtk_tree_selection_select_iter(skin_select, &iter);
 				gtk_tree_view_set_cursor(GTK_TREE_VIEW(skin_list),
 					 gtk_tree_model_get_path(GTK_TREE_MODEL(skin_store), &iter),

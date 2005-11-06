@@ -22,9 +22,6 @@
 #ifndef _GUI_MAIN_H
 #define _GUI_MAIN_H
 
-#define MAX_FONTNAME_LEN    256
-#define MAX_COLORNAME_LEN   32
-
 void deflicker(void);
 
 void create_gui(int argc, char ** argv, int optind, int enqueue,

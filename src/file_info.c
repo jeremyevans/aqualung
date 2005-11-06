@@ -42,6 +42,7 @@
 #include "decoder/file_decoder.h"
 #include "music_browser.h"
 #include "gui_main.h"
+#include "options.h"
 #include "trashlist.h"
 #include "i18n.h"
 #include "meta_decoder.h"
@@ -56,6 +57,9 @@
 #define IMPORT_DEST_COMMENT  5
 #define IMPORT_DEST_RVA      6
 
+
+extern options_t options;
+
 typedef struct _import_data_t {
         GtkTreeModel * model;
         GtkTreeIter track_iter;
@@ -64,7 +68,6 @@ typedef struct _import_data_t {
         float fval;
 } import_data_t;
 
-extern int replaygain_tag_to_use;
 
 extern GtkWidget * main_window;
 extern GtkTreeStore * music_store;
@@ -573,7 +576,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
 					char replaygain_label[MAXLEN];
 
-					switch (replaygain_tag_to_use) {
+					switch (options.replaygain_tag_to_use) {
 					case 0:
 						strcpy(replaygain_label, "Replaygain_track_gain:");
 						break;
@@ -684,7 +687,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
 					char replaygain_label[MAXLEN];
 
-					switch (replaygain_tag_to_use) {
+					switch (options.replaygain_tag_to_use) {
 					case 0:
 						strcpy(replaygain_label, "Replaygain_track_gain:");
 						break;

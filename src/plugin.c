@@ -36,18 +36,18 @@
 
 #include "common.h"
 #include "i18n.h"
+#include "options.h"
 #include "trashlist.h"
 #include "plugin.h"
 
+extern options_t options;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern pthread_mutex_t plugin_lock;
 
-extern char confdir[MAXLEN];
 extern int n_plugins;
 extern plugin_instance * plugin_vect[MAX_PLUGINS];
 
-extern int simple_view_in_fx;
 
 extern unsigned long ladspa_buflen;
 extern LADSPA_Data * l_buf;
@@ -1841,7 +1841,7 @@ create_fxbuilder(void) {
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
 	gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(column), 0);
 
-        if(simple_view_in_fx)
+        if (options.simple_view_in_fx)
                 gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN (column), FALSE);
 
 	column = gtk_tree_view_column_new_with_attributes(_("Name"), renderer, "text", 1, NULL);
@@ -1854,7 +1854,7 @@ create_fxbuilder(void) {
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
 	gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(column), 2);
 
-        if(simple_view_in_fx)
+        if (options.simple_view_in_fx)
                 gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN (column), FALSE);
 
 	column = gtk_tree_view_column_new_with_attributes(_("Inputs"), renderer, "text", 3, NULL);
@@ -1862,7 +1862,7 @@ create_fxbuilder(void) {
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
 	gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(column), 3);
         
-        if(simple_view_in_fx)
+        if (options.simple_view_in_fx)
                 gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN (column), FALSE);
 
 	column = gtk_tree_view_column_new_with_attributes(_("Outputs"), renderer, "text", 4, NULL);
@@ -1870,7 +1870,7 @@ create_fxbuilder(void) {
         gtk_tree_view_append_column(GTK_TREE_VIEW(avail_list), column);
 	gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(column), 4);
         
-        if(simple_view_in_fx)
+        if (options.simple_view_in_fx)
                 gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN (column), FALSE);
 
         frame_running = gtk_frame_new(_("Running plugins"));
@@ -1983,7 +1983,7 @@ save_plugin_data(void) {
         char str[32];
 
 
-        sprintf(plugin_file, "%s/plugin.xml", confdir);
+        sprintf(plugin_file, "%s/plugin.xml", options.confdir);
 
         doc = xmlNewDoc((const xmlChar*) "1.0");
         root = xmlNewNode(NULL, (const xmlChar*) "aqualung_plugin");
@@ -2022,7 +2022,7 @@ save_plugin_data(void) {
                 ++i;
         }
 
-        sprintf(tmpname, "%s/plugin.xml.temp", confdir);
+        sprintf(tmpname, "%s/plugin.xml.temp", options.confdir);
         xmlSaveFormatFile(tmpname, doc, 1);
 
         if ((fin = fopen(plugin_file, "rt")) == NULL) {
@@ -2160,7 +2160,7 @@ load_plugin_data(void) {
         char plugin_file[MAXLEN];
         FILE * f;
 
-        sprintf(plugin_file, "%s/plugin.xml", confdir);
+        sprintf(plugin_file, "%s/plugin.xml", options.confdir);
 
         if ((f = fopen(plugin_file, "rt")) == NULL) {
                 fprintf(stderr, "No plugin.xml -- creating empty one: %s\n", plugin_file);

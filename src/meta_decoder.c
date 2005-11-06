@@ -44,6 +44,7 @@
 #include "common.h"
 #include "core.h"
 #include "i18n.h"
+#include "options.h"
 #include "decoder/file_decoder.h"
 #ifdef HAVE_OGG_VORBIS
 #include "decoder/dec_vorbis.h"
@@ -51,7 +52,7 @@
 #include "meta_decoder.h"
 
 
-extern int replaygain_tag_to_use;
+extern options_t options;
 
 
 #ifdef HAVE_ID3
@@ -727,7 +728,7 @@ meta_get_rva(metadata * meta, float * fval) {
 		return 0;
 	}
 
-	switch (replaygain_tag_to_use) {
+	switch (options.replaygain_tag_to_use) {
 	case 0:
 		strcpy(replaygain_label, "Replaygain_track_gain:");
 		break;

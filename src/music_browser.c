@@ -37,6 +37,7 @@
 #include "decoder/file_decoder.h"
 #include "meta_decoder.h"
 #include "gui_main.h"
+#include "options.h"
 #include "volume.h"
 #include "playlist.h"
 #include "search.h"
@@ -47,21 +48,12 @@
 /*#define COVER_HEIGHT            200*/
 #define DEFAULT_COVER_FILE      "cover.jpg"
 
-extern GtkWidget * vol_window;
+extern options_t options;
 
-extern int rva_is_enabled;
-extern float rva_refvol;
-extern float rva_steepness;
-extern int rva_use_averaging;
-extern int rva_use_linear_thresh;
-extern float rva_avg_linear_thresh;
-extern float rva_avg_stddev_thresh;
+extern GtkWidget * vol_window;
 
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
-
-extern char confdir[MAXLEN];
-extern char currdir[MAXLEN];
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
@@ -69,12 +61,7 @@ extern PangoFontDescription *fd_browser;
 
 extern void set_sliders_width(void);
 
-char title_format[MAXLEN];
-
-int magnify_smaller_images = 0;
-int cover_width = 2;    /* 200 px */
 gint cover_widths[5] = { 50, 100, 200, 300, -1 };       /* widths in pixels */
-int expand_stores_on_startup = 1;
 
 GtkWidget * browser_window;
 GtkWidget * dialog;
@@ -84,12 +71,6 @@ int browser_size_x;
 int browser_size_y;
 int browser_on;
 int browser_paned_pos;
-
-int auto_use_meta_artist = 0;
-int auto_use_meta_record = 0;
-int auto_use_meta_track = 0;
-int hide_comment_pane = 0;
-int hide_comment_pane_shadow = 0;
 
 extern int drift_x;
 extern int drift_y;
@@ -117,7 +98,6 @@ extern GtkListStore * ms_pathlist_store;
 
 extern GtkWidget * musicstore_toggle;
 
-extern int override_skin_settings;
 
 /* popup menus for tree items */
 GtkWidget * artist_menu;
@@ -363,7 +343,7 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
         if (strlen(selected_filename)) {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), selected_filename);
 	} else {
-                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), currdir);
+                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
 	}
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
@@ -376,7 +356,7 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		gtk_entry_set_text(GTK_ENTRY(data), selected_filename);
 
-                strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
                                                                          MAXLEN-1);
         }
 
@@ -859,12 +839,12 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
         gtk_window_set_default_size(GTK_WINDOW(file_selector), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(file_selector), GTK_RESPONSE_ACCEPT);
         gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(file_selector), TRUE);
-        gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(file_selector), currdir);
+        gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(file_selector), options.currdir);
 
 
         if (gtk_dialog_run(GTK_DIALOG(file_selector)) == GTK_RESPONSE_ACCEPT) {
 
-                strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_selector)),
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_selector)),
                                                                          MAXLEN-1);
 
                 lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(file_selector));
@@ -1214,7 +1194,7 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
         if(strlen(selected_filename))
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), selected_filename);
         else
-                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), currdir);
+                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
@@ -1226,7 +1206,7 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		gtk_entry_set_text(GTK_ENTRY(data), selected_filename);
 
-                strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
                                                                          MAXLEN-1);
         }
 
@@ -1896,7 +1876,7 @@ store__addlist_cb(gpointer data) {
 				strncpy(record_name, precord_name, MAXLEN-1);
 				g_free(precord_name);
 
-				if (rva_is_enabled && rva_use_averaging) { /* save track volumes */
+				if (options.rva_is_enabled && options.rva_use_averaging) { /* save track volumes */
 				
 					float * volumes = NULL;
 					k = 0;
@@ -1907,7 +1887,7 @@ store__addlist_cb(gpointer data) {
 						gtk_tree_model_get(model, &iter_track, 5, &volume, -1);
 					
 						if (volume > 0.1f) { /* unmeasured */
-							volume = rva_refvol;
+							volume = options.rva_refvol;
 						}
 					
 						nlevels++;
@@ -1920,10 +1900,10 @@ store__addlist_cb(gpointer data) {
 					}
 				
 					voladj = rva_from_multiple_volumes(nlevels, volumes,
-									   rva_use_linear_thresh,
-									   rva_avg_linear_thresh,
-									   rva_avg_stddev_thresh,
-									   rva_refvol, rva_steepness);
+									   options.rva_use_linear_thresh,
+									   options.rva_avg_linear_thresh,
+									   options.rva_avg_stddev_thresh,
+									   options.rva_refvol, options.rva_steepness);
 					free(volumes);
 				}
 			
@@ -1940,7 +1920,7 @@ store__addlist_cb(gpointer data) {
 					g_free(ptrack_name);
 					g_free(pfile);
 
-					if (auto_use_meta_artist || auto_use_meta_record || auto_use_meta_track) {
+					if (options.auto_use_meta_artist || options.auto_use_meta_record || options.auto_use_meta_track) {
 						meta = meta_new();
 						if (!meta_read(meta, file)) {
 							meta_free(meta);
@@ -1948,15 +1928,15 @@ store__addlist_cb(gpointer data) {
 						}
 					}
 				
-					if ((meta != NULL) && auto_use_meta_artist) {
+					if ((meta != NULL) && options.auto_use_meta_artist) {
 						meta_get_artist(meta, artist_name);
 					}
 				
-					if ((meta != NULL) && auto_use_meta_record) {
+					if ((meta != NULL) && options.auto_use_meta_record) {
 						meta_get_record(meta, record_name);
 					}
 				
-					if ((meta != NULL) && auto_use_meta_track) {
+					if ((meta != NULL) && options.auto_use_meta_track) {
 						meta_get_title(meta, track_name);
 					}
 				
@@ -1965,7 +1945,7 @@ store__addlist_cb(gpointer data) {
 						meta = NULL;
 					}
 				
-					make_title_string(list_str, title_format,
+					make_title_string(list_str, options.title_format,
 							  artist_name, record_name, track_name);
 
 					if (duration == 0.0f) {
@@ -1978,12 +1958,12 @@ store__addlist_cb(gpointer data) {
 					}
 					time2time(duration, duration_str);
 
-					if (rva_is_enabled && !rva_use_averaging) {
+					if (options.rva_is_enabled && !options.rva_use_averaging) {
 						if (use_rva >= 0.0f) {
 							voladj = rva;
 						} else {
 							if (volume <= 0.1f) {
-								voladj = rva_from_volume(volume, rva_refvol, rva_steepness);
+								voladj = rva_from_volume(volume, options.rva_refvol, options.rva_steepness);
 							} else { /* unmeasured, see if there is RVA data in the file*/
 								metadata * meta = meta_new();
 								if (meta_read(meta, file)) {
@@ -1996,7 +1976,7 @@ store__addlist_cb(gpointer data) {
 								meta_free(meta);
 							}
 						}
-					} else if (!rva_is_enabled) {
+					} else if (!options.rva_is_enabled) {
 						voladj = 0.0f;
 					}
 
@@ -2249,7 +2229,7 @@ artist__addlist_cb(gpointer data) {
 			strncpy(record_name, precord_name, MAXLEN-1);
 			g_free(precord_name);
 
-			if (rva_is_enabled && rva_use_averaging) { /* save track volumes */
+			if (options.rva_is_enabled && options.rva_use_averaging) { /* save track volumes */
 				
 				float * volumes = NULL;
 				k = 0;
@@ -2260,7 +2240,7 @@ artist__addlist_cb(gpointer data) {
 					gtk_tree_model_get(model, &iter_track, 5, &volume, -1);
 					
 					if (volume > 0.1f) { /* unmeasured */
-						volume = rva_refvol;
+						volume = options.rva_refvol;
 					}
 					
 					nlevels++;
@@ -2273,10 +2253,10 @@ artist__addlist_cb(gpointer data) {
 				}
 				
 				voladj = rva_from_multiple_volumes(nlevels, volumes,
-								   rva_use_linear_thresh,
-								   rva_avg_linear_thresh,
-								   rva_avg_stddev_thresh,
-								   rva_refvol, rva_steepness);
+								   options.rva_use_linear_thresh,
+								   options.rva_avg_linear_thresh,
+								   options.rva_avg_stddev_thresh,
+								   options.rva_refvol, options.rva_steepness);
 				free(volumes);
 			}
 			
@@ -2293,7 +2273,7 @@ artist__addlist_cb(gpointer data) {
 				g_free(ptrack_name);
 				g_free(pfile);
 
-				if (auto_use_meta_artist || auto_use_meta_record || auto_use_meta_track) {
+				if (options.auto_use_meta_artist || options.auto_use_meta_record || options.auto_use_meta_track) {
 					meta = meta_new();
 					if (!meta_read(meta, file)) {
 						meta_free(meta);
@@ -2301,15 +2281,15 @@ artist__addlist_cb(gpointer data) {
 					}
 				}
 				
-				if ((meta != NULL) && auto_use_meta_artist) {
+				if ((meta != NULL) && options.auto_use_meta_artist) {
 					meta_get_artist(meta, artist_name);
 				}
 				
-				if ((meta != NULL) && auto_use_meta_record) {
+				if ((meta != NULL) && options.auto_use_meta_record) {
 					meta_get_record(meta, record_name);
 				}
 				
-				if ((meta != NULL) && auto_use_meta_track) {
+				if ((meta != NULL) && options.auto_use_meta_track) {
 					meta_get_title(meta, track_name);
 				}
 				
@@ -2318,7 +2298,7 @@ artist__addlist_cb(gpointer data) {
 					meta = NULL;
 				}
 				
-				make_title_string(list_str, title_format,
+				make_title_string(list_str, options.title_format,
 						  artist_name, record_name, track_name);
 
 				if (duration == 0.0f) {
@@ -2330,12 +2310,12 @@ artist__addlist_cb(gpointer data) {
 				}
 				time2time(duration, duration_str);
 
-				if (rva_is_enabled && !rva_use_averaging) {
+				if (options.rva_is_enabled && !options.rva_use_averaging) {
 					if (use_rva >= 0.0f) {
 						voladj = rva;
 					} else {
 						if (volume <= 0.1f) {
-							voladj = rva_from_volume(volume, rva_refvol, rva_steepness);
+							voladj = rva_from_volume(volume, options.rva_refvol, options.rva_steepness);
 						} else { /* unmeasured, see if there is RVA data in the file*/
 							metadata * meta = meta_new();
 							if (meta_read(meta, file)) {
@@ -2348,7 +2328,7 @@ artist__addlist_cb(gpointer data) {
 							meta_free(meta);
 						}
 					}
-				} else if (!rva_is_enabled) {
+				} else if (!options.rva_is_enabled) {
 					voladj = 0.0f;
 				}
 
@@ -2569,7 +2549,7 @@ record__addlist_cb(gpointer data) {
                 g_free(partist_name);
 
 
-		if (rva_is_enabled && rva_use_averaging) { /* save track volumes */
+		if (options.rva_is_enabled && options.rva_use_averaging) { /* save track volumes */
 
 			float * volumes = NULL;
 			i = 0;
@@ -2580,7 +2560,7 @@ record__addlist_cb(gpointer data) {
 				gtk_tree_model_get(model, &iter_track, 5, &volume, -1);
 
 				if (volume > 0.1f) { /* unmeasured */
-					volume = rva_refvol;
+					volume = options.rva_refvol;
 				}
 
 				nlevels++;
@@ -2592,10 +2572,10 @@ record__addlist_cb(gpointer data) {
 			}
 
 			voladj = rva_from_multiple_volumes(nlevels, volumes,
-							   rva_use_linear_thresh,
-							   rva_avg_linear_thresh,
-							   rva_avg_stddev_thresh,
-							   rva_refvol, rva_steepness);
+							   options.rva_use_linear_thresh,
+							   options.rva_avg_linear_thresh,
+							   options.rva_avg_stddev_thresh,
+							   options.rva_refvol, options.rva_steepness);
 			
 			free(volumes);
 		}
@@ -2613,7 +2593,7 @@ record__addlist_cb(gpointer data) {
 			g_free(ptrack_name);
 			g_free(pfile);
 			
-			if (auto_use_meta_artist || auto_use_meta_record || auto_use_meta_track) {
+			if (options.auto_use_meta_artist || options.auto_use_meta_record || options.auto_use_meta_track) {
 				meta = meta_new();
 				if (!meta_read(meta, file)) {
 					meta_free(meta);
@@ -2621,15 +2601,15 @@ record__addlist_cb(gpointer data) {
 				}
 			}
 			
-			if ((meta != NULL) && auto_use_meta_artist) {
+			if ((meta != NULL) && options.auto_use_meta_artist) {
 				meta_get_artist(meta, artist_name);
 			}
 			
-			if ((meta != NULL) && auto_use_meta_record) {
+			if ((meta != NULL) && options.auto_use_meta_record) {
 				meta_get_record(meta, record_name);
 			}
 			
-			if ((meta != NULL) && auto_use_meta_track) {
+			if ((meta != NULL) && options.auto_use_meta_track) {
 				meta_get_title(meta, track_name);
 			}
 			
@@ -2638,7 +2618,7 @@ record__addlist_cb(gpointer data) {
 				meta = NULL;
 			}
 
-			make_title_string(list_str, title_format,
+			make_title_string(list_str, options.title_format,
 					  artist_name, record_name, track_name);
 
 			if (duration == 0.0f) {
@@ -2650,13 +2630,13 @@ record__addlist_cb(gpointer data) {
 			}
 			time2time(duration, duration_str);
 
-			if (rva_is_enabled && !rva_use_averaging) {
+			if (options.rva_is_enabled && !options.rva_use_averaging) {
 				
 				if (use_rva >= 0.0f) {
 					voladj = rva;
 				} else {
 					if (volume <= 0.1f) {
-						voladj = rva_from_volume(volume, rva_refvol, rva_steepness);
+						voladj = rva_from_volume(volume, options.rva_refvol, options.rva_steepness);
 					} else { /* unmeasured, see if there is RVA data in the file */
 						metadata * meta = meta_new();
 						if (meta_read(meta, file)) {
@@ -2670,7 +2650,7 @@ record__addlist_cb(gpointer data) {
 					}
 				}
 
-			} else if (!rva_is_enabled) {
+			} else if (!options.rva_is_enabled) {
 				voladj = 0.0f;
 			}
 
@@ -2933,7 +2913,7 @@ track__addlist_cb(gpointer data) {
                 strncpy(artist_name, partist_name, MAXLEN-1);
                 g_free(partist_name);
 
-		if (auto_use_meta_artist || auto_use_meta_record || auto_use_meta_track) {
+		if (options.auto_use_meta_artist || options.auto_use_meta_record || options.auto_use_meta_track) {
 			meta = meta_new();
 			if (!meta_read(meta, file)) {
 				meta_free(meta);
@@ -2941,15 +2921,15 @@ track__addlist_cb(gpointer data) {
 			}
 		}
 
-		if ((meta != NULL) && auto_use_meta_artist) {
+		if ((meta != NULL) && options.auto_use_meta_artist) {
 			meta_get_artist(meta, artist_name);
 		}
 
-		if ((meta != NULL) && auto_use_meta_record) {
+		if ((meta != NULL) && options.auto_use_meta_record) {
 			meta_get_record(meta, record_name);
 		}
 
-		if ((meta != NULL) && auto_use_meta_track) {
+		if ((meta != NULL) && options.auto_use_meta_track) {
 			meta_get_title(meta, track_name);
 		}
 
@@ -2958,7 +2938,7 @@ track__addlist_cb(gpointer data) {
 			meta = NULL;
 		}
 
-		make_title_string(list_str, title_format,
+		make_title_string(list_str, options.title_format,
 				  artist_name, record_name, track_name);
 
 		if (duration == 0.0f) {
@@ -2970,12 +2950,12 @@ track__addlist_cb(gpointer data) {
 		}
 		time2time(duration, duration_str);
 
-		if (rva_is_enabled) {
+		if (options.rva_is_enabled) {
 			if (use_rva >= 0.0f) {
 				voladj = rva;
 			} else {
 				if (volume <= 0.1f) {
-					voladj = rva_from_volume(volume, rva_refvol, rva_steepness);
+					voladj = rva_from_volume(volume, options.rva_refvol, options.rva_steepness);
 				} else { /* unmeasured, see if there is RVA data in the file */
 					metadata * meta = meta_new();
 					if (meta_read(meta, file)) {
@@ -3146,7 +3126,7 @@ track__fileinfo_cb(gpointer data) {
                 strncpy(artist_name, partist_name, MAXLEN-1);
                 g_free(partist_name);
 
-		make_title_string(list_str, title_format,
+		make_title_string(list_str, options.title_format,
 				  artist_name, record_name, track_name);
 
 		if (is_store_iter_readonly(&iter_track)) {
@@ -3294,7 +3274,7 @@ set_comment_text_and_cover(char * str) {
 
                         /* load and display cover */
 
-                        k = cover_widths[cover_width % 5];
+                        k = cover_widths[options.cover_width % 5];
 
                         if (k == -1) {
 
@@ -3337,7 +3317,7 @@ set_comment_text_and_cover(char * str) {
                                         pixbuf = scaled;
 
                                 } else {
-                                        if (magnify_smaller_images) {
+                                        if (options.magnify_smaller_images) {
 
                                                 scaled_height = (height * d_cover_width) / width;
 
@@ -3451,7 +3431,7 @@ music_tree_expand_stores(void) {
 	GtkTreePath * path = NULL;
 	int i = 0;
 
-	if (!expand_stores_on_startup) return;
+	if (!options.autoexpand_stores) return;
 
 	i = 0;
         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_store, NULL, i++)) {
@@ -3489,7 +3469,7 @@ create_music_browser(void) {
 	gtk_container_set_border_width(GTK_CONTAINER(browser_window), 2);
         gtk_widget_set_size_request(browser_window, 200, 300);
 
-	if (!hide_comment_pane) {
+	if (!options.hide_comment_pane) {
 		browser_paned = gtk_vpaned_new();
 		gtk_container_add(GTK_CONTAINER(browser_window), browser_paned);
 	}
@@ -3514,7 +3494,7 @@ create_music_browser(void) {
 	gtk_widget_set_name(music_tree, "music_tree");
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(music_tree), FALSE);
 
-        if (override_skin_settings) {
+        if (options.override_skin_settings) {
                 gtk_widget_modify_font(music_tree, fd_browser);
         }
 
@@ -3527,7 +3507,7 @@ create_music_browser(void) {
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(music_tree), FALSE);
 
 	viewport1 = gtk_viewport_new(NULL, NULL);
-	if (!hide_comment_pane) {
+	if (!options.hide_comment_pane) {
 		gtk_paned_pack1(GTK_PANED(browser_paned), viewport1, TRUE, TRUE);
 	} else {
 		gtk_container_add(GTK_CONTAINER(browser_window), viewport1);
@@ -3790,13 +3770,13 @@ create_music_browser(void) {
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 	viewport2 = gtk_viewport_new(NULL, NULL);
-	if (!hide_comment_pane) {
+	if (!options.hide_comment_pane) {
 		gtk_paned_pack2(GTK_PANED(browser_paned), viewport2, FALSE, TRUE);
 	}
 	gtk_container_add(GTK_CONTAINER(viewport2), scrolled_win2);
 	gtk_container_add(GTK_CONTAINER(scrolled_win2), comment_view);
 
-	if (!hide_comment_pane) {
+	if (!options.hide_comment_pane) {
 		gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
 	}
 }
@@ -3809,7 +3789,7 @@ show_music_browser(void) {
 	gtk_window_move(GTK_WINDOW(browser_window), browser_pos_x, browser_pos_y);
 	gtk_window_resize(GTK_WINDOW(browser_window), browser_size_x, browser_size_y);
 	gtk_widget_show_all(browser_window);
-	if (!hide_comment_pane) {
+	if (!options.hide_comment_pane) {
 		gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
 	}
 }
@@ -3821,7 +3801,7 @@ hide_music_browser(void) {
 	browser_on = 0;
 	gtk_window_get_position(GTK_WINDOW(browser_window), &browser_pos_x, &browser_pos_y);
 	gtk_window_get_size(GTK_WINDOW(browser_window), &browser_size_x, &browser_size_y);
-	if (!hide_comment_pane) {
+	if (!options.hide_comment_pane) {
 		browser_paned_pos = gtk_paned_get_position(GTK_PANED(browser_paned));
 	}
 	gtk_widget_hide(browser_window);

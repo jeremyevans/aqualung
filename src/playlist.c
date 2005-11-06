@@ -40,38 +40,23 @@
 #include "decoder/file_decoder.h"
 #include "meta_decoder.h"
 #include "volume.h"
+#include "options.h"
 #include "i18n.h"
 #include "search_playlist.h"
 #include "playlist.h"
+
+extern options_t options;
 
 extern void set_sliders_width(void);
 
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
 
-extern char currdir[MAXLEN];
-extern char cwd[MAXLEN];
-
-extern char title_format[MAXLEN];
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 extern PangoFontDescription *fd_playlist;
 
-extern int override_skin_settings;
-
-int auto_save_playlist = 1;
-int show_rva_in_playlist = 0;
-int show_length_in_playlist = 1;
-int show_active_track_name_in_bold = 1;
-int plcol_idx[3] = { 0, 1, 2 };
-
-int auto_use_ext_meta_artist = 0;
-int auto_use_ext_meta_record = 0;
-int auto_use_ext_meta_track = 0;
-
-int enable_playlist_statusbar = 1;
-int enable_playlist_statusbar_shadow = 1;
 
 int alt_L;
 int alt_R;
@@ -96,15 +81,6 @@ int playlist_color_is_set;
 extern int main_size_x;
 extern int main_size_y;
 
-extern int playlist_is_embedded;
-
-extern int rva_is_enabled;
-extern float rva_refvol;
-extern float rva_steepness;
-extern int rva_use_averaging;
-extern int rva_use_linear_thresh;
-extern float rva_avg_linear_thresh;
-extern float rva_avg_stddev_thresh;
 
 extern int drift_x;
 extern int drift_y;
@@ -259,7 +235,7 @@ set_playlist_color() {
 
 			if (strcmp(str, pl_color_active) == 0) {
 				gtk_list_store_set(play_store, &iter, 2, active, -1);
-                                if(show_active_track_name_in_bold)
+                                if (options.show_active_track_name_in_bold)
                                         gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 				g_free(str);
                         }
@@ -324,7 +300,7 @@ start_playback_from_playlist(GtkTreePath * path) {
 	
 	gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path);
 	gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
-        if(show_active_track_name_in_bold)
+        if (options.show_active_track_name_in_bold)
                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 	
 	n = get_playing_pos(play_store);
@@ -449,7 +425,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
         case GDK_q:
 	case GDK_Q:
 	case GDK_Escape:
-                if(!playlist_is_embedded)
+                if (!options.playlist_is_embedded)
                         playlist_window_close(NULL, NULL, NULL);
 		return TRUE;
 		break;
@@ -508,7 +484,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                                 k = gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++);
                         } while (k && !gtk_tree_selection_iter_is_selected(play_select, &iter));
 
-                        if(k) {
+                        if (k) {
 
                                 path = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), &iter);
 
@@ -582,7 +558,7 @@ plist__save_cb(gpointer data) {
 
 
         dialog = gtk_file_chooser_dialog_new(_("Please specify the file to save the playlist to."), 
-                                             playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
+                                             options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
                                              GTK_FILE_CHOOSER_ACTION_SAVE, 
                                              GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
@@ -590,7 +566,7 @@ plist__save_cb(gpointer data) {
 
         set_sliders_width();
 
-        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), currdir);
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
         gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "playlist.xml");
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
@@ -605,7 +581,7 @@ plist__save_cb(gpointer data) {
 		strncpy(filename, selected_filename, MAXLEN-1);
 		save_playlist(filename);
 
-                strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
                                                                          MAXLEN-1);
 
                 g_free(selected_filename);
@@ -624,7 +600,7 @@ plist__load_cb(gpointer data) {
 
 
         dialog = gtk_file_chooser_dialog_new(_("Please specify the file to load the playlist from."), 
-                                             playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
+                                             options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
                                              GTK_FILE_CHOOSER_ACTION_OPEN, 
                                              GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
@@ -632,7 +608,7 @@ plist__load_cb(gpointer data) {
 
         set_sliders_width();
 
-        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), currdir);
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
@@ -660,7 +636,7 @@ plist__load_cb(gpointer data) {
 			break;
 		}
 
-                strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
                                                                          MAXLEN-1);
         }
 
@@ -680,7 +656,7 @@ plist__enqueue_cb(gpointer data) {
 
 
         dialog = gtk_file_chooser_dialog_new(_("Please specify the file to load the playlist from."), 
-                                             playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
+                                             options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
                                              GTK_FILE_CHOOSER_ACTION_OPEN, 
                                              GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
@@ -688,7 +664,7 @@ plist__enqueue_cb(gpointer data) {
 
         set_sliders_width();
 
-        gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), currdir);
+        gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
@@ -716,7 +692,7 @@ plist__enqueue_cb(gpointer data) {
 			break;
 		}
 
-                strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
                                                                          MAXLEN-1);
         }
 
@@ -745,10 +721,10 @@ watch_vol_calc(gpointer data) {
 	if (vol_is_average) {
 		char voladj_str[32];
 		float voladj = rva_from_multiple_volumes(vol_n_tracks, volumes,
-							 rva_use_linear_thresh,
-							 rva_avg_linear_thresh,
-							 rva_avg_stddev_thresh,
-							 rva_refvol, rva_steepness);
+							 options.rva_use_linear_thresh,
+							 options.rva_avg_linear_thresh,
+							 options.rva_avg_stddev_thresh,
+							 options.rva_refvol, options.rva_steepness);
 
 		voladj2str(voladj, voladj_str);
 
@@ -786,7 +762,7 @@ watch_vol_calc(gpointer data) {
 
 			if (k != -1) {
 				
-				voladj = rva_from_volume(volumes[k], rva_refvol, rva_steepness);
+				voladj = rva_from_volume(volumes[k], options.rva_refvol, options.rva_steepness);
 				voladj2str(voladj, voladj_str);
 				gtk_list_store_set(play_store, &iter, 3, voladj,
 						   4, voladj_str, -1);
@@ -847,8 +823,8 @@ plist_setup_vol_calc(void) {
 	if (vol_n_tracks == 0)
 		return;
 
-	if (!rva_is_enabled) {
-		GtkWidget * dialog = gtk_message_dialog_new(playlist_is_embedded ?
+	if (!options.rva_is_enabled) {
+		GtkWidget * dialog = gtk_message_dialog_new(options.playlist_is_embedded ?
 				         GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
 					 GTK_DIALOG_DESTROY_WITH_PARENT,
 					 GTK_MESSAGE_INFO,
@@ -1017,7 +993,7 @@ playlist_filemeta_get(char * physical_name, char * alt_name) {
 
 	plfm->duration = get_file_duration(physical_name);
 
-	if (rva_is_enabled) {
+	if (options.rva_is_enabled) {
 		meta = meta_new();
 		if (meta_read(meta, physical_name)) {
 			if (!meta_get_rva(meta, &(plfm->voladj))) {
@@ -1036,9 +1012,9 @@ playlist_filemeta_get(char * physical_name, char * alt_name) {
 	record_name[0] = '\0';
 	track_name[0] = '\0';
 
-	if (auto_use_ext_meta_artist ||
-	    auto_use_ext_meta_record ||
-	    auto_use_ext_meta_track) {
+	if (options.auto_use_ext_meta_artist ||
+	    options.auto_use_ext_meta_record ||
+	    options.auto_use_ext_meta_track) {
 		
 		meta = meta_new();
 		if (!meta_read(meta, physical_name)) {
@@ -1048,21 +1024,21 @@ playlist_filemeta_get(char * physical_name, char * alt_name) {
 	}
 	
 	use_meta = 0;
-	if ((meta != NULL) && auto_use_ext_meta_artist) {
+	if ((meta != NULL) && options.auto_use_ext_meta_artist) {
 		meta_get_artist(meta, artist_name);
 		if (artist_name[0] != '\0') {
 			use_meta = 1;
 		}
 	}
 	
-	if ((meta != NULL) && auto_use_ext_meta_record) {
+	if ((meta != NULL) && options.auto_use_ext_meta_record) {
 		meta_get_record(meta, record_name);
 		if (record_name[0] != '\0') {
 			use_meta = 1;
 		}
 	}
 	
-	if ((meta != NULL) && auto_use_ext_meta_track) {
+	if ((meta != NULL) && options.auto_use_ext_meta_track) {
 		meta_get_title(meta, track_name);
 		if (track_name[0] != '\0') {
 			use_meta = 1;
@@ -1090,7 +1066,7 @@ playlist_filemeta_get(char * physical_name, char * alt_name) {
 		meta_free(meta);
 		meta = NULL;
 		if (use_meta) {
-			make_title_string(display_name, title_format,
+			make_title_string(display_name, options.title_format,
 					  artist_name, record_name, track_name);
 		} else {
 			if (alt_name != NULL) {
@@ -1170,7 +1146,7 @@ direct_add(GtkWidget * widget, gpointer * data) {
 
 
         dialog = gtk_file_chooser_dialog_new(_("Select files..."), 
-                                             playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
+                                             options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
                                              GTK_FILE_CHOOSER_ACTION_OPEN, 
                                              GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
@@ -1183,12 +1159,12 @@ direct_add(GtkWidget * widget, gpointer * data) {
         deflicker();
 
         gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
-        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), currdir);
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                strncpy(currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
                                                                          MAXLEN-1);
 
                 lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
@@ -1394,7 +1370,7 @@ playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event) {
 	gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(length_column), length_width);
 
 
-	if (playlist_is_embedded) {
+	if (options.playlist_is_embedded) {
 		if (main_window->window != NULL) {
 			gtk_widget_queue_draw(main_window);
 			deflicker();
@@ -1422,7 +1398,7 @@ playlist_selection_changed(GtkTreeSelection * sel, gpointer data) {
 	char str[MAXLEN];
 	char time[16];
 
-	if (!enable_playlist_statusbar) return;
+	if (!options.enable_playlist_statusbar) return;
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
 
@@ -1455,7 +1431,7 @@ playlist_content_changed(void) {
 	char str[MAXLEN];
 	char time[16];
 
-	if (!enable_playlist_statusbar) return;
+	if (!options.enable_playlist_statusbar) return;
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
 			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 5, &len, -1);
@@ -1492,7 +1468,7 @@ create_playlist(void) {
 	int i;
 
         /* window creating stuff */
-	if (!playlist_is_embedded) {
+	if (!options.playlist_is_embedded) {
 		playlist_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title(GTK_WINDOW(playlist_window), _("Playlist"));
 		gtk_container_set_border_width(GTK_CONTAINER(playlist_window), 2);
@@ -1581,19 +1557,19 @@ create_playlist(void) {
 	gtk_widget_set_name(play_list, "play_list");
 	gtk_widget_set_size_request(play_list, 100, 100);
 
-        if(override_skin_settings) {
+        if (options.override_skin_settings) {
                 gtk_widget_modify_font (play_list, fd_playlist);
         }
 
         playlist_color_is_set = 0;
 
-	if (playlist_is_embedded) {
+	if (options.playlist_is_embedded) {
 		g_signal_connect(G_OBJECT(play_list), "key_press_event",
 				 G_CALLBACK(playlist_window_key_pressed), NULL);
 	}
 
 	for (i = 0; i < 3; i++) {
-		switch (plcol_idx[i]) {
+		switch (options.plcol_idx[i]) {
 		case 0:
 			track_renderer = gtk_cell_renderer_text_new();
 			track_column = gtk_tree_view_column_new_with_attributes("Tracks",
@@ -1621,7 +1597,7 @@ create_playlist(void) {
 			gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(rva_column),
 							GTK_TREE_VIEW_COLUMN_FIXED);
 			gtk_tree_view_column_set_spacing(GTK_TREE_VIEW_COLUMN(rva_column), 3);
-			if (show_rva_in_playlist) {
+			if (options.show_rva_in_playlist) {
 				gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(rva_column), TRUE);
 				gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(rva_column), 50);
 			} else {
@@ -1643,7 +1619,7 @@ create_playlist(void) {
 			gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(length_column),
 							GTK_TREE_VIEW_COLUMN_FIXED);
 			gtk_tree_view_column_set_spacing(GTK_TREE_VIEW_COLUMN(length_column), 3);
-			if (show_length_in_playlist) {
+			if (options.show_length_in_playlist) {
 				gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(length_column), TRUE);
 				gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(length_column), 50);
 			} else {
@@ -1684,7 +1660,7 @@ create_playlist(void) {
 
 
 	/* statusbar */
-	if (enable_playlist_statusbar) {
+	if (options.enable_playlist_statusbar) {
 		statusbar_viewport = gtk_viewport_new(NULL, NULL);
 		gtk_widget_set_name(statusbar_viewport, "info_viewport");
 		gtk_box_pack_start(GTK_BOX(vbox), statusbar_viewport, FALSE, TRUE, 2);
@@ -1785,7 +1761,7 @@ show_playlist(void) {
 
 	playlist_on = 1;
 
-	if (!playlist_is_embedded) {
+	if (!options.playlist_is_embedded) {
 		gtk_window_move(GTK_WINDOW(playlist_window), playlist_pos_x, playlist_pos_y);
 		gtk_window_resize(GTK_WINDOW(playlist_window), playlist_size_x, playlist_size_y);
 	} else {
@@ -1806,7 +1782,7 @@ void
 hide_playlist(void) {
 
 	playlist_on = 0;
-	if (!playlist_is_embedded) {
+	if (!options.playlist_is_embedded) {
 		gtk_window_get_position(GTK_WINDOW(playlist_window), &playlist_pos_x, &playlist_pos_y);
 		gtk_window_get_size(GTK_WINDOW(playlist_window), &playlist_size_x, &playlist_size_y);
 	} else {
@@ -1816,7 +1792,7 @@ hide_playlist(void) {
 	}
         gtk_widget_hide(playlist_window);
 
-	if (playlist_is_embedded) {
+	if (options.playlist_is_embedded) {
 		gtk_window_resize(GTK_WINDOW(main_window), main_size_x, main_size_y - playlist_size_y - 6);
 	}
 
@@ -2419,7 +2395,7 @@ add_to_playlist(char * filename, int enqueue) {
 		snprintf(fullname, MAXLEN-1, "%s/%s", home, path);
 		break;
 	default:
-		snprintf(fullname, MAXLEN-1, "%s/%s", cwd, filename);
+		snprintf(fullname, MAXLEN-1, "%s/%s", options.cwd, filename);
 		break;
 	}
 

@@ -31,10 +31,12 @@
 
 #include "common.h"
 #include "i18n.h"
+#include "options.h"
 #include "decoder/file_decoder.h"
 #include "music_browser.h"
 #include "cddb_lookup.h"
 
+extern options_t options;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
@@ -46,10 +48,6 @@ extern GtkTreeSelection * music_select;
 pthread_t cddb_thread_id;
 int cddb_thread_state = 0;
 int cddb_query_aborted = 0;
-
-char cddb_server[MAXLEN] = "freedb.org";
-int cddb_use_http = 0;
-int cddb_timeout = 10;
 
 GtkTreeIter iter_record;
 
@@ -488,10 +486,10 @@ cddb_thread(void * arg) {
 		return 0;
 	}
 
-	cddb_set_server_name(conn, cddb_server);
-	cddb_set_timeout(conn, cddb_timeout);
+	cddb_set_server_name(conn, options.cddb_server);
+	cddb_set_timeout(conn, options.cddb_timeout);
 
-	if (cddb_use_http) {
+	if (options.cddb_use_http) {
 		cddb_http_enable(conn);
 		cddb_set_server_port(conn, 80);
 	}

@@ -29,12 +29,16 @@
 #include "common.h"
 #include "playlist.h"
 #include "gui_main.h"
+#include "options.h"
 #include "i18n.h"
 
 /* search flags */
 #define SEARCH_F_CS (1 << 0)    /* case sensitive */
 #define SEARCH_F_EM (1 << 1)    /* exact matches only */
 #define SEARCH_F_SF (1 << 2)    /* select first and close */
+
+
+extern options_t options;
 
 extern int search_pl_flags;
 
@@ -43,7 +47,6 @@ extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern GtkListStore * play_store;
 extern GtkWidget * play_list;
 
-extern int playlist_is_embedded;
 extern GtkWidget * playlist_window;
 extern GtkWidget * main_window;
 
@@ -269,7 +272,7 @@ search_playlist_dialog(void) {
         gtk_window_set_position(GTK_WINDOW(search_window), GTK_WIN_POS_CENTER);
 
 
-	if (playlist_is_embedded) {
+	if (options.playlist_is_embedded) {
 		gtk_window_set_transient_for(GTK_WINDOW(search_window), GTK_WINDOW(main_window));
 	} else {
 		gtk_window_set_transient_for(GTK_WINDOW(search_window), GTK_WINDOW(playlist_window));

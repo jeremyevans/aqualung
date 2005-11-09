@@ -1373,12 +1373,10 @@ playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event) {
 	if (options.playlist_is_embedded) {
 		if (main_window->window != NULL) {
 			gtk_widget_queue_draw(main_window);
-			deflicker();
 		}
 	} else {
 		if (playlist_window->window != NULL) {
 			gtk_widget_queue_draw(playlist_window);
-			deflicker();
 		}
 	}
 

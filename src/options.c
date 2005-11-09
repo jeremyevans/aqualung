@@ -194,6 +194,7 @@ ok(GtkWidget * widget, gpointer data) {
 	int n_prev = 3;
         GdkColor color;
 
+
 	strncpy(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)), MAXLEN - 1);
 	strncpy(options.default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN - 1);
 	options.auto_save_playlist = auto_save_playlist_shadow;
@@ -331,6 +332,7 @@ ok(GtkWidget * widget, gpointer data) {
 	options.cddb_timeout = gtk_spin_button_get_value(GTK_SPIN_BUTTON(cddb_tout_spinner));
 #endif /* HAVE_CDDB */
 
+
         for (i = 0; i < 3; i++) {
 
 		GtkTreeIter iter;
@@ -389,11 +391,13 @@ ok(GtkWidget * widget, gpointer data) {
                 override_past_state = 0;
         }
 
+
         if (restart_flag) {
                 show_restart_info();            
         }
 
 	gtk_widget_destroy(options_window);
+
 	return TRUE;
 }
 

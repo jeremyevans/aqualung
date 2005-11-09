@@ -44,14 +44,14 @@ typedef struct {
 } rms_env;
 
 
+extern GtkTreeStore * music_store;
+extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
+
+
 GtkWidget * vol_window = NULL;
 GtkWidget * progress;
 GtkWidget * cancel_button;
 GtkWidget * file_entry;
-
-extern GtkTreeStore * music_store;
-
-extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 vol_queue_t * vol_queue = NULL;
 vol_queue_t * vol_queue_save = NULL;
@@ -68,6 +68,7 @@ int vol_index;
 rms_env * rms_vol;
 
 void set_filename_text (gchar *filename);
+
 
 vol_queue_t *
 vol_queue_push(vol_queue_t * q, char * file, GtkTreeIter iter) {
@@ -131,6 +132,7 @@ vol_window_close(GtkWidget * widget, gpointer * data) {
 
         vol_cancelled = 1;
 	vol_window = NULL;
+
         return 0;
 }
 
@@ -162,7 +164,7 @@ volume_window(void) {
 
 
 	vol_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(vol_window), _("Processing..."));
+        gtk_window_set_title(GTK_WINDOW(vol_window), _("Calculating volume level"));
         gtk_window_set_position(GTK_WINDOW(vol_window), GTK_WIN_POS_CENTER);
         gtk_window_resize(GTK_WINDOW(vol_window), 450, 160);
         g_signal_connect(G_OBJECT(vol_window), "delete_event",
@@ -173,14 +175,7 @@ volume_window(void) {
         gtk_container_add(GTK_CONTAINER(vol_window), vbox);
 
         hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 10);
-
-        label = gtk_label_new("");
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-        gtk_label_set_markup(GTK_LABEL(label), _("<b>Calculating volume level</b>"));
-
-        hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 
         label = gtk_label_new(_("Filename:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 2);
@@ -189,16 +184,10 @@ volume_window(void) {
         gtk_editable_set_editable(GTK_EDITABLE(file_entry), FALSE);
         gtk_box_pack_start(GTK_BOX(hbox), file_entry, TRUE, TRUE, 2);
 
-        hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 5);
-
-        label = gtk_label_new(_("Progress:"));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
 	progress = gtk_progress_bar_new();
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.0f);
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress), "0%");
-        gtk_box_pack_start(GTK_BOX(hbox), progress, TRUE, TRUE, 2);
+        gtk_box_pack_start(GTK_BOX(vbox), progress, TRUE, FALSE, 2);
 
 	hbuttonbox = gtk_hbutton_box_new();
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);

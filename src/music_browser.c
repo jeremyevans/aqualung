@@ -51,15 +51,20 @@
 extern options_t options;
 
 extern GtkWidget * vol_window;
+extern GtkWidget * play_list;
+extern GtkWidget * musicstore_toggle;
+
+extern GtkListStore * play_store;
+extern GtkListStore * ms_pathlist_store;
+
+extern PangoFontDescription *fd_browser;
 
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
-
-extern PangoFontDescription *fd_browser;
-
 extern void set_sliders_width(void);
+
 
 gint cover_widths[5] = { 50, 100, 200, 300, -1 };       /* widths in pixels */
 
@@ -72,18 +77,6 @@ int browser_size_y;
 int browser_on;
 int browser_paned_pos;
 
-extern int drift_x;
-extern int drift_y;
-
-extern int main_pos_x;
-extern int main_pos_y;
-
-extern int playlist_pos_x;
-extern int playlist_pos_y;
-extern int playlist_on;
-
-extern GtkWidget * play_list;
-
 int music_store_changed = 0;
 
 GtkWidget * music_tree;
@@ -92,11 +85,6 @@ GtkTreeSelection * music_select;
 
 GtkWidget * comment_view;
 GtkWidget * browser_paned;
-
-extern GtkListStore * play_store;
-extern GtkListStore * ms_pathlist_store;
-
-extern GtkWidget * musicstore_toggle;
 
 
 /* popup menus for tree items */
@@ -155,6 +143,8 @@ GtkWidget * blank_menu;
 GtkWidget * blank__add;
 GtkWidget * blank__search;
 GtkWidget * blank__save;
+
+int drag_info;
 
 
 /* prototypes, when we need them */
@@ -249,8 +239,6 @@ struct keybinds blank_keybinds[] = {
 GtkTargetEntry target_table[] = {
 	{ "", GTK_TARGET_SAME_APP, 0 }
 };
-
-int drag_info;
 
 
 static gboolean
@@ -1828,15 +1816,13 @@ dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data)
 
 /****************************************/
 
-void
-store__addlist_cb(gpointer data) {
 
-        GtkTreeIter iter_store;
+void
+track_addlist_iter(GtkTreeIter iter_track, float avg_voladj, int use_avg_voladj) {
+
         GtkTreeIter iter_artist;
         GtkTreeIter iter_record;
-        GtkTreeIter iter_track;
 	GtkTreeIter list_iter;
-        GtkTreeModel * model;
 
         char * partist_name;
         char * precord_name;
@@ -1847,10 +1833,7 @@ store__addlist_cb(gpointer data) {
         char record_name[MAXLEN];
         char track_name[MAXLEN];
         char file[MAXLEN];
-
 	char list_str[MAXLEN];
-	int h, i, j, k;
-	int nlevels;
 
 	float duration;
 	float volume;
@@ -1860,146 +1843,188 @@ store__addlist_cb(gpointer data) {
 	char voladj_str[32];
 	char duration_str[32];
 
+	metadata * meta = NULL;
 
-        if (gtk_tree_selection_get_selected(music_select, &model, &iter_store)) {
-		h = 0;
-		while (gtk_tree_model_iter_nth_child(model, &iter_artist, &iter_store, h++)) {
 
-			gtk_tree_model_get(model, &iter_artist, 0, &partist_name, -1);
-			strncpy(artist_name, partist_name, MAXLEN-1);
-			g_free(partist_name);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, 0, &ptrack_name, 2, &pfile,
+			   4, &duration, 5, &volume, 6, &rva, 7, &use_rva, -1);
+	strncpy(track_name, ptrack_name, MAXLEN-1);
+	strncpy(file, pfile, MAXLEN-1);
+	g_free(ptrack_name);
+	g_free(pfile);
+		
+	gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_record, &iter_track);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 0, &precord_name, -1);
+	strncpy(record_name, precord_name, MAXLEN-1);
+	g_free(precord_name);
 
-			i = 0;
-			while (gtk_tree_model_iter_nth_child(model, &iter_record, &iter_artist, i++)) {
+	gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_artist, &iter_record);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist, 0, &partist_name, -1);
+	strncpy(artist_name, partist_name, MAXLEN-1);
+	g_free(partist_name);
 
-				gtk_tree_model_get(model, &iter_record, 0, &precord_name, -1);
-				strncpy(record_name, precord_name, MAXLEN-1);
-				g_free(precord_name);
+	if (options.auto_use_meta_artist || options.auto_use_meta_record || options.auto_use_meta_track) {
+		meta = meta_new();
+		if (!meta_read(meta, file)) {
+			meta_free(meta);
+			meta = NULL;
+		}
+	}
 
-				if (options.rva_is_enabled && options.rva_use_averaging) { /* save track volumes */
-				
-					float * volumes = NULL;
-					k = 0;
-					nlevels = 0;
-				
-					while (gtk_tree_model_iter_nth_child(model, &iter_track,
-									     &iter_record, k++)) {
-						gtk_tree_model_get(model, &iter_track, 5, &volume, -1);
-					
-						if (volume > 0.1f) { /* unmeasured */
-							volume = options.rva_refvol;
+	if ((meta != NULL) && options.auto_use_meta_artist) {
+		meta_get_artist(meta, artist_name);
+	}
+
+	if ((meta != NULL) && options.auto_use_meta_record) {
+		meta_get_record(meta, record_name);
+	}
+
+	if ((meta != NULL) && options.auto_use_meta_track) {
+		meta_get_title(meta, track_name);
+	}
+
+	if (meta != NULL) {
+		meta_free(meta);
+		meta = NULL;
+	}
+	
+	make_title_string(list_str, options.title_format,
+			  artist_name, record_name, track_name);
+	
+	if (duration == 0.0f) {
+		duration = get_file_duration(file);
+		if (!is_store_iter_readonly(&iter_track)) {
+			gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
+				music_store_mark_changed();
+		}
+	}
+	time2time(duration, duration_str);
+	
+	if (options.rva_is_enabled) {
+		if (options.rva_use_averaging && use_avg_voladj) {
+			voladj = avg_voladj;
+		} else {
+			if (use_rva >= 0.0f) {
+				voladj = rva;
+			} else {
+				if (volume <= 0.1f) {
+					voladj = rva_from_volume(volume,
+								 options.rva_refvol,
+								 options.rva_steepness);
+				} else { /* unmeasured, see if there is RVA data in the file */
+					metadata * meta = meta_new();
+					if (meta_read(meta, file)) {
+						if (!meta_get_rva(meta, &voladj)) {
+							voladj = 0.0f;
 						}
-					
-						nlevels++;
-						if ((volumes = realloc(volumes, nlevels * sizeof(float))) == NULL) {
-							fprintf(stderr,
-								"atore__addlist_cb: realloc error\n");
-							return;
-						}
-						volumes[nlevels-1] = volume;
-					}
-				
-					voladj = rva_from_multiple_volumes(nlevels, volumes,
-									   options.rva_use_linear_thresh,
-									   options.rva_avg_linear_thresh,
-									   options.rva_avg_stddev_thresh,
-									   options.rva_refvol, options.rva_steepness);
-					free(volumes);
-				}
-			
-				j = 0;
-				while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, j++)) {
-
-					metadata * meta = NULL;
-
-				
-					gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
-							   4, &duration, 5, &volume, 6, &rva, 7, &use_rva, -1);
-					strncpy(track_name, ptrack_name, MAXLEN-1);
-					strncpy(file, pfile, MAXLEN-1);
-					g_free(ptrack_name);
-					g_free(pfile);
-
-					if (options.auto_use_meta_artist || options.auto_use_meta_record || options.auto_use_meta_track) {
-						meta = meta_new();
-						if (!meta_read(meta, file)) {
-							meta_free(meta);
-							meta = NULL;
-						}
-					}
-				
-					if ((meta != NULL) && options.auto_use_meta_artist) {
-						meta_get_artist(meta, artist_name);
-					}
-				
-					if ((meta != NULL) && options.auto_use_meta_record) {
-						meta_get_record(meta, record_name);
-					}
-				
-					if ((meta != NULL) && options.auto_use_meta_track) {
-						meta_get_title(meta, track_name);
-					}
-				
-					if (meta != NULL) {
-						meta_free(meta);
-						meta = NULL;
-					}
-				
-					make_title_string(list_str, options.title_format,
-							  artist_name, record_name, track_name);
-
-					if (duration == 0.0f) {
-						duration = get_file_duration(file);
-						if (!is_store_iter_readonly(&iter_track)) {
-							gtk_tree_store_set(music_store, &iter_track,
-									   4, duration, -1);
-							music_store_mark_changed();
-						}
-					}
-					time2time(duration, duration_str);
-
-					if (options.rva_is_enabled && !options.rva_use_averaging) {
-						if (use_rva >= 0.0f) {
-							voladj = rva;
-						} else {
-							if (volume <= 0.1f) {
-								voladj = rva_from_volume(volume, options.rva_refvol, options.rva_steepness);
-							} else { /* unmeasured, see if there is RVA data in the file*/
-								metadata * meta = meta_new();
-								if (meta_read(meta, file)) {
-									if (!meta_get_rva(meta, &voladj)) {
-										voladj = 0.0f;
-									}
-								} else {
-									voladj = 0.0f;
-								}
-								meta_free(meta);
-							}
-						}
-					} else if (!options.rva_is_enabled) {
+					} else {
 						voladj = 0.0f;
 					}
-
-					gtk_list_store_insert_before(play_store,
-								     &list_iter,
-								     (GtkTreeIter *)data);
-
-					voladj2str(voladj, voladj_str);
-					gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
-							   2, pl_color_inactive,
-							   3, voladj, 4, voladj_str,
-							   5, duration, 6, duration_str, -1);
-
-					if ((j % 3) == 0) {
-						deflicker();
-					}
+					meta_free(meta);
 				}
 			}
 		}
-		delayed_playlist_rearrange(100);
 	}
+	
+	gtk_list_store_insert_before(play_store, &list_iter, NULL);
+	
+	voladj2str(voladj, voladj_str);
+	
+	gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
+			   2, pl_color_inactive, 3, voladj, 4, voladj_str,
+			   5, duration, 6, duration_str, -1);
 
 	playlist_content_changed();
+}
+
+
+void
+record_addlist_iter(GtkTreeIter iter_record) {
+
+        GtkTreeIter iter_track;
+
+	int i;
+	int nlevels;
+
+	float volume;
+	float voladj = 0.0f;
+
+
+	if (options.rva_is_enabled && options.rva_use_averaging) { /* save track volumes */
+
+		float * volumes = NULL;
+		i = 0;
+		nlevels = 0;
+		
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track,
+						     &iter_record, i++)) {
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, 5, &volume, -1);
+			
+			if (volume > 0.1f) { /* unmeasured */
+				volume = options.rva_refvol;
+			}
+			
+			nlevels++;
+			if ((volumes = realloc(volumes, nlevels * sizeof(float))) == NULL) {
+				fprintf(stderr, "record__addlist_cb: realloc error\n");
+				return;
+			}
+			volumes[nlevels-1] = volume;
+		}
+		
+		voladj = rva_from_multiple_volumes(nlevels, volumes,
+						   options.rva_use_linear_thresh,
+						   options.rva_avg_linear_thresh,
+						   options.rva_avg_stddev_thresh,
+						   options.rva_refvol, options.rva_steepness);
+		free(volumes);
+	}
+	
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track, &iter_record, i++)) {
+		track_addlist_iter(iter_track, voladj, options.rva_use_averaging);
+	}
+}
+
+
+void
+artist_addlist_iter(GtkTreeIter iter_artist) {
+
+	GtkTreeIter iter_record;
+	int i = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_record, &iter_artist, i++)) {
+		record_addlist_iter(iter_record);
+	}
+}
+
+
+void
+store_addlist_iter(GtkTreeIter iter_store) {
+
+	GtkTreeIter iter_artist;
+	int i = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, &iter_store, i++)) {
+		artist_addlist_iter(iter_artist);
+	}
+}
+
+
+/****************************************/
+
+
+void
+store__addlist_cb(gpointer data) {
+
+        GtkTreeIter iter_store;
+        GtkTreeModel * model;
+
+
+        if (gtk_tree_selection_get_selected(music_select, &model, &iter_store)) {
+		store_addlist_iter(iter_store);
+		delayed_playlist_rearrange(100);
+	}
 }
 
 
@@ -2188,169 +2213,12 @@ void
 artist__addlist_cb(gpointer data) {
 
         GtkTreeIter iter_artist;
-        GtkTreeIter iter_record;
-        GtkTreeIter iter_track;
-	GtkTreeIter list_iter;
         GtkTreeModel * model;
 
-        char * partist_name;
-        char * precord_name;
-        char * ptrack_name;
-        char * pfile;
-
-        char artist_name[MAXLEN];
-        char record_name[MAXLEN];
-        char track_name[MAXLEN];
-        char file[MAXLEN];
-
-	char list_str[MAXLEN];
-	int i, j, k;
-	int nlevels;
-
-	float duration;
-	float volume;
-	float rva;
-	float use_rva;
-	float voladj = 0.0f;
-	char voladj_str[32];
-	char duration_str[32];
-
-
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_artist)) {
-
-                gtk_tree_model_get(model, &iter_artist, 0, &partist_name, -1);
-                strncpy(artist_name, partist_name, MAXLEN-1);
-                g_free(partist_name);
-
-		i = 0;
-		while (gtk_tree_model_iter_nth_child(model, &iter_record, &iter_artist, i++)) {
-
-			gtk_tree_model_get(model, &iter_record, 0, &precord_name, -1);
-			strncpy(record_name, precord_name, MAXLEN-1);
-			g_free(precord_name);
-
-			if (options.rva_is_enabled && options.rva_use_averaging) { /* save track volumes */
-				
-				float * volumes = NULL;
-				k = 0;
-				nlevels = 0;
-				
-				while (gtk_tree_model_iter_nth_child(model, &iter_track,
-								     &iter_record, k++)) {
-					gtk_tree_model_get(model, &iter_track, 5, &volume, -1);
-					
-					if (volume > 0.1f) { /* unmeasured */
-						volume = options.rva_refvol;
-					}
-					
-					nlevels++;
-					if ((volumes = realloc(volumes, nlevels * sizeof(float))) == NULL) {
-						fprintf(stderr,
-							"artist__addlist_c: brealloc error\n");
-						return;
-					}
-					volumes[nlevels-1] = volume;
-				}
-				
-				voladj = rva_from_multiple_volumes(nlevels, volumes,
-								   options.rva_use_linear_thresh,
-								   options.rva_avg_linear_thresh,
-								   options.rva_avg_stddev_thresh,
-								   options.rva_refvol, options.rva_steepness);
-				free(volumes);
-			}
-			
-			j = 0;
-			while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, j++)) {
-
-				metadata * meta = NULL;
-
-				
-				gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
-						   4, &duration, 5, &volume, 6, &rva, 7, &use_rva, -1);
-				strncpy(track_name, ptrack_name, MAXLEN-1);
-				strncpy(file, pfile, MAXLEN-1);
-				g_free(ptrack_name);
-				g_free(pfile);
-
-				if (options.auto_use_meta_artist || options.auto_use_meta_record || options.auto_use_meta_track) {
-					meta = meta_new();
-					if (!meta_read(meta, file)) {
-						meta_free(meta);
-						meta = NULL;
-					}
-				}
-				
-				if ((meta != NULL) && options.auto_use_meta_artist) {
-					meta_get_artist(meta, artist_name);
-				}
-				
-				if ((meta != NULL) && options.auto_use_meta_record) {
-					meta_get_record(meta, record_name);
-				}
-				
-				if ((meta != NULL) && options.auto_use_meta_track) {
-					meta_get_title(meta, track_name);
-				}
-				
-				if (meta != NULL) {
-					meta_free(meta);
-					meta = NULL;
-				}
-				
-				make_title_string(list_str, options.title_format,
-						  artist_name, record_name, track_name);
-
-				if (duration == 0.0f) {
-					duration = get_file_duration(file);
-					if (!is_store_iter_readonly(&iter_track)) {
-						gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
-						music_store_mark_changed();
-					}
-				}
-				time2time(duration, duration_str);
-
-				if (options.rva_is_enabled && !options.rva_use_averaging) {
-					if (use_rva >= 0.0f) {
-						voladj = rva;
-					} else {
-						if (volume <= 0.1f) {
-							voladj = rva_from_volume(volume, options.rva_refvol, options.rva_steepness);
-						} else { /* unmeasured, see if there is RVA data in the file*/
-							metadata * meta = meta_new();
-							if (meta_read(meta, file)) {
-								if (!meta_get_rva(meta, &voladj)) {
-									voladj = 0.0f;
-								}
-							} else {
-								voladj = 0.0f;
-							}
-							meta_free(meta);
-						}
-					}
-				} else if (!options.rva_is_enabled) {
-					voladj = 0.0f;
-				}
-
-				gtk_list_store_insert_before(play_store,
-							     &list_iter,
-							     (GtkTreeIter *)data);
-
-				voladj2str(voladj, voladj_str);
-				gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
-						   2, pl_color_inactive,
-						   3, voladj, 4, voladj_str,
-						   5, duration, 6, duration_str, -1);
-
-				if ((j % 3) == 0) {
-					deflicker();
-				}
-			}
-		}
+		artist_addlist_iter(iter_artist);
 		delayed_playlist_rearrange(100);
 	}
-
-	playlist_content_changed();
 }
 
 
@@ -2507,170 +2375,13 @@ artist__remove_cb(gpointer data) {
 void
 record__addlist_cb(gpointer data) {
 
-        GtkTreeIter iter_artist;
         GtkTreeIter iter_record;
-        GtkTreeIter iter_track;
-	GtkTreeIter list_iter;
         GtkTreeModel * model;
 
-        char * partist_name;
-        char * precord_name;
-        char * ptrack_name;
-        char * pfile;
-
-        char artist_name[MAXLEN];
-        char record_name[MAXLEN];
-        char track_name[MAXLEN];
-        char file[MAXLEN];
-
-	char list_str[MAXLEN];
-	int i;
-	int nlevels;
-
-	float duration;
-	float volume;
-	float rva;
-	float use_rva;
-	float voladj = 0.0f;
-	char voladj_str[32];
-	char duration_str[32];
-
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_record)) {
-
-                gtk_tree_model_get(model, &iter_record, 0, &precord_name, -1);
-                strncpy(record_name, precord_name, MAXLEN-1);
-                g_free(precord_name);
-		
-		gtk_tree_model_iter_parent(model, &iter_artist, &iter_record);
-		if (iter_artist.stamp != GTK_TREE_STORE(model)->stamp)
-			return;
-                gtk_tree_model_get(model, &iter_artist, 0, &partist_name, -1);
-                strncpy(artist_name, partist_name, MAXLEN-1);
-                g_free(partist_name);
-
-
-		if (options.rva_is_enabled && options.rva_use_averaging) { /* save track volumes */
-
-			float * volumes = NULL;
-			i = 0;
-			nlevels = 0;
-
-			while (gtk_tree_model_iter_nth_child(model, &iter_track,
-							     &iter_record, i++)) {
-				gtk_tree_model_get(model, &iter_track, 5, &volume, -1);
-
-				if (volume > 0.1f) { /* unmeasured */
-					volume = options.rva_refvol;
-				}
-
-				nlevels++;
-				if ((volumes = realloc(volumes, nlevels * sizeof(float))) == NULL) {
-					fprintf(stderr, "record__addlist_cb: realloc error\n");
-					return;
-				}
-				volumes[nlevels-1] = volume;
-			}
-
-			voladj = rva_from_multiple_volumes(nlevels, volumes,
-							   options.rva_use_linear_thresh,
-							   options.rva_avg_linear_thresh,
-							   options.rva_avg_stddev_thresh,
-							   options.rva_refvol, options.rva_steepness);
-			
-			free(volumes);
-		}
-
-		i = 0;
-		while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, i++)) {
-
-			metadata * meta = NULL;
-
-
-			gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
-					   4, &duration, 5, &volume, 6, &rva, 7, &use_rva, -1);
-			strncpy(track_name, ptrack_name, MAXLEN-1);
-			strncpy(file, pfile, MAXLEN-1);
-			g_free(ptrack_name);
-			g_free(pfile);
-			
-			if (options.auto_use_meta_artist || options.auto_use_meta_record || options.auto_use_meta_track) {
-				meta = meta_new();
-				if (!meta_read(meta, file)) {
-					meta_free(meta);
-					meta = NULL;
-				}
-			}
-			
-			if ((meta != NULL) && options.auto_use_meta_artist) {
-				meta_get_artist(meta, artist_name);
-			}
-			
-			if ((meta != NULL) && options.auto_use_meta_record) {
-				meta_get_record(meta, record_name);
-			}
-			
-			if ((meta != NULL) && options.auto_use_meta_track) {
-				meta_get_title(meta, track_name);
-			}
-			
-			if (meta != NULL) {
-				meta_free(meta);
-				meta = NULL;
-			}
-
-			make_title_string(list_str, options.title_format,
-					  artist_name, record_name, track_name);
-
-			if (duration == 0.0f) {
-				duration = get_file_duration(file);
-				if (!is_store_iter_readonly(&iter_track)) {
-					gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
-					music_store_mark_changed();
-				}
-			}
-			time2time(duration, duration_str);
-
-			if (options.rva_is_enabled && !options.rva_use_averaging) {
-				
-				if (use_rva >= 0.0f) {
-					voladj = rva;
-				} else {
-					if (volume <= 0.1f) {
-						voladj = rva_from_volume(volume, options.rva_refvol, options.rva_steepness);
-					} else { /* unmeasured, see if there is RVA data in the file */
-						metadata * meta = meta_new();
-						if (meta_read(meta, file)) {
-							if (!meta_get_rva(meta, &voladj)) {
-								voladj = 0.0f;
-							}
-						} else {
-							voladj = 0.0f;
-						}
-						meta_free(meta);
-					}
-				}
-
-			} else if (!options.rva_is_enabled) {
-				voladj = 0.0f;
-			}
-
-			gtk_list_store_insert_before(play_store,
-						     &list_iter,
-						     (GtkTreeIter *)data);
-
-			voladj2str(voladj, voladj_str);
-			gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
-					   2, pl_color_inactive, 3, voladj, 4, voladj_str,
-					   5, duration, 6, duration_str, -1);
-
-			if ((i % 3) == 0) {
-				deflicker();
-			}
-		}
+		record_addlist_iter(iter_record);
 		delayed_playlist_rearrange(100);
 	}
-
-	playlist_content_changed();
 }
 
 
@@ -2866,126 +2577,13 @@ record__cddb_cb(gpointer data) {
 void
 track__addlist_cb(gpointer data) {
 
-        GtkTreeIter iter_artist;
-        GtkTreeIter iter_record;
         GtkTreeIter iter_track;
-	GtkTreeIter list_iter;
         GtkTreeModel * model;
 
-        char * partist_name;
-        char * precord_name;
-        char * ptrack_name;
-        char * pfile;
-
-        char artist_name[MAXLEN];
-        char record_name[MAXLEN];
-        char track_name[MAXLEN];
-        char file[MAXLEN];
-	char list_str[MAXLEN];
-
-	float duration;
-	float volume;
-	float rva;
-	float use_rva;
-	float voladj;
-	char voladj_str[32];
-	char duration_str[32];
-
-	metadata * meta = NULL;
-
-
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
-
-                gtk_tree_model_get(model, &iter_track, 0, &ptrack_name, 2, &pfile,
-				   4, &duration, 5, &volume, 6, &rva, 7, &use_rva, -1);
-                strncpy(track_name, ptrack_name, MAXLEN-1);
-                strncpy(file, pfile, MAXLEN-1);
-                g_free(ptrack_name);
-                g_free(pfile);
-		
-		gtk_tree_model_iter_parent(model, &iter_record, &iter_track);
-                gtk_tree_model_get(model, &iter_record, 0, &precord_name, -1);
-                strncpy(record_name, precord_name, MAXLEN-1);
-                g_free(precord_name);
-
-		gtk_tree_model_iter_parent(model, &iter_artist, &iter_record);
-                gtk_tree_model_get(model, &iter_artist, 0, &partist_name, -1);
-                strncpy(artist_name, partist_name, MAXLEN-1);
-                g_free(partist_name);
-
-		if (options.auto_use_meta_artist || options.auto_use_meta_record || options.auto_use_meta_track) {
-			meta = meta_new();
-			if (!meta_read(meta, file)) {
-				meta_free(meta);
-				meta = NULL;
-			}
-		}
-
-		if ((meta != NULL) && options.auto_use_meta_artist) {
-			meta_get_artist(meta, artist_name);
-		}
-
-		if ((meta != NULL) && options.auto_use_meta_record) {
-			meta_get_record(meta, record_name);
-		}
-
-		if ((meta != NULL) && options.auto_use_meta_track) {
-			meta_get_title(meta, track_name);
-		}
-
-		if (meta != NULL) {
-			meta_free(meta);
-			meta = NULL;
-		}
-
-		make_title_string(list_str, options.title_format,
-				  artist_name, record_name, track_name);
-
-		if (duration == 0.0f) {
-			duration = get_file_duration(file);
-			if (!is_store_iter_readonly(&iter_track)) {
-				gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
-				music_store_mark_changed();
-			}
-		}
-		time2time(duration, duration_str);
-
-		if (options.rva_is_enabled) {
-			if (use_rva >= 0.0f) {
-				voladj = rva;
-			} else {
-				if (volume <= 0.1f) {
-					voladj = rva_from_volume(volume, options.rva_refvol, options.rva_steepness);
-				} else { /* unmeasured, see if there is RVA data in the file */
-					metadata * meta = meta_new();
-					if (meta_read(meta, file)) {
-						if (!meta_get_rva(meta, &voladj)) {
-							voladj = 0.0f;
-						}
-					} else {
-						voladj = 0.0f;
-					}
-					meta_free(meta);
-				}
-			}
-		} else {
-			voladj = 0.0f;
-		}
-		
-		gtk_list_store_insert_before(play_store,
-					     &list_iter,
-					     (GtkTreeIter *)data);
-
-		voladj2str(voladj, voladj_str);
-
-		gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
-				   2, pl_color_inactive, 3, voladj, 4, voladj_str,
-				   5, duration, 6, duration_str, -1);
-
+		track_addlist_iter(iter_track, 0.0f, 0);
 		delayed_playlist_rearrange(100);
 	}
-
-	playlist_content_changed();
 }
 
 

@@ -419,6 +419,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	switch (kevent->keyval) {
 
         case GDK_Insert:
+	case GDK_KP_Insert:
                 direct_add(NULL, NULL);
                 return TRUE;
                 break;

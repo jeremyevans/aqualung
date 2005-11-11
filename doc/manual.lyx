@@ -1036,7 +1036,7 @@ Shortcuts for this window
 \align center 
 
 \begin_inset  Tabular
-<lyxtabular version="3" rows="14" columns="2">
+<lyxtabular version="3" rows="17" columns="2">
 <features>
 <column alignment="center" valignment="top" leftline="true" width="0">
 <column alignment="left" valignment="top" leftline="true" rightline="true" width="0">
@@ -1190,6 +1190,24 @@ jump (seek) forward in current track
 
 \layout Standard
 
+backspace
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+restart current track
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
 
 \family roman 
 \series medium 
@@ -1288,7 +1306,16 @@ space
 \bar no 
 \noun off 
 \color none
-pause
+paus
+\family default 
+\series default 
+\shape default 
+\size default 
+\emph default 
+\bar default 
+\noun default 
+\color default
+e
 \end_inset 
 </cell>
 </row>
@@ -1361,6 +1388,24 @@ volume down
 \noun off 
 \color none
 volume up
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+i or I
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+bring up the File Info dialog for currently played track
 \end_inset 
 </cell>
 </row>
@@ -1541,6 +1586,24 @@ Alt+x
 \noun off 
 \color none
 show/hide LADSPA patch builder
+\end_inset 
+</cell>
+</row>
+<row bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Ctrl+q
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+quit Aqualung
 \end_inset 
 </cell>
 </row>
@@ -1855,7 +1918,7 @@ Shortcuts for this window
 \align center 
 
 \begin_inset  Tabular
-<lyxtabular version="3" rows="12" columns="2">
+<lyxtabular version="3" rows="13" columns="2">
 <features>
 <column alignment="center" valignment="top" leftline="true" width="0">
 <column alignment="block" valignment="top" leftline="true" rightline="true" width="10cm">
@@ -2444,6 +2507,24 @@ navigation in the tree
 \end_inset 
 </cell>
 </row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+s or S
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+search in all stores
+\end_inset 
+</cell>
+</row>
 <row topline="true" bottomline="true">
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
@@ -2460,6 +2541,15 @@ navigation in the tree
 \noun off 
 \color none
 q or Q
+\family default 
+\series default 
+\shape default 
+\size default 
+\emph default 
+\bar default 
+\noun default 
+\color default
+ or ESC
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
@@ -2538,7 +2628,7 @@ Shortcuts for this window
 \align center 
 
 \begin_inset  Tabular
-<lyxtabular version="3" rows="5" columns="2">
+<lyxtabular version="3" rows="8" columns="2">
 <features>
 <column alignment="center" valignment="top" leftline="true" width="0">
 <column alignment="block" valignment="top" leftline="true" rightline="true" width="10cm">
@@ -2685,6 +2775,60 @@ i or I
 \color none
 bring up the File info dialog (also accessible from the right-click popup
  menu)
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+insert
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+open `Add Files...' dialog
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+x or X
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Cut selected
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+s or S
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Search in Playlist
 \end_inset 
 </cell>
 </row>

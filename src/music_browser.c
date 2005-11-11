@@ -1818,7 +1818,7 @@ dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data)
 
 
 void
-track_addlist_iter(GtkTreeIter iter_track, float avg_voladj, int use_avg_voladj) {
+track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * dest, float avg_voladj, int use_avg_voladj) {
 
         GtkTreeIter iter_artist;
         GtkTreeIter iter_record;
@@ -1893,9 +1893,9 @@ track_addlist_iter(GtkTreeIter iter_track, float avg_voladj, int use_avg_voladj)
 	
 	if (duration == 0.0f) {
 		duration = get_file_duration(file);
-		if (!is_store_iter_readonly(&iter_track)) {
+		if (!is_store_iter_readonly(&iter_track) && duration > 0.0f) {
 			gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
-				music_store_mark_changed();
+			music_store_mark_changed();
 		}
 	}
 	time2time(duration, duration_str);
@@ -1926,20 +1926,18 @@ track_addlist_iter(GtkTreeIter iter_track, float avg_voladj, int use_avg_voladj)
 		}
 	}
 	
-	gtk_list_store_insert_before(play_store, &list_iter, NULL);
+	gtk_list_store_insert_before(play_store, &list_iter, dest);
 	
 	voladj2str(voladj, voladj_str);
 	
 	gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
 			   2, pl_color_inactive, 3, voladj, 4, voladj_str,
 			   5, duration, 6, duration_str, -1);
-
-	playlist_content_changed();
 }
 
 
 void
-record_addlist_iter(GtkTreeIter iter_record) {
+record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest) {
 
         GtkTreeIter iter_track;
 
@@ -1982,31 +1980,32 @@ record_addlist_iter(GtkTreeIter iter_record) {
 	
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track, &iter_record, i++)) {
-		track_addlist_iter(iter_track, voladj, options.rva_use_averaging);
+		track_addlist_iter(iter_track, dest, voladj, options.rva_use_averaging);
 	}
 }
 
 
 void
-artist_addlist_iter(GtkTreeIter iter_artist) {
+artist_addlist_iter(GtkTreeIter iter_artist, GtkTreeIter * dest) {
 
 	GtkTreeIter iter_record;
 	int i = 0;
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_record, &iter_artist, i++)) {
-		record_addlist_iter(iter_record);
+		record_addlist_iter(iter_record, dest);
 	}
+
 }
 
 
 void
-store_addlist_iter(GtkTreeIter iter_store) {
+store_addlist_iter(GtkTreeIter iter_store, GtkTreeIter * dest) {
 
 	GtkTreeIter iter_artist;
 	int i = 0;
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, &iter_store, i++)) {
-		artist_addlist_iter(iter_artist);
+		artist_addlist_iter(iter_artist, dest);
 	}
 }
 
@@ -2022,7 +2021,8 @@ store__addlist_cb(gpointer data) {
 
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_store)) {
-		store_addlist_iter(iter_store);
+		store_addlist_iter(iter_store, (GtkTreeIter *)data);
+		playlist_content_changed();
 		delayed_playlist_rearrange(100);
 	}
 }
@@ -2216,7 +2216,8 @@ artist__addlist_cb(gpointer data) {
         GtkTreeModel * model;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_artist)) {
-		artist_addlist_iter(iter_artist);
+		artist_addlist_iter(iter_artist, (GtkTreeIter *)data);
+		playlist_content_changed();
 		delayed_playlist_rearrange(100);
 	}
 }
@@ -2379,7 +2380,8 @@ record__addlist_cb(gpointer data) {
         GtkTreeModel * model;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_record)) {
-		record_addlist_iter(iter_record);
+		record_addlist_iter(iter_record, (GtkTreeIter *)data);
+		playlist_content_changed();
 		delayed_playlist_rearrange(100);
 	}
 }
@@ -2581,7 +2583,8 @@ track__addlist_cb(gpointer data) {
         GtkTreeModel * model;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
-		track_addlist_iter(iter_track, 0.0f, 0);
+		track_addlist_iter(iter_track, (GtkTreeIter *)data, 0.0f, 0);
+		playlist_content_changed();
 		delayed_playlist_rearrange(100);
 	}
 }
@@ -3274,7 +3277,9 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__remove);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addtrk);
+#ifdef HAVE_CDDB
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__cddb);
+#endif /* HAVE_CDDB */
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator3);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__volume);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__search);
@@ -3299,10 +3304,6 @@ create_music_browser(void) {
 	gtk_widget_show(record__separator3);
 	gtk_widget_show(record__volume);
 	gtk_widget_show(record__search);
-
-#ifndef HAVE_CDDB
-	gtk_widget_set_sensitive(record__cddb, FALSE);
-#endif /* HAVE_CDDB */
 
 	/* create popup menu for track tree items */
 	track_menu = gtk_menu_new();

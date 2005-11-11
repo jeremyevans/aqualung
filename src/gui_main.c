@@ -217,6 +217,8 @@ GtkWidget * label_src_type;
 
 int alt_L;
 int alt_R;
+int control_L;
+int control_R;
 int shift_L;
 int shift_R;
 int x_scroll_start;          
@@ -1053,6 +1055,39 @@ vol_bal_timeout_callback(gpointer data) {
 
 
 void
+musicstore_toggled(GtkWidget * widget, gpointer data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
+		show_music_browser();
+	} else {
+		hide_music_browser();
+	}
+}
+
+
+void
+playlist_toggled(GtkWidget * widget, gpointer data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
+		show_playlist();
+	} else {
+		hide_playlist();
+	}
+}
+
+
+void
+plugin_toggled(GtkWidget * widget, gpointer data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
+		show_fxbuilder();
+	} else {
+		hide_fxbuilder();
+	}
+}
+
+
+void
 main_window_close(GtkWidget * widget, gpointer data) {
 
 	send_cmd = CMD_FINISH;
@@ -1118,6 +1153,12 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	case GDK_Alt_R:
 		alt_R = 1;
 		break;
+	case GDK_Control_L:
+		control_L = 1;
+		break;
+	case GDK_Control_R:
+		control_R = 1;
+		break;
 	case GDK_Shift_L:
 		shift_L = 1;
 		break;
@@ -1127,20 +1168,30 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	}
 
 
-	if (alt_L || alt_R) {
-		switch (event->keyval) {	
-		case GDK_KP_Divide:
+	switch (event->keyval) {	
+	case GDK_KP_Divide:
+		if (alt_L || alt_R) {
 			refresh_time_label = 0;
 			if (vol_bal_timeout_tag) {
 				g_source_remove(vol_bal_timeout_tag);
 			}
-
+			
 			vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
 			g_signal_emit_by_name(G_OBJECT(scale_bal), "move-slider",
 					      GTK_SCROLL_STEP_BACKWARD, NULL);
-			return TRUE;
-			break;
-		case GDK_KP_Multiply:
+		} else {
+			refresh_time_label = 0;
+			if (vol_bal_timeout_tag) {
+				g_source_remove(vol_bal_timeout_tag);
+			}
+		
+			vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
+			g_signal_emit_by_name(G_OBJECT(scale_vol), "move-slider",
+					      GTK_SCROLL_STEP_BACKWARD, NULL);
+		}
+		return TRUE;
+	case GDK_KP_Multiply:
+		if (alt_L || alt_R) {
 			refresh_time_label = 0;
 			if (vol_bal_timeout_tag) {
 				g_source_remove(vol_bal_timeout_tag);
@@ -1149,23 +1200,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
 			g_signal_emit_by_name(G_OBJECT(scale_bal),
 					      "move-slider", GTK_SCROLL_STEP_FORWARD, NULL);
-			break;
-			return TRUE;
-		}
-	} else {
-		switch (event->keyval) {
-		case GDK_KP_Divide:
-			refresh_time_label = 0;
-			if (vol_bal_timeout_tag) {
-				g_source_remove(vol_bal_timeout_tag);
-			}
-			
-			vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
-			g_signal_emit_by_name(G_OBJECT(scale_vol), "move-slider",
-					      GTK_SCROLL_STEP_BACKWARD, NULL);
-			return TRUE;
-			break;
-		case GDK_KP_Multiply:
+		} else {
 			refresh_time_label = 0;
 			if (vol_bal_timeout_tag) {
 				g_source_remove(vol_bal_timeout_tag);
@@ -1174,89 +1209,103 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
 			g_signal_emit_by_name(G_OBJECT(scale_vol),
 					      "move-slider", GTK_SCROLL_STEP_FORWARD, NULL);
-			return TRUE;
-			break;
-                case GDK_Right:
-                        if (is_file_loaded && allow_seeks) {
-                                refresh_scale = 0;
-                                g_signal_emit_by_name(G_OBJECT(scale_pos), "move-slider",
-                                                      GTK_SCROLL_STEP_FORWARD, NULL);
-                        }
-                        return TRUE;
-                        break;
-                case GDK_Left:
-                        if (is_file_loaded && allow_seeks) {
-                                refresh_scale = 0;
-                                g_signal_emit_by_name(G_OBJECT(scale_pos), "move-slider",
-                                                      GTK_SCROLL_STEP_BACKWARD, NULL);
-                        }
-                        return TRUE;
-                        break;
-		case GDK_Down:
-			if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
-				return FALSE;
-			}
-			next_event(NULL, NULL, NULL);
-			return TRUE;
-			break;
-		case GDK_Up:
-			if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
-				return FALSE;
-			}
-			prev_event(NULL, NULL, NULL);
-			return TRUE;
-			break;
-		case GDK_s:
-		case GDK_S:
+		}
+		return TRUE;
+	case GDK_Right:
+		if (is_file_loaded && allow_seeks) {
+			refresh_scale = 0;
+			g_signal_emit_by_name(G_OBJECT(scale_pos), "move-slider",
+					      GTK_SCROLL_STEP_FORWARD, NULL);
+		}
+		return TRUE;
+	case GDK_Left:
+		if (is_file_loaded && allow_seeks) {
+			refresh_scale = 0;
+			g_signal_emit_by_name(G_OBJECT(scale_pos), "move-slider",
+					      GTK_SCROLL_STEP_BACKWARD, NULL);
+		}
+		return TRUE;
+	case GDK_Down:
+		if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
+			return FALSE;
+		}
+		next_event(NULL, NULL, NULL);
+		return TRUE;
+	case GDK_Up:
+		if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
+			return FALSE;
+		}
+		prev_event(NULL, NULL, NULL);
+		return TRUE;
+	case GDK_s:
+	case GDK_S:
+		if (alt_L || alt_R) {
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(musicstore_toggle),
+						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(musicstore_toggle)));
+		} else {
 			if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
 				return FALSE;
 			}
 			stop_event(NULL, NULL, NULL);
-			return TRUE;
-			break;
-		case GDK_space:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
-			        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
-			return TRUE;
-			break;
-		case GDK_p:
-		case GDK_P:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
-			        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
-			return TRUE;
-			break;
-			
-		case GDK_i:
-		case GDK_I:
-			if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
-				return FALSE;
-			}
-			conf__fileinfo_cb(NULL);
-			return TRUE;
-			break;
-
-		case GDK_BackSpace:
-			if (allow_seeks) {
-				seek_t seek;
-				
-				send_cmd = CMD_SEEKTO;
-				seek.seek_to_pos = 0.0f;
-				jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
-				jack_ringbuffer_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
-				
-				if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-					pthread_cond_signal(&disk_thread_wake);
-					pthread_mutex_unlock(&disk_thread_lock);
-				}
-			}
-			
-			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)))
-				gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
-			
-			return TRUE;
-			break;
 		}
+		return TRUE;
+	case GDK_space:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
+					     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
+		return TRUE;
+	case GDK_p:
+	case GDK_P:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
+					     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
+		return TRUE;
+	case GDK_i:
+	case GDK_I:
+		if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
+			return FALSE;
+		}
+		conf__fileinfo_cb(NULL);
+		return TRUE;
+	case GDK_BackSpace:
+		if (allow_seeks) {
+			seek_t seek;
+			
+			send_cmd = CMD_SEEKTO;
+			seek.seek_to_pos = 0.0f;
+			jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
+			jack_ringbuffer_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
+			
+			if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
+				pthread_cond_signal(&disk_thread_wake);
+				pthread_mutex_unlock(&disk_thread_lock);
+			}
+		}
+		
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)))
+			gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
+		
+		return TRUE;
+	case GDK_l:
+	case GDK_L:
+		if (alt_L || alt_R) {
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle),
+						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(playlist_toggle)));
+		}
+		return TRUE;
+	case GDK_x:
+	case GDK_X:
+		if (alt_L || alt_R) {
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(plugin_toggle),
+						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(plugin_toggle)));
+		}
+		return TRUE;
+	case GDK_q:
+	case GDK_Q:
+		if (control_L || control_R) {
+			main_window_close(NULL, NULL);
+		}
+		return TRUE;
 	}
+	
 	return FALSE;
 }
 
@@ -1270,6 +1319,12 @@ main_window_key_released(GtkWidget * widget, GdkEventKey * event) {
 		break;
 	case GDK_Alt_R:
 		alt_R = 0;
+		break;
+	case GDK_Control_L:
+		control_L = 0;
+		break;
+	case GDK_Control_R:
+		control_R = 0;
 		break;
 	case GDK_Shift_L:
 		shift_L = 0;
@@ -1384,39 +1439,6 @@ main_window_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 	}
 
 	return TRUE;
-}
-
-
-void
-musicstore_toggled(GtkWidget * widget, gpointer data) {
-
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
-		show_music_browser();
-	} else {
-		hide_music_browser();
-	}
-}
-
-
-void
-playlist_toggled(GtkWidget * widget, gpointer data) {
-
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
-		show_playlist();
-	} else {
-		hide_playlist();
-	}
-}
-
-
-void
-plugin_toggled(GtkWidget * widget, gpointer data) {
-
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
-		show_fxbuilder();
-	} else {
-		hide_fxbuilder();
-	}
 }
 
 
@@ -2178,9 +2200,9 @@ create_button_with_image(char * path, int toggle, char * alt) {
 		gtk_container_add(GTK_CONTAINER(button), image);
 	} else {
 		if (toggle) {
-			button = gtk_toggle_button_new_with_mnemonic(alt);
+			button = gtk_toggle_button_new_with_label(alt);
 		} else {
-			button = gtk_button_new_with_mnemonic(alt);
+			button = gtk_button_new_with_label(alt);
 		}
 	}
 
@@ -2290,7 +2312,11 @@ create_main_window(char * skin_path) {
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__options);
 	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__skin);
-	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__jack);
+
+	if (output == JACK_DRIVER) {
+		gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__jack);
+	}
+
 	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__fileinfo);
 	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__separator);
 	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__about);
@@ -2300,9 +2326,6 @@ create_main_window(char * skin_path) {
 	g_signal_connect_swapped(G_OBJECT(conf__jack), "activate", G_CALLBACK(conf__jack_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(conf__fileinfo), "activate", G_CALLBACK(conf__fileinfo_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(conf__about), "activate", G_CALLBACK(conf__about_cb), NULL);
-
-	if (output != JACK_DRIVER)
-		gtk_widget_set_sensitive(conf__jack, FALSE);
 
 	gtk_widget_set_sensitive(conf__fileinfo, FALSE);
 
@@ -2597,17 +2620,17 @@ create_main_window(char * skin_path) {
 
         /* toggle buttons for sub-windows visibility */
 	sprintf(path, "%s/%s", skin_path, "pl");
-	playlist_toggle = create_button_with_image(path, 1, "P_L");
+	playlist_toggle = create_button_with_image(path, 1, "PL");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), playlist_toggle, _("Toggle playlist"), NULL);
 	gtk_box_pack_end(GTK_BOX(btns_hbox), playlist_toggle, FALSE, FALSE, 0);
 	
 	sprintf(path, "%s/%s", skin_path, "ms");
-	musicstore_toggle = create_button_with_image(path, 1, "M_S");
+	musicstore_toggle = create_button_with_image(path, 1, "MS");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), musicstore_toggle, _("Toggle music store"), NULL);
 	gtk_box_pack_end(GTK_BOX(btns_hbox), musicstore_toggle, FALSE, FALSE, 3);
 
 	sprintf(path, "%s/%s", skin_path, "fx");
-	plugin_toggle = create_button_with_image(path, 1, "F_X");
+	plugin_toggle = create_button_with_image(path, 1, "FX");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), plugin_toggle, _("Toggle LADSPA patch builder"), NULL);
 	gtk_box_pack_end(GTK_BOX(btns_hbox), plugin_toggle, FALSE, FALSE, 0);
 

@@ -1160,7 +1160,10 @@ create_options_window(void) {
 	GtkWidget * hbox_cwidth;
 
 	GtkWidget * vbox_meta;
+
+#ifdef HAVE_CDDB
 	GtkWidget * vbox_cddb;
+#endif /* HAVE_CDDB */
 
         GtkSizeGroup * label_size;
 
@@ -1889,11 +1892,11 @@ See the About box and the documentation for details."));
 
 	/* CDDB notebook page */
 
+#ifdef HAVE_CDDB
 	vbox_cddb = gtk_vbox_new(FALSE, 10);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_cddb), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_cddb, create_notebook_tab(_("CDDB"), "cddb.png"));
 
-#ifdef HAVE_CDDB
 	hbox = gtk_hbox_new(FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(vbox_cddb), hbox, FALSE, TRUE, 0);
 
@@ -1931,12 +1934,6 @@ See the About box and the documentation for details."));
 		gtk_combo_box_set_active(GTK_COMBO_BOX(cddb_proto_combo), 0);
 	}
 	gtk_box_pack_start(GTK_BOX(hbox), cddb_proto_combo, FALSE, FALSE, 5);
-
-#else
-
-	label = gtk_label_new(_("Aqualung is compiled without CDDB support.\n\
-See the About box and the documentation for details."));
-	gtk_box_pack_start(GTK_BOX(vbox_cddb), label, FALSE, FALSE, 5);
 
 #endif /* HAVE_CDDB */
 

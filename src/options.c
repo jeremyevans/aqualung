@@ -119,6 +119,7 @@ GtkWidget * check_auto_use_ext_meta_record;
 GtkWidget * check_auto_use_ext_meta_track;
 GtkWidget * check_enable_tooltips;
 GtkWidget * check_hide_comment_pane;
+GtkWidget * check_enable_mstore_statusbar;
 GtkWidget * check_expand_stores;
 GtkWidget * check_playlist_is_embedded;
 GtkWidget * check_enable_playlist_statusbar;
@@ -297,6 +298,12 @@ ok(GtkWidget * widget, gpointer data) {
 		options.hide_comment_pane_shadow = 1;
 	} else {
 	        options.hide_comment_pane_shadow = 0;
+	}
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_mstore_statusbar))) {
+		options.enable_mstore_statusbar_shadow = 1;
+	} else {
+	        options.enable_mstore_statusbar_shadow = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_expand_stores))) {
@@ -1423,6 +1430,17 @@ to set the column order in the Playlist."));
 	gtk_box_pack_start(GTK_BOX(vbox_ms), check_hide_comment_pane, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_hide_comment_pane), "toggled",
 						G_CALLBACK (restart_active), _("Hide the Music Store comment pane"));
+
+	check_enable_mstore_statusbar =
+		gtk_check_button_new_with_label(_("Enable statusbar"));
+	gtk_widget_set_name(check_enable_mstore_statusbar, "check_on_notebook");
+	if (options.enable_mstore_statusbar_shadow) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_mstore_statusbar), TRUE);
+	}
+	options.enable_mstore_statusbar_shadow = options.enable_mstore_statusbar;
+	g_signal_connect(G_OBJECT(check_enable_mstore_statusbar), "toggled",
+			 G_CALLBACK(restart_active), _("Enable statusbar in Music Store"));
+        gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_mstore_statusbar, FALSE, TRUE, 3);
 
 
 	check_expand_stores = gtk_check_button_new_with_label(_("Expand Stores on startup"));

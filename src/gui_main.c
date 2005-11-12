@@ -1362,6 +1362,8 @@ main_window_focus_out(GtkWidget * widget, GdkEventFocus * event, gpointer data) 
         alt_R = 0;
         shift_L = 0;
         shift_R = 0;
+	control_L = 0;
+	control_R = 0;
 
         refresh_scale = 1;
 
@@ -3338,6 +3340,9 @@ save_config(void) {
 	snprintf(str, 31, "%d", options.hide_comment_pane_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "hide_comment_pane", (xmlChar *) str);
 
+	snprintf(str, 31, "%d", options.enable_mstore_statusbar_shadow);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_mstore_statusbar", (xmlChar *) str);
+
 	snprintf(str, 31, "%d", options.autoexpand_stores);
         xmlNewTextChild(root, NULL, (const xmlChar *) "autoexpand_stores", (xmlChar *) str);
 
@@ -3553,6 +3558,7 @@ load_config(void) {
         options.simple_view_in_fx = 0;
 
 	options.hide_comment_pane = options.hide_comment_pane_shadow = 0;
+	options.enable_mstore_statusbar = options.enable_mstore_statusbar_shadow = 1;
         options.magnify_smaller_images = 0;
         options.cover_width = 2;
 
@@ -3711,6 +3717,14 @@ load_config(void) {
                         if (key != NULL) {
 				sscanf((char *) key, "%d", &options.hide_comment_pane);
 				options.hide_comment_pane_shadow = options.hide_comment_pane;
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_mstore_statusbar"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				sscanf((char *) key, "%d", &options.enable_mstore_statusbar);
+				options.enable_mstore_statusbar_shadow = options.enable_mstore_statusbar;
 			}
                         xmlFree(key);
                 }

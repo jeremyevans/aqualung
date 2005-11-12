@@ -85,6 +85,7 @@ GtkTreeSelection * music_select;
 
 GtkWidget * comment_view;
 GtkWidget * browser_paned;
+GtkWidget * statusbar;
 
 
 /* popup menus for tree items */
@@ -2439,6 +2440,7 @@ record__add_cb(gpointer data) {
 						gtk_tree_store_set(music_store, &child_iter,
 								   0, str, 1, str_n,
 								   2, strings[i], 3, "",
+								   4, get_file_duration(strings[i]),
 								   5, volume, 7, use_rva, -1);
 					}
 					free(strings[i]);
@@ -2624,8 +2626,8 @@ track__add_cb(gpointer data) {
 		if (add_track_dialog(name, sort_name, file, comment)) {
 			
 			gtk_tree_store_append(music_store, &iter, &parent_iter);
-			gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name,
-					   2, file, 3, comment, 5, volume, 7, use_rva, -1);
+			gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name, 2, file,
+					   3, comment, 4, get_file_duration(file), 5, volume, 7, use_rva, -1);
 
 			music_store_mark_changed();
 		}
@@ -2810,14 +2812,40 @@ search_cb(gpointer data) {
 /************************************/
 
 
-static void
-set_comment_text_and_cover(char * str) {
+void
+set_comment_text(GtkTextIter * iter) {
+
+	GtkTreeModel * model;
+	GtkTreeIter iter_tree;
+	GtkTextBuffer * buffer;
+	char * comment;
+
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
+
+        if (gtk_tree_selection_get_selected(music_select, &model, &iter_tree)) {
+		gtk_tree_model_get(model, &iter_tree, 3, &comment, -1);
+		if (comment[0] != '\0') {
+			gtk_text_buffer_insert(buffer, iter, comment, -1);
+		} else {
+			gtk_text_buffer_insert(buffer, iter, _("(no comment)"), -1);
+		}
+                g_free(comment);
+	} else {
+		gtk_text_buffer_insert(buffer, iter, "", -1);
+	}
+
+	gtk_text_view_set_buffer(GTK_TEXT_VIEW(comment_view), buffer);
+}
+
+
+void
+set_comment_cover(GtkTextIter * iter) {
 
         GtkTreeModel * model;
         GtkTreeIter r_iter, t_iter;
         GtkTreePath * path;
 	GtkTextBuffer * buffer;
-        GtkTextIter iter, a_iter, b_iter;
         GdkPixbuf *pixbuf;
         GdkPixbuf *scaled;
         GdkPixbufFormat *format;
@@ -2829,10 +2857,6 @@ set_comment_text_and_cover(char * str) {
 
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
-
-        gtk_text_buffer_get_bounds (buffer, &a_iter, &b_iter);
-	gtk_text_buffer_delete (buffer, &a_iter, &b_iter);  
-        gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
 
         /* get cover path */
         
@@ -2850,8 +2874,6 @@ set_comment_text_and_cover(char * str) {
                                 if (gtk_tree_model_iter_nth_child(model, &t_iter, &r_iter, 0)) {
 					gtk_tree_model_get(GTK_TREE_MODEL(model), &t_iter, 2, &filename, -1);
 				} else {
-					gtk_text_buffer_insert (buffer, &iter, str, -1);
-					gtk_text_view_set_buffer(GTK_TEXT_VIEW(comment_view), buffer);
 					return;
 				}
 
@@ -2929,46 +2951,165 @@ set_comment_text_and_cover(char * str) {
                                         }                                
 				}
 
-                                gtk_text_buffer_insert_pixbuf (buffer, &iter, pixbuf);
-                                gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
+                                gtk_text_buffer_insert_pixbuf (buffer, iter, pixbuf);
+                                gtk_text_buffer_insert (buffer, iter, "\n\n", -1);
 
                                 g_object_unref (pixbuf);
                         }
-
                 }
 
                 gtk_tree_path_free(path);
-
         }
+}
 
 
-        /* insert comment */
+void
+set_comment_content(void) {
 
-        gtk_text_buffer_insert (buffer, &iter, str, -1);
-        gtk_text_view_set_buffer(GTK_TEXT_VIEW(comment_view), buffer);
+	GtkTextBuffer * buffer;
+        GtkTextIter iter, a_iter, b_iter;
+
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
+
+        gtk_text_buffer_get_bounds(buffer, &a_iter, &b_iter);
+	gtk_text_buffer_delete(buffer, &a_iter, &b_iter);  
+        gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
+
+	set_comment_cover(&iter);
+	set_comment_text(&iter);
+}
+
+void
+set_status_bar_info(void) {
+
+	GtkTreePath * path;
+	GtkTreeModel * model;
+	GtkTreeIter iter;
+	GtkTreeIter iter_artist;
+	GtkTreeIter iter_record;
+	GtkTreeIter iter_track;
+
+	int n_artist = 0;
+	int n_record = 0;
+	int n_track = 0;
+
+	int i, j, k;
+
+	float len = 0.0f;
+	float duration = 0.0f;
+	
+	char duration_str[32];
+	char str[MAXLEN];
+
+
+	if (!options.enable_mstore_statusbar) return;
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
+
+		path = gtk_tree_model_get_path(model, &iter);
+
+		switch (gtk_tree_path_get_depth(path)) {
+		case 1:
+			i = 0;
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, &iter, i++)) {
+				n_artist++;
+
+				j = 0;
+				while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_record,
+								     &iter_artist, j++)) {
+					n_record++;
+
+					k = 0;
+					while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track,
+									     &iter_record, k++)) {
+						n_track++;
+						gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, 4, &len, -1);
+						duration += len;
+					}
+				}
+			}
+
+			if (duration > 0.0f) {
+				time2time(duration, duration_str);
+			} else {
+				strcpy(duration_str, _("time unmeasured"));
+			}
+			snprintf(str, MAXLEN-1, "%d %s, %d %s, %d %s [%s] ",
+				 n_artist, (n_artist > 1) ? _("artists") : _("artist"),
+				 n_record, (n_record > 1) ? _("records") : _("record"),
+				 n_track, (n_track > 1) ? _("tracks") : _("track"),
+				 duration_str);
+			break;
+		case 2:
+			j = 0;
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_record,
+							     &iter, j++)) {
+				n_record++;
+				
+				k = 0;
+				while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track,
+								     &iter_record, k++)) {
+					n_track++;
+					gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, 4, &len, -1);
+					duration += len;
+				}
+			}
+
+			if (duration > 0.0f) {
+				time2time(duration, duration_str);
+			} else {
+				strcpy(duration_str, _("time unmeasured"));
+			}
+			snprintf(str, MAXLEN-1, "%d %s, %d %s [%s] ",
+				 n_record, (n_record > 1) ? _("records") : _("record"),
+				 n_track, (n_track > 1) ? _("tracks") : _("track"),
+				 duration_str);
+			break;
+		case 3:
+			k = 0;
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track,
+							     &iter, k++)) {
+				n_track++;
+				gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, 4, &len, -1);
+				duration += len;
+			}
+
+			if (duration > 0.0f) {
+				time2time(duration, duration_str);
+			} else {
+				strcpy(duration_str, _("time unmeasured"));
+			}
+			snprintf(str, MAXLEN-1, "%d %s [%s] ",
+				 n_track, (n_track > 1) ? _("tracks") : _("track"),
+				 duration_str);
+			break;
+		case 4:
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 4, &duration, -1);
+
+			if (duration > 0.0f) {
+				time2time(duration, duration_str);
+			} else {
+				strcpy(duration_str, _("time unmeasured"));
+			}
+			snprintf(str, MAXLEN-1, "[%s] ",
+				 duration_str);
+			break;
+		}
+
+	} else {
+		str[0] = '\0';
+	}
+
+	gtk_label_set_text(GTK_LABEL(statusbar), str);
 }
 
 
 void
 tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
 
-        GtkTreeIter iter;
-        GtkTreeModel * model;
-        gchar * comment;
-
-        if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
-
-                gtk_tree_model_get(model, &iter, 3, &comment, -1);
-		if (comment[0] != '\0') {
-			set_comment_text_and_cover(comment);
-		} else {
-			set_comment_text_and_cover(_("(no comment)"));
-		}
-                g_free(comment);
-
-        } else {
-		set_comment_text_and_cover("");
-	}
+	set_comment_content();
+	set_status_bar_info();
 }
 
 
@@ -2979,7 +3120,8 @@ row_collapsed_cb(GtkTreeView *view, GtkTreeIter * iter1, GtkTreePath * path1) {
         GtkTreeModel * model;
 
         if (!gtk_tree_selection_get_selected(music_select, &model, &iter2)) {
-			set_comment_text_and_cover("");
+		set_comment_content();
+		set_status_bar_info();
 	}
 
 	return FALSE;
@@ -3049,10 +3191,13 @@ music_tree_expand_stores(void) {
 void
 create_music_browser(void) {
 	
+	GtkWidget * vbox;
 	GtkWidget * viewport1;
 	GtkWidget * viewport2;
 	GtkWidget * scrolled_win1;
 	GtkWidget * scrolled_win2;
+	GtkWidget * statusbar_viewport;
+	GtkWidget * statusbar_hbox;
 
 	GtkCellRenderer * renderer;
 	GtkTreeViewColumn * column;
@@ -3070,9 +3215,12 @@ create_music_browser(void) {
 	gtk_container_set_border_width(GTK_CONTAINER(browser_window), 2);
         gtk_widget_set_size_request(browser_window, 200, 300);
 
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(browser_window), vbox);
+
 	if (!options.hide_comment_pane) {
 		browser_paned = gtk_vpaned_new();
-		gtk_container_add(GTK_CONTAINER(browser_window), browser_paned);
+		gtk_box_pack_start(GTK_BOX(vbox), browser_paned, TRUE, TRUE, 0);
 	}
 
 	/* create music store tree */
@@ -3111,7 +3259,7 @@ create_music_browser(void) {
 	if (!options.hide_comment_pane) {
 		gtk_paned_pack1(GTK_PANED(browser_paned), viewport1, TRUE, TRUE);
 	} else {
-		gtk_container_add(GTK_CONTAINER(browser_window), viewport1);
+		gtk_box_pack_start(GTK_BOX(vbox), viewport1, TRUE, TRUE, 0);
 	}
 
 	scrolled_win1 = gtk_scrolled_window_new(NULL, NULL);
@@ -3377,6 +3525,20 @@ create_music_browser(void) {
 
 	if (!options.hide_comment_pane) {
 		gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
+	}
+
+	if (options.enable_mstore_statusbar) {
+		statusbar_viewport = gtk_viewport_new(NULL, NULL);
+		gtk_widget_set_name(statusbar_viewport, "info_viewport");
+		gtk_box_pack_start(GTK_BOX(vbox), statusbar_viewport, FALSE, TRUE, 2);
+
+		statusbar_hbox = gtk_hbox_new(FALSE, 0);
+		gtk_container_set_border_width(GTK_CONTAINER(statusbar_hbox), 1);
+		gtk_container_add(GTK_CONTAINER(statusbar_viewport), statusbar_hbox);
+
+		statusbar = gtk_label_new("");
+		gtk_widget_set_name(statusbar, "label_info");
+		gtk_box_pack_end(GTK_BOX(statusbar_hbox), statusbar, FALSE, FALSE, 0);
 	}
 }
 

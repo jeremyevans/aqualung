@@ -56,13 +56,15 @@ typedef struct {
 	/* Music Store */
 	int hide_comment_pane;
 	int hide_comment_pane_shadow;
+	int enable_mstore_statusbar;
+	int enable_mstore_statusbar_shadow;
 	int autoexpand_stores;
 	int cover_width;
 	int magnify_smaller_images;
 
 	/* DSP */
 	int ladspa_is_postfader;
-	/* src_type should be moved here too */
+	/* TODO: src_type should be moved here too */
 	
 	/* RVA */
 	int rva_is_enabled;

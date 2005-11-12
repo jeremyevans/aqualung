@@ -1410,9 +1410,9 @@ playlist_selection_changed(GtkTreeSelection * sel, gpointer data) {
 
 	time2time(duration, time);
 	if (count == 1) {
-		sprintf(str, _("%d track [%s]"), count, time);
+		sprintf(str, _("%d track [%s] "), count, time);
 	} else {
-		sprintf(str, _("%d tracks [%s]"), count, time);
+		sprintf(str, _("%d tracks [%s] "), count, time);
 	}
 
 	gtk_label_set_text(GTK_LABEL(statusbar_selected), str);
@@ -1439,9 +1439,9 @@ playlist_content_changed(void) {
 
 	time2time(duration, time);
 	if (i == 2) {
-		sprintf(str, _("%d track [%s]"), i - 1, time);
+		sprintf(str, _("%d track [%s] "), i - 1, time);
 	} else {
-		sprintf(str, _("%d tracks [%s]"), i - 1, time);
+		sprintf(str, _("%d tracks [%s] "), i - 1, time);
 	}
 
 	gtk_label_set_text(GTK_LABEL(statusbar_total), str);

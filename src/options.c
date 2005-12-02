@@ -63,8 +63,6 @@ extern GtkWidget * bigtimer_label;
 extern GtkWidget * smalltimer_label_1;
 extern GtkWidget * smalltimer_label_2;
 
-//extern char activesong_color[MAX_COLORNAME_LEN];
-
 int auto_save_playlist_shadow;
 int show_rva_in_playlist_shadow;
 int show_length_in_playlist_shadow;
@@ -121,6 +119,7 @@ GtkWidget * check_enable_tooltips;
 GtkWidget * check_hide_comment_pane;
 GtkWidget * check_enable_mstore_statusbar;
 GtkWidget * check_expand_stores;
+GtkWidget * check_show_hidden;
 GtkWidget * check_playlist_is_embedded;
 GtkWidget * check_enable_playlist_statusbar;
 GtkWidget * check_buttons_at_the_bottom;
@@ -310,6 +309,12 @@ ok(GtkWidget * widget, gpointer data) {
 		options.autoexpand_stores = 1;
 	} else {
 		options.autoexpand_stores = 0;
+	}
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_hidden))) {
+		options.show_hidden = 1;
+	} else {
+		options.show_hidden = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded))) {
@@ -981,12 +986,39 @@ create_notebook_tab(char * text, char * imgfile) {
 void
 add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 
+	const char * ppath;
 	char path[MAXLEN];
 	GtkTreeIter iter;
 
-	snprintf(path, MAXLEN - 1, "%s", gtk_entry_get_text(GTK_ENTRY(entry_ms_pathlist)));
+	ppath = gtk_entry_get_text(GTK_ENTRY(entry_ms_pathlist));
 
-	if (path[0] == '\0') return;
+	if (ppath[0] == '\0') return;
+
+	if (ppath[0] == '~') {
+		snprintf(path, MAXLEN - 1, "%s%s", options.home, ppath + 1);
+	} else if (ppath[0] == '/') {
+		strncpy(path, ppath, MAXLEN - 1);
+	} else {
+		GtkWidget * dialog;
+		GtkWidget * label;
+		
+		dialog = gtk_dialog_new_with_buttons(_("Warning"),
+						     GTK_WINDOW(options_window),
+						     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+						     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+						     NULL);
+		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+		
+		label = gtk_label_new(_("Paths must either be absolute or starting with a tilde."));
+		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
+		gtk_widget_show(label);
+		
+		gtk_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
+		return;
+	}
 
 	gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), "");
 	gtk_list_store_append(ms_pathlist_store, &iter);
@@ -1036,6 +1068,10 @@ browse_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_hidden))) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
@@ -1494,6 +1530,10 @@ to set the column order in the Playlist."));
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_ms_pathlist), 10);
 	gtk_container_add(GTK_CONTAINER(frame_ms_pathlist), vbox_ms_pathlist);
 
+	label = gtk_label_new(_("Paths must either be absolute or starting with a tilde,\n"
+				"which will be expanded to the user's home directory."));
+	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), label, FALSE, TRUE, 5);
+
 	if (!ms_pathlist_store) {
 		ms_pathlist_store = gtk_list_store_new(2,
 						    G_TYPE_STRING,     /* path */
@@ -1521,7 +1561,7 @@ to set the column order in the Playlist."));
         gtk_tree_view_set_reorderable(GTK_TREE_VIEW(ms_pathlist_view), TRUE);
 
 	viewport = gtk_viewport_new(NULL, NULL);
-	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), viewport, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), viewport, FALSE, TRUE, 5);
 
         scrolled_win = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
@@ -1557,7 +1597,14 @@ to set the column order in the Playlist."));
 	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist), refresh_ms_pathlist, FALSE, FALSE, 0);
 	
 
-	
+	check_show_hidden = gtk_check_button_new_with_label(_("Show hidden files and directories in file chooser"));
+	gtk_widget_set_name(check_show_hidden, "check_on_notebook");
+	if (options.show_hidden) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_hidden), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), check_show_hidden, FALSE, FALSE, 0);
+
+
 
 	/* "DSP" notebook page */
 

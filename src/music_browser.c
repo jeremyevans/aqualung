@@ -327,6 +327,10 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              NULL);
 
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
+
         set_sliders_width();
 
         if (strlen(selected_filename)) {
@@ -383,6 +387,7 @@ add_store_dialog(char * name, char * file, char * comment) {
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					     NULL);
+
         gtk_widget_set_size_request(GTK_WIDGET(dialog), 400, 300);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
@@ -452,8 +457,17 @@ add_store_dialog(char * name, char * file, char * comment) {
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
+		const char * pfile = gtk_entry_get_text(GTK_ENTRY(file_entry));
+
+		if (pfile[0] == '~') {
+			snprintf(file, MAXLEN-1, "%s%s", options.home, pfile + 1);
+		} else if (pfile[0] == '/') {
+			strncpy(file, pfile, MAXLEN-1);
+		} else {
+			snprintf(file, MAXLEN-1, "%s/%s", options.cwd, pfile);
+		}
+
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
-                strcpy(file, gtk_entry_get_text(GTK_ENTRY(file_entry)));
 
 		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);
@@ -461,10 +475,11 @@ add_store_dialog(char * name, char * file, char * comment) {
 		strcpy(comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
 							 &iter_start, &iter_end, TRUE));
 
-		if ((name[0] != '\0') && (file[0] != '\0'))
+		if ((name[0] != '\0') && (file[0] != '\0')) {
 			ret = 1;
-		else
+		} else {
 			ret = 0;
+		}
         } else {
                 name[0] = '\0';
                 file[0] = '\0';
@@ -3846,7 +3861,6 @@ load_music_store(void) {
 		}
 	
 		xmlFreeDoc(doc);
-
                 g_free(store_file);
         }
 

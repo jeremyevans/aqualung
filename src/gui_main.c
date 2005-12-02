@@ -2699,6 +2699,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		home = ".";
 	}
 
+	strcpy(options.home, home);
 	sprintf(options.currdir, "%s/*", home);
 	sprintf(options.confdir, "%s/.aqualung", home);
 
@@ -3346,6 +3347,9 @@ save_config(void) {
 	snprintf(str, 31, "%d", options.autoexpand_stores);
         xmlNewTextChild(root, NULL, (const xmlChar *) "autoexpand_stores", (xmlChar *) str);
 
+	snprintf(str, 31, "%d", options.show_hidden);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "show_hidden", (xmlChar *) str);
+
 	snprintf(str, 31, "%d", options.override_skin_settings);
         xmlNewTextChild(root, NULL, (const xmlChar *) "override_skin_settings", (xmlChar *) str);
 
@@ -3732,6 +3736,13 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
 				sscanf((char *) key, "%d", &options.autoexpand_stores);
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_hidden"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				sscanf((char *) key, "%d", &options.show_hidden);
 			}
                         xmlFree(key);
                 }

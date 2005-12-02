@@ -25,6 +25,8 @@ void create_options_window(void);
 
 typedef struct {
 
+	/* home directory */
+	char home[MAXLEN];
 	/* normally $HOME/.aqualung */
 	char confdir[MAXLEN];
 	/* to keep track of file selector dialogs; starts with $HOME */
@@ -59,6 +61,7 @@ typedef struct {
 	int enable_mstore_statusbar;
 	int enable_mstore_statusbar_shadow;
 	int autoexpand_stores;
+	int show_hidden;
 	int cover_width;
 	int magnify_smaller_images;
 

@@ -43,11 +43,12 @@
 extern options_t options;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
+extern void set_sliders_width(void);
+
 extern pthread_mutex_t plugin_lock;
 
 extern int n_plugins;
 extern plugin_instance * plugin_vect[MAX_PLUGINS];
-
 
 extern unsigned long ladspa_buflen;
 extern LADSPA_Data * l_buf;
@@ -70,6 +71,7 @@ GtkWidget * remove_button;
 GtkWidget * conf_button;
 
 GtkWidget * rp_menu;
+GtkWidget * scrolled_win_running;
 
 extern GtkWidget * plugin_toggle;
 
@@ -85,6 +87,23 @@ typedef struct {
 
 int added_plugin = 0;
 
+
+void
+set_active_state(void) {
+	
+	GtkTreeIter iter;
+
+        if (!gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, 0)) {
+                /* disable buttons and menu */
+                gtk_widget_set_sensitive(remove_button, FALSE);
+                gtk_widget_set_sensitive(conf_button, FALSE);
+        } else {
+                /* enable buttons and menu */
+                gtk_widget_set_sensitive(remove_button, TRUE);
+                gtk_widget_set_sensitive(conf_button, TRUE);
+        }
+
+}
 
 static int
 rdf_filter(const struct dirent64 * de) {
@@ -284,12 +303,14 @@ static gboolean
 fxbuilder_close(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(plugin_toggle), FALSE);
+        set_sliders_width();    /* MAGIC */
         return TRUE;
 }
 
 void
 show_fxbuilder(void) {
 
+        set_active_state();
 	gtk_widget_show_all(fxbuilder_window);
 	fxbuilder_on = 1;
 }
@@ -1418,6 +1439,8 @@ build_plugin_window(plugin_instance * instance) {
 		instance->timeout = 0;
 	}
 
+        set_active_state();
+
         g_signal_connect(G_OBJECT(instance->window), "delete_event", G_CALLBACK(close_plugin_window), NULL);
 }
 
@@ -1482,6 +1505,7 @@ add_clicked(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	gtk_tree_selection_selected_foreach(avail_select, foreach_plugin_to_add, NULL);
 
+        set_active_state();
 	return TRUE;
 }
 
@@ -1522,7 +1546,9 @@ remove_clicked(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		trashlist_free(instance->trashlist);
 		free(instance);
 	}
-	return TRUE;
+
+        set_active_state();
+        return TRUE;
 }
 
 
@@ -1592,7 +1618,7 @@ running_list_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 		conf_clicked(NULL, NULL, NULL);
 	}
 
-	if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
+	if (event->type == GDK_BUTTON_PRESS && event->button == 3 && gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, 0)) {
 
 		gtk_menu_popup(GTK_MENU(rp_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);
@@ -1733,6 +1759,8 @@ rp__clear_list_cb(gpointer data) {
 
                 gtk_list_store_clear(running_store);           
         }                                                            
+
+        set_active_state();
 }
 
 void
@@ -1746,7 +1774,6 @@ create_fxbuilder(void) {
 
 	GtkWidget * frame_running;
 	GtkWidget * viewport_running;
-	GtkWidget * scrolled_win_running;
 
 	GtkWidget * hbox_buttons;
 
@@ -1960,6 +1987,8 @@ create_fxbuilder(void) {
 	gtk_widget_show(rp__toggle_all);
 	gtk_widget_show(rp__separator2);
 	gtk_widget_show(rp__clear_list);
+
+        set_sliders_width();    /* MAGIC */
 }
 
 

@@ -43,6 +43,7 @@ extern options_t options;
 extern int search_pl_flags;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
+extern void set_sliders_width(void);
 
 extern GtkListStore * play_store;
 extern GtkWidget * play_list;
@@ -56,6 +57,7 @@ static GtkWidget * searchkey_entry;
 static GtkWidget * check_case;
 static GtkWidget * check_exact;
 static GtkWidget * check_sfac;
+static GtkWidget * sres_list;
 
 static GtkListStore * search_store;
 static GtkTreeSelection * search_select;
@@ -106,6 +108,7 @@ close_button_clicked(GtkWidget * widget, gpointer data) {
 	clear_search_store();
         gtk_widget_destroy(search_window);
         search_window = NULL;
+        set_sliders_width();    /* MAGIC */
         return TRUE;
 }
 
@@ -121,6 +124,25 @@ search_window_close(GtkWidget * widget, gpointer * data) {
         return 0;
 }
 
+static gint
+sfac_clicked(GtkWidget * widget, gpointer data) {
+
+        get_toggle_buttons_state();
+
+        if(selectfc) {
+
+                gtk_widget_hide(sres_list);
+                gtk_window_resize(GTK_WINDOW(search_window), 420, 138);
+
+        } else {
+
+                gtk_window_resize(GTK_WINDOW(search_window), 420, 355);
+                gtk_widget_show(sres_list);
+
+        }
+
+        return TRUE;
+}
 
 static gint
 search_button_clicked(GtkWidget * widget, gpointer data) {
@@ -271,13 +293,11 @@ search_playlist_dialog(void) {
         gtk_window_set_title(GTK_WINDOW(search_window), _("Search the Playlist"));
         gtk_window_set_position(GTK_WINDOW(search_window), GTK_WIN_POS_CENTER);
 
-
 	if (options.playlist_is_embedded) {
 		gtk_window_set_transient_for(GTK_WINDOW(search_window), GTK_WINDOW(main_window));
 	} else {
 		gtk_window_set_transient_for(GTK_WINDOW(search_window), GTK_WINDOW(playlist_window));
 	}
-
 
 	gtk_window_set_modal(GTK_WINDOW(search_window), TRUE);
         g_signal_connect(G_OBJECT(search_window), "delete_event",
@@ -287,52 +307,57 @@ search_playlist_dialog(void) {
         gtk_container_set_border_width(GTK_CONTAINER(search_window), 5);
 
         vbox = gtk_vbox_new(FALSE, 0);
+        gtk_widget_show(vbox);
         gtk_container_add(GTK_CONTAINER(search_window), vbox);
 
-
 	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_widget_show(hbox);
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 3);
 
 	label = gtk_label_new(_("Key: "));
+        gtk_widget_show(label);
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
 
         searchkey_entry = gtk_entry_new();
+        gtk_widget_show(searchkey_entry);
         gtk_box_pack_start(GTK_BOX(hbox), searchkey_entry, TRUE, TRUE, 5);
 
 
 	table = gtk_table_new(4, 2, FALSE);
+        gtk_widget_show(table);
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, TRUE, 3);
 
 	check_case = gtk_check_button_new_with_label(_("Case sensitive"));
+        gtk_widget_show(check_case);
 	gtk_widget_set_name(check_case, "check_on_window");
 	gtk_table_attach(GTK_TABLE(table), check_case, 0, 1, 0, 1,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 4);
 
 	check_exact = gtk_check_button_new_with_label(_("Exact matches only"));
-	gtk_widget_set_name(check_exact, "check_on_window");
+        gtk_widget_show(check_exact);     
+        gtk_widget_set_name(check_exact, "check_on_window");
 	gtk_table_attach(GTK_TABLE(table), check_exact, 1, 2, 0, 1,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 4);
 
 	check_sfac = gtk_check_button_new_with_label(_("Select first and close window"));
+        gtk_widget_show(check_sfac);     
 	gtk_widget_set_name(check_sfac, "check_on_window");
+        g_signal_connect(G_OBJECT(check_sfac), "clicked", G_CALLBACK(sfac_clicked), NULL);
 	gtk_table_attach(GTK_TABLE(table), check_sfac, 0, 1, 1, 2,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 4);
 
-        if(search_pl_flags & SEARCH_F_CS)
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_case), TRUE);
-        if(search_pl_flags & SEARCH_F_EM)
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_exact), TRUE);
-        if(search_pl_flags & SEARCH_F_SF)
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_sfac), TRUE);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = sres_list = gtk_hbox_new(FALSE, 0);
+        gtk_widget_show(hbox);     
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 3);
         gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 3);
 
 	search_viewport = gtk_viewport_new(NULL, NULL);
+        gtk_widget_show(search_viewport);     
         gtk_box_pack_start(GTK_BOX(hbox), search_viewport, TRUE, TRUE, 0);
 
         search_scrwin = gtk_scrolled_window_new(NULL, NULL);
+        gtk_widget_show(search_scrwin);     
         gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(search_scrwin),
                                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
         gtk_container_add(GTK_CONTAINER(search_viewport), search_scrwin);
@@ -340,11 +365,12 @@ search_playlist_dialog(void) {
 
         search_store = gtk_list_store_new(2,
 					  G_TYPE_STRING,   /* title */
-					  G_TYPE_POINTER); /* * GtkTreePath */
+					  G_TYPE_POINTER); /* GtkTreePath */
 
         gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(search_store), 0, GTK_SORT_ASCENDING);
 
         search_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(search_store));
+        gtk_widget_show(search_list);     
         gtk_widget_set_size_request(search_list, 400, 200);
         gtk_container_add(GTK_CONTAINER(search_scrwin), search_list);
         search_select = gtk_tree_view_get_selection(GTK_TREE_VIEW(search_list));
@@ -364,18 +390,32 @@ search_playlist_dialog(void) {
         gtk_tree_view_append_column(GTK_TREE_VIEW(search_list), search_column);
 
 
-	hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_hbox_new(FALSE, 0);
+        gtk_widget_show(hbox);     
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 3);
 
         button = gui_stock_label_button(_("Search"), GTK_STOCK_FIND);
+        gtk_widget_show(button);     
         g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(search_button_clicked), NULL);
         gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
 
         button = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
+        gtk_widget_show(button);     
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(close_button_clicked), NULL);
         gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
 
-	gtk_widget_show_all(search_window);
+
+        if(search_pl_flags & SEARCH_F_CS)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_case), TRUE);
+        if(search_pl_flags & SEARCH_F_EM)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_exact), TRUE);
+        if(search_pl_flags & SEARCH_F_SF)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_sfac), TRUE);
+
+        gtk_widget_show(search_window);
+
+        set_sliders_width();    /* MAGIC */
+
 }
 
 

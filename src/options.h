@@ -43,6 +43,8 @@ typedef struct {
 	int enable_tooltips;
 	int buttons_at_the_bottom;
 	int simple_view_in_fx;
+	int show_sn_title;
+	int united_minimization;
 
 	/* Playlist */
 	int playlist_is_embedded;

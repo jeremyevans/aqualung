@@ -43,6 +43,7 @@
 extern int search_ms_flags;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
+extern void set_sliders_width(void);
 
 extern GtkTreeStore * music_store;
 extern GtkWidget * music_tree;
@@ -60,6 +61,7 @@ GtkWidget * check_artist;
 GtkWidget * check_record;
 GtkWidget * check_track;
 GtkWidget * check_comment;
+GtkWidget * sres_list;
 
 GtkListStore * search_store;
 GtkTreeSelection * search_select;
@@ -121,6 +123,7 @@ close_button_clicked(GtkWidget * widget, gpointer data) {
 	clear_search_store();
         gtk_widget_destroy(search_window);
         search_window = NULL;
+        set_sliders_width();    /* MAGIC */
         return TRUE;
 }
 
@@ -138,6 +141,25 @@ search_window_close(GtkWidget * widget, gpointer * data) {
         return 0;
 }
 
+static gint
+sfac_clicked(GtkWidget * widget, gpointer data) {
+
+        get_toggle_buttons_state();
+
+        if(selectfc) {
+
+                gtk_widget_hide(sres_list);
+                gtk_window_resize(GTK_WINDOW(search_window), 420, 215);
+
+        } else {
+
+                gtk_window_resize(GTK_WINDOW(search_window), 420, 430);
+                gtk_widget_show(sres_list);
+
+        }
+
+        return TRUE;
+}
 
 static gint
 search_button_clicked(GtkWidget * widget, gpointer data) {
@@ -467,87 +489,90 @@ search_dialog(void) {
         gtk_container_set_border_width(GTK_CONTAINER(search_window), 5);
 
         vbox = gtk_vbox_new(FALSE, 0);
+        gtk_widget_show(vbox);
         gtk_container_add(GTK_CONTAINER(search_window), vbox);
 
 
 	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_widget_show(hbox);
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 3);
 
 	label = gtk_label_new(_("Key: "));
+        gtk_widget_show(label);
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
 
         searchkey_entry = gtk_entry_new();
+        gtk_widget_show(searchkey_entry);
         gtk_box_pack_start(GTK_BOX(hbox), searchkey_entry, TRUE, TRUE, 5);
 
 
 	table = gtk_table_new(5, 2, FALSE);
+        gtk_widget_show(table);
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, TRUE, 3);
 
 	check_case = gtk_check_button_new_with_label(_("Case sensitive"));
+        gtk_widget_show(check_case);     
 	gtk_widget_set_name(check_case, "check_on_window");
 	gtk_table_attach(GTK_TABLE(table), check_case, 0, 1, 0, 1,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 5);
 
 	check_exact = gtk_check_button_new_with_label(_("Exact matches only"));
+        gtk_widget_show(check_exact);     
 	gtk_widget_set_name(check_exact, "check_on_window");
 	gtk_table_attach(GTK_TABLE(table), check_exact, 1, 2, 0, 1,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 5);
 
 	check_sfac = gtk_check_button_new_with_label(_("Select first and close window"));
+        gtk_widget_show(check_sfac);     
 	gtk_widget_set_name(check_sfac, "check_on_window");
+        g_signal_connect(G_OBJECT(check_sfac), "clicked", G_CALLBACK(sfac_clicked), NULL);
 	gtk_table_attach(GTK_TABLE(table), check_sfac, 0, 1, 1, 2,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 5);
 
 	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_widget_show(hbox);     
 	label = gtk_label_new(_("Search in:"));
+        gtk_widget_show(label);     
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 2, 3,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 5);
 
 
 	check_artist = gtk_check_button_new_with_label(_("Artist names"));
+        gtk_widget_show(check_artist);     
 	gtk_widget_set_name(check_artist, "check_on_window");
 	gtk_table_attach(GTK_TABLE(table), check_artist, 0, 1, 3, 4,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 1);
 
 	check_record = gtk_check_button_new_with_label(_("Record titles"));
+        gtk_widget_show(check_record);     
 	gtk_widget_set_name(check_record, "check_on_window");
 	gtk_table_attach(GTK_TABLE(table), check_record, 0, 1, 4, 5,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 1);
 
 	check_track = gtk_check_button_new_with_label(_("Track titles"));
+        gtk_widget_show(check_track);     
 	gtk_widget_set_name(check_track, "check_on_window");
 	gtk_table_attach(GTK_TABLE(table), check_track, 1, 2, 3, 4,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 1);
 
 	check_comment = gtk_check_button_new_with_label(_("Comments"));
+        gtk_widget_show(check_comment);     
 	gtk_widget_set_name(check_comment, "check_on_window");
 	gtk_table_attach(GTK_TABLE(table), check_comment, 1, 2, 4, 5,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 1);
 
-        if(search_ms_flags & SEARCH_F_CS)
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_case), TRUE);
-        if(search_ms_flags & SEARCH_F_EM)
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_exact), TRUE);
-        if(search_ms_flags & SEARCH_F_SF)
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_sfac), TRUE);
-        if(search_ms_flags & SEARCH_F_AN)
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_artist), TRUE);
-        if(search_ms_flags & SEARCH_F_RT)
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_record), TRUE);
-        if(search_ms_flags & SEARCH_F_TT)
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_track), TRUE);
-        if(search_ms_flags & SEARCH_F_CO)
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_comment), TRUE);
-
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = sres_list = gtk_hbox_new(FALSE, 0);
+        gtk_widget_show(hbox);     
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 3);
         gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 3);
 
 	search_viewport = gtk_viewport_new(NULL, NULL);
+        gtk_widget_show(search_viewport);     
         gtk_box_pack_start(GTK_BOX(hbox), search_viewport, TRUE, TRUE, 0);
 
         search_scrwin = gtk_scrolled_window_new(NULL, NULL);
+        gtk_widget_show(search_scrwin);     
         gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(search_scrwin),
                                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
         gtk_container_add(GTK_CONTAINER(search_viewport), search_scrwin);
@@ -562,6 +587,7 @@ search_dialog(void) {
         gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(search_store), 0, GTK_SORT_ASCENDING);
 
         search_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(search_store));
+        gtk_widget_show(search_list);     
         gtk_widget_set_size_request(search_list, 400, 200);
         gtk_container_add(GTK_CONTAINER(search_scrwin), search_list);
         search_select = gtk_tree_view_get_selection(GTK_TREE_VIEW(search_list));
@@ -604,17 +630,37 @@ search_dialog(void) {
 
 
 	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_widget_show(hbox);     
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 3);
 
         button = gui_stock_label_button(_("Search"), GTK_STOCK_FIND);
+        gtk_widget_show(button);     
         g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(search_button_clicked), NULL);
         gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
 
         button = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
+        gtk_widget_show(button);     
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(close_button_clicked), NULL);
         gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
 
-	gtk_widget_show_all(search_window);
+        if(search_ms_flags & SEARCH_F_CS)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_case), TRUE);
+        if(search_ms_flags & SEARCH_F_EM)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_exact), TRUE);
+        if(search_ms_flags & SEARCH_F_SF)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_sfac), TRUE);
+        if(search_ms_flags & SEARCH_F_AN)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_artist), TRUE);
+        if(search_ms_flags & SEARCH_F_RT)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_record), TRUE);
+        if(search_ms_flags & SEARCH_F_TT)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_track), TRUE);
+        if(search_ms_flags & SEARCH_F_CO)
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_comment), TRUE);
+
+	gtk_widget_show(search_window);
+
+        set_sliders_width();    /* MAGIC */
 }
 
 

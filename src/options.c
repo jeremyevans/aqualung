@@ -52,6 +52,7 @@ GtkWidget * optmenu_src;
 #endif /* HAVE_SRC */
 
 extern GtkWidget * main_window;
+extern GtkWidget * play_button;
 extern GtkTooltips * aqualung_tooltips;
 
 extern PangoFontDescription *fd_playlist;
@@ -90,9 +91,12 @@ extern GtkTreeViewColumn * track_column;
 extern GtkTreeViewColumn * rva_column;
 extern GtkTreeViewColumn * length_column;
 
+extern GtkListStore * play_store;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern void disable_bold_font_in_playlist(void);
+extern void set_main_window_title(int n, GtkTreeIter *iter);
+extern void set_sliders_width(void);
 
 GtkWidget * options_window;
 GtkWidget * optmenu_ladspa;
@@ -116,6 +120,8 @@ GtkWidget * check_auto_use_ext_meta_artist;
 GtkWidget * check_auto_use_ext_meta_record;
 GtkWidget * check_auto_use_ext_meta_track;
 GtkWidget * check_enable_tooltips;
+GtkWidget * check_show_sn_title;
+GtkWidget * check_united_minimization;
 GtkWidget * check_hide_comment_pane;
 GtkWidget * check_enable_mstore_statusbar;
 GtkWidget * check_expand_stores;
@@ -287,6 +293,22 @@ ok(GtkWidget * widget, gpointer data) {
 	        options.simple_view_in_fx = 0;
 	}
 
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_sn_title))) {
+		options.show_sn_title = 1;
+                if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button))) { 
+                        set_main_window_title(get_playing_pos(play_store), NULL);
+                }
+	} else {
+	        options.show_sn_title = 0;
+                set_main_window_title(-1, NULL);
+	}
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_united_minimization))) {
+		options.united_minimization = 1;
+	} else {
+	        options.united_minimization = 0;
+	}
+
         if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_override_skin))) {
 		options.override_skin_settings = 1;
 	} else {
@@ -389,7 +411,6 @@ ok(GtkWidget * widget, gpointer data) {
                 /* apply colors */               
 
                 if (gdk_color_parse(options.activesong_color, &color) == TRUE) {
-
                         play_list->style->fg[SELECTED].red = color.red;
                         play_list->style->fg[SELECTED].green = color.green;
                         play_list->style->fg[SELECTED].blue = color.blue;
@@ -410,6 +431,8 @@ ok(GtkWidget * widget, gpointer data) {
 
 	gtk_widget_destroy(options_window);
 
+        set_sliders_width();    /* MAGIC */
+
 	return TRUE;
 }
 
@@ -418,6 +441,8 @@ static gint
 cancel(GtkWidget * widget, gpointer data) {
 
 	gtk_widget_destroy(options_window);
+
+        set_sliders_width();    /* MAGIC */
 	return TRUE;
 }
 
@@ -952,6 +977,7 @@ gchar str[MAX_COLORNAME_LEN];
         sprintf(str, "#%02X%02X%02X", c.red * 256 / 65536, c.green * 256 / 65536, c.blue * 256 / 65536);
 
         strncpy(options.activesong_color, str, MAX_COLORNAME_LEN);
+
 }
 
 GtkWidget *
@@ -1326,6 +1352,24 @@ running realtime as a default.\n"));
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_simple_view_in_fx, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_simple_view_in_fx), "toggled",
 						G_CALLBACK (restart_active), _("Simple view in LADSPA patch builder"));
+
+	check_united_minimization =
+		gtk_check_button_new_with_label(_("United windows minimization"));
+
+        gtk_widget_set_name(check_united_minimization, "check_on_notebook");
+	if (options.united_minimization) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_united_minimization), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_united_minimization, FALSE, FALSE, 0);
+
+	check_show_sn_title =
+		gtk_check_button_new_with_label(_("Show song name in the main window's title"));
+
+        gtk_widget_set_name(check_show_sn_title, "check_on_notebook");
+	if (options.show_sn_title) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_sn_title), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_show_sn_title, FALSE, FALSE, 0);
 
 
         /* "Playlist" notebook page */
@@ -2205,6 +2249,8 @@ See the About box and the documentation for details."));
   	gtk_container_add(GTK_CONTAINER(hbuttonbox), cancel_btn);   
 
 	gtk_widget_show_all(options_window);
+
+        set_sliders_width();    /* MAGIC */
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

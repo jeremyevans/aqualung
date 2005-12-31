@@ -44,8 +44,6 @@
 #include "i18n.h"
 #include "music_browser.h"
 
-/*#define COVER_WIDTH             200*/
-/*#define COVER_HEIGHT            200*/
 #define DEFAULT_COVER_FILE      "cover.jpg"
 
 extern options_t options;
@@ -64,6 +62,7 @@ extern char pl_color_inactive[14];
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern void set_sliders_width(void);
+extern void assign_audio_fc_filters(GtkFileChooser *fc);
 
 
 gint cover_widths[5] = { 50, 100, 200, 300, -1 };       /* widths in pixels */
@@ -331,7 +330,7 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
 		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
 	}
 
-        set_sliders_width();
+        set_sliders_width();    /* MAGIC */
 
         if (strlen(selected_filename)) {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), selected_filename);
@@ -355,6 +354,8 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
 
 
         gtk_widget_destroy(dialog);
+
+        set_sliders_width();    /* MAGIC */
 
 	return 0;
 }
@@ -837,13 +838,14 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
                                                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                                      NULL);
 
-        set_sliders_width();
+        set_sliders_width();    /* MAGIC */
 
         gtk_window_set_position(GTK_WINDOW(file_selector), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(file_selector), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(file_selector), GTK_RESPONSE_ACCEPT);
         gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(file_selector), TRUE);
         gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(file_selector), options.currdir);
+        assign_audio_fc_filters(GTK_FILE_CHOOSER(file_selector));
 
 
         if (gtk_dialog_run(GTK_DIALOG(file_selector)) == GTK_RESPONSE_ACCEPT) {
@@ -873,6 +875,8 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
         }
                                                          
         gtk_widget_destroy(file_selector);
+
+        set_sliders_width();    /* MAGIC */
 
 	return 0;
 }
@@ -1016,6 +1020,8 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 
 	gtk_widget_show_all(dialog);
 
+        set_sliders_width();    /* MAGIC */
+
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
@@ -1066,6 +1072,8 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
         }
 
         gtk_widget_destroy(dialog);
+
+        set_sliders_width();    /* MAGIC */
 
         return ret;
 }
@@ -1193,7 +1201,7 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              NULL);
 
-        set_sliders_width();
+        set_sliders_width();    /* MAGIC */
 
         if(strlen(selected_filename))
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), selected_filename);
@@ -1203,6 +1211,7 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+        assign_audio_fc_filters(GTK_FILE_CHOOSER(dialog));
 
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
@@ -1216,6 +1225,8 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
 
 
         gtk_widget_destroy(dialog);
+
+        set_sliders_width();    /* MAGIC */
 
 	return 0;
 }

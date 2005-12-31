@@ -48,6 +48,9 @@
 extern options_t options;
 
 extern void set_sliders_width(void);
+extern void set_main_window_title(int n, GtkTreeIter *iter);
+extern void assign_audio_fc_filters(GtkFileChooser *fc);
+extern void assign_playlist_fc_filters(GtkFileChooser *fc);
 
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
@@ -308,7 +311,11 @@ start_playback_from_playlist(GtkTreePath * path) {
 	gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, 3, &(cue.voladj), -1);
 	cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 	strncpy(current_file, str, MAXLEN-1);
-	g_free(str);
+        g_free(str);
+
+        if(options.show_sn_title) {
+                set_main_window_title(n, NULL);
+        }
 
 	g_signal_handler_block(G_OBJECT(play_button), play_id);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), TRUE);
@@ -565,7 +572,7 @@ plist__save_cb(gpointer data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              NULL);
 
-        set_sliders_width();
+        set_sliders_width();    /* MAGIC */
 
         gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
         gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "playlist.xml");
@@ -589,6 +596,8 @@ plist__save_cb(gpointer data) {
         }
 
         gtk_widget_destroy(dialog);
+
+        set_sliders_width();    /* MAGIC */
 }
 
 
@@ -607,12 +616,12 @@ plist__load_cb(gpointer data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              NULL);
 
-        set_sliders_width();
-
-        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+        set_sliders_width();    /* MAGIC */
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+        assign_playlist_fc_filters(GTK_FILE_CHOOSER(dialog));
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
 
@@ -643,6 +652,8 @@ plist__load_cb(gpointer data) {
 
         gtk_widget_destroy(dialog);
 
+        set_sliders_width();    /* MAGIC */
+
 	playlist_content_changed();
 
 }
@@ -663,9 +674,10 @@ plist__enqueue_cb(gpointer data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              NULL);
 
-        set_sliders_width();
+        set_sliders_width();    /* MAGIC */
 
         gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+        assign_playlist_fc_filters(GTK_FILE_CHOOSER(dialog));
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
@@ -698,6 +710,8 @@ plist__enqueue_cb(gpointer data) {
         }
 
         gtk_widget_destroy(dialog);
+
+        set_sliders_width();    /* MAGIC */
         
         playlist_content_changed();
 }
@@ -1145,7 +1159,6 @@ direct_add(GtkWidget * widget, gpointer * data) {
         GtkWidget *dialog;
         GSList *lfiles, *node;
 
-
         dialog = gtk_file_chooser_dialog_new(_("Select files..."), 
                                              options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
                                              GTK_FILE_CHOOSER_ACTION_OPEN, 
@@ -1153,14 +1166,13 @@ direct_add(GtkWidget * widget, gpointer * data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              NULL);
 
-        set_sliders_width();
+        set_sliders_width();    /* MAGIC */
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
-        deflicker();
-
         gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
         gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+        assign_audio_fc_filters(GTK_FILE_CHOOSER(dialog));
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
@@ -1187,6 +1199,8 @@ direct_add(GtkWidget * widget, gpointer * data) {
         delayed_playlist_rearrange(100);
 
         gtk_widget_destroy(dialog);
+
+        set_sliders_width();    /* MAGIC */
 
 	playlist_content_changed();
 
@@ -1646,7 +1660,6 @@ create_playlist(void) {
 			 G_CALLBACK(playlist_drag_data_received), NULL);
 
 
-
 	viewport = gtk_viewport_new(NULL, NULL);
         gtk_box_pack_start(GTK_BOX(vbox), viewport, TRUE, TRUE, 0);
 
@@ -1828,6 +1841,8 @@ save_playlist(char * filename) {
 
                 xmlNewTextChild(node, NULL, (const xmlChar*) "track_name", (const xmlChar*) track_name);
                 xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) phys_name);
+
+                /* FIXME: dont use #000000 color as active if you dont want special fx in playlist 8-) */
 
 		if (strcmp(color, pl_color_active) == 0) {
 			strcpy(str, "yes");

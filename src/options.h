@@ -55,6 +55,7 @@ typedef struct {
 	int show_rva_in_playlist;
 	int show_length_in_playlist;
 	int show_active_track_name_in_bold;
+	int enable_rules_hint;
 	int plcol_idx[3];
 
 	/* Music Store */
@@ -101,6 +102,9 @@ typedef struct {
 	char browser_font[MAX_FONTNAME_LEN];
 	char bigtimer_font[MAX_FONTNAME_LEN];
 	char smalltimer_font[MAX_FONTNAME_LEN];
+	char songtitle_font[MAX_FONTNAME_LEN];
+	char songinfo_font[MAX_FONTNAME_LEN];
+	char statusbar_font[MAX_FONTNAME_LEN];
 	char activesong_color[MAX_COLORNAME_LEN];
 
 } options_t;

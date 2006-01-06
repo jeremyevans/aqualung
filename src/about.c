@@ -31,11 +31,13 @@
 
 GtkWidget * about_window;
 extern GtkWidget * main_window;
+extern void set_sliders_width(void);
 
 static gint
 ok(GtkWidget * widget, gpointer data) {
 
 	gtk_widget_destroy(about_window);
+        set_sliders_width();
 	return TRUE;
 }
 
@@ -142,7 +144,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, _("Skin support, look & feel, GUI hacks:\n"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\tPeter Szilagyi <peterszilagyi@users.sourceforge.net>\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Programming, GUI engineering:\n"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tTomasz Maka <pasp@ll.pl>\n\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tTomasz Maka <pasp@users.sourceforge.net>\n\n\n", -1);
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Translators:"), -1, tag, NULL);
@@ -377,6 +379,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."), -1);
 		gtk_box_pack_end(GTK_BOX(vbox), xpm, FALSE, FALSE, 0);
 		gtk_widget_show(xpm);
 	}
+
+        set_sliders_width();    /* MAGIC */
 
         gtk_widget_grab_focus(ok_btn);
 }

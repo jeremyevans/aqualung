@@ -56,6 +56,7 @@ extern GtkListStore * play_store;
 extern GtkListStore * ms_pathlist_store;
 
 extern PangoFontDescription *fd_browser;
+extern PangoFontDescription *fd_statusbar;
 
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
@@ -84,7 +85,7 @@ GtkTreeSelection * music_select;
 
 GtkWidget * comment_view;
 GtkWidget * browser_paned;
-GtkWidget * statusbar;
+GtkWidget * statusbar_ms;
 
 
 /* popup menus for tree items */
@@ -3127,7 +3128,7 @@ set_status_bar_info(void) {
 		str[0] = '\0';
 	}
 
-	gtk_label_set_text(GTK_LABEL(statusbar), str);
+	gtk_label_set_text(GTK_LABEL(statusbar_ms), str);
 }
 
 
@@ -3562,9 +3563,13 @@ create_music_browser(void) {
 		gtk_container_set_border_width(GTK_CONTAINER(statusbar_hbox), 1);
 		gtk_container_add(GTK_CONTAINER(statusbar_viewport), statusbar_hbox);
 
-		statusbar = gtk_label_new("");
-		gtk_widget_set_name(statusbar, "label_info");
-		gtk_box_pack_end(GTK_BOX(statusbar_hbox), statusbar, FALSE, FALSE, 0);
+		statusbar_ms = gtk_label_new("");
+		gtk_widget_set_name(statusbar_ms, "label_info");
+		gtk_box_pack_end(GTK_BOX(statusbar_hbox), statusbar_ms, FALSE, FALSE, 0);
+
+                if (options.override_skin_settings) {
+                        gtk_widget_modify_font (statusbar_ms, fd_statusbar);
+                }
 	}
 }
 

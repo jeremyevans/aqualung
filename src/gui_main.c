@@ -80,6 +80,9 @@ PangoFontDescription *fd_playlist;
 PangoFontDescription *fd_browser;
 PangoFontDescription *fd_bigtimer;
 PangoFontDescription *fd_smalltimer;
+PangoFontDescription *fd_songtitle;
+PangoFontDescription *fd_songinfo;
+PangoFontDescription *fd_statusbar;
 
 /* Communication between gui thread and disk thread */
 extern pthread_mutex_t disk_thread_lock;
@@ -347,7 +350,6 @@ gchar default_title[MAXLEN];
 		if (GTK_IS_LABEL(label_title)) {
                         sprintf(default_title, "Aqualung %s", aqualung_version);
 			gtk_label_set_text(GTK_LABEL(label_title), default_title);
-/*			gtk_label_set_text(GTK_LABEL(label_title), "");*/
                 }
         }
 }
@@ -1876,25 +1878,31 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 			is_file_loaded = 1;
 			g_signal_handler_block(G_OBJECT(play_button), play_id);
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), TRUE);
-			g_signal_handler_unblock(G_OBJECT(play_button), play_id);
+               		g_signal_handler_unblock(G_OBJECT(play_button), play_id);
+
+                        if(options.show_sn_title) {
+                                set_main_window_title(n, NULL);
+                        }
 
 		} else {
 			if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
                                 /* normal or repeat mode */
 				if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
-					gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+                                        n = 0;
+                                        gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
                                         if (options.show_active_track_name_in_bold)
                                                 gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
 							   3, &(cue.voladj), -1);
-					cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-					strncpy(current_file, str, MAXLEN-1);
+                                        cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+                                        strncpy(current_file, str, MAXLEN-1);
 					g_free(str);
 					is_file_loaded = 1;
 					g_signal_handler_block(G_OBJECT(play_button), play_id);
 					gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), TRUE);
 					g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-				} else {
+
+                                } else {
 					is_file_loaded = 0;
 					current_file[0] = '\0';
 					zero_displays();
@@ -2323,6 +2331,9 @@ create_main_window(char * skin_path) {
  	fd_browser = pango_font_description_from_string(options.browser_font);
  	fd_bigtimer = pango_font_description_from_string(options.bigtimer_font);
  	fd_smalltimer = pango_font_description_from_string(options.smalltimer_font);
+ 	fd_songtitle = pango_font_description_from_string(options.songtitle_font);
+ 	fd_songinfo = pango_font_description_from_string(options.songinfo_font);
+ 	fd_statusbar = pango_font_description_from_string(options.statusbar_font);
 
 
         aqualung_tooltips = gtk_tooltips_new();
@@ -2509,6 +2520,16 @@ create_main_window(char * skin_path) {
 	gtk_widget_set_name(label_src_type, "label_info");
 	gtk_box_pack_start(GTK_BOX(info_hbox), label_src_type, FALSE, FALSE, 3);
 
+        if (options.override_skin_settings) {
+                gtk_widget_modify_font (label_title, fd_songtitle);
+
+                gtk_widget_modify_font (label_mono, fd_songinfo);
+                gtk_widget_modify_font (label_samplerate, fd_songinfo);
+                gtk_widget_modify_font (label_bps, fd_songinfo);
+                gtk_widget_modify_font (label_format, fd_songinfo);
+                gtk_widget_modify_font (label_output, fd_songinfo);
+                gtk_widget_modify_font (label_src_type, fd_songinfo);
+        }
 
 	/* Volume and balance slider */
 	vb_table = gtk_table_new(1, 3, FALSE);
@@ -2592,7 +2613,6 @@ create_main_window(char * skin_path) {
 
 	sprintf(path, "%s/%s", skin_path, "pause");
 	pause_button = create_button_with_image(path, 1, "pause");
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), time_labels[time_idx[0]], "dupa1", NULL);
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), pause_button, _("Pause (space)"), NULL);
 
 	GTK_WIDGET_UNSET_FLAGS(prev_button, GTK_CAN_FOCUS);
@@ -2981,9 +3001,9 @@ timeout_callback(gpointer data) {
 								GTK_TOGGLE_BUTTON(play_button), FALSE);
 							g_signal_handler_unblock(G_OBJECT(play_button),
 										 play_id);
-                                                        if(options.show_sn_title) {
-                                                                set_main_window_title(-1, NULL);
-                                                        }
+/*                                                        if(options.show_sn_title) {*/
+/*                                                                set_main_window_title(-1, NULL);*/
+/*                                                        }*/
 						} else {
 							/* list repeat mode */
 							if (gtk_tree_model_get_iter_first(
@@ -3093,9 +3113,9 @@ timeout_callback(gpointer data) {
 						gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
 									     FALSE);
 						g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-                                                if(options.show_sn_title) {
-                                                        set_main_window_title(-1, NULL);
-                                                }
+/*                                                if(options.show_sn_title) {*/
+/*                                                        set_main_window_title(-1, NULL);*/
+/*                                                }*/
 					}
 				} else { /* shuffle mode */
 					n_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store),
@@ -3357,6 +3377,8 @@ save_config(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) "show_length_in_playlist", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.show_active_track_name_in_bold);
         xmlNewTextChild(root, NULL, (const xmlChar *) "show_active_track_name_in_bold", (xmlChar *) str);
+	snprintf(str, 31, "%d", options.enable_rules_hint);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_rules_hint", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", options.auto_use_meta_artist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_meta_artist", (xmlChar *) str);
@@ -3483,6 +3505,12 @@ save_config(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) "bigtimer_font", (xmlChar *) str);
 	snprintf(str, MAX_FONTNAME_LEN, "%s", options.smalltimer_font);
         xmlNewTextChild(root, NULL, (const xmlChar *) "smalltimer_font", (xmlChar *) str);
+	snprintf(str, MAX_FONTNAME_LEN, "%s", options.songtitle_font);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "songtitle_font", (xmlChar *) str);
+	snprintf(str, MAX_FONTNAME_LEN, "%s", options.songinfo_font);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "songinfo_font", (xmlChar *) str);
+	snprintf(str, MAX_FONTNAME_LEN, "%s", options.statusbar_font);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "statusbar_font", (xmlChar *) str);
 
 	snprintf(str, MAX_COLORNAME_LEN, "%s", options.activesong_color);
         xmlNewTextChild(root, NULL, (const xmlChar *) "activesong_color", (xmlChar *) str);
@@ -3625,6 +3653,7 @@ load_config(void) {
 
         options.override_skin_settings = 0;
         options.show_active_track_name_in_bold = 1;
+        options.enable_rules_hint = 0;
 	options.autoexpand_stores = 1;
 
 	options.auto_save_playlist = 1;
@@ -3736,6 +3765,12 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
 				sscanf((char *) key, "%d", &options.show_active_track_name_in_bold);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_rules_hint"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+				sscanf((char *) key, "%d", &options.enable_rules_hint);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_tooltips"))) {
@@ -4032,6 +4067,27 @@ load_config(void) {
                         xmlFree(key);
                 }
 
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"songtitle_font"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                strncpy(options.songtitle_font, (char *) key, MAX_FONTNAME_LEN-1);
+                        xmlFree(key);
+                }
+
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"songinfo_font"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                strncpy(options.songinfo_font, (char *) key, MAX_FONTNAME_LEN-1);
+                        xmlFree(key);
+                }
+
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"statusbar_font"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                strncpy(options.statusbar_font, (char *) key, MAX_FONTNAME_LEN-1);
+                        xmlFree(key);
+                }
+
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"activesong_color"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
@@ -4251,6 +4307,8 @@ assign_playlist_fc_filters(GtkFileChooser *fc) {
 
         len = sizeof(file_filters)/sizeof(gchar*)/2;
 
+        gtk_widget_realize(GTK_WIDGET(fc));
+
         /* all files filter */
         filter_1 = gtk_file_filter_new();
         gtk_file_filter_add_pattern(filter_1, "*");
@@ -4350,6 +4408,8 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
 #ifdef HAVE_SNDFILE
         len_c = sizeof(file_filters_c)/sizeof(gchar*)-1;
 #endif /* HAVE_SNDFILE */
+
+        gtk_widget_realize(GTK_WIDGET(fc));
 
         /* all files filter */
         filter_1 = gtk_file_filter_new();

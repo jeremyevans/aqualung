@@ -55,10 +55,12 @@ extern void assign_playlist_fc_filters(GtkFileChooser *fc);
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
 
+extern GtkTooltips * aqualung_tooltips;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 extern PangoFontDescription *fd_playlist;
+extern PangoFontDescription *fd_statusbar;
 
 
 int alt_L;
@@ -116,7 +118,9 @@ GtkCellRenderer * rva_renderer;
 GtkCellRenderer * length_renderer;
 
 GtkWidget * statusbar_total;
+GtkWidget * statusbar_total_label;
 GtkWidget * statusbar_selected;
+GtkWidget * statusbar_selected_label;
 
 /* popup menus */
 GtkWidget * add_menu;
@@ -1476,7 +1480,6 @@ create_playlist(void) {
 
 	GtkWidget * statusbar;
 	GtkWidget * statusbar_viewport;
-	GtkWidget * statusbar_label;
 
 	int i;
 
@@ -1572,6 +1575,10 @@ create_playlist(void) {
 
         if (options.override_skin_settings) {
                 gtk_widget_modify_font (play_list, fd_playlist);
+        }
+
+        if (options.enable_rules_hint) {
+                gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(play_list), TRUE);
         }
 
         playlist_color_is_set = 0;
@@ -1685,9 +1692,9 @@ create_playlist(void) {
 		gtk_widget_set_name(statusbar_selected, "label_info");
 		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_selected, FALSE, TRUE, 0);
 		
-		statusbar_label = gtk_label_new(_("Selected: "));
-		gtk_widget_set_name(statusbar_label, "label_info");
-		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_label, FALSE, TRUE, 0);
+		statusbar_selected_label = gtk_label_new(_("Selected: "));
+		gtk_widget_set_name(statusbar_selected_label, "label_info");
+		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_selected_label, FALSE, TRUE, 0);
 		
 		gtk_box_pack_end(GTK_BOX(statusbar), gtk_vseparator_new(), FALSE, TRUE, 5);
 		
@@ -1695,9 +1702,16 @@ create_playlist(void) {
 		gtk_widget_set_name(statusbar_total, "label_info");
 		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_total, FALSE, TRUE, 0);
 		
-		statusbar_label = gtk_label_new(_("Total: "));
-		gtk_widget_set_name(statusbar_label, "label_info");
-		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_label, FALSE, TRUE, 0);
+		statusbar_total_label = gtk_label_new(_("Total: "));
+		gtk_widget_set_name(statusbar_total_label, "label_info");
+		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_total_label, FALSE, TRUE, 0);
+
+                if (options.override_skin_settings) {
+                        gtk_widget_modify_font (statusbar_selected, fd_statusbar);
+                        gtk_widget_modify_font (statusbar_selected_label, fd_statusbar);
+                        gtk_widget_modify_font (statusbar_total, fd_statusbar);
+                        gtk_widget_modify_font (statusbar_total_label, fd_statusbar);
+                }
 		
 		playlist_selection_changed(NULL, NULL);
 		playlist_content_changed();
@@ -1709,14 +1723,17 @@ create_playlist(void) {
         gtk_box_pack_start(GTK_BOX(vbox), hbox_bottom, FALSE, TRUE, 0);
 
 	direct_button = gtk_button_new_with_label(_("Add files..."));
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), direct_button, _("Add files to playlist"), NULL);
         gtk_box_pack_start(GTK_BOX(hbox_bottom), direct_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(direct_button), "clicked", G_CALLBACK(direct_add), NULL);
 
 	selall_button = gtk_button_new_with_label(_("Select all"));
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), selall_button, _("Select all songs in playlist\n(Press right mouse button for menu)"), NULL);
         gtk_box_pack_start(GTK_BOX(hbox_bottom), selall_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(selall_button), "clicked", G_CALLBACK(select_all), NULL);
 	
 	remsel_button = gtk_button_new_with_label(_("Remove selected"));
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), remsel_button, _("Remove selected songs from playlist\n(Press right mouse button for menu)"), NULL);
         gtk_box_pack_start(GTK_BOX(hbox_bottom), remsel_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(remsel_button), "clicked", G_CALLBACK(remove_sel), NULL);
 

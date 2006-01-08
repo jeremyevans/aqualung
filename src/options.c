@@ -236,6 +236,11 @@ ok(GtkWidget * widget, gpointer data) {
         GdkColor color;
 
 
+        if (restart_flag) {
+                show_restart_info();            
+        }
+
+
 	strncpy(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)), MAXLEN - 1);
 	strncpy(options.default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN - 1);
 	options.auto_save_playlist = auto_save_playlist_shadow;
@@ -436,9 +441,6 @@ ok(GtkWidget * widget, gpointer data) {
 		n_prev = n;
 	}	
 
-	playlist_size_allocate(NULL, NULL);
-	delayed_playlist_rearrange(100);
-
         /* apply changes */
 
         if (options.override_skin_settings) {
@@ -477,9 +479,9 @@ ok(GtkWidget * widget, gpointer data) {
                         set_playlist_color();
                 }
 
-                if(appearance_changed)
+                if (appearance_changed) {
                         change_skin(options.skin);
-
+		}
         } else if (override_past_state) {
 
                 /* reload skin */
@@ -487,16 +489,13 @@ ok(GtkWidget * widget, gpointer data) {
                 override_past_state = 0;
         }
 
-
-        if (restart_flag) {
-                show_restart_info();            
-        }
-
         current_notebook_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
 
 	gtk_widget_destroy(options_window);
 
         set_sliders_width();    /* MAGIC */
+
+	playlist_size_allocate(NULL, NULL);
 
 	return TRUE;
 }

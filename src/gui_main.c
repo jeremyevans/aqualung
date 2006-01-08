@@ -1510,7 +1510,7 @@ changed_pos(GtkAdjustment * adj, gpointer data) {
 		gtk_adjustment_set_value(adj, 0.0f);
 
         if (options.enable_tooltips) {
-                sprintf(str, "Position: %d%%", (gint)gtk_adjustment_get_value(GTK_ADJUSTMENT(adj))); 
+                sprintf(str, _("Position: %d%%"), (gint)gtk_adjustment_get_value(GTK_ADJUSTMENT(adj))); 
                 gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), scale_pos, str, NULL);
         }
 }
@@ -1564,7 +1564,7 @@ changed_vol(GtkAdjustment * adj, gpointer date) {
 		gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
         }
 
-        sprintf(str2, "Volume: %s", str);
+        sprintf(str2, _("Volume: %s"), str);
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), scale_vol, str2, NULL);
 }
 
@@ -1635,7 +1635,7 @@ changed_bal(GtkAdjustment * adj, gpointer date) {
 		gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
 	}
 
-        sprintf(str2, "Balance: %s", str);
+        sprintf(str2, _("Balance: %s"), str);
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), scale_bal, str2, NULL);
 }
 
@@ -2799,6 +2799,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
 
 	create_playlist();
+
         playlist_size_allocate(NULL, NULL);
 
 	create_music_browser();

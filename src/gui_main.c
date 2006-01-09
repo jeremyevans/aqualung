@@ -284,8 +284,6 @@ void playlist_toggled(GtkWidget * widget, gpointer data);
 
 void set_sliders_width(void);
 
-void set_main_window_title(int n, GtkTreeIter *iter);
-
 void assign_audio_fc_filters(GtkFileChooser *fc);
 void assign_playlist_fc_filters(GtkFileChooser *fc);
 
@@ -341,18 +339,31 @@ time2time(float seconds, char * str) {
 
 void
 set_title_label(char * str) {
-gchar default_title[MAXLEN];
+
+	gchar default_title[MAXLEN];
+        char tmp[MAXLEN];
 
 	if (is_file_loaded) {
-		if (GTK_IS_LABEL(label_title))
+		if (GTK_IS_LABEL(label_title)) {
 			gtk_label_set_text(GTK_LABEL(label_title), str);
+			if (options.show_sn_title) {
+				strncpy(tmp, g_locale_from_utf8(str, -1, NULL, NULL, NULL), MAXLEN-1);
+				strncat(tmp, " - ", MAXLEN-1);
+				strncat(tmp, win_title, MAXLEN-1);
+				gtk_window_set_title(GTK_WINDOW(main_window), tmp);
+			} else {
+				gtk_window_set_title(GTK_WINDOW(main_window), win_title);
+			}
+		}
 	} else {
 		if (GTK_IS_LABEL(label_title)) {
                         sprintf(default_title, "Aqualung %s", aqualung_version);
 			gtk_label_set_text(GTK_LABEL(label_title), default_title);
+			gtk_window_set_title(GTK_WINDOW(main_window), win_title);
                 }
         }
 }
+
 
 void
 assembly_format_label(char * str, int v_major, int v_minor) {
@@ -1727,10 +1738,6 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		strncpy(current_file, str, MAXLEN-1);
 		g_free(str);
 
-                if(options.show_sn_title) {
-                        set_main_window_title(n, NULL);
-                }
-
 		if (is_paused) {
 			is_paused = 0;
 			g_signal_handler_block(G_OBJECT(pause_button), pause_id);
@@ -1828,10 +1835,6 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		strncpy(current_file, str, MAXLEN-1);
 		g_free(str);
 
-                if(options.show_sn_title) {
-                        set_main_window_title(n, NULL);
-                }
-
 		if (is_paused) {
 			is_paused = 0;
 			g_signal_handler_block(G_OBJECT(pause_button), pause_id);
@@ -1879,10 +1882,6 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 			g_signal_handler_block(G_OBJECT(play_button), play_id);
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), TRUE);
                		g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-
-                        if(options.show_sn_title) {
-                                set_main_window_title(n, NULL);
-                        }
 
 		} else {
 			if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
@@ -1952,10 +1951,6 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		send_cmd = CMD_RESUME;
 		jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
 	}
-
-        if(options.show_sn_title) {
-                set_main_window_title(n, NULL);
-        }
 
 	if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
 		pthread_cond_signal(&disk_thread_wake);
@@ -2035,10 +2030,6 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		pthread_cond_signal(&disk_thread_wake);
 		pthread_mutex_unlock(&disk_thread_lock);
 	}
-	
-        if(options.show_sn_title) {
-                set_main_window_title(-1, NULL);
-        }
 
 	return FALSE;
 }
@@ -2983,9 +2974,6 @@ timeout_callback(gpointer data) {
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						strncpy(current_file, str, MAXLEN-1);
 						g_free(str);
-                                                if(options.show_sn_title) {
-                                                        set_main_window_title(0, &iter);
-                                                }
                                                 is_file_loaded = 1;
 					} else {
 						if (!gtk_toggle_button_get_active(
@@ -3002,9 +2990,6 @@ timeout_callback(gpointer data) {
 								GTK_TOGGLE_BUTTON(play_button), FALSE);
 							g_signal_handler_unblock(G_OBJECT(play_button),
 										 play_id);
-/*                                                        if(options.show_sn_title) {*/
-/*                                                                set_main_window_title(-1, NULL);*/
-/*                                                        }*/
 						} else {
 							/* list repeat mode */
 							if (gtk_tree_model_get_iter_first(
@@ -3020,9 +3005,6 @@ timeout_callback(gpointer data) {
 									g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 								strncpy(current_file, str, MAXLEN-1);
 								g_free(str);
-                                                                if(options.show_sn_title) {
-                                                                        set_main_window_title(0, &iter);
-                                                                }
 							} else {
 								is_file_loaded = 0;
 								current_file[0] = '\0';
@@ -3048,9 +3030,6 @@ timeout_callback(gpointer data) {
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						strncpy(current_file, str, MAXLEN-1);
 						g_free(str);
-                                                if(options.show_sn_title) {
-                                                        set_main_window_title(0, &iter);
-                                                }
 						is_file_loaded = 1;
 				} else {
 					/* shuffle mode */
@@ -3075,9 +3054,6 @@ timeout_callback(gpointer data) {
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						strncpy(current_file, str, MAXLEN-1);
 						g_free(str);
-                                                if(options.show_sn_title) {
-                                                        set_main_window_title(0, &iter);
-                                                }
 						is_file_loaded = 1;
 					} else {
 						is_file_loaded = 0;
@@ -3101,9 +3077,6 @@ timeout_callback(gpointer data) {
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						strncpy(current_file, str, MAXLEN-1);
 						g_free(str);
-                                                if(options.show_sn_title) {
-                                                        set_main_window_title(0, &iter);
-                                                }
 					} else {
 						is_file_loaded = 0;
 						current_file[0] = '\0';
@@ -3114,9 +3087,6 @@ timeout_callback(gpointer data) {
 						gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
 									     FALSE);
 						g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-/*                                                if(options.show_sn_title) {*/
-/*                                                        set_main_window_title(-1, NULL);*/
-/*                                                }*/
 					}
 				} else { /* shuffle mode */
 					n_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store),
@@ -3135,9 +3105,6 @@ timeout_callback(gpointer data) {
 						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
 						strncpy(current_file, str, MAXLEN-1);
 						g_free(str);
-                                                if(options.show_sn_title) {
-                                                        set_main_window_title(0, &iter);
-                                                }
 						is_file_loaded = 1;
 					} else {
 						is_file_loaded = 0;
@@ -4259,38 +4226,6 @@ set_sliders_width(void) {
 	gtk_widget_queue_draw(scale_bal);
 	deflicker();
 
-}
-
-void
-set_main_window_title(int n, GtkTreeIter *iter) {
-
-	GtkTreeIter m_iter;
-        char *str;
-        char tmp[MAXLEN];
-
-        if(n == -1) {
-
-                gtk_window_set_title(GTK_WINDOW(main_window), win_title);
-
-        } else {
-
-                if(iter == NULL) {
-
-                        gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &m_iter, NULL, n);
-                        gtk_tree_model_get(GTK_TREE_MODEL(play_store), &m_iter, 0, &str, -1);
-
-                } else {
-
-                        gtk_tree_model_get(GTK_TREE_MODEL(play_store), iter, 0, &str, -1);
-
-                }
-
-                strncpy(tmp, strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL)), MAXLEN-1);
-                strncat(tmp, " - ", MAXLEN-1);
-                strncat(tmp, win_title, MAXLEN-1);
-                g_free(str);
-                gtk_window_set_title(GTK_WINDOW(main_window), tmp);
-        }
 }
 
 

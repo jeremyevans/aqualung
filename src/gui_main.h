@@ -33,6 +33,8 @@ void sample2time(unsigned long SR, unsigned long long sample, char * str, int si
 void time2time(float samples, char * str);
 void assembly_format_label(char * str, int v_major, int v_minor);
 
+void refresh_displays(void);
+
 void save_window_position(void);
 void restore_window_position(void);
 void change_skin(char * skin_path);

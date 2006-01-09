@@ -48,7 +48,6 @@
 extern options_t options;
 
 extern void set_sliders_width(void);
-extern void set_main_window_title(int n, GtkTreeIter *iter);
 extern void assign_audio_fc_filters(GtkFileChooser *fc);
 extern void assign_playlist_fc_filters(GtkFileChooser *fc);
 
@@ -317,8 +316,8 @@ start_playback_from_playlist(GtkTreePath * path) {
 	strncpy(current_file, str, MAXLEN-1);
         g_free(str);
 
-        if(options.show_sn_title) {
-                set_main_window_title(n, NULL);
+        if (options.show_sn_title) {
+		refresh_displays();
         }
 
 	g_signal_handler_block(G_OBJECT(play_button), play_id);

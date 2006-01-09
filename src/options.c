@@ -116,7 +116,6 @@ extern GtkListStore * play_store;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern void disable_bold_font_in_playlist(void);
-extern void set_main_window_title(int n, GtkTreeIter *iter);
 extern void set_sliders_width(void);
 
 GtkWidget * options_window;
@@ -345,12 +344,10 @@ ok(GtkWidget * widget, gpointer data) {
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_sn_title))) {
 		options.show_sn_title = 1;
-                if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button))) { 
-                        set_main_window_title(get_playing_pos(play_store), NULL);
-                }
+		refresh_displays();
 	} else {
 	        options.show_sn_title = 0;
-                set_main_window_title(-1, NULL);
+		refresh_displays();
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_united_minimization))) {

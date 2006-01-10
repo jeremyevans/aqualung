@@ -802,7 +802,7 @@ void aifp_transfer_files(void) {
                 gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), rmdir_button, _("Remove directory and its entire contents"), NULL);
         }
 
-        label = gtk_label_new (_("<b>Destanation directory</b>"));
+        label = gtk_label_new (_("<b>Destination directory</b>"));
         gtk_widget_show (label);
         gtk_frame_set_label_widget (GTK_FRAME (frame), label);
         gtk_label_set_use_markup (GTK_LABEL (label), TRUE);

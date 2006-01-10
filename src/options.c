@@ -1080,10 +1080,18 @@ void restart_active(GtkToggleButton * togglebutton, gpointer data) {
 
         restart_flag = 1;
 
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(restart_list_store), &iter, NULL, i++)) {
-		gtk_tree_model_get(GTK_TREE_MODEL(restart_list_store), &iter, 0, &text, -1);
-		if (!strcmp(text, (char *)data)) return;
-	}
+        while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(restart_list_store), &iter, NULL, i++)) {
+
+                gtk_tree_model_get(GTK_TREE_MODEL(restart_list_store), &iter, 0, &text, -1);
+
+                if (!strcmp(text, (char *)data)) {
+                        gtk_list_store_remove(restart_list_store, &iter);
+                        if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(restart_list_store), &iter)) {
+                                restart_flag = 0;
+                        }
+                        return;
+                }
+        }
 
 	gtk_list_store_append(restart_list_store, &iter);
 	gtk_list_store_set(restart_list_store, &iter, 0, (char *)data, -1);

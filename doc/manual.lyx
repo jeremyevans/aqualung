@@ -4,7 +4,7 @@
 \begin_preamble
 \sloppy
 
-\usepackage[bookmarks, bookmarksopen=true, bookmarksopenlevel=2, colorlinks=true, urlcolor=blue, linkcolor=blue, pdftitle={Aqualung User's Manual}]{hyperref}
+\usepackage[bookmarks, bookmarksopen=true, bookmarksopenlevel=2, colorlinks=true, pdfstartview=FitH, urlcolor=blue, linkcolor=black, pdftitle={Aqualung User's Manual}]{hyperref}
 \usepackage{fancyhdr}
 \lhead{Aqualung}
 \chead{User's Manual}
@@ -64,9 +64,9 @@ hspace{0mm}
 \backslash 
 vspace{10mm}
 \layout Standard
-
+{
 \backslash 
-Huge{
+Huge
 \backslash 
 bf Aqualung}
 \layout Standard
@@ -74,9 +74,9 @@ bf Aqualung}
 \backslash 
 vspace{3mm}
 \layout Standard
-
+{
 \backslash 
-LARGE{Music Player for GNU/Linux}
+LARGE Music Player for GNU/Linux}
 \layout Standard
 
 \backslash 
@@ -88,11 +88,37 @@ today
 \layout Standard
 
 \backslash 
-vspace{80mm}
+vspace{70mm}
+\layout Standard
+{
+\backslash 
+Huge User's Manual}
 \layout Standard
 
 \backslash 
-Huge{User's Manual}
+vspace{60mm}
+\layout Standard
+Copyright 
+\backslash 
+copyright{} 2006 Peter Szilagyi
+\layout Standard
+
+\backslash 
+vspace{5mm}
+\layout Standard
+Permission is granted to copy, distribute and/or modify this document
+\backslash 
+
+\backslash 
+
+\layout Standard
+under the terms of the GNU Free Documentation License, Version 1.2
+\backslash 
+
+\backslash 
+
+\layout Standard
+or any later version published by the Free Software Foundation.
 \layout Standard
 
 \backslash 

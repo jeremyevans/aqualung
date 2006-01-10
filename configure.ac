@@ -422,6 +422,29 @@ else
 fi
 
 
+AC_MSG_CHECKING(for iRiver iFP support)
+AC_ARG_WITH(
+	ifp,
+	[  --with-ifp=yes,no       compile with iRiver iFP driver support (default: yes)],
+	ifp="$withval",
+	ifp="detect")
+if test "$ifp" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(ifp, ifp_find_device, [lib=yes], [lib=no])
+	if test "$lib" = "yes"; then
+	    ifp_LIBS="-lifp"
+		AC_DEFINE([HAVE_IFP], [1], [Defined if compile with iRiver iFP driver support])
+	fi
+	if test "$lib" = "no" -a "$ifp" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the iFP driver library installed. Grab it from http://ifp-driver.sourceforge.net/)
+	fi
+	if test "$ifp" = "detect"; then
+		ifp=$lib
+	fi
+fi
+
+
 # Compiler and linker variables
 gtk_CFLAGS=`pkg-config --cflags gtk+-2.0`
 gtk_LIBS=`pkg-config --libs gtk+-2.0`
@@ -442,7 +465,7 @@ DATADIR="-DDATADIR=\\\"$datadir/aqualung\\\""
 
 CFLAGS="-O2 -Wall $SKINDIR $LOCALEDIR $DATADIR -D_GNU_SOURCE"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS"
-LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $cddb_LIBS"
+LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $cddb_LIBS $ifp_LIBS"
 
 
 AC_OUTPUT([Makefile \
@@ -482,4 +505,5 @@ echo "      JACK Audio Server                   :  yes (always)"
 echo
 echo "  Internal Sample Rate Converter support  :  $src"
 echo "  CDDB support                            :  $cddb"
+echo "  iRiver iFP driver support               :  $ifp"
 echo "----------------------------------------------------------------------"

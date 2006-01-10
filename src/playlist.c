@@ -44,6 +44,7 @@
 #include "i18n.h"
 #include "search_playlist.h"
 #include "playlist.h"
+#include "ifp_device.h"
 
 extern options_t options;
 
@@ -146,6 +147,11 @@ GtkWidget * plist__reread_file_meta;
 GtkWidget * plist__separator2;
 GtkWidget * plist__fileinfo;
 GtkWidget * plist__search;
+
+#ifdef HAVE_IFP
+GtkWidget * plist__send_songs_to_iriver;
+GtkWidget * plist__separator3;
+#endif /* HAVE_IFP */
 
 char command[RB_CONTROL_SIZE];
 
@@ -932,6 +938,15 @@ plist__reread_file_meta_cb(gpointer data) {
 }
 
 
+#ifdef HAVE_IFP
+void
+plist__send_songs_to_iriver_cb(gpointer data) {
+
+        aifp_transfer_files();
+
+}
+#endif /* HAVE_IFP */
+
 void
 plist__fileinfo_cb(gpointer data) {
 
@@ -1514,7 +1529,13 @@ create_playlist(void) {
 	plist__rva_average = gtk_menu_item_new_with_label(_("Average"));
 	plist__reread_file_meta = gtk_menu_item_new_with_label(_("Reread file metadata"));
 	plist__separator2 = gtk_separator_menu_item_new();
-	plist__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
+
+#ifdef HAVE_IFP
+	plist__send_songs_to_iriver = gtk_menu_item_new_with_label(_("Send songs to iFP device"));
+        plist__separator3 = gtk_separator_menu_item_new();
+#endif  /* HAVE_IFP */
+
+        plist__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
 	plist__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__save);
@@ -1527,7 +1548,13 @@ create_playlist(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist__rva_menu), plist__rva_average);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__reread_file_meta);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__separator2);
-	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__fileinfo);
+
+#ifdef HAVE_IFP
+	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__send_songs_to_iriver);
+        gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__separator3);
+#endif  /* HAVE_IFP */
+
+        gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__fileinfo);
 	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__search);
 
 	g_signal_connect_swapped(G_OBJECT(plist__save), "activate", G_CALLBACK(plist__save_cb), NULL);
@@ -1536,7 +1563,12 @@ create_playlist(void) {
 	g_signal_connect_swapped(G_OBJECT(plist__rva_separate), "activate", G_CALLBACK(plist__rva_separate_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__rva_average), "activate", G_CALLBACK(plist__rva_average_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__reread_file_meta), "activate", G_CALLBACK(plist__reread_file_meta_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(plist__fileinfo), "activate", G_CALLBACK(plist__fileinfo_cb), NULL);
+
+#ifdef HAVE_IFP
+	g_signal_connect_swapped(G_OBJECT(plist__send_songs_to_iriver), "activate", G_CALLBACK(plist__send_songs_to_iriver_cb), NULL);
+#endif  /* HAVE_IFP */
+
+        g_signal_connect_swapped(G_OBJECT(plist__fileinfo), "activate", G_CALLBACK(plist__fileinfo_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(plist__search), "activate", G_CALLBACK(plist__search_cb), NULL);
 
 	gtk_widget_show(plist__save);
@@ -1548,6 +1580,12 @@ create_playlist(void) {
 	gtk_widget_show(plist__rva_average);
 	gtk_widget_show(plist__reread_file_meta);
 	gtk_widget_show(plist__separator2);
+
+#ifdef HAVE_IFP
+	gtk_widget_show(plist__send_songs_to_iriver);
+	gtk_widget_show(plist__separator3);
+#endif  /* HAVE_IFP */
+        
 	gtk_widget_show(plist__fileinfo);
 	gtk_widget_show(plist__search);
 

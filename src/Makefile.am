@@ -12,6 +12,7 @@ core.h core.c \
 file_info.h file_info.c \
 gui_main.h gui_main.c \
 i18n.h \
+ifp_device.h ifp_device.c \
 meta_decoder.h meta_decoder.c \
 music_browser.h music_browser.c \
 options.h options.c \

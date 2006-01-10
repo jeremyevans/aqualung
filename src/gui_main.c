@@ -4337,6 +4337,7 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
 
 
         len_a = sizeof(file_filters_a)/sizeof(gchar*)/2;
+
 #ifdef HAVE_MOD
         len_b = sizeof(file_filters_b)/sizeof(gchar*)-1;
 #endif /* HAVE_MOD */
@@ -4358,10 +4359,15 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
 
         for(i=0; i < len_a; i++)
                 gtk_file_filter_add_pattern(filter_2, file_filters_a[2*i+1]);
+#ifdef HAVE_MOD
         for(i=0; i < len_b; i++)
                 gtk_file_filter_add_pattern(filter_2, file_filters_b[i+1]);
+#endif /* HAVE_MOD */
+
+#ifdef HAVE_SNDFILE
         for(i=0; i < len_c; i++)
                 gtk_file_filter_add_pattern(filter_2, file_filters_c[i+1]);
+#endif /* HAVE_SNDFILE */
 
         gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), "All Audio Files"); 
         gtk_file_chooser_add_filter(fc, filter_2);

@@ -404,9 +404,36 @@ assembly_format_label(char * str, int v_major, int v_minor) {
 	case SF_FORMAT_MAT4:
 		strcpy(str, "Matlab (tm) V4.2 / GNU Octave 2.0");
 		break;
-	case SF_FORMAT_MAT5:
-		strcpy(str, "Matlab (tm) V5.0 / GNU Octave 2.1");
+    #ifdef HAVE_NEW_SNDFILE
+    /* version(libsndfile) >= 1.0.12 */
+	case SF_FORMAT_PVF:
+		strcpy(str, "Portable Voice Format");
 		break;
+	case SF_FORMAT_XI:
+		strcpy(str, "Fasttracker 2 Extended Instrument");
+		break;
+	case SF_FORMAT_HTK:
+		strcpy(str, "HMM Tool Kit");
+		break;
+	case SF_FORMAT_SDS:
+		strcpy(str, "Midi Sample Dump Standard");
+		break;
+	case SF_FORMAT_AVR:
+		strcpy(str, "Audio Visual Research");
+		break;
+	case SF_FORMAT_WAVEX:
+		strcpy(str, "MS WAVE with WAVEFORMATEX");
+		break;
+	case SF_FORMAT_SD2:
+		strcpy(str, "Sound Designer 2");
+		break;
+	case SF_FORMAT_FLAC:
+		strcpy(str, "FLAC");
+		break;
+	case SF_FORMAT_CAF:
+		strcpy(str, "Core Audio File");
+		break;
+    #endif /* HAVE_NEW_SNDFILE */
 #endif /* HAVE_SNDFILE */
 
 #ifdef HAVE_FLAC

@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=koi8-u\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../about.c:75 ../gui_main.c:2339
+#: ../about.c:75 ../gui_main.c:2363
 msgid "About"
 msgstr "Про програму"
 
@@ -74,13 +74,13 @@ msgstr "П╕дтримка формат╕в файл╕в:"
 
 #: ../about.c:175 ../about.c:186 ../about.c:197 ../about.c:208 ../about.c:219
 #: ../about.c:230 ../about.c:241 ../about.c:252 ../about.c:263 ../about.c:279
-#: ../about.c:290 ../about.c:300 ../about.c:311 ../about.c:322
+#: ../about.c:290 ../about.c:300 ../about.c:311 ../about.c:322 ../about.c:333
 msgid "yes"
 msgstr "так"
 
 #: ../about.c:179 ../about.c:190 ../about.c:201 ../about.c:212 ../about.c:223
 #: ../about.c:234 ../about.c:245 ../about.c:256 ../about.c:267 ../about.c:283
-#: ../about.c:294 ../about.c:315 ../about.c:326
+#: ../about.c:294 ../about.c:315 ../about.c:326 ../about.c:337
 msgid "no"
 msgstr "н╕ "
 
@@ -148,7 +148,12 @@ msgstr "Вбудований перетворювач частоти семплювання\n"
 msgid "CDDB support\n"
 msgstr "п╕дтримка CDDB\n"
 
-#: ../about.c:334
+#: ../about.c:340
+#, fuzzy
+msgid "iRiver iFP driver support\n"
+msgstr "Драйвери виводу:"
+
+#: ../about.c:345
 msgid ""
 "Aqualung could not be functional without the following libraries.\n"
 "We would like to thank the authors of these software packages:\n"
@@ -188,7 +193,7 @@ msgstr ""
 "* libid3tag, a library for accessing ID3v2 tags\n"
 "* libcddb, a CDDB server access library"
 
-#: ../about.c:354
+#: ../about.c:365
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -274,7 +279,7 @@ msgstr "Дор╕жки"
 msgid "%d of %d"
 msgstr "%d з %d"
 
-#: ../cddb_lookup.c:601 ../cddb_lookup.c:627 ../gui_main.c:1123
+#: ../cddb_lookup.c:601 ../cddb_lookup.c:627 ../gui_main.c:1147
 #: ../options.c:1208 ../options.c:1303
 msgid "Warning"
 msgstr "Увага"
@@ -287,7 +292,7 @@ msgstr "Трапилась помилка при спроб╕ п╕д'╓днання до сервера CDDB."
 msgid "No matching record found."
 msgstr "Схожих запис╕в не знайдено."
 
-#: ../file_info.c:306 ../gui_main.c:2337
+#: ../file_info.c:306 ../gui_main.c:2361
 msgid "File info"
 msgstr "╤нформац╕я про файл"
 
@@ -324,11 +329,11 @@ msgstr "%ld Гц"
 msgid "Channel count:"
 msgstr "К╕льк╕сть канал╕в:"
 
-#: ../file_info.c:398 ../gui_main.c:697
+#: ../file_info.c:398 ../gui_main.c:721
 msgid "MONO"
 msgstr "МОНО"
 
-#: ../file_info.c:400 ../gui_main.c:700
+#: ../file_info.c:400 ../gui_main.c:724
 msgid "STEREO"
 msgstr "СТЕРЕО"
 
@@ -373,134 +378,134 @@ msgstr "Коментар╕ Vorbis"
 msgid "FLAC metadata"
 msgstr "FLAC метадан╕"
 
-#: ../gui_main.c:455
+#: ../gui_main.c:479
 msgid "Unrecognized"
 msgstr "Нерозп╕знано"
 
-#: ../gui_main.c:463 ../gui_main.c:469 ../gui_main.c:472 ../gui_main.c:475
+#: ../gui_main.c:487 ../gui_main.c:493 ../gui_main.c:496 ../gui_main.c:499
 msgid "bit signed"
 msgstr "знаковий б╕т"
 
-#: ../gui_main.c:466
+#: ../gui_main.c:490
 msgid "bit unsigned"
 msgstr "беззнаковий б╕т"
 
-#: ../gui_main.c:478
+#: ../gui_main.c:502
 msgid "bit float"
 msgstr "плаваючий б╕т"
 
-#: ../gui_main.c:481
+#: ../gui_main.c:505
 msgid "bit double"
 msgstr "подв╕йний б╕т"
 
-#: ../gui_main.c:484 ../gui_main.c:487 ../gui_main.c:490 ../gui_main.c:493
-#: ../gui_main.c:496 ../gui_main.c:499 ../gui_main.c:502 ../gui_main.c:505
 #: ../gui_main.c:508 ../gui_main.c:511 ../gui_main.c:514 ../gui_main.c:517
-#: ../gui_main.c:520
+#: ../gui_main.c:520 ../gui_main.c:523 ../gui_main.c:526 ../gui_main.c:529
+#: ../gui_main.c:532 ../gui_main.c:535 ../gui_main.c:538 ../gui_main.c:541
+#: ../gui_main.c:544
 msgid "encoding"
 msgstr "кодування"
 
-#: ../gui_main.c:531
+#: ../gui_main.c:555
 msgid "Profile: Telephone"
 msgstr "Проф╕ль: Телефон"
 
-#: ../gui_main.c:534
+#: ../gui_main.c:558
 msgid "Profile: Thumb"
 msgstr "Проф╕ль: Еск╕з"
 
-#: ../gui_main.c:537
+#: ../gui_main.c:561
 msgid "Profile: Radio"
 msgstr "Проф╕ль: Рад╕о"
 
-#: ../gui_main.c:540
+#: ../gui_main.c:564
 msgid "Profile: Standard"
 msgstr "Проф╕ль: Стандарт"
 
-#: ../gui_main.c:543
+#: ../gui_main.c:567
 msgid "Profile: Xtreme"
 msgstr "Проф╕ль: Екстремальний"
 
-#: ../gui_main.c:546
+#: ../gui_main.c:570
 msgid "Profile: Insane"
 msgstr "Проф╕ль: Божев╕льний"
 
-#: ../gui_main.c:549
+#: ../gui_main.c:573
 msgid "Profile: Braindead"
 msgstr "Проф╕ль: Без башн╕"
 
-#: ../gui_main.c:564
+#: ../gui_main.c:588
 msgid "Layer I"
 msgstr ""
 
-#: ../gui_main.c:567
+#: ../gui_main.c:591
 msgid "Layer II"
 msgstr ""
 
-#: ../gui_main.c:570
+#: ../gui_main.c:594
 msgid "Layer III"
 msgstr ""
 
-#: ../gui_main.c:580
+#: ../gui_main.c:604
 msgid "Single channel"
 msgstr "Один канал"
 
-#: ../gui_main.c:583
+#: ../gui_main.c:607
 msgid "Dual channel"
 msgstr "Два канала"
 
-#: ../gui_main.c:586
+#: ../gui_main.c:610
 msgid "Joint stereo"
 msgstr "Об'╓днане стерео"
 
-#: ../gui_main.c:589
+#: ../gui_main.c:613
 msgid "Stereo"
 msgstr "Стерео"
 
-#: ../gui_main.c:599
+#: ../gui_main.c:623
 msgid "Emphasis: none"
 msgstr "Наголос: нема╓"
 
-#: ../gui_main.c:602 ../gui_main.c:605
+#: ../gui_main.c:626 ../gui_main.c:629
 msgid "Emphasis:"
 msgstr "Наголос:"
 
-#: ../gui_main.c:608
+#: ../gui_main.c:632
 msgid "Emphasis: reserved"
 msgstr "Наголос: резервний"
 
-#: ../gui_main.c:621
+#: ../gui_main.c:645
 msgid "Compression: Fast"
 msgstr "Ступ╕нь стиснення: Швидка"
 
-#: ../gui_main.c:624
+#: ../gui_main.c:648
 msgid "Compression: Normal"
 msgstr "Ступ╕нь стиснення: Нормальна"
 
-#: ../gui_main.c:627
+#: ../gui_main.c:651
 msgid "Compression: High"
 msgstr "Ступ╕нь стиснення: Висока"
 
-#: ../gui_main.c:630
+#: ../gui_main.c:654
 msgid "Compression: Extra High"
 msgstr "Ступ╕нь стиснення: Дуже висока"
 
-#: ../gui_main.c:633
+#: ../gui_main.c:657
 msgid "Compression: Insane"
 msgstr "Ступ╕нь стиснення: Божев╕льна"
 
-#: ../gui_main.c:718 ../gui_main.c:723 ../gui_main.c:727
+#: ../gui_main.c:742 ../gui_main.c:747 ../gui_main.c:751
 msgid "Output:"
 msgstr "Вив╕д:"
 
-#: ../gui_main.c:741
+#: ../gui_main.c:765
 msgid "SRC Type: "
 msgstr "SRC Тип: "
 
-#: ../gui_main.c:745
+#: ../gui_main.c:769
 msgid "None"
 msgstr "Нема╓"
 
-#: ../gui_main.c:1133
+#: ../gui_main.c:1157
 msgid ""
 "Music Store has been changed.\n"
 "Do you want to save it before exiting?"
@@ -508,51 +513,51 @@ msgstr ""
 "Музичний склад було зм╕нено.\n"
 "Чи ви бажа╓те зберегти зм╕ни перед виходом?"
 
-#: ../gui_main.c:1524
+#: ../gui_main.c:1548
 #, c-format
 msgid "Position: %d%%"
 msgstr ""
 
-#: ../gui_main.c:1542 ../gui_main.c:1569
+#: ../gui_main.c:1566 ../gui_main.c:1593
 #, c-format
 msgid "Mute"
 msgstr "Приглушити"
 
-#: ../gui_main.c:1544 ../gui_main.c:1571
+#: ../gui_main.c:1568 ../gui_main.c:1595
 #, c-format
 msgid "%d dB"
 msgstr "%d Дб"
 
-#: ../gui_main.c:1578
+#: ../gui_main.c:1602
 #, fuzzy, c-format
 msgid "Volume: %s"
 msgstr "Р╕вень гучност╕:"
 
-#: ../gui_main.c:1606 ../gui_main.c:1637
+#: ../gui_main.c:1630 ../gui_main.c:1661
 #, c-format
 msgid "%d%% R"
 msgstr "%d%% П"
 
-#: ../gui_main.c:1608 ../gui_main.c:1639
+#: ../gui_main.c:1632 ../gui_main.c:1663
 #, c-format
 msgid "%d%% L"
 msgstr "%d%% Л"
 
-#: ../gui_main.c:1611 ../gui_main.c:1642
+#: ../gui_main.c:1635 ../gui_main.c:1666
 #, c-format
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:1649
+#: ../gui_main.c:1673
 #, c-format
 msgid "Balance: %s"
 msgstr ""
 
-#: ../gui_main.c:2246
+#: ../gui_main.c:2270
 msgid "JACK connection lost"
 msgstr "JACK п╕д'╓днання втрачено"
 
-#: ../gui_main.c:2249
+#: ../gui_main.c:2273
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -564,72 +569,72 @@ msgstr ""
 "швидкий. Все що ви можете тепер зробити\n"
 "це перезапустити обидва JACK та Aqualung.\n"
 
-#: ../gui_main.c:2334 ../options.c:1436
+#: ../gui_main.c:2358 ../options.c:1436
 msgid "Settings"
 msgstr "Налаштування"
 
-#: ../gui_main.c:2335 ../skin.c:122
+#: ../gui_main.c:2359 ../skin.c:122
 msgid "Skin chooser"
 msgstr "Виб╕р жупан╕в"
 
-#: ../gui_main.c:2336
+#: ../gui_main.c:2360
 msgid "JACK port setup"
 msgstr "Налаштування порту JACK"
 
-#: ../gui_main.c:2591
+#: ../gui_main.c:2615
 msgid "Previous song (up)"
 msgstr "Попередня п╕сня (вгору)"
 
-#: ../gui_main.c:2595
+#: ../gui_main.c:2619
 msgid "Stop (s)"
 msgstr "Зупинити (s)"
 
-#: ../gui_main.c:2599
+#: ../gui_main.c:2623
 msgid "Next song (down)"
 msgstr "Наступна п╕сня (вниз)"
 
-#: ../gui_main.c:2603
+#: ../gui_main.c:2627
 msgid "Play (p)"
 msgstr "Грати (p)"
 
-#: ../gui_main.c:2607
+#: ../gui_main.c:2631
 msgid "Pause (space)"
 msgstr "Пауза (проб╕л)"
 
-#: ../gui_main.c:2633
+#: ../gui_main.c:2657
 msgid "Repeat current song"
 msgstr "Повторювати поточну п╕сню"
 
-#: ../gui_main.c:2641
+#: ../gui_main.c:2665
 msgid "Repeat all songs"
 msgstr "Повторювати вс╕ п╕сн╕"
 
-#: ../gui_main.c:2649
+#: ../gui_main.c:2673
 msgid "Shuffle songs"
 msgstr "Перем╕шати п╕сн╕"
 
-#: ../gui_main.c:2662
+#: ../gui_main.c:2686
 msgid "Toggle playlist"
 msgstr "Вимикач списку програвання"
 
-#: ../gui_main.c:2667
+#: ../gui_main.c:2691
 msgid "Toggle music store"
 msgstr "Вимикач музичного складу"
 
-#: ../gui_main.c:2672
+#: ../gui_main.c:2696
 msgid "Toggle LADSPA patch builder"
 msgstr "Вимикач буд╕вельника шлях╕в LADSPA"
 
-#: ../gui_main.c:4169 ../music_browser.c:2086 ../options.c:1231
+#: ../gui_main.c:4193 ../music_browser.c:2086 ../options.c:1231
 #: ../options.c:1330
 msgid "rw"
 msgstr ""
 
-#: ../gui_main.c:4171 ../options.c:1233 ../options.c:1332
+#: ../gui_main.c:4195 ../options.c:1233 ../options.c:1332
 msgid "r"
 msgstr ""
 
-#: ../gui_main.c:4173 ../options.c:1235 ../options.c:1334
+#: ../gui_main.c:4197 ../options.c:1235 ../options.c:1334
 msgid "unreachable"
 msgstr "недосяжний"
 

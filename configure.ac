@@ -187,6 +187,15 @@ else
 	if test "$lib" = "yes"; then
 		sndfile_LIBS=`pkg-config --libs sndfile`
 		AC_DEFINE([HAVE_SNDFILE], [1], [Defined if compile with sndfile (WAV, AIFF, etc.) support])
+
+		AC_MSG_CHECKING(whether sndfile version >= 1.0.12)
+		if pkg-config --exists 'sndfile >= 1.0.12'; then
+		        AC_MSG_RESULT(yes)
+			AC_DEFINE([HAVE_NEW_SNDFILE], [1], [Defined if version(sndfile) >= 1.0.12])
+		else
+			AC_MSG_RESULT(no)
+		fi
+
 	fi
 	if test "$lib" = "no" -a "$sndfile" = "yes"; then
 		AC_MSG_ERROR(You do not appear to have the sndfile library installed. Grab it from  http://www.mega-nerd.com/libsndfile/ )

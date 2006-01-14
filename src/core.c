@@ -1642,10 +1642,17 @@ main(int argc, char ** argv) {
 
 		fprintf(stderr, "\tCDDB support                                : ");
 #ifdef HAVE_CDDB
+		fprintf(stderr, "yes\n");
+#else
+		fprintf(stderr, "no\n");
+#endif /* HAVE_CDDB */
+
+		fprintf(stderr, "\tiRiver iFP driver support                   : ");
+#ifdef HAVE_IFP
 		fprintf(stderr, "yes\n\n");
 #else
 		fprintf(stderr, "no\n\n");
-#endif /* HAVE_CDDB */
+#endif /* HAVE_IFP */
 
 		exit(1);
 	}

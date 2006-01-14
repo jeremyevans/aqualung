@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../about.c:75 ../gui_main.c:2339
+#: ../about.c:75 ../gui_main.c:2363
 msgid "About"
 msgstr "Névjegy"
 
@@ -75,13 +75,13 @@ msgstr "Támogatott fájltípusok:"
 
 #: ../about.c:175 ../about.c:186 ../about.c:197 ../about.c:208 ../about.c:219
 #: ../about.c:230 ../about.c:241 ../about.c:252 ../about.c:263 ../about.c:279
-#: ../about.c:290 ../about.c:300 ../about.c:311 ../about.c:322
+#: ../about.c:290 ../about.c:300 ../about.c:311 ../about.c:322 ../about.c:333
 msgid "yes"
 msgstr "igen"
 
 #: ../about.c:179 ../about.c:190 ../about.c:201 ../about.c:212 ../about.c:223
 #: ../about.c:234 ../about.c:245 ../about.c:256 ../about.c:267 ../about.c:283
-#: ../about.c:294 ../about.c:315 ../about.c:326
+#: ../about.c:294 ../about.c:315 ../about.c:326 ../about.c:337
 msgid "no"
 msgstr "nem"
 
@@ -149,7 +149,12 @@ msgstr "Beépített mintavételi frekvencia konverter\n"
 msgid "CDDB support\n"
 msgstr "CDDB támogatás\n"
 
-#: ../about.c:334
+#: ../about.c:340
+#, fuzzy
+msgid "iRiver iFP driver support\n"
+msgstr "Kimeneti meghajtók:"
+
+#: ../about.c:345
 msgid ""
 "Aqualung could not be functional without the following libraries.\n"
 "We would like to thank the authors of these software packages:\n"
@@ -189,7 +194,7 @@ msgstr ""
 "* libid3tag, könyvtár az ID3v2 tagek olvasásához\n"
 "* libcddb, egy CDDB szerver elérést támogató könyvtár"
 
-#: ../about.c:354
+#: ../about.c:365
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -287,7 +292,7 @@ msgstr "Számok"
 msgid "%d of %d"
 msgstr "%d / %d"
 
-#: ../cddb_lookup.c:601 ../cddb_lookup.c:627 ../gui_main.c:1123
+#: ../cddb_lookup.c:601 ../cddb_lookup.c:627 ../gui_main.c:1147
 #: ../options.c:1208 ../options.c:1303
 msgid "Warning"
 msgstr "Figyelmeztetés"
@@ -300,7 +305,7 @@ msgstr "Hiba történt a CDDB szerverhez való kapcsolódás közben."
 msgid "No matching record found."
 msgstr "Az album nem található az adatbázisban."
 
-#: ../file_info.c:306 ../gui_main.c:2337
+#: ../file_info.c:306 ../gui_main.c:2361
 msgid "File info"
 msgstr "Fájl infó"
 
@@ -337,11 +342,11 @@ msgstr "%ld Hz"
 msgid "Channel count:"
 msgstr "Csatornák száma:"
 
-#: ../file_info.c:398 ../gui_main.c:697
+#: ../file_info.c:398 ../gui_main.c:721
 msgid "MONO"
 msgstr "MONO"
 
-#: ../file_info.c:400 ../gui_main.c:700
+#: ../file_info.c:400 ../gui_main.c:724
 msgid "STEREO"
 msgstr "STEREO"
 
@@ -386,134 +391,134 @@ msgstr "Vorbis kommentek"
 msgid "FLAC metadata"
 msgstr "FLAC metaadatok"
 
-#: ../gui_main.c:455
+#: ../gui_main.c:479
 msgid "Unrecognized"
 msgstr "Ismeretlen"
 
-#: ../gui_main.c:463 ../gui_main.c:469 ../gui_main.c:472 ../gui_main.c:475
+#: ../gui_main.c:487 ../gui_main.c:493 ../gui_main.c:496 ../gui_main.c:499
 msgid "bit signed"
 msgstr "bites elõjeles egész"
 
-#: ../gui_main.c:466
+#: ../gui_main.c:490
 msgid "bit unsigned"
 msgstr "bites elõjel nélküli egész"
 
-#: ../gui_main.c:478
+#: ../gui_main.c:502
 msgid "bit float"
 msgstr "bites lebegõpontos"
 
-#: ../gui_main.c:481
+#: ../gui_main.c:505
 msgid "bit double"
 msgstr "bites dupla pontosságú lebegõpontos"
 
-#: ../gui_main.c:484 ../gui_main.c:487 ../gui_main.c:490 ../gui_main.c:493
-#: ../gui_main.c:496 ../gui_main.c:499 ../gui_main.c:502 ../gui_main.c:505
 #: ../gui_main.c:508 ../gui_main.c:511 ../gui_main.c:514 ../gui_main.c:517
-#: ../gui_main.c:520
+#: ../gui_main.c:520 ../gui_main.c:523 ../gui_main.c:526 ../gui_main.c:529
+#: ../gui_main.c:532 ../gui_main.c:535 ../gui_main.c:538 ../gui_main.c:541
+#: ../gui_main.c:544
 msgid "encoding"
 msgstr "kódolású"
 
-#: ../gui_main.c:531
+#: ../gui_main.c:555
 msgid "Profile: Telephone"
 msgstr "Profile: Telephone"
 
-#: ../gui_main.c:534
+#: ../gui_main.c:558
 msgid "Profile: Thumb"
 msgstr "Profile: Thumb"
 
-#: ../gui_main.c:537
+#: ../gui_main.c:561
 msgid "Profile: Radio"
 msgstr "Profile: Radio"
 
-#: ../gui_main.c:540
+#: ../gui_main.c:564
 msgid "Profile: Standard"
 msgstr "Profile: Standard"
 
-#: ../gui_main.c:543
+#: ../gui_main.c:567
 msgid "Profile: Xtreme"
 msgstr "Profile: Xtreme"
 
-#: ../gui_main.c:546
+#: ../gui_main.c:570
 msgid "Profile: Insane"
 msgstr "Profile: Insane"
 
-#: ../gui_main.c:549
+#: ../gui_main.c:573
 msgid "Profile: Braindead"
 msgstr "Profile: Braindead"
 
-#: ../gui_main.c:564
+#: ../gui_main.c:588
 msgid "Layer I"
 msgstr "I. Réteg"
 
-#: ../gui_main.c:567
+#: ../gui_main.c:591
 msgid "Layer II"
 msgstr "II. Réteg"
 
-#: ../gui_main.c:570
+#: ../gui_main.c:594
 msgid "Layer III"
 msgstr "III. Réteg"
 
-#: ../gui_main.c:580
+#: ../gui_main.c:604
 msgid "Single channel"
 msgstr "Egycsatornás"
 
-#: ../gui_main.c:583
+#: ../gui_main.c:607
 msgid "Dual channel"
 msgstr "Kétcsatornás"
 
-#: ../gui_main.c:586
+#: ../gui_main.c:610
 msgid "Joint stereo"
 msgstr "Kapcsolt sztereó"
 
-#: ../gui_main.c:589
+#: ../gui_main.c:613
 msgid "Stereo"
 msgstr "Sztereó"
 
-#: ../gui_main.c:599
+#: ../gui_main.c:623
 msgid "Emphasis: none"
 msgstr "Elõkiemelés: nincs"
 
-#: ../gui_main.c:602 ../gui_main.c:605
+#: ../gui_main.c:626 ../gui_main.c:629
 msgid "Emphasis:"
 msgstr "Elõkiemelés:"
 
-#: ../gui_main.c:608
+#: ../gui_main.c:632
 msgid "Emphasis: reserved"
 msgstr "Elõkiemelés: fenntartott"
 
-#: ../gui_main.c:621
+#: ../gui_main.c:645
 msgid "Compression: Fast"
 msgstr "Tömörítés: Gyors"
 
-#: ../gui_main.c:624
+#: ../gui_main.c:648
 msgid "Compression: Normal"
 msgstr "Tömörítés: Normál"
 
-#: ../gui_main.c:627
+#: ../gui_main.c:651
 msgid "Compression: High"
 msgstr "Tömörítés: Magas"
 
-#: ../gui_main.c:630
+#: ../gui_main.c:654
 msgid "Compression: Extra High"
 msgstr "Tömörítés: Extra magas"
 
-#: ../gui_main.c:633
+#: ../gui_main.c:657
 msgid "Compression: Insane"
 msgstr "Tömörítés: Elmebeteg"
 
-#: ../gui_main.c:718 ../gui_main.c:723 ../gui_main.c:727
+#: ../gui_main.c:742 ../gui_main.c:747 ../gui_main.c:751
 msgid "Output:"
 msgstr "Kimenet:"
 
-#: ../gui_main.c:741
+#: ../gui_main.c:765
 msgid "SRC Type: "
 msgstr "SRC Típus: "
 
-#: ../gui_main.c:745
+#: ../gui_main.c:769
 msgid "None"
 msgstr "Nincs"
 
-#: ../gui_main.c:1133
+#: ../gui_main.c:1157
 msgid ""
 "Music Store has been changed.\n"
 "Do you want to save it before exiting?"
@@ -521,51 +526,51 @@ msgstr ""
 "A Zenetár tartalma megváltozott.\n"
 "Szeretnéd elmenteni kilépés elõtt?"
 
-#: ../gui_main.c:1524
+#: ../gui_main.c:1548
 #, c-format
 msgid "Position: %d%%"
 msgstr "Pozíció: %d%%"
 
-#: ../gui_main.c:1542 ../gui_main.c:1569
+#: ../gui_main.c:1566 ../gui_main.c:1593
 #, c-format
 msgid "Mute"
 msgstr "Néma"
 
-#: ../gui_main.c:1544 ../gui_main.c:1571
+#: ../gui_main.c:1568 ../gui_main.c:1595
 #, c-format
 msgid "%d dB"
 msgstr "%d dB"
 
-#: ../gui_main.c:1578
+#: ../gui_main.c:1602
 #, c-format
 msgid "Volume: %s"
 msgstr "Hangerõ: %s"
 
-#: ../gui_main.c:1606 ../gui_main.c:1637
+#: ../gui_main.c:1630 ../gui_main.c:1661
 #, c-format
 msgid "%d%% R"
 msgstr "%d%% R"
 
-#: ../gui_main.c:1608 ../gui_main.c:1639
+#: ../gui_main.c:1632 ../gui_main.c:1663
 #, c-format
 msgid "%d%% L"
 msgstr "%d%% L"
 
-#: ../gui_main.c:1611 ../gui_main.c:1642
+#: ../gui_main.c:1635 ../gui_main.c:1666
 #, c-format
 msgid "C"
 msgstr "C"
 
-#: ../gui_main.c:1649
+#: ../gui_main.c:1673
 #, c-format
 msgid "Balance: %s"
 msgstr "Balansz: %s"
 
-#: ../gui_main.c:2246
+#: ../gui_main.c:2270
 msgid "JACK connection lost"
 msgstr "Megszakadt a JACK összeköttetés"
 
-#: ../gui_main.c:2249
+#: ../gui_main.c:2273
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -576,72 +581,72 @@ msgstr ""
 "az Aqualungot, mert nem volt elég gyors. Újra\n"
 "kell indítani a JACK-et és az Aqualungot is.\n"
 
-#: ../gui_main.c:2334 ../options.c:1436
+#: ../gui_main.c:2358 ../options.c:1436
 msgid "Settings"
 msgstr "Beállítások"
 
-#: ../gui_main.c:2335 ../skin.c:122
+#: ../gui_main.c:2359 ../skin.c:122
 msgid "Skin chooser"
 msgstr "Szkin-választó"
 
-#: ../gui_main.c:2336
+#: ../gui_main.c:2360
 msgid "JACK port setup"
 msgstr "JACK port beállítás"
 
-#: ../gui_main.c:2591
+#: ../gui_main.c:2615
 msgid "Previous song (up)"
 msgstr "Elõzõ szám (fel)"
 
-#: ../gui_main.c:2595
+#: ../gui_main.c:2619
 msgid "Stop (s)"
 msgstr "Megállítás (s)"
 
-#: ../gui_main.c:2599
+#: ../gui_main.c:2623
 msgid "Next song (down)"
 msgstr "Következõ szám (le)"
 
-#: ../gui_main.c:2603
+#: ../gui_main.c:2627
 msgid "Play (p)"
 msgstr "Lejátszás (p)"
 
-#: ../gui_main.c:2607
+#: ../gui_main.c:2631
 msgid "Pause (space)"
 msgstr "Szünet (szóköz)"
 
-#: ../gui_main.c:2633
+#: ../gui_main.c:2657
 msgid "Repeat current song"
 msgstr "Aktuális szám ismétlése"
 
-#: ../gui_main.c:2641
+#: ../gui_main.c:2665
 msgid "Repeat all songs"
 msgstr "Összes szám ismétlése"
 
-#: ../gui_main.c:2649
+#: ../gui_main.c:2673
 msgid "Shuffle songs"
 msgstr "Véletlenszerû sorrend"
 
-#: ../gui_main.c:2662
+#: ../gui_main.c:2686
 msgid "Toggle playlist"
 msgstr "Lejátszólista"
 
-#: ../gui_main.c:2667
+#: ../gui_main.c:2691
 msgid "Toggle music store"
 msgstr "Zenetár"
 
-#: ../gui_main.c:2672
+#: ../gui_main.c:2696
 msgid "Toggle LADSPA patch builder"
 msgstr "LADSPA effekt szerkesztõ"
 
-#: ../gui_main.c:4169 ../music_browser.c:2086 ../options.c:1231
+#: ../gui_main.c:4193 ../music_browser.c:2086 ../options.c:1231
 #: ../options.c:1330
 msgid "rw"
 msgstr "rw"
 
-#: ../gui_main.c:4171 ../options.c:1233 ../options.c:1332
+#: ../gui_main.c:4195 ../options.c:1233 ../options.c:1332
 msgid "r"
 msgstr "r"
 
-#: ../gui_main.c:4173 ../options.c:1235 ../options.c:1334
+#: ../gui_main.c:4197 ../options.c:1235 ../options.c:1334
 msgid "unreachable"
 msgstr "nem elérhetõ"
 

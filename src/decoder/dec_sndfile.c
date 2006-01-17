@@ -76,6 +76,15 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_BADLIB;
 	}
 
+#ifdef HAVE_NEW_SNDFILE
+	/* XXX don't use the FLAC decoder in sndfile, seeking seems to be buggy */
+	/* the native FLAC decoder will catch the file instead. */
+	if ((pd->sf_info.format & SF_FORMAT_TYPEMASK) == SF_FORMAT_FLAC) {
+		sf_close(pd->sf);
+		return DECODER_OPEN_BADLIB;
+	}
+#endif
+
 	if ((pd->sf_info.channels != 1) && (pd->sf_info.channels != 2)) {
 		fprintf(stderr,
 			"sndfile_decoder_open: sndfile with %d channels is unsupported\n",

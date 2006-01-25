@@ -56,6 +56,7 @@
 #include "transceiver.h"
 #include "gui_main.h"
 #include "plugin.h"
+#include "spinlock.h"
 #include "i18n.h"
 #include "core.h"
 
@@ -107,12 +108,12 @@ jack_ringbuffer_t * rb_gui2disk;
 jack_ringbuffer_t * rb_disk2gui;
 
 /* Lock critical operations that could interfere with output thread */
-pthread_mutex_t output_thread_lock = PTHREAD_MUTEX_INITIALIZER;
+int output_thread_lock = 0;
 double left_gain = 1.0;
 double right_gain = 1.0;
 
 /* LADSPA stuff */
-pthread_mutex_t plugin_lock = PTHREAD_MUTEX_INITIALIZER;
+int plugin_lock = 0;
 unsigned long ladspa_buflen = 0;
 LADSPA_Data * l_buf = NULL;
 LADSPA_Data * r_buf = NULL;
@@ -479,7 +480,7 @@ oss_thread(void * arg) {
 	req_time.tv_sec = 0;
         req_time.tv_nsec = 100000000;
 
-	pthread_mutex_lock(&output_thread_lock);
+	spin_waitlock_m(&output_thread_lock);
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 
@@ -520,9 +521,9 @@ oss_thread(void * arg) {
 		}
 
 		if ((n_avail = jack_ringbuffer_read_space(rb) / (2*sample_size)) == 0) {
-			pthread_mutex_unlock(&output_thread_lock);
+			spin_unlock_m(&output_thread_lock);
 			nanosleep(&req_time, &rem_time);
-			pthread_mutex_lock(&output_thread_lock);
+			spin_waitlock_m(&output_thread_lock);
 			goto oss_wake;
 		}
 
@@ -549,7 +550,7 @@ oss_thread(void * arg) {
 		}
 
 		/* plugin processing */
-		pthread_mutex_lock(&plugin_lock);
+		spin_waitlock_m(&plugin_lock);
 		for (i = 0; i < n_plugins; i++) {
 			if (plugin_vect[i]->is_bypassed)
 				continue;
@@ -561,7 +562,7 @@ oss_thread(void * arg) {
 				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
 			}
 		}
-		pthread_mutex_unlock(&plugin_lock);
+		spin_unlock_m(&plugin_lock);
 
 		if (!options.ladspa_is_postfader) {
 			for (i = 0; i < bufsize; i++) {
@@ -586,9 +587,9 @@ oss_thread(void * arg) {
 		}
 
 		/* write data to audio device */
-		pthread_mutex_unlock(&output_thread_lock);
+		spin_unlock_m(&output_thread_lock);
 		ioctl_status = write(fd_oss, oss_short_buf, 2*n_avail * sizeof(short));
-		pthread_mutex_lock(&output_thread_lock);
+		spin_waitlock_m(&output_thread_lock);
 		if (ioctl_status != 2*n_avail * sizeof(short))
 			fprintf(stderr, "oss_thread: Error writing to audio device\n");
 
@@ -633,7 +634,7 @@ alsa_thread(void * arg) {
 	req_time.tv_sec = 0;
         req_time.tv_nsec = 100000000;
 
-	pthread_mutex_lock(&output_thread_lock);
+	spin_waitlock_m(&output_thread_lock);
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 
@@ -691,9 +692,9 @@ alsa_thread(void * arg) {
 		}
 
 		if ((n_avail = jack_ringbuffer_read_space(rb) / (2*sample_size)) == 0) {
-			pthread_mutex_unlock(&output_thread_lock);
+			spin_unlock_m(&output_thread_lock);
 			nanosleep(&req_time, &rem_time);
-			pthread_mutex_lock(&output_thread_lock);
+			spin_waitlock_m(&output_thread_lock);
 			goto alsa_wake;
 		}
 
@@ -720,7 +721,7 @@ alsa_thread(void * arg) {
 		}
 		
 		/* plugin processing */
-		pthread_mutex_lock(&plugin_lock);
+		spin_waitlock_m(&plugin_lock);
 		for (i = 0; i < n_plugins; i++) {
 			if (plugin_vect[i]->is_bypassed)
 				continue;
@@ -732,7 +733,7 @@ alsa_thread(void * arg) {
 				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
 			}
 		}
-		pthread_mutex_unlock(&plugin_lock);
+		spin_unlock_m(&plugin_lock);
 		
 		if (!options.ladspa_is_postfader) {
 			for (i = 0; i < bufsize; i++) {
@@ -758,11 +759,11 @@ alsa_thread(void * arg) {
 			}
 
 			/* write data to audio device */
-			pthread_mutex_unlock(&output_thread_lock);
+			spin_unlock_m(&output_thread_lock);
 			if ((n_written = snd_pcm_writei(pcm_handle, alsa_int_buf, n_avail)) != n_avail) {
 				snd_pcm_prepare(pcm_handle);
 			}
-			pthread_mutex_lock(&output_thread_lock);
+			spin_waitlock_m(&output_thread_lock);
 
 		} else {
 			for (i = 0; i < bufsize; i++) {
@@ -781,11 +782,11 @@ alsa_thread(void * arg) {
 			}
 
 			/* write data to audio device */
-			pthread_mutex_unlock(&output_thread_lock);
+			spin_unlock_m(&output_thread_lock);
 			if ((n_written = snd_pcm_writei(pcm_handle, alsa_short_buf, n_avail)) != n_avail) {
 				snd_pcm_prepare(pcm_handle);
 			}
-			pthread_mutex_lock(&output_thread_lock);
+			spin_waitlock_m(&output_thread_lock);
 		}
 		
 		/* wake up disk thread if 1/4 of rb data has been read */
@@ -819,7 +820,7 @@ process(jack_nframes_t nframes, void * arg) {
 	static int flushcnt = 0;
 	char recv_cmd;
 
-	pthread_mutex_lock(&output_thread_lock);
+	spin_waitlock_m(&output_thread_lock);
 	
 	ladspa_buflen = jack_nframes = nframes;
 	
@@ -867,7 +868,7 @@ process(jack_nframes_t nframes, void * arg) {
 		}
 		
 		/* plugin processing */
-		pthread_mutex_lock(&plugin_lock);
+		spin_waitlock_m(&plugin_lock);
 		for (i = 0; i < n_plugins; i++) {
 			if (plugin_vect[i]->is_bypassed)
 				continue;
@@ -879,7 +880,7 @@ process(jack_nframes_t nframes, void * arg) {
 				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
 			}
 		}
-		pthread_mutex_unlock(&plugin_lock);
+		spin_unlock_m(&plugin_lock);
 		
 		if (!options.ladspa_is_postfader) {
 			for (i = 0; i < nframes; i++) {
@@ -899,7 +900,7 @@ process(jack_nframes_t nframes, void * arg) {
 		flushing = 0;
 	}
 	
-	pthread_mutex_unlock(&output_thread_lock);
+	spin_unlock_m(&output_thread_lock);
 
 	/* wake up disk thread if 1/4 of rb data has been read */
 	/* note that 1 frame = 8 bytes so 8 * info->rb_size equals the full data amount */
@@ -917,9 +918,9 @@ process(jack_nframes_t nframes, void * arg) {
 void
 jack_shutdown(void *arg) {
 
-	pthread_mutex_lock(&output_thread_lock);
+	spin_waitlock_m(&output_thread_lock);
 	jack_is_shutdown = 1;
-	pthread_mutex_unlock(&output_thread_lock);
+	spin_unlock_m(&output_thread_lock);
 }
 
 

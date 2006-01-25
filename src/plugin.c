@@ -38,6 +38,7 @@
 #include "i18n.h"
 #include "options.h"
 #include "trashlist.h"
+#include "spinlock.h"
 #include "plugin.h"
 
 extern options_t options;
@@ -45,7 +46,7 @@ extern options_t options;
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern void set_sliders_width(void);
 
-extern pthread_mutex_t plugin_lock;
+extern int plugin_lock;
 
 extern int n_plugins;
 extern plugin_instance * plugin_vect[MAX_PLUGINS];
@@ -537,12 +538,12 @@ refresh_plugin_vect(int diff) {
 		++i;
 	}
 
-	pthread_mutex_lock(&plugin_lock);
+	spin_waitlock_s(&plugin_lock);
 	n_plugins += diff;
 	for (j = 0; j < i; j++) {
 		plugin_vect[j] = plugin_vect_shadow[j];
 	}
-	pthread_mutex_unlock(&plugin_lock);
+	spin_unlock_s(&plugin_lock);
 }
 
 
@@ -565,13 +566,13 @@ plugin_bypassed(GtkWidget * widget, gpointer data) {
 	plugin_instance * instance = (plugin_instance *) data;
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
-		pthread_mutex_lock(&plugin_lock);
+		spin_waitlock_s(&plugin_lock);
 		instance->is_bypassed = 1;
-		pthread_mutex_unlock(&plugin_lock);
+		spin_unlock_s(&plugin_lock);
 	} else {
-		pthread_mutex_lock(&plugin_lock);
+		spin_waitlock_s(&plugin_lock);
 		instance->is_bypassed = 0;
-		pthread_mutex_unlock(&plugin_lock);
+		spin_unlock_s(&plugin_lock);
 	}
 
         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, i)) {
@@ -593,13 +594,13 @@ plugin_btn_toggled(GtkWidget * widget, gpointer data) {
 	LADSPA_Data * plugin_data = (LADSPA_Data *) data;
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
-		pthread_mutex_lock(&plugin_lock);
+		spin_waitlock_s(&plugin_lock);
 		*plugin_data = 1.0f;
-		pthread_mutex_unlock(&plugin_lock);
+		spin_unlock_s(&plugin_lock);
 	} else {
-		pthread_mutex_lock(&plugin_lock);
+		spin_waitlock_s(&plugin_lock);
 		*plugin_data = -1.0f;
-		pthread_mutex_unlock(&plugin_lock);
+		spin_unlock_s(&plugin_lock);
 	}
 }
 
@@ -610,7 +611,7 @@ update_plugin_outputs(gpointer data) {
 	plugin_instance * instance = (plugin_instance *) data;
 	unsigned long k;
 
-	pthread_mutex_lock(&plugin_lock);
+	spin_waitlock_s(&plugin_lock);
 	for (k = 0; k < MAX_KNOBS && k < instance->descriptor->PortCount; ++k) {
 		if (LADSPA_IS_PORT_OUTPUT(instance->descriptor->PortDescriptors[k])
 		    && LADSPA_IS_PORT_CONTROL(instance->descriptor->PortDescriptors[k])) {
@@ -618,7 +619,7 @@ update_plugin_outputs(gpointer data) {
 			instance->adjustments[k]->value = instance->knobs[k];
 		}
 	}
-	pthread_mutex_unlock(&plugin_lock);
+	spin_unlock_s(&plugin_lock);
 
 	for (k = 0; k < MAX_KNOBS && k < instance->descriptor->PortCount; ++k) {
 		if (LADSPA_IS_PORT_OUTPUT(instance->descriptor->PortDescriptors[k])
@@ -636,9 +637,9 @@ plugin_value_changed(GtkAdjustment * adj, gpointer data) {
 
 	LADSPA_Data * plugin_data = (LADSPA_Data *) data;
 
-	pthread_mutex_lock(&plugin_lock);
+	spin_waitlock_s(&plugin_lock);
 	*plugin_data = (LADSPA_Data) gtk_adjustment_get_value(adj);
-	pthread_mutex_unlock(&plugin_lock);
+	spin_unlock_s(&plugin_lock);
 }
 
 
@@ -657,9 +658,9 @@ changed_combo(GtkWidget * widget, gpointer * data) {
 
 	lrdf_free_setting_values(defs);
 
-	pthread_mutex_lock(&plugin_lock);
+	spin_waitlock_s(&plugin_lock);
 	instance->knobs[k] = value;
-	pthread_mutex_unlock(&plugin_lock);
+	spin_unlock_s(&plugin_lock);
 }
 
 
@@ -719,9 +720,9 @@ plugin_scale_btn_pressed(GtkWidget * widget, GdkEventButton * event, gpointer * 
 		return FALSE;
 
 	adj = gtk_range_get_adjustment(GTK_RANGE(widget));
-	pthread_mutex_lock(&plugin_lock);
+	spin_waitlock_s(&plugin_lock);
 	adj->value = btnpdata->start;
-	pthread_mutex_unlock(&plugin_lock);
+	spin_unlock_s(&plugin_lock);
 	gtk_adjustment_value_changed(adj);
 
         return TRUE;
@@ -1618,7 +1619,8 @@ running_list_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 		conf_clicked(NULL, NULL, NULL);
 	}
 
-	if (event->type == GDK_BUTTON_PRESS && event->button == 3 && gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, 0)) {
+	if (event->type == GDK_BUTTON_PRESS && event->button == 3 &&
+	    gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, 0)) {
 
 		gtk_menu_popup(GTK_MENU(rp_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);

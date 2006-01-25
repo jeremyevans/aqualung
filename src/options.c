@@ -37,6 +37,7 @@
 #include "gui_main.h"
 #include "music_browser.h"
 #include "playlist.h"
+#include "spinlock.h"
 #include "i18n.h"
 #include "options.h"
 
@@ -45,7 +46,7 @@ options_t options;
 static int current_notebook_page = 0;
 int appearance_changed;
 
-extern pthread_mutex_t output_thread_lock;
+extern int output_thread_lock;
 
 
 #ifdef HAVE_SRC
@@ -564,9 +565,9 @@ void
 changed_ladspa_prepost(GtkWidget * widget, gpointer * data) {
 
 	int status = gtk_combo_box_get_active(GTK_COMBO_BOX(optmenu_ladspa));
-	pthread_mutex_lock(&output_thread_lock);
+	spin_waitlock_s(&output_thread_lock);
 	options.ladspa_is_postfader = status;
-	pthread_mutex_unlock(&output_thread_lock);
+	spin_unlock_s(&output_thread_lock);
 }
 
 
@@ -1858,9 +1859,9 @@ to set the column order in the Playlist."));
         	gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_ladspa), _("Post Fader (after Volume & Balance)"));
 
 	}
-	pthread_mutex_lock(&output_thread_lock);
+	spin_waitlock_s(&output_thread_lock);
 	status = options.ladspa_is_postfader;
-	pthread_mutex_unlock(&output_thread_lock);
+	spin_unlock_s(&output_thread_lock);
 	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_ladspa), status);
         g_signal_connect(optmenu_ladspa, "changed", G_CALLBACK(changed_ladspa_prepost), NULL);
 

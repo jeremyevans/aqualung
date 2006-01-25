@@ -22,6 +22,7 @@ ports.h ports.c \
 search.h search.c \
 search_playlist.h search_playlist.c \
 skin.h skin.c \
+spinlock.h spinlock.c \
 transceiver.c transceiver.h \
 trashlist.c trashlist.h \
 version.h \

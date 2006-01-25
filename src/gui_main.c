@@ -60,6 +60,7 @@
 #include "playlist.h"
 #include "plugin.h"
 #include "file_info.h"
+#include "spinlock.h"
 #include "i18n.h"
 #include "gui_main.h"
 #include "version.h"
@@ -90,7 +91,7 @@ extern pthread_cond_t  disk_thread_wake;
 extern jack_ringbuffer_t * rb_gui2disk;
 extern jack_ringbuffer_t * rb_disk2gui;
 
-extern pthread_mutex_t output_thread_lock;
+extern int output_thread_lock;
 
 extern jack_client_t * jack_client;
 extern char * client_name;
@@ -3230,10 +3231,11 @@ timeout_callback(gpointer data) {
 			left_gain_shadow = vol_lin;
 			right_gain_shadow = vol_lin * db2lin(0.4f * bal);
 		}
-		if (pthread_mutex_trylock(&output_thread_lock) == 0) {
+		if (!spin_islocked_m(&output_thread_lock)) {
+			spin_waitlock_s(&output_thread_lock);
 			left_gain = left_gain_shadow;
 			right_gain = right_gain_shadow;
-			pthread_mutex_unlock(&output_thread_lock);
+			spin_unlock_s(&output_thread_lock);
 			update_pending = 0;
 		} else {
 			update_pending = 1;
@@ -3300,7 +3302,8 @@ timeout_callback(gpointer data) {
 
 	/* check for JACK shutdown condition */
 	if (output == JACK_DRIVER) {
-		if (pthread_mutex_trylock(&output_thread_lock) == 0) {
+		if (!spin_islocked_m(&output_thread_lock)) {
+			spin_waitlock_s(&output_thread_lock);
 			if (jack_is_shutdown) {
 				if (is_file_loaded) {
 					stop_event(NULL, NULL, NULL);
@@ -3314,7 +3317,7 @@ timeout_callback(gpointer data) {
 					jack_popup_beenthere = 1;
 				}
 			}
-			pthread_mutex_unlock(&output_thread_lock);
+			spin_unlock_s(&output_thread_lock);
 		}
 	}
 	return TRUE;

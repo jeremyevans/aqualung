@@ -31,7 +31,7 @@
 
 
 void
-spin_waitlock_m(int * sl) {
+spin_waitlock_m(volatile int * sl) {
 
 	(*sl) |= SL_MASK_MASTER;
 	(*sl) |= SL_MASK_TURN;
@@ -43,7 +43,7 @@ spin_waitlock_m(int * sl) {
 
 
 void
-spin_waitlock_s(int * sl) {
+spin_waitlock_s(volatile int * sl) {
 
 	(*sl) |= SL_MASK_SLAVE;
 	(*sl) &= !SL_MASK_TURN;
@@ -55,21 +55,21 @@ spin_waitlock_s(int * sl) {
 
 
 void
-spin_unlock_m(int * sl) {
+spin_unlock_m(volatile int * sl) {
 
 	(*sl) &= !SL_MASK_MASTER;
 }
 
 
 void
-spin_unlock_s(int * sl) {
+spin_unlock_s(volatile int * sl) {
 
 	(*sl) &= !SL_MASK_SLAVE;
 }
 
 
 int
-spin_islocked_m(int * sl) {
+spin_islocked_m(volatile int * sl) {
 
 	return (((*sl) & SL_MASK_MASTER) &&
 		((!((*sl) & SL_MASK_SLAVE)) || (!((*sl) & SL_MASK_TURN))));
@@ -77,7 +77,7 @@ spin_islocked_m(int * sl) {
 
 
 int
-spin_islocked_s(int * sl) {
+spin_islocked_s(volatile int * sl) {
 
 	return (((*sl) & SL_MASK_SLAVE) &&
 		((!((*sl) & SL_MASK_SLAVE)) || (((*sl) & SL_MASK_TURN))));

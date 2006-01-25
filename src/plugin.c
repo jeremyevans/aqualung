@@ -46,7 +46,7 @@ extern options_t options;
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern void set_sliders_width(void);
 
-extern int plugin_lock;
+extern volatile int plugin_lock;
 
 extern int n_plugins;
 extern plugin_instance * plugin_vect[MAX_PLUGINS];

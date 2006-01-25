@@ -108,12 +108,12 @@ jack_ringbuffer_t * rb_gui2disk;
 jack_ringbuffer_t * rb_disk2gui;
 
 /* Lock critical operations that could interfere with output thread */
-int output_thread_lock = 0;
+volatile int output_thread_lock = 0;
 double left_gain = 1.0;
 double right_gain = 1.0;
 
 /* LADSPA stuff */
-int plugin_lock = 0;
+volatile int plugin_lock = 0;
 unsigned long ladspa_buflen = 0;
 LADSPA_Data * l_buf = NULL;
 LADSPA_Data * r_buf = NULL;

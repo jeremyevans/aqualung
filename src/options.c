@@ -46,7 +46,7 @@ options_t options;
 static int current_notebook_page = 0;
 int appearance_changed;
 
-extern int output_thread_lock;
+extern volatile int output_thread_lock;
 
 
 #ifdef HAVE_SRC

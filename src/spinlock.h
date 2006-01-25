@@ -25,17 +25,17 @@
  * This implementation allows two threads (master, slave) to share a spinlock.
  */
 
-void spin_waitlock_m(int * sl);
-void spin_waitlock_s(int * sl);
-void spin_unlock_m(int * sl);
-void spin_unlock_s(int * sl);
+void spin_waitlock_m(volatile int * sl);
+void spin_waitlock_s(volatile int * sl);
+void spin_unlock_m(volatile int * sl);
+void spin_unlock_s(volatile int * sl);
 
 /* Should be used from the opposite thread -- e.g. spin_islocked_m() should
  * be called from the slave thread to know if the master thread currently
  * holds the lock.
  */
-int spin_islocked_m(int * sl);
-int spin_islocked_s(int * sl);
+int spin_islocked_m(volatile int * sl);
+int spin_islocked_s(volatile int * sl);
 
 
 #endif /* _SPINLOCK_H */

@@ -91,7 +91,7 @@ extern pthread_cond_t  disk_thread_wake;
 extern jack_ringbuffer_t * rb_gui2disk;
 extern jack_ringbuffer_t * rb_disk2gui;
 
-extern int output_thread_lock;
+extern volatile int output_thread_lock;
 
 extern jack_client_t * jack_client;
 extern char * client_name;

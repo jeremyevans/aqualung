@@ -3231,11 +3231,16 @@ timeout_callback(gpointer data) {
 			left_gain_shadow = vol_lin;
 			right_gain_shadow = vol_lin * db2lin(0.4f * bal);
 		}
+/*
 		if (!spin_islocked_m(&output_thread_lock)) {
 			spin_waitlock_s(&output_thread_lock);
+*/
+		if (!output_thread_lock) {
 			left_gain = left_gain_shadow;
 			right_gain = right_gain_shadow;
+/*
 			spin_unlock_s(&output_thread_lock);
+*/
 			update_pending = 0;
 		} else {
 			update_pending = 1;
@@ -3302,8 +3307,10 @@ timeout_callback(gpointer data) {
 
 	/* check for JACK shutdown condition */
 	if (output == JACK_DRIVER) {
+/*
 		if (!spin_islocked_m(&output_thread_lock)) {
 			spin_waitlock_s(&output_thread_lock);
+*/
 			if (jack_is_shutdown) {
 				if (is_file_loaded) {
 					stop_event(NULL, NULL, NULL);
@@ -3317,8 +3324,10 @@ timeout_callback(gpointer data) {
 					jack_popup_beenthere = 1;
 				}
 			}
+/*
 			spin_unlock_s(&output_thread_lock);
 		}
+*/
 	}
 	return TRUE;
 }

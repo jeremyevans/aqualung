@@ -480,7 +480,9 @@ oss_thread(void * arg) {
 	req_time.tv_sec = 0;
         req_time.tv_nsec = 100000000;
 
-	spin_waitlock_m(&output_thread_lock);
+	//spin_waitlock_m(&output_thread_lock);
+	output_thread_lock = 1;
+
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 
@@ -521,9 +523,11 @@ oss_thread(void * arg) {
 		}
 
 		if ((n_avail = jack_ringbuffer_read_space(rb) / (2*sample_size)) == 0) {
-			spin_unlock_m(&output_thread_lock);
+			//spin_unlock_m(&output_thread_lock);
+			output_thread_lock = 0;
 			nanosleep(&req_time, &rem_time);
-			spin_waitlock_m(&output_thread_lock);
+			//spin_waitlock_m(&output_thread_lock);
+			output_thread_lock = 1;
 			goto oss_wake;
 		}
 
@@ -550,7 +554,8 @@ oss_thread(void * arg) {
 		}
 
 		/* plugin processing */
-		spin_waitlock_m(&plugin_lock);
+		//spin_waitlock_m(&plugin_lock);
+		plugin_lock = 1;
 		for (i = 0; i < n_plugins; i++) {
 			if (plugin_vect[i]->is_bypassed)
 				continue;
@@ -562,7 +567,8 @@ oss_thread(void * arg) {
 				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
 			}
 		}
-		spin_unlock_m(&plugin_lock);
+		//spin_unlock_m(&plugin_lock);
+		plugin_lock = 0;
 
 		if (!options.ladspa_is_postfader) {
 			for (i = 0; i < bufsize; i++) {
@@ -587,9 +593,11 @@ oss_thread(void * arg) {
 		}
 
 		/* write data to audio device */
-		spin_unlock_m(&output_thread_lock);
+		//spin_unlock_m(&output_thread_lock);
+		output_thread_lock = 0;
 		ioctl_status = write(fd_oss, oss_short_buf, 2*n_avail * sizeof(short));
-		spin_waitlock_m(&output_thread_lock);
+		//spin_waitlock_m(&output_thread_lock);
+		output_thread_lock = 1;
 		if (ioctl_status != 2*n_avail * sizeof(short))
 			fprintf(stderr, "oss_thread: Error writing to audio device\n");
 
@@ -634,7 +642,8 @@ alsa_thread(void * arg) {
 	req_time.tv_sec = 0;
         req_time.tv_nsec = 100000000;
 
-	spin_waitlock_m(&output_thread_lock);
+	//spin_waitlock_m(&output_thread_lock);
+	output_thread_lock = 1;
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 
@@ -692,9 +701,11 @@ alsa_thread(void * arg) {
 		}
 
 		if ((n_avail = jack_ringbuffer_read_space(rb) / (2*sample_size)) == 0) {
-			spin_unlock_m(&output_thread_lock);
+			//spin_unlock_m(&output_thread_lock);
+			output_thread_lock = 0;
 			nanosleep(&req_time, &rem_time);
-			spin_waitlock_m(&output_thread_lock);
+			//spin_waitlock_m(&output_thread_lock);
+			output_thread_lock = 1;
 			goto alsa_wake;
 		}
 
@@ -721,7 +732,8 @@ alsa_thread(void * arg) {
 		}
 		
 		/* plugin processing */
-		spin_waitlock_m(&plugin_lock);
+		//spin_waitlock_m(&plugin_lock);
+		plugin_lock = 1;
 		for (i = 0; i < n_plugins; i++) {
 			if (plugin_vect[i]->is_bypassed)
 				continue;
@@ -733,7 +745,8 @@ alsa_thread(void * arg) {
 				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
 			}
 		}
-		spin_unlock_m(&plugin_lock);
+		//spin_unlock_m(&plugin_lock);
+		plugin_lock = 0;
 		
 		if (!options.ladspa_is_postfader) {
 			for (i = 0; i < bufsize; i++) {
@@ -759,11 +772,13 @@ alsa_thread(void * arg) {
 			}
 
 			/* write data to audio device */
-			spin_unlock_m(&output_thread_lock);
+			//spin_unlock_m(&output_thread_lock);
+			output_thread_lock = 0;
 			if ((n_written = snd_pcm_writei(pcm_handle, alsa_int_buf, n_avail)) != n_avail) {
 				snd_pcm_prepare(pcm_handle);
 			}
-			spin_waitlock_m(&output_thread_lock);
+			//spin_waitlock_m(&output_thread_lock);
+			output_thread_lock = 1;
 
 		} else {
 			for (i = 0; i < bufsize; i++) {
@@ -782,11 +797,13 @@ alsa_thread(void * arg) {
 			}
 
 			/* write data to audio device */
-			spin_unlock_m(&output_thread_lock);
+			//spin_unlock_m(&output_thread_lock);
+			output_thread_lock = 0;
 			if ((n_written = snd_pcm_writei(pcm_handle, alsa_short_buf, n_avail)) != n_avail) {
 				snd_pcm_prepare(pcm_handle);
 			}
-			spin_waitlock_m(&output_thread_lock);
+			//spin_waitlock_m(&output_thread_lock);
+			output_thread_lock = 1;
 		}
 		
 		/* wake up disk thread if 1/4 of rb data has been read */
@@ -820,7 +837,8 @@ process(jack_nframes_t nframes, void * arg) {
 	static int flushcnt = 0;
 	char recv_cmd;
 
-	spin_waitlock_m(&output_thread_lock);
+	//spin_waitlock_m(&output_thread_lock);
+	output_thread_lock = 1;
 	
 	ladspa_buflen = jack_nframes = nframes;
 	
@@ -868,7 +886,8 @@ process(jack_nframes_t nframes, void * arg) {
 		}
 		
 		/* plugin processing */
-		spin_waitlock_m(&plugin_lock);
+		//spin_waitlock_m(&plugin_lock);
+		plugin_lock = 1;
 		for (i = 0; i < n_plugins; i++) {
 			if (plugin_vect[i]->is_bypassed)
 				continue;
@@ -880,7 +899,8 @@ process(jack_nframes_t nframes, void * arg) {
 				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
 			}
 		}
-		spin_unlock_m(&plugin_lock);
+		//spin_unlock_m(&plugin_lock);
+		plugin_lock = 0;
 		
 		if (!options.ladspa_is_postfader) {
 			for (i = 0; i < nframes; i++) {
@@ -900,7 +920,8 @@ process(jack_nframes_t nframes, void * arg) {
 		flushing = 0;
 	}
 	
-	spin_unlock_m(&output_thread_lock);
+	//spin_unlock_m(&output_thread_lock);
+	output_thread_lock = 0;
 
 	/* wake up disk thread if 1/4 of rb data has been read */
 	/* note that 1 frame = 8 bytes so 8 * info->rb_size equals the full data amount */
@@ -916,11 +937,11 @@ process(jack_nframes_t nframes, void * arg) {
 
 
 void
-jack_shutdown(void *arg) {
+jack_shutdown(void * arg) {
 
-	spin_waitlock_m(&output_thread_lock);
+	//spin_waitlock_m(&output_thread_lock);
 	jack_is_shutdown = 1;
-	spin_unlock_m(&output_thread_lock);
+	//spin_unlock_m(&output_thread_lock);
 }
 
 

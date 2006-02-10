@@ -880,7 +880,6 @@ void show_restart_info(void) {
 	gtk_widget_show_all(info_dialog);
         gtk_dialog_run(GTK_DIALOG(info_dialog));
         gtk_widget_destroy(info_dialog);
-
 }
 
 void playlist_font_select(GtkWidget *widget)
@@ -1550,6 +1549,14 @@ running realtime as a default.\n"));
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_show_sn_title, FALSE, FALSE, 0);
 
 
+	check_show_hidden = gtk_check_button_new_with_label(_("Show hidden files and directories in file choosers"));
+	gtk_widget_set_name(check_show_hidden, "check_on_notebook");
+	if (options.show_hidden) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_hidden), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_show_hidden, FALSE, FALSE, 0);
+
+
         /* "Playlist" notebook page */
 
 	vbox_pl = gtk_vbox_new(FALSE, 0);
@@ -1828,14 +1835,6 @@ to set the column order in the Playlist."));
 			  G_CALLBACK(refresh_ms_pathlist_clicked), NULL);
 	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist), refresh_ms_pathlist, FALSE, FALSE, 0);
 	
-
-	check_show_hidden = gtk_check_button_new_with_label(_("Show hidden files and directories in file chooser"));
-	gtk_widget_set_name(check_show_hidden, "check_on_notebook");
-	if (options.show_hidden) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_hidden), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), check_show_hidden, FALSE, FALSE, 0);
-
 
 
 	/* "DSP" notebook page */

@@ -1689,6 +1689,8 @@ To do so, you will utilize the popup menus in the Music Store window.
  new store, which is a top-level element holding artists.
  When creating a new store, you have to specify a file on your filesystem
  to hold all data about the artists, records and tracks in this store.
+ Note that this creates an empty store; for adding an already existing database
+ file, use the Settings/Music Store interface.
  We suggest that you place this file somewhere next to the audio files,
  so it will be available along with the music.
  This is particularly beneficial if you plan to share the music directory
@@ -1774,8 +1776,7 @@ On the Settings/Music Store page you can specify several database files
  If a given file is unavailable, the corresponding store item will be missing
  from the Music Store.
  If the file is readonly, you can play the music, but you won't be allowed
- to change (add, edit, remove, etc.)\SpecialChar ~
-the items in the store.
+ to change (add, edit, remove, etc.) the items in the store.
  Finally, if you have write permission on the file, you will be allowed
  to change the items.
  When adding or removing files, you need to press the `Refresh' button for

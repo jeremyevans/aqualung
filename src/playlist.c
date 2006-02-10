@@ -590,6 +590,9 @@ plist__save_cb(gpointer data) {
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
@@ -633,6 +636,9 @@ plist__load_cb(gpointer data) {
         assign_playlist_fc_filters(GTK_FILE_CHOOSER(dialog));
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
@@ -692,6 +698,9 @@ plist__enqueue_cb(gpointer data) {
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
@@ -1192,6 +1201,10 @@ direct_add(GtkWidget * widget, gpointer * data) {
         gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
         assign_audio_fc_filters(GTK_FILE_CHOOSER(dialog));
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 

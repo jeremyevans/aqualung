@@ -848,6 +848,9 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
         gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(file_selector), options.currdir);
         assign_audio_fc_filters(GTK_FILE_CHOOSER(file_selector));
 
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
 
         if (gtk_dialog_run(GTK_DIALOG(file_selector)) == GTK_RESPONSE_ACCEPT) {
 
@@ -1204,16 +1207,20 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
 
         set_sliders_width();    /* MAGIC */
 
-        if(strlen(selected_filename))
+        if (strlen(selected_filename)) {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), selected_filename);
-        else
+	} else {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+	}
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
         assign_audio_fc_filters(GTK_FILE_CHOOSER(dialog));
 
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
@@ -2074,16 +2081,36 @@ store__add_cb(gpointer data) {
 	comment[0] = '\0';
 
 	if (add_store_dialog(name, file, comment)) {
-		gtk_tree_store_append(music_store, &iter, NULL);
-		gtk_tree_store_set(music_store, &iter, 0, name, 2, file, 3, comment, -1);
 
-		doc = xmlNewDoc((const xmlChar *) "1.0");
-		root = xmlNewNode(NULL, (const xmlChar *) "music_store");
-		xmlDocSetRootElement(doc, root);
-		xmlSaveFormatFile(file, doc, 1);
+		if (access(file, F_OK) == 0) {
 
-		gtk_list_store_append(ms_pathlist_store, &iter);
-		gtk_list_store_set(ms_pathlist_store, &iter, 0, file, 1, _("rw"), -1);
+			GtkWidget * dialog;
+
+			dialog = gtk_message_dialog_new(GTK_WINDOW (browser_window),
+							GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+							GTK_MESSAGE_INFO,
+							GTK_BUTTONS_OK,
+							_("The store '%s' already exists.\nAdd it on the Settings/Music Store tab."),
+							file);
+			gtk_widget_show_all(dialog);
+			gtk_dialog_run(GTK_DIALOG(dialog));
+			gtk_widget_destroy(dialog);
+		} else {
+			gtk_tree_store_append(music_store, &iter, NULL);
+			gtk_tree_store_set(music_store, &iter, 0, name, 2, file, 3, comment, -1);
+
+			doc = xmlNewDoc((const xmlChar *) "1.0");
+			root = xmlNewNode(NULL, (const xmlChar *) "music_store");
+			xmlDocSetRootElement(doc, root);
+
+			xmlNewTextChild(root, NULL, (const xmlChar *) "name", (xmlChar *) name);
+			xmlNewTextChild(root, NULL, (const xmlChar *) "comment", (xmlChar *) comment);
+
+			xmlSaveFormatFile(file, doc, 1);
+
+			gtk_list_store_append(ms_pathlist_store, &iter);
+			gtk_list_store_set(ms_pathlist_store, &iter, 0, file, 1, _("rw"), -1);
+		}
 	}
 }
 

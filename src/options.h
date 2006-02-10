@@ -45,6 +45,7 @@ typedef struct {
 	int simple_view_in_fx;
 	int show_sn_title;
 	int united_minimization;
+	int show_hidden;
 
 	/* Playlist */
 	int playlist_is_embedded;
@@ -64,7 +65,6 @@ typedef struct {
 	int enable_mstore_statusbar;
 	int enable_mstore_statusbar_shadow;
 	int autoexpand_stores;
-	int show_hidden;
 	int cover_width;
 	int magnify_smaller_images;
 

@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=koi8-u\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../about.c:75 ../gui_main.c:2363
+#: ../about.c:75 ../gui_main.c:2367
 msgid "About"
 msgstr "Про програму"
 
@@ -279,7 +279,7 @@ msgstr "Дор╕жки"
 msgid "%d of %d"
 msgstr "%d з %d"
 
-#: ../cddb_lookup.c:601 ../cddb_lookup.c:627 ../gui_main.c:1147
+#: ../cddb_lookup.c:601 ../cddb_lookup.c:627 ../gui_main.c:1151
 #: ../options.c:1208 ../options.c:1303
 msgid "Warning"
 msgstr "Увага"
@@ -292,7 +292,7 @@ msgstr "Трапилась помилка при спроб╕ п╕д'╓днання до сервера CDDB."
 msgid "No matching record found."
 msgstr "Схожих запис╕в не знайдено."
 
-#: ../file_info.c:306 ../gui_main.c:2361
+#: ../file_info.c:306 ../gui_main.c:2365
 msgid "File info"
 msgstr "╤нформац╕я про файл"
 
@@ -329,11 +329,11 @@ msgstr "%ld Гц"
 msgid "Channel count:"
 msgstr "К╕льк╕сть канал╕в:"
 
-#: ../file_info.c:398 ../gui_main.c:721
+#: ../file_info.c:398 ../gui_main.c:725
 msgid "MONO"
 msgstr "МОНО"
 
-#: ../file_info.c:400 ../gui_main.c:724
+#: ../file_info.c:400 ../gui_main.c:728
 msgid "STEREO"
 msgstr "СТЕРЕО"
 
@@ -378,134 +378,134 @@ msgstr "Коментар╕ Vorbis"
 msgid "FLAC metadata"
 msgstr "FLAC метадан╕"
 
-#: ../gui_main.c:479
+#: ../gui_main.c:483
 msgid "Unrecognized"
 msgstr "Нерозп╕знано"
 
-#: ../gui_main.c:487 ../gui_main.c:493 ../gui_main.c:496 ../gui_main.c:499
+#: ../gui_main.c:491 ../gui_main.c:497 ../gui_main.c:500 ../gui_main.c:503
 msgid "bit signed"
 msgstr "знаковий б╕т"
 
-#: ../gui_main.c:490
+#: ../gui_main.c:494
 msgid "bit unsigned"
 msgstr "беззнаковий б╕т"
 
-#: ../gui_main.c:502
+#: ../gui_main.c:506
 msgid "bit float"
 msgstr "плаваючий б╕т"
 
-#: ../gui_main.c:505
+#: ../gui_main.c:509
 msgid "bit double"
 msgstr "подв╕йний б╕т"
 
-#: ../gui_main.c:508 ../gui_main.c:511 ../gui_main.c:514 ../gui_main.c:517
-#: ../gui_main.c:520 ../gui_main.c:523 ../gui_main.c:526 ../gui_main.c:529
-#: ../gui_main.c:532 ../gui_main.c:535 ../gui_main.c:538 ../gui_main.c:541
-#: ../gui_main.c:544
+#: ../gui_main.c:512 ../gui_main.c:515 ../gui_main.c:518 ../gui_main.c:521
+#: ../gui_main.c:524 ../gui_main.c:527 ../gui_main.c:530 ../gui_main.c:533
+#: ../gui_main.c:536 ../gui_main.c:539 ../gui_main.c:542 ../gui_main.c:545
+#: ../gui_main.c:548
 msgid "encoding"
 msgstr "кодування"
 
-#: ../gui_main.c:555
+#: ../gui_main.c:559
 msgid "Profile: Telephone"
 msgstr "Проф╕ль: Телефон"
 
-#: ../gui_main.c:558
+#: ../gui_main.c:562
 msgid "Profile: Thumb"
 msgstr "Проф╕ль: Еск╕з"
 
-#: ../gui_main.c:561
+#: ../gui_main.c:565
 msgid "Profile: Radio"
 msgstr "Проф╕ль: Рад╕о"
 
-#: ../gui_main.c:564
+#: ../gui_main.c:568
 msgid "Profile: Standard"
 msgstr "Проф╕ль: Стандарт"
 
-#: ../gui_main.c:567
+#: ../gui_main.c:571
 msgid "Profile: Xtreme"
 msgstr "Проф╕ль: Екстремальний"
 
-#: ../gui_main.c:570
+#: ../gui_main.c:574
 msgid "Profile: Insane"
 msgstr "Проф╕ль: Божев╕льний"
 
-#: ../gui_main.c:573
+#: ../gui_main.c:577
 msgid "Profile: Braindead"
 msgstr "Проф╕ль: Без башн╕"
 
-#: ../gui_main.c:588
+#: ../gui_main.c:592
 msgid "Layer I"
 msgstr ""
 
-#: ../gui_main.c:591
+#: ../gui_main.c:595
 msgid "Layer II"
 msgstr ""
 
-#: ../gui_main.c:594
+#: ../gui_main.c:598
 msgid "Layer III"
 msgstr ""
 
-#: ../gui_main.c:604
+#: ../gui_main.c:608
 msgid "Single channel"
 msgstr "Один канал"
 
-#: ../gui_main.c:607
+#: ../gui_main.c:611
 msgid "Dual channel"
 msgstr "Два канала"
 
-#: ../gui_main.c:610
+#: ../gui_main.c:614
 msgid "Joint stereo"
 msgstr "Об'╓днане стерео"
 
-#: ../gui_main.c:613
+#: ../gui_main.c:617
 msgid "Stereo"
 msgstr "Стерео"
 
-#: ../gui_main.c:623
+#: ../gui_main.c:627
 msgid "Emphasis: none"
 msgstr "Наголос: нема╓"
 
-#: ../gui_main.c:626 ../gui_main.c:629
+#: ../gui_main.c:630 ../gui_main.c:633
 msgid "Emphasis:"
 msgstr "Наголос:"
 
-#: ../gui_main.c:632
+#: ../gui_main.c:636
 msgid "Emphasis: reserved"
 msgstr "Наголос: резервний"
 
-#: ../gui_main.c:645
+#: ../gui_main.c:649
 msgid "Compression: Fast"
 msgstr "Ступ╕нь стиснення: Швидка"
 
-#: ../gui_main.c:648
+#: ../gui_main.c:652
 msgid "Compression: Normal"
 msgstr "Ступ╕нь стиснення: Нормальна"
 
-#: ../gui_main.c:651
+#: ../gui_main.c:655
 msgid "Compression: High"
 msgstr "Ступ╕нь стиснення: Висока"
 
-#: ../gui_main.c:654
+#: ../gui_main.c:658
 msgid "Compression: Extra High"
 msgstr "Ступ╕нь стиснення: Дуже висока"
 
-#: ../gui_main.c:657
+#: ../gui_main.c:661
 msgid "Compression: Insane"
 msgstr "Ступ╕нь стиснення: Божев╕льна"
 
-#: ../gui_main.c:742 ../gui_main.c:747 ../gui_main.c:751
+#: ../gui_main.c:746 ../gui_main.c:751 ../gui_main.c:755
 msgid "Output:"
 msgstr "Вив╕д:"
 
-#: ../gui_main.c:765
+#: ../gui_main.c:769
 msgid "SRC Type: "
 msgstr "SRC Тип: "
 
-#: ../gui_main.c:769
+#: ../gui_main.c:773
 msgid "None"
 msgstr "Нема╓"
 
-#: ../gui_main.c:1157
+#: ../gui_main.c:1161
 msgid ""
 "Music Store has been changed.\n"
 "Do you want to save it before exiting?"
@@ -513,51 +513,51 @@ msgstr ""
 "Музичний склад було зм╕нено.\n"
 "Чи ви бажа╓те зберегти зм╕ни перед виходом?"
 
-#: ../gui_main.c:1548
+#: ../gui_main.c:1552
 #, c-format
 msgid "Position: %d%%"
 msgstr ""
 
-#: ../gui_main.c:1566 ../gui_main.c:1593
+#: ../gui_main.c:1570 ../gui_main.c:1597
 #, c-format
 msgid "Mute"
 msgstr "Приглушити"
 
-#: ../gui_main.c:1568 ../gui_main.c:1595
+#: ../gui_main.c:1572 ../gui_main.c:1599
 #, c-format
 msgid "%d dB"
 msgstr "%d Дб"
 
-#: ../gui_main.c:1602
+#: ../gui_main.c:1606
 #, fuzzy, c-format
 msgid "Volume: %s"
 msgstr "Р╕вень гучност╕:"
 
-#: ../gui_main.c:1630 ../gui_main.c:1661
+#: ../gui_main.c:1634 ../gui_main.c:1665
 #, c-format
 msgid "%d%% R"
 msgstr "%d%% П"
 
-#: ../gui_main.c:1632 ../gui_main.c:1663
+#: ../gui_main.c:1636 ../gui_main.c:1667
 #, c-format
 msgid "%d%% L"
 msgstr "%d%% Л"
 
-#: ../gui_main.c:1635 ../gui_main.c:1666
+#: ../gui_main.c:1639 ../gui_main.c:1670
 #, c-format
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:1673
+#: ../gui_main.c:1677
 #, c-format
 msgid "Balance: %s"
 msgstr ""
 
-#: ../gui_main.c:2270
+#: ../gui_main.c:2274
 msgid "JACK connection lost"
 msgstr "JACK п╕д'╓днання втрачено"
 
-#: ../gui_main.c:2273
+#: ../gui_main.c:2277
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -569,72 +569,72 @@ msgstr ""
 "швидкий. Все що ви можете тепер зробити\n"
 "це перезапустити обидва JACK та Aqualung.\n"
 
-#: ../gui_main.c:2358 ../options.c:1436
+#: ../gui_main.c:2362 ../options.c:1436
 msgid "Settings"
 msgstr "Налаштування"
 
-#: ../gui_main.c:2359 ../skin.c:122
+#: ../gui_main.c:2363 ../skin.c:122
 msgid "Skin chooser"
 msgstr "Виб╕р жупан╕в"
 
-#: ../gui_main.c:2360
+#: ../gui_main.c:2364
 msgid "JACK port setup"
 msgstr "Налаштування порту JACK"
 
-#: ../gui_main.c:2615
+#: ../gui_main.c:2619
 msgid "Previous song (up)"
 msgstr "Попередня п╕сня (вгору)"
 
-#: ../gui_main.c:2619
+#: ../gui_main.c:2623
 msgid "Stop (s)"
 msgstr "Зупинити (s)"
 
-#: ../gui_main.c:2623
+#: ../gui_main.c:2627
 msgid "Next song (down)"
 msgstr "Наступна п╕сня (вниз)"
 
-#: ../gui_main.c:2627
+#: ../gui_main.c:2631
 msgid "Play (p)"
 msgstr "Грати (p)"
 
-#: ../gui_main.c:2631
+#: ../gui_main.c:2635
 msgid "Pause (space)"
 msgstr "Пауза (проб╕л)"
 
-#: ../gui_main.c:2657
+#: ../gui_main.c:2661
 msgid "Repeat current song"
 msgstr "Повторювати поточну п╕сню"
 
-#: ../gui_main.c:2665
+#: ../gui_main.c:2669
 msgid "Repeat all songs"
 msgstr "Повторювати вс╕ п╕сн╕"
 
-#: ../gui_main.c:2673
+#: ../gui_main.c:2677
 msgid "Shuffle songs"
 msgstr "Перем╕шати п╕сн╕"
 
-#: ../gui_main.c:2686
+#: ../gui_main.c:2690
 msgid "Toggle playlist"
 msgstr "Вимикач списку програвання"
 
-#: ../gui_main.c:2691
+#: ../gui_main.c:2695
 msgid "Toggle music store"
 msgstr "Вимикач музичного складу"
 
-#: ../gui_main.c:2696
+#: ../gui_main.c:2700
 msgid "Toggle LADSPA patch builder"
 msgstr "Вимикач буд╕вельника шлях╕в LADSPA"
 
-#: ../gui_main.c:4193 ../music_browser.c:2086 ../options.c:1231
+#: ../gui_main.c:4208 ../music_browser.c:2118 ../options.c:1231
 #: ../options.c:1330
 msgid "rw"
 msgstr ""
 
-#: ../gui_main.c:4195 ../options.c:1233 ../options.c:1332
+#: ../gui_main.c:4210 ../options.c:1233 ../options.c:1332
 msgid "r"
 msgstr ""
 
-#: ../gui_main.c:4197 ../options.c:1235 ../options.c:1334
+#: ../gui_main.c:4212 ../options.c:1235 ../options.c:1334
 msgid "unreachable"
 msgstr "недосяжний"
 
@@ -896,18 +896,18 @@ msgstr "Додати склад"
 msgid "Name:"
 msgstr "╤м'я:"
 
-#: ../music_browser.c:412 ../music_browser.c:541 ../music_browser.c:1294
-#: ../music_browser.c:1451 ../volume.c:180
+#: ../music_browser.c:412 ../music_browser.c:541 ../music_browser.c:1301
+#: ../music_browser.c:1458 ../volume.c:180
 msgid "Filename:"
 msgstr "Назва файлу:"
 
-#: ../music_browser.c:427 ../music_browser.c:1309 ../music_browser.c:1467
+#: ../music_browser.c:427 ../music_browser.c:1316 ../music_browser.c:1474
 msgid "_Browse..."
 msgstr "_Оглянути..."
 
 #: ../music_browser.c:433 ../music_browser.c:553 ../music_browser.c:661
-#: ../music_browser.c:771 ../music_browser.c:996 ../music_browser.c:1137
-#: ../music_browser.c:1315 ../music_browser.c:1473
+#: ../music_browser.c:771 ../music_browser.c:999 ../music_browser.c:1140
+#: ../music_browser.c:1322 ../music_browser.c:1480
 msgid "Comments:"
 msgstr "Коментар╕:"
 
@@ -919,13 +919,13 @@ msgstr "Редагувати Склад"
 msgid "Add Artist"
 msgstr "Додати виконавця"
 
-#: ../music_browser.c:639 ../music_browser.c:749 ../music_browser.c:940
-#: ../music_browser.c:1115 ../music_browser.c:1272 ../music_browser.c:1429
+#: ../music_browser.c:639 ../music_browser.c:749 ../music_browser.c:943
+#: ../music_browser.c:1118 ../music_browser.c:1279 ../music_browser.c:1436
 msgid "Visible name:"
 msgstr "Видима назва:"
 
-#: ../music_browser.c:650 ../music_browser.c:760 ../music_browser.c:951
-#: ../music_browser.c:1126 ../music_browser.c:1283 ../music_browser.c:1440
+#: ../music_browser.c:650 ../music_browser.c:760 ../music_browser.c:954
+#: ../music_browser.c:1129 ../music_browser.c:1290 ../music_browser.c:1447
 msgid "Name to sort by:"
 msgstr "Сортувати назви за:"
 
@@ -937,217 +937,224 @@ msgstr "Редагувати виконавця"
 msgid "Please select the audio files for this record."
 msgstr "Будьласка обер╕ть звуков╕ файли для цього запису."
 
-#: ../music_browser.c:927
+#: ../music_browser.c:930
 msgid "Add Record"
 msgstr "Додати запис"
 
-#: ../music_browser.c:963
+#: ../music_browser.c:966
 msgid "Auto-create tracks from these files:"
 msgstr "Автостворення дор╕жок з цих файл╕в:"
 
-#: ../music_browser.c:984 ../plugin.c:1970
+#: ../music_browser.c:987 ../plugin.c:1985
 msgid "Clear list"
 msgstr "Очистити список"
 
-#: ../music_browser.c:991
+#: ../music_browser.c:994
 msgid "_Add files..."
 msgstr "_Додати файли..."
 
-#: ../music_browser.c:1102
+#: ../music_browser.c:1105
 msgid "Edit Record"
 msgstr "Редагувати запис"
 
-#: ../music_browser.c:1198
+#: ../music_browser.c:1201
 msgid "Please select the audio file for this track."
 msgstr "Будьласка обер╕ть звуковий файл для ц╕╓╖ дор╕жки."
 
-#: ../music_browser.c:1259
+#: ../music_browser.c:1266
 msgid "Add Track"
 msgstr "Додати дор╕жку"
 
-#: ../music_browser.c:1416
+#: ../music_browser.c:1423
 msgid "Edit Track"
 msgstr "Редагувати дор╕жку"
 
-#: ../music_browser.c:1500
+#: ../music_browser.c:1507
 msgid "Duration:"
 msgstr "Тривал╕сть:"
 
-#: ../music_browser.c:1515
+#: ../music_browser.c:1522
 msgid "Volume level:"
 msgstr "Р╕вень гучност╕:"
 
-#: ../music_browser.c:1526
+#: ../music_browser.c:1533
 #, c-format
 msgid "Unmeasured"
 msgstr "Невим╕ряно"
 
-#: ../music_browser.c:1537
+#: ../music_browser.c:1544
 msgid "Use manual RVA value [dB]"
 msgstr "Використовувати значення ПВР встановлен╕ вручну [dB]"
 
-#: ../music_browser.c:2212 ../music_browser.c:2392 ../music_browser.c:2580
-#: ../music_browser.c:2820
+#: ../music_browser.c:2093
+#, c-format
+msgid ""
+"The store '%s' already exists.\n"
+"Add it on the Settings/Music Store tab."
+msgstr ""
+
+#: ../music_browser.c:2245 ../music_browser.c:2425 ../music_browser.c:2613
+#: ../music_browser.c:2853
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
 msgstr "Справд╕ прибрати \"%s\" з Музичного Складу?"
 
-#: ../music_browser.c:2213
+#: ../music_browser.c:2246
 msgid "Remove Store"
 msgstr "Прибрати Склад"
 
-#: ../music_browser.c:2393
+#: ../music_browser.c:2426
 msgid "Remove Artist"
 msgstr "Прибрати виконавця"
 
-#: ../music_browser.c:2581
+#: ../music_browser.c:2614
 msgid "Remove Record"
 msgstr "Прибрати запис"
 
-#: ../music_browser.c:2821
+#: ../music_browser.c:2854
 msgid "Remove Track"
 msgstr "Прибрати дор╕жку"
 
-#: ../music_browser.c:2858
+#: ../music_browser.c:2891
 msgid "(no comment)"
 msgstr "(без коментаря)"
 
-#: ../music_browser.c:3063 ../music_browser.c:3089 ../music_browser.c:3108
-#: ../music_browser.c:3120
+#: ../music_browser.c:3096 ../music_browser.c:3122 ../music_browser.c:3141
+#: ../music_browser.c:3153
 #, fuzzy
 msgid "time unmeasured"
 msgstr "Невим╕ряно"
 
-#: ../music_browser.c:3066
+#: ../music_browser.c:3099
 #, fuzzy
 msgid "artists"
 msgstr "Виконавець"
 
-#: ../music_browser.c:3066
+#: ../music_browser.c:3099
 #, fuzzy
 msgid "artist"
 msgstr "Виконавець"
 
-#: ../music_browser.c:3067 ../music_browser.c:3092
+#: ../music_browser.c:3100 ../music_browser.c:3125
 #, fuzzy
 msgid "records"
 msgstr "Запис"
 
-#: ../music_browser.c:3067 ../music_browser.c:3092
+#: ../music_browser.c:3100 ../music_browser.c:3125
 #, fuzzy
 msgid "record"
 msgstr "Запис"
 
-#: ../music_browser.c:3068 ../music_browser.c:3093 ../music_browser.c:3111
+#: ../music_browser.c:3101 ../music_browser.c:3126 ../music_browser.c:3144
 #, fuzzy
 msgid "tracks"
 msgstr "Дор╕жки"
 
-#: ../music_browser.c:3068 ../music_browser.c:3093 ../music_browser.c:3111
+#: ../music_browser.c:3101 ../music_browser.c:3126 ../music_browser.c:3144
 #, fuzzy
 msgid "track"
 msgstr "Дор╕жка"
 
-#: ../music_browser.c:3238 ../music_browser.c:3828 ../music_browser.c:3895
-#: ../options.c:1689
+#: ../music_browser.c:3271 ../music_browser.c:3861 ../music_browser.c:3928
+#: ../options.c:1697
 msgid "Music Store"
 msgstr "Музичний Склад"
 
-#: ../music_browser.c:3328 ../music_browser.c:3345
+#: ../music_browser.c:3361 ../music_browser.c:3378
 msgid "Add new store..."
 msgstr "Додати новий склад..."
 
-#: ../music_browser.c:3329 ../music_browser.c:3352 ../music_browser.c:3402
-#: ../music_browser.c:3446 ../music_browser.c:3494 ../playlist.c:1539
+#: ../music_browser.c:3362 ../music_browser.c:3385 ../music_browser.c:3435
+#: ../music_browser.c:3479 ../music_browser.c:3527 ../playlist.c:1552
 msgid "Search..."
 msgstr "Шукати..."
 
-#: ../music_browser.c:3330 ../music_browser.c:3354
+#: ../music_browser.c:3363 ../music_browser.c:3387
 msgid "Save Music Store"
 msgstr "Зберегти Музичний Склад"
 
-#: ../music_browser.c:3343 ../music_browser.c:3393 ../music_browser.c:3436
-#: ../music_browser.c:3485
+#: ../music_browser.c:3376 ../music_browser.c:3426 ../music_browser.c:3469
+#: ../music_browser.c:3518
 msgid "Add to playlist"
 msgstr "Додати до списку програвання"
 
-#: ../music_browser.c:3346
+#: ../music_browser.c:3379
 msgid "Edit store..."
 msgstr "Редагувати склад..."
 
-#: ../music_browser.c:3347
+#: ../music_browser.c:3380
 msgid "Remove store"
 msgstr "Прибрати склад"
 
-#: ../music_browser.c:3349
+#: ../music_browser.c:3382
 msgid "Add new artist to this store..."
 msgstr "Додати нового виконавця до цього складу..."
 
-#: ../music_browser.c:3351 ../music_browser.c:3401 ../music_browser.c:3445
+#: ../music_browser.c:3384 ../music_browser.c:3434 ../music_browser.c:3478
 msgid "Calculate volume (recursive)"
 msgstr "П╕драхувати гучн╕сть (рекурсивно)"
 
-#: ../music_browser.c:3395
+#: ../music_browser.c:3428
 msgid "Add new artist..."
 msgstr "Додати нового виконавця..."
 
-#: ../music_browser.c:3396
+#: ../music_browser.c:3429
 msgid "Edit artist..."
 msgstr "редагувати виконавця..."
 
-#: ../music_browser.c:3397
+#: ../music_browser.c:3430
 msgid "Remove artist"
 msgstr "прибрати виконавця"
 
-#: ../music_browser.c:3399
+#: ../music_browser.c:3432
 msgid "Add new record to this artist..."
 msgstr "Додати новий запис до цього виконавця..."
 
-#: ../music_browser.c:3438
+#: ../music_browser.c:3471
 msgid "Add new record..."
 msgstr "Додати новий запис..."
 
-#: ../music_browser.c:3439
+#: ../music_browser.c:3472
 msgid "Edit record..."
 msgstr "Редагувати запис..."
 
-#: ../music_browser.c:3440
+#: ../music_browser.c:3473
 msgid "Remove record"
 msgstr "Прибрати запис"
 
-#: ../music_browser.c:3442
+#: ../music_browser.c:3475
 msgid "Add new track to this record..."
 msgstr "Додати нову дор╕жку до цього запису..."
 
-#: ../music_browser.c:3443
+#: ../music_browser.c:3476
 msgid "CDDB query for this record..."
 msgstr "CDDB запит для цього запису..."
 
-#: ../music_browser.c:3487
+#: ../music_browser.c:3520
 msgid "Add new track..."
 msgstr "Додати нову дор╕жку..."
 
-#: ../music_browser.c:3488
+#: ../music_browser.c:3521
 msgid "Edit track..."
 msgstr "Редагувати дор╕жку..."
 
-#: ../music_browser.c:3489
+#: ../music_browser.c:3522
 msgid "Remove track"
 msgstr "Прибрати дор╕жку"
 
-#: ../music_browser.c:3491 ../playlist.c:1538
+#: ../music_browser.c:3524 ../playlist.c:1551
 msgid "File info..."
 msgstr "╤нформац╕я про файл"
 
-#: ../music_browser.c:3493
+#: ../music_browser.c:3526
 msgid "Calculate volume"
 msgstr "П╕драхувати гучн╕сть"
 
-#: ../music_browser.c:3889
+#: ../music_browser.c:3922
 msgid "*Music Store"
 msgstr "*Музичний Склад"
 
-#: ../options.c:862
+#: ../options.c:863
 #, fuzzy
 msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
@@ -1243,51 +1250,55 @@ msgstr ""
 msgid "Show song name in the main window's title"
 msgstr ""
 
-#: ../options.c:1556 ../playlist.c:1503
+#: ../options.c:1552
+msgid "Show hidden files and directories in file choosers"
+msgstr ""
+
+#: ../options.c:1564 ../playlist.c:1516
 msgid "Playlist"
 msgstr "Список програвання"
 
-#: ../options.c:1559 ../options.c:1566
+#: ../options.c:1567 ../options.c:1574
 msgid "Embed playlist into main window"
 msgstr "Вбудувати список програвання у головне в╕кно"
 
-#: ../options.c:1568
+#: ../options.c:1576
 msgid "Save and restore the playlist on exit/startup"
 msgstr "Запис та в╕дновлення списку програвання при виход╕/запуску"
 
-#: ../options.c:1579 ../options.c:1702
+#: ../options.c:1587 ../options.c:1710
 #, fuzzy
 msgid "Enable statusbar"
 msgstr "Ув╕мкнути рядок стану у списку програвання"
 
-#: ../options.c:1586
+#: ../options.c:1594
 msgid "Enable statusbar in playlist"
 msgstr "Ув╕мкнути рядок стану у списку програвання"
 
-#: ../options.c:1590
+#: ../options.c:1598
 #, fuzzy
 msgid "Show RVA values"
 msgstr "Значення ПВР"
 
-#: ../options.c:1601
+#: ../options.c:1609
 #, fuzzy
 msgid "Show track lengths"
 msgstr "Тривал╕сть дор╕жок"
 
-#: ../options.c:1612
+#: ../options.c:1620
 msgid "Show active track name in bold"
 msgstr "Вид╕ляти жирним активну дор╕жку"
 
-#: ../options.c:1623
+#: ../options.c:1631
 #, fuzzy
 msgid "Enable rules hint"
 msgstr "Зад╕яти ус╕ втулки"
 
-#: ../options.c:1633
+#: ../options.c:1641
 msgid "Playlist column order"
 msgstr "Порядок стовпчик╕в списку пргравання"
 
-#: ../options.c:1640
+#: ../options.c:1648
 msgid ""
 "Drag and drop entries in the list below \n"
 "to set the column order in the Playlist."
@@ -1295,104 +1306,100 @@ msgstr ""
 "Перетягуйте пункти у списку нижче \n"
 "для встановлення порядку стовпчик╕в у списку пргравання."
 
-#: ../options.c:1652
+#: ../options.c:1660
 msgid "Column"
 msgstr "Стовпчик"
 
-#: ../options.c:1669 ../search.c:553
+#: ../options.c:1677 ../search.c:553
 msgid "Track titles"
 msgstr "Назви дор╕жок"
 
-#: ../options.c:1674
+#: ../options.c:1682
 msgid "RVA values"
 msgstr "Значення ПВР"
 
-#: ../options.c:1679
+#: ../options.c:1687
 msgid "Track lengths"
 msgstr "Тривал╕сть дор╕жок"
 
-#: ../options.c:1692 ../options.c:1699
+#: ../options.c:1700 ../options.c:1707
 msgid "Hide the Music Store comment pane"
 msgstr "Приховати панель коментар╕в Музичного Складу"
 
-#: ../options.c:1709
+#: ../options.c:1717
 #, fuzzy
 msgid "Enable statusbar in Music Store"
 msgstr "Ув╕мкнути рядок стану у списку програвання"
 
-#: ../options.c:1713
+#: ../options.c:1721
 msgid "Expand Stores on startup"
 msgstr ""
 
-#: ../options.c:1721
+#: ../options.c:1729
 msgid "Cover art"
 msgstr "Обкладинка"
 
-#: ../options.c:1730
+#: ../options.c:1738
 msgid "Default cover width:"
 msgstr "Ширина обкладинки по замовчанню:"
 
-#: ../options.c:1738
+#: ../options.c:1746
 msgid "50 pixels"
 msgstr "50 п╕ксел╕в"
 
-#: ../options.c:1739
+#: ../options.c:1747
 msgid "100 pixels"
 msgstr "100 п╕ксел╕в"
 
-#: ../options.c:1740
+#: ../options.c:1748
 msgid "200 pixels"
 msgstr "200 п╕ксел╕в"
 
-#: ../options.c:1741
+#: ../options.c:1749
 msgid "300 pixels"
 msgstr "300 п╕ксел╕в"
 
-#: ../options.c:1742
+#: ../options.c:1750
 msgid "use browser window width"
 msgstr "використовувати ширину в╕кна оглядача"
 
-#: ../options.c:1749
+#: ../options.c:1757
 msgid "Don't magnify images with smaller width"
 msgstr "Не зб╕льшувати зображення меншого розм╕ру"
 
-#: ../options.c:1757
+#: ../options.c:1765
 msgid "Paths to Music Store databases"
 msgstr "Шляхи до баз даних Музичного Складу"
 
-#: ../options.c:1764
+#: ../options.c:1772
 msgid ""
 "Paths must either be absolute or starting with a tilde,\n"
 "which will be expanded to the user's home directory."
 msgstr ""
 
-#: ../options.c:1778
+#: ../options.c:1786
 msgid "Path"
 msgstr "Шлях"
 
-#: ../options.c:1785
+#: ../options.c:1793
 msgid "Access"
 msgstr "Доступ"
 
-#: ../options.c:1810
+#: ../options.c:1818
 msgid "Add"
 msgstr "Додати"
 
-#: ../options.c:1815
+#: ../options.c:1823
 msgid "Browse"
 msgstr "Оглянути"
 
-#: ../options.c:1820
+#: ../options.c:1828
 msgid "Remove"
 msgstr "Прибрати"
 
-#: ../options.c:1825
+#: ../options.c:1833
 msgid "Refresh"
 msgstr "Оновити"
-
-#: ../options.c:1831
-msgid "Show hidden files and directories in file chooser"
-msgstr ""
 
 #: ../options.c:1844
 msgid "DSP"
@@ -1611,164 +1618,164 @@ msgstr "Активна п╕сня у списку програвання: "
 msgid "Please specify the file to save the playlist to."
 msgstr "Будьласка вкаж╕ть файл куди буде записано список програвання."
 
-#: ../playlist.c:621 ../playlist.c:679
+#: ../playlist.c:624 ../playlist.c:685
 msgid "Please specify the file to load the playlist from."
 msgstr "Будьласка вкаж╕ть файл зв╕дки буде завантажено список програвання."
 
-#: ../playlist.c:856
+#: ../playlist.c:865
 msgid ""
 "Playback RVA is currently disabled. Enable it at Settings->Playback RVA."
 msgstr ""
 "ПВР програвання зараз вимкнено. Ув╕мкн╕ть ╖╖ в Налаштування->ПВР програвання."
 
-#: ../playlist.c:1086 ../playlist.c:1089 ../playlist.c:1092
+#: ../playlist.c:1095 ../playlist.c:1098 ../playlist.c:1101
 msgid "Unknown"
 msgstr "Нев╕домо"
 
-#: ../playlist.c:1180
+#: ../playlist.c:1189
 msgid "Select files..."
 msgstr "Вибрати файли..."
 
-#: ../playlist.c:1445 ../playlist.c:1474
+#: ../playlist.c:1458 ../playlist.c:1487
 #, fuzzy, c-format
 msgid "%d track [%s] "
 msgstr "%d дор╕жка [%s]"
 
-#: ../playlist.c:1447 ../playlist.c:1476
+#: ../playlist.c:1460 ../playlist.c:1489
 #, fuzzy, c-format
 msgid "%d tracks [%s] "
 msgstr "%d дор╕жок [%s]"
 
-#: ../playlist.c:1522
+#: ../playlist.c:1535
 msgid "Save playlist"
 msgstr "Зберегти список програвання"
 
-#: ../playlist.c:1523
+#: ../playlist.c:1536
 msgid "Load playlist"
 msgstr "Завантажити список програвання"
 
-#: ../playlist.c:1524
+#: ../playlist.c:1537
 msgid "Enqueue playlist"
 msgstr "Поставити в чергу список програвання"
 
-#: ../playlist.c:1526
+#: ../playlist.c:1539
 msgid "Calculate RVA"
 msgstr "П╕драхувати ПВР"
 
-#: ../playlist.c:1528
+#: ../playlist.c:1541
 msgid "Separate"
 msgstr "Окрем╕"
 
-#: ../playlist.c:1529
+#: ../playlist.c:1542
 msgid "Average"
 msgstr "Середн╕"
 
-#: ../playlist.c:1530
+#: ../playlist.c:1543
 msgid "Reread file metadata"
 msgstr "Перечитати ╕нформац╕ю про файл"
 
-#: ../playlist.c:1534
+#: ../playlist.c:1547
 msgid "Send songs to iFP device"
 msgstr ""
 
-#: ../playlist.c:1732
+#: ../playlist.c:1745
 msgid "Selected: "
 msgstr "Вибрано: "
 
-#: ../playlist.c:1742
+#: ../playlist.c:1755
 msgid "Total: "
 msgstr "Разом: "
 
-#: ../playlist.c:1762
+#: ../playlist.c:1775
 msgid "Add files..."
 msgstr "Додати файли..."
 
-#: ../playlist.c:1763
+#: ../playlist.c:1776
 #, fuzzy
 msgid "Add files to playlist"
 msgstr "Додати до списку програвання"
 
-#: ../playlist.c:1767 ../playlist.c:1785
+#: ../playlist.c:1780 ../playlist.c:1798
 msgid "Select all"
 msgstr "Вибрати все"
 
-#: ../playlist.c:1768
+#: ../playlist.c:1781
 msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:1772 ../playlist.c:1810
+#: ../playlist.c:1785 ../playlist.c:1823
 msgid "Remove selected"
 msgstr "Прибрати вибране"
 
-#: ../playlist.c:1773
+#: ../playlist.c:1786
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:1780
+#: ../playlist.c:1793
 msgid "Select none"
 msgstr "Зняти виб╕р"
 
-#: ../playlist.c:1790
+#: ../playlist.c:1803
 msgid "Invert selection"
 msgstr "Перевернути виб╕р"
 
-#: ../playlist.c:1800
+#: ../playlist.c:1813
 msgid "Cut selected"
 msgstr "Прибрати обране"
 
-#: ../playlist.c:1805
+#: ../playlist.c:1818
 msgid "Remove all"
 msgstr "Прибрати все"
 
-#: ../plugin.c:1792
+#: ../plugin.c:1807
 msgid "LADSPA patch builder"
 msgstr "Буд╕вельник шлях╕в LADSPA"
 
-#: ../plugin.c:1801
+#: ../plugin.c:1816
 msgid "Available plugins"
 msgstr "Наявн╕ втулки"
 
-#: ../plugin.c:1866
+#: ../plugin.c:1881
 msgid "ID"
 msgstr "╤дентиф╕катор"
 
-#: ../plugin.c:1874 ../plugin.c:1957
+#: ../plugin.c:1889 ../plugin.c:1972
 msgid "Name"
 msgstr "╤м'я"
 
-#: ../plugin.c:1879
+#: ../plugin.c:1894
 msgid "Category"
 msgstr "Категор╕я"
 
-#: ../plugin.c:1887
+#: ../plugin.c:1902
 msgid "Inputs"
 msgstr "Входи"
 
-#: ../plugin.c:1895 ../ports.c:473
+#: ../plugin.c:1910 ../ports.c:473
 msgid "Outputs"
 msgstr "Виходи"
 
-#: ../plugin.c:1903
+#: ../plugin.c:1918
 msgid "Running plugins"
 msgstr "Запущен╕ втулки"
 
-#: ../plugin.c:1920
+#: ../plugin.c:1935
 msgid "_Configure"
 msgstr "_Налаштувати"
 
-#: ../plugin.c:1965
+#: ../plugin.c:1980
 msgid "Enable all plugins"
 msgstr "Зад╕яти ус╕ втулки"
 
-#: ../plugin.c:1966
+#: ../plugin.c:1981
 msgid "Disable all plugins"
 msgstr "Вимкнути ус╕ втулки"
 
-#: ../plugin.c:1968
+#: ../plugin.c:1983
 msgid "Invert current state"
 msgstr "╤нвертувати поточний стан"
 

@@ -21,6 +21,7 @@
 #include <config.h>
 
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -471,6 +472,13 @@ ok(GtkWidget * widget, gpointer data) {
                 /* apply colors */               
 
                 if (gdk_color_parse(options.activesong_color, &color) == TRUE) {
+ 
+                        /* sorry for this, but it's temporary workaround */
+                        /* see playlist.c:1848 FIXME tag for details */
+
+                        if(!color.red && !color.green && !color.blue)
+                                color.red++;
+
                         play_list->style->fg[SELECTED].red = color.red;
                         play_list->style->fg[SELECTED].green = color.green;
                         play_list->style->fg[SELECTED].blue = color.blue;
@@ -506,6 +514,27 @@ cancel(GtkWidget * widget, gpointer data) {
 
         set_sliders_width();    /* MAGIC */
 	return TRUE;
+}
+
+
+static gint
+options_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
+
+	switch (kevent->keyval) {
+
+	case GDK_Escape:
+		cancel(NULL, NULL);
+		return TRUE;
+		break;
+
+        case GDK_Return:
+	case GDK_KP_Enter:
+		ok(NULL, NULL);
+                return TRUE;
+		break;
+	}
+
+	return FALSE;
 }
 
 
@@ -1437,6 +1466,9 @@ create_options_window(void) {
 	gtk_window_set_position(GTK_WINDOW(options_window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(options_window), TRUE);
         gtk_container_set_border_width(GTK_CONTAINER(options_window), 5);
+
+        g_signal_connect(G_OBJECT(options_window), "key_press_event",
+			 G_CALLBACK(options_window_key_pressed), NULL);
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(options_window), vbox);

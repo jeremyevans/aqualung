@@ -106,6 +106,9 @@ extern GtkListStore * play_store;
 extern GtkListStore * running_store;
 extern GtkWidget * play_list;
 
+extern GtkWidget * plist_menu;
+
+void init_plist_menu(GtkWidget *append_menu);
 
 /* the physical name of the file that is playing, or a '\0'. */
 char current_file[MAXLEN];
@@ -287,6 +290,21 @@ void set_sliders_width(void);
 
 void assign_audio_fc_filters(GtkFileChooser *fc);
 void assign_playlist_fc_filters(GtkFileChooser *fc);
+
+/* externs form playlist.c */
+extern void rem__sel_cb(gpointer data);
+extern void cut__sel_cb(gpointer data);
+extern void plist__search_cb(gpointer data);
+extern void direct_add(GtkWidget * widget, gpointer * data);
+
+extern void start_playback_from_playlist(GtkTreePath * path);
+
+extern char fileinfo_name[MAXLEN];
+extern char fileinfo_file[MAXLEN];
+
+extern GtkWidget * plist__fileinfo;
+extern GtkTreeSelection * play_select;
+
 
 void
 deflicker(void) {
@@ -1032,6 +1050,13 @@ change_skin(char * path) {
 	refresh_displays();
 
         if (options.override_skin_settings && (gdk_color_parse(options.activesong_color, &color) == TRUE)) {
+
+                /* sorry for this, but it's temporary workaround */
+                /* see playlist.c:1848 FIXME tag for details */
+
+                if(!color.red && !color.green && !color.blue)
+                        color.red++;
+
                 play_list->style->fg[SELECTED].red = color.red;
                 play_list->style->fg[SELECTED].green = color.green;
                 play_list->style->fg[SELECTED].blue = color.blue;
@@ -1193,6 +1218,15 @@ main_window_close(GtkWidget * widget, gpointer data) {
 gint
 main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
+	GtkTreePath * path;
+	GtkTreeViewColumn * column;
+	GtkTreeIter iter;
+	char * pname;
+	char * pfile;
+        gboolean k;
+
+	int i;
+
 	switch (event->keyval) {
 	case GDK_Alt_L:
 		alt_L = 1;
@@ -1272,16 +1306,10 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 					      GTK_SCROLL_STEP_BACKWARD, NULL);
 		}
 		return TRUE;
-	case GDK_Down:
-		if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
-			return FALSE;
-		}
+	case GDK_period:
 		next_event(NULL, NULL, NULL);
 		return TRUE;
-	case GDK_Up:
-		if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
-			return FALSE;
-		}
+	case GDK_comma:
 		prev_event(NULL, NULL, NULL);
 		return TRUE;
 	case GDK_s:
@@ -1290,9 +1318,6 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(musicstore_toggle),
 						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(musicstore_toggle)));
 		} else {
-			if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
-				return FALSE;
-			}
 			stop_event(NULL, NULL, NULL);
 		}
 		return TRUE;
@@ -1307,11 +1332,11 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		return TRUE;
 	case GDK_i:
 	case GDK_I:
-		if (options.playlist_is_embedded && gtk_widget_is_focus(play_list)) {
-			return FALSE;
-		}
-		conf__fileinfo_cb(NULL);
-		return TRUE;
+		if (!options.playlist_is_embedded) {
+                        conf__fileinfo_cb(NULL);
+        		return TRUE;
+                }
+                break;
 	case GDK_BackSpace:
 		if (allow_seeks) {
 			seek_t seek;
@@ -1351,8 +1376,102 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			main_window_close(NULL, NULL);
 		}
 		return TRUE;
+	case GDK_k:
+	case GDK_K:
+        	create_skin_window();
+                return TRUE;
+	case GDK_o:
+	case GDK_O:
+                create_options_window();
+                return TRUE;
+
 	}
 	
+
+        if(options.playlist_is_embedded) {
+
+                /* c&p from playlist.c */
+
+                switch (event->keyval) {
+
+                case GDK_Insert:
+                case GDK_KP_Insert:
+                        direct_add(NULL, NULL);
+                        return TRUE;
+                        break;
+                case GDK_i:
+                case GDK_I:
+                        gtk_tree_view_get_cursor(GTK_TREE_VIEW(play_list), &path, &column);
+
+                        if (path && gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path)) {
+
+                                GtkTreeIter dummy;
+                                
+                                gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
+                                                   0, &pname, 1, &pfile, -1);
+                                
+                                strncpy(fileinfo_name, pname, MAXLEN-1);
+                                strncpy(fileinfo_file, pfile, MAXLEN-1);
+                                free(pname);
+                                free(pfile);
+                                show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy);
+                        }
+
+                        return TRUE;
+                        break;
+                case GDK_Return:
+                case GDK_KP_Enter:
+                        gtk_tree_view_get_cursor(GTK_TREE_VIEW(play_list), &path, &column);
+
+                        if (path) {
+                                start_playback_from_playlist(path);
+                        }		
+                        return TRUE;
+                        break;
+                case GDK_x:
+                case GDK_X:
+                        if (control_L || control_R) {
+                                cut__sel_cb(NULL);
+                        }                                                
+                        return TRUE;
+                        break;
+                case GDK_f:
+                case GDK_F:
+                        plist__search_cb(NULL);
+                        return TRUE;
+                        break;
+                
+                case GDK_Delete:
+                case GDK_KP_Delete:
+                        if (shift_L || shift_R) {
+
+                                gtk_list_store_clear(play_store);
+
+                        } else {
+
+                                i = 0;
+                                do {
+                                        k = gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++);
+                                } while (k && !gtk_tree_selection_iter_is_selected(play_select, &iter));
+
+                                if (k) {
+
+                                        path = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), &iter);
+
+                                        rem__sel_cb(NULL);
+
+                                        gtk_tree_selection_select_path(play_select, path);
+                                        gtk_tree_view_set_cursor(GTK_TREE_VIEW(play_list), path, NULL, FALSE);
+
+                                }
+                        }
+
+                        return TRUE;
+                        break;
+                }
+
+        }
+
 	return FALSE;
 }
 
@@ -1480,13 +1599,15 @@ main_window_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 
 	if (event->button == 3) {
 
-		if (is_file_loaded && (current_file[0] != '\0')) {
-			gtk_widget_set_sensitive(conf__fileinfo, TRUE);
-		} else {
-			gtk_widget_set_sensitive(conf__fileinfo, FALSE);
-		}
+                if (!options.playlist_is_embedded) {
+                        if (is_file_loaded && (current_file[0] != '\0')) {
+                                gtk_widget_set_sensitive(conf__fileinfo, TRUE);
+                        } else {
+                                gtk_widget_set_sensitive(conf__fileinfo, FALSE);
+                        }
+                }
 
-		gtk_menu_popup(GTK_MENU(conf_menu), NULL, NULL, NULL, NULL,
+                gtk_menu_popup(GTK_MENU(conf_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);
 	}
 
@@ -2354,43 +2475,57 @@ create_main_window(char * skin_path) {
  	fd_songinfo = pango_font_description_from_string(options.songinfo_font);
  	fd_statusbar = pango_font_description_from_string(options.statusbar_font);
 
-
         aqualung_tooltips = gtk_tooltips_new();
 
-	conf_menu = gtk_menu_new();
+        conf_menu = gtk_menu_new();
 
-	conf__options = gtk_menu_item_new_with_label(_("Settings"));
-	conf__skin = gtk_menu_item_new_with_label(_("Skin chooser"));
-	conf__jack = gtk_menu_item_new_with_label(_("JACK port setup"));
-	conf__fileinfo = gtk_menu_item_new_with_label(_("File info"));
-	conf__separator = gtk_separator_menu_item_new();
-	conf__about = gtk_menu_item_new_with_label(_("About"));
+        /* embeded playlist ? */
+        if(options.playlist_is_embedded) {
 
-	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__options);
-	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__skin);
+                init_plist_menu(conf_menu);
+                plist_menu = conf_menu;
+        }
 
-	if (output == JACK_DRIVER) {
-		gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__jack);
-	}
+        conf__options = gtk_menu_item_new_with_label(_("Settings"));
+        conf__skin = gtk_menu_item_new_with_label(_("Skin chooser"));
+        conf__jack = gtk_menu_item_new_with_label(_("JACK port setup"));
+        if(!options.playlist_is_embedded) 
+                conf__fileinfo = gtk_menu_item_new_with_label(_("File info"));
+        conf__separator = gtk_separator_menu_item_new();
+        conf__about = gtk_menu_item_new_with_label(_("About"));
 
-	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__fileinfo);
-	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__separator);
-	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__about);
+        if(options.playlist_is_embedded)
+                gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__separator);
+        gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__options);
+        gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__skin);
 
-	g_signal_connect_swapped(G_OBJECT(conf__options), "activate", G_CALLBACK(conf__options_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(conf__skin), "activate", G_CALLBACK(conf__skin_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(conf__jack), "activate", G_CALLBACK(conf__jack_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(conf__fileinfo), "activate", G_CALLBACK(conf__fileinfo_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(conf__about), "activate", G_CALLBACK(conf__about_cb), NULL);
+        if (output == JACK_DRIVER) {
+                gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__jack);
+        }
 
-	gtk_widget_set_sensitive(conf__fileinfo, FALSE);
+        if(!options.playlist_is_embedded) {
+                gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__fileinfo);
+                gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__separator);
+        }
+        gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__about);
 
-	gtk_widget_show(conf__options);
-	gtk_widget_show(conf__skin);
-	gtk_widget_show(conf__jack);
-	gtk_widget_show(conf__fileinfo);
-	gtk_widget_show(conf__separator);
-	gtk_widget_show(conf__about);
+        g_signal_connect_swapped(G_OBJECT(conf__options), "activate", G_CALLBACK(conf__options_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(conf__skin), "activate", G_CALLBACK(conf__skin_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(conf__jack), "activate", G_CALLBACK(conf__jack_cb), NULL);
+
+        g_signal_connect_swapped(G_OBJECT(conf__about), "activate", G_CALLBACK(conf__about_cb), NULL);
+
+        if(!options.playlist_is_embedded) {
+                g_signal_connect_swapped(G_OBJECT(conf__fileinfo), "activate", G_CALLBACK(conf__fileinfo_cb), NULL);
+                gtk_widget_set_sensitive(conf__fileinfo, FALSE);
+                gtk_widget_show(conf__fileinfo);
+        }
+
+        gtk_widget_show(conf__options);
+        gtk_widget_show(conf__skin);
+        gtk_widget_show(conf__jack);
+        gtk_widget_show(conf__separator);
+        gtk_widget_show(conf__about);
 
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -2463,7 +2598,6 @@ create_main_window(char * skin_path) {
 			 (gpointer)title_scrolledwin);
 	g_signal_connect(G_OBJECT(title_viewp), "motion_notify_event", G_CALLBACK(scroll_motion_notify),
 			 (gpointer)title_scrolledwin);
-
 
 	title_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(title_hbox), 1);
@@ -2601,7 +2735,6 @@ create_main_window(char * skin_path) {
         GTK_WIDGET_UNSET_FLAGS(scale_bal, GTK_CAN_FOCUS);
         GTK_WIDGET_UNSET_FLAGS(scale_pos, GTK_CAN_FOCUS);
 
-
         /* Embedded playlist */
 	if (options.playlist_is_embedded && options.buttons_at_the_bottom) {
 		playlist_window = gtk_vbox_new(FALSE, 0);
@@ -2716,6 +2849,7 @@ create_main_window(char * skin_path) {
 		gtk_box_pack_start(GTK_BOX(vbox), playlist_window, TRUE, TRUE, 3);
 	}
 
+
         if (options.enable_tooltips) {
                 gtk_tooltips_enable(aqualung_tooltips);
         } else {
@@ -2749,6 +2883,9 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	GList * glist = NULL;
 	GdkPixbuf * pixbuf = NULL;
         GdkColor color;
+        GtkTreePath * path_pl;
+	GtkTreeIter iter;
+        gint i;
 
 	srand(time(0));
 	sample_pos = 0;
@@ -2899,6 +3036,13 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
         /* change color of active song in playlist */
         if (options.override_skin_settings && (gdk_color_parse(options.activesong_color, &color) == TRUE)) {
+
+                /* sorry for this, but it's temporary workaround */
+                /* see playlist.c:1848 FIXME tag for details */
+
+                if(!color.red && !color.green && !color.blue)
+                        color.red++;
+
                 play_list->style->fg[SELECTED].red = color.red;
                 play_list->style->fg[SELECTED].green = color.green;
                 play_list->style->fg[SELECTED].blue = color.blue;
@@ -2918,6 +3062,19 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	/* set timeout function */
 	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
+
+        /* make active first row in playlist if at least one song exist */
+
+        for(i=0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
+
+        if(options.playlist_is_embedded && i) {
+                path_pl = gtk_tree_path_new_first();
+                gtk_widget_realize(play_list);
+                gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), path_pl, NULL, TRUE);
+                gtk_tree_path_free (path_pl); 
+                gtk_widget_grab_focus(GTK_WIDGET(play_list));
+        }
+
 }
 
 
@@ -4272,9 +4429,9 @@ void
 assign_playlist_fc_filters(GtkFileChooser *fc) {
 
         gchar *file_filters[] = { 
-                "Aqualung playlist (*.xml)",      "*.[xX][mM][lL]",
-                "MP3 Playlist (*.m3u)",           "*.[mM]3[uU]",
-                "Multimedia Playlist (*.pls)",    "*.[pP][lL][sS]",
+                _("Aqualung playlist (*.xml)"),      "*.[xX][mM][lL]",
+                _("MP3 Playlist (*.m3u)"),           "*.[mM]3[uU]",
+                _("Multimedia Playlist (*.pls)"),    "*.[pP][lL][sS]",
         };
 
         gint i, len;
@@ -4287,7 +4444,7 @@ assign_playlist_fc_filters(GtkFileChooser *fc) {
         /* all files filter */
         filter_1 = gtk_file_filter_new();
         gtk_file_filter_add_pattern(filter_1, "*");
-        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_1), "All Files"); 
+        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_1), _("All Files")); 
         gtk_file_chooser_add_filter(fc, filter_1);
 
         /* all playlist files filter */
@@ -4296,7 +4453,7 @@ assign_playlist_fc_filters(GtkFileChooser *fc) {
         for(i=0; i < len; i++)
                 gtk_file_filter_add_pattern(filter_2, file_filters[2*i+1]);
 
-        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), "All Playlist Files"); 
+        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), _("All Playlist Files")); 
         gtk_file_chooser_add_filter(fc, filter_2);
         gtk_file_chooser_set_filter(fc, filter_2);
 
@@ -4318,34 +4475,34 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
         gchar *file_filters_a[] = { 
 
 #ifdef HAVE_MPEG
-                "MPEG Audio (*.mp1, *.mp2, *.mp3)",     "*.[mM][pP][123]",
+                _("MPEG Audio (*.mp1, *.mp2, *.mp3)"),     "*.[mM][pP][123]",
 #endif /* HAVE_MPEG */
 
 #ifdef HAVE_FLAC
-                "Free Lossless Audio Codec (*.flac)",   "*.[fF][lL][aA][cC]",
+                _("Free Lossless Audio Codec (*.flac)"),   "*.[fF][lL][aA][cC]",
 #endif /* HAVE_FLAC */
 
 #ifdef HAVE_OGG_VORBIS
-                "Ogg Vorbis (*.ogg)",                   "*.[oO][gG][gG]",
+                _("Ogg Vorbis (*.ogg)"),                   "*.[oO][gG][gG]",
 #endif /* HAVE_OGG_VORBIS */
 
 #ifdef HAVE_SPEEX
-                "Ogg Speex (*.spx)",                    "*.[sS][pP][xX]",
+                _("Ogg Speex (*.spx)"),                    "*.[sS][pP][xX]",
 #endif /* HAVE_SPEEX */
 
 #ifdef HAVE_MPC
-                "Musepack (*.mpc)",                     "*.[mM][pP][cC]",
+                _("Musepack (*.mpc)"),                     "*.[mM][pP][cC]",
 #endif /* HAVE_MPC */
 
 #ifdef HAVE_MAC
-                "Monkey's Audio Codec (*.ape)",         "*.[aA][pP][eE]",
+                _("Monkey's Audio Codec (*.ape)"),         "*.[aA][pP][eE]",
 #endif /* HAVE_MAC */
 
         };
 
 #ifdef HAVE_MOD
         gchar *file_filters_b[] = { 
-                "Modules (*.xm, *.mod, *.it, *.s3m, ...)", "*.[xX][mM]", "*.[mM][oO][dD]", "*.[iI][tT]", 
+                _("Modules (*.xm, *.mod, *.it, *.s3m, ...)"), "*.[xX][mM]", "*.[mM][oO][dD]", "*.[iI][tT]", 
                 "*.[sS]3[mM]", "*.669", "*.[aA][mM][fF]", "*.[aA][mM][sS]", "*.[dD][bB][mM]", "*.[dD][mM][fF]", 
                 "*.[dD][sS][mM]", "*.[fF][aA][rR]", "*.[jJ]2[bB]", "*.[mM][dD][lL]", "*.[mM][eE][dD]", 
                 "*.[mM][tT]?", "*.[oO][kK][tT]", "*.[pP][sS][mM]", "*.[pP][tT][mM]", "*.[sS][tT][mM]", 
@@ -4357,7 +4514,7 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
 #ifdef HAVE_SNDFILE
         /* FIXME: this list is incomplette */
         gchar *file_filters_c[] = { 
-                "Sound Files (*.wav, *.aiff, *.au, ...)", "*.[wW][aA][vV]", "*.[aA][iI][fF]*", "*.[aA][uU]", 
+                _("Sound Files (*.wav, *.aiff, *.au, ...)"), "*.[wW][aA][vV]", "*.[aA][iI][fF]*", "*.[aA][uU]", 
                 "*.[wW]64", "*.[vV][oO][cC]", "*.[xX][iI]", "*.[hH][tT][kK]", "*.[sS][vV][xX]"
         };
 #endif /* HAVE_SNDFILE */
@@ -4390,7 +4547,7 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
         /* all files filter */
         filter_1 = gtk_file_filter_new();
         gtk_file_filter_add_pattern(filter_1, "*");
-        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_1), "All Files"); 
+        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_1), _("All Files")); 
         gtk_file_chooser_add_filter(fc, filter_1);
 
         /* all audio files filter */
@@ -4408,7 +4565,7 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
                 gtk_file_filter_add_pattern(filter_2, file_filters_c[i+1]);
 #endif /* HAVE_SNDFILE */
 
-        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), "All Audio Files"); 
+        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), _("All Audio Files")); 
         gtk_file_chooser_add_filter(fc, filter_2);
         gtk_file_chooser_set_filter(fc, filter_2);
 

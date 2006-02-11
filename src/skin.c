@@ -19,6 +19,7 @@
 */
 
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>
@@ -95,6 +96,26 @@ apply(GtkWidget * widget, gpointer data) {
 	return TRUE;
 }
 
+static gint
+skin_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
+
+	switch (kevent->keyval) {
+
+	case GDK_Escape:
+		cancel(NULL, NULL);
+		return TRUE;
+		break;
+
+        case GDK_Return:
+	case GDK_KP_Enter:
+		apply(NULL, NULL);
+                return TRUE;
+		break;
+	}
+
+	return FALSE;
+}
+
 
 void
 create_skin_window() {
@@ -123,6 +144,9 @@ create_skin_window() {
 	gtk_window_set_position(GTK_WINDOW(skin_window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(skin_window), TRUE);
         gtk_container_set_border_width(GTK_CONTAINER(skin_window), 2);
+
+        g_signal_connect(G_OBJECT(skin_window), "key_press_event",
+			 G_CALLBACK(skin_window_key_pressed), NULL);
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(skin_window), vbox);

@@ -74,6 +74,8 @@ extern GtkTreeStore * music_store;
 extern GtkTreeSelection * music_select;
 extern GtkWidget * music_tree;
 
+extern void set_sliders_width(void);
+
 GtkWidget * info_window = NULL;
 trashlist_t * fileinfo_trash = NULL;
 
@@ -100,6 +102,7 @@ dismiss(GtkWidget * widget, gpointer data) {
 	info_window = NULL;
 	trashlist_free(fileinfo_trash);
 	fileinfo_trash = NULL;
+        set_sliders_width();
 	return TRUE;
 }
 
@@ -110,6 +113,7 @@ info_window_close(GtkWidget * widget, gpointer * data) {
 	info_window = NULL;
 	trashlist_free(fileinfo_trash);
 	fileinfo_trash = NULL;
+        set_sliders_width();
 	return 0;
 }
 
@@ -301,6 +305,8 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		fprintf(stderr, "show_file_info(): meta_read() returned an error\n");
 		return;
 	}
+
+        set_sliders_width();
 
 	info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(info_window), _("File info"));

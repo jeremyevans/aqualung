@@ -62,7 +62,6 @@ extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern PangoFontDescription *fd_playlist;
 extern PangoFontDescription *fd_statusbar;
 
-
 int alt_L;
 int alt_R;
 int shift_L;
@@ -83,9 +82,9 @@ int playlist_size_x;
 int playlist_size_y;
 int playlist_on;
 int playlist_color_is_set;
+
 extern int main_size_x;
 extern int main_size_y;
-
 
 extern int drift_x;
 extern int drift_y;
@@ -152,6 +151,8 @@ GtkWidget * plist__search;
 GtkWidget * plist__send_songs_to_iriver;
 GtkWidget * plist__separator3;
 #endif /* HAVE_IFP */
+
+void init_plist_menu(GtkWidget *append_menu);
 
 char command[RB_CONTROL_SIZE];
 
@@ -482,8 +483,8 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                 }                                                
 		return TRUE;
 		break;
-	case GDK_s:
-	case GDK_S:
+	case GDK_f:
+	case GDK_F:
 		plist__search_cb(NULL);
 		return TRUE;
 		break;
@@ -551,10 +552,12 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_da
 				strncpy(fileinfo_file, pfile, MAXLEN-1);
 				free(pname);
 				free(pfile);
-				gtk_widget_set_sensitive(plist__fileinfo, TRUE);
+
+                                gtk_widget_set_sensitive(plist__fileinfo, TRUE);
 			}
 		} else {
-			gtk_widget_set_sensitive(plist__fileinfo, FALSE);
+
+                        gtk_widget_set_sensitive(plist__fileinfo, FALSE);
 		}
 
 		gtk_menu_popup(GTK_MENU(plist_menu), NULL, NULL, NULL, NULL,
@@ -1522,85 +1525,23 @@ create_playlist(void) {
 		gtk_widget_set_size_request(playlist_window, 200, 200);
 	}
 
-        g_signal_connect(G_OBJECT(playlist_window), "key_press_event",
-                         G_CALLBACK(playlist_window_key_pressed), NULL);
-        g_signal_connect(G_OBJECT(playlist_window), "key_release_event",
-                         G_CALLBACK(playlist_window_key_released), NULL);
+        if (!options.playlist_is_embedded) {
+                g_signal_connect(G_OBJECT(playlist_window), "key_press_event",
+                                 G_CALLBACK(playlist_window_key_pressed), NULL);
+                g_signal_connect(G_OBJECT(playlist_window), "key_release_event",
+                                 G_CALLBACK(playlist_window_key_released), NULL);
+        }
+
         g_signal_connect(G_OBJECT(playlist_window), "focus_out_event",
                          G_CALLBACK(playlist_window_focus_out), NULL);
 	gtk_widget_set_events(playlist_window, GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 
-        plist_menu = gtk_menu_new();
+        /* embeded playlist ? */
+        if(!options.playlist_is_embedded) {
 
-	plist__save = gtk_menu_item_new_with_label(_("Save playlist"));
-	plist__load = gtk_menu_item_new_with_label(_("Load playlist"));
-	plist__enqueue = gtk_menu_item_new_with_label(_("Enqueue playlist"));
-	plist__separator1 = gtk_separator_menu_item_new();
-	plist__rva = gtk_menu_item_new_with_label(_("Calculate RVA"));
-	plist__rva_menu = gtk_menu_new();
-	plist__rva_separate = gtk_menu_item_new_with_label(_("Separate"));
-	plist__rva_average = gtk_menu_item_new_with_label(_("Average"));
-	plist__reread_file_meta = gtk_menu_item_new_with_label(_("Reread file metadata"));
-	plist__separator2 = gtk_separator_menu_item_new();
-
-#ifdef HAVE_IFP
-	plist__send_songs_to_iriver = gtk_menu_item_new_with_label(_("Send songs to iFP device"));
-        plist__separator3 = gtk_separator_menu_item_new();
-#endif  /* HAVE_IFP */
-
-        plist__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
-	plist__search = gtk_menu_item_new_with_label(_("Search..."));
-
-	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__save);
-	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__load);
-	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__enqueue);
-	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__separator1);
-	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__rva);
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(plist__rva), plist__rva_menu);
-	gtk_menu_shell_append(GTK_MENU_SHELL(plist__rva_menu), plist__rva_separate);
-	gtk_menu_shell_append(GTK_MENU_SHELL(plist__rva_menu), plist__rva_average);
-	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__reread_file_meta);
-	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__separator2);
-
-#ifdef HAVE_IFP
-	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__send_songs_to_iriver);
-        gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__separator3);
-#endif  /* HAVE_IFP */
-
-        gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__fileinfo);
-	gtk_menu_shell_append(GTK_MENU_SHELL(plist_menu), plist__search);
-
-	g_signal_connect_swapped(G_OBJECT(plist__save), "activate", G_CALLBACK(plist__save_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(plist__load), "activate", G_CALLBACK(plist__load_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(plist__enqueue), "activate", G_CALLBACK(plist__enqueue_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(plist__rva_separate), "activate", G_CALLBACK(plist__rva_separate_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(plist__rva_average), "activate", G_CALLBACK(plist__rva_average_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(plist__reread_file_meta), "activate", G_CALLBACK(plist__reread_file_meta_cb), NULL);
-
-#ifdef HAVE_IFP
-	g_signal_connect_swapped(G_OBJECT(plist__send_songs_to_iriver), "activate", G_CALLBACK(plist__send_songs_to_iriver_cb), NULL);
-#endif  /* HAVE_IFP */
-
-        g_signal_connect_swapped(G_OBJECT(plist__fileinfo), "activate", G_CALLBACK(plist__fileinfo_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(plist__search), "activate", G_CALLBACK(plist__search_cb), NULL);
-
-	gtk_widget_show(plist__save);
-	gtk_widget_show(plist__load);
-	gtk_widget_show(plist__enqueue);
-	gtk_widget_show(plist__separator1);
-	gtk_widget_show(plist__rva);
-	gtk_widget_show(plist__rva_separate);
-	gtk_widget_show(plist__rva_average);
-	gtk_widget_show(plist__reread_file_meta);
-	gtk_widget_show(plist__separator2);
-
-#ifdef HAVE_IFP
-	gtk_widget_show(plist__send_songs_to_iriver);
-	gtk_widget_show(plist__separator3);
-#endif  /* HAVE_IFP */
-        
-	gtk_widget_show(plist__fileinfo);
-	gtk_widget_show(plist__search);
+                plist_menu = gtk_menu_new();
+                init_plist_menu(plist_menu);
+        }
 
         vbox = gtk_vbox_new(FALSE, 2);
         gtk_container_add(GTK_CONTAINER(playlist_window), vbox);
@@ -1632,11 +1573,6 @@ create_playlist(void) {
         }
 
         playlist_color_is_set = 0;
-
-	if (options.playlist_is_embedded) {
-		g_signal_connect(G_OBJECT(play_list), "key_press_event",
-				 G_CALLBACK(playlist_window_key_pressed), NULL);
-	}
 
 	for (i = 0; i < 3; i++) {
 		switch (options.plcol_idx[i]) {
@@ -2530,6 +2466,80 @@ add_to_playlist(char * filename, int enqueue) {
 	}
 
 	playlist_content_changed();
+}
+
+void
+init_plist_menu(GtkWidget *append_menu) {
+
+        plist__save = gtk_menu_item_new_with_label(_("Save playlist"));
+        plist__load = gtk_menu_item_new_with_label(_("Load playlist"));
+        plist__enqueue = gtk_menu_item_new_with_label(_("Enqueue playlist"));
+        plist__separator1 = gtk_separator_menu_item_new();
+        plist__rva = gtk_menu_item_new_with_label(_("Calculate RVA"));
+        plist__rva_menu = gtk_menu_new();
+        plist__rva_separate = gtk_menu_item_new_with_label(_("Separate"));
+        plist__rva_average = gtk_menu_item_new_with_label(_("Average"));
+        plist__reread_file_meta = gtk_menu_item_new_with_label(_("Reread file metadata"));
+        plist__separator2 = gtk_separator_menu_item_new();
+
+#ifdef HAVE_IFP
+        plist__send_songs_to_iriver = gtk_menu_item_new_with_label(_("Send songs to iFP device"));
+        plist__separator3 = gtk_separator_menu_item_new();
+#endif  /* HAVE_IFP */
+
+        plist__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
+        plist__search = gtk_menu_item_new_with_label(_("Search..."));
+
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__save);
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__load);
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__enqueue);
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__separator1);
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__rva);
+        gtk_menu_item_set_submenu(GTK_MENU_ITEM(plist__rva), plist__rva_menu);
+        gtk_menu_shell_append(GTK_MENU_SHELL(plist__rva_menu), plist__rva_separate);
+        gtk_menu_shell_append(GTK_MENU_SHELL(plist__rva_menu), plist__rva_average);
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__reread_file_meta);
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__separator2);
+
+#ifdef HAVE_IFP
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__send_songs_to_iriver);
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__separator3);
+#endif  /* HAVE_IFP */
+
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__fileinfo);
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__search);
+
+        g_signal_connect_swapped(G_OBJECT(plist__save), "activate", G_CALLBACK(plist__save_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(plist__load), "activate", G_CALLBACK(plist__load_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(plist__enqueue), "activate", G_CALLBACK(plist__enqueue_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(plist__rva_separate), "activate", G_CALLBACK(plist__rva_separate_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(plist__rva_average), "activate", G_CALLBACK(plist__rva_average_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(plist__reread_file_meta), "activate", G_CALLBACK(plist__reread_file_meta_cb), NULL);
+
+#ifdef HAVE_IFP
+        g_signal_connect_swapped(G_OBJECT(plist__send_songs_to_iriver), "activate", G_CALLBACK(plist__send_songs_to_iriver_cb), NULL);
+#endif  /* HAVE_IFP */
+
+        g_signal_connect_swapped(G_OBJECT(plist__fileinfo), "activate", G_CALLBACK(plist__fileinfo_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(plist__search), "activate", G_CALLBACK(plist__search_cb), NULL);
+
+        gtk_widget_show(plist__save);
+        gtk_widget_show(plist__load);
+        gtk_widget_show(plist__enqueue);
+        gtk_widget_show(plist__separator1);
+        gtk_widget_show(plist__rva);
+        gtk_widget_show(plist__rva_separate);
+        gtk_widget_show(plist__rva_average);
+        gtk_widget_show(plist__reread_file_meta);
+        gtk_widget_show(plist__separator2);
+
+#ifdef HAVE_IFP
+        gtk_widget_show(plist__send_songs_to_iriver);
+        gtk_widget_show(plist__separator3);
+#endif  /* HAVE_IFP */
+        
+        gtk_widget_show(plist__fileinfo);
+        gtk_widget_show(plist__search);
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

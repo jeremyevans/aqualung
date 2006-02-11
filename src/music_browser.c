@@ -193,7 +193,7 @@ struct keybinds artist_keybinds[] = {
 	{artist__volume_cb, GDK_v, GDK_V},
 	{artist__remove_cb, GDK_Delete, GDK_KP_Delete},
 	{record__add_cb, GDK_plus, GDK_KP_Add},
-	{search_cb, GDK_s, GDK_S},
+	{search_cb, GDK_f, GDK_F},
 	{NULL, 0}
 };
 
@@ -204,7 +204,7 @@ struct keybinds record_keybinds[] = {
 	{record__volume_cb, GDK_v, GDK_V},
 	{record__remove_cb, GDK_Delete, GDK_KP_Delete},
 	{track__add_cb, GDK_plus, GDK_KP_Add},
-	{search_cb, GDK_s, GDK_S},
+	{search_cb, GDK_f, GDK_F},
 	{NULL, 0}
 };
 
@@ -215,7 +215,7 @@ struct keybinds track_keybinds[] = {
 	{track__volume_cb, GDK_v, GDK_V},
 	{track__remove_cb, GDK_Delete, GDK_KP_Delete},
 	{track__fileinfo_cb, GDK_i, GDK_I},
-	{search_cb, GDK_s, GDK_S},
+	{search_cb, GDK_f, GDK_F},
 	{NULL, 0}
 };
 
@@ -226,13 +226,13 @@ struct keybinds store_keybinds[] = {
 	{store__volume_cb, GDK_v, GDK_V},
 	{store__remove_cb, GDK_Delete, GDK_KP_Delete},
 	{artist__add_cb, GDK_plus, GDK_KP_Add},
-	{search_cb, GDK_s, GDK_S},
+	{search_cb, GDK_f, GDK_F},
 	{NULL, 0}
 };
 
 struct keybinds blank_keybinds[] = {
         {store__add_cb, GDK_n, GDK_N},
-        {search_cb, GDK_s, GDK_S},
+        {search_cb, GDK_f, GDK_F},
         {NULL, 0}
 };
 

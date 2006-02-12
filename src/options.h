@@ -53,10 +53,11 @@ typedef struct {
 	int auto_save_playlist;
 	int enable_playlist_statusbar;
 	int enable_playlist_statusbar_shadow;
+	int show_songs_size_in_statusbar;
 	int show_rva_in_playlist;
 	int show_length_in_playlist;
 	int show_active_track_name_in_bold;
-	int enable_rules_hint;
+	int enable_pl_rules_hint;
 	int plcol_idx[3];
 
 	/* Music Store */
@@ -65,6 +66,7 @@ typedef struct {
 	int enable_mstore_statusbar;
 	int enable_mstore_statusbar_shadow;
 	int autoexpand_stores;
+	int enable_ms_rules_hint;
 	int cover_width;
 	int magnify_smaller_images;
 

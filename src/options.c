@@ -88,9 +88,11 @@ extern GtkWidget * statusbar_ms;
 
 int auto_save_playlist_shadow;
 int show_rva_in_playlist_shadow;
+int show_songs_size_in_statusbar_shadow;
 int show_length_in_playlist_shadow;
 int show_active_track_name_in_bold_shadow;
-int enable_rules_hint_shadow;
+int enable_pl_rules_hint_shadow;
+int enable_ms_rules_hint_shadow;
 int rva_is_enabled_shadow;
 int rva_env_shadow;
 float rva_refvol_shadow;
@@ -119,6 +121,7 @@ extern GtkListStore * play_store;
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern void disable_bold_font_in_playlist(void);
 extern void set_sliders_width(void);
+extern void playlist_selection_changed(GtkTreeSelection * sel, gpointer data);
 
 GtkWidget * options_window;
 GtkWidget * notebook;
@@ -132,9 +135,11 @@ GtkWidget * entry_param;
 GtkWidget * label_src;
 GtkWidget * check_autoplsave;
 GtkWidget * check_show_rva_in_playlist;
+GtkWidget * check_show_songs_size_in_statusbar;
 GtkWidget * check_show_length_in_playlist;
 GtkWidget * check_show_active_track_name_in_bold;
-GtkWidget * check_enable_rules_hint;
+GtkWidget * check_enable_pl_rules_hint;
+GtkWidget * check_enable_ms_rules_hint;
 GtkWidget * check_rva_is_enabled;
 GtkWidget * check_rva_use_averaging;
 GtkWidget * check_auto_use_meta_artist;
@@ -246,6 +251,7 @@ ok(GtkWidget * widget, gpointer data) {
 	strncpy(options.default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN - 1);
 	options.auto_save_playlist = auto_save_playlist_shadow;
 	options.rva_is_enabled = rva_is_enabled_shadow;
+	options.show_songs_size_in_statusbar = show_songs_size_in_statusbar_shadow;
 	options.rva_env = rva_env_shadow;
 	options.rva_refvol = rva_refvol_shadow;
 	options.rva_steepness = rva_steepness_shadow;
@@ -278,13 +284,22 @@ ok(GtkWidget * widget, gpointer data) {
                 disable_bold_font_in_playlist();
 	}
 
-	options.enable_rules_hint = enable_rules_hint_shadow;
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_rules_hint))) {
-		options.enable_rules_hint = 1;
+	options.enable_pl_rules_hint = enable_pl_rules_hint_shadow;
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_pl_rules_hint))) {
+		options.enable_pl_rules_hint = 1;
                 gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(play_list), TRUE);
 	} else {
-		options.enable_rules_hint = 0;
+		options.enable_pl_rules_hint = 0;
                 gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(play_list), FALSE);
+	}
+
+        options.enable_ms_rules_hint = enable_ms_rules_hint_shadow;
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_ms_rules_hint))) {
+		options.enable_ms_rules_hint = 1;
+                gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(music_tree), TRUE);
+	} else {
+		options.enable_ms_rules_hint = 0;
+                gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(music_tree), FALSE);
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_artist))) {
@@ -495,6 +510,10 @@ ok(GtkWidget * widget, gpointer data) {
                 override_past_state = 0;
         }
 
+        /* refresh statusbar */
+        playlist_content_changed();
+        playlist_selection_changed(NULL, NULL);
+
         current_notebook_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
 
 	gtk_widget_destroy(options_window);
@@ -581,12 +600,32 @@ check_show_active_track_name_in_bold_toggled(GtkWidget * widget, gpointer * data
 }
 
 void
-check_enable_rules_hint_toggled(GtkWidget * widget, gpointer * data) {
+check_show_songs_size_in_statusbar_toggled(GtkWidget * widget, gpointer * data) {
 
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_rules_hint))) {
-		enable_rules_hint_shadow = 1;
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_songs_size_in_statusbar))) {
+		show_songs_size_in_statusbar_shadow = 1;
 	} else {
-		enable_rules_hint_shadow = 0;
+		show_songs_size_in_statusbar_shadow = 0;
+	}
+}
+
+void
+check_enable_pl_rules_hint_toggled(GtkWidget * widget, gpointer * data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_pl_rules_hint))) {
+		enable_pl_rules_hint_shadow = 1;
+	} else {
+		enable_pl_rules_hint_shadow = 0;
+	}
+}
+
+void
+check_enable_ms_rules_hint_toggled(GtkWidget * widget, gpointer * data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_ms_rules_hint))) {
+		enable_ms_rules_hint_shadow = 1;
+	} else {
+		enable_ms_rules_hint_shadow = 0;
 	}
 }
 
@@ -1588,7 +1627,6 @@ running realtime as a default.\n"));
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_show_hidden, FALSE, FALSE, 0);
 
-
         /* "Playlist" notebook page */
 
 	vbox_pl = gtk_vbox_new(FALSE, 0);
@@ -1626,7 +1664,18 @@ running realtime as a default.\n"));
 			 G_CALLBACK(restart_active), _("Enable statusbar in playlist"));
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_playlist_statusbar, FALSE, TRUE, 3);
 
-	check_show_rva_in_playlist =
+	check_show_songs_size_in_statusbar =
+		gtk_check_button_new_with_label(_("Show songs size in statusbar"));
+	gtk_widget_set_name(check_show_songs_size_in_statusbar, "check_on_notebook");
+	if (options.show_songs_size_in_statusbar) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_songs_size_in_statusbar), TRUE);
+	}
+	show_songs_size_in_statusbar_shadow = options.show_songs_size_in_statusbar;
+	g_signal_connect(G_OBJECT(check_show_songs_size_in_statusbar), "toggled",
+			 G_CALLBACK(check_show_songs_size_in_statusbar_toggled), NULL);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_songs_size_in_statusbar, FALSE, TRUE, 3);
+
+        check_show_rva_in_playlist =
 		gtk_check_button_new_with_label(_("Show RVA values"));
 	gtk_widget_set_name(check_show_rva_in_playlist, "check_on_notebook");
 	if (options.show_rva_in_playlist) {
@@ -1659,16 +1708,16 @@ running realtime as a default.\n"));
 			 G_CALLBACK(check_show_active_track_name_in_bold_toggled), NULL);
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_active_track_name_in_bold, FALSE, TRUE, 3);
 
-	check_enable_rules_hint =
+	check_enable_pl_rules_hint =
 		gtk_check_button_new_with_label(_("Enable rules hint"));
-        gtk_widget_set_name(check_enable_rules_hint, "check_on_notebook");
-	if (options.enable_rules_hint) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_rules_hint), TRUE);
+        gtk_widget_set_name(check_enable_pl_rules_hint, "check_on_notebook");
+	if (options.enable_pl_rules_hint) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_pl_rules_hint), TRUE);
 	}
-	enable_rules_hint_shadow = options.enable_rules_hint;
-	g_signal_connect(G_OBJECT(check_enable_rules_hint), "toggled",
-			 G_CALLBACK(check_enable_rules_hint_toggled), NULL);
-	gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_rules_hint, FALSE, TRUE, 3);
+	enable_pl_rules_hint_shadow = options.enable_pl_rules_hint;
+	g_signal_connect(G_OBJECT(check_enable_pl_rules_hint), "toggled",
+			 G_CALLBACK(check_enable_pl_rules_hint_toggled), NULL);
+	gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_pl_rules_hint, FALSE, TRUE, 3);
 
         frame_plistcol = gtk_frame_new(_("Playlist column order"));
         gtk_box_pack_start(GTK_BOX(vbox_pl), frame_plistcol, FALSE, TRUE, 5);
@@ -1756,6 +1805,17 @@ to set the column order in the Playlist."));
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_expand_stores), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_ms), check_expand_stores, FALSE, FALSE, 0);
+
+	check_enable_ms_rules_hint =
+		gtk_check_button_new_with_label(_("Enable rules hint"));
+        gtk_widget_set_name(check_enable_ms_rules_hint, "check_on_notebook");
+	if (options.enable_ms_rules_hint) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_ms_rules_hint), TRUE);
+	}
+	enable_ms_rules_hint_shadow = options.enable_ms_rules_hint;
+	g_signal_connect(G_OBJECT(check_enable_ms_rules_hint), "toggled",
+			 G_CALLBACK(check_enable_ms_rules_hint_toggled), NULL);
+	gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_ms_rules_hint, FALSE, TRUE, 3);
 
 
 	frame_cart = gtk_frame_new(_("Cover art"));
@@ -2545,8 +2605,8 @@ See the About box and the documentation for details."));
 	hbuttonbox = gtk_hbutton_box_new();
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
-        gtk_box_set_spacing(GTK_BOX(hbuttonbox), 12);
-        gtk_container_set_border_width(GTK_CONTAINER(hbuttonbox), 5);
+        gtk_box_set_spacing(GTK_BOX(hbuttonbox), 8);
+        gtk_container_set_border_width(GTK_CONTAINER(hbuttonbox), 3);
 
         ok_btn = gtk_button_new_from_stock (GTK_STOCK_APPLY); 
 	g_signal_connect(ok_btn, "clicked", G_CALLBACK(ok), NULL);

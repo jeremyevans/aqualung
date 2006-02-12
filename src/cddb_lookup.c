@@ -85,8 +85,8 @@ static void
 create_progress_window(void) {
 
 	GtkWidget * vbox;
-	GtkWidget * hbox;
-	GtkWidget * sep;
+	GtkWidget * hbuttonbox;
+	GtkWidget * hseparator;
 	GtkWidget * abort_button;
 
 
@@ -94,6 +94,7 @@ create_progress_window(void) {
         gtk_window_set_title(GTK_WINDOW(progress_win), _("CDDB query"));
 	gtk_window_set_modal(GTK_WINDOW(progress_win), TRUE);
         gtk_window_set_position(GTK_WINDOW(progress_win), GTK_WIN_POS_CENTER);
+        gtk_window_resize(GTK_WINDOW(progress_win), 330, 120);
         g_signal_connect(G_OBJECT(progress_win), "delete_event",
 			 G_CALLBACK(abort_cb), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(progress_win), 10);
@@ -108,16 +109,20 @@ create_progress_window(void) {
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progbar), _("Connecting to CDDB server..."));
 	gtk_box_pack_start(GTK_BOX(vbox), progbar, FALSE, FALSE, 6);
 	
-	sep = gtk_hseparator_new();
-	gtk_box_pack_start(GTK_BOX(vbox), sep, FALSE, FALSE, 6);
+        hseparator = gtk_hseparator_new ();
+        gtk_widget_show (hseparator);
+        gtk_box_pack_start (GTK_BOX (vbox), hseparator, FALSE, TRUE, 5);
 
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, FALSE, 0);
+	hbuttonbox = gtk_hbutton_box_new();
+	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
         abort_button = gui_stock_label_button(_("Abort"), GTK_STOCK_CANCEL);
         g_signal_connect(G_OBJECT(abort_button), "clicked",
 			 G_CALLBACK(abort_cb), NULL);
-	gtk_box_pack_end(GTK_BOX(hbox), abort_button, FALSE, FALSE, 0);
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), abort_button);   
+
+        gtk_widget_grab_focus(abort_button);
 
 	gtk_widget_show_all(progress_win);
 }
@@ -596,23 +601,16 @@ cddb_timeout_callback(gpointer data) {
 
 		if (cddb_thread_state == -1) {
 			GtkWidget * dialog;
-			GtkWidget * label;
 
-			dialog = gtk_dialog_new_with_buttons(_("Warning"),
-						     GTK_WINDOW(browser_window),
-						     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-						     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-						     NULL);
+                        dialog = gtk_message_dialog_new(GTK_WINDOW(browser_window),
+                                             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                             GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, 
+                                             _("An error occurred while attempting "
+						"to connect to the CDDB server."));
 			gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 			gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 			gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 		
-
-			label = gtk_label_new(_("An error occurred while attempting "
-						"to connect to the CDDB server."));
-			gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
-			gtk_widget_show(label);
-
 			gtk_dialog_run(GTK_DIALOG(dialog));
 
 			gtk_widget_destroy(dialog);
@@ -622,22 +620,15 @@ cddb_timeout_callback(gpointer data) {
 
 			if (record_count == 0) {
 				GtkWidget * dialog;
-				GtkWidget * label;
 
-				dialog = gtk_dialog_new_with_buttons(_("Warning"),
-						     GTK_WINDOW(browser_window),
-						     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-						     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-						     NULL);
+				dialog = gtk_message_dialog_new(GTK_WINDOW(browser_window),
+		        			     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                                     GTK_MESSAGE_WARNING, GTK_BUTTONS_CLOSE, 
+                                                     _("No matching record found."));
 				gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 				gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 				gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 		
-
-				label = gtk_label_new(_("No matching record found."));
-				gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
-				gtk_widget_show(label);
-
 				gtk_dialog_run(GTK_DIALOG(dialog));
 				
 				gtk_widget_destroy(dialog);
@@ -684,3 +675,6 @@ void cddb_get() {
 }
 
 #endif /* HAVE_CDDB */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

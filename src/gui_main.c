@@ -65,6 +65,8 @@
 #include "gui_main.h"
 #include "version.h"
 
+#define DISP_COVER_WIDTH 48
+#define DISP_COVER_HEIGHT 48
 
 /* receive at most this much remote messages in one run of timeout_callback() */
 #define MAX_RCV_COUNT 32
@@ -240,7 +242,6 @@ GtkWidget * playlist_toggle;
 guint timeout_tag;
 guint vol_bal_timeout_tag = 0;
 
-
 gint timeout_callback(gpointer data);
 
 /* whether we are refreshing the scale on STATUS commands recv'd from disk thread */
@@ -291,6 +292,12 @@ void set_sliders_width(void);
 void assign_audio_fc_filters(GtkFileChooser *fc);
 void assign_playlist_fc_filters(GtkFileChooser *fc);
 
+GtkWidget * cover_image_area;
+GtkWidget * cover_viewport;
+gint cover_show_flag;
+
+void cover_update(gchar *filename);
+
 /* externs form playlist.c */
 extern void rem__sel_cb(gpointer data);
 extern void cut__sel_cb(gpointer data);
@@ -337,14 +344,26 @@ sample2time(unsigned long SR, unsigned long long sample, char * str, int sign) {
 void
 time2time(float seconds, char * str) {
 
-	int h;
+	int d, h;
 	char m, s;
 
+        d = seconds / 86400;
 	h = seconds / 3600;
 	m = seconds / 60 - h * 60;
 	s = seconds - h * 3600 - m * 60;
+        h = h - d * 24;
 
-	if (h > 0) {
+        if (d > 0) {
+                if(d == 1 && h > 9) {
+                        sprintf(str, _("%d day, %2d:%02d:%02d"), d, h, m, s);
+                } else if(d == 1 && h < 9) {
+                        sprintf(str, _("%d day, %1d:%02d:%02d"), d, h, m, s);
+                } else if(d != 1 && h > 9) {
+                        sprintf(str, _("%d days, %2d:%02d:%02d"), d, h, m, s);
+                } else {
+                        sprintf(str, _("%d days, %1d:%02d:%02d"), d, h, m, s);
+                }
+        } else if (h > 0) {
 		if (h > 9) {
 			sprintf(str, "%02d:%02d:%02d", h, m, s);
 		} else {
@@ -379,7 +398,7 @@ set_title_label(char * str) {
                         sprintf(default_title, "Aqualung %s", aqualung_version);
 			gtk_label_set_text(GTK_LABEL(label_title), default_title);
 			gtk_window_set_title(GTK_WINDOW(main_window), win_title);
-                }
+                }         
         }
 }
 
@@ -849,11 +868,20 @@ refresh_displays(void) {
 			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 0, &title_str, -1);
 			set_title_label(title_str);
 			g_free(title_str);
+                        if(is_file_loaded) {
+                                gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &title_str, -1);
+                                cover_update(title_str);
+        			g_free(title_str);
+                        }
 		} else {
 			set_title_label("");
+                        cover_show_flag = 0;
+                        gtk_widget_hide(cover_viewport);
 		}
 	} else {
 		set_title_label("");
+                cover_show_flag = 0;
+                gtk_widget_hide(cover_viewport);
 	}
 
 	set_format_label(disp_info.format_major, disp_info.format_minor);
@@ -963,7 +991,6 @@ change_skin(char * path) {
 
 	g_source_remove(timeout_tag);
 
-
 	save_window_position();
 
 	gtk_widget_destroy(main_window);
@@ -1012,6 +1039,9 @@ change_skin(char * path) {
 	gtk_widget_show_all(main_window);
 	deflicker();
 	deflicker();
+
+        cover_show_flag = 0;
+        gtk_widget_hide(cover_viewport);
 
 	if (options.playlist_is_embedded) {
 		if (!playlist_on) {
@@ -1171,24 +1201,17 @@ main_window_close(GtkWidget * widget, gpointer data) {
 
 	if (music_store_changed) {
 		GtkWidget * dialog;
-		GtkWidget * label;
-		
-		dialog = gtk_dialog_new_with_buttons(_("Warning"),
-						     GTK_WINDOW(main_window),
-						     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-						     GTK_STOCK_YES, GTK_RESPONSE_ACCEPT,
-						     GTK_STOCK_NO, GTK_RESPONSE_REJECT,
-						     NULL);
+
+                dialog = gtk_message_dialog_new(GTK_WINDOW(main_window),
+                                                GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                                GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, 
+                                                _("Music Store has been changed.\n"
+                                                "Do you want to save it before exiting?"));
 		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_YES);
 		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 		
-		label = gtk_label_new(_("Music Store has been changed.\n"
-					"Do you want to save it before exiting?"));
-		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
-		gtk_widget_show(label);
-		
-		if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+		if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
 			save_music_store();
 		}
 		
@@ -1384,7 +1407,24 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	case GDK_O:
                 create_options_window();
                 return TRUE;
-
+	case GDK_1:
+	        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_button)))
+        		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_button), FALSE);
+                else
+        		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_button), TRUE);
+                return TRUE;
+	case GDK_2:
+	        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_all_button)))
+        		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_all_button), FALSE);
+                else
+        		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_all_button), TRUE);
+                return TRUE;
+	case GDK_3:
+	        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button)))
+        		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), FALSE);
+                else
+        		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), TRUE);
+                return TRUE;
 	}
 	
 
@@ -2180,6 +2220,10 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		pthread_mutex_unlock(&disk_thread_lock);
 	}
 
+        /* hide cover */
+        cover_show_flag = 0;
+        gtk_widget_hide(cover_viewport);
+
 	return FALSE;
 }
 
@@ -2305,7 +2349,6 @@ scroll_motion_notify(GtkWidget * widget, GdkEventMotion * event, gpointer * win)
 
 	return TRUE;
 }
-
 
 void
 repeat_toggled(GtkWidget * widget, gpointer data) {
@@ -2735,6 +2778,19 @@ create_main_window(char * skin_path) {
         GTK_WIDGET_UNSET_FLAGS(scale_bal, GTK_CAN_FOCUS);
         GTK_WIDGET_UNSET_FLAGS(scale_pos, GTK_CAN_FOCUS);
 
+        /* cover display */
+
+	cover_viewport = gtk_viewport_new(NULL, NULL);
+	gtk_widget_set_size_request(cover_viewport, DISP_COVER_WIDTH, DISP_COVER_HEIGHT);
+	gtk_box_pack_start(GTK_BOX(disp_hbox), cover_viewport, FALSE, FALSE, 0);
+
+        cover_image_area = gtk_image_new();
+	gtk_widget_set_size_request(GTK_WIDGET(cover_image_area), DISP_COVER_WIDTH-4, DISP_COVER_HEIGHT-4);
+	gtk_container_add(GTK_CONTAINER(cover_viewport), cover_image_area);
+
+        /*------------------------------------------------------------------------------*/
+
+
         /* Embedded playlist */
 	if (options.playlist_is_embedded && options.buttons_at_the_bottom) {
 		playlist_window = gtk_vbox_new(FALSE, 0);
@@ -3018,6 +3074,9 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	restore_window_position();
 	gtk_widget_show_all(main_window);
 	deflicker();
+
+        cover_show_flag = 0;
+        gtk_widget_hide(cover_viewport);        /* hide cover icon */
 
 	if (options.playlist_is_embedded) {
 		if (!playlist_on) {
@@ -3537,12 +3596,16 @@ save_config(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) "auto_save_playlist", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.show_rva_in_playlist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "show_rva_in_playlist", (xmlChar *) str);
+	snprintf(str, 31, "%d", options.show_songs_size_in_statusbar);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "show_songs_size_in_statusbar", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.show_length_in_playlist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "show_length_in_playlist", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.show_active_track_name_in_bold);
         xmlNewTextChild(root, NULL, (const xmlChar *) "show_active_track_name_in_bold", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.enable_rules_hint);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_rules_hint", (xmlChar *) str);
+	snprintf(str, 31, "%d", options.enable_pl_rules_hint);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_pl_rules_hint", (xmlChar *) str);
+	snprintf(str, 31, "%d", options.enable_ms_rules_hint);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_ms_rules_hint", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", options.auto_use_meta_artist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_meta_artist", (xmlChar *) str);
@@ -3817,7 +3880,9 @@ load_config(void) {
 
         options.override_skin_settings = 0;
         options.show_active_track_name_in_bold = 1;
-        options.enable_rules_hint = 0;
+        options.show_songs_size_in_statusbar = 0;
+        options.enable_pl_rules_hint = 0;
+        options.enable_ms_rules_hint = 0;
 	options.autoexpand_stores = 1;
 
 	options.auto_save_playlist = 1;
@@ -3919,6 +3984,12 @@ load_config(void) {
 				sscanf((char *) key, "%d", &options.show_rva_in_playlist);
                         xmlFree(key);
                 }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_songs_size_in_statusbar"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf((char *) key, "%d", &options.show_songs_size_in_statusbar);
+                        xmlFree(key);
+                }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_length_in_playlist"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
@@ -3931,10 +4002,16 @@ load_config(void) {
 				sscanf((char *) key, "%d", &options.show_active_track_name_in_bold);
                         xmlFree(key);
                 }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_rules_hint"))) {
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_pl_rules_hint"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-				sscanf((char *) key, "%d", &options.enable_rules_hint);
+				sscanf((char *) key, "%d", &options.enable_pl_rules_hint);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_ms_rules_hint"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+				sscanf((char *) key, "%d", &options.enable_ms_rules_hint);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_tooltips"))) {
@@ -4602,6 +4679,74 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
         gtk_file_chooser_add_filter(fc, filter_5);
 
 #endif /* HAVE_SNDFILE */
+
+}
+
+
+void 
+cover_update(gchar *filename) {
+
+        GdkPixbuf * cover_pixbuf;
+        GdkPixbuf * cover_pixbuf_scaled;
+        GdkPixbufFormat * format;
+        gint i, k, width, height;
+        gint scaled_width, scaled_height;
+        gchar cover_filename[PATH_MAX];
+
+
+        if(strlen(filename)) {
+
+                /* create cover path */
+
+                k = strlen(filename) - 1;
+                while (filename[k--] != '/');
+
+                for (i = 0; k != -2; i++, k--)
+                        cover_filename[i] = filename[i];
+
+                cover_filename[i] = '\0';
+
+                strcat(cover_filename, "cover.jpg");
+
+                cover_pixbuf = gdk_pixbuf_new_from_file (cover_filename, NULL);
+
+                if (cover_pixbuf != NULL) {
+
+                        format = gdk_pixbuf_get_file_info(cover_filename, &width, &height);
+
+                        /* don't scale when orginal size is smaller than cover defaults */
+
+                        scaled_width =  DISP_COVER_WIDTH-4;
+                        scaled_height = DISP_COVER_HEIGHT-4;
+
+                        if (width >= height) {
+
+                                scaled_height = (height * (DISP_COVER_WIDTH-4)) / width;
+
+                        } else {
+
+                                scaled_width = (width * (DISP_COVER_HEIGHT-4)) / height;
+                        }
+
+                        cover_pixbuf_scaled = gdk_pixbuf_scale_simple (cover_pixbuf, scaled_width, scaled_height, GDK_INTERP_TILES);
+                        g_object_unref (cover_pixbuf);
+                        cover_pixbuf = cover_pixbuf_scaled;
+
+                        gtk_image_set_from_pixbuf (GTK_IMAGE(cover_image_area), cover_pixbuf);
+
+                        if(!cover_show_flag) {
+                                cover_show_flag = 1;      
+                                gtk_widget_show(cover_viewport);
+                        }
+
+                } else {
+ 
+                        cover_show_flag = 0;      
+                        gtk_widget_hide(cover_viewport);
+
+                }
+
+        }
 
 }
 

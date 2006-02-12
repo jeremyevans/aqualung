@@ -152,6 +152,8 @@ GtkWidget * plist__send_songs_to_iriver;
 GtkWidget * plist__separator3;
 #endif /* HAVE_IFP */
 
+#define MBYTES  1048576         /* bytes per MB */
+
 void init_plist_menu(GtkWidget *append_menu);
 
 char command[RB_CONTROL_SIZE];
@@ -1283,7 +1285,7 @@ void
 rem__all_cb(gpointer data) {
 
 	gtk_list_store_clear(play_store);
-	playlist_content_changed();
+        playlist_content_changed();
 }
 
 
@@ -1444,23 +1446,40 @@ playlist_selection_changed(GtkTreeSelection * sel, gpointer data) {
 	float len = 0;
 	char str[MAXLEN];
 	char time[16];
+        gchar * tstr;
+        guint songs_size;
+        struct stat statbuf;
 
 	if (!options.enable_playlist_statusbar) return;
+
+        songs_size = 0;
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
 
 		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
-			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 5, &len, -1);
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 5, &len, 1, &tstr, -1);
 			duration += len;
 			count++;
-		}
+                        if(g_stat(tstr, &statbuf) != -1) {
+                                songs_size += statbuf.st_size;
+                        }
+                        g_free(tstr);
+                }
 	}
 
 	time2time(duration, time);
 	if (count == 1) {
-		sprintf(str, _("%d track [%s] "), count, time);
+                if(options.show_songs_size_in_statusbar) {
+                        sprintf(str, _("%d track [%s] (%d MB)"), count, time, songs_size/MBYTES);
+                } else {
+                        sprintf(str, _("%d track [%s] "), count, time);
+                }
 	} else {
-		sprintf(str, _("%d tracks [%s] "), count, time);
+                if(options.show_songs_size_in_statusbar) {
+                        sprintf(str, _("%d tracks [%s] (%d MB)"), count, time, songs_size/MBYTES);
+                } else {
+                        sprintf(str, _("%d tracks [%s] "), count, time);
+                }
 	}
 
 	gtk_label_set_text(GTK_LABEL(statusbar_selected), str);
@@ -1477,19 +1496,36 @@ playlist_content_changed(void) {
 	float len = 0;
 	char str[MAXLEN];
 	char time[16];
+        gchar * tstr;
+        guint songs_size;
+        struct stat statbuf;
 
 	if (!options.enable_playlist_statusbar) return;
 
+        songs_size = 0;
+
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
-			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 5, &len, -1);
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 5, &len, 1, &tstr, -1);
 			duration += len;
+                        if(g_stat(tstr, &statbuf) != -1) {
+                                songs_size += statbuf.st_size;
+                        }
+                        g_free(tstr);
 	}
 
 	time2time(duration, time);
 	if (i == 2) {
-		sprintf(str, _("%d track [%s] "), i - 1, time);
+                if(options.show_songs_size_in_statusbar) {
+                        sprintf(str, _("%d track [%s] (%d MB)"), i - 1, time, songs_size/MBYTES);
+                } else {
+                        sprintf(str, _("%d track [%s] "), i - 1, time);
+                }
 	} else {
-		sprintf(str, _("%d tracks [%s] "), i - 1, time);
+                if(options.show_songs_size_in_statusbar) {
+                        sprintf(str, _("%d tracks [%s] (%d MB)"), i - 1, time, songs_size/MBYTES);
+                } else {
+                        sprintf(str, _("%d tracks [%s] "), i - 1, time);
+                }
 	}
 
 	gtk_label_set_text(GTK_LABEL(statusbar_total), str);
@@ -1568,7 +1604,7 @@ create_playlist(void) {
                 gtk_widget_modify_font (play_list, fd_playlist);
         }
 
-        if (options.enable_rules_hint) {
+        if (options.enable_pl_rules_hint) {
                 gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(play_list), TRUE);
         }
 

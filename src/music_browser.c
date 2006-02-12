@@ -2908,7 +2908,8 @@ set_comment_cover(GtkTextIter * iter) {
         gint width, height;
         gint d_cover_width, d_cover_height;
         gint scaled_width, scaled_height;
-
+        guchar *pixels, *p;
+        gint rowstride, channels;
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
 
@@ -3002,8 +3003,36 @@ set_comment_cover(GtkTextIter * iter) {
                                                 g_object_unref (pixbuf);
                                                 pixbuf = scaled;
 
-                                        }                                
+                                        } else {
+
+                                                scaled_width = width;
+                                                scaled_height = height;
+                                        }                               
 				}
+
+                                /* draw frame */
+
+                                channels = gdk_pixbuf_get_n_channels (pixbuf);
+                                rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+                                pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+                                /* horizontal lines */
+                                for(i=0; i<scaled_width; i++) {
+                                        p = pixels + i * channels;
+                                        p[0] = p[1] = p[2] = 0;
+                                        p = pixels + (scaled_height-1) * rowstride + i * channels;
+                                        p[0] = p[1] = p[2] = 0;
+                                }
+
+                                /* vertical lines */
+                                for(i=0; i<scaled_height; i++) {
+                                        p = pixels + i * rowstride;
+                                        p[0] = p[1] = p[2] = 0;
+                                        p = pixels + i * rowstride + (scaled_width-1) * channels;
+                                        p[0] = p[1] = p[2] = 0;
+                                }
+
+                                /* insert picture */
 
                                 gtk_text_buffer_insert_pixbuf (buffer, iter, pixbuf);
                                 gtk_text_buffer_insert (buffer, iter, "\n\n", -1);
@@ -3299,6 +3328,10 @@ create_music_browser(void) {
 
         if (options.override_skin_settings) {
                 gtk_widget_modify_font(music_tree, fd_browser);
+        }
+
+        if (options.enable_ms_rules_hint) {
+                gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(music_tree), TRUE);
         }
 
         renderer = gtk_cell_renderer_text_new();

@@ -385,7 +385,7 @@ set_title_label(char * str) {
 		if (GTK_IS_LABEL(label_title)) {
 			gtk_label_set_text(GTK_LABEL(label_title), str);
 			if (options.show_sn_title) {
-				strncpy(tmp, g_locale_from_utf8(str, -1, NULL, NULL, NULL), MAXLEN-1);
+				strncpy(tmp, str, MAXLEN-1);
 				strncat(tmp, " - ", MAXLEN-1);
 				strncat(tmp, win_title, MAXLEN-1);
 				gtk_window_set_title(GTK_WINDOW(main_window), tmp);

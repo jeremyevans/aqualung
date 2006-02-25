@@ -110,7 +110,8 @@ extern GtkWidget * play_list;
 
 extern GtkWidget * plist_menu;
 
-void init_plist_menu(GtkWidget *append_menu);
+extern void init_plist_menu(GtkWidget *append_menu);
+/*extern void get_fileinfo_filename (void);*/
 
 /* the physical name of the file that is playing, or a '\0'. */
 char current_file[MAXLEN];
@@ -384,6 +385,13 @@ set_title_label(char * str) {
 	if (is_file_loaded) {
 		if (GTK_IS_LABEL(label_title)) {
 			gtk_label_set_text(GTK_LABEL(label_title), str);
+
+                        if(options.playlist_is_embedded) {
+                                gtk_widget_set_sensitive(plist__fileinfo, TRUE);
+                                strncpy(fileinfo_name, str, MAXLEN-1);
+                                strncpy(fileinfo_file, current_file, MAXLEN-1);
+                        }
+
 			if (options.show_sn_title) {
 				strncpy(tmp, str, MAXLEN-1);
 				strncat(tmp, " - ", MAXLEN-1);
@@ -1132,7 +1140,7 @@ conf__fileinfo_cb(gpointer data) {
 
 		GtkTreeIter dummy;
 		const char * name = gtk_label_get_text(GTK_LABEL(label_title));
-	
+
 		show_file_info((char *)name, current_file, 0, NULL, dummy);
 	}
 }
@@ -2071,9 +2079,8 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 			g_signal_handler_block(G_OBJECT(play_button), play_id);
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), TRUE);
                		g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-
 		} else {
-			if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
+                        if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
                                 /* normal or repeat mode */
 				if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
                                         n = 0;
@@ -2139,7 +2146,8 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
 		send_cmd = CMD_RESUME;
 		jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
-	}
+
+        }
 
 	if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
 		pthread_cond_signal(&disk_thread_wake);
@@ -2202,6 +2210,10 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
 	g_signal_handler_unblock(G_OBJECT(play_button), play_id);
 	g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+
+        if(options.playlist_is_embedded) {
+                gtk_widget_set_sensitive(plist__fileinfo, FALSE);
+        }
 
         if (is_paused) {
                 is_paused = 0;
@@ -3124,14 +3136,17 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
         /* make active first row in playlist if at least one song exist */
 
-        for(i=0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
+        if(options.playlist_is_embedded) {
 
-        if(options.playlist_is_embedded && i) {
-                path_pl = gtk_tree_path_new_first();
-                gtk_widget_realize(play_list);
-                gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), path_pl, NULL, TRUE);
-                gtk_tree_path_free (path_pl); 
-                gtk_widget_grab_focus(GTK_WIDGET(play_list));
+                for(i=0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
+
+                        path_pl = gtk_tree_path_new_first();
+                        gtk_widget_realize(play_list);
+                        gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), path_pl, NULL, TRUE);
+                        gtk_tree_path_free (path_pl); 
+                        gtk_widget_grab_focus(GTK_WIDGET(play_list));
+                        gtk_widget_set_sensitive(plist__fileinfo, FALSE);
+
         }
 
 }

@@ -25,6 +25,7 @@
 #include <string.h>
 #include <math.h>
 #include <gtk/gtk.h>
+#include <glib/gstdio.h>
 #include <gdk/gdkkeysyms.h>
 #include <pthread.h>
 #include <libxml/xmlmemory.h>
@@ -155,6 +156,7 @@ GtkWidget * plist__separator3;
 #define MBYTES  1048576         /* bytes per MB */
 
 void init_plist_menu(GtkWidget *append_menu);
+void get_fileinfo_filename (void);
 
 char command[RB_CONTROL_SIZE];
 
@@ -557,12 +559,23 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_da
 
                                 gtk_widget_set_sensitive(plist__fileinfo, TRUE);
 			}
+
 		} else {
 
-                        gtk_widget_set_sensitive(plist__fileinfo, FALSE);
-		}
+                        if(options.playlist_is_embedded) {
+                                
+                                if (!is_file_loaded)
+                                        gtk_widget_set_sensitive(plist__fileinfo, FALSE);
 
-		gtk_menu_popup(GTK_MENU(plist_menu), NULL, NULL, NULL, NULL,
+                        } else { 
+                                
+                                gtk_widget_set_sensitive(plist__fileinfo, FALSE);
+
+                        }
+		
+                }
+
+                gtk_menu_popup(GTK_MENU(plist_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);
 		return TRUE;
 	}
@@ -2577,6 +2590,7 @@ init_plist_menu(GtkWidget *append_menu) {
         gtk_widget_show(plist__fileinfo);
         gtk_widget_show(plist__search);
 }
+
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

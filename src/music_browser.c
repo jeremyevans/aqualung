@@ -52,7 +52,7 @@ extern GtkWidget * vol_window;
 extern GtkWidget * play_list;
 extern GtkWidget * musicstore_toggle;
 
-extern GtkListStore * play_store;
+extern GtkTreeStore * play_store;
 extern GtkListStore * ms_pathlist_store;
 
 extern PangoFontDescription *fd_browser;
@@ -103,6 +103,7 @@ GtkWidget * artist__search;
 
 GtkWidget * record_menu;
 GtkWidget * record__addlist;
+GtkWidget * record__addlist_albummode;
 GtkWidget * record__separator1;
 GtkWidget * record__add;
 GtkWidget * record__edit;
@@ -1853,7 +1854,8 @@ dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data)
 
 
 void
-track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * dest, float avg_voladj, int use_avg_voladj) {
+track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * dest,
+		   float avg_voladj, int use_avg_voladj) {
 
         GtkTreeIter iter_artist;
         GtkTreeIter iter_record;
@@ -1923,9 +1925,13 @@ track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * dest, float avg_voladj,
 		meta = NULL;
 	}
 	
-	make_title_string(list_str, options.title_format,
-			  artist_name, record_name, track_name);
-	
+	if (parent != NULL) {
+		strcpy(list_str, track_name);
+	} else {
+		make_title_string(list_str, options.title_format,
+				  artist_name, record_name, track_name);
+	}
+
 	if (duration == 0.0f) {
 		duration = get_file_duration(file);
 		if (!is_store_iter_readonly(&iter_track) && duration > 0.0f) {
@@ -1961,21 +1967,23 @@ track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * dest, float avg_voladj,
 		}
 	}
 	
-	gtk_list_store_insert_before(play_store, &list_iter, dest);
+	gtk_tree_store_insert_before(play_store, &list_iter, parent, dest);
 	
 	voladj2str(voladj, voladj_str);
 	
-	gtk_list_store_set(play_store, &list_iter, 0, list_str, 1, file,
+	gtk_tree_store_set(play_store, &list_iter, 0, list_str, 1, file,
 			   2, pl_color_inactive, 3, voladj, 4, voladj_str,
 			   5, duration, 6, duration_str, -1);
 }
 
 
 void
-record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest) {
+record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode) {
 
         GtkTreeIter iter_track;
-
+	GtkTreeIter list_iter;
+	GtkTreeIter * plist_iter;
+	
 	int i;
 	int nlevels;
 
@@ -2013,9 +2021,34 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest) {
 		free(volumes);
 	}
 	
+	if (album_mode) { /* XXX */
+		char * precord_name;
+		char * partist_name;
+		char list_str[MAXLEN];
+		GtkTreeIter iter_artist;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 0, &precord_name, -1);
+		gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_artist, &iter_record);
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist, 0, &partist_name, -1);
+
+		sprintf(list_str, "%s: %s", partist_name, precord_name);
+
+		g_free(precord_name);
+		g_free(partist_name);
+
+		gtk_tree_store_insert_before(play_store, &list_iter, NULL, dest);
+		
+		gtk_tree_store_set(play_store, &list_iter, 0, list_str, 1, ""/*file*/,
+				   2, pl_color_inactive, 3, 0.0f/*voladj*/, 4, ""/*voladj_str*/,
+				   /* 5, duration, 6, duration_str,*/ -1);
+		plist_iter = &list_iter;
+	} else {
+		plist_iter = NULL;
+	}
+
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track, &iter_record, i++)) {
-		track_addlist_iter(iter_track, dest, voladj, options.rva_use_averaging);
+		track_addlist_iter(iter_track, plist_iter, dest, voladj, options.rva_use_averaging);
 	}
 }
 
@@ -2027,7 +2060,7 @@ artist_addlist_iter(GtkTreeIter iter_artist, GtkTreeIter * dest) {
 	int i = 0;
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_record, &iter_artist, i++)) {
-		record_addlist_iter(iter_record, dest);
+		record_addlist_iter(iter_record, dest, options.playlist_is_tree);
 	}
 
 }
@@ -2429,13 +2462,27 @@ artist__remove_cb(gpointer data) {
 
 
 void
+record__addlist_albummode_cb(gpointer data) {
+
+        GtkTreeIter iter_record;
+        GtkTreeModel * model;
+
+        if (gtk_tree_selection_get_selected(music_select, &model, &iter_record)) {
+		record_addlist_iter(iter_record, (GtkTreeIter *)data, 1/* true*/);
+		playlist_content_changed();
+		delayed_playlist_rearrange(100);
+	}
+}
+
+
+void
 record__addlist_cb(gpointer data) {
 
         GtkTreeIter iter_record;
         GtkTreeModel * model;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_record)) {
-		record_addlist_iter(iter_record, (GtkTreeIter *)data);
+		record_addlist_iter(iter_record, (GtkTreeIter *)data, options.playlist_is_tree);
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
 	}
@@ -2639,7 +2686,7 @@ track__addlist_cb(gpointer data) {
         GtkTreeModel * model;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
-		track_addlist_iter(iter_track, (GtkTreeIter *)data, 0.0f, 0);
+		track_addlist_iter(iter_track, NULL, (GtkTreeIter *)data, 0.0f, 0);
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
 	}
@@ -3494,6 +3541,7 @@ create_music_browser(void) {
 	/* create popup menu for record tree items */
 	record_menu = gtk_menu_new();
 	record__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
+	record__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 	record__separator1 = gtk_separator_menu_item_new();
 	record__add = gtk_menu_item_new_with_label(_("Add new record..."));
 	record__edit = gtk_menu_item_new_with_label(_("Edit record..."));
@@ -3506,6 +3554,7 @@ create_music_browser(void) {
 	record__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addlist);
+	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addlist_albummode);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator1);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__add);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__edit);
@@ -3520,6 +3569,7 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__search);
 
 	g_signal_connect_swapped(G_OBJECT(record__addlist), "activate", G_CALLBACK(record__addlist_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(record__addlist_albummode), "activate", G_CALLBACK(record__addlist_albummode_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__add), "activate", G_CALLBACK(record__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__edit), "activate", G_CALLBACK(record__edit_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__remove), "activate", G_CALLBACK(record__remove_cb), NULL);
@@ -3529,6 +3579,7 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(record__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(record__addlist);
+	gtk_widget_show(record__addlist_albummode);
 	gtk_widget_show(record__separator1);
 	gtk_widget_show(record__add);
 	gtk_widget_show(record__edit);

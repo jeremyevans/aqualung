@@ -156,6 +156,7 @@ GtkWidget * check_enable_mstore_statusbar;
 GtkWidget * check_expand_stores;
 GtkWidget * check_show_hidden;
 GtkWidget * check_playlist_is_embedded;
+GtkWidget * check_playlist_is_tree;
 GtkWidget * check_enable_playlist_statusbar;
 GtkWidget * check_buttons_at_the_bottom;
 GtkWidget * check_simple_view_in_fx;
@@ -215,8 +216,9 @@ void show_restart_info(void);
 GtkListStore * restart_list_store = NULL;
 
 
-void open_font_desc(void)
-{
+void
+open_font_desc(void) {
+
         if (fd_playlist) pango_font_description_free(fd_playlist);
 	fd_playlist = pango_font_description_from_string(options.playlist_font);
         if (fd_browser) pango_font_description_free(fd_browser);
@@ -407,6 +409,12 @@ ok(GtkWidget * widget, gpointer data) {
 		options.playlist_is_embedded_shadow = 1;
 	} else {
 	        options.playlist_is_embedded_shadow = 0;
+	}
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_playlist_is_tree))) {
+		options.playlist_is_tree_shadow = 1;
+	} else {
+	        options.playlist_is_tree_shadow = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_playlist_statusbar))) {
@@ -950,11 +958,12 @@ void show_restart_info(void) {
         gtk_widget_destroy(info_dialog);
 }
 
-void playlist_font_select(GtkWidget *widget)
-{
-gchar *s;
-GtkWidget *font_selector;
-gint response;
+void
+playlist_font_select(GtkWidget *widget) {
+
+	gchar *s;
+	GtkWidget *font_selector;
+	gint response;
 
 	font_selector = gtk_font_selection_dialog_new ("Select a font...");
 	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
@@ -1641,7 +1650,18 @@ running realtime as a default.\n"));
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_embedded, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_playlist_is_embedded), "toggled",
-						G_CALLBACK (restart_active), _("Embed playlist into main window"));
+		G_CALLBACK (restart_active), _("Embed playlist into main window"));
+
+        check_playlist_is_tree =
+		gtk_check_button_new_with_label(_("Album mode is the default when adding whole artists/records"));
+	gtk_widget_set_name(check_playlist_is_tree, "check_on_notebook");
+	if (options.playlist_is_tree_shadow) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_tree), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_tree, FALSE, TRUE, 3);
+	g_signal_connect (G_OBJECT (check_playlist_is_tree), "toggled",
+		G_CALLBACK (restart_active), _("Album mode is the default when adding whole artists/records"));
+
 	check_autoplsave =
 	    gtk_check_button_new_with_label(_("Save and restore the playlist on exit/startup"));
 	gtk_widget_set_name(check_autoplsave, "check_on_notebook");

@@ -50,6 +50,8 @@ typedef struct {
 	/* Playlist */
 	int playlist_is_embedded;
 	int playlist_is_embedded_shadow;
+	int playlist_is_tree;
+	int playlist_is_tree_shadow;
 	int auto_save_playlist;
 	int enable_playlist_statusbar;
 	int enable_playlist_statusbar_shadow;

@@ -25,8 +25,9 @@
 #include <string.h>
 #include <math.h>
 #include <gtk/gtk.h>
-#include <glib/gstdio.h>
 #include <gdk/gdkkeysyms.h>
+#include <glib.h>
+#include <glib/gstdio.h>
 #include <pthread.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
@@ -108,7 +109,7 @@ int vol_n_tracks;
 int vol_is_average;
 
 GtkWidget * play_list;
-GtkListStore * play_store = 0;
+GtkTreeStore * play_store = 0;
 GtkTreeSelection * play_select;
 GtkTreeViewColumn * track_column;
 GtkTreeViewColumn * rva_column;
@@ -156,7 +157,6 @@ GtkWidget * plist__separator3;
 #define MBYTES  1048576         /* bytes per MB */
 
 void init_plist_menu(GtkWidget *append_menu);
-void get_fileinfo_filename (void);
 
 char command[RB_CONTROL_SIZE];
 
@@ -221,7 +221,7 @@ disable_bold_font_in_playlist() {
 
 	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
 		do {
-        		gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
+        		gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
 		} while (i++, gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter));
         }
 
@@ -251,15 +251,15 @@ set_playlist_color() {
 			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 2, &str, -1);
 
 			if (strcmp(str, pl_color_active) == 0) {
-				gtk_list_store_set(play_store, &iter, 2, active, -1);
+				gtk_tree_store_set(play_store, &iter, 2, active, -1);
                                 if (options.show_active_track_name_in_bold)
-                                        gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
+                                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 				g_free(str);
                         }
 
 			if (strcmp(str, pl_color_inactive) == 0) {
-				gtk_list_store_set(play_store, &iter, 2, inactive, -1);
-				gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
+				gtk_tree_store_set(play_store, &iter, 2, inactive, -1);
+				gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
 				g_free(str);
 			}
 
@@ -274,7 +274,7 @@ set_playlist_color() {
 
 
 long
-get_playing_pos(GtkListStore * store) {
+get_playing_pos(GtkTreeStore * store) {
 
 	GtkTreeIter iter;
 	char * str;
@@ -311,14 +311,14 @@ start_playback_from_playlist(GtkTreePath * path) {
 	n = get_playing_pos(play_store);
 	if (n != -1) {
 		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-		gtk_list_store_set(play_store, &iter, 2, pl_color_inactive, -1);
-                gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
+		gtk_tree_store_set(play_store, &iter, 2, pl_color_inactive, -1);
+                gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
 	}
 	
 	gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path);
-	gtk_list_store_set(play_store, &iter, 2, pl_color_active, -1);
+	gtk_tree_store_set(play_store, &iter, 2, pl_color_active, -1);
         if (options.show_active_track_name_in_bold)
-                gtk_list_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
+                gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
 	
 	n = get_playing_pos(play_store);
 	gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
@@ -497,7 +497,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	case GDK_KP_Delete:
                 if (shift_L || shift_R) {
 
-                        gtk_list_store_clear(play_store);
+                        gtk_tree_store_clear(play_store);
 
                 } else {
 
@@ -559,23 +559,12 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_da
 
                                 gtk_widget_set_sensitive(plist__fileinfo, TRUE);
 			}
-
 		} else {
 
-                        if(options.playlist_is_embedded) {
-                                
-                                if (!is_file_loaded)
-                                        gtk_widget_set_sensitive(plist__fileinfo, FALSE);
+                        gtk_widget_set_sensitive(plist__fileinfo, FALSE);
+		}
 
-                        } else { 
-                                
-                                gtk_widget_set_sensitive(plist__fileinfo, FALSE);
-
-                        }
-		
-                }
-
-                gtk_menu_popup(GTK_MENU(plist_menu), NULL, NULL, NULL, NULL,
+		gtk_menu_popup(GTK_MENU(plist_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);
 		return TRUE;
 	}
@@ -790,7 +779,7 @@ watch_vol_calc(gpointer data) {
 			}
 
 			if (k != -1) {
-				gtk_list_store_set(play_store, &iter,
+				gtk_tree_store_set(play_store, &iter,
 						   3, voladj, 4, voladj_str, -1);
 			}
 		}
@@ -815,7 +804,7 @@ watch_vol_calc(gpointer data) {
 				
 				voladj = rva_from_volume(volumes[k], options.rva_refvol, options.rva_steepness);
 				voladj2str(voladj, voladj_str);
-				gtk_list_store_set(play_store, &iter, 3, voladj,
+				gtk_tree_store_set(play_store, &iter, 3, voladj,
 						   4, voladj_str, -1);
 			}
 		}
@@ -948,7 +937,7 @@ plist__reread_file_meta_cb(gpointer data) {
 			voladj2str(plfm->voladj, voladj_str);
 			time2time(plfm->duration, duration_str);
 			
-			gtk_list_store_set(play_store, &iter,
+			gtk_tree_store_set(play_store, &iter,
 					   0, plfm->title,
 					   1, fullname,
 					   3, plfm->voladj, 4, voladj_str,
@@ -1173,8 +1162,8 @@ add_file_to_playlist(gchar *filename) {
         voladj2str(plfm->voladj, voladj_str);
         time2time(plfm->duration, duration_str);
 
-        gtk_list_store_append(play_store, &play_iter);
-        gtk_list_store_set(play_store, &play_iter, 0, plfm->title, 1, filename,
+        gtk_tree_store_append(play_store, &play_iter, NULL);
+        gtk_tree_store_set(play_store, &play_iter, 0, plfm->title, 1, filename,
                            2, pl_color_inactive,
                            3, plfm->voladj, 4, voladj_str,
                            5, plfm->duration, 6, duration_str, 7, PANGO_WEIGHT_NORMAL, -1);
@@ -1297,7 +1286,7 @@ sel__inv_cb(gpointer data) {
 void
 rem__all_cb(gpointer data) {
 
-	gtk_list_store_clear(play_store);
+	gtk_tree_store_clear(play_store);
         playlist_content_changed();
 }
 
@@ -1311,7 +1300,7 @@ rem__sel_cb(gpointer data) {
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
 
 		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
-			gtk_list_store_remove(play_store, &iter);
+			gtk_tree_store_remove(play_store, &iter);
 			--i;
 		}
 	}
@@ -1342,7 +1331,7 @@ cut__sel_cb(gpointer data) {
 			gtk_tree_selection_select_iter(play_select, &iter);
 			
 		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
-			gtk_list_store_remove(play_store, &iter);
+			gtk_tree_store_remove(play_store, &iter);
 			--i;
 		}
 	}
@@ -1449,7 +1438,34 @@ playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event) {
 
 
 void
-playlist_selection_changed(GtkTreeSelection * sel, gpointer data) {
+playlist_child_stats(GtkTreeIter * iter, int * count, float * duration, guint * songs_size, int selected) {
+
+	int j = 0;
+	gchar * tstr;
+	struct stat statbuf;
+	GtkTreeIter iter_child;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, iter, j++)) {
+		
+		if (!selected || gtk_tree_selection_iter_is_selected(play_select, &iter_child)) {
+			
+			float len = 0;
+
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter_child, 5, &len, 1, &tstr, -1);
+			*duration += len;
+			(*count)++;
+			if (g_stat(tstr, &statbuf) != -1) {
+				*songs_size += statbuf.st_size;
+			}
+			g_free(tstr);			
+		}
+	}
+}
+
+
+/* if selected == true -> stats for selected tracks; else: all tracks */
+void
+playlist_stats(int selected) {
 
 	GtkTreeIter iter;
 	int i = 0;
@@ -1469,14 +1485,23 @@ playlist_selection_changed(GtkTreeSelection * sel, gpointer data) {
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
 
-		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
-			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 5, &len, 1, &tstr, -1);
-			duration += len;
-			count++;
-                        if(g_stat(tstr, &statbuf) != -1) {
-                                songs_size += statbuf.st_size;
-                        }
-                        g_free(tstr);
+		int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter);
+		if (n > 0) { /* album node -- count children tracks */
+			if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+				playlist_child_stats(&iter, &count, &duration, &songs_size, 0/*false*/);
+			} else {
+				playlist_child_stats(&iter, &count, &duration, &songs_size, selected);
+			}
+		} else {
+			if (!selected || gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 5, &len, 1, &tstr, -1);
+				duration += len;
+				count++;
+				if (g_stat(tstr, &statbuf) != -1) {
+					songs_size += statbuf.st_size;
+				}
+				g_free(tstr);
+			}
                 }
 	}
 
@@ -1495,53 +1520,24 @@ playlist_selection_changed(GtkTreeSelection * sel, gpointer data) {
                 }
 	}
 
-	gtk_label_set_text(GTK_LABEL(statusbar_selected), str);
+	if (selected) {
+		gtk_label_set_text(GTK_LABEL(statusbar_selected), str);
+	} else {
+		gtk_label_set_text(GTK_LABEL(statusbar_total), str);
+	}
+}
+
+void
+playlist_selection_changed(GtkTreeSelection * sel, gpointer data) {
+
+	playlist_stats(1/* true */);
 }
 
 
 void
 playlist_content_changed(void) {
 
-	GtkTreeIter iter;
-	int i = 0;
-
-	float duration = 0;
-	float len = 0;
-	char str[MAXLEN];
-	char time[16];
-        gchar * tstr;
-        guint songs_size;
-        struct stat statbuf;
-
-	if (!options.enable_playlist_statusbar) return;
-
-        songs_size = 0;
-
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
-			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 5, &len, 1, &tstr, -1);
-			duration += len;
-                        if(g_stat(tstr, &statbuf) != -1) {
-                                songs_size += statbuf.st_size;
-                        }
-                        g_free(tstr);
-	}
-
-	time2time(duration, time);
-	if (i == 2) {
-                if(options.show_songs_size_in_statusbar) {
-                        sprintf(str, _("%d track [%s] (%d MB)"), i - 1, time, songs_size/MBYTES);
-                } else {
-                        sprintf(str, _("%d track [%s] "), i - 1, time);
-                }
-	} else {
-                if(options.show_songs_size_in_statusbar) {
-                        sprintf(str, _("%d tracks [%s] (%d MB)"), i - 1, time, songs_size/MBYTES);
-                } else {
-                        sprintf(str, _("%d tracks [%s] "), i - 1, time);
-                }
-	}
-
-	gtk_label_set_text(GTK_LABEL(statusbar_total), str);
+	playlist_stats(0/*false*/);
 }
 
 void
@@ -1585,7 +1581,7 @@ create_playlist(void) {
                          G_CALLBACK(playlist_window_focus_out), NULL);
 	gtk_widget_set_events(playlist_window, GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 
-        /* embeded playlist ? */
+        /* embedded playlist? */
         if(!options.playlist_is_embedded) {
 
                 plist_menu = gtk_menu_new();
@@ -1597,7 +1593,7 @@ create_playlist(void) {
 
         /* create playlist */
 	if (!play_store) {
-		play_store = gtk_list_store_new(8,
+		play_store = gtk_tree_store_new(8,
 						G_TYPE_STRING,          /* track name */
 						G_TYPE_STRING,          /* physical filename */
 						G_TYPE_STRING,          /* color for selections */
@@ -1976,8 +1972,8 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, int sel_ok) {
 	if ((track_name[0] != '\0') && (phys_name[0] != '\0') && (color[0] != '\0')) {
 		voladj2str(voladj, voladj_str);
 		time2time(duration, duration_str);
-		gtk_list_store_append(play_store, &iter);
-		gtk_list_store_set(play_store, &iter, 0, track_name, 1, phys_name,
+		gtk_tree_store_append(play_store, &iter, NULL);
+		gtk_tree_store_set(play_store, &iter, 0, track_name, 1, phys_name,
 				   2, color, 3, voladj, 4, voladj_str,
 				   5, duration, 6, duration_str, -1);
 	} else {
@@ -2025,7 +2021,7 @@ load_playlist(char * filename, int enqueue) {
 		strcpy(pl_color_inactive, "#000000");
 
 	if (!enqueue)
-		gtk_list_store_clear(play_store);
+		gtk_tree_store_clear(play_store);
 
 	if (get_playing_pos(play_store) == -1)
 		sel_ok = 1;
@@ -2079,7 +2075,7 @@ load_m3u(char * filename, int enqueue) {
 	}
 
 	if (!enqueue)
-		gtk_list_store_clear(play_store);
+		gtk_tree_store_clear(play_store);
 
 	i = 0;
 	while ((c = fgetc(f)) != EOF) {
@@ -2164,8 +2160,8 @@ load_m3u(char * filename, int enqueue) {
 				time2time(plfm->duration, duration_str);
 				voladj2str(plfm->voladj, voladj_str);
 
-				gtk_list_store_append(play_store, &iter);
-				gtk_list_store_set(play_store, &iter,
+				gtk_tree_store_append(play_store, &iter, NULL);
+				gtk_tree_store_set(play_store, &iter,
 						   0, plfm->title,
 						   1, g_locale_to_utf8(path, -1, NULL, NULL, NULL),
 						   2, pl_color_inactive,
@@ -2219,7 +2215,7 @@ load_pls(char * filename, int enqueue) {
 	}
 
 	if (!enqueue)
-		gtk_list_store_clear(play_store);
+		gtk_tree_store_clear(play_store);
 
 	i = 0;
 	while ((c = fgetc(f)) != EOF) {
@@ -2365,8 +2361,8 @@ load_pls(char * filename, int enqueue) {
 			time2time(plfm->duration, duration_str);
 			voladj2str(plfm->voladj, voladj_str);
 
-			gtk_list_store_append(play_store, &iter);
-			gtk_list_store_set(play_store, &iter,
+			gtk_tree_store_append(play_store, &iter, NULL);
+			gtk_tree_store_set(play_store, &iter,
 					   0, plfm->title,
 					   1, g_locale_to_utf8(file, -1, NULL, NULL, NULL),
 					   2, pl_color_inactive,
@@ -2475,7 +2471,7 @@ add_to_playlist(char * filename, int enqueue) {
 
 	case 0: /* not a playlist -- load the file itself */
 		if (!enqueue)
-			gtk_list_store_clear(play_store);
+			gtk_tree_store_clear(play_store);
 
 		plfm = playlist_filemeta_get(g_locale_to_utf8(fullname, -1, NULL, NULL, NULL), NULL);
 		if (plfm == NULL) {
@@ -2486,8 +2482,8 @@ add_to_playlist(char * filename, int enqueue) {
 		voladj2str(plfm->voladj, voladj_str);
 		time2time(plfm->duration, duration_str);
 
-                gtk_list_store_append(play_store, &iter);
-                gtk_list_store_set(play_store, &iter,
+                gtk_tree_store_append(play_store, &iter, NULL);
+                gtk_tree_store_set(play_store, &iter,
 				   0, plfm->title,
 				   1, g_locale_to_utf8(fullname, -1, NULL, NULL, NULL),
 				   2, pl_color_inactive,
@@ -2590,7 +2586,6 @@ init_plist_menu(GtkWidget *append_menu) {
         gtk_widget_show(plist__fileinfo);
         gtk_widget_show(plist__search);
 }
-
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

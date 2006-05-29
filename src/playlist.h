@@ -24,7 +24,7 @@
 
 
 void voladj2str(float voladj, char * str);
-long get_playing_pos(GtkListStore * store);
+long get_playing_pos(GtkTreeStore * store);
 void delayed_playlist_rearrange(int delay);
 gint playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event);
 void create_playlist(void);

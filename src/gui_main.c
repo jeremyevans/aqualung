@@ -374,6 +374,68 @@ time2time(float seconds, char * str) {
 }
 
 
+/* pack 2 strings into one
+ * output format: 4 hex digits -> length of 1st string (N)
+ *                4 hex digits -> length of 2nd string (M)
+ *                N characters of 1st string (w/o trailing zero)
+ *                M characters of 2nd string (w/o trailing zero)
+ *                trailing zero
+ * sum: length(str1) + length(str2) + 4 + 4 + 1
+ * result should point to an area with sufficient space
+ */
+void
+pack_strings(char * str1, char * str2, char * result) {
+
+	int len1 = strlen(str1);
+	int len2 = strlen(str2);
+	char buf[5];
+
+	result[0] = '\0';
+	buf[0] = '\0';
+	sprintf(buf, "%04X", len1);
+	strcat(result, buf);
+	buf[0] = '\0';
+	sprintf(buf, "%04X", len2);
+	strcat(result, buf);
+	strcat(result, str1);
+	strcat(result, str2);
+}
+
+/* inverse of pack_strings()
+ * str1 and str2 should point to areas of sufficient space
+ */
+void
+unpack_strings(char * packed, char * str1, char * str2) {
+
+	char strlen1[5];
+	char strlen2[5];
+	int len1, len2;
+	int i;
+
+	if (strlen(packed) < 8) {
+		str1[0] = '\0';
+		str2[0] = '\0';
+		return;
+	}
+
+	strncpy(strlen1, packed, 4);
+	strlen1[5] = '\0';
+	sscanf(strlen1, "%x", &len1);
+	strncpy(strlen2, packed+4, 4);
+	strlen2[5] = '\0';
+	sscanf(strlen2, "%x", &len2);
+
+	for (i = 0; i < len1; i++) {
+		str1[i] = packed[i+8];
+	}
+	str1[i] = '\0';
+	for (i = 0; i < len2; i++) {
+		str2[i] = packed[i+len1+8];
+	}
+	str2[i] = '\0';
+}
+
+
 void
 set_title_label(char * str) {
 
@@ -854,20 +916,39 @@ refresh_time_displays(void) {
 void
 refresh_displays(void) {
 
-	long n;
+	GtkTreePath * p;
 	GtkTreeIter iter;
 	char * title_str;
 
 	refresh_time_displays();
 
 	if (play_store) {
-		n = get_playing_pos(play_store);
-		if (n != -1) {
-			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 0, &title_str, -1);
-			set_title_label(title_str);
-			g_free(title_str);
-                        if(is_file_loaded) {
+		p = get_playing_path(play_store);
+		if (p != NULL) {
+			int n = gtk_tree_path_get_depth(p);
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
+			gtk_tree_path_free(p);
+			
+			if (n > 1) { /* track under album node */
+				GtkTreeIter iter_parent;
+				char artist[MAXLEN];
+				char record[MAXLEN];
+				char list_str[MAXLEN];
+
+				gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store), &iter_parent, &iter);
+				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter_parent, 1, &title_str, -1);
+				unpack_strings(title_str, artist, record);
+				g_free(title_str);
+				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 0, &title_str, -1);
+				make_title_string(list_str, options.title_format, artist, record, title_str);
+				g_free(title_str);
+				set_title_label(list_str);				
+			} else {
+				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 0, &title_str, -1);
+				set_title_label(title_str);
+				g_free(title_str);
+			}
+                        if (is_file_loaded) {
                                 gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &title_str, -1);
                                 cover_update(title_str);
         			g_free(title_str);

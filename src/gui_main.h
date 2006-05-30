@@ -24,6 +24,9 @@
 
 void deflicker(void);
 
+void pack_strings(char * str1, char * str2, char * result);
+void unpack_strings(char * packed, char * str1, char * str2);
+
 void create_gui(int argc, char ** argv, int optind, int enqueue,
 		unsigned long rate, unsigned long rb_audio_size);
 

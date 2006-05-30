@@ -214,24 +214,49 @@ voladj2str(float voladj, char * str) {
 }
 
 void
-disable_bold_font_in_playlist() { /* XXX needs adjustment */
+disable_bold_font_in_playlist() {
 
         GtkTreeIter iter;
 	int i = 0;
 
-	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
-		do {
-        		gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
-		} while (i++, gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter));
-        }
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+		int j = 0;
+		GtkTreeIter iter_child;
 
+		gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, &iter, j++)) {
+			gtk_tree_store_set(play_store, &iter_child, 7, PANGO_WEIGHT_NORMAL, -1);
+		}
+	}
 }
 
+
 void
-set_playlist_color() { /* XXX needs adjustment */
+adjust_playlist_item_color(GtkTreeIter * piter, char * active, char * inactive) {
+
+	char * str;
+
+	gtk_tree_model_get(GTK_TREE_MODEL(play_store), piter, 2, &str, -1);
+	
+	if (strcmp(str, pl_color_active) == 0) {
+		gtk_tree_store_set(play_store, piter, 2, active, -1);
+		if (options.show_active_track_name_in_bold)
+			gtk_tree_store_set(play_store, piter, 7, PANGO_WEIGHT_BOLD, -1);
+		g_free(str);
+	}
+	
+	if (strcmp(str, pl_color_inactive) == 0) {
+		gtk_tree_store_set(play_store, piter, 2, inactive, -1);
+		gtk_tree_store_set(play_store, piter, 7, PANGO_WEIGHT_NORMAL, -1);
+		g_free(str);
+	}
+}
+
+
+void
+set_playlist_color() {
 	
 	GtkTreeIter iter;
-	char * str;
 	char active[14];
 	char inactive[14];
 	int i = 0;
@@ -246,30 +271,18 @@ set_playlist_color() { /* XXX needs adjustment */
 		play_list->style->fg[INSENSITIVE].green,
 		play_list->style->fg[INSENSITIVE].blue);
 
-	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
-		do {
-			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 2, &str, -1);
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+		int j = 0;
+		GtkTreeIter iter_child;
 
-			if (strcmp(str, pl_color_active) == 0) {
-				gtk_tree_store_set(play_store, &iter, 2, active, -1);
-                                if (options.show_active_track_name_in_bold)
-                                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
-				g_free(str);
-                        }
-
-			if (strcmp(str, pl_color_inactive) == 0) {
-				gtk_tree_store_set(play_store, &iter, 2, inactive, -1);
-				gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
-				g_free(str);
-			}
-
-		} while (i++, gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter));
-
+		adjust_playlist_item_color(&iter, active, inactive);
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, &iter, j++)) {
+			adjust_playlist_item_color(&iter_child, active, inactive);
+		}
         }
 
         strcpy(pl_color_active, active);
-	strcpy(pl_color_inactive, inactive);
-        
+	strcpy(pl_color_inactive, inactive);        
 }
 
 
@@ -1323,18 +1336,32 @@ sel__none_cb(gpointer data) {
 
 
 void
-sel__inv_cb(gpointer data) { /* XXX needs adjustment */
+invert_item_selection(GtkTreeIter * piter) {
+
+	if (gtk_tree_selection_iter_is_selected(play_select, piter)) {
+		gtk_tree_selection_unselect_iter(play_select, piter);
+	} else {
+		gtk_tree_selection_select_iter(play_select, piter);
+	}
+}
+
+
+void
+sel__inv_cb(gpointer data) {
 
 	GtkTreeIter iter;
 	int i = 0;
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
 
-		if (gtk_tree_selection_iter_is_selected(play_select, &iter))
-			gtk_tree_selection_unselect_iter(play_select, &iter);
-		else
-			gtk_tree_selection_select_iter(play_select, &iter);
-			
+		GtkTreeIter iter_child;
+		int j = 0;
+
+		invert_item_selection(&iter);
+
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, &iter, j++)) {
+			invert_item_selection(&iter_child);
+		}
 	}
 }
 
@@ -1358,6 +1385,8 @@ rem__sel_cb(gpointer data) {
 		GtkTreeIter iter_child;
 		int j = 0;
 
+		int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter);
+
 		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
 			gtk_tree_store_remove(play_store, &iter);
 			--i;
@@ -1369,6 +1398,12 @@ rem__sel_cb(gpointer data) {
 				gtk_tree_store_remove(play_store, &iter_child);
 				--j;
 			}
+		}
+
+		/* if all tracks have been removed, also remove album node */
+		if (n && gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter) == 0) {
+			gtk_tree_store_remove(play_store, &iter);
+			--i;
 		}
 	}
 
@@ -1383,26 +1418,63 @@ remove_sel(GtkWidget * widget, gpointer * data) {
 }
 
 
+/* playlist item is selected -> keep, else -> remove
+ * ret: 0 if kept, 1 if removed track
+ */
+int
+cut_track_item(GtkTreeIter * piter) {
+
+	if (!gtk_tree_selection_iter_is_selected(play_select, piter)) {
+		gtk_tree_store_remove(play_store, piter);
+		return 1;
+	}
+	return 0;
+}
+
+
+/* ret: 1 if at least one of album node's children are selected; else 0 */
+int
+any_tracks_selected(GtkTreeIter * piter) {
+
+	int j = 0;
+	GtkTreeIter iter_child;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, piter, j++)) {
+		if (gtk_tree_selection_iter_is_selected(play_select, &iter_child)) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+
 /* cut selected callback */
 void
-cut__sel_cb(gpointer data) { /* XXX needs adjustment */
+cut__sel_cb(gpointer data) {
 
 	GtkTreeIter iter;
 	int i = 0;
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
 
-		if (gtk_tree_selection_iter_is_selected(play_select, &iter))
-			gtk_tree_selection_unselect_iter(play_select, &iter);
-		else
-			gtk_tree_selection_select_iter(play_select, &iter);
-			
-		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
-			gtk_tree_store_remove(play_store, &iter);
-			--i;
+		int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter);
+
+		if (n) { /* album node */
+			if (any_tracks_selected(&iter)) {
+				int j = 0;
+				GtkTreeIter iter_child;
+				while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
+								     &iter_child, &iter, j++)) {
+					j -= cut_track_item(&iter_child);
+				}
+			} else {
+				i -= cut_track_item(&iter);
+			}
+		} else { /* track node */
+			i -= cut_track_item(&iter);
 		}
 	}
-
+	gtk_tree_selection_unselect_all(play_select);
 	playlist_content_changed();
 }
 
@@ -1925,63 +1997,85 @@ hide_playlist(void) {
 }
 
 
-void
-save_playlist(char * filename) { /* XXX needs adjustment */
+xmlNodePtr
+save_track_node(GtkTreeIter * piter, xmlNodePtr root, char * nodeID) {
 
-        int i = 0;
-        GtkTreeIter iter;
 	char * track_name;
 	char * phys_name;
 	char * color;
-        xmlDocPtr doc;
-        xmlNodePtr root;
-        xmlNodePtr node;
 	float voladj;
 	float duration;
         char str[32];
+        xmlNodePtr node;
 
+	gtk_tree_model_get(GTK_TREE_MODEL(play_store), piter,
+			   0, &track_name, 1, &phys_name, 2, &color,
+			   3, &voladj, 5, &duration, -1);
+	
+	node = xmlNewTextChild(root, NULL, (const xmlChar*) nodeID, NULL);
+	
+	xmlNewTextChild(node, NULL, (const xmlChar*) "track_name", (const xmlChar*) track_name);
+	xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) phys_name);
+	
+	/* FIXME: dont use #000000 color as active if you dont want special fx in playlist 8-) */
+	
+	if (strcmp(color, pl_color_active) == 0) {
+		strcpy(str, "yes");
+	} else {
+		strcpy(str, "no");
+	}
+	xmlNewTextChild(node, NULL, (const xmlChar*) "is_active", (const xmlChar*) str);
+	
+	snprintf(str, 31, "%f", voladj);
+	xmlNewTextChild(node, NULL, (const xmlChar*) "voladj", (const xmlChar*) str);
+	
+	snprintf(str, 31, "%f", duration);
+	xmlNewTextChild(node, NULL, (const xmlChar*) "duration", (const xmlChar*) str);
+	
+	g_free(track_name);
+	g_free(phys_name);
+	g_free(color);
+
+	return node;
+}
+
+
+void
+save_playlist(char * filename) {
+
+        int i = 0;
+        GtkTreeIter iter;
+        xmlDocPtr doc;
+        xmlNodePtr root;
 
         doc = xmlNewDoc((const xmlChar*) "1.0");
         root = xmlNewNode(NULL, (const xmlChar*) "aqualung_playlist");
         xmlDocSetRootElement(doc, root);
 
-        while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i)) {
+        while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
 
-                gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
-				   0, &track_name, 1, &phys_name, 2, &color,
-				   3, &voladj, 5, &duration, -1);
+		int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter);
 
-                node = xmlNewTextChild(root, NULL, (const xmlChar*) "track", NULL);
+		if (n) { /* album node */
+			int j = 0;
+			GtkTreeIter iter_child;
+			xmlNodePtr node;
 
-                xmlNewTextChild(node, NULL, (const xmlChar*) "track_name", (const xmlChar*) track_name);
-                xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) phys_name);
-
-                /* FIXME: dont use #000000 color as active if you dont want special fx in playlist 8-) */
-
-		if (strcmp(color, pl_color_active) == 0) {
-			strcpy(str, "yes");
-		} else {
-			strcpy(str, "no");
+			node = save_track_node(&iter, root, "record");
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
+							     &iter_child, &iter, j++)) {
+				save_track_node(&iter_child, node, "track");
+			}
+		} else { /* track node */
+			save_track_node(&iter, root, "track");
 		}
-                xmlNewTextChild(node, NULL, (const xmlChar*) "is_active", (const xmlChar*) str);
-
-		snprintf(str, 31, "%f", voladj);
-		xmlNewTextChild(node, NULL, (const xmlChar*) "voladj", (const xmlChar*) str);
-
-		snprintf(str, 31, "%f", duration);
-		xmlNewTextChild(node, NULL, (const xmlChar*) "duration", (const xmlChar*) str);
-
-		g_free(track_name);
-		g_free(phys_name);
-		g_free(color);
-                ++i;
         }
         xmlSaveFormatFile(filename, doc, 1);
 }
 
 
 void
-parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, int sel_ok) {
+parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * pparent_iter, int sel_ok) {
 
         xmlChar * key;
 	GtkTreeIter iter;
@@ -1997,6 +2091,8 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, int sel_ok) {
 	phys_name[0] = '\0';
 	color[0] = '\0';
 	
+	gtk_tree_store_append(play_store, &iter, pparent_iter);
+
         cur = cur->xmlChildrenNode;
         while (cur != NULL) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"track_name"))) {
@@ -2031,6 +2127,8 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, int sel_ok) {
 				duration = convf((char *) key);
                         }
                         xmlFree(key);
+                } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"track"))) {
+                        parse_playlist_track(doc, cur, &iter, sel_ok);
 		}
 		cur = cur->next;
 	}
@@ -2038,7 +2136,6 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, int sel_ok) {
 	if ((track_name[0] != '\0') && (phys_name[0] != '\0') && (color[0] != '\0')) {
 		voladj2str(voladj, voladj_str);
 		time2time(duration, duration_str);
-		gtk_tree_store_append(play_store, &iter, NULL);
 		gtk_tree_store_set(play_store, &iter, 0, track_name, 1, phys_name,
 				   2, color, 3, voladj, 4, voladj_str,
 				   5, duration, 6, duration_str, -1);
@@ -2049,7 +2146,7 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, int sel_ok) {
 
 
 void
-load_playlist(char * filename, int enqueue) { /* XXX needs adjustment */
+load_playlist(char * filename, int enqueue) {
 
         xmlDocPtr doc;
         xmlNodePtr cur;
@@ -2095,7 +2192,10 @@ load_playlist(char * filename, int enqueue) { /* XXX needs adjustment */
         cur = cur->xmlChildrenNode;
         while (cur != NULL) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"track"))) {
-                        parse_playlist_track(doc, cur, sel_ok);
+                        parse_playlist_track(doc, cur, NULL, sel_ok);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"record"))) {
+                        parse_playlist_track(doc, cur, NULL, sel_ok);
                 }
                 cur = cur->next;
         }

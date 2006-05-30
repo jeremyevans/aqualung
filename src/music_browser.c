@@ -1379,7 +1379,8 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 }
 
 
-void use_rva_check_button_cb(GtkWidget * widget, gpointer data) {
+void
+use_rva_check_button_cb(GtkWidget * widget, gpointer data) {
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
 		gtk_widget_set_sensitive((GtkWidget *)data, TRUE);
@@ -2023,23 +2024,25 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 		free(volumes);
 	}
 	
-	if (album_mode) { /* XXX incomplete */
+	if (album_mode) { /* XXX incomplete (duration etc.) */
 		char * precord_name;
 		char * partist_name;
-		char list_str[MAXLEN];
+		char name_str[MAXLEN];
+		char packed_str[MAXLEN];
 		GtkTreeIter iter_artist;
 
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 0, &precord_name, -1);
 		gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_artist, &iter_record);
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist, 0, &partist_name, -1);
 
-		sprintf(list_str, "%s: %s", partist_name, precord_name);
+		sprintf(name_str, "%s: %s", partist_name, precord_name);
+		pack_strings(partist_name, precord_name, packed_str);
 
 		g_free(precord_name);
 		g_free(partist_name);
 
 		gtk_tree_store_insert_before(play_store, &list_iter, NULL, dest);		
-		gtk_tree_store_set(play_store, &list_iter, 0, list_str, 1, ""/*file*/,
+		gtk_tree_store_set(play_store, &list_iter, 0, name_str, 1, packed_str,
 				   2, pl_color_inactive, 3, 0.0f/*voladj*/, 4, ""/*voladj_str*/,
 				   /* 5, duration, 6, duration_str,*/ -1);
 		plist_iter = &list_iter;

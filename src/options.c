@@ -1653,14 +1653,14 @@ running realtime as a default.\n"));
 		G_CALLBACK (restart_active), _("Embed playlist into main window"));
 
         check_playlist_is_tree =
-		gtk_check_button_new_with_label(_("Album mode is the default when adding whole artists/records"));
+		gtk_check_button_new_with_label(_("Album mode is the default when adding entire records"));
 	gtk_widget_set_name(check_playlist_is_tree, "check_on_notebook");
 	if (options.playlist_is_tree_shadow) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_tree), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_tree, FALSE, TRUE, 3);
 	g_signal_connect (G_OBJECT (check_playlist_is_tree), "toggled",
-		G_CALLBACK (restart_active), _("Album mode is the default when adding whole artists/records"));
+		G_CALLBACK (restart_active), _("Album mode is the default when adding entire records"));
 
 	check_autoplsave =
 	    gtk_check_button_new_with_label(_("Save and restore the playlist on exit/startup"));

@@ -299,7 +299,7 @@ gint cover_show_flag;
 void cover_update(gchar *filename);
 
 /* externs form playlist.c */
-extern void rem__sel_cb(gpointer data);
+extern void clear_playlist_selection(void);
 extern void cut__sel_cb(gpointer data);
 extern void plist__search_cb(gpointer data);
 extern void direct_add(GtkWidget * widget, gpointer * data);
@@ -315,7 +315,6 @@ extern GtkTreeSelection * play_select;
 
 void
 deflicker(void) {
-
 	while (g_main_context_iteration(NULL, FALSE));
 }
 
@@ -1246,9 +1245,6 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	GtkTreeIter iter;
 	char * pname;
 	char * pfile;
-        gboolean k;
-
-	int i;
 
 	switch (event->keyval) {
 	case GDK_Alt_L:
@@ -1484,34 +1480,14 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
                 case GDK_Delete:
                 case GDK_KP_Delete:
                         if (shift_L || shift_R) {
-
                                 gtk_tree_store_clear(play_store);
-
                         } else {
-
-                                i = 0;
-                                do {
-                                        k = gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++);
-                                } while (k && !gtk_tree_selection_iter_is_selected(play_select, &iter));
-
-                                if (k) {
-
-                                        path = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), &iter);
-
-                                        rem__sel_cb(NULL);
-
-                                        gtk_tree_selection_select_path(play_select, path);
-                                        gtk_tree_view_set_cursor(GTK_TREE_VIEW(play_list), path, NULL, FALSE);
-
-                                }
+				clear_playlist_selection();
                         }
-
                         return TRUE;
                         break;
                 }
-
         }
-
 	return FALSE;
 }
 
@@ -2522,9 +2498,8 @@ create_main_window(char * skin_path) {
 
         conf_menu = gtk_menu_new();
 
-        /* embeded playlist ? */
-        if(options.playlist_is_embedded) {
-
+        /* embedded playlist? */
+        if (options.playlist_is_embedded) {
                 init_plist_menu(conf_menu);
                 plist_menu = conf_menu;
         }

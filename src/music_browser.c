@@ -89,8 +89,24 @@ GtkWidget * statusbar_ms;
 
 
 /* popup menus for tree items */
+GtkWidget * store_menu;
+GtkWidget * store__addlist;
+GtkWidget * store__addlist_albummode;
+GtkWidget * store__separator1;
+GtkWidget * store__add;
+GtkWidget * store__edit;
+GtkWidget * store__remove;
+GtkWidget * store__separator2;
+GtkWidget * store__addart;
+GtkWidget * store__separator3;
+GtkWidget * store__volume;
+GtkWidget * store__search;
+GtkWidget * store__separator4;
+GtkWidget * store__save;
+
 GtkWidget * artist_menu;
 GtkWidget * artist__addlist;
+GtkWidget * artist__addlist_albummode;
 GtkWidget * artist__separator1;
 GtkWidget * artist__add;
 GtkWidget * artist__edit;
@@ -126,20 +142,6 @@ GtkWidget * track__fileinfo;
 GtkWidget * track__separator3;
 GtkWidget * track__volume;
 GtkWidget * track__search;
-
-GtkWidget * store_menu;
-GtkWidget * store__addlist;
-GtkWidget * store__separator1;
-GtkWidget * store__add;
-GtkWidget * store__edit;
-GtkWidget * store__remove;
-GtkWidget * store__separator2;
-GtkWidget * store__addart;
-GtkWidget * store__separator3;
-GtkWidget * store__volume;
-GtkWidget * store__search;
-GtkWidget * store__separator4;
-GtkWidget * store__save;
 
 GtkWidget * blank_menu;
 GtkWidget * blank__add;
@@ -2021,7 +2023,7 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 		free(volumes);
 	}
 	
-	if (album_mode) { /* XXX */
+	if (album_mode) { /* XXX incomplete */
 		char * precord_name;
 		char * partist_name;
 		char list_str[MAXLEN];
@@ -2036,8 +2038,7 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 		g_free(precord_name);
 		g_free(partist_name);
 
-		gtk_tree_store_insert_before(play_store, &list_iter, NULL, dest);
-		
+		gtk_tree_store_insert_before(play_store, &list_iter, NULL, dest);		
 		gtk_tree_store_set(play_store, &list_iter, 0, list_str, 1, ""/*file*/,
 				   2, pl_color_inactive, 3, 0.0f/*voladj*/, 4, ""/*voladj_str*/,
 				   /* 5, duration, 6, duration_str,*/ -1);
@@ -2054,31 +2055,46 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 
 
 void
-artist_addlist_iter(GtkTreeIter iter_artist, GtkTreeIter * dest) {
+artist_addlist_iter(GtkTreeIter iter_artist, GtkTreeIter * dest, int album_mode) {
 
 	GtkTreeIter iter_record;
 	int i = 0;
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_record, &iter_artist, i++)) {
-		record_addlist_iter(iter_record, dest, options.playlist_is_tree);
+		record_addlist_iter(iter_record, dest, album_mode);
 	}
 
 }
 
 
 void
-store_addlist_iter(GtkTreeIter iter_store, GtkTreeIter * dest) {
+store_addlist_iter(GtkTreeIter iter_store, GtkTreeIter * dest, int album_mode) {
 
 	GtkTreeIter iter_artist;
 	int i = 0;
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, &iter_store, i++)) {
-		artist_addlist_iter(iter_artist, dest);
+		artist_addlist_iter(iter_artist, dest, album_mode);
 	}
 }
 
 
 /****************************************/
+
+
+void
+store__addlist_albummode_cb(gpointer data) {
+
+        GtkTreeIter iter_store;
+        GtkTreeModel * model;
+
+
+        if (gtk_tree_selection_get_selected(music_select, &model, &iter_store)) {
+		store_addlist_iter(iter_store, (GtkTreeIter *)data, 1/*true*/);
+		playlist_content_changed();
+		delayed_playlist_rearrange(100);
+	}
+}
 
 
 void
@@ -2089,7 +2105,7 @@ store__addlist_cb(gpointer data) {
 
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_store)) {
-		store_addlist_iter(iter_store, (GtkTreeIter *)data);
+		store_addlist_iter(iter_store, (GtkTreeIter *)data, options.playlist_is_tree);
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
 	}
@@ -2298,13 +2314,27 @@ store__save_cb(gpointer data) {
 
 
 void
+artist__addlist_albummode_cb(gpointer data) {
+
+        GtkTreeIter iter_artist;
+        GtkTreeModel * model;
+
+        if (gtk_tree_selection_get_selected(music_select, &model, &iter_artist)) {
+		artist_addlist_iter(iter_artist, (GtkTreeIter *)data, 1/*true*/);
+		playlist_content_changed();
+		delayed_playlist_rearrange(100);
+	}
+}
+
+
+void
 artist__addlist_cb(gpointer data) {
 
         GtkTreeIter iter_artist;
         GtkTreeModel * model;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_artist)) {
-		artist_addlist_iter(iter_artist, (GtkTreeIter *)data);
+		artist_addlist_iter(iter_artist, (GtkTreeIter *)data, options.playlist_is_tree);
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
 	}
@@ -3448,6 +3478,7 @@ create_music_browser(void) {
 	/* create popup menu for music store tree items */
 	store_menu = gtk_menu_new();
 	store__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
+	store__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 	store__separator1 = gtk_separator_menu_item_new();
 	store__add = gtk_menu_item_new_with_label(_("Add new store..."));
 	store__edit = gtk_menu_item_new_with_label(_("Edit store..."));
@@ -3461,6 +3492,7 @@ create_music_browser(void) {
 	store__save = gtk_menu_item_new_with_label(_("Save Music Store"));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__addlist);
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__addlist_albummode);
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__separator1);
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__add);
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__edit);
@@ -3474,6 +3506,7 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__save);
 
 	g_signal_connect_swapped(G_OBJECT(store__addlist), "activate", G_CALLBACK(store__addlist_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(store__addlist_albummode), "activate", G_CALLBACK(store__addlist_albummode_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(store__add), "activate", G_CALLBACK(store__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(store__edit), "activate", G_CALLBACK(store__edit_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(store__remove), "activate", G_CALLBACK(store__remove_cb), NULL);
@@ -3483,6 +3516,7 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(store__save), "activate", G_CALLBACK(store__save_cb), NULL);
 
 	gtk_widget_show(store__addlist);
+	gtk_widget_show(store__addlist_albummode);
 	gtk_widget_show(store__separator1);
 	gtk_widget_show(store__add);
 	gtk_widget_show(store__edit);
@@ -3498,6 +3532,7 @@ create_music_browser(void) {
 	/* create popup menu for artist tree items */
 	artist_menu = gtk_menu_new();
 	artist__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
+	artist__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 	artist__separator1 = gtk_separator_menu_item_new();
 	artist__add = gtk_menu_item_new_with_label(_("Add new artist..."));
 	artist__edit = gtk_menu_item_new_with_label(_("Edit artist..."));
@@ -3509,6 +3544,7 @@ create_music_browser(void) {
 	artist__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__addlist);
+	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__addlist_albummode);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__separator1);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__add);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__edit);
@@ -3520,6 +3556,7 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__search);
 
 	g_signal_connect_swapped(G_OBJECT(artist__addlist), "activate", G_CALLBACK(artist__addlist_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(artist__addlist_albummode), "activate", G_CALLBACK(artist__addlist_albummode_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__add), "activate", G_CALLBACK(artist__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__edit), "activate", G_CALLBACK(artist__edit_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__remove), "activate", G_CALLBACK(artist__remove_cb), NULL);
@@ -3528,6 +3565,7 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(artist__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(artist__addlist);
+	gtk_widget_show(artist__addlist_albummode);
 	gtk_widget_show(artist__separator1);
 	gtk_widget_show(artist__add);
 	gtk_widget_show(artist__edit);

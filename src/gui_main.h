@@ -22,6 +22,11 @@
 #ifndef _GUI_MAIN_H
 #define _GUI_MAIN_H
 
+
+#define PLAY  1
+#define PAUSE 2
+
+
 void deflicker(void);
 
 void pack_strings(char * str1, char * str2, char * result);

@@ -2044,7 +2044,7 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 		gtk_tree_store_insert_before(play_store, &list_iter, NULL, dest);		
 		gtk_tree_store_set(play_store, &list_iter, 0, name_str, 1, packed_str,
 				   2, pl_color_inactive, 3, 0.0f/*voladj*/, 4, ""/*voladj_str*/,
-				   /* 5, duration, 6, duration_str,*/ -1);
+				   5, 0.0f/*duration*/, 6, "00:00"/*duration_str*/, -1);
 		plist_iter = &list_iter;
 	} else {
 		plist_iter = NULL;

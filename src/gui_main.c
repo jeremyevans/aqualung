@@ -1907,99 +1907,389 @@ scale_bal_button_release_event(GtkWidget * widget, GdkEventButton * event) {
 }
 
 
+/******** Cue functions *********/
+
+void
+try_waking_disk_thread(void) {
+
+	if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
+		pthread_cond_signal(&disk_thread_wake);
+		pthread_mutex_unlock(&disk_thread_lock);
+	}
+}
+
+
+void
+toggle_noeffect(int id, int state) {
+	switch (id) {
+	case PLAY:
+		g_signal_handler_block(G_OBJECT(play_button), play_id);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), state);
+		g_signal_handler_unblock(G_OBJECT(play_button), play_id);
+		break;
+	case PAUSE:
+		g_signal_handler_block(G_OBJECT(pause_button), pause_id);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), state);
+		g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+		break;
+	default:
+		printf("error in gui_main.c/toggle_without_effect(): unknown id value %d\n", id);
+		break;
+	}
+}
+
+
+void
+mark_track(GtkTreeIter * piter) {
+
+	gtk_tree_store_set(play_store, piter, 2, pl_color_active, -1);
+	if (options.show_active_track_name_in_bold) {
+		gtk_tree_store_set(play_store, piter, 7, PANGO_WEIGHT_BOLD, -1);
+	}
+}
+
+
+void
+unmark_track(GtkTreeIter * piter) {
+
+	gtk_tree_store_set(play_store, piter, 2, pl_color_inactive, -1);
+	gtk_tree_store_set(play_store, piter, 7, PANGO_WEIGHT_NORMAL, -1);
+}
+
+
+void
+cue_track_for_playback(GtkTreeIter * piter, cue_t * cue) {
+
+	char * str;
+
+	gtk_tree_model_get(GTK_TREE_MODEL(play_store), piter, 1, &str, 3, &(cue->voladj), -1);
+	cue->filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+	strncpy(current_file, str, MAXLEN-1);
+	g_free(str);
+}
+
+
+/* retcode for choose_X_track(): 1->success, 0->empty list */
+int
+choose_first_track(GtkTreeIter * piter) {
+
+	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), piter)) {
+		if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), piter)) {
+			GtkTreeIter iter_parent = *piter;
+			gtk_tree_model_iter_children(GTK_TREE_MODEL(play_store), piter, &iter_parent);
+		}
+		return 1;
+	}
+	return 0;
+}
+
+
+/* get first or last child iter */
+void
+get_child_iter(GtkTreeIter * piter, int first) {
+	
+	GtkTreeIter iter;
+	if (first) {
+		gtk_tree_model_iter_children(GTK_TREE_MODEL(play_store), &iter, piter);
+	} else {
+		int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), piter);
+		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, piter, n-1);
+	}
+	*piter = iter;
+}
+
+
+int
+choose_prev_track(GtkTreeIter * piter) {
+
+	GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), piter);
+
+ try_again_prev:
+	if (gtk_tree_path_prev(p)) {
+		if (gtk_tree_path_get_depth(p) == 1) { /* toplevel */
+			GtkTreeIter iter;
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
+			if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), &iter)) {
+				get_child_iter(&iter, 0/* last */);
+			}
+			*piter = iter;
+		} else {
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), piter, p);
+		}
+		gtk_tree_path_free(p);
+		return 1;
+	} else {
+		if (gtk_tree_path_get_depth(p) == 1) { /* toplevel */
+			GtkTreeIter iter;
+			int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
+			if (n) {
+				gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n-1);
+				if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), &iter)) {
+					get_child_iter(&iter, 0/* last */);
+				}
+				*piter = iter;
+				gtk_tree_path_free(p);
+				return 1;
+			} else {
+				gtk_tree_path_free(p);
+				return 0;
+			}
+		} else {
+			gtk_tree_path_up(p);
+			goto try_again_prev;
+		}
+	}
+}
+
+
+int
+choose_next_track(GtkTreeIter * piter) {
+
+ try_again_next:
+	if (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), piter)) {
+		GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), piter);
+		if (gtk_tree_path_get_depth(p) == 1) { /* toplevel */
+			if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), piter)) {
+				get_child_iter(piter, 1/* first */);
+			}
+		}
+		gtk_tree_path_free(p);
+		return 1;
+	} else {
+		GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), piter);
+		if (gtk_tree_path_get_depth(p) == 1) { /* toplevel */
+			int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
+			if (n) {
+				gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), piter);
+				if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), piter)) {
+					get_child_iter(piter, 1/* first */);
+				}
+				gtk_tree_path_free(p);
+				return 1;
+			} else {
+				gtk_tree_path_free(p);
+				return 0;
+			}
+		} else {
+			gtk_tree_path_up(p);
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), piter, p);
+			gtk_tree_path_free(p);
+			goto try_again_next;
+		}		
+	}
+}
+
+
+/* simpler case than choose_next_track(); no support for wrap-around at end of list.
+ * used by the timeout callback for track flow-through */
+int
+choose_adjacent_track(GtkTreeIter * piter) {
+
+ try_again_adjacent:
+	if (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), piter)) {
+		GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), piter);
+		if (gtk_tree_path_get_depth(p) == 1) { /* toplevel */
+			if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), piter)) {
+				get_child_iter(piter, 1/* first */);
+			}
+		}
+		gtk_tree_path_free(p);
+		return 1;
+	} else {
+		GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), piter);
+		if (gtk_tree_path_get_depth(p) == 1) { /* toplevel */
+			gtk_tree_path_free(p);
+			return 0;
+		} else {
+			gtk_tree_path_up(p);
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), piter, p);
+			gtk_tree_path_free(p);
+			goto try_again_adjacent;
+		}		
+	}
+}
+
+
+/* also used to pick the track numbered n_stop in the flattened tree */
+long
+count_playlist_tracks(GtkTreeIter * piter, long n_stop) {
+
+	GtkTreeIter iter;
+	long i = 0;
+	long n = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+		long c = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter);
+		long d = c;
+		if (!c) ++c;
+		if (n_stop > -1) {
+			if (n_stop > c) {
+				n_stop -= c;
+			} else {
+				if (d) {
+					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
+								      piter, &iter, n_stop-1);
+					return 0;
+				} else {
+					*piter = iter;
+					return 0;
+				}
+			}
+		}
+		n += c;
+	}
+	return n;
+}
+
+
+int
+random_toplevel_item(GtkTreeIter * piter) {
+
+	long n_items;
+	long n;
+
+	n_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
+	if (!n_items) {
+		return 0;
+	}
+
+	n = (double)rand() * n_items / RAND_MAX;
+	if (n == n_items)
+		--n;
+	
+	gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), piter, NULL, n);
+	return 1;
+}
+
+
+int
+random_first_track(GtkTreeIter * piter) {
+
+	if (random_toplevel_item(piter)) {
+		if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), piter)) {
+			get_child_iter(piter, 1/* first */);
+		}
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+
+int
+choose_random_track(GtkTreeIter * piter) {
+
+	long n_items;
+	long n;
+
+	if (options.album_shuffle_mode) {
+		if (gtk_tree_store_iter_is_valid(play_store, piter)) {
+			int d = gtk_tree_store_iter_depth(play_store, piter);
+			if (d) {
+				if (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), piter)) {
+					return 1;
+				}
+			}
+		}
+		return random_first_track(piter);
+	} else {
+		n_items = count_playlist_tracks(NULL, -1);
+		if (n_items) {
+			n = (double)rand() * n_items / RAND_MAX;
+			if (n == n_items)
+				--n;
+			count_playlist_tracks(piter, n+1);
+			return 1;
+		}
+		return 0;
+	}
+}
+
+
+void
+prepare_playback(GtkTreeIter * piter, cue_t * pcue) {
+
+	mark_track(piter);
+	cue_track_for_playback(piter, pcue);
+	is_file_loaded = 1;
+	toggle_noeffect(PLAY, TRUE);
+}
+
+
+void
+unprepare_playback(void) {
+	
+	is_file_loaded = 0;
+	current_file[0] = '\0';
+	zero_displays();
+	toggle_noeffect(PLAY, FALSE);
+}
+
+
 gint
 prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	GtkTreeIter iter;
-	long n;
-	long n_items;
+	GtkTreePath * p;
 	char cmd;
 	cue_t cue;
-	char * str;
 
 	if (!allow_seeks)
 		return FALSE;
 
 	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
 		/* normal or repeat mode */
-		n = get_playing_pos(play_store);
-		if (n != -1) {
-			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-			gtk_tree_store_set(play_store, &iter, 2, pl_color_inactive, -1);
-                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
-			if (n == 0)
-				n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
-			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n-1);
-			gtk_tree_store_set(play_store, &iter, 2, pl_color_active, -1);
-                        if (options.show_active_track_name_in_bold)
-                                gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
-			
+		p = get_playing_path(play_store);
+		if (p != NULL) {
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
+			gtk_tree_path_free(p);
+			unmark_track(&iter);
+			if (choose_prev_track(&iter)) {
+				mark_track(&iter);
+			}
 		} else {
-			if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
-				gtk_tree_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                if (options.show_active_track_name_in_bold)
-                                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
+			if (choose_first_track(&iter)) {
+				mark_track(&iter);
 			}
 		}
 	} else {
 		/* shuffle mode */
-		n = get_playing_pos(play_store);
-		if (n != -1) {
-			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-			gtk_tree_store_set(play_store, &iter, 2, pl_color_inactive, -1);
-                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
+		p = get_playing_path(play_store);
+		if (p != NULL) {
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
+			gtk_tree_path_free(p);
+			unmark_track(&iter);
 		}
-		n_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
-		if (n_items) {
-			n = (double)rand() * n_items / RAND_MAX;
-			if (n == n_items)
-				--n;
-			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-			gtk_tree_store_set(play_store, &iter, 2, pl_color_active, -1);
-                        if (options.show_active_track_name_in_bold)
-                                gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
+		if (choose_random_track(&iter)) {
+			mark_track(&iter);
 		}
 	}
 
 	if (is_file_loaded) {
-
-		if ((n = get_playing_pos(play_store)) == -1) {
-
+		if ((p = get_playing_path(play_store)) == NULL) {
 			if (is_paused) {
-
 				is_paused = 0;
-				g_signal_handler_block(G_OBJECT(pause_button), pause_id);
-				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
-				g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
-
+				toggle_noeffect(PAUSE, FALSE);
 				stop_event(NULL, NULL, NULL);
 			}
-
 			return FALSE;
 		}
 
-		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-		gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, 3, &(cue.voladj), -1);
-		cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-		strncpy(current_file, str, MAXLEN-1);
-		g_free(str);
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
+		gtk_tree_path_free(p);
+		cue_track_for_playback(&iter, &cue);
 
 		if (is_paused) {
 			is_paused = 0;
-			g_signal_handler_block(G_OBJECT(pause_button), pause_id);
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
-			g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+			toggle_noeffect(PAUSE, FALSE);
+			toggle_noeffect(PLAY, TRUE);
 		}
 
 		cmd = CMD_CUE;
 		jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
 		jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
-		if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-			pthread_cond_signal(&disk_thread_wake);
-			pthread_mutex_unlock(&disk_thread_lock);
-		}
+		try_waking_disk_thread();
 	}
-
 	return FALSE;
 }
 
@@ -2008,95 +2298,66 @@ gint
 next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	GtkTreeIter iter;
-	long n;
-	long n_items;
+	GtkTreePath * p;
 	char cmd;
 	cue_t cue;
-	char * str;
 
 	if (!allow_seeks)
 		return FALSE;
 
 	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
 		/* normal or repeat mode */
-		n = get_playing_pos(play_store);
-		if (n != -1) {
-			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-			gtk_tree_store_set(play_store, &iter, 2, pl_color_inactive, -1);
-                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
-			if (n == (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL) - 1))
-				n = -1;
-			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n+1);
-			gtk_tree_store_set(play_store, &iter, 2, pl_color_active, -1);
-                        if (options.show_active_track_name_in_bold)
-                                gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
-			
+		p = get_playing_path(play_store);
+		if (p != NULL) {
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
+			gtk_tree_path_free(p);
+			unmark_track(&iter);
+			if (choose_next_track(&iter)) {
+				mark_track(&iter);
+			}
 		} else {
-			if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
-				gtk_tree_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                if (options.show_active_track_name_in_bold)
-                                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
+			if (choose_first_track(&iter)) {
+				mark_track(&iter);
 			}
 		}
 	} else {
 		/* shuffle mode */
-		n = get_playing_pos(play_store);
-		if (n != -1) {
-			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-			gtk_tree_store_set(play_store, &iter, 2, pl_color_inactive, -1);
-                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
+		p = get_playing_path(play_store);
+		if (p != NULL) {
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
+			gtk_tree_path_free(p);
+			unmark_track(&iter);
 		}
-		n_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
-		if (n_items) {
-			n = (double)rand() * n_items / RAND_MAX;
-			if (n == n_items)
-				--n;
-			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-			gtk_tree_store_set(play_store, &iter, 2, pl_color_active, -1);
-                        if (options.show_active_track_name_in_bold)
-                                gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
+		if (choose_random_track(&iter)) {
+			mark_track(&iter);
 		}
 	}
 
 	if (is_file_loaded) {
-
-		if ((n = get_playing_pos(play_store)) == -1) {
-
+		if ((p = get_playing_path(play_store)) == NULL) {
 			if (is_paused) {
-
 				is_paused = 0;
-				g_signal_handler_block(G_OBJECT(pause_button), pause_id);
-				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
-				g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
-
+				toggle_noeffect(PAUSE, FALSE);
 				stop_event(NULL, NULL, NULL);
 			}
-
 			return FALSE;
 		}
 
-		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-		gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, 3, &(cue.voladj), -1);
-		cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-		strncpy(current_file, str, MAXLEN-1);
-		g_free(str);
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
+		gtk_tree_path_free(p);
+		cue_track_for_playback(&iter, &cue);
 
 		if (is_paused) {
 			is_paused = 0;
-			g_signal_handler_block(G_OBJECT(pause_button), pause_id);
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
-			g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+			toggle_noeffect(PAUSE, FALSE);
+			toggle_noeffect(PLAY, TRUE);
 		}
 
 		cmd = CMD_CUE;
 		jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
 		jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
-		if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-			pthread_cond_signal(&disk_thread_wake);
-			pthread_mutex_unlock(&disk_thread_lock);
-		}
+		try_waking_disk_thread();
 	}
-
 	return FALSE;
 }
 
@@ -2105,104 +2366,50 @@ gint
 play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	GtkTreeIter iter;
-	long n = -1;
-	long n_items;
+	GtkTreePath * p;
 	char cmd;
 	cue_t cue;
-	char * str;
 
-	if (!is_paused) {
-		cmd = CMD_CUE;
-		cue.filename = NULL;
-
-		n = get_playing_pos(play_store);
-		if (n != -1) {
-			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, n);
-
-			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
-					   3, &(cue.voladj), -1);
-			cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-			strncpy(current_file, str, MAXLEN-1);
-			g_free(str);
-			is_file_loaded = 1;
-			g_signal_handler_block(G_OBJECT(play_button), play_id);
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), TRUE);
-               		g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-
-		} else {
-			if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
-                                /* normal or repeat mode */
-				if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
-                                        n = 0;
-                                        gtk_tree_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                        if (options.show_active_track_name_in_bold)
-                                                gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
-					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
-							   3, &(cue.voladj), -1);
-                                        cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-                                        strncpy(current_file, str, MAXLEN-1);
-					g_free(str);
-					is_file_loaded = 1;
-					g_signal_handler_block(G_OBJECT(play_button), play_id);
-					gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), TRUE);
-					g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-
-                                } else {
-					is_file_loaded = 0;
-					current_file[0] = '\0';
-					zero_displays();
-					g_signal_handler_block(G_OBJECT(play_button), play_id);
-					gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), FALSE);
-					g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-				}
-
-			} else { /* shuffle mode */
-				n_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
-				if (n_items) {
-					n = (double)rand() * n_items / RAND_MAX;
-					if (n == n_items)
-						--n;
-					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
-								      NULL, n);
-					gtk_tree_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                        if (options.show_active_track_name_in_bold)
-                                                gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
-					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str,
-							   3, &(cue.voladj), -1);
-					cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-					strncpy(current_file, str, MAXLEN-1);
-					g_free(str);
-					is_file_loaded = 1;
-					g_signal_handler_block(G_OBJECT(play_button), play_id);
-					gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), TRUE);
-					g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-				} else {
-					is_file_loaded = 0;
-					current_file[0] = '\0';
-					zero_displays();
-					g_signal_handler_block(G_OBJECT(play_button), play_id);
-					gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), FALSE);
-					g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-				}
-			}
-		}                          
-		jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
-		jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
-			
-	} else {
+	if (is_paused) {
 		is_paused = 0;
-		g_signal_handler_block(G_OBJECT(pause_button), pause_id);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
-		g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+		toggle_noeffect(PAUSE, FALSE);
 		send_cmd = CMD_RESUME;
 		jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
+		try_waking_disk_thread();
+		return FALSE;
 	}
 
-	if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-		pthread_cond_signal(&disk_thread_wake);
-		pthread_mutex_unlock(&disk_thread_lock);
+	cmd = CMD_CUE;
+	cue.filename = NULL;
+	
+	p = get_playing_path(play_store);
+	if (p != NULL) {
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
+		gtk_tree_path_free(p);
+		prepare_playback(&iter, &cue);
+	} else {
+		if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
+			/* normal or repeat mode */
+			if (choose_first_track(&iter)) {
+				prepare_playback(&iter, &cue);
+			} else {
+				unprepare_playback();
+			}			
+		} else { /* shuffle mode */
+			if (choose_random_track(&iter)) {
+				prepare_playback(&iter, &cue);
+			} else {
+				unprepare_playback();
+			}
+		}
 	}
-
+	if (cue.filename == NULL) {
+		stop_event(NULL, NULL, NULL);
+	} else {
+		jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
+		jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
+		try_waking_disk_thread();
+	}
 	return FALSE;
 }
 
@@ -2211,34 +2418,24 @@ gint
 pause_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	if ((!allow_seeks) || (!is_file_loaded)) {
-		g_signal_handler_block(G_OBJECT(pause_button), pause_id);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
-		g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+		toggle_noeffect(PAUSE, FALSE);
 		return FALSE;
 	}
 
 	if (!is_paused) {
 		is_paused = 1;
-		g_signal_handler_block(G_OBJECT(play_button), play_id);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), FALSE);
-		g_signal_handler_unblock(G_OBJECT(play_button), play_id);
+		toggle_noeffect(PLAY, FALSE);
 		send_cmd = CMD_PAUSE;
 		jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
 
 	} else {
 		is_paused = 0;
-		g_signal_handler_block(G_OBJECT(play_button), play_id);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), TRUE);
-		g_signal_handler_unblock(G_OBJECT(play_button), play_id);
+		toggle_noeffect(PLAY, TRUE);
 		send_cmd = CMD_RESUME;
 		jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
 	}
 
-	if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-		pthread_cond_signal(&disk_thread_wake);
-		pthread_mutex_unlock(&disk_thread_lock);
-	}
-
+	try_waking_disk_thread();
 	return FALSE;
 }
 
@@ -2253,29 +2450,18 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	current_file[0] = '\0';
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
 	zero_displays();
-	g_signal_handler_block(G_OBJECT(play_button), play_id);
-	g_signal_handler_block(G_OBJECT(pause_button), pause_id);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), FALSE);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
-	g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-	g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+	toggle_noeffect(PLAY, FALSE);
+	toggle_noeffect(PAUSE, FALSE);
 
         if (is_paused) {
                 is_paused = 0;
-                g_signal_handler_block(G_OBJECT(pause_button), pause_id);
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), FALSE);
-                g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
         }
 
 	cmd = CMD_CUE;
 	cue.filename = NULL;
         jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
         jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
-
-	if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-		pthread_cond_signal(&disk_thread_wake);
-		pthread_mutex_unlock(&disk_thread_lock);
-	}
+	try_waking_disk_thread();
 
         /* hide cover */
         cover_show_flag = 0;
@@ -2284,6 +2470,79 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	return FALSE;
 }
 
+
+/* called when a track ends without user intervention */
+void
+decide_next_track(cue_t * pcue) {
+
+	GtkTreePath * p;
+	GtkTreeIter iter;
+
+	p = get_playing_path(play_store);
+	if (p != NULL) { /* there is a marked track in playlist */
+		if ((!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) &&
+		    (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_button)))) {
+			/* normal or list repeat mode */
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
+			gtk_tree_path_free(p);
+			unmark_track(&iter);
+			if (choose_adjacent_track(&iter)) {
+				prepare_playback(&iter, pcue);
+			} else {
+				if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_all_button))) {
+					/* normal mode */
+					allow_seeks = 1;
+					changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
+					unprepare_playback();
+				} else {
+					/* list repeat mode */
+					if (choose_first_track(&iter)) {
+						prepare_playback(&iter, pcue);
+					} else {
+						allow_seeks = 1;
+						changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
+						unprepare_playback();
+					}
+				}
+			}
+		} else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_button))) {
+			/* track repeat mode */
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
+			gtk_tree_path_free(p);
+			prepare_playback(&iter, pcue);
+		} else {
+			/* shuffle mode */
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
+			gtk_tree_path_free(p);
+			unmark_track(&iter);
+			if (choose_random_track(&iter)) {
+				prepare_playback(&iter, pcue);
+			} else {
+				unprepare_playback();
+			}
+		}
+	} else { /* no marked track in playlist */
+		if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
+			/* normal or repeat mode */
+			if (choose_first_track(&iter)) {
+				prepare_playback(&iter, pcue);
+			} else {
+				allow_seeks = 1;
+				changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
+				unprepare_playback();
+			}
+		} else { /* shuffle mode */
+			if (choose_random_track(&iter)) {
+				prepare_playback(&iter, pcue);
+			} else {
+				unprepare_playback();
+			}
+		}
+	}
+}
+
+
+/********************************************/
 
 void
 swap_labels(int a, int b) {
@@ -3228,12 +3487,8 @@ gint
 timeout_callback(gpointer data) {
 
 	long pos;
-	long n;
-	long n_items;
-	char * str;
 	char cmd;
 	cue_t cue;
-	GtkTreeIter iter;
 	static double left_gain_shadow;
 	static double right_gain_shadow;
 	static int update_pending = 0;
@@ -3256,167 +3511,7 @@ timeout_callback(gpointer data) {
 			if (!is_file_loaded)
 				break; /* ignore leftover filereq message */
 
-			n = get_playing_pos(play_store);
-                        if (n != -1) {
-				if ((!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) &&
-				    (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_button)))) {
-					/* normal or list repeat mode */
-					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
-								      NULL, n);
-					gtk_tree_store_set(play_store, &iter, 2, pl_color_inactive, -1);
-                                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
-					if (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter)) {
-						gtk_tree_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                                if (options.show_active_track_name_in_bold)
-                                                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
-						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
-								   1, &str, 3, &(cue.voladj), -1);
-						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-						strncpy(current_file, str, MAXLEN-1);
-						g_free(str);
-                                                is_file_loaded = 1;
-					} else {
-						if (!gtk_toggle_button_get_active(
-							    GTK_TOGGLE_BUTTON(repeat_all_button))) {
-							/* normal mode */
-							is_file_loaded = 0;
-							current_file[0] = '\0';
-							allow_seeks = 1;
-							changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
-							zero_displays();
-							g_signal_handler_block(G_OBJECT(play_button),
-									       play_id);
-							gtk_toggle_button_set_active(
-								GTK_TOGGLE_BUTTON(play_button), FALSE);
-							g_signal_handler_unblock(G_OBJECT(play_button),
-										 play_id);
-						} else {
-							/* list repeat mode */
-							if (gtk_tree_model_get_iter_first(
-								    GTK_TREE_MODEL(play_store),&iter)) {
-								gtk_tree_store_set(play_store, &iter, 2,
-										   pl_color_active, -1);
-                                                                if (options.show_active_track_name_in_bold)
-                                                                        gtk_tree_store_set(play_store, &iter, 7, 
-                                                                                           PANGO_WEIGHT_BOLD, -1);
-								gtk_tree_model_get(GTK_TREE_MODEL(play_store),
-								   &iter, 1, &str, 3, &(cue.voladj), -1);
-								cue.filename = strdup(
-									g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-								strncpy(current_file, str, MAXLEN-1);
-								g_free(str);
-							} else {
-								is_file_loaded = 0;
-								current_file[0] = '\0';
-								allow_seeks = 1;
-								changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
-								zero_displays();
-								g_signal_handler_block(
-									G_OBJECT(play_button), play_id);
-								gtk_toggle_button_set_active(
-									GTK_TOGGLE_BUTTON(play_button),
-									FALSE);
-								g_signal_handler_unblock(
-									G_OBJECT(play_button), play_id);
-							}
-						}
-					}
-				} else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_button))) {
-					/* repeat mode */
-					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
-								      NULL, n);
-						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
-								   1, &str, 3, &(cue.voladj), -1);
-						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-						strncpy(current_file, str, MAXLEN-1);
-						g_free(str);
-						is_file_loaded = 1;
-				} else {
-					/* shuffle mode */
-					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
-								      NULL, n);
-					gtk_tree_store_set(play_store, &iter, 2, pl_color_inactive, -1);
-                                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_NORMAL, -1);
-
-					n_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store),
-										 NULL);
-					if (n_items) {
-						n = (double)rand() * n_items / RAND_MAX;
-						if (n == n_items)
-							--n;
-						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
-									      &iter, NULL, n);
-						gtk_tree_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                                if (options.show_active_track_name_in_bold)
-                                                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
-						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
-								   1, &str, 3, &(cue.voladj), -1);
-						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-						strncpy(current_file, str, MAXLEN-1);
-						g_free(str);
-						is_file_loaded = 1;
-					} else {
-						is_file_loaded = 0;
-						current_file[0] = '\0';
-						zero_displays();
-						g_signal_handler_block(G_OBJECT(play_button), play_id);
-						gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
-									     FALSE);
-						g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-					}
-				}
-			} else {
-				if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
-					/* normal or repeat mode */
-					if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store),&iter)) {
-						gtk_tree_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                                if (options.show_active_track_name_in_bold)
-                                                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
-						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
-								   1, &str, 3, &(cue.voladj), -1);
-						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-						strncpy(current_file, str, MAXLEN-1);
-						g_free(str);
-					} else {
-						is_file_loaded = 0;
-						current_file[0] = '\0';
-						allow_seeks = 1;
-						changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
-						zero_displays();
-						g_signal_handler_block(G_OBJECT(play_button), play_id);
-						gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
-									     FALSE);
-						g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-					}
-				} else { /* shuffle mode */
-					n_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store),
-										 NULL);
-					if (n_items) {
-						n = (double)rand() * n_items / RAND_MAX;
-						if (n == n_items)
-							--n;
-						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
-									      &iter, NULL, n);
-						gtk_tree_store_set(play_store, &iter, 2, pl_color_active, -1);
-                                                if (options.show_active_track_name_in_bold)
-                                                        gtk_tree_store_set(play_store, &iter, 7, PANGO_WEIGHT_BOLD, -1);
-						gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
-								   1, &str, 3, &(cue.voladj), -1);
-						cue.filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
-						strncpy(current_file, str, MAXLEN-1);
-						g_free(str);
-						is_file_loaded = 1;
-					} else {
-						is_file_loaded = 0;
-						current_file[0] = '\0';
-						zero_displays();
-						g_signal_handler_block(G_OBJECT(play_button), play_id);
-						gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
-									     FALSE);
-						g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-					}
-				}
-			}
+			decide_next_track(&cue);
 
 			if (cue.filename != NULL) {
 				jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
@@ -3426,11 +3521,7 @@ timeout_callback(gpointer data) {
 				jack_ringbuffer_write(rb_gui2disk, &send_cmd, sizeof(char));
 			}
 
-			if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-				pthread_cond_signal(&disk_thread_wake);
-				pthread_mutex_unlock(&disk_thread_lock);
-			}
-
+			try_waking_disk_thread();
 			break;
 
 		case CMD_FILEINFO:
@@ -3779,8 +3870,10 @@ save_config(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_is_visible", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.playlist_is_embedded_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_is_embedded", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.playlist_is_tree_shadow);
+	snprintf(str, 31, "%d", options.playlist_is_tree);
         xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_is_tree", (xmlChar *) str);
+	snprintf(str, 31, "%d", options.album_shuffle_mode);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "album_shuffle_mode", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.enable_playlist_statusbar_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "enable_playlist_statusbar", (xmlChar *) str);
 	snprintf(str, MAX_FONTNAME_LEN, "%s", options.playlist_font);
@@ -4341,7 +4434,13 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
                                 sscanf((char *) key, "%d", &options.playlist_is_tree);
-				options.playlist_is_tree_shadow = options.playlist_is_tree;
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"album_shuffle_mode"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+                                sscanf((char *) key, "%d", &options.album_shuffle_mode);
 			}
                         xmlFree(key);
                 }

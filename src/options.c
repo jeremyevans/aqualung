@@ -157,6 +157,7 @@ GtkWidget * check_expand_stores;
 GtkWidget * check_show_hidden;
 GtkWidget * check_playlist_is_embedded;
 GtkWidget * check_playlist_is_tree;
+GtkWidget * check_album_shuffle_mode;
 GtkWidget * check_enable_playlist_statusbar;
 GtkWidget * check_buttons_at_the_bottom;
 GtkWidget * check_simple_view_in_fx;
@@ -412,9 +413,15 @@ ok(GtkWidget * widget, gpointer data) {
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_playlist_is_tree))) {
-		options.playlist_is_tree_shadow = 1;
+		options.playlist_is_tree = 1;
 	} else {
-	        options.playlist_is_tree_shadow = 0;
+	        options.playlist_is_tree = 0;
+	}
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_album_shuffle_mode))) {
+		options.album_shuffle_mode = 1;
+	} else {
+	        options.album_shuffle_mode = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_playlist_statusbar))) {
@@ -1648,19 +1655,9 @@ running realtime as a default.\n"));
 	if (options.playlist_is_embedded_shadow) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded), TRUE);
 	}
-	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_embedded, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_embedded, FALSE, TRUE, 3);
 	g_signal_connect (G_OBJECT (check_playlist_is_embedded), "toggled",
 		G_CALLBACK (restart_active), _("Embed playlist into main window"));
-
-        check_playlist_is_tree =
-		gtk_check_button_new_with_label(_("Album mode is the default when adding entire records"));
-	gtk_widget_set_name(check_playlist_is_tree, "check_on_notebook");
-	if (options.playlist_is_tree_shadow) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_tree), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_tree, FALSE, TRUE, 3);
-	g_signal_connect (G_OBJECT (check_playlist_is_tree), "toggled",
-		G_CALLBACK (restart_active), _("Album mode is the default when adding entire records"));
 
 	check_autoplsave =
 	    gtk_check_button_new_with_label(_("Save and restore the playlist on exit/startup"));
@@ -1672,6 +1669,23 @@ running realtime as a default.\n"));
 	g_signal_connect(G_OBJECT(check_autoplsave), "toggled",
 			 G_CALLBACK(autoplsave_toggled), NULL);
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_autoplsave, FALSE, TRUE, 3);
+
+        check_playlist_is_tree =
+		gtk_check_button_new_with_label(_("Album mode is the default when adding entire records"));
+	gtk_widget_set_name(check_playlist_is_tree, "check_on_notebook");
+	if (options.playlist_is_tree) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_tree), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_tree, FALSE, TRUE, 3);
+
+        check_album_shuffle_mode =
+		gtk_check_button_new_with_label(_("When shuffling, records added in Album mode "
+						  "are played in order"));
+	gtk_widget_set_name(check_album_shuffle_mode, "check_on_notebook");
+	if (options.album_shuffle_mode) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_album_shuffle_mode), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_pl), check_album_shuffle_mode, FALSE, TRUE, 3);
 
 	check_enable_playlist_statusbar =
 		gtk_check_button_new_with_label(_("Enable statusbar"));
@@ -1685,7 +1699,7 @@ running realtime as a default.\n"));
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_playlist_statusbar, FALSE, TRUE, 3);
 
 	check_show_songs_size_in_statusbar =
-		gtk_check_button_new_with_label(_("Show songs size in statusbar"));
+		gtk_check_button_new_with_label(_("Show soundfile size in statusbar"));
 	gtk_widget_set_name(check_show_songs_size_in_statusbar, "check_on_notebook");
 	if (options.show_songs_size_in_statusbar) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_songs_size_in_statusbar), TRUE);

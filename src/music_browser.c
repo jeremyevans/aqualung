@@ -1856,7 +1856,8 @@ dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data)
 /****************************************/
 
 
-void
+/* returns the duration of the track */
+float
 track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * dest,
 		   float avg_voladj, int use_avg_voladj) {
 
@@ -1977,6 +1978,8 @@ track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * d
 	gtk_tree_store_set(play_store, &list_iter, 0, list_str, 1, file,
 			   2, pl_color_inactive, 3, voladj, 4, voladj_str,
 			   5, duration, 6, duration_str, -1);
+
+	return duration;
 }
 
 
@@ -1992,6 +1995,8 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 
 	float volume;
 	float voladj = 0.0f;
+
+	float record_duration = 0.0f;
 
 
 	if (options.rva_is_enabled && options.rva_use_averaging) { /* save track volumes */
@@ -2024,7 +2029,7 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 		free(volumes);
 	}
 	
-	if (album_mode) { /* XXX incomplete (duration etc.) */
+	if (album_mode) {
 		char * precord_name;
 		char * partist_name;
 		char name_str[MAXLEN];
@@ -2041,7 +2046,7 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 		g_free(precord_name);
 		g_free(partist_name);
 
-		gtk_tree_store_insert_before(play_store, &list_iter, NULL, dest);		
+		gtk_tree_store_insert_before(play_store, &list_iter, NULL, dest);
 		gtk_tree_store_set(play_store, &list_iter, 0, name_str, 1, packed_str,
 				   2, pl_color_inactive, 3, 0.0f/*voladj*/, 4, ""/*voladj_str*/,
 				   5, 0.0f/*duration*/, 6, "00:00"/*duration_str*/, -1);
@@ -2052,7 +2057,14 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track, &iter_record, i++)) {
-		track_addlist_iter(iter_track, plist_iter, dest, voladj, options.rva_use_averaging);
+		record_duration += track_addlist_iter(iter_track, plist_iter, dest, voladj,
+						      options.rva_use_averaging);
+	}
+
+	if (album_mode) {
+		char record_duration_str[32];
+		time2time(record_duration, record_duration_str);
+		gtk_tree_store_set(play_store, &list_iter, 5, record_duration, 6, record_duration_str, -1);
 	}
 }
 
@@ -2581,7 +2593,6 @@ record__add_cb(gpointer data) {
 				}
 				free(strings);
 			}
-
 			music_store_mark_changed();
 		}
 	}

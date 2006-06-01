@@ -1946,6 +1946,12 @@ mark_track(GtkTreeIter * piter) {
 	if (options.show_active_track_name_in_bold) {
 		gtk_tree_store_set(play_store, piter, 7, PANGO_WEIGHT_BOLD, -1);
 	}
+
+	if (gtk_tree_store_iter_depth(play_store, piter)) { /* track node of album */
+		GtkTreeIter iter_parent;
+		gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store), &iter_parent, piter);
+		mark_track(&iter_parent);
+	}
 }
 
 
@@ -1954,6 +1960,12 @@ unmark_track(GtkTreeIter * piter) {
 
 	gtk_tree_store_set(play_store, piter, 2, pl_color_inactive, -1);
 	gtk_tree_store_set(play_store, piter, 7, PANGO_WEIGHT_NORMAL, -1);
+
+	if (gtk_tree_store_iter_depth(play_store, piter)) { /* track node of album */
+		GtkTreeIter iter_parent;
+		gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store), &iter_parent, piter);
+		unmark_track(&iter_parent);
+	}
 }
 
 

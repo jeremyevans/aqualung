@@ -274,7 +274,7 @@ widget "*comment_view" style "comment_view"
 
 style "play_list" = "view"
 {
-	
+	fg[NORMAL] = "#000000" 
 	fg[SELECTED] = "#198ca5"				   		   
  	fg[INSENSITIVE] = "#000000"
 	font_name = "Sans 10"	

@@ -280,6 +280,7 @@ widget "*comment_view" style "comment_view"
 
 style "play_list" = "view"
 {
+	fg[NORMAL] = { 0.0, 0.0, 1.0 }
 	fg[SELECTED] = { 1.0, 0.0, 0.0 }
 	fg[INSENSITIVE] = { 0.0, 0.0, 0.0 }
 

@@ -1505,7 +1505,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	}
 	
 
-        if(options.playlist_is_embedded) {
+        if (options.playlist_is_embedded) {
 
                 /* c&p from playlist.c */
 
@@ -3132,7 +3132,7 @@ create_main_window(char * skin_path) {
 
 	sprintf(path, "%s/%s", skin_path, "prev");
 	prev_button = create_button_with_image(path, 0, "prev");
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), prev_button, _("Previous song (up)"), NULL);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), prev_button, _("Previous song (comma)"), NULL);
 
 	sprintf(path, "%s/%s", skin_path, "stop");
 	stop_button = create_button_with_image(path, 0, "stop");
@@ -3140,7 +3140,7 @@ create_main_window(char * skin_path) {
 
 	sprintf(path, "%s/%s", skin_path, "next");
 	next_button = create_button_with_image(path, 0, "next");
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), next_button, _("Next song (down)"), NULL);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), next_button, _("Next song (period)"), NULL);
 
 	sprintf(path, "%s/%s", skin_path, "play");
 	play_button = create_button_with_image(path, 1, "play");

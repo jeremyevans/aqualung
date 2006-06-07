@@ -317,6 +317,7 @@ get_playing_path(GtkTreeStore * store) {
 		}
 		
 	} while (i++, gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter));
+
 	return NULL;
 }
 
@@ -1444,15 +1445,22 @@ gint
 playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, gint x, gint y, 
 			    GtkSelectionData  * data, guint info, guint time) {
 
-	GtkTreePath * path;
+	GtkTreePath * path = NULL;
 	GtkTreeViewColumn * column;
 	GtkTreeIter iter;
-	GtkTreeIter * piter = 0;
+	GtkTreeIter * piter = NULL;
 
 	if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(play_list), x, y, &path, &column, NULL, NULL)) {
+		if (drag_info != 4) { /* dragging store, artist or record */
+			while (gtk_tree_path_get_depth(path) > 1) {
+				gtk_tree_path_up(path);
+			}
+		}
+
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path);
 		piter = &iter;
 	}
+
 
 	switch (drag_info) {
 	case 1:
@@ -1467,6 +1475,10 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 	case 4:
 		track__addlist_cb(piter);
 		break;
+	}
+
+	if (path) {
+		gtk_tree_path_free(path);
 	}
 
 	return FALSE;

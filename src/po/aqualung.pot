@@ -1,4 +1,4 @@
-#: ../about.c:75 ../gui_main.c:2771
+#: ../about.c:75 ../gui_main.c:2865
 msgid "About"
 msgstr ""
 
@@ -250,7 +250,7 @@ msgstr ""
 msgid "No matching record found."
 msgstr ""
 
-#: ../file_info.c:312 ../gui_main.c:2769
+#: ../file_info.c:312 ../gui_main.c:2863
 msgid "File info"
 msgstr ""
 
@@ -529,11 +529,11 @@ msgstr ""
 msgid "Balance: %s"
 msgstr ""
 
-#: ../gui_main.c:2672
+#: ../gui_main.c:2766
 msgid "JACK connection lost"
 msgstr ""
 
-#: ../gui_main.c:2675
+#: ../gui_main.c:2769
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -541,128 +541,128 @@ msgid ""
 "is restart both JACK and Aqualung.\n"
 msgstr ""
 
-#: ../gui_main.c:2765 ../options.c:1520
+#: ../gui_main.c:2859 ../options.c:1520
 msgid "Settings"
 msgstr ""
 
-#: ../gui_main.c:2766 ../skin.c:143
+#: ../gui_main.c:2860 ../skin.c:143
 msgid "Skin chooser"
 msgstr ""
 
-#: ../gui_main.c:2767
+#: ../gui_main.c:2861
 msgid "JACK port setup"
 msgstr ""
 
-#: ../gui_main.c:3041
-msgid "Previous song (up)"
+#: ../gui_main.c:3135
+msgid "Previous song (comma)"
 msgstr ""
 
-#: ../gui_main.c:3045
+#: ../gui_main.c:3139
 msgid "Stop (s)"
 msgstr ""
 
-#: ../gui_main.c:3049
-msgid "Next song (down)"
+#: ../gui_main.c:3143
+msgid "Next song (period)"
 msgstr ""
 
-#: ../gui_main.c:3053
+#: ../gui_main.c:3147
 msgid "Play (p)"
 msgstr ""
 
-#: ../gui_main.c:3057
+#: ../gui_main.c:3151
 msgid "Pause (space)"
 msgstr ""
 
-#: ../gui_main.c:3083
+#: ../gui_main.c:3177
 msgid "Repeat current song"
 msgstr ""
 
-#: ../gui_main.c:3091
+#: ../gui_main.c:3185
 msgid "Repeat all songs"
 msgstr ""
 
-#: ../gui_main.c:3099
+#: ../gui_main.c:3193
 msgid "Shuffle songs"
 msgstr ""
 
-#: ../gui_main.c:3112
+#: ../gui_main.c:3206
 msgid "Toggle playlist"
 msgstr ""
 
-#: ../gui_main.c:3117
+#: ../gui_main.c:3211
 msgid "Toggle music store"
 msgstr ""
 
-#: ../gui_main.c:3122
+#: ../gui_main.c:3216
 msgid "Toggle LADSPA patch builder"
 msgstr ""
 
-#: ../gui_main.c:4525 ../music_browser.c:2164 ../options.c:1315
+#: ../gui_main.c:4619 ../music_browser.c:2177 ../options.c:1315
 #: ../options.c:1414
 msgid "rw"
 msgstr ""
 
-#: ../gui_main.c:4527 ../options.c:1317 ../options.c:1416
+#: ../gui_main.c:4621 ../options.c:1317 ../options.c:1416
 msgid "r"
 msgstr ""
 
-#: ../gui_main.c:4529 ../options.c:1319 ../options.c:1418
+#: ../gui_main.c:4623 ../options.c:1319 ../options.c:1418
 msgid "unreachable"
 msgstr ""
 
-#: ../gui_main.c:4592
+#: ../gui_main.c:4686
 msgid "Aqualung playlist (*.xml)"
 msgstr ""
 
-#: ../gui_main.c:4593
+#: ../gui_main.c:4687
 msgid "MP3 Playlist (*.m3u)"
 msgstr ""
 
-#: ../gui_main.c:4594
+#: ../gui_main.c:4688
 msgid "Multimedia Playlist (*.pls)"
 msgstr ""
 
-#: ../gui_main.c:4607 ../gui_main.c:4710
+#: ../gui_main.c:4701 ../gui_main.c:4804
 msgid "All Files"
 msgstr ""
 
-#: ../gui_main.c:4616
+#: ../gui_main.c:4710
 msgid "All Playlist Files"
 msgstr ""
 
-#: ../gui_main.c:4638
+#: ../gui_main.c:4732
 msgid "MPEG Audio (*.mp1, *.mp2, *.mp3)"
 msgstr ""
 
-#: ../gui_main.c:4642
+#: ../gui_main.c:4736
 msgid "Free Lossless Audio Codec (*.flac)"
 msgstr ""
 
-#: ../gui_main.c:4646
+#: ../gui_main.c:4740
 msgid "Ogg Vorbis (*.ogg)"
 msgstr ""
 
-#: ../gui_main.c:4650
+#: ../gui_main.c:4744
 msgid "Ogg Speex (*.spx)"
 msgstr ""
 
-#: ../gui_main.c:4654
+#: ../gui_main.c:4748
 msgid "Musepack (*.mpc)"
 msgstr ""
 
-#: ../gui_main.c:4658
+#: ../gui_main.c:4752
 msgid "Monkey's Audio Codec (*.ape)"
 msgstr ""
 
-#: ../gui_main.c:4665
+#: ../gui_main.c:4759
 msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
 msgstr ""
 
-#: ../gui_main.c:4677
+#: ../gui_main.c:4771
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
 msgstr ""
 
-#: ../gui_main.c:4728
+#: ../gui_main.c:4822
 msgid "All Audio Files"
 msgstr ""
 
@@ -1005,168 +1005,168 @@ msgstr ""
 msgid "Use manual RVA value [dB]"
 msgstr ""
 
-#: ../music_browser.c:2145
+#: ../music_browser.c:2158
 #, c-format
 msgid ""
 "The store '%s' already exists.\n"
 "Add it on the Settings/Music Store tab."
 msgstr ""
 
-#: ../music_browser.c:2291 ../music_browser.c:2485 ../music_browser.c:2687
-#: ../music_browser.c:2927
+#: ../music_browser.c:2304 ../music_browser.c:2498 ../music_browser.c:2699
+#: ../music_browser.c:2939
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
 msgstr ""
 
-#: ../music_browser.c:2292
+#: ../music_browser.c:2305
 msgid "Remove Store"
 msgstr ""
 
-#: ../music_browser.c:2486
+#: ../music_browser.c:2499
 msgid "Remove Artist"
 msgstr ""
 
-#: ../music_browser.c:2688
+#: ../music_browser.c:2700
 msgid "Remove Record"
 msgstr ""
 
-#: ../music_browser.c:2928
+#: ../music_browser.c:2940
 msgid "Remove Track"
 msgstr ""
 
-#: ../music_browser.c:2965
+#: ../music_browser.c:2977
 msgid "(no comment)"
 msgstr ""
 
-#: ../music_browser.c:3199 ../music_browser.c:3225 ../music_browser.c:3244
-#: ../music_browser.c:3256
+#: ../music_browser.c:3211 ../music_browser.c:3237 ../music_browser.c:3256
+#: ../music_browser.c:3268
 msgid "time unmeasured"
 msgstr ""
 
-#: ../music_browser.c:3202
+#: ../music_browser.c:3214
 msgid "artists"
 msgstr ""
 
-#: ../music_browser.c:3202
+#: ../music_browser.c:3214
 msgid "artist"
 msgstr ""
 
-#: ../music_browser.c:3203 ../music_browser.c:3228
+#: ../music_browser.c:3215 ../music_browser.c:3240
 msgid "records"
 msgstr ""
 
-#: ../music_browser.c:3203 ../music_browser.c:3228
+#: ../music_browser.c:3215 ../music_browser.c:3240
 msgid "record"
 msgstr ""
 
-#: ../music_browser.c:3204 ../music_browser.c:3229 ../music_browser.c:3247
+#: ../music_browser.c:3216 ../music_browser.c:3241 ../music_browser.c:3259
 msgid "tracks"
 msgstr ""
 
-#: ../music_browser.c:3204 ../music_browser.c:3229 ../music_browser.c:3247
+#: ../music_browser.c:3216 ../music_browser.c:3241 ../music_browser.c:3259
 msgid "track"
 msgstr ""
 
-#: ../music_browser.c:3374 ../music_browser.c:3980 ../music_browser.c:4047
+#: ../music_browser.c:3386 ../music_browser.c:3992 ../music_browser.c:4059
 #: ../options.c:1812
 msgid "Music Store"
 msgstr ""
 
-#: ../music_browser.c:3468 ../music_browser.c:3486
+#: ../music_browser.c:3480 ../music_browser.c:3498
 msgid "Add new store..."
 msgstr ""
 
-#: ../music_browser.c:3469 ../music_browser.c:3493 ../music_browser.c:3547
-#: ../music_browser.c:3595 ../music_browser.c:3646 ../playlist.c:2701
+#: ../music_browser.c:3481 ../music_browser.c:3505 ../music_browser.c:3559
+#: ../music_browser.c:3607 ../music_browser.c:3658 ../playlist.c:2679
 msgid "Search..."
 msgstr ""
 
-#: ../music_browser.c:3470 ../music_browser.c:3495
+#: ../music_browser.c:3482 ../music_browser.c:3507
 msgid "Save Music Store"
 msgstr ""
 
-#: ../music_browser.c:3483 ../music_browser.c:3537 ../music_browser.c:3584
-#: ../music_browser.c:3637
+#: ../music_browser.c:3495 ../music_browser.c:3549 ../music_browser.c:3596
+#: ../music_browser.c:3649
 msgid "Add to playlist"
 msgstr ""
 
-#: ../music_browser.c:3484 ../music_browser.c:3538 ../music_browser.c:3585
+#: ../music_browser.c:3496 ../music_browser.c:3550 ../music_browser.c:3597
 msgid "Add to playlist (Album mode)"
 msgstr ""
 
-#: ../music_browser.c:3487
+#: ../music_browser.c:3499
 msgid "Edit store..."
 msgstr ""
 
-#: ../music_browser.c:3488
+#: ../music_browser.c:3500
 msgid "Remove store"
 msgstr ""
 
-#: ../music_browser.c:3490
+#: ../music_browser.c:3502
 msgid "Add new artist to this store..."
 msgstr ""
 
-#: ../music_browser.c:3492 ../music_browser.c:3546 ../music_browser.c:3594
+#: ../music_browser.c:3504 ../music_browser.c:3558 ../music_browser.c:3606
 msgid "Calculate volume (recursive)"
 msgstr ""
 
-#: ../music_browser.c:3540
+#: ../music_browser.c:3552
 msgid "Add new artist..."
 msgstr ""
 
-#: ../music_browser.c:3541
+#: ../music_browser.c:3553
 msgid "Edit artist..."
 msgstr ""
 
-#: ../music_browser.c:3542
+#: ../music_browser.c:3554
 msgid "Remove artist"
 msgstr ""
 
-#: ../music_browser.c:3544
+#: ../music_browser.c:3556
 msgid "Add new record to this artist..."
 msgstr ""
 
-#: ../music_browser.c:3587
+#: ../music_browser.c:3599
 msgid "Add new record..."
 msgstr ""
 
-#: ../music_browser.c:3588
+#: ../music_browser.c:3600
 msgid "Edit record..."
 msgstr ""
 
-#: ../music_browser.c:3589
+#: ../music_browser.c:3601
 msgid "Remove record"
 msgstr ""
 
-#: ../music_browser.c:3591
+#: ../music_browser.c:3603
 msgid "Add new track to this record..."
 msgstr ""
 
-#: ../music_browser.c:3592
+#: ../music_browser.c:3604
 msgid "CDDB query for this record..."
 msgstr ""
 
-#: ../music_browser.c:3639
+#: ../music_browser.c:3651
 msgid "Add new track..."
 msgstr ""
 
-#: ../music_browser.c:3640
+#: ../music_browser.c:3652
 msgid "Edit track..."
 msgstr ""
 
-#: ../music_browser.c:3641
+#: ../music_browser.c:3653
 msgid "Remove track"
 msgstr ""
 
-#: ../music_browser.c:3643 ../playlist.c:2700
+#: ../music_browser.c:3655 ../playlist.c:2678
 msgid "File info..."
 msgstr ""
 
-#: ../music_browser.c:3645
+#: ../music_browser.c:3657
 msgid "Calculate volume"
 msgstr ""
 
-#: ../music_browser.c:4041
+#: ../music_browser.c:4053
 msgid "*Music Store"
 msgstr ""
 
@@ -1258,7 +1258,7 @@ msgstr ""
 msgid "Show hidden files and directories in file choosers"
 msgstr ""
 
-#: ../options.c:1650 ../playlist.c:1703
+#: ../options.c:1650 ../playlist.c:1675
 msgid "Playlist"
 msgstr ""
 
@@ -1614,128 +1614,128 @@ msgstr ""
 msgid "Active song in playlist: "
 msgstr ""
 
-#: ../playlist.c:654
+#: ../playlist.c:616
 msgid "Please specify the file to save the playlist to."
 msgstr ""
 
-#: ../playlist.c:701 ../playlist.c:762
+#: ../playlist.c:663 ../playlist.c:724
 msgid "Please specify the file to load the playlist from."
 msgstr ""
 
-#: ../playlist.c:941
+#: ../playlist.c:903
 msgid ""
 "Playback RVA is currently disabled. Enable it at Settings->Playback RVA."
 msgstr ""
 
-#: ../playlist.c:1171 ../playlist.c:1174 ../playlist.c:1177
+#: ../playlist.c:1133 ../playlist.c:1136 ../playlist.c:1139
 msgid "Unknown"
 msgstr ""
 
-#: ../playlist.c:1265
+#: ../playlist.c:1227
 msgid "Select files..."
 msgstr ""
 
-#: ../playlist.c:1650
+#: ../playlist.c:1622
 #, c-format
 msgid "%d track [%s] (%d MB)"
 msgstr ""
 
-#: ../playlist.c:1652
+#: ../playlist.c:1624
 #, c-format
 msgid "%d track [%s] "
 msgstr ""
 
-#: ../playlist.c:1656
+#: ../playlist.c:1628
 #, c-format
 msgid "%d tracks [%s] (%d MB)"
 msgstr ""
 
-#: ../playlist.c:1658
+#: ../playlist.c:1630
 #, c-format
 msgid "%d tracks [%s] "
 msgstr ""
 
-#: ../playlist.c:1864
+#: ../playlist.c:1838
 msgid "Selected: "
 msgstr ""
 
-#: ../playlist.c:1874
+#: ../playlist.c:1848
 msgid "Total: "
 msgstr ""
 
-#: ../playlist.c:1894
+#: ../playlist.c:1868
 msgid "Add files..."
 msgstr ""
 
-#: ../playlist.c:1895
+#: ../playlist.c:1869
 msgid "Add files to playlist"
 msgstr ""
 
-#: ../playlist.c:1899 ../playlist.c:1917
+#: ../playlist.c:1873 ../playlist.c:1891
 msgid "Select all"
 msgstr ""
 
-#: ../playlist.c:1900
+#: ../playlist.c:1874
 msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:1904 ../playlist.c:1942
+#: ../playlist.c:1878 ../playlist.c:1916
 msgid "Remove selected"
 msgstr ""
 
-#: ../playlist.c:1905
+#: ../playlist.c:1879
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:1912
+#: ../playlist.c:1886
 msgid "Select none"
 msgstr ""
 
-#: ../playlist.c:1922
+#: ../playlist.c:1896
 msgid "Invert selection"
 msgstr ""
 
-#: ../playlist.c:1932
+#: ../playlist.c:1906
 msgid "Cut selected"
 msgstr ""
 
-#: ../playlist.c:1937
+#: ../playlist.c:1911
 msgid "Remove all"
 msgstr ""
 
-#: ../playlist.c:2684
+#: ../playlist.c:2662
 msgid "Save playlist"
 msgstr ""
 
-#: ../playlist.c:2685
+#: ../playlist.c:2663
 msgid "Load playlist"
 msgstr ""
 
-#: ../playlist.c:2686
+#: ../playlist.c:2664
 msgid "Enqueue playlist"
 msgstr ""
 
-#: ../playlist.c:2688
+#: ../playlist.c:2666
 msgid "Calculate RVA"
 msgstr ""
 
-#: ../playlist.c:2690
+#: ../playlist.c:2668
 msgid "Separate"
 msgstr ""
 
-#: ../playlist.c:2691
+#: ../playlist.c:2669
 msgid "Average"
 msgstr ""
 
-#: ../playlist.c:2692
+#: ../playlist.c:2670
 msgid "Reread file metadata"
 msgstr ""
 
-#: ../playlist.c:2696
+#: ../playlist.c:2674
 msgid "Send songs to iFP device"
 msgstr ""
 

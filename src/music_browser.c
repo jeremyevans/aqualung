@@ -1971,6 +1971,7 @@ track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * d
 		}
 	}
 	
+	/* either parent or dest should be set, but not both */
 	gtk_tree_store_insert_before(play_store, &list_iter, parent, dest);
 	
 	voladj2str(voladj, voladj_str);
@@ -2051,6 +2052,7 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 				   2, pl_color_inactive, 3, 0.0f/*voladj*/, 4, ""/*voladj_str*/,
 				   5, 0.0f/*duration*/, 6, "00:00"/*duration_str*/, -1);
 		plist_iter = &list_iter;
+		dest = NULL;
 	} else {
 		plist_iter = NULL;
 	}

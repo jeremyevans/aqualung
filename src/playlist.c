@@ -1630,6 +1630,67 @@ playlist_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
 }
 
 
+void
+playlist_perform_drag(GtkTreeModel * model,
+		      GtkTreeIter * sel_iter, GtkTreePath * sel_path,
+		      GtkTreeIter * pos_iter, GtkTreePath * pos_path) {
+
+	int cmp = gtk_tree_path_compare(sel_path, pos_path);
+
+	if (cmp == 0) {
+		return;
+	}
+
+	if (gtk_tree_path_get_depth(sel_path) ==
+	    gtk_tree_path_get_depth(pos_path)) {
+
+		if (cmp == 1) {
+			gtk_tree_store_move_before(play_store, sel_iter, pos_iter);
+		} else {
+			gtk_tree_store_move_after(play_store, sel_iter, pos_iter);
+		}
+	} else {
+
+		GtkTreeIter iter;
+		char * tname;
+		char * fname;
+		char * color;
+		float voladj;
+		char * voldisp;
+		float duration;
+		char * durdisp;
+		int fontw;
+
+		if (gtk_tree_model_iter_has_child(model, sel_iter)) {
+			return;
+		}
+
+		gtk_tree_model_get(model, sel_iter, 0, &tname, 1, &fname, 2, &color,
+				   3, &voladj, 4, &voldisp, 5, &duration,
+				   6, &durdisp, 7, &fontw, -1);
+
+		if (cmp == 1) {
+			gtk_tree_store_insert_before(GTK_TREE_STORE(model),
+						     &iter, NULL, pos_iter);
+		} else {
+			gtk_tree_store_insert_after(GTK_TREE_STORE(model),
+						    &iter, NULL, pos_iter);
+		}
+
+		gtk_tree_store_set(GTK_TREE_STORE(model), &iter, 0, tname, 1, fname, 2, color,
+				   3, voladj, 4, voldisp, 5, duration,
+				   6, durdisp, 7, fontw, -1);
+
+		gtk_tree_store_remove(GTK_TREE_STORE(model), sel_iter);
+
+		g_free(tname);
+		g_free(fname);
+		g_free(color);
+		g_free(voldisp);
+		g_free(durdisp);
+	}
+}
+
 
 gint
 playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, gint x, gint y, 
@@ -1640,8 +1701,8 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 	if (!strcmp(data->data, "store")) {
 
 		GtkTreePath * path = NULL;
-		GtkTreeIter iter;
 		GtkTreeIter * piter = NULL;
+		GtkTreeIter iter;
 
 		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(play_list),
 						  x, y, &path, &column, NULL, NULL)) {
@@ -1692,23 +1753,22 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 			if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(play_list),
 						  x, y, &pos_path, &column, NULL, NULL)) {
 
-				if (gtk_tree_path_get_depth(sel_path) ==
-				    gtk_tree_path_get_depth(pos_path)) {
+				gtk_tree_model_get_iter(model, &pos_iter, pos_path);
 
-					int cmp = gtk_tree_path_compare(sel_path, pos_path);
-
-					gtk_tree_model_get_iter(model, &pos_iter, pos_path);
-
-					if (cmp == 1) {
-						gtk_tree_store_move_before(play_store,
-								   &sel_iter, &pos_iter);
-					} else if (cmp == -1) {
-						gtk_tree_store_move_after(play_store,
-								  &sel_iter, &pos_iter);
-					}
-				}
+				playlist_perform_drag(model,
+						      &sel_iter, sel_path,
+						      &pos_iter, pos_path);
 			}
 		}
+
+		if (sel_path) {
+			gtk_tree_path_free(sel_path);
+		}
+
+		if (pos_path) {
+			gtk_tree_path_free(pos_path);
+		}
+
 
 		gtk_tree_selection_set_mode(play_select, GTK_SELECTION_MULTIPLE);
 	}

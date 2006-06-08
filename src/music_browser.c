@@ -148,7 +148,6 @@ GtkWidget * blank__add;
 GtkWidget * blank__search;
 GtkWidget * blank__save;
 
-int drag_info;
 
 
 /* prototypes, when we need them */
@@ -178,10 +177,6 @@ static void track__fileinfo_cb(gpointer data);
 static void track__volume_cb(gpointer data);
 
 static void search_cb(gpointer data);
-
-gint playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, gint x,
-				 gint y, GtkSelectionData  * data, guint info, guint time);
-
 
 struct keybinds {
 	void (*callback)(gpointer);
@@ -239,10 +234,6 @@ struct keybinds blank_keybinds[] = {
         {NULL, 0}
 };
 
-
-GtkTargetEntry target_table[] = {
-	{ "", GTK_TARGET_SAME_APP, 0 }
-};
 
 
 static gboolean
@@ -3290,7 +3281,7 @@ tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
 
 
 gint
-row_collapsed_cb(GtkTreeView *view, GtkTreeIter * iter1, GtkTreePath * path1) {
+row_collapsed_cb(GtkTreeView * view, GtkTreeIter * iter1, GtkTreePath * path1) {
 
         GtkTreeIter iter2;
         GtkTreeModel * model;
@@ -3305,15 +3296,18 @@ row_collapsed_cb(GtkTreeView *view, GtkTreeIter * iter1, GtkTreePath * path1) {
 
 
 void
-browser_drag_begin(GtkWidget *widget, GdkDragContext * drag_context, gpointer data) {
+browser_drag_begin(GtkWidget * widget, GdkDragContext * drag_context, gpointer data) {
 
 	GtkTreeIter iter;
 	GtkTreeModel * model;
 
+	GtkTargetEntry target_table[] = {
+		{ "", GTK_TARGET_SAME_APP, 0 }
+	};
+
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
-		drag_info = gtk_tree_path_get_depth(gtk_tree_model_get_path(model, &iter));
-	} else {
-		drag_info = 0;
+		target_table[0].info =
+			gtk_tree_path_get_depth(gtk_tree_model_get_path(model, &iter));
 	}
 
 	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(play_list), FALSE);
@@ -3329,17 +3323,14 @@ void
 browser_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
 		      GtkSelectionData * data, guint info, guint time, gpointer user_data) {
 
-	gtk_selection_data_set(data, data->target, 8, (const guchar *) "\0", 1);
+	gtk_selection_data_set(data, data->target, 8, (const guchar *) "store\0", 6);
 }
 
 
 void
 browser_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer user_data) {
 
-	drag_info = 0;
-
 	gtk_drag_dest_unset(play_list);
-	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(play_list), TRUE);
 }
 
 
@@ -3381,6 +3372,11 @@ create_music_browser(void) {
 
 	GdkPixbuf * pixbuf;
 	char path[MAXLEN];
+
+	GtkTargetEntry target_table[] = {
+		{ "", GTK_TARGET_SAME_APP, 0 }
+	};
+
 
 	/* window creating stuff */
 	browser_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -3466,7 +3462,7 @@ create_music_browser(void) {
 			    1,
 			    GDK_ACTION_COPY);
 
-	sprintf(path, "%s/drag.png", DATADIR);
+	snprintf(path, MAXLEN-1, "%s/drag.png", DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		gtk_drag_source_set_icon_pixbuf(music_tree, pixbuf);
 	}	

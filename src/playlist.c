@@ -176,8 +176,6 @@ extern jack_ringbuffer_t * rb_gui2disk;
 
 extern GtkWidget * playlist_toggle;
 
-extern int drag_info;
-
 
 /* used to store array of sequence numbers of tracks selected for RVA calc */
 int * seqnums = NULL;
@@ -188,6 +186,7 @@ typedef struct _playlist_filemeta {
         float duration;
         float voladj;
 } playlist_filemeta;
+
 
 playlist_filemeta * playlist_filemeta_get(char * physical_name, char * alt_name);
 void playlist_filemeta_free(playlist_filemeta * plfm);
@@ -1442,50 +1441,6 @@ cut__sel_cb(gpointer data) {
 
 
 gint
-playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, gint x, gint y, 
-			    GtkSelectionData  * data, guint info, guint time) {
-
-	GtkTreePath * path = NULL;
-	GtkTreeViewColumn * column;
-	GtkTreeIter iter;
-	GtkTreeIter * piter = NULL;
-
-	if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(play_list), x, y, &path, &column, NULL, NULL)) {
-		if (drag_info != 4) { /* dragging store, artist or record */
-			while (gtk_tree_path_get_depth(path) > 1) {
-				gtk_tree_path_up(path);
-			}
-		}
-
-		gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path);
-		piter = &iter;
-	}
-
-
-	switch (drag_info) {
-	case 1:
-		store__addlist_cb(piter);
-		break;
-	case 2:
-		artist__addlist_cb(piter);
-		break;
-	case 3:
-		record__addlist_cb(piter);
-		break;
-	case 4:
-		track__addlist_cb(piter);
-		break;
-	}
-
-	if (path) {
-		gtk_tree_path_free(path);
-	}
-
-	return FALSE;
-}
-
-
-gint
 playlist_rearrange_timeout_cb(gpointer data) {   
 
 	playlist_size_allocate(NULL, NULL);
@@ -1651,6 +1606,124 @@ playlist_content_changed(void) {
 	playlist_stats(0/*false*/);
 }
 
+
+void
+playlist_drag_begin(GtkWidget * widget, GdkDragContext * drag_context, gpointer data) {
+
+	GtkTargetEntry target_table[] = {
+		{ "", GTK_TARGET_SAME_APP, 0 }
+	};
+
+	gtk_drag_dest_set(play_list,
+			  GTK_DEST_DEFAULT_ALL,
+			  target_table,
+			  1,
+			  GDK_ACTION_MOVE);
+}
+
+
+void
+playlist_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
+		      GtkSelectionData * data, guint info, guint time, gpointer user_data) {
+
+	gtk_selection_data_set(data, data->target, 8, (const guchar *) "list\0", 5);
+}
+
+
+
+gint
+playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, gint x, gint y, 
+			    GtkSelectionData  * data, guint info, guint time) {
+
+	GtkTreeViewColumn * column;
+
+	if (!strcmp(data->data, "store")) {
+
+		GtkTreePath * path = NULL;
+		GtkTreeIter iter;
+		GtkTreeIter * piter = NULL;
+
+		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(play_list),
+						  x, y, &path, &column, NULL, NULL)) {
+
+			if (info != 4) { /* dragging store, artist or record */
+				while (gtk_tree_path_get_depth(path) > 1) {
+					gtk_tree_path_up(path);
+				}
+			}
+
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path);
+			piter = &iter;
+		}
+
+		switch (info) {
+		case 1:
+			store__addlist_cb(piter);
+			break;
+		case 2:
+			artist__addlist_cb(piter);
+			break;
+		case 3:
+			record__addlist_cb(piter);
+			break;
+		case 4:
+			track__addlist_cb(piter);
+			break;
+		}
+
+		if (path) {
+			gtk_tree_path_free(path);
+		}
+
+	} else if (!strcmp(data->data, "list")) {
+
+		GtkTreeModel * model;
+		GtkTreeIter sel_iter;
+		GtkTreeIter pos_iter;
+		GtkTreePath * sel_path = NULL;
+		GtkTreePath * pos_path = NULL;
+
+		gtk_tree_selection_set_mode(play_select, GTK_SELECTION_SINGLE);
+
+		if (gtk_tree_selection_get_selected(play_select, &model, &sel_iter)) {
+
+			sel_path = gtk_tree_model_get_path(model, &sel_iter);
+
+			if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(play_list),
+						  x, y, &pos_path, &column, NULL, NULL)) {
+
+				if (gtk_tree_path_get_depth(sel_path) ==
+				    gtk_tree_path_get_depth(pos_path)) {
+
+					int cmp = gtk_tree_path_compare(sel_path, pos_path);
+
+					gtk_tree_model_get_iter(model, &pos_iter, pos_path);
+
+					if (cmp == 1) {
+						gtk_tree_store_move_before(play_store,
+								   &sel_iter, &pos_iter);
+					} else if (cmp == -1) {
+						gtk_tree_store_move_after(play_store,
+								  &sel_iter, &pos_iter);
+					}
+				}
+			}
+		}
+
+		gtk_tree_selection_set_mode(play_select, GTK_SELECTION_MULTIPLE);
+	}
+
+	return FALSE;
+}
+
+
+void
+playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer user_data) {
+
+	gtk_drag_dest_unset(play_list);
+}
+
+
 void
 create_playlist(void) {
 
@@ -1668,6 +1741,13 @@ create_playlist(void) {
 	GtkWidget * statusbar_viewport;
 
 	int i;
+
+	GdkPixbuf * pixbuf;
+	char path[MAXLEN];
+
+	GtkTargetEntry target_table[] = {
+		{ "", GTK_TARGET_SAME_APP, 0 }
+	};
 
         /* window creating stuff */
 	if (!options.playlist_is_embedded) {
@@ -1795,7 +1875,35 @@ create_playlist(void) {
 	}
 
         gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(play_list), FALSE);
-	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(play_list), TRUE);
+
+
+	/* setup drag and drop inside playlist */
+	
+	gtk_drag_source_set(play_list,
+			    GDK_BUTTON1_MASK,
+			    target_table,
+			    1,
+			    GDK_ACTION_MOVE);
+
+	
+	snprintf(path, MAXLEN-1, "%s/drag.png", DATADIR);
+	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
+		gtk_drag_source_set_icon_pixbuf(play_list, pixbuf);
+	}	
+	
+
+	g_signal_connect(G_OBJECT(play_list), "drag_begin",
+			 G_CALLBACK(playlist_drag_begin), NULL);
+
+	g_signal_connect(G_OBJECT(play_list), "drag_data_get",
+			 G_CALLBACK(playlist_drag_data_get), NULL);
+
+	g_signal_connect(G_OBJECT(play_list), "drag_end",
+			 G_CALLBACK(playlist_drag_end), NULL);
+
+	g_signal_connect(G_OBJECT(play_list), "drag_data_received",
+			 G_CALLBACK(playlist_drag_data_received), NULL);
+	
 
         play_select = gtk_tree_view_get_selection(GTK_TREE_VIEW(play_list));
         gtk_tree_selection_set_mode(play_select, GTK_SELECTION_MULTIPLE);
@@ -1806,8 +1914,6 @@ create_playlist(void) {
 
 	g_signal_connect(G_OBJECT(play_list), "button_press_event",
 			 G_CALLBACK(doubleclick_handler), NULL);
-	g_signal_connect(G_OBJECT(play_list), "drag_data_received",
-			 G_CALLBACK(playlist_drag_data_received), NULL);
 
 
 	viewport = gtk_viewport_new(NULL, NULL);

@@ -1183,43 +1183,29 @@ void restart_active(GtkToggleButton * togglebutton, gpointer data) {
 
 void set_sensitive_part(void) {
 
+	gboolean state;
+
         if (options.override_skin_settings) {
+		state = TRUE;
+	} else {
+		state = FALSE;
+	}
 
-                gtk_widget_set_sensitive(entry_ms_font, TRUE);
-                gtk_widget_set_sensitive(entry_pl_font, TRUE);
-                gtk_widget_set_sensitive(entry_bt_font, TRUE);
-                gtk_widget_set_sensitive(entry_st_font, TRUE);
-                gtk_widget_set_sensitive(entry_songt_font, TRUE);
-                gtk_widget_set_sensitive(entry_si_font, TRUE);
-                gtk_widget_set_sensitive(entry_sb_font, TRUE);
-                gtk_widget_set_sensitive(button_ms_font, TRUE);
-                gtk_widget_set_sensitive(button_pl_font, TRUE);
-                gtk_widget_set_sensitive(button_bt_font, TRUE);
-                gtk_widget_set_sensitive(button_st_font, TRUE);
-                gtk_widget_set_sensitive(button_songt_font, TRUE);
-                gtk_widget_set_sensitive(button_si_font, TRUE);
-                gtk_widget_set_sensitive(button_sb_font, TRUE);
-                gtk_widget_set_sensitive(color_picker, TRUE);
-
-        } else {
-
-                gtk_widget_set_sensitive(entry_ms_font, FALSE);
-                gtk_widget_set_sensitive(entry_pl_font, FALSE);
-                gtk_widget_set_sensitive(entry_bt_font, FALSE);
-                gtk_widget_set_sensitive(entry_st_font, FALSE);
-                gtk_widget_set_sensitive(entry_songt_font, FALSE);
-                gtk_widget_set_sensitive(entry_si_font, FALSE);
-                gtk_widget_set_sensitive(entry_sb_font, FALSE);
-                gtk_widget_set_sensitive(button_ms_font, FALSE);
-                gtk_widget_set_sensitive(button_pl_font, FALSE);
-                gtk_widget_set_sensitive(button_bt_font, FALSE);
-                gtk_widget_set_sensitive(button_st_font, FALSE);
-                gtk_widget_set_sensitive(button_songt_font, FALSE);
-                gtk_widget_set_sensitive(button_si_font, FALSE);
-                gtk_widget_set_sensitive(button_sb_font, FALSE);
-                gtk_widget_set_sensitive(color_picker, FALSE);
-
-        }
+	gtk_widget_set_sensitive(entry_ms_font, state);
+	gtk_widget_set_sensitive(entry_pl_font, state);
+	gtk_widget_set_sensitive(entry_bt_font, state);
+	gtk_widget_set_sensitive(entry_st_font, state);
+	gtk_widget_set_sensitive(entry_songt_font, state);
+	gtk_widget_set_sensitive(entry_si_font, state);
+	gtk_widget_set_sensitive(entry_sb_font, state);
+	gtk_widget_set_sensitive(button_ms_font, state);
+	gtk_widget_set_sensitive(button_pl_font, state);
+	gtk_widget_set_sensitive(button_bt_font, state);
+	gtk_widget_set_sensitive(button_st_font, state);
+	gtk_widget_set_sensitive(button_songt_font, state);
+	gtk_widget_set_sensitive(button_si_font, state);
+	gtk_widget_set_sensitive(button_sb_font, state);
+	gtk_widget_set_sensitive(color_picker, state);
 }
 
 void  cb_toggle_override_skin (GtkToggleButton *togglebutton, gpointer user_data)

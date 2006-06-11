@@ -658,7 +658,7 @@ msgstr "Musikladen"
 msgid "Toggle LADSPA patch builder"
 msgstr "LADSPA Patch Bauer"
 
-#: ../gui_main.c:4619 ../music_browser.c:2177 ../options.c:1315
+#: ../gui_main.c:4619 ../music_browser.c:2169 ../options.c:1315
 #: ../options.c:1414
 msgid "rw"
 msgstr ""
@@ -976,291 +976,291 @@ msgstr "Kommentar"
 msgid "Vendor:"
 msgstr ""
 
-#: ../music_browser.c:326
+#: ../music_browser.c:317
 #, fuzzy
 msgid "Please select the xml file for this store."
 msgstr "Bitte wählen Sie die audio Datei für dieses Track aus."
 
-#: ../music_browser.c:389
+#: ../music_browser.c:380
 #, fuzzy
 msgid "Add Store"
 msgstr "Album hinzufügen"
 
-#: ../music_browser.c:403 ../music_browser.c:533
+#: ../music_browser.c:394 ../music_browser.c:524
 #, fuzzy
 msgid "Name:"
 msgstr "Name"
 
-#: ../music_browser.c:415 ../music_browser.c:544 ../music_browser.c:1304
-#: ../music_browser.c:1462
+#: ../music_browser.c:406 ../music_browser.c:535 ../music_browser.c:1295
+#: ../music_browser.c:1453
 msgid "Filename:"
 msgstr "Dateiname:"
 
-#: ../music_browser.c:430 ../music_browser.c:1319 ../music_browser.c:1478
+#: ../music_browser.c:421 ../music_browser.c:1310 ../music_browser.c:1469
 #, fuzzy
 msgid "_Browse..."
 msgstr "Blättern..."
 
-#: ../music_browser.c:436 ../music_browser.c:556 ../music_browser.c:664
-#: ../music_browser.c:774 ../music_browser.c:1002 ../music_browser.c:1143
-#: ../music_browser.c:1325 ../music_browser.c:1484
+#: ../music_browser.c:427 ../music_browser.c:547 ../music_browser.c:655
+#: ../music_browser.c:765 ../music_browser.c:993 ../music_browser.c:1134
+#: ../music_browser.c:1316 ../music_browser.c:1475
 msgid "Comments:"
 msgstr "Kommentar:"
 
-#: ../music_browser.c:520
+#: ../music_browser.c:511
 #, fuzzy
 msgid "Edit Store"
 msgstr "Musikladen"
 
-#: ../music_browser.c:629
+#: ../music_browser.c:620
 msgid "Add Artist"
 msgstr "Artist hinzufügen"
 
-#: ../music_browser.c:642 ../music_browser.c:752 ../music_browser.c:946
-#: ../music_browser.c:1121 ../music_browser.c:1282 ../music_browser.c:1440
+#: ../music_browser.c:633 ../music_browser.c:743 ../music_browser.c:937
+#: ../music_browser.c:1112 ../music_browser.c:1273 ../music_browser.c:1431
 msgid "Visible name:"
 msgstr "Sichtbar Name:"
 
-#: ../music_browser.c:653 ../music_browser.c:763 ../music_browser.c:957
-#: ../music_browser.c:1132 ../music_browser.c:1293 ../music_browser.c:1451
+#: ../music_browser.c:644 ../music_browser.c:754 ../music_browser.c:948
+#: ../music_browser.c:1123 ../music_browser.c:1284 ../music_browser.c:1442
 msgid "Name to sort by:"
 msgstr "Sortiere nach:"
 
-#: ../music_browser.c:739
+#: ../music_browser.c:730
 msgid "Edit Artist"
 msgstr "Artist editieren"
 
-#: ../music_browser.c:838
+#: ../music_browser.c:829
 msgid "Please select the audio files for this record."
 msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
 
-#: ../music_browser.c:933
+#: ../music_browser.c:924
 msgid "Add Record"
 msgstr "Album hinzufügen"
 
-#: ../music_browser.c:969
+#: ../music_browser.c:960
 msgid "Auto-create tracks from these files:"
 msgstr "Tracks aus dieser Dateien automatische erstellen:"
 
-#: ../music_browser.c:990 ../plugin.c:1985
+#: ../music_browser.c:981 ../plugin.c:1985
 msgid "Clear list"
 msgstr "Liste aufklären"
 
-#: ../music_browser.c:997
+#: ../music_browser.c:988
 #, fuzzy
 msgid "_Add files..."
 msgstr "Dateien hinzufügen..."
 
-#: ../music_browser.c:1108
+#: ../music_browser.c:1099
 msgid "Edit Record"
 msgstr "Album editieren"
 
-#: ../music_browser.c:1204
+#: ../music_browser.c:1195
 msgid "Please select the audio file for this track."
 msgstr "Bitte wählen Sie die audio Datei für dieses Track aus."
 
-#: ../music_browser.c:1269
+#: ../music_browser.c:1260
 msgid "Add Track"
 msgstr "Track hinzufügen"
 
-#: ../music_browser.c:1427
+#: ../music_browser.c:1418
 msgid "Edit Track"
 msgstr "Track editieren"
 
-#: ../music_browser.c:1511
+#: ../music_browser.c:1502
 msgid "Duration:"
 msgstr "Zeitdauer:"
 
-#: ../music_browser.c:1526
+#: ../music_browser.c:1517
 msgid "Volume level:"
 msgstr "Lautstärke:"
 
-#: ../music_browser.c:1537
+#: ../music_browser.c:1528
 #, c-format
 msgid "Unmeasured"
 msgstr "Unbekannt"
 
-#: ../music_browser.c:1548
+#: ../music_browser.c:1539
 msgid "Use manual RVA value [dB]"
 msgstr "Manuelles RVA Level benutzen [dB]"
 
-#: ../music_browser.c:2158
+#: ../music_browser.c:2150
 #, c-format
 msgid ""
 "The store '%s' already exists.\n"
 "Add it on the Settings/Music Store tab."
 msgstr ""
 
-#: ../music_browser.c:2304 ../music_browser.c:2498 ../music_browser.c:2699
-#: ../music_browser.c:2939
+#: ../music_browser.c:2296 ../music_browser.c:2490 ../music_browser.c:2691
+#: ../music_browser.c:2931
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
 msgstr "Wirklich entfernen \"%s\" aus dem Musikladen?"
 
-#: ../music_browser.c:2305
+#: ../music_browser.c:2297
 #, fuzzy
 msgid "Remove Store"
 msgstr "Track entfernen"
 
-#: ../music_browser.c:2499
+#: ../music_browser.c:2491
 msgid "Remove Artist"
 msgstr "Artist entfernen"
 
-#: ../music_browser.c:2700
+#: ../music_browser.c:2692
 msgid "Remove Record"
 msgstr "Album entfernen"
 
-#: ../music_browser.c:2940
+#: ../music_browser.c:2932
 msgid "Remove Track"
 msgstr "Track entfernen"
 
-#: ../music_browser.c:2977
+#: ../music_browser.c:2969
 msgid "(no comment)"
 msgstr "(kein Kommentar)"
 
-#: ../music_browser.c:3211 ../music_browser.c:3237 ../music_browser.c:3256
-#: ../music_browser.c:3268
+#: ../music_browser.c:3203 ../music_browser.c:3229 ../music_browser.c:3248
+#: ../music_browser.c:3260
 #, fuzzy
 msgid "time unmeasured"
 msgstr "Unbekannt"
 
-#: ../music_browser.c:3214
+#: ../music_browser.c:3206
 #, fuzzy
 msgid "artists"
 msgstr "Artist"
 
-#: ../music_browser.c:3214
+#: ../music_browser.c:3206
 #, fuzzy
 msgid "artist"
 msgstr "Artist"
 
-#: ../music_browser.c:3215 ../music_browser.c:3240
+#: ../music_browser.c:3207 ../music_browser.c:3232
 #, fuzzy
 msgid "records"
 msgstr "Album"
 
-#: ../music_browser.c:3215 ../music_browser.c:3240
+#: ../music_browser.c:3207 ../music_browser.c:3232
 #, fuzzy
 msgid "record"
 msgstr "Album"
 
-#: ../music_browser.c:3216 ../music_browser.c:3241 ../music_browser.c:3259
+#: ../music_browser.c:3208 ../music_browser.c:3233 ../music_browser.c:3251
 #, fuzzy
 msgid "tracks"
 msgstr "Track"
 
-#: ../music_browser.c:3216 ../music_browser.c:3241 ../music_browser.c:3259
+#: ../music_browser.c:3208 ../music_browser.c:3233 ../music_browser.c:3251
 #, fuzzy
 msgid "track"
 msgstr "Track"
 
-#: ../music_browser.c:3386 ../music_browser.c:3992 ../music_browser.c:4059
+#: ../music_browser.c:3383 ../music_browser.c:3989 ../music_browser.c:4056
 #: ../options.c:1812
 msgid "Music Store"
 msgstr "Musikladen"
 
-#: ../music_browser.c:3480 ../music_browser.c:3498
+#: ../music_browser.c:3477 ../music_browser.c:3495
 #, fuzzy
 msgid "Add new store..."
 msgstr "Neues Track hinzufügen..."
 
-#: ../music_browser.c:3481 ../music_browser.c:3505 ../music_browser.c:3559
-#: ../music_browser.c:3607 ../music_browser.c:3658 ../playlist.c:2679
+#: ../music_browser.c:3478 ../music_browser.c:3502 ../music_browser.c:3556
+#: ../music_browser.c:3604 ../music_browser.c:3655 ../playlist.c:2849
 msgid "Search..."
 msgstr "Suche..."
 
-#: ../music_browser.c:3482 ../music_browser.c:3507
+#: ../music_browser.c:3479 ../music_browser.c:3504
 #, fuzzy
 msgid "Save Music Store"
 msgstr "Musikladen"
 
-#: ../music_browser.c:3495 ../music_browser.c:3549 ../music_browser.c:3596
-#: ../music_browser.c:3649
+#: ../music_browser.c:3492 ../music_browser.c:3546 ../music_browser.c:3593
+#: ../music_browser.c:3646
 msgid "Add to playlist"
 msgstr "Zur Playliste hinzufügen"
 
-#: ../music_browser.c:3496 ../music_browser.c:3550 ../music_browser.c:3597
+#: ../music_browser.c:3493 ../music_browser.c:3547 ../music_browser.c:3594
 #, fuzzy
 msgid "Add to playlist (Album mode)"
 msgstr "Zur Playliste hinzufügen"
 
-#: ../music_browser.c:3499
+#: ../music_browser.c:3496
 #, fuzzy
 msgid "Edit store..."
 msgstr "Track editieren..."
 
-#: ../music_browser.c:3500
+#: ../music_browser.c:3497
 #, fuzzy
 msgid "Remove store"
 msgstr "Track entfernen"
 
-#: ../music_browser.c:3502
+#: ../music_browser.c:3499
 #, fuzzy
 msgid "Add new artist to this store..."
 msgstr "Neues Track zu diesem Album hinzufügen..."
 
-#: ../music_browser.c:3504 ../music_browser.c:3558 ../music_browser.c:3606
+#: ../music_browser.c:3501 ../music_browser.c:3555 ../music_browser.c:3603
 msgid "Calculate volume (recursive)"
 msgstr "Lautstärke bestimmen (rekursiv)"
 
-#: ../music_browser.c:3552
+#: ../music_browser.c:3549
 msgid "Add new artist..."
 msgstr "Neuen Artist hinzufügen..."
 
-#: ../music_browser.c:3553
+#: ../music_browser.c:3550
 msgid "Edit artist..."
 msgstr "Artist editieren..."
 
-#: ../music_browser.c:3554
+#: ../music_browser.c:3551
 msgid "Remove artist"
 msgstr "Artist entfernen"
 
-#: ../music_browser.c:3556
+#: ../music_browser.c:3553
 msgid "Add new record to this artist..."
 msgstr "Neues Album zu diesem Artist hinzufügen..."
 
-#: ../music_browser.c:3599
+#: ../music_browser.c:3596
 msgid "Add new record..."
 msgstr "Neues Album hinzufügen..."
 
-#: ../music_browser.c:3600
+#: ../music_browser.c:3597
 msgid "Edit record..."
 msgstr "Album editieren..."
 
-#: ../music_browser.c:3601
+#: ../music_browser.c:3598
 msgid "Remove record"
 msgstr "Album entfernen"
 
-#: ../music_browser.c:3603
+#: ../music_browser.c:3600
 msgid "Add new track to this record..."
 msgstr "Neues Track zu diesem Album hinzufügen..."
 
-#: ../music_browser.c:3604
+#: ../music_browser.c:3601
 #, fuzzy
 msgid "CDDB query for this record..."
 msgstr "Neues Track zu diesem Album hinzufügen..."
 
-#: ../music_browser.c:3651
+#: ../music_browser.c:3648
 msgid "Add new track..."
 msgstr "Neues Track hinzufügen..."
 
-#: ../music_browser.c:3652
+#: ../music_browser.c:3649
 msgid "Edit track..."
 msgstr "Track editieren..."
 
-#: ../music_browser.c:3653
+#: ../music_browser.c:3650
 msgid "Remove track"
 msgstr "Track entfernen"
 
-#: ../music_browser.c:3655 ../playlist.c:2678
+#: ../music_browser.c:3652 ../playlist.c:2848
 msgid "File info..."
 msgstr "Datei-Info..."
 
-#: ../music_browser.c:3657
+#: ../music_browser.c:3654
 msgid "Calculate volume"
 msgstr "Lautstärke bestimmen"
 
-#: ../music_browser.c:4053
+#: ../music_browser.c:4050
 #, fuzzy
 msgid "*Music Store"
 msgstr "Musikladen"
@@ -1271,7 +1271,7 @@ msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
 msgstr "Aqualung muss new gestartet werden damit die Veränderungen wirken."
 
-#: ../options.c:1292 ../options.c:1387
+#: ../options.c:1292 ../options.c:1387 ../playlist.c:886
 msgid "Warning"
 msgstr "Warnung"
 
@@ -1371,7 +1371,7 @@ msgstr ""
 msgid "Show hidden files and directories in file choosers"
 msgstr ""
 
-#: ../options.c:1650 ../playlist.c:1675
+#: ../options.c:1650 ../playlist.c:1819
 msgid "Playlist"
 msgstr "Playliste"
 
@@ -1758,7 +1758,7 @@ msgstr "Playliste speichern"
 msgid "Please specify the file to load the playlist from."
 msgstr "Playliste laden"
 
-#: ../playlist.c:903
+#: ../playlist.c:895
 msgid ""
 "Playback RVA is currently disabled. Enable it at Settings->Playback RVA."
 msgstr ""
@@ -1772,111 +1772,111 @@ msgstr "Unnbekannt"
 msgid "Select files..."
 msgstr "Dateien hinzufügen..."
 
-#: ../playlist.c:1622
+#: ../playlist.c:1578
 #, fuzzy, c-format
 msgid "%d track [%s] (%d MB)"
 msgstr "Track"
 
-#: ../playlist.c:1624
+#: ../playlist.c:1580
 #, fuzzy, c-format
 msgid "%d track [%s] "
 msgstr "Track"
 
-#: ../playlist.c:1628
+#: ../playlist.c:1584
 #, fuzzy, c-format
 msgid "%d tracks [%s] (%d MB)"
 msgstr "Track"
 
-#: ../playlist.c:1630
+#: ../playlist.c:1586
 #, c-format
 msgid "%d tracks [%s] "
 msgstr ""
 
-#: ../playlist.c:1838
+#: ../playlist.c:2008
 #, fuzzy
 msgid "Selected: "
 msgstr "Alles auswählen"
 
-#: ../playlist.c:1848
+#: ../playlist.c:2018
 msgid "Total: "
 msgstr ""
 
-#: ../playlist.c:1868
+#: ../playlist.c:2038
 msgid "Add files..."
 msgstr "Dateien hinzufügen..."
 
-#: ../playlist.c:1869
+#: ../playlist.c:2039
 #, fuzzy
 msgid "Add files to playlist"
 msgstr "Zur Playliste hinzufügen"
 
-#: ../playlist.c:1873 ../playlist.c:1891
+#: ../playlist.c:2043 ../playlist.c:2061
 msgid "Select all"
 msgstr "Alles auswählen"
 
-#: ../playlist.c:1874
+#: ../playlist.c:2044
 msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:1878 ../playlist.c:1916
+#: ../playlist.c:2048 ../playlist.c:2086
 msgid "Remove selected"
 msgstr "Markierte entfernen"
 
-#: ../playlist.c:1879
+#: ../playlist.c:2049
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:1886
+#: ../playlist.c:2056
 msgid "Select none"
 msgstr "Nichts auswählen"
 
-#: ../playlist.c:1896
+#: ../playlist.c:2066
 msgid "Invert selection"
 msgstr "Markierungen invertieren"
 
-#: ../playlist.c:1906
+#: ../playlist.c:2076
 #, fuzzy
 msgid "Cut selected"
 msgstr "Markierte entfernen"
 
-#: ../playlist.c:1911
+#: ../playlist.c:2081
 msgid "Remove all"
 msgstr "Alle entfernen"
 
-#: ../playlist.c:2662
+#: ../playlist.c:2832
 msgid "Save playlist"
 msgstr "Playliste speichern"
 
-#: ../playlist.c:2663
+#: ../playlist.c:2833
 msgid "Load playlist"
 msgstr "Playliste laden"
 
-#: ../playlist.c:2664
+#: ../playlist.c:2834
 msgid "Enqueue playlist"
 msgstr "Playliste einreihen"
 
-#: ../playlist.c:2666
+#: ../playlist.c:2836
 #, fuzzy
 msgid "Calculate RVA"
 msgstr "Lautstärke bestimmen"
 
-#: ../playlist.c:2668
+#: ../playlist.c:2838
 msgid "Separate"
 msgstr ""
 
-#: ../playlist.c:2669
+#: ../playlist.c:2839
 msgid "Average"
 msgstr ""
 
-#: ../playlist.c:2670
+#: ../playlist.c:2840
 msgid "Reread file metadata"
 msgstr ""
 
-#: ../playlist.c:2674
+#: ../playlist.c:2844
 msgid "Send songs to iFP device"
 msgstr ""
 

@@ -42,10 +42,9 @@ the names of artists, and the titles of records and tracks). You can
 Artists/Records/Tracks, thereby making life easier than with the
 all-in-one Winamp/XMMS playlist.
 
-Please refer to the HTML documentation provided with the program for a
+Please refer to the documentation provided with the program for a
 detailed description of features, usage tips and miscellaneous info.
-You will find it in the doc/html/ directory (just open index.html with
-Any Browser).
+You will find it in the doc/ directory in .pdf and .lyx formats.
 
 To compile the program, you will need to have the following libraries
 installed. It is possible to compile the program without some of these
@@ -70,8 +69,8 @@ libsamplerate			http://www.mega-nerd.com/SRC
 
 
 Compilation and installation instructions specific to Aqualung, as
-well as usage information are covered by the HTML documentation in
-greater detail.
+well as usage information are covered by the documentation in greater
+detail.
 
 
 Please consider subscribing to the project's mailing list at:

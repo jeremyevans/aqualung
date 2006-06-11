@@ -2154,7 +2154,7 @@ store__add_cb(gpointer data) {
 			gtk_widget_destroy(dialog);
 		} else {
 			gtk_tree_store_append(music_store, &iter, NULL);
-			gtk_tree_store_set(music_store, &iter, 0, name, 2, file, 3, comment, -1);
+			gtk_tree_store_set(music_store, &iter, 0, name, 2, file, 3, comment, 7, 1.0f/*rw*/, -1);
 
 			doc = xmlNewDoc((const xmlChar *) "1.0");
 			root = xmlNewNode(NULL, (const xmlChar *) "music_store");
@@ -3328,9 +3328,10 @@ browser_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
 
 
 void
-browser_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer user_data) {
+browser_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer data) {
 
 	gtk_drag_dest_unset(play_list);
+	playlist_drag_end(widget, drag_context, data);
 }
 
 
@@ -3987,10 +3988,10 @@ load_music_store(void) {
 
 		gtk_tree_store_append(music_store, &iter_store, NULL);
 		gtk_tree_store_set(music_store, &iter_store, 0, _("Music Store"), 1, "",
-				   2, store_file, 3, "", 7, -10.0f, -1);
+				   2, store_file, 3, "", 7, -1.0f, -1);
 
 		if (access(store_file, W_OK) == 0) {
-			gtk_tree_store_set(music_store, &iter_store, 7, 10.0f, -1);
+			gtk_tree_store_set(music_store, &iter_store, 7, 1.0f, -1);
 		}
 	
 		doc = xmlParseFile(store_file);
@@ -4036,7 +4037,7 @@ load_music_store(void) {
 			}
 			cur = cur->next;
 		}
-	
+
 		xmlFreeDoc(doc);
                 g_free(store_file);
         }

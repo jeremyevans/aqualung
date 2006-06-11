@@ -38,6 +38,7 @@ void load_pls(char * filename, int enqueue);
 int is_playlist(char * filename);
 void add_to_playlist(char * filename, int enqueue);
 void playlist_content_changed(void);
+void playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer data);
 
 
 #endif /* _PLAYLIST_H */

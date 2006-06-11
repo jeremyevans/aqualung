@@ -73,6 +73,7 @@ int ctrl_R;
 
 GtkWidget * playlist_window;
 GtkWidget * da_dialog;
+GtkWidget * scrolled_win;
 
 extern GtkWidget * main_window;
 extern GtkWidget * info_window;
@@ -85,11 +86,12 @@ int playlist_size_y;
 int playlist_on;
 int playlist_color_is_set;
 
+int playlist_drag_y;
+int playlist_scroll_up_tag = -1;
+int playlist_scroll_dn_tag = -1;
+
 extern int main_size_x;
 extern int main_size_y;
-
-extern int drift_x;
-extern int drift_y;
 
 extern int main_pos_x;
 extern int main_pos_y;
@@ -107,6 +109,11 @@ extern int vol_finished;
 extern int vol_index;
 int vol_n_tracks;
 int vol_is_average;
+vol_queue_t * pl_vol_queue;
+
+/* used to store array of tree iters of tracks selected for RVA calc */
+GtkTreeIter * vol_iters;
+
 
 GtkWidget * play_list;
 GtkTreeStore * play_store = 0;
@@ -175,10 +182,6 @@ extern pthread_cond_t  disk_thread_wake;
 extern jack_ringbuffer_t * rb_gui2disk;
 
 extern GtkWidget * playlist_toggle;
-
-
-/* used to store array of sequence numbers of tracks selected for RVA calc */
-int * seqnums = NULL;
 
 
 typedef struct _playlist_filemeta {
@@ -777,7 +780,6 @@ gint
 watch_vol_calc(gpointer data) {
 
         float * volumes = (float *)data;
-	GtkTreeIter iter;
 
         if (!vol_finished) {
                 return TRUE;
@@ -795,46 +797,32 @@ watch_vol_calc(gpointer data) {
 							 options.rva_use_linear_thresh,
 							 options.rva_avg_linear_thresh,
 							 options.rva_avg_stddev_thresh,
-							 options.rva_refvol, options.rva_steepness);
+							 options.rva_refvol,
+							 options.rva_steepness);
+		int i;
 
 		voladj2str(voladj, voladj_str);
 
-		int i = 0;
-		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
-			int j, k = -1;
+		for (i = 0; i < vol_n_tracks; i++) {
 
-			for (j = 0; j < vol_n_tracks; j++) {
-				if (seqnums[j] == i) {
-					k = j;
-				}
-			}
-
-			if (k != -1) {
-				gtk_tree_store_set(play_store, &iter, 3, voladj, 4, voladj_str, -1);
+			if (gtk_tree_store_iter_is_valid(play_store, &vol_iters[i])) {
+				gtk_tree_store_set(play_store, &vol_iters[i],
+						   3, voladj, 4, voladj_str, -1);
 			}
 		}
 	} else {
 		float voladj;
 		char voladj_str[32];
 
-		int i = 0;
+		int i;
 
-		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter,
-						     NULL, i++)) {
-			
-			int j, k = -1;
-
-			for (j = 0; j < vol_n_tracks; j++) {
-				if (seqnums[j] == i) {
-					k = j;
-				}
-			}
-
-			if (k != -1) {
-				
-				voladj = rva_from_volume(volumes[k], options.rva_refvol, options.rva_steepness);
+		for (i = 0; i < vol_n_tracks; i++) {
+			if (gtk_tree_store_iter_is_valid(play_store, &vol_iters[i])) {
+				voladj = rva_from_volume(volumes[i],
+							 options.rva_refvol,
+							 options.rva_steepness);
 				voladj2str(voladj, voladj_str);
-				gtk_tree_store_set(play_store, &iter, 3, voladj,
+				gtk_tree_store_set(play_store, &vol_iters[i], 3, voladj,
 						   4, voladj_str, -1);
 			}
 		}
@@ -842,81 +830,97 @@ watch_vol_calc(gpointer data) {
 
 	free(volumes);
 	volumes = NULL;
-	free(seqnums);
-	seqnums = NULL;
+	free(vol_iters);
+	vol_iters = NULL;
         return FALSE;
 }
 
 
 void
-plist_setup_vol_calc(void) {
-
-	GtkTreeIter iter;
-	int i;
+plist_setup_vol_foreach(GtkTreeModel * model, GtkTreePath * path,
+			GtkTreeIter * iter, gpointer data) {
 
         char * pfile;
-        char file[MAXLEN];
 
-	vol_queue_t * q = NULL;
+	if (gtk_tree_model_iter_has_child(model, iter)) {
+		return;
+	}
+
+	gtk_tree_model_get(model, iter, 1, &pfile, -1);
+
+	if (pl_vol_queue == NULL) {
+		pl_vol_queue = vol_queue_push(NULL, pfile, *iter/*dummy*/);
+	} else {
+		vol_queue_push(pl_vol_queue, pfile, *iter/*dummy*/);
+	}
+	++vol_n_tracks;
+
+	vol_iters = (GtkTreeIter *)realloc(vol_iters, vol_n_tracks * sizeof(GtkTreeIter));
+	if (!vol_iters) {
+		fprintf(stderr, "realloc error in plist_setup_vol_calc()\n");
+		return;
+	}
+	vol_iters[vol_n_tracks-1] = *iter;
+
+	g_free(pfile);
+}
+
+void
+plist_setup_vol_calc(void) {
+
 	float * volumes = NULL;
 
+	pl_vol_queue = NULL;
 
         if (vol_window != NULL) {
                 return;
         }
 
-	i = 0;
 	vol_n_tracks = 0;
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
-		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
-
-                        gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &pfile, -1);
-                        strncpy(file, pfile, MAXLEN-1);
-                        g_free(pfile);
-
-                        if (q == NULL) {
-                                q = vol_queue_push(NULL, file, iter/*dummy*/);
-                        } else {
-                                vol_queue_push(q, file, iter/*dummy*/);
-                        }
-			++vol_n_tracks;
-
-			seqnums = (int *)realloc(seqnums, vol_n_tracks * sizeof(int));
-			if (!seqnums) {
-				fprintf(stderr, "realloc error in plist_setup_vol_calc()\n");
-				return;
-			}
-			seqnums[vol_n_tracks-1] = i;
-		}
-	}
+	gtk_tree_selection_selected_foreach(play_select, plist_setup_vol_foreach, NULL);
 
 	if (vol_n_tracks == 0)
 		return;
 
 	if (!options.rva_is_enabled) {
-		GtkWidget * dialog = gtk_message_dialog_new(options.playlist_is_embedded ?
-				         GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
-					 GTK_DIALOG_DESTROY_WITH_PARENT,
-					 GTK_MESSAGE_INFO,
-					 GTK_BUTTONS_CLOSE,
-					 _("Playback RVA is currently disabled. "
-					   "Enable it at Settings->Playback RVA."));
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
 
-		free(seqnums);
-		seqnums = NULL;
-		return;
+		GtkWidget * dialog = gtk_dialog_new_with_buttons(
+				 _("Warning"),
+				 options.playlist_is_embedded ?
+				 GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
+				 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+				 GTK_STOCK_YES, GTK_RESPONSE_ACCEPT,
+				 GTK_STOCK_NO, GTK_RESPONSE_REJECT,
+				 NULL);
+
+		/* label text is misleading */
+		GtkWidget * label =  gtk_label_new(_("Playback RVA is currently disabled. "
+						     "Enable it at Settings->Playback RVA."));
+
+		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
+		gtk_widget_show(label);
+
+		if (gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
+			free(vol_iters);
+			vol_iters = NULL;
+			gtk_widget_destroy(dialog);
+
+			return;
+		} else {
+			options.rva_is_enabled = 1;
+			gtk_widget_destroy(dialog);
+		}
 	}
 
 	if ((volumes = calloc(vol_n_tracks, sizeof(float))) == NULL) {
 		fprintf(stderr, "calloc error in plist__rva_separate_cb()\n");
-		free(seqnums);
-		seqnums = NULL;
+		free(vol_iters);
+		vol_iters = NULL;
 		return;
 	}
 
-	calculate_volume(q, volumes);
+
+	calculate_volume(pl_vol_queue, volumes);
 	gtk_timeout_add(200, watch_vol_calc, (gpointer)volumes);
 }
 
@@ -1636,14 +1640,17 @@ playlist_perform_drag(GtkTreeModel * model,
 		      GtkTreeIter * pos_iter, GtkTreePath * pos_path) {
 
 	int cmp = gtk_tree_path_compare(sel_path, pos_path);
+	int sel_depth = gtk_tree_path_get_depth(sel_path);
+	int pos_depth = gtk_tree_path_get_depth(pos_path);
+
+	int * sel_idx = gtk_tree_path_get_indices(sel_path);
+	int * pos_idx = gtk_tree_path_get_indices(pos_path);
 
 	if (cmp == 0) {
 		return;
 	}
 
-	if (gtk_tree_path_get_depth(sel_path) ==
-	    gtk_tree_path_get_depth(pos_path)) {
-
+	if (sel_depth == pos_depth && (sel_depth == 1 || sel_idx[0] == pos_idx[0])) {
 		if (cmp == 1) {
 			gtk_tree_store_move_before(play_store, sel_iter, pos_iter);
 		} else {
@@ -1778,8 +1785,66 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 
 
 void
-playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer user_data) {
+playlist_remove_scroll_tags() {
+	if (playlist_scroll_up_tag > 0) {	
+		g_source_remove(playlist_scroll_up_tag);
+		playlist_scroll_up_tag = -1;
+	}
+	if (playlist_scroll_dn_tag > 0) {	
+		g_source_remove(playlist_scroll_dn_tag);
+		playlist_scroll_dn_tag = -1;
+	}
+}
 
+gint
+playlist_scroll_up(gpointer data) {
+
+	g_signal_emit_by_name(G_OBJECT(scrolled_win), "scroll-child",
+			      GTK_SCROLL_STEP_BACKWARD, FALSE/*vertical*/, NULL);
+
+	return TRUE;
+}
+
+gint
+playlist_scroll_dn(gpointer data) {
+
+	g_signal_emit_by_name(G_OBJECT(scrolled_win), "scroll-child",
+			      GTK_SCROLL_STEP_FORWARD, FALSE/*vertical*/, NULL);
+
+	return TRUE;
+}
+
+
+void
+playlist_drag_leave(GtkWidget * widget, GdkDragContext * drag_context, guint time) {
+
+	if (playlist_drag_y < widget->allocation.height / 2) {
+		if (playlist_scroll_up_tag == -1) {
+			playlist_scroll_up_tag = g_timeout_add(100, playlist_scroll_up, NULL);
+		}
+	} else {
+		if (playlist_scroll_dn_tag == -1) {
+			playlist_scroll_dn_tag = g_timeout_add(100, playlist_scroll_dn, NULL);
+		}
+	}
+}
+
+
+gboolean
+playlist_drag_motion(GtkWidget * widget, GdkDragContext * context,
+		     gint x, gint y, guint time) {
+
+	playlist_drag_y = y;
+	playlist_remove_scroll_tags();
+
+	return TRUE;
+}
+
+
+void
+playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer data) {
+
+	playlist_remove_scroll_tags();
 	gtk_drag_dest_unset(play_list);
 }
 
@@ -1795,7 +1860,6 @@ create_playlist(void) {
 	GtkWidget * remsel_button;
 
 	GtkWidget * viewport;
-	GtkWidget * scrolled_win;
 
 	GtkWidget * statusbar;
 	GtkWidget * statusbar_viewport;
@@ -1937,7 +2001,7 @@ create_playlist(void) {
         gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(play_list), FALSE);
 
 
-	/* setup drag and drop inside playlist */
+	/* setup drag and drop inside playlist for reordering */
 	
 	gtk_drag_source_set(play_list,
 			    GDK_BUTTON1_MASK,
@@ -1955,11 +2019,17 @@ create_playlist(void) {
 	g_signal_connect(G_OBJECT(play_list), "drag_begin",
 			 G_CALLBACK(playlist_drag_begin), NULL);
 
+	g_signal_connect(G_OBJECT(play_list), "drag_end",
+			 G_CALLBACK(playlist_drag_end), NULL);
+
 	g_signal_connect(G_OBJECT(play_list), "drag_data_get",
 			 G_CALLBACK(playlist_drag_data_get), NULL);
 
-	g_signal_connect(G_OBJECT(play_list), "drag_end",
-			 G_CALLBACK(playlist_drag_end), NULL);
+	g_signal_connect(G_OBJECT(play_list), "drag_leave",
+			 G_CALLBACK(playlist_drag_leave), NULL);
+
+	g_signal_connect(G_OBJECT(play_list), "drag_motion",
+			 G_CALLBACK(playlist_drag_motion), NULL);
 
 	g_signal_connect(G_OBJECT(play_list), "drag_data_received",
 			 G_CALLBACK(playlist_drag_data_received), NULL);

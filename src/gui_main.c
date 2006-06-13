@@ -386,19 +386,7 @@ time2time(float seconds, char * str) {
 void
 pack_strings(char * str1, char * str2, char * result) {
 
-	int len1 = strlen(str1);
-	int len2 = strlen(str2);
-	char buf[5];
-
-	result[0] = '\0';
-	buf[0] = '\0';
-	sprintf(buf, "%04X", len1);
-	strcat(result, buf);
-	buf[0] = '\0';
-	sprintf(buf, "%04X", len2);
-	strcat(result, buf);
-	strcat(result, str1);
-	strcat(result, str2);
+	sprintf(result, "%04X%04X%s%s", strlen(str1), strlen(str2), str1, str2);
 }
 
 /* inverse of pack_strings()
@@ -407,10 +395,7 @@ pack_strings(char * str1, char * str2, char * result) {
 void
 unpack_strings(char * packed, char * str1, char * str2) {
 
-	char strlen1[5];
-	char strlen2[5];
 	int len1, len2;
-	int i;
 
 	if (strlen(packed) < 8) {
 		str1[0] = '\0';
@@ -418,21 +403,11 @@ unpack_strings(char * packed, char * str1, char * str2) {
 		return;
 	}
 
-	strncpy(strlen1, packed, 4);
-	strlen1[5] = '\0';
-	sscanf(strlen1, "%x", &len1);
-	strncpy(strlen2, packed+4, 4);
-	strlen2[5] = '\0';
-	sscanf(strlen2, "%x", &len2);
-
-	for (i = 0; i < len1; i++) {
-		str1[i] = packed[i+8];
-	}
-	str1[i] = '\0';
-	for (i = 0; i < len2; i++) {
-		str2[i] = packed[i+len1+8];
-	}
-	str2[i] = '\0';
+	sscanf(packed, "%04X%04X", &len1, &len2);
+	strncpy(str1, packed + 8, len1);
+	strncpy(str2, packed + 8 + len1, len2);
+	str1[len1] = '\0';
+	str2[len2] = '\0';
 }
 
 

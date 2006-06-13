@@ -184,8 +184,25 @@ struct keybinds {
 	int keyval2;
 };
 
+struct keybinds blank_keybinds[] = {
+        {store__add_cb, GDK_n, GDK_N},
+        {search_cb, GDK_f, GDK_F},
+        {NULL, 0}
+};
+
+struct keybinds store_keybinds[] = {
+	{store__addlist_defmode, GDK_a, GDK_A},
+	{store__add_cb, GDK_n, GDK_N},
+	{store__edit_cb, GDK_e, GDK_E},
+	{store__volume_cb, GDK_v, GDK_V},
+	{store__remove_cb, GDK_Delete, GDK_KP_Delete},
+	{artist__add_cb, GDK_plus, GDK_KP_Add},
+	{search_cb, GDK_f, GDK_F},
+	{NULL, 0}
+};
+
 struct keybinds artist_keybinds[] = {
-	{artist__addlist_cb, GDK_a, GDK_A},
+	{artist__addlist_defmode, GDK_a, GDK_A},
 	{artist__add_cb, GDK_n, GDK_N},
 	{artist__edit_cb, GDK_e, GDK_E},
 	{artist__volume_cb, GDK_v, GDK_V},
@@ -196,7 +213,7 @@ struct keybinds artist_keybinds[] = {
 };
 
 struct keybinds record_keybinds[] = {
-	{record__addlist_cb, GDK_a, GDK_A},
+	{record__addlist_defmode, GDK_a, GDK_A},
 	{record__add_cb, GDK_n, GDK_N},
 	{record__edit_cb, GDK_e, GDK_E},
 	{record__volume_cb, GDK_v, GDK_V},
@@ -215,23 +232,6 @@ struct keybinds track_keybinds[] = {
 	{track__fileinfo_cb, GDK_i, GDK_I},
 	{search_cb, GDK_f, GDK_F},
 	{NULL, 0}
-};
-
-struct keybinds store_keybinds[] = {
-	{store__addlist_cb, GDK_a, GDK_A},
-	{store__add_cb, GDK_n, GDK_N},
-	{store__edit_cb, GDK_e, GDK_E},
-	{store__volume_cb, GDK_v, GDK_V},
-	{store__remove_cb, GDK_Delete, GDK_KP_Delete},
-	{artist__add_cb, GDK_plus, GDK_KP_Add},
-	{search_cb, GDK_f, GDK_F},
-	{NULL, 0}
-};
-
-struct keybinds blank_keybinds[] = {
-        {store__add_cb, GDK_n, GDK_N},
-        {search_cb, GDK_f, GDK_F},
-        {NULL, 0}
 };
 
 
@@ -1819,15 +1819,15 @@ dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data)
 			
 			switch (gtk_tree_path_get_depth(path)) {
 			case 1:
-				store__addlist_cb(NULL);
+				store__addlist_defmode(NULL);
 				return TRUE;
 				break;
 			case 2:
-				artist__addlist_cb(NULL);
+				artist__addlist_defmode(NULL);
 				return TRUE;
 				break;
 			case 3:
-				record__addlist_cb(NULL);
+				record__addlist_defmode(NULL);
 				return TRUE;
 				break;
 			case 4:
@@ -2090,33 +2090,39 @@ store_addlist_iter(GtkTreeIter iter_store, GtkTreeIter * dest, int album_mode) {
 /****************************************/
 
 
+/* mode: 0 normal, 1 album mode */
+
 void
-store__addlist_albummode_cb(gpointer data) {
+store__addlist_with_mode(int mode, gpointer data) {
 
         GtkTreeIter iter_store;
         GtkTreeModel * model;
 
-
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_store)) {
-		store_addlist_iter(iter_store, (GtkTreeIter *)data, 1/*true*/);
+		store_addlist_iter(iter_store, (GtkTreeIter *)data, mode);
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
 	}
+}
+
+void
+store__addlist_defmode(gpointer data) {
+
+	store__addlist_with_mode(options.playlist_is_tree, data);
+}
+
+
+void
+store__addlist_albummode_cb(gpointer data) {
+
+	store__addlist_with_mode(1, data);
 }
 
 
 void
 store__addlist_cb(gpointer data) {
 
-        GtkTreeIter iter_store;
-        GtkTreeModel * model;
-
-
-        if (gtk_tree_selection_get_selected(music_select, &model, &iter_store)) {
-		store_addlist_iter(iter_store, (GtkTreeIter *)data, options.playlist_is_tree);
-		playlist_content_changed();
-		delayed_playlist_rearrange(100);
-	}
+	store__addlist_with_mode(0, data);
 }
 
 
@@ -2321,31 +2327,38 @@ store__save_cb(gpointer data) {
 /****************************************/
 
 
+/* mode: 0 normal, 1 album mode */
+
 void
-artist__addlist_albummode_cb(gpointer data) {
+artist__addlist_with_mode(int mode, gpointer data) {
 
         GtkTreeIter iter_artist;
         GtkTreeModel * model;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_artist)) {
-		artist_addlist_iter(iter_artist, (GtkTreeIter *)data, 1/*true*/);
+		artist_addlist_iter(iter_artist, (GtkTreeIter *)data, mode);
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
 	}
+}
+
+void
+artist__addlist_defmode(gpointer data) {
+
+	artist__addlist_with_mode(options.playlist_is_tree, data);
+}
+
+void
+artist__addlist_albummode_cb(gpointer data) {
+
+	artist__addlist_with_mode(1, data);
 }
 
 
 void
 artist__addlist_cb(gpointer data) {
 
-        GtkTreeIter iter_artist;
-        GtkTreeModel * model;
-
-        if (gtk_tree_selection_get_selected(music_select, &model, &iter_artist)) {
-		artist_addlist_iter(iter_artist, (GtkTreeIter *)data, options.playlist_is_tree);
-		playlist_content_changed();
-		delayed_playlist_rearrange(100);
-	}
+	artist__addlist_with_mode(0, data);
 }
 
 
@@ -2499,31 +2512,38 @@ artist__remove_cb(gpointer data) {
 /************************************/
 
 
+/* mode: 0 normal, 1 album mode */
+
 void
-record__addlist_albummode_cb(gpointer data) {
+record__addlist_with_mode(int mode, gpointer data) {
 
         GtkTreeIter iter_record;
         GtkTreeModel * model;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_record)) {
-		record_addlist_iter(iter_record, (GtkTreeIter *)data, 1/* true*/);
+		record_addlist_iter(iter_record, (GtkTreeIter *)data, mode);
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
 	}
+}
+
+void
+record__addlist_defmode(gpointer data) {
+
+	record__addlist_with_mode(options.playlist_is_tree, data);
+}
+
+void
+record__addlist_albummode_cb(gpointer data) {
+
+	record__addlist_with_mode(1, data);
 }
 
 
 void
 record__addlist_cb(gpointer data) {
 
-        GtkTreeIter iter_record;
-        GtkTreeModel * model;
-
-        if (gtk_tree_selection_get_selected(music_select, &model, &iter_record)) {
-		record_addlist_iter(iter_record, (GtkTreeIter *)data, options.playlist_is_tree);
-		playlist_content_changed();
-		delayed_playlist_rearrange(100);
-	}
+	record__addlist_with_mode(0, data);
 }
 
 

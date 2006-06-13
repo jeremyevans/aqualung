@@ -36,9 +36,9 @@ void music_store_mark_saved(void);
 void load_music_store(void);
 void save_music_store(void);
 
-void store__addlist_cb(gpointer data);
-void artist__addlist_cb(gpointer data);
-void record__addlist_cb(gpointer data);
+void store__addlist_defmode(gpointer data);
+void artist__addlist_defmode(gpointer data);
+void record__addlist_defmode(gpointer data);
 void track__addlist_cb(gpointer data);
 
 #endif

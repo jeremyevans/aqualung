@@ -1509,7 +1509,7 @@ playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event) {
 		length_width = 1;
 	}
 
-	track_width = avail - rva_width - length_width - 6;
+	track_width = avail - rva_width - length_width;
 	if (track_width < 1)
 		track_width = 1;
 

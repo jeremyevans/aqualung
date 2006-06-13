@@ -288,6 +288,35 @@ set_playlist_color() {
 }
 
 
+void
+playlist_foreach_selected(void (* foreach)(GtkTreeIter *)) {
+
+	GtkTreeIter iter_top;
+	GtkTreeIter iter;
+	int i;
+	int j;
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_top, NULL, i++)) {
+
+		gboolean topsel = gtk_tree_selection_iter_is_selected(play_select, &iter_top);
+
+		if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), &iter_top)) {
+
+			j = 0;
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, &iter_top, j++)) {
+				if (topsel || gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+					(*foreach)(&iter);
+				}
+			}
+
+		} else if (topsel) {
+			(*foreach)(&iter_top);
+		}
+	}
+}
+
+
 GtkTreePath *
 get_playing_path(GtkTreeStore * store) {
 
@@ -837,16 +866,11 @@ watch_vol_calc(gpointer data) {
 
 
 void
-plist_setup_vol_foreach(GtkTreeModel * model, GtkTreePath * path,
-			GtkTreeIter * iter, gpointer data) {
+plist_setup_vol_foreach(GtkTreeIter * iter) {
 
         char * pfile;
 
-	if (gtk_tree_model_iter_has_child(model, iter)) {
-		return;
-	}
-
-	gtk_tree_model_get(model, iter, 1, &pfile, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(play_store), iter, 1, &pfile, -1);
 
 	if (pl_vol_queue == NULL) {
 		pl_vol_queue = vol_queue_push(NULL, pfile, *iter/*dummy*/);
@@ -877,7 +901,8 @@ plist_setup_vol_calc(void) {
         }
 
 	vol_n_tracks = 0;
-	gtk_tree_selection_selected_foreach(play_select, plist_setup_vol_foreach, NULL);
+
+	playlist_foreach_selected(plist_setup_vol_foreach);
 
 	if (vol_n_tracks == 0)
 		return;
@@ -893,9 +918,8 @@ plist_setup_vol_calc(void) {
 				 GTK_STOCK_NO, GTK_RESPONSE_REJECT,
 				 NULL);
 
-		/* label text is misleading */
-		GtkWidget * label =  gtk_label_new(_("Playback RVA is currently disabled. "
-						     "Enable it at Settings->Playback RVA."));
+		GtkWidget * label =  gtk_label_new(_("Playback RVA is currently disabled.\n"
+						     "Do you want to enable it now?"));
 
 		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
 		gtk_widget_show(label);
@@ -942,48 +966,48 @@ plist__rva_average_cb(gpointer data) {
 
 
 void
-plist__reread_file_meta_cb(gpointer data) {
+plist__reread_file_meta_foreach(GtkTreeIter * iter) {
 
-	int i;
-	GtkTreeIter iter;
 	gchar * title;
 	gchar * fullname;
 	char voladj_str[32];
 	char duration_str[32];
 	playlist_filemeta * plfm = NULL;
 
-	i = 0;
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
-		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
 
-			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
-					   0, &title,
-					   1, &fullname,
-					   -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(play_store), iter,
+			   0, &title,
+			   1, &fullname,
+			   -1);
 
-			plfm = playlist_filemeta_get(fullname, title);
-			if (plfm == NULL) {
-				fprintf(stderr, "plist__reread_file_meta_cb(): "
-					"playlist_filemeta_get() returned NULL\n");
-				return;
-			}
-			
-			voladj2str(plfm->voladj, voladj_str);
-			time2time(plfm->duration, duration_str);
-			
-			gtk_tree_store_set(play_store, &iter,
-					   0, plfm->title,
-					   1, fullname,
-					   3, plfm->voladj, 4, voladj_str,
-					   5, plfm->duration, 6, duration_str,
-					   -1);
-			
-			playlist_filemeta_free(plfm);
-			plfm = NULL;
-			g_free(title);
-			g_free(fullname);
-		}
+	plfm = playlist_filemeta_get(fullname, title);
+	if (plfm == NULL) {
+		fprintf(stderr, "plist__reread_file_meta_foreach(): "
+			"playlist_filemeta_get() returned NULL\n");
+		return;
 	}
+			
+	voladj2str(plfm->voladj, voladj_str);
+	time2time(plfm->duration, duration_str);
+			
+	gtk_tree_store_set(play_store, iter,
+			   0, plfm->title,
+			   1, fullname,
+			   3, plfm->voladj, 4, voladj_str,
+			   5, plfm->duration, 6, duration_str,
+			   -1);
+			
+	playlist_filemeta_free(plfm);
+	plfm = NULL;
+	g_free(title);
+	g_free(fullname);
+}
+
+
+void
+plist__reread_file_meta_cb(gpointer data) {
+
+	playlist_foreach_selected(plist__reread_file_meta_foreach);
 	delayed_playlist_rearrange(100);
 }
 
@@ -1577,13 +1601,13 @@ playlist_stats(int selected) {
 
 	time2time(duration, time);
 	if (count == 1) {
-                if(options.show_songs_size_in_statusbar) {
+                if (options.show_songs_size_in_statusbar) {
                         sprintf(str, _("%d track [%s] (%d MB)"), count, time, songs_size/MBYTES);
                 } else {
                         sprintf(str, _("%d track [%s] "), count, time);
                 }
 	} else {
-                if(options.show_songs_size_in_statusbar) {
+                if (options.show_songs_size_in_statusbar) {
                         sprintf(str, _("%d tracks [%s] (%d MB)"), count, time, songs_size/MBYTES);
                 } else {
                         sprintf(str, _("%d tracks [%s] "), count, time);

@@ -304,7 +304,7 @@ process_volume(gpointer data) {
 
 
 	/* just to make things faster */
-	for (runs = 0; runs < 50; runs++) {
+	for (runs = 0; runs < 100; runs++) {
 
 		numread = file_decoder_read(fdec_vol, samples, vol_chunk_size);
 		++vol_chunks_read;
@@ -318,7 +318,7 @@ process_volume(gpointer data) {
 			sprintf(str_progress, "%.1f%%", fraction * 100.0f);
 			gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress), str_progress);
 		}
-		
+
 		
 		/* calculate signal power of chunk and feed it in the rms envelope */
 		if (numread > 0) {

@@ -129,7 +129,7 @@ sfac_clicked(GtkWidget * widget, gpointer data) {
 
         get_toggle_buttons_state();
 
-        if(selectfc) {
+        if (selectfc) {
 
                 gtk_widget_hide(sres_list);
                 gtk_window_resize(GTK_WINDOW(search_window), 420, 138);
@@ -142,6 +142,36 @@ sfac_clicked(GtkWidget * widget, gpointer data) {
         }
 
         return TRUE;
+}
+
+
+void
+search_foreach(GPatternSpec * pattern, GtkTreeIter * list_iter) {
+
+	char * text;
+	char * tmp = NULL;
+
+	gtk_tree_model_get(GTK_TREE_MODEL(play_store), list_iter, 0, &text, -1);
+
+	if (casesens) {
+		tmp = strdup(text);
+	} else {
+		tmp = g_utf8_strup(text, -1);
+	}
+
+	if (g_pattern_match_string(pattern, tmp)) {
+
+		GtkTreeIter iter;
+		GtkTreePath * path;
+
+		path = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), list_iter);
+		gtk_list_store_append(search_store, &iter);
+		gtk_list_store_set(search_store, &iter, 0, text, 1, (gpointer)path, -1);
+	}
+
+	g_free(tmp);
+	g_free(text);
+	deflicker();
 }
 
 static gint
@@ -186,39 +216,25 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &list_iter, NULL, i++)) {
 
-		char * text;
+		if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), &list_iter)) {
 
-		gtk_tree_model_get(GTK_TREE_MODEL(play_store), &list_iter, 0, &text, -1);
+			int j = 0;
+			GtkTreeIter iter;
 
-		char * tmp = NULL;
-		if (casesens) {
-			tmp = strdup(text);
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
+							     &iter, &list_iter, j++)) {
+				search_foreach(pattern, &iter);
+			}
 		} else {
-			tmp = g_utf8_strup(text, -1);
+			search_foreach(pattern, &list_iter);
 		}
-		if (g_pattern_match_string(pattern, tmp)) {
-
-                        GtkTreeIter iter;
-			GtkTreePath * path;
-
-			path = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), &list_iter);
-			gtk_list_store_append(search_store, &iter);
-			gtk_list_store_set(search_store, &iter,
-					   0, text,
-					   1, (gpointer)path,
-					   -1);
-		}
-
-		g_free(tmp);
-		g_free(text);
-		deflicker();
 	}
 
 	g_pattern_spec_free(pattern);
 
-        if(selectfc) {
+        if (selectfc) {
                 
-                if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(search_store), &sfac_iter) == TRUE)
+                if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(search_store), &sfac_iter) == TRUE)
                         gtk_tree_selection_select_iter(search_select, &sfac_iter);
 
                 close_button_clicked(NULL, NULL);
@@ -233,6 +249,7 @@ search_selection_changed(GtkTreeSelection * treeselection, gpointer user_data) {
 
 	GtkTreeIter iter;
 	GtkTreePath * path;
+	GtkTreePath * path_up;
 	gpointer gptr;
 
 	if (!gtk_tree_selection_get_selected(search_select, NULL, &iter)) {
@@ -243,8 +260,16 @@ search_selection_changed(GtkTreeSelection * treeselection, gpointer user_data) {
 			   1, &gptr, -1);
 
 	path = (GtkTreePath *)gptr;
+	path_up = gtk_tree_path_copy(path);
+
+	if (gtk_tree_path_up(path_up)) {
+		gtk_tree_view_expand_row(GTK_TREE_VIEW(play_list), path_up, FALSE);
+	}
+
 	gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(play_list), path, NULL, TRUE, 0.5f, 0.5f);
 	gtk_tree_view_set_cursor(GTK_TREE_VIEW(play_list), path, NULL, FALSE);
+
+	gtk_tree_path_free(path_up);
 }
 
 
@@ -405,11 +430,11 @@ search_playlist_dialog(void) {
         gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
 
 
-        if(search_pl_flags & SEARCH_F_CS)
+        if (search_pl_flags & SEARCH_F_CS)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_case), TRUE);
-        if(search_pl_flags & SEARCH_F_EM)
+        if (search_pl_flags & SEARCH_F_EM)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_exact), TRUE);
-        if(search_pl_flags & SEARCH_F_SF)
+        if (search_pl_flags & SEARCH_F_SF)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_sfac), TRUE);
 
         gtk_widget_show(search_window);

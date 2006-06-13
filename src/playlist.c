@@ -607,25 +607,21 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_da
 
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
 		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(play_list), event->x, event->y,
-						  &path, &column, NULL, NULL)) {
+						  &path, &column, NULL, NULL) &&
+		    gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path) &&
+		    gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter) == 0) {
 
-			if (gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path)) {
-
-				if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter) == 0) {
-
-					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
-							   0, &pname, 1, &pfile, -1);
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
+					   0, &pname, 1, &pfile, -1);
 					
-					strncpy(fileinfo_name, pname, MAXLEN-1);
-					strncpy(fileinfo_file, pfile, MAXLEN-1);
-					free(pname);
-					free(pfile);
+			strncpy(fileinfo_name, pname, MAXLEN-1);
+			strncpy(fileinfo_file, pfile, MAXLEN-1);
+			free(pname);
+			free(pfile);
 					
-					gtk_widget_set_sensitive(plist__fileinfo, TRUE);
-				}
-			}
+			gtk_widget_set_sensitive(plist__fileinfo, TRUE);
 		} else {
-                        gtk_widget_set_sensitive(plist__fileinfo, FALSE);
+			gtk_widget_set_sensitive(plist__fileinfo, FALSE);
 		}
 
 		gtk_menu_popup(GTK_MENU(plist_menu), NULL, NULL, NULL, NULL,

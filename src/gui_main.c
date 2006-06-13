@@ -310,7 +310,6 @@ extern char fileinfo_name[MAXLEN];
 extern char fileinfo_file[MAXLEN];
 
 extern GtkWidget * plist__fileinfo;
-extern GtkTreeSelection * play_select;
 
 
 void
@@ -1671,13 +1670,19 @@ main_window_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 
 	if (event->button == 3) {
 
-                if (!options.playlist_is_embedded) {
-                        if (is_file_loaded && (current_file[0] != '\0')) {
-                                gtk_widget_set_sensitive(conf__fileinfo, TRUE);
-                        } else {
-                                gtk_widget_set_sensitive(conf__fileinfo, FALSE);
-                        }
-                }
+		GtkWidget * fileinfo;
+
+                if (options.playlist_is_embedded) {
+			fileinfo = plist__fileinfo;
+		} else {
+			fileinfo = conf__fileinfo;
+		}
+
+		if (is_file_loaded && (current_file[0] != '\0')) {
+			gtk_widget_set_sensitive(fileinfo, TRUE);
+		} else {
+			gtk_widget_set_sensitive(fileinfo, FALSE);
+		}
 
                 gtk_menu_popup(GTK_MENU(conf_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);

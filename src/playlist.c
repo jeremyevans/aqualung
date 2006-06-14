@@ -535,7 +535,9 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	case GDK_I:
 		gtk_tree_view_get_cursor(GTK_TREE_VIEW(play_list), &path, &column);
 
-		if (path && gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path)) {
+		if (path &&
+		    gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path) &&
+		    !gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), &iter)) {
 
 			GtkTreeIter dummy;
 			
@@ -609,7 +611,7 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_da
 		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(play_list), event->x, event->y,
 						  &path, &column, NULL, NULL) &&
 		    gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path) &&
-		    gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter) == 0) {
+		    !gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), &iter)) {
 
 			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 					   0, &pname, 1, &pfile, -1);

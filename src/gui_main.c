@@ -1494,7 +1494,9 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
                 case GDK_I:
                         gtk_tree_view_get_cursor(GTK_TREE_VIEW(play_list), &path, &column);
 
-                        if (path && gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path)) {
+                        if (path &&
+			    gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path) &&
+			    !gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), &iter)) {
 
                                 GtkTreeIter dummy;
                                 
@@ -1672,13 +1674,19 @@ main_window_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 
 		GtkWidget * fileinfo;
 
-                if (options.playlist_is_embedded) {
+		if (options.playlist_is_embedded) {
 			fileinfo = plist__fileinfo;
 		} else {
 			fileinfo = conf__fileinfo;
 		}
 
 		if (is_file_loaded && (current_file[0] != '\0')) {
+
+			const char * name = gtk_label_get_text(GTK_LABEL(label_title));
+
+			strncpy(fileinfo_name, name, MAXLEN-1);
+			strncpy(fileinfo_file, current_file, MAXLEN-1);
+
 			gtk_widget_set_sensitive(fileinfo, TRUE);
 		} else {
 			gtk_widget_set_sensitive(fileinfo, FALSE);

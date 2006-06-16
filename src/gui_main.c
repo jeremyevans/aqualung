@@ -1295,12 +1295,6 @@ main_window_close(GtkWidget * widget, gpointer data) {
 gint
 main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
-	GtkTreePath * path;
-	GtkTreeViewColumn * column;
-	GtkTreeIter iter;
-	char * pname;
-	char * pfile;
-
 	switch (event->keyval) {
 	case GDK_Alt_L:
 		alt_L = 1;
@@ -1442,8 +1436,9 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		if (alt_L || alt_R) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(plugin_toggle),
 						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(plugin_toggle)));
+			return TRUE;
 		}
-		return TRUE;
+		break;
 	case GDK_q:
 	case GDK_Q:
 		if (control_L || control_R) {
@@ -1480,71 +1475,9 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	
 
         if (options.playlist_is_embedded) {
-
-                /* c&p from playlist.c */
-
-                switch (event->keyval) {
-
-                case GDK_Insert:
-                case GDK_KP_Insert:
-                        direct_add(NULL, NULL);
-                        return TRUE;
-                        break;
-                case GDK_i:
-                case GDK_I:
-                        gtk_tree_view_get_cursor(GTK_TREE_VIEW(play_list), &path, &column);
-
-                        if (path &&
-			    gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path) &&
-			    !gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), &iter)) {
-
-                                GtkTreeIter dummy;
-                                
-                                gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
-                                                   0, &pname, 1, &pfile, -1);
-                                
-                                strncpy(fileinfo_name, pname, MAXLEN-1);
-                                strncpy(fileinfo_file, pfile, MAXLEN-1);
-                                free(pname);
-                                free(pfile);
-                                show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy);
-                        }
-
-                        return TRUE;
-                        break;
-                case GDK_Return:
-                case GDK_KP_Enter:
-                        gtk_tree_view_get_cursor(GTK_TREE_VIEW(play_list), &path, &column);
-
-                        if (path) {
-                                start_playback_from_playlist(path);
-                        }		
-                        return TRUE;
-                        break;
-                case GDK_x:
-                case GDK_X:
-                        if (control_L || control_R) {
-                                cut__sel_cb(NULL);
-                        }                                                
-                        return TRUE;
-                        break;
-                case GDK_f:
-                case GDK_F:
-                        plist__search_cb(NULL);
-                        return TRUE;
-                        break;
-                
-                case GDK_Delete:
-                case GDK_KP_Delete:
-                        if (shift_L || shift_R) {
-                                gtk_tree_store_clear(play_store);
-                        } else {
-				clear_playlist_selection();
-                        }
-                        return TRUE;
-                        break;
-                }
+		playlist_window_key_pressed(widget, event);
         }
+
 	return FALSE;
 }
 

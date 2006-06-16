@@ -1286,6 +1286,12 @@ Playlist
 \end_layout
 
 \begin_layout Standard
+Note that depending on the skin, these buttons may come with images instead
+ of the letters above.
+ However, their functionallity does not change.
+\end_layout
+
+\begin_layout Standard
 The remaining three buttons are to select the playback mode.
  When none of these buttons is depressed, playback goes the normal way.
  The buttons are mutually exclusive, and select track repeat, list repeat
@@ -1323,6 +1329,13 @@ An additional thing to know about the volume control is that it ranges up
  close to the 0 dB (or 100%) top, and so they will likely distort with as
  little as +1 dB additional gain.
  The moral is: if you want it loud, turn up your external amp.
+ You can also consider using RVA if the volume level of your tracks tends
+ to vary in a wide range -- see section 
+\begin_inset LatexCommand \ref{sub:RVA}
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -1356,7 +1369,7 @@ href{http://tap-plugins.sourceforge.net/ladspa/limiter.html}{this limiter plugin
 \begin_layout Standard
 Right-clicking almost anywhere in the window will bring up a menu that allows
  access to the `Settings' dialog, the `Skin Chooser', the `JACK Port Setup'
- dialog (enabled only when running the program with JACK output), and the
+ dialog (present only when running the program with JACK output), and the
  `About' box.
  The latter may be useful to see which features have been compiled into
  the program.
@@ -2081,6 +2094,11 @@ quit Aqualung
 
 \begin_layout Subsection
 Music Store
+\begin_inset LatexCommand \label{sub:Music-Store}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -2178,9 +2196,9 @@ Each store, artist, record and track has fields you can fill in via bringing
  up the `Edit' dialog for that item.
  The `Visible name' is obviously the string that will appear in the Music
  Store tree, and in the Playlist.
- The `Name to sort by' is a string used to sort items on the same level
- of hierarchy (all artists, records of a given artist, and tracks of a given
- record).
+ The `Name to sort by' is a string key used for sorting items on the same
+ level of hierarchy (all artists, records of a given artist, and tracks
+ of a given record).
 \end_layout
 
 \begin_layout Standard
@@ -2224,7 +2242,8 @@ As mentioned before, you may maintain several collections of audio files
  on several machines.
  Each collection is arranged in an artist/record/track hierarchy, and appears
  under a store item in the Music Store tree.
- The metadata describing one collection is located in a file on your filesystem.
+ The metadata describing one collection is located in one file on your filesyste
+m.
 \end_layout
 
 \begin_layout Standard
@@ -2238,6 +2257,12 @@ On the Settings/Music Store page you can specify several database files
  to change the items.
  When adding or removing files, you need to press the `Refresh' button for
  the changes to take effect.
+\end_layout
+
+\begin_layout Standard
+The order in which the stores appear in the Music Store is the order of
+ the corresponding database files in the list.
+ The list can be reordered via drag & drop.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2255,7 +2280,8 @@ The program can read and display FLAC stream metadata, Ogg Vorbis comments
 
 \begin_layout Standard
 When you open the `File info' dialog from the Music Store, you will find
- buttons to the right of every metadata field that was read from the file.
+ buttons to the right of every metadata field that was read from the file
+ (unless the store is readonly).
  By pressing these buttons, the associated data will be imported into the
  corresponding field of the relevant Track.
 \end_layout
@@ -2268,6 +2294,11 @@ For metadata fields that don't have a corresponding field in the Music Store,
 
 \begin_layout Subsubsection
 Using the RVA system
+\begin_inset LatexCommand \label{sub:RVA}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2386,7 +2417,8 @@ This feature is available by right-clicking on an existing record in the
  Music Store.
  It starts a CDDB query for the record (which can last a bit long if there
  are a lot of matches), and displays a dialog with the search results.
- It works even if you have already encoded your audio files in a lossy format.
+ It tends to work even if you have already encoded your audio files in a
+ lossy format.
 \end_layout
 
 \begin_layout Standard
@@ -2399,7 +2431,20 @@ If there are multiple matches, you can select any of them using the combo
 \end_layout
 
 \begin_layout Standard
-The default CDDB database server address is freedb.org.
+The default CDDB database server address is 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+href{http://freedb.org}{freedb.org}
+\end_layout
+
+\end_inset
+
+.
  You can specify another server on the Settings/CDDB page.
  The connection timeout and the protocol (CDDBP or HTTP) can also be set
  there.
@@ -3058,6 +3103,17 @@ The contents of the playlist can be saved and restored automatically when
 \end_layout
 
 \begin_layout Standard
+The playlist can not only maintain a linear list of songs, but also capable
+ of keeping the tracks of albums together.
+ This is done when a Store, Artist or Record has been added to the playlist
+ using the so-called Album mode, available from the popup menu in Music
+ Store.
+ If you tend to use it extensively, there is an option on the Settings/Playlist
+ page to make it default, so drag and drop and keyboard adding will use
+ this mode automatically.
+\end_layout
+
+\begin_layout Standard
 You can rearrange the list at any time by dragging and dropping items with
  the mouse.
 \end_layout
@@ -3069,7 +3125,7 @@ Shortcuts for this window
 \begin_layout Standard
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="8" columns="2">
+<lyxtabular version="3" rows="9" columns="2">
 <features>
 <column alignment="center" valignment="top" leftline="true" width="0">
 <column alignment="block" valignment="top" leftline="true" rightline="true" width="10cm">
@@ -3143,7 +3199,27 @@ delete
 \bar no
 \noun off
 \color none
-remove selected track(s)
+remove selected tracks
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+SHIFT+delete
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+remove all tracks
 \end_layout
 
 \end_inset
@@ -3342,19 +3418,20 @@ This dialog lets you set some options that affect the behavior of the program.
  all the options easier.
 \end_layout
 
+\begin_layout Subsubsection
+General
+\end_layout
+
 \begin_layout Standard
-On the `General' tab, the `Title format' can be set to fit your personal
- taste.
+The 'Title format' string will be used to construct a single title line
+ from an Artist, a Record and a Track name when adding tracks to the Playlist.
+ The Artist, Record and Track names should appear as '%a', '%r' and '%t'
+ in the template, respectively.
  Such strings may be `%a: %t [%r]', `%a / %r / %t', `%a :: %r :: %t', or
  just about anything else you can think of.
  Note that once you add something from the Music Store to the playlist,
  the strings in the Playlist window will not update if you change this setting
  afterwards.
- This is because creating the one-line title string from the artist, record
- and track titles is a one-way operation, and though one could think of
- workarounds, they are just not elegant and practically needed.
- (We might change this in the future, so if this is a problem for you, contact
- us.)
 \end_layout
 
 \begin_layout Standard
@@ -3392,16 +3469,61 @@ help' here, the program will always display the standard message and exit
 \end_layout
 
 \begin_layout Standard
-Now on to the `Playlist' notebook page.
- The option to save/restore the playlist when exiting and starting the program
+There are some global options to set here as well, which should be quite
+ obvious to use.
+\end_layout
+
+\begin_layout Subsubsection
+Playlist
+\end_layout
+
+\begin_layout Standard
+The option to save/restore the playlist when exiting and starting the program
  is turned on by default.
  If you prefer starting with an empty playlist every time, turn it off.
  Here you can also set the visibility of the strack lengths and RVA values
  in the playlist.
  By dragging and dropping entries in the list, you can rearrange the columns.
  The position of those that are not shown is of course irrelevant.
- Other options: embedding the playlist in the Main window, hiding the statusbar,
- and showing active track name in bold.
+ Other options should be obvious, such as embedding the Playlist in the
+ Main window, hiding the statusbar, and showing active track name in bold.
+\end_layout
+
+\begin_layout Subsubsection
+Music Store
+\end_layout
+
+\begin_layout Standard
+The purpose and usage of Music Store and database files have been covered
+ in section 
+\begin_inset LatexCommand \ref{sub:Music-Store}
+
+\end_inset
+
+.
+ On this page you can somewhat customize the Music Store, decide whether
+ to hide the comment pane or the status bar, or to enable rules hint.
+ If you choose to expand stores on startup, all toplevel tree nodes will
+ automatically be expanded after starting Aqualung.
+\end_layout
+
+\begin_layout Standard
+There are also some options to handle the cover arts of your records.
+ Displaying cover arts is a yet immature feature, which can be accessed
+ if you place a file named `cover.jpg' in the same directory where you keep
+ the tracks of a record.
+ If you select this record (or one of its tracks) in the Music Store, the
+ image will be displayed in the comment pane, as well as in the Main window
+ during the playback of a track from this album.
+\end_layout
+
+\begin_layout Standard
+At last, as already mentioned before, this page is the place to manage music
+ store database files too.
+\end_layout
+
+\begin_layout Subsubsection
+DSP
 \end_layout
 
 \begin_layout Standard
@@ -3436,21 +3558,52 @@ Of course, sample rate conversion springs into action only when the output
  back at 48k.
 \end_layout
 
+\begin_layout Subsubsection
+Playback RVA
+\end_layout
+
 \begin_layout Standard
-On the `Metadata' page you can decide whether you prefer using file metadata
- (if available) instead of information from the Music Store.
+This page is for setting the RVA options.
+ RVA has already been discussed above, see section 
+\begin_inset LatexCommand \ref{sub:RVA}
+
+\end_inset
+
+ for details.
+\end_layout
+
+\begin_layout Subsubsection
+Metadata
+\end_layout
+
+\begin_layout Standard
+On this page you can decide whether you prefer using file metadata (if available
+) instead of information from the Music Store.
+ Settings can be made on Artist / Record / Track basis.
  Metadata can also be used when adding external files to Playlist.
 \end_layout
 
-\begin_layout Standard
-The last page is `Appearance'.
- You can change the font of the Music Store, Playlist and the timer labels,
- and set the color of the active track in Playlist.
+\begin_layout Subsubsection
+CDDB
 \end_layout
 
 \begin_layout Standard
-The left two notebook pages, `Playback RVA' and `CDDB' have already been
- described.
+You can customize the CDDB lookup here.
+ As for the protocol, standard CDDB (port 888) and CDDB over HTTP (port
+ 80) are supported.
+ The standard CDDB port is the recommended choice unless some unavoidable
+ firewall settings prevent you from using it.
+\end_layout
+
+\begin_layout Subsubsection
+Appearance
+\end_layout
+
+\begin_layout Standard
+On this page you can decide whether to override some fonts and colors provided
+ by the skins.
+ You can change the font of the Music Store, Playlist, the track and timer
+ labels, and set the color of the active track in Playlist.
 \end_layout
 
 \begin_layout Subsection

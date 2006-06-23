@@ -318,6 +318,16 @@ deflicker(void) {
 }
 
 
+void
+try_waking_disk_thread(void) {
+
+	if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
+		pthread_cond_signal(&disk_thread_wake);
+		pthread_mutex_unlock(&disk_thread_lock);
+	}
+}
+
+
 /* returns (hh:mm:ss) or (mm:ss) format time string from sample position */
 void
 sample2time(unsigned long SR, unsigned long long sample, char * str, int sign) {
@@ -1248,10 +1258,7 @@ main_window_close(GtkWidget * widget, gpointer data) {
 
 	send_cmd = CMD_FINISH;
 	jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
-        if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-                pthread_cond_signal(&disk_thread_wake);
-                pthread_mutex_unlock(&disk_thread_lock);
-        }
+	try_waking_disk_thread();
 
 	if (music_store_changed) {
 		GtkWidget * dialog;
@@ -1413,11 +1420,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			seek.seek_to_pos = 0.0f;
 			jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
 			jack_ringbuffer_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
-			
-			if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-				pthread_cond_signal(&disk_thread_wake);
-				pthread_mutex_unlock(&disk_thread_lock);
-			}
+			try_waking_disk_thread();
 		}
 		
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)))
@@ -1515,10 +1518,7 @@ main_window_key_released(GtkWidget * widget, GdkEventKey * event) {
                                 / 100.0f * total_samples;
                         jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
                         jack_ringbuffer_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
-                        if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-                                pthread_cond_signal(&disk_thread_wake);
-                                pthread_mutex_unlock(&disk_thread_lock);
-                        }
+			try_waking_disk_thread();
                 }
                 break;
 	}
@@ -1668,10 +1668,7 @@ scale_button_release_event(GtkWidget * widget, GdkEventButton * event) {
 				/ 100.0f * total_samples;
 			jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
 			jack_ringbuffer_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
-			if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-				pthread_cond_signal(&disk_thread_wake);
-				pthread_mutex_unlock(&disk_thread_lock);
-			}
+			try_waking_disk_thread();
 		}
 	}
 
@@ -1829,16 +1826,6 @@ scale_bal_button_release_event(GtkWidget * widget, GdkEventButton * event) {
 
 
 /******** Cue functions *********/
-
-void
-try_waking_disk_thread(void) {
-
-	if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-		pthread_cond_signal(&disk_thread_wake);
-		pthread_mutex_unlock(&disk_thread_lock);
-	}
-}
-
 
 void
 toggle_noeffect(int id, int state) {

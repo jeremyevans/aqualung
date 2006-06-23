@@ -176,9 +176,6 @@ extern int allow_seeks;
 
 extern char current_file[MAXLEN];
 
-
-extern pthread_mutex_t disk_thread_lock;
-extern pthread_cond_t  disk_thread_wake;
 extern jack_ringbuffer_t * rb_gui2disk;
 
 extern GtkWidget * playlist_toggle;

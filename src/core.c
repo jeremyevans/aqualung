@@ -30,6 +30,8 @@
 #include <time.h>
 #include <pthread.h>
 #include <getopt.h>
+#include <time.h>
+#include <sys/time.h>
 #include <sys/stat.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
@@ -444,7 +446,20 @@ disk_thread(void * arg) {
 		end_of_file = 0;
 		
 	sleep:
-		pthread_cond_wait(&disk_thread_wake, &disk_thread_lock);
+		{
+			struct timeval now;
+			struct timezone tz;
+			struct timespec timeout;
+			gettimeofday(&now, &tz);
+			timeout.tv_nsec = now.tv_usec * 1000 + 500000000;
+			timeout.tv_sec = now.tv_sec;
+			while (timeout.tv_nsec > 1000000000) {
+				timeout.tv_nsec -= 1000000000;
+				timeout.tv_sec += 1;
+			}
+			pthread_cond_timedwait(&disk_thread_wake, &disk_thread_lock, &timeout);
+		}
+		//pthread_cond_wait(&disk_thread_wake, &disk_thread_lock);
 	}
  done:
 	free(readbuf);
@@ -473,7 +488,7 @@ oss_thread(void * arg) {
 
 	int fd_oss = info->fd_oss;
 	short * oss_short_buf;
-	jack_nframes_t rb_size = info->rb_size;
+	//jack_nframes_t rb_size = info->rb_size;
 
 	struct timespec req_time;
 	struct timespec rem_time;
@@ -604,12 +619,14 @@ oss_thread(void * arg) {
 		/* wake up disk thread if 1/4 of rb data has been read */
 		/* note that 1 frame = 8 bytes so 8 * info->rb_size equals the full data amount */
 	oss_wake:
+/*
 		if (jack_ringbuffer_read_space(rb) < 6 * rb_size) {
 			if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
 				pthread_cond_signal(&disk_thread_wake);
 				pthread_mutex_unlock(&disk_thread_lock);
 			}
-		}		
+		}
+*/
 	}
         /* NOTREACHED -- this thread will be cancelled from main thread on exit */
 	return 0;
@@ -634,7 +651,7 @@ alsa_thread(void * arg) {
 	short * alsa_short_buf = NULL;
 	int * alsa_int_buf = NULL;
 
-	jack_nframes_t rb_size = info->rb_size;
+	//jack_nframes_t rb_size = info->rb_size;
 	snd_pcm_t * pcm_handle = info->pcm_handle;
 
 	struct timespec req_time;
@@ -809,12 +826,14 @@ alsa_thread(void * arg) {
 		/* wake up disk thread if 1/4 of rb data has been read */
 		/* note that 1 frame = 8 bytes so 8 * info->rb_size equals the full data amount */
 	alsa_wake:
+/*
 		if (jack_ringbuffer_read_space(rb) < 6 * rb_size) {
 			if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
 				pthread_cond_signal(&disk_thread_wake);
 				pthread_mutex_unlock(&disk_thread_lock);
 			}
 		}		
+*/
 	}
         /* NOTREACHED -- this thread will be cancelled from main thread on exit */
 	return 0;
@@ -829,7 +848,7 @@ process(jack_nframes_t nframes, void * arg) {
 
 	jack_nframes_t i;
 	jack_nframes_t n_avail;
-	thread_info_t * info = (thread_info_t *) arg;
+	//thread_info_t * info = (thread_info_t *) arg;
 	jack_default_audio_sample_t * out1 = jack_port_get_buffer(out_L_port, nframes);
 	jack_default_audio_sample_t * out2 = jack_port_get_buffer(out_R_port, nframes);
 
@@ -885,7 +904,7 @@ process(jack_nframes_t nframes, void * arg) {
 			}
 		}
 		
-		/* plugin processing */
+		// plugin processing
 		//spin_waitlock_m(&plugin_lock);
 		plugin_lock = 1;
 		for (i = 0; i < n_plugins; i++) {
@@ -923,15 +942,16 @@ process(jack_nframes_t nframes, void * arg) {
 	//spin_unlock_m(&output_thread_lock);
 	output_thread_lock = 0;
 
-	/* wake up disk thread if 1/4 of rb data has been read */
-	/* note that 1 frame = 8 bytes so 8 * info->rb_size equals the full data amount */
+	// wake up disk thread if 1/4 of rb data has been read
+	// note that 1 frame = 8 bytes so 8 * info->rb_size equals the full data amount
+/*
 	if (jack_ringbuffer_read_space(rb) < 6 * info->rb_size) {
 		if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-			pthread_cond_signal(&disk_thread_wake);
+			//pthread_cond_signal(&disk_thread_wake);
 			pthread_mutex_unlock(&disk_thread_lock);
 		}
 	}
-
+*/
 	return 0;
 }
 

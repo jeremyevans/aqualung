@@ -519,6 +519,7 @@ oss_thread(void * arg) {
 
 
 	while (1) {
+	oss_wake:
 		while (jack_ringbuffer_read_space(rb_disk2out)) {
 			jack_ringbuffer_read(rb_disk2out, &recv_cmd, 1);
 			switch (recv_cmd) {
@@ -618,7 +619,7 @@ oss_thread(void * arg) {
 
 		/* wake up disk thread if 1/4 of rb data has been read */
 		/* note that 1 frame = 8 bytes so 8 * info->rb_size equals the full data amount */
-	oss_wake:
+//	oss_wake:
 /*
 		if (jack_ringbuffer_read_space(rb) < 6 * rb_size) {
 			if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
@@ -690,6 +691,7 @@ alsa_thread(void * arg) {
 
 
 	while (1) {
+	alsa_wake:
 		while (jack_ringbuffer_read_space(rb_disk2out)) {
 			jack_ringbuffer_read(rb_disk2out, &recv_cmd, 1);
 			switch (recv_cmd) {
@@ -825,7 +827,7 @@ alsa_thread(void * arg) {
 		
 		/* wake up disk thread if 1/4 of rb data has been read */
 		/* note that 1 frame = 8 bytes so 8 * info->rb_size equals the full data amount */
-	alsa_wake:
+//	alsa_wake:
 /*
 		if (jack_ringbuffer_read_space(rb) < 6 * rb_size) {
 			if (pthread_mutex_trylock(&disk_thread_lock) == 0) {

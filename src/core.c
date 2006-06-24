@@ -451,7 +451,7 @@ disk_thread(void * arg) {
 			struct timezone tz;
 			struct timespec timeout;
 			gettimeofday(&now, &tz);
-			timeout.tv_nsec = now.tv_usec * 1000 + 500000000;
+			timeout.tv_nsec = now.tv_usec * 1000 + 100000000;
 			timeout.tv_sec = now.tv_sec;
 			while (timeout.tv_nsec > 1000000000) {
 				timeout.tv_nsec -= 1000000000;

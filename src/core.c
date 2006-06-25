@@ -1332,6 +1332,8 @@ main(int argc, char ** argv) {
 	int rate = 0;
 	int try_realtime = 0;
 	int priority = 1;
+	int disk_try_realtime = 0;
+	int disk_priority = 1;
 
 	char rcmd;
 	int no_session = -1;
@@ -1344,7 +1346,7 @@ main(int argc, char ** argv) {
 	int remote_quit = 0;
 	char * voladj_arg = NULL;
 
-	char * optstring = "vho:d:c:n:p:r:a::RP:s::N:BLUTFEV:Q";
+	char * optstring = "vho:d:c:n:p:r:a::RP:DY:s::N:BLUTFEV:Q";
 	struct option long_options[] = {
 		{ "version", 0, 0, 'v' },
 		{ "help", 0, 0, 'h' },
@@ -1357,6 +1359,8 @@ main(int argc, char ** argv) {
 		{ "auto", 2, 0, 'a' },
 		{ "realtime", 0, 0, 'R' },
 		{ "priority", 1, 0, 'P' },
+		{ "disk-realtime", 0, 0, 'D' },
+		{ "disk-priority", 1, 0, 'Y' },
 		{ "srctype", 2, 0, 's' },
 
 		{ "session", 1, 0, 'N' },
@@ -1506,6 +1510,12 @@ main(int argc, char ** argv) {
 				break;
 			case 'P':
 				priority = atoi(optarg);
+				break;
+			case 'D':
+				disk_try_realtime = 1;
+				break;
+			case 'Y':
+				disk_priority = atoi(optarg);
 				break;
 			case 's':
 #ifdef HAVE_SRC
@@ -1828,13 +1838,17 @@ main(int argc, char ** argv) {
 			"aqualung --help\n"
 			"aqualung --version\n"
 
+			"\nGeneral options:\n"
+			"-D, --disk-realtime: Try to use realtime (SCHED_FIFO) scheduling for disk thread.\n"
+			"-Y, --disk-priority <int>: When running -D, set scheduler priority to <int> (defaults to 1).\n"
+
 			"\nOptions relevant to ALSA output:\n"
 			"-d, --device <name>: Set the output device (defaults to plughw:0,0).\n"
 			"-p, --period <int>: Set ALSA period size (defaults to 8192).\n"
 			"-n, --nperiods <int>: Specify the number of periods in hardware buffer (defaults to 2).\n"
 			"-r, --rate <int>: Set the output sample rate.\n"
 			"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for ALSA output thread.\n"
-			"-P, --priority <int>: When running --realtime, set scheduler priority to <int> (defaults to 1).\n"
+			"-P, --priority <int>: When running -R, set scheduler priority to <int> (defaults to 1).\n"
 
 			"\nOptions relevant to OSS output:\n"
 			"-d, --device <name>: Set the output device (defaults to /dev/dsp).\n"
@@ -1981,6 +1995,19 @@ main(int argc, char ** argv) {
 
 	/* startup disk thread */
 	pthread_create(&thread_info.disk_thread_id, NULL, disk_thread, &thread_info);
+
+	if (disk_try_realtime) {
+		int x;
+		memset(&param, 0, sizeof(param));
+		param.sched_priority = disk_priority;
+		if ((x = pthread_setschedparam(thread_info.disk_thread_id,
+					       SCHED_FIFO, &param)) != 0) {
+			fprintf(stderr,
+				"Cannot use real-time scheduling for disk thread (FIFO/%d) "
+				"(%d: %s)\n", param.sched_priority, x, strerror(x));
+			exit(1);
+		}
+	}
 
 
 	/* OSS */

@@ -1,4 +1,4 @@
-.TH AQUALUNG 1 "5 Nov 2005"
+.TH AQUALUNG 1 "25 June 2006"
 
 
 .SH NAME
@@ -72,6 +72,22 @@ also specify which sample rate converter you want to use, or request a
 list of available converters. You may also control another instance of
 the program remotely, or add files to the playlist.
 
+The disk thread is a background worker thread doing file decoding and
+sample rate conversion. If you experience short audio dropouts caused
+by other programs (e.g. web browser loading a complex page) try to run
+this thread at realtime with the -D (and optionally -Y) options.
+
+.TP
+.B General options:
+.TP
+\-D, \-\-disk-realtime
+.br
+Try to use realtime (SCHED_FIFO) scheduling for disk thread.
+.TP
+\-Y, \-\-disk-priority <int>
+.br
+When running \-D, set scheduler priority to <int> (defaults to 1).
+
 .TP
 .B Options relevant to ALSA output:
 .TP
@@ -97,7 +113,7 @@ Try to use realtime (SCHED_FIFO) scheduling for ALSA output thread.
 .TP
 \-P, \-\-priority <int>
 .br
-When running \-\-realtime, set scheduler priority to <int> (defaults to 1).
+When running \-R, set scheduler priority to <int> (defaults to 1).
 
 .TP
 .B Options relevant to OSS output:

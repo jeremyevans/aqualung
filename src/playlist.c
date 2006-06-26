@@ -132,8 +132,6 @@ GtkWidget * statusbar_selected_label;
 
 /* popup menus */
 GtkWidget * add_menu;
-GtkWidget * add__single;
-GtkWidget * add__direct;
 GtkWidget * sel_menu;
 GtkWidget * sel__none;
 GtkWidget * sel__all;
@@ -286,7 +284,7 @@ set_playlist_color() {
 }
 
 
-/* Calles foreach on each selected track iter. A track is selected iff
+/* Calls foreach on each selected track iter. A track is selected iff
    it is selected or its parent album node is selected. */
 
 void
@@ -1259,14 +1257,13 @@ direct_add(GtkWidget * widget, gpointer * data) {
         }
 
 
-        delayed_playlist_rearrange(100);
-
         gtk_widget_destroy(dialog);
 
         set_sliders_width();    /* MAGIC */
 
 	playlist_content_changed();
 
+        delayed_playlist_rearrange(100);
 }
 
 

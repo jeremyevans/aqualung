@@ -1604,7 +1604,7 @@ recalc_album_node(GtkTreeIter * iter) {
 
 	playlist_child_stats(iter, &count, &duration, &songs_size, 0/*false*/);
 	time2time(duration, time);
-	gtk_tree_store_set(play_store, iter, 6, time, -1);
+	gtk_tree_store_set(play_store, iter, 5, duration, 6, time, -1);
 }
 
 

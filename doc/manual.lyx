@@ -401,6 +401,49 @@ version Print version information and list of compiled-in features.
 \end_layout
 
 \begin_layout Subsection
+General options
+\end_layout
+
+\begin_layout Description
+-D,\InsetSpace ~
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+{-}{-}
+\end_layout
+
+\end_inset
+
+disk-realtime Try to use realtime (SCHED_FIFO) scheduling for disk thread,
+ a background worker thread doing file decoding and sample rate conversion.
+ Try this (and optionally -Y) if you experience short audio dropouts caused
+ by other programs (e.g.\InsetSpace ~
+web browser loading a complex page).
+\end_layout
+
+\begin_layout Description
+-Y,\InsetSpace ~
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+{-}{-}
+\end_layout
+
+\end_inset
+
+disk-priority\InsetSpace ~
+<int> When running -D, set scheduler priority to <int> (defaults
+ to 1).
+ 
+\end_layout
+
+\begin_layout Subsection
 Output specific options
 \end_layout
 

@@ -1,3 +1,62 @@
+2006-06-30	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
+
+    * Aqualung 0.9beta5
+        http://aqualung.sf.net
+
+	This is a new milestone release after 17 months of silent
+	development. Large parts of the program have been rewritten,
+	refactored, fixed, etc. A multitude of new features have been
+	added to the software, which now weighs into Open Source with
+	about 30,000 lines of GPL'ed source code written by a handful of
+	free-time developers (no, you won't need your whole hand).
+
+	It won't make too much sense to precisely list every change made
+	to the sources during this period - the list would be prohibitively
+	lengthy. For the curious, the mailing list archive is recommended.
+	The most important, high-level changes are summarized below.
+
+	
+	* Group CDs in the Playlist via "Album mode". Shuffle between
+	  records but play their contents in order!
+
+	* Statusbars in Playlist and Music Store display statistics and
+	  other data.
+
+	* Multiple Music Stores are supported - useful for separate
+	  genres, file formats or for music mounted from different file
+	  servers via NFS.
+
+	* CDDB support!
+
+	* iFP driver support for integrating with iRiver HW players!
+	
+	* Completely reworked Settings dialog, the new control center!
+
+	* Embed Playlist into Main window for a more compact look!
+
+	* Search facility for Music Store and Playlist.
+	
+	* Add support for Musepack (via libmpcdec), Monkey's Audio, Ogg Speex.
+
+	* Rudimentary album art (cover display) support.
+	
+	* RVA-related work, improved metadata support.
+	
+	* Fixed a boatload of bugs concerning cyrillic filenames, etc.
+
+	* MP3 improvements (file recognition, clipping, seeking...)
+
+	* Better fault tolerance in Ogg Vorbis decoder.
+
+	* Various GUI fixes, new command line options, etc, etc.
+
+	* Improved build system for skins, icons, etc.
+
+	* New skins (Ocean, Plain), new Logo (see About box)! ;-)
+	
+	* Compiles and runs on AMD64 (thanks to Mark Knecht for testing)!
+
+	
 2005-01-30	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
 
     * Aqualung 0.9beta4.1

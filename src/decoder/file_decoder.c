@@ -205,6 +205,7 @@ file_decoder_seek(file_decoder_t * fdec, unsigned long long seek_to_pos) {
 }
  
 
+/* expects to get an UTF8 filename */ 
 float
 get_file_duration(char * file) {
 
@@ -218,8 +219,14 @@ get_file_duration(char * file) {
                 return 0.0f;
         }
 
-        if (file_decoder_open(fdec, file)) {
-                fprintf(stderr, "file_decoder_open() failed on %s\n", file);
+	file_locale = g_locale_from_utf8(file, -1, NULL, NULL, &error);
+	if (file_locale == NULL) {
+		printf("get_file_duration(): Error during g_locale_from_utf8(): %s\n", error->message);
+		return 0.0f;
+	}
+
+        if (file_decoder_open(fdec, file_locale)) {
+                fprintf(stderr, "file_decoder_open() failed on %s\n", file_locale);
                 return 0.0f;
         }
 

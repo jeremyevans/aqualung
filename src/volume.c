@@ -216,9 +216,9 @@ process_volume_setup(vol_queue_t * q) {
                 return 1;
         }
 
-        if (file_decoder_open(fdec_vol, q->file)) {
+        if (file_decoder_open(fdec_vol, g_locale_from_utf8(q->file, -1, NULL, NULL, NULL))) {
                 fprintf(stderr, "file_decoder_open() failed on %s\n",
-                        q->file);
+                        g_locale_from_utf8(q->file, -1, NULL, NULL, NULL));
                 return 1;
         }
 

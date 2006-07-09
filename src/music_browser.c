@@ -3788,8 +3788,6 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record) {
 
 	GtkTreeIter iter_track;
 	xmlChar * key;
-	gchar *converted_temp;
-	GError *error=NULL;
 
 	char name[MAXLEN];
 	char sort_name[MAXLEN];
@@ -3809,50 +3807,29 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record) {
 	while (cur != NULL) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-			if (key != NULL) {
-				strncpy(name, (char *) key, sizeof(name)-1);
-				name[sizeof(name) - 1] = '\0';
-			};
+			if (key != NULL)
+				strncpy(name, (char *) key, MAXLEN-1);
 			xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"sort_name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-			if (key != NULL) {
-				strncpy(sort_name, (char *) key, sizeof(sort_name)-1);
-				sort_name[sizeof(sort_name) - 1] = '\0';
-			};
+			if (key != NULL)
+				strncpy(sort_name, (char *) key, MAXLEN-1);
 			xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"file"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-			if (key != NULL) {
-			    if((converted_temp = g_filename_from_uri((char *) key, NULL, NULL))) {
-                                strncpy(file, converted_temp, sizeof(file)-1);
-				file[sizeof(file) - 1] = '\0';
-			        g_free(converted_temp);
-			    } else 
-			    //try to read utf8 filename from outdated file
-				if((converted_temp = g_locale_from_utf8((char *) key, -1, NULL, NULL, &error))) {
-				    strncpy(file, converted_temp, sizeof(file)-1);
-				    file[sizeof(file) - 1] = '\0';
-                                    g_free(converted_temp);
-                                } else {
-                                //last try - maybe it's plain locale filename
-				    strncpy(file, (char *) key, sizeof(file)-1);
-				    file[sizeof(file) - 1] = '\0';
-				};
-			};
+			if (key != NULL)
+				strncpy(file, (char *) key, MAXLEN-1);
 			xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"comment"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-			if (key != NULL) {
-				strncpy(comment, (char *) key, sizeof(comment)-1);
-				comment[sizeof(comment) - 1] = '\0';
-			};
+			if (key != NULL)
+				strncpy(comment, (char *) key, MAXLEN-1);
 			xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"duration"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
                                 duration = convf((char *) key);
-                        };
+                        }
                         xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"volume"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
@@ -4107,8 +4084,6 @@ void
 save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track) {
 
 	xmlNodePtr node;
-	gchar *converted_temp;
-	
 	char * name;
 	char * sort_name;
 	char * file;
@@ -4132,9 +4107,7 @@ save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track) {
 		xmlNewTextChild(node, NULL, (const xmlChar *) "sort_name", (const xmlChar *) sort_name);
 	if (file[0] == '\0')
 		fprintf(stderr, "saving music_store XML: warning: track node with empty <file>\n");
-	converted_temp = g_filename_to_uri(file, NULL, NULL);
-	xmlNewTextChild(node, NULL, (const xmlChar *) "file", (const xmlChar*) converted_temp);
-	g_free(converted_temp);
+	xmlNewTextChild(node, NULL, (const xmlChar *) "file", (const xmlChar *) file);
 	if (comment[0] != '\0')
 		xmlNewTextChild(node, NULL, (const xmlChar *) "comment", (const xmlChar *) comment);
 

@@ -1058,11 +1058,6 @@ playlist_filemeta_get(char * physical_name, char * alt_name) {
 		return NULL;
 	}
 
-        if ((substr = strrchr(physical_name, '/')) == NULL)
-                substr = physical_name;
-        else
-                ++substr;
-
 	plfm->duration = get_file_duration(physical_name);
 
 	if (options.rva_is_enabled) {
@@ -1134,25 +1129,25 @@ playlist_filemeta_get(char * physical_name, char * alt_name) {
 		use_meta = 0;
 	}
 	
-	if (meta != NULL) {
-		meta_free(meta);
-		meta = NULL;
-		if (use_meta) {
-			make_title_string(display_name, options.title_format,
-					  artist_name, record_name, track_name);
-		} else {
-			if (alt_name != NULL) {
-				strcpy(display_name, alt_name);
-			} else {
-				strcpy(display_name, substr);
-			} 
-		}
+	if (use_meta && (meta != NULL)) {
+		make_title_string(display_name, options.title_format,
+				  artist_name, record_name, track_name);
 	} else {
 		if (alt_name != NULL) {
 			strcpy(display_name, alt_name);
 		} else {
+    			if ((substr = strrchr(physical_name, '/')) == NULL)
+            			substr = physical_name;
+    			else
+            			++substr;
+			substr = g_filename_display_name(substr);
 			strcpy(display_name, substr);
-		}
+			g_free(substr);
+		} 
+	}
+	if (meta != NULL) {
+		meta_free(meta);
+		meta = NULL;
 	}
 
 	plfm->title = strdup(display_name);
@@ -2263,6 +2258,7 @@ save_track_node(GtkTreeIter * piter, xmlNodePtr root, char * nodeID) {
 
 	char * track_name;
 	char * phys_name;
+	gchar *converted_temp;
 	char * color;
 	float voladj;
 	float duration;
@@ -2276,8 +2272,9 @@ save_track_node(GtkTreeIter * piter, xmlNodePtr root, char * nodeID) {
 	node = xmlNewTextChild(root, NULL, (const xmlChar*) nodeID, NULL);
 	
 	xmlNewTextChild(node, NULL, (const xmlChar*) "track_name", (const xmlChar*) track_name);
-	xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) phys_name);
-	
+	converted_temp = g_filename_to_uri(phys_name, NULL, NULL);
+	xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) converted_temp);
+	g_free(converted_temp);
 	/* FIXME: dont use #000000 color as active if you dont want special fx in playlist 8-) */
 	
 	if (strcmp(color, pl_color_active) == 0) {
@@ -2339,6 +2336,8 @@ void
 parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * pparent_iter, int sel_ok) {
 
         xmlChar * key;
+	gchar *converted_temp;
+	GError *error;
 	GtkTreeIter iter;
 	char track_name[MAXLEN];
 	char phys_name[MAXLEN];
@@ -2352,59 +2351,84 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * pparent_iter, 
 	phys_name[0] = '\0';
 	color[0] = '\0';
 	
-	gtk_tree_store_append(play_store, &iter, pparent_iter);
 
         cur = cur->xmlChildrenNode;
+	if (cur) {
+	    gtk_tree_store_append(play_store, &iter, pparent_iter);
+	    gtk_tree_store_set(play_store, &iter, 0, "", 1, "", 2, "", 3, 0.0f, 
+				4, "", 5, 0.0f, 6, "", -1);
+	}
+
         while (cur != NULL) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"track_name"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(track_name, (char *) key, MAXLEN-1);
+                        if (key != NULL) {
+                                strncpy(track_name, (char *) key, sizeof(track_name)-1);
+				track_name[sizeof(track_name)-1] = '\0';
+			};
                         xmlFree(key);
+			gtk_tree_store_set(play_store, &iter, 0, track_name, -1); 
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"phys_name"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(phys_name, (char *) key, MAXLEN-1);
+                        if (key != NULL) {
+				if((converted_temp = g_filename_from_uri((char *) key, NULL, NULL))) {
+                            	    strncpy(phys_name, converted_temp, sizeof(phys_name)-1);
+				    phys_name[sizeof(phys_name)-1] = '\0';
+				    g_free(converted_temp);
+				} else {
+				    //try to read utf8 filename from outdated file
+				    converted_temp = g_locale_from_utf8((char *) key, -1, NULL, NULL, &error);
+				    if((converted_temp!=NULL)) {
+					strncpy(phys_name, converted_temp, sizeof(phys_name)-1);
+					phys_name[sizeof(phys_name)-1] = '\0';
+					g_free(converted_temp);
+				    } else {
+				    //last try - maybe it's plain locale filename
+					strncpy(phys_name, (char *) key, sizeof(phys_name)-1);
+					phys_name[sizeof(phys_name)-1] = '\0';
+				    };
+				};
+			};
                         xmlFree(key);
+			gtk_tree_store_set(play_store, &iter, 1, phys_name, -1); 
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"is_active"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
 				if ((xmlStrcmp(key, (const xmlChar *)"yes")) || (!sel_ok)) {
-					strncpy(color, pl_color_inactive, 31);
+					strncpy(color, pl_color_inactive, sizeof(color)-1);
+					color[sizeof(color)-1] = '\0';
 				} else {
-					strncpy(color, pl_color_active, 31);
-				}
-			}
+					strncpy(color, pl_color_active, sizeof(color)-1);
+					color[sizeof(color)-1] = '\0';
+				};
+			} else {
+			    strncpy(color, pl_color_inactive, sizeof(color)-1);
+			    color[sizeof(color)-1] = '\0';
+			};
                         xmlFree(key);
+			gtk_tree_store_set(play_store, &iter, 2, color, -1);
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"voladj"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
 				voladj = convf((char *) key);
                         }
                         xmlFree(key);
+			voladj2str(voladj, voladj_str);
+			gtk_tree_store_set(play_store, &iter, 3, voladj, 4, voladj_str, -1);
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"duration"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
 				duration = convf((char *) key);
                         }
                         xmlFree(key);
+			time2time(duration, duration_str);
+			gtk_tree_store_set(play_store, &iter, 5, duration, 6, duration_str, -1);
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"track"))) {
                         parse_playlist_track(doc, cur, &iter, sel_ok);
 		}
 		cur = cur->next;
 	}
-
-	if ((track_name[0] != '\0') && (phys_name[0] != '\0') && (color[0] != '\0')) {
-		voladj2str(voladj, voladj_str);
-		time2time(duration, duration_str);
-		gtk_tree_store_set(play_store, &iter, 0, track_name, 1, phys_name,
-				   2, color, 3, voladj, 4, voladj_str,
-				   5, duration, 6, duration_str, -1);
-	} else {
-		fprintf(stderr, "warning: parse_playlist_track: incomplete data in playlist XML\n");
-	}
 }
-
 
 void
 load_playlist(char * filename, int enqueue) {
@@ -2581,7 +2605,7 @@ load_m3u(char * filename, int enqueue) {
 				have_name = 0;
 
 				
-				plfm = playlist_filemeta_get(g_locale_to_utf8(path, -1, NULL, NULL, NULL),
+				plfm = playlist_filemeta_get(path,
 							     have_name ? name : NULL);
 				if (plfm == NULL) {
 					fprintf(stderr, "load_m3u(): playlist_filemeta_get() returned NULL\n");
@@ -2782,7 +2806,7 @@ load_pls(char * filename, int enqueue) {
 
 			have_file = have_title = 0;
 
-			plfm = playlist_filemeta_get(g_locale_to_utf8(file, -1, NULL, NULL, NULL),
+			plfm = playlist_filemeta_get(file,
 						     have_title ? title : NULL);
 			if (plfm == NULL) {
 				fprintf(stderr, "load_pls(): playlist_filemeta_get() returned NULL\n");
@@ -2904,7 +2928,7 @@ add_to_playlist(char * filename, int enqueue) {
 		if (!enqueue)
 			gtk_tree_store_clear(play_store);
 
-		plfm = playlist_filemeta_get(g_locale_to_utf8(fullname, -1, NULL, NULL, NULL), NULL);
+		plfm = playlist_filemeta_get(fullname, NULL);
 		if (plfm == NULL) {
 			fprintf(stderr, "add_to_playlist(): playlist_filemeta_get() returned NULL\n");
 			return;

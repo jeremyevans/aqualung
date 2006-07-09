@@ -53,6 +53,8 @@
 	* Improved build system for skins, icons, etc.
 
 	* New skins (Ocean, Plain), new Logo (see About box)! ;-)
+
+	* Better RT behaviour with Jack output
 	
 	* Compiles and runs on AMD64 (thanks to Mark Knecht for testing)!
 

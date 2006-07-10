@@ -245,6 +245,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	       GtkTreeModel * model, GtkTreeIter track_iter) {
 
         char str[MAXLEN];
+	gchar *file_display;
 
 	GtkWidget * vbox;
 	GtkWidget * table;
@@ -343,8 +344,10 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_table_attach(GTK_TABLE(table), hbox_path, 0, 1, 1, 2,
 			 GTK_FILL, GTK_FILL, 5, 2);
 
+	file_display=g_filename_display_name(file);
 	entry_path = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(entry_path), file);
+	gtk_entry_set_text(GTK_ENTRY(entry_path), file_display);
+	g_free(file_display);
 	gtk_editable_set_editable(GTK_EDITABLE(entry_path), FALSE);
 	gtk_table_attach(GTK_TABLE(table), entry_path, 1, 2, 1, 2,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 2);

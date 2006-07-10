@@ -449,7 +449,6 @@ meta_read_flac(metadata * meta, FLAC__StreamMetadata * flacmeta) {
 
 
 /* ret: 1 if successful, 0 if error */
-/* expects filename in UTF8 */
 int
 meta_read(metadata * meta, char * file) {
 
@@ -457,8 +456,6 @@ meta_read(metadata * meta, char * file) {
 #ifdef HAVE_OGG_VORBIS
         char str[MAXLEN];
 #endif /* HAVE_OGG_VORBIS */
-	gchar * file_locale = NULL;  
-	GError * error = NULL;
 
         if ((fdec = file_decoder_new()) == NULL) {
                 fprintf(stderr, "meta_read(): error: file_decoder_new() returned NULL\n");
@@ -466,14 +463,8 @@ meta_read(metadata * meta, char * file) {
                 return 0;
         }
 
-	file_locale = g_locale_from_utf8(file, -1, NULL, NULL, &error);
-        if (file_locale == NULL) {
-                printf("meta_read(): Error during g_locale_from_utf8(): %s\n", error->message);
-                return 0;
-        }
-
-        if (file_decoder_open(fdec, file_locale)) {
-                fprintf(stderr, "file_decoder_open() failed on %s\n", file_locale);
+        if (file_decoder_open(fdec, file)) {
+                fprintf(stderr, "file_decoder_open() failed on %s\n", file);
 		file_decoder_delete(fdec);
                 return 0;
         }
@@ -490,7 +481,7 @@ meta_read(metadata * meta, char * file) {
 		struct id3_file * id3file;
                 struct id3_tag * id3tag;
 
-                if ((id3file = id3_file_open(g_locale_from_utf8(file, -1, NULL, NULL, NULL),
+                if ((id3file = id3_file_open(file,
                                              ID3_FILE_MODE_READONLY)) != NULL) {
                         if ((id3tag = id3_file_tag(id3file)) != NULL) {
 
@@ -562,12 +553,12 @@ meta_read(metadata * meta, char * file) {
                 FLAC__StreamMetadata * flacmeta = NULL;
 
                 if (!FLAC__metadata_simple_iterator_init(iter,
-		        g_locale_from_utf8(file, -1, NULL, NULL, NULL), true, true)) {
+		        file, true, true)) {
 
                         fprintf(stderr,
                                 "meta_read(): error: "
                                 "FLAC__metadata_simple_iterator_init() failed on %s\n",
-                                g_locale_from_utf8(file, -1, NULL, NULL, NULL));
+                                file);
 
 			fprintf(stderr, "%s\n",
 				FLAC__Metadata_SimpleIteratorStatusString[FLAC__metadata_simple_iterator_status(iter)]);

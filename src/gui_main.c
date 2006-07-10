@@ -1883,7 +1883,7 @@ cue_track_for_playback(GtkTreeIter * piter, cue_t * cue) {
 	char * str;
 
 	gtk_tree_model_get(GTK_TREE_MODEL(play_store), piter, 1, &str, 3, &(cue->voladj), -1);
-	cue->filename = strdup(g_locale_from_utf8(str, -1, NULL, NULL, NULL));
+	cue->filename = strdup(str);
 	strncpy(current_file, str, MAXLEN-1);
 	g_free(str);
 }

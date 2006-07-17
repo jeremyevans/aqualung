@@ -45,7 +45,7 @@
 #endif /* HAVE_SRC */
 
 #ifdef HAVE_MPC
-#include <musepack/musepack.h>
+#include <mpcdec/mpcdec.h>
 #endif /* HAVE_MPC */
 
 #include "common.h"

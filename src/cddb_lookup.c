@@ -34,6 +34,7 @@
 #include "options.h"
 #include "decoder/file_decoder.h"
 #include "music_browser.h"
+#include "build_store.h"
 #include "cddb_lookup.h"
 
 extern options_t options;
@@ -185,6 +186,34 @@ init_query_data() {
 
 		record_length = length;
 	}
+
+	return 0;
+}
+
+static int
+init_query_data_from_tracklist(track_t * tracks) {
+
+	int i;
+	float length = 0.0f;
+	float fr_offset = 150.0f; /* leading 2 secs in frames */
+
+	track_t * ptrack = NULL;
+
+	for (track_count = 0, ptrack = tracks; ptrack; track_count++, ptrack = ptrack->next);
+
+	if ((frames = (int *)malloc(sizeof(int) * track_count)) == NULL) {
+		fprintf(stderr, "cddb_lookup.c: init_query_data_from_tracklist(): malloc error\n");
+		return 1;
+	}
+
+	for (i = 0, ptrack = tracks; ptrack; i++, ptrack = ptrack->next) {
+
+		frames[i] = (int)fr_offset;
+		length += ptrack->duration;
+		fr_offset += ptrack->duration * 75.0f;
+	}
+
+	record_length = length;
 
 	return 0;
 }
@@ -653,7 +682,8 @@ cddb_timeout_callback(gpointer data) {
 }
 
 
-void cddb_get() {
+void
+cddb_get() {
 
 	if (init_query_data()) {
 		return;
@@ -669,9 +699,12 @@ void cddb_get() {
 	g_timeout_add(100, cddb_timeout_callback, NULL);
 }
 
-#else
+void
+cddb_get_batch(track_t * tracks) {
 
-void cddb_get() {
+	if (init_query_data_from_tracklist(tracks)) {
+		return;
+	}
 }
 
 #endif /* HAVE_CDDB */

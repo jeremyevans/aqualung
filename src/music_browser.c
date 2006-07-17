@@ -31,6 +31,7 @@
 #include <libxml/parser.h>
 
 #include "common.h"
+#include "build_store.h"
 #include "cddb_lookup.h"
 #include "core.h"
 #include "file_info.h"
@@ -61,15 +62,14 @@ extern PangoFontDescription *fd_statusbar;
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
 
-extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
+extern GtkWidget * gui_stock_label_button(gchar * blabel, const gchar * bstock);
 extern void set_sliders_width(void);
-extern void assign_audio_fc_filters(GtkFileChooser *fc);
+extern void assign_audio_fc_filters(GtkFileChooser * fc);
 
 
 gint cover_widths[5] = { 50, 100, 200, 300, -1 };       /* widths in pixels */
 
 GtkWidget * browser_window;
-GtkWidget * dialog;
 int browser_pos_x;
 int browser_pos_y;
 int browser_size_x;
@@ -94,6 +94,7 @@ GtkWidget * store__addlist;
 GtkWidget * store__addlist_albummode;
 GtkWidget * store__separator1;
 GtkWidget * store__add;
+GtkWidget * store__build;
 GtkWidget * store__edit;
 GtkWidget * store__remove;
 GtkWidget * store__separator2;
@@ -126,7 +127,11 @@ GtkWidget * record__edit;
 GtkWidget * record__remove;
 GtkWidget * record__separator2;
 GtkWidget * record__addtrk;
+
+#ifdef HAVE_CDDB
 GtkWidget * record__cddb;
+#endif /* HAVE_CDDB */
+
 GtkWidget * record__separator3;
 GtkWidget * record__volume;
 GtkWidget * record__search;
@@ -156,6 +161,7 @@ void load_music_store(void);
 static gboolean music_tree_event_cb(GtkWidget * widget, GdkEvent * event);
 
 static void store__add_cb(gpointer data);
+static void store__build_cb(gpointer data);
 static void store__edit_cb(gpointer data);
 static void store__volume_cb(gpointer data);
 static void store__remove_cb(gpointer data);
@@ -186,6 +192,7 @@ struct keybinds {
 
 struct keybinds blank_keybinds[] = {
         {store__add_cb, GDK_n, GDK_N},
+        {store__build_cb, GDK_b, GDK_B},
         {search_cb, GDK_f, GDK_F},
         {NULL, 0}
 };
@@ -193,6 +200,7 @@ struct keybinds blank_keybinds[] = {
 struct keybinds store_keybinds[] = {
 	{store__addlist_defmode, GDK_a, GDK_A},
 	{store__add_cb, GDK_n, GDK_N},
+	{store__build_cb, GDK_b, GDK_B},
 	{store__edit_cb, GDK_e, GDK_E},
 	{store__volume_cb, GDK_v, GDK_V},
 	{store__remove_cb, GDK_Delete, GDK_KP_Delete},
@@ -314,11 +322,11 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
 	const gchar * selected_filename = gtk_entry_get_text(GTK_ENTRY(data));
 
 
-        dialog = gtk_file_chooser_dialog_new(_("Please select the xml file for this store."), 
-                                             GTK_WINDOW(browser_window), 
-                                             GTK_FILE_CHOOSER_ACTION_SAVE, 
-                                             GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT, 
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
+        dialog = gtk_file_chooser_dialog_new(_("Please select the xml file for this store."),
+                                             GTK_WINDOW(browser_window),
+                                             GTK_FILE_CHOOSER_ACTION_SAVE,
+                                             GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT,
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                              NULL);
 
 	if (options.show_hidden) {
@@ -359,6 +367,7 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
 int
 add_store_dialog(char * name, char * file, char * comment) {
 
+	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -377,7 +386,7 @@ add_store_dialog(char * name, char * file, char * comment) {
 
         int ret;
 
-        dialog = gtk_dialog_new_with_buttons(_("Add Store"),
+        dialog = gtk_dialog_new_with_buttons(_("Create empty store"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
@@ -388,34 +397,32 @@ add_store_dialog(char * name, char * file, char * comment) {
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
 
-	table = gtk_table_new(3, 2, FALSE);
+	table = gtk_table_new(2, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
-
-	name_label = gtk_label_new(_("Name:"));
-        hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
-
-        name_entry = gtk_entry_new();
-        gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
-        gtk_entry_set_text(GTK_ENTRY(name_entry), name);
-	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
-
 
 	file_label = gtk_label_new(_("Filename:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), file_label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 5);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
 	hbox2 = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox2, 1, 2, 2, 3,
+	gtk_table_attach(GTK_TABLE(table), hbox2, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
         file_entry = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(file_entry), MAXLEN - 1);
-        gtk_entry_set_text(GTK_ENTRY(file_entry), file);
         gtk_box_pack_start(GTK_BOX(hbox2), file_entry, TRUE, TRUE, 0);
+
+
+	name_label = gtk_label_new(_("Name:"));
+        hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
+
+        name_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
+	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 1, 2,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
 
 	browse_button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
@@ -451,6 +458,12 @@ add_store_dialog(char * name, char * file, char * comment) {
 
 	gtk_widget_show_all(dialog);
 
+ display:
+
+	name[0] = '\0';
+	file[0] = '\0';
+	comment[0] = '\0';
+
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		const char * pfile = gtk_entry_get_text(GTK_ENTRY(file_entry));
@@ -459,11 +472,11 @@ add_store_dialog(char * name, char * file, char * comment) {
 			snprintf(file, MAXLEN-1, "%s%s", options.home, pfile + 1);
 		} else if (pfile[0] == '/') {
 			strncpy(file, pfile, MAXLEN-1);
-		} else {
+		} else if (pfile[0] != '\0') {
 			snprintf(file, MAXLEN-1, "%s/%s", options.cwd, pfile);
 		}
 
-                strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
+                strncpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), MAXLEN-1);
 
 		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);
@@ -471,11 +484,12 @@ add_store_dialog(char * name, char * file, char * comment) {
 		strcpy(comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
 							 &iter_start, &iter_end, TRUE));
 
-		if ((name[0] != '\0') && (file[0] != '\0')) {
-			ret = 1;
-		} else {
-			ret = 0;
+		if ((name[0] == '\0') || (file[0] == '\0')) {
+			goto display;
 		}
+
+		ret = 1;
+
         } else {
                 name[0] = '\0';
                 file[0] = '\0';
@@ -492,6 +506,7 @@ add_store_dialog(char * name, char * file, char * comment) {
 int
 edit_store_dialog(char * name, char * file, char * comment) {
 
+	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -573,6 +588,11 @@ edit_store_dialog(char * name, char * file, char * comment) {
 
 	gtk_widget_show_all(dialog);
 
+ display:
+
+	name[0] = '\0';
+	comment[0] = '\0';
+
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
 
@@ -581,10 +601,12 @@ edit_store_dialog(char * name, char * file, char * comment) {
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
 		strcpy(comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
 							 &iter_start, &iter_end, TRUE));
-		if (name[0] != '\0')
-			ret = 1;
-		else
-			ret = 0;
+		if (name[0] == '\0') {
+			goto display;
+		}
+
+		ret = 1;
+
         } else {
                 name[0] = '\0';
                 comment[0] = '\0';
@@ -601,6 +623,7 @@ edit_store_dialog(char * name, char * file, char * comment) {
 int
 add_artist_dialog(char * name, char * sort_name, char * comment) {
 
+	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -681,6 +704,12 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
 
 	gtk_widget_show_all(dialog);
 
+ display:
+
+	name[0] = '\0';
+	sort_name[0] = '\0';
+	comment[0] = '\0';
+
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
@@ -690,11 +719,12 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
 		strcpy(comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
 							 &iter_start, &iter_end, TRUE));
+		if (name[0] == '\0') {
+			goto display;
+		}
 
-		if (name[0] != '\0')
-			ret = 1;
-		else
-			ret = 0;
+		ret = 1;
+
         } else {
                 name[0] = '\0';
                 sort_name[0] = '\0';
@@ -711,6 +741,7 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
 int
 edit_artist_dialog(char * name, char * sort_name, char * comment) {
 
+	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -790,6 +821,12 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
 
 	gtk_widget_show_all(dialog);
 
+ display:
+
+	name[0] = '\0';
+	sort_name[0] = '\0';
+	comment[0] = '\0';
+
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
@@ -799,10 +836,12 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
 		strcpy(comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
 							 &iter_start, &iter_end, TRUE));
-		if (name[0] != '\0')
-			ret = 1;
-		else
-			ret = 0;
+		if (name[0] == '\0') {
+			goto display;
+		}
+
+		ret = 1;
+
         } else {
                 name[0] = '\0';
                 sort_name[0] = '\0';
@@ -827,11 +866,11 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
 
 
         file_selector = gtk_file_chooser_dialog_new(_("Please select the audio files for this record."), 
-                                                     GTK_WINDOW(dialog), 
-                                                     GTK_FILE_CHOOSER_ACTION_OPEN, 
-                                                     GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
-                                                     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
-                                                     NULL);
+						    NULL,
+						    GTK_FILE_CHOOSER_ACTION_OPEN,
+						    GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+						    GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+						    NULL);
 
         set_sliders_width();    /* MAGIC */
 
@@ -843,7 +882,7 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
         assign_audio_fc_filters(GTK_FILE_CHOOSER(file_selector));
 
 	if (options.show_hidden) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(file_selector), TRUE);
 	}
 
         if (gtk_dialog_run(GTK_DIALOG(file_selector)) == GTK_RESPONSE_ACCEPT) {
@@ -855,7 +894,7 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
 
                 node = lfiles;
 
-                while(node) {
+                while (node) {
 
                         selected_filename = (char *) node->data;
 
@@ -892,6 +931,7 @@ clicked_tracklist_header(GtkWidget * widget, gpointer * data) {
 int
 add_record_dialog(char * name, char * sort_name, char *** strings, char * comment) {
 
+	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -1020,6 +1060,12 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 
         set_sliders_width();    /* MAGIC */
 
+ display:
+
+	name[0] = '\0';
+	sort_name[0] = '\0';
+	comment[0] = '\0';
+
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
@@ -1058,10 +1104,12 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
 		strcpy(comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
 							 &iter_start, &iter_end, TRUE));
-		if (name[0] != '\0')
-			ret = 1;
-		else
-			ret = 0;
+
+		if (name[0] == '\0') {
+			goto display;
+		}
+
+		ret = 1;
         } else {
                 name[0] = '\0';
                 sort_name[0] = '\0';
@@ -1080,6 +1128,7 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 int
 edit_record_dialog(char * name, char * sort_name, char * comment) {
 
+	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -1159,6 +1208,12 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
 
 	gtk_widget_show_all(dialog);
 
+ display:
+
+	name[0] = '\0';
+	sort_name[0] = '\0';
+	comment[0] = '\0';
+
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
@@ -1168,10 +1223,12 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
 		strcpy(comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
 							 &iter_start, &iter_end, TRUE));
-		if (name[0] != '\0')
-			ret = 1;
-		else
-			ret = 0;
+		if (name[0] == '\0') {
+			goto display;
+		}
+
+		ret = 1;
+
         } else {
                 name[0] = '\0';
                 sort_name[0] = '\0';
@@ -1237,6 +1294,7 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
 int
 add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 
+	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -1340,6 +1398,13 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 
 	gtk_widget_show_all(dialog);
 
+ display:
+
+	name[0] = '\0';
+	sort_name[0] = '\0';
+	file[0] = '\0';
+	comment[0] = '\0';
+		
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
@@ -1352,10 +1417,12 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 		strcpy(comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
 							 &iter_start, &iter_end, TRUE));
 
-		if ((name[0] != '\0') && (file[0] != '\0'))
-			ret = 1;
-		else
-			ret = 0;
+		if ((name[0] == '\0') || (file[0] == '\0')) {
+			goto display;
+		}
+
+		ret = 1;
+
         } else {
                 name[0] = '\0';
                 sort_name[0] = '\0';
@@ -1385,6 +1452,7 @@ int
 edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 		  float duration, float volume, float * rva, float * use_rva) {
 
+	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
         GtkWidget * name_entry;
@@ -1522,10 +1590,13 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 
         volume_entry = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(volume_entry), MAXLEN - 1);
-	if (volume <= 0.1f)
+
+	if (volume <= 0.1f) {
 		snprintf(str, MAXLEN-1, "%.1f dBFS", volume);
-	else
+	} else {
 		snprintf(str, MAXLEN-1, _("Unmeasured"));
+	}
+
         gtk_entry_set_text(GTK_ENTRY(volume_entry), str);
         gtk_editable_set_editable(GTK_EDITABLE(volume_entry), FALSE);
         gtk_table_attach(GTK_TABLE(table), volume_entry, 1, 2, 1, 2,
@@ -1562,6 +1633,13 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 
 	gtk_widget_show_all(dialog);
 
+ display:
+
+	name[0] = '\0';
+	sort_name[0] = '\0';
+	file[0] = '\0';
+	comment[0] = '\0';
+
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
@@ -1582,10 +1660,11 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 			*rva = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_manual_rva));
 		}
 
-		if ((name[0] != '\0') && (file[0] != '\0'))
-			ret = 1;
-		else
-			ret = 0;
+		if ((name[0] == '\0') || (file[0] == '\0')) {
+			goto display;
+		}
+
+		ret = 1;
 
         } else {
                 name[0] = '\0';
@@ -1604,6 +1683,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 int
 confirm_dialog(char * title, char * text) {
 
+	GtkWidget * dialog;
         GtkWidget * label;
         int ret;
 
@@ -1672,6 +1752,7 @@ set_popup_sensitivity(GtkTreePath * path) {
 		val = TRUE;
 	}
 
+	gtk_widget_set_sensitive(store__build, val);
 	gtk_widget_set_sensitive(store__edit, val);
 	gtk_widget_set_sensitive(store__remove, val);
 	gtk_widget_set_sensitive(store__addart, val);
@@ -2174,6 +2255,18 @@ store__add_cb(gpointer data) {
 			gtk_list_store_append(ms_pathlist_store, &iter);
 			gtk_list_store_set(ms_pathlist_store, &iter, 0, file, 1, _("rw"), -1);
 		}
+	}
+}
+
+
+static void
+store__build_cb(gpointer data) {
+
+	GtkTreeIter store_iter;
+	GtkTreeModel * model;
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &store_iter)) {
+		build_store(store_iter);
 	}
 }
 
@@ -2719,6 +2812,8 @@ record__remove_cb(gpointer data) {
 }
 
 
+#ifdef HAVE_CDDB
+
 static void
 record__cddb_cb(gpointer data) {
 	GtkTreeIter iter;
@@ -2731,6 +2826,8 @@ record__cddb_cb(gpointer data) {
 		cddb_get();
 	}
 }
+
+#endif /* HAVE_CDDB */
 
 
 /************************************/
@@ -2969,6 +3066,71 @@ search_cb(gpointer data) {
 
 /************************************/
 
+/* return:
+     0: if iter was newly created
+     1: if iter has already existed
+*/
+
+int
+get_iter_for_artist_and_record(GtkTreeIter * store_iter, GtkTreeIter * iter,
+			       const char * artist, const char * record) {
+	int i, j;
+	GtkTreeIter artist_iter;
+	GtkTreeIter record_iter;
+	GtkTreeIter new_artist_iter;
+	GtkTreeIter new_record_iter;
+
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+					     &artist_iter, store_iter, i++)) {
+
+		char * artist_name;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &artist_iter,
+				   0, &artist_name, -1);
+
+
+		if (strcmp(artist, artist_name)) {
+			continue;
+		}
+
+		j = 0;
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+						     &record_iter, &artist_iter, j++)) {
+			char * record_name;
+
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &record_iter,
+					   0, &record_name, -1);
+
+			if (!strcmp(record, record_name)) {
+
+				*iter = record_iter;
+				return 1;
+			}
+		}
+
+		/* create record */
+		gtk_tree_store_append(music_store, &new_record_iter, &artist_iter);
+		gtk_tree_store_set(music_store, &new_record_iter, 0, record, 1, record,
+				   2, "", 3, "", -1);
+
+		*iter = new_record_iter;
+		return 0;
+	}
+
+	/* create both artist and record */
+	gtk_tree_store_append(music_store, &new_artist_iter, store_iter);
+	gtk_tree_store_set(music_store, &new_artist_iter, 0, artist, 1, artist,
+			   2, "", 3, "", -1);
+
+	gtk_tree_store_append(music_store, &new_record_iter, &new_artist_iter);
+	gtk_tree_store_set(music_store, &new_record_iter, 0, record, 1, record,
+			   2, "", 3, "", -1);
+
+	*iter = new_record_iter;
+	return 0;
+}
 
 void
 set_comment_text(GtkTextIter * iter) {
@@ -3495,7 +3657,7 @@ create_music_browser(void) {
 
         /* create popup menu for blank space */
         blank_menu = gtk_menu_new();
-        blank__add = gtk_menu_item_new_with_label(_("Add new store..."));
+        blank__add = gtk_menu_item_new_with_label(_("Create empty store..."));
         blank__search = gtk_menu_item_new_with_label(_("Search..."));
         blank__save = gtk_menu_item_new_with_label(_("Save Music Store"));
         gtk_menu_shell_append(GTK_MENU_SHELL(blank_menu), blank__add);
@@ -3513,7 +3675,8 @@ create_music_browser(void) {
 	store__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	store__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 	store__separator1 = gtk_separator_menu_item_new();
-	store__add = gtk_menu_item_new_with_label(_("Add new store..."));
+	store__add = gtk_menu_item_new_with_label(_("Create empty store..."));
+	store__build = gtk_menu_item_new_with_label(_("Build store from filesystem..."));
 	store__edit = gtk_menu_item_new_with_label(_("Edit store..."));
 	store__remove = gtk_menu_item_new_with_label(_("Remove store"));
 	store__separator2 = gtk_separator_menu_item_new();
@@ -3528,6 +3691,7 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__addlist_albummode);
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__separator1);
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__add);
+	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__build);
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__edit);
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__remove);
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__separator2);
@@ -3541,6 +3705,7 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(store__addlist), "activate", G_CALLBACK(store__addlist_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(store__addlist_albummode), "activate", G_CALLBACK(store__addlist_albummode_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(store__add), "activate", G_CALLBACK(store__add_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(store__build), "activate", G_CALLBACK(store__build_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(store__edit), "activate", G_CALLBACK(store__edit_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(store__remove), "activate", G_CALLBACK(store__remove_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(store__addart), "activate", G_CALLBACK(artist__add_cb), NULL);
@@ -3552,6 +3717,7 @@ create_music_browser(void) {
 	gtk_widget_show(store__addlist_albummode);
 	gtk_widget_show(store__separator1);
 	gtk_widget_show(store__add);
+	gtk_widget_show(store__build);
 	gtk_widget_show(store__edit);
 	gtk_widget_show(store__remove);
 	gtk_widget_show(store__separator2);
@@ -3619,7 +3785,9 @@ create_music_browser(void) {
 	record__remove = gtk_menu_item_new_with_label(_("Remove record"));
 	record__separator2 = gtk_separator_menu_item_new();
 	record__addtrk = gtk_menu_item_new_with_label(_("Add new track to this record..."));
+#ifdef HAVE_CDDB
 	record__cddb = gtk_menu_item_new_with_label(_("CDDB query for this record..."));
+#endif /* HAVE_CDDB */
 	record__separator3 = gtk_separator_menu_item_new();
 	record__volume = gtk_menu_item_new_with_label(_("Calculate volume (recursive)"));
 	record__search = gtk_menu_item_new_with_label(_("Search..."));
@@ -3645,7 +3813,9 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(record__edit), "activate", G_CALLBACK(record__edit_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__remove), "activate", G_CALLBACK(record__remove_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__addtrk), "activate", G_CALLBACK(track__add_cb), NULL);
+#ifdef HAVE_CDDB
 	g_signal_connect_swapped(G_OBJECT(record__cddb), "activate", G_CALLBACK(record__cddb_cb), NULL);
+#endif /* HAVE_CDDB */
 	g_signal_connect_swapped(G_OBJECT(record__volume), "activate", G_CALLBACK(record__volume_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__search), "activate", G_CALLBACK(search_cb), NULL);
 
@@ -3657,7 +3827,9 @@ create_music_browser(void) {
 	gtk_widget_show(record__remove);
 	gtk_widget_show(record__separator2);
 	gtk_widget_show(record__addtrk);
+#ifdef HAVE_CDDB
 	gtk_widget_show(record__cddb);
+#endif /* HAVE_CDDB */
 	gtk_widget_show(record__separator3);
 	gtk_widget_show(record__volume);
 	gtk_widget_show(record__search);

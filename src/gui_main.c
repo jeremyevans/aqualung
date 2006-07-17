@@ -267,8 +267,8 @@ GtkWidget * conf__options;
 GtkWidget * conf__skin;
 GtkWidget * conf__jack;
 GtkWidget * conf__fileinfo;
-GtkWidget * conf__separator;
 GtkWidget * conf__about;
+GtkWidget * conf__quit;
 
 GtkWidget * bigtimer_label;
 GtkWidget * smalltimer_label_1;
@@ -362,11 +362,11 @@ time2time(float seconds, char * str) {
         h = h - d * 24;
 
         if (d > 0) {
-                if(d == 1 && h > 9) {
+                if (d == 1 && h > 9) {
                         sprintf(str, _("%d day, %2d:%02d:%02d"), d, h, m, s);
-                } else if(d == 1 && h < 9) {
+                } else if (d == 1 && h < 9) {
                         sprintf(str, _("%d day, %1d:%02d:%02d"), d, h, m, s);
-                } else if(d != 1 && h > 9) {
+                } else if (d != 1 && h > 9) {
                         sprintf(str, _("%d days, %2d:%02d:%02d"), d, h, m, s);
                 } else {
                         sprintf(str, _("%d days, %1d:%02d:%02d"), d, h, m, s);
@@ -1148,7 +1148,7 @@ change_skin(char * path) {
                 /* sorry for this, but it's temporary workaround */
                 /* see playlist.c:1848 FIXME tag for details */
 
-                if(!color.red && !color.green && !color.blue)
+                if (!color.red && !color.green && !color.blue)
                         color.red++;
 
                 play_list->style->fg[SELECTED].red = color.red;
@@ -1162,6 +1162,52 @@ change_skin(char * path) {
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
 
 	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
+}
+
+
+void
+main_window_close(GtkWidget * widget, gpointer data) {
+
+	send_cmd = CMD_FINISH;
+	jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
+	try_waking_disk_thread();
+
+	if (music_store_changed) {
+		GtkWidget * dialog;
+
+                dialog = gtk_message_dialog_new(GTK_WINDOW(main_window),
+                                                GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                                GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, 
+                                                _("Music Store has been changed.\n"
+                                                "Do you want to save it before exiting?"));
+		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_YES);
+		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+		
+		if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
+			save_music_store();
+		}
+		
+		gtk_widget_destroy(dialog);
+	}
+	
+	save_window_position();
+	save_config();
+	save_plugin_data();
+
+	if (options.auto_save_playlist) {
+		char playlist_name[MAXLEN];
+
+		snprintf(playlist_name, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
+		save_playlist(playlist_name);
+	}
+
+        pango_font_description_free(fd_playlist);
+        pango_font_description_free(fd_browser);
+
+	lrdf_cleanup();
+	close_app_socket();
+	gtk_main_quit();
 }
 
 
@@ -1209,6 +1255,13 @@ conf__about_cb(gpointer data) {
 }
 
 
+void
+conf__quit_cb(gpointer data) {
+
+	main_window_close(NULL, NULL);
+}
+
+
 gint
 vol_bal_timeout_callback(gpointer data) {
 
@@ -1250,52 +1303,6 @@ plugin_toggled(GtkWidget * widget, gpointer data) {
 	} else {
 		hide_fxbuilder();
 	}
-}
-
-
-void
-main_window_close(GtkWidget * widget, gpointer data) {
-
-	send_cmd = CMD_FINISH;
-	jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
-	try_waking_disk_thread();
-
-	if (music_store_changed) {
-		GtkWidget * dialog;
-
-                dialog = gtk_message_dialog_new(GTK_WINDOW(main_window),
-                                                GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                                GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, 
-                                                _("Music Store has been changed.\n"
-                                                "Do you want to save it before exiting?"));
-		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_YES);
-		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
-		
-		if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
-			save_music_store();
-		}
-		
-		gtk_widget_destroy(dialog);
-	}
-	
-	save_window_position();
-	save_config();
-	save_plugin_data();
-
-	if (options.auto_save_playlist) {
-		char playlist_name[MAXLEN];
-
-		snprintf(playlist_name, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
-		save_playlist(playlist_name);
-	}
-
-        pango_font_description_free(fd_playlist);
-        pango_font_description_free(fd_browser);
-
-	lrdf_cleanup();
-	close_app_socket();
-	gtk_main_quit();
 }
 
 
@@ -1546,7 +1553,7 @@ main_window_focus_out(GtkWidget * widget, GdkEventFocus * event, gpointer data) 
 gint
 main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpointer data) {
 
-        if(options.united_minimization) {
+        if (options.united_minimization) {
 
                 if (event->new_window_state == GDK_WINDOW_STATE_ICONIFIED) {
                         if (browser_on)
@@ -2693,6 +2700,9 @@ create_main_window(char * skin_path) {
 	GtkWidget * info_hbox;
 	GtkWidget * vb_table;
 
+	GtkWidget * conf__separator1;
+	GtkWidget * conf__separator2;
+
 	GtkWidget * time_table;
 	GtkWidget * time0_viewp;
 	GtkWidget * time1_viewp;
@@ -2767,13 +2777,17 @@ create_main_window(char * skin_path) {
         conf__options = gtk_menu_item_new_with_label(_("Settings"));
         conf__skin = gtk_menu_item_new_with_label(_("Skin chooser"));
         conf__jack = gtk_menu_item_new_with_label(_("JACK port setup"));
-        if(!options.playlist_is_embedded) 
+        if (!options.playlist_is_embedded) {
                 conf__fileinfo = gtk_menu_item_new_with_label(_("File info"));
-        conf__separator = gtk_separator_menu_item_new();
+	}
+        conf__separator1 = gtk_separator_menu_item_new();
         conf__about = gtk_menu_item_new_with_label(_("About"));
+        conf__separator2 = gtk_separator_menu_item_new();
+        conf__quit = gtk_menu_item_new_with_label(_("Quit"));
 
-        if(options.playlist_is_embedded)
-                gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__separator);
+        if (options.playlist_is_embedded) {
+                gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__separator1);
+	}
         gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__options);
         gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__skin);
 
@@ -2781,19 +2795,22 @@ create_main_window(char * skin_path) {
                 gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__jack);
         }
 
-        if(!options.playlist_is_embedded) {
+        if (!options.playlist_is_embedded) {
                 gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__fileinfo);
-                gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__separator);
+                gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__separator1);
         }
         gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__about);
+	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__separator2);
+        gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__quit);
 
         g_signal_connect_swapped(G_OBJECT(conf__options), "activate", G_CALLBACK(conf__options_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(conf__skin), "activate", G_CALLBACK(conf__skin_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(conf__jack), "activate", G_CALLBACK(conf__jack_cb), NULL);
 
         g_signal_connect_swapped(G_OBJECT(conf__about), "activate", G_CALLBACK(conf__about_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(conf__quit), "activate", G_CALLBACK(conf__quit_cb), NULL);
 
-        if(!options.playlist_is_embedded) {
+        if (!options.playlist_is_embedded) {
                 g_signal_connect_swapped(G_OBJECT(conf__fileinfo), "activate", G_CALLBACK(conf__fileinfo_cb), NULL);
                 gtk_widget_set_sensitive(conf__fileinfo, FALSE);
                 gtk_widget_show(conf__fileinfo);
@@ -2802,8 +2819,10 @@ create_main_window(char * skin_path) {
         gtk_widget_show(conf__options);
         gtk_widget_show(conf__skin);
         gtk_widget_show(conf__jack);
-        gtk_widget_show(conf__separator);
+        gtk_widget_show(conf__separator1);
         gtk_widget_show(conf__about);
+        gtk_widget_show(conf__separator2);
+        gtk_widget_show(conf__quit);
 
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -3334,7 +3353,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
                 /* sorry for this, but it's temporary workaround */
                 /* see playlist.c:1848 FIXME tag for details */
 
-                if(!color.red && !color.green && !color.blue)
+                if (!color.red && !color.green && !color.blue)
                         color.red++;
 
                 play_list->style->fg[SELECTED].red = color.red;
@@ -3361,7 +3380,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
         for(i=0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
 
-        if(options.playlist_is_embedded && i) {
+        if (options.playlist_is_embedded && i) {
                 path_pl = gtk_tree_path_new_first();
                 gtk_widget_realize(play_list);
                 gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), path_pl, NULL, TRUE);
@@ -4779,7 +4798,7 @@ cover_update(gchar *filename) {
         gchar cover_filename[PATH_MAX];
 
 
-        if(strlen(filename)) {
+        if (strlen(filename)) {
 
                 /* create cover path */
 
@@ -4819,7 +4838,7 @@ cover_update(gchar *filename) {
 
                         gtk_image_set_from_pixbuf (GTK_IMAGE(cover_image_area), cover_pixbuf);
 
-                        if(!cover_show_flag) {
+                        if (!cover_show_flag) {
                                 cover_show_flag = 1;      
                                 gtk_widget_show(cover_viewport);
                         }

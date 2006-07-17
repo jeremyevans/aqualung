@@ -18,10 +18,21 @@
     $Id$
 */
 
-#ifndef _CDDB_LOOKUP_H
-#define _CDDB_LOOKUP_H
 
-void cddb_get(void);
-void cddb_get_batch(track_t * tracks);
+#ifndef _BUILD_STORE_H
+#define _BUILD_STORE_H
 
-#endif /* _CDDB_LOOKUP_H */
+typedef struct _track_t {
+
+	char filename[MAXLEN];
+	char name[MAXLEN];
+	float duration;
+	int valid;
+
+	struct _track_t * next;
+
+} track_t;
+
+void build_store(GtkTreeIter store_iter);
+
+#endif /* _BUILD_STORE_H */

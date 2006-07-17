@@ -146,7 +146,7 @@ sfac_clicked(GtkWidget * widget, gpointer data) {
 
         get_toggle_buttons_state();
 
-        if(selectfc) {
+        if (selectfc) {
 
                 gtk_widget_hide(sres_list);
                 gtk_window_resize(GTK_WINDOW(search_window), 420, 215);
@@ -643,19 +643,19 @@ search_dialog(void) {
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(close_button_clicked), NULL);
         gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
 
-        if(search_ms_flags & SEARCH_F_CS)
+        if (search_ms_flags & SEARCH_F_CS)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_case), TRUE);
-        if(search_ms_flags & SEARCH_F_EM)
+        if (search_ms_flags & SEARCH_F_EM)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_exact), TRUE);
-        if(search_ms_flags & SEARCH_F_SF)
+        if (search_ms_flags & SEARCH_F_SF)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_sfac), TRUE);
-        if(search_ms_flags & SEARCH_F_AN)
+        if (search_ms_flags & SEARCH_F_AN)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_artist), TRUE);
-        if(search_ms_flags & SEARCH_F_RT)
+        if (search_ms_flags & SEARCH_F_RT)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_record), TRUE);
-        if(search_ms_flags & SEARCH_F_TT)
+        if (search_ms_flags & SEARCH_F_TT)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_track), TRUE);
-        if(search_ms_flags & SEARCH_F_CO)
+        if (search_ms_flags & SEARCH_F_CO)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_comment), TRUE);
 
 	gtk_widget_show(search_window);

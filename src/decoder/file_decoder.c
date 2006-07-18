@@ -60,8 +60,8 @@ decoder_init_t * decoder_init_v[N_DECODERS] = {
 	vorbis_decoder_init,
 	speex_dec_init,
 	mpc_decoder_init,
-	mpeg_decoder_init,
 	mac_decoder_init,
+	mpeg_decoder_init,
 	mod_decoder_init
 };
 

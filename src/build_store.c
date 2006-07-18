@@ -21,11 +21,13 @@
 #include <config.h>
 
 #include <dirent.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <regex.h>
 #include <gtk/gtk.h>
 #include <sys/stat.h>
 
@@ -44,14 +46,6 @@ extern GtkWidget * browser_window;
 extern GtkWidget * gui_stock_label_button(gchar * blabel, const gchar * bstock);
 extern void set_sliders_width(void);
 
-enum {
-	MODE_NONE,
-	MODE_META,
-	MODE_CDDB,
-	MODE_FILE
-};
-
-int search_order[] = { MODE_META, MODE_CDDB, MODE_FILE };
 
 pthread_t build_store_thread_id;
 
@@ -63,12 +57,16 @@ GtkWidget * meta_check_title;
 GtkWidget * meta_check_artist;
 GtkWidget * meta_check_record;
 
+#ifdef HAVE_CDDB
 GtkWidget * cddb_check_enable;
 GtkWidget * cddb_check_title;
 GtkWidget * cddb_check_artist;
 GtkWidget * cddb_check_record;
+/*
 GtkWidget * cddb_radio_batch;
 GtkWidget * cddb_radio_interactive;
+*/
+#endif /* HAVE_CDDB */
 
 GtkWidget * fs_radio_preset;
 GtkWidget * fs_radio_regexp;
@@ -89,10 +87,14 @@ int cddb_title = 1;
 int cddb_artist = 1;
 int cddb_record = 1;
 
+int fs_preset = 1;
 int fs_rm_number = 1;
 int fs_rm_ext = 1;
 int fs_underscore = 1;
 
+char fs_regexp[MAXLEN];
+char fs_replacement[MAXLEN];
+regex_t fs_compiled;
 
 char root[MAXLEN];
 
@@ -108,6 +110,8 @@ meta_check_enable_toggled(GtkWidget * widget, gpointer * data) {
 	gtk_widget_set_sensitive(meta_check_record, state);
 }
 
+
+#ifdef HAVE_CDDB
 void
 cddb_check_enable_toggled(GtkWidget * widget, gpointer * data) {
 
@@ -116,9 +120,12 @@ cddb_check_enable_toggled(GtkWidget * widget, gpointer * data) {
 	gtk_widget_set_sensitive(cddb_check_title, state);
 	gtk_widget_set_sensitive(cddb_check_artist, state);
 	gtk_widget_set_sensitive(cddb_check_record, state);
+	/*
 	gtk_widget_set_sensitive(cddb_radio_batch, state);
 	gtk_widget_set_sensitive(cddb_radio_interactive, state);
+	*/
 }
+#endif /* HAVE_CDDB */
 
 
 void
@@ -199,7 +206,11 @@ build_store_dialog(void) {
 	GtkWidget * browse_button;
 
 	GtkWidget * meta_vbox;
+
+#ifdef HAVE_CDDB
 	GtkWidget * cddb_vbox;
+#endif /* HAVE_CDDB */
+
 	GtkWidget * fs_vbox;
 
         int ret;
@@ -305,6 +316,7 @@ build_store_dialog(void) {
 
 	/* CDDB */
 
+#ifdef HAVE_CDDB
         cddb_vbox = gtk_vbox_new(FALSE, 0);
 	label = gtk_label_new(_("CDDB"));
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), cddb_vbox, label);
@@ -359,6 +371,7 @@ build_store_dialog(void) {
 	gtk_widget_set_name(cddb_radio_interactive, "check_on_notebook");
         gtk_box_pack_start(GTK_BOX(cddb_vbox), cddb_radio_interactive, FALSE, FALSE, 0);
 	*/
+#endif /* HAVE_CDDB */
 
 	/* Filenames */
 
@@ -369,6 +382,10 @@ build_store_dialog(void) {
 	fs_radio_preset = gtk_radio_button_new_with_label(NULL, _("Predefined transformations"));
 	gtk_widget_set_name(fs_radio_preset, "check_on_notebook");
         gtk_box_pack_start(GTK_BOX(fs_vbox), fs_radio_preset, FALSE, FALSE, 5);
+
+	if (fs_preset) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fs_radio_preset), TRUE);
+	}
 
 	g_signal_connect(G_OBJECT(fs_radio_preset), "toggled",
 			 G_CALLBACK(fs_radio_preset_toggled), NULL);
@@ -453,24 +470,31 @@ build_store_dialog(void) {
 			snprintf(root, MAXLEN-1, "%s/%s", options.cwd, proot);
 		}
 
-		if (root[0] == '\0') {
-			goto display;
-		}
-
 		meta_enable = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_enable));
 		meta_wspace = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_wspace));
 		meta_title = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_title));
 		meta_artist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_artist));
 		meta_record = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_record));
 
+#ifdef HAVE_CDDB
 		cddb_enable = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cddb_check_enable));
 		cddb_title = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cddb_check_title));
 		cddb_artist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cddb_check_artist));
 		cddb_record = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cddb_check_record));
+#endif /* HAVE_CDDB */
 
+		fs_preset = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fs_radio_preset));
 		fs_rm_number = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fs_check_rm_number));
 		fs_rm_ext = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fs_check_rm_ext));
 		fs_underscore = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fs_check_underscore));
+
+		strncpy(fs_regexp, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp1)), MAXLEN - 1);
+		strncpy(fs_replacement, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp2)), MAXLEN - 1);
+
+		if (root[0] == '\0' ||
+		    (!fs_preset && regcomp(&fs_compiled, fs_regexp, REG_EXTENDED))) {
+			goto display;
+		}
 
 		ret = 1;
 
@@ -553,39 +577,71 @@ num_invalid_tracks(track_t * tracks) {
 void
 transform_filename(char * dest, char * src) {
 
-	int i;
-	char tmp[MAXLEN];
-	char * ptmp = tmp;
+	if (fs_preset) {
 
-	strncpy(tmp, src, MAXLEN-1);
+		int i;
+		char tmp[MAXLEN];
+		char * ptmp = tmp;
+		
+		strncpy(tmp, src, MAXLEN-1);
 
-	/* remove leading number */
-
-	if (fs_rm_number) {
-		while (*ptmp && ((*ptmp >= '0' && *ptmp <= '9') ||
-				 *ptmp == ' ' || *ptmp == '_' || *ptmp == '-')) {
-			ptmp++;
-		}
-	}
-
-	/* remove extension */
-
-	if (fs_rm_ext) {
-		for (i = strlen(ptmp) - 1; ptmp[i] != '.'; i--);
-		ptmp[i] = '\0';
-	}
-
-	/* convert underscore to space */
-
-	if (fs_underscore) {
-		for (i = 0; ptmp[i]; i++) {
-			if (ptmp[i] == '_') {
-				ptmp[i] = ' ';
+		if (fs_rm_number) {
+			while (*ptmp && (isdigit(*ptmp) || *ptmp == ' ' ||
+					 *ptmp == '_' || *ptmp == '-')) {
+				ptmp++;
 			}
 		}
-	}
 
-	strncpy(dest, ptmp, MAXLEN-1);
+		if (fs_rm_ext) {
+			for (i = strlen(ptmp) - 1; ptmp[i] != '.'; i--);
+			ptmp[i] = '\0';
+		}
+
+		if (fs_underscore) {
+			for (i = 0; ptmp[i]; i++) {
+				if (ptmp[i] == '_') {
+					ptmp[i] = ' ';
+				}
+			}
+		}
+
+		strncpy(dest, ptmp, MAXLEN-1);
+
+	} else {
+
+		regmatch_t regmatch[10];
+
+		if (!regexec(&fs_compiled, src, 10, regmatch, 0)) {
+		
+			int i;
+
+			dest[0] = '\0';
+
+			strncat(dest, src, regmatch[0].rm_so);
+
+			for (i = 0; i < strlen(fs_replacement) - 1; i++) {
+				if (fs_replacement[i] == '\\' && isdigit(fs_replacement[i+1])) {
+					int j = fs_replacement[i+1] - '0';
+					
+					if (j == 0 || j > fs_compiled.re_nsub) {
+						i++;
+						continue;
+					}
+					
+					strncat(dest, src + regmatch[j].rm_so,
+						regmatch[j].rm_eo - regmatch[j].rm_so);
+					i++;
+				} else {
+					strncat(dest, fs_replacement + i, 1);
+				}
+			}
+			
+			strncat(dest, fs_replacement + i, 1);
+			strcat(dest, src + regmatch[0].rm_eo);
+		} else {
+			strncpy(dest, src, MAXLEN-1);
+		}
+	}
 }
 
 void
@@ -689,6 +745,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 
 	/* cddb */
 
+#ifdef HAVE_CDDB
 	if (cddb_enable) {
 
 		cddb_get_batch(tracks, artist, record, &artist_is_set, &record_is_set,
@@ -698,6 +755,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 			goto finish;
 		}
 	}
+#endif /* HAVE_CDDB */
 
 	/* filesystem */
 
@@ -714,10 +772,12 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	for (i = 0, ptrack = tracks; ptrack; i++, ptrack = ptrack->next) {
 
 		if (!ptrack->valid) {
+			printf("transform %d\n", i);
 			transform_filename(ptrack->name, ptrack->d_name);
 			ptrack->valid = 1;
 		}
 	}
+
 
 	/* add tracks to music store */
 

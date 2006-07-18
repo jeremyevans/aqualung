@@ -118,21 +118,22 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 		fprintf(stderr, "mpc_decoder_open: fopen() failed for Musepack file\n");
 		return DECODER_OPEN_FERROR;
 	}
-
 	pd->seekable = 1;
 	fseek(pd->mpc_file, 0, SEEK_END);
 	pd->size = ftell(pd->mpc_file);
 	fseek(pd->mpc_file, 0, SEEK_SET);
 	
-	mpc_reader_setup_file_reader(&pd->mpc_r, pd->mpc_file);
+	mpc_reader_setup_file_reader(&pd->mpc_r_f, pd->mpc_file);
 	
 	mpc_streaminfo_init(&pd->mpc_i);
-	if (mpc_streaminfo_read(&pd->mpc_i, &pd->mpc_r) != ERROR_CODE_OK) {
+	if (mpc_streaminfo_read(&pd->mpc_i, &pd->mpc_r_f.reader) != ERROR_CODE_OK) {
+		fclose(pd->mpc_file);
 		return DECODER_OPEN_BADLIB;
 	}
 	
-	mpc_decoder_setup(&pd->mpc_d, &pd->mpc_r);
+	mpc_decoder_setup(&pd->mpc_d, &pd->mpc_r_f.reader);
 	if (!mpc_decoder_initialize(&pd->mpc_d, &pd->mpc_i)) {
+		fclose(pd->mpc_file);
 		return DECODER_OPEN_BADLIB;
 	}
 	

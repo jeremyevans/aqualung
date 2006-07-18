@@ -44,7 +44,7 @@ typedef struct _mpc_pdata_t {
         int status;
         int is_eos;
         mpc_decoder mpc_d;
-        mpc_reader mpc_r;
+        mpc_reader_file mpc_r_f;
         mpc_streaminfo mpc_i;
 } mpc_pdata_t;
 #endif /* HAVE_MPC */

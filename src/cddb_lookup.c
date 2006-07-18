@@ -56,6 +56,7 @@ GtkWidget * progress_win = NULL;
 GtkWidget * progress_label;
 GtkWidget * progbar;
 int progress_counter = 0;
+int progress_prev = 0;
 
 GtkWidget * combo;
 GtkListStore * track_store;
@@ -608,7 +609,6 @@ static gint
 cddb_timeout_callback(gpointer data) {
 
 	int i;
-	int progress_prev = 0;
 	char text[MAXLEN];
 
 	if (cddb_query_aborted) {
@@ -694,16 +694,69 @@ cddb_get() {
 	cddb_thread_state = 0;
 	cddb_query_aborted = 0;
 	progress_counter = 0;
+	progress_prev = 0;
 	pthread_create(&cddb_thread_id, NULL, cddb_thread, NULL);
 
 	g_timeout_add(100, cddb_timeout_callback, NULL);
 }
 
 void
-cddb_get_batch(track_t * tracks) {
+cddb_get_batch(track_t * tracks,
+	       char * artist, char * record, int * artist_is_set, int * record_is_set,
+	       int cddb_title, int cddb_artist, int cddb_record) {
 
 	if (init_query_data_from_tracklist(tracks)) {
 		return;
+	}
+
+	printf("cddb: query data initialized\n");
+
+	cddb_thread_state = 0;
+	cddb_query_aborted = 0;
+	progress_counter = 0;
+	progress_prev = 0;
+
+	cddb_thread(NULL);
+
+	if (cddb_thread_state == -1 || record_count == 0) {
+		printf("cddb: no match found\n");
+		return;
+	}
+
+	if (cddb_thread_state == 1) {
+
+		int i;
+		track_t * ptrack = NULL;
+		printf("cddb: %d match found\n", record_count);
+
+		if (cddb_artist && !*artist_is_set) {
+			strncpy(artist, cddb_disc_get_artist(records[0]), MAXLEN-1);
+			*artist_is_set = 1;
+		}
+
+		if (cddb_record && !*record_is_set) {
+			strncpy(record, cddb_disc_get_title(records[0]), MAXLEN-1);
+			*record_is_set = 1;
+		}
+		
+		if (cddb_title) {
+			for (i = 0, ptrack = tracks; ptrack; i++, ptrack = ptrack->next) {
+				if (!ptrack->valid) {
+					strncpy(ptrack->name,
+						cddb_track_get_title(cddb_disc_get_track(records[0], i)),
+						MAXLEN-1);
+					ptrack->valid = 1;
+				}
+			}
+		}
+
+		for (i = 0; i < record_count; i++) {
+			cddb_disc_destroy(records[i]);
+		}
+		
+		free(records);
+		libcddb_shutdown();
+		free(frames);
 	}
 }
 

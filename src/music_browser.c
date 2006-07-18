@@ -3086,28 +3086,47 @@ get_iter_for_artist_and_record(GtkTreeIter * store_iter, GtkTreeIter * iter,
 					     &artist_iter, store_iter, i++)) {
 
 		char * artist_name;
+		char * artist_name_key;
+		char * artist_key;
 
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &artist_iter,
 				   0, &artist_name, -1);
 
+		artist_key = g_utf8_casefold(artist, -1);
+		artist_name_key = g_utf8_casefold(artist_name, -1);
 
-		if (strcmp(artist, artist_name)) {
+		if (g_utf8_collate(artist_key, artist_name_key)) {
+			g_free(artist_key);
+			g_free(artist_name_key);
 			continue;
 		}
+
+		g_free(artist_key);
+		g_free(artist_name_key);
 
 		j = 0;
 		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
 						     &record_iter, &artist_iter, j++)) {
 			char * record_name;
+			char * record_name_key;
+			char * record_key;
 
 			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &record_iter,
 					   0, &record_name, -1);
 
-			if (!strcmp(record, record_name)) {
+			record_key = g_utf8_casefold(record, -1);
+			record_name_key = g_utf8_casefold(record_name, -1);
+
+			if (!g_utf8_collate(record_key, record_name_key)) {
 
 				*iter = record_iter;
+				g_free(record_key);
+				g_free(record_name_key);
 				return 1;
 			}
+
+			g_free(record_key);
+			g_free(record_name_key);
 		}
 
 		/* create record */

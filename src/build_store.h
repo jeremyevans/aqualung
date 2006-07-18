@@ -25,6 +25,7 @@
 typedef struct _track_t {
 
 	char filename[MAXLEN];
+	char d_name[MAXLEN];
 	char name[MAXLEN];
 	float duration;
 	int valid;

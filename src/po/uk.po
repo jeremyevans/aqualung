@@ -210,89 +210,146 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../build_store.c:145
+#: ../build_store.c:152
 #, fuzzy
 msgid "Please select the root directory."
 msgstr "Будьласка обер╕ть звуков╕ файли для цього запису."
 
-#: ../build_store.c:208
+#: ../build_store.c:225
 #, fuzzy
 msgid "Build store"
 msgstr "Редагувати склад..."
 
-#: ../build_store.c:227 ../options.c:1527
+#: ../build_store.c:244 ../options.c:1527
 msgid "General"
 msgstr "Головне"
 
-#: ../build_store.c:230
+#: ../build_store.c:250
 msgid "Root path:"
 msgstr ""
 
-#: ../build_store.c:244 ../music_browser.c:428 ../music_browser.c:1368
+#: ../build_store.c:264 ../music_browser.c:428 ../music_browser.c:1368
 #: ../music_browser.c:1537
 msgid "_Browse..."
 msgstr "_Оглянути..."
 
-#: ../build_store.c:254 ../options.c:2207
+#: ../build_store.c:270
+msgid "Metadata first, then CDDB"
+msgstr ""
+
+#: ../build_store.c:276
+msgid "CDDB first, then metadata"
+msgstr ""
+
+#: ../build_store.c:285 ../options.c:2207
 msgid "Metadata"
 msgstr "Метадан╕"
 
-#: ../build_store.c:258
+#: ../build_store.c:289
 #, fuzzy
 msgid "Import file metadata"
 msgstr "Перечитати ╕нформац╕ю про файл"
 
-#: ../build_store.c:270 ../build_store.c:326
+#: ../build_store.c:301 ../build_store.c:365
 #, fuzzy
 msgid "Import title"
 msgstr "╤мпортувати як Альбом"
 
-#: ../build_store.c:279 ../build_store.c:335
+#: ../build_store.c:310 ../build_store.c:374
 #, fuzzy
 msgid "Import artist"
 msgstr "╤мпортувати як Виконавця"
 
-#: ../build_store.c:288 ../build_store.c:344
+#: ../build_store.c:319 ../build_store.c:383
 #, fuzzy
 msgid "Import record"
 msgstr "╤мпортувати як Запис"
 
-#: ../build_store.c:297
+#: ../build_store.c:328
 msgid "Exclude whitespace-only metadata"
 msgstr ""
 
-#: ../build_store.c:309 ../options.c:2306
+#: ../build_store.c:348 ../options.c:2306
 msgid "CDDB"
 msgstr ""
 
-#: ../build_store.c:313
+#: ../build_store.c:352
 msgid "Perform CDDB lookup for records"
 msgstr ""
 
-#: ../build_store.c:366
+#: ../build_store.c:402
 msgid "Filesystem"
 msgstr ""
 
-#: ../build_store.c:369
+#: ../build_store.c:405
 msgid "Predefined transformations"
 msgstr ""
 
-#: ../build_store.c:377
+#: ../build_store.c:417
 msgid "Remove leading number"
 msgstr ""
 
-#: ../build_store.c:386
+#: ../build_store.c:426
 #, fuzzy
 msgid "Remove file extension"
 msgstr "Прибрати вибране"
 
-#: ../build_store.c:395
+#: ../build_store.c:435
 #, fuzzy
 msgid "Convert underscore to space"
 msgstr "╤нвертувати поточний стан"
 
-#: ../build_store.c:404
+#: ../build_store.c:444
 msgid "Regular expression"
+msgstr ""
+
+#: ../build_store.c:458
+msgid "regexp:"
+msgstr ""
+
+#: ../build_store.c:469
+msgid "replacement:"
+msgstr ""
+
+#: ../build_store.c:546
+msgid "Regexp matches empty string"
+msgstr ""
+
+#: ../build_store.c:597
+#, fuzzy
+msgid "Building store from filesystem"
+msgstr "Редагувати склад..."
+
+#: ../build_store.c:611
+#, fuzzy
+msgid "Directory:"
+msgstr "Запис"
+
+#: ../build_store.c:623
+#, fuzzy
+msgid "Action:"
+msgstr "Тривал╕сть:"
+
+#: ../build_store.c:643 ../cddb_lookup.c:122 ../ifp_device.c:879
+#: ../volume.c:192
+msgid "Abort"
+msgstr "Перервати"
+
+#: ../build_store.c:874
+msgid "Scanning files"
+msgstr ""
+
+#: ../build_store.c:915 ../build_store.c:934
+#, fuzzy
+msgid "Processing metadata"
+msgstr "Обробка..."
+
+#: ../build_store.c:921 ../build_store.c:940
+msgid "CDDB lookup"
+msgstr ""
+
+#: ../build_store.c:953
+msgid "File name transformation"
 msgstr ""
 
 #: ../cddb_lookup.c:96 ../cddb_lookup.c:340
@@ -306,10 +363,6 @@ msgstr "Отримання зб╕г╕в з сервера..."
 #: ../cddb_lookup.c:111
 msgid "Connecting to CDDB server..."
 msgstr "П╕д'╓днуюсь до сервера CDDB..."
-
-#: ../cddb_lookup.c:122 ../ifp_device.c:879 ../volume.c:192
-msgid "Abort"
-msgstr "Перервати"
 
 #: ../cddb_lookup.c:356
 msgid "Matches:"
@@ -2068,9 +2121,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "%d%% - Calculate volume level"
 #~ msgstr "П╕драхувати гучн╕сть"
-
-#~ msgid "Processing..."
-#~ msgstr "Обробка..."
 
 #~ msgid "Progress:"
 #~ msgstr "Прогрес:"

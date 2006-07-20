@@ -48,8 +48,14 @@ extern void set_sliders_width(void);
 
 
 pthread_t build_store_thread_id;
+int build_cancelled = 0;
 
 GtkTreeIter store_iter;
+
+GtkWidget * prog_window;
+GtkWidget * prog_cancel_button;
+GtkWidget * prog_file_entry;
+GtkWidget * prog_action_label;
 
 GtkWidget * meta_check_enable;
 GtkWidget * meta_check_wspace;
@@ -62,10 +68,6 @@ GtkWidget * cddb_check_enable;
 GtkWidget * cddb_check_title;
 GtkWidget * cddb_check_artist;
 GtkWidget * cddb_check_record;
-/*
-GtkWidget * cddb_radio_batch;
-GtkWidget * cddb_radio_interactive;
-*/
 #endif /* HAVE_CDDB */
 
 GtkWidget * fs_radio_preset;
@@ -75,6 +77,8 @@ GtkWidget * fs_check_rm_ext;
 GtkWidget * fs_check_underscore;
 GtkWidget * fs_entry_regexp1;
 GtkWidget * fs_entry_regexp2;
+
+int order_meta_first = 1;
 
 int meta_enable = 1;
 int meta_wspace = 1;
@@ -120,10 +124,6 @@ cddb_check_enable_toggled(GtkWidget * widget, gpointer * data) {
 	gtk_widget_set_sensitive(cddb_check_title, state);
 	gtk_widget_set_sensitive(cddb_check_artist, state);
 	gtk_widget_set_sensitive(cddb_check_record, state);
-	/*
-	gtk_widget_set_sensitive(cddb_radio_batch, state);
-	gtk_widget_set_sensitive(cddb_radio_interactive, state);
-	*/
 }
 #endif /* HAVE_CDDB */
 
@@ -151,14 +151,14 @@ browse_button_clicked(GtkWidget * widget, gpointer * data) {
 
         dialog = gtk_file_chooser_dialog_new(_("Please select the root directory."),
                                              GTK_WINDOW(browser_window),
-                                             GTK_FILE_CHOOSER_ACTION_SAVE,
+					     GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
                                              GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT,
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                              NULL);
 
 	if (options.show_hidden) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
-	}
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), options.show_hidden);
+	} 
 
         set_sliders_width();    /* MAGIC */
 
@@ -205,13 +205,19 @@ build_store_dialog(void) {
 	GtkWidget * root_label;
 	GtkWidget * browse_button;
 
+	GtkWidget * gen_vbox;
 	GtkWidget * meta_vbox;
+	GtkWidget * fs_vbox;
+
+	GtkWidget * fs_error_label;
 
 #ifdef HAVE_CDDB
+	GtkWidget * order_radio_meta;
+	GtkWidget * order_radio_cddb;
 	GtkWidget * cddb_vbox;
 #endif /* HAVE_CDDB */
 
-	GtkWidget * fs_vbox;
+	GdkColor red = { 0, 50000, 0, 0 };
 
         int ret;
 
@@ -234,9 +240,12 @@ build_store_dialog(void) {
 
 	/* General */
 
-	table = gtk_table_new(3, 2, FALSE);
+        gen_vbox = gtk_vbox_new(FALSE, 0);
 	label = gtk_label_new(_("General"));
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, label);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), gen_vbox, label);
+
+	table = gtk_table_new(1, 2, FALSE);
+        gtk_box_pack_start(GTK_BOX(gen_vbox), table, FALSE, FALSE, 0);
 
 	root_label = gtk_label_new(_("Root path:"));
         hbox = gtk_hbox_new(FALSE, 0);
@@ -249,14 +258,25 @@ build_store_dialog(void) {
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
         root_entry = gtk_entry_new_with_max_length(MAXLEN-1);
-	gtk_entry_set_text(GTK_ENTRY(root_entry), "~/music"); // TMP: just for testing
+	gtk_entry_set_text(GTK_ENTRY(root_entry), "/music"); // TMP: just for testing
         gtk_box_pack_start(GTK_BOX(hbox2), root_entry, TRUE, TRUE, 0);
 
 	browse_button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
         gtk_box_pack_start(GTK_BOX(hbox2), browse_button, FALSE, TRUE, 2);
-        g_signal_connect(G_OBJECT(browse_button), "clicked",
-			 G_CALLBACK(browse_button_clicked),
+        g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_clicked),
 			 (gpointer *)root_entry);
+
+#ifdef HAVE_CDDB
+	order_radio_meta = gtk_radio_button_new_with_label(NULL, _("Metadata first, then CDDB"));
+	gtk_widget_set_name(order_radio_meta, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(gen_vbox), order_radio_meta, FALSE, FALSE, 0);
+
+
+	order_radio_cddb = gtk_radio_button_new_with_label_from_widget(
+		       GTK_RADIO_BUTTON(order_radio_meta), _("CDDB first, then metadata"));
+	gtk_widget_set_name(order_radio_cddb, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(gen_vbox), order_radio_cddb, FALSE, FALSE, 0);
+#endif /* HAVE_CDDB */
 
 
 	/* Metadata */
@@ -313,6 +333,13 @@ build_store_dialog(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_wspace), TRUE);
 	}
 
+	if (!meta_enable) {
+		gtk_widget_set_sensitive(meta_check_title, FALSE);
+		gtk_widget_set_sensitive(meta_check_artist, FALSE);
+		gtk_widget_set_sensitive(meta_check_record, FALSE);
+		gtk_widget_set_sensitive(meta_check_wspace, FALSE);
+	}
+
 
 	/* CDDB */
 
@@ -361,16 +388,12 @@ build_store_dialog(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_check_record), TRUE);
 	}
 
-	/*
-	cddb_radio_batch = gtk_radio_button_new_with_label(NULL, _("Batch mode (I'm feeling lucky)"));
-	gtk_widget_set_name(cddb_radio_batch, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(cddb_vbox), cddb_radio_batch, FALSE, FALSE, 0);
+	if (!cddb_enable) {
+		gtk_widget_set_sensitive(cddb_check_title, FALSE);
+		gtk_widget_set_sensitive(cddb_check_artist, FALSE);
+		gtk_widget_set_sensitive(cddb_check_record, FALSE);
+	}
 
-	cddb_radio_interactive = gtk_radio_button_new_with_label_from_widget(
-			     GTK_RADIO_BUTTON(cddb_radio_batch), _("Interactive mode (let me choose if multiple matches found)"));
-	gtk_widget_set_name(cddb_radio_interactive, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(cddb_vbox), cddb_radio_interactive, FALSE, FALSE, 0);
-	*/
 #endif /* HAVE_CDDB */
 
 	/* Filenames */
@@ -426,7 +449,13 @@ build_store_dialog(void) {
 	table = gtk_table_new(2, 2, FALSE);
 
         hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new("regexp:");
+	fs_error_label = gtk_label_new("");
+	gtk_widget_modify_fg(fs_error_label, GTK_STATE_NORMAL, &red);
+        gtk_box_pack_start(GTK_BOX(hbox), fs_error_label, FALSE, FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(fs_vbox), hbox, FALSE, FALSE, 5);
+
+        hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(_("regexp:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
 			 GTK_FILL, GTK_FILL, 0, 5);
@@ -437,7 +466,7 @@ build_store_dialog(void) {
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
         hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new("replacement:");
+	label = gtk_label_new(_("replacement:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
 			 GTK_FILL, GTK_FILL, 0, 5);
@@ -453,6 +482,7 @@ build_store_dialog(void) {
 	/* run dialog */
 
 	gtk_widget_show_all(dialog);
+	gtk_widget_hide(fs_error_label);
 
  display:
 
@@ -469,6 +499,8 @@ build_store_dialog(void) {
 		} else if (proot[0] != '\0') {
 			snprintf(root, MAXLEN-1, "%s/%s", options.cwd, proot);
 		}
+
+		order_meta_first = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(order_radio_meta));
 
 		meta_enable = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_enable));
 		meta_wspace = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_wspace));
@@ -491,9 +523,30 @@ build_store_dialog(void) {
 		strncpy(fs_regexp, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp1)), MAXLEN - 1);
 		strncpy(fs_replacement, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp2)), MAXLEN - 1);
 
-		if (root[0] == '\0' ||
-		    (!fs_preset && regcomp(&fs_compiled, fs_regexp, REG_EXTENDED))) {
+		if (root[0] == '\0') {
 			goto display;
+		}
+
+		if (!fs_preset) {
+
+			int err;
+			char msg[MAXLEN];
+
+			if ((err = regcomp(&fs_compiled, fs_regexp, REG_EXTENDED))) {
+
+				regerror(err, &fs_compiled, msg, MAXLEN);
+				gtk_label_set_text(GTK_LABEL(fs_error_label),
+						   g_locale_to_utf8(msg, -1, NULL, NULL, NULL));
+				gtk_widget_show(fs_error_label);
+				goto display;
+			}
+
+			if (!regexec(&fs_compiled, "", 0, NULL, 0)) {
+				gtk_label_set_text(GTK_LABEL(fs_error_label),
+						   _("Regexp matches empty string"));
+				gtk_widget_show(fs_error_label);
+				goto display;
+			}
 		}
 
 		ret = 1;
@@ -505,6 +558,107 @@ build_store_dialog(void) {
         gtk_widget_destroy(dialog);
 
         return ret;
+}
+
+
+void
+prog_window_close(GtkWidget * widget, gpointer data) {
+
+	build_cancelled = 1;
+	gtk_widget_destroy(prog_window);
+}
+
+void
+cancel_build(GtkWidget * widget, gpointer data) {
+
+	build_cancelled = 1;
+	gtk_widget_destroy(prog_window);
+}
+
+gboolean
+finish_build(gpointer data) {
+
+	gtk_widget_destroy(prog_window);
+	return FALSE;
+}
+
+
+void
+progress_window(void) {
+
+	GtkWidget * table;
+	GtkWidget * label;
+	GtkWidget * vbox;
+	GtkWidget * hbox;
+	GtkWidget * hbuttonbox;
+	GtkWidget * hseparator;
+
+	prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        gtk_window_set_title(GTK_WINDOW(prog_window), _("Building store from filesystem"));
+        gtk_window_set_position(GTK_WINDOW(prog_window), GTK_WIN_POS_CENTER);
+        gtk_window_resize(GTK_WINDOW(prog_window), 430, 110);
+        g_signal_connect(G_OBJECT(prog_window), "delete_event",
+                         G_CALLBACK(prog_window_close), NULL);
+        gtk_container_set_border_width(GTK_CONTAINER(prog_window), 5);
+
+        vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_add(GTK_CONTAINER(prog_window), vbox);
+
+	table = gtk_table_new(2, 2, FALSE);
+        gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
+
+        hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(_("Directory:"));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
+			 GTK_FILL, GTK_FILL, 5, 5);
+
+        prog_file_entry = gtk_entry_new();
+        gtk_editable_set_editable(GTK_EDITABLE(prog_file_entry), FALSE);
+	gtk_table_attach(GTK_TABLE(table), prog_file_entry, 1, 2, 0, 1,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+
+        hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(_("Action:"));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
+			 GTK_FILL, GTK_FILL, 5, 5);
+
+        hbox = gtk_hbox_new(FALSE, 0);
+	prog_action_label = gtk_label_new("");
+        gtk_box_pack_start(GTK_BOX(hbox), prog_action_label, FALSE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 1, 2,
+			 GTK_FILL, GTK_FILL, 5, 5);
+
+        hseparator = gtk_hseparator_new();
+        gtk_box_pack_start(GTK_BOX(vbox), hseparator, FALSE, TRUE, 5);
+
+	hbuttonbox = gtk_hbutton_box_new();
+	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
+
+        prog_cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL); 
+        g_signal_connect(prog_cancel_button, "clicked", G_CALLBACK(cancel_build), NULL);
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), prog_cancel_button);   
+
+        gtk_widget_grab_focus(prog_cancel_button);
+
+        gtk_widget_show_all(prog_window);
+}
+
+gboolean
+set_prog_file_entry(gpointer data) {
+
+	gtk_entry_set_text(GTK_ENTRY(prog_file_entry), (char *)data);
+	return FALSE;
+}
+
+
+gboolean
+set_prog_action_label(gpointer data) {
+
+	gtk_label_set_text(GTK_LABEL(prog_action_label), (char *)data);
+	return FALSE;
 }
 
 
@@ -609,26 +763,30 @@ transform_filename(char * dest, char * src) {
 
 	} else {
 
+		int offs = 0;
 		regmatch_t regmatch[10];
 
-		if (!regexec(&fs_compiled, src, 10, regmatch, 0)) {
+		dest[0] = '\0';
+
+		while (!regexec(&fs_compiled, src + offs, 10, regmatch, 0)) {
 		
-			int i;
+			int i = 0;
+			int b = strlen(fs_replacement) - 1;
 
-			dest[0] = '\0';
+			strncat(dest, src + offs, regmatch[0].rm_so);
 
-			strncat(dest, src, regmatch[0].rm_so);
+			for (i = 0; i < b; i++) {
 
-			for (i = 0; i < strlen(fs_replacement) - 1; i++) {
 				if (fs_replacement[i] == '\\' && isdigit(fs_replacement[i+1])) {
+
 					int j = fs_replacement[i+1] - '0';
-					
+				
 					if (j == 0 || j > fs_compiled.re_nsub) {
 						i++;
 						continue;
 					}
-					
-					strncat(dest, src + regmatch[j].rm_so,
+				
+					strncat(dest, src + offs + regmatch[j].rm_so,
 						regmatch[j].rm_eo - regmatch[j].rm_so);
 					i++;
 				} else {
@@ -637,12 +795,54 @@ transform_filename(char * dest, char * src) {
 			}
 			
 			strncat(dest, fs_replacement + i, 1);
-			strcat(dest, src + regmatch[0].rm_eo);
+			offs += regmatch[0].rm_eo;
+		}
+
+		if (!*dest) {
+			strncpy(dest, src + offs, MAXLEN-1);
 		} else {
-			strncpy(dest, src, MAXLEN-1);
+			strcat(dest, src + offs);
 		}
 	}
 }
+
+
+void
+process_meta(track_t * tracks, char * artist, char * record,
+	     int * artist_is_set, int * record_is_set) {
+
+	track_t * ptrack;
+	metadata * meta = meta_new();
+
+	for (ptrack = tracks; ptrack; ptrack = ptrack->next) {
+
+		meta = meta_new();
+
+		if (meta_read(meta, ptrack->filename)) {
+			if (meta_artist &&
+			    !*artist_is_set && meta_get_artist(meta, artist)) {
+				if (!meta_wspace || !is_wspace(artist)) {
+					*artist_is_set = 1;
+				}
+			}
+			if (meta_record &&
+			    !*record_is_set && meta_get_record(meta, record)) {
+				if (!meta_wspace || !is_wspace(record)) {
+					*record_is_set = 1;
+				}
+			}
+			if (meta_title &&
+			    !ptrack->valid && meta_get_title(meta, ptrack->name)) {
+				if (!meta_wspace || !is_wspace(ptrack->name)) {
+					ptrack->valid = 1;
+				}
+			}
+		}
+
+		meta_free(meta);
+	}
+}
+
 
 void
 process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
@@ -654,7 +854,6 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	char basename[MAXLEN];
 	char filename[MAXLEN];
 
-	metadata * meta = meta_new();
 
 	char artist[MAXLEN];
 	char record[MAXLEN];
@@ -668,6 +867,8 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	track_t * ptrack = NULL;
 	track_t * last_track = NULL;
 	float duration;
+
+	g_idle_add(set_prog_action_label, (gpointer) _("Scanning files"));
 
 	for (i = 0; i < scandir(dir_record, &ent_track, filter, alphasort); i++) {
 
@@ -697,8 +898,6 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 				last_track->next = track;
 				last_track = track;
 			}
-
-			printf(" |------ added file: %s\n", filename);
 		}
 	}
 
@@ -706,58 +905,49 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 		return;
 	}
 
-	/* metadata */
+	/* metadata and cddb */
 
-	if (meta_enable) {
-
-		for (ptrack = tracks; ptrack; ptrack = ptrack->next) {
-
-			meta = meta_new();
-
-			if (meta_read(meta, ptrack->filename)) {
-				if (meta_artist &&
-				    !artist_is_set && meta_get_artist(meta, artist)) {
-					if (!meta_wspace || !is_wspace(artist)) {
-						artist_is_set = 1;
-					}
-				}
-				if (meta_record &&
-				    !record_is_set && meta_get_record(meta, record)) {
-					if (!meta_wspace || !is_wspace(record)) {
-						record_is_set = 1;
-					}
-				}
-				if (meta_title &&
-				    !ptrack->valid && meta_get_title(meta, ptrack->name)) {
-					if (!meta_wspace || !is_wspace(ptrack->name)) {
-						ptrack->valid = 1;
-					}
-				}
-			}
-
-			meta_free(meta);
+	if (order_meta_first) {
+		if (meta_enable) {
+			g_idle_add(set_prog_action_label, (gpointer) _("Processing metadata"));
+			process_meta(tracks, artist, record, &artist_is_set, &record_is_set);
 		}
-
-		if (artist_is_set && record_is_set && num_invalid_tracks(tracks) == 0) {
-			goto finish;
-		}
-	}
-
-	/* cddb */
-
+	} else {
 #ifdef HAVE_CDDB
-	if (cddb_enable) {
-
-		cddb_get_batch(tracks, artist, record, &artist_is_set, &record_is_set,
-			       cddb_title, cddb_artist, cddb_record);
-
-		if (artist_is_set && record_is_set && num_invalid_tracks(tracks) == 0) {
-			goto finish;
+		if (cddb_enable) {
+			g_idle_add(set_prog_action_label, (gpointer) _("CDDB lookup"));
+			cddb_get_batch(tracks, artist, record, &artist_is_set, &record_is_set,
+				       cddb_title, cddb_artist, cddb_record);
 		}
-	}
 #endif /* HAVE_CDDB */
+	}
+
+	if (artist_is_set && record_is_set && num_invalid_tracks(tracks) == 0) {
+		goto finish;
+	}
+
+	if (!order_meta_first) {
+		if (meta_enable) {
+			g_idle_add(set_prog_action_label, (gpointer) _("Processing metadata"));
+			process_meta(tracks, artist, record, &artist_is_set, &record_is_set);
+		}
+	} else {
+#ifdef HAVE_CDDB
+		if (cddb_enable) {
+			g_idle_add(set_prog_action_label, (gpointer) _("CDDB lookup"));
+			cddb_get_batch(tracks, artist, record, &artist_is_set, &record_is_set,
+				       cddb_title, cddb_artist, cddb_record);
+		}
+#endif /* HAVE_CDDB */
+	}
+
+	if (artist_is_set && record_is_set && num_invalid_tracks(tracks) == 0) {
+		goto finish;
+	}
 
 	/* filesystem */
+
+	g_idle_add(set_prog_action_label, (gpointer) _("File name transformation"));
 
 	if (!artist_is_set) {
 		strncpy(artist, artist_d_name, MAXLEN-1);
@@ -772,7 +962,6 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	for (i = 0, ptrack = tracks; ptrack; i++, ptrack = ptrack->next) {
 
 		if (!ptrack->valid) {
-			printf("transform %d\n", i);
 			transform_filename(ptrack->name, ptrack->d_name);
 			ptrack->valid = 1;
 		}
@@ -815,8 +1004,6 @@ build_store_thread(void * arg) {
 	char dir_artist[MAXLEN];
 	char dir_record[MAXLEN];
 
-	printf("--> build_store_thread\n");
-
 	for (i = 0; i < scandir(root, &ent_artist, filter, alphasort); i++) {
 
 		snprintf(dir_artist, MAXLEN-1, "%s/%s", root, ent_artist[i]->d_name);
@@ -824,8 +1011,6 @@ build_store_thread(void * arg) {
 		if (!is_dir(dir_artist)) {
 			continue;
 		}
-
-		printf("[+] %s\n", ent_artist[i]->d_name);
 
 		for (j = 0; j < scandir(dir_artist, &ent_record, filter, alphasort); j++) {
 
@@ -835,13 +1020,17 @@ build_store_thread(void * arg) {
 				continue;
 			}
 
-			printf(" |--- %s\n", ent_record[j]->d_name);
+			if (build_cancelled) {
+				return NULL;
+			}
+
+			g_idle_add(set_prog_file_entry, (gpointer)dir_record);
 
 			process_record(dir_record, ent_artist[i]->d_name, ent_record[j]->d_name);
 		}
 	}
 
-	printf("<-- build_store_thread\n");
+	g_idle_add(finish_build, NULL);
 
 	return NULL;
 }
@@ -850,8 +1039,11 @@ void
 build_store(GtkTreeIter iter) {
 
 	store_iter = iter;
+	build_cancelled = 0;
 
 	if (build_store_dialog()) {
+		progress_window();
+		music_store_mark_changed();
 		pthread_create(&build_store_thread_id, NULL, build_store_thread, NULL);
 	}
 }

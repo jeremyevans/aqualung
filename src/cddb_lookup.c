@@ -709,8 +709,6 @@ cddb_get_batch(track_t * tracks,
 		return;
 	}
 
-	printf("cddb: query data initialized\n");
-
 	cddb_thread_state = 0;
 	cddb_query_aborted = 0;
 	progress_counter = 0;
@@ -719,7 +717,6 @@ cddb_get_batch(track_t * tracks,
 	cddb_thread(NULL);
 
 	if (cddb_thread_state == -1 || record_count == 0) {
-		printf("cddb: no match found\n");
 		return;
 	}
 
@@ -727,7 +724,6 @@ cddb_get_batch(track_t * tracks,
 
 		int i;
 		track_t * ptrack = NULL;
-		printf("cddb: %d match found\n", record_count);
 
 		if (cddb_artist && !*artist_is_set) {
 			strncpy(artist, cddb_disc_get_artist(records[0]), MAXLEN-1);

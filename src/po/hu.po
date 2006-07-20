@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2006-06-13 14:58+0200\n"
+"PO-Revision-Date: 2006-07-20 21:47+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -222,90 +222,135 @@ msgstr ""
 "Szabad Szoftver Alapítvány címére: Free Software Foundation, Inc., 675\n"
 "Mass Ave, Cambridge, MA 02139, USA."
 
-#: ../build_store.c:145
-#, fuzzy
+#: ../build_store.c:152
 msgid "Please select the root directory."
-msgstr "Válaszd ki az albumhoz adandó hangfájlokat."
+msgstr "Válaszd ki a gyökérkönyvtárat."
 
-#: ../build_store.c:208
-#, fuzzy
+#: ../build_store.c:225
 msgid "Build store"
-msgstr "Tároló szerkesztése..."
+msgstr "Tároló felépítése"
 
-#: ../build_store.c:227 ../options.c:1527
+#: ../build_store.c:244 ../options.c:1527
 msgid "General"
 msgstr "Általános"
 
-#: ../build_store.c:230
+#: ../build_store.c:250
 msgid "Root path:"
-msgstr ""
+msgstr "Gyökérkönyvtár:"
 
-#: ../build_store.c:244 ../music_browser.c:428 ../music_browser.c:1368
+#: ../build_store.c:264 ../music_browser.c:428 ../music_browser.c:1368
 #: ../music_browser.c:1537
 msgid "_Browse..."
 msgstr "_Tallózás..."
 
-#: ../build_store.c:254 ../options.c:2207
+#: ../build_store.c:270
+msgid "Metadata first, then CDDB"
+msgstr "Elõször metaadatok, utána CDDB"
+
+#: ../build_store.c:276
+msgid "CDDB first, then metadata"
+msgstr "Elõször CDDB, utána metaadatok"
+
+#: ../build_store.c:285 ../options.c:2207
 msgid "Metadata"
 msgstr "Metaadatok"
 
-#: ../build_store.c:258
-#, fuzzy
+#: ../build_store.c:289
 msgid "Import file metadata"
-msgstr "Metaadatok újraolvasása"
+msgstr "Metaadatok importálása"
 
-#: ../build_store.c:270 ../build_store.c:326
-#, fuzzy
+#: ../build_store.c:301 ../build_store.c:365
 msgid "Import title"
-msgstr "Importálás címként"
+msgstr "Cím importálása"
 
-#: ../build_store.c:279 ../build_store.c:335
-#, fuzzy
+#: ../build_store.c:310 ../build_store.c:374
 msgid "Import artist"
-msgstr "Importálás elõadóként"
+msgstr "Elõadó importálása"
 
-#: ../build_store.c:288 ../build_store.c:344
-#, fuzzy
+#: ../build_store.c:319 ../build_store.c:383
 msgid "Import record"
-msgstr "Importálás albumként"
+msgstr "Album importálása"
 
-#: ../build_store.c:297
+#: ../build_store.c:328
 msgid "Exclude whitespace-only metadata"
-msgstr ""
+msgstr "Csak szóközöket tartalmazó metaadatok kihagyása"
 
-#: ../build_store.c:309 ../options.c:2306
+#: ../build_store.c:348 ../options.c:2306
 msgid "CDDB"
 msgstr "CDDB"
 
-#: ../build_store.c:313
+#: ../build_store.c:352
 msgid "Perform CDDB lookup for records"
-msgstr ""
+msgstr "Albumok lekérdezése CDDB adatbázisból"
 
-#: ../build_store.c:366
+#: ../build_store.c:402
 msgid "Filesystem"
-msgstr ""
+msgstr "Fájlrendszer"
 
-#: ../build_store.c:369
+#: ../build_store.c:405
 msgid "Predefined transformations"
-msgstr ""
+msgstr "Elõre definiált transzformációk"
 
-#: ../build_store.c:377
+#: ../build_store.c:417
 msgid "Remove leading number"
-msgstr ""
+msgstr "Kezdõ számjegyek levágása"
 
-#: ../build_store.c:386
-#, fuzzy
+#: ../build_store.c:426
 msgid "Remove file extension"
-msgstr "Kijelölt elemek törlése"
+msgstr "Kiterjesztés levágása"
 
-#: ../build_store.c:395
-#, fuzzy
+#: ../build_store.c:435
 msgid "Convert underscore to space"
-msgstr "Aktuális állapot invertálása"
+msgstr "Aláhúzás szóközzé alakítása"
 
-#: ../build_store.c:404
+#: ../build_store.c:444
 msgid "Regular expression"
-msgstr ""
+msgstr "Reguláris kifejezés"
+
+#: ../build_store.c:458
+msgid "regexp:"
+msgstr "reg.kif.:"
+
+#: ../build_store.c:469
+msgid "replacement:"
+msgstr "csere:"
+
+#: ../build_store.c:546
+msgid "Regexp matches empty string"
+msgstr "A kifejezés fedi az üres karakterláncot"
+
+#: ../build_store.c:597
+msgid "Building store from filesystem"
+msgstr "Tároló felépítése fájlrendszerrõl"
+
+#: ../build_store.c:611
+msgid "Directory:"
+msgstr "Könyvtár:"
+
+#: ../build_store.c:623
+msgid "Action:"
+msgstr "Mûvelet:"
+
+#: ../build_store.c:643 ../cddb_lookup.c:122 ../ifp_device.c:879
+#: ../volume.c:192
+msgid "Abort"
+msgstr "Megszakítás"
+
+#: ../build_store.c:874
+msgid "Scanning files"
+msgstr "Fájlok vizsgálata"
+
+#: ../build_store.c:915 ../build_store.c:934
+msgid "Processing metadata"
+msgstr "Metaadatok olvasása"
+
+#: ../build_store.c:921 ../build_store.c:940
+msgid "CDDB lookup"
+msgstr "CDDB lekérdezés"
+
+#: ../build_store.c:953
+msgid "File name transformation"
+msgstr "Fájlnév transzformáció"
 
 #: ../cddb_lookup.c:96 ../cddb_lookup.c:340
 msgid "CDDB query"
@@ -318,10 +363,6 @@ msgstr "Találatok letöltése a szerverrõl..."
 #: ../cddb_lookup.c:111
 msgid "Connecting to CDDB server..."
 msgstr "Kapcsolódás a CDDB szerverhez..."
-
-#: ../cddb_lookup.c:122 ../ifp_device.c:879 ../volume.c:192
-msgid "Abort"
-msgstr "Megszakítás"
 
 #: ../cddb_lookup.c:356
 msgid "Matches:"
@@ -694,7 +735,7 @@ msgstr "JACK port beállítás"
 
 #: ../gui_main.c:2786
 msgid "Quit"
-msgstr ""
+msgstr "Kilépés"
 
 #: ../gui_main.c:3062
 msgid "Previous song (comma)"
@@ -1059,9 +1100,8 @@ msgid "Please select the xml file for this store."
 msgstr "Add meg a tárolóhoz tartozó xml fájlt."
 
 #: ../music_browser.c:389
-#, fuzzy
 msgid "Create empty store"
-msgstr "Könyvtár létrehozása"
+msgstr "Üres tároló létrehozása"
 
 #: ../music_browser.c:403 ../music_browser.c:550 ../music_browser.c:1353
 #: ../music_browser.c:1521
@@ -1224,7 +1264,7 @@ msgstr "Zenetár"
 
 #: ../music_browser.c:3679 ../music_browser.c:3697
 msgid "Create empty store..."
-msgstr ""
+msgstr "Üres tároló létrehozása..."
 
 #: ../music_browser.c:3680 ../music_browser.c:3705 ../music_browser.c:3762
 #: ../music_browser.c:3812 ../music_browser.c:3867 ../playlist.c:2999
@@ -1245,9 +1285,8 @@ msgid "Add to playlist (Album mode)"
 msgstr "Lejátszólistába (Album mód)"
 
 #: ../music_browser.c:3698
-#, fuzzy
 msgid "Build store from filesystem..."
-msgstr "Tároló szerkesztése..."
+msgstr "Tároló felépítése fájlrendszerrõl..."
 
 #: ../music_browser.c:3699
 msgid "Edit store..."
@@ -2047,15 +2086,3 @@ msgstr "Hangosság meghatározása"
 #, c-format
 msgid "%s"
 msgstr "%s"
-
-#, fuzzy
-#~ msgid "The store '%s' already exists. Choose an other filename."
-#~ msgstr ""
-#~ "A '%s' táróló már létezik.\n"
-#~ "Hozzáadása a Beállítások/Zenetár oldalon lehetséges."
-
-#~ msgid "Add Store"
-#~ msgstr "Tároló hozzáadása"
-
-#~ msgid "Add new store..."
-#~ msgstr "Új tároló hozzáadása..."

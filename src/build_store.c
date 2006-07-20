@@ -258,7 +258,7 @@ build_store_dialog(void) {
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
         root_entry = gtk_entry_new_with_max_length(MAXLEN-1);
-	gtk_entry_set_text(GTK_ENTRY(root_entry), "/music"); // TMP: just for testing
+	/*gtk_entry_set_text(GTK_ENTRY(root_entry), "/music");*/
         gtk_box_pack_start(GTK_BOX(hbox2), root_entry, TRUE, TRUE, 0);
 
 	browse_button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);

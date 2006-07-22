@@ -303,24 +303,24 @@ msgstr "╤нвертувати поточний стан"
 msgid "Regular expression"
 msgstr ""
 
-#: ../build_store.c:458
+#: ../build_store.c:452
 msgid "regexp:"
 msgstr ""
 
-#: ../build_store.c:469
+#: ../build_store.c:463
 msgid "replacement:"
 msgstr ""
 
-#: ../build_store.c:546
+#: ../build_store.c:543
 msgid "Regexp matches empty string"
 msgstr ""
 
-#: ../build_store.c:597
+#: ../build_store.c:598
 #, fuzzy
 msgid "Building store from filesystem"
 msgstr "Редагувати склад..."
 
-#: ../build_store.c:611
+#: ../build_store.c:612
 #, fuzzy
 msgid "Directory:"
 msgstr "Запис"
@@ -330,25 +330,25 @@ msgstr "Запис"
 msgid "Action:"
 msgstr "Тривал╕сть:"
 
-#: ../build_store.c:643 ../cddb_lookup.c:122 ../ifp_device.c:879
+#: ../build_store.c:641 ../cddb_lookup.c:122 ../ifp_device.c:879
 #: ../volume.c:192
 msgid "Abort"
 msgstr "Перервати"
 
-#: ../build_store.c:874
+#: ../build_store.c:872
 msgid "Scanning files"
 msgstr ""
 
-#: ../build_store.c:915 ../build_store.c:934
+#: ../build_store.c:913 ../build_store.c:932
 #, fuzzy
 msgid "Processing metadata"
 msgstr "Обробка..."
 
-#: ../build_store.c:921 ../build_store.c:940
+#: ../build_store.c:919 ../build_store.c:938
 msgid "CDDB lookup"
 msgstr ""
 
-#: ../build_store.c:953
+#: ../build_store.c:951
 msgid "File name transformation"
 msgstr ""
 
@@ -1279,7 +1279,7 @@ msgid "Create empty store..."
 msgstr ""
 
 #: ../music_browser.c:3680 ../music_browser.c:3705 ../music_browser.c:3762
-#: ../music_browser.c:3812 ../music_browser.c:3867 ../playlist.c:2999
+#: ../music_browser.c:3812 ../music_browser.c:3867 ../playlist.c:3088
 msgid "Search..."
 msgstr "Шукати..."
 
@@ -1366,7 +1366,7 @@ msgstr "Редагувати дор╕жку..."
 msgid "Remove track"
 msgstr "Прибрати дор╕жку"
 
-#: ../music_browser.c:3864 ../playlist.c:2998
+#: ../music_browser.c:3864 ../playlist.c:3087
 msgid "File info..."
 msgstr "╤нформац╕я про файл"
 
@@ -1384,7 +1384,7 @@ msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
 msgstr "Вам знадобиться перезапустити Aqualung щоб зм╕ни набули чинност╕"
 
-#: ../options.c:1278 ../options.c:1373 ../playlist.c:878
+#: ../options.c:1278 ../options.c:1373 ../playlist.c:880
 msgid "Warning"
 msgstr "Увага"
 
@@ -1478,7 +1478,7 @@ msgstr ""
 msgid "Show hidden files and directories in file choosers"
 msgstr ""
 
-#: ../options.c:1636 ../playlist.c:1920
+#: ../options.c:1636 ../playlist.c:1998
 msgid "Playlist"
 msgstr "Список програвання"
 
@@ -1842,15 +1842,15 @@ msgstr "Кольори"
 msgid "Active song in playlist: "
 msgstr "Активна п╕сня у списку програвання: "
 
-#: ../playlist.c:612
+#: ../playlist.c:614
 msgid "Please specify the file to save the playlist to."
 msgstr "Будьласка вкаж╕ть файл куди буде записано список програвання."
 
-#: ../playlist.c:659 ../playlist.c:720
+#: ../playlist.c:661 ../playlist.c:722
 msgid "Please specify the file to load the playlist from."
 msgstr "Будьласка вкаж╕ть файл зв╕дки буде завантажено список програвання."
 
-#: ../playlist.c:886
+#: ../playlist.c:888
 #, fuzzy
 msgid ""
 "Playback RVA is currently disabled.\n"
@@ -1858,116 +1858,129 @@ msgid ""
 msgstr ""
 "ПВР програвання зараз вимкнено. Ув╕мкн╕ть ╖╖ в Налаштування->ПВР програвання."
 
-#: ../playlist.c:1120 ../playlist.c:1123 ../playlist.c:1126
+#: ../playlist.c:1141 ../playlist.c:1144 ../playlist.c:1147
 msgid "Unknown"
 msgstr "Нев╕домо"
 
-#: ../playlist.c:1214
-msgid "Select files..."
+#: ../playlist.c:1234
+#, fuzzy
+msgid "Select files"
 msgstr "Вибрати файли..."
 
-#: ../playlist.c:1570
+#: ../playlist.c:1292
+#, fuzzy
+msgid "Select directory"
+msgstr "Прибрати запис"
+
+#: ../playlist.c:1655
 #, fuzzy, c-format
 msgid "%d track [%s] (%d MB)"
 msgstr "%d дор╕жка [%s]"
 
-#: ../playlist.c:1572
+#: ../playlist.c:1657
 #, fuzzy, c-format
 msgid "%d track [%s] "
 msgstr "%d дор╕жка [%s]"
 
-#: ../playlist.c:1576
+#: ../playlist.c:1661
 #, fuzzy, c-format
 msgid "%d tracks [%s] (%d MB)"
 msgstr "%d дор╕жок [%s]"
 
-#: ../playlist.c:1578
+#: ../playlist.c:1663
 #, fuzzy, c-format
 msgid "%d tracks [%s] "
 msgstr "%d дор╕жок [%s]"
 
-#: ../playlist.c:2120
+#: ../playlist.c:2194
 msgid "Selected: "
 msgstr "Вибрано: "
 
-#: ../playlist.c:2130
+#: ../playlist.c:2204
 msgid "Total: "
 msgstr "Разом: "
 
-#: ../playlist.c:2150
-msgid "Add files..."
+#: ../playlist.c:2224 ../playlist.c:2247
+#, fuzzy
+msgid "Add files"
 msgstr "Додати файли..."
 
-#: ../playlist.c:2151
-#, fuzzy
-msgid "Add files to playlist"
-msgstr "Додати до списку програвання"
+#: ../playlist.c:2225
+msgid ""
+"Add files to playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
 
-#: ../playlist.c:2155 ../playlist.c:2173
+#: ../playlist.c:2229 ../playlist.c:2267
 msgid "Select all"
 msgstr "Вибрати все"
 
-#: ../playlist.c:2156
+#: ../playlist.c:2230
 msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2160 ../playlist.c:2198
+#: ../playlist.c:2234 ../playlist.c:2287
 msgid "Remove selected"
 msgstr "Прибрати вибране"
 
-#: ../playlist.c:2161
+#: ../playlist.c:2235
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2168
+#: ../playlist.c:2242
+#, fuzzy
+msgid "Add directory"
+msgstr "Додати запис"
+
+#: ../playlist.c:2257
 msgid "Select none"
 msgstr "Зняти виб╕р"
 
-#: ../playlist.c:2178
+#: ../playlist.c:2262
 msgid "Invert selection"
 msgstr "Перевернути виб╕р"
 
-#: ../playlist.c:2188
-msgid "Cut selected"
-msgstr "Прибрати обране"
-
-#: ../playlist.c:2193
+#: ../playlist.c:2277
 msgid "Remove all"
 msgstr "Прибрати все"
 
-#: ../playlist.c:2982
+#: ../playlist.c:2282
+msgid "Cut selected"
+msgstr "Прибрати обране"
+
+#: ../playlist.c:3071
 msgid "Save playlist"
 msgstr "Зберегти список програвання"
 
-#: ../playlist.c:2983
+#: ../playlist.c:3072
 msgid "Load playlist"
 msgstr "Завантажити список програвання"
 
-#: ../playlist.c:2984
+#: ../playlist.c:3073
 msgid "Enqueue playlist"
 msgstr "Поставити в чергу список програвання"
 
-#: ../playlist.c:2986
+#: ../playlist.c:3075
 msgid "Calculate RVA"
 msgstr "П╕драхувати ПВР"
 
-#: ../playlist.c:2988
+#: ../playlist.c:3077
 msgid "Separate"
 msgstr "Окрем╕"
 
-#: ../playlist.c:2989
+#: ../playlist.c:3078
 msgid "Average"
 msgstr "Середн╕"
 
-#: ../playlist.c:2990
+#: ../playlist.c:3079
 msgid "Reread file metadata"
 msgstr "Перечитати ╕нформац╕ю про файл"
 
-#: ../playlist.c:2994
+#: ../playlist.c:3083
 msgid "Send songs to iFP device"
 msgstr ""
 
@@ -2104,6 +2117,10 @@ msgstr "<b>П╕драховую р╕вень гучност╕</b>"
 #, c-format
 msgid "%s"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Add files to playlist"
+#~ msgstr "Додати до списку програвання"
 
 #~ msgid "Add Store"
 #~ msgstr "Додати склад"

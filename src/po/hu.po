@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2006-07-20 21:47+0200\n"
+"PO-Revision-Date: 2006-07-22 16:29+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -307,23 +307,23 @@ msgstr "Aláhúzás szóközzé alakítása"
 msgid "Regular expression"
 msgstr "Reguláris kifejezés"
 
-#: ../build_store.c:458
+#: ../build_store.c:452
 msgid "regexp:"
 msgstr "reg.kif.:"
 
-#: ../build_store.c:469
+#: ../build_store.c:463
 msgid "replacement:"
 msgstr "csere:"
 
-#: ../build_store.c:546
+#: ../build_store.c:543
 msgid "Regexp matches empty string"
 msgstr "A kifejezés fedi az üres karakterláncot"
 
-#: ../build_store.c:597
+#: ../build_store.c:598
 msgid "Building store from filesystem"
 msgstr "Tároló felépítése fájlrendszerrõl"
 
-#: ../build_store.c:611
+#: ../build_store.c:612
 msgid "Directory:"
 msgstr "Könyvtár:"
 
@@ -331,24 +331,24 @@ msgstr "Könyvtár:"
 msgid "Action:"
 msgstr "Mûvelet:"
 
-#: ../build_store.c:643 ../cddb_lookup.c:122 ../ifp_device.c:879
+#: ../build_store.c:641 ../cddb_lookup.c:122 ../ifp_device.c:879
 #: ../volume.c:192
 msgid "Abort"
 msgstr "Megszakítás"
 
-#: ../build_store.c:874
+#: ../build_store.c:872
 msgid "Scanning files"
 msgstr "Fájlok vizsgálata"
 
-#: ../build_store.c:915 ../build_store.c:934
+#: ../build_store.c:913 ../build_store.c:932
 msgid "Processing metadata"
 msgstr "Metaadatok olvasása"
 
-#: ../build_store.c:921 ../build_store.c:940
+#: ../build_store.c:919 ../build_store.c:938
 msgid "CDDB lookup"
 msgstr "CDDB lekérdezés"
 
-#: ../build_store.c:953
+#: ../build_store.c:951
 msgid "File name transformation"
 msgstr "Fájlnév transzformáció"
 
@@ -1267,7 +1267,7 @@ msgid "Create empty store..."
 msgstr "Üres tároló létrehozása..."
 
 #: ../music_browser.c:3680 ../music_browser.c:3705 ../music_browser.c:3762
-#: ../music_browser.c:3812 ../music_browser.c:3867 ../playlist.c:2999
+#: ../music_browser.c:3812 ../music_browser.c:3867 ../playlist.c:3088
 msgid "Search..."
 msgstr "Keresés..."
 
@@ -1352,7 +1352,7 @@ msgstr "Szám szerkesztése..."
 msgid "Remove track"
 msgstr "Szám eltávolítása"
 
-#: ../music_browser.c:3864 ../playlist.c:2998
+#: ../music_browser.c:3864 ../playlist.c:3087
 msgid "File info..."
 msgstr "Fájl infó..."
 
@@ -1370,7 +1370,7 @@ msgid ""
 msgstr ""
 "A következõ változtatások az Aqualung újraindítása után jutnak érvényre:"
 
-#: ../options.c:1278 ../options.c:1373 ../playlist.c:878
+#: ../options.c:1278 ../options.c:1373 ../playlist.c:880
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
@@ -1464,7 +1464,7 @@ msgstr "Szám címének megjelenítése a fõablak címsorában"
 msgid "Show hidden files and directories in file choosers"
 msgstr "Rejtett fájlok és könyvtárak mutatása tallózáskor"
 
-#: ../options.c:1636 ../playlist.c:1920
+#: ../options.c:1636 ../playlist.c:1998
 msgid "Playlist"
 msgstr "Lejátszólista"
 
@@ -1822,15 +1822,15 @@ msgstr "Színek"
 msgid "Active song in playlist: "
 msgstr "Aktív szám a Lejátszólistában: "
 
-#: ../playlist.c:612
+#: ../playlist.c:614
 msgid "Please specify the file to save the playlist to."
 msgstr "Add meg az elmentendõ lejátszólista fájlt."
 
-#: ../playlist.c:659 ../playlist.c:720
+#: ../playlist.c:661 ../playlist.c:722
 msgid "Please specify the file to load the playlist from."
 msgstr "Add meg a betöltendõ lejátszólista fájlt."
 
-#: ../playlist.c:886
+#: ../playlist.c:888
 msgid ""
 "Playback RVA is currently disabled.\n"
 "Do you want to enable it now?"
@@ -1838,55 +1838,63 @@ msgstr ""
 "A lejátszáskori RVA jelenleg nem engedélyezett.\n"
 "Akarod most engedélyezni?"
 
-#: ../playlist.c:1120 ../playlist.c:1123 ../playlist.c:1126
+#: ../playlist.c:1141 ../playlist.c:1144 ../playlist.c:1147
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: ../playlist.c:1214
-msgid "Select files..."
-msgstr "Fájlok kiválasztása..."
+#: ../playlist.c:1234
+msgid "Select files"
+msgstr "Fájlok kiválasztása"
 
-#: ../playlist.c:1570
+#: ../playlist.c:1292
+msgid "Select directory"
+msgstr "Könyvtár kiválasztása"
+
+#: ../playlist.c:1655
 #, c-format
 msgid "%d track [%s] (%d MB)"
 msgstr "%d szám [%s] (%d MB)"
 
-#: ../playlist.c:1572
+#: ../playlist.c:1657
 #, c-format
 msgid "%d track [%s] "
 msgstr "%d szám [%s] "
 
-#: ../playlist.c:1576
+#: ../playlist.c:1661
 #, c-format
 msgid "%d tracks [%s] (%d MB)"
 msgstr "%d szám [%s] (%d MB)"
 
-#: ../playlist.c:1578
+#: ../playlist.c:1663
 #, c-format
 msgid "%d tracks [%s] "
 msgstr "%d szám [%s] "
 
-#: ../playlist.c:2120
+#: ../playlist.c:2194
 msgid "Selected: "
 msgstr "Kijelölve: "
 
-#: ../playlist.c:2130
+#: ../playlist.c:2204
 msgid "Total: "
 msgstr "Összesen: "
 
-#: ../playlist.c:2150
-msgid "Add files..."
-msgstr "Fájlok hozzáadása..."
+#: ../playlist.c:2224 ../playlist.c:2247
+msgid "Add files"
+msgstr "Fájlok hozzáadása"
 
-#: ../playlist.c:2151
-msgid "Add files to playlist"
-msgstr "Fájlok hozzáadása a listához"
+#: ../playlist.c:2225
+msgid ""
+"Add files to playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
+"Fájlok hozzáadása a listához\n"
+"(jobb egérgomb: helyi menü)"
 
-#: ../playlist.c:2155 ../playlist.c:2173
+#: ../playlist.c:2229 ../playlist.c:2267
 msgid "Select all"
 msgstr "Összes elem kijelölése"
 
-#: ../playlist.c:2156
+#: ../playlist.c:2230
 msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
@@ -1894,11 +1902,11 @@ msgstr ""
 "A lejátszólista összes számának kijelölése\n"
 "(jobb egérgomb: helyi menü)"
 
-#: ../playlist.c:2160 ../playlist.c:2198
+#: ../playlist.c:2234 ../playlist.c:2287
 msgid "Remove selected"
 msgstr "Kijelölt elemek törlése"
 
-#: ../playlist.c:2161
+#: ../playlist.c:2235
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
@@ -1906,51 +1914,55 @@ msgstr ""
 "Kijelölt számok törlése a lejátszólistából\n"
 "(jobb egérgomb: helyi menü)"
 
-#: ../playlist.c:2168
+#: ../playlist.c:2242
+msgid "Add directory"
+msgstr "Könyvtár hozzáadása"
+
+#: ../playlist.c:2257
 msgid "Select none"
 msgstr "Kijelölés megszüntetése"
 
-#: ../playlist.c:2178
+#: ../playlist.c:2262
 msgid "Invert selection"
 msgstr "Kijelölés megfordítása"
 
-#: ../playlist.c:2188
-msgid "Cut selected"
-msgstr "Kijelölt elemek megtartása"
-
-#: ../playlist.c:2193
+#: ../playlist.c:2277
 msgid "Remove all"
 msgstr "Mindent eltávolít"
 
-#: ../playlist.c:2982
+#: ../playlist.c:2282
+msgid "Cut selected"
+msgstr "Kijelölt elemek megtartása"
+
+#: ../playlist.c:3071
 msgid "Save playlist"
 msgstr "Lejátszólista mentése"
 
-#: ../playlist.c:2983
+#: ../playlist.c:3072
 msgid "Load playlist"
 msgstr "Lejátszólista betöltése"
 
-#: ../playlist.c:2984
+#: ../playlist.c:3073
 msgid "Enqueue playlist"
 msgstr "Lejátszólista hozzáfûzése"
 
-#: ../playlist.c:2986
+#: ../playlist.c:3075
 msgid "Calculate RVA"
 msgstr "Hangosság meghatározása"
 
-#: ../playlist.c:2988
+#: ../playlist.c:3077
 msgid "Separate"
 msgstr "Egyéni"
 
-#: ../playlist.c:2989
+#: ../playlist.c:3078
 msgid "Average"
 msgstr "Átlagos"
 
-#: ../playlist.c:2990
+#: ../playlist.c:3079
 msgid "Reread file metadata"
 msgstr "Metaadatok újraolvasása"
 
-#: ../playlist.c:2994
+#: ../playlist.c:3083
 msgid "Send songs to iFP device"
 msgstr "Számok iFP eszközre küldése"
 

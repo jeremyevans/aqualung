@@ -229,7 +229,7 @@ build_store_dialog(void) {
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					     NULL);
 
-        gtk_widget_set_size_request(GTK_WIDGET(dialog), 400, 300);
+        gtk_widget_set_size_request(GTK_WIDGET(dialog), 400, 320);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
 
@@ -449,12 +449,6 @@ build_store_dialog(void) {
 	table = gtk_table_new(2, 2, FALSE);
 
         hbox = gtk_hbox_new(FALSE, 0);
-	fs_error_label = gtk_label_new("");
-	gtk_widget_modify_fg(fs_error_label, GTK_STATE_NORMAL, &red);
-        gtk_box_pack_start(GTK_BOX(hbox), fs_error_label, FALSE, FALSE, 5);
-        gtk_box_pack_start(GTK_BOX(fs_vbox), hbox, FALSE, FALSE, 5);
-
-        hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("regexp:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
@@ -478,11 +472,16 @@ build_store_dialog(void) {
 
         gtk_box_pack_start(GTK_BOX(fs_vbox), table, FALSE, FALSE, 5);
 
+        hbox = gtk_hbox_new(FALSE, 0);
+	fs_error_label = gtk_label_new("");
+	gtk_widget_modify_fg(fs_error_label, GTK_STATE_NORMAL, &red);
+        gtk_box_pack_start(GTK_BOX(hbox), fs_error_label, FALSE, FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(fs_vbox), hbox, FALSE, FALSE, 5);
+
 
 	/* run dialog */
 
 	gtk_widget_show_all(dialog);
-	gtk_widget_hide(fs_error_label);
 
  display:
 
@@ -491,6 +490,8 @@ build_store_dialog(void) {
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		const char * proot = gtk_entry_get_text(GTK_ENTRY(root_entry));
+
+		gtk_widget_hide(fs_error_label);
 
 		if (proot[0] == '~') {
 			snprintf(root, MAXLEN-1, "%s%s", options.home, proot + 1);
@@ -523,10 +524,6 @@ build_store_dialog(void) {
 		strncpy(fs_regexp, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp1)), MAXLEN - 1);
 		strncpy(fs_replacement, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp2)), MAXLEN - 1);
 
-		if (root[0] == '\0') {
-			goto display;
-		}
-
 		if (!fs_preset) {
 
 			int err;
@@ -547,6 +544,10 @@ build_store_dialog(void) {
 				gtk_widget_show(fs_error_label);
 				goto display;
 			}
+		}
+
+		if (root[0] == '\0') {
+			goto display;
 		}
 
 		ret = 1;
@@ -665,11 +666,7 @@ set_prog_action_label(gpointer data) {
 static int
 filter(const struct dirent * de) {
 
-	if (de->d_name[0] == '.') {
-		return 0;
-	}
-
-	return 1;
+	return de->d_name[0] != '.';
 }
 
 

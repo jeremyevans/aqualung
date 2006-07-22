@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <dirent.h>
 #include <math.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -132,6 +133,8 @@ GtkWidget * statusbar_selected_label;
 
 /* popup menus */
 GtkWidget * add_menu;
+GtkWidget * add__files;
+GtkWidget * add__dir;
 GtkWidget * sel_menu;
 GtkWidget * sel__none;
 GtkWidget * sel__all;
@@ -193,7 +196,7 @@ void playlist_filemeta_free(playlist_filemeta * plfm);
 void rem__sel_cb(gpointer data);
 void cut__sel_cb(gpointer data);
 void plist__search_cb(gpointer data);
-void direct_add(GtkWidget * widget, gpointer * data);
+void add_files(GtkWidget * widget, gpointer data);
 void recalc_album_node(GtkTreeIter * iter);
 
 
@@ -488,7 +491,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 
         case GDK_Insert:
 	case GDK_KP_Insert:
-                direct_add(NULL, NULL);
+                add_files(NULL, NULL);
                 return TRUE;
                 break;
         case GDK_q:
@@ -1002,6 +1005,25 @@ plist__search_cb(gpointer data) {
 
 
 static gboolean
+add_cb(GtkWidget * widget, GdkEvent * event) {
+
+        if (event->type == GDK_BUTTON_PRESS) {
+                GdkEventButton * bevent = (GdkEventButton *) event;
+
+                if (bevent->button == 3) {
+
+			gtk_menu_popup(GTK_MENU(add_menu), NULL, NULL, NULL, NULL,
+				       bevent->button, bevent->time);
+
+			return TRUE;
+		}
+		return FALSE;
+	}
+	return FALSE;
+}
+
+
+static gboolean
 sel_cb(GtkWidget * widget, GdkEvent * event) {
 
         if (event->type == GDK_BUTTON_PRESS) {
@@ -1058,7 +1080,9 @@ playlist_filemeta_get(char * physical_name, char * alt_name) {
 		return NULL;
 	}
 
-	plfm->duration = get_file_duration(physical_name);
+	if ((plfm->duration = get_file_duration(physical_name)) <= 0.0f) {
+		return NULL;
+	}
 
 	if (options.rva_is_enabled) {
 		meta = meta_new();
@@ -1173,7 +1197,6 @@ add_file_to_playlist(gchar *filename) {
 	playlist_filemeta * plfm = NULL;
 
 	if ((plfm = playlist_filemeta_get(filename, NULL)) == NULL) {
-		fprintf(stderr, "add_file_to_playlist(): playlist_filemeta_get() returned NULL\n");
 		return;
 	}
 
@@ -1187,33 +1210,50 @@ add_file_to_playlist(gchar *filename) {
                            5, plfm->duration, 6, duration_str, 7, PANGO_WEIGHT_NORMAL, -1);
 
 	playlist_filemeta_free(plfm);
+
 }
 
 
-gint
-dialog_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
+static int
+filter(const struct dirent * de) {
 
-	switch (kevent->keyval) {
-
-        case GDK_Escape:
-                gtk_dialog_response(GTK_DIALOG(da_dialog), GTK_RESPONSE_CLOSE);
-                return TRUE;
-                break;
-        }
-
-        return FALSE;
+	return de->d_name[0] != '.';
 }
 
 
 void
-direct_add(GtkWidget * widget, gpointer * data) {
+add_dir_to_playlist(char * dirname) {
+
+	int i;
+	struct dirent ** ent;
+	struct stat st_file;
+	char path[MAXLEN];
+
+	for (i = 0; i < scandir(dirname, &ent, filter, alphasort); i++) {
+
+		snprintf(path, MAXLEN-1, "%s/%s", dirname, ent[i]->d_name);
+
+		if (stat(path, &st_file) == -1) {
+			continue;
+		}
+
+		if (S_ISDIR(st_file.st_mode)) {
+			add_dir_to_playlist(path);
+		} else {
+			add_file_to_playlist(path);
+		}
+	}
+}
+
+
+void
+add_files(GtkWidget * widget, gpointer data) {
 
         GtkWidget *dialog;
-        GSList *lfiles, *node;
 
-        dialog = gtk_file_chooser_dialog_new(_("Select files..."), 
+        dialog = gtk_file_chooser_dialog_new(_("Select files"), 
                                              options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
-                                             GTK_FILE_CHOOSER_ACTION_OPEN, 
+                                             GTK_FILE_CHOOSER_ACTION_OPEN,
                                              GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              NULL);
@@ -1233,14 +1273,16 @@ direct_add(GtkWidget * widget, gpointer * data) {
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
+		GSList *lfiles, *node;
+
                 strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
-                                                                         MAXLEN-1);
+			MAXLEN-1);
 
                 lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
 
                 node = lfiles;
 
-                while(node) {
+                while (node) {
 
                         add_file_to_playlist((char *)node->data);
                         g_free(node->data);
@@ -1263,7 +1305,70 @@ direct_add(GtkWidget * widget, gpointer * data) {
 
 
 void
-select_all(GtkWidget * widget, gpointer * data) {
+add_directory(GtkWidget * widget, gpointer data) {
+
+        GtkWidget *dialog;
+
+        dialog = gtk_file_chooser_dialog_new(_("Select directory"), 
+                                             options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
+					     GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
+                                             NULL);
+
+        set_sliders_width();    /* MAGIC */
+
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
+        gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+        assign_audio_fc_filters(GTK_FILE_CHOOSER(dialog));
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
+
+        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+
+		char dirname[MAXLEN];
+
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+			MAXLEN-1);
+
+                strncpy(dirname, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+			MAXLEN-1);
+
+		add_dir_to_playlist(dirname);
+        }
+
+
+        gtk_widget_destroy(dialog);
+
+        set_sliders_width();    /* MAGIC */
+
+	playlist_content_changed();
+
+        delayed_playlist_rearrange(100);
+}
+
+
+void
+add__files_cb(gpointer data) {
+
+	add_files(NULL, NULL);
+}
+
+
+void
+add__dir_cb(gpointer data) {
+
+	add_directory(NULL, NULL);
+}
+
+
+void
+select_all(GtkWidget * widget, gpointer data) {
 
 	gtk_tree_selection_select_all(play_select);
 }
@@ -1363,7 +1468,7 @@ rem__sel_cb(gpointer data) {
 
 
 void
-remove_sel(GtkWidget * widget, gpointer * data) {
+remove_sel(GtkWidget * widget, gpointer data) {
 
 	rem__sel_cb(NULL);
 }
@@ -1883,20 +1988,13 @@ playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer da
 }
 
 
-/*
-void
-playlist_row_deleted(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter * iter, gpointer data) {
-	printf("playlist_row_deleted\n");
-}
-*/
-
 void
 create_playlist(void) {
 
 	GtkWidget * vbox;
 
 	GtkWidget * hbox_bottom;
-	GtkWidget * direct_button;
+	GtkWidget * add_button;
 	GtkWidget * selall_button;
 	GtkWidget * remsel_button;
 
@@ -1959,10 +2057,6 @@ create_playlist(void) {
                                                 G_TYPE_INT);            /* font weight */
 	}
 
-	/*
-	g_signal_connect(G_OBJECT(play_store), "row-deleted",
-			 G_CALLBACK(playlist_row_deleted), NULL);
-	*/
 
         play_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(play_store));
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(play_list), FALSE);
@@ -2147,10 +2241,10 @@ create_playlist(void) {
         hbox_bottom = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox), hbox_bottom, FALSE, TRUE, 0);
 
-	direct_button = gtk_button_new_with_label(_("Add files..."));
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), direct_button, _("Add files to playlist"), NULL);
-        gtk_box_pack_start(GTK_BOX(hbox_bottom), direct_button, TRUE, TRUE, 0);
-        g_signal_connect(G_OBJECT(direct_button), "clicked", G_CALLBACK(direct_add), NULL);
+	add_button = gtk_button_new_with_label(_("Add files"));
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), add_button, _("Add files to playlist\n(Press right mouse button for menu)"), NULL);
+        gtk_box_pack_start(GTK_BOX(hbox_bottom), add_button, TRUE, TRUE, 0);
+        g_signal_connect(G_OBJECT(add_button), "clicked", G_CALLBACK(add_files), NULL);
 
 	selall_button = gtk_button_new_with_label(_("Select all"));
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), selall_button, _("Select all songs in playlist\n(Press right mouse button for menu)"), NULL);
@@ -2163,6 +2257,21 @@ create_playlist(void) {
         g_signal_connect(G_OBJECT(remsel_button), "clicked", G_CALLBACK(remove_sel), NULL);
 
 
+        add_menu = gtk_menu_new();
+
+        add__dir = gtk_menu_item_new_with_label(_("Add directory"));
+        gtk_menu_shell_append(GTK_MENU_SHELL(add_menu), add__dir);
+        g_signal_connect_swapped(G_OBJECT(add__dir), "activate", G_CALLBACK(add__dir_cb), NULL);
+	gtk_widget_show(add__dir);
+
+        add__files = gtk_menu_item_new_with_label(_("Add files"));
+        gtk_menu_shell_append(GTK_MENU_SHELL(add_menu), add__files);
+        g_signal_connect_swapped(G_OBJECT(add__files), "activate", G_CALLBACK(add__files_cb), NULL);
+	gtk_widget_show(add__files);
+
+        g_signal_connect_swapped(G_OBJECT(add_button), "event", G_CALLBACK(add_cb), NULL);
+
+
         sel_menu = gtk_menu_new();
 
         sel__none = gtk_menu_item_new_with_label(_("Select none"));
@@ -2170,30 +2279,30 @@ create_playlist(void) {
         g_signal_connect_swapped(G_OBJECT(sel__none), "activate", G_CALLBACK(sel__none_cb), NULL);
 	gtk_widget_show(sel__none);
 
-        sel__all = gtk_menu_item_new_with_label(_("Select all"));
-        gtk_menu_shell_append(GTK_MENU_SHELL(sel_menu), sel__all);
-        g_signal_connect_swapped(G_OBJECT(sel__all), "activate", G_CALLBACK(sel__all_cb), NULL);
-	gtk_widget_show(sel__all);
-
         sel__inv = gtk_menu_item_new_with_label(_("Invert selection"));
         gtk_menu_shell_append(GTK_MENU_SHELL(sel_menu), sel__inv);
         g_signal_connect_swapped(G_OBJECT(sel__inv), "activate", G_CALLBACK(sel__inv_cb), NULL);
 	gtk_widget_show(sel__inv);
+
+        sel__all = gtk_menu_item_new_with_label(_("Select all"));
+        gtk_menu_shell_append(GTK_MENU_SHELL(sel_menu), sel__all);
+        g_signal_connect_swapped(G_OBJECT(sel__all), "activate", G_CALLBACK(sel__all_cb), NULL);
+	gtk_widget_show(sel__all);
 
         g_signal_connect_swapped(G_OBJECT(selall_button), "event", G_CALLBACK(sel_cb), NULL);
 
 
         rem_menu = gtk_menu_new();
 
-        cut__sel = gtk_menu_item_new_with_label(_("Cut selected"));
-        gtk_menu_shell_append(GTK_MENU_SHELL(rem_menu), cut__sel);
-        g_signal_connect_swapped(G_OBJECT(cut__sel), "activate", G_CALLBACK(cut__sel_cb), NULL);
-    	gtk_widget_show(cut__sel);
-
         rem__all = gtk_menu_item_new_with_label(_("Remove all"));
         gtk_menu_shell_append(GTK_MENU_SHELL(rem_menu), rem__all);
         g_signal_connect_swapped(G_OBJECT(rem__all), "activate", G_CALLBACK(rem__all_cb), NULL);
     	gtk_widget_show(rem__all);
+
+        cut__sel = gtk_menu_item_new_with_label(_("Cut selected"));
+        gtk_menu_shell_append(GTK_MENU_SHELL(rem_menu), cut__sel);
+        g_signal_connect_swapped(G_OBJECT(cut__sel), "activate", G_CALLBACK(cut__sel_cb), NULL);
+    	gtk_widget_show(cut__sel);
 
         rem__sel = gtk_menu_item_new_with_label(_("Remove selected"));
         gtk_menu_shell_append(GTK_MENU_SHELL(rem_menu), rem__sel);
@@ -2272,7 +2381,7 @@ save_track_node(GtkTreeIter * piter, xmlNodePtr root, char * nodeID) {
 	node = xmlNewTextChild(root, NULL, (const xmlChar*) nodeID, NULL);
 	
 	xmlNewTextChild(node, NULL, (const xmlChar*) "track_name", (const xmlChar*) track_name);
-	if(!strcmp(nodeID,"record")) {
+	if (!strcmp(nodeID,"record")) {
 	    xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) phys_name);
 	} else {
 	    converted_temp = g_filename_to_uri(phys_name, NULL, NULL);
@@ -2376,18 +2485,18 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * pparent_iter, 
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"phys_name"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				if(is_record_node) {
+				if (is_record_node) {
 				//"record" node keeps special data here 
 				    strncpy(phys_name, (char *) key, sizeof(phys_name)-1);
 				    phys_name[sizeof(phys_name)-1] = '\0';
-				} else if((converted_temp = g_filename_from_uri((char *) key, NULL, NULL))) {
+				} else if ((converted_temp = g_filename_from_uri((char *) key, NULL, NULL))) {
                             	    strncpy(phys_name, converted_temp, sizeof(phys_name)-1);
 				    phys_name[sizeof(phys_name)-1] = '\0';
 				    g_free(converted_temp);
 				} else {
 				    //try to read utf8 filename from outdated file
 				    converted_temp = g_locale_from_utf8((char *) key, -1, NULL, NULL, &error);
-				    if((converted_temp!=NULL)) {
+				    if ((converted_temp!=NULL)) {
 					strncpy(phys_name, converted_temp, sizeof(phys_name)-1);
 					phys_name[sizeof(phys_name)-1] = '\0';
 					g_free(converted_temp);

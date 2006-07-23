@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <gtk/gtk.h>
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -38,6 +39,7 @@
 #include "common.h"
 #include "i18n.h"
 #include "options.h"
+#include "playlist.h"
 
 #define MBYTES  1048576         /* bytes per MB */
 #define ROOTDIR _("<root>")
@@ -60,6 +62,7 @@ struct ifp_device ifpdev;
 
 gchar remote_directory[MAXLEN];
 gchar temp[MAXLEN];
+gchar dest_dir[MAXLEN];
 gchar dest_file[MAXLEN];
 
 guint songs_size, number_of_songs;
@@ -106,13 +109,53 @@ update_progress (void *context, struct ifp_transfer_status *status) {
 
 }
 
-void
-upload_songs_cb (GtkButton *button, gpointer user_data) {
 
-	GtkTreeIter iter;
-        gint i, j, k, n;
-        gchar *str;
-        gchar dest_dir[MAXLEN], file[MAXLEN];
+void
+upload_songs_cb_foreach(GtkTreeIter * iter, void * data) {
+
+	int i;
+	int * n = (int *)data;
+	char * str;
+	char file[MAXLEN];
+
+	if (abort_pressed) {
+		return;
+	}
+
+	gtk_tree_model_get(GTK_TREE_MODEL(play_store), iter, 1, &str, -1);
+
+	i = strlen(str);
+
+	while (str[--i]!='/');
+
+	strncpy(file, str + i + 1, MAXLEN-1);
+
+	strncpy(dest_file, dest_dir, MAXLEN-1);
+	if (strcmp(remote_directory, ROOTDIR)) {
+		strncat(dest_file, "\\", MAXLEN-1);
+	}
+	strncat(dest_file, file, MAXLEN-1);
+
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_op),
+				      (double)(*n + 1) / number_of_songs);
+	sprintf(temp, _("%d / %d files"), *n + 1, number_of_songs);
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar_op), temp);
+	deflicker();
+
+	ifp_upload_file(&ifpdev, str, dest_file, update_progress, NULL);
+
+	aifp_update_info();
+	deflicker();
+
+	g_free(str);
+
+	(*n)++;
+}
+
+void
+upload_songs_cb(GtkButton * button, gpointer user_data) {
+
+	int n = 0;
 
         gtk_widget_set_sensitive(abort_button, TRUE);
         gtk_widget_set_sensitive(upload_button, FALSE);
@@ -125,60 +168,26 @@ upload_songs_cb (GtkButton *button, gpointer user_data) {
 
         strncpy(dest_dir, "\\", MAXLEN-1);
 
-        if(strcmp(remote_directory, ROOTDIR))
+        if (strcmp(remote_directory, ROOTDIR)) {
                 strncat(dest_dir, remote_directory, MAXLEN-1);
-
-        i = n = 0;
-
-        while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
-
-                if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
-
-			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, -1);
-
-                        j = strlen(str);
-                        k = 0;
-
-                        while(str[--j]!='/');
-                        while(str[++j])
-                            file[k++] = str[j];
-                        file[k] = '\0';
-
-                        strncpy(dest_file, dest_dir, MAXLEN-1);
-                        if(strcmp(remote_directory, ROOTDIR))
-                                strncat(dest_file, "\\", MAXLEN-1);
-                        strncat(dest_file, file, MAXLEN-1);
-
-                        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_op), (double)(n+1)/number_of_songs);
-                        sprintf(temp, _("%d / %d files"), n+1, number_of_songs);
-                        gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_op), temp);
-                        deflicker();
-
-                        k = ifp_upload_file(&ifpdev, str, dest_file, update_progress, NULL);
-
-                        aifp_update_info();
-                        deflicker();
-
-                        n++;
-                }
-
-                if(abort_pressed) break;
 	}
+
+	playlist_foreach_selected(upload_songs_cb_foreach, &n);
 
         gtk_widget_set_sensitive(abort_button, FALSE);
         gtk_widget_set_sensitive(close_button, TRUE);
         gtk_widget_set_sensitive(list, TRUE);
 
-        if(!abort_pressed) {
+        if (!abort_pressed) {
                 gtk_widget_set_sensitive(upload_button, FALSE);
-                gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_op), _("Done."));
+                gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbar_op), _("Done."));
         } else {
-                gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_op), _("Aborted..."));
+                gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbar_op), _("Aborted..."));
                 gtk_widget_set_sensitive(upload_button, TRUE);
         }
 
         aifp_update_info();
-        gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_cf), _("Done."));
+        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbar_cf), _("Done."));
         deflicker();
 
         abort_pressed = 0;
@@ -213,7 +222,7 @@ create_directory_cb (GtkButton *button, gpointer user_data) {
 
                 strncpy(temp, gtk_entry_get_text(GTK_ENTRY(name_entry)), MAXLEN-1);
 
-                if(strlen(temp)) {
+                if (strlen(temp)) {
 
                         k = ifp_mkdir(&ifpdev, temp);
 
@@ -233,7 +242,7 @@ rename_directory_cb (GtkButton *button, gpointer user_data) {
         gint response, k;
         const gchar * text;
 
-        if(strcmp(remote_directory, ROOTDIR)) {
+        if (strcmp(remote_directory, ROOTDIR)) {
 
                 info_dialog = gtk_message_dialog_new (GTK_WINDOW(aifp_window),
                                                       GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
@@ -259,7 +268,7 @@ rename_directory_cb (GtkButton *button, gpointer user_data) {
                         strncpy(temp, "\\", MAXLEN-1);
                         strncat(temp, text, MAXLEN-1);
 
-                        if(strlen(text)) {
+                        if (strlen(text)) {
 
                                 strncpy(dest_file, "\\", MAXLEN-1);
                                 strncat(dest_file, remote_directory, MAXLEN-1);
@@ -281,7 +290,7 @@ remove_directory_cb (GtkButton *button, gpointer user_data) {
         GtkWidget *info_dialog;
         gint response, k;
 
-        if(strcmp(remote_directory, ROOTDIR)) {
+        if (strcmp(remote_directory, ROOTDIR)) {
 
                 sprintf(temp, _("Directory '%s' will be removed with its entire contents.\n\nAre you sure ?"), remote_directory);
 
@@ -342,7 +351,7 @@ aifp_dump_dir(void *context, int type, const char *name, int filesize) {
 
         i = 1;  /* 0 is for ROOTDIR */
 
-        if(type == IFP_DIR) {
+        if (type == IFP_DIR) {
 
                 gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(list_store), &iter, NULL, i++);
                 gtk_list_store_append(list_store, &iter);
@@ -365,7 +374,7 @@ aifp_directory_listing(void) {
 	gtk_list_store_append(list_store, &iter);
 	gtk_list_store_set(list_store, &iter, 0, ROOTDIR, -1);
 
-        if(ifp_list_dirs(&ifpdev, "\\", aifp_dump_dir, NULL)) {
+        if (ifp_list_dirs(&ifpdev, "\\", aifp_dump_dir, NULL)) {
 
                 fprintf(stderr, "warning: list dirs failed.\n");
                 return -1;
@@ -417,31 +426,31 @@ aifp_update_info(void) {
 
 /* get the number of songs to send and overall data size to be transmitted */
 
+void
+aifp_get_songs_info_foreach(GtkTreeIter * iter, void * data) {
+
+        struct stat statbuf;
+	char * file;
+	int * num = (int *)data;
+
+	gtk_tree_model_get(GTK_TREE_MODEL(play_store), iter, 1, &file, -1);
+
+	if (stat(file, &statbuf) != -1) {
+		songs_size += statbuf.st_size;
+		(*num)++;
+	}
+
+	g_free(file);
+}
+
 gint
 aifp_get_songs_info(void) {
 
-	GtkTreeIter iter;
-	gchar * str;
-	gint i, k;
-        struct stat statbuf;
+	int num = 0;
 
-        i = k = 0;
+	playlist_foreach_selected(aifp_get_songs_info_foreach, &num);
 
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
-
-                if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
-
-			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &str, -1);
-
-                        if(g_stat(str, &statbuf) != -1) {
-
-                                songs_size += statbuf.st_size;
-                                k++;
-                        }
-                }
-	}
-
-        return k;
+	return num;
 }
 
 
@@ -485,7 +494,7 @@ aifp_check_and_init_device(void) {
                         " interface.)"));
 
                 e = ifp_release_device(dh);
-                if(e) { 
+                if (e) { 
                         fprintf(stderr, "warning: release_device failed, i=%d\n",e);
                 }
 
@@ -494,7 +503,7 @@ aifp_check_and_init_device(void) {
 
         i = ifp_init(&ifpdev, dh);
 
-        if(i) {
+        if (i) {
                 
                 sprintf(temp, _("Device isn't responding..\ntry jiggling the handle. (error %d)"),i);
                 aifp_show_message(GTK_MESSAGE_ERROR, temp);
@@ -502,7 +511,7 @@ aifp_check_and_init_device(void) {
                 usb_release_interface(dh, dev->config->interface->altsetting->bInterfaceNumber);
 
                 e = ifp_release_device(dh);
-                if(e) { 
+                if (e) { 
                         fprintf(stderr, "warning: release_device failed, i=%d\n",e);
                 }
 
@@ -520,7 +529,7 @@ aifp_window_close(GtkWidget * widget, gpointer * data) {
 
         e = ifp_finalize(&ifpdev);
 
-        if(e) { 
+        if (e) { 
                 fprintf(stderr, "warning: finalize failed, i=%d\n",e);  
         }
 
@@ -528,7 +537,7 @@ aifp_window_close(GtkWidget * widget, gpointer * data) {
 
         e = ifp_release_device(dh);
 
-        if(e) { 
+        if (e) { 
                 fprintf(stderr, "warning: release_device failed, i=%d\n",e); 
         }
 
@@ -568,12 +577,14 @@ void aifp_transfer_files(void) {
 
         number_of_songs = aifp_get_songs_info();
 
-        if(!number_of_songs) {
+        if (!number_of_songs) {
                 aifp_show_message(GTK_MESSAGE_WARNING, _("Please select at least one song from playlist..."));
                 return;
         }
 
-        if(aifp_check_and_init_device() == -1) return;
+        if (aifp_check_and_init_device() == -1) {
+		return;
+	}
 
         aifp_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(aifp_window), _("iFP device manager"));
@@ -897,10 +908,11 @@ void aifp_transfer_files(void) {
 
         aifp_directory_listing();
         
-        if(songs_size > freespace)
+        if (songs_size > freespace) {
                 gtk_widget_set_sensitive(upload_button, FALSE);
-        else
+	} else {
                 gtk_widget_set_sensitive(upload_button, TRUE);
+	}
 
         abort_pressed = 0;
 

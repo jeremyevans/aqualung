@@ -291,7 +291,7 @@ set_playlist_color() {
    it is selected or its parent album node is selected. */
 
 void
-playlist_foreach_selected(void (* foreach)(GtkTreeIter *)) {
+playlist_foreach_selected(void (* foreach)(GtkTreeIter *, void *), void * data) {
 
 	GtkTreeIter iter_top;
 	GtkTreeIter iter;
@@ -308,12 +308,12 @@ playlist_foreach_selected(void (* foreach)(GtkTreeIter *)) {
 			j = 0;
 			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, &iter_top, j++)) {
 				if (topsel || gtk_tree_selection_iter_is_selected(play_select, &iter)) {
-					(*foreach)(&iter);
+					(*foreach)(&iter, data);
 				}
 			}
 
 		} else if (topsel) {
-			(*foreach)(&iter_top);
+			(*foreach)(&iter_top, data);
 		}
 	}
 }
@@ -834,7 +834,7 @@ watch_vol_calc(gpointer data) {
 
 
 void
-plist_setup_vol_foreach(GtkTreeIter * iter) {
+plist_setup_vol_foreach(GtkTreeIter * iter, void * data) {
 
         char * pfile;
 
@@ -870,7 +870,7 @@ plist_setup_vol_calc(void) {
 
 	vol_n_tracks = 0;
 
-	playlist_foreach_selected(plist_setup_vol_foreach);
+	playlist_foreach_selected(plist_setup_vol_foreach, NULL);
 
 	if (vol_n_tracks == 0)
 		return;
@@ -934,7 +934,7 @@ plist__rva_average_cb(gpointer data) {
 
 
 void
-plist__reread_file_meta_foreach(GtkTreeIter * iter) {
+plist__reread_file_meta_foreach(GtkTreeIter * iter, void * data) {
 
 	gchar * title;
 	gchar * fullname;
@@ -975,7 +975,7 @@ plist__reread_file_meta_foreach(GtkTreeIter * iter) {
 void
 plist__reread_file_meta_cb(gpointer data) {
 
-	playlist_foreach_selected(plist__reread_file_meta_foreach);
+	playlist_foreach_selected(plist__reread_file_meta_foreach, NULL);
 	delayed_playlist_rearrange(100);
 }
 

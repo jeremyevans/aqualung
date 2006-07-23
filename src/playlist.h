@@ -40,6 +40,7 @@ void add_to_playlist(char * filename, int enqueue);
 void playlist_content_changed(void);
 void playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer data);
 gint playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent);
+void playlist_foreach_selected(void (* foreach)(GtkTreeIter *, void *), void * data);
 
 
 #endif /* _PLAYLIST_H */

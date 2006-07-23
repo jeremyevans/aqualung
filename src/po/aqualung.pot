@@ -1,4 +1,4 @@
-#: ../about.c:75 ../gui_main.c:2784
+#: ../about.c:75 ../gui_main.c:2791
 msgid "About"
 msgstr ""
 
@@ -54,109 +54,87 @@ msgstr ""
 msgid "File format support:"
 msgstr ""
 
-#: ../about.c:175 ../about.c:186 ../about.c:197 ../about.c:208 ../about.c:219
-#: ../about.c:230 ../about.c:241 ../about.c:252 ../about.c:263 ../about.c:279
-#: ../about.c:290 ../about.c:300 ../about.c:311 ../about.c:322 ../about.c:333
-msgid "yes"
+#: ../about.c:174 ../about.c:181 ../about.c:188 ../about.c:195 ../about.c:202
+#: ../about.c:209 ../about.c:216 ../about.c:223 ../about.c:230 ../about.c:242
+#: ../about.c:249 ../about.c:255 ../about.c:264 ../about.c:271 ../about.c:278
+msgid "\t\t[yes]\t"
 msgstr ""
 
-#: ../about.c:179 ../about.c:190 ../about.c:201 ../about.c:212 ../about.c:223
-#: ../about.c:234 ../about.c:245 ../about.c:256 ../about.c:267 ../about.c:283
-#: ../about.c:294 ../about.c:315 ../about.c:326 ../about.c:337
-msgid "no"
+#: ../about.c:176 ../about.c:183 ../about.c:190 ../about.c:197 ../about.c:204
+#: ../about.c:211 ../about.c:218 ../about.c:225 ../about.c:232 ../about.c:244
+#: ../about.c:251 ../about.c:266 ../about.c:273 ../about.c:280
+msgid "\t\t[no]\t\t"
 msgstr ""
 
-#: ../about.c:182
+#: ../about.c:178
 msgid "sndfile (WAV, AIFF, etc.)\n"
 msgstr ""
 
-#: ../about.c:193
+#: ../about.c:185
 msgid "Free Lossless Audio Codec (FLAC)\n"
 msgstr ""
 
-#: ../about.c:204
+#: ../about.c:192
 msgid "Ogg Vorbis\n"
 msgstr ""
 
-#: ../about.c:215
+#: ../about.c:199
 msgid "Ogg Speex\n"
 msgstr ""
 
-#: ../about.c:226
+#: ../about.c:206
 msgid "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
 msgstr ""
 
-#: ../about.c:237
+#: ../about.c:213
 msgid "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
 msgstr ""
 
-#: ../about.c:248
+#: ../about.c:220
 msgid "Musepack\n"
 msgstr ""
 
-#: ../about.c:259
+#: ../about.c:227
 msgid "Monkey's Audio Codec\n"
 msgstr ""
 
-#: ../about.c:270
+#: ../about.c:234
 msgid "ID3 tags\n"
 msgstr ""
 
-#: ../about.c:274
+#: ../about.c:238
 msgid "Output driver support:"
 msgstr ""
 
-#: ../about.c:286
+#: ../about.c:246
 msgid "OSS Audio\n"
 msgstr ""
 
-#: ../about.c:297
+#: ../about.c:253
 msgid "ALSA Audio\n"
 msgstr ""
 
-#: ../about.c:302
+#: ../about.c:256
 msgid "JACK Audio Server\n"
 msgstr ""
 
-#: ../about.c:306
+#: ../about.c:260
 msgid "Miscellaneous:"
 msgstr ""
 
-#: ../about.c:318
+#: ../about.c:268
 msgid "Internal Sample Rate Converter support\n"
 msgstr ""
 
-#: ../about.c:329
+#: ../about.c:275
 msgid "CDDB support\n"
 msgstr ""
 
-#: ../about.c:340
+#: ../about.c:282
 msgid "iRiver iFP driver support\n"
 msgstr ""
 
-#: ../about.c:345
-msgid ""
-"Aqualung could not be functional without the following libraries.\n"
-"We would like to thank the authors of these software packages:\n"
-"\n"
-"* The GIMP Toolkit (GTK+), version 2.0\n"
-"* libXML2, the XML C parser and toolkit of Gnome\n"
-"* libJACK, the JACK Audio Connection Kit support library\n"
-"* liblrdf, a library for manipulating RDF files about LADSPA plugins\n"
-"* libsamplerate (aka Secret Rabbit Code), a high quality Sample Rate "
-"Converter\n"
-"* libsndfile, a library for accessing audio files containing sampled sound\n"
-"* libvorbis & libvorbisfile, for decoding Ogg Vorbis audio\n"
-"* liboggz & libspeex, for decoding Ogg Speex\n"
-"* libFLAC, the Free Lossless Audio Codec library\n"
-"* libMAD, a GPL'ed MPEG Audio Decoder library\n"
-"* libmodplug, a MOD decoder library in the public domain\n"
-"* libmusepack, a GPL'ed Musepack decoder library\n"
-"* libid3tag, a library for accessing ID3v2 tags\n"
-"* libcddb, a CDDB server access library"
-msgstr ""
-
-#: ../about.c:365
+#: ../about.c:287
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -173,100 +151,100 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../build_store.c:238
+#: ../build_store.c:232
 msgid "Please select the root directory."
 msgstr ""
 
-#: ../build_store.c:314
+#: ../build_store.c:307
 msgid "Build store"
 msgstr ""
 
-#: ../build_store.c:333 ../options.c:1527
+#: ../build_store.c:327 ../options.c:1527
 msgid "General"
 msgstr ""
 
-#: ../build_store.c:339
+#: ../build_store.c:333
 msgid "Root path:"
 msgstr ""
 
-#: ../build_store.c:352 ../music_browser.c:429 ../music_browser.c:1369
+#: ../build_store.c:346 ../music_browser.c:429 ../music_browser.c:1369
 #: ../music_browser.c:1538
 msgid "_Browse..."
 msgstr ""
 
-#: ../build_store.c:358
+#: ../build_store.c:352
 msgid "Data source priority"
 msgstr ""
 
-#: ../build_store.c:364
+#: ../build_store.c:359
 msgid "Metadata first, then CDDB"
 msgstr ""
 
-#: ../build_store.c:370
+#: ../build_store.c:365
 msgid "CDDB first, then metadata"
 msgstr ""
 
-#: ../build_store.c:379 ../options.c:2207
+#: ../build_store.c:375 ../options.c:2207
 msgid "Metadata"
 msgstr ""
 
-#: ../build_store.c:383
+#: ../build_store.c:379
 msgid "Import file metadata"
 msgstr ""
 
-#: ../build_store.c:395 ../build_store.c:459
+#: ../build_store.c:391 ../build_store.c:456
 msgid "Import title"
 msgstr ""
 
-#: ../build_store.c:404 ../build_store.c:468
+#: ../build_store.c:400 ../build_store.c:465
 msgid "Import artist"
 msgstr ""
 
-#: ../build_store.c:413 ../build_store.c:477
+#: ../build_store.c:409 ../build_store.c:474
 msgid "Import record"
 msgstr ""
 
-#: ../build_store.c:422
+#: ../build_store.c:418
 msgid "Exclude whitespace-only metadata"
 msgstr ""
 
-#: ../build_store.c:442 ../options.c:2306
+#: ../build_store.c:439 ../options.c:2306
 msgid "CDDB"
 msgstr ""
 
-#: ../build_store.c:446
+#: ../build_store.c:443
 msgid "Perform CDDB lookup for records"
 msgstr ""
 
-#: ../build_store.c:496
+#: ../build_store.c:494
 msgid "Filesystem"
 msgstr ""
 
-#: ../build_store.c:499
+#: ../build_store.c:497
 msgid "Predefined transformations"
 msgstr ""
 
-#: ../build_store.c:511
+#: ../build_store.c:509
 msgid "Remove leading number"
 msgstr ""
 
-#: ../build_store.c:520
+#: ../build_store.c:518
 msgid "Remove file extension"
 msgstr ""
 
-#: ../build_store.c:529
+#: ../build_store.c:527
 msgid "Convert underscore to space"
 msgstr ""
 
-#: ../build_store.c:538
+#: ../build_store.c:536
 msgid "Regular expression"
 msgstr ""
 
-#: ../build_store.c:546
+#: ../build_store.c:544
 msgid "regexp:"
 msgstr ""
 
-#: ../build_store.c:557
+#: ../build_store.c:556
 msgid "replacement:"
 msgstr ""
 
@@ -274,36 +252,36 @@ msgstr ""
 msgid "Regexp matches empty string"
 msgstr ""
 
-#: ../build_store.c:692
+#: ../build_store.c:695
 msgid "Building store from filesystem"
 msgstr ""
 
-#: ../build_store.c:706
+#: ../build_store.c:709
 msgid "Directory:"
 msgstr ""
 
-#: ../build_store.c:717
+#: ../build_store.c:720
 msgid "Action:"
 msgstr ""
 
-#: ../build_store.c:735 ../cddb_lookup.c:122 ../ifp_device.c:879
+#: ../build_store.c:738 ../cddb_lookup.c:122 ../ifp_device.c:879
 #: ../volume.c:192
 msgid "Abort"
 msgstr ""
 
-#: ../build_store.c:988
+#: ../build_store.c:991
 msgid "Scanning files"
 msgstr ""
 
-#: ../build_store.c:1029 ../build_store.c:1048
+#: ../build_store.c:1032 ../build_store.c:1051
 msgid "Processing metadata"
 msgstr ""
 
-#: ../build_store.c:1035 ../build_store.c:1054
+#: ../build_store.c:1038 ../build_store.c:1057
 msgid "CDDB lookup"
 msgstr ""
 
-#: ../build_store.c:1067
+#: ../build_store.c:1070
 msgid "File name transformation"
 msgstr ""
 
@@ -380,7 +358,7 @@ msgstr ""
 msgid "No matching record found."
 msgstr ""
 
-#: ../file_info.c:313 ../gui_main.c:2781
+#: ../file_info.c:313 ../gui_main.c:2788
 msgid "File info"
 msgstr ""
 
@@ -417,11 +395,11 @@ msgstr ""
 msgid "Channel count:"
 msgstr ""
 
-#: ../file_info.c:407 ../gui_main.c:807
+#: ../file_info.c:407 ../gui_main.c:808
 msgid "MONO"
 msgstr ""
 
-#: ../file_info.c:409 ../gui_main.c:810
+#: ../file_info.c:409 ../gui_main.c:811
 msgid "STEREO"
 msgstr ""
 
@@ -466,204 +444,204 @@ msgstr ""
 msgid "FLAC metadata"
 msgstr ""
 
-#: ../gui_main.c:366
+#: ../gui_main.c:367
 #, c-format
 msgid "%d day, %2d:%02d:%02d"
 msgstr ""
 
-#: ../gui_main.c:368
+#: ../gui_main.c:369
 #, c-format
 msgid "%d day, %1d:%02d:%02d"
 msgstr ""
 
-#: ../gui_main.c:370
+#: ../gui_main.c:371
 #, c-format
 msgid "%d days, %2d:%02d:%02d"
 msgstr ""
 
-#: ../gui_main.c:372
+#: ../gui_main.c:373
 #, c-format
 msgid "%d days, %1d:%02d:%02d"
 msgstr ""
 
-#: ../gui_main.c:565
+#: ../gui_main.c:566
 msgid "Unrecognized"
 msgstr ""
 
-#: ../gui_main.c:573 ../gui_main.c:579 ../gui_main.c:582 ../gui_main.c:585
+#: ../gui_main.c:574 ../gui_main.c:580 ../gui_main.c:583 ../gui_main.c:586
 msgid "bit signed"
 msgstr ""
 
-#: ../gui_main.c:576
+#: ../gui_main.c:577
 msgid "bit unsigned"
 msgstr ""
 
-#: ../gui_main.c:588
+#: ../gui_main.c:589
 msgid "bit float"
 msgstr ""
 
-#: ../gui_main.c:591
+#: ../gui_main.c:592
 msgid "bit double"
 msgstr ""
 
-#: ../gui_main.c:594 ../gui_main.c:597 ../gui_main.c:600 ../gui_main.c:603
-#: ../gui_main.c:606 ../gui_main.c:609 ../gui_main.c:612 ../gui_main.c:615
-#: ../gui_main.c:618 ../gui_main.c:621 ../gui_main.c:624 ../gui_main.c:627
-#: ../gui_main.c:630
+#: ../gui_main.c:595 ../gui_main.c:598 ../gui_main.c:601 ../gui_main.c:604
+#: ../gui_main.c:607 ../gui_main.c:610 ../gui_main.c:613 ../gui_main.c:616
+#: ../gui_main.c:619 ../gui_main.c:622 ../gui_main.c:625 ../gui_main.c:628
+#: ../gui_main.c:631
 msgid "encoding"
 msgstr ""
 
-#: ../gui_main.c:641
+#: ../gui_main.c:642
 msgid "Profile: Telephone"
 msgstr ""
 
-#: ../gui_main.c:644
+#: ../gui_main.c:645
 msgid "Profile: Thumb"
 msgstr ""
 
-#: ../gui_main.c:647
+#: ../gui_main.c:648
 msgid "Profile: Radio"
 msgstr ""
 
-#: ../gui_main.c:650
+#: ../gui_main.c:651
 msgid "Profile: Standard"
 msgstr ""
 
-#: ../gui_main.c:653
+#: ../gui_main.c:654
 msgid "Profile: Xtreme"
 msgstr ""
 
-#: ../gui_main.c:656
+#: ../gui_main.c:657
 msgid "Profile: Insane"
 msgstr ""
 
-#: ../gui_main.c:659
+#: ../gui_main.c:660
 msgid "Profile: Braindead"
 msgstr ""
 
-#: ../gui_main.c:674
+#: ../gui_main.c:675
 msgid "Layer I"
 msgstr ""
 
-#: ../gui_main.c:677
+#: ../gui_main.c:678
 msgid "Layer II"
 msgstr ""
 
-#: ../gui_main.c:680
+#: ../gui_main.c:681
 msgid "Layer III"
 msgstr ""
 
-#: ../gui_main.c:690
+#: ../gui_main.c:691
 msgid "Single channel"
 msgstr ""
 
-#: ../gui_main.c:693
+#: ../gui_main.c:694
 msgid "Dual channel"
 msgstr ""
 
-#: ../gui_main.c:696
+#: ../gui_main.c:697
 msgid "Joint stereo"
 msgstr ""
 
-#: ../gui_main.c:699
+#: ../gui_main.c:700
 msgid "Stereo"
 msgstr ""
 
-#: ../gui_main.c:709
+#: ../gui_main.c:710
 msgid "Emphasis: none"
 msgstr ""
 
-#: ../gui_main.c:712 ../gui_main.c:715
+#: ../gui_main.c:713 ../gui_main.c:716
 msgid "Emphasis:"
 msgstr ""
 
-#: ../gui_main.c:718
+#: ../gui_main.c:719
 msgid "Emphasis: reserved"
 msgstr ""
 
-#: ../gui_main.c:731
+#: ../gui_main.c:732
 msgid "Compression: Fast"
 msgstr ""
 
-#: ../gui_main.c:734
+#: ../gui_main.c:735
 msgid "Compression: Normal"
 msgstr ""
 
-#: ../gui_main.c:737
+#: ../gui_main.c:738
 msgid "Compression: High"
 msgstr ""
 
-#: ../gui_main.c:740
+#: ../gui_main.c:741
 msgid "Compression: Extra High"
 msgstr ""
 
-#: ../gui_main.c:743
+#: ../gui_main.c:744
 msgid "Compression: Insane"
 msgstr ""
 
-#: ../gui_main.c:828 ../gui_main.c:833 ../gui_main.c:837
+#: ../gui_main.c:829 ../gui_main.c:834 ../gui_main.c:838
 msgid "Output:"
 msgstr ""
 
-#: ../gui_main.c:851
+#: ../gui_main.c:852
 msgid "SRC Type: "
 msgstr ""
 
-#: ../gui_main.c:855
+#: ../gui_main.c:856
 msgid "None"
 msgstr ""
 
-#: ../gui_main.c:1181
+#: ../gui_main.c:1188
 msgid ""
 "Music Store has been changed.\n"
 "Do you want to save it before exiting?"
 msgstr ""
 
-#: ../gui_main.c:1695
+#: ../gui_main.c:1702
 #, c-format
 msgid "Position: %d%%"
 msgstr ""
 
-#: ../gui_main.c:1713 ../gui_main.c:1740
+#: ../gui_main.c:1720 ../gui_main.c:1747
 #, c-format
 msgid "Mute"
 msgstr ""
 
-#: ../gui_main.c:1715 ../gui_main.c:1742
+#: ../gui_main.c:1722 ../gui_main.c:1749
 #, c-format
 msgid "%d dB"
 msgstr ""
 
-#: ../gui_main.c:1749
+#: ../gui_main.c:1756
 #, c-format
 msgid "Volume: %s"
 msgstr ""
 
-#: ../gui_main.c:1777 ../gui_main.c:1808
+#: ../gui_main.c:1784 ../gui_main.c:1815
 #, c-format
 msgid "%d%% R"
 msgstr ""
 
-#: ../gui_main.c:1779 ../gui_main.c:1810
+#: ../gui_main.c:1786 ../gui_main.c:1817
 #, c-format
 msgid "%d%% L"
 msgstr ""
 
-#: ../gui_main.c:1782 ../gui_main.c:1813
+#: ../gui_main.c:1789 ../gui_main.c:1820
 #, c-format
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:1820
+#: ../gui_main.c:1827
 #, c-format
 msgid "Balance: %s"
 msgstr ""
 
-#: ../gui_main.c:2681
+#: ../gui_main.c:2688
 msgid "JACK connection lost"
 msgstr ""
 
-#: ../gui_main.c:2684
+#: ../gui_main.c:2691
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -671,132 +649,132 @@ msgid ""
 "is restart both JACK and Aqualung.\n"
 msgstr ""
 
-#: ../gui_main.c:2777 ../options.c:1506
+#: ../gui_main.c:2784 ../options.c:1506
 msgid "Settings"
 msgstr ""
 
-#: ../gui_main.c:2778 ../skin.c:143
+#: ../gui_main.c:2785 ../skin.c:143
 msgid "Skin chooser"
 msgstr ""
 
-#: ../gui_main.c:2779
+#: ../gui_main.c:2786
 msgid "JACK port setup"
 msgstr ""
 
-#: ../gui_main.c:2786
+#: ../gui_main.c:2793
 msgid "Quit"
 msgstr ""
 
-#: ../gui_main.c:3062
+#: ../gui_main.c:3069
 msgid "Previous song (comma)"
 msgstr ""
 
-#: ../gui_main.c:3066
+#: ../gui_main.c:3073
 msgid "Stop (s)"
 msgstr ""
 
-#: ../gui_main.c:3070
+#: ../gui_main.c:3077
 msgid "Next song (period)"
 msgstr ""
 
-#: ../gui_main.c:3074
+#: ../gui_main.c:3081
 msgid "Play (p)"
 msgstr ""
 
-#: ../gui_main.c:3078
+#: ../gui_main.c:3085
 msgid "Pause (space)"
 msgstr ""
 
-#: ../gui_main.c:3104
+#: ../gui_main.c:3111
 msgid "Repeat current song"
 msgstr ""
 
-#: ../gui_main.c:3112
+#: ../gui_main.c:3119
 msgid "Repeat all songs"
 msgstr ""
 
-#: ../gui_main.c:3120
+#: ../gui_main.c:3127
 msgid "Shuffle songs"
 msgstr ""
 
-#: ../gui_main.c:3133
+#: ../gui_main.c:3140
 msgid "Toggle playlist"
 msgstr ""
 
-#: ../gui_main.c:3138
+#: ../gui_main.c:3145
 msgid "Toggle music store"
 msgstr ""
 
-#: ../gui_main.c:3143
+#: ../gui_main.c:3150
 msgid "Toggle LADSPA patch builder"
 msgstr ""
 
-#: ../gui_main.c:4546 ../music_browser.c:2257 ../options.c:1301
+#: ../gui_main.c:4553 ../music_browser.c:2257 ../options.c:1301
 #: ../options.c:1400
 msgid "rw"
 msgstr ""
 
-#: ../gui_main.c:4548 ../options.c:1303 ../options.c:1402
+#: ../gui_main.c:4555 ../options.c:1303 ../options.c:1402
 msgid "r"
 msgstr ""
 
-#: ../gui_main.c:4550 ../options.c:1305 ../options.c:1404
+#: ../gui_main.c:4557 ../options.c:1305 ../options.c:1404
 msgid "unreachable"
 msgstr ""
 
-#: ../gui_main.c:4613
+#: ../gui_main.c:4620
 msgid "Aqualung playlist (*.xml)"
 msgstr ""
 
-#: ../gui_main.c:4614
+#: ../gui_main.c:4621
 msgid "MP3 Playlist (*.m3u)"
 msgstr ""
 
-#: ../gui_main.c:4615
+#: ../gui_main.c:4622
 msgid "Multimedia Playlist (*.pls)"
 msgstr ""
 
-#: ../gui_main.c:4628 ../gui_main.c:4731
+#: ../gui_main.c:4635 ../gui_main.c:4738
 msgid "All Files"
 msgstr ""
 
-#: ../gui_main.c:4637
+#: ../gui_main.c:4644
 msgid "All Playlist Files"
 msgstr ""
 
-#: ../gui_main.c:4659
+#: ../gui_main.c:4666
 msgid "MPEG Audio (*.mp1, *.mp2, *.mp3)"
 msgstr ""
 
-#: ../gui_main.c:4663
+#: ../gui_main.c:4670
 msgid "Free Lossless Audio Codec (*.flac)"
 msgstr ""
 
-#: ../gui_main.c:4667
+#: ../gui_main.c:4674
 msgid "Ogg Vorbis (*.ogg)"
 msgstr ""
 
-#: ../gui_main.c:4671
+#: ../gui_main.c:4678
 msgid "Ogg Speex (*.spx)"
 msgstr ""
 
-#: ../gui_main.c:4675
+#: ../gui_main.c:4682
 msgid "Musepack (*.mpc)"
 msgstr ""
 
-#: ../gui_main.c:4679
+#: ../gui_main.c:4686
 msgid "Monkey's Audio Codec (*.ape)"
 msgstr ""
 
-#: ../gui_main.c:4686
+#: ../gui_main.c:4693
 msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
 msgstr ""
 
-#: ../gui_main.c:4698
+#: ../gui_main.c:4705
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
 msgstr ""
 
-#: ../gui_main.c:4749
+#: ../gui_main.c:4756
 msgid "All Audio Files"
 msgstr ""
 
@@ -1207,7 +1185,7 @@ msgid "Create empty store..."
 msgstr ""
 
 #: ../music_browser.c:3681 ../music_browser.c:3706 ../music_browser.c:3763
-#: ../music_browser.c:3813 ../music_browser.c:3868 ../playlist.c:3108
+#: ../music_browser.c:3813 ../music_browser.c:3868 ../playlist.c:3107
 msgid "Search..."
 msgstr ""
 
@@ -1292,7 +1270,7 @@ msgstr ""
 msgid "Remove track"
 msgstr ""
 
-#: ../music_browser.c:3865 ../playlist.c:3107
+#: ../music_browser.c:3865 ../playlist.c:3106
 msgid "File info..."
 msgstr ""
 
@@ -1388,7 +1366,7 @@ msgstr ""
 msgid "Show hidden files and directories in file choosers"
 msgstr ""
 
-#: ../options.c:1636 ../playlist.c:2018
+#: ../options.c:1636 ../playlist.c:2017
 msgid "Playlist"
 msgstr ""
 
@@ -1663,76 +1641,76 @@ msgstr ""
 msgid "Replaygain_album_gain"
 msgstr ""
 
-#: ../options.c:2311
+#: ../options.c:2308
 msgid "CDDB server:"
 msgstr ""
 
-#: ../options.c:2322
+#: ../options.c:2320
 msgid "Connection timeout [sec]:"
 msgstr ""
 
-#: ../options.c:2333
+#: ../options.c:2331
 msgid "Protocol:"
 msgstr ""
 
-#: ../options.c:2337
+#: ../options.c:2338
 msgid "CDDBP (port 888)"
 msgstr ""
 
-#: ../options.c:2338
+#: ../options.c:2339
 msgid "HTTP (port 80)"
 msgstr ""
 
-#: ../options.c:2354
+#: ../options.c:2356
 msgid "Appearance"
 msgstr ""
 
-#: ../options.c:2357
+#: ../options.c:2359
 msgid "Override skin settings"
 msgstr ""
 
-#: ../options.c:2367
+#: ../options.c:2369
 msgid "Fonts"
 msgstr ""
 
-#: ../options.c:2379
+#: ../options.c:2381
 msgid "Playlist: "
 msgstr ""
 
-#: ../options.c:2398 ../options.c:2428 ../options.c:2459 ../options.c:2489
-#: ../options.c:2519 ../options.c:2549 ../options.c:2579
+#: ../options.c:2400 ../options.c:2430 ../options.c:2461 ../options.c:2491
+#: ../options.c:2521 ../options.c:2551 ../options.c:2581
 msgid "Select"
 msgstr ""
 
-#: ../options.c:2408
+#: ../options.c:2410
 msgid "Music Store: "
 msgstr ""
 
-#: ../options.c:2439
+#: ../options.c:2441
 msgid "Big timer: "
 msgstr ""
 
-#: ../options.c:2469
+#: ../options.c:2471
 msgid "Small timers: "
 msgstr ""
 
-#: ../options.c:2499
+#: ../options.c:2501
 msgid "Song title: "
 msgstr ""
 
-#: ../options.c:2529
+#: ../options.c:2531
 msgid "Song info: "
 msgstr ""
 
-#: ../options.c:2559
+#: ../options.c:2561
 msgid "Statusbar: "
 msgstr ""
 
-#: ../options.c:2586
+#: ../options.c:2588
 msgid "Colors"
 msgstr ""
 
-#: ../options.c:2598
+#: ../options.c:2600
 msgid "Active song in playlist: "
 msgstr ""
 
@@ -1762,113 +1740,113 @@ msgstr ""
 msgid "Select directory"
 msgstr ""
 
-#: ../playlist.c:1675
+#: ../playlist.c:1674
 #, c-format
 msgid "%d track [%s] (%d MB)"
 msgstr ""
 
-#: ../playlist.c:1677
+#: ../playlist.c:1676
 #, c-format
 msgid "%d track [%s] "
 msgstr ""
 
-#: ../playlist.c:1681
+#: ../playlist.c:1680
 #, c-format
 msgid "%d tracks [%s] (%d MB)"
 msgstr ""
 
-#: ../playlist.c:1683
+#: ../playlist.c:1682
 #, c-format
 msgid "%d tracks [%s] "
 msgstr ""
 
-#: ../playlist.c:2214
+#: ../playlist.c:2213
 msgid "Selected: "
 msgstr ""
 
-#: ../playlist.c:2224
+#: ../playlist.c:2223
 msgid "Total: "
 msgstr ""
 
-#: ../playlist.c:2244 ../playlist.c:2267
+#: ../playlist.c:2243 ../playlist.c:2266
 msgid "Add files"
 msgstr ""
 
-#: ../playlist.c:2245
+#: ../playlist.c:2244
 msgid ""
 "Add files to playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2249 ../playlist.c:2287
+#: ../playlist.c:2248 ../playlist.c:2286
 msgid "Select all"
 msgstr ""
 
-#: ../playlist.c:2250
+#: ../playlist.c:2249
 msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2254 ../playlist.c:2307
+#: ../playlist.c:2253 ../playlist.c:2306
 msgid "Remove selected"
 msgstr ""
 
-#: ../playlist.c:2255
+#: ../playlist.c:2254
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2262
+#: ../playlist.c:2261
 msgid "Add directory"
 msgstr ""
 
-#: ../playlist.c:2277
+#: ../playlist.c:2276
 msgid "Select none"
 msgstr ""
 
-#: ../playlist.c:2282
+#: ../playlist.c:2281
 msgid "Invert selection"
 msgstr ""
 
-#: ../playlist.c:2297
+#: ../playlist.c:2296
 msgid "Remove all"
 msgstr ""
 
-#: ../playlist.c:2302
+#: ../playlist.c:2301
 msgid "Cut selected"
 msgstr ""
 
-#: ../playlist.c:3091
+#: ../playlist.c:3090
 msgid "Save playlist"
 msgstr ""
 
-#: ../playlist.c:3092
+#: ../playlist.c:3091
 msgid "Load playlist"
 msgstr ""
 
-#: ../playlist.c:3093
+#: ../playlist.c:3092
 msgid "Enqueue playlist"
 msgstr ""
 
-#: ../playlist.c:3095
+#: ../playlist.c:3094
 msgid "Calculate RVA"
 msgstr ""
 
-#: ../playlist.c:3097
+#: ../playlist.c:3096
 msgid "Separate"
 msgstr ""
 
-#: ../playlist.c:3098
+#: ../playlist.c:3097
 msgid "Average"
 msgstr ""
 
-#: ../playlist.c:3099
+#: ../playlist.c:3098
 msgid "Reread file metadata"
 msgstr ""
 
-#: ../playlist.c:3103
+#: ../playlist.c:3102
 msgid "Send songs to iFP device"
 msgstr ""
 

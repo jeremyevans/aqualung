@@ -19,12 +19,12 @@
     $Id$
 */
 
-#ifndef _IFP_LOOKUP_H
-#define _IFP_LOOKUP_H
+#ifndef _IFP_DEVICE_H
+#define _IFP_DEVICE_H
 
 void aifp_transfer_files(void);
 
-#endif /* _IFP_LOOKUP_H */
+#endif /* _IFP_DEVICE_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

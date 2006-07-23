@@ -710,7 +710,7 @@ cddb_get_batch(track_t * tracks,
 
 	map_t * map_artist = NULL;
 	map_t * map_record = NULL;
-	map_t * map_tracks[track_count];
+	map_t ** map_tracks = NULL;
 
 	char tmp[MAXLEN];
 
@@ -727,6 +727,11 @@ cddb_get_batch(track_t * tracks,
 	cddb_thread(NULL);
 
 	if (cddb_thread_state != 1 || record_count == 0) {
+		return;
+	}
+
+	if ((map_tracks = (map_t **)malloc(sizeof(map_t *) * track_count)) == NULL) {
+		fprintf(stderr, "cddb_lookup.c: cddb_get_batch(): malloc error\n");
 		return;
 	}
 
@@ -757,7 +762,7 @@ cddb_get_batch(track_t * tracks,
 			}
 		}
 	}
-		
+
 	if (cddb_artist && !*artist_is_set) {
 		char * max = map_get_max(map_artist);
 
@@ -787,11 +792,12 @@ cddb_get_batch(track_t * tracks,
 			}
 		}
 
-		free(map_tracks[j]);
+		map_free(map_tracks[j]);
 	}
 
-	free(map_artist);
-	free(map_record);
+	map_free(map_artist);
+	map_free(map_record);
+	free(map_tracks);
 
 	for (i = 0; i < record_count; i++) {
 		cddb_disc_destroy(records[i]);

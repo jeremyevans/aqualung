@@ -411,6 +411,7 @@ add_store_dialog(char * name, char * file, char * comment) {
 
         file_entry = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(file_entry), MAXLEN - 1);
+	gtk_entry_set_text(GTK_ENTRY(file_entry), "~/music_store.xml");
         gtk_box_pack_start(GTK_BOX(hbox2), file_entry, TRUE, TRUE, 0);
 
 

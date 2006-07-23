@@ -52,7 +52,7 @@ int build_cancelled = 0;
 
 GtkTreeIter store_iter;
 
-GtkWidget * prog_window;
+GtkWidget * build_prog_window = NULL;
 GtkWidget * prog_cancel_button;
 GtkWidget * prog_file_entry;
 GtkWidget * prog_action_label;
@@ -77,8 +77,10 @@ GtkWidget * fs_check_rm_ext;
 GtkWidget * fs_check_underscore;
 GtkWidget * fs_entry_regexp1;
 GtkWidget * fs_entry_regexp2;
+GtkWidget * fs_label_regexp;
+GtkWidget * fs_label_repl;
 
-int order_meta_first = 1;
+int pri_meta_first = 1;
 
 int meta_enable = 1;
 int meta_wspace = 1;
@@ -101,6 +103,82 @@ char fs_replacement[MAXLEN];
 regex_t fs_compiled;
 
 char root[MAXLEN];
+
+
+map_t *
+map_new(char * str) {
+
+	map_t * map;
+
+	if ((map = (map_t *)malloc(sizeof(map_t))) == NULL) {
+		fprintf(stderr, "build_store.c: map_new(): malloc error\n");
+		return NULL;
+	}
+
+	strncpy(map->str, str, MAXLEN-1);
+	map->count = 1;
+	map->next = NULL;
+
+	return map;
+}
+
+void
+map_put(map_t ** map, char * str) {
+
+	map_t * pmap;
+	map_t * _pmap;
+
+	if (*map == NULL) {
+		*map = map_new(str);
+	} else {
+
+		for (_pmap = pmap = *map; pmap; _pmap = pmap, pmap = pmap->next) {
+
+			char * key1 = g_utf8_casefold(str, -1);
+			char * key2 = g_utf8_casefold(pmap->str, -1);
+
+			if (!g_utf8_collate(key1, key2)) {
+				pmap->count++;
+				g_free(key1);
+				g_free(key2);
+				return;
+			}
+
+			g_free(key1);
+			g_free(key2);
+		}
+
+		_pmap->next = map_new(str);
+	}
+}
+
+char *
+map_get_max(map_t * map) {
+
+	map_t * pmap;
+	int max = 0;
+	char * str = NULL;
+
+	for (pmap = map; pmap; pmap = pmap->next) {
+		if (max < pmap->count) {
+			str = pmap->str;
+			max = pmap->count;
+		}
+	}
+
+	return str;
+}
+
+void
+map_free(map_t * map) {
+
+	map_t * pmap;
+
+	for (pmap = map; pmap; map = pmap) {
+		pmap = map->next;
+		free(map);
+	}
+}
 
 
 void
@@ -139,6 +217,8 @@ fs_radio_preset_toggled(GtkWidget * widget, gpointer * data) {
 
 	gtk_widget_set_sensitive(fs_entry_regexp1, !state);
 	gtk_widget_set_sensitive(fs_entry_regexp2, !state);
+	gtk_widget_set_sensitive(fs_label_regexp, !state);
+	gtk_widget_set_sensitive(fs_label_repl, !state);
 }
 
 
@@ -212,8 +292,10 @@ build_store_dialog(void) {
 	GtkWidget * fs_error_label;
 
 #ifdef HAVE_CDDB
-	GtkWidget * order_radio_meta;
-	GtkWidget * order_radio_cddb;
+	GtkWidget * gen_pri_frame;
+	GtkWidget * gen_pri_vbox;
+	GtkWidget * pri_radio_meta;
+	GtkWidget * pri_radio_cddb;
 	GtkWidget * cddb_vbox;
 #endif /* HAVE_CDDB */
 
@@ -241,6 +323,7 @@ build_store_dialog(void) {
 	/* General */
 
         gen_vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(gen_vbox), 5);
 	label = gtk_label_new(_("General"));
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), gen_vbox, label);
 
@@ -251,15 +334,14 @@ build_store_dialog(void) {
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), root_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
-			 GTK_FILL, GTK_FILL, 5, 5);
+			 GTK_FILL, GTK_FILL, 0, 5);
 
 	hbox2 = gtk_hbox_new(FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox2, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
         root_entry = gtk_entry_new_with_max_length(MAXLEN-1);
-	/*gtk_entry_set_text(GTK_ENTRY(root_entry), "/music");*/
-        gtk_box_pack_start(GTK_BOX(hbox2), root_entry, TRUE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox2), root_entry, TRUE, TRUE, 5);
 
 	browse_button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
         gtk_box_pack_start(GTK_BOX(hbox2), browse_button, FALSE, TRUE, 2);
@@ -267,21 +349,29 @@ build_store_dialog(void) {
 			 (gpointer *)root_entry);
 
 #ifdef HAVE_CDDB
-	order_radio_meta = gtk_radio_button_new_with_label(NULL, _("Metadata first, then CDDB"));
-	gtk_widget_set_name(order_radio_meta, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(gen_vbox), order_radio_meta, FALSE, FALSE, 0);
+	gen_pri_frame = gtk_frame_new(_("Data source priority"));
+        gtk_box_pack_start(GTK_BOX(gen_vbox), gen_pri_frame, FALSE, FALSE, 5);
+
+        gen_pri_vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(gen_pri_vbox), 5);
+	gtk_container_add(GTK_CONTAINER(gen_pri_frame), gen_pri_vbox);
+
+	pri_radio_meta = gtk_radio_button_new_with_label(NULL, _("Metadata first, then CDDB"));
+	gtk_widget_set_name(pri_radio_meta, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(gen_pri_vbox), pri_radio_meta, FALSE, FALSE, 0);
 
 
-	order_radio_cddb = gtk_radio_button_new_with_label_from_widget(
-		       GTK_RADIO_BUTTON(order_radio_meta), _("CDDB first, then metadata"));
-	gtk_widget_set_name(order_radio_cddb, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(gen_vbox), order_radio_cddb, FALSE, FALSE, 0);
+	pri_radio_cddb = gtk_radio_button_new_with_label_from_widget(
+		       GTK_RADIO_BUTTON(pri_radio_meta), _("CDDB first, then metadata"));
+	gtk_widget_set_name(pri_radio_cddb, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(gen_pri_vbox), pri_radio_cddb, FALSE, FALSE, 0);
 #endif /* HAVE_CDDB */
 
 
 	/* Metadata */
 
         meta_vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(meta_vbox), 5);
 	label = gtk_label_new(_("Metadata"));
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), meta_vbox, label);
 
@@ -345,6 +435,7 @@ build_store_dialog(void) {
 
 #ifdef HAVE_CDDB
         cddb_vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(cddb_vbox), 5);
 	label = gtk_label_new(_("CDDB"));
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), cddb_vbox, label);
 
@@ -399,6 +490,7 @@ build_store_dialog(void) {
 	/* Filenames */
 
         fs_vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(fs_vbox), 5);
 	label = gtk_label_new(_("Filesystem"));
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), fs_vbox, label);
 
@@ -449,8 +541,9 @@ build_store_dialog(void) {
 	table = gtk_table_new(2, 2, FALSE);
 
         hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(_("regexp:"));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
+	fs_label_regexp = gtk_label_new(_("regexp:"));
+	gtk_widget_set_sensitive(fs_label_regexp, FALSE);
+        gtk_box_pack_start(GTK_BOX(hbox), fs_label_regexp, FALSE, FALSE, 5);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
 			 GTK_FILL, GTK_FILL, 0, 5);
 
@@ -460,8 +553,9 @@ build_store_dialog(void) {
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
         hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(_("replacement:"));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
+	fs_label_repl = gtk_label_new(_("replacement:"));
+	gtk_widget_set_sensitive(fs_label_repl, FALSE);
+        gtk_box_pack_start(GTK_BOX(hbox), fs_label_repl, FALSE, FALSE, 5);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
 			 GTK_FILL, GTK_FILL, 0, 5);
 
@@ -501,7 +595,6 @@ build_store_dialog(void) {
 			snprintf(root, MAXLEN-1, "%s/%s", options.cwd, proot);
 		}
 
-		order_meta_first = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(order_radio_meta));
 
 		meta_enable = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_enable));
 		meta_wspace = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_wspace));
@@ -510,6 +603,7 @@ build_store_dialog(void) {
 		meta_record = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_record));
 
 #ifdef HAVE_CDDB
+		pri_meta_first = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pri_radio_meta));
 		cddb_enable = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cddb_check_enable));
 		cddb_title = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cddb_check_title));
 		cddb_artist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cddb_check_artist));
@@ -566,20 +660,23 @@ void
 prog_window_close(GtkWidget * widget, gpointer data) {
 
 	build_cancelled = 1;
-	gtk_widget_destroy(prog_window);
+	gtk_widget_destroy(build_prog_window);
+	build_prog_window = NULL;
 }
 
 void
 cancel_build(GtkWidget * widget, gpointer data) {
 
 	build_cancelled = 1;
-	gtk_widget_destroy(prog_window);
+	gtk_widget_destroy(build_prog_window);
+	build_prog_window = NULL;
 }
 
 gboolean
 finish_build(gpointer data) {
 
-	gtk_widget_destroy(prog_window);
+	gtk_widget_destroy(build_prog_window);
+	build_prog_window = NULL;
 	return FALSE;
 }
 
@@ -594,16 +691,16 @@ progress_window(void) {
 	GtkWidget * hbuttonbox;
 	GtkWidget * hseparator;
 
-	prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(prog_window), _("Building store from filesystem"));
-        gtk_window_set_position(GTK_WINDOW(prog_window), GTK_WIN_POS_CENTER);
-        gtk_window_resize(GTK_WINDOW(prog_window), 430, 110);
-        g_signal_connect(G_OBJECT(prog_window), "delete_event",
+	build_prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        gtk_window_set_title(GTK_WINDOW(build_prog_window), _("Building store from filesystem"));
+        gtk_window_set_position(GTK_WINDOW(build_prog_window), GTK_WIN_POS_CENTER);
+        gtk_window_resize(GTK_WINDOW(build_prog_window), 430, 110);
+        g_signal_connect(G_OBJECT(build_prog_window), "delete_event",
                          G_CALLBACK(prog_window_close), NULL);
-        gtk_container_set_border_width(GTK_CONTAINER(prog_window), 5);
+        gtk_container_set_border_width(GTK_CONTAINER(build_prog_window), 5);
 
         vbox = gtk_vbox_new(FALSE, 0);
-        gtk_container_add(GTK_CONTAINER(prog_window), vbox);
+        gtk_container_add(GTK_CONTAINER(build_prog_window), vbox);
 
 	table = gtk_table_new(2, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
@@ -644,7 +741,7 @@ progress_window(void) {
 
         gtk_widget_grab_focus(prog_cancel_button);
 
-        gtk_widget_show_all(prog_window);
+        gtk_widget_show_all(build_prog_window);
 }
 
 gboolean
@@ -811,21 +908,26 @@ process_meta(track_t * tracks, char * artist, char * record,
 	track_t * ptrack;
 	metadata * meta = meta_new();
 
+	map_t * map_artist = NULL;
+	map_t * map_record = NULL;
+
+	char tmp[MAXLEN];
+
 	for (ptrack = tracks; ptrack; ptrack = ptrack->next) {
 
 		meta = meta_new();
 
 		if (meta_read(meta, ptrack->filename)) {
 			if (meta_artist &&
-			    !*artist_is_set && meta_get_artist(meta, artist)) {
-				if (!meta_wspace || !is_wspace(artist)) {
-					*artist_is_set = 1;
+			    !*artist_is_set && meta_get_artist(meta, tmp)) {
+				if (!meta_wspace || !is_wspace(tmp)) {
+					map_put(&map_artist, tmp);
 				}
 			}
 			if (meta_record &&
-			    !*record_is_set && meta_get_record(meta, record)) {
-				if (!meta_wspace || !is_wspace(record)) {
-					*record_is_set = 1;
+			    !*record_is_set && meta_get_record(meta, tmp)) {
+				if (!meta_wspace || !is_wspace(tmp)) {
+					map_put(&map_record, tmp);
 				}
 			}
 			if (meta_title &&
@@ -838,6 +940,27 @@ process_meta(track_t * tracks, char * artist, char * record,
 
 		meta_free(meta);
 	}
+
+	if (meta_artist && !*artist_is_set) {
+		char * max = map_get_max(map_artist);
+
+		if (max) {
+			strncpy(artist, max, MAXLEN-1);
+			*artist_is_set = 1;
+		}
+	}
+
+	if (meta_record && !*record_is_set) {
+		char * max = map_get_max(map_record);
+
+		if (max) {
+			strncpy(record, max, MAXLEN-1);
+			*record_is_set = 1;
+		}
+	}
+
+	map_free(map_artist);
+	map_free(map_record);
 }
 
 
@@ -904,7 +1027,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 
 	/* metadata and cddb */
 
-	if (order_meta_first) {
+	if (pri_meta_first) {
 		if (meta_enable) {
 			g_idle_add(set_prog_action_label, (gpointer) _("Processing metadata"));
 			process_meta(tracks, artist, record, &artist_is_set, &record_is_set);
@@ -923,7 +1046,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 		goto finish;
 	}
 
-	if (!order_meta_first) {
+	if (!pri_meta_first) {
 		if (meta_enable) {
 			g_idle_add(set_prog_action_label, (gpointer) _("Processing metadata"));
 			process_meta(tracks, artist, record, &artist_is_set, &record_is_set);

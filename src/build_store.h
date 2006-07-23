@@ -22,6 +22,19 @@
 #ifndef _BUILD_STORE_H
 #define _BUILD_STORE_H
 
+typedef struct _map_t {
+
+	char str[MAXLEN];
+	int count;
+	struct _map_t * next;
+
+} map_t;
+
+void map_put(map_t ** map, char * str);
+char * map_get_max(map_t * map);
+void map_free(map_t * map);
+
+
 typedef struct _track_t {
 
 	char filename[MAXLEN];

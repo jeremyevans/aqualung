@@ -705,6 +705,16 @@ cddb_get_batch(track_t * tracks,
 	       char * artist, char * record, int * artist_is_set, int * record_is_set,
 	       int cddb_title, int cddb_artist, int cddb_record) {
 
+	int i, j;
+	track_t * ptrack = NULL;
+
+	map_t * map_artist = NULL;
+	map_t * map_record = NULL;
+	map_t * map_tracks[track_count];
+
+	char tmp[MAXLEN];
+
+
 	if (init_query_data_from_tracklist(tracks)) {
 		return;
 	}
@@ -716,44 +726,80 @@ cddb_get_batch(track_t * tracks,
 
 	cddb_thread(NULL);
 
-	if (cddb_thread_state == -1 || record_count == 0) {
+	if (cddb_thread_state != 1 || record_count == 0) {
 		return;
 	}
 
-	if (cddb_thread_state == 1) {
+	for (i = 0; i < track_count; i++) {
+		map_tracks[i] = NULL;
+	}
 
-		int i;
-		track_t * ptrack = NULL;
+	for (i = 0; i < record_count; i++) {
 
 		if (cddb_artist && !*artist_is_set) {
-			strncpy(artist, cddb_disc_get_artist(records[0]), MAXLEN-1);
-			*artist_is_set = 1;
+			strncpy(tmp, cddb_disc_get_artist(records[i]), MAXLEN-1);
+			map_put(&map_artist, tmp);
 		}
 
 		if (cddb_record && !*record_is_set) {
-			strncpy(record, cddb_disc_get_title(records[0]), MAXLEN-1);
-			*record_is_set = 1;
+			strncpy(tmp, cddb_disc_get_title(records[i]), MAXLEN-1);
+			map_put(&map_record, tmp);
 		}
 		
 		if (cddb_title) {
-			for (i = 0, ptrack = tracks; ptrack; i++, ptrack = ptrack->next) {
+			for (j = 0, ptrack = tracks; ptrack && j < track_count; j++, ptrack = ptrack->next) {
 				if (!ptrack->valid) {
-					strncpy(ptrack->name,
-						cddb_track_get_title(cddb_disc_get_track(records[0], i)),
+					strncpy(tmp,
+						cddb_track_get_title(cddb_disc_get_track(records[i], j)),
 						MAXLEN-1);
-					ptrack->valid = 1;
+					map_put(map_tracks + j, tmp);
 				}
 			}
 		}
-
-		for (i = 0; i < record_count; i++) {
-			cddb_disc_destroy(records[i]);
-		}
-		
-		free(records);
-		libcddb_shutdown();
-		free(frames);
 	}
+		
+	if (cddb_artist && !*artist_is_set) {
+		char * max = map_get_max(map_artist);
+
+		if (max) {
+			strncpy(artist, max, MAXLEN-1);
+			*artist_is_set = 1;
+		}
+	}
+
+	if (cddb_record && !*record_is_set) {
+		char * max = map_get_max(map_record);
+
+		if (max) {
+			strncpy(record, max, MAXLEN-1);
+			*record_is_set = 1;
+		}
+	}
+
+	for (j = 0, ptrack = tracks; ptrack && j < track_count; j++, ptrack = ptrack->next) {
+
+		if (!ptrack->valid) {
+			char * max = map_get_max(map_tracks[j]);
+
+			if (max) {
+				strncpy(ptrack->name, max, MAXLEN-1);
+				ptrack->valid = 1;
+			}
+		}
+
+		free(map_tracks[j]);
+	}
+
+	free(map_artist);
+	free(map_record);
+
+	for (i = 0; i < record_count; i++) {
+		cddb_disc_destroy(records[i]);
+	}
+
+	free(records);
+	libcddb_shutdown();
+	free(frames);
 }
 
 #endif /* HAVE_CDDB */

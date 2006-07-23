@@ -1477,7 +1477,7 @@ create_options_window(void) {
 	GtkWidget * vbox_meta;
 
 #ifdef HAVE_CDDB
-	GtkWidget * vbox_cddb;
+	GtkWidget * table_cddb;
 #endif /* HAVE_CDDB */
 
         GtkSizeGroup * label_size;
@@ -2301,37 +2301,38 @@ See the About box and the documentation for details."));
 	/* CDDB notebook page */
 
 #ifdef HAVE_CDDB
-	vbox_cddb = gtk_vbox_new(FALSE, 10);
-        gtk_container_set_border_width(GTK_CONTAINER(vbox_cddb), 8);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_cddb, create_notebook_tab(_("CDDB"), "cddb.png"));
-
-	hbox = gtk_hbox_new(FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_cddb), hbox, FALSE, TRUE, 0);
+	table_cddb = gtk_table_new(3, 2, FALSE);
+        gtk_container_set_border_width(GTK_CONTAINER(table_cddb), 8);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table_cddb, create_notebook_tab(_("CDDB"), "cddb.png"));
 
 	label = gtk_label_new(_("CDDB server:"));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 0, 1,
+                         GTK_FILL, GTK_FILL, 5, 5);
 
 	cddb_server_entry = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(cddb_server_entry), options.cddb_server);
-	gtk_box_pack_start(GTK_BOX(hbox), cddb_server_entry, TRUE, TRUE, 5);
+        gtk_table_attach(GTK_TABLE(table_cddb), cddb_server_entry, 1, 2, 0, 1,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
-
-	hbox = gtk_hbox_new(FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_cddb), hbox, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("Connection timeout [sec]:"));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 1, 2,
+                         GTK_FILL, GTK_FILL, 5, 5);
 
 	cddb_tout_spinner = gtk_spin_button_new_with_range(1, 60, 1);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cddb_tout_spinner), options.cddb_timeout);
-	gtk_box_pack_start(GTK_BOX(hbox), cddb_tout_spinner, FALSE, FALSE, 5);
-
-
-	hbox = gtk_hbox_new(FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_cddb), hbox, FALSE, TRUE, 0);
+        gtk_table_attach(GTK_TABLE(table_cddb), cddb_tout_spinner, 1, 2, 1, 2,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
 	label = gtk_label_new(_("Protocol:"));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 2, 3,
+                         GTK_FILL, GTK_FILL, 5, 5);
 
 	cddb_proto_combo = gtk_combo_box_new_text();
 	gtk_combo_box_append_text(GTK_COMBO_BOX(cddb_proto_combo), _("CDDBP (port 888)"));
@@ -2341,7 +2342,8 @@ See the About box and the documentation for details."));
 	} else {
 		gtk_combo_box_set_active(GTK_COMBO_BOX(cddb_proto_combo), 0);
 	}
-	gtk_box_pack_start(GTK_BOX(hbox), cddb_proto_combo, FALSE, FALSE, 5);
+        gtk_table_attach(GTK_TABLE(table_cddb), cddb_proto_combo, 1, 2, 2, 3,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
 #endif /* HAVE_CDDB */
 

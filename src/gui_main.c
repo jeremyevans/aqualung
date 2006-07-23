@@ -168,6 +168,7 @@ extern GtkWidget * fxbuilder_window;
 extern GtkWidget * ports_window;
 extern GtkWidget * info_window;
 extern GtkWidget * vol_window;
+extern GtkWidget * build_prog_window;
 extern GtkWidget * browser_paned;
 
 int main_pos_x;
@@ -1135,6 +1136,12 @@ change_skin(char * path) {
 	if (vol_window) {
 		gtk_widget_reset_rc_styles(vol_window);
 		gtk_widget_queue_draw(vol_window);
+		deflicker();
+	}
+
+	if (build_prog_window) {
+		gtk_widget_reset_rc_styles(build_prog_window);
+		gtk_widget_queue_draw(build_prog_window);
 		deflicker();
 	}
 

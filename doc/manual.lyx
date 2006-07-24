@@ -1331,7 +1331,7 @@ Playlist
 \begin_layout Standard
 Note that depending on the skin, these buttons may come with images instead
  of the letters above.
- However, their functionallity does not change.
+ However, their functionality does not change.
 \end_layout
 
 \begin_layout Standard
@@ -1451,7 +1451,7 @@ Shortcuts for this window
 \begin_inset Text
 
 \begin_layout Standard
-comma
+z, Z, y, Y, comma
 \end_layout
 
 \end_inset
@@ -1480,7 +1480,120 @@ jump to previous track
 \begin_inset Text
 
 \begin_layout Standard
-period
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+x, X, p, P
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+play
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+c, C, space
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+paus
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\noun default
+e
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+v, V, s, S
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+stop
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+b, B, period
 \end_layout
 
 \end_inset
@@ -1614,128 +1727,6 @@ restart current track
 \bar no
 \noun off
 \color none
-p or P
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\noun off
-\color none
-play
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row topline="true">
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\noun off
-\color none
-s or S
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\noun off
-\color none
-stop
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row topline="true">
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\noun off
-\color none
-space
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\noun off
-\color none
-paus
-\family default
-\series default
-\shape default
-\size default
-\emph default
-\bar default
-\noun default
-e
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row topline="true">
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\noun off
-\color none
 /
 \end_layout
 
@@ -1803,7 +1794,7 @@ volume up
 \begin_inset Text
 
 \begin_layout Standard
-i or I
+i, I
 \end_layout
 
 \end_inset
@@ -1908,7 +1899,7 @@ balance towards right
 \bar no
 \noun off
 \color none
-Alt+s
+Alt+S
 \end_layout
 
 \end_inset
@@ -1946,7 +1937,7 @@ show/hide Music Store
 \bar no
 \noun off
 \color none
-Alt+l
+Alt+L
 \end_layout
 
 \end_inset
@@ -1984,7 +1975,7 @@ show/hide Playlist
 \bar no
 \noun off
 \color none
-Alt+x
+Alt+X
 \end_layout
 
 \end_inset
@@ -2013,7 +2004,7 @@ show/hide LADSPA patch builder
 \begin_inset Text
 
 \begin_layout Standard
-k or K
+k, K
 \end_layout
 
 \end_inset
@@ -2033,7 +2024,7 @@ show Skin Chooser
 \begin_inset Text
 
 \begin_layout Standard
-o or O
+o, O
 \end_layout
 
 \end_inset
@@ -2113,7 +2104,7 @@ toggle shuffle
 \begin_inset Text
 
 \begin_layout Standard
-Ctrl+q
+Ctrl+Q
 \end_layout
 
 \end_inset
@@ -2192,8 +2183,8 @@ So you have a bunch of directories containing lots of tracks.
 
 \begin_layout Standard
 To do so, you will utilize the popup menus in the Music Store window.
- When you have nothing initially, all that pops up is an option to add a
- new store, which is a top-level element holding artists.
+ When you have nothing initially, all that pops up is an option to create
+ a new store, which is a top-level element holding artists.
  When creating a new store, you have to specify a file on your filesystem
  to hold all data about the artists, records and tracks in this store.
  Note that this creates an empty store; for adding an already existing database
@@ -2228,6 +2219,101 @@ You don't have to add all the tracks to all records one by one, if you already
 \begin_layout Standard
 Now all you have to do is set the correct visible names for the tracks,
  which is quite easy due to the CDDB/Freedb support.
+\end_layout
+
+\begin_layout Subsubsection
+Building store from filesystem
+\end_layout
+
+\begin_layout Standard
+You might think that the way stores are built up and filled with data is
+ painfully slow and exhaustive -- especially if you already own a large
+ music collection, and cannot bring yourself to add each record one by one.
+ Luckily Aqualung comes with a Music Store builder facility, which allows
+ you to easily create a store from your audio files.
+ However, it requires the collection to be organized in a music/artist/record/tr
+ackXX.* filesystem structure, which is one more argument for doing it this
+ way.
+\end_layout
+
+\begin_layout Standard
+The builder can gain information about your music from three sources: metadata
+ (if your audio files are correctly tagged), CDDB query (if you compiled
+ Aqualung with CDDB support) and the filesystem names of the audio files
+ themselves.
+\end_layout
+
+\begin_layout Standard
+If you are up to building a new store, first create an empty store (right-click
+ in Music Store, then choose the `Create empty store' item), then right-click
+ on the new store and choose `Build store from filesystem'.
+ You will be shown the builder dialog with several options broken down into
+ four notebook pages.
+ Later, if you only want to update the content of a store, you can start
+ a build process on a non-empty store as well.
+ Existing records will not be overwritten.
+\end_layout
+
+\begin_layout Standard
+On the `General' page you have to select the root directory of your music
+ collection, the one which contains a directory for each artist.
+ The priority of the metadata and CDDB lookup can be set there too (filename
+ transformation is always the last step, if the other two have both failed).
+ The priority applies independently to the artist name, record name and
+ track titles, so each string will be set from the highest priority source
+ that provides the necessary data.
+ Thus it is possible that the artist and e.g.\InsetSpace ~
+tracks 1-5 are filled with metadata,
+ while the record name and the rest of the track titles are set after a
+ CDDB lookup.
+ In case of multiple matches (e.g.\InsetSpace ~
+due to CDDB query, or more than one track
+ has metadata for the artist or record name) the string candidate that occurred
+ most cases is chosen in order to avoid typos and other garbage whenever
+ possible.
+\end_layout
+
+\begin_layout Standard
+The `Metadata' page lets you choose whether to use metadata at all, and
+ if yes, where.
+ You have the option to exclude metadata containing only whitespace, which
+ is a kind of protection.
+\end_layout
+
+\begin_layout Standard
+The `CDDB' page has similar settings for the CDDB lookup as the `Metadata'
+ page had for metadata -- you can decide whether to perform CDDB lookup
+ and for what kind of strings.
+\end_layout
+
+\begin_layout Standard
+At last, the `Filesystem' page is for generating the track names from the
+ filenames.
+ You can decide whether to use the predefined transformations, or a regular
+ expression based substitution method.
+ The former choice should be quite obvious and intended to provide acceptable
+ result in most cases.
+ The regexp is for those who are familiar with the regexp syntax and have
+ to perform some unusual transformations.
+ It has the effect of a `sed s/regexp/replacement/g' call on each filename.
+ The regexp must not match the empty string, but the replacement is allowed
+ to be empty in which case the matched parts are deleted.
+ The replacement may contain the special escapes 
+\backslash
+1 through 
+\backslash
+9 to refer to the corresponding matching sub-expressions in the regexp.
+ See sed(1) and grep(1) for more information on sed substitution and regexp
+ syntax.
+\end_layout
+
+\begin_layout Standard
+Once you are satisfied with the settings click `OK'.
+ A new window showing the progress is displayed, and the store is filled
+ up.
+ You can abort the process if you encounter some error or weirdness, or
+ just want to refine some settings.
+ 
 \end_layout
 
 \begin_layout Subsubsection
@@ -2383,7 +2469,7 @@ If `Enable playback RVA' is unchecked, the whole RVA system is turned off.
  need to enjoy the music.
  If you work in a noisy workshop (and listen to Aqualung-played music) then
  it is best to minimize the volume differences between tracks so all tracks
- will be uniformy audible at a particular volume setting.
+ will be uniformly audible at a particular volume setting.
  If you can afford to listen to music in a silent room with high quality
  headphones or good near-field monitors, you should choose `Audiophile'
  which will yield no change to volumes.
@@ -2511,7 +2597,7 @@ Shortcuts for this window
 \begin_layout Standard
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="11" columns="2">
+<lyxtabular version="3" rows="12" columns="2">
 <features>
 <column alignment="center" valignment="top" leftline="true" width="0">
 <column alignment="block" valignment="top" leftline="true" rightline="true" width="10cm">
@@ -2545,23 +2631,7 @@ double click
 \emph off
 \bar no
 \noun off
- a 
-\family default
-\series default
-\shape default
-\size default
-\emph default
-\bar default
-\noun default
-or
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\noun off
- A
+ a, A
 \end_layout
 
 \end_inset
@@ -2615,23 +2685,7 @@ artist/record/track to playlist
 \bar no
 \noun off
 \color none
-n 
-\family default
-\series default
-\shape default
-\size default
-\emph default
-\bar default
-\noun default
-or
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\noun off
- N
+n, N
 \end_layout
 
 \end_inset
@@ -2676,6 +2730,26 @@ artist/record/track
 \begin_inset Text
 
 \begin_layout Standard
+b, B
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+build store from filesystem
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
 
 \family roman
 \series medium
@@ -2685,7 +2759,7 @@ artist/record/track
 \bar no
 \noun off
 \color none
-e or E
+e, E
 \end_layout
 
 \end_inset
@@ -2739,7 +2813,7 @@ artist/record/track
 \bar no
 \noun off
 \color none
-i or I
+i, I
 \end_layout
 
 \end_inset
@@ -2768,7 +2842,7 @@ bring up the File info dialog (for Tracks only)
 \begin_inset Text
 
 \begin_layout Standard
-v or V
+v, V
 \end_layout
 
 \end_inset
@@ -3029,7 +3103,7 @@ navigation in the tree
 \begin_inset Text
 
 \begin_layout Standard
-f or F
+f, F
 \end_layout
 
 \end_inset
@@ -3058,7 +3132,7 @@ search in all stores
 \bar no
 \noun off
 \color none
-q or Q
+q, Q,
 \family default
 \series default
 \shape default
@@ -3066,7 +3140,7 @@ q or Q
 \emph default
 \bar default
 \noun default
- or ESC
+ ESC
 \end_layout
 
 \end_inset
@@ -3084,7 +3158,7 @@ q or Q
 \bar no
 \noun off
 \color none
-hide window (same as Alt+s or Alt+S in main window)
+hide window (same as Alt+S in main window)
 \end_layout
 
 \end_inset
@@ -3113,21 +3187,23 @@ Playlist
 This window has relatively few surprising features.
  It normally receives its contents from the Music Store.
  However, you can put any file in the playlist regardless of the contents
- of your Music Store, using the `Add files\SpecialChar \ldots{}
-' button at the bottom of the
+ of your Music Store, using the `Add files' button at the bottom of the
  window.
+ Adding a directory is also supported, by right-clicking on the button and
+ selecting the appropriate menu item.
 \end_layout
 
 \begin_layout Standard
 The other two buttons (`Select all', `Remove selected') function as you
  would expect them when clicked with the left mouse button.
- However, clicking with the right mouse button brings up small menus that
- contain further options such as `Invert selection'.
+ Clicking with the right mouse button brings up popup menus that contain
+ further options as seen with the `Add files' button.
 \end_layout
 
 \begin_layout Standard
 There is a statusbar under the list showing the total time of the playlist
- and the duration of the selected tracks.
+ and the duration of the selected tracks, as well as the size of the songs
+ (in MB) if enabled.
 \end_layout
 
 \begin_layout Standard
@@ -3136,7 +3212,7 @@ The contents of the playlist can be saved and restored automatically when
  (Whether this should be done is a configuration option, covered later.)
  In addition to this, you can save the playlist manually at any time, or
  load a previously saved playlist file.
- To do this, right click in the playlist area, which will bring up a popup
+ To do this, right-click in the playlist area, which will bring up a popup
  menu with these features.
  The playlist is saved as an XML file, so you should normally end your filename
  with .xml -- however, this is only good practice and not necessary.
@@ -3321,7 +3397,7 @@ start playback of the selected or double-clicked track, or jump to it if
 \bar no
 \noun off
 \color none
-i or I
+i, I
 \end_layout
 
 \end_inset
@@ -3371,7 +3447,7 @@ open `Add Files...' dialog
 \begin_inset Text
 
 \begin_layout Standard
-x or X
+u, U
 \end_layout
 
 \end_inset
@@ -3391,7 +3467,7 @@ Cut selected
 \begin_inset Text
 
 \begin_layout Standard
-f or F
+f, F
 \end_layout
 
 \end_inset
@@ -3420,7 +3496,7 @@ Search in Playlist
 \bar no
 \noun off
 \color none
-q or Q or ESC
+q, Q, ESC
 \end_layout
 
 \end_inset
@@ -3438,7 +3514,7 @@ q or Q or ESC
 \bar no
 \noun off
 \color none
-hide window (same as Alt+l or Alt+L in main window)
+hide window (same as Alt+L in main window)
 \end_layout
 
 \end_inset
@@ -3524,7 +3600,7 @@ Playlist
 The option to save/restore the playlist when exiting and starting the program
  is turned on by default.
  If you prefer starting with an empty playlist every time, turn it off.
- Here you can also set the visibility of the strack lengths and RVA values
+ Here you can also set the visibility of the track lengths and RVA values
  in the playlist.
  By dragging and dropping entries in the list, you can rearrange the columns.
  The position of those that are not shown is of course irrelevant.
@@ -3623,7 +3699,8 @@ Metadata
 On this page you can decide whether you prefer using file metadata (if available
 ) instead of information from the Music Store.
  Settings can be made on Artist / Record / Track basis.
- Metadata can also be used when adding external files to Playlist.
+ Metadata can also be used when adding external files to Playlist (enabled
+ by default).
 \end_layout
 
 \begin_layout Subsubsection
@@ -3632,9 +3709,9 @@ CDDB
 
 \begin_layout Standard
 You can customize the CDDB lookup here.
- As for the protocol, standard CDDB (port 888) and CDDB over HTTP (port
+ As for the protocol, standard CDDBP (port 888) and CDDB over HTTP (port
  80) are supported.
- The standard CDDB port is the recommended choice unless some unavoidable
+ The standard CDDBP port is the recommended choice unless some unavoidable
  firewall settings prevent you from using it.
 \end_layout
 

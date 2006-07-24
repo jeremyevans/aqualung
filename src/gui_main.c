@@ -1340,43 +1340,33 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
 	switch (event->keyval) {	
 	case GDK_KP_Divide:
-		if (alt_L || alt_R) {
-			refresh_time_label = 0;
-			if (vol_bal_timeout_tag) {
-				g_source_remove(vol_bal_timeout_tag);
-			}
+		refresh_time_label = 0;
+		if (vol_bal_timeout_tag) {
+			g_source_remove(vol_bal_timeout_tag);
+		}
 			
-			vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
+		vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
+
+		if (alt_L || alt_R) {
 			g_signal_emit_by_name(G_OBJECT(scale_bal), "move-slider",
 					      GTK_SCROLL_STEP_BACKWARD, NULL);
 		} else {
-			refresh_time_label = 0;
-			if (vol_bal_timeout_tag) {
-				g_source_remove(vol_bal_timeout_tag);
-			}
-		
-			vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
 			g_signal_emit_by_name(G_OBJECT(scale_vol), "move-slider",
 					      GTK_SCROLL_STEP_BACKWARD, NULL);
 		}
 		return TRUE;
 	case GDK_KP_Multiply:
+		refresh_time_label = 0;
+		if (vol_bal_timeout_tag) {
+			g_source_remove(vol_bal_timeout_tag);
+		}
+		
+		vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
+
 		if (alt_L || alt_R) {
-			refresh_time_label = 0;
-			if (vol_bal_timeout_tag) {
-				g_source_remove(vol_bal_timeout_tag);
-			}
-			
-			vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
 			g_signal_emit_by_name(G_OBJECT(scale_bal),
 					      "move-slider", GTK_SCROLL_STEP_FORWARD, NULL);
 		} else {
-			refresh_time_label = 0;
-			if (vol_bal_timeout_tag) {
-				g_source_remove(vol_bal_timeout_tag);
-			}
-			
-			vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
 			g_signal_emit_by_name(G_OBJECT(scale_vol),
 					      "move-slider", GTK_SCROLL_STEP_FORWARD, NULL);
 		}
@@ -1395,9 +1385,15 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 					      GTK_SCROLL_STEP_BACKWARD, NULL);
 		}
 		return TRUE;
+	case GDK_b:
+	case GDK_B:
 	case GDK_period:
 		next_event(NULL, NULL, NULL);
 		return TRUE;
+	case GDK_z:
+	case GDK_Z:
+	case GDK_y:
+	case GDK_Y:
 	case GDK_comma:
 		prev_event(NULL, NULL, NULL);
 		return TRUE;
@@ -1410,6 +1406,12 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			stop_event(NULL, NULL, NULL);
 		}
 		return TRUE;
+	case GDK_v:
+	case GDK_V:
+		stop_event(NULL, NULL, NULL);
+		return TRUE;
+	case GDK_c:
+	case GDK_C:
 	case GDK_space:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
 					     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
@@ -1453,9 +1455,11 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		if (alt_L || alt_R) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(plugin_toggle),
 						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(plugin_toggle)));
-			return TRUE;
+		} else {
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
+						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
 		}
-		break;
+		return TRUE;
 	case GDK_q:
 	case GDK_Q:
 		if (control_L || control_R) {
@@ -3066,23 +3070,23 @@ create_main_window(char * skin_path) {
 
 	sprintf(path, "%s/%s", skin_path, "prev");
 	prev_button = create_button_with_image(path, 0, "prev");
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), prev_button, _("Previous song (comma)"), NULL);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), prev_button, _("Previous song"), NULL);
 
 	sprintf(path, "%s/%s", skin_path, "stop");
 	stop_button = create_button_with_image(path, 0, "stop");
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), stop_button, _("Stop (s)"), NULL);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), stop_button, _("Stop"), NULL);
 
 	sprintf(path, "%s/%s", skin_path, "next");
 	next_button = create_button_with_image(path, 0, "next");
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), next_button, _("Next song (period)"), NULL);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), next_button, _("Next song"), NULL);
 
 	sprintf(path, "%s/%s", skin_path, "play");
 	play_button = create_button_with_image(path, 1, "play");
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), play_button, _("Play (p)"), NULL);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), play_button, _("Play"), NULL);
 
 	sprintf(path, "%s/%s", skin_path, "pause");
 	pause_button = create_button_with_image(path, 1, "pause");
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), pause_button, _("Pause (space)"), NULL);
+        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), pause_button, _("Pause"), NULL);
 
 	GTK_WIDGET_UNSET_FLAGS(prev_button, GTK_CAN_FOCUS);
 	GTK_WIDGET_UNSET_FLAGS(stop_button, GTK_CAN_FOCUS);
@@ -3231,26 +3235,26 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 				options.confdir, errno);
 		}
 	}
-	
+
 	load_config();
 
 	if (options.title_format[0] == '\0')
 		sprintf(options.title_format, "%%a: %%t [%%r]");
 	if (options.skin[0] == '\0') {
-		sprintf(options.skin, "%s/default", SKINDIR);
+		sprintf(options.skin, "%s/plain", SKINDIR);
 		main_pos_x = 30;
 		main_pos_y = 30;
-		main_size_x = 530;
+		main_size_x = 670;
 		main_size_y = 113;
 		browser_pos_x = 30;
 		browser_pos_y = 180;
-		browser_size_x = 204;
-		browser_size_y = 408;
+		browser_size_x = 250;
+		browser_size_y = 500;
 		browser_on = 1;
-		playlist_pos_x = 260;
+		playlist_pos_x = 300;
 		playlist_pos_y = 180;
-		playlist_size_x = 300;
-		playlist_size_y = 408;
+		playlist_size_x = 400;
+		playlist_size_y = 500;
 		playlist_on = 1;
 	}
 
@@ -3258,8 +3262,9 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		sprintf(options.cddb_server, "freedb.org");
 	}
 
-	if (src_type == -1)
+	if (src_type == -1) {
 		src_type = 4;
+	}
 
 	sprintf(path, "%s/rc", options.skin);
 	gtk_rc_parse(path);
@@ -3959,27 +3964,18 @@ load_config(void) {
 
 	vol = 0.0f;
 	bal = 0.0f;
-	browser_paned_pos = 250;
+	browser_paned_pos = 400;
 
 	options.skin[0] = '\0';
 
 	options.default_param[0] = '\0';
 	options.title_format[0] = '\0';
         options.enable_tooltips = 1;
-        options.simple_view_in_fx = 0;
-        options.show_sn_title = 0;
-        options.united_minimization = 1;
+        options.show_sn_title = 1;
 
-	options.hide_comment_pane = options.hide_comment_pane_shadow = 0;
 	options.enable_mstore_statusbar = options.enable_mstore_statusbar_shadow = 1;
-        options.magnify_smaller_images = 0;
         options.cover_width = 2;
 
-        options.override_skin_settings = 0;
-        options.show_active_track_name_in_bold = 1;
-        options.show_songs_size_in_statusbar = 0;
-        options.enable_pl_rules_hint = 0;
-        options.enable_ms_rules_hint = 0;
 	options.autoexpand_stores = 1;
 
 	options.auto_save_playlist = 1;
@@ -3992,6 +3988,10 @@ load_config(void) {
 	options.rva_use_linear_thresh = 0;
 	options.rva_avg_linear_thresh = 3.0f;
 	options.rva_avg_stddev_thresh = 2.0f;
+
+	options.auto_use_ext_meta_artist = 1;
+	options.auto_use_ext_meta_record = 1;
+	options.auto_use_ext_meta_track = 1;
 
 	options.cddb_server[0] = '\0';
 	options.cddb_timeout = 10;

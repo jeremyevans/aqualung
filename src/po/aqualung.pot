@@ -1,4 +1,4 @@
-#: ../about.c:75 ../gui_main.c:2791
+#: ../about.c:75 ../gui_main.c:2795
 msgid "About"
 msgstr ""
 
@@ -264,7 +264,7 @@ msgstr ""
 msgid "Action:"
 msgstr ""
 
-#: ../build_store.c:738 ../cddb_lookup.c:122 ../ifp_device.c:879
+#: ../build_store.c:738 ../cddb_lookup.c:122 ../ifp_device.c:890
 #: ../volume.c:192
 msgid "Abort"
 msgstr ""
@@ -358,7 +358,7 @@ msgstr ""
 msgid "No matching record found."
 msgstr ""
 
-#: ../file_info.c:313 ../gui_main.c:2788
+#: ../file_info.c:313 ../gui_main.c:2792
 msgid "File info"
 msgstr ""
 
@@ -597,51 +597,51 @@ msgid ""
 "Do you want to save it before exiting?"
 msgstr ""
 
-#: ../gui_main.c:1702
+#: ../gui_main.c:1706
 #, c-format
 msgid "Position: %d%%"
 msgstr ""
 
-#: ../gui_main.c:1720 ../gui_main.c:1747
+#: ../gui_main.c:1724 ../gui_main.c:1751
 #, c-format
 msgid "Mute"
 msgstr ""
 
-#: ../gui_main.c:1722 ../gui_main.c:1749
+#: ../gui_main.c:1726 ../gui_main.c:1753
 #, c-format
 msgid "%d dB"
 msgstr ""
 
-#: ../gui_main.c:1756
+#: ../gui_main.c:1760
 #, c-format
 msgid "Volume: %s"
 msgstr ""
 
-#: ../gui_main.c:1784 ../gui_main.c:1815
+#: ../gui_main.c:1788 ../gui_main.c:1819
 #, c-format
 msgid "%d%% R"
 msgstr ""
 
-#: ../gui_main.c:1786 ../gui_main.c:1817
+#: ../gui_main.c:1790 ../gui_main.c:1821
 #, c-format
 msgid "%d%% L"
 msgstr ""
 
-#: ../gui_main.c:1789 ../gui_main.c:1820
+#: ../gui_main.c:1793 ../gui_main.c:1824
 #, c-format
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:1827
+#: ../gui_main.c:1831
 #, c-format
 msgid "Balance: %s"
 msgstr ""
 
-#: ../gui_main.c:2688
+#: ../gui_main.c:2692
 msgid "JACK connection lost"
 msgstr ""
 
-#: ../gui_main.c:2691
+#: ../gui_main.c:2695
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -649,174 +649,174 @@ msgid ""
 "is restart both JACK and Aqualung.\n"
 msgstr ""
 
-#: ../gui_main.c:2784 ../options.c:1506
+#: ../gui_main.c:2788 ../options.c:1506
 msgid "Settings"
 msgstr ""
 
-#: ../gui_main.c:2785 ../skin.c:143
+#: ../gui_main.c:2789 ../skin.c:143
 msgid "Skin chooser"
 msgstr ""
 
-#: ../gui_main.c:2786
+#: ../gui_main.c:2790
 msgid "JACK port setup"
 msgstr ""
 
-#: ../gui_main.c:2793
+#: ../gui_main.c:2797
 msgid "Quit"
 msgstr ""
 
-#: ../gui_main.c:3069
-msgid "Previous song (comma)"
-msgstr ""
-
 #: ../gui_main.c:3073
-msgid "Stop (s)"
+msgid "Previous song"
 msgstr ""
 
 #: ../gui_main.c:3077
-msgid "Next song (period)"
+msgid "Stop"
 msgstr ""
 
 #: ../gui_main.c:3081
-msgid "Play (p)"
+msgid "Next song"
 msgstr ""
 
 #: ../gui_main.c:3085
-msgid "Pause (space)"
+msgid "Play"
 msgstr ""
 
-#: ../gui_main.c:3111
+#: ../gui_main.c:3089
+msgid "Pause"
+msgstr ""
+
+#: ../gui_main.c:3115
 msgid "Repeat current song"
 msgstr ""
 
-#: ../gui_main.c:3119
+#: ../gui_main.c:3123
 msgid "Repeat all songs"
 msgstr ""
 
-#: ../gui_main.c:3127
+#: ../gui_main.c:3131
 msgid "Shuffle songs"
 msgstr ""
 
-#: ../gui_main.c:3140
+#: ../gui_main.c:3144
 msgid "Toggle playlist"
 msgstr ""
 
-#: ../gui_main.c:3145
+#: ../gui_main.c:3149
 msgid "Toggle music store"
 msgstr ""
 
-#: ../gui_main.c:3150
+#: ../gui_main.c:3154
 msgid "Toggle LADSPA patch builder"
 msgstr ""
 
-#: ../gui_main.c:4553 ../music_browser.c:2257 ../options.c:1301
+#: ../gui_main.c:4557 ../music_browser.c:2257 ../options.c:1301
 #: ../options.c:1400
 msgid "rw"
 msgstr ""
 
-#: ../gui_main.c:4555 ../options.c:1303 ../options.c:1402
+#: ../gui_main.c:4559 ../options.c:1303 ../options.c:1402
 msgid "r"
 msgstr ""
 
-#: ../gui_main.c:4557 ../options.c:1305 ../options.c:1404
+#: ../gui_main.c:4561 ../options.c:1305 ../options.c:1404
 msgid "unreachable"
 msgstr ""
 
-#: ../gui_main.c:4620
+#: ../gui_main.c:4624
 msgid "Aqualung playlist (*.xml)"
 msgstr ""
 
-#: ../gui_main.c:4621
+#: ../gui_main.c:4625
 msgid "MP3 Playlist (*.m3u)"
 msgstr ""
 
-#: ../gui_main.c:4622
+#: ../gui_main.c:4626
 msgid "Multimedia Playlist (*.pls)"
 msgstr ""
 
-#: ../gui_main.c:4635 ../gui_main.c:4738
+#: ../gui_main.c:4639 ../gui_main.c:4742
 msgid "All Files"
 msgstr ""
 
-#: ../gui_main.c:4644
+#: ../gui_main.c:4648
 msgid "All Playlist Files"
 msgstr ""
 
-#: ../gui_main.c:4666
+#: ../gui_main.c:4670
 msgid "MPEG Audio (*.mp1, *.mp2, *.mp3)"
 msgstr ""
 
-#: ../gui_main.c:4670
+#: ../gui_main.c:4674
 msgid "Free Lossless Audio Codec (*.flac)"
 msgstr ""
 
-#: ../gui_main.c:4674
+#: ../gui_main.c:4678
 msgid "Ogg Vorbis (*.ogg)"
 msgstr ""
 
-#: ../gui_main.c:4678
+#: ../gui_main.c:4682
 msgid "Ogg Speex (*.spx)"
 msgstr ""
 
-#: ../gui_main.c:4682
+#: ../gui_main.c:4686
 msgid "Musepack (*.mpc)"
 msgstr ""
 
-#: ../gui_main.c:4686
+#: ../gui_main.c:4690
 msgid "Monkey's Audio Codec (*.ape)"
 msgstr ""
 
-#: ../gui_main.c:4693
+#: ../gui_main.c:4697
 msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
 msgstr ""
 
-#: ../gui_main.c:4705
+#: ../gui_main.c:4709
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
 msgstr ""
 
-#: ../gui_main.c:4756
+#: ../gui_main.c:4760
 msgid "All Audio Files"
 msgstr ""
 
-#: ../ifp_device.c:43
+#: ../ifp_device.c:45
 msgid "<root>"
 msgstr ""
 
-#: ../ifp_device.c:101
+#: ../ifp_device.c:104
 #, c-format
 msgid "%d / %d bytes"
 msgstr ""
 
-#: ../ifp_device.c:153
+#: ../ifp_device.c:141
 #, c-format
 msgid "%d / %d files"
 msgstr ""
 
-#: ../ifp_device.c:174 ../ifp_device.c:181
+#: ../ifp_device.c:183 ../ifp_device.c:190
 msgid "Done."
 msgstr ""
 
-#: ../ifp_device.c:176
+#: ../ifp_device.c:185
 msgid "Aborted..."
 msgstr ""
 
-#: ../ifp_device.c:198
+#: ../ifp_device.c:207
 msgid "Please enter directory name"
 msgstr ""
 
-#: ../ifp_device.c:200
+#: ../ifp_device.c:209
 msgid "Create directory"
 msgstr ""
 
-#: ../ifp_device.c:240
+#: ../ifp_device.c:249
 msgid "Please enter a new name"
 msgstr ""
 
-#: ../ifp_device.c:242 ../ifp_device.c:802
+#: ../ifp_device.c:251 ../ifp_device.c:813
 msgid "Rename directory"
 msgstr ""
 
-#: ../ifp_device.c:286
+#: ../ifp_device.c:295
 #, c-format
 msgid ""
 "Directory '%s' will be removed with its entire contents.\n"
@@ -824,122 +824,122 @@ msgid ""
 "Are you sure ?"
 msgstr ""
 
-#: ../ifp_device.c:292
+#: ../ifp_device.c:301
 msgid "Remove directory"
 msgstr ""
 
-#: ../ifp_device.c:474
+#: ../ifp_device.c:483
 msgid ""
 "A suitable iRiver iFP device couldn't be found.\n"
 "Perhaps it's unplugged or turned off."
 msgstr ""
 
-#: ../ifp_device.c:484
+#: ../ifp_device.c:493
 msgid ""
 "Device is busy.\n"
 "(I was unable to claim its interface.)"
 msgstr ""
 
-#: ../ifp_device.c:499
+#: ../ifp_device.c:508
 #, c-format
 msgid ""
 "Device isn't responding..\n"
 "try jiggling the handle. (error %d)"
 msgstr ""
 
-#: ../ifp_device.c:572
+#: ../ifp_device.c:581
 msgid "Please select at least one song from playlist..."
 msgstr ""
 
-#: ../ifp_device.c:579
+#: ../ifp_device.c:590
 msgid "iFP device manager"
 msgstr ""
 
-#: ../ifp_device.c:614
+#: ../ifp_device.c:625
 msgid "Selected files:"
 msgstr ""
 
-#: ../ifp_device.c:621
+#: ../ifp_device.c:632
 msgid "Total size:"
 msgstr ""
 
-#: ../ifp_device.c:628
+#: ../ifp_device.c:639
 msgid "label_songs"
 msgstr ""
 
-#: ../ifp_device.c:636
+#: ../ifp_device.c:647
 msgid "label_songs_size"
 msgstr ""
 
-#: ../ifp_device.c:644
+#: ../ifp_device.c:655
 msgid "<b>Songs info</b>"
 msgstr ""
 
-#: ../ifp_device.c:670
+#: ../ifp_device.c:681
 msgid "Model:"
 msgstr ""
 
-#: ../ifp_device.c:677
+#: ../ifp_device.c:688
 msgid "Capacity:"
 msgstr ""
 
-#: ../ifp_device.c:684
+#: ../ifp_device.c:695
 msgid "Free space:"
 msgstr ""
 
-#: ../ifp_device.c:691
+#: ../ifp_device.c:702
 msgid "label_model"
 msgstr ""
 
-#: ../ifp_device.c:699
+#: ../ifp_device.c:710
 msgid "label_capacity"
 msgstr ""
 
-#: ../ifp_device.c:707
+#: ../ifp_device.c:718
 msgid "label_freespace"
 msgstr ""
 
-#: ../ifp_device.c:726
+#: ../ifp_device.c:737
 msgid "Battery"
 msgstr ""
 
-#: ../ifp_device.c:733
+#: ../ifp_device.c:744
 msgid "Free space"
 msgstr ""
 
-#: ../ifp_device.c:735
+#: ../ifp_device.c:746
 msgid "<b>Device status</b>"
 msgstr ""
 
-#: ../ifp_device.c:801
+#: ../ifp_device.c:812
 msgid "Create a new directory"
 msgstr ""
 
-#: ../ifp_device.c:803
+#: ../ifp_device.c:814
 msgid "Remove directory and its entire contents"
 msgstr ""
 
-#: ../ifp_device.c:806
+#: ../ifp_device.c:817
 msgid "<b>Destination directory</b>"
 msgstr ""
 
-#: ../ifp_device.c:829
+#: ../ifp_device.c:840
 msgid "Current file: "
 msgstr ""
 
-#: ../ifp_device.c:836
+#: ../ifp_device.c:847
 msgid "Overall: "
 msgstr ""
 
-#: ../ifp_device.c:845 ../ifp_device.c:852
+#: ../ifp_device.c:856 ../ifp_device.c:863
 msgid "Idle."
 msgstr ""
 
-#: ../ifp_device.c:857
+#: ../ifp_device.c:868
 msgid "<b>Uploading progress</b>"
 msgstr ""
 
-#: ../ifp_device.c:873
+#: ../ifp_device.c:884
 msgid "Upload songs"
 msgstr ""
 

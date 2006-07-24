@@ -533,8 +533,8 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		}		
 		return TRUE;
 		break;
-	case GDK_x:
-	case GDK_X:
+	case GDK_u:
+	case GDK_U:
 		cut__sel_cb(NULL);
 		return TRUE;
 		break;

@@ -47,6 +47,7 @@ typedef struct _track_t {
 
 } track_t;
 
+void build_artist(GtkTreeIter artist_iter);
 void build_store(GtkTreeIter store_iter);
 
 #endif /* _BUILD_STORE_H */

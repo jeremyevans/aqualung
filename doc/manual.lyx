@@ -2267,7 +2267,7 @@ tracks 1-5 are filled with metadata,
  while the record name and the rest of the track titles are set after a
  CDDB lookup.
  In case of multiple matches (e.g.\InsetSpace ~
-due to CDDB query, or more than one track
+through CDDB query, or more than one track
  has metadata for the artist or record name) the string candidate that occurred
  most cases is chosen in order to avoid typos and other garbage whenever
  possible.
@@ -2313,7 +2313,16 @@ Once you are satisfied with the settings click `OK'.
  up.
  You can abort the process if you encounter some error or weirdness, or
  just want to refine some settings.
- 
+\end_layout
+
+\begin_layout Standard
+The building process can be narrowed to only one artist, which can strongly
+ speed up the operation.
+ It may come in handy if you made changes to only one artist (or just a
+ few ones).
+ The feature is accessible from the right-click menu of the artists.
+ Note that you will have to specify the directory of the artist instead
+ of the root directory of the entire music collection.
 \end_layout
 
 \begin_layout Subsubsection

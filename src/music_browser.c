@@ -110,6 +110,7 @@ GtkWidget * artist__addlist;
 GtkWidget * artist__addlist_albummode;
 GtkWidget * artist__separator1;
 GtkWidget * artist__add;
+GtkWidget * artist__build;
 GtkWidget * artist__edit;
 GtkWidget * artist__remove;
 GtkWidget * artist__separator2;
@@ -130,7 +131,10 @@ GtkWidget * record__addtrk;
 
 #ifdef HAVE_CDDB
 GtkWidget * record__cddb;
+extern int cddb_thread_state;
 #endif /* HAVE_CDDB */
+
+extern int build_thread_state;
 
 GtkWidget * record__separator3;
 GtkWidget * record__volume;
@@ -167,6 +171,7 @@ static void store__volume_cb(gpointer data);
 static void store__remove_cb(gpointer data);
 
 static void artist__add_cb(gpointer data);
+static void artist__build_cb(gpointer data);
 static void artist__edit_cb(gpointer data);
 static void artist__remove_cb(gpointer data);
 static void artist__volume_cb(gpointer data);
@@ -212,6 +217,7 @@ struct keybinds store_keybinds[] = {
 struct keybinds artist_keybinds[] = {
 	{artist__addlist_defmode, GDK_a, GDK_A},
 	{artist__add_cb, GDK_n, GDK_N},
+	{artist__build_cb, GDK_b, GDK_B},
 	{artist__edit_cb, GDK_e, GDK_E},
 	{artist__volume_cb, GDK_v, GDK_V},
 	{artist__remove_cb, GDK_Delete, GDK_KP_Delete},
@@ -1760,6 +1766,7 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gtk_widget_set_sensitive(store__volume, val);
 
 	gtk_widget_set_sensitive(artist__add, val);
+	gtk_widget_set_sensitive(artist__build, val);
 	gtk_widget_set_sensitive(artist__edit, val);
 	gtk_widget_set_sensitive(artist__remove, val);
 	gtk_widget_set_sensitive(artist__addrec, val);
@@ -1778,6 +1785,18 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gtk_widget_set_sensitive(track__edit, val);
 	gtk_widget_set_sensitive(track__remove, val);
 	gtk_widget_set_sensitive(track__volume, val);
+
+	if (
+#ifdef HAVE_CDDB
+	    cddb_thread_state != 2 ||
+#endif /* HAVE_CDDB */
+	    build_thread_state != 1) {
+		gtk_widget_set_sensitive(store__build, FALSE);
+		gtk_widget_set_sensitive(artist__build, FALSE);
+#ifdef HAVE_CDDB
+		gtk_widget_set_sensitive(record__cddb, FALSE);
+#endif /* HAVE_CDDB */
+	}
 }
 
 
@@ -2494,6 +2513,18 @@ artist__add_cb(gpointer data) {
 
 
 static void
+artist__build_cb(gpointer data) {
+
+	GtkTreeIter artist_iter;
+	GtkTreeModel * model;
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &artist_iter)) {
+		build_artist(artist_iter);
+	}
+}
+
+
+static void
 artist__edit_cb(gpointer data) {
 
 	GtkTreeIter iter;
@@ -3073,8 +3104,8 @@ search_cb(gpointer data) {
 */
 
 int
-get_iter_for_artist_and_record(GtkTreeIter * store_iter, GtkTreeIter * iter,
-			       const char * artist, const char * record) {
+store_get_iter_for_artist_and_record(GtkTreeIter * store_iter, GtkTreeIter * iter,
+				     const char * artist, const char * record) {
 	int i, j;
 	GtkTreeIter artist_iter;
 	GtkTreeIter record_iter;
@@ -3151,6 +3182,50 @@ get_iter_for_artist_and_record(GtkTreeIter * store_iter, GtkTreeIter * iter,
 	*iter = new_record_iter;
 	return 0;
 }
+
+int
+artist_get_iter_for_record(GtkTreeIter * artist_iter, GtkTreeIter * iter,
+			   const char * record) {
+	int i;
+	GtkTreeIter record_iter;
+	GtkTreeIter new_record_iter;
+
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+					     &record_iter, artist_iter, i++)) {
+
+		char * record_name;
+		char * record_name_key;
+		char * record_key;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &record_iter,
+				   0, &record_name, -1);
+
+		record_key = g_utf8_casefold(record, -1);
+		record_name_key = g_utf8_casefold(record_name, -1);
+
+		if (!g_utf8_collate(record_key, record_name_key)) {
+
+			*iter = record_iter;
+			g_free(record_key);
+			g_free(record_name_key);
+			return 1;
+		}
+
+		g_free(record_key);
+		g_free(record_name_key);
+	}
+
+	/* create record */
+	gtk_tree_store_append(music_store, &new_record_iter, artist_iter);
+	gtk_tree_store_set(music_store, &new_record_iter, 0, record, 1, record,
+			   2, "", 3, "", -1);
+
+	*iter = new_record_iter;
+	return 0;
+}
+
 
 void
 set_comment_text(GtkTextIter * iter) {
@@ -3754,6 +3829,7 @@ create_music_browser(void) {
 	artist__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 	artist__separator1 = gtk_separator_menu_item_new();
 	artist__add = gtk_menu_item_new_with_label(_("Add new artist..."));
+	artist__build = gtk_menu_item_new_with_label(_("Build artist from filesystem..."));
 	artist__edit = gtk_menu_item_new_with_label(_("Edit artist..."));
 	artist__remove = gtk_menu_item_new_with_label(_("Remove artist"));
 	artist__separator2 = gtk_separator_menu_item_new();
@@ -3766,6 +3842,7 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__addlist_albummode);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__separator1);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__add);
+	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__build);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__edit);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__remove);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__separator2);
@@ -3777,6 +3854,7 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(artist__addlist), "activate", G_CALLBACK(artist__addlist_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__addlist_albummode), "activate", G_CALLBACK(artist__addlist_albummode_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__add), "activate", G_CALLBACK(artist__add_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(artist__build), "activate", G_CALLBACK(artist__build_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__edit), "activate", G_CALLBACK(artist__edit_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__remove), "activate", G_CALLBACK(artist__remove_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__addrec), "activate", G_CALLBACK(record__add_cb), NULL);
@@ -3787,6 +3865,7 @@ create_music_browser(void) {
 	gtk_widget_show(artist__addlist_albummode);
 	gtk_widget_show(artist__separator1);
 	gtk_widget_show(artist__add);
+	gtk_widget_show(artist__build);
 	gtk_widget_show(artist__edit);
 	gtk_widget_show(artist__remove);
 	gtk_widget_show(artist__separator2);

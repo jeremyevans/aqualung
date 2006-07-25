@@ -47,10 +47,18 @@ extern GtkWidget * gui_stock_label_button(gchar * blabel, const gchar * bstock);
 extern void set_sliders_width(void);
 
 
-pthread_t build_store_thread_id;
+pthread_t build_thread_id;
+
+/* 0: busy, 1: free to start new build */
+int build_thread_state = 1;
+
 int build_cancelled = 0;
 
+/* 0: build store, 1: build artist */
+int build_type;
+
 GtkTreeIter store_iter;
+GtkTreeIter artist_iter;
 
 GtkWidget * build_prog_window = NULL;
 GtkWidget * prog_cancel_button;
@@ -272,7 +280,7 @@ browse_button_clicked(GtkWidget * widget, gpointer * data) {
 
 
 int
-build_store_dialog(void) {
+build_dialog(void) {
 
 	GtkWidget * dialog;
 	GtkWidget * notebook;
@@ -282,7 +290,7 @@ build_store_dialog(void) {
 	GtkWidget * hbox2;
 
 	GtkWidget * root_entry;
-	GtkWidget * root_label;
+	GtkWidget * root_label = NULL;
 	GtkWidget * browse_button;
 
 	GtkWidget * gen_vbox;
@@ -301,12 +309,18 @@ build_store_dialog(void) {
 
 	GdkColor red = { 0, 50000, 0, 0 };
 
+	char * title = NULL;
         int ret;
 
+	if (build_type == 0) {
+		title = _("Build store");
+	} else if (build_type == 1) {
+		title = _("Build artist");
+	}
 
-        dialog = gtk_dialog_new_with_buttons(_("Build store"),
+        dialog = gtk_dialog_new_with_buttons(title,
 					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					     NULL);
@@ -330,7 +344,12 @@ build_store_dialog(void) {
 	table = gtk_table_new(1, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(gen_vbox), table, FALSE, FALSE, 0);
 
-	root_label = gtk_label_new(_("Root path:"));
+	if (build_type == 0) {
+		root_label = gtk_label_new(_("Root path:"));
+	} else if (build_type == 1) {
+		root_label = gtk_label_new(_("Artist path:"));
+	}
+
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), root_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
@@ -388,7 +407,7 @@ build_store_dialog(void) {
 			 G_CALLBACK(meta_check_enable_toggled), NULL);
 
 	meta_check_title =
-		gtk_check_button_new_with_label(_("Import title"));
+		gtk_check_button_new_with_label(_("Import track titles"));
 	gtk_widget_set_name(meta_check_title, "check_on_notebook");
         gtk_box_pack_start(GTK_BOX(meta_vbox), meta_check_title, FALSE, FALSE, 0);
 
@@ -399,7 +418,10 @@ build_store_dialog(void) {
 	meta_check_artist =
 		gtk_check_button_new_with_label(_("Import artist"));
 	gtk_widget_set_name(meta_check_artist, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(meta_vbox), meta_check_artist, FALSE, FALSE, 0);
+
+	if (build_type == 0) {
+		gtk_box_pack_start(GTK_BOX(meta_vbox), meta_check_artist, FALSE, FALSE, 0);
+	}
 
 	if (meta_artist) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_artist), TRUE);
@@ -453,7 +475,7 @@ build_store_dialog(void) {
 
 
 	cddb_check_title =
-		gtk_check_button_new_with_label(_("Import title"));
+		gtk_check_button_new_with_label(_("Import track titles"));
 	gtk_widget_set_name(cddb_check_title, "check_on_notebook");
         gtk_box_pack_start(GTK_BOX(cddb_vbox), cddb_check_title, FALSE, FALSE, 0);
 
@@ -464,7 +486,10 @@ build_store_dialog(void) {
 	cddb_check_artist =
 		gtk_check_button_new_with_label(_("Import artist"));
 	gtk_widget_set_name(cddb_check_artist, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(cddb_vbox), cddb_check_artist, FALSE, FALSE, 0);
+
+	if (build_type == 0) {
+		gtk_box_pack_start(GTK_BOX(cddb_vbox), cddb_check_artist, FALSE, FALSE, 0);
+	}
 
 	if (cddb_artist) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_check_artist), TRUE);
@@ -677,6 +702,9 @@ finish_build(gpointer data) {
 
 	gtk_widget_destroy(build_prog_window);
 	build_prog_window = NULL;
+
+	build_thread_state = 1;
+
 	return FALSE;
 }
 
@@ -691,8 +719,16 @@ progress_window(void) {
 	GtkWidget * hbuttonbox;
 	GtkWidget * hseparator;
 
+	char * title = NULL;
+
+	if (build_type == 0) {
+		title = _("Building store from filesystem");
+	} else if (build_type == 1) {
+		title = _("Building artist from filesystem");
+	}
+
 	build_prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(build_prog_window), _("Building store from filesystem"));
+        gtk_window_set_title(GTK_WINDOW(build_prog_window), title);
         gtk_window_set_position(GTK_WINDOW(build_prog_window), GTK_WIN_POS_CENTER);
         gtk_window_resize(GTK_WINDOW(build_prog_window), 430, 110);
         g_signal_connect(G_OBJECT(build_prog_window), "delete_event",
@@ -968,6 +1004,7 @@ void
 process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 
 	GtkTreeIter record_iter;
+	int result = 0;
 
 	int i;
 	struct dirent ** ent_track;
@@ -1092,7 +1129,14 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 
  finish:
 
-	if (!get_iter_for_artist_and_record(&store_iter, &record_iter, artist, record)) {
+	if (build_type == 0) {
+		result = store_get_iter_for_artist_and_record(&store_iter, &record_iter,
+							      artist, record);
+	} else if (build_type == 1) {
+		result = artist_get_iter_for_record(&artist_iter, &record_iter, record);
+	}
+
+	if (result == 0) {
 		for (i = 0, ptrack = tracks; ptrack; i++, ptrack = ptrack->next) {
 
 			GtkTreeIter iter;
@@ -1100,7 +1144,9 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 			sprintf(sort_name, "%02d", i + 1);
 
 			gtk_tree_store_append(music_store, &iter, &record_iter);
-			gtk_tree_store_set(music_store, &iter, 0, ptrack->name, 1, sort_name,
+			gtk_tree_store_set(music_store, &iter,
+					   0, ptrack->name,
+					   1, sort_name,
 					   2, ptrack->filename, 3, "",
 					   4, ptrack->duration, 5, 1.0f, 7, -1.0f, -1);
 		}
@@ -1114,6 +1160,41 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	}
 }
 
+
+void *
+build_artist_thread(void * arg) {
+
+	int i;
+	struct dirent ** ent_record;
+	char dir_record[MAXLEN];
+	char artist_d_name[MAXLEN];
+
+	i = strlen(root);
+	while (root[--i] != '/');
+	strncpy(artist_d_name, root + i + 1, MAXLEN-1);
+
+	for (i = 0; i < scandir(root, &ent_record, filter, alphasort); i++) {
+
+		snprintf(dir_record, MAXLEN-1, "%s/%s", root, ent_record[i]->d_name);
+		
+		if (!is_dir(dir_record)) {
+			continue;
+		}
+
+		if (build_cancelled) {
+			build_thread_state = 1;
+			return NULL;
+		}
+
+		g_idle_add(set_prog_file_entry, (gpointer)dir_record);
+
+		process_record(dir_record, artist_d_name, ent_record[i]->d_name);
+	}
+
+	g_idle_add(finish_build, NULL);
+
+	return NULL;
+}
 
 void *
 build_store_thread(void * arg) {
@@ -1141,6 +1222,7 @@ build_store_thread(void * arg) {
 			}
 
 			if (build_cancelled) {
+				build_thread_state = 1;
 				return NULL;
 			}
 
@@ -1156,14 +1238,37 @@ build_store_thread(void * arg) {
 }
 
 void
+build_artist(GtkTreeIter iter) {
+
+	build_thread_state = 0;
+
+	artist_iter = iter;
+	build_cancelled = 0;
+	build_type = 1;
+
+	if (build_dialog()) {
+		progress_window();
+		music_store_mark_changed();
+		pthread_create(&build_thread_id, NULL, build_artist_thread, NULL);
+	} else {
+		build_thread_state = 1;
+	}
+}
+
+void
 build_store(GtkTreeIter iter) {
+
+	build_thread_state = 0;
 
 	store_iter = iter;
 	build_cancelled = 0;
+	build_type = 0;
 
-	if (build_store_dialog()) {
+	if (build_dialog()) {
 		progress_window();
 		music_store_mark_changed();
-		pthread_create(&build_store_thread_id, NULL, build_store_thread, NULL);
+		pthread_create(&build_thread_id, NULL, build_store_thread, NULL);
+	} else {
+		build_thread_state = 1;
 	}
 }

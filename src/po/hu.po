@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2006-07-25 13:50+0200\n"
+"PO-Revision-Date: 2006-07-31 18:41+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -182,149 +182,153 @@ msgstr ""
 "Szabad Szoftver Alapítvány címére: Free Software Foundation, Inc., 675\n"
 "Mass Ave, Cambridge, MA 02139, USA."
 
-#: ../build_store.c:240
+#: ../build_store.c:243
 msgid "Please select the root directory."
 msgstr "Válaszd ki a gyökérkönyvtárat."
 
-#: ../build_store.c:316
+#: ../build_store.c:319
 msgid "Build store"
 msgstr "Tároló felépítése"
 
-#: ../build_store.c:318
+#: ../build_store.c:321
 msgid "Build artist"
 msgstr "Elõadó felépítése"
 
-#: ../build_store.c:341 ../options.c:1527
+#: ../build_store.c:344 ../options.c:1527
 msgid "General"
 msgstr "Általános"
 
-#: ../build_store.c:348
+#: ../build_store.c:351
 msgid "Root path:"
 msgstr "Gyökérkönyvtár:"
 
-#: ../build_store.c:350
+#: ../build_store.c:353
 msgid "Artist path:"
 msgstr "Elõadó könyvtára:"
 
-#: ../build_store.c:365 ../music_browser.c:435 ../music_browser.c:1375
+#: ../build_store.c:368 ../music_browser.c:435 ../music_browser.c:1375
 #: ../music_browser.c:1544
 msgid "_Browse..."
 msgstr "_Tallózás..."
 
-#: ../build_store.c:371
+#: ../build_store.c:374
 msgid "Data source priority"
 msgstr "Adatforrások sorrendje"
 
-#: ../build_store.c:378
+#: ../build_store.c:381
 msgid "Metadata first, then CDDB"
 msgstr "Elõször metaadatok, utána CDDB"
 
-#: ../build_store.c:384
+#: ../build_store.c:387
 msgid "CDDB first, then metadata"
 msgstr "Elõször CDDB, utána metaadatok"
 
-#: ../build_store.c:394 ../options.c:2207
+#: ../build_store.c:397 ../options.c:2207
 msgid "Metadata"
 msgstr "Metaadatok"
 
-#: ../build_store.c:398
+#: ../build_store.c:401
 msgid "Import file metadata"
 msgstr "Metaadatok importálása"
 
-#: ../build_store.c:410 ../build_store.c:478
+#: ../build_store.c:413 ../build_store.c:491
 msgid "Import track titles"
-msgstr "Számok címének importálása"
+msgstr "Számcímek importálása"
 
-#: ../build_store.c:419 ../build_store.c:487
+#: ../build_store.c:422 ../build_store.c:500
 msgid "Import artist"
 msgstr "Elõadó importálása"
 
-#: ../build_store.c:431 ../build_store.c:499
+#: ../build_store.c:434 ../build_store.c:512
 msgid "Import record"
 msgstr "Album importálása"
 
-#: ../build_store.c:440
+#: ../build_store.c:443
+msgid "Import RVA"
+msgstr "RVA importálása"
+
+#: ../build_store.c:452
 msgid "Exclude whitespace-only metadata"
 msgstr "Csak szóközöket tartalmazó metaadatok kihagyása"
 
-#: ../build_store.c:461 ../options.c:2306
+#: ../build_store.c:474 ../options.c:2306
 msgid "CDDB"
 msgstr "CDDB"
 
-#: ../build_store.c:465
+#: ../build_store.c:478
 msgid "Perform CDDB lookup for records"
 msgstr "Albumok lekérdezése CDDB adatbázisból"
 
-#: ../build_store.c:519
+#: ../build_store.c:532
 msgid "Filesystem"
 msgstr "Fájlrendszer"
 
-#: ../build_store.c:522
+#: ../build_store.c:535
 msgid "Predefined transformations"
 msgstr "Elõre definiált transzformációk"
 
-#: ../build_store.c:534
+#: ../build_store.c:547
 msgid "Remove leading number"
 msgstr "Kezdõ számjegyek levágása"
 
-#: ../build_store.c:543
+#: ../build_store.c:556
 msgid "Remove file extension"
 msgstr "Kiterjesztés levágása"
 
-#: ../build_store.c:552
+#: ../build_store.c:565
 msgid "Convert underscore to space"
 msgstr "Aláhúzás szóközzé alakítása"
 
-#: ../build_store.c:561
+#: ../build_store.c:574
 msgid "Regular expression"
 msgstr "Reguláris kifejezés"
 
-#: ../build_store.c:569
+#: ../build_store.c:582
 msgid "regexp:"
 msgstr "reg.kif.:"
 
-#: ../build_store.c:581
+#: ../build_store.c:594
 msgid "replacement:"
 msgstr "csere:"
 
-#: ../build_store.c:662
+#: ../build_store.c:676
 msgid "Regexp matches empty string"
 msgstr "A kifejezés fedi az üres karakterláncot"
 
-#: ../build_store.c:725
+#: ../build_store.c:739
 msgid "Building store from filesystem"
 msgstr "Tároló felépítése fájlrendszerrõl"
 
-#: ../build_store.c:727
+#: ../build_store.c:741
 msgid "Building artist from filesystem"
 msgstr "Elõadó felépítése fájlrendszerrõl..."
 
-#: ../build_store.c:745
+#: ../build_store.c:759
 msgid "Directory:"
 msgstr "Könyvtár:"
 
-#: ../build_store.c:756
+#: ../build_store.c:770
 msgid "Action:"
 msgstr "Mûvelet:"
 
-#: ../build_store.c:774 ../cddb_lookup.c:124 ../ifp_device.c:890
+#: ../build_store.c:788 ../cddb_lookup.c:124 ../ifp_device.c:890
 #: ../volume.c:192
 msgid "Abort"
 msgstr "Megszakítás"
 
-#: ../build_store.c:1028
+#: ../build_store.c:1045
 msgid "Scanning files"
 msgstr "Fájlok vizsgálata"
 
-#: ../build_store.c:1069 ../build_store.c:1088
+#: ../build_store.c:1087 ../build_store.c:1106
 msgid "Processing metadata"
 msgstr "Metaadatok olvasása"
 
-#: ../build_store.c:1075 ../build_store.c:1094
+#: ../build_store.c:1093 ../build_store.c:1112
 msgid "CDDB lookup"
 msgstr "CDDB lekérdezés"
 
-#: ../build_store.c:1107
+#: ../build_store.c:1125
 msgid "File name transformation"
 msgstr "Fájlnév transzformáció"
 

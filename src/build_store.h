@@ -41,6 +41,7 @@ typedef struct _track_t {
 	char d_name[MAXLEN];
 	char name[MAXLEN];
 	float duration;
+	float rva;
 	int valid;
 
 	struct _track_t * next;

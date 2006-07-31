@@ -83,7 +83,7 @@ typedef struct _metadata {
 metadata * meta_new(void);
 int meta_read(metadata * meta, char * filename);
 void meta_free(metadata * meta);
-void meta_list(metadata * meta);
+/*void meta_list(metadata * meta);*/ /* for DEBUG purposes */
 
 int meta_get_rva(metadata * meta, float * fval);
 int meta_get_title(metadata * meta, char * str);

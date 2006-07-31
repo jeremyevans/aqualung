@@ -70,6 +70,7 @@ GtkWidget * meta_check_wspace;
 GtkWidget * meta_check_title;
 GtkWidget * meta_check_artist;
 GtkWidget * meta_check_record;
+GtkWidget * meta_check_rva;
 
 #ifdef HAVE_CDDB
 GtkWidget * cddb_check_enable;
@@ -95,6 +96,7 @@ int meta_wspace = 1;
 int meta_title = 1;
 int meta_artist = 1;
 int meta_record = 1;
+int meta_rva = 1;
 
 int cddb_enable = 1;
 int cddb_title = 1;
@@ -198,6 +200,7 @@ meta_check_enable_toggled(GtkWidget * widget, gpointer * data) {
 	gtk_widget_set_sensitive(meta_check_title, state);
 	gtk_widget_set_sensitive(meta_check_artist, state);
 	gtk_widget_set_sensitive(meta_check_record, state);
+	gtk_widget_set_sensitive(meta_check_rva, state);
 }
 
 
@@ -436,6 +439,15 @@ build_dialog(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_record), TRUE);
 	}
 
+	meta_check_rva =
+		gtk_check_button_new_with_label(_("Import RVA"));
+	gtk_widget_set_name(meta_check_rva, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(meta_vbox), meta_check_rva, FALSE, FALSE, 0);
+
+	if (meta_rva) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_rva), TRUE);
+	}
+
 	meta_check_wspace =
 		gtk_check_button_new_with_label(_("Exclude whitespace-only metadata"));
 	gtk_widget_set_name(meta_check_wspace, "check_on_notebook");
@@ -449,6 +461,7 @@ build_dialog(void) {
 		gtk_widget_set_sensitive(meta_check_title, FALSE);
 		gtk_widget_set_sensitive(meta_check_artist, FALSE);
 		gtk_widget_set_sensitive(meta_check_record, FALSE);
+		gtk_widget_set_sensitive(meta_check_rva, FALSE);
 		gtk_widget_set_sensitive(meta_check_wspace, FALSE);
 	}
 
@@ -626,6 +639,7 @@ build_dialog(void) {
 		meta_title = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_title));
 		meta_artist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_artist));
 		meta_record = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_record));
+		meta_rva = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_rva));
 
 #ifdef HAVE_CDDB
 		pri_meta_first = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pri_radio_meta));
@@ -972,6 +986,9 @@ process_meta(track_t * tracks, char * artist, char * record,
 					ptrack->valid = 1;
 				}
 			}
+			if (meta_rva) {
+				meta_get_rva(meta, &ptrack->rva);
+			}
 		}
 
 		meta_free(meta);
@@ -1040,9 +1057,10 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 				fprintf(stderr, "build_store.c: process_record(): malloc error\n");
 				return;
 			} else {
-				track->duration = duration;
 				strncpy(track->d_name, ent_track[i]->d_name, MAXLEN-1);
 				strncpy(track->filename, filename, MAXLEN-1);
+				track->duration = duration;
+				track->rva = 1.0f;
 				track->valid = 0;
 				track->next = NULL;
 
@@ -1079,7 +1097,8 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 #endif /* HAVE_CDDB */
 	}
 
-	if (artist_is_set && record_is_set && num_invalid_tracks(tracks) == 0) {
+	if (artist_is_set && record_is_set && num_invalid_tracks(tracks) == 0 &&
+	    (pri_meta_first || !meta_rva)) {
 		goto finish;
 	}
 
@@ -1147,8 +1166,12 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 			gtk_tree_store_set(music_store, &iter,
 					   0, ptrack->name,
 					   1, sort_name,
-					   2, ptrack->filename, 3, "",
-					   4, ptrack->duration, 5, 1.0f, 7, -1.0f, -1);
+					   2, ptrack->filename,
+					   3, "",
+					   4, ptrack->duration,
+					   5, ptrack->rva,
+					   7, -1.0f,
+					   -1);
 		}
 	}
 

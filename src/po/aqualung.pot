@@ -151,149 +151,153 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../build_store.c:240
+#: ../build_store.c:243
 msgid "Please select the root directory."
 msgstr ""
 
-#: ../build_store.c:316
+#: ../build_store.c:319
 msgid "Build store"
 msgstr ""
 
-#: ../build_store.c:318
+#: ../build_store.c:321
 msgid "Build artist"
 msgstr ""
 
-#: ../build_store.c:341 ../options.c:1527
+#: ../build_store.c:344 ../options.c:1527
 msgid "General"
 msgstr ""
 
-#: ../build_store.c:348
+#: ../build_store.c:351
 msgid "Root path:"
 msgstr ""
 
-#: ../build_store.c:350
+#: ../build_store.c:353
 msgid "Artist path:"
 msgstr ""
 
-#: ../build_store.c:365 ../music_browser.c:435 ../music_browser.c:1375
+#: ../build_store.c:368 ../music_browser.c:435 ../music_browser.c:1375
 #: ../music_browser.c:1544
 msgid "_Browse..."
 msgstr ""
 
-#: ../build_store.c:371
+#: ../build_store.c:374
 msgid "Data source priority"
 msgstr ""
 
-#: ../build_store.c:378
+#: ../build_store.c:381
 msgid "Metadata first, then CDDB"
 msgstr ""
 
-#: ../build_store.c:384
+#: ../build_store.c:387
 msgid "CDDB first, then metadata"
 msgstr ""
 
-#: ../build_store.c:394 ../options.c:2207
+#: ../build_store.c:397 ../options.c:2207
 msgid "Metadata"
 msgstr ""
 
-#: ../build_store.c:398
+#: ../build_store.c:401
 msgid "Import file metadata"
 msgstr ""
 
-#: ../build_store.c:410 ../build_store.c:478
+#: ../build_store.c:413 ../build_store.c:491
 msgid "Import track titles"
 msgstr ""
 
-#: ../build_store.c:419 ../build_store.c:487
+#: ../build_store.c:422 ../build_store.c:500
 msgid "Import artist"
 msgstr ""
 
-#: ../build_store.c:431 ../build_store.c:499
+#: ../build_store.c:434 ../build_store.c:512
 msgid "Import record"
 msgstr ""
 
-#: ../build_store.c:440
+#: ../build_store.c:443
+msgid "Import RVA"
+msgstr ""
+
+#: ../build_store.c:452
 msgid "Exclude whitespace-only metadata"
 msgstr ""
 
-#: ../build_store.c:461 ../options.c:2306
+#: ../build_store.c:474 ../options.c:2306
 msgid "CDDB"
 msgstr ""
 
-#: ../build_store.c:465
+#: ../build_store.c:478
 msgid "Perform CDDB lookup for records"
 msgstr ""
 
-#: ../build_store.c:519
+#: ../build_store.c:532
 msgid "Filesystem"
 msgstr ""
 
-#: ../build_store.c:522
+#: ../build_store.c:535
 msgid "Predefined transformations"
 msgstr ""
 
-#: ../build_store.c:534
+#: ../build_store.c:547
 msgid "Remove leading number"
 msgstr ""
 
-#: ../build_store.c:543
+#: ../build_store.c:556
 msgid "Remove file extension"
 msgstr ""
 
-#: ../build_store.c:552
+#: ../build_store.c:565
 msgid "Convert underscore to space"
 msgstr ""
 
-#: ../build_store.c:561
+#: ../build_store.c:574
 msgid "Regular expression"
 msgstr ""
 
-#: ../build_store.c:569
+#: ../build_store.c:582
 msgid "regexp:"
 msgstr ""
 
-#: ../build_store.c:581
+#: ../build_store.c:594
 msgid "replacement:"
 msgstr ""
 
-#: ../build_store.c:662
+#: ../build_store.c:676
 msgid "Regexp matches empty string"
 msgstr ""
 
-#: ../build_store.c:725
+#: ../build_store.c:739
 msgid "Building store from filesystem"
 msgstr ""
 
-#: ../build_store.c:727
+#: ../build_store.c:741
 msgid "Building artist from filesystem"
 msgstr ""
 
-#: ../build_store.c:745
+#: ../build_store.c:759
 msgid "Directory:"
 msgstr ""
 
-#: ../build_store.c:756
+#: ../build_store.c:770
 msgid "Action:"
 msgstr ""
 
-#: ../build_store.c:774 ../cddb_lookup.c:124 ../ifp_device.c:890
+#: ../build_store.c:788 ../cddb_lookup.c:124 ../ifp_device.c:890
 #: ../volume.c:192
 msgid "Abort"
 msgstr ""
 
-#: ../build_store.c:1028
+#: ../build_store.c:1045
 msgid "Scanning files"
 msgstr ""
 
-#: ../build_store.c:1069 ../build_store.c:1088
+#: ../build_store.c:1087 ../build_store.c:1106
 msgid "Processing metadata"
 msgstr ""
 
-#: ../build_store.c:1075 ../build_store.c:1094
+#: ../build_store.c:1093 ../build_store.c:1112
 msgid "CDDB lookup"
 msgstr ""
 
-#: ../build_store.c:1107
+#: ../build_store.c:1125
 msgid "File name transformation"
 msgstr ""
 

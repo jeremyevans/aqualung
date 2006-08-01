@@ -997,3 +997,74 @@ meta_get_artist(metadata * meta, char * str) {
 
 	return 0;
 }
+
+
+/* ret: 1 if found, 0 if no Year data */
+/* can be called with str == NULL only to see if data is found */
+int
+meta_get_year(metadata * meta, char * str) {
+
+#ifdef HAVE_ID3
+	id3_tag_data * id3;
+#endif /* HAVE_ID3 */
+	oggv_comment * oggv;
+
+
+	if (meta == NULL) {
+		fprintf(stderr, "meta_get_artist(): assertion meta != NULL failed\n");
+		return 0;
+	}
+
+#ifdef HAVE_FLAC
+	oggv = meta->flac_root;
+	if (oggv->next != NULL) {
+		oggv = oggv->next;
+		while (oggv != NULL) {
+
+			if (strcmp(oggv->label, "Date:") == 0) {
+				if (str != NULL) {
+					strncpy(str, oggv->str, MAXLEN-1);
+				}
+				return 1;
+			}
+			oggv = oggv->next;
+		}
+	}
+#endif /* HAVE_FLAC */
+
+#ifdef HAVE_OGG_VORBIS
+	oggv = meta->oggv_root;
+	if (oggv->next != NULL) {
+		oggv = oggv->next;
+		while (oggv != NULL) {
+
+			if (strcmp(oggv->label, "Date:") == 0) {
+				if (str != NULL) {
+					strncpy(str, oggv->str, MAXLEN-1);
+				}
+				return 1;
+			}
+			oggv = oggv->next;
+		}
+	}
+#endif /* HAVE_OGG_VORBIS */
+
+#ifdef HAVE_ID3
+	id3 = meta->id3_root;
+	if (id3->next != NULL) {
+		id3 = id3->next;
+		while (id3 != NULL) {
+
+			if (strcmp(id3->id, ID3_FRAME_YEAR) == 0) {
+				if (str != NULL) {
+					strncpy(str, (char *) id3->utf8, MAXLEN-1);
+				}
+				return 1;
+			}
+			id3 = id3->next;
+		}
+	}
+#endif /* HAVE_ID3 */
+
+	return 0;
+}

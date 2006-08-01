@@ -3105,7 +3105,9 @@ search_cb(gpointer data) {
 
 int
 store_get_iter_for_artist_and_record(GtkTreeIter * store_iter, GtkTreeIter * iter,
-				     const char * artist, const char * record) {
+				     const char * artist, const char * artist_sort_name,
+				     const char * record, const char * record_sort_name,
+				     const char * record_comment) {
 	int i, j;
 	GtkTreeIter artist_iter;
 	GtkTreeIter record_iter;
@@ -3163,8 +3165,9 @@ store_get_iter_for_artist_and_record(GtkTreeIter * store_iter, GtkTreeIter * ite
 
 		/* create record */
 		gtk_tree_store_append(music_store, &new_record_iter, &artist_iter);
-		gtk_tree_store_set(music_store, &new_record_iter, 0, record, 1, record,
-				   2, "", 3, "", -1);
+		gtk_tree_store_set(music_store, &new_record_iter,
+				   0, record, 1, record_sort_name,
+				   2, "", 3, record_comment, -1);
 
 		*iter = new_record_iter;
 		return 0;
@@ -3172,12 +3175,14 @@ store_get_iter_for_artist_and_record(GtkTreeIter * store_iter, GtkTreeIter * ite
 
 	/* create both artist and record */
 	gtk_tree_store_append(music_store, &new_artist_iter, store_iter);
-	gtk_tree_store_set(music_store, &new_artist_iter, 0, artist, 1, artist,
+	gtk_tree_store_set(music_store, &new_artist_iter,
+			   0, artist, 1, artist_sort_name,
 			   2, "", 3, "", -1);
 
 	gtk_tree_store_append(music_store, &new_record_iter, &new_artist_iter);
-	gtk_tree_store_set(music_store, &new_record_iter, 0, record, 1, record,
-			   2, "", 3, "", -1);
+	gtk_tree_store_set(music_store, &new_record_iter,
+			   0, record, 1, record_sort_name,
+			   2, "", 3, record_comment, -1);
 
 	*iter = new_record_iter;
 	return 0;
@@ -3185,7 +3190,8 @@ store_get_iter_for_artist_and_record(GtkTreeIter * store_iter, GtkTreeIter * ite
 
 int
 artist_get_iter_for_record(GtkTreeIter * artist_iter, GtkTreeIter * iter,
-			   const char * record) {
+			   const char * record, const char * record_sort_name,
+			   const char * record_comment) {
 	int i;
 	GtkTreeIter record_iter;
 	GtkTreeIter new_record_iter;
@@ -3219,8 +3225,9 @@ artist_get_iter_for_record(GtkTreeIter * artist_iter, GtkTreeIter * iter,
 
 	/* create record */
 	gtk_tree_store_append(music_store, &new_record_iter, artist_iter);
-	gtk_tree_store_set(music_store, &new_record_iter, 0, record, 1, record,
-			   2, "", 3, "", -1);
+	gtk_tree_store_set(music_store, &new_record_iter,
+			   0, record, 1, record_sort_name,
+			   2, "", 3, record_comment, -1);
 
 	*iter = new_record_iter;
 	return 0;

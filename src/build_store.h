@@ -35,7 +35,7 @@ char * map_get_max(map_t * map);
 void map_free(map_t * map);
 
 
-typedef struct _track_t {
+typedef struct _build_track_t {
 
 	char filename[MAXLEN];
 	char d_name[MAXLEN];
@@ -44,9 +44,23 @@ typedef struct _track_t {
 	float rva;
 	int valid;
 
-	struct _track_t * next;
+	struct _build_track_t * next;
 
-} track_t;
+} build_track_t;
+
+typedef struct _build_record_t {
+
+	char artist[MAXLEN];
+	char record[MAXLEN];
+	char year[MAXLEN];
+
+	int artist_valid;
+	int record_valid;
+	int year_valid;
+
+	build_track_t * tracks;
+
+} build_record_t;
 
 void build_artist(GtkTreeIter artist_iter);
 void build_store(GtkTreeIter store_iter);

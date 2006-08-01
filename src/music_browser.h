@@ -42,8 +42,11 @@ void record__addlist_defmode(gpointer data);
 void track__addlist_cb(gpointer data);
 
 int store_get_iter_for_artist_and_record(GtkTreeIter * store_iter, GtkTreeIter * iter,
-					 const char * artist, const char * record);
+					 const char * artist, const char * artist_sort_name,
+					 const char * record, const char * record_sort_name,
+					 const char * record_comment);
 int artist_get_iter_for_record(GtkTreeIter * artist_iter, GtkTreeIter * iter,
-			       const char * record);
+			       const char * record, const char * record_sort_name,
+			       const char * record_name);
 
 #endif /* _MUSIC_BROWSER_H */

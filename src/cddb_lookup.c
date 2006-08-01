@@ -37,6 +37,11 @@
 #include "build_store.h"
 #include "cddb_lookup.h"
 
+#define CDDB_THREAD_ERROR   -1
+#define CDDB_THREAD_BUSY     0
+#define CDDB_THREAD_SUCCESS  1
+#define CDDB_THREAD_FREE     2
+
 extern options_t options;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
@@ -48,8 +53,7 @@ extern GtkTreeSelection * music_select;
 
 pthread_t cddb_thread_id;
 
-/* 0: busy, -1: error, 1: success, 2: free to start new query */
-int cddb_thread_state = 2;
+int cddb_thread_state = CDDB_THREAD_FREE;
 
 int cddb_query_aborted = 0;
 
@@ -194,13 +198,13 @@ init_query_data() {
 }
 
 static int
-init_query_data_from_tracklist(track_t * tracks) {
+init_query_data_from_tracklist(build_track_t * tracks) {
 
 	int i;
 	float length = 0.0f;
 	float fr_offset = 150.0f; /* leading 2 secs in frames */
 
-	track_t * ptrack = NULL;
+	build_track_t * ptrack = NULL;
 
 	for (track_count = 0, ptrack = tracks; ptrack; track_count++, ptrack = ptrack->next);
 
@@ -232,7 +236,7 @@ load_disc(cddb_disc_t * disc) {
 	gtk_entry_set_text(GTK_ENTRY(artist_entry), cddb_disc_get_artist(disc));
 	gtk_entry_set_text(GTK_ENTRY(title_entry), cddb_disc_get_title(disc));
 
-	snprintf(str, MAXLEN, "%d", cddb_disc_get_year(disc));
+	snprintf(str, MAXLEN-1, "%d", cddb_disc_get_year(disc));
 	gtk_entry_set_text(GTK_ENTRY(year_entry), str);
 
 	gtk_entry_set_text(GTK_ENTRY(category_entry), cddb_disc_get_category_str(disc));
@@ -520,7 +524,7 @@ cddb_thread(void * arg) {
 
 	if ((conn = cddb_new()) == NULL) {
 		fprintf(stderr, "cddb_lookup.c: cddb_thread(): cddb_new error\n");
-		cddb_thread_state = -1;
+		cddb_thread_state = CDDB_THREAD_ERROR;
 		return 0;
 	}
 
@@ -534,7 +538,7 @@ cddb_thread(void * arg) {
 
 	if ((disc = cddb_disc_new()) == NULL) {
 		fprintf(stderr, "cddb_lookup.c: cddb_thread(): cddb_disc_new error\n");
-		cddb_thread_state = -1;
+		cddb_thread_state = CDDB_THREAD_ERROR;
 		return 0;
 	}
 
@@ -549,7 +553,7 @@ cddb_thread(void * arg) {
 	record_count = cddb_query(conn, disc);
 
 	if (record_count < 0) {
-		cddb_thread_state = -1;
+		cddb_thread_state = CDDB_THREAD_ERROR;
 		return 0;
 	}
 
@@ -563,13 +567,13 @@ cddb_thread(void * arg) {
 
 		libcddb_shutdown();
 
-		cddb_thread_state = 1;
+		cddb_thread_state = CDDB_THREAD_SUCCESS;
 		return 0;
 	}
 
 	if ((records = (cddb_disc_t **)malloc(sizeof(cddb_disc_t *) * record_count)) == NULL) {
 		fprintf(stderr, "cddb_lookup.c: cddb_thread(): malloc error\n");
-		cddb_thread_state = -1;
+		cddb_thread_state = CDDB_THREAD_ERROR;
 		return 0;
 	}
 
@@ -603,7 +607,7 @@ cddb_thread(void * arg) {
 		return 0;
 	}
 
-	cddb_thread_state = 1;
+	cddb_thread_state = CDDB_THREAD_SUCCESS;
 	return 0;
 }
 
@@ -616,7 +620,7 @@ cddb_timeout_callback(gpointer data) {
 
 	if (cddb_query_aborted) {
 		destroy_progress_window();
-		cddb_thread_state = 2;
+		cddb_thread_state = CDDB_THREAD_FREE;
 		return FALSE;
 	}
 
@@ -679,7 +683,7 @@ cddb_timeout_callback(gpointer data) {
 
 	free(frames);
 
-	cddb_thread_state = 2;
+	cddb_thread_state = CDDB_THREAD_FREE;
 
 	return FALSE;
 }
@@ -688,10 +692,10 @@ cddb_timeout_callback(gpointer data) {
 void
 cddb_get() {
 
-	cddb_thread_state = 0;
+	cddb_thread_state = CDDB_THREAD_BUSY;
 
 	if (init_query_data()) {
-		cddb_thread_state = 2;
+		cddb_thread_state = CDDB_THREAD_FREE;
 		return;
 	}
 
@@ -706,24 +710,23 @@ cddb_get() {
 }
 
 void
-cddb_get_batch(track_t * tracks,
-	       char * artist, char * record, int * artist_is_set, int * record_is_set,
-	       int cddb_title, int cddb_artist, int cddb_record) {
+cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cddb_record) {
 
 	int i, j;
-	track_t * ptrack = NULL;
+	build_track_t * ptrack = NULL;
 
 	map_t * map_artist = NULL;
 	map_t * map_record = NULL;
+	map_t * map_year = NULL;
 	map_t ** map_tracks = NULL;
 
 	char tmp[MAXLEN];
 
 
-	cddb_thread_state = 0;
+	cddb_thread_state = CDDB_THREAD_BUSY;
 
-	if (init_query_data_from_tracklist(tracks)) {
-		cddb_thread_state = 2;
+	if (init_query_data_from_tracklist(record->tracks)) {
+		cddb_thread_state = CDDB_THREAD_FREE;
 		return;
 	}
 
@@ -733,14 +736,14 @@ cddb_get_batch(track_t * tracks,
 
 	cddb_thread(NULL);
 
-	if (cddb_thread_state != 1 || record_count == 0) {
-		cddb_thread_state = 2;
+	if (cddb_thread_state != CDDB_THREAD_SUCCESS || record_count == 0) {
+		cddb_thread_state = CDDB_THREAD_FREE;
 		return;
 	}
 
 	if ((map_tracks = (map_t **)malloc(sizeof(map_t *) * track_count)) == NULL) {
 		fprintf(stderr, "cddb_lookup.c: cddb_get_batch(): malloc error\n");
-		cddb_thread_state = 2;
+		cddb_thread_state = CDDB_THREAD_FREE;
 		return;
 	}
 
@@ -750,18 +753,24 @@ cddb_get_batch(track_t * tracks,
 
 	for (i = 0; i < record_count; i++) {
 
-		if (cddb_artist && !*artist_is_set) {
+		if (cddb_artist && !record->artist_valid) {
 			strncpy(tmp, cddb_disc_get_artist(records[i]), MAXLEN-1);
 			map_put(&map_artist, tmp);
 		}
 
-		if (cddb_record && !*record_is_set) {
+		if (cddb_record && !record->record_valid) {
 			strncpy(tmp, cddb_disc_get_title(records[i]), MAXLEN-1);
 			map_put(&map_record, tmp);
 		}
+
+		if (!record->year_valid) {
+			snprintf(tmp, MAXLEN-1, "%d", cddb_disc_get_year(records[i]));
+			map_put(&map_year, tmp);
+		}
 		
 		if (cddb_title) {
-			for (j = 0, ptrack = tracks; ptrack && j < track_count; j++, ptrack = ptrack->next) {
+			for (j = 0, ptrack = record->tracks;
+			     ptrack && j < track_count; j++, ptrack = ptrack->next) {
 				if (!ptrack->valid) {
 					strncpy(tmp,
 						cddb_track_get_title(cddb_disc_get_track(records[i], j)),
@@ -772,25 +781,34 @@ cddb_get_batch(track_t * tracks,
 		}
 	}
 
-	if (cddb_artist && !*artist_is_set) {
+	if (map_artist) {
 		char * max = map_get_max(map_artist);
 
 		if (max) {
-			strncpy(artist, max, MAXLEN-1);
-			*artist_is_set = 1;
+			strncpy(record->artist, max, MAXLEN-1);
+			record->artist_valid = 1;
 		}
 	}
 
-	if (cddb_record && !*record_is_set) {
+	if (map_record) {
 		char * max = map_get_max(map_record);
 
 		if (max) {
-			strncpy(record, max, MAXLEN-1);
-			*record_is_set = 1;
+			strncpy(record->record, max, MAXLEN-1);
+			record->record_valid = 1;
 		}
 	}
 
-	for (j = 0, ptrack = tracks; ptrack && j < track_count; j++, ptrack = ptrack->next) {
+	if (map_year) {
+		char * max = map_get_max(map_year);
+
+		if (max) {
+			strncpy(record->year, max, MAXLEN-1);
+			record->year_valid = 1;
+		}
+	}
+
+	for (j = 0, ptrack = record->tracks; ptrack && j < track_count; j++, ptrack = ptrack->next) {
 
 		if (!ptrack->valid) {
 			char * max = map_get_max(map_tracks[j]);
@@ -806,6 +824,7 @@ cddb_get_batch(track_t * tracks,
 
 	map_free(map_artist);
 	map_free(map_record);
+	map_free(map_year);
 	free(map_tracks);
 
 	for (i = 0; i < record_count; i++) {
@@ -816,7 +835,7 @@ cddb_get_batch(track_t * tracks,
 	libcddb_shutdown();
 	free(frames);
 
-	cddb_thread_state = 2;
+	cddb_thread_state = CDDB_THREAD_FREE;
 }
 
 #endif /* HAVE_CDDB */

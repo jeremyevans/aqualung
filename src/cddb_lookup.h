@@ -22,8 +22,6 @@
 #define _CDDB_LOOKUP_H
 
 void cddb_get(void);
-void cddb_get_batch(track_t * tracks, char * artist, char * record,
-		    int * artist_is_set, int * record_is_set,
-		    int cddb_title, int cddb_artist, int cddb_record);
+void cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cddb_record);
 
 #endif /* _CDDB_LOOKUP_H */

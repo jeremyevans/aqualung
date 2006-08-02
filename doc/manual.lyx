@@ -1,4 +1,4 @@
-#LyX 1.4.1 created this file. For more info see http://www.lyx.org/
+#LyX 1.4.2 created this file. For more info see http://www.lyx.org/
 \lyxformat 245
 \begin_document
 \begin_header
@@ -2251,7 +2251,6 @@ If you are up to building a new store, first create an empty store (right-click
  four notebook pages.
  Later, if you only want to update the content of a store, you can start
  a build process on a non-empty store as well.
- Existing records will not be overwritten.
 \end_layout
 
 \begin_layout Standard
@@ -2271,6 +2270,28 @@ through CDDB query, or more than one track
  has metadata for the artist or record name) the string candidate that occurred
  most cases is chosen in order to avoid typos and other garbage whenever
  possible.
+\end_layout
+
+\begin_layout Standard
+The sort key for artists and records can be chosen between the real name
+ and the directory name of the corresponding artist or record.
+ For records there is a third choice, the year of the album, which can be
+ retrieved from metadata or through CDDB query (the priority of the sources
+ applies here too).
+ The year can also be automatically added to the comment field of new records
+ found by the build process.
+\end_layout
+
+\begin_layout Standard
+If you rebuild a store, existing data is not touched in any way.
+ The only change to be made to the store is that new audio files in a record's
+ directory will be added to the record.
+ However, you have the option to re-read data for existing tracks too.
+ It will only reset the track title, duration and RVA from the appropriate
+ Replaygain tag (if such tag exists and you enabled RVA import on the `Metadata'
+ page, see below).
+ Note that any other data such as comment or manual RVA value will strictly
+ be kept intact.
 \end_layout
 
 \begin_layout Standard

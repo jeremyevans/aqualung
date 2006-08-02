@@ -4581,6 +4581,13 @@ save_music_store(void) {
 		fclose(fout);
 
 		if (diff) {
+			struct stat st_file;
+
+			if (stat(store_file, &st_file) == 0) {
+				chown(tmpname, st_file.st_uid, st_file.st_gid);
+				chmod(tmpname, st_file.st_mode);
+			}
+
 			unlink(store_file);
 			rename(tmpname, store_file);
 		} else {

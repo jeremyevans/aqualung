@@ -104,7 +104,7 @@ GtkWidget * fs_label_error;
 
 int artist_sort_by = ARTIST_SORT_NAME;
 int record_sort_by = RECORD_SORT_YEAR;
-
+int reset_existing_data = 0;
 int add_year_to_comment = 0;
 
 int pri_meta_first = 1;
@@ -330,6 +330,7 @@ build_dialog(void) {
 	GtkWidget * gen_radio_record_name;
 	GtkWidget * gen_radio_record_dir;
 	GtkWidget * gen_radio_record_year;
+	GtkWidget * gen_check_reset_data;
 	GtkWidget * gen_check_add_year;
 
 	GtkWidget * meta_vbox;
@@ -484,12 +485,22 @@ build_dialog(void) {
 
 
 	gen_check_add_year =
-		gtk_check_button_new_with_label(_("Add year to record comments"));
+		gtk_check_button_new_with_label(_("Add year to the comments of new records"));
 	gtk_widget_set_name(gen_check_add_year, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(gen_vbox), gen_check_add_year, FALSE, FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(gen_vbox), gen_check_add_year, FALSE, FALSE, 0);
 
 	if (add_year_to_comment) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_check_add_year), TRUE);
+	}
+
+
+	gen_check_reset_data =
+		gtk_check_button_new_with_label(_("Re-read data for existing tracks"));
+	gtk_widget_set_name(gen_check_reset_data, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(gen_vbox), gen_check_reset_data, FALSE, FALSE, 0);
+
+	if (reset_existing_data) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_check_reset_data), TRUE);
 	}
 
 
@@ -758,6 +769,7 @@ build_dialog(void) {
 		}
 
 		add_year_to_comment = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_add_year));
+		reset_existing_data = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_reset_data));
 
 		meta_enable = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_enable));
 		meta_wspace = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_wspace));
@@ -1157,6 +1169,27 @@ process_meta(build_record_t * record) {
 
 
 void
+add_new_track(GtkTreeIter * record_iter, build_track_t * ptrack, int i) {
+
+	GtkTreeIter iter;
+	char sort_name[3];
+
+	snprintf(sort_name, 3, "%02d", i + 1);
+
+	gtk_tree_store_append(music_store, &iter, record_iter);
+	gtk_tree_store_set(music_store, &iter,
+			   0, ptrack->name,
+			   1, sort_name,
+			   2, ptrack->filename,
+			   3, "",
+			   4, ptrack->duration,
+			   5, ptrack->rva,
+			   7, -1.0f,
+			   -1);
+}
+
+
+void
 process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 
 	GtkTreeIter record_iter;
@@ -1330,21 +1363,51 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 
 	if (result == 0) {
 		for (i = 0, ptrack = record.tracks; ptrack; i++, ptrack = ptrack->next) {
+			add_new_track(&record_iter, ptrack, i);
+		}
+	}
+
+	if (result == 1) {
+		for (i = 0, ptrack = record.tracks; ptrack; i++, ptrack = ptrack->next) {
 
 			GtkTreeIter iter;
-			char sort_name[4];
-			sprintf(sort_name, "%02d", i + 1);
+			int has = 0;
+			int j = 0;
 
-			gtk_tree_store_append(music_store, &iter, &record_iter);
-			gtk_tree_store_set(music_store, &iter,
-					   0, ptrack->name,
-					   1, sort_name,
-					   2, ptrack->filename,
-					   3, "",
-					   4, ptrack->duration,
-					   5, ptrack->rva,
-					   7, -1.0f,
-					   -1);
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+							     &iter, &record_iter, j++)) {
+				char * file = NULL;
+
+				gtk_tree_model_get(GTK_TREE_MODEL(music_store),
+						   &iter, 2, &file, -1);
+
+				if (!strcmp(file, ptrack->filename)) {
+					has = 1;
+					g_free(file);
+					break;
+				}
+
+				g_free(file);
+			}
+
+			if (has) {
+				if (reset_existing_data) {
+					if (ptrack->rva <= 0.1f) {
+						gtk_tree_store_set(music_store, &iter,
+								   0, ptrack->name,
+								   4, ptrack->duration,
+								   5, ptrack->rva,
+								   -1);
+					} else {
+						gtk_tree_store_set(music_store, &iter,
+								   0, ptrack->name,
+								   4, ptrack->duration,
+								   -1);
+					}
+				}
+			} else {
+				add_new_track(&record_iter, ptrack, i);
+			}
 		}
 	}
 

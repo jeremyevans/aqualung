@@ -680,6 +680,9 @@ assembly_format_label(char * str, int v_major, int v_minor) {
 			case MPEG_LAYER_III:
 				strcat(str, _("Layer III"));
 				break;
+			default:
+				strcat(str, _("Unrecognized"));
+				break;
 			}
 		}
 

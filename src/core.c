@@ -78,6 +78,7 @@ char * user_port2 = NULL;
 
 const size_t sample_size = sizeof(float);
 
+gint playlist_state, browser_state;
 
 /* ALSA driver parameters */
 #ifdef HAVE_ALSA
@@ -1346,7 +1347,7 @@ main(int argc, char ** argv) {
 	int remote_quit = 0;
 	char * voladj_arg = NULL;
 
-	char * optstring = "vho:d:c:n:p:r:a::RP:DY:s::N:BLUTFEV:Q";
+	char * optstring = "vho:d:c:n:p:r:a::RP:DY:s::l:m:N:BLUTFEV:Q";
 	struct option long_options[] = {
 		{ "version", 0, 0, 'v' },
 		{ "help", 0, 0, 'h' },
@@ -1361,7 +1362,9 @@ main(int argc, char ** argv) {
 		{ "priority", 1, 0, 'P' },
 		{ "disk-realtime", 0, 0, 'D' },
 		{ "disk-priority", 1, 0, 'Y' },
-		{ "srctype", 2, 0, 's' },
+		{ "srctype", 2, 0, 's' },	
+                { "show-pl", 1, 0, 'l' },
+		{ "show-ms", 1, 0, 'm' },
 
 		{ "session", 1, 0, 'N' },
 		{ "back", 0, 0, 'B' },
@@ -1388,6 +1391,8 @@ main(int argc, char ** argv) {
 	}
 
 	load_default_cl(&argc_def, &argv_def);
+
+        playlist_state = browser_state = -1;
 
 	for (parse_run = 0; parse_run < 2; parse_run++) {
 
@@ -1559,7 +1564,21 @@ main(int argc, char ** argv) {
 				exit(1);
 #endif /* HAVE_SRC */
 				break;
-				
+                        case 'l':
+                               if(!strncmp(optarg, "yes", 3)) {
+                                        playlist_state = 1;
+                               } else if(!strncmp(optarg, "no", 2)) {
+                                        playlist_state = 0;
+                               }
+                               break;
+                        case 'm':
+                                if(!strncmp(optarg, "yes", 3)) {
+                                        browser_state = 1;
+                                } else if(!strncmp(optarg, "no", 2)) {
+                                        browser_state = 0;
+                                }
+                                break;
+
 			case 'N':
 				no_session = atoi(optarg);
 				break;
@@ -1880,6 +1899,10 @@ main(int argc, char ** argv) {
 			"\nOptions for file loading:\n"
 			"-E, --enqueue: Don't clear the contents of the playlist when adding new items.\n"
 
+                        "\nOptions for change state of Playlist/Music Store windows:\n"
+			"-l [yes, no], --show-pl=yes, no: Show/hide playlist window.\n"
+			"-m [yes, no], --show-ms=yes, no: Show/hide music store window.\n"
+
 			"\nIf you don't specify a session number via --session, the files will be opened by "
 			"the new\ninstance, otherwise they will be sent to the already running instance you "
 			"specify.\n"
@@ -2086,3 +2109,7 @@ main(int argc, char ** argv) {
 	jack_ringbuffer_free(rb_disk2out);
 	return 0;
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+
+

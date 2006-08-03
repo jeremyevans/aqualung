@@ -527,3 +527,6 @@ mpeg_decoder_init(file_decoder_t * fdec) {
         return NULL;
 }
 #endif /* HAVE_MPEG */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

@@ -554,6 +554,15 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                 }
                 return TRUE;
 		break;
+#ifdef HAVE_IFP
+	case GDK_t:
+	case GDK_T:
+                aifp_transfer_files();
+		return TRUE;
+		break;
+#endif /* HAVE_IFP */
+
+
 	}
 
 	return FALSE;
@@ -1836,7 +1845,7 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 
 	GtkTreeViewColumn * column;
 
-	if (!strcmp(data->data, "store")) {
+	if (!strcmp((gchar *)data->data, "store")) {
 
 		GtkTreePath * path = NULL;
 		GtkTreeIter * piter = NULL;
@@ -1881,7 +1890,7 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 			gtk_tree_path_free(path);
 		}
 
-	} else if (!strcmp(data->data, "list")) {
+	} else if (!strcmp((gchar *)data->data, "list")) {
 
 		GtkTreeModel * model;
 		GtkTreeIter sel_iter;

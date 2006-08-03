@@ -177,3 +177,6 @@ sndfile_decoder_init(file_decoder_t * fdec) {
 	return NULL;
 }
 #endif /* HAVE_SNDFILE */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

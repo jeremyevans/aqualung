@@ -63,14 +63,16 @@ extern PangoFontDescription *fd_statusbar;
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
 
-extern GtkWidget * gui_stock_label_button(gchar * blabel, const gchar * bstock);
+extern GtkWidget * gui_stock_label_button(gchar * label, const gchar * stock);
 extern void set_sliders_width(void);
 extern void assign_audio_fc_filters(GtkFileChooser * fc);
 
+extern GtkTooltips * aqualung_tooltips;
 
 gint cover_widths[5] = { 50, 100, 200, 300, -1 };       /* widths in pixels */
 
 GtkWidget * browser_window;
+GtkWidget * dialog;
 int browser_pos_x;
 int browser_pos_y;
 int browser_size_x;
@@ -158,7 +160,12 @@ GtkWidget * blank__add;
 GtkWidget * blank__search;
 GtkWidget * blank__save;
 
+int drag_info;
 
+GtkWidget * save_button;
+
+GtkWidget * name_entry;
+GtkWidget * sort_name_entry;
 
 /* prototypes, when we need them */
 void load_music_store(void);
@@ -377,7 +384,6 @@ add_store_dialog(char * name, char * file, char * comment) {
 	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
-        GtkWidget * name_entry;
 	GtkWidget * name_label;
 	GtkWidget * hbox2;
 	GtkWidget * file_entry;
@@ -517,7 +523,6 @@ edit_store_dialog(char * name, char * file, char * comment) {
 	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
-        GtkWidget * name_entry;
 	GtkWidget * name_label;
 	GtkWidget * file_entry;
 	GtkWidget * file_label;
@@ -626,6 +631,16 @@ edit_store_dialog(char * name, char * file, char * comment) {
         return ret;
 }
 
+int add_entry_key_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+	if (event->keyval == GDK_Return) {
+
+                gtk_entry_set_text(GTK_ENTRY(sort_name_entry), gtk_entry_get_text(GTK_ENTRY(name_entry)));
+	        gtk_widget_grab_focus(sort_name_entry);
+        } 
+        
+	return FALSE;
+}
 
 
 int
@@ -634,9 +649,7 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
 	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
-        GtkWidget * name_entry;
 	GtkWidget * name_label;
-	GtkWidget * sort_name_entry;
 	GtkWidget * sort_name_label;
 	GtkWidget * viewport;
         GtkWidget * scrolled_window;
@@ -667,6 +680,7 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
         name_entry = gtk_entry_new();
+        g_signal_connect (G_OBJECT(name_entry), "key_press_event", G_CALLBACK(add_entry_key_press), NULL);
         gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
@@ -752,9 +766,7 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
 	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
-        GtkWidget * name_entry;
 	GtkWidget * name_label;
-	GtkWidget * sort_name_entry;
 	GtkWidget * sort_name_label;
 	GtkWidget * viewport;
         GtkWidget * scrolled_window;
@@ -785,6 +797,7 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
         name_entry = gtk_entry_new();
+        g_signal_connect (G_OBJECT(name_entry), "key_press_event", G_CALLBACK(add_entry_key_press), NULL);
         gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
@@ -942,9 +955,7 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
-        GtkWidget * name_entry;
 	GtkWidget * name_label;
-	GtkWidget * sort_name_entry;
 	GtkWidget * sort_name_label;
 	GtkWidget * list_label;
 
@@ -988,6 +999,7 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
         name_entry = gtk_entry_new();
+        g_signal_connect (G_OBJECT(name_entry), "key_press_event", G_CALLBACK(add_entry_key_press), NULL);
         gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
@@ -1139,9 +1151,7 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
 	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
-        GtkWidget * name_entry;
 	GtkWidget * name_label;
-	GtkWidget * sort_name_entry;
 	GtkWidget * sort_name_label;
 	GtkWidget * viewport;
         GtkWidget * scrolled_window;
@@ -1172,6 +1182,7 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
         name_entry = gtk_entry_new();
+        g_signal_connect (G_OBJECT(name_entry), "key_press_event", G_CALLBACK(add_entry_key_press), NULL);
         gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
@@ -1305,9 +1316,7 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
-        GtkWidget * name_entry;
 	GtkWidget * name_label;
-	GtkWidget * sort_name_entry;
 	GtkWidget * sort_name_label;
 	GtkWidget * hbox2;
 	GtkWidget * file_entry;
@@ -1342,6 +1351,7 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
         name_entry = gtk_entry_new();
+        g_signal_connect (G_OBJECT(name_entry), "key_press_event", G_CALLBACK(add_entry_key_press), NULL);
         gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
@@ -1463,9 +1473,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 	GtkWidget * dialog;
 	GtkWidget * table;
 	GtkWidget * hbox;
-        GtkWidget * name_entry;
 	GtkWidget * name_label;
-	GtkWidget * sort_name_entry;
 	GtkWidget * sort_name_label;
 	GtkWidget * hbox2;
 	GtkWidget * file_entry;
@@ -1510,6 +1518,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
         name_entry = gtk_entry_new();
+        g_signal_connect (G_OBJECT(name_entry), "key_press_event", G_CALLBACK(add_entry_key_press), NULL);
         gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
@@ -1691,25 +1700,35 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 int
 confirm_dialog(char * title, char * text) {
 
-	GtkWidget * dialog;
-        GtkWidget * label;
+/*	GtkWidget * dialog;*/
+/*        GtkWidget * label;*/
         int ret;
 
-        dialog = gtk_dialog_new_with_buttons(title,
-					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-					     NULL);
-	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
-	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+/*        dialog = gtk_dialog_new_with_buttons(title,*/
+/*					     GTK_WINDOW(browser_window),*/
+/*					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,*/
+/*					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,*/
+/*					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,*/
+/*					     NULL);*/
+/*	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);*/
+/*        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);*/
+/*	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);*/
 
-	label = gtk_label_new(text);
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
-	gtk_widget_show(label);
+/*	label = gtk_label_new(text);*/
+/*        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);*/
+/*	gtk_widget_show(label);*/
 
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+/*        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {*/
+
+        dialog = gtk_message_dialog_new(GTK_WINDOW(browser_window),
+                                        GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                        GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, text);
+	gtk_window_set_title(GTK_WINDOW(dialog), title);
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_NO);
+        gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+
+        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
                 ret = 1;
         } else {
                 ret = 0;
@@ -2262,7 +2281,7 @@ store__add_cb(gpointer data) {
 			gtk_widget_destroy(dialog);
 		} else {
 			gtk_tree_store_append(music_store, &iter, NULL);
-			gtk_tree_store_set(music_store, &iter, 0, name, 2, file, 3, comment, 7, 1.0f/*rw*/, -1);
+			gtk_tree_store_set(music_store, &iter, 0, name, 2, file, 3, comment, 7, 1.0f/*rw*/, 8, PANGO_WEIGHT_BOLD, -1);
 
 			doc = xmlNewDoc((const xmlChar *) "1.0");
 			root = xmlNewNode(NULL, (const xmlChar *) "music_store");
@@ -3096,6 +3115,123 @@ search_cb(gpointer data) {
 	search_dialog();
 }
 
+static void
+collapse_all_items_cb(gpointer data)
+{
+        gtk_tree_view_collapse_all(GTK_TREE_VIEW(music_tree));  
+}
+
+static void
+edit_item_cb(gpointer data)
+{
+	GtkTreeModel * model;
+	GtkTreeIter parent_iter;
+	GtkTreePath * parent_path;
+        gint level;
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &parent_iter)) {
+
+		if (is_store_iter_readonly(&parent_iter)) return;
+
+		parent_path = gtk_tree_model_get_path(model, &parent_iter);
+		level = gtk_tree_path_get_depth(parent_path);
+
+                switch(level) {
+
+                        case 1: /* store */
+                                store__edit_cb(NULL);
+                                break;
+                        case 2: /* artist */
+                                artist__edit_cb(NULL);
+                                break;
+                        case 3: /* album */
+                                record__edit_cb(NULL);
+                                break;
+                        case 4: /* track */
+                                track__edit_cb(NULL);
+                                break;
+
+                        default:
+                                break;
+                }
+        }
+
+}
+
+static void
+add_item_cb(gpointer data)
+{
+	GtkTreeModel * model;
+	GtkTreeIter parent_iter;
+	GtkTreePath * parent_path;
+        gint level;
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &parent_iter)) {
+
+		if (is_store_iter_readonly(&parent_iter)) return;
+
+		parent_path = gtk_tree_model_get_path(model, &parent_iter);
+		level = gtk_tree_path_get_depth(parent_path);
+
+                switch(level) {
+
+                        case 1: /* store */
+                                store__add_cb(NULL);
+                                break;
+                        case 2: /* artist */
+                                artist__add_cb(NULL);
+                                break;
+                        case 3: /* album */
+                                record__add_cb(NULL);
+                                break;
+                        case 4: /* track */
+                                track__add_cb(NULL);
+                                break;
+
+                        default:
+                                break;
+                }
+        }
+
+}
+
+static void
+remove_item_cb(gpointer data)
+{
+	GtkTreeModel * model;
+	GtkTreeIter parent_iter;
+	GtkTreePath * parent_path;
+        gint level;
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &parent_iter)) {
+
+		if (is_store_iter_readonly(&parent_iter)) return;
+
+		parent_path = gtk_tree_model_get_path(model, &parent_iter);
+		level = gtk_tree_path_get_depth(parent_path);
+
+                switch(level) {
+
+                        case 1: /* store */
+                                store__remove_cb(NULL);
+                                break;
+                        case 2: /* artist */
+                                artist__remove_cb(NULL);
+                                break;
+                        case 3: /* album */
+                                record__remove_cb(NULL);
+                                break;
+                        case 4: /* track */
+                                track__remove_cb(NULL);
+                                break;
+
+                        default:
+                                break;
+                }
+        }
+
+}
+
 
 /************************************/
 
@@ -3645,12 +3781,18 @@ void
 create_music_browser(void) {
 	
 	GtkWidget * vbox;
+        GtkWidget * hbox;
 	GtkWidget * viewport1;
 	GtkWidget * viewport2;
 	GtkWidget * scrolled_win1;
 	GtkWidget * scrolled_win2;
 	GtkWidget * statusbar_viewport;
 	GtkWidget * statusbar_hbox;
+       	GtkWidget * edit_button;
+	GtkWidget * add_button;
+	GtkWidget * remove_button;
+	GtkWidget * search_button;
+	GtkWidget * collapse_all_button;
 
 	GtkCellRenderer * renderer;
 	GtkTreeViewColumn * column;
@@ -3676,6 +3818,50 @@ create_music_browser(void) {
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(browser_window), vbox);
 
+        if (options.enable_mstore_toolbar) {
+
+                hbox = gtk_hbox_new(FALSE, 0);
+                gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 3);
+
+                search_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_FIND);
+                GTK_WIDGET_UNSET_FLAGS(search_button, GTK_CAN_FOCUS);
+                g_signal_connect(G_OBJECT(search_button), "clicked", G_CALLBACK(search_cb), NULL);
+                gtk_box_pack_start(GTK_BOX(hbox), search_button, FALSE, TRUE, 3);
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), search_button, _("Search..."), NULL);
+
+                collapse_all_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_REFRESH);
+                GTK_WIDGET_UNSET_FLAGS(collapse_all_button, GTK_CAN_FOCUS);
+                gtk_box_pack_start(GTK_BOX(hbox), collapse_all_button, FALSE, TRUE, 3);
+                g_signal_connect(G_OBJECT(collapse_all_button), "pressed", G_CALLBACK(collapse_all_items_cb), NULL);
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), collapse_all_button, _("Collapse all items"), NULL);
+
+                edit_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_EDIT);
+                GTK_WIDGET_UNSET_FLAGS(edit_button, GTK_CAN_FOCUS);
+                gtk_box_pack_start(GTK_BOX(hbox), edit_button, FALSE, TRUE, 3);
+                g_signal_connect(G_OBJECT(edit_button), "pressed", G_CALLBACK(edit_item_cb), NULL);
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), edit_button, _("Edit item..."), NULL);
+
+                add_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_ADD);
+                GTK_WIDGET_UNSET_FLAGS(add_button, GTK_CAN_FOCUS);
+                gtk_box_pack_start(GTK_BOX(hbox), add_button, FALSE, TRUE, 3);
+                g_signal_connect(G_OBJECT(add_button), "pressed", G_CALLBACK(add_item_cb), NULL);
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), add_button, _("Add item..."), NULL);
+
+                remove_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_REMOVE);
+                GTK_WIDGET_UNSET_FLAGS(remove_button, GTK_CAN_FOCUS);
+                gtk_box_pack_start(GTK_BOX(hbox), remove_button, FALSE, TRUE, 3);
+                g_signal_connect(G_OBJECT(remove_button), "pressed", G_CALLBACK(remove_item_cb), NULL);
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), remove_button, _("Remove item..."), NULL);
+
+                save_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_SAVE);
+                GTK_WIDGET_UNSET_FLAGS(save_button, GTK_CAN_FOCUS);
+                gtk_box_pack_start(GTK_BOX(hbox), save_button, FALSE, TRUE, 3);
+                g_signal_connect(G_OBJECT(save_button), "pressed", G_CALLBACK(store__save_cb), NULL);
+                gtk_widget_set_sensitive(save_button, FALSE);
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), save_button, _("Save Music Store"), NULL);
+        }
+
+
 	if (!options.hide_comment_pane) {
 		browser_paned = gtk_vpaned_new();
 		gtk_box_pack_start(GTK_BOX(vbox), browser_paned, TRUE, TRUE, 0);
@@ -3683,7 +3869,7 @@ create_music_browser(void) {
 
 	/* create music store tree */
 	if (!music_store) {
-		music_store = gtk_tree_store_new(8,
+		music_store = gtk_tree_store_new(9,
 						 G_TYPE_STRING,  /* visible name */
 						 G_TYPE_STRING,  /* string to sort by (except stores) */
 						 G_TYPE_STRING,  /* physical filename (stores&tracks) */
@@ -3691,10 +3877,11 @@ create_music_browser(void) {
 						 G_TYPE_FLOAT,   /* track length in seconds */
 						 G_TYPE_FLOAT,   /* track average volume in dBFS */
 						 G_TYPE_FLOAT,   /* track manual volume adjustment, dB */
-						 G_TYPE_FLOAT);  /* if >= 0: use track manual RVA, 
+						 G_TYPE_FLOAT,   /* if >= 0: use track manual RVA, 
 								    if < 0: auto (compute from avg. loudness);
 								    if >= 0: writable store,
 								    if < 0: readonly store */
+                			         G_TYPE_INT);    /* font weight */
 	}
 
 	music_tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(music_store));
@@ -3713,6 +3900,7 @@ create_music_browser(void) {
 	column = gtk_tree_view_column_new_with_attributes("Artist / Record / Track",
 							  renderer,
 							  "text", 0,
+                                                          "weight", 8,
 							  NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(music_tree), column);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(music_tree), FALSE);
@@ -4310,10 +4498,10 @@ load_music_store(void) {
 
 		gtk_tree_store_append(music_store, &iter_store, NULL);
 		gtk_tree_store_set(music_store, &iter_store, 0, _("Music Store"), 1, "",
-				   2, store_file, 3, "", 7, -1.0f, -1);
+				   2, store_file, 3, "", 7, -1.0f, 8, PANGO_WEIGHT_BOLD, -1);
 
 		if (access(store_file, W_OK) == 0) {
-			gtk_tree_store_set(music_store, &iter_store, 7, 1.0f, -1);
+			gtk_tree_store_set(music_store, &iter_store, 7, 1.0f, 8, PANGO_WEIGHT_BOLD, -1);
 		}
 	
 		doc = xmlParseFile(store_file);
@@ -4371,12 +4559,14 @@ void music_store_mark_changed(void) {
 
 	music_store_changed = 1;
 	gtk_window_set_title(GTK_WINDOW(browser_window), _("*Music Store"));
+       	gtk_widget_set_sensitive(save_button, TRUE);
 }
 
 void music_store_mark_saved(void) {
 
 	music_store_changed = 0;
 	gtk_window_set_title(GTK_WINDOW(browser_window), _("Music Store"));
+        gtk_widget_set_sensitive(save_button, FALSE);
 }
 
 /**********************************************************************************/

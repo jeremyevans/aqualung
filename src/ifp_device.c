@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 #include <glib.h>
 #include <glib/gstdio.h>
+#include <gdk/gdkkeysyms.h>
 #include <pthread.h>
 #include <limits.h>
 #include <usb.h>
@@ -53,7 +54,8 @@ extern GtkTooltips * aqualung_tooltips;
 
 extern void set_sliders_width(void);
 void deflicker(void);
-gint aifp_directory_listing(void);
+gint aifp_directory_listing(gchar *name);
+void aifp_check_size(void);
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 struct usb_device *dev = NULL;
@@ -84,8 +86,12 @@ GtkWidget * progressbar_battery;
 GtkWidget * progressbar_freespace;
 GtkWidget * progressbar_cf;
 GtkWidget * progressbar_op;
+GtkWidget * file_entry;
 GtkWidget * list;
 GtkListStore * list_store = NULL;
+
+GtkWidget *mkdir_dialog;
+GtkWidget *rename_dialog;
 
 void aifp_update_info(void);
 
@@ -101,12 +107,15 @@ int
 update_progress (void *context, struct ifp_transfer_status *status) {
 
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_cf), (double)status->file_bytes/status->file_total);
-        sprintf(temp, _("%d / %d bytes"), status->file_bytes, status->file_total);
+        sprintf(temp, _("%d / %d bytes (%.1f MB)"), status->file_bytes, status->file_total, (double)status->file_total/MBYTES);
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_cf), temp);
         deflicker();
 
-        return 0;
-
+        if (abort_pressed) {
+                return 1;
+        } else {
+                return 0;
+        }
 }
 
 
@@ -135,6 +144,9 @@ upload_songs_cb_foreach(GtkTreeIter * iter, void * data) {
 		strncat(dest_file, "\\", MAXLEN-1);
 	}
 	strncat(dest_file, file, MAXLEN-1);
+
+        gtk_entry_set_text(GTK_ENTRY(file_entry), file);
+        gtk_editable_set_position(GTK_EDITABLE(file_entry), -1);
 
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_op),
 				      (double)(*n + 1) / number_of_songs);
@@ -191,34 +203,58 @@ upload_songs_cb(GtkButton * button, gpointer user_data) {
         deflicker();
 
         abort_pressed = 0;
+
+        gtk_widget_set_sensitive(abort_button, FALSE);
+        gtk_widget_set_sensitive(upload_button, TRUE);
+        gtk_widget_set_sensitive(close_button, TRUE);
+        gtk_widget_set_sensitive(mkdir_button, TRUE);
+        gtk_widget_set_sensitive(rndir_button, TRUE);
+        gtk_widget_set_sensitive(rmdir_button, TRUE);
+        gtk_widget_set_sensitive(list, TRUE);
+        deflicker();
+        gtk_widget_grab_focus(list);
+
+        gtk_entry_set_text(GTK_ENTRY(file_entry), _("None"));
 }
 
 /* directory operation handlers */
 
+
+int mkdir_key_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+	if (event->keyval == GDK_Return) {
+
+                gtk_dialog_response(GTK_DIALOG (mkdir_dialog), GTK_RESPONSE_OK);
+
+        } 
+        
+	return FALSE;
+}
+
 void
 create_directory_cb (GtkButton *button, gpointer user_data) {
 
-        GtkWidget *info_dialog;
         GtkWidget *name_entry;
         gint response, k;
 
-        info_dialog = gtk_message_dialog_new (GTK_WINDOW(aifp_window),
+        mkdir_dialog = gtk_message_dialog_new (GTK_WINDOW(aifp_window),
                                               GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
                                               GTK_MESSAGE_INFO, GTK_BUTTONS_OK_CANCEL, _("Please enter directory name"));
 
-        gtk_window_set_title(GTK_WINDOW(info_dialog), _("Create directory"));
+        gtk_window_set_title(GTK_WINDOW(mkdir_dialog), _("Create directory"));
 
         name_entry = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(info_dialog)->vbox), name_entry, FALSE, FALSE, 6);
+        g_signal_connect (G_OBJECT(name_entry), "key_press_event", G_CALLBACK(mkdir_key_press), NULL);
+        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(mkdir_dialog)->vbox), name_entry, FALSE, FALSE, 6);
         gtk_entry_set_max_length(GTK_ENTRY(name_entry), 64);
         gtk_widget_set_size_request(GTK_WIDGET(name_entry), 300, -1);
 
-        gtk_widget_show_all (info_dialog);
+        gtk_widget_show_all (mkdir_dialog);
 
-        response = gtk_dialog_run (GTK_DIALOG (info_dialog));     
+        response = gtk_dialog_run (GTK_DIALOG (mkdir_dialog));
 
 
-        if (response == GTK_RESPONSE_OK) {   
+        if (response == GTK_RESPONSE_OK) {
 
                 strncpy(temp, gtk_entry_get_text(GTK_ENTRY(name_entry)), MAXLEN-1);
 
@@ -226,42 +262,55 @@ create_directory_cb (GtkButton *button, gpointer user_data) {
 
                         k = ifp_mkdir(&ifpdev, temp);
 
+                        aifp_directory_listing(temp);
                         aifp_update_info();
-                        aifp_directory_listing();
+
                 }
         }
 
-        gtk_widget_destroy(info_dialog);
+        gtk_widget_destroy(mkdir_dialog);
+}
+
+
+int rename_key_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+	if (event->keyval == GDK_Return) {
+
+                gtk_dialog_response(GTK_DIALOG (rename_dialog), GTK_RESPONSE_OK);
+
+        }
+        
+	return FALSE;
 }
 
 void
 rename_directory_cb (GtkButton *button, gpointer user_data) {
 
-        GtkWidget *info_dialog;
         GtkWidget *name_entry;
         gint response, k;
         const gchar * text;
 
         if (strcmp(remote_directory, ROOTDIR)) {
 
-                info_dialog = gtk_message_dialog_new (GTK_WINDOW(aifp_window),
+                rename_dialog = gtk_message_dialog_new (GTK_WINDOW(aifp_window),
                                                       GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
                                                       GTK_MESSAGE_INFO, GTK_BUTTONS_OK_CANCEL, _("Please enter a new name"));
 
-                gtk_window_set_title(GTK_WINDOW(info_dialog), _("Rename directory"));
+                gtk_window_set_title(GTK_WINDOW(rename_dialog), _("Rename directory"));
 
                 name_entry = gtk_entry_new();
-                gtk_box_pack_start(GTK_BOX(GTK_DIALOG(info_dialog)->vbox), name_entry, FALSE, FALSE, 6);
+                g_signal_connect (G_OBJECT(name_entry), "key_press_event", G_CALLBACK(rename_key_press), NULL);
+                gtk_box_pack_start(GTK_BOX(GTK_DIALOG(rename_dialog)->vbox), name_entry, FALSE, FALSE, 6);
                 gtk_entry_set_max_length(GTK_ENTRY(name_entry), 64);
                 gtk_widget_set_size_request(GTK_WIDGET(name_entry), 300, -1);
 
                 gtk_entry_set_text(GTK_ENTRY(name_entry), remote_directory);
 
-                gtk_widget_show_all (info_dialog);
+                gtk_widget_show_all (rename_dialog);
 
-                response = gtk_dialog_run (GTK_DIALOG (info_dialog));     
+                response = gtk_dialog_run (GTK_DIALOG (rename_dialog));
 
-                if (response == GTK_RESPONSE_OK) {   
+                if (response == GTK_RESPONSE_OK) {
 
                         text = gtk_entry_get_text(GTK_ENTRY(name_entry));
 
@@ -276,11 +325,11 @@ rename_directory_cb (GtkButton *button, gpointer user_data) {
                                 k = ifp_rename(&ifpdev, dest_file, temp);
 
                                 aifp_update_info();
-                                aifp_directory_listing();
+                                aifp_directory_listing (NULL);
                         }
                 }
 
-                gtk_widget_destroy(info_dialog);
+                gtk_widget_destroy(rename_dialog);
         }
 }
 
@@ -292,7 +341,8 @@ remove_directory_cb (GtkButton *button, gpointer user_data) {
 
         if (strcmp(remote_directory, ROOTDIR)) {
 
-                sprintf(temp, _("Directory '%s' will be removed with its entire contents.\n\nAre you sure ?"), remote_directory);
+                sprintf(temp, _("Directory '%s' will be removed with its entire contents.\n\nAre you sure ?"), 
+                        remote_directory);
 
                 info_dialog = gtk_message_dialog_new (GTK_WINDOW(aifp_window),
                                                       GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
@@ -313,7 +363,8 @@ remove_directory_cb (GtkButton *button, gpointer user_data) {
                         k = ifp_delete_dir_recursive(&ifpdev, temp);
 
                         aifp_update_info();
-                        aifp_directory_listing();
+                        aifp_check_size();
+                        aifp_directory_listing (NULL);
                 }
 
                 set_sliders_width();    /* MAGIC */
@@ -323,6 +374,7 @@ remove_directory_cb (GtkButton *button, gpointer user_data) {
 
 
 /* "directory selected" handler */
+
 void 
 directory_selected_cb (GtkTreeSelection *selection, gpointer data) {
 
@@ -363,10 +415,12 @@ aifp_dump_dir(void *context, int type, const char *name, int filesize) {
 }
 
 gint
-aifp_directory_listing(void) {
+aifp_directory_listing(gchar *name) {
 
         GtkTreeIter iter;
         GtkTreePath *path;
+        gint d;
+        gchar * item_name;
 
         gtk_list_store_clear(list_store);
 
@@ -380,10 +434,33 @@ aifp_directory_listing(void) {
                 return -1;
         }
 
-        path = gtk_tree_path_new_first();
-        gtk_tree_view_set_cursor(GTK_TREE_VIEW(list), path, NULL, FALSE);
+        if (!name) {
 
-        g_free(path);
+                path = gtk_tree_path_new_first();
+                gtk_tree_view_set_cursor(GTK_TREE_VIEW(list), path, NULL, FALSE);
+
+                g_free(path);
+
+        } else {
+
+                d = 0;
+
+                while(gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(list_store), &iter, NULL, d++)) {
+
+	                gtk_tree_model_get(GTK_TREE_MODEL(list_store), &iter, 0, &item_name, -1);
+
+                        if (!strcmp(item_name, name)) {
+
+                                path = gtk_tree_path_new_from_indices (d-1, -1);
+                                gtk_tree_view_set_cursor(GTK_TREE_VIEW(list), path, NULL, FALSE);
+                                gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (list), path,
+                                              NULL, TRUE, 0.5, 0.0);
+                                g_free(path);
+                                break;
+
+                        }
+                }
+        }
 
         return 0;
 }
@@ -398,7 +475,7 @@ aifp_update_info(void) {
 
         sprintf(temp, "%d", number_of_songs); 
         gtk_label_set_text(GTK_LABEL(label_songs), temp);
-        sprintf(temp, "%d bytes (%d MB)", songs_size, songs_size/MBYTES); 
+        sprintf(temp, "%d bytes (%.1f MB)", songs_size, (double)songs_size/MBYTES); 
         gtk_label_set_text(GTK_LABEL(label_songs_size), temp);
 
         battery_status = ifp_battery(&ifpdev);
@@ -408,11 +485,11 @@ aifp_update_info(void) {
         gtk_label_set_text(GTK_LABEL(label_model), temp);
         
         capacity = ifp_capacity(&ifpdev);
-        sprintf(temp, "%d bytes (%d MB)", capacity, capacity/MBYTES); 
+        sprintf(temp, "%d bytes (%.1f MB)", capacity, (double)capacity/MBYTES); 
         gtk_label_set_text(GTK_LABEL(label_capacity), temp);
 
         freespace = ifp_freespace(&ifpdev);
-        sprintf(temp, "%d bytes (%d MB)", freespace, freespace/MBYTES); 
+        sprintf(temp, "%d bytes (%.1f MB)", freespace, (double)freespace/MBYTES); 
         gtk_label_set_text(GTK_LABEL(label_freespace), temp);
 
         space = (double)freespace/capacity;
@@ -430,8 +507,8 @@ void
 aifp_get_songs_info_foreach(GtkTreeIter * iter, void * data) {
 
         struct stat statbuf;
-	char * file;
-	int * num = (int *)data;
+	gchar * file;
+	gint * num = (int *)data;
 
 	gtk_tree_model_get(GTK_TREE_MODEL(play_store), iter, 1, &file, -1);
 
@@ -446,7 +523,7 @@ aifp_get_songs_info_foreach(GtkTreeIter * iter, void * data) {
 gint
 aifp_get_songs_info(void) {
 
-	int num = 0;
+	gint num = 0;
 
 	playlist_foreach_selected(aifp_get_songs_info_foreach, &num);
 
@@ -548,6 +625,44 @@ aifp_window_close(GtkWidget * widget, gpointer * data) {
 }
 
 
+void aifp_check_size(void) {
+
+        if(songs_size > freespace)
+                gtk_widget_set_sensitive(upload_button, FALSE);
+        else
+                gtk_widget_set_sensitive(upload_button, TRUE);
+}
+
+gint
+aifp_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
+
+	switch (kevent->keyval) {
+
+        case GDK_Escape:
+                aifp_window_close (NULL, NULL);
+        	return TRUE;
+                break;
+
+        case GDK_c:
+                create_directory_cb (NULL, NULL);
+        	return TRUE;
+                break;
+
+        case GDK_r:
+                rename_directory_cb (NULL, NULL);
+        	return TRUE;
+                break;
+
+        case GDK_Delete:
+	case GDK_KP_Delete:
+                remove_directory_cb (NULL, NULL);
+        	return TRUE;
+                break;
+
+        }
+
+	return FALSE;
+}
 
 void aifp_transfer_files(void) {
 
@@ -594,8 +709,10 @@ void aifp_transfer_files(void) {
 	gtk_window_set_modal(GTK_WINDOW(aifp_window), TRUE);
         g_signal_connect(G_OBJECT(aifp_window), "delete_event",
                          G_CALLBACK(aifp_window_close), NULL);
+        g_signal_connect(G_OBJECT(aifp_window), "key_press_event",
+                         G_CALLBACK(aifp_window_key_pressed), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(aifp_window), 5);
-        gtk_window_set_default_size(GTK_WINDOW(aifp_window), 300, 530);
+        gtk_window_set_default_size(GTK_WINDOW(aifp_window), 360, 530);
 
         vbox1 = gtk_vbox_new (FALSE, 0);
         gtk_widget_show (vbox1);
@@ -784,6 +901,7 @@ void aifp_transfer_files(void) {
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list), column);
         gtk_container_add (GTK_CONTAINER (scrolledwindow), list);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(list), FALSE);
+        gtk_tree_view_set_enable_search (GTK_TREE_VIEW(list), FALSE);
 
         vseparator = gtk_vseparator_new ();
         gtk_widget_show (vseparator);
@@ -830,38 +948,53 @@ void aifp_transfer_files(void) {
         gtk_container_add (GTK_CONTAINER (frame), alignment);
         gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 12, 0);
 
-        table = gtk_table_new (2, 2, FALSE);
+        table = gtk_table_new (3, 2, FALSE);
         gtk_widget_show (table);
         gtk_container_add (GTK_CONTAINER (alignment), table);
         gtk_container_set_border_width (GTK_CONTAINER (table), 8);
         gtk_table_set_row_spacings (GTK_TABLE (table), 4);
         gtk_table_set_col_spacings (GTK_TABLE (table), 4);
 
-        label = gtk_label_new (_("Current file: "));
+        label = gtk_label_new (_("File name: "));
         gtk_widget_show (label);
         gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1,
                           (GtkAttachOptions) (GTK_FILL),
                           (GtkAttachOptions) (0), 0, 0);
         gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
-        label = gtk_label_new (_("Overall: "));
+        label = gtk_label_new (_("Current file: "));
         gtk_widget_show (label);
         gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
                           (GtkAttachOptions) (GTK_FILL),
                           (GtkAttachOptions) (0), 0, 0);
         gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
+        label = gtk_label_new (_("Overall: "));
+        gtk_widget_show (label);
+        gtk_table_attach (GTK_TABLE (table), label, 0, 1, 2, 3,
+                          (GtkAttachOptions) (GTK_FILL),
+                          (GtkAttachOptions) (0), 0, 0);
+        gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+        file_entry = gtk_entry_new();
+        gtk_widget_show (file_entry);
+        gtk_editable_set_editable(GTK_EDITABLE(file_entry), FALSE);
+        gtk_table_attach (GTK_TABLE (table), file_entry, 1, 2, 0, 1,
+                          (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                          (GtkAttachOptions) (0), 0, 0);
+        gtk_entry_set_text(GTK_ENTRY(file_entry), _("None"));
+
         progressbar_cf = gtk_progress_bar_new ();
         gtk_widget_show (progressbar_cf);
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_cf), _("Idle."));
-        gtk_table_attach (GTK_TABLE (table), progressbar_cf, 1, 2, 0, 1,
+        gtk_table_attach (GTK_TABLE (table), progressbar_cf, 1, 2, 1, 2,
                           (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                           (GtkAttachOptions) (0), 0, 0);
 
         progressbar_op = gtk_progress_bar_new ();
         gtk_widget_show (progressbar_op);
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_op), _("Idle."));
-        gtk_table_attach (GTK_TABLE (table), progressbar_op, 1, 2, 1, 2,
+        gtk_table_attach (GTK_TABLE (table), progressbar_op, 1, 2, 2, 3,
                           (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                           (GtkAttachOptions) (0), 0, 0);
 
@@ -881,13 +1014,13 @@ void aifp_transfer_files(void) {
         gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), GTK_BUTTONBOX_END);
         gtk_box_set_spacing (GTK_BOX (hbuttonbox), 6);
 
-        upload_button = gui_stock_label_button (_("Upload songs"), GTK_STOCK_GO_UP);
+        upload_button = gui_stock_label_button (_("_Upload songs"), GTK_STOCK_GO_UP);
         gtk_widget_show (upload_button);
         g_signal_connect(upload_button, "clicked", G_CALLBACK(upload_songs_cb), NULL);
         gtk_container_add (GTK_CONTAINER (hbuttonbox), upload_button);
         GTK_WIDGET_SET_FLAGS (upload_button, GTK_CAN_DEFAULT);
 
-        abort_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL);
+        abort_button = gui_stock_label_button (_("_Abort"), GTK_STOCK_CANCEL);
         gtk_widget_show (abort_button);
         g_signal_connect(abort_button, "clicked", G_CALLBACK(abort_transfer_cb), NULL);
         gtk_container_add (GTK_CONTAINER (hbuttonbox), abort_button);
@@ -900,24 +1033,18 @@ void aifp_transfer_files(void) {
         GTK_WIDGET_SET_FLAGS (close_button, GTK_CAN_DEFAULT);     
 
         gtk_widget_set_sensitive(abort_button, FALSE);
-        gtk_widget_grab_focus(close_button);
+        gtk_widget_grab_focus(list);
 
         /* update info and directory listing */
 
         aifp_update_info();
-
-        aifp_directory_listing();
-        
-        if (songs_size > freespace) {
-                gtk_widget_set_sensitive(upload_button, FALSE);
-	} else {
-                gtk_widget_set_sensitive(upload_button, TRUE);
-	}
+        aifp_directory_listing (NULL);
+        aifp_check_size();
 
         abort_pressed = 0;
 
         gtk_widget_show(aifp_window);
-        set_sliders_width();
+        set_sliders_width();            /* MAGIC */
 }
 
 #endif /* HAVE_IFP */

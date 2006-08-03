@@ -219,3 +219,6 @@ vorbis_decoder_init(file_decoder_t * fdec) {
         return NULL;
 }
 #endif /* HAVE_OGG_VORBIS */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

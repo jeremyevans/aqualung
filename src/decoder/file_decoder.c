@@ -228,3 +228,6 @@ get_file_duration(char * file) {
 
 	return duration;
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

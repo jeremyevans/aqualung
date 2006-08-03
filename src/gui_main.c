@@ -312,6 +312,8 @@ extern char fileinfo_file[MAXLEN];
 
 extern GtkWidget * plist__fileinfo;
 
+extern gint playlist_state;
+extern gint browser_state;
 
 void
 deflicker(void) {
@@ -3325,6 +3327,10 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	if (shuffle_on)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), TRUE);
 
+        if(playlist_state != -1) 
+                playlist_on = playlist_state;
+        if(browser_state != -1) 
+                browser_on = browser_state;
 
 	if (browser_on) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(musicstore_toggle), TRUE);
@@ -3349,8 +3355,9 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	if (options.playlist_is_embedded) {
 		if (!playlist_on) {
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle), FALSE);
-			gtk_widget_hide(playlist_window);
+/*			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle), FALSE);*/
+/*			gtk_widget_hide(playlist_window);*/
+                        hide_playlist();
 			deflicker();
 		}
 	}
@@ -3746,6 +3753,9 @@ save_config(void) {
 	snprintf(str, 31, "%d", options.hide_comment_pane_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "hide_comment_pane", (xmlChar *) str);
 
+        snprintf(str, 31, "%d", options.enable_mstore_toolbar_shadow);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_mstore_toolbar", (xmlChar *) str);
+
 	snprintf(str, 31, "%d", options.enable_mstore_statusbar_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "enable_mstore_statusbar", (xmlChar *) str);
 
@@ -3977,6 +3987,8 @@ load_config(void) {
         options.show_sn_title = 1;
 
 	options.enable_mstore_statusbar = options.enable_mstore_statusbar_shadow = 1;
+       	options.enable_mstore_toolbar = options.enable_mstore_toolbar_shadow = 0;
+
         options.cover_width = 2;
 
 	options.autoexpand_stores = 1;
@@ -4168,6 +4180,14 @@ load_config(void) {
                         if (key != NULL) {
 				sscanf((char *) key, "%d", &options.hide_comment_pane);
 				options.hide_comment_pane_shadow = options.hide_comment_pane;
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_mstore_toolbar"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				sscanf((char *) key, "%d", &options.enable_mstore_toolbar);
+				options.enable_mstore_toolbar_shadow = options.enable_mstore_toolbar;
 			}
                         xmlFree(key);
                 }
@@ -4570,9 +4590,14 @@ load_config(void) {
         return;
 }
 
+/* create button with stock item 
+ *
+ * in: label - label for buttor        (label=NULL  to disable label, label=-1 to disable button relief)
+ *     stock - stock icon identifier                                
+ */
 
 GtkWidget* 
-gui_stock_label_button(gchar *blabel, const gchar *bstock) {
+gui_stock_label_button(gchar *label, const gchar *stock) {
 
 	GtkWidget *button;
 	GtkWidget *alignment;
@@ -4581,18 +4606,25 @@ gui_stock_label_button(gchar *blabel, const gchar *bstock) {
 
 	button = g_object_new (GTK_TYPE_BUTTON, "visible", TRUE, NULL);
 
+        if (label== (gchar *)-1) {
+                gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);  
+        }
+
 	alignment = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
 	hbox = gtk_hbox_new (FALSE, 2);
 	gtk_container_add (GTK_CONTAINER (alignment), hbox);
 
-	image = gtk_image_new_from_stock (bstock, GTK_ICON_SIZE_BUTTON);
-	if (image)
-		gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, TRUE, 0);
+	image = gtk_image_new_from_stock (stock, GTK_ICON_SIZE_BUTTON);
 
-	if (blabel)
+        if (image) {
+		gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, TRUE, 0);
+        }
+
+        if (label != NULL && label != (gchar *)-1) {
 		gtk_box_pack_start (GTK_BOX (hbox),
-		g_object_new (GTK_TYPE_LABEL, "label", blabel, "use_underline", TRUE, NULL),
+		g_object_new (GTK_TYPE_LABEL, "label", label, "use_underline", TRUE, NULL),
 		FALSE, TRUE, 0);
+        }
 
 	gtk_widget_show_all (alignment);
 	gtk_container_add (GTK_CONTAINER (button), alignment);

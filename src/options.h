@@ -67,6 +67,8 @@ typedef struct {
 	int hide_comment_pane_shadow;
 	int enable_mstore_statusbar;
 	int enable_mstore_statusbar_shadow;
+   	int enable_mstore_toolbar;
+	int enable_mstore_toolbar_shadow;
 	int autoexpand_stores;
 	int enable_ms_rules_hint;
 	int cover_width;

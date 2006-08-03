@@ -153,6 +153,7 @@ GtkWidget * check_show_sn_title;
 GtkWidget * check_united_minimization;
 GtkWidget * check_hide_comment_pane;
 GtkWidget * check_enable_mstore_statusbar;
+GtkWidget * check_enable_mstore_toolbar;
 GtkWidget * check_expand_stores;
 GtkWidget * check_show_hidden;
 GtkWidget * check_playlist_is_embedded;
@@ -392,6 +393,12 @@ ok(GtkWidget * widget, gpointer data) {
 		options.enable_mstore_statusbar_shadow = 1;
 	} else {
 	        options.enable_mstore_statusbar_shadow = 0;
+	}
+
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_mstore_toolbar))) {
+		options.enable_mstore_toolbar_shadow = 1;
+	} else {
+	        options.enable_mstore_toolbar_shadow = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_expand_stores))) {
@@ -1183,29 +1190,26 @@ void restart_active(GtkToggleButton * togglebutton, gpointer data) {
 
 void set_sensitive_part(void) {
 
+GtkWidget *sensitive_table[] = {
+        entry_ms_font, entry_pl_font, entry_bt_font, entry_st_font,
+        entry_songt_font, entry_si_font, entry_sb_font, button_ms_font,
+        button_pl_font, button_bt_font, button_st_font, button_songt_font,
+        button_si_font, button_sb_font, color_picker
+};
 	gboolean state;
-
+        gint items, n;
+        
         if (options.override_skin_settings) {
 		state = TRUE;
 	} else {
 		state = FALSE;
 	}
 
-	gtk_widget_set_sensitive(entry_ms_font, state);
-	gtk_widget_set_sensitive(entry_pl_font, state);
-	gtk_widget_set_sensitive(entry_bt_font, state);
-	gtk_widget_set_sensitive(entry_st_font, state);
-	gtk_widget_set_sensitive(entry_songt_font, state);
-	gtk_widget_set_sensitive(entry_si_font, state);
-	gtk_widget_set_sensitive(entry_sb_font, state);
-	gtk_widget_set_sensitive(button_ms_font, state);
-	gtk_widget_set_sensitive(button_pl_font, state);
-	gtk_widget_set_sensitive(button_bt_font, state);
-	gtk_widget_set_sensitive(button_st_font, state);
-	gtk_widget_set_sensitive(button_songt_font, state);
-	gtk_widget_set_sensitive(button_si_font, state);
-	gtk_widget_set_sensitive(button_sb_font, state);
-	gtk_widget_set_sensitive(color_picker, state);
+        items = sizeof(sensitive_table) / sizeof(GtkWidget*);
+
+        for(n=0; n < items; n++) {
+                gtk_widget_set_sensitive(sensitive_table[n], state);
+        }
 }
 
 void  cb_toggle_override_skin (GtkToggleButton *togglebutton, gpointer user_data)
@@ -1414,6 +1418,47 @@ refresh_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 
 
 void
+display_title_format_help(void) {
+
+GtkWidget *help_dialog;
+
+        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
+                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, 
+                                              _("\nThe template string you enter here will be used to\n"
+                                              "construct a single title line from an Artist, a Record\n"
+                                              "and a Track name. These are denoted by %%a, %%r and %%t,\n"
+                                              "respectively. Everything else you enter here will be\n"
+                                              "literally copied into the resulting string.\n"));
+
+        gtk_widget_show (help_dialog);
+        gtk_dialog_run(GTK_DIALOG(help_dialog));
+        gtk_widget_destroy(help_dialog);
+}
+
+
+void
+display_implict_command_line_help(void) {
+
+GtkWidget *help_dialog;
+
+        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
+                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, 
+                                              _("\nThe string you enter here will be parsed as a command\n"
+                                              "line before parsing the actual command line parameters.\n"
+                                              "What you enter here will act as a default setting and may\n"
+                                              "or may not be overrided from the 'real' command line.\n"
+                                              "Example: enter '-o alsa -R' below to use ALSA output\n"
+                                              "running realtime as a default.\n"));
+
+        gtk_widget_show (help_dialog);
+        gtk_dialog_run(GTK_DIALOG(help_dialog));
+        gtk_widget_destroy(help_dialog);
+}
+
+
+void
 create_options_window(void) {
 
 	GtkWidget * vbox;
@@ -1424,12 +1469,12 @@ create_options_window(void) {
 	GtkWidget * frame_misc;
 	GtkWidget * frame_cart;
 	GtkWidget * vbox_title;
+	GtkWidget * hbox_title;
 	GtkWidget * vbox_param;
+	GtkWidget * hbox_param;
 	GtkWidget * vbox_misc;
 	GtkWidget * vbox_cart;
 	GtkWidget * vbox_appearance;
-	GtkWidget * label_title;
-	GtkWidget * label_param;
 
 	GtkWidget * vbox_pl;
 	GtkWidget * vbox_ms;
@@ -1487,6 +1532,8 @@ create_options_window(void) {
 	GtkWidget * hbuttonbox;
 	GtkWidget * ok_btn;
 	GtkWidget * cancel_btn;
+       	GtkWidget * help_btn_title;
+	GtkWidget * help_btn_param;
 
 	int status;
 	int i;
@@ -1530,42 +1577,41 @@ create_options_window(void) {
 	gtk_box_pack_start(GTK_BOX(vbox_general), frame_title, FALSE, TRUE, 5);
 
 	vbox_title = gtk_vbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox_title), 10);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_title), 5);
 	gtk_container_add(GTK_CONTAINER(frame_title), vbox_title);
 
-	label_title = gtk_label_new(_("\nThe template string you enter here will be used to\n\
-construct a single title line from an Artist, a Record\n\
-and a Track name. These are denoted by %a, %r and %t,\n\
-respectively. Everything else you enter here will be\n\
-literally copied into the resulting string.\n"));
-	gtk_box_pack_start(GTK_BOX(vbox_title), label_title, TRUE, TRUE, 0);
+        hbox_title = gtk_hbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox_title), 2);
+	gtk_box_pack_start(GTK_BOX(vbox_title), hbox_title, TRUE, TRUE, 0);
 
 	entry_title = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(entry_title), MAXLEN - 1);
 	gtk_entry_set_text(GTK_ENTRY(entry_title), options.title_format);
-	gtk_box_pack_start(GTK_BOX(vbox_title), entry_title, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_title), entry_title, TRUE, TRUE, 0);
 
+        help_btn_title = gtk_button_new_from_stock (GTK_STOCK_HELP); 
+	g_signal_connect(help_btn_title, "clicked", G_CALLBACK(display_title_format_help), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_title), help_btn_title, FALSE, FALSE, 0);
 
 	frame_param = gtk_frame_new(_("Implicit command line"));
 	gtk_box_pack_start(GTK_BOX(vbox_general), frame_param, FALSE, TRUE, 5);
 
 	vbox_param = gtk_vbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox_param), 10);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_param), 5);
 	gtk_container_add(GTK_CONTAINER(frame_param), vbox_param);
 
-	label_param = gtk_label_new(_("\nThe string you enter here will be parsed as a command\n\
-line before parsing the actual command line parameters.\n\
-What you enter here will act as a default setting and may\n\
-or may not be overrided from the 'real' command line.\n\
-Example: enter '-o alsa -R' below to use ALSA output\n\
-running realtime as a default.\n"));
-	gtk_box_pack_start(GTK_BOX(vbox_param), label_param, TRUE, TRUE, 0);
+        hbox_param = gtk_hbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox_param), 2);
+	gtk_box_pack_start(GTK_BOX(vbox_param), hbox_param, TRUE, TRUE, 0);
 
 	entry_param = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(entry_param), MAXLEN - 1);
 	gtk_entry_set_text(GTK_ENTRY(entry_param), options.default_param);
-	gtk_box_pack_start(GTK_BOX(vbox_param), entry_param, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_param), entry_param, TRUE, TRUE, 0);
 
+        help_btn_param = gtk_button_new_from_stock (GTK_STOCK_HELP); 
+	g_signal_connect(help_btn_param, "clicked", G_CALLBACK(display_implict_command_line_help), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_param), help_btn_param, FALSE, FALSE, 0);
 
 	frame_misc = gtk_frame_new(_("Miscellaneous"));
 	gtk_box_pack_start(GTK_BOX(vbox_general), frame_misc, FALSE, TRUE, 5);
@@ -1806,6 +1852,16 @@ to set the column order in the Playlist."));
 	gtk_box_pack_start(GTK_BOX(vbox_ms), check_hide_comment_pane, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_hide_comment_pane), "toggled",
 						G_CALLBACK (restart_active), _("Hide the Music Store comment pane"));
+	check_enable_mstore_toolbar =
+		gtk_check_button_new_with_label(_("Enable toolbar"));
+	gtk_widget_set_name(check_enable_mstore_toolbar, "check_on_notebook");
+	if (options.enable_mstore_toolbar_shadow) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_mstore_toolbar), TRUE);
+	}
+	options.enable_mstore_toolbar_shadow = options.enable_mstore_toolbar;
+	g_signal_connect(G_OBJECT(check_enable_mstore_toolbar), "toggled",
+			 G_CALLBACK(restart_active), _("Enable toolbar in Music Store"));
+        gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_mstore_toolbar, FALSE, TRUE, 3);
 
 	check_enable_mstore_statusbar =
 		gtk_check_button_new_with_label(_("Enable statusbar"));

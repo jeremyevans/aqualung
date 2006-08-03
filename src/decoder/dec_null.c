@@ -121,3 +121,6 @@ null_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	*/
 	/* seek to seek_to_pos sample position in the file. */
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

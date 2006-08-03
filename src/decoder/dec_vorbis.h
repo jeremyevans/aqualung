@@ -57,3 +57,6 @@ void vorbis_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
 
 
 #endif /* _DEC_VORBIS_H */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

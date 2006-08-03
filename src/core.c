@@ -1899,7 +1899,7 @@ main(int argc, char ** argv) {
 			"\nOptions for file loading:\n"
 			"-E, --enqueue: Don't clear the contents of the playlist when adding new items.\n"
 
-                        "\nOptions for change state of Playlist/Music Store windows:\n"
+                        "\nOptions for changing state of Playlist/Music Store windows:\n"
 			"-l [yes, no], --show-pl=yes, no: Show/hide playlist window.\n"
 			"-m [yes, no], --show-ms=yes, no: Show/hide music store window.\n"
 

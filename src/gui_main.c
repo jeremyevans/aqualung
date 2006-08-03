@@ -3997,7 +3997,7 @@ load_config(void) {
         options.show_sn_title = 1;
 
 	options.enable_mstore_statusbar = options.enable_mstore_statusbar_shadow = 1;
-       	options.enable_mstore_toolbar = options.enable_mstore_toolbar_shadow = 0;
+       	options.enable_mstore_toolbar = options.enable_mstore_toolbar_shadow = 1;
 
         options.cover_width = 2;
 

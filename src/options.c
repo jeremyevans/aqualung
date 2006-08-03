@@ -283,6 +283,7 @@ ok(GtkWidget * widget, gpointer data) {
 	options.show_active_track_name_in_bold = show_active_track_name_in_bold_shadow;
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_active_track_name_in_bold))) {
 		options.show_active_track_name_in_bold = 1;
+		change_skin(options.skin);
 	} else {
 		options.show_active_track_name_in_bold = 0;
                 disable_bold_font_in_playlist();

@@ -314,13 +314,12 @@ build_dialog(void) {
 	GtkWidget * label;
 	GtkWidget * table;
 	GtkWidget * hbox;
-	GtkWidget * hbox2;
 
 	GtkWidget * root_entry;
-	GtkWidget * root_label = NULL;
 	GtkWidget * browse_button;
 
 	GtkWidget * gen_vbox;
+	GtkWidget * gen_path_frame = NULL;
 	GtkWidget * gen_artist_frame;
 	GtkWidget * gen_artist_vbox;
 	GtkWidget * gen_radio_artist_name;
@@ -378,29 +377,22 @@ build_dialog(void) {
 	label = gtk_label_new(_("General"));
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), gen_vbox, label);
 
-	table = gtk_table_new(1, 2, FALSE);
-        gtk_box_pack_start(GTK_BOX(gen_vbox), table, FALSE, FALSE, 0);
-
 	if (build_type == BUILD_STORE) {
-		root_label = gtk_label_new(_("Root path:"));
+		gen_path_frame = gtk_frame_new(_("Root path"));
 	} else if (build_type == BUILD_ARTIST) {
-		root_label = gtk_label_new(_("Artist path:"));
+		gen_path_frame = gtk_frame_new(_("Artist path"));
 	}
+        gtk_box_pack_start(GTK_BOX(gen_vbox), gen_path_frame, FALSE, FALSE, 5);
 
         hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), root_label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
-			 GTK_FILL, GTK_FILL, 0, 5);
-
-	hbox2 = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox2, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
+        gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_container_add(GTK_CONTAINER(gen_path_frame), hbox);
 
         root_entry = gtk_entry_new_with_max_length(MAXLEN-1);
-        gtk_box_pack_start(GTK_BOX(hbox2), root_entry, TRUE, TRUE, 5);
+        gtk_box_pack_start(GTK_BOX(hbox), root_entry, TRUE, TRUE, 5);
 
 	browse_button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
-        gtk_box_pack_start(GTK_BOX(hbox2), browse_button, FALSE, TRUE, 2);
+        gtk_box_pack_start(GTK_BOX(hbox), browse_button, FALSE, TRUE, 2);
         g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_clicked),
 			 (gpointer *)root_entry);
 

@@ -21,7 +21,7 @@ inserting \fBno gaps\fR between adjacent tracks. It also supports high
 quality sample rate conversion between the file and the output device,
 when necessary.
 
-Almost all sample-based, uncompressed formats (eg. WAV, AIFF, AU etc.)
+Almost all sample-based, uncompressed formats (e.g. WAV, AIFF, AU etc.)
 are supported. Files encoded with FLAC (the Free Lossless Audio
 Codec), Ogg Vorbis, Ogg Speex, MPEG Audio (including the infamous MP3
 format) and MOD audio formats (MOD, S3M, XM, IT, etc.), Musepack and
@@ -87,6 +87,15 @@ Try to use realtime (SCHED_FIFO) scheduling for disk thread.
 \-Y, \-\-disk-priority <int>
 .br
 When running \-D, set scheduler priority to <int> (defaults to 1).
+.br
+.TP
+\-l, \-\-show-pl [yes|no]
+.br
+Change visibility of Playlist.
+.TP
+\-m, \-\-show-ms [yes|no]
+.br
+Change visibility of Music Store.
 
 .TP
 .B Options relevant to ALSA output:

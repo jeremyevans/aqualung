@@ -443,6 +443,40 @@ disk-priority\InsetSpace ~
  
 \end_layout
 
+\begin_layout Description
+-l,\InsetSpace ~
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+{-}{-}
+\end_layout
+
+\end_inset
+
+show-pl\InsetSpace ~
+[yes|no] Change visibility of Playlist.
+\end_layout
+
+\begin_layout Description
+-m,\InsetSpace ~
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+{-}{-}
+\end_layout
+
+\end_inset
+
+show-ms\InsetSpace ~
+[yes|no] Change visibility of Music Store.
+\end_layout
+
 \begin_layout Subsection
 Output specific options
 \end_layout

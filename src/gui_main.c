@@ -3304,7 +3304,17 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
 	}
 
+	sprintf(path, "%s/icon_24.png", DATADIR);
+	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
+		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
+	}
+
 	sprintf(path, "%s/icon_32.png", DATADIR);
+	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
+		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
+	}
+
+	sprintf(path, "%s/icon_48.png", DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
 	}

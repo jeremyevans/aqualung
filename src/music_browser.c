@@ -4557,14 +4557,18 @@ void music_store_mark_changed(void) {
 
 	music_store_changed = 1;
 	gtk_window_set_title(GTK_WINDOW(browser_window), _("*Music Store"));
-       	gtk_widget_set_sensitive(save_button, TRUE);
+	if (options.enable_mstore_toolbar) {
+		gtk_widget_set_sensitive(save_button, TRUE);
+	}
 }
 
 void music_store_mark_saved(void) {
 
 	music_store_changed = 0;
 	gtk_window_set_title(GTK_WINDOW(browser_window), _("Music Store"));
-        gtk_widget_set_sensitive(save_button, FALSE);
+	if (options.enable_mstore_toolbar) {
+		gtk_widget_set_sensitive(save_button, FALSE);
+	}
 }
 
 /**********************************************************************************/

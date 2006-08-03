@@ -1351,7 +1351,6 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
         name_entry = gtk_entry_new();
-        g_signal_connect (G_OBJECT(name_entry), "key_press_event", G_CALLBACK(add_entry_key_press), NULL);
         gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,
@@ -1518,7 +1517,6 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
         name_entry = gtk_entry_new();
-        g_signal_connect (G_OBJECT(name_entry), "key_press_event", G_CALLBACK(add_entry_key_press), NULL);
         gtk_entry_set_max_length(GTK_ENTRY(name_entry), MAXLEN - 1);
         gtk_entry_set_text(GTK_ENTRY(name_entry), name);
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, 0, 1,

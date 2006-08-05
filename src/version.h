@@ -1,6 +1,6 @@
 #ifndef _VERSION_H
 #define _VERSION_H
 
-static const char * aqualung_version  = "0.191.5";
+static const char * aqualung_version  = "0.192.0";
 
 #endif /* _VERSION_H */

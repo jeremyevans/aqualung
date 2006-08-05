@@ -605,6 +605,8 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_da
 			gtk_widget_set_sensitive(plist__fileinfo, FALSE);
 		}
 
+		gtk_widget_set_sensitive(plist__rva, (vol_window == NULL) ? TRUE : FALSE);
+
 		gtk_menu_popup(GTK_MENU(plist_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);
 		return TRUE;
@@ -2043,7 +2045,7 @@ create_playlist(void) {
                          G_CALLBACK(playlist_window_focus_out), NULL);
 	gtk_widget_set_events(playlist_window, GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 
-        /* embedded playlist? */
+
         if (!options.playlist_is_embedded) {
                 plist_menu = gtk_menu_new();
                 init_plist_menu(plist_menu);

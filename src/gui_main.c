@@ -311,6 +311,7 @@ extern char fileinfo_name[MAXLEN];
 extern char fileinfo_file[MAXLEN];
 
 extern GtkWidget * plist__fileinfo;
+extern GtkWidget * plist__rva;
 
 extern gint playlist_state;
 extern gint browser_state;
@@ -1648,6 +1649,10 @@ main_window_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 			gtk_widget_set_sensitive(fileinfo, FALSE);
 		}
 
+		if (options.playlist_is_embedded) {
+			gtk_widget_set_sensitive(plist__rva, (vol_window == NULL) ? TRUE : FALSE);
+		}
+
                 gtk_menu_popup(GTK_MENU(conf_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);
 	}
@@ -2784,7 +2789,6 @@ create_main_window(char * skin_path) {
 
         conf_menu = gtk_menu_new();
 
-        /* embedded playlist? */
         if (options.playlist_is_embedded) {
                 init_plist_menu(conf_menu);
                 plist_menu = conf_menu;

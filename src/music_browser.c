@@ -50,10 +50,10 @@
 
 extern options_t options;
 
-extern int build_thread_state;
+extern volatile int build_thread_state;
 
 #ifdef HAVE_CDDB
-extern int cddb_thread_state;
+extern volatile int cddb_thread_state;
 #endif /* HAVE_CDDB */
 
 extern GtkWidget * vol_window;

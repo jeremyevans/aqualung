@@ -103,7 +103,7 @@ abort_transfer_cb (GtkButton *button, gpointer user_data) {
         abort_pressed = 1;
 }
 
-int
+static int
 update_progress (void *context, struct ifp_transfer_status *status) {
 
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_cf), (double)status->file_bytes/status->file_total);

@@ -47,6 +47,8 @@ typedef struct {
 extern GtkTreeStore * music_store;
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
+pthread_t volume_thread_id;
+
 
 GtkWidget * vol_window = NULL;
 GtkWidget * progress;
@@ -65,9 +67,9 @@ int vol_cancelled;
 int vol_finished;
 int vol_index;
 
-rms_env * rms_vol;
+double fraction;
 
-void set_filename_text (gchar *filename);
+rms_env * rms_vol;
 
 
 vol_queue_t *
@@ -137,22 +139,49 @@ vol_window_close(GtkWidget * widget, gpointer * data) {
 }
 
 
+gboolean
+vol_window_destroy(gpointer data) {
+
+	gtk_widget_destroy(vol_window);
+	vol_window = NULL;
+
+	return FALSE;
+}
+
+
 gint
 cancel_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
+	printf("cancel_event\n");
         vol_cancelled = 1;
         return TRUE;
 }
 
-void
-set_filename_text (gchar *filename) {
+gboolean
+set_filename_text(gpointer data) {
 
-        gtk_entry_set_text(GTK_ENTRY(file_entry), filename);
-        gtk_editable_set_position(GTK_EDITABLE(file_entry), -1);
+	if (vol_window) {
+		gtk_entry_set_text(GTK_ENTRY(file_entry), (char *)data);
+		gtk_editable_set_position(GTK_EDITABLE(file_entry), -1);
+		gtk_widget_grab_focus(cancel_button);
+	}
 
-        gtk_widget_grab_focus(cancel_button);
+	return FALSE;
 }
 
+static gboolean
+update_progress(gpointer data) {
+
+	if (vol_window) {
+		char str_progress[10];
+
+		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), fraction);
+		sprintf(str_progress, "%.1f%%", fraction * 100.0f);
+		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress), str_progress);
+	}
+
+	return FALSE;
+}
 
 void
 volume_window(void) {
@@ -232,10 +261,9 @@ process_volume_setup(vol_queue_t * q) {
 	vol_chunks_read = 0;
 	
 	snprintf(msg, MAXLEN-1, _("%s"), q->file);
-        set_filename_text(msg);
+	g_idle_add(set_filename_text, (gpointer)q->file);
 
 	vol_running = 1;
-	vol_cancelled = 0;
 	vol_result = 0.0f;
 
 	return 0;
@@ -244,16 +272,14 @@ process_volume_setup(vol_queue_t * q) {
 
 
 gboolean
-process_volume(gpointer data) {
+process_volume(float * volumes) {
 
 	float * samples = NULL;
 	unsigned long numread;
-	char str_progress[10];
 	float chunk_power = 0.0f;
 	float rms;
 	unsigned long i;
 	int runs;
-	float * volumes = (float *)data;
 
 	if (!vol_running) {
 
@@ -267,12 +293,11 @@ process_volume(gpointer data) {
 			vol_queue_cleanup(vol_queue_save);
 			vol_queue_save = vol_queue = NULL;
 			vol_finished = 1;
-			gtk_widget_destroy(vol_window);
-			vol_window = NULL;
+
+			g_idle_add(vol_window_destroy, NULL);
 			return FALSE;
 		}
 	}
-
 
 	if (vol_cancelled) {
 		vol_queue_cleanup(vol_queue_save);
@@ -281,10 +306,10 @@ process_volume(gpointer data) {
 		file_decoder_close(fdec_vol);
 		file_decoder_delete(fdec_vol);
 		if (vol_window != NULL) {
-			gtk_widget_destroy(vol_window);
-			vol_window = NULL;
+			g_idle_add(vol_window_destroy, NULL);
 			free(rms_vol);
 		}
+
 		return FALSE;
 	}
 
@@ -296,8 +321,7 @@ process_volume(gpointer data) {
 		vol_finished = 1;
 		file_decoder_close(fdec_vol);
 		file_decoder_delete(fdec_vol);
-		gtk_widget_destroy(vol_window);
-		vol_window = NULL;
+		g_idle_add(vol_window_destroy, NULL);
 		free(rms_vol);
 		return FALSE;
 	}
@@ -310,13 +334,12 @@ process_volume(gpointer data) {
 		++vol_chunks_read;
 
 		if (runs == 0) {
-			double fraction = (double)vol_chunks_read / vol_n_chunks;
-			if (fraction > 1.0f)
+			fraction = (double)vol_chunks_read / vol_n_chunks;
+			if (fraction > 1.0f) {
 				fraction = 1.0f;
+			}
 
-			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), fraction);
-			sprintf(str_progress, "%.1f%%", fraction * 100.0f);
-			gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress), str_progress);
+			g_idle_add(update_progress, NULL);
 		}
 
 		
@@ -329,8 +352,9 @@ process_volume(gpointer data) {
 			
 			rms = rms_env_process(rms_vol, chunk_power);
 
-			if (rms > vol_result)
+			if (rms > vol_result) {
 				vol_result = rms;
+			}
 		}
 		
 		if ((numread < vol_chunk_size) || (vol_cancelled)) {
@@ -347,6 +371,8 @@ process_volume(gpointer data) {
 #endif /* HAVE_MPEG */
 
 				if (volumes == NULL) {
+
+					/* seems to works from this thread */
 					gtk_tree_store_set(music_store, &(vol_queue->iter), 5, vol_result, -1);
 					music_store_mark_changed();
 				} else {
@@ -366,19 +392,31 @@ process_volume(gpointer data) {
 }
 
 
+void *
+volume_thread(void * arg) {
+
+	float * volumes = (float *)arg;
+
+	while (process_volume(volumes) == TRUE);
+
+	return NULL;
+}
+
 /* volumes == NULL: store in music_store, else: store in result vector */
 void
 calculate_volume(vol_queue_t * q, float * volumes) {
 
-	if (q == NULL)
+	if (q == NULL) {
 		return;
+	}
 	
 	vol_queue_save = vol_queue = q;
 	volume_window();
 	vol_index = 0;
 	vol_finished = 0;
+	vol_cancelled = 0;
 	process_volume_setup(vol_queue);
-	g_idle_add(process_volume, (gpointer)volumes);
+	pthread_create(&volume_thread_id, NULL, volume_thread, volumes);
 }
 
 
@@ -420,10 +458,11 @@ rva_from_multiple_volumes(int nlevels, float * volumes,
 		variance = sum / nlevels;
 
 		/* get standard deviation */
-		if (variance < EPSILON)
+		if (variance < EPSILON) {
 			std_dev = 0.0;
-		else
+		} else {
 			std_dev = sqrt(variance);
+		}
 
 		threshold = stddev_thresh * std_dev;
 	} else {

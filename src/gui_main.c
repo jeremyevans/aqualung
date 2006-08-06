@@ -100,6 +100,8 @@ extern char * client_name;
 extern int jack_is_shutdown;
 extern const size_t sample_size;
 
+extern volatile int vol_cancelled;
+
 extern int aqualung_socket_fd;
 extern int aqualung_session_id;
 
@@ -281,6 +283,7 @@ GtkWidget * smalltimer_label_2;
 
 /* systray stuff */
 #ifdef HAVE_SYSTRAY
+
 GtkWidget * systray_menu;
 GtkWidget * systray__show;
 GtkWidget * systray__hide;
@@ -291,10 +294,9 @@ GtkWidget * systray__prev;
 GtkWidget * systray__next;
 GtkWidget * systray__quit;
 int systray_main_window_on = 1;
-int systray_playlist_on = 0;
-int systray_browser_on = 0;
-int systray_fxbuilder_on = 0;
+
 void hide_all_windows(gpointer data);
+
 #endif /* HAVE_SYSTRAY */
 
 void create_main_window(char * skin_path);
@@ -1216,6 +1218,8 @@ main_window_close(GtkWidget * widget, gpointer data) {
 	jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
 	try_waking_disk_thread();
 
+	vol_cancelled = 1;
+
 	if (music_store_changed) {
 		GtkWidget * dialog;
 
@@ -1609,17 +1613,21 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
         if (options.united_minimization) {
 
                 if (event->new_window_state == GDK_WINDOW_STATE_ICONIFIED) {
-                        if (browser_on)
+                        if (browser_on) {
                                 gtk_window_iconify(GTK_WINDOW(browser_window));
+			}
 
-                        if (!options.playlist_is_embedded && playlist_on)
+                        if (!options.playlist_is_embedded && playlist_on) {
                                 gtk_window_iconify(GTK_WINDOW(playlist_window));
+			}
 
-                        if (vol_window)
+                        if (vol_window) {
                                 gtk_window_iconify(GTK_WINDOW(vol_window));
+			}
 
-                        if (info_window)
+                        if (info_window) {
                                 gtk_window_iconify(GTK_WINDOW(info_window));
+			}
 
                         if (fxbuilder_on) {
                                 GtkTreeIter iter;
@@ -1638,21 +1646,25 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
                 }
 
                 if (event->new_window_state == 0) {
-                        if (browser_on)
+                        if (browser_on) {
                                 gtk_window_deiconify(GTK_WINDOW(browser_window));
+			}
 
-                        if (!options.playlist_is_embedded && playlist_on)
+                        if (!options.playlist_is_embedded && playlist_on) {
                                 gtk_window_deiconify(GTK_WINDOW(playlist_window));
+			}
 
-                        if (vol_window)
+                        if (vol_window) {
                                 gtk_window_deiconify(GTK_WINDOW(vol_window));
+			}
 
-                        if (info_window)
+                        if (info_window) {
                                 gtk_window_deiconify(GTK_WINDOW(info_window));
+			}
 
-                        if (fxbuilder_on)
+                        if (fxbuilder_on) {
                                 gtk_window_deiconify(GTK_WINDOW(fxbuilder_window));
-
+			}
                 }
         }	
 
@@ -2766,39 +2778,90 @@ set_win_title(void) {
 
 
 #ifdef HAVE_SYSTRAY
+
 void
 hide_all_windows(gpointer data) {
-	/* Inverse operation of systray__show_cb().
+	/* Inverse operation of show_all_windows().
 	 * note that hiding/showing multiple windows has to be done in a
 	 * stack-like order, eg. hide main window last, show it first. */
 
+	if (!systray_main_window_on) {
+		return;
+	}
+
 	systray_main_window_on = 0;
-	systray_playlist_on = playlist_on;
-	systray_browser_on = browser_on;
-	systray_fxbuilder_on = fxbuilder_on;
+
+	if (build_prog_window) {
+		gtk_widget_hide(build_prog_window);
+	}
 
 	if (vol_window) {
 		gtk_widget_hide(vol_window);
 	}
+
 	if (info_window) {
 		gtk_widget_hide(info_window);
 	}
 
 	if (!options.playlist_is_embedded && playlist_on) {
-		hide_playlist();
+		gtk_widget_hide(playlist_window);
 	}
+
 	if (browser_on) {
-		hide_music_browser();
+		gtk_widget_hide(browser_window);
 	}
+
 	if (fxbuilder_on) {
-		hide_fxbuilder();
+		gtk_widget_hide(fxbuilder_window);
 	}
 
 	gtk_widget_hide(main_window);
 
-	gtk_widget_show(systray__show);
 	gtk_widget_hide(systray__hide);
+	gtk_widget_show(systray__show);
 }
+
+void
+show_all_windows(gpointer data) {
+
+	gtk_widget_show(main_window);
+	systray_main_window_on = 1;
+	deflicker();
+
+	if (!options.playlist_is_embedded && playlist_on) {
+		gtk_widget_show(playlist_window);
+		deflicker();
+	}
+
+	if (browser_on) {
+		gtk_widget_show(browser_window);
+		deflicker();
+	}
+
+	if (fxbuilder_on) {
+		gtk_widget_show(fxbuilder_window);
+		deflicker();
+	}
+
+	if (info_window) {
+		gtk_widget_show(info_window);
+		deflicker();
+	}
+
+	if (vol_window) {
+		gtk_widget_show(vol_window);
+		deflicker();
+	}
+
+	if (build_prog_window) {
+		gtk_widget_show(build_prog_window);
+		deflicker();
+	}
+
+	gtk_widget_hide(systray__show);
+	gtk_widget_show(systray__hide);
+}
+
 #endif /* HAVE_SYSTRAY */
 
 
@@ -3317,32 +3380,7 @@ systray_popup_menu_cb(GtkStatusIcon * systray_icon, guint button, guint time, gp
 void
 systray__show_cb(gpointer data) {
 
-	gtk_widget_show(main_window);
-	systray_main_window_on = 1;
-	deflicker();
-	if (!options.playlist_is_embedded && systray_playlist_on) {
-		show_playlist();
-		deflicker();
-	}
-	if (systray_browser_on) {
-		show_music_browser();
-		deflicker();
-	}
-	if (systray_fxbuilder_on) {
-		show_fxbuilder();
-		deflicker();
-	}
-	if (info_window) {
-		gtk_widget_show(info_window);
-		deflicker();
-	}
-	if (vol_window) {
-		gtk_widget_show(vol_window);
-		deflicker();
-	}
-
-	gtk_widget_show(systray__hide);
-	gtk_widget_hide(systray__show);
+	show_all_windows(NULL);
 }
 
 void
@@ -3392,10 +3430,10 @@ systray__quit_cb(gpointer data) {
 void
 systray_activate_cb(GtkStatusIcon * systray_icon, gpointer data) {
 
-	if (systray_main_window_on) {
-		systray__hide_cb(NULL);
-	} else {
+	if (!systray_main_window_on) {
 		systray__show_cb(NULL);
+	} else {
+		systray__hide_cb(NULL);
 	}
 }
 
@@ -3489,16 +3527,8 @@ setup_systray(void) {
         g_signal_connect_swapped(G_OBJECT(systray__quit), "activate", G_CALLBACK(systray__quit_cb), NULL);
 
         gtk_widget_show(systray_menu);
-
-	/* This is deliberately not shown at program startup!
-	 * At any time, only one of systray__show and systray__hide
-	 * is shown in the systray popup menu. This is a workaround
-	 * instead of changing the text of the menu item. */
-        /* gtk_widget_show(systray__show); */
         gtk_widget_show(systray__hide);
-
         gtk_widget_show(systray__separator1);
-
 	gtk_widget_show(systray__play);
 	gtk_widget_show(systray__pause);
 	gtk_widget_show(systray__stop);
@@ -3643,19 +3673,25 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		gtk_window_set_default_icon_list(glist);
 	}
 
-	if (repeat_on)
+	if (repeat_on) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_button), TRUE);
+	}
 
-	if (repeat_all_on)
+	if (repeat_all_on) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_all_button), TRUE);
+	}
 
-	if (shuffle_on)
+	if (shuffle_on) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), TRUE);
+	}
 
-        if(playlist_state != -1) 
+        if (playlist_state != -1) {
                 playlist_on = playlist_state;
-        if(browser_state != -1) 
+	}
+
+        if (browser_state != -1) {
                 browser_on = browser_state;
+	}
 
 	if (browser_on) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(musicstore_toggle), TRUE);
@@ -3725,7 +3761,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
         /* make active first row in playlist if at least one song exist */
 
-        for(i=0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
+        for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
 
         if (options.playlist_is_embedded && i) {
                 path_pl = gtk_tree_path_new_first();
@@ -4997,15 +5033,16 @@ assign_playlist_fc_filters(GtkFileChooser *fc) {
         /* all playlist files filter */
         filter_2 = gtk_file_filter_new();
 
-        for(i=0; i < len; i++)
+        for (i = 0; i < len; i++) {
                 gtk_file_filter_add_pattern(filter_2, file_filters[2*i+1]);
+	}
 
         gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), _("All Playlist Files")); 
         gtk_file_chooser_add_filter(fc, filter_2);
         gtk_file_chooser_set_filter(fc, filter_2);
 
         /* single extensions */
-        for(i=0; i < len; i++) {
+        for (i = 0; i < len; i++) {
 
                 filter_3 = gtk_file_filter_new();
                 gtk_file_filter_add_pattern(filter_3, file_filters[2*i+1]);
@@ -5100,16 +5137,19 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
         /* all audio files filter */
         filter_2 = gtk_file_filter_new();
 
-        for(i=0; i < len_a; i++)
+        for (i = 0; i < len_a; i++) {
                 gtk_file_filter_add_pattern(filter_2, file_filters_a[2*i+1]);
+	}
 #ifdef HAVE_MOD
-        for(i=0; i < len_b; i++)
+        for (i = 0; i < len_b; i++) {
                 gtk_file_filter_add_pattern(filter_2, file_filters_b[i+1]);
+	}
 #endif /* HAVE_MOD */
 
 #ifdef HAVE_SNDFILE
-        for(i=0; i < len_c; i++)
+        for (i = 0; i < len_c; i++) {
                 gtk_file_filter_add_pattern(filter_2, file_filters_c[i+1]);
+	}
 #endif /* HAVE_SNDFILE */
 
         gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), _("All Audio Files")); 
@@ -5117,7 +5157,7 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
         gtk_file_chooser_set_filter(fc, filter_2);
 
         /* single extensions */
-        for(i=0; i < len_a; i++) {
+        for (i = 0; i < len_a; i++) {
 
                 filter_3 = gtk_file_filter_new();
                 gtk_file_filter_add_pattern(filter_3, file_filters_a[2*i+1]);
@@ -5129,8 +5169,9 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
 
         filter_4 = gtk_file_filter_new();
 
-        for(i=0; i < len_b; i++) 
+        for (i = 0; i < len_b; i++) {
                 gtk_file_filter_add_pattern(filter_4, file_filters_b[i+1]);
+	}
 
         gtk_file_filter_set_name(GTK_FILE_FILTER(filter_4), file_filters_b[0]); 
         gtk_file_chooser_add_filter(fc, filter_4);
@@ -5142,8 +5183,9 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
 
         filter_5 = gtk_file_filter_new();
 
-        for(i=0; i < len_c; i++) 
+        for (i = 0; i < len_c; i++) {
                 gtk_file_filter_add_pattern(filter_5, file_filters_c[i+1]);
+	}
 
         gtk_file_filter_set_name(GTK_FILE_FILTER(filter_5), file_filters_c[0]); 
         gtk_file_chooser_add_filter(fc, filter_5);
@@ -5171,8 +5213,9 @@ cover_update(gchar *filename) {
                 k = strlen(filename) - 1;
                 while (filename[k--] != '/');
 
-                for (i = 0; k != -2; i++, k--)
+                for (i = 0; k != -2; i++, k--) {
                         cover_filename[i] = filename[i];
+		}
 
                 cover_filename[i] = '\0';
 
@@ -5208,16 +5251,12 @@ cover_update(gchar *filename) {
                                 cover_show_flag = 1;      
                                 gtk_widget_show(cover_viewport);
                         }
-
                 } else {
  
                         cover_show_flag = 0;      
                         gtk_widget_hide(cover_viewport);
-
                 }
-
         }
-
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../about.c:76 ../gui_main.c:2893
+#: ../about.c:76 ../gui_main.c:2937
 msgid "About"
 msgstr "Über Aqualung"
 
@@ -372,7 +372,7 @@ msgstr "Album"
 msgid "Action:"
 msgstr "Zeitdauer:"
 
-#: ../build_store.c:916 ../cddb_lookup.c:128 ../volume.c:192
+#: ../build_store.c:916 ../cddb_lookup.c:128 ../volume.c:221
 msgid "Abort"
 msgstr "Abbrechen"
 
@@ -474,7 +474,7 @@ msgstr "Fehler während des Verbindungen zur CDDB Server."
 msgid "No matching record found."
 msgstr "Neues Track zu diesem Album hinzufügen..."
 
-#: ../file_info.c:313 ../gui_main.c:2890
+#: ../file_info.c:313 ../gui_main.c:2934
 msgid "File info"
 msgstr "Datei-Info"
 
@@ -511,11 +511,11 @@ msgstr ""
 msgid "Channel count:"
 msgstr "Kanalanzahl:"
 
-#: ../file_info.c:407 ../gui_main.c:845
+#: ../file_info.c:407 ../gui_main.c:847
 msgid "MONO"
 msgstr ""
 
-#: ../file_info.c:409 ../gui_main.c:848
+#: ../file_info.c:409 ../gui_main.c:850
 msgid "STEREO"
 msgstr ""
 
@@ -560,154 +560,154 @@ msgstr "Vorbis Kommentare"
 msgid "FLAC metadata"
 msgstr "FLAC-Metadaten"
 
-#: ../gui_main.c:392
+#: ../gui_main.c:394
 #, c-format
 msgid "%d day, %2d:%02d:%02d"
 msgstr ""
 
-#: ../gui_main.c:394
+#: ../gui_main.c:396
 #, c-format
 msgid "%d day, %1d:%02d:%02d"
 msgstr ""
 
-#: ../gui_main.c:396
+#: ../gui_main.c:398
 #, c-format
 msgid "%d days, %2d:%02d:%02d"
 msgstr ""
 
-#: ../gui_main.c:398
+#: ../gui_main.c:400
 #, c-format
 msgid "%d days, %1d:%02d:%02d"
 msgstr ""
 
-#: ../gui_main.c:600 ../gui_main.c:718
+#: ../gui_main.c:602 ../gui_main.c:720
 msgid "Unrecognized"
 msgstr "Unbekannt"
 
-#: ../gui_main.c:608 ../gui_main.c:614 ../gui_main.c:617 ../gui_main.c:620
+#: ../gui_main.c:610 ../gui_main.c:616 ../gui_main.c:619 ../gui_main.c:622
 msgid "bit signed"
 msgstr "bit gezeichnet"
 
-#: ../gui_main.c:611
+#: ../gui_main.c:613
 msgid "bit unsigned"
 msgstr "bit vorzeichenlos"
 
-#: ../gui_main.c:623
+#: ../gui_main.c:625
 msgid "bit float"
 msgstr "Floß"
 
-#: ../gui_main.c:626
+#: ../gui_main.c:628
 msgid "bit double"
 msgstr "bit Doppelt"
 
-#: ../gui_main.c:629 ../gui_main.c:632 ../gui_main.c:635 ../gui_main.c:638
-#: ../gui_main.c:641 ../gui_main.c:644 ../gui_main.c:647 ../gui_main.c:650
-#: ../gui_main.c:653 ../gui_main.c:656 ../gui_main.c:659 ../gui_main.c:662
-#: ../gui_main.c:665
+#: ../gui_main.c:631 ../gui_main.c:634 ../gui_main.c:637 ../gui_main.c:640
+#: ../gui_main.c:643 ../gui_main.c:646 ../gui_main.c:649 ../gui_main.c:652
+#: ../gui_main.c:655 ../gui_main.c:658 ../gui_main.c:661 ../gui_main.c:664
+#: ../gui_main.c:667
 msgid "encoding"
 msgstr "Kodierung"
 
-#: ../gui_main.c:676
+#: ../gui_main.c:678
 msgid "Profile: Telephone"
 msgstr ""
 
-#: ../gui_main.c:679
+#: ../gui_main.c:681
 msgid "Profile: Thumb"
 msgstr ""
 
-#: ../gui_main.c:682
+#: ../gui_main.c:684
 msgid "Profile: Radio"
 msgstr ""
 
-#: ../gui_main.c:685
+#: ../gui_main.c:687
 msgid "Profile: Standard"
 msgstr ""
 
-#: ../gui_main.c:688
+#: ../gui_main.c:690
 msgid "Profile: Xtreme"
 msgstr ""
 
-#: ../gui_main.c:691
+#: ../gui_main.c:693
 msgid "Profile: Insane"
 msgstr ""
 
-#: ../gui_main.c:694
+#: ../gui_main.c:696
 msgid "Profile: Braindead"
 msgstr ""
 
-#: ../gui_main.c:709
+#: ../gui_main.c:711
 msgid "Layer I"
 msgstr "Schicht I"
 
-#: ../gui_main.c:712
+#: ../gui_main.c:714
 msgid "Layer II"
 msgstr "Schicht II"
 
-#: ../gui_main.c:715
+#: ../gui_main.c:717
 msgid "Layer III"
 msgstr "Schicht III"
 
-#: ../gui_main.c:728
+#: ../gui_main.c:730
 msgid "Single channel"
 msgstr "Einzelkanal"
 
-#: ../gui_main.c:731
+#: ../gui_main.c:733
 msgid "Dual channel"
 msgstr "Doppelkanal"
 
-#: ../gui_main.c:734
+#: ../gui_main.c:736
 msgid "Joint stereo"
 msgstr ""
 
-#: ../gui_main.c:737
+#: ../gui_main.c:739
 msgid "Stereo"
 msgstr ""
 
-#: ../gui_main.c:747
+#: ../gui_main.c:749
 msgid "Emphasis: none"
 msgstr "Betonung: none"
 
-#: ../gui_main.c:750 ../gui_main.c:753
+#: ../gui_main.c:752 ../gui_main.c:755
 msgid "Emphasis:"
 msgstr "Betonung:"
 
-#: ../gui_main.c:756
+#: ../gui_main.c:758
 msgid "Emphasis: reserved"
 msgstr "Betonung: reserviert"
 
-#: ../gui_main.c:769
+#: ../gui_main.c:771
 msgid "Compression: Fast"
 msgstr ""
 
-#: ../gui_main.c:772
+#: ../gui_main.c:774
 msgid "Compression: Normal"
 msgstr ""
 
-#: ../gui_main.c:775
+#: ../gui_main.c:777
 msgid "Compression: High"
 msgstr ""
 
-#: ../gui_main.c:778
+#: ../gui_main.c:780
 msgid "Compression: Extra High"
 msgstr ""
 
-#: ../gui_main.c:781
+#: ../gui_main.c:783
 msgid "Compression: Insane"
 msgstr ""
 
-#: ../gui_main.c:866 ../gui_main.c:871 ../gui_main.c:875
+#: ../gui_main.c:868 ../gui_main.c:873 ../gui_main.c:877
 msgid "Output:"
 msgstr "Ausgabe:"
 
-#: ../gui_main.c:889
+#: ../gui_main.c:891
 msgid "SRC Type: "
 msgstr "SRC Typ: "
 
-#: ../gui_main.c:893 ../ifp_device.c:217 ../ifp_device.c:985
+#: ../gui_main.c:895 ../ifp_device.c:217 ../ifp_device.c:985
 msgid "None"
 msgstr "Keine"
 
-#: ../gui_main.c:1225
+#: ../gui_main.c:1229
 msgid ""
 "Music Store has been changed.\n"
 "Do you want to save it before exiting?"
@@ -715,51 +715,51 @@ msgstr ""
 "Musikladen ist verändert werden.\n"
 "Wollen Sie es sparen bevor aussteigen?"
 
-#: ../gui_main.c:1752
+#: ../gui_main.c:1764
 #, c-format
 msgid "Position: %d%%"
 msgstr ""
 
-#: ../gui_main.c:1770 ../gui_main.c:1797
+#: ../gui_main.c:1782 ../gui_main.c:1809
 #, c-format
 msgid "Mute"
 msgstr ""
 
-#: ../gui_main.c:1772 ../gui_main.c:1799
+#: ../gui_main.c:1784 ../gui_main.c:1811
 #, c-format
 msgid "%d dB"
 msgstr ""
 
-#: ../gui_main.c:1806
+#: ../gui_main.c:1818
 #, fuzzy, c-format
 msgid "Volume: %s"
 msgstr "Lautstärke:"
 
-#: ../gui_main.c:1834 ../gui_main.c:1865
+#: ../gui_main.c:1846 ../gui_main.c:1877
 #, c-format
 msgid "%d%% R"
 msgstr ""
 
-#: ../gui_main.c:1836 ../gui_main.c:1867
+#: ../gui_main.c:1848 ../gui_main.c:1879
 #, c-format
 msgid "%d%% L"
 msgstr ""
 
-#: ../gui_main.c:1839 ../gui_main.c:1870
+#: ../gui_main.c:1851 ../gui_main.c:1882
 #, c-format
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:1877
+#: ../gui_main.c:1889
 #, c-format
 msgid "Balance: %s"
 msgstr ""
 
-#: ../gui_main.c:2738
+#: ../gui_main.c:2750
 msgid "JACK connection lost"
 msgstr "JACK Verbindung verloren"
 
-#: ../gui_main.c:2741
+#: ../gui_main.c:2753
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -771,161 +771,161 @@ msgstr ""
 "nicht schnell genug war. Sie sollten JACK\n"
 "sowie Aqualung neu starten.\n"
 
-#: ../gui_main.c:2886 ../options.c:1554
+#: ../gui_main.c:2930 ../options.c:1554
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: ../gui_main.c:2887 ../skin.c:143
+#: ../gui_main.c:2931 ../skin.c:143
 msgid "Skin chooser"
 msgstr "Skin-Browser"
 
-#: ../gui_main.c:2888
+#: ../gui_main.c:2932
 msgid "JACK port setup"
 msgstr "JACK Port Einrichtung"
 
-#: ../gui_main.c:2895 ../gui_main.c:3462
+#: ../gui_main.c:2939 ../gui_main.c:3494
 msgid "Quit"
 msgstr ""
 
-#: ../gui_main.c:3171
+#: ../gui_main.c:3215
 #, fuzzy
 msgid "Previous song"
 msgstr "Voriger (oben)"
 
-#: ../gui_main.c:3175 ../gui_main.c:3448
+#: ../gui_main.c:3219 ../gui_main.c:3480
 #, fuzzy
 msgid "Stop"
 msgstr "Stop (s)"
 
-#: ../gui_main.c:3179
+#: ../gui_main.c:3223
 #, fuzzy
 msgid "Next song"
 msgstr "Nächster (unten)"
 
-#: ../gui_main.c:3183 ../gui_main.c:3440
+#: ../gui_main.c:3227 ../gui_main.c:3472
 #, fuzzy
 msgid "Play"
 msgstr "Playliste"
 
-#: ../gui_main.c:3187 ../gui_main.c:3444
+#: ../gui_main.c:3231 ../gui_main.c:3476
 msgid "Pause"
 msgstr ""
 
-#: ../gui_main.c:3213
+#: ../gui_main.c:3257
 msgid "Repeat current song"
 msgstr "Wiederholen"
 
-#: ../gui_main.c:3221
+#: ../gui_main.c:3265
 msgid "Repeat all songs"
 msgstr "Playliste wiederholen"
 
-#: ../gui_main.c:3229
+#: ../gui_main.c:3273
 msgid "Shuffle songs"
 msgstr "Zufall"
 
-#: ../gui_main.c:3242
+#: ../gui_main.c:3286
 #, fuzzy
 msgid "Toggle playlist"
 msgstr "Playliste speichern"
 
-#: ../gui_main.c:3247
+#: ../gui_main.c:3291
 #, fuzzy
 msgid "Toggle music store"
 msgstr "Musikladen"
 
-#: ../gui_main.c:3252
+#: ../gui_main.c:3296
 #, fuzzy
 msgid "Toggle LADSPA patch builder"
 msgstr "LADSPA Patch Bauer"
 
-#: ../gui_main.c:3433
+#: ../gui_main.c:3465
 #, fuzzy
 msgid "Show Aqualung"
 msgstr "Zeige RVA in Playliste"
 
-#: ../gui_main.c:3434
+#: ../gui_main.c:3466
 #, fuzzy
 msgid "Hide Aqualung"
 msgstr "Zeige RVA in Playliste"
 
-#: ../gui_main.c:3452
+#: ../gui_main.c:3484
 #, fuzzy
 msgid "Previous"
 msgstr "Voriger (oben)"
 
-#: ../gui_main.c:3456
+#: ../gui_main.c:3488
 #, fuzzy
 msgid "Next"
 msgstr "Nächster (unten)"
 
-#: ../gui_main.c:4893 ../music_browser.c:2310 ../options.c:1306
+#: ../gui_main.c:4923 ../music_browser.c:2310 ../options.c:1306
 #: ../options.c:1405
 msgid "rw"
 msgstr ""
 
-#: ../gui_main.c:4895 ../options.c:1308 ../options.c:1407
+#: ../gui_main.c:4925 ../options.c:1308 ../options.c:1407
 msgid "r"
 msgstr ""
 
-#: ../gui_main.c:4897 ../options.c:1310 ../options.c:1409
+#: ../gui_main.c:4927 ../options.c:1310 ../options.c:1409
 msgid "unreachable"
 msgstr "unerreichtbar"
 
-#: ../gui_main.c:4972
+#: ../gui_main.c:5002
 msgid "Aqualung playlist (*.xml)"
 msgstr ""
 
-#: ../gui_main.c:4973
+#: ../gui_main.c:5003
 #, fuzzy
 msgid "MP3 Playlist (*.m3u)"
 msgstr "Playliste"
 
-#: ../gui_main.c:4974
+#: ../gui_main.c:5004
 msgid "Multimedia Playlist (*.pls)"
 msgstr ""
 
-#: ../gui_main.c:4987 ../gui_main.c:5090
+#: ../gui_main.c:5017 ../gui_main.c:5121
 msgid "All Files"
 msgstr ""
 
-#: ../gui_main.c:4996
+#: ../gui_main.c:5027
 #, fuzzy
 msgid "All Playlist Files"
 msgstr "Playliste"
 
-#: ../gui_main.c:5018
+#: ../gui_main.c:5049
 msgid "MPEG Audio (*.mp1, *.mp2, *.mp3)"
 msgstr ""
 
-#: ../gui_main.c:5022
+#: ../gui_main.c:5053
 msgid "Free Lossless Audio Codec (*.flac)"
 msgstr ""
 
-#: ../gui_main.c:5026
+#: ../gui_main.c:5057
 msgid "Ogg Vorbis (*.ogg)"
 msgstr ""
 
-#: ../gui_main.c:5030
+#: ../gui_main.c:5061
 msgid "Ogg Speex (*.spx)"
 msgstr ""
 
-#: ../gui_main.c:5034
+#: ../gui_main.c:5065
 msgid "Musepack (*.mpc)"
 msgstr ""
 
-#: ../gui_main.c:5038
+#: ../gui_main.c:5069
 msgid "Monkey's Audio Codec (*.ape)"
 msgstr ""
 
-#: ../gui_main.c:5045
+#: ../gui_main.c:5076
 msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
 msgstr ""
 
-#: ../gui_main.c:5057
+#: ../gui_main.c:5088
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
 msgstr ""
 
-#: ../gui_main.c:5108
+#: ../gui_main.c:5142
 #, fuzzy
 msgid "All Audio Files"
 msgstr "Audiophil"
@@ -2253,12 +2253,12 @@ msgstr "Playliste speichern"
 msgid "Available skins"
 msgstr "Verfügbare Skins"
 
-#: ../volume.c:165
+#: ../volume.c:194
 #, fuzzy
 msgid "Calculating volume level"
 msgstr "Lautstärke bestimmen: %s"
 
-#: ../volume.c:234
+#: ../volume.c:263
 #, c-format
 msgid "%s"
 msgstr ""

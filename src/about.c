@@ -285,6 +285,13 @@ create_about_window() {
 #endif /* HAVE_IFP */
 	gtk_text_buffer_insert_at_cursor(buffer, _("iRiver iFP driver support\n"), -1);
 	
+#ifdef HAVE_SYSTRAY
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
+#else
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+#endif /* HAVE_SYSTRAY */
+	gtk_text_buffer_insert_at_cursor(buffer, _("Systray support\n"), -1);
+	
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer,

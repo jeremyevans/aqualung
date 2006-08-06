@@ -1724,8 +1724,15 @@ main(int argc, char ** argv) {
 #ifdef HAVE_IFP
 		fprintf(stderr, "yes\n\n");
 #else
-		fprintf(stderr, "no\n\n");
+		fprintf(stderr, "no\n");
 #endif /* HAVE_IFP */
+
+		fprintf(stderr, "\tSystray support                             : ");
+#ifdef HAVE_SYSTRAY
+		fprintf(stderr, "yes\n\n");
+#else
+		fprintf(stderr, "no\n\n");
+#endif /* HAVE_SYSTRAY */
 
 		exit(1);
 	}

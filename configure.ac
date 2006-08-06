@@ -457,6 +457,34 @@ else
 fi
 
 
+AC_MSG_CHECKING(for Systray support)
+AC_ARG_WITH(
+	systray,
+	[  --with-systray=yes,no   compile with Systray support (default: yes)],
+	systray="$withval",
+	systray="detect")
+if test "$systray" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_MSG_CHECKING(whether GTK+ version >= 2.10)
+	if pkg-config --exists 'gtk+-2.0 >= 2.10'; then
+	        AC_MSG_RESULT(yes)
+		AC_DEFINE([HAVE_SYSTRAY], [1], [Defined if version(GTK+-2.0) >= 2.10])
+		lib="yes"
+	else
+		AC_MSG_RESULT(no)
+		lib="no"
+	fi
+
+	if test "$lib" = "no" -a "$systray" = "yes"; then
+		AC_MSG_ERROR(You need GTK+ version 2.10 or higher for systray support.)
+	fi
+	if test "$systray" = "detect"; then
+	        systray=$lib
+	fi
+fi
+
+
 # Compiler and linker variables
 gtk_CFLAGS=`pkg-config --cflags gtk+-2.0`
 gtk_LIBS=`pkg-config --libs gtk+-2.0`
@@ -518,4 +546,5 @@ echo
 echo "  Internal Sample Rate Converter support  :  $src"
 echo "  CDDB support                            :  $cddb"
 echo "  iRiver iFP driver support               :  $ifp"
+echo "  Systray support                         :  $systray"
 echo "----------------------------------------------------------------------"

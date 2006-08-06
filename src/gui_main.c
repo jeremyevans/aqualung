@@ -171,6 +171,10 @@ extern GtkWidget * vol_window;
 extern GtkWidget * build_prog_window;
 extern GtkWidget * browser_paned;
 
+#ifdef HAVE_SYSTRAY
+GtkStatusIcon * systray_icon;
+#endif
+
 int main_pos_x;
 int main_pos_y;
 int main_size_x;
@@ -274,6 +278,24 @@ GtkWidget * conf__quit;
 GtkWidget * bigtimer_label;
 GtkWidget * smalltimer_label_1;
 GtkWidget * smalltimer_label_2;
+
+/* systray stuff */
+#ifdef HAVE_SYSTRAY
+GtkWidget * systray_menu;
+GtkWidget * systray__show;
+GtkWidget * systray__hide;
+GtkWidget * systray__play;
+GtkWidget * systray__pause;
+GtkWidget * systray__stop;
+GtkWidget * systray__prev;
+GtkWidget * systray__next;
+GtkWidget * systray__quit;
+int systray_main_window_on = 1;
+int systray_playlist_on = 0;
+int systray_browser_on = 0;
+int systray_fxbuilder_on = 0;
+void hide_all_windows(gpointer data);
+#endif /* HAVE_SYSTRAY */
 
 void create_main_window(char * skin_path);
 
@@ -438,8 +460,14 @@ set_title_label(char * str) {
 				strncat(tmp, " - ", MAXLEN-1);
 				strncat(tmp, win_title, MAXLEN-1);
 				gtk_window_set_title(GTK_WINDOW(main_window), tmp);
+#ifdef HAVE_SYSTRAY
+				gtk_status_icon_set_tooltip(systray_icon, tmp);
+#endif /* HAVE_SYSTRAY */
 			} else {
 				gtk_window_set_title(GTK_WINDOW(main_window), win_title);
+#ifdef HAVE_SYSTRAY
+				gtk_status_icon_set_tooltip(systray_icon, win_title);
+#endif /* HAVE_SYSTRAY */
 			}
 		}
 	} else {
@@ -447,6 +475,9 @@ set_title_label(char * str) {
                         sprintf(default_title, "Aqualung %s", aqualung_version);
 			gtk_label_set_text(GTK_LABEL(label_title), default_title);
 			gtk_window_set_title(GTK_WINDOW(main_window), win_title);
+#ifdef HAVE_SYSTRAY
+			gtk_status_icon_set_tooltip(systray_icon, win_title);
+#endif /* HAVE_SYSTRAY */
                 }         
         }
 }
@@ -1498,6 +1529,11 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
                 else
         		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), TRUE);
                 return TRUE;
+#ifdef HAVE_SYSTRAY
+	case GDK_Escape:
+		hide_all_windows(NULL);
+		return TRUE;
+#endif /* HAVE_SYSTRAY */
 	}
 	
 
@@ -2712,6 +2748,61 @@ is restart both JACK and Aqualung.\n"));
 
 
 void
+set_win_title(void) {
+
+	char str_session_id[32];
+
+	strcpy(win_title, "Aqualung");
+	if (aqualung_session_id > 0) {
+		sprintf(str_session_id, ".%d", aqualung_session_id);
+		strcat(win_title, str_session_id);
+	}
+	if ((output == JACK_DRIVER) && (strcmp(client_name, "aqualung") != 0)) {
+		strcat(win_title, " [");
+		strcat(win_title, client_name);
+		strcat(win_title, "]");
+	}
+}
+
+
+#ifdef HAVE_SYSTRAY
+void
+hide_all_windows(gpointer data) {
+	/* Inverse operation of systray__show_cb().
+	 * note that hiding/showing multiple windows has to be done in a
+	 * stack-like order, eg. hide main window last, show it first. */
+
+	systray_main_window_on = 0;
+	systray_playlist_on = playlist_on;
+	systray_browser_on = browser_on;
+	systray_fxbuilder_on = fxbuilder_on;
+
+	if (vol_window) {
+		gtk_widget_hide(vol_window);
+	}
+	if (info_window) {
+		gtk_widget_hide(info_window);
+	}
+
+	if (!options.playlist_is_embedded && playlist_on) {
+		hide_playlist();
+	}
+	if (browser_on) {
+		hide_music_browser();
+	}
+	if (fxbuilder_on) {
+		hide_fxbuilder();
+	}
+
+	gtk_widget_hide(main_window);
+
+	gtk_widget_show(systray__show);
+	gtk_widget_hide(systray__hide);
+}
+#endif /* HAVE_SYSTRAY */
+
+
+void
 create_main_window(char * skin_path) {
 
 	GtkWidget * vbox;
@@ -2745,23 +2836,21 @@ create_main_window(char * skin_path) {
 	GtkWidget * sr_table;
 
 	char path[MAXLEN];
-	char str_session_id[32];
 
-	strcpy(win_title, "Aqualung");
-	if (aqualung_session_id > 0) {
-		sprintf(str_session_id, ".%d", aqualung_session_id);
-		strcat(win_title, str_session_id);
-	}
-	if ((output == JACK_DRIVER) && (strcmp(client_name, "aqualung") != 0)) {
-		strcat(win_title, " [");
-		strcat(win_title, client_name);
-		strcat(win_title, "]");
-	}
-
+	set_win_title();
 	main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_name(main_window, "main_window");
 	gtk_window_set_title(GTK_WINDOW(main_window), win_title);
+#ifdef HAVE_SYSTRAY
+	gtk_status_icon_set_tooltip(systray_icon, win_title);
+#endif /* HAVE_SYSTRAY */
+
+#ifdef HAVE_SYSTRAY
+        g_signal_connect(G_OBJECT(main_window), "delete_event", G_CALLBACK(hide_all_windows), NULL);
+#else
         g_signal_connect(G_OBJECT(main_window), "delete_event", G_CALLBACK(main_window_close), NULL);
+#endif /* HAVE_SYSTRAY */
+
         g_signal_connect(G_OBJECT(main_window), "key_press_event", G_CALLBACK(main_window_key_pressed), NULL);
         g_signal_connect(G_OBJECT(main_window), "key_release_event",
 			 G_CALLBACK(main_window_key_released), NULL);
@@ -3204,6 +3293,224 @@ process_filenames(char ** argv, int optind, int enqueue) {
 }	
 
 
+/*** Systray support ***/
+#ifdef HAVE_SYSTRAY
+gint
+systray_activated(GtkWidget * widget, GdkEventButton * event) {
+
+	if (event->button == 3) {
+                gtk_menu_popup(GTK_MENU(systray_menu), NULL, NULL,
+			       gtk_status_icon_position_menu, (gpointer)systray_icon,
+			       event->button, event->time);
+	}
+	return TRUE;
+}
+
+void
+systray_popup_menu_cb(GtkStatusIcon * systray_icon, guint button, guint time, gpointer data) {
+
+	gtk_menu_popup(GTK_MENU(systray_menu), NULL, NULL,
+		       gtk_status_icon_position_menu, data,
+		       button, time);
+}
+
+void
+systray__show_cb(gpointer data) {
+
+	gtk_widget_show(main_window);
+	systray_main_window_on = 1;
+	deflicker();
+	if (!options.playlist_is_embedded && systray_playlist_on) {
+		show_playlist();
+		deflicker();
+	}
+	if (systray_browser_on) {
+		show_music_browser();
+		deflicker();
+	}
+	if (systray_fxbuilder_on) {
+		show_fxbuilder();
+		deflicker();
+	}
+	if (info_window) {
+		gtk_widget_show(info_window);
+		deflicker();
+	}
+	if (vol_window) {
+		gtk_widget_show(vol_window);
+		deflicker();
+	}
+
+	gtk_widget_show(systray__hide);
+	gtk_widget_hide(systray__show);
+}
+
+void
+systray__hide_cb(gpointer data) {
+
+	hide_all_windows(NULL);
+}
+
+void
+systray__play_cb(gpointer data) {
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
+				     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
+}
+
+void
+systray__pause_cb(gpointer data) {
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
+				     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
+}
+
+void
+systray__stop_cb(gpointer data) {
+
+	stop_event(NULL, NULL, NULL);
+}
+
+void
+systray__prev_cb(gpointer data) {
+
+	prev_event(NULL, NULL, NULL);
+}
+
+void
+systray__next_cb(gpointer data) {
+
+	next_event(NULL, NULL, NULL);
+}
+
+void
+systray__quit_cb(gpointer data) {
+
+	main_window_close(NULL, NULL);
+}
+
+void
+systray_activate_cb(GtkStatusIcon * systray_icon, gpointer data) {
+
+	if (systray_main_window_on) {
+		systray__hide_cb(NULL);
+	} else {
+		systray__show_cb(NULL);
+	}
+}
+
+
+/* returns a hbox with a stock image and label in it */
+GtkWidget *
+create_systray_menu_item(const gchar * stock_id, char * text) {
+
+	GtkWidget * hbox;
+	GtkWidget * widget;
+
+	hbox = gtk_hbox_new(FALSE, 5);
+	gtk_widget_show(hbox);
+	widget = gtk_image_new_from_stock(stock_id, GTK_ICON_SIZE_MENU);
+	gtk_widget_show(widget);
+	gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, TRUE, 2);
+	widget = gtk_label_new(text);
+	gtk_widget_show(widget);
+	gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, TRUE, 2);
+
+	return hbox;
+}
+
+void
+setup_systray(void) {
+
+	char path[MAXLEN];
+
+	GtkWidget * systray__separator1;
+	GtkWidget * systray__separator2;
+
+	sprintf(path, "%s/icon_64.png", DATADIR);
+	systray_icon = gtk_status_icon_new_from_file(path);
+
+        g_signal_connect_swapped(G_OBJECT(systray_icon), "activate",
+				 G_CALLBACK(systray_activate_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(systray_icon), "popup-menu",
+				 G_CALLBACK(systray_popup_menu_cb), (gpointer)systray_icon);
+
+        systray_menu = gtk_menu_new();
+
+        systray__show = gtk_menu_item_new_with_label(_("Show Aqualung"));
+        systray__hide = gtk_menu_item_new_with_label(_("Hide Aqualung"));
+
+        systray__separator1 = gtk_separator_menu_item_new();
+
+        systray__play = gtk_menu_item_new();
+	gtk_container_add(GTK_CONTAINER(systray__play),
+			  create_systray_menu_item(GTK_STOCK_MEDIA_PLAY, _("Play")));
+
+        systray__pause = gtk_menu_item_new();
+	gtk_container_add(GTK_CONTAINER(systray__pause),
+			  create_systray_menu_item(GTK_STOCK_MEDIA_PAUSE, _("Pause")));
+
+        systray__stop = gtk_menu_item_new();
+	gtk_container_add(GTK_CONTAINER(systray__stop),
+			  create_systray_menu_item(GTK_STOCK_MEDIA_STOP, _("Stop")));
+
+        systray__prev = gtk_menu_item_new();
+	gtk_container_add(GTK_CONTAINER(systray__prev),
+			  create_systray_menu_item(GTK_STOCK_MEDIA_PREVIOUS, _("Previous")));
+
+        systray__next = gtk_menu_item_new();
+	gtk_container_add(GTK_CONTAINER(systray__next),
+			  create_systray_menu_item(GTK_STOCK_MEDIA_NEXT, _("Next")));
+
+        systray__separator2 = gtk_separator_menu_item_new();
+
+        systray__quit = gtk_menu_item_new();
+	gtk_container_add(GTK_CONTAINER(systray__quit),
+			  create_systray_menu_item(GTK_STOCK_STOP, _("Quit")));
+	
+        gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__show);
+        gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__hide);
+        gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__separator1);
+        gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__play);
+        gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__pause);
+        gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__stop);
+        gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__prev);
+        gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__next);
+        gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__separator2);
+        gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__quit);
+
+        g_signal_connect_swapped(G_OBJECT(systray__show), "activate", G_CALLBACK(systray__show_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(systray__hide), "activate", G_CALLBACK(systray__hide_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(systray__play), "activate", G_CALLBACK(systray__play_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(systray__pause), "activate", G_CALLBACK(systray__pause_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(systray__stop), "activate", G_CALLBACK(systray__stop_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(systray__prev), "activate", G_CALLBACK(systray__prev_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(systray__next), "activate", G_CALLBACK(systray__next_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(systray__quit), "activate", G_CALLBACK(systray__quit_cb), NULL);
+
+        gtk_widget_show(systray_menu);
+
+	/* This is deliberately not shown at program startup!
+	 * At any time, only one of systray__show and systray__hide
+	 * is shown in the systray popup menu. This is a workaround
+	 * instead of changing the text of the menu item. */
+        /* gtk_widget_show(systray__show); */
+        gtk_widget_show(systray__hide);
+
+        gtk_widget_show(systray__separator1);
+
+	gtk_widget_show(systray__play);
+	gtk_widget_show(systray__pause);
+	gtk_widget_show(systray__stop);
+	gtk_widget_show(systray__prev);
+	gtk_widget_show(systray__next);
+	
+        gtk_widget_show(systray__separator2);
+        gtk_widget_show(systray__quit);
+}
+#endif /* HAVE_SYSTRAY */
+
+
 void
 create_gui(int argc, char ** argv, int optind, int enqueue,
 	   unsigned long rate, unsigned long rb_audio_size) {
@@ -3277,6 +3584,10 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	sprintf(path, "%s/rc", options.skin);
 	gtk_rc_parse(path);
+
+#ifdef HAVE_SYSTRAY
+	setup_systray();
+#endif /* HAVE_SYSTRAY */
 
 	create_main_window(options.skin);
 
@@ -3423,7 +3734,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
                 gtk_tree_path_free (path_pl); 
                 gtk_widget_grab_focus(GTK_WIDGET(play_list));
         }
-
 }
 
 

@@ -152,7 +152,6 @@ vol_window_destroy(gpointer data) {
 gint
 cancel_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
-	printf("cancel_event\n");
         vol_cancelled = 1;
         return TRUE;
 }

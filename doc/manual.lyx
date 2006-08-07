@@ -443,40 +443,6 @@ disk-priority\InsetSpace ~
  
 \end_layout
 
-\begin_layout Description
--l,\InsetSpace ~
-
-\begin_inset ERT
-status collapsed
-
-\begin_layout Standard
-
-{-}{-}
-\end_layout
-
-\end_inset
-
-show-pl\InsetSpace ~
-[yes|no] Change visibility of Playlist.
-\end_layout
-
-\begin_layout Description
--m,\InsetSpace ~
-
-\begin_inset ERT
-status collapsed
-
-\begin_layout Standard
-
-{-}{-}
-\end_layout
-
-\end_inset
-
-show-ms\InsetSpace ~
-[yes|no] Change visibility of Music Store.
-\end_layout
-
 \begin_layout Subsection
 Output specific options
 \end_layout
@@ -861,6 +827,20 @@ status collapsed
 
 enqueue Don't clear the contents of the playlist when adding new items.
  
+\end_layout
+
+\begin_layout Subsection
+Options for changing state of Playlist/Music Store windows
+\end_layout
+
+\begin_layout Description
+-l,\InsetSpace ~
+--show-pl=[yes|no] Show/hide playlist window.
+\end_layout
+
+\begin_layout Description
+-m,\InsetSpace ~
+--show-ms=[yes|no] Show/hide music store window.
 \end_layout
 
 \begin_layout Subsection
@@ -3703,6 +3683,8 @@ There are also some options to handle the cover arts of your records.
 \begin_layout Standard
 At last, as already mentioned before, this page is the place to manage music
  store database files too.
+ Note that you will have to press the `Refresh' button after adding or removing
+ a store, or reordering the list.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3929,6 +3911,33 @@ This dialog lets you choose from the available skins at any time.
  ones.
  If there are skins in the system-wide directory and the local directory
  having the same name, the local one takes precedence.
+\end_layout
+
+\begin_layout Subsection
+System Tray Support
+\end_layout
+
+\begin_layout Standard
+When compiled with Systray support, Aqualung will place its icon in the
+ system tray (notification area), and lets all of its windows to be closed
+ while still playing music.
+ In this mode pressing the upper right X on the main window will not exit
+ the program, only hide its windows.
+\end_layout
+
+\begin_layout Standard
+Clicking on the systray icon with the left mouse button will toggle visibility
+ of the program's windows.
+ Clicking with the right button will bring up a popup menu allowing showing/hidi
+ng of the program, basic cueing, and quitting Aqualung.
+\end_layout
+
+\begin_layout Standard
+The systray icon has a tooltip displaying the same text as the main window's
+ title.
+ So it's easy to see what track is currently playing, and also the Aqualung
+ instance id (in case of more instances).
+ 
 \end_layout
 
 \end_body

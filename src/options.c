@@ -1267,6 +1267,7 @@ add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 	const char * ppath;
 	char path[MAXLEN];
 	GtkTreeIter iter;
+	int i;
 
 	ppath = gtk_entry_get_text(GTK_ENTRY(entry_ms_pathlist));
 
@@ -1297,6 +1298,33 @@ add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 		gtk_widget_destroy(dialog);
 		return;
 	}
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
+		char * p;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &p, -1);
+
+		if (!strcmp(p, path)) {
+
+			GtkWidget * dialog;
+
+			dialog = gtk_message_dialog_new(GTK_WINDOW(options_window),
+							GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+							GTK_MESSAGE_WARNING,
+							GTK_BUTTONS_CLOSE,
+							_("The specified store has already been added to the list."));
+			gtk_widget_show(dialog);
+			gtk_dialog_run(GTK_DIALOG(dialog));
+			gtk_widget_destroy(dialog);
+
+			g_free(p);
+			return;
+		}
+
+		g_free(p);
+	}
+	
 
 	gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), "");
 	gtk_list_store_append(ms_pathlist_store, &iter);
@@ -1989,18 +2017,18 @@ to set the column order in the Playlist."));
 	hbox_ms_pathlist = gtk_hbox_new(FALSE, FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist, FALSE, FALSE, 5);
 	
-	entry_ms_pathlist = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), entry_ms_pathlist, FALSE, FALSE, 0);
-
-	add_ms_pathlist = gtk_button_new_with_label(_("Add"));
-	g_signal_connect (G_OBJECT(add_ms_pathlist), "clicked",
-			  G_CALLBACK(add_ms_pathlist_clicked), NULL);
-	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), add_ms_pathlist, FALSE, FALSE, 5);
-
 	browse_ms_pathlist = gtk_button_new_with_label(_("Browse"));
 	g_signal_connect (G_OBJECT(browse_ms_pathlist), "clicked",
 			  G_CALLBACK(browse_ms_pathlist_clicked), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), browse_ms_pathlist, FALSE, FALSE, 0);
+
+	entry_ms_pathlist = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), entry_ms_pathlist, FALSE, FALSE, 5);
+
+	add_ms_pathlist = gtk_button_new_with_label(_("Add"));
+	g_signal_connect (G_OBJECT(add_ms_pathlist), "clicked",
+			  G_CALLBACK(add_ms_pathlist_clicked), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), add_ms_pathlist, FALSE, FALSE, 0);
 
 	remove_ms_pathlist = gtk_button_new_with_label(_("Remove"));
 	g_signal_connect (G_OBJECT(remove_ms_pathlist), "clicked",

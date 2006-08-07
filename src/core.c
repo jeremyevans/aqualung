@@ -1906,13 +1906,13 @@ main(int argc, char ** argv) {
 			"\nOptions for file loading:\n"
 			"-E, --enqueue: Don't clear the contents of the playlist when adding new items.\n"
 
-                        "\nOptions for changing state of Playlist/Music Store windows:\n"
-			"-l [yes, no], --show-pl=yes, no: Show/hide playlist window.\n"
-			"-m [yes, no], --show-ms=yes, no: Show/hide music store window.\n"
-
 			"\nIf you don't specify a session number via --session, the files will be opened by "
 			"the new\ninstance, otherwise they will be sent to the already running instance you "
 			"specify.\n"
+
+                        "\nOptions for changing state of Playlist/Music Store windows:\n"
+			"-l [yes, no], --show-pl=yes, no: Show/hide playlist window.\n"
+			"-m [yes, no], --show-ms=yes, no: Show/hide music store window.\n"
 
 			"\nExamples:\n"
 			"$ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2\n"

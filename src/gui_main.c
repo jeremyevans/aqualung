@@ -175,6 +175,7 @@ extern GtkWidget * browser_paned;
 
 #ifdef HAVE_SYSTRAY
 GtkStatusIcon * systray_icon;
+int warn_wm_not_systray_capable = 0;
 #endif
 
 int main_pos_x;
@@ -2785,6 +2786,27 @@ hide_all_windows(gpointer data) {
 	 * note that hiding/showing multiple windows has to be done in a
 	 * stack-like order, eg. hide main window last, show it first. */
 
+	if (gtk_status_icon_is_embedded(systray_icon) == FALSE) {
+
+		if (!warn_wm_not_systray_capable) {
+
+			GtkWidget * dialog;
+
+			dialog = gtk_message_dialog_new(options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
+							GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+							GTK_MESSAGE_WARNING,
+							GTK_BUTTONS_CLOSE,
+							_("Aqualung is compiled with system tray support, but the status icon could not be embedded in the notification area. Your desktop may not have support for a system tray, or it has not been configured correctly."));
+			gtk_widget_show(dialog);
+			gtk_dialog_run(GTK_DIALOG(dialog));
+			gtk_widget_destroy(dialog);
+
+			warn_wm_not_systray_capable = 1;
+		}
+
+		return;
+	}
+
 	if (!systray_main_window_on) {
 		return;
 	}
@@ -3331,13 +3353,11 @@ create_main_window(char * skin_path) {
 		gtk_box_pack_start(GTK_BOX(vbox), playlist_window, TRUE, TRUE, 3);
 	}
 
-
         if (options.enable_tooltips) {
                 gtk_tooltips_enable(aqualung_tooltips);
         } else {
                 gtk_tooltips_disable(aqualung_tooltips);
         }
-
 }
 
 
@@ -3708,6 +3728,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	}
 
 	restore_window_position();
+
 	gtk_widget_show_all(main_window);
 	deflicker();
 

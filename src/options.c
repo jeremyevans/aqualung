@@ -1938,9 +1938,17 @@ to set the column order in the Playlist."));
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_ms_pathlist), 10);
 	gtk_container_add(GTK_CONTAINER(frame_ms_pathlist), vbox_ms_pathlist);
 
+	hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("Paths must either be absolute or starting with a tilde,\n"
 				"which will be expanded to the user's home directory."));
-	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), label, FALSE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox, FALSE, TRUE, 5);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(_("You will need to click the Refresh button after adding or\n"
+				"removing a store or reordering the list."));
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox, FALSE, TRUE, 5);
 
 	if (!ms_pathlist_store) {
 		ms_pathlist_store = gtk_list_store_new(2,

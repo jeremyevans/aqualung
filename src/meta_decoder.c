@@ -433,7 +433,7 @@ meta_read_flac(metadata * meta, FLAC__StreamMetadata * flacmeta) {
 		append_flac(meta, oggv);
         }
 
-        for (j = 0; j < flacmeta->data.vorbis_comment.vendor_string.length; j++) {
+        for (j = 0; j < flacmeta->data.vorbis_comment.vendor_string.length && j < MAXLEN-1; j++) {
 
                 field[j] = flacmeta->data.vorbis_comment.vendor_string.entry[j];
         }

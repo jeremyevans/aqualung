@@ -122,6 +122,7 @@ extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern void disable_bold_font_in_playlist(void);
 extern void set_sliders_width(void);
 extern void playlist_selection_changed(GtkTreeSelection * sel, gpointer data);
+extern void set_buttons_relief(void);
 
 GtkWidget * options_window;
 GtkWidget * notebook;
@@ -164,6 +165,8 @@ GtkWidget * check_buttons_at_the_bottom;
 GtkWidget * check_simple_view_in_fx;
 GtkWidget * check_override_skin;
 GtkWidget * check_magnify_smaller_images;
+GtkWidget * check_main_window_always_on_top;
+GtkWidget * check_disable_buttons_relief;
 
 GtkListStore * ms_pathlist_store = NULL;
 GtkTreeSelection * ms_pathlist_select;
@@ -358,6 +361,14 @@ ok(GtkWidget * widget, gpointer data) {
 	        options.buttons_at_the_bottom = 0;
 	}
 
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_disable_buttons_relief))) {
+		options.disable_buttons_relief = 1;
+                set_buttons_relief();
+	} else {
+	        options.disable_buttons_relief = 0;
+                set_buttons_relief();
+	}
+
         if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_simple_view_in_fx))) {
 		options.simple_view_in_fx = 1;
 	} else {
@@ -412,6 +423,12 @@ ok(GtkWidget * widget, gpointer data) {
 		options.show_hidden = 1;
 	} else {
 		options.show_hidden = 0;
+	}
+
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_main_window_always_on_top))) {
+		options.main_window_always_on_top = 1;
+	} else {
+		options.main_window_always_on_top = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded))) {
@@ -531,6 +548,13 @@ ok(GtkWidget * widget, gpointer data) {
                 /* reload skin */
                 change_skin(options.skin);
                 override_past_state = 0;
+        }
+
+        /* always on top ? */
+	if (options.main_window_always_on_top) {
+                gtk_window_set_keep_above (GTK_WINDOW(main_window), TRUE);
+        } else {
+                gtk_window_set_keep_above (GTK_WINDOW(main_window), FALSE);
         }
 
         /* refresh statusbar */
@@ -1667,6 +1691,23 @@ create_options_window(void) {
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_buttons_at_the_bottom, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_buttons_at_the_bottom), "toggled",
 						G_CALLBACK (restart_active), _("Put control buttons at the bottom of playlist"));
+
+        check_disable_buttons_relief =
+		gtk_check_button_new_with_label(_("Disable control buttons relief"));
+	gtk_widget_set_name(check_disable_buttons_relief, "check_on_notebook");
+	if (options.disable_buttons_relief) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_disable_buttons_relief), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_disable_buttons_relief, FALSE, FALSE, 0);
+
+
+        check_main_window_always_on_top = gtk_check_button_new_with_label(_("Keep main window always on top"));
+	gtk_widget_set_name(check_main_window_always_on_top, "main_window_always_on_top");
+	if (options.main_window_always_on_top) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_main_window_always_on_top), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_main_window_always_on_top, FALSE, FALSE, 0);
+
 
 	check_simple_view_in_fx =
 		gtk_check_button_new_with_label(_("Simple view in LADSPA patch builder"));

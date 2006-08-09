@@ -10,6 +10,7 @@ build_store.h build_store.c \
 common.h \
 cddb_lookup.h cddb_lookup.c \
 core.h core.c \
+cover.h cover.c \
 file_info.h file_info.c \
 gui_main.h gui_main.c \
 i18n.h \

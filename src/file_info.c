@@ -39,6 +39,7 @@
 
 #include "common.h"
 #include "core.h"
+#include "cover.h"
 #include "decoder/file_decoder.h"
 #include "music_browser.h"
 #include "gui_main.h"
@@ -248,6 +249,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gchar *file_display;
 
 	GtkWidget * vbox;
+	GtkWidget * hbox_t;
 	GtkWidget * table;
 	GtkWidget * hbox_name;
 	GtkWidget * label_name;
@@ -257,6 +259,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	GtkWidget * entry_path;
 	GtkWidget * hbuttonbox;
 	GtkWidget * dismiss_btn;
+	GtkWidget * cover_image_area;
 
 	GtkWidget * vbox_file;
 	GtkWidget * label_file;
@@ -323,10 +326,13 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(info_window), vbox);
 
-	table = gtk_table_new(2, 2, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 4);
+	hbox_t = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_t, FALSE, FALSE, 0);
 
-	hbox_name = gtk_hbox_new(FALSE, 0);
+	table = gtk_table_new(2, 2, FALSE);
+	gtk_box_pack_start(GTK_BOX(hbox_t), table, TRUE, TRUE, 4);
+
+        hbox_name = gtk_hbox_new(FALSE, 0);
 	label_name = gtk_label_new(_("Track:"));
 	gtk_box_pack_start(GTK_BOX(hbox_name), label_name, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox_name, 0, 1, 0, 1,
@@ -351,6 +357,11 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_editable_set_editable(GTK_EDITABLE(entry_path), FALSE);
 	gtk_table_attach(GTK_TABLE(table), entry_path, 1, 2, 1, 2,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 2);
+
+        cover_image_area = gtk_image_new();
+	gtk_box_pack_start(GTK_BOX(hbox_t), cover_image_area, FALSE, FALSE, 0);
+
+        display_cover(cover_image_area, 48, 48, file, FALSE);
 
 	nb = gtk_notebook_new();
 	gtk_box_pack_start(GTK_BOX(vbox), nb, TRUE, TRUE, 10);

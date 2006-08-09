@@ -19,14 +19,19 @@
     $Id$
 */
 
-#ifndef _IFP_DEVICE_H
-#define _IFP_DEVICE_H
+#ifndef _COVER_H
+#define _COVER_H
 
-#define ROOTDIR _("<root>")
+/*#define DEFAULT_COVER_FILE      "cover.jpg"*/
 
-void aifp_transfer_files(void);
+/* FIXME  34 is space for scrollbar width, window border and it is theme dependent */
+#define SCROLLBAR_WIDTH         34
 
-#endif /* _IFP_DEVICE_H */
+void    display_cover           (GtkWidget *image_area, gint dest_width, gint dest_height, gchar *song_filename, gboolean hide);
+void    insert_cover            (GtkTextIter * iter);
+
+
+#endif /* _COVER_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

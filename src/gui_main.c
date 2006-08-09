@@ -50,6 +50,7 @@
 
 #include "common.h"
 #include "core.h"
+#include "cover.h"
 #include "transceiver.h"
 #include "decoder/file_decoder.h"
 #include "about.h"
@@ -64,9 +65,6 @@
 #include "i18n.h"
 #include "gui_main.h"
 #include "version.h"
-
-#define DISP_COVER_WIDTH 48
-#define DISP_COVER_HEIGHT 48
 
 /* receive at most this much remote messages in one run of timeout_callback() */
 #define MAX_RCV_COUNT 32
@@ -217,6 +215,9 @@ gulong pause_id;
 
 GtkWidget * play_button;
 GtkWidget * pause_button;
+GtkWidget * prev_button;
+GtkWidget * stop_button;
+GtkWidget * next_button;
 GtkWidget * repeat_button;
 GtkWidget * repeat_all_button;
 GtkWidget * shuffle_button;
@@ -319,10 +320,9 @@ void assign_audio_fc_filters(GtkFileChooser *fc);
 void assign_playlist_fc_filters(GtkFileChooser *fc);
 
 GtkWidget * cover_image_area;
-GtkWidget * cover_viewport;
 gint cover_show_flag;
 
-void cover_update(gchar *filename);
+void set_buttons_relief(void);
 
 /* externs form playlist.c */
 extern void clear_playlist_selection(void);
@@ -975,18 +975,18 @@ refresh_displays(void) {
 			}
                         if (is_file_loaded) {
                                 gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &title_str, -1);
-                                cover_update(title_str);
+                                display_cover(cover_image_area, 48, 48, title_str, TRUE);
         			g_free(title_str);
                         }
 		} else {
 			set_title_label("");
                         cover_show_flag = 0;
-                        gtk_widget_hide(cover_viewport);
+                        gtk_widget_hide(cover_image_area);
 		}
 	} else {
 		set_title_label("");
                 cover_show_flag = 0;
-                gtk_widget_hide(cover_viewport);
+                gtk_widget_hide(cover_image_area);
 	}
 
 	set_format_label(disp_info.format_major, disp_info.format_minor);
@@ -1146,7 +1146,7 @@ change_skin(char * path) {
 	deflicker();
 
         cover_show_flag = 0;
-        gtk_widget_hide(cover_viewport);
+        gtk_widget_hide(cover_image_area);
 
 	if (options.playlist_is_embedded) {
 		if (!playlist_on) {
@@ -2462,7 +2462,7 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
         /* hide cover */
         cover_show_flag = 0;
-        gtk_widget_hide(cover_viewport);
+        gtk_widget_hide(cover_image_area);
 
 	return FALSE;
 }
@@ -2914,10 +2914,6 @@ create_main_window(char * skin_path) {
 	GtkWidget * info_scrolledwin;
 	GtkWidget * info_vsep;
 
-	GtkWidget * prev_button;
-	GtkWidget * stop_button;
-	GtkWidget * next_button;
-
 	GtkWidget * sr_table;
 
 	char path[MAXLEN];
@@ -2948,6 +2944,12 @@ create_main_window(char * skin_path) {
 	
 	gtk_widget_set_events(main_window, GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 	gtk_container_set_border_width(GTK_CONTAINER(main_window), 5);
+
+        /* always on top ? */
+
+	if (options.main_window_always_on_top) {
+                gtk_window_set_keep_above (GTK_WINDOW(main_window), TRUE);
+        }
 
         /* initialize fonts */
 
@@ -3226,25 +3228,17 @@ create_main_window(char * skin_path) {
         GTK_WIDGET_UNSET_FLAGS(scale_bal, GTK_CAN_FOCUS);
         GTK_WIDGET_UNSET_FLAGS(scale_pos, GTK_CAN_FOCUS);
 
-        /* cover display */
-
-	cover_viewport = gtk_viewport_new(NULL, NULL);
-	gtk_widget_set_size_request(cover_viewport, DISP_COVER_WIDTH, DISP_COVER_HEIGHT);
-	gtk_box_pack_start(GTK_BOX(disp_hbox), cover_viewport, FALSE, FALSE, 0);
+        /* cover display widget */
 
         cover_image_area = gtk_image_new();
-	gtk_widget_set_size_request(GTK_WIDGET(cover_image_area), DISP_COVER_WIDTH-4, DISP_COVER_HEIGHT-4);
-	gtk_container_add(GTK_CONTAINER(cover_viewport), cover_image_area);
-
-        /*------------------------------------------------------------------------------*/
-
+	gtk_box_pack_start(GTK_BOX(disp_hbox), cover_image_area, FALSE, FALSE, 0);
 
         /* Embedded playlist */
-	if (options.playlist_is_embedded && options.buttons_at_the_bottom) {
+
+        if (options.playlist_is_embedded && options.buttons_at_the_bottom) {
 		playlist_window = gtk_vbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), playlist_window, TRUE, TRUE, 3);
 	}
-
 
         /* Button box with prev, play, pause, stop, next buttons */
 
@@ -3346,6 +3340,8 @@ create_main_window(char * skin_path) {
 	GTK_WIDGET_UNSET_FLAGS(plugin_toggle, GTK_CAN_FOCUS);
 
 	gtk_box_pack_end(GTK_BOX(btns_hbox), sr_table, FALSE, FALSE, 3);
+
+        set_buttons_relief();
 
 	/* Embedded playlist */
 	if (options.playlist_is_embedded && !options.buttons_at_the_bottom) {
@@ -3733,12 +3729,10 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	deflicker();
 
         cover_show_flag = 0;
-        gtk_widget_hide(cover_viewport);        /* hide cover icon */
+        gtk_widget_hide(cover_image_area);        /* hide cover icon */
 
 	if (options.playlist_is_embedded) {
 		if (!playlist_on) {
-/*			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle), FALSE);*/
-/*			gtk_widget_hide(playlist_window);*/
                         hide_playlist();
 			deflicker();
 		}
@@ -4116,6 +4110,9 @@ save_config(void) {
 	snprintf(str, 31, "%d", options.buttons_at_the_bottom);
         xmlNewTextChild(root, NULL, (const xmlChar *) "buttons_at_the_bottom", (xmlChar *) str);
 
+	snprintf(str, 31, "%d", options.disable_buttons_relief);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "disable_buttons_relief", (xmlChar *) str);
+
         snprintf(str, 31, "%d", options.simple_view_in_fx);
         xmlNewTextChild(root, NULL, (const xmlChar *) "simple_view_in_fx", (xmlChar *) str);
 
@@ -4145,6 +4142,9 @@ save_config(void) {
 
 	snprintf(str, 31, "%d", options.show_hidden);
         xmlNewTextChild(root, NULL, (const xmlChar *) "show_hidden", (xmlChar *) str);
+
+        snprintf(str, 31, "%d", options.main_window_always_on_top);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "main_window_always_on_top", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", options.override_skin_settings);
         xmlNewTextChild(root, NULL, (const xmlChar *) "override_skin_settings", (xmlChar *) str);
@@ -4366,6 +4366,8 @@ load_config(void) {
 	options.title_format[0] = '\0';
         options.enable_tooltips = 1;
         options.show_sn_title = 1;
+        options.united_minimization = 1;
+        options.buttons_at_the_bottom = 1;
 
 	options.enable_mstore_statusbar = options.enable_mstore_statusbar_shadow = 1;
        	options.enable_mstore_toolbar = options.enable_mstore_toolbar_shadow = 1;
@@ -4521,6 +4523,13 @@ load_config(void) {
 			}
                         xmlFree(key);
                 }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"disable_buttons_relief"))) {
+                        key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+                                sscanf((char *) key, "%d", &options.disable_buttons_relief);
+                        }
+                        xmlFree(key);
+                }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"simple_view_in_fx"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
@@ -4591,6 +4600,13 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
 				sscanf((char *) key, "%d", &options.show_hidden);
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"main_window_always_on_top"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				sscanf((char *) key, "%d", &options.main_window_always_on_top);
 			}
                         xmlFree(key);
                 }
@@ -5216,68 +5232,25 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
 }
 
 
-void 
-cover_update(gchar *filename) {
+void
+set_buttons_relief(void) {
 
-        GdkPixbuf * cover_pixbuf;
-        GdkPixbuf * cover_pixbuf_scaled;
-        GdkPixbufFormat * format;
-        gint i, k, width, height;
-        gint scaled_width, scaled_height;
-        gchar cover_filename[PATH_MAX];
+GtkWidget *rbuttons_table[] = {
+        prev_button, stop_button, next_button, play_button,
+        pause_button, repeat_button, repeat_all_button, shuffle_button,
+        playlist_toggle, musicstore_toggle, plugin_toggle
+};
 
+gint i, n;
 
-        if (strlen(filename)) {
+        i = sizeof(rbuttons_table)/sizeof(GtkWidget*);
 
-                /* create cover path */
-
-                k = strlen(filename) - 1;
-                while (filename[k--] != '/');
-
-                for (i = 0; k != -2; i++, k--) {
-                        cover_filename[i] = filename[i];
-		}
-
-                cover_filename[i] = '\0';
-
-                strcat(cover_filename, "cover.jpg");
-
-                cover_pixbuf = gdk_pixbuf_new_from_file (cover_filename, NULL);
-
-                if (cover_pixbuf != NULL) {
-
-                        format = gdk_pixbuf_get_file_info(cover_filename, &width, &height);
-
-                        /* don't scale when orginal size is smaller than cover defaults */
-
-                        scaled_width =  DISP_COVER_WIDTH-4;
-                        scaled_height = DISP_COVER_HEIGHT-4;
-
-                        if (width >= height) {
-
-                                scaled_height = (height * (DISP_COVER_WIDTH-4)) / width;
-
-                        } else {
-
-                                scaled_width = (width * (DISP_COVER_HEIGHT-4)) / height;
-                        }
-
-                        cover_pixbuf_scaled = gdk_pixbuf_scale_simple (cover_pixbuf, scaled_width, scaled_height, GDK_INTERP_TILES);
-                        g_object_unref (cover_pixbuf);
-                        cover_pixbuf = cover_pixbuf_scaled;
-
-                        gtk_image_set_from_pixbuf (GTK_IMAGE(cover_image_area), cover_pixbuf);
-
-                        if (!cover_show_flag) {
-                                cover_show_flag = 1;      
-                                gtk_widget_show(cover_viewport);
-                        }
-                } else {
- 
-                        cover_show_flag = 0;      
-                        gtk_widget_hide(cover_viewport);
-                }
-        }
+        for(n=0; n < i ;n++)
+	        if (options.disable_buttons_relief) 
+                        gtk_button_set_relief (GTK_BUTTON (rbuttons_table[n]), GTK_RELIEF_NONE); 
+                else
+                        gtk_button_set_relief (GTK_BUTTON (rbuttons_table[n]), GTK_RELIEF_NORMAL); 
+                
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

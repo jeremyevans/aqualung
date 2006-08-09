@@ -177,63 +177,63 @@ create_about_window() {
 #ifdef HAVE_SNDFILE
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_SNDFILE */
 	gtk_text_buffer_insert_at_cursor(buffer, _("sndfile (WAV, AIFF, etc.)\n"), -1);
 	
 #ifdef HAVE_FLAC
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_FLAC */
 	gtk_text_buffer_insert_at_cursor(buffer, _("Free Lossless Audio Codec (FLAC)\n"), -1);
 	
 #ifdef HAVE_OGG_VORBIS
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_OGG_VORBIS */
 	gtk_text_buffer_insert_at_cursor(buffer, _("Ogg Vorbis\n"), -1);
 	
 #ifdef HAVE_SPEEX
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_SPEEX */
 	gtk_text_buffer_insert_at_cursor(buffer, _("Ogg Speex\n"), -1);
 	
 #ifdef HAVE_MPEG
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_MPEG */
 	gtk_text_buffer_insert_at_cursor(buffer, _("MPEG Audio (MPEG 1-2.5 Layer I-III)\n"), -1);
 	
 #ifdef HAVE_MOD
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_MOD */
         gtk_text_buffer_insert_at_cursor(buffer, _("MOD Audio (MOD, S3M, XM, IT, etc.)\n"), -1);
 
 #ifdef HAVE_MPC
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_MPC */
         gtk_text_buffer_insert_at_cursor(buffer, _("Musepack\n"), -1);
 
 #ifdef HAVE_MAC
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_MAC */
         gtk_text_buffer_insert_at_cursor(buffer, _("Monkey's Audio Codec\n"), -1);
 
 #ifdef HAVE_ID3
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_ID3 */
         gtk_text_buffer_insert_at_cursor(buffer, _("ID3 tags\n"), -1);
 
@@ -245,14 +245,14 @@ create_about_window() {
 #ifdef HAVE_OSS
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_OSS */
 	gtk_text_buffer_insert_at_cursor(buffer, _("OSS Audio\n"), -1);
 	
 #ifdef HAVE_ALSA
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_ALSA */
 	gtk_text_buffer_insert_at_cursor(buffer, _("ALSA Audio\n"), -1);
 	
@@ -267,28 +267,28 @@ create_about_window() {
 #ifdef HAVE_SRC
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_SRC */
 	gtk_text_buffer_insert_at_cursor(buffer, _("Internal Sample Rate Converter support\n"), -1);
 
 #ifdef HAVE_CDDB
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_CDDB */
 	gtk_text_buffer_insert_at_cursor(buffer, _("CDDB support\n"), -1);
 
 #ifdef HAVE_IFP
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_IFP */
 	gtk_text_buffer_insert_at_cursor(buffer, _("iRiver iFP driver support\n"), -1);
 	
 #ifdef HAVE_SYSTRAY
 	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[yes]\t"), -1);
 #else
-	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[no]\t\t"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("\t\t[ no]\t"), -1);
 #endif /* HAVE_SYSTRAY */
 	gtk_text_buffer_insert_at_cursor(buffer, _("Systray support\n"), -1);
 	

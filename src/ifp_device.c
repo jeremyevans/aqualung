@@ -40,10 +40,8 @@
 #include "common.h"
 #include "i18n.h"
 #include "options.h"
+#include "ifp_device.h"
 #include "playlist.h"
-
-#define MBYTES  1048576         /* bytes per MB */
-#define ROOTDIR _("<root>")
 
 extern options_t options;
 extern GtkListStore * play_store;
@@ -107,7 +105,7 @@ static int
 update_progress (void *context, struct ifp_transfer_status *status) {
 
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_cf), (double)status->file_bytes/status->file_total);
-        sprintf(temp, _("%d / %d bytes (%.1f MB)"), status->file_bytes, status->file_total, (double)status->file_total/MBYTES);
+        sprintf(temp, _("%d / %d bytes (%.1f MB)"), status->file_bytes, status->file_total, (double)status->file_total/(1024*1024));
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_cf), temp);
         deflicker();
 
@@ -475,21 +473,21 @@ aifp_update_info(void) {
 
         sprintf(temp, "%d", number_of_songs); 
         gtk_label_set_text(GTK_LABEL(label_songs), temp);
-        sprintf(temp, "%d bytes (%.1f MB)", songs_size, (double)songs_size/MBYTES); 
+        sprintf(temp, "%d bytes (%.1f MB)", songs_size, (double)songs_size / (1024*1024)); 
         gtk_label_set_text(GTK_LABEL(label_songs_size), temp);
 
         battery_status = ifp_battery(&ifpdev);
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_battery), battery_status/4.0);
+        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_battery), battery_status / 4.0);
 
         ifp_model(&ifpdev, temp, sizeof(temp));
         gtk_label_set_text(GTK_LABEL(label_model), temp);
         
         capacity = ifp_capacity(&ifpdev);
-        sprintf(temp, "%d bytes (%.1f MB)", capacity, (double)capacity/MBYTES); 
+        sprintf(temp, "%d bytes (%.1f MB)", capacity, (double)capacity / (1024*1024)); 
         gtk_label_set_text(GTK_LABEL(label_capacity), temp);
 
         freespace = ifp_freespace(&ifpdev);
-        sprintf(temp, "%d bytes (%.1f MB)", freespace, (double)freespace/MBYTES); 
+        sprintf(temp, "%d bytes (%.1f MB)", freespace, (double)freespace / (1024*1024)); 
         gtk_label_set_text(GTK_LABEL(label_freespace), temp);
 
         space = (double)freespace/capacity;

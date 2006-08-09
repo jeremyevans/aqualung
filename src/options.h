@@ -42,10 +42,12 @@ typedef struct {
 	char default_param[MAXLEN];
 	int enable_tooltips;
 	int buttons_at_the_bottom;
+   	int disable_buttons_relief;
 	int simple_view_in_fx;
 	int show_sn_title;
 	int united_minimization;
 	int show_hidden;
+   	int main_window_always_on_top;
 
 	/* Playlist */
 	int playlist_is_embedded;

@@ -162,8 +162,6 @@ GtkWidget * plist__send_songs_to_iriver;
 GtkWidget * plist__separator3;
 #endif /* HAVE_IFP */
 
-#define MBYTES  1048576         /* bytes per MB */
-
 void init_plist_menu(GtkWidget *append_menu);
 
 char command[RB_CONTROL_SIZE];
@@ -1649,7 +1647,7 @@ playlist_stats(int selected) {
 	char str[MAXLEN];
 	char time[16];
         gchar * tstr;
-        guint songs_size;
+        guint songs_size, m_size;
         struct stat statbuf;
 
 	if (!options.enable_playlist_statusbar) return;
@@ -1680,15 +1678,25 @@ playlist_stats(int selected) {
 
 
 	time2time(duration, time);
+        m_size = songs_size / (1024*1024);
+
 	if (count == 1) {
                 if (options.show_songs_size_in_statusbar) {
-                        sprintf(str, _("%d track [%s] (%d MB)"), count, time, songs_size/MBYTES);
+                        if(m_size < 1024) {
+                                sprintf(str, _("%d track [%s] (%d MB)"), count, time, m_size);
+                        } else {
+                                sprintf(str, _("%d track [%s] (%.1f GB)"), count, time, m_size / 1024.0);
+                        }
                 } else {
                         sprintf(str, _("%d track [%s] "), count, time);
                 }
 	} else {
                 if (options.show_songs_size_in_statusbar) {
-                        sprintf(str, _("%d tracks [%s] (%d MB)"), count, time, songs_size/MBYTES);
+                        if(m_size < 1024) {
+                                sprintf(str, _("%d tracks [%s] (%d MB)"), count, time, m_size);
+                        } else {
+                                sprintf(str, _("%d tracks [%s] (%.1f GB)"), count, time, m_size / 1024.0);
+                        }
                 } else {
                         sprintf(str, _("%d tracks [%s] "), count, time);
                 }

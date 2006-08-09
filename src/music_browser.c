@@ -35,6 +35,7 @@
 #include "build_store.h"
 #include "cddb_lookup.h"
 #include "core.h"
+#include "cover.h"
 #include "file_info.h"
 #include "decoder/file_decoder.h"
 #include "meta_decoder.h"
@@ -46,7 +47,6 @@
 #include "i18n.h"
 #include "music_browser.h"
 
-#define DEFAULT_COVER_FILE      "cover.jpg"
 
 extern options_t options;
 
@@ -75,18 +75,16 @@ extern void assign_audio_fc_filters(GtkFileChooser * fc);
 
 extern GtkTooltips * aqualung_tooltips;
 
-gint cover_widths[5] = { 50, 100, 200, 300, -1 };       /* widths in pixels */
-
 GtkWidget * browser_window;
 GtkWidget * dialog;
-int browser_pos_x;
-int browser_pos_y;
-int browser_size_x;
-int browser_size_y;
-int browser_on;
-int browser_paned_pos;
+gint browser_pos_x;
+gint browser_pos_y;
+gint browser_size_x;
+gint browser_size_y;
+gint browser_on;
+gint browser_paned_pos;
 
-int music_store_changed = 0;
+gint music_store_changed = 0;
 
 GtkWidget * music_tree;
 GtkTreeStore * music_store = NULL;
@@ -3476,160 +3474,6 @@ set_comment_text(GtkTextIter * iter) {
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(comment_view), buffer);
 }
 
-
-void
-set_comment_cover(GtkTextIter * iter) {
-
-        GtkTreeModel * model;
-        GtkTreeIter r_iter, t_iter;
-        GtkTreePath * path;
-	GtkTextBuffer * buffer;
-        GdkPixbuf *pixbuf;
-        GdkPixbuf *scaled;
-        GdkPixbufFormat *format;
-        gchar *filename, cover_filename[PATH_MAX];
-        gint k, i;
-        gint width, height;
-        gint d_cover_width, d_cover_height;
-        gint scaled_width, scaled_height;
-        guchar *pixels, *p;
-        gint rowstride, channels;
-
-	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
-
-        /* get cover path */
-        
-        if (gtk_tree_selection_get_selected(music_select, &model, &r_iter)) {
-
-                path = gtk_tree_model_get_path(GTK_TREE_MODEL(model), &r_iter);
-                i = gtk_tree_path_get_depth(path);
-
-                /* check if we at 3rd level (album) or 4th level (track) */
-
-                if (i == 3 || i == 4) {
-
-                        if (i == 3) { /* album selected */
-
-                                if (gtk_tree_model_iter_nth_child(model, &t_iter, &r_iter, 0)) {
-					gtk_tree_model_get(GTK_TREE_MODEL(model), &t_iter, 2, &filename, -1);
-				} else {
-					return;
-				}
-
-                        } else { /* track selected */
-                                gtk_tree_model_get(GTK_TREE_MODEL(model), &r_iter, 2, &filename, -1);
-                        }
-
-                        /* create cover path */
-
-                        k = strlen(filename) - 1;
-                        while (filename[k--] != '/');
-
-                        for (i = 0; k != -2; i++, k--)
-                                cover_filename[i] = filename[i];
-
-                        cover_filename[i] = '\0';
-
-
-                        strcat(cover_filename, DEFAULT_COVER_FILE);
-
-
-                        /* load and display cover */
-
-                        k = cover_widths[options.cover_width % 5];
-
-                        if (k == -1) {
-
-                                /* FIXME  34 is space for scrollbar width, window  
-                                 * border and it is theme dependent
-                                 */  
-
-                                d_cover_width = d_cover_height = browser_size_x - 34;      
-
-                        } else {
-
-                                d_cover_width = d_cover_height = k;
-                        }
-
-                        pixbuf = gdk_pixbuf_new_from_file (cover_filename, NULL);
-
-                        if (pixbuf != NULL) {
-
-                                format = gdk_pixbuf_get_file_info(cover_filename, &width, &height);
-
-                                /* don't scale when orginal size is smaller than cover defaults */
-
-                                scaled_width =  d_cover_width;
-                                scaled_height = d_cover_height;
-
-                                if (width > d_cover_width || height > d_cover_height) {
-
-                                        if (width >= height) {
-
-                                                scaled_height = (height * d_cover_width) / width;
-
-                                        } else {
-
-                                                scaled_width = (width * d_cover_height) / height;
-
-                                        }
-
-                                        scaled = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_TILES);
-                                        g_object_unref (pixbuf);
-                                        pixbuf = scaled;
-
-                                } else {
-                                        if (options.magnify_smaller_images) {
-
-                                                scaled_height = (height * d_cover_width) / width;
-
-                                                scaled = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_TILES);
-                                                g_object_unref (pixbuf);
-                                                pixbuf = scaled;
-
-                                        } else {
-
-                                                scaled_width = width;
-                                                scaled_height = height;
-                                        }                               
-				}
-
-                                /* draw frame */
-
-                                channels = gdk_pixbuf_get_n_channels (pixbuf);
-                                rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-                                pixels = gdk_pixbuf_get_pixels (pixbuf);
-
-                                /* horizontal lines */
-                                for(i=0; i<scaled_width; i++) {
-                                        p = pixels + i * channels;
-                                        p[0] = p[1] = p[2] = 0;
-                                        p = pixels + (scaled_height-1) * rowstride + i * channels;
-                                        p[0] = p[1] = p[2] = 0;
-                                }
-
-                                /* vertical lines */
-                                for(i=0; i<scaled_height; i++) {
-                                        p = pixels + i * rowstride;
-                                        p[0] = p[1] = p[2] = 0;
-                                        p = pixels + i * rowstride + (scaled_width-1) * channels;
-                                        p[0] = p[1] = p[2] = 0;
-                                }
-
-                                /* insert picture */
-
-                                gtk_text_buffer_insert_pixbuf (buffer, iter, pixbuf);
-                                gtk_text_buffer_insert (buffer, iter, "\n\n", -1);
-
-                                g_object_unref (pixbuf);
-                        }
-                }
-
-                gtk_tree_path_free(path);
-        }
-}
-
-
 void
 set_comment_content(void) {
 
@@ -3643,7 +3487,7 @@ set_comment_content(void) {
 	gtk_text_buffer_delete(buffer, &a_iter, &b_iter);  
         gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
 
-	set_comment_cover(&iter);
+	insert_cover(&iter);
 	set_comment_text(&iter);
 }
 

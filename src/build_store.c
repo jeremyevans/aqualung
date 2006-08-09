@@ -925,7 +925,10 @@ progress_window(void) {
 gboolean
 set_prog_file_entry(gpointer data) {
 
-	gtk_entry_set_text(GTK_ENTRY(prog_file_entry), (char *)data);
+	char * utf8 = g_locale_to_utf8((char *)data, -1, NULL, NULL, NULL);
+	gtk_entry_set_text(GTK_ENTRY(prog_file_entry), utf8);
+	g_free(utf8);
+
 	return FALSE;
 }
 
@@ -1295,20 +1298,26 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	g_idle_add(set_prog_action_label, (gpointer) _("File name transformation"));
 
 	if (!record.artist_valid) {
-		strncpy(record.artist, artist_d_name, MAXLEN-1);
+		char * utf8 = g_locale_to_utf8(artist_d_name, -1, NULL, NULL, NULL);
+		strncpy(record.artist, utf8, MAXLEN-1);
 		record.artist_valid = 1;
+		g_free(utf8);
 	}
 
 	if (!record.record_valid) {
-		strncpy(record.record, record_d_name, MAXLEN-1);
+		char * utf8 = g_locale_to_utf8(record_d_name, -1, NULL, NULL, NULL);
+		strncpy(record.record, utf8, MAXLEN-1);
 		record.record_valid = 1;
+		g_free(utf8);
 	}
 
 	for (i = 0, ptrack = record.tracks; ptrack; i++, ptrack = ptrack->next) {
 
 		if (!ptrack->valid) {
-			transform_filename(ptrack->name, ptrack->d_name);
+			char * utf8 = g_locale_to_utf8(ptrack->d_name, -1, NULL, NULL, NULL);
+			transform_filename(ptrack->name, utf8);
 			ptrack->valid = 1;
+			g_free(utf8);
 		}
 	}
 

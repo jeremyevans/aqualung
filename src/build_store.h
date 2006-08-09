@@ -66,3 +66,7 @@ void build_artist(GtkTreeIter artist_iter);
 void build_store(GtkTreeIter store_iter);
 
 #endif /* _BUILD_STORE_H */
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dirent.h>
 #include <gtk/gtk.h>
 
 #include "common.h"
@@ -33,7 +34,6 @@
 #include "i18n.h"
 #include "options.h"
 
-
 extern options_t options;
 
 extern gint cover_show_flag;
@@ -41,6 +41,14 @@ extern gint cover_show_flag;
 extern gint browser_size_x;
 extern GtkWidget * comment_view;
 extern GtkTreeSelection * music_select;
+
+/* maximum 4 chars per extension */
+
+gchar *cover_extensions[] = {
+        "jpg", "jpeg", "png", "gif", "bmp", "tif", "tiff"
+};
+
+gint n_extensions = sizeof(cover_extensions) / sizeof(gchar*);
 
 
 gchar *
@@ -62,36 +70,106 @@ get_song_path(gchar *song_filename) {
 }
 
 
+static gint
+entry_filter(const struct dirent *entry) {
+
+        gint i, j, len;
+        gchar ext[5], c, *str1, *str2;
+   
+
+        len = strlen (entry->d_name);
+
+        if (len < 5)                    /* 5 => a.abc */
+                return FALSE;
+
+        /* extract extension */
+
+        i = j = 0;
+
+        while(i < 4) {
+                c = entry->d_name[len - 4 + i];
+                if (c != '.') {
+                        ext[j++] = c;
+                }
+                i++;
+        }
+
+        ext[j] = 0;
+
+        /* filter candidates for cover */
+
+        str1 = g_utf8_casefold(ext, -1);
+
+        for (i = 0; i < n_extensions; i++) {
+
+                str2 = g_utf8_casefold(cover_extensions[i], -1);
+                
+                if (!g_utf8_collate(str1, str2)) {
+                        g_free(str1);
+                        g_free(str2);
+                        return TRUE;
+                }
+        
+                g_free (str2);
+        }
+
+        g_free (str1);
+
+	return FALSE;
+}
+
 gchar *
 find_cover_filename(gchar *song_filename) {
 
         gchar *cover_filenames[] = {
-                "cover.jpg", ".cover.jpg", "Cover.jpg", "COVER.JPG",
-                "folder.jpg", ".folder.jpg", "Folder.jpg", "FOLDER.JPG",
-                "front.jpg", ".front.jpg", "Front.jpg", "FRONT.JPG"
+                "cover", ".cover", 
+                "folder", ".folder",
+                "front", ".front"
         };
 
-        gint n_files, i;
-        gchar base_path[PATH_MAX];
-        static gchar current_filename[PATH_MAX];
+        gint n_files, i, j, n;
+        gchar base_path[PATH_MAX], current_filename[PATH_MAX];
+        static gchar cover_filename[PATH_MAX];
+	struct dirent ** d_entry;
+        gchar *str1, *str2;
 
         n_files = sizeof(cover_filenames) / sizeof(gchar*);
-
         strcpy(base_path, get_song_path(song_filename));
 
         for (i = 0; i < n_files; i++) {
 
-                strcpy(current_filename, base_path);
-                strcat(current_filename, cover_filenames[i]);
+                for (j = 0; j < n_extensions; j++) {
 
-                if (g_file_test(current_filename, G_FILE_TEST_IS_REGULAR) == TRUE) {
+                        strcpy (current_filename, cover_filenames[i]);
+                        strcat (current_filename, ".");
+                        strcat (current_filename, cover_extensions[j]);
 
-                        return current_filename;
+                        str1 = g_utf8_casefold (current_filename, -1);
 
+	                for (n = 0; n < scandir(base_path, &d_entry, entry_filter, alphasort); n++) {
+
+                                str2 = g_utf8_casefold(d_entry[n]->d_name, -1);
+
+                                if (!g_utf8_collate(str1, str2)) {
+
+                                        strcpy (cover_filename, base_path);
+                                        strcat (cover_filename, d_entry[n]->d_name);
+
+                                        if (g_file_test (cover_filename, G_FILE_TEST_IS_REGULAR) == TRUE) {
+                                                g_free (str1);
+                                                g_free (str2);
+                                                return cover_filename;
+                                        }
+                                }
+
+                                g_free (str2);
+                        }
+
+                        g_free (str1);
                 }
         }
 
-        return cover_filenames[0];
+        return cover_filename;
 }
 
 

@@ -22,8 +22,6 @@
 #ifndef _COVER_H
 #define _COVER_H
 
-/*#define DEFAULT_COVER_FILE      "cover.jpg"*/
-
 /* FIXME  34 is space for scrollbar width, window border and it is theme dependent */
 #define SCROLLBAR_WIDTH         34
 

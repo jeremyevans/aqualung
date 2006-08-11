@@ -1,8 +1,8 @@
 #!/bin/sh
 
 MAJOR=0
-MINOR=195
-MICRO=1
+MINOR=196
+MICRO=0
 
 if [ $# -eq 0 ] ; then
     echo $MAJOR.$MINOR.$MICRO

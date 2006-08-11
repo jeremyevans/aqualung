@@ -3757,6 +3757,7 @@ create_music_browser(void) {
 	GtkWidget * scrolled_win1;
 	GtkWidget * scrolled_win2;
 	GtkWidget * statusbar_viewport;
+	GtkWidget * statusbar_scrolledwin;
 	GtkWidget * statusbar_hbox;
        	GtkWidget * edit_button;
 	GtkWidget * add_button;
@@ -4210,9 +4211,27 @@ create_music_browser(void) {
 	}
 
 	if (options.enable_mstore_statusbar) {
+
+		statusbar_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+		gtk_widget_set_size_request(statusbar_scrolledwin, 1, -1);    /* MAGIC */
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(statusbar_scrolledwin),
+					       GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+
 		statusbar_viewport = gtk_viewport_new(NULL, NULL);
 		gtk_widget_set_name(statusbar_viewport, "info_viewport");
-		gtk_box_pack_start(GTK_BOX(vbox), statusbar_viewport, FALSE, TRUE, 2);
+
+		gtk_container_add(GTK_CONTAINER(statusbar_scrolledwin), statusbar_viewport);
+		gtk_box_pack_start(GTK_BOX(vbox), statusbar_scrolledwin, FALSE, TRUE, 2);
+
+		gtk_widget_set_events(statusbar_viewport,
+				      GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
+
+		g_signal_connect(G_OBJECT(statusbar_viewport), "button_press_event",
+				 G_CALLBACK(scroll_btn_pressed), NULL);
+		g_signal_connect(G_OBJECT(statusbar_viewport), "button_release_event",
+				 G_CALLBACK(scroll_btn_released), (gpointer)statusbar_scrolledwin);
+		g_signal_connect(G_OBJECT(statusbar_viewport), "motion_notify_event",
+				 G_CALLBACK(scroll_motion_notify), (gpointer)statusbar_scrolledwin);
 
 		statusbar_hbox = gtk_hbox_new(FALSE, 0);
 		gtk_container_set_border_width(GTK_CONTAINER(statusbar_hbox), 1);

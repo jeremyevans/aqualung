@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2006-08-10 14:45+0200\n"
+"PO-Revision-Date: 2006-08-11 18:20+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -127,7 +127,7 @@ msgstr "JACK Audio Szerver\n"
 
 #: ../about.c:325
 msgid "Win32 Sound API\n"
-msgstr ""
+msgstr "Win32 Sound API\n"
 
 #: ../about.c:329
 msgid "Miscellaneous:"
@@ -138,9 +138,8 @@ msgid "Internal Sample Rate Converter support\n"
 msgstr "Beépített mintavételi frekvencia konverter\n"
 
 #: ../about.c:351
-#, fuzzy
 msgid "LADSPA plugin support\n"
-msgstr "LADSPA effekt processzálás"
+msgstr "LADSPA effekt támogatás\n"
 
 #: ../about.c:362
 msgid "CDDB support\n"
@@ -663,9 +662,8 @@ msgid "Output:"
 msgstr "Kimenet:"
 
 #: ../gui_main.c:895
-#, fuzzy
 msgid "No output"
-msgstr "Kimenet:"
+msgstr "Nincs kimenet"
 
 #: ../gui_main.c:909
 msgid "SRC Type: "

@@ -178,11 +178,6 @@ extern GtkWidget * vol_window;
 extern GtkWidget * build_prog_window;
 extern GtkWidget * browser_paned;
 
-#ifdef HAVE_SYSTRAY
-GtkStatusIcon * systray_icon;
-int warn_wm_not_systray_capable = 0;
-#endif
-
 int main_pos_x;
 int main_pos_y;
 int main_size_x;
@@ -247,7 +242,7 @@ int control_L;
 int control_R;
 int shift_L;
 int shift_R;
-int x_scroll_start;          
+int x_scroll_start;
 int x_scroll_pos;
 int scroll_btn;
 
@@ -293,6 +288,8 @@ GtkWidget * smalltimer_label_2;
 /* systray stuff */
 #ifdef HAVE_SYSTRAY
 
+GtkStatusIcon * systray_icon;
+
 GtkWidget * systray_menu;
 GtkWidget * systray__show;
 GtkWidget * systray__hide;
@@ -302,11 +299,14 @@ GtkWidget * systray__stop;
 GtkWidget * systray__prev;
 GtkWidget * systray__next;
 GtkWidget * systray__quit;
-int systray_main_window_on = 1;
+
+int warn_wm_not_systray_capable = 0;
 
 void hide_all_windows(gpointer data);
 
 #endif /* HAVE_SYSTRAY */
+
+int systray_main_window_on = 1;
 
 void create_main_window(char * skin_path);
 
@@ -1264,8 +1264,12 @@ main_window_close(GtkWidget * widget, gpointer data) {
 		gtk_widget_destroy(dialog);
 	}
 	
-	save_window_position();
+	if (systray_main_window_on) {
+		save_window_position();
+	}
+
 	save_config();
+
 #ifdef HAVE_LADSPA
 	save_plugin_data();
 	lrdf_cleanup();
@@ -3100,7 +3104,7 @@ create_main_window(char * skin_path) {
 
 
 	info_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-        gtk_widget_set_size_request(info_scrolledwin, 1,-1);           /* MAGIC */
+        gtk_widget_set_size_request(info_scrolledwin, 1, -1);           /* MAGIC */
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(info_scrolledwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_NEVER);
 
@@ -3108,20 +3112,21 @@ create_main_window(char * skin_path) {
 	gtk_widget_set_name(info_viewp, "info_viewport");
 	gtk_container_add(GTK_CONTAINER(info_scrolledwin), info_viewp);
 	gtk_widget_set_events(info_viewp, GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
-        g_signal_connect(G_OBJECT(info_viewp), "button_press_event", G_CALLBACK(scroll_btn_pressed), NULL);
-        g_signal_connect(G_OBJECT(info_viewp), "button_release_event", G_CALLBACK(scroll_btn_released),
-                         (gpointer)info_scrolledwin);
-        g_signal_connect(G_OBJECT(info_viewp), "motion_notify_event", G_CALLBACK(scroll_motion_notify),
-                         (gpointer)info_scrolledwin);
+
+        g_signal_connect(G_OBJECT(info_viewp), "button_press_event",
+			 G_CALLBACK(scroll_btn_pressed), NULL);
+        g_signal_connect(G_OBJECT(info_viewp), "button_release_event",
+			 G_CALLBACK(scroll_btn_released), (gpointer)info_scrolledwin);
+        g_signal_connect(G_OBJECT(info_viewp), "motion_notify_event",
+			 G_CALLBACK(scroll_motion_notify), (gpointer)info_scrolledwin);
 
 	info_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(info_hbox), 1);
 	gtk_container_add(GTK_CONTAINER(info_viewp), info_hbox);
 
 
-
 	title_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-        gtk_widget_set_size_request(title_scrolledwin, 1,-1);          /* MAGIC */
+        gtk_widget_set_size_request(title_scrolledwin, 1, -1);          /* MAGIC */
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(title_scrolledwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_NEVER);
 

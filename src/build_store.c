@@ -278,7 +278,9 @@ browse_button_clicked(GtkWidget * widget, gpointer * data) {
         set_sliders_width();    /* MAGIC */
 
         if (strlen(selected_filename)) {
-                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), selected_filename);
+      		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
+                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), locale);
+		g_free(locale);
 	} else {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
 	}
@@ -290,11 +292,14 @@ browse_button_clicked(GtkWidget * widget, gpointer * data) {
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		gtk_entry_set_text(GTK_ENTRY(data), selected_filename);
+		char * utf8;
 
-                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
-                                                                         MAXLEN-1);
+                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		utf8 = g_locale_to_utf8(selected_filename, -1, NULL, NULL, NULL);
+		gtk_entry_set_text(GTK_ENTRY(data), utf8);
+
+                strncpy(options.currdir, selected_filename, MAXLEN-1);
+		g_free(utf8);
         }
 
 
@@ -727,7 +732,7 @@ build_dialog(void) {
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		const char * proot = gtk_entry_get_text(GTK_ENTRY(root_entry));
+		char * proot = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(root_entry)), -1, NULL, NULL, NULL);
 
 		gtk_label_set_text(GTK_LABEL(fs_label_error), "");
 
@@ -738,6 +743,8 @@ build_dialog(void) {
 		} else if (proot[0] != '\0') {
 			snprintf(root, MAXLEN-1, "%s/%s", options.cwd, proot);
 		}
+
+		g_free(proot);
 
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_radio_artist_name))) {
 			artist_sort_by = ARTIST_SORT_NAME;
@@ -793,10 +800,13 @@ build_dialog(void) {
 			if ((err = regcomp(&fs_compiled, fs_regexp, REG_EXTENDED))) {
 
 				char msg[MAXLEN];
+				char * utf8;
 
 				regerror(err, &fs_compiled, msg, MAXLEN);
-				gtk_label_set_text(GTK_LABEL(fs_label_error),
-						   g_locale_to_utf8(msg, -1, NULL, NULL, NULL));
+				utf8 = g_locale_to_utf8(msg, -1, NULL, NULL, NULL);
+				gtk_label_set_text(GTK_LABEL(fs_label_error), utf8);
+				g_free(utf8);
+
 				goto display;
 			}
 
@@ -925,7 +935,7 @@ progress_window(void) {
 gboolean
 set_prog_file_entry(gpointer data) {
 
-	char * utf8 = g_locale_to_utf8((char *)data, -1, NULL, NULL, NULL);
+	char * utf8 = g_filename_display_name((char *)data);
 	gtk_entry_set_text(GTK_ENTRY(prog_file_entry), utf8);
 	g_free(utf8);
 
@@ -1298,14 +1308,14 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	g_idle_add(set_prog_action_label, (gpointer) _("File name transformation"));
 
 	if (!record.artist_valid) {
-		char * utf8 = g_locale_to_utf8(artist_d_name, -1, NULL, NULL, NULL);
+		char * utf8 = g_filename_display_name(artist_d_name);
 		strncpy(record.artist, utf8, MAXLEN-1);
 		record.artist_valid = 1;
 		g_free(utf8);
 	}
 
 	if (!record.record_valid) {
-		char * utf8 = g_locale_to_utf8(record_d_name, -1, NULL, NULL, NULL);
+		char * utf8 = g_filename_display_name(record_d_name);
 		strncpy(record.record, utf8, MAXLEN-1);
 		record.record_valid = 1;
 		g_free(utf8);
@@ -1314,7 +1324,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	for (i = 0, ptrack = record.tracks; ptrack; i++, ptrack = ptrack->next) {
 
 		if (!ptrack->valid) {
-			char * utf8 = g_locale_to_utf8(ptrack->d_name, -1, NULL, NULL, NULL);
+			char * utf8 = g_filename_display_name(ptrack->d_name);
 			transform_filename(ptrack->name, utf8);
 			ptrack->valid = 1;
 			g_free(utf8);

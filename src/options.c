@@ -962,7 +962,8 @@ stdthresh_changed(GtkWidget * widget, gpointer * data) {
 	rva_avg_stddev_thresh_shadow = gtk_adjustment_get_value(GTK_ADJUSTMENT(widget)) / 100.0f;
 }
 
-void show_restart_info(void) {
+void
+show_restart_info(void) {
 
 	GtkWidget * info_dialog;
 	GtkWidget * list;
@@ -1021,14 +1022,14 @@ playlist_font_select(GtkWidget *widget) {
 
         appearance_changed = 1;
 	gtk_widget_destroy (font_selector);
-
 }
 
-void browser_font_select(GtkWidget *widget)
-{
-gchar *s;
-GtkWidget *font_selector;
-gint response;
+void
+browser_font_select(GtkWidget *widget) {
+
+	gchar *s;
+	GtkWidget *font_selector;
+	gint response;
 
 	font_selector = gtk_font_selection_dialog_new ("Select a font...");
 	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
@@ -1048,14 +1049,14 @@ gint response;
 
         appearance_changed = 1;
 	gtk_widget_destroy (font_selector);
-
 }
 
-void bigtimer_font_select(GtkWidget *widget)
-{
-gchar *s;
-GtkWidget *font_selector;
-gint response;
+void
+bigtimer_font_select(GtkWidget *widget) {
+
+	gchar *s;
+	GtkWidget *font_selector;
+	gint response;
 
 	font_selector = gtk_font_selection_dialog_new ("Select a font...");
 	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
@@ -1075,14 +1076,14 @@ gint response;
 
         appearance_changed = 1;
 	gtk_widget_destroy (font_selector);
-
 }
 
-void smalltimer_font_select(GtkWidget *widget)
-{
-gchar *s;
-GtkWidget *font_selector;
-gint response;
+void
+smalltimer_font_select(GtkWidget *widget) {
+
+	gchar *s;
+	GtkWidget *font_selector;
+	gint response;
 
 	font_selector = gtk_font_selection_dialog_new ("Select a font...");
 	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
@@ -1102,14 +1103,14 @@ gint response;
 
         appearance_changed = 1;
 	gtk_widget_destroy (font_selector);
-
 }
 
-void songtitle_font_select(GtkWidget *widget)
-{
-gchar *s;
-GtkWidget *font_selector;
-gint response;
+void
+songtitle_font_select(GtkWidget *widget) {
+
+	gchar *s;
+	GtkWidget *font_selector;
+	gint response;
 
 	font_selector = gtk_font_selection_dialog_new ("Select a font...");
 	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
@@ -1129,14 +1130,14 @@ gint response;
 
         appearance_changed = 1;
 	gtk_widget_destroy (font_selector);
-
 }
 
-void songinfo_font_select(GtkWidget *widget)
-{
-gchar *s;
-GtkWidget *font_selector;
-gint response;
+void
+songinfo_font_select(GtkWidget *widget) {
+
+	gchar *s;
+	GtkWidget *font_selector;
+	gint response;
 
 	font_selector = gtk_font_selection_dialog_new ("Select a font...");
 	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
@@ -1156,14 +1157,14 @@ gint response;
 
         appearance_changed = 1;
 	gtk_widget_destroy (font_selector);
-
 }
 
-void statusbar_font_select(GtkWidget *widget)
-{
-gchar *s;
-GtkWidget *font_selector;
-gint response;
+void
+statusbar_font_select(GtkWidget *widget) {
+
+	gchar *s;
+	GtkWidget *font_selector;
+	gint response;
 
 	font_selector = gtk_font_selection_dialog_new ("Select a font...");
 	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
@@ -1183,10 +1184,10 @@ gint response;
 
         appearance_changed = 1;
 	gtk_widget_destroy (font_selector);
-
 }
 
-void restart_active(GtkToggleButton * togglebutton, gpointer data) {
+void
+restart_active(GtkToggleButton * togglebutton, gpointer data) {
 
 	GtkTreeIter iter;
 	char * text;
@@ -1212,14 +1213,16 @@ void restart_active(GtkToggleButton * togglebutton, gpointer data) {
 	gtk_list_store_set(restart_list_store, &iter, 0, (char *)data, -1);
 }
 
-void set_sensitive_part(void) {
+void
+set_sensitive_part(void) {
 
-GtkWidget *sensitive_table[] = {
-        entry_ms_font, entry_pl_font, entry_bt_font, entry_st_font,
-        entry_songt_font, entry_si_font, entry_sb_font, button_ms_font,
-        button_pl_font, button_bt_font, button_st_font, button_songt_font,
-        button_si_font, button_sb_font, color_picker
-};
+	GtkWidget *sensitive_table[] = {
+		entry_ms_font, entry_pl_font, entry_bt_font, entry_st_font,
+		entry_songt_font, entry_si_font, entry_sb_font, button_ms_font,
+		button_pl_font, button_bt_font, button_st_font, button_songt_font,
+		button_si_font, button_sb_font, color_picker
+	};
+
 	gboolean state;
         gint items, n;
         
@@ -1231,22 +1234,24 @@ GtkWidget *sensitive_table[] = {
 
         items = sizeof(sensitive_table) / sizeof(GtkWidget*);
 
-        for(n=0; n < items; n++) {
+        for (n = 0; n < items; n++) {
                 gtk_widget_set_sensitive(sensitive_table[n], state);
         }
 }
 
-void  cb_toggle_override_skin (GtkToggleButton *togglebutton, gpointer user_data)
-{
+void
+cb_toggle_override_skin(GtkToggleButton *togglebutton, gpointer user_data) {
+
         options.override_skin_settings = options.override_skin_settings ? 0 : 1;
         appearance_changed = 1;
         set_sensitive_part();
 }
 
-void color_selected (GtkColorButton *widget, gpointer user_data)
-{
-GdkColor c;
-gchar str[MAX_COLORNAME_LEN];
+void
+color_selected(GtkColorButton *widget, gpointer user_data) {
+
+	GdkColor c;
+	gchar str[MAX_COLORNAME_LEN];
 
         appearance_changed = 1;
         gtk_color_button_get_color(widget, &c);
@@ -1287,19 +1292,20 @@ create_notebook_tab(char * text, char * imgfile) {
 void
 add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 
-	const char * ppath;
-	char path[MAXLEN];
+	const char * pname;
+	char name[MAXLEN];
+	char * path;
 	GtkTreeIter iter;
 	int i;
 
-	ppath = gtk_entry_get_text(GTK_ENTRY(entry_ms_pathlist));
+	pname = gtk_entry_get_text(GTK_ENTRY(entry_ms_pathlist));
 
-	if (ppath[0] == '\0') return;
+	if (pname[0] == '\0') return;
 
-	if (ppath[0] == '~') {
-		snprintf(path, MAXLEN - 1, "%s%s", options.home, ppath + 1);
-	} else if (ppath[0] == '/') {
-		strncpy(path, ppath, MAXLEN - 1);
+	if (pname[0] == '~') {
+		snprintf(name, MAXLEN - 1, "%s%s", options.home, pname + 1);
+	} else if (pname[0] == '/') {
+		strncpy(name, pname, MAXLEN - 1);
 	} else {
 		GtkWidget * dialog;
 		GtkWidget * label;
@@ -1322,6 +1328,8 @@ add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 		return;
 	}
 
+	path = g_locale_from_utf8(name, -1, NULL, NULL, NULL);
+
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
 		char * p;
@@ -1342,6 +1350,7 @@ add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 			gtk_widget_destroy(dialog);
 
 			g_free(p);
+			g_free(path);
 			return;
 		}
 
@@ -1351,15 +1360,17 @@ add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 
 	gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), "");
 	gtk_list_store_append(ms_pathlist_store, &iter);
-	gtk_list_store_set(ms_pathlist_store, &iter, 0, path, -1);
+	gtk_list_store_set(ms_pathlist_store, &iter, 0, path, 1, name, -1);
 
 	if (access(path, R_OK | W_OK) == 0) {
-		gtk_list_store_set(ms_pathlist_store, &iter, 1, _("rw"), -1);
+		gtk_list_store_set(ms_pathlist_store, &iter, 2, _("rw"), -1);
 	} else if (access(path, R_OK) == 0) {
-		gtk_list_store_set(ms_pathlist_store, &iter, 1, _("r"), -1);
+		gtk_list_store_set(ms_pathlist_store, &iter, 2, _("r"), -1);
 	} else {
-		gtk_list_store_set(ms_pathlist_store, &iter, 1, _("unreachable"), -1);
+		gtk_list_store_set(ms_pathlist_store, &iter, 2, _("unreachable"), -1);
 	}
+
+	g_free(path);
 }
 
 
@@ -1404,11 +1415,14 @@ browse_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-                gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), selected_filename);
+		char * utf8;
 
-                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
-			MAXLEN-1);
+                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		utf8 = g_locale_to_utf8(selected_filename, -1, NULL, NULL, NULL);
+                gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), utf8);
+
+                strncpy(options.currdir, selected_filename, MAXLEN-1);
+		g_free(utf8);
         }
 
         gtk_widget_destroy(dialog);
@@ -1453,11 +1467,11 @@ refresh_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &path, -1);
 		
 		if (access(path, R_OK | W_OK) == 0) {
-			gtk_list_store_set(ms_pathlist_store, &iter, 1, _("rw"), -1);
+			gtk_list_store_set(ms_pathlist_store, &iter, 2, _("rw"), -1);
 		} else if (access(path, R_OK) == 0) {
-			gtk_list_store_set(ms_pathlist_store, &iter, 1, _("r"), -1);
+			gtk_list_store_set(ms_pathlist_store, &iter, 2, _("r"), -1);
 		} else {
-			gtk_list_store_set(ms_pathlist_store, &iter, 1, _("unreachable"), -1);
+			gtk_list_store_set(ms_pathlist_store, &iter, 2, _("unreachable"), -1);
 		}
 		
 		g_free(path);
@@ -1472,7 +1486,7 @@ refresh_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 void
 display_title_format_help(void) {
 
-GtkWidget *help_dialog;
+	GtkWidget *help_dialog;
 
         help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
                                               GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
@@ -1492,7 +1506,7 @@ GtkWidget *help_dialog;
 void
 display_implict_command_line_help(void) {
 
-GtkWidget *help_dialog;
+	GtkWidget *help_dialog;
 
         help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
                                               GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
@@ -2019,8 +2033,9 @@ to set the column order in the Playlist."));
 	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox, FALSE, TRUE, 5);
 
 	if (!ms_pathlist_store) {
-		ms_pathlist_store = gtk_list_store_new(2,
+		ms_pathlist_store = gtk_list_store_new(3,
 						    G_TYPE_STRING,     /* path */
+						    G_TYPE_STRING,     /* displayed name */
 						    G_TYPE_STRING);    /* state (rw, r, unreachable) */
 	}
 
@@ -2029,14 +2044,14 @@ to set the column order in the Playlist."));
 
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes(_("Path"), renderer,
-							  "text", 0,
+							  "text", 1,
 							  NULL);
 	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(ms_pathlist_view), column);
 
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes(_("Access"), renderer,
-							  "text", 1,
+							  "text", 2,
 							  NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(ms_pathlist_view), column);
 

@@ -366,7 +366,9 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
         set_sliders_width();    /* MAGIC */
 
         if (strlen(selected_filename)) {
-                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), selected_filename);
+		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
+                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), locale);
+		g_free(locale);
 	} else {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
 	}
@@ -378,11 +380,14 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
+		char * locale;
+
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
 		gtk_entry_set_text(GTK_ENTRY(data), selected_filename);
 
-                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
-                                                                         MAXLEN-1);
+                strncpy(options.currdir, locale, MAXLEN-1);
+		g_free(locale);
         }
 
 
@@ -457,8 +462,8 @@ add_store_dialog(char * name, char * file, char * comment) {
 
 	browse_button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
         gtk_box_pack_start(GTK_BOX(hbox2), browse_button, FALSE, TRUE, 2);
-        g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_store_clicked),
-			 (gpointer *)file_entry);
+        g_signal_connect(G_OBJECT(browse_button), "clicked",
+			 G_CALLBACK(browse_button_store_clicked), (gpointer *)file_entry);
 	
 
 	comment_label = gtk_label_new(_("Comments:"));
@@ -496,7 +501,7 @@ add_store_dialog(char * name, char * file, char * comment) {
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		const char * pfile = gtk_entry_get_text(GTK_ENTRY(file_entry));
+		const char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
 
 		if (pfile[0] == '~') {
 			snprintf(file, MAXLEN-1, "%s%s", options.home, pfile + 1);
@@ -550,6 +555,7 @@ edit_store_dialog(char * name, char * file, char * comment) {
 	GtkTextIter iter_start;
 	GtkTextIter iter_end;
 
+	char * utf8;
         int ret;
 
         dialog = gtk_dialog_new_with_buttons(_("Edit Store"),
@@ -583,7 +589,11 @@ edit_store_dialog(char * name, char * file, char * comment) {
 
 	file_entry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(file_entry), MAXLEN - 1);
-	gtk_entry_set_text(GTK_ENTRY(file_entry), file);
+
+	utf8 = g_locale_to_utf8(file, -1, NULL, NULL, NULL);
+	gtk_entry_set_text(GTK_ENTRY(file_entry), utf8);
+	g_free(utf8);
+
 	gtk_editable_set_editable(GTK_EDITABLE(file_entry), FALSE);
 	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
@@ -895,14 +905,14 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
 int
 browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
 
-        GtkWidget * file_selector;
+        GtkWidget * dialog;
         const gchar * selected_filename;
 	GtkListStore * model = (GtkListStore *)data;
 	GtkTreeIter iter;
         GSList *lfiles, *node;
 
 
-        file_selector = gtk_file_chooser_dialog_new(_("Please select the audio files for this record."), 
+        dialog = gtk_file_chooser_dialog_new(_("Please select the audio files for this record."), 
 						    NULL,
 						    GTK_FILE_CHOOSER_ACTION_OPEN,
 						    GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
@@ -911,23 +921,23 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
 
         set_sliders_width();    /* MAGIC */
 
-        gtk_window_set_position(GTK_WINDOW(file_selector), GTK_WIN_POS_CENTER_ON_PARENT);
-        gtk_window_set_default_size(GTK_WINDOW(file_selector), 580, 390);
-        gtk_dialog_set_default_response(GTK_DIALOG(file_selector), GTK_RESPONSE_ACCEPT);
-        gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(file_selector), TRUE);
-        gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(file_selector), options.currdir);
-        assign_audio_fc_filters(GTK_FILE_CHOOSER(file_selector));
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+        gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
+        gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+        assign_audio_fc_filters(GTK_FILE_CHOOSER(dialog));
 
 	if (options.show_hidden) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(file_selector), TRUE);
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
 	}
 
-        if (gtk_dialog_run(GTK_DIALOG(file_selector)) == GTK_RESPONSE_ACCEPT) {
+        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_selector)),
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
                                                                          MAXLEN-1);
 
-                lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(file_selector));
+                lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
 
                 node = lfiles;
 
@@ -936,8 +946,12 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
                         selected_filename = (char *) node->data;
 
 			if (selected_filename[strlen(selected_filename)-1] != '/') {
+
+				char * utf8 = g_locale_to_utf8(selected_filename, -1,
+							       NULL, NULL, NULL);
 				gtk_list_store_append(model, &iter);
-				gtk_list_store_set(model, &iter, 0, selected_filename, -1);
+				gtk_list_store_set(model, &iter, 0, utf8, -1);
+				g_free(utf8);
 			}
 
                         g_free(node->data);
@@ -948,7 +962,7 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
                 g_slist_free(lfiles);
         }
                                                          
-        gtk_widget_destroy(file_selector);
+        gtk_widget_destroy(dialog);
 
         set_sliders_width();    /* MAGIC */
 
@@ -1110,8 +1124,9 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 		if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter)) {
 			/* count the number of list items */
 			n = 1;
-			while (gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter))
+			while (gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter)) {
 				n++;
+			}
 		}
 		if ((n) && (name[0] != '\0')) {
 
@@ -1121,16 +1136,22 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 				exit(1);
 			}
 			for (i = 0; i < n; i++) {
+
+				char * locale;
+
 				gtk_tree_model_get(GTK_TREE_MODEL(model), &iter, 0, &str, -1);
 				gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
 
-				if (!((*strings)[i] = calloc(strlen(str)+1, sizeof(char)))) {
+				locale = g_locale_from_utf8(str, -1, NULL, NULL, NULL);
+
+				if (!((*strings)[i] = calloc(strlen(locale)+1, sizeof(char)))) {
 					fprintf(stderr, "add_record_dialog(): calloc error\n");
 					exit(1);
 				}
 
-				strcpy((*strings)[i], str);
+				strcpy((*strings)[i], locale);
 				g_free(str);
+				g_free(locale);
 			}
 			(*strings)[i] = NULL;
 		}
@@ -1294,7 +1315,9 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
         set_sliders_width();    /* MAGIC */
 
         if (strlen(selected_filename)) {
-                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), selected_filename);
+		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
+                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), locale);
+		g_free(locale);
 	} else {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
 	}
@@ -1310,11 +1333,14 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		gtk_entry_set_text(GTK_ENTRY(data), selected_filename);
+		char * utf8;
 
-                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
-                                                                         MAXLEN-1);
+                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		utf8 = g_locale_to_utf8(selected_filename, -1, NULL, NULL, NULL);
+		gtk_entry_set_text(GTK_ENTRY(data), utf8);
+
+                strncpy(options.currdir, selected_filename, MAXLEN-1);
+		g_free(utf8);
         }
 
 
@@ -1440,9 +1466,13 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 		
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
+		char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
+
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
-                strcpy(file, gtk_entry_get_text(GTK_ENTRY(file_entry)));
+                strcpy(file, pfile);
+
+		g_free(pfile);
 
 		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);
@@ -1511,7 +1541,9 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 	GtkWidget * check_button;
 	GtkObject * adj_manual_rva;
 	GtkWidget * spin_button;
+
 	char str[MAXLEN];
+	char * utf8;
         int ret;
 
         dialog = gtk_dialog_new_with_buttons(_("Edit Track"),
@@ -1561,14 +1593,18 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 
         file_entry = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(file_entry), MAXLEN - 1);
-        gtk_entry_set_text(GTK_ENTRY(file_entry), file);
+
+	utf8 = g_locale_to_utf8(file, -1, NULL, NULL, NULL);
+        gtk_entry_set_text(GTK_ENTRY(file_entry), utf8);
+	g_free(utf8);
+
         gtk_box_pack_start(GTK_BOX(hbox2), file_entry, TRUE, TRUE, 0);
 
 
 	browse_button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
         gtk_box_pack_start(GTK_BOX(hbox2), browse_button, FALSE, TRUE, 2);
-        g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_track_clicked),
-			 (gpointer *)file_entry);
+        g_signal_connect(G_OBJECT(browse_button), "clicked",
+			 G_CALLBACK(browse_button_track_clicked), (gpointer *)file_entry);
 	
 
 	comment_label = gtk_label_new(_("Comments:"));
@@ -1673,9 +1709,13 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
+		char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
+
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
-                strcpy(file, gtk_entry_get_text(GTK_ENTRY(file_entry)));
+                strcpy(file, pfile);
+
+		g_free(pfile);
 
 		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);
@@ -2292,6 +2332,9 @@ store__add_cb(gpointer data) {
 			gtk_dialog_run(GTK_DIALOG(dialog));
 			gtk_widget_destroy(dialog);
 		} else {
+
+			char * utf8 = g_locale_to_utf8(file, -1, NULL, NULL, NULL);
+
 			gtk_tree_store_append(music_store, &iter, NULL);
 			gtk_tree_store_set(music_store, &iter, 0, name, 2, file, 3, comment, 7, 1.0f/*rw*/, 8, PANGO_WEIGHT_BOLD, -1);
 
@@ -2305,7 +2348,8 @@ store__add_cb(gpointer data) {
 			xmlSaveFormatFile(file, doc, 1);
 
 			gtk_list_store_append(ms_pathlist_store, &iter);
-			gtk_list_store_set(ms_pathlist_store, &iter, 0, file, 1, _("rw"), -1);
+			gtk_list_store_set(ms_pathlist_store, &iter, 0, file, 1, utf8, 2, _("rw"), -1);
+			g_free(utf8);
 		}
 	}
 }
@@ -2780,18 +2824,21 @@ record__add_cb(gpointer data) {
 				for (i = 0; strings[i] != NULL; i++) {
 					sprintf(str_n, "%02d", i+1);
 					str = strings[i];
-					while (strstr(str, "/"))
+					while (strstr(str, "/")) {
 						str = strstr(str, "/") + 1;
+					}
 					if (str) {
 						float volume = 1.0f;
 						float use_rva = -1.0f;
+						char * utf8 = g_locale_to_utf8(str, -1, NULL, NULL, NULL);
 
 						gtk_tree_store_append(music_store, &child_iter, &iter);
 						gtk_tree_store_set(music_store, &child_iter,
-								   0, str, 1, str_n,
+								   0, utf8, 1, str_n,
 								   2, strings[i], 3, "",
 								   4, get_file_duration(strings[i]),
 								   5, volume, 7, use_rva, -1);
+						g_free(utf8);
 					}
 					free(strings[i]);
 				}
@@ -4445,8 +4492,9 @@ load_music_store(void) {
 	int i = 0;
 
 	if (!ms_pathlist_store) {
-		ms_pathlist_store = gtk_list_store_new(2,
+		ms_pathlist_store = gtk_list_store_new(3,
 						       G_TYPE_STRING,     /* path */
+						       G_TYPE_STRING,     /* displayed name */
 						       G_TYPE_STRING);    /* state (rw, r, unreachable) */
 	}
 

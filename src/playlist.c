@@ -2400,11 +2400,11 @@ save_track_node(GtkTreeIter * piter, xmlNodePtr root, char * nodeID) {
 	
 	xmlNewTextChild(node, NULL, (const xmlChar*) "track_name", (const xmlChar*) track_name);
 	if (!strcmp(nodeID,"record")) {
-	    xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) phys_name);
+		xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) phys_name);
 	} else {
-	    converted_temp = g_filename_to_uri(phys_name, NULL, NULL);
-	    xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) converted_temp);
-	    g_free(converted_temp);
+		converted_temp = g_filename_to_uri(phys_name, NULL, NULL);
+		xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) converted_temp);
+		g_free(converted_temp);
 	};
 	/* FIXME: dont use #000000 color as active if you dont want special fx in playlist 8-) */
 	
@@ -2676,8 +2676,9 @@ load_m3u(char * filename, int enqueue) {
 			}
 		} else {
 			line[i] = '\0';
-			if (i == 0)
+			if (i == 0) {
 				continue;
+			}
 			i = 0;
 
 			if (strstr(line, "#EXTM3U") == line) {
@@ -2691,7 +2692,7 @@ load_m3u(char * filename, int enqueue) {
 				
 				/* We parse the timing, but throw it away. 
 				   This may change in the future. */
-				while ((line[cnt+8] >= '0') && (line[cnt+8] <= '9')) {
+				while ((line[cnt+8] >= '0') && (line[cnt+8] <= '9') && cnt < 63) {
 					str_duration[cnt] = line[cnt+8];
 					++cnt;
 				}

@@ -160,9 +160,14 @@ gboolean
 set_filename_text(gpointer data) {
 
 	if (vol_window) {
-		gtk_entry_set_text(GTK_ENTRY(file_entry), (char *)data);
+
+		char * utf8 = g_filename_display_name((char *)data);
+
+		gtk_entry_set_text(GTK_ENTRY(file_entry), utf8);
 		gtk_editable_set_position(GTK_EDITABLE(file_entry), -1);
 		gtk_widget_grab_focus(cancel_button);
+
+		g_free(utf8);
 	}
 
 	return FALSE;

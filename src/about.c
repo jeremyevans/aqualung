@@ -22,6 +22,7 @@
 #include <config.h>
 
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "common.h"
 #include "version.h"
@@ -35,12 +36,28 @@ GtkWidget * about_window;
 extern GtkWidget * main_window;
 extern void set_sliders_width(void);
 
+
 static gint
 ok(GtkWidget * widget, gpointer data) {
 
 	gtk_widget_destroy(about_window);
         set_sliders_width();
 	return TRUE;
+}
+
+
+gint
+about_key_pressed(GtkWidget * widget, GdkEventKey * event, gpointer * data) {
+
+        switch (event->keyval) {
+	case GDK_q:
+	case GDK_Q:
+	case GDK_Escape:
+		ok(NULL, NULL);
+		return TRUE;
+	};
+
+	return FALSE;
 }
 
 
@@ -80,6 +97,7 @@ create_about_window() {
         gtk_widget_set_size_request(about_window, 483, 430);
 	gtk_window_set_position(GTK_WINDOW(about_window), GTK_WIN_POS_CENTER);
 	gtk_widget_modify_bg(about_window, GTK_STATE_NORMAL, &white);
+        g_signal_connect(G_OBJECT(about_window), "key_press_event", G_CALLBACK(about_key_pressed), NULL);
 
         vbox0 = gtk_vbox_new(FALSE, 0);
         gtk_container_add(GTK_CONTAINER(about_window), vbox0);

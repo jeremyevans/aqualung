@@ -2851,6 +2851,8 @@ hide_all_windows(gpointer data) {
 
 	systray_main_window_on = 0;
 
+	save_window_position();
+
 	if (build_prog_window) {
 		gtk_widget_hide(build_prog_window);
 	}
@@ -2917,6 +2919,8 @@ show_all_windows(gpointer data) {
 		gtk_widget_show(build_prog_window);
 		deflicker();
 	}
+
+	restore_window_position();
 
 	gtk_widget_hide(systray__show);
 	gtk_widget_show(systray__hide);
@@ -4308,19 +4312,21 @@ save_config(void) {
 	snprintf(str, 31, "%d", search_ms_flags);
         xmlNewTextChild(root, NULL, (const xmlChar *) "search_ms_flags", (xmlChar *) str);
 
-	//#ifdef HAVE_CDDB
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_server", (xmlChar *) options.cddb_server);
 	snprintf(str, 31, "%d", options.cddb_timeout);
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_timeout", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.cddb_use_http);
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_use_http", (xmlChar *) str);
-	//#endif /* HAVE_CDDB */
+
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
+		char * utf8;
 		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &path, -1);
-		xmlNewTextChild(root, NULL, (const xmlChar *) "music_store", (xmlChar *) path);
+		utf8 = g_locale_to_utf8(path, -1, NULL, NULL, NULL);
+		xmlNewTextChild(root, NULL, (const xmlChar *) "music_store", (xmlChar *) utf8);
 		g_free(path);
+		g_free(utf8);
 	}
 
 	
@@ -5003,23 +5009,30 @@ load_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
+
+				char * ppath;
+
 				snprintf(path, MAXLEN - 1, "%s", (char *)key);
+				ppath = g_locale_from_utf8(path, -1, NULL, NULL, NULL);
 
 				if (!ms_pathlist_store) {
-					ms_pathlist_store = gtk_list_store_new(2,
+					ms_pathlist_store = gtk_list_store_new(3,
 						    G_TYPE_STRING,     /* path */
+						    G_TYPE_STRING,     /* displayed name */
 						    G_TYPE_STRING);    /* state (rw, r, unreachable) */
 				}
 
 				gtk_list_store_append(ms_pathlist_store, &iter);
-				gtk_list_store_set(ms_pathlist_store, &iter, 0, path, -1);
-				if (access(path, R_OK | W_OK) == 0) {
-					gtk_list_store_set(ms_pathlist_store, &iter, 1, _("rw"), -1);
-				} else if (access(path, R_OK) == 0) {
-					gtk_list_store_set(ms_pathlist_store, &iter, 1, _("r"), -1);
+				gtk_list_store_set(ms_pathlist_store, &iter, 0, ppath, 1, path, -1);
+				if (access(ppath, R_OK | W_OK) == 0) {
+					gtk_list_store_set(ms_pathlist_store, &iter, 2, _("rw"), -1);
+				} else if (access(ppath, R_OK) == 0) {
+					gtk_list_store_set(ms_pathlist_store, &iter, 2, _("r"), -1);
 				} else {
-					gtk_list_store_set(ms_pathlist_store, &iter, 1, _("unreachable"), -1);
+					gtk_list_store_set(ms_pathlist_store, &iter, 2, _("unreachable"), -1);
 				}
+
+				g_free(ppath);
 			}
 
                         xmlFree(key);

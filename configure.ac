@@ -33,40 +33,20 @@ AC_CHECK_FUNCS([floor memset mkdir strdup strrchr strstr])
 
 
 
-#AC_MSG_CHECKING(for compilation platform)
-#if [ `uname -a | grep Cygwin | wc -l` = "1" ] ; then
-#   PLATFORM_CFLAGS="-mwin32 -mwindows"
-#   PLATFORM_LIBS="-lintl -lwinmm"
-#   win32="yes"
-#   AC_MSG_RESULT(Cygwin)
-#fi
-#if [ `uname -a | grep CYGWIN | wc -l` = "1" ] ; then
-#   PLATFORM_CFLAGS="-mwin32 -mwindows"
-#   PLATFORM_LIBS="-lintl -lwinmm"
-#   win32="yes"
-#   AC_MSG_RESULT(CYGWIN)
-#fi
-#if [ `uname -a | grep Linux | wc -l` = "1" ] ; then
-#   PLATFORM_CFLAGS=""
-#   PLATFORM_LIBS=""
-#   win32="no"
-#   AC_MSG_RESULT(Linux)
-#fi
-#if [ `uname -a | grep LINUX | wc -l` = "1" ] ; then
-#   PLATFORM_CFLAGS=""
-#   PLATFORM_LIBS=""
-#   win32="no"
-#   AC_MSG_RESULT(LINUX)
-#fi
+AC_MSG_CHECKING(for compilation platform)
+if test `uname -a | grep CYGWIN | wc -l` = "1" ; then
+   PLATFORM_CFLAGS="-mwin32 -mwindows"
+   PLATFORM_LIBS="-lintl -lwinmm"
+   win32="yes"
+   AC_MSG_RESULT(Cygwin)
+fi
+if test `uname -a | grep Linux | wc -l` = "1"  ; then
+   PLATFORM_CFLAGS=""
+   PLATFORM_LIBS=""
+   win32="no"
+   AC_MSG_RESULT(Linux)
+fi
 
-# uncomment these when building in Cygwin:
-#PLATFORM_CFLAGS="-mwin32 -mwindows"
-#PLATFORM_LIBS="-lintl -lwinmm"
-#win32="yes"
-# else uncomment these:
-PLATFORM_CFLAGS=""
-PLATFORM_LIBS=""
-win32="no"
 
 
 AC_CHECK_PROG([var], [pkg-config], [yes], [no])

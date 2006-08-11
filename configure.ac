@@ -33,6 +33,42 @@ AC_CHECK_FUNCS([floor memset mkdir strdup strrchr strstr])
 
 
 
+#AC_MSG_CHECKING(for compilation platform)
+#if [ `uname -a | grep Cygwin | wc -l` = "1" ] ; then
+#   PLATFORM_CFLAGS="-mwin32 -mwindows"
+#   PLATFORM_LIBS="-lintl -lwinmm"
+#   win32="yes"
+#   AC_MSG_RESULT(Cygwin)
+#fi
+#if [ `uname -a | grep CYGWIN | wc -l` = "1" ] ; then
+#   PLATFORM_CFLAGS="-mwin32 -mwindows"
+#   PLATFORM_LIBS="-lintl -lwinmm"
+#   win32="yes"
+#   AC_MSG_RESULT(CYGWIN)
+#fi
+#if [ `uname -a | grep Linux | wc -l` = "1" ] ; then
+#   PLATFORM_CFLAGS=""
+#   PLATFORM_LIBS=""
+#   win32="no"
+#   AC_MSG_RESULT(Linux)
+#fi
+#if [ `uname -a | grep LINUX | wc -l` = "1" ] ; then
+#   PLATFORM_CFLAGS=""
+#   PLATFORM_LIBS=""
+#   win32="no"
+#   AC_MSG_RESULT(LINUX)
+#fi
+
+# uncomment these when building in Cygwin:
+#PLATFORM_CFLAGS="-mwin32 -mwindows"
+#PLATFORM_LIBS="-lintl -lwinmm"
+#win32="yes"
+# else uncomment these:
+PLATFORM_CFLAGS=""
+PLATFORM_LIBS=""
+win32="no"
+
+
 AC_CHECK_PROG([var], [pkg-config], [yes], [no])
 if test ! "$var" = "yes"; then
 	AC_MSG_ERROR(You do not appear to have pkg-config installed)
@@ -62,38 +98,10 @@ AC_CHECK_LIB(xml2,
 	[AC_MSG_ERROR(You do not appear to have libxml2 installed. Grab it from http://xmlsoft.org)])
 
 
-AC_MSG_CHECKING(jack development library)
-if pkg-config --exists 'jack'; then
-        AC_MSG_RESULT(yes)
-else
-	AC_MSG_RESULT(no)
-	AC_MSG_ERROR(You do not appear to have libjack (the JACK library) installed. Grab it from http://jackit.sf.net)
-fi
-
-AC_CHECK_LIB(jack,
-	jack_client_new,
-	[],
-	[AC_MSG_ERROR(You do not appear to have JACK installed. Grab it from http://jackit.sf.net)])
-
-
 AC_CHECK_LIB(pthread,
 	pthread_create,
 	[],
 	[AC_MSG_ERROR(You do not appear to have a usable pthread library)])
-
-
-AC_MSG_CHECKING(whether liblrdf version >= 0.4.0)
-if pkg-config --exists 'lrdf >= 0.4.0'; then
-        AC_MSG_RESULT(yes)
-else
-	AC_MSG_RESULT(no)
-	AC_MSG_ERROR(LRDF not found or too old (version < 0.4.0))
-fi
-
-AC_CHECK_LIB(lrdf,
-	lrdf_init,
-	[],
-	[AC_MSG_ERROR([You do not appear to have the LRDF library installed. Grab it from http://plugin.org.uk/releases/lrdf])])
 
 
 AC_CHECK_LIB(dl,
@@ -146,6 +154,31 @@ else
 	fi
 	if test "$alsa" = "detect"; then
 	        alsa=$lib
+	fi
+fi
+
+
+AC_MSG_CHECKING(for JACK support)
+AC_ARG_WITH(
+	jack,
+	[  --with-jack=yes,no      compile with JACK support (default: yes)],
+	jack="$withval",
+	jack="detect")
+
+if test "$jack" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(jack, jack_client_new, [lib=yes], [lib=no])
+	if test "$lib" = "yes"; then
+	        jack_CFLAGS=`pkg-config --cflags jack`
+		jack_LIBS=`pkg-config --libs jack`
+		AC_DEFINE([HAVE_JACK], [1], [Defined if compile with JACK support])
+	fi
+	if test "$lib" = "no" -a "$jack" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the JACK library installed. Grab it from http://jackaudio.org)
+	fi
+	if test "$jack" = "detect"; then
+	        jack=$lib
 	fi
 fi
 
@@ -401,6 +434,36 @@ else
 fi
 
 
+AC_MSG_CHECKING(for LADSPA plugin support)
+AC_ARG_WITH(
+	ladspa,
+	[  --with-ladspa=yes,no    compile with LADSPA plugin support (default: yes)],
+	ladspa="$withval",
+	ladspa="detect")
+if test "$ladspa" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(lrdf, lrdf_init, [lib=yes], [lib=no])
+	if test "$lib" = "yes"; then
+		AC_MSG_CHECKING(whether liblrdf version >= 0.4.0)
+		if `pkg-config --exists 'lrdf >= 0.4.0'`; then
+			AC_MSG_RESULT(yes)
+		        lrdf_LIBS=`pkg-config --libs lrdf`
+			AC_DEFINE([HAVE_LADSPA], [1], [Defined if compile with LADSPA plugin support])
+		else
+			AC_MSG_RESULT(no)
+			lib="no"
+		fi
+	fi
+	if test "$lib" = "no" -a "$ladspa" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the LRDF library installed (needed for LADSPA support). Grab it from http://sourceforge.net/projects/lrdf/)
+	fi
+	if test "$ladspa" = "detect"; then
+		ladspa=$lib
+	fi
+fi
+
+
 AC_MSG_CHECKING(for CDDB support)
 AC_ARG_WITH(
 	cddb,
@@ -495,17 +558,14 @@ glib_LIBS=`pkg-config --libs gthread-2.0`
 xml_CFLAGS=`xml2-config --cflags`
 xml_LIBS=`xml2-config --libs`
 
-jack_LIBS=`pkg-config --libs jack`
 
-lrdf_LIBS=`pkg-config --libs lrdf`
+AQUALUNG_SKINDIR="-DAQUALUNG_SKINDIR=\\\"$datadir/aqualung/skin\\\""
+AQUALUNG_LOCALEDIR="-DAQUALUNG_LOCALEDIR=\\\"$datadir/locale\\\""
+AQUALUNG_DATADIR="-DAQUALUNG_DATADIR=\\\"$datadir/aqualung\\\""
 
-SKINDIR="-DSKINDIR=\\\"$datadir/aqualung/skin\\\""
-LOCALEDIR="-DLOCALEDIR=\\\"$datadir/locale\\\""
-DATADIR="-DDATADIR=\\\"$datadir/aqualung\\\""
-
-CFLAGS="-O2 -Wall $SKINDIR $LOCALEDIR $DATADIR -D_GNU_SOURCE"
-CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS"
-LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $cddb_LIBS $ifp_LIBS"
+CFLAGS="-O2 -Wall $PLATFORM_CFLAGS $AQUALUNG_SKINDIR $AQUALUNG_LOCALEDIR $AQUALUNG_DATADIR -D_GNU_SOURCE"
+CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS"
+LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $id3_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS"
 
 
 AC_OUTPUT([Makefile \
@@ -541,9 +601,11 @@ echo
 echo "  Output driver support:"
 echo "      OSS Audio                           :  $oss"
 echo "      ALSA Audio                          :  $alsa"
-echo "      JACK Audio Server                   :  yes (always)"
+echo "      JACK Audio Server                   :  $jack"
+echo "      Win32 Sound API                     :  $win32"
 echo
 echo "  Internal Sample Rate Converter support  :  $src"
+echo "  LADSPA plugin support                   :  $ladspa"
 echo "  CDDB support                            :  $cddb"
 echo "  iRiver iFP driver support               :  $ifp"
 echo "  Systray support                         :  $systray"

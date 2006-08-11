@@ -32,8 +32,6 @@
 #include <sys/stat.h>
 #include <gtk/gtk.h>
 
-#include <jack/ringbuffer.h>
-
 
 #include "file_decoder.h"
 #include "dec_null.h"

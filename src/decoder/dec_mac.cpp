@@ -117,7 +117,7 @@ decode_mac(decoder_t * dec) {
 		break;
 	}
 
-	jack_ringbuffer_write(pd->rb, (char *)fbuf,
+	rb_write(pd->rb, (char *)fbuf,
 			      act_read * pd->channels * sample_size);
 
 	return 0;
@@ -197,7 +197,7 @@ mac_decoder_open(decoder_t * dec, char * filename) {
 	}
 
 	pd->is_eos = 0;
-	pd->rb = jack_ringbuffer_create(pd->channels * sample_size * RB_MAC_SIZE);
+	pd->rb = rb_create(pd->channels * sample_size * RB_MAC_SIZE);
 	fdec->channels = pd->channels;
 	fdec->SR = pd->sample_rate;
 	fdec->file_lib = MAC_LIB;
@@ -239,7 +239,7 @@ mac_decoder_close(decoder_t * dec) {
 	IAPEDecompress * pdecompress = (IAPEDecompress *)pd->decompress;
 
 	delete(pdecompress);
-	jack_ringbuffer_free(pd->rb);
+	rb_free(pd->rb);
 }
 
 
@@ -252,19 +252,19 @@ mac_decoder_read(decoder_t * dec, float * dest, int num) {
 	unsigned int n_avail = 0;
 
 
-	while ((jack_ringbuffer_read_space(pd->rb) <
+	while ((rb_read_space(pd->rb) <
 		num * pd->channels * sample_size) && (!pd->is_eos)) {
 
 		pd->is_eos = decode_mac(dec);
 	}
 
-	n_avail = jack_ringbuffer_read_space(pd->rb) /
+	n_avail = rb_read_space(pd->rb) /
 		(pd->channels * sample_size);
 
 	if (n_avail > num)
 		n_avail = num;
 
-	jack_ringbuffer_read(pd->rb, (char *)dest, n_avail * pd->channels * sample_size);
+	rb_read(pd->rb, (char *)dest, n_avail * pd->channels * sample_size);
 	numread = n_avail;
 	return numread;
 }
@@ -282,8 +282,8 @@ mac_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	fdec->samples_left = fdec->fileinfo.total_samples - seek_to_pos;
 
 	/* empty mac decoder ringbuffer */
-	while (jack_ringbuffer_read_space(pd->rb))
-		jack_ringbuffer_read(pd->rb, &flush_dest, sizeof(char));
+	while (rb_read_space(pd->rb))
+		rb_read(pd->rb, &flush_dest, sizeof(char));
 }
 
 

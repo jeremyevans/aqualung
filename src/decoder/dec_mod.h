@@ -38,7 +38,7 @@
 
 #ifdef HAVE_MOD
 typedef struct _mod_pdata_t {
-        jack_ringbuffer_t * rb;
+        rb_t * rb;
         ModPlug_Settings mp_settings;
         ModPlugFile * mpf;
         int fd;

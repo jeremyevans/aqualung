@@ -304,8 +304,25 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, _("ALSA Audio\n"), -1);
 
 	
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[" MARK "]\t", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
+#ifdef HAVE_JACK
+	gtk_text_buffer_insert_at_cursor(buffer, MARK, -1);
+#else
+	gtk_text_buffer_get_end_iter(buffer, &iter);
+	gtk_text_buffer_insert_with_tags(buffer, &iter, MARK, -1, tag2, NULL);
+#endif /* HAVE_JACK */
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("JACK Audio Server\n"), -1);
+
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
+#ifdef _WIN32
+	gtk_text_buffer_insert_at_cursor(buffer, MARK, -1);
+#else
+	gtk_text_buffer_get_end_iter(buffer, &iter);
+	gtk_text_buffer_insert_with_tags(buffer, &iter, MARK, -1, tag2, NULL);
+#endif /* _WIN32 */
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("Win32 Sound API\n"), -1);
 
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
@@ -322,6 +339,16 @@ create_about_window() {
 #endif /* HAVE_SRC */
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Internal Sample Rate Converter support\n"), -1);
+
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
+#ifdef HAVE_LADSPA
+	gtk_text_buffer_insert_at_cursor(buffer, MARK, -1);
+#else
+	gtk_text_buffer_get_end_iter(buffer, &iter);
+	gtk_text_buffer_insert_with_tags(buffer, &iter, MARK, -1, tag2, NULL);
+#endif /* HAVE_LADSPA */
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("LADSPA plugin support\n"), -1);
 
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
@@ -379,7 +406,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."), -1);
 	gtk_container_add(GTK_CONTAINER(frame), scrolled_win);
 	gtk_container_add(GTK_CONTAINER(scrolled_win), view);
 
-	sprintf(path, "%s/logo.png", DATADIR);
+	sprintf(path, "%s/logo.png", AQUALUNG_DATADIR);
         if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		xpm = gtk_image_new_from_pixbuf (pixbuf);
 		gtk_box_pack_start(GTK_BOX(vbox0), xpm, FALSE, FALSE, 0);

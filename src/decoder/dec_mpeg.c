@@ -268,10 +268,10 @@ mpeg_output(void * data, struct mad_header const * header, struct mad_pcm * pcm)
                         fbuf[j] = (double)buf[j] * fdec->voladj_lin / scale;
                 }
 
-                if (jack_ringbuffer_write_space(pd->rb) >=
+                if (rb_write_space(pd->rb) >=
                     pd->channels * sample_size) {
 
-                        jack_ringbuffer_write(pd->rb, (char *)fbuf,
+                        rb_write(pd->rb, (char *)fbuf,
                                               pd->channels * sample_size);
 		}
         }
@@ -440,7 +440,7 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	
 	pd->error = 0;
 	pd->is_eos = 0;
-	pd->rb = jack_ringbuffer_create(pd->channels * sample_size * RB_MAD_SIZE);
+	pd->rb = rb_create(pd->channels * sample_size * RB_MAD_SIZE);
 	fdec->channels = pd->channels;
 	fdec->SR = pd->SR;
 	fdec->file_lib = MAD_LIB;
@@ -465,7 +465,7 @@ mpeg_decoder_close(decoder_t * dec) {
 	if (munmap(pd->fdm, pd->mpeg_stat.st_size) == -1)
 		fprintf(stderr, "Error while munmap()'ing MPEG Audio file mapping\n");
 	close(pd->fd);
-	jack_ringbuffer_free(pd->rb);
+	rb_free(pd->rb);
 }
 
 
@@ -478,18 +478,18 @@ mpeg_decoder_read(decoder_t * dec, float * dest, int num) {
 	unsigned int n_avail = 0;
 
 
-	while ((jack_ringbuffer_read_space(pd->rb) < num * pd->channels *
+	while ((rb_read_space(pd->rb) < num * pd->channels *
 		sample_size) && (!pd->is_eos)) {
 		
 		pd->is_eos = decode_mpeg(dec);
 	}
 	
-	n_avail = jack_ringbuffer_read_space(pd->rb) / (pd->channels * sample_size);
+	n_avail = rb_read_space(pd->rb) / (pd->channels * sample_size);
 
 	if (n_avail > num)
 		n_avail = num;
 
-	jack_ringbuffer_read(pd->rb, (char *)dest, n_avail * pd->channels * sample_size);
+	rb_read(pd->rb, (char *)dest, n_avail * pd->channels * sample_size);
 
 	numread = n_avail;
 	return numread;
@@ -515,8 +515,8 @@ mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 		(pd->mpeg_stream.next_frame - pd->mpeg_stream.buffer)
 		/ pd->bitrate * 8 * pd->SR;
 	/* empty mpeg decoder ringbuffer */
-	while (jack_ringbuffer_read_space(pd->rb))
-		jack_ringbuffer_read(pd->rb, &flush_dest, sizeof(char));
+	while (rb_read_space(pd->rb))
+		rb_read(pd->rb, &flush_dest, sizeof(char));
 }
 
 

@@ -35,7 +35,7 @@
 #ifdef HAVE_FLAC
 typedef struct _flac_pdata_t {
         FLAC__FileDecoder * flac_decoder;
-        jack_ringbuffer_t * rb;
+        rb_t * rb;
         int channels;
         int SR;
         unsigned bits_per_sample;

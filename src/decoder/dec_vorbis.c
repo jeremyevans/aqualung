@@ -65,7 +65,7 @@ decode_vorbis(decoder_t * dec) {
                 for (i = 0; i < bytes_read/2; i++) {
                         fbuffer[i] = *((short *)(buffer + 2*i)) * fdec->voladj_lin / 32768.f;
 		}
-                jack_ringbuffer_write(pd->rb, (char *)fbuffer,
+                rb_write(pd->rb, (char *)fbuffer,
                                       bytes_read/2 * sample_size);
 		break;
 	}
@@ -142,7 +142,7 @@ vorbis_decoder_open(decoder_t * dec, char * filename) {
 	}
 	
 	pd->is_eos = 0;
-	pd->rb = jack_ringbuffer_create(pd->vi->channels * sample_size * RB_VORBIS_SIZE);
+	pd->rb = rb_create(pd->vi->channels * sample_size * RB_VORBIS_SIZE);
 	fdec->channels = pd->vi->channels;
 	fdec->SR = pd->vi->rate;
 	fdec->file_lib = VORBIS_LIB;
@@ -162,7 +162,7 @@ vorbis_decoder_close(decoder_t * dec) {
 	vorbis_pdata_t * pd = (vorbis_pdata_t *)dec->pdata;
 
 	ov_clear(&(pd->vf));
-	jack_ringbuffer_free(pd->rb);
+	rb_free(pd->rb);
 }
 
 
@@ -175,19 +175,19 @@ vorbis_decoder_read(decoder_t * dec, float * dest, int num) {
 	unsigned int n_avail = 0;
 
 
-	while ((jack_ringbuffer_read_space(pd->rb) <
+	while ((rb_read_space(pd->rb) <
 		num * pd->vi->channels * sample_size) && (!pd->is_eos)) {
 
 		pd->is_eos = decode_vorbis(dec);
 	}
 
-	n_avail = jack_ringbuffer_read_space(pd->rb) /
+	n_avail = rb_read_space(pd->rb) /
 		(pd->vi->channels * sample_size);
 
 	if (n_avail > num)
 		n_avail = num;
 
-	jack_ringbuffer_read(pd->rb, (char *)dest, n_avail *
+	rb_read(pd->rb, (char *)dest, n_avail *
 			     pd->vi->channels * sample_size);
 	numread = n_avail;
 	return numread;
@@ -204,8 +204,8 @@ vorbis_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	if (ov_pcm_seek(&(pd->vf), seek_to_pos) == 0) {
 		fdec->samples_left = fdec->fileinfo.total_samples - seek_to_pos;
 		/* empty vorbis decoder ringbuffer */
-		while (jack_ringbuffer_read_space(pd->rb))
-			jack_ringbuffer_read(pd->rb, &flush_dest, sizeof(char));
+		while (rb_read_space(pd->rb))
+			rb_read(pd->rb, &flush_dest, sizeof(char));
 	} else {
 		fprintf(stderr, "vorbis_decoder_seek: warning: ov_pcm_seek() failed\n");
 	}

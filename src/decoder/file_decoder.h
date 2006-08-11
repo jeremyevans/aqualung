@@ -23,7 +23,7 @@
 #define _FILE_DECODER_H
 
 #include <jack/jack.h>
-#include <jack/ringbuffer.h>
+#include "../rb.h"
 
 /* input libs */
 #define NULL_LIB    0

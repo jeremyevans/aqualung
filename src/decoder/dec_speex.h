@@ -39,7 +39,7 @@
 
 #ifdef HAVE_SPEEX
 typedef struct _speex_pdata_t {
-        jack_ringbuffer_t * rb;
+        rb_t * rb;
         FILE * speex_file;
 
 	OGGZ * oggz;

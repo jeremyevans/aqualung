@@ -37,7 +37,7 @@
 
 #ifdef HAVE_MPC
 typedef struct _mpc_pdata_t {
-        jack_ringbuffer_t * rb;
+        rb_t * rb;
         FILE * mpc_file;
         long int size;
         int seekable;

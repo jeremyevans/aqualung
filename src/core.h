@@ -23,12 +23,17 @@
 #define _CORE_H
 
 
+#include <sys/types.h>
+#include <pthread.h>
+
+
 #ifdef HAVE_ALSA
 #include <alsa/asoundlib.h>
 #endif /* HAVE_ALSA */
 
+#ifdef HAVE_JACK
 #include <jack/jack.h>
-#include <jack/ringbuffer.h>
+#endif /* HAVE_JACK */
 
 /* output drivers */
 #ifdef HAVE_OSS
@@ -39,8 +44,13 @@
 #define ALSA_DRIVER 2
 #endif /* HAVE_ALSA */
 
-/* you can't compile without this */
+#ifdef HAVE_JACK
 #define JACK_DRIVER 3
+#endif /* HAVE_JACK */
+
+#ifdef _WIN32
+#define WIN32_DRIVER 4
+#endif /* _WIN32 */
 
 
 #define MAX_SAMPLERATE 96000
@@ -65,14 +75,12 @@ typedef struct _thread_info {
 	pthread_t disk_thread_id;
 
 #ifdef HAVE_OSS	
-	/* OSS */
 	pthread_t oss_thread_id;
 	int fd_oss;
 	short * oss_short_buf;
 #endif /* HAVE_OSS */
 
 #ifdef HAVE_ALSA	
-	/* ALSA */
 	pthread_t alsa_thread_id;
 	char * pcm_name;
 	snd_pcm_t * pcm_handle;
@@ -83,7 +91,11 @@ typedef struct _thread_info {
 	int * alsa_int_buf;
 #endif /* HAVE_ALSA */	
 
-	jack_nframes_t rb_size;
+#ifdef _WIN32
+	pthread_t win32_thread_id;
+#endif /* _WIN32 */
+
+	u_int32_t rb_size;
 	unsigned long in_SR;
 	unsigned long in_SR_prev;
 	unsigned long out_SR;

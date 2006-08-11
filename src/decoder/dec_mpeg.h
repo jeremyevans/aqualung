@@ -39,7 +39,7 @@
 #ifdef HAVE_MPEG
 typedef struct _mpeg_pdata_t {
         struct mad_decoder mpeg_decoder;
-        jack_ringbuffer_t * rb;
+        rb_t * rb;
         FILE * mpeg_file;
         int channels;
         int SR;

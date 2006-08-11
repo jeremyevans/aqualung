@@ -33,10 +33,10 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <jack/jack.h>
-#include <jack/ringbuffer.h>
 
 #include "common.h"
 #include "core.h"
+#include "rb.h"
 #include "gui_main.h"
 #include "music_browser.h"
 #include "file_info.h"
@@ -175,7 +175,7 @@ extern int allow_seeks;
 
 extern char current_file[MAXLEN];
 
-extern jack_ringbuffer_t * rb_gui2disk;
+extern rb_t * rb_gui2disk;
 
 extern GtkWidget * playlist_toggle;
 
@@ -397,8 +397,8 @@ start_playback_from_playlist(GtkTreePath * path) {
 	}
 		
 	cmd = CMD_CUE;
-	jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
-	jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
+	rb_write(rb_gui2disk, &cmd, sizeof(char));
+	rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 	try_waking_disk_thread();
 	
 	is_file_loaded = 1;
@@ -2168,7 +2168,7 @@ create_playlist(void) {
 			    GDK_ACTION_MOVE);
 
 	
-	snprintf(path, MAXLEN-1, "%s/drag.png", DATADIR);
+	snprintf(path, MAXLEN-1, "%s/drag.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		gtk_drag_source_set_icon_pixbuf(play_list, pixbuf);
 	}	

@@ -19,6 +19,10 @@
 */
 
 
+#include <config.h>
+
+#ifdef HAVE_JACK
+
 #include <errno.h>
 #include <math.h>
 #include <stdio.h>
@@ -571,6 +575,8 @@ port_setup_dialog(void) {
 	gtk_widget_show_all(hbox_L);
 	gtk_widget_show_all(hbox_R);
 }
+
+#endif /* HAVE_JACK */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

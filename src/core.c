@@ -48,33 +48,41 @@
 #endif /* HAVE_OSS */
 
 /* for JACK support */
+#ifdef HAVE_JACK
 #include <jack/jack.h>
-#include <jack/ringbuffer.h>
+#endif /* HAVE_JACK */
+
+#ifdef _WIN32
+#include <windows.h>
+#include <mmsystem.h>
+#endif /* _WIN32 */
 
 #include "common.h"
 #include "version.h"
+#include "rb.h"
 #include "options.h"
 #include "decoder/file_decoder.h"
 #include "transceiver.h"
 #include "gui_main.h"
 #include "plugin.h"
-#include "spinlock.h"
 #include "i18n.h"
 #include "core.h"
 
 extern options_t options;
 
 /* JACK data */
+#ifdef HAVE_JACK
 jack_client_t * jack_client;
 jack_port_t * out_L_port;
 jack_port_t * out_R_port;
 char * client_name = NULL;
-jack_nframes_t jack_nframes;
+u_int32_t jack_nframes;
 int jack_is_shutdown;
 int auto_connect = 0;
 int default_ports = 1;
 char * user_port1 = NULL;
 char * user_port2 = NULL;
+#endif /* HAVE_JACK */
 
 const size_t sample_size = sizeof(float);
 
@@ -101,14 +109,14 @@ int src_type_parsed = 0;
 #endif /* HAVE_SRC */
 
 /* Synchronization between disk thread and output thread */
-jack_ringbuffer_t * rb;
 pthread_mutex_t disk_thread_lock = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t  disk_thread_wake = PTHREAD_COND_INITIALIZER;
-jack_ringbuffer_t * rb_disk2out;
+rb_t * rb; /* this is the audio stream carrier ringbuffer */
+rb_t * rb_disk2out;
 
 /* Communication between gui thread and disk thread */
-jack_ringbuffer_t * rb_gui2disk;
-jack_ringbuffer_t * rb_disk2gui;
+rb_t * rb_gui2disk;
+rb_t * rb_disk2gui;
 
 /* Lock critical operations that could interfere with output thread */
 volatile int output_thread_lock = 0;
@@ -116,12 +124,14 @@ double left_gain = 1.0;
 double right_gain = 1.0;
 
 /* LADSPA stuff */
+float * l_buf = NULL;
+float * r_buf = NULL;
+#ifdef HAVE_LADSPA
 volatile int plugin_lock = 0;
 unsigned long ladspa_buflen = 0;
-LADSPA_Data * l_buf = NULL;
-LADSPA_Data * r_buf = NULL;
 int n_plugins = 0;
 plugin_instance * plugin_vect[MAX_PLUGINS];
+#endif /* HAVE_LADSPA */
 
 /* remote control */
 extern int immediate_start;
@@ -232,15 +242,15 @@ disk_thread(void * arg) {
 	while (1) {
 
 		recv_cmd = 0;
-		if (jack_ringbuffer_read_space(rb_gui2disk) > 0) {
-			jack_ringbuffer_read(rb_gui2disk, &recv_cmd, 1);
+		if (rb_read_space(rb_gui2disk) > 0) {
+			rb_read(rb_gui2disk, &recv_cmd, 1);
 			switch (recv_cmd) {
 			case CMD_CUE:
 				/* read the string */
-				while (jack_ringbuffer_read_space(rb_gui2disk) < sizeof(cue_t))
+				while (rb_read_space(rb_gui2disk) < sizeof(cue_t))
 					;
 
-				jack_ringbuffer_read(rb_gui2disk, (void *)&cue, sizeof(cue_t));
+				rb_read(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 				
 				if (cue.filename != NULL) {
 					strncpy(filename, cue.filename, MAXLEN-1);
@@ -257,7 +267,7 @@ disk_thread(void * arg) {
 						info->is_streaming = 0;
 						end_of_file = 1;
 						send_cmd = CMD_FILEREQ;
-						jack_ringbuffer_write(rb_disk2gui, &send_cmd, 1);
+						rb_write(rb_disk2gui, &send_cmd, 1);
 						goto sleep;
 					} else if (!sample_rates_ok(info->out_SR, fdec->SR)) {
 						fdec->file_open = 1; /* to get close_file() working */
@@ -268,7 +278,7 @@ disk_thread(void * arg) {
 						info->is_streaming = 0;
 						end_of_file = 1;
 						send_cmd = CMD_FILEREQ;
-						jack_ringbuffer_write(rb_disk2gui, &send_cmd, 1);
+						rb_write(rb_disk2gui, &send_cmd, 1);
 						goto sleep;
 					} else {
 						file_decoder_set_rva(fdec, cue.voladj);
@@ -279,9 +289,9 @@ disk_thread(void * arg) {
 						sample_offset = 0;
 
 						send_cmd = CMD_FILEINFO;
-						jack_ringbuffer_write(rb_disk2gui, &send_cmd,
+						rb_write(rb_disk2gui, &send_cmd,
 								      sizeof(send_cmd));
-						jack_ringbuffer_write(rb_disk2gui,
+						rb_write(rb_disk2gui,
 								      (char *)&(fdec->fileinfo),
 								      sizeof(fileinfo_t));
 
@@ -293,7 +303,7 @@ disk_thread(void * arg) {
 
 					/* send a FLUSH command to output thread to stop immediately */
 					send_cmd = CMD_FLUSH;
-					jack_ringbuffer_write(rb_disk2out, &send_cmd, 1);
+					rb_write(rb_disk2out, &send_cmd, 1);
 					goto sleep;
 				}
 				break;
@@ -306,10 +316,10 @@ disk_thread(void * arg) {
 
 				/* send a FLUSH command to output thread */
 				send_cmd = CMD_FLUSH;
-				jack_ringbuffer_write(rb_disk2out, &send_cmd, 1);
+				rb_write(rb_disk2out, &send_cmd, 1);
 
 				/* roll back sample_offset samples, if possible */
-				sample_offset = jack_ringbuffer_read_space(rb) /
+				sample_offset = rb_read_space(rb) /
 					(2 * sample_size) * src_ratio;
 				if (sample_offset <
 				    fdec->fileinfo.total_samples - fdec->samples_left)
@@ -326,21 +336,21 @@ disk_thread(void * arg) {
 				goto done;
 				break;
 			case CMD_SEEKTO:
-				while (jack_ringbuffer_read_space(rb_gui2disk) < sizeof(seek_t))
+				while (rb_read_space(rb_gui2disk) < sizeof(seek_t))
 					;
-				jack_ringbuffer_read(rb_gui2disk, (char *)&seek, sizeof(seek_t));
+				rb_read(rb_gui2disk, (char *)&seek, sizeof(seek_t));
 				if (fdec->file_lib != 0) {
 					file_decoder_seek(fdec, seek.seek_to_pos);
 					/* send a FLUSH command to output thread */
 					send_cmd = CMD_FLUSH;
-					jack_ringbuffer_write(rb_disk2out, &send_cmd, 1);
+					rb_write(rb_disk2out, &send_cmd, 1);
 				} else {
 					/* send dummy STATUS to gui, to set pos slider to zero */
 					disk_thread_status.samples_left = 0;
 					disk_thread_status.sample_offset = 0;
 					send_cmd = CMD_STATUS;
-					jack_ringbuffer_write(rb_disk2gui, &send_cmd, sizeof(send_cmd));
-					jack_ringbuffer_write(rb_disk2gui, (char *)&disk_thread_status,
+					rb_write(rb_disk2gui, &send_cmd, sizeof(send_cmd));
+					rb_write(rb_disk2gui, (char *)&disk_thread_status,
 							      sizeof(status_t));
 				}
 				break;
@@ -355,7 +365,7 @@ disk_thread(void * arg) {
 		if (!info->is_streaming)
 			goto sleep;
 
-		n_space = jack_ringbuffer_write_space(rb) / (2 * sample_size);
+		n_space = rb_write_space(rb) / (2 * sample_size);
 		while (n_src < 0.95 * n_space) {
 			
 			src_ratio = (double)info->out_SR / (double)info->in_SR;
@@ -417,27 +427,27 @@ disk_thread(void * arg) {
 
 				/* send request for a new filename */
 				send_cmd = CMD_FILEREQ;
-				jack_ringbuffer_write(rb_disk2gui, &send_cmd, 1);
+				rb_write(rb_disk2gui, &send_cmd, 1);
 				goto sleep;
 			}
 		}
 
 	flush:
-		jack_ringbuffer_write(rb, framebuf, n_src * 2*sample_size);
+		rb_write(rb, framebuf, n_src * 2*sample_size);
 
 		/* update & send STATUS */
 		fdec->samples_left -= n_read;
-		sample_offset =	jack_ringbuffer_read_space(rb) / (2 * sample_size);
+		sample_offset =	rb_read_space(rb) / (2 * sample_size);
 		disk_thread_status.samples_left = fdec->samples_left;
 		disk_thread_status.sample_offset = sample_offset / src_ratio;
 		if (disk_thread_status.samples_left < 0) {
 			disk_thread_status.samples_left = 0;
 		}
 
-		if (!jack_ringbuffer_read_space(rb_gui2disk)) {
+		if (!rb_read_space(rb_gui2disk)) {
 			send_cmd = CMD_STATUS;
-			jack_ringbuffer_write(rb_disk2gui, &send_cmd, sizeof(send_cmd));
-			jack_ringbuffer_write(rb_disk2gui, (char *)&disk_thread_status,
+			rb_write(rb_disk2gui, &send_cmd, sizeof(send_cmd));
+			rb_write(rb_disk2gui, (char *)&disk_thread_status,
 					      sizeof(status_t));
 		}
 
@@ -480,7 +490,7 @@ disk_thread(void * arg) {
 void *
 oss_thread(void * arg) {
 
-        jack_nframes_t i;
+        u_int32_t i;
         thread_info_t * info = (thread_info_t *)arg;
 	int bufsize = 1024;
         int n_avail;
@@ -489,14 +499,12 @@ oss_thread(void * arg) {
 
 	int fd_oss = info->fd_oss;
 	short * oss_short_buf;
-	//jack_nframes_t rb_size = info->rb_size;
 
 	struct timespec req_time;
 	struct timespec rem_time;
 	req_time.tv_sec = 0;
         req_time.tv_nsec = 100000000;
 
-	//spin_waitlock_m(&output_thread_lock);
 	output_thread_lock = 1;
 
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -508,27 +516,29 @@ oss_thread(void * arg) {
 	}
 	oss_short_buf = info->oss_short_buf;
 
-	if ((l_buf = malloc(bufsize * sizeof(LADSPA_Data))) == NULL) {
+	if ((l_buf = malloc(bufsize * sizeof(float))) == NULL) {
 		fprintf(stderr, "oss_thread: malloc error\n");
 		exit(1);
 	}
-	if ((r_buf = malloc(bufsize * sizeof(LADSPA_Data))) == NULL) {
+	if ((r_buf = malloc(bufsize * sizeof(float))) == NULL) {
 		fprintf(stderr, "oss_thread: malloc error\n");
 		exit(1);
 	}
+#ifdef HAVE_LADSPA
 	ladspa_buflen = bufsize;
+#endif /* HAVE_LADSPA */
 
 
 	while (1) {
 	oss_wake:
-		while (jack_ringbuffer_read_space(rb_disk2out)) {
-			jack_ringbuffer_read(rb_disk2out, &recv_cmd, 1);
+		while (rb_read_space(rb_disk2out)) {
+			rb_read(rb_disk2out, &recv_cmd, 1);
 			switch (recv_cmd) {
 			case CMD_FLUSH:
-				while ((n_avail = jack_ringbuffer_read_space(rb)) > 0) {
+				while ((n_avail = rb_read_space(rb)) > 0) {
 					if (n_avail > 2*bufsize * sizeof(short))
 						n_avail = 2*bufsize * sizeof(short);
-					jack_ringbuffer_read(rb, (char *)oss_short_buf,
+					rb_read(rb, (char *)oss_short_buf,
 							     2*bufsize * sizeof(short));
 				}
 				goto oss_wake;
@@ -539,11 +549,9 @@ oss_thread(void * arg) {
 			}
 		}
 
-		if ((n_avail = jack_ringbuffer_read_space(rb) / (2*sample_size)) == 0) {
-			//spin_unlock_m(&output_thread_lock);
+		if ((n_avail = rb_read_space(rb) / (2*sample_size)) == 0) {
 			output_thread_lock = 0;
 			nanosleep(&req_time, &rem_time);
-			//spin_waitlock_m(&output_thread_lock);
 			output_thread_lock = 1;
 			goto oss_wake;
 		}
@@ -552,16 +560,23 @@ oss_thread(void * arg) {
 			n_avail = bufsize;
 		
 		for (i = 0; i < n_avail; i++) {
-			jack_ringbuffer_read(rb, (char *)&(l_buf[i]), sample_size);
-			jack_ringbuffer_read(rb, (char *)&(r_buf[i]), sample_size);
+			rb_read(rb, (char *)&(l_buf[i]), sample_size);
+			rb_read(rb, (char *)&(r_buf[i]), sample_size);
 		}
 
+#ifdef HAVE_LADSPA
 		if (options.ladspa_is_postfader) {
 			for (i = 0; i < n_avail; i++) {
 				l_buf[i] *= left_gain;
 				r_buf[i] *= right_gain;
 			}
 		}
+#else
+		for (i = 0; i < n_avail; i++) {
+			l_buf[i] *= left_gain;
+			r_buf[i] *= right_gain;
+		}
+#endif /* HAVE_LADSPA */
 
 		if (n_avail < bufsize) {
 			for (i = n_avail; i < bufsize; i++) {
@@ -571,7 +586,7 @@ oss_thread(void * arg) {
 		}
 
 		/* plugin processing */
-		//spin_waitlock_m(&plugin_lock);
+#ifdef HAVE_LADSPA
 		plugin_lock = 1;
 		for (i = 0; i < n_plugins; i++) {
 			if (plugin_vect[i]->is_bypassed)
@@ -584,7 +599,6 @@ oss_thread(void * arg) {
 				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
 			}
 		}
-		//spin_unlock_m(&plugin_lock);
 		plugin_lock = 0;
 
 		if (!options.ladspa_is_postfader) {
@@ -593,6 +607,7 @@ oss_thread(void * arg) {
 				r_buf[i] *= right_gain;
 			}
 		}
+#endif /* HAVE_LADSPA */
 
 		for (i = 0; i < bufsize; i++) {
 			if (l_buf[i] > 1.0)
@@ -610,25 +625,12 @@ oss_thread(void * arg) {
 		}
 
 		/* write data to audio device */
-		//spin_unlock_m(&output_thread_lock);
 		output_thread_lock = 0;
 		ioctl_status = write(fd_oss, oss_short_buf, 2*n_avail * sizeof(short));
-		//spin_waitlock_m(&output_thread_lock);
 		output_thread_lock = 1;
 		if (ioctl_status != 2*n_avail * sizeof(short))
 			fprintf(stderr, "oss_thread: Error writing to audio device\n");
 
-		/* wake up disk thread if 1/4 of rb data has been read */
-		/* note that 1 frame = 8 bytes so 8 * info->rb_size equals the full data amount */
-//	oss_wake:
-/*
-		if (jack_ringbuffer_read_space(rb) < 6 * rb_size) {
-			if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-				pthread_cond_signal(&disk_thread_wake);
-				pthread_mutex_unlock(&disk_thread_lock);
-			}
-		}
-*/
 	}
         /* NOTREACHED -- this thread will be cancelled from main thread on exit */
 	return 0;
@@ -642,7 +644,7 @@ oss_thread(void * arg) {
 void *
 alsa_thread(void * arg) {
 
-        jack_nframes_t i;
+        u_int32_t i;
         thread_info_t * info = (thread_info_t *)arg;
 	snd_pcm_sframes_t n_written = 0;
 	int bufsize = 1024;
@@ -653,7 +655,6 @@ alsa_thread(void * arg) {
 	short * alsa_short_buf = NULL;
 	int * alsa_int_buf = NULL;
 
-	//jack_nframes_t rb_size = info->rb_size;
 	snd_pcm_t * pcm_handle = info->pcm_handle;
 
 	struct timespec req_time;
@@ -661,7 +662,6 @@ alsa_thread(void * arg) {
 	req_time.tv_sec = 0;
         req_time.tv_nsec = 100000000;
 
-	//spin_waitlock_m(&output_thread_lock);
 	output_thread_lock = 1;
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
@@ -680,35 +680,37 @@ alsa_thread(void * arg) {
 		alsa_short_buf = info->alsa_short_buf;
 	}
 
-	if ((l_buf = malloc(bufsize * sizeof(LADSPA_Data))) == NULL) {
+	if ((l_buf = malloc(bufsize * sizeof(float))) == NULL) {
 		fprintf(stderr, "alsa_thread: malloc error\n");
 		exit(1);
 	}
-	if ((r_buf = malloc(bufsize * sizeof(LADSPA_Data))) == NULL) {
+	if ((r_buf = malloc(bufsize * sizeof(float))) == NULL) {
 		fprintf(stderr, "alsa_thread: malloc error\n");
 		exit(1);
 	}
+#ifdef HAVE_LADSPA
 	ladspa_buflen = bufsize;
+#endif /* HAVE_LADSPA */
 
 
 	while (1) {
 	alsa_wake:
-		while (jack_ringbuffer_read_space(rb_disk2out)) {
-			jack_ringbuffer_read(rb_disk2out, &recv_cmd, 1);
+		while (rb_read_space(rb_disk2out)) {
+			rb_read(rb_disk2out, &recv_cmd, 1);
 			switch (recv_cmd) {
 			case CMD_FLUSH:
 				if (is_output_32bit) {
-					while ((n_avail = jack_ringbuffer_read_space(rb)) > 0) {
+					while ((n_avail = rb_read_space(rb)) > 0) {
 						if (n_avail > 2*bufsize * sizeof(int))
 							n_avail = 2*bufsize * sizeof(int);
-						jack_ringbuffer_read(rb, (char *)alsa_int_buf,
+						rb_read(rb, (char *)alsa_int_buf,
 								     2*bufsize * sizeof(int));
 					}
 				} else {
-					while ((n_avail = jack_ringbuffer_read_space(rb)) > 0) {
+					while ((n_avail = rb_read_space(rb)) > 0) {
 						if (n_avail > 2*bufsize * sizeof(short))
 							n_avail = 2*bufsize * sizeof(short);
-						jack_ringbuffer_read(rb, (char *)alsa_short_buf,
+						rb_read(rb, (char *)alsa_short_buf,
 								     2*bufsize * sizeof(short));
 					}
 				}
@@ -720,11 +722,9 @@ alsa_thread(void * arg) {
 			}
 		}
 
-		if ((n_avail = jack_ringbuffer_read_space(rb) / (2*sample_size)) == 0) {
-			//spin_unlock_m(&output_thread_lock);
+		if ((n_avail = rb_read_space(rb) / (2*sample_size)) == 0) {
 			output_thread_lock = 0;
 			nanosleep(&req_time, &rem_time);
-			//spin_waitlock_m(&output_thread_lock);
 			output_thread_lock = 1;
 			goto alsa_wake;
 		}
@@ -733,16 +733,23 @@ alsa_thread(void * arg) {
 			n_avail = bufsize;
 
 		for (i = 0; i < n_avail; i++) {
-			jack_ringbuffer_read(rb, (char *)&(l_buf[i]), sample_size);
-			jack_ringbuffer_read(rb, (char *)&(r_buf[i]), sample_size);
+			rb_read(rb, (char *)&(l_buf[i]), sample_size);
+			rb_read(rb, (char *)&(r_buf[i]), sample_size);
 		}
 
+#ifdef HAVE_LADSPA
 		if (options.ladspa_is_postfader) {
 			for (i = 0; i < n_avail; i++) {
 				l_buf[i] *= left_gain;
 				r_buf[i] *= right_gain;
 			}
 		}
+#else
+		for (i = 0; i < n_avail; i++) {
+			l_buf[i] *= left_gain;
+			r_buf[i] *= right_gain;
+		}
+#endif /* HAVE_LADSPA */
 
 		if (n_avail < bufsize) {
 			for (i = n_avail; i < bufsize; i++) {
@@ -752,7 +759,7 @@ alsa_thread(void * arg) {
 		}
 		
 		/* plugin processing */
-		//spin_waitlock_m(&plugin_lock);
+#ifdef HAVE_LADSPA
 		plugin_lock = 1;
 		for (i = 0; i < n_plugins; i++) {
 			if (plugin_vect[i]->is_bypassed)
@@ -765,7 +772,6 @@ alsa_thread(void * arg) {
 				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
 			}
 		}
-		//spin_unlock_m(&plugin_lock);
 		plugin_lock = 0;
 		
 		if (!options.ladspa_is_postfader) {
@@ -774,6 +780,7 @@ alsa_thread(void * arg) {
 				r_buf[i] *= right_gain;
 			}
 		}
+#endif /* HAVE_LADSPA */
 
 		if (is_output_32bit) {
 			for (i = 0; i < bufsize; i++) {
@@ -792,12 +799,10 @@ alsa_thread(void * arg) {
 			}
 
 			/* write data to audio device */
-			//spin_unlock_m(&output_thread_lock);
 			output_thread_lock = 0;
 			if ((n_written = snd_pcm_writei(pcm_handle, alsa_int_buf, n_avail)) != n_avail) {
 				snd_pcm_prepare(pcm_handle);
 			}
-			//spin_waitlock_m(&output_thread_lock);
 			output_thread_lock = 1;
 
 		} else {
@@ -817,26 +822,12 @@ alsa_thread(void * arg) {
 			}
 
 			/* write data to audio device */
-			//spin_unlock_m(&output_thread_lock);
 			output_thread_lock = 0;
 			if ((n_written = snd_pcm_writei(pcm_handle, alsa_short_buf, n_avail)) != n_avail) {
 				snd_pcm_prepare(pcm_handle);
 			}
-			//spin_waitlock_m(&output_thread_lock);
 			output_thread_lock = 1;
 		}
-		
-		/* wake up disk thread if 1/4 of rb data has been read */
-		/* note that 1 frame = 8 bytes so 8 * info->rb_size equals the full data amount */
-//	alsa_wake:
-/*
-		if (jack_ringbuffer_read_space(rb) < 6 * rb_size) {
-			if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-				pthread_cond_signal(&disk_thread_wake);
-				pthread_mutex_unlock(&disk_thread_lock);
-			}
-		}		
-*/
 	}
         /* NOTREACHED -- this thread will be cancelled from main thread on exit */
 	return 0;
@@ -846,12 +837,12 @@ alsa_thread(void * arg) {
 
 
 /* JACK output function */
+#ifdef HAVE_JACK
 int
-process(jack_nframes_t nframes, void * arg) {
+process(u_int32_t nframes, void * arg) {
 
-	jack_nframes_t i;
-	jack_nframes_t n_avail;
-	//thread_info_t * info = (thread_info_t *) arg;
+	u_int32_t i;
+	u_int32_t n_avail;
 	jack_default_audio_sample_t * out1 = jack_port_get_buffer(out_L_port, nframes);
 	jack_default_audio_sample_t * out2 = jack_port_get_buffer(out_R_port, nframes);
 
@@ -859,17 +850,19 @@ process(jack_nframes_t nframes, void * arg) {
 	static int flushcnt = 0;
 	char recv_cmd;
 
-	//spin_waitlock_m(&output_thread_lock);
 	output_thread_lock = 1;
 	
-	ladspa_buflen = jack_nframes = nframes;
+	jack_nframes = nframes;
+#ifdef HAVE_LADSPA
+	ladspa_buflen = nframes;
+#endif /* HAVE_LADSPA */
 	
-	while (jack_ringbuffer_read_space(rb_disk2out)) {
-		jack_ringbuffer_read(rb_disk2out, &recv_cmd, 1);
+	while (rb_read_space(rb_disk2out)) {
+		rb_read(rb_disk2out, &recv_cmd, 1);
 		switch (recv_cmd) {
 		case CMD_FLUSH:
 			flushing = 1;
-			flushcnt = jack_ringbuffer_read_space(rb)/nframes/
+			flushcnt = rb_read_space(rb)/nframes/
 				(2*sample_size) * 1.1f;
 			break;
 		default:
@@ -878,13 +871,13 @@ process(jack_nframes_t nframes, void * arg) {
 		}
 	}
 	
-	n_avail = jack_ringbuffer_read_space(rb) / (2*sample_size);
+	n_avail = rb_read_space(rb) / (2*sample_size);
 	if (n_avail > nframes)
 		n_avail = nframes;
 	
 	for (i = 0; i < n_avail; i++) {
-		jack_ringbuffer_read(rb, (char *)&(l_buf[i]), sample_size);
-		jack_ringbuffer_read(rb, (char *)&(r_buf[i]), sample_size);
+		rb_read(rb, (char *)&(l_buf[i]), sample_size);
+		rb_read(rb, (char *)&(r_buf[i]), sample_size);
 	}
 	
 	if (n_avail < nframes) {
@@ -900,15 +893,22 @@ process(jack_nframes_t nframes, void * arg) {
 			r_buf[i] = 0.0f;
 		}
 	} else {
+#ifdef HAVE_LADSPA
 		if (options.ladspa_is_postfader) {
 			for (i = 0; i < n_avail; i++) {
 				l_buf[i] *= left_gain;
 				r_buf[i] *= right_gain;
 			}
 		}
+#else
+		for (i = 0; i < n_avail; i++) {
+			l_buf[i] *= left_gain;
+			r_buf[i] *= right_gain;
+		}
+#endif /* HAVE_LADSPA */
 		
-		// plugin processing
-		//spin_waitlock_m(&plugin_lock);
+		/* plugin processing */
+#ifdef HAVE_LADSPA
 		plugin_lock = 1;
 		for (i = 0; i < n_plugins; i++) {
 			if (plugin_vect[i]->is_bypassed)
@@ -921,7 +921,6 @@ process(jack_nframes_t nframes, void * arg) {
 				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
 			}
 		}
-		//spin_unlock_m(&plugin_lock);
 		plugin_lock = 0;
 		
 		if (!options.ladspa_is_postfader) {
@@ -930,6 +929,7 @@ process(jack_nframes_t nframes, void * arg) {
 				r_buf[i] *= right_gain;
 			}
 		}
+#endif /* HAVE_LADSPA */
 	}
 	
 	for (i = 0; i < nframes; i++) {
@@ -938,23 +938,12 @@ process(jack_nframes_t nframes, void * arg) {
 	}
 	
 	
-	if ((flushing) && (!jack_ringbuffer_read_space(rb) || (--flushcnt == 0))) {
+	if ((flushing) && (!rb_read_space(rb) || (--flushcnt == 0))) {
 		flushing = 0;
 	}
 	
-	//spin_unlock_m(&output_thread_lock);
 	output_thread_lock = 0;
 
-	// wake up disk thread if 1/4 of rb data has been read
-	// note that 1 frame = 8 bytes so 8 * info->rb_size equals the full data amount
-/*
-	if (jack_ringbuffer_read_space(rb) < 6 * info->rb_size) {
-		if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-			//pthread_cond_signal(&disk_thread_wake);
-			pthread_mutex_unlock(&disk_thread_lock);
-		}
-	}
-*/
 	return 0;
 }
 
@@ -962,11 +951,9 @@ process(jack_nframes_t nframes, void * arg) {
 void
 jack_shutdown(void * arg) {
 
-	//spin_waitlock_m(&output_thread_lock);
 	jack_is_shutdown = 1;
-	//spin_unlock_m(&output_thread_lock);
 }
-
+#endif /* HAVE_JACK */
 
 
 
@@ -1112,6 +1099,7 @@ alsa_init(thread_info_t * info) {
 #endif /* HAVE_ALSA */
 
 
+#ifdef HAVE_JACK
 void
 jack_init(thread_info_t * info) {
 
@@ -1145,15 +1133,17 @@ jack_init(thread_info_t * info) {
         out_R_port = jack_port_register(jack_client, "out_R", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 
 	jack_nframes = jack_get_buffer_size(jack_client);
-	if ((l_buf = malloc(jack_nframes * sizeof(LADSPA_Data))) == NULL) {
+	if ((l_buf = malloc(jack_nframes * sizeof(float))) == NULL) {
 		fprintf(stderr, "jack_init: malloc error\n");
 		exit(1);
 	}
-	if ((r_buf = malloc(jack_nframes * sizeof(LADSPA_Data))) == NULL) {
+	if ((r_buf = malloc(jack_nframes * sizeof(float))) == NULL) {
 		fprintf(stderr, "jack_init: malloc error\n");
 		exit(1);
 	}
+#ifdef HAVE_LADSPA
 	ladspa_buflen = jack_nframes;
+#endif /* HAVE_LADSPA */
 }
 
 
@@ -1204,7 +1194,248 @@ jack_client_start(void) {
 		}
 	}
 }
- 
+#endif /* HAVE_JACK */
+
+
+
+#ifdef _WIN32
+
+#define WIN32_BUFFER_LEN (1<<16)
+
+void *
+win32_thread(void * arg) {
+
+        u_int32_t i;
+        thread_info_t * info = (thread_info_t *)arg;
+
+        WAVEFORMATEX wf;
+        MMRESULT error;
+        HWAVEOUT hwave;
+	short * short_buf = NULL;
+	int nbufs = 8;
+	int bufcnt;
+        WAVEHDR whdr[nbufs];
+	int j;
+        int n_avail;
+	char recv_cmd;
+	int bufsize = WIN32_BUFFER_LEN / sizeof(short) / nbufs / 2;
+
+
+	if ((l_buf = calloc(1, bufsize * sizeof(float))) == NULL) {
+		fprintf(stderr, "win32_thread: malloc error\n");
+		exit(1);
+	}
+	if ((r_buf = calloc(1, bufsize * sizeof(float))) == NULL) {
+		fprintf(stderr, "win32_thread: malloc error\n");
+		exit(1);
+	}
+#ifdef HAVE_LADSPA
+	ladspa_buflen = bufsize;
+#endif /* HAVE_LADSPA */
+
+	if ((short_buf = calloc(1, WIN32_BUFFER_LEN)) == NULL) {
+		fprintf(stderr, "win32_thread: malloc error\n");
+		exit(1);
+	}
+
+        wf.nChannels = 2;
+        wf.nSamplesPerSec = info->out_SR;
+        wf.nBlockAlign = 2 * sizeof(short);
+
+        wf.wFormatTag = WAVE_FORMAT_PCM;
+        wf.cbSize = 0;
+        wf.wBitsPerSample = 16;
+        wf.nAvgBytesPerSec = wf.nBlockAlign * wf.nSamplesPerSec;
+
+        error = waveOutOpen(&hwave, WAVE_MAPPER, &wf, 0L, 0L, 0L);
+        if (error != MMSYSERR_NOERROR) {
+                printf("waveOutOpen failed, error = %d\n", error);
+                switch (error) {
+		case MMSYSERR_ALLOCATED:
+			puts("MMSYSERR_ALLOCATED");
+			break;
+		case MMSYSERR_BADDEVICEID:
+			puts("MMSYSERR_BADDEVICEID");
+			break;
+		case MMSYSERR_NODRIVER:
+			puts("MMSYSERR_NODRIVER");
+			break;
+		case MMSYSERR_NOMEM:
+			puts("MMSYSERR_NOMEM");
+			break;
+		case WAVERR_BADFORMAT:
+			puts("WAVERR_BADFORMAT");
+			break;
+		case WAVERR_SYNC:
+			puts("WAVERR_SYNC");
+			break;
+                }
+                return NULL;
+        }
+
+	for (bufcnt = 0; bufcnt < nbufs; bufcnt++) {
+		whdr[bufcnt].lpData = (char *)short_buf +
+			bufcnt * WIN32_BUFFER_LEN / nbufs;
+		whdr[bufcnt].dwBufferLength = WIN32_BUFFER_LEN / nbufs;
+		whdr[bufcnt].dwUser = 0L;
+		whdr[bufcnt].dwFlags = 0L;
+		whdr[bufcnt].dwLoops = 0L;
+		
+		if ((error = waveOutPrepareHeader(hwave, &(whdr[bufcnt]), sizeof(WAVEHDR)))
+		    != MMSYSERR_NOERROR) {
+			printf("waveOutPrepareHeader[%d] failed : %08X\n", bufcnt, error);
+			waveOutUnprepareHeader(hwave, &(whdr[bufcnt]), sizeof(WAVEHDR));
+			waveOutClose(hwave);
+			return NULL;
+		}
+	}
+
+        for (j = 0; j < WIN32_BUFFER_LEN / sizeof(short); j++) {
+                short_buf[j] = 0;
+        }
+
+
+	for (bufcnt = 0; bufcnt < nbufs; bufcnt++) {
+		if ((error = waveOutWrite(hwave, &(whdr[bufcnt]), sizeof(WAVEHDR))) !=
+		    MMSYSERR_NOERROR) {
+			printf("waveOutWrite[%d] failed : %08X\n", bufcnt, error);
+			waveOutUnprepareHeader(hwave, &(whdr[bufcnt]), sizeof(WAVEHDR));
+			waveOutClose(hwave);
+			return NULL;
+		}
+        }
+
+	bufcnt = 0;
+
+	while (1) {
+	win32_wake:
+
+		while (rb_read_space(rb_disk2out)) {
+			rb_read(rb_disk2out, &recv_cmd, 1);
+			switch (recv_cmd) {
+			case CMD_FLUSH:
+				while ((n_avail = rb_read_space(rb)) > 0) {
+					if (n_avail > 2*bufsize * sizeof(short))
+						n_avail = 2*bufsize * sizeof(short);
+					rb_read(rb, (char *)short_buf,
+							     2*bufsize * sizeof(short));
+				}
+				for (j = 0; j < WIN32_BUFFER_LEN / sizeof(short); j++) {
+					short_buf[j] = 0;
+				}
+				goto win32_wake;
+				break;
+			default:
+				fprintf(stderr, "win32_thread: recv'd unknown command %d\n",
+					recv_cmd);
+				break;
+			}
+		}
+
+		if ((n_avail = rb_read_space(rb) / (2*sample_size)) == 0) {
+			Sleep(100);
+			goto win32_wake;
+		}
+
+		if (n_avail > bufsize)
+			n_avail = bufsize;
+		
+		for (i = 0; i < n_avail; i++) {
+			rb_read(rb, (char *)&(l_buf[i]), sample_size);
+			rb_read(rb, (char *)&(r_buf[i]), sample_size);
+		}
+
+#ifdef HAVE_LADSPA
+		if (options.ladspa_is_postfader) {
+			for (i = 0; i < n_avail; i++) {
+				l_buf[i] *= left_gain;
+				r_buf[i] *= right_gain;
+			}
+		}
+#else
+		for (i = 0; i < n_avail; i++) {
+			l_buf[i] *= left_gain;
+			r_buf[i] *= right_gain;
+		}
+#endif /* HAVE_LADSPA */
+
+		if (n_avail < bufsize) {
+			for (i = n_avail; i < bufsize; i++) {
+				l_buf[i] = 0.0f;
+				r_buf[i] = 0.0f;
+			}
+		}
+
+		/* plugin processing */
+#ifdef HAVE_LADSPA
+		plugin_lock = 1;
+		for (i = 0; i < n_plugins; i++) {
+			if (plugin_vect[i]->is_bypassed)
+				continue;
+			
+			if (plugin_vect[i]->handle) {
+				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle, ladspa_buflen);
+			}
+			if (plugin_vect[i]->handle2) {
+				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
+			}
+		}
+		plugin_lock = 0;
+		
+		if (!options.ladspa_is_postfader) {
+			for (i = 0; i < bufsize; i++) {
+				l_buf[i] *= left_gain;
+				r_buf[i] *= right_gain;
+			}
+		}
+#endif /* HAVE_LADSPA */
+
+		
+		while (!(whdr[bufcnt].dwFlags & WHDR_DONE))
+			Sleep(1);
+
+		for (i = 0; i < bufsize; i++) {
+			if (l_buf[i] > 1.0)
+				l_buf[i] = 1.0;
+			else if (l_buf[i] < -1.0)
+				l_buf[i] = -1.0;
+
+			if (r_buf[i] > 1.0)
+				r_buf[i] = 1.0;
+			else if (r_buf[i] < -1.0)
+				r_buf[i] = -1.0;
+
+			short_buf[2*bufcnt*bufsize + 2*i] = floorf(32767.0 * l_buf[i]);
+			short_buf[2*bufcnt*bufsize + 2*i+1] = floorf(32767.0 * r_buf[i]);
+		}
+
+		/* write data to audio device */
+		if ((error = waveOutWrite(hwave, &(whdr[bufcnt]), sizeof(WAVEHDR)))
+		    != MMSYSERR_NOERROR) {
+			printf("waveOutWrite[%d] failed : %08X\n", bufcnt, error);
+			waveOutUnprepareHeader(hwave, &(whdr[bufcnt]), sizeof(WAVEHDR));
+			waveOutClose(hwave);
+			return NULL;
+		}
+
+		++bufcnt;
+		if (bufcnt == nbufs)
+			bufcnt = 0;
+	}
+        /* NOTREACHED -- this thread will be cancelled from main thread on exit */
+
+        waveOutPause(hwave);
+        waveOutReset(hwave);
+	for (bufcnt = 0; bufcnt < nbufs; bufcnt++) {
+		waveOutUnprepareHeader(hwave, &(whdr[bufcnt]), sizeof(WAVEHDR));
+	}
+        waveOutClose(hwave);
+
+	return 0;
+}
+#endif /* _WIN32 */
+
+
  
 void
 load_default_cl(int * argc, char *** argv) {
@@ -1379,8 +1610,9 @@ main(int argc, char ** argv) {
 		{ 0, 0, 0, 0 }
 	};
 
+
 	setlocale(LC_ALL, "");
-	bindtextdomain(PACKAGE, LOCALEDIR);
+	bindtextdomain(PACKAGE, AQUALUNG_LOCALEDIR);
 	textdomain(PACKAGE);
 	
 	setup_app_socket();
@@ -1456,14 +1688,40 @@ main(int argc, char ** argv) {
 					break;
 				}
 				if (strcmp(output_str, "jack") == 0) {
+#ifdef HAVE_JACK
 					output = JACK_DRIVER;
+#else
+					fprintf(stderr,
+						"You selected JACK output, but this instance of Aqualung "
+						"is compiled\n"
+						"without JACK output support. Type aqualung -v to get a "
+						"list of\n"
+						"compiled-in features.\n");
+					exit(1);
+#endif /* HAVE_JACK */
+					break;
+				}
+				if (strcmp(output_str, "win32") == 0) {
+#ifdef _WIN32
+					output = WIN32_DRIVER;
+#else
+					fprintf(stderr,
+						"You selected WIN32 output, but this instance of Aqualung "
+						"is compiled\n"
+						"without WIN32 output support. Type aqualung -v to get a "
+						"list of\n"
+						"compiled-in features.\n");
+					exit(1);
+#endif /* _WIN32 */
 					break;
 				}
 			case 'd':
 				device_name = strdup(optarg);
 				break;
 			case 'c':
+#ifdef HAVE_JACK
 				client_name = strdup(optarg);
+#endif /* HAVE_JACK */
 				break;
 			case 'n':
 #ifdef HAVE_ALSA
@@ -1479,6 +1737,7 @@ main(int argc, char ** argv) {
 				rate = atoi(optarg);
 				break;
 			case 'a':
+#ifdef HAVE_JACK
 				auto_connect = 1;
 				if (optarg) {
 					char * s;
@@ -1508,7 +1767,7 @@ main(int argc, char ** argv) {
 
 					default_ports = 0;
 				}
-
+#endif /* HAVE_JACK */
 				break;
 			case 'R':
 				try_realtime = 1;
@@ -1704,7 +1963,19 @@ main(int argc, char ** argv) {
 		fprintf(stderr, "no\n");
 #endif /* HAVE_ALSA */
 
-		fprintf(stderr, "\t\tJACK Audio Server                   : yes (always)\n");
+		fprintf(stderr, "\t\tJACK Audio Server                   : ");
+#ifdef HAVE_JACK
+		fprintf(stderr, "yes\n");
+#else
+		fprintf(stderr, "no\n");
+#endif /* HAVE_JACK */
+
+		fprintf(stderr, "\t\tWin32 Sound API                     : ");
+#ifdef _WIN32
+		fprintf(stderr, "yes\n");
+#else
+		fprintf(stderr, "no\n");
+#endif /* _WIN32 */
 
 		fprintf(stderr, "\n\tInternal Sample Rate Converter support      : ");
 #ifdef HAVE_SRC
@@ -1712,6 +1983,13 @@ main(int argc, char ** argv) {
 #else
 		fprintf(stderr, "no\n");
 #endif /* HAVE_SRC */
+
+		fprintf(stderr, "\tLADSPA plugin support                       : ");
+#ifdef HAVE_LADSPA
+		fprintf(stderr, "yes\n");
+#else
+		fprintf(stderr, "no\n");
+#endif /* HAVE_LADSPA */
 
 		fprintf(stderr, "\tCDDB support                                : ");
 #ifdef HAVE_CDDB
@@ -1860,7 +2138,7 @@ main(int argc, char ** argv) {
 
 		fprintf(stderr,
 			"\nInvocation:\n"
-			"aqualung --output (oss|alsa|jack) [options] [file1 [file2 ...]]\n"
+			"aqualung --output (oss|alsa|jack|win32) [options] [file1 [file2 ...]]\n"
 			"aqualung --help\n"
 			"aqualung --version\n"
 
@@ -1885,6 +2163,9 @@ main(int argc, char ** argv) {
 			"given JACK ports (defaults to first two hardware playback ports).\n"
 			"-c, --client <name>: Set client name (needed if you want to run multiple instances of the program).\n"
 
+			"\nOptions relevant to WIN32 output:\n"
+			"-r, --rate <int>: Set the output sample rate.\n"
+			
 			"\nOptions relevant to the Sample Rate Converter:\n"
 			"-s[<int>], --srctype[=<int>]: Choose the SRC type, or print the list of available\n"
 			"types if no number given. The default is SRC type 4 (Linear Interpolator).\n"
@@ -1928,6 +2209,7 @@ main(int argc, char ** argv) {
 	}
 
 	
+#ifdef HAVE_JACK
 	if ((output == JACK_DRIVER) && (rate > 0)) {
 		fprintf(stderr,
 			"You attempted to set the output rate for the JACK output.\n"
@@ -1937,6 +2219,7 @@ main(int argc, char ** argv) {
 			"will determine the output sample rate to use.\n");
 		exit(1);
 	}
+#endif /* HAVE_JACK */
 
 #ifdef HAVE_OSS
 	if ((output == OSS_DRIVER) && (rate == 0)) {
@@ -1949,6 +2232,12 @@ main(int argc, char ** argv) {
 		rate = 44100;
 	}
 #endif /* HAVE_ALSA */
+
+#ifdef _WIN32
+	if ((output == WIN32_DRIVER) && (rate == 0)) {
+		rate = 44100;
+	}
+#endif /* _WIN32 */
 
 
 	if (device_name == NULL) {
@@ -1978,14 +2267,13 @@ main(int argc, char ** argv) {
 
 	memset(&thread_info, 0, sizeof(thread_info));
 
-	/* JACK */
+#ifdef HAVE_JACK
 	if (output == JACK_DRIVER) {
 		jack_init(&thread_info);
 		rate = thread_info.out_SR;
 	}
+#endif /* HAVE_JACK */
 
-
-	/* ALSA */
 #ifdef HAVE_ALSA
 	if (output == ALSA_DRIVER) {
 		thread_info.out_SR = rate;
@@ -1994,28 +2282,32 @@ main(int argc, char ** argv) {
 	}
 #endif /* HAVE_ALSA */
 
-
-	/* OSS */
 #ifdef HAVE_OSS
 	if (output == OSS_DRIVER) {
 		thread_info.out_SR = rate;
 	}
 #endif /* HAVE_OSS */
 
+#ifdef _WIN32
+	if (output == WIN32_DRIVER) {
+		thread_info.out_SR = rate;
+	}
+#endif /* _WIN32 */
+
 
 	thread_info.rb_size = RB_AUDIO_SIZE * thread_info.out_SR / 44100.0;
 
-        rb = jack_ringbuffer_create(2*sample_size * thread_info.rb_size);
+        rb = rb_create(2*sample_size * thread_info.rb_size);
 	memset(rb->buf, 0, rb->size);
 
 
-	rb_disk2gui = jack_ringbuffer_create(RB_CONTROL_SIZE);
+	rb_disk2gui = rb_create(RB_CONTROL_SIZE);
 	memset(rb_disk2gui->buf, 0, rb_disk2gui->size);
 
-	rb_gui2disk = jack_ringbuffer_create(RB_CONTROL_SIZE);
+	rb_gui2disk = rb_create(RB_CONTROL_SIZE);
 	memset(rb_gui2disk->buf, 0, rb_gui2disk->size);
 
-	rb_disk2out = jack_ringbuffer_create(RB_CONTROL_SIZE);
+	rb_disk2out = rb_create(RB_CONTROL_SIZE);
 	memset(rb_disk2out->buf, 0, rb_disk2out->size);
 
 	thread_info.is_streaming = 0;
@@ -2040,15 +2332,12 @@ main(int argc, char ** argv) {
 	}
 
 
-	/* OSS */
 #ifdef HAVE_OSS
 	if (output == OSS_DRIVER) {
 		oss_init(&thread_info);
 	}
 #endif /* HAVE_OSS */
 
-
-	/* ALSA */
 #ifdef HAVE_ALSA
 	if (output == ALSA_DRIVER) {
 		pthread_create(&thread_info.alsa_thread_id, NULL, alsa_thread, &thread_info);
@@ -2068,13 +2357,18 @@ main(int argc, char ** argv) {
 	}
 #endif /* HAVE_ALSA */
 
+#ifdef _WIN32
+	if (output == WIN32_DRIVER) {
+		pthread_create(&thread_info.win32_thread_id, NULL, win32_thread, &thread_info);
+	}
+#endif /* _WIN32 */
+
 
 	create_gui(argc, argv, optind, enqueue, rate, RB_AUDIO_SIZE * rate / 44100.0);
 	run_gui(); /* control stays here until user exits program */
 
 	pthread_join(thread_info.disk_thread_id, NULL);
 
-	/* OSS */
 #ifdef HAVE_OSS
 	if (output == OSS_DRIVER) {
 		pthread_cancel(thread_info.oss_thread_id);
@@ -2084,8 +2378,6 @@ main(int argc, char ** argv) {
 	}
 #endif /* HAVE_OSS */
 
-
-	/* ALSA */
 #ifdef HAVE_ALSA
 	if (output == ALSA_DRIVER) {
 		pthread_cancel(thread_info.alsa_thread_id);
@@ -2097,23 +2389,28 @@ main(int argc, char ** argv) {
 	}
 #endif /* HAVE_ALSA */
 
-
-	/* JACK */
+#ifdef HAVE_JACK
 	if (output == JACK_DRIVER) {
 		jack_client_close(jack_client);
 		free(client_name);
 	}
+#endif /* HAVE_JACK */
 
+#ifdef _WIN32
+	if (output == WIN32_DRIVER) {
+		pthread_cancel(thread_info.win32_thread_id);
+	}
+#endif /* _WIN32 */
 
 	if (device_name != NULL)
 		free(device_name);
 
 	free(l_buf);
 	free(r_buf);
-	jack_ringbuffer_free(rb);
-	jack_ringbuffer_free(rb_disk2gui);
-	jack_ringbuffer_free(rb_gui2disk);
-	jack_ringbuffer_free(rb_disk2out);
+	rb_free(rb);
+	rb_free(rb_disk2gui);
+	rb_free(rb_gui2disk);
+	rb_free(rb_disk2out);
 	return 0;
 }
 

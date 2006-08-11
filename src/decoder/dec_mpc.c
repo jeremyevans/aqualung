@@ -65,7 +65,7 @@ decode_mpc(decoder_t * dec) {
                         fval = 1.0f;
                 }
 		
-                jack_ringbuffer_write(pd->rb, (char *)&fval, sample_size);
+                rb_write(pd->rb, (char *)&fval, sample_size);
 	}
 	return 0;
 }
@@ -138,7 +138,7 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 	}
 	
 	pd->is_eos = 0;
-	pd->rb = jack_ringbuffer_create(pd->mpc_i.channels * sample_size * RB_MPC_SIZE);
+	pd->rb = rb_create(pd->mpc_i.channels * sample_size * RB_MPC_SIZE);
 	
 	fdec->channels = pd->mpc_i.channels;
 	fdec->SR = pd->mpc_i.sample_freq;
@@ -158,7 +158,7 @@ mpc_decoder_close(decoder_t * dec) {
 
 	mpc_pdata_t * pd = (mpc_pdata_t *)dec->pdata;
 
-	jack_ringbuffer_free(pd->rb);
+	rb_free(pd->rb);
 	fclose(pd->mpc_file);
 }
 
@@ -172,18 +172,18 @@ mpc_decoder_read(decoder_t * dec, float * dest, int num) {
 	unsigned int n_avail = 0;
 
 
-	while ((jack_ringbuffer_read_space(pd->rb) <
+	while ((rb_read_space(pd->rb) <
 		num * pd->mpc_i.channels * sample_size) && (!pd->is_eos)) {
 
 		pd->is_eos = decode_mpc(dec);
 	}
 
-	n_avail = jack_ringbuffer_read_space(pd->rb) / (pd->mpc_i.channels * sample_size);
+	n_avail = rb_read_space(pd->rb) / (pd->mpc_i.channels * sample_size);
 
 	if (n_avail > num)
 		n_avail = num;
 
-	jack_ringbuffer_read(pd->rb, (char *)dest, n_avail *
+	rb_read(pd->rb, (char *)dest, n_avail *
 			     pd->mpc_i.channels * sample_size);
 
 	numread = n_avail;
@@ -202,8 +202,8 @@ mpc_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	if (mpc_decoder_seek_sample(&pd->mpc_d, seek_to_pos)) {
 		fdec->samples_left = fdec->fileinfo.total_samples - seek_to_pos;
 		/* empty musepack decoder ringbuffer */
-		while (jack_ringbuffer_read_space(pd->rb))
-			jack_ringbuffer_read(pd->rb, &flush_dest, sizeof(char));
+		while (rb_read_space(pd->rb))
+			rb_read(pd->rb, &flush_dest, sizeof(char));
 	} else {
 		fprintf(stderr,
 			"mpc_decoder_seek: warning: mpc_decoder_seek_sample() failed\n");

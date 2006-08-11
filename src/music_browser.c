@@ -3859,7 +3859,7 @@ create_music_browser(void) {
 			    1,
 			    GDK_ACTION_COPY);
 
-	snprintf(path, MAXLEN-1, "%s/drag.png", DATADIR);
+	snprintf(path, MAXLEN-1, "%s/drag.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		gtk_drag_source_set_icon_pixbuf(music_tree, pixbuf);
 	}	

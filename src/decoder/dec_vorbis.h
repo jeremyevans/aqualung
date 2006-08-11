@@ -23,7 +23,13 @@
 #define _DEC_VORBIS_H
 
 #ifdef HAVE_OGG_VORBIS
+#ifdef _WIN32
+#undef _WIN32
 #include <vorbis/vorbisfile.h>
+#define _WIN32
+#else
+#include <vorbis/vorbisfile.h>
+#endif /* _WIN32 */
 #endif /* HAVE_OGG_VORBIS */
 
 #include "file_decoder.h"
@@ -37,7 +43,7 @@
 
 #ifdef HAVE_OGG_VORBIS
 typedef struct _vorbis_pdata_t {
-        jack_ringbuffer_t * rb;
+        rb_t * rb;
         FILE * vorbis_file;
         OggVorbis_File vf;
         vorbis_info * vi;

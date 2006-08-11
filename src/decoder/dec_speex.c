@@ -128,7 +128,7 @@ read_ogg_packet(OGGZ * oggz, ogg_packet * op, long serialno, void * user_data) {
 					}
 				}
 				
-				jack_ringbuffer_write(pd->rb, (char *)output_frame,
+				rb_write(pd->rb, (char *)output_frame,
 						      pd->channels * pd->frame_size * sample_size);
 			}
 		}
@@ -266,7 +266,7 @@ speex_dec_open(decoder_t * dec, char * filename) {
 	speex_decoder_ctl(pd->decoder, SPEEX_SET_ENH, &enh);
 
 	pd->is_eos = 0;
-	pd->rb = jack_ringbuffer_create(pd->channels * sample_size * RB_SPEEX_SIZE);
+	pd->rb = rb_create(pd->channels * sample_size * RB_SPEEX_SIZE);
 	fdec->channels = pd->channels;
 	fdec->SR = pd->sample_rate;
 	fdec->file_lib = SPEEX_LIB;
@@ -289,7 +289,7 @@ speex_dec_close(decoder_t * dec) {
 	oggz_close(pd->oggz);
 	speex_bits_destroy(&(pd->bits));
         speex_decoder_destroy(pd->decoder);
-	jack_ringbuffer_free(pd->rb);
+	rb_free(pd->rb);
 }
 
 
@@ -302,19 +302,19 @@ speex_dec_read(decoder_t * dec, float * dest, int num) {
 	unsigned int n_avail = 0;
 
 
-	while ((jack_ringbuffer_read_space(pd->rb) <
+	while ((rb_read_space(pd->rb) <
 		num * pd->channels * sample_size) && (!pd->is_eos)) {
 
 		pd->is_eos = decode_speex(dec);
 	}
 
-	n_avail = jack_ringbuffer_read_space(pd->rb) /
+	n_avail = rb_read_space(pd->rb) /
 		(pd->channels * sample_size);
 
 	if (n_avail > num)
 		n_avail = num;
 
-	jack_ringbuffer_read(pd->rb, (char *)dest, n_avail *
+	rb_read(pd->rb, (char *)dest, n_avail *
 			     pd->channels * sample_size);
 
 	numread = n_avail;
@@ -340,8 +340,8 @@ speex_dec_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 
 		fdec->samples_left = fdec->fileinfo.total_samples - seek_to_pos;
 		/* empty speex decoder ringbuffer */
-		while (jack_ringbuffer_read_space(pd->rb))
-			jack_ringbuffer_read(pd->rb, &flush_dest, sizeof(char));
+		while (rb_read_space(pd->rb))
+			rb_read(pd->rb, &flush_dest, sizeof(char));
 	} else {
 		fprintf(stderr, "speex_dec_seek(): warning: oggz_seek_units() returned -1\n");
 	}

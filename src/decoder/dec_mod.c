@@ -52,7 +52,7 @@ decode_mod(decoder_t * dec) {
                 for (i = 0; i < bytes_read/2; i++) {
                         fbuffer[i] = *((short *)(buffer + 2*i)) * fdec->voladj_lin / 32768.f;
 		}
-                jack_ringbuffer_write(pd->rb, (char *)fbuffer,
+                rb_write(pd->rb, (char *)fbuffer,
 				      bytes_read/2 * sample_size);
                 return 0;
         } else {
@@ -163,7 +163,7 @@ mod_decoder_open(decoder_t * dec, char * filename) {
 	}
 	
 	pd->is_eos = 0;
-	pd->rb = jack_ringbuffer_create(pd->mp_settings.mChannels * sample_size * RB_MOD_SIZE);
+	pd->rb = rb_create(pd->mp_settings.mChannels * sample_size * RB_MOD_SIZE);
 	fdec->channels = pd->mp_settings.mChannels;
 	fdec->SR = pd->mp_settings.mFrequency;
 	fdec->file_lib = MOD_LIB;
@@ -187,7 +187,7 @@ mod_decoder_close(decoder_t * dec) {
 	if (munmap(pd->fdm, pd->st.st_size) == -1)
 		fprintf(stderr, "Error while munmap()'ing MOD Audio file mapping\n");
 	close(pd->fd);
-	jack_ringbuffer_free(pd->rb);
+	rb_free(pd->rb);
 }
 
 
@@ -200,19 +200,19 @@ mod_decoder_read(decoder_t * dec, float * dest, int num) {
 	unsigned int n_avail = 0;
 
 
-	while ((jack_ringbuffer_read_space(pd->rb) <
+	while ((rb_read_space(pd->rb) <
 		num * pd->mp_settings.mChannels * sample_size) && (!pd->is_eos)) {
 
 		pd->is_eos = decode_mod(dec);
 	}
 
-	n_avail = jack_ringbuffer_read_space(pd->rb) /
+	n_avail = rb_read_space(pd->rb) /
 		(pd->mp_settings.mChannels * sample_size);
 
 	if (n_avail > num)
 		n_avail = num;
 
-	jack_ringbuffer_read(pd->rb, (char *)dest, n_avail *
+	rb_read(pd->rb, (char *)dest, n_avail *
 			     pd->mp_settings.mChannels * sample_size);
 
 	numread = n_avail;
@@ -234,8 +234,8 @@ mod_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	ModPlug_Seek(pd->mpf, (double)seek_to_pos / pd->mp_settings.mFrequency * 1000.0f);
 	fdec->samples_left = fdec->fileinfo.total_samples - seek_to_pos;
 	/* empty mod decoder ringbuffer */
-	while (jack_ringbuffer_read_space(pd->rb))
-		jack_ringbuffer_read(pd->rb, &flush_dest, sizeof(char));
+	while (rb_read_space(pd->rb))
+		rb_read(pd->rb, &flush_dest, sizeof(char));
 }
 
 

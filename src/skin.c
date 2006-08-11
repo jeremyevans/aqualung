@@ -188,8 +188,8 @@ create_skin_window() {
 	}
 
 	/* system wide skins */
-	pdir = SKINDIR;
-	n = scandir(SKINDIR, &ent, filter, alphasort);
+	pdir = AQUALUNG_SKINDIR;
+	n = scandir(AQUALUNG_SKINDIR, &ent, filter, alphasort);
 	if (n >= 0) {
 		int c;
 		char path[MAXLEN];
@@ -213,7 +213,7 @@ create_skin_window() {
 
 			if (!found) {
 				gtk_list_store_append(skin_store, &iter);
-				snprintf(path, MAXLEN - 1, "%s/%s", SKINDIR, ent[c]->d_name);
+				snprintf(path, MAXLEN - 1, "%s/%s", AQUALUNG_SKINDIR, ent[c]->d_name);
 				gtk_list_store_set(skin_store, &iter, 0, ent[c]->d_name, 1, path, -1);
 			}
 		}

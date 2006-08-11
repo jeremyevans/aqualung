@@ -38,7 +38,13 @@
 #endif /* HAVE_FLAC */
 
 #ifdef HAVE_OGG_VORBIS
+#ifdef _WIN32
+#undef _WIN32
 #include <vorbis/vorbisfile.h>
+#define _WIN32
+#else
+#include <vorbis/vorbisfile.h>
+#endif /* _WIN32 */
 #endif /* HAVE_OGG_VORBIS */
 
 #include "common.h"

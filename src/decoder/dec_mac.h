@@ -34,7 +34,7 @@
 
 #ifdef HAVE_MAC
 typedef struct _mac_pdata_t {
-        jack_ringbuffer_t * rb;
+        rb_t * rb;
 	void * decompress; /* (IAPEDecompress *) */
 	unsigned int sample_rate;
 	unsigned int bits_per_sample;

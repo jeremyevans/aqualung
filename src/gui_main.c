@@ -28,13 +28,18 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <pthread.h>
-#include <jack/jack.h>
-#include <jack/ringbuffer.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
+
+#ifdef HAVE_LADSPA
 #include <lrdf.h>
+#endif /* HAVE_LADSPA */
+
+#ifdef HAVE_JACK
+#include <jack/jack.h>
+#endif /* HAVE_JACK */
 
 #ifdef HAVE_SNDFILE
 #include <sndfile.h>
@@ -50,6 +55,7 @@
 
 #include "common.h"
 #include "core.h"
+#include "rb.h"
 #include "cover.h"
 #include "transceiver.h"
 #include "decoder/file_decoder.h"
@@ -61,7 +67,6 @@
 #include "playlist.h"
 #include "plugin.h"
 #include "file_info.h"
-#include "spinlock.h"
 #include "i18n.h"
 #include "gui_main.h"
 #include "version.h"
@@ -88,15 +93,17 @@ PangoFontDescription *fd_statusbar;
 /* Communication between gui thread and disk thread */
 extern pthread_mutex_t disk_thread_lock;
 extern pthread_cond_t  disk_thread_wake;
-extern jack_ringbuffer_t * rb_gui2disk;
-extern jack_ringbuffer_t * rb_disk2gui;
+extern rb_t * rb_gui2disk;
+extern rb_t * rb_disk2gui;
 
 extern volatile int output_thread_lock;
 
+#ifdef HAVE_JACK
 extern jack_client_t * jack_client;
 extern char * client_name;
 extern int jack_is_shutdown;
-extern const size_t sample_size;
+//extern const size_t sample_size;
+#endif /* HAVE_JACK */
 
 extern volatile int vol_cancelled;
 
@@ -874,8 +881,18 @@ set_output_label(int output, int out_SR) {
 		sprintf(str, "%s ALSA @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_ALSA */
+#ifdef HAVE_JACK
 	case JACK_DRIVER:
 		sprintf(str, "%s JACK @ %d Hz", _("Output:"), out_SR);
+		break;
+#endif /* HAVE_JACK */
+#ifdef _WIN32
+	case WIN32_DRIVER:
+		sprintf(str, "%s Win32 @ %d Hz", _("Output:"), out_SR);
+		break;
+#endif /* _WIN32 */
+	default:
+		strcpy(str, _("No output"));
 		break;
 	}
 	
@@ -1086,9 +1103,12 @@ change_skin(char * path) {
 	int st_mstore = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(musicstore_toggle));
 	int st_plist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(playlist_toggle));
 
+
+#ifdef HAVE_LADSPA
 	GtkTreeIter iter;
 	gpointer gp_instance;
 	int i = 0;
+#endif /* HAVE_LADSPA */
 
 	char rcpath[MAXLEN];
 
@@ -1118,8 +1138,10 @@ change_skin(char * path) {
 	deflicker();
 	create_music_browser();
 	deflicker();
+#ifdef HAVE_LADSPA
 	create_fxbuilder();
 	deflicker();
+#endif /* HAVE_LADSPA */
 	
 	g_signal_handler_block(G_OBJECT(play_button), play_id);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), st_play);
@@ -1156,6 +1178,7 @@ change_skin(char * path) {
 		}
 	}
 
+#ifdef HAVE_LADSPA
         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, i) &&
 		i < MAX_PLUGINS) {
 
@@ -1165,6 +1188,7 @@ change_skin(char * path) {
 		deflicker();
 		++i;
 	}
+#endif /* HAVE_LADSPA */
 
 	if (info_window) {
 		gtk_widget_reset_rc_styles(info_window);
@@ -1216,7 +1240,7 @@ void
 main_window_close(GtkWidget * widget, gpointer data) {
 
 	send_cmd = CMD_FINISH;
-	jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
+	rb_write(rb_gui2disk, &send_cmd, 1);
 	try_waking_disk_thread();
 
 	vol_cancelled = 1;
@@ -1242,7 +1266,10 @@ main_window_close(GtkWidget * widget, gpointer data) {
 	
 	save_window_position();
 	save_config();
+#ifdef HAVE_LADSPA
 	save_plugin_data();
+	lrdf_cleanup();
+#endif /* HAVE_LADSPA */
 
 	if (options.auto_save_playlist) {
 		char playlist_name[MAXLEN];
@@ -1254,7 +1281,6 @@ main_window_close(GtkWidget * widget, gpointer data) {
         pango_font_description_free(fd_playlist);
         pango_font_description_free(fd_browser);
 
-	lrdf_cleanup();
 	close_app_socket();
 	gtk_main_quit();
 }
@@ -1280,7 +1306,9 @@ conf__skin_cb(gpointer data) {
 void
 conf__jack_cb(gpointer data) {
 
+#ifdef HAVE_JACK
 	port_setup_dialog();
+#endif /* HAVE_JACK */
 }
 
 
@@ -1347,11 +1375,16 @@ playlist_toggled(GtkWidget * widget, gpointer data) {
 void
 plugin_toggled(GtkWidget * widget, gpointer data) {
 
+#ifdef HAVE_LADSPA
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
 		show_fxbuilder();
 	} else {
 		hide_fxbuilder();
 	}
+#else
+	/* XXX */
+	printf("Aqualung compiled without LADSPA plugin support.\n");
+#endif /* HAVE_LADSPA */
 }
 
 
@@ -1476,8 +1509,8 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			
 			send_cmd = CMD_SEEKTO;
 			seek.seek_to_pos = 0.0f;
-			jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
-			jack_ringbuffer_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
+			rb_write(rb_gui2disk, &send_cmd, 1);
+			rb_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
 			try_waking_disk_thread();
 		}
 		
@@ -1581,8 +1614,8 @@ main_window_key_released(GtkWidget * widget, GdkEventKey * event) {
                         send_cmd = CMD_SEEKTO;
                         seek.seek_to_pos = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_pos))
                                 / 100.0f * total_samples;
-                        jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
-                        jack_ringbuffer_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
+                        rb_write(rb_gui2disk, &send_cmd, 1);
+                        rb_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
 			try_waking_disk_thread();
                 }
                 break;
@@ -1630,6 +1663,7 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
                                 gtk_window_iconify(GTK_WINDOW(info_window));
 			}
 
+#ifdef HAVE_LADSPA
                         if (fxbuilder_on) {
                                 GtkTreeIter iter;
                                 gpointer gp_instance;
@@ -1644,6 +1678,7 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
                                         ++i;
                                 }
                         }
+#endif /* HAVE_LADSPA */
                 }
 
                 if (event->new_window_state == 0) {
@@ -1743,8 +1778,8 @@ scale_button_release_event(GtkWidget * widget, GdkEventButton * event) {
 			send_cmd = CMD_SEEKTO;
 			seek.seek_to_pos = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_pos))
 				/ 100.0f * total_samples;
-			jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
-			jack_ringbuffer_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
+			rb_write(rb_gui2disk, &send_cmd, 1);
+			rb_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
 			try_waking_disk_thread();
 		}
 	}
@@ -2283,8 +2318,8 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		}
 
 		cmd = CMD_CUE;
-		jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
-		jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
+		rb_write(rb_gui2disk, &cmd, sizeof(char));
+		rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 		try_waking_disk_thread();
 	}
 	return FALSE;
@@ -2351,8 +2386,8 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		}
 
 		cmd = CMD_CUE;
-		jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
-		jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
+		rb_write(rb_gui2disk, &cmd, sizeof(char));
+		rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 		try_waking_disk_thread();
 	}
 	return FALSE;
@@ -2371,7 +2406,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		is_paused = 0;
 		toggle_noeffect(PAUSE, FALSE);
 		send_cmd = CMD_RESUME;
-		jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
+		rb_write(rb_gui2disk, &send_cmd, 1);
 		try_waking_disk_thread();
 		return FALSE;
 	}
@@ -2403,8 +2438,8 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	if (cue.filename == NULL) {
 		stop_event(NULL, NULL, NULL);
 	} else {
-		jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
-		jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
+		rb_write(rb_gui2disk, &cmd, sizeof(char));
+		rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 		try_waking_disk_thread();
 	}
 	return FALSE;
@@ -2423,13 +2458,13 @@ pause_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		is_paused = 1;
 		toggle_noeffect(PLAY, FALSE);
 		send_cmd = CMD_PAUSE;
-		jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
+		rb_write(rb_gui2disk, &send_cmd, 1);
 
 	} else {
 		is_paused = 0;
 		toggle_noeffect(PLAY, TRUE);
 		send_cmd = CMD_RESUME;
-		jack_ringbuffer_write(rb_gui2disk, &send_cmd, 1);
+		rb_write(rb_gui2disk, &send_cmd, 1);
 	}
 
 	try_waking_disk_thread();
@@ -2456,8 +2491,8 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	cmd = CMD_CUE;
 	cue.filename = NULL;
-        jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
-        jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
+        rb_write(rb_gui2disk, &cmd, sizeof(char));
+        rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 	try_waking_disk_thread();
 
         /* hide cover */
@@ -2741,6 +2776,7 @@ create_button_with_image(char * path, int toggle, char * alt) {
 }
 
 
+#ifdef HAVE_JACK
 void
 jack_shutdown_window(void) {
 
@@ -2758,6 +2794,7 @@ is restart both JACK and Aqualung.\n"));
         gtk_container_add(GTK_CONTAINER(window), label);
 	gtk_widget_show_all(window);
 }
+#endif /* HAVE_JACK */
 
 
 void
@@ -2770,16 +2807,17 @@ set_win_title(void) {
 		sprintf(str_session_id, ".%d", aqualung_session_id);
 		strcat(win_title, str_session_id);
 	}
+#ifdef HAVE_JACK
 	if ((output == JACK_DRIVER) && (strcmp(client_name, "aqualung") != 0)) {
 		strcat(win_title, " [");
 		strcat(win_title, client_name);
 		strcat(win_title, "]");
 	}
+#endif /* HAVE_JACK */
 }
 
 
 #ifdef HAVE_SYSTRAY
-
 void
 hide_all_windows(gpointer data) {
 	/* Inverse operation of show_all_windows().
@@ -2883,7 +2921,6 @@ show_all_windows(gpointer data) {
 	gtk_widget_hide(systray__show);
 	gtk_widget_show(systray__hide);
 }
-
 #endif /* HAVE_SYSTRAY */
 
 
@@ -2987,9 +3024,11 @@ create_main_window(char * skin_path) {
         gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__options);
         gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__skin);
 
+#ifdef HAVE_JACK
         if (output == JACK_DRIVER) {
                 gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__jack);
         }
+#endif /* HAVE_JACK */
 
         if (!options.playlist_is_embedded) {
                 gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__fileinfo);
@@ -3329,7 +3368,9 @@ create_main_window(char * skin_path) {
 	sprintf(path, "%s/%s", skin_path, "fx");
 	plugin_toggle = create_button_with_image(path, 1, "FX");
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), plugin_toggle, _("Toggle LADSPA patch builder"), NULL);
+#ifdef HAVE_LADSPA
 	gtk_box_pack_end(GTK_BOX(btns_hbox), plugin_toggle, FALSE, FALSE, 0);
+#endif /* HAVE_LADSPA */
 
 	g_signal_connect(playlist_toggle, "toggled", G_CALLBACK(playlist_toggled), NULL);
 	g_signal_connect(musicstore_toggle, "toggled", G_CALLBACK(musicstore_toggled), NULL);
@@ -3481,7 +3522,7 @@ setup_systray(void) {
 	GtkWidget * systray__separator1;
 	GtkWidget * systray__separator2;
 
-	sprintf(path, "%s/icon_64.png", DATADIR);
+	sprintf(path, "%s/icon_64.png", AQUALUNG_DATADIR);
 	systray_icon = gtk_status_icon_new_from_file(path);
 
         g_signal_connect_swapped(G_OBJECT(systray_icon), "activate",
@@ -3576,7 +3617,9 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	rb_size = rb_audio_size;
 
 	gtk_init(&argc, &argv);
+#ifdef HAVE_LADSPA
 	lrdf_init();
+#endif /* HAVE_LADSPA */
 
 	if (!(home = getenv("HOME"))) {
 		/* no warning -- done that in core.c::load_default_cl() */
@@ -3603,7 +3646,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	if (options.title_format[0] == '\0')
 		sprintf(options.title_format, "%%a: %%t [%%r]");
 	if (options.skin[0] == '\0') {
-		sprintf(options.skin, "%s/plain", SKINDIR);
+		sprintf(options.skin, "%s/plain", AQUALUNG_SKINDIR);
 		main_pos_x = 30;
 		main_pos_y = 30;
 		main_size_x = 670;
@@ -3648,9 +3691,11 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	create_music_browser();
 
+#ifdef HAVE_LADSPA
 	create_fxbuilder();
-
 	load_plugin_data();
+#endif /* HAVE_LADSPA */
+
 	load_music_store();
 
 	if (options.auto_save_playlist) {
@@ -3660,27 +3705,27 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		load_playlist(playlist_name, 0);
 	}
 
-	sprintf(path, "%s/icon_16.png", DATADIR);
+	sprintf(path, "%s/icon_16.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
 	}
 
-	sprintf(path, "%s/icon_24.png", DATADIR);
+	sprintf(path, "%s/icon_24.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
 	}
 
-	sprintf(path, "%s/icon_32.png", DATADIR);
+	sprintf(path, "%s/icon_32.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
 	}
 
-	sprintf(path, "%s/icon_48.png", DATADIR);
+	sprintf(path, "%s/icon_48.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
 	}
 
-	sprintf(path, "%s/icon_64.png", DATADIR);
+	sprintf(path, "%s/icon_64.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
 	}
@@ -3767,9 +3812,11 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	process_filenames(argv, optind, enqueue);
 
 	/* activate jack client and connect ports */
+#ifdef HAVE_JACK
 	if (output == JACK_DRIVER) {
 		jack_client_start();
 	}
+#endif /* HAVE_JACK */
 
 	/* set timeout function */
 	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
@@ -3828,15 +3875,17 @@ timeout_callback(gpointer data) {
 	static double left_gain_shadow;
 	static double right_gain_shadow;
 	static int update_pending = 0;
-	static int jack_popup_beenthere = 0;
 	char rcmd;
 	static char cmdbuf[MAXLEN];
 	int rcv_count;
 	static int last_rcmd_loadenq = 0;
+#ifdef HAVE_JACK
+	static int jack_popup_beenthere = 0;
+#endif /* HAVE_JACK */
 
 
-	while (jack_ringbuffer_read_space(rb_disk2gui)) {
-		jack_ringbuffer_read(rb_disk2gui, &recv_cmd, 1);
+	while (rb_read_space(rb_disk2gui)) {
+		rb_read(rb_disk2gui, &recv_cmd, 1);
 		switch (recv_cmd) {
 
 		case CMD_FILEREQ:
@@ -3850,20 +3899,20 @@ timeout_callback(gpointer data) {
 			decide_next_track(&cue);
 
 			if (cue.filename != NULL) {
-				jack_ringbuffer_write(rb_gui2disk, &cmd, sizeof(char));
-				jack_ringbuffer_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
+				rb_write(rb_gui2disk, &cmd, sizeof(char));
+				rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 			} else {
 				send_cmd = CMD_STOPWOFL;
-				jack_ringbuffer_write(rb_gui2disk, &send_cmd, sizeof(char));
+				rb_write(rb_gui2disk, &send_cmd, sizeof(char));
 			}
 
 			try_waking_disk_thread();
 			break;
 
 		case CMD_FILEINFO:
-			while (jack_ringbuffer_read_space(rb_disk2gui) < sizeof(fileinfo_t))
+			while (rb_read_space(rb_disk2gui) < sizeof(fileinfo_t))
 				;
-			jack_ringbuffer_read(rb_disk2gui, (char *)&fileinfo, sizeof(fileinfo_t));
+			rb_read(rb_disk2gui, (char *)&fileinfo, sizeof(fileinfo_t));
 
 			total_samples = fileinfo.total_samples;
 			status.samples_left = fileinfo.total_samples;
@@ -3872,9 +3921,9 @@ timeout_callback(gpointer data) {
 			break;
 
 		case CMD_STATUS:
-			while (jack_ringbuffer_read_space(rb_disk2gui) < sizeof(status_t))
+			while (rb_read_space(rb_disk2gui) < sizeof(status_t))
 				;
-			jack_ringbuffer_read(rb_disk2gui, (char *)&status, sizeof(status_t));
+			rb_read(rb_disk2gui, (char *)&status, sizeof(status_t));
 
 			pos = total_samples - status.samples_left;
 
@@ -4005,29 +4054,24 @@ timeout_callback(gpointer data) {
 	}
 
 	/* check for JACK shutdown condition */
+#ifdef HAVE_JACK
 	if (output == JACK_DRIVER) {
-/*
-		if (!spin_islocked_m(&output_thread_lock)) {
-			spin_waitlock_s(&output_thread_lock);
-*/
-			if (jack_is_shutdown) {
-				if (is_file_loaded) {
-					stop_event(NULL, NULL, NULL);
-				}
-				if (!jack_popup_beenthere) {
-					jack_shutdown_window();
-					if (ports_window) {
-						ports_clicked_close(NULL, NULL);
-					}
-					gtk_widget_set_sensitive(conf__jack, FALSE);
-					jack_popup_beenthere = 1;
-				}
+		if (jack_is_shutdown) {
+			if (is_file_loaded) {
+				stop_event(NULL, NULL, NULL);
 			}
-/*
-			spin_unlock_s(&output_thread_lock);
+			if (!jack_popup_beenthere) {
+				jack_shutdown_window();
+				if (ports_window) {
+					ports_clicked_close(NULL, NULL);
+				}
+				gtk_widget_set_sensitive(conf__jack, FALSE);
+				jack_popup_beenthere = 1;
+			}
 		}
-*/
 	}
+#endif /* HAVE_JACK */
+
 	return TRUE;
 }
 

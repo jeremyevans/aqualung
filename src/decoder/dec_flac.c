@@ -58,7 +58,7 @@ write_callback(const FLAC__FileDecoder * decoder,
                         buf[j] = *(buffer[j] + i);
                         fbuf[j] = (float)buf[j] * fdec->voladj_lin / scale;
                 }
-                jack_ringbuffer_write(pd->rb, (char *)fbuf,
+                rb_write(pd->rb, (char *)fbuf,
                                       pd->channels * sample_size);
         }
 
@@ -189,7 +189,7 @@ flac_decoder_open(decoder_t * dec, char * filename) {
 				goto try_flac;
 			}
 			
-			pd->rb = jack_ringbuffer_create(pd->channels *
+			pd->rb = rb_create(pd->channels *
 							sample_size * RB_FLAC_SIZE);
 			fdec->channels = pd->channels;
 			fdec->SR = pd->SR;
@@ -218,7 +218,7 @@ flac_decoder_close(decoder_t * dec) {
 
 	FLAC__file_decoder_finish(pd->flac_decoder);
 	FLAC__file_decoder_delete(pd->flac_decoder);
-	jack_ringbuffer_free(pd->rb);
+	rb_free(pd->rb);
 }
 
 
@@ -232,7 +232,7 @@ flac_decoder_read(decoder_t * dec, float * dest, int num) {
 
 
 	pd->state = FLAC__file_decoder_get_state(pd->flac_decoder);
-	while ((jack_ringbuffer_read_space(pd->rb) < num * pd->channels
+	while ((rb_read_space(pd->rb) < num * pd->channels
 		* sample_size) && (pd->state == FLAC__FILE_DECODER_OK)) {
 		FLAC__file_decoder_process_single(pd->flac_decoder);
 		pd->state = FLAC__file_decoder_get_state(pd->flac_decoder);
@@ -245,14 +245,14 @@ flac_decoder_read(decoder_t * dec, float * dest, int num) {
 		return 0; /* this means that a new file will be opened */
 	}
 
-	n_avail = jack_ringbuffer_read_space(pd->rb) /
+	n_avail = rb_read_space(pd->rb) /
 		(pd->channels * sample_size);
 
 	if (n_avail > num) {
 		n_avail = num;
 	}
 
-	jack_ringbuffer_read(pd->rb, (char *)dest, n_avail *
+	rb_read(pd->rb, (char *)dest, n_avail *
 			     pd->channels * sample_size);
 	numread = n_avail;
 	return numread;
@@ -275,8 +275,8 @@ flac_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 		fdec->samples_left = fdec->fileinfo.total_samples - seek_to_pos;
 
 		/* empty flac decoder ringbuffer */
-		while (jack_ringbuffer_read_space(pd->rb))
-			jack_ringbuffer_read(pd->rb, &flush_dest, sizeof(char));
+		while (rb_read_space(pd->rb))
+			rb_read(pd->rb, &flush_dest, sizeof(char));
 	} else {
 		fprintf(stderr, "flac_decoder_seek: warning: "
 			"FLAC__file_decoder_seek_absolute() failed\n");

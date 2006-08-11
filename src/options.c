@@ -38,7 +38,6 @@
 #include "gui_main.h"
 #include "music_browser.h"
 #include "playlist.h"
-//#include "spinlock.h"
 #include "i18n.h"
 #include "options.h"
 
@@ -1271,7 +1270,7 @@ create_notebook_tab(char * text, char * imgfile) {
 	label = gtk_label_new(text);
 	gtk_box_pack_end(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-	sprintf(path, "%s/%s", DATADIR, imgfile);
+	sprintf(path, "%s/%s", AQUALUNG_DATADIR, imgfile);
 
         pixbuf = gdk_pixbuf_new_from_file(path, NULL);
 

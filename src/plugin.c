@@ -21,6 +21,8 @@
 
 #include <config.h>
 
+#ifdef HAVE_LADSPA
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
@@ -38,7 +40,6 @@
 #include "i18n.h"
 #include "options.h"
 #include "trashlist.h"
-#include "spinlock.h"
 #include "plugin.h"
 
 extern options_t options;
@@ -58,7 +59,6 @@ extern LADSPA_Data * r_buf;
 extern unsigned long out_SR;
 
 int fxbuilder_on;
-
 GtkWidget * fxbuilder_window;
 GtkWidget * avail_list;
 GtkListStore * avail_store = NULL;
@@ -2248,6 +2248,15 @@ load_plugin_data(void) {
         xmlFreeDoc(doc);
         return;
 }
+
+
+#else
+
+#include <gtk/gtk.h>
+int fxbuilder_on = 0;
+GtkWidget * fxbuilder_window = NULL;
+
+#endif /* HAVE_LADSPA */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

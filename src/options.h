@@ -48,6 +48,7 @@ typedef struct {
 	int united_minimization;
 	int show_hidden;
    	int main_window_always_on_top;
+    int tags_tab_first;
 
 	/* Playlist */
 	int playlist_is_embedded;

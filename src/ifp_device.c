@@ -104,8 +104,8 @@ abort_transfer_cb (GtkButton *button, gpointer user_data) {
 static int
 update_progress (void *context, struct ifp_transfer_status *status) {
 
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_cf), (double)status->file_bytes/status->file_total);
-        sprintf(temp, _("%d / %d bytes (%.1f MB)"), status->file_bytes, status->file_total, (double)status->file_total/(1024*1024));
+        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_cf), (float)status->file_bytes/status->file_total);
+        sprintf(temp, _("%d / %d bytes (%.1f MB)"), status->file_bytes, status->file_total, (float)status->file_total/(1024*1024));
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_cf), temp);
         deflicker();
 
@@ -147,7 +147,7 @@ upload_songs_cb_foreach(GtkTreeIter * iter, void * data) {
         gtk_editable_set_position(GTK_EDITABLE(file_entry), -1);
 
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_op),
-				      (double)(*n + 1) / number_of_songs);
+				      (float)(*n + 1) / number_of_songs);
 	sprintf(temp, _("%d / %d files"), *n + 1, number_of_songs);
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar_op), temp);
 	deflicker();
@@ -469,11 +469,11 @@ aifp_directory_listing(gchar *name) {
 void
 aifp_update_info(void) {
 
-        gdouble space;
+        gfloat space;
 
         sprintf(temp, "%d", number_of_songs); 
         gtk_label_set_text(GTK_LABEL(label_songs), temp);
-        sprintf(temp, "%d bytes (%.1f MB)", songs_size, (double)songs_size / (1024*1024)); 
+        sprintf(temp, "%d bytes (%.1f MB)", songs_size, (float)songs_size / (1024*1024)); 
         gtk_label_set_text(GTK_LABEL(label_songs_size), temp);
 
         battery_status = ifp_battery(&ifpdev);
@@ -483,14 +483,14 @@ aifp_update_info(void) {
         gtk_label_set_text(GTK_LABEL(label_model), temp);
         
         capacity = ifp_capacity(&ifpdev);
-        sprintf(temp, "%d bytes (%.1f MB)", capacity, (double)capacity / (1024*1024)); 
+        sprintf(temp, "%d bytes (%.1f MB)", capacity, (float)capacity / (1024*1024)); 
         gtk_label_set_text(GTK_LABEL(label_capacity), temp);
 
         freespace = ifp_freespace(&ifpdev);
-        sprintf(temp, "%d bytes (%.1f MB)", freespace, (double)freespace / (1024*1024)); 
+        sprintf(temp, "%d bytes (%.1f MB)", freespace, (float)freespace / (1024*1024)); 
         gtk_label_set_text(GTK_LABEL(label_freespace), temp);
 
-        space = (double)freespace/capacity;
+        space = (float)freespace/capacity;
 
         sprintf(temp, "Free space (%d%%)", (gint)(space*100)); 
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_freespace), temp);

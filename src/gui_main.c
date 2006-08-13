@@ -4205,6 +4205,9 @@ save_config(void) {
         snprintf(str, 31, "%d", options.main_window_always_on_top);
         xmlNewTextChild(root, NULL, (const xmlChar *) "main_window_always_on_top", (xmlChar *) str);
 
+        snprintf(str, 31, "%d", options.tags_tab_first);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "tags_tab_first", (xmlChar *) str);
+
 	snprintf(str, 31, "%d", options.override_skin_settings);
         xmlNewTextChild(root, NULL, (const xmlChar *) "override_skin_settings", (xmlChar *) str);
 
@@ -4674,6 +4677,13 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
 				sscanf((char *) key, "%d", &options.main_window_always_on_top);
+			}
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"tags_tab_first"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				sscanf((char *) key, "%d", &options.tags_tab_first);
 			}
                         xmlFree(key);
                 }

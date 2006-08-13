@@ -3557,7 +3557,7 @@ music_store_set_status_bar_info(void) {
 	float len = 0.0f;
 	float duration = 0.0f;
 	char * file;
-	unsigned int size = 0;
+	float size = 0;
 	
 	char duration_str[MAXLEN];
 	char str[MAXLEN];
@@ -3572,7 +3572,7 @@ music_store_set_status_bar_info(void) {
 		path = gtk_tree_model_get_path(model, &iter);
 
 		switch (gtk_tree_path_get_depth(path)) {
-		case 1:
+		case 1: /* music store */
 			i = 0;
 			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, &iter, i++)) {
 				n_artist++;
@@ -3590,8 +3590,8 @@ music_store_set_status_bar_info(void) {
 						duration += len;
 						
 						if (stat(file, &statbuf) != -1) {
-							size += statbuf.st_size;
-						}
+							size += statbuf.st_size / 1024.0;
+						} 
 
 						g_free(file);
 					}
@@ -3605,9 +3605,9 @@ music_store_set_status_bar_info(void) {
 			}
 
 			if (options.ms_statusbar_show_size) {
-				if ((size /= 1024 * 1024) < 1024) {
+				if ((size /= 1024.0) < 1024) {
 					snprintf(str, MAXLEN-1,
-						 ("%d %s, %d %s, %d %s [%s] (%d MB)"),
+						 ("%d %s, %d %s, %d %s [%s] (%.1f MB)"),
 						 n_artist,
 						 (n_artist > 1) ? _("artists") : _("artist"),
 						 n_record,
@@ -3636,7 +3636,7 @@ music_store_set_status_bar_info(void) {
 			}
 
 			break;
-		case 2:
+		case 2: /* artist */
 			j = 0;
 			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_record,
 							     &iter, j++)) {
@@ -3650,7 +3650,7 @@ music_store_set_status_bar_info(void) {
 					duration += len;
 
 					if (stat(file, &statbuf) != -1) {
-						size += statbuf.st_size;
+						size += statbuf.st_size / 1024.0;
 					}
 
 					g_free(file);
@@ -3664,8 +3664,8 @@ music_store_set_status_bar_info(void) {
 			}
 
 			if (options.ms_statusbar_show_size) {
-				if ((size /= 1024 * 1024) < 1024) {
-					snprintf(str, MAXLEN-1, "%d %s, %d %s [%s] (%d MB)",
+				if ((size /= 1024.0) < 1024) {
+					snprintf(str, MAXLEN-1, "%d %s, %d %s [%s] (%.1f MB)",
 						 n_record,
 						 (n_record > 1) ? _("records") : _("record"),
 						 n_track,
@@ -3687,7 +3687,7 @@ music_store_set_status_bar_info(void) {
 			}
 
 			break;
-		case 3:
+		case 3: /* record */
 			k = 0;
 			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track,
 							     &iter, k++)) {
@@ -3696,7 +3696,7 @@ music_store_set_status_bar_info(void) {
 				duration += len;
 
 				if (stat(file, &statbuf) != -1) {
-					size += statbuf.st_size;
+					size += statbuf.st_size / 1024.0;
 				}
 
 				g_free(file);
@@ -3709,8 +3709,8 @@ music_store_set_status_bar_info(void) {
 			}
 
 			if (options.ms_statusbar_show_size) {
-				if ((size /= 1024 * 1024) < 1024) {
-					snprintf(str, MAXLEN-1, "%d %s [%s] (%d MB)",
+				if ((size /= 1024.0) < 1024) {
+					snprintf(str, MAXLEN-1, "%d %s [%s] (%.1f MB)",
 						 n_track,
 						 (n_track > 1) ? _("tracks") : _("track"),
 						 duration_str, size);
@@ -3727,7 +3727,7 @@ music_store_set_status_bar_info(void) {
 			}
 
 			break;
-		case 4:
+		case 4: /* track */
 			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 2, &file, 4, &duration, -1);
 
 			if (duration > 0.0f) {
@@ -3737,14 +3737,14 @@ music_store_set_status_bar_info(void) {
 			}
 
 			if (stat(file, &statbuf) != -1) {
-				size += statbuf.st_size;
+				size += statbuf.st_size / 1024.0;
 			}
 
 			g_free(file);
 
 			if (options.ms_statusbar_show_size) {
-				if ((size /= 1024 * 1024) < 1024) {
-					snprintf(str, MAXLEN-1, "1 %s [%s] (%d MB)",
+				if ((size /= 1024.0) < 1024) {
+					snprintf(str, MAXLEN-1, "1 %s [%s] (%.1f MB)",
 						 _("track"), duration_str, size);
 				} else {
 					snprintf(str, MAXLEN-1, "1 %s [%s] (%.1f GB)",

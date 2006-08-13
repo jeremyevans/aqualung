@@ -123,6 +123,7 @@ extern void disable_bold_font_in_playlist(void);
 extern void set_sliders_width(void);
 extern void playlist_selection_changed(GtkTreeSelection * sel, gpointer data);
 extern void set_buttons_relief(void);
+extern void show_active_position_in_playlist(void);
 
 GtkWidget * options_window;
 GtkWidget * notebook;
@@ -158,6 +159,7 @@ GtkWidget * check_enable_mstore_statusbar;
 GtkWidget * check_enable_mstore_toolbar;
 GtkWidget * check_expand_stores;
 GtkWidget * check_show_hidden;
+GtkWidget * check_tags_tab_first;
 GtkWidget * check_playlist_is_embedded;
 GtkWidget * check_playlist_is_tree;
 GtkWidget * check_album_shuffle_mode;
@@ -433,6 +435,12 @@ ok(GtkWidget * widget, gpointer data) {
 		options.main_window_always_on_top = 0;
 	}
 
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_tags_tab_first))) {
+		options.tags_tab_first = 1;
+	} else {
+		options.tags_tab_first = 0;
+	}
+
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded))) {
 		options.playlist_is_embedded_shadow = 1;
 	} else {
@@ -571,6 +579,7 @@ ok(GtkWidget * widget, gpointer data) {
         set_sliders_width();    /* MAGIC */
 
 	playlist_size_allocate(NULL, NULL);
+        show_active_position_in_playlist();
 
 	return TRUE;
 }
@@ -1771,6 +1780,14 @@ create_options_window(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_hidden), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_show_hidden, FALSE, FALSE, 0);
+
+        check_tags_tab_first = gtk_check_button_new_with_label(_("Show tags tab first in the file info dialog"));
+	gtk_widget_set_name(check_tags_tab_first, "check_on_notebook");
+	if (options.tags_tab_first) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_tags_tab_first), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_tags_tab_first, FALSE, FALSE, 0);
+
 
         /* "Playlist" notebook page */
 

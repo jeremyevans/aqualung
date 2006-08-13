@@ -80,8 +80,9 @@ extern void set_sliders_width(void);
 GtkWidget * info_window = NULL;
 trashlist_t * fileinfo_trash = NULL;
 
-gint page = 0;     /* current notebook page */
-GtkWidget * nb;     /* notebook widget */
+gint page = 0;          /* current notebook page */
+gint n_pages = 0;       /* number of notebook pages */
+GtkWidget * nb;         /* notebook widget */
 
 import_data_t *
 import_data_new(void) {
@@ -231,8 +232,8 @@ info_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		break;
 		
 	case GDK_Return:
+		page = (page+1) % n_pages;
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(nb), page);
-		page = (page+1) % gtk_notebook_get_n_pages(GTK_NOTEBOOK(nb));
 		break;
 		
 	}
@@ -365,8 +366,6 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
 	nb = gtk_notebook_new();
 	gtk_box_pack_start(GTK_BOX(vbox), nb, TRUE, TRUE, 10);
-	page = 0;
-
 
 	/* Audio data notebook page */
 
@@ -773,6 +772,13 @@ show_file_info(char * name, char * file, int is_called_from_browser,
   	gtk_container_add(GTK_CONTAINER(hbuttonbox), dismiss_btn);   
 
 	gtk_widget_show_all(info_window);
+
+	n_pages = gtk_notebook_get_n_pages(GTK_NOTEBOOK(nb));
+
+        if (n_pages > 1) {
+                page = options.tags_tab_first ? 1 : 0;
+                gtk_notebook_set_current_page(GTK_NOTEBOOK(nb), page);
+        }
 
 	meta_free(meta);
 }

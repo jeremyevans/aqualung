@@ -393,7 +393,8 @@ build_dialog(void) {
         gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
 	gtk_container_add(GTK_CONTAINER(gen_path_frame), hbox);
 
-        root_entry = gtk_entry_new_with_max_length(MAXLEN-1);
+        root_entry = gtk_entry_new ();
+        gtk_entry_set_max_length (GTK_ENTRY(root_entry), MAXLEN-1);
         gtk_box_pack_start(GTK_BOX(hbox), root_entry, TRUE, TRUE, 5);
 
 	browse_button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);

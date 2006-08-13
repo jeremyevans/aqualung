@@ -1618,7 +1618,7 @@ playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event) {
 
 
 void
-playlist_child_stats(GtkTreeIter * iter, int * count, float * duration, guint * songs_size, int selected) {
+playlist_child_stats(GtkTreeIter * iter, int * count, float * duration, float * songs_size, int selected) {
 
 	int j = 0;
 	gchar * tstr;
@@ -1635,7 +1635,7 @@ playlist_child_stats(GtkTreeIter * iter, int * count, float * duration, guint * 
 			*duration += len;
 			(*count)++;
 			if (stat(tstr, &statbuf) != -1) {
-				*songs_size += statbuf.st_size;
+				*songs_size += statbuf.st_size / 1024.0;
 			}
 			g_free(tstr);
 		}
@@ -1656,7 +1656,7 @@ playlist_stats(int selected) {
 	char str[MAXLEN];
 	char time[MAXLEN];
         gchar * tstr;
-        guint songs_size, m_size;
+        float songs_size, m_size;
         struct stat statbuf;
 
 	if (!options.enable_playlist_statusbar) return;
@@ -1678,7 +1678,7 @@ playlist_stats(int selected) {
 				duration += len;
 				count++;
 				if (stat(tstr, &statbuf) != -1) {
-					songs_size += statbuf.st_size;
+					songs_size += statbuf.st_size / 1024.0;
 				}
 				g_free(tstr);
 			}
@@ -1687,12 +1687,12 @@ playlist_stats(int selected) {
 
 
 	time2time(duration, time);
-        m_size = songs_size / (1024*1024);
+        m_size = songs_size / 1024.0;
 
 	if (count == 1) {
                 if (options.pl_statusbar_show_size) {
                         if(m_size < 1024) {
-                                sprintf(str, _("%d track [%s] (%d MB)"), count, time, m_size);
+                                sprintf(str, _("%d track [%s] (%.1f MB)"), count, time, m_size);
                         } else {
                                 sprintf(str, _("%d track [%s] (%.1f GB)"), count, time, m_size / 1024.0);
                         }
@@ -1702,7 +1702,7 @@ playlist_stats(int selected) {
 	} else {
                 if (options.pl_statusbar_show_size) {
                         if(m_size < 1024) {
-                                sprintf(str, _("%d tracks [%s] (%d MB)"), count, time, m_size);
+                                sprintf(str, _("%d tracks [%s] (%.1f MB)"), count, time, m_size);
                         } else {
                                 sprintf(str, _("%d tracks [%s] (%.1f GB)"), count, time, m_size / 1024.0);
                         }
@@ -1723,7 +1723,7 @@ void
 recalc_album_node(GtkTreeIter * iter) {
 	int count = 0;
 	float duration = 0;
-	guint songs_size;
+	float songs_size;
 	char time[MAXLEN];
 
 	playlist_child_stats(iter, &count, &duration, &songs_size, 0/*false*/);

@@ -87,7 +87,8 @@ extern GtkWidget * statusbar_ms;
 
 int auto_save_playlist_shadow;
 int show_rva_in_playlist_shadow;
-int show_songs_size_in_statusbar_shadow;
+int pl_statusbar_show_size_shadow;
+int ms_statusbar_show_size_shadow;
 int show_length_in_playlist_shadow;
 int show_active_track_name_in_bold_shadow;
 int enable_pl_rules_hint_shadow;
@@ -135,7 +136,8 @@ GtkWidget * entry_param;
 GtkWidget * label_src;
 GtkWidget * check_autoplsave;
 GtkWidget * check_show_rva_in_playlist;
-GtkWidget * check_show_songs_size_in_statusbar;
+GtkWidget * check_pl_statusbar_show_size;
+GtkWidget * check_ms_statusbar_show_size;
 GtkWidget * check_show_length_in_playlist;
 GtkWidget * check_show_active_track_name_in_bold;
 GtkWidget * check_enable_pl_rules_hint;
@@ -257,7 +259,8 @@ ok(GtkWidget * widget, gpointer data) {
 	strncpy(options.default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN - 1);
 	options.auto_save_playlist = auto_save_playlist_shadow;
 	options.rva_is_enabled = rva_is_enabled_shadow;
-	options.show_songs_size_in_statusbar = show_songs_size_in_statusbar_shadow;
+	options.pl_statusbar_show_size = pl_statusbar_show_size_shadow;
+	options.ms_statusbar_show_size = ms_statusbar_show_size_shadow;
 	options.rva_env = rva_env_shadow;
 	options.rva_refvol = rva_refvol_shadow;
 	options.rva_steepness = rva_steepness_shadow;
@@ -559,6 +562,7 @@ ok(GtkWidget * widget, gpointer data) {
         /* refresh statusbar */
         playlist_content_changed();
         playlist_selection_changed(NULL, NULL);
+	music_store_set_status_bar_info();
 
         current_notebook_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
 
@@ -646,12 +650,22 @@ check_show_active_track_name_in_bold_toggled(GtkWidget * widget, gpointer * data
 }
 
 void
-check_show_songs_size_in_statusbar_toggled(GtkWidget * widget, gpointer * data) {
+check_pl_statusbar_show_size_toggled(GtkWidget * widget, gpointer * data) {
 
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_songs_size_in_statusbar))) {
-		show_songs_size_in_statusbar_shadow = 1;
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_pl_statusbar_show_size))) {
+		pl_statusbar_show_size_shadow = 1;
 	} else {
-		show_songs_size_in_statusbar_shadow = 0;
+		pl_statusbar_show_size_shadow = 0;
+	}
+}
+
+void
+check_ms_statusbar_show_size_toggled(GtkWidget * widget, gpointer * data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_ms_statusbar_show_size))) {
+		ms_statusbar_show_size_shadow = 1;
+	} else {
+		ms_statusbar_show_size_shadow = 0;
 	}
 }
 
@@ -1813,16 +1827,16 @@ create_options_window(void) {
 			 G_CALLBACK(restart_active), _("Enable statusbar in playlist"));
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_playlist_statusbar, FALSE, TRUE, 3);
 
-	check_show_songs_size_in_statusbar =
+	check_pl_statusbar_show_size =
 		gtk_check_button_new_with_label(_("Show soundfile size in statusbar"));
-	gtk_widget_set_name(check_show_songs_size_in_statusbar, "check_on_notebook");
-	if (options.show_songs_size_in_statusbar) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_songs_size_in_statusbar), TRUE);
+	gtk_widget_set_name(check_pl_statusbar_show_size, "check_on_notebook");
+	if (options.pl_statusbar_show_size) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_pl_statusbar_show_size), TRUE);
 	}
-	show_songs_size_in_statusbar_shadow = options.show_songs_size_in_statusbar;
-	g_signal_connect(G_OBJECT(check_show_songs_size_in_statusbar), "toggled",
-			 G_CALLBACK(check_show_songs_size_in_statusbar_toggled), NULL);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_songs_size_in_statusbar, FALSE, TRUE, 3);
+	pl_statusbar_show_size_shadow = options.pl_statusbar_show_size;
+	g_signal_connect(G_OBJECT(check_pl_statusbar_show_size), "toggled",
+			 G_CALLBACK(check_pl_statusbar_show_size_toggled), NULL);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_pl_statusbar_show_size, FALSE, TRUE, 3);
 
         check_show_rva_in_playlist =
 		gtk_check_button_new_with_label(_("Show RVA values"));
@@ -1956,6 +1970,17 @@ to set the column order in the Playlist."));
 	g_signal_connect(G_OBJECT(check_enable_mstore_statusbar), "toggled",
 			 G_CALLBACK(restart_active), _("Enable statusbar in Music Store"));
         gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_mstore_statusbar, FALSE, TRUE, 3);
+
+	check_ms_statusbar_show_size =
+		gtk_check_button_new_with_label(_("Show soundfile size in statusbar"));
+	gtk_widget_set_name(check_ms_statusbar_show_size, "check_on_notebook");
+	if (options.ms_statusbar_show_size) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_ms_statusbar_show_size), TRUE);
+	}
+	ms_statusbar_show_size_shadow = options.ms_statusbar_show_size;
+	g_signal_connect(G_OBJECT(check_ms_statusbar_show_size), "toggled",
+			 G_CALLBACK(check_ms_statusbar_show_size_toggled), NULL);
+        gtk_box_pack_start(GTK_BOX(vbox_ms), check_ms_statusbar_show_size, FALSE, TRUE, 3);
 
 
 	check_expand_stores = gtk_check_button_new_with_label(_("Expand Stores on startup"));

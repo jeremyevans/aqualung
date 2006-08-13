@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <dirent.h>
+#include <unistd.h>
+#include <sys/stat.h>
 #include <math.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -948,7 +950,7 @@ plist__reread_file_meta_foreach(GtkTreeIter * iter, void * data) {
 	gchar * title;
 	gchar * fullname;
 	char voladj_str[32];
-	char duration_str[32];
+	char duration_str[MAXLEN];
 	playlist_filemeta * plfm = NULL;
 
 
@@ -1201,7 +1203,7 @@ void
 add_file_to_playlist(gchar *filename) {
 
 	char voladj_str[32];
-	char duration_str[32];
+	char duration_str[MAXLEN];
 	GtkTreeIter play_iter;
 	playlist_filemeta * plfm = NULL;
 
@@ -1625,10 +1627,10 @@ playlist_child_stats(GtkTreeIter * iter, int * count, float * duration, guint * 
 			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter_child, 5, &len, 1, &tstr, -1);
 			*duration += len;
 			(*count)++;
-			if (g_stat(tstr, &statbuf) != -1) {
+			if (stat(tstr, &statbuf) != -1) {
 				*songs_size += statbuf.st_size;
 			}
-			g_free(tstr);			
+			g_free(tstr);
 		}
 	}
 }
@@ -1645,7 +1647,7 @@ playlist_stats(int selected) {
 	float duration = 0;
 	float len = 0;
 	char str[MAXLEN];
-	char time[16];
+	char time[MAXLEN];
         gchar * tstr;
         guint songs_size, m_size;
         struct stat statbuf;
@@ -1668,7 +1670,7 @@ playlist_stats(int selected) {
 				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 5, &len, 1, &tstr, -1);
 				duration += len;
 				count++;
-				if (g_stat(tstr, &statbuf) != -1) {
+				if (stat(tstr, &statbuf) != -1) {
 					songs_size += statbuf.st_size;
 				}
 				g_free(tstr);
@@ -1681,7 +1683,7 @@ playlist_stats(int selected) {
         m_size = songs_size / (1024*1024);
 
 	if (count == 1) {
-                if (options.show_songs_size_in_statusbar) {
+                if (options.pl_statusbar_show_size) {
                         if(m_size < 1024) {
                                 sprintf(str, _("%d track [%s] (%d MB)"), count, time, m_size);
                         } else {
@@ -1691,7 +1693,7 @@ playlist_stats(int selected) {
                         sprintf(str, _("%d track [%s] "), count, time);
                 }
 	} else {
-                if (options.show_songs_size_in_statusbar) {
+                if (options.pl_statusbar_show_size) {
                         if(m_size < 1024) {
                                 sprintf(str, _("%d tracks [%s] (%d MB)"), count, time, m_size);
                         } else {
@@ -1715,7 +1717,7 @@ recalc_album_node(GtkTreeIter * iter) {
 	int count = 0;
 	float duration = 0;
 	guint songs_size;
-	char time[16];
+	char time[MAXLEN];
 
 	playlist_child_stats(iter, &count, &duration, &songs_size, 0/*false*/);
 	time2time(duration, time);
@@ -2496,7 +2498,7 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * pparent_iter, 
 	float voladj = 0.0f;
 	char voladj_str[32];
 	float duration = 0.0f;
-	char duration_str[32];
+	char duration_str[MAXLEN];
 
 	track_name[0] = '\0';
 	phys_name[0] = '\0';
@@ -2667,7 +2669,7 @@ load_m3u(char * filename, int enqueue) {
 	int have_name = 0;
 	GtkTreeIter iter;
 	char voladj_str[32];
-	char duration_str[32];
+	char duration_str[MAXLEN];
 	playlist_filemeta * plfm = NULL;
 
 
@@ -3048,7 +3050,7 @@ add_to_playlist(char * filename, int enqueue) {
 	char * path = filename;
 	GtkTreeIter iter;
 	char voladj_str[32];
-	char duration_str[32];
+	char duration_str[MAXLEN];
 	playlist_filemeta * plfm = NULL;
 
 

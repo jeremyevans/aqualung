@@ -935,9 +935,14 @@ progress_window(void) {
 gboolean
 set_prog_file_entry(gpointer data) {
 
-	char * utf8 = g_filename_display_name((char *)data);
-	gtk_entry_set_text(GTK_ENTRY(prog_file_entry), utf8);
-	g_free(utf8);
+	if (build_prog_window) {
+
+		char * utf8 = g_filename_display_name((char *)data);
+
+		gtk_entry_set_text(GTK_ENTRY(prog_file_entry), utf8);
+		gtk_widget_grab_focus(prog_cancel_button);
+		g_free(utf8);
+	}
 
 	return FALSE;
 }
@@ -946,7 +951,10 @@ set_prog_file_entry(gpointer data) {
 gboolean
 set_prog_action_label(gpointer data) {
 
-	gtk_label_set_text(GTK_LABEL(prog_action_label), (char *)data);
+	if (build_prog_window) {
+		gtk_label_set_text(GTK_LABEL(prog_action_label), (char *)data);
+	}
+
 	return FALSE;
 }
 
@@ -1336,6 +1344,8 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 
  finish:
 
+	music_store_mark_changed();
+
 	switch (artist_sort_by) {
 	case ARTIST_SORT_NAME:
 		artist_sort_name = record.artist;
@@ -1518,7 +1528,6 @@ build_artist(GtkTreeIter iter) {
 
 	if (build_dialog()) {
 		progress_window();
-		music_store_mark_changed();
 		pthread_create(&build_thread_id, NULL, build_artist_thread, NULL);
 	} else {
 		build_thread_state = BUILD_THREAD_FREE;
@@ -1536,7 +1545,6 @@ build_store(GtkTreeIter iter) {
 
 	if (build_dialog()) {
 		progress_window();
-		music_store_mark_changed();
 		pthread_create(&build_thread_id, NULL, build_store_thread, NULL);
 	} else {
 		build_thread_state = BUILD_THREAD_FREE;

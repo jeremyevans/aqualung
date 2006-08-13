@@ -399,13 +399,13 @@ time2time(float seconds, char * str) {
 
         if (d > 0) {
                 if (d == 1 && h > 9) {
-                        sprintf(str, _("%d day, %2d:%02d:%02d"), d, h, m, s);
+                        sprintf(str, "%d %s, %2d:%02d:%02d", d, _("day"), h, m, s);
                 } else if (d == 1 && h < 9) {
-                        sprintf(str, _("%d day, %1d:%02d:%02d"), d, h, m, s);
+                        sprintf(str, "%d %s, %1d:%02d:%02d", d, _("day"), h, m, s);
                 } else if (d != 1 && h > 9) {
-                        sprintf(str, _("%d days, %2d:%02d:%02d"), d, h, m, s);
+                        sprintf(str, "%d %s, %2d:%02d:%02d", d, _("days"), h, m, s);
                 } else {
-                        sprintf(str, _("%d days, %1d:%02d:%02d"), d, h, m, s);
+                        sprintf(str, "%d %s, %1d:%02d:%02d", d, _("days"), h, m, s);
                 }
         } else if (h > 0) {
 		if (h > 9) {
@@ -4132,8 +4132,10 @@ save_config(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) "auto_save_playlist", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.show_rva_in_playlist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "show_rva_in_playlist", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.show_songs_size_in_statusbar);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "show_songs_size_in_statusbar", (xmlChar *) str);
+	snprintf(str, 31, "%d", options.pl_statusbar_show_size);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "pl_statusbar_show_size", (xmlChar *) str);
+	snprintf(str, 31, "%d", options.ms_statusbar_show_size);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "ms_statusbar_show_size", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.show_length_in_playlist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "show_length_in_playlist", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.show_active_track_name_in_bold);
@@ -4534,10 +4536,16 @@ load_config(void) {
 				sscanf((char *) key, "%d", &options.show_rva_in_playlist);
                         xmlFree(key);
                 }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_songs_size_in_statusbar"))) {
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"pl_statusbar_show_size"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                sscanf((char *) key, "%d", &options.show_songs_size_in_statusbar);
+                                sscanf((char *) key, "%d", &options.pl_statusbar_show_size);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"ms_statusbar_show_size"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf((char *) key, "%d", &options.ms_statusbar_show_size);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_length_in_playlist"))) {

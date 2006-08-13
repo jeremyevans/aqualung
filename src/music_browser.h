@@ -41,6 +41,8 @@ void artist__addlist_defmode(gpointer data);
 void record__addlist_defmode(gpointer data);
 void track__addlist_cb(gpointer data);
 
+void music_store_set_status_bar_info(void);
+
 int store_get_iter_for_artist_and_record(GtkTreeIter * store_iter, GtkTreeIter * iter,
 					 const char * artist, const char * artist_sort_name,
 					 const char * record, const char * record_sort_name,

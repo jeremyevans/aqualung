@@ -165,6 +165,8 @@ GtkWidget * plist__separator3;
 #endif /* HAVE_IFP */
 
 void init_plist_menu(GtkWidget *append_menu);
+void show_active_position_in_playlist(void);
+void show_last_position_in_playlist(void);
 
 char command[RB_CONTROL_SIZE];
 
@@ -543,6 +545,11 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		plist__search_cb(NULL);
 		return TRUE;
 		break;
+        case GDK_a:
+        case GDK_A:
+                show_active_position_in_playlist();
+                return TRUE;
+                break;
         
         case GDK_Delete:
 	case GDK_KP_Delete:
@@ -3198,6 +3205,58 @@ init_plist_menu(GtkWidget *append_menu) {
         gtk_widget_show(plist__fileinfo);
         gtk_widget_show(plist__search);
 }
+
+
+void
+show_active_position_in_playlist(void) {
+
+        GtkTreeIter iter;
+	char * str;
+        gint flag;
+        GtkTreePath * visible_path;
+
+        flag = 0;
+
+        if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
+
+                do {
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 2, &str, -1);
+		        if (strcmp(str, pl_color_active) == 0) {
+                                flag = 1;
+                                break;
+                        }
+
+		} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter));
+
+                if (flag) {
+                        visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
+                        gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
+                        gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (play_list), visible_path,
+                                                      NULL, TRUE, 0.3, 0.0);
+                }
+        }
+}
+
+
+void
+show_last_position_in_playlist(void) {
+
+        GtkTreeIter iter;
+	gint i;
+        GtkTreePath * visible_path;
+
+        for(i=0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
+        
+        if(i) {
+                gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i-1);
+
+                visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
+                gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
+                gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (play_list), visible_path,
+                                              NULL, TRUE, 1.0, 0.0);
+        }
+}
+
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

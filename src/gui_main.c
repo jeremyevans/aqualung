@@ -339,6 +339,9 @@ extern void direct_add(GtkWidget * widget, gpointer * data);
 
 extern void start_playback_from_playlist(GtkTreePath * path);
 
+extern void show_active_position_in_playlist(void);
+extern void show_last_position_in_playlist(void);
+
 extern char fileinfo_name[MAXLEN];
 extern char fileinfo_file[MAXLEN];
 
@@ -3616,7 +3619,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	GList * glist = NULL;
 	GdkPixbuf * pixbuf = NULL;
         GdkColor color;
-        GtkTreePath * path_pl;
 	GtkTreeIter iter;
         gint i;
 
@@ -3830,17 +3832,18 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	/* set timeout function */
 	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
 
-        /* make active first row in playlist if at least one song exist */
+        /* make active row with last played song */
 
-        for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
+        if(options.playlist_is_embedded) {
 
-        if (options.playlist_is_embedded && i) {
-                path_pl = gtk_tree_path_new_first();
+                for(i=0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
+
+                show_active_position_in_playlist();
                 gtk_widget_realize(play_list);
-                gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), path_pl, NULL, TRUE);
-                gtk_tree_path_free (path_pl); 
                 gtk_widget_grab_focus(GTK_WIDGET(play_list));
+                gtk_widget_set_sensitive(plist__fileinfo, FALSE);
         }
+
 }
 
 
@@ -4041,6 +4044,7 @@ timeout_callback(gpointer data) {
 			break;
 		case RCMD_ENQUEUE:
 			add_to_playlist(cmdbuf, 1);
+                        show_last_position_in_playlist();  
 			if (last_rcmd_loadenq != 1)
 				last_rcmd_loadenq = 2;
 			break;

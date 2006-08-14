@@ -1236,6 +1236,13 @@ change_skin(char * path) {
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
 
 	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
+
+        if(options.playlist_is_embedded) {
+
+                show_active_position_in_playlist();
+                gtk_widget_realize(play_list);
+                gtk_widget_grab_focus(GTK_WIDGET(play_list));
+        }
 }
 
 
@@ -3619,8 +3626,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	GList * glist = NULL;
 	GdkPixbuf * pixbuf = NULL;
         GdkColor color;
-	GtkTreeIter iter;
-        gint i;
 
 	srand(time(0));
 	sample_pos = 0;
@@ -3835,8 +3840,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
         /* make active row with last played song */
 
         if(options.playlist_is_embedded) {
-
-                for(i=0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
 
                 show_active_position_in_playlist();
                 gtk_widget_realize(play_list);

@@ -105,6 +105,7 @@ int cover_width_shadow;
 
 int restart_flag;
 int override_past_state;
+int track_name_in_bold_past_state;
 
 extern int music_store_changed;
 
@@ -290,7 +291,7 @@ ok(GtkWidget * widget, gpointer data) {
 	options.show_active_track_name_in_bold = show_active_track_name_in_bold_shadow;
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_active_track_name_in_bold))) {
 		options.show_active_track_name_in_bold = 1;
-		change_skin(options.skin);
+/*		change_skin(options.skin);*/
 	} else {
 		options.show_active_track_name_in_bold = 0;
                 disable_bold_font_in_playlist();
@@ -507,6 +508,13 @@ ok(GtkWidget * widget, gpointer data) {
 
         /* apply changes */
 
+        if (!track_name_in_bold_past_state && !appearance_changed) {
+
+                /* reload skin */
+                change_skin(options.skin);
+                track_name_in_bold_past_state = 0;
+        }
+
         if (options.override_skin_settings) {
 
                 /* apply fonts */
@@ -558,8 +566,9 @@ ok(GtkWidget * widget, gpointer data) {
                 /* reload skin */
                 change_skin(options.skin);
                 override_past_state = 0;
-        }
 
+        } 
+     
         /* always on top ? */
 	if (options.main_window_always_on_top) {
                 gtk_window_set_keep_above (GTK_WINDOW(main_window), TRUE);
@@ -1548,6 +1557,25 @@ display_implict_command_line_help(void) {
 
 
 void
+display_pathlist_help(void) {
+
+	GtkWidget *help_dialog;
+
+        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
+                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, 
+	                                      _("Paths must either be absolute or starting with a tilde,\n"
+                				"which will be expanded to the user's home directory.\n\n"
+                                                "You will need to click the Refresh button after adding or\n"
+	                			"removing a store or reordering the list."));
+
+        gtk_widget_show (help_dialog);
+        gtk_dialog_run(GTK_DIALOG(help_dialog));
+        gtk_widget_destroy(help_dialog);
+}
+
+
+void
 create_options_window(void) {
 
 	GtkWidget * vbox;
@@ -1571,6 +1599,7 @@ create_options_window(void) {
 	GtkWidget * ms_pathlist_view;
 	GtkWidget * vbox_ms_pathlist;
 	GtkWidget * hbox_ms_pathlist;
+	GtkWidget * hbox_ms_pathlist_2;
 	GtkWidget * add_ms_pathlist;
 	GtkWidget * browse_ms_pathlist;
 	GtkWidget * remove_ms_pathlist;
@@ -1623,6 +1652,7 @@ create_options_window(void) {
 	GtkWidget * cancel_btn;
        	GtkWidget * help_btn_title;
 	GtkWidget * help_btn_param;
+	GtkWidget * help_pathlist;
 
 	int status;
 	int i;
@@ -1877,6 +1907,8 @@ create_options_window(void) {
 			 G_CALLBACK(check_show_length_in_playlist_toggled), NULL);
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_length_in_playlist, FALSE, TRUE, 3);
 	
+        track_name_in_bold_past_state = options.show_active_track_name_in_bold;
+
 	check_show_active_track_name_in_bold =
 		gtk_check_button_new_with_label(_("Show active track name in bold"));
 	gtk_widget_set_name(check_show_active_track_name_in_bold, "check_on_notebook");
@@ -2062,18 +2094,6 @@ to set the column order in the Playlist."));
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_ms_pathlist), 10);
 	gtk_container_add(GTK_CONTAINER(frame_ms_pathlist), vbox_ms_pathlist);
 
-	hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(_("Paths must either be absolute or starting with a tilde,\n"
-				"which will be expanded to the user's home directory."));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox, FALSE, TRUE, 5);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(_("You will need to click the Refresh button after adding or\n"
-				"removing a store or reordering the list."));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox, FALSE, TRUE, 5);
-
 	if (!ms_pathlist_store) {
 		ms_pathlist_store = gtk_list_store_new(3,
 						    G_TYPE_STRING,     /* path */
@@ -2109,34 +2129,39 @@ to set the column order in the Playlist."));
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_container_add(GTK_CONTAINER(viewport), scrolled_win);
 	gtk_container_add(GTK_CONTAINER(scrolled_win), ms_pathlist_view);
-
 	
 	hbox_ms_pathlist = gtk_hbox_new(FALSE, FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist, FALSE, FALSE, 5);
 	
-	browse_ms_pathlist = gtk_button_new_with_label(_("Browse"));
+	entry_ms_pathlist = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), entry_ms_pathlist, TRUE, TRUE, 0);
+
+	browse_ms_pathlist = gui_stock_label_button(_("Browse"), GTK_STOCK_OPEN);
 	g_signal_connect (G_OBJECT(browse_ms_pathlist), "clicked",
 			  G_CALLBACK(browse_ms_pathlist_clicked), NULL);
-	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), browse_ms_pathlist, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist), browse_ms_pathlist, FALSE, FALSE, 3);
 
-	entry_ms_pathlist = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), entry_ms_pathlist, FALSE, FALSE, 5);
+	hbox_ms_pathlist_2 = gtk_hbox_new(FALSE, FALSE);
+	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist_2, TRUE, TRUE, 2);
 
-	add_ms_pathlist = gtk_button_new_with_label(_("Add"));
-	g_signal_connect (G_OBJECT(add_ms_pathlist), "clicked",
-			  G_CALLBACK(add_ms_pathlist_clicked), NULL);
-	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), add_ms_pathlist, FALSE, FALSE, 0);
+        help_pathlist = gtk_button_new_from_stock (GTK_STOCK_HELP); 
+	g_signal_connect(help_pathlist, "clicked", G_CALLBACK(display_pathlist_help), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist_2), help_pathlist, FALSE, FALSE, 0);
 
-	remove_ms_pathlist = gtk_button_new_with_label(_("Remove"));
-	g_signal_connect (G_OBJECT(remove_ms_pathlist), "clicked",
-			  G_CALLBACK(remove_ms_pathlist_clicked), NULL);
-	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), remove_ms_pathlist, FALSE, FALSE, 5);
-
-	refresh_ms_pathlist = gtk_button_new_with_label(_("Refresh"));
+	refresh_ms_pathlist = gui_stock_label_button(_("Refresh"), GTK_STOCK_REFRESH);
 	g_signal_connect (G_OBJECT(refresh_ms_pathlist), "clicked",
 			  G_CALLBACK(refresh_ms_pathlist_clicked), NULL);
-	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist), refresh_ms_pathlist, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist_2), refresh_ms_pathlist, FALSE, FALSE, 3);
 	
+	remove_ms_pathlist = gui_stock_label_button(_("Remove"), GTK_STOCK_REMOVE);
+	g_signal_connect (G_OBJECT(remove_ms_pathlist), "clicked",
+			  G_CALLBACK(remove_ms_pathlist_clicked), NULL);
+	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist_2), remove_ms_pathlist, FALSE, FALSE, 3);
+
+	add_ms_pathlist = gui_stock_label_button(_("Add"), GTK_STOCK_ADD);
+	g_signal_connect (G_OBJECT(add_ms_pathlist), "clicked",
+			  G_CALLBACK(add_ms_pathlist_clicked), NULL);
+	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist_2), add_ms_pathlist, FALSE, FALSE, 3);
 
 
 	/* "DSP" notebook page */

@@ -3586,14 +3586,16 @@ music_store_set_status_bar_info(void) {
 					while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track,
 									     &iter_record, k++)) {
 						n_track++;
-						gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, 2, &file, 4, &len, -1);
+                                                gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, 2, &file, 4, &len, -1);
 						duration += len;
 						
-						if (stat(file, &statbuf) != -1) {
-							size += statbuf.st_size / 1024.0;
-						} 
+			                        if (options.ms_statusbar_show_size) {
+                                                        if (stat(file, &statbuf) != -1) {
+                                                                size += statbuf.st_size / 1024.0;
+                                                        } 
+                                                }
 
-						g_free(file);
+                                                g_free(file);
 					}
 				}
 			}
@@ -3649,11 +3651,13 @@ music_store_set_status_bar_info(void) {
 					gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, 2, &file, 4, &len, -1);
 					duration += len;
 
-					if (stat(file, &statbuf) != -1) {
-						size += statbuf.st_size / 1024.0;
-					}
+                                        if (options.ms_statusbar_show_size) {
+                                                if (stat(file, &statbuf) != -1) {
+                                                        size += statbuf.st_size / 1024.0;
+                                                }
+                                        }
 
-					g_free(file);
+                                        g_free(file);
 				}
 			}
 
@@ -3695,11 +3699,13 @@ music_store_set_status_bar_info(void) {
 				gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, 2, &file, 4, &len, -1);
 				duration += len;
 
-				if (stat(file, &statbuf) != -1) {
-					size += statbuf.st_size / 1024.0;
-				}
+			        if (options.ms_statusbar_show_size) {
+                                        if (stat(file, &statbuf) != -1) {
+                                                size += statbuf.st_size / 1024.0;
+                                        }
+                                }
 
-				g_free(file);
+                                g_free(file);
 			}
 
 			if (duration > 0.0f) {
@@ -3736,11 +3742,13 @@ music_store_set_status_bar_info(void) {
 				strcpy(duration_str, _("time unmeasured"));
 			}
 
-			if (stat(file, &statbuf) != -1) {
-				size += statbuf.st_size / 1024.0;
-			}
+			if (options.ms_statusbar_show_size) {
+                                if (stat(file, &statbuf) != -1) {
+                                        size += statbuf.st_size / 1024.0;
+                                }
+                        }
 
-			g_free(file);
+                        g_free(file);
 
 			if (options.ms_statusbar_show_size) {
 				if ((size /= 1024.0) < 1024) {

@@ -136,6 +136,8 @@ find_cover_filename(gchar *song_filename) {
         n_files = sizeof(cover_filenames) / sizeof(gchar*);
         strcpy(base_path, get_song_path(song_filename));
 
+        cover_filename[0] = '\0';
+
         for (i = 0; i < n_files; i++) {
 
                 for (j = 0; j < n_extensions; j++) {
@@ -318,6 +320,7 @@ insert_cover(GtkTextIter * iter) {
                         }
 
                         strcpy(cover_filename, find_cover_filename(song_filename));
+                        g_free (song_filename);
 
                         /* load and display cover */
 

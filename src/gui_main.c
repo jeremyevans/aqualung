@@ -1237,10 +1237,10 @@ change_skin(char * path) {
 
 	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
 
-        if(options.playlist_is_embedded) {
+        show_active_position_in_playlist();
+        gtk_widget_realize(play_list);
 
-                show_active_position_in_playlist();
-                gtk_widget_realize(play_list);
+        if(options.playlist_is_embedded) {
                 gtk_widget_grab_focus(GTK_WIDGET(play_list));
         }
 }
@@ -3839,12 +3839,12 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
         /* make active row with last played song */
 
-        if(options.playlist_is_embedded) {
+        show_active_position_in_playlist();
+        gtk_widget_realize(play_list);
 
-                show_active_position_in_playlist();
-                gtk_widget_realize(play_list);
-                gtk_widget_grab_focus(GTK_WIDGET(play_list));
+        if(options.playlist_is_embedded) {
                 gtk_widget_set_sensitive(plist__fileinfo, FALSE);
+                gtk_widget_grab_focus(GTK_WIDGET(play_list));
         }
 
 }

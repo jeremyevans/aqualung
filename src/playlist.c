@@ -144,6 +144,7 @@ GtkWidget * sel__inv;
 GtkWidget * rem_menu;
 GtkWidget * cut__sel;
 GtkWidget * rem__all;
+GtkWidget * rem__dead;
 GtkWidget * rem__sel;
 GtkWidget * plist_menu;
 GtkWidget * plist__save;
@@ -1485,6 +1486,57 @@ rem__sel_cb(gpointer data) {
 
 
 void
+rem__dead_cb(gpointer data) {
+
+	GtkTreeIter iter;
+	int i = 0;
+        gchar *filename;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+
+                gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &filename, -1);
+
+                int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter);
+
+                if (!n && g_file_test (filename, G_FILE_TEST_IS_REGULAR) == FALSE) {
+                        g_free (filename);
+                        gtk_tree_store_remove(play_store, &iter);
+                        --i;
+                        continue;
+                }
+
+                g_free (filename);
+
+		GtkTreeIter iter_child;
+		int j = 0;
+
+                if (n) {
+
+                        while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, &iter, j++)) {
+                                gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter_child, 1, &filename, -1);
+
+                                if (g_file_test (filename, G_FILE_TEST_IS_REGULAR) == FALSE) {
+                                        gtk_tree_store_remove(play_store, &iter_child);
+                                        --j;
+                                }
+
+                                g_free (filename);
+                        }
+
+                        /* remove album node if empty */
+                        if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter) == 0) {
+				gtk_tree_store_remove(play_store, &iter);
+                                --i;
+                        } else {
+                                recalc_album_node(&iter);
+                        }
+                }
+
+        }
+	playlist_content_changed();
+}
+
+void
 remove_sel(GtkWidget * widget, gpointer data) {
 
 	rem__sel_cb(NULL);
@@ -2344,6 +2396,11 @@ create_playlist(void) {
         gtk_menu_shell_append(GTK_MENU_SHELL(rem_menu), rem__all);
         g_signal_connect_swapped(G_OBJECT(rem__all), "activate", G_CALLBACK(rem__all_cb), NULL);
     	gtk_widget_show(rem__all);
+
+        rem__dead = gtk_menu_item_new_with_label(_("Remove dead"));
+        gtk_menu_shell_append(GTK_MENU_SHELL(rem_menu), rem__dead);
+        g_signal_connect_swapped(G_OBJECT(rem__dead), "activate", G_CALLBACK(rem__dead_cb), NULL);
+    	gtk_widget_show(rem__dead);
 
         cut__sel = gtk_menu_item_new_with_label(_("Cut selected"));
         gtk_menu_shell_append(GTK_MENU_SHELL(rem_menu), cut__sel);

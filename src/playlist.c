@@ -168,6 +168,7 @@ GtkWidget * plist__separator3;
 void init_plist_menu(GtkWidget *append_menu);
 void show_active_position_in_playlist(void);
 void show_last_position_in_playlist(void);
+void expand_collapse_album_node(void);
 
 char command[RB_CONTROL_SIZE];
 
@@ -365,7 +366,7 @@ start_playback_from_playlist(GtkTreePath * path) {
 	GtkTreePath * p;
 	char cmd;
 	cue_t cue;
-
+        
 	if (!allow_seeks)
 		return;
 
@@ -373,7 +374,7 @@ start_playback_from_playlist(GtkTreePath * path) {
 	if (p != NULL) {
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
 		gtk_tree_path_free(p);
-		unmark_track(&iter);
+                unmark_track(&iter);
 	}
 	
 	gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path);
@@ -570,6 +571,10 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		break;
 #endif /* HAVE_IFP */
 
+        case GDK_grave:
+                expand_collapse_album_node();
+                return TRUE;
+		break;
 
 	}
 
@@ -2168,6 +2173,8 @@ create_playlist(void) {
 			gtk_tree_view_column_set_spacing(GTK_TREE_VIEW_COLUMN(track_column), 3);
 			gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(track_column), FALSE);
 			gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(track_column), 10);
+                        g_object_set(G_OBJECT(track_renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
+                        gtk_cell_renderer_set_fixed_size(track_renderer, 10, -1);
 			gtk_tree_view_append_column(GTK_TREE_VIEW(play_list), track_column);
 			break;
 
@@ -3311,6 +3318,50 @@ show_last_position_in_playlist(void) {
                 gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
                 gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (play_list), visible_path,
                                               NULL, TRUE, 1.0, 0.0);
+        }
+}
+
+void
+expand_collapse_album_node(void) {
+
+	GtkTreeIter iter, iter_child;
+	gint i, j;
+        GtkTreePath *path;
+        GtkTreeViewColumn *column;
+
+        i = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+
+		if (gtk_tree_selection_iter_is_selected(play_select, &iter) &&
+                    gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter)) {
+
+                        gtk_tree_view_get_cursor(GTK_TREE_VIEW(play_list), &path, &column);
+
+                        if (path && gtk_tree_view_row_expanded(GTK_TREE_VIEW(play_list), path)) {
+                                gtk_tree_view_collapse_row(GTK_TREE_VIEW(play_list), path);
+                        } else {
+                                gtk_tree_view_expand_row(GTK_TREE_VIEW(play_list), path, FALSE);
+                        }
+                        
+                        continue;
+                }
+
+                j = 0;
+
+                while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, &iter, j++)) {
+
+                        if (gtk_tree_selection_iter_is_selected(play_select, &iter_child) &&
+                            gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store), &iter, &iter_child)) {
+
+                                path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
+
+                                if (path) {
+                                        gtk_tree_view_collapse_row(GTK_TREE_VIEW(play_list), path);
+                                        gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), path, NULL, TRUE);
+                                }
+                        }
+                }
         }
 }
 

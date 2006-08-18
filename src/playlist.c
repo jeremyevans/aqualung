@@ -180,6 +180,7 @@ extern int is_paused;
 extern int allow_seeks;
 
 extern char current_file[MAXLEN];
+extern gchar current_track_name[MAXLEN];
 
 extern rb_t * rb_gui2disk;
 
@@ -1460,6 +1461,8 @@ rem__sel_cb(gpointer data) {
 
 		GtkTreeIter iter_child;
 		int j = 0;
+		int modified = 0;
+		char * str;
 
 		int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter);
 
@@ -1471,8 +1474,17 @@ rem__sel_cb(gpointer data) {
 
 		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, &iter, j++)) {
 			if (gtk_tree_selection_iter_is_selected(play_select, &iter_child)) {
+
+				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter_child, 2, &str, -1);
+				if (strcmp(str, pl_color_active) == 0) {
+					unmark_track(&iter_child);
+				}
+
+				g_free(str);
+
 				gtk_tree_store_remove(play_store, &iter_child);
 				--j;
+				modified = 1;
 			}
 		}
 
@@ -1481,8 +1493,19 @@ rem__sel_cb(gpointer data) {
 			if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter) == 0) {
 				gtk_tree_store_remove(play_store, &iter);
 				--i;
-			} else {
+			} else if (modified) {
 				recalc_album_node(&iter);
+
+				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 2, &str, -1);
+				if (strcmp(str, pl_color_active) == 0) {
+					gtk_tree_model_iter_children(GTK_TREE_MODEL(play_store),
+								     &iter_child, &iter);
+					gtk_tree_store_set(play_store, &iter, 0,
+							   current_track_name, -1);
+					unmark_track(&iter);
+					mark_track(&iter);
+				}
+				g_free(str);
 			}
 		}
 	}

@@ -835,12 +835,34 @@ Options for changing state of Playlist/Music Store windows
 
 \begin_layout Description
 -l,\InsetSpace ~
---show-pl=[yes|no] Show/hide playlist window.
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+{-}{-}
+\end_layout
+
+\end_inset
+
+show-pl=[yes|no] Show/hide playlist window.
 \end_layout
 
 \begin_layout Description
 -m,\InsetSpace ~
---show-ms=[yes|no] Show/hide music store window.
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+{-}{-}
+\end_layout
+
+\end_inset
+
+show-ms=[yes|no] Show/hide music store window.
 \end_layout
 
 \begin_layout Subsection
@@ -2256,7 +2278,7 @@ Now all you have to do is set the correct visible names for the tracks,
 \end_layout
 
 \begin_layout Subsubsection
-Building store from filesystem
+Building or Updating store from filesystem
 \end_layout
 
 \begin_layout Standard
@@ -2895,7 +2917,7 @@ i, I
 \bar no
 \noun off
 \color none
-bring up the File info dialog (for Tracks only)
+bring up the File info dialog (for tracks only)
 \end_layout
 
 \end_inset
@@ -2924,7 +2946,7 @@ v, V
 \bar no
 \noun off
 \color none
-start volume calculation for the selected item (recursive for 
+start volume calculation for unmeasured items (recursive for 
 \family default
 \series default
 \shape default
@@ -3267,7 +3289,7 @@ The other two buttons (`Select all', `Remove selected') function as you
 \begin_layout Standard
 There is a statusbar under the list showing the total time of the playlist
  and the duration of the selected tracks, as well as the size of the songs
- (in MB) if enabled.
+ if enabled.
 \end_layout
 
 \begin_layout Standard
@@ -3308,7 +3330,7 @@ Shortcuts for this window
 \begin_layout Standard
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="9" columns="2">
+<lyxtabular version="3" rows="11" columns="2">
 <features>
 <column alignment="center" valignment="top" leftline="true" width="0">
 <column alignment="block" valignment="top" leftline="true" rightline="true" width="10cm">
@@ -3500,7 +3522,7 @@ insert
 \begin_inset Text
 
 \begin_layout Standard
-open `Add Files...' dialog
+open `Add Files' dialog
 \end_layout
 
 \end_inset
@@ -3520,7 +3542,7 @@ u, U
 \begin_inset Text
 
 \begin_layout Standard
-Cut selected
+cut selected
 \end_layout
 
 \end_inset
@@ -3540,7 +3562,47 @@ f, F
 \begin_inset Text
 
 \begin_layout Standard
-Search in Playlist
+search in Playlist
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+t, T
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+send selected songs to iRiver iFP device
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+a, A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+scroll list to show active track
 \end_layout
 
 \end_inset
@@ -3692,12 +3754,14 @@ The purpose and usage of Music Store and database files have been covered
 
 \begin_layout Standard
 There are also some options to handle the cover arts of your records.
- Displaying cover arts is a yet immature feature, which can be accessed
- if you place a file named `cover.jpg' in the same directory where you keep
- the tracks of a record.
+ The feature can be turned on by placing an image file in the same directory
+ where you keep the tracks of a record.
+ The filename must be one of `cover.ext', `.cover.ext', `front.ext', `.front.ext',
+ `folder.ext', `.folder.ext', where `ext' is one of `jpg', `jpeg', `png', `gif',
+ `bmp', `tif', `tiff'.
  If you select this record (or one of its tracks) in the Music Store, the
- image will be displayed in the comment pane, as well as in the Main window
- during the playback of a track from this album.
+ image will be displayed in the comment pane and the File Info dialog, as
+ well as in the Main window during the playback of a track from this album.
 \end_layout
 
 \begin_layout Standard
@@ -3956,7 +4020,7 @@ ng of the program, basic cueing, and quitting Aqualung.
 The systray icon has a tooltip displaying the same text as the main window's
  title.
  So it's easy to see what track is currently playing, and also the Aqualung
- instance id (in case of more instances).
+ instance ID (in case of more instances).
  
 \end_layout
 

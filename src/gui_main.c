@@ -2320,7 +2320,6 @@ choose_random_track(GtkTreeIter * piter) {
 void
 prepare_playback(GtkTreeIter * piter, cue_t * pcue) {
 
-	unmark_track(piter);
 	mark_track(piter);
 	cue_track_for_playback(piter, pcue);
 	is_file_loaded = 1;

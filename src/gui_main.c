@@ -331,8 +331,6 @@ gint cover_show_flag;
 
 void set_buttons_relief(void);
 
-gchar current_track_name[MAXLEN];
-gint current_track_name_initialized = 0;
 
 /* externs form playlist.c */
 extern void clear_playlist_selection(void);
@@ -1252,10 +1250,6 @@ change_skin(char * path) {
 void
 main_window_close(GtkWidget * widget, gpointer data) {
 
-	GtkTreeIter iter;       
-        GtkTreeIter iter_parent; 
-	GtkTreePath * p;        
-
 	send_cmd = CMD_FINISH;
 	rb_write(rb_gui2disk, &send_cmd, 1);
 	try_waking_disk_thread();
@@ -1284,24 +1278,6 @@ main_window_close(GtkWidget * widget, gpointer data) {
 	if (systray_main_window_on) {
 		save_window_position();
 	}
-
-        /* remove counter from track name */
-
-        p = get_playing_path(play_store);
-
-        if (p != NULL) {
-                gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
-                gtk_tree_path_free(p);
-
-	        if (gtk_tree_store_iter_depth(play_store, &iter)) {
-	        	gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store), &iter_parent, &iter);
-
-                        if (current_track_name_initialized) {
-                                gtk_tree_store_set(play_store, &iter_parent, 0, current_track_name, -1);
-                        }
-	        }
-
-        }
 
 	save_config();
 
@@ -2001,17 +1977,20 @@ toggle_noeffect(int id, int state) {
 void
 mark_track(GtkTreeIter * piter) {
 
-	GtkTreeIter iter_parent;
-        gint j, n;
-        gchar *track_name, *str;
-        gchar counter[MAXLEN], tmptrackname[MAXLEN];
+        int j, n;
+        char * track_name;
+	char *str;
+        char counter[MAXLEN];
+	char tmptrackname[MAXLEN];
 
 
-        if (!current_track_name_initialized) {
-                gtk_tree_model_get(GTK_TREE_MODEL(play_store), piter, 0, &track_name, -1);
-                strncpy(current_track_name, track_name, MAXLEN-1);
-                current_track_name_initialized = 1;
-        }
+	gtk_tree_model_get(GTK_TREE_MODEL(play_store), piter, 2, &str, -1);
+	if (strcmp(str, pl_color_active) == 0) {
+		g_free(str);
+		return;
+	}
+	g_free(str);
+
 
 	gtk_tree_store_set(play_store, piter, 2, pl_color_active, -1);
 	if (options.show_active_track_name_in_bold) {
@@ -2021,15 +2000,14 @@ mark_track(GtkTreeIter * piter) {
         n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), piter);
 
         if (n) {
+		GtkTreeIter iter_child;
+
                 gtk_tree_model_get(GTK_TREE_MODEL(play_store), piter, 0, &track_name, -1);
-                strncpy(current_track_name, track_name, MAXLEN-1);
                 strncpy(tmptrackname, track_name, MAXLEN-1);
 
-		gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store), &iter_parent, piter);
                 j = 0;
-
-		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_parent, piter, j++)) {
-			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter_parent, 2, &str, -1);
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, piter, j++)) {
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter_child, 2, &str, -1);
 			if (strcmp(str, pl_color_active) == 0) {
 				g_free(str);
                                 break;
@@ -2044,6 +2022,8 @@ mark_track(GtkTreeIter * piter) {
         }
 
 	if (gtk_tree_store_iter_depth(play_store, piter)) { /* track node of album */
+		GtkTreeIter iter_parent;
+
 		gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store), &iter_parent, piter);
 		mark_track(&iter_parent);
 	}
@@ -2053,17 +2033,40 @@ mark_track(GtkTreeIter * piter) {
 void
 unmark_track(GtkTreeIter * piter) {
 
+	int n;
+
 	gtk_tree_store_set(play_store, piter, 2, pl_color_inactive, -1);
 	gtk_tree_store_set(play_store, piter, 7, PANGO_WEIGHT_NORMAL, -1);
 
+        n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), piter);
+
+        if (n) {
+		/* unmarking an album node: cut the counter string from the end */
+
+		char * name;
+		char * pack;
+		int len1, len2;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(play_store), piter, 0, &name, 1, &pack, -1);
+
+		sscanf(pack, "%04X%04X", &len1, &len2);
+
+		/* the +2 in the index below is the length of the ": "
+		   string which is put between the artist and album
+		   names in music_browser.c: record_addlist_iter() */
+		name[len1 + len2 + 2] = '\0';
+
+		gtk_tree_store_set(play_store, piter, 0, name, -1);
+
+		g_free(pack);
+		g_free(name);
+	}
+
 	if (gtk_tree_store_iter_depth(play_store, piter)) { /* track node of album */
 		GtkTreeIter iter_parent;
+
 		gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store), &iter_parent, piter);
 		unmark_track(&iter_parent);
-
-                if (current_track_name_initialized) {
-                        gtk_tree_store_set(play_store, &iter_parent, 0, current_track_name, -1);
-                }
 	}
 }
 
@@ -2307,8 +2310,9 @@ choose_random_track(GtkTreeIter * piter) {
 		n_items = count_playlist_tracks(NULL, -1);
 		if (n_items) {
 			n = (double)rand() * n_items / RAND_MAX;
-			if (n == n_items)
+			if (n == n_items) {
 				--n;
+			}
 			count_playlist_tracks(piter, n+1);
 			return 1;
 		}

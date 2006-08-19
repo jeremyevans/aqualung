@@ -180,7 +180,6 @@ extern int is_paused;
 extern int allow_seeks;
 
 extern char current_file[MAXLEN];
-extern gchar current_track_name[MAXLEN];
 
 extern rb_t * rb_gui2disk;
 
@@ -1498,10 +1497,6 @@ rem__sel_cb(gpointer data) {
 
 				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 2, &str, -1);
 				if (strcmp(str, pl_color_active) == 0) {
-					gtk_tree_model_iter_children(GTK_TREE_MODEL(play_store),
-								     &iter_child, &iter);
-					gtk_tree_store_set(play_store, &iter, 0,
-							   current_track_name, -1);
 					unmark_track(&iter);
 					mark_track(&iter);
 				}

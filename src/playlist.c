@@ -34,7 +34,6 @@
 #include <pthread.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
-#include <jack/jack.h>
 
 #include "common.h"
 #include "core.h"

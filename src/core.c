@@ -176,7 +176,7 @@ sample_rates_ok(int out_SR, int file_SR) {
 #else
         if (out_SR != file_SR) {
 		fprintf(stderr,
-			"Input file's samplerate (%ld Hz) and output samplerate (%ld Hz) differ, "
+			"Input file's samplerate (%d Hz) and output samplerate (%d Hz) differ, "
 			"and\nAqualung is compiled without Sample Rate Converter support. To play "
 			"this file,\nyou have to build Aqualung with internal Sample Rate Converter "
 			"support,\nor set the playback sample rate to match the file's sample rate."

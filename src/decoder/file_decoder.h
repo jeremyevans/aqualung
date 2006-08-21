@@ -22,7 +22,6 @@
 #ifndef _FILE_DECODER_H
 #define _FILE_DECODER_H
 
-#include <jack/jack.h>
 #include "../rb.h"
 
 /* input libs */

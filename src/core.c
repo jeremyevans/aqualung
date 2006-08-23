@@ -811,7 +811,7 @@ alsa_thread(void * arg) {
 			}
 
 			/* write data to audio device */
-			output_thread_lock = 0;
+			//			output_thread_lock = 0;
 			if ((n_written = snd_pcm_writei(pcm_handle, alsa_int_buf, n_avail)) != n_avail) {
 				snd_pcm_prepare(pcm_handle);
 			}

@@ -26,8 +26,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
-#include <pthread.h>
 #include <cddb/cddb.h>
+
+#ifdef _WIN32
+#include <glib.h>
+#else
+#include <pthread.h>
+#endif /* _WIN32 */
 
 #include "common.h"
 #include "i18n.h"
@@ -51,7 +56,7 @@ extern GtkTreeStore * music_store;
 extern GtkTreeSelection * music_select;
 
 
-pthread_t cddb_thread_id;
+AQUALUNG_THREAD_DECLARE(cddb_thread_id)
 
 int cddb_thread_state = CDDB_THREAD_FREE;
 
@@ -704,7 +709,7 @@ cddb_get() {
 	cddb_query_aborted = 0;
 	progress_counter = 0;
 	progress_prev = 0;
-	pthread_create(&cddb_thread_id, NULL, cddb_thread, NULL);
+	AQUALUNG_THREAD_CREATE(cddb_thread_id, NULL, cddb_thread, NULL)
 
 	g_timeout_add(100, cddb_timeout_callback, NULL);
 }

@@ -26,10 +26,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <pthread.h>
 #include <regex.h>
 #include <gtk/gtk.h>
 #include <sys/stat.h>
+
+#ifdef _WIN32
+#include <glib.h>
+#else
+#include <pthread.h>
+#endif /* _WIN32*/
 
 #include "common.h"
 #include "i18n.h"
@@ -60,7 +65,7 @@ extern GtkWidget * gui_stock_label_button(gchar * blabel, const gchar * bstock);
 extern void set_sliders_width(void);
 
 
-pthread_t build_thread_id;
+AQUALUNG_THREAD_DECLARE(build_thread_id)
 
 /* 0: busy, 1: free to start new build */
 int build_thread_state = BUILD_THREAD_FREE;
@@ -1529,7 +1534,7 @@ build_artist(GtkTreeIter iter) {
 
 	if (build_dialog()) {
 		progress_window();
-		pthread_create(&build_thread_id, NULL, build_artist_thread, NULL);
+		AQUALUNG_THREAD_CREATE(build_thread_id, NULL, build_artist_thread, NULL)
 	} else {
 		build_thread_state = BUILD_THREAD_FREE;
 	}
@@ -1546,7 +1551,7 @@ build_store(GtkTreeIter iter) {
 
 	if (build_dialog()) {
 		progress_window();
-		pthread_create(&build_thread_id, NULL, build_store_thread, NULL);
+		AQUALUNG_THREAD_CREATE(build_thread_id, NULL, build_store_thread, NULL)
 	} else {
 		build_thread_state = BUILD_THREAD_FREE;
 	}

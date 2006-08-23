@@ -31,7 +31,6 @@
 #include <gdk/gdkkeysyms.h>
 #include <glib.h>
 #include <glib/gstdio.h>
-#include <pthread.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 

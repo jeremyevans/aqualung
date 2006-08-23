@@ -26,6 +26,12 @@
 #include <gtk/gtk.h>
 #include <math.h>
 
+#ifdef _WIN32
+#include <glib.h>
+#else
+#include <pthread.h>
+#endif /* _WIN32 */
+
 #include "common.h"
 #include "core.h"
 #include "decoder/file_decoder.h"
@@ -47,7 +53,7 @@ typedef struct {
 extern GtkTreeStore * music_store;
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
-pthread_t volume_thread_id;
+AQUALUNG_THREAD_DECLARE(volume_thread_id)
 
 
 GtkWidget * vol_window = NULL;
@@ -420,7 +426,7 @@ calculate_volume(vol_queue_t * q, float * volumes) {
 	vol_finished = 0;
 	vol_cancelled = 0;
 	process_volume_setup(vol_queue);
-	pthread_create(&volume_thread_id, NULL, volume_thread, volumes);
+	AQUALUNG_THREAD_CREATE(volume_thread_id, NULL, volume_thread, volumes)
 }
 
 

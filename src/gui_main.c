@@ -27,11 +27,16 @@
 #include <math.h>
 #include <sys/stat.h>
 #include <errno.h>
-#include <pthread.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
+
+#ifdef _WIN32
+#include <glib.h>
+#else
+#include <pthread.h>
+#endif /* _WIN32 */
 
 #ifdef HAVE_LADSPA
 #include <lrdf.h>
@@ -91,18 +96,17 @@ PangoFontDescription *fd_songinfo;
 PangoFontDescription *fd_statusbar;
 
 /* Communication between gui thread and disk thread */
-extern pthread_mutex_t disk_thread_lock;
-extern pthread_cond_t  disk_thread_wake;
+extern AQUALUNG_MUTEX_DECLARE(disk_thread_lock)
+extern AQUALUNG_COND_DECLARE(disk_thread_wake)
 extern rb_t * rb_gui2disk;
 extern rb_t * rb_disk2gui;
 
-extern volatile int output_thread_lock;
+//extern volatile int output_thread_lock;
 
 #ifdef HAVE_JACK
 extern jack_client_t * jack_client;
 extern char * client_name;
 extern int jack_is_shutdown;
-//extern const size_t sample_size;
 #endif /* HAVE_JACK */
 
 extern volatile int vol_cancelled;
@@ -361,9 +365,9 @@ deflicker(void) {
 void
 try_waking_disk_thread(void) {
 
-	if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-		pthread_cond_signal(&disk_thread_wake);
-		pthread_mutex_unlock(&disk_thread_lock);
+	if (AQUALUNG_MUTEX_TRYLOCK(disk_thread_lock)) {
+		AQUALUNG_COND_SIGNAL(disk_thread_wake)
+		AQUALUNG_MUTEX_UNLOCK(disk_thread_lock)
 	}
 }
 
@@ -1296,7 +1300,6 @@ main_window_close(GtkWidget * widget, gpointer data) {
         pango_font_description_free(fd_playlist);
         pango_font_description_free(fd_browser);
 
-	close_app_socket();
 	gtk_main_quit();
 }
 
@@ -3958,7 +3961,7 @@ timeout_callback(gpointer data) {
 	cue_t cue;
 	static double left_gain_shadow;
 	static double right_gain_shadow;
-	static int update_pending = 0;
+	//static int update_pending = 0;
 	char rcmd;
 	static char cmdbuf[MAXLEN];
 	int rcv_count;
@@ -4052,7 +4055,7 @@ timeout_callback(gpointer data) {
 		}
 	}
         /* update volume & balance if necessary */
-	if ((vol != vol_prev) || (bal != bal_prev) || (update_pending)) {
+	if ((vol != vol_prev) || (bal != bal_prev) /*|| (update_pending)*/) {
 		vol_prev = vol;
 		vol_lin = (vol < -40.5f) ? 0 : db2lin(vol);
 		bal_prev = bal;
@@ -4063,20 +4066,14 @@ timeout_callback(gpointer data) {
 			left_gain_shadow = vol_lin;
 			right_gain_shadow = vol_lin * db2lin(0.4f * bal);
 		}
-/*
-		if (!spin_islocked_m(&output_thread_lock)) {
-			spin_waitlock_s(&output_thread_lock);
-*/
-		if (!output_thread_lock) {
+		/*		if (!output_thread_lock) {*/
 			left_gain = left_gain_shadow;
 			right_gain = right_gain_shadow;
-/*
-			spin_unlock_s(&output_thread_lock);
-*/
+			/*
 			update_pending = 0;
 		} else {
 			update_pending = 1;
-		}
+			}*/
 	}
 
 	/* receive and execute remote commands, if any */

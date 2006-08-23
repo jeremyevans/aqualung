@@ -24,8 +24,14 @@
 
 
 #include <sys/types.h>
-#include <pthread.h>
 
+#ifdef _WIN32
+#include <glib.h>
+#else
+#include <pthread.h>
+#endif
+
+#include "common.h"
 
 #ifdef HAVE_ALSA
 #include <alsa/asoundlib.h>
@@ -72,16 +78,16 @@
 
 
 typedef struct _thread_info {
-	pthread_t disk_thread_id;
+	AQUALUNG_THREAD_DECLARE(disk_thread_id)
 
 #ifdef HAVE_OSS	
-	pthread_t oss_thread_id;
+	AQUALUNG_THREAD_DECLARE(oss_thread_id)
 	int fd_oss;
 	short * oss_short_buf;
 #endif /* HAVE_OSS */
 
-#ifdef HAVE_ALSA	
-	pthread_t alsa_thread_id;
+#ifdef HAVE_ALSA
+	AQUALUNG_THREAD_DECLARE(alsa_thread_id)
 	char * pcm_name;
 	snd_pcm_t * pcm_handle;
 	snd_pcm_stream_t stream;
@@ -92,7 +98,7 @@ typedef struct _thread_info {
 #endif /* HAVE_ALSA */	
 
 #ifdef _WIN32
-	pthread_t win32_thread_id;
+	AQUALUNG_THREAD_DECLARE(win32_thread_id)
 #endif /* _WIN32 */
 
 	u_int32_t rb_size;

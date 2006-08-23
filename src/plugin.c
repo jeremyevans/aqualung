@@ -29,7 +29,6 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <lrdf.h>
-#include <pthread.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <gtk/gtk.h>

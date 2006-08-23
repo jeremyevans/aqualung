@@ -28,7 +28,6 @@
 #include <fcntl.h>
 #include <math.h>
 #include <time.h>
-#include <pthread.h>
 #include <getopt.h>
 #include <time.h>
 #include <sys/time.h>
@@ -36,18 +35,22 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 
+#ifdef _WIN32
+#include <glib.h>
+#else
+#include <pthread.h>
+#endif /* _WIN32 */
+
 #ifdef HAVE_SRC
 #include <samplerate.h>
 #endif /* HAVE_SRC */
 
-/* for OSS support */
 #ifdef HAVE_OSS
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <linux/soundcard.h>
 #endif /* HAVE_OSS */
 
-/* for JACK support */
 #ifdef HAVE_JACK
 #include <jack/jack.h>
 #endif /* HAVE_JACK */
@@ -109,8 +112,8 @@ int src_type_parsed = 0;
 #endif /* HAVE_SRC */
 
 /* Synchronization between disk thread and output thread */
-pthread_mutex_t disk_thread_lock = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t  disk_thread_wake = PTHREAD_COND_INITIALIZER;
+AQUALUNG_MUTEX_DECLARE_INIT(disk_thread_lock)
+AQUALUNG_COND_DECLARE_INIT(disk_thread_wake)
 rb_t * rb; /* this is the audio stream carrier ringbuffer */
 rb_t * rb_disk2out;
 
@@ -119,7 +122,7 @@ rb_t * rb_gui2disk;
 rb_t * rb_disk2gui;
 
 /* Lock critical operations that could interfere with output thread */
-volatile int output_thread_lock = 0;
+//volatile int output_thread_lock = 0;
 double left_gain = 1.0;
 double right_gain = 1.0;
 
@@ -233,9 +236,7 @@ disk_thread(void * arg) {
 		exit(1);
 	}
 
-	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-	pthread_mutex_lock(&disk_thread_lock);
+	AQUALUNG_MUTEX_LOCK(disk_thread_lock)
 
 	filename[0] = '\0';
 
@@ -333,6 +334,9 @@ disk_thread(void * arg) {
 				info->is_streaming = 1;
 				break;
 			case CMD_FINISH:
+				/* send FINISH to output thread, then goto exit */
+				send_cmd = CMD_FINISH;
+				rb_write(rb_disk2out, &send_cmd, 1);
 				goto done;
 				break;
 			case CMD_SEEKTO:
@@ -458,6 +462,13 @@ disk_thread(void * arg) {
 		
 	sleep:
 		{
+			/* suspend thread, wake up after 100 ms */
+#ifdef _WIN32
+			GTimeVal time;
+			GTimeVal * timeout = &time;
+			g_get_current_time(timeout);
+			g_time_val_add(timeout, 100000);
+#else
 			struct timeval now;
 			struct timezone tz;
 			struct timespec timeout;
@@ -468,9 +479,9 @@ disk_thread(void * arg) {
 				timeout.tv_nsec -= 1000000000;
 				timeout.tv_sec += 1;
 			}
-			pthread_cond_timedwait(&disk_thread_wake, &disk_thread_lock, &timeout);
+#endif /* _WIN32 */
+			AQUALUNG_COND_TIMEDWAIT(disk_thread_wake, disk_thread_lock, timeout)
 		}
-		//pthread_cond_wait(&disk_thread_wake, &disk_thread_lock);
 	}
  done:
 	free(readbuf);
@@ -479,7 +490,7 @@ disk_thread(void * arg) {
 	src_state = src_delete(src_state);
 #endif /* HAVE_SRC */
 	file_decoder_delete(fdec);
-	pthread_mutex_unlock(&disk_thread_lock);
+	AQUALUNG_MUTEX_UNLOCK(disk_thread_lock)
 	return 0;
 }
 
@@ -505,10 +516,7 @@ oss_thread(void * arg) {
 	req_time.tv_sec = 0;
         req_time.tv_nsec = 100000000;
 
-	output_thread_lock = 1;
-
-	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+	//	output_thread_lock = 1;
 
 	if ((info->oss_short_buf = malloc(2*bufsize * sizeof(short))) == NULL) {
 		fprintf(stderr, "oss_thread: malloc error\n");
@@ -543,6 +551,9 @@ oss_thread(void * arg) {
 				}
 				goto oss_wake;
 				break;
+			case CMD_FINISH:
+				goto oss_finish;
+				break;
 			default:
 				fprintf(stderr, "oss_thread: recv'd unknown command %d\n", recv_cmd);
 				break;
@@ -550,9 +561,9 @@ oss_thread(void * arg) {
 		}
 
 		if ((n_avail = rb_read_space(rb) / (2*sample_size)) == 0) {
-			output_thread_lock = 0;
+			//			output_thread_lock = 0;
 			nanosleep(&req_time, &rem_time);
-			output_thread_lock = 1;
+			//			output_thread_lock = 1;
 			goto oss_wake;
 		}
 
@@ -625,14 +636,14 @@ oss_thread(void * arg) {
 		}
 
 		/* write data to audio device */
-		output_thread_lock = 0;
+		//		output_thread_lock = 0;
 		ioctl_status = write(fd_oss, oss_short_buf, 2*n_avail * sizeof(short));
-		output_thread_lock = 1;
+		//		output_thread_lock = 1;
 		if (ioctl_status != 2*n_avail * sizeof(short))
 			fprintf(stderr, "oss_thread: Error writing to audio device\n");
 
 	}
-        /* NOTREACHED -- this thread will be cancelled from main thread on exit */
+ oss_finish:
 	return 0;
 }
 #endif /* HAVE_OSS */
@@ -662,9 +673,7 @@ alsa_thread(void * arg) {
 	req_time.tv_sec = 0;
         req_time.tv_nsec = 100000000;
 
-	output_thread_lock = 1;
-	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+	//	output_thread_lock = 1;
 
 	if (is_output_32bit) {
 		if ((info->alsa_int_buf = malloc(2*bufsize * sizeof(int))) == NULL) {
@@ -716,6 +725,9 @@ alsa_thread(void * arg) {
 				}
 				goto alsa_wake;
 				break;
+			case CMD_FINISH:
+				goto alsa_finish;
+				break;
 			default:
 				fprintf(stderr, "alsa_thread: recv'd unknown command %d\n", recv_cmd);
 				break;
@@ -723,9 +735,9 @@ alsa_thread(void * arg) {
 		}
 
 		if ((n_avail = rb_read_space(rb) / (2*sample_size)) == 0) {
-			output_thread_lock = 0;
+			//			output_thread_lock = 0;
 			nanosleep(&req_time, &rem_time);
-			output_thread_lock = 1;
+			//			output_thread_lock = 1;
 			goto alsa_wake;
 		}
 
@@ -803,7 +815,7 @@ alsa_thread(void * arg) {
 			if ((n_written = snd_pcm_writei(pcm_handle, alsa_int_buf, n_avail)) != n_avail) {
 				snd_pcm_prepare(pcm_handle);
 			}
-			output_thread_lock = 1;
+			//			output_thread_lock = 1;
 
 		} else {
 			for (i = 0; i < bufsize; i++) {
@@ -822,14 +834,14 @@ alsa_thread(void * arg) {
 			}
 
 			/* write data to audio device */
-			output_thread_lock = 0;
+			//			output_thread_lock = 0;
 			if ((n_written = snd_pcm_writei(pcm_handle, alsa_short_buf, n_avail)) != n_avail) {
 				snd_pcm_prepare(pcm_handle);
 			}
-			output_thread_lock = 1;
+			//			output_thread_lock = 1;
 		}
 	}
-        /* NOTREACHED -- this thread will be cancelled from main thread on exit */
+ alsa_finish:
 	return 0;
 }
 #endif /* HAVE_ALSA */
@@ -850,7 +862,7 @@ process(u_int32_t nframes, void * arg) {
 	static int flushcnt = 0;
 	char recv_cmd;
 
-	output_thread_lock = 1;
+	//	output_thread_lock = 1;
 	
 	jack_nframes = nframes;
 #ifdef HAVE_LADSPA
@@ -864,6 +876,10 @@ process(u_int32_t nframes, void * arg) {
 			flushing = 1;
 			flushcnt = rb_read_space(rb)/nframes/
 				(2*sample_size) * 1.1f;
+			break;
+		case CMD_FINISH:
+			//			output_thread_lock = 0;
+			return 0;
 			break;
 		default:
 			fprintf(stderr, "jack process(): recv'd unknown command %d\n", recv_cmd);
@@ -942,8 +958,7 @@ process(u_int32_t nframes, void * arg) {
 		flushing = 0;
 	}
 	
-	output_thread_lock = 0;
-
+	//	output_thread_lock = 0;
 	return 0;
 }
 
@@ -1015,7 +1030,7 @@ oss_init(thread_info_t * info) {
 	}
 
 	/* start OSS output thread */
-	pthread_create(&info->oss_thread_id, NULL, oss_thread, info);
+	AQUALUNG_THREAD_CREATE(info->oss_thread_id, NULL, oss_thread, info)
 }
 #endif /* HAVE_OSS */
 
@@ -1309,7 +1324,6 @@ win32_thread(void * arg) {
 
 	while (1) {
 	win32_wake:
-
 		while (rb_read_space(rb_disk2out)) {
 			rb_read(rb_disk2out, &recv_cmd, 1);
 			switch (recv_cmd) {
@@ -1324,6 +1338,9 @@ win32_thread(void * arg) {
 					short_buf[j] = 0;
 				}
 				goto win32_wake;
+				break;
+			case CMD_FINISH:
+				goto win32_finish;
 				break;
 			default:
 				fprintf(stderr, "win32_thread: recv'd unknown command %d\n",
@@ -1422,15 +1439,14 @@ win32_thread(void * arg) {
 		if (bufcnt == nbufs)
 			bufcnt = 0;
 	}
-        /* NOTREACHED -- this thread will be cancelled from main thread on exit */
 
+ win32_finish:
         waveOutPause(hwave);
         waveOutReset(hwave);
 	for (bufcnt = 0; bufcnt < nbufs; bufcnt++) {
 		waveOutUnprepareHeader(hwave, &(whdr[bufcnt]), sizeof(WAVEHDR));
 	}
         waveOutClose(hwave);
-
 	return 0;
 }
 #endif /* _WIN32 */
@@ -1553,7 +1569,9 @@ main(int argc, char ** argv) {
 	char ** argv_def = NULL;
 
 	thread_info_t thread_info;
+#ifndef _WIN32
 	struct sched_param param;
+#endif /* !_WIN32 */
 
 	int c;
 	int longopt_index = 0;
@@ -1610,6 +1628,12 @@ main(int argc, char ** argv) {
 		{ 0, 0, 0, 0 }
 	};
 
+
+#ifdef _WIN32
+	g_thread_init(NULL);
+	disk_thread_lock = g_mutex_new();
+	disk_thread_wake = g_cond_new();
+#endif /* _WIN32 */
 
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, AQUALUNG_LOCALEDIR);
@@ -2012,6 +2036,7 @@ main(int argc, char ** argv) {
 		fprintf(stderr, "no\n\n");
 #endif /* HAVE_SYSTRAY */
 
+		close_app_socket();
 		exit(1);
 	}
 
@@ -2024,6 +2049,7 @@ main(int argc, char ** argv) {
 			no_session = 0;
 		rcmd = RCMD_BACK;
 		send_message_to_session(no_session, &rcmd, 1);
+		close_app_socket();
 		exit(0);
 	}
 	if (pause) {
@@ -2031,6 +2057,7 @@ main(int argc, char ** argv) {
 			no_session = 0;
 		rcmd = RCMD_PAUSE;
 		send_message_to_session(no_session, &rcmd, 1);
+		close_app_socket();
 		exit(0);
 	}
 	if (stop) {
@@ -2038,6 +2065,7 @@ main(int argc, char ** argv) {
 			no_session = 0;
 		rcmd = RCMD_STOP;
 		send_message_to_session(no_session, &rcmd, 1);
+		close_app_socket();
 		exit(0);
 	}
 	if (fwd) {
@@ -2045,6 +2073,7 @@ main(int argc, char ** argv) {
 			no_session = 0;
 		rcmd = RCMD_FWD;
 		send_message_to_session(no_session, &rcmd, 1);
+		close_app_socket();
 		exit(0);
 	}
 
@@ -2053,6 +2082,7 @@ main(int argc, char ** argv) {
 			no_session = 0;
 		rcmd = RCMD_QUIT;
 		send_message_to_session(no_session, &rcmd, 1);
+		close_app_socket();
 		exit(1);
 	}
 
@@ -2065,6 +2095,7 @@ main(int argc, char ** argv) {
 		buf[1] = '\0';
 		strncat(buf, voladj_arg, MAXLEN-1);
 		send_message_to_session(no_session, buf, strlen(buf));
+		close_app_socket();
 		exit(1);
 	}
 
@@ -2112,6 +2143,7 @@ main(int argc, char ** argv) {
 				rcmd = RCMD_PLAY;
 				send_message_to_session(no_session, &rcmd, 1);
 			}
+			close_app_socket();
 			exit(0);
 		}
 	}
@@ -2122,10 +2154,16 @@ main(int argc, char ** argv) {
 		} else {
 			rcmd = RCMD_PLAY;
 			send_message_to_session(no_session, &rcmd, 1);
+			close_app_socket();
 			exit(0);
 		}
 	}
 
+#ifdef _WIN32
+	if (output == 0) {
+		output = WIN32_DRIVER;
+	}
+#endif /* _WIN32 */
 
  show_usage_:
 	if (show_usage || (output == 0)) {
@@ -2205,6 +2243,7 @@ main(int argc, char ** argv) {
 			"and output drivers may be usable. Type aqualung -v to get a\n"
 			"list of all the compiled-in features.\n\n");
 
+		close_app_socket();
 		exit (0);
 	}
 
@@ -2217,6 +2256,7 @@ main(int argc, char ** argv) {
 			"oss and alsa outputs only.\n"
 			"In case of the JACK output, the (already running) JACK server\n"
 			"will determine the output sample rate to use.\n");
+		close_app_socket();
 		exit(1);
 	}
 #endif /* HAVE_JACK */
@@ -2316,9 +2356,12 @@ main(int argc, char ** argv) {
 
 
 	/* startup disk thread */
-	pthread_create(&thread_info.disk_thread_id, NULL, disk_thread, &thread_info);
+	AQUALUNG_THREAD_CREATE(thread_info.disk_thread_id, NULL, disk_thread, &thread_info)
 
 	if (disk_try_realtime) {
+#ifdef _WIN32
+		printf("Warning: setting thread priorities is unsupported under Win32.\n");
+#else
 		int x;
 		memset(&param, 0, sizeof(param));
 		param.sched_priority = disk_priority;
@@ -2327,8 +2370,10 @@ main(int argc, char ** argv) {
 			fprintf(stderr,
 				"Cannot use real-time scheduling for disk thread (FIFO/%d) "
 				"(%d: %s)\n", param.sched_priority, x, strerror(x));
+			close_app_socket();
 			exit(1);
 		}
+#endif /* _WIN32 */
 	}
 
 
@@ -2340,9 +2385,12 @@ main(int argc, char ** argv) {
 
 #ifdef HAVE_ALSA
 	if (output == ALSA_DRIVER) {
-		pthread_create(&thread_info.alsa_thread_id, NULL, alsa_thread, &thread_info);
+		AQUALUNG_THREAD_CREATE(thread_info.alsa_thread_id, NULL, alsa_thread, &thread_info)
 
 		if (try_realtime) {
+#ifdef _WIN32
+			printf("Warning: setting thread priorities is unsupported under Win32.\n");
+#else
 			int x;
 			memset(&param, 0, sizeof(param));
 			param.sched_priority = priority;
@@ -2351,15 +2399,17 @@ main(int argc, char ** argv) {
 				fprintf(stderr,
 					"Cannot use real-time scheduling for ALSA output thread (FIFO/%d) "
 					"(%d: %s)\n", param.sched_priority, x, strerror(x));
+				close_app_socket();
 				exit(1);
 			}
+#endif /* _WIN32 */
 		}
 	}
 #endif /* HAVE_ALSA */
 
 #ifdef _WIN32
 	if (output == WIN32_DRIVER) {
-		pthread_create(&thread_info.win32_thread_id, NULL, win32_thread, &thread_info);
+		AQUALUNG_THREAD_CREATE(thread_info.win32_thread_id, NULL, win32_thread, &thread_info)
 	}
 #endif /* _WIN32 */
 
@@ -2367,11 +2417,11 @@ main(int argc, char ** argv) {
 	create_gui(argc, argv, optind, enqueue, rate, RB_AUDIO_SIZE * rate / 44100.0);
 	run_gui(); /* control stays here until user exits program */
 
-	pthread_join(thread_info.disk_thread_id, NULL);
+	AQUALUNG_THREAD_JOIN(thread_info.disk_thread_id)
 
 #ifdef HAVE_OSS
 	if (output == OSS_DRIVER) {
-		pthread_cancel(thread_info.oss_thread_id);
+		AQUALUNG_THREAD_JOIN(thread_info.oss_thread_id)
 		free(thread_info.oss_short_buf);
 		ioctl(thread_info.fd_oss, SNDCTL_DSP_RESET, 0);
 		close(thread_info.fd_oss);
@@ -2380,7 +2430,7 @@ main(int argc, char ** argv) {
 
 #ifdef HAVE_ALSA
 	if (output == ALSA_DRIVER) {
-		pthread_cancel(thread_info.alsa_thread_id);
+		AQUALUNG_THREAD_JOIN(thread_info.alsa_thread_id)
 		snd_pcm_close(thread_info.pcm_handle);
 		if (thread_info.is_output_32bit)
 			free(thread_info.alsa_int_buf);
@@ -2398,7 +2448,7 @@ main(int argc, char ** argv) {
 
 #ifdef _WIN32
 	if (output == WIN32_DRIVER) {
-		pthread_cancel(thread_info.win32_thread_id);
+		AQUALUNG_THREAD_JOIN(thread_info.win32_thread_id)
 	}
 #endif /* _WIN32 */
 
@@ -2411,9 +2461,9 @@ main(int argc, char ** argv) {
 	rb_free(rb_disk2gui);
 	rb_free(rb_gui2disk);
 	rb_free(rb_disk2out);
+
+	close_app_socket();
 	return 0;
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
-
-

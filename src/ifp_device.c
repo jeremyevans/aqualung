@@ -32,7 +32,6 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <gdk/gdkkeysyms.h>
-#include <pthread.h>
 #include <limits.h>
 #include <usb.h>
 #include <ifp.h>

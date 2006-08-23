@@ -56,6 +56,18 @@ fi
 
 
 
+if test $win32 = "no" ; then
+AC_CHECK_LIB(pthread,
+	pthread_create,
+	[],
+	[AC_MSG_ERROR(You do not appear to have a usable pthread library)])
+AC_CHECK_LIB(dl,
+	dlopen,
+	[],
+	[AC_MSG_ERROR(You do not appear to have a usable interface to the dynamic linking loader.)])
+fi
+
+
 # Checks for libraries.
 AC_MSG_CHECKING(whether GTK+ version >= 2.4)
 if pkg-config --exists 'gtk+-2.0 >= 2.4'; then
@@ -71,23 +83,10 @@ if test ! "$var" = "yes"; then
 	AC_MSG_ERROR(You do not appear to have xml2-config installed. This usually means that the libxml2 library is missing or not properly installed on your system. Get libxml2 from http://xmlsoft.org)
 fi
 
-
 AC_CHECK_LIB(xml2,
 	xmlNewDoc,
 	[],
 	[AC_MSG_ERROR(You do not appear to have libxml2 installed. Grab it from http://xmlsoft.org)])
-
-
-AC_CHECK_LIB(pthread,
-	pthread_create,
-	[],
-	[AC_MSG_ERROR(You do not appear to have a usable pthread library)])
-
-
-AC_CHECK_LIB(dl,
-	dlopen,
-	[],
-	[AC_MSG_ERROR(You do not appear to have a usable interface to the dynamic linking loader.)])
 
 
 

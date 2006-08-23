@@ -1134,8 +1134,10 @@ change_skin(char * path) {
 	}
 	gtk_widget_destroy(browser_window);
 	deflicker();
+#ifdef HAVE_LADSPA
 	gtk_widget_destroy(fxbuilder_window);
 	deflicker();
+#endif /* HAVE_LADSPA */
 	
 	sprintf(rcpath, "%s/rc", path);
 	gtk_rc_parse(rcpath);

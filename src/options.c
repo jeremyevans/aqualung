@@ -507,7 +507,8 @@ ok(GtkWidget * widget, gpointer data) {
 
         /* apply changes */
 
-        if (!track_name_in_bold_past_state && !appearance_changed) {
+        if (!track_name_in_bold_past_state && options.show_active_track_name_in_bold == 1 &&
+	    !appearance_changed) {
 
                 /* reload skin */
                 change_skin(options.skin);

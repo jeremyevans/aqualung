@@ -45,8 +45,6 @@ options_t options;
 static int current_notebook_page = 0;
 int appearance_changed;
 
-//extern volatile int output_thread_lock;
-
 
 #ifdef HAVE_SRC
 extern int src_type;
@@ -373,11 +371,13 @@ ok(GtkWidget * widget, gpointer data) {
                 set_buttons_relief();
 	}
 
+#ifdef HAVE_LADSPA
         if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_simple_view_in_fx))) {
 		options.simple_view_in_fx = 1;
 	} else {
 	        options.simple_view_in_fx = 0;
 	}
+#endif /* HAVE_LADSPA */
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_sn_title))) {
 		options.show_sn_title = 1;
@@ -706,14 +706,14 @@ check_enable_ms_rules_hint_toggled(GtkWidget * widget, gpointer * data) {
 	}
 }
 
+#ifdef HAVE_LADSPA
 void
 changed_ladspa_prepost(GtkWidget * widget, gpointer * data) {
 
 	int status = gtk_combo_box_get_active(GTK_COMBO_BOX(optmenu_ladspa));
-	//spin_waitlock_s(&output_thread_lock);
 	options.ladspa_is_postfader = status;
-	//spin_unlock_s(&output_thread_lock);
 }
+#endif /* HAVE_LADSPA */
 
 
 #ifdef HAVE_SRC
@@ -1653,7 +1653,9 @@ create_options_window(void) {
 	GtkWidget * help_btn_param;
 	GtkWidget * help_pathlist;
 
+#ifdef HAVE_LADSPA
 	int status;
+#endif /* HAVE_LADSPA */
 	int i;
 
 
@@ -1774,6 +1776,7 @@ create_options_window(void) {
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_main_window_always_on_top, FALSE, FALSE, 0);
 
 
+#ifdef HAVE_LADSPA
 	check_simple_view_in_fx =
 		gtk_check_button_new_with_label(_("Simple view in LADSPA patch builder"));
 	gtk_widget_set_name(check_simple_view_in_fx, "check_on_notebook");
@@ -1783,6 +1786,7 @@ create_options_window(void) {
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_simple_view_in_fx, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_simple_view_in_fx), "toggled",
 						G_CALLBACK (restart_active), _("Simple view in LADSPA patch builder"));
+#endif /* HAVE_LADSPA */
 
 	check_united_minimization =
 		gtk_check_button_new_with_label(_("United windows minimization"));
@@ -2176,6 +2180,7 @@ to set the column order in the Playlist."));
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_ladspa), 10);
 	gtk_container_add(GTK_CONTAINER(frame_ladspa), vbox_ladspa);
 
+#ifdef HAVE_LADSPA
         optmenu_ladspa = gtk_combo_box_new_text (); 
         gtk_box_pack_start(GTK_BOX(vbox_ladspa), optmenu_ladspa, TRUE, TRUE, 0);
 
@@ -2184,11 +2189,16 @@ to set the column order in the Playlist."));
         	gtk_combo_box_append_text (GTK_COMBO_BOX (optmenu_ladspa), _("Post Fader (after Volume & Balance)"));
 
 	}
-	//spin_waitlock_s(&output_thread_lock);
 	status = options.ladspa_is_postfader;
-	//spin_unlock_s(&output_thread_lock);
 	gtk_combo_box_set_active (GTK_COMBO_BOX (optmenu_ladspa), status);
         g_signal_connect(optmenu_ladspa, "changed", G_CALLBACK(changed_ladspa_prepost), NULL);
+#else
+	{
+		GtkWidget * label = gtk_label_new(_("Aqualung is compiled without LADSPA plugin support.\n\
+See the About box and the documentation for details."));
+		gtk_box_pack_start(GTK_BOX(vbox_ladspa), label, FALSE, TRUE, 5);
+	}
+#endif /* HAVE_LADSPA */
 
 
 	frame_src = gtk_frame_new(_("Sample Rate Converter type"));

@@ -194,7 +194,7 @@ msgstr "Tároló felépítése"
 msgid "Build artist"
 msgstr "Elõadó felépítése"
 
-#: ../build_store.c:387 ../options.c:1686
+#: ../build_store.c:387 ../options.c:1690
 msgid "General"
 msgstr "Általános"
 
@@ -227,7 +227,7 @@ msgstr "Elõször CDDB, utána metaadatok"
 msgid "Sort artists by"
 msgstr "Elõadók rendezése a következõ szerint"
 
-#: ../build_store.c:437 ../options.c:2429 ../options.c:2464
+#: ../build_store.c:437 ../options.c:2436 ../options.c:2471
 msgid "Artist name"
 msgstr "Elõadó neve"
 
@@ -239,7 +239,7 @@ msgstr "Könyvtár neve"
 msgid "Sort records by"
 msgstr "Albumok rendezése a következõ szerint"
 
-#: ../build_store.c:463 ../options.c:2438 ../options.c:2473
+#: ../build_store.c:463 ../options.c:2445 ../options.c:2480
 msgid "Record name"
 msgstr "Album címe"
 
@@ -255,7 +255,7 @@ msgstr "Év hozzáadása az újonnan felvett albumok kommentjéhez"
 msgid "Re-read data for existing tracks"
 msgstr "Létezõ számok adatainak újraolvasása"
 
-#: ../build_store.c:514 ../options.c:2418
+#: ../build_store.c:514 ../options.c:2425
 msgid "Metadata"
 msgstr "Metaadatok"
 
@@ -283,7 +283,7 @@ msgstr "RVA importálása"
 msgid "Exclude whitespace-only metadata"
 msgstr "Csak szóközöket tartalmazó metaadatok kihagyása"
 
-#: ../build_store.c:591 ../options.c:2517
+#: ../build_store.c:591 ../options.c:2524
 msgid "CDDB"
 msgstr "CDDB"
 
@@ -739,7 +739,7 @@ msgstr ""
 "sikerült a tálcára helyezni. Lehet, hogy az asztalodról hiányzik a "
 "rendszertálca, vagy nincs megfelelõen beállítva."
 
-#: ../gui_main.c:3100 ../options.c:1665
+#: ../gui_main.c:3100 ../options.c:1669
 msgid "Settings"
 msgstr "Beállítások"
 
@@ -815,16 +815,16 @@ msgstr "Elõzõ"
 msgid "Next"
 msgstr "Következõ"
 
-#: ../gui_main.c:5124 ../music_browser.c:2351 ../options.c:1392
-#: ../options.c:1496
+#: ../gui_main.c:5124 ../music_browser.c:2351 ../options.c:1395
+#: ../options.c:1499
 msgid "rw"
 msgstr "rw"
 
-#: ../gui_main.c:5126 ../options.c:1394 ../options.c:1498
+#: ../gui_main.c:5126 ../options.c:1397 ../options.c:1501
 msgid "r"
 msgstr "r"
 
-#: ../gui_main.c:5128 ../options.c:1396 ../options.c:1500
+#: ../gui_main.c:5128 ../options.c:1399 ../options.c:1503
 msgid "unreachable"
 msgstr "nem elérhetõ"
 
@@ -1299,7 +1299,7 @@ msgid "track"
 msgstr "szám"
 
 #: ../music_browser.c:3892 ../music_browser.c:4636 ../music_browser.c:4706
-#: ../options.c:1983
+#: ../options.c:1987
 msgid "Music Store"
 msgstr "Zenetár"
 
@@ -1436,33 +1436,33 @@ msgstr "Hangosság meghatározása"
 msgid "*Music Store"
 msgstr "*Zenetár"
 
-#: ../options.c:1004
+#: ../options.c:1007
 msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
 msgstr ""
 "A következõ változtatások az Aqualung újraindítása után jutnak érvényre:"
 
-#: ../options.c:1339 ../options.c:1469 ../playlist.c:903
+#: ../options.c:1342 ../options.c:1472 ../playlist.c:903
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
-#: ../options.c:1348
+#: ../options.c:1351
 msgid "Paths must either be absolute or starting with a tilde."
 msgstr "Abszolút vagy tildével kezdõdõ elérési út szükséges."
 
-#: ../options.c:1373
+#: ../options.c:1376
 msgid "The specified store has already been added to the list."
 msgstr "A megadott tároló már szerepel a listában."
 
-#: ../options.c:1426
+#: ../options.c:1429
 msgid "Please select a Music Store database."
 msgstr "Válassz egy adatbázist."
 
-#: ../options.c:1473
+#: ../options.c:1476
 msgid "Discard changes"
 msgstr "Változások eldobása"
 
-#: ../options.c:1479
+#: ../options.c:1482
 msgid ""
 "Music Store has been changed. You have to save it before\n"
 "refreshing if you want to keep the changes."
@@ -1470,7 +1470,7 @@ msgstr ""
 "A Zenetár tartalma megváltozott. Frissítés elõtt el kell\n"
 "menteni, ha meg akarod tartani a változtatásokat."
 
-#: ../options.c:1520
+#: ../options.c:1523
 #, c-format
 msgid ""
 "\n"
@@ -1487,7 +1487,7 @@ msgstr ""
 "szám címét jelölik. A sablonban szereplõ egyéb karakterek\n"
 "változtatás nélkül jelennek meg a címsorban.\n"
 
-#: ../options.c:1540
+#: ../options.c:1543
 msgid ""
 "\n"
 "The string you enter here will be parsed as a command\n"
@@ -1505,7 +1505,7 @@ msgstr ""
 "Például a '-o alsa -R' az ALSA kimenet valós idejû használatát\n"
 "írja elõ alapértelmezettként.\n"
 
-#: ../options.c:1561
+#: ../options.c:1564
 msgid ""
 "Paths must either be absolute or starting with a tilde,\n"
 "which will be expanded to the user's home directory.\n"
@@ -1519,107 +1519,107 @@ msgstr ""
 "Tároló hozzáadása, eltávolítása vagy a lista átrendezése\n"
 "után meg kell nyomni a Frissítés gombot."
 
-#: ../options.c:1688
+#: ../options.c:1692
 msgid "Title format"
 msgstr "Címformátum"
 
-#: ../options.c:1708
+#: ../options.c:1712
 msgid "Implicit command line"
 msgstr "Implicit parancssor"
 
-#: ../options.c:1728
+#: ../options.c:1732
 msgid "Miscellaneous"
 msgstr "Egyéb"
 
-#: ../options.c:1736
+#: ../options.c:1740
 msgid "Enable tooltips"
 msgstr "Buboréksúgók engedélyezése"
 
-#: ../options.c:1745 ../options.c:1752
+#: ../options.c:1749 ../options.c:1756
 msgid "Put control buttons at the bottom of playlist"
 msgstr "Vezérlõgombok elhelyezése a Lejátszólista alján"
 
-#: ../options.c:1755
+#: ../options.c:1759
 msgid "Disable control buttons relief"
 msgstr "Vezérlõgombok kiemelkedésének tiltása"
 
-#: ../options.c:1763
+#: ../options.c:1767
 msgid "Keep main window always on top"
 msgstr "A fõablak legyen mindig felül"
 
-#: ../options.c:1772 ../options.c:1779
+#: ../options.c:1776 ../options.c:1783
 msgid "Simple view in LADSPA patch builder"
 msgstr "Egyszerû nézet a LADSPA effekt szerkesztõben"
 
-#: ../options.c:1782
+#: ../options.c:1786
 msgid "United windows minimization"
 msgstr "Ablakok együttes minimalizálása"
 
-#: ../options.c:1791
+#: ../options.c:1795
 msgid "Show song name in the main window's title"
 msgstr "Szám címének megjelenítése a fõablak címsorában"
 
-#: ../options.c:1800
+#: ../options.c:1804
 msgid "Show hidden files and directories in file choosers"
 msgstr "Rejtett fájlok és könyvtárak mutatása tallózáskor"
 
-#: ../options.c:1807
+#: ../options.c:1811
 msgid "Show tags tab first in the file info dialog"
 msgstr "Elõször a tagek látszódjanak a fájl infó ablakban"
 
-#: ../options.c:1819 ../playlist.c:2119
+#: ../options.c:1823 ../playlist.c:2119
 msgid "Playlist"
 msgstr "Lejátszólista"
 
-#: ../options.c:1822 ../options.c:1829
+#: ../options.c:1826 ../options.c:1833
 msgid "Embed playlist into main window"
 msgstr "A Lejátszólista beágyazása a fõablakba"
 
-#: ../options.c:1832
+#: ../options.c:1836
 msgid "Save and restore the playlist on exit/startup"
 msgstr "Lejátszólista mentése és visszatöltése kilépéskor/indításkor"
 
-#: ../options.c:1843
+#: ../options.c:1847
 msgid "Album mode is the default when adding entire records"
 msgstr "Lemezek alapértelmezett hozzáadása album mód szerint"
 
-#: ../options.c:1851
+#: ../options.c:1855
 msgid "When shuffling, records added in Album mode are played in order"
 msgstr "Véletlenszerû lejátszás esetén albumon belüli számsorrend megtartása"
 
-#: ../options.c:1860 ../options.c:2006
+#: ../options.c:1864 ../options.c:2010
 msgid "Enable statusbar"
 msgstr "Állapotsor engedélyezése"
 
-#: ../options.c:1867
+#: ../options.c:1871
 msgid "Enable statusbar in playlist"
 msgstr "Állapotsor engedélyezése a Lejátszólistában"
 
-#: ../options.c:1871 ../options.c:2017
+#: ../options.c:1875 ../options.c:2021
 msgid "Show soundfile size in statusbar"
 msgstr "Hangfálj méretének mutatása az állapotsorban"
 
-#: ../options.c:1882
+#: ../options.c:1886
 msgid "Show RVA values"
 msgstr "RVA értékek megjelenítése"
 
-#: ../options.c:1893
+#: ../options.c:1897
 msgid "Show track lengths"
 msgstr "Szám hosszak megjelenítése"
 
-#: ../options.c:1906
+#: ../options.c:1910
 msgid "Show active track name in bold"
 msgstr "Aktív szám megjelenítése félkövérrel"
 
-#: ../options.c:1917 ../options.c:2036
+#: ../options.c:1921 ../options.c:2040
 msgid "Enable rules hint"
 msgstr "Sorok vonalazása"
 
-#: ../options.c:1927
+#: ../options.c:1931
 msgid "Playlist column order"
 msgstr "Oszlopok sorrendje a Lejátszólistában"
 
-#: ../options.c:1934
+#: ../options.c:1938
 msgid ""
 "Drag and drop entries in the list below \n"
 "to set the column order in the Playlist."
@@ -1627,123 +1627,132 @@ msgstr ""
 "Az alábbi lista elemeinek átrendezésével\n"
 "állítható a Lejátszólista oszlopainak sorrendje."
 
-#: ../options.c:1946
+#: ../options.c:1950
 msgid "Column"
 msgstr "Oszlop"
 
-#: ../options.c:1963 ../search.c:553
+#: ../options.c:1967 ../search.c:553
 msgid "Track titles"
 msgstr "Számcímek"
 
-#: ../options.c:1968
+#: ../options.c:1972
 msgid "RVA values"
 msgstr "RVA értékek"
 
-#: ../options.c:1973
+#: ../options.c:1977
 msgid "Track lengths"
 msgstr "Szám hosszak"
 
-#: ../options.c:1986 ../options.c:1993
+#: ../options.c:1990 ../options.c:1997
 msgid "Hide the Music Store comment pane"
 msgstr "A Zenetár komment mezõjének elrejtése"
 
-#: ../options.c:1995
+#: ../options.c:1999
 msgid "Enable toolbar"
 msgstr "Eszköztár engedélyezése"
 
-#: ../options.c:2002
+#: ../options.c:2006
 msgid "Enable toolbar in Music Store"
 msgstr "Eszköztár engedélyezése a Zenetárban"
 
-#: ../options.c:2013
+#: ../options.c:2017
 msgid "Enable statusbar in Music Store"
 msgstr "Állapotsor engedélyezése a Zenetárban"
 
-#: ../options.c:2028
+#: ../options.c:2032
 msgid "Expand Stores on startup"
 msgstr "Tárolók lenyitása indításkor"
 
-#: ../options.c:2047
+#: ../options.c:2051
 msgid "Cover art"
 msgstr "Lemezborító"
 
-#: ../options.c:2056
+#: ../options.c:2060
 msgid "Default cover width:"
 msgstr "Alapértelmezett borítóméret:"
 
-#: ../options.c:2064
+#: ../options.c:2068
 msgid "50 pixels"
 msgstr "50 képpont"
 
-#: ../options.c:2065
+#: ../options.c:2069
 msgid "100 pixels"
 msgstr "100 képpont"
 
-#: ../options.c:2066
+#: ../options.c:2070
 msgid "200 pixels"
 msgstr "200 képpont"
 
-#: ../options.c:2067
+#: ../options.c:2071
 msgid "300 pixels"
 msgstr "300 képpont"
 
-#: ../options.c:2068
+#: ../options.c:2072
 msgid "use browser window width"
 msgstr "ablak szélességéhez igazít"
 
-#: ../options.c:2075
+#: ../options.c:2079
 msgid "Don't magnify images with smaller width"
 msgstr "A kisebb képeket ne nagyítsa"
 
-#: ../options.c:2083
+#: ../options.c:2087
 msgid "Paths to Music Store databases"
 msgstr "A Zenetár adatbázisok elérési útja"
 
-#: ../options.c:2101
+#: ../options.c:2105
 msgid "Path"
 msgstr "Elérési út"
 
-#: ../options.c:2108
+#: ../options.c:2112
 msgid "Access"
 msgstr "Hozzáférés"
 
-#: ../options.c:2132
+#: ../options.c:2136
 msgid "Browse"
 msgstr "Tallózás"
 
-#: ../options.c:2144
+#: ../options.c:2148
 msgid "Refresh"
 msgstr "Frissítés"
 
-#: ../options.c:2149
+#: ../options.c:2153
 msgid "Remove"
 msgstr "Eltávolítás"
 
-#: ../options.c:2154
+#: ../options.c:2158
 msgid "Add"
 msgstr "Hozzáadás"
 
-#: ../options.c:2164
+#: ../options.c:2168
 msgid "DSP"
 msgstr "DSP"
 
-#: ../options.c:2166
+#: ../options.c:2170
 msgid "LADSPA plugin processing"
 msgstr "LADSPA effekt processzálás"
 
-#: ../options.c:2184
+#: ../options.c:2182
 msgid "Pre Fader (before Volume & Balance)"
 msgstr "Pre Fader (Hangerõ- és balanszszabályozó elõtt)"
 
-#: ../options.c:2185
+#: ../options.c:2183
 msgid "Post Fader (after Volume & Balance)"
 msgstr "Post Fader (Hangerõ és balanszszabályozó után)"
 
 #: ../options.c:2191
+#, fuzzy
+msgid ""
+"Aqualung is compiled without LADSPA plugin support.\n"
+"See the About box and the documentation for details."
+msgstr ""
+"Az Aqualungot mintavételi frekvencia konverter támogatás nélkül\n"
+"fordították. Részletek a Névjegyben és a dokumentációban."
+
+#: ../options.c:2198
 msgid "Sample Rate Converter type"
 msgstr "Mintavételi frekvencia konverter típusa"
 
-#: ../options.c:2220
+#: ../options.c:2227
 msgid ""
 "Aqualung is compiled without Sample Rate Converter support.\n"
 "See the About box and the documentation for details."
@@ -1751,69 +1760,69 @@ msgstr ""
 "Az Aqualungot mintavételi frekvencia konverter támogatás nélkül\n"
 "fordították. Részletek a Névjegyben és a dokumentációban."
 
-#: ../options.c:2232
+#: ../options.c:2239
 msgid "Playback RVA"
 msgstr "Lejátszáskori RVA"
 
-#: ../options.c:2234
+#: ../options.c:2241
 msgid "Enable playback RVA"
 msgstr "Lejátszáskori RVA használata"
 
-#: ../options.c:2263
+#: ../options.c:2270
 msgid "Listening environment:"
 msgstr "Lehallgatási környezet:"
 
-#: ../options.c:2274
+#: ../options.c:2281
 msgid "Audiophile"
 msgstr "Audiofil"
 
-#: ../options.c:2275
+#: ../options.c:2282
 msgid "Living room"
 msgstr "Nappali szoba"
 
-#: ../options.c:2276
+#: ../options.c:2283
 msgid "Office"
 msgstr "Iroda"
 
-#: ../options.c:2277
+#: ../options.c:2284
 msgid "Noisy workshop"
 msgstr "Zajos mûhely"
 
-#: ../options.c:2286
+#: ../options.c:2293
 msgid "Reference volume [dBFS] :"
 msgstr "Referencia-hangerõszint [dBFS] :"
 
-#: ../options.c:2302
+#: ../options.c:2309
 msgid "Steepness [dB/dB] :"
 msgstr "Meredekség [dB/dB] :"
 
-#: ../options.c:2320
+#: ../options.c:2327
 msgid "Apply averaged RVA to tracks of the same record"
 msgstr "Egyazon lemez számaira átlagolt RVA alkalmazása"
 
-#: ../options.c:2335
+#: ../options.c:2342
 msgid "Drop statistical aberrations based on"
 msgstr "Beszámítás az átlagba, ha belül van:"
 
-#: ../options.c:2346
+#: ../options.c:2353
 #, c-format
 msgid "% of standard deviation"
 msgstr "a szórás megadott %-án"
 
-#: ../options.c:2347
+#: ../options.c:2354
 msgid "Linear threshold [dB]"
 msgstr "az átlagtól vett eltérésen [dB]"
 
-#: ../options.c:2356
+#: ../options.c:2363
 msgid "Linear threshold [dB] :"
 msgstr "Max. eltérés az átlagtól [dB] :"
 
-#: ../options.c:2372
+#: ../options.c:2379
 #, c-format
 msgid "% of standard deviation :"
 msgstr "Max. eltérés a szórás %-ában :"
 
-#: ../options.c:2423
+#: ../options.c:2430
 msgid ""
 "When adding to playlist, use file metadata (if available) instead of\n"
 "information from the Music Store for:"
@@ -1821,99 +1830,99 @@ msgstr ""
 "Ha van a fájlban metaadat, a Lejátszólistába adáskor ezt használja a\n"
 "Zenetárból származó információ helyett a következõknél:"
 
-#: ../options.c:2447 ../options.c:2482
+#: ../options.c:2454 ../options.c:2489
 msgid "Track name"
 msgstr "Szám címe"
 
-#: ../options.c:2458
+#: ../options.c:2465
 msgid ""
 "When adding external files to playlist, use file metadata (if available) for:"
 msgstr ""
 "Külsõ fájlok Lejátszólistába adásakor metaadat használata (ha van)\n"
 "a következõknél:"
 
-#: ../options.c:2493
+#: ../options.c:2500
 msgid "Replaygain tag to use in Ogg Vorbis and FLAC files: "
 msgstr "Replaygain tag használata Ogg Vorbis és FLAC fájlokban: "
 
-#: ../options.c:2505
+#: ../options.c:2512
 msgid "Replaygain_track_gain"
 msgstr "Replaygain_track_gain"
 
-#: ../options.c:2506
+#: ../options.c:2513
 msgid "Replaygain_album_gain"
 msgstr "Replaygain_album_gain"
 
-#: ../options.c:2519
+#: ../options.c:2526
 msgid "CDDB server:"
 msgstr "CDDB szerver:"
 
-#: ../options.c:2531
+#: ../options.c:2538
 msgid "Connection timeout [sec]:"
 msgstr "Kapcsolódás idõkorlátja [sec]:"
 
-#: ../options.c:2542
+#: ../options.c:2549
 msgid "Protocol:"
 msgstr "Protokoll:"
 
-#: ../options.c:2549
+#: ../options.c:2556
 msgid "CDDBP (port 888)"
 msgstr "CDDBP (port 888)"
 
-#: ../options.c:2550
+#: ../options.c:2557
 msgid "HTTP (port 80)"
 msgstr "HTTP (port 80)"
 
-#: ../options.c:2567
+#: ../options.c:2574
 msgid "Appearance"
 msgstr "Megjelenés"
 
-#: ../options.c:2570
+#: ../options.c:2577
 msgid "Override skin settings"
 msgstr "Szkin beállítások felülbírálása"
 
-#: ../options.c:2580
+#: ../options.c:2587
 msgid "Fonts"
 msgstr "Betûtípusok"
 
-#: ../options.c:2592
+#: ../options.c:2599
 msgid "Playlist: "
 msgstr "Lejátszólista: "
 
-#: ../options.c:2611 ../options.c:2641 ../options.c:2672 ../options.c:2702
-#: ../options.c:2732 ../options.c:2762 ../options.c:2792
+#: ../options.c:2618 ../options.c:2648 ../options.c:2679 ../options.c:2709
+#: ../options.c:2739 ../options.c:2769 ../options.c:2799
 msgid "Select"
 msgstr "Választ"
 
-#: ../options.c:2621
+#: ../options.c:2628
 msgid "Music Store: "
 msgstr "Zenetár: "
 
-#: ../options.c:2652
+#: ../options.c:2659
 msgid "Big timer: "
 msgstr "Nagy idõkijelzõ: "
 
-#: ../options.c:2682
+#: ../options.c:2689
 msgid "Small timers: "
 msgstr "Kis idõkijelzõk: "
 
-#: ../options.c:2712
+#: ../options.c:2719
 msgid "Song title: "
 msgstr "Szám címe: "
 
-#: ../options.c:2742
+#: ../options.c:2749
 msgid "Song info: "
 msgstr "Szám info: "
 
-#: ../options.c:2772
+#: ../options.c:2779
 msgid "Statusbar: "
 msgstr "Állapotsor: "
 
-#: ../options.c:2799
+#: ../options.c:2806
 msgid "Colors"
 msgstr "Színek"
 
-#: ../options.c:2811
+#: ../options.c:2818
 msgid "Active song in playlist: "
 msgstr "Aktív szám a Lejátszólistában: "
 
@@ -2207,11 +2216,3 @@ msgstr "Hangosság meghatározása"
 #, c-format
 msgid "%s"
 msgstr "%s"
-
-#, fuzzy
-#~ msgid ""
-#~ "Aqualung is compiled without LADSPA plugin support.\n"
-#~ "See the About box and the documentation for details."
-#~ msgstr ""
-#~ "Az Aqualungot mintavételi frekvencia konverter támogatás nélkül\n"
-#~ "fordították. Részletek a Névjegyben és a dokumentációban."

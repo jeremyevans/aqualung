@@ -330,15 +330,15 @@ build_dialog(void) {
 
 	GtkWidget * gen_vbox;
 	GtkWidget * gen_path_frame = NULL;
+
 	GtkWidget * gen_artist_frame;
 	GtkWidget * gen_artist_vbox;
-	GtkWidget * gen_radio_artist_name;
-	GtkWidget * gen_radio_artist_dir;
+	GtkWidget * gen_artist_combo;
+
 	GtkWidget * gen_record_frame;
 	GtkWidget * gen_record_vbox;
-	GtkWidget * gen_radio_record_name;
-	GtkWidget * gen_radio_record_dir;
-	GtkWidget * gen_radio_record_year;
+	GtkWidget * gen_record_combo;
+
 	GtkWidget * gen_check_reset_data;
 	GtkWidget * gen_check_add_year;
 
@@ -348,9 +348,8 @@ build_dialog(void) {
 
 #ifdef HAVE_CDDB
 	GtkWidget * gen_pri_frame;
+	GtkWidget * gen_pri_combo;
 	GtkWidget * gen_pri_vbox;
-	GtkWidget * pri_radio_meta;
-	GtkWidget * pri_radio_cddb;
 	GtkWidget * cddb_vbox;
 #endif /* HAVE_CDDB */
 
@@ -360,9 +359,9 @@ build_dialog(void) {
         int ret;
 
 	if (build_type == BUILD_STORE) {
-		title = _("Build store");
+		title = _("Build/Update store");
 	} else if (build_type == BUILD_ARTIST) {
-		title = _("Build artist");
+		title = _("Build/Update artist");
 	}
 
         dialog = gtk_dialog_new_with_buttons(title,
@@ -415,15 +414,18 @@ build_dialog(void) {
         gtk_container_set_border_width(GTK_CONTAINER(gen_pri_vbox), 5);
 	gtk_container_add(GTK_CONTAINER(gen_pri_frame), gen_pri_vbox);
 
-	pri_radio_meta = gtk_radio_button_new_with_label(NULL, _("Metadata first, then CDDB"));
-	gtk_widget_set_name(pri_radio_meta, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(gen_pri_vbox), pri_radio_meta, FALSE, FALSE, 0);
+	gen_pri_combo = gtk_combo_box_new_text();
+        gtk_box_pack_start(GTK_BOX(gen_pri_vbox), gen_pri_combo, FALSE, FALSE, 0);
 
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_pri_combo), _("Metadata first, then CDDB"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_pri_combo), _("CDDB first, then metadata"));
 
-	pri_radio_cddb = gtk_radio_button_new_with_label_from_widget(
-		       GTK_RADIO_BUTTON(pri_radio_meta), _("CDDB first, then metadata"));
-	gtk_widget_set_name(pri_radio_cddb, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(gen_pri_vbox), pri_radio_cddb, FALSE, FALSE, 0);
+	if (pri_meta_first) {
+		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_pri_combo), 0);
+	} else {
+		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_pri_combo), 1);
+	}
+
 #endif /* HAVE_CDDB */
 
 
@@ -434,21 +436,18 @@ build_dialog(void) {
         gtk_container_set_border_width(GTK_CONTAINER(gen_artist_vbox), 5);
 	gtk_container_add(GTK_CONTAINER(gen_artist_frame), gen_artist_vbox);
 
-	gen_radio_artist_name = gtk_radio_button_new_with_label(NULL, _("Artist name"));
-	gtk_widget_set_name(gen_radio_artist_name, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(gen_artist_vbox), gen_radio_artist_name, FALSE, FALSE, 0);
+	gen_artist_combo = gtk_combo_box_new_text();
+        gtk_box_pack_start(GTK_BOX(gen_artist_vbox), gen_artist_combo, FALSE, FALSE, 0);
 
-	gen_radio_artist_dir = gtk_radio_button_new_with_label_from_widget(
-			   GTK_RADIO_BUTTON(gen_radio_artist_name), _("Directory name"));
-	gtk_widget_set_name(gen_radio_artist_dir, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(gen_artist_vbox), gen_radio_artist_dir, FALSE, FALSE, 0);
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_artist_combo), _("Artist name"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_artist_combo), _("Directory name"));
 
 	switch (artist_sort_by) {
 	case ARTIST_SORT_NAME:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_radio_artist_name), TRUE);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_artist_combo), 0);
 		break;
 	case ARTIST_SORT_DIR:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_radio_artist_dir), TRUE);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_artist_combo), 1);
 		break;
 	}
 
@@ -460,29 +459,22 @@ build_dialog(void) {
         gtk_container_set_border_width(GTK_CONTAINER(gen_record_vbox), 5);
 	gtk_container_add(GTK_CONTAINER(gen_record_frame), gen_record_vbox);
 
-	gen_radio_record_name = gtk_radio_button_new_with_label(NULL, _("Record name"));
-	gtk_widget_set_name(gen_radio_record_name, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(gen_record_vbox), gen_radio_record_name, FALSE, FALSE, 0);
+	gen_record_combo = gtk_combo_box_new_text();
+        gtk_box_pack_start(GTK_BOX(gen_record_vbox), gen_record_combo, FALSE, FALSE, 0);
 
-	gen_radio_record_dir = gtk_radio_button_new_with_label_from_widget(
-			   GTK_RADIO_BUTTON(gen_radio_record_name), _("Directory name"));
-	gtk_widget_set_name(gen_radio_record_dir, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(gen_record_vbox), gen_radio_record_dir, FALSE, FALSE, 0);
-
-	gen_radio_record_year = gtk_radio_button_new_with_label_from_widget(
-			   GTK_RADIO_BUTTON(gen_radio_record_name), _("Year"));
-	gtk_widget_set_name(gen_radio_record_year, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(gen_record_vbox), gen_radio_record_year, FALSE, FALSE, 0);
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_record_combo), _("Record name"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_record_combo), _("Directory name"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_record_combo), _("Year"));
 
 	switch (record_sort_by) {
 	case RECORD_SORT_NAME:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_radio_record_name), TRUE);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_record_combo), 0);
 		break;
 	case RECORD_SORT_DIR:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_radio_record_dir), TRUE);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_record_combo), 1);
 		break;
 	case RECORD_SORT_YEAR:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_radio_record_year), TRUE);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_record_combo), 2);
 		break;
 	}
 
@@ -752,26 +744,27 @@ build_dialog(void) {
 
 		g_free(proot);
 
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_radio_artist_name))) {
+		switch (gtk_combo_box_get_active(GTK_COMBO_BOX(gen_artist_combo))) {
+		case 0:
 			artist_sort_by = ARTIST_SORT_NAME;
-		}
-
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_radio_artist_dir))) {
+			break;
+		case 1:
 			artist_sort_by = ARTIST_SORT_DIR;
+			break;
 		}
 
-
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_radio_record_name))) {
+		switch (gtk_combo_box_get_active(GTK_COMBO_BOX(gen_record_combo))) {
+		case 0:
 			record_sort_by = RECORD_SORT_NAME;
-		}
-
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_radio_record_dir))) {
+			break;
+		case 1:
 			record_sort_by = RECORD_SORT_DIR;
+			break;
+		case 2:
+			record_sort_by = RECORD_SORT_YEAR;
+			break;
 		}
 
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_radio_record_year))) {
-			record_sort_by = RECORD_SORT_YEAR;
-		}
 
 		add_year_to_comment = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_add_year));
 		reset_existing_data = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_reset_data));
@@ -784,7 +777,14 @@ build_dialog(void) {
 		meta_rva = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_rva));
 
 #ifdef HAVE_CDDB
-		pri_meta_first = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pri_radio_meta));
+		switch (gtk_combo_box_get_active(GTK_COMBO_BOX(gen_pri_combo))) {
+		case 0:
+			pri_meta_first = 1;
+			break;
+		case 1:
+			pri_meta_first = 0;
+			break;
+		}
 		cddb_enable = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cddb_check_enable));
 		cddb_title = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cddb_check_title));
 		cddb_artist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cddb_check_artist));
@@ -1013,6 +1013,13 @@ is_wspace(char * str) {
 }
 
 int
+is_valid_year(long y) {
+
+	/* Please update when we reach the 22nd century. */
+	return y > 1900 && y < 2100;
+}
+
+int
 num_invalid_tracks(build_record_t * record) {
 
 	int invalid = 0;
@@ -1143,7 +1150,10 @@ process_meta(build_record_t * record) {
 			}
 			if (!record->year_valid && meta_get_year(meta, tmp)) {
 				if (!meta_wspace || !is_wspace(tmp)) {
-					map_put(&map_year, tmp);
+					long y = strtol(tmp, NULL, 10);
+					if (is_valid_year(y)) {
+						map_put(&map_year, tmp);
+					}
 				}
 			}
 			if (meta_rva) {

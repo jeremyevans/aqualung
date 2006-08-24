@@ -62,6 +62,8 @@ typedef struct _build_record_t {
 
 } build_record_t;
 
+int is_valid_year(long y);
+
 void build_artist(GtkTreeIter artist_iter);
 void build_store(GtkTreeIter store_iter);
 

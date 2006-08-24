@@ -769,8 +769,11 @@ cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cdd
 		}
 
 		if (!record->year_valid) {
-			snprintf(tmp, MAXLEN-1, "%d", cddb_disc_get_year(records[i]));
-			map_put(&map_year, tmp);
+			int y = cddb_disc_get_year(records[i]);
+			if (is_valid_year(y)) {
+				snprintf(tmp, MAXLEN-1, "%d", y);
+				map_put(&map_year, tmp);
+			}
 		}
 		
 		if (cddb_title) {

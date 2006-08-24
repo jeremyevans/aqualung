@@ -4048,7 +4048,7 @@ create_music_browser(void) {
 	store__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 	store__separator1 = gtk_separator_menu_item_new();
 	store__add = gtk_menu_item_new_with_label(_("Create empty store..."));
-	store__build = gtk_menu_item_new_with_label(_("Build store from filesystem..."));
+	store__build = gtk_menu_item_new_with_label(_("Build/Update store from filesystem..."));
 	store__edit = gtk_menu_item_new_with_label(_("Edit store..."));
 	store__remove = gtk_menu_item_new_with_label(_("Remove store"));
 	store__separator2 = gtk_separator_menu_item_new();
@@ -4115,7 +4115,7 @@ create_music_browser(void) {
 	artist__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 	artist__separator1 = gtk_separator_menu_item_new();
 	artist__add = gtk_menu_item_new_with_label(_("Add new artist..."));
-	artist__build = gtk_menu_item_new_with_label(_("Build artist from filesystem..."));
+	artist__build = gtk_menu_item_new_with_label(_("Build/Update artist from filesystem..."));
 	artist__edit = gtk_menu_item_new_with_label(_("Edit artist..."));
 	artist__remove = gtk_menu_item_new_with_label(_("Remove artist"));
 	artist__separator2 = gtk_separator_menu_item_new();

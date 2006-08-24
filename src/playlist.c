@@ -996,8 +996,42 @@ plist__reread_file_meta_foreach(GtkTreeIter * iter, void * data) {
 
 void
 plist__reread_file_meta_cb(gpointer data) {
-
+	
+	GtkTreeIter iter;
+	GtkTreeIter iter_child;
+	int i = 0;
+	int j = 0;
+	int reread = 0;
+	
 	playlist_foreach_selected(plist__reread_file_meta_foreach, NULL);
+	
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+		
+		if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), &iter)) {
+			
+			reread = 0;
+			
+			if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+				reread = 1;
+			} else {
+				j = 0;
+				while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
+								     &iter_child, &iter, j++)) {
+					if (gtk_tree_selection_iter_is_selected(play_select,
+										&iter_child)) {
+						reread = 1;
+						break;
+					}
+				}
+			}
+			
+			if (reread) {
+				recalc_album_node(&iter);
+			}
+		}
+	}
+	
 	delayed_playlist_rearrange(100);
 }
 

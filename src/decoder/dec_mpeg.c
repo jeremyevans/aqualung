@@ -27,6 +27,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <limits.h>
+#include <string.h>
 
 #include "dec_mpeg.h"
 
@@ -36,194 +38,387 @@ extern size_t sample_size;
 
 #ifdef HAVE_MPEG
 
-/* MPEG bitrate index tables */
-int bri_V1_L1[15] = {0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448};
-int bri_V1_L2[15] = {0, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384};
-int bri_V1_L3[15] = {0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320};
-int bri_V2_L1[15] = {0, 32, 48, 56, 64, 80, 96, 112, 128, 144, 160, 176, 192, 224, 256};
-int bri_V2_L23[15] = {0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160};
+/* Uncomment this to get debug printouts */
+/*#define MPEG_DEBUG*/
 
+#define BYTES2INT(b1,b2,b3,b4) (((long)(b1 & 0xFF) << (3*8)) | \
+                                ((long)(b2 & 0xFF) << (2*8)) | \
+                                ((long)(b3 & 0xFF) << (1*8)) | \
+                                ((long)(b4 & 0xFF) << (0*8)))
 
-/* ret == 0 -> valid MPEG file, ret != 0 -> error */
+#define SYNC_MASK (0x7ffL << 21)
+#define VERSION_MASK (3L << 19)
+#define LAYER_MASK (3L << 17)
+#define PROTECTION_MASK (1L << 16)
+#define BITRATE_MASK (0xfL << 12)
+#define SAMPLERATE_MASK (3L << 10)
+#define PADDING_MASK (1L << 9)
+#define PRIVATE_MASK (1L << 8)
+#define CHANNELMODE_MASK (3L << 6)
+#define MODE_EXT_MASK (3L << 4)
+#define COPYRIGHT_MASK (1L << 3)
+#define ORIGINAL_MASK (1L << 2)
+#define EMPHASIS_MASK 3L
+
+/* MPEG Version table, sorted by version index */
+static const signed char version_table[4] = {
+	MPEG_VERSION2_5, -1, MPEG_VERSION2, MPEG_VERSION1
+};
+
+/* Bitrate table for mpeg audio, indexed by row index and birate index */
+static const short bitrates[5][16] = {
+	{0,32,64,96,128,160,192,224,256,288,320,352,384,416,448,0}, /* V1 L1 */
+	{0,32,48,56, 64, 80, 96,112,128,160,192,224,256,320,384,0}, /* V1 L2 */
+	{0,32,40,48, 56, 64, 80, 96,112,128,160,192,224,256,320,0}, /* V1 L3 */
+	{0,32,48,56, 64, 80, 96,112,128,144,160,176,192,224,256,0}, /* V2 L1 */
+	{0, 8,16,24, 32, 40, 48, 56, 64, 80, 96,112,128,144,160,0}  /* V2 L2+L3 */
+};
+
+/* Bitrate pointer table, indexed by version and layer */
+static const short *bitrate_table[3][3] = {
+	{bitrates[0], bitrates[1], bitrates[2]},
+	{bitrates[3], bitrates[4], bitrates[4]},
+	{bitrates[3], bitrates[4], bitrates[4]}
+};
+
+/* Sampling frequency table, indexed by version and frequency index */
+static const long freq_table[3][3] = {
+	{44100, 48000, 32000}, /* MPEG Version 1 */
+	{22050, 24000, 16000}, /* MPEG version 2 */
+	{11025, 12000,  8000}, /* MPEG version 2.5 */
+};
+
+/* check if 'head' is a valid mp3 frame header */
+static int
+is_mp3frameheader(unsigned long head) {
+
+	if ((head & SYNC_MASK) != (unsigned long)SYNC_MASK) /* bad sync? */
+		return 0;
+	if ((head & VERSION_MASK) == (1L << 19)) /* bad version? */
+		return 0;
+	if (!(head & LAYER_MASK)) /* no layer? */
+		return 0;
+	if ((head & BITRATE_MASK) == BITRATE_MASK) /* bad bitrate? */
+		return 0;
+	if (!(head & BITRATE_MASK)) /* no bitrate? */
+		return 0;
+	if ((head & SAMPLERATE_MASK) == SAMPLERATE_MASK) /* bad sample rate? */
+		return 0;
+	
+	return 1;
+}
+
+static int
+mp3headerinfo(mp3info_t *info, unsigned long header) {
+
+	int bitindex, freqindex;
+	
+	/* MPEG Audio Version */
+	info->version = version_table[(header & VERSION_MASK) >> 19];
+	if (info->version < 0)
+		return 0;
+	
+	/* Layer */
+	info->layer = 3 - ((header & LAYER_MASK) >> 17);
+	if (info->layer == 3)
+		return 0;
+	
+	info->protection = (header & PROTECTION_MASK) ? 1 : 0;
+	
+	/* Bitrate */
+	bitindex = (header & BITRATE_MASK) >> 12;
+	info->bitrate = bitrate_table[info->version][info->layer][bitindex];
+	if(info->bitrate == 0)
+		return 0;
+	
+	/* Sampling frequency */
+	freqindex = (header & SAMPLERATE_MASK) >> 10;
+	if (freqindex == 3)
+		return 0;
+	info->frequency = freq_table[info->version][freqindex];
+	
+	info->padding = (header & PADDING_MASK) ? 1 : 0;
+	
+	/* Calculate number of bytes, calculation depends on layer */
+	if (info->layer == 0) {
+		info->frame_samples = 384;
+		info->frame_size = (12000 * info->bitrate / info->frequency + info->padding) * 4;
+	} else if ((info->version > MPEG_VERSION1) && (info->layer == 2)) {
+		info->frame_samples = 576;
+	} else {
+		info->frame_samples = 1152;
+		info->frame_size = (1000/8) * info->frame_samples * info->bitrate / info->frequency
+			+ info->padding;
+	}
+	
+	/* Frametime fraction calculation.
+	   This fraction is reduced as far as possible. */
+	if (freqindex != 0) { /* 48/32/24/16/12/8 kHz */
+		/* integer number of milliseconds, denominator == 1 */
+		info->ft_num = 1000 * info->frame_samples / info->frequency;
+		info->ft_den = 1;
+	} else /* 44.1/22.05/11.025 kHz */ if (info->layer == 0) {
+		info->ft_num = 147000 * 384 / info->frequency;
+		info->ft_den = 147;
+	} else {
+		info->ft_num = 49000 * info->frame_samples / info->frequency;
+		info->ft_den = 49;
+	}
+	
+	info->channel_mode = (header & CHANNELMODE_MASK) >> 6;
+	info->mode_extension = (header & MODE_EXT_MASK) >> 4;
+	info->emphasis = header & EMPHASIS_MASK;
+
+#ifdef MPEG_DEBUG	
+	printf( "Header: %08x, Ver %d, lay %d, bitr %d, freq %ld, "
+		"chmode %d, mode_ext %d, emph %d, bytes: %d time: %d/%d\n",
+		header, info->version, info->layer+1, info->bitrate,
+		info->frequency, info->channel_mode, info->mode_extension,
+		info->emphasis, info->frame_size, info->ft_num, info->ft_den);
+#endif /* MPEG_DEBUG */
+	return 1;
+}
+
+static unsigned long
+__find_next_frame(int fd, long *offset, long max_offset,
+		  unsigned long last_header,
+		  int(*getfunc)(int fd, unsigned char *c)) {
+
+	unsigned long header=0;
+	unsigned char tmp;
+	int i;
+	
+	long pos = 0;
+	
+	/* We remember the last header we found, to use as a template to see if
+	   the header we find has the same frequency, layer etc */
+	last_header &= 0xffff0c00;
+	
+	/* Fill up header with first 24 bits */
+	for(i = 0; i < 3; i++) {
+		header <<= 8;
+		if(!getfunc(fd, &tmp))
+			return 0;
+		header |= tmp;
+		pos++;
+	}
+	
+	do {
+		header <<= 8;
+		if(!getfunc(fd, &tmp))
+			return 0;
+		header |= tmp;
+		pos++;
+		if(max_offset > 0 && pos > max_offset)
+			return 0;
+	} while(!is_mp3frameheader(header) || (last_header?((header & 0xffff0c00) != last_header):0));
+	
+	*offset = pos - 4;
+
+#ifdef MPEG_DEBUG	
+	if(*offset)
+		printf("Warning: skipping %d bytes of garbage\n", *offset);
+#endif /* MPEG_DEBUG */
+	
+	return header;
+}
+
+static int
+fileread(int fd, unsigned char *c) {    
+	return read(fd, c, 1);
+}
+
+unsigned long
+find_next_frame(int fd, long *offset, long max_offset, unsigned long last_header) {
+	return __find_next_frame(fd, offset, max_offset, last_header, fileread);
+}
+
 int
-mpeg_explore(decoder_t * dec) {
+get_mp3file_info(int fd, mp3info_t *info) {
 
-	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
+	unsigned char frame[1800];
+	unsigned char *vbrheader;
+	unsigned long header;
+	long bytecount;
+	int num_offsets;
+	int frames_per_entry;
+	int i;
+	long offset;
+	int j;
+	long tmp;
+	
+	header = find_next_frame(fd, &bytecount, 0x20000, 0);
+	/* Quit if we haven't found a valid header within 128K */
+	if(header == 0)
+		return -1;
+	
+	memset(info, 0, sizeof(mp3info_t));
+	/* These two are needed for proper LAME gapless MP3 playback */
+	info->enc_delay = -1;
+	info->enc_padding = -1;
+	if(!mp3headerinfo(info, header))
+		return -2;
+	
+	/* OK, we have found a frame. Let's see if it has a Xing header */
+	if(read(fd, frame, info->frame_size-4) < 0)
+		return -3;
+	
+	/* calculate position of VBR header */
+	if ( info->version == MPEG_VERSION1 ) {
+		if (info->channel_mode == 3) /* mono */
+			vbrheader = frame + 17;
+		else
+			vbrheader = frame + 32;
+	} else {
+		if (info->channel_mode == 3) /* mono */
+			vbrheader = frame + 9;
+		else
+			vbrheader = frame + 17;
+	}
+	
+	if (!memcmp(vbrheader, "Xing", 4) || !memcmp(vbrheader, "Info", 4)) {
 
-        int buf = 0;
-        int pos = 0;
-        int byte1 = 0;
-        int byte2 = 0;
-        int byte3 = 0;
-        int ver = 0;
-        int layer = 0;
-        int bri = 0; /* bitrate index */
-        int padding = 0;
-        int chmode = 0;
-        int emph = 0;
+		int i = 8; /* Where to start parsing info */
+		
+#ifdef MPEG_DEBUG
+		printf("Xing/Info header\n");
+#endif /* MPEG_DEBUG */
+		
+		/* Remember where in the file the Xing header is */
+		info->vbr_header_pos = lseek(fd, 0, SEEK_CUR) - info->frame_size;
+		
+		/* We want to skip the Xing frame when playing the stream */
+		bytecount += info->frame_size;
+		
+		/* Now get the next frame to find out the real info about
+		   the mp3 stream */
+		header = find_next_frame(fd, &tmp, 0x20000, 0);
+		if(header == 0)
+			return -4;
+		
+		if(!mp3headerinfo(info, header))
+			return -5;
+		
+		/* Is it a VBR file? */
+		info->is_vbr = info->is_xing_vbr = !memcmp(vbrheader, "Xing", 4);
+		
+		if (vbrheader[7] & VBR_FRAMES_FLAG) /* Is the frame count there? */
+			{
+				info->frame_count = BYTES2INT(vbrheader[i], vbrheader[i+1],
+							      vbrheader[i+2], vbrheader[i+3]);
+				if (info->frame_count <= ULONG_MAX / info->ft_num)
+					info->file_time = info->frame_count * info->ft_num / info->ft_den;
+				else
+					info->file_time = info->frame_count / info->ft_den * info->ft_num;
+				i += 4;
+			}
+		
+		if (vbrheader[7] & VBR_BYTES_FLAG) { /* Is byte count there? */
+			info->byte_count = BYTES2INT(vbrheader[i], vbrheader[i+1],
+						     vbrheader[i+2], vbrheader[i+3]);
+			i += 4;
+		}
+		
+		if (info->file_time && info->byte_count) {
+			if (info->byte_count <= (ULONG_MAX/8))
+				info->bitrate = info->byte_count * 8 / info->file_time;
+			else
+				info->bitrate = info->byte_count / (info->file_time >> 3);
+		} else {
+			info->bitrate = 0;
+		}
+			
+		if (vbrheader[7] & VBR_TOC_FLAG) { /* Is table-of-contents there? */			
+			memcpy(info->toc, vbrheader+i, 100);
+			i += 100;
+		}
+		if (vbrheader[7] & VBR_QUALITY_FLAG) {
+			/* We don't care about this, but need to skip it */
+			i += 4;
+		}
+		i += 21;
+		info->enc_delay = (vbrheader[i] << 4) | (vbrheader[i + 1] >> 4);
+		info->enc_padding = ((vbrheader[i + 1] & 0x0f) << 8) | vbrheader[i + 2];
+		if (!(info->enc_delay >= 0 && info->enc_delay <= 1152 && 
+		      info->enc_padding >= 0 && info->enc_padding <= 2*1152)) {
+			/* Invalid data */
+			info->enc_delay = -1;
+			info->enc_padding = -1;
+		}
+	}
+	
+	if (!memcmp(vbrheader, "VBRI", 4)) {
+#ifdef MPEG_DEBUG
+		printf("VBRI header\n");
+#endif /* MPEG_DEBUG */
+		    
+		/* We want to skip the VBRI frame when playing the stream */
+		bytecount += info->frame_size;
+		
+		/* Now get the next frame to find out the real info about
+		   the mp3 stream */
+		header = find_next_frame(fd, &tmp, 0x20000, 0);
+		if(header == 0)
+			return -6;
+		
+		bytecount += tmp;
+		
+		if(!mp3headerinfo(info, header))
+			return -7;
 
-        do {
-                do {
-                        if (read(pd->exp_fd, &buf, 1) != 1) {
-                                return 1;
-                        }
-                        ++pos;
-/*
-                        if (pos > 8192) {
-				printf("invalid mpeg: ret 2\n");
-                                return 1;
-                        }
-*/
-                } while (buf != 0xff);
-
-                if (read(pd->exp_fd, &buf, 1) != 1) {
-                        return 1;
-                }
-                ++pos;
-        } while ((buf & 0xe0) != 0xe0);
-
-        byte1 = buf;
-
-        if (read(pd->exp_fd, &byte2, 1) != 1) {
-                return 1;
-        }
-        ++pos;
-
-        if (read(pd->exp_fd, &byte3, 1) != 1) {
-                return 1;
-        }
-        ++pos;
-
-        ver = (byte1 >> 3) & 0x3;
-
-        layer = (byte1 >> 1) & 0x3;
-        switch (layer) {
-        case 0:
-		return 1;
-                break;
-        case 1: pd->mpeg_subformat |= MPEG_LAYER_III;
-                break;
-        case 2: pd->mpeg_subformat |= MPEG_LAYER_II;
-                break;
-        case 3: pd->mpeg_subformat |= MPEG_LAYER_I;
-                break;
-        }
-
-        bri = (byte2 >> 4) & 0x0f;
-        switch (bri) {
-        case 0: printf("Unsupported free-format MPEG detected.\n");
-		return 1;
-                break;
-        case 15:
-                return 1;
-                break;
-        default:
-                switch (layer) {
-                case 3:
-                        switch (ver) {
-                        case 3:
-                                pd->bitrate = bri_V1_L1[bri] * 1000;
-                                break;
-                        case 0:
-                        case 2:
-                                pd->bitrate = bri_V2_L1[bri] * 1000;
-                                break;
-                        }
-                        break;
-                case 2:
-                        switch (ver) {
-                        case 3:
-                                pd->bitrate = bri_V1_L2[bri] * 1000;
-                                break;
-                        case 0:
-                        case 2:
-                                pd->bitrate = bri_V2_L23[bri] * 1000;
-                                break;
-                        }
-                        break;
-                case 1:
-                        switch (ver) {
-                        case 3:
-                                pd->bitrate = bri_V1_L3[bri] * 1000;
-                                break;
-                        case 0:
-                        case 2:
-                                pd->bitrate = bri_V2_L23[bri] * 1000;
-                                break;
-                        }
-                        break;
-                }
-                break;
-        }
-
-
-        switch ((byte2 >> 2) & 0x03) {
-        case 0:
-                switch (ver) {
-                case 0: pd->SR = 11025;
-                        break;
-                case 2: pd->SR = 22050;
-                        break;
-                case 3: pd->SR = 44100;
-                        break;
-                }
-                break;
-        case 1:
-                switch (ver) {
-                case 0: pd->SR = 12000;
-                        break;
-                case 2: pd->SR = 24000;
-                        break;
-                case 3: pd->SR = 48000;
-                        break;
-                }
-                break;
-        case 2:
-                switch (ver) {
-                case 0: pd->SR = 8000;
-                        break;
-                case 2: pd->SR = 16000;
-                        break;
-                case 3: pd->SR = 32000;
-                        break;
-                }
-                break;
-        case 3:
-                return 1;
-                break;
-        }
-
-        padding = (byte2 >> 1) & 0x01;
-
-        chmode = (byte3 >> 6) & 0x03;
-        switch (chmode) {
-        case 0: pd->mpeg_subformat |= MPEG_MODE_STEREO;
-                pd->channels = 2;
-                break;
-        case 1: pd->mpeg_subformat |= MPEG_MODE_JOINT;
-                pd->channels = 2;
-                break;
-        case 2: pd->mpeg_subformat |= MPEG_MODE_DUAL;
-                pd->channels = 2;
-                break;
-        case 3: pd->mpeg_subformat |= MPEG_MODE_SINGLE;
-                pd->channels = 1;
-                break;
-        }
-
-        emph = byte3 & 0x03;
-        switch (emph) {
-        case 0: pd->mpeg_subformat |= MPEG_EMPH_NONE;
-                break;
-        case 1: pd->mpeg_subformat |= MPEG_EMPH_5015;
-                break;
-        case 2: pd->mpeg_subformat |= MPEG_EMPH_RES;
-                break;
-        case 3: pd->mpeg_subformat |= MPEG_EMPH_J_17;
-                break;
-        }
-
-        return 0;
+#ifdef MPEG_DEBUG		
+		printf("%04x: %04x %04x ", 0, header >> 16, header & 0xffff);
+		for(i = 4;i < (int)sizeof(frame)-4;i+=2) {
+			if(i % 16 == 0) {
+				printf("\n%04x: ", i-4);
+			}
+			printf("%04x ", (frame[i-4] << 8) | frame[i-4+1]);
+		}
+		printf("\n");
+#endif /* MPEG_DEBUG */
+		
+		/* Yes, it is a FhG VBR file */
+		info->is_vbr = 1;
+		info->is_vbri_vbr = 1;
+		info->has_toc = 0; /* We don't parse the TOC (yet) */
+		
+		info->byte_count = BYTES2INT(vbrheader[10], vbrheader[11],
+					     vbrheader[12], vbrheader[13]);
+		info->frame_count = BYTES2INT(vbrheader[14], vbrheader[15],
+					      vbrheader[16], vbrheader[17]);
+		if (info->frame_count <= ULONG_MAX / info->ft_num)
+			info->file_time = info->frame_count * info->ft_num / info->ft_den;
+		else
+			info->file_time = info->frame_count / info->ft_den * info->ft_num;
+		
+		if (info->byte_count <= (ULONG_MAX/8))
+			info->bitrate = info->byte_count * 8 / info->file_time;
+		else
+			info->bitrate = info->byte_count / (info->file_time >> 3);
+		
+		/* We don't parse the TOC, since we don't yet know how to (FIXME) */
+		num_offsets = BYTES2INT(0, 0, vbrheader[18], vbrheader[19]);
+		frames_per_entry = BYTES2INT(0, 0, vbrheader[24], vbrheader[25]);
+#ifdef MPEG_DEBUG
+		printf("Frame size (%dkpbs): %d bytes (0x%x)\n",
+		       info->bitrate, info->frame_size, info->frame_size);
+		printf("Frame count: %x\n", info->frame_count);
+		printf("Byte count: %x\n", info->byte_count);
+		printf("Offsets: %d\n", num_offsets);
+		printf("Frames/entry: %d\n", frames_per_entry);
+#endif /* MPEG_DEBUG */
+		
+		offset = 0;
+		
+		for(i = 0;i < num_offsets;i++) {
+			j = BYTES2INT(0, 0, vbrheader[26+i*2], vbrheader[27+i*2]);
+			offset += j;
+#ifdef MPEG_DEBUG
+			printf("%03d: %x (%x)\n", i, offset - bytecount, j);
+#endif /* MPEG_DEBUG */
+		}
+	}
+	return bytecount;
 }
 
 
@@ -289,7 +484,9 @@ mpeg_header(void * data, struct mad_header const * header) {
         decoder_t * dec = (decoder_t *)data;
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
 
-        pd->bitrate = header->bitrate;
+	if (pd->bitrate != header->bitrate) {
+		pd->bitrate = header->bitrate;
+	}
 
         return MAD_FLOW_CONTINUE;
 }
@@ -386,28 +583,82 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	file_decoder_t * fdec = dec->fdec;
 
 	struct stat exp_stat;
+	long bytecount = 0;
 
-
-	if ((pd->exp_fd = open(filename, O_RDONLY)) == 0) {
+	if ((pd->fd = open(filename, O_RDONLY)) == 0) {
 		fprintf(stderr, "mpeg_decoder_open: open() failed for MPEG Audio file\n");
 		return DECODER_OPEN_FERROR;
 	}
-	
-	fstat(pd->exp_fd, &exp_stat);
+
+	fstat(pd->fd, &exp_stat);
 	pd->filesize = exp_stat.st_size;
 	pd->SR = pd->channels = pd->bitrate = pd->mpeg_subformat = 0;
 	pd->error = 0;
-	if (mpeg_explore(dec) != 0) {
-		printf("MPEG explore failed for frame 1, searching for frame 2\n");
-		if (mpeg_explore(dec) != 0) {
-			printf("MPEG explore failed for frame 2, searching for frame 3\n");
-			if (mpeg_explore(dec) != 0) {
-				close(pd->exp_fd);
-				return DECODER_OPEN_BADLIB;
-			}
-		}
+
+	bytecount = get_mp3file_info(pd->fd, &pd->mp3info);
+	close(pd->fd);
+
+#ifdef MPEG_DEBUG
+	printf("bytecount = %ld\n\n", bytecount);
+#endif /* MPEG_DEBUG */
+	if (bytecount < 0) {
+		return DECODER_OPEN_BADLIB;
 	}
-	close(pd->exp_fd);
+
+#ifdef MPEG_DEBUG
+	printf("version = %d\n", pd->mp3info.version);
+	printf("layer = %d\n", pd->mp3info.layer);
+	printf("bitrate = %d\n", pd->mp3info.bitrate);
+	printf("frequency = %d\n", pd->mp3info.frequency);
+	printf("channel_mode = %d\n", pd->mp3info.channel_mode);
+	printf("mode_extension = %d\n", pd->mp3info.mode_extension);
+	printf("emphasis = %d\n", pd->mp3info.emphasis);
+	printf("is_vbr = %d\n", pd->mp3info.is_vbr);
+	printf("has_toc = %d\n", pd->mp3info.has_toc);
+	printf("frame_count = %ld\n", pd->mp3info.frame_count);
+	printf("byte_count = %ld\n", pd->mp3info.byte_count);
+	printf("file_time = %ld\n", pd->mp3info.file_time);
+	printf("enc_delay = %ld\n", pd->mp3info.enc_padding);
+	printf("enc_padding = %ld\n", pd->mp3info.enc_padding);
+#endif /* MPEG_DEBUG */
+
+	pd->SR = pd->mp3info.frequency;
+	pd->bitrate = pd->mp3info.bitrate * 1000;
+
+        switch (pd->mp3info.layer) {
+        case 0: pd->mpeg_subformat |= MPEG_LAYER_I;
+                break;
+        case 1: pd->mpeg_subformat |= MPEG_LAYER_II;
+                break;
+        case 2: pd->mpeg_subformat |= MPEG_LAYER_III;
+                break;
+        }
+
+        switch (pd->mp3info.channel_mode) {
+        case 0: pd->mpeg_subformat |= MPEG_MODE_STEREO;
+                pd->channels = 2;
+                break;
+        case 1: pd->mpeg_subformat |= MPEG_MODE_JOINT;
+                pd->channels = 2;
+                break;
+        case 2: pd->mpeg_subformat |= MPEG_MODE_DUAL;
+                pd->channels = 2;
+                break;
+        case 3: pd->mpeg_subformat |= MPEG_MODE_SINGLE;
+                pd->channels = 1;
+                break;
+        }
+
+        switch (pd->mp3info.emphasis) {
+        case 0: pd->mpeg_subformat |= MPEG_EMPH_NONE;
+                break;
+        case 1: pd->mpeg_subformat |= MPEG_EMPH_5015;
+                break;
+        case 2: pd->mpeg_subformat |= MPEG_EMPH_RES;
+                break;
+        case 3: pd->mpeg_subformat |= MPEG_EMPH_J_17;
+                break;
+        }
 
 	if ((!pd->SR) || (!pd->channels) || (!pd->bitrate)) {
 		return DECODER_OPEN_BADLIB;
@@ -420,10 +671,11 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_FERROR;
 	}
 	
-	/* get a rough estimate of the total decoded length of the file */
-	/* XXX this may as well be considered a hack. (what about VBR ???) */
-	pd->total_samples_est =
-		(double)pd->filesize / pd->bitrate * 8 * pd->SR;
+	if (pd->mp3info.is_vbr) {
+		pd->total_samples_est = (double)pd->SR * pd->mp3info.file_time / 1000.0f;
+	} else {
+		pd->total_samples_est =	(double)pd->filesize / pd->bitrate * 8 * pd->SR;
+	}
 	
 	/* setup playback */
 	pd->fd = open(filename, O_RDONLY);
@@ -529,4 +781,3 @@ mpeg_decoder_init(file_decoder_t * fdec) {
 #endif /* HAVE_MPEG */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
-

@@ -76,6 +76,7 @@ int build_type;
 
 GtkTreeIter store_iter;
 GtkTreeIter artist_iter;
+int artist_iter_is_set = 0;
 
 GtkWidget * build_prog_window = NULL;
 GtkWidget * prog_cancel_button;
@@ -1244,7 +1245,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	record.artist[0] = '\0';
 	record.record[0] = '\0';
 	record.year[0] = '\0';
-	record.artist_valid = 0;
+	record.artist_valid = artist_iter_is_set;
 	record.record_valid = 0;
 	record.year_valid = 0;
 	record.tracks = NULL;
@@ -1388,10 +1389,18 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	}
 
 	if (build_type == BUILD_STORE) {
-		result = store_get_iter_for_artist_and_record(&store_iter, &record_iter,
+		if (artist_iter_is_set) {
+			result = artist_get_iter_for_record(&artist_iter, &record_iter,
+							    record.record, record_sort_name,
+							    record_comment);
+		} else {
+			result = store_get_iter_for_artist_and_record(&store_iter,
+							      &artist_iter, &record_iter,
 							      record.artist, artist_sort_name,
 							      record.record, record_sort_name,
 							      record_comment);
+			artist_iter_is_set = 1;
+		}
 	} else if (build_type == BUILD_ARTIST) {
 		result = artist_get_iter_for_record(&artist_iter, &record_iter,
 						    record.record, record_sort_name,
@@ -1465,6 +1474,8 @@ build_artist_thread(void * arg) {
 	char dir_record[MAXLEN];
 	char artist_d_name[MAXLEN];
 
+	artist_iter_is_set = 1;
+
 	i = strlen(root);
 	while (root[--i] != '/');
 	strncpy(artist_d_name, root + i + 1, MAXLEN-1);
@@ -1501,6 +1512,7 @@ build_store_thread(void * arg) {
 	char dir_artist[MAXLEN];
 	char dir_record[MAXLEN];
 
+
 	for (i = 0; i < scandir(root, &ent_artist, filter, alphasort); i++) {
 
 		snprintf(dir_artist, MAXLEN-1, "%s/%s", root, ent_artist[i]->d_name);
@@ -1508,6 +1520,8 @@ build_store_thread(void * arg) {
 		if (!is_dir(dir_artist)) {
 			continue;
 		}
+
+		artist_iter_is_set = 0;
 
 		for (j = 0; j < scandir(dir_artist, &ent_record, filter, alphasort); j++) {
 

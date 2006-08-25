@@ -28,9 +28,14 @@
 #include <fcntl.h>
 #include <math.h>
 #include <time.h>
-#include <pthread.h>
 #include <sys/stat.h>
 #include <gtk/gtk.h>
+
+#ifdef _WIN32
+#include <glib.h>
+#else
+#include <pthread.h>
+#endif /* _WIN32 */
 
 
 #include "file_decoder.h"

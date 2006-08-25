@@ -866,28 +866,44 @@ meta_get_abstract(metadata * meta, char * str, char * tag_flac, char * tag_ogg, 
 int
 meta_get_title(metadata * meta, char * str) {
 
+#ifdef HAVE_ID3
 	return meta_get_abstract(meta, str, "Title:", "Title:", ID3_FRAME_TITLE);
+#else
+	return meta_get_abstract(meta, str, "Title:", "Title:", "dummy");
+#endif /* HAVE_ID3 */
 }
 
 
 int
 meta_get_record(metadata * meta, char * str) {
 
+#ifdef HAVE_ID3
 	return meta_get_abstract(meta, str, "Album:", "Album:", ID3_FRAME_ALBUM);
+#else
+	return meta_get_abstract(meta, str, "Album:", "Album:", "dummy");
+#endif /* HAVE_ID3 */
 }
 
 
 int
 meta_get_artist(metadata * meta, char * str) {
 
+#ifdef HAVE_ID3
 	return meta_get_abstract(meta, str, "Artist:", "Artist:", ID3_FRAME_ARTIST);
+#else
+	return meta_get_abstract(meta, str, "Artist:", "Artist:", "dummy");
+#endif /* HAVE_ID3 */
 }
 
 
 int
 meta_get_year(metadata * meta, char * str) {
 
+#ifdef HAVE_ID3
 	return meta_get_abstract(meta, str, "Date:", "Date:", ID3_FRAME_YEAR);
+#else
+	return meta_get_abstract(meta, str, "Date:", "Date:", "dummy");
+#endif /* HAVE_ID3 */
 }
 
 

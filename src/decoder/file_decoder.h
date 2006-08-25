@@ -64,6 +64,8 @@
 #define MPEG_EMPH_J_17   0x400
 #define MPEG_EMPH_RES    0x800
 #define MPEG_EMPH_MASK   0xF00
+
+#define MPEG_VBR         0x008
 #endif /* HAVE_MPEG */
 
 #ifdef HAVE_MOD

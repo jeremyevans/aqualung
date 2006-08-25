@@ -39,7 +39,7 @@ extern size_t sample_size;
 #ifdef HAVE_MPEG
 
 /* Uncomment this to get debug printouts */
-/*#define MPEG_DEBUG*/
+//#define MPEG_DEBUG
 
 #define BYTES2INT(b1,b2,b3,b4) (((long)(b1 & 0xFF) << (3*8)) | \
                                 ((long)(b2 & 0xFF) << (2*8)) | \
@@ -422,6 +422,74 @@ get_mp3file_info(int fd, mp3info_t *info) {
 }
 
 
+void
+last_two_frames(mpeg_pdata_t * pd) {
+
+	int fd = pd->fd;
+	int bufsize = 0;
+	int pos;
+	unsigned char * buffer = NULL;
+	struct stat st;
+	int i, last_i, header_cnt;
+
+	lseek(fd, 0, SEEK_SET);
+
+	if (fstat(fd, &st) == -1 || st.st_size == 0) {
+		printf("dec_mpeg.c:last_two_frames(): fstat failed\n");
+		return;
+	}
+
+	if (st.st_size > 0x4000) {
+		bufsize = 0x4000;
+	} else {
+		bufsize = st.st_size;
+	}
+
+	buffer = malloc(bufsize);
+	if (buffer == NULL) {
+		printf("dec_mpeg.c:last_two_frames(): malloc failed\n");
+		return;		
+	}
+	pos = st.st_size - bufsize;
+	if (lseek(fd, pos, SEEK_SET) != pos) {
+		printf("dec_mpeg.c:last_two_frames(): lseek failed\n");
+		free(buffer);
+		return;
+	}
+	if (read(fd, buffer, bufsize) != bufsize) {
+		printf("dec_mpeg.c:last_two_frames(): read failed\n");
+		free(buffer);
+		return;
+	}
+
+	last_i = bufsize;
+	header_cnt = 0;
+	for (i = bufsize-4; ((i >= 0) && (header_cnt < 10)); i--) {
+		long header = BYTES2INT(buffer[i], buffer[i+1], buffer[i+2], buffer[i+3]);
+		mp3info_t mp3info;
+
+		if (is_mp3frameheader(header)) {
+			mp3headerinfo(&mp3info, header);
+			if ((mp3info.layer == pd->mp3info.layer) &&
+			    (mp3info.version == pd->mp3info.version) &&
+			    (mp3info.frequency == pd->mp3info.frequency)) {
+				pd->last_frames[header_cnt] = st.st_size - bufsize + i;
+#ifdef MPEG_DEBUG
+				printf("header found at offset %d   delta = %d", bufsize-i, last_i - i);
+				printf("\tsize = %d  samples = %d\n", mp3info.frame_size, mp3info.frame_samples);
+				printf("last_frames[%d] = %d\n", header_cnt, pd->last_frames[header_cnt]);
+#endif /* MPEG_DEBUG */
+				last_i = i;
+				header_cnt++;
+			}
+		}
+	}
+
+	free(buffer);
+	return;
+}
+
+
 /* MPEG input callback */
 static
 enum mad_flow
@@ -429,15 +497,18 @@ mpeg_input(void * data, struct mad_stream * stream) {
 
         decoder_t * dec = (decoder_t *)data;
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
+	size_t size = 0;
 
         if (fstat(pd->fd, &(pd->mpeg_stat)) == -1 || pd->mpeg_stat.st_size == 0)
                 return MAD_FLOW_STOP;
 	
-        pd->fdm = mmap(0, pd->mpeg_stat.st_size, PROT_READ, MAP_SHARED, pd->fd, 0);
+	size = pd->mpeg_stat.st_size;
+
+        pd->fdm = mmap(0, size, PROT_READ, MAP_SHARED, pd->fd, 0);
         if (pd->fdm == MAP_FAILED)
                 return MAD_FLOW_STOP;
 
-        mad_stream_buffer(stream, pd->fdm, pd->mpeg_stat.st_size);
+        mad_stream_buffer(stream, pd->fdm, size);
 
         return MAD_FLOW_CONTINUE;
 }
@@ -451,25 +522,90 @@ mpeg_output(void * data, struct mad_header const * header, struct mad_pcm * pcm)
         decoder_t * dec = (decoder_t *)data;
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
+	long pos_bytes;
+	int end_count = pcm->length;
 
-	int i, j;
+	int i = 0, j;
 	unsigned long scale = 322122547; /* (1 << 28) * 1.2 */
         int buf[2];
         float fbuf[2];
 
-        for (i = 0; i < pcm->length; i++) {
+	if (pd->delay_frames > pcm->length) {
+		pd->delay_frames -= pcm->length;
+#ifdef MPEG_DEBUG
+		printf("skipping whole frame as part of encoder delay\n");
+#endif /* MPEG_DEBUG */		
+		return MAD_FLOW_CONTINUE;
+	} else if (pd->delay_frames > 0) {
+		i = pd->delay_frames;
+		pd->delay_frames = 0;
+#ifdef MPEG_DEBUG
+		printf("skipping %d samples of encoder delay\n", i);
+#endif /* MPEG_DEBUG */		
+	} else {
+		i = 0;
+	}
+
+	pos_bytes = (pd->mpeg_stream.this_frame - pd->mpeg_stream.buffer) + 10;
+	if (pos_bytes >= pd->last_frames[0]) {
+		int pad = pd->mp3info.enc_padding;
+#ifdef MPEG_DEBUG
+		printf(" *** last frame len=%d ***\n", pcm->length);
+#endif /* MPEG_DEBUG */		
+		if (pad > pcm->length) {
+#ifdef MPEG_DEBUG
+			printf("skipping whole frame\n");
+#endif /* MPEG_DEBUG */
+			return MAD_FLOW_CONTINUE;
+		} else if (pad > 0) {
+			end_count = pcm->length - pad;
+#ifdef MPEG_DEBUG
+			printf("skipping %d samples\n", pad);
+#endif /* MPEG_DEBUG */
+		}
+	} else if (pos_bytes >= pd->last_frames[1]) {
+		int pad = pd->mp3info.enc_padding;
+#ifdef MPEG_DEBUG
+		printf(" *** last but one frame len=%d***\n", pcm->length);
+#endif /* MPEG_DEBUG */		
+		if (pad > pcm->length) {
+			pad -= pcm->length;
+			end_count = pcm->length - pad;
+#ifdef MPEG_DEBUG
+			printf("skipping %d samples\n", pad);
+#endif /* MPEG_DEBUG */
+		}
+	} 
+#ifdef MPEG_DEBUG
+	else if (pos_bytes >= pd->last_frames[2]) {
+		printf(" *** last but 2 ***\n");
+	} else if (pos_bytes >= pd->last_frames[3]) {
+		printf(" *** last but 3 ***\n");
+	} else if (pos_bytes >= pd->last_frames[4]) {
+		printf(" *** last but 4 ***\n");
+	} else if (pos_bytes >= pd->last_frames[5]) {
+		printf(" *** last but 5 ***\n");
+	} else if (pos_bytes >= pd->last_frames[6]) {
+		printf(" *** last but 6 ***\n");
+	} else if (pos_bytes >= pd->last_frames[7]) {
+		printf(" *** last but 7 ***\n");
+	} else if (pos_bytes >= pd->last_frames[8]) {
+		printf(" *** last but 8 ***\n");
+	} else if (pos_bytes >= pd->last_frames[9]) {
+		printf(" *** last but 9 ***\n");
+	}
+#endif /* MPEG_DEBUG */
+
+        for (; i < end_count; i++) {
                 for (j = 0; j < pd->channels; j++) {
                         buf[j] = pd->error ? 0 : *(pcm->samples[j] + i);
                         fbuf[j] = (double)buf[j] * fdec->voladj_lin / scale;
                 }
-
-                if (rb_write_space(pd->rb) >=
-                    pd->channels * sample_size) {
-
-                        rb_write(pd->rb, (char *)fbuf,
-                                              pd->channels * sample_size);
+                if (rb_write_space(pd->rb) >= pd->channels * sample_size) {
+                        rb_write(pd->rb, (char *)fbuf, pd->channels * sample_size);
 		}
         }
+	pd->frame_counter++;
         pd->error = 0;
 
         return MAD_FLOW_CONTINUE;
@@ -583,7 +719,6 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	file_decoder_t * fdec = dec->fdec;
 
 	struct stat exp_stat;
-	long bytecount = 0;
 
 	if ((pd->fd = open(filename, O_RDONLY)) == 0) {
 		fprintf(stderr, "mpeg_decoder_open: open() failed for MPEG Audio file\n");
@@ -595,15 +730,19 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	pd->SR = pd->channels = pd->bitrate = pd->mpeg_subformat = 0;
 	pd->error = 0;
 
-	bytecount = get_mp3file_info(pd->fd, &pd->mp3info);
-	close(pd->fd);
+	pd->skip_bytes = get_mp3file_info(pd->fd, &pd->mp3info);
 
 #ifdef MPEG_DEBUG
-	printf("bytecount = %ld\n\n", bytecount);
+	printf("skip_bytes = %ld\n\n", pd->skip_bytes);
 #endif /* MPEG_DEBUG */
-	if (bytecount < 0) {
+	if (pd->skip_bytes < 0) {
+		close(pd->fd);
 		return DECODER_OPEN_BADLIB;
 	}
+
+	/* search for last N frames, needed for gapless playback */
+	last_two_frames(pd);
+	close(pd->fd);
 
 #ifdef MPEG_DEBUG
 	printf("version = %d\n", pd->mp3info.version);
@@ -613,12 +752,14 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	printf("channel_mode = %d\n", pd->mp3info.channel_mode);
 	printf("mode_extension = %d\n", pd->mp3info.mode_extension);
 	printf("emphasis = %d\n", pd->mp3info.emphasis);
+	printf("frame_size = %d\n", pd->mp3info.frame_size);
+	printf("frame_samples = %d\n", pd->mp3info.frame_samples);
 	printf("is_vbr = %d\n", pd->mp3info.is_vbr);
 	printf("has_toc = %d\n", pd->mp3info.has_toc);
 	printf("frame_count = %ld\n", pd->mp3info.frame_count);
 	printf("byte_count = %ld\n", pd->mp3info.byte_count);
 	printf("file_time = %ld\n", pd->mp3info.file_time);
-	printf("enc_delay = %ld\n", pd->mp3info.enc_padding);
+	printf("enc_delay = %ld\n", pd->mp3info.enc_delay);
 	printf("enc_padding = %ld\n", pd->mp3info.enc_padding);
 #endif /* MPEG_DEBUG */
 
@@ -673,10 +814,30 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	
 	if (pd->mp3info.is_vbr) {
 		pd->total_samples_est = (double)pd->SR * pd->mp3info.file_time / 1000.0f;
+		pd->mpeg_subformat |= MPEG_VBR;
 	} else {
 		pd->total_samples_est =	(double)pd->filesize / pd->bitrate * 8 * pd->SR;
 	}
+
+	if (pd->mp3info.enc_delay > 0) {
+		pd->delay_frames = pd->mp3info.enc_delay + 528 + pd->mp3info.frame_samples;
+	} else {
+		pd->delay_frames = 0;
+	}
 	
+	pd->error = 0;
+	pd->is_eos = 0;
+	pd->frame_counter = 0;
+	pd->rb = rb_create(pd->channels * sample_size * RB_MAD_SIZE);
+	fdec->channels = pd->channels;
+	fdec->SR = pd->SR;
+	fdec->file_lib = MAD_LIB;
+	
+	fdec->fileinfo.total_samples = pd->total_samples_est;
+	fdec->fileinfo.format_major = FORMAT_MAD;
+	fdec->fileinfo.format_minor = pd->mpeg_subformat;
+	fdec->fileinfo.bps = pd->bitrate;
+
 	/* setup playback */
 	pd->fd = open(filename, O_RDONLY);
 	mad_stream_init(&(pd->mpeg_stream));
@@ -690,18 +851,6 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_FERROR;
 	}
 	
-	pd->error = 0;
-	pd->is_eos = 0;
-	pd->rb = rb_create(pd->channels * sample_size * RB_MAD_SIZE);
-	fdec->channels = pd->channels;
-	fdec->SR = pd->SR;
-	fdec->file_lib = MAD_LIB;
-	
-	fdec->fileinfo.total_samples = pd->total_samples_est;
-	fdec->fileinfo.format_major = FORMAT_MAD;
-	fdec->fileinfo.format_minor = pd->mpeg_subformat;
-	fdec->fileinfo.bps = pd->bitrate;
-
 	return DECODER_OPEN_SUCCESS;
 }
 
@@ -754,6 +903,10 @@ mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 	char flush_dest;
+
+	if (seek_to_pos < pd->mp3info.frame_samples) {
+		pd->frame_counter = 0;
+	}
 
 	pd->mpeg_stream.next_frame = pd->mpeg_stream.buffer;
 	mad_stream_sync(&(pd->mpeg_stream));

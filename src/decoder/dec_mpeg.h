@@ -95,11 +95,15 @@ typedef struct _mpeg_pdata_t {
         int is_eos;
         struct stat mpeg_stat;
         long long int filesize;
+	long skip_bytes;
+	long delay_frames;
         int fd;
         void * fdm;
         unsigned long total_samples_est;
         int mpeg_subformat; /* used as v_minor */
 	mp3info_t mp3info;
+	unsigned long frame_counter;
+	unsigned long last_frames[10]; /* [0] is the last frame offset, [1] the last-but-one, etc. */
         struct mad_stream mpeg_stream;
         struct mad_frame mpeg_frame;
         struct mad_synth mpeg_synth;

@@ -821,11 +821,15 @@ set_format_label(int v_major, int v_minor) {
 }
 
 void
-set_bps_label(int bps) {
+set_bps_label(int bps, int is_vbr) {
 	
 	char str[MAXLEN];
 
-	sprintf(str, "%.1f kbit/s", bps/1000.0);
+	if (is_vbr) {
+		sprintf(str, "%.1f kbit/s VBR", bps/1000.0);
+	} else {
+		sprintf(str, "%.1f kbit/s", bps/1000.0);
+	}
 
 	if (is_file_loaded) {
 		if (GTK_IS_LABEL(label_bps))
@@ -1016,7 +1020,16 @@ refresh_displays(void) {
 
 	set_format_label(disp_info.format_major, disp_info.format_minor);
 	set_samplerate_label(disp_info.sample_rate);
-	set_bps_label(disp_info.bps);
+
+#ifdef HAVE_MPEG
+	if ((disp_info.format_major == FORMAT_MAD) && (disp_info.format_minor & MPEG_VBR)) {
+		set_bps_label(disp_info.bps, 1);
+	} else {
+		set_bps_label(disp_info.bps, 0);
+	}
+#else
+	set_bps_label(disp_info.bps, 0);
+#endif /* HAVE_MPEG */
 	set_mono_label(disp_info.is_mono);
 
 	set_output_label(output, out_SR);

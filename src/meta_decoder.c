@@ -792,10 +792,10 @@ meta_get_rva(metadata * meta, float * fval) {
 }
 
 
-/* ret: 1 if found, 0 if no Title data */
+/* ret: 1 if found, 0 if no data */
 /* can be called with str == NULL only to see if data is found */
 int
-meta_get_title(metadata * meta, char * str) {
+meta_get_abstract(metadata * meta, char * str, char * tag_flac, char * tag_ogg, char * tag_id3) {
 
 #ifdef HAVE_ID3
 	id3_tag_data * id3;
@@ -814,7 +814,7 @@ meta_get_title(metadata * meta, char * str) {
 		oggv = oggv->next;
 		while (oggv != NULL) {
 
-			if (strcmp(oggv->label, "Title:") == 0) {
+			if (strcmp(oggv->label, tag_flac) == 0) {
 				if (str != NULL) {
 					strncpy(str, oggv->str, MAXLEN-1);
 				}
@@ -831,7 +831,7 @@ meta_get_title(metadata * meta, char * str) {
 		oggv = oggv->next;
 		while (oggv != NULL) {
 
-			if (strcmp(oggv->label, "Title:") == 0) {
+			if (strcmp(oggv->label, tag_ogg) == 0) {
 				if (str != NULL) {
 					strncpy(str, oggv->str, MAXLEN-1);
 				}
@@ -848,7 +848,7 @@ meta_get_title(metadata * meta, char * str) {
 		id3 = id3->next;
 		while (id3 != NULL) {
 
-			if (strcmp(id3->id, ID3_FRAME_TITLE) == 0) {
+			if (strcmp(id3->id, tag_id3) == 0) {
 				if (str != NULL) {
 					strncpy(str, (char *) id3->utf8, MAXLEN-1);
 				}
@@ -863,214 +863,37 @@ meta_get_title(metadata * meta, char * str) {
 }
 
 
-/* ret: 1 if found, 0 if no Record data */
-/* can be called with str == NULL only to see if data is found */
+int
+meta_get_title(metadata * meta, char * str) {
+
+	return meta_get_abstract(meta, str, "Title:", "Title:", ID3_FRAME_TITLE);
+}
+
+
 int
 meta_get_record(metadata * meta, char * str) {
 
-#ifdef HAVE_ID3
-	id3_tag_data * id3;
-#endif /* HAVE_ID3 */
-	oggv_comment * oggv;
-
-
-	if (meta == NULL) {
-		fprintf(stderr, "meta_get_record(): assertion meta != NULL failed\n");
-		return 0;
-	}
-
-#ifdef HAVE_FLAC
-	oggv = meta->flac_root;
-	if (oggv->next != NULL) {
-		oggv = oggv->next;
-		while (oggv != NULL) {
-
-			if (strcmp(oggv->label, "Album:") == 0) {
-				if (str != NULL) {
-					strncpy(str, oggv->str, MAXLEN-1);
-				}
-				return 1;
-			}
-			oggv = oggv->next;
-		}
-	}
-#endif /* HAVE_FLAC */
-
-#ifdef HAVE_OGG_VORBIS
-	oggv = meta->oggv_root;
-	if (oggv->next != NULL) {
-		oggv = oggv->next;
-		while (oggv != NULL) {
-
-			if (strcmp(oggv->label, "Album:") == 0) {
-				if (str != NULL) {
-					strncpy(str, oggv->str, MAXLEN-1);
-				}
-				return 1;
-			}
-			oggv = oggv->next;
-		}
-	}
-#endif /* HAVE_OGG_VORBIS */
-
-#ifdef HAVE_ID3
-	id3 = meta->id3_root;
-	if (id3->next != NULL) {
-		id3 = id3->next;
-		while (id3 != NULL) {
-
-			if (strcmp(id3->id, ID3_FRAME_ALBUM) == 0) {
-				if (str != NULL) {
-					strncpy(str, (char *) id3->utf8, MAXLEN-1);
-				}
-				return 1;
-			}
-			id3 = id3->next;
-		}
-	}
-#endif /* HAVE_ID3 */
-
-	return 0;
+	return meta_get_abstract(meta, str, "Album:", "Album:", ID3_FRAME_ALBUM);
 }
 
 
-/* ret: 1 if found, 0 if no Artist data */
-/* can be called with str == NULL only to see if data is found */
 int
 meta_get_artist(metadata * meta, char * str) {
 
-#ifdef HAVE_ID3
-	id3_tag_data * id3;
-#endif /* HAVE_ID3 */
-	oggv_comment * oggv;
-
-
-	if (meta == NULL) {
-		fprintf(stderr, "meta_get_artist(): assertion meta != NULL failed\n");
-		return 0;
-	}
-
-#ifdef HAVE_FLAC
-	oggv = meta->flac_root;
-	if (oggv->next != NULL) {
-		oggv = oggv->next;
-		while (oggv != NULL) {
-
-			if (strcmp(oggv->label, "Artist:") == 0) {
-				if (str != NULL) {
-					strncpy(str, oggv->str, MAXLEN-1);
-				}
-				return 1;
-			}
-			oggv = oggv->next;
-		}
-	}
-#endif /* HAVE_FLAC */
-
-#ifdef HAVE_OGG_VORBIS
-	oggv = meta->oggv_root;
-	if (oggv->next != NULL) {
-		oggv = oggv->next;
-		while (oggv != NULL) {
-
-			if (strcmp(oggv->label, "Artist:") == 0) {
-				if (str != NULL) {
-					strncpy(str, oggv->str, MAXLEN-1);
-				}
-				return 1;
-			}
-			oggv = oggv->next;
-		}
-	}
-#endif /* HAVE_OGG_VORBIS */
-
-#ifdef HAVE_ID3
-	id3 = meta->id3_root;
-	if (id3->next != NULL) {
-		id3 = id3->next;
-		while (id3 != NULL) {
-
-			if (strcmp(id3->id, ID3_FRAME_ARTIST) == 0) {
-				if (str != NULL) {
-					strncpy(str, (char *) id3->utf8, MAXLEN-1);
-				}
-				return 1;
-			}
-			id3 = id3->next;
-		}
-	}
-#endif /* HAVE_ID3 */
-
-	return 0;
+	return meta_get_abstract(meta, str, "Artist:", "Artist:", ID3_FRAME_ARTIST);
 }
 
 
-/* ret: 1 if found, 0 if no Year data */
-/* can be called with str == NULL only to see if data is found */
 int
 meta_get_year(metadata * meta, char * str) {
 
-#ifdef HAVE_ID3
-	id3_tag_data * id3;
-#endif /* HAVE_ID3 */
-	oggv_comment * oggv;
-
-
-	if (meta == NULL) {
-		fprintf(stderr, "meta_get_artist(): assertion meta != NULL failed\n");
-		return 0;
-	}
-
-#ifdef HAVE_FLAC
-	oggv = meta->flac_root;
-	if (oggv->next != NULL) {
-		oggv = oggv->next;
-		while (oggv != NULL) {
-
-			if (strcmp(oggv->label, "Date:") == 0) {
-				if (str != NULL) {
-					strncpy(str, oggv->str, MAXLEN-1);
-				}
-				return 1;
-			}
-			oggv = oggv->next;
-		}
-	}
-#endif /* HAVE_FLAC */
-
-#ifdef HAVE_OGG_VORBIS
-	oggv = meta->oggv_root;
-	if (oggv->next != NULL) {
-		oggv = oggv->next;
-		while (oggv != NULL) {
-
-			if (strcmp(oggv->label, "Date:") == 0) {
-				if (str != NULL) {
-					strncpy(str, oggv->str, MAXLEN-1);
-				}
-				return 1;
-			}
-			oggv = oggv->next;
-		}
-	}
-#endif /* HAVE_OGG_VORBIS */
-
-#ifdef HAVE_ID3
-	id3 = meta->id3_root;
-	if (id3->next != NULL) {
-		id3 = id3->next;
-		while (id3 != NULL) {
-
-			if (strcmp(id3->id, ID3_FRAME_YEAR) == 0) {
-				if (str != NULL) {
-					strncpy(str, (char *) id3->utf8, MAXLEN-1);
-				}
-				return 1;
-			}
-			id3 = id3->next;
-		}
-	}
-#endif /* HAVE_ID3 */
-
-	return 0;
+	return meta_get_abstract(meta, str, "Date:", "Date:", ID3_FRAME_YEAR);
 }
+
+
+int
+meta_get_comment(metadata * meta, char * str) {
+
+	return meta_get_abstract(meta, str, "Comment:", "Comment:", "XCOM");
+}
+

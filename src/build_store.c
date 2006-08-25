@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <fnmatch.h>
 #include <regex.h>
 #include <gtk/gtk.h>
 #include <sys/stat.h>
@@ -44,18 +45,23 @@
 #include "build_store.h"
 #include "cddb_lookup.h"
 
-#define BUILD_THREAD_BUSY 0
-#define BUILD_THREAD_FREE 1
+#define BUILD_THREAD_BUSY  0
+#define BUILD_THREAD_FREE  1
 
-#define BUILD_STORE       0
-#define BUILD_ARTIST      1
+#define BUILD_STORE   0
+#define BUILD_ARTIST  1
 
-#define ARTIST_SORT_NAME  0
-#define ARTIST_SORT_DIR   1
+#define ARTIST_SORT_NAME      0
+#define ARTIST_SORT_NAME_LOW  1
+#define ARTIST_SORT_DIR       2
+#define ARTIST_SORT_DIR_LOW   3
 
-#define RECORD_SORT_NAME  0
-#define RECORD_SORT_DIR   1
-#define RECORD_SORT_YEAR  2
+#define RECORD_SORT_YEAR      0
+#define RECORD_SORT_NAME      1
+#define RECORD_SORT_NAME_LOW  2
+#define RECORD_SORT_DIR       3
+#define RECORD_SORT_DIR_LOW   4
+
 
 extern options_t options;
 extern GtkTreeStore * music_store;
@@ -67,7 +73,7 @@ extern void set_sliders_width(void);
 
 AQUALUNG_THREAD_DECLARE(build_thread_id)
 
-/* 0: busy, 1: free to start new build */
+
 int build_thread_state = BUILD_THREAD_FREE;
 
 int build_cancelled = 0;
@@ -83,12 +89,18 @@ GtkWidget * prog_cancel_button;
 GtkWidget * prog_file_entry;
 GtkWidget * prog_action_label;
 
+GtkWidget * gen_check_excl;
+GtkWidget * gen_entry_excl;
+GtkWidget * gen_check_incl;
+GtkWidget * gen_entry_incl;
+
 GtkWidget * meta_check_enable;
 GtkWidget * meta_check_wspace;
 GtkWidget * meta_check_title;
 GtkWidget * meta_check_artist;
 GtkWidget * meta_check_record;
 GtkWidget * meta_check_rva;
+GtkWidget * meta_check_comment;
 
 #ifdef HAVE_CDDB
 GtkWidget * cddb_check_enable;
@@ -108,12 +120,17 @@ GtkWidget * fs_label_regexp;
 GtkWidget * fs_label_repl;
 GtkWidget * fs_label_error;
 
-int artist_sort_by = ARTIST_SORT_NAME;
+int artist_sort_by = ARTIST_SORT_NAME_LOW;
 int record_sort_by = RECORD_SORT_YEAR;
 int reset_existing_data = 0;
 int add_year_to_comment = 0;
 
 int pri_meta_first = 1;
+
+int excl_enabled = 0;
+char excl_pattern[MAXLEN];
+int incl_enabled = 0;
+char incl_pattern[MAXLEN];
 
 int meta_enable = 1;
 int meta_wspace = 1;
@@ -121,6 +138,7 @@ int meta_title = 1;
 int meta_artist = 1;
 int meta_record = 1;
 int meta_rva = 1;
+int meta_comment = 1;
 
 int cddb_enable = 1;
 int cddb_title = 1;
@@ -225,6 +243,7 @@ meta_check_enable_toggled(GtkWidget * widget, gpointer * data) {
 	gtk_widget_set_sensitive(meta_check_artist, state);
 	gtk_widget_set_sensitive(meta_check_record, state);
 	gtk_widget_set_sensitive(meta_check_rva, state);
+	gtk_widget_set_sensitive(meta_check_comment, state);
 }
 
 
@@ -260,6 +279,22 @@ fs_radio_preset_toggled(GtkWidget * widget, gpointer * data) {
 	} else {
 		gtk_widget_show(fs_label_error);
 	}
+}
+
+
+void
+gen_check_excl_toggled(GtkWidget * widget, gpointer * data) {
+
+	gboolean state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_excl));
+	gtk_widget_set_sensitive(gen_entry_excl, state);
+}
+
+
+void
+gen_check_incl_toggled(GtkWidget * widget, gpointer * data) {
+
+	gboolean state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_incl));
+	gtk_widget_set_sensitive(gen_entry_incl, state);
 }
 
 
@@ -340,10 +375,17 @@ build_dialog(void) {
 	GtkWidget * gen_record_vbox;
 	GtkWidget * gen_record_combo;
 
+	GtkWidget * gen_excl_frame;
+	GtkWidget * gen_excl_frame_hbox;
+	GtkWidget * gen_incl_frame;
+	GtkWidget * gen_incl_frame_hbox;
+
 	GtkWidget * gen_check_reset_data;
 	GtkWidget * gen_check_add_year;
 
 	GtkWidget * meta_vbox;
+	GtkWidget * meta_frame;
+	GtkWidget * meta_frame_vbox;
 
 	GtkWidget * fs_vbox;
 
@@ -352,6 +394,8 @@ build_dialog(void) {
 	GtkWidget * gen_pri_combo;
 	GtkWidget * gen_pri_vbox;
 	GtkWidget * cddb_vbox;
+	GtkWidget * cddb_frame;
+	GtkWidget * cddb_frame_vbox;
 #endif /* HAVE_CDDB */
 
 	GdkColor red = { 0, 50000, 0, 0 };
@@ -399,7 +443,7 @@ build_dialog(void) {
 	gtk_container_add(GTK_CONTAINER(gen_path_frame), hbox);
 
         root_entry = gtk_entry_new ();
-        gtk_entry_set_max_length (GTK_ENTRY(root_entry), MAXLEN-1);
+        gtk_entry_set_max_length(GTK_ENTRY(root_entry), MAXLEN-1);
         gtk_box_pack_start(GTK_BOX(hbox), root_entry, TRUE, TRUE, 5);
 
 	browse_button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
@@ -441,14 +485,22 @@ build_dialog(void) {
         gtk_box_pack_start(GTK_BOX(gen_artist_vbox), gen_artist_combo, FALSE, FALSE, 0);
 
 	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_artist_combo), _("Artist name"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_artist_combo), _("Artist name (lowercase)"));
 	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_artist_combo), _("Directory name"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_artist_combo), _("Directory name (lowercase)"));
 
 	switch (artist_sort_by) {
 	case ARTIST_SORT_NAME:
 		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_artist_combo), 0);
 		break;
-	case ARTIST_SORT_DIR:
+	case ARTIST_SORT_NAME_LOW:
 		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_artist_combo), 1);
+		break;
+	case ARTIST_SORT_DIR:
+		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_artist_combo), 2);
+		break;
+	case ARTIST_SORT_DIR_LOW:
+		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_artist_combo), 3);
 		break;
 	}
 
@@ -463,20 +515,77 @@ build_dialog(void) {
 	gen_record_combo = gtk_combo_box_new_text();
         gtk_box_pack_start(GTK_BOX(gen_record_vbox), gen_record_combo, FALSE, FALSE, 0);
 
-	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_record_combo), _("Record name"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_record_combo), _("Directory name"));
 	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_record_combo), _("Year"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_record_combo), _("Record name"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_record_combo), _("Record name (lowercase)"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_record_combo), _("Directory name"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_record_combo), _("Directory name (lowercase)"));
 
 	switch (record_sort_by) {
-	case RECORD_SORT_NAME:
+	case RECORD_SORT_YEAR:
 		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_record_combo), 0);
 		break;
-	case RECORD_SORT_DIR:
+	case RECORD_SORT_NAME:
 		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_record_combo), 1);
 		break;
-	case RECORD_SORT_YEAR:
+	case RECORD_SORT_NAME_LOW:
 		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_record_combo), 2);
 		break;
+	case RECORD_SORT_DIR:
+		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_record_combo), 3);
+		break;
+	case RECORD_SORT_DIR_LOW:
+		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_record_combo), 4);
+		break;
+	}
+
+
+	gen_excl_frame = gtk_frame_new(_("Exclude files matching wildcard"));
+        gtk_box_pack_start(GTK_BOX(gen_vbox), gen_excl_frame, FALSE, FALSE, 5);
+        gen_excl_frame_hbox = gtk_hbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(gen_excl_frame_hbox), 5);
+	gtk_container_add(GTK_CONTAINER(gen_excl_frame), gen_excl_frame_hbox);
+
+	gen_check_excl = gtk_check_button_new();
+	gtk_widget_set_name(gen_check_excl, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(gen_excl_frame_hbox), gen_check_excl, FALSE, FALSE, 0);
+
+	g_signal_connect(G_OBJECT(gen_check_excl), "toggled",
+			 G_CALLBACK(gen_check_excl_toggled), NULL);
+
+        gen_entry_excl = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(gen_entry_excl), MAXLEN-1);
+	gtk_entry_set_text(GTK_ENTRY(gen_entry_excl), "*(*.jpg|*.png|*.gif)");
+        gtk_box_pack_end(GTK_BOX(gen_excl_frame_hbox), gen_entry_excl, TRUE, TRUE, 0);
+
+	if (excl_enabled) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_check_excl), TRUE);
+	} else {
+		gtk_widget_set_sensitive(gen_entry_excl, FALSE);
+	}
+
+	gen_incl_frame = gtk_frame_new(_("Include only files matching wildcard"));
+        gtk_box_pack_start(GTK_BOX(gen_vbox), gen_incl_frame, FALSE, FALSE, 5);
+        gen_incl_frame_hbox = gtk_hbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(gen_incl_frame_hbox), 5);
+	gtk_container_add(GTK_CONTAINER(gen_incl_frame), gen_incl_frame_hbox);
+
+	gen_check_incl = gtk_check_button_new();
+	gtk_widget_set_name(gen_check_incl, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(gen_incl_frame_hbox), gen_check_incl, FALSE, FALSE, 0);
+
+	g_signal_connect(G_OBJECT(gen_check_incl), "toggled",
+			 G_CALLBACK(gen_check_incl_toggled), NULL);
+
+        gen_entry_incl = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(gen_entry_incl), MAXLEN-1);
+	gtk_entry_set_text(GTK_ENTRY(gen_entry_incl), "*.flac");
+        gtk_box_pack_end(GTK_BOX(gen_incl_frame_hbox), gen_entry_incl, TRUE, TRUE, 0);
+
+	if (incl_enabled) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_check_incl), TRUE);
+	} else {
+		gtk_widget_set_sensitive(gen_entry_incl, FALSE);
 	}
 
 
@@ -519,45 +628,6 @@ build_dialog(void) {
 	g_signal_connect(G_OBJECT(meta_check_enable), "toggled",
 			 G_CALLBACK(meta_check_enable_toggled), NULL);
 
-	meta_check_title =
-		gtk_check_button_new_with_label(_("Import track titles"));
-	gtk_widget_set_name(meta_check_title, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(meta_vbox), meta_check_title, FALSE, FALSE, 0);
-
-	if (meta_title) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_title), TRUE);
-	}
-
-	meta_check_artist =
-		gtk_check_button_new_with_label(_("Import artist"));
-	gtk_widget_set_name(meta_check_artist, "check_on_notebook");
-
-	if (build_type == BUILD_STORE) {
-		gtk_box_pack_start(GTK_BOX(meta_vbox), meta_check_artist, FALSE, FALSE, 0);
-	}
-
-	if (meta_artist) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_artist), TRUE);
-	}
-
-	meta_check_record =
-		gtk_check_button_new_with_label(_("Import record"));
-	gtk_widget_set_name(meta_check_record, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(meta_vbox), meta_check_record, FALSE, FALSE, 0);
-
-	if (meta_record) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_record), TRUE);
-	}
-
-	meta_check_rva =
-		gtk_check_button_new_with_label(_("Import RVA"));
-	gtk_widget_set_name(meta_check_rva, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(meta_vbox), meta_check_rva, FALSE, FALSE, 0);
-
-	if (meta_rva) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_rva), TRUE);
-	}
-
 	meta_check_wspace =
 		gtk_check_button_new_with_label(_("Exclude whitespace-only metadata"));
 	gtk_widget_set_name(meta_check_wspace, "check_on_notebook");
@@ -567,11 +637,68 @@ build_dialog(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_wspace), TRUE);
 	}
 
+
+	meta_frame = gtk_frame_new(_("Import"));
+        gtk_box_pack_start(GTK_BOX(meta_vbox), meta_frame, FALSE, FALSE, 5);
+
+        meta_frame_vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(meta_frame_vbox), 5);
+        gtk_container_add(GTK_CONTAINER(meta_frame), meta_frame_vbox);
+
+	meta_check_artist =
+		gtk_check_button_new_with_label(_("Artist name"));
+	gtk_widget_set_name(meta_check_artist, "check_on_notebook");
+
+	if (build_type == BUILD_STORE) {
+		gtk_box_pack_start(GTK_BOX(meta_frame_vbox), meta_check_artist, FALSE, FALSE, 0);
+	}
+
+	if (meta_artist) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_artist), TRUE);
+	}
+
+	meta_check_record =
+		gtk_check_button_new_with_label(_("Record name"));
+	gtk_widget_set_name(meta_check_record, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(meta_frame_vbox), meta_check_record, FALSE, FALSE, 0);
+
+	if (meta_record) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_record), TRUE);
+	}
+
+	meta_check_title =
+		gtk_check_button_new_with_label(_("Track name"));
+	gtk_widget_set_name(meta_check_title, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(meta_frame_vbox), meta_check_title, FALSE, FALSE, 0);
+
+	if (meta_title) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_title), TRUE);
+	}
+
+	meta_check_rva =
+		gtk_check_button_new_with_label(_("Replaygain tag as manual RVA"));
+	gtk_widget_set_name(meta_check_rva, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(meta_frame_vbox), meta_check_rva, FALSE, FALSE, 0);
+
+	if (meta_rva) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_rva), TRUE);
+	}
+
+	meta_check_comment =
+		gtk_check_button_new_with_label(_("Comment"));
+	gtk_widget_set_name(meta_check_comment, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(meta_frame_vbox), meta_check_comment, FALSE, FALSE, 0);
+
+	if (meta_comment) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_comment), TRUE);
+	}
+
 	if (!meta_enable) {
 		gtk_widget_set_sensitive(meta_check_title, FALSE);
 		gtk_widget_set_sensitive(meta_check_artist, FALSE);
 		gtk_widget_set_sensitive(meta_check_record, FALSE);
 		gtk_widget_set_sensitive(meta_check_rva, FALSE);
+		gtk_widget_set_sensitive(meta_check_comment, FALSE);
 		gtk_widget_set_sensitive(meta_check_wspace, FALSE);
 	}
 
@@ -597,21 +724,19 @@ build_dialog(void) {
 			 G_CALLBACK(cddb_check_enable_toggled), NULL);
 
 
-	cddb_check_title =
-		gtk_check_button_new_with_label(_("Import track titles"));
-	gtk_widget_set_name(cddb_check_title, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(cddb_vbox), cddb_check_title, FALSE, FALSE, 0);
+	cddb_frame = gtk_frame_new(_("Import"));
+        gtk_box_pack_start(GTK_BOX(cddb_vbox), cddb_frame, FALSE, FALSE, 5);
 
-	if (cddb_title) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_check_title), TRUE);
-	}
+        cddb_frame_vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(cddb_frame_vbox), 5);
+        gtk_container_add(GTK_CONTAINER(cddb_frame), cddb_frame_vbox);
 
 	cddb_check_artist =
-		gtk_check_button_new_with_label(_("Import artist"));
+		gtk_check_button_new_with_label(_("Artist name"));
 	gtk_widget_set_name(cddb_check_artist, "check_on_notebook");
 
 	if (build_type == BUILD_STORE) {
-		gtk_box_pack_start(GTK_BOX(cddb_vbox), cddb_check_artist, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(cddb_frame_vbox), cddb_check_artist, FALSE, FALSE, 0);
 	}
 
 	if (cddb_artist) {
@@ -619,12 +744,21 @@ build_dialog(void) {
 	}
 
 	cddb_check_record =
-		gtk_check_button_new_with_label(_("Import record"));
+		gtk_check_button_new_with_label(_("Record name"));
 	gtk_widget_set_name(cddb_check_record, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(cddb_vbox), cddb_check_record, FALSE, FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(cddb_frame_vbox), cddb_check_record, FALSE, FALSE, 0);
 
 	if (cddb_record) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_check_record), TRUE);
+	}
+
+	cddb_check_title =
+		gtk_check_button_new_with_label(_("Track name"));
+	gtk_widget_set_name(cddb_check_title, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(cddb_frame_vbox), cddb_check_title, FALSE, FALSE, 0);
+
+	if (cddb_title) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_check_title), TRUE);
 	}
 
 	if (!cddb_enable) {
@@ -632,7 +766,6 @@ build_dialog(void) {
 		gtk_widget_set_sensitive(cddb_check_artist, FALSE);
 		gtk_widget_set_sensitive(cddb_check_record, FALSE);
 	}
-
 #endif /* HAVE_CDDB */
 
 	/* Filenames */
@@ -750,20 +883,45 @@ build_dialog(void) {
 			artist_sort_by = ARTIST_SORT_NAME;
 			break;
 		case 1:
+			artist_sort_by = ARTIST_SORT_NAME_LOW;
+			break;
+		case 2:
 			artist_sort_by = ARTIST_SORT_DIR;
+			break;
+		case 3:
+			artist_sort_by = ARTIST_SORT_DIR_LOW;
 			break;
 		}
 
 		switch (gtk_combo_box_get_active(GTK_COMBO_BOX(gen_record_combo))) {
 		case 0:
-			record_sort_by = RECORD_SORT_NAME;
-			break;
-		case 1:
-			record_sort_by = RECORD_SORT_DIR;
-			break;
-		case 2:
 			record_sort_by = RECORD_SORT_YEAR;
 			break;
+		case 1:
+			record_sort_by = RECORD_SORT_NAME;
+			break;
+		case 2:
+			record_sort_by = RECORD_SORT_NAME_LOW;
+			break;
+		case 3:
+			record_sort_by = RECORD_SORT_DIR;
+			break;
+		case 4:
+			record_sort_by = RECORD_SORT_DIR_LOW;
+			break;
+		}
+
+
+		excl_enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_excl));
+
+		if (excl_enabled) {
+			strncpy(excl_pattern, gtk_entry_get_text(GTK_ENTRY(gen_entry_excl)), MAXLEN-1);
+		}
+
+		incl_enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_incl));
+
+		if (incl_enabled) {
+			strncpy(incl_pattern, gtk_entry_get_text(GTK_ENTRY(gen_entry_incl)), MAXLEN-1);
 		}
 
 
@@ -776,6 +934,7 @@ build_dialog(void) {
 		meta_artist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_artist));
 		meta_record = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_record));
 		meta_rva = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_rva));
+		meta_comment = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(meta_check_comment));
 
 #ifdef HAVE_CDDB
 		switch (gtk_combo_box_get_active(GTK_COMBO_BOX(gen_pri_combo))) {
@@ -797,8 +956,8 @@ build_dialog(void) {
 		fs_rm_ext = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fs_check_rm_ext));
 		fs_underscore = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fs_check_underscore));
 
-		strncpy(fs_regexp, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp1)), MAXLEN - 1);
-		strncpy(fs_replacement, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp2)), MAXLEN - 1);
+		strncpy(fs_regexp, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp1)), MAXLEN-1);
+		strncpy(fs_replacement, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp2)), MAXLEN-1);
 
 		if (!fs_preset) {
 
@@ -1160,6 +1319,11 @@ process_meta(build_record_t * record) {
 			if (meta_rva) {
 				meta_get_rva(meta, &ptrack->rva);
 			}
+			if (meta_comment && meta_get_comment(meta, tmp)) {
+				if (!meta_wspace || !is_wspace(tmp)) {
+					strncpy(ptrack->comment, tmp, MAXLEN-1);
+				}
+			}
 		}
 
 		meta_free(meta);
@@ -1207,15 +1371,30 @@ add_new_track(GtkTreeIter * record_iter, build_track_t * ptrack, int i) {
 	snprintf(sort_name, 3, "%02d", i + 1);
 
 	gtk_tree_store_append(music_store, &iter, record_iter);
-	gtk_tree_store_set(music_store, &iter,
-			   0, ptrack->name,
-			   1, sort_name,
-			   2, ptrack->filename,
-			   3, "",
-			   4, ptrack->duration,
-			   5, ptrack->rva,
-			   7, -1.0f,
-			   -1);
+
+	if (ptrack->rva > 0.1f) { /* rva unmeasured */
+		gtk_tree_store_set(music_store, &iter,
+				   0, ptrack->name,
+				   1, sort_name,
+				   2, ptrack->filename,
+				   3, ptrack->comment,
+				   4, ptrack->duration,
+				   5, 1.0f,
+				   6, 0.0f,
+				   7, -1.0f,
+				   -1);
+	} else {
+		gtk_tree_store_set(music_store, &iter,
+				   0, ptrack->name,
+				   1, sort_name,
+				   2, ptrack->filename,
+				   3, ptrack->comment,
+				   4, ptrack->duration,
+				   5, 1.0f,
+				   6, ptrack->rva,
+				   7, 1.0f,
+				   -1);
+	}
 }
 
 
@@ -1238,9 +1417,11 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	build_track_t * last_track = NULL;
 	float duration;
 
-	char * artist_sort_name = "";
-	char * record_sort_name = "";
-	char * record_comment = "";
+	char artist_sort_name[MAXLEN];
+	char record_sort_name[MAXLEN];
+	char record_comment[MAXLEN];
+
+	char * utf8;
 
 	record.artist[0] = '\0';
 	record.record[0] = '\0';
@@ -1250,12 +1431,38 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	record.year_valid = 0;
 	record.tracks = NULL;
 
+	artist_sort_name[0] = '\0';
+	record_sort_name[0] = '\0';
+	record_comment[0] = '\0';
+
 	g_idle_add(set_prog_action_label, (gpointer) _("Scanning files"));
 
 	for (i = 0; i < scandir(dir_record, &ent_track, filter, alphasort); i++) {
 
 		strncpy(basename, ent_track[i]->d_name, MAXLEN-1);
 		snprintf(filename, MAXLEN-1, "%s/%s", dir_record, ent_track[i]->d_name);
+
+		if (is_dir(filename)) {
+			continue;
+		}
+
+		if (excl_enabled) {
+			utf8 = g_locale_to_utf8(basename, -1, NULL, NULL, NULL);
+			if (fnmatch(excl_pattern, utf8, FNM_FILE_NAME | FNM_PERIOD | FNM_EXTMATCH) == 0) {
+				g_free(utf8);
+				continue;
+			}
+			g_free(utf8);
+		}
+
+		if (incl_enabled) {
+			utf8 = g_locale_to_utf8(basename, -1, NULL, NULL, NULL);
+			if (fnmatch(incl_pattern, utf8, FNM_FILE_NAME | FNM_PERIOD | FNM_EXTMATCH) != 0) {
+				g_free(utf8);
+				continue;
+			}
+			g_free(utf8);
+		}
 
 		if ((duration = get_file_duration(filename)) > 0.0f) {
 
@@ -1265,8 +1472,10 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 				fprintf(stderr, "build_store.c: process_record(): malloc error\n");
 				return;
 			} else {
-				strncpy(track->d_name, ent_track[i]->d_name, MAXLEN-1);
 				strncpy(track->filename, filename, MAXLEN-1);
+				strncpy(track->d_name, ent_track[i]->d_name, MAXLEN-1);
+				track->name[0] = '\0';
+				track->comment[0] = '\0';
 				track->duration = duration;
 				track->rva = 1.0f;
 				track->valid = 0;
@@ -1333,14 +1542,14 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	g_idle_add(set_prog_action_label, (gpointer) _("File name transformation"));
 
 	if (!record.artist_valid) {
-		char * utf8 = g_filename_display_name(artist_d_name);
+		utf8 = g_filename_display_name(artist_d_name);
 		strncpy(record.artist, utf8, MAXLEN-1);
 		record.artist_valid = 1;
 		g_free(utf8);
 	}
 
 	if (!record.record_valid) {
-		char * utf8 = g_filename_display_name(record_d_name);
+		utf8 = g_filename_display_name(record_d_name);
 		strncpy(record.record, utf8, MAXLEN-1);
 		record.record_valid = 1;
 		g_free(utf8);
@@ -1349,7 +1558,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	for (i = 0, ptrack = record.tracks; ptrack; i++, ptrack = ptrack->next) {
 
 		if (!ptrack->valid) {
-			char * utf8 = g_filename_display_name(ptrack->d_name);
+			utf8 = g_filename_display_name(ptrack->d_name);
 			transform_filename(ptrack->name, utf8);
 			ptrack->valid = 1;
 			g_free(utf8);
@@ -1365,27 +1574,59 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 
 	switch (artist_sort_by) {
 	case ARTIST_SORT_NAME:
-		artist_sort_name = record.artist;
+		strncpy(artist_sort_name, record.artist, MAXLEN-1);
+		break;
+	case ARTIST_SORT_NAME_LOW:
+		utf8 = g_utf8_strdown(record.artist, -1);
+		strncpy(artist_sort_name, utf8, MAXLEN-1);
+		g_free(utf8);
 		break;
 	case ARTIST_SORT_DIR:
-		artist_sort_name = artist_d_name;
+		utf8 = g_locale_to_utf8(artist_d_name, -1, NULL, NULL, NULL);
+		strncpy(artist_sort_name, utf8, MAXLEN-1);
+		g_free(utf8);
+		break;
+	case ARTIST_SORT_DIR_LOW:
+		{
+			char * tmp = g_locale_to_utf8(artist_d_name, -1, NULL, NULL, NULL);
+			utf8 = g_utf8_strdown(tmp, -1);
+			strncpy(artist_sort_name, utf8, MAXLEN-1);
+			g_free(utf8);
+			g_free(tmp);
+		}
 		break;
 	}
 
 	switch (record_sort_by) {
+	case RECORD_SORT_YEAR:
+		strncpy(record_sort_name, record.year, MAXLEN-1);
+		break;
 	case RECORD_SORT_NAME:
-		record_sort_name = record.record;
+		strncpy(record_sort_name, record.record, MAXLEN-1);
+		break;
+	case RECORD_SORT_NAME_LOW:
+		utf8 = g_utf8_strdown(record.record, -1);
+		strncpy(record_sort_name, utf8, MAXLEN-1);
+		g_free(utf8);
 		break;
 	case RECORD_SORT_DIR:
-		record_sort_name = record_d_name;
+		utf8 = g_locale_to_utf8(record_d_name, -1, NULL, NULL, NULL);
+		strncpy(record_sort_name, utf8, MAXLEN-1);
+		g_free(utf8);
 		break;
-	case RECORD_SORT_YEAR:
-		record_sort_name = record.year;
+	case RECORD_SORT_DIR_LOW:
+		{
+			char * tmp = g_locale_to_utf8(record_d_name, -1, NULL, NULL, NULL);
+			utf8 = g_utf8_strdown(tmp, -1);
+			strncpy(record_sort_name, utf8, MAXLEN-1);
+			g_free(utf8);
+			g_free(tmp);
+		}
 		break;
 	}
 
 	if (add_year_to_comment) {
-		record_comment = record.year;
+		strncpy(record_comment, record.year, MAXLEN-1);
 	}
 
 	if (build_type == BUILD_STORE) {
@@ -1417,7 +1658,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 		for (i = 0, ptrack = record.tracks; ptrack; i++, ptrack = ptrack->next) {
 
 			GtkTreeIter iter;
-			int has = 0;
+			int has_track = 0;
 			int j = 0;
 
 			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
@@ -1428,7 +1669,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 						   &iter, 2, &file, -1);
 
 				if (!strcmp(file, ptrack->filename)) {
-					has = 1;
+					has_track = 1;
 					g_free(file);
 					break;
 				}
@@ -1436,18 +1677,19 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 				g_free(file);
 			}
 
-			if (has) {
+			if (has_track) {
 				if (reset_existing_data) {
-					if (ptrack->rva <= 0.1f) {
+					if (ptrack->rva > 0.1f) { /* rva unmeasured */
 						gtk_tree_store_set(music_store, &iter,
 								   0, ptrack->name,
 								   4, ptrack->duration,
-								   5, ptrack->rva,
 								   -1);
 					} else {
 						gtk_tree_store_set(music_store, &iter,
 								   0, ptrack->name,
 								   4, ptrack->duration,
+								   6, ptrack->rva,
+								   7, 1.0f,
 								   -1);
 					}
 				}

@@ -40,6 +40,7 @@ typedef struct _build_track_t {
 	char filename[MAXLEN];
 	char d_name[MAXLEN];
 	char name[MAXLEN];
+	char comment[MAXLEN];
 	float duration;
 	float rva;
 	int valid;

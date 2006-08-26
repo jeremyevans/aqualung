@@ -55,6 +55,10 @@ typedef struct _build_record_t {
 	char record[MAXLEN];
 	char year[MAXLEN];
 
+	char record_comment[MAXLEN];
+	char artist_sort_name[MAXLEN];
+	char record_sort_name[MAXLEN];
+
 	int artist_valid;
 	int record_valid;
 	int year_valid;

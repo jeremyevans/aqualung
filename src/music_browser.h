@@ -43,14 +43,5 @@ void track__addlist_cb(gpointer data);
 
 void music_store_set_status_bar_info(void);
 
-int store_get_iter_for_artist_and_record(GtkTreeIter * store_iter,
-					 GtkTreeIter * artist_iter,
-					 GtkTreeIter * record_iter,
-					 const char * artist, const char * artist_sort_name,
-					 const char * record, const char * record_sort_name,
-					 const char * record_comment);
-int artist_get_iter_for_record(GtkTreeIter * artist_iter, GtkTreeIter * record_iter,
-			       const char * record, const char * record_sort_name,
-			       const char * record_name);
 
 #endif /* _MUSIC_BROWSER_H */

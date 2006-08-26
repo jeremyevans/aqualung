@@ -60,7 +60,7 @@ AQUALUNG_THREAD_DECLARE(cddb_thread_id)
 
 int cddb_thread_state = CDDB_THREAD_FREE;
 
-int cddb_query_aborted = 0;
+volatile int cddb_query_aborted = 0;
 
 GtkTreeIter iter_record;
 

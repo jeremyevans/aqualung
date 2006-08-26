@@ -1990,6 +1990,10 @@ dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data)
 		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(music_tree), event->x, event->y,
 						  &path, &column, NULL, NULL)) {
 			
+			if (!gtk_tree_selection_path_is_selected(music_select, path)) {
+				return FALSE;
+			}
+
 			switch (gtk_tree_path_get_depth(path)) {
 			case 1:
 				store__addlist_defmode(NULL);
@@ -3358,158 +3362,6 @@ remove_item_cb(gpointer data)
 
 
 /************************************/
-
-
-char *
-filter_string(const char * str) {
-
-	int len;
-	char * tmp;
-	int i;
-	int j;
-
-	len = strlen(str);
-
-	if (len == 0) {
-		return NULL;
-	}
-
-	if ((tmp = (char *)malloc((len + 1) * sizeof(char))) == NULL) {
-		fprintf(stderr, "music_browser.c: filter_string(): malloc error\n");
-		return NULL;
-	}
-
-	for (i = 0, j = 0; i < len; i++) {
-		if (str[i] != ' ' &&
-		    str[i] != '.' &&
-		    str[i] != ',' &&
-		    str[i] != '?' &&
-		    str[i] != '!' &&
-		    str[i] != '\'' &&
-		    str[i] != '-' &&
-		    str[i] != '_' &&
-		    str[i] != '(' &&
-		    str[i] != ')' &&
-		    str[i] != '[' &&
-		    str[i] != ']' &&
-		    str[i] != '{' &&
-		    str[i] != '}') {
-			tmp[j++] = str[i];
-		}
-	}
-
-	tmp[j] = '\0';
-
-	return tmp;
-}
-
-int
-collate(const char * str1, const char * str2) {
-
-	char * tmp1 = filter_string(str1);
-	char * tmp2 = filter_string(str2);
-
-	char * key1 = g_utf8_casefold(tmp1, -1);;
-	char * key2 = g_utf8_casefold(tmp2, -1);;
-
-	int i = g_utf8_collate(key1, key2);
-
-	g_free(key1);
-	g_free(key2);
-	free(tmp1);
-	free(tmp2);
-
-	return i;
-}
-
-
-/* return:
-     0: if iter was newly created
-     1: if iter has already existed
-*/
-
-int
-store_get_iter_for_artist_and_record(GtkTreeIter * store_iter,
-				     GtkTreeIter * artist_iter, GtkTreeIter * record_iter,
-				     const char * artist, const char * artist_sort_name,
-				     const char * record, const char * record_sort_name,
-				     const char * record_comment) {
-	int i;
-	int j;
-
-	i = 0;
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
-					     artist_iter, store_iter, i++)) {
-
-		char * artist_name;
-
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), artist_iter,
-				   0, &artist_name, -1);
-
-		if (collate(artist, artist_name)) {
-			continue;
-		}
-
-		j = 0;
-		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
-						     record_iter, artist_iter, j++)) {
-			char * record_name;
-
-			gtk_tree_model_get(GTK_TREE_MODEL(music_store), record_iter,
-					   0, &record_name, -1);
-
-			if (!collate(record, record_name)) {
-				return 1;
-			}
-		}
-
-		/* create record */
-		gtk_tree_store_append(music_store, record_iter, artist_iter);
-		gtk_tree_store_set(music_store, record_iter,
-				   0, record, 1, record_sort_name,
-				   2, "", 3, record_comment, -1);
-
-		return 0;
-	}
-
-	/* create both artist and record */
-	gtk_tree_store_append(music_store, artist_iter, store_iter);
-	gtk_tree_store_set(music_store, artist_iter,
-			   0, artist, 1, artist_sort_name,
-			   2, "", 3, "", -1);
-
-	gtk_tree_store_append(music_store, record_iter, artist_iter);
-	gtk_tree_store_set(music_store, record_iter,
-			   0, record, 1, record_sort_name,
-			   2, "", 3, record_comment, -1);
-	return 0;
-}
-
-int
-artist_get_iter_for_record(GtkTreeIter * artist_iter, GtkTreeIter * record_iter,
-			   const char * record, const char * record_sort_name,
-			   const char * record_comment) {
-	int i = 0;
-
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
-					     record_iter, artist_iter, i++)) {
-		char * record_name;
-
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), record_iter,
-				   0, &record_name, -1);
-
-		if (!collate(record, record_name)) {
-			return 1;
-		}
-	}
-
-	/* create record */
-	gtk_tree_store_append(music_store, record_iter, artist_iter);
-	gtk_tree_store_set(music_store, record_iter,
-			   0, record, 1, record_sort_name,
-			   2, "", 3, record_comment, -1);
-	return 0;
-}
 
 
 void

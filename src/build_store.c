@@ -1825,6 +1825,8 @@ write_data_to_store(gpointer data) {
 		}
 	}
 
+	music_store_mark_changed();
+
 	write_data_locked = 0;
 
 	return FALSE;
@@ -2196,7 +2198,6 @@ build_artist(GtkTreeIter iter) {
 
 	if (build_dialog()) {
 		progress_window();
-		music_store_mark_changed();
 		AQUALUNG_THREAD_CREATE(build_thread_id, NULL, build_artist_thread, NULL)
 	} else {
 		build_thread_state = BUILD_THREAD_FREE;
@@ -2214,7 +2215,6 @@ build_store(GtkTreeIter iter) {
 
 	if (build_dialog()) {
 		progress_window();
-		music_store_mark_changed();
 		AQUALUNG_THREAD_CREATE(build_thread_id, NULL, build_store_thread, NULL)
 	} else {
 		build_thread_state = BUILD_THREAD_FREE;

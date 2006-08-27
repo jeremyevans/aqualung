@@ -72,6 +72,7 @@ int vol_running;
 int vol_cancelled;
 int vol_finished;
 int vol_index;
+int vol_window_visible;
 
 double fraction;
 
@@ -183,11 +184,30 @@ static gboolean
 update_progress(gpointer data) {
 
 	if (vol_window) {
-		char str_progress[10];
+		if (vol_window_visible) {
+			char str_progress[10];
 
-		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), fraction);
-		sprintf(str_progress, "%.1f%%", fraction * 100.0f);
-		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress), str_progress);
+			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), fraction);
+			snprintf(str_progress, 10, "%.0f%%", fraction * 100.0f);
+			gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress), str_progress);
+		} else {
+			char title[MAXLEN];
+
+			snprintf(title, MAXLEN, "%.0f%% - %s", fraction * 100.0f,
+				 _("Calculating volume level"));
+			gtk_window_set_title(GTK_WINDOW(vol_window), title);
+		}
+	}
+
+	return FALSE;
+}
+
+
+gboolean
+vol_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpointer user_data) {
+
+	if ((vol_window_visible = !(event->new_window_state & GDK_WINDOW_STATE_ICONIFIED))) {
+		gtk_window_set_title(GTK_WINDOW(vol_window), _("Calculating volume level"));
 	}
 
 	return FALSE;
@@ -196,7 +216,10 @@ update_progress(gpointer data) {
 void
 volume_window(void) {
 
+	GtkWidget * table;
+	GtkWidget * label;
 	GtkWidget * vbox;
+	GtkWidget * hbox;
 	GtkWidget * hbuttonbox;
 	GtkWidget * hseparator;
 
@@ -206,19 +229,38 @@ volume_window(void) {
         gtk_window_resize(GTK_WINDOW(vol_window), 430, 110);
         g_signal_connect(G_OBJECT(vol_window), "delete_event",
                          G_CALLBACK(vol_window_close), NULL);
+        g_signal_connect(G_OBJECT(vol_window), "window_state_event",
+                         G_CALLBACK(vol_window_state_changed), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(vol_window), 5);
 
         vbox = gtk_vbox_new(FALSE, 0);
         gtk_container_add(GTK_CONTAINER(vol_window), vbox);
 
+	table = gtk_table_new(2, 2, FALSE);
+        gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
+
+        hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(_("File:"));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
+			 GTK_FILL, GTK_FILL, 5, 5);
+
         file_entry = gtk_entry_new();
         gtk_editable_set_editable(GTK_EDITABLE(file_entry), FALSE);
-        gtk_box_pack_start(GTK_BOX(vbox), file_entry, TRUE, TRUE, 3);
+	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, 0, 1,
+			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
+
+        hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(_("Progress:"));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
+			 GTK_FILL, GTK_FILL, 5, 5);
 
 	progress = gtk_progress_bar_new();
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.0f);
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress), "0%");
-        gtk_box_pack_start(GTK_BOX(vbox), progress, TRUE, FALSE, 3);
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress), "0.0%");
+	gtk_table_attach(GTK_TABLE(table), progress, 1, 2, 1, 2,
+			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
 
         hseparator = gtk_hseparator_new ();
         gtk_widget_show (hseparator);
@@ -270,7 +312,7 @@ process_volume_setup(vol_queue_t * q) {
 	vol_n_chunks = fdec_vol->fileinfo.total_samples / vol_chunk_size + 1;
 	vol_chunks_read = 0;
 	
-	snprintf(msg, MAXLEN-1, _("%s"), q->file);
+	strncpy(msg, q->file, MAXLEN-1);
 	g_idle_add(set_filename_text, (gpointer)q->file);
 
 	vol_running = 1;

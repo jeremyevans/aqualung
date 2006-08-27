@@ -2009,12 +2009,6 @@ mark_track(GtkTreeIter * piter) {
 	}
 	g_free(str);
 
-
-	gtk_tree_store_set(play_store, piter, 2, pl_color_active, -1);
-	if (options.show_active_track_name_in_bold) {
-		gtk_tree_store_set(play_store, piter, 7, PANGO_WEIGHT_BOLD, -1);
-	}
-
         n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), piter);
 
         if (n) {
@@ -2033,11 +2027,20 @@ mark_track(GtkTreeIter * piter) {
 			g_free(str);
 		}
 
+		if (j > n) {
+			return;
+		}
+
                 sprintf(counter, _(" (%d/%d)"), j, n);
                 strncat(tmptrackname, counter, MAXLEN-1);
 		gtk_tree_store_set(play_store, piter, 0, tmptrackname, -1);
                 g_free(track_name);
         }
+
+	gtk_tree_store_set(play_store, piter, 2, pl_color_active, -1);
+	if (options.show_active_track_name_in_bold) {
+		gtk_tree_store_set(play_store, piter, 7, PANGO_WEIGHT_BOLD, -1);
+	}
 
 	if (gtk_tree_store_iter_depth(play_store, piter)) { /* track node of album */
 		GtkTreeIter iter_parent;

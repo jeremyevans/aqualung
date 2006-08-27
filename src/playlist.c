@@ -191,7 +191,7 @@ typedef struct _playlist_filemeta {
 } playlist_filemeta;
 
 
-playlist_filemeta * playlist_filemeta_get(char * physical_name, char * alt_name);
+playlist_filemeta * playlist_filemeta_get(char * physical_name, char * alt_name, int composit);
 void playlist_filemeta_free(playlist_filemeta * plfm);
 
 
@@ -962,7 +962,9 @@ plist__reread_file_meta_foreach(GtkTreeIter * iter, void * data) {
 	gchar * fullname;
 	char voladj_str[32];
 	char duration_str[MAXLEN];
+	int composit;
 	playlist_filemeta * plfm = NULL;
+	GtkTreeIter dummy;
 
 
 	gtk_tree_model_get(GTK_TREE_MODEL(play_store), iter,
@@ -970,7 +972,13 @@ plist__reread_file_meta_foreach(GtkTreeIter * iter, void * data) {
 			   1, &fullname,
 			   -1);
 
-	plfm = playlist_filemeta_get(fullname, title);
+	if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store), &dummy, iter)) {
+		composit = 0;
+	} else {
+		composit = 1;
+	}
+
+	plfm = playlist_filemeta_get(fullname, title, composit);
 	if (plfm == NULL) {
 		fprintf(stderr, "plist__reread_file_meta_foreach(): "
 			"playlist_filemeta_get() returned NULL\n");
@@ -1120,7 +1128,7 @@ rem_cb(GtkWidget * widget, GdkEvent * event) {
 /* physical_name should be UTF8 encoded */
 /* if alt_name != NULL, it will be used as title if no meta is found */
 playlist_filemeta *
-playlist_filemeta_get(char * physical_name, char * alt_name) {
+playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 
 	char display_name[MAXLEN];
 	char artist_name[MAXLEN];
@@ -1210,8 +1218,13 @@ playlist_filemeta_get(char * physical_name, char * alt_name) {
 	}
 	
 	if (use_meta && (meta != NULL)) {
-		make_title_string(display_name, options.title_format,
-				  artist_name, record_name, track_name);
+		if (composit) {
+			make_title_string(display_name, options.title_format,
+					  artist_name, record_name, track_name);
+		} else {
+			strncpy(display_name, track_name, MAXLEN-1);
+
+		}
 	} else {
 		if (alt_name != NULL) {
 			strcpy(display_name, alt_name);
@@ -1252,7 +1265,7 @@ add_file_to_playlist(gchar *filename) {
 	GtkTreeIter play_iter;
 	playlist_filemeta * plfm = NULL;
 
-	if ((plfm = playlist_filemeta_get(filename, NULL)) == NULL) {
+	if ((plfm = playlist_filemeta_get(filename, NULL, 1)) == NULL) {
 		return;
 	}
 
@@ -1266,7 +1279,6 @@ add_file_to_playlist(gchar *filename) {
                            5, plfm->duration, 6, duration_str, 7, PANGO_WEIGHT_NORMAL, -1);
 
 	playlist_filemeta_free(plfm);
-
 }
 
 
@@ -1892,11 +1904,19 @@ playlist_perform_drag(GtkTreeModel * model,
 		return;
 	}
 
-	if (sel_depth == pos_depth && (sel_depth == 1 || sel_idx[0] == pos_idx[0])) {
+	if (sel_depth == pos_depth && (sel_depth == 1 /* top */ || sel_idx[0] == pos_idx[0])) {
+
+		GtkTreeIter parent;
+
 		if (cmp == 1) {
 			gtk_tree_store_move_before(play_store, sel_iter, pos_iter);
 		} else {
 			gtk_tree_store_move_after(play_store, sel_iter, pos_iter);
+		}
+
+		if (gtk_tree_model_iter_parent(model, &parent, sel_iter)) {
+			unmark_track(&parent);
+			mark_track(&parent);
 		}
 	} else {
 
@@ -1918,11 +1938,11 @@ playlist_perform_drag(GtkTreeModel * model,
 			return;
 		}
 
-		if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store), &sel_parent, sel_iter)) {
+		if (gtk_tree_model_iter_parent(model, &sel_parent, sel_iter)) {
 			recalc_sel_parent = 1;
 		}
 
-		if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store), &pos_parent, pos_iter)) {
+		if (gtk_tree_model_iter_parent(model, &pos_parent, pos_iter)) {
 			recalc_pos_parent = 1;
 		}
 
@@ -1931,29 +1951,31 @@ playlist_perform_drag(GtkTreeModel * model,
 				   6, &durdisp, 7, &fontw, -1);
 
 		if (cmp == 1) {
-			gtk_tree_store_insert_before(GTK_TREE_STORE(model),
-						     &iter, NULL, pos_iter);
+			gtk_tree_store_insert_before(play_store, &iter, NULL, pos_iter);
 		} else {
-			gtk_tree_store_insert_after(GTK_TREE_STORE(model),
-						    &iter, NULL, pos_iter);
+			gtk_tree_store_insert_after(play_store, &iter, NULL, pos_iter);
 		}
 
-		gtk_tree_store_set(GTK_TREE_STORE(model), &iter, 0, tname, 1, fname, 2, color,
+		gtk_tree_store_set(play_store, &iter, 0, tname, 1, fname, 2, color,
 				   3, voladj, 4, voldisp, 5, duration,
 				   6, durdisp, 7, fontw, -1);
 
-		gtk_tree_store_remove(GTK_TREE_STORE(model), sel_iter);
+		gtk_tree_store_remove(play_store, sel_iter);
 
 		if (recalc_sel_parent) {
 			if (gtk_tree_model_iter_has_child(model, &sel_parent)) {
 				recalc_album_node(&sel_parent);
+				unmark_track(&sel_parent);
+				mark_track(&sel_parent);
 			} else {
-				gtk_tree_store_remove(GTK_TREE_STORE(model), &sel_parent);
+				gtk_tree_store_remove(play_store, &sel_parent);
 			}
 		}
 
 		if (recalc_pos_parent) {
 			recalc_album_node(&pos_parent);
+			unmark_track(&pos_parent);
+			mark_track(&pos_parent);
 		}
 
 		g_free(tname);
@@ -2007,6 +2029,8 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 			if (piter && gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store),
 								&parent, piter)) {
 				recalc_album_node(&parent);
+				unmark_track(&parent);
+				mark_track(&parent);
 			}
 
 			break;
@@ -2885,7 +2909,8 @@ load_m3u(char * filename, int enqueue) {
 
 				
 				plfm = playlist_filemeta_get(path,
-							     have_name ? name : NULL);
+							     have_name ? name : NULL,
+							     1);
 				if (plfm == NULL) {
 					fprintf(stderr, "load_m3u(): playlist_filemeta_get() returned NULL\n");
 					continue;
@@ -3086,7 +3111,8 @@ load_pls(char * filename, int enqueue) {
 			have_file = have_title = 0;
 
 			plfm = playlist_filemeta_get(file,
-						     have_title ? title : NULL);
+						     have_title ? title : NULL,
+						     1);
 			if (plfm == NULL) {
 				fprintf(stderr, "load_pls(): playlist_filemeta_get() returned NULL\n");
 				continue;
@@ -3207,7 +3233,7 @@ add_to_playlist(char * filename, int enqueue) {
 		if (!enqueue)
 			gtk_tree_store_clear(play_store);
 
-		plfm = playlist_filemeta_get(fullname, NULL);
+		plfm = playlist_filemeta_get(fullname, NULL, 1);
 		if (plfm == NULL) {
 			fprintf(stderr, "add_to_playlist(): playlist_filemeta_get() returned NULL\n");
 			return;

@@ -30,6 +30,12 @@
 #include <limits.h>
 #include <string.h>
 
+#ifdef _WIN32
+#include <glib.h>
+#else
+#include <pthread.h>
+#endif /* _WIN32 */
+
 #include "dec_mpeg.h"
 
 
@@ -39,7 +45,7 @@ extern size_t sample_size;
 #ifdef HAVE_MPEG
 
 /* Uncomment this to get debug printouts */
-//#define MPEG_DEBUG
+/* #define MPEG_DEBUG */
 
 #define BYTES2INT(b1,b2,b3,b4) (((long)(b1 & 0xFF) << (3*8)) | \
                                 ((long)(b2 & 0xFF) << (2*8)) | \
@@ -59,6 +65,7 @@ extern size_t sample_size;
 #define COPYRIGHT_MASK (1L << 3)
 #define ORIGINAL_MASK (1L << 2)
 #define EMPHASIS_MASK 3L
+
 
 /* MPEG Version table, sorted by version index */
 static const signed char version_table[4] = {
@@ -170,11 +177,12 @@ mp3headerinfo(mp3info_t *info, unsigned long header) {
 	info->emphasis = header & EMPHASIS_MASK;
 
 #ifdef MPEG_DEBUG	
-	printf( "Header: %08x, Ver %d, lay %d, bitr %d, freq %ld, "
+/*	printf( "Header: %08x, Ver %d, lay %d, bitr %d, freq %ld, "
 		"chmode %d, mode_ext %d, emph %d, bytes: %d time: %d/%d\n",
 		header, info->version, info->layer+1, info->bitrate,
 		info->frequency, info->channel_mode, info->mode_extension,
 		info->emphasis, info->frame_size, info->ft_num, info->ft_den);
+*/
 #endif /* MPEG_DEBUG */
 	return 1;
 }
@@ -487,6 +495,98 @@ last_two_frames(mpeg_pdata_t * pd) {
 
 	free(buffer);
 	return;
+}
+
+
+void *
+build_seek_table_thread(void * args) {
+
+	mpeg_pdata_t * pd = (mpeg_pdata_t *) args;
+	int cnt = 0;
+	int table_index = 0;
+	long long sample_offset = 0;
+	char * bytes = (char *)pd->fdm;
+	long i;
+	int div;
+
+
+	pd->builder_thread_running = 1;
+
+	if (pd->mp3info.is_vbr) {
+		div = pd->mp3info.frame_count / 100;
+	} else {
+		unsigned long frame_count = pd->filesize / pd->mp3info.frame_size;
+		div = frame_count / 100;
+	}
+
+#ifdef MPEG_DEBUG
+	printf("building seek table, div = %d\n", div);
+#endif /* MPEG_DEBUG */
+
+	for (i = 0; i < pd->filesize-4;) {
+		long header = BYTES2INT(bytes[i], bytes[i+1], bytes[i+2], bytes[i+3]);
+		mp3info_t mp3info;
+		
+		if (is_mp3frameheader(header)) {
+			mp3headerinfo(&mp3info, header);
+			if ((mp3info.layer == pd->mp3info.layer) &&
+			    (mp3info.version == pd->mp3info.version) &&
+			    (mp3info.frequency == pd->mp3info.frequency)) {
+
+				if (table_index > 99)
+					break;
+
+				if (cnt % div == 0) {
+#ifdef MPEG_DEBUG
+					printf("idx %2d | offset %8ld | sample %9lld\n",
+					       table_index, i, sample_offset);
+#endif /* MPEG_DEBUG */
+					pd->seek_table[table_index].frame = cnt;
+					pd->seek_table[table_index].sample = sample_offset;
+					pd->seek_table[table_index].offset = i;
+					++table_index;
+				}
+
+				sample_offset += mp3info.frame_samples;
+				i += mp3info.frame_size;
+				++cnt;
+			} else {
+#ifdef MPEG_DEBUG
+				printf("bogus header\n");
+#endif /* MPEG_DEBUG */
+				++i;
+			}
+		} else {
+			++i;
+		}
+
+		if (!pd->builder_thread_running) {
+			/* we were cancelled by the file decoder main thread */
+#ifdef MPEG_DEBUG
+			printf("seek table builder thread cancelled, exiting.\n");
+#endif /* MPEG_DEBUG */
+			return NULL;
+		}
+	}
+#ifdef MPEG_DEBUG
+	printf("seek table builder thread finished, cnt = %d\n", cnt);
+#endif /* MPEG_DEBUG */
+	pd->builder_thread_running = 0;
+	return NULL;
+}
+
+
+void
+build_seek_table(mpeg_pdata_t * pd) {
+
+	int i;
+
+	/* data init (so when seeking we know if an entry is not yet filled in) */
+	for (i = 0; i < 100; i++) {
+		pd->seek_table[i].frame = -1;
+	}
+	pd->builder_thread_running = 0;
+	AQUALUNG_THREAD_CREATE(pd->seek_builder_id, NULL, build_seek_table_thread, pd)
 }
 
 
@@ -828,6 +928,7 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	pd->error = 0;
 	pd->is_eos = 0;
 	pd->frame_counter = 0;
+	pd->seek_table_built = 0;
 	pd->rb = rb_create(pd->channels * sample_size * RB_MAD_SIZE);
 	fdec->channels = pd->channels;
 	fdec->SR = pd->SR;
@@ -850,7 +951,7 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 		mad_stream_finish(&(pd->mpeg_stream));
 		return DECODER_OPEN_FERROR;
 	}
-	
+
 	return DECODER_OPEN_SUCCESS;
 }
 
@@ -859,6 +960,15 @@ void
 mpeg_decoder_close(decoder_t * dec) {
 
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
+
+	/* take care of seek table builder thread, if there is any */
+	if (pd->builder_thread_running) {
+		pd->builder_thread_running = 0;
+		AQUALUNG_THREAD_JOIN(pd->seek_builder_id)
+#ifdef MPEG_DEBUG
+		printf("joined seek table builder thread\n");
+#endif /* MPEG_DEBUG */
+	}
 
 	mad_synth_finish(&(pd->mpeg_synth));
 	mad_frame_finish(&(pd->mpeg_frame));
@@ -878,6 +988,13 @@ mpeg_decoder_read(decoder_t * dec, float * dest, int num) {
 	unsigned int numread = 0;
 	unsigned int n_avail = 0;
 
+	if (!pd->seek_table_built) {
+		/* read mmap'ed file and build seek table in background thread.
+		   we do this upon the first read, so it doesn't start when we open
+		   a mass of files, but don't read any audio (metadata retrieval, etc) */
+		build_seek_table(pd);	
+		pd->seek_table_built = 1;
+	}
 
 	while ((rb_read_space(pd->rb) < num * pd->channels *
 		sample_size) && (!pd->is_eos)) {
@@ -902,23 +1019,73 @@ mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
+	char * bytes = (char *)pd->fdm;
+	long header;
+	mp3info_t mp3info;
 	char flush_dest;
+	int i;
+	unsigned long offset;
+	unsigned long long sample;
 
 	if (seek_to_pos < pd->mp3info.frame_samples) {
 		pd->frame_counter = 0;
+		pd->mpeg_stream.next_frame = pd->mpeg_stream.buffer;
+		fdec->samples_left = fdec->fileinfo.total_samples;
+		goto flush_decoder_rb;
 	}
 
-	pd->mpeg_stream.next_frame = pd->mpeg_stream.buffer;
-	mad_stream_sync(&(pd->mpeg_stream));
-	mad_stream_skip(&(pd->mpeg_stream), pd->filesize *
-			(double)seek_to_pos / pd->total_samples_est);
-	mad_stream_sync(&(pd->mpeg_stream));
+	/* search for closest preceding entry in seek table */
+	for (i = 0; i < 99; i++) {
+		if (pd->seek_table[i].frame == -1) {
+			/* uninitialized seek table (to the desired position, at least)
+			   so we fall back on conventional bitstream seeking */
+#ifdef MPEG_DEBUG
+			printf("seek table not yet ready, seeking bitstream.\n");
+#endif /* MPEG_DEBUG */
+			pd->mpeg_stream.next_frame = pd->mpeg_stream.buffer;
+			mad_stream_sync(&(pd->mpeg_stream));
+			mad_stream_skip(&(pd->mpeg_stream), pd->filesize *
+					(double)seek_to_pos / pd->total_samples_est);
+			mad_stream_sync(&(pd->mpeg_stream));
+			
+			pd->is_eos = decode_mpeg(dec);
+			/* report the real position of the decoder */
+			fdec->samples_left = fdec->fileinfo.total_samples -
+				(pd->mpeg_stream.next_frame - pd->mpeg_stream.buffer)
+				/ pd->bitrate * 8 * pd->SR;
 
-	pd->is_eos = decode_mpeg(dec);
-	/* report the real position of the decoder */
-	fdec->samples_left = fdec->fileinfo.total_samples -
-		(pd->mpeg_stream.next_frame - pd->mpeg_stream.buffer)
-		/ pd->bitrate * 8 * pd->SR;
+			goto flush_decoder_rb;
+		}
+
+		if (pd->seek_table[i+1].sample > seek_to_pos)
+			break;
+	}
+
+	offset = pd->seek_table[i].offset;
+	sample = pd->seek_table[i].sample;
+
+	do {
+		header = BYTES2INT(bytes[offset], bytes[offset+1], bytes[offset+2], bytes[offset+3]);
+		if (is_mp3frameheader(header)) {
+			mp3headerinfo(&mp3info, header);
+			if ((mp3info.layer == pd->mp3info.layer) &&
+			    (mp3info.version == pd->mp3info.version) &&
+			    (mp3info.frequency == pd->mp3info.frequency)) {
+				
+				sample += mp3info.frame_samples;
+				offset += mp3info.frame_size;
+			} else {
+				++offset;
+			}
+		} else {
+			++offset;
+		}
+	} while (sample + mp3info.frame_samples < seek_to_pos);
+
+	pd->mpeg_stream.next_frame = pd->mpeg_stream.buffer + offset;
+	fdec->samples_left = fdec->fileinfo.total_samples - sample;
+
+ flush_decoder_rb:
 	/* empty mpeg decoder ringbuffer */
 	while (rb_read_space(pd->rb))
 		rb_read(pd->rb, &flush_dest, sizeof(char));

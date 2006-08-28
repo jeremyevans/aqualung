@@ -101,8 +101,6 @@ extern AQUALUNG_COND_DECLARE(disk_thread_wake)
 extern rb_t * rb_gui2disk;
 extern rb_t * rb_disk2gui;
 
-//extern volatile int output_thread_lock;
-
 #ifdef HAVE_JACK
 extern jack_client_t * jack_client;
 extern char * client_name;
@@ -147,9 +145,9 @@ int src_type = 0;
 int src_type_parsed = 0;
 #endif /* HAVE_SRC */
 
-int immediate_start = 0; /* this flag set to 1 in core.c if --play
-			  * for current instance is specified.
-			  */
+/* this flag set to 1 in core.c if --play
+   for current instance is specified. */
+int immediate_start = 0; 
 
 int search_pl_flags = 0;
 int search_ms_flags = 120; /* check search flags in search.c for initial value :) */
@@ -261,6 +259,9 @@ gint timeout_callback(gpointer data);
 
 /* whether we are refreshing the scale on STATUS commands recv'd from disk thread */
 int refresh_scale = 1;
+/* suppress scale refreshing after seeking (discard this much STATUS packets).
+   Prevents position slider to momentarily jump back to original position. */
+int refresh_scale_suppress = 0;
 
 /* whether we allow seeks (depending on if we are at the end of the track) */
 int allow_seeks = 1;
@@ -1545,6 +1546,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			rb_write(rb_gui2disk, &send_cmd, 1);
 			rb_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
 			try_waking_disk_thread();
+			refresh_scale_suppress = 2;
 		}
 		
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)))
@@ -1650,6 +1652,7 @@ main_window_key_released(GtkWidget * widget, GdkEventKey * event) {
                         rb_write(rb_gui2disk, &send_cmd, 1);
                         rb_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
 			try_waking_disk_thread();
+			refresh_scale_suppress = 2;
                 }
                 break;
 	}
@@ -1814,6 +1817,7 @@ scale_button_release_event(GtkWidget * widget, GdkEventButton * event) {
 			rb_write(rb_gui2disk, &send_cmd, 1);
 			rb_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
 			try_waking_disk_thread();
+			refresh_scale_suppress = 2;
 		}
 	}
 
@@ -3979,7 +3983,6 @@ timeout_callback(gpointer data) {
 	cue_t cue;
 	static double left_gain_shadow;
 	static double right_gain_shadow;
-	//static int update_pending = 0;
 	char rcmd;
 	static char cmdbuf[MAXLEN];
 	int rcv_count;
@@ -4061,9 +4064,13 @@ timeout_callback(gpointer data) {
 
 			fresh_new_file_prev = fresh_new_file;
 
-			if (refresh_scale && GTK_IS_ADJUSTMENT(adj_pos)) {
+			if (refresh_scale && !refresh_scale_suppress && GTK_IS_ADJUSTMENT(adj_pos)) {
 				gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos),
 							 100.0f * (double)(pos) / total_samples);
+			}
+
+			if (refresh_scale_suppress > 0) {
+				--refresh_scale_suppress;
 			}
 			break;
 
@@ -4073,7 +4080,7 @@ timeout_callback(gpointer data) {
 		}
 	}
         /* update volume & balance if necessary */
-	if ((vol != vol_prev) || (bal != bal_prev) /*|| (update_pending)*/) {
+	if ((vol != vol_prev) || (bal != bal_prev)) {
 		vol_prev = vol;
 		vol_lin = (vol < -40.5f) ? 0 : db2lin(vol);
 		bal_prev = bal;
@@ -4084,14 +4091,8 @@ timeout_callback(gpointer data) {
 			left_gain_shadow = vol_lin;
 			right_gain_shadow = vol_lin * db2lin(0.4f * bal);
 		}
-		/*		if (!output_thread_lock) {*/
 			left_gain = left_gain_shadow;
 			right_gain = right_gain_shadow;
-			/*
-			update_pending = 0;
-		} else {
-			update_pending = 1;
-			}*/
 	}
 
 	/* receive and execute remote commands, if any */

@@ -29,6 +29,7 @@
 #endif /* HAVE_MPEG */
 
 
+#include "../common.h"
 #include "file_decoder.h"
 
 
@@ -84,6 +85,12 @@ unsigned long find_next_frame(int fd, long *offset, long max_offset,
                               unsigned long last_header);
 int get_mp3file_info(int fd, mp3info_t *info);
 
+typedef struct {
+	unsigned int frame; /* number of mpeg frame */
+	unsigned long long sample; /* number of audio samples since beginning of file */
+	unsigned long offset; /* byte offset from beginning of file */
+} mpeg_seek_table_t;
+
 typedef struct _mpeg_pdata_t {
         struct mad_decoder mpeg_decoder;
         rb_t * rb;
@@ -96,12 +103,16 @@ typedef struct _mpeg_pdata_t {
         struct stat mpeg_stat;
         long long int filesize;
 	long skip_bytes;
-	long delay_frames;
+       	long delay_frames;
         int fd;
         void * fdm;
         unsigned long total_samples_est;
         int mpeg_subformat; /* used as v_minor */
 	mp3info_t mp3info;
+	int seek_table_built;
+	AQUALUNG_THREAD_DECLARE(seek_builder_id)
+        int builder_thread_running;
+	mpeg_seek_table_t seek_table[100];
 	unsigned long frame_counter;
 	unsigned long last_frames[10]; /* [0] is the last frame offset, [1] the last-but-one, etc. */
         struct mad_stream mpeg_stream;

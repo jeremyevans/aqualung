@@ -100,6 +100,9 @@ GtkWidget * gen_entry_incl;
 
 GtkWidget * gen_check_cap;
 GtkWidget * gen_combo_cap;
+GtkWidget * gen_check_cap_pre;
+GtkWidget * gen_entry_cap_pre;
+GtkWidget * gen_check_cap_low;
 
 GtkWidget * meta_check_enable;
 GtkWidget * meta_check_wspace;
@@ -125,6 +128,10 @@ GtkWidget * fs_entry_regexp1;
 GtkWidget * fs_entry_regexp2;
 GtkWidget * fs_label_regexp;
 GtkWidget * fs_label_repl;
+GtkWidget * fs_label_input;
+GtkWidget * fs_entry_input;
+GtkWidget * fs_button_test;
+GtkWidget * fs_entry_output;
 GtkWidget * fs_label_error;
 
 int artist_sort_by = ARTIST_SORT_NAME_LOW;
@@ -134,13 +141,16 @@ int add_year_to_comment = 0;
 
 int pri_meta_first = 1;
 
-int excl_enabled = 0;
-char excl_pattern[MAXLEN];
+int excl_enabled = 1;
+char ** excl_patternv = NULL;
 int incl_enabled = 0;
-char incl_pattern[MAXLEN];
+char ** incl_patternv = NULL;
 
 int cap_enabled = 0;
+int cap_pre_enabled = 1;
+int cap_low_enabled = 0;
 int cap_mode = CAP_ALL_WORDS;
+char ** cap_pre_stringv = NULL;
 
 int rm_spaces_enabled = 1;
 
@@ -167,6 +177,9 @@ char fs_replacement[MAXLEN];
 regex_t fs_compiled;
 
 char root[MAXLEN];
+
+
+void transform_filename(char * dest, char * src);
 
 
 map_t *
@@ -439,12 +452,7 @@ fs_radio_preset_toggled(GtkWidget * widget, gpointer * data) {
 	gtk_widget_set_sensitive(fs_entry_regexp2, !state);
 	gtk_widget_set_sensitive(fs_label_regexp, !state);
 	gtk_widget_set_sensitive(fs_label_repl, !state);
-
-	if (state) {
-		gtk_widget_hide(fs_label_error);
-	} else {
-		gtk_widget_show(fs_label_error);
-	}
+	gtk_widget_set_sensitive(fs_label_error, !state);
 }
 
 
@@ -465,10 +473,26 @@ gen_check_incl_toggled(GtkWidget * widget, gpointer * data) {
 
 
 void
+gen_check_cap_pre_toggled(GtkWidget * widget, gpointer * data) {
+
+	gboolean state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_cap_pre));
+	gtk_widget_set_sensitive(gen_entry_cap_pre, state);
+}
+
+
+void
 gen_check_cap_toggled(GtkWidget * widget, gpointer * data) {
 
 	gboolean state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_cap));
 	gtk_widget_set_sensitive(gen_combo_cap, state);
+	gtk_widget_set_sensitive(gen_check_cap_pre, state);
+	gtk_widget_set_sensitive(gen_check_cap_low, state);
+
+	if (state == FALSE) {
+		gtk_widget_set_sensitive(gen_entry_cap_pre, FALSE);
+	} else {
+		gen_check_cap_pre_toggled(NULL, NULL);
+	}
 }
 
 
@@ -527,6 +551,60 @@ browse_button_clicked(GtkWidget * widget, gpointer * data) {
 
 
 int
+test_button_clicked(GtkWidget * widget, gpointer * data) {
+
+	char * input = (char *)gtk_entry_get_text(GTK_ENTRY(data));
+	char output[MAXLEN];
+	int err;
+
+	fs_preset = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fs_radio_preset));
+	fs_rm_number = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fs_check_rm_number));
+	fs_rm_ext = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fs_check_rm_ext));
+	fs_underscore = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fs_check_underscore));
+
+	strncpy(fs_regexp, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp1)), MAXLEN-1);
+	strncpy(fs_replacement, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp2)), MAXLEN-1);
+
+	gtk_widget_hide(fs_label_error);
+	gtk_entry_set_text(GTK_ENTRY(fs_entry_output), "");
+
+	if (!fs_preset) {
+		if ((err = regcomp(&fs_compiled, fs_regexp, REG_EXTENDED))) {
+
+			char msg[MAXLEN];
+			char * utf8;
+
+			regerror(err, &fs_compiled, msg, MAXLEN);
+			utf8 = g_locale_to_utf8(msg, -1, NULL, NULL, NULL);
+			gtk_label_set_text(GTK_LABEL(fs_label_error), utf8);
+			gtk_widget_show(fs_label_error);
+			g_free(utf8);
+
+			regfree(&fs_compiled);
+			return 0;
+		}
+
+		if (!regexec(&fs_compiled, "", 0, NULL, 0)) {
+			gtk_label_set_text(GTK_LABEL(fs_label_error),
+					   _("Regexp matches empty string"));
+			gtk_widget_show(fs_label_error);
+			regfree(&fs_compiled);
+			return 0;
+		}
+	}
+
+	transform_filename(output, input);
+
+	if (fs_preset) {
+		regfree(&fs_compiled);
+	}
+
+	gtk_entry_set_text(GTK_ENTRY(fs_entry_output), output);
+
+	return 0;
+}
+
+int
 build_dialog(void) {
 
 	GtkWidget * dialog;
@@ -555,7 +633,7 @@ build_dialog(void) {
 	GtkWidget * gen_incl_frame_hbox;
 
 	GtkWidget * gen_cap_frame;
-	GtkWidget * gen_cap_frame_hbox;
+	GtkWidget * gen_cap_frame_vbox;
 
 	GtkWidget * gen_check_rm_spaces;
 
@@ -567,6 +645,11 @@ build_dialog(void) {
 	GtkWidget * meta_frame_vbox;
 
 	GtkWidget * fs_vbox;
+	GtkWidget * fs_frame_preset;
+	GtkWidget * fs_frame_preset_vbox;
+	GtkWidget * fs_frame_regexp;
+	GtkWidget * fs_frame_regexp_vbox;
+	GtkWidget * fs_frame_sandbox;
 
 #ifdef HAVE_CDDB
 	GtkWidget * gen_pri_frame;
@@ -577,7 +660,7 @@ build_dialog(void) {
 	GtkWidget * cddb_frame_vbox;
 #endif /* HAVE_CDDB */
 
-	GdkColor red = { 0, 50000, 0, 0 };
+	GdkColor red = { 0, 30000, 0, 0 };
 
 	char * title = NULL;
         int ret;
@@ -596,6 +679,7 @@ build_dialog(void) {
 					     NULL);
 
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+        gtk_window_set_default_size(GTK_WINDOW(dialog), 400, -1);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
 
 	notebook = gtk_notebook_new();
@@ -641,8 +725,8 @@ build_dialog(void) {
 	gen_pri_combo = gtk_combo_box_new_text();
         gtk_box_pack_start(GTK_BOX(gen_pri_vbox), gen_pri_combo, FALSE, FALSE, 0);
 
-	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_pri_combo), _("Metadata first, then CDDB"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_pri_combo), _("CDDB first, then metadata"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_pri_combo), _("Metadata, CDDB, Filesystem"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_pri_combo), _("CDDB, Metadata, Filesystem"));
 
 	if (pri_meta_first) {
 		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_pri_combo), 0);
@@ -734,7 +818,7 @@ build_dialog(void) {
 
         gen_entry_excl = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(gen_entry_excl), MAXLEN-1);
-	gtk_entry_set_text(GTK_ENTRY(gen_entry_excl), "*(*.jpg|*.png|*.gif)");
+	gtk_entry_set_text(GTK_ENTRY(gen_entry_excl), "*.jpg,*.png,*.gif");
         gtk_box_pack_end(GTK_BOX(gen_excl_frame_hbox), gen_entry_excl, TRUE, TRUE, 0);
 
 	if (excl_enabled) {
@@ -768,24 +852,49 @@ build_dialog(void) {
 	}
 
 
-	gen_cap_frame = gtk_frame_new(_("Capitalize"));
+	gen_cap_frame = gtk_frame_new(_("Capitalization"));
         gtk_box_pack_start(GTK_BOX(gen_vbox), gen_cap_frame, FALSE, FALSE, 5);
-        gen_cap_frame_hbox = gtk_hbox_new(FALSE, 0);
-        gtk_container_set_border_width(GTK_CONTAINER(gen_cap_frame_hbox), 5);
-	gtk_container_add(GTK_CONTAINER(gen_cap_frame), gen_cap_frame_hbox);
 
-	gen_check_cap = gtk_check_button_new();
+        gen_cap_frame_vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(gen_cap_frame_vbox), 5);
+	gtk_container_add(GTK_CONTAINER(gen_cap_frame), gen_cap_frame_vbox);
+
+	table = gtk_table_new(2, 2, FALSE);
+        gtk_box_pack_start(GTK_BOX(gen_cap_frame_vbox), table, FALSE, FALSE, 0);
+
+	gen_check_cap = gtk_check_button_new_with_label(_("Capitalize: "));
 	gtk_widget_set_name(gen_check_cap, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(gen_cap_frame_hbox), gen_check_cap, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), gen_check_cap, 0, 1, 0, 1,
+			 GTK_FILL, GTK_FILL, 0, 0);
 
 	g_signal_connect(G_OBJECT(gen_check_cap), "toggled",
 			 G_CALLBACK(gen_check_cap_toggled), NULL);
 
 	gen_combo_cap = gtk_combo_box_new_text();
-        gtk_box_pack_start(GTK_BOX(gen_cap_frame_hbox), gen_combo_cap, TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), gen_combo_cap, 1, 2, 0, 1,
+			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 0);
 
 	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_combo_cap), _("All words"));
 	gtk_combo_box_append_text(GTK_COMBO_BOX(gen_combo_cap), _("First word only"));
+
+	gen_check_cap_pre = gtk_check_button_new_with_label(_("Force case: "));
+	gtk_widget_set_name(gen_check_cap_pre, "check_on_notebook");
+	gtk_table_attach(GTK_TABLE(table), gen_check_cap_pre, 0, 1, 1, 2,
+			 GTK_FILL, GTK_FILL, 0, 5);
+
+	g_signal_connect(G_OBJECT(gen_check_cap_pre), "toggled",
+			 G_CALLBACK(gen_check_cap_pre_toggled), NULL);
+
+        gen_entry_cap_pre = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(gen_entry_cap_pre), MAXLEN-1);
+	gtk_entry_set_text(GTK_ENTRY(gen_entry_cap_pre), "CD,a),b),c),d),I,II,III,IV,V,VI,VII,VIII,IX,X");
+	gtk_table_attach(GTK_TABLE(table), gen_entry_cap_pre, 1, 2, 1, 2,
+			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
+
+	gen_check_cap_low = gtk_check_button_new_with_label(_("Force other letters to lowercase"));
+	gtk_widget_set_name(gen_check_cap_low, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(gen_cap_frame_vbox), gen_check_cap_low, TRUE, TRUE, 0);
+
 
 	switch (cap_mode) {
 	case CAP_ALL_WORDS:
@@ -796,10 +905,23 @@ build_dialog(void) {
 		break;
 	}
 
+	if (cap_pre_enabled) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_check_cap_pre), TRUE);
+	} else {
+		gtk_widget_set_sensitive(gen_combo_cap, FALSE);
+	}
+
+	if (cap_low_enabled) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_check_cap_low), TRUE);
+	}
+
 	if (cap_enabled) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_check_cap), TRUE);
 	} else {
 		gtk_widget_set_sensitive(gen_combo_cap, FALSE);
+		gtk_widget_set_sensitive(gen_check_cap_pre, FALSE);
+		gtk_widget_set_sensitive(gen_entry_cap_pre, FALSE);
+		gtk_widget_set_sensitive(gen_check_cap_low, FALSE);
 	}
 
 
@@ -898,15 +1020,6 @@ build_dialog(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_title), TRUE);
 	}
 
-	meta_check_rva =
-		gtk_check_button_new_with_label(_("Replaygain tag as manual RVA"));
-	gtk_widget_set_name(meta_check_rva, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(meta_frame_vbox), meta_check_rva, FALSE, FALSE, 0);
-
-	if (meta_rva) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_rva), TRUE);
-	}
-
 	meta_check_comment =
 		gtk_check_button_new_with_label(_("Comment"));
 	gtk_widget_set_name(meta_check_comment, "check_on_notebook");
@@ -914,6 +1027,15 @@ build_dialog(void) {
 
 	if (meta_comment) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_comment), TRUE);
+	}
+
+	meta_check_rva =
+		gtk_check_button_new_with_label(_("Replaygain tag as manual RVA"));
+	gtk_widget_set_name(meta_check_rva, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(meta_frame_vbox), meta_check_rva, FALSE, FALSE, 0);
+
+	if (meta_rva) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(meta_check_rva), TRUE);
 	}
 
 	if (!meta_enable) {
@@ -948,7 +1070,7 @@ build_dialog(void) {
 
 
 	cddb_frame = gtk_frame_new(_("Import"));
-        gtk_box_pack_start(GTK_BOX(cddb_vbox), cddb_frame, FALSE, FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(cddb_vbox), cddb_frame, FALSE, FALSE, 0);
 
         cddb_frame_vbox = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(cddb_frame_vbox), 5);
@@ -998,9 +1120,15 @@ build_dialog(void) {
 	label = gtk_label_new(_("Filesystem"));
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), fs_vbox, label);
 
+	fs_frame_preset = gtk_frame_new(NULL);
+        gtk_box_pack_start(GTK_BOX(fs_vbox), fs_frame_preset, FALSE, FALSE, 5);
+        fs_frame_preset_vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(fs_frame_preset_vbox), 5);
+	gtk_container_add(GTK_CONTAINER(fs_frame_preset), fs_frame_preset_vbox);
+
 	fs_radio_preset = gtk_radio_button_new_with_label(NULL, _("Predefined transformations"));
 	gtk_widget_set_name(fs_radio_preset, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(fs_vbox), fs_radio_preset, FALSE, FALSE, 5);
+        gtk_frame_set_label_widget(GTK_FRAME(fs_frame_preset), fs_radio_preset);
 
 	if (fs_preset) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fs_radio_preset), TRUE);
@@ -1012,7 +1140,7 @@ build_dialog(void) {
 	fs_check_rm_number =
 		gtk_check_button_new_with_label(_("Remove leading number"));
 	gtk_widget_set_name(fs_check_rm_number, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(fs_vbox), fs_check_rm_number, FALSE, FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(fs_frame_preset_vbox), fs_check_rm_number, FALSE, FALSE, 0);
 
 	if (fs_rm_number) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fs_check_rm_number), TRUE);
@@ -1021,7 +1149,7 @@ build_dialog(void) {
 	fs_check_rm_ext =
 		gtk_check_button_new_with_label(_("Remove file extension"));
 	gtk_widget_set_name(fs_check_rm_ext, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(fs_vbox), fs_check_rm_ext, FALSE, FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(fs_frame_preset_vbox), fs_check_rm_ext, FALSE, FALSE, 0);
 
 	if (fs_rm_ext) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fs_check_rm_ext), TRUE);
@@ -1030,22 +1158,30 @@ build_dialog(void) {
 	fs_check_underscore =
 		gtk_check_button_new_with_label(_("Convert underscore to space"));
 	gtk_widget_set_name(fs_check_underscore, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(fs_vbox), fs_check_underscore, FALSE, FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(fs_frame_preset_vbox), fs_check_underscore, FALSE, FALSE, 0);
 
 	if (fs_underscore) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fs_check_underscore), TRUE);
 	}
 
+
+	fs_frame_regexp = gtk_frame_new(NULL);
+        gtk_box_pack_start(GTK_BOX(fs_vbox), fs_frame_regexp, FALSE, FALSE, 5);
+        fs_frame_regexp_vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(fs_frame_regexp_vbox), 5);
+	gtk_container_add(GTK_CONTAINER(fs_frame_regexp), fs_frame_regexp_vbox);
+
 	fs_radio_regexp = gtk_radio_button_new_with_label_from_widget(
 			      GTK_RADIO_BUTTON(fs_radio_preset), _("Regular expression"));
 	gtk_widget_set_name(fs_radio_regexp, "check_on_notebook");
-        gtk_box_pack_start(GTK_BOX(fs_vbox), fs_radio_regexp, FALSE, FALSE, 5);
+	gtk_frame_set_label_widget(GTK_FRAME(fs_frame_regexp), fs_radio_regexp);
 
 
 	table = gtk_table_new(2, 2, FALSE);
+        gtk_box_pack_start(GTK_BOX(fs_frame_regexp_vbox), table, FALSE, FALSE, 5);
 
         hbox = gtk_hbox_new(FALSE, 0);
-	fs_label_regexp = gtk_label_new(_("regexp:"));
+	fs_label_regexp = gtk_label_new(_("Regexp:"));
 	gtk_widget_set_sensitive(fs_label_regexp, FALSE);
         gtk_box_pack_start(GTK_BOX(hbox), fs_label_regexp, FALSE, FALSE, 5);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
@@ -1057,7 +1193,7 @@ build_dialog(void) {
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
         hbox = gtk_hbox_new(FALSE, 0);
-	fs_label_repl = gtk_label_new(_("replacement:"));
+	fs_label_repl = gtk_label_new(_("Replace:"));
 	gtk_widget_set_sensitive(fs_label_repl, FALSE);
         gtk_box_pack_start(GTK_BOX(hbox), fs_label_repl, FALSE, FALSE, 5);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
@@ -1068,18 +1204,46 @@ build_dialog(void) {
 	gtk_table_attach(GTK_TABLE(table), fs_entry_regexp2, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
-        gtk_box_pack_start(GTK_BOX(fs_vbox), table, FALSE, FALSE, 5);
-
         hbox = gtk_hbox_new(FALSE, 0);
 	fs_label_error = gtk_label_new("");
 	gtk_widget_modify_fg(fs_label_error, GTK_STATE_NORMAL, &red);
         gtk_box_pack_start(GTK_BOX(hbox), fs_label_error, FALSE, FALSE, 5);
-        gtk_box_pack_start(GTK_BOX(fs_vbox), hbox, FALSE, FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(fs_frame_regexp_vbox), hbox, FALSE, FALSE, 0);
+
+
+	fs_frame_sandbox = gtk_frame_new(_("Sandbox"));
+        gtk_box_pack_start(GTK_BOX(fs_vbox), fs_frame_sandbox, FALSE, FALSE, 5);
+
+	table = gtk_table_new(2, 2, FALSE);
+        gtk_container_set_border_width(GTK_CONTAINER(table), 5);
+	gtk_container_add(GTK_CONTAINER(fs_frame_sandbox), table);
+
+        hbox = gtk_hbox_new(FALSE, 0);
+	fs_label_input = gtk_label_new(_("Filename:"));
+        gtk_box_pack_start(GTK_BOX(hbox), fs_label_input, FALSE, FALSE, 5);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
+			 GTK_FILL, GTK_FILL, 0, 5);
+
+	fs_entry_input = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), fs_entry_input, 1, 2, 0, 1,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+
+	fs_button_test = gtk_button_new_with_label(_("Test"));
+	gtk_table_attach(GTK_TABLE(table), fs_button_test, 0, 1, 1, 2,
+			 GTK_FILL, GTK_FILL, 0, 5);
+        g_signal_connect(G_OBJECT(fs_button_test), "clicked", G_CALLBACK(test_button_clicked),
+			 (gpointer *)fs_entry_input);
+
+	fs_entry_output = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), fs_entry_output, 1, 2, 1, 2,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
 
 	/* run dialog */
 
 	gtk_widget_show_all(dialog);
+	gtk_widget_hide(fs_label_error);
+	gtk_widget_grab_focus(root_entry);
 
  display:
 
@@ -1088,8 +1252,6 @@ build_dialog(void) {
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		char * proot = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(root_entry)), -1, NULL, NULL, NULL);
-
-		gtk_label_set_text(GTK_LABEL(fs_label_error), "");
 
 		if (proot[0] == '~') {
 			snprintf(root, MAXLEN-1, "%s%s", options.home, proot + 1);
@@ -1100,6 +1262,7 @@ build_dialog(void) {
 		}
 
 		g_free(proot);
+
 
 		switch (gtk_combo_box_get_active(GTK_COMBO_BOX(gen_artist_combo))) {
 		case 0:
@@ -1138,13 +1301,15 @@ build_dialog(void) {
 		excl_enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_excl));
 
 		if (excl_enabled) {
-			strncpy(excl_pattern, gtk_entry_get_text(GTK_ENTRY(gen_entry_excl)), MAXLEN-1);
+			excl_patternv =
+			    g_strsplit(gtk_entry_get_text(GTK_ENTRY(gen_entry_excl)), ",", 0);
 		}
 
 		incl_enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_incl));
 
 		if (incl_enabled) {
-			strncpy(incl_pattern, gtk_entry_get_text(GTK_ENTRY(gen_entry_incl)), MAXLEN-1);
+			incl_patternv =
+			    g_strsplit(gtk_entry_get_text(GTK_ENTRY(gen_entry_incl)), ",", 0);
 		}
 
 		cap_enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_cap));
@@ -1158,6 +1323,13 @@ build_dialog(void) {
 			break;
 		}
 
+		cap_pre_enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_cap_pre));
+		if (cap_pre_enabled) {
+			cap_pre_stringv =
+			   g_strsplit(gtk_entry_get_text(GTK_ENTRY(gen_entry_cap_pre)), ",", 0);
+		}
+
+		cap_low_enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_cap_low));
 
 		rm_spaces_enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_rm_spaces));
 		add_year_to_comment = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gen_check_add_year));
@@ -1194,6 +1366,14 @@ build_dialog(void) {
 		strncpy(fs_regexp, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp1)), MAXLEN-1);
 		strncpy(fs_replacement, gtk_entry_get_text(GTK_ENTRY(fs_entry_regexp2)), MAXLEN-1);
 
+		gtk_widget_hide(fs_label_error);
+
+		if (root[0] == '\0') {
+			gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
+			gtk_widget_grab_focus(root_entry);
+			goto display;
+		}
+
 		if (!fs_preset) {
 
 			int err;
@@ -1206,7 +1386,13 @@ build_dialog(void) {
 				regerror(err, &fs_compiled, msg, MAXLEN);
 				utf8 = g_locale_to_utf8(msg, -1, NULL, NULL, NULL);
 				gtk_label_set_text(GTK_LABEL(fs_label_error), utf8);
+				gtk_widget_show(fs_label_error);
 				g_free(utf8);
+
+				regfree(&fs_compiled);
+
+				gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 3);
+				gtk_widget_grab_focus(fs_entry_regexp1);
 
 				goto display;
 			}
@@ -1214,12 +1400,14 @@ build_dialog(void) {
 			if (!regexec(&fs_compiled, "", 0, NULL, 0)) {
 				gtk_label_set_text(GTK_LABEL(fs_label_error),
 						   _("Regexp matches empty string"));
+				gtk_widget_show(fs_label_error);
+				regfree(&fs_compiled);
+
+				gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 3);
+				gtk_widget_grab_focus(fs_entry_regexp1);
+
 				goto display;
 			}
-		}
-
-		if (root[0] == '\0') {
-			goto display;
 		}
 
 		ret = 1;
@@ -1238,23 +1426,44 @@ void
 prog_window_close(GtkWidget * widget, gpointer data) {
 
 	build_cancelled = 1;
-	gtk_widget_destroy(build_prog_window);
-	build_prog_window = NULL;
+
+	if (build_prog_window) {
+		gtk_widget_destroy(build_prog_window);
+		build_prog_window = NULL;
+	}
 }
 
 void
 cancel_build(GtkWidget * widget, gpointer data) {
 
 	build_cancelled = 1;
-	gtk_widget_destroy(build_prog_window);
-	build_prog_window = NULL;
+
+	if (build_prog_window) {
+		gtk_widget_destroy(build_prog_window);
+		build_prog_window = NULL;
+	}
 }
 
 gboolean
 finish_build(gpointer data) {
 
-	gtk_widget_destroy(build_prog_window);
-	build_prog_window = NULL;
+	if (build_prog_window) {
+		gtk_widget_destroy(build_prog_window);
+		build_prog_window = NULL;
+	}
+
+	g_strfreev(cap_pre_stringv);
+	cap_pre_stringv = NULL;
+
+	g_strfreev(excl_patternv);
+	excl_patternv = NULL;
+
+	g_strfreev(incl_patternv);
+	incl_patternv = NULL;
+
+	if (!fs_preset) {
+		regfree(&fs_compiled);
+	}
 
 	build_thread_state = BUILD_THREAD_FREE;
 
@@ -1448,8 +1657,10 @@ transform_filename(char * dest, char * src) {
 		}
 
 		if (fs_rm_ext) {
-			for (i = strlen(ptmp) - 1; ptmp[i] != '.'; i--);
-			ptmp[i] = '\0';
+			char * c = NULL;
+			if ((c = strrchr(tmp, '.')) != NULL) {
+				*c = '\0';
+			}
 		}
 
 		if (fs_underscore) {
@@ -1508,6 +1719,54 @@ transform_filename(char * dest, char * src) {
 }
 
 
+void
+cap_pre(char * str) {
+
+	int i = 0;
+	int len_str = 0;
+	gchar * sub = NULL;
+	gchar * haystack = NULL;
+
+	if (cap_pre_stringv[0] == NULL) {
+		return;
+	}
+
+	len_str = strlen(str);
+	haystack = g_utf8_strdown(str, -1);
+
+	for (i = 0; cap_pre_stringv[i]; i++) {
+		int len_cap = 0;
+		int off = 0;
+		gchar * needle = NULL;
+		gchar * p = NULL;
+
+		if (*(cap_pre_stringv[i]) == '\0') {
+			continue;
+		}
+
+		len_cap = strlen(cap_pre_stringv[i]);
+		needle = g_utf8_strdown(cap_pre_stringv[i], -1);
+
+		while ((sub = strstr(haystack + off, needle)) != NULL) {
+			int len_sub = strlen(sub);
+
+			if (((p = g_utf8_find_prev_char(haystack, sub)) == NULL ||
+			     !g_unichar_isalpha(g_utf8_get_char(p))) &&
+			    ((p = g_utf8_find_next_char(sub + len_cap - 1, NULL)) == NULL ||
+			     !g_unichar_isalpha(g_utf8_get_char(p)))) {
+				strncpy(str + len_str - len_sub, cap_pre_stringv[i], len_cap);
+			}
+
+			off = len_str - len_sub + len_cap;
+		}
+
+		g_free(needle);
+	}
+
+	g_free(haystack);
+}
+
+
 int
 cap_after(gunichar ch) {
 
@@ -1536,6 +1795,7 @@ cap_after(gunichar ch) {
 	return 0;
 }
 
+
 void
 capitalize(char * str) {
 
@@ -1555,7 +1815,11 @@ capitalize(char * str) {
 		if (prev == 0 || (cap_mode == CAP_ALL_WORDS && cap_after(prev))) {
 			new_ch = g_unichar_totitle(ch);
 		} else {
-			new_ch = g_unichar_tolower(ch);
+			if (cap_low_enabled) {
+				new_ch = g_unichar_tolower(ch);
+			} else {
+				new_ch = ch;
+			}
 		}
 
 		if ((stringv = (gchar **)realloc(stringv, (n + 2) * sizeof(gchar *))) == NULL) {
@@ -1592,6 +1856,10 @@ capitalize(char * str) {
 	}
 
 	free(stringv);
+
+	if (cap_pre_enabled) {
+		cap_pre(str);
+	}
 }
 
 
@@ -1883,21 +2151,49 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 		}
 
 		if (excl_enabled) {
-			utf8 = g_locale_to_utf8(basename, -1, NULL, NULL, NULL);
-			if (fnmatch(excl_pattern, utf8, FNM_FILE_NAME | FNM_PERIOD | FNM_EXTMATCH) == 0) {
+			int i;
+			int match = 0;
+			for (i = 0; excl_patternv[i]; i++) {
+
+				if (*(excl_patternv[i]) == '\0') {
+					continue;
+				}
+
+				utf8 = g_locale_to_utf8(basename, -1, NULL, NULL, NULL);
+				if (fnmatch(excl_patternv[i], utf8, 0) == 0) {
+					match = 1;
+					g_free(utf8);
+					break;
+				}
 				g_free(utf8);
+			}
+
+			if (match) {
 				continue;
 			}
-			g_free(utf8);
 		}
 
 		if (incl_enabled) {
-			utf8 = g_locale_to_utf8(basename, -1, NULL, NULL, NULL);
-			if (fnmatch(incl_pattern, utf8, FNM_FILE_NAME | FNM_PERIOD | FNM_EXTMATCH) != 0) {
+			int i;
+			int match = 0;
+			for (i = 0; incl_patternv[i]; i++) {
+
+				if (*(incl_patternv[i]) == '\0') {
+					continue;
+				}
+
+				utf8 = g_locale_to_utf8(basename, -1, NULL, NULL, NULL);
+				if (fnmatch(incl_patternv[i], utf8, 0) == 0) {
+					match = 1;
+					g_free(utf8);
+					break;
+				}
 				g_free(utf8);
+			}
+
+			if (!match) {
 				continue;
 			}
-			g_free(utf8);
 		}
 
 		if ((duration = get_file_duration(filename)) > 0.0f) {
@@ -2129,7 +2425,7 @@ build_artist_thread(void * arg) {
 		}
 
 		if (build_cancelled) {
-			build_thread_state = BUILD_THREAD_FREE;
+			g_idle_add(finish_build, NULL);
 			return NULL;
 		}
 
@@ -2172,7 +2468,7 @@ build_store_thread(void * arg) {
 			}
 
 			if (build_cancelled) {
-				build_thread_state = BUILD_THREAD_FREE;
+				g_idle_add(finish_build, NULL);
 				return NULL;
 			}
 

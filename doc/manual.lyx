@@ -2330,12 +2330,39 @@ through CDDB query, or more than one track
 
 \begin_layout Standard
 The sort key for artists and records can be chosen between the real name
- and the directory name of the corresponding artist or record.
- For records there is a third choice, the year of the album, which can be
+ and the directory name of the corresponding artist or record, both can
+ be forced lowercase.
+ For records there is another choice, the year of the album, which can be
  retrieved from metadata or through CDDB query (the priority of the sources
  applies here too).
  The year can also be automatically added to the comment field of new records
  found by the build process.
+\end_layout
+
+\begin_layout Standard
+You can exclude files from the build process that match a wildcard pattern.
+ The pattern is a comma-separated list of wildcards, e.g.\InsetSpace ~
+`*.jpg,*.png,*.gif'
+ will cause all files having jpg, png, or gif extension to be left out.
+ Note that hidden files (whose name starts with a period) are always excluded.
+\end_layout
+
+\begin_layout Standard
+Similarly, you may include only those files that match a wildcard pattern.
+ The syntax is the same as with the exclusion.
+ This easily allows you to build a store containing music e.g.\InsetSpace ~
+encoded with
+ FLAC, and another store for Ogg, while the audio files can be placed together
+ even in the same directory.
+\end_layout
+
+\begin_layout Standard
+Capitalization of the strings can be controlled too.
+ You may choose from capitalizing all words, or only the first one.
+ If you allow one of them, you can supply a case-sensitive comma-separated
+ list of words, whose case will be preserved.
+ It is useful to make roman numerals and other acronyms appear uppercase
+ (or in the case you like them).
 \end_layout
 
 \begin_layout Standard
@@ -2366,8 +2393,8 @@ The `CDDB' page has similar settings for the CDDB lookup as the `Metadata'
 \begin_layout Standard
 At last, the `Filesystem' page is for generating the track names from the
  filenames.
- You can decide whether to use the predefined transformations, or a regular
- expression based substitution method.
+ You can decide whether to use the predefined transformations, or an extended
+ regular expression based substitution method.
  The former choice should be quite obvious and intended to provide acceptable
  result in most cases.
  The regexp is for those who are familiar with the regexp syntax and have
@@ -2382,6 +2409,9 @@ At last, the `Filesystem' page is for generating the track names from the
 9 to refer to the corresponding matching sub-expressions in the regexp.
  See sed(1) and grep(1) for more information on sed substitution and regexp
  syntax.
+ There is a sandbox where you can enter a filename and see how it would
+ be transformed, providing a safe environment for experiments.
+ It works both for predefined and regexp transforms.
 \end_layout
 
 \begin_layout Standard
@@ -4013,7 +4043,7 @@ When compiled with Systray support, Aqualung will place its icon in the
 Clicking on the systray icon with the left mouse button will toggle visibility
  of the program's windows.
  Clicking with the right button will bring up a popup menu allowing showing/hidi
-ng of the program, basic cueing, and quitting Aqualung.
+ng the windows, basic cueing, and quitting Aqualung.
 \end_layout
 
 \begin_layout Standard
@@ -4022,417 +4052,6 @@ The systray icon has a tooltip displaying the same text as the main window's
  So it's easy to see what track is currently playing, and also the Aqualung
  instance ID (in case of more instances).
  
-\end_layout
-
-\begin_layout Section
-\start_of_appendix
-Regexp and wildcard usage
-\end_layout
-
-\begin_layout Subsection
-Regular expression
-\end_layout
-
-\begin_layout Standard
-The Music Store builder can transform filenames into track titles applying
- a regular expression based substitution.
- The regular expression will be interpreted as a so-called extended regular
- expression, thus the following description applies to extended regular
- expressions.
-\end_layout
-
-\begin_layout Standard
-A regular expression is a pattern that describes a set of strings.
- Regular expressions are constructed analogously to arithmetic expressions,
- by using various operators to combine smaller expressions.
-\end_layout
-
-\begin_layout Standard
-The fundamental building blocks are the regular expressions that match a
- single character.
- Most characters, including all letters and digits, are regular expressions
- that match themselves.
- Any metacharacter with special meaning may be quoted by preceding it with
- a backslash.
-\end_layout
-
-\begin_layout Standard
-A bracket expression is a list of characters enclosed by [ and ].
- It matches any single character in that list; if the first character of
- the list is the caret ^ then it matches any character not in the list.
- For example, the regular expression [0123456789] matches any single digit.
-\end_layout
-
-\begin_layout Standard
-Within a bracket expression, a range expression consists of two characters
- separated by a hyphen.
- It matches any single character that sorts between the two characters,
- inclusive, using the locale's collating sequence and character set.
- For example, in the default C locale, [a-d] is equivalent to [abcd].
- Some locales sort characters in dictionary order, and in these locales
- [a-d] is typically not equivalent to [abcd]; it might be equivalent to
- [aBbCcDd], for example.
-\end_layout
-
-\begin_layout Standard
-Finally, certain named classes of characters are predefined within bracket
- expressions, as follows.
- Their names are self explanatory, and they are [:alnum:], [:alpha:], [:cntrl:],
- [:digit:], [:graph:], [:lower:], [:print:], [:punct:], [:space:], [:upper:],
- and [:xdigit:].
- For example, [[:alnum:]] means [0-9A-Za-z], except the latter form depends
- upon the C locale and the ASCII character encoding, whereas the former
- is independent of locale and character set.
- (Note that the brackets in these class names are part of the symbolic names,
- and must be included in addition to the brackets delimiting the bracket
- list.) Most metacharacters lose their special meaning inside lists.
- To include a literal ] place it first in the list.
- Similarly, to include a literal ^ place it anywhere but first.
- Finally, to include a literal - place it last.
-\end_layout
-
-\begin_layout Standard
-The period .
- matches any single character.
- The symbol 
-\backslash
-w is a synonym for [[:alnum:]] and 
-\backslash
-W is a synonym for [^[:alnum]].
-\end_layout
-
-\begin_layout Standard
-The caret ^ and the dollar sign $ are metacharacters that respectively match
- the empty string at the beginning and end of a line.
- The symbols 
-\backslash
-< and 
-\backslash
-> respectively match the empty string at the beginning and end of a word.
- The symbol 
-\backslash
-b matches the empty string at the edge of a word, and 
-\backslash
-B matches the empty string provided it's not at the edge of a word.
-\end_layout
-
-\begin_layout Standard
-A regular expression may be followed by one of several repetition operators:
-\end_layout
-
-\begin_layout Standard
-\align center
-\begin_inset Tabular
-<lyxtabular version="3" rows="6" columns="2">
-<features>
-<column alignment="right" valignment="top" width="0">
-<column alignment="left" valignment="top" width="0">
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-?
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-The preceding item is optional and matched at most once.
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-*
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-The preceding item will be matched zero or more times.
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-+
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-The preceding item will be matched one or more times.
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-{n}
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-The preceding item is matched exactly n times.
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-{n,}
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-The preceding item is matched n or more times.
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-{n,m}
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-The preceding item is matched at least n times, but not more than m times.
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Two regular expressions may be concatenated; the resulting regular expression
- matches any string formed by concatenating two substrings that respectively
- match the concatenated subexpressions.
-\end_layout
-
-\begin_layout Standard
-Two regular expressions may be joined by the infix operator |; the resulting
- regular expression matches any string matching either subexpression.
-\end_layout
-
-\begin_layout Standard
-Repetition takes precedence over concatenation, which in turn takes precedence
- over alternation.
- A whole subexpression may be enclosed in parentheses to override these
- precedence rules.
-\end_layout
-
-\begin_layout Standard
-The backreference 
-\backslash
-n, where n is a single digit, matches the substring previously matched by
- the nth parenthesized subexpression of the regular expression.
-\end_layout
-
-\begin_layout Subsection
-Wildcard matching
-\end_layout
-
-\begin_layout Standard
-The Music Store and Playlist search facitilies match against a pattern that
- can contain only `*' and `?' wildcards with similar semantics as the standard
- shell wildcards: `*' matches an arbitrary, possibly empty string, `?' matches
- an arbitrary character.
- Note that `*' and `?' can not be escaped to include them literally in a
- pattern.
-\end_layout
-
-\begin_layout Standard
-Wildcard matching is also used by the Music Store builder if you specify
- patterns to include or exclude files from the build process, but it has
- some extensions to the wildcard matching used by searching.
-\end_layout
-
-\begin_layout Itemize
-It treats the `/' character specially.
- Wildcard constructs in pattern cannot match `/' in filename.
- Thus, the only way to match `/' is with an explicit `/' in pattern.
-\end_layout
-
-\begin_layout Itemize
-It treats the `.' character specially if it appears at the beginning of filename.
- Wildcard constructs in pattern cannot match `.' as the first character of
- string.
-\end_layout
-
-\begin_layout Itemize
-Recognize beside the normal patterns also the extended patterns.
- The patterns are written in the form explained in the following table where
- pattern-list is a | separated list of patterns.
-\end_layout
-
-\begin_layout Standard
-\align center
-\begin_inset Tabular
-<lyxtabular version="3" rows="5" columns="2">
-<features>
-<column alignment="right" valignment="top" width="0">
-<column alignment="left" valignment="top" width="11cm">
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-?(pattern-list)
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-The pattern matches if zero or one occurrences of any of the patterns in
- the pattern-list allow matching the input string.
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-*(pattern-list)
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-The pattern matches if zero or more occurrences of any of the patterns in
- the pattern-list allow matching the input string.
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-+(pattern-list)
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-The pattern matches if one or more occurrences of any of the patterns in
- the pattern-list allow matching the input string.
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-@(pattern-list)
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-The pattern matches if exactly one occurrence of any of the patterns in
- the pattern-list allows matching the input string.
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-!(pattern-list)
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Standard
-The pattern matches if the input string cannot be matched with any of the
- patterns in the pattern-list.
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
 \end_layout
 
 \end_body

@@ -86,7 +86,7 @@ unsigned long find_next_frame(int fd, long *offset, long max_offset,
 int get_mp3file_info(int fd, mp3info_t *info);
 
 typedef struct {
-	unsigned int frame; /* number of mpeg frame */
+	int frame; /* number of mpeg frame */
 	unsigned long long sample; /* number of audio samples since beginning of file */
 	unsigned long offset; /* byte offset from beginning of file */
 } mpeg_seek_table_t;
@@ -114,7 +114,7 @@ typedef struct _mpeg_pdata_t {
         int builder_thread_running;
 	mpeg_seek_table_t seek_table[100];
 	unsigned long frame_counter;
-	unsigned long last_frames[10]; /* [0] is the last frame offset, [1] the last-but-one, etc. */
+	long last_frames[2]; /* [0] is the last frame's byte offset, [1] the last-but-one */
         struct mad_stream mpeg_stream;
         struct mad_frame mpeg_frame;
         struct mad_synth mpeg_synth;

@@ -433,47 +433,11 @@ get_mp3file_info(int fd, mp3info_t *info) {
 void
 last_two_frames(mpeg_pdata_t * pd) {
 
-	int fd = pd->fd;
-	int bufsize = 0;
-	int pos;
-	unsigned char * buffer = NULL;
-	struct stat st;
-	int i, last_i, header_cnt;
+	char * bytes = (char *)pd->fdm;
+	int i, last_i = pd->filesize, header_cnt = 0;
 
-	lseek(fd, 0, SEEK_SET);
-
-	if (fstat(fd, &st) == -1 || st.st_size == 0) {
-		printf("dec_mpeg.c:last_two_frames(): fstat failed\n");
-		return;
-	}
-
-	if (st.st_size > 0x4000) {
-		bufsize = 0x4000;
-	} else {
-		bufsize = st.st_size;
-	}
-
-	buffer = malloc(bufsize);
-	if (buffer == NULL) {
-		printf("dec_mpeg.c:last_two_frames(): malloc failed\n");
-		return;		
-	}
-	pos = st.st_size - bufsize;
-	if (lseek(fd, pos, SEEK_SET) != pos) {
-		printf("dec_mpeg.c:last_two_frames(): lseek failed\n");
-		free(buffer);
-		return;
-	}
-	if (read(fd, buffer, bufsize) != bufsize) {
-		printf("dec_mpeg.c:last_two_frames(): read failed\n");
-		free(buffer);
-		return;
-	}
-
-	last_i = bufsize;
-	header_cnt = 0;
-	for (i = bufsize-4; ((i >= 0) && (header_cnt < 10)); i--) {
-		long header = BYTES2INT(buffer[i], buffer[i+1], buffer[i+2], buffer[i+3]);
+	for (i = pd->filesize-4; ((i >= 0) && (header_cnt < 2)); i--) {
+		long header = BYTES2INT(bytes[i], bytes[i+1], bytes[i+2], bytes[i+3]);
 		mp3info_t mp3info;
 
 		if (is_mp3frameheader(header)) {
@@ -481,9 +445,9 @@ last_two_frames(mpeg_pdata_t * pd) {
 			if ((mp3info.layer == pd->mp3info.layer) &&
 			    (mp3info.version == pd->mp3info.version) &&
 			    (mp3info.frequency == pd->mp3info.frequency)) {
-				pd->last_frames[header_cnt] = st.st_size - bufsize + i;
+				pd->last_frames[header_cnt] = i;
 #ifdef MPEG_DEBUG
-				printf("header found at offset %d   delta = %d", bufsize-i, last_i - i);
+				printf("header found at offset %d   delta = %d", pd->filesize-i, last_i - i);
 				printf("\tsize = %d  samples = %d\n", mp3info.frame_size, mp3info.frame_samples);
 				printf("last_frames[%d] = %d\n", header_cnt, pd->last_frames[header_cnt]);
 #endif /* MPEG_DEBUG */
@@ -492,8 +456,6 @@ last_two_frames(mpeg_pdata_t * pd) {
 			}
 		}
 	}
-
-	free(buffer);
 	return;
 }
 
@@ -579,13 +541,6 @@ build_seek_table_thread(void * args) {
 void
 build_seek_table(mpeg_pdata_t * pd) {
 
-	int i;
-
-	/* data init (so when seeking we know if an entry is not yet filled in) */
-	for (i = 0; i < 100; i++) {
-		pd->seek_table[i].frame = -1;
-	}
-	pd->builder_thread_running = 0;
 	AQUALUNG_THREAD_CREATE(pd->seek_builder_id, NULL, build_seek_table_thread, pd)
 }
 
@@ -647,7 +602,7 @@ mpeg_output(void * data, struct mad_header const * header, struct mad_pcm * pcm)
 	}
 
 	pos_bytes = (pd->mpeg_stream.this_frame - pd->mpeg_stream.buffer) + 10;
-	if (pos_bytes >= pd->last_frames[0]) {
+	if ((pd->last_frames[0] != -1) && (pos_bytes >= pd->last_frames[0])) {
 		int pad = pd->mp3info.enc_padding;
 #ifdef MPEG_DEBUG
 		printf(" *** last frame len=%d ***\n", pcm->length);
@@ -663,7 +618,7 @@ mpeg_output(void * data, struct mad_header const * header, struct mad_pcm * pcm)
 			printf("skipping %d samples\n", pad);
 #endif /* MPEG_DEBUG */
 		}
-	} else if (pos_bytes >= pd->last_frames[1]) {
+	} else if ((pd->last_frames[1] != -1) && (pos_bytes >= pd->last_frames[1])) {
 		int pad = pd->mp3info.enc_padding;
 #ifdef MPEG_DEBUG
 		printf(" *** last but one frame len=%d***\n", pcm->length);
@@ -676,25 +631,6 @@ mpeg_output(void * data, struct mad_header const * header, struct mad_pcm * pcm)
 #endif /* MPEG_DEBUG */
 		}
 	} 
-#ifdef MPEG_DEBUG
-	else if (pos_bytes >= pd->last_frames[2]) {
-		printf(" *** last but 2 ***\n");
-	} else if (pos_bytes >= pd->last_frames[3]) {
-		printf(" *** last but 3 ***\n");
-	} else if (pos_bytes >= pd->last_frames[4]) {
-		printf(" *** last but 4 ***\n");
-	} else if (pos_bytes >= pd->last_frames[5]) {
-		printf(" *** last but 5 ***\n");
-	} else if (pos_bytes >= pd->last_frames[6]) {
-		printf(" *** last but 6 ***\n");
-	} else if (pos_bytes >= pd->last_frames[7]) {
-		printf(" *** last but 7 ***\n");
-	} else if (pos_bytes >= pd->last_frames[8]) {
-		printf(" *** last but 8 ***\n");
-	} else if (pos_bytes >= pd->last_frames[9]) {
-		printf(" *** last but 9 ***\n");
-	}
-#endif /* MPEG_DEBUG */
 
         for (; i < end_count; i++) {
                 for (j = 0; j < pd->channels; j++) {
@@ -817,7 +753,7 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
-
+	int i;
 	struct stat exp_stat;
 
 	if ((pd->fd = open(filename, O_RDONLY)) == 0) {
@@ -831,18 +767,14 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	pd->error = 0;
 
 	pd->skip_bytes = get_mp3file_info(pd->fd, &pd->mp3info);
+	close(pd->fd);
 
 #ifdef MPEG_DEBUG
 	printf("skip_bytes = %ld\n\n", pd->skip_bytes);
 #endif /* MPEG_DEBUG */
 	if (pd->skip_bytes < 0) {
-		close(pd->fd);
 		return DECODER_OPEN_BADLIB;
 	}
-
-	/* search for last N frames, needed for gapless playback */
-	last_two_frames(pd);
-	close(pd->fd);
 
 #ifdef MPEG_DEBUG
 	printf("version = %d\n", pd->mp3info.version);
@@ -925,6 +857,16 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 		pd->delay_frames = 0;
 	}
 	
+	/* data init (so when seeking we know if an entry is not yet filled in) */
+	for (i = 0; i < 100; i++) {
+		pd->seek_table[i].frame = -1;
+	}
+	pd->builder_thread_running = 0;
+
+	for (i = 0; i < 2; i++) {
+		pd->last_frames[i] = -1;
+	}
+
 	pd->error = 0;
 	pd->is_eos = 0;
 	pd->frame_counter = 0;
@@ -989,6 +931,8 @@ mpeg_decoder_read(decoder_t * dec, float * dest, int num) {
 	unsigned int n_avail = 0;
 
 	if (!pd->seek_table_built) {
+		/* locate last two audio frames (for gapless playback) */
+		last_two_frames(pd);
 		/* read mmap'ed file and build seek table in background thread.
 		   we do this upon the first read, so it doesn't start when we open
 		   a mass of files, but don't read any audio (metadata retrieval, etc) */

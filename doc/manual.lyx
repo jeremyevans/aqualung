@@ -2354,6 +2354,7 @@ Similarly, you may include only those files that match a wildcard pattern.
 encoded with
  FLAC, and another store for Ogg, while the audio files can be placed together
  even in the same directory.
+ Exclude and include patterns are case-insensitive.
 \end_layout
 
 \begin_layout Standard

@@ -581,6 +581,7 @@ test_button_clicked(GtkWidget * widget, gpointer * data) {
 			g_free(utf8);
 
 			regfree(&fs_compiled);
+			gtk_widget_grab_focus(fs_entry_regexp1);
 			return 0;
 		}
 
@@ -589,6 +590,7 @@ test_button_clicked(GtkWidget * widget, gpointer * data) {
 					   _("Regexp matches empty string"));
 			gtk_widget_show(fs_label_error);
 			regfree(&fs_compiled);
+			gtk_widget_grab_focus(fs_entry_regexp1);
 			return 0;
 		}
 	}
@@ -664,6 +666,9 @@ build_dialog(void) {
 
 	char * title = NULL;
         int ret;
+	char filter[MAXLEN];
+	char * pfilter = NULL;
+
 
 	if (build_type == BUILD_STORE) {
 		title = _("Build/Update store");
@@ -818,7 +823,7 @@ build_dialog(void) {
 
         gen_entry_excl = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(gen_entry_excl), MAXLEN-1);
-	gtk_entry_set_text(GTK_ENTRY(gen_entry_excl), "*.jpg,*.png,*.gif");
+	gtk_entry_set_text(GTK_ENTRY(gen_entry_excl), "*.jpg,*.png,*.gif,*.pls,*.m3u,*.xml,*.html,*.htm,*.txt,*.avi");
         gtk_box_pack_end(GTK_BOX(gen_excl_frame_hbox), gen_entry_excl, TRUE, TRUE, 0);
 
 	if (excl_enabled) {
@@ -842,7 +847,46 @@ build_dialog(void) {
 
         gen_entry_incl = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(gen_entry_incl), MAXLEN-1);
-	gtk_entry_set_text(GTK_ENTRY(gen_entry_incl), "*.flac");
+
+	filter[0] = '\0';
+
+#ifdef HAVE_SNDFILE
+	strcat(filter, "*.wav,");
+#endif /* HAVE_SNDFILE */
+
+#ifdef HAVE_FLAC
+	strcat(filter, "*.flac,");
+#endif /* HAVE_FLAC */
+
+#ifdef HAVE_OGG_VORBIS
+	strcat(filter, "*.ogg,");
+#endif /* HAVE_OGG_VORBIS */
+
+#ifdef HAVE_MPEG
+	strcat(filter, "*.mp[123],");
+#endif /* HAVE_MPEG */
+
+#ifdef HAVE_SPEEX
+	strcat(filter, "*.spx,");
+#endif /* HAVE_SPEEX */
+
+#ifdef HAVE_MPC
+	strcat(filter, "*.mpc,");
+#endif /* HAVE_MPC */
+
+#ifdef HAVE_MAC
+	strcat(filter, "*.ape,");
+#endif /* HAVE_MAC */
+
+#ifdef HAVE_MOD
+	strcat(filter, "*.mod,");
+#endif /* HAVE_MOD */
+
+	if ((pfilter = strrchr(filter, ',')) != NULL) {
+		*pfilter = '\0';
+	}
+
+	gtk_entry_set_text(GTK_ENTRY(gen_entry_incl), filter);
         gtk_box_pack_end(GTK_BOX(gen_incl_frame_hbox), gen_entry_incl, TRUE, TRUE, 0);
 
 	if (incl_enabled) {
@@ -2160,7 +2204,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 				}
 
 				utf8 = g_locale_to_utf8(basename, -1, NULL, NULL, NULL);
-				if (fnmatch(excl_patternv[i], utf8, 0) == 0) {
+				if (fnmatch(excl_patternv[i], utf8, FNM_CASEFOLD) == 0) {
 					match = 1;
 					g_free(utf8);
 					break;
@@ -2183,7 +2227,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 				}
 
 				utf8 = g_locale_to_utf8(basename, -1, NULL, NULL, NULL);
-				if (fnmatch(incl_patternv[i], utf8, 0) == 0) {
+				if (fnmatch(incl_patternv[i], utf8, FNM_CASEFOLD) == 0) {
 					match = 1;
 					g_free(utf8);
 					break;

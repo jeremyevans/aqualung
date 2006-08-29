@@ -5407,21 +5407,23 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
 void
 set_buttons_relief(void) {
 
-GtkWidget *rbuttons_table[] = {
-        prev_button, stop_button, next_button, play_button,
-        pause_button, repeat_button, repeat_all_button, shuffle_button,
-        playlist_toggle, musicstore_toggle, plugin_toggle
-};
+	GtkWidget *rbuttons_table[] = {
+		prev_button, stop_button, next_button, play_button,
+		pause_button, repeat_button, repeat_all_button, shuffle_button,
+		playlist_toggle, musicstore_toggle, plugin_toggle
+	};
 
-gint i, n;
+	gint i, n;
 
         i = sizeof(rbuttons_table)/sizeof(GtkWidget*);
 
-        for(n=0; n < i ;n++)
-	        if (options.disable_buttons_relief) 
+        for (n = 0; n < i; n++) {
+	        if (options.disable_buttons_relief) {
                         gtk_button_set_relief (GTK_BUTTON (rbuttons_table[n]), GTK_RELIEF_NONE); 
-                else
-                        gtk_button_set_relief (GTK_BUTTON (rbuttons_table[n]), GTK_RELIEF_NORMAL); 
+		} else {
+                        gtk_button_set_relief (GTK_BUTTON (rbuttons_table[n]), GTK_RELIEF_NORMAL);
+		}
+	}
                 
 }
 

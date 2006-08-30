@@ -2636,6 +2636,7 @@ See the About box and the documentation for details."));
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_pl_font = gtk_entry_new();
+        GTK_WIDGET_UNSET_FLAGS(entry_pl_font, GTK_CAN_FOCUS);
         gtk_box_pack_start(GTK_BOX(hbox), entry_pl_font, TRUE, TRUE, 3);
         gtk_editable_set_editable(GTK_EDITABLE(entry_pl_font), FALSE);
 
@@ -2665,6 +2666,7 @@ See the About box and the documentation for details."));
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_ms_font = gtk_entry_new();
+        GTK_WIDGET_UNSET_FLAGS(entry_ms_font, GTK_CAN_FOCUS);
         gtk_box_pack_start(GTK_BOX(hbox), entry_ms_font, TRUE, TRUE, 3);
         gtk_editable_set_editable(GTK_EDITABLE(entry_ms_font), FALSE);
 
@@ -2696,6 +2698,7 @@ See the About box and the documentation for details."));
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_bt_font = gtk_entry_new();
+        GTK_WIDGET_UNSET_FLAGS(entry_bt_font, GTK_CAN_FOCUS);
         gtk_box_pack_start(GTK_BOX(hbox), entry_bt_font, TRUE, TRUE, 3);
         gtk_editable_set_editable(GTK_EDITABLE(entry_bt_font), FALSE);
 
@@ -2726,6 +2729,7 @@ See the About box and the documentation for details."));
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_st_font = gtk_entry_new();
+        GTK_WIDGET_UNSET_FLAGS(entry_st_font, GTK_CAN_FOCUS);
         gtk_box_pack_start(GTK_BOX(hbox), entry_st_font, TRUE, TRUE, 3);
         gtk_editable_set_editable(GTK_EDITABLE(entry_st_font), FALSE);
 
@@ -2756,6 +2760,7 @@ See the About box and the documentation for details."));
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_songt_font = gtk_entry_new();
+        GTK_WIDGET_UNSET_FLAGS(entry_songt_font, GTK_CAN_FOCUS);
         gtk_box_pack_start(GTK_BOX(hbox), entry_songt_font, TRUE, TRUE, 3);
         gtk_editable_set_editable(GTK_EDITABLE(entry_songt_font), FALSE);
 
@@ -2786,6 +2791,7 @@ See the About box and the documentation for details."));
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_si_font = gtk_entry_new();
+        GTK_WIDGET_UNSET_FLAGS(entry_si_font, GTK_CAN_FOCUS);
         gtk_box_pack_start(GTK_BOX(hbox), entry_si_font, TRUE, TRUE, 3);
         gtk_editable_set_editable(GTK_EDITABLE(entry_si_font), FALSE);
 
@@ -2816,6 +2822,7 @@ See the About box and the documentation for details."));
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_sb_font = gtk_entry_new();
+        GTK_WIDGET_UNSET_FLAGS(entry_sb_font, GTK_CAN_FOCUS);
         gtk_box_pack_start(GTK_BOX(hbox), entry_sb_font, TRUE, TRUE, 3);
         gtk_editable_set_editable(GTK_EDITABLE(entry_sb_font), FALSE);
 
@@ -2882,7 +2889,7 @@ See the About box and the documentation for details."));
         gtk_box_set_spacing(GTK_BOX(hbuttonbox), 8);
         gtk_container_set_border_width(GTK_CONTAINER(hbuttonbox), 3);
 
-        ok_btn = gtk_button_new_from_stock (GTK_STOCK_APPLY); 
+        ok_btn = gtk_button_new_from_stock (GTK_STOCK_OK); 
 	g_signal_connect(ok_btn, "clicked", G_CALLBACK(ok), NULL);
   	gtk_container_add(GTK_CONTAINER(hbuttonbox), ok_btn);   
 

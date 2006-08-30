@@ -465,6 +465,8 @@ search_dialog(void) {
 	GtkWidget * label;
 	GtkWidget * button;
 	GtkWidget * table;
+	GtkWidget * hseparator;
+	GtkWidget * hbuttonbox;
 
         GtkWidget * search_viewport;
         GtkWidget * search_scrwin;
@@ -479,7 +481,7 @@ search_dialog(void) {
 
         search_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(search_window), _("Search the Music Store"));
-        gtk_window_set_position(GTK_WINDOW(search_window), GTK_WIN_POS_CENTER);
+        gtk_window_set_position(GTK_WINDOW(search_window), GTK_WIN_POS_CENTER_ON_PARENT);
 	gtk_window_set_transient_for(GTK_WINDOW(search_window), GTK_WINDOW(browser_window));
 	gtk_window_set_modal(GTK_WINDOW(search_window), TRUE);
         g_signal_connect(G_OBJECT(search_window), "delete_event",
@@ -628,20 +630,25 @@ search_dialog(void) {
         gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(search_column), 2);
         gtk_tree_view_append_column(GTK_TREE_VIEW(search_list), search_column);
 
+        hseparator = gtk_hseparator_new ();
+        gtk_widget_show (hseparator);
+        gtk_box_pack_start (GTK_BOX (vbox), hseparator, FALSE, TRUE, 5);
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_widget_show(hbox);     
-        gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 3);
+	hbuttonbox = gtk_hbutton_box_new();
+        gtk_widget_show (hbuttonbox);
+        gtk_box_set_spacing(GTK_BOX(hbuttonbox), 8);
+	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
         button = gui_stock_label_button(_("Search"), GTK_STOCK_FIND);
         gtk_widget_show(button);     
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), button);   
         g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(search_button_clicked), NULL);
-        gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
 
         button = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
         gtk_widget_show(button);     
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), button);   
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(close_button_clicked), NULL);
-        gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
 
         if (search_ms_flags & SEARCH_F_CS)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_case), TRUE);

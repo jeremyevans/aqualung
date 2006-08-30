@@ -504,6 +504,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		}
 		return TRUE;
 		break;
+	case GDK_F1:
 	case GDK_i:
 	case GDK_I:
 		gtk_tree_view_get_cursor(GTK_TREE_VIEW(play_list), &path, &column);

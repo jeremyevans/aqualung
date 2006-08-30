@@ -69,7 +69,7 @@ read_ogg_packet(OGGZ * oggz, ogg_packet * op, long serialno, void * user_data) {
 
                 speex_bits_init(&(pd->bits));
 
-                header = speex_packet_to_header(op->packet, op->bytes);
+                header = speex_packet_to_header((char *)op->packet, op->bytes);
                 if (!header) {
                         printf("Cannot read Speex header\n");
 			pd->error = 1;
@@ -111,7 +111,7 @@ read_ogg_packet(OGGZ * oggz, ogg_packet * op, long serialno, void * user_data) {
 		pd->granulepos = op->granulepos;
 
 		if (!pd->exploring) {
-			speex_bits_read_from(&(pd->bits), op->packet, op->bytes);
+			speex_bits_read_from(&(pd->bits), (char *)op->packet, op->bytes);
 			
 			for (j = 0; j < pd->nframes; j++) {
 				

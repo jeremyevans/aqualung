@@ -54,6 +54,11 @@ typedef struct _oggv_comment {
 	struct _oggv_comment * next;
 } oggv_comment;
 
+#ifdef HAVE_MOD
+typedef struct _mod_info {
+	char * title;
+} mod_info;
+#endif /* HAVE_MOD */
 
 typedef struct _metadata {
 
@@ -77,6 +82,10 @@ typedef struct _metadata {
 	oggv_comment * oggv_root;
 #endif /* HAVE_OGG_VORBIS */
 
+#ifdef HAVE_MOD
+	mod_info * mod_root;
+#endif /* HAVE_MOD */
+
 } metadata;
 
 
@@ -94,3 +103,7 @@ int meta_get_comment(metadata * meta, char * str);
 
 
 #endif /* _META_DECODER_H */
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

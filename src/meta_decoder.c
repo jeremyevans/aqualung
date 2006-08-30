@@ -47,6 +47,10 @@
 #endif /* _WIN32 */
 #endif /* HAVE_OGG_VORBIS */
 
+#ifdef HAVE_MOD
+#include <libmodplug/modplug.h>
+#endif /* HAVE_MOD */
+
 #include "common.h"
 #include "core.h"
 #include "i18n.h"
@@ -55,6 +59,9 @@
 #ifdef HAVE_OGG_VORBIS
 #include "decoder/dec_vorbis.h"
 #endif /* HAVE_OGG_VORBIS */
+#ifdef HAVE_MOD
+#include "decoder/dec_mod.h"
+#endif /* HAVE_MOD */
 #include "meta_decoder.h"
 
 
@@ -82,6 +89,22 @@ id3_new(void) {
 }
 #endif /* HAVE_ID3 */
 
+#ifdef HAVE_MOD
+mod_info *
+modinfo_new(void) {
+
+	mod_info * new = NULL;
+
+	if ((new = (mod_info *)malloc(sizeof(mod_info))) == NULL) {
+		fprintf(stderr, "meta_decoder.c/modinfo_new(): malloc error\n");
+		return NULL;
+	}
+
+	new->title = NULL;
+
+	return new;
+}
+#endif /* HAVE_MOD */
 
 oggv_comment *
 oggv_new(void) {
@@ -121,6 +144,9 @@ meta_new(void) {
 #ifdef HAVE_OGG_VORBIS
 	new->oggv_root = oggv_new();
 #endif /* HAVE_OGG_VORBIS */
+#ifdef HAVE_MOD
+	new->mod_root = modinfo_new();
+#endif /* HAVE_MOD */
 
 	return new;
 }
@@ -199,6 +225,24 @@ append_oggv(metadata * meta, oggv_comment * oggv) {
 	oggv_prev->next = oggv;
 }
 #endif /* HAVE_OGG_VORBIS */
+
+#ifdef HAVE_MOD
+void
+append_mod(metadata * meta, mod_info * mod) {
+
+	if (meta == NULL) {
+		fprintf(stderr, "append_mod(): assertion meta != NULL failed\n");
+		return;
+	}
+
+	if (meta->mod_root == NULL) {
+		fprintf(stderr, "append_mod(): assertion meta->mod_root != NULL failed\n");
+		return;
+	}
+
+	meta->mod_root = mod;
+}
+#endif /* HAVE_MOD */
 
 
 #ifdef HAVE_ID3
@@ -595,6 +639,19 @@ meta_read(metadata * meta, char * file) {
         }
 #endif /* HAVE_FLAC */
 
+#ifdef HAVE_MOD
+        if (fdec->file_lib == MOD_LIB) {
+
+                decoder_t * dec = (decoder_t *)(fdec->pdec);
+                mod_pdata_t * pd = (mod_pdata_t *)dec->pdata;
+		mod_info * mi = modinfo_new();
+                
+		mi->title = strdup(ModPlug_GetName(pd->mpf));
+                append_mod(meta, mi);
+                
+        }
+#endif /* HAVE_MOD */
+
         file_decoder_close(fdec);
         file_decoder_delete(fdec);
 
@@ -611,6 +668,9 @@ meta_free(metadata * meta) {
 #endif /* HAVE_ID3 */
 	oggv_comment * oggv;
 	oggv_comment * oggv_next;
+#ifdef HAVE_MOD
+	mod_info * mi;
+#endif /* HAVE_MOD */
 
 
 #ifdef HAVE_ID3
@@ -645,6 +705,15 @@ meta_free(metadata * meta) {
 		oggv = oggv_next;
 	}
 #endif /* HAVE_OGG_VORBIS */
+
+#ifdef HAVE_MOD
+	mi = meta->mod_root;
+        if(mi != NULL) {
+                if(mi->title)                   
+                        free(mi->title);
+                free(mi);
+        }
+#endif /* HAVE_MOD */
 
 	free(meta);
 }
@@ -795,12 +864,15 @@ meta_get_rva(metadata * meta, float * fval) {
 /* ret: 1 if found, 0 if no data */
 /* can be called with str == NULL only to see if data is found */
 int
-meta_get_abstract(metadata * meta, char * str, char * tag_flac, char * tag_ogg, char * tag_id3) {
+meta_get_abstract(metadata * meta, char * str, char * tag_flac, char * tag_ogg, char * tag_id3, char * tag_mod) {
 
 #ifdef HAVE_ID3
 	id3_tag_data * id3;
 #endif /* HAVE_ID3 */
 	oggv_comment * oggv;
+#ifdef HAVE_MOD
+	mod_info * mi;
+#endif /* HAVE_MOD */
 
 
 	if (meta == NULL) {
@@ -859,6 +931,19 @@ meta_get_abstract(metadata * meta, char * str, char * tag_flac, char * tag_ogg, 
 	}
 #endif /* HAVE_ID3 */
 
+#ifdef HAVE_MOD 
+	mi = meta->mod_root;
+
+        if (mi != NULL) {
+                if (strcmp(tag_mod, "Title") == 0) {
+                        if (str != NULL) {
+                                strncpy(str, (char *) mi->title, MAXLEN-1);
+                        }
+                        return 1;
+                }
+        }
+#endif /* HAVE_MOD */
+
 	return 0;
 }
 
@@ -867,9 +952,9 @@ int
 meta_get_title(metadata * meta, char * str) {
 
 #ifdef HAVE_ID3
-	return meta_get_abstract(meta, str, "Title:", "Title:", ID3_FRAME_TITLE);
+	return meta_get_abstract(meta, str, "Title:", "Title:", ID3_FRAME_TITLE, "Title");
 #else
-	return meta_get_abstract(meta, str, "Title:", "Title:", "dummy");
+	return meta_get_abstract(meta, str, "Title:", "Title:", "dummy", "Title");
 #endif /* HAVE_ID3 */
 }
 
@@ -878,9 +963,9 @@ int
 meta_get_record(metadata * meta, char * str) {
 
 #ifdef HAVE_ID3
-	return meta_get_abstract(meta, str, "Album:", "Album:", ID3_FRAME_ALBUM);
+	return meta_get_abstract(meta, str, "Album:", "Album:", ID3_FRAME_ALBUM, "dummy");
 #else
-	return meta_get_abstract(meta, str, "Album:", "Album:", "dummy");
+	return meta_get_abstract(meta, str, "Album:", "Album:", "dummy", "dummy");
 #endif /* HAVE_ID3 */
 }
 
@@ -889,9 +974,9 @@ int
 meta_get_artist(metadata * meta, char * str) {
 
 #ifdef HAVE_ID3
-	return meta_get_abstract(meta, str, "Artist:", "Artist:", ID3_FRAME_ARTIST);
+	return meta_get_abstract(meta, str, "Artist:", "Artist:", ID3_FRAME_ARTIST, "dummy");
 #else
-	return meta_get_abstract(meta, str, "Artist:", "Artist:", "dummy");
+	return meta_get_abstract(meta, str, "Artist:", "Artist:", "dummy", "dummy");
 #endif /* HAVE_ID3 */
 }
 
@@ -900,9 +985,9 @@ int
 meta_get_year(metadata * meta, char * str) {
 
 #ifdef HAVE_ID3
-	return meta_get_abstract(meta, str, "Date:", "Date:", ID3_FRAME_YEAR);
+	return meta_get_abstract(meta, str, "Date:", "Date:", ID3_FRAME_YEAR, "dummy");
 #else
-	return meta_get_abstract(meta, str, "Date:", "Date:", "dummy");
+	return meta_get_abstract(meta, str, "Date:", "Date:", "dummy", "dummy");
 #endif /* HAVE_ID3 */
 }
 
@@ -910,6 +995,9 @@ meta_get_year(metadata * meta, char * str) {
 int
 meta_get_comment(metadata * meta, char * str) {
 
-	return meta_get_abstract(meta, str, "Comment:", "Comment:", "XCOM");
+	return meta_get_abstract(meta, str, "Comment:", "Comment:", "XCOM", "dummy");
 }
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

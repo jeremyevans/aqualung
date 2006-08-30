@@ -52,6 +52,7 @@ typedef struct _mod_pdata_t {
 decoder_t * mod_decoder_init(file_decoder_t * fdec);
 #ifdef HAVE_MOD
 void mod_decoder_destroy(decoder_t * dec);
+int is_valid_mod_extension(char * filename);
 int mod_decoder_open(decoder_t * dec, char * filename);
 void mod_decoder_close(decoder_t * dec);
 unsigned int mod_decoder_read(decoder_t * dec, float * dest, int num);

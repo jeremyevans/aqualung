@@ -40,6 +40,7 @@
 #include "gui_main.h"
 #include "music_browser.h"
 #include "file_info.h"
+#include "decoder/dec_mod.h"
 #include "decoder/file_decoder.h"
 #include "meta_decoder.h"
 #include "volume.h"
@@ -1138,6 +1139,10 @@ playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 	metadata * meta = NULL;
 	int use_meta = 0;
 	gchar * substr;
+
+        if (is_valid_mod_extension(physical_name)) {
+                composit = 0;
+        }
 
 	playlist_filemeta * plfm = calloc(1, sizeof(playlist_filemeta));
 	if (!plfm) {

@@ -105,6 +105,10 @@ mod_decoder_destroy(decoder_t * dec) {
 	free(dec);
 }
 
+int
+is_valid_mod_extension(char * filename) {
+	return is_valid_extension(valid_extensions_mod, filename);
+}
 
 int
 mod_decoder_open(decoder_t * dec, char * filename) {
@@ -113,7 +117,7 @@ mod_decoder_open(decoder_t * dec, char * filename) {
 	file_decoder_t * fdec = dec->fdec;
 	
 
-	if (!is_valid_extension(valid_extensions_mod, filename)) {
+	if (!is_valid_mod_extension(filename)) {
 		return DECODER_OPEN_BADLIB;
 	}
 

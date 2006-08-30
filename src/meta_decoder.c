@@ -936,7 +936,7 @@ meta_get_abstract(metadata * meta, char * str, char * tag_flac, char * tag_ogg, 
 
         if (mi != NULL) {
                 if (strcmp(tag_mod, "Title") == 0) {
-                        if (str != NULL) {
+                        if (str != NULL && mi->title != NULL) {
                                 strncpy(str, (char *) mi->title, MAXLEN-1);
                         }
                         return 1;

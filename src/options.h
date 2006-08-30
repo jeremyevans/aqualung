@@ -75,6 +75,7 @@ typedef struct {
 	int enable_mstore_toolbar_shadow;
 	int autoexpand_stores;
 	int enable_ms_rules_hint;
+	int enable_ms_tree_icons;
 	int cover_width;
 	int magnify_smaller_images;
 

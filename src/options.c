@@ -91,6 +91,7 @@ int show_length_in_playlist_shadow;
 int show_active_track_name_in_bold_shadow;
 int enable_pl_rules_hint_shadow;
 int enable_ms_rules_hint_shadow;
+int enable_ms_tree_icons_shadow;
 int rva_is_enabled_shadow;
 int rva_env_shadow;
 float rva_refvol_shadow;
@@ -142,6 +143,7 @@ GtkWidget * check_show_length_in_playlist;
 GtkWidget * check_show_active_track_name_in_bold;
 GtkWidget * check_enable_pl_rules_hint;
 GtkWidget * check_enable_ms_rules_hint;
+GtkWidget * check_enable_ms_tree_icons;
 GtkWidget * check_rva_is_enabled;
 GtkWidget * check_rva_use_averaging;
 GtkWidget * check_auto_use_meta_artist;
@@ -289,7 +291,6 @@ ok(GtkWidget * widget, gpointer data) {
 	options.show_active_track_name_in_bold = show_active_track_name_in_bold_shadow;
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_active_track_name_in_bold))) {
 		options.show_active_track_name_in_bold = 1;
-/*		change_skin(options.skin);*/
 	} else {
 		options.show_active_track_name_in_bold = 0;
                 disable_bold_font_in_playlist();
@@ -311,6 +312,13 @@ ok(GtkWidget * widget, gpointer data) {
 	} else {
 		options.enable_ms_rules_hint = 0;
                 gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(music_tree), FALSE);
+	}
+
+        options.enable_ms_tree_icons = enable_ms_tree_icons_shadow;
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_ms_tree_icons))) {
+		options.enable_ms_tree_icons = 1;
+	} else {
+		options.enable_ms_tree_icons = 0;
 	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_artist))) {
@@ -705,6 +713,16 @@ check_enable_ms_rules_hint_toggled(GtkWidget * widget, gpointer * data) {
 		enable_ms_rules_hint_shadow = 1;
 	} else {
 		enable_ms_rules_hint_shadow = 0;
+	}
+}
+
+void
+check_enable_ms_tree_icons_toggled(GtkWidget * widget, gpointer * data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_enable_ms_tree_icons))) {
+		enable_ms_tree_icons_shadow = 1;
+	} else {
+		enable_ms_tree_icons_shadow = 0;
 	}
 }
 
@@ -2081,6 +2099,18 @@ to set the column order in the Playlist."));
 			 G_CALLBACK(check_enable_ms_rules_hint_toggled), NULL);
 	gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_ms_rules_hint, FALSE, TRUE, 3);
 
+	check_enable_ms_tree_icons =
+		gtk_check_button_new_with_label(_("Enable the Music Store tree icons"));
+        gtk_widget_set_name(check_enable_ms_tree_icons, "check_on_notebook");
+	if (options.enable_ms_tree_icons) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_ms_tree_icons), TRUE);
+	}
+	enable_ms_tree_icons_shadow = options.enable_ms_tree_icons;
+	g_signal_connect(G_OBJECT(check_enable_ms_tree_icons), "toggled",
+			 G_CALLBACK(check_enable_ms_tree_icons_toggled), NULL);
+	g_signal_connect (G_OBJECT (check_enable_ms_tree_icons), "toggled",
+						G_CALLBACK (restart_active), _("Enable Music Store tree icons"));
+	gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_ms_tree_icons, FALSE, TRUE, 3);
 
 	frame_cart = gtk_frame_new(_("Cover art"));
 	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_cart, FALSE, TRUE, 5);
@@ -2162,37 +2192,42 @@ to set the column order in the Playlist."));
 	gtk_container_add(GTK_CONTAINER(scrolled_win), ms_pathlist_view);
 	
 	hbox_ms_pathlist = gtk_hbox_new(FALSE, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist, FALSE, FALSE, 5);
-	
+	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist, FALSE, FALSE, 0);
+
 	entry_ms_pathlist = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), entry_ms_pathlist, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist), entry_ms_pathlist, TRUE, TRUE, 2);
 
 	browse_ms_pathlist = gui_stock_label_button(_("Browse"), GTK_STOCK_OPEN);
+        gtk_container_set_border_width(GTK_CONTAINER(browse_ms_pathlist), 2);
 	g_signal_connect (G_OBJECT(browse_ms_pathlist), "clicked",
 			  G_CALLBACK(browse_ms_pathlist_clicked), (gpointer)entry_ms_pathlist);
-	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist), browse_ms_pathlist, FALSE, FALSE, 3);
+	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist), browse_ms_pathlist, FALSE, FALSE, 0);
 
 	hbox_ms_pathlist_2 = gtk_hbox_new(FALSE, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist_2, TRUE, TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist_2, FALSE, FALSE, 0);
 
         help_pathlist = gtk_button_new_from_stock (GTK_STOCK_HELP); 
+        gtk_container_set_border_width(GTK_CONTAINER(help_pathlist), 2);
 	g_signal_connect(help_pathlist, "clicked", G_CALLBACK(display_pathlist_help), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist_2), help_pathlist, FALSE, FALSE, 0);
 
 	refresh_ms_pathlist = gui_stock_label_button(_("Refresh"), GTK_STOCK_REFRESH);
+        gtk_container_set_border_width(GTK_CONTAINER(refresh_ms_pathlist), 2);
 	g_signal_connect (G_OBJECT(refresh_ms_pathlist), "clicked",
 			  G_CALLBACK(refresh_ms_pathlist_clicked), NULL);
-	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist_2), refresh_ms_pathlist, FALSE, FALSE, 3);
+	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist_2), refresh_ms_pathlist, FALSE, FALSE, 0);
 	
 	remove_ms_pathlist = gui_stock_label_button(_("Remove"), GTK_STOCK_REMOVE);
+        gtk_container_set_border_width(GTK_CONTAINER(remove_ms_pathlist), 2);
 	g_signal_connect (G_OBJECT(remove_ms_pathlist), "clicked",
 			  G_CALLBACK(remove_ms_pathlist_clicked), NULL);
-	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist_2), remove_ms_pathlist, FALSE, FALSE, 3);
+	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist_2), remove_ms_pathlist, FALSE, FALSE, 0);
 
 	add_ms_pathlist = gui_stock_label_button(_("Add"), GTK_STOCK_ADD);
+        gtk_container_set_border_width(GTK_CONTAINER(add_ms_pathlist), 2);
 	g_signal_connect (G_OBJECT(add_ms_pathlist), "clicked",
 			  G_CALLBACK(add_ms_pathlist_clicked), NULL);
-	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist_2), add_ms_pathlist, FALSE, FALSE, 3);
+	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist_2), add_ms_pathlist, FALSE, FALSE, 0);
 
 
 	/* "DSP" notebook page */

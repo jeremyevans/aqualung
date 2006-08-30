@@ -4236,6 +4236,8 @@ save_config(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) "enable_pl_rules_hint", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.enable_ms_rules_hint);
         xmlNewTextChild(root, NULL, (const xmlChar *) "enable_ms_rules_hint", (xmlChar *) str);
+	snprintf(str, 31, "%d", options.enable_ms_tree_icons);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_ms_tree_icons", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", options.auto_use_meta_artist);
         xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_meta_artist", (xmlChar *) str);
@@ -4517,6 +4519,7 @@ load_config(void) {
 	options.default_param[0] = '\0';
 	options.title_format[0] = '\0';
         options.enable_tooltips = 1;
+        options.enable_ms_tree_icons = 1;
         options.show_sn_title = 1;
         options.united_minimization = 1;
         options.buttons_at_the_bottom = 1;
@@ -4665,6 +4668,12 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
 				sscanf((char *) key, "%d", &options.enable_ms_rules_hint);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_ms_tree_icons"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+				sscanf((char *) key, "%d", &options.enable_ms_tree_icons);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_tooltips"))) {

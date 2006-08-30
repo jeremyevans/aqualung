@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 
@@ -1329,6 +1330,7 @@ add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 	char * path;
 	GtkTreeIter iter;
 	int i;
+	struct stat st_file;
 
 	pname = gtk_entry_get_text(GTK_ENTRY(entry_ms_pathlist));
 
@@ -1357,6 +1359,10 @@ add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 		
 		gtk_dialog_run(GTK_DIALOG(dialog));
 		gtk_widget_destroy(dialog);
+		return;
+	}
+
+	if (stat(name, &st_file) != -1 && S_ISDIR(st_file.st_mode)) {
 		return;
 	}
 
@@ -1426,7 +1432,7 @@ void
 browse_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 
         GtkWidget * dialog;
-        const gchar * selected_filename;
+	const gchar * selected_filename = gtk_entry_get_text(GTK_ENTRY(data));
 
 
         dialog = gtk_file_chooser_dialog_new(_("Please select a Music Store database."),
@@ -1439,7 +1445,26 @@ browse_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+
+        if (strlen(selected_filename)) {
+		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
+		char tmp[MAXLEN];
+		tmp[0] = '\0';
+
+		if (locale[0] == '~') {
+			snprintf(tmp, MAXLEN-1, "%s%s", options.home, locale + 1);
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
+		} else if (locale[0] == '/') {
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), locale);
+		} else if (locale[0] != '\0') {
+			snprintf(tmp, MAXLEN-1, "%s/%s", options.cwd, locale + 1);
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
+		}
+
+		g_free(locale);
+	} else {
+                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+	}
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_hidden))) {
 		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
@@ -1474,7 +1499,9 @@ refresh_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 		
 		dialog = gtk_dialog_new_with_buttons(_("Warning"),
 						     GTK_WINDOW(options_window),
-						     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+						     GTK_DIALOG_MODAL |
+						     GTK_DIALOG_DESTROY_WITH_PARENT |
+						     GTK_FILE_CHOOSER_ACTION_OPEN,
 						     GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
 						     _("Discard changes"), GTK_RESPONSE_REJECT,
 						     NULL);
@@ -2142,7 +2169,7 @@ to set the column order in the Playlist."));
 
 	browse_ms_pathlist = gui_stock_label_button(_("Browse"), GTK_STOCK_OPEN);
 	g_signal_connect (G_OBJECT(browse_ms_pathlist), "clicked",
-			  G_CALLBACK(browse_ms_pathlist_clicked), NULL);
+			  G_CALLBACK(browse_ms_pathlist_clicked), (gpointer)entry_ms_pathlist);
 	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist), browse_ms_pathlist, FALSE, FALSE, 3);
 
 	hbox_ms_pathlist_2 = gtk_hbox_new(FALSE, FALSE);

@@ -351,7 +351,6 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
         GtkWidget * dialog;
 	const gchar * selected_filename = gtk_entry_get_text(GTK_ENTRY(data));
 
-
         dialog = gtk_file_chooser_dialog_new(_("Please select the xml file for this store."),
                                              GTK_WINDOW(browser_window),
                                              GTK_FILE_CHOOSER_ACTION_SAVE,
@@ -367,7 +366,19 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
 
         if (strlen(selected_filename)) {
 		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
-                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), locale);
+		char tmp[MAXLEN];
+		tmp[0] = '\0';
+
+		if (locale[0] == '~') {
+			snprintf(tmp, MAXLEN-1, "%s%s", options.home, locale + 1);
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
+		} else if (locale[0] == '/') {
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), locale);
+		} else if (locale[0] != '\0') {
+			snprintf(tmp, MAXLEN-1, "%s/%s", options.cwd, locale + 1);
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
+		}
+
 		g_free(locale);
 	} else {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
@@ -921,6 +932,10 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
 
         set_sliders_width();    /* MAGIC */
 
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
+
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
@@ -928,9 +943,6 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
         gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
         assign_audio_fc_filters(GTK_FILE_CHOOSER(dialog));
 
-	if (options.show_hidden) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
-	}
 
         if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
@@ -1304,7 +1316,6 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
         GtkWidget * dialog;
 	const gchar * selected_filename = gtk_entry_get_text(GTK_ENTRY(data));
 
-
         dialog = gtk_file_chooser_dialog_new(_("Please select the audio file for this track."), 
                                              GTK_WINDOW(browser_window), 
                                              GTK_FILE_CHOOSER_ACTION_OPEN, 
@@ -1314,9 +1325,22 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
 
         set_sliders_width();    /* MAGIC */
 
+
         if (strlen(selected_filename)) {
 		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
-                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), locale);
+		char tmp[MAXLEN];
+		tmp[0] = '\0';
+
+		if (locale[0] == '~') {
+			snprintf(tmp, MAXLEN-1, "%s%s", options.home, locale + 1);
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
+		} else if (locale[0] == '/') {
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), locale);
+		} else if (locale[0] != '\0') {
+			snprintf(tmp, MAXLEN-1, "%s/%s", options.cwd, locale + 1);
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
+		}
+
 		g_free(locale);
 	} else {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);

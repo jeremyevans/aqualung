@@ -338,7 +338,7 @@ remove_directory_cb (GtkButton *button, gpointer user_data) {
 
         if (strcmp(remote_directory, ROOTDIR)) {
 
-                sprintf(temp, _("Directory '%s' will be removed with its entire contents.\n\nAre you sure ?"), 
+                sprintf(temp, _("Directory '%s' will be removed with its entire contents.\n\nAre you sure?"), 
                         remote_directory);
 
                 info_dialog = gtk_message_dialog_new (GTK_WINDOW(aifp_window),
@@ -427,7 +427,7 @@ aifp_directory_listing(gchar *name) {
 
         if (ifp_list_dirs(&ifpdev, "\\", aifp_dump_dir, NULL)) {
 
-                fprintf(stderr, "warning: list dirs failed.\n");
+                fprintf(stderr, "ifp_device.c: aifp_directory_listing(): list dirs failed.\n");
                 return -1;
         }
 
@@ -472,7 +472,7 @@ aifp_update_info(void) {
 
         sprintf(temp, "%d", number_of_songs); 
         gtk_label_set_text(GTK_LABEL(label_songs), temp);
-        sprintf(temp, "%d bytes (%.1f MB)", songs_size, (float)songs_size / (1024*1024)); 
+        sprintf(temp, _("%d bytes (%.1f MB)"), songs_size, (float)songs_size / (1024*1024)); 
         gtk_label_set_text(GTK_LABEL(label_songs_size), temp);
 
         battery_status = ifp_battery(&ifpdev);
@@ -482,16 +482,16 @@ aifp_update_info(void) {
         gtk_label_set_text(GTK_LABEL(label_model), temp);
         
         capacity = ifp_capacity(&ifpdev);
-        sprintf(temp, "%d bytes (%.1f MB)", capacity, (float)capacity / (1024*1024)); 
+        sprintf(temp, _("%d bytes (%.1f MB)"), capacity, (float)capacity / (1024*1024)); 
         gtk_label_set_text(GTK_LABEL(label_capacity), temp);
 
         freespace = ifp_freespace(&ifpdev);
-        sprintf(temp, "%d bytes (%.1f MB)", freespace, (float)freespace / (1024*1024)); 
+        sprintf(temp, _("%d bytes (%.1f MB)"), freespace, (float)freespace / (1024*1024)); 
         gtk_label_set_text(GTK_LABEL(label_freespace), temp);
 
         space = (float)freespace/capacity;
 
-        sprintf(temp, "Free space (%d%%)", (gint)(space*100)); 
+        sprintf(temp, _("Free space (%d%%)"), (gint)(space*100)); 
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_freespace), temp);
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_freespace), space);
 
@@ -554,8 +554,8 @@ aifp_check_and_init_device(void) {
 
         dh = ifp_find_device();
         if (dh == NULL) {
-                aifp_show_message(GTK_MESSAGE_ERROR, _("A suitable iRiver iFP device couldn't be found.\n"
-                                  "Perhaps it's unplugged or turned off."));
+                aifp_show_message(GTK_MESSAGE_ERROR, _("No suitable iRiver iFP device found.\n"
+                                  "Perhaps it is unplugged or turned off."));
                 return -1;
         }
 
@@ -564,12 +564,11 @@ aifp_check_and_init_device(void) {
         /* "must be called" written in the libusb documentation */
         if (usb_claim_interface(dh, dev->config->interface->altsetting->bInterfaceNumber)) {
 
-                aifp_show_message(GTK_MESSAGE_ERROR, _("Device is busy.\n(I was unable to claim its"
-                        " interface.)"));
+                aifp_show_message(GTK_MESSAGE_ERROR, _("Device is busy.\n(Aqualung was unable to claim its interface.)"));
 
                 e = ifp_release_device(dh);
                 if (e) { 
-                        fprintf(stderr, "warning: release_device failed, i=%d\n",e);
+                        fprintf(stderr, "ifp_device.c: aifp_check_and_init_device(): release_device failed, i=%d\n", e);
                 }
 
                 return -1;
@@ -579,14 +578,14 @@ aifp_check_and_init_device(void) {
 
         if (i) {
                 
-                sprintf(temp, _("Device isn't responding..\ntry jiggling the handle. (error %d)"),i);
+                sprintf(temp, _("Device is not responding.\nTry jiggling the handle. (error %d)"),i);
                 aifp_show_message(GTK_MESSAGE_ERROR, temp);
 
                 usb_release_interface(dh, dev->config->interface->altsetting->bInterfaceNumber);
 
                 e = ifp_release_device(dh);
                 if (e) { 
-                        fprintf(stderr, "warning: release_device failed, i=%d\n",e);
+                        fprintf(stderr, "ifp_device.c: aifp_check_and_init_device(): release_device failed, i=%d\n", e);
                 }
 
                 return -1;
@@ -604,7 +603,7 @@ aifp_window_close(GtkWidget * widget, gpointer * data) {
         e = ifp_finalize(&ifpdev);
 
         if (e) { 
-                fprintf(stderr, "warning: finalize failed, i=%d\n",e);  
+                fprintf(stderr, "ifp_device.c: aifp_window_close(): finalize failed, i=%d\n", e);  
         }
 
         usb_release_interface(dh, dev->config->interface->altsetting->bInterfaceNumber);
@@ -612,7 +611,7 @@ aifp_window_close(GtkWidget * widget, gpointer * data) {
         e = ifp_release_device(dh);
 
         if (e) { 
-                fprintf(stderr, "warning: release_device failed, i=%d\n",e); 
+                fprintf(stderr, "ifp_device.c: aifp_window_close(): release_device failed, i=%d\n", e); 
         }
 
         gtk_widget_destroy(aifp_window);
@@ -690,7 +689,7 @@ void aifp_transfer_files(void) {
         number_of_songs = aifp_get_songs_info();
 
         if (!number_of_songs) {
-                aifp_show_message(GTK_MESSAGE_WARNING, _("Please select at least one song from playlist..."));
+                aifp_show_message(GTK_MESSAGE_WARNING, _("Please select at least one song from playlist."));
                 return;
         }
 
@@ -926,7 +925,7 @@ void aifp_transfer_files(void) {
         if (options.enable_tooltips) {
                 gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), mkdir_button, _("Create a new directory"), NULL);
                 gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), rndir_button, _("Rename directory"), NULL);
-                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), rmdir_button, _("Remove directory and its entire contents"), NULL);
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), rmdir_button, _("Remove directory with its entire contents"), NULL);
         }
 
         label = gtk_label_new (_("<b>Destination directory</b>"));

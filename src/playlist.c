@@ -1140,9 +1140,11 @@ playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 	int use_meta = 0;
 	gchar * substr;
 
+#ifdef HAVE_MOD
         if (is_valid_mod_extension(physical_name)) {
                 composit = 0;
         }
+#endif /* HAVE_MOD */
 
 	playlist_filemeta * plfm = calloc(1, sizeof(playlist_filemeta));
 	if (!plfm) {

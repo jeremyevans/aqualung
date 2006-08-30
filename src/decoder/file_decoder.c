@@ -69,6 +69,29 @@ decoder_init_t * decoder_init_v[N_DECODERS] = {
 };
 
 
+/* utility function used by some decoders to check file extension */
+int
+is_valid_extension(char ** valid_extensions, char * filename) {
+
+	int i = 0;
+	char * c = NULL;
+
+	if ((c = strrchr(filename, '.')) == NULL) {
+		return 0;
+	}
+	++c;
+
+	while (valid_extensions[i] != NULL) {
+
+		if (strcmp(c, valid_extensions[i]) == 0) {
+			return 1;
+		}
+		++i;
+	}
+	return 0;
+}
+
+
 file_decoder_t *
 file_decoder_new(void) {
 

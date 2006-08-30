@@ -67,6 +67,12 @@ extern size_t sample_size;
 #define EMPHASIS_MASK 3L
 
 
+/* list of accepted file extensions */
+char * valid_extensions_mpeg[] = {
+	"mp3", "mpa", "mpga", "mpega", "abs", "mp2", "mp2a", "mpa2", NULL
+};
+
+
 /* MPEG Version table, sorted by version index */
 static const signed char version_table[4] = {
 	MPEG_VERSION2_5, -1, MPEG_VERSION2, MPEG_VERSION1
@@ -755,6 +761,10 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	file_decoder_t * fdec = dec->fdec;
 	int i;
 	struct stat exp_stat;
+
+	if (!is_valid_extension(valid_extensions_mpeg, filename)) {
+		return DECODER_OPEN_BADLIB;
+	}
 
 	if ((pd->fd = open(filename, O_RDONLY)) == 0) {
 		fprintf(stderr, "mpeg_decoder_open: open() failed for MPEG Audio file\n");

@@ -35,6 +35,15 @@ extern size_t sample_size;
 
 
 #ifdef HAVE_MOD
+
+/* list of accepted file extensions */
+char * valid_extensions_mod[] = {
+	"669", "amf", "ams", "dbm", "dmf", "dsm", "far", "it",
+	"j2b", "mdl", "med", "mod", "mt2", "mtm", "okt", "psm",
+	"ptm", "s3m", "stm", "ult", "umx", "xm", NULL
+};
+
+
 /* return 1 if reached end of stream, 0 else */
 int
 decode_mod(decoder_t * dec) {
@@ -103,6 +112,10 @@ mod_decoder_open(decoder_t * dec, char * filename) {
 	mod_pdata_t * pd = (mod_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 	
+
+	if (!is_valid_extension(valid_extensions_mod, filename)) {
+		return DECODER_OPEN_BADLIB;
+	}
 
 	if ((pd->fd = open(filename, O_RDONLY)) == -1) {
 		fprintf(stderr,

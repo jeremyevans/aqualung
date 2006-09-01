@@ -33,6 +33,7 @@ style "plugin_scrwin" = "window"
 widget "*GtkWindow*" style "window"
 widget "*Dialog*" style "window"
 widget "*FileSelection*" style "window"
+widget "*playlist_window*" style "window"
 widget "*main_window" style "main_window"
 
 
@@ -178,15 +179,8 @@ widget "*nostyle" style "nostyle"
 
 # --- checkbutton
 
-style "check_notebook" = "button"
-{
-	bg_pixmap[NORMAL] = "wood4.png"
-	bg_pixmap[PRELIGHT] = "wood4.png"
-	bg_pixmap[ACTIVE] = "wood4.png"
-}
-
 widget "*check_on_window" style "window"
-widget "*check_on_notebook" style "check_notebook"
+widget "*check_on_notebook" style "button"
 
 # --- main window
 

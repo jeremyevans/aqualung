@@ -3389,6 +3389,7 @@ create_main_window(char * skin_path) {
 
         if (options.playlist_is_embedded && options.buttons_at_the_bottom) {
 		playlist_window = gtk_vbox_new(FALSE, 0);
+		gtk_widget_set_name(playlist_window, "playlist_window");
 		gtk_box_pack_start(GTK_BOX(vbox), playlist_window, TRUE, TRUE, 3);
 	}
 
@@ -3500,6 +3501,7 @@ create_main_window(char * skin_path) {
 	/* Embedded playlist */
 	if (options.playlist_is_embedded && !options.buttons_at_the_bottom) {
 		playlist_window = gtk_vbox_new(FALSE, 0);
+		gtk_widget_set_name(playlist_window, "playlist_window");
 		gtk_box_pack_start(GTK_BOX(vbox), playlist_window, TRUE, TRUE, 3);
 	}
 

@@ -32,6 +32,7 @@ style "plugin_scrwin" = "window"
 widget "*GtkWindow*" style "window"
 widget "*Dialog*" style "window"
 widget "*FileSelection*" style "window"
+widget "*playlist_window*" style "window"
 widget "*main_window" style "main_window"
 
 

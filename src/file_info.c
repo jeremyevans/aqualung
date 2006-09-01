@@ -120,6 +120,7 @@ dismiss(GtkWidget * widget, gpointer data) {
         if (md_fdec) {
                 file_decoder_close(md_fdec);
                 file_decoder_delete(md_fdec);
+                md_fdec = NULL;
         }
 #endif /* HAVE_MOD_INFO */
 
@@ -801,7 +802,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	mdi = meta->mod_root;
 	if (mdi->active) {
                 if ((md_fdec = file_decoder_new()) == NULL) {
-                        fprintf(stderr, "fill_module_info_page(): error: file_decoder_new() returned NULL\n");
+                        fprintf(stderr, "show_file_info(): error: file_decoder_new() returned NULL\n");
                 }
 
                 if (file_decoder_open(md_fdec, file)) {
@@ -809,11 +810,16 @@ show_file_info(char * name, char * file, int is_called_from_browser,
                 }
 
                 if (md_fdec->file_lib == MOD_LIB) {
+
                         vbox_mod = gtk_vbox_new(FALSE, 4);
                         label_mod = gtk_label_new(_("Module info"));
                         gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_mod, label_mod);
                         page++;
                         fill_module_info_page(mdi, vbox_mod, file);
+                } else {
+
+                        file_decoder_close(md_fdec);
+                        file_decoder_delete(md_fdec);
                 }
         }
 #endif /* HAVE_MOD_INFO */

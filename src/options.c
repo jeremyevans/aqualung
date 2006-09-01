@@ -1815,7 +1815,7 @@ create_options_window(void) {
 
 
         check_main_window_always_on_top = gtk_check_button_new_with_label(_("Keep main window always on top"));
-	gtk_widget_set_name(check_main_window_always_on_top, "main_window_always_on_top");
+	gtk_widget_set_name(check_main_window_always_on_top, "check_on_notebook");
 	if (options.main_window_always_on_top) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_main_window_always_on_top), TRUE);
 	}

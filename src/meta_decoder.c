@@ -101,6 +101,7 @@ modinfo_new(void) {
 	}
 
 	new->title = NULL;
+	new->active = 0;
 
 	return new;
 }
@@ -647,8 +648,15 @@ meta_read(metadata * meta, char * file) {
 		mod_info * mi = modinfo_new();
                 
 		mi->title = strdup(ModPlug_GetName(pd->mpf));
+                mi->active = 1;
+#ifdef HAVE_MOD_INFO
+                mi->type = ModPlug_GetModuleType(pd->mpf);
+                mi->samples = ModPlug_NumSamples(pd->mpf);
+                mi->instruments = ModPlug_NumInstruments(pd->mpf);
+                mi->patterns = ModPlug_NumPatterns(pd->mpf);
+                mi->channels = ModPlug_NumChannels(pd->mpf);
+#endif /* HAVE_MOD_INFO */
                 append_mod(meta, mi);
-                
         }
 #endif /* HAVE_MOD */
 

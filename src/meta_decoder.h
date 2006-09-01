@@ -32,6 +32,10 @@
 #include <FLAC/metadata.h>
 #endif /* HAVE_FLAC */
 
+#ifdef HAVE_MOD
+#include <libmodplug/modplug.h>
+#endif /* HAVE_MOD */
+
 #include "decoder/file_decoder.h"
 
 
@@ -57,6 +61,14 @@ typedef struct _oggv_comment {
 #ifdef HAVE_MOD
 typedef struct _mod_info {
 	char * title;
+        int active;
+#ifdef HAVE_MOD_INFO
+        int type;
+        unsigned int samples;
+        unsigned int instruments;
+        unsigned int patterns;
+        unsigned int channels;
+#endif /* HAVE_MOD_INFO */
 } mod_info;
 #endif /* HAVE_MOD */
 

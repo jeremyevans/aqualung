@@ -361,8 +361,17 @@ else
 	if test "$mod" = "detect"; then
 		mod=$lib
 	fi
+    AC_MSG_CHECKING(for Module info)
+    AC_MSG_CHECKING(whether libmodplug version >= 0.8)
+    if pkg-config --exists 'libmodplug >= 0.8'; then
+            AC_MSG_RESULT(yes)
+        AC_DEFINE([HAVE_MOD_INFO], [1], [Defined if version(libmodplug) >= 0.8])
+        lib="yes"
+    else
+        AC_MSG_RESULT(no)
+        lib="no"
+    fi
 fi
-
 
 AC_MSG_CHECKING(for Musepack support)
 AC_ARG_WITH(

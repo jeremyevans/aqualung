@@ -2867,7 +2867,7 @@ record__add_cb(gpointer data) {
                                                                            2, strings[i], 3, "",
                                                                            4, get_file_duration(strings[i]),
                                                                            5, volume, 7, use_rva, 
-                                                                           9, icon_record, -1);
+                                                                           9, icon_track, -1);
                                                 } else {
                                                         gtk_tree_store_set(music_store, &child_iter,
                                                                            0, utf8, 1, str_n,

@@ -78,6 +78,9 @@ extern GdkPixbuf * icon_artist;
 extern GdkPixbuf * icon_record;
 extern GdkPixbuf * icon_track;
 
+extern char * valid_extensions_mpeg[];
+extern char * valid_extensions_mod[];
+
 AQUALUNG_THREAD_DECLARE(build_thread_id)
 
 
@@ -691,8 +694,8 @@ build_dialog(void) {
 	GdkColor red = { 0, 30000, 0, 0 };
 
 	char * title = NULL;
-        int ret;
-	char filter[MAXLEN];
+        int i, ret;
+	char filter[20480];
 	char * pfilter = NULL;
 
 
@@ -889,7 +892,11 @@ build_dialog(void) {
 #endif /* HAVE_OGG_VORBIS */
 
 #ifdef HAVE_MPEG
-	strcat(filter, "*.mp[123],");
+	for (i = 0; valid_extensions_mpeg[i] != NULL; i++) {
+		strcat(filter, "*.");
+		strcat(filter, valid_extensions_mpeg[i]);
+		strcat(filter, ",");
+	}
 #endif /* HAVE_MPEG */
 
 #ifdef HAVE_SPEEX
@@ -905,7 +912,11 @@ build_dialog(void) {
 #endif /* HAVE_MAC */
 
 #ifdef HAVE_MOD
-	strcat(filter, "*.mod,*.xm,*.it,*.s3m,");
+	for (i = 0; valid_extensions_mod[i] != NULL; i++) {
+		strcat(filter, "*.");
+		strcat(filter, valid_extensions_mod[i]);
+		strcat(filter, ",");
+	}
 #endif /* HAVE_MOD */
 
 	if ((pfilter = strrchr(filter, ',')) != NULL) {

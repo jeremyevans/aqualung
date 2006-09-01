@@ -158,13 +158,15 @@ mp3headerinfo(mp3info_t *info, unsigned long header) {
 	/* Calculate number of bytes, calculation depends on layer */
 	if (info->layer == 0) {
 		info->frame_samples = 384;
-		info->frame_size = (12000 * info->bitrate / info->frequency + info->padding) * 4;
-	} else if ((info->version > MPEG_VERSION1) && (info->layer == 2)) {
-		info->frame_samples = 576;
+		info->frame_size = (12000 * info->bitrate / info->frequency 
+				    + info->padding) * 4;
 	} else {
-		info->frame_samples = 1152;
-		info->frame_size = (1000/8) * info->frame_samples * info->bitrate / info->frequency
-			+ info->padding;
+		if ((info->version > MPEG_VERSION1) && (info->layer == 2))
+			info->frame_samples = 576;
+		else
+			info->frame_samples = 1152;
+		info->frame_size = (1000/8) * info->frame_samples * info->bitrate
+			/ info->frequency + info->padding;
 	}
 	
 	/* Frametime fraction calculation.
@@ -173,12 +175,15 @@ mp3headerinfo(mp3info_t *info, unsigned long header) {
 		/* integer number of milliseconds, denominator == 1 */
 		info->ft_num = 1000 * info->frame_samples / info->frequency;
 		info->ft_den = 1;
-	} else /* 44.1/22.05/11.025 kHz */ if (info->layer == 0) {
-		info->ft_num = 147000 * 384 / info->frequency;
-		info->ft_den = 147;
-	} else {
-		info->ft_num = 49000 * info->frame_samples / info->frequency;
-		info->ft_den = 49;
+	} else {                /* 44.1/22.05/11.025 kHz */
+		if (info->layer == 0) {
+			info->ft_num = 147000 * 384 / info->frequency;
+			info->ft_den = 147;
+		}
+		else {
+			info->ft_num = 49000 * info->frame_samples / info->frequency;
+			info->ft_den = 49;
+		}
 	}
 	
 	info->channel_mode = (header & CHANNELMODE_MASK) >> 6;
@@ -186,12 +191,14 @@ mp3headerinfo(mp3info_t *info, unsigned long header) {
 	info->emphasis = header & EMPHASIS_MASK;
 
 #ifdef MPEG_DEBUG	
-/*	printf( "Header: %08x, Ver %d, lay %d, bitr %d, freq %ld, "
+	/*
+	printf( "Header: %08x, Ver %d, lay %d, bitr %d, freq %ld, "
 		"chmode %d, mode_ext %d, emph %d, bytes: %d time: %d/%d\n",
 		header, info->version, info->layer+1, info->bitrate,
 		info->frequency, info->channel_mode, info->mode_extension,
 		info->emphasis, info->frame_size, info->ft_num, info->ft_den);
-*/
+	*/
+
 #endif /* MPEG_DEBUG */
 	return 1;
 }
@@ -263,22 +270,25 @@ get_mp3file_info(int fd, mp3info_t *info) {
 	long offset;
 	int j;
 	long tmp;
-	
+	int ret;
+
 	header = find_next_frame(fd, &bytecount, 0x100000, 0);
 	/* Quit if we haven't found a valid header within 1M */
-	if(header == 0)
+	if (header == 0)
 		return -1;
 	
 	memset(info, 0, sizeof(mp3info_t));
 	/* These two are needed for proper LAME gapless MP3 playback */
 	info->enc_delay = -1;
 	info->enc_padding = -1;
-	if(!mp3headerinfo(info, header))
+	if (!mp3headerinfo(info, header))
 		return -2;
 	
 	/* OK, we have found a frame. Let's see if it has a Xing header */
-	if(read(fd, frame, info->frame_size-4) < 0)
+	if ((ret = read(fd, frame, info->frame_size-4)) < 0) {
+		printf("read(): %s\n", strerror(ret));
 		return -3;
+	}
 	
 	/* calculate position of VBR header */
 	if ( info->version == MPEG_VERSION1 ) {
@@ -319,16 +329,16 @@ get_mp3file_info(int fd, mp3info_t *info) {
 		/* Is it a VBR file? */
 		info->is_vbr = info->is_xing_vbr = !memcmp(vbrheader, "Xing", 4);
 		
-		if (vbrheader[7] & VBR_FRAMES_FLAG) /* Is the frame count there? */
-			{
-				info->frame_count = BYTES2INT(vbrheader[i], vbrheader[i+1],
-							      vbrheader[i+2], vbrheader[i+3]);
-				if (info->frame_count <= ULONG_MAX / info->ft_num)
-					info->file_time = info->frame_count * info->ft_num / info->ft_den;
-				else
-					info->file_time = info->frame_count / info->ft_den * info->ft_num;
-				i += 4;
-			}
+		if (vbrheader[7] & VBR_FRAMES_FLAG) { /* Is the frame count there? */
+			
+			info->frame_count = BYTES2INT(vbrheader[i], vbrheader[i+1],
+						      vbrheader[i+2], vbrheader[i+3]);
+			if (info->frame_count <= ULONG_MAX / info->ft_num)
+				info->file_time = info->frame_count * info->ft_num / info->ft_den;
+			else
+				info->file_time = info->frame_count / info->ft_den * info->ft_num;
+			i += 4;
+		}
 		
 		if (vbrheader[7] & VBR_BYTES_FLAG) { /* Is byte count there? */
 			info->byte_count = BYTES2INT(vbrheader[i], vbrheader[i+1],
@@ -912,6 +922,9 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_FERROR;
 	}
 
+#ifdef MPEG_DEBUG
+	printf("mpeg_decoder_open successful\n");
+#endif /* MPEG_DEBUG */
 	return DECODER_OPEN_SUCCESS;
 }
 
@@ -924,6 +937,9 @@ mpeg_decoder_close(decoder_t * dec) {
 	/* take care of seek table builder thread, if there is any */
 	if (pd->builder_thread_running) {
 		pd->builder_thread_running = 0;
+#ifdef MPEG_DEBUG
+		printf("joining seek table builder thread\n");
+#endif /* MPEG_DEBUG */
 		AQUALUNG_THREAD_JOIN(pd->seek_builder_id)
 #ifdef MPEG_DEBUG
 		printf("joined seek table builder thread\n");
@@ -937,6 +953,9 @@ mpeg_decoder_close(decoder_t * dec) {
 		fprintf(stderr, "Error while munmap()'ing MPEG Audio file mapping\n");
 	close(pd->fd);
 	rb_free(pd->rb);
+#ifdef MPEG_DEBUG
+	printf("mpeg_decoder_close successful\n");
+#endif /* MPEG_DEBUG */
 }
 
 
@@ -949,6 +968,9 @@ mpeg_decoder_read(decoder_t * dec, float * dest, int num) {
 	unsigned int n_avail = 0;
 
 	if (!pd->seek_table_built) {
+#ifdef MPEG_DEBUG
+		printf("first read from mpeg file\n");
+#endif /* MPEG_DEBUG */
 		/* locate last two audio frames (for gapless playback) */
 		last_two_frames(pd);
 		/* read mmap'ed file and build seek table in background thread.

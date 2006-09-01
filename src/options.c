@@ -1783,7 +1783,7 @@ create_options_window(void) {
 	gtk_box_pack_start(GTK_BOX(vbox_general), frame_misc, FALSE, TRUE, 5);
 
 	vbox_misc = gtk_vbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox_misc), 10);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_misc), 8);
 	gtk_container_add(GTK_CONTAINER(frame_misc), vbox_misc);
 
 	check_enable_tooltips =
@@ -1870,7 +1870,7 @@ create_options_window(void) {
 
         /* "Playlist" notebook page */
 
-	vbox_pl = gtk_vbox_new(FALSE, 0);
+	vbox_pl = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_pl), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_pl, create_notebook_tab(_("Playlist"), "playlist.png"));
 	
@@ -1880,7 +1880,7 @@ create_options_window(void) {
 	if (options.playlist_is_embedded_shadow) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded), TRUE);
 	}
-	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_embedded, FALSE, TRUE, 3);
+	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_embedded, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (check_playlist_is_embedded), "toggled",
 		G_CALLBACK (restart_active), _("Embed playlist into main window"));
 
@@ -1893,7 +1893,7 @@ create_options_window(void) {
 	auto_save_playlist_shadow = options.auto_save_playlist;
 	g_signal_connect(G_OBJECT(check_autoplsave), "toggled",
 			 G_CALLBACK(autoplsave_toggled), NULL);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), check_autoplsave, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_autoplsave, FALSE, TRUE, 0);
 
         check_playlist_is_tree =
 		gtk_check_button_new_with_label(_("Album mode is the default when adding entire records"));
@@ -1901,7 +1901,7 @@ create_options_window(void) {
 	if (options.playlist_is_tree) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_tree), TRUE);
 	}
-	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_tree, FALSE, TRUE, 3);
+	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_tree, FALSE, TRUE, 0);
 
         check_album_shuffle_mode =
 		gtk_check_button_new_with_label(_("When shuffling, records added in Album mode "
@@ -1910,7 +1910,7 @@ create_options_window(void) {
 	if (options.album_shuffle_mode) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_album_shuffle_mode), TRUE);
 	}
-	gtk_box_pack_start(GTK_BOX(vbox_pl), check_album_shuffle_mode, FALSE, TRUE, 3);
+	gtk_box_pack_start(GTK_BOX(vbox_pl), check_album_shuffle_mode, FALSE, TRUE, 0);
 
 	check_enable_playlist_statusbar =
 		gtk_check_button_new_with_label(_("Enable statusbar"));
@@ -1921,7 +1921,7 @@ create_options_window(void) {
 	options.enable_playlist_statusbar_shadow = options.enable_playlist_statusbar;
 	g_signal_connect(G_OBJECT(check_enable_playlist_statusbar), "toggled",
 			 G_CALLBACK(restart_active), _("Enable statusbar in playlist"));
-        gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_playlist_statusbar, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_playlist_statusbar, FALSE, TRUE, 0);
 
 	check_pl_statusbar_show_size =
 		gtk_check_button_new_with_label(_("Show soundfile size in statusbar"));
@@ -1932,7 +1932,7 @@ create_options_window(void) {
 	pl_statusbar_show_size_shadow = options.pl_statusbar_show_size;
 	g_signal_connect(G_OBJECT(check_pl_statusbar_show_size), "toggled",
 			 G_CALLBACK(check_pl_statusbar_show_size_toggled), NULL);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), check_pl_statusbar_show_size, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_pl_statusbar_show_size, FALSE, TRUE, 0);
 
         check_show_rva_in_playlist =
 		gtk_check_button_new_with_label(_("Show RVA values"));
@@ -1943,7 +1943,7 @@ create_options_window(void) {
 	show_rva_in_playlist_shadow = options.show_rva_in_playlist;
 	g_signal_connect(G_OBJECT(check_show_rva_in_playlist), "toggled",
 			 G_CALLBACK(check_show_rva_in_playlist_toggled), NULL);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_rva_in_playlist, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_rva_in_playlist, FALSE, TRUE, 0);
 
 	check_show_length_in_playlist =
 		gtk_check_button_new_with_label(_("Show track lengths"));
@@ -1954,7 +1954,7 @@ create_options_window(void) {
 	show_length_in_playlist_shadow = options.show_length_in_playlist;
 	g_signal_connect(G_OBJECT(check_show_length_in_playlist), "toggled",
 			 G_CALLBACK(check_show_length_in_playlist_toggled), NULL);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_length_in_playlist, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_length_in_playlist, FALSE, TRUE, 0);
 	
         track_name_in_bold_past_state = options.show_active_track_name_in_bold;
 
@@ -1967,7 +1967,7 @@ create_options_window(void) {
 	show_active_track_name_in_bold_shadow = options.show_active_track_name_in_bold;
 	g_signal_connect(G_OBJECT(check_show_active_track_name_in_bold), "toggled",
 			 G_CALLBACK(check_show_active_track_name_in_bold_toggled), NULL);
-        gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_active_track_name_in_bold, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_active_track_name_in_bold, FALSE, TRUE, 0);
 
 	check_enable_pl_rules_hint =
 		gtk_check_button_new_with_label(_("Enable rules hint"));
@@ -1978,7 +1978,7 @@ create_options_window(void) {
 	enable_pl_rules_hint_shadow = options.enable_pl_rules_hint;
 	g_signal_connect(G_OBJECT(check_enable_pl_rules_hint), "toggled",
 			 G_CALLBACK(check_enable_pl_rules_hint_toggled), NULL);
-	gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_pl_rules_hint, FALSE, TRUE, 3);
+	gtk_box_pack_start(GTK_BOX(vbox_pl), check_enable_pl_rules_hint, FALSE, TRUE, 0);
 
         frame_plistcol = gtk_frame_new(_("Playlist column order"));
         gtk_box_pack_start(GTK_BOX(vbox_pl), frame_plistcol, FALSE, TRUE, 5);
@@ -2034,12 +2034,12 @@ to set the column order in the Playlist."));
 
         /* "Music store" notebook page */
 
-	vbox_ms = gtk_vbox_new(FALSE, 0);
+	vbox_ms = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_ms), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_ms, create_notebook_tab(_("Music Store"), "music_store.png"));
 
 	check_hide_comment_pane =
-		gtk_check_button_new_with_label(_("Hide the Music Store comment pane"));
+		gtk_check_button_new_with_label(_("Hide comment pane"));
 	gtk_widget_set_name(check_hide_comment_pane, "check_on_notebook");
 	if (options.hide_comment_pane_shadow) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_hide_comment_pane), TRUE);
@@ -2056,7 +2056,7 @@ to set the column order in the Playlist."));
 	options.enable_mstore_toolbar_shadow = options.enable_mstore_toolbar;
 	g_signal_connect(G_OBJECT(check_enable_mstore_toolbar), "toggled",
 			 G_CALLBACK(restart_active), _("Enable toolbar in Music Store"));
-        gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_mstore_toolbar, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_mstore_toolbar, FALSE, TRUE, 0);
 
 	check_enable_mstore_statusbar =
 		gtk_check_button_new_with_label(_("Enable statusbar"));
@@ -2067,7 +2067,7 @@ to set the column order in the Playlist."));
 	options.enable_mstore_statusbar_shadow = options.enable_mstore_statusbar;
 	g_signal_connect(G_OBJECT(check_enable_mstore_statusbar), "toggled",
 			 G_CALLBACK(restart_active), _("Enable statusbar in Music Store"));
-        gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_mstore_statusbar, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_mstore_statusbar, FALSE, TRUE, 0);
 
 	check_ms_statusbar_show_size =
 		gtk_check_button_new_with_label(_("Show soundfile size in statusbar"));
@@ -2078,7 +2078,7 @@ to set the column order in the Playlist."));
 	ms_statusbar_show_size_shadow = options.ms_statusbar_show_size;
 	g_signal_connect(G_OBJECT(check_ms_statusbar_show_size), "toggled",
 			 G_CALLBACK(check_ms_statusbar_show_size_toggled), NULL);
-        gtk_box_pack_start(GTK_BOX(vbox_ms), check_ms_statusbar_show_size, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_ms), check_ms_statusbar_show_size, FALSE, TRUE, 0);
 
 
 	check_expand_stores = gtk_check_button_new_with_label(_("Expand Stores on startup"));
@@ -2097,10 +2097,10 @@ to set the column order in the Playlist."));
 	enable_ms_rules_hint_shadow = options.enable_ms_rules_hint;
 	g_signal_connect(G_OBJECT(check_enable_ms_rules_hint), "toggled",
 			 G_CALLBACK(check_enable_ms_rules_hint_toggled), NULL);
-	gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_ms_rules_hint, FALSE, TRUE, 3);
+	gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_ms_rules_hint, FALSE, TRUE, 0);
 
 	check_enable_ms_tree_icons =
-		gtk_check_button_new_with_label(_("Enable the Music Store tree icons"));
+		gtk_check_button_new_with_label(_("Enable tree node icons"));
         gtk_widget_set_name(check_enable_ms_tree_icons, "check_on_notebook");
 	if (options.enable_ms_tree_icons) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_ms_tree_icons), TRUE);
@@ -2109,8 +2109,8 @@ to set the column order in the Playlist."));
 	g_signal_connect(G_OBJECT(check_enable_ms_tree_icons), "toggled",
 			 G_CALLBACK(check_enable_ms_tree_icons_toggled), NULL);
 	g_signal_connect (G_OBJECT (check_enable_ms_tree_icons), "toggled",
-						G_CALLBACK (restart_active), _("Enable Music Store tree icons"));
-	gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_ms_tree_icons, FALSE, TRUE, 3);
+			  G_CALLBACK (restart_active), _("Enable Music Store tree node icons"));
+	gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_ms_tree_icons, FALSE, TRUE, 0);
 
 	frame_cart = gtk_frame_new(_("Cover art"));
 	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_cart, FALSE, TRUE, 5);
@@ -2140,7 +2140,7 @@ to set the column order in the Playlist."));
 	g_signal_connect(optmenu_cwidth, "changed", G_CALLBACK(changed_cover_width), NULL);
 
         check_magnify_smaller_images =
-		gtk_check_button_new_with_label(_("Don't magnify images with smaller width"));
+		gtk_check_button_new_with_label(_("Do not magnify images with smaller width"));
 	gtk_widget_set_name(check_magnify_smaller_images, "check_on_notebook");
 	if (!options.magnify_smaller_images) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_magnify_smaller_images), TRUE);
@@ -2151,7 +2151,7 @@ to set the column order in the Playlist."));
 	frame_ms_pathlist = gtk_frame_new(_("Paths to Music Store databases"));
 	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_ms_pathlist, FALSE, TRUE, 5);
 	
-	vbox_ms_pathlist = gtk_vbox_new(FALSE, FALSE);
+	vbox_ms_pathlist = gtk_vbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_ms_pathlist), 10);
 	gtk_container_add(GTK_CONTAINER(frame_ms_pathlist), vbox_ms_pathlist);
 

@@ -884,7 +884,7 @@ meta_get_abstract(metadata * meta, char * str, char * tag_flac, char * tag_ogg, 
 
 
 	if (meta == NULL) {
-		fprintf(stderr, "meta_get_title(): assertion meta != NULL failed\n");
+		fprintf(stderr, "meta_get_abstract(): assertion meta != NULL failed\n");
 		return 0;
 	}
 

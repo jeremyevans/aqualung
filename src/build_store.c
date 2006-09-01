@@ -849,7 +849,7 @@ build_dialog(void) {
 
         gen_entry_excl = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(gen_entry_excl), MAXLEN-1);
-	gtk_entry_set_text(GTK_ENTRY(gen_entry_excl), "*.jpg,*.png,*.gif,*.pls,*.m3u,*.xml,*.html,*.htm,*.txt,*.avi,*.cue");
+	gtk_entry_set_text(GTK_ENTRY(gen_entry_excl), "*.jpg,*.jpeg,*.png,*.gif,*.pls,*.m3u,*.cue,*.xml,*.html,*.htm,*.txt,*.avi");
         gtk_box_pack_end(GTK_BOX(gen_excl_frame_hbox), gen_entry_excl, TRUE, TRUE, 0);
 
 	if (excl_enabled) {
@@ -905,10 +905,7 @@ build_dialog(void) {
 #endif /* HAVE_MAC */
 
 #ifdef HAVE_MOD
-	strcat(filter, "*.mod,");
-	strcat(filter, "*.xm,");
-	strcat(filter, "*.it,");
-	strcat(filter, "*.s3m,");
+	strcat(filter, "*.mod,*.xm,*.it,*.s3m,");
 #endif /* HAVE_MOD */
 
 	if ((pfilter = strrchr(filter, ',')) != NULL) {
@@ -1018,7 +1015,7 @@ build_dialog(void) {
 
 
 	gen_check_reset_data =
-		gtk_check_button_new_with_label(_("Re-read data for existing tracks"));
+		gtk_check_button_new_with_label(_("Reread data for existing tracks"));
 	gtk_widget_set_name(gen_check_reset_data, "check_on_notebook");
         gtk_box_pack_start(GTK_BOX(gen_vbox), gen_check_reset_data, FALSE, FALSE, 0);
 

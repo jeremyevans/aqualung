@@ -171,8 +171,6 @@ GtkWidget * blank__add;
 GtkWidget * blank__search;
 GtkWidget * blank__save;
 
-int drag_info;
-
 GtkWidget * save_button;
 
 GtkWidget * name_entry;

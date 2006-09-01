@@ -83,7 +83,7 @@ is_valid_extension(char ** valid_extensions, char * filename) {
 
 	while (valid_extensions[i] != NULL) {
 
-		if (strcmp(c, valid_extensions[i]) == 0) {
+		if (strcasecmp(c, valid_extensions[i]) == 0) {
 			return 1;
 		}
 		++i;

@@ -36,6 +36,9 @@
 #include <pthread.h>
 #endif /* _WIN32 */
 
+#ifdef HAVE_MOD
+#include "dec_mod.h"
+#endif /* HAVE_MOD */
 #include "dec_mpeg.h"
 
 
@@ -261,8 +264,8 @@ get_mp3file_info(int fd, mp3info_t *info) {
 	int j;
 	long tmp;
 	
-	header = find_next_frame(fd, &bytecount, 0x20000, 0);
-	/* Quit if we haven't found a valid header within 128K */
+	header = find_next_frame(fd, &bytecount, 0x100000, 0);
+	/* Quit if we haven't found a valid header within 1M */
 	if(header == 0)
 		return -1;
 	
@@ -762,9 +765,14 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	int i;
 	struct stat exp_stat;
 
-	if (!is_valid_extension(valid_extensions_mpeg, filename)) {
+#ifdef HAVE_MOD
+	if (is_valid_mod_extension(filename)) {
+#ifdef MPEG_DEBUG
+		printf("invalid extension of %s\n", filename);
+#endif /* MPEG_DEBUG */
 		return DECODER_OPEN_BADLIB;
 	}
+#endif /* HAVE_MOD */
 
 	if ((pd->fd = open(filename, O_RDONLY)) == 0) {
 		fprintf(stderr, "mpeg_decoder_open: open() failed for MPEG Audio file\n");

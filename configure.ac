@@ -273,11 +273,11 @@ AC_ARG_WITH(
 if test "$speex" = "no"; then
 	AC_MSG_RESULT(no)
 else
-	AC_CHECK_LIB(oggz, oggz_open, [oggzlib=yes], [oggzlib=no], [-loggz])
+	AC_CHECK_LIB(oggz, oggz_open, [oggzlib=yes], [oggzlib=no], [-loggz -logg])
 	AC_CHECK_LIB(speex, speex_bits_init, [speexlib=yes], [speexlib=no], [-lspeex])
 	if test "$oggzlib" = "yes"; then
 		if test "$speexlib" = "yes"; then
-			speex_LIBS="-loggz -lspeex"
+			speex_LIBS="-loggz -logg -lspeex"
 			lib="yes"
 			AC_DEFINE([HAVE_SPEEX], [1], [Defined if compile with Ogg Speex support])
 		else
@@ -327,9 +327,9 @@ AC_ARG_WITH(
 if test "$id3" = "no"; then
 	AC_MSG_RESULT(no)
 else
-	AC_CHECK_LIB(id3tag, id3_tag_parse, [lib=yes], [lib=no])
+	AC_CHECK_LIB(id3tag, id3_tag_parse, [lib=yes], [lib=no], [-lz])
 	if test "$lib" = "yes"; then
-	        id3_LIBS="-lid3tag"
+	        id3_LIBS="-lid3tag -lz"
 		AC_DEFINE([HAVE_ID3], [1], [Defined if compile with ID3 tags support])
 	fi
 	if test "$lib" = "no" -a "$id3" = "yes"; then
@@ -361,16 +361,17 @@ else
 	if test "$mod" = "detect"; then
 		mod=$lib
 	fi
-    AC_MSG_CHECKING(for Module info)
-    AC_MSG_CHECKING(whether libmodplug version >= 0.8)
-    if pkg-config --exists 'libmodplug >= 0.8'; then
-            AC_MSG_RESULT(yes)
-        AC_DEFINE([HAVE_MOD_INFO], [1], [Defined if version(libmodplug) >= 0.8])
-        lib="yes"
-    else
-        AC_MSG_RESULT(no)
-        lib="no"
-    fi
+
+	if test "$mod" = "yes"; then
+	        AC_MSG_CHECKING(for Module info)
+		AC_MSG_CHECKING(whether libmodplug version >= 0.8)
+		if pkg-config --exists 'libmodplug >= 0.8'; then
+                        AC_MSG_RESULT(yes)
+			AC_DEFINE([HAVE_MOD_INFO], [1], [Defined if version(libmodplug) >= 0.8])
+		else
+			AC_MSG_RESULT(no)
+		fi
+	fi
 fi
 
 AC_MSG_CHECKING(for Musepack support)

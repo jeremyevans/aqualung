@@ -182,248 +182,248 @@ msgstr ""
 "Szabad Szoftver Alapítvány címére: Free Software Foundation, Inc., 675\n"
 "Mass Ave, Cambridge, MA 02139, USA."
 
-#: ../build_store.c:532
+#: ../build_store.c:535
 msgid "Please select the root directory."
 msgstr "Válaszd ki a gyökérkönyvtárat."
 
-#: ../build_store.c:616 ../build_store.c:1472
+#: ../build_store.c:619 ../build_store.c:1483
 msgid "Regexp matches empty string"
 msgstr "A kifejezés fedi az üres karakterláncot"
 
-#: ../build_store.c:700
+#: ../build_store.c:703
 msgid "Build/Update store"
 msgstr "Tároló felépítése/aktualizálása"
 
-#: ../build_store.c:702
+#: ../build_store.c:705
 msgid "Build/Update artist"
 msgstr "Elõadó felépítése/aktualizálása"
 
-#: ../build_store.c:725 ../options.c:1740
+#: ../build_store.c:728 ../options.c:1740
 msgid "General"
 msgstr "Általános"
 
-#: ../build_store.c:729
+#: ../build_store.c:732
 msgid "Root path"
 msgstr "Gyökérkönyvtár"
 
-#: ../build_store.c:731
+#: ../build_store.c:734
 msgid "Artist path"
 msgstr "Elõadó könyvtára"
 
-#: ../build_store.c:743 ../music_browser.c:476 ../music_browser.c:1453
+#: ../build_store.c:746 ../music_browser.c:476 ../music_browser.c:1453
 #: ../music_browser.c:1630
 msgid "_Browse..."
 msgstr "_Tallózás..."
 
-#: ../build_store.c:749
+#: ../build_store.c:752
 msgid "Data source priority"
 msgstr "Adatforrások sorrendje"
 
-#: ../build_store.c:759
+#: ../build_store.c:762
 msgid "Metadata, CDDB, Filesystem"
 msgstr "Metaadatok, CDDB, Fájlrendszer"
 
-#: ../build_store.c:760
+#: ../build_store.c:763
 msgid "CDDB, Metadata, Filesystem"
 msgstr "CDDB, Metaadatok, Fájlrenfszer"
 
-#: ../build_store.c:771
+#: ../build_store.c:774
 msgid "Sort artists by"
 msgstr "Elõadók rendezése a következõ szerint"
 
-#: ../build_store.c:781 ../build_store.c:1064 ../build_store.c:1150
+#: ../build_store.c:784 ../build_store.c:1075 ../build_store.c:1161
 #: ../options.c:2505 ../options.c:2540
 msgid "Artist name"
 msgstr "Elõadó neve"
 
-#: ../build_store.c:782
+#: ../build_store.c:785
 msgid "Artist name (lowercase)"
 msgstr "Elõadó neve (kisbetûvel)"
 
-#: ../build_store.c:783 ../build_store.c:815
+#: ../build_store.c:786 ../build_store.c:818
 msgid "Directory name"
 msgstr "Könyvtár neve"
 
-#: ../build_store.c:784 ../build_store.c:816
+#: ../build_store.c:787 ../build_store.c:819
 msgid "Directory name (lowercase)"
 msgstr "Könyvtár neve (kisbetûvel)"
 
-#: ../build_store.c:802
+#: ../build_store.c:805
 msgid "Sort records by"
 msgstr "Albumok rendezése a következõ szerint"
 
-#: ../build_store.c:812 ../meta_decoder.c:342
+#: ../build_store.c:815 ../meta_decoder.c:342
 msgid "Year"
 msgstr "Év"
 
-#: ../build_store.c:813 ../build_store.c:1076 ../build_store.c:1162
+#: ../build_store.c:816 ../build_store.c:1087 ../build_store.c:1173
 #: ../options.c:2514 ../options.c:2549
 msgid "Record name"
 msgstr "Album címe"
 
-#: ../build_store.c:814
+#: ../build_store.c:817
 msgid "Record name (lowercase)"
 msgstr "Album címe (kisbetûvel)"
 
-#: ../build_store.c:837
+#: ../build_store.c:840
 msgid "Exclude files matching wildcard"
 msgstr "Mintára illeszkedõ fájlok kihagyása"
 
-#: ../build_store.c:861
+#: ../build_store.c:864
 msgid "Include only files matching wildcard"
 msgstr "Csak a mintára illeszkedõ fájlok vizsgálata"
 
-#: ../build_store.c:925
+#: ../build_store.c:936
 msgid "Capitalization"
 msgstr "Kis/nagybetû beállítása"
 
-#: ../build_store.c:935
+#: ../build_store.c:946
 msgid "Capitalize: "
 msgstr "Nagy kezdõbetû:"
 
-#: ../build_store.c:947
+#: ../build_store.c:958
 msgid "All words"
 msgstr "Minden szónál"
 
-#: ../build_store.c:948
+#: ../build_store.c:959
 msgid "First word only"
 msgstr "Csak az elsõ szónál"
 
-#: ../build_store.c:950
+#: ../build_store.c:961
 msgid "Force case: "
 msgstr "Alak megõrzése: "
 
-#: ../build_store.c:964
+#: ../build_store.c:975
 msgid "Force other letters to lowercase"
 msgstr "A többi legyen kisbetû"
 
-#: ../build_store.c:999
+#: ../build_store.c:1010
 msgid "Trim leading, tailing and duplicate spaces"
 msgstr "Kezdõ, végzõ és többszörös szóközök eltávolítása"
 
-#: ../build_store.c:1008
+#: ../build_store.c:1019
 msgid "Add year to the comments of new records"
 msgstr "Év hozzáadása az újonnan felvett albumok kommentjéhez"
 
-#: ../build_store.c:1018
+#: ../build_store.c:1029
 msgid "Reread data for existing tracks"
 msgstr "Létezõ számok adatainak újraolvasása"
 
-#: ../build_store.c:1031 ../options.c:2494
+#: ../build_store.c:1042 ../options.c:2494
 msgid "Metadata"
 msgstr "Metaadatok"
 
-#: ../build_store.c:1035
+#: ../build_store.c:1046
 msgid "Import file metadata"
 msgstr "Metaadatok importálása"
 
-#: ../build_store.c:1047
+#: ../build_store.c:1058
 msgid "Exclude whitespace-only metadata"
 msgstr "Csak szóközöket tartalmazó metaadatok kihagyása"
 
-#: ../build_store.c:1056 ../build_store.c:1142
+#: ../build_store.c:1067 ../build_store.c:1153
 msgid "Import"
 msgstr "Importálás"
 
-#: ../build_store.c:1085 ../build_store.c:1171 ../options.c:2523
+#: ../build_store.c:1096 ../build_store.c:1182 ../options.c:2523
 #: ../options.c:2558
 msgid "Track name"
 msgstr "Szám címe"
 
-#: ../build_store.c:1094 ../meta_decoder.c:418
+#: ../build_store.c:1105 ../meta_decoder.c:418
 msgid "Comment"
 msgstr "Komment"
 
-#: ../build_store.c:1103
+#: ../build_store.c:1114
 msgid "Replaygain tag as manual RVA"
 msgstr "Replaygain tag rögzített RVA-ként"
 
-#: ../build_store.c:1126 ../options.c:2593
+#: ../build_store.c:1137 ../options.c:2593
 msgid "CDDB"
 msgstr "CDDB"
 
-#: ../build_store.c:1130
+#: ../build_store.c:1141
 msgid "Perform CDDB lookup for records"
 msgstr "Albumok lekérdezése CDDB adatbázisból"
 
-#: ../build_store.c:1190
+#: ../build_store.c:1201
 msgid "Filesystem"
 msgstr "Fájlrendszer"
 
-#: ../build_store.c:1199
+#: ../build_store.c:1210
 msgid "Predefined transformations"
 msgstr "Elõre definiált transzformációk"
 
-#: ../build_store.c:1211
+#: ../build_store.c:1222
 msgid "Remove leading number"
 msgstr "Kezdõ számjegyek levágása"
 
-#: ../build_store.c:1220
+#: ../build_store.c:1231
 msgid "Remove file extension"
 msgstr "Kiterjesztés levágása"
 
-#: ../build_store.c:1229
+#: ../build_store.c:1240
 msgid "Convert underscore to space"
 msgstr "Aláhúzás szóközzé alakítása"
 
-#: ../build_store.c:1245
+#: ../build_store.c:1256
 msgid "Regular expression"
 msgstr "Reguláris kifejezés"
 
-#: ../build_store.c:1254
+#: ../build_store.c:1265
 msgid "Regexp:"
 msgstr "Kifejezés:"
 
-#: ../build_store.c:1266
+#: ../build_store.c:1277
 msgid "Replace:"
 msgstr "Csere:"
 
-#: ../build_store.c:1284
+#: ../build_store.c:1295
 msgid "Sandbox"
 msgstr "Homokozó"
 
-#: ../build_store.c:1292 ../music_browser.c:450 ../music_browser.c:598
+#: ../build_store.c:1303 ../music_browser.c:450 ../music_browser.c:598
 #: ../music_browser.c:1438 ../music_browser.c:1610
 msgid "Filename:"
 msgstr "Fájlnév:"
 
-#: ../build_store.c:1301
+#: ../build_store.c:1312
 msgid "Test"
 msgstr "Teszt"
 
-#: ../build_store.c:1557
+#: ../build_store.c:1568
 msgid "Building store from filesystem"
 msgstr "Tároló felépítése fájlrendszerrõl"
 
-#: ../build_store.c:1559
+#: ../build_store.c:1570
 msgid "Building artist from filesystem"
 msgstr "Elõadó felépítése fájlrendszerrõl..."
 
-#: ../build_store.c:1577
+#: ../build_store.c:1588
 msgid "Directory:"
 msgstr "Könyvtár:"
 
-#: ../build_store.c:1588
+#: ../build_store.c:1599
 msgid "Action:"
 msgstr "Mûvelet:"
 
-#: ../build_store.c:1606 ../cddb_lookup.c:133 ../volume.c:273
+#: ../build_store.c:1617 ../cddb_lookup.c:133 ../volume.c:273
 msgid "Abort"
 msgstr "Megszakítás"
 
-#: ../build_store.c:2257
+#: ../build_store.c:2268
 msgid "Scanning files"
 msgstr "Fájlok vizsgálata"
 
-#: ../build_store.c:2351 ../build_store.c:2371
+#: ../build_store.c:2362 ../build_store.c:2382
 msgid "Processing metadata"
 msgstr "Metaadatok olvasása"
 
-#: ../build_store.c:2357 ../build_store.c:2377
+#: ../build_store.c:2368 ../build_store.c:2388
 msgid "CDDB lookup"
 msgstr "CDDB lekérdezés"
 
-#: ../build_store.c:2389
+#: ../build_store.c:2400
 msgid "File name transformation"
 msgstr "Fájlnév transzformáció"
 
@@ -855,136 +855,137 @@ msgstr "Szkin-választó"
 msgid "JACK port setup"
 msgstr "JACK port beállítás"
 
-#: ../gui_main.c:3131 ../gui_main.c:3677
+#: ../gui_main.c:3131 ../gui_main.c:3679
 msgid "Quit"
 msgstr "Kilépés"
 
-#: ../gui_main.c:3402
+#: ../gui_main.c:3403
 msgid "Previous song"
 msgstr "Elõzõ szám"
 
-#: ../gui_main.c:3406 ../gui_main.c:3663
+#: ../gui_main.c:3407 ../gui_main.c:3665
 msgid "Stop"
 msgstr "Megállítás"
 
-#: ../gui_main.c:3410
+#: ../gui_main.c:3411
 msgid "Next song"
 msgstr "Következõ szám"
 
-#: ../gui_main.c:3414 ../gui_main.c:3655
+#: ../gui_main.c:3415 ../gui_main.c:3657
 msgid "Play"
 msgstr "Lejátszás"
 
-#: ../gui_main.c:3418 ../gui_main.c:3659
+#: ../gui_main.c:3419 ../gui_main.c:3661
 msgid "Pause"
 msgstr "Szünet"
 
-#: ../gui_main.c:3444
+#: ../gui_main.c:3445
 msgid "Repeat current song"
 msgstr "Aktuális szám ismétlése"
 
-#: ../gui_main.c:3452
+#: ../gui_main.c:3453
 msgid "Repeat all songs"
 msgstr "Összes szám ismétlése"
 
-#: ../gui_main.c:3460
+#: ../gui_main.c:3461
 msgid "Shuffle songs"
 msgstr "Véletlenszerû sorrend"
 
-#: ../gui_main.c:3473
+#: ../gui_main.c:3474
 msgid "Toggle playlist"
 msgstr "Lejátszólista"
 
-#: ../gui_main.c:3478
+#: ../gui_main.c:3479
 msgid "Toggle music store"
 msgstr "Zenetár"
 
-#: ../gui_main.c:3483
+#: ../gui_main.c:3484
 msgid "Toggle LADSPA patch builder"
 msgstr "LADSPA effekt szerkesztõ"
 
-#: ../gui_main.c:3648
+#: ../gui_main.c:3650
 msgid "Show Aqualung"
 msgstr "Aqualung mutatása"
 
-#: ../gui_main.c:3649
+#: ../gui_main.c:3651
 msgid "Hide Aqualung"
 msgstr "Aqualung elrejtése"
 
-#: ../gui_main.c:3667
+#: ../gui_main.c:3669
 msgid "Previous"
 msgstr "Elõzõ"
 
-#: ../gui_main.c:3671
+#: ../gui_main.c:3673
 msgid "Next"
 msgstr "Következõ"
 
-#: ../gui_main.c:5152 ../music_browser.c:2368 ../options.c:1422
+#: ../gui_main.c:5154 ../music_browser.c:2368 ../options.c:1422
 #: ../options.c:1547
 msgid "rw"
 msgstr "rw"
 
-#: ../gui_main.c:5154 ../options.c:1424 ../options.c:1549
+#: ../gui_main.c:5156 ../options.c:1424 ../options.c:1549
 msgid "r"
 msgstr "r"
 
-#: ../gui_main.c:5156 ../options.c:1426 ../options.c:1551
+#: ../gui_main.c:5158 ../options.c:1426 ../options.c:1551
 msgid "unreachable"
 msgstr "nem elérhetõ"
 
-#: ../gui_main.c:5233
+#: ../gui_main.c:5235
 msgid "Aqualung playlist (*.xml)"
 msgstr "Aqualung lejátszólista (*.xml)"
 
-#: ../gui_main.c:5234
+#: ../gui_main.c:5236
 msgid "MP3 Playlist (*.m3u)"
 msgstr "MP3 lejátszólista (*.m3u) "
 
-#: ../gui_main.c:5235
+#: ../gui_main.c:5237
 msgid "Multimedia Playlist (*.pls)"
 msgstr "Multimedia lejátszólista (*.pls)"
 
-#: ../gui_main.c:5248 ../gui_main.c:5352
+#: ../gui_main.c:5250 ../gui_main.c:5354
 msgid "All Files"
 msgstr "Minden fájl"
 
-#: ../gui_main.c:5258
+#: ../gui_main.c:5260
 msgid "All Playlist Files"
 msgstr "Minden lejátszólista"
 
-#: ../gui_main.c:5280
-msgid "MPEG Audio (*.mp1, *.mp2, *.mp3)"
+#: ../gui_main.c:5282
+#, fuzzy
+msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
 msgstr "MPEG Audio (*.mp1, *.mp2, *.mp3)"
 
-#: ../gui_main.c:5284
+#: ../gui_main.c:5286
 msgid "Free Lossless Audio Codec (*.flac)"
 msgstr "Free Lossless Audio Codec (*.flac)"
 
-#: ../gui_main.c:5288
+#: ../gui_main.c:5290
 msgid "Ogg Vorbis (*.ogg)"
 msgstr "Ogg Vorbis (*.ogg)"
 
-#: ../gui_main.c:5292
+#: ../gui_main.c:5294
 msgid "Ogg Speex (*.spx)"
 msgstr "Ogg Speex (*.spx)"
 
-#: ../gui_main.c:5296
+#: ../gui_main.c:5298
 msgid "Musepack (*.mpc)"
 msgstr "Musepack (*.mpc)"
 
-#: ../gui_main.c:5300
+#: ../gui_main.c:5302
 msgid "Monkey's Audio Codec (*.ape)"
 msgstr "Monkey's Audio Codec (*.ape)"
 
-#: ../gui_main.c:5307
+#: ../gui_main.c:5309
 msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
 msgstr "Modulok (*.xm, *.mod, *.it, *.s3m, ...)"
 
-#: ../gui_main.c:5319
+#: ../gui_main.c:5321
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
 msgstr "Hangfájlok (*.wav, *.aiff, *.au, ...)"
 
-#: ../gui_main.c:5373
+#: ../gui_main.c:5375
 msgid "All Audio Files"
 msgstr "Minden hangfájl"
 

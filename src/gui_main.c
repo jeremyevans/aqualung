@@ -5279,7 +5279,7 @@ assign_audio_fc_filters(GtkFileChooser *fc) {
         gchar *file_filters_a[] = { 
 
 #ifdef HAVE_MPEG
-                _("MPEG Audio (*.mp1, *.mp2, *.mp3)"),     "*.[mM][pP][123]",
+                _("MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"), "*.[mM][pP][123]",
 #endif /* HAVE_MPEG */
 
 #ifdef HAVE_FLAC

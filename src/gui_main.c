@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <unistd.h>
 #include <math.h>
 #include <sys/stat.h>
@@ -152,6 +153,14 @@ int immediate_start = 0;
 int search_pl_flags = 0;
 int search_ms_flags = 120; /* check search flags in search.c for initial value :) */
 
+
+#ifdef HAVE_MPEG
+extern char * valid_extensions_mpeg[];
+#endif /* HAVE_MPEG */
+
+#ifdef HAVE_MOD
+extern char * valid_extensions_mod[];
+#endif /* HAVE_MOD */
 
 /* volume & balance sliders */
 double vol = 0.0f;
@@ -5224,7 +5233,6 @@ set_sliders_width(void) {
 	GTK_SCALE(scale_bal)->range.min_slider_size = 11;
 	gtk_widget_queue_draw(scale_bal);
 	deflicker();
-
 }
 
 
@@ -5274,143 +5282,126 @@ assign_playlist_fc_filters(GtkFileChooser *fc) {
 
 
 void
-assign_audio_fc_filters(GtkFileChooser *fc) {
+build_filter_from_extensions(GtkFileFilter * f1, GtkFileFilter * f2, char * extensions[]) {
 
-        gchar *file_filters_a[] = { 
+	int i, j, k;
 
-#ifdef HAVE_MPEG
-                _("MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"), "*.[mM][pP][123]",
-#endif /* HAVE_MPEG */
+	for (i = 0; extensions[i]; i++) {
+		char buf[32];
+		buf[0] = '*';
+		buf[1] = '.';
+		k = 2;
+		for (j = 0; extensions[i][j]; j++) {
+			if (isalpha(extensions[i][j]) && k < 28) {
+				buf[k++] = '[';
+				buf[k++] = tolower(extensions[i][j]);
+				buf[k++] = toupper(extensions[i][j]);
+				buf[k++] = ']';
+			} else if (k < 31) {
+				buf[k++] = extensions[i][j];
+			}
+		}
+		buf[k] = '\0';
+		gtk_file_filter_add_pattern(f1, buf);
+		gtk_file_filter_add_pattern(f2, buf);
+	}
+}
+
+
+void
+assign_audio_fc_filters(GtkFileChooser * fc) {
+
+        GtkFileFilter * filter;
+        GtkFileFilter * filter_all;
+
+        filter = gtk_file_filter_new();
+        gtk_file_filter_set_name(filter, _("All Files")); 
+        gtk_file_filter_add_pattern(filter, "*");
+        gtk_file_chooser_add_filter(fc, filter);
+
+        filter_all = gtk_file_filter_new();
+        gtk_file_filter_set_name(filter_all, _("All Audio Files")); 
+        gtk_file_chooser_add_filter(fc, filter_all);
+        gtk_file_chooser_set_filter(fc, filter_all);
+
+#ifdef HAVE_SNDFILE
+        filter = gtk_file_filter_new();
+        gtk_file_filter_set_name(filter, _("Sound Files (*.wav, *.aiff, *.au, ...)"));
+
+        gtk_file_filter_add_pattern(filter, "*.[wW][aA][vV]");
+        gtk_file_filter_add_pattern(filter, "*.[aA][iI][fF]*");
+        gtk_file_filter_add_pattern(filter, "*.[aA][uU]");
+        gtk_file_filter_add_pattern(filter, "*.[wW]64");
+        gtk_file_filter_add_pattern(filter, "*.[vV][oO][cC]");
+        gtk_file_filter_add_pattern(filter, "*.[xX][iI]");
+        gtk_file_filter_add_pattern(filter, "*.[hH][tT][kK]");
+        gtk_file_filter_add_pattern(filter, "*.[sS][vV][xX]");
+
+        gtk_file_filter_add_pattern(filter_all, "*.[wW][aA][vV]");
+        gtk_file_filter_add_pattern(filter_all, "*.[aA][iI][fF]*");
+        gtk_file_filter_add_pattern(filter_all, "*.[aA][uU]");
+        gtk_file_filter_add_pattern(filter_all, "*.[wW]64");
+        gtk_file_filter_add_pattern(filter_all, "*.[vV][oO][cC]");
+        gtk_file_filter_add_pattern(filter_all, "*.[xX][iI]");
+        gtk_file_filter_add_pattern(filter_all, "*.[hH][tT][kK]");
+        gtk_file_filter_add_pattern(filter_all, "*.[sS][vV][xX]");
+
+        gtk_file_chooser_add_filter(fc, filter);
+#endif /* HAVE_SNDFILE */
 
 #ifdef HAVE_FLAC
-                _("Free Lossless Audio Codec (*.flac)"),   "*.[fF][lL][aA][cC]",
+        filter = gtk_file_filter_new();
+        gtk_file_filter_set_name(filter, _("Free Lossless Audio Codec (*.flac)")); 
+        gtk_file_filter_add_pattern(filter, "*.[fF][lL][aA][cC]");
+        gtk_file_filter_add_pattern(filter_all, "*.[fF][lL][aA][cC]");
+        gtk_file_chooser_add_filter(fc, filter);
 #endif /* HAVE_FLAC */
 
+#ifdef HAVE_MPEG
+        filter = gtk_file_filter_new();
+        gtk_file_filter_set_name(filter, _("MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"));
+	build_filter_from_extensions(filter, filter_all, valid_extensions_mpeg);
+        gtk_file_chooser_add_filter(fc, filter);
+#endif /* HAME_MPEG */
+
 #ifdef HAVE_OGG_VORBIS
-                _("Ogg Vorbis (*.ogg)"),                   "*.[oO][gG][gG]",
+        filter = gtk_file_filter_new();
+        gtk_file_filter_set_name(filter, _("Ogg Vorbis (*.ogg)")); 
+        gtk_file_filter_add_pattern(filter, "*.[oO][gG][gG]");
+        gtk_file_filter_add_pattern(filter_all, "*.[oO][gG][gG]");
+        gtk_file_chooser_add_filter(fc, filter);
 #endif /* HAVE_OGG_VORBIS */
 
 #ifdef HAVE_SPEEX
-                _("Ogg Speex (*.spx)"),                    "*.[sS][pP][xX]",
+        filter = gtk_file_filter_new();
+        gtk_file_filter_set_name(filter, _("Ogg Speex (*.spx)")); 
+        gtk_file_filter_add_pattern(filter, "*.[sS][pP][xX]");
+        gtk_file_filter_add_pattern(filter_all, "*.[sS][pP][xX]");
+        gtk_file_chooser_add_filter(fc, filter);
 #endif /* HAVE_SPEEX */
 
 #ifdef HAVE_MPC
-                _("Musepack (*.mpc)"),                     "*.[mM][pP][cC]",
+        filter = gtk_file_filter_new();
+        gtk_file_filter_set_name(filter, _("Musepack (*.mpc)")); 
+        gtk_file_filter_add_pattern(filter, "*.[mM][pP][cC]");
+        gtk_file_filter_add_pattern(filter_all, "*.[mM][pP][cC]");
+        gtk_file_chooser_add_filter(fc, filter);
 #endif /* HAVE_MPC */
 
 #ifdef HAVE_MAC
-                _("Monkey's Audio Codec (*.ape)"),         "*.[aA][pP][eE]",
+        filter = gtk_file_filter_new();
+        gtk_file_filter_set_name(filter, _("Monkey's Audio Codec (*.ape)")); 
+        gtk_file_filter_add_pattern(filter, "*.[aA][pP][eE]");
+        gtk_file_filter_add_pattern(filter_all, "*.[aA][pP][eE]");
+        gtk_file_chooser_add_filter(fc, filter);
 #endif /* HAVE_MAC */
 
-        };
-
 #ifdef HAVE_MOD
-        gchar *file_filters_b[] = { 
-                _("Modules (*.xm, *.mod, *.it, *.s3m, ...)"), "*.[xX][mM]", "*.[mM][oO][dD]", "*.[iI][tT]", 
-                "*.[sS]3[mM]", "*.669", "*.[aA][mM][fF]", "*.[aA][mM][sS]", "*.[dD][bB][mM]", "*.[dD][mM][fF]", 
-                "*.[dD][sS][mM]", "*.[fF][aA][rR]", "*.[jJ]2[bB]", "*.[mM][dD][lL]", "*.[mM][eE][dD]", 
-                "*.[mM][tT]?", "*.[oO][kK][tT]", "*.[pP][sS][mM]", "*.[pP][tT][mM]", "*.[sS][tT][mM]", 
-                "*.[uU][lL][tT]", "*.[uU][mM][xX]"
-        };
+        filter = gtk_file_filter_new();
+        gtk_file_filter_set_name(filter, _("Modules (*.xm, *.mod, *.it, *.s3m, ...)")); 
+	build_filter_from_extensions(filter, filter_all, valid_extensions_mod);
+        gtk_file_chooser_add_filter(fc, filter);
 #endif /* HAVE_MOD */
-
-        
-#ifdef HAVE_SNDFILE
-        /* FIXME: this list is incomplette */
-        gchar *file_filters_c[] = { 
-                _("Sound Files (*.wav, *.aiff, *.au, ...)"), "*.[wW][aA][vV]", "*.[aA][iI][fF]*", "*.[aA][uU]", 
-                "*.[wW]64", "*.[vV][oO][cC]", "*.[xX][iI]", "*.[hH][tT][kK]", "*.[sS][vV][xX]"
-        };
-#endif /* HAVE_SNDFILE */
-
-        gint i, len_a;
-        GtkFileFilter *filter_1, *filter_2, *filter_3;
-
-#ifdef HAVE_MOD                  
-        gint len_b;
-        GtkFileFilter *filter_4;
-#endif /* HAVE_MOD */
-#ifdef HAVE_SNDFILE
-        gint len_c;
-        GtkFileFilter *filter_5;
-#endif /* HAVE_SNDFILE */
-
-
-        len_a = sizeof(file_filters_a)/sizeof(gchar*)/2;
-
-#ifdef HAVE_MOD
-        len_b = sizeof(file_filters_b)/sizeof(gchar*)-1;
-#endif /* HAVE_MOD */
-        
-#ifdef HAVE_SNDFILE
-        len_c = sizeof(file_filters_c)/sizeof(gchar*)-1;
-#endif /* HAVE_SNDFILE */
-
-        gtk_widget_realize(GTK_WIDGET(fc));
-
-        /* all files filter */
-        filter_1 = gtk_file_filter_new();
-        gtk_file_filter_add_pattern(filter_1, "*");
-        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_1), _("All Files")); 
-        gtk_file_chooser_add_filter(fc, filter_1);
-
-        /* all audio files filter */
-        filter_2 = gtk_file_filter_new();
-
-        for (i = 0; i < len_a; i++) {
-                gtk_file_filter_add_pattern(filter_2, file_filters_a[2*i+1]);
-	}
-#ifdef HAVE_MOD
-        for (i = 0; i < len_b; i++) {
-                gtk_file_filter_add_pattern(filter_2, file_filters_b[i+1]);
-	}
-#endif /* HAVE_MOD */
-
-#ifdef HAVE_SNDFILE
-        for (i = 0; i < len_c; i++) {
-                gtk_file_filter_add_pattern(filter_2, file_filters_c[i+1]);
-	}
-#endif /* HAVE_SNDFILE */
-
-        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), _("All Audio Files")); 
-        gtk_file_chooser_add_filter(fc, filter_2);
-        gtk_file_chooser_set_filter(fc, filter_2);
-
-        /* single extensions */
-        for (i = 0; i < len_a; i++) {
-
-                filter_3 = gtk_file_filter_new();
-                gtk_file_filter_add_pattern(filter_3, file_filters_a[2*i+1]);
-                gtk_file_filter_set_name(GTK_FILE_FILTER(filter_3), file_filters_a[2*i]); 
-                gtk_file_chooser_add_filter(fc, filter_3);
-        }
-
-#ifdef HAVE_MOD
-
-        filter_4 = gtk_file_filter_new();
-
-        for (i = 0; i < len_b; i++) {
-                gtk_file_filter_add_pattern(filter_4, file_filters_b[i+1]);
-	}
-
-        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_4), file_filters_b[0]); 
-        gtk_file_chooser_add_filter(fc, filter_4);
-
-#endif /* HAVE_MOD */
-
-
-#ifdef HAVE_SNDFILE
-
-        filter_5 = gtk_file_filter_new();
-
-        for (i = 0; i < len_c; i++) {
-                gtk_file_filter_add_pattern(filter_5, file_filters_c[i+1]);
-	}
-
-        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_5), file_filters_c[0]); 
-        gtk_file_chooser_add_filter(fc, filter_5);
-
-#endif /* HAVE_SNDFILE */
 
 }
 

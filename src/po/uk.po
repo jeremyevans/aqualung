@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=koi8-u\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../about.c:96 ../gui_main.c:3129
+#: ../about.c:96 ../gui_main.c:3138
 msgid "About"
 msgstr "Про програму"
 
@@ -172,273 +172,273 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../build_store.c:535
+#: ../build_store.c:540
 #, fuzzy
 msgid "Please select the root directory."
 msgstr "Будьласка обер╕ть звуков╕ файли для цього запису."
 
-#: ../build_store.c:619 ../build_store.c:1483
+#: ../build_store.c:624 ../build_store.c:1488
 msgid "Regexp matches empty string"
 msgstr ""
 
-#: ../build_store.c:703
+#: ../build_store.c:708
 #, fuzzy
 msgid "Build/Update store"
 msgstr "Редагувати склад..."
 
-#: ../build_store.c:705
+#: ../build_store.c:710
 #, fuzzy
 msgid "Build/Update artist"
 msgstr "Редагувати склад..."
 
-#: ../build_store.c:728 ../options.c:1740
+#: ../build_store.c:733 ../options.c:1740
 msgid "General"
 msgstr "Головне"
 
-#: ../build_store.c:732
+#: ../build_store.c:737
 msgid "Root path"
 msgstr ""
 
-#: ../build_store.c:734
+#: ../build_store.c:739
 #, fuzzy
 msgid "Artist path"
 msgstr "Виконавець:"
 
-#: ../build_store.c:746 ../music_browser.c:476 ../music_browser.c:1453
+#: ../build_store.c:751 ../music_browser.c:476 ../music_browser.c:1453
 #: ../music_browser.c:1630
 msgid "_Browse..."
 msgstr "_Оглянути..."
 
-#: ../build_store.c:752
+#: ../build_store.c:757
 msgid "Data source priority"
 msgstr ""
 
-#: ../build_store.c:762
+#: ../build_store.c:767
 msgid "Metadata, CDDB, Filesystem"
 msgstr ""
 
-#: ../build_store.c:763
+#: ../build_store.c:768
 msgid "CDDB, Metadata, Filesystem"
 msgstr ""
 
-#: ../build_store.c:774
+#: ../build_store.c:779
 #, fuzzy
 msgid "Sort artists by"
 msgstr "╤мпортувати як Виконавця"
 
-#: ../build_store.c:784 ../build_store.c:1075 ../build_store.c:1161
+#: ../build_store.c:789 ../build_store.c:1080 ../build_store.c:1166
 #: ../options.c:2505 ../options.c:2540
 msgid "Artist name"
 msgstr "Назва виконавця"
 
-#: ../build_store.c:785
+#: ../build_store.c:790
 #, fuzzy
 msgid "Artist name (lowercase)"
 msgstr "Назвах виконавц╕в"
 
-#: ../build_store.c:786 ../build_store.c:818
+#: ../build_store.c:791 ../build_store.c:823
 #, fuzzy
 msgid "Directory name"
 msgstr "Запис"
 
-#: ../build_store.c:787 ../build_store.c:819
+#: ../build_store.c:792 ../build_store.c:824
 #, fuzzy
 msgid "Directory name (lowercase)"
 msgstr "Запис"
 
-#: ../build_store.c:805
+#: ../build_store.c:810
 #, fuzzy
 msgid "Sort records by"
 msgstr "╤мпортувати як Запис"
 
-#: ../build_store.c:815 ../meta_decoder.c:342
+#: ../build_store.c:820 ../meta_decoder.c:342
 msgid "Year"
 msgstr "Р╕к"
 
-#: ../build_store.c:816 ../build_store.c:1087 ../build_store.c:1173
+#: ../build_store.c:821 ../build_store.c:1092 ../build_store.c:1178
 #: ../options.c:2514 ../options.c:2549
 msgid "Record name"
 msgstr "Назва запису"
 
-#: ../build_store.c:817
+#: ../build_store.c:822
 #, fuzzy
 msgid "Record name (lowercase)"
 msgstr "Запис"
 
-#: ../build_store.c:840
+#: ../build_store.c:845
 msgid "Exclude files matching wildcard"
 msgstr ""
 
-#: ../build_store.c:864
+#: ../build_store.c:869
 msgid "Include only files matching wildcard"
 msgstr ""
 
-#: ../build_store.c:936
+#: ../build_store.c:941
 msgid "Capitalization"
 msgstr ""
 
-#: ../build_store.c:946
+#: ../build_store.c:951
 #, fuzzy
 msgid "Capitalize: "
 msgstr "Всього семпл╕в:"
 
-#: ../build_store.c:958
+#: ../build_store.c:963
 #, fuzzy
 msgid "All words"
 msgstr "Дор╕жки"
 
-#: ../build_store.c:959
+#: ../build_store.c:964
 msgid "First word only"
 msgstr ""
 
-#: ../build_store.c:961
+#: ../build_store.c:966
 #, fuzzy
 msgid "Force case: "
 msgstr "Назва файлу:"
 
-#: ../build_store.c:975
+#: ../build_store.c:980
 msgid "Force other letters to lowercase"
 msgstr ""
 
-#: ../build_store.c:1010
+#: ../build_store.c:1015
 msgid "Trim leading, tailing and duplicate spaces"
 msgstr ""
 
-#: ../build_store.c:1019
+#: ../build_store.c:1024
 #, fuzzy
 msgid "Add year to the comments of new records"
 msgstr "Додати до коментар╕в"
 
-#: ../build_store.c:1029
+#: ../build_store.c:1034
 msgid "Reread data for existing tracks"
 msgstr ""
 
-#: ../build_store.c:1042 ../options.c:2494
+#: ../build_store.c:1047 ../options.c:2494
 msgid "Metadata"
 msgstr "Метадан╕"
 
-#: ../build_store.c:1046
+#: ../build_store.c:1051
 #, fuzzy
 msgid "Import file metadata"
 msgstr "Перечитати ╕нформац╕ю про файл"
 
-#: ../build_store.c:1058
+#: ../build_store.c:1063
 msgid "Exclude whitespace-only metadata"
 msgstr ""
 
-#: ../build_store.c:1067 ../build_store.c:1153
+#: ../build_store.c:1072 ../build_store.c:1158
 #, fuzzy
 msgid "Import"
 msgstr "╤мпортувати як ПВР"
 
-#: ../build_store.c:1096 ../build_store.c:1182 ../options.c:2523
+#: ../build_store.c:1101 ../build_store.c:1187 ../options.c:2523
 #: ../options.c:2558
 msgid "Track name"
 msgstr "Назва дор╕жки"
 
-#: ../build_store.c:1105 ../meta_decoder.c:418
+#: ../build_store.c:1110 ../meta_decoder.c:418
 msgid "Comment"
 msgstr "Коментар"
 
-#: ../build_store.c:1114
+#: ../build_store.c:1119
 #, fuzzy
 msgid "Replaygain tag as manual RVA"
 msgstr "П╕дсилення дор╕жки"
 
-#: ../build_store.c:1137 ../options.c:2593
+#: ../build_store.c:1142 ../options.c:2593
 msgid "CDDB"
 msgstr ""
 
-#: ../build_store.c:1141
+#: ../build_store.c:1146
 msgid "Perform CDDB lookup for records"
 msgstr ""
 
-#: ../build_store.c:1201
+#: ../build_store.c:1206
 msgid "Filesystem"
 msgstr ""
 
-#: ../build_store.c:1210
+#: ../build_store.c:1215
 msgid "Predefined transformations"
 msgstr ""
 
-#: ../build_store.c:1222
+#: ../build_store.c:1227
 msgid "Remove leading number"
 msgstr ""
 
-#: ../build_store.c:1231
+#: ../build_store.c:1236
 #, fuzzy
 msgid "Remove file extension"
 msgstr "Прибрати вибране"
 
-#: ../build_store.c:1240
+#: ../build_store.c:1245
 #, fuzzy
 msgid "Convert underscore to space"
 msgstr "╤нвертувати поточний стан"
 
-#: ../build_store.c:1256
+#: ../build_store.c:1261
 msgid "Regular expression"
 msgstr ""
 
-#: ../build_store.c:1265
+#: ../build_store.c:1270
 msgid "Regexp:"
 msgstr ""
 
-#: ../build_store.c:1277
+#: ../build_store.c:1282
 #, fuzzy
 msgid "Replace:"
 msgstr "Пауза (проб╕л)"
 
-#: ../build_store.c:1295
+#: ../build_store.c:1300
 msgid "Sandbox"
 msgstr ""
 
-#: ../build_store.c:1303 ../music_browser.c:450 ../music_browser.c:598
+#: ../build_store.c:1308 ../music_browser.c:450 ../music_browser.c:598
 #: ../music_browser.c:1438 ../music_browser.c:1610
 msgid "Filename:"
 msgstr "Назва файлу:"
 
-#: ../build_store.c:1312
+#: ../build_store.c:1317
 msgid "Test"
 msgstr ""
 
-#: ../build_store.c:1568
+#: ../build_store.c:1573
 #, fuzzy
 msgid "Building store from filesystem"
 msgstr "Редагувати склад..."
 
-#: ../build_store.c:1570
+#: ../build_store.c:1575
 #, fuzzy
 msgid "Building artist from filesystem"
 msgstr "Редагувати склад..."
 
-#: ../build_store.c:1588
+#: ../build_store.c:1593
 #, fuzzy
 msgid "Directory:"
 msgstr "Запис"
 
-#: ../build_store.c:1599
+#: ../build_store.c:1604
 #, fuzzy
 msgid "Action:"
 msgstr "Тривал╕сть:"
 
-#: ../build_store.c:1617 ../cddb_lookup.c:133 ../volume.c:273
+#: ../build_store.c:1622 ../cddb_lookup.c:133 ../volume.c:273
 msgid "Abort"
 msgstr "Перервати"
 
-#: ../build_store.c:2268
+#: ../build_store.c:2273
 msgid "Scanning files"
 msgstr ""
 
-#: ../build_store.c:2362 ../build_store.c:2382
+#: ../build_store.c:2367 ../build_store.c:2387
 #, fuzzy
 msgid "Processing metadata"
 msgstr "Обробка..."
 
-#: ../build_store.c:2368 ../build_store.c:2388
+#: ../build_store.c:2373 ../build_store.c:2393
 msgid "CDDB lookup"
 msgstr ""
 
-#: ../build_store.c:2400
+#: ../build_store.c:2405
 msgid "File name transformation"
 msgstr ""
 
@@ -515,7 +515,7 @@ msgstr "Трапилась помилка при спроб╕ п╕д'╓днання до сервера CDDB."
 msgid "No matching record found."
 msgstr "Схожих запис╕в не знайдено."
 
-#: ../file_info.c:348 ../gui_main.c:3126
+#: ../file_info.c:348 ../gui_main.c:3135
 msgid "File info"
 msgstr "╤нформац╕я про файл"
 
@@ -552,11 +552,11 @@ msgstr "%ld Гц"
 msgid "Channel count:"
 msgstr "К╕льк╕сть канал╕в:"
 
-#: ../file_info.c:454 ../gui_main.c:868
+#: ../file_info.c:454 ../gui_main.c:877
 msgid "MONO"
 msgstr "МОНО"
 
-#: ../file_info.c:456 ../gui_main.c:871
+#: ../file_info.c:456 ../gui_main.c:880
 msgid "STEREO"
 msgstr "СТЕРЕО"
 
@@ -647,147 +647,147 @@ msgstr ""
 msgid "Name"
 msgstr "╤м'я"
 
-#: ../gui_main.c:411 ../gui_main.c:413
+#: ../gui_main.c:420 ../gui_main.c:422
 msgid "day"
 msgstr ""
 
-#: ../gui_main.c:415 ../gui_main.c:417
+#: ../gui_main.c:424 ../gui_main.c:426
 msgid "days"
 msgstr ""
 
-#: ../gui_main.c:619 ../gui_main.c:737
+#: ../gui_main.c:628 ../gui_main.c:746
 msgid "Unrecognized"
 msgstr "Нерозп╕знано"
 
-#: ../gui_main.c:627 ../gui_main.c:633 ../gui_main.c:636 ../gui_main.c:639
+#: ../gui_main.c:636 ../gui_main.c:642 ../gui_main.c:645 ../gui_main.c:648
 msgid "bit signed"
 msgstr "знаковий б╕т"
 
-#: ../gui_main.c:630
+#: ../gui_main.c:639
 msgid "bit unsigned"
 msgstr "беззнаковий б╕т"
 
-#: ../gui_main.c:642
+#: ../gui_main.c:651
 msgid "bit float"
 msgstr "плаваючий б╕т"
 
-#: ../gui_main.c:645
+#: ../gui_main.c:654
 msgid "bit double"
 msgstr "подв╕йний б╕т"
 
-#: ../gui_main.c:648 ../gui_main.c:651 ../gui_main.c:654 ../gui_main.c:657
-#: ../gui_main.c:660 ../gui_main.c:663 ../gui_main.c:666 ../gui_main.c:669
-#: ../gui_main.c:672 ../gui_main.c:675 ../gui_main.c:678 ../gui_main.c:681
-#: ../gui_main.c:684
+#: ../gui_main.c:657 ../gui_main.c:660 ../gui_main.c:663 ../gui_main.c:666
+#: ../gui_main.c:669 ../gui_main.c:672 ../gui_main.c:675 ../gui_main.c:678
+#: ../gui_main.c:681 ../gui_main.c:684 ../gui_main.c:687 ../gui_main.c:690
+#: ../gui_main.c:693
 msgid "encoding"
 msgstr "кодування"
 
-#: ../gui_main.c:695
+#: ../gui_main.c:704
 msgid "Profile: Telephone"
 msgstr "Проф╕ль: Телефон"
 
-#: ../gui_main.c:698
+#: ../gui_main.c:707
 msgid "Profile: Thumb"
 msgstr "Проф╕ль: Еск╕з"
 
-#: ../gui_main.c:701
+#: ../gui_main.c:710
 msgid "Profile: Radio"
 msgstr "Проф╕ль: Рад╕о"
 
-#: ../gui_main.c:704
+#: ../gui_main.c:713
 msgid "Profile: Standard"
 msgstr "Проф╕ль: Стандарт"
 
-#: ../gui_main.c:707
+#: ../gui_main.c:716
 msgid "Profile: Xtreme"
 msgstr "Проф╕ль: Екстремальний"
 
-#: ../gui_main.c:710
+#: ../gui_main.c:719
 msgid "Profile: Insane"
 msgstr "Проф╕ль: Божев╕льний"
 
-#: ../gui_main.c:713
+#: ../gui_main.c:722
 msgid "Profile: Braindead"
 msgstr "Проф╕ль: Без башн╕"
 
-#: ../gui_main.c:728
+#: ../gui_main.c:737
 msgid "Layer I"
 msgstr ""
 
-#: ../gui_main.c:731
+#: ../gui_main.c:740
 msgid "Layer II"
 msgstr ""
 
-#: ../gui_main.c:734
+#: ../gui_main.c:743
 msgid "Layer III"
 msgstr ""
 
-#: ../gui_main.c:747
+#: ../gui_main.c:756
 msgid "Single channel"
 msgstr "Один канал"
 
-#: ../gui_main.c:750
+#: ../gui_main.c:759
 msgid "Dual channel"
 msgstr "Два канала"
 
-#: ../gui_main.c:753
+#: ../gui_main.c:762
 msgid "Joint stereo"
 msgstr "Об'╓днане стерео"
 
-#: ../gui_main.c:756
+#: ../gui_main.c:765
 msgid "Stereo"
 msgstr "Стерео"
 
-#: ../gui_main.c:766
+#: ../gui_main.c:775
 msgid "Emphasis: none"
 msgstr "Наголос: нема╓"
 
-#: ../gui_main.c:769 ../gui_main.c:772
+#: ../gui_main.c:778 ../gui_main.c:781
 msgid "Emphasis:"
 msgstr "Наголос:"
 
-#: ../gui_main.c:775
+#: ../gui_main.c:784
 msgid "Emphasis: reserved"
 msgstr "Наголос: резервний"
 
-#: ../gui_main.c:788
+#: ../gui_main.c:797
 msgid "Compression: Fast"
 msgstr "Ступ╕нь стиснення: Швидка"
 
-#: ../gui_main.c:791
+#: ../gui_main.c:800
 msgid "Compression: Normal"
 msgstr "Ступ╕нь стиснення: Нормальна"
 
-#: ../gui_main.c:794
+#: ../gui_main.c:803
 msgid "Compression: High"
 msgstr "Ступ╕нь стиснення: Висока"
 
-#: ../gui_main.c:797
+#: ../gui_main.c:806
 msgid "Compression: Extra High"
 msgstr "Ступ╕нь стиснення: Дуже висока"
 
-#: ../gui_main.c:800
+#: ../gui_main.c:809
 msgid "Compression: Insane"
 msgstr "Ступ╕нь стиснення: Божев╕льна"
 
-#: ../gui_main.c:889 ../gui_main.c:894 ../gui_main.c:899 ../gui_main.c:904
+#: ../gui_main.c:898 ../gui_main.c:903 ../gui_main.c:908 ../gui_main.c:913
 msgid "Output:"
 msgstr "Вив╕д:"
 
-#: ../gui_main.c:908
+#: ../gui_main.c:917
 #, fuzzy
 msgid "No output"
 msgstr "Вив╕д:"
 
-#: ../gui_main.c:922
+#: ../gui_main.c:931
 msgid "SRC Type: "
 msgstr "SRC Тип: "
 
-#: ../gui_main.c:926 ../ifp_device.c:214 ../ifp_device.c:981
+#: ../gui_main.c:935 ../ifp_device.c:214 ../ifp_device.c:981
 msgid "None"
 msgstr "Нема╓"
 
-#: ../gui_main.c:1285
+#: ../gui_main.c:1294
 msgid ""
 "Music Store has been changed.\n"
 "Do you want to save it before exiting?"
@@ -795,56 +795,56 @@ msgstr ""
 "Музичний склад було зм╕нено.\n"
 "Чи ви бажа╓те зберегти зм╕ни перед виходом?"
 
-#: ../gui_main.c:1837
+#: ../gui_main.c:1846
 #, c-format
 msgid "Position: %d%%"
 msgstr ""
 
-#: ../gui_main.c:1855 ../gui_main.c:1882
+#: ../gui_main.c:1864 ../gui_main.c:1891
 #, c-format
 msgid "Mute"
 msgstr "Приглушити"
 
-#: ../gui_main.c:1857 ../gui_main.c:1884
+#: ../gui_main.c:1866 ../gui_main.c:1893
 #, c-format
 msgid "%d dB"
 msgstr "%d Дб"
 
-#: ../gui_main.c:1891
+#: ../gui_main.c:1900
 #, fuzzy, c-format
 msgid "Volume: %s"
 msgstr "Р╕вень гучност╕:"
 
-#: ../gui_main.c:1919 ../gui_main.c:1950
+#: ../gui_main.c:1928 ../gui_main.c:1959
 #, c-format
 msgid "%d%% R"
 msgstr "%d%% П"
 
-#: ../gui_main.c:1921 ../gui_main.c:1952
+#: ../gui_main.c:1930 ../gui_main.c:1961
 #, c-format
 msgid "%d%% L"
 msgstr "%d%% Л"
 
-#: ../gui_main.c:1924 ../gui_main.c:1955
+#: ../gui_main.c:1933 ../gui_main.c:1964
 #, c-format
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:1962
+#: ../gui_main.c:1971
 #, c-format
 msgid "Balance: %s"
 msgstr ""
 
-#: ../gui_main.c:2038
+#: ../gui_main.c:2047
 #, c-format
 msgid " (%d/%d)"
 msgstr ""
 
-#: ../gui_main.c:2895
+#: ../gui_main.c:2904
 msgid "JACK connection lost"
 msgstr "JACK п╕д'╓днання втрачено"
 
-#: ../gui_main.c:2898
+#: ../gui_main.c:2907
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -856,168 +856,168 @@ msgstr ""
 "швидкий. Все що ви можете тепер зробити\n"
 "це перезапустити обидва JACK та Aqualung.\n"
 
-#: ../gui_main.c:2945
+#: ../gui_main.c:2954
 msgid ""
 "Aqualung is compiled with system tray support, but the status icon could not "
 "be embedded in the notification area. Your desktop may not have support for "
 "a system tray, or it has not been configured correctly."
 msgstr ""
 
-#: ../gui_main.c:3122 ../options.c:1719
+#: ../gui_main.c:3131 ../options.c:1719
 msgid "Settings"
 msgstr "Налаштування"
 
-#: ../gui_main.c:3123 ../skin.c:145
+#: ../gui_main.c:3132 ../skin.c:145
 msgid "Skin chooser"
 msgstr "Виб╕р жупан╕в"
 
-#: ../gui_main.c:3124
+#: ../gui_main.c:3133
 msgid "JACK port setup"
 msgstr "Налаштування порту JACK"
 
-#: ../gui_main.c:3131 ../gui_main.c:3679
+#: ../gui_main.c:3140 ../gui_main.c:3688
 msgid "Quit"
 msgstr ""
 
-#: ../gui_main.c:3403
+#: ../gui_main.c:3412
 #, fuzzy
 msgid "Previous song"
 msgstr "Попередня п╕сня (вгору)"
 
-#: ../gui_main.c:3407 ../gui_main.c:3665
+#: ../gui_main.c:3416 ../gui_main.c:3674
 #, fuzzy
 msgid "Stop"
 msgstr "Зупинити (s)"
 
-#: ../gui_main.c:3411
+#: ../gui_main.c:3420
 #, fuzzy
 msgid "Next song"
 msgstr "Наступна п╕сня (вниз)"
 
-#: ../gui_main.c:3415 ../gui_main.c:3657
+#: ../gui_main.c:3424 ../gui_main.c:3666
 #, fuzzy
 msgid "Play"
 msgstr "Список програвання"
 
-#: ../gui_main.c:3419 ../gui_main.c:3661
+#: ../gui_main.c:3428 ../gui_main.c:3670
 msgid "Pause"
 msgstr ""
 
-#: ../gui_main.c:3445
+#: ../gui_main.c:3454
 msgid "Repeat current song"
 msgstr "Повторювати поточну п╕сню"
 
-#: ../gui_main.c:3453
+#: ../gui_main.c:3462
 msgid "Repeat all songs"
 msgstr "Повторювати вс╕ п╕сн╕"
 
-#: ../gui_main.c:3461
+#: ../gui_main.c:3470
 msgid "Shuffle songs"
 msgstr "Перем╕шати п╕сн╕"
 
-#: ../gui_main.c:3474
+#: ../gui_main.c:3483
 msgid "Toggle playlist"
 msgstr "Вимикач списку програвання"
 
-#: ../gui_main.c:3479
+#: ../gui_main.c:3488
 msgid "Toggle music store"
 msgstr "Вимикач музичного складу"
 
-#: ../gui_main.c:3484
+#: ../gui_main.c:3493
 msgid "Toggle LADSPA patch builder"
 msgstr "Вимикач буд╕вельника шлях╕в LADSPA"
 
-#: ../gui_main.c:3650
+#: ../gui_main.c:3659
 #, fuzzy
 msgid "Show Aqualung"
 msgstr "Значення ПВР"
 
-#: ../gui_main.c:3651
+#: ../gui_main.c:3660
 #, fuzzy
 msgid "Hide Aqualung"
 msgstr "Значення ПВР"
 
-#: ../gui_main.c:3669
+#: ../gui_main.c:3678
 #, fuzzy
 msgid "Previous"
 msgstr "Попередня п╕сня (вгору)"
 
-#: ../gui_main.c:3673
+#: ../gui_main.c:3682
 #, fuzzy
 msgid "Next"
 msgstr "Наступна п╕сня (вниз)"
 
-#: ../gui_main.c:5154 ../music_browser.c:2368 ../options.c:1422
+#: ../gui_main.c:5163 ../music_browser.c:2368 ../options.c:1422
 #: ../options.c:1547
 msgid "rw"
 msgstr ""
 
-#: ../gui_main.c:5156 ../options.c:1424 ../options.c:1549
+#: ../gui_main.c:5165 ../options.c:1424 ../options.c:1549
 msgid "r"
 msgstr ""
 
-#: ../gui_main.c:5158 ../options.c:1426 ../options.c:1551
+#: ../gui_main.c:5167 ../options.c:1426 ../options.c:1551
 msgid "unreachable"
 msgstr "недосяжний"
 
-#: ../gui_main.c:5235
+#: ../gui_main.c:5244
 msgid "Aqualung playlist (*.xml)"
 msgstr ""
 
-#: ../gui_main.c:5236
+#: ../gui_main.c:5245
 #, fuzzy
 msgid "MP3 Playlist (*.m3u)"
 msgstr "Список програвання: "
 
-#: ../gui_main.c:5237
+#: ../gui_main.c:5246
 msgid "Multimedia Playlist (*.pls)"
 msgstr ""
 
-#: ../gui_main.c:5250 ../gui_main.c:5354
+#: ../gui_main.c:5259 ../gui_main.c:5319
 msgid "All Files"
 msgstr ""
 
-#: ../gui_main.c:5260
+#: ../gui_main.c:5269
 #, fuzzy
 msgid "All Playlist Files"
 msgstr "Список програвання: "
 
-#: ../gui_main.c:5282
-msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
-msgstr ""
-
-#: ../gui_main.c:5286
-msgid "Free Lossless Audio Codec (*.flac)"
-msgstr ""
-
-#: ../gui_main.c:5290
-msgid "Ogg Vorbis (*.ogg)"
-msgstr ""
-
-#: ../gui_main.c:5294
-msgid "Ogg Speex (*.spx)"
-msgstr ""
-
-#: ../gui_main.c:5298
-msgid "Musepack (*.mpc)"
-msgstr ""
-
-#: ../gui_main.c:5302
-msgid "Monkey's Audio Codec (*.ape)"
-msgstr ""
-
-#: ../gui_main.c:5309
-msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
-msgstr ""
-
-#: ../gui_main.c:5321
-msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
-msgstr ""
-
-#: ../gui_main.c:5375
+#: ../gui_main.c:5324
 #, fuzzy
 msgid "All Audio Files"
 msgstr "Ауд╕оф╕л"
+
+#: ../gui_main.c:5328
+msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
+msgstr ""
+
+#: ../gui_main.c:5353
+msgid "Free Lossless Audio Codec (*.flac)"
+msgstr ""
+
+#: ../gui_main.c:5361
+msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
+msgstr ""
+
+#: ../gui_main.c:5368
+msgid "Ogg Vorbis (*.ogg)"
+msgstr ""
+
+#: ../gui_main.c:5376
+msgid "Ogg Speex (*.spx)"
+msgstr ""
+
+#: ../gui_main.c:5384
+msgid "Musepack (*.mpc)"
+msgstr ""
+
+#: ../gui_main.c:5392
+msgid "Monkey's Audio Codec (*.ape)"
+msgstr ""
+
+#: ../gui_main.c:5400
+msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
+msgstr ""
 
 #: ../ifp_device.c:107
 #, c-format

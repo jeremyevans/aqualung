@@ -78,8 +78,13 @@ extern GdkPixbuf * icon_artist;
 extern GdkPixbuf * icon_record;
 extern GdkPixbuf * icon_track;
 
+#ifdef HAVE_MPEG
 extern char * valid_extensions_mpeg[];
+#endif /* HAVE_MPEG */
+
+#ifdef HAVE_MOD
 extern char * valid_extensions_mod[];
+#endif /* HAVE_MOD */
 
 AQUALUNG_THREAD_DECLARE(build_thread_id)
 

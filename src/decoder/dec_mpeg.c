@@ -243,9 +243,10 @@ __find_next_frame(int fd, long *offset, long max_offset,
 	
 	*offset = pos - 4;
 
-#ifdef MPEG_DEBUG	
-	if(*offset)
+#ifdef MPEG_DEBUG
+/*	if(*offset)
 		printf("Warning: skipping %d bytes of garbage\n", *offset);
+*/
 #endif /* MPEG_DEBUG */
 	
 	return header;
@@ -275,6 +276,36 @@ vlfc_cmp(mp3info_t *info1, mp3info_t *info2) {
 	if (info1->channel_mode != info2->channel_mode)
 		return 0;
 	return 1;
+}
+
+
+void
+skip_id3v2_header(int fd) {
+
+	char buffer[12];
+	long id3_length = 0;
+
+	if (read(fd, buffer, 10) != 10) {
+		lseek(fd, 0, SEEK_SET);
+		return;
+	}
+
+	if ((buffer[0] != 'I') ||
+	    (buffer[1] != 'D') ||
+	    (buffer[2] != '3')) {
+		lseek(fd, 0, SEEK_SET);
+		return;
+	}
+
+	id3_length = (((long)(buffer[6] & 0x7F) << (3*7)) |
+		      ((long)(buffer[7] & 0x7F) << (2*7)) |
+		      ((long)(buffer[8] & 0x7F) << (1*7)) |
+		      ((long)(buffer[9] & 0x7F) << (0*7)));
+
+#ifdef MPEG_DEBUG
+	printf("id3_length = %ld\n", id3_length);
+#endif /* MPEG_DEBUG */
+	lseek(fd, id3_length, SEEK_SET);
 }
 
 
@@ -313,6 +344,9 @@ get_mp3file_info(int fd, mp3info_t *info) {
 	for (i = 4; i < 7; i++) {
 		freq_counters[i] = 0;
 	}
+
+	/* skip ID3v2 header, if present */
+	skip_id3v2_header(fd);
 
 	for (i = 0; i < 4; i++) {
 		headers[i] = find_next_frame(fd, &bytecount, 0x100000 - bytecount, 0);
@@ -656,37 +690,6 @@ get_mp3file_info(int fd, mp3info_t *info) {
 }
 
 
-void
-last_two_frames(mpeg_pdata_t * pd) {
-
-	char * bytes = (char *)pd->fdm;
-	int i, last_i = pd->filesize, header_cnt = 0;
-
-	for (i = pd->filesize-4; ((i >= 0) && (header_cnt < 2)); i--) {
-		long header = BYTES2INT(bytes[i], bytes[i+1], bytes[i+2], bytes[i+3]);
-		mp3info_t mp3info;
-
-		if (is_mp3frameheader(header)) {
-			mp3headerinfo(&mp3info, header);
-			if ((mp3info.layer == pd->mp3info.layer) &&
-			    (mp3info.version == pd->mp3info.version) &&
-			    (mp3info.channel_mode == pd->mp3info.channel_mode) &&
-			    (mp3info.frequency == pd->mp3info.frequency)) {
-				pd->last_frames[header_cnt] = i;
-#ifdef MPEG_DEBUG
-				printf("header found at offset %d   delta = %d", pd->filesize-i, last_i - i);
-				printf("\tsize = %d  samples = %d\n", mp3info.frame_size, mp3info.frame_samples);
-				printf("last_frames[%d] = %d\n", header_cnt, pd->last_frames[header_cnt]);
-#endif /* MPEG_DEBUG */
-				last_i = i;
-				header_cnt++;
-			}
-		}
-	}
-	return;
-}
-
-
 void *
 build_seek_table_thread(void * args) {
 
@@ -697,6 +700,7 @@ build_seek_table_thread(void * args) {
 	char * bytes = (char *)pd->fdm;
 	long i;
 	int div;
+	long last = 0, last_but_1 = 0;
 
 
 	pd->builder_thread_running = 1;
@@ -724,10 +728,10 @@ build_seek_table_thread(void * args) {
 			    (mp3info.channel_mode == pd->mp3info.channel_mode) &&
 			    (mp3info.frequency == pd->mp3info.frequency)) {
 
-				if (table_index > 99)
-					break;
+				last_but_1 = last;
+				last = i;
 
-				if (cnt % div == 0) {
+				if ((cnt % div == 0) && (table_index < 100)) {
 #ifdef MPEG_DEBUG
 					printf("idx %2d | offset %8ld | sample %9lld\n",
 					       table_index, i, sample_offset);
@@ -766,8 +770,13 @@ build_seek_table_thread(void * args) {
 		}
 	}
 
+	pd->last_frames[1] = last_but_1;
+	pd->last_frames[0] = last;
+
 #ifdef MPEG_DEBUG
 	printf("seek table builder thread finished, cnt = %d\n", cnt);
+	printf("last_frames[1] = %ld\n", pd->last_frames[1]);
+	printf("last_frames[0] = %ld\n", pd->last_frames[0]);
 #endif /* MPEG_DEBUG */
 	pd->builder_thread_running = 0;
 	return NULL;
@@ -1190,8 +1199,6 @@ mpeg_decoder_read(decoder_t * dec, float * dest, int num) {
 #ifdef MPEG_DEBUG
 		printf("first read from mpeg file\n");
 #endif /* MPEG_DEBUG */
-		/* locate last two audio frames (for gapless playback) */
-		last_two_frames(pd);
 		/* read mmap'ed file and build seek table in background thread.
 		   we do this upon the first read, so it doesn't start when we open
 		   a mass of files, but don't read any audio (metadata retrieval, etc) */

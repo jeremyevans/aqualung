@@ -700,8 +700,9 @@ build_seek_table_thread(void * args) {
 	char * bytes = (char *)pd->fdm;
 	long i;
 	int div;
-	long last = 0, last_but_1 = 0;
-
+	long last = 0, last_but_1 = 0, last_but_2 = 0;
+	int have_id3v1 = 0;
+	long limit = pd->filesize-4;
 
 	pd->builder_thread_running = 1;
 
@@ -717,7 +718,22 @@ build_seek_table_thread(void * args) {
 	printf("building seek table, div = %d\n", div);
 #endif /* MPEG_DEBUG */
 
-	for (i = pd->mp3info.start_byteoffset; i < pd->filesize-4;) {
+
+	/* look for id3v1 tag at the end of file */
+	if (pd->filesize >= 128 + 4) {
+		if ((bytes[pd->filesize-128] == 'T') &&
+		    (bytes[pd->filesize-127] == 'A') &&
+		    (bytes[pd->filesize-126] == 'G')) {
+#ifdef MPEG_DEBUG
+			printf("ID3v1 tag found at end of file\n");
+#endif /* MPEG_DEBUG */
+			have_id3v1 = 1;
+			limit = pd->filesize - 128 - 4;
+		}
+	}
+
+
+	for (i = pd->mp3info.start_byteoffset; i < limit;) {
 		long header = BYTES2INT(bytes[i], bytes[i+1], bytes[i+2], bytes[i+3]);
 		mp3info_t mp3info;
 		
@@ -728,6 +744,7 @@ build_seek_table_thread(void * args) {
 			    (mp3info.channel_mode == pd->mp3info.channel_mode) &&
 			    (mp3info.frequency == pd->mp3info.frequency)) {
 
+				last_but_2 = last_but_1;
 				last_but_1 = last;
 				last = i;
 
@@ -768,6 +785,18 @@ build_seek_table_thread(void * args) {
 			pd->seek_table[j].sample = pd->seek_table[table_index-1].sample;
 			pd->seek_table[j].offset = pd->seek_table[table_index-1].offset;
 		}
+	}
+
+	{
+		i = last;
+		long header = BYTES2INT(bytes[i], bytes[i+1], bytes[i+2], bytes[i+3]);
+		mp3info_t mp3info;
+		mp3headerinfo(&mp3info, header);
+#ifdef MPEG_DEBUG
+		printf("last frame position = %ld\n", limit + 4 - i);
+		printf("last frame length = %d samp = %d\n",
+		       mp3info.frame_size, mp3info.frame_samples);
+#endif /* MPEG_DEBUG */
 	}
 
 	pd->last_frames[1] = last_but_1;

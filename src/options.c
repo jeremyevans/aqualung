@@ -1693,6 +1693,7 @@ create_options_window(void) {
 	check_show_active_track_name_in_bold =
 		gtk_check_button_new_with_label(_("Show active track name in bold"));
 	gtk_widget_set_name(check_show_active_track_name_in_bold, "check_on_notebook");
+	track_name_in_bold_shadow = options.show_active_track_name_in_bold;
 	if (options.show_active_track_name_in_bold) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_active_track_name_in_bold), TRUE);
 	}

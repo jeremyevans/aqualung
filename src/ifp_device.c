@@ -39,6 +39,7 @@
 #include "common.h"
 #include "i18n.h"
 #include "options.h"
+#include "gui_main.h"
 #include "ifp_device.h"
 #include "playlist.h"
 
@@ -247,7 +248,7 @@ create_directory_cb (GtkButton *button, gpointer user_data) {
 
         gtk_widget_show_all (mkdir_dialog);
 
-        response = gtk_dialog_run (GTK_DIALOG (mkdir_dialog));
+        response = aqualung_dialog_run (GTK_DIALOG (mkdir_dialog));
 
 
         if (response == GTK_RESPONSE_OK) {
@@ -304,7 +305,7 @@ rename_directory_cb (GtkButton *button, gpointer user_data) {
 
                 gtk_widget_show_all (rename_dialog);
 
-                response = gtk_dialog_run (GTK_DIALOG (rename_dialog));
+                response = aqualung_dialog_run (GTK_DIALOG (rename_dialog));
 
                 if (response == GTK_RESPONSE_OK) {
 
@@ -347,7 +348,7 @@ remove_directory_cb (GtkButton *button, gpointer user_data) {
                 gtk_window_set_title(GTK_WINDOW(info_dialog), _("Remove directory"));
                 gtk_widget_show (info_dialog);
 
-                response = gtk_dialog_run (GTK_DIALOG (info_dialog));     
+                response = aqualung_dialog_run (GTK_DIALOG (info_dialog));     
 
                 gtk_widget_destroy(info_dialog);
 
@@ -535,7 +536,7 @@ aifp_show_message(gint type, gchar *message) {
                                               type, GTK_BUTTONS_CLOSE, message);
 
         gtk_widget_show (info_dialog);
-        gtk_dialog_run(GTK_DIALOG(info_dialog));
+        aqualung_dialog_run(GTK_DIALOG(info_dialog));
         gtk_widget_destroy(info_dialog);
 }
 

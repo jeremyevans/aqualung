@@ -32,6 +32,7 @@
 #define PAUSE 2
 
 
+gint aqualung_dialog_run(GtkDialog * dialog);
 void deflicker(void);
 
 void pack_strings(char * str1, char * str2, char * result);

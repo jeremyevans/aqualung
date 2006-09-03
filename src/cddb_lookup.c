@@ -38,6 +38,7 @@
 #include "i18n.h"
 #include "options.h"
 #include "decoder/file_decoder.h"
+#include "gui_main.h"
 #include "music_browser.h"
 #include "build_store.h"
 #include "cddb_lookup.h"
@@ -494,7 +495,7 @@ create_cddb_dialog(void) {
 
 	load_disc(records[0]);
 
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+	if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
 							  &iter_track, &iter_record, i); i++) {
@@ -653,7 +654,7 @@ cddb_timeout_callback(gpointer data) {
 			gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 			gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 		
-			gtk_dialog_run(GTK_DIALOG(dialog));
+			aqualung_dialog_run(GTK_DIALOG(dialog));
 			gtk_widget_destroy(dialog);
 
 		} else if (cddb_thread_state == 1) {
@@ -669,7 +670,7 @@ cddb_timeout_callback(gpointer data) {
 				gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 				gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 		
-				gtk_dialog_run(GTK_DIALOG(dialog));
+				aqualung_dialog_run(GTK_DIALOG(dialog));
 				gtk_widget_destroy(dialog);
 
 			} else {

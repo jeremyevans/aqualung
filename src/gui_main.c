@@ -315,6 +315,7 @@ GtkWidget * systray__next;
 GtkWidget * systray__quit;
 
 int warn_wm_not_systray_capable = 0;
+int systray_semaphore = 0;
 
 void hide_all_windows(gpointer data);
 
@@ -363,6 +364,21 @@ extern GtkWidget * plist__rva;
 
 extern gint playlist_state;
 extern gint browser_state;
+
+
+gint
+aqualung_dialog_run(GtkDialog * dialog) {
+
+#ifdef HAVE_SYSTRAY
+	int ret;
+	systray_semaphore++;
+	ret = gtk_dialog_run(dialog);
+	systray_semaphore--;
+	return ret;
+#else
+	return gtk_dialog_run(dialog);
+#endif /* HAVE_SYSTRAY */
+}
 
 void
 deflicker(void) {
@@ -1267,7 +1283,7 @@ change_skin(char * path) {
         show_active_position_in_playlist();
         gtk_widget_realize(play_list);
 
-        if(options.playlist_is_embedded) {
+        if (options.playlist_is_embedded) {
                 gtk_widget_grab_focus(GTK_WIDGET(play_list));
         }
 }
@@ -1294,7 +1310,7 @@ main_window_close(GtkWidget * widget, gpointer data) {
 		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_YES);
 		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 		
-		if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
+		if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
 			save_music_store();
 		}
 		
@@ -2950,7 +2966,7 @@ hide_all_windows(gpointer data) {
 							GTK_BUTTONS_CLOSE,
 							_("Aqualung is compiled with system tray support, but the status icon could not be embedded in the notification area. Your desktop may not have support for a system tray, or it has not been configured correctly."));
 			gtk_widget_show(dialog);
-			gtk_dialog_run(GTK_DIALOG(dialog));
+			aqualung_dialog_run(GTK_DIALOG(dialog));
 			gtk_widget_destroy(dialog);
 
 			warn_wm_not_systray_capable = 1;
@@ -3536,23 +3552,14 @@ process_filenames(char ** argv, int optind, int enqueue) {
 
 /*** Systray support ***/
 #ifdef HAVE_SYSTRAY
-gint
-systray_activated(GtkWidget * widget, GdkEventButton * event) {
-
-	if (event->button == 3) {
-                gtk_menu_popup(GTK_MENU(systray_menu), NULL, NULL,
-			       gtk_status_icon_position_menu, (gpointer)systray_icon,
-			       event->button, event->time);
-	}
-	return TRUE;
-}
-
 void
 systray_popup_menu_cb(GtkStatusIcon * systray_icon, guint button, guint time, gpointer data) {
 
-	gtk_menu_popup(GTK_MENU(systray_menu), NULL, NULL,
-		       gtk_status_icon_position_menu, data,
-		       button, time);
+	if (systray_semaphore == 0) {
+		gtk_menu_popup(GTK_MENU(systray_menu), NULL, NULL,
+			       gtk_status_icon_position_menu, data,
+			       button, time);
+	}
 }
 
 void
@@ -3608,10 +3615,12 @@ systray__quit_cb(gpointer data) {
 void
 systray_activate_cb(GtkStatusIcon * systray_icon, gpointer data) {
 
-	if (!systray_main_window_on) {
-		systray__show_cb(NULL);
-	} else {
-		systray__hide_cb(NULL);
+	if (systray_semaphore == 0) {
+		if (!systray_main_window_on) {
+			systray__show_cb(NULL);
+		} else {
+			systray__hide_cb(NULL);
+		}
 	}
 }
 
@@ -4243,7 +4252,7 @@ save_config(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) "enable_pl_rules_hint", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.enable_ms_rules_hint);
         xmlNewTextChild(root, NULL, (const xmlChar *) "enable_ms_rules_hint", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.enable_ms_tree_icons);
+	snprintf(str, 31, "%d", options.enable_ms_tree_icons_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "enable_ms_tree_icons", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", options.auto_use_meta_artist);
@@ -4263,13 +4272,13 @@ save_config(void) {
 	snprintf(str, 31, "%d", options.enable_tooltips);
         xmlNewTextChild(root, NULL, (const xmlChar *) "enable_tooltips", (xmlChar *) str);
 
-	snprintf(str, 31, "%d", options.buttons_at_the_bottom);
+	snprintf(str, 31, "%d", options.buttons_at_the_bottom_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "buttons_at_the_bottom", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", options.disable_buttons_relief);
         xmlNewTextChild(root, NULL, (const xmlChar *) "disable_buttons_relief", (xmlChar *) str);
 
-        snprintf(str, 31, "%d", options.simple_view_in_fx);
+        snprintf(str, 31, "%d", options.simple_view_in_fx_shadow);
         xmlNewTextChild(root, NULL, (const xmlChar *) "simple_view_in_fx", (xmlChar *) str);
 
 	snprintf(str, 31, "%d", options.show_sn_title);
@@ -4679,8 +4688,10 @@ load_config(void) {
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_ms_tree_icons"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
+                        if (key != NULL) {
 				sscanf((char *) key, "%d", &options.enable_ms_tree_icons);
+				options.enable_ms_tree_icons_shadow = options.enable_ms_tree_icons;
+			}
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_tooltips"))) {
@@ -4694,6 +4705,7 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
 				sscanf((char *) key, "%d", &options.buttons_at_the_bottom);
+				options.buttons_at_the_bottom_shadow = options.buttons_at_the_bottom;
 			}
                         xmlFree(key);
                 }
@@ -4708,6 +4720,7 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
 				sscanf((char *) key, "%d", &options.simple_view_in_fx);
+				options.simple_view_in_fx_shadow = options.simple_view_in_fx;
 			}
                         xmlFree(key);
                 }

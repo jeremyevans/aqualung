@@ -42,13 +42,15 @@ typedef struct {
 	char default_param[MAXLEN];
 	int enable_tooltips;
 	int buttons_at_the_bottom;
+	int buttons_at_the_bottom_shadow;
    	int disable_buttons_relief;
 	int simple_view_in_fx;
+	int simple_view_in_fx_shadow;
 	int show_sn_title;
 	int united_minimization;
 	int show_hidden;
    	int main_window_always_on_top;
-    int tags_tab_first;
+	int tags_tab_first;
 
 	/* Playlist */
 	int playlist_is_embedded;
@@ -76,12 +78,13 @@ typedef struct {
 	int autoexpand_stores;
 	int enable_ms_rules_hint;
 	int enable_ms_tree_icons;
+	int enable_ms_tree_icons_shadow;
 	int cover_width;
 	int magnify_smaller_images;
 
 	/* DSP */
 	int ladspa_is_postfader;
-	/* TODO: src_type should be moved here too */
+	/* TODO: int src_type;*/
 	
 	/* RVA */
 	int rva_is_enabled;

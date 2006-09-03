@@ -390,7 +390,7 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
 
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		char * locale;
 
@@ -509,7 +509,7 @@ add_store_dialog(char * name, char * file, char * comment) {
 	file[0] = '\0';
 	comment[0] = '\0';
 
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		const char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
 
@@ -642,7 +642,7 @@ edit_store_dialog(char * name, char * file, char * comment) {
 	name[0] = '\0';
 	comment[0] = '\0';
 
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
 
 		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
@@ -768,7 +768,7 @@ add_artist_dialog(char * name, char * sort_name, char * comment) {
 	sort_name[0] = '\0';
 	comment[0] = '\0';
 
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
 
@@ -884,7 +884,7 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
 	sort_name[0] = '\0';
 	comment[0] = '\0';
 
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
 
@@ -943,7 +943,7 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
         assign_audio_fc_filters(GTK_FILE_CHOOSER(dialog));
 
 
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
                 strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
                                                                          MAXLEN-1);
@@ -1123,7 +1123,7 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 	sort_name[0] = '\0';
 	comment[0] = '\0';
 
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
 
@@ -1275,7 +1275,7 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
 	sort_name[0] = '\0';
 	comment[0] = '\0';
 
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
 
@@ -1347,7 +1347,7 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
 		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
 	}
 
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		char * utf8;
 
@@ -1478,7 +1478,7 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
 	file[0] = '\0';
 	comment[0] = '\0';
 		
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
 
@@ -1721,7 +1721,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 	file[0] = '\0';
 	comment[0] = '\0';
 
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
 
@@ -1778,7 +1778,7 @@ confirm_dialog(char * title, char * text) {
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_NO);
         gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 
-        if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
                 ret = 1;
         } else {
                 ret = 0;
@@ -2329,7 +2329,7 @@ store__add_cb(gpointer data) {
 							_("The store '%s' already exists.\nAdd it on the Settings/Music Store tab."),
 							file);
 			gtk_widget_show_all(dialog);
-			gtk_dialog_run(GTK_DIALOG(dialog));
+			aqualung_dialog_run(GTK_DIALOG(dialog));
 			gtk_widget_destroy(dialog);
 		} else {
 

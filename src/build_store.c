@@ -42,6 +42,7 @@
 #include "i18n.h"
 #include "options.h"
 #include "music_browser.h"
+#include "gui_main.h"
 #include "meta_decoder.h"
 #include "build_store.h"
 #include "cddb_lookup.h"
@@ -72,7 +73,6 @@ extern GtkTreeStore * music_store;
 
 extern GtkWidget * browser_window;
 extern GtkWidget * gui_stock_label_button(gchar * blabel, const gchar * bstock);
-extern void set_sliders_width(void);
 
 extern GdkPixbuf * icon_artist;
 extern GdkPixbuf * icon_record;
@@ -548,7 +548,7 @@ browse_button_clicked(GtkWidget * widget, gpointer * data) {
 		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), options.show_hidden);
 	} 
 
-        set_sliders_width();    /* MAGIC */
+        deflicker();
 
         if (strlen(selected_filename)) {
       		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
@@ -577,8 +577,6 @@ browse_button_clicked(GtkWidget * widget, gpointer * data) {
 
 
         gtk_widget_destroy(dialog);
-
-        set_sliders_width();    /* MAGIC */
 
 	return 0;
 }

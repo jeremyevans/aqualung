@@ -43,7 +43,6 @@ extern options_t options;
 extern int search_pl_flags;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
-extern void set_sliders_width(void);
 
 extern GtkListStore * play_store;
 extern GtkWidget * play_list;
@@ -108,7 +107,6 @@ close_button_clicked(GtkWidget * widget, gpointer data) {
 	clear_search_store();
         gtk_widget_destroy(search_window);
         search_window = NULL;
-        set_sliders_width();    /* MAGIC */
         return TRUE;
 }
 
@@ -445,9 +443,6 @@ search_playlist_dialog(void) {
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_sfac), TRUE);
 
         gtk_widget_show(search_window);
-
-        set_sliders_width();    /* MAGIC */
-
 }
 
 

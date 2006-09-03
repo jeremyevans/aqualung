@@ -43,7 +43,6 @@
 extern int search_ms_flags;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
-extern void set_sliders_width(void);
 
 extern GtkTreeStore * music_store;
 extern GtkWidget * music_tree;
@@ -123,7 +122,6 @@ close_button_clicked(GtkWidget * widget, gpointer data) {
 	clear_search_store();
         gtk_widget_destroy(search_window);
         search_window = NULL;
-        set_sliders_width();    /* MAGIC */
         return TRUE;
 }
 
@@ -666,8 +664,6 @@ search_dialog(void) {
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_comment), TRUE);
 
 	gtk_widget_show(search_window);
-
-        set_sliders_width();    /* MAGIC */
 }
 
 

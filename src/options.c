@@ -120,7 +120,6 @@ extern GtkListStore * play_store;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern void disable_bold_font_in_playlist(void);
-extern void set_sliders_width(void);
 extern void playlist_selection_changed(GtkTreeSelection * sel, gpointer data);
 extern void set_buttons_relief(void);
 extern void show_active_position_in_playlist(void);
@@ -594,8 +593,6 @@ ok(GtkWidget * widget, gpointer data) {
 
 	gtk_widget_destroy(options_window);
 
-        set_sliders_width();    /* MAGIC */
-
 	playlist_size_allocate(NULL, NULL);
         show_active_position_in_playlist();
 
@@ -607,8 +604,6 @@ static gint
 cancel(GtkWidget * widget, gpointer data) {
 
 	gtk_widget_destroy(options_window);
-
-        set_sliders_width();    /* MAGIC */
 	return TRUE;
 }
 
@@ -2935,8 +2930,6 @@ See the About box and the documentation for details."));
 	gtk_widget_show_all(options_window);
 
         gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), current_notebook_page);
-
-        set_sliders_width();    /* MAGIC */
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

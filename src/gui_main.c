@@ -335,8 +335,6 @@ void load_config(void);
 
 void playlist_toggled(GtkWidget * widget, gpointer data);
 
-void set_sliders_width(void);
-
 void assign_audio_fc_filters(GtkFileChooser *fc);
 void assign_playlist_fc_filters(GtkFileChooser *fc);
 
@@ -1242,7 +1240,6 @@ change_skin(char * path) {
 		deflicker();
 	}
 
-        set_sliders_width();
 	restore_window_position();
 	deflicker();
 	refresh_displays();
@@ -3927,7 +3924,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	zero_displays();
 	set_playlist_color();
-        set_sliders_width();
 
 	/* read command line filenames */
 	process_filenames(argv, optind, enqueue);
@@ -5219,20 +5215,6 @@ gui_stock_label_button(gchar *label, const gchar *stock) {
 	gtk_container_add (GTK_CONTAINER (button), alignment);
 
 	return button;
-}
-
-
-void
-set_sliders_width(void) {
-
-        GTK_SCALE(scale_vol)->range.slider_size_fixed = 1;
-	GTK_SCALE(scale_vol)->range.min_slider_size = 11;
-        gtk_widget_queue_draw(scale_vol);
-        deflicker();
-	GTK_SCALE(scale_bal)->range.slider_size_fixed = 1;
-	GTK_SCALE(scale_bal)->range.min_slider_size = 11;
-	gtk_widget_queue_draw(scale_bal);
-	deflicker();
 }
 
 

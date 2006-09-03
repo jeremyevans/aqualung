@@ -239,10 +239,12 @@ style "scale_pos" = "scale"
 
 style "scale_vol" = "scale_pos"
 {
+    GtkScale::slider-length	= 11
 }
 
 style "scale_bal" = "scale_pos"
 {
+    GtkScale::slider-length	= 11
 }
 
 widget "*time_viewport" style "time_viewport"

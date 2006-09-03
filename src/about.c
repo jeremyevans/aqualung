@@ -34,14 +34,12 @@
 
 GtkWidget * about_window;
 extern GtkWidget * main_window;
-extern void set_sliders_width(void);
 
 
 static gint
 ok(GtkWidget * widget, gpointer data) {
 
 	gtk_widget_destroy(about_window);
-        set_sliders_width();
 	return TRUE;
 }
 
@@ -432,7 +430,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."), -1);
 	}
 
 	gtk_widget_show_all(about_window);
-        set_sliders_width();    /* MAGIC */
 
         gtk_widget_grab_focus(ok_btn);
 }

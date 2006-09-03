@@ -49,7 +49,6 @@ extern GtkWidget * playlist_window;
 extern GtkWidget * main_window;
 extern GtkTooltips * aqualung_tooltips;
 
-extern void set_sliders_width(void);
 void deflicker(void);
 gint aifp_directory_listing(gchar *name);
 void aifp_check_size(void);
@@ -364,8 +363,6 @@ remove_directory_cb (GtkButton *button, gpointer user_data) {
                         aifp_directory_listing (NULL);
                 }
 
-                set_sliders_width();    /* MAGIC */
-                
         }
 }
 
@@ -540,8 +537,6 @@ aifp_show_message(gint type, gchar *message) {
         gtk_widget_show (info_dialog);
         gtk_dialog_run(GTK_DIALOG(info_dialog));
         gtk_widget_destroy(info_dialog);
-
-        set_sliders_width();    /* MAGIC */
 }
 
 
@@ -616,7 +611,6 @@ aifp_window_close(GtkWidget * widget, gpointer * data) {
 
         gtk_widget_destroy(aifp_window);
         aifp_window = NULL;
-        set_sliders_width();
         return 0;
 }
 
@@ -1040,7 +1034,6 @@ void aifp_transfer_files(void) {
         abort_pressed = 0;
 
         gtk_widget_show(aifp_window);
-        set_sliders_width();            /* MAGIC */
 }
 
 #endif /* HAVE_IFP */

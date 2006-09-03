@@ -44,7 +44,6 @@
 extern options_t options;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
-extern void set_sliders_width(void);
 
 extern volatile int plugin_lock;
 
@@ -303,7 +302,6 @@ static gboolean
 fxbuilder_close(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(plugin_toggle), FALSE);
-        set_sliders_width();    /* MAGIC */
         return TRUE;
 }
 
@@ -2002,7 +2000,6 @@ create_fxbuilder(void) {
 	gtk_widget_show(rp__separator2);
 	gtk_widget_show(rp__clear_list);
 
-        set_sliders_width();    /* MAGIC */
 }
 
 

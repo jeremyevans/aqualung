@@ -70,7 +70,6 @@ extern char pl_color_active[14];
 extern char pl_color_inactive[14];
 
 extern GtkWidget * gui_stock_label_button(gchar * label, const gchar * stock);
-extern void set_sliders_width(void);
 extern void assign_audio_fc_filters(GtkFileChooser * fc);
 
 extern GtkTooltips * aqualung_tooltips;
@@ -364,7 +363,7 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
 		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
 	}
 
-        set_sliders_width();    /* MAGIC */
+        deflicker();
 
         if (strlen(selected_filename)) {
 		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
@@ -405,8 +404,6 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
 
 
         gtk_widget_destroy(dialog);
-
-        set_sliders_width();    /* MAGIC */
 
 	return 0;
 }
@@ -932,7 +929,7 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
 						    GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 						    NULL);
 
-        set_sliders_width();    /* MAGIC */
+        deflicker();
 
 	if (options.show_hidden) {
 		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
@@ -977,8 +974,6 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
         }
                                                          
         gtk_widget_destroy(dialog);
-
-        set_sliders_width();    /* MAGIC */
 
 	return 0;
 }
@@ -1122,8 +1117,6 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 
 	gtk_widget_show_all(dialog);
 
-        set_sliders_width();    /* MAGIC */
-
  display:
 
 	name[0] = '\0';
@@ -1189,8 +1182,6 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
         }
 
         gtk_widget_destroy(dialog);
-
-        set_sliders_width();    /* MAGIC */
 
         return ret;
 }
@@ -1325,8 +1316,7 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              NULL);
 
-        set_sliders_width();    /* MAGIC */
-
+        deflicker();
 
         if (strlen(selected_filename)) {
 		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
@@ -1371,8 +1361,6 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
 
 
         gtk_widget_destroy(dialog);
-
-        set_sliders_width();    /* MAGIC */
 
 	return 0;
 }

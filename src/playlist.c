@@ -52,7 +52,6 @@
 
 extern options_t options;
 
-extern void set_sliders_width(void);
 extern void assign_audio_fc_filters(GtkFileChooser *fc);
 extern void assign_playlist_fc_filters(GtkFileChooser *fc);
 
@@ -643,8 +642,7 @@ plist__save_cb(gpointer data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              NULL);
 
-        set_sliders_width();    /* MAGIC */
-
+        deflicker();
         gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
         gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "playlist.xml");
 
@@ -670,8 +668,6 @@ plist__save_cb(gpointer data) {
         }
 
         gtk_widget_destroy(dialog);
-
-        set_sliders_width();    /* MAGIC */
 }
 
 
@@ -690,8 +686,7 @@ plist__load_cb(gpointer data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              NULL);
 
-        set_sliders_width();    /* MAGIC */
-
+        deflicker();
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
@@ -729,10 +724,7 @@ plist__load_cb(gpointer data) {
 
         gtk_widget_destroy(dialog);
 
-        set_sliders_width();    /* MAGIC */
-
 	playlist_content_changed();
-
 }
 
 
@@ -751,8 +743,7 @@ plist__enqueue_cb(gpointer data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              NULL);
 
-        set_sliders_width();    /* MAGIC */
-
+        deflicker();
         gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
         assign_playlist_fc_filters(GTK_FILE_CHOOSER(dialog));
 
@@ -791,8 +782,6 @@ plist__enqueue_cb(gpointer data) {
 
         gtk_widget_destroy(dialog);
 
-        set_sliders_width();    /* MAGIC */
-        
         playlist_content_changed();
 }
 
@@ -1334,8 +1323,7 @@ add_files(GtkWidget * widget, gpointer data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              NULL);
 
-        set_sliders_width();    /* MAGIC */
-
+        deflicker();
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
@@ -1372,8 +1360,6 @@ add_files(GtkWidget * widget, gpointer data) {
 
         gtk_widget_destroy(dialog);
 
-        set_sliders_width();    /* MAGIC */
-
 	playlist_content_changed();
 
         delayed_playlist_rearrange(100);
@@ -1392,8 +1378,7 @@ add_directory(GtkWidget * widget, gpointer data) {
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                              NULL);
 
-        set_sliders_width();    /* MAGIC */
-
+        deflicker();
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
@@ -1419,8 +1404,6 @@ add_directory(GtkWidget * widget, gpointer data) {
 
 
         gtk_widget_destroy(dialog);
-
-        set_sliders_width();    /* MAGIC */
 
 	playlist_content_changed();
 

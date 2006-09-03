@@ -43,14 +43,9 @@
 
 
 options_t options;
+
 static int current_notebook_page = 0;
-int appearance_changed;
 
-
-#ifdef HAVE_SRC
-extern int src_type;
-GtkWidget * combo_src;
-#endif /* HAVE_SRC */
 
 extern GtkWidget * main_window;
 extern GtkWidget * play_button;
@@ -83,20 +78,6 @@ extern GtkWidget * statusbar_selected_label;
 
 extern GtkWidget * statusbar_ms;
 
-int rva_is_enabled_shadow;
-int rva_env_shadow;
-float rva_refvol_shadow;
-float rva_steepness_shadow;
-int rva_use_averaging_shadow;
-int rva_use_linear_thresh_shadow;
-float rva_avg_linear_thresh_shadow;
-float rva_avg_stddev_thresh_shadow;
-
-int reskin_flag;
-int restart_flag;
-int override_shadow;
-int track_name_in_bold_shadow;
-
 extern int music_store_changed;
 
 extern GtkWidget * music_tree;
@@ -115,79 +96,111 @@ extern void playlist_selection_changed(GtkTreeSelection * sel, gpointer data);
 extern void set_buttons_relief(void);
 extern void show_active_position_in_playlist(void);
 
+int rva_is_enabled_shadow;
+int rva_env_shadow;
+float rva_refvol_shadow;
+float rva_steepness_shadow;
+int rva_use_averaging_shadow;
+int rva_use_linear_thresh_shadow;
+float rva_avg_linear_thresh_shadow;
+float rva_avg_stddev_thresh_shadow;
+
+int appearance_changed;
+int reskin_flag;
+int restart_flag;
+int override_shadow;
+int track_name_in_bold_shadow;
+
 GtkWidget * options_window;
 GtkWidget * notebook;
-GtkWidget * combo_ladspa;
-GtkWidget * combo_listening_env;
-GtkWidget * combo_threshold;
-GtkWidget * combo_replaygain;
-GtkWidget * combo_cwidth;
+
 GtkWidget * entry_title;
 GtkWidget * entry_param;
-GtkWidget * label_src;
-GtkWidget * check_autoplsave;
-GtkWidget * check_show_rva_in_playlist;
-GtkWidget * check_pl_statusbar_show_size;
-GtkWidget * check_ms_statusbar_show_size;
-GtkWidget * check_show_length_in_playlist;
-GtkWidget * check_show_active_track_name_in_bold;
-GtkWidget * check_enable_pl_rules_hint;
-GtkWidget * check_enable_ms_rules_hint;
-GtkWidget * check_enable_ms_tree_icons;
-GtkWidget * check_rva_is_enabled;
-GtkWidget * check_rva_use_averaging;
-GtkWidget * check_auto_use_meta_artist;
-GtkWidget * check_auto_use_meta_record;
-GtkWidget * check_auto_use_meta_track;
-GtkWidget * check_auto_use_ext_meta_artist;
-GtkWidget * check_auto_use_ext_meta_record;
-GtkWidget * check_auto_use_ext_meta_track;
 GtkWidget * check_enable_tooltips;
-GtkWidget * check_show_sn_title;
+GtkWidget * check_buttons_at_the_bottom;
+GtkWidget * check_disable_buttons_relief;
+GtkWidget * check_main_window_always_on_top;
+GtkWidget * check_simple_view_in_fx;
 GtkWidget * check_united_minimization;
-GtkWidget * check_hide_comment_pane;
-GtkWidget * check_enable_mstore_statusbar;
-GtkWidget * check_enable_mstore_toolbar;
-GtkWidget * check_expand_stores;
+GtkWidget * check_show_sn_title;
 GtkWidget * check_show_hidden;
 GtkWidget * check_tags_tab_first;
+
 GtkWidget * check_playlist_is_embedded;
+GtkWidget * check_autoplsave;
 GtkWidget * check_playlist_is_tree;
 GtkWidget * check_album_shuffle_mode;
 GtkWidget * check_enable_playlist_statusbar;
-GtkWidget * check_buttons_at_the_bottom;
-GtkWidget * check_simple_view_in_fx;
-GtkWidget * check_override_skin;
-GtkWidget * check_magnify_smaller_images;
-GtkWidget * check_main_window_always_on_top;
-GtkWidget * check_disable_buttons_relief;
+GtkWidget * check_pl_statusbar_show_size;
+GtkWidget * check_show_rva_in_playlist;
+GtkWidget * check_show_length_in_playlist;
+GtkWidget * check_show_active_track_name_in_bold;
+GtkWidget * check_enable_pl_rules_hint;
+GtkListStore * plistcol_store;
 
+GtkWidget * check_hide_comment_pane;
+GtkWidget * check_enable_mstore_toolbar;
+GtkWidget * check_enable_mstore_statusbar;
+GtkWidget * check_ms_statusbar_show_size;
+GtkWidget * check_expand_stores;
+GtkWidget * check_enable_ms_rules_hint;
+GtkWidget * check_enable_ms_tree_icons;
+GtkWidget * combo_cwidth;
+GtkWidget * check_magnify_smaller_images;
 GtkListStore * ms_pathlist_store = NULL;
 GtkTreeSelection * ms_pathlist_select;
 GtkWidget * entry_ms_pathlist;
 
-GtkWidget * cddb_server_entry;
-GtkWidget * cddb_tout_spinner;
-GtkWidget * cddb_proto_combo;
+#ifdef HAVE_LADSPA
+GtkWidget * combo_ladspa;
+#endif /* HAVE_LADSPA */
+#ifdef HAVE_SRC
+extern int src_type;
+GtkWidget * combo_src;
+#endif /* HAVE_SRC */
+GtkWidget * label_src;
 
+GtkWidget * check_rva_is_enabled;
+GtkWidget * rva_drawing_area;
+GdkPixmap * rva_pixmap = NULL;
+GtkWidget * rva_viewport;
+GtkWidget * combo_listening_env;
+GtkWidget * spin_refvol;
+GtkWidget * spin_steepness;
+GtkWidget * check_rva_use_averaging;
+GtkWidget * combo_threshold;
+GtkWidget * spin_linthresh;
+GtkWidget * spin_stdthresh;
 GtkObject * adj_refvol;
 GtkObject * adj_steepness;
 GtkObject * adj_linthresh;
 GtkObject * adj_stdthresh;
-GtkWidget * rva_drawing_area;
-GdkPixmap * rva_pixmap = NULL;
-GtkWidget * rva_viewport;
-GtkWidget * spin_refvol;
-GtkWidget * spin_steepness;
-GtkWidget * spin_linthresh;
-GtkWidget * spin_stdthresh;
 GtkWidget * label_listening_env;
 GtkWidget * label_refvol;
 GtkWidget * label_steepness;
 GtkWidget * label_threshold;
 GtkWidget * label_linthresh;
 GtkWidget * label_stdthresh;
-GtkListStore * plistcol_store;
+
+GtkWidget * check_auto_use_meta_artist;
+GtkWidget * check_auto_use_meta_record;
+GtkWidget * check_auto_use_meta_track;
+GtkWidget * check_auto_use_ext_meta_artist;
+GtkWidget * check_auto_use_ext_meta_record;
+GtkWidget * check_auto_use_ext_meta_track;
+GtkWidget * combo_replaygain;
+
+#ifdef HAVE_CDDB
+GtkWidget * cddb_server_entry;
+GtkWidget * cddb_tout_spinner;
+GtkWidget * cddb_radio_direct;
+GtkWidget * cddb_radio_proxy;
+GtkWidget * cddb_proto_combo;
+GtkWidget * cddb_proxy_entry;
+GtkWidget * cddb_proxy_port_spinner;
+#endif /* HAVE_CDDB */
+
+GtkWidget * check_override_skin;
 
 #define DEFAULT_FONT_NAME "Sans 11"
 
@@ -375,6 +388,9 @@ options_window_accept(void) {
 	set_option_from_combo(cddb_proto_combo, &options.cddb_use_http);
 	set_option_from_spin(cddb_tout_spinner, &options.cddb_timeout);
 	set_option_from_entry(cddb_server_entry, options.cddb_server);
+        set_option_from_toggle(cddb_radio_proxy, &options.cddb_use_proxy);
+	set_option_from_entry(cddb_proxy_entry, options.cddb_proxy);
+	set_option_from_spin(cddb_proxy_port_spinner, &options.cddb_proxy_port);
 #endif /* HAVE_CDDB */
 
 
@@ -1376,6 +1392,17 @@ display_pathlist_help(void) {
         gtk_widget_destroy(help_dialog);
 }
 
+#ifdef HAVE_CDDB
+void
+cddb_radio_direct_toggled(GtkWidget * widget, gpointer * data) {
+
+	gboolean state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cddb_radio_direct));
+
+	gtk_widget_set_sensitive(cddb_proto_combo, state);
+	gtk_widget_set_sensitive(cddb_proxy_entry, !state);
+	gtk_widget_set_sensitive(cddb_proxy_port_spinner, !state);
+}
+#endif /* HAVE_CDDB */
 
 void
 create_options_window(void) {
@@ -2294,7 +2321,7 @@ See the About box and the documentation for details."));
 	/* CDDB notebook page */
 
 #ifdef HAVE_CDDB
-	table_cddb = gtk_table_new(3, 2, FALSE);
+	table_cddb = gtk_table_new(7, 2, FALSE);
         gtk_container_set_border_width(GTK_CONTAINER(table_cddb), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table_cddb, create_notebook_tab(_("CDDB"), "cddb.png"));
 
@@ -2309,7 +2336,6 @@ See the About box and the documentation for details."));
         gtk_table_attach(GTK_TABLE(table_cddb), cddb_server_entry, 1, 2, 0, 1,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
-
 	label = gtk_label_new(_("Connection timeout [sec]:"));
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
@@ -2321,10 +2347,17 @@ See the About box and the documentation for details."));
         gtk_table_attach(GTK_TABLE(table_cddb), cddb_tout_spinner, 1, 2, 1, 2,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
+	cddb_radio_direct = gtk_radio_button_new_with_label(NULL, _("Direct connection to CDDB server"));
+	gtk_widget_set_name(cddb_radio_direct, "check_on_notebook");
+	g_signal_connect(G_OBJECT(cddb_radio_direct), "toggled",
+			 G_CALLBACK(cddb_radio_direct_toggled), NULL);
+        gtk_table_attach(GTK_TABLE(table_cddb), cddb_radio_direct, 0, 2, 2, 3,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+
 	label = gtk_label_new(_("Protocol:"));
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 2, 3,
+        gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 3, 4,
                          GTK_FILL, GTK_FILL, 5, 5);
 
 	cddb_proto_combo = gtk_combo_box_new_text();
@@ -2335,8 +2368,44 @@ See the About box and the documentation for details."));
 	} else {
 		gtk_combo_box_set_active(GTK_COMBO_BOX(cddb_proto_combo), 0);
 	}
-        gtk_table_attach(GTK_TABLE(table_cddb), cddb_proto_combo, 1, 2, 2, 3,
+        gtk_table_attach(GTK_TABLE(table_cddb), cddb_proto_combo, 1, 2, 3, 4,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+
+	cddb_radio_proxy = gtk_radio_button_new_with_label_from_widget(
+		       GTK_RADIO_BUTTON(cddb_radio_direct), _("HTTP tunneling through proxy"));
+	gtk_widget_set_name(cddb_radio_proxy, "check_on_notebook");
+        gtk_table_attach(GTK_TABLE(table_cddb), cddb_radio_proxy, 0, 2, 4, 5,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+
+	label = gtk_label_new(_("HTTP proxy:"));
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 5, 6,
+                         GTK_FILL, GTK_FILL, 5, 5);
+
+	cddb_proxy_entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(cddb_proxy_entry), options.cddb_proxy);
+        gtk_table_attach(GTK_TABLE(table_cddb), cddb_proxy_entry, 1, 2, 5, 6,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+
+	label = gtk_label_new(_("Port:"));
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 6, 7,
+                         GTK_FILL, GTK_FILL, 5, 5);
+
+	cddb_proxy_port_spinner = gtk_spin_button_new_with_range(0, 65535, 1);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cddb_proxy_port_spinner), options.cddb_proxy_port);
+        gtk_table_attach(GTK_TABLE(table_cddb), cddb_proxy_port_spinner, 1, 2, 6, 7,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+
+	if (options.cddb_use_proxy) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_radio_direct), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_radio_proxy), TRUE);
+	} else {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_radio_proxy), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_radio_direct), TRUE);
+	}
 
 #endif /* HAVE_CDDB */
 

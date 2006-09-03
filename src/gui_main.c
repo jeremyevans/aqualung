@@ -4437,6 +4437,11 @@ save_config(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_timeout", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.cddb_use_http);
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_use_http", (xmlChar *) str);
+	snprintf(str, 31, "%d", options.cddb_use_proxy);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_use_proxy", (xmlChar *) str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_proxy", (xmlChar *) options.cddb_proxy);
+	snprintf(str, 31, "%d", options.cddb_proxy_port);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_proxy_port", (xmlChar *) str);
 
 
 	i = 0;
@@ -4535,13 +4540,13 @@ load_config(void) {
 	options.default_param[0] = '\0';
 	options.title_format[0] = '\0';
         options.enable_tooltips = 1;
-        options.enable_ms_tree_icons = 1;
         options.show_sn_title = 1;
         options.united_minimization = 1;
-        options.buttons_at_the_bottom = 1;
+        options.buttons_at_the_bottom = options.buttons_at_the_bottom_shadow = 1;
 
 	options.enable_mstore_statusbar = options.enable_mstore_statusbar_shadow = 1;
        	options.enable_mstore_toolbar = options.enable_mstore_toolbar_shadow = 1;
+        options.enable_ms_tree_icons = options.enable_ms_tree_icons_shadow = 1;
 
         options.cover_width = 2;
 
@@ -4563,6 +4568,7 @@ load_config(void) {
 	options.auto_use_ext_meta_track = 1;
 
 	options.cddb_server[0] = '\0';
+	options.cddb_proxy[0] = '\0';
 	options.cddb_timeout = 10;
 
 	options.plcol_idx[0] = 0;
@@ -5147,6 +5153,24 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
                                 sscanf((char *) key, "%d", &options.cddb_use_http);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_proxy"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                strncpy(options.cddb_proxy, (char *) key, MAXLEN-1);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_proxy_port"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf((char *) key, "%d", &options.cddb_proxy_port);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_use_proxy"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf((char *) key, "%d", &options.cddb_use_proxy);
                         xmlFree(key);
                 }
 

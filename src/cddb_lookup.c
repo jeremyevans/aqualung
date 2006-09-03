@@ -537,9 +537,19 @@ cddb_thread(void * arg) {
 	cddb_set_server_name(conn, options.cddb_server);
 	cddb_set_timeout(conn, options.cddb_timeout);
 
-	if (options.cddb_use_http) {
-		cddb_http_enable(conn);
-		cddb_set_server_port(conn, 80);
+	if (options.cddb_use_proxy) {
+		cddb_http_proxy_enable(conn);
+		cddb_set_http_proxy_server_name(conn, options.cddb_proxy);
+		cddb_set_http_proxy_server_port(conn, options.cddb_proxy_port);
+	} else {
+		cddb_http_proxy_disable(conn);
+		if (options.cddb_use_http) {
+			cddb_http_enable(conn);
+			cddb_set_server_port(conn, 80);
+		} else {
+			cddb_http_disable(conn);
+			cddb_set_server_port(conn, 888);
+		}
 	}
 
 	if ((disc = cddb_disc_new()) == NULL) {

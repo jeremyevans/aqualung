@@ -1214,10 +1214,6 @@ build_dialog(void) {
 	gtk_widget_set_name(fs_radio_preset, "check_on_notebook");
         gtk_frame_set_label_widget(GTK_FRAME(fs_frame_preset), fs_radio_preset);
 
-	if (fs_preset) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fs_radio_preset), TRUE);
-	}
-
 	g_signal_connect(G_OBJECT(fs_radio_preset), "toggled",
 			 G_CALLBACK(fs_radio_preset_toggled), NULL);
 
@@ -1266,25 +1262,21 @@ build_dialog(void) {
 
         hbox = gtk_hbox_new(FALSE, 0);
 	fs_label_regexp = gtk_label_new(_("Regexp:"));
-	gtk_widget_set_sensitive(fs_label_regexp, FALSE);
         gtk_box_pack_start(GTK_BOX(hbox), fs_label_regexp, FALSE, FALSE, 5);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
 			 GTK_FILL, GTK_FILL, 0, 5);
 
 	fs_entry_regexp1 = gtk_entry_new();
-	gtk_widget_set_sensitive(fs_entry_regexp1, FALSE);
 	gtk_table_attach(GTK_TABLE(table), fs_entry_regexp1, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
         hbox = gtk_hbox_new(FALSE, 0);
 	fs_label_repl = gtk_label_new(_("Replace:"));
-	gtk_widget_set_sensitive(fs_label_repl, FALSE);
         gtk_box_pack_start(GTK_BOX(hbox), fs_label_repl, FALSE, FALSE, 5);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
 			 GTK_FILL, GTK_FILL, 0, 5);
 
 	fs_entry_regexp2 = gtk_entry_new();
-	gtk_widget_set_sensitive(fs_entry_regexp2, FALSE);
 	gtk_table_attach(GTK_TABLE(table), fs_entry_regexp2, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
@@ -1294,6 +1286,13 @@ build_dialog(void) {
         gtk_box_pack_start(GTK_BOX(hbox), fs_label_error, FALSE, FALSE, 5);
         gtk_box_pack_start(GTK_BOX(fs_frame_regexp_vbox), hbox, FALSE, FALSE, 0);
 
+	if (fs_preset) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fs_radio_regexp), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fs_radio_preset), TRUE);
+	} else {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fs_radio_preset), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fs_radio_regexp), TRUE);
+	}
 
 	fs_frame_sandbox = gtk_frame_new(_("Sandbox"));
         gtk_box_pack_start(GTK_BOX(fs_vbox), fs_frame_sandbox, FALSE, FALSE, 5);

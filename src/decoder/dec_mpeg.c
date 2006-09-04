@@ -50,7 +50,6 @@ extern size_t sample_size;
 /* Uncomment this to get debug printouts */
 /* #define MPEG_DEBUG */
 
-
 /* use the first MAX_STAT_HEADERS number of headers to gather
  * statistical info if needed */
 #define MAX_STAT_HEADERS 256
@@ -348,6 +347,26 @@ get_mp3file_info(int fd, mp3info_t *info) {
 	/* skip ID3v2 header, if present */
 	skip_id3v2_header(fd);
 
+#ifndef MPEG_STATREC
+	/* uase first valid mpeg frame header to retrieve stream info */
+	headers[0] = find_next_frame(fd, &bytecount, 0x100000 - bytecount, 0);
+	/* Quit if we haven't found a valid header within 1M */
+	if (headers[0] == 0)
+		return -1;
+	
+	memset(&infos[0], 0, sizeof(mp3info_t));
+	
+	/* These two are needed for proper LAME gapless MP3 playback */
+	infos[0].enc_delay = -1;
+	infos[0].enc_padding = -1;
+	if (!mp3headerinfo(&infos[0], headers[0]))
+		return -2;
+	
+	offsets[0] = lseek(fd, 0, SEEK_CUR);
+	offset = offsets[0];
+	header = headers[0];
+#else
+	/* more sophisticated approach - but slower as well. */
 	for (i = 0; i < 4; i++) {
 		headers[i] = find_next_frame(fd, &bytecount, 0x100000 - bytecount, 0);
 		/* Quit if we haven't found a valid header within 1M */
@@ -511,6 +530,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 			return -2;
 		}
 	}
+#endif /* MPEG_STATISTICAL_RECOGNITION */
 	
 	lseek(fd, offset, SEEK_SET);
 	memset(info, 0, sizeof(mp3info_t));	
@@ -700,8 +720,7 @@ build_seek_table_thread(void * args) {
 	char * bytes = (char *)pd->fdm;
 	long i;
 	int div;
-	long last = 0, last_but_1 = 0, last_but_2 = 0;
-	int have_id3v1 = 0;
+	long last = 0, last_but_1 = 0;
 	long limit = pd->filesize-4;
 
 	pd->builder_thread_running = 1;
@@ -727,8 +746,7 @@ build_seek_table_thread(void * args) {
 #ifdef MPEG_DEBUG
 			printf("ID3v1 tag found at end of file\n");
 #endif /* MPEG_DEBUG */
-			have_id3v1 = 1;
-			limit = pd->filesize - 128 - 4;
+			limit -= 128;
 		}
 	}
 
@@ -744,7 +762,6 @@ build_seek_table_thread(void * args) {
 			    (mp3info.channel_mode == pd->mp3info.channel_mode) &&
 			    (mp3info.frequency == pd->mp3info.frequency)) {
 
-				last_but_2 = last_but_1;
 				last_but_1 = last;
 				last = i;
 
@@ -787,17 +804,17 @@ build_seek_table_thread(void * args) {
 		}
 	}
 
+#ifdef MPEG_DEBUG
 	{
 		i = last;
 		long header = BYTES2INT(bytes[i], bytes[i+1], bytes[i+2], bytes[i+3]);
 		mp3info_t mp3info;
 		mp3headerinfo(&mp3info, header);
-#ifdef MPEG_DEBUG
 		printf("last frame position = %ld\n", limit + 4 - i);
 		printf("last frame length = %d samp = %d\n",
 		       mp3info.frame_size, mp3info.frame_samples);
-#endif /* MPEG_DEBUG */
 	}
+#endif /* MPEG_DEBUG */
 
 	pd->last_frames[1] = last_but_1;
 	pd->last_frames[0] = last;

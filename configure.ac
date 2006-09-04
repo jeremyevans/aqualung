@@ -315,6 +315,21 @@ else
 	if test "$mpeg" = "detect"; then
 		mpeg=$lib
 	fi
+
+	if test "$mpeg" = "yes"; then
+	        AC_MSG_CHECKING(whether to compile with statistical MPEG frame recognition)
+		AC_ARG_WITH(
+		mpegstatrec,
+		[  --with-mpegstatrec=yes,no  compile with statistical MPEG frame recognition (default: yes)],
+		mpegstatrec="$withval",
+		mpegstatrec="detect")
+		if test "$mpegstatrec" = "no"; then
+		        AC_MSG_RESULT(no)
+		else
+                        AC_MSG_RESULT(yes)
+		        AC_DEFINE([MPEG_STATREC], [1], [Defined if compile with statistical MPEG frame recognition])
+		fi
+	fi
 fi
 
 

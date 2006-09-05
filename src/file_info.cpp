@@ -347,6 +347,7 @@ print_tags(TagLib::ID3v1::Tag * id3v1_tag,
 #endif /* HAVE_TAGLIB */
 
 
+#ifdef HAVE_TAGLIB
 #ifdef HAVE_FLAC
 void
 meta_print_flac(metadata * meta) {
@@ -392,6 +393,7 @@ meta_print_mpc(metadata * meta) {
 		   taglib_mpc_file->APETag(), NULL);
 }
 #endif /* HAVE_MPC */
+#endif /* HAVE_TAGLIB */
 
 
 void

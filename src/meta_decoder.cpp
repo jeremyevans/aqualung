@@ -507,6 +507,7 @@ meta_read_flac(metadata * meta, FLAC__StreamMetadata * flacmeta) {
 #endif /* HAVE_FLAC */
 
 
+#ifdef HAVE_TAGLIB
 #ifdef HAVE_FLAC
 void *
 meta_read_flac(char * file) {
@@ -545,6 +546,7 @@ meta_read_mpc(char * file) {
 	return reinterpret_cast<void *>(taglib_mpc_file);
 }
 #endif /* HAVE_MPC */
+#endif /* HAVE_TAGLIB */
 
 
 /* ret: 1 if successful, 0 if error */
@@ -742,6 +744,7 @@ meta_read(metadata * meta, char * file) {
 }
 
 
+#ifdef HAVE_TAGLIB
 #ifdef HAVE_FLAC
 void
 meta_free_flac(metadata * meta) {
@@ -784,6 +787,7 @@ meta_free_mpc(metadata * meta) {
 	taglib_mpc_file->~File();
 }
 #endif /* HAVE_MPC */
+#endif /* HAVE_TAGLIB */
 
 
 void

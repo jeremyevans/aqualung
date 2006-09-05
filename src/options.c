@@ -198,6 +198,9 @@ GtkWidget * cddb_radio_proxy;
 GtkWidget * cddb_proto_combo;
 GtkWidget * cddb_proxy_entry;
 GtkWidget * cddb_proxy_port_spinner;
+GtkWidget * cddb_label_proto;
+GtkWidget * cddb_label_proxy;
+GtkWidget * cddb_label_proxy_port;
 #endif /* HAVE_CDDB */
 
 GtkWidget * check_override_skin;
@@ -280,7 +283,8 @@ options_window_accept(void) {
 	int i;
 	int n;
 	int n_prev = 3;
-
+	GtkTreeIter iter;
+	GtkTreeIter iter2;
         GdkColor color;
 
 
@@ -486,6 +490,82 @@ options_window_accept(void) {
                 override_shadow = 0;
         } 
      
+
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+					     &iter, NULL, i++)) {
+		char * p1;
+		int j;
+		int has;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 2, &p1, -1);
+		
+		j = 0;
+		has = 0;
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store),
+						     &iter2, NULL, j++)) {
+			char * p2;
+
+			gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter2, 0, &p2, -1);
+			if (strcmp(p1, p2) == 0) {
+				has = 1;
+				g_free(p2);
+				break;
+			}
+
+			g_free(p2);
+		}
+
+		if (!has) {
+
+			// TODO: if unsaved ask
+
+			gtk_tree_store_remove(music_store, &iter);
+			--i;
+		}
+
+		g_free(p1);
+	}
+
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store),
+					     &iter, NULL, i++)) {
+		char * p1;
+		int j;
+		int has;
+		char sort[4];
+
+		snprintf(sort, 4, "%03d", i);
+
+		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &p1, -1);
+
+		j = 0;
+		has = 0;
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+						     &iter2, NULL, j++)) {
+			char * p2;
+
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store),
+					   &iter2, 2, &p2, -1);
+
+			if (strcmp(p1, p2) == 0) {
+				gtk_tree_store_set(music_store, &iter2, 1, sort, -1);
+				g_free(p2);
+				has = 1;
+				break;
+			}
+
+			g_free(p2);
+		}
+
+		if (!has) {
+			load_music_store(p1, sort);
+		}
+
+		g_free(p1);
+	}
 
 	set_buttons_relief();
 	refresh_displays();
@@ -1145,6 +1225,7 @@ add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 		
 		label = gtk_label_new(_("Paths must either be absolute or starting with a tilde."));
+
 		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
 		gtk_widget_show(label);
 		
@@ -1278,62 +1359,6 @@ browse_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 
 
 void
-refresh_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
-
-	GtkTreeIter iter;
-	int i = 0;
-	char * path;
-
-	if (music_store_changed) {
-		GtkWidget * dialog;
-		GtkWidget * label;
-		
-		dialog = gtk_dialog_new_with_buttons(_("Warning"),
-						     GTK_WINDOW(options_window),
-						     GTK_DIALOG_MODAL |
-						     GTK_DIALOG_DESTROY_WITH_PARENT |
-						     GTK_FILE_CHOOSER_ACTION_OPEN,
-						     GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-						     _("Discard changes"), GTK_RESPONSE_REJECT,
-						     NULL);
-		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
-		
-		label = gtk_label_new(_("Music Store has been changed. You have to save it before\n"
-					"refreshing if you want to keep the changes."));
-		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
-		gtk_widget_show(label);
-		
-		if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-			save_music_store();
-		}
-		
-		gtk_widget_destroy(dialog);
-	}
-
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store),
-					     &iter, NULL, i++)) {
-		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &path, -1);
-		
-		if (access(path, R_OK | W_OK) == 0) {
-			gtk_list_store_set(ms_pathlist_store, &iter, 2, _("rw"), -1);
-		} else if (access(path, R_OK) == 0) {
-			gtk_list_store_set(ms_pathlist_store, &iter, 2, _("r"), -1);
-		} else {
-			gtk_list_store_set(ms_pathlist_store, &iter, 2, _("unreachable"), -1);
-		}
-		
-		g_free(path);
-	}
-	
-	gtk_tree_store_clear(music_store);
-	load_music_store();
-	music_store_mark_saved();
-}
-
-
-void
 display_title_format_help(void) {
 
 	GtkWidget *help_dialog;
@@ -1382,10 +1407,8 @@ display_pathlist_help(void) {
         help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
                                               GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
                                               GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, 
-	                                      _("Paths must either be absolute or starting with a tilde,\n"
-                				"which will be expanded to the user's home directory.\n\n"
-                                                "You will need to click the Refresh button after adding or\n"
-	                			"removing a store or reordering the list."));
+	                                      _("Paths must either be absolute or starting with a tilde, which will be expanded to the user's home directory.\n\n"
+						"Drag and drop entries in the list to set the store order in the Music Store."));
 
         gtk_widget_show (help_dialog);
         aqualung_dialog_run(GTK_DIALOG(help_dialog));
@@ -1399,8 +1422,11 @@ cddb_radio_direct_toggled(GtkWidget * widget, gpointer * data) {
 	gboolean state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cddb_radio_direct));
 
 	gtk_widget_set_sensitive(cddb_proto_combo, state);
+	gtk_widget_set_sensitive(cddb_label_proto, state);
 	gtk_widget_set_sensitive(cddb_proxy_entry, !state);
 	gtk_widget_set_sensitive(cddb_proxy_port_spinner, !state);
+	gtk_widget_set_sensitive(cddb_label_proxy, !state);
+	gtk_widget_set_sensitive(cddb_label_proxy_port, !state);
 }
 #endif /* HAVE_CDDB */
 
@@ -1412,9 +1438,7 @@ create_options_window(void) {
 	GtkWidget * frame_param;
 	GtkWidget * frame_misc;
 	GtkWidget * frame_cart;
-	GtkWidget * vbox_title;
 	GtkWidget * hbox_title;
-	GtkWidget * vbox_param;
 	GtkWidget * hbox_param;
 	GtkWidget * vbox_misc;
 	GtkWidget * vbox_cart;
@@ -1430,7 +1454,6 @@ create_options_window(void) {
 	GtkWidget * add_ms_pathlist;
 	GtkWidget * browse_ms_pathlist;
 	GtkWidget * remove_ms_pathlist;
-	GtkWidget * refresh_ms_pathlist;
 	GtkWidget * frame_plistcol;
 	GtkWidget * vbox_plistcol;
 	GtkWidget * label_plistcol;
@@ -1454,13 +1477,13 @@ create_options_window(void) {
 
 	GtkWidget * vbox_rva;
 	GtkWidget * table_rva;
-	GtkWidget * hbox_listening_env;
-	GtkWidget * hbox_refvol;
-	GtkWidget * hbox_steepness;
-	GtkWidget * table_avg;
-	GtkWidget * hbox_threshold;
-	GtkWidget * hbox_linthresh;
-	GtkWidget * hbox_stdthresh;
+	//GtkWidget * hbox_listening_env;
+	//GtkWidget * hbox_refvol;
+	//GtkWidget * hbox_steepness;
+	//GtkWidget * table_avg;
+	//GtkWidget * hbox_threshold;
+	//GtkWidget * hbox_linthresh;
+	//GtkWidget * hbox_stdthresh;
         GtkWidget * label_cwidth;
 	GtkWidget * hbox_cwidth;
 
@@ -1513,20 +1536,16 @@ create_options_window(void) {
 
 	/* "General" notebook page */
 
-	vbox_general = gtk_vbox_new(FALSE, 0);
+	vbox_general = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_general), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_general, create_notebook_tab(_("General"), "general.png"));
 
 	frame_title = gtk_frame_new(_("Title format"));
-	gtk_box_pack_start(GTK_BOX(vbox_general), frame_title, FALSE, TRUE, 5);
-
-	vbox_title = gtk_vbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox_title), 5);
-	gtk_container_add(GTK_CONTAINER(frame_title), vbox_title);
+	gtk_box_pack_start(GTK_BOX(vbox_general), frame_title, FALSE, TRUE, 0);
 
         hbox_title = gtk_hbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(hbox_title), 2);
-	gtk_box_pack_start(GTK_BOX(vbox_title), hbox_title, TRUE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox_title), 5);
+	gtk_container_add(GTK_CONTAINER(frame_title), hbox_title);
 
 	entry_title = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(entry_title), MAXLEN - 1);
@@ -1540,13 +1559,10 @@ create_options_window(void) {
 	frame_param = gtk_frame_new(_("Implicit command line"));
 	gtk_box_pack_start(GTK_BOX(vbox_general), frame_param, FALSE, TRUE, 5);
 
-	vbox_param = gtk_vbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox_param), 5);
-	gtk_container_add(GTK_CONTAINER(frame_param), vbox_param);
 
         hbox_param = gtk_hbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(hbox_param), 2);
-	gtk_box_pack_start(GTK_BOX(vbox_param), hbox_param, TRUE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox_param), 5);
+	gtk_container_add(GTK_CONTAINER(frame_param), hbox_param);
 
 	entry_param = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(entry_param), MAXLEN - 1);
@@ -1558,7 +1574,7 @@ create_options_window(void) {
 	gtk_box_pack_start(GTK_BOX(hbox_param), help_btn_param, FALSE, FALSE, 0);
 
 	frame_misc = gtk_frame_new(_("Miscellaneous"));
-	gtk_box_pack_start(GTK_BOX(vbox_general), frame_misc, FALSE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_general), frame_misc, FALSE, TRUE, 0);
 
 	vbox_misc = gtk_vbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_misc), 8);
@@ -1891,18 +1907,11 @@ to set the column order in the Playlist."));
 
 
 	frame_ms_pathlist = gtk_frame_new(_("Paths to Music Store databases"));
-	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_ms_pathlist, FALSE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_ms_pathlist, FALSE, TRUE, 0);
 	
 	vbox_ms_pathlist = gtk_vbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_ms_pathlist), 10);
 	gtk_container_add(GTK_CONTAINER(frame_ms_pathlist), vbox_ms_pathlist);
-
-	if (!ms_pathlist_store) {
-		ms_pathlist_store = gtk_list_store_new(3,
-						    G_TYPE_STRING,     /* path */
-						    G_TYPE_STRING,     /* displayed name */
-						    G_TYPE_STRING);    /* state (rw, r, unreachable) */
-	}
 
 	ms_pathlist_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(ms_pathlist_store));
 	ms_pathlist_select = gtk_tree_view_get_selection(GTK_TREE_VIEW(ms_pathlist_view));
@@ -1953,12 +1962,6 @@ to set the column order in the Playlist."));
 	g_signal_connect(help_pathlist, "clicked", G_CALLBACK(display_pathlist_help), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist_2), help_pathlist, FALSE, FALSE, 0);
 
-	refresh_ms_pathlist = gui_stock_label_button(_("Refresh"), GTK_STOCK_REFRESH);
-        gtk_container_set_border_width(GTK_CONTAINER(refresh_ms_pathlist), 2);
-	g_signal_connect (G_OBJECT(refresh_ms_pathlist), "clicked",
-			  G_CALLBACK(refresh_ms_pathlist_clicked), NULL);
-	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist_2), refresh_ms_pathlist, FALSE, FALSE, 0);
-	
 	remove_ms_pathlist = gui_stock_label_button(_("Remove"), GTK_STOCK_REMOVE);
         gtk_container_set_border_width(GTK_CONTAINER(remove_ms_pathlist), 2);
 	g_signal_connect (G_OBJECT(remove_ms_pathlist), "clicked",
@@ -1974,12 +1977,12 @@ to set the column order in the Playlist."));
 
 	/* "DSP" notebook page */
 
-	vbox_dsp = gtk_vbox_new(FALSE, 0);
+	vbox_dsp = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_dsp), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_dsp, create_notebook_tab(_("DSP"), "dsp.png"));
 
 	frame_ladspa = gtk_frame_new(_("LADSPA plugin processing"));
-	gtk_box_pack_start(GTK_BOX(vbox_dsp), frame_ladspa, FALSE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_dsp), frame_ladspa, FALSE, TRUE, 0);
 
 	vbox_ladspa = gtk_vbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_ladspa), 10);
@@ -1989,11 +1992,9 @@ to set the column order in the Playlist."));
         combo_ladspa = gtk_combo_box_new_text (); 
         gtk_box_pack_start(GTK_BOX(vbox_ladspa), combo_ladspa, TRUE, TRUE, 0);
 
-	{
-	        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_ladspa), _("Pre Fader (before Volume & Balance)"));
-        	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_ladspa), _("Post Fader (after Volume & Balance)"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_ladspa), _("Pre Fader (before Volume & Balance)"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_ladspa), _("Post Fader (after Volume & Balance)"));
 
-	}
 	status = options.ladspa_is_postfader;
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_ladspa), status);
         g_signal_connect(combo_ladspa, "changed", G_CALLBACK(changed_ladspa_prepost), NULL);
@@ -2045,7 +2046,7 @@ See the About box and the documentation for details."));
 
 	/* "Playback RVA" notebook page */
 
-	vbox_rva = gtk_vbox_new(FALSE, 0);
+	vbox_rva = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_rva), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_rva, create_notebook_tab(_("Playback RVA"), "rva.png"));
 
@@ -2057,11 +2058,11 @@ See the About box and the documentation for details."));
 	rva_is_enabled_shadow = options.rva_is_enabled;
 	g_signal_connect(G_OBJECT(check_rva_is_enabled), "toggled",
 			 G_CALLBACK(check_rva_is_enabled_toggled), NULL);
-        gtk_box_pack_start(GTK_BOX(vbox_rva), check_rva_is_enabled, FALSE, TRUE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_rva), check_rva_is_enabled, FALSE, TRUE, 0);
 
 
-	table_rva = gtk_table_new(4, 2, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox_rva), table_rva, TRUE, TRUE, 3);
+	table_rva = gtk_table_new(8, 2, FALSE);
+	gtk_box_pack_start(GTK_BOX(vbox_rva), table_rva, TRUE, TRUE, 5);
 
 	rva_viewport = gtk_viewport_new(NULL, NULL);
 	gtk_widget_set_size_request(rva_viewport, 244, 244);
@@ -2077,10 +2078,10 @@ See the About box and the documentation for details."));
 	g_signal_connect(G_OBJECT(rva_drawing_area), "expose_event",
 			 G_CALLBACK(rva_expose_event), NULL);
 	
-        hbox_listening_env = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_hbox_new(FALSE, 0);
         label_listening_env = gtk_label_new(_("Listening environment:"));
-        gtk_box_pack_start(GTK_BOX(hbox_listening_env), label_listening_env, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_rva), hbox_listening_env, 0, 1, 1, 2,
+        gtk_box_pack_start(GTK_BOX(hbox), label_listening_env, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 1, 2,
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	combo_listening_env = gtk_combo_box_new_text ();
@@ -2097,10 +2098,10 @@ See the About box and the documentation for details."));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_listening_env), options.rva_env);
 	g_signal_connect(combo_listening_env, "changed", G_CALLBACK(changed_listening_env), NULL);
 
-        hbox_refvol = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_hbox_new(FALSE, 0);
         label_refvol = gtk_label_new(_("Reference volume [dBFS] :"));
-        gtk_box_pack_start(GTK_BOX(hbox_refvol), label_refvol, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_rva), hbox_refvol, 0, 1, 2, 3,
+        gtk_box_pack_start(GTK_BOX(hbox), label_refvol, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 2, 3,
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	rva_refvol_shadow = options.rva_refvol;
@@ -2113,10 +2114,10 @@ See the About box and the documentation for details."));
         gtk_table_attach(GTK_TABLE(table_rva), spin_refvol, 1, 2, 2, 3,
                          GTK_FILL, GTK_FILL, 5, 2);
 
-        hbox_steepness = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_hbox_new(FALSE, 0);
         label_steepness = gtk_label_new(_("Steepness [dB/dB] :"));
-        gtk_box_pack_start(GTK_BOX(hbox_steepness), label_steepness, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_rva), hbox_steepness, 0, 1, 3, 4,
+        gtk_box_pack_start(GTK_BOX(hbox), label_steepness, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 3, 4,
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	rva_steepness_shadow = options.rva_steepness;
@@ -2140,20 +2141,18 @@ See the About box and the documentation for details."));
 	rva_use_averaging_shadow = options.rva_use_averaging;
 	g_signal_connect(G_OBJECT(check_rva_use_averaging), "toggled",
 			 G_CALLBACK(check_rva_use_averaging_toggled), NULL);
-        gtk_box_pack_start(GTK_BOX(vbox_rva), check_rva_use_averaging, FALSE, TRUE, 5);
+        //gtk_box_pack_start(GTK_BOX(vbox_rva), check_rva_use_averaging, FALSE, TRUE, 5);
+        gtk_table_attach(GTK_TABLE(table_rva), check_rva_use_averaging, 0, 2, 4, 5,
+                         GTK_FILL, GTK_FILL, 5, 2);
 
-
-	table_avg = gtk_table_new(3, 2, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox_rva), table_avg, FALSE, TRUE, 3);
-
-        hbox_threshold = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_hbox_new(FALSE, 0);
         label_threshold = gtk_label_new(_("Drop statistical aberrations based on"));
-        gtk_box_pack_start(GTK_BOX(hbox_threshold), label_threshold, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_avg), hbox_threshold, 0, 1, 0, 1,
+        gtk_box_pack_start(GTK_BOX(hbox), label_threshold, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 5, 6,
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	combo_threshold = gtk_combo_box_new_text ();
-        gtk_table_attach(GTK_TABLE(table_avg), combo_threshold, 1, 2, 0, 1,
+        gtk_table_attach(GTK_TABLE(table_rva), combo_threshold, 1, 2, 5, 6,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 2);
 
 
@@ -2164,10 +2163,10 @@ See the About box and the documentation for details."));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_threshold), options.rva_use_linear_thresh);
 	g_signal_connect(combo_threshold, "changed", G_CALLBACK(changed_threshold), NULL);
 
-        hbox_linthresh = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_hbox_new(FALSE, 0);
         label_linthresh = gtk_label_new(_("Linear threshold [dB] :"));
-        gtk_box_pack_start(GTK_BOX(hbox_linthresh), label_linthresh, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_avg), hbox_linthresh, 0, 1, 1, 2,
+        gtk_box_pack_start(GTK_BOX(hbox), label_linthresh, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 6, 7,
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	rva_avg_linear_thresh_shadow = options.rva_avg_linear_thresh;
@@ -2177,13 +2176,13 @@ See the About box and the documentation for details."));
         gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_linthresh), FALSE);
 	g_signal_connect(G_OBJECT(adj_linthresh), "value_changed",
 			 G_CALLBACK(linthresh_changed), NULL);
-        gtk_table_attach(GTK_TABLE(table_avg), spin_linthresh, 1, 2, 1, 2,
+        gtk_table_attach(GTK_TABLE(table_rva), spin_linthresh, 1, 2, 6, 7,
                          GTK_FILL, GTK_FILL, 5, 2);
 
-        hbox_stdthresh = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_hbox_new(FALSE, 0);
         label_stdthresh = gtk_label_new(_("% of standard deviation :"));
-        gtk_box_pack_start(GTK_BOX(hbox_stdthresh), label_stdthresh, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_avg), hbox_stdthresh, 0, 1, 2, 3,
+        gtk_box_pack_start(GTK_BOX(hbox), label_stdthresh, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 7, 8,
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	rva_avg_stddev_thresh_shadow = options.rva_avg_stddev_thresh;
@@ -2194,7 +2193,7 @@ See the About box and the documentation for details."));
         gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_stdthresh), FALSE);
 	g_signal_connect(G_OBJECT(adj_stdthresh), "value_changed",
 			 G_CALLBACK(stdthresh_changed), NULL);
-        gtk_table_attach(GTK_TABLE(table_avg), spin_stdthresh, 1, 2, 2, 3,
+        gtk_table_attach(GTK_TABLE(table_rva), spin_stdthresh, 1, 2, 7, 8,
                          GTK_FILL, GTK_FILL, 5, 2);
 
 
@@ -2225,92 +2224,92 @@ See the About box and the documentation for details."));
 
 	/* "Metadata" notebook page */
 
-	vbox_meta = gtk_vbox_new(FALSE, 0);
+	vbox_meta = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_meta), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_meta, create_notebook_tab(_("Metadata"), "metadata.png"));
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("When adding to playlist, use file metadata (if available) "
 				"instead of\ninformation from the Music Store for:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
 	check_auto_use_meta_artist = gtk_check_button_new_with_label(_("Artist name"));
 	gtk_widget_set_name(check_auto_use_meta_artist, "check_on_notebook");
 	if (options.auto_use_meta_artist) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_artist), TRUE);
 	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_artist, FALSE, TRUE, 20);
+        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_artist, FALSE, TRUE, 35);
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
 	check_auto_use_meta_record = gtk_check_button_new_with_label(_("Record name"));
 	gtk_widget_set_name(check_auto_use_meta_record, "check_on_notebook");
 	if (options.auto_use_meta_record) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_record), TRUE);
 	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_record, FALSE, TRUE, 20);
+        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_record, FALSE, TRUE, 35);
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
 	check_auto_use_meta_track = gtk_check_button_new_with_label(_("Track name"));
 	gtk_widget_set_name(check_auto_use_meta_track, "check_on_notebook");
 	if (options.auto_use_meta_track) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_track), TRUE);
 	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_track, FALSE, TRUE, 20);
+        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_track, FALSE, TRUE, 35);
 
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 5);
 
 	label = gtk_label_new(_("When adding external files to playlist, use file metadata "
 				"(if available) for:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
 	check_auto_use_ext_meta_artist = gtk_check_button_new_with_label(_("Artist name"));
 	gtk_widget_set_name(check_auto_use_ext_meta_artist, "check_on_notebook");
 	if (options.auto_use_ext_meta_artist) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_artist), TRUE);
 	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_artist, FALSE, TRUE, 20);
+        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_artist, FALSE, TRUE, 35);
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
 	check_auto_use_ext_meta_record = gtk_check_button_new_with_label(_("Record name"));
 	gtk_widget_set_name(check_auto_use_ext_meta_record, "check_on_notebook");
 	if (options.auto_use_ext_meta_record) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_record), TRUE);
 	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_record, FALSE, TRUE, 20);
+        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_record, FALSE, TRUE, 35);
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
 	check_auto_use_ext_meta_track = gtk_check_button_new_with_label(_("Track name"));
 	gtk_widget_set_name(check_auto_use_ext_meta_track, "check_on_notebook");
 	if (options.auto_use_ext_meta_track) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_track), TRUE);
 	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_track, FALSE, TRUE, 20);
+        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_track, FALSE, TRUE, 35);
 
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 5);
 
 	label = gtk_label_new(_("Replaygain tag to use in Ogg Vorbis and FLAC files: "));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
 
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
 
 	combo_replaygain = gtk_combo_box_new_text ();
-        gtk_box_pack_start(GTK_BOX(hbox), combo_replaygain, FALSE, FALSE, 20);
+        gtk_box_pack_start(GTK_BOX(hbox), combo_replaygain, FALSE, FALSE, 35);
 
 	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_replaygain), _("Replaygain_track_gain"));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_replaygain), _("Replaygain_album_gain"));
@@ -2329,36 +2328,36 @@ See the About box and the documentation for details."));
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 0, 1,
-                         GTK_FILL, GTK_FILL, 5, 5);
+                         GTK_FILL, GTK_FILL, 5, 3);
 
 	cddb_server_entry = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(cddb_server_entry), options.cddb_server);
         gtk_table_attach(GTK_TABLE(table_cddb), cddb_server_entry, 1, 2, 0, 1,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
 	label = gtk_label_new(_("Connection timeout [sec]:"));
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 1, 2,
-                         GTK_FILL, GTK_FILL, 5, 5);
+                         GTK_FILL, GTK_FILL, 5, 3);
 
 	cddb_tout_spinner = gtk_spin_button_new_with_range(1, 60, 1);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cddb_tout_spinner), options.cddb_timeout);
         gtk_table_attach(GTK_TABLE(table_cddb), cddb_tout_spinner, 1, 2, 1, 2,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
 	cddb_radio_direct = gtk_radio_button_new_with_label(NULL, _("Direct connection to CDDB server"));
 	gtk_widget_set_name(cddb_radio_direct, "check_on_notebook");
 	g_signal_connect(G_OBJECT(cddb_radio_direct), "toggled",
 			 G_CALLBACK(cddb_radio_direct_toggled), NULL);
         gtk_table_attach(GTK_TABLE(table_cddb), cddb_radio_direct, 0, 2, 2, 3,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
-	label = gtk_label_new(_("Protocol:"));
+	cddb_label_proto = gtk_label_new(_("Protocol:"));
 	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), cddb_label_proto, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 3, 4,
-                         GTK_FILL, GTK_FILL, 5, 5);
+                         GTK_FILL, GTK_FILL, 35, 3);
 
 	cddb_proto_combo = gtk_combo_box_new_text();
 	gtk_combo_box_append_text(GTK_COMBO_BOX(cddb_proto_combo), _("CDDBP (port 888)"));
@@ -2369,35 +2368,35 @@ See the About box and the documentation for details."));
 		gtk_combo_box_set_active(GTK_COMBO_BOX(cddb_proto_combo), 0);
 	}
         gtk_table_attach(GTK_TABLE(table_cddb), cddb_proto_combo, 1, 2, 3, 4,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
 	cddb_radio_proxy = gtk_radio_button_new_with_label_from_widget(
 		       GTK_RADIO_BUTTON(cddb_radio_direct), _("HTTP tunneling through proxy"));
 	gtk_widget_set_name(cddb_radio_proxy, "check_on_notebook");
         gtk_table_attach(GTK_TABLE(table_cddb), cddb_radio_proxy, 0, 2, 4, 5,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
-	label = gtk_label_new(_("HTTP proxy:"));
+	cddb_label_proxy = gtk_label_new(_("HTTP proxy:"));
 	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), cddb_label_proxy, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 5, 6,
-                         GTK_FILL, GTK_FILL, 5, 5);
+                         GTK_FILL, GTK_FILL, 35, 3);
 
 	cddb_proxy_entry = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(cddb_proxy_entry), options.cddb_proxy);
         gtk_table_attach(GTK_TABLE(table_cddb), cddb_proxy_entry, 1, 2, 5, 6,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
-	label = gtk_label_new(_("Port:"));
+	cddb_label_proxy_port = gtk_label_new(_("Port:"));
 	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), cddb_label_proxy_port, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 6, 7,
-                         GTK_FILL, GTK_FILL, 5, 5);
+                         GTK_FILL, GTK_FILL, 35, 3);
 
 	cddb_proxy_port_spinner = gtk_spin_button_new_with_range(0, 65535, 1);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cddb_proxy_port_spinner), options.cddb_proxy_port);
         gtk_table_attach(GTK_TABLE(table_cddb), cddb_proxy_port_spinner, 1, 2, 6, 7,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
 	if (options.cddb_use_proxy) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_radio_direct), TRUE);
@@ -2413,7 +2412,7 @@ See the About box and the documentation for details."));
 
         override_shadow = options.override_skin_settings;
 
-	vbox_appearance = gtk_vbox_new(FALSE, 0);
+	vbox_appearance = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_appearance), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_appearance, create_notebook_tab(_("Appearance"), "appearance.png"));
 
@@ -2432,22 +2431,22 @@ See the About box and the documentation for details."));
 	gtk_box_pack_start(GTK_BOX(vbox_appearance), frame_fonts, FALSE, TRUE, 5);
 
 	vbox_fonts = gtk_vbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox_fonts), 10);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_fonts), 5);
 	gtk_container_add(GTK_CONTAINER(frame_fonts), vbox_fonts);
 
         /* playlist font */
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, FALSE, 3);
+	hbox = gtk_hbox_new(FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Playlist: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_pl_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_pl_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_pl_font, TRUE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), entry_pl_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_pl_font), FALSE);
 
         if (strlen(options.playlist_font)) {
@@ -2458,23 +2457,23 @@ See the About box and the documentation for details."));
         }
 
         button_pl_font =  gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_pl_font, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), button_pl_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_pl_font), "clicked",
 						G_CALLBACK (playlist_font_select), NULL);
 
         /* music store font */
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
+	hbox = gtk_hbox_new(FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("Music Store: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_ms_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_ms_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_ms_font, TRUE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), entry_ms_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_ms_font), FALSE);
 
         if (strlen(options.browser_font)) {
@@ -2489,24 +2488,24 @@ See the About box and the documentation for details."));
         }
 
         button_ms_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_ms_font, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), button_ms_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_ms_font), "clicked",
 						G_CALLBACK (browser_font_select), NULL);
 
 
         /* big timer font */
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
+	hbox = gtk_hbox_new(FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("Big timer: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_bt_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_bt_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_bt_font, TRUE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), entry_bt_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_bt_font), FALSE);
 
         if (strlen(options.bigtimer_font)) {
@@ -2521,23 +2520,23 @@ See the About box and the documentation for details."));
         }
 
         button_bt_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_bt_font, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), button_bt_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_bt_font), "clicked",
 						G_CALLBACK (bigtimer_font_select), NULL);
 
         /* small timer font */
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
+	hbox = gtk_hbox_new(FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("Small timers: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_st_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_st_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_st_font, TRUE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), entry_st_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_st_font), FALSE);
 
         if (strlen(options.smalltimer_font)) {
@@ -2552,23 +2551,23 @@ See the About box and the documentation for details."));
         }
 
         button_st_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_st_font, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), button_st_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_st_font), "clicked",
 						G_CALLBACK (smalltimer_font_select), NULL);
 
         /* song title font */
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
+	hbox = gtk_hbox_new(FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("Song title: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_songt_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_songt_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_songt_font, TRUE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), entry_songt_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_songt_font), FALSE);
 
         if (strlen(options.songtitle_font)) {
@@ -2583,23 +2582,23 @@ See the About box and the documentation for details."));
         }
 
         button_songt_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_songt_font, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), button_songt_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_songt_font), "clicked",
 						G_CALLBACK (songtitle_font_select), NULL);
 
         /* song info font */
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
+	hbox = gtk_hbox_new(FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("Song info: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_si_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_si_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_si_font, TRUE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), entry_si_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_si_font), FALSE);
 
         if (strlen(options.songinfo_font)) {
@@ -2614,23 +2613,23 @@ See the About box and the documentation for details."));
         }
 
         button_si_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_si_font, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), button_si_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_si_font), "clicked",
 						G_CALLBACK (songinfo_font_select), NULL);
 
         /* statusbar font */
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 3);
+	hbox = gtk_hbox_new(FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("Statusbar: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_sb_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_sb_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_sb_font, TRUE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), entry_sb_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_sb_font), FALSE);
 
         if (strlen(options.statusbar_font)) {
@@ -2645,7 +2644,7 @@ See the About box and the documentation for details."));
         }
 
         button_sb_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_sb_font, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), button_sb_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_sb_font), "clicked",
 						G_CALLBACK (statusbar_font_select), NULL);
 
@@ -2655,21 +2654,21 @@ See the About box and the documentation for details."));
 	gtk_box_pack_start(GTK_BOX(vbox_appearance), frame_colors, FALSE, TRUE, 5);
 
 	vbox_colors = gtk_vbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox_colors), 10);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_colors), 5);
 	gtk_container_add(GTK_CONTAINER(frame_colors), vbox_colors);
 
         /* active song */
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_colors), hbox, FALSE, TRUE, 3);
+	hbox = gtk_hbox_new(FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_colors), hbox, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("Active song in playlist: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
 	hbox_s = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
 
         if (gdk_color_parse(options.activesong_color, &color) == FALSE) {
 
@@ -2681,7 +2680,7 @@ See the About box and the documentation for details."));
 
         color_picker = gtk_color_button_new_with_color (&color);
         gtk_widget_set_size_request(GTK_WIDGET(color_picker), 60, -1);
-        gtk_box_pack_start(GTK_BOX(hbox), color_picker, FALSE, TRUE, 3);
+        gtk_box_pack_start(GTK_BOX(hbox), color_picker, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (color_picker), "color-set",
 						G_CALLBACK (color_selected), NULL);
 

@@ -154,16 +154,19 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 	switch (data->dest_type) {
 	case IMPORT_DEST_TITLE:
 		gtk_tree_store_set(music_store, &(data->track_iter), 0, data->str, -1);
+		music_store_mark_changed(&(data->track_iter));
 		break;
 	case IMPORT_DEST_RECORD:
 		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
 		gtk_tree_store_set(music_store, &record_iter, 0, data->str, -1);
+		music_store_mark_changed(&record_iter);
 		break;
 	case IMPORT_DEST_ARTIST:
 		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
 		gtk_tree_model_iter_parent(data->model, &artist_iter, &record_iter);
 		gtk_tree_store_set(music_store, &artist_iter, 0, data->str, -1);
 		gtk_tree_store_set(music_store, &artist_iter, 1, data->str, -1);
+		music_store_mark_changed(&artist_iter);
 		path = gtk_tree_model_get_path(data->model, &(data->track_iter));
 		gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(music_tree), path, NULL, TRUE, 0.5f, 0.0f);
 		break;
@@ -176,6 +179,7 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 		}
 		strncat(tmp, data->str, MAXLEN-1);
 		gtk_tree_store_set(music_store, &(data->track_iter), 1, tmp, -1);
+		music_store_mark_changed(&(data->track_iter));
 		break;
 	case IMPORT_DEST_COMMENT:
 		gtk_tree_model_get(data->model, &(data->track_iter), 3, &ptmp, -1);
@@ -188,16 +192,16 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 		}
 		strncat(tmp, data->str, MAXLEN-1);
 		gtk_tree_store_set(music_store, &(data->track_iter), 3, tmp, -1);
+		music_store_mark_changed(&(data->track_iter));
 		tree_selection_changed_cb(music_select, NULL);
 		break;
 	case IMPORT_DEST_RVA:
 		ftmp = 1.0f;
 		gtk_tree_store_set(music_store, &(data->track_iter), 6, data->fval, -1);
 		gtk_tree_store_set(music_store, &(data->track_iter), 7, ftmp, -1);
+		music_store_mark_changed(&(data->track_iter));
 		break;
 	}
-
-	music_store_mark_changed();
 }
 
 

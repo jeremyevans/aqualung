@@ -426,7 +426,7 @@ process_volume(float * volumes) {
 
 					/* seems to works from this thread */
 					gtk_tree_store_set(music_store, &(vol_queue->iter), 5, vol_result, -1);
-					music_store_mark_changed();
+					music_store_mark_changed(&(vol_queue->iter));
 				} else {
 					volumes[vol_index++] = vol_result;
 				}

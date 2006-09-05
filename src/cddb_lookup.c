@@ -188,7 +188,7 @@ init_query_data() {
 					return 1;
 				}
 				gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
-				music_store_mark_changed();
+				music_store_mark_changed(&iter_track);
 			}
 
 			frames[i] = (int)fr_offset;
@@ -279,7 +279,7 @@ add_to_comments(GtkWidget * widget, gpointer data) {
 	gtk_tree_store_set(music_store, &iter_record, 3, comment, -1);
 	tree_selection_changed_cb(music_select, NULL);
 
-	music_store_mark_changed();
+	music_store_mark_changed(&iter_record);
 }
 
 
@@ -294,7 +294,7 @@ import_as_artist(GtkWidget * widget, gpointer data) {
 	gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
 	gtk_tree_store_set(music_store, &iter, 0, gtk_entry_get_text(GTK_ENTRY(artist_entry)), -1);
 
-	music_store_mark_changed();
+	music_store_mark_changed(&iter);
 }
 
 
@@ -302,7 +302,7 @@ static void
 import_as_title(GtkWidget * widget, gpointer data) {
 
 	gtk_tree_store_set(music_store, &iter_record, 0, gtk_entry_get_text(GTK_ENTRY(title_entry)), -1);
-	music_store_mark_changed();
+	music_store_mark_changed(&iter_record);
 }
 
 
@@ -507,11 +507,11 @@ create_cddb_dialog(void) {
 						   &iter_trlist, 0, &name, -1);
 				gtk_tree_store_set(music_store, &iter_track,
 						   0, name, -1);
+				music_store_mark_changed(&iter_track);
 			}
 		}
 
 		tree_selection_changed_cb(music_select, NULL);
-		music_store_mark_changed();
 	}
 
 	gtk_widget_destroy(dialog);

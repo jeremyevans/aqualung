@@ -30,11 +30,12 @@ void create_music_browser(void);
 void show_music_browser(void);
 void hide_music_browser(void);
 
-void music_store_mark_changed(void);
-void music_store_mark_saved(void);
+void music_store_mark_changed(GtkTreeIter * iter);
+void music_store_mark_saved(GtkTreeIter* iter);
 
-void load_music_store(void);
-void save_music_store(void);
+void load_music_store(char * file, char * sort);
+void load_all_music_store(void);
+void save_all_music_store(void);
 
 void store__addlist_defmode(gpointer data);
 void artist__addlist_defmode(gpointer data);

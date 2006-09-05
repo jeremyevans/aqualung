@@ -1304,14 +1304,14 @@ main_window_close(GtkWidget * widget, gpointer data) {
                 dialog = gtk_message_dialog_new(GTK_WINDOW(main_window),
                                                 GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
                                                 GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, 
-                                                _("Music Store has been changed.\n"
-                                                "Do you want to save it before exiting?"));
+                                                _("One or more stores in Music Store have been modified.\n"
+                                                "Do you want to save them before exiting?"));
 		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_YES);
 		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 		
 		if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
-			save_music_store();
+			save_all_music_store();
 		}
 		
 		gtk_widget_destroy(dialog);
@@ -3823,7 +3823,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	load_plugin_data();
 #endif /* HAVE_LADSPA */
 
-	load_music_store();
+	load_all_music_store();
 
 	if (options.auto_save_playlist) {
 		char playlist_name[MAXLEN];
@@ -4575,6 +4575,10 @@ load_config(void) {
 	options.plcol_idx[1] = 1;
 	options.plcol_idx[2] = 2;
 
+	ms_pathlist_store = gtk_list_store_new(3,
+					       G_TYPE_STRING,   /* path */
+					       G_TYPE_STRING,   /* displayed name */
+					       G_TYPE_STRING);  /* state (rw, r, unreachable) */
 
         cur = cur->xmlChildrenNode;
         while (cur != NULL) {
@@ -5182,13 +5186,6 @@ load_config(void) {
 
 				snprintf(path, MAXLEN - 1, "%s", (char *)key);
 				ppath = g_locale_from_utf8(path, -1, NULL, NULL, NULL);
-
-				if (!ms_pathlist_store) {
-					ms_pathlist_store = gtk_list_store_new(3,
-						    G_TYPE_STRING,     /* path */
-						    G_TYPE_STRING,     /* displayed name */
-						    G_TYPE_STRING);    /* state (rw, r, unreachable) */
-				}
 
 				gtk_list_store_append(ms_pathlist_store, &iter);
 				gtk_list_store_set(ms_pathlist_store, &iter, 0, ppath, 1, path, -1);

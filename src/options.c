@@ -509,7 +509,17 @@ options_window_accept(void) {
 
 			gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter2, 0, &p2, -1);
 			if (strcmp(p1, p2) == 0) {
-				has = 1;
+
+				char * state;
+
+				gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store),
+						   &iter2, 2, &state, -1);
+
+				if (strcmp(state, _("unreachable")) != 0) {
+					has = 1;
+				}
+
+				g_free(state);
 				g_free(p2);
 				break;
 			}
@@ -519,7 +529,33 @@ options_window_accept(void) {
 
 		if (!has) {
 
-			// TODO: if unsaved ask
+			float dirty;
+			char * name;
+
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter,
+					   0, &name, 6, &dirty, -1);
+
+			if (dirty < 0) {
+				GtkWidget * dialog;
+
+				dialog = gtk_message_dialog_new(GTK_WINDOW(options_window),
+					GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+					GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, 
+					_("Do you want to save store \"%s\" before removing from Music Store?"), name + 1);
+				gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+				gtk_dialog_set_default_response(GTK_DIALOG(dialog),
+								GTK_RESPONSE_YES);
+				gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+		
+				if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
+					save_music_store(&iter);
+				} else {
+					music_store_mark_saved(&iter);
+				}
+
+				gtk_widget_destroy(dialog);
+				g_free(name);
+			}
 
 			gtk_tree_store_remove(music_store, &iter);
 			--i;

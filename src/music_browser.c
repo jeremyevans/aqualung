@@ -181,8 +181,6 @@ GdkPixbuf * icon_track;
 
 /* prototypes, when we need them */
 
-static void save_music_store(GtkTreeIter * iter);
-
 static gboolean music_tree_event_cb(GtkWidget * widget, GdkEvent * event);
 
 static void store__add_cb(gpointer data);
@@ -1766,7 +1764,7 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 
 
 int
-confirm_dialog(char * title, char * text) {
+confirm_dialog(char * title, char * text, GtkResponseType resp) {
 
         int ret;
 
@@ -1775,7 +1773,7 @@ confirm_dialog(char * title, char * text) {
                                         GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, text);
 	gtk_window_set_title(GTK_WINDOW(dialog), title);
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_NO);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), resp);
         gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
@@ -1829,7 +1827,7 @@ set_popup_sensitivity(GtkTreePath * path) {
 
 	gtk_widget_set_sensitive(store__build, val);
 	gtk_widget_set_sensitive(store__edit, val);
-	gtk_widget_set_sensitive(store__remove, val);
+	gtk_widget_set_sensitive(store__save, val);
 	gtk_widget_set_sensitive(store__addart, val);
 	gtk_widget_set_sensitive(store__volume, val2);
 
@@ -2354,6 +2352,7 @@ store__add_cb(gpointer data) {
 
 			gtk_list_store_append(ms_pathlist_store, &iter);
 			gtk_list_store_set(ms_pathlist_store, &iter, 0, file, 1, utf8, 2, _("rw"), -1);
+			save_config();
 			g_free(utf8);
 		}
 	}
@@ -2496,22 +2495,32 @@ store__remove_cb(gpointer data) {
 	char name[MAXLEN];
 	char file[MAXLEN];
 	char text[MAXLEN];
-	float state;
+	float dirty;
 	int i = 0;
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
-		if (is_store_iter_readonly(&iter)) return;
-
-                gtk_tree_model_get(model, &iter, 0, &pname, 2, &pfile, 7, &state, -1);
+                gtk_tree_model_get(model, &iter, 0, &pname, 2, &pfile, 6, &dirty, -1);
 
 		strncpy(name, pname, MAXLEN-1);
 		strncpy(file, pfile, MAXLEN-1);
                 g_free(pname);
                 g_free(pfile);
 		
-		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
-		if (confirm_dialog(_("Remove Store"), text)) {
+		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"),
+			 (dirty < 0) ? (name + 1) : (name));
+		if (confirm_dialog(_("Remove Store"), text, GTK_RESPONSE_NO)) {
+
+			if (dirty < 0) {
+				if (confirm_dialog(_("Remove Store"),
+					   _("Do you want to save the store before removing?"),
+					   GTK_RESPONSE_YES)) {
+					save_music_store(&iter);
+				} else {
+					music_store_mark_saved(&iter);
+				}
+			}
+
 			gtk_tree_store_remove(music_store, &iter);
 			tree_selection_changed_cb(music_select, NULL);
 			
@@ -2523,6 +2532,8 @@ store__remove_cb(gpointer data) {
 					gtk_list_store_remove(ms_pathlist_store, &iter);
 				}
 			}
+
+			save_config();
 		}
 	}
 }
@@ -2757,7 +2768,7 @@ artist__remove_cb(gpointer data) {
                 g_free(pname);
 		
 		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
-		if (confirm_dialog(_("Remove Artist"), text)) {
+		if (confirm_dialog(_("Remove Artist"), text, GTK_RESPONSE_NO)) {
 			music_store_mark_changed(&iter);
 			gtk_tree_store_remove(music_store, &iter);
 			tree_selection_changed_cb(music_select, NULL);
@@ -2995,7 +3006,7 @@ record__remove_cb(gpointer data) {
                 g_free(pname);
 		
 		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
-		if (confirm_dialog(_("Remove Record"), text)) {
+		if (confirm_dialog(_("Remove Record"), text, GTK_RESPONSE_NO)) {
 			music_store_mark_changed(&iter);
 			gtk_tree_store_remove(music_store, &iter);
 			gtk_tree_selection_unselect_all(music_select);
@@ -3255,7 +3266,7 @@ track__remove_cb(gpointer data) {
                 g_free(pname);
 		
 		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
-		if (confirm_dialog(_("Remove Track"), text)) {
+		if (confirm_dialog(_("Remove Track"), text, GTK_RESPONSE_NO)) {
 			music_store_mark_changed(&iter);
 			gtk_tree_store_remove(music_store, &iter);
 			gtk_tree_selection_unselect_all(music_select);

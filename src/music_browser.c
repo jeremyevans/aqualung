@@ -186,6 +186,7 @@ static gboolean music_tree_event_cb(GtkWidget * widget, GdkEvent * event);
 static void store__add_cb(gpointer data);
 static void store__build_cb(gpointer data);
 static void store__edit_cb(gpointer data);
+static void store__save_cb(gpointer data);
 static void store__volume_unmeasured_cb(gpointer data);
 static void store__volume_all_cb(gpointer data);
 static void store__remove_cb(gpointer data);
@@ -230,6 +231,7 @@ struct keybinds store_keybinds[] = {
 	{store__add_cb, GDK_n, GDK_N},
 	{store__build_cb, GDK_b, GDK_B},
 	{store__edit_cb, GDK_e, GDK_E},
+	{store__save_cb, GDK_s, GDK_S},
 	{store__volume_unmeasured_cb, GDK_v, GDK_V},
 	{store__remove_cb, GDK_Delete, GDK_KP_Delete},
 	{artist__add_cb, GDK_plus, GDK_KP_Add},

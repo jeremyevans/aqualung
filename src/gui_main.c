@@ -331,7 +331,6 @@ gint pause_event(GtkWidget * widget, GdkEvent * event, gpointer data);
 gint stop_event(GtkWidget * widget, GdkEvent * event, gpointer data);
 gint next_event(GtkWidget * widget, GdkEvent * event, gpointer data);
 
-void save_config(void);
 void load_config(void);
 
 void playlist_toggled(GtkWidget * widget, gpointer data);
@@ -1256,6 +1255,12 @@ change_skin(char * path) {
 		deflicker();
 	}
 
+#ifdef HAVE_SYSTRAY
+	gtk_widget_reset_rc_styles(systray_menu);
+	gtk_widget_queue_draw(systray_menu);
+	deflicker();
+#endif /* HAVE_SYSTRAY */
+
 	restore_window_position();
 	deflicker();
 	refresh_displays();
@@ -1320,6 +1325,8 @@ main_window_close(GtkWidget * widget, gpointer data) {
 	if (systray_main_window_on) {
 		save_window_position();
 	}
+
+	save_config();
 
 #ifdef HAVE_LADSPA
 	save_plugin_data();
@@ -4492,9 +4499,6 @@ load_config(void) {
         char config_file[MAXLEN];
         FILE * f;
 
-	char path[MAXLEN];
-	GtkTreeIter iter;
-
 
         sprintf(config_file, "%s/config.xml", options.confdir);
 
@@ -5180,20 +5184,13 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
 
+				char path[MAXLEN];
 				char * ppath;
 
 				snprintf(path, MAXLEN - 1, "%s", (char *)key);
 				ppath = g_locale_from_utf8(path, -1, NULL, NULL, NULL);
 
-				gtk_list_store_append(ms_pathlist_store, &iter);
-				gtk_list_store_set(ms_pathlist_store, &iter, 0, ppath, 1, path, -1);
-				if (access(ppath, R_OK | W_OK) == 0) {
-					gtk_list_store_set(ms_pathlist_store, &iter, 2, _("rw"), -1);
-				} else if (access(ppath, R_OK) == 0) {
-					gtk_list_store_set(ms_pathlist_store, &iter, 2, _("r"), -1);
-				} else {
-					gtk_list_store_set(ms_pathlist_store, &iter, 2, _("unreachable"), -1);
-				}
+				append_ms_pathlist(ppath, path);
 
 				g_free(ppath);
 			}

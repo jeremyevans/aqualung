@@ -510,16 +510,10 @@ options_window_accept(void) {
 			gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter2, 0, &p2, -1);
 			if (strcmp(p1, p2) == 0) {
 
-				char * state;
-
-				gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store),
-						   &iter2, 2, &state, -1);
-
-				if (strcmp(state, _("unreachable")) != 0) {
+				if (access(p2, R_OK) == 0) {
 					has = 1;
 				}
 
-				g_free(state);
 				g_free(p2);
 				break;
 			}
@@ -587,9 +581,18 @@ options_window_accept(void) {
 					   &iter2, 2, &p2, -1);
 
 			if (strcmp(p1, p2) == 0) {
+
 				gtk_tree_store_set(music_store, &iter2, 1, sort, -1);
+
+				if (access(p2, W_OK) == 0) {
+					gtk_tree_store_set(music_store, &iter2, 7, 1.0f, -1);
+				} else {
+					gtk_tree_store_set(music_store, &iter2, 7, -1.0f, -1);
+				}
+
 				g_free(p2);
 				has = 1;
+
 				break;
 			}
 
@@ -1231,6 +1234,44 @@ create_notebook_tab(char * text, char * imgfile) {
 	return vbox;
 }
 
+
+void
+refresh_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
+
+	GtkTreeIter iter;
+	char * path;
+	int i = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store),
+					     &iter, NULL, i++)) {
+
+		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &path, -1);
+
+		if (access(path, R_OK | W_OK) == 0) {
+			gtk_list_store_set(ms_pathlist_store, &iter, 2, _("rw"), -1);
+		} else if (access(path, R_OK) == 0) {
+			gtk_list_store_set(ms_pathlist_store, &iter, 2, _("r"), -1);
+		} else {
+			gtk_list_store_set(ms_pathlist_store, &iter, 2, _("unreachable"), -1);
+		}
+
+		g_free(path);
+	}
+}
+
+
+void
+append_ms_pathlist(char * path, char * name) {
+
+	GtkTreeIter iter;
+
+	gtk_list_store_append(ms_pathlist_store, &iter);
+	gtk_list_store_set(ms_pathlist_store, &iter, 0, path, 1, name, -1);
+
+	refresh_ms_pathlist_clicked(NULL, NULL);
+}
+
+
 void
 add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 
@@ -1272,11 +1313,13 @@ add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 		return;
 	}
 
-	if (stat(name, &st_file) != -1 && S_ISDIR(st_file.st_mode)) {
+	if ((path = g_locale_from_utf8(name, -1, NULL, NULL, NULL)) == NULL) {
 		return;
 	}
 
-	path = g_locale_from_utf8(name, -1, NULL, NULL, NULL);
+	if (stat(path, &st_file) != -1 && S_ISDIR(st_file.st_mode)) {
+		return;
+	}
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
@@ -1307,16 +1350,8 @@ add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 	
 
 	gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), "");
-	gtk_list_store_append(ms_pathlist_store, &iter);
-	gtk_list_store_set(ms_pathlist_store, &iter, 0, path, 1, name, -1);
 
-	if (access(path, R_OK | W_OK) == 0) {
-		gtk_list_store_set(ms_pathlist_store, &iter, 2, _("rw"), -1);
-	} else if (access(path, R_OK) == 0) {
-		gtk_list_store_set(ms_pathlist_store, &iter, 2, _("r"), -1);
-	} else {
-		gtk_list_store_set(ms_pathlist_store, &iter, 2, _("unreachable"), -1);
-	}
+	append_ms_pathlist(path, name);
 
 	g_free(path);
 }
@@ -1361,6 +1396,11 @@ browse_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 		char tmp[MAXLEN];
 		tmp[0] = '\0';
 
+		if (locale == NULL) {
+			gtk_widget_destroy(dialog);
+			return;
+		}
+
 		if (locale[0] == '~') {
 			snprintf(tmp, MAXLEN-1, "%s%s", options.home, locale + 1);
 			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
@@ -1386,6 +1426,12 @@ browse_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		utf8 = g_locale_to_utf8(selected_filename, -1, NULL, NULL, NULL);
+
+		if (utf8 == NULL) {
+			gtk_widget_destroy(dialog);
+			return;
+		}
+
                 gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), utf8);
 
                 strncpy(options.currdir, selected_filename, MAXLEN-1);
@@ -1492,6 +1538,7 @@ create_options_window(void) {
 	GtkWidget * add_ms_pathlist;
 	GtkWidget * browse_ms_pathlist;
 	GtkWidget * remove_ms_pathlist;
+	GtkWidget * refresh_ms_pathlist;
 	GtkWidget * frame_plistcol;
 	GtkWidget * vbox_plistcol;
 	GtkWidget * label_plistcol;
@@ -1515,13 +1562,6 @@ create_options_window(void) {
 
 	GtkWidget * vbox_rva;
 	GtkWidget * table_rva;
-	//GtkWidget * hbox_listening_env;
-	//GtkWidget * hbox_refvol;
-	//GtkWidget * hbox_steepness;
-	//GtkWidget * table_avg;
-	//GtkWidget * hbox_threshold;
-	//GtkWidget * hbox_linthresh;
-	//GtkWidget * hbox_stdthresh;
         GtkWidget * label_cwidth;
 	GtkWidget * hbox_cwidth;
 
@@ -1555,6 +1595,7 @@ create_options_window(void) {
 		gtk_list_store_clear(restart_list_store);
 	}
 
+	refresh_ms_pathlist_clicked(NULL, NULL);
 
         options_window = gtk_dialog_new_with_buttons(_("Settings"),
 					     GTK_WINDOW(main_window),
@@ -1999,6 +2040,12 @@ to set the column order in the Playlist."));
         gtk_container_set_border_width(GTK_CONTAINER(help_pathlist), 2);
 	g_signal_connect(help_pathlist, "clicked", G_CALLBACK(display_pathlist_help), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist_2), help_pathlist, FALSE, FALSE, 0);
+
+	refresh_ms_pathlist = gui_stock_label_button(_("Refresh"), GTK_STOCK_REFRESH);
+	gtk_container_set_border_width(GTK_CONTAINER(refresh_ms_pathlist), 2);
+ 	g_signal_connect (G_OBJECT(refresh_ms_pathlist), "clicked",
+ 			  G_CALLBACK(refresh_ms_pathlist_clicked), NULL);
+ 	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist_2), refresh_ms_pathlist, FALSE, FALSE, 0);
 
 	remove_ms_pathlist = gui_stock_label_button(_("Remove"), GTK_STOCK_REMOVE);
         gtk_container_set_border_width(GTK_CONTAINER(remove_ms_pathlist), 2);

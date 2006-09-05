@@ -21,8 +21,6 @@
 #ifndef _OPTIONS_H
 #define _OPTIONS_H
 
-void create_options_window(void);
-
 typedef struct {
 
 	/* home directory */
@@ -125,5 +123,8 @@ typedef struct {
 	char activesong_color[MAX_COLORNAME_LEN];
 
 } options_t;
+
+void create_options_window(void);
+void append_ms_pathlist(char * path, char * name);
 
 #endif /* _OPTIONS_H */

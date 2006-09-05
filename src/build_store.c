@@ -541,6 +541,12 @@ browse_button_clicked(GtkWidget * widget, gpointer * data) {
 
         if (strlen(selected_filename)) {
       		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
+
+		if (locale == NULL) {
+			gtk_widget_destroy(dialog);
+			return 0;
+		}
+
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), locale);
 		g_free(locale);
 	} else {
@@ -558,12 +564,17 @@ browse_button_clicked(GtkWidget * widget, gpointer * data) {
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		utf8 = g_locale_to_utf8(selected_filename, -1, NULL, NULL, NULL);
+
+		if (utf8 == NULL) {
+			gtk_widget_destroy(dialog);
+			return 0;
+		}
+
 		gtk_entry_set_text(GTK_ENTRY(data), utf8);
 
                 strncpy(options.currdir, selected_filename, MAXLEN-1);
 		g_free(utf8);
         }
-
 
         gtk_widget_destroy(dialog);
 
@@ -1324,6 +1335,12 @@ build_dialog(void) {
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		char * proot = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(root_entry)), -1, NULL, NULL, NULL);
+
+		if (proot == NULL) {
+			gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
+			gtk_widget_grab_focus(root_entry);
+			goto display;
+		}
 
 		if (proot[0] == '~') {
 			snprintf(root, MAXLEN-1, "%s%s", options.home, proot + 1);
@@ -2245,6 +2262,12 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 				}
 
 				utf8 = g_locale_to_utf8(basename, -1, NULL, NULL, NULL);
+
+				if (utf8 == NULL) {
+					match = 1;
+					break;
+				}
+
 				if (fnmatch(excl_patternv[i], utf8, FNM_CASEFOLD) == 0) {
 					match = 1;
 					g_free(utf8);
@@ -2268,6 +2291,12 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 				}
 
 				utf8 = g_locale_to_utf8(basename, -1, NULL, NULL, NULL);
+
+				if (utf8 == NULL) {
+					match = 0;
+					break;
+				}
+
 				if (fnmatch(incl_patternv[i], utf8, FNM_CASEFOLD) == 0) {
 					match = 1;
 					g_free(utf8);
@@ -2397,13 +2426,13 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 		g_free(utf8);
 		break;
 	case ARTIST_SORT_DIR:
-		utf8 = g_locale_to_utf8(artist_d_name, -1, NULL, NULL, NULL);
+		utf8 = g_filename_display_name(artist_d_name);
 		strncpy(record.artist_sort_name, utf8, MAXLEN-1);
 		g_free(utf8);
 		break;
 	case ARTIST_SORT_DIR_LOW:
 		{
-			char * tmp = g_locale_to_utf8(artist_d_name, -1, NULL, NULL, NULL);
+			char * tmp = g_filename_display_name(artist_d_name);
 			utf8 = g_utf8_strdown(tmp, -1);
 			strncpy(record.artist_sort_name, utf8, MAXLEN-1);
 			g_free(utf8);
@@ -2425,13 +2454,13 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 		g_free(utf8);
 		break;
 	case RECORD_SORT_DIR:
-		utf8 = g_locale_to_utf8(record_d_name, -1, NULL, NULL, NULL);
+		utf8 = g_filename_display_name(record_d_name);
 		strncpy(record.record_sort_name, utf8, MAXLEN-1);
 		g_free(utf8);
 		break;
 	case RECORD_SORT_DIR_LOW:
 		{
-			char * tmp = g_locale_to_utf8(record_d_name, -1, NULL, NULL, NULL);
+			char * tmp = g_filename_display_name(record_d_name);
 			utf8 = g_utf8_strdown(tmp, -1);
 			strncpy(record.record_sort_name, utf8, MAXLEN-1);
 			g_free(utf8);

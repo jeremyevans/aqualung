@@ -370,6 +370,11 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
 		char tmp[MAXLEN];
 		tmp[0] = '\0';
 
+		if (locale == NULL) {
+			gtk_widget_destroy(dialog);
+			return 0;
+		}
+
 		if (locale[0] == '~') {
 			snprintf(tmp, MAXLEN-1, "%s%s", options.home, locale + 1);
 			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
@@ -396,12 +401,17 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
+
+		if (locale == NULL) {
+			gtk_widget_destroy(dialog);
+			return 0;
+		}
+
 		gtk_entry_set_text(GTK_ENTRY(data), selected_filename);
 
                 strncpy(options.currdir, locale, MAXLEN-1);
 		g_free(locale);
         }
-
 
         gtk_widget_destroy(dialog);
 
@@ -499,7 +509,7 @@ add_store_dialog(char * name, char * file, char * comment) {
         gtk_text_view_set_buffer(GTK_TEXT_VIEW(comment_view), buffer);
         gtk_container_add(GTK_CONTAINER(scrolled_window), comment_view);
 
-	gtk_widget_grab_focus(name_entry);
+	gtk_widget_grab_focus(file_entry);
 
 	gtk_widget_show_all(dialog);
 
@@ -512,6 +522,11 @@ add_store_dialog(char * name, char * file, char * comment) {
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		const char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
+
+		if (pfile == NULL) {
+			gtk_widget_grab_focus(file_entry);
+			goto display;
+		}
 
 		if (pfile[0] == '~') {
 			snprintf(file, MAXLEN-1, "%s%s", options.home, pfile + 1);
@@ -1323,6 +1338,11 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
 		char tmp[MAXLEN];
 		tmp[0] = '\0';
 
+		if (locale == NULL) {
+			gtk_widget_destroy(dialog);
+			return 0;
+		}
+
 		if (locale[0] == '~') {
 			snprintf(tmp, MAXLEN-1, "%s%s", options.home, locale + 1);
 			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
@@ -1353,12 +1373,17 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		utf8 = g_locale_to_utf8(selected_filename, -1, NULL, NULL, NULL);
+
+		if (utf8 == NULL) {
+			gtk_widget_destroy(dialog);
+			return 0;
+		}
+
 		gtk_entry_set_text(GTK_ENTRY(data), utf8);
 
                 strncpy(options.currdir, selected_filename, MAXLEN-1);
 		g_free(utf8);
-        }
-
+	}
 
         gtk_widget_destroy(dialog);
 
@@ -1481,6 +1506,11 @@ add_track_dialog(char * name, char * sort_name, char * file, char * comment) {
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
+
+		if (pfile == NULL) {
+			gtk_widget_grab_focus(file_entry);
+			goto display;
+		}
 
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
@@ -1724,6 +1754,11 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
+
+		if (pfile == NULL) {
+			gtk_widget_grab_focus(file_entry);
+			goto display;
+		}
 
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
@@ -2354,7 +2389,6 @@ store__add_cb(gpointer data) {
 
 			gtk_list_store_append(ms_pathlist_store, &iter);
 			gtk_list_store_set(ms_pathlist_store, &iter, 0, file, 1, utf8, 2, _("rw"), -1);
-			save_config();
 			g_free(utf8);
 		}
 	}
@@ -2534,8 +2568,6 @@ store__remove_cb(gpointer data) {
 					gtk_list_store_remove(ms_pathlist_store, &iter);
 				}
 			}
-
-			save_config();
 		}
 	}
 }
@@ -4555,7 +4587,7 @@ load_music_store(char * store_file, char * sort) {
 	gtk_tree_store_append(music_store, &iter_store, NULL);
 
 	gtk_tree_store_set(music_store, &iter_store, 0, _("Music Store"), 1, sort,
-			   2, store_file, 3, "", 6, 1.0f, 7, -1.0f, 8, PANGO_WEIGHT_BOLD, -1);
+			   2, store_file, 3, "", 6, 1.0f, 8, PANGO_WEIGHT_BOLD, -1);
 
 	if (options.enable_ms_tree_icons) {
 		gtk_tree_store_set(music_store, &iter_store, 9, icon_store, -1);
@@ -4563,6 +4595,8 @@ load_music_store(char * store_file, char * sort) {
 
 	if (access(store_file, W_OK) == 0) {
 		gtk_tree_store_set(music_store, &iter_store, 7, 1.0f, -1);
+	} else {
+		gtk_tree_store_set(music_store, &iter_store, 7, -1.0f, -1);
 	}
 	
 	doc = xmlParseFile(store_file);

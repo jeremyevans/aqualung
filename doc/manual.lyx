@@ -2685,7 +2685,7 @@ status collapsed
 
 
 \backslash
-href{http://freedb.org}{freedb.org}
+href{http://www.freedb.org}{freedb.org}
 \end_layout
 
 \end_inset
@@ -2694,6 +2694,12 @@ href{http://freedb.org}{freedb.org}
  You can specify another server on the Settings/CDDB page.
  The connection timeout and the protocol (CDDBP or HTTP) can also be set
  there.
+\end_layout
+
+\begin_layout Standard
+Instead of connecting directly to the CDDB server you can use an HTTP proxy.
+ This case you have to specify the proxy server address and port on the
+ Settings/CDDB page (the protocol will be HTTP).
 \end_layout
 
 \begin_layout Standard
@@ -2714,7 +2720,7 @@ Shortcuts for this window
 \begin_layout Standard
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="12" columns="2">
+<lyxtabular version="3" rows="13" columns="2">
 <features>
 <column alignment="center" valignment="top" leftline="true" width="0">
 <column alignment="block" valignment="top" leftline="true" rightline="true" width="10cm">
@@ -2837,6 +2843,26 @@ store/
 \bar no
 \noun off
 artist/record/track
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+s, S
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+save store
 \end_layout
 
 \end_inset
@@ -3798,8 +3824,8 @@ There are also some options to handle the cover arts of your records.
 \begin_layout Standard
 At last, as already mentioned before, this page is the place to manage music
  store database files too.
- Note that you will have to press the `Refresh' button after adding or removing
- a store, or reordering the list.
+ Pressing the `Refresh' button will update the accessibility (r, rw, unreachable
+) of the specified store files.
 \end_layout
 
 \begin_layout Subsubsection

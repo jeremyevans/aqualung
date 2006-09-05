@@ -53,10 +53,6 @@
 #endif /* HAVE_MOD */
 
 #ifdef HAVE_TAGLIB
-#include <id3v1tag.h>
-#include <id3v2tag.h>
-#include <apetag.h>
-#include <xiphcomment.h>
 #include <mpegfile.h>
 #include <mpcfile.h>
 #include <flacfile.h>
@@ -76,8 +72,6 @@
 #endif /* HAVE_MOD */
 #include "meta_decoder.h"
 
-
-using namespace std;
 
 extern options_t options;
 
@@ -748,65 +742,12 @@ meta_read(metadata * meta, char * file) {
 }
 
 
-#ifdef HAVE_TAGLIB
-void
-print_tags(TagLib::ID3v1::Tag * id3v1_tag,
-	   TagLib::ID3v2::Tag * id3v2_tag,
-	   TagLib::APE::Tag * ape_tag,
-	   TagLib::Ogg::XiphComment * oxc) {
-
-	if (id3v1_tag) {
-		cout << "-- ID3v1Tag --" << endl;
-		cout << "title   - \"" << id3v1_tag->title()   << "\"" << endl;
-		cout << "artist  - \"" << id3v1_tag->artist()  << "\"" << endl;
-		cout << "album   - \"" << id3v1_tag->album()   << "\"" << endl;
-		cout << "year    - \"" << id3v1_tag->year()    << "\"" << endl;
-		cout << "comment - \"" << id3v1_tag->comment() << "\"" << endl;
-		cout << "track   - \"" << id3v1_tag->track()   << "\"" << endl;
-		cout << "genre   - \"" << id3v1_tag->genre()   << "\"" << endl;
-	}	
-	if (id3v2_tag) {
-		cout << "-- ID3v2Tag --" << endl;
-		cout << "title   - \"" << id3v2_tag->title()   << "\"" << endl;
-		cout << "artist  - \"" << id3v2_tag->artist()  << "\"" << endl;
-		cout << "album   - \"" << id3v2_tag->album()   << "\"" << endl;
-		cout << "year    - \"" << id3v2_tag->year()    << "\"" << endl;
-		cout << "comment - \"" << id3v2_tag->comment() << "\"" << endl;
-		cout << "track   - \"" << id3v2_tag->track()   << "\"" << endl;
-		cout << "genre   - \"" << id3v2_tag->genre()   << "\"" << endl;
-	}
-	if (ape_tag) {
-		cout << "-- APE Tag --" << endl;
-		cout << "title   - \"" << ape_tag->title()   << "\"" << endl;
-		cout << "artist  - \"" << ape_tag->artist()  << "\"" << endl;
-		cout << "album   - \"" << ape_tag->album()   << "\"" << endl;
-		cout << "year    - \"" << ape_tag->year()    << "\"" << endl;
-		cout << "comment - \"" << ape_tag->comment() << "\"" << endl;
-		cout << "track   - \"" << ape_tag->track()   << "\"" << endl;
-		cout << "genre   - \"" << ape_tag->genre()   << "\"" << endl;
-	}
-	if (oxc) {
-		cout << "-- Ogg Xiph Comment --" << endl;
-		cout << "title   - \"" << oxc->title()   << "\"" << endl;
-		cout << "artist  - \"" << oxc->artist()  << "\"" << endl;
-		cout << "album   - \"" << oxc->album()   << "\"" << endl;
-		cout << "year    - \"" << oxc->year()    << "\"" << endl;
-		cout << "comment - \"" << oxc->comment() << "\"" << endl;
-		cout << "track   - \"" << oxc->track()   << "\"" << endl;
-		cout << "genre   - \"" << oxc->genre()   << "\"" << endl;
-	}
-}
-#endif /* HAVE_TAGLIB */
-
-
 #ifdef HAVE_FLAC
 void
 meta_free_flac(metadata * meta) {
 
 	TagLib::FLAC::File * taglib_flac_file =
 		reinterpret_cast<TagLib::FLAC::File *>(meta->taglib_file);
-	print_tags(taglib_flac_file->ID3v1Tag(), taglib_flac_file->ID3v2Tag(),
-		   NULL, taglib_flac_file->xiphComment());
 	taglib_flac_file->~File();
 }
 #endif /* HAVE_FLAC */
@@ -818,7 +759,6 @@ meta_free_oggv(metadata * meta) {
 
 	TagLib::Ogg::Vorbis::File * taglib_oggv_file =
 		reinterpret_cast<TagLib::Ogg::Vorbis::File *>(meta->taglib_file);
-	print_tags(NULL, NULL, NULL, taglib_oggv_file->tag());
 	taglib_oggv_file->~File();
 }
 #endif /* HAVE_OGG_VORBIS */
@@ -830,8 +770,6 @@ meta_free_mpeg(metadata * meta) {
 
 	TagLib::MPEG::File * taglib_mpeg_file =
 		reinterpret_cast<TagLib::MPEG::File *>(meta->taglib_file);
-	print_tags(taglib_mpeg_file->ID3v1Tag(), taglib_mpeg_file->ID3v2Tag(),
-		   taglib_mpeg_file->APETag(), NULL);
 	taglib_mpeg_file->~File();
 }
 #endif /* HAVE_MPEG */
@@ -843,8 +781,6 @@ meta_free_mpc(metadata * meta) {
 
 	TagLib::MPC::File * taglib_mpc_file =
 		reinterpret_cast<TagLib::MPC::File *>(meta->taglib_file);
-	print_tags(taglib_mpc_file->ID3v1Tag(), NULL,
-		   taglib_mpc_file->APETag(), NULL);
 	taglib_mpc_file->~File();
 }
 #endif /* HAVE_MPC */

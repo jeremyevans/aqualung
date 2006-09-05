@@ -46,6 +46,20 @@
 #include "decoder/dec_mod.h"
 #endif /* HAVE_MOD */
 
+#ifdef HAVE_TAGLIB
+#include <id3v1tag.h>
+#include <id3v2tag.h>
+#include <apetag.h>
+#include <xiphcomment.h>
+#include <mpegfile.h>
+#include <mpcfile.h>
+#include <flacfile.h>
+#include <vorbisfile.h>
+#include <tlist.h>
+#include <tbytevector.h>
+#endif /* HAVE_TAGLIB */
+
+
 #include "common.h"
 #include "core.h"
 #include "cover.h"
@@ -267,6 +281,119 @@ info_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 }
 
 
+#ifdef HAVE_TAGLIB
+/* this is a primitive lister for me to experiment with */
+void
+print_tags(TagLib::ID3v1::Tag * id3v1_tag,
+	   TagLib::ID3v2::Tag * id3v2_tag,
+	   TagLib::APE::Tag * ape_tag,
+	   TagLib::Ogg::XiphComment * oxc) {
+
+	if (id3v1_tag && !id3v1_tag->isEmpty()) {
+		std::cout << "-- ID3v1Tag --" << std::endl;
+		std::cout << "title   - \"" << id3v1_tag->title()   << "\"" << std::endl;
+		std::cout << "artist  - \"" << id3v1_tag->artist()  << "\"" << std::endl;
+		std::cout << "album   - \"" << id3v1_tag->album()   << "\"" << std::endl;
+		std::cout << "year    - \"" << id3v1_tag->year()    << "\"" << std::endl;
+		std::cout << "comment - \"" << id3v1_tag->comment() << "\"" << std::endl;
+		std::cout << "track   - \"" << id3v1_tag->track()   << "\"" << std::endl;
+		std::cout << "genre   - \"" << id3v1_tag->genre()   << "\"" << std::endl;
+	}	
+	if (id3v2_tag && !id3v2_tag->isEmpty()) {
+		std::cout << "-- ID3v2Tag --" << std::endl;
+		std::cout << "title   - \"" << id3v2_tag->title()   << "\"" << std::endl;
+		std::cout << "artist  - \"" << id3v2_tag->artist()  << "\"" << std::endl;
+		std::cout << "album   - \"" << id3v2_tag->album()   << "\"" << std::endl;
+		std::cout << "year    - \"" << id3v2_tag->year()    << "\"" << std::endl;
+		std::cout << "comment - \"" << id3v2_tag->comment() << "\"" << std::endl;
+		std::cout << "track   - \"" << id3v2_tag->track()   << "\"" << std::endl;
+		std::cout << "genre   - \"" << id3v2_tag->genre()   << "\"" << std::endl;
+
+		std::cout << " *** ID3v2 Frame list ***" << std::endl;
+		TagLib::ID3v2::FrameList l = id3v2_tag->frameList();
+		std::list<TagLib::ID3v2::Frame*>::iterator i;
+
+		for (i = l.begin(); i != l.end(); ++i) {
+			TagLib::ID3v2::Frame * frame = *i;
+			std::cout << frame->frameID().data() << " | " << frame->toString() << std::endl;
+		}
+	}
+	if (ape_tag && !ape_tag->isEmpty()) {
+		std::cout << "-- APE Tag --" << std::endl;
+		std::cout << "title   - \"" << ape_tag->title()   << "\"" << std::endl;
+		std::cout << "artist  - \"" << ape_tag->artist()  << "\"" << std::endl;
+		std::cout << "album   - \"" << ape_tag->album()   << "\"" << std::endl;
+		std::cout << "year    - \"" << ape_tag->year()    << "\"" << std::endl;
+		std::cout << "comment - \"" << ape_tag->comment() << "\"" << std::endl;
+		std::cout << "track   - \"" << ape_tag->track()   << "\"" << std::endl;
+		std::cout << "genre   - \"" << ape_tag->genre()   << "\"" << std::endl;
+	}
+	if (oxc && !oxc->isEmpty()) {
+		std::cout << "-- Ogg Xiph Comment --" << std::endl;
+		std::cout << "title   - \"" << oxc->title()   << "\"" << std::endl;
+		std::cout << "artist  - \"" << oxc->artist()  << "\"" << std::endl;
+		std::cout << "album   - \"" << oxc->album()   << "\"" << std::endl;
+		std::cout << "year    - \"" << oxc->year()    << "\"" << std::endl;
+		std::cout << "comment - \"" << oxc->comment() << "\"" << std::endl;
+		std::cout << "track   - \"" << oxc->track()   << "\"" << std::endl;
+		std::cout << "genre   - \"" << oxc->genre()   << "\"" << std::endl;
+
+		std::cout << "Number of fields: " << oxc->fieldCount() << std::endl;
+
+		//std::map m = oxc->fieldListMap();
+		//std::map<TagLib>
+	}
+}
+#endif /* HAVE_TAGLIB */
+
+
+#ifdef HAVE_FLAC
+void
+meta_print_flac(metadata * meta) {
+
+	TagLib::FLAC::File * taglib_flac_file =
+		reinterpret_cast<TagLib::FLAC::File *>(meta->taglib_file);
+	print_tags(taglib_flac_file->ID3v1Tag(), taglib_flac_file->ID3v2Tag(),
+		   NULL, taglib_flac_file->xiphComment());
+}
+#endif /* HAVE_FLAC */
+
+
+#ifdef HAVE_OGG_VORBIS
+void
+meta_print_oggv(metadata * meta) {
+
+	TagLib::Ogg::Vorbis::File * taglib_oggv_file =
+		reinterpret_cast<TagLib::Ogg::Vorbis::File *>(meta->taglib_file);
+	print_tags(NULL, NULL, NULL, taglib_oggv_file->tag());
+}
+#endif /* HAVE_OGG_VORBIS */
+
+
+#ifdef HAVE_MPEG
+void
+meta_print_mpeg(metadata * meta) {
+
+	TagLib::MPEG::File * taglib_mpeg_file =
+		reinterpret_cast<TagLib::MPEG::File *>(meta->taglib_file);
+	print_tags(taglib_mpeg_file->ID3v1Tag(), taglib_mpeg_file->ID3v2Tag(),
+		   taglib_mpeg_file->APETag(), NULL);
+}
+#endif /* HAVE_MPEG */
+
+
+#ifdef HAVE_MPC
+void
+meta_print_mpc(metadata * meta) {
+
+	TagLib::MPC::File * taglib_mpc_file =
+		reinterpret_cast<TagLib::MPC::File *>(meta->taglib_file);
+	print_tags(taglib_mpc_file->ID3v1Tag(), NULL,
+		   taglib_mpc_file->APETag(), NULL);
+}
+#endif /* HAVE_MPC */
+
+
 void
 show_file_info(char * name, char * file, int is_called_from_browser,
 	       GtkTreeModel * model, GtkTreeIter track_iter) {
@@ -341,6 +468,32 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		fprintf(stderr, "show_file_info(): meta_read() returned an error\n");
 		return;
 	}
+
+#ifdef HAVE_TAGLIB
+	switch (meta->format_major) {
+#ifdef HAVE_FLAC
+	case FORMAT_FLAC:
+		meta_print_flac(meta);
+		break;
+#endif /* HAVE_FLAC */
+#ifdef HAVE_OGG_VORBIS
+	case FORMAT_VORBIS:
+		meta_print_oggv(meta);
+		break;
+#endif /* HAVE_OGG_VORBIS */
+#ifdef HAVE_MPEG
+	case FORMAT_MAD:
+		meta_print_mpeg(meta);
+		break;
+#endif /* HAVE_MPEG */
+#ifdef HAVE_MPC
+	case FORMAT_MPC:
+		meta_print_mpc(meta);
+		break;
+#endif /* HAVE_MPC */
+	}
+#endif /* HAVE_TAGLIB */
+
 
 	info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(info_window), _("File info"));

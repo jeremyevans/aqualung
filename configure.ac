@@ -375,10 +375,12 @@ AC_ARG_WITH(
 if test "$metadata" = "no"; then
 	AC_MSG_RESULT(no)
 else
+	AC_MSG_CHECKING(whether taglib >= 1.4 is present)
 	if `pkg-config --exists 'taglib >= 1.4'`; then
 	        lib="yes"
 	else
 		lib="no"
+		AC_MSG_RESULT(no)
 	fi
 	if test "$lib" = "yes"; then
 	        taglib_CFLAGS=`pkg-config --cflags taglib`
@@ -387,7 +389,7 @@ else
 		AC_MSG_RESULT(yes)
 	fi
 	if test "$lib" = "no" -a "$metadata" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the taglib library installed, or it is older than the required version 1.4. Grab it from http://developer.kde.org/~wheeler/taglib)
+		AC_MSG_ERROR(You do not appear to have the taglib library installed or it is too old. Grab it from http://developer.kde.org/~wheeler/taglib)
 	fi
 	if test "$metadata" = "detect"; then
 	        metadata=$lib

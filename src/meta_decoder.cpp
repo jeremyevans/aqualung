@@ -513,11 +513,45 @@ meta_read_flac(metadata * meta, FLAC__StreamMetadata * flacmeta) {
 #endif /* HAVE_FLAC */
 
 
-TagLib::String formatSeconds(int seconds) {
-  char secondsString[3];
-  sprintf(secondsString, "%02i", seconds);
-  return secondsString;
+#ifdef HAVE_FLAC
+void *
+meta_read_flac(char * file) {
+
+	TagLib::FLAC::File * taglib_flac_file = new TagLib::FLAC::File(file);
+	return reinterpret_cast<void *>(taglib_flac_file);
 }
+#endif /* HAVE_FLAC */
+
+
+#ifdef HAVE_OGG_VORBIS
+void *
+meta_read_oggv(char * file) {
+
+	TagLib::Ogg::Vorbis::File * taglib_oggv_file = new TagLib::Ogg::Vorbis::File(file);
+	return reinterpret_cast<void *>(taglib_oggv_file);
+}
+#endif /* HAVE_OGG_VORBIS */
+
+
+#ifdef HAVE_MPEG
+void *
+meta_read_mpeg(char * file) {
+
+	TagLib::MPEG::File * taglib_mpeg_file = new TagLib::MPEG::File(file);
+	return reinterpret_cast<void *>(taglib_mpeg_file);
+}
+#endif /* HAVE_MPEG */
+
+
+#ifdef HAVE_MPC
+void *
+meta_read_mpc(char * file) {
+
+	TagLib::MPC::File * taglib_mpc_file = new TagLib::MPC::File(file);
+	return reinterpret_cast<void *>(taglib_mpc_file);
+}
+#endif /* HAVE_MPC */
+
 
 /* ret: 1 if successful, 0 if error */
 int
@@ -552,26 +586,22 @@ meta_read(metadata * meta, char * file) {
 	switch (meta->format_major) {
 #ifdef HAVE_FLAC
 	case FORMAT_FLAC:
-		TagLib::FLAC::File * taglib_flac_file = new TagLib::FLAC::File(file);
-		meta->taglib_file = reinterpret_cast<void *>(taglib_flac_file);
+		meta->taglib_file = meta_read_flac(file);
 		break;
 #endif /* HAVE_FLAC */
 #ifdef HAVE_OGG_VORBIS
 	case FORMAT_VORBIS:
-		TagLib::Ogg::Vorbis::File * taglib_oggv_file = new TagLib::Ogg::Vorbis::File(file);
-		meta->taglib_file = reinterpret_cast<void *>(taglib_oggv_file);
+		meta->taglib_file = meta_read_oggv(file);
 		break;
 #endif /* HAVE_OGG_VORBIS */
 #ifdef HAVE_MPEG
 	case FORMAT_MAD:
-		TagLib::MPEG::File * taglib_mpeg_file = new TagLib::MPEG::File(file);
-		meta->taglib_file = reinterpret_cast<void *>(taglib_mpeg_file);
+		meta->taglib_file = meta_read_mpeg(file);
 		break;
 #endif /* HAVE_MPEG */
 #ifdef HAVE_MPC
 	case FORMAT_MPC:
-		TagLib::MPC::File * taglib_mpc_file = new TagLib::MPC::File(file);
-		meta->taglib_file = reinterpret_cast<void *>(taglib_mpc_file);
+		meta->taglib_file = meta_read_mpc(file);
 		break;
 #endif /* HAVE_MPC */
 	}
@@ -718,6 +748,7 @@ meta_read(metadata * meta, char * file) {
 }
 
 
+#ifdef HAVE_TAGLIB
 void
 print_tags(TagLib::ID3v1::Tag * id3v1_tag,
 	   TagLib::ID3v2::Tag * id3v2_tag,
@@ -765,6 +796,58 @@ print_tags(TagLib::ID3v1::Tag * id3v1_tag,
 		cout << "genre   - \"" << oxc->genre()   << "\"" << endl;
 	}
 }
+#endif /* HAVE_TAGLIB */
+
+
+#ifdef HAVE_FLAC
+void
+meta_free_flac(metadata * meta) {
+
+	TagLib::FLAC::File * taglib_flac_file =
+		reinterpret_cast<TagLib::FLAC::File *>(meta->taglib_file);
+	print_tags(taglib_flac_file->ID3v1Tag(), taglib_flac_file->ID3v2Tag(),
+		   NULL, taglib_flac_file->xiphComment());
+	taglib_flac_file->~File();
+}
+#endif /* HAVE_FLAC */
+
+
+#ifdef HAVE_OGG_VORBIS
+void
+meta_free_oggv(metadata * meta) {
+
+	TagLib::Ogg::Vorbis::File * taglib_oggv_file =
+		reinterpret_cast<TagLib::Ogg::Vorbis::File *>(meta->taglib_file);
+	print_tags(NULL, NULL, NULL, taglib_oggv_file->tag());
+	taglib_oggv_file->~File();
+}
+#endif /* HAVE_OGG_VORBIS */
+
+
+#ifdef HAVE_MPEG
+void
+meta_free_mpeg(metadata * meta) {
+
+	TagLib::MPEG::File * taglib_mpeg_file =
+		reinterpret_cast<TagLib::MPEG::File *>(meta->taglib_file);
+	print_tags(taglib_mpeg_file->ID3v1Tag(), taglib_mpeg_file->ID3v2Tag(),
+		   taglib_mpeg_file->APETag(), NULL);
+	taglib_mpeg_file->~File();
+}
+#endif /* HAVE_MPEG */
+
+
+#ifdef HAVE_MPC
+void
+meta_free_mpc(metadata * meta) {
+
+	TagLib::MPC::File * taglib_mpc_file =
+		reinterpret_cast<TagLib::MPC::File *>(meta->taglib_file);
+	print_tags(taglib_mpc_file->ID3v1Tag(), NULL,
+		   taglib_mpc_file->APETag(), NULL);
+	taglib_mpc_file->~File();
+}
+#endif /* HAVE_MPC */
 
 
 void
@@ -785,30 +868,22 @@ meta_free(metadata * meta) {
 	switch (meta->format_major) {
 #ifdef HAVE_FLAC
 	case FORMAT_FLAC:
-		TagLib::FLAC::File * taglib_flac_file = reinterpret_cast<TagLib::FLAC::File *>(meta->taglib_file);
-		print_tags(taglib_flac_file->ID3v1Tag(), taglib_flac_file->ID3v2Tag(), NULL, taglib_flac_file->xiphComment());
-		taglib_flac_file->~File();
+		meta_free_flac(meta);
 		break;
 #endif /* HAVE_FLAC */
 #ifdef HAVE_OGG_VORBIS
 	case FORMAT_VORBIS:
-		TagLib::Ogg::Vorbis::File * taglib_oggv_file = reinterpret_cast<TagLib::Ogg::Vorbis::File *>(meta->taglib_file);
-		print_tags(NULL, NULL, NULL, taglib_oggv_file->tag());
-		taglib_oggv_file->~File();
+		meta_free_oggv(meta);
 		break;
 #endif /* HAVE_OGG_VORBIS */
 #ifdef HAVE_MPEG
 	case FORMAT_MAD:
-		TagLib::MPEG::File * taglib_mpeg_file = reinterpret_cast<TagLib::MPEG::File *>(meta->taglib_file);
-		print_tags(taglib_mpeg_file->ID3v1Tag(), taglib_mpeg_file->ID3v2Tag(), taglib_mpeg_file->APETag(), NULL);
-		taglib_mpeg_file->~File();
+		meta_free_mpeg(meta);
 		break;
 #endif /* HAVE_MPEG */
 #ifdef HAVE_MPC
 	case FORMAT_MPC:
-		TagLib::MPC::File * taglib_mpc_file = reinterpret_cast<TagLib::MPC::File *>(meta->taglib_file);
-		print_tags(taglib_mpc_file->ID3v1Tag(), NULL, taglib_mpc_file->APETag(), NULL);
-		taglib_mpc_file->~File();
+		meta_free_mpc(meta);
 		break;
 #endif /* HAVE_MPC */
 	}

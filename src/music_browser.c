@@ -300,7 +300,7 @@ browser_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
 
 void
-make_title_string(char * dest, char * template, char * artist, char * record, char * track) {
+make_title_string(char * dest, char * templ, char * artist, char * record, char * track) {
 
 	int i;
 	int j;
@@ -308,12 +308,12 @@ make_title_string(char * dest, char * template, char * artist, char * record, ch
 	char * arg[3] = { "", "", "" };
 	char temp[MAXLEN];
 
-	temp[0] = template[0];
+	temp[0] = templ[0];
 
-	for (i = j = 1; i < strlen(template) && j < MAXLEN - 1; i++, j++) {
-		if (template[i - 1] == '%') {
+	for (i = j = 1; i < strlen(templ) && j < MAXLEN - 1; i++, j++) {
+		if (templ[i - 1] == '%') {
 			if (argc < 3) {
-				switch (template[i]) {
+				switch (templ[i]) {
 				case 'a':
 					arg[argc++] = artist;
 					temp[j] = 's';
@@ -328,15 +328,15 @@ make_title_string(char * dest, char * template, char * artist, char * record, ch
 					break;
 				default:
 					temp[j++] = '%';
-					temp[j] = template[i];
+					temp[j] = templ[i];
 					break;
 				}
 			} else {
 				temp[j++] = '%';
-				temp[j] = template[i];
+				temp[j] = templ[i];
 			}
 		} else {
-			temp[j] = template[i];
+			temp[j] = templ[i];
 		}
 	}
 

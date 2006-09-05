@@ -24,8 +24,16 @@
 #include <gtk/gtk.h>
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void show_file_info(char * name, char * file, int is_called_from_browser,
 		    GtkTreeModel * model, GtkTreeIter iter_track);
 
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif /* _FILE_INFO_H */

@@ -28,6 +28,11 @@
 #include "core.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #define PLAY  1
 #define PAUSE 2
 
@@ -66,5 +71,9 @@ gint scroll_btn_pressed(GtkWidget * widget, GdkEventButton * event);
 gint scroll_btn_released(GtkWidget * widget, GdkEventButton * event, gpointer * win);
 gint scroll_motion_notify(GtkWidget * widget, GdkEventMotion * event, gpointer * win);
 
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif /* _GUI_MAIN_H */

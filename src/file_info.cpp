@@ -103,7 +103,7 @@ import_data_new(void) {
 
 	import_data_t * data;
 
-	if ((data = calloc(1, sizeof(import_data_t))) == NULL) {
+	if ((data = (import_data_t *)calloc(1, sizeof(import_data_t))) == NULL) {
 		fprintf(stderr, "error: import_data_new(): calloc error\n");
 		return NULL;
 	}
@@ -159,16 +159,16 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 	case IMPORT_DEST_RECORD:
 		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
 		gtk_tree_store_set(music_store, &record_iter, 0, data->str, -1);
-		music_store_mark_changed(&record_iter);
+		music_store_mark_changed(&(data->track_iter));
 		break;
 	case IMPORT_DEST_ARTIST:
 		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
 		gtk_tree_model_iter_parent(data->model, &artist_iter, &record_iter);
 		gtk_tree_store_set(music_store, &artist_iter, 0, data->str, -1);
 		gtk_tree_store_set(music_store, &artist_iter, 1, data->str, -1);
-		music_store_mark_changed(&artist_iter);
 		path = gtk_tree_model_get_path(data->model, &(data->track_iter));
 		gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(music_tree), path, NULL, TRUE, 0.5f, 0.0f);
+		music_store_mark_changed(&(data->track_iter));
 		break;
 	case IMPORT_DEST_NUMBER:
 		if (data->str[0] != '0') {
@@ -192,8 +192,8 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 		}
 		strncat(tmp, data->str, MAXLEN-1);
 		gtk_tree_store_set(music_store, &(data->track_iter), 3, tmp, -1);
-		music_store_mark_changed(&(data->track_iter));
 		tree_selection_changed_cb(music_select, NULL);
+		music_store_mark_changed(&(data->track_iter));
 		break;
 	case IMPORT_DEST_RVA:
 		ftmp = 1.0f;
@@ -229,13 +229,13 @@ append_table(GtkWidget * table, int * cnt, char * field, char * value,
 
 	if (importbtn_text == NULL) {
 		gtk_table_attach(GTK_TABLE(table), entry, 1, 3, *cnt, *cnt+1,
-				 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+				 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
 	} else {
 		button = gtk_button_new_with_label(importbtn_text);
 		g_signal_connect(G_OBJECT(button), "clicked",
 				 G_CALLBACK(import_button_pressed), (gpointer)data);
 		gtk_table_attach(GTK_TABLE(table), entry, 1, 2, *cnt, *cnt+1,
-				 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+				 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
 		gtk_table_attach(GTK_TABLE(table), button, 2, 3, *cnt, *cnt+1,
 				 GTK_FILL, GTK_FILL, 5, 3);
 	}
@@ -373,7 +373,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_entry_set_text(GTK_ENTRY(entry_name), name);
 	gtk_editable_set_editable(GTK_EDITABLE(entry_name), FALSE);
 	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, 0, 1,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 2);
+			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 2);
 
 	hbox_path = gtk_hbox_new(FALSE, 0);
 	label_path = gtk_label_new(_("File:"));
@@ -388,7 +388,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	g_free(file_display);
 	gtk_editable_set_editable(GTK_EDITABLE(entry_path), FALSE);
 	gtk_table_attach(GTK_TABLE(table), entry_path, 1, 2, 1, 2,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 2);
+			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 2);
 
         cover_image_area = gtk_image_new();
 	gtk_box_pack_start(GTK_BOX(hbox_t), cover_image_area, FALSE, FALSE, 0);
@@ -416,7 +416,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_entry_set_text(GTK_ENTRY(entry), str);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 0, 1,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("Length:"));
@@ -428,7 +428,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_entry_set_text(GTK_ENTRY(entry), str);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 1, 2,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("Samplerate:"));
@@ -440,7 +440,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_entry_set_text(GTK_ENTRY(entry), str);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 2, 3,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("Channel count:"));
@@ -455,7 +455,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_entry_set_text(GTK_ENTRY(entry), str);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 3, 4,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("Bandwidth:"));
@@ -467,7 +467,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_entry_set_text(GTK_ENTRY(entry), str);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 4, 5,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("Total samples:"));
@@ -479,7 +479,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_entry_set_text(GTK_ENTRY(entry), str);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 5, 6,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
 
 
 #ifdef HAVE_ID3
@@ -1167,6 +1167,7 @@ GtkTreeViewColumn *column;
         }
 }
 #endif /* HAVE_MOD_INFO */
+
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

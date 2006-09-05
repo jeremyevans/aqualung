@@ -24,6 +24,10 @@
 
 #include "../rb.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* input libs */
 #define NULL_LIB    0
 #define SNDFILE_LIB 1
@@ -157,6 +161,10 @@ float get_file_duration(char * file);
 
 #define db2lin(x) ((x) > -90.0f ? powf(10.0f, (x) * 0.05f) : 0.0f)
 
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif /* _FILE_DECODER_H */
 

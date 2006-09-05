@@ -11,11 +11,11 @@ common.h \
 cddb_lookup.h cddb_lookup.c \
 core.h core.c \
 cover.h cover.c \
-file_info.h file_info.c \
+file_info.h file_info.cpp \
 gui_main.h gui_main.c \
 i18n.h \
 ifp_device.h ifp_device.c \
-meta_decoder.h meta_decoder.c \
+meta_decoder.h meta_decoder.cpp \
 music_browser.h music_browser.c \
 options.h options.c \
 playlist.h playlist.c \

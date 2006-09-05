@@ -36,7 +36,13 @@
 #include <libmodplug/modplug.h>
 #endif /* HAVE_MOD */
 
+
 #include "decoder/file_decoder.h"
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 #ifdef HAVE_ID3
@@ -94,6 +100,11 @@ typedef struct _metadata {
 	oggv_comment * oggv_root;
 #endif /* HAVE_OGG_VORBIS */
 
+#ifdef HAVE_TAGLIB
+	/* TagLib::File * */
+	void * taglib_file;
+#endif /* HAVE_TAGLIB */
+
 #ifdef HAVE_MOD
 	mod_info * mod_root;
 #endif /* HAVE_MOD */
@@ -113,6 +124,10 @@ int meta_get_artist(metadata * meta, char * str);
 int meta_get_year(metadata * meta, char * str);
 int meta_get_comment(metadata * meta, char * str);
 
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif /* _META_DECODER_H */
 

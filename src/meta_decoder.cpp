@@ -20,6 +20,7 @@
 
 #include <config.h>
 
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,6 +52,17 @@
 #include <libmodplug/modplug.h>
 #endif /* HAVE_MOD */
 
+#ifdef HAVE_TAGLIB
+#include <id3v1tag.h>
+#include <id3v2tag.h>
+#include <apetag.h>
+#include <xiphcomment.h>
+#include <mpegfile.h>
+#include <mpcfile.h>
+#include <flacfile.h>
+#include <vorbisfile.h>
+#endif /* HAVE_TAGLIB */
+
 #include "common.h"
 #include "core.h"
 #include "i18n.h"
@@ -65,6 +77,8 @@
 #include "meta_decoder.h"
 
 
+using namespace std;
+
 extern options_t options;
 
 
@@ -72,20 +86,20 @@ extern options_t options;
 id3_tag_data *
 id3_new(void) {
 
-	id3_tag_data * new = NULL;
+	id3_tag_data * new_tag = NULL;
 
-	if ((new = (id3_tag_data *)malloc(sizeof(id3_tag_data))) == NULL) {
+	if ((new_tag = (id3_tag_data *)malloc(sizeof(id3_tag_data))) == NULL) {
 		fprintf(stderr, "meta_decoder.c/id3_new(): malloc error\n");
 		return NULL;
 	}
 
-	new->id[0] = '\0';
-	new->label = NULL;
-	new->utf8 = NULL;
-	new->fval = 0.0f;
-	new->next = NULL;
+	new_tag->id[0] = '\0';
+	new_tag->label = NULL;
+	new_tag->utf8 = NULL;
+	new_tag->fval = 0.0f;
+	new_tag->next = NULL;
 
-	return new;
+	return new_tag;
 }
 #endif /* HAVE_ID3 */
 
@@ -93,63 +107,63 @@ id3_new(void) {
 mod_info *
 modinfo_new(void) {
 
-	mod_info * new = NULL;
+	mod_info * new_tag = NULL;
 
-	if ((new = (mod_info *)malloc(sizeof(mod_info))) == NULL) {
+	if ((new_tag = (mod_info *)malloc(sizeof(mod_info))) == NULL) {
 		fprintf(stderr, "meta_decoder.c/modinfo_new(): malloc error\n");
 		return NULL;
 	}
 
-	new->title = NULL;
-	new->active = 0;
+	new_tag->title = NULL;
+	new_tag->active = 0;
 
-	return new;
+	return new_tag;
 }
 #endif /* HAVE_MOD */
 
 oggv_comment *
 oggv_new(void) {
 
-	oggv_comment * new = NULL;
+	oggv_comment * new_tag = NULL;
 
-	if ((new = (oggv_comment *)malloc(sizeof(oggv_comment))) == NULL) {
+	if ((new_tag = (oggv_comment *)malloc(sizeof(oggv_comment))) == NULL) {
 		fprintf(stderr, "meta_decoder.c/oggv_new(): malloc error\n");
 		return NULL;
 	}
 
-	new->label = NULL;
-	new->str = NULL;
-	new->fval = 0.0f;
-	new->next = NULL;
+	new_tag->label = NULL;
+	new_tag->str = NULL;
+	new_tag->fval = 0.0f;
+	new_tag->next = NULL;
 
-	return new;
+	return new_tag;
 }
 
 
 metadata *
 meta_new(void) {
 
-	metadata * new = NULL;
+	metadata * new_tag = NULL;
 
-	if ((new = (metadata *)malloc(sizeof(metadata))) == NULL) {
+	if ((new_tag = (metadata *)malloc(sizeof(metadata))) == NULL) {
 		fprintf(stderr, "meta_decoder.c/meta_new(): malloc error\n");
 		return NULL;
 	}
 
 #ifdef HAVE_ID3
-	new->id3_root = id3_new();
+	new_tag->id3_root = id3_new();
 #endif /* HAVE_ID3 */
 #ifdef HAVE_FLAC
-	new->flac_root = oggv_new();
+	new_tag->flac_root = oggv_new();
 #endif /* HAVE_FLAC */
 #ifdef HAVE_OGG_VORBIS
-	new->oggv_root = oggv_new();
+	new_tag->oggv_root = oggv_new();
 #endif /* HAVE_OGG_VORBIS */
 #ifdef HAVE_MOD
-	new->mod_root = modinfo_new();
+	new_tag->mod_root = modinfo_new();
 #endif /* HAVE_MOD */
 
-	return new;
+	return new_tag;
 }
 
 
@@ -499,6 +513,12 @@ meta_read_flac(metadata * meta, FLAC__StreamMetadata * flacmeta) {
 #endif /* HAVE_FLAC */
 
 
+TagLib::String formatSeconds(int seconds) {
+  char secondsString[3];
+  sprintf(secondsString, "%02i", seconds);
+  return secondsString;
+}
+
 /* ret: 1 if successful, 0 if error */
 int
 meta_read(metadata * meta, char * file) {
@@ -507,6 +527,7 @@ meta_read(metadata * meta, char * file) {
 #ifdef HAVE_OGG_VORBIS
         char str[MAXLEN];
 #endif /* HAVE_OGG_VORBIS */
+
 
         if ((fdec = file_decoder_new()) == NULL) {
                 fprintf(stderr, "meta_read(): error: file_decoder_new() returned NULL\n");
@@ -526,6 +547,36 @@ meta_read(metadata * meta, char * file) {
 	meta->sample_rate = fdec->fileinfo.sample_rate;
 	meta->is_mono = fdec->fileinfo.is_mono;
 	meta->bps = fdec->fileinfo.bps;
+
+#ifdef HAVE_TAGLIB
+	switch (meta->format_major) {
+#ifdef HAVE_FLAC
+	case FORMAT_FLAC:
+		TagLib::FLAC::File * taglib_flac_file = new TagLib::FLAC::File(file);
+		meta->taglib_file = reinterpret_cast<void *>(taglib_flac_file);
+		break;
+#endif /* HAVE_FLAC */
+#ifdef HAVE_OGG_VORBIS
+	case FORMAT_VORBIS:
+		TagLib::Ogg::Vorbis::File * taglib_oggv_file = new TagLib::Ogg::Vorbis::File(file);
+		meta->taglib_file = reinterpret_cast<void *>(taglib_oggv_file);
+		break;
+#endif /* HAVE_OGG_VORBIS */
+#ifdef HAVE_MPEG
+	case FORMAT_MAD:
+		TagLib::MPEG::File * taglib_mpeg_file = new TagLib::MPEG::File(file);
+		meta->taglib_file = reinterpret_cast<void *>(taglib_mpeg_file);
+		break;
+#endif /* HAVE_MPEG */
+#ifdef HAVE_MPC
+	case FORMAT_MPC:
+		TagLib::MPC::File * taglib_mpc_file = new TagLib::MPC::File(file);
+		meta->taglib_file = reinterpret_cast<void *>(taglib_mpc_file);
+		break;
+#endif /* HAVE_MPC */
+	}
+#endif /* HAVE_TAGLIB */
+
 
 #ifdef HAVE_ID3
 	{
@@ -625,7 +676,7 @@ meta_read(metadata * meta, char * file) {
                         if (flacmeta == NULL)
                                 break;
 
-                        /* process a VORBIS_COMMENT metadata block */
+	/* process a VORBIS_COMMENT metadata block */
                         if (flacmeta->type == FLAC__METADATA_TYPE_VORBIS_COMMENT) {
 
 				meta_read_flac(meta, flacmeta);
@@ -668,6 +719,55 @@ meta_read(metadata * meta, char * file) {
 
 
 void
+print_tags(TagLib::ID3v1::Tag * id3v1_tag,
+	   TagLib::ID3v2::Tag * id3v2_tag,
+	   TagLib::APE::Tag * ape_tag,
+	   TagLib::Ogg::XiphComment * oxc) {
+
+	if (id3v1_tag) {
+		cout << "-- ID3v1Tag --" << endl;
+		cout << "title   - \"" << id3v1_tag->title()   << "\"" << endl;
+		cout << "artist  - \"" << id3v1_tag->artist()  << "\"" << endl;
+		cout << "album   - \"" << id3v1_tag->album()   << "\"" << endl;
+		cout << "year    - \"" << id3v1_tag->year()    << "\"" << endl;
+		cout << "comment - \"" << id3v1_tag->comment() << "\"" << endl;
+		cout << "track   - \"" << id3v1_tag->track()   << "\"" << endl;
+		cout << "genre   - \"" << id3v1_tag->genre()   << "\"" << endl;
+	}	
+	if (id3v2_tag) {
+		cout << "-- ID3v2Tag --" << endl;
+		cout << "title   - \"" << id3v2_tag->title()   << "\"" << endl;
+		cout << "artist  - \"" << id3v2_tag->artist()  << "\"" << endl;
+		cout << "album   - \"" << id3v2_tag->album()   << "\"" << endl;
+		cout << "year    - \"" << id3v2_tag->year()    << "\"" << endl;
+		cout << "comment - \"" << id3v2_tag->comment() << "\"" << endl;
+		cout << "track   - \"" << id3v2_tag->track()   << "\"" << endl;
+		cout << "genre   - \"" << id3v2_tag->genre()   << "\"" << endl;
+	}
+	if (ape_tag) {
+		cout << "-- APE Tag --" << endl;
+		cout << "title   - \"" << ape_tag->title()   << "\"" << endl;
+		cout << "artist  - \"" << ape_tag->artist()  << "\"" << endl;
+		cout << "album   - \"" << ape_tag->album()   << "\"" << endl;
+		cout << "year    - \"" << ape_tag->year()    << "\"" << endl;
+		cout << "comment - \"" << ape_tag->comment() << "\"" << endl;
+		cout << "track   - \"" << ape_tag->track()   << "\"" << endl;
+		cout << "genre   - \"" << ape_tag->genre()   << "\"" << endl;
+	}
+	if (oxc) {
+		cout << "-- Ogg Xiph Comment --" << endl;
+		cout << "title   - \"" << oxc->title()   << "\"" << endl;
+		cout << "artist  - \"" << oxc->artist()  << "\"" << endl;
+		cout << "album   - \"" << oxc->album()   << "\"" << endl;
+		cout << "year    - \"" << oxc->year()    << "\"" << endl;
+		cout << "comment - \"" << oxc->comment() << "\"" << endl;
+		cout << "track   - \"" << oxc->track()   << "\"" << endl;
+		cout << "genre   - \"" << oxc->genre()   << "\"" << endl;
+	}
+}
+
+
+void
 meta_free(metadata * meta) {
 
 #ifdef HAVE_ID3
@@ -679,6 +779,40 @@ meta_free(metadata * meta) {
 #ifdef HAVE_MOD
 	mod_info * mi;
 #endif /* HAVE_MOD */
+
+
+#ifdef HAVE_TAGLIB
+	switch (meta->format_major) {
+#ifdef HAVE_FLAC
+	case FORMAT_FLAC:
+		TagLib::FLAC::File * taglib_flac_file = reinterpret_cast<TagLib::FLAC::File *>(meta->taglib_file);
+		print_tags(taglib_flac_file->ID3v1Tag(), taglib_flac_file->ID3v2Tag(), NULL, taglib_flac_file->xiphComment());
+		taglib_flac_file->~File();
+		break;
+#endif /* HAVE_FLAC */
+#ifdef HAVE_OGG_VORBIS
+	case FORMAT_VORBIS:
+		TagLib::Ogg::Vorbis::File * taglib_oggv_file = reinterpret_cast<TagLib::Ogg::Vorbis::File *>(meta->taglib_file);
+		print_tags(NULL, NULL, NULL, taglib_oggv_file->tag());
+		taglib_oggv_file->~File();
+		break;
+#endif /* HAVE_OGG_VORBIS */
+#ifdef HAVE_MPEG
+	case FORMAT_MAD:
+		TagLib::MPEG::File * taglib_mpeg_file = reinterpret_cast<TagLib::MPEG::File *>(meta->taglib_file);
+		print_tags(taglib_mpeg_file->ID3v1Tag(), taglib_mpeg_file->ID3v2Tag(), taglib_mpeg_file->APETag(), NULL);
+		taglib_mpeg_file->~File();
+		break;
+#endif /* HAVE_MPEG */
+#ifdef HAVE_MPC
+	case FORMAT_MPC:
+		TagLib::MPC::File * taglib_mpc_file = reinterpret_cast<TagLib::MPC::File *>(meta->taglib_file);
+		print_tags(taglib_mpc_file->ID3v1Tag(), NULL, taglib_mpc_file->APETag(), NULL);
+		taglib_mpc_file->~File();
+		break;
+#endif /* HAVE_MPC */
+	}
+#endif /* HAVE_TAGLIB */
 
 
 #ifdef HAVE_ID3

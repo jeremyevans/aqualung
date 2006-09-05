@@ -22,9 +22,13 @@
 #ifndef _MUSIC_BROWSER_H
 #define _MUSIC_BROWSER_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data);
 
-void make_title_string(char * dest, char * template, char * artist, char * record, char * track);
+void make_title_string(char * dest, char * templ, char * artist, char * record, char * track);
 
 void create_music_browser(void);
 void show_music_browser(void);
@@ -44,6 +48,10 @@ void record__addlist_defmode(gpointer data);
 void track__addlist_cb(gpointer data);
 
 void music_store_set_status_bar_info(void);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 
 #endif /* _MUSIC_BROWSER_H */

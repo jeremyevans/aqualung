@@ -1321,8 +1321,6 @@ main_window_close(GtkWidget * widget, gpointer data) {
 		save_window_position();
 	}
 
-	save_config();
-
 #ifdef HAVE_LADSPA
 	save_plugin_data();
 	lrdf_cleanup();

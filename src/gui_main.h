@@ -48,6 +48,7 @@ void create_gui(int argc, char ** argv, int optind, int enqueue,
 		unsigned long rate, unsigned long rb_audio_size);
 
 void run_gui(void);
+void save_config(void);
 
 void sample2time(unsigned long SR, unsigned long long sample, char * str, int sign);
 void time2time(float samples, char * str);

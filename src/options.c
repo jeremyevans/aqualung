@@ -581,6 +581,8 @@ options_window_accept(void) {
         show_active_position_in_playlist();
 
 	gtk_widget_destroy(options_window);
+
+	save_config();
 }
 
 

@@ -302,8 +302,9 @@ meta_read_rva2(metadata * meta, struct id3_tag * tag) {
 			
 			voladj_fixed = (data[1] << 8) | (data[2] << 0);
 			voladj_fixed |= -(voladj_fixed & 0x8000);
-			
+
 			voladj_float = (double) voladj_fixed / 512;
+			/* XXX */ printf("voladj_fixed = %d  float = %+.1f dB\n", voladj_fixed, voladj_float);
 			
 			snprintf(str, MAXLEN-1, "%+.1f dB (tagged by %s)",
 				 voladj_float, id);

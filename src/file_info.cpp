@@ -51,10 +51,16 @@
 #include <id3v2tag.h>
 #include <apetag.h>
 #include <xiphcomment.h>
+
+#include <attachedpictureframe.h>
+#include <relativevolumeframe.h>
+
 #include <mpegfile.h>
 #include <mpcfile.h>
 #include <flacfile.h>
 #include <vorbisfile.h>
+
+#include <tmap.h>
 #include <tlist.h>
 #include <tbytevector.h>
 #endif /* HAVE_TAGLIB */
@@ -315,7 +321,36 @@ print_tags(TagLib::ID3v1::Tag * id3v1_tag,
 
 		for (i = l.begin(); i != l.end(); ++i) {
 			TagLib::ID3v2::Frame * frame = *i;
-			std::cout << frame->frameID().data() << " | " << frame->toString() << std::endl;
+			char frameID[5];
+
+			for(int j = 0; j < 4; j++) {
+				frameID[j] = frame->frameID().data()[j];
+			}
+			frameID[4] = '\0';
+
+			std::cout << frameID << " | " << frame->toString() << std::endl;
+		        if (strcmp(frameID, "APIC") == 0) {
+				TagLib::ID3v2::AttachedPictureFrame * apic_frame =
+					//new TagLib::ID3v2::AttachedPictureFrame(frame->render());
+					dynamic_cast<TagLib::ID3v2::AttachedPictureFrame *>(frame);
+
+				std::cout << "we have an attached picture, type: " << apic_frame->mimeType() << std::endl;
+				//delete apic_frame;
+			} else if (strcmp(frameID, "RVA2") == 0) {
+				TagLib::ID3v2::RelativeVolumeFrame * rva_frame =
+					//new TagLib::ID3v2::RelativeVolumeFrame(frame->render());
+					dynamic_cast<TagLib::ID3v2::RelativeVolumeFrame *>(frame);
+
+				if (rva_frame->channelType() == TagLib::ID3v2::RelativeVolumeFrame::MasterVolume) {
+					int adj_index = rva_frame->volumeAdjustmentIndex(rva_frame->channelType());
+					float adj = rva_frame->volumeAdjustment(rva_frame->channelType());
+
+					std::cout << "we have an RVA frame" << std::endl;
+					printf("adj_index = %d   adj = %+.1f dB\n", adj_index, adj);
+					std::cout << "str: " << rva_frame->toString() << std::endl;
+				}
+				//delete rva_frame;
+			}
 		}
 	}
 	if (ape_tag && !ape_tag->isEmpty()) {
@@ -338,10 +373,17 @@ print_tags(TagLib::ID3v1::Tag * id3v1_tag,
 		std::cout << "track   - \"" << oxc->track()   << "\"" << std::endl;
 		std::cout << "genre   - \"" << oxc->genre()   << "\"" << std::endl;
 
+		std::cout << "Vendor: \"" << oxc->vendorID()   << "\"" << std::endl;
+
 		std::cout << "Number of fields: " << oxc->fieldCount() << std::endl;
 
-		//std::map m = oxc->fieldListMap();
-		//std::map<TagLib>
+		TagLib::Ogg::FieldListMap m = oxc->fieldListMap();
+		
+		for (TagLib::Ogg::FieldListMap::Iterator i = m.begin(); i != m.end(); ++i) {
+			for (TagLib::StringList::Iterator j = (*i).second.begin(); j != (*i).second.end(); ++j) {
+				std::cout << (*i).first << " " << *j << std::endl;
+			}
+		}
 	}
 }
 #endif /* HAVE_TAGLIB */

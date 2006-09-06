@@ -48,7 +48,11 @@
 #ifdef HAVE_OSS
 #include <sys/ioctl.h>
 #include <sys/types.h>
+#ifdef __FreeBSD__
+#include <sys/soundcard.h>
+#else
 #include <linux/soundcard.h>
+#endif /* __FreeBSD__ */
 #endif /* HAVE_OSS */
 
 #ifdef HAVE_JACK

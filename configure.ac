@@ -1,9 +1,34 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(aqualung, 0.9beta5, http://aqualung.sf.net/mantis)
-AM_INIT_AUTOMAKE(aqualung, 0.9beta5)
+AC_INIT(aqualung, CVS, http://aqualung.sf.net/mantis)
+AM_INIT_AUTOMAKE(aqualung, CVS)
 AC_CONFIG_SRCDIR([src/core.c])
 AM_CONFIG_HEADER([config.h])
+
+
+
+AC_MSG_CHECKING(for compilation platform)
+if test `uname -a | grep CYGWIN | wc -l` = "1" ; then
+   PLATFORM_CFLAGS="-mwin32 -mwindows"
+   PLATFORM_LIBS="-lintl -lwinmm"
+   win32="yes"
+   freebsd="no"
+   AC_MSG_RESULT(Cygwin)
+fi
+if test `uname -a | grep FreeBSD | wc -l` = "1"  ; then
+   PLATFORM_CFLAGS=""
+   PLATFORM_LIBS=""
+   win32="no"
+   freebsd="yes"
+   AC_MSG_RESULT(FreeBSD)
+fi
+if test `uname -a | grep Linux | wc -l` = "1"  ; then
+   PLATFORM_CFLAGS=""
+   PLATFORM_LIBS=""
+   win32="no"
+   freebsd="no"
+   AC_MSG_RESULT(Linux)
+fi
 
 
 
@@ -33,22 +58,6 @@ AC_CHECK_FUNCS([floor memset mkdir strdup strrchr strstr])
 
 
 
-AC_MSG_CHECKING(for compilation platform)
-if test `uname -a | grep CYGWIN | wc -l` = "1" ; then
-   PLATFORM_CFLAGS="-mwin32 -mwindows"
-   PLATFORM_LIBS="-lintl -lwinmm"
-   win32="yes"
-   AC_MSG_RESULT(Cygwin)
-fi
-if test `uname -a | grep Linux | wc -l` = "1"  ; then
-   PLATFORM_CFLAGS=""
-   PLATFORM_LIBS=""
-   win32="no"
-   AC_MSG_RESULT(Linux)
-fi
-
-
-
 AC_CHECK_PROG([var], [pkg-config], [yes], [no])
 if test ! "$var" = "yes"; then
 	AC_MSG_ERROR(You do not appear to have pkg-config installed)
@@ -61,6 +70,9 @@ AC_CHECK_LIB(pthread,
 	pthread_create,
 	[],
 	[AC_MSG_ERROR(You do not appear to have a usable pthread library)])
+fi
+
+if test $win32 = "no" -a $freebsd = "no" ; then
 AC_CHECK_LIB(dl,
 	dlopen,
 	[],
@@ -90,13 +102,15 @@ if test ! "$var" = "yes"; then
 	AC_MSG_ERROR(You do not appear to have xml2-config installed. This usually means that the libxml2 library is missing or not properly installed on your system. Get libxml2 from http://xmlsoft.org)
 fi
 
-AC_CHECK_LIB(xml2,
-	xmlNewDoc,
-	[],
-	[AC_MSG_ERROR(You do not appear to have libxml2 installed. Grab it from http://xmlsoft.org)])
-
 xml_CFLAGS=`xml2-config --cflags`
 xml_LIBS=`xml2-config --libs`
+
+if test $freebsd = "no" ; then
+        AC_CHECK_LIB(xml2,
+	        xmlNewDoc,
+	        [],
+	        [AC_MSG_ERROR(You do not appear to have libxml2 installed. Grab it from http://xmlsoft.org)])
+fi
 
 
 AC_MSG_CHECKING(for OSS support)
@@ -108,12 +122,20 @@ AC_ARG_WITH(
 if test "$oss" = no; then
 	AC_MSG_RESULT(no)
 else
-	AC_CHECK_HEADER([linux/soundcard.h], [hdr=yes], [hdr=no])
+	if test $freebsd = "no" ; then
+	        AC_CHECK_HEADER([linux/soundcard.h], [hdr=yes], [hdr=no])
+	else
+	        AC_CHECK_HEADER([sys/soundcard.h], [hdr=yes], [hdr=no])
+	fi
 	if test "$hdr" = "yes"; then
 		AC_DEFINE([HAVE_OSS], [1], [Defined if compile with OSS support])
 	fi
 	if test "$hdr" = "no" -a "$oss" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have linux/soundcard.h needed by OSS sound support.)
+	        if test $freebsd = "no" ; then
+		        AC_MSG_ERROR(You do not appear to have linux/soundcard.h needed by OSS sound support.)
+		else
+		        AC_MSG_ERROR(You do not appear to have sys/soundcard.h needed by OSS sound support.)
+		fi
 	fi
 	if test "$oss" = "detect"; then
 	        oss=$hdr

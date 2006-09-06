@@ -41,6 +41,12 @@
 #include "trashlist.h"
 #include "plugin.h"
 
+#ifdef __FreeBSD__
+#define dirent64 dirent
+#define scandir64 scandir
+#define alphasort64 alphasort
+#endif /* __FreeBSD__ */
+
 extern options_t options;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);

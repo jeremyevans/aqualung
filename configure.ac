@@ -81,8 +81,8 @@ fi
 
 
 # Checks for libraries.
-AC_MSG_CHECKING(whether GTK+ version >= 2.4)
-if pkg-config --exists 'gtk+-2.0 >= 2.4'; then
+AC_MSG_CHECKING(whether GTK+ version >= 2.6)
+if pkg-config --exists 'gtk+-2.0 >= 2.6'; then
 
         gtk_CFLAGS=`pkg-config --cflags gtk+-2.0`
 	gtk_LIBS=`pkg-config --libs gtk+-2.0`
@@ -93,7 +93,7 @@ if pkg-config --exists 'gtk+-2.0 >= 2.4'; then
         AC_MSG_RESULT(yes)
 else
 	AC_MSG_RESULT(no)
-	AC_MSG_ERROR(GTK+ not found or too old (version < 2.4))
+	AC_MSG_ERROR(GTK+ not found or too old (version < 2.6))
 fi
 
 
@@ -105,12 +105,10 @@ fi
 xml_CFLAGS=`xml2-config --cflags`
 xml_LIBS=`xml2-config --libs`
 
-if test $freebsd = "no" ; then
-        AC_CHECK_LIB(xml2,
-	        xmlNewDoc,
-	        [],
-	        [AC_MSG_ERROR(You do not appear to have libxml2 installed. Grab it from http://xmlsoft.org)])
-fi
+AC_CHECK_LIB(xml2,
+	xmlNewDoc,
+	[],
+	[AC_MSG_ERROR(You do not appear to have libxml2 installed. Grab it from http://xmlsoft.org)])
 
 
 AC_MSG_CHECKING(for OSS support)
@@ -655,7 +653,7 @@ echo "      MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod"
 echo "      Musepack                            :  $mpc"
 echo "      Monkey's Audio Codec                :  $mac"
 echo "      ID3 tags                            :  $id3"
-echo "      Metadata                            :  $metadata"
+echo "      Metadata (ID3, Ogg comments, APE)   :  $metadata"
 echo
 echo "  Output driver support:"
 echo "      OSS Audio                           :  $oss"

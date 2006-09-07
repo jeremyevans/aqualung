@@ -69,7 +69,8 @@ extern "C" {
 #define MPEG_EMPH_RES    0x800
 #define MPEG_EMPH_MASK   0xF00
 
-#define MPEG_VBR         0x008
+#define MPEG_VBR         0x1000
+#define MPEG_UBR         0x2000
 #endif /* HAVE_MPEG */
 
 #ifdef HAVE_MOD

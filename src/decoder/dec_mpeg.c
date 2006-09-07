@@ -120,8 +120,6 @@ is_mp3frameheader(unsigned long head) {
 		return 0;
 	if ((head & BITRATE_MASK) == BITRATE_MASK) /* bad bitrate? */
 		return 0;
-	if (!(head & BITRATE_MASK)) /* no bitrate? */
-		return 0;
 	if ((head & SAMPLERATE_MASK) == SAMPLERATE_MASK) /* bad sample rate? */
 		return 0;
 	
@@ -148,8 +146,9 @@ mp3headerinfo(mp3info_t *info, unsigned long header) {
 	/* Bitrate */
 	bitindex = (header & BITRATE_MASK) >> 12;
 	info->bitrate = bitrate_table[info->version][info->layer][bitindex];
-	if(info->bitrate == 0)
-		return 0;
+	/*if (info->bitrate == 0) {
+		info->
+	}*/
 	
 	/* Sampling frequency */
 	freqindex = (header & SAMPLERATE_MASK) >> 10;
@@ -162,15 +161,24 @@ mp3headerinfo(mp3info_t *info, unsigned long header) {
 	/* Calculate number of bytes, calculation depends on layer */
 	if (info->layer == 0) {
 		info->frame_samples = 384;
-		info->frame_size = (12000 * info->bitrate / info->frequency 
-				    + info->padding) * 4;
+		if (info->bitrate == 0) {
+			info->frame_size = 0;
+		} else {
+			info->frame_size = (12000 * info->bitrate / info->frequency
+					    + info->padding) * 4;
+		}
 	} else {
-		if ((info->version > MPEG_VERSION1) && (info->layer == 2))
+		if ((info->version > MPEG_VERSION1) && (info->layer == 2)) {
 			info->frame_samples = 576;
-		else
+		} else {
 			info->frame_samples = 1152;
-		info->frame_size = (1000/8) * info->frame_samples * info->bitrate
-			/ info->frequency + info->padding;
+		}
+		if (info->bitrate == 0) {
+			info->frame_size = 0;
+		} else {
+			info->frame_size = (1000/8) * info->frame_samples * info->bitrate
+				/ info->frequency + info->padding;
+		}
 	}
 	
 	/* Frametime fraction calculation.
@@ -301,6 +309,8 @@ skip_id3v2_header(int fd) {
 		      ((long)(buffer[8] & 0x7F) << (1*7)) |
 		      ((long)(buffer[9] & 0x7F) << (0*7)));
 
+	id3_length += 10; /* add 10 byte header */
+
 #ifdef MPEG_DEBUG
 	printf("id3_length = %ld\n", id3_length);
 #endif /* MPEG_DEBUG */
@@ -348,8 +358,8 @@ get_mp3file_info(int fd, mp3info_t *info) {
 	skip_id3v2_header(fd);
 
 #ifndef MPEG_STATREC
-	/* uase first valid mpeg frame header to retrieve stream info */
-	headers[0] = find_next_frame(fd, &bytecount, 0x100000 - bytecount, 0);
+	/* use first valid mpeg frame header to retrieve stream info */
+	headers[0] = find_next_frame(fd, &bytecount, 0x100000, 0);
 	/* Quit if we haven't found a valid header within 1M */
 	if (headers[0] == 0)
 		return -1;
@@ -368,7 +378,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 #else
 	/* more sophisticated approach - but slower as well. */
 	for (i = 0; i < 4; i++) {
-		headers[i] = find_next_frame(fd, &bytecount, 0x100000 - bytecount, 0);
+		headers[i] = find_next_frame(fd, &bytecount, 0x100000, 0);
 		/* Quit if we haven't found a valid header within 1M */
 		if (headers[i] == 0)
 			return -1;
@@ -403,7 +413,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 		printf("first 4 frames differ, gathering stats...\n");
 #endif /* MPEG_DEBUG */
 		for (i = 4; i < max_headers; i++) {
-			headers[i] = find_next_frame(fd, &bytecount, 0x100000 - bytecount, 0);
+			headers[i] = find_next_frame(fd, &bytecount, 0x100000, 0);
 			/* Quit if we haven't found a valid header within 1M */
 			if (headers[i] == 0)
 				break;
@@ -533,7 +543,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 #endif /* MPEG_STATISTICAL_RECOGNITION */
 	
 	lseek(fd, offset, SEEK_SET);
-	memset(info, 0, sizeof(mp3info_t));	
+	memset(info, 0, sizeof(mp3info_t));
 	info->start_byteoffset = offset;
 	info->enc_delay = -1;
 	info->enc_padding = -1;
@@ -543,6 +553,38 @@ get_mp3file_info(int fd, mp3info_t *info) {
 #ifdef MPEG_DEBUG
 	printf("start_byteoffset = %d\n", info->start_byteoffset);
 #endif 
+
+	if (info->frame_size == 0) {
+		/* free-format MPEG - no VBR allowed.
+		   we have to find the next frame, so we can determine the frame size & bitrate */
+
+		long offset_next;
+		long header_next;
+		mp3info_t info_next;
+
+		do {
+			header_next = find_next_frame(fd, &bytecount, 0x100000, 0);
+			/* Quit if we haven't found a valid header within 1M */
+			if (header_next == 0)
+				return -1;
+			
+			memset(&info_next, 0, sizeof(mp3info_t));
+			
+			/* These two are needed for proper LAME gapless MP3 playback */
+			info_next.enc_delay = -1;
+			info_next.enc_padding = -1;
+			if (!mp3headerinfo(&info_next, header_next))
+				return -2;
+			
+		} while (!vlfc_cmp(info, &info_next));
+
+		offset_next = lseek(fd, 0, SEEK_CUR);
+		info->frame_size = offset_next - offset;
+		lseek(fd, offset - 4, SEEK_SET); /* go back to beginning of stream */
+		info->start_byteoffset -= 4;
+		return bytecount;
+	}
+
 
 	/* OK, we have the first real frame. Let's see if it has a Xing header */
 	if ((ret = read(fd, frame, info->frame_size-4)) < 0) {
@@ -777,7 +819,11 @@ build_seek_table_thread(void * args) {
 				}
 
 				sample_offset += mp3info.frame_samples;
-				i += mp3info.frame_size;
+				if (mp3info.frame_size == 0) {
+					i += pd->mp3info.frame_size;
+				} else {
+					i += mp3info.frame_size;
+				}
 				++cnt;
 			} else {
 				++i;
@@ -876,11 +922,13 @@ mpeg_output(void * data, struct mad_header const * header, struct mad_pcm * pcm)
         int buf[2];
         float fbuf[2];
 
+	int pad = pd->mp3info.enc_padding;
+
 	if (pd->delay_frames > pcm->length) {
 		pd->delay_frames -= pcm->length;
 #ifdef MPEG_DEBUG
 		printf("skipping whole frame as part of encoder delay\n");
-#endif /* MPEG_DEBUG */		
+#endif /* MPEG_DEBUG */
 		return MAD_FLOW_CONTINUE;
 	} else if (pd->delay_frames > 0) {
 		i = pd->delay_frames;
@@ -893,8 +941,7 @@ mpeg_output(void * data, struct mad_header const * header, struct mad_pcm * pcm)
 	}
 
 	pos_bytes = (pd->mpeg_stream.this_frame - pd->mpeg_stream.buffer) + 10;
-	if ((pd->last_frames[0] != -1) && (pos_bytes >= pd->last_frames[0])) {
-		int pad = pd->mp3info.enc_padding;
+	if ((pad > 0) && (pd->last_frames[0] != -1) && (pos_bytes >= pd->last_frames[0])) {
 #ifdef MPEG_DEBUG
 		printf(" *** last frame len=%d ***\n", pcm->length);
 #endif /* MPEG_DEBUG */		
@@ -903,14 +950,13 @@ mpeg_output(void * data, struct mad_header const * header, struct mad_pcm * pcm)
 			printf("skipping whole frame\n");
 #endif /* MPEG_DEBUG */
 			return MAD_FLOW_CONTINUE;
-		} else if (pad > 0) {
+		} else {
 			end_count = pcm->length - pad;
 #ifdef MPEG_DEBUG
 			printf("skipping %d samples\n", pad);
 #endif /* MPEG_DEBUG */
 		}
-	} else if ((pd->last_frames[1] != -1) && (pos_bytes >= pd->last_frames[1])) {
-		int pad = pd->mp3info.enc_padding;
+	} else if ((pad > 0) && (pd->last_frames[1] != -1) && (pos_bytes >= pd->last_frames[1])) {
 #ifdef MPEG_DEBUG
 		printf(" *** last but one frame len=%d***\n", pcm->length);
 #endif /* MPEG_DEBUG */		
@@ -1131,7 +1177,7 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
                 break;
         }
 
-	if ((!pd->SR) || (!pd->channels) || (!pd->bitrate)) {
+	if ((!pd->SR) || (!pd->channels)) {
 		return DECODER_OPEN_BADLIB;
 	}
 
@@ -1146,9 +1192,19 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 		pd->total_samples_est = (double)pd->SR * pd->mp3info.file_time / 1000.0f;
 		pd->mpeg_subformat |= MPEG_VBR;
 	} else {
-		pd->total_samples_est =
-			(double)(pd->filesize - pd->mp3info.start_byteoffset)
-			/ pd->bitrate * 8 * pd->SR;
+		if (pd->bitrate == 0) {
+			pd->total_samples_est = (long long)(pd->filesize - pd->mp3info.start_byteoffset)
+				* pd->mp3info.frame_samples / pd->mp3info.frame_size;
+
+			pd->bitrate = pd->mp3info.bitrate = 8 *
+				(double)(pd->filesize - pd->mp3info.start_byteoffset) /
+				(pd->total_samples_est / pd->SR);
+			pd->mpeg_subformat |= MPEG_UBR;
+		} else {
+			pd->total_samples_est =
+				(double)(pd->filesize - pd->mp3info.start_byteoffset)
+				/ pd->bitrate * 8 * pd->SR;
+		}
 	}
 
 	if (pd->mp3info.enc_delay > 0) {

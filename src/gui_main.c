@@ -844,14 +844,18 @@ set_format_label(int v_major, int v_minor) {
 }
 
 void
-set_bps_label(int bps, int is_vbr) {
+set_bps_label(int bps, int is_vbr, int is_ubr) {
 	
 	char str[MAXLEN];
 
 	if (is_vbr) {
 		sprintf(str, "%.1f kbit/s VBR", bps/1000.0);
 	} else {
-		sprintf(str, "%.1f kbit/s", bps/1000.0);
+		if (is_ubr) {
+			sprintf(str, "%.1f kbit/s UBR", bps/1000.0);
+		} else {
+			sprintf(str, "%.1f kbit/s", bps/1000.0);
+		}
 	}
 
 	if (is_file_loaded) {
@@ -1045,13 +1049,19 @@ refresh_displays(void) {
 	set_samplerate_label(disp_info.sample_rate);
 
 #ifdef HAVE_MPEG
-	if ((disp_info.format_major == FORMAT_MAD) && (disp_info.format_minor & MPEG_VBR)) {
-		set_bps_label(disp_info.bps, 1);
+	if (disp_info.format_major == FORMAT_MAD) {
+		if (disp_info.format_minor & MPEG_VBR) {
+			set_bps_label(disp_info.bps, 1, 0);
+		} else if (disp_info.format_minor & MPEG_UBR) {
+			set_bps_label(disp_info.bps, 0, 1);
+		} else {
+			set_bps_label(disp_info.bps, 0, 0);
+		}
 	} else {
-		set_bps_label(disp_info.bps, 0);
+		set_bps_label(disp_info.bps, 0, 0);
 	}
 #else
-	set_bps_label(disp_info.bps, 0);
+	set_bps_label(disp_info.bps, 0, 0);
 #endif /* HAVE_MPEG */
 	set_mono_label(disp_info.is_mono);
 

@@ -146,9 +146,6 @@ mp3headerinfo(mp3info_t *info, unsigned long header) {
 	/* Bitrate */
 	bitindex = (header & BITRATE_MASK) >> 12;
 	info->bitrate = bitrate_table[info->version][info->layer][bitindex];
-	/*if (info->bitrate == 0) {
-		info->
-	}*/
 	
 	/* Sampling frequency */
 	freqindex = (header & SAMPLERATE_MASK) >> 10;

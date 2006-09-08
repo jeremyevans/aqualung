@@ -1,3 +1,21 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Tom Szilagyi
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: aqualung 0.9beta3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-09-19 18:04+0300\n"
+"PO-Revision-Date: 2005-09-19 01:51+0200\n"
+"Last-Translator: Sergiy Niskorodov <sgh_punk@users.sourceforge.net>\n"
+"Language-Team: Ukrainian <uk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=koi8-u\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 #: ../about.c:94 ../gui_main.c:3166
 msgid "About"
 msgstr "Про програму"
@@ -233,8 +251,8 @@ msgstr "Запис"
 msgid "Sort records by"
 msgstr "╤мпортувати як Запис"
 
-#: ../build_store.c:818 ../file_info.cpp:418 ../file_info.cpp:444
-#: ../meta_decoder.cpp:100 ../meta_decoder.cpp:391
+#: ../build_store.c:818 ../file_info.cpp:426 ../file_info.cpp:452
+#: ../meta_decoder.cpp:416
 msgid "Year"
 msgstr "Р╕к"
 
@@ -319,8 +337,8 @@ msgstr "╤мпортувати як ПВР"
 msgid "Track name"
 msgstr "Назва дор╕жки"
 
-#: ../build_store.c:1108 ../file_info.cpp:435 ../file_info.cpp:446
-#: ../meta_decoder.cpp:467
+#: ../build_store.c:1108 ../file_info.cpp:443 ../file_info.cpp:454
+#: ../meta_decoder.cpp:492
 msgid "Comment"
 msgstr "Коментар"
 
@@ -446,8 +464,8 @@ msgstr "Зб╕ги:"
 msgid "Artist:"
 msgstr "Виконавець:"
 
-#: ../cddb_lookup.c:395 ../file_info.cpp:391 ../file_info.cpp:930
-#: ../file_info.cpp:1031 ../file_info.cpp:1142
+#: ../cddb_lookup.c:395 ../file_info.cpp:391 ../file_info.cpp:967
+#: ../file_info.cpp:1068 ../file_info.cpp:1179
 msgid "Import as Artist"
 msgstr "╤мпортувати як Виконавця"
 
@@ -455,8 +473,8 @@ msgstr "╤мпортувати як Виконавця"
 msgid "Title:"
 msgstr "Назва:"
 
-#: ../cddb_lookup.c:409 ../file_info.cpp:382 ../file_info.cpp:920
-#: ../file_info.cpp:1011 ../file_info.cpp:1122
+#: ../cddb_lookup.c:409 ../file_info.cpp:382 ../file_info.cpp:957
+#: ../file_info.cpp:1048 ../file_info.cpp:1159
 msgid "Import as Title"
 msgstr "╤мпортувати як Альбом"
 
@@ -465,10 +483,10 @@ msgid "Year:"
 msgstr "Р╕к:"
 
 #: ../cddb_lookup.c:423 ../cddb_lookup.c:437 ../cddb_lookup.c:451
-#: ../cddb_lookup.c:465 ../file_info.cpp:418 ../file_info.cpp:427
-#: ../file_info.cpp:436 ../file_info.cpp:482 ../file_info.cpp:973
-#: ../file_info.cpp:1071 ../file_info.cpp:1084 ../file_info.cpp:1181
-#: ../file_info.cpp:1194
+#: ../cddb_lookup.c:465 ../file_info.cpp:426 ../file_info.cpp:435
+#: ../file_info.cpp:444 ../file_info.cpp:493 ../file_info.cpp:1010
+#: ../file_info.cpp:1108 ../file_info.cpp:1121 ../file_info.cpp:1218
+#: ../file_info.cpp:1231
 msgid "Add to Comments"
 msgstr "Додати до коментар╕в"
 
@@ -624,11 +642,11 @@ msgstr "Ступ╕нь стиснення: Дуже висока"
 msgid "Compression: Insane"
 msgstr "Ступ╕нь стиснення: Божев╕льна"
 
-#: ../gui_main.c:894 ../file_info.cpp:828
+#: ../gui_main.c:894 ../file_info.cpp:865
 msgid "MONO"
 msgstr "МОНО"
 
-#: ../gui_main.c:897 ../file_info.cpp:830
+#: ../gui_main.c:897 ../file_info.cpp:867
 msgid "STEREO"
 msgstr "СТЕРЕО"
 
@@ -738,7 +756,7 @@ msgstr "Виб╕р жупан╕в"
 msgid "JACK port setup"
 msgstr "Налаштування порту JACK"
 
-#: ../gui_main.c:3163 ../file_info.cpp:722
+#: ../gui_main.c:3163 ../file_info.cpp:759
 msgid "File info"
 msgstr "╤нформац╕я про файл"
 
@@ -2086,7 +2104,7 @@ msgstr "Наявн╕ втулки"
 msgid "ID"
 msgstr "╤дентиф╕катор"
 
-#: ../plugin.c:1892 ../plugin.c:1975 ../file_info.cpp:1557
+#: ../plugin.c:1892 ../plugin.c:1975 ../file_info.cpp:1594
 msgid "Name"
 msgstr "╤м'я"
 
@@ -2182,8 +2200,8 @@ msgstr "Назвах запис╕в"
 msgid "Comments"
 msgstr "Коментар╕"
 
-#: ../search.c:599 ../file_info.cpp:390 ../file_info.cpp:439
-#: ../meta_decoder.cpp:94 ../meta_decoder.cpp:385
+#: ../search.c:599 ../file_info.cpp:390 ../file_info.cpp:447
+#: ../meta_decoder.cpp:115 ../meta_decoder.cpp:410
 msgid "Artist"
 msgstr "Виконавець"
 
@@ -2191,8 +2209,8 @@ msgstr "Виконавець"
 msgid "Record"
 msgstr "Запис"
 
-#: ../search.c:621 ../file_info.cpp:409 ../file_info.cpp:442
-#: ../meta_decoder.cpp:99 ../meta_decoder.cpp:390
+#: ../search.c:621 ../file_info.cpp:413 ../file_info.cpp:450
+#: ../meta_decoder.cpp:415
 msgid "Track"
 msgstr "Дор╕жка"
 
@@ -2204,8 +2222,8 @@ msgstr "Шукати"
 msgid "Search the Playlist"
 msgstr "Шукати у списку програвання"
 
-#: ../search_playlist.c:407 ../file_info.cpp:381 ../file_info.cpp:438
-#: ../meta_decoder.cpp:89 ../meta_decoder.cpp:380
+#: ../search_playlist.c:407 ../file_info.cpp:381 ../file_info.cpp:446
+#: ../meta_decoder.cpp:102 ../meta_decoder.cpp:405
 msgid "Title"
 msgstr "Назва"
 
@@ -2218,7 +2236,7 @@ msgstr "Наявн╕ жупани"
 msgid "Calculating volume level"
 msgstr "<b>П╕драховую р╕вень гучност╕</b>"
 
-#: ../volume.c:243 ../file_info.cpp:755
+#: ../volume.c:243 ../file_info.cpp:792
 msgid "File:"
 msgstr "Файл:"
 
@@ -2226,217 +2244,346 @@ msgstr "Файл:"
 msgid "Progress:"
 msgstr "Прогрес:"
 
-#: ../file_info.cpp:399 ../file_info.cpp:440 ../meta_decoder.cpp:98
-#: ../meta_decoder.cpp:389
+#: ../file_info.cpp:399 ../file_info.cpp:448 ../meta_decoder.cpp:86
+#: ../meta_decoder.cpp:414
 msgid "Album"
 msgstr "Альбом"
 
-#: ../file_info.cpp:400 ../file_info.cpp:940 ../file_info.cpp:1021
-#: ../file_info.cpp:1132
+#: ../file_info.cpp:400 ../file_info.cpp:977 ../file_info.cpp:1058
+#: ../file_info.cpp:1169
 msgid "Import as Record"
 msgstr "╤мпортувати як Запис"
 
-#: ../file_info.cpp:409 ../file_info.cpp:950
+#: ../file_info.cpp:413 ../file_info.cpp:987
 msgid "Import as Track number"
 msgstr "╤мпортувати як Номер дор╕жки"
 
-#: ../file_info.cpp:426 ../file_info.cpp:445 ../meta_decoder.cpp:102
-#: ../meta_decoder.cpp:393
+#: ../file_info.cpp:434 ../file_info.cpp:453 ../meta_decoder.cpp:418
 msgid "Genre"
 msgstr "Жанр"
 
-#: ../file_info.cpp:457
+#: ../file_info.cpp:468
 msgid "ID3v1"
 msgstr ""
 
-#: ../file_info.cpp:499
+#: ../file_info.cpp:506
+#, c-format
+msgid "%+.1f dB (Id: %s)"
+msgstr ""
+
+#: ../file_info.cpp:517 ../file_info.cpp:519 ../file_info.cpp:996
+#: ../meta_decoder.cpp:378
+msgid "Relative Volume"
+msgstr "В╕дносний Р╕вень"
+
+#: ../file_info.cpp:517 ../file_info.cpp:997 ../file_info.cpp:1096
+#: ../file_info.cpp:1206
+msgid "Import as RVA"
+msgstr "╤мпортувати як ПВР"
+
+#: ../file_info.cpp:534
 #, fuzzy
 msgid "ID3v2"
 msgstr "ID3v2 теги"
 
-#: ../file_info.cpp:539
+#: ../file_info.cpp:576
 msgid "APE"
 msgstr ""
 
-#: ../file_info.cpp:742
+#: ../file_info.cpp:779
 msgid "Track:"
 msgstr "Дор╕жка:"
 
-#: ../file_info.cpp:782
+#: ../file_info.cpp:819
 msgid "Audio data"
 msgstr "Ауд╕о дан╕"
 
-#: ../file_info.cpp:786
+#: ../file_info.cpp:823
 msgid "Format:"
 msgstr "Формат:"
 
-#: ../file_info.cpp:798
+#: ../file_info.cpp:835
 msgid "Length:"
 msgstr "Довжина:"
 
-#: ../file_info.cpp:810
+#: ../file_info.cpp:847
 msgid "Samplerate:"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:815
+#: ../file_info.cpp:852
 #, c-format
 msgid "%ld Hz"
 msgstr "%ld Гц"
 
-#: ../file_info.cpp:822
+#: ../file_info.cpp:859
 msgid "Channel count:"
 msgstr "К╕льк╕сть канал╕в:"
 
-#: ../file_info.cpp:837
+#: ../file_info.cpp:874
 msgid "Bandwidth:"
 msgstr "Швидк╕сть потоку:"
 
-#: ../file_info.cpp:842
+#: ../file_info.cpp:879
 #, c-format
 msgid "%.1f kbit/s"
 msgstr "%.1f кб╕т/с"
 
-#: ../file_info.cpp:849
+#: ../file_info.cpp:886
 msgid "Total samples:"
 msgstr "Всього семпл╕в:"
 
-#: ../file_info.cpp:898
+#: ../file_info.cpp:935
 msgid "ID3v2 tags"
 msgstr "ID3v2 теги"
 
-#: ../file_info.cpp:959 ../meta_decoder.cpp:353
-msgid "Relative Volume"
-msgstr "В╕дносний Р╕вень"
-
-#: ../file_info.cpp:960 ../file_info.cpp:1059 ../file_info.cpp:1169
-msgid "Import as RVA"
-msgstr "╤мпортувати як ПВР"
-
-#: ../file_info.cpp:990
+#: ../file_info.cpp:1027
 msgid "Vorbis comments"
 msgstr "Коментар╕ Vorbis"
 
-#: ../file_info.cpp:1101
+#: ../file_info.cpp:1138
 msgid "FLAC metadata"
 msgstr "FLAC метадан╕"
 
-#: ../file_info.cpp:1216
+#: ../file_info.cpp:1253
 #, fuzzy
 msgid "Module info"
 msgstr "╤нформац╕я про файл"
 
-#: ../file_info.cpp:1356 ../file_info.cpp:1435
+#: ../file_info.cpp:1393 ../file_info.cpp:1472
 #, fuzzy
 msgid "Type:"
 msgstr "SRC Тип: "
 
-#: ../file_info.cpp:1369 ../file_info.cpp:1448
+#: ../file_info.cpp:1406 ../file_info.cpp:1485
 #, fuzzy
 msgid "Channels:"
 msgstr "К╕льк╕сть канал╕в:"
 
-#: ../file_info.cpp:1383 ../file_info.cpp:1462
+#: ../file_info.cpp:1420 ../file_info.cpp:1499
 #, fuzzy
 msgid "Patterns:"
 msgstr "Категор╕я"
 
-#: ../file_info.cpp:1397 ../file_info.cpp:1476
+#: ../file_info.cpp:1434 ../file_info.cpp:1513
 #, fuzzy
 msgid "Samples:"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:1410
+#: ../file_info.cpp:1447
 msgid "Instruments:"
 msgstr ""
 
-#: ../file_info.cpp:1518
+#: ../file_info.cpp:1555
 #, fuzzy
 msgid "Samples"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:1527
+#: ../file_info.cpp:1564
 msgid "Instruments"
 msgstr ""
 
-#: ../file_info.cpp:1550
+#: ../file_info.cpp:1587
 msgid "No."
 msgstr ""
 
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Tom Szilagyi
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#
-#: ../meta_decoder.cpp:86
-msgid ""
+#: ../meta_decoder.cpp:87
+msgid "Beats per minute"
 msgstr ""
-"Project-Id-Version: aqualung 0.9beta3\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-19 18:04+0300\n"
-"PO-Revision-Date: 2005-09-19 01:51+0200\n"
-"Last-Translator: Sergiy Niskorodov <sgh_punk@users.sourceforge.net>\n"
-"Language-Team: Ukrainian <uk@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=koi8-u\n"
-"Content-Transfer-Encoding: 8bit\n"
 
-#: ../meta_decoder.cpp:90 ../meta_decoder.cpp:381
-msgid "Subtitle"
-msgstr "П╕дпис"
+#: ../meta_decoder.cpp:88 ../meta_decoder.cpp:409
+msgid "Composer"
+msgstr "Автор"
 
-#: ../meta_decoder.cpp:91
+#: ../meta_decoder.cpp:89
+msgid "Content type"
+msgstr ""
+
+#: ../meta_decoder.cpp:90
 #, fuzzy
 msgid "Copyright"
 msgstr "Авторське право (С)"
 
+#: ../meta_decoder.cpp:91
+#, fuzzy
+msgid "Encoding time"
+msgstr "кодування"
+
 #: ../meta_decoder.cpp:92
 #, fuzzy
-msgid "Produced"
-msgstr "Виробник (Р)"
+msgid "Playlist delay"
+msgstr "Список програвання: "
 
-#: ../meta_decoder.cpp:93 ../meta_decoder.cpp:384
-msgid "Composer"
-msgstr "Автор"
+#: ../meta_decoder.cpp:93
+msgid "Original release time"
+msgstr ""
 
-#: ../meta_decoder.cpp:95 ../meta_decoder.cpp:386
-msgid "Orchestra"
-msgstr "Оркестр"
+#: ../meta_decoder.cpp:94
+#, fuzzy
+msgid "Recording time"
+msgstr "Назвах запис╕в"
 
-#: ../meta_decoder.cpp:96 ../meta_decoder.cpp:387
-msgid "Conductor"
-msgstr "Диригент"
+#: ../meta_decoder.cpp:95
+msgid "Release time"
+msgstr ""
 
-#: ../meta_decoder.cpp:97 ../meta_decoder.cpp:388
+#: ../meta_decoder.cpp:96
+#, fuzzy
+msgid "Tagging time"
+msgstr "Великий таймер: "
+
+#: ../meta_decoder.cpp:97
+#, fuzzy
+msgid "Encoded by"
+msgstr "Кодувальник"
+
+#: ../meta_decoder.cpp:98 ../meta_decoder.cpp:413
 msgid "Lyricist"
 msgstr "Поет"
 
-#: ../meta_decoder.cpp:101 ../meta_decoder.cpp:392
-msgid "Publisher"
-msgstr "Видавник"
+#: ../meta_decoder.cpp:99
+#, fuzzy
+msgid "File type"
+msgstr "Назва файлу:"
 
-#: ../meta_decoder.cpp:103 ../meta_decoder.cpp:394
-msgid "Station"
-msgstr "Станц╕я"
+#: ../meta_decoder.cpp:100
+msgid "Involved people"
+msgstr ""
 
-#: ../meta_decoder.cpp:104 ../meta_decoder.cpp:395
-msgid "Encoder"
-msgstr "Кодувальник"
+#: ../meta_decoder.cpp:101
+msgid "Content group"
+msgstr ""
+
+#: ../meta_decoder.cpp:103 ../meta_decoder.cpp:406
+msgid "Subtitle"
+msgstr "П╕дпис"
+
+#: ../meta_decoder.cpp:104
+msgid "Initial key"
+msgstr ""
 
 #: ../meta_decoder.cpp:105
+msgid "Language"
+msgstr ""
+
+#: ../meta_decoder.cpp:106
 #, fuzzy
 msgid "Length"
 msgstr "Довжина:"
 
-#: ../meta_decoder.cpp:431
+#: ../meta_decoder.cpp:107
+msgid "Musician credits"
+msgstr ""
+
+#: ../meta_decoder.cpp:108
+msgid "Media type"
+msgstr ""
+
+#: ../meta_decoder.cpp:109
+msgid "Mood"
+msgstr ""
+
+#: ../meta_decoder.cpp:110
+msgid "Original album"
+msgstr ""
+
+#: ../meta_decoder.cpp:111
+msgid "Original filename"
+msgstr ""
+
+#: ../meta_decoder.cpp:112
+msgid "Original lyricist"
+msgstr ""
+
+#: ../meta_decoder.cpp:113
+msgid "Original artist"
+msgstr ""
+
+#: ../meta_decoder.cpp:114
+msgid "Owner/licensee"
+msgstr ""
+
+#: ../meta_decoder.cpp:116 ../meta_decoder.cpp:411
+msgid "Orchestra"
+msgstr "Оркестр"
+
+#: ../meta_decoder.cpp:117 ../meta_decoder.cpp:412
+msgid "Conductor"
+msgstr "Диригент"
+
+#: ../meta_decoder.cpp:118
+msgid "Interpreted/remixed"
+msgstr ""
+
+#: ../meta_decoder.cpp:119
+msgid "Part of set"
+msgstr ""
+
+#: ../meta_decoder.cpp:120
+#, fuzzy
+msgid "Produced"
+msgstr "Виробник (Р)"
+
+#: ../meta_decoder.cpp:121 ../meta_decoder.cpp:417
+msgid "Publisher"
+msgstr "Видавник"
+
+#: ../meta_decoder.cpp:122
+#, fuzzy
+msgid "Track number"
+msgstr "Назва дор╕жки"
+
+#: ../meta_decoder.cpp:123
+msgid "Radio station name"
+msgstr ""
+
+#: ../meta_decoder.cpp:124
+msgid "Radio station owner"
+msgstr ""
+
+#: ../meta_decoder.cpp:125
+msgid "Album sort order"
+msgstr ""
+
+#: ../meta_decoder.cpp:126
+msgid "Artist sort order"
+msgstr ""
+
+#: ../meta_decoder.cpp:127
+#, fuzzy
+msgid "Title sort order"
+msgstr "Формат назви"
+
+#: ../meta_decoder.cpp:128
+msgid "ISRC"
+msgstr ""
+
+#: ../meta_decoder.cpp:129
+#, fuzzy
+msgid "Encoding settings"
+msgstr "Перекривати установки жупана"
+
+#: ../meta_decoder.cpp:130
+#, fuzzy
+msgid "Set subtitle"
+msgstr "П╕дпис"
+
+#: ../meta_decoder.cpp:419
+msgid "Station"
+msgstr "Станц╕я"
+
+#: ../meta_decoder.cpp:420
+msgid "Encoder"
+msgstr "Кодувальник"
+
+#: ../meta_decoder.cpp:456
 msgid "Copyright (C)"
 msgstr "Авторське право (С)"
 
-#: ../meta_decoder.cpp:431
+#: ../meta_decoder.cpp:456
 msgid "Produced (P)"
 msgstr "Виробник (Р)"
 
-#: ../meta_decoder.cpp:543 ../meta_decoder.cpp:711
+#: ../meta_decoder.cpp:568 ../meta_decoder.cpp:736
 msgid "Vendor:"
 msgstr "Постачальник:"
 

@@ -83,26 +83,51 @@ lookup_id3v2_textframe(char * frameID, char * descr) {
                 char const * frameID;
                 char const * descr;
         } const info[] = {
-                { "",  _("") },
-
-
-                { "TIT2",           _("Title") },
-                { "TIT3",           _("Subtitle") },
-                { "TCOP",           _("Copyright") },
-                { "TPRO",           _("Produced") },
-                { "TCOM",           _("Composer") },
-                { ID3_FRAME_ARTIST, _("Artist") },
-                { "TPE2",           _("Orchestra") },
-                { "TPE3",           _("Conductor") },
-                { "TEXT",           _("Lyricist") },
-                { ID3_FRAME_ALBUM,  _("Album") },
-                { ID3_FRAME_TRACK,  _("Track") },
-                { ID3_FRAME_YEAR,   _("Year") },
-                { "TPUB",           _("Publisher") },
-                { ID3_FRAME_GENRE,  _("Genre") },
-                { "TRSN",           _("Station") },
-                { "TENC",           _("Encoder") },
-                { "TLEN",           _("Length") },
+                { "TALB",  _("Album") },
+                { "TBPM",  _("Beats per minute") },
+                { "TCOM",  _("Composer") },
+                { "TCON",  _("Content type") },
+                { "TCOP",  _("Copyright") },
+                { "TDEN",  _("Encoding time") },
+                { "TDLY",  _("Playlist delay") },
+                { "TDOR",  _("Original release time") },
+                { "TDRC",  _("Recording time") },
+                { "TDRL",  _("Release time") },
+                { "TDTG",  _("Tagging time") },
+                { "TENC",  _("Encoded by") },
+                { "TEXT",  _("Lyricist") },
+                { "TFLT",  _("File type") },
+                { "TIPL",  _("Involved people") },
+                { "TIT1",  _("Content group") },
+                { "TIT2",  _("Title") },
+                { "TIT3",  _("Subtitle") },
+                { "TKEY",  _("Initial key") },
+                { "TLAN",  _("Language") },
+                { "TLEN",  _("Length") },
+                { "TMCL",  _("Musician credits") },
+                { "TMED",  _("Media type") },
+                { "TMOO",  _("Mood") },
+                { "TOAL",  _("Original album") },
+                { "TOFN",  _("Original filename") },
+                { "TOLY",  _("Original lyricist") },
+                { "TOPE",  _("Original artist") },
+                { "TOWN",  _("Owner/licensee") },
+                { "TPE1",  _("Artist") },
+                { "TPE2",  _("Orchestra") },
+                { "TPE3",  _("Conductor") },
+                { "TPE4",  _("Interpreted/remixed") },
+                { "TPOS",  _("Part of set") },
+                { "TPRO",  _("Produced") },
+                { "TPUB",  _("Publisher") },
+                { "TRCK",  _("Track number") },
+                { "TRSN",  _("Radio station name") },
+                { "TRSO",  _("Radio station owner") },
+                { "TSOA",  _("Album sort order") },
+                { "TSOP",  _("Artist sort order") },
+                { "TSOT",  _("Title sort order") },
+                { "TSRC",  _("ISRC") },
+                { "TSSE",  _("Encoding settings") },
+                { "TSST",  _("Set subtitle") },
 		{ NULL, NULL }
         };
 
@@ -342,9 +367,7 @@ meta_read_rva2(metadata * meta, struct id3_tag * tag) {
 			
 			voladj_fixed = (data[1] << 8) | (data[2] << 0);
 			voladj_fixed |= -(voladj_fixed & 0x8000);
-
 			voladj_float = (double) voladj_fixed / 512;
-			/* XXX */ printf("voladj_fixed = %d  float = %+.1f dB\n", voladj_fixed, voladj_float);
 			
 			snprintf(str, MAXLEN-1, "%+.1f dB (tagged by %s)",
 				 voladj_float, id);

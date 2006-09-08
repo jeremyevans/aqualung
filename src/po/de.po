@@ -1,3 +1,22 @@
+# German translations for aqualung package
+# German messages for aqualung.
+# Copyright (C) 2004 Tom Szilagyi
+# This file is distributed under the same license as the aqualung package.
+# Peter Szilagyi <peterszilagyi@users.sourceforge.net>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: aqualung 0.9beta4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-09-17 20:26+0200\n"
+"PO-Revision-Date: 2005-10-29 13:57+0200\n"
+"Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
+"Language-Team: German <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 #: ../about.c:94 ../gui_main.c:3166
 msgid "About"
 msgstr "Über Aqualung"
@@ -249,8 +268,8 @@ msgstr "Album"
 msgid "Sort records by"
 msgstr "Als Album importieren"
 
-#: ../build_store.c:818 ../file_info.cpp:418 ../file_info.cpp:444
-#: ../meta_decoder.cpp:100 ../meta_decoder.cpp:391
+#: ../build_store.c:818 ../file_info.cpp:426 ../file_info.cpp:452
+#: ../meta_decoder.cpp:416
 msgid "Year"
 msgstr "Jahr"
 
@@ -335,8 +354,8 @@ msgstr "Als RVA importieren"
 msgid "Track name"
 msgstr "Track"
 
-#: ../build_store.c:1108 ../file_info.cpp:435 ../file_info.cpp:446
-#: ../meta_decoder.cpp:467
+#: ../build_store.c:1108 ../file_info.cpp:443 ../file_info.cpp:454
+#: ../meta_decoder.cpp:492
 msgid "Comment"
 msgstr "Kommentar"
 
@@ -462,8 +481,8 @@ msgstr "Treffer:"
 msgid "Artist:"
 msgstr "Artist"
 
-#: ../cddb_lookup.c:395 ../file_info.cpp:391 ../file_info.cpp:930
-#: ../file_info.cpp:1031 ../file_info.cpp:1142
+#: ../cddb_lookup.c:395 ../file_info.cpp:391 ../file_info.cpp:967
+#: ../file_info.cpp:1068 ../file_info.cpp:1179
 msgid "Import as Artist"
 msgstr "Als Artist importieren"
 
@@ -472,8 +491,8 @@ msgstr "Als Artist importieren"
 msgid "Title:"
 msgstr "Titel:"
 
-#: ../cddb_lookup.c:409 ../file_info.cpp:382 ../file_info.cpp:920
-#: ../file_info.cpp:1011 ../file_info.cpp:1122
+#: ../cddb_lookup.c:409 ../file_info.cpp:382 ../file_info.cpp:957
+#: ../file_info.cpp:1048 ../file_info.cpp:1159
 msgid "Import as Title"
 msgstr "Als Titel importieren"
 
@@ -483,10 +502,10 @@ msgid "Year:"
 msgstr "Jahr"
 
 #: ../cddb_lookup.c:423 ../cddb_lookup.c:437 ../cddb_lookup.c:451
-#: ../cddb_lookup.c:465 ../file_info.cpp:418 ../file_info.cpp:427
-#: ../file_info.cpp:436 ../file_info.cpp:482 ../file_info.cpp:973
-#: ../file_info.cpp:1071 ../file_info.cpp:1084 ../file_info.cpp:1181
-#: ../file_info.cpp:1194
+#: ../cddb_lookup.c:465 ../file_info.cpp:426 ../file_info.cpp:435
+#: ../file_info.cpp:444 ../file_info.cpp:493 ../file_info.cpp:1010
+#: ../file_info.cpp:1108 ../file_info.cpp:1121 ../file_info.cpp:1218
+#: ../file_info.cpp:1231
 msgid "Add to Comments"
 msgstr "Zum Kommentar hinzufügen"
 
@@ -646,11 +665,11 @@ msgstr ""
 msgid "Compression: Insane"
 msgstr ""
 
-#: ../gui_main.c:894 ../file_info.cpp:828
+#: ../gui_main.c:894 ../file_info.cpp:865
 msgid "MONO"
 msgstr ""
 
-#: ../gui_main.c:897 ../file_info.cpp:830
+#: ../gui_main.c:897 ../file_info.cpp:867
 msgid "STEREO"
 msgstr ""
 
@@ -760,7 +779,7 @@ msgstr "Skin-Browser"
 msgid "JACK port setup"
 msgstr "JACK Port Einrichtung"
 
-#: ../gui_main.c:3163 ../file_info.cpp:722
+#: ../gui_main.c:3163 ../file_info.cpp:759
 msgid "File info"
 msgstr "Datei-Info"
 
@@ -2130,7 +2149,7 @@ msgstr "Verfügbare Plugins"
 msgid "ID"
 msgstr ""
 
-#: ../plugin.c:1892 ../plugin.c:1975 ../file_info.cpp:1557
+#: ../plugin.c:1892 ../plugin.c:1975 ../file_info.cpp:1594
 msgid "Name"
 msgstr "Name"
 
@@ -2229,8 +2248,8 @@ msgstr "Album Titel"
 msgid "Comments"
 msgstr "Kommentar"
 
-#: ../search.c:599 ../file_info.cpp:390 ../file_info.cpp:439
-#: ../meta_decoder.cpp:94 ../meta_decoder.cpp:385
+#: ../search.c:599 ../file_info.cpp:390 ../file_info.cpp:447
+#: ../meta_decoder.cpp:115 ../meta_decoder.cpp:410
 msgid "Artist"
 msgstr "Artist"
 
@@ -2238,8 +2257,8 @@ msgstr "Artist"
 msgid "Record"
 msgstr "Album"
 
-#: ../search.c:621 ../file_info.cpp:409 ../file_info.cpp:442
-#: ../meta_decoder.cpp:99 ../meta_decoder.cpp:390
+#: ../search.c:621 ../file_info.cpp:413 ../file_info.cpp:450
+#: ../meta_decoder.cpp:415
 msgid "Track"
 msgstr "Track"
 
@@ -2252,8 +2271,8 @@ msgstr "Suche"
 msgid "Search the Playlist"
 msgstr "Playliste speichern"
 
-#: ../search_playlist.c:407 ../file_info.cpp:381 ../file_info.cpp:438
-#: ../meta_decoder.cpp:89 ../meta_decoder.cpp:380
+#: ../search_playlist.c:407 ../file_info.cpp:381 ../file_info.cpp:446
+#: ../meta_decoder.cpp:102 ../meta_decoder.cpp:405
 msgid "Title"
 msgstr "Titel:"
 
@@ -2266,7 +2285,7 @@ msgstr "Verfügbare Skins"
 msgid "Calculating volume level"
 msgstr "Lautstärke bestimmen: %s"
 
-#: ../volume.c:243 ../file_info.cpp:755
+#: ../volume.c:243 ../file_info.cpp:792
 msgid "File:"
 msgstr "Datei:"
 
@@ -2274,218 +2293,345 @@ msgstr "Datei:"
 msgid "Progress:"
 msgstr ""
 
-#: ../file_info.cpp:399 ../file_info.cpp:440 ../meta_decoder.cpp:98
-#: ../meta_decoder.cpp:389
+#: ../file_info.cpp:399 ../file_info.cpp:448 ../meta_decoder.cpp:86
+#: ../meta_decoder.cpp:414
 msgid "Album"
 msgstr "Album"
 
-#: ../file_info.cpp:400 ../file_info.cpp:940 ../file_info.cpp:1021
-#: ../file_info.cpp:1132
+#: ../file_info.cpp:400 ../file_info.cpp:977 ../file_info.cpp:1058
+#: ../file_info.cpp:1169
 msgid "Import as Record"
 msgstr "Als Album importieren"
 
-#: ../file_info.cpp:409 ../file_info.cpp:950
+#: ../file_info.cpp:413 ../file_info.cpp:987
 msgid "Import as Track number"
 msgstr "Als Tracknummer importieren"
 
-#: ../file_info.cpp:426 ../file_info.cpp:445 ../meta_decoder.cpp:102
-#: ../meta_decoder.cpp:393
+#: ../file_info.cpp:434 ../file_info.cpp:453 ../meta_decoder.cpp:418
 msgid "Genre"
 msgstr "Genre"
 
-#: ../file_info.cpp:457
+#: ../file_info.cpp:468
 msgid "ID3v1"
 msgstr ""
 
-#: ../file_info.cpp:499
+#: ../file_info.cpp:506
+#, c-format
+msgid "%+.1f dB (Id: %s)"
+msgstr ""
+
+#: ../file_info.cpp:517 ../file_info.cpp:519 ../file_info.cpp:996
+#: ../meta_decoder.cpp:378
+msgid "Relative Volume"
+msgstr "Relative Lautstärke"
+
+#: ../file_info.cpp:517 ../file_info.cpp:997 ../file_info.cpp:1096
+#: ../file_info.cpp:1206
+msgid "Import as RVA"
+msgstr "Als RVA importieren"
+
+#: ../file_info.cpp:534
 msgid "ID3v2"
 msgstr ""
 
-#: ../file_info.cpp:539
+#: ../file_info.cpp:576
 msgid "APE"
 msgstr ""
 
-#: ../file_info.cpp:742
+#: ../file_info.cpp:779
 #, fuzzy
 msgid "Track:"
 msgstr "Track"
 
-#: ../file_info.cpp:782
+#: ../file_info.cpp:819
 msgid "Audio data"
 msgstr "Audio-Daten"
 
-#: ../file_info.cpp:786
+#: ../file_info.cpp:823
 #, fuzzy
 msgid "Format:"
 msgstr "Abbrechen"
 
-#: ../file_info.cpp:798
+#: ../file_info.cpp:835
 msgid "Length:"
 msgstr "Länge:"
 
-#: ../file_info.cpp:810
+#: ../file_info.cpp:847
 #, fuzzy
 msgid "Samplerate:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:815
+#: ../file_info.cpp:852
 #, c-format
 msgid "%ld Hz"
 msgstr ""
 
-#: ../file_info.cpp:822
+#: ../file_info.cpp:859
 msgid "Channel count:"
 msgstr "Kanalanzahl:"
 
-#: ../file_info.cpp:837
+#: ../file_info.cpp:874
 msgid "Bandwidth:"
 msgstr "Bandbreite:"
 
-#: ../file_info.cpp:842
+#: ../file_info.cpp:879
 #, c-format
 msgid "%.1f kbit/s"
 msgstr ""
 
-#: ../file_info.cpp:849
+#: ../file_info.cpp:886
 msgid "Total samples:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:898
+#: ../file_info.cpp:935
 msgid "ID3v2 tags"
 msgstr ""
 
-#: ../file_info.cpp:959 ../meta_decoder.cpp:353
-msgid "Relative Volume"
-msgstr "Relative Lautstärke"
-
-#: ../file_info.cpp:960 ../file_info.cpp:1059 ../file_info.cpp:1169
-msgid "Import as RVA"
-msgstr "Als RVA importieren"
-
-#: ../file_info.cpp:990
+#: ../file_info.cpp:1027
 msgid "Vorbis comments"
 msgstr "Vorbis Kommentare"
 
-#: ../file_info.cpp:1101
+#: ../file_info.cpp:1138
 msgid "FLAC metadata"
 msgstr "FLAC-Metadaten"
 
-#: ../file_info.cpp:1216
+#: ../file_info.cpp:1253
 #, fuzzy
 msgid "Module info"
 msgstr "Datei-Info"
 
-#: ../file_info.cpp:1356 ../file_info.cpp:1435
+#: ../file_info.cpp:1393 ../file_info.cpp:1472
 #, fuzzy
 msgid "Type:"
 msgstr "SRC Typ: "
 
-#: ../file_info.cpp:1369 ../file_info.cpp:1448
+#: ../file_info.cpp:1406 ../file_info.cpp:1485
 #, fuzzy
 msgid "Channels:"
 msgstr "Kanalanzahl:"
 
-#: ../file_info.cpp:1383 ../file_info.cpp:1462
+#: ../file_info.cpp:1420 ../file_info.cpp:1499
 #, fuzzy
 msgid "Patterns:"
 msgstr "Kategorie"
 
-#: ../file_info.cpp:1397 ../file_info.cpp:1476
+#: ../file_info.cpp:1434 ../file_info.cpp:1513
 #, fuzzy
 msgid "Samples:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:1410
+#: ../file_info.cpp:1447
 msgid "Instruments:"
 msgstr ""
 
-#: ../file_info.cpp:1518
+#: ../file_info.cpp:1555
 #, fuzzy
 msgid "Samples"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:1527
+#: ../file_info.cpp:1564
 msgid "Instruments"
 msgstr ""
 
-#: ../file_info.cpp:1550
+#: ../file_info.cpp:1587
 msgid "No."
 msgstr ""
 
-# German translations for aqualung package
-# German messages for aqualung.
-# Copyright (C) 2004 Tom Szilagyi
-# This file is distributed under the same license as the aqualung package.
-# Peter Szilagyi <peterszilagyi@users.sourceforge.net>, 2005.
-#
-#: ../meta_decoder.cpp:86
-msgid ""
-msgstr ""
-"Project-Id-Version: aqualung 0.9beta4\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2005-10-29 13:57+0200\n"
-"Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
-"Language-Team: German <de@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: ../meta_decoder.cpp:90 ../meta_decoder.cpp:381
-msgid "Subtitle"
-msgstr "Untertitel"
-
-#: ../meta_decoder.cpp:91
-msgid "Copyright"
+#: ../meta_decoder.cpp:87
+msgid "Beats per minute"
 msgstr ""
 
-#: ../meta_decoder.cpp:92
-msgid "Produced"
-msgstr ""
-
-#: ../meta_decoder.cpp:93 ../meta_decoder.cpp:384
+#: ../meta_decoder.cpp:88 ../meta_decoder.cpp:409
 msgid "Composer"
 msgstr "Komponist"
 
-#: ../meta_decoder.cpp:95 ../meta_decoder.cpp:386
-msgid "Orchestra"
-msgstr "Orchester"
+#: ../meta_decoder.cpp:89
+msgid "Content type"
+msgstr ""
 
-#: ../meta_decoder.cpp:96 ../meta_decoder.cpp:387
-msgid "Conductor"
-msgstr "Dirigent"
+#: ../meta_decoder.cpp:90
+msgid "Copyright"
+msgstr ""
 
-#: ../meta_decoder.cpp:97 ../meta_decoder.cpp:388
+#: ../meta_decoder.cpp:91
+#, fuzzy
+msgid "Encoding time"
+msgstr "Kodierung"
+
+#: ../meta_decoder.cpp:92
+#, fuzzy
+msgid "Playlist delay"
+msgstr "Playliste"
+
+#: ../meta_decoder.cpp:93
+msgid "Original release time"
+msgstr ""
+
+#: ../meta_decoder.cpp:94
+#, fuzzy
+msgid "Recording time"
+msgstr "Album Titel"
+
+#: ../meta_decoder.cpp:95
+msgid "Release time"
+msgstr ""
+
+#: ../meta_decoder.cpp:96
+#, fuzzy
+msgid "Tagging time"
+msgstr "Musikladen"
+
+#: ../meta_decoder.cpp:97
+#, fuzzy
+msgid "Encoded by"
+msgstr "Kodier"
+
+#: ../meta_decoder.cpp:98 ../meta_decoder.cpp:413
 msgid "Lyricist"
 msgstr "Lyriker"
 
-#: ../meta_decoder.cpp:101 ../meta_decoder.cpp:392
-msgid "Publisher"
-msgstr "Herausgeber"
+#: ../meta_decoder.cpp:99
+#, fuzzy
+msgid "File type"
+msgstr "Dateiname:"
 
-#: ../meta_decoder.cpp:103 ../meta_decoder.cpp:394
-msgid "Station"
-msgstr "Sender"
+#: ../meta_decoder.cpp:100
+msgid "Involved people"
+msgstr ""
 
-#: ../meta_decoder.cpp:104 ../meta_decoder.cpp:395
-msgid "Encoder"
-msgstr "Kodier"
+#: ../meta_decoder.cpp:101
+msgid "Content group"
+msgstr ""
+
+#: ../meta_decoder.cpp:103 ../meta_decoder.cpp:406
+msgid "Subtitle"
+msgstr "Untertitel"
+
+#: ../meta_decoder.cpp:104
+msgid "Initial key"
+msgstr ""
 
 #: ../meta_decoder.cpp:105
+msgid "Language"
+msgstr ""
+
+#: ../meta_decoder.cpp:106
 #, fuzzy
 msgid "Length"
 msgstr "Länge:"
 
-#: ../meta_decoder.cpp:431
+#: ../meta_decoder.cpp:107
+msgid "Musician credits"
+msgstr ""
+
+#: ../meta_decoder.cpp:108
+msgid "Media type"
+msgstr ""
+
+#: ../meta_decoder.cpp:109
+msgid "Mood"
+msgstr ""
+
+#: ../meta_decoder.cpp:110
+msgid "Original album"
+msgstr ""
+
+#: ../meta_decoder.cpp:111
+msgid "Original filename"
+msgstr ""
+
+#: ../meta_decoder.cpp:112
+msgid "Original lyricist"
+msgstr ""
+
+#: ../meta_decoder.cpp:113
+msgid "Original artist"
+msgstr ""
+
+#: ../meta_decoder.cpp:114
+msgid "Owner/licensee"
+msgstr ""
+
+#: ../meta_decoder.cpp:116 ../meta_decoder.cpp:411
+msgid "Orchestra"
+msgstr "Orchester"
+
+#: ../meta_decoder.cpp:117 ../meta_decoder.cpp:412
+msgid "Conductor"
+msgstr "Dirigent"
+
+#: ../meta_decoder.cpp:118
+msgid "Interpreted/remixed"
+msgstr ""
+
+#: ../meta_decoder.cpp:119
+msgid "Part of set"
+msgstr ""
+
+#: ../meta_decoder.cpp:120
+msgid "Produced"
+msgstr ""
+
+#: ../meta_decoder.cpp:121 ../meta_decoder.cpp:417
+msgid "Publisher"
+msgstr "Herausgeber"
+
+#: ../meta_decoder.cpp:122
+#, fuzzy
+msgid "Track number"
+msgstr "Track"
+
+#: ../meta_decoder.cpp:123
+msgid "Radio station name"
+msgstr ""
+
+#: ../meta_decoder.cpp:124
+msgid "Radio station owner"
+msgstr ""
+
+#: ../meta_decoder.cpp:125
+msgid "Album sort order"
+msgstr ""
+
+#: ../meta_decoder.cpp:126
+msgid "Artist sort order"
+msgstr ""
+
+#: ../meta_decoder.cpp:127
+#, fuzzy
+msgid "Title sort order"
+msgstr "Namensformat"
+
+#: ../meta_decoder.cpp:128
+msgid "ISRC"
+msgstr ""
+
+#: ../meta_decoder.cpp:129
+msgid "Encoding settings"
+msgstr ""
+
+#: ../meta_decoder.cpp:130
+#, fuzzy
+msgid "Set subtitle"
+msgstr "Untertitel"
+
+#: ../meta_decoder.cpp:419
+msgid "Station"
+msgstr "Sender"
+
+#: ../meta_decoder.cpp:420
+msgid "Encoder"
+msgstr "Kodier"
+
+#: ../meta_decoder.cpp:456
 msgid "Copyright (C)"
 msgstr ""
 
-#: ../meta_decoder.cpp:431
+#: ../meta_decoder.cpp:456
 msgid "Produced (P)"
 msgstr ""
 
-#: ../meta_decoder.cpp:543 ../meta_decoder.cpp:711
+#: ../meta_decoder.cpp:568 ../meta_decoder.cpp:736
 #, fuzzy
 msgid "Vendor:"
 msgstr "Genre"

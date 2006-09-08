@@ -340,9 +340,7 @@ read_rva2(char * raw_data, unsigned int length, char * id_str, float * voladj) {
 
                        voladj_fixed = (data[1] << 8) | (data[2] << 0);
                        voladj_fixed |= -(voladj_fixed & 0x8000);
-
                        voladj_float = (double) voladj_fixed / 512;
-                       printf("voladj_fixed = %d  float = %+.1f dB\n", voladj_fixed, voladj_float);
 
                        snprintf(id_str, MAXLEN-1, "%s", id);
 		       *voladj = voladj_float;
@@ -404,7 +402,11 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode, T
 		data->model = mode.model;
 		data->track_iter = mode.track_iter;
 		data->dest_type = IMPORT_DEST_NUMBER;
-		sprintf(str, "%d", tag->track());
+		if (tag->track() != 0) {
+			sprintf(str, "%d", tag->track());
+		} else {
+			str[0] = '\0';
+		}
 		strncpy(data->str, str, MAXLEN-1);
 		append_table(table, &cnt, _("Track"), str, _("Import as Track number"), data);
 
@@ -413,7 +415,11 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode, T
 		data->model = mode.model;
 		data->track_iter = mode.track_iter;
 		data->dest_type = IMPORT_DEST_COMMENT;
-		sprintf(str, "%d", tag->year());
+		if (tag->year() != 0) {
+			sprintf(str, "%d", tag->year());
+		} else {
+			str[0] = '\0';
+		}
 		strncpy(data->str, str, MAXLEN-1);
 		append_table(table, &cnt, _("Year"), str, _("Add to Comments"), data);
 
@@ -438,9 +444,17 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode, T
 		append_table(table, &cnt, _("Title"),   (char *)tag->title().toCString(true),   NULL, NULL);
 		append_table(table, &cnt, _("Artist"),  (char *)tag->artist().toCString(true),  NULL, NULL);
 		append_table(table, &cnt, _("Album"),   (char *)tag->album().toCString(true),   NULL, NULL);
-		sprintf(str, "%d", tag->track());
+		if (tag->track() != 0) {
+			sprintf(str, "%d", tag->track());
+		} else {
+			str[0] = '\0';
+		}
 		append_table(table, &cnt, _("Track"),   str, NULL, NULL);
-		sprintf(str, "%d", tag->year());
+		if (tag->year() != 0) {
+			sprintf(str, "%d", tag->year());
+		} else {
+			str[0] = '\0';
+		}
 		append_table(table, &cnt, _("Year"),    str, NULL, NULL);
 		append_table(table, &cnt, _("Genre"),   (char *)tag->genre().toCString(true),   NULL, NULL);
 		append_table(table, &cnt, _("Comment"), (char *)tag->comment().toCString(true), NULL, NULL);
@@ -490,10 +504,33 @@ insert_id3v2_text(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_
 
 
 void
+insert_id3v2_rva2(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_t mode,
+		  char * id_str, float voladj) {
+	
+	char descr[MAXLEN];
+
+	snprintf(descr, MAXLEN-1, _("%+.1f dB (Id: %s)"), voladj, id_str);
+
+	if (mode.is_called_from_browser) {
+		import_data_t * data;
+
+		data = import_data_new();
+		trashlist_add(fileinfo_trash, data);
+		data->model = mode.model;
+		data->track_iter = mode.track_iter;
+		data->dest_type = IMPORT_DEST_RVA;
+		data->fval = voladj;
+		append_table(table, cnt, _("Relative Volume"), descr, _("Import as RVA"), data);
+	} else {
+		append_table(table, cnt, _("Relative Volume"), descr, NULL, NULL);
+	}
+}
+
+
+void
 build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v2::Tag * id3v2_tag) {
 
 	int cnt = 0;
-	char str[8];
 	GtkWidget * table;
 
 	TagLib::ID3v2::FrameList l = id3v2_tag->frameList();
@@ -515,10 +552,12 @@ build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v2::Tag * id
 			TagLib::ID3v2::AttachedPictureFrame * apic_frame =
 				dynamic_cast<TagLib::ID3v2::AttachedPictureFrame *>(frame);
 
+			printf("embedded picture\n");
 		} else if (strcmp(frameID, "RVA2") == 0) {
 			char id_str[MAXLEN];
 			float voladj;
 			read_rva2(frame->render().data() + 10, frame->size(), id_str, &voladj);
+			insert_id3v2_rva2(nb, table, &cnt, mode, id_str, voladj);
 
 		} else if (frameID[0] == 'T') {
 			/* skip frames that are handled by the simple mode */
@@ -527,8 +566,8 @@ build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v2::Tag * id
 			    (strcmp(frameID, "TALB") != 0) && /* album */
 			    (strcmp(frameID, "TRCK") != 0) && /* track no. */
 			    (strcmp(frameID, "TCON") != 0) && /* genre */
-			    (strcmp(frameID, "TDRC") != 0)    /* year */
-			    ) {
+			    (strcmp(frameID, "TDRC") != 0)) { /* year */
+
 				insert_id3v2_text(nb, table, &cnt, mode, frame, frameID);
 			}
 		}

@@ -45,6 +45,8 @@ extern "C" {
 #endif
 
 
+int lookup_id3v2_textframe(char * frameID, char * descr);
+
 #ifdef HAVE_ID3
 typedef struct _id3_tag_data {
 	char id[5];

@@ -54,6 +54,7 @@
 
 #include <attachedpictureframe.h>
 #include <relativevolumeframe.h>
+#include <textidentificationframe.h>
 
 #include <mpegfile.h>
 #include <mpcfile.h>
@@ -90,7 +91,13 @@
 
 extern options_t options;
 
-typedef struct _import_data_t {
+typedef struct {
+	int is_called_from_browser;
+	GtkTreeModel * model;
+	GtkTreeIter track_iter;
+} fileinfo_mode_t;
+
+typedef struct {
         GtkTreeModel * model;
         GtkTreeIter track_iter;
         int dest_type; /* one of the above codes */
@@ -107,7 +114,7 @@ extern GtkWidget * music_tree;
 GtkWidget * info_window = NULL;
 trashlist_t * fileinfo_trash = NULL;
 
-gint page = 0;          /* current notebook page */
+//gint page = 0;          /* current notebook page */
 gint n_pages = 0;       /* number of notebook pages */
 GtkWidget * nb;         /* notebook widget */
 
@@ -277,7 +284,7 @@ info_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		break;
 		
 	case GDK_Return:
-		page = (page+1) % n_pages;
+		int page = (gtk_notebook_get_current_page(GTK_NOTEBOOK(nb)) + 1) % n_pages;
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(nb), page);
 		break;
 		
@@ -288,151 +295,340 @@ info_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 
 
 #ifdef HAVE_TAGLIB
-/* this is a primitive lister for me to experiment with */
+/* fuction to work around buggy TagLib::ID3v2::RelativeVolumeFrame */
 void
-print_tags(TagLib::ID3v1::Tag * id3v1_tag,
-	   TagLib::ID3v2::Tag * id3v2_tag,
-	   TagLib::APE::Tag * ape_tag,
-	   TagLib::Ogg::XiphComment * oxc) {
+read_rva2(char * raw_data, unsigned int length, char * id_str, float * voladj) {
 
-	if (id3v1_tag && !id3v1_tag->isEmpty()) {
-		std::cout << "-- ID3v1Tag --" << std::endl;
-		std::cout << "title   - \"" << id3v1_tag->title()   << "\"" << std::endl;
-		std::cout << "artist  - \"" << id3v1_tag->artist()  << "\"" << std::endl;
-		std::cout << "album   - \"" << id3v1_tag->album()   << "\"" << std::endl;
-		std::cout << "year    - \"" << id3v1_tag->year()    << "\"" << std::endl;
-		std::cout << "comment - \"" << id3v1_tag->comment() << "\"" << std::endl;
-		std::cout << "track   - \"" << id3v1_tag->track()   << "\"" << std::endl;
-		std::cout << "genre   - \"" << id3v1_tag->genre()   << "\"" << std::endl;
-	}	
-	if (id3v2_tag && !id3v2_tag->isEmpty()) {
-		std::cout << "-- ID3v2Tag --" << std::endl;
-		std::cout << "title   - \"" << id3v2_tag->title()   << "\"" << std::endl;
-		std::cout << "artist  - \"" << id3v2_tag->artist()  << "\"" << std::endl;
-		std::cout << "album   - \"" << id3v2_tag->album()   << "\"" << std::endl;
-		std::cout << "year    - \"" << id3v2_tag->year()    << "\"" << std::endl;
-		std::cout << "comment - \"" << id3v2_tag->comment() << "\"" << std::endl;
-		std::cout << "track   - \"" << id3v2_tag->track()   << "\"" << std::endl;
-		std::cout << "genre   - \"" << id3v2_tag->genre()   << "\"" << std::endl;
+       int i;
+       char id[MAXLEN];
+       char str[MAXLEN];
+       int id_len;
+       char * data;
 
-		std::cout << " *** ID3v2 Frame list ***" << std::endl;
-		TagLib::ID3v2::FrameList l = id3v2_tag->frameList();
-		std::list<TagLib::ID3v2::Frame*>::iterator i;
+       id[0] = '\0';
+       str[0] = '\0';
 
-		for (i = l.begin(); i != l.end(); ++i) {
-			TagLib::ID3v2::Frame * frame = *i;
-			char frameID[5];
+       /* parse text string */
+       strncpy(id, raw_data, MAXLEN-1);
+       id_len = strlen(id);
 
-			for(int j = 0; j < 4; j++) {
-				frameID[j] = frame->frameID().data()[j];
-			}
-			frameID[4] = '\0';
+       /* skipping zero bytes */
+       for (i = id_len; raw_data[i] == '\0'; i++) {
 
-			std::cout << frameID << " | " << frame->toString() << std::endl;
-		        if (strcmp(frameID, "APIC") == 0) {
-				TagLib::ID3v2::AttachedPictureFrame * apic_frame =
-					//new TagLib::ID3v2::AttachedPictureFrame(frame->render());
-					dynamic_cast<TagLib::ID3v2::AttachedPictureFrame *>(frame);
+               /* TagLib puts extra zero bytes after the end of the
+                  text, but do not count them into the frame size. */
 
-				std::cout << "we have an attached picture, type: " << apic_frame->mimeType() << std::endl;
-				//delete apic_frame;
-			} else if (strcmp(frameID, "RVA2") == 0) {
-				TagLib::ID3v2::RelativeVolumeFrame * rva_frame =
-					//new TagLib::ID3v2::RelativeVolumeFrame(frame->render());
-					dynamic_cast<TagLib::ID3v2::RelativeVolumeFrame *>(frame);
+               if (i != id_len) {
+                       length++;
+               }
+       }
 
-				if (rva_frame->channelType() == TagLib::ID3v2::RelativeVolumeFrame::MasterVolume) {
-					int adj_index = rva_frame->volumeAdjustmentIndex(rva_frame->channelType());
-					float adj = rva_frame->volumeAdjustment(rva_frame->channelType());
+       length -= i;
+       data = raw_data + i;
 
-					std::cout << "we have an RVA frame" << std::endl;
-					printf("adj_index = %d   adj = %+.1f dB\n", adj_index, adj);
-					std::cout << "str: " << rva_frame->toString() << std::endl;
-				}
-				//delete rva_frame;
-			}
-		}
+       /* now parse the binary data */
+       while (length >= 4) {
+               unsigned int peak_bytes;
+
+               peak_bytes = (data[3] + 7) / 8;
+               if (4 + peak_bytes > length)
+                       break;
+
+               if (data[0] == 0x01 /* MasterVolume */) {
+                       signed int voladj_fixed;
+                       double voladj_float;
+
+                       voladj_fixed = (data[1] << 8) | (data[2] << 0);
+                       voladj_fixed |= -(voladj_fixed & 0x8000);
+
+                       voladj_float = (double) voladj_fixed / 512;
+                       printf("voladj_fixed = %d  float = %+.1f dB\n", voladj_fixed, voladj_float);
+
+                       snprintf(id_str, MAXLEN-1, "%s", id);
+		       *voladj = voladj_float;
+		       return;
+               }
+               data   += 4 + peak_bytes;
+               length -= 4 + peak_bytes;
+       }
+       id_str[0] = '\0';
+       *voladj = 0.0f;
+}
+
+
+/* simple mode for tags that don't require anything fancy (currently id3v1 and ape) */
+int
+build_simple_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::Tag * tag, char * nb_label) {
+
+	GtkWidget * vbox = gtk_vbox_new(FALSE, 4);
+	GtkWidget * table = gtk_table_new(0, 3, FALSE);
+	GtkWidget * label = gtk_label_new(nb_label);
+	gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 10);
+	gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox, label);
+
+	int cnt = 0;
+	char str[8];
+
+	if (mode.is_called_from_browser) {
+		import_data_t * data;
+
+		data = import_data_new();
+		trashlist_add(fileinfo_trash, data);
+		data->model = mode.model;
+		data->track_iter = mode.track_iter;
+		data->dest_type = IMPORT_DEST_TITLE;
+		strncpy(data->str, (char *)tag->title().toCString(true), MAXLEN-1);
+		append_table(table, &cnt, _("Title"), (char *)tag->title().toCString(true),
+			     _("Import as Title"), data);
+
+		data = import_data_new();
+		trashlist_add(fileinfo_trash, data);
+		data->model = mode.model;
+		data->track_iter = mode.track_iter;
+		data->dest_type = IMPORT_DEST_ARTIST;
+		strncpy(data->str, (char *)tag->artist().toCString(true), MAXLEN-1);
+		append_table(table, &cnt, _("Artist"), (char *)tag->artist().toCString(true),
+			     _("Import as Artist"), data);
+
+		data = import_data_new();
+		trashlist_add(fileinfo_trash, data);
+		data->model = mode.model;
+		data->track_iter = mode.track_iter;
+		data->dest_type = IMPORT_DEST_RECORD;
+		strncpy(data->str, (char *)tag->album().toCString(true), MAXLEN-1);
+		append_table(table, &cnt, _("Album"), (char *)tag->album().toCString(true),
+			     _("Import as Record"), data);
+
+		data = import_data_new();
+		trashlist_add(fileinfo_trash, data);
+		data->model = mode.model;
+		data->track_iter = mode.track_iter;
+		data->dest_type = IMPORT_DEST_NUMBER;
+		sprintf(str, "%d", tag->track());
+		strncpy(data->str, str, MAXLEN-1);
+		append_table(table, &cnt, _("Track"), str, _("Import as Track number"), data);
+
+		data = import_data_new();
+		trashlist_add(fileinfo_trash, data);
+		data->model = mode.model;
+		data->track_iter = mode.track_iter;
+		data->dest_type = IMPORT_DEST_COMMENT;
+		sprintf(str, "%d", tag->year());
+		strncpy(data->str, str, MAXLEN-1);
+		append_table(table, &cnt, _("Year"), str, _("Add to Comments"), data);
+
+		data = import_data_new();
+		trashlist_add(fileinfo_trash, data);
+		data->model = mode.model;
+		data->track_iter = mode.track_iter;
+		data->dest_type = IMPORT_DEST_COMMENT;
+		strncpy(data->str, (char *)tag->genre().toCString(true), MAXLEN-1);
+		append_table(table, &cnt, _("Genre"), (char *)tag->genre().toCString(true),
+			     _("Add to Comments"), data);
+
+		data = import_data_new();
+		trashlist_add(fileinfo_trash, data);
+		data->model = mode.model;
+		data->track_iter = mode.track_iter;
+		data->dest_type = IMPORT_DEST_COMMENT;
+		strncpy(data->str, (char *)tag->comment().toCString(true), MAXLEN-1);
+		append_table(table, &cnt, _("Comment"), (char *)tag->comment().toCString(true),
+			     _("Add to Comments"), data);
+	} else {
+		append_table(table, &cnt, _("Title"),   (char *)tag->title().toCString(true),   NULL, NULL);
+		append_table(table, &cnt, _("Artist"),  (char *)tag->artist().toCString(true),  NULL, NULL);
+		append_table(table, &cnt, _("Album"),   (char *)tag->album().toCString(true),   NULL, NULL);
+		sprintf(str, "%d", tag->track());
+		append_table(table, &cnt, _("Track"),   str, NULL, NULL);
+		sprintf(str, "%d", tag->year());
+		append_table(table, &cnt, _("Year"),    str, NULL, NULL);
+		append_table(table, &cnt, _("Genre"),   (char *)tag->genre().toCString(true),   NULL, NULL);
+		append_table(table, &cnt, _("Comment"), (char *)tag->comment().toCString(true), NULL, NULL);
 	}
-	if (ape_tag && !ape_tag->isEmpty()) {
-		std::cout << "-- APE Tag --" << std::endl;
-		std::cout << "title   - \"" << ape_tag->title()   << "\"" << std::endl;
-		std::cout << "artist  - \"" << ape_tag->artist()  << "\"" << std::endl;
-		std::cout << "album   - \"" << ape_tag->album()   << "\"" << std::endl;
-		std::cout << "year    - \"" << ape_tag->year()    << "\"" << std::endl;
-		std::cout << "comment - \"" << ape_tag->comment() << "\"" << std::endl;
-		std::cout << "track   - \"" << ape_tag->track()   << "\"" << std::endl;
-		std::cout << "genre   - \"" << ape_tag->genre()   << "\"" << std::endl;
-	}
-	if (oxc && !oxc->isEmpty()) {
-		std::cout << "-- Ogg Xiph Comment --" << std::endl;
-		std::cout << "title   - \"" << oxc->title()   << "\"" << std::endl;
-		std::cout << "artist  - \"" << oxc->artist()  << "\"" << std::endl;
-		std::cout << "album   - \"" << oxc->album()   << "\"" << std::endl;
-		std::cout << "year    - \"" << oxc->year()    << "\"" << std::endl;
-		std::cout << "comment - \"" << oxc->comment() << "\"" << std::endl;
-		std::cout << "track   - \"" << oxc->track()   << "\"" << std::endl;
-		std::cout << "genre   - \"" << oxc->genre()   << "\"" << std::endl;
 
-		std::cout << "Vendor: \"" << oxc->vendorID()   << "\"" << std::endl;
+	return cnt;
+}
 
-		std::cout << "Number of fields: " << oxc->fieldCount() << std::endl;
 
-		TagLib::Ogg::FieldListMap m = oxc->fieldListMap();
+void
+build_id3v1_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v1::Tag * id3v1_tag) {
+
+	TagLib::Tag * tag = dynamic_cast<TagLib::Tag *>(id3v1_tag);
+	build_simple_page(nb, mode, tag, _("ID3v1"));
+}
+
+
+void
+insert_id3v2_text(GtkNotebook * nb, fileinfo_mode_t mode,
+		  TagLib::ID3v2::Frame * frame, char * frameID) {
+
+	char descr[MAXLEN];
+
+	TagLib::ID3v2::TextIdentificationFrame * tid_frame =
+		dynamic_cast<TagLib::ID3v2::TextIdentificationFrame *>(frame);
+
+	if (!lookup_id3v2_textframe(frameID, descr))
+		return;
+
+	printf("%s\n", descr);
+
+}
+
+
+void
+build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v2::Tag * id3v2_tag) {
+
+	GtkWidget * vbox = gtk_vbox_new(FALSE, 4);
+	GtkWidget * table = gtk_table_new(0, 3, FALSE);
+	GtkWidget * label = gtk_label_new(_("ID3v2"));
+	gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 10);
+	gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox, label);
+
+	int cnt = 0;
+	char str[8];
+
+	TagLib::ID3v2::FrameList l = id3v2_tag->frameList();
+	std::list<TagLib::ID3v2::Frame*>::iterator i;
+	
+	TagLib::Tag * tag = dynamic_cast<TagLib::Tag *>(id3v2_tag);
+	cnt = build_simple_page(nb, mode, tag, _("ID3v2"));
+
+	for (i = l.begin(); i != l.end(); ++i) {
+		TagLib::ID3v2::Frame * frame = *i;
+		char frameID[5];
 		
-		for (TagLib::Ogg::FieldListMap::Iterator i = m.begin(); i != m.end(); ++i) {
-			for (TagLib::StringList::Iterator j = (*i).second.begin(); j != (*i).second.end(); ++j) {
-				std::cout << (*i).first << " " << *j << std::endl;
+		for(int j = 0; j < 4; j++) {
+			frameID[j] = frame->frameID().data()[j];
+		}
+		frameID[4] = '\0';
+
+		if (strcmp(frameID, "APIC") == 0) {
+			TagLib::ID3v2::AttachedPictureFrame * apic_frame =
+				dynamic_cast<TagLib::ID3v2::AttachedPictureFrame *>(frame);
+
+		} else if (strcmp(frameID, "RVA2") == 0) {
+			char id_str[MAXLEN];
+			float voladj;
+			read_rva2(frame->render().data() + 10, frame->size(), id_str, &voladj);
+
+		} else if (frameID[0] == 'T') {
+			/* skip frames that are handled by the simple mode */
+			if ((strcmp(frameID, "TIT2") != 0) && /* title */
+			    (strcmp(frameID, "TPE1") != 0) && /* artist */
+			    (strcmp(frameID, "TALB") != 0) && /* album */
+			    (strcmp(frameID, "TRCK") != 0) //&& /* track no. */
+			    //(strcmp(frameID, "") != 0) &&
+			    //(strcmp(frameID, "") != 0) &&
+			    //(strcmp(frameID, "") != 0)
+			    ) {
+				insert_id3v2_text(nb, mode, frame, frameID);
 			}
 		}
 	}
 }
-#endif /* HAVE_TAGLIB */
 
 
-#ifdef HAVE_TAGLIB
+void
+build_ape_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::APE::Tag * ape_tag) {
+
+	TagLib::Tag * tag = dynamic_cast<TagLib::Tag *>(ape_tag);
+	build_simple_page(nb, mode, tag, _("APE"));
+}
+
+
+void
+build_oxc_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::Ogg::XiphComment * oxc) {
+
+	std::cout << "-- Ogg Xiph Comment --" << std::endl;
+	std::cout << "title   - \"" << oxc->title()   << "\"" << std::endl;
+	std::cout << "artist  - \"" << oxc->artist()  << "\"" << std::endl;
+	std::cout << "album   - \"" << oxc->album()   << "\"" << std::endl;
+	std::cout << "year    - \"" << oxc->year()    << "\"" << std::endl;
+	std::cout << "comment - \"" << oxc->comment() << "\"" << std::endl;
+	std::cout << "track   - \"" << oxc->track()   << "\"" << std::endl;
+	std::cout << "genre   - \"" << oxc->genre()   << "\"" << std::endl;
+	
+	std::cout << "Vendor: \"" << oxc->vendorID()   << "\"" << std::endl;
+	
+	std::cout << "Number of fields: " << oxc->fieldCount() << std::endl;
+	
+	TagLib::Ogg::FieldListMap m = oxc->fieldListMap();
+	
+	for (TagLib::Ogg::FieldListMap::Iterator i = m.begin(); i != m.end(); ++i) {
+		for (TagLib::StringList::Iterator j = (*i).second.begin(); j != (*i).second.end(); ++j) {
+			std::cout << (*i).first << " " << *j << std::endl;
+		}
+	}
+}
+
+
 #ifdef HAVE_FLAC
 void
-meta_print_flac(metadata * meta) {
+build_nb_pages_flac(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
 
 	TagLib::FLAC::File * taglib_flac_file =
 		reinterpret_cast<TagLib::FLAC::File *>(meta->taglib_file);
-	print_tags(taglib_flac_file->ID3v1Tag(), taglib_flac_file->ID3v2Tag(),
-		   NULL, taglib_flac_file->xiphComment());
+
+	if (taglib_flac_file->ID3v1Tag() && !taglib_flac_file->ID3v1Tag()->isEmpty()) {
+		build_id3v1_page(nb, mode, taglib_flac_file->ID3v1Tag());
+	}
+	if (taglib_flac_file->ID3v2Tag() && !taglib_flac_file->ID3v2Tag()->isEmpty()) {
+		build_id3v2_page(nb, mode, taglib_flac_file->ID3v2Tag());
+	}
+	if (taglib_flac_file->xiphComment() && !taglib_flac_file->xiphComment()->isEmpty()) {
+		build_oxc_page(nb, mode, taglib_flac_file->xiphComment());
+	}
 }
 #endif /* HAVE_FLAC */
 
 
 #ifdef HAVE_OGG_VORBIS
 void
-meta_print_oggv(metadata * meta) {
+build_nb_pages_oggv(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
 
 	TagLib::Ogg::Vorbis::File * taglib_oggv_file =
 		reinterpret_cast<TagLib::Ogg::Vorbis::File *>(meta->taglib_file);
-	print_tags(NULL, NULL, NULL, taglib_oggv_file->tag());
+
+	if (taglib_oggv_file->tag() && !taglib_oggv_file->tag()->isEmpty()) {
+		build_oxc_page(nb, mode, taglib_oggv_file->tag());
+	}
 }
 #endif /* HAVE_OGG_VORBIS */
 
 
 #ifdef HAVE_MPEG
 void
-meta_print_mpeg(metadata * meta) {
+build_nb_pages_mpeg(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
 
 	TagLib::MPEG::File * taglib_mpeg_file =
 		reinterpret_cast<TagLib::MPEG::File *>(meta->taglib_file);
-	print_tags(taglib_mpeg_file->ID3v1Tag(), taglib_mpeg_file->ID3v2Tag(),
-		   taglib_mpeg_file->APETag(), NULL);
+
+	if (taglib_mpeg_file->ID3v1Tag() && !taglib_mpeg_file->ID3v1Tag()->isEmpty()) {
+		build_id3v1_page(nb, mode, taglib_mpeg_file->ID3v1Tag());
+	}
+	if (taglib_mpeg_file->ID3v2Tag() && !taglib_mpeg_file->ID3v2Tag()->isEmpty()) {
+		build_id3v2_page(nb, mode, taglib_mpeg_file->ID3v2Tag());
+	}
+	if (taglib_mpeg_file->APETag() && !taglib_mpeg_file->APETag()->isEmpty()) {
+		build_ape_page(nb, mode, taglib_mpeg_file->APETag());
+	}
 }
 #endif /* HAVE_MPEG */
 
 
 #ifdef HAVE_MPC
 void
-meta_print_mpc(metadata * meta) {
+build_nb_pages_mpc(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
 
 	TagLib::MPC::File * taglib_mpc_file =
 		reinterpret_cast<TagLib::MPC::File *>(meta->taglib_file);
-	print_tags(taglib_mpc_file->ID3v1Tag(), NULL,
-		   taglib_mpc_file->APETag(), NULL);
+
+	if (taglib_mpc_file->ID3v1Tag() && !taglib_mpc_file->ID3v1Tag()->isEmpty()) {
+		build_id3v1_page(nb, mode, taglib_mpc_file->ID3v1Tag());
+	}
+	if (taglib_mpc_file->APETag() && !taglib_mpc_file->APETag()->isEmpty()) {
+		build_ape_page(nb, mode, taglib_mpc_file->APETag());
+	}
 }
 #endif /* HAVE_MPC */
 #endif /* HAVE_TAGLIB */
@@ -496,6 +692,11 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	oggv_comment * oggv;
 	int cnt;
 
+	fileinfo_mode_t mode;
+
+	mode.is_called_from_browser = is_called_from_browser;
+	mode.model = model;
+	mode.track_iter = track_iter;
 
 	if (info_window != NULL) {
 		gtk_widget_destroy(info_window);
@@ -512,32 +713,6 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		fprintf(stderr, "show_file_info(): meta_read() returned an error\n");
 		return;
 	}
-
-#ifdef HAVE_TAGLIB
-	switch (meta->format_major) {
-#ifdef HAVE_FLAC
-	case FORMAT_FLAC:
-		meta_print_flac(meta);
-		break;
-#endif /* HAVE_FLAC */
-#ifdef HAVE_OGG_VORBIS
-	case FORMAT_VORBIS:
-		meta_print_oggv(meta);
-		break;
-#endif /* HAVE_OGG_VORBIS */
-#ifdef HAVE_MPEG
-	case FORMAT_MAD:
-		meta_print_mpeg(meta);
-		break;
-#endif /* HAVE_MPEG */
-#ifdef HAVE_MPC
-	case FORMAT_MPC:
-		meta_print_mpc(meta);
-		break;
-#endif /* HAVE_MPC */
-	}
-#endif /* HAVE_TAGLIB */
-
 
 	info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(info_window), _("File info"));
@@ -679,6 +854,33 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
 
 
+
+#ifdef HAVE_TAGLIB
+	switch (meta->format_major) {
+#ifdef HAVE_FLAC
+	case FORMAT_FLAC:
+		build_nb_pages_flac(meta, GTK_NOTEBOOK(nb), mode);
+		break;
+#endif /* HAVE_FLAC */
+#ifdef HAVE_OGG_VORBIS
+	case FORMAT_VORBIS:
+		build_nb_pages_oggv(meta, GTK_NOTEBOOK(nb), mode);
+		break;
+#endif /* HAVE_OGG_VORBIS */
+#ifdef HAVE_MPEG
+	case FORMAT_MAD:
+		build_nb_pages_mpeg(meta, GTK_NOTEBOOK(nb), mode);
+		break;
+#endif /* HAVE_MPEG */
+#ifdef HAVE_MPC
+	case FORMAT_MPC:
+		build_nb_pages_mpc(meta, GTK_NOTEBOOK(nb), mode);
+		break;
+#endif /* HAVE_MPC */
+	}
+#endif /* HAVE_TAGLIB */
+
+
 #ifdef HAVE_ID3
 	cnt = 0;
 	id3 = meta->id3_root;
@@ -692,7 +894,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		label_id3v2 = gtk_label_new(_("ID3v2 tags"));
 		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_id3v2,
 					 label_id3v2);
-		page++;
+		//page++;
 
 		while (id3 != NULL) {
 			
@@ -783,7 +985,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		gtk_box_pack_start(GTK_BOX(vbox_vorbis), table_vorbis, TRUE, TRUE, 10);
 		label_vorbis = gtk_label_new(_("Vorbis comments"));
 		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_vorbis, label_vorbis);
-		page++;
+		//page++;
 		
 		while (oggv != NULL) {
 			
@@ -894,7 +1096,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		gtk_box_pack_start(GTK_BOX(vbox_flac), table_flac, TRUE, TRUE, 10);
 		label_flac = gtk_label_new(_("FLAC metadata"));
 		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_flac, label_flac);
-		page++;
+		//page++;
 		
 		while (oggv != NULL) {
 			
@@ -1009,7 +1211,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
                         vbox_mod = gtk_vbox_new(FALSE, 4);
                         label_mod = gtk_label_new(_("Module info"));
                         gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_mod, label_mod);
-                        page++;
+                        //page++;
                         fill_module_info_page(mdi, vbox_mod, file);
                 } else {
 
@@ -1036,8 +1238,8 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	n_pages = gtk_notebook_get_n_pages(GTK_NOTEBOOK(nb));
 
         if (n_pages > 1) {
-                page = options.tags_tab_first ? 1 : 0;
-                gtk_notebook_set_current_page(GTK_NOTEBOOK(nb), page);
+		//int page = options.tags_tab_first ? 1 : 0;
+                gtk_notebook_set_current_page(GTK_NOTEBOOK(nb), options.tags_tab_first?1:0);
         }
 
 	meta_free(meta);

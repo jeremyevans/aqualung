@@ -75,6 +75,45 @@
 
 extern options_t options;
 
+/* fills in descr based on frameID, ret 1 if found, 0 else */
+int
+lookup_id3v2_textframe(char * frameID, char * descr) {
+
+        static struct {
+                char const * frameID;
+                char const * descr;
+        } const info[] = {
+                { "",  _("") },
+
+
+                { ID3_FRAME_TITLE,  _("Title") },
+                { "TIT3",           _("Subtitle") },
+                { "TCOP",           _("Copyright") },
+                { "TPRO",           _("Produced") },
+                { "TCOM",           _("Composer") },
+                { ID3_FRAME_ARTIST, _("Artist") },
+                { "TPE2",           _("Orchestra") },
+                { "TPE3",           _("Conductor") },
+                { "TEXT",           _("Lyricist") },
+                { ID3_FRAME_ALBUM,  _("Album") },
+                { ID3_FRAME_TRACK,  _("Track") },
+                { ID3_FRAME_YEAR,   _("Year") },
+                { "TPUB",           _("Publisher") },
+                { ID3_FRAME_GENRE,  _("Genre") },
+                { "TRSN",           _("Station") },
+                { "TENC",           _("Encoder") },
+		{ NULL, NULL }
+        };
+
+	for (int i = 0; info[i].frameID != NULL; i++) {
+		if (strcmp(info[i].frameID, frameID) == 0) {
+			strncpy(descr, info[i].descr, MAXLEN-1);
+			return 1;
+		}
+	}
+	return 0;
+}
+
 
 #ifdef HAVE_ID3
 id3_tag_data *
@@ -453,7 +492,7 @@ meta_read_flac(metadata * meta, FLAC__StreamMetadata * flacmeta) {
 
         char field[MAXLEN];
         char str[MAXLEN];
-        int i,j,k;
+        unsigned int i,j,k;
 
 
         for (i = 0; i < flacmeta->data.vorbis_comment.num_comments; i++) {

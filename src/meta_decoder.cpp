@@ -86,7 +86,7 @@ lookup_id3v2_textframe(char * frameID, char * descr) {
                 { "",  _("") },
 
 
-                { ID3_FRAME_TITLE,  _("Title") },
+                { "TIT2",           _("Title") },
                 { "TIT3",           _("Subtitle") },
                 { "TCOP",           _("Copyright") },
                 { "TPRO",           _("Produced") },
@@ -102,6 +102,7 @@ lookup_id3v2_textframe(char * frameID, char * descr) {
                 { ID3_FRAME_GENRE,  _("Genre") },
                 { "TRSN",           _("Station") },
                 { "TENC",           _("Encoder") },
+                { "TLEN",           _("Length") },
 		{ NULL, NULL }
         };
 

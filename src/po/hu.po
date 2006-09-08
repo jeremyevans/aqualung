@@ -233,8 +233,8 @@ msgstr "Könyvtár neve (kisbetûvel)"
 msgid "Sort records by"
 msgstr "Albumok rendezése a következõ szerint"
 
-#: ../build_store.c:818 ../file_info.cpp:417 ../file_info.cpp:443
-#: ../meta_decoder.cpp:100 ../meta_decoder.cpp:390
+#: ../build_store.c:818 ../file_info.cpp:418 ../file_info.cpp:444
+#: ../meta_decoder.cpp:100 ../meta_decoder.cpp:391
 msgid "Year"
 msgstr "Év"
 
@@ -312,8 +312,8 @@ msgstr "Importálás"
 msgid "Track name"
 msgstr "Szám címe"
 
-#: ../build_store.c:1108 ../file_info.cpp:434 ../file_info.cpp:445
-#: ../meta_decoder.cpp:466
+#: ../build_store.c:1108 ../file_info.cpp:435 ../file_info.cpp:446
+#: ../meta_decoder.cpp:467
 msgid "Comment"
 msgstr "Komment"
 
@@ -430,8 +430,8 @@ msgstr "Találatok:"
 msgid "Artist:"
 msgstr "Elõadó:"
 
-#: ../cddb_lookup.c:395 ../file_info.cpp:390 ../file_info.cpp:910
-#: ../file_info.cpp:1011 ../file_info.cpp:1122
+#: ../cddb_lookup.c:395 ../file_info.cpp:391 ../file_info.cpp:930
+#: ../file_info.cpp:1031 ../file_info.cpp:1142
 msgid "Import as Artist"
 msgstr "Importálás elõadóként"
 
@@ -439,8 +439,8 @@ msgstr "Importálás elõadóként"
 msgid "Title:"
 msgstr "Cím:"
 
-#: ../cddb_lookup.c:409 ../file_info.cpp:381 ../file_info.cpp:900
-#: ../file_info.cpp:991 ../file_info.cpp:1102
+#: ../cddb_lookup.c:409 ../file_info.cpp:382 ../file_info.cpp:920
+#: ../file_info.cpp:1011 ../file_info.cpp:1122
 msgid "Import as Title"
 msgstr "Importálás címként"
 
@@ -449,9 +449,10 @@ msgid "Year:"
 msgstr "Év:"
 
 #: ../cddb_lookup.c:423 ../cddb_lookup.c:437 ../cddb_lookup.c:451
-#: ../cddb_lookup.c:465 ../file_info.cpp:417 ../file_info.cpp:426
-#: ../file_info.cpp:435 ../file_info.cpp:953 ../file_info.cpp:1051
-#: ../file_info.cpp:1064 ../file_info.cpp:1161 ../file_info.cpp:1174
+#: ../cddb_lookup.c:465 ../file_info.cpp:418 ../file_info.cpp:427
+#: ../file_info.cpp:436 ../file_info.cpp:482 ../file_info.cpp:973
+#: ../file_info.cpp:1071 ../file_info.cpp:1084 ../file_info.cpp:1181
+#: ../file_info.cpp:1194
 msgid "Add to Comments"
 msgstr "Hozzáadás a kommentekhez"
 
@@ -607,11 +608,11 @@ msgstr "Tömörítés: Extra magas"
 msgid "Compression: Insane"
 msgstr "Tömörítés: Elmebeteg"
 
-#: ../gui_main.c:894 ../file_info.cpp:808
+#: ../gui_main.c:894 ../file_info.cpp:828
 msgid "MONO"
 msgstr "MONO"
 
-#: ../gui_main.c:897 ../file_info.cpp:810
+#: ../gui_main.c:897 ../file_info.cpp:830
 msgid "STEREO"
 msgstr "STEREO"
 
@@ -721,7 +722,7 @@ msgstr "Szkin-választó"
 msgid "JACK port setup"
 msgstr "JACK port beállítás"
 
-#: ../gui_main.c:3163 ../file_info.cpp:702
+#: ../gui_main.c:3163 ../file_info.cpp:722
 msgid "File info"
 msgstr "Fájl infó"
 
@@ -2029,7 +2030,7 @@ msgstr "Rendelkezésre álló effektek"
 msgid "ID"
 msgstr "ID"
 
-#: ../plugin.c:1892 ../plugin.c:1975 ../file_info.cpp:1537
+#: ../plugin.c:1892 ../plugin.c:1975 ../file_info.cpp:1557
 msgid "Name"
 msgstr "Név"
 
@@ -2125,8 +2126,8 @@ msgstr "Albumok"
 msgid "Comments"
 msgstr "Megjegyzések"
 
-#: ../search.c:599 ../file_info.cpp:389 ../file_info.cpp:438
-#: ../meta_decoder.cpp:94 ../meta_decoder.cpp:384
+#: ../search.c:599 ../file_info.cpp:390 ../file_info.cpp:439
+#: ../meta_decoder.cpp:94 ../meta_decoder.cpp:385
 msgid "Artist"
 msgstr "Elõadó"
 
@@ -2134,8 +2135,8 @@ msgstr "Elõadó"
 msgid "Record"
 msgstr "Album"
 
-#: ../search.c:621 ../file_info.cpp:408 ../file_info.cpp:441
-#: ../meta_decoder.cpp:99 ../meta_decoder.cpp:389
+#: ../search.c:621 ../file_info.cpp:409 ../file_info.cpp:442
+#: ../meta_decoder.cpp:99 ../meta_decoder.cpp:390
 msgid "Track"
 msgstr "Szám"
 
@@ -2147,8 +2148,8 @@ msgstr "Keresés"
 msgid "Search the Playlist"
 msgstr "Keresés a Lejátszólistában"
 
-#: ../search_playlist.c:407 ../file_info.cpp:380 ../file_info.cpp:437
-#: ../meta_decoder.cpp:89 ../meta_decoder.cpp:379
+#: ../search_playlist.c:407 ../file_info.cpp:381 ../file_info.cpp:438
+#: ../meta_decoder.cpp:89 ../meta_decoder.cpp:380
 msgid "Title"
 msgstr "Cím"
 
@@ -2160,7 +2161,7 @@ msgstr "Elérhetõ szkinek"
 msgid "Calculating volume level"
 msgstr "Hangosság meghatározása"
 
-#: ../volume.c:243 ../file_info.cpp:735
+#: ../volume.c:243 ../file_info.cpp:755
 msgid "File:"
 msgstr "Fájl:"
 
@@ -2168,133 +2169,133 @@ msgstr "Fájl:"
 msgid "Progress:"
 msgstr "Feldolgozás:"
 
-#: ../file_info.cpp:398 ../file_info.cpp:439 ../meta_decoder.cpp:98
-#: ../meta_decoder.cpp:388
+#: ../file_info.cpp:399 ../file_info.cpp:440 ../meta_decoder.cpp:98
+#: ../meta_decoder.cpp:389
 msgid "Album"
 msgstr "Lemez"
 
-#: ../file_info.cpp:399 ../file_info.cpp:920 ../file_info.cpp:1001
-#: ../file_info.cpp:1112
+#: ../file_info.cpp:400 ../file_info.cpp:940 ../file_info.cpp:1021
+#: ../file_info.cpp:1132
 msgid "Import as Record"
 msgstr "Importálás albumként"
 
-#: ../file_info.cpp:408 ../file_info.cpp:930
+#: ../file_info.cpp:409 ../file_info.cpp:950
 msgid "Import as Track number"
 msgstr "Importálás sorszámként"
 
-#: ../file_info.cpp:425 ../file_info.cpp:444 ../meta_decoder.cpp:102
-#: ../meta_decoder.cpp:392
+#: ../file_info.cpp:426 ../file_info.cpp:445 ../meta_decoder.cpp:102
+#: ../meta_decoder.cpp:393
 msgid "Genre"
 msgstr "Mûfaj"
 
-#: ../file_info.cpp:454
+#: ../file_info.cpp:457
 msgid "ID3v1"
 msgstr ""
 
-#: ../file_info.cpp:480
+#: ../file_info.cpp:499
 #, fuzzy
 msgid "ID3v2"
 msgstr "ID3v2 tagek"
 
-#: ../file_info.cpp:519
+#: ../file_info.cpp:539
 msgid "APE"
 msgstr ""
 
-#: ../file_info.cpp:722
+#: ../file_info.cpp:742
 msgid "Track:"
 msgstr "Szám:"
 
-#: ../file_info.cpp:762
+#: ../file_info.cpp:782
 msgid "Audio data"
 msgstr "Audio jellemzõk"
 
-#: ../file_info.cpp:766
+#: ../file_info.cpp:786
 msgid "Format:"
 msgstr "Formátum:"
 
-#: ../file_info.cpp:778
+#: ../file_info.cpp:798
 msgid "Length:"
 msgstr "Hossz:"
 
-#: ../file_info.cpp:790
+#: ../file_info.cpp:810
 msgid "Samplerate:"
 msgstr "Mintavételi frekvencia:"
 
-#: ../file_info.cpp:795
+#: ../file_info.cpp:815
 #, c-format
 msgid "%ld Hz"
 msgstr "%ld Hz"
 
-#: ../file_info.cpp:802
+#: ../file_info.cpp:822
 msgid "Channel count:"
 msgstr "Csatornák száma:"
 
-#: ../file_info.cpp:817
+#: ../file_info.cpp:837
 msgid "Bandwidth:"
 msgstr "Sávszélesség:"
 
-#: ../file_info.cpp:822
+#: ../file_info.cpp:842
 #, c-format
 msgid "%.1f kbit/s"
 msgstr "%.1f kbit/s"
 
-#: ../file_info.cpp:829
+#: ../file_info.cpp:849
 msgid "Total samples:"
 msgstr "Összes mintavétel:"
 
-#: ../file_info.cpp:878
+#: ../file_info.cpp:898
 msgid "ID3v2 tags"
 msgstr "ID3v2 tagek"
 
-#: ../file_info.cpp:939 ../meta_decoder.cpp:352
+#: ../file_info.cpp:959 ../meta_decoder.cpp:353
 msgid "Relative Volume"
 msgstr "Relatív hangosság"
 
-#: ../file_info.cpp:940 ../file_info.cpp:1039 ../file_info.cpp:1149
+#: ../file_info.cpp:960 ../file_info.cpp:1059 ../file_info.cpp:1169
 msgid "Import as RVA"
 msgstr "Importálás RVA-ként"
 
-#: ../file_info.cpp:970
+#: ../file_info.cpp:990
 msgid "Vorbis comments"
 msgstr "Vorbis kommentek"
 
-#: ../file_info.cpp:1081
+#: ../file_info.cpp:1101
 msgid "FLAC metadata"
 msgstr "FLAC metaadatok"
 
-#: ../file_info.cpp:1196
+#: ../file_info.cpp:1216
 msgid "Module info"
 msgstr "Modul infó"
 
-#: ../file_info.cpp:1336 ../file_info.cpp:1415
+#: ../file_info.cpp:1356 ../file_info.cpp:1435
 msgid "Type:"
 msgstr "Típus: "
 
-#: ../file_info.cpp:1349 ../file_info.cpp:1428
+#: ../file_info.cpp:1369 ../file_info.cpp:1448
 msgid "Channels:"
 msgstr "Csatornák:"
 
-#: ../file_info.cpp:1363 ../file_info.cpp:1442
+#: ../file_info.cpp:1383 ../file_info.cpp:1462
 msgid "Patterns:"
 msgstr "Minták:"
 
-#: ../file_info.cpp:1377 ../file_info.cpp:1456
+#: ../file_info.cpp:1397 ../file_info.cpp:1476
 msgid "Samples:"
 msgstr "Mintavételek:"
 
-#: ../file_info.cpp:1390
+#: ../file_info.cpp:1410
 msgid "Instruments:"
 msgstr "Hangszerek:"
 
-#: ../file_info.cpp:1498
+#: ../file_info.cpp:1518
 msgid "Samples"
 msgstr "Mintavételek:i frekvencia:"
 
-#: ../file_info.cpp:1507
+#: ../file_info.cpp:1527
 msgid "Instruments"
 msgstr "Hangszerek"
 
-#: ../file_info.cpp:1530
+#: ../file_info.cpp:1550
 msgid "No."
 msgstr "No."
 
@@ -2318,7 +2319,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../meta_decoder.cpp:90 ../meta_decoder.cpp:380
+#: ../meta_decoder.cpp:90 ../meta_decoder.cpp:381
 msgid "Subtitle"
 msgstr "Alcím"
 
@@ -2332,42 +2333,47 @@ msgstr "Copyright (C)"
 msgid "Produced"
 msgstr "Produced (P)"
 
-#: ../meta_decoder.cpp:93 ../meta_decoder.cpp:383
+#: ../meta_decoder.cpp:93 ../meta_decoder.cpp:384
 msgid "Composer"
 msgstr "Zeneszerzõ"
 
-#: ../meta_decoder.cpp:95 ../meta_decoder.cpp:385
+#: ../meta_decoder.cpp:95 ../meta_decoder.cpp:386
 msgid "Orchestra"
 msgstr "Zenekar"
 
-#: ../meta_decoder.cpp:96 ../meta_decoder.cpp:386
+#: ../meta_decoder.cpp:96 ../meta_decoder.cpp:387
 msgid "Conductor"
 msgstr "Karmester"
 
-#: ../meta_decoder.cpp:97 ../meta_decoder.cpp:387
+#: ../meta_decoder.cpp:97 ../meta_decoder.cpp:388
 msgid "Lyricist"
 msgstr "Szövegíró"
 
-#: ../meta_decoder.cpp:101 ../meta_decoder.cpp:391
+#: ../meta_decoder.cpp:101 ../meta_decoder.cpp:392
 msgid "Publisher"
 msgstr "Kiadó"
 
-#: ../meta_decoder.cpp:103 ../meta_decoder.cpp:393
+#: ../meta_decoder.cpp:103 ../meta_decoder.cpp:394
 msgid "Station"
 msgstr "Adóállomás"
 
-#: ../meta_decoder.cpp:104 ../meta_decoder.cpp:394
+#: ../meta_decoder.cpp:104 ../meta_decoder.cpp:395
 msgid "Encoder"
 msgstr "Kódoló"
 
-#: ../meta_decoder.cpp:430
+#: ../meta_decoder.cpp:105
+#, fuzzy
+msgid "Length"
+msgstr "Hossz:"
+
+#: ../meta_decoder.cpp:431
 msgid "Copyright (C)"
 msgstr "Copyright (C)"
 
-#: ../meta_decoder.cpp:430
+#: ../meta_decoder.cpp:431
 msgid "Produced (P)"
 msgstr "Produced (P)"
 
-#: ../meta_decoder.cpp:542 ../meta_decoder.cpp:710
+#: ../meta_decoder.cpp:543 ../meta_decoder.cpp:711
 msgid "Vendor:"
 msgstr "Vendor:"

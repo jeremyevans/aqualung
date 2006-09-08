@@ -358,7 +358,7 @@ read_rva2(char * raw_data, unsigned int length, char * id_str, float * voladj) {
 
 /* simple mode for tags that don't require anything fancy (currently id3v1 and ape) */
 int
-build_simple_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::Tag * tag, char * nb_label) {
+build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode, TagLib::Tag * tag, char * nb_label) {
 
 	GtkWidget * vbox = gtk_vbox_new(FALSE, 4);
 	GtkWidget * table = gtk_table_new(0, 3, FALSE);
@@ -446,6 +446,9 @@ build_simple_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::Tag * tag, cha
 		append_table(table, &cnt, _("Comment"), (char *)tag->comment().toCString(true), NULL, NULL);
 	}
 
+	if (ptable) {
+		*ptable = table;
+	}
 	return cnt;
 }
 
@@ -454,12 +457,12 @@ void
 build_id3v1_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v1::Tag * id3v1_tag) {
 
 	TagLib::Tag * tag = dynamic_cast<TagLib::Tag *>(id3v1_tag);
-	build_simple_page(nb, mode, tag, _("ID3v1"));
+	build_simple_page(nb, NULL, mode, tag, _("ID3v1"));
 }
 
 
 void
-insert_id3v2_text(GtkNotebook * nb, fileinfo_mode_t mode,
+insert_id3v2_text(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_t mode,
 		  TagLib::ID3v2::Frame * frame, char * frameID) {
 
 	char descr[MAXLEN];
@@ -470,28 +473,34 @@ insert_id3v2_text(GtkNotebook * nb, fileinfo_mode_t mode,
 	if (!lookup_id3v2_textframe(frameID, descr))
 		return;
 
-	printf("%s\n", descr);
+	if (mode.is_called_from_browser) {
+		import_data_t * data;
 
+		data = import_data_new();
+		trashlist_add(fileinfo_trash, data);
+		data->model = mode.model;
+		data->track_iter = mode.track_iter;
+		data->dest_type = IMPORT_DEST_COMMENT;
+		strncpy(data->str, (char *)descr, MAXLEN-1);
+		append_table(table, cnt, descr, (char *)tid_frame->toString().toCString(true), _("Add to Comments"), data);
+	} else {
+		append_table(table, cnt, descr, (char *)tid_frame->toString().toCString(true), NULL, NULL);
+	}
 }
 
 
 void
 build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v2::Tag * id3v2_tag) {
 
-	GtkWidget * vbox = gtk_vbox_new(FALSE, 4);
-	GtkWidget * table = gtk_table_new(0, 3, FALSE);
-	GtkWidget * label = gtk_label_new(_("ID3v2"));
-	gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 10);
-	gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox, label);
-
 	int cnt = 0;
 	char str[8];
+	GtkWidget * table;
 
 	TagLib::ID3v2::FrameList l = id3v2_tag->frameList();
 	std::list<TagLib::ID3v2::Frame*>::iterator i;
 	
 	TagLib::Tag * tag = dynamic_cast<TagLib::Tag *>(id3v2_tag);
-	cnt = build_simple_page(nb, mode, tag, _("ID3v2"));
+	cnt = build_simple_page(nb, &table, mode, tag, _("ID3v2"));
 
 	for (i = l.begin(); i != l.end(); ++i) {
 		TagLib::ID3v2::Frame * frame = *i;
@@ -516,12 +525,11 @@ build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v2::Tag * id
 			if ((strcmp(frameID, "TIT2") != 0) && /* title */
 			    (strcmp(frameID, "TPE1") != 0) && /* artist */
 			    (strcmp(frameID, "TALB") != 0) && /* album */
-			    (strcmp(frameID, "TRCK") != 0) //&& /* track no. */
-			    //(strcmp(frameID, "") != 0) &&
-			    //(strcmp(frameID, "") != 0) &&
-			    //(strcmp(frameID, "") != 0)
+			    (strcmp(frameID, "TRCK") != 0) && /* track no. */
+			    (strcmp(frameID, "TCON") != 0) && /* genre */
+			    (strcmp(frameID, "TDRC") != 0)    /* year */
 			    ) {
-				insert_id3v2_text(nb, mode, frame, frameID);
+				insert_id3v2_text(nb, table, &cnt, mode, frame, frameID);
 			}
 		}
 	}
@@ -532,7 +540,7 @@ void
 build_ape_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::APE::Tag * ape_tag) {
 
 	TagLib::Tag * tag = dynamic_cast<TagLib::Tag *>(ape_tag);
-	build_simple_page(nb, mode, tag, _("APE"));
+	build_simple_page(nb, NULL, mode, tag, _("APE"));
 }
 
 

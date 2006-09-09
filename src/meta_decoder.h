@@ -23,15 +23,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_ID3
-#include <id3tag.h>
-#endif /* HAVE_ID3 */
-
-#ifdef HAVE_FLAC
-#include <FLAC/format.h>
-#include <FLAC/metadata.h>
-#endif /* HAVE_FLAC */
-
 #ifdef HAVE_MOD
 #include <libmodplug/modplug.h>
 #endif /* HAVE_MOD */
@@ -44,27 +35,6 @@
 extern "C" {
 #endif
 
-
-int lookup_id3v2_textframe(char * frameID, char * descr);
-
-#ifdef HAVE_ID3
-typedef struct _id3_tag_data {
-	char id[5];
-	char * label;
-	id3_utf8_t * utf8;
-	float fval;
-	struct _id3_tag_data * next;
-} id3_tag_data;
-#endif /* HAVE_ID3 */
-
-
-/* we use this for both FLAC and Ogg */
-typedef struct _oggv_comment {
-	char * label;
-	char * str;
-	float fval;
-	struct _oggv_comment * next;
-} oggv_comment;
 
 #ifdef HAVE_MOD
 typedef struct _mod_info {
@@ -90,20 +60,8 @@ typedef struct _metadata {
 	int is_mono;
 	int bps;
 
-#ifdef HAVE_ID3
-	id3_tag_data * id3_root;
-#endif /* HAVE_ID3 */
-
-#ifdef HAVE_FLAC
-	oggv_comment * flac_root;
-#endif /* HAVE_FLAC */
-
-#ifdef HAVE_OGG_VORBIS
-	oggv_comment * oggv_root;
-#endif /* HAVE_OGG_VORBIS */
-
 #ifdef HAVE_TAGLIB
-	/* TagLib::File * */
+	/* TagLib::File* cast to void* */
 	void * taglib_file;
 #endif /* HAVE_TAGLIB */
 
@@ -114,10 +72,13 @@ typedef struct _metadata {
 } metadata;
 
 
+void read_rva2(char * raw_data, unsigned int length, char * id_str, float * voladj);
+int lookup_id3v2_textframe(char * frameID, char * descr);
+
+
 metadata * meta_new(void);
 int meta_read(metadata * meta, char * filename);
 void meta_free(metadata * meta);
-/*void meta_list(metadata * meta);*/ /* for DEBUG purposes */
 
 int meta_get_rva(metadata * meta, float * fval);
 int meta_get_title(metadata * meta, char * str);

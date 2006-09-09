@@ -362,61 +362,6 @@ else
 fi
 
 
-AC_MSG_CHECKING(for ID3 tags support)
-AC_ARG_WITH(
-	id3,
-	[  --with-id3=yes,no       compile with ID3 tags support (default: yes)],
-	id3="$withval",
-	id3="detect")
-if test "$id3" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(id3tag, id3_tag_parse, [lib=yes], [lib=no], [-lz])
-	if test "$lib" = "yes"; then
-	        id3_LIBS="-lid3tag -lz"
-		AC_DEFINE([HAVE_ID3], [1], [Defined if compile with ID3 tags support])
-	fi
-	if test "$lib" = "no" -a "$id3" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the id3tag library installed. Grab it from http://www.underbit.com/products/mad/)
-	fi
-	if test "$id3" = "detect"; then
-		id3=$lib
-	fi
-fi
-
-
-AC_MSG_CHECKING(for metadata support)
-AC_ARG_WITH(
-	metadata,
-	[  --with-metadata=yes,no  compile with metadata support (default: yes)],
-	metadata="$withval",
-	metadata="detect")
-
-if test "$metadata" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_MSG_CHECKING(whether taglib >= 1.4 is present)
-	if `pkg-config --exists 'taglib >= 1.4'`; then
-	        lib="yes"
-	else
-		lib="no"
-		AC_MSG_RESULT(no)
-	fi
-	if test "$lib" = "yes"; then
-	        taglib_CFLAGS=`pkg-config --cflags taglib`
-		taglib_LIBS=`pkg-config --libs taglib`
-		AC_DEFINE([HAVE_TAGLIB], [1], [Defined if compile with metadata support])
-		AC_MSG_RESULT(yes)
-	fi
-	if test "$lib" = "no" -a "$metadata" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the taglib library installed or it is too old. Grab it from http://developer.kde.org/~wheeler/taglib)
-	fi
-	if test "$metadata" = "detect"; then
-	        metadata=$lib
-	fi
-fi
-
-
 AC_MSG_CHECKING(for MOD audio support)
 AC_ARG_WITH(
 	mod,
@@ -495,6 +440,38 @@ else
 	fi
 	if test "$mac" = "detect"; then
 		mac=$lib
+	fi
+fi
+
+
+AC_MSG_CHECKING(for metadata support)
+AC_ARG_WITH(
+	metadata,
+	[  --with-metadata=yes,no  compile with metadata support (default: yes)],
+	metadata="$withval",
+	metadata="detect")
+
+if test "$metadata" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_MSG_CHECKING(whether taglib >= 1.4 is present)
+	if `pkg-config --exists 'taglib >= 1.4'`; then
+	        lib="yes"
+	else
+		lib="no"
+		AC_MSG_RESULT(no)
+	fi
+	if test "$lib" = "yes"; then
+	        taglib_CFLAGS=`pkg-config --cflags taglib`
+		taglib_LIBS=`pkg-config --libs taglib`
+		AC_DEFINE([HAVE_TAGLIB], [1], [Defined if compile with metadata support])
+		AC_MSG_RESULT(yes)
+	fi
+	if test "$lib" = "no" -a "$metadata" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the taglib library installed or it is too old. Grab it from http://developer.kde.org/~wheeler/taglib)
+	fi
+	if test "$metadata" = "detect"; then
+	        metadata=$lib
 	fi
 fi
 
@@ -621,7 +598,7 @@ AQUALUNG_DATADIR="-DAQUALUNG_DATADIR=\\\"$datadir/aqualung\\\""
 CFLAGS="-O2 -Wall $PLATFORM_CFLAGS $AQUALUNG_SKINDIR $AQUALUNG_LOCALEDIR $AQUALUNG_DATADIR -D_GNU_SOURCE"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $taglib_CFLAGS"
-LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $id3_LIBS $taglib_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS"
+LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $taglib_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS"
 
 
 AC_OUTPUT([Makefile \
@@ -652,8 +629,7 @@ echo "      MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg"
 echo "      MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod"
 echo "      Musepack                            :  $mpc"
 echo "      Monkey's Audio Codec                :  $mac"
-echo "      ID3 tags                            :  $id3"
-echo "      Metadata (ID3, Ogg comments, APE)   :  $metadata"
+echo "      Metadata (ID3, APE, Ogg comments)   :  $metadata"
 echo
 echo "  Output driver support:"
 echo "      OSS Audio                           :  $oss"

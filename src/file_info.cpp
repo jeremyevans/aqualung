@@ -29,15 +29,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
-#ifdef HAVE_ID3
-#include <id3tag.h>
-#endif /* HAVE_ID3 */
-
-#ifdef HAVE_FLAC
-#include <FLAC/format.h>
-#include <FLAC/metadata.h>
-#endif /* HAVE_FLAC */
-
 #ifdef HAVE_MOD_INFO
 #include <libmodplug/modplug.h>
 #endif /* HAVE_MOD_INFO */
@@ -65,7 +56,6 @@
 #include <tlist.h>
 #include <tbytevector.h>
 #endif /* HAVE_TAGLIB */
-
 
 #include "common.h"
 #include "core.h"
@@ -114,7 +104,6 @@ extern GtkWidget * music_tree;
 GtkWidget * info_window = NULL;
 trashlist_t * fileinfo_trash = NULL;
 
-//gint page = 0;          /* current notebook page */
 gint n_pages = 0;       /* number of notebook pages */
 GtkWidget * nb;         /* notebook widget */
 
@@ -257,10 +246,16 @@ append_table(GtkWidget * table, int * cnt, char * field, char * value,
 	if (importbtn_text == NULL) {
 		gtk_table_attach(GTK_TABLE(table), entry, 1, 3, *cnt, *cnt+1,
 				 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
-	} else {
+	} else if (data != NULL) {
 		button = gtk_button_new_with_label(importbtn_text);
 		g_signal_connect(G_OBJECT(button), "clicked",
 				 G_CALLBACK(import_button_pressed), (gpointer)data);
+		gtk_table_attach(GTK_TABLE(table), entry, 1, 2, *cnt, *cnt+1,
+				 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
+		gtk_table_attach(GTK_TABLE(table), button, 2, 3, *cnt, *cnt+1,
+				 GTK_FILL, GTK_FILL, 5, 3);
+	} else { /* we have no data -> dummy button, no signal attached */
+		button = gtk_button_new_with_label(importbtn_text);
 		gtk_table_attach(GTK_TABLE(table), entry, 1, 2, *cnt, *cnt+1,
 				 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
 		gtk_table_attach(GTK_TABLE(table), button, 2, 3, *cnt, *cnt+1,
@@ -295,65 +290,6 @@ info_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 
 
 #ifdef HAVE_TAGLIB
-/* fuction to work around buggy TagLib::ID3v2::RelativeVolumeFrame */
-void
-read_rva2(char * raw_data, unsigned int length, char * id_str, float * voladj) {
-
-       int i;
-       char id[MAXLEN];
-       char str[MAXLEN];
-       int id_len;
-       char * data;
-
-       id[0] = '\0';
-       str[0] = '\0';
-
-       /* parse text string */
-       strncpy(id, raw_data, MAXLEN-1);
-       id_len = strlen(id);
-
-       /* skipping zero bytes */
-       for (i = id_len; raw_data[i] == '\0'; i++) {
-
-               /* TagLib puts extra zero bytes after the end of the
-                  text, but do not count them into the frame size. */
-
-               if (i != id_len) {
-                       length++;
-               }
-       }
-
-       length -= i;
-       data = raw_data + i;
-
-       /* now parse the binary data */
-       while (length >= 4) {
-               unsigned int peak_bytes;
-
-               peak_bytes = (data[3] + 7) / 8;
-               if (4 + peak_bytes > length)
-                       break;
-
-               if (data[0] == 0x01 /* MasterVolume */) {
-                       signed int voladj_fixed;
-                       double voladj_float;
-
-                       voladj_fixed = (data[1] << 8) | (data[2] << 0);
-                       voladj_fixed |= -(voladj_fixed & 0x8000);
-                       voladj_float = (double) voladj_fixed / 512;
-
-                       snprintf(id_str, MAXLEN-1, "%s", id);
-		       *voladj = voladj_float;
-		       return;
-               }
-               data   += 4 + peak_bytes;
-               length -= 4 + peak_bytes;
-       }
-       id_str[0] = '\0';
-       *voladj = 0.0f;
-}
-
-
 /* simple mode for tags that don't require anything fancy (currently id3v1 and ape) */
 int
 build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode, TagLib::Tag * tag, char * nb_label) {
@@ -365,7 +301,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode, T
 	gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox, label);
 
 	int cnt = 0;
-	char str[8];
+	char str[MAXLEN];
 
 	if (mode.is_called_from_browser) {
 		import_data_t * data;
@@ -375,27 +311,27 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode, T
 		data->model = mode.model;
 		data->track_iter = mode.track_iter;
 		data->dest_type = IMPORT_DEST_TITLE;
-		strncpy(data->str, (char *)tag->title().toCString(true), MAXLEN-1);
-		append_table(table, &cnt, _("Title"), (char *)tag->title().toCString(true),
-			     _("Import as Title"), data);
+		strncpy(str, (char *)tag->title().toCString(true), MAXLEN-1);
+		strncpy(data->str, str, MAXLEN-1);
+		append_table(table, &cnt, _("Title:"), str, _("Import as Title"), data);
 
 		data = import_data_new();
 		trashlist_add(fileinfo_trash, data);
 		data->model = mode.model;
 		data->track_iter = mode.track_iter;
 		data->dest_type = IMPORT_DEST_ARTIST;
-		strncpy(data->str, (char *)tag->artist().toCString(true), MAXLEN-1);
-		append_table(table, &cnt, _("Artist"), (char *)tag->artist().toCString(true),
-			     _("Import as Artist"), data);
+		strncpy(str, (char *)tag->artist().toCString(true), MAXLEN-1);
+		strncpy(data->str, str, MAXLEN-1);
+		append_table(table, &cnt, _("Artist:"), str, _("Import as Artist"), data);
 
 		data = import_data_new();
 		trashlist_add(fileinfo_trash, data);
 		data->model = mode.model;
 		data->track_iter = mode.track_iter;
 		data->dest_type = IMPORT_DEST_RECORD;
-		strncpy(data->str, (char *)tag->album().toCString(true), MAXLEN-1);
-		append_table(table, &cnt, _("Album"), (char *)tag->album().toCString(true),
-			     _("Import as Record"), data);
+		strncpy(str, (char *)tag->album().toCString(true), MAXLEN-1);
+		strncpy(data->str, str, MAXLEN-1);
+		append_table(table, &cnt, _("Album:"), str, _("Import as Record"), data);
 
 		data = import_data_new();
 		trashlist_add(fileinfo_trash, data);
@@ -408,7 +344,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode, T
 			str[0] = '\0';
 		}
 		strncpy(data->str, str, MAXLEN-1);
-		append_table(table, &cnt, _("Track"), str, _("Import as Track number"), data);
+		append_table(table, &cnt, _("Track:"), str, _("Import as Track number"), data);
 
 		data = import_data_new();
 		trashlist_add(fileinfo_trash, data);
@@ -420,44 +356,44 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode, T
 		} else {
 			str[0] = '\0';
 		}
-		strncpy(data->str, str, MAXLEN-1);
-		append_table(table, &cnt, _("Year"), str, _("Add to Comments"), data);
+		snprintf(data->str, MAXLEN-1, "%s %s", _("Year:"), str);
+		append_table(table, &cnt, _("Year:"), str, _("Add to Comments"), data);
 
 		data = import_data_new();
 		trashlist_add(fileinfo_trash, data);
 		data->model = mode.model;
 		data->track_iter = mode.track_iter;
 		data->dest_type = IMPORT_DEST_COMMENT;
-		strncpy(data->str, (char *)tag->genre().toCString(true), MAXLEN-1);
-		append_table(table, &cnt, _("Genre"), (char *)tag->genre().toCString(true),
-			     _("Add to Comments"), data);
+		strncpy(str, (char *)tag->genre().toCString(true), MAXLEN-1);
+		snprintf(data->str, MAXLEN-1, "%s %s", _("Genre:"), str);
+		append_table(table, &cnt, _("Genre:"), str, _("Add to Comments"), data);
 
 		data = import_data_new();
 		trashlist_add(fileinfo_trash, data);
 		data->model = mode.model;
 		data->track_iter = mode.track_iter;
 		data->dest_type = IMPORT_DEST_COMMENT;
-		strncpy(data->str, (char *)tag->comment().toCString(true), MAXLEN-1);
-		append_table(table, &cnt, _("Comment"), (char *)tag->comment().toCString(true),
-			     _("Add to Comments"), data);
+		strncpy(str, (char *)tag->comment().toCString(true), MAXLEN-1);
+		snprintf(data->str, MAXLEN-1, "%s %s", _("Comment:"), str);
+		append_table(table, &cnt, _("Comment:"), str, _("Add to Comments"), data);
 	} else {
-		append_table(table, &cnt, _("Title"),   (char *)tag->title().toCString(true),   NULL, NULL);
-		append_table(table, &cnt, _("Artist"),  (char *)tag->artist().toCString(true),  NULL, NULL);
-		append_table(table, &cnt, _("Album"),   (char *)tag->album().toCString(true),   NULL, NULL);
+		append_table(table, &cnt, _("Title:"),   (char *)tag->title().toCString(true),   NULL, NULL);
+		append_table(table, &cnt, _("Artist:"),  (char *)tag->artist().toCString(true),  NULL, NULL);
+		append_table(table, &cnt, _("Album:"),   (char *)tag->album().toCString(true),   NULL, NULL);
 		if (tag->track() != 0) {
 			sprintf(str, "%d", tag->track());
 		} else {
 			str[0] = '\0';
 		}
-		append_table(table, &cnt, _("Track"),   str, NULL, NULL);
+		append_table(table, &cnt, _("Track:"),   str, NULL, NULL);
 		if (tag->year() != 0) {
 			sprintf(str, "%d", tag->year());
 		} else {
 			str[0] = '\0';
 		}
-		append_table(table, &cnt, _("Year"),    str, NULL, NULL);
-		append_table(table, &cnt, _("Genre"),   (char *)tag->genre().toCString(true),   NULL, NULL);
-		append_table(table, &cnt, _("Comment"), (char *)tag->comment().toCString(true), NULL, NULL);
+		append_table(table, &cnt, _("Year:"),    str, NULL, NULL);
+		append_table(table, &cnt, _("Genre:"),   (char *)tag->genre().toCString(true),   NULL, NULL);
+		append_table(table, &cnt, _("Comment:"), (char *)tag->comment().toCString(true), NULL, NULL);
 	}
 
 	if (ptable) {
@@ -480,12 +416,19 @@ insert_id3v2_text(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_
 		  TagLib::ID3v2::Frame * frame, char * frameID) {
 
 	char descr[MAXLEN];
+	char str[MAXLEN];
 
 	TagLib::ID3v2::TextIdentificationFrame * tid_frame =
 		dynamic_cast<TagLib::ID3v2::TextIdentificationFrame *>(frame);
 
 	if (!lookup_id3v2_textframe(frameID, descr))
 		return;
+
+	int len = strlen(descr);
+	if (len < MAXLEN-1) {
+		descr[len++] = ':';
+		descr[len] = '\0';
+	}
 
 	if (mode.is_called_from_browser) {
 		import_data_t * data;
@@ -495,10 +438,12 @@ insert_id3v2_text(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_
 		data->model = mode.model;
 		data->track_iter = mode.track_iter;
 		data->dest_type = IMPORT_DEST_COMMENT;
-		strncpy(data->str, (char *)descr, MAXLEN-1);
-		append_table(table, cnt, descr, (char *)tid_frame->toString().toCString(true), _("Add to Comments"), data);
+		strncpy(str, (char *)tid_frame->toString().toCString(true), MAXLEN-1);
+		snprintf(data->str, MAXLEN-1, "%s: %s", descr, str);
+		append_table(table, cnt, descr, str, _("Add to Comments"), data);
 	} else {
-		append_table(table, cnt, descr, (char *)tid_frame->toString().toCString(true), NULL, NULL);
+		strncpy(str, (char *)tid_frame->toString().toCString(true), MAXLEN-1);
+		append_table(table, cnt, descr, str, NULL, NULL);
 	}
 }
 
@@ -520,9 +465,9 @@ insert_id3v2_rva2(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_
 		data->track_iter = mode.track_iter;
 		data->dest_type = IMPORT_DEST_RVA;
 		data->fval = voladj;
-		append_table(table, cnt, _("Relative Volume"), descr, _("Import as RVA"), data);
+		append_table(table, cnt, _("Relative Volume Adj.:"), descr, _("Import as RVA"), data);
 	} else {
-		append_table(table, cnt, _("Relative Volume"), descr, NULL, NULL);
+		append_table(table, cnt, _("Relative Volume Adj.:"), descr, NULL, NULL);
 	}
 }
 
@@ -552,7 +497,8 @@ build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v2::Tag * id
 			TagLib::ID3v2::AttachedPictureFrame * apic_frame =
 				dynamic_cast<TagLib::ID3v2::AttachedPictureFrame *>(frame);
 
-			printf("embedded picture\n");
+			/* XXX incomplete */
+
 		} else if (strcmp(frameID, "RVA2") == 0) {
 			char id_str[MAXLEN];
 			float voladj;
@@ -570,6 +516,8 @@ build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v2::Tag * id
 
 				insert_id3v2_text(nb, table, &cnt, mode, frame, frameID);
 			}
+		} else {
+			/* XXX incomplete */
 		}
 	}
 }
@@ -584,28 +532,80 @@ build_ape_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::APE::Tag * ape_ta
 
 
 void
+insert_oxc(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_t mode,
+		  char * key, char * val) {
+
+	if (mode.is_called_from_browser) {
+		import_data_t * data;
+		
+		data = import_data_new();
+		trashlist_add(fileinfo_trash, data);
+		
+		data->model = mode.model;
+		data->track_iter = mode.track_iter;
+		snprintf(data->str, MAXLEN-1, "%s %s", key, val);
+		
+		if ((strcmp(key, "Replaygain_track_gain:") == 0) ||
+		    (strcmp(key, "Replaygain_album_gain:") == 0)) {
+			
+			data->fval = convf(val);
+			data->dest_type = IMPORT_DEST_RVA;
+			append_table(table, cnt, key, val, _("Import as RVA"), data);
+		} else {
+			data->fval = 0.0f;
+			data->dest_type = IMPORT_DEST_COMMENT;
+			append_table(table, cnt, key, val, _("Add to Comments"), data);
+		}
+	} else {
+		append_table(table, cnt, key, val, NULL, NULL);
+	}
+}
+
+
+void
 build_oxc_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::Ogg::XiphComment * oxc) {
 
-	std::cout << "-- Ogg Xiph Comment --" << std::endl;
-	std::cout << "title   - \"" << oxc->title()   << "\"" << std::endl;
-	std::cout << "artist  - \"" << oxc->artist()  << "\"" << std::endl;
-	std::cout << "album   - \"" << oxc->album()   << "\"" << std::endl;
-	std::cout << "year    - \"" << oxc->year()    << "\"" << std::endl;
-	std::cout << "comment - \"" << oxc->comment() << "\"" << std::endl;
-	std::cout << "track   - \"" << oxc->track()   << "\"" << std::endl;
-	std::cout << "genre   - \"" << oxc->genre()   << "\"" << std::endl;
-	
-	std::cout << "Vendor: \"" << oxc->vendorID()   << "\"" << std::endl;
-	
-	std::cout << "Number of fields: " << oxc->fieldCount() << std::endl;
-	
+	int cnt = 0;
+	GtkWidget * table;
+
+	TagLib::Tag * tag = dynamic_cast<TagLib::Tag *>(oxc);
+	cnt = build_simple_page(nb, &table, mode, tag, _("Ogg comments"));
+
 	TagLib::Ogg::FieldListMap m = oxc->fieldListMap();
-	
 	for (TagLib::Ogg::FieldListMap::Iterator i = m.begin(); i != m.end(); ++i) {
 		for (TagLib::StringList::Iterator j = (*i).second.begin(); j != (*i).second.end(); ++j) {
-			std::cout << (*i).first << " " << *j << std::endl;
+			char key[MAXLEN];
+			char val[MAXLEN];
+			char c;
+			int k;
+
+			/* skip comments that are handled by the simple mode */
+			if ((strcmp("TITLE", (*i).first.toCString(true)) == 0) ||
+			    (strcmp("ARTIST", (*i).first.toCString(true)) == 0) ||
+			    (strcmp("ALBUM", (*i).first.toCString(true)) == 0) ||
+			    (strcmp("DATE", (*i).first.toCString(true)) == 0) ||
+			    (strcmp("COMMENT", (*i).first.toCString(true)) == 0) ||
+			    (strcmp("TRACKNUMBER", (*i).first.toCString(true)) == 0) ||
+			    (strcmp("GENRE", (*i).first.toCString(true)) == 0)) {
+
+				continue;
+			}
+
+			for (k = 0; ((c = (*i).first.toCString(true)[k]) != '\0') && (k < MAXLEN-1); k++) {
+				key[k] = (k == 0) ? toupper(c) : tolower(c);
+			}
+			key[k++] = ':';
+			key[k] = '\0';
+
+			for (k = 0; ((c = (*j).toCString(true)[k]) != '\0') && (k < MAXLEN-1); k++) {
+				val[k] = c;
+			}
+			val[k] = '\0';
+
+			insert_oxc(nb, table, &cnt, mode, key, val);
 		}
 	}
+	insert_oxc(nb, table, &cnt, mode, _("Vendor:"), (char *)oxc->vendorID().toCString(true));
 }
 
 
@@ -622,7 +622,7 @@ build_nb_pages_flac(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
 	if (taglib_flac_file->ID3v2Tag() && !taglib_flac_file->ID3v2Tag()->isEmpty()) {
 		build_id3v2_page(nb, mode, taglib_flac_file->ID3v2Tag());
 	}
-	if (taglib_flac_file->xiphComment() && !taglib_flac_file->xiphComment()->isEmpty()) {
+	if (taglib_flac_file->xiphComment()) {
 		build_oxc_page(nb, mode, taglib_flac_file->xiphComment());
 	}
 }
@@ -636,7 +636,7 @@ build_nb_pages_oggv(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
 	TagLib::Ogg::Vorbis::File * taglib_oggv_file =
 		reinterpret_cast<TagLib::Ogg::Vorbis::File *>(meta->taglib_file);
 
-	if (taglib_oggv_file->tag() && !taglib_oggv_file->tag()->isEmpty()) {
+	if (taglib_oggv_file->tag()) {
 		build_oxc_page(nb, mode, taglib_oggv_file->tag());
 	}
 }
@@ -708,24 +708,6 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	GtkWidget * label;
 	GtkWidget * entry;
 
-#ifdef HAVE_ID3
-	GtkWidget * vbox_id3v2;
-	GtkWidget * label_id3v2;
-	GtkWidget * table_id3v2;
-#endif /* HAVE_ID3 */
-
-#ifdef HAVE_OGG_VORBIS
-	GtkWidget * vbox_vorbis;
-	GtkWidget * label_vorbis;
-	GtkWidget * table_vorbis;
-#endif /* HAVE_OGG_VORBIS */
-
-#ifdef HAVE_FLAC
-	GtkWidget * vbox_flac;
-	GtkWidget * label_flac;
-	GtkWidget * table_flac;
-#endif /* HAVE_FLAC */
-
 #ifdef HAVE_MOD_INFO
         mod_info * mdi;
 	GtkWidget * vbox_mod;
@@ -733,14 +715,8 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 #endif /* HAVE_MOD_INFO */
 
 	metadata * meta = meta_new();
-#ifdef HAVE_ID3
-	id3_tag_data * id3;
-#endif /* HAVE_ID3 */
-	oggv_comment * oggv;
-	int cnt;
 
 	fileinfo_mode_t mode;
-
 	mode.is_called_from_browser = is_called_from_browser;
 	mode.model = model;
 	mode.track_iter = track_iter;
@@ -765,7 +741,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
         gtk_window_set_title(GTK_WINDOW(info_window), _("File info"));
 	gtk_window_set_transient_for(GTK_WINDOW(info_window), GTK_WINDOW(main_window));
 	gtk_window_set_position(GTK_WINDOW(info_window), GTK_WIN_POS_CENTER_ON_PARENT);
-	gtk_widget_set_size_request(GTK_WIDGET(info_window), 500, -1);
+	//gtk_widget_set_size_request(GTK_WIDGET(info_window), 500, -1);
 	g_signal_connect(G_OBJECT(info_window), "delete_event",
 			 G_CALLBACK(info_window_close), NULL);
         g_signal_connect(G_OBJECT(info_window), "key_press_event",
@@ -901,7 +877,6 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
 
 
-
 #ifdef HAVE_TAGLIB
 	switch (meta->format_major) {
 #ifdef HAVE_FLAC
@@ -927,321 +902,6 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	}
 #endif /* HAVE_TAGLIB */
 
-
-#ifdef HAVE_ID3
-	cnt = 0;
-	id3 = meta->id3_root;
-	if (id3->next != NULL) {
-		id3 = id3->next;
-		
-		vbox_id3v2 = gtk_vbox_new(FALSE, 4);
-		table_id3v2 = gtk_table_new(0, 3, FALSE);
-		gtk_box_pack_start(GTK_BOX(vbox_id3v2), table_id3v2,
-				   TRUE, TRUE, 10);
-		label_id3v2 = gtk_label_new(_("ID3v2 tags"));
-		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_id3v2,
-					 label_id3v2);
-		//page++;
-
-		while (id3 != NULL) {
-			
-			if (!is_called_from_browser) {
-				append_table(table_id3v2, &cnt, (char *) id3->label, (char *) id3->utf8,
-					     NULL, NULL);
-			} else {
-				import_data_t * data = import_data_new();
-				trashlist_add(fileinfo_trash, data);
-				
-				if (strcmp(id3->id, ID3_FRAME_TITLE) == 0) {
-					
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_TITLE;
-					strncpy(data->str, (char *) id3->utf8, MAXLEN-1);
-					append_table(table_id3v2, &cnt,
-						     id3->label, (char *) id3->utf8,
-						     _("Import as Title"), data);
-				} else
-				if (strcmp(id3->id, ID3_FRAME_ARTIST) == 0) {
-					
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_ARTIST;
-					strncpy(data->str, (char *) id3->utf8, MAXLEN-1);
-					append_table(table_id3v2, &cnt,
-						     id3->label, (char *) id3->utf8,
-						     _("Import as Artist"), data);
-				} else
-				if (strcmp(id3->id, ID3_FRAME_ALBUM) == 0) {
-					
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_RECORD;
-					strncpy(data->str, (char *) id3->utf8, MAXLEN-1);
-					append_table(table_id3v2, &cnt,
-						     id3->label, (char *) id3->utf8,
-						     _("Import as Record"), data);
-				} else
-				if (strcmp(id3->id, ID3_FRAME_TRACK) == 0) {
-					
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_NUMBER;
-					strncpy(data->str, (char *) id3->utf8, MAXLEN-1);
-					append_table(table_id3v2, &cnt,
-						     id3->label, (char *) id3->utf8,
-						     _("Import as Track number"), data);
-				} else
-				if (strcmp(id3->id, "RVA2") == 0) {
-					
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_RVA;
-					data->fval = id3->fval;
-					append_table(table_id3v2, &cnt,
-						     _("Relative Volume"), (char *) id3->utf8,
-						     _("Import as RVA"), data);
-					
-				} else {
-					char tmp[MAXLEN];
-					
-					snprintf(tmp, MAXLEN-1, "%s %s",
-						 id3->label, id3->utf8);
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_COMMENT;
-					strncpy(data->str, tmp, MAXLEN-1);
-					append_table(table_id3v2, &cnt,
-						     id3->label, (char *) id3->utf8,
-						     _("Add to Comments"), data);
-				}
-			}
-			id3 = id3->next;
-		}
-	}
-#endif /* HAVE_ID3 */
-
-#ifdef HAVE_OGG_VORBIS
-	cnt = 0;
-	oggv = meta->oggv_root;
-	if (oggv->next != NULL) {
-		oggv = oggv->next;
-		
-		vbox_vorbis = gtk_vbox_new(FALSE, 4);
-		table_vorbis = gtk_table_new(0, 3, FALSE);
-		gtk_box_pack_start(GTK_BOX(vbox_vorbis), table_vorbis, TRUE, TRUE, 10);
-		label_vorbis = gtk_label_new(_("Vorbis comments"));
-		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_vorbis, label_vorbis);
-		//page++;
-		
-		while (oggv != NULL) {
-			
-			if (!is_called_from_browser) {
-				append_table(table_vorbis, &cnt,
-					     oggv->label, oggv->str, NULL, NULL);
-			} else {
-				import_data_t * data = import_data_new();
-				trashlist_add(fileinfo_trash, data);
-				
-				if (strcmp(oggv->label, "Title:") == 0) {
-					
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_TITLE;
-					strncpy(data->str, oggv->str, MAXLEN-1);
-					append_table(table_vorbis, &cnt,
-						     oggv->label, oggv->str,
-						     _("Import as Title"), data);
-				} else
-				if (strcmp(oggv->label, "Album:") == 0) {
-					
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_RECORD;
-					strncpy(data->str, oggv->str, MAXLEN-1);
-					append_table(table_vorbis, &cnt,
-						     oggv->label, oggv->str,
-						     _("Import as Record"), data);
-				} else
-				if (strcmp(oggv->label, "Artist:") == 0) {
-					
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_ARTIST;
-					strncpy(data->str, oggv->str, MAXLEN-1);
-					append_table(table_vorbis, &cnt,
-						     oggv->label, oggv->str,
-						     _("Import as Artist"), data);
-
-				} else if ((strcmp(oggv->label, "Replaygain_track_gain:") == 0) ||
-					   (strcmp(oggv->label, "Replaygain_album_gain:") == 0)) {
-
-					char replaygain_label[MAXLEN];
-
-					switch (options.replaygain_tag_to_use) {
-					case 0:
-						strcpy(replaygain_label, "Replaygain_track_gain:");
-						break;
-					case 1:
-						strcpy(replaygain_label, "Replaygain_album_gain:");
-						break;
-					default:
-						fprintf(stderr, "file_info.c: illegal "
-							"replaygain_tag_to_use value -- "
-							"please see the programmers\n");
-					}
-					
-					if (strcmp(oggv->label, replaygain_label) == 0) {
-						
-						data->model = model;
-						data->track_iter = track_iter;
-						data->dest_type = IMPORT_DEST_RVA;
-						data->fval = oggv->fval;
-						append_table(table_vorbis, &cnt,
-							     oggv->label, oggv->str,
-							     _("Import as RVA"), data);
-					} else {
-						char tmp[MAXLEN];
-						
-						snprintf(tmp, MAXLEN-1, "%s %s",
-							 oggv->label, oggv->str);
-						data->model = model;
-						data->track_iter = track_iter;
-						data->dest_type = IMPORT_DEST_COMMENT;
-						strncpy(data->str, tmp, MAXLEN-1);
-						append_table(table_vorbis, &cnt,
-							     oggv->label, oggv->str,
-							     _("Add to Comments"), data);
-					}
-				} else {
-					char tmp[MAXLEN];
-					
-					snprintf(tmp, MAXLEN-1, "%s %s",
-						 oggv->label, oggv->str);
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_COMMENT;
-					strncpy(data->str, tmp, MAXLEN-1);
-					append_table(table_vorbis, &cnt,
-						     oggv->label, oggv->str,
-						     _("Add to Comments"), data);
-				}
-			}
-			oggv = oggv->next;
-		}
-	}
-#endif /* HAVE_OGG_VORBIS */
-
-#ifdef HAVE_FLAC
-	cnt = 0;
-	oggv = meta->flac_root;
-	if (oggv->next != NULL) {
-		oggv = oggv->next;
-		
-		vbox_flac = gtk_vbox_new(FALSE, 4);
-		table_flac = gtk_table_new(0, 3, FALSE);
-		gtk_box_pack_start(GTK_BOX(vbox_flac), table_flac, TRUE, TRUE, 10);
-		label_flac = gtk_label_new(_("FLAC metadata"));
-		gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_flac, label_flac);
-		//page++;
-		
-		while (oggv != NULL) {
-			
-			if (!is_called_from_browser) {
-				append_table(table_flac, &cnt,
-					     oggv->label, oggv->str, NULL, NULL);
-			} else {
-				import_data_t * data = import_data_new();
-				trashlist_add(fileinfo_trash, data);
-				
-				if (strcmp(oggv->label, "Title:") == 0) {
-					
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_TITLE;
-					strncpy(data->str, oggv->str, MAXLEN-1);
-					append_table(table_flac, &cnt,
-						     oggv->label, oggv->str,
-						     _("Import as Title"), data);
-				} else
-				if (strcmp(oggv->label, "Album:") == 0) {
-					
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_RECORD;
-					strncpy(data->str, oggv->str, MAXLEN-1);
-					append_table(table_flac, &cnt,
-						     oggv->label, oggv->str,
-						     _("Import as Record"), data);
-				} else
-				if (strcmp(oggv->label, "Artist:") == 0) {
-					
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_ARTIST;
-					strncpy(data->str, oggv->str, MAXLEN-1);
-					append_table(table_flac, &cnt,
-						     oggv->label, oggv->str,
-						     _("Import as Artist"), data);
-
-				} else if ((strcmp(oggv->label, "Replaygain_track_gain:") == 0) ||
-					   (strcmp(oggv->label, "Replaygain_album_gain:") == 0)) {
-
-					char replaygain_label[MAXLEN];
-
-					switch (options.replaygain_tag_to_use) {
-					case 0:
-						strcpy(replaygain_label, "Replaygain_track_gain:");
-						break;
-					case 1:
-						strcpy(replaygain_label, "Replaygain_album_gain:");
-						break;
-					default:
-						fprintf(stderr, "illegal replaygain_tag_to_use value -- "
-							"please see the programmers\n");
-					}
-					
-					if (strcmp(oggv->label, replaygain_label) == 0) {
-						
-						data->model = model;
-						data->track_iter = track_iter;
-						data->dest_type = IMPORT_DEST_RVA;
-						data->fval = oggv->fval;
-						append_table(table_flac, &cnt,
-							     oggv->label, oggv->str,
-							     _("Import as RVA"), data);
-					} else {
-						char tmp[MAXLEN];
-						
-						snprintf(tmp, MAXLEN-1, "%s %s",
-							 oggv->label, oggv->str);
-						data->model = model;
-						data->track_iter = track_iter;
-						data->dest_type = IMPORT_DEST_COMMENT;
-						strncpy(data->str, tmp, MAXLEN-1);
-						append_table(table_flac, &cnt,
-							     oggv->label, oggv->str,
-							     _("Add to Comments"), data);
-					}
-				} else {
-					char tmp[MAXLEN];
-					
-					snprintf(tmp, MAXLEN-1, "%s %s",
-						 oggv->label, oggv->str);
-					data->model = model;
-					data->track_iter = track_iter;
-					data->dest_type = IMPORT_DEST_COMMENT;
-					strncpy(data->str, tmp, MAXLEN-1);
-					append_table(table_flac, &cnt,
-						     oggv->label, oggv->str,
-						     _("Add to Comments"), data);
-				}
-			}
-			oggv = oggv->next;
-		}
-	}
-#endif /* HAVE_FLAC */
-
 #ifdef HAVE_MOD_INFO
 	mdi = meta->mod_root;
 	if (mdi->active) {
@@ -1258,7 +918,6 @@ show_file_info(char * name, char * file, int is_called_from_browser,
                         vbox_mod = gtk_vbox_new(FALSE, 4);
                         label_mod = gtk_label_new(_("Module info"));
                         gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox_mod, label_mod);
-                        //page++;
                         fill_module_info_page(mdi, vbox_mod, file);
                 } else {
 
@@ -1285,15 +944,14 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	n_pages = gtk_notebook_get_n_pages(GTK_NOTEBOOK(nb));
 
         if (n_pages > 1) {
-		//int page = options.tags_tab_first ? 1 : 0;
-                gtk_notebook_set_current_page(GTK_NOTEBOOK(nb), options.tags_tab_first?1:0);
+                gtk_notebook_set_current_page(GTK_NOTEBOOK(nb), options.tags_tab_first ? 1 : 0);
         }
 
 	meta_free(meta);
 }
 
-#ifdef HAVE_MOD_INFO
 
+#ifdef HAVE_MOD_INFO
 /*
  * type = 0 for sample list
  * type != 0 for instrument list

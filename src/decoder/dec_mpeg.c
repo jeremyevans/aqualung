@@ -541,7 +541,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 	
 	lseek(fd, offset, SEEK_SET);
 	memset(info, 0, sizeof(mp3info_t));
-	info->start_byteoffset = offset;
+	info->start_byteoffset = offset - 4; /* XXX */
 	info->enc_delay = -1;
 	info->enc_padding = -1;
 	if (!mp3headerinfo(info, header))
@@ -578,7 +578,6 @@ get_mp3file_info(int fd, mp3info_t *info) {
 		offset_next = lseek(fd, 0, SEEK_CUR);
 		info->frame_size = offset_next - offset;
 		lseek(fd, offset - 4, SEEK_SET); /* go back to beginning of stream */
-		info->start_byteoffset -= 4;
 		return bytecount;
 	}
 
@@ -897,7 +896,8 @@ mpeg_input(void * data, struct mad_stream * stream) {
         if (pd->fdm == MAP_FAILED)
                 return MAD_FLOW_STOP;
 
-        mad_stream_buffer(stream, pd->fdm, size);
+        mad_stream_buffer(stream, pd->fdm + pd->mp3info.start_byteoffset,
+			  size - pd->mp3info.start_byteoffset);
 
         return MAD_FLOW_CONTINUE;
 }
@@ -1247,7 +1247,6 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	}
 
 	pd->frame_counter = 0;
-	pd->mpeg_stream.next_frame = pd->mpeg_stream.buffer + pd->mp3info.start_byteoffset;
 
 #ifdef MPEG_DEBUG
 	printf("mpeg_decoder_open successful\n");
@@ -1338,8 +1337,7 @@ mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 
 	if (seek_to_pos < pd->mp3info.frame_samples) {
 		pd->frame_counter = 0;
-		pd->mpeg_stream.next_frame = pd->mpeg_stream.buffer
-			+ pd->mp3info.start_byteoffset;
+		pd->mpeg_stream.next_frame = pd->mpeg_stream.buffer;
 		fdec->samples_left = fdec->fileinfo.total_samples;
 		goto flush_decoder_rb;
 	}
@@ -1352,8 +1350,7 @@ mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 #ifdef MPEG_DEBUG
 			printf("seek table not yet ready, seeking bitstream.\n");
 #endif /* MPEG_DEBUG */
-			pd->mpeg_stream.next_frame = pd->mpeg_stream.buffer +
-				pd->mp3info.start_byteoffset;
+			pd->mpeg_stream.next_frame = pd->mpeg_stream.buffer;
 			mad_stream_sync(&(pd->mpeg_stream));
 			mad_stream_skip(&(pd->mpeg_stream),
 					(pd->filesize - pd->mp3info.start_byteoffset)
@@ -1363,8 +1360,8 @@ mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 			pd->is_eos = decode_mpeg(dec);
 			/* report the real position of the decoder */
 			fdec->samples_left = fdec->fileinfo.total_samples -
-				(pd->mpeg_stream.next_frame - pd->mpeg_stream.buffer
-				 - pd->mp3info.start_byteoffset) / pd->bitrate * 8 * pd->SR;
+				(pd->mpeg_stream.next_frame - pd->mpeg_stream.buffer)
+				/ pd->bitrate * 8 * pd->SR;
 
 			goto flush_decoder_rb;
 		}
@@ -1398,7 +1395,7 @@ mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 		}
 	} while (sample + mp3info.frame_samples < seek_to_pos);
 
-	pd->mpeg_stream.next_frame = pd->mpeg_stream.buffer + offset;
+	pd->mpeg_stream.next_frame = pd->mpeg_stream.buffer - pd->mp3info.start_byteoffset + offset;
 	fdec->samples_left = fdec->fileinfo.total_samples - sample;
 
  flush_decoder_rb:

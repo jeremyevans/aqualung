@@ -1968,12 +1968,12 @@ main(int argc, char ** argv) {
                 fprintf(stderr, "no\n");
 #endif /* HAVE_MAC */
 
-                fprintf(stderr, "\t\tID3 tags                            : ");
-#ifdef HAVE_ID3
+                fprintf(stderr, "\t\tMetadata (ID3, APE, Ogg comments)   : ");
+#ifdef HAVE_TAGLIB
                 fprintf(stderr, "yes\n");
 #else
                 fprintf(stderr, "no\n");
-#endif /* HAVE_ID3 */
+#endif /* HAVE_TAGLIB */
 
 		fprintf(stderr, "\n\tOutput driver support:\n");
 

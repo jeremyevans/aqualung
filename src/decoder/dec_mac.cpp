@@ -26,6 +26,7 @@
 
 
 #ifdef HAVE_MAC
+
 /* expand this to nothing so there's no error when including MACLib.h */
 /* -- talkin' about cross-platform libraries? */
 #define DLLEXPORT
@@ -75,7 +76,7 @@ decode_mac(decoder_t * dec) {
 			return 1;
 		}
 		for (int i = 0; i < act_read; i++) {
-			for (int j = 0; j < pd->channels; j++) {
+			for (unsigned int j = 0; j < pd->channels; j++) {
 				fbuf[n] = (float)(data8[n] * fdec->voladj_lin / scale);
 				++n;
 			}
@@ -90,7 +91,7 @@ decode_mac(decoder_t * dec) {
 			return 1;
 		}
 		for (int i = 0; i < act_read; i++) {
-			for (int j = 0; j < pd->channels; j++) {
+			for (unsigned int j = 0; j < pd->channels; j++) {
 				fbuf[n] = (float)(data16[n] * fdec->voladj_lin / scale);
 				++n;
 			}
@@ -104,7 +105,7 @@ decode_mac(decoder_t * dec) {
 			return 1;
 		}
 		for (int i = 0; i < act_read; i++) {
-			for (int j = 0; j < pd->channels; j++) {
+			for (unsigned int j = 0; j < pd->channels; j++) {
 				fbuf[n] = (float)(data32[n] * fdec->voladj_lin / scale);
 				++n;
 			}
@@ -249,7 +250,7 @@ mac_decoder_read(decoder_t * dec, float * dest, int num) {
 	mac_pdata_t * pd = (mac_pdata_t *)dec->pdata;
 
 	unsigned int numread = 0;
-	unsigned int n_avail = 0;
+	int n_avail = 0;
 
 
 	while ((rb_read_space(pd->rb) <

@@ -105,8 +105,9 @@ typedef struct {
 
 	/* CDDB */
 	char cddb_server[MAXLEN];
-	int cddb_use_http;
 	int cddb_timeout;
+	char cddb_email[MAXLEN];
+	int cddb_use_http;
 	int cddb_use_proxy;
 	char cddb_proxy[MAXLEN];
 	int cddb_proxy_port;

@@ -22,6 +22,13 @@
 #ifndef _BUILD_STORE_H
 #define _BUILD_STORE_H
 
+#define BUILD_THREAD_BUSY  0
+#define BUILD_THREAD_FREE  1
+
+/* Please update when we reach the 22nd century. */
+#define YEAR_MIN 1900
+#define YEAR_MAX 2100
+
 typedef struct _map_t {
 
 	char str[MAXLEN];
@@ -68,6 +75,7 @@ typedef struct _build_record_t {
 } build_record_t;
 
 int is_valid_year(long y);
+int is_all_wspace(char * str);
 
 void build_artist(GtkTreeIter artist_iter);
 void build_store(GtkTreeIter store_iter);

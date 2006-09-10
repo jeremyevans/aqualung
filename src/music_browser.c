@@ -141,6 +141,7 @@ GtkWidget * record__separator2;
 GtkWidget * record__addtrk;
 #ifdef HAVE_CDDB
 GtkWidget * record__cddb;
+GtkWidget * record__cddb_submit;
 #endif /* HAVE_CDDB */
 GtkWidget * record__separator3;
 GtkWidget * record__volume;
@@ -1881,6 +1882,7 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gtk_widget_set_sensitive(record__addtrk, val);
 #ifdef HAVE_CDDB
 	gtk_widget_set_sensitive(record__cddb, val);
+	gtk_widget_set_sensitive(record__cddb_submit, TRUE);
 #endif /* HAVE_CDDB */
 	gtk_widget_set_sensitive(record__volume, val2);
 
@@ -1891,13 +1893,14 @@ set_popup_sensitivity(GtkTreePath * path) {
 
 	if (
 #ifdef HAVE_CDDB
-	    cddb_thread_state != 2 ||
+	    cddb_thread_state != CDDB_THREAD_FREE ||
 #endif /* HAVE_CDDB */
-	    build_thread_state != 1) {
+	    build_thread_state != BUILD_THREAD_FREE) {
 		gtk_widget_set_sensitive(store__build, FALSE);
 		gtk_widget_set_sensitive(artist__build, FALSE);
 #ifdef HAVE_CDDB
 		gtk_widget_set_sensitive(record__cddb, FALSE);
+		gtk_widget_set_sensitive(record__cddb_submit, FALSE);
 #endif /* HAVE_CDDB */
 	}
 }
@@ -3054,6 +3057,7 @@ record__remove_cb(gpointer data) {
 
 static void
 record__cddb_cb(gpointer data) {
+
 	GtkTreeIter iter;
 	GtkTreeModel * model;
 
@@ -3061,7 +3065,19 @@ record__cddb_cb(gpointer data) {
 
 		if (is_store_iter_readonly(&iter)) return;
 
-		cddb_get();
+		cddb_get(&iter);
+	}
+}
+
+static void
+record__cddb_submit_cb(gpointer data) {
+
+	GtkTreeIter iter;
+	GtkTreeModel * model;
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
+
+		cddb_submit(&iter);
 	}
 }
 
@@ -4140,6 +4156,7 @@ create_music_browser(void) {
 	record__addtrk = gtk_menu_item_new_with_label(_("Add new track to this record..."));
 #ifdef HAVE_CDDB
 	record__cddb = gtk_menu_item_new_with_label(_("CDDB query for this record..."));
+	record__cddb_submit = gtk_menu_item_new_with_label(_("Submit record to CDDB database..."));
 #endif /* HAVE_CDDB */
 	record__separator3 = gtk_separator_menu_item_new();
 	record__volume = gtk_menu_item_new_with_label(_("Calculate volume (recursive)"));
@@ -4158,6 +4175,7 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addtrk);
 #ifdef HAVE_CDDB
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__cddb);
+	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__cddb_submit);
 #endif /* HAVE_CDDB */
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator3);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__volume);
@@ -4174,6 +4192,7 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(record__addtrk), "activate", G_CALLBACK(track__add_cb), NULL);
 #ifdef HAVE_CDDB
 	g_signal_connect_swapped(G_OBJECT(record__cddb), "activate", G_CALLBACK(record__cddb_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(record__cddb_submit), "activate", G_CALLBACK(record__cddb_submit_cb), NULL);
 #endif /* HAVE_CDDB */
 	g_signal_connect_swapped(G_OBJECT(record__volume_unmeasured), "activate", G_CALLBACK(record__volume_unmeasured_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__volume_all), "activate", G_CALLBACK(record__volume_all_cb), NULL);
@@ -4189,6 +4208,7 @@ create_music_browser(void) {
 	gtk_widget_show(record__addtrk);
 #ifdef HAVE_CDDB
 	gtk_widget_show(record__cddb);
+	gtk_widget_show(record__cddb_submit);
 #endif /* HAVE_CDDB */
 	gtk_widget_show(record__separator3);
 	gtk_widget_show(record__volume);

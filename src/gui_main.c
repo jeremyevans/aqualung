@@ -4450,6 +4450,7 @@ save_config(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_server", (xmlChar *) options.cddb_server);
 	snprintf(str, 31, "%d", options.cddb_timeout);
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_timeout", (xmlChar *) str);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_email", (xmlChar *) options.cddb_email);
 	snprintf(str, 31, "%d", options.cddb_use_http);
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_use_http", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.cddb_use_proxy);
@@ -4580,6 +4581,7 @@ load_config(void) {
 	options.auto_use_ext_meta_track = 1;
 
 	options.cddb_server[0] = '\0';
+	options.cddb_email[0] = '\0';
 	options.cddb_proxy[0] = '\0';
 	options.cddb_timeout = 10;
 
@@ -5163,6 +5165,12 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
                                 sscanf((char *) key, "%d", &options.cddb_timeout);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_email"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                strncpy(options.cddb_email, (char *) key, MAXLEN-1);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_use_http"))) {

@@ -21,7 +21,13 @@
 #ifndef _CDDB_LOOKUP_H
 #define _CDDB_LOOKUP_H
 
-void cddb_get(void);
+#define CDDB_THREAD_ERROR   -1
+#define CDDB_THREAD_BUSY     0
+#define CDDB_THREAD_SUCCESS  1
+#define CDDB_THREAD_FREE     2
+
+void cddb_get(GtkTreeIter * iter_record);
 void cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cddb_record);
+void cddb_submit(GtkTreeIter * iter_record);
 
 #endif /* _CDDB_LOOKUP_H */

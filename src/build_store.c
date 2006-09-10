@@ -47,9 +47,6 @@
 #include "build_store.h"
 #include "cddb_lookup.h"
 
-#define BUILD_THREAD_BUSY  0
-#define BUILD_THREAD_FREE  1
-
 #define BUILD_STORE   0
 #define BUILD_ARTIST  1
 
@@ -1691,12 +1688,12 @@ is_reg(char * name) {
 
 
 int
-is_wspace(char * str) {
+is_all_wspace(char * str) {
 
 	int i;
 
 	for (i = 0; str[i]; i++) {
-		if (str[i] != ' ' || str[i] != '\t') {
+		if (str[i] != ' ' && str[i] != '\t') {
 			return 0;
 		}
 	}
@@ -1707,8 +1704,7 @@ is_wspace(char * str) {
 int
 is_valid_year(long y) {
 
-	/* Please update when we reach the 22nd century. */
-	return y > 1900 && y < 2100;
+	return y > YEAR_MIN && y < YEAR_MAX;
 }
 
 int
@@ -1999,24 +1995,24 @@ process_meta(build_record_t * record) {
 		if (meta_read(meta, ptrack->filename)) {
 			if (meta_artist &&
 			    !record->artist_valid && meta_get_artist(meta, tmp)) {
-				if (!meta_wspace || !is_wspace(tmp)) {
+				if (!meta_wspace || !is_all_wspace(tmp)) {
 					map_put(&map_artist, tmp);
 				}
 			}
 			if (meta_record &&
 			    !record->record_valid && meta_get_record(meta, tmp)) {
-				if (!meta_wspace || !is_wspace(tmp)) {
+				if (!meta_wspace || !is_all_wspace(tmp)) {
 					map_put(&map_record, tmp);
 				}
 			}
 			if (meta_title &&
 			    !ptrack->valid && meta_get_title(meta, ptrack->name)) {
-				if (!meta_wspace || !is_wspace(ptrack->name)) {
+				if (!meta_wspace || !is_all_wspace(ptrack->name)) {
 					ptrack->valid = 1;
 				}
 			}
 			if (!record->year_valid && meta_get_year(meta, tmp)) {
-				if (!meta_wspace || !is_wspace(tmp)) {
+				if (!meta_wspace || !is_all_wspace(tmp)) {
 					long y = strtol(tmp, NULL, 10);
 					if (is_valid_year(y)) {
 						map_put(&map_year, tmp);
@@ -2027,7 +2023,7 @@ process_meta(build_record_t * record) {
 				meta_get_rva(meta, &ptrack->rva);
 			}
 			if (meta_comment && meta_get_comment(meta, tmp)) {
-				if (!meta_wspace || !is_wspace(tmp)) {
+				if (!meta_wspace || !is_all_wspace(tmp)) {
 					strncpy(ptrack->comment, tmp, MAXLEN-1);
 				}
 			}
@@ -2208,8 +2204,6 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 
 	struct timespec req_time;
 	struct timespec rem_time;
-	req_time.tv_sec = 0;
-        req_time.tv_nsec = 10000000;
 
 	int i;
 	struct dirent ** ent_track;
@@ -2225,6 +2219,9 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	float duration;
 
 	char * utf8;
+
+	req_time.tv_sec = 0;
+        req_time.tv_nsec = 10000000;
 
 	record.artist[0] = '\0';
 	record.record[0] = '\0';

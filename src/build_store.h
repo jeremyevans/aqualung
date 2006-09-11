@@ -22,6 +22,12 @@
 #ifndef _BUILD_STORE_H
 #define _BUILD_STORE_H
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #define BUILD_THREAD_BUSY  0
 #define BUILD_THREAD_FREE  1
 
@@ -79,6 +85,12 @@ int is_all_wspace(char * str);
 
 void build_artist(GtkTreeIter artist_iter);
 void build_store(GtkTreeIter store_iter);
+
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
+
 
 #endif /* _BUILD_STORE_H */
 

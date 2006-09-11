@@ -45,6 +45,7 @@
 #include <apetag.h>
 #include <xiphcomment.h>
 
+#include <apeitem.h>
 #include <attachedpictureframe.h>
 #include <relativevolumeframe.h>
 #include <textidentificationframe.h>
@@ -67,6 +68,7 @@
 #include "gui_main.h"
 #include "options.h"
 #include "trashlist.h"
+#include "build_store.h"
 #include "i18n.h"
 #include "meta_decoder.h"
 #include "file_info.h"
@@ -82,6 +84,7 @@
 
 
 extern options_t options;
+
 
 typedef struct {
 	int is_called_from_browser;
@@ -407,7 +410,8 @@ info_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 #ifdef HAVE_TAGLIB
 /* simple mode for tags that don't require anything fancy (currently id3v1 and ape) */
 int
-build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode, TagLib::Tag * tag, char * nb_label) {
+build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
+		  TagLib::Tag * tag, char * nb_label) {
 
 	GtkWidget * vbox = gtk_vbox_new(FALSE, 4);
 	GtkWidget * table = gtk_table_new(0, 3, FALSE);
@@ -425,80 +429,102 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode, T
 	if (mode.is_called_from_browser) {
 		import_data_t * data;
 
-		data = import_data_new();
-		trashlist_add(fileinfo_trash, data);
-		data->model = mode.model;
-		data->track_iter = mode.track_iter;
-		data->dest_type = IMPORT_DEST_TITLE;
 		strncpy(str, (char *)tag->title().toCString(true), MAXLEN-1);
-		strncpy(data->str, str, MAXLEN-1);
+		if (is_all_wspace(str)) {
+			data = NULL;
+		} else {
+			data = import_data_new();
+			trashlist_add(fileinfo_trash, data);
+			data->model = mode.model;
+			data->track_iter = mode.track_iter;
+			data->dest_type = IMPORT_DEST_TITLE;
+			strncpy(data->str, str, MAXLEN-1);
+		}
 		append_table(table, &cnt, _("Title:"), str, _("Import as Title"), data);
 
-		data = import_data_new();
-		trashlist_add(fileinfo_trash, data);
-		data->model = mode.model;
-		data->track_iter = mode.track_iter;
-		data->dest_type = IMPORT_DEST_ARTIST;
 		strncpy(str, (char *)tag->artist().toCString(true), MAXLEN-1);
-		strncpy(data->str, str, MAXLEN-1);
+		if (is_all_wspace(str)) {
+			data = NULL;
+		} else {
+			data = import_data_new();
+			trashlist_add(fileinfo_trash, data);
+			data->model = mode.model;
+			data->track_iter = mode.track_iter;
+			data->dest_type = IMPORT_DEST_ARTIST;
+			strncpy(data->str, str, MAXLEN-1);
+		}
 		append_table(table, &cnt, _("Artist:"), str, _("Import as Artist"), data);
 
-		data = import_data_new();
-		trashlist_add(fileinfo_trash, data);
-		data->model = mode.model;
-		data->track_iter = mode.track_iter;
-		data->dest_type = IMPORT_DEST_RECORD;
 		strncpy(str, (char *)tag->album().toCString(true), MAXLEN-1);
-		strncpy(data->str, str, MAXLEN-1);
+		if (is_all_wspace(str)) {
+			data = NULL;
+		} else {
+			data = import_data_new();
+			trashlist_add(fileinfo_trash, data);
+			data->model = mode.model;
+			data->track_iter = mode.track_iter;
+			data->dest_type = IMPORT_DEST_RECORD;
+			strncpy(data->str, str, MAXLEN-1);
+		}
 		append_table(table, &cnt, _("Album:"), str, _("Import as Record"), data);
 
-		data = import_data_new();
-		trashlist_add(fileinfo_trash, data);
-		data->model = mode.model;
-		data->track_iter = mode.track_iter;
-		data->dest_type = IMPORT_DEST_NUMBER;
 		if (tag->track() != 0) {
 			sprintf(str, "%d", tag->track());
+			data = import_data_new();
+			trashlist_add(fileinfo_trash, data);
+			data->model = mode.model;
+			data->track_iter = mode.track_iter;
+			data->dest_type = IMPORT_DEST_NUMBER;
+			strncpy(data->str, str, MAXLEN-1);
 		} else {
 			str[0] = '\0';
+			data = NULL;
 		}
-		strncpy(data->str, str, MAXLEN-1);
 		append_table(table, &cnt, _("Track:"), str, _("Import as Track number"), data);
 
-		data = import_data_new();
-		trashlist_add(fileinfo_trash, data);
-		data->model = mode.model;
-		data->track_iter = mode.track_iter;
-		data->dest_type = IMPORT_DEST_COMMENT;
 		if (tag->year() != 0) {
 			sprintf(str, "%d", tag->year());
+			data = import_data_new();
+			trashlist_add(fileinfo_trash, data);
+			data->model = mode.model;
+			data->track_iter = mode.track_iter;
+			data->dest_type = IMPORT_DEST_COMMENT;
+			snprintf(data->str, MAXLEN-1, "%s %s", _("Year:"), str);
 		} else {
 			str[0] = '\0';
+			data = NULL;
 		}
-		snprintf(data->str, MAXLEN-1, "%s %s", _("Year:"), str);
 		append_table(table, &cnt, _("Year:"), str, _("Add to Comments"), data);
 
-		data = import_data_new();
-		trashlist_add(fileinfo_trash, data);
-		data->model = mode.model;
-		data->track_iter = mode.track_iter;
-		data->dest_type = IMPORT_DEST_COMMENT;
 		strncpy(str, (char *)tag->genre().toCString(true), MAXLEN-1);
-		snprintf(data->str, MAXLEN-1, "%s %s", _("Genre:"), str);
+		if (is_all_wspace(str)) {
+			data = NULL;
+		} else {
+			data = import_data_new();
+			trashlist_add(fileinfo_trash, data);
+			data->model = mode.model;
+			data->track_iter = mode.track_iter;
+			data->dest_type = IMPORT_DEST_COMMENT;
+			snprintf(data->str, MAXLEN-1, "%s %s", _("Genre:"), str);
+		}
 		append_table(table, &cnt, _("Genre:"), str, _("Add to Comments"), data);
 
-		data = import_data_new();
-		trashlist_add(fileinfo_trash, data);
-		data->model = mode.model;
-		data->track_iter = mode.track_iter;
-		data->dest_type = IMPORT_DEST_COMMENT;
 		strncpy(str, (char *)tag->comment().toCString(true), MAXLEN-1);
-		snprintf(data->str, MAXLEN-1, "%s %s", _("Comment:"), str);
+		if (is_all_wspace(str)) {
+			data = NULL;
+		} else {
+			data = import_data_new();
+			trashlist_add(fileinfo_trash, data);
+			data->model = mode.model;
+			data->track_iter = mode.track_iter;
+			data->dest_type = IMPORT_DEST_COMMENT;
+			snprintf(data->str, MAXLEN-1, "%s %s", _("Comment:"), str);
+		}
 		append_table(table, &cnt, _("Comment:"), str, _("Add to Comments"), data);
 	} else {
-		append_table(table, &cnt, _("Title:"),   (char *)tag->title().toCString(true),   NULL, NULL);
-		append_table(table, &cnt, _("Artist:"),  (char *)tag->artist().toCString(true),  NULL, NULL);
-		append_table(table, &cnt, _("Album:"),   (char *)tag->album().toCString(true),   NULL, NULL);
+		append_table(table, &cnt, _("Title:"),  (char *)tag->title().toCString(true),  NULL, NULL);
+		append_table(table, &cnt, _("Artist:"), (char *)tag->artist().toCString(true), NULL, NULL);
+		append_table(table, &cnt, _("Album:"),  (char *)tag->album().toCString(true),  NULL, NULL);
 		if (tag->track() != 0) {
 			sprintf(str, "%d", tag->track());
 		} else {
@@ -755,17 +781,10 @@ build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v2::Tag * id
 }
 
 
-void
-build_ape_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::APE::Tag * ape_tag) {
-
-	TagLib::Tag * tag = dynamic_cast<TagLib::Tag *>(ape_tag);
-	build_simple_page(nb, NULL, mode, tag, _("APE"));
-}
-
-
+/* ape tags also use this */
 void
 insert_oxc(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_t mode,
-		  char * key, char * val) {
+	   char * key, char * val) {
 
 	if (mode.is_called_from_browser) {
 		import_data_t * data;
@@ -790,6 +809,57 @@ insert_oxc(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_t mode,
 		}
 	} else {
 		append_table(table, cnt, key, val, NULL, NULL);
+	}
+}
+
+
+void
+build_ape_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::APE::Tag * ape_tag) {
+
+	int cnt = 0;
+	GtkWidget * table;
+	
+	TagLib::Tag * tag = dynamic_cast<TagLib::Tag *>(ape_tag);
+	cnt = build_simple_page(nb, &table, mode, tag, _("APE"));
+
+	TagLib::APE::ItemListMap m = ape_tag->itemListMap();
+	for (TagLib::APE::ItemListMap::Iterator i = m.begin(); i != m.end(); ++i) {
+
+		TagLib::StringList::Iterator j;
+		TagLib::StringList l = (*i).second.toStringList();
+		for (j = l.begin(); j != l.end(); j++) {
+			
+			char key[MAXLEN];
+			char val[MAXLEN];
+			char c;
+			int k;
+			
+			/* skip comments that are handled by the simple mode */
+			if ((strcmp("TITLE", (*i).first.toCString(true)) == 0) ||
+			    (strcmp("ARTIST", (*i).first.toCString(true)) == 0) ||
+			    (strcmp("ALBUM", (*i).first.toCString(true)) == 0) ||
+			    (strcmp("YEAR", (*i).first.toCString(true)) == 0) ||
+			    (strcmp("COMMENT", (*i).first.toCString(true)) == 0) ||
+			    (strcmp("TRACK", (*i).first.toCString(true)) == 0) ||
+			    (strcmp("GENRE", (*i).first.toCString(true)) == 0)) {
+				
+				continue;
+			}
+			
+			for (k = 0; ((c = (*i).first.toCString(true)[k]) != '\0') && (k < MAXLEN-1); k++) {
+				key[k] = (k == 0) ? toupper(c) : tolower(c);
+			}
+			key[k++] = ':';
+			key[k] = '\0';
+			
+			for (k = 0; ((c = (*j).toCString(true)[k]) != '\0') && (k < MAXLEN-1); k++) {
+				val[k] = c;
+			}
+			val[k] = '\0';
+			
+			printf("'%s' =  '%s'\n", key, val);
+			insert_oxc(nb, table, &cnt, mode, key, val);
+		}
 	}
 }
 

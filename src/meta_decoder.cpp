@@ -197,7 +197,7 @@ append_mod(metadata * meta, mod_info * mod) {
 void *
 meta_read_flac(char * file) {
 
-	TagLib::FLAC::File * taglib_flac_file = new TagLib::FLAC::File(file);
+	TagLib::FLAC::File * taglib_flac_file = new TagLib::FLAC::File(file, false);
 	return reinterpret_cast<void *>(taglib_flac_file);
 }
 #endif /* HAVE_FLAC */
@@ -207,7 +207,7 @@ meta_read_flac(char * file) {
 void *
 meta_read_oggv(char * file) {
 
-	TagLib::Ogg::Vorbis::File * taglib_oggv_file = new TagLib::Ogg::Vorbis::File(file);
+	TagLib::Ogg::Vorbis::File * taglib_oggv_file = new TagLib::Ogg::Vorbis::File(file, false);
 	return reinterpret_cast<void *>(taglib_oggv_file);
 }
 #endif /* HAVE_OGG_VORBIS */
@@ -217,7 +217,7 @@ meta_read_oggv(char * file) {
 void *
 meta_read_mpeg(char * file) {
 
-	TagLib::MPEG::File * taglib_mpeg_file = new TagLib::MPEG::File(file);
+	TagLib::MPEG::File * taglib_mpeg_file = new TagLib::MPEG::File(file, false);
 	return reinterpret_cast<void *>(taglib_mpeg_file);
 }
 #endif /* HAVE_MPEG */
@@ -227,7 +227,7 @@ meta_read_mpeg(char * file) {
 void *
 meta_read_mpc(char * file) {
 
-	TagLib::MPC::File * taglib_mpc_file = new TagLib::MPC::File(file);
+	TagLib::MPC::File * taglib_mpc_file = new TagLib::MPC::File(file, false);
 	return reinterpret_cast<void *>(taglib_mpc_file);
 }
 #endif /* HAVE_MPC */

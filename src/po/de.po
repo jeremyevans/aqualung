@@ -474,28 +474,28 @@ msgstr "JACK Verbindung verloren"
 msgid "Matches:"
 msgstr "Treffer:"
 
-#: ../cddb_lookup.c:395 ../cddb_lookup.c:662 ../file_info.cpp:325
-#: ../file_info.cpp:381
+#: ../cddb_lookup.c:395 ../cddb_lookup.c:662 ../file_info.cpp:444
+#: ../file_info.cpp:500
 #, fuzzy
 msgid "Artist:"
 msgstr "Artist"
 
-#: ../cddb_lookup.c:401 ../file_info.cpp:325
+#: ../cddb_lookup.c:401 ../file_info.cpp:444
 msgid "Import as Artist"
 msgstr "Als Artist importieren"
 
-#: ../cddb_lookup.c:409 ../cddb_lookup.c:677 ../file_info.cpp:316
-#: ../file_info.cpp:380
+#: ../cddb_lookup.c:409 ../cddb_lookup.c:677 ../file_info.cpp:435
+#: ../file_info.cpp:499
 #, fuzzy
 msgid "Title:"
 msgstr "Titel:"
 
-#: ../cddb_lookup.c:415 ../file_info.cpp:316
+#: ../cddb_lookup.c:415 ../file_info.cpp:435
 msgid "Import as Title"
 msgstr "Als Titel importieren"
 
-#: ../cddb_lookup.c:423 ../cddb_lookup.c:692 ../file_info.cpp:359
-#: ../file_info.cpp:360 ../file_info.cpp:394
+#: ../cddb_lookup.c:423 ../cddb_lookup.c:692 ../file_info.cpp:478
+#: ../file_info.cpp:479 ../file_info.cpp:513
 #, fuzzy
 msgid "Year:"
 msgstr "Jahr"
@@ -511,13 +511,13 @@ msgid "Category:"
 msgstr "Kategorie"
 
 #: ../cddb_lookup.c:443 ../cddb_lookup.c:457 ../cddb_lookup.c:471
-#: ../file_info.cpp:360 ../file_info.cpp:369 ../file_info.cpp:378
-#: ../file_info.cpp:443 ../file_info.cpp:557
+#: ../file_info.cpp:479 ../file_info.cpp:488 ../file_info.cpp:497
+#: ../file_info.cpp:562 ../file_info.cpp:789
 msgid "Add to Comments"
 msgstr "Zum Kommentar hinzufügen"
 
-#: ../cddb_lookup.c:451 ../cddb_lookup.c:739 ../file_info.cpp:368
-#: ../file_info.cpp:369 ../file_info.cpp:395
+#: ../cddb_lookup.c:451 ../cddb_lookup.c:739 ../file_info.cpp:487
+#: ../file_info.cpp:488 ../file_info.cpp:514
 #, fuzzy
 msgid "Genre:"
 msgstr "Genre"
@@ -757,11 +757,11 @@ msgstr ""
 msgid "Compression: Insane"
 msgstr ""
 
-#: ../gui_main.c:894 ../file_info.cpp:847
+#: ../gui_main.c:894 ../file_info.cpp:1080
 msgid "MONO"
 msgstr ""
 
-#: ../gui_main.c:897 ../file_info.cpp:849
+#: ../gui_main.c:897 ../file_info.cpp:1082
 msgid "STEREO"
 msgstr ""
 
@@ -871,7 +871,7 @@ msgstr "Skin-Browser"
 msgid "JACK port setup"
 msgstr "JACK Port Einrichtung"
 
-#: ../gui_main.c:3163 ../file_info.cpp:741
+#: ../gui_main.c:3163 ../file_info.cpp:973
 msgid "File info"
 msgstr "Datei-Info"
 
@@ -2245,7 +2245,7 @@ msgstr "Verfügbare Plugins"
 msgid "ID"
 msgstr ""
 
-#: ../plugin.c:1892 ../plugin.c:1975 ../file_info.cpp:1258
+#: ../plugin.c:1892 ../plugin.c:1975 ../file_info.cpp:1491
 msgid "Name"
 msgstr "Name"
 
@@ -2378,7 +2378,7 @@ msgstr "Verfügbare Skins"
 msgid "Calculating volume level"
 msgstr "Lautstärke bestimmen: %s"
 
-#: ../volume.c:243 ../file_info.cpp:774
+#: ../volume.c:243 ../file_info.cpp:1007
 msgid "File:"
 msgstr "Datei:"
 
@@ -2386,144 +2386,261 @@ msgstr "Datei:"
 msgid "Progress:"
 msgstr ""
 
-#: ../file_info.cpp:334 ../file_info.cpp:382
+#: ../file_info.cpp:286
+#, fuzzy
+msgid "Please specify the file to save the image to."
+msgstr "Playliste speichern"
+
+#: ../file_info.cpp:346
+#, fuzzy
+msgid "Type"
+msgstr "SRC Typ: "
+
+#: ../file_info.cpp:348
+#, fuzzy
+msgid "Description"
+msgstr "Zeitdauer:"
+
+#: ../file_info.cpp:350
+msgid "No description"
+msgstr ""
+
+#: ../file_info.cpp:353
+msgid "Embedded picture"
+msgstr ""
+
+#: ../file_info.cpp:370
+#, fuzzy
+msgid "Save to file..."
+msgstr "Musikladen"
+
+#: ../file_info.cpp:453 ../file_info.cpp:501
 #, fuzzy
 msgid "Album:"
 msgstr "Album"
 
-#: ../file_info.cpp:334
+#: ../file_info.cpp:453
 msgid "Import as Record"
 msgstr "Als Album importieren"
 
-#: ../file_info.cpp:347 ../file_info.cpp:388 ../file_info.cpp:761
+#: ../file_info.cpp:466 ../file_info.cpp:507 ../file_info.cpp:994
 #, fuzzy
 msgid "Track:"
 msgstr "Track"
 
-#: ../file_info.cpp:347
+#: ../file_info.cpp:466
 msgid "Import as Track number"
 msgstr "Als Tracknummer importieren"
 
-#: ../file_info.cpp:377 ../file_info.cpp:378 ../file_info.cpp:396
+#: ../file_info.cpp:496 ../file_info.cpp:497 ../file_info.cpp:515
 #, fuzzy
 msgid "Comment:"
 msgstr "Kommentar:"
 
-#: ../file_info.cpp:410
+#: ../file_info.cpp:529
 msgid "ID3v1"
 msgstr ""
 
-#: ../file_info.cpp:457
+#: ../file_info.cpp:576
 #, c-format
 msgid "%+.1f dB (Id: %s)"
 msgstr ""
 
-#: ../file_info.cpp:468 ../file_info.cpp:470
+#: ../file_info.cpp:587 ../file_info.cpp:589
 #, fuzzy
 msgid "Relative Volume Adj.:"
 msgstr "Relative Lautstärke"
 
-#: ../file_info.cpp:468 ../file_info.cpp:553
+#: ../file_info.cpp:587 ../file_info.cpp:785
 msgid "Import as RVA"
 msgstr "Als RVA importieren"
 
-#: ../file_info.cpp:485
+#: ../file_info.cpp:601
+msgid "Other"
+msgstr ""
+
+#: ../file_info.cpp:603
+msgid "File icon (32x32 PNG)"
+msgstr ""
+
+#: ../file_info.cpp:605
+#, fuzzy
+msgid "File icon (other)"
+msgstr "Datei-Info"
+
+#: ../file_info.cpp:607
+msgid "Front cover"
+msgstr ""
+
+#: ../file_info.cpp:609
+msgid "Back cover"
+msgstr ""
+
+#: ../file_info.cpp:611
+msgid "Leaflet page"
+msgstr ""
+
+#: ../file_info.cpp:613
+#, fuzzy
+msgid "Album image"
+msgstr "Album"
+
+#: ../file_info.cpp:615
+msgid "Lead artist/performer"
+msgstr ""
+
+#: ../file_info.cpp:617
+msgid "Artist/performer"
+msgstr ""
+
+#: ../file_info.cpp:619 ../meta_decoder.cpp:108
+msgid "Conductor"
+msgstr "Dirigent"
+
+#: ../file_info.cpp:621
+#, fuzzy
+msgid "Band/orchestra"
+msgstr "Orchester"
+
+#: ../file_info.cpp:623 ../meta_decoder.cpp:79
+msgid "Composer"
+msgstr "Komponist"
+
+#: ../file_info.cpp:625
+msgid "Lyricist/text writer"
+msgstr ""
+
+#: ../file_info.cpp:627
+#, fuzzy
+msgid "Recording location/studio"
+msgstr "Album Titel"
+
+#: ../file_info.cpp:629
+msgid "During recording"
+msgstr ""
+
+#: ../file_info.cpp:631
+msgid "During performance"
+msgstr ""
+
+#: ../file_info.cpp:633
+msgid "Movie/video screen capture"
+msgstr ""
+
+#: ../file_info.cpp:635
+msgid "A large, coloured fish"
+msgstr ""
+
+#: ../file_info.cpp:637
+#, fuzzy
+msgid "Illustration"
+msgstr "Zeitdauer:"
+
+#: ../file_info.cpp:639
+msgid "Band/artist logotype"
+msgstr ""
+
+#: ../file_info.cpp:641
+msgid "Publisher/studio logotype"
+msgstr ""
+
+#: ../file_info.cpp:723
 msgid "ID3v2"
 msgstr ""
 
-#: ../file_info.cpp:530
+#: ../file_info.cpp:762
 msgid "APE"
 msgstr ""
 
-#: ../file_info.cpp:572
+#: ../file_info.cpp:804
 #, fuzzy
 msgid "Ogg comments"
 msgstr "Kommentar"
 
-#: ../file_info.cpp:608
+#: ../file_info.cpp:840
 #, fuzzy
 msgid "Vendor:"
 msgstr "Genre"
 
-#: ../file_info.cpp:801
+#: ../file_info.cpp:1034
 msgid "Audio data"
 msgstr "Audio-Daten"
 
-#: ../file_info.cpp:805
+#: ../file_info.cpp:1038
 #, fuzzy
 msgid "Format:"
 msgstr "Abbrechen"
 
-#: ../file_info.cpp:817
+#: ../file_info.cpp:1050
 msgid "Length:"
 msgstr "Länge:"
 
-#: ../file_info.cpp:829
+#: ../file_info.cpp:1062
 #, fuzzy
 msgid "Samplerate:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:834
+#: ../file_info.cpp:1067
 #, c-format
 msgid "%ld Hz"
 msgstr ""
 
-#: ../file_info.cpp:841
+#: ../file_info.cpp:1074
 msgid "Channel count:"
 msgstr "Kanalanzahl:"
 
-#: ../file_info.cpp:856
+#: ../file_info.cpp:1089
 msgid "Bandwidth:"
 msgstr "Bandbreite:"
 
-#: ../file_info.cpp:861
+#: ../file_info.cpp:1094
 #, c-format
 msgid "%.1f kbit/s"
 msgstr ""
 
-#: ../file_info.cpp:868
+#: ../file_info.cpp:1101
 msgid "Total samples:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:919
+#: ../file_info.cpp:1152
 #, fuzzy
 msgid "Module info"
 msgstr "Datei-Info"
 
-#: ../file_info.cpp:1057 ../file_info.cpp:1136
+#: ../file_info.cpp:1290 ../file_info.cpp:1369
 #, fuzzy
 msgid "Type:"
 msgstr "SRC Typ: "
 
-#: ../file_info.cpp:1070 ../file_info.cpp:1149
+#: ../file_info.cpp:1303 ../file_info.cpp:1382
 #, fuzzy
 msgid "Channels:"
 msgstr "Kanalanzahl:"
 
-#: ../file_info.cpp:1084 ../file_info.cpp:1163
+#: ../file_info.cpp:1317 ../file_info.cpp:1396
 #, fuzzy
 msgid "Patterns:"
 msgstr "Kategorie"
 
-#: ../file_info.cpp:1098 ../file_info.cpp:1177
+#: ../file_info.cpp:1331 ../file_info.cpp:1410
 #, fuzzy
 msgid "Samples:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:1111
+#: ../file_info.cpp:1344
 msgid "Instruments:"
 msgstr ""
 
-#: ../file_info.cpp:1219
+#: ../file_info.cpp:1452
 #, fuzzy
 msgid "Samples"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:1228
+#: ../file_info.cpp:1461
 msgid "Instruments"
 msgstr ""
 
-#: ../file_info.cpp:1251
+#: ../file_info.cpp:1484
 msgid "No."
 msgstr ""
 
@@ -2534,10 +2651,6 @@ msgstr "Album"
 #: ../meta_decoder.cpp:78
 msgid "Beats per minute"
 msgstr ""
-
-#: ../meta_decoder.cpp:79
-msgid "Composer"
-msgstr "Komponist"
 
 #: ../meta_decoder.cpp:80
 msgid "Content type"
@@ -2649,10 +2762,6 @@ msgstr ""
 #: ../meta_decoder.cpp:107
 msgid "Orchestra"
 msgstr "Orchester"
-
-#: ../meta_decoder.cpp:108
-msgid "Conductor"
-msgstr "Dirigent"
 
 #: ../meta_decoder.cpp:109
 msgid "Interpreted/remixed"

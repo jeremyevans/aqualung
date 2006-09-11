@@ -28,6 +28,8 @@
 #include <sys/stat.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
+#include <glib.h>
+#include <glib/gstdio.h>
 
 #ifdef HAVE_MOD_INFO
 #include <libmodplug/modplug.h>
@@ -94,6 +96,13 @@ typedef struct {
         char str[MAXLEN];
         float fval;
 } import_data_t;
+
+
+typedef struct {
+	char savefile[MAXLEN];
+	unsigned int image_size;
+	void * image_data;
+} save_pic_t;
 
 
 extern GtkWidget * main_window;
@@ -231,7 +240,7 @@ append_table(GtkWidget * table, int * cnt, char * field, char * value,
 
 	GtkWidget * button;
 
-	gtk_table_resize(GTK_TABLE(table), *cnt + 1, 2);
+	gtk_table_resize(GTK_TABLE(table), *cnt + 1, 3);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(field);
@@ -262,6 +271,112 @@ append_table(GtkWidget * table, int * cnt, char * field, char * value,
 				 GTK_FILL, GTK_FILL, 5, 3);
 	}
 	
+	(*cnt)++;
+}
+
+
+static void
+save_pic_button_pressed(GtkWidget * widget, gpointer data) {
+
+	save_pic_t * save_pic = (save_pic_t *)data;
+        GtkWidget * dialog;
+        gchar * selected_filename;
+	char filename[MAXLEN];
+
+        dialog = gtk_file_chooser_dialog_new(_("Please specify the file to save the image to."), 
+                                             GTK_WINDOW(info_window), 
+                                             GTK_FILE_CHOOSER_ACTION_SAVE, 
+                                             GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                             NULL);
+
+        deflicker();
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+        gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), save_pic->savefile);
+
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
+        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
+
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		strncpy(filename, selected_filename, MAXLEN-1);
+                g_free(selected_filename);
+
+		FILE * f = fopen(filename, "wb");
+		if (f == NULL) {
+			printf("error: fopen() failed\n");
+			gtk_widget_destroy(dialog);
+			return;
+		}
+		if (fwrite(save_pic->image_data, 1, save_pic->image_size, f) != save_pic->image_size) {
+			printf("fwrite() error\n");
+			gtk_widget_destroy(dialog);
+			return;
+		}
+		fclose(f);
+
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)), MAXLEN-1);
+        }
+        gtk_widget_destroy(dialog);
+}
+
+
+void
+append_table_pic(GtkWidget * table, int * cnt, GtkWidget * image,
+		 char * type, char * descr, char * savefilename,
+		 void * image_data, int image_size) {
+
+	char type_str[MAXLEN];
+	char descr_str[MAXLEN];
+
+	save_pic_t * save_pic = (save_pic_t *)malloc(sizeof(save_pic_t));
+	if (save_pic == NULL)
+		return;
+
+	trashlist_add(fileinfo_trash, save_pic);
+	strncpy(save_pic->savefile, savefilename, MAXLEN-1);
+	save_pic->image_size = image_size;
+	save_pic->image_data = image_data;
+
+	snprintf(type_str, MAXLEN-1, "%s: %s", _("Type"), type);
+	if (descr != NULL) {
+		snprintf(descr_str, MAXLEN-1, "%s: %s", _("Description"), descr);
+	} else {
+		strcpy(descr_str, _("No description"));
+	}
+
+	GtkWidget * frame = gtk_frame_new(_("Embedded picture"));
+	GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+	GtkWidget * hbox_i;
+	GtkWidget * vbox = gtk_vbox_new(FALSE, 0);
+	GtkWidget * label;
+	gtk_container_add(GTK_CONTAINER(frame), hbox);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+
+	hbox_i = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(type_str);
+	gtk_box_pack_start(GTK_BOX(hbox_i), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_i, FALSE, FALSE, 3);
+	hbox_i = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(descr_str);
+	gtk_box_pack_start(GTK_BOX(hbox_i), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_i, FALSE, FALSE, 3);
+
+	GtkWidget * button = gtk_button_new_with_label(_("Save to file..."));
+	g_signal_connect(G_OBJECT(button), "clicked",
+			 G_CALLBACK(save_pic_button_pressed), (gpointer)save_pic);
+	gtk_box_pack_end(GTK_BOX(vbox), button, FALSE, FALSE, 3);
+
+	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 3);
+	gtk_box_pack_end(GTK_BOX(hbox), image, FALSE, FALSE, 3);
+	gtk_table_attach(GTK_TABLE(table), frame, 0, 3, *cnt, *cnt+1,
+			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
+
 	(*cnt)++;
 }
 
@@ -297,8 +412,12 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode, T
 	GtkWidget * vbox = gtk_vbox_new(FALSE, 4);
 	GtkWidget * table = gtk_table_new(0, 3, FALSE);
 	GtkWidget * label = gtk_label_new(nb_label);
+	GtkWidget * scrwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrwin),
+				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 10);
-	gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox, label);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrwin), vbox);
+	gtk_notebook_append_page(GTK_NOTEBOOK(nb), scrwin, label);
 
 	int cnt = 0;
 	char str[MAXLEN];
@@ -472,6 +591,125 @@ insert_id3v2_rva2(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_
 }
 
 
+char *
+pic_type_to_string(int type) {
+
+	using namespace TagLib::ID3v2;
+
+	switch (type) {
+	case AttachedPictureFrame::Other:
+		return _("Other");
+	case AttachedPictureFrame::FileIcon:
+		return _("File icon (32x32 PNG)");
+	case AttachedPictureFrame::OtherFileIcon:
+		return _("File icon (other)");
+	case AttachedPictureFrame::FrontCover:
+		return _("Front cover");
+	case AttachedPictureFrame::BackCover:
+		return _("Back cover");
+	case AttachedPictureFrame::LeafletPage:
+		return _("Leaflet page");
+	case AttachedPictureFrame::Media:
+		return _("Album image");
+	case AttachedPictureFrame::LeadArtist:
+		return _("Lead artist/performer");
+	case AttachedPictureFrame::Artist:
+		return _("Artist/performer");
+	case AttachedPictureFrame::Conductor:
+		return _("Conductor");
+	case AttachedPictureFrame::Band:
+		return _("Band/orchestra");
+	case AttachedPictureFrame::Composer:
+		return _("Composer");
+	case AttachedPictureFrame::Lyricist:
+		return _("Lyricist/text writer");
+	case AttachedPictureFrame::RecordingLocation:
+		return _("Recording location/studio");
+	case AttachedPictureFrame::DuringRecording:
+		return _("During recording");
+	case AttachedPictureFrame::DuringPerformance:
+		return _("During performance");
+	case AttachedPictureFrame::MovieScreenCapture:
+		return _("Movie/video screen capture");
+	case AttachedPictureFrame::ColouredFish:
+		return _("A large, coloured fish");
+	case AttachedPictureFrame::Illustration:
+		return _("Illustration");
+	case AttachedPictureFrame::BandLogo:
+		return _("Band/artist logotype");
+	case AttachedPictureFrame::PublisherLogo:
+		return _("Publisher/studio logotype");
+	default:
+		return NULL;
+	}
+}
+
+
+void
+insert_id3v2_apic(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_t mode,
+		  TagLib::ID3v2::Frame * frame) {
+
+	TagLib::ID3v2::AttachedPictureFrame * apic_frame =
+		dynamic_cast<TagLib::ID3v2::AttachedPictureFrame *>(frame);
+	
+	char mime_type[20];
+	char savefilename[256];
+	char tmpname[256];
+	void * image_data = NULL;
+
+	mime_type[0] = '\0';
+	strcpy(savefilename, "picture.");
+	int r = sscanf(apic_frame->mimeType().toCString(true), "image/%s", mime_type);
+
+	if (r == 0) {
+		strncpy(mime_type, apic_frame->mimeType().toCString(true), 19);
+	}
+	for (int i = 0; mime_type[i] != '\0'; i++) {
+		mime_type[i] = tolower(mime_type[i]);
+	}
+	if (mime_type[0] == '\0') {
+		strcpy(mime_type, "dat");
+	}
+	strncat(savefilename, mime_type, 255);
+
+	TagLib::ByteVector bv = apic_frame->picture();
+	
+	if (bv.size() <= 0)
+		return;
+
+	image_data = malloc(bv.size());
+	if (!image_data)
+		return;
+
+	trashlist_add(fileinfo_trash, image_data);
+	memcpy(image_data, bv.data(), bv.size());
+
+	strcpy(tmpname, "/tmp/aqualung-picture-XXXXXX.dat");
+	int fd = g_mkstemp(tmpname);
+	if (fd < 0) {
+		printf("error: g_mkstemp() failed\n");
+		return;
+	}
+	if (write(fd, bv.data(), bv.size()) != (int)bv.size()) {
+		printf("write() error\n");
+		return;
+	}
+	close(fd);
+
+	GtkWidget * image = gtk_image_new_from_file(tmpname);
+	if (g_unlink(tmpname) < 0) {
+		printf("error: g_unlink() failed on %s\n", tmpname);
+		return;
+	}
+
+	append_table_pic(table, cnt, image,
+			 pic_type_to_string(apic_frame->type()),
+			 apic_frame->description().isEmpty() ?
+			 NULL : (char *)apic_frame->description().toCString(true),
+			 savefilename, image_data, bv.size());
+}
+
+
 void
 build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v2::Tag * id3v2_tag) {
 
@@ -494,17 +732,12 @@ build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v2::Tag * id
 		frameID[4] = '\0';
 
 		if (strcmp(frameID, "APIC") == 0) {
-			TagLib::ID3v2::AttachedPictureFrame * apic_frame =
-				dynamic_cast<TagLib::ID3v2::AttachedPictureFrame *>(frame);
-
-			/* XXX incomplete */
-
+			insert_id3v2_apic(nb, table, &cnt, mode, frame);
 		} else if (strcmp(frameID, "RVA2") == 0) {
 			char id_str[MAXLEN];
 			float voladj;
 			read_rva2(frame->render().data() + 10, frame->size(), id_str, &voladj);
 			insert_id3v2_rva2(nb, table, &cnt, mode, id_str, voladj);
-
 		} else if (frameID[0] == 'T') {
 			/* skip frames that are handled by the simple mode */
 			if ((strcmp(frameID, "TIT2") != 0) && /* title */
@@ -513,7 +746,6 @@ build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, TagLib::ID3v2::Tag * id
 			    (strcmp(frameID, "TRCK") != 0) && /* track no. */
 			    (strcmp(frameID, "TCON") != 0) && /* genre */
 			    (strcmp(frameID, "TDRC") != 0)) { /* year */
-
 				insert_id3v2_text(nb, table, &cnt, mode, frame, frameID);
 			}
 		} else {
@@ -741,7 +973,8 @@ show_file_info(char * name, char * file, int is_called_from_browser,
         gtk_window_set_title(GTK_WINDOW(info_window), _("File info"));
 	gtk_window_set_transient_for(GTK_WINDOW(info_window), GTK_WINDOW(main_window));
 	gtk_window_set_position(GTK_WINDOW(info_window), GTK_WIN_POS_CENTER_ON_PARENT);
-	//gtk_widget_set_size_request(GTK_WIDGET(info_window), 500, -1);
+	gtk_window_set_default_size(GTK_WINDOW(info_window), 600, 500);
+        gtk_window_set_resizable(GTK_WINDOW(info_window), TRUE);
 	g_signal_connect(G_OBJECT(info_window), "delete_event",
 			 G_CALLBACK(info_window_close), NULL);
         g_signal_connect(G_OBJECT(info_window), "key_press_event",

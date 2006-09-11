@@ -412,26 +412,26 @@ msgstr ""
 msgid "Matches:"
 msgstr ""
 
-#: ../cddb_lookup.c:395 ../cddb_lookup.c:662 ../file_info.cpp:325
-#: ../file_info.cpp:381
+#: ../cddb_lookup.c:395 ../cddb_lookup.c:662 ../file_info.cpp:444
+#: ../file_info.cpp:500
 msgid "Artist:"
 msgstr ""
 
-#: ../cddb_lookup.c:401 ../file_info.cpp:325
+#: ../cddb_lookup.c:401 ../file_info.cpp:444
 msgid "Import as Artist"
 msgstr ""
 
-#: ../cddb_lookup.c:409 ../cddb_lookup.c:677 ../file_info.cpp:316
-#: ../file_info.cpp:380
+#: ../cddb_lookup.c:409 ../cddb_lookup.c:677 ../file_info.cpp:435
+#: ../file_info.cpp:499
 msgid "Title:"
 msgstr ""
 
-#: ../cddb_lookup.c:415 ../file_info.cpp:316
+#: ../cddb_lookup.c:415 ../file_info.cpp:435
 msgid "Import as Title"
 msgstr ""
 
-#: ../cddb_lookup.c:423 ../cddb_lookup.c:692 ../file_info.cpp:359
-#: ../file_info.cpp:360 ../file_info.cpp:394
+#: ../cddb_lookup.c:423 ../cddb_lookup.c:692 ../file_info.cpp:478
+#: ../file_info.cpp:479 ../file_info.cpp:513
 msgid "Year:"
 msgstr ""
 
@@ -444,13 +444,13 @@ msgid "Category:"
 msgstr ""
 
 #: ../cddb_lookup.c:443 ../cddb_lookup.c:457 ../cddb_lookup.c:471
-#: ../file_info.cpp:360 ../file_info.cpp:369 ../file_info.cpp:378
-#: ../file_info.cpp:443 ../file_info.cpp:557
+#: ../file_info.cpp:479 ../file_info.cpp:488 ../file_info.cpp:497
+#: ../file_info.cpp:562 ../file_info.cpp:789
 msgid "Add to Comments"
 msgstr ""
 
-#: ../cddb_lookup.c:451 ../cddb_lookup.c:739 ../file_info.cpp:368
-#: ../file_info.cpp:369 ../file_info.cpp:395
+#: ../cddb_lookup.c:451 ../cddb_lookup.c:739 ../file_info.cpp:487
+#: ../file_info.cpp:488 ../file_info.cpp:514
 msgid "Genre:"
 msgstr ""
 
@@ -685,11 +685,11 @@ msgstr ""
 msgid "Compression: Insane"
 msgstr ""
 
-#: ../gui_main.c:894 ../file_info.cpp:847
+#: ../gui_main.c:894 ../file_info.cpp:1080
 msgid "MONO"
 msgstr ""
 
-#: ../gui_main.c:897 ../file_info.cpp:849
+#: ../gui_main.c:897 ../file_info.cpp:1082
 msgid "STEREO"
 msgstr ""
 
@@ -791,7 +791,7 @@ msgstr ""
 msgid "JACK port setup"
 msgstr ""
 
-#: ../gui_main.c:3163 ../file_info.cpp:741
+#: ../gui_main.c:3163 ../file_info.cpp:973
 msgid "File info"
 msgstr ""
 
@@ -2056,7 +2056,7 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
-#: ../plugin.c:1892 ../plugin.c:1975 ../file_info.cpp:1258
+#: ../plugin.c:1892 ../plugin.c:1975 ../file_info.cpp:1491
 msgid "Name"
 msgstr ""
 
@@ -2184,7 +2184,7 @@ msgstr ""
 msgid "Calculating volume level"
 msgstr ""
 
-#: ../volume.c:243 ../file_info.cpp:774
+#: ../volume.c:243 ../file_info.cpp:1007
 msgid "File:"
 msgstr ""
 
@@ -2192,130 +2192,238 @@ msgstr ""
 msgid "Progress:"
 msgstr ""
 
-#: ../file_info.cpp:334 ../file_info.cpp:382
+#: ../file_info.cpp:286
+msgid "Please specify the file to save the image to."
+msgstr ""
+
+#: ../file_info.cpp:346
+msgid "Type"
+msgstr ""
+
+#: ../file_info.cpp:348
+msgid "Description"
+msgstr ""
+
+#: ../file_info.cpp:350
+msgid "No description"
+msgstr ""
+
+#: ../file_info.cpp:353
+msgid "Embedded picture"
+msgstr ""
+
+#: ../file_info.cpp:370
+msgid "Save to file..."
+msgstr ""
+
+#: ../file_info.cpp:453 ../file_info.cpp:501
 msgid "Album:"
 msgstr ""
 
-#: ../file_info.cpp:334
+#: ../file_info.cpp:453
 msgid "Import as Record"
 msgstr ""
 
-#: ../file_info.cpp:347 ../file_info.cpp:388 ../file_info.cpp:761
+#: ../file_info.cpp:466 ../file_info.cpp:507 ../file_info.cpp:994
 msgid "Track:"
 msgstr ""
 
-#: ../file_info.cpp:347
+#: ../file_info.cpp:466
 msgid "Import as Track number"
 msgstr ""
 
-#: ../file_info.cpp:377 ../file_info.cpp:378 ../file_info.cpp:396
+#: ../file_info.cpp:496 ../file_info.cpp:497 ../file_info.cpp:515
 msgid "Comment:"
 msgstr ""
 
-#: ../file_info.cpp:410
+#: ../file_info.cpp:529
 msgid "ID3v1"
 msgstr ""
 
-#: ../file_info.cpp:457
+#: ../file_info.cpp:576
 #, c-format
 msgid "%+.1f dB (Id: %s)"
 msgstr ""
 
-#: ../file_info.cpp:468 ../file_info.cpp:470
+#: ../file_info.cpp:587 ../file_info.cpp:589
 msgid "Relative Volume Adj.:"
 msgstr ""
 
-#: ../file_info.cpp:468 ../file_info.cpp:553
+#: ../file_info.cpp:587 ../file_info.cpp:785
 msgid "Import as RVA"
 msgstr ""
 
-#: ../file_info.cpp:485
+#: ../file_info.cpp:601
+msgid "Other"
+msgstr ""
+
+#: ../file_info.cpp:603
+msgid "File icon (32x32 PNG)"
+msgstr ""
+
+#: ../file_info.cpp:605
+msgid "File icon (other)"
+msgstr ""
+
+#: ../file_info.cpp:607
+msgid "Front cover"
+msgstr ""
+
+#: ../file_info.cpp:609
+msgid "Back cover"
+msgstr ""
+
+#: ../file_info.cpp:611
+msgid "Leaflet page"
+msgstr ""
+
+#: ../file_info.cpp:613
+msgid "Album image"
+msgstr ""
+
+#: ../file_info.cpp:615
+msgid "Lead artist/performer"
+msgstr ""
+
+#: ../file_info.cpp:617
+msgid "Artist/performer"
+msgstr ""
+
+#: ../file_info.cpp:619 ../meta_decoder.cpp:108
+msgid "Conductor"
+msgstr ""
+
+#: ../file_info.cpp:621
+msgid "Band/orchestra"
+msgstr ""
+
+#: ../file_info.cpp:623 ../meta_decoder.cpp:79
+msgid "Composer"
+msgstr ""
+
+#: ../file_info.cpp:625
+msgid "Lyricist/text writer"
+msgstr ""
+
+#: ../file_info.cpp:627
+msgid "Recording location/studio"
+msgstr ""
+
+#: ../file_info.cpp:629
+msgid "During recording"
+msgstr ""
+
+#: ../file_info.cpp:631
+msgid "During performance"
+msgstr ""
+
+#: ../file_info.cpp:633
+msgid "Movie/video screen capture"
+msgstr ""
+
+#: ../file_info.cpp:635
+msgid "A large, coloured fish"
+msgstr ""
+
+#: ../file_info.cpp:637
+msgid "Illustration"
+msgstr ""
+
+#: ../file_info.cpp:639
+msgid "Band/artist logotype"
+msgstr ""
+
+#: ../file_info.cpp:641
+msgid "Publisher/studio logotype"
+msgstr ""
+
+#: ../file_info.cpp:723
 msgid "ID3v2"
 msgstr ""
 
-#: ../file_info.cpp:530
+#: ../file_info.cpp:762
 msgid "APE"
 msgstr ""
 
-#: ../file_info.cpp:572
+#: ../file_info.cpp:804
 msgid "Ogg comments"
 msgstr ""
 
-#: ../file_info.cpp:608
+#: ../file_info.cpp:840
 msgid "Vendor:"
 msgstr ""
 
-#: ../file_info.cpp:801
+#: ../file_info.cpp:1034
 msgid "Audio data"
 msgstr ""
 
-#: ../file_info.cpp:805
+#: ../file_info.cpp:1038
 msgid "Format:"
 msgstr ""
 
-#: ../file_info.cpp:817
+#: ../file_info.cpp:1050
 msgid "Length:"
 msgstr ""
 
-#: ../file_info.cpp:829
+#: ../file_info.cpp:1062
 msgid "Samplerate:"
 msgstr ""
 
-#: ../file_info.cpp:834
+#: ../file_info.cpp:1067
 #, c-format
 msgid "%ld Hz"
 msgstr ""
 
-#: ../file_info.cpp:841
+#: ../file_info.cpp:1074
 msgid "Channel count:"
 msgstr ""
 
-#: ../file_info.cpp:856
+#: ../file_info.cpp:1089
 msgid "Bandwidth:"
 msgstr ""
 
-#: ../file_info.cpp:861
+#: ../file_info.cpp:1094
 #, c-format
 msgid "%.1f kbit/s"
 msgstr ""
 
-#: ../file_info.cpp:868
+#: ../file_info.cpp:1101
 msgid "Total samples:"
 msgstr ""
 
-#: ../file_info.cpp:919
+#: ../file_info.cpp:1152
 msgid "Module info"
 msgstr ""
 
-#: ../file_info.cpp:1057 ../file_info.cpp:1136
+#: ../file_info.cpp:1290 ../file_info.cpp:1369
 msgid "Type:"
 msgstr ""
 
-#: ../file_info.cpp:1070 ../file_info.cpp:1149
+#: ../file_info.cpp:1303 ../file_info.cpp:1382
 msgid "Channels:"
 msgstr ""
 
-#: ../file_info.cpp:1084 ../file_info.cpp:1163
+#: ../file_info.cpp:1317 ../file_info.cpp:1396
 msgid "Patterns:"
 msgstr ""
 
-#: ../file_info.cpp:1098 ../file_info.cpp:1177
+#: ../file_info.cpp:1331 ../file_info.cpp:1410
 msgid "Samples:"
 msgstr ""
 
-#: ../file_info.cpp:1111
+#: ../file_info.cpp:1344
 msgid "Instruments:"
 msgstr ""
 
-#: ../file_info.cpp:1219
+#: ../file_info.cpp:1452
 msgid "Samples"
 msgstr ""
 
-#: ../file_info.cpp:1228
+#: ../file_info.cpp:1461
 msgid "Instruments"
 msgstr ""
 
-#: ../file_info.cpp:1251
+#: ../file_info.cpp:1484
 msgid "No."
 msgstr ""
 
@@ -2325,10 +2433,6 @@ msgstr ""
 
 #: ../meta_decoder.cpp:78
 msgid "Beats per minute"
-msgstr ""
-
-#: ../meta_decoder.cpp:79
-msgid "Composer"
 msgstr ""
 
 #: ../meta_decoder.cpp:80
@@ -2433,10 +2537,6 @@ msgstr ""
 
 #: ../meta_decoder.cpp:107
 msgid "Orchestra"
-msgstr ""
-
-#: ../meta_decoder.cpp:108
-msgid "Conductor"
 msgstr ""
 
 #: ../meta_decoder.cpp:109

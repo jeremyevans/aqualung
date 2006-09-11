@@ -580,7 +580,7 @@ create_cddb_write_warn_dialog(char * text) {
 	return ret;
 }
 
-int
+static int
 check_case(char * text, int _case) {
 
 	char * str;

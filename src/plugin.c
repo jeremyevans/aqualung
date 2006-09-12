@@ -139,19 +139,22 @@ so_filter(const struct dirent64 * de) {
 void
 parse_lrdf_data(void) {
 
-
-	char * lrdf_path = NULL;
+	char * str;
+	char lrdf_path[MAXLEN];
 	char rdf_path[MAXLEN];
 	char fileuri[MAXLEN];
 	int i, j = 0;
 	struct dirent64 ** de;
 	int n;
 
-	if (!(lrdf_path = getenv("LADSPA_RDF_PATH"))) {
-                lrdf_path = strdup("/usr/local/share/ladspa/rdf:/usr/share/ladspa/rdf");
+	lrdf_path[0] = '\0';
+
+	if ((str = getenv("LADSPA_RDF_PATH"))) {
+		snprintf(lrdf_path, MAXLEN-1, "%s:", str);
+	} else {
+                strncat(lrdf_path, "/usr/local/share/ladspa/rdf:/usr/share/ladspa/rdf:", MAXLEN-1);
 	}
 
-	strcat(lrdf_path, ":");
 	for (i = 0; lrdf_path[i] != '\0'; i++) {
 		if (lrdf_path[i] == ':') {
 			rdf_path[j] = '\0';

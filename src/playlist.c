@@ -243,16 +243,17 @@ adjust_playlist_item_color(GtkTreeIter * piter, char * active, char * inactive) 
 	
 	if (strcmp(str, pl_color_active) == 0) {
 		gtk_tree_store_set(play_store, piter, 2, active, -1);
-		if (options.show_active_track_name_in_bold)
+		if (options.show_active_track_name_in_bold) {
 			gtk_tree_store_set(play_store, piter, 7, PANGO_WEIGHT_BOLD, -1);
-		g_free(str);
+		}
 	}
 	
 	if (strcmp(str, pl_color_inactive) == 0) {
 		gtk_tree_store_set(play_store, piter, 2, inactive, -1);
 		gtk_tree_store_set(play_store, piter, 7, PANGO_WEIGHT_NORMAL, -1);
-		g_free(str);
 	}
+
+	g_free(str);
 }
 
 

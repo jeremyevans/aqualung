@@ -1743,6 +1743,7 @@ main(int argc, char ** argv) {
 #endif /* _WIN32 */
 					break;
 				}
+				free(output_str);
 			case 'd':
 				device_name = strdup(optarg);
 				break;

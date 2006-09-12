@@ -541,7 +541,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 	
 	lseek(fd, offset, SEEK_SET);
 	memset(info, 0, sizeof(mp3info_t));
-	info->start_byteoffset = offset - 4; /* XXX */
+	info->start_byteoffset = offset - 4;
 	info->enc_delay = -1;
 	info->enc_padding = -1;
 	if (!mp3headerinfo(info, header))
@@ -617,6 +617,11 @@ get_mp3file_info(int fd, mp3info_t *info) {
 		/* We want to skip the Xing frame when playing the stream */
 		bytecount += info->frame_size;
 		
+		/* workaround some files that have padding bit set, but frame size is 417 bytes */
+		if (info->padding) {
+			lseek(fd, -1, SEEK_CUR);
+		}
+
 		/* Now get the next frame to find out the real info about
 		   the mp3 stream */
 		header = find_next_frame(fd, &tmp, 0x20000, 0);

@@ -514,7 +514,7 @@ save_basic_fields(GtkWidget * widget, gpointer data) {
 	if (save_basic->taglib_oggv_file != NULL)
 		save_basic->taglib_oggv_file->save();
 	if (save_basic->taglib_mpeg_file != NULL) {
-		int tags;
+		int tags = 0;
 		if (save_basic->id3v1_tag != NULL)
 			tags |= TagLib::MPEG::File::ID3v1;
 		if (save_basic->id3v2_tag != NULL)

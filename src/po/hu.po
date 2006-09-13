@@ -443,26 +443,26 @@ msgstr "Kapcsolódás a CDDB szerverhez..."
 msgid "Matches:"
 msgstr "Találatok:"
 
-#: ../cddb_lookup.c:395 ../cddb_lookup.c:662 ../file_info.cpp:444
-#: ../file_info.cpp:500
+#: ../cddb_lookup.c:395 ../cddb_lookup.c:662 ../file_info.cpp:489
+#: ../file_info.cpp:559
 msgid "Artist:"
 msgstr "Elõadó:"
 
-#: ../cddb_lookup.c:401 ../file_info.cpp:444
+#: ../cddb_lookup.c:401 ../file_info.cpp:489
 msgid "Import as Artist"
 msgstr "Importálás elõadóként"
 
-#: ../cddb_lookup.c:409 ../cddb_lookup.c:677 ../file_info.cpp:435
-#: ../file_info.cpp:499
+#: ../cddb_lookup.c:409 ../cddb_lookup.c:677 ../file_info.cpp:476
+#: ../file_info.cpp:558
 msgid "Title:"
 msgstr "Cím:"
 
-#: ../cddb_lookup.c:415 ../file_info.cpp:435
+#: ../cddb_lookup.c:415 ../file_info.cpp:476
 msgid "Import as Title"
 msgstr "Importálás címként"
 
-#: ../cddb_lookup.c:423 ../cddb_lookup.c:692 ../file_info.cpp:478
-#: ../file_info.cpp:479 ../file_info.cpp:513
+#: ../cddb_lookup.c:423 ../cddb_lookup.c:692 ../file_info.cpp:525
+#: ../file_info.cpp:530 ../file_info.cpp:572
 msgid "Year:"
 msgstr "Év:"
 
@@ -476,13 +476,13 @@ msgid "Category:"
 msgstr "Kategória:"
 
 #: ../cddb_lookup.c:443 ../cddb_lookup.c:457 ../cddb_lookup.c:471
-#: ../file_info.cpp:479 ../file_info.cpp:488 ../file_info.cpp:497
-#: ../file_info.cpp:562 ../file_info.cpp:789
+#: ../file_info.cpp:530 ../file_info.cpp:543 ../file_info.cpp:556
+#: ../file_info.cpp:644 ../file_info.cpp:864
 msgid "Add to Comments"
 msgstr "Hozzáadás a kommentekhez"
 
-#: ../cddb_lookup.c:451 ../cddb_lookup.c:739 ../file_info.cpp:487
-#: ../file_info.cpp:488 ../file_info.cpp:514
+#: ../cddb_lookup.c:451 ../cddb_lookup.c:739 ../file_info.cpp:541
+#: ../file_info.cpp:543 ../file_info.cpp:573
 msgid "Genre:"
 msgstr "Mûfaj:"
 
@@ -505,7 +505,7 @@ msgstr ""
 "Ellenõrizd hogy megadtál egy email-címet az elküldéshez, vagy próbálkozz\n"
 "másik protokollal."
 
-#: ../cddb_lookup.c:557 ../options.c:1299 ../playlist.c:894
+#: ../cddb_lookup.c:557 ../options.c:1299 ../playlist.c:895
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
@@ -732,11 +732,11 @@ msgstr "Tömörítés: Extra magas"
 msgid "Compression: Insane"
 msgstr "Tömörítés: Elmebeteg"
 
-#: ../gui_main.c:894 ../file_info.cpp:1080
+#: ../gui_main.c:894 ../file_info.cpp:1226
 msgid "MONO"
 msgstr "MONO"
 
-#: ../gui_main.c:897 ../file_info.cpp:1082
+#: ../gui_main.c:897 ../file_info.cpp:1228
 msgid "STEREO"
 msgstr "STEREO"
 
@@ -846,7 +846,7 @@ msgstr "Szkin-választó"
 msgid "JACK port setup"
 msgstr "JACK port beállítás"
 
-#: ../gui_main.c:3163 ../file_info.cpp:973
+#: ../gui_main.c:3163 ../file_info.cpp:1119
 msgid "File info"
 msgstr "Fájl infó"
 
@@ -1209,7 +1209,7 @@ msgstr "Album hozzáadása"
 msgid "Auto-create tracks from these files:"
 msgstr "Számok automatikus létrehozása a következõ fájlokból:"
 
-#: ../music_browser.c:1096 ../plugin.c:1988
+#: ../music_browser.c:1096 ../plugin.c:1991
 msgid "Clear list"
 msgstr "Lista törlése"
 
@@ -1336,7 +1336,7 @@ msgstr "Zenetár"
 
 #: ../music_browser.c:3870 ../music_browser.c:4011 ../music_browser.c:4040
 #: ../music_browser.c:4103 ../music_browser.c:4166 ../music_browser.c:4233
-#: ../playlist.c:3286
+#: ../playlist.c:3287
 msgid "Search..."
 msgstr "Keresés..."
 
@@ -1463,7 +1463,7 @@ msgstr "Szám szerkesztése..."
 msgid "Remove track"
 msgstr "Szám eltávolítása"
 
-#: ../music_browser.c:4227 ../playlist.c:3285
+#: ../music_browser.c:4227 ../playlist.c:3286
 msgid "File info..."
 msgstr "Fájl infó..."
 
@@ -1602,7 +1602,7 @@ msgstr "Rejtett fájlok és könyvtárak mutatása tallózáskor"
 msgid "Show tags tab first in the file info dialog"
 msgstr "Elõször a tagek látszódjanak a fájl infó ablakban"
 
-#: ../options.c:1746 ../playlist.c:2168
+#: ../options.c:1746 ../playlist.c:2169
 msgid "Playlist"
 msgstr "Lejátszólista"
 
@@ -1988,15 +1988,15 @@ msgstr "Színek"
 msgid "Active song in playlist: "
 msgstr "Aktív szám a Lejátszólistában: "
 
-#: ../playlist.c:638
+#: ../playlist.c:639
 msgid "Please specify the file to save the playlist to."
 msgstr "Add meg az elmentendõ lejátszólista fájlt."
 
-#: ../playlist.c:682 ../playlist.c:739
+#: ../playlist.c:683 ../playlist.c:740
 msgid "Please specify the file to load the playlist from."
 msgstr "Add meg a betöltendõ lejátszólista fájlt."
 
-#: ../playlist.c:902
+#: ../playlist.c:903
 msgid ""
 "Playback RVA is currently disabled.\n"
 "Do you want to enable it now?"
@@ -2004,61 +2004,61 @@ msgstr ""
 "A lejátszáskori RVA jelenleg nem engedélyezett.\n"
 "Akarod most engedélyezni?"
 
-#: ../playlist.c:1205 ../playlist.c:1208 ../playlist.c:1211
+#: ../playlist.c:1206 ../playlist.c:1209 ../playlist.c:1212
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: ../playlist.c:1319
+#: ../playlist.c:1320
 msgid "Select files"
 msgstr "Fájlok kiválasztása"
 
-#: ../playlist.c:1374
+#: ../playlist.c:1375
 msgid "Select directory"
 msgstr "Könyvtár kiválasztása"
 
-#: ../playlist.c:1805
+#: ../playlist.c:1806
 #, c-format
 msgid "%d track [%s] (%.1f MB)"
 msgstr "%d szám [%s] (%.1f MB)"
 
-#: ../playlist.c:1807
+#: ../playlist.c:1808
 #, c-format
 msgid "%d track [%s] (%.1f GB)"
 msgstr "%d szám [%s] (%.1f GB)"
 
-#: ../playlist.c:1810
+#: ../playlist.c:1811
 #, c-format
 msgid "%d track [%s] "
 msgstr "%d szám [%s] "
 
-#: ../playlist.c:1815
+#: ../playlist.c:1816
 #, c-format
 msgid "%d tracks [%s] (%.1f MB)"
 msgstr "%d szám [%s] (%.1f MB)"
 
-#: ../playlist.c:1817
+#: ../playlist.c:1818
 #, c-format
 msgid "%d tracks [%s] (%.1f GB)"
 msgstr "%d szám [%s] (%.1f GB)"
 
-#: ../playlist.c:1820
+#: ../playlist.c:1821
 #, c-format
 msgid "%d tracks [%s] "
 msgstr "%d szám [%s] "
 
-#: ../playlist.c:2384
+#: ../playlist.c:2385
 msgid "Selected: "
 msgstr "Kijelölve: "
 
-#: ../playlist.c:2394
+#: ../playlist.c:2395
 msgid "Total: "
 msgstr "Összesen: "
 
-#: ../playlist.c:2414 ../playlist.c:2437
+#: ../playlist.c:2415 ../playlist.c:2438
 msgid "Add files"
 msgstr "Fájlok hozzáadása"
 
-#: ../playlist.c:2415
+#: ../playlist.c:2416
 msgid ""
 "Add files to playlist\n"
 "(Press right mouse button for menu)"
@@ -2066,11 +2066,11 @@ msgstr ""
 "Fájlok hozzáadása a listához\n"
 "(jobb egérgomb: helyi menü)"
 
-#: ../playlist.c:2419 ../playlist.c:2457
+#: ../playlist.c:2420 ../playlist.c:2458
 msgid "Select all"
 msgstr "Összes elem kijelölése"
 
-#: ../playlist.c:2420
+#: ../playlist.c:2421
 msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
@@ -2078,11 +2078,11 @@ msgstr ""
 "A lejátszólista összes számának kijelölése\n"
 "(jobb egérgomb: helyi menü)"
 
-#: ../playlist.c:2424 ../playlist.c:2482
+#: ../playlist.c:2425 ../playlist.c:2483
 msgid "Remove selected"
 msgstr "Kijelölt elemek törlése"
 
-#: ../playlist.c:2425
+#: ../playlist.c:2426
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
@@ -2090,107 +2090,107 @@ msgstr ""
 "Kijelölt számok törlése a lejátszólistából\n"
 "(jobb egérgomb: helyi menü)"
 
-#: ../playlist.c:2432
+#: ../playlist.c:2433
 msgid "Add directory"
 msgstr "Könyvtár hozzáadása"
 
-#: ../playlist.c:2447
+#: ../playlist.c:2448
 msgid "Select none"
 msgstr "Kijelölés megszüntetése"
 
-#: ../playlist.c:2452
+#: ../playlist.c:2453
 msgid "Invert selection"
 msgstr "Kijelölés megfordítása"
 
-#: ../playlist.c:2467
+#: ../playlist.c:2468
 msgid "Remove all"
 msgstr "Mindent eltávolít"
 
-#: ../playlist.c:2472
+#: ../playlist.c:2473
 msgid "Remove dead"
 msgstr "Érvénytelen elemek eltávolítása"
 
-#: ../playlist.c:2477
+#: ../playlist.c:2478
 msgid "Cut selected"
 msgstr "Kijelölt elemek megtartása"
 
-#: ../playlist.c:3269
+#: ../playlist.c:3270
 msgid "Save playlist"
 msgstr "Lejátszólista mentése"
 
-#: ../playlist.c:3270
+#: ../playlist.c:3271
 msgid "Load playlist"
 msgstr "Lejátszólista betöltése"
 
-#: ../playlist.c:3271
+#: ../playlist.c:3272
 msgid "Enqueue playlist"
 msgstr "Lejátszólista hozzáfûzése"
 
-#: ../playlist.c:3273
+#: ../playlist.c:3274
 msgid "Calculate RVA"
 msgstr "Hangosság meghatározása"
 
-#: ../playlist.c:3275
+#: ../playlist.c:3276
 msgid "Separate"
 msgstr "Egyéni"
 
-#: ../playlist.c:3276
+#: ../playlist.c:3277
 msgid "Average"
 msgstr "Átlagos"
 
-#: ../playlist.c:3277
+#: ../playlist.c:3278
 msgid "Reread file metadata"
 msgstr "Metaadatok újraolvasása"
 
-#: ../playlist.c:3281
+#: ../playlist.c:3282
 msgid "Send songs to iFP device"
 msgstr "Számok iFP eszközre küldése"
 
-#: ../plugin.c:1810
+#: ../plugin.c:1813
 msgid "LADSPA patch builder"
 msgstr "LADSPA effekt szerkesztõ"
 
-#: ../plugin.c:1819
+#: ../plugin.c:1822
 msgid "Available plugins"
 msgstr "Rendelkezésre álló effektek"
 
-#: ../plugin.c:1884
+#: ../plugin.c:1887
 msgid "ID"
 msgstr "ID"
 
-#: ../plugin.c:1892 ../plugin.c:1975 ../file_info.cpp:1491
+#: ../plugin.c:1895 ../plugin.c:1978 ../file_info.cpp:1637
 msgid "Name"
 msgstr "Név"
 
-#: ../plugin.c:1897
+#: ../plugin.c:1900
 msgid "Category"
 msgstr "Kategória"
 
-#: ../plugin.c:1905
+#: ../plugin.c:1908
 msgid "Inputs"
 msgstr "Bemenetek"
 
-#: ../plugin.c:1913 ../ports.c:477
+#: ../plugin.c:1916 ../ports.c:477
 msgid "Outputs"
 msgstr "Kimenetek"
 
-#: ../plugin.c:1921
+#: ../plugin.c:1924
 msgid "Running plugins"
 msgstr "Mûködõ effektek"
 
-#: ../plugin.c:1938
+#: ../plugin.c:1941
 msgid "_Configure"
 msgstr "_Beállítás"
 
-#: ../plugin.c:1983
+#: ../plugin.c:1986
 msgid "Enable all plugins"
 msgstr "Összes effekt engedélyezése"
 
-#: ../plugin.c:1984
+#: ../plugin.c:1987
 msgid "Disable all plugins"
 msgstr "Összes effekt letiltása"
 
-#: ../plugin.c:1986
+#: ../plugin.c:1989
 msgid "Invert current state"
 msgstr "Aktuális állapot invertálása"
 
@@ -2286,7 +2286,7 @@ msgstr "Elérhetõ szkinek"
 msgid "Calculating volume level"
 msgstr "Hangosság meghatározása"
 
-#: ../volume.c:243 ../file_info.cpp:1007
+#: ../volume.c:243 ../file_info.cpp:1153
 msgid "File:"
 msgstr "Fájl:"
 
@@ -2294,252 +2294,256 @@ msgstr "Fájl:"
 msgid "Progress:"
 msgstr "Feldolgozás:"
 
-#: ../file_info.cpp:286
+#: ../file_info.cpp:305
 #, fuzzy
 msgid "Please specify the file to save the image to."
 msgstr "Add meg az elmentendõ lejátszólista fájlt."
 
-#: ../file_info.cpp:346
+#: ../file_info.cpp:365
 #, fuzzy
 msgid "Type"
 msgstr "Típus: "
 
-#: ../file_info.cpp:348
+#: ../file_info.cpp:367
 #, fuzzy
 msgid "Description"
 msgstr "Hossz:"
 
-#: ../file_info.cpp:350
+#: ../file_info.cpp:369
 msgid "No description"
 msgstr ""
 
-#: ../file_info.cpp:353
+#: ../file_info.cpp:372
 msgid "Embedded picture"
 msgstr ""
 
-#: ../file_info.cpp:370
+#: ../file_info.cpp:389
 #, fuzzy
 msgid "Save to file..."
 msgstr "Tároló mentése"
 
-#: ../file_info.cpp:453 ../file_info.cpp:501
+#: ../file_info.cpp:502 ../file_info.cpp:560
 #, fuzzy
 msgid "Album:"
 msgstr "Lemez"
 
-#: ../file_info.cpp:453
+#: ../file_info.cpp:502
 msgid "Import as Record"
 msgstr "Importálás albumként"
 
-#: ../file_info.cpp:466 ../file_info.cpp:507 ../file_info.cpp:994
+#: ../file_info.cpp:516 ../file_info.cpp:566 ../file_info.cpp:1140
 msgid "Track:"
 msgstr "Szám:"
 
-#: ../file_info.cpp:466
+#: ../file_info.cpp:516
 msgid "Import as Track number"
 msgstr "Importálás sorszámként"
 
-#: ../file_info.cpp:496 ../file_info.cpp:497 ../file_info.cpp:515
+#: ../file_info.cpp:554 ../file_info.cpp:556 ../file_info.cpp:574
 #, fuzzy
 msgid "Comment:"
 msgstr "Megjegyzések:"
 
-#: ../file_info.cpp:529
+#: ../file_info.cpp:596
+msgid "Save basic fields"
+msgstr ""
+
+#: ../file_info.cpp:611
 msgid "ID3v1"
 msgstr "ID3v1"
 
-#: ../file_info.cpp:576
+#: ../file_info.cpp:658
 #, c-format
 msgid "%+.1f dB (Id: %s)"
 msgstr "+.1f dB (Id: %s)"
 
-#: ../file_info.cpp:587 ../file_info.cpp:589
+#: ../file_info.cpp:669 ../file_info.cpp:671
 #, fuzzy
 msgid "Relative Volume Adj.:"
 msgstr "Relatív hangosság"
 
-#: ../file_info.cpp:587 ../file_info.cpp:785
+#: ../file_info.cpp:669 ../file_info.cpp:860
 msgid "Import as RVA"
 msgstr "Importálás RVA-ként"
 
-#: ../file_info.cpp:601
+#: ../file_info.cpp:683
 msgid "Other"
 msgstr ""
 
-#: ../file_info.cpp:603
+#: ../file_info.cpp:685
 msgid "File icon (32x32 PNG)"
 msgstr ""
 
-#: ../file_info.cpp:605
+#: ../file_info.cpp:687
 #, fuzzy
 msgid "File icon (other)"
 msgstr "Fájl infó"
 
-#: ../file_info.cpp:607
+#: ../file_info.cpp:689
 msgid "Front cover"
 msgstr ""
 
-#: ../file_info.cpp:609
+#: ../file_info.cpp:691
 msgid "Back cover"
 msgstr ""
 
-#: ../file_info.cpp:611
+#: ../file_info.cpp:693
 msgid "Leaflet page"
 msgstr ""
 
-#: ../file_info.cpp:613
+#: ../file_info.cpp:695
 #, fuzzy
 msgid "Album image"
 msgstr "Lemez"
 
-#: ../file_info.cpp:615
+#: ../file_info.cpp:697
 msgid "Lead artist/performer"
 msgstr ""
 
-#: ../file_info.cpp:617
+#: ../file_info.cpp:699
 msgid "Artist/performer"
 msgstr ""
 
-#: ../file_info.cpp:619 ../meta_decoder.cpp:108
+#: ../file_info.cpp:701 ../meta_decoder.cpp:108
 msgid "Conductor"
 msgstr "Karmester"
 
-#: ../file_info.cpp:621
+#: ../file_info.cpp:703
 #, fuzzy
 msgid "Band/orchestra"
 msgstr "Zenekar"
 
-#: ../file_info.cpp:623 ../meta_decoder.cpp:79
+#: ../file_info.cpp:705 ../meta_decoder.cpp:79
 msgid "Composer"
 msgstr "Zeneszerzõ"
 
-#: ../file_info.cpp:625
+#: ../file_info.cpp:707
 msgid "Lyricist/text writer"
 msgstr ""
 
-#: ../file_info.cpp:627
+#: ../file_info.cpp:709
 #, fuzzy
 msgid "Recording location/studio"
 msgstr "Albumok"
 
-#: ../file_info.cpp:629
+#: ../file_info.cpp:711
 msgid "During recording"
 msgstr ""
 
-#: ../file_info.cpp:631
+#: ../file_info.cpp:713
 msgid "During performance"
 msgstr ""
 
-#: ../file_info.cpp:633
+#: ../file_info.cpp:715
 msgid "Movie/video screen capture"
 msgstr ""
 
-#: ../file_info.cpp:635
+#: ../file_info.cpp:717
 msgid "A large, coloured fish"
 msgstr ""
 
-#: ../file_info.cpp:637
+#: ../file_info.cpp:719
 #, fuzzy
 msgid "Illustration"
 msgstr "Hossz:"
 
-#: ../file_info.cpp:639
+#: ../file_info.cpp:721
 msgid "Band/artist logotype"
 msgstr ""
 
-#: ../file_info.cpp:641
+#: ../file_info.cpp:723
 msgid "Publisher/studio logotype"
 msgstr ""
 
-#: ../file_info.cpp:723
+#: ../file_info.cpp:805
 #, fuzzy
 msgid "ID3v2"
 msgstr "ID3v2 tagek"
 
-#: ../file_info.cpp:762
+#: ../file_info.cpp:879
 msgid "APE"
 msgstr "APE"
 
-#: ../file_info.cpp:804
+#: ../file_info.cpp:930
 #, fuzzy
 msgid "Ogg comments"
 msgstr "Megjegyzések"
 
-#: ../file_info.cpp:840
+#: ../file_info.cpp:966
 msgid "Vendor:"
 msgstr "Vendor:"
 
-#: ../file_info.cpp:1034
+#: ../file_info.cpp:1180
 msgid "Audio data"
 msgstr "Audio jellemzõk"
 
-#: ../file_info.cpp:1038
+#: ../file_info.cpp:1184
 msgid "Format:"
 msgstr "Formátum:"
 
-#: ../file_info.cpp:1050
+#: ../file_info.cpp:1196
 msgid "Length:"
 msgstr "Hossz:"
 
-#: ../file_info.cpp:1062
+#: ../file_info.cpp:1208
 msgid "Samplerate:"
 msgstr "Mintavételi frekvencia:"
 
-#: ../file_info.cpp:1067
+#: ../file_info.cpp:1213
 #, c-format
 msgid "%ld Hz"
 msgstr "%ld Hz"
 
-#: ../file_info.cpp:1074
+#: ../file_info.cpp:1220
 msgid "Channel count:"
 msgstr "Csatornák száma:"
 
-#: ../file_info.cpp:1089
+#: ../file_info.cpp:1235
 msgid "Bandwidth:"
 msgstr "Sávszélesség:"
 
-#: ../file_info.cpp:1094
+#: ../file_info.cpp:1240
 #, c-format
 msgid "%.1f kbit/s"
 msgstr "%.1f kbit/s"
 
-#: ../file_info.cpp:1101
+#: ../file_info.cpp:1247
 msgid "Total samples:"
 msgstr "Összes mintavétel:"
 
-#: ../file_info.cpp:1152
+#: ../file_info.cpp:1298
 msgid "Module info"
 msgstr "Modul infó"
 
-#: ../file_info.cpp:1290 ../file_info.cpp:1369
+#: ../file_info.cpp:1436 ../file_info.cpp:1515
 msgid "Type:"
 msgstr "Típus: "
 
-#: ../file_info.cpp:1303 ../file_info.cpp:1382
+#: ../file_info.cpp:1449 ../file_info.cpp:1528
 msgid "Channels:"
 msgstr "Csatornák:"
 
-#: ../file_info.cpp:1317 ../file_info.cpp:1396
+#: ../file_info.cpp:1463 ../file_info.cpp:1542
 msgid "Patterns:"
 msgstr "Minták:"
 
-#: ../file_info.cpp:1331 ../file_info.cpp:1410
+#: ../file_info.cpp:1477 ../file_info.cpp:1556
 msgid "Samples:"
 msgstr "Mintavételek:"
 
-#: ../file_info.cpp:1344
+#: ../file_info.cpp:1490
 msgid "Instruments:"
 msgstr "Hangszerek:"
 
-#: ../file_info.cpp:1452
+#: ../file_info.cpp:1598
 msgid "Samples"
 msgstr "Mintavételek:i frekvencia:"
 
-#: ../file_info.cpp:1461
+#: ../file_info.cpp:1607
 msgid "Instruments"
 msgstr "Hangszerek"
 
-#: ../file_info.cpp:1484
+#: ../file_info.cpp:1630
 msgid "No."
 msgstr "No."
 

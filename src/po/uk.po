@@ -458,26 +458,26 @@ msgstr "П╕д'╓днуюсь до сервера CDDB..."
 msgid "Matches:"
 msgstr "Зб╕ги:"
 
-#: ../cddb_lookup.c:395 ../cddb_lookup.c:662 ../file_info.cpp:444
-#: ../file_info.cpp:500
+#: ../cddb_lookup.c:395 ../cddb_lookup.c:662 ../file_info.cpp:489
+#: ../file_info.cpp:559
 msgid "Artist:"
 msgstr "Виконавець:"
 
-#: ../cddb_lookup.c:401 ../file_info.cpp:444
+#: ../cddb_lookup.c:401 ../file_info.cpp:489
 msgid "Import as Artist"
 msgstr "╤мпортувати як Виконавця"
 
-#: ../cddb_lookup.c:409 ../cddb_lookup.c:677 ../file_info.cpp:435
-#: ../file_info.cpp:499
+#: ../cddb_lookup.c:409 ../cddb_lookup.c:677 ../file_info.cpp:476
+#: ../file_info.cpp:558
 msgid "Title:"
 msgstr "Назва:"
 
-#: ../cddb_lookup.c:415 ../file_info.cpp:435
+#: ../cddb_lookup.c:415 ../file_info.cpp:476
 msgid "Import as Title"
 msgstr "╤мпортувати як Альбом"
 
-#: ../cddb_lookup.c:423 ../cddb_lookup.c:692 ../file_info.cpp:478
-#: ../file_info.cpp:479 ../file_info.cpp:513
+#: ../cddb_lookup.c:423 ../cddb_lookup.c:692 ../file_info.cpp:525
+#: ../file_info.cpp:530 ../file_info.cpp:572
 msgid "Year:"
 msgstr "Р╕к:"
 
@@ -491,13 +491,13 @@ msgid "Category:"
 msgstr "Категор╕я:"
 
 #: ../cddb_lookup.c:443 ../cddb_lookup.c:457 ../cddb_lookup.c:471
-#: ../file_info.cpp:479 ../file_info.cpp:488 ../file_info.cpp:497
-#: ../file_info.cpp:562 ../file_info.cpp:789
+#: ../file_info.cpp:530 ../file_info.cpp:543 ../file_info.cpp:556
+#: ../file_info.cpp:644 ../file_info.cpp:864
 msgid "Add to Comments"
 msgstr "Додати до коментар╕в"
 
-#: ../cddb_lookup.c:451 ../cddb_lookup.c:739 ../file_info.cpp:487
-#: ../file_info.cpp:488 ../file_info.cpp:514
+#: ../cddb_lookup.c:451 ../cddb_lookup.c:739 ../file_info.cpp:541
+#: ../file_info.cpp:543 ../file_info.cpp:573
 msgid "Genre:"
 msgstr "Жанр:"
 
@@ -516,7 +516,7 @@ msgid ""
 "access protocol."
 msgstr ""
 
-#: ../cddb_lookup.c:557 ../options.c:1299 ../playlist.c:894
+#: ../cddb_lookup.c:557 ../options.c:1299 ../playlist.c:895
 msgid "Warning"
 msgstr "Увага"
 
@@ -736,11 +736,11 @@ msgstr "Ступ╕нь стиснення: Дуже висока"
 msgid "Compression: Insane"
 msgstr "Ступ╕нь стиснення: Божев╕льна"
 
-#: ../gui_main.c:894 ../file_info.cpp:1080
+#: ../gui_main.c:894 ../file_info.cpp:1226
 msgid "MONO"
 msgstr "МОНО"
 
-#: ../gui_main.c:897 ../file_info.cpp:1082
+#: ../gui_main.c:897 ../file_info.cpp:1228
 msgid "STEREO"
 msgstr "СТЕРЕО"
 
@@ -850,7 +850,7 @@ msgstr "Виб╕р жупан╕в"
 msgid "JACK port setup"
 msgstr "Налаштування порту JACK"
 
-#: ../gui_main.c:3163 ../file_info.cpp:973
+#: ../gui_main.c:3163 ../file_info.cpp:1119
 msgid "File info"
 msgstr "╤нформац╕я про файл"
 
@@ -1227,7 +1227,7 @@ msgstr "Додати запис"
 msgid "Auto-create tracks from these files:"
 msgstr "Автостворення дор╕жок з цих файл╕в:"
 
-#: ../music_browser.c:1096 ../plugin.c:1988
+#: ../music_browser.c:1096 ../plugin.c:1991
 msgid "Clear list"
 msgstr "Очистити список"
 
@@ -1359,7 +1359,7 @@ msgstr "Музичний Склад"
 
 #: ../music_browser.c:3870 ../music_browser.c:4011 ../music_browser.c:4040
 #: ../music_browser.c:4103 ../music_browser.c:4166 ../music_browser.c:4233
-#: ../playlist.c:3286
+#: ../playlist.c:3287
 msgid "Search..."
 msgstr "Шукати..."
 
@@ -1496,7 +1496,7 @@ msgstr "Редагувати дор╕жку..."
 msgid "Remove track"
 msgstr "Прибрати дор╕жку"
 
-#: ../music_browser.c:4227 ../playlist.c:3285
+#: ../music_browser.c:4227 ../playlist.c:3286
 msgid "File info..."
 msgstr "╤нформац╕я про файл"
 
@@ -1630,7 +1630,7 @@ msgstr ""
 msgid "Show tags tab first in the file info dialog"
 msgstr ""
 
-#: ../options.c:1746 ../playlist.c:2168
+#: ../options.c:1746 ../playlist.c:2169
 msgid "Playlist"
 msgstr "Список програвання"
 
@@ -2033,15 +2033,15 @@ msgstr "Кольори"
 msgid "Active song in playlist: "
 msgstr "Активна п╕сня у списку програвання: "
 
-#: ../playlist.c:638
+#: ../playlist.c:639
 msgid "Please specify the file to save the playlist to."
 msgstr "Будьласка вкаж╕ть файл куди буде записано список програвання."
 
-#: ../playlist.c:682 ../playlist.c:739
+#: ../playlist.c:683 ../playlist.c:740
 msgid "Please specify the file to load the playlist from."
 msgstr "Будьласка вкаж╕ть файл зв╕дки буде завантажено список програвання."
 
-#: ../playlist.c:902
+#: ../playlist.c:903
 #, fuzzy
 msgid ""
 "Playback RVA is currently disabled.\n"
@@ -2049,192 +2049,192 @@ msgid ""
 msgstr ""
 "ПВР програвання зараз вимкнено. Ув╕мкн╕ть ╖╖ в Налаштування->ПВР програвання."
 
-#: ../playlist.c:1205 ../playlist.c:1208 ../playlist.c:1211
+#: ../playlist.c:1206 ../playlist.c:1209 ../playlist.c:1212
 msgid "Unknown"
 msgstr "Нев╕домо"
 
-#: ../playlist.c:1319
+#: ../playlist.c:1320
 #, fuzzy
 msgid "Select files"
 msgstr "Вибрати файли..."
 
-#: ../playlist.c:1374
+#: ../playlist.c:1375
 #, fuzzy
 msgid "Select directory"
 msgstr "Прибрати запис"
 
-#: ../playlist.c:1805
+#: ../playlist.c:1806
 #, fuzzy, c-format
 msgid "%d track [%s] (%.1f MB)"
 msgstr "%d дор╕жка [%s]"
 
-#: ../playlist.c:1807
+#: ../playlist.c:1808
 #, fuzzy, c-format
 msgid "%d track [%s] (%.1f GB)"
 msgstr "%d дор╕жка [%s]"
 
-#: ../playlist.c:1810
+#: ../playlist.c:1811
 #, fuzzy, c-format
 msgid "%d track [%s] "
 msgstr "%d дор╕жка [%s]"
 
-#: ../playlist.c:1815
+#: ../playlist.c:1816
 #, fuzzy, c-format
 msgid "%d tracks [%s] (%.1f MB)"
 msgstr "%d дор╕жок [%s]"
 
-#: ../playlist.c:1817
+#: ../playlist.c:1818
 #, fuzzy, c-format
 msgid "%d tracks [%s] (%.1f GB)"
 msgstr "%d дор╕жок [%s]"
 
-#: ../playlist.c:1820
+#: ../playlist.c:1821
 #, fuzzy, c-format
 msgid "%d tracks [%s] "
 msgstr "%d дор╕жок [%s]"
 
-#: ../playlist.c:2384
+#: ../playlist.c:2385
 msgid "Selected: "
 msgstr "Вибрано: "
 
-#: ../playlist.c:2394
+#: ../playlist.c:2395
 msgid "Total: "
 msgstr "Разом: "
 
-#: ../playlist.c:2414 ../playlist.c:2437
+#: ../playlist.c:2415 ../playlist.c:2438
 #, fuzzy
 msgid "Add files"
 msgstr "Додати файли..."
 
-#: ../playlist.c:2415
+#: ../playlist.c:2416
 msgid ""
 "Add files to playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2419 ../playlist.c:2457
+#: ../playlist.c:2420 ../playlist.c:2458
 msgid "Select all"
 msgstr "Вибрати все"
 
-#: ../playlist.c:2420
+#: ../playlist.c:2421
 msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2424 ../playlist.c:2482
+#: ../playlist.c:2425 ../playlist.c:2483
 msgid "Remove selected"
 msgstr "Прибрати вибране"
 
-#: ../playlist.c:2425
+#: ../playlist.c:2426
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2432
+#: ../playlist.c:2433
 #, fuzzy
 msgid "Add directory"
 msgstr "Додати запис"
 
-#: ../playlist.c:2447
+#: ../playlist.c:2448
 msgid "Select none"
 msgstr "Зняти виб╕р"
 
-#: ../playlist.c:2452
+#: ../playlist.c:2453
 msgid "Invert selection"
 msgstr "Перевернути виб╕р"
 
-#: ../playlist.c:2467
+#: ../playlist.c:2468
 msgid "Remove all"
 msgstr "Прибрати все"
 
-#: ../playlist.c:2472
+#: ../playlist.c:2473
 #, fuzzy
 msgid "Remove dead"
 msgstr "Прибрати все"
 
-#: ../playlist.c:2477
+#: ../playlist.c:2478
 msgid "Cut selected"
 msgstr "Прибрати обране"
 
-#: ../playlist.c:3269
+#: ../playlist.c:3270
 msgid "Save playlist"
 msgstr "Зберегти список програвання"
 
-#: ../playlist.c:3270
+#: ../playlist.c:3271
 msgid "Load playlist"
 msgstr "Завантажити список програвання"
 
-#: ../playlist.c:3271
+#: ../playlist.c:3272
 msgid "Enqueue playlist"
 msgstr "Поставити в чергу список програвання"
 
-#: ../playlist.c:3273
+#: ../playlist.c:3274
 msgid "Calculate RVA"
 msgstr "П╕драхувати ПВР"
 
-#: ../playlist.c:3275
+#: ../playlist.c:3276
 msgid "Separate"
 msgstr "Окрем╕"
 
-#: ../playlist.c:3276
+#: ../playlist.c:3277
 msgid "Average"
 msgstr "Середн╕"
 
-#: ../playlist.c:3277
+#: ../playlist.c:3278
 msgid "Reread file metadata"
 msgstr "Перечитати ╕нформац╕ю про файл"
 
-#: ../playlist.c:3281
+#: ../playlist.c:3282
 msgid "Send songs to iFP device"
 msgstr ""
 
-#: ../plugin.c:1810
+#: ../plugin.c:1813
 msgid "LADSPA patch builder"
 msgstr "Буд╕вельник шлях╕в LADSPA"
 
-#: ../plugin.c:1819
+#: ../plugin.c:1822
 msgid "Available plugins"
 msgstr "Наявн╕ втулки"
 
-#: ../plugin.c:1884
+#: ../plugin.c:1887
 msgid "ID"
 msgstr "╤дентиф╕катор"
 
-#: ../plugin.c:1892 ../plugin.c:1975 ../file_info.cpp:1491
+#: ../plugin.c:1895 ../plugin.c:1978 ../file_info.cpp:1637
 msgid "Name"
 msgstr "╤м'я"
 
-#: ../plugin.c:1897
+#: ../plugin.c:1900
 msgid "Category"
 msgstr "Категор╕я"
 
-#: ../plugin.c:1905
+#: ../plugin.c:1908
 msgid "Inputs"
 msgstr "Входи"
 
-#: ../plugin.c:1913 ../ports.c:477
+#: ../plugin.c:1916 ../ports.c:477
 msgid "Outputs"
 msgstr "Виходи"
 
-#: ../plugin.c:1921
+#: ../plugin.c:1924
 msgid "Running plugins"
 msgstr "Запущен╕ втулки"
 
-#: ../plugin.c:1938
+#: ../plugin.c:1941
 msgid "_Configure"
 msgstr "_Налаштувати"
 
-#: ../plugin.c:1983
+#: ../plugin.c:1986
 msgid "Enable all plugins"
 msgstr "Зад╕яти ус╕ втулки"
 
-#: ../plugin.c:1984
+#: ../plugin.c:1987
 msgid "Disable all plugins"
 msgstr "Вимкнути ус╕ втулки"
 
-#: ../plugin.c:1986
+#: ../plugin.c:1989
 msgid "Invert current state"
 msgstr "╤нвертувати поточний стан"
 
@@ -2331,7 +2331,7 @@ msgstr "Наявн╕ жупани"
 msgid "Calculating volume level"
 msgstr "<b>П╕драховую р╕вень гучност╕</b>"
 
-#: ../volume.c:243 ../file_info.cpp:1007
+#: ../volume.c:243 ../file_info.cpp:1153
 msgid "File:"
 msgstr "Файл:"
 
@@ -2339,258 +2339,263 @@ msgstr "Файл:"
 msgid "Progress:"
 msgstr "Прогрес:"
 
-#: ../file_info.cpp:286
+#: ../file_info.cpp:305
 #, fuzzy
 msgid "Please specify the file to save the image to."
 msgstr "Будьласка вкаж╕ть файл куди буде записано список програвання."
 
-#: ../file_info.cpp:346
+#: ../file_info.cpp:365
 #, fuzzy
 msgid "Type"
 msgstr "SRC Тип: "
 
-#: ../file_info.cpp:348
+#: ../file_info.cpp:367
 #, fuzzy
 msgid "Description"
 msgstr "Тривал╕сть:"
 
-#: ../file_info.cpp:350
+#: ../file_info.cpp:369
 msgid "No description"
 msgstr ""
 
-#: ../file_info.cpp:353
+#: ../file_info.cpp:372
 msgid "Embedded picture"
 msgstr ""
 
-#: ../file_info.cpp:370
+#: ../file_info.cpp:389
 #, fuzzy
 msgid "Save to file..."
 msgstr "Зберегти Музичний Склад"
 
-#: ../file_info.cpp:453 ../file_info.cpp:501
+#: ../file_info.cpp:502 ../file_info.cpp:560
 #, fuzzy
 msgid "Album:"
 msgstr "Альбом"
 
-#: ../file_info.cpp:453
+#: ../file_info.cpp:502
 msgid "Import as Record"
 msgstr "╤мпортувати як Запис"
 
-#: ../file_info.cpp:466 ../file_info.cpp:507 ../file_info.cpp:994
+#: ../file_info.cpp:516 ../file_info.cpp:566 ../file_info.cpp:1140
 msgid "Track:"
 msgstr "Дор╕жка:"
 
-#: ../file_info.cpp:466
+#: ../file_info.cpp:516
 msgid "Import as Track number"
 msgstr "╤мпортувати як Номер дор╕жки"
 
-#: ../file_info.cpp:496 ../file_info.cpp:497 ../file_info.cpp:515
+#: ../file_info.cpp:554 ../file_info.cpp:556 ../file_info.cpp:574
 #, fuzzy
 msgid "Comment:"
 msgstr "Коментар╕:"
 
-#: ../file_info.cpp:529
+#: ../file_info.cpp:596
+#, fuzzy
+msgid "Save basic fields"
+msgstr "Зберегти Музичний Склад"
+
+#: ../file_info.cpp:611
 msgid "ID3v1"
 msgstr ""
 
-#: ../file_info.cpp:576
+#: ../file_info.cpp:658
 #, c-format
 msgid "%+.1f dB (Id: %s)"
 msgstr ""
 
-#: ../file_info.cpp:587 ../file_info.cpp:589
+#: ../file_info.cpp:669 ../file_info.cpp:671
 #, fuzzy
 msgid "Relative Volume Adj.:"
 msgstr "В╕дносний Р╕вень"
 
-#: ../file_info.cpp:587 ../file_info.cpp:785
+#: ../file_info.cpp:669 ../file_info.cpp:860
 msgid "Import as RVA"
 msgstr "╤мпортувати як ПВР"
 
-#: ../file_info.cpp:601
+#: ../file_info.cpp:683
 msgid "Other"
 msgstr ""
 
-#: ../file_info.cpp:603
+#: ../file_info.cpp:685
 msgid "File icon (32x32 PNG)"
 msgstr ""
 
-#: ../file_info.cpp:605
+#: ../file_info.cpp:687
 #, fuzzy
 msgid "File icon (other)"
 msgstr "╤нформац╕я про файл"
 
-#: ../file_info.cpp:607
+#: ../file_info.cpp:689
 msgid "Front cover"
 msgstr ""
 
-#: ../file_info.cpp:609
+#: ../file_info.cpp:691
 msgid "Back cover"
 msgstr ""
 
-#: ../file_info.cpp:611
+#: ../file_info.cpp:693
 msgid "Leaflet page"
 msgstr ""
 
-#: ../file_info.cpp:613
+#: ../file_info.cpp:695
 #, fuzzy
 msgid "Album image"
 msgstr "Альбом"
 
-#: ../file_info.cpp:615
+#: ../file_info.cpp:697
 msgid "Lead artist/performer"
 msgstr ""
 
-#: ../file_info.cpp:617
+#: ../file_info.cpp:699
 msgid "Artist/performer"
 msgstr ""
 
-#: ../file_info.cpp:619 ../meta_decoder.cpp:108
+#: ../file_info.cpp:701 ../meta_decoder.cpp:108
 msgid "Conductor"
 msgstr "Диригент"
 
-#: ../file_info.cpp:621
+#: ../file_info.cpp:703
 #, fuzzy
 msgid "Band/orchestra"
 msgstr "Оркестр"
 
-#: ../file_info.cpp:623 ../meta_decoder.cpp:79
+#: ../file_info.cpp:705 ../meta_decoder.cpp:79
 msgid "Composer"
 msgstr "Автор"
 
-#: ../file_info.cpp:625
+#: ../file_info.cpp:707
 msgid "Lyricist/text writer"
 msgstr ""
 
-#: ../file_info.cpp:627
+#: ../file_info.cpp:709
 #, fuzzy
 msgid "Recording location/studio"
 msgstr "Назвах запис╕в"
 
-#: ../file_info.cpp:629
+#: ../file_info.cpp:711
 msgid "During recording"
 msgstr ""
 
-#: ../file_info.cpp:631
+#: ../file_info.cpp:713
 msgid "During performance"
 msgstr ""
 
-#: ../file_info.cpp:633
+#: ../file_info.cpp:715
 msgid "Movie/video screen capture"
 msgstr ""
 
-#: ../file_info.cpp:635
+#: ../file_info.cpp:717
 msgid "A large, coloured fish"
 msgstr ""
 
-#: ../file_info.cpp:637
+#: ../file_info.cpp:719
 #, fuzzy
 msgid "Illustration"
 msgstr "Тривал╕сть:"
 
-#: ../file_info.cpp:639
+#: ../file_info.cpp:721
 msgid "Band/artist logotype"
 msgstr ""
 
-#: ../file_info.cpp:641
+#: ../file_info.cpp:723
 msgid "Publisher/studio logotype"
 msgstr ""
 
-#: ../file_info.cpp:723
+#: ../file_info.cpp:805
 #, fuzzy
 msgid "ID3v2"
 msgstr "ID3v2 теги"
 
-#: ../file_info.cpp:762
+#: ../file_info.cpp:879
 msgid "APE"
 msgstr ""
 
-#: ../file_info.cpp:804
+#: ../file_info.cpp:930
 #, fuzzy
 msgid "Ogg comments"
 msgstr "Коментар╕"
 
-#: ../file_info.cpp:840
+#: ../file_info.cpp:966
 msgid "Vendor:"
 msgstr "Постачальник:"
 
-#: ../file_info.cpp:1034
+#: ../file_info.cpp:1180
 msgid "Audio data"
 msgstr "Ауд╕о дан╕"
 
-#: ../file_info.cpp:1038
+#: ../file_info.cpp:1184
 msgid "Format:"
 msgstr "Формат:"
 
-#: ../file_info.cpp:1050
+#: ../file_info.cpp:1196
 msgid "Length:"
 msgstr "Довжина:"
 
-#: ../file_info.cpp:1062
+#: ../file_info.cpp:1208
 msgid "Samplerate:"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:1067
+#: ../file_info.cpp:1213
 #, c-format
 msgid "%ld Hz"
 msgstr "%ld Гц"
 
-#: ../file_info.cpp:1074
+#: ../file_info.cpp:1220
 msgid "Channel count:"
 msgstr "К╕льк╕сть канал╕в:"
 
-#: ../file_info.cpp:1089
+#: ../file_info.cpp:1235
 msgid "Bandwidth:"
 msgstr "Швидк╕сть потоку:"
 
-#: ../file_info.cpp:1094
+#: ../file_info.cpp:1240
 #, c-format
 msgid "%.1f kbit/s"
 msgstr "%.1f кб╕т/с"
 
-#: ../file_info.cpp:1101
+#: ../file_info.cpp:1247
 msgid "Total samples:"
 msgstr "Всього семпл╕в:"
 
-#: ../file_info.cpp:1152
+#: ../file_info.cpp:1298
 #, fuzzy
 msgid "Module info"
 msgstr "╤нформац╕я про файл"
 
-#: ../file_info.cpp:1290 ../file_info.cpp:1369
+#: ../file_info.cpp:1436 ../file_info.cpp:1515
 #, fuzzy
 msgid "Type:"
 msgstr "SRC Тип: "
 
-#: ../file_info.cpp:1303 ../file_info.cpp:1382
+#: ../file_info.cpp:1449 ../file_info.cpp:1528
 #, fuzzy
 msgid "Channels:"
 msgstr "К╕льк╕сть канал╕в:"
 
-#: ../file_info.cpp:1317 ../file_info.cpp:1396
+#: ../file_info.cpp:1463 ../file_info.cpp:1542
 #, fuzzy
 msgid "Patterns:"
 msgstr "Категор╕я"
 
-#: ../file_info.cpp:1331 ../file_info.cpp:1410
+#: ../file_info.cpp:1477 ../file_info.cpp:1556
 #, fuzzy
 msgid "Samples:"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:1344
+#: ../file_info.cpp:1490
 msgid "Instruments:"
 msgstr ""
 
-#: ../file_info.cpp:1452
+#: ../file_info.cpp:1598
 #, fuzzy
 msgid "Samples"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:1461
+#: ../file_info.cpp:1607
 msgid "Instruments"
 msgstr ""
 
-#: ../file_info.cpp:1484
+#: ../file_info.cpp:1630
 msgid "No."
 msgstr ""
 
@@ -2804,9 +2809,6 @@ msgstr "П╕дпис"
 
 #~ msgid "FLAC metadata"
 #~ msgstr "FLAC метадан╕"
-
-#~ msgid "Save Music Store"
-#~ msgstr "Зберегти Музичний Склад"
 
 #~ msgid "Discard changes"
 #~ msgstr "Скасувати зм╕ни"

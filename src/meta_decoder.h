@@ -72,6 +72,8 @@ typedef struct _metadata {
 } metadata;
 
 
+int cut_trailing_whitespace(char * str);
+
 void read_rva2(char * raw_data, unsigned int length, char * id_str, float * voladj);
 int lookup_id3v2_textframe(char * frameID, char * descr);
 

@@ -66,6 +66,23 @@
 extern options_t options;
 
 
+int
+cut_trailing_whitespace(char * str) {
+
+	int i = strlen(str) - 1;
+
+	while (i >= 0) {
+		if ((str[i] == ' ') || (str[i] == '\t')) {
+			str[i] = '\0';
+		} else {
+			break;
+		}
+		--i;
+	}
+	return ((i >= 0) ? 1 : 0);
+}
+
+
 /* fills in descr based on frameID, ret 1 if found, 0 else */
 int
 lookup_id3v2_textframe(char * frameID, char * descr) {
@@ -592,31 +609,31 @@ meta_lookup(char * str, int which, TagLib::Tag * tag) {
 	case META_TITLE:
 		if (tag->title().toCString(true)[0] != '\0') {
 			strncpy(str, tag->title().toCString(true), MAXLEN-1);
-			return 1;
+			return cut_trailing_whitespace(str);
 		}
 		break;
 	case META_RECORD:
 		if (tag->album().toCString(true)[0] != '\0') {
 			strncpy(str, tag->album().toCString(true), MAXLEN-1);
-			return 1;
+			return cut_trailing_whitespace(str);
 		}
 		break;
 	case META_ARTIST:
 		if (tag->artist().toCString(true)[0] != '\0') {
 			strncpy(str, tag->artist().toCString(true), MAXLEN-1);
-			return 1;
+			return cut_trailing_whitespace(str);
 		}
 		break;
 	case META_YEAR:
 		if (tag->year() != 0) {
 			snprintf(str, MAXLEN-1, "%d", tag->year());
-			return 1;
+			return cut_trailing_whitespace(str);
 		}
 		break;
 	case META_COMMENT:
 		if (tag->comment().toCString(true)[0] != '\0') {
 			strncpy(str, tag->comment().toCString(true), MAXLEN-1);
-			return 1;
+			return cut_trailing_whitespace(str);
 		}
 		break;
 	}
@@ -636,7 +653,7 @@ meta_get_title_mod(metadata * meta, char * str) {
 		if (str != NULL && mi->title != NULL) {
 			strncpy(str, (char *) mi->title, MAXLEN-1);
 		}
-		return 1;
+		return cut_trailing_whitespace(str);
         }
 	return 0;
 }

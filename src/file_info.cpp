@@ -520,7 +520,7 @@ save_basic_fields(GtkWidget * widget, gpointer data) {
 		if (save_basic->id3v2_tag != NULL)
 			tags |= TagLib::MPEG::File::ID3v2;
 		if (save_basic->ape_tag != NULL)
-		tags |= TagLib::MPEG::File::APE;
+			tags |= TagLib::MPEG::File::APE;
 		save_basic->taglib_mpeg_file->save(tags, false);
 	}
 	if (save_basic->taglib_mpc_file != NULL)

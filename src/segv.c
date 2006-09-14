@@ -125,8 +125,9 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 		signum, strsignal(signum));
 #ifdef _WIN32
 	fprintf(stderr, "If you were running on UNIX instead of Windows,\n");
-	fprintf(stderr, "you could help the developers by getting a crash\n");
-	fprintf(stderr, "report (stacktrace) instead of this message...\n");
+	fprintf(stderr, "you could help the developers by sending them the\n");
+	fprintf(stderr, "crash report (stacktrace) you'd get instead of\n");
+	fprintf(stderr, "this message...\n");
 #else
 	fprintf(stderr, "To help the developers fix the bug causing this crash,\n");
 	fprintf(stderr, "please do the following:\n\n");

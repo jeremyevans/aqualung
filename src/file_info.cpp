@@ -552,6 +552,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 		import_data_t * data;
 
 		strncpy(str, (char *)tag->title().toCString(true), MAXLEN-1);
+		cut_trailing_whitespace(str);
 		if (is_all_wspace(str)) {
 			data = NULL;
 		} else {
@@ -566,6 +567,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 						       str, _("Import as Title"), data);
 
 		strncpy(str, (char *)tag->artist().toCString(true), MAXLEN-1);
+		cut_trailing_whitespace(str);
 		if (is_all_wspace(str)) {
 			data = NULL;
 		} else {
@@ -580,6 +582,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 							str, _("Import as Artist"), data);
 
 		strncpy(str, (char *)tag->album().toCString(true), MAXLEN-1);
+		cut_trailing_whitespace(str);
 		if (is_all_wspace(str)) {
 			data = NULL;
 		} else {
@@ -624,6 +627,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 						      str, _("Add to Comments"), data);
 
 		strncpy(str, (char *)tag->genre().toCString(true), MAXLEN-1);
+		cut_trailing_whitespace(str);
 		if (is_all_wspace(str)) {
 			data = NULL;
 		} else {
@@ -638,6 +642,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 						       str, _("Add to Comments"), data);
 
 		strncpy(str, (char *)tag->comment().toCString(true), MAXLEN-1);
+		cut_trailing_whitespace(str);
 		if (is_all_wspace(str)) {
 			data = NULL;
 		} else {
@@ -651,30 +656,39 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 		save_basic->entry_comment = append_table(table, &cnt, editable, _("Comment:"),
 							 str, _("Add to Comments"), data);
 	} else {
-		save_basic->entry_title = append_table(table, &cnt, editable, _("Title:"),
-			(char *)tag->title().toCString(true),  NULL, NULL);
-		save_basic->entry_artist = append_table(table, &cnt, editable, _("Artist:"),
-			(char *)tag->artist().toCString(true), NULL, NULL);
-		save_basic->entry_album = append_table(table, &cnt, editable, _("Album:"),
-			(char *)tag->album().toCString(true),  NULL, NULL);
+		strncpy(str, (char *)tag->title().toCString(true), MAXLEN-1);
+		cut_trailing_whitespace(str);
+		save_basic->entry_title = append_table(table, &cnt, editable, _("Title:"), str,  NULL, NULL);
+
+		strncpy(str, (char *)tag->artist().toCString(true), MAXLEN-1);
+		cut_trailing_whitespace(str);
+		save_basic->entry_artist = append_table(table, &cnt, editable, _("Artist:"), str, NULL, NULL);
+
+		strncpy(str, (char *)tag->album().toCString(true), MAXLEN-1);
+		cut_trailing_whitespace(str);
+		save_basic->entry_album = append_table(table, &cnt, editable, _("Album:"), str,  NULL, NULL);
+
 		if (tag->track() != 0) {
 			sprintf(str, "%d", tag->track());
 		} else {
 			str[0] = '\0';
 		}
-		save_basic->entry_track = append_table(table, &cnt, editable, _("Track:"),
-						       str, NULL, NULL);
+		save_basic->entry_track = append_table(table, &cnt, editable, _("Track:"), str, NULL, NULL);
+
 		if (tag->year() != 0) {
 			sprintf(str, "%d", tag->year());
 		} else {
 			str[0] = '\0';
 		}
-		save_basic->entry_year = append_table(table, &cnt, editable, _("Year:"),
-						      str, NULL, NULL);
-		save_basic->entry_genre = append_table(table, &cnt, editable, _("Genre:"),
-			(char *)tag->genre().toCString(true),   NULL, NULL);
-		save_basic->entry_comment = append_table(table, &cnt, editable, _("Comment:"),
-			(char *)tag->comment().toCString(true), NULL, NULL);
+		save_basic->entry_year = append_table(table, &cnt, editable, _("Year:"), str, NULL, NULL);
+
+		strncpy(str, (char *)tag->genre().toCString(true), MAXLEN-1);
+		cut_trailing_whitespace(str);
+		save_basic->entry_genre = append_table(table, &cnt, editable, _("Genre:"), str,   NULL, NULL);
+
+		strncpy(str, (char *)tag->comment().toCString(true), MAXLEN-1);
+		cut_trailing_whitespace(str);
+		save_basic->entry_comment = append_table(table, &cnt, editable, _("Comment:"), str, NULL, NULL);
 	}
 
 	if (ptable) {
@@ -686,7 +700,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 		g_signal_connect(G_OBJECT(button), "clicked",
 				 G_CALLBACK(save_basic_fields), (gpointer)save_basic);
 		gtk_table_resize(GTK_TABLE(table), cnt + 1, 3);
-		gtk_table_attach(GTK_TABLE(table), button, 0, 3, cnt, cnt+1, GTK_FILL, GTK_FILL, 5, 3);
+		gtk_table_attach(GTK_TABLE(table), button, 1, 3, cnt, cnt+1, GTK_FILL, GTK_FILL, 5, 3);
 		++cnt;
 	}
 	return cnt;
@@ -1137,7 +1151,12 @@ build_nb_pages_mpeg(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
 	save_basic->taglib_mpeg_file = taglib_mpeg_file;
 
 	if (taglib_mpeg_file->ID3v1Tag() && !taglib_mpeg_file->ID3v1Tag()->isEmpty()) {
-		build_id3v1_page(nb, mode, false, save_basic, taglib_mpeg_file->ID3v1Tag());
+		/* allow editing only if there is no id3v2 tag */
+		bool id3v1_editable = true;
+		if (taglib_mpeg_file->ID3v2Tag()) {
+			id3v1_editable = taglib_mpeg_file->ID3v2Tag()->isEmpty();
+		}
+		build_id3v1_page(nb, mode, id3v1_editable, save_basic, taglib_mpeg_file->ID3v1Tag());
 	}
 	if (taglib_mpeg_file->ID3v2Tag() && !taglib_mpeg_file->ID3v2Tag()->isEmpty()) {
 		build_id3v2_page(nb, mode, editable, save_basic, taglib_mpeg_file->ID3v2Tag());

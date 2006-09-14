@@ -7,12 +7,32 @@ AM_CONFIG_HEADER([config.h])
 
 
 
+AC_MSG_CHECKING(for type of build)
+AC_ARG_ENABLE(
+	debug,
+	[  --enable-debug=yes,no   compile with debugging support (default: no)],
+	buildtype="debug",
+	buildtype="release")
+if test "$buildtype" = "debug"; then
+        BUILD_CFLAGS="-rdynamic -ggdb -g -O0"
+	AC_DEFINE([DEBUG_BUILD], [1], [Defined if doing a debug build])
+	AC_MSG_RESULT(debug)
+else
+        BUILD_CFLAGS="-O2"
+	AC_DEFINE([RELEASE_BUILD], [1], [Defined if doing a release build])
+	AC_MSG_RESULT(release)
+fi
+
+
 AC_MSG_CHECKING(for compilation platform)
 if test `uname -a | grep CYGWIN | wc -l` = "1" ; then
    PLATFORM_CFLAGS="-mwin32 -mwindows"
    PLATFORM_LIBS="-lintl -lwinmm"
    win32="yes"
    freebsd="no"
+   if test "$buildtype" = "debug"; then
+	   AC_MSG_ERROR(Sorry, debug build under Cygwin is unsupported!)
+   fi
    AC_MSG_RESULT(Cygwin)
 fi
 if test `uname -a | grep FreeBSD | wc -l` = "1"  ; then
@@ -595,7 +615,7 @@ AQUALUNG_SKINDIR="-DAQUALUNG_SKINDIR=\\\"$datadir/aqualung/skin\\\""
 AQUALUNG_LOCALEDIR="-DAQUALUNG_LOCALEDIR=\\\"$datadir/locale\\\""
 AQUALUNG_DATADIR="-DAQUALUNG_DATADIR=\\\"$datadir/aqualung\\\""
 
-CFLAGS="-O2 -Wall $PLATFORM_CFLAGS $AQUALUNG_SKINDIR $AQUALUNG_LOCALEDIR $AQUALUNG_DATADIR -D_GNU_SOURCE"
+CFLAGS="$BUILD_CFLAGS -Wall $PLATFORM_CFLAGS $AQUALUNG_SKINDIR $AQUALUNG_LOCALEDIR $AQUALUNG_DATADIR -D_GNU_SOURCE"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $taglib_CFLAGS"
 LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $taglib_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS"
@@ -619,6 +639,8 @@ AC_OUTPUT([Makefile \
 echo "----------------------------------------------------------------------"
 echo "  Configuration summary"
 echo "  ====================="
+echo
+echo "  Build type                              :  $buildtype"
 echo
 echo "  File format support:"
 echo "      sndfile (WAV, AIFF, etc.)           :  $sndfile"

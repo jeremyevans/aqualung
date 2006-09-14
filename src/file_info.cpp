@@ -179,7 +179,7 @@ save_basic_new(void) {
 #endif /* HAVE_TAGLIB */
 
 
-static gint
+gint
 dismiss(GtkWidget * widget, gpointer data) {
 
 	metadata * meta = (metadata *)data;
@@ -201,7 +201,7 @@ dismiss(GtkWidget * widget, gpointer data) {
 }
 
 
-static gint
+gint
 info_window_close(GtkWidget * widget, GdkEventAny * event, gpointer data) {
 
 	metadata * meta = (metadata *)data;
@@ -233,7 +233,7 @@ info_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent, gpointer data)
 }
 
 
-static void
+void
 import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 
 	import_data_t * data = (import_data_t *)gptr_data;
@@ -348,7 +348,7 @@ append_table(GtkWidget * table, int * cnt, bool editable, char * field, char * v
 }
 
 
-static void
+void
 save_pic_button_pressed(GtkWidget * widget, gpointer data) {
 
 	save_pic_t * save_pic = (save_pic_t *)data;
@@ -455,7 +455,7 @@ append_table_pic(GtkWidget * table, int * cnt, GtkWidget * image,
 
 
 #ifdef HAVE_TAGLIB
-static void
+void
 save_basic_fields(GtkWidget * widget, gpointer data) {
 
 	save_basic_t * save_basic = (save_basic_t *)data;

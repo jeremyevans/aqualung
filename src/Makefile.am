@@ -24,6 +24,7 @@ ports.h ports.c \
 rb.h rb.c \
 search.h search.c \
 search_playlist.h search_playlist.c \
+segv.h segv.c \
 skin.h skin.c \
 transceiver.c transceiver.h \
 trashlist.c trashlist.h \

@@ -171,10 +171,10 @@ widget "*TreeView*" style "view"
 widget "*TextView*" style "view"
 widget "*List*" style "view"
 
+widget "*Notebook*" style "button"
 widget "*Scrollbar*" style "scrollbar"
 widget "*Separator*" style "scrollbar"
 widget "*Progress*" style "progressbar"
-widget "*Notebook*" style "button"
 
 widget "*OptionMenu*" style "button"
 widget "*Menu*" style "menu"

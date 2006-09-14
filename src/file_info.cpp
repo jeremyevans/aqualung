@@ -539,10 +539,13 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 	GtkWidget * table = gtk_table_new(0, 3, FALSE);
 	GtkWidget * label = gtk_label_new(nb_label);
 	GtkWidget * scrwin = gtk_scrolled_window_new(NULL, NULL);
+	GtkWidget * viewp = gtk_viewport_new(NULL, NULL);
+	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewp), GTK_SHADOW_NONE);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 10);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrwin), vbox);
+	gtk_container_add(GTK_CONTAINER(scrwin), viewp);
+	gtk_container_add(GTK_CONTAINER(viewp), vbox);
 	gtk_notebook_append_page(GTK_NOTEBOOK(nb), scrwin, label);
 
 	int cnt = 0;

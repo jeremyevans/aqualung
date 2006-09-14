@@ -95,6 +95,7 @@ volatile int write_data_locked = 0;
 GtkTreeIter store_iter;
 GtkTreeIter artist_iter;
 int artist_iter_is_set = 0;
+int artist_name_is_set = 0;
 
 GtkWidget * build_prog_window = NULL;
 GtkWidget * prog_cancel_button;
@@ -292,6 +293,7 @@ filter_string(const char * str) {
 		    str[i] != ',' &&
 		    str[i] != '?' &&
 		    str[i] != '!' &&
+		    str[i] != '&' &&
 		    str[i] != '\'' &&
 		    str[i] != '"' &&
 		    str[i] != '-' &&
@@ -1522,12 +1524,7 @@ prog_window_close(GtkWidget * widget, gpointer data) {
 void
 cancel_build(GtkWidget * widget, gpointer data) {
 
-	build_cancelled = 1;
-
-	if (build_prog_window) {
-		gtk_widget_destroy(build_prog_window);
-		build_prog_window = NULL;
-	}
+	prog_window_close(NULL, NULL);
 }
 
 gboolean
@@ -2119,14 +2116,32 @@ write_data_to_store(gpointer data) {
 
 
 	if (build_type == BUILD_STORE) {
+
+		char * low1 = g_utf8_strdown(record->artist_d_name, -1);
+		char * low2 = g_utf8_strdown(record->artist, -1);
+		int diff = strcmp(low1, low2);
+
+		g_free(low1);
+		g_free(low2);
+
 		if (artist_iter_is_set) {
 			result = artist_get_iter_for_record(&artist_iter, &record_iter, record);
+
+			if (!artist_name_is_set && diff) {
+				gtk_tree_store_set(music_store, &artist_iter,
+						   0, record->artist, -1);
+				artist_name_is_set = 1;
+			}
 		} else {
 			result = store_get_iter_for_artist_and_record(&store_iter,
 								      &artist_iter,
 								      &record_iter,
 								      record);
 			artist_iter_is_set = 1;
+
+			if (diff) {
+				artist_name_is_set = 1;
+			}
 		}
 	} else {
 		result = artist_get_iter_for_record(&artist_iter, &record_iter, record);
@@ -2231,12 +2246,16 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	record.artist_sort_name[0] = '\0';
 	record.record_sort_name[0] = '\0';
 
-	record.artist_valid = artist_iter_is_set;
+	record.artist_valid = artist_name_is_set;
 	record.record_valid = 0;
 	record.year_valid = 0;
 
 	record.tracks = NULL;
 
+	utf8 = g_filename_display_name(artist_d_name);
+	record.artist_d_name[0] = '\0';
+	strncpy(record.artist_d_name, utf8, MAXLEN-1);
+	g_free(utf8);
 
 	g_idle_add(set_prog_action_label, (gpointer) _("Scanning files"));
 
@@ -2385,10 +2404,8 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	g_idle_add(set_prog_action_label, (gpointer) _("File name transformation"));
 
 	if (!record.artist_valid) {
-		utf8 = g_filename_display_name(artist_d_name);
-		strncpy(record.artist, utf8, MAXLEN-1);
+		strncpy(record.artist, record.artist_d_name, MAXLEN-1);
 		record.artist_valid = 1;
-		g_free(utf8);
 	}
 
 	if (!record.record_valid) {
@@ -2428,13 +2445,9 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 		g_free(utf8);
 		break;
 	case ARTIST_SORT_DIR_LOW:
-		{
-			char * tmp = g_filename_display_name(artist_d_name);
-			utf8 = g_utf8_strdown(tmp, -1);
-			strncpy(record.artist_sort_name, utf8, MAXLEN-1);
-			g_free(utf8);
-			g_free(tmp);
-		}
+		utf8 = g_utf8_strdown(record.artist_d_name, -1);
+		strncpy(record.artist_sort_name, utf8, MAXLEN-1);
+		g_free(utf8);
 		break;
 	}
 
@@ -2522,6 +2535,7 @@ build_artist_thread(void * arg) {
 	char artist_d_name[MAXLEN];
 
 	artist_iter_is_set = 1;
+	artist_name_is_set = 1;
 
 	i = strlen(root);
 	while (root[--i] != '/');
@@ -2569,6 +2583,7 @@ build_store_thread(void * arg) {
 		}
 
 		artist_iter_is_set = 0;
+		artist_name_is_set = 0;
 
 		for (j = 0; j < scandir(dir_artist, &ent_record, filter, alphasort); j++) {
 

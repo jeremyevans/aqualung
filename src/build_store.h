@@ -65,6 +65,7 @@ typedef struct _build_track_t {
 typedef struct _build_record_t {
 
 	char artist[MAXLEN];
+	char artist_d_name[MAXLEN];
 	char record[MAXLEN];
 	char year[MAXLEN];
 

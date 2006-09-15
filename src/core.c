@@ -126,7 +126,6 @@ rb_t * rb_gui2disk;
 rb_t * rb_disk2gui;
 
 /* Lock critical operations that could interfere with output thread */
-//volatile int output_thread_lock = 0;
 double left_gain = 1.0;
 double right_gain = 1.0;
 
@@ -520,8 +519,6 @@ oss_thread(void * arg) {
 	req_time.tv_sec = 0;
         req_time.tv_nsec = 100000000;
 
-	//	output_thread_lock = 1;
-
 	if ((info->oss_short_buf = malloc(2*bufsize * sizeof(short))) == NULL) {
 		fprintf(stderr, "oss_thread: malloc error\n");
 		exit(1);
@@ -565,9 +562,7 @@ oss_thread(void * arg) {
 		}
 
 		if ((n_avail = rb_read_space(rb) / (2*sample_size)) == 0) {
-			//			output_thread_lock = 0;
 			nanosleep(&req_time, &rem_time);
-			//			output_thread_lock = 1;
 			goto oss_wake;
 		}
 
@@ -640,9 +635,7 @@ oss_thread(void * arg) {
 		}
 
 		/* write data to audio device */
-		//		output_thread_lock = 0;
 		ioctl_status = write(fd_oss, oss_short_buf, 2*n_avail * sizeof(short));
-		//		output_thread_lock = 1;
 		if (ioctl_status != 2*n_avail * sizeof(short))
 			fprintf(stderr, "oss_thread: Error writing to audio device\n");
 
@@ -676,8 +669,6 @@ alsa_thread(void * arg) {
 	struct timespec rem_time;
 	req_time.tv_sec = 0;
         req_time.tv_nsec = 100000000;
-
-	//	output_thread_lock = 1;
 
 	if (is_output_32bit) {
 		if ((info->alsa_int_buf = malloc(2*bufsize * sizeof(int))) == NULL) {
@@ -739,9 +730,7 @@ alsa_thread(void * arg) {
 		}
 
 		if ((n_avail = rb_read_space(rb) / (2*sample_size)) == 0) {
-			//			output_thread_lock = 0;
 			nanosleep(&req_time, &rem_time);
-			//			output_thread_lock = 1;
 			goto alsa_wake;
 		}
 
@@ -815,12 +804,9 @@ alsa_thread(void * arg) {
 			}
 
 			/* write data to audio device */
-			//			output_thread_lock = 0;
 			if ((n_written = snd_pcm_writei(pcm_handle, alsa_int_buf, n_avail)) != n_avail) {
 				snd_pcm_prepare(pcm_handle);
 			}
-			//			output_thread_lock = 1;
-
 		} else {
 			for (i = 0; i < bufsize; i++) {
 				if (l_buf[i] > 1.0)
@@ -838,11 +824,9 @@ alsa_thread(void * arg) {
 			}
 
 			/* write data to audio device */
-			//			output_thread_lock = 0;
 			if ((n_written = snd_pcm_writei(pcm_handle, alsa_short_buf, n_avail)) != n_avail) {
 				snd_pcm_prepare(pcm_handle);
 			}
-			//			output_thread_lock = 1;
 		}
 	}
  alsa_finish:
@@ -866,8 +850,6 @@ process(u_int32_t nframes, void * arg) {
 	static int flushcnt = 0;
 	char recv_cmd;
 
-	//	output_thread_lock = 1;
-	
 	jack_nframes = nframes;
 #ifdef HAVE_LADSPA
 	ladspa_buflen = nframes;
@@ -882,7 +864,6 @@ process(u_int32_t nframes, void * arg) {
 				(2*sample_size) * 1.1f;
 			break;
 		case CMD_FINISH:
-			//			output_thread_lock = 0;
 			return 0;
 			break;
 		default:
@@ -961,8 +942,6 @@ process(u_int32_t nframes, void * arg) {
 	if ((flushing) && (!rb_read_space(rb) || (--flushcnt == 0))) {
 		flushing = 0;
 	}
-	
-	//	output_thread_lock = 0;
 	return 0;
 }
 

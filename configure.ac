@@ -31,8 +31,9 @@ if test `uname -a | grep CYGWIN | wc -l` = "1" ; then
    win32="yes"
    freebsd="no"
    if test "$buildtype" = "debug"; then
-	   AC_MSG_ERROR(Sorry, debug build under Cygwin is unsupported!)
+	   AC_MSG_ERROR([Sorry, debug build under Cygwin is unsupported!])
    fi
+   platform="Cygwin"
    AC_MSG_RESULT(Cygwin)
 fi
 if test `uname -a | grep FreeBSD | wc -l` = "1"  ; then
@@ -40,6 +41,7 @@ if test `uname -a | grep FreeBSD | wc -l` = "1"  ; then
    PLATFORM_LIBS=""
    win32="no"
    freebsd="yes"
+   platform="FreeBSD"
    AC_MSG_RESULT(FreeBSD)
 fi
 if test `uname -a | grep Linux | wc -l` = "1"  ; then
@@ -47,6 +49,7 @@ if test `uname -a | grep Linux | wc -l` = "1"  ; then
    PLATFORM_LIBS=""
    win32="no"
    freebsd="no"
+   platform="Linux"
    AC_MSG_RESULT(Linux)
 fi
 
@@ -640,7 +643,7 @@ echo "----------------------------------------------------------------------"
 echo "  Configuration summary"
 echo "  ====================="
 echo
-echo "  Build type                              :  $buildtype"
+echo "  Build type / target platform            :  $buildtype / $platform"
 echo
 echo "  File format support:"
 echo "      sndfile (WAV, AIFF, etc.)           :  $sndfile"

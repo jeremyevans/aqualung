@@ -121,6 +121,8 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 static void
 signal_segv(int signum, siginfo_t * info, void * ptr) {
 
+	fprintf(stderr, "sighandler(release build)\n");
+
 	fprintf(stderr, "Aqualung received signal %d (%s).\n\n",
 		signum, strsignal(signum));
 #ifdef _WIN32
@@ -146,6 +148,15 @@ setup_sigsegv() {
 	memset(&action, 0, sizeof(action));
 	action.sa_sigaction = signal_segv;
 	action.sa_flags = SA_SIGINFO;
+
+	if (sigaction(SIGFPE, &action, NULL) < 0) {
+		perror("sigaction");
+		return 0;
+	}
+	if (sigaction(SIGILL, &action, NULL) < 0) {
+		perror("sigaction");
+		return 0;
+	}
 	if (sigaction(SIGSEGV, &action, NULL) < 0) {
 		perror("sigaction");
 		return 0;
@@ -154,7 +165,7 @@ setup_sigsegv() {
 		perror("sigaction");
 		return 0;
 	}
-	if (sigaction(SIGFPE, &action, NULL) < 0) {
+	if (sigaction(SIGABRT, &action, NULL) < 0) {
 		perror("sigaction");
 		return 0;
 	}

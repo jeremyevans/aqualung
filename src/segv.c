@@ -121,8 +121,6 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 static void
 signal_segv(int signum, siginfo_t * info, void * ptr) {
 
-	fprintf(stderr, "sighandler(release build)\n");
-
 	fprintf(stderr, "Aqualung received signal %d (%s).\n\n",
 		signum, strsignal(signum));
 #ifdef _WIN32

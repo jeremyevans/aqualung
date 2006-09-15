@@ -1155,8 +1155,8 @@ build_nb_pages_mpeg(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
 
 	if (taglib_mpeg_file->ID3v1Tag() && !taglib_mpeg_file->ID3v1Tag()->isEmpty()) {
 		/* allow editing only if there is no id3v2 tag */
-		bool id3v1_editable = true;
-		if (taglib_mpeg_file->ID3v2Tag()) {
+		bool id3v1_editable = editable;
+		if (id3v1_editable && taglib_mpeg_file->ID3v2Tag()) {
 			id3v1_editable = taglib_mpeg_file->ID3v2Tag()->isEmpty();
 		}
 		build_id3v1_page(nb, mode, id3v1_editable, save_basic, taglib_mpeg_file->ID3v1Tag());

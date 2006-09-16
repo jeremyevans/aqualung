@@ -154,6 +154,10 @@ int search_pl_flags = 0;
 int search_ms_flags = 120; /* check search flags in search.c for initial value :) */
 
 
+#ifdef HAVE_SNDFILE
+extern char * valid_extensions_sndfile[];
+#endif /* HAVE_SNDFILE */
+
 #ifdef HAVE_MPEG
 extern char * valid_extensions_mpeg[];
 #endif /* HAVE_MPEG */
@@ -5356,25 +5360,7 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
 #ifdef HAVE_SNDFILE
         filter = gtk_file_filter_new();
         gtk_file_filter_set_name(filter, _("Sound Files (*.wav, *.aiff, *.au, ...)"));
-
-        gtk_file_filter_add_pattern(filter, "*.[wW][aA][vV]");
-        gtk_file_filter_add_pattern(filter, "*.[aA][iI][fF]*");
-        gtk_file_filter_add_pattern(filter, "*.[aA][uU]");
-        gtk_file_filter_add_pattern(filter, "*.[wW]64");
-        gtk_file_filter_add_pattern(filter, "*.[vV][oO][cC]");
-        gtk_file_filter_add_pattern(filter, "*.[xX][iI]");
-        gtk_file_filter_add_pattern(filter, "*.[hH][tT][kK]");
-        gtk_file_filter_add_pattern(filter, "*.[sS][vV][xX]");
-
-        gtk_file_filter_add_pattern(filter_all, "*.[wW][aA][vV]");
-        gtk_file_filter_add_pattern(filter_all, "*.[aA][iI][fF]*");
-        gtk_file_filter_add_pattern(filter_all, "*.[aA][uU]");
-        gtk_file_filter_add_pattern(filter_all, "*.[wW]64");
-        gtk_file_filter_add_pattern(filter_all, "*.[vV][oO][cC]");
-        gtk_file_filter_add_pattern(filter_all, "*.[xX][iI]");
-        gtk_file_filter_add_pattern(filter_all, "*.[hH][tT][kK]");
-        gtk_file_filter_add_pattern(filter_all, "*.[sS][vV][xX]");
-
+	build_filter_from_extensions(filter, filter_all, valid_extensions_sndfile);
         gtk_file_chooser_add_filter(fc, filter);
 #endif /* HAVE_SNDFILE */
 

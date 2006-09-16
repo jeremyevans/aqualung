@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2006-09-10 19:33+0200\n"
+"PO-Revision-Date: 2006-09-16 18:03+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Névjegy"
 
 #: ../about.c:153
 msgid "Build version: "
-msgstr "Fordítási verzió:  "
+msgstr "Fordítási verzió: "
 
 #: ../about.c:158
 msgid "Homepage:"
@@ -467,9 +467,8 @@ msgid "Year:"
 msgstr "Év:"
 
 #: ../cddb_lookup.c:429
-#, fuzzy
 msgid "Import as Sort Key"
-msgstr "Importálás címként"
+msgstr "Importálás kulcsként"
 
 #: ../cddb_lookup.c:437 ../cddb_lookup.c:717
 msgid "Category:"
@@ -495,15 +494,14 @@ msgid "Tracks"
 msgstr "Számok"
 
 #: ../cddb_lookup.c:536
-#, fuzzy
 msgid ""
 "An error occurred while attempting to submit the record to the CDDB server.\n"
 "Make sure you provided an email address for submission, or try to change the "
 "access protocol."
 msgstr ""
 "Hiba történt a lemez elküldése közben.\n"
-"Ellenõrizd hogy megadtál egy email-címet az elküldéshez, vagy próbálkozz\n"
-"másik protokollal."
+"Ellenõrizd hogy megadtál egy email címet az elküldéshez, vagy próbálkozz\n"
+"másik elérési protokollal."
 
 #: ../cddb_lookup.c:557 ../options.c:1299 ../playlist.c:895
 msgid "Warning"
@@ -511,32 +509,31 @@ msgstr "Figyelmeztetés"
 
 #: ../cddb_lookup.c:645
 msgid "CDDB submission"
-msgstr ""
+msgstr "CDDB küldés"
 
 #: ../cddb_lookup.c:721
 msgid "(choose a category)"
-msgstr ""
+msgstr "(válassz egy kategóriát)"
 
 #: ../cddb_lookup.c:722
 msgid "data (ISO9660 and other data CDs)"
-msgstr ""
+msgstr "adat (ISO9660 és egyéb adat CD)"
 
 #: ../cddb_lookup.c:723
 msgid "folk"
-msgstr ""
+msgstr "folk"
 
 #: ../cddb_lookup.c:724
 msgid "jazz"
-msgstr ""
+msgstr "jazz"
 
 #: ../cddb_lookup.c:725
 msgid "miscellaneous"
 msgstr "egyéb"
 
 #: ../cddb_lookup.c:726
-#, fuzzy
 msgid "rock"
-msgstr "Szám"
+msgstr "rock"
 
 #: ../cddb_lookup.c:727
 msgid "country"
@@ -547,14 +544,12 @@ msgid "blues"
 msgstr "blues"
 
 #: ../cddb_lookup.c:729
-#, fuzzy
 msgid "newage"
-msgstr "Átlagos"
+msgstr "newage"
 
 #: ../cddb_lookup.c:730
-#, fuzzy
 msgid "reagge"
-msgstr "Átlagos"
+msgstr "reagge"
 
 #: ../cddb_lookup.c:731
 msgid "classical"
@@ -2295,37 +2290,32 @@ msgid "Progress:"
 msgstr "Feldolgozás:"
 
 #: ../file_info.cpp:375
-#, fuzzy
 msgid "Please specify the file to save the image to."
-msgstr "Add meg az elmentendõ lejátszólista fájlt."
+msgstr "Add meg az elmentendõ képfájlt."
 
 #: ../file_info.cpp:435
-#, fuzzy
 msgid "Type"
-msgstr "Típus: "
+msgstr "Típus"
 
 #: ../file_info.cpp:437
-#, fuzzy
 msgid "Description"
-msgstr "Hossz:"
+msgstr "Leírás"
 
 #: ../file_info.cpp:439
 msgid "No description"
-msgstr ""
+msgstr "Nincs leírás"
 
 #: ../file_info.cpp:442
 msgid "Embedded picture"
-msgstr ""
+msgstr "Beágyazott kép"
 
 #: ../file_info.cpp:459
-#, fuzzy
 msgid "Save to file..."
-msgstr "Tároló mentése"
+msgstr "Mentés fájlba..."
 
 #: ../file_info.cpp:614 ../file_info.cpp:687
-#, fuzzy
 msgid "Album:"
-msgstr "Lemez"
+msgstr "Lemez:"
 
 #: ../file_info.cpp:615
 msgid "Import as Record"
@@ -2340,13 +2330,12 @@ msgid "Import as Track number"
 msgstr "Importálás sorszámként"
 
 #: ../file_info.cpp:672 ../file_info.cpp:674 ../file_info.cpp:709
-#, fuzzy
 msgid "Comment:"
-msgstr "Megjegyzések:"
+msgstr "Megjegyzés:"
 
 #: ../file_info.cpp:717
 msgid "Save basic fields"
-msgstr ""
+msgstr "Alap mezõk elmentése"
 
 #: ../file_info.cpp:736
 msgid "ID3v1"
@@ -2358,9 +2347,8 @@ msgid "%+.1f dB (Id: %s)"
 msgstr "+.1f dB (Id: %s)"
 
 #: ../file_info.cpp:794 ../file_info.cpp:796
-#, fuzzy
 msgid "Relative Volume Adj.:"
-msgstr "Relatív hangosság"
+msgstr "Relatív hangosság:"
 
 #: ../file_info.cpp:794 ../file_info.cpp:989
 msgid "Import as RVA"
@@ -2368,50 +2356,47 @@ msgstr "Importálás RVA-ként"
 
 #: ../file_info.cpp:808
 msgid "Other"
-msgstr ""
+msgstr "Egyéb"
 
 #: ../file_info.cpp:810
 msgid "File icon (32x32 PNG)"
-msgstr ""
+msgstr "Fájl ikon (32x32 PNG)"
 
 #: ../file_info.cpp:812
-#, fuzzy
 msgid "File icon (other)"
-msgstr "Fájl infó"
+msgstr "Fájl ikon (egyéb)"
 
 #: ../file_info.cpp:814
 msgid "Front cover"
-msgstr ""
+msgstr "Elsõ borító"
 
 #: ../file_info.cpp:816
 msgid "Back cover"
-msgstr ""
+msgstr "Hátsó borító"
 
 #: ../file_info.cpp:818
 msgid "Leaflet page"
-msgstr ""
+msgstr "Füzetlap"
 
 #: ../file_info.cpp:820
-#, fuzzy
 msgid "Album image"
-msgstr "Lemez"
+msgstr "Album kép"
 
 #: ../file_info.cpp:822
 msgid "Lead artist/performer"
-msgstr ""
+msgstr "Vezetõ mûvész/elõadó"
 
 #: ../file_info.cpp:824
 msgid "Artist/performer"
-msgstr ""
+msgstr "Mûvész/elõadó"
 
 #: ../file_info.cpp:826 ../meta_decoder.cpp:125
 msgid "Conductor"
 msgstr "Karmester"
 
 #: ../file_info.cpp:828
-#, fuzzy
 msgid "Band/orchestra"
-msgstr "Zenekar"
+msgstr "Zenekar/orchestra"
 
 #: ../file_info.cpp:830 ../meta_decoder.cpp:96
 msgid "Composer"
@@ -2419,55 +2404,51 @@ msgstr "Zeneszerzõ"
 
 #: ../file_info.cpp:832
 msgid "Lyricist/text writer"
-msgstr ""
+msgstr "Szövegíró"
 
 #: ../file_info.cpp:834
-#, fuzzy
 msgid "Recording location/studio"
-msgstr "Albumok"
+msgstr "Felvétel helye/stúdió"
 
 #: ../file_info.cpp:836
 msgid "During recording"
-msgstr ""
+msgstr "Felvétel közben"
 
 #: ../file_info.cpp:838
 msgid "During performance"
-msgstr ""
+msgstr "Elõadás közben"
 
 #: ../file_info.cpp:840
 msgid "Movie/video screen capture"
-msgstr ""
+msgstr "Mozi/videó felvétel"
 
 #: ../file_info.cpp:842
 msgid "A large, coloured fish"
-msgstr ""
+msgstr "Egy nagy, színes hal"
 
 #: ../file_info.cpp:844
-#, fuzzy
 msgid "Illustration"
-msgstr "Hossz:"
+msgstr "Illusztráció"
 
 #: ../file_info.cpp:846
 msgid "Band/artist logotype"
-msgstr ""
+msgstr "Zenekar/elõadó logótípus"
 
 #: ../file_info.cpp:848
 msgid "Publisher/studio logotype"
-msgstr ""
+msgstr "Kiadó/stúdió logótípus"
 
 #: ../file_info.cpp:933
-#, fuzzy
 msgid "ID3v2"
-msgstr "ID3v2 tagek"
+msgstr "ID3v2"
 
 #: ../file_info.cpp:1011
 msgid "APE"
 msgstr "APE"
 
 #: ../file_info.cpp:1066
-#, fuzzy
 msgid "Ogg comments"
-msgstr "Megjegyzések"
+msgstr "Ogg megjegyzések"
 
 #: ../file_info.cpp:1102
 msgid "Vendor:"
@@ -2475,30 +2456,27 @@ msgstr "Vendor:"
 
 #: ../file_info.cpp:1116
 msgid "Create ID3v1"
-msgstr ""
+msgstr "ID3v1 létrehozása"
 
 #: ../file_info.cpp:1122
-#, fuzzy
 msgid "Remove ID3v1"
-msgstr "Eltávolítás"
+msgstr "ID3v1 eltávolítása"
 
 #: ../file_info.cpp:1128
 msgid "Create ID3v2"
-msgstr ""
+msgstr "ID3v2 létrehozása"
 
 #: ../file_info.cpp:1134
-#, fuzzy
 msgid "Remove ID3v2"
-msgstr "Eltávolítás"
+msgstr "ID3v2 eltávolítása"
 
 #: ../file_info.cpp:1140
 msgid "Create APE"
-msgstr ""
+msgstr "APE létrehozása"
 
 #: ../file_info.cpp:1146
-#, fuzzy
 msgid "Remove APE"
-msgstr "Eltávolítás"
+msgstr "APE eltávolítása"
 
 #: ../file_info.cpp:1428
 msgid "Audio data"
@@ -2580,47 +2558,41 @@ msgstr "Lemez"
 
 #: ../meta_decoder.cpp:95
 msgid "Beats per minute"
-msgstr ""
+msgstr "Percenkénti ütésszám"
 
 #: ../meta_decoder.cpp:97
 msgid "Content type"
 msgstr "Tartalom típusa"
 
 #: ../meta_decoder.cpp:98
-#, fuzzy
 msgid "Copyright"
-msgstr "Copyright (C)"
+msgstr "Copyright"
 
 #: ../meta_decoder.cpp:99
-#, fuzzy
 msgid "Encoding time"
-msgstr "kódolású"
+msgstr "Kódolás ideje"
 
 #: ../meta_decoder.cpp:100
-#, fuzzy
 msgid "Playlist delay"
-msgstr "Lejátszólista: "
+msgstr "Lejátszólista késleltetés"
 
 #: ../meta_decoder.cpp:101
 msgid "Original release time"
-msgstr ""
+msgstr "Eredeti kiadás ideje"
 
 #: ../meta_decoder.cpp:102
-#, fuzzy
 msgid "Recording time"
-msgstr "Albumok"
+msgstr "Felvétel ideje"
 
 #: ../meta_decoder.cpp:103
 msgid "Release time"
-msgstr ""
+msgstr "Kiadás ideje"
 
 #: ../meta_decoder.cpp:104
-#, fuzzy
 msgid "Tagging time"
-msgstr "Nagy idõkijelzõ: "
+msgstr "Taggelés ideje"
 
 #: ../meta_decoder.cpp:105
-#, fuzzy
 msgid "Encoded by"
 msgstr "Kódoló"
 
@@ -2629,17 +2601,16 @@ msgid "Lyricist"
 msgstr "Szövegíró"
 
 #: ../meta_decoder.cpp:107
-#, fuzzy
 msgid "File type"
-msgstr "Fájlrendszer"
+msgstr "Fájltípus"
 
 #: ../meta_decoder.cpp:108
 msgid "Involved people"
-msgstr ""
+msgstr "Résztvevõ emberek"
 
 #: ../meta_decoder.cpp:109
 msgid "Content group"
-msgstr ""
+msgstr "Tartalom csoport"
 
 #: ../meta_decoder.cpp:111
 msgid "Subtitle"
@@ -2647,49 +2618,47 @@ msgstr "Alcím"
 
 #: ../meta_decoder.cpp:112
 msgid "Initial key"
-msgstr ""
+msgstr "Kezdeti elõjegyzés"
 
 #: ../meta_decoder.cpp:113
 msgid "Language"
-msgstr ""
+msgstr "Nyelv"
 
 #: ../meta_decoder.cpp:114
-#, fuzzy
 msgid "Length (ms)"
-msgstr "Hossz:"
+msgstr "Hossz (ms)"
 
 #: ../meta_decoder.cpp:115
 msgid "Musician credits"
-msgstr ""
+msgstr "Zenészek elismerése"
 
 #: ../meta_decoder.cpp:116
 msgid "Media type"
-msgstr ""
+msgstr "Média típus"
 
 #: ../meta_decoder.cpp:117
-#, fuzzy
 msgid "Mood"
-msgstr "Modell:"
+msgstr "Hangnem"
 
 #: ../meta_decoder.cpp:118
 msgid "Original album"
-msgstr ""
+msgstr "Eredeti album"
 
 #: ../meta_decoder.cpp:119
 msgid "Original filename"
-msgstr ""
+msgstr "Eredeti fájlnév"
 
 #: ../meta_decoder.cpp:120
 msgid "Original lyricist"
-msgstr ""
+msgstr "Eredeti szövegíró"
 
 #: ../meta_decoder.cpp:121
 msgid "Original artist"
-msgstr ""
+msgstr "Eredeti elõadó"
 
 #: ../meta_decoder.cpp:122
 msgid "Owner/licensee"
-msgstr ""
+msgstr "Tulajdonos/engedélyezõ"
 
 #: ../meta_decoder.cpp:124
 msgid "Orchestra"
@@ -2697,91 +2666,52 @@ msgstr "Zenekar"
 
 #: ../meta_decoder.cpp:126
 msgid "Interpreted/remixed"
-msgstr ""
+msgstr "Feldolgozás/remix"
 
 #: ../meta_decoder.cpp:127
 msgid "Part of set"
-msgstr ""
+msgstr "Összetett mû része"
 
 #: ../meta_decoder.cpp:128
-#, fuzzy
 msgid "Produced"
-msgstr "Produced (P)"
+msgstr "Produced"
 
 #: ../meta_decoder.cpp:129
 msgid "Publisher"
 msgstr "Kiadó"
 
 #: ../meta_decoder.cpp:130
-#, fuzzy
 msgid "Track number"
-msgstr "Szám címe"
+msgstr "Track száma"
 
 #: ../meta_decoder.cpp:131
 msgid "Radio station name"
-msgstr ""
+msgstr "Rádióállomás neve"
 
 #: ../meta_decoder.cpp:132
 msgid "Radio station owner"
-msgstr ""
+msgstr "Rádióállomás tulajdonosa"
 
 #: ../meta_decoder.cpp:133
 msgid "Album sort order"
-msgstr ""
+msgstr "Albumok sorrendje"
 
 #: ../meta_decoder.cpp:134
 msgid "Artist sort order"
-msgstr ""
+msgstr "Elõadók sorrendje"
 
 #: ../meta_decoder.cpp:135
-#, fuzzy
 msgid "Title sort order"
-msgstr "Címformátum"
+msgstr "Címek sorrendje"
 
 #: ../meta_decoder.cpp:136
 msgid "ISRC"
-msgstr ""
+msgstr "ISRC"
 
 #: ../meta_decoder.cpp:137
-#, fuzzy
 msgid "Encoding settings"
-msgstr "Szkin beállítások felülbírálása"
+msgstr "Kódolási beállítások"
 
 #: ../meta_decoder.cpp:138
-#, fuzzy
 msgid "Set subtitle"
-msgstr "Alcím"
-
-#, fuzzy
-#~ msgid "Length"
-#~ msgstr "Hossz:"
-
-#~ msgid "ID3 tags\n"
-#~ msgstr "ID3v2 tagek\n"
-
-#~ msgid "Relative Volume"
-#~ msgstr "Relatív hangosság"
-
-#~ msgid "Genre"
-#~ msgstr "Mûfaj"
-
-#~ msgid "Station"
-#~ msgstr "Adóállomás"
-
-#~ msgid "Encoder"
-#~ msgstr "Kódoló"
-
-#~ msgid "Copyright (C)"
-#~ msgstr "Copyright (C)"
-
-#~ msgid "Produced (P)"
-#~ msgstr "Produced (P)"
-
-#~ msgid "ID3v2 tags"
-#~ msgstr "ID3v2 tagek"
-
-#~ msgid "Vorbis comments"
-#~ msgstr "Vorbis kommentek"
-
-#~ msgid "FLAC metadata"
-#~ msgstr "FLAC metaadatok"
+msgstr "Alcím beállítása"

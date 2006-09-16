@@ -28,6 +28,12 @@
 
 
 #ifdef HAVE_SNDFILE
+
+/* list of accepted file extensions */
+char * valid_extensions_sndfile[] = {
+        "wav", "aiff", "au", "w64", "voc", "xi", "htk", "svx", NULL
+};
+
 decoder_t *
 sndfile_decoder_init(file_decoder_t * fdec) {
 

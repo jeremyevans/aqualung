@@ -75,6 +75,10 @@ extern GdkPixbuf * icon_artist;
 extern GdkPixbuf * icon_record;
 extern GdkPixbuf * icon_track;
 
+#ifdef HAVE_SNDFILE
+extern char * valid_extensions_sndfile[];
+#endif /* HAVE_SNDFILE */
+
 #ifdef HAVE_MPEG
 extern char * valid_extensions_mpeg[];
 #endif /* HAVE_MPEG */
@@ -168,8 +172,8 @@ int meta_wspace = 1;
 int meta_title = 1;
 int meta_artist = 1;
 int meta_record = 1;
-int meta_rva = 1;
-int meta_comment = 1;
+int meta_rva = 0;
+int meta_comment = 0;
 
 int cddb_enable = 1;
 int cddb_title = 1;
@@ -882,7 +886,11 @@ build_dialog(void) {
 	filter[0] = '\0';
 
 #ifdef HAVE_SNDFILE
-	strcat(filter, "*.wav,");
+	for (i = 0; valid_extensions_sndfile[i] != NULL; i++) {
+		strcat(filter, "*.");
+		strcat(filter, valid_extensions_sndfile[i]);
+		strcat(filter, ",");
+	}
 #endif /* HAVE_SNDFILE */
 
 #ifdef HAVE_FLAC

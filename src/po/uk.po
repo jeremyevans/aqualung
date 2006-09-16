@@ -172,273 +172,273 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#: ../build_store.c:526
+#: ../build_store.c:528
 #, fuzzy
 msgid "Please select the root directory."
 msgstr "Будьласка обер╕ть звуков╕ файли для цього запису."
 
-#: ../build_store.c:619 ../build_store.c:1488
+#: ../build_store.c:621 ../build_store.c:1490
 msgid "Regexp matches empty string"
 msgstr ""
 
-#: ../build_store.c:703
+#: ../build_store.c:705
 #, fuzzy
 msgid "Build/Update store"
 msgstr "Редагувати склад..."
 
-#: ../build_store.c:705
+#: ../build_store.c:707
 #, fuzzy
 msgid "Build/Update artist"
 msgstr "Редагувати склад..."
 
-#: ../build_store.c:728 ../options.c:1622
+#: ../build_store.c:730 ../options.c:1622
 msgid "General"
 msgstr "Головне"
 
-#: ../build_store.c:732
+#: ../build_store.c:734
 msgid "Root path"
 msgstr ""
 
-#: ../build_store.c:734
+#: ../build_store.c:736
 #, fuzzy
 msgid "Artist path"
 msgstr "Виконавець:"
 
-#: ../build_store.c:746 ../music_browser.c:484 ../music_browser.c:1467
+#: ../build_store.c:748 ../music_browser.c:484 ../music_browser.c:1467
 #: ../music_browser.c:1649
 msgid "_Browse..."
 msgstr "_Оглянути..."
 
-#: ../build_store.c:752
+#: ../build_store.c:754
 msgid "Data source priority"
 msgstr ""
 
-#: ../build_store.c:762
+#: ../build_store.c:764
 msgid "Metadata, CDDB, Filesystem"
 msgstr ""
 
-#: ../build_store.c:763
+#: ../build_store.c:765
 msgid "CDDB, Metadata, Filesystem"
 msgstr ""
 
-#: ../build_store.c:774
+#: ../build_store.c:776
 #, fuzzy
 msgid "Sort artists by"
 msgstr "╤мпортувати як Виконавця"
 
-#: ../build_store.c:784 ../build_store.c:1075 ../build_store.c:1161
+#: ../build_store.c:786 ../build_store.c:1077 ../build_store.c:1163
 #: ../options.c:2327 ../options.c:2362
 msgid "Artist name"
 msgstr "Назва виконавця"
 
-#: ../build_store.c:785
+#: ../build_store.c:787
 #, fuzzy
 msgid "Artist name (lowercase)"
 msgstr "Назвах виконавц╕в"
 
-#: ../build_store.c:786 ../build_store.c:818
+#: ../build_store.c:788 ../build_store.c:820
 #, fuzzy
 msgid "Directory name"
 msgstr "Запис"
 
-#: ../build_store.c:787 ../build_store.c:819
+#: ../build_store.c:789 ../build_store.c:821
 #, fuzzy
 msgid "Directory name (lowercase)"
 msgstr "Запис"
 
-#: ../build_store.c:805
+#: ../build_store.c:807
 #, fuzzy
 msgid "Sort records by"
 msgstr "╤мпортувати як Запис"
 
-#: ../build_store.c:815
+#: ../build_store.c:817
 msgid "Year"
 msgstr "Р╕к"
 
-#: ../build_store.c:816 ../build_store.c:1087 ../build_store.c:1173
+#: ../build_store.c:818 ../build_store.c:1089 ../build_store.c:1175
 #: ../options.c:2336 ../options.c:2371
 msgid "Record name"
 msgstr "Назва запису"
 
-#: ../build_store.c:817
+#: ../build_store.c:819
 #, fuzzy
 msgid "Record name (lowercase)"
 msgstr "Запис"
 
-#: ../build_store.c:840
+#: ../build_store.c:842
 msgid "Exclude files matching wildcard"
 msgstr ""
 
-#: ../build_store.c:864
+#: ../build_store.c:866
 msgid "Include only files matching wildcard"
 msgstr ""
 
-#: ../build_store.c:936
+#: ../build_store.c:938
 msgid "Capitalization"
 msgstr ""
 
-#: ../build_store.c:946
+#: ../build_store.c:948
 #, fuzzy
 msgid "Capitalize: "
 msgstr "Всього семпл╕в:"
 
-#: ../build_store.c:958
+#: ../build_store.c:960
 #, fuzzy
 msgid "All words"
 msgstr "Дор╕жки"
 
-#: ../build_store.c:959
+#: ../build_store.c:961
 msgid "First word only"
 msgstr ""
 
-#: ../build_store.c:961
+#: ../build_store.c:963
 #, fuzzy
 msgid "Force case: "
 msgstr "Назва файлу:"
 
-#: ../build_store.c:975
+#: ../build_store.c:977
 msgid "Force other letters to lowercase"
 msgstr ""
 
-#: ../build_store.c:1010
+#: ../build_store.c:1012
 msgid "Trim leading, tailing and duplicate spaces"
 msgstr ""
 
-#: ../build_store.c:1019
+#: ../build_store.c:1021
 #, fuzzy
 msgid "Add year to the comments of new records"
 msgstr "Додати до коментар╕в"
 
-#: ../build_store.c:1029
+#: ../build_store.c:1031
 msgid "Reread data for existing tracks"
 msgstr ""
 
-#: ../build_store.c:1042 ../options.c:2316
+#: ../build_store.c:1044 ../options.c:2316
 msgid "Metadata"
 msgstr "Метадан╕"
 
-#: ../build_store.c:1046
+#: ../build_store.c:1048
 #, fuzzy
 msgid "Import file metadata"
 msgstr "Перечитати ╕нформац╕ю про файл"
 
-#: ../build_store.c:1058
+#: ../build_store.c:1060
 msgid "Exclude whitespace-only metadata"
 msgstr ""
 
-#: ../build_store.c:1067 ../build_store.c:1153
+#: ../build_store.c:1069 ../build_store.c:1155
 #, fuzzy
 msgid "Import"
 msgstr "╤мпортувати як ПВР"
 
-#: ../build_store.c:1096 ../build_store.c:1182 ../options.c:2345
+#: ../build_store.c:1098 ../build_store.c:1184 ../options.c:2345
 #: ../options.c:2380
 msgid "Track name"
 msgstr "Назва дор╕жки"
 
-#: ../build_store.c:1105
+#: ../build_store.c:1107
 msgid "Comment"
 msgstr "Коментар"
 
-#: ../build_store.c:1114
+#: ../build_store.c:1116
 #, fuzzy
 msgid "Replaygain tag as manual RVA"
 msgstr "П╕дсилення дор╕жки"
 
-#: ../build_store.c:1137 ../options.c:2412
+#: ../build_store.c:1139 ../options.c:2412
 msgid "CDDB"
 msgstr ""
 
-#: ../build_store.c:1141
+#: ../build_store.c:1143
 msgid "Perform CDDB lookup for records"
 msgstr ""
 
-#: ../build_store.c:1201
+#: ../build_store.c:1203
 msgid "Filesystem"
 msgstr ""
 
-#: ../build_store.c:1210
+#: ../build_store.c:1212
 msgid "Predefined transformations"
 msgstr ""
 
-#: ../build_store.c:1218
+#: ../build_store.c:1220
 msgid "Remove leading number"
 msgstr ""
 
-#: ../build_store.c:1227
+#: ../build_store.c:1229
 #, fuzzy
 msgid "Remove file extension"
 msgstr "Прибрати вибране"
 
-#: ../build_store.c:1236
+#: ../build_store.c:1238
 #, fuzzy
 msgid "Convert underscore to space"
 msgstr "╤нвертувати поточний стан"
 
-#: ../build_store.c:1252
+#: ../build_store.c:1254
 msgid "Regular expression"
 msgstr ""
 
-#: ../build_store.c:1261
+#: ../build_store.c:1263
 msgid "Regexp:"
 msgstr ""
 
-#: ../build_store.c:1271
+#: ../build_store.c:1273
 #, fuzzy
 msgid "Replace:"
 msgstr "Пауза (проб╕л)"
 
-#: ../build_store.c:1294
+#: ../build_store.c:1296
 msgid "Sandbox"
 msgstr ""
 
-#: ../build_store.c:1302 ../music_browser.c:458 ../music_browser.c:611
+#: ../build_store.c:1304 ../music_browser.c:458 ../music_browser.c:611
 #: ../music_browser.c:1452 ../music_browser.c:1629
 msgid "Filename:"
 msgstr "Назва файлу:"
 
-#: ../build_store.c:1311
+#: ../build_store.c:1313
 msgid "Test"
 msgstr ""
 
-#: ../build_store.c:1573
+#: ../build_store.c:1570
 #, fuzzy
 msgid "Building store from filesystem"
 msgstr "Редагувати склад..."
 
-#: ../build_store.c:1575
+#: ../build_store.c:1572
 #, fuzzy
 msgid "Building artist from filesystem"
 msgstr "Редагувати склад..."
 
-#: ../build_store.c:1593
+#: ../build_store.c:1590
 #, fuzzy
 msgid "Directory:"
 msgstr "Запис"
 
-#: ../build_store.c:1604
+#: ../build_store.c:1601
 #, fuzzy
 msgid "Action:"
 msgstr "Тривал╕сть:"
 
-#: ../build_store.c:1622 ../cddb_lookup.c:136 ../volume.c:273
+#: ../build_store.c:1619 ../cddb_lookup.c:136 ../volume.c:273
 msgid "Abort"
 msgstr "Перервати"
 
-#: ../build_store.c:2241
+#: ../build_store.c:2260
 msgid "Scanning files"
 msgstr ""
 
-#: ../build_store.c:2347 ../build_store.c:2367
+#: ../build_store.c:2366 ../build_store.c:2386
 #, fuzzy
 msgid "Processing metadata"
 msgstr "Обробка..."
 
-#: ../build_store.c:2353 ../build_store.c:2373
+#: ../build_store.c:2372 ../build_store.c:2392
 msgid "CDDB lookup"
 msgstr ""
 
-#: ../build_store.c:2385
+#: ../build_store.c:2404
 msgid "File name transformation"
 msgstr ""
 
@@ -458,26 +458,26 @@ msgstr "П╕д'╓днуюсь до сервера CDDB..."
 msgid "Matches:"
 msgstr "Зб╕ги:"
 
-#: ../cddb_lookup.c:395 ../cddb_lookup.c:662 ../file_info.cpp:489
-#: ../file_info.cpp:559
+#: ../cddb_lookup.c:395 ../cddb_lookup.c:662 ../file_info.cpp:599
+#: ../file_info.cpp:683
 msgid "Artist:"
 msgstr "Виконавець:"
 
-#: ../cddb_lookup.c:401 ../file_info.cpp:489
+#: ../cddb_lookup.c:401 ../file_info.cpp:600
 msgid "Import as Artist"
 msgstr "╤мпортувати як Виконавця"
 
-#: ../cddb_lookup.c:409 ../cddb_lookup.c:677 ../file_info.cpp:476
-#: ../file_info.cpp:558
+#: ../cddb_lookup.c:409 ../cddb_lookup.c:677 ../file_info.cpp:584
+#: ../file_info.cpp:679
 msgid "Title:"
 msgstr "Назва:"
 
-#: ../cddb_lookup.c:415 ../file_info.cpp:476
+#: ../cddb_lookup.c:415 ../file_info.cpp:585
 msgid "Import as Title"
 msgstr "╤мпортувати як Альбом"
 
-#: ../cddb_lookup.c:423 ../cddb_lookup.c:692 ../file_info.cpp:525
-#: ../file_info.cpp:530 ../file_info.cpp:572
+#: ../cddb_lookup.c:423 ../cddb_lookup.c:692 ../file_info.cpp:639
+#: ../file_info.cpp:644 ../file_info.cpp:701
 msgid "Year:"
 msgstr "Р╕к:"
 
@@ -491,13 +491,13 @@ msgid "Category:"
 msgstr "Категор╕я:"
 
 #: ../cddb_lookup.c:443 ../cddb_lookup.c:457 ../cddb_lookup.c:471
-#: ../file_info.cpp:530 ../file_info.cpp:543 ../file_info.cpp:556
-#: ../file_info.cpp:644 ../file_info.cpp:864
+#: ../file_info.cpp:645 ../file_info.cpp:660 ../file_info.cpp:675
+#: ../file_info.cpp:769 ../file_info.cpp:993
 msgid "Add to Comments"
 msgstr "Додати до коментар╕в"
 
-#: ../cddb_lookup.c:451 ../cddb_lookup.c:739 ../file_info.cpp:541
-#: ../file_info.cpp:543 ../file_info.cpp:573
+#: ../cddb_lookup.c:451 ../cddb_lookup.c:739 ../file_info.cpp:657
+#: ../file_info.cpp:659 ../file_info.cpp:705
 msgid "Genre:"
 msgstr "Жанр:"
 
@@ -736,11 +736,11 @@ msgstr "Ступ╕нь стиснення: Дуже висока"
 msgid "Compression: Insane"
 msgstr "Ступ╕нь стиснення: Божев╕льна"
 
-#: ../gui_main.c:894 ../file_info.cpp:1226
+#: ../gui_main.c:894 ../file_info.cpp:1474
 msgid "MONO"
 msgstr "МОНО"
 
-#: ../gui_main.c:897 ../file_info.cpp:1228
+#: ../gui_main.c:897 ../file_info.cpp:1476
 msgid "STEREO"
 msgstr "СТЕРЕО"
 
@@ -850,7 +850,7 @@ msgstr "Виб╕р жупан╕в"
 msgid "JACK port setup"
 msgstr "Налаштування порту JACK"
 
-#: ../gui_main.c:3163 ../file_info.cpp:1119
+#: ../gui_main.c:3163 ../file_info.cpp:1364
 msgid "File info"
 msgstr "╤нформац╕я про файл"
 
@@ -2202,7 +2202,7 @@ msgstr "Наявн╕ втулки"
 msgid "ID"
 msgstr "╤дентиф╕катор"
 
-#: ../plugin.c:1895 ../plugin.c:1978 ../file_info.cpp:1637
+#: ../plugin.c:1895 ../plugin.c:1978 ../file_info.cpp:1885
 msgid "Name"
 msgstr "╤м'я"
 
@@ -2298,7 +2298,7 @@ msgstr "Назвах запис╕в"
 msgid "Comments"
 msgstr "Коментар╕"
 
-#: ../search.c:599 ../meta_decoder.cpp:106
+#: ../search.c:599 ../meta_decoder.cpp:123
 msgid "Artist"
 msgstr "Виконавець"
 
@@ -2318,7 +2318,7 @@ msgstr "Шукати"
 msgid "Search the Playlist"
 msgstr "Шукати у списку програвання"
 
-#: ../search_playlist.c:407 ../meta_decoder.cpp:93
+#: ../search_playlist.c:407 ../meta_decoder.cpp:110
 msgid "Title"
 msgstr "Назва"
 
@@ -2331,7 +2331,7 @@ msgstr "Наявн╕ жупани"
 msgid "Calculating volume level"
 msgstr "<b>П╕драховую р╕вень гучност╕</b>"
 
-#: ../volume.c:243 ../file_info.cpp:1153
+#: ../volume.c:243 ../file_info.cpp:1398
 msgid "File:"
 msgstr "Файл:"
 
@@ -2339,439 +2339,466 @@ msgstr "Файл:"
 msgid "Progress:"
 msgstr "Прогрес:"
 
-#: ../file_info.cpp:305
+#: ../file_info.cpp:375
 #, fuzzy
 msgid "Please specify the file to save the image to."
 msgstr "Будьласка вкаж╕ть файл куди буде записано список програвання."
 
-#: ../file_info.cpp:365
+#: ../file_info.cpp:435
 #, fuzzy
 msgid "Type"
 msgstr "SRC Тип: "
 
-#: ../file_info.cpp:367
+#: ../file_info.cpp:437
 #, fuzzy
 msgid "Description"
 msgstr "Тривал╕сть:"
 
-#: ../file_info.cpp:369
+#: ../file_info.cpp:439
 msgid "No description"
 msgstr ""
 
-#: ../file_info.cpp:372
+#: ../file_info.cpp:442
 msgid "Embedded picture"
 msgstr ""
 
-#: ../file_info.cpp:389
+#: ../file_info.cpp:459
 #, fuzzy
 msgid "Save to file..."
 msgstr "Зберегти Музичний Склад"
 
-#: ../file_info.cpp:502 ../file_info.cpp:560
+#: ../file_info.cpp:614 ../file_info.cpp:687
 #, fuzzy
 msgid "Album:"
 msgstr "Альбом"
 
-#: ../file_info.cpp:502
+#: ../file_info.cpp:615
 msgid "Import as Record"
 msgstr "╤мпортувати як Запис"
 
-#: ../file_info.cpp:516 ../file_info.cpp:566 ../file_info.cpp:1140
+#: ../file_info.cpp:629 ../file_info.cpp:694 ../file_info.cpp:1385
 msgid "Track:"
 msgstr "Дор╕жка:"
 
-#: ../file_info.cpp:516
+#: ../file_info.cpp:630
 msgid "Import as Track number"
 msgstr "╤мпортувати як Номер дор╕жки"
 
-#: ../file_info.cpp:554 ../file_info.cpp:556 ../file_info.cpp:574
+#: ../file_info.cpp:672 ../file_info.cpp:674 ../file_info.cpp:709
 #, fuzzy
 msgid "Comment:"
 msgstr "Коментар╕:"
 
-#: ../file_info.cpp:596
+#: ../file_info.cpp:717
 #, fuzzy
 msgid "Save basic fields"
 msgstr "Зберегти Музичний Склад"
 
-#: ../file_info.cpp:611
+#: ../file_info.cpp:736
 msgid "ID3v1"
 msgstr ""
 
-#: ../file_info.cpp:658
+#: ../file_info.cpp:783
 #, c-format
 msgid "%+.1f dB (Id: %s)"
 msgstr ""
 
-#: ../file_info.cpp:669 ../file_info.cpp:671
+#: ../file_info.cpp:794 ../file_info.cpp:796
 #, fuzzy
 msgid "Relative Volume Adj.:"
 msgstr "В╕дносний Р╕вень"
 
-#: ../file_info.cpp:669 ../file_info.cpp:860
+#: ../file_info.cpp:794 ../file_info.cpp:989
 msgid "Import as RVA"
 msgstr "╤мпортувати як ПВР"
 
-#: ../file_info.cpp:683
+#: ../file_info.cpp:808
 msgid "Other"
 msgstr ""
 
-#: ../file_info.cpp:685
+#: ../file_info.cpp:810
 msgid "File icon (32x32 PNG)"
 msgstr ""
 
-#: ../file_info.cpp:687
+#: ../file_info.cpp:812
 #, fuzzy
 msgid "File icon (other)"
 msgstr "╤нформац╕я про файл"
 
-#: ../file_info.cpp:689
+#: ../file_info.cpp:814
 msgid "Front cover"
 msgstr ""
 
-#: ../file_info.cpp:691
+#: ../file_info.cpp:816
 msgid "Back cover"
 msgstr ""
 
-#: ../file_info.cpp:693
+#: ../file_info.cpp:818
 msgid "Leaflet page"
 msgstr ""
 
-#: ../file_info.cpp:695
+#: ../file_info.cpp:820
 #, fuzzy
 msgid "Album image"
 msgstr "Альбом"
 
-#: ../file_info.cpp:697
+#: ../file_info.cpp:822
 msgid "Lead artist/performer"
 msgstr ""
 
-#: ../file_info.cpp:699
+#: ../file_info.cpp:824
 msgid "Artist/performer"
 msgstr ""
 
-#: ../file_info.cpp:701 ../meta_decoder.cpp:108
+#: ../file_info.cpp:826 ../meta_decoder.cpp:125
 msgid "Conductor"
 msgstr "Диригент"
 
-#: ../file_info.cpp:703
+#: ../file_info.cpp:828
 #, fuzzy
 msgid "Band/orchestra"
 msgstr "Оркестр"
 
-#: ../file_info.cpp:705 ../meta_decoder.cpp:79
+#: ../file_info.cpp:830 ../meta_decoder.cpp:96
 msgid "Composer"
 msgstr "Автор"
 
-#: ../file_info.cpp:707
+#: ../file_info.cpp:832
 msgid "Lyricist/text writer"
 msgstr ""
 
-#: ../file_info.cpp:709
+#: ../file_info.cpp:834
 #, fuzzy
 msgid "Recording location/studio"
 msgstr "Назвах запис╕в"
 
-#: ../file_info.cpp:711
+#: ../file_info.cpp:836
 msgid "During recording"
 msgstr ""
 
-#: ../file_info.cpp:713
+#: ../file_info.cpp:838
 msgid "During performance"
 msgstr ""
 
-#: ../file_info.cpp:715
+#: ../file_info.cpp:840
 msgid "Movie/video screen capture"
 msgstr ""
 
-#: ../file_info.cpp:717
+#: ../file_info.cpp:842
 msgid "A large, coloured fish"
 msgstr ""
 
-#: ../file_info.cpp:719
+#: ../file_info.cpp:844
 #, fuzzy
 msgid "Illustration"
 msgstr "Тривал╕сть:"
 
-#: ../file_info.cpp:721
+#: ../file_info.cpp:846
 msgid "Band/artist logotype"
 msgstr ""
 
-#: ../file_info.cpp:723
+#: ../file_info.cpp:848
 msgid "Publisher/studio logotype"
 msgstr ""
 
-#: ../file_info.cpp:805
+#: ../file_info.cpp:933
 #, fuzzy
 msgid "ID3v2"
 msgstr "ID3v2 теги"
 
-#: ../file_info.cpp:879
+#: ../file_info.cpp:1011
 msgid "APE"
 msgstr ""
 
-#: ../file_info.cpp:930
+#: ../file_info.cpp:1066
 #, fuzzy
 msgid "Ogg comments"
 msgstr "Коментар╕"
 
-#: ../file_info.cpp:966
+#: ../file_info.cpp:1102
 msgid "Vendor:"
 msgstr "Постачальник:"
 
-#: ../file_info.cpp:1180
+#: ../file_info.cpp:1116
+msgid "Create ID3v1"
+msgstr ""
+
+#: ../file_info.cpp:1122
+#, fuzzy
+msgid "Remove ID3v1"
+msgstr "Прибрати"
+
+#: ../file_info.cpp:1128
+msgid "Create ID3v2"
+msgstr ""
+
+#: ../file_info.cpp:1134
+#, fuzzy
+msgid "Remove ID3v2"
+msgstr "Прибрати"
+
+#: ../file_info.cpp:1140
+msgid "Create APE"
+msgstr ""
+
+#: ../file_info.cpp:1146
+#, fuzzy
+msgid "Remove APE"
+msgstr "Прибрати"
+
+#: ../file_info.cpp:1428
 msgid "Audio data"
 msgstr "Ауд╕о дан╕"
 
-#: ../file_info.cpp:1184
+#: ../file_info.cpp:1432
 msgid "Format:"
 msgstr "Формат:"
 
-#: ../file_info.cpp:1196
+#: ../file_info.cpp:1444
 msgid "Length:"
 msgstr "Довжина:"
 
-#: ../file_info.cpp:1208
+#: ../file_info.cpp:1456
 msgid "Samplerate:"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:1213
+#: ../file_info.cpp:1461
 #, c-format
 msgid "%ld Hz"
 msgstr "%ld Гц"
 
-#: ../file_info.cpp:1220
+#: ../file_info.cpp:1468
 msgid "Channel count:"
 msgstr "К╕льк╕сть канал╕в:"
 
-#: ../file_info.cpp:1235
+#: ../file_info.cpp:1483
 msgid "Bandwidth:"
 msgstr "Швидк╕сть потоку:"
 
-#: ../file_info.cpp:1240
+#: ../file_info.cpp:1488
 #, c-format
 msgid "%.1f kbit/s"
 msgstr "%.1f кб╕т/с"
 
-#: ../file_info.cpp:1247
+#: ../file_info.cpp:1495
 msgid "Total samples:"
 msgstr "Всього семпл╕в:"
 
-#: ../file_info.cpp:1298
+#: ../file_info.cpp:1546
 #, fuzzy
 msgid "Module info"
 msgstr "╤нформац╕я про файл"
 
-#: ../file_info.cpp:1436 ../file_info.cpp:1515
+#: ../file_info.cpp:1684 ../file_info.cpp:1763
 #, fuzzy
 msgid "Type:"
 msgstr "SRC Тип: "
 
-#: ../file_info.cpp:1449 ../file_info.cpp:1528
+#: ../file_info.cpp:1697 ../file_info.cpp:1776
 #, fuzzy
 msgid "Channels:"
 msgstr "К╕льк╕сть канал╕в:"
 
-#: ../file_info.cpp:1463 ../file_info.cpp:1542
+#: ../file_info.cpp:1711 ../file_info.cpp:1790
 #, fuzzy
 msgid "Patterns:"
 msgstr "Категор╕я"
 
-#: ../file_info.cpp:1477 ../file_info.cpp:1556
+#: ../file_info.cpp:1725 ../file_info.cpp:1804
 #, fuzzy
 msgid "Samples:"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:1490
+#: ../file_info.cpp:1738
 msgid "Instruments:"
 msgstr ""
 
-#: ../file_info.cpp:1598
+#: ../file_info.cpp:1846
 #, fuzzy
 msgid "Samples"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:1607
+#: ../file_info.cpp:1855
 msgid "Instruments"
 msgstr ""
 
-#: ../file_info.cpp:1630
+#: ../file_info.cpp:1878
 msgid "No."
 msgstr ""
 
-#: ../meta_decoder.cpp:77
+#: ../meta_decoder.cpp:94
 msgid "Album"
 msgstr "Альбом"
 
-#: ../meta_decoder.cpp:78
+#: ../meta_decoder.cpp:95
 msgid "Beats per minute"
 msgstr ""
 
-#: ../meta_decoder.cpp:80
+#: ../meta_decoder.cpp:97
 msgid "Content type"
 msgstr ""
 
-#: ../meta_decoder.cpp:81
+#: ../meta_decoder.cpp:98
 #, fuzzy
 msgid "Copyright"
 msgstr "Авторське право (С)"
 
-#: ../meta_decoder.cpp:82
+#: ../meta_decoder.cpp:99
 #, fuzzy
 msgid "Encoding time"
 msgstr "кодування"
 
-#: ../meta_decoder.cpp:83
+#: ../meta_decoder.cpp:100
 #, fuzzy
 msgid "Playlist delay"
 msgstr "Список програвання: "
 
-#: ../meta_decoder.cpp:84
+#: ../meta_decoder.cpp:101
 msgid "Original release time"
 msgstr ""
 
-#: ../meta_decoder.cpp:85
+#: ../meta_decoder.cpp:102
 #, fuzzy
 msgid "Recording time"
 msgstr "Назвах запис╕в"
 
-#: ../meta_decoder.cpp:86
+#: ../meta_decoder.cpp:103
 msgid "Release time"
 msgstr ""
 
-#: ../meta_decoder.cpp:87
+#: ../meta_decoder.cpp:104
 #, fuzzy
 msgid "Tagging time"
 msgstr "Великий таймер: "
 
-#: ../meta_decoder.cpp:88
+#: ../meta_decoder.cpp:105
 #, fuzzy
 msgid "Encoded by"
 msgstr "Кодувальник"
 
-#: ../meta_decoder.cpp:89
+#: ../meta_decoder.cpp:106
 msgid "Lyricist"
 msgstr "Поет"
 
-#: ../meta_decoder.cpp:90
+#: ../meta_decoder.cpp:107
 #, fuzzy
 msgid "File type"
 msgstr "Назва файлу:"
 
-#: ../meta_decoder.cpp:91
+#: ../meta_decoder.cpp:108
 msgid "Involved people"
 msgstr ""
 
-#: ../meta_decoder.cpp:92
+#: ../meta_decoder.cpp:109
 msgid "Content group"
 msgstr ""
 
-#: ../meta_decoder.cpp:94
+#: ../meta_decoder.cpp:111
 msgid "Subtitle"
 msgstr "П╕дпис"
 
-#: ../meta_decoder.cpp:95
+#: ../meta_decoder.cpp:112
 msgid "Initial key"
 msgstr ""
 
-#: ../meta_decoder.cpp:96
+#: ../meta_decoder.cpp:113
 msgid "Language"
 msgstr ""
 
-#: ../meta_decoder.cpp:97
+#: ../meta_decoder.cpp:114
 #, fuzzy
 msgid "Length (ms)"
 msgstr "Довжина:"
 
-#: ../meta_decoder.cpp:98
+#: ../meta_decoder.cpp:115
 msgid "Musician credits"
 msgstr ""
 
-#: ../meta_decoder.cpp:99
+#: ../meta_decoder.cpp:116
 msgid "Media type"
 msgstr ""
 
-#: ../meta_decoder.cpp:100
+#: ../meta_decoder.cpp:117
 msgid "Mood"
 msgstr ""
 
-#: ../meta_decoder.cpp:101
+#: ../meta_decoder.cpp:118
 msgid "Original album"
 msgstr ""
 
-#: ../meta_decoder.cpp:102
+#: ../meta_decoder.cpp:119
 msgid "Original filename"
 msgstr ""
 
-#: ../meta_decoder.cpp:103
+#: ../meta_decoder.cpp:120
 msgid "Original lyricist"
 msgstr ""
 
-#: ../meta_decoder.cpp:104
+#: ../meta_decoder.cpp:121
 msgid "Original artist"
 msgstr ""
 
-#: ../meta_decoder.cpp:105
+#: ../meta_decoder.cpp:122
 msgid "Owner/licensee"
 msgstr ""
 
-#: ../meta_decoder.cpp:107
+#: ../meta_decoder.cpp:124
 msgid "Orchestra"
 msgstr "Оркестр"
 
-#: ../meta_decoder.cpp:109
+#: ../meta_decoder.cpp:126
 msgid "Interpreted/remixed"
 msgstr ""
 
-#: ../meta_decoder.cpp:110
+#: ../meta_decoder.cpp:127
 msgid "Part of set"
 msgstr ""
 
-#: ../meta_decoder.cpp:111
+#: ../meta_decoder.cpp:128
 #, fuzzy
 msgid "Produced"
 msgstr "Виробник (Р)"
 
-#: ../meta_decoder.cpp:112
+#: ../meta_decoder.cpp:129
 msgid "Publisher"
 msgstr "Видавник"
 
-#: ../meta_decoder.cpp:113
+#: ../meta_decoder.cpp:130
 #, fuzzy
 msgid "Track number"
 msgstr "Назва дор╕жки"
 
-#: ../meta_decoder.cpp:114
+#: ../meta_decoder.cpp:131
 msgid "Radio station name"
 msgstr ""
 
-#: ../meta_decoder.cpp:115
+#: ../meta_decoder.cpp:132
 msgid "Radio station owner"
 msgstr ""
 
-#: ../meta_decoder.cpp:116
+#: ../meta_decoder.cpp:133
 msgid "Album sort order"
 msgstr ""
 
-#: ../meta_decoder.cpp:117
+#: ../meta_decoder.cpp:134
 msgid "Artist sort order"
 msgstr ""
 
-#: ../meta_decoder.cpp:118
+#: ../meta_decoder.cpp:135
 #, fuzzy
 msgid "Title sort order"
 msgstr "Формат назви"
 
-#: ../meta_decoder.cpp:119
+#: ../meta_decoder.cpp:136
 msgid "ISRC"
 msgstr ""
 
-#: ../meta_decoder.cpp:120
+#: ../meta_decoder.cpp:137
 #, fuzzy
 msgid "Encoding settings"
 msgstr "Перекривати установки жупана"
 
-#: ../meta_decoder.cpp:121
+#: ../meta_decoder.cpp:138
 #, fuzzy
 msgid "Set subtitle"
 msgstr "П╕дпис"

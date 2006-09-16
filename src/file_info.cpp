@@ -108,7 +108,17 @@ typedef struct {
 	void * image_data;
 } save_pic_t;
 
+
 #ifdef HAVE_TAGLIB
+
+/* used in flags below */
+#define CREATE_ID3v1 0x01
+#define CREATE_ID3v2 0x02
+#define CREATE_APE   0x04
+#define REMOVE_ID3v1 0x10
+#define REMOVE_ID3v2 0x20
+#define REMOVE_APE   0x40
+
 typedef struct {
 	TagLib::FLAC::File * taglib_flac_file;
 	TagLib::Ogg::Vorbis::File * taglib_oggv_file;
@@ -129,7 +139,18 @@ typedef struct {
 	GtkWidget * entry_year;
 	GtkWidget * entry_genre;
 	GtkWidget * entry_comment;
+
+	int flags;
+	int id3v1_page_no;
+	int id3v2_page_no;
+	int ape_page_no;
+	int oxc_page_no;
 } save_basic_t;
+
+typedef struct {
+	int flags;
+	save_basic_t * save_basic;
+} tagbutton_data_t;
 #endif /* HAVE_TAGLIB */
 
 
@@ -175,6 +196,19 @@ save_basic_new(void) {
 	}
 
 	return save_basic;
+}
+
+
+tagbutton_data_t *
+tagbutton_data_new(void) {
+
+	tagbutton_data_t * tdata = (tagbutton_data_t *)calloc(1, sizeof(tagbutton_data_t));
+	if (!tdata) {
+		fprintf(stderr, "error: tagbutton_data_new(): calloc error\n");
+		return NULL;
+	}
+
+	return tdata;
 }
 #endif /* HAVE_TAGLIB */
 
@@ -530,7 +564,7 @@ save_basic_fields(GtkWidget * widget, gpointer data) {
 
 /* simple mode for tags that don't require anything fancy (currently id3v1 and ape) */
 int
-build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
+build_simple_page(GtkNotebook * nb, int * cnt, GtkWidget ** ptable, fileinfo_mode_t mode,
 		  bool editable, save_basic_t * save_basic, char * nb_label) {
 
 	TagLib::Tag * tag = save_basic->tag;
@@ -546,9 +580,8 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 	gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 10);
 	gtk_container_add(GTK_CONTAINER(scrwin), viewp);
 	gtk_container_add(GTK_CONTAINER(viewp), vbox);
-	gtk_notebook_append_page(GTK_NOTEBOOK(nb), scrwin, label);
+	int page_id = gtk_notebook_append_page(GTK_NOTEBOOK(nb), scrwin, label);
 
-	int cnt = 0;
 	char str[MAXLEN];
 
 	if (mode.is_called_from_browser) {
@@ -566,7 +599,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 			data->dest_type = IMPORT_DEST_TITLE;
 			strncpy(data->str, str, MAXLEN-1);
 		}
-		save_basic->entry_title = append_table(table, &cnt, editable, _("Title:"),
+		save_basic->entry_title = append_table(table, cnt, editable, _("Title:"),
 						       str, _("Import as Title"), data);
 
 		strncpy(str, (char *)tag->artist().toCString(true), MAXLEN-1);
@@ -581,7 +614,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 			data->dest_type = IMPORT_DEST_ARTIST;
 			strncpy(data->str, str, MAXLEN-1);
 		}
-		save_basic->entry_artist = append_table(table, &cnt, editable, _("Artist:"),
+		save_basic->entry_artist = append_table(table, cnt, editable, _("Artist:"),
 							str, _("Import as Artist"), data);
 
 		strncpy(str, (char *)tag->album().toCString(true), MAXLEN-1);
@@ -596,7 +629,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 			data->dest_type = IMPORT_DEST_RECORD;
 			strncpy(data->str, str, MAXLEN-1);
 		}
-		save_basic->entry_album = append_table(table, &cnt, editable, _("Album:"),
+		save_basic->entry_album = append_table(table, cnt, editable, _("Album:"),
 						       str, _("Import as Record"), data);
 
 		if (tag->track() != 0) {
@@ -611,7 +644,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 			str[0] = '\0';
 			data = NULL;
 		}
-		save_basic->entry_track = append_table(table, &cnt, editable, _("Track:"),
+		save_basic->entry_track = append_table(table, cnt, editable, _("Track:"),
 						       str, _("Import as Track number"), data);
 
 		if (tag->year() != 0) {
@@ -626,7 +659,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 			str[0] = '\0';
 			data = NULL;
 		}
-		save_basic->entry_year = append_table(table, &cnt, editable, _("Year:"),
+		save_basic->entry_year = append_table(table, cnt, editable, _("Year:"),
 						      str, _("Add to Comments"), data);
 
 		strncpy(str, (char *)tag->genre().toCString(true), MAXLEN-1);
@@ -641,7 +674,7 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 			data->dest_type = IMPORT_DEST_COMMENT;
 			snprintf(data->str, MAXLEN-1, "%s %s", _("Genre:"), str);
 		}
-		save_basic->entry_genre = append_table(table, &cnt, editable, _("Genre:"),
+		save_basic->entry_genre = append_table(table, cnt, editable, _("Genre:"),
 						       str, _("Add to Comments"), data);
 
 		strncpy(str, (char *)tag->comment().toCString(true), MAXLEN-1);
@@ -656,42 +689,42 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 			data->dest_type = IMPORT_DEST_COMMENT;
 			snprintf(data->str, MAXLEN-1, "%s %s", _("Comment:"), str);
 		}
-		save_basic->entry_comment = append_table(table, &cnt, editable, _("Comment:"),
+		save_basic->entry_comment = append_table(table, cnt, editable, _("Comment:"),
 							 str, _("Add to Comments"), data);
 	} else {
 		strncpy(str, (char *)tag->title().toCString(true), MAXLEN-1);
 		cut_trailing_whitespace(str);
-		save_basic->entry_title = append_table(table, &cnt, editable, _("Title:"), str,  NULL, NULL);
+		save_basic->entry_title = append_table(table, cnt, editable, _("Title:"), str,  NULL, NULL);
 
 		strncpy(str, (char *)tag->artist().toCString(true), MAXLEN-1);
 		cut_trailing_whitespace(str);
-		save_basic->entry_artist = append_table(table, &cnt, editable, _("Artist:"), str, NULL, NULL);
+		save_basic->entry_artist = append_table(table, cnt, editable, _("Artist:"), str, NULL, NULL);
 
 		strncpy(str, (char *)tag->album().toCString(true), MAXLEN-1);
 		cut_trailing_whitespace(str);
-		save_basic->entry_album = append_table(table, &cnt, editable, _("Album:"), str,  NULL, NULL);
+		save_basic->entry_album = append_table(table, cnt, editable, _("Album:"), str,  NULL, NULL);
 
 		if (tag->track() != 0) {
 			sprintf(str, "%d", tag->track());
 		} else {
 			str[0] = '\0';
 		}
-		save_basic->entry_track = append_table(table, &cnt, editable, _("Track:"), str, NULL, NULL);
+		save_basic->entry_track = append_table(table, cnt, editable, _("Track:"), str, NULL, NULL);
 
 		if (tag->year() != 0) {
 			sprintf(str, "%d", tag->year());
 		} else {
 			str[0] = '\0';
 		}
-		save_basic->entry_year = append_table(table, &cnt, editable, _("Year:"), str, NULL, NULL);
+		save_basic->entry_year = append_table(table, cnt, editable, _("Year:"), str, NULL, NULL);
 
 		strncpy(str, (char *)tag->genre().toCString(true), MAXLEN-1);
 		cut_trailing_whitespace(str);
-		save_basic->entry_genre = append_table(table, &cnt, editable, _("Genre:"), str,   NULL, NULL);
+		save_basic->entry_genre = append_table(table, cnt, editable, _("Genre:"), str,   NULL, NULL);
 
 		strncpy(str, (char *)tag->comment().toCString(true), MAXLEN-1);
 		cut_trailing_whitespace(str);
-		save_basic->entry_comment = append_table(table, &cnt, editable, _("Comment:"), str, NULL, NULL);
+		save_basic->entry_comment = append_table(table, cnt, editable, _("Comment:"), str, NULL, NULL);
 	}
 
 	if (ptable) {
@@ -702,22 +735,23 @@ build_simple_page(GtkNotebook * nb, GtkWidget ** ptable, fileinfo_mode_t mode,
 		GtkWidget * button = gtk_button_new_with_label(_("Save basic fields"));
 		g_signal_connect(G_OBJECT(button), "clicked",
 				 G_CALLBACK(save_basic_fields), (gpointer)save_basic);
-		gtk_table_resize(GTK_TABLE(table), cnt + 1, 3);
-		gtk_table_attach(GTK_TABLE(table), button, 1, 3, cnt, cnt+1, GTK_FILL, GTK_FILL, 5, 3);
-		++cnt;
+		gtk_table_resize(GTK_TABLE(table), *cnt + 1, 3);
+		gtk_table_attach(GTK_TABLE(table), button, 1, 3, *cnt, *cnt + 1, GTK_FILL, GTK_FILL, 5, 3);
+		(*cnt)++;
 	}
-	return cnt;
+	return page_id;
 }
 
 
-void
+int
 build_id3v1_page(GtkNotebook * nb, fileinfo_mode_t mode, bool editable,
 		 save_basic_t * save_basic, TagLib::ID3v1::Tag * id3v1_tag) {
 
+	int cnt = 0;
 	TagLib::Tag * tag = dynamic_cast<TagLib::Tag *>(id3v1_tag);
 	save_basic->tag = tag;
 	save_basic->id3v1_tag = id3v1_tag;
-	build_simple_page(nb, NULL, mode, editable, save_basic, _("ID3v1"));
+	return build_simple_page(nb, &cnt, NULL, mode, editable, save_basic, _("ID3v1"));
 }
 
 
@@ -901,7 +935,7 @@ insert_id3v2_apic(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_
 }
 
 
-void
+int
 build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, bool editable,
 		 save_basic_t * save_basic, TagLib::ID3v2::Tag * id3v2_tag) {
 
@@ -914,7 +948,7 @@ build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, bool editable,
 	TagLib::Tag * tag = dynamic_cast<TagLib::Tag *>(id3v2_tag);
 	save_basic->tag = tag;
 	save_basic->id3v2_tag = id3v2_tag;
-	cnt = build_simple_page(nb, &table, mode, editable, save_basic, _("ID3v2"));
+	int page_no = build_simple_page(nb, &cnt, &table, mode, editable, save_basic, _("ID3v2"));
 
 	for (i = l.begin(); i != l.end(); ++i) {
 		TagLib::ID3v2::Frame * frame = *i;
@@ -946,6 +980,7 @@ build_id3v2_page(GtkNotebook * nb, fileinfo_mode_t mode, bool editable,
 			/* XXX incomplete */
 		}
 	}
+	return page_no;
 }
 
 
@@ -981,7 +1016,7 @@ insert_oxc(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_t mode,
 }
 
 
-void
+int
 build_ape_page(GtkNotebook * nb, fileinfo_mode_t mode, bool editable,
 	       save_basic_t * save_basic, TagLib::APE::Tag * ape_tag) {
 
@@ -991,7 +1026,7 @@ build_ape_page(GtkNotebook * nb, fileinfo_mode_t mode, bool editable,
 	TagLib::Tag * tag = dynamic_cast<TagLib::Tag *>(ape_tag);
 	save_basic->tag = tag;
 	save_basic->ape_tag = ape_tag;
-	cnt = build_simple_page(nb, &table, mode, editable, save_basic, _("APE"));
+	int page_no = build_simple_page(nb, &cnt, &table, mode, editable, save_basic, _("APE"));
 
 	TagLib::APE::ItemListMap m = ape_tag->itemListMap();
 	for (TagLib::APE::ItemListMap::Iterator i = m.begin(); i != m.end(); ++i) {
@@ -1032,10 +1067,11 @@ build_ape_page(GtkNotebook * nb, fileinfo_mode_t mode, bool editable,
 			insert_oxc(nb, table, &cnt, mode, key, val);
 		}
 	}
+	return page_no;
 }
 
 
-void
+int
 build_oxc_page(GtkNotebook * nb, fileinfo_mode_t mode, bool editable,
 	       save_basic_t * save_basic, TagLib::Ogg::XiphComment * oxc) {
 
@@ -1045,7 +1081,7 @@ build_oxc_page(GtkNotebook * nb, fileinfo_mode_t mode, bool editable,
 	TagLib::Tag * tag = dynamic_cast<TagLib::Tag *>(oxc);
 	save_basic->tag = tag;
 	save_basic->oxc = oxc;
-	cnt = build_simple_page(nb, &table, mode, editable, save_basic, _("Ogg comments"));
+	int page_no = build_simple_page(nb, &cnt, &table, mode, editable, save_basic, _("Ogg comments"));
 
 	TagLib::Ogg::FieldListMap m = oxc->fieldListMap();
 	for (TagLib::Ogg::FieldListMap::Iterator i = m.begin(); i != m.end(); ++i) {
@@ -1082,12 +1118,92 @@ build_oxc_page(GtkNotebook * nb, fileinfo_mode_t mode, bool editable,
 		}
 	}
 	insert_oxc(nb, table, &cnt, mode, _("Vendor:"), (char *)oxc->vendorID().toCString(true));
+	
+	return page_no;
+}
+
+
+void
+create_remove_handler(GtkWidget * widget, gpointer data) {
+
+	tagbutton_data_t * tdata = (tagbutton_data_t *)data;
+
+	printf("flags = %d\n", tdata->flags);
+}
+
+
+void
+build_tag_buttons(save_basic_t * save_basic, GtkWidget * hbox) {
+
+	tagbutton_data_t * tdata = NULL;
+	GtkWidget * button;
+
+	if (save_basic->flags & CREATE_ID3v1) {
+		button = gtk_button_new_with_label(_("Create ID3v1"));
+		tdata = tagbutton_data_new();
+		trashlist_add(fileinfo_trash, tdata);
+		tdata->flags |= CREATE_ID3v1;
+		tdata->save_basic = save_basic;
+		g_signal_connect(G_OBJECT(button), "clicked",
+				 G_CALLBACK(create_remove_handler), (gpointer)tdata);
+		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 3);
+	}
+	if (save_basic->flags & REMOVE_ID3v1) {
+		button = gtk_button_new_with_label(_("Remove ID3v1"));
+		tdata = tagbutton_data_new();
+		trashlist_add(fileinfo_trash, tdata);
+		tdata->flags |= REMOVE_ID3v1;
+		tdata->save_basic = save_basic;
+		g_signal_connect(G_OBJECT(button), "clicked",
+				 G_CALLBACK(create_remove_handler), (gpointer)tdata);
+		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 3);
+	}
+	if (save_basic->flags & CREATE_ID3v2) {
+		button = gtk_button_new_with_label(_("Create ID3v2"));
+		tdata = tagbutton_data_new();
+		trashlist_add(fileinfo_trash, tdata);
+		tdata->flags |= CREATE_ID3v2;
+		tdata->save_basic = save_basic;
+		g_signal_connect(G_OBJECT(button), "clicked",
+				 G_CALLBACK(create_remove_handler), (gpointer)tdata);
+		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 3);
+	}
+	if (save_basic->flags & REMOVE_ID3v2) {
+		button = gtk_button_new_with_label(_("Remove ID3v2"));
+		tdata = tagbutton_data_new();
+		trashlist_add(fileinfo_trash, tdata);
+		tdata->flags |= REMOVE_ID3v2;
+		tdata->save_basic = save_basic;
+		g_signal_connect(G_OBJECT(button), "clicked",
+				 G_CALLBACK(create_remove_handler), (gpointer)tdata);
+		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 3);
+	}
+	if (save_basic->flags & CREATE_APE) {
+		button = gtk_button_new_with_label(_("Create APE"));
+		tdata = tagbutton_data_new();
+		trashlist_add(fileinfo_trash, tdata);
+		tdata->flags |= CREATE_APE;
+		tdata->save_basic = save_basic;
+		g_signal_connect(G_OBJECT(button), "clicked",
+				 G_CALLBACK(create_remove_handler), (gpointer)tdata);
+		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 3);
+	}
+	if (save_basic->flags & REMOVE_APE) {
+		button = gtk_button_new_with_label(_("Remove APE"));
+		tdata = tagbutton_data_new();
+		trashlist_add(fileinfo_trash, tdata);
+		tdata->flags |= REMOVE_APE;
+		tdata->save_basic = save_basic;
+		g_signal_connect(G_OBJECT(button), "clicked",
+				 G_CALLBACK(create_remove_handler), (gpointer)tdata);
+		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 3);
+	}
 }
 
 
 #ifdef HAVE_FLAC
 void
-build_nb_pages_flac(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
+build_nb_pages_flac(metadata * meta, GtkNotebook * nb, GtkWidget * hbox, fileinfo_mode_t mode) {
 
 	TagLib::FLAC::File * taglib_flac_file =
 		reinterpret_cast<TagLib::FLAC::File *>(meta->taglib_file);
@@ -1101,22 +1217,33 @@ build_nb_pages_flac(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
 	trashlist_add(fileinfo_trash, save_basic);
 	save_basic->taglib_flac_file = taglib_flac_file;
 
-	if (taglib_flac_file->ID3v1Tag() && !taglib_flac_file->ID3v1Tag()->isEmpty()) {
-		build_id3v1_page(nb, mode, false, save_basic, taglib_flac_file->ID3v1Tag());
+	if (taglib_flac_file->ID3v1Tag()) {
+		save_basic->id3v1_page_no =
+		    build_id3v1_page(nb, mode, false, save_basic, taglib_flac_file->ID3v1Tag());
+		save_basic->flags |= REMOVE_ID3v1;
+	} else {
+		save_basic->flags |= CREATE_ID3v1;
 	}
-	if (taglib_flac_file->ID3v2Tag() && !taglib_flac_file->ID3v2Tag()->isEmpty()) {
-		build_id3v2_page(nb, mode, false, save_basic, taglib_flac_file->ID3v2Tag());
+	if (taglib_flac_file->ID3v2Tag()) {
+		save_basic->id3v2_page_no =
+		    build_id3v2_page(nb, mode, false, save_basic, taglib_flac_file->ID3v2Tag());
+		save_basic->flags |= REMOVE_ID3v2;
+	} else {
+		save_basic->flags |= CREATE_ID3v2;
 	}
 	if (taglib_flac_file->xiphComment()) {
-		build_oxc_page(nb, mode, editable, save_basic, taglib_flac_file->xiphComment());
+		save_basic->oxc_page_no =
+		    build_oxc_page(nb, mode, editable, save_basic, taglib_flac_file->xiphComment());
 	}
+
+	build_tag_buttons(save_basic, hbox);
 }
 #endif /* HAVE_FLAC */
 
 
 #ifdef HAVE_OGG_VORBIS
 void
-build_nb_pages_oggv(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
+build_nb_pages_oggv(metadata * meta, GtkNotebook * nb, GtkWidget * hbox, fileinfo_mode_t mode) {
 
 	TagLib::Ogg::Vorbis::File * taglib_oggv_file =
 		reinterpret_cast<TagLib::Ogg::Vorbis::File *>(meta->taglib_file);
@@ -1131,15 +1258,18 @@ build_nb_pages_oggv(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
 	save_basic->taglib_oggv_file = taglib_oggv_file;
 
 	if (taglib_oggv_file->tag()) {
-		build_oxc_page(nb, mode, editable, save_basic, taglib_oggv_file->tag());
+		save_basic->oxc_page_no =
+		    build_oxc_page(nb, mode, editable, save_basic, taglib_oggv_file->tag());
 	}
+
+	build_tag_buttons(save_basic, hbox);
 }
 #endif /* HAVE_OGG_VORBIS */
 
 
 #ifdef HAVE_MPEG
 void
-build_nb_pages_mpeg(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
+build_nb_pages_mpeg(metadata * meta, GtkNotebook * nb, GtkWidget * hbox, fileinfo_mode_t mode) {
 
 	TagLib::MPEG::File * taglib_mpeg_file =
 		reinterpret_cast<TagLib::MPEG::File *>(meta->taglib_file);
@@ -1153,27 +1283,41 @@ build_nb_pages_mpeg(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
 	trashlist_add(fileinfo_trash, save_basic);
 	save_basic->taglib_mpeg_file = taglib_mpeg_file;
 
-	if (taglib_mpeg_file->ID3v1Tag() && !taglib_mpeg_file->ID3v1Tag()->isEmpty()) {
+	if (taglib_mpeg_file->ID3v1Tag()) {
 		/* allow editing only if there is no id3v2 tag */
 		bool id3v1_editable = editable;
 		if (id3v1_editable && taglib_mpeg_file->ID3v2Tag()) {
 			id3v1_editable = taglib_mpeg_file->ID3v2Tag()->isEmpty();
 		}
-		build_id3v1_page(nb, mode, id3v1_editable, save_basic, taglib_mpeg_file->ID3v1Tag());
+		save_basic->id3v1_page_no =
+		    build_id3v1_page(nb, mode, id3v1_editable, save_basic, taglib_mpeg_file->ID3v1Tag());
+		save_basic->flags |= REMOVE_ID3v1;
+	} else {
+		save_basic->flags |= CREATE_ID3v1;
 	}
-	if (taglib_mpeg_file->ID3v2Tag() && !taglib_mpeg_file->ID3v2Tag()->isEmpty()) {
-		build_id3v2_page(nb, mode, editable, save_basic, taglib_mpeg_file->ID3v2Tag());
+	if (taglib_mpeg_file->ID3v2Tag()) {
+		save_basic->id3v2_page_no =
+		    build_id3v2_page(nb, mode, editable, save_basic, taglib_mpeg_file->ID3v2Tag());
+		save_basic->flags |= REMOVE_ID3v2;
+	} else {
+		save_basic->flags |= CREATE_ID3v2;
 	}
-	if (taglib_mpeg_file->APETag() && !taglib_mpeg_file->APETag()->isEmpty()) {
-		build_ape_page(nb, mode, false, save_basic, taglib_mpeg_file->APETag());
+	if (taglib_mpeg_file->APETag()) {
+		save_basic->ape_page_no =
+		    build_ape_page(nb, mode, false, save_basic, taglib_mpeg_file->APETag());
+		save_basic->flags |= REMOVE_APE;
+	} else {
+		save_basic->flags |= CREATE_APE;
 	}
+
+	build_tag_buttons(save_basic, hbox);
 }
 #endif /* HAVE_MPEG */
 
 
 #ifdef HAVE_MPC
 void
-build_nb_pages_mpc(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
+build_nb_pages_mpc(metadata * meta, GtkNotebook * nb, GtkWidget * hbox, fileinfo_mode_t mode) {
 
 	TagLib::MPC::File * taglib_mpc_file =
 		reinterpret_cast<TagLib::MPC::File *>(meta->taglib_file);
@@ -1187,12 +1331,22 @@ build_nb_pages_mpc(metadata * meta, GtkNotebook * nb, fileinfo_mode_t mode) {
 	trashlist_add(fileinfo_trash, save_basic);
 	save_basic->taglib_mpc_file = taglib_mpc_file;
 
-	if (taglib_mpc_file->ID3v1Tag() && !taglib_mpc_file->ID3v1Tag()->isEmpty()) {
-		build_id3v1_page(nb, mode, false, save_basic, taglib_mpc_file->ID3v1Tag());
+	if (taglib_mpc_file->ID3v1Tag()) {
+		save_basic->id3v1_page_no =
+		    build_id3v1_page(nb, mode, false, save_basic, taglib_mpc_file->ID3v1Tag());
+		save_basic->flags |= REMOVE_ID3v1;
+	} else {
+		save_basic->flags |= CREATE_ID3v1;
 	}
-	if (taglib_mpc_file->APETag() && !taglib_mpc_file->APETag()->isEmpty()) {
-		build_ape_page(nb, mode, editable, save_basic, taglib_mpc_file->APETag());
+	if (taglib_mpc_file->APETag()) {
+		save_basic->ape_page_no =
+		    build_ape_page(nb, mode, editable, save_basic, taglib_mpc_file->APETag());
+		save_basic->flags |= REMOVE_APE;
+	} else {
+		save_basic->flags |= CREATE_APE;
 	}
+
+	build_tag_buttons(save_basic, hbox);
 }
 #endif /* HAVE_MPC */
 #endif /* HAVE_TAGLIB */
@@ -1206,6 +1360,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gchar *file_display;
 
 	GtkWidget * vbox;
+	GtkWidget * hbox_tagbuttons;
 	GtkWidget * hbox_t;
 	GtkWidget * table;
 	GtkWidget * hbox_name;
@@ -1271,7 +1426,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_container_add(GTK_CONTAINER(info_window), vbox);
 
 	hbox_t = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_t, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_t, FALSE, FALSE, 5);
 
 	table = gtk_table_new(2, 2, FALSE);
 	gtk_box_pack_start(GTK_BOX(hbox_t), table, TRUE, TRUE, 4);
@@ -1309,8 +1464,11 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
         display_cover(cover_image_area, 48, 48, file, FALSE);
 
+	hbox_tagbuttons = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_tagbuttons, FALSE, FALSE, 5);
+
 	nb = gtk_notebook_new();
-	gtk_box_pack_start(GTK_BOX(vbox), nb, TRUE, TRUE, 10);
+	gtk_box_pack_start(GTK_BOX(vbox), nb, TRUE, TRUE, 5);
 
 	/* Audio data notebook page */
 
@@ -1400,22 +1558,22 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	switch (meta->format_major) {
 #ifdef HAVE_FLAC
 	case FORMAT_FLAC:
-		build_nb_pages_flac(meta, GTK_NOTEBOOK(nb), mode);
+		build_nb_pages_flac(meta, GTK_NOTEBOOK(nb), hbox_tagbuttons, mode);
 		break;
 #endif /* HAVE_FLAC */
 #ifdef HAVE_OGG_VORBIS
 	case FORMAT_VORBIS:
-		build_nb_pages_oggv(meta, GTK_NOTEBOOK(nb), mode);
+		build_nb_pages_oggv(meta, GTK_NOTEBOOK(nb), hbox_tagbuttons, mode);
 		break;
 #endif /* HAVE_OGG_VORBIS */
 #ifdef HAVE_MPEG
 	case FORMAT_MAD:
-		build_nb_pages_mpeg(meta, GTK_NOTEBOOK(nb), mode);
+		build_nb_pages_mpeg(meta, GTK_NOTEBOOK(nb), hbox_tagbuttons, mode);
 		break;
 #endif /* HAVE_MPEG */
 #ifdef HAVE_MPC
 	case FORMAT_MPC:
-		build_nb_pages_mpc(meta, GTK_NOTEBOOK(nb), mode);
+		build_nb_pages_mpc(meta, GTK_NOTEBOOK(nb), hbox_tagbuttons, mode);
 		break;
 #endif /* HAVE_MPC */
 	}
@@ -1466,7 +1624,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
                 gtk_notebook_set_current_page(GTK_NOTEBOOK(nb), options.tags_tab_first ? 1 : 0);
         }
 
-	/* metadata object is freed in handlers when closing window */
+	/* metadata object is freed in info_window destroy handlers */
 }
 
 

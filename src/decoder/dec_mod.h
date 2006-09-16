@@ -26,8 +26,8 @@
 #include <sys/mman.h>
 #ifdef __FreeBSD__
 #include <sys/types.h>
-#include <sys/stat.h>
 #endif /* __FreeBSD__ */
+#include <sys/stat.h>
 #include <libmodplug/modplug.h>
 #endif /* HAVE_MOD */
 

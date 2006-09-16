@@ -77,13 +77,13 @@ GtkWidget * rmdir_button;
 GtkWidget * label_songs;
 GtkWidget * label_songs_size;
 GtkWidget * label_model;
-GtkWidget * label_capacity;
-GtkWidget * label_freespace;
+/*GtkWidget * label_capacity;*/
+/*GtkWidget * label_freespace;*/
 GtkWidget * progressbar_battery;
 GtkWidget * progressbar_freespace;
 GtkWidget * progressbar_cf;
 GtkWidget * progressbar_op;
-GtkWidget * file_entry;
+GtkWidget * aifp_file_entry;
 GtkWidget * list;
 GtkListStore * list_store = NULL;
 
@@ -104,7 +104,7 @@ static int
 update_progress (void *context, struct ifp_transfer_status *status) {
 
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_cf), (float)status->file_bytes/status->file_total);
-        sprintf(temp, _("%d / %d bytes (%.1f MB)"), status->file_bytes, status->file_total, (float)status->file_total/(1024*1024));
+        sprintf(temp, _("%.1f MB / %.1f MB"), (float)status->file_bytes/(1024*1024), (float)status->file_total/(1024*1024));
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_cf), temp);
         deflicker();
 
@@ -142,8 +142,8 @@ upload_songs_cb_foreach(GtkTreeIter * iter, void * data) {
 	}
 	strncat(dest_file, file, MAXLEN-1);
 
-        gtk_entry_set_text(GTK_ENTRY(file_entry), file);
-        gtk_editable_set_position(GTK_EDITABLE(file_entry), -1);
+        gtk_entry_set_text(GTK_ENTRY(aifp_file_entry), file);
+        gtk_editable_set_position(GTK_EDITABLE(aifp_file_entry), -1);
 
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_op),
 				      (float)(*n + 1) / number_of_songs);
@@ -189,14 +189,17 @@ upload_songs_cb(GtkButton * button, gpointer user_data) {
 
         if (!abort_pressed) {
                 gtk_widget_set_sensitive(upload_button, FALSE);
-                gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbar_op), _("Done."));
+                gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbar_op), _("Done"));
+                gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbar_cf), _("Done"));
         } else {
                 gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbar_op), _("Aborted..."));
+                gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_op), 0.0);
+                gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbar_cf), _("Aborted..."));
+                gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_cf), 0.0);
                 gtk_widget_set_sensitive(upload_button, TRUE);
         }
 
         aifp_update_info();
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbar_cf), _("Done."));
         deflicker();
 
         abort_pressed = 0;
@@ -211,11 +214,10 @@ upload_songs_cb(GtkButton * button, gpointer user_data) {
         deflicker();
         gtk_widget_grab_focus(list);
 
-        gtk_entry_set_text(GTK_ENTRY(file_entry), _("None"));
+        gtk_entry_set_text(GTK_ENTRY(aifp_file_entry), _("None"));
 }
 
 /* directory operation handlers */
-
 
 int mkdir_key_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
@@ -466,30 +468,28 @@ aifp_directory_listing(gchar *name) {
 void
 aifp_update_info(void) {
 
+        gchar tmp[MAXLEN];
         gfloat space;
 
         sprintf(temp, "%d", number_of_songs); 
+        sprintf(tmp, _(" (%.1f MB)"), (float)songs_size / (1024*1024)); 
+        strncat (temp, tmp, MAXLEN-1);
         gtk_label_set_text(GTK_LABEL(label_songs), temp);
-        sprintf(temp, _("%d bytes (%.1f MB)"), songs_size, (float)songs_size / (1024*1024)); 
-        gtk_label_set_text(GTK_LABEL(label_songs_size), temp);
 
         battery_status = ifp_battery(&ifpdev);
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_battery), battery_status / 4.0);
 
         ifp_model(&ifpdev, temp, sizeof(temp));
+        capacity = ifp_capacity(&ifpdev);
+        sprintf(tmp, _(" (capacity = %.1f MB)"), (float)capacity / (1024*1024)); 
+        strncat (temp, tmp, MAXLEN-1);
         gtk_label_set_text(GTK_LABEL(label_model), temp);
         
-        capacity = ifp_capacity(&ifpdev);
-        sprintf(temp, _("%d bytes (%.1f MB)"), capacity, (float)capacity / (1024*1024)); 
-        gtk_label_set_text(GTK_LABEL(label_capacity), temp);
-
         freespace = ifp_freespace(&ifpdev);
-        sprintf(temp, _("%d bytes (%.1f MB)"), freespace, (float)freespace / (1024*1024)); 
-        gtk_label_set_text(GTK_LABEL(label_freespace), temp);
+        sprintf(temp, _(" Free space (%.1f MB)"), (float)freespace / (1024*1024)); 
 
         space = (float)freespace/capacity;
 
-        sprintf(temp, _("Free space (%d%%)"), (gint)(space*100)); 
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_freespace), temp);
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_freespace), space);
 
@@ -703,7 +703,7 @@ void aifp_transfer_files(void) {
         g_signal_connect(G_OBJECT(aifp_window), "key_press_event",
                          G_CALLBACK(aifp_window_key_pressed), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(aifp_window), 5);
-        gtk_window_set_default_size(GTK_WINDOW(aifp_window), 360, 530);
+        gtk_window_set_default_size(GTK_WINDOW(aifp_window), 350, -1);
 
         vbox1 = gtk_vbox_new (FALSE, 0);
         gtk_widget_show (vbox1);
@@ -711,55 +711,36 @@ void aifp_transfer_files(void) {
 
         vbox2 = gtk_vbox_new (FALSE, 0);
         gtk_widget_show (vbox2);
-        gtk_box_pack_start (GTK_BOX (vbox1), vbox2, TRUE, TRUE, 0);
+        gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
         frame = gtk_frame_new (NULL);
         gtk_widget_show (frame);
-        gtk_box_pack_start (GTK_BOX (vbox2), frame, TRUE, TRUE, 0);
+        gtk_box_pack_start (GTK_BOX (vbox2), frame, FALSE, FALSE, 0);
         gtk_container_set_border_width (GTK_CONTAINER (frame), 2);
         gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_NONE);
 
         alignment = gtk_alignment_new (0.5, 0.5, 1, 1);
         gtk_widget_show (alignment);
         gtk_container_add (GTK_CONTAINER (frame), alignment);
+        gtk_container_set_border_width (GTK_CONTAINER (alignment), 4);
         gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 12, 0);
 
-        table = gtk_table_new (2, 2, FALSE);
-        gtk_widget_show (table);
-        gtk_container_add (GTK_CONTAINER (alignment), table);
-        gtk_container_set_border_width (GTK_CONTAINER (table), 8);
-        gtk_table_set_row_spacings (GTK_TABLE (table), 4);
+        hbox1 = gtk_hbox_new (FALSE, 0);
+        gtk_widget_show (hbox1);
+        gtk_container_add (GTK_CONTAINER (alignment), hbox1);
 
         label = gtk_label_new (_("Selected files:"));
         gtk_widget_show (label);
-        gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1,
-                          (GtkAttachOptions) (GTK_FILL),
-                          (GtkAttachOptions) (0), 0, 0);
-        gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-
-        label = gtk_label_new (_("Total size:"));
-        gtk_widget_show (label);
-        gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
-                          (GtkAttachOptions) (GTK_FILL),
-                          (GtkAttachOptions) (0), 0, 0);
+        gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
         gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
         label_songs = gtk_label_new (_("label_songs"));
         gtk_widget_show (label_songs);
-        gtk_table_attach (GTK_TABLE (table), label_songs, 1, 2, 0, 1,
-                          (GtkAttachOptions) (GTK_FILL),
-                          (GtkAttachOptions) (0), 0, 0);
+        gtk_box_pack_start (GTK_BOX (hbox1), label_songs, FALSE, FALSE, 0);
         gtk_misc_set_alignment (GTK_MISC (label_songs), 0, 0.5);
         gtk_misc_set_padding (GTK_MISC (label_songs), 5, 0);
 
-        label_songs_size = gtk_label_new (_("label_songs_size"));
-        gtk_widget_show (label_songs_size);
-        gtk_table_attach (GTK_TABLE (table), label_songs_size, 1, 2, 1, 2,
-                          (GtkAttachOptions) (GTK_FILL),
-                          (GtkAttachOptions) (0), 0, 0);
-        gtk_misc_set_alignment (GTK_MISC (label_songs_size), 0, 0.5);
-        gtk_misc_set_padding (GTK_MISC (label_songs_size), 5, 0);
-
+ 
         label = gtk_label_new (_("<b>Songs info</b>"));
         gtk_widget_show (label);
         gtk_frame_set_label_widget (GTK_FRAME (frame), label);
@@ -774,81 +755,41 @@ void aifp_transfer_files(void) {
         alignment = gtk_alignment_new (0.5, 0.5, 1, 1);
         gtk_widget_show (alignment);
         gtk_container_add (GTK_CONTAINER (frame), alignment);
+        gtk_container_set_border_width (GTK_CONTAINER (alignment), 4);
         gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 12, 0);
 
         vbox3 = gtk_vbox_new (FALSE, 0);
         gtk_widget_show (vbox3);
         gtk_container_add (GTK_CONTAINER (alignment), vbox3);
 
-        table = gtk_table_new (3, 2, FALSE);
-        gtk_widget_show (table);
-        gtk_box_pack_start (GTK_BOX (vbox3), table, TRUE, TRUE, 0);
-        gtk_container_set_border_width (GTK_CONTAINER (table), 8);
-        gtk_table_set_row_spacings (GTK_TABLE (table), 4);         
+        hbox1 = gtk_hbox_new (FALSE, 0);
+        gtk_widget_show (hbox1);
+        gtk_box_pack_start (GTK_BOX (vbox3), hbox1, TRUE, TRUE, 2);
 
         label = gtk_label_new (_("Model:"));
         gtk_widget_show (label);
-        gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1,
-                          (GtkAttachOptions) (GTK_FILL),
-                          (GtkAttachOptions) (0), 0, 0);
+        gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
         gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
-        label = gtk_label_new (_("Capacity:"));
-        gtk_widget_show (label);
-        gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
-                          (GtkAttachOptions) (GTK_FILL),
-                          (GtkAttachOptions) (0), 0, 0);
-        gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-
-        label = gtk_label_new (_("Free space:"));
-        gtk_widget_show (label);
-        gtk_table_attach (GTK_TABLE (table), label, 0, 1, 2, 3,
-                          (GtkAttachOptions) (GTK_FILL),
-                          (GtkAttachOptions) (0), 0, 0);
-        gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-
-        label_model = gtk_label_new (_("label_model"));
+        label_model = gtk_label_new (NULL);
         gtk_widget_show (label_model);
-        gtk_table_attach (GTK_TABLE (table), label_model, 1, 2, 0, 1,
-                          (GtkAttachOptions) (GTK_FILL),
-                          (GtkAttachOptions) (0), 0, 0);
+        gtk_box_pack_start (GTK_BOX (hbox1), label_model, FALSE, FALSE, 0);
         gtk_misc_set_alignment (GTK_MISC (label_model), 0, 0.5);
         gtk_misc_set_padding (GTK_MISC (label_model), 5, 0);
 
-        label_capacity = gtk_label_new (_("label_capacity"));
-        gtk_widget_show (label_capacity);
-        gtk_table_attach (GTK_TABLE (table), label_capacity, 1, 2, 1, 2,
-                          (GtkAttachOptions) (GTK_FILL),
-                          (GtkAttachOptions) (0), 0, 0);
-        gtk_misc_set_alignment (GTK_MISC (label_capacity), 0, 0.5);
-        gtk_misc_set_padding (GTK_MISC (label_capacity), 5, 0);
-
-        label_freespace = gtk_label_new (_("label_freespace"));
-        gtk_widget_show (label_freespace);
-        gtk_table_attach (GTK_TABLE (table), label_freespace, 1, 2, 2, 3,
-                          (GtkAttachOptions) (GTK_FILL),
-                          (GtkAttachOptions) (0), 0, 0);
-        gtk_misc_set_alignment (GTK_MISC (label_freespace), 0, 0.5);
-        gtk_misc_set_padding (GTK_MISC (label_freespace), 5, 0);             
-
-        table = gtk_table_new (1, 2, FALSE);
-        gtk_widget_show (table);
-        gtk_box_pack_start (GTK_BOX (vbox3), table, TRUE, TRUE, 0);
-        gtk_container_set_border_width (GTK_CONTAINER (table), 8);
-        gtk_table_set_col_spacings (GTK_TABLE (table), 8);
+        hbox1 = gtk_hbox_new (FALSE, 0);
+        gtk_widget_show (hbox1);
+        gtk_box_pack_start (GTK_BOX (vbox3), hbox1, TRUE, TRUE, 2);
 
         progressbar_battery = gtk_progress_bar_new ();
         gtk_widget_show (progressbar_battery);
-        gtk_table_attach (GTK_TABLE (table), progressbar_battery, 0, 1, 0, 1,
-                          (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                          (GtkAttachOptions) (0), 0, 0);
+        gtk_box_pack_start (GTK_BOX (hbox1), progressbar_battery, TRUE, TRUE, 2);
+        gtk_widget_set_size_request (progressbar_battery, 70, -1);
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_battery), _("Battery"));
 
         progressbar_freespace = gtk_progress_bar_new ();
         gtk_widget_show (progressbar_freespace);
-        gtk_table_attach (GTK_TABLE (table), progressbar_freespace, 1, 2, 0, 1,
-                          (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                          (GtkAttachOptions) (0), 0, 0);
+        gtk_box_pack_start (GTK_BOX (hbox1), progressbar_freespace, TRUE, TRUE, 2);
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_freespace), _("Free space"));
 
         label = gtk_label_new (_("<b>Device status</b>"));
@@ -896,23 +837,29 @@ void aifp_transfer_files(void) {
 
         vseparator = gtk_vseparator_new ();
         gtk_widget_show (vseparator);
-        gtk_box_pack_start (GTK_BOX (hbox1), vseparator, FALSE, TRUE, 6);
+        gtk_box_pack_start (GTK_BOX (hbox1), vseparator, FALSE, TRUE, 2);
 
         vbox4 = gtk_vbox_new (FALSE, 0);
         gtk_widget_show (vbox4);
         gtk_box_pack_start (GTK_BOX (hbox1), vbox4, FALSE, FALSE, 0);
 
         mkdir_button = gui_stock_label_button(NULL, GTK_STOCK_NEW);
+        gtk_button_set_relief (GTK_BUTTON (mkdir_button), GTK_RELIEF_NONE); 
+        GTK_WIDGET_UNSET_FLAGS(mkdir_button, GTK_CAN_FOCUS);
         gtk_widget_show (mkdir_button);
         g_signal_connect(mkdir_button, "clicked", G_CALLBACK(create_directory_cb), NULL);
         gtk_box_pack_start (GTK_BOX (vbox4), mkdir_button, FALSE, FALSE, 0);
 
         rndir_button = gui_stock_label_button(NULL, GTK_STOCK_EDIT);
+        GTK_WIDGET_UNSET_FLAGS(rndir_button, GTK_CAN_FOCUS);
+        gtk_button_set_relief (GTK_BUTTON (rndir_button), GTK_RELIEF_NONE); 
         gtk_widget_show (rndir_button);
         g_signal_connect(rndir_button, "clicked", G_CALLBACK(rename_directory_cb), NULL);
         gtk_box_pack_start (GTK_BOX (vbox4), rndir_button, FALSE, FALSE, 0);
 
         rmdir_button = gui_stock_label_button(NULL, GTK_STOCK_DELETE);
+        GTK_WIDGET_UNSET_FLAGS(rmdir_button, GTK_CAN_FOCUS);
+        gtk_button_set_relief (GTK_BUTTON (rmdir_button), GTK_RELIEF_NONE); 
         gtk_widget_show (rmdir_button);
         g_signal_connect(rmdir_button, "clicked", G_CALLBACK(remove_directory_cb), NULL);
         gtk_box_pack_start (GTK_BOX (vbox4), rmdir_button, FALSE, FALSE, 0);
@@ -967,24 +914,25 @@ void aifp_transfer_files(void) {
                           (GtkAttachOptions) (0), 0, 0);
         gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
-        file_entry = gtk_entry_new();
-        gtk_widget_show (file_entry);
-        gtk_editable_set_editable(GTK_EDITABLE(file_entry), FALSE);
-        gtk_table_attach (GTK_TABLE (table), file_entry, 1, 2, 0, 1,
+        aifp_file_entry = gtk_entry_new();
+        GTK_WIDGET_UNSET_FLAGS(aifp_file_entry, GTK_CAN_FOCUS);
+        gtk_widget_show (aifp_file_entry);
+        gtk_editable_set_editable(GTK_EDITABLE(aifp_file_entry), FALSE);
+        gtk_table_attach (GTK_TABLE (table), aifp_file_entry, 1, 2, 0, 1,
                           (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                           (GtkAttachOptions) (0), 0, 0);
-        gtk_entry_set_text(GTK_ENTRY(file_entry), _("None"));
+        gtk_entry_set_text(GTK_ENTRY(aifp_file_entry), _("None"));
 
         progressbar_cf = gtk_progress_bar_new ();
         gtk_widget_show (progressbar_cf);
-        gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_cf), _("Idle."));
+        gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_cf), _("Idle"));
         gtk_table_attach (GTK_TABLE (table), progressbar_cf, 1, 2, 1, 2,
                           (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                           (GtkAttachOptions) (0), 0, 0);
 
         progressbar_op = gtk_progress_bar_new ();
         gtk_widget_show (progressbar_op);
-        gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_op), _("Idle."));
+        gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_op), _("Idle"));
         gtk_table_attach (GTK_TABLE (table), progressbar_op, 1, 2, 2, 3,
                           (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                           (GtkAttachOptions) (0), 0, 0);
@@ -1005,19 +953,22 @@ void aifp_transfer_files(void) {
         gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), GTK_BUTTONBOX_END);
         gtk_box_set_spacing (GTK_BOX (hbuttonbox), 6);
 
-        upload_button = gui_stock_label_button (_("_Upload songs"), GTK_STOCK_GO_UP);
+        upload_button = gui_stock_label_button (_("_Upload"), GTK_STOCK_GO_UP);
+        GTK_WIDGET_UNSET_FLAGS(upload_button, GTK_CAN_FOCUS);
         gtk_widget_show (upload_button);
         g_signal_connect(upload_button, "clicked", G_CALLBACK(upload_songs_cb), NULL);
         gtk_container_add (GTK_CONTAINER (hbuttonbox), upload_button);
         GTK_WIDGET_SET_FLAGS (upload_button, GTK_CAN_DEFAULT);
 
         abort_button = gui_stock_label_button (_("_Abort"), GTK_STOCK_CANCEL);
+        GTK_WIDGET_UNSET_FLAGS(abort_button, GTK_CAN_FOCUS);
         gtk_widget_show (abort_button);
         g_signal_connect(abort_button, "clicked", G_CALLBACK(abort_transfer_cb), NULL);
         gtk_container_add (GTK_CONTAINER (hbuttonbox), abort_button);
         GTK_WIDGET_SET_FLAGS (abort_button, GTK_CAN_DEFAULT);
 
         close_button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
+        GTK_WIDGET_UNSET_FLAGS(close_button, GTK_CAN_FOCUS);
         gtk_widget_show (close_button);
         g_signal_connect(close_button, "clicked", G_CALLBACK(aifp_window_close), NULL);
         gtk_container_add (GTK_CONTAINER (hbuttonbox), close_button);

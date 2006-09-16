@@ -163,6 +163,7 @@ GtkWidget * plist__send_songs_to_iriver;
 GtkWidget * plist__separator3;
 #endif /* HAVE_IFP */
 
+void add_directory(GtkWidget * widget, gpointer data);
 void init_plist_menu(GtkWidget *append_menu);
 void show_active_position_in_playlist(void);
 void show_last_position_in_playlist(void);
@@ -489,7 +490,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		ctrl_R = 1;
 		break;
 	}
-
+        
 	switch (kevent->keyval) {
 
         case GDK_Insert:
@@ -2354,6 +2355,7 @@ create_playlist(void) {
 	if (options.enable_playlist_statusbar) {
 
 		statusbar_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+                GTK_WIDGET_UNSET_FLAGS(statusbar_scrolledwin, GTK_CAN_FOCUS);
 		gtk_widget_set_size_request(statusbar_scrolledwin, 1, -1);    /* MAGIC */
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(statusbar_scrolledwin),
 					       GTK_POLICY_NEVER, GTK_POLICY_NEVER);
@@ -2413,16 +2415,19 @@ create_playlist(void) {
         gtk_box_pack_start(GTK_BOX(vbox), hbox_bottom, FALSE, TRUE, 0);
 
 	add_button = gtk_button_new_with_label(_("Add files"));
+        GTK_WIDGET_UNSET_FLAGS(add_button, GTK_CAN_FOCUS);
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), add_button, _("Add files to playlist\n(Press right mouse button for menu)"), NULL);
         gtk_box_pack_start(GTK_BOX(hbox_bottom), add_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(add_button), "clicked", G_CALLBACK(add_files), NULL);
 
 	selall_button = gtk_button_new_with_label(_("Select all"));
+        GTK_WIDGET_UNSET_FLAGS(selall_button, GTK_CAN_FOCUS);
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), selall_button, _("Select all songs in playlist\n(Press right mouse button for menu)"), NULL);
         gtk_box_pack_start(GTK_BOX(hbox_bottom), selall_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(selall_button), "clicked", G_CALLBACK(select_all), NULL);
 	
 	remsel_button = gtk_button_new_with_label(_("Remove selected"));
+        GTK_WIDGET_UNSET_FLAGS(remsel_button, GTK_CAN_FOCUS);
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), remsel_button, _("Remove selected songs from playlist\n(Press right mouse button for menu)"), NULL);
         gtk_box_pack_start(GTK_BOX(hbox_bottom), remsel_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(remsel_button), "clicked", G_CALLBACK(remove_sel), NULL);
@@ -3342,12 +3347,13 @@ init_plist_menu(GtkWidget *append_menu) {
 void
 show_active_position_in_playlist(void) {
 
-        GtkTreeIter iter;
+        GtkTreeIter iter, iter_child;
 	char * str;
-        gint flag;
+        gint flag, cflag, j;
         GtkTreePath * visible_path;
+        GtkTreeViewColumn * visible_column;
 
-        flag = 0;
+        flag = cflag = 0;
 
         if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
 
@@ -3355,13 +3361,36 @@ show_active_position_in_playlist(void) {
 			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 2, &str, -1);
 		        if (strcmp(str, pl_color_active) == 0) {
                                 flag = 1;
+		                if (gtk_tree_selection_iter_is_selected(play_select, &iter) &&
+                                    gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter)) {
+
+                                        gtk_tree_view_get_cursor(GTK_TREE_VIEW(play_list), &visible_path, &visible_column);
+
+                                        if (!gtk_tree_view_row_expanded(GTK_TREE_VIEW(play_list), visible_path)) {
+                                                gtk_tree_view_expand_row(GTK_TREE_VIEW(play_list), visible_path, FALSE);
+                                        }
+
+                                        j = 0;
+
+                                        while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, &iter, j++)) {
+                                                gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter_child, 2, &str, -1);
+                                                if (strcmp(str, pl_color_active) == 0) {
+                                                        cflag = 1;
+                                                        break;
+                                                }
+                                        }
+                                }
                                 break;
                         }
 
 		} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter));
 
                 if (flag) {
-                        visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
+                        if (cflag) {
+                                visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter_child);
+                        } else {
+                                visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
+                        }
                         gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
                         gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (play_list), visible_path,
                                                       NULL, TRUE, 0.3, 0.0);

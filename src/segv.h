@@ -25,3 +25,6 @@ int setup_sigsegv();
 #endif
 
 #endif /* _SEGV_H */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

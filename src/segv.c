@@ -133,7 +133,7 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 #else
 	fprintf(stderr, "To help the developers fix the bug causing this crash,\n");
 	fprintf(stderr, "please do the following:\n\n");
-	fprintf(stderr, "1) configure & make Aqualung with --debug-enabled\n");
+	fprintf(stderr, "1) configure & make Aqualung with --enable-debug\n");
 	fprintf(stderr, "2) reproduce the crash\n");
 	fprintf(stderr, "3) send the crash report to the developers\n\n");
 	fprintf(stderr, "Thank you for supporting Aqualung!\n");
@@ -179,4 +179,6 @@ init(void) {
 	setup_sigsegv();
 }
 #endif
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

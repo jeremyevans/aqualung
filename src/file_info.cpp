@@ -87,6 +87,7 @@
 
 extern options_t options;
 
+GtkWidget * fi_event_box;
 
 typedef struct {
         GtkTreeModel * model;
@@ -1554,7 +1555,7 @@ gboolean
 fi_cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_data) {
 
 	if (event->type == GDK_BUTTON_PRESS && event->button == 1) { /* LMB ? */
-                display_zoomed_cover((gchar *) user_data);
+                display_zoomed_cover(fi_event_box, (gchar *) user_data);
         }
         return TRUE;
 }    
@@ -1578,7 +1579,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	GtkWidget * entry_path;
 	GtkWidget * hbuttonbox;
 	GtkWidget * dismiss_btn;
-	GtkWidget * cover_image_area;
+	GtkWidget * fi_cover_image_area;
 
 	GtkWidget * vbox_file;
 	GtkWidget * label_file;
@@ -1586,7 +1587,6 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	GtkWidget * hbox;
 	GtkWidget * label;
 	GtkWidget * entry;
-        GtkWidget * event_box;
 
 #ifdef HAVE_MOD_INFO
         mod_info * mdi;
@@ -1667,14 +1667,14 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_table_attach(GTK_TABLE(table), entry_path, 1, 2, 1, 2,
 			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 2);
 
-        cover_image_area = gtk_image_new();
-        event_box = gtk_event_box_new ();
-	gtk_box_pack_start(GTK_BOX(hbox_t), event_box, FALSE, FALSE, 0);
-        gtk_container_add (GTK_CONTAINER (event_box), cover_image_area);
-        g_signal_connect(G_OBJECT(event_box), "button_press_event",
+        fi_cover_image_area = gtk_image_new();
+        fi_event_box = gtk_event_box_new ();
+	gtk_box_pack_start(GTK_BOX(hbox_t), fi_event_box, FALSE, FALSE, 0);
+        gtk_container_add (GTK_CONTAINER (fi_event_box), fi_cover_image_area);
+        g_signal_connect(G_OBJECT(fi_event_box), "button_press_event",
                          G_CALLBACK(fi_cover_press_button_cb), file);
 
-        display_cover(cover_image_area, 48, 48, file, FALSE, TRUE);
+        display_cover(fi_cover_image_area, fi_event_box, 48, 48, file, FALSE, TRUE);
 
 	hbox_tagbuttons = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_tagbuttons, FALSE, FALSE, 5);

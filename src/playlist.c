@@ -159,6 +159,7 @@ GtkWidget * plist__separator3;
 void add_directory(GtkWidget * widget, gpointer data);
 void init_plist_menu(GtkWidget *append_menu);
 void show_active_position_in_playlist(void);
+void show_active_position_in_playlist_toggle(void);
 void show_last_position_in_playlist(void);
 void expand_collapse_album_node(void);
 
@@ -486,7 +487,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		break;
         case GDK_a:
         case GDK_A:
-                show_active_position_in_playlist();
+                show_active_position_in_playlist_toggle();
                 return TRUE;
                 break;
         case GDK_w:
@@ -3285,6 +3286,40 @@ init_plist_menu(GtkWidget *append_menu) {
 void
 show_active_position_in_playlist(void) {
 
+        GtkTreeIter iter;
+	char * str;
+        gint flag;
+        GtkTreePath * visible_path;
+        GtkTreeViewColumn * visible_column;
+
+        flag = 0;
+
+        if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
+
+                do {
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 2, &str, -1);
+		        if (strcmp(str, pl_color_active) == 0) {
+                                flag = 1;
+		                if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+                                    gtk_tree_view_get_cursor(GTK_TREE_VIEW(play_list), &visible_path, &visible_column);
+                                }
+                                break;
+                        }
+
+		} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter));
+
+                if (flag) {
+                        visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
+                        gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
+                        gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (play_list), visible_path,
+                                                      NULL, TRUE, 0.3, 0.0);
+                }
+        }
+}
+
+void
+show_active_position_in_playlist_toggle(void) {
+
         GtkTreeIter iter, iter_child;
 	char * str;
         gint flag, cflag, j;
@@ -3326,16 +3361,16 @@ show_active_position_in_playlist(void) {
                 if (flag) {
                         if (cflag) {
                                 visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter_child);
+                                gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
                         } else {
                                 visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
+                                gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
+                                gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (play_list), visible_path,
+                                                              NULL, TRUE, 0.3, 0.0);
                         }
-                        gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
-                        gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (play_list), visible_path,
-                                                      NULL, TRUE, 0.3, 0.0);
                 }
         }
 }
-
 
 void
 show_last_position_in_playlist(void) {

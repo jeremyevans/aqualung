@@ -226,7 +226,7 @@ cover_window_close_cb(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 
 void 
-display_zoomed_cover(gchar *song_filename) {
+display_zoomed_cover(GtkWidget *event_area, gchar *song_filename) {
 
         GtkWidget * image_area;
         gint size;
@@ -251,7 +251,7 @@ display_zoomed_cover(gchar *song_filename) {
                 gtk_widget_show(image_area);
                 gtk_container_add (GTK_CONTAINER (cover_window), image_area);
 
-                display_cover(image_area, size, size, song_filename, FALSE, FALSE);
+                display_cover(image_area, event_area, size, size, song_filename, FALSE, FALSE);
 
                 gtk_widget_set_size_request(cover_window, calculated_width, calculated_height);
                 gtk_widget_show(cover_window);
@@ -261,7 +261,8 @@ display_zoomed_cover(gchar *song_filename) {
 
 
 void 
-display_cover(GtkWidget *image_area, gint dest_width, gint dest_height, gchar *song_filename, gboolean hide, gboolean bevel) {
+display_cover(GtkWidget *image_area, GtkWidget *event_area, gint dest_width, gint dest_height, 
+              gchar *song_filename, gboolean hide, gboolean bevel) {
 
         GdkPixbuf * cover_pixbuf;
         GdkPixbuf * cover_pixbuf_scaled;
@@ -272,6 +273,8 @@ display_cover(GtkWidget *image_area, gint dest_width, gint dest_height, gchar *s
 
         calculated_width = dest_width;
         calculated_height = dest_height;
+
+        cover_pixbuf = NULL;
 
         if (strlen(song_filename)) {
 
@@ -313,6 +316,7 @@ display_cover(GtkWidget *image_area, gint dest_width, gint dest_height, gchar *s
                         if (!cover_show_flag && hide == TRUE) {
                                 cover_show_flag = 1;      
                                 gtk_widget_show(image_area);
+                                gtk_widget_show(event_area);
                         }
 
                 } else {
@@ -320,6 +324,7 @@ display_cover(GtkWidget *image_area, gint dest_width, gint dest_height, gchar *s
                         if (hide == TRUE) {
                                 cover_show_flag = 0;      
                                 gtk_widget_hide(image_area);
+                                gtk_widget_hide(event_area);
                         }
 
                 }
@@ -374,6 +379,8 @@ insert_cover(GtkTextIter * iter) {
 
                         strcpy(cover_filename, find_cover_filename(song_filename));
                         g_free (song_filename);
+
+                        pixbuf = NULL;
 
                         /* load and display cover */
 

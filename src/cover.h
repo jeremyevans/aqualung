@@ -30,7 +30,10 @@ extern "C" {
 /* FIXME  34 is space for scrollbar width, window border and it is theme dependent */
 #define SCROLLBAR_WIDTH         34
 
-void    display_cover           (GtkWidget *image_area, gint dest_width, gint dest_height, gchar *song_filename, gboolean hide);
+#define N_COVER_WIDTHS          5
+
+void    display_cover           (GtkWidget *image_area, gint dest_width, gint dest_height, gchar *song_filename, gboolean hide, gboolean bevel);
+void    display_zoomed_cover    (gchar *song_filename);
 void    insert_cover            (GtkTextIter * iter);
 
 

@@ -251,12 +251,7 @@ GtkWidget * label_mono;
 GtkWidget * label_output;
 GtkWidget * label_src_type;
 
-int alt_L;
-int alt_R;
-int control_L;
-int control_R;
-int shift_L;
-int shift_R;
+int shift_state;
 int x_scroll_start;
 int x_scroll_pos;
 int scroll_btn;
@@ -1035,7 +1030,7 @@ refresh_displays(void) {
 			}
                         if (is_file_loaded) {
                                 gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &title_str, -1);
-                                display_cover(cover_image_area, 48, 48, title_str, TRUE);
+                                display_cover(cover_image_area, 48, 48, title_str, TRUE, TRUE);
         			g_free(title_str);
                         }
 		} else {
@@ -1281,8 +1276,7 @@ change_skin(char * path) {
 
         if (options.override_skin_settings && (gdk_color_parse(options.activesong_color, &color) == TRUE)) {
 
-                /* sorry for this, but it's temporary workaround */
-                /* see playlist.c:1848 FIXME tag for details */
+                /* it's temporary workaround - see playlist.c FIXME tag for details */
 
                 if (!color.red && !color.green && !color.blue)
                         color.red++;
@@ -1466,27 +1460,7 @@ plugin_toggled(GtkWidget * widget, gpointer data) {
 gint
 main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
-	switch (event->keyval) {
-	case GDK_Alt_L:
-		alt_L = 1;
-		break;
-	case GDK_Alt_R:
-		alt_R = 1;
-		break;
-	case GDK_Control_L:
-		control_L = 1;
-		break;
-	case GDK_Control_R:
-		control_R = 1;
-		break;
-	case GDK_Shift_L:
-		shift_L = 1;
-		break;
-	case GDK_Shift_R:
-		shift_R = 1;
-		break;
-	}
-
+        shift_state = event->state & GDK_SHIFT_MASK;
 
 	switch (event->keyval) {	
 	case GDK_KP_Divide:
@@ -1497,7 +1471,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			
 		vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
 
-		if (alt_L || alt_R) {
+                if(event->state & GDK_MOD1_MASK) {  /* ALT + KP_Divide */
 			g_signal_emit_by_name(G_OBJECT(scale_bal), "move-slider",
 					      GTK_SCROLL_STEP_BACKWARD, NULL);
 		} else {
@@ -1513,7 +1487,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		
 		vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
 
-		if (alt_L || alt_R) {
+                if(event->state & GDK_MOD1_MASK) {  /* ALT + KP_Multiply */
 			g_signal_emit_by_name(G_OBJECT(scale_bal),
 					      "move-slider", GTK_SCROLL_STEP_FORWARD, NULL);
 		} else {
@@ -1549,7 +1523,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		return TRUE;
 	case GDK_s:
 	case GDK_S:
-		if (alt_L || alt_R) {
+                if(event->state & GDK_MOD1_MASK) {  /* ALT + s */
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(musicstore_toggle),
 						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(musicstore_toggle)));
 		} else {
@@ -1596,14 +1570,14 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		return TRUE;
 	case GDK_l:
 	case GDK_L:
-		if (alt_L || alt_R) {
+                if(event->state & GDK_MOD1_MASK) {  /* ALT + l */
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle),
 						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(playlist_toggle)));
 		}
 		return TRUE;
 	case GDK_x:
 	case GDK_X:
-		if (alt_L || alt_R) {
+                if(event->state & GDK_MOD1_MASK) {  /* ALT + x */
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(plugin_toggle),
 						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(plugin_toggle)));
 		} else {
@@ -1613,7 +1587,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		return TRUE;
 	case GDK_q:
 	case GDK_Q:
-		if (control_L || control_R) {
+                if(event->state & GDK_CONTROL_MASK) {  /* CTRL + q */
 			main_window_close(NULL, NULL);
 		}
 		return TRUE;
@@ -1662,25 +1636,9 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 gint
 main_window_key_released(GtkWidget * widget, GdkEventKey * event) {
 
+        shift_state = event->state & GDK_SHIFT_MASK;
+
 	switch (event->keyval) {
-	case GDK_Alt_L:
-		alt_L = 0;
-		break;
-	case GDK_Alt_R:
-		alt_R = 0;
-		break;
-	case GDK_Control_L:
-		control_L = 0;
-		break;
-	case GDK_Control_R:
-		control_R = 0;
-		break;
-	case GDK_Shift_L:
-		shift_L = 0;
-		break;
-	case GDK_Shift_R:
-		shift_R = 0;
-		break;
         case GDK_Right:
         case GDK_Left:
                 if (is_file_loaded && allow_seeks && refresh_scale == 0) {
@@ -1704,13 +1662,6 @@ main_window_key_released(GtkWidget * widget, GdkEventKey * event) {
 
 gint
 main_window_focus_out(GtkWidget * widget, GdkEventFocus * event, gpointer data) {
-
-        alt_L = 0;
-        alt_R = 0;
-        shift_L = 0;
-        shift_R = 0;
-	control_L = 0;
-	control_R = 0;
 
         refresh_scale = 1;
 
@@ -1887,7 +1838,7 @@ scale_vol_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 	char str[10];
 	vol = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_vol));
 
-	if (shift_L || shift_R) {
+        if(event->state & GDK_SHIFT_MASK) {  /* SHIFT */
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), 0);
 		return TRUE;
 	}
@@ -1925,7 +1876,7 @@ changed_vol(GtkAdjustment * adj, gpointer date) {
                 sprintf(str, _("%d dB"), (int)vol);
         }
 
-        if (!shift_L && !shift_R && !refresh_time_label) {
+        if(!shift_state && !refresh_time_label) {
 		gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
         }
 
@@ -1950,7 +1901,7 @@ scale_bal_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 	char str[10];
 	bal = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_bal));
 
-	if (shift_L || shift_R) {
+        if(event->state & GDK_SHIFT_MASK) {  /* SHIFT */
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), 0);
 		return TRUE;
 	}
@@ -1996,7 +1947,7 @@ changed_bal(GtkAdjustment * adj, gpointer date) {
                 sprintf(str, _("C"));
         }
 	
-        if (!shift_L && !shift_R && !refresh_time_label) {
+        if(!shift_state && !refresh_time_label) {  /* SHIFT */
 		gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
 	}
 
@@ -3076,6 +3027,29 @@ show_all_windows(gpointer data) {
 }
 #endif /* HAVE_SYSTRAY */
 
+gboolean    
+cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_data) {
+
+        GtkTreePath * p;
+	GtkTreeIter iter;
+	char * title_str;
+
+	if (event->type == GDK_BUTTON_PRESS && event->button == 1) { /* LMB ? */
+                if (play_store) {
+                        p = get_playing_path(play_store);
+                        if (p != NULL) {
+                                gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
+                                gtk_tree_path_free(p);
+                                if (is_file_loaded) {
+                                        gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &title_str, -1);
+                                        display_zoomed_cover(title_str);
+                                        g_free(title_str);
+                                }
+                        }
+                }
+        }
+        return TRUE;
+}    
 
 void
 create_main_window(char * skin_path) {
@@ -3086,6 +3060,8 @@ create_main_window(char * skin_path) {
 	GtkWidget * title_hbox;
 	GtkWidget * info_hbox;
 	GtkWidget * vb_table;
+
+        GtkWidget * event_box;
 
 	GtkWidget * conf__separator1;
 	GtkWidget * conf__separator2;
@@ -3424,7 +3400,11 @@ create_main_window(char * skin_path) {
         /* cover display widget */
 
         cover_image_area = gtk_image_new();
-	gtk_box_pack_start(GTK_BOX(disp_hbox), cover_image_area, FALSE, FALSE, 0);
+        event_box = gtk_event_box_new ();
+	gtk_box_pack_start(GTK_BOX(disp_hbox), event_box, FALSE, FALSE, 0);
+        gtk_container_add (GTK_CONTAINER (event_box), cover_image_area);
+        g_signal_connect(G_OBJECT(event_box), "button_press_event",
+                         G_CALLBACK(cover_press_button_cb), cover_image_area);
 
         /* Embedded playlist */
 

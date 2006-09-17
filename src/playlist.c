@@ -65,13 +65,6 @@ extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern PangoFontDescription *fd_playlist;
 extern PangoFontDescription *fd_statusbar;
 
-int alt_L;
-int alt_R;
-int shift_L;
-int shift_R;
-int ctrl_L;
-int ctrl_R;
-
 GtkWidget * playlist_window;
 GtkWidget * da_dialog;
 GtkWidget * scrolled_win;
@@ -419,47 +412,6 @@ playlist_window_close(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	return TRUE;
 }
 
-gint
-playlist_window_key_released(GtkWidget * widget, GdkEventKey * kevent) {
-
-        switch (kevent->keyval) {
-	case GDK_Alt_L:
-		alt_L = 0;
-		break;
-	case GDK_Alt_R:
-		alt_R = 0;
-		break;
-	case GDK_Shift_L:
-		shift_L = 0;
-		break;
-	case GDK_Shift_R:
-		shift_R = 0;
-		break;
-	case GDK_Control_L:
-		ctrl_L = 0;
-		break;
-	case GDK_Control_R:
-		ctrl_R = 0;
-		break;
-	}
-
-
-        return FALSE;
-}
-
-gint
-playlist_window_focus_out(GtkWidget * widget, GdkEventFocus * event, gpointer data) {
-
-        alt_L = 0;
-        alt_R = 0;
-        shift_L = 0;
-        shift_R = 0;
-        ctrl_L = 0;
-        ctrl_R = 0;
-
-        return FALSE;
-}
-
 
 gint
 playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
@@ -470,32 +422,16 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	char * pname;
 	char * pfile;
 
+
         switch (kevent->keyval) {
-	case GDK_Alt_L:
-		alt_L = 1;
-		break;
-	case GDK_Alt_R:
-		alt_R = 1;
-		break;
-	case GDK_Shift_L:
-		shift_L = 1;
-		break;
-	case GDK_Shift_R:
-		shift_R = 1;
-		break;
-	case GDK_Control_L:
-		ctrl_L = 1;
-		break;
-	case GDK_Control_R:
-		ctrl_R = 1;
-		break;
-	}
-        
-	switch (kevent->keyval) {
 
         case GDK_Insert:
 	case GDK_KP_Insert:
-                add_files(NULL, NULL);
+                if(kevent->state & GDK_SHIFT_MASK) {  /* SHIFT + Insert */
+                        add_directory(NULL, NULL);
+                } else {
+                        add_files(NULL, NULL);
+                }
                 return TRUE;
                 break;
         case GDK_q:
@@ -553,10 +489,15 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                 show_active_position_in_playlist();
                 return TRUE;
                 break;
-        
+        case GDK_w:
+        case GDK_W:
+                gtk_tree_view_collapse_all(GTK_TREE_VIEW(play_list));  
+                show_active_position_in_playlist();
+                return TRUE;
+                break;
         case GDK_Delete:
 	case GDK_KP_Delete:
-                if (shift_L || shift_R) {
+                if(kevent->state & GDK_SHIFT_MASK) {  /* SHIFT + Delete */
                         gtk_tree_store_clear(play_store);
 			playlist_content_changed();
                 } else {
@@ -2179,12 +2120,8 @@ create_playlist(void) {
         if (!options.playlist_is_embedded) {
                 g_signal_connect(G_OBJECT(playlist_window), "key_press_event",
                                  G_CALLBACK(playlist_window_key_pressed), NULL);
-                g_signal_connect(G_OBJECT(playlist_window), "key_release_event",
-                                 G_CALLBACK(playlist_window_key_released), NULL);
         }
 
-        g_signal_connect(G_OBJECT(playlist_window), "focus_out_event",
-                         G_CALLBACK(playlist_window_focus_out), NULL);
 	gtk_widget_set_events(playlist_window, GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 
 
@@ -2569,7 +2506,8 @@ save_track_node(GtkTreeIter * piter, xmlNodePtr root, char * nodeID) {
 		xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) converted_temp);
 		g_free(converted_temp);
 	};
-	/* FIXME: dont use #000000 color as active if you dont want special fx in playlist 8-) */
+
+	/* FIXME: don't use #000000 (black) color for active song */
 	
 	if (strcmp(color, pl_color_active) == 0) {
 		strcpy(str, "yes");

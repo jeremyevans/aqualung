@@ -27,9 +27,11 @@
 #include <string.h>
 #include <dirent.h>
 #include <gtk/gtk.h>
+#include <gdk/gdkcursor.h>
 
 #include "common.h"
 #include "cover.h"
+#include "gui_main.h"
 #include "music_browser.h"
 #include "i18n.h"
 #include "options.h"
@@ -40,6 +42,7 @@ extern gint cover_show_flag;
 
 extern gint browser_size_x;
 extern GtkWidget * comment_view;
+extern GtkWidget * main_window;
 extern GtkTreeSelection * music_select;
 
 /* maximum 4 chars per extension */
@@ -50,20 +53,24 @@ gchar *cover_extensions[] = {
 
 gint n_extensions = sizeof(cover_extensions) / sizeof(gchar*);
 
+GtkWidget *cover_window;
+gchar temp_filename[PATH_MAX];
+gint ext_flag;
+gint calculated_width, calculated_height;
+gint cover_widths[N_COVER_WIDTHS] = { 50, 100, 200, 300, -1 };       /* widths in pixels */
 
 gchar *
 get_song_path(gchar *song_filename) {
 
         static gchar song_path[PATH_MAX];
-        gint i, k;
-
-
-        k = strlen(song_filename) - 1;
-        while (song_filename[k--] != '/');
-
-        for (i = 0; k != -2; i++, k--)
-                song_path[i] = song_filename[i];
-
+        gint i;
+        gchar *pos;
+        
+        if ((pos = strrchr(song_filename, '/'))) {
+                for (i=0; song_filename <= pos; i++) {
+                        song_path[i] = *song_filename++;
+                }
+        }
         song_path[i] = '\0';
 
         return song_path;
@@ -73,47 +80,39 @@ get_song_path(gchar *song_filename) {
 static gint
 entry_filter(const struct dirent *entry) {
 
-        gint i, j, len;
-        gchar ext[5], c, *str1, *str2;
-   
+        gint i, len;
+        gchar *ext, *str1, *str2;
 
         len = strlen (entry->d_name);
 
         if (len < 5)                    /* 5 => a.abc */
                 return FALSE;
 
-        /* extract extension */
+        if ((ext = strrchr(entry->d_name, '.'))) {
+ 
+                ext++; 
 
-        i = j = 0;
+                /* filter candidates for cover */
 
-        while(i < 4) {
-                c = entry->d_name[len - 4 + i];
-                if (c != '.') {
-                        ext[j++] = c;
-                }
-                i++;
-        }
+                str1 = g_utf8_casefold(ext, -1);
 
-        ext[j] = 0;
+                for (i = 0; i < n_extensions; i++) {
 
-        /* filter candidates for cover */
-
-        str1 = g_utf8_casefold(ext, -1);
-
-        for (i = 0; i < n_extensions; i++) {
-
-                str2 = g_utf8_casefold(cover_extensions[i], -1);
+                        str2 = g_utf8_casefold(cover_extensions[i], -1);
+                        
+                        if (!g_utf8_collate(str1, str2)) {
+                                g_free(str1);
+                                g_free(str2);
+                                ext_flag = TRUE;
+                                strncpy(temp_filename, entry->d_name, PATH_MAX-1);
+                                return TRUE;
+                        }
                 
-                if (!g_utf8_collate(str1, str2)) {
-                        g_free(str1);
-                        g_free(str2);
-                        return TRUE;
+                        g_free (str2);
                 }
-        
-                g_free (str2);
-        }
 
-        g_free (str1);
+                g_free (str1);
+        }
 
 	return FALSE;
 }
@@ -136,7 +135,7 @@ find_cover_filename(gchar *song_filename) {
         n_files = sizeof(cover_filenames) / sizeof(gchar*);
         strcpy(base_path, get_song_path(song_filename));
 
-        cover_filename[0] = '\0';
+        cover_filename[0] = temp_filename[0] = '\0';
 
         for (i = 0; i < n_files; i++) {
 
@@ -146,6 +145,7 @@ find_cover_filename(gchar *song_filename) {
                         strcat (current_filename, ".");
                         strcat (current_filename, cover_extensions[j]);
 
+                        ext_flag = FALSE;
                         str1 = g_utf8_casefold (current_filename, -1);
 
 	                for (n = 0; n < scandir(base_path, &d_entry, entry_filter, alphasort); n++) {
@@ -169,6 +169,11 @@ find_cover_filename(gchar *song_filename) {
 
                         g_free (str1);
                 }
+        }
+
+        if (ext_flag == TRUE) {
+                strcpy (cover_filename, base_path);
+                strcat (cover_filename, temp_filename);
         }
 
         return cover_filename;
@@ -212,8 +217,51 @@ draw_cover_frame(GdkPixbuf *pixbuf, gint width, gint height, gboolean bevel) {
 
 }
 
+gboolean
+cover_window_close_cb(GtkWidget * widget, GdkEvent * event, gpointer data) {
+
+        gtk_widget_destroy(widget);
+	return TRUE;
+}
+
+
 void 
-display_cover(GtkWidget *image_area, gint dest_width, gint dest_height, gchar *song_filename, gboolean hide) {
+display_zoomed_cover(gchar *song_filename) {
+
+        GtkWidget * image_area;
+        gint size;
+
+        if (g_file_test (song_filename, G_FILE_TEST_IS_REGULAR) == TRUE) {
+
+                size = cover_widths[options.cover_width];
+                if (size == -1) {
+                        size = cover_widths[options.cover_width-1];
+                }
+
+		cover_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+                g_signal_connect(G_OBJECT(cover_window), "button_press_event",
+                                 G_CALLBACK(cover_window_close_cb), NULL);
+                gtk_window_set_position(GTK_WINDOW(cover_window), GTK_WIN_POS_MOUSE);
+	        gtk_widget_set_events(cover_window, GDK_BUTTON_PRESS_MASK);
+               	gtk_window_set_modal(GTK_WINDOW(cover_window), TRUE);
+        	gtk_window_set_transient_for(GTK_WINDOW(cover_window), GTK_WINDOW(main_window));
+                gtk_window_set_decorated(GTK_WINDOW(cover_window), FALSE);
+
+                image_area = gtk_image_new();
+                gtk_widget_show(image_area);
+                gtk_container_add (GTK_CONTAINER (cover_window), image_area);
+
+                display_cover(image_area, size, size, song_filename, FALSE, FALSE);
+
+                gtk_widget_set_size_request(cover_window, calculated_width, calculated_height);
+                gtk_widget_show(cover_window);
+
+        }
+}
+
+
+void 
+display_cover(GtkWidget *image_area, gint dest_width, gint dest_height, gchar *song_filename, gboolean hide, gboolean bevel) {
 
         GdkPixbuf * cover_pixbuf;
         GdkPixbuf * cover_pixbuf_scaled;
@@ -222,6 +270,8 @@ display_cover(GtkWidget *image_area, gint dest_width, gint dest_height, gchar *s
         gint scaled_width, scaled_height;
         gchar cover_filename[PATH_MAX];
 
+        calculated_width = dest_width;
+        calculated_height = dest_height;
 
         if (strlen(song_filename)) {
 
@@ -253,7 +303,10 @@ display_cover(GtkWidget *image_area, gint dest_width, gint dest_height, gchar *s
                         g_object_unref (cover_pixbuf);
                         cover_pixbuf = cover_pixbuf_scaled;
 
-                        draw_cover_frame(cover_pixbuf, scaled_width, scaled_height, TRUE);
+                        draw_cover_frame(cover_pixbuf, scaled_width, scaled_height, bevel);
+
+                        calculated_width = scaled_width;
+                        calculated_height = scaled_height;
 
                         gtk_image_set_from_pixbuf (GTK_IMAGE(image_area), cover_pixbuf);
 
@@ -285,12 +338,12 @@ insert_cover(GtkTextIter * iter) {
         GdkPixbuf *pixbuf;
         GdkPixbuf *scaled;
         GdkPixbufFormat *format;
-        gchar *song_filename, cover_filename[PATH_MAX];
+        gchar *song_filename;
+        gchar cover_filename[PATH_MAX];
         gint k, i;
         gint width, height;
         gint d_cover_width, d_cover_height;
         gint scaled_width, scaled_height;
-        gint cover_widths[5] = { 50, 100, 200, 300, -1 };       /* widths in pixels */
 
         buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
 
@@ -324,7 +377,7 @@ insert_cover(GtkTextIter * iter) {
 
                         /* load and display cover */
 
-                        k = cover_widths[options.cover_width % 5];
+                        k = cover_widths[options.cover_width % N_COVER_WIDTHS];
 
                         if (k == -1) {
 

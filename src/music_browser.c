@@ -213,6 +213,7 @@ static void track__remove_cb(gpointer data);
 static void track__fileinfo_cb(gpointer data);
 
 static void search_cb(gpointer data);
+static void collapse_all_items_cb(gpointer data);
 
 struct keybinds {
 	void (*callback)(gpointer);
@@ -224,6 +225,7 @@ struct keybinds blank_keybinds[] = {
         {store__add_cb, GDK_n, GDK_N},
         {store__build_cb, GDK_b, GDK_B},
         {search_cb, GDK_f, GDK_F},
+        {collapse_all_items_cb, GDK_w, GDK_W},
         {NULL, 0}
 };
 
@@ -237,6 +239,7 @@ struct keybinds store_keybinds[] = {
 	{store__remove_cb, GDK_Delete, GDK_KP_Delete},
 	{artist__add_cb, GDK_plus, GDK_KP_Add},
 	{search_cb, GDK_f, GDK_F},
+        {collapse_all_items_cb, GDK_w, GDK_W},
 	{NULL, 0}
 };
 
@@ -249,6 +252,7 @@ struct keybinds artist_keybinds[] = {
 	{artist__remove_cb, GDK_Delete, GDK_KP_Delete},
 	{record__add_cb, GDK_plus, GDK_KP_Add},
 	{search_cb, GDK_f, GDK_F},
+        {collapse_all_items_cb, GDK_w, GDK_W},
 	{NULL, 0}
 };
 
@@ -260,6 +264,7 @@ struct keybinds record_keybinds[] = {
 	{record__remove_cb, GDK_Delete, GDK_KP_Delete},
 	{track__add_cb, GDK_plus, GDK_KP_Add},
 	{search_cb, GDK_f, GDK_F},
+        {collapse_all_items_cb, GDK_w, GDK_W},
 	{NULL, 0}
 };
 
@@ -271,6 +276,7 @@ struct keybinds track_keybinds[] = {
 	{track__remove_cb, GDK_Delete, GDK_KP_Delete},
 	{track__fileinfo_cb, GDK_i, GDK_I},
 	{search_cb, GDK_f, GDK_F},
+        {collapse_all_items_cb, GDK_w, GDK_W},
 	{NULL, 0}
 };
 

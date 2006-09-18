@@ -34,11 +34,13 @@
 #endif /* HAVE_MOD */
 
 #ifdef HAVE_TAGLIB
+#include <tag.h>
 #include <id3v1tag.h>
 #include <id3v2tag.h>
 #include <apetag.h>
 #include <xiphcomment.h>
 
+#include <fileref.h>
 #include <mpegfile.h>
 #include <mpcfile.h>
 #include <flacfile.h>
@@ -766,6 +768,107 @@ meta_get_comment(metadata * meta, char * str) {
 #endif /* HAVE_TAGLIB */
 	return ret;
 }
+
+
+
+#ifdef HAVE_TAGLIB
+
+/* Update basic metadata fields of a file. Used for mass-tagging.
+ * Note that this method is lightweight (does not need an underlying file_decoder),
+ * and does not need explicit filetype information either.
+ *
+ * Any input string may be NULL, in which case that field won't be updated.
+ * Existing metadata not updated will be retained.
+ *
+ * filename should be locale encoded, fields should be UTF8.
+ *
+ * Return 1 if OK, < 0 else.
+ */
+int
+meta_update_basic(char * filename, char * title, char * artist, char * album,
+		  char * comment, char * genre, char * year, char * track) {
+
+	TagLib::FileRef f(filename);
+	char buf[MAXLEN];
+	int save = 0;
+	
+	if (f.isNull() || !f.tag()) {
+		return -1;
+	}
+
+	TagLib::Tag * t = f.tag();
+	TagLib::String str;
+
+	if (title) {
+		strncpy(buf, title, MAXLEN-1);
+		cut_trailing_whitespace(buf);
+		str = TagLib::String(buf, TagLib::String::UTF8);
+		t->setTitle(str);
+		save = 1;
+	}
+	if (artist) {
+		strncpy(buf, artist, MAXLEN-1);
+		cut_trailing_whitespace(buf);
+		str = TagLib::String(buf, TagLib::String::UTF8);
+		t->setArtist(str);
+		save = 1;
+	}
+	if (album) {
+		strncpy(buf, album, MAXLEN-1);
+		cut_trailing_whitespace(buf);
+		str = TagLib::String(buf, TagLib::String::UTF8);
+		t->setAlbum(str);
+		save = 1;
+	}
+	if (comment) {
+		strncpy(buf, comment, MAXLEN-1);
+		cut_trailing_whitespace(buf);
+		str = TagLib::String(buf, TagLib::String::UTF8);
+		t->setComment(str);
+		save = 1;
+	}
+	if (genre) {
+		strncpy(buf, genre, MAXLEN-1);
+		cut_trailing_whitespace(buf);
+		str = TagLib::String(buf, TagLib::String::UTF8);
+		t->setGenre(str);
+		save = 1;
+	}
+	if (year) {
+		int i;
+		strncpy(buf, year, MAXLEN-1);
+		cut_trailing_whitespace(buf);
+		if (sscanf(buf, "%d", &i) < 1) {
+			i = 0;
+		}
+		if ((i < 0) || (i > 9999)) {
+			i = 0;
+		}
+		t->setYear(i);
+		save = 1;
+	}
+	if (track) {
+		int i;
+		strncpy(buf, track, MAXLEN-1);
+		cut_trailing_whitespace(buf);
+		if (sscanf(buf, "%d", &i) < 1) {
+			i = 0;
+		}
+		if ((i < 0) || (i > 9999)) {
+			i = 0;
+		}
+		t->setTrack(i);
+		save = 1;
+	}
+
+	if (save) {
+		f.file()->save();
+	}
+
+	return 1;
+}
+
+#endif /* HAVE_TAGLIB */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

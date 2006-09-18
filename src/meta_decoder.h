@@ -89,6 +89,11 @@ int meta_get_artist(metadata * meta, char * str);
 int meta_get_year(metadata * meta, char * str);
 int meta_get_comment(metadata * meta, char * str);
 
+#ifdef HAVE_TAGLIB
+int meta_update_basic(char * filename, char * title, char * artist, char * album,
+		      char * comment, char * genre, char * year, char * track);
+#endif /* HAVE_TAGLIB */
+
 
 #ifdef __cplusplus
 } /* extern "C" */

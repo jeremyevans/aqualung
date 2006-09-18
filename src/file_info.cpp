@@ -560,6 +560,13 @@ save_basic_fields(GtkWidget * widget, gpointer data) {
 
 	strncpy(buf, gtk_entry_get_text(GTK_ENTRY(save_basic->entry_comment)), MAXLEN-1);
 	cut_trailing_whitespace(buf);
+	/* workaround silly TagLib when writing an empty comment to an id3v2 tag */
+	if (save_basic->taglib_mpeg_file != NULL) {
+		if (buf[0] == '\0') {
+			buf[0] = ' ';
+			buf[1] = '\0';
+		}
+	}
 	str = TagLib::String(buf, TagLib::String::UTF8);
 	tag->setComment(str);
 

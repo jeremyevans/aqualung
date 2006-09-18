@@ -540,6 +540,11 @@ save_basic_fields(GtkWidget * widget, gpointer data) {
 
 	strncpy(buf, gtk_entry_get_text(GTK_ENTRY(save_basic->entry_title)), MAXLEN-1);
 	cut_trailing_whitespace(buf);
+	/* hack to work around TagLib not saving the tag if it's empty */
+	if (buf[0] == '\0') {
+		buf[0] = ' ';
+		buf[1] = '\0';
+	}
 	str = TagLib::String(buf, TagLib::String::UTF8);	
 	tag->setTitle(str);
 

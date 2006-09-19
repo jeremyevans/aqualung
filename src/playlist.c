@@ -3215,18 +3215,18 @@ init_plist_menu(GtkWidget *append_menu) {
         plist__load = gtk_menu_item_new_with_label(_("Load playlist"));
         plist__enqueue = gtk_menu_item_new_with_label(_("Enqueue playlist"));
         plist__separator1 = gtk_separator_menu_item_new();
+
+#ifdef HAVE_IFP
+        plist__send_songs_to_iriver = gtk_menu_item_new_with_label(_("Send to iFP device"));
+        plist__separator3 = gtk_separator_menu_item_new();
+#endif  /* HAVE_IFP */
+
         plist__rva = gtk_menu_item_new_with_label(_("Calculate RVA"));
         plist__rva_menu = gtk_menu_new();
         plist__rva_separate = gtk_menu_item_new_with_label(_("Separate"));
         plist__rva_average = gtk_menu_item_new_with_label(_("Average"));
         plist__reread_file_meta = gtk_menu_item_new_with_label(_("Reread file metadata"));
         plist__separator2 = gtk_separator_menu_item_new();
-
-#ifdef HAVE_IFP
-        plist__send_songs_to_iriver = gtk_menu_item_new_with_label(_("Send songs to iFP device"));
-        plist__separator3 = gtk_separator_menu_item_new();
-#endif  /* HAVE_IFP */
-
         plist__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
         plist__search = gtk_menu_item_new_with_label(_("Search..."));
 
@@ -3234,18 +3234,18 @@ init_plist_menu(GtkWidget *append_menu) {
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__load);
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__enqueue);
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__separator1);
-        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__rva);
-        gtk_menu_item_set_submenu(GTK_MENU_ITEM(plist__rva), plist__rva_menu);
-        gtk_menu_shell_append(GTK_MENU_SHELL(plist__rva_menu), plist__rva_separate);
-        gtk_menu_shell_append(GTK_MENU_SHELL(plist__rva_menu), plist__rva_average);
-        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__reread_file_meta);
-        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__separator2);
 
 #ifdef HAVE_IFP
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__send_songs_to_iriver);
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__separator3);
 #endif  /* HAVE_IFP */
 
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__rva);
+        gtk_menu_item_set_submenu(GTK_MENU_ITEM(plist__rva), plist__rva_menu);
+        gtk_menu_shell_append(GTK_MENU_SHELL(plist__rva_menu), plist__rva_separate);
+        gtk_menu_shell_append(GTK_MENU_SHELL(plist__rva_menu), plist__rva_average);
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__reread_file_meta);
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__separator2);
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__fileinfo);
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__search);
 

@@ -86,6 +86,7 @@
 
 
 extern options_t options;
+extern GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 
 GtkWidget * fi_event_box;
 
@@ -610,10 +611,13 @@ append_table_pic(GtkWidget * table, int * cnt, GtkWidget * image,
 	gtk_box_pack_start(GTK_BOX(hbox_i), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_i, FALSE, FALSE, 3);
 
-	GtkWidget * button = gtk_button_new_with_label(_("Save to file..."));
+        GtkWidget * hbuttonbox = gtk_hbutton_box_new();
+        gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
+        GtkWidget * button = gui_stock_label_button(_("Save to file..."), GTK_STOCK_SAVE);
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), button);   
 	g_signal_connect(G_OBJECT(button), "clicked",
 			 G_CALLBACK(save_pic_button_pressed), (gpointer)save_pic);
-	gtk_box_pack_end(GTK_BOX(vbox), button, FALSE, FALSE, 3);
+	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, FALSE, 3);  
 
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 3);
 	gtk_box_pack_end(GTK_BOX(hbox), image, FALSE, FALSE, 3);
@@ -908,7 +912,10 @@ build_simple_page(save_basic_t * save_basic, TagLib::Tag * tag, int * cnt, GtkWi
 	}
 
 	if (edit_mode) {
-		GtkWidget * button = gtk_button_new_with_label(_("Save basic fields"));
+                GtkWidget * hbuttonbox = gtk_hbutton_box_new();
+                gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
+                GtkWidget * button = gui_stock_label_button(_("Save basic fields"), GTK_STOCK_SAVE);
+  	        gtk_container_add(GTK_CONTAINER(hbuttonbox), button);   
 		savepage_data_t * sdata = savepage_data_new();
 		trashlist_add(fileinfo_trash, sdata);
 		sdata->save_page_no = page_id;
@@ -916,7 +923,7 @@ build_simple_page(save_basic_t * save_basic, TagLib::Tag * tag, int * cnt, GtkWi
 		g_signal_connect(G_OBJECT(button), "clicked",
 				 G_CALLBACK(save_basic_fields), (gpointer)sdata);
 		gtk_table_resize(GTK_TABLE(table), *cnt + 1, 3);
-		gtk_table_attach(GTK_TABLE(table), button, 1, 3, *cnt, *cnt + 1, GTK_FILL, GTK_FILL, 5, 3);
+		gtk_table_attach(GTK_TABLE(table), hbuttonbox, 1, 3, *cnt, *cnt + 1, GTK_FILL, GTK_FILL, 5, 3);
 		(*cnt)++;
 	}
 	return page_id;
@@ -1472,7 +1479,8 @@ build_tag_buttons(save_basic_t * save_basic) {
 	hbox = save_basic->hbox_inner;
 
 	if (save_basic->flags & REMOVE_ID3v1) {
-		button = gtk_button_new_with_label(_("Remove ID3v1"));
+                button = gui_stock_label_button(_("Remove ID3v1"), GTK_STOCK_REMOVE);
+
 		gtk_widget_show(button);
 		tdata = tagbutton_data_new();
 		trashlist_add(fileinfo_trash, tdata);
@@ -1483,7 +1491,7 @@ build_tag_buttons(save_basic_t * save_basic) {
 		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 3);
 	}
 	if (save_basic->flags & CREATE_ID3v2) {
-		button = gtk_button_new_with_label(_("Create ID3v2"));
+                button = gui_stock_label_button(_("Create ID3v2"), GTK_STOCK_ADD);
 		gtk_widget_show(button);
 		tdata = tagbutton_data_new();
 		trashlist_add(fileinfo_trash, tdata);
@@ -1494,7 +1502,7 @@ build_tag_buttons(save_basic_t * save_basic) {
 		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 3);
 	}
 	if (save_basic->flags & REMOVE_ID3v2) {
-		button = gtk_button_new_with_label(_("Remove ID3v2"));
+                button = gui_stock_label_button(_("Remove ID3v2"), GTK_STOCK_REMOVE);
 		gtk_widget_show(button);
 		tdata = tagbutton_data_new();
 		trashlist_add(fileinfo_trash, tdata);
@@ -1505,7 +1513,7 @@ build_tag_buttons(save_basic_t * save_basic) {
 		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 3);
 	}
 	if (save_basic->flags & CREATE_APE) {
-		button = gtk_button_new_with_label(_("Create APE"));
+                button = gui_stock_label_button(_("Create APE"), GTK_STOCK_ADD);
 		gtk_widget_show(button);
 		tdata = tagbutton_data_new();
 		trashlist_add(fileinfo_trash, tdata);
@@ -1516,7 +1524,7 @@ build_tag_buttons(save_basic_t * save_basic) {
 		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 3);
 	}
 	if (save_basic->flags & REMOVE_APE) {
-		button = gtk_button_new_with_label(_("Remove APE"));
+                button = gui_stock_label_button(_("Remove APE"), GTK_STOCK_REMOVE);
 		gtk_widget_show(button);
 		tdata = tagbutton_data_new();
 		trashlist_add(fileinfo_trash, tdata);
@@ -1695,7 +1703,7 @@ gboolean
 fi_cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_data) {
 
 	if (event->type == GDK_BUTTON_PRESS && event->button == 1) { /* LMB ? */
-                display_zoomed_cover(fi_event_box, (gchar *) user_data);
+                display_zoomed_cover(info_window, fi_event_box, (gchar *) user_data);
         }
         return TRUE;
 }    
@@ -1717,7 +1725,6 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	GtkWidget * hbox_path;
 	GtkWidget * label_path;
 	GtkWidget * entry_path;
-	GtkWidget * hbuttonbox;
 	GtkWidget * dismiss_btn;
 	GtkWidget * fi_cover_image_area;
 
@@ -1817,7 +1824,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
         display_cover(fi_cover_image_area, fi_event_box, 48, 48, file, FALSE, TRUE);
 
 	hbox_tagbuttons = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_tagbuttons, FALSE, FALSE, 5);
+	gtk_box_pack_end(GTK_BOX(vbox), hbox_tagbuttons, FALSE, FALSE, 5);
 
 	nb = gtk_notebook_new();
 	gtk_box_pack_start(GTK_BOX(vbox), nb, TRUE, TRUE, 5);
@@ -1960,13 +1967,10 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
 	gtk_widget_grab_focus(nb);
 
-	hbuttonbox = gtk_hbutton_box_new();
-	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, FALSE, 0);
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
-
         dismiss_btn = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
 	g_signal_connect(dismiss_btn, "clicked", G_CALLBACK(dismiss), (gpointer)meta);
-  	gtk_container_add(GTK_CONTAINER(hbuttonbox), dismiss_btn);   
+        gtk_widget_set_size_request(dismiss_btn, 80, -1);
+	gtk_box_pack_end(GTK_BOX(hbox_tagbuttons), dismiss_btn, FALSE, FALSE, 3);
 
 	gtk_widget_show_all(info_window);
 
@@ -2064,8 +2068,11 @@ GtkWidget *mod_channels_label;
 GtkWidget *mod_patterns_label;
 GtkWidget *mod_samples_label;
 GtkWidget *mod_instruments_label;
-GtkWidget *hseparator;
-GtkWidget *hbox;
+GtkWidget *vseparator;
+GtkWidget *hbox2;
+GtkWidget *hbox3;
+GtkWidget *vbox2;
+GtkWidget *vbox3;
 GtkWidget *samples_radiobutton = NULL;
 GtkWidget *instruments_radiobutton = NULL;
 GSList *samples_radiobutton_group = NULL;
@@ -2074,13 +2081,22 @@ GtkWidget *scrolledwindow;
 GtkCellRenderer *renderer;
 GtkTreeViewColumn *column;
 
+
+        hbox2 = gtk_hbox_new (FALSE, 0);
+        gtk_widget_show (hbox2);
+        gtk_box_pack_start (GTK_BOX (vbox), hbox2, TRUE, TRUE, 0);
+
+        vbox2 = gtk_hbox_new (FALSE, 0);
+        gtk_widget_show (vbox2);
+        gtk_box_pack_start (GTK_BOX (hbox2), vbox2, FALSE, FALSE, 0);
+
         if (mdi->instruments) {
 
-                table = gtk_table_new (2, 6, FALSE);
+                table = gtk_table_new (5, 2, FALSE);
                 gtk_widget_show (table);
-                gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
+                gtk_box_pack_start (GTK_BOX (vbox2), table, FALSE, FALSE, 0);
                 gtk_container_set_border_width (GTK_CONTAINER (table), 8);
-                gtk_table_set_row_spacings (GTK_TABLE (table), 4);
+                gtk_table_set_row_spacings (GTK_TABLE (table), 6);
                 gtk_table_set_col_spacings (GTK_TABLE (table), 4);
 
                 label = gtk_label_new (_("Type:"));
@@ -2098,55 +2114,53 @@ GtkTreeViewColumn *column;
 
                 label = gtk_label_new (_("Channels:"));
                 gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 2, 3, 0, 1,
+                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
-                gtk_widget_set_size_request (label, 150, -1);
                 gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
 
                 mod_channels_label = gtk_label_new ("");
                 gtk_widget_show (mod_channels_label);
-                gtk_table_attach (GTK_TABLE (table), mod_channels_label, 3, 4, 0, 1,
+                gtk_table_attach (GTK_TABLE (table), mod_channels_label, 1, 2, 1, 2,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
 
                 label = gtk_label_new (_("Patterns:"));
                 gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 4, 5, 0, 1,
+                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 2, 3,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
-                gtk_widget_set_size_request (label, 150, -1);
                 gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
 
                 mod_patterns_label = gtk_label_new ("");
                 gtk_widget_show (mod_patterns_label);
-                gtk_table_attach (GTK_TABLE (table), mod_patterns_label, 5, 6, 0, 1,
+                gtk_table_attach (GTK_TABLE (table), mod_patterns_label, 1, 2, 2, 3,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
 
                 label = gtk_label_new (_("Samples:"));
                 gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
+                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 3, 4,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
                 gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
 
                 mod_samples_label = gtk_label_new ("");
                 gtk_widget_show (mod_samples_label);
-                gtk_table_attach (GTK_TABLE (table), mod_samples_label, 1, 2, 1, 2,
+                gtk_table_attach (GTK_TABLE (table), mod_samples_label, 1, 2, 3, 4,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
 
                 label = gtk_label_new (_("Instruments:"));
                 gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 2, 3, 1, 2,
+                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 4, 5,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
                 gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
 
                 mod_instruments_label = gtk_label_new ("");
                 gtk_widget_show (mod_instruments_label);
-                gtk_table_attach (GTK_TABLE (table), mod_instruments_label, 3, 4, 1, 2,
+                gtk_table_attach (GTK_TABLE (table), mod_instruments_label, 1, 2, 4, 5,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
 
@@ -2155,9 +2169,9 @@ GtkTreeViewColumn *column;
 
         } else {
 
-                table = gtk_table_new (1, 8, FALSE);
+                table = gtk_table_new (4, 2, FALSE);
                 gtk_widget_show (table);
-                gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
+                gtk_box_pack_start (GTK_BOX (vbox2), table, FALSE, FALSE, 0);
                 gtk_container_set_border_width (GTK_CONTAINER (table), 8);
                 gtk_table_set_row_spacings (GTK_TABLE (table), 4);
                 gtk_table_set_col_spacings (GTK_TABLE (table), 4);
@@ -2177,43 +2191,40 @@ GtkTreeViewColumn *column;
 
                 label = gtk_label_new (_("Channels:"));
                 gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 2, 3, 0, 1,
+                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
-                gtk_widget_set_size_request (label, 110, -1);
                 gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
 
                 mod_channels_label = gtk_label_new ("");
                 gtk_widget_show (mod_channels_label);
-                gtk_table_attach (GTK_TABLE (table), mod_channels_label, 3, 4, 0, 1,
+                gtk_table_attach (GTK_TABLE (table), mod_channels_label, 1, 2, 1, 2,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
 
                 label = gtk_label_new (_("Patterns:"));
                 gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 4, 5, 0, 1,
+                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 2, 3,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
-                gtk_widget_set_size_request (label, 110, -1);
                 gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
 
                 mod_patterns_label = gtk_label_new ("");
                 gtk_widget_show (mod_patterns_label);
-                gtk_table_attach (GTK_TABLE (table), mod_patterns_label, 5, 6, 0, 1,
+                gtk_table_attach (GTK_TABLE (table), mod_patterns_label, 1, 2, 2, 3,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
 
                 label = gtk_label_new (_("Samples:"));
                 gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 6, 7, 0, 1,
+                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 3, 4,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
-                gtk_widget_set_size_request (label, 110, -1);
                 gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
 
                 mod_samples_label = gtk_label_new ("");
                 gtk_widget_show (mod_samples_label);
-                gtk_table_attach (GTK_TABLE (table), mod_samples_label, 7, 8, 0, 1,
+                gtk_table_attach (GTK_TABLE (table), mod_samples_label, 1, 2, 3, 4,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
         }
@@ -2235,19 +2246,23 @@ GtkTreeViewColumn *column;
         sprintf(temp, "%d", mdi->samples);
         gtk_label_set_text (GTK_LABEL(mod_samples_label), temp);
 
-        hseparator = gtk_hseparator_new ();
-        gtk_widget_show (hseparator);
-        gtk_box_pack_start (GTK_BOX (vbox), hseparator, FALSE, FALSE, 2);
+        vseparator = gtk_vseparator_new ();
+        gtk_widget_show (vseparator);
+        gtk_box_pack_start (GTK_BOX (hbox2), vseparator, FALSE, FALSE, 4);
+
+        vbox3 = gtk_vbox_new (FALSE, 0);
+        gtk_widget_show (vbox3);
+        gtk_box_pack_start (GTK_BOX (hbox2), vbox3, TRUE, TRUE, 0);
 
         if (mdi->instruments) {
 
-                hbox = gtk_hbox_new (FALSE, 0);
-                gtk_widget_show (hbox);
-                gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+                hbox3 = gtk_hbox_new (FALSE, 0);
+                gtk_widget_show (hbox3);
+                gtk_box_pack_start (GTK_BOX (vbox3), hbox3, FALSE, FALSE, 0);
 
                 samples_radiobutton = gtk_radio_button_new_with_mnemonic (NULL, _("Samples"));
                 gtk_widget_show (samples_radiobutton);
-                gtk_box_pack_start (GTK_BOX (hbox), samples_radiobutton, FALSE, TRUE, 0);
+                gtk_box_pack_end (GTK_BOX (hbox3), samples_radiobutton, FALSE, TRUE, 0);
                 gtk_container_set_border_width (GTK_CONTAINER (samples_radiobutton), 4);
                 gtk_radio_button_set_group (GTK_RADIO_BUTTON (samples_radiobutton), samples_radiobutton_group);
                 samples_radiobutton_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (samples_radiobutton));
@@ -2256,7 +2271,7 @@ GtkTreeViewColumn *column;
 
                 instruments_radiobutton = gtk_radio_button_new_with_mnemonic (NULL, _("Instruments"));
                 gtk_widget_show (instruments_radiobutton);
-                gtk_box_pack_start (GTK_BOX (hbox), instruments_radiobutton, FALSE, TRUE, 0);
+                gtk_box_pack_end (GTK_BOX (hbox3), instruments_radiobutton, FALSE, TRUE, 0);
                 gtk_container_set_border_width (GTK_CONTAINER (instruments_radiobutton), 4);
                 gtk_radio_button_set_group (GTK_RADIO_BUTTON (instruments_radiobutton), samples_radiobutton_group);
                 samples_radiobutton_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (instruments_radiobutton));
@@ -2268,13 +2283,14 @@ GtkTreeViewColumn *column;
         gtk_widget_set_size_request (scrolledwindow, -1, 220);
         gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), 
                                         GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-        gtk_box_pack_start (GTK_BOX (vbox), scrolledwindow, TRUE, TRUE, 0);
+        gtk_box_pack_end (GTK_BOX (vbox3), scrolledwindow, TRUE, TRUE, 0);
         gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
 
         smp_instr_list_store = gtk_list_store_new(2, 
                                         G_TYPE_STRING,
                                         G_TYPE_STRING);
         smp_instr_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(smp_instr_list_store));
+	gtk_widget_set_name(smp_instr_list, "samples_instruments_list");
         gtk_widget_show (smp_instr_list);
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes(_("No."), renderer, "text", 0, NULL);

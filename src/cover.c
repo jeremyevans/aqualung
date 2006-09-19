@@ -226,7 +226,7 @@ cover_window_close_cb(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 
 void 
-display_zoomed_cover(GtkWidget *event_area, gchar *song_filename) {
+display_zoomed_cover(GtkWidget *window, GtkWidget *event_area, gchar *song_filename) {
 
         GtkWidget * image_area;
         gint size;
@@ -244,7 +244,7 @@ display_zoomed_cover(GtkWidget *event_area, gchar *song_filename) {
                 gtk_window_set_position(GTK_WINDOW(cover_window), GTK_WIN_POS_MOUSE);
 	        gtk_widget_set_events(cover_window, GDK_BUTTON_PRESS_MASK);
                	gtk_window_set_modal(GTK_WINDOW(cover_window), TRUE);
-        	gtk_window_set_transient_for(GTK_WINDOW(cover_window), GTK_WINDOW(main_window));
+        	gtk_window_set_transient_for(GTK_WINDOW(cover_window), GTK_WINDOW(window));
                 gtk_window_set_decorated(GTK_WINDOW(cover_window), FALSE);
 
                 image_area = gtk_image_new();

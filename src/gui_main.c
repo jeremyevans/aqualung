@@ -3047,7 +3047,7 @@ cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_d
                                 gtk_tree_path_free(p);
                                 if (is_file_loaded) {
                                         gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &title_str, -1);
-                                        display_zoomed_cover(c_event_box, title_str);
+                                        display_zoomed_cover(main_window, c_event_box, title_str);
                                         g_free(title_str);
                                 }
                         }

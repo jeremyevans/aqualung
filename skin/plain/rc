@@ -171,10 +171,10 @@ widget "*TreeView*" style "view"
 widget "*TextView*" style "view"
 widget "*List*" style "view"
 
-widget "*Notebook*" style "button"
 widget "*Scrollbar*" style "scrollbar"
 widget "*Separator*" style "scrollbar"
 widget "*Progress*" style "progressbar"
+widget "*Notebook*" style "button"
 
 widget "*OptionMenu*" style "button"
 widget "*Menu*" style "menu"
@@ -334,4 +334,21 @@ widget "*plugin_maker" style "plugin_maker"
 widget "*plugin_bypass_button*" style "plugin_bypass_button"
 widget "*plugin_scale" style "plugin_scale"
 widget "*plugin_toggled" style "plugin_toggled"
+
+# --- mod info list
+
+style "samples_instruments_list"
+{
+	font_name = "Monospace 10"
+
+	base[SELECTED] = "#e8e8de"
+	base[ACTIVE] = "#e8e8de"
+	fg[NORMAL] = "#e8e8de"
+	fg[SELECTED] = "#e8e8de"
+
+	text[SELECTED] = "#000000"
+	text[ACTIVE] = "#000000"
+}
+
+widget "*samples_instruments_list" style "samples_instruments_list"
 

@@ -71,6 +71,7 @@ gint scroll_btn_pressed(GtkWidget * widget, GdkEventButton * event);
 gint scroll_btn_released(GtkWidget * widget, GdkEventButton * event, gpointer * win);
 gint scroll_motion_notify(GtkWidget * widget, GdkEventMotion * event, gpointer * win);
 
+GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 
 #ifdef __cplusplus
 } /* extern "C" */

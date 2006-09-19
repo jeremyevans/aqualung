@@ -322,3 +322,14 @@ widget "*plugin_maker" style "plugin_maker"
 widget "*plugin_bypass_button*" style "plugin_bypass_button"
 widget "*plugin_scale" style "plugin_scale"
 widget "*plugin_toggled" style "plugin_toggled"
+
+# --- mod info list
+
+style "samples_instruments_list"
+{
+	font_name = "Monospace 10"
+}
+
+widget "*samples_instruments_list" style "samples_instruments_list"
+
+

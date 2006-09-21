@@ -146,7 +146,7 @@ typedef struct _decoder_t {
 #define DECODER_OPEN_FERROR  2
 
 
-int is_valid_extension(char ** valid_extensions, char * filename);
+int is_valid_extension(char ** valid_extensions, char * filename, int module);
 
 file_decoder_t * file_decoder_new(void);
 void file_decoder_delete(file_decoder_t * fdec);

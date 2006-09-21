@@ -71,23 +71,57 @@ decoder_init_t * decoder_init_v[N_DECODERS] = {
 
 /* utility function used by some decoders to check file extension */
 int
-is_valid_extension(char ** valid_extensions, char * filename) {
+is_valid_extension(char ** valid_extensions, char * filename, int module) {
 
-	int i = 0;
-	char * c = NULL;
+	int i;
+	char * c = NULL, * d = NULL;
+        char *ext;
 
-	if ((c = strrchr(filename, '.')) == NULL) {
-		return 0;
+        /* post ext */
+        i = 0;
+
+	if ((c = strrchr(filename, '.')) != NULL) {
+
+                ++c;
+
+                while (valid_extensions[i] != NULL) {
+
+                        if (strcasecmp(c, valid_extensions[i]) == 0) {
+                                return 1;
+                        }
+                        ++i;
+                }
 	}
-	++c;
 
-	while (valid_extensions[i] != NULL) {
+        if (module) {      /* checking mod pre file extension */
+                           /* lots of amiga modules has EXT.NAME filename format */
 
-		if (strcasecmp(c, valid_extensions[i]) == 0) {
-			return 1;
-		}
-		++i;
-	}
+                /* pre ext */
+                i = 0;
+                ext = strdup(filename);
+
+                if (ext && (c = strrchr(ext, '/')) != NULL) {
+
+                        ++c;
+
+                        if ((d = strchr(ext, '.')) != NULL) {
+
+                                *d = '\0';
+
+                                while (valid_extensions[i] != NULL) {
+
+                                        if (strcasecmp(c, valid_extensions[i]) == 0) {
+                                                free(ext);
+                                                return 1;
+                                        }
+                                        ++i;
+                                }
+                        }
+                }
+
+                free(ext);
+        }
+
 	return 0;
 }
 

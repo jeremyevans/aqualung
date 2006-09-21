@@ -52,6 +52,10 @@ typedef struct _mod_pdata_t {
 } mod_pdata_t;
 #endif /* HAVE_MOD */
 
+enum {
+    GZ = 0,
+    BZ2
+};
 
 decoder_t * mod_decoder_init(file_decoder_t * fdec);
 #ifdef HAVE_MOD

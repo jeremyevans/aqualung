@@ -5401,6 +5401,27 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
         gtk_file_chooser_add_filter(fc, filter);
 #endif /* HAVE_MOD */
 
+#if defined(HAVE_MOD) && (defined(HAVE_LIBZ) || defined(HAVE_LIBBZ2))
+        filter = gtk_file_filter_new();
+#if defined(HAVE_LIBZ) && defined(HAVE_LIBBZ2)
+        gtk_file_filter_set_name(filter, _("Compressed modules (*.gz, *.bz2)")); 
+#elif defined(HAVE_LIBZ)
+        gtk_file_filter_set_name(filter, _("Compressed modules (*.gz)")); 
+#elif defined(HAVE_LIBBZ2)
+        gtk_file_filter_set_name(filter, _("Compressed modules (*.bz2)")); 
+#endif /* HAVE_LIBZ, HAVE_LIBBZ2 */
+
+#ifdef HAVE_LIBZ
+        gtk_file_filter_add_pattern(filter, "*.[gG][zZ]");
+        gtk_file_filter_add_pattern(filter_all, "*.[gG][zZ]");
+#endif /* HAVE_LIBZ */
+#ifdef HAVE_LIBBZ2
+        gtk_file_filter_add_pattern(filter, "*.[bB][zZ]2");
+        gtk_file_filter_add_pattern(filter_all, "*.[bB][zZ]2");
+#endif /* HAVE_LIBBZ2 */
+        gtk_file_chooser_add_filter(fc, filter);
+#endif /* (HAVE_MOD && HAVE LIBZ) */
+
 }
 
 

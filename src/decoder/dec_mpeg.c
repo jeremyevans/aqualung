@@ -1095,7 +1095,7 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	int i;
 	struct stat exp_stat;
 
-	if (!is_valid_extension(valid_extensions_mpeg, filename)) {
+	if (!is_valid_extension(valid_extensions_mpeg, filename, 0)) {
 #ifdef MPEG_DEBUG
 		printf("invalid extension of %s\n", filename);
 #endif /* MPEG_DEBUG */

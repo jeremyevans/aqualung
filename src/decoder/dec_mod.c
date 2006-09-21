@@ -23,13 +23,22 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <limits.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "dec_mod.h"
+#ifdef HAVE_LIBZ
+#include <zlib.h>
+#endif /* HAVE_LIBZ */
 
+#ifdef HAVE_LIBBZ2
+#include <bzlib.h>
+#endif /* HAVE_LIBBZ2 */
+
+#include "dec_mod.h"
 
 extern size_t sample_size;
 
@@ -43,6 +52,137 @@ char * valid_extensions_mod[] = {
 	"ptm", "s3m", "stm", "ult", "umx", "xm", NULL
 };
 
+#if defined(HAVE_LIBZ) || defined(HAVE_LIBBZ2)
+
+char unpacked_filename[PATH_MAX];
+
+char *
+unpack_file (char *filename, int type) {
+
+char *pos, *c;
+int i, len;
+char buffer[16384];
+#ifdef HAVE_LIBZ
+gzFile *gz_input_file = NULL;
+#endif /* HAVE_LIBZ */
+#ifdef HAVE_LIBBZ2
+BZFILE *bz2_input_file = NULL;
+#endif /* HAVE_LIBBZ2 */
+FILE *output_file;
+
+    unpacked_filename[0] = '\0';
+
+    if ((type == GZ || type == BZ2) && (pos = strrchr(filename, '.')) != NULL) {
+        pos++;
+
+        if (type == GZ) {
+
+            if (strcasecmp(pos, "gz") != 0) {
+                return NULL;
+            }
+
+        } else {
+
+            if (strcasecmp(pos, "bz2") != 0) {
+                return NULL;
+            }
+        }
+
+        strncat(unpacked_filename, "/tmp/", PATH_MAX-1);
+
+        i = 5;      /* strlen("/tmp/") */
+
+        if ((c = strrchr(filename, '/')) != NULL) {
+            c++;
+
+            while (c != pos-1) {
+                unpacked_filename[i++] = *c;
+                *c++;
+            }
+        }
+
+        unpacked_filename[i] = '\0';
+
+        if (type == GZ) {
+
+#ifdef HAVE_LIBZ
+            if ((gz_input_file = gzopen (filename, "r")) == NULL) {
+                return NULL;
+            }
+#endif /* HAVE_LIBZ */
+
+        } else {
+
+#ifdef HAVE_LIBBZ2
+            if ((bz2_input_file = BZ2_bzopen (filename, "r")) == NULL) {
+                return NULL;
+            }
+#endif /* HAVE_LIBBZ2 */
+        }
+
+        if ((output_file = fopen (unpacked_filename, "w")) == NULL) {
+            return NULL;
+        }
+
+        while (1) {
+
+            if (type == GZ) {
+#ifdef HAVE_LIBZ
+                len = gzread(gz_input_file, buffer, sizeof(buffer));
+#endif /* HAVE_LIBZ */
+            } else {
+#ifdef HAVE_LIBBZ2
+                len = BZ2_bzread(bz2_input_file, buffer, sizeof(buffer));
+#endif /* HAVE_LIBBZ2 */
+            }
+
+            if (len < 0) {
+                return NULL;
+            }
+            if (len == 0) break;
+
+            if ((int)fwrite(buffer, 1, (unsigned)len, output_file) != len) {
+                return NULL;
+            }
+        }
+
+        if (fclose(output_file)) {
+            return NULL;
+        }
+
+        if (type == GZ) {
+#ifdef HAVE_LIBZ
+            if (gzclose(gz_input_file) != Z_OK){
+                return NULL;
+            }
+#endif /* HAVE_LIBZ */
+        } else {
+#ifdef HAVE_LIBBZ2
+            BZ2_bzclose(bz2_input_file);
+#endif /* HAVE_LIBBZ2 */
+        }
+
+        return unpacked_filename;
+
+    } else {
+
+        return NULL;
+    }
+}
+
+int
+remove_unpacked_file (void) {
+
+    if (unpacked_filename[0]) {
+        unlink (unpacked_filename);
+        return 1;
+    }
+
+    return 0;
+}
+
+#endif /* HAVE_LIBZ && HAVE_LIBBZ2 */
+
 
 /* return 1 if reached end of stream, 0 else */
 int
@@ -55,7 +195,6 @@ decode_mod(decoder_t * dec) {
 	long bytes_read;
         float fbuffer[MOD_BUFSIZE/2];
         char buffer[MOD_BUFSIZE];
-
 
         if ((bytes_read = ModPlug_Read(pd->mpf, buffer, MOD_BUFSIZE)) > 0) {
                 for (i = 0; i < bytes_read/2; i++) {
@@ -107,15 +246,30 @@ mod_decoder_destroy(decoder_t * dec) {
 
 int
 is_valid_mod_extension(char * filename) {
-	return is_valid_extension(valid_extensions_mod, filename);
+	return is_valid_extension(valid_extensions_mod, filename, 1);
 }
 
 int
-mod_decoder_open(decoder_t * dec, char * filename) {
+mod_decoder_open(decoder_t * dec, char * mod_filename) {
+
+char *filename = NULL;
 
 	mod_pdata_t * pd = (mod_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
-	
+
+#ifdef HAVE_LIBZ	
+        filename = unpack_file(mod_filename, GZ);
+#endif /* HAVE_LIBZ */
+
+#ifdef HAVE_LIBBZ2	
+        if (filename == NULL) {
+                filename = unpack_file(mod_filename, BZ2);
+        }
+#endif /* HAVE_LIBBZ2 */
+
+        if (filename == NULL) {
+                filename = mod_filename;
+        }
 
 	if (!is_valid_mod_extension(filename)) {
 		return DECODER_OPEN_BADLIB;
@@ -144,21 +298,6 @@ mod_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_FERROR;
 	}
 
-	/* set libmodplug decoder parameters */
-	pd->mp_settings.mFlags = MODPLUG_ENABLE_OVERSAMPLING | MODPLUG_ENABLE_NOISE_REDUCTION;
-	pd->mp_settings.mChannels = 2;
-	pd->mp_settings.mBits = 16;
-	pd->mp_settings.mFrequency = 44100;
-	pd->mp_settings.mResamplingMode = MODPLUG_RESAMPLE_FIR;
-	pd->mp_settings.mReverbDepth = 100;
-	pd->mp_settings.mReverbDelay = 100;
-	pd->mp_settings.mBassAmount = 100;
-	pd->mp_settings.mBassRange = 100;
-	pd->mp_settings.mSurroundDepth = 100;
-	pd->mp_settings.mSurroundDelay = 40;
-	pd->mp_settings.mLoopCount = 0;
-
-	ModPlug_SetSettings(&(pd->mp_settings));
 	if ((pd->mpf = ModPlug_Load(pd->fdm, pd->st.st_size)) == NULL) {
 		if (munmap(pd->fdm, pd->st.st_size) == -1)
 			fprintf(stderr, "Error while munmap()'ing MOD Audio file mapping\n");
@@ -178,6 +317,22 @@ mod_decoder_open(decoder_t * dec, char * filename) {
 		close(pd->fd);
 		return DECODER_OPEN_BADLIB;
 	}
+
+        /* set libmodplug decoder parameters */
+	pd->mp_settings.mFlags = MODPLUG_ENABLE_OVERSAMPLING | MODPLUG_ENABLE_NOISE_REDUCTION;
+        pd->mp_settings.mChannels = 2;
+	pd->mp_settings.mBits = 16;
+	pd->mp_settings.mFrequency = 44100;
+	pd->mp_settings.mResamplingMode = MODPLUG_RESAMPLE_FIR;
+	pd->mp_settings.mReverbDepth = 100;
+	pd->mp_settings.mReverbDelay = 100;
+	pd->mp_settings.mBassAmount = 100;
+	pd->mp_settings.mBassRange = 100;
+	pd->mp_settings.mSurroundDepth = 100;
+	pd->mp_settings.mSurroundDelay = 40;
+	pd->mp_settings.mLoopCount = 0;
+
+	ModPlug_SetSettings(&(pd->mp_settings));
 	
 	pd->is_eos = 0;
 	pd->rb = rb_create(pd->mp_settings.mChannels * sample_size * RB_MOD_SIZE);
@@ -201,7 +356,12 @@ mod_decoder_close(decoder_t * dec) {
 	mod_pdata_t * pd = (mod_pdata_t *)dec->pdata;
 
 	ModPlug_Unload(pd->mpf);
-	if (munmap(pd->fdm, pd->st.st_size) == -1)
+
+#if defined(HAVE_LIBZ) || defined(HAVE_LIBBZ2)
+        remove_unpacked_file();
+#endif /* HAVE_LIBZ, HAVE_LIBBZ2 */
+
+        if (munmap(pd->fdm, pd->st.st_size) == -1)
 		fprintf(stderr, "Error while munmap()'ing MOD Audio file mapping\n");
 	close(pd->fd);
 	rb_free(pd->rb);
@@ -215,7 +375,6 @@ mod_decoder_read(decoder_t * dec, float * dest, int num) {
 
 	unsigned int numread = 0;
 	unsigned int n_avail = 0;
-
 
 	while ((rb_read_space(pd->rb) <
 		num * pd->mp_settings.mChannels * sample_size) && (!pd->is_eos)) {

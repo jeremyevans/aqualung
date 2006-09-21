@@ -102,6 +102,19 @@ AC_CHECK_LIB(dl,
 	[AC_MSG_ERROR(You do not appear to have a usable interface to the dynamic linking loader.)])
 fi
 
+z_LIBS=""
+AC_CHECK_LIB(z,	gzopen, [lib=yes], [lib=no])
+if test "$lib" = "yes"; then
+    z_LIBS="-lz"
+    AC_DEFINE([HAVE_LIBZ], [1], [Defined if compile with libz])
+fi
+
+bz2_LIBS=""
+AC_CHECK_LIB(bz2, BZ2_bzopen, [lib=yes], [lib=no])
+if test "$lib" = "yes"; then
+    bz2_LIBS="-lbz2"
+    AC_DEFINE([HAVE_LIBBZ2], [1], [Defined if compile with libbz2])
+fi
 
 # Checks for libraries.
 AC_MSG_CHECKING(whether GTK+ version >= 2.6)
@@ -621,7 +634,7 @@ AQUALUNG_DATADIR="-DAQUALUNG_DATADIR=\\\"$datadir/aqualung\\\""
 CFLAGS="$BUILD_CFLAGS -Wall $PLATFORM_CFLAGS $AQUALUNG_SKINDIR $AQUALUNG_LOCALEDIR $AQUALUNG_DATADIR -D_GNU_SOURCE"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $taglib_CFLAGS"
-LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $taglib_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS"
+LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $taglib_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS"
 
 
 AC_OUTPUT([Makefile \

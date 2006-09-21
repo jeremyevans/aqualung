@@ -1073,10 +1073,32 @@ playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 	int use_meta = 0;
 	gchar * substr;
 
+#if defined(HAVE_MOD) && (defined(HAVE_LIBZ) || defined(HAV_LIBBZ2))
+        gchar * pos;
+#endif /* (HAVE_MOD && (HAVE_LIBZ || HAVE_LIBBZ2)) */
+
 #ifdef HAVE_MOD
         if (is_valid_mod_extension(physical_name)) {
                 composit = 0;
         }
+
+#ifdef HAVE_LIBZ	
+        if ((pos = strrchr(physical_name, '.')) != NULL) {
+                pos++;
+
+                if (!strcasecmp(pos, "gz")) {
+                    composit = 0;
+                }
+
+#ifdef HAVE_LIBBZ2
+                if (!strcasecmp(pos, "bz2")) {
+                    composit = 0;
+                }
+#endif /* HAVE LIBBZ2 */
+
+        }
+#endif /* HAVE LIBZ */
+
 #endif /* HAVE_MOD */
 
 	playlist_filemeta * plfm = calloc(1, sizeof(playlist_filemeta));

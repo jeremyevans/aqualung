@@ -2239,7 +2239,6 @@ GtkTreeViewColumn *column;
 
         gtk_label_set_text (GTK_LABEL(mod_type_label), a_type[i]);
         sprintf(temp, "%d", mdi->channels);
-
         gtk_label_set_text (GTK_LABEL(mod_channels_label), temp);
         sprintf(temp, "%d", mdi->patterns);
         gtk_label_set_text (GTK_LABEL(mod_patterns_label), temp);

@@ -312,6 +312,7 @@ meta_read(metadata * meta, char * file) {
 		mod_info * mi = modinfo_new();
                 
 		mi->title = strdup(ModPlug_GetName(pd->mpf));
+                cut_trailing_whitespace(mi->title);
                 mi->active = 1;
 #ifdef HAVE_MOD_INFO
                 mi->type = ModPlug_GetModuleType(pd->mpf);

@@ -2574,7 +2574,6 @@ You have to do two things prior to using RVA in Aqualung.
 \begin_layout Standard
 When you are done with this, open the `Settings' dialog (right-click almost
  anywhere in the main window), and select the `Playback RVA' notebook page.
- You will see something like this: 
 \end_layout
 
 \begin_layout Standard
@@ -2659,9 +2658,14 @@ CDDB Support
 \end_layout
 
 \begin_layout Standard
-This feature is available by right-clicking on an existing record in the
- Music Store.
- It starts a CDDB query for the record (which can last a bit long if there
+Aqualung supports retrieving matches from a CDDB database, as well as submitting
+ new records or updating existing ones.
+ The features are available by right-clicking on a record in the Music Store
+ and choosing the appropriate menu item.
+\end_layout
+
+\begin_layout Standard
+The CDDB query option starts a query (which can last a bit long if there
  are a lot of matches), and displays a dialog with the search results.
  It tends to work even if you have already encoded your audio files in a
  lossy format.
@@ -2677,32 +2681,6 @@ If there are multiple matches, you can select any of them using the combo
 \end_layout
 
 \begin_layout Standard
-The default CDDB database server address is 
-\begin_inset ERT
-status collapsed
-
-\begin_layout Standard
-
-
-\backslash
-href{http://www.freedb.org}{freedb.org}
-\end_layout
-
-\end_inset
-
-.
- You can specify another server on the Settings/CDDB page.
- The connection timeout and the protocol (CDDBP or HTTP) can also be set
- there.
-\end_layout
-
-\begin_layout Standard
-Instead of connecting directly to the CDDB server you can use an HTTP proxy.
- This case you have to specify the proxy server address and port on the
- Settings/CDDB page (the protocol will be HTTP).
-\end_layout
-
-\begin_layout Standard
 By pressing the `OK' button the track names of the currently selected lookup
  results will be propagated into the Music Store.
  The artist name and record title are not automatically set, but can be
@@ -2713,6 +2691,62 @@ By pressing the `OK' button the track names of the currently selected lookup
  button next to the appropriate text entry.
 \end_layout
 
+\begin_layout Standard
+The CDDB submission option brings up a dialog which contains the artist,
+ title, year, category, genre and extended data fields, and the tracklist.
+ All fields (including track names) are editable.
+ The artist, title, year and category fields are mandatory, the genre and
+ extended data are optional.
+ Track names should be all set as well.
+ If you are about to update or correct an existing CDDB record, make sure
+ that you choose the same category as the existing record has (this information
+ can be retrieved via a CDDB query).
+ You are also recommended to comply with the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+href{http://freedb.org/modules.php?name=Sections&sop=viewarticle&artid=26#2-2}{nam
+ing rules}
+\end_layout
+
+\end_inset
+
+ when submitting new records.
+\end_layout
+
+\begin_layout Standard
+The default CDDB database server address is 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+href{http://freedb.org}{freedb.org}
+\end_layout
+
+\end_inset
+
+.
+ You can specify another server on the Settings/CDDB page.
+ The connection timeout and the protocol (CDDBP or HTTP) can also be set
+ there.
+ You will also have to give a valid email address for CDDB submission.
+ Should your submission be rejected for some reason, you will receive a
+ note about the failure to this address.
+\end_layout
+
+\begin_layout Standard
+Instead of connecting directly to the CDDB server you can use an HTTP proxy.
+ This case you have to specify the proxy server address and port on the
+ Settings/CDDB page (the protocol will be HTTP).
+\end_layout
+
 \begin_layout Subsubsection
 Shortcuts for this window
 \end_layout
@@ -2720,7 +2754,7 @@ Shortcuts for this window
 \begin_layout Standard
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="13" columns="2">
+<lyxtabular version="3" rows="14" columns="2">
 <features>
 <column alignment="center" valignment="top" leftline="true" width="0">
 <column alignment="block" valignment="top" leftline="true" rightline="true" width="10cm">
@@ -3208,6 +3242,26 @@ expand/collapse current row non-recursively
 \begin_inset Text
 
 \begin_layout Standard
+w, W
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+collapse all rows
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
 
 \family roman
 \series medium
@@ -3387,7 +3441,7 @@ Shortcuts for this window
 \begin_layout Standard
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="11" columns="2">
+<lyxtabular version="3" rows="13" columns="2">
 <features>
 <column alignment="center" valignment="top" leftline="true" width="0">
 <column alignment="block" valignment="top" leftline="true" rightline="true" width="10cm">
@@ -3579,7 +3633,27 @@ insert
 \begin_inset Text
 
 \begin_layout Standard
-open `Add Files' dialog
+add files
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+SHIFT+insert
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+add directory
 \end_layout
 
 \end_inset
@@ -3660,6 +3734,26 @@ a, A
 
 \begin_layout Standard
 scroll list to show active track
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+w, W
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+collapse all nodes
 \end_layout
 
 \end_inset

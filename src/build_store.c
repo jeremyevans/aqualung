@@ -99,7 +99,7 @@ volatile int write_data_locked = 0;
 GtkTreeIter store_iter;
 GtkTreeIter artist_iter;
 int artist_iter_is_set = 0;
-int artist_name_is_set = 0;
+map_t * artist_name_map = NULL;
 
 GtkWidget * build_prog_window = NULL;
 GtkWidget * prog_cancel_button;
@@ -2127,19 +2127,9 @@ write_data_to_store(gpointer data) {
 
 		char * low1 = g_utf8_strdown(record->artist_d_name, -1);
 		char * low2 = g_utf8_strdown(record->artist, -1);
-		int diff = strcmp(low1, low2);
-
-		g_free(low1);
-		g_free(low2);
 
 		if (artist_iter_is_set) {
 			result = artist_get_iter_for_record(&artist_iter, &record_iter, record);
-
-			if (!artist_name_is_set && diff) {
-				gtk_tree_store_set(music_store, &artist_iter,
-						   0, record->artist, -1);
-				artist_name_is_set = 1;
-			}
 		} else {
 			result = store_get_iter_for_artist_and_record(&store_iter,
 								      &artist_iter,
@@ -2147,10 +2137,19 @@ write_data_to_store(gpointer data) {
 								      record);
 			artist_iter_is_set = 1;
 
-			if (diff) {
-				artist_name_is_set = 1;
-			}
+			gtk_tree_store_set(music_store, &artist_iter, 0, record->artist, -1);
 		}
+
+		if (strcmp(low1, low2)) {
+			char * max = NULL;
+			map_put(&artist_name_map, record->artist);
+			max = map_get_max(artist_name_map);
+			gtk_tree_store_set(music_store, &artist_iter, 0, max, -1);
+		}
+
+		g_free(low1);
+		g_free(low2);
+
 	} else {
 		result = artist_get_iter_for_record(&artist_iter, &record_iter, record);
 	}
@@ -2254,7 +2253,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	record.artist_sort_name[0] = '\0';
 	record.record_sort_name[0] = '\0';
 
-	record.artist_valid = artist_name_is_set;
+	record.artist_valid = 0;
 	record.record_valid = 0;
 	record.year_valid = 0;
 
@@ -2543,7 +2542,6 @@ build_artist_thread(void * arg) {
 	char artist_d_name[MAXLEN];
 
 	artist_iter_is_set = 1;
-	artist_name_is_set = 1;
 
 	i = strlen(root);
 	while (root[--i] != '/');
@@ -2591,7 +2589,6 @@ build_store_thread(void * arg) {
 		}
 
 		artist_iter_is_set = 0;
-		artist_name_is_set = 0;
 
 		for (j = 0; j < scandir(dir_artist, &ent_record, filter, alphasort); j++) {
 
@@ -2610,6 +2607,9 @@ build_store_thread(void * arg) {
 
 			process_record(dir_record, ent_artist[i]->d_name, ent_record[j]->d_name);
 		}
+
+		map_free(artist_name_map);
+		artist_name_map = NULL;
 	}
 
 	g_idle_add(finish_build, NULL);

@@ -85,6 +85,39 @@ cut_trailing_whitespace(char * str) {
 }
 
 
+#ifdef HAVE_MOD
+void
+mod_name_filter(char *str) {
+
+        char buffer[MAXLEN];
+        int n, k, f, len;
+
+        strncpy(buffer, str, MAXLEN-1);
+
+        k = f = n = 0;
+        len = strlen(buffer);
+
+        while (buffer[n] == ' ' || buffer[n] == '\t' ||
+               buffer[n] == '_' || buffer[n] == '.') {
+                n++;
+        }
+
+        for(; n < len; n++) {
+                if (isprint(buffer[n])) {
+                        if (buffer[n] == '_' || buffer[n] == '.') {
+                                buffer[n] = ' ';
+                        }
+                        str[k++] = buffer[n];
+                        f = 1;
+                }
+        }
+
+        if (f) {
+                str[k] = '\0';
+        }
+}
+#endif /* HAVE_MOD */
+
 /* fills in descr based on frameID, ret 1 if found, 0 else */
 int
 lookup_id3v2_textframe(char * frameID, char * descr) {
@@ -312,7 +345,7 @@ meta_read(metadata * meta, char * file) {
 		mod_info * mi = modinfo_new();
                 
 		mi->title = strdup(ModPlug_GetName(pd->mpf));
-                cut_trailing_whitespace(mi->title);
+		mod_name_filter(mi->title);
                 mi->active = 1;
 #ifdef HAVE_MOD_INFO
                 mi->type = ModPlug_GetModuleType(pd->mpf);
@@ -415,8 +448,9 @@ meta_free(metadata * meta) {
 #ifdef HAVE_MOD
 	mi = meta->mod_root;
         if(mi != NULL) {
-                if(mi->title)                   
+                if(mi->title != NULL) {                   
                         free(mi->title);
+                }
                 free(mi);
         }
 #endif /* HAVE_MOD */

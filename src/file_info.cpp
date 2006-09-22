@@ -2070,7 +2070,6 @@ GtkWidget *mod_samples_label;
 GtkWidget *mod_instruments_label;
 GtkWidget *vseparator;
 GtkWidget *hbox2;
-GtkWidget *hbox3;
 GtkWidget *vbox2;
 GtkWidget *vbox3;
 GtkWidget *samples_radiobutton = NULL;
@@ -2086,7 +2085,7 @@ GtkTreeViewColumn *column;
         gtk_widget_show (hbox2);
         gtk_box_pack_start (GTK_BOX (vbox), hbox2, TRUE, TRUE, 0);
 
-        vbox2 = gtk_hbox_new (FALSE, 0);
+        vbox2 = gtk_vbox_new (FALSE, 0);
         gtk_widget_show (vbox2);
         gtk_box_pack_start (GTK_BOX (hbox2), vbox2, FALSE, FALSE, 0);
 
@@ -2166,6 +2165,32 @@ GtkTreeViewColumn *column;
 
                 sprintf(temp, "%d", mdi->instruments);
                 gtk_label_set_text (GTK_LABEL(mod_instruments_label), temp);
+
+
+                table = gtk_table_new (2, 1, FALSE);
+                gtk_widget_show (table);
+                gtk_box_pack_end (GTK_BOX (vbox2), table, FALSE, FALSE, 0);
+                gtk_container_set_border_width (GTK_CONTAINER (table), 8);
+                gtk_table_set_row_spacings (GTK_TABLE (table), 4);
+
+                samples_radiobutton = gtk_radio_button_new_with_mnemonic (NULL, _("Samples"));
+                gtk_widget_show (samples_radiobutton);
+                gtk_table_attach (GTK_TABLE (table), samples_radiobutton, 0, 1, 0, 1,
+                                  (GtkAttachOptions) (GTK_FILL | GTK_EXPAND),
+                                  (GtkAttachOptions) (0), 0, 0);
+                gtk_radio_button_set_group (GTK_RADIO_BUTTON (samples_radiobutton), samples_radiobutton_group);
+                samples_radiobutton_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (samples_radiobutton));
+		g_signal_connect(G_OBJECT(samples_radiobutton), "toggled",
+				 G_CALLBACK(radio_buttons_cb), NULL);
+
+                instruments_radiobutton = gtk_radio_button_new_with_mnemonic (NULL, _("Instruments"));
+                gtk_widget_show (instruments_radiobutton);
+                gtk_table_attach (GTK_TABLE (table), instruments_radiobutton, 0, 1, 1, 2,
+                                  (GtkAttachOptions) (GTK_FILL),
+                                  (GtkAttachOptions) (0), 0, 0);
+                gtk_radio_button_set_group (GTK_RADIO_BUTTON (instruments_radiobutton), samples_radiobutton_group);
+                samples_radiobutton_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (instruments_radiobutton));
+
 
         } else {
 
@@ -2252,29 +2277,6 @@ GtkTreeViewColumn *column;
         vbox3 = gtk_vbox_new (FALSE, 0);
         gtk_widget_show (vbox3);
         gtk_box_pack_start (GTK_BOX (hbox2), vbox3, TRUE, TRUE, 0);
-
-        if (mdi->instruments) {
-
-                hbox3 = gtk_hbox_new (FALSE, 0);
-                gtk_widget_show (hbox3);
-                gtk_box_pack_start (GTK_BOX (vbox3), hbox3, FALSE, FALSE, 0);
-
-                samples_radiobutton = gtk_radio_button_new_with_mnemonic (NULL, _("Samples"));
-                gtk_widget_show (samples_radiobutton);
-                gtk_box_pack_end (GTK_BOX (hbox3), samples_radiobutton, FALSE, TRUE, 0);
-                gtk_container_set_border_width (GTK_CONTAINER (samples_radiobutton), 4);
-                gtk_radio_button_set_group (GTK_RADIO_BUTTON (samples_radiobutton), samples_radiobutton_group);
-                samples_radiobutton_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (samples_radiobutton));
-		g_signal_connect(G_OBJECT(samples_radiobutton), "toggled",
-				 G_CALLBACK(radio_buttons_cb), NULL);
-
-                instruments_radiobutton = gtk_radio_button_new_with_mnemonic (NULL, _("Instruments"));
-                gtk_widget_show (instruments_radiobutton);
-                gtk_box_pack_end (GTK_BOX (hbox3), instruments_radiobutton, FALSE, TRUE, 0);
-                gtk_container_set_border_width (GTK_CONTAINER (instruments_radiobutton), 4);
-                gtk_radio_button_set_group (GTK_RADIO_BUTTON (instruments_radiobutton), samples_radiobutton_group);
-                samples_radiobutton_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (instruments_radiobutton));
-        }
 
         scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
         gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow), 4);

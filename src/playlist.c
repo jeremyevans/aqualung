@@ -3330,12 +3330,14 @@ show_active_position_in_playlist(void) {
 
 		} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter));
 
-                if (flag) {
-                        visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
-                        gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
-                        gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (play_list), visible_path,
-                                                      NULL, TRUE, 0.3, 0.0);
+                if (!flag) {
+                        gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, 0);
                 }
+
+                visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
+                gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
+                gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (play_list), visible_path,
+                                              NULL, TRUE, 0.3, 0.0);
         }
 }
 

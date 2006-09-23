@@ -52,10 +52,13 @@
 #include "i18n.h"
 #include "options.h"
 #include "decoder/file_decoder.h"
+#include "meta_decoder.h"
+
 #ifdef HAVE_MOD
 #include "decoder/dec_mod.h"
+
+extern char * valid_extensions_mod[];
 #endif /* HAVE_MOD */
-#include "meta_decoder.h"
 
 
 #define META_TITLE   1
@@ -116,6 +119,74 @@ mod_name_filter(char *str) {
                 str[k] = '\0';
         }
 }
+
+
+void
+mod_filename_filter(char *str, char **valid_extensions) {
+
+        char buffer[MAXLEN];
+        char *pos;
+        int i;
+
+        strncpy(buffer, str, MAXLEN-1);
+
+        if ((pos = strrchr(buffer, '/')) != NULL) {
+ 
+            pos++;
+            i = 0;
+ 
+            while(pos[i]) {
+                str[i] = pos[i];
+                i++;
+            }
+            str[i] = '\0';
+        }
+
+        if ((pos = strrchr(str, '.')) != NULL) {
+
+            if (strcasecmp(pos+1, "gz") == 0 || strcasecmp (pos+1, "bz2") == 0) {
+                *pos = '\0';
+            }
+        }
+
+        if ((pos = strrchr(str, '.')) != NULL) {
+ 
+            i = 0;           
+            while (valid_extensions[i] != NULL) {
+
+                    if (strcasecmp(pos+1, valid_extensions[i]) == 0) {
+                            *pos = '\0';
+                    }
+                    ++i;
+            }
+        }
+
+        strncpy(buffer, str, MAXLEN-1);
+
+        if ((pos = strchr(buffer, '.')) != NULL) {
+            *pos = '\0';
+
+            i = 0;           
+            while (valid_extensions[i] != NULL) {
+
+                if (strcasecmp(buffer, valid_extensions[i]) == 0) {
+
+                    *pos++;
+                    i = 0;
+
+                    while(pos[i] != '\0') {
+                        str[i] = pos[i];
+                        i++;
+                    }
+                    str[i] = '\0';
+                    break;
+                }
+                ++i;
+            }
+
+        }
+}
+
 #endif /* HAVE_MOD */
 
 /* fills in descr based on frameID, ret 1 if found, 0 else */
@@ -346,6 +417,14 @@ meta_read(metadata * meta, char * file) {
                 
 		mi->title = strdup(ModPlug_GetName(pd->mpf));
 		mod_name_filter(mi->title);
+
+                if (!strlen(mi->title)) {
+                        free(mi->title);
+                        mi->title = strdup(file);
+                        mod_filename_filter(mi->title, valid_extensions_mod);
+		        mod_name_filter(mi->title);
+                }
+
                 mi->active = 1;
 #ifdef HAVE_MOD_INFO
                 mi->type = ModPlug_GetModuleType(pd->mpf);
@@ -688,7 +767,7 @@ meta_get_title_mod(metadata * meta, char * str) {
 	mi = meta->mod_root;
         if (mi != NULL) {
 		if (str != NULL && mi->title != NULL) {
-			strncpy(str, (char *) mi->title, MAXLEN-1);
+       			strncpy(str, (char *) mi->title, MAXLEN-1);
 		}
 		return cut_trailing_whitespace(str);
         }

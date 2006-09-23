@@ -460,7 +460,7 @@ append_table(GtkWidget * table, int * cnt, int edit_mode, char * field, char * v
 	     char * importbtn_text, import_data_t * data) {
 
 	GtkWidget * hbox;
-	GtkWidget * entry;
+	GtkWidget * entry = NULL;
 	GtkWidget * label;
 
 	GtkWidget * button;
@@ -472,6 +472,7 @@ append_table(GtkWidget * table, int * cnt, int edit_mode, char * field, char * v
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, *cnt, *cnt+1, GTK_FILL, GTK_FILL, 5, 3);
 
+#ifdef HAVE_TAGLIB
 	if (edit_mode == EDITABLE_GENRE) {
 		entry = gtk_combo_box_new_text();
 		int selected = 0;
@@ -494,6 +495,7 @@ append_table(GtkWidget * table, int * cnt, int edit_mode, char * field, char * v
 		GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
 		gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 	}
+#endif /* HAVE_TAG_LIB */
 
 	if (importbtn_text == NULL) {
 		gtk_table_attach(GTK_TABLE(table), entry, 1, 3, *cnt, *cnt+1,

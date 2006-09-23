@@ -28,6 +28,7 @@
 #include <dirent.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkcursor.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "common.h"
 #include "cover.h"
@@ -63,7 +64,7 @@ gchar *
 get_song_path(gchar *song_filename) {
 
         static gchar song_path[PATH_MAX];
-        gint i;
+        gint i = 0;
         gchar *pos;
         
         if ((pos = strrchr(song_filename, '/'))) {
@@ -224,6 +225,15 @@ cover_window_close_cb(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	return TRUE;
 }
 
+gint
+cover_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
+
+	if (kevent->keyval == GDK_Escape) {
+                cover_window_close_cb(widget, NULL, NULL);
+		return TRUE;
+        }
+	return FALSE;
+}
 
 void 
 display_zoomed_cover(GtkWidget *window, GtkWidget *event_area, gchar *song_filename) {
@@ -241,6 +251,8 @@ display_zoomed_cover(GtkWidget *window, GtkWidget *event_area, gchar *song_filen
 		cover_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
                 g_signal_connect(G_OBJECT(cover_window), "button_press_event",
                                  G_CALLBACK(cover_window_close_cb), NULL);
+                g_signal_connect(G_OBJECT(cover_window), "key_press_event",
+                                 G_CALLBACK(cover_window_key_pressed), NULL);
                 gtk_window_set_position(GTK_WINDOW(cover_window), GTK_WIN_POS_MOUSE);
 	        gtk_widget_set_events(cover_window, GDK_BUTTON_PRESS_MASK);
                	gtk_window_set_modal(GTK_WINDOW(cover_window), TRUE);

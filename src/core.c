@@ -957,175 +957,233 @@ jack_shutdown(void * arg) {
 
 
 #ifdef HAVE_OSS
-void
-oss_init(thread_info_t * info) {
+/* return values:
+ *  0 : success
+ * -1 : device busy
+ * -N : unable to start with given params
+ */
+int
+oss_init(thread_info_t * info, int verbose) {
 
 	int ioctl_arg;
 	int ioctl_status;
 
         if (info->out_SR > MAX_SAMPLERATE) {
-                fprintf(stderr, "\nThe sample rate you set (%ld Hz) is higher than MAX_SAMPLERATE.\n",
-		       info->out_SR);
-                fprintf(stderr, "This is an arbitrary limit, which you may safely enlarge "
-                       "if you really need to.\n");
-                fprintf(stderr, "Currently MAX_SAMPLERATE = %d Hz.\n", MAX_SAMPLERATE);
-                exit(1);
+		if (verbose) {
+			fprintf(stderr, "\nThe sample rate you set (%ld Hz) is higher than MAX_SAMPLERATE.\n",
+				info->out_SR);
+			fprintf(stderr, "This is an arbitrary limit, which you may safely enlarge "
+				"if you really need to.\n");
+			fprintf(stderr, "Currently MAX_SAMPLERATE = %d Hz.\n", MAX_SAMPLERATE);
+		}
+                return -2;
         }
 
 	/* open dsp device */
 	info->fd_oss = open(device_name, O_WRONLY, 0);
 	if (info->fd_oss < 0) {
-		fprintf(stderr, "oss_init: open of %s ", device_name);
-		perror("failed");
-		exit(1);
+		if (verbose) {
+			fprintf(stderr, "oss_init: open of %s ", device_name);
+			perror("failed");
+		}
+		return -1;
 	}
 
 	ioctl_arg = 16; /* bitdepth */
 	ioctl_status = ioctl(info->fd_oss, SOUND_PCM_WRITE_BITS, &ioctl_arg);
 	if (ioctl_status == -1) {
-		perror("oss_init: SOUND_PCM_WRITE_BITS ioctl failed");
-		exit(1);
+		if (verbose) {
+			perror("oss_init: SOUND_PCM_WRITE_BITS ioctl failed");
+		}
+		return -3;
 	}
 	if (ioctl_arg != 16) {
-		perror("oss_init: unable to set sample size");
-		exit(1);
+		if (verbose) {
+			perror("oss_init: unable to set sample size");
+		}
+		return -4;
 	}
 
 	ioctl_arg = 2;  /* stereo */
 	ioctl_status = ioctl(info->fd_oss, SOUND_PCM_WRITE_CHANNELS, &ioctl_arg);
 	if (ioctl_status == -1) {
-		perror("oss_init: SOUND_PCM_WRITE_CHANNELS ioctl failed");
-		exit(1);
+		if (verbose) {
+			perror("oss_init: SOUND_PCM_WRITE_CHANNELS ioctl failed");
+		}
+		return -5;
 	}
 	if (ioctl_arg != 2) {
-		perror("oss_init: unable to set number of channels");
-		exit(1);
+		if (verbose) {
+			perror("oss_init: unable to set number of channels");
+		}
+		return -6;
 	}
 
 	ioctl_arg = info->out_SR;
 	ioctl_status = ioctl(info->fd_oss, SOUND_PCM_WRITE_RATE, &ioctl_arg);
 	if (ioctl_status == -1) {
-		perror("oss_init: SOUND_PCM_WRITE_RATE ioctl failed");
-		exit(1);
+		if (verbose) {
+			perror("oss_init: SOUND_PCM_WRITE_RATE ioctl failed");
+		}
+		return -7;
 	}
 	if (ioctl_arg != info->out_SR) {
-		fprintf(stderr, "oss_init: unable to set sample_rate to %ld\n", info->out_SR);
+		if (verbose) {
+			fprintf(stderr, "oss_init: unable to set sample_rate to %ld\n", info->out_SR);
+		}
+		return -8;
 	}
 
 	/* start OSS output thread */
 	AQUALUNG_THREAD_CREATE(info->oss_thread_id, NULL, oss_thread, info)
+
+	return 0;
 }
 #endif /* HAVE_OSS */
 
 
 
 #ifdef HAVE_ALSA
-void
-alsa_init(thread_info_t * info) {
+/* return values:
+ *  0 : success
+ * -1 : device busy
+ * -N : unable to start with given params
+ */
+int
+alsa_init(thread_info_t * info, int verbose) {
 
 	unsigned rate;
 	int dir = 0;
+	int ret;
 
 	info->stream = SND_PCM_STREAM_PLAYBACK;
 	snd_pcm_hw_params_alloca(&info->hwparams);
-	if (snd_pcm_open(&info->pcm_handle, info->pcm_name, info->stream, 0) < 0) {
-		fprintf(stderr, "alsa_init: error opening PCM device %s\n", info->pcm_name);
-		exit(1);
+	ret = snd_pcm_open(&info->pcm_handle, info->pcm_name, info->stream, SND_PCM_NONBLOCK);
+	if (ret < 0) {
+		if (verbose) {
+			fprintf(stderr, "alsa_init: error opening PCM device %s: %s\n",
+				info->pcm_name, snd_strerror(ret));
+		}
+		return -1;
+	}
+	snd_pcm_close(info->pcm_handle);
+
+	/* now that we know the device is available, open it in blocking mode */
+	/* this is not deadlock safe. */
+	ret = snd_pcm_open(&info->pcm_handle, info->pcm_name, info->stream, 0);
+	if (ret < 0) {
+		if (verbose) {
+			fprintf(stderr, "alsa_init: error reopening PCM device %s: %s\n",
+				info->pcm_name, snd_strerror(ret));
+		}
+		return -2;
 	}
 	
 	if (snd_pcm_hw_params_any(info->pcm_handle, info->hwparams) < 0) {
-		fprintf(stderr, "alsa_init: cannot configure this PCM device.\n");
-		exit(1);
+		if (verbose) {
+			fprintf(stderr, "alsa_init: cannot configure this PCM device.\n");
+		}
+		return -3;
 	}
 
 	if (snd_pcm_hw_params_set_periods_integer(info->pcm_handle, info->hwparams) < 0) {
-		fprintf(stderr, "alsa_init: cannot set period size to integer value.\n");
-		exit(1);
+		fprintf(stderr, "alsa_init warning: cannot set period size to integer value.\n");
 	}
 
 	if (snd_pcm_hw_params_set_access(info->pcm_handle, info->hwparams,
 					 SND_PCM_ACCESS_RW_INTERLEAVED) < 0) {
-		fprintf(stderr, "alsa_init: error setting access to SND_PCM_ACCESS_RW_INTERLEAVED.\n");
-		exit(1);
+		if (verbose) {
+			fprintf(stderr, "alsa_init: error setting access to SND_PCM_ACCESS_RW_INTERLEAVED.\n");
+		}
+		return -4;
 	}
   
 	info->is_output_32bit = 1;
 	if (snd_pcm_hw_params_set_format(info->pcm_handle, info->hwparams, SND_PCM_FORMAT_S32) < 0) {
-		fprintf(stderr, "alsa_init: unable to open 32 bit output, falling back to 16 bit...\n");
+		if (verbose) {
+			fprintf(stderr, "alsa_init: unable to open 32 bit output, falling back to 16 bit...\n");
+		}
 		if (snd_pcm_hw_params_set_format(info->pcm_handle, info->hwparams, SND_PCM_FORMAT_S16) < 0) {
-			fprintf(stderr, "alsa_init: unable to open 16 bit output, exiting.\n");
-			exit(1);
+			if (verbose) {
+				fprintf(stderr, "alsa_init: unable to open 16 bit output, exiting.\n");
+			}
+			return -5;
 		}
 		info->is_output_32bit = 0;
 	}
-
+	
 	rate = info->out_SR;
 	dir = 0;
 	if (snd_pcm_hw_params_set_rate_near(info->pcm_handle, info->hwparams, &rate, &dir) < 0) {
-		fprintf(stderr, "alsa_init: can't set sample rate to %u.\n", rate);
-		exit(1);
+		if (verbose) {
+			fprintf(stderr, "alsa_init: can't set sample rate to %u.\n", rate);
+		}
+		return -6;
 	}
 	
 	if (rate != info->out_SR) {
-		fprintf(stderr, "Requested sample rate (%ld Hz) cannot be set, ", info->out_SR);
-		fprintf(stderr, "using closest available rate (%d Hz).\n", rate);
+		if (verbose) {
+			fprintf(stderr, "Requested sample rate (%ld Hz) cannot be set, ", info->out_SR);
+			fprintf(stderr, "using closest available rate (%d Hz).\n", rate);
+		}
 		info->out_SR = rate;
 	}
 
 	if (snd_pcm_hw_params_set_channels(info->pcm_handle, info->hwparams, 2) < 0) {
-		fprintf(stderr, "alsa_init: error setting channels.\n");
-		exit(1);
+		if (verbose) {
+			fprintf(stderr, "alsa_init: error setting channels.\n");
+		}
+		return -7;
 	}
 
 	if (snd_pcm_hw_params_set_periods(info->pcm_handle, info->hwparams, nperiods, 0) < 0) {
-		fprintf(stderr, "alsa_init: error setting nperiods to %d.\n", nperiods);
-		exit(1);
+		if (verbose) {
+			fprintf(stderr, "alsa_init warning: error setting nperiods to %d.\n", nperiods);
+		}
 	}
   
 	if (snd_pcm_hw_params_set_buffer_size(info->pcm_handle, info->hwparams,
 					      (period * nperiods)>>2) < 0) {
-		fprintf(stderr, "alsa_init: error setting buffersize to %d.\n", (period * nperiods)>>2);
-		fprintf(stderr, "Parameters were: nperiods = %d, period = %d\n", nperiods, period);
-		exit(1);
+		if (verbose) {
+			fprintf(stderr, "alsa_init warning: failed setting buffersize to %d.\n", (period * nperiods)>>2);
+			fprintf(stderr, "Parameters were: nperiods = %d, period = %d\n", nperiods, period);
+		}
 	}
 
 	if (snd_pcm_hw_params(info->pcm_handle, info->hwparams) < 0) {
-		fprintf(stderr, "alsa_init: error setting HW params.\n");
-		exit(1);
+		if (verbose) {
+			fprintf(stderr, "alsa_init: error setting HW params.\n");
+		}
+		return -8;
 	}
+
+	return 0;
 }
 #endif /* HAVE_ALSA */
 
 
 #ifdef HAVE_JACK
-void
+/* return values:
+ *  0 : success
+ * -1 : couldn't connect to Jack
+ * -N : Jack sample rate (N) out of range
+ */
+int
 jack_init(thread_info_t * info) {
 
 	if (client_name == NULL)
 		client_name = strdup("aqualung");
 
 	if ((jack_client = jack_client_new(client_name)) == 0) {
-                fprintf(stderr, "\nAqualung couldn't connect to JACK.\n");
-                fprintf(stderr, "There are several possible reasons:\n"
-                        "\t1) JACK is not running.\n"
-                        "\t2) JACK is running as another user, perhaps root.\n"
-                        "\t3) There is already another client called '%s'. (Use the -c option!)\n",
-			client_name);
-                fprintf(stderr, "Please consider the possibilities, and perhaps (re)start JACK.\n");
-		exit(1);
+		return -1;
 	}
 
 	jack_set_process_callback(jack_client, process, info);
 	jack_on_shutdown(jack_client, jack_shutdown, info);
 
         if ((info->out_SR = jack_get_sample_rate(jack_client)) > MAX_SAMPLERATE) {
-                fprintf(stderr, "\nThe JACK sample rate (%ld Hz) is higher than MAX_SAMPLERATE.\n",
-		       info->out_SR);
-                fprintf(stderr, "This is an arbitrary limit, which you may safely enlarge "
-                       "if you really need to.\n");
-                fprintf(stderr, "Currently MAX_SAMPLERATE = %d Hz.\n", MAX_SAMPLERATE);
-                jack_client_close(jack_client);
-                exit(1);
+		jack_client_close(jack_client);
+                return -info->out_SR;
         }
         out_L_port = jack_port_register(jack_client, "out_L", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
         out_R_port = jack_port_register(jack_client, "out_R", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
@@ -1142,6 +1200,7 @@ jack_init(thread_info_t * info) {
 #ifdef HAVE_LADSPA
 	ladspa_buflen = jack_nframes;
 #endif /* HAVE_LADSPA */
+	return 0;
 }
 
 
@@ -1539,7 +1598,253 @@ load_default_cl(int * argc, char *** argv) {
 	
         return;
 }
+ 
+ 
+void
+print_version(void) {
 
+	fprintf(stderr,	"Aqualung -- Music player for GNU/Linux\n");
+	fprintf(stderr, "Build version: %s\n", aqualung_version);
+	fprintf(stderr,
+		"(C) 2004-2006 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
+		"This is free software, and you are welcome to redistribute it\n"
+		"under certain conditions; see the file COPYING for details.\n");
+	
+	fprintf(stderr, "\nThis Aqualung binary is compiled with:\n"
+		"\n\tFile format support:\n");
+	
+	fprintf(stderr, "\t\tsndfile (WAV, AIFF, etc.)           : ");
+#ifdef HAVE_SNDFILE
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_SNDFILE */
+	
+	fprintf(stderr, "\t\tFree Lossless Audio Codec (FLAC)    : ");
+#ifdef HAVE_FLAC
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_FLAC */
+	
+	fprintf(stderr, "\t\tOgg Vorbis                          : ");
+#ifdef HAVE_OGG_VORBIS
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_OGG_VORBIS */
+	
+	fprintf(stderr, "\t\tOgg Speex                           : ");
+#ifdef HAVE_SPEEX
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_SPEEX */
+	
+	fprintf(stderr, "\t\tMPEG Audio (MPEG 1-2.5 Layer I-III) : ");
+#ifdef HAVE_MPEG
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_MPEG */
+	
+	fprintf(stderr, "\t\tMOD Audio (MOD, S3M, XM, IT, etc.)  : ");
+#ifdef HAVE_MOD
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_MOD */
+	
+	fprintf(stderr, "\t\tMusepack                            : ");
+#ifdef HAVE_MPC
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_MPC */
+	
+	fprintf(stderr, "\t\tMonkey's Audio Codec                : ");
+#ifdef HAVE_MAC
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_MAC */
+	
+	fprintf(stderr, "\t\tMetadata (ID3, APE, Ogg comments)   : ");
+#ifdef HAVE_TAGLIB
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_TAGLIB */
+	
+	fprintf(stderr, "\n\tOutput driver support:\n");
+	
+	fprintf(stderr, "\t\tOSS Audio                           : ");
+#ifdef HAVE_OSS
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_OSS */
+	
+	fprintf(stderr, "\t\tALSA Audio                          : ");
+#ifdef HAVE_ALSA
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_ALSA */
+	
+	fprintf(stderr, "\t\tJACK Audio Server                   : ");
+#ifdef HAVE_JACK
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_JACK */
+	
+	fprintf(stderr, "\t\tWin32 Sound API                     : ");
+#ifdef _WIN32
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* _WIN32 */
+	
+	fprintf(stderr, "\n\tInternal Sample Rate Converter support      : ");
+#ifdef HAVE_SRC
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_SRC */
+	
+	fprintf(stderr, "\tLADSPA plugin support                       : ");
+#ifdef HAVE_LADSPA
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_LADSPA */
+	
+	fprintf(stderr, "\tCDDB support                                : ");
+#ifdef HAVE_CDDB
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_CDDB */
+	
+	fprintf(stderr, "\tiRiver iFP driver support                   : ");
+#ifdef HAVE_IFP
+	fprintf(stderr, "yes\n\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_IFP */
+	
+	fprintf(stderr, "\tSystray support                             : ");
+#ifdef HAVE_SYSTRAY
+	fprintf(stderr, "yes\n\n");
+#else
+	fprintf(stderr, "no\n\n");
+#endif /* HAVE_SYSTRAY */
+}
+
+
+void
+print_usage(void) {
+
+	fprintf(stderr,	"Aqualung -- Music player for GNU/Linux\n");
+	fprintf(stderr, "Build version: %s\n", aqualung_version);
+	fprintf(stderr,
+		"(C) 2004-2006 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
+		"This is free software, and you are welcome to redistribute it\n"
+		"under certain conditions; see the file COPYING for details.\n");
+	
+	fprintf(stderr,
+		"\nInvocation:\n"
+		"aqualung --help\n"
+		"aqualung --version\n"
+		"aqualung [--output (oss|alsa|jack|win32)] [options] [file1 [file2 ...]]\n"
+		
+		"\nGeneral options:\n"
+		"-D, --disk-realtime: Try to use realtime (SCHED_FIFO) scheduling for disk thread.\n"
+		"-Y, --disk-priority <int>: When running -D, set scheduler priority to <int> (defaults to 1).\n"
+		
+		"\nOptions relevant to ALSA output:\n"
+		"-d, --device <name>: Set the output device (defaults to plughw:0,0).\n"
+		"-p, --period <int>: Set ALSA period size (defaults to 8192).\n"
+		"-n, --nperiods <int>: Specify the number of periods in hardware buffer (defaults to 2).\n"
+		"-r, --rate <int>: Set the output sample rate.\n"
+		"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for ALSA output thread.\n"
+		"-P, --priority <int>: When running -R, set scheduler priority to <int> (defaults to 1).\n"
+		
+		"\nOptions relevant to OSS output:\n"
+		"-d, --device <name>: Set the output device (defaults to /dev/dsp).\n"
+		"-r, --rate <int>: Set the output sample rate.\n"
+		
+		"\nOptions relevant to JACK output:\n"
+		"-a[<port_L>,<port_R>], --auto[=<port_L>,<port_R>]: Auto-connect output ports to\n"
+		"given JACK ports (defaults to first two hardware playback ports).\n"
+		"-c, --client <name>: Set client name (needed if you want to run multiple instances of the program).\n"
+		
+		"\nOptions relevant to WIN32 output:\n"
+		"-r, --rate <int>: Set the output sample rate.\n"
+		
+		"\nOptions relevant to the Sample Rate Converter:\n"
+		"-s[<int>], --srctype[=<int>]: Choose the SRC type, or print the list of available\n"
+		"types if no number given. The default is SRC type 4 (Linear Interpolator).\n"
+		
+		"\nOptions for remote cue control:\n"
+		"-N, --session <int>: Number of Aqualung instance to control.\n"
+		"-B, --back: Jump to previous track.\n"
+		"-F, --fwd: Jump to next track.\n"
+		"-L, --play: Start playing.\n"
+		"-U, --pause: Pause playback, or resume if already paused.\n"
+		"-T, --stop: Stop playback.\n"
+		"-V, --volume [m|M]|[=]<val>: Set, adjust or mute volume.\n"
+		"-Q, --quit: Terminate remote instance.\n"
+		
+		"Note that these options default to the 0-th instance when no -N option is given,\n"
+		"except for -L which defaults to the present instance (so as to be able to start\n"
+		"playback immediately from the command line).\n"
+		
+		"\nOptions for file loading:\n"
+		"-E, --enqueue: Don't clear the contents of the playlist when adding new items.\n"
+		
+		"\nIf you don't specify a session number via --session, the files will be opened by "
+		"the new\ninstance, otherwise they will be sent to the already running instance you "
+		"specify.\n"
+		
+		"\nOptions for changing state of Playlist/Music Store windows:\n"
+		"-l [yes, no], --show-pl=yes, no: Show/hide playlist window.\n"
+		"-m [yes, no], --show-ms=yes, no: Show/hide music store window.\n"
+		
+		"\nExamples:\n"
+		"$ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2\n"
+		"$ aqualung --srctype=1 --output oss --rate 96000\n"
+		"$ aqualung -o jack -a -E `find ./ledzeppelin/ -name \"*.flac\"`\n");
+	
+	fprintf(stderr, 
+		"\nDepending on the compile-time options, not all file formats\n"
+		"and output drivers may be usable. Type aqualung -v to get a\n"
+		"list of all the compiled-in features.\n\n");
+}
+
+
+void
+print_jack_failed_connection(void) {
+
+	fprintf(stderr, "\nAqualung couldn't connect to JACK.\n");
+	fprintf(stderr, "There are several possible reasons:\n"
+		"\t1) JACK is not running.\n"
+		"\t2) JACK is running as another user, perhaps root.\n"
+		"\t3) There is already another client called '%s'. (Use the -c option!)\n",
+		client_name);
+	fprintf(stderr, "Please consider the possibilities, and perhaps (re)start JACK.\n");
+}
+
+
+void
+print_jack_SR_out_of_range(int SR) {
+
+	fprintf(stderr, "\nThe JACK sample rate (%d Hz) is higher than MAX_SAMPLERATE.\n", SR);
+	fprintf(stderr, "This is an arbitrary limit, which you may safely enlarge "
+		"if you really need to.\n");
+	fprintf(stderr, "Currently MAX_SAMPLERATE = %d Hz.\n", MAX_SAMPLERATE);
+}
 
 
 int
@@ -1610,6 +1915,8 @@ main(int argc, char ** argv) {
 
 		{ 0, 0, 0, 0 }
 	};
+
+	int auto_driver_found = 0;
 
 
 #ifdef _WIN32
@@ -1882,150 +2189,16 @@ main(int argc, char ** argv) {
 	}
 	
 	if (show_version) {
-		fprintf(stderr,	"Aqualung -- Music player for GNU/Linux\n");
-		fprintf(stderr, "Build version: %s\n", aqualung_version);
-		fprintf(stderr,
-			"(C) 2004-2006 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
-			"This is free software, and you are welcome to redistribute it\n"
-			"under certain conditions; see the file COPYING for details.\n");
-
-		fprintf(stderr, "\nThis Aqualung binary is compiled with:\n"
-			"\n\tFile format support:\n");
-
-		fprintf(stderr, "\t\tsndfile (WAV, AIFF, etc.)           : ");
-#ifdef HAVE_SNDFILE
-		fprintf(stderr, "yes\n");
-#else
-		fprintf(stderr, "no\n");
-#endif /* HAVE_SNDFILE */
-
-		fprintf(stderr, "\t\tFree Lossless Audio Codec (FLAC)    : ");
-#ifdef HAVE_FLAC
-		fprintf(stderr, "yes\n");
-#else
-		fprintf(stderr, "no\n");
-#endif /* HAVE_FLAC */
-
-		fprintf(stderr, "\t\tOgg Vorbis                          : ");
-#ifdef HAVE_OGG_VORBIS
-		fprintf(stderr, "yes\n");
-#else
-		fprintf(stderr, "no\n");
-#endif /* HAVE_OGG_VORBIS */
-
-		fprintf(stderr, "\t\tOgg Speex                           : ");
-#ifdef HAVE_SPEEX
-		fprintf(stderr, "yes\n");
-#else
-		fprintf(stderr, "no\n");
-#endif /* HAVE_SPEEX */
-
-		fprintf(stderr, "\t\tMPEG Audio (MPEG 1-2.5 Layer I-III) : ");
-#ifdef HAVE_MPEG
-		fprintf(stderr, "yes\n");
-#else
-		fprintf(stderr, "no\n");
-#endif /* HAVE_MPEG */
-
-                fprintf(stderr, "\t\tMOD Audio (MOD, S3M, XM, IT, etc.)  : ");
-#ifdef HAVE_MOD
-                fprintf(stderr, "yes\n");
-#else
-                fprintf(stderr, "no\n");
-#endif /* HAVE_MOD */
-
-                fprintf(stderr, "\t\tMusepack                            : ");
-#ifdef HAVE_MPC
-                fprintf(stderr, "yes\n");
-#else
-                fprintf(stderr, "no\n");
-#endif /* HAVE_MPC */
-
-                fprintf(stderr, "\t\tMonkey's Audio Codec                : ");
-#ifdef HAVE_MAC
-                fprintf(stderr, "yes\n");
-#else
-                fprintf(stderr, "no\n");
-#endif /* HAVE_MAC */
-
-                fprintf(stderr, "\t\tMetadata (ID3, APE, Ogg comments)   : ");
-#ifdef HAVE_TAGLIB
-                fprintf(stderr, "yes\n");
-#else
-                fprintf(stderr, "no\n");
-#endif /* HAVE_TAGLIB */
-
-		fprintf(stderr, "\n\tOutput driver support:\n");
-
-		fprintf(stderr, "\t\tOSS Audio                           : ");
-#ifdef HAVE_OSS
-		fprintf(stderr, "yes\n");
-#else
-		fprintf(stderr, "no\n");
-#endif /* HAVE_OSS */
-
-		fprintf(stderr, "\t\tALSA Audio                          : ");
-#ifdef HAVE_ALSA
-		fprintf(stderr, "yes\n");
-#else
-		fprintf(stderr, "no\n");
-#endif /* HAVE_ALSA */
-
-		fprintf(stderr, "\t\tJACK Audio Server                   : ");
-#ifdef HAVE_JACK
-		fprintf(stderr, "yes\n");
-#else
-		fprintf(stderr, "no\n");
-#endif /* HAVE_JACK */
-
-		fprintf(stderr, "\t\tWin32 Sound API                     : ");
-#ifdef _WIN32
-		fprintf(stderr, "yes\n");
-#else
-		fprintf(stderr, "no\n");
-#endif /* _WIN32 */
-
-		fprintf(stderr, "\n\tInternal Sample Rate Converter support      : ");
-#ifdef HAVE_SRC
-		fprintf(stderr, "yes\n");
-#else
-		fprintf(stderr, "no\n");
-#endif /* HAVE_SRC */
-
-		fprintf(stderr, "\tLADSPA plugin support                       : ");
-#ifdef HAVE_LADSPA
-		fprintf(stderr, "yes\n");
-#else
-		fprintf(stderr, "no\n");
-#endif /* HAVE_LADSPA */
-
-		fprintf(stderr, "\tCDDB support                                : ");
-#ifdef HAVE_CDDB
-		fprintf(stderr, "yes\n");
-#else
-		fprintf(stderr, "no\n");
-#endif /* HAVE_CDDB */
-
-		fprintf(stderr, "\tiRiver iFP driver support                   : ");
-#ifdef HAVE_IFP
-		fprintf(stderr, "yes\n\n");
-#else
-		fprintf(stderr, "no\n");
-#endif /* HAVE_IFP */
-
-		fprintf(stderr, "\tSystray support                             : ");
-#ifdef HAVE_SYSTRAY
-		fprintf(stderr, "yes\n\n");
-#else
-		fprintf(stderr, "no\n\n");
-#endif /* HAVE_SYSTRAY */
-
+		print_version();
 		close_app_socket();
 		exit(1);
 	}
 
-	if (show_usage)
-		goto show_usage_;
+	if (show_usage) {
+		print_usage();
+		close_app_socket();
+		exit(1);
+	}
 
 
 	if (back) {
@@ -2149,91 +2322,101 @@ main(int argc, char ** argv) {
 	}
 #endif /* _WIN32 */
 
- show_usage_:
-	if (show_usage || (output == 0)) {
-		fprintf(stderr,	"Aqualung -- Music player for GNU/Linux\n");
-		fprintf(stderr, "Build version: %s\n", aqualung_version);
+
+	memset(&thread_info, 0, sizeof(thread_info));
+
+#ifdef HAVE_JACK
+	if ((output != JACK_DRIVER) && (rate == 0)) {
+		rate = 44100;
+	}
+#else
+	if (rate == 0) {
+		rate = 44100;
+	}
+#endif /* HAVE_JACK */
+
+	/* try to find a suitable output driver */
+	if (output == 0) {
+		printf("No output driver specified, probing for a usable driver.\n");
+	}
+#ifdef HAVE_JACK
+	if (output == 0) {
+		int ret;
+
+		/* probe Jack */
+		printf("Probing JACK driver... ");
+		ret = jack_init(&thread_info);
+		if (ret == -1) {
+			printf("JACK server not found\n");
+		} else if (ret < 0) {
+			printf("Output samplerate (%d Hz) out of range\n", -ret);
+		} else {
+			output = JACK_DRIVER;
+			rate = thread_info.out_SR;
+			auto_driver_found = 1;
+			printf("OK\n");
+		}
+	}
+#endif /* HAVE_JACK */
+#ifdef HAVE_ALSA
+	if (output == 0) { /* probe ALSA */
+		int ret;
+
+		printf("Probing ALSA driver... ");
+
+		period = 8192;
+		nperiods = 2;
+		device_name = strdup("plughw:0,0");
+
+		thread_info.out_SR = rate;
+		thread_info.pcm_name = strdup(device_name);
+
+		ret = alsa_init(&thread_info, 0);
+		if (ret == -1) {
+			printf("device busy\n");			
+		} else if (ret < 0) {
+			printf("unable to start with default params\n");
+		} else {
+			output = ALSA_DRIVER;
+			auto_driver_found = 1;
+			printf("OK\n");
+		}
+	}
+#endif /* HAVE_ALSA */
+#ifdef HAVE_OSS
+	if (output == 0) { /* probe OSS */
+		int ret;
+
+		printf("Probing OSS driver... ");
+
+		device_name = strdup("/dev/dsp");
+		thread_info.out_SR = rate;
+
+		ret = oss_init(&thread_info, 0);
+		if (ret == -1) {
+			printf("device busy\n");			
+		} else if (ret < 0) {
+			printf("unable to start with default params\n");
+		} else {
+			output = OSS_DRIVER;
+			auto_driver_found = 1;
+			printf("OK\n");
+		}
+	}
+#endif /* HAVE_OSS */
+
+	/* if no output driver was found, give up and exit */
+	if (output == 0) {
 		fprintf(stderr,
-			"(C) 2004-2006 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
-			"This is free software, and you are welcome to redistribute it\n"
-			"under certain conditions; see the file COPYING for details.\n");
-
-		fprintf(stderr,
-			"\nInvocation:\n"
-			"aqualung --output (oss|alsa|jack|win32) [options] [file1 [file2 ...]]\n"
-			"aqualung --help\n"
-			"aqualung --version\n"
-
-			"\nGeneral options:\n"
-			"-D, --disk-realtime: Try to use realtime (SCHED_FIFO) scheduling for disk thread.\n"
-			"-Y, --disk-priority <int>: When running -D, set scheduler priority to <int> (defaults to 1).\n"
-
-			"\nOptions relevant to ALSA output:\n"
-			"-d, --device <name>: Set the output device (defaults to plughw:0,0).\n"
-			"-p, --period <int>: Set ALSA period size (defaults to 8192).\n"
-			"-n, --nperiods <int>: Specify the number of periods in hardware buffer (defaults to 2).\n"
-			"-r, --rate <int>: Set the output sample rate.\n"
-			"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for ALSA output thread.\n"
-			"-P, --priority <int>: When running -R, set scheduler priority to <int> (defaults to 1).\n"
-
-			"\nOptions relevant to OSS output:\n"
-			"-d, --device <name>: Set the output device (defaults to /dev/dsp).\n"
-			"-r, --rate <int>: Set the output sample rate.\n"
-			
-			"\nOptions relevant to JACK output:\n"
-			"-a[<port_L>,<port_R>], --auto[=<port_L>,<port_R>]: Auto-connect output ports to\n"
-			"given JACK ports (defaults to first two hardware playback ports).\n"
-			"-c, --client <name>: Set client name (needed if you want to run multiple instances of the program).\n"
-
-			"\nOptions relevant to WIN32 output:\n"
-			"-r, --rate <int>: Set the output sample rate.\n"
-			
-			"\nOptions relevant to the Sample Rate Converter:\n"
-			"-s[<int>], --srctype[=<int>]: Choose the SRC type, or print the list of available\n"
-			"types if no number given. The default is SRC type 4 (Linear Interpolator).\n"
-
-			"\nOptions for remote cue control:\n"
-			"-N, --session <int>: Number of Aqualung instance to control.\n"
-			"-B, --back: Jump to previous track.\n"
-			"-F, --fwd: Jump to next track.\n"
-			"-L, --play: Start playing.\n"
-			"-U, --pause: Pause playback, or resume if already paused.\n"
-			"-T, --stop: Stop playback.\n"
-			"-V, --volume [m|M]|[=]<val>: Set, adjust or mute volume.\n"
-			"-Q, --quit: Terminate remote instance.\n"
-
-			"Note that these options default to the 0-th instance when no -N option is given,\n"
-			"except for -L which defaults to the present instance (so as to be able to start\n"
-			"playback immediately from the command line).\n"
-
-			"\nOptions for file loading:\n"
-			"-E, --enqueue: Don't clear the contents of the playlist when adding new items.\n"
-
-			"\nIf you don't specify a session number via --session, the files will be opened by "
-			"the new\ninstance, otherwise they will be sent to the already running instance you "
-			"specify.\n"
-
-                        "\nOptions for changing state of Playlist/Music Store windows:\n"
-			"-l [yes, no], --show-pl=yes, no: Show/hide playlist window.\n"
-			"-m [yes, no], --show-ms=yes, no: Show/hide music store window.\n"
-
-			"\nExamples:\n"
-			"$ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2\n"
-			"$ aqualung --srctype=1 --output oss --rate 96000\n"
-			"$ aqualung -o jack -a -E `find ./ledzeppelin/ -name \"*.flac\"`\n");
-
-		fprintf(stderr, 
-			"\nDepending on the compile-time options, not all file formats\n"
-			"and output drivers may be usable. Type aqualung -v to get a\n"
-			"list of all the compiled-in features.\n\n");
-
+			"No usable output driver was found. Please see aqualung --help\n"
+			"and the docs for more info on successfully starting the program.\n");
 		close_app_socket();
-		exit (0);
+		exit(1);
 	}
 
 	
 #ifdef HAVE_JACK
-	if ((output == JACK_DRIVER) && (rate > 0)) {
+	if ((output == JACK_DRIVER) && (!auto_driver_found) && (rate > 0)) {
 		fprintf(stderr,
 			"You attempted to set the output rate for the JACK output.\n"
 			"We won't do this; please use the --rate option with the\n"
@@ -2244,25 +2427,6 @@ main(int argc, char ** argv) {
 		exit(1);
 	}
 #endif /* HAVE_JACK */
-
-#ifdef HAVE_OSS
-	if ((output == OSS_DRIVER) && (rate == 0)) {
-		rate = 44100;
-	}
-#endif /* HAVE_OSS */
-
-#ifdef HAVE_ALSA
-	if ((output == ALSA_DRIVER) && (rate == 0)) {
-		rate = 44100;
-	}
-#endif /* HAVE_ALSA */
-
-#ifdef _WIN32
-	if ((output == WIN32_DRIVER) && (rate == 0)) {
-		rate = 44100;
-	}
-#endif /* _WIN32 */
-
 
 	if (device_name == NULL) {
 #ifdef HAVE_OSS
@@ -2289,20 +2453,39 @@ main(int argc, char ** argv) {
 #endif /* HAVE_ALSA */
 
 
-	memset(&thread_info, 0, sizeof(thread_info));
-
 #ifdef HAVE_JACK
 	if (output == JACK_DRIVER) {
-		jack_init(&thread_info);
-		rate = thread_info.out_SR;
+		if (!auto_driver_found) {
+			int ret = jack_init(&thread_info);
+			if (ret == -1) {
+				print_jack_failed_connection();
+				close_app_socket();
+				exit(1);
+			} else if (ret < 0) {
+				print_jack_SR_out_of_range(-ret);
+				close_app_socket();
+				exit(1);
+			} else {
+				rate = thread_info.out_SR;
+			}
+		}
 	}
 #endif /* HAVE_JACK */
 
 #ifdef HAVE_ALSA
 	if (output == ALSA_DRIVER) {
-		thread_info.out_SR = rate;
-		thread_info.pcm_name = strdup(device_name);
-		alsa_init(&thread_info);
+		if (!auto_driver_found) {
+			int ret;
+
+			thread_info.out_SR = rate;
+			thread_info.pcm_name = strdup(device_name);
+
+			ret = alsa_init(&thread_info, 1);
+			if (ret < 0) {
+				close_app_socket();
+				exit(1);
+			}
+		}
 	}
 #endif /* HAVE_ALSA */
 
@@ -2363,7 +2546,13 @@ main(int argc, char ** argv) {
 
 #ifdef HAVE_OSS
 	if (output == OSS_DRIVER) {
-		oss_init(&thread_info);
+		if (!auto_driver_found) {
+			int ret = oss_init(&thread_info, 1);
+			if (ret < 0) {
+				close_app_socket();
+				exit(1);
+			}
+		}
 	}
 #endif /* HAVE_OSS */
 

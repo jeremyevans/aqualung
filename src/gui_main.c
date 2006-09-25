@@ -68,6 +68,7 @@
 #include "about.h"
 #include "options.h"
 #include "skin.h"
+#include "search.h"
 #include "ports.h"
 #include "music_browser.h"
 #include "playlist.h"
@@ -151,7 +152,7 @@ int src_type_parsed = 0;
 int immediate_start = 0; 
 
 int search_pl_flags = 0;
-int search_ms_flags = 120; /* check search flags in search.c for initial value :) */
+int search_ms_flags = SEARCH_F_AN | SEARCH_F_RT | SEARCH_F_TT | SEARCH_F_CO;
 
 
 #ifdef HAVE_SNDFILE

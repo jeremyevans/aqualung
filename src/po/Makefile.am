@@ -48,13 +48,13 @@ $(DOMAIN).pot: $(POTFILES)
 install:
 	for i in $(MOFILES); do \
 		lang=`echo $$i | sed 's/\.mo$$//'`; \
-		$(mkinstalldirs) ${DESTDIR}/$(localedir)/$$lang/LC_MESSAGES; \
-		$(INSTALL_DATA) $$i ${DESTDIR}/$(localedir)/$$lang/LC_MESSAGES/$(DOMAIN).mo; \
+		$(mkinstalldirs) ${DESTDIR}$(localedir)/$$lang/LC_MESSAGES; \
+		$(INSTALL_DATA) $$i ${DESTDIR}$(localedir)/$$lang/LC_MESSAGES/$(DOMAIN).mo; \
 	done
 
 uninstall:
 	for i in $(MOFILES); do \
 		lang=`echo $$i | sed 's/\.mo$$//'`; \
-		rm -f ${DESTDIR}/$(localedir)/$$lang/LC_MESSAGES/$(DOMAIN).mo; \
+		rm -f ${DESTDIR}$(localedir)/$$lang/LC_MESSAGES/$(DOMAIN).mo; \
 	done
 

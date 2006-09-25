@@ -532,11 +532,10 @@ create_cddb_write_error_dialog(gpointer data) {
 
 	dialog = gtk_message_dialog_new(GTK_WINDOW(browser_window),
 					GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-					GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, 
-					_("An error occurred while attempting "
-					  "to submit the record to the CDDB server.\n"
-					  "Make sure you provided an email address for "
-					  "submission, or try to change the access protocol."));
+					GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+					(char *)data);
+
+
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
@@ -719,17 +718,17 @@ create_cddb_submit_dialog(gpointer data) {
 
 	category_combo = gtk_combo_box_new_text();
 	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), _("(choose a category)"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), _("data (ISO9660 and other data CDs)"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), _("folk"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), _("jazz"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), _("miscellaneous"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), _("rock"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), _("country"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), _("blues"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), _("newage"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), _("reagge"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), _("classical"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), _("soundtrack (movies, shows)"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "data");
+	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "folk");
+	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "jazz");
+	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "misc");
+	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "rock");
+	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "country");
+	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "blues");
+	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "newage");
+	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "reagge");
+	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "classical");
+	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "soundtrack");
 	gtk_combo_box_set_active(GTK_COMBO_BOX(category_combo), 0);
 	gtk_table_attach(GTK_TABLE(table), category_combo, 1, 2, 3, 4,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
@@ -795,6 +794,7 @@ create_cddb_submit_dialog(gpointer data) {
 		char * title;
 		char * genre;
 		int category;
+		int year;
 
 		artist = (char *)gtk_entry_get_text(GTK_ENTRY(artist_entry));
 		if (is_all_wspace(artist)) {
@@ -836,6 +836,15 @@ create_cddb_submit_dialog(gpointer data) {
 			}
 		}
 
+		year = gtk_spin_button_get_value(GTK_SPIN_BUTTON(year_spinner));
+
+		if (year == YEAR_MIN) {
+			if (create_cddb_write_warn_dialog(_("It is very likely that the year is wrong.\n"
+							    "Do you want to proceed?"))) {
+				goto display;
+			}
+		}
+
 		category = gtk_combo_box_get_active(GTK_COMBO_BOX(category_combo));
 		if (category == 0) {
 			gtk_widget_grab_focus(category_combo);
@@ -865,7 +874,7 @@ create_cddb_submit_dialog(gpointer data) {
 
 		cddb_disc_set_artist(disc, artist);
 		cddb_disc_set_title(disc, title);
-		cddb_disc_set_year(disc, gtk_spin_button_get_value(GTK_SPIN_BUTTON(year_spinner)));
+		cddb_disc_set_year(disc, year);
 		cddb_disc_set_category(disc, category - 1);
 		cddb_disc_set_genre(disc, genre);
 		cddb_disc_set_ext_data(disc, gtk_entry_get_text(GTK_ENTRY(ext_entry)));
@@ -894,11 +903,8 @@ cddb_connection_setup(cddb_conn_t ** conn) {
 
 	cddb_set_server_name(*conn, options.cddb_server);
 	cddb_set_timeout(*conn, options.cddb_timeout);
+	cddb_set_charset(*conn, "UTF-8");
 	cddb_set_client(*conn, "Aqualung", aqualung_version);
-
-	if (options.cddb_email[0] != '\0') {
-		cddb_set_email_address(*conn, options.cddb_email);
-	}
 
 	if (options.cddb_use_proxy) {
 		cddb_http_proxy_enable(*conn);
@@ -1024,20 +1030,21 @@ cddb_submit_thread(void * arg) {
         req_time.tv_nsec = 500000000;
 
 	if (cddb_connection_setup(&conn) == 1) {
-		cddb_destroy(conn);
-		libcddb_shutdown();
-		free(frames);
-		cddb_thread_state = CDDB_THREAD_FREE;
-		return NULL;
+		goto cleanup;
 	}
+
+	if (options.cddb_email[0] == '\0' || !cddb_set_email_address(conn, options.cddb_email)) {
+
+		g_idle_add(create_cddb_write_error_dialog, _("The email address provided for submission is invalid."));
+		goto cleanup;
+	}
+
+	cddb_http_enable(conn);
+	cddb_set_server_port(conn, 80);
 
 	if ((disc = cddb_disc_new()) == NULL) {
 		fprintf(stderr, "cddb_lookup.c: cddb_submit_thread(): cddb_disc_new error\n");
-		cddb_destroy(conn);
-		libcddb_shutdown();
-		free(frames);
-		cddb_thread_state = CDDB_THREAD_FREE;
-		return NULL;
+		goto cleanup;
 	}
 
 	cddb_disc_set_length(disc, record_length);
@@ -1051,11 +1058,7 @@ cddb_submit_thread(void * arg) {
 	if (cddb_disc_calc_discid(disc) == 0) {
 		fprintf(stderr, "cddb_lookup.c: cddb_submit_thread(): cddb_disc_calc_discid error\n");
 		cddb_disc_destroy(disc);
-		cddb_destroy(conn);
-		libcddb_shutdown();
-		free(frames);
-		cddb_thread_state = CDDB_THREAD_FREE;
-		return NULL;
+		goto cleanup;
 	}
 
 	cddb_data_locked = 1;
@@ -1067,17 +1070,17 @@ cddb_submit_thread(void * arg) {
 
 	if (cddb_thread_state == CDDB_THREAD_SUCCESS) {
 		if (!cddb_write(conn, disc)) {
-			g_idle_add(create_cddb_write_error_dialog, NULL);
+			g_idle_add(create_cddb_write_error_dialog, _("An error occurred while submitting the record to the CDDB server."));
 		}
 	}
 
-	cddb_destroy(conn);
 	cddb_disc_destroy(disc);
 
+ cleanup:
+
+	cddb_destroy(conn);
 	libcddb_shutdown();
-
 	free(frames);
-
 	cddb_thread_state = CDDB_THREAD_FREE;
 
 	return NULL;

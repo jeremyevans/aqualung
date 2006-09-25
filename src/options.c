@@ -2451,7 +2451,7 @@ See the About box and the documentation for details."));
         gtk_table_attach(GTK_TABLE(table_cddb), cddb_radio_direct, 0, 2, 3, 4,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
-	cddb_label_proto = gtk_label_new(_("Protocol:"));
+	cddb_label_proto = gtk_label_new(_("Protocol for querying:"));
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), cddb_label_proto, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 4, 5,

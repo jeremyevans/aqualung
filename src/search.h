@@ -21,6 +21,14 @@
 #ifndef _SEARCH_H
 #define _SEARCH_H
 
+/* search flags */
+#define SEARCH_F_CS (1 << 0)    /* case sensitive */
+#define SEARCH_F_EM (1 << 1)    /* exact matches only */
+#define SEARCH_F_SF (1 << 2)    /* select first and close */
+#define SEARCH_F_AN (1 << 3)    /* artist names */
+#define SEARCH_F_RT (1 << 4)    /* record titles */
+#define SEARCH_F_TT (1 << 5)    /* track titles */
+#define SEARCH_F_CO (1 << 6)    /* comments */
 
 void search_dialog(void);
 

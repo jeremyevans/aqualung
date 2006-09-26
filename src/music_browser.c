@@ -180,6 +180,30 @@ GdkPixbuf * icon_record;
 GdkPixbuf * icon_store;
 GdkPixbuf * icon_track;
 
+#ifdef HAVE_TAGLIB
+GtkWidget * store__tag;
+GtkWidget * artist__tag;
+GtkWidget * record__tag;
+GtkWidget * track__tag;
+
+typedef struct _batch_tag_t {
+
+	char filename[MAXLEN];
+	char title[MAXLEN];
+	char artist[MAXLEN];
+	char album[MAXLEN];
+	char comment[MAXLEN];
+	char year[MAXLEN];
+	char track[MAXLEN];
+
+	struct _batch_tag_t * next;
+
+} batch_tag_t;
+
+batch_tag_t * batch_tag_root = NULL;
+#endif /* HAVE_TAGLIB */
+
+
 /* prototypes, when we need them */
 
 gboolean music_tree_event_cb(GtkWidget * widget, GdkEvent * event);
@@ -1863,17 +1887,18 @@ is_store_iter_readonly(GtkTreeIter * i) {
 void
 set_popup_sensitivity(GtkTreePath * path) {
 
-	gboolean val;
-	gboolean val2;
+	gboolean val, val2, val3;
 
 	val = (is_store_path_readonly(path)) ? FALSE : TRUE;
 	val2 = (vol_window == NULL) ? TRUE : FALSE;
+	val3 = (batch_tag_root == NULL) ? TRUE : FALSE;
 
 	gtk_widget_set_sensitive(store__build, val);
 	gtk_widget_set_sensitive(store__edit, val);
 	gtk_widget_set_sensitive(store__save, val);
 	gtk_widget_set_sensitive(store__addart, val);
 	gtk_widget_set_sensitive(store__volume, val2);
+	gtk_widget_set_sensitive(store__tag, val3);
 
 	gtk_widget_set_sensitive(artist__add, val);
 	gtk_widget_set_sensitive(artist__build, val);
@@ -1881,6 +1906,7 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gtk_widget_set_sensitive(artist__remove, val);
 	gtk_widget_set_sensitive(artist__addrec, val);
 	gtk_widget_set_sensitive(artist__volume, val2);
+	gtk_widget_set_sensitive(artist__tag, val3);
 
 	gtk_widget_set_sensitive(record__add, val);
 	gtk_widget_set_sensitive(record__edit, val);
@@ -1891,11 +1917,13 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gtk_widget_set_sensitive(record__cddb_submit, TRUE);
 #endif /* HAVE_CDDB */
 	gtk_widget_set_sensitive(record__volume, val2);
+	gtk_widget_set_sensitive(record__tag, val3);
 
 	gtk_widget_set_sensitive(track__add, val);
 	gtk_widget_set_sensitive(track__edit, val);
 	gtk_widget_set_sensitive(track__remove, val);
 	gtk_widget_set_sensitive(track__volume, val2);
+	gtk_widget_set_sensitive(track__tag, val3);
 
 	if (
 #ifdef HAVE_CDDB
@@ -3452,6 +3480,7 @@ remove_item_cb(gpointer data) {
 #ifdef HAVE_TAGLIB
 
 AQUALUNG_THREAD_DECLARE(tag_thread_id)
+volatile int batch_tag_cancelled;
 
 #define TAG_F_TITLE   (1 << 0)
 #define TAG_F_ARTIST  (1 << 1)
@@ -3471,22 +3500,12 @@ char artist_tag[MAXLEN];
 char album_tag[MAXLEN];
 char year_tag[MAXLEN];
 
-typedef struct _batch_tag_t {
-
-	char filename[MAXLEN];
-	char title[MAXLEN];
-	char artist[MAXLEN];
-	char album[MAXLEN];
-	char comment[MAXLEN];
-	char year[MAXLEN];
-	char track[MAXLEN];
-
-	struct _batch_tag_t * next;
-
-} batch_tag_t;
-
-batch_tag_t * batch_tag_root = NULL;
 batch_tag_t * batch_tag_curr = NULL;
+
+GtkWidget * tag_prog_window;
+GtkWidget * tag_prog_file_entry;
+GtkWidget * tag_prog_cancel_button;
+GtkListStore * tag_error_list;
 
 int
 create_tag_dialog() {
@@ -3567,6 +3586,140 @@ create_tag_dialog() {
 	return 0;
 }
 
+void
+tag_prog_window_close(GtkWidget * widget, gpointer data) {
+
+	batch_tag_cancelled = 1;
+	batch_tag_root = batch_tag_curr = NULL;
+
+	if (tag_prog_window) {
+		gtk_widget_destroy(tag_prog_window);
+		tag_prog_window = NULL;
+	}
+}
+
+void
+cancel_batch_tag(GtkWidget * widget, gpointer data) {
+
+	tag_prog_window_close(NULL, NULL);
+}
+
+void
+create_tag_prog_window(void) {
+
+
+	GtkWidget * table;
+	GtkWidget * label;
+	GtkWidget * vbox;
+	GtkWidget * hbox;
+	GtkWidget * hbuttonbox;
+	GtkWidget * hseparator;
+	GtkWidget * viewport;
+	GtkWidget * scrollwin;
+	GtkWidget * tag_error_view;
+	GtkTreeViewColumn * column;
+	GtkCellRenderer * renderer;
+
+	tag_prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        gtk_window_set_title(GTK_WINDOW(tag_prog_window), _("Update file metadata"));
+        gtk_window_set_position(GTK_WINDOW(tag_prog_window), GTK_WIN_POS_CENTER);
+        gtk_window_resize(GTK_WINDOW(tag_prog_window), 500, 300);
+        g_signal_connect(G_OBJECT(tag_prog_window), "delete_event",
+                         G_CALLBACK(tag_prog_window_close), NULL);
+        gtk_container_set_border_width(GTK_CONTAINER(tag_prog_window), 5);
+
+        vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_add(GTK_CONTAINER(tag_prog_window), vbox);
+
+	table = gtk_table_new(2, 2, FALSE);
+        gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 0);
+
+        hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(_("File:"));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
+			 GTK_FILL, GTK_FILL, 5, 5);
+
+        tag_prog_file_entry = gtk_entry_new();
+        gtk_editable_set_editable(GTK_EDITABLE(tag_prog_file_entry), FALSE);
+	gtk_table_attach(GTK_TABLE(table), tag_prog_file_entry, 1, 2, 0, 1,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+
+	tag_error_list = gtk_list_store_new(1, G_TYPE_STRING);
+        tag_error_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(tag_error_list));
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(tag_error_view), FALSE);
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Failed to set metadata at the following files:"),
+							  renderer,
+							  "text", 0,
+							  NULL);
+        gtk_tree_view_append_column(GTK_TREE_VIEW(tag_error_view), column);
+
+	scrollwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
+				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+        viewport = gtk_viewport_new(NULL, NULL);
+	gtk_table_attach(GTK_TABLE(table), viewport, 0, 2, 1, 2,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 5);
+	gtk_container_add(GTK_CONTAINER(viewport), scrollwin);
+        gtk_container_add(GTK_CONTAINER(scrollwin), tag_error_view);
+
+        hseparator = gtk_hseparator_new();
+        gtk_box_pack_start(GTK_BOX(vbox), hseparator, FALSE, TRUE, 5);
+
+	hbuttonbox = gtk_hbutton_box_new();
+	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
+
+        tag_prog_cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL); 
+        g_signal_connect(tag_prog_cancel_button, "clicked", G_CALLBACK(cancel_batch_tag), NULL);
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), tag_prog_cancel_button);   
+
+        gtk_widget_grab_focus(tag_prog_cancel_button);
+
+        gtk_widget_show_all(tag_prog_window);
+}
+
+gboolean
+set_tag_prog_file_entry(gpointer data) {
+
+	if (tag_prog_window) {
+
+		char * utf8 = g_filename_display_name((char *)data);
+		gtk_entry_set_text(GTK_ENTRY(tag_prog_file_entry), utf8);
+		gtk_widget_grab_focus(tag_prog_cancel_button);
+		g_free(utf8);
+	}
+
+	return FALSE;
+}
+
+gboolean
+batch_tag_finish(gpointer data) {
+
+	if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(tag_error_list), NULL) > 0) {
+		gtk_entry_set_text(GTK_ENTRY(tag_prog_file_entry), "");
+		gtk_button_set_label(GTK_BUTTON(tag_prog_cancel_button), GTK_STOCK_CLOSE);
+		gtk_button_set_use_stock(GTK_BUTTON(tag_prog_cancel_button), TRUE);
+	} else {
+		tag_prog_window_close(NULL, NULL);
+	}
+
+	return FALSE;
+}
+
+gboolean
+batch_tag_append_error(gpointer data) {
+
+	GtkTreeIter iter;
+
+	gtk_list_store_append(tag_error_list, &iter);
+	gtk_list_store_set(tag_error_list, &iter, 0, (char *)data, -1);
+
+	return FALSE;
+}
+
+
 void *
 update_tag_thread(void * args) {
 
@@ -3574,6 +3727,22 @@ update_tag_thread(void * args) {
 	batch_tag_t * _ptag = ptag;
 
 	while (ptag) {
+
+		if (batch_tag_cancelled) {
+
+			while (ptag) {
+				ptag = ptag->next;
+				free(_ptag);
+				_ptag = ptag;
+			}			
+
+			g_idle_add(batch_tag_finish, NULL);
+
+			return NULL;
+		}
+
+		g_idle_add(set_tag_prog_file_entry, (gpointer)ptag->filename);
+
 		if (meta_update_basic(ptag->filename,
 				      (tag_flags & TAG_F_TITLE) ? ptag->title : NULL,
 				      (tag_flags & TAG_F_ARTIST) ? ptag->artist : NULL,
@@ -3581,15 +3750,17 @@ update_tag_thread(void * args) {
 				      (tag_flags & TAG_F_COMMENT) ? ptag->comment : NULL,
 				      NULL /* genre */,
 				      (tag_flags & TAG_F_YEAR) ? ptag->year : NULL,
-				      (tag_flags & TAG_F_TRACKNO) ? ptag->track: NULL) < 0) {
-			printf("filename = %s\n", ptag->filename);
+				      (tag_flags & TAG_F_TRACKNO) ? ptag->track : NULL) < 0) {
+
+			g_idle_add(batch_tag_append_error, (gpointer)ptag->filename);
 		}
+
 		ptag = ptag->next;
 		free(_ptag);
 		_ptag = ptag;
 	}
 
-	batch_tag_root = batch_tag_curr = NULL;
+	g_idle_add(batch_tag_finish, NULL);
 
 	return NULL;
 }
@@ -3635,6 +3806,8 @@ track_batch_tag(gpointer data) {
 	g_free(track);
 
 	if (data) {
+		batch_tag_cancelled = 0;
+		create_tag_prog_window();
 		AQUALUNG_THREAD_CREATE(tag_thread_id, NULL, update_tag_thread, batch_tag_root)
 	}
 
@@ -3670,6 +3843,8 @@ record_batch_tag(gpointer data) {
 	}
 
 	if (data) {
+		batch_tag_cancelled = 0;
+		create_tag_prog_window();
 		AQUALUNG_THREAD_CREATE(tag_thread_id, NULL, update_tag_thread, batch_tag_root)
 	}
 
@@ -3700,6 +3875,8 @@ artist_batch_tag(gpointer data) {
 	}
 
 	if (data) {
+		batch_tag_cancelled = 0;
+		create_tag_prog_window();
 		AQUALUNG_THREAD_CREATE(tag_thread_id, NULL, update_tag_thread, batch_tag_root)
 	}
 
@@ -3719,6 +3896,8 @@ store_batch_tag(gpointer data) {
 	}
 
 	if (data) {
+		batch_tag_cancelled = 0;
+		create_tag_prog_window();
 		AQUALUNG_THREAD_CREATE(tag_thread_id, NULL, update_tag_thread, batch_tag_root)
 	}
 
@@ -4185,13 +4364,6 @@ create_music_browser(void) {
 	GtkWidget * remove_button;
 	GtkWidget * search_button;
 	GtkWidget * collapse_all_button;
-
-#ifdef HAVE_TAGLIB
-	GtkWidget * store__tag;
-	GtkWidget * artist__tag;
-	GtkWidget * record__tag;
-	GtkWidget * track__tag;
-#endif /* HAVE_TAGLIB */
 
 	GtkCellRenderer * renderer;
 	GtkTreeViewColumn * column;

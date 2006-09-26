@@ -227,7 +227,7 @@ msgid "Sort artists by"
 msgstr "╤мпортувати як Виконавця"
 
 #: ../build_store.c:790 ../build_store.c:1085 ../build_store.c:1171
-#: ../music_browser.c:3512 ../options.c:2327 ../options.c:2362
+#: ../music_browser.c:3516 ../options.c:2327 ../options.c:2362
 msgid "Artist name"
 msgstr "Назва виконавця"
 
@@ -251,12 +251,12 @@ msgstr "Запис"
 msgid "Sort records by"
 msgstr "╤мпортувати як Запис"
 
-#: ../build_store.c:821 ../music_browser.c:3517
+#: ../build_store.c:821 ../music_browser.c:3521
 msgid "Year"
 msgstr "Р╕к"
 
 #: ../build_store.c:822 ../build_store.c:1097 ../build_store.c:1183
-#: ../music_browser.c:3513 ../options.c:2336 ../options.c:2371
+#: ../music_browser.c:3517 ../options.c:2336 ../options.c:2371
 msgid "Record name"
 msgstr "Назва запису"
 
@@ -331,7 +331,7 @@ msgstr ""
 msgid "Import"
 msgstr "╤мпортувати як ПВР"
 
-#: ../build_store.c:1106 ../build_store.c:1192 ../music_browser.c:3514
+#: ../build_store.c:1106 ../build_store.c:1192 ../music_browser.c:3518
 #: ../options.c:2345 ../options.c:2380
 msgid "Track name"
 msgstr "Назва дор╕жки"
@@ -421,7 +421,8 @@ msgstr "Запис"
 msgid "Action:"
 msgstr "Тривал╕сть:"
 
-#: ../build_store.c:1627 ../cddb_lookup.c:136 ../volume.c:273
+#: ../build_store.c:1627 ../cddb_lookup.c:135 ../music_browser.c:3660
+#: ../volume.c:273
 msgid "Abort"
 msgstr "Перервати"
 
@@ -442,134 +443,134 @@ msgstr ""
 msgid "File name transformation"
 msgstr ""
 
-#: ../cddb_lookup.c:111 ../cddb_lookup.c:357
+#: ../cddb_lookup.c:110 ../cddb_lookup.c:356
 msgid "CDDB query"
 msgstr "CDDB запит"
 
-#: ../cddb_lookup.c:121
+#: ../cddb_lookup.c:120
 msgid "Retrieving matches from server..."
 msgstr "Отримання зб╕г╕в з сервера..."
 
-#: ../cddb_lookup.c:125
+#: ../cddb_lookup.c:124
 msgid "Connecting to CDDB server..."
 msgstr "П╕д'╓днуюсь до сервера CDDB..."
 
-#: ../cddb_lookup.c:374
+#: ../cddb_lookup.c:373
 msgid "Matches:"
 msgstr "Зб╕ги:"
 
-#: ../cddb_lookup.c:395 ../cddb_lookup.c:661 ../file_info.cpp:794
+#: ../cddb_lookup.c:394 ../cddb_lookup.c:660 ../file_info.cpp:794
 #: ../file_info.cpp:879
 msgid "Artist:"
 msgstr "Виконавець:"
 
-#: ../cddb_lookup.c:401 ../file_info.cpp:794
+#: ../cddb_lookup.c:400 ../file_info.cpp:794
 msgid "Import as Artist"
 msgstr "╤мпортувати як Виконавця"
 
-#: ../cddb_lookup.c:409 ../cddb_lookup.c:676 ../file_info.cpp:779
+#: ../cddb_lookup.c:408 ../cddb_lookup.c:675 ../file_info.cpp:779
 #: ../file_info.cpp:874
 msgid "Title:"
 msgstr "Назва:"
 
-#: ../cddb_lookup.c:415 ../file_info.cpp:779
+#: ../cddb_lookup.c:414 ../file_info.cpp:779
 msgid "Import as Title"
 msgstr "╤мпортувати як Альбом"
 
-#: ../cddb_lookup.c:423 ../cddb_lookup.c:691 ../file_info.cpp:833
+#: ../cddb_lookup.c:422 ../cddb_lookup.c:690 ../file_info.cpp:833
 #: ../file_info.cpp:839 ../file_info.cpp:900
 msgid "Year:"
 msgstr "Р╕к:"
 
-#: ../cddb_lookup.c:429
+#: ../cddb_lookup.c:428
 #, fuzzy
 msgid "Import as Sort Key"
 msgstr "╤мпортувати як Альбом"
 
-#: ../cddb_lookup.c:437 ../cddb_lookup.c:716
+#: ../cddb_lookup.c:436 ../cddb_lookup.c:715
 msgid "Category:"
 msgstr "Категор╕я:"
 
-#: ../cddb_lookup.c:443 ../cddb_lookup.c:457 ../cddb_lookup.c:471
+#: ../cddb_lookup.c:442 ../cddb_lookup.c:456 ../cddb_lookup.c:470
 #: ../file_info.cpp:839 ../file_info.cpp:854 ../file_info.cpp:869
 #: ../file_info.cpp:976 ../file_info.cpp:1199
 msgid "Add to Comments"
 msgstr "Додати до коментар╕в"
 
-#: ../cddb_lookup.c:451 ../cddb_lookup.c:738 ../file_info.cpp:851
+#: ../cddb_lookup.c:450 ../cddb_lookup.c:737 ../file_info.cpp:851
 #: ../file_info.cpp:853 ../file_info.cpp:904
 msgid "Genre:"
 msgstr "Жанр:"
 
-#: ../cddb_lookup.c:465 ../cddb_lookup.c:747
+#: ../cddb_lookup.c:464 ../cddb_lookup.c:746
 msgid "Extended data:"
 msgstr "Додатков╕ дан╕:"
 
-#: ../cddb_lookup.c:483 ../cddb_lookup.c:770
+#: ../cddb_lookup.c:482 ../cddb_lookup.c:769
 msgid "Tracks"
 msgstr "Дор╕жки"
 
-#: ../cddb_lookup.c:556 ../options.c:1299 ../playlist.c:838
+#: ../cddb_lookup.c:555 ../options.c:1299 ../playlist.c:838
 msgid "Warning"
 msgstr "Увага"
 
-#: ../cddb_lookup.c:644
+#: ../cddb_lookup.c:643
 msgid "CDDB submission"
 msgstr ""
 
-#: ../cddb_lookup.c:720
+#: ../cddb_lookup.c:719
 msgid "(choose a category)"
 msgstr ""
 
-#: ../cddb_lookup.c:806
+#: ../cddb_lookup.c:805
 msgid ""
 "Artist appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
 
-#: ../cddb_lookup.c:813
+#: ../cddb_lookup.c:812
 msgid ""
 "Artist appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
 
-#: ../cddb_lookup.c:826
+#: ../cddb_lookup.c:825
 msgid ""
 "Title appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
 
-#: ../cddb_lookup.c:833
+#: ../cddb_lookup.c:832
 msgid ""
 "Title appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
 
-#: ../cddb_lookup.c:842
+#: ../cddb_lookup.c:841
 msgid ""
 "It is very likely that the year is wrong.\n"
 "Do you want to proceed?"
 msgstr ""
 
-#: ../cddb_lookup.c:1038
+#: ../cddb_lookup.c:1036
 msgid "The email address provided for submission is invalid."
 msgstr ""
 
-#: ../cddb_lookup.c:1073
+#: ../cddb_lookup.c:1071
 #, fuzzy
 msgid "An error occurred while submitting the record to the CDDB server."
 msgstr "Трапилась помилка при спроб╕ п╕д'╓днання до сервера CDDB."
 
-#: ../cddb_lookup.c:1104
+#: ../cddb_lookup.c:1102
 #, c-format
 msgid "%d of %d"
 msgstr "%d з %d"
 
-#: ../cddb_lookup.c:1120
+#: ../cddb_lookup.c:1118
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr "Трапилась помилка при спроб╕ п╕д'╓днання до сервера CDDB."
 
-#: ../cddb_lookup.c:1137
+#: ../cddb_lookup.c:1135
 msgid "No matching record found."
 msgstr "Схожих запис╕в не знайдено."
 
@@ -696,11 +697,11 @@ msgstr "Ступ╕нь стиснення: Дуже висока"
 msgid "Compression: Insane"
 msgstr "Ступ╕нь стиснення: Божев╕льна"
 
-#: ../gui_main.c:895 ../file_info.cpp:1885
+#: ../gui_main.c:895 ../file_info.cpp:1893
 msgid "MONO"
 msgstr "МОНО"
 
-#: ../gui_main.c:898 ../file_info.cpp:1887
+#: ../gui_main.c:898 ../file_info.cpp:1895
 msgid "STEREO"
 msgstr "СТЕРЕО"
 
@@ -810,7 +811,7 @@ msgstr "Виб╕р жупан╕в"
 msgid "JACK port setup"
 msgstr "Налаштування порту JACK"
 
-#: ../gui_main.c:3147 ../file_info.cpp:1771
+#: ../gui_main.c:3147 ../file_info.cpp:1779
 msgid "File info"
 msgstr "╤нформац╕я про файл"
 
@@ -1253,238 +1254,246 @@ msgstr "Прибрати запис"
 msgid "Remove Track"
 msgstr "Прибрати дор╕жку"
 
-#: ../music_browser.c:3505
+#: ../music_browser.c:3509 ../music_browser.c:3610
 #, fuzzy
 msgid "Update file metadata"
 msgstr "Перечитати ╕нформац╕ю про файл"
 
-#: ../music_browser.c:3515
+#: ../music_browser.c:3519
 #, fuzzy
 msgid "Track comment"
 msgstr "Назва дор╕жки"
 
-#: ../music_browser.c:3516 ../meta_decoder.cpp:236
+#: ../music_browser.c:3520 ../meta_decoder.cpp:236
 #, fuzzy
 msgid "Track number"
 msgstr "Назва дор╕жки"
 
-#: ../music_browser.c:3797
+#: ../music_browser.c:3624 ../volume.c:243 ../file_info.cpp:1813
+msgid "File:"
+msgstr "Файл:"
+
+#: ../music_browser.c:3638
+msgid "Failed to set metadata at the following files:"
+msgstr ""
+
+#: ../music_browser.c:3988
 msgid "(no comment)"
 msgstr "(без коментаря)"
 
-#: ../music_browser.c:3889 ../music_browser.c:3950 ../music_browser.c:3997
-#: ../music_browser.c:4025
+#: ../music_browser.c:4080 ../music_browser.c:4141 ../music_browser.c:4188
+#: ../music_browser.c:4216
 #, fuzzy
 msgid "time unmeasured"
 msgstr "Невим╕ряно"
 
-#: ../music_browser.c:3897 ../music_browser.c:3907 ../music_browser.c:3917
+#: ../music_browser.c:4088 ../music_browser.c:4098 ../music_browser.c:4108
 #, fuzzy
 msgid "artists"
 msgstr "Виконавець"
 
-#: ../music_browser.c:3897 ../music_browser.c:3907 ../music_browser.c:3917
+#: ../music_browser.c:4088 ../music_browser.c:4098 ../music_browser.c:4108
 #, fuzzy
 msgid "artist"
 msgstr "Виконавець"
 
-#: ../music_browser.c:3899 ../music_browser.c:3909 ../music_browser.c:3918
-#: ../music_browser.c:3957 ../music_browser.c:3964 ../music_browser.c:3971
+#: ../music_browser.c:4090 ../music_browser.c:4100 ../music_browser.c:4109
+#: ../music_browser.c:4148 ../music_browser.c:4155 ../music_browser.c:4162
 #, fuzzy
 msgid "records"
 msgstr "Запис"
 
-#: ../music_browser.c:3899 ../music_browser.c:3909 ../music_browser.c:3918
-#: ../music_browser.c:3957 ../music_browser.c:3964 ../music_browser.c:3971
+#: ../music_browser.c:4090 ../music_browser.c:4100 ../music_browser.c:4109
+#: ../music_browser.c:4148 ../music_browser.c:4155 ../music_browser.c:4162
 #, fuzzy
 msgid "record"
 msgstr "Запис"
 
-#: ../music_browser.c:3901 ../music_browser.c:3911 ../music_browser.c:3919
-#: ../music_browser.c:3959 ../music_browser.c:3966 ../music_browser.c:3972
-#: ../music_browser.c:4004 ../music_browser.c:4009 ../music_browser.c:4014
+#: ../music_browser.c:4092 ../music_browser.c:4102 ../music_browser.c:4110
+#: ../music_browser.c:4150 ../music_browser.c:4157 ../music_browser.c:4163
+#: ../music_browser.c:4195 ../music_browser.c:4200 ../music_browser.c:4205
 #, fuzzy
 msgid "tracks"
 msgstr "Дор╕жки"
 
-#: ../music_browser.c:3901 ../music_browser.c:3911 ../music_browser.c:3919
-#: ../music_browser.c:3959 ../music_browser.c:3966 ../music_browser.c:3972
-#: ../music_browser.c:4004 ../music_browser.c:4009 ../music_browser.c:4014
-#: ../music_browser.c:4039 ../music_browser.c:4042 ../music_browser.c:4045
+#: ../music_browser.c:4092 ../music_browser.c:4102 ../music_browser.c:4110
+#: ../music_browser.c:4150 ../music_browser.c:4157 ../music_browser.c:4163
+#: ../music_browser.c:4195 ../music_browser.c:4200 ../music_browser.c:4205
+#: ../music_browser.c:4230 ../music_browser.c:4233 ../music_browser.c:4236
 #, fuzzy
 msgid "track"
 msgstr "Дор╕жка"
 
-#: ../music_browser.c:4181 ../music_browser.c:4987 ../music_browser.c:5137
+#: ../music_browser.c:4372 ../music_browser.c:5178 ../music_browser.c:5328
 #: ../options.c:1890
 msgid "Music Store"
 msgstr "Музичний Склад"
 
-#: ../music_browser.c:4200 ../music_browser.c:4341 ../music_browser.c:4373
-#: ../music_browser.c:4448 ../music_browser.c:4523 ../music_browser.c:4602
+#: ../music_browser.c:4391 ../music_browser.c:4532 ../music_browser.c:4564
+#: ../music_browser.c:4639 ../music_browser.c:4714 ../music_browser.c:4793
 #: ../playlist.c:3280
 msgid "Search..."
 msgstr "Шукати..."
 
-#: ../music_browser.c:4206
+#: ../music_browser.c:4397
 msgid "Collapse all items"
 msgstr ""
 
-#: ../music_browser.c:4212
+#: ../music_browser.c:4403
 #, fuzzy
 msgid "Edit item..."
 msgstr "Редагувати склад..."
 
-#: ../music_browser.c:4218
+#: ../music_browser.c:4409
 #, fuzzy
 msgid "Add item..."
 msgstr "_Додати файли..."
 
-#: ../music_browser.c:4224
+#: ../music_browser.c:4415
 #, fuzzy
 msgid "Remove item..."
 msgstr "Прибрати склад"
 
-#: ../music_browser.c:4231 ../music_browser.c:4342
+#: ../music_browser.c:4422 ../music_browser.c:4533
 #, fuzzy
 msgid "Save all stores"
 msgstr "Зберегти Музичний Склад"
 
-#: ../music_browser.c:4340 ../music_browser.c:4358
+#: ../music_browser.c:4531 ../music_browser.c:4549
 msgid "Create empty store..."
 msgstr ""
 
-#: ../music_browser.c:4355 ../music_browser.c:4431 ../music_browser.c:4503
-#: ../music_browser.c:4587
+#: ../music_browser.c:4546 ../music_browser.c:4622 ../music_browser.c:4694
+#: ../music_browser.c:4778
 msgid "Add to playlist"
 msgstr "Додати до списку програвання"
 
-#: ../music_browser.c:4356 ../music_browser.c:4432 ../music_browser.c:4504
+#: ../music_browser.c:4547 ../music_browser.c:4623 ../music_browser.c:4695
 #, fuzzy
 msgid "Add to playlist (Album mode)"
 msgstr "Додати до списку програвання"
 
-#: ../music_browser.c:4359
+#: ../music_browser.c:4550
 #, fuzzy
 msgid "Build/Update store from filesystem..."
 msgstr "Редагувати склад..."
 
-#: ../music_browser.c:4360
+#: ../music_browser.c:4551
 msgid "Edit store..."
 msgstr "Редагувати склад..."
 
-#: ../music_browser.c:4361
+#: ../music_browser.c:4552
 #, fuzzy
 msgid "Save store"
 msgstr "Зберегти Музичний Склад"
 
-#: ../music_browser.c:4362
+#: ../music_browser.c:4553
 msgid "Remove store"
 msgstr "Прибрати склад"
 
-#: ../music_browser.c:4364
+#: ../music_browser.c:4555
 msgid "Add new artist to this store..."
 msgstr "Додати нового виконавця до цього складу..."
 
-#: ../music_browser.c:4366 ../music_browser.c:4441 ../music_browser.c:4516
+#: ../music_browser.c:4557 ../music_browser.c:4632 ../music_browser.c:4707
 msgid "Calculate volume (recursive)"
 msgstr "П╕драхувати гучн╕сть (рекурсивно)"
 
-#: ../music_browser.c:4368 ../music_browser.c:4443 ../music_browser.c:4518
+#: ../music_browser.c:4559 ../music_browser.c:4634 ../music_browser.c:4709
 #, fuzzy
 msgid "Unmeasured tracks only"
 msgstr "Невим╕ряно"
 
-#: ../music_browser.c:4369 ../music_browser.c:4444 ../music_browser.c:4519
+#: ../music_browser.c:4560 ../music_browser.c:4635 ../music_browser.c:4710
 #, fuzzy
 msgid "All tracks"
 msgstr "Дор╕жки"
 
-#: ../music_browser.c:4371 ../music_browser.c:4446 ../music_browser.c:4521
+#: ../music_browser.c:4562 ../music_browser.c:4637 ../music_browser.c:4712
 #, fuzzy
 msgid "Batch-update file metadata..."
 msgstr "Перечитати ╕нформац╕ю про файл"
 
-#: ../music_browser.c:4434
+#: ../music_browser.c:4625
 msgid "Add new artist..."
 msgstr "Додати нового виконавця..."
 
-#: ../music_browser.c:4435
+#: ../music_browser.c:4626
 #, fuzzy
 msgid "Build/Update artist from filesystem..."
 msgstr "Редагувати склад..."
 
-#: ../music_browser.c:4436
+#: ../music_browser.c:4627
 msgid "Edit artist..."
 msgstr "редагувати виконавця..."
 
-#: ../music_browser.c:4437
+#: ../music_browser.c:4628
 msgid "Remove artist"
 msgstr "прибрати виконавця"
 
-#: ../music_browser.c:4439
+#: ../music_browser.c:4630
 msgid "Add new record to this artist..."
 msgstr "Додати новий запис до цього виконавця..."
 
-#: ../music_browser.c:4506
+#: ../music_browser.c:4697
 msgid "Add new record..."
 msgstr "Додати новий запис..."
 
-#: ../music_browser.c:4507
+#: ../music_browser.c:4698
 msgid "Edit record..."
 msgstr "Редагувати запис..."
 
-#: ../music_browser.c:4508
+#: ../music_browser.c:4699
 msgid "Remove record"
 msgstr "Прибрати запис"
 
-#: ../music_browser.c:4510
+#: ../music_browser.c:4701
 msgid "Add new track to this record..."
 msgstr "Додати нову дор╕жку до цього запису..."
 
-#: ../music_browser.c:4512
+#: ../music_browser.c:4703
 msgid "CDDB query for this record..."
 msgstr "CDDB запит для цього запису..."
 
-#: ../music_browser.c:4513
+#: ../music_browser.c:4704
 msgid "Submit record to CDDB database..."
 msgstr ""
 
-#: ../music_browser.c:4589
+#: ../music_browser.c:4780
 msgid "Add new track..."
 msgstr "Додати нову дор╕жку..."
 
-#: ../music_browser.c:4590
+#: ../music_browser.c:4781
 msgid "Edit track..."
 msgstr "Редагувати дор╕жку..."
 
-#: ../music_browser.c:4591
+#: ../music_browser.c:4782
 msgid "Remove track"
 msgstr "Прибрати дор╕жку"
 
-#: ../music_browser.c:4593 ../playlist.c:3279
+#: ../music_browser.c:4784 ../playlist.c:3279
 msgid "File info..."
 msgstr "╤нформац╕я про файл"
 
-#: ../music_browser.c:4595
+#: ../music_browser.c:4786
 msgid "Calculate volume"
 msgstr "П╕драхувати гучн╕сть"
 
-#: ../music_browser.c:4597
+#: ../music_browser.c:4788
 #, fuzzy
 msgid "Only if unmeasured"
 msgstr "Невим╕ряно"
 
-#: ../music_browser.c:4598
+#: ../music_browser.c:4789
 msgid "In any case"
 msgstr ""
 
-#: ../music_browser.c:4600
+#: ../music_browser.c:4791
 #, fuzzy
 msgid "Update file metadata..."
 msgstr "Перечитати ╕нформац╕ю про файл"
 
-#: ../music_browser.c:5103
+#: ../music_browser.c:5294
 msgid "*Music Store"
 msgstr "*Музичний Склад"
 
@@ -2182,7 +2191,7 @@ msgstr "Наявн╕ втулки"
 msgid "ID"
 msgstr "╤дентиф╕катор"
 
-#: ../plugin.c:1895 ../plugin.c:1978 ../file_info.cpp:2306
+#: ../plugin.c:1895 ../plugin.c:1978 ../file_info.cpp:2314
 msgid "Name"
 msgstr "╤м'я"
 
@@ -2311,10 +2320,6 @@ msgstr "Наявн╕ жупани"
 msgid "Calculating volume level"
 msgstr "<b>П╕драховую р╕вень гучност╕</b>"
 
-#: ../volume.c:243 ../file_info.cpp:1805
-msgid "File:"
-msgstr "Файл:"
-
 #: ../volume.c:254
 msgid "Progress:"
 msgstr "Прогрес:"
@@ -2361,7 +2366,7 @@ msgstr "Альбом"
 msgid "Import as Record"
 msgstr "╤мпортувати як Запис"
 
-#: ../file_info.cpp:824 ../file_info.cpp:892 ../file_info.cpp:1792
+#: ../file_info.cpp:824 ../file_info.cpp:892 ../file_info.cpp:1800
 msgid "Track:"
 msgstr "Дор╕жка:"
 
@@ -2504,106 +2509,106 @@ msgstr "Коментар╕"
 msgid "Vendor:"
 msgstr "Постачальник:"
 
-#: ../file_info.cpp:1484
+#: ../file_info.cpp:1492
 #, fuzzy
 msgid "Remove ID3v1"
 msgstr "Прибрати"
 
-#: ../file_info.cpp:1496
+#: ../file_info.cpp:1504
 msgid "Create ID3v2"
 msgstr ""
 
-#: ../file_info.cpp:1507
+#: ../file_info.cpp:1515
 #, fuzzy
 msgid "Remove ID3v2"
 msgstr "Прибрати"
 
-#: ../file_info.cpp:1518
+#: ../file_info.cpp:1526
 msgid "Create APE"
 msgstr ""
 
-#: ../file_info.cpp:1529
+#: ../file_info.cpp:1537
 #, fuzzy
 msgid "Remove APE"
 msgstr "Прибрати"
 
-#: ../file_info.cpp:1839
+#: ../file_info.cpp:1847
 msgid "Audio data"
 msgstr "Ауд╕о дан╕"
 
-#: ../file_info.cpp:1843
+#: ../file_info.cpp:1851
 msgid "Format:"
 msgstr "Формат:"
 
-#: ../file_info.cpp:1855
+#: ../file_info.cpp:1863
 msgid "Length:"
 msgstr "Довжина:"
 
-#: ../file_info.cpp:1867
+#: ../file_info.cpp:1875
 msgid "Samplerate:"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:1872
+#: ../file_info.cpp:1880
 #, c-format
 msgid "%ld Hz"
 msgstr "%ld Гц"
 
-#: ../file_info.cpp:1879
+#: ../file_info.cpp:1887
 msgid "Channel count:"
 msgstr "К╕льк╕сть канал╕в:"
 
-#: ../file_info.cpp:1894
+#: ../file_info.cpp:1902
 msgid "Bandwidth:"
 msgstr "Швидк╕сть потоку:"
 
-#: ../file_info.cpp:1899
+#: ../file_info.cpp:1907
 #, c-format
 msgid "%.1f kbit/s"
 msgstr "%.1f кб╕т/с"
 
-#: ../file_info.cpp:1906
+#: ../file_info.cpp:1914
 msgid "Total samples:"
 msgstr "Всього семпл╕в:"
 
-#: ../file_info.cpp:1957
+#: ../file_info.cpp:1965
 #, fuzzy
 msgid "Module info"
 msgstr "╤нформац╕я про файл"
 
-#: ../file_info.cpp:2103 ../file_info.cpp:2206
+#: ../file_info.cpp:2111 ../file_info.cpp:2214
 #, fuzzy
 msgid "Type:"
 msgstr "SRC Тип: "
 
-#: ../file_info.cpp:2116 ../file_info.cpp:2219
+#: ../file_info.cpp:2124 ../file_info.cpp:2227
 #, fuzzy
 msgid "Channels:"
 msgstr "К╕льк╕сть канал╕в:"
 
-#: ../file_info.cpp:2129 ../file_info.cpp:2232
+#: ../file_info.cpp:2137 ../file_info.cpp:2240
 #, fuzzy
 msgid "Patterns:"
 msgstr "Категор╕я"
 
-#: ../file_info.cpp:2142 ../file_info.cpp:2245
+#: ../file_info.cpp:2150 ../file_info.cpp:2253
 #, fuzzy
 msgid "Samples:"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:2155
+#: ../file_info.cpp:2163
 msgid "Instruments:"
 msgstr ""
 
-#: ../file_info.cpp:2178
+#: ../file_info.cpp:2186
 #, fuzzy
 msgid "Samples"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:2188
+#: ../file_info.cpp:2196
 msgid "Instruments"
 msgstr ""
 
-#: ../file_info.cpp:2299
+#: ../file_info.cpp:2307
 msgid "No."
 msgstr ""
 
@@ -2778,6 +2783,10 @@ msgstr "Перекривати установки жупана"
 #, fuzzy
 msgid "Set subtitle"
 msgstr "П╕дпис"
+
+#, fuzzy
+#~ msgid "Close"
+#~ msgstr "Кольори"
 
 #~ msgid "Protocol:"
 #~ msgstr "Протокол:"

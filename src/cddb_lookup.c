@@ -42,7 +42,6 @@
 #include "music_browser.h"
 #include "build_store.h"
 #include "cddb_lookup.h"
-#include "version.h"
 
 #define CASE_UP    0
 #define CASE_DOWN  1
@@ -904,7 +903,6 @@ cddb_connection_setup(cddb_conn_t ** conn) {
 	cddb_set_server_name(*conn, options.cddb_server);
 	cddb_set_timeout(*conn, options.cddb_timeout);
 	cddb_set_charset(*conn, "UTF-8");
-	cddb_set_client(*conn, "Aqualung", aqualung_version);
 
 	if (options.cddb_use_proxy) {
 		cddb_http_proxy_enable(*conn);

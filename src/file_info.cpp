@@ -1341,6 +1341,14 @@ create_remove_handler(GtkWidget * widget, gpointer data) {
 				save_basic->taglib_mpeg_file = new TagLib::MPEG::File(buf, false);
 			}
 
+			/* if we have an ID3v1 page, re-create it in read-only mode */
+			if (save_basic->id3v1_page_no != -1) {
+				gtk_notebook_remove_page(save_basic->nb, save_basic->id3v1_page_no);
+				save_basic->id3v1_page_no = -1;
+				save_basic->id3v1_page_no =
+					build_id3v1_page(save_basic, false, save_basic->taglib_mpeg_file->ID3v1Tag());
+			}
+
 			save_basic->id3v2_page_no =
 				build_id3v2_page(save_basic, true, save_basic->taglib_mpeg_file->ID3v2Tag());
 

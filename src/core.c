@@ -1824,6 +1824,7 @@ print_usage(void) {
 }
 
 
+#ifdef HAVE_JACK
 void
 print_jack_failed_connection(void) {
 
@@ -1845,6 +1846,7 @@ print_jack_SR_out_of_range(int SR) {
 		"if you really need to.\n");
 	fprintf(stderr, "Currently MAX_SAMPLERATE = %d Hz.\n", MAX_SAMPLERATE);
 }
+#endif /* HAVE_JACK */
 
 
 int
@@ -1916,7 +1918,9 @@ main(int argc, char ** argv) {
 		{ 0, 0, 0, 0 }
 	};
 
+#if defined(HAVE_JACK) || defined(HAVE_ALSA) || defined(HAVE_OSS)
 	int auto_driver_found = 0;
+#endif /* jack || alsa || oss */
 
 
 #ifdef _WIN32
@@ -2535,10 +2539,8 @@ main(int argc, char ** argv) {
 		if ((x = pthread_setschedparam(thread_info.disk_thread_id,
 					       SCHED_FIFO, &param)) != 0) {
 			fprintf(stderr,
-				"Cannot use real-time scheduling for disk thread (FIFO/%d) "
+				"Warning: cannot use real-time scheduling for disk thread (FIFO/%d) "
 				"(%d: %s)\n", param.sched_priority, x, strerror(x));
-			close_app_socket();
-			exit(1);
 		}
 #endif /* _WIN32 */
 	}
@@ -2570,10 +2572,8 @@ main(int argc, char ** argv) {
 			if ((x = pthread_setschedparam(thread_info.alsa_thread_id,
 						       SCHED_FIFO, &param)) != 0) {
 				fprintf(stderr,
-					"Cannot use real-time scheduling for ALSA output thread (FIFO/%d) "
+					"Warning: cannot use real-time scheduling for ALSA output thread (FIFO/%d) "
 					"(%d: %s)\n", param.sched_priority, x, strerror(x));
-				close_app_socket();
-				exit(1);
 			}
 #endif /* _WIN32 */
 		}

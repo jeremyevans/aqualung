@@ -902,11 +902,15 @@ int
 meta_update_basic(char * filename, char * title, char * artist, char * album,
 		  char * comment, char * genre, char * year, char * track) {
 
-	TagLib::FileRef f(filename);
+	TagLib::FileRef f(filename, false);
 	char buf[MAXLEN];
 	int save = 0;
 	
 	if (f.isNull() || !f.tag()) {
+		return -1;
+	}
+
+	if (f.file()->readOnly()) {
 		return -1;
 	}
 

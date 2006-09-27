@@ -48,7 +48,7 @@
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Standard
 
@@ -288,13 +288,13 @@ Aqualung is a music player for the GNU/Linux operating system.
 
 \begin_layout Standard
 Almost all sample-based, uncompressed formats (e.g.\InsetSpace ~
-WAV, AIFF, AU etc.)\InsetSpace ~
-are supported.
+WAV, AIFF, AU etc.) are
+ supported.
  Files encoded with FLAC (the Free Lossless Audio Codec), Ogg Vorbis, Ogg
  Speex, MPEG Audio (including the infamous MP3 format), MOD audio formats
  (MOD, S3M, XM, IT, etc.), Musepack and Monkey's Audio Codec are also supported.
  The program can play the music through OSS, ALSA or the JACK Audio Connection
- Kit.
+ Kit, or even using the Win32 Sound API (available only under Cygwin).
  Depending on the compile-time options, not all file formats and output
  drivers may be usable.
  Type `aqualung -v' to get a list of all the compiled-in features.
@@ -307,16 +307,16 @@ Aqualung supports the LADSPA 1.1 plugin standard.
 \end_layout
 
 \begin_layout Standard
-Other features of the program: internally working volume and balance controls
- (not touching the soundcard mixer), multiple skin support, random seeking
- during playback, track repeat, list repeat and shuffle mode (besides normal
- playback).
- It will come up in the same state as it was when you closed it, including
- playback modes, volume & balance settings, currently processing LADSPA
- plugins, window sizes, positions & visibility, and other miscellaneous
+Other features of the program are internally working volume and balance
+ controls (not touching the soundcard mixer), multiple skin support, random
+ seeking during playback, track repeat, list repeat and shuffle mode (besides
+ normal playback).
+ Aqualung will come up in the same state as it was when you closed it, including
+ playback modes, volume and balance settings, currently processing LADSPA
+ plugins, window sizes, positions and visibility, and other miscellaneous
  options.
- Aqualung has the ability to display FLAC stream metadata, Ogg Vorbis comments
- and ID3v2 tags found in MP3 and other files.
+ Aqualung has the ability to display and edit Ogg Xiph comments, ID3v1,
+ ID3v2 and APE tags found in files that support them.
 \end_layout
 
 \begin_layout Standard
@@ -333,7 +333,7 @@ In addition to all this, Aqualung provides a so-called Music Store that
  and the titles of records and tracks).
  You can (and should) organize your music into trees of Artists/Records/Tracks,
  thereby making life easier than with the all-in-one Winamp/XMMS playlist.
- Importing file metadata (ID3v2 tags, Ogg Vorbis comments, FLAC metadata)
+ Importing file metadata (ID3v1, ID3v2 tags, Ogg Xiph comments, APE metadata)
  into the Music Store as well as getting track names from a CDDB/Freedb
  database is supported.
 \end_layout
@@ -344,28 +344,6 @@ Command Line Interface
 
 \begin_layout Subsection
 Invocation
-\end_layout
-
-\begin_layout Description
-aqualung\InsetSpace ~
-
-\begin_inset ERT
-status collapsed
-
-\begin_layout Standard
-
-{-}{-}
-\end_layout
-
-\end_inset
-
-output\InsetSpace ~
-(oss|alsa|jack)\InsetSpace ~
-[options]\InsetSpace ~
-[file1\InsetSpace ~
-[file2\InsetSpace ~
-\SpecialChar \ldots{}
-]]
 \end_layout
 
 \begin_layout Description
@@ -398,6 +376,28 @@ status collapsed
 \end_inset
 
 version Print version information and list of compiled-in features.
+\end_layout
+
+\begin_layout Description
+aqualung\InsetSpace ~
+[
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+{-}{-}
+\end_layout
+
+\end_inset
+
+output\InsetSpace ~
+(oss|alsa|jack|win32)]\InsetSpace ~
+[options]\InsetSpace ~
+[file1\InsetSpace ~
+[file2\InsetSpace ~
+\SpecialChar \ldots{}
+]]
 \end_layout
 
 \begin_layout Subsection
@@ -2449,7 +2449,7 @@ Each store, artist, record and track has fields you can fill in via bringing
 
 \begin_layout Standard
 For artists, you should enter the same here as the `Visible name' for ordinary
- band names (you can use copy&paste to do that).
+ band names (you can use copy & paste to do that).
  However, for some artists you will enter a slightly modified string: `Mayall,
  John' or just `Mayall' for John Mayall, for example.
  This is to ensure that `John Mayall' (which is the visible name) appears
@@ -2501,8 +2501,6 @@ On the Settings/Music Store page you can specify several database files
  to change (add, edit, remove, etc.) the items in the store.
  Finally, if you have write permission on the file, you will be allowed
  to change the items.
- When adding or removing files, you need to press the `Refresh' button for
- the changes to take effect.
 \end_layout
 
 \begin_layout Standard
@@ -2512,12 +2510,12 @@ The order in which the stores appear in the Music Store is the order of
 \end_layout
 
 \begin_layout Subsubsection
-Importing file metadata into the Music Store
+Handling file metadata
 \end_layout
 
 \begin_layout Standard
-The program can read and display FLAC stream metadata, Ogg Vorbis comments
- and ID3v2 tags present in the files themselves.
+The program can read and write Ogg Xiph comments, ID3v1, ID3v2 and APE tags
+ present in the files themselves.
  To see such metadata for a particular track, you will utilize the `File
  info' dialog accessible from the Music Store (right-click popup menus for
  Tracks, or press `i') and the Playlist (right-click popup menu for playlist
@@ -2530,12 +2528,33 @@ When you open the `File info' dialog from the Music Store, you will find
  (unless the store is readonly).
  By pressing these buttons, the associated data will be imported into the
  corresponding field of the relevant Track.
+ For metadata fields that don't have a corresponding field in the Music
+ Store, you can append their contents to the `Comment' field as a catch-all
+ solution.
 \end_layout
 
 \begin_layout Standard
-For metadata fields that don't have a corresponding field in the Music Store,
- you can append their contents to the `Comment' field as a catch-all solution.
- 
+The so-called basic fields (that are common in all supported metadata formats)
+ are editable, thus you can modify their contents and save them by pressing
+ the `Save basic fields' button.
+ Other format specific fields are also displayed, but modifying them is
+ not supported.
+ Creation and removal of the tags is also supported for the appropriate
+ file formats.
+\end_layout
+
+\begin_layout Standard
+Aqualung supports mass tagging, that is, writing data from the Music Store
+ into file metadata.
+ The feature can be invoked on a store, artist, record or a single track
+ using the `Batch-update file metadata\SpecialChar \ldots{}
+' popup menu item.
+ Supported metadata fields are artist, record and track name, track number,
+ track comment and year.
+ The names are copied from the visible name fields of the artist, record
+ and track, the track number and comment are set from the sort name and
+ comment field of the track, respectively.
+ The year is extracted from the sort name field of the record.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2648,7 +2667,8 @@ You also have the possibility to always use a manually specified, fixed
  value as RVA for a particular track.
  In the `Edit track' dialog for that track, check the `Use manual RVA value'
  checkbox and set the value with the spinbutton on its right.
- If you import an ID3v2.4 RVA tag from an MP3 file, it will also set this
+ If you e.g.\InsetSpace ~
+import an ID3v2.4 RVA tag from an MP3 file, it will also set this
  field thereby circumventing Aqualung's own RVA calculation.
  
 \end_layout
@@ -2686,9 +2706,10 @@ By pressing the `OK' button the track names of the currently selected lookup
  The artist name and record title are not automatically set, but can be
  imported using the `Import as Artist' and `Import as Title' buttons on
  the right.
- Other data (year, category, genre and extended data) can be appended to
- the comment field of the record in question using the `Add to Comments'
- button next to the appropriate text entry.
+ Year can be imported as the sort key of the record.
+ Other data (category, genre and extended data) can be appended to the comment
+ field of the record in question using the `Add to Comments' button next
+ to the appropriate text entry.
 \end_layout
 
 \begin_layout Standard
@@ -2719,32 +2740,7 @@ ing rules}
 \end_layout
 
 \begin_layout Standard
-The default CDDB database server address is 
-\begin_inset ERT
-status collapsed
 
-\begin_layout Standard
-
-
-\backslash
-href{http://freedb.org}{freedb.org}
-\end_layout
-
-\end_inset
-
-.
- You can specify another server on the Settings/CDDB page.
- The connection timeout and the protocol (CDDBP or HTTP) can also be set
- there.
- You will also have to give a valid email address for CDDB submission.
- Should your submission be rejected for some reason, you will receive a
- note about the failure to this address.
-\end_layout
-
-\begin_layout Standard
-Instead of connecting directly to the CDDB server you can use an HTTP proxy.
- This case you have to specify the proxy server address and port on the
- Settings/CDDB page (the protocol will be HTTP).
 \end_layout
 
 \begin_layout Subsubsection
@@ -3913,6 +3909,7 @@ There are also some options to handle the cover arts of your records.
  If you select this record (or one of its tracks) in the Music Store, the
  image will be displayed in the comment pane and the File Info dialog, as
  well as in the Main window during the playback of a track from this album.
+ Clicking the image will show a zoomed version of the cover.
 \end_layout
 
 \begin_layout Standard
@@ -3990,10 +3987,42 @@ CDDB
 
 \begin_layout Standard
 You can customize the CDDB lookup here.
- As for the protocol, standard CDDBP (port 888) and CDDB over HTTP (port
- 80) are supported.
+ As for the protocol for querying, standard CDDBP (port 888) and CDDB over
+ HTTP (port 80) are supported.
  The standard CDDBP port is the recommended choice unless some unavoidable
  firewall settings prevent you from using it.
+ For submission always HTTP is used.
+\end_layout
+
+\begin_layout Standard
+The default CDDB database server address is 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+href{http://freedb.org}{freedb.org}
+\end_layout
+
+\end_inset
+
+, but you may specify another server (maybe a close mirror).
+ The connection timeout can also be set here.
+\end_layout
+
+\begin_layout Standard
+If you want to update or submit records to the CDDB server, you will have
+ to give a valid email address.
+ Should your submission be rejected for some reason, you will receive a
+ note about the failure to this address.
+\end_layout
+
+\begin_layout Standard
+Instead of connecting directly to the CDDB server you can use an HTTP proxy.
+ This case you have to specify the proxy server address and port (the protocol
+ will be HTTP).
 \end_layout
 
 \begin_layout Subsubsection

@@ -1887,18 +1887,23 @@ is_store_iter_readonly(GtkTreeIter * i) {
 void
 set_popup_sensitivity(GtkTreePath * path) {
 
-	gboolean val, val2, val3;
+	gboolean val = (is_store_path_readonly(path)) ? FALSE : TRUE;
+	gboolean val2 = (vol_window == NULL) ? TRUE : FALSE;
 
-	val = (is_store_path_readonly(path)) ? FALSE : TRUE;
-	val2 = (vol_window == NULL) ? TRUE : FALSE;
-	val3 = (batch_tag_root == NULL) ? TRUE : FALSE;
+#ifdef HAVE_TAGLIB
+	gboolean val3 = (batch_tag_root == NULL) ? TRUE : FALSE;
+
+	gtk_widget_set_sensitive(store__tag, val3);
+	gtk_widget_set_sensitive(artist__tag, val3);
+	gtk_widget_set_sensitive(record__tag, val3);
+	gtk_widget_set_sensitive(track__tag, val3);
+#endif /* HAVE_TAGLIB */
 
 	gtk_widget_set_sensitive(store__build, val);
 	gtk_widget_set_sensitive(store__edit, val);
 	gtk_widget_set_sensitive(store__save, val);
 	gtk_widget_set_sensitive(store__addart, val);
 	gtk_widget_set_sensitive(store__volume, val2);
-	gtk_widget_set_sensitive(store__tag, val3);
 
 	gtk_widget_set_sensitive(artist__add, val);
 	gtk_widget_set_sensitive(artist__build, val);
@@ -1906,7 +1911,6 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gtk_widget_set_sensitive(artist__remove, val);
 	gtk_widget_set_sensitive(artist__addrec, val);
 	gtk_widget_set_sensitive(artist__volume, val2);
-	gtk_widget_set_sensitive(artist__tag, val3);
 
 	gtk_widget_set_sensitive(record__add, val);
 	gtk_widget_set_sensitive(record__edit, val);
@@ -1917,13 +1921,11 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gtk_widget_set_sensitive(record__cddb_submit, TRUE);
 #endif /* HAVE_CDDB */
 	gtk_widget_set_sensitive(record__volume, val2);
-	gtk_widget_set_sensitive(record__tag, val3);
 
 	gtk_widget_set_sensitive(track__add, val);
 	gtk_widget_set_sensitive(track__edit, val);
 	gtk_widget_set_sensitive(track__remove, val);
 	gtk_widget_set_sensitive(track__volume, val2);
-	gtk_widget_set_sensitive(track__tag, val3);
 
 	if (
 #ifdef HAVE_CDDB

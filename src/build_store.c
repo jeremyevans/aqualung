@@ -152,7 +152,7 @@ int record_sort_by = RECORD_SORT_YEAR;
 int reset_existing_data = 0;
 int add_year_to_comment = 0;
 
-int pri_meta_first = 1;
+int pri_meta_first = 0;
 
 int excl_enabled = 1;
 char ** excl_patternv = NULL;

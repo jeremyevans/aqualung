@@ -388,11 +388,11 @@ else
 		[  --with-mpegstatrec=yes,no  compile with statistical MPEG frame recognition (default: yes)],
 		mpegstatrec="$withval",
 		mpegstatrec="detect")
-		if test "$mpegstatrec" = "no"; then
-		        AC_MSG_RESULT(no)
-		else
+		if test "$mpegstatrec" = "yes"; then
                         AC_MSG_RESULT(yes)
 		        AC_DEFINE([MPEG_STATREC], [1], [Defined if compile with statistical MPEG frame recognition])
+		else
+		        AC_MSG_RESULT(no)
 		fi
 	fi
 fi

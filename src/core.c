@@ -56,6 +56,7 @@
 #endif /* HAVE_OSS */
 
 #ifdef HAVE_JACK
+#include <sys/mman.h>
 #include <jack/jack.h>
 #endif /* HAVE_JACK */
 
@@ -1249,6 +1250,12 @@ jack_client_start(void) {
 				fprintf(stderr, "Connected out_R to %s\n", user_port2);
 			}
 		}
+	}
+
+	/* unlock memory (implicitly locked by libjack when Jack runs realtime) */
+	if (munlockall() < 0) {
+		fprintf(stderr, "jack_client_start: munlockall() failed\n");
+		exit(1);
 	}
 }
 #endif /* HAVE_JACK */

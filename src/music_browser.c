@@ -1888,7 +1888,7 @@ void
 set_popup_sensitivity(GtkTreePath * path) {
 
 	gboolean val = (is_store_path_readonly(path)) ? FALSE : TRUE;
-	gboolean val2 = (vol_window == NULL) ? TRUE : FALSE;
+	gboolean val2 = (vol_window == NULL) ? val : FALSE;
 
 #ifdef HAVE_TAGLIB
 	gboolean val3 = (batch_tag_root == NULL) ? TRUE : FALSE;

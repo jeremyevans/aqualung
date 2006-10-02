@@ -210,8 +210,8 @@ msgstr "Gyökérkönyvtár"
 msgid "Artist path"
 msgstr "Elõadó könyvtára"
 
-#: ../build_store.c:752 ../music_browser.c:490 ../music_browser.c:1473
-#: ../music_browser.c:1655
+#: ../build_store.c:752 ../music_browser.c:514 ../music_browser.c:1497
+#: ../music_browser.c:1679
 msgid "_Browse..."
 msgstr "_Tallózás..."
 
@@ -232,7 +232,7 @@ msgid "Sort artists by"
 msgstr "Elõadók rendezése a következõ szerint"
 
 #: ../build_store.c:790 ../build_store.c:1085 ../build_store.c:1171
-#: ../music_browser.c:3516 ../options.c:2327 ../options.c:2362
+#: ../music_browser.c:3531 ../options.c:2327 ../options.c:2362
 msgid "Artist name"
 msgstr "Elõadó neve"
 
@@ -252,12 +252,12 @@ msgstr "Könyvtár neve (kisbetûvel)"
 msgid "Sort records by"
 msgstr "Albumok rendezése a következõ szerint"
 
-#: ../build_store.c:821 ../music_browser.c:3521
+#: ../build_store.c:821 ../music_browser.c:3536
 msgid "Year"
 msgstr "Év"
 
 #: ../build_store.c:822 ../build_store.c:1097 ../build_store.c:1183
-#: ../music_browser.c:3517 ../options.c:2336 ../options.c:2371
+#: ../music_browser.c:3532 ../options.c:2336 ../options.c:2371
 msgid "Record name"
 msgstr "Album címe"
 
@@ -325,7 +325,7 @@ msgstr "Csak szóközöket tartalmazó metaadatok kihagyása"
 msgid "Import"
 msgstr "Importálás"
 
-#: ../build_store.c:1106 ../build_store.c:1192 ../music_browser.c:3518
+#: ../build_store.c:1106 ../build_store.c:1192 ../music_browser.c:3533
 #: ../options.c:2345 ../options.c:2380
 msgid "Track name"
 msgstr "Szám címe"
@@ -382,8 +382,8 @@ msgstr "Csere:"
 msgid "Sandbox"
 msgstr "Homokozó"
 
-#: ../build_store.c:1312 ../music_browser.c:464 ../music_browser.c:617
-#: ../music_browser.c:1458 ../music_browser.c:1635
+#: ../build_store.c:1312 ../music_browser.c:488 ../music_browser.c:641
+#: ../music_browser.c:1482 ../music_browser.c:1659
 msgid "Filename:"
 msgstr "Fájlnév:"
 
@@ -407,7 +407,7 @@ msgstr "Könyvtár:"
 msgid "Action:"
 msgstr "Mûvelet:"
 
-#: ../build_store.c:1627 ../cddb_lookup.c:135 ../music_browser.c:3660
+#: ../build_store.c:1627 ../cddb_lookup.c:135 ../music_browser.c:3676
 #: ../volume.c:273
 msgid "Abort"
 msgstr "Megszakítás"
@@ -1104,100 +1104,100 @@ msgstr "_Feltöltés"
 msgid "_Abort"
 msgstr "_Megszakítás"
 
-#: ../music_browser.c:362
+#: ../music_browser.c:386
 msgid "Please select the xml file for this store."
 msgstr "Add meg a tárolóhoz tartozó xml fájlt."
 
-#: ../music_browser.c:450
+#: ../music_browser.c:474
 msgid "Create empty store"
 msgstr "Üres tároló létrehozása"
 
-#: ../music_browser.c:479 ../music_browser.c:606
+#: ../music_browser.c:503 ../music_browser.c:630
 msgid "Name:"
 msgstr "Név:"
 
-#: ../music_browser.c:496 ../music_browser.c:633 ../music_browser.c:758
-#: ../music_browser.c:875 ../music_browser.c:1114 ../music_browser.c:1266
-#: ../music_browser.c:1479 ../music_browser.c:1661
+#: ../music_browser.c:520 ../music_browser.c:657 ../music_browser.c:782
+#: ../music_browser.c:899 ../music_browser.c:1138 ../music_browser.c:1290
+#: ../music_browser.c:1503 ../music_browser.c:1685
 msgid "Comments:"
 msgstr "Megjegyzések:"
 
-#: ../music_browser.c:593
+#: ../music_browser.c:617
 msgid "Edit Store"
 msgstr "Tároló szerkesztése"
 
-#: ../music_browser.c:722
+#: ../music_browser.c:746
 msgid "Add Artist"
 msgstr "Elõadó hozzáadása"
 
-#: ../music_browser.c:735 ../music_browser.c:852 ../music_browser.c:1057
-#: ../music_browser.c:1243 ../music_browser.c:1436 ../music_browser.c:1613
+#: ../music_browser.c:759 ../music_browser.c:876 ../music_browser.c:1081
+#: ../music_browser.c:1267 ../music_browser.c:1460 ../music_browser.c:1637
 msgid "Visible name:"
 msgstr "Látható név:"
 
-#: ../music_browser.c:747 ../music_browser.c:864 ../music_browser.c:1069
-#: ../music_browser.c:1255 ../music_browser.c:1447 ../music_browser.c:1624
+#: ../music_browser.c:771 ../music_browser.c:888 ../music_browser.c:1093
+#: ../music_browser.c:1279 ../music_browser.c:1471 ../music_browser.c:1648
 msgid "Name to sort by:"
 msgstr "Rendezési kulcs:"
 
-#: ../music_browser.c:839
+#: ../music_browser.c:863
 msgid "Edit Artist"
 msgstr "Elõadó szerkesztése"
 
-#: ../music_browser.c:947
+#: ../music_browser.c:971
 msgid "Please select the audio files for this record."
 msgstr "Válaszd ki az albumhoz adandó hangfájlokat."
 
-#: ../music_browser.c:1044
+#: ../music_browser.c:1068
 msgid "Add Record"
 msgstr "Album hozzáadása"
 
-#: ../music_browser.c:1081
+#: ../music_browser.c:1105
 msgid "Auto-create tracks from these files:"
 msgstr "Számok automatikus létrehozása a következõ fájlokból:"
 
-#: ../music_browser.c:1102 ../plugin.c:1991
+#: ../music_browser.c:1126 ../plugin.c:1991
 msgid "Clear list"
 msgstr "Lista törlése"
 
-#: ../music_browser.c:1109
+#: ../music_browser.c:1133
 msgid "_Add files..."
 msgstr "Fájlok _hozzáadása..."
 
-#: ../music_browser.c:1230
+#: ../music_browser.c:1254
 msgid "Edit Record"
 msgstr "Album szerkesztése"
 
-#: ../music_browser.c:1334
+#: ../music_browser.c:1358
 msgid "Please select the audio file for this track."
 msgstr "Add meg a számhoz tartozó fájlt."
 
-#: ../music_browser.c:1423
+#: ../music_browser.c:1447
 msgid "Add Track"
 msgstr "Szám hozzáadása"
 
-#: ../music_browser.c:1600
+#: ../music_browser.c:1624
 msgid "Edit Track"
 msgstr "Szám szerkesztése"
 
-#: ../music_browser.c:1688
+#: ../music_browser.c:1712
 msgid "Duration:"
 msgstr "Hossz:"
 
-#: ../music_browser.c:1703
+#: ../music_browser.c:1727
 msgid "Volume level:"
 msgstr "Hangerõ:"
 
-#: ../music_browser.c:1715
+#: ../music_browser.c:1739
 #, c-format
 msgid "Unmeasured"
 msgstr "Ismeretlen"
 
-#: ../music_browser.c:1728
+#: ../music_browser.c:1752
 msgid "Use manual RVA value [dB]"
 msgstr "Rögzített RVA használata [dB]"
 
-#: ../music_browser.c:2372
+#: ../music_browser.c:2402
 #, c-format
 msgid ""
 "The store '%s' already exists.\n"
@@ -1206,253 +1206,253 @@ msgstr ""
 "A '%s' táróló már létezik.\n"
 "Hozzáadása a Beállítások/Zenetár oldalon lehetséges."
 
-#: ../music_browser.c:2399 ../options.c:1253
+#: ../music_browser.c:2429 ../options.c:1253
 msgid "rw"
 msgstr "rw"
 
-#: ../music_browser.c:2553 ../music_browser.c:2808 ../music_browser.c:3045
-#: ../music_browser.c:3313
+#: ../music_browser.c:2583 ../music_browser.c:2838 ../music_browser.c:3075
+#: ../music_browser.c:3343
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
 msgstr "Biztosan eltávolítod a Zenetárból a következõt: \"%s\" ?"
 
-#: ../music_browser.c:2555 ../music_browser.c:2558
+#: ../music_browser.c:2585 ../music_browser.c:2588
 msgid "Remove Store"
 msgstr "Tároló eltávolítása"
 
-#: ../music_browser.c:2559
+#: ../music_browser.c:2589
 msgid "Do you want to save the store before removing?"
 msgstr "El akarod menteni a tárolót eltávolítás elõtt?"
 
-#: ../music_browser.c:2809
+#: ../music_browser.c:2839
 msgid "Remove Artist"
 msgstr "Elõadó eltávolítása"
 
-#: ../music_browser.c:3046
+#: ../music_browser.c:3076
 msgid "Remove Record"
 msgstr "Album eltávolítása"
 
-#: ../music_browser.c:3314
+#: ../music_browser.c:3344
 msgid "Remove Track"
 msgstr "Szám eltávolítása"
 
-#: ../music_browser.c:3509 ../music_browser.c:3610
+#: ../music_browser.c:3524 ../music_browser.c:3626
 msgid "Update file metadata"
 msgstr "Metaadatok frissítése"
 
-#: ../music_browser.c:3519
+#: ../music_browser.c:3534
 msgid "Track comment"
 msgstr "Szám kommentje"
 
-#: ../music_browser.c:3520 ../meta_decoder.cpp:236
+#: ../music_browser.c:3535 ../meta_decoder.cpp:236
 msgid "Track number"
 msgstr "Track száma"
 
-#: ../music_browser.c:3624 ../volume.c:243 ../file_info.cpp:1813
+#: ../music_browser.c:3640 ../volume.c:243 ../file_info.cpp:1813
 msgid "File:"
 msgstr "Fájl:"
 
-#: ../music_browser.c:3638
+#: ../music_browser.c:3654
 msgid "Failed to set metadata at the following files:"
 msgstr "A következõ fájloknál nem sikerült beállítani a metaadatokat:"
 
-#: ../music_browser.c:3988
+#: ../music_browser.c:4007
 msgid "(no comment)"
 msgstr "(nincs megjegyzés)"
 
-#: ../music_browser.c:4080 ../music_browser.c:4141 ../music_browser.c:4188
-#: ../music_browser.c:4216
+#: ../music_browser.c:4099 ../music_browser.c:4160 ../music_browser.c:4207
+#: ../music_browser.c:4235
 msgid "time unmeasured"
 msgstr "ismeretlen hossz"
 
-#: ../music_browser.c:4088 ../music_browser.c:4098 ../music_browser.c:4108
+#: ../music_browser.c:4107 ../music_browser.c:4117 ../music_browser.c:4127
 msgid "artists"
 msgstr "elõadó"
 
-#: ../music_browser.c:4088 ../music_browser.c:4098 ../music_browser.c:4108
+#: ../music_browser.c:4107 ../music_browser.c:4117 ../music_browser.c:4127
 msgid "artist"
 msgstr "elõadó"
 
-#: ../music_browser.c:4090 ../music_browser.c:4100 ../music_browser.c:4109
-#: ../music_browser.c:4148 ../music_browser.c:4155 ../music_browser.c:4162
+#: ../music_browser.c:4109 ../music_browser.c:4119 ../music_browser.c:4128
+#: ../music_browser.c:4167 ../music_browser.c:4174 ../music_browser.c:4181
 msgid "records"
 msgstr "album"
 
-#: ../music_browser.c:4090 ../music_browser.c:4100 ../music_browser.c:4109
-#: ../music_browser.c:4148 ../music_browser.c:4155 ../music_browser.c:4162
+#: ../music_browser.c:4109 ../music_browser.c:4119 ../music_browser.c:4128
+#: ../music_browser.c:4167 ../music_browser.c:4174 ../music_browser.c:4181
 msgid "record"
 msgstr "album"
 
-#: ../music_browser.c:4092 ../music_browser.c:4102 ../music_browser.c:4110
-#: ../music_browser.c:4150 ../music_browser.c:4157 ../music_browser.c:4163
-#: ../music_browser.c:4195 ../music_browser.c:4200 ../music_browser.c:4205
+#: ../music_browser.c:4111 ../music_browser.c:4121 ../music_browser.c:4129
+#: ../music_browser.c:4169 ../music_browser.c:4176 ../music_browser.c:4182
+#: ../music_browser.c:4214 ../music_browser.c:4219 ../music_browser.c:4224
 msgid "tracks"
 msgstr "szám"
 
-#: ../music_browser.c:4092 ../music_browser.c:4102 ../music_browser.c:4110
-#: ../music_browser.c:4150 ../music_browser.c:4157 ../music_browser.c:4163
-#: ../music_browser.c:4195 ../music_browser.c:4200 ../music_browser.c:4205
-#: ../music_browser.c:4230 ../music_browser.c:4233 ../music_browser.c:4236
+#: ../music_browser.c:4111 ../music_browser.c:4121 ../music_browser.c:4129
+#: ../music_browser.c:4169 ../music_browser.c:4176 ../music_browser.c:4182
+#: ../music_browser.c:4214 ../music_browser.c:4219 ../music_browser.c:4224
+#: ../music_browser.c:4249 ../music_browser.c:4252 ../music_browser.c:4255
 msgid "track"
 msgstr "szám"
 
-#: ../music_browser.c:4372 ../music_browser.c:5178 ../music_browser.c:5328
+#: ../music_browser.c:4384 ../music_browser.c:5190 ../music_browser.c:5340
 #: ../options.c:1890
 msgid "Music Store"
 msgstr "Zenetár"
 
-#: ../music_browser.c:4391 ../music_browser.c:4532 ../music_browser.c:4564
-#: ../music_browser.c:4639 ../music_browser.c:4714 ../music_browser.c:4793
+#: ../music_browser.c:4403 ../music_browser.c:4544 ../music_browser.c:4576
+#: ../music_browser.c:4651 ../music_browser.c:4726 ../music_browser.c:4805
 #: ../playlist.c:3280
 msgid "Search..."
 msgstr "Keresés..."
 
-#: ../music_browser.c:4397
+#: ../music_browser.c:4409
 msgid "Collapse all items"
 msgstr "Elemek bezárása"
 
-#: ../music_browser.c:4403
+#: ../music_browser.c:4415
 msgid "Edit item..."
 msgstr "Elem szerkesztése..."
 
-#: ../music_browser.c:4409
+#: ../music_browser.c:4421
 msgid "Add item..."
 msgstr "Elem hozzáadása..."
 
-#: ../music_browser.c:4415
+#: ../music_browser.c:4427
 msgid "Remove item..."
 msgstr "Elem eltávolítása"
 
-#: ../music_browser.c:4422 ../music_browser.c:4533
+#: ../music_browser.c:4434 ../music_browser.c:4545
 msgid "Save all stores"
 msgstr "Összes tároló mentése"
 
-#: ../music_browser.c:4531 ../music_browser.c:4549
+#: ../music_browser.c:4543 ../music_browser.c:4561
 msgid "Create empty store..."
 msgstr "Üres tároló létrehozása..."
 
-#: ../music_browser.c:4546 ../music_browser.c:4622 ../music_browser.c:4694
-#: ../music_browser.c:4778
+#: ../music_browser.c:4558 ../music_browser.c:4634 ../music_browser.c:4706
+#: ../music_browser.c:4790
 msgid "Add to playlist"
 msgstr "Lejátszólistába"
 
-#: ../music_browser.c:4547 ../music_browser.c:4623 ../music_browser.c:4695
+#: ../music_browser.c:4559 ../music_browser.c:4635 ../music_browser.c:4707
 msgid "Add to playlist (Album mode)"
 msgstr "Lejátszólistába (Album mód)"
 
-#: ../music_browser.c:4550
+#: ../music_browser.c:4562
 msgid "Build/Update store from filesystem..."
 msgstr "Tároló felépítése/aktualizálása fájlrendszerrõl..."
 
-#: ../music_browser.c:4551
+#: ../music_browser.c:4563
 msgid "Edit store..."
 msgstr "Tároló szerkesztése..."
 
-#: ../music_browser.c:4552
+#: ../music_browser.c:4564
 msgid "Save store"
 msgstr "Tároló mentése"
 
-#: ../music_browser.c:4553
+#: ../music_browser.c:4565
 msgid "Remove store"
 msgstr "Tároló eltávolítása"
 
-#: ../music_browser.c:4555
+#: ../music_browser.c:4567
 msgid "Add new artist to this store..."
 msgstr "Új elõadó hozzáadása ehhez a tárolóhoz..."
 
-#: ../music_browser.c:4557 ../music_browser.c:4632 ../music_browser.c:4707
+#: ../music_browser.c:4569 ../music_browser.c:4644 ../music_browser.c:4719
 msgid "Calculate volume (recursive)"
 msgstr "Hangosság meghatározása (rekurzív)"
 
-#: ../music_browser.c:4559 ../music_browser.c:4634 ../music_browser.c:4709
+#: ../music_browser.c:4571 ../music_browser.c:4646 ../music_browser.c:4721
 msgid "Unmeasured tracks only"
 msgstr "Ismeretlen hangerejû számokra"
 
-#: ../music_browser.c:4560 ../music_browser.c:4635 ../music_browser.c:4710
+#: ../music_browser.c:4572 ../music_browser.c:4647 ../music_browser.c:4722
 msgid "All tracks"
 msgstr "Minden számra"
 
-#: ../music_browser.c:4562 ../music_browser.c:4637 ../music_browser.c:4712
+#: ../music_browser.c:4574 ../music_browser.c:4649 ../music_browser.c:4724
 msgid "Batch-update file metadata..."
 msgstr "Metaadatok frissítése a háttérben..."
 
-#: ../music_browser.c:4625
+#: ../music_browser.c:4637
 msgid "Add new artist..."
 msgstr "Új elõadó hozzáadása..."
 
-#: ../music_browser.c:4626
+#: ../music_browser.c:4638
 msgid "Build/Update artist from filesystem..."
 msgstr "Elõadó felépítése/aktualizálása fájlrendszerrõl..."
 
-#: ../music_browser.c:4627
+#: ../music_browser.c:4639
 msgid "Edit artist..."
 msgstr "Elõadó szerkesztése..."
 
-#: ../music_browser.c:4628
+#: ../music_browser.c:4640
 msgid "Remove artist"
 msgstr "Elõadó eltávolítása"
 
-#: ../music_browser.c:4630
+#: ../music_browser.c:4642
 msgid "Add new record to this artist..."
 msgstr "Új album hozzáadása ehhez az elõadóhoz..."
 
-#: ../music_browser.c:4697
+#: ../music_browser.c:4709
 msgid "Add new record..."
 msgstr "Új album hozzáadása..."
 
-#: ../music_browser.c:4698
+#: ../music_browser.c:4710
 msgid "Edit record..."
 msgstr "Album szerkesztése..."
 
-#: ../music_browser.c:4699
+#: ../music_browser.c:4711
 msgid "Remove record"
 msgstr "Album eltávolítása"
 
-#: ../music_browser.c:4701
+#: ../music_browser.c:4713
 msgid "Add new track to this record..."
 msgstr "Új szám hozzáadása ehhez az albumhoz..."
 
-#: ../music_browser.c:4703
+#: ../music_browser.c:4715
 msgid "CDDB query for this record..."
 msgstr "Album lekérdezése CDDB adatbázisból..."
 
-#: ../music_browser.c:4704
+#: ../music_browser.c:4716
 msgid "Submit record to CDDB database..."
 msgstr "Album feltöltése CDDB adatbázisba..."
 
-#: ../music_browser.c:4780
+#: ../music_browser.c:4792
 msgid "Add new track..."
 msgstr "Új szám hozzáadása..."
 
-#: ../music_browser.c:4781
+#: ../music_browser.c:4793
 msgid "Edit track..."
 msgstr "Szám szerkesztése..."
 
-#: ../music_browser.c:4782
+#: ../music_browser.c:4794
 msgid "Remove track"
 msgstr "Szám eltávolítása"
 
-#: ../music_browser.c:4784 ../playlist.c:3279
+#: ../music_browser.c:4796 ../playlist.c:3279
 msgid "File info..."
 msgstr "Fájl infó..."
 
-#: ../music_browser.c:4786
+#: ../music_browser.c:4798
 msgid "Calculate volume"
 msgstr "Hangosság meghatározása"
 
-#: ../music_browser.c:4788
+#: ../music_browser.c:4800
 msgid "Only if unmeasured"
 msgstr "Csak ha ismeretlen"
 
-#: ../music_browser.c:4789
+#: ../music_browser.c:4801
 msgid "In any case"
 msgstr "Minden esetben"
 
-#: ../music_browser.c:4791
+#: ../music_browser.c:4803
 msgid "Update file metadata..."
 msgstr "Metaadatok frissítése..."
 
-#: ../music_browser.c:5294
+#: ../music_browser.c:5306
 msgid "*Music Store"
 msgstr "*Zenetár"
 

@@ -2364,6 +2364,7 @@ main(int argc, char ** argv) {
 		} else {
 			output = JACK_DRIVER;
 			rate = thread_info.out_SR;
+			auto_connect = 1;
 			auto_driver_found = 1;
 			printf("OK\n");
 		}

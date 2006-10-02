@@ -885,7 +885,7 @@ meta_get_comment(metadata * meta, char * str) {
 
 
 
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 
 /* Update basic metadata fields of a file. Used for mass-tagging.
  * Note that this method is lightweight (does not need an underlying file_decoder),
@@ -986,7 +986,7 @@ meta_update_basic(char * filename, char * title, char * artist, char * album,
 	return 1;
 }
 
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

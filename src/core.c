@@ -1251,12 +1251,6 @@ jack_client_start(void) {
 			}
 		}
 	}
-
-	/* unlock memory (implicitly locked by libjack when Jack runs realtime) */
-	if (munlockall() < 0) {
-		fprintf(stderr, "jack_client_start: munlockall() failed\n");
-		exit(1);
-	}
 }
 #endif /* HAVE_JACK */
 
@@ -1929,6 +1923,13 @@ main(int argc, char ** argv) {
 	int auto_driver_found = 0;
 #endif /* jack || alsa || oss */
 
+
+#ifndef _WIN32
+	/* unlock memory (implicitly locked by libjack when Jack runs realtime) */
+	if (munlockall() < 0) {
+		fprintf(stderr, "aqualung main(): munlockall() failed\n");
+	}
+#endif /* !_WIN32 */
 
 #ifdef _WIN32
 	g_thread_init(NULL);

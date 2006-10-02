@@ -180,7 +180,7 @@ GdkPixbuf * icon_record;
 GdkPixbuf * icon_store;
 GdkPixbuf * icon_track;
 
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 GtkWidget * store__tag;
 GtkWidget * artist__tag;
 GtkWidget * record__tag;
@@ -201,7 +201,7 @@ typedef struct _batch_tag_t {
 } batch_tag_t;
 
 batch_tag_t * batch_tag_root = NULL;
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 
 
 /* prototypes, when we need them */
@@ -1890,14 +1890,14 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gboolean val = (is_store_path_readonly(path)) ? FALSE : TRUE;
 	gboolean val2 = (vol_window == NULL) ? val : FALSE;
 
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gboolean val3 = (batch_tag_root == NULL) ? TRUE : FALSE;
 
 	gtk_widget_set_sensitive(store__tag, val3);
 	gtk_widget_set_sensitive(artist__tag, val3);
 	gtk_widget_set_sensitive(record__tag, val3);
 	gtk_widget_set_sensitive(track__tag, val3);
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 
 	gtk_widget_set_sensitive(store__build, val);
 	gtk_widget_set_sensitive(store__edit, val);
@@ -3479,7 +3479,7 @@ remove_item_cb(gpointer data) {
 /************************************/
 
 
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 
 AQUALUNG_THREAD_DECLARE(tag_thread_id)
 volatile int batch_tag_cancelled;
@@ -3982,7 +3982,7 @@ store__tag_cb(gpointer data) {
 }
 
 
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 
 
 /************************************/
@@ -4570,9 +4570,9 @@ create_music_browser(void) {
 	store__volume_menu = gtk_menu_new();
 	store__volume_unmeasured = gtk_menu_item_new_with_label(_("Unmeasured tracks only"));
 	store__volume_all = gtk_menu_item_new_with_label(_("All tracks"));
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	store__tag = gtk_menu_item_new_with_label(_("Batch-update file metadata..."));
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	store__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__addlist);
@@ -4590,9 +4590,9 @@ create_music_browser(void) {
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(store__volume), store__volume_menu);
         gtk_menu_shell_append(GTK_MENU_SHELL(store__volume_menu), store__volume_unmeasured);
         gtk_menu_shell_append(GTK_MENU_SHELL(store__volume_menu), store__volume_all);
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__tag);
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__search);
 
 	g_signal_connect_swapped(G_OBJECT(store__addlist), "activate", G_CALLBACK(store__addlist_cb), NULL);
@@ -4605,9 +4605,9 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(store__addart), "activate", G_CALLBACK(artist__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(store__volume_unmeasured), "activate", G_CALLBACK(store__volume_unmeasured_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(store__volume_all), "activate", G_CALLBACK(store__volume_all_cb), NULL);
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	g_signal_connect_swapped(G_OBJECT(store__tag), "activate", G_CALLBACK(store__tag_cb), NULL);
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	g_signal_connect_swapped(G_OBJECT(store__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(store__addlist);
@@ -4624,9 +4624,9 @@ create_music_browser(void) {
 	gtk_widget_show(store__volume);
 	gtk_widget_show(store__volume_unmeasured);
 	gtk_widget_show(store__volume_all);
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_widget_show(store__tag);
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_widget_show(store__search);
 
 	/* create popup menu for artist tree items */
@@ -4645,9 +4645,9 @@ create_music_browser(void) {
 	artist__volume_menu = gtk_menu_new();
 	artist__volume_unmeasured = gtk_menu_item_new_with_label(_("Unmeasured tracks only"));
 	artist__volume_all = gtk_menu_item_new_with_label(_("All tracks"));
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	artist__tag = gtk_menu_item_new_with_label(_("Batch-update file metadata..."));
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	artist__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__addlist);
@@ -4664,9 +4664,9 @@ create_music_browser(void) {
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(artist__volume), artist__volume_menu);
         gtk_menu_shell_append(GTK_MENU_SHELL(artist__volume_menu), artist__volume_unmeasured);
         gtk_menu_shell_append(GTK_MENU_SHELL(artist__volume_menu), artist__volume_all);
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__tag);
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__search);
 
 	g_signal_connect_swapped(G_OBJECT(artist__addlist), "activate", G_CALLBACK(artist__addlist_cb), NULL);
@@ -4678,9 +4678,9 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(artist__addrec), "activate", G_CALLBACK(record__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__volume_unmeasured), "activate", G_CALLBACK(artist__volume_unmeasured_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__volume_all), "activate", G_CALLBACK(artist__volume_all_cb), NULL);
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	g_signal_connect_swapped(G_OBJECT(artist__tag), "activate", G_CALLBACK(artist__tag_cb), NULL);
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	g_signal_connect_swapped(G_OBJECT(artist__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(artist__addlist);
@@ -4696,9 +4696,9 @@ create_music_browser(void) {
 	gtk_widget_show(artist__volume);
 	gtk_widget_show(artist__volume_unmeasured);
 	gtk_widget_show(artist__volume_all);
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_widget_show(artist__tag);
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_widget_show(artist__search);
 
 	/* create popup menu for record tree items */
@@ -4720,9 +4720,9 @@ create_music_browser(void) {
 	record__volume_menu = gtk_menu_new();
 	record__volume_unmeasured = gtk_menu_item_new_with_label(_("Unmeasured tracks only"));
 	record__volume_all = gtk_menu_item_new_with_label(_("All tracks"));
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	record__tag = gtk_menu_item_new_with_label(_("Batch-update file metadata..."));
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	record__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addlist);
@@ -4742,9 +4742,9 @@ create_music_browser(void) {
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(record__volume), record__volume_menu);
         gtk_menu_shell_append(GTK_MENU_SHELL(record__volume_menu), record__volume_unmeasured);
         gtk_menu_shell_append(GTK_MENU_SHELL(record__volume_menu), record__volume_all);
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__tag);
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__search);
 
 	g_signal_connect_swapped(G_OBJECT(record__addlist), "activate", G_CALLBACK(record__addlist_cb), NULL);
@@ -4759,9 +4759,9 @@ create_music_browser(void) {
 #endif /* HAVE_CDDB */
 	g_signal_connect_swapped(G_OBJECT(record__volume_unmeasured), "activate", G_CALLBACK(record__volume_unmeasured_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__volume_all), "activate", G_CALLBACK(record__volume_all_cb), NULL);
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	g_signal_connect_swapped(G_OBJECT(record__tag), "activate", G_CALLBACK(record__tag_cb), NULL);
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	g_signal_connect_swapped(G_OBJECT(record__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(record__addlist);
@@ -4780,9 +4780,9 @@ create_music_browser(void) {
 	gtk_widget_show(record__volume);
 	gtk_widget_show(record__volume_unmeasured);
 	gtk_widget_show(record__volume_all);
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_widget_show(record__tag);
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_widget_show(record__search);
 
 	/* create popup menu for track tree items */
@@ -4799,9 +4799,9 @@ create_music_browser(void) {
 	track__volume_menu = gtk_menu_new();
 	track__volume_unmeasured = gtk_menu_item_new_with_label(_("Only if unmeasured"));
 	track__volume_all = gtk_menu_item_new_with_label(_("In any case"));
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	track__tag = gtk_menu_item_new_with_label(_("Update file metadata..."));
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	track__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__addlist);
@@ -4816,9 +4816,9 @@ create_music_browser(void) {
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(track__volume), track__volume_menu);
         gtk_menu_shell_append(GTK_MENU_SHELL(track__volume_menu), track__volume_unmeasured);
         gtk_menu_shell_append(GTK_MENU_SHELL(track__volume_menu), track__volume_all);
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__tag);
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__search);
 
 	g_signal_connect_swapped(G_OBJECT(track__addlist), "activate", G_CALLBACK(track__addlist_cb), NULL);
@@ -4828,9 +4828,9 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(track__fileinfo), "activate", G_CALLBACK(track__fileinfo_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__volume_unmeasured), "activate", G_CALLBACK(track__volume_unmeasured_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__volume_all), "activate", G_CALLBACK(track__volume_all_cb), NULL);
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	g_signal_connect_swapped(G_OBJECT(track__tag), "activate", G_CALLBACK(track__tag_cb), NULL);
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	g_signal_connect_swapped(G_OBJECT(track__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(track__addlist);
@@ -4844,9 +4844,9 @@ create_music_browser(void) {
 	gtk_widget_show(track__volume);
 	gtk_widget_show(track__volume_unmeasured);
 	gtk_widget_show(track__volume_all);
-#ifdef HAVE_TAGLIB
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_widget_show(track__tag);
-#endif /* HAVE_TAGLIB */
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_widget_show(track__search);
 
 	/* attach event handler that will popup the menus */

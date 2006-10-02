@@ -385,7 +385,7 @@ else
 	        AC_MSG_CHECKING(whether to compile with statistical MPEG frame recognition)
 		AC_ARG_WITH(
 		mpegstatrec,
-		[  --with-mpegstatrec=yes,no  compile with statistical MPEG frame recognition (default: yes)],
+		[  --with-mpegstatrec=yes,no  compile with statistical MPEG frame recognition (default: no)],
 		mpegstatrec="$withval",
 		mpegstatrec="detect")
 		if test "$mpegstatrec" = "yes"; then
@@ -486,7 +486,6 @@ AC_ARG_WITH(
 	[  --with-metadata=yes,no  compile with metadata support (default: yes)],
 	metadata="$withval",
 	metadata="detect")
-
 if test "$metadata" = "no"; then
 	AC_MSG_RESULT(no)
 else
@@ -509,7 +508,24 @@ else
 	if test "$metadata" = "detect"; then
 	        metadata=$lib
 	fi
+
+	if test "$metadata" = "yes"; then
+	        AC_MSG_CHECKING(for metadata edit support)
+		AC_ARG_WITH(
+		metaedit,
+		[  --with-metaedit=yes,no  compile with metadata edit support (default: no)],
+		metaedit="$withval",
+		metaedit="detect")
+		
+		if test "$metaedit" = "yes"; then
+			AC_DEFINE([HAVE_METAEDIT], [1], [Defined if compile with metadata edit support])
+			AC_MSG_RESULT(yes)
+		else
+		        AC_MSG_RESULT(no)
+		fi
+	fi
 fi
+
 
 
 AC_MSG_CHECKING(for LADSPA plugin support)
@@ -681,3 +697,13 @@ echo "  CDDB support                            :  $cddb"
 echo "  iRiver iFP driver support               :  $ifp"
 echo "  Systray support                         :  $systray"
 echo "----------------------------------------------------------------------"
+
+
+if test "$metaedit" = "yes"; then
+echo
+echo " WARNING: compiling with metadata edit support is currently DANGEROUS"
+echo " because of serious bugs in the underlying TagLib library. Using this"
+echo " feature may result in DAMAGED or CORRUPT files. Compile with metadata"
+echo " edit support only if you intend to debug this feature."
+echo
+fi

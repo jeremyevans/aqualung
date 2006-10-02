@@ -1554,10 +1554,14 @@ build_nb_pages_flac(metadata * meta, GtkNotebook * nb, GtkWidget * hbox, fileinf
 	TagLib::FLAC::File * taglib_flac_file =
 		reinterpret_cast<TagLib::FLAC::File *>(meta->taglib_file);
 
+#ifdef HAVE_METAEDIT
 	TagLib::File * taglib_file =
 		dynamic_cast<TagLib::File *>(taglib_flac_file);
 
 	int edit_mode = taglib_file->readOnly() ? EDITABLE_NO : EDITABLE_YES;
+#else
+	int edit_mode = EDITABLE_NO;
+#endif /* HAVE_METAEDIT */
 
 	save_basic_t * save_basic = save_basic_new();
 	trashlist_add(fileinfo_trash, save_basic);
@@ -1593,10 +1597,14 @@ build_nb_pages_oggv(metadata * meta, GtkNotebook * nb, GtkWidget * hbox, fileinf
 	TagLib::Ogg::Vorbis::File * taglib_oggv_file =
 		reinterpret_cast<TagLib::Ogg::Vorbis::File *>(meta->taglib_file);
 
+#ifdef HAVE_METAEDIT
 	TagLib::File * taglib_file =
 		dynamic_cast<TagLib::File *>(taglib_oggv_file);
 
 	int edit_mode = taglib_file->readOnly() ? EDITABLE_NO : EDITABLE_YES;
+#else
+	int edit_mode = EDITABLE_NO;
+#endif /* HAVE_METAEDIT */
 
 	save_basic_t * save_basic = save_basic_new();
 	trashlist_add(fileinfo_trash, save_basic);
@@ -1624,10 +1632,14 @@ build_nb_pages_mpeg(metadata * meta, GtkNotebook * nb, GtkWidget * hbox, fileinf
 	TagLib::MPEG::File * taglib_mpeg_file =
 		reinterpret_cast<TagLib::MPEG::File *>(meta->taglib_file);
 
+#ifdef HAVE_METAEDIT
 	TagLib::File * taglib_file =
 		dynamic_cast<TagLib::File *>(taglib_mpeg_file);
 
 	int edit_mode = taglib_file->readOnly() ? EDITABLE_NO : EDITABLE_YES;
+#else
+	int edit_mode = EDITABLE_NO;
+#endif /* HAVE_METAEDIT */
 
 	save_basic_t * save_basic = save_basic_new();
 	trashlist_add(fileinfo_trash, save_basic);
@@ -1677,10 +1689,14 @@ build_nb_pages_mpc(metadata * meta, GtkNotebook * nb, GtkWidget * hbox, fileinfo
 	TagLib::MPC::File * taglib_mpc_file =
 		reinterpret_cast<TagLib::MPC::File *>(meta->taglib_file);
 
+#ifdef HAVE_METAEDIT
 	TagLib::File * taglib_file =
 		dynamic_cast<TagLib::File *>(taglib_mpc_file);
 
 	int edit_mode = taglib_file->readOnly() ? EDITABLE_NO : EDITABLE_YES;
+#else
+	int edit_mode = EDITABLE_NO;
+#endif /* HAVE_METAEDIT */
 
 	save_basic_t * save_basic = save_basic_new();
 	trashlist_add(fileinfo_trash, save_basic);

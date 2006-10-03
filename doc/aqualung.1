@@ -69,13 +69,14 @@ Normally you should be able to start Aqualung without any
 options. This case the output device will be selected by probing for a
 usable driver (in order of JACK, ALSA, OSS) with default parameters.
 
-If no usable driver found, or you want to explicitly choose a suitable
-output configuration, you have to tell the program which output device
-to use. This is possible with the -o (--output) option. There are
-specific optional parameters for all three output drivers. You can
-also specify which sample rate converter you want to use, or request a
-list of available converters. You may also control another instance of
-the program remotely, or add files to the playlist.
+If no driver could be started with default parameters, or you want to
+explicitly choose a suitable output configuration, you have to tell
+the program which output device to use. This is possible with the -o
+(--output) option. There are specific optional parameters for all four
+output drivers. You can also specify which sample rate converter you
+want to use, or request a list of available converters. You may also
+control another instance of the program remotely, or add files to the
+playlist.
 
 The disk thread is a background worker thread doing file decoding and
 sample rate conversion. If you experience short audio dropouts caused
@@ -147,11 +148,22 @@ Set the output sample rate.
 .br
 Auto-connect output ports to given JACK ports (defaults to first two
 hardware playback ports).
-
 .TP
 \-c, \-\-client <name>
 .br
 Set client name (needed if you want to run multiple instances of the program).
+
+.P
+NOTE: In the case when JACK output has been selected as part of the
+automatic output device detection, the -a option is implicitly
+applied.
+
+.TP
+.B Options relevant to Win32 output:
+.TP
+\-r, \-\-rate <int>
+.br
+Set the output sample rate.
 
 .TP
 .B Options relevant to the Sample Rate Converter:

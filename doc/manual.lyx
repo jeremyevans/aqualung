@@ -642,6 +642,33 @@ client\InsetSpace ~
  of the program).
 \end_layout
 
+\begin_layout Standard
+NOTE: In the case when JACK output has been selected as part of the automatic
+ output device detection, the -a option is implicitly applied.
+\end_layout
+
+\begin_layout Subsubsection
+Win32
+\end_layout
+
+\begin_layout Description
+-r,\InsetSpace ~
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+{-}{-}
+\end_layout
+
+\end_inset
+
+rate\InsetSpace ~
+<int> Set the output sample rate.
+ 
+\end_layout
+
 \begin_layout Subsection
 Options relevant to the Sample Rate Converter
 \end_layout

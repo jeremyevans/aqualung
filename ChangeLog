@@ -1,3 +1,46 @@
+2006-10-03	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
+
+    * Aqualung 0.9beta6
+        http://aqualung.sf.net
+
+	This release introduces a fair number of substantial improvements:
+
+	* Music Store builder: automatically build a Music Store by scanning the
+	  files on disk. Perform CDDB lookups & extract metadata on the fly.
+
+	* MPEG decoder enhancements: robust file recognition, VBR and UBR file
+	  support, frame-accurate seeking, true gapless playback via eliminating
+	  encoder padding+delay read from LAME headers.
+
+	* Fully revamped metadata support using TagLib. The result is a more
+	  complete implementation also supporting APE tags in Musepack files.
+
+	* Automatic output driver detection: ability to startup without command
+	  line arguments (using default driver parameters).
+	
+	* Systray (a.k.a. Notification Area) support.
+
+	* Handling of compressed MOD files (.gz and .bz2).
+
+	* Resolved issue with JACK memory locking (which previously resulted in
+	  runaway memory consumption).
+
+	* Aqualung compiles & runs under FreeBSD and Cygwin.
+
+
+    NEW LIBRARY DEPENDENCIES:
+	
+	* TagLib >= 1.4 is now required for metadata support.
+	  http://developer.kde.org/~wheeler/taglib.html
+
+	* GTK+ >= 2.10 is needed for the (optional) Systray support.
+
+
+    DROPPED DEPENDENCIES:
+	
+	* libid3tag library is not required anymore (succeeded by TagLib).
+
+
 2006-06-30	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
 
     * Aqualung 0.9beta5

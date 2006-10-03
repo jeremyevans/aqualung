@@ -2,76 +2,17 @@ Aqualung README
 ===============
 
 
+Aqualung is an advanced music player primarily targeted for the
+GNU/Linux operating system, but also usable on FreeBSD and Cygwin.
+
 Homepage: http://aqualung.sf.net
 
-
-Aqualung is a music player for the GNU/Linux operating system. It
-plays audio files from your filesystem and has the feature of
-inserting no gaps between adjacent tracks.  It also supports high
-quality sample rate conversion between the file and the output device,
-when necessary.
-
-Almost all sample-based, uncompressed formats (eg. WAV, AIFF, AU etc.)
-are supported.  Files encoded with FLAC (the Free Lossless Audio
-Codec), Ogg Vorbis, MPEG Audio (including the infamous MP3 format) and
-MOD files (MOD, S3M, XM, IT, etc.) are also supported.
-
-The program can play the music through OSS, ALSA or the JACK Audio
-Connection Kit.
-
-Aqualung supports the LADSPA 1.1 plugin standard.  You can use any
-suitable plugin to enhance the music you are listening to.
-
-Other features of the program: internally working volume and balance
-controls (not touching the soundcard mixer), multiple skin support,
-random seeking during playback, track repeat, list repeat and shuffle
-mode (besides normal playback). It will come up in the same state as
-it was when you closed it, including playback modes, volume & balance
-settings, currently processing LADSPA plugins, window sizes, positions
-& visibility, and other miscellaneous options.
-
-You can control any running instance of the program remotely from the
-command line (start, stop, pause etc.). Remote loading or enqueueing
-soundfiles as well as complete playlists is also supported.
-
-In addition to all this, Aqualung provides a so-called Music Store
-that is an XML-based music database, capable of storing various
-metadata about music on your computer (including, but not limited to,
-the names of artists, and the titles of records and tracks). You can
-(and should) organize your music into a tree of
-Artists/Records/Tracks, thereby making life easier than with the
-all-in-one Winamp/XMMS playlist.
+Please see the homepage for a general introduction to the program,
+including compilation instructions.
 
 Please refer to the documentation provided with the program for a
 detailed description of features, usage tips and miscellaneous info.
 You will find it in the doc/ directory in .pdf and .lyx formats.
-
-To compile the program, you will need to have the following libraries
-installed. It is possible to compile the program without some of these
-packages by sacrificing some of the program's functionality (eg. not
-including support for unneeded file formats).
-
-
-name				where to get it
-----------------------------------------------------------------------
-GTK+-2.0			http://www.gtk.org
-libXML2				http://xmlsoft.org
-liblrdf				http://lrdf.sourceforge.net
-JACK				http://jackit.sf.net
-libasound			http://www.alsa-project.org
-libsndfile			http://www.mega-nerd.com/libsndfile
-libFLAC				http://flac.sourceforge.net
-libvorbis, libvorbisfile	http://www.xiph.org/ogg/vorbis
-libMAD				http://www.underbit.com/products/mad
-libid3tag			http://sourceforge.net/project/showfiles.php?group_id=12349
-libmodplug			http://modplug-xmms.sourceforge.net
-libsamplerate			http://www.mega-nerd.com/SRC
-
-
-Compilation and installation instructions specific to Aqualung, as
-well as usage information are covered by the documentation in greater
-detail.
-
 
 Please consider subscribing to the project's mailing list at:
 http://lists.sourceforge.net/lists/listinfo/aqualung-friends

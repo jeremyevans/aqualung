@@ -35,12 +35,25 @@ void save_playlist(char * filename);
 void load_playlist(char * filename, int enqueue);
 void load_m3u(char * filename, int enqueue);
 void load_pls(char * filename, int enqueue);
-int is_playlist(char * filename);
+gint is_playlist(char * filename);
 void add_to_playlist(char * filename, int enqueue);
 void playlist_content_changed(void);
 void playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer data);
 gint playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent);
 void playlist_foreach_selected(void (* foreach)(GtkTreeIter *, void *), void * data);
 
+enum {
+    COLUMN_TRACK_NAME = 0,          
+    COLUMN_PHYSICAL_FILENAME,       
+    COLUMN_SELECTION_COLOR,         
+    COLUMN_VOLUME_ADJUSTMENT,       
+    COLUMN_VOLUME_ADJUSTMENT_DISP,  
+    COLUMN_DURATION,                
+    COLUMN_DURATION_DISP,           
+    COLUMN_FONT_WEIGHT,             
+
+    NUMBER_OF_COLUMNS               /* it must be the last entry here */
+};
 
 #endif /* _PLAYLIST_H */
+

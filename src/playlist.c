@@ -1871,22 +1871,6 @@ playlist_content_changed(void) {
 }
 
 
-	/*
-void
-playlist_drag_begin(GtkWidget * widget, GdkDragContext * drag_context, gpointer data) {
-	GtkTargetEntry target_table[] = {
-		{ "", GTK_TARGET_SAME_APP, 0 }
-	};
-
-	gtk_drag_dest_set(play_list,
-			  GTK_DEST_DEFAULT_ALL,
-			  target_table,
-			  1,
-			  GDK_ACTION_MOVE);
-}
-	*/
-
-
 void
 playlist_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
 		      GtkSelectionData * data, guint info, guint time, gpointer user_data) {
@@ -2116,7 +2100,6 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 		char file[MAXLEN];
 		struct stat st_file;
 
-
 		for (i = 0; *((gchar *)data->data + i); i++) {
 			if (*((gchar *)data->data + i) == '\r') {
 				*((gchar *)data->data + i) = '\n';
@@ -2124,7 +2107,9 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 		}
 
 		uri_list = g_strsplit((gchar *)data->data, "\n", 0);
+
 		for (i = 0; uri_list[i]; i++) {
+
 			if (*(uri_list[i]) == '\0') {
 				continue;
 			}
@@ -2148,15 +2133,15 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 				strncpy(file, uri_list[i] + off, MAXLEN-1);
 			}
 
-			g_free(str);
-		}
-		
-		if (stat(file, &st_file) == 0) {
-			if (S_ISDIR(st_file.st_mode)) {
-				add_dir_to_playlist(file);
-			} else {
-				add_file_to_playlist(file);
+			if (stat(file, &st_file) == 0) {
+				if (S_ISDIR(st_file.st_mode)) {
+					add_dir_to_playlist(file);
+				} else {
+					add_file_to_playlist(file);
+				}
 			}
+
+			g_free(str);
 		}
 
 		g_strfreev(uri_list);

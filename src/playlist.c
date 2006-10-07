@@ -73,6 +73,8 @@ extern GtkWidget * main_window;
 extern GtkWidget * info_window;
 extern GtkWidget * vol_window;
 
+extern GtkTreeSelection * music_select;
+
 gint playlist_pos_x;
 gint playlist_pos_y;
 gint playlist_size_x;
@@ -1869,9 +1871,9 @@ playlist_content_changed(void) {
 }
 
 
+	/*
 void
 playlist_drag_begin(GtkWidget * widget, GdkDragContext * drag_context, gpointer data) {
-
 	GtkTargetEntry target_table[] = {
 		{ "", GTK_TARGET_SAME_APP, 0 }
 	};
@@ -1882,6 +1884,7 @@ playlist_drag_begin(GtkWidget * widget, GdkDragContext * drag_context, gpointer 
 			  1,
 			  GDK_ACTION_MOVE);
 }
+	*/
 
 
 void
@@ -1994,102 +1997,9 @@ playlist_perform_drag(GtkTreeModel * model,
 }
 
 
-gint
-playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, gint x, gint y, 
-			    GtkSelectionData  * data, guint info, guint time) {
-
-	GtkTreeViewColumn * column;
-
-	if (!strcmp((gchar *)data->data, "store")) {
-
-		GtkTreePath * path = NULL;
-		GtkTreeIter * piter = NULL;
-		GtkTreeIter iter;
-		GtkTreeIter parent;
-
-		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(play_list),
-						  x, y, &path, &column, NULL, NULL)) {
-
-			if (info != 4) { /* dragging store, artist or record */
-				while (gtk_tree_path_get_depth(path) > 1) {
-					gtk_tree_path_up(path);
-				}
-			}
-
-			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path);
-			piter = &iter;
-		}
-
-		switch (info) {
-		case 1:
-			store__addlist_defmode(piter);
-			break;
-		case 2:
-			artist__addlist_defmode(piter);
-			break;
-		case 3:
-			record__addlist_defmode(piter);
-			break;
-		case 4:
-			track__addlist_cb(piter);
-
-			if (piter && gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store),
-								&parent, piter)) {
-				recalc_album_node(&parent);
-				unmark_track(&parent);
-				mark_track(&parent);
-			}
-
-			break;
-		}
-
-		if (path) {
-			gtk_tree_path_free(path);
-		}
-
-	} else if (!strcmp((gchar *)data->data, "list")) {
-
-		GtkTreeModel * model;
-		GtkTreeIter sel_iter;
-		GtkTreeIter pos_iter;
-		GtkTreePath * sel_path = NULL;
-		GtkTreePath * pos_path = NULL;
-
-		gtk_tree_selection_set_mode(play_select, GTK_SELECTION_SINGLE);
-
-		if (gtk_tree_selection_get_selected(play_select, &model, &sel_iter)) {
-
-			sel_path = gtk_tree_model_get_path(model, &sel_iter);
-
-			if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(play_list),
-						  x, y, &pos_path, &column, NULL, NULL)) {
-
-				gtk_tree_model_get_iter(model, &pos_iter, pos_path);
-
-				playlist_perform_drag(model,
-						      &sel_iter, sel_path,
-						      &pos_iter, pos_path);
-			}
-		}
-
-		if (sel_path) {
-			gtk_tree_path_free(sel_path);
-		}
-
-		if (pos_path) {
-			gtk_tree_path_free(pos_path);
-		}
-
-
-		gtk_tree_selection_set_mode(play_select, GTK_SELECTION_MULTIPLE);
-	}
-
-	return FALSE;
-}
-
-
 void
 playlist_remove_scroll_tags() {
+
 	if (playlist_scroll_up_tag > 0) {	
 		g_source_remove(playlist_scroll_up_tag);
 		playlist_scroll_up_tag = -1;
@@ -2098,6 +2008,163 @@ playlist_remove_scroll_tags() {
 		g_source_remove(playlist_scroll_dn_tag);
 		playlist_scroll_dn_tag = -1;
 	}
+}
+
+gint
+playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, gint x, gint y, 
+			    GtkSelectionData  * data, guint info, guint time) {
+
+	GtkTreeViewColumn * column;
+
+	if (info == 0) { /* drag and drop inside Aqualung */
+
+		if (!strcmp((gchar *)data->data, "store")) {
+
+			GtkTreePath * path = NULL;
+			GtkTreeIter * piter = NULL;
+			GtkTreeIter iter;
+			GtkTreeIter parent;
+			GtkTreeModel * model;
+			int depth;
+
+			if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
+				depth = gtk_tree_path_get_depth(gtk_tree_model_get_path(model, &iter));
+			} else {
+				return FALSE;
+			}
+
+			if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(play_list),
+							  x, y, &path, &column, NULL, NULL)) {
+
+				if (depth != 4) { /* dragging store, artist or record */
+					while (gtk_tree_path_get_depth(path) > 1) {
+						gtk_tree_path_up(path);
+					}
+				}
+
+				gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path);
+				piter = &iter;
+			}
+
+			switch (depth) {
+			case 1:
+				store__addlist_defmode(piter);
+				break;
+			case 2:
+				artist__addlist_defmode(piter);
+				break;
+			case 3:
+				record__addlist_defmode(piter);
+				break;
+			case 4:
+				track__addlist_cb(piter);
+
+				if (piter && gtk_tree_model_iter_parent(GTK_TREE_MODEL(play_store),
+									&parent, piter)) {
+					recalc_album_node(&parent);
+					unmark_track(&parent);
+					mark_track(&parent);
+				}
+
+				break;
+			}
+
+			if (path) {
+				gtk_tree_path_free(path);
+			}
+			
+		} else if (!strcmp((gchar *)data->data, "list")) {
+
+			GtkTreeModel * model;
+			GtkTreeIter sel_iter;
+			GtkTreeIter pos_iter;
+			GtkTreePath * sel_path = NULL;
+			GtkTreePath * pos_path = NULL;
+
+			gtk_tree_selection_set_mode(play_select, GTK_SELECTION_SINGLE);
+
+			if (gtk_tree_selection_get_selected(play_select, &model, &sel_iter)) {
+
+				sel_path = gtk_tree_model_get_path(model, &sel_iter);
+
+				if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(play_list),
+								  x, y, &pos_path, &column, NULL, NULL)) {
+
+					gtk_tree_model_get_iter(model, &pos_iter, pos_path);
+
+					playlist_perform_drag(model,
+							      &sel_iter, sel_path,
+							      &pos_iter, pos_path);
+				}
+			}
+
+			if (sel_path) {
+				gtk_tree_path_free(sel_path);
+			}
+
+			if (pos_path) {
+				gtk_tree_path_free(pos_path);
+			}
+
+			gtk_tree_selection_set_mode(play_select, GTK_SELECTION_MULTIPLE);
+		}
+
+	} else { /* drag and drop from external app */
+
+		gchar ** uri_list;
+		int i;
+		char file[MAXLEN];
+		struct stat st_file;
+
+
+		for (i = 0; *((gchar *)data->data + i); i++) {
+			if (*((gchar *)data->data + i) == '\r') {
+				*((gchar *)data->data + i) = '\n';
+			}
+		}
+
+		uri_list = g_strsplit((gchar *)data->data, "\n", 0);
+		for (i = 0; uri_list[i]; i++) {
+			if (*(uri_list[i]) == '\0') {
+				continue;
+			}
+
+			gchar * str = g_filename_from_uri(uri_list[i], NULL, NULL);
+
+			if (str != NULL) {
+				strncpy(file, str, MAXLEN-1);
+			} else {
+				int off = 0;
+
+				if (strstr(uri_list[i], "file:") == uri_list[i] ||
+				    strstr(uri_list[i], "FILE:") == uri_list[i]) {
+					off = 5;
+				}
+
+				while (uri_list[i][off] == '/' && uri_list[i][off+1] == '/') {
+					off++;
+				}
+
+				strncpy(file, uri_list[i] + off, MAXLEN-1);
+			}
+
+			g_free(str);
+		}
+		
+		if (stat(file, &st_file) == 0) {
+			if (S_ISDIR(st_file.st_mode)) {
+				add_dir_to_playlist(file);
+			} else {
+				add_file_to_playlist(file);
+			}
+		}
+
+		g_strfreev(uri_list);
+
+		playlist_remove_scroll_tags();
+	}
+
+	return FALSE;
 }
 
 gint
@@ -2149,7 +2216,6 @@ void
 playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer data) {
 
 	playlist_remove_scroll_tags();
-	gtk_drag_dest_unset(play_list);
 }
 
 
@@ -2174,8 +2240,15 @@ create_playlist(void) {
 	GdkPixbuf * pixbuf;
 	gchar path[MAXLEN];
 
-	GtkTargetEntry target_table[] = {
+	GtkTargetEntry source_table[] = {
 		{ "", GTK_TARGET_SAME_APP, 0 }
+	};
+
+	GtkTargetEntry target_table[] = {
+		{ "", GTK_TARGET_SAME_APP, 0 },
+		{ "STRING", 0, 1 },
+		{ "text/plain", 0, 1 },
+		{ "text/uri-list", 0, 1 }
 	};
 
         /* window creating stuff */
@@ -2305,23 +2378,24 @@ create_playlist(void) {
         gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(play_list), FALSE);
 
 
-	/* setup drag and drop inside playlist for reordering */
+	/* setup drag and drop */
 	
 	gtk_drag_source_set(play_list,
 			    GDK_BUTTON1_MASK,
-			    target_table,
+			    source_table,
 			    1,
 			    GDK_ACTION_MOVE);
-
 	
+	gtk_drag_dest_set(play_list,
+			  GTK_DEST_DEFAULT_ALL,
+			  target_table,
+			  4,
+			  GDK_ACTION_MOVE | GDK_ACTION_COPY);
+
 	snprintf(path, MAXLEN-1, "%s/drag.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		gtk_drag_source_set_icon_pixbuf(play_list, pixbuf);
 	}	
-	
-
-	g_signal_connect(G_OBJECT(play_list), "drag_begin",
-			 G_CALLBACK(playlist_drag_begin), NULL);
 
 	g_signal_connect(G_OBJECT(play_list), "drag_end",
 			 G_CALLBACK(playlist_drag_end), NULL);

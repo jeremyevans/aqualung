@@ -21,9 +21,10 @@
 #include <dlfcn.h>
 #include <execinfo.h>
 
+#include "version.h"
+
 #endif /* DEBUG_BUILD */
 
-#include "version.h"
 #include "segv.h"
 
 #ifdef DEBUG_BUILD
@@ -62,7 +63,7 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 	fprintf(stderr, "===[ CRASH REPORT ]======\n");
 	fprintf(stderr, "Please mail this to <aqualung-friends@lists.sourceforge.net>\n");
 	fprintf(stderr, "along with a short description of what you were doing when\n");
-	fprintf(stderr, "the program crashed. Please also send the output of `aqualnug -v'.\n");
+	fprintf(stderr, "the program crashed. Please also send the output of `aqualung -v'.\n");
 	fprintf(stderr, "Thank you in advance!\n\n");
 	fprintf(stderr, "  Aqualung %s\n\n", aqualung_version);
 	fprintf(stderr, "  si_signo = %d (%s)\n", signum, strsignal(signum));

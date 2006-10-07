@@ -59,126 +59,126 @@ char unpacked_filename[PATH_MAX];
 char *
 unpack_file (char *filename, int type) {
 
-char *pos, *c;
-int i, len;
-char buffer[16384];
+	char *pos, *c;
+	int i, len = 0;
+	char buffer[16384];
 #ifdef HAVE_LIBZ
-gzFile *gz_input_file = NULL;
+	gzFile *gz_input_file = NULL;
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
-BZFILE *bz2_input_file = NULL;
+	BZFILE *bz2_input_file = NULL;
 #endif /* HAVE_LIBBZ2 */
-FILE *output_file;
+	FILE *output_file;
 
-    unpacked_filename[0] = '\0';
+	unpacked_filename[0] = '\0';
 
-    if ((type == GZ || type == BZ2) && (pos = strrchr(filename, '.')) != NULL) {
-        pos++;
+	if ((type == GZ || type == BZ2) && (pos = strrchr(filename, '.')) != NULL) {
+		pos++;
 
-        if (type == GZ) {
+		if (type == GZ) {
 
-            if (strcasecmp(pos, "gz") != 0) {
-                return NULL;
-            }
+			if (strcasecmp(pos, "gz") != 0) {
+				return NULL;
+			}
 
-        } else {
+		} else {
 
-            if (strcasecmp(pos, "bz2") != 0) {
-                return NULL;
-            }
-        }
+			if (strcasecmp(pos, "bz2") != 0) {
+				return NULL;
+			}
+		}
 
-        strncat(unpacked_filename, "/tmp/", PATH_MAX-1);
+		strncat(unpacked_filename, "/tmp/", PATH_MAX-1);
 
-        i = 5;      /* strlen("/tmp/") */
+		i = 5;      /* strlen("/tmp/") */
 
-        if ((c = strrchr(filename, '/')) != NULL) {
-            c++;
+		if ((c = strrchr(filename, '/')) != NULL) {
+			c++;
 
-            while (c != pos-1) {
-                unpacked_filename[i++] = *c;
-                *c++;
-            }
-        }
+			while (c != pos-1) {
+				unpacked_filename[i++] = *c;
+				*c++;
+			}
+		}
 
-        unpacked_filename[i] = '\0';
+		unpacked_filename[i] = '\0';
 
-        if (type == GZ) {
+		if (type == GZ) {
 
 #ifdef HAVE_LIBZ
-            if ((gz_input_file = gzopen (filename, "r")) == NULL) {
-                return NULL;
-            }
+			if ((gz_input_file = gzopen (filename, "r")) == NULL) {
+				return NULL;
+			}
 #endif /* HAVE_LIBZ */
 
-        } else {
+		} else {
 
 #ifdef HAVE_LIBBZ2
-            if ((bz2_input_file = BZ2_bzopen (filename, "r")) == NULL) {
-                return NULL;
-            }
+			if ((bz2_input_file = BZ2_bzopen (filename, "r")) == NULL) {
+				return NULL;
+			}
 #endif /* HAVE_LIBBZ2 */
-        }
+		}
 
-        if ((output_file = fopen (unpacked_filename, "w")) == NULL) {
-            return NULL;
-        }
+		if ((output_file = fopen (unpacked_filename, "w")) == NULL) {
+			return NULL;
+		}
 
-        while (1) {
+		while (1) {
 
-            if (type == GZ) {
+			if (type == GZ) {
 #ifdef HAVE_LIBZ
-                len = gzread(gz_input_file, buffer, sizeof(buffer));
+				len = gzread(gz_input_file, buffer, sizeof(buffer));
 #endif /* HAVE_LIBZ */
-            } else {
+			} else {
 #ifdef HAVE_LIBBZ2
-                len = BZ2_bzread(bz2_input_file, buffer, sizeof(buffer));
+				len = BZ2_bzread(bz2_input_file, buffer, sizeof(buffer));
 #endif /* HAVE_LIBBZ2 */
-            }
+			}
 
-            if (len < 0) {
-                return NULL;
-            }
-            if (len == 0) break;
+			if (len < 0) {
+				return NULL;
+			}
+			if (len == 0) break;
 
-            if ((int)fwrite(buffer, 1, (unsigned)len, output_file) != len) {
-                return NULL;
-            }
-        }
+			if ((int)fwrite(buffer, 1, (unsigned)len, output_file) != len) {
+				return NULL;
+			}
+		}
 
-        if (fclose(output_file)) {
-            return NULL;
-        }
+		if (fclose(output_file)) {
+			return NULL;
+		}
 
-        if (type == GZ) {
+		if (type == GZ) {
 #ifdef HAVE_LIBZ
-            if (gzclose(gz_input_file) != Z_OK){
-                return NULL;
-            }
+			if (gzclose(gz_input_file) != Z_OK){
+				return NULL;
+			}
 #endif /* HAVE_LIBZ */
-        } else {
+		} else {
 #ifdef HAVE_LIBBZ2
-            BZ2_bzclose(bz2_input_file);
+			BZ2_bzclose(bz2_input_file);
 #endif /* HAVE_LIBBZ2 */
-        }
+		}
 
-        return unpacked_filename;
+		return unpacked_filename;
 
-    } else {
+	} else {
 
-        return NULL;
-    }
+		return NULL;
+	}
 }
 
 int
 remove_unpacked_file (void) {
 
-    if (unpacked_filename[0]) {
-        unlink (unpacked_filename);
-        return 1;
-    }
+	if (unpacked_filename[0]) {
+		unlink (unpacked_filename);
+		return 1;
+	}
 
-    return 0;
+	return 0;
 }
 
 #endif /* HAVE_LIBZ && HAVE_LIBBZ2 */

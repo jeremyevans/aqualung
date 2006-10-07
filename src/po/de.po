@@ -532,7 +532,7 @@ msgstr "Erweiterte Daten:"
 msgid "Tracks"
 msgstr "Track"
 
-#: ../cddb_lookup.c:555 ../options.c:1299 ../playlist.c:838
+#: ../cddb_lookup.c:555 ../options.c:1299 ../playlist.c:850
 msgid "Warning"
 msgstr "Warnung"
 
@@ -720,11 +720,11 @@ msgstr ""
 msgid "Compression: Insane"
 msgstr ""
 
-#: ../gui_main.c:895 ../file_info.cpp:1893
+#: ../gui_main.c:895 ../file_info.cpp:1909
 msgid "MONO"
 msgstr ""
 
-#: ../gui_main.c:898 ../file_info.cpp:1895
+#: ../gui_main.c:898 ../file_info.cpp:1911
 msgid "STEREO"
 msgstr ""
 
@@ -834,7 +834,7 @@ msgstr "Skin-Browser"
 msgid "JACK port setup"
 msgstr "JACK Port Einrichtung"
 
-#: ../gui_main.c:3147 ../file_info.cpp:1779
+#: ../gui_main.c:3147 ../file_info.cpp:1795
 msgid "File info"
 msgstr "Datei-Info"
 
@@ -1300,7 +1300,7 @@ msgstr "Track"
 msgid "Track number"
 msgstr "Track"
 
-#: ../music_browser.c:3640 ../volume.c:243 ../file_info.cpp:1813
+#: ../music_browser.c:3640 ../volume.c:243 ../file_info.cpp:1829
 msgid "File:"
 msgstr "Datei:"
 
@@ -1362,7 +1362,7 @@ msgstr "Musikladen"
 
 #: ../music_browser.c:4403 ../music_browser.c:4544 ../music_browser.c:4576
 #: ../music_browser.c:4651 ../music_browser.c:4726 ../music_browser.c:4805
-#: ../playlist.c:3280
+#: ../playlist.c:3306
 msgid "Search..."
 msgstr "Suche..."
 
@@ -1506,7 +1506,7 @@ msgstr "Track editieren..."
 msgid "Remove track"
 msgstr "Track entfernen"
 
-#: ../music_browser.c:4796 ../playlist.c:3279
+#: ../music_browser.c:4796 ../playlist.c:3305
 msgid "File info..."
 msgstr "Datei-Info..."
 
@@ -1657,7 +1657,7 @@ msgstr ""
 msgid "Show tags tab first in the file info dialog"
 msgstr ""
 
-#: ../options.c:1746 ../playlist.c:2161
+#: ../options.c:1746 ../playlist.c:2184
 msgid "Playlist"
 msgstr "Playliste"
 
@@ -2066,161 +2066,186 @@ msgstr "Schließen"
 msgid "Active song in playlist: "
 msgstr "Zeige RVA in Playliste"
 
-#: ../playlist.c:582
+#: ../playlist.c:586
 msgid "Please specify the file to save the playlist to."
 msgstr "Playliste speichern"
 
-#: ../playlist.c:626 ../playlist.c:683
+#: ../playlist.c:607
+#, fuzzy
+msgid "Saving playlist..."
+msgstr "Playliste speichern"
+
+#: ../playlist.c:632 ../playlist.c:692
 msgid "Please specify the file to load the playlist from."
 msgstr "Playliste laden"
 
-#: ../playlist.c:846
+#: ../playlist.c:652
+#, fuzzy
+msgid "Loading playlist..."
+msgstr "Playliste laden"
+
+#: ../playlist.c:713
+#, fuzzy
+msgid "Enqueing playlist..."
+msgstr "Playliste einreihen"
+
+#: ../playlist.c:858
 msgid ""
 "Playback RVA is currently disabled.\n"
 "Do you want to enable it now?"
 msgstr ""
 
-#: ../playlist.c:1171 ../playlist.c:1174 ../playlist.c:1177
+#: ../playlist.c:1183 ../playlist.c:1186 ../playlist.c:1189
 msgid "Unknown"
 msgstr "Unnbekannt"
 
-#: ../playlist.c:1285
+#: ../playlist.c:1297
 #, fuzzy
 msgid "Select files"
 msgstr "Dateien hinzufügen..."
 
-#: ../playlist.c:1340
+#: ../playlist.c:1318
+#, fuzzy
+msgid "Adding files..."
+msgstr "Dateien hinzufügen..."
+
+#: ../playlist.c:1355
 #, fuzzy
 msgid "Select directory"
 msgstr "Album entfernen"
 
-#: ../playlist.c:1798
+#: ../playlist.c:1375
+#, fuzzy
+msgid "Adding files recursively..."
+msgstr "Dateien hinzufügen..."
+
+#: ../playlist.c:1818
 #, fuzzy, c-format
 msgid "%d track [%s] (%.1f MB)"
 msgstr "Track"
 
-#: ../playlist.c:1800
+#: ../playlist.c:1820
 #, fuzzy, c-format
 msgid "%d track [%s] (%.1f GB)"
 msgstr "Track"
 
-#: ../playlist.c:1803
+#: ../playlist.c:1823
 #, fuzzy, c-format
 msgid "%d track [%s] "
 msgstr "Track"
 
-#: ../playlist.c:1808
+#: ../playlist.c:1828
 #, fuzzy, c-format
 msgid "%d tracks [%s] (%.1f MB)"
 msgstr "Track"
 
-#: ../playlist.c:1810
+#: ../playlist.c:1830
 #, fuzzy, c-format
 msgid "%d tracks [%s] (%.1f GB)"
 msgstr "Track"
 
-#: ../playlist.c:1813
+#: ../playlist.c:1833
 #, c-format
 msgid "%d tracks [%s] "
 msgstr ""
 
-#: ../playlist.c:2374
+#: ../playlist.c:2397
 #, fuzzy
 msgid "Selected: "
 msgstr "Alles auswählen"
 
-#: ../playlist.c:2384
+#: ../playlist.c:2407
 msgid "Total: "
 msgstr ""
 
-#: ../playlist.c:2404 ../playlist.c:2430
+#: ../playlist.c:2427 ../playlist.c:2453
 #, fuzzy
 msgid "Add files"
 msgstr "Dateien hinzufügen..."
 
-#: ../playlist.c:2406
+#: ../playlist.c:2429
 msgid ""
 "Add files to playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2410 ../playlist.c:2450
+#: ../playlist.c:2433 ../playlist.c:2473
 msgid "Select all"
 msgstr "Alles auswählen"
 
-#: ../playlist.c:2412
+#: ../playlist.c:2435
 msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2416 ../playlist.c:2475
+#: ../playlist.c:2439 ../playlist.c:2498
 msgid "Remove selected"
 msgstr "Markierte entfernen"
 
-#: ../playlist.c:2418
+#: ../playlist.c:2441
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2425
+#: ../playlist.c:2448
 #, fuzzy
 msgid "Add directory"
 msgstr "Album hinzufügen"
 
-#: ../playlist.c:2440
+#: ../playlist.c:2463
 msgid "Select none"
 msgstr "Nichts auswählen"
 
-#: ../playlist.c:2445
+#: ../playlist.c:2468
 msgid "Invert selection"
 msgstr "Markierungen invertieren"
 
-#: ../playlist.c:2460
+#: ../playlist.c:2483
 msgid "Remove all"
 msgstr "Alle entfernen"
 
-#: ../playlist.c:2465
+#: ../playlist.c:2488
 #, fuzzy
 msgid "Remove dead"
 msgstr "Alle entfernen"
 
-#: ../playlist.c:2470
+#: ../playlist.c:2493
 #, fuzzy
 msgid "Cut selected"
 msgstr "Markierte entfernen"
 
-#: ../playlist.c:3263
+#: ../playlist.c:3289
 msgid "Save playlist"
 msgstr "Playliste speichern"
 
-#: ../playlist.c:3264
+#: ../playlist.c:3290
 msgid "Load playlist"
 msgstr "Playliste laden"
 
-#: ../playlist.c:3265
+#: ../playlist.c:3291
 msgid "Enqueue playlist"
 msgstr "Playliste einreihen"
 
-#: ../playlist.c:3269
+#: ../playlist.c:3295
 msgid "Send to iFP device"
 msgstr ""
 
-#: ../playlist.c:3273
+#: ../playlist.c:3299
 #, fuzzy
 msgid "Calculate RVA"
 msgstr "Lautstärke bestimmen"
 
-#: ../playlist.c:3275
+#: ../playlist.c:3301
 msgid "Separate"
 msgstr ""
 
-#: ../playlist.c:3276
+#: ../playlist.c:3302
 msgid "Average"
 msgstr ""
 
-#: ../playlist.c:3277
+#: ../playlist.c:3303
 msgid "Reread file metadata"
 msgstr ""
 
@@ -2236,7 +2261,7 @@ msgstr "Verfügbare Plugins"
 msgid "ID"
 msgstr ""
 
-#: ../plugin.c:1895 ../plugin.c:1978 ../file_info.cpp:2314
+#: ../plugin.c:1895 ../plugin.c:1978 ../file_info.cpp:2330
 msgid "Name"
 msgstr "Name"
 
@@ -2415,7 +2440,7 @@ msgstr "Album"
 msgid "Import as Record"
 msgstr "Als Album importieren"
 
-#: ../file_info.cpp:824 ../file_info.cpp:892 ../file_info.cpp:1800
+#: ../file_info.cpp:824 ../file_info.cpp:892 ../file_info.cpp:1816
 #, fuzzy
 msgid "Track:"
 msgstr "Track"
@@ -2582,85 +2607,85 @@ msgstr ""
 msgid "Remove APE"
 msgstr "Entfernen"
 
-#: ../file_info.cpp:1847
+#: ../file_info.cpp:1863
 msgid "Audio data"
 msgstr "Audio-Daten"
 
-#: ../file_info.cpp:1851
+#: ../file_info.cpp:1867
 #, fuzzy
 msgid "Format:"
 msgstr "Abbrechen"
 
-#: ../file_info.cpp:1863
+#: ../file_info.cpp:1879
 msgid "Length:"
 msgstr "Länge:"
 
-#: ../file_info.cpp:1875
+#: ../file_info.cpp:1891
 #, fuzzy
 msgid "Samplerate:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:1880
+#: ../file_info.cpp:1896
 #, c-format
 msgid "%ld Hz"
 msgstr ""
 
-#: ../file_info.cpp:1887
+#: ../file_info.cpp:1903
 msgid "Channel count:"
 msgstr "Kanalanzahl:"
 
-#: ../file_info.cpp:1902
+#: ../file_info.cpp:1918
 msgid "Bandwidth:"
 msgstr "Bandbreite:"
 
-#: ../file_info.cpp:1907
+#: ../file_info.cpp:1923
 #, c-format
 msgid "%.1f kbit/s"
 msgstr ""
 
-#: ../file_info.cpp:1914
+#: ../file_info.cpp:1930
 msgid "Total samples:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:1965
+#: ../file_info.cpp:1981
 #, fuzzy
 msgid "Module info"
 msgstr "Datei-Info"
 
-#: ../file_info.cpp:2111 ../file_info.cpp:2214
+#: ../file_info.cpp:2127 ../file_info.cpp:2230
 #, fuzzy
 msgid "Type:"
 msgstr "SRC Typ: "
 
-#: ../file_info.cpp:2124 ../file_info.cpp:2227
+#: ../file_info.cpp:2140 ../file_info.cpp:2243
 #, fuzzy
 msgid "Channels:"
 msgstr "Kanalanzahl:"
 
-#: ../file_info.cpp:2137 ../file_info.cpp:2240
+#: ../file_info.cpp:2153 ../file_info.cpp:2256
 #, fuzzy
 msgid "Patterns:"
 msgstr "Kategorie"
 
-#: ../file_info.cpp:2150 ../file_info.cpp:2253
+#: ../file_info.cpp:2166 ../file_info.cpp:2269
 #, fuzzy
 msgid "Samples:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:2163
+#: ../file_info.cpp:2179
 msgid "Instruments:"
 msgstr ""
 
-#: ../file_info.cpp:2186
+#: ../file_info.cpp:2202
 #, fuzzy
 msgid "Samples"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:2196
+#: ../file_info.cpp:2212
 msgid "Instruments"
 msgstr ""
 
-#: ../file_info.cpp:2307
+#: ../file_info.cpp:2323
 msgid "No."
 msgstr ""
 

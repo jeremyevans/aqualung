@@ -4289,30 +4289,6 @@ row_collapsed_cb(GtkTreeView * view, GtkTreeIter * iter1, GtkTreePath * path1) {
 
 
 void
-browser_drag_begin(GtkWidget * widget, GdkDragContext * drag_context, gpointer data) {
-
-	GtkTreeIter iter;
-	GtkTreeModel * model;
-
-	GtkTargetEntry target_table[] = {
-		{ "", GTK_TARGET_SAME_APP, 0 }
-	};
-
-	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
-		target_table[0].info =
-			gtk_tree_path_get_depth(gtk_tree_model_get_path(model, &iter));
-	}
-
-	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(play_list), FALSE);
-	gtk_drag_dest_set(play_list,
-			  GTK_DEST_DEFAULT_ALL,
-			  target_table,
-			  1,
-			  GDK_ACTION_COPY);
-}
-
-
-void
 browser_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
 		      GtkSelectionData * data, guint info, guint time, gpointer user_data) {
 
@@ -4323,7 +4299,6 @@ browser_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
 void
 browser_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer data) {
 
-	gtk_drag_dest_unset(play_list);
 	playlist_drag_end(widget, drag_context, data);
 }
 
@@ -4521,7 +4496,7 @@ create_music_browser(void) {
 
 	music_tree_expand_stores();
 
-	/* setup drag-and-drop */
+	/* setup drag and drop */
 	gtk_drag_source_set(music_tree,
 			    GDK_BUTTON1_MASK,
 			    target_table,
@@ -4533,7 +4508,6 @@ create_music_browser(void) {
 		gtk_drag_source_set_icon_pixbuf(music_tree, pixbuf);
 	}	
 
-	g_signal_connect(G_OBJECT(music_tree), "drag_begin", G_CALLBACK(browser_drag_begin), NULL);
 	g_signal_connect(G_OBJECT(music_tree), "drag_data_get", G_CALLBACK(browser_drag_data_get), NULL);
 	g_signal_connect(G_OBJECT(music_tree), "drag_end", G_CALLBACK(browser_drag_end), NULL);
 
@@ -4974,47 +4948,48 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record) {
 			if (key != NULL) {
 				strncpy(name, (char *) key, sizeof(name)-1);
 				name[sizeof(name) - 1] = '\0';
-			};
+			}
 			xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"sort_name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
 				strncpy(sort_name, (char *) key, sizeof(sort_name)-1);
 				sort_name[sizeof(sort_name) - 1] = '\0';
-			};
+			}
 			xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"file"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
-			    if ((converted_temp = g_filename_from_uri((char *) key, NULL, NULL))) {
-                                strncpy(file, converted_temp, sizeof(file)-1);
-				file[sizeof(file) - 1] = '\0';
-			        g_free(converted_temp);
-			    } else 
-			    //try to read utf8 filename from outdated file
-				if ((converted_temp = g_locale_from_utf8((char *) key, -1, NULL, NULL, &error))) {
-				    strncpy(file, converted_temp, sizeof(file)-1);
-				    file[sizeof(file) - 1] = '\0';
-                                    g_free(converted_temp);
-                                } else {
-                                //last try - maybe it's plain locale filename
-				    strncpy(file, (char *) key, sizeof(file)-1);
-				    file[sizeof(file) - 1] = '\0';
-				};
-			};
+				if ((converted_temp = g_filename_from_uri((char *) key, NULL, NULL))) {
+					strncpy(file, converted_temp, sizeof(file)-1);
+					file[sizeof(file) - 1] = '\0';
+					g_free(converted_temp);
+				} else {
+					/* try to read utf8 filename from outdated file */
+					if ((converted_temp = g_locale_from_utf8((char *) key, -1, NULL, NULL, &error))) {
+						strncpy(file, converted_temp, sizeof(file)-1);
+						file[sizeof(file) - 1] = '\0';
+						g_free(converted_temp);
+					} else {
+						/* last try - maybe it's plain locale filename */
+						strncpy(file, (char *) key, sizeof(file)-1);
+						file[sizeof(file) - 1] = '\0';
+					}
+				}
+			}
 			xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"comment"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
 				strncpy(comment, (char *) key, sizeof(comment)-1);
 				comment[sizeof(comment) - 1] = '\0';
-			};
+			}
 			xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"duration"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
                                 duration = convf((char *) key);
-                        };
+                        }
                         xmlFree(key);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"volume"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);

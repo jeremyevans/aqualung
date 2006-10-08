@@ -2096,6 +2096,7 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 	} else { /* drag and drop from external app */
 
 		gchar ** uri_list;
+		gchar * str = NULL;
 		int i;
 		char file[MAXLEN];
 		struct stat st_file;
@@ -2114,10 +2115,9 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 				continue;
 			}
 
-			gchar * str = g_filename_from_uri(uri_list[i], NULL, NULL);
-
-			if (str != NULL) {
+			if ((str = g_filename_from_uri(uri_list[i], NULL, NULL)) != NULL) {
 				strncpy(file, str, MAXLEN-1);
+				g_free(str);
 			} else {
 				int off = 0;
 
@@ -2133,6 +2133,11 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 				strncpy(file, uri_list[i] + off, MAXLEN-1);
 			}
 
+			if ((str = g_locale_from_utf8(file, -1, NULL, NULL, NULL)) != NULL) {
+				strncpy(file, str, MAXLEN-1);
+				g_free(str);
+			}
+
 			if (stat(file, &st_file) == 0) {
 				if (S_ISDIR(st_file.st_mode)) {
 					add_dir_to_playlist(file);
@@ -2140,8 +2145,6 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 					add_file_to_playlist(file);
 				}
 			}
-
-			g_free(str);
 		}
 
 		g_strfreev(uri_list);

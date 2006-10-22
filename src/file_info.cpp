@@ -987,7 +987,7 @@ insert_id3v2_rva2(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_
 	
 	char descr[MAXLEN];
 
-	snprintf(descr, MAXLEN-1, _("%+.1f dB (Id: %s)"), voladj, id_str);
+	snprintf(descr, MAXLEN-1, "%+.1f dB (Id: %s)", voladj, id_str);
 
 	if (mode.is_called_from_browser) {
 		import_data_t * data;
@@ -1249,7 +1249,6 @@ build_ape_page(save_basic_t * save_basic, int edit_mode, TagLib::APE::Tag * ape_
 			}
 			val[k] = '\0';
 			
-			printf("'%s' =  '%s'\n", key, val);
 			insert_oxc(save_basic->nb, table, &cnt, save_basic->mode, key, val);
 		}
 	}

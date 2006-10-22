@@ -2388,7 +2388,7 @@ See the About box and the documentation for details."));
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 5);
 
-	label = gtk_label_new(_("Replaygain tag to use in Ogg Vorbis and FLAC files: "));
+	label = gtk_label_new(_("Replaygain tag to extract from Ogg Xiph and APE tags: "));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
 
 

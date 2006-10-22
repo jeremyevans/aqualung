@@ -586,14 +586,18 @@ read_rva2(char * raw_data, unsigned int length, char * id_str, float * voladj) {
                        voladj_float = (double) voladj_fixed / 512;
 
                        snprintf(id_str, MAXLEN-1, "%s", id);
-		       *voladj = voladj_float;
+		       if (voladj != NULL) {
+			       *voladj = voladj_float;
+		       }
 		       return;
                }
                data   += 4 + peak_bytes;
                length -= 4 + peak_bytes;
        }
        id_str[0] = '\0';
-       *voladj = 0.0f;
+       if (voladj != NULL) {
+	       *voladj = 0.0f;
+       }
 }
 
 
@@ -618,6 +622,7 @@ meta_get_rva_from_id3v2(TagLib::ID3v2::Tag * id3v2_tag, float * fval) {
 		if (strcmp(frameID, "RVA2") == 0) {
 			char id_str[MAXLEN];
 			read_rva2(frame->render().data() + 10, frame->size(), id_str, fval);
+			return 1;
 		}
 	}
 	return 0;
@@ -661,7 +666,60 @@ meta_get_rva_from_oxc(TagLib::Ogg::XiphComment * oxc, float * fval) {
 			val[k] = '\0';
 			
 			if (strcmp(key, replaygain_label) == 0) {
-				*fval = convf(val);
+				if (fval != NULL) {
+					*fval = convf(val);
+				}
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+
+int
+meta_get_rva_from_ape(TagLib::APE::Tag * ape_tag, float * fval) {
+
+	char replaygain_label[MAXLEN];
+
+	if (ape_tag == NULL) return 0;
+
+	switch (options.replaygain_tag_to_use) {
+	case 0:
+		strcpy(replaygain_label, "Replaygain_track_gain:");
+		break;
+	case 1:
+		strcpy(replaygain_label, "Replaygain_album_gain:");
+		break;
+	}
+
+	TagLib::APE::ItemListMap m = ape_tag->itemListMap();
+        for (TagLib::APE::ItemListMap::Iterator i = m.begin(); i != m.end(); ++i) {
+
+		TagLib::StringList::Iterator j;
+		TagLib::StringList l = (*i).second.toStringList();
+                for (j = l.begin(); j != l.end(); j++) {
+
+			char key[MAXLEN];
+			char val[MAXLEN];
+			char c;
+			int k;
+			
+			for (k = 0; ((c = (*i).first.toCString(true)[k]) != '\0') && (k < MAXLEN-1); k++) {
+				key[k] = (k == 0) ? toupper(c) : tolower(c);
+			}
+			key[k++] = ':';
+			key[k] = '\0';
+			
+			for (k = 0; ((c = (*j).toCString(true)[k]) != '\0') && (k < MAXLEN-1); k++) {
+				val[k] = c;
+			}
+			val[k] = '\0';
+			
+			if (strcmp(key, replaygain_label) == 0) {
+				if (fval != NULL) {
+					*fval = convf(val);
+				}
 				return 1;
 			}
 		}
@@ -708,6 +766,9 @@ meta_get_rva(metadata * meta, float * fval) {
 	case FORMAT_MAD:
 		mpeg_file = reinterpret_cast<TagLib::MPEG::File *>(meta->taglib_file);
 		ret = meta_get_rva_from_id3v2(mpeg_file->ID3v2Tag(), fval);
+		if (!ret) {
+			ret = meta_get_rva_from_ape(mpeg_file->APETag(), fval);
+		}
 		break;
 #endif /* HAVE_MPEG */
 	}

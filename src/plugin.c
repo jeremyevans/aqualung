@@ -170,7 +170,9 @@ parse_lrdf_data(void) {
 						fprintf(stderr,
 							"warning: could not parse RDF file: %s\n", fileuri);
 					}
+					free(de[c]);
 				}
+				free(de);
 			}
 		} else {
 			rdf_path[j++] = lrdf_path[i];
@@ -280,7 +282,9 @@ find_plugins(char * path_entry) {
 				}
 			}
 			dlclose(library);
+			free(de[c]);
 		}
+		free(de);
 	}
 }
 

@@ -2360,6 +2360,11 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 				last_track = track;
 			}
 		}
+		free(ent_track[i]);
+	}
+
+	if (i) {
+		free(ent_track);
 	}
 
 	if (record.tracks == NULL) {
@@ -2530,6 +2535,9 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 		ptrack = record.tracks->next;
 		free(record.tracks);
 	}
+
+	free(artist_d_name);
+	free(record_d_name);
 }
 
 
@@ -2561,8 +2569,12 @@ build_artist_thread(void * arg) {
 		}
 
 		g_idle_add(set_prog_file_entry, (gpointer)dir_record);
+		process_record(dir_record, strdup(artist_d_name), strdup(ent_record[i]->d_name));
+		free(ent_record[i]);
+	}
 
-		process_record(dir_record, artist_d_name, ent_record[i]->d_name);
+	if (i) {
+		free(ent_record);
 	}
 
 	g_idle_add(finish_build, NULL);
@@ -2605,11 +2617,25 @@ build_store_thread(void * arg) {
 
 			g_idle_add(set_prog_file_entry, (gpointer)dir_record);
 
-			process_record(dir_record, ent_artist[i]->d_name, ent_record[j]->d_name);
+			process_record(dir_record,
+				       strdup(ent_artist[i]->d_name),
+				       strdup(ent_record[j]->d_name));
+			
+			free(ent_record[j]);
+		}
+
+		if (j) {
+			free(ent_record);
 		}
 
 		map_free(artist_name_map);
 		artist_name_map = NULL;
+
+		free(ent_artist[i]);
+	}
+
+	if (i) {
+		free(ent_artist);
 	}
 
 	g_idle_add(finish_build, NULL);

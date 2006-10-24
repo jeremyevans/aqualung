@@ -385,15 +385,15 @@ msgstr ""
 msgid "Scanning files"
 msgstr ""
 
-#: ../build_store.c:2373 ../build_store.c:2393
+#: ../build_store.c:2378 ../build_store.c:2398
 msgid "Processing metadata"
 msgstr ""
 
-#: ../build_store.c:2379 ../build_store.c:2399
+#: ../build_store.c:2384 ../build_store.c:2404
 msgid "CDDB lookup"
 msgstr ""
 
-#: ../build_store.c:2411
+#: ../build_store.c:2416
 msgid "File name transformation"
 msgstr ""
 
@@ -1099,7 +1099,7 @@ msgstr ""
 msgid "Auto-create tracks from these files:"
 msgstr ""
 
-#: ../music_browser.c:1126 ../plugin.c:1991
+#: ../music_browser.c:1126 ../plugin.c:1995
 msgid "Clear list"
 msgstr ""
 
@@ -1244,7 +1244,7 @@ msgstr ""
 
 #: ../music_browser.c:4378 ../music_browser.c:4518 ../music_browser.c:4550
 #: ../music_browser.c:4625 ../music_browser.c:4700 ../music_browser.c:4779
-#: ../playlist.c:3368
+#: ../playlist.c:3374
 msgid "Search..."
 msgstr ""
 
@@ -1373,7 +1373,7 @@ msgstr ""
 msgid "Remove track"
 msgstr ""
 
-#: ../music_browser.c:4770 ../playlist.c:3367
+#: ../music_browser.c:4770 ../playlist.c:3373
 msgid "File info..."
 msgstr ""
 
@@ -1505,7 +1505,7 @@ msgstr ""
 msgid "Show tags tab first in the file info dialog"
 msgstr ""
 
-#: ../options.c:1746 ../playlist.c:2245
+#: ../options.c:1746 ../playlist.c:2251
 msgid "Playlist"
 msgstr ""
 
@@ -1898,7 +1898,7 @@ msgid "Loading playlist..."
 msgstr ""
 
 #: ../playlist.c:715
-msgid "Enqueing playlist..."
+msgid "Enqueuing playlist..."
 msgstr ""
 
 #: ../playlist.c:860
@@ -1911,191 +1911,191 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: ../playlist.c:1299
+#: ../playlist.c:1305
 msgid "Select files"
 msgstr ""
 
-#: ../playlist.c:1320
+#: ../playlist.c:1326
 msgid "Adding files..."
 msgstr ""
 
-#: ../playlist.c:1357
+#: ../playlist.c:1363
 msgid "Select directory"
 msgstr ""
 
-#: ../playlist.c:1377
+#: ../playlist.c:1383
 msgid "Adding files recursively..."
 msgstr ""
 
-#: ../playlist.c:1820
+#: ../playlist.c:1826
 #, c-format
 msgid "%d track [%s] (%.1f MB)"
 msgstr ""
 
-#: ../playlist.c:1822
+#: ../playlist.c:1828
 #, c-format
 msgid "%d track [%s] (%.1f GB)"
 msgstr ""
 
-#: ../playlist.c:1825
+#: ../playlist.c:1831
 #, c-format
 msgid "%d track [%s] "
 msgstr ""
 
-#: ../playlist.c:1830
+#: ../playlist.c:1836
 #, c-format
 msgid "%d tracks [%s] (%.1f MB)"
 msgstr ""
 
-#: ../playlist.c:1832
+#: ../playlist.c:1838
 #, c-format
 msgid "%d tracks [%s] (%.1f GB)"
 msgstr ""
 
-#: ../playlist.c:1835
+#: ../playlist.c:1841
 #, c-format
 msgid "%d tracks [%s] "
 msgstr ""
 
-#: ../playlist.c:2459
+#: ../playlist.c:2465
 msgid "Selected: "
 msgstr ""
 
-#: ../playlist.c:2469
+#: ../playlist.c:2475
 msgid "Total: "
 msgstr ""
 
-#: ../playlist.c:2489 ../playlist.c:2515
+#: ../playlist.c:2495 ../playlist.c:2521
 msgid "Add files"
 msgstr ""
 
-#: ../playlist.c:2491
+#: ../playlist.c:2497
 msgid ""
 "Add files to playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2495 ../playlist.c:2535
+#: ../playlist.c:2501 ../playlist.c:2541
 msgid "Select all"
 msgstr ""
 
-#: ../playlist.c:2497
+#: ../playlist.c:2503
 msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2501 ../playlist.c:2560
+#: ../playlist.c:2507 ../playlist.c:2566
 msgid "Remove selected"
 msgstr ""
 
-#: ../playlist.c:2503
+#: ../playlist.c:2509
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2510
+#: ../playlist.c:2516
 msgid "Add directory"
 msgstr ""
 
-#: ../playlist.c:2525
+#: ../playlist.c:2531
 msgid "Select none"
 msgstr ""
 
-#: ../playlist.c:2530
+#: ../playlist.c:2536
 msgid "Invert selection"
 msgstr ""
 
-#: ../playlist.c:2545
+#: ../playlist.c:2551
 msgid "Remove all"
 msgstr ""
 
-#: ../playlist.c:2550
+#: ../playlist.c:2556
 msgid "Remove dead"
 msgstr ""
 
-#: ../playlist.c:2555
+#: ../playlist.c:2561
 msgid "Cut selected"
 msgstr ""
 
-#: ../playlist.c:3351
+#: ../playlist.c:3357
 msgid "Save playlist"
 msgstr ""
 
-#: ../playlist.c:3352
+#: ../playlist.c:3358
 msgid "Load playlist"
 msgstr ""
 
-#: ../playlist.c:3353
+#: ../playlist.c:3359
 msgid "Enqueue playlist"
 msgstr ""
 
-#: ../playlist.c:3357
+#: ../playlist.c:3363
 msgid "Send to iFP device"
 msgstr ""
 
-#: ../playlist.c:3361
+#: ../playlist.c:3367
 msgid "Calculate RVA"
 msgstr ""
 
-#: ../playlist.c:3363
+#: ../playlist.c:3369
 msgid "Separate"
 msgstr ""
 
-#: ../playlist.c:3364
+#: ../playlist.c:3370
 msgid "Average"
 msgstr ""
 
-#: ../playlist.c:3365
+#: ../playlist.c:3371
 msgid "Reread file metadata"
 msgstr ""
 
-#: ../plugin.c:1813
+#: ../plugin.c:1817
 msgid "LADSPA patch builder"
 msgstr ""
 
-#: ../plugin.c:1822
+#: ../plugin.c:1826
 msgid "Available plugins"
 msgstr ""
 
-#: ../plugin.c:1887
+#: ../plugin.c:1891
 msgid "ID"
 msgstr ""
 
-#: ../plugin.c:1895 ../plugin.c:1978 ../file_info.cpp:2329
+#: ../plugin.c:1899 ../plugin.c:1982 ../file_info.cpp:2329
 msgid "Name"
 msgstr ""
 
-#: ../plugin.c:1900
+#: ../plugin.c:1904
 msgid "Category"
 msgstr ""
 
-#: ../plugin.c:1908
+#: ../plugin.c:1912
 msgid "Inputs"
 msgstr ""
 
-#: ../plugin.c:1916 ../ports.c:477
+#: ../plugin.c:1920 ../ports.c:477
 msgid "Outputs"
 msgstr ""
 
-#: ../plugin.c:1924
+#: ../plugin.c:1928
 msgid "Running plugins"
 msgstr ""
 
-#: ../plugin.c:1941
+#: ../plugin.c:1945
 msgid "_Configure"
 msgstr ""
 
-#: ../plugin.c:1986
+#: ../plugin.c:1990
 msgid "Enable all plugins"
 msgstr ""
 
-#: ../plugin.c:1987
+#: ../plugin.c:1991
 msgid "Disable all plugins"
 msgstr ""
 
-#: ../plugin.c:1989
+#: ../plugin.c:1993
 msgid "Invert current state"
 msgstr ""
 

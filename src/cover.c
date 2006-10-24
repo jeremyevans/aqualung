@@ -166,9 +166,13 @@ find_cover_filename(gchar *song_filename) {
                                 }
 
                                 g_free (str2);
+				free(d_entry[n]);
                         }
 
                         g_free (str1);
+			if (n) {
+				free(d_entry);
+			}
                 }
         }
 

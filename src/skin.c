@@ -186,7 +186,9 @@ create_skin_window() {
 			gtk_list_store_append(skin_store, &iter);
 			snprintf(path, MAXLEN - 1, "%s/%s", options.confdir, ent[c]->d_name);
 			gtk_list_store_set(skin_store, &iter, 0, ent[c]->d_name, 1, path, -1);
+			free(ent[c]);
 		}
+		free(ent);
 	}
 
 	/* system wide skins */
@@ -218,7 +220,9 @@ create_skin_window() {
 				snprintf(path, MAXLEN - 1, "%s/%s", AQUALUNG_SKINDIR, ent[c]->d_name);
 				gtk_list_store_set(skin_store, &iter, 0, ent[c]->d_name, 1, path, -1);
 			}
+			free(ent[c]);
 		}
+		free(ent);
 	}
 
 	hbuttonbox = gtk_hbutton_box_new();

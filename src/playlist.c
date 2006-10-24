@@ -712,7 +712,7 @@ plist__enqueue_cb(gpointer data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                iw_show_info(dialog, _("Enqueing playlist..."));
+                iw_show_info(dialog, _("Enqueuing playlist..."));
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
@@ -1287,6 +1287,12 @@ add_dir_to_playlist(char * dirname) {
 		} else {
 			add_file_to_playlist(path);
 		}
+
+		free(ent[i]);
+	}
+
+	if (i) {
+		free(ent);
 	}
 }
 

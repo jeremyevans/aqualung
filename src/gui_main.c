@@ -338,6 +338,7 @@ void playlist_toggled(GtkWidget * widget, gpointer data);
 void assign_audio_fc_filters(GtkFileChooser *fc);
 void assign_playlist_fc_filters(GtkFileChooser *fc);
 
+GtkWidget * cover_align;
 GtkWidget * c_event_box;
 GtkWidget * cover_image_area;
 gint cover_show_flag;
@@ -1032,7 +1033,8 @@ refresh_displays(void) {
 			}
                         if (is_file_loaded) {
                                 gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, 1, &title_str, -1);
-                                display_cover(cover_image_area, c_event_box, 48, 48, title_str, TRUE, TRUE);
+                                display_cover(cover_image_area, c_event_box, cover_align,
+					      48, 48, title_str, TRUE, TRUE);
         			g_free(title_str);
                         }
 		} else {
@@ -1040,12 +1042,14 @@ refresh_displays(void) {
                         cover_show_flag = 0;
                         gtk_widget_hide(cover_image_area);
                         gtk_widget_hide(c_event_box);
+                        gtk_widget_hide(cover_align);
 		}
 	} else {
 		set_title_label("");
                 cover_show_flag = 0;
                 gtk_widget_hide(cover_image_area);
                 gtk_widget_hide(c_event_box);
+		gtk_widget_hide(cover_align);
 	}
 
 	set_format_label(disp_info.format_major, disp_info.format_minor);
@@ -1229,6 +1233,7 @@ change_skin(char * path) {
         cover_show_flag = 0;
         gtk_widget_hide(cover_image_area);
         gtk_widget_hide(c_event_box);
+	gtk_widget_hide(cover_align);
 
 	if (options.playlist_is_embedded) {
 		if (!playlist_on) {
@@ -2604,7 +2609,8 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
         cover_show_flag = 0;
         gtk_widget_hide(cover_image_area);
         gtk_widget_hide(c_event_box);
-
+	gtk_widget_hide(cover_align);
+			
 	return FALSE;
 }
 
@@ -3403,10 +3409,12 @@ create_main_window(char * skin_path) {
 
         /* cover display widget */
 
+	cover_align = gtk_alignment_new(0.5f, 0.5f, 0.0f, 0.0f);
+	gtk_box_pack_start(GTK_BOX(disp_hbox), cover_align, FALSE, FALSE, 0);
         cover_image_area = gtk_image_new();
-        c_event_box = gtk_event_box_new ();
-	gtk_box_pack_start(GTK_BOX(disp_hbox), c_event_box, FALSE, FALSE, 0);
-        gtk_container_add (GTK_CONTAINER (c_event_box), cover_image_area);
+        c_event_box = gtk_event_box_new();
+	gtk_container_add(GTK_CONTAINER(cover_align), c_event_box);
+        gtk_container_add(GTK_CONTAINER(c_event_box), cover_image_area);
         g_signal_connect(G_OBJECT(c_event_box), "button_press_event",
                          G_CALLBACK(cover_press_button_cb), cover_image_area);
 
@@ -3904,7 +3912,9 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	deflicker();
 
         cover_show_flag = 0;
+        gtk_widget_hide(cover_align);
         gtk_widget_hide(c_event_box);
+        gtk_widget_hide(cover_image_area);
 
 	if (options.playlist_is_embedded) {
 		if (!playlist_on) {

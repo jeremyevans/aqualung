@@ -192,10 +192,10 @@ draw_cover_frame(GdkPixbuf *pixbuf, gint width, gint height, gboolean bevel) {
         gint i, bc1, bc2, bc3, bc4;
         guchar *pixels, *p;
 
-        bc1 = bc2 = bc3 = bc4 = 0;      /* black edges */
+        bc1 = bc2 = bc3 = bc4 = 64;      /* dark edges */
 
         if (bevel == TRUE) {
-                bc2 = bc4 = 255;        /* white edges */
+                bc2 = bc4 = 160;        /* light edges */
         }
 
         /* draw frame */
@@ -267,7 +267,7 @@ display_zoomed_cover(GtkWidget *window, GtkWidget *event_area, gchar *song_filen
                 gtk_widget_show(image_area);
                 gtk_container_add (GTK_CONTAINER (cover_window), image_area);
 
-                display_cover(image_area, event_area, size, size, song_filename, FALSE, FALSE);
+                display_cover(image_area, event_area, NULL, size, size, song_filename, FALSE, FALSE);
 
                 gtk_widget_set_size_request(cover_window, calculated_width, calculated_height);
                 gtk_widget_show(cover_window);
@@ -277,7 +277,8 @@ display_zoomed_cover(GtkWidget *window, GtkWidget *event_area, gchar *song_filen
 
 
 void 
-display_cover(GtkWidget *image_area, GtkWidget *event_area, gint dest_width, gint dest_height, 
+display_cover(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
+	      gint dest_width, gint dest_height,
               gchar *song_filename, gboolean hide, gboolean bevel) {
 
         GdkPixbuf * cover_pixbuf;
@@ -333,6 +334,9 @@ display_cover(GtkWidget *image_area, GtkWidget *event_area, gint dest_width, gin
                                 cover_show_flag = 1;      
                                 gtk_widget_show(image_area);
                                 gtk_widget_show(event_area);
+				if (align) {
+					gtk_widget_show(align);
+				}
                         }
 
                 } else {
@@ -341,6 +345,9 @@ display_cover(GtkWidget *image_area, GtkWidget *event_area, gint dest_width, gin
                                 cover_show_flag = 0;      
                                 gtk_widget_hide(image_area);
                                 gtk_widget_hide(event_area);
+				if (align) {
+					gtk_widget_hide(align);
+				}
                         }
 
                 }

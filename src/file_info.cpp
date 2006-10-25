@@ -1752,6 +1752,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	GtkWidget * entry_path;
 	GtkWidget * dismiss_btn;
 	GtkWidget * fi_cover_image_area;
+	GtkWidget * fi_cover_align;
 
 	GtkWidget * vbox_file;
 	GtkWidget * label_file;
@@ -1839,14 +1840,17 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_table_attach(GTK_TABLE(table), entry_path, 1, 2, 1, 2,
 			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 2);
 
+	fi_cover_align = gtk_alignment_new(0.5f, 0.5f, 0.0f, 0.0f);
+	gtk_box_pack_start(GTK_BOX(hbox_t), fi_cover_align, FALSE, FALSE, 0);
         fi_cover_image_area = gtk_image_new();
         fi_event_box = gtk_event_box_new ();
-	gtk_box_pack_start(GTK_BOX(hbox_t), fi_event_box, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(fi_cover_align), fi_event_box);
         gtk_container_add (GTK_CONTAINER (fi_event_box), fi_cover_image_area);
         g_signal_connect(G_OBJECT(fi_event_box), "button_press_event",
                          G_CALLBACK(fi_cover_press_button_cb), file);
 
-        display_cover(fi_cover_image_area, fi_event_box, 48, 48, file, FALSE, TRUE);
+        display_cover(fi_cover_image_area, fi_event_box, fi_cover_align,
+		      48, 48, file, FALSE, TRUE);
 
 	hbox_tagbuttons = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hbox_tagbuttons, FALSE, FALSE, 5);

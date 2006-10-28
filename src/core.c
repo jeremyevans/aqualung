@@ -1948,6 +1948,17 @@ main(int argc, char ** argv) {
 		strcpy(options.cwd, ".");
 	}
 
+        {
+                char * home = getenv("HOME");
+                if (!home) {
+                        char * homedir = (char *)g_get_home_dir();
+                        snprintf(options.currdir, MAXLEN-1, "%s/.aqualung", homedir);
+                        g_free(homedir);
+                } else {
+                        snprintf(options.currdir, MAXLEN-1, "%s/.aqualung", home);
+                }
+        }
+	
 	load_default_cl(&argc_def, &argv_def);
 
         playlist_state = browser_state = -1;

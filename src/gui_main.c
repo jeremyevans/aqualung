@@ -3765,7 +3765,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	}
 
 	strcpy(options.home, home);
-	sprintf(options.currdir, "%s/*", home);
 	sprintf(options.confdir, "%s/.aqualung", home);
 
 	if (chdir(options.confdir) != 0) {
@@ -3785,14 +3784,14 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		sprintf(options.title_format, "%%a: %%t [%%r]");
 	if (options.skin[0] == '\0') {
 		sprintf(options.skin, "%s/plain", AQUALUNG_SKINDIR);
-		main_pos_x = 30;
+		main_pos_x = 280;
 		main_pos_y = 30;
-		main_size_x = 670;
-		main_size_y = 113;
+		main_size_x = 380;
+		main_size_y = 380;
 		browser_pos_x = 30;
-		browser_pos_y = 180;
-		browser_size_x = 250;
-		browser_size_y = 500;
+		browser_pos_y = 30;
+		browser_size_x = 240;
+		browser_size_y = 380;
 		browser_on = 1;
 		playlist_pos_x = 300;
 		playlist_pos_y = 180;
@@ -4554,10 +4553,13 @@ load_config(void) {
         options.show_sn_title = 1;
         options.united_minimization = 1;
         options.buttons_at_the_bottom = options.buttons_at_the_bottom_shadow = 1;
+	options.playlist_is_embedded = options.playlist_is_embedded_shadow = 1;
+	options.playlist_is_tree = 1;
 
 	options.enable_mstore_statusbar = options.enable_mstore_statusbar_shadow = 1;
        	options.enable_mstore_toolbar = options.enable_mstore_toolbar_shadow = 1;
         options.enable_ms_tree_icons = options.enable_ms_tree_icons_shadow = 1;
+	options.ms_statusbar_show_size = 1;
 
         options.cover_width = 2;
 
@@ -4566,6 +4568,7 @@ load_config(void) {
 	options.auto_save_playlist = 1;
 	options.show_length_in_playlist = 1;
 	options.enable_playlist_statusbar = options.enable_playlist_statusbar_shadow = 1;
+	options.pl_statusbar_show_size = 1;
 
 	options.rva_refvol = -12.0f;
 	options.rva_steepness = 1.0f;

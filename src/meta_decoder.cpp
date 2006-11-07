@@ -858,7 +858,7 @@ meta_get_title(metadata * meta, char * str) {
 #endif /* HAVE_TAGLIB */
 
 #ifdef HAVE_MOD
-	if (meta->format_major == FORMAT_MOD) {
+	if (meta->file_lib == MOD_LIB) {
 		ret = meta_get_title_mod(meta, str);
 	}
 #endif /* HAVE_MOD */

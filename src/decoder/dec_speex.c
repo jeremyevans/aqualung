@@ -267,14 +267,14 @@ speex_dec_open(decoder_t * dec, char * filename) {
 
 	pd->is_eos = 0;
 	pd->rb = rb_create(pd->channels * sample_size * RB_SPEEX_SIZE);
-	fdec->channels = pd->channels;
-	fdec->SR = pd->sample_rate;
-	fdec->file_lib = SPEEX_LIB;
-	strcpy(dec->format_str, "Ogg Speex");
-
+	fdec->fileinfo.channels = pd->channels;
+	fdec->fileinfo.sample_rate = pd->sample_rate;
 	length_in_samples = pd->granulepos + pd->nframes - 1;
 	fdec->fileinfo.total_samples = length_in_samples;
 	fdec->fileinfo.bps = 8 * length_in_bytes / (length_in_samples / pd->sample_rate);
+
+	fdec->file_lib = SPEEX_LIB;
+	strcpy(dec->format_str, "Ogg Speex");
 
 	return DECODER_OPEN_SUCCESS;
 }

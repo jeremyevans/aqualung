@@ -200,8 +200,7 @@ decode_mod(decoder_t * dec) {
                 for (i = 0; i < bytes_read/2; i++) {
                         fbuffer[i] = *((short *)(buffer + 2*i)) * fdec->voladj_lin / 32768.f;
 		}
-                rb_write(pd->rb, (char *)fbuffer,
-				      bytes_read/2 * sample_size);
+                rb_write(pd->rb, (char *)fbuffer, bytes_read/2 * sample_size);
                 return 0;
         } else {
 		return 1;
@@ -336,8 +335,8 @@ char *filename = NULL;
 	
 	pd->is_eos = 0;
 	pd->rb = rb_create(pd->mp_settings.mChannels * sample_size * RB_MOD_SIZE);
-	fdec->channels = pd->mp_settings.mChannels;
-	fdec->SR = pd->mp_settings.mFrequency;
+	fdec->fileinfo.channels = pd->mp_settings.mChannels;
+	fdec->fileinfo.sample_rate = pd->mp_settings.mFrequency;
 	fdec->file_lib = MOD_LIB;
 	strcpy(dec->format_str, "MOD Audio");
 	

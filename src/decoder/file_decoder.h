@@ -50,10 +50,9 @@ extern "C" {
 typedef struct _fileinfo_t {
         unsigned long long total_samples;
         unsigned long sample_rate;
+	int channels;
         int is_mono;
         int bps;
-        int format_major;
-        int format_minor;
 	char * format_str; /* buffer allocated in pdec */
 	int format_flags;
 } fileinfo_t;
@@ -64,8 +63,6 @@ typedef struct _file_decoder_t {
 	/* public */
 	int file_open;
 	int file_lib;
-	int channels;
-	unsigned long SR;
 	fileinfo_t fileinfo;
 	unsigned long long samples_left;
 	float voladj_db;

@@ -1230,8 +1230,8 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	pd->is_eos = 0;
 	pd->seek_table_built = 0;
 	pd->rb = rb_create(pd->channels * sample_size * RB_MAD_SIZE);
-	fdec->channels = pd->channels;
-	fdec->SR = pd->SR;
+	fdec->fileinfo.channels = pd->channels;
+	fdec->fileinfo.sample_rate = pd->SR;
 	fdec->file_lib = MAD_LIB;
 	strcpy(dec->format_str, "MPEG Audio");
 

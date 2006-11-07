@@ -99,13 +99,11 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 			pd->sf_info.channels);
 		return DECODER_OPEN_FERROR;
 	}
-	fdec->channels = pd->sf_info.channels;
-	fdec->SR = pd->sf_info.samplerate;
-	fdec->file_lib = SNDFILE_LIB;
-	
+	fdec->fileinfo.channels = pd->sf_info.channels;
+	fdec->fileinfo.sample_rate = pd->sf_info.samplerate;
 	fdec->fileinfo.total_samples = pd->sf_info.frames;
-	fdec->fileinfo.format_major = pd->sf_info.format & SF_FORMAT_TYPEMASK;
-	fdec->fileinfo.format_minor = pd->sf_info.format & SF_FORMAT_SUBMASK;
+
+	fdec->file_lib = SNDFILE_LIB;
 	
 	switch (pd->sf_info.format & SF_FORMAT_SUBMASK) {
 	case SF_FORMAT_PCM_S8:
@@ -131,7 +129,7 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 		fdec->fileinfo.bps = 0;
 		break;
 	}
-	fdec->fileinfo.bps *= fdec->SR * fdec->channels;
+	fdec->fileinfo.bps *= fdec->fileinfo.sample_rate * fdec->fileinfo.channels;
 
 
 	switch (pd->sf_info.format & SF_FORMAT_TYPEMASK) {

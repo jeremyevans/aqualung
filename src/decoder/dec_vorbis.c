@@ -144,13 +144,13 @@ vorbis_decoder_open(decoder_t * dec, char * filename) {
 	
 	pd->is_eos = 0;
 	pd->rb = rb_create(pd->vi->channels * sample_size * RB_VORBIS_SIZE);
-	fdec->channels = pd->vi->channels;
-	fdec->SR = pd->vi->rate;
-	fdec->file_lib = VORBIS_LIB;
-	strcpy(dec->format_str, "Ogg Vorbis");
-	
+	fdec->fileinfo.channels = pd->vi->channels;
+	fdec->fileinfo.sample_rate = pd->vi->rate;
 	fdec->fileinfo.total_samples = ov_pcm_total(&(pd->vf), -1);
 	fdec->fileinfo.bps = ov_bitrate(&(pd->vf), -1);
+	
+	fdec->file_lib = VORBIS_LIB;
+	strcpy(dec->format_str, "Ogg Vorbis");
 	
 	return DECODER_OPEN_SUCCESS;
 }

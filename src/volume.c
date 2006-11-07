@@ -365,7 +365,7 @@ process_volume(float * volumes) {
 		return FALSE;
 	}
 
-	if ((samples = (float *)malloc(vol_chunk_size * fdec_vol->channels * sizeof(float))) == NULL) {
+	if ((samples = (float *)malloc(vol_chunk_size * fdec_vol->fileinfo.channels * sizeof(float))) == NULL) {
 
 		fprintf(stderr, "process_volume(): error: malloc() returned NULL\n");
 		vol_queue_cleanup(vol_queue_save);
@@ -397,10 +397,10 @@ process_volume(float * volumes) {
 		
 		/* calculate signal power of chunk and feed it in the rms envelope */
 		if (numread > 0) {
-			for (i = 0; i < numread * fdec_vol->channels; i++) {
+			for (i = 0; i < numread * fdec_vol->fileinfo.channels; i++) {
 				chunk_power += samples[i] * samples[i];
 			}
-			chunk_power /= numread * fdec_vol->channels;
+			chunk_power /= numread * fdec_vol->fileinfo.channels;
 			
 			rms = rms_env_process(rms_vol, chunk_power);
 

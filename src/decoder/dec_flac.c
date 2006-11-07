@@ -191,10 +191,11 @@ flac_decoder_open(decoder_t * dec, char * filename) {
 			}
 			
 			pd->rb = rb_create(pd->channels * sample_size * RB_FLAC_SIZE);
-			fdec->channels = pd->channels;
-			fdec->SR = pd->SR;
+			fdec->fileinfo.channels = pd->channels;
+			fdec->fileinfo.sample_rate = pd->SR;
 			fdec->fileinfo.total_samples = pd->total_samples;
-			fdec->fileinfo.bps = pd->bits_per_sample * fdec->SR * fdec->channels;
+			fdec->fileinfo.bps = pd->bits_per_sample * fdec->fileinfo.sample_rate
+				* fdec->fileinfo.channels;
 
 			fdec->file_lib = FLAC_LIB;
 			strcpy(dec->format_str, "FLAC");			

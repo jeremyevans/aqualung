@@ -195,22 +195,22 @@ file_decoder_open(file_decoder_t * fdec, char * filename) {
 	        goto no_open;
 	}
 
-	if (fdec->channels == 1) {
+	if (fdec->fileinfo.channels == 1) {
 		fdec->fileinfo.is_mono = 1;
 		goto ok_open;
 
-	} else if (fdec->channels == 2) {
+	} else if (fdec->fileinfo.channels == 2) {
 		fdec->fileinfo.is_mono = 0;
 		goto ok_open;
 
 	} else {
 		fprintf(stderr, "file_decoder_open: programmer error: "
-			"soundfile with %d\n channels is unsupported.\n", fdec->channels);
+			"soundfile with %d\n channels is unsupported.\n",
+			fdec->fileinfo.channels);
 		goto no_open;
 	}
 
  ok_open:
-	fdec->fileinfo.sample_rate = fdec->SR;
 	fdec->file_open = 1;
 	fdec->samples_left = fdec->fileinfo.total_samples;
 	fdec->fileinfo.format_str = dec->format_str;

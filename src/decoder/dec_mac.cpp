@@ -200,8 +200,8 @@ mac_decoder_open(decoder_t * dec, char * filename) {
 
 	pd->is_eos = 0;
 	pd->rb = rb_create(pd->channels * sample_size * RB_MAC_SIZE);
-	fdec->channels = pd->channels;
-	fdec->SR = pd->sample_rate;
+	fdec->fileinfo.channels = pd->channels;
+	fdec->fileinfo.sample_rate = pd->sample_rate;
 	fdec->fileinfo.total_samples = (unsigned long long)(pd->sample_rate / 1000.0f * pd->length_in_ms);
 	fdec->fileinfo.bps = pd->bitrate * 1000;
 

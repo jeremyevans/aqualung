@@ -141,8 +141,8 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 	pd->is_eos = 0;
 	pd->rb = rb_create(pd->mpc_i.channels * sample_size * RB_MPC_SIZE);
 	
-	fdec->channels = pd->mpc_i.channels;
-	fdec->SR = pd->mpc_i.sample_freq;
+	fdec->fileinfo.channels = pd->mpc_i.channels;
+	fdec->fileinfo.sample_rate = pd->mpc_i.sample_freq;
 	fdec->fileinfo.total_samples = mpc_streaminfo_get_length_samples(&pd->mpc_i);
 	fdec->fileinfo.bps = pd->mpc_i.average_bitrate;
 

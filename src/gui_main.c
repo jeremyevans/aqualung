@@ -767,9 +767,8 @@ zero_displays(void) {
 
 	disp_info.total_samples = 0;
 	disp_info.sample_rate = 0;
+	disp_info.channels = 2;
 	disp_info.is_mono = 0;
-	disp_info.format_major = 0;
-	disp_info.format_minor = 0;
 	disp_info.bps = 0;
 
 	disp_samples = 0;

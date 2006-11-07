@@ -274,7 +274,8 @@ disk_thread(void * arg) {
 						send_cmd = CMD_FILEREQ;
 						rb_write(rb_disk2gui, &send_cmd, 1);
 						goto sleep;
-					} else if (!sample_rates_ok(info->out_SR, fdec->SR)) {
+					} else if (!sample_rates_ok(info->out_SR,
+								    fdec->fileinfo.sample_rate)) {
 						fdec->file_open = 1; /* to get close_file() working */
 						file_decoder_close(fdec);
 						fdec->file_open = 0;
@@ -288,8 +289,8 @@ disk_thread(void * arg) {
 					} else {
 						file_decoder_set_rva(fdec, cue.voladj);
 						info->in_SR_prev = info->in_SR;
-						info->in_SR = fdec->SR;
-						info->is_mono = (fdec->channels == 1) ? 1 : 0;
+						info->in_SR = fdec->fileinfo.sample_rate;
+						info->is_mono = fdec->fileinfo.is_mono;
 
 						sample_offset = 0;
 

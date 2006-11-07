@@ -743,9 +743,15 @@ meta_get_rva(metadata * meta, float * fval) {
 	}
 
 #ifdef HAVE_TAGLIB
+#ifdef HAVE_FLAC
 	TagLib::FLAC::File * flac_file;
+#endif /* HAVE_FLAC */
+#ifdef HAVE_OGG_VORBIS
 	TagLib::Ogg::Vorbis::File * oggv_file;
+#endif /* HAVE_OGG_VORBIS */
+#ifdef HAVE_MPEG
 	TagLib::MPEG::File * mpeg_file;
+#endif /* HAVE_MPEG */
 
 	switch (meta->file_lib) {
 #ifdef HAVE_FLAC

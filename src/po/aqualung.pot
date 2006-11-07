@@ -1,4 +1,4 @@
-#: ../about.c:94 ../gui_main.c:2840
+#: ../about.c:94 ../gui_main.c:2841
 msgid "About"
 msgstr ""
 
@@ -87,54 +87,58 @@ msgid "Monkey's Audio Codec\n"
 msgstr ""
 
 #: ../about.c:293
+msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
+msgstr ""
+
+#: ../about.c:303
 msgid "Metadata (ID3, APE, Ogg comments)\n"
 msgstr ""
 
-#: ../about.c:297
+#: ../about.c:307
 msgid "Output driver support:"
 msgstr ""
 
-#: ../about.c:309
+#: ../about.c:319
 msgid "OSS Audio\n"
 msgstr ""
 
-#: ../about.c:320
+#: ../about.c:330
 msgid "ALSA Audio\n"
 msgstr ""
 
-#: ../about.c:331
+#: ../about.c:341
 msgid "JACK Audio Server\n"
 msgstr ""
 
-#: ../about.c:341
+#: ../about.c:351
 msgid "Win32 Sound API\n"
 msgstr ""
 
-#: ../about.c:345
+#: ../about.c:355
 msgid "Miscellaneous:"
 msgstr ""
 
-#: ../about.c:357
+#: ../about.c:367
 msgid "Internal Sample Rate Converter support\n"
 msgstr ""
 
-#: ../about.c:367
+#: ../about.c:377
 msgid "LADSPA plugin support\n"
 msgstr ""
 
-#: ../about.c:378
+#: ../about.c:388
 msgid "CDDB support\n"
 msgstr ""
 
-#: ../about.c:389
+#: ../about.c:399
 msgid "iRiver iFP driver support\n"
 msgstr ""
 
-#: ../about.c:400
+#: ../about.c:410
 msgid "Systray support\n"
 msgstr ""
 
-#: ../about.c:405
+#: ../about.c:415
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -526,94 +530,94 @@ msgstr ""
 msgid "No matching record found."
 msgstr ""
 
-#: ../gui_main.c:435 ../gui_main.c:437
+#: ../gui_main.c:437 ../gui_main.c:439
 msgid "day"
 msgstr ""
 
-#: ../gui_main.c:439 ../gui_main.c:441
+#: ../gui_main.c:441 ../gui_main.c:443
 msgid "days"
 msgstr ""
 
-#: ../gui_main.c:597 ../file_info.cpp:1911
+#: ../gui_main.c:599 ../file_info.cpp:1911
 msgid "MONO"
 msgstr ""
 
-#: ../gui_main.c:600 ../file_info.cpp:1913
+#: ../gui_main.c:602 ../file_info.cpp:1913
 msgid "STEREO"
 msgstr ""
 
-#: ../gui_main.c:618 ../gui_main.c:623 ../gui_main.c:628 ../gui_main.c:633
+#: ../gui_main.c:620 ../gui_main.c:625 ../gui_main.c:630 ../gui_main.c:635
 msgid "Output:"
 msgstr ""
 
-#: ../gui_main.c:637
+#: ../gui_main.c:639
 msgid "No output"
 msgstr ""
 
-#: ../gui_main.c:651
+#: ../gui_main.c:653
 msgid "SRC Type: "
 msgstr ""
 
-#: ../gui_main.c:655 ../ifp_device.c:217 ../ifp_device.c:924
+#: ../gui_main.c:657 ../ifp_device.c:217 ../ifp_device.c:924
 msgid "None"
 msgstr ""
 
-#: ../gui_main.c:1014
+#: ../gui_main.c:1015
 msgid ""
 "One or more stores in Music Store have been modified.\n"
 "Do you want to save them before exiting?"
 msgstr ""
 
-#: ../gui_main.c:1523
+#: ../gui_main.c:1524
 #, c-format
 msgid "Position: %d%%"
 msgstr ""
 
-#: ../gui_main.c:1541 ../gui_main.c:1568
+#: ../gui_main.c:1542 ../gui_main.c:1569
 #, c-format
 msgid "Mute"
 msgstr ""
 
-#: ../gui_main.c:1543 ../gui_main.c:1570
+#: ../gui_main.c:1544 ../gui_main.c:1571
 #, c-format
 msgid "%d dB"
 msgstr ""
 
-#: ../gui_main.c:1577
+#: ../gui_main.c:1578
 #, c-format
 msgid "Volume: %s"
 msgstr ""
 
-#: ../gui_main.c:1605 ../gui_main.c:1636
+#: ../gui_main.c:1606 ../gui_main.c:1637
 #, c-format
 msgid "%d%% R"
 msgstr ""
 
-#: ../gui_main.c:1607 ../gui_main.c:1638
+#: ../gui_main.c:1608 ../gui_main.c:1639
 #, c-format
 msgid "%d%% L"
 msgstr ""
 
-#: ../gui_main.c:1610 ../gui_main.c:1641
+#: ../gui_main.c:1611 ../gui_main.c:1642
 #, c-format
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:1648
+#: ../gui_main.c:1649
 #, c-format
 msgid "Balance: %s"
 msgstr ""
 
-#: ../gui_main.c:1724
+#: ../gui_main.c:1725
 #, c-format
 msgid " (%d/%d)"
 msgstr ""
 
-#: ../gui_main.c:2583
+#: ../gui_main.c:2584
 msgid "JACK connection lost"
 msgstr ""
 
-#: ../gui_main.c:2586
+#: ../gui_main.c:2587
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -621,159 +625,163 @@ msgid ""
 "is restart both JACK and Aqualung.\n"
 msgstr ""
 
-#: ../gui_main.c:2633
+#: ../gui_main.c:2634
 msgid ""
 "Aqualung is compiled with system tray support, but the status icon could not "
 "be embedded in the notification area. Your desktop may not have support for "
 "a system tray, or it has not been configured correctly."
 msgstr ""
 
-#: ../gui_main.c:2833 ../options.c:1602
+#: ../gui_main.c:2834 ../options.c:1602
 msgid "Settings"
 msgstr ""
 
-#: ../gui_main.c:2834 ../skin.c:145
+#: ../gui_main.c:2835 ../skin.c:146
 msgid "Skin chooser"
 msgstr ""
 
-#: ../gui_main.c:2835
+#: ../gui_main.c:2836
 msgid "JACK port setup"
 msgstr ""
 
-#: ../gui_main.c:2837 ../file_info.cpp:1795
+#: ../gui_main.c:2838 ../file_info.cpp:1795
 msgid "File info"
 msgstr ""
 
-#: ../gui_main.c:2842 ../gui_main.c:3389
+#: ../gui_main.c:2843 ../gui_main.c:3390
 msgid "Quit"
 msgstr ""
 
-#: ../gui_main.c:3120
+#: ../gui_main.c:3121
 msgid "Previous song"
 msgstr ""
 
-#: ../gui_main.c:3124 ../gui_main.c:3375
+#: ../gui_main.c:3125 ../gui_main.c:3376
 msgid "Stop"
 msgstr ""
 
-#: ../gui_main.c:3128
+#: ../gui_main.c:3129
 msgid "Next song"
 msgstr ""
 
-#: ../gui_main.c:3132 ../gui_main.c:3367
+#: ../gui_main.c:3133 ../gui_main.c:3368
 msgid "Play"
 msgstr ""
 
-#: ../gui_main.c:3136 ../gui_main.c:3371
+#: ../gui_main.c:3137 ../gui_main.c:3372
 msgid "Pause"
 msgstr ""
 
-#: ../gui_main.c:3162
+#: ../gui_main.c:3163
 msgid "Repeat current song"
 msgstr ""
 
-#: ../gui_main.c:3170
+#: ../gui_main.c:3171
 msgid "Repeat all songs"
 msgstr ""
 
-#: ../gui_main.c:3178
+#: ../gui_main.c:3179
 msgid "Shuffle songs"
 msgstr ""
 
-#: ../gui_main.c:3191
+#: ../gui_main.c:3192
 msgid "Toggle playlist"
 msgstr ""
 
-#: ../gui_main.c:3196
+#: ../gui_main.c:3197
 msgid "Toggle music store"
 msgstr ""
 
-#: ../gui_main.c:3201
+#: ../gui_main.c:3202
 msgid "Toggle LADSPA patch builder"
 msgstr ""
 
-#: ../gui_main.c:3360
+#: ../gui_main.c:3361
 msgid "Show Aqualung"
 msgstr ""
 
-#: ../gui_main.c:3361
+#: ../gui_main.c:3362
 msgid "Hide Aqualung"
 msgstr ""
 
-#: ../gui_main.c:3379
+#: ../gui_main.c:3380
 msgid "Previous"
 msgstr ""
 
-#: ../gui_main.c:3383
+#: ../gui_main.c:3384
 msgid "Next"
 msgstr ""
 
-#: ../gui_main.c:4957
+#: ../gui_main.c:4958
 msgid "Aqualung playlist (*.xml)"
 msgstr ""
 
-#: ../gui_main.c:4958
+#: ../gui_main.c:4959
 msgid "MP3 Playlist (*.m3u)"
 msgstr ""
 
-#: ../gui_main.c:4959
+#: ../gui_main.c:4960
 msgid "Multimedia Playlist (*.pls)"
 msgstr ""
 
-#: ../gui_main.c:4972 ../gui_main.c:5032
+#: ../gui_main.c:4973 ../gui_main.c:5033
 msgid "All Files"
 msgstr ""
 
-#: ../gui_main.c:4982
+#: ../gui_main.c:4983
 msgid "All Playlist Files"
 msgstr ""
 
-#: ../gui_main.c:5037
+#: ../gui_main.c:5038
 msgid "All Audio Files"
 msgstr ""
 
-#: ../gui_main.c:5043
+#: ../gui_main.c:5044
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
 msgstr ""
 
-#: ../gui_main.c:5050
+#: ../gui_main.c:5051
 msgid "Free Lossless Audio Codec (*.flac)"
 msgstr ""
 
-#: ../gui_main.c:5058
+#: ../gui_main.c:5059
 msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
 msgstr ""
 
-#: ../gui_main.c:5065
+#: ../gui_main.c:5066
 msgid "Ogg Vorbis (*.ogg)"
 msgstr ""
 
-#: ../gui_main.c:5073
+#: ../gui_main.c:5074
 msgid "Ogg Speex (*.spx)"
 msgstr ""
 
-#: ../gui_main.c:5081
+#: ../gui_main.c:5082
 msgid "Musepack (*.mpc)"
 msgstr ""
 
-#: ../gui_main.c:5089
+#: ../gui_main.c:5090
 msgid "Monkey's Audio Codec (*.ape)"
 msgstr ""
 
-#: ../gui_main.c:5097
+#: ../gui_main.c:5098
 msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
 msgstr ""
 
-#: ../gui_main.c:5105
+#: ../gui_main.c:5106
 msgid "Compressed modules (*.gz, *.bz2)"
 msgstr ""
 
-#: ../gui_main.c:5107
+#: ../gui_main.c:5108
 msgid "Compressed modules (*.gz)"
 msgstr ""
 
-#: ../gui_main.c:5109
+#: ../gui_main.c:5110
 msgid "Compressed modules (*.bz2)"
+msgstr ""
+
+#: ../gui_main.c:5126
+msgid "LAVC audio/video files"
 msgstr ""
 
 #: ../ifp_device.c:107
@@ -2068,7 +2076,7 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: ../skin.c:172
+#: ../skin.c:173
 msgid "Available skins"
 msgstr ""
 
@@ -2493,121 +2501,121 @@ msgstr ""
 msgid "Set subtitle"
 msgstr ""
 
-#: ../decoder/dec_mpc.c:151
+#: ../decoder/dec_mpc.c:154
 msgid "Profile: Telephone"
 msgstr ""
 
-#: ../decoder/dec_mpc.c:154
+#: ../decoder/dec_mpc.c:157
 msgid "Profile: Thumb"
 msgstr ""
 
-#: ../decoder/dec_mpc.c:157
+#: ../decoder/dec_mpc.c:160
 msgid "Profile: Radio"
 msgstr ""
 
-#: ../decoder/dec_mpc.c:160
+#: ../decoder/dec_mpc.c:163
 msgid "Profile: Standard"
 msgstr ""
 
-#: ../decoder/dec_mpc.c:163
+#: ../decoder/dec_mpc.c:166
 msgid "Profile: Xtreme"
 msgstr ""
 
-#: ../decoder/dec_mpc.c:166
+#: ../decoder/dec_mpc.c:169
 msgid "Profile: Insane"
 msgstr ""
 
-#: ../decoder/dec_mpc.c:169
+#: ../decoder/dec_mpc.c:172
 msgid "Profile: Braindead"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1244
+#: ../decoder/dec_mpeg.c:1242
 msgid "Layer I"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1247
+#: ../decoder/dec_mpeg.c:1245
 msgid "Layer II"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1250
+#: ../decoder/dec_mpeg.c:1248
 msgid "Layer III"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1253
+#: ../decoder/dec_mpeg.c:1251
 msgid "Unrecognized"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1262
+#: ../decoder/dec_mpeg.c:1260
 msgid "Single channel"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1265
+#: ../decoder/dec_mpeg.c:1263
 msgid "Dual channel"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1268
+#: ../decoder/dec_mpeg.c:1266
 msgid "Joint stereo"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1271
+#: ../decoder/dec_mpeg.c:1269
 msgid "Stereo"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1279
+#: ../decoder/dec_mpeg.c:1277
 msgid "Emphasis: none"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1282 ../decoder/dec_mpeg.c:1285
+#: ../decoder/dec_mpeg.c:1280 ../decoder/dec_mpeg.c:1283
 msgid "Emphasis:"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1288
+#: ../decoder/dec_mpeg.c:1286
 msgid "Emphasis: reserved"
 msgstr ""
 
-#: ../decoder/dec_sndfile.c:202 ../decoder/dec_sndfile.c:208
-#: ../decoder/dec_sndfile.c:211 ../decoder/dec_sndfile.c:214
+#: ../decoder/dec_sndfile.c:200 ../decoder/dec_sndfile.c:206
+#: ../decoder/dec_sndfile.c:209 ../decoder/dec_sndfile.c:212
 msgid "bit signed"
 msgstr ""
 
-#: ../decoder/dec_sndfile.c:205
+#: ../decoder/dec_sndfile.c:203
 msgid "bit unsigned"
 msgstr ""
 
-#: ../decoder/dec_sndfile.c:217
+#: ../decoder/dec_sndfile.c:215
 msgid "bit float"
 msgstr ""
 
-#: ../decoder/dec_sndfile.c:220
+#: ../decoder/dec_sndfile.c:218
 msgid "bit double"
 msgstr ""
 
-#: ../decoder/dec_sndfile.c:223 ../decoder/dec_sndfile.c:226
-#: ../decoder/dec_sndfile.c:229 ../decoder/dec_sndfile.c:232
-#: ../decoder/dec_sndfile.c:235 ../decoder/dec_sndfile.c:238
-#: ../decoder/dec_sndfile.c:241 ../decoder/dec_sndfile.c:244
-#: ../decoder/dec_sndfile.c:247 ../decoder/dec_sndfile.c:250
-#: ../decoder/dec_sndfile.c:253 ../decoder/dec_sndfile.c:256
-#: ../decoder/dec_sndfile.c:259
+#: ../decoder/dec_sndfile.c:221 ../decoder/dec_sndfile.c:224
+#: ../decoder/dec_sndfile.c:227 ../decoder/dec_sndfile.c:230
+#: ../decoder/dec_sndfile.c:233 ../decoder/dec_sndfile.c:236
+#: ../decoder/dec_sndfile.c:239 ../decoder/dec_sndfile.c:242
+#: ../decoder/dec_sndfile.c:245 ../decoder/dec_sndfile.c:248
+#: ../decoder/dec_sndfile.c:251 ../decoder/dec_sndfile.c:254
+#: ../decoder/dec_sndfile.c:257
 msgid "encoding"
 msgstr ""
 
-#: ../decoder/dec_mac.cpp:233
+#: ../decoder/dec_mac.cpp:223
 msgid "Compression: Fast"
 msgstr ""
 
-#: ../decoder/dec_mac.cpp:236
+#: ../decoder/dec_mac.cpp:226
 msgid "Compression: Normal"
 msgstr ""
 
-#: ../decoder/dec_mac.cpp:239
+#: ../decoder/dec_mac.cpp:229
 msgid "Compression: High"
 msgstr ""
 
-#: ../decoder/dec_mac.cpp:242
+#: ../decoder/dec_mac.cpp:232
 msgid "Compression: Extra High"
 msgstr ""
 
-#: ../decoder/dec_mac.cpp:245
+#: ../decoder/dec_mac.cpp:235
 msgid "Compression: Insane"
 msgstr ""

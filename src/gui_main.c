@@ -411,8 +411,10 @@ sample2time(unsigned long SR, unsigned long long sample, char * str, int sign) {
 	m = (sample / SR) / 60 - h * 60;
 	s = (sample / SR) - h * 3600 - m * 60;
 
-	if (h > 0)
+	if (h > 9)
 		sprintf(str, (sign)?("-%02d:%02d:%02d"):("%02d:%02d:%02d"), h, m, s);
+	else if (h > 0)
+		sprintf(str, (sign)?("-%1d:%02d:%02d"):("%1d:%02d:%02d"), h, m, s);
 	else
 		sprintf(str, (sign)?("-%02d:%02d"):("%02d:%02d"), m, s);
 }
@@ -5119,6 +5121,16 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
         gtk_file_chooser_add_filter(fc, filter);
 #endif /* (HAVE_MOD && HAVE LIBZ) */
 
+#ifdef HAVE_LAVC
+        filter = gtk_file_filter_new();
+        gtk_file_filter_set_name(filter, _("LAVC audio/video files"));
+	{
+		char * valid_ext_lavc[] = {
+			"aac", "ac3", "avi", "mp3", "ra", "wav", "wma", "wv", NULL };
+		build_filter_from_extensions(filter, filter_all, valid_ext_lavc);
+	}
+        gtk_file_chooser_add_filter(fc, filter);
+#endif /* HAVE_LAVC */
 }
 
 

@@ -2,6 +2,7 @@ noinst_LIBRARIES = libdecoder.a
 
 libdecoder_a_SOURCES = \
 dec_flac.h dec_flac.c \
+dec_lavc.h dec_lavc.c \
 dec_mac.h dec_mac.cpp \
 dec_mod.h dec_mod.c \
 dec_mpc.h dec_mpc.c \

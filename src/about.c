@@ -283,6 +283,16 @@ create_about_window() {
         gtk_text_buffer_insert_at_cursor(buffer, _("Monkey's Audio Codec\n"), -1);
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
+#ifdef HAVE_LAVC
+	gtk_text_buffer_insert_at_cursor(buffer, MARK, -1);
+#else
+	gtk_text_buffer_get_end_iter(buffer, &iter);
+	gtk_text_buffer_insert_with_tags(buffer, &iter, MARK, -1, tag2, NULL);
+#endif /* HAVE_LAVC */
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
+        gtk_text_buffer_insert_at_cursor(buffer, _("LAVC (AC3, AAC, WavPack, WMA, etc.)\n"), -1);
+
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 #ifdef HAVE_TAGLIB
 	gtk_text_buffer_insert_at_cursor(buffer, MARK, -1);
 #else

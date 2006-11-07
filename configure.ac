@@ -480,6 +480,34 @@ else
 fi
 
 
+AC_MSG_CHECKING(for LAVC support)
+AC_ARG_WITH(
+	lavc,
+	[  --with-lavc=yes,no      compile with lavc (FFmpeg) support (default: yes)],
+	lavc="$withval",
+	lavc="detect")
+if test "$lavc" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(avformat, av_open_input_file, [avf_lib=yes], [avf_lib=no], [-lavcodec -lavutil -lz])
+	AC_CHECK_LIB(avcodec, avcodec_open, [avc_lib=yes], [avc_lib=no], [-lavformat -lavutil -lz])
+
+	if test "$avf_lib" = "yes" -a "$avc_lib" = "yes" ; then
+	        lavc_LIBS="-lavformat -lavcodec -lavutil -lz"
+		AC_DEFINE([HAVE_LAVC], [1], [Defined if compile with LAVC support])
+		AC_MSG_RESULT(yes)
+	fi
+	if test "$avf_lib" = "no" -o "$avc_lib" = "no" ; then
+	        if test "$lavc" = "yes"; then
+		        AC_MSG_ERROR(You do not appear to have the LAVC decoder library (FFmpeg) installed. Grab it from http://ffmpeg.mplayerhq.hu/)
+		fi
+	fi
+	if test "$lavc" = "detect"; then
+		lavc=$avc_lib
+	fi
+fi
+
+
 AC_MSG_CHECKING(for metadata support)
 AC_ARG_WITH(
 	metadata,
@@ -503,7 +531,7 @@ else
 		AC_MSG_RESULT(yes)
 	fi
 	if test "$lib" = "no" -a "$metadata" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the taglib library installed or it is too old. Grab it from http://developer.kde.org/~wheeler/taglib)
+		AC_MSG_ERROR(You do not appear to have the TagLib library installed or it is too old. Grab it from http://developer.kde.org/~wheeler/taglib)
 	fi
 	if test "$metadata" = "detect"; then
 	        metadata=$lib
@@ -650,7 +678,7 @@ AQUALUNG_DATADIR="-DAQUALUNG_DATADIR=\\\"$datadir/aqualung\\\""
 CFLAGS="$BUILD_CFLAGS -Wall $PLATFORM_CFLAGS $AQUALUNG_SKINDIR $AQUALUNG_LOCALEDIR $AQUALUNG_DATADIR -D_GNU_SOURCE"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $taglib_CFLAGS"
-LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $taglib_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS"
+LIBS="decoder/libdecoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $taglib_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS"
 
 
 AC_OUTPUT([Makefile \
@@ -675,7 +703,7 @@ echo
 echo "  Build type / target platform            :  $buildtype / $platform"
 echo
 echo "  File format support:"
-echo "      sndfile (WAV, AIFF, etc.)           :  $sndfile"
+echo "      sndfile (WAV, AIFF, AU, etc.)       :  $sndfile"
 echo "      Free Lossless Audio Codec (FLAC)    :  $flac"
 echo "      Ogg Vorbis                          :  $ogg"
 echo "      Ogg Speex                           :  $speex"
@@ -683,6 +711,7 @@ echo "      MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg"
 echo "      MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod"
 echo "      Musepack                            :  $mpc"
 echo "      Monkey's Audio Codec                :  $mac"
+echo "      LAVC (AC3, AAC, WavPack, WMA, etc.) :  $lavc"
 echo "      Metadata (ID3, APE, Ogg comments)   :  $metadata"
 echo
 echo "  Output driver support:"

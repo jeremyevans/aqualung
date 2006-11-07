@@ -48,6 +48,7 @@
 #include "dec_mpeg.h"
 #include "dec_mod.h"
 #include "dec_mac.h"
+#include "dec_lavc.h"
 
 
 extern size_t sample_size;
@@ -65,6 +66,7 @@ decoder_init_t * decoder_init_v[N_DECODERS] = {
 	mpc_decoder_init,
 	mac_decoder_init,
 	mpeg_decoder_init,
+	lavc_decoder_init,
 	mod_decoder_init
 };
 
@@ -123,6 +125,16 @@ is_valid_extension(char ** valid_extensions, char * filename, int module) {
         }
 
 	return 0;
+}
+
+
+/* call this first before using file_decoder in program */
+void
+file_decoder_init(void) {
+
+#ifdef HAVE_LAVC
+	av_register_all();
+#endif /* HAVE_LAVC */
 }
 
 

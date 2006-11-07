@@ -1671,6 +1671,13 @@ print_version(void) {
 	fprintf(stderr, "no\n");
 #endif /* HAVE_MAC */
 	
+	fprintf(stderr, "\t\tLAVC (AC3, AAC, WavPack, WMA, etc.) : ");
+#ifdef HAVE_LAVC
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_LAVC */
+	
 	fprintf(stderr, "\t\tMetadata (ID3, APE, Ogg comments)   : ");
 #ifdef HAVE_TAGLIB
 	fprintf(stderr, "yes\n");
@@ -1937,6 +1944,8 @@ main(int argc, char ** argv) {
 	disk_thread_lock = g_mutex_new();
 	disk_thread_wake = g_cond_new();
 #endif /* _WIN32 */
+
+	file_decoder_init();
 
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, AQUALUNG_LOCALEDIR);

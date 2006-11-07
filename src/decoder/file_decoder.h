@@ -39,8 +39,9 @@ extern "C" {
 #define MAD_LIB     6
 #define MOD_LIB     7
 #define MAC_LIB     8
+#define LAVC_LIB    9
 
-#define N_DECODERS  9
+#define N_DECODERS  10
 
 
 /* format_flags */
@@ -99,6 +100,8 @@ typedef struct _decoder_t {
 
 
 int is_valid_extension(char ** valid_extensions, char * filename, int module);
+
+void file_decoder_init(void);
 
 file_decoder_t * file_decoder_new(void);
 void file_decoder_delete(file_decoder_t * fdec);

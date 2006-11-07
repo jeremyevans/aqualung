@@ -375,8 +375,7 @@ meta_read(metadata * meta, char * file) {
                 return 0;
         }
 
-	meta->format_major = fdec->fileinfo.format_major;
-	meta->format_minor = fdec->fileinfo.format_minor;
+	meta->file_lib = fdec->file_lib;
 	strcpy(meta->format_str, fdec->fileinfo.format_str);
 	meta->format_flags = fdec->fileinfo.format_flags;
 	meta->total_samples = fdec->fileinfo.total_samples;
@@ -385,24 +384,24 @@ meta_read(metadata * meta, char * file) {
 	meta->bps = fdec->fileinfo.bps;
 
 #ifdef HAVE_TAGLIB
-	switch (meta->format_major) {
+	switch (meta->file_lib) {
 #ifdef HAVE_FLAC
-	case FORMAT_FLAC:
+	case FLAC_LIB:
 		meta->taglib_file = meta_read_flac(file);
 		break;
 #endif /* HAVE_FLAC */
 #ifdef HAVE_OGG_VORBIS
-	case FORMAT_VORBIS:
+	case VORBIS_LIB:
 		meta->taglib_file = meta_read_oggv(file);
 		break;
 #endif /* HAVE_OGG_VORBIS */
 #ifdef HAVE_MPEG
-	case FORMAT_MAD:
+	case MAD_LIB:
 		meta->taglib_file = meta_read_mpeg(file);
 		break;
 #endif /* HAVE_MPEG */
 #ifdef HAVE_MPC
-	case FORMAT_MPC:
+	case MPC_LIB:
 		meta->taglib_file = meta_read_mpc(file);
 		break;
 #endif /* HAVE_MPC */
@@ -501,24 +500,24 @@ meta_free(metadata * meta) {
 
 
 #ifdef HAVE_TAGLIB
-	switch (meta->format_major) {
+	switch (meta->file_lib) {
 #ifdef HAVE_FLAC
-	case FORMAT_FLAC:
+	case FLAC_LIB:
 		meta_free_flac(meta);
 		break;
 #endif /* HAVE_FLAC */
 #ifdef HAVE_OGG_VORBIS
-	case FORMAT_VORBIS:
+	case VORBIS_LIB:
 		meta_free_oggv(meta);
 		break;
 #endif /* HAVE_OGG_VORBIS */
 #ifdef HAVE_MPEG
-	case FORMAT_MAD:
+	case MAD_LIB:
 		meta_free_mpeg(meta);
 		break;
 #endif /* HAVE_MPEG */
 #ifdef HAVE_MPC
-	case FORMAT_MPC:
+	case MPC_LIB:
 		meta_free_mpc(meta);
 		break;
 #endif /* HAVE_MPC */
@@ -748,9 +747,9 @@ meta_get_rva(metadata * meta, float * fval) {
 	TagLib::Ogg::Vorbis::File * oggv_file;
 	TagLib::MPEG::File * mpeg_file;
 
-	switch (meta->format_major) {
+	switch (meta->file_lib) {
 #ifdef HAVE_FLAC
-	case FORMAT_FLAC:
+	case FLAC_LIB:
 		flac_file = reinterpret_cast<TagLib::FLAC::File *>(meta->taglib_file);
 		ret = meta_get_rva_from_id3v2(flac_file->ID3v2Tag(), fval);
 		if (!ret) {
@@ -759,13 +758,13 @@ meta_get_rva(metadata * meta, float * fval) {
 		break;
 #endif /* HAVE_FLAC */
 #ifdef HAVE_OGG_VORBIS
-	case FORMAT_VORBIS:
+	case VORBIS_LIB:
 		oggv_file = reinterpret_cast<TagLib::Ogg::Vorbis::File *>(meta->taglib_file);
 		ret = meta_get_rva_from_oxc(oggv_file->tag(), fval);
 		break;
 #endif /* HAVE_OGG_VORBIS */
 #ifdef HAVE_MPEG
-	case FORMAT_MAD:
+	case MAD_LIB:
 		mpeg_file = reinterpret_cast<TagLib::MPEG::File *>(meta->taglib_file);
 		ret = meta_get_rva_from_id3v2(mpeg_file->ID3v2Tag(), fval);
 		if (!ret) {

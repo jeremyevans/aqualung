@@ -54,8 +54,7 @@ typedef struct _mod_info {
 typedef struct _metadata {
 
 	/* audio stream properties */
-	int format_major;
-	int format_minor;
+	int file_lib;
 	char format_str[MAXLEN];
 	int format_flags;
 	unsigned long long total_samples;

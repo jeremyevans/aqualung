@@ -202,53 +202,32 @@ mac_decoder_open(decoder_t * dec, char * filename) {
 	pd->rb = rb_create(pd->channels * sample_size * RB_MAC_SIZE);
 	fdec->channels = pd->channels;
 	fdec->SR = pd->sample_rate;
+	fdec->fileinfo.total_samples = (unsigned long long)(pd->sample_rate / 1000.0f * pd->length_in_ms);
+	fdec->fileinfo.bps = pd->bitrate * 1000;
+
 	fdec->file_lib = MAC_LIB;
+	strcpy(dec->format_str, "Monkey's Audio");
 
 	switch (pd->compression_level) {
 	case COMPRESSION_LEVEL_FAST:
-		fdec->fileinfo.format_minor = MAC_COMP_FAST;
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Fast"));
 		break;
 	case COMPRESSION_LEVEL_NORMAL:
-		fdec->fileinfo.format_minor = MAC_COMP_NORMAL;
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Normal"));
 		break;
 	case COMPRESSION_LEVEL_HIGH:
-		fdec->fileinfo.format_minor = MAC_COMP_HIGH;
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: High"));
 		break;
 	case COMPRESSION_LEVEL_EXTRA_HIGH:
-		fdec->fileinfo.format_minor = MAC_COMP_EXTRA;
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Extra High"));
 		break;
 	case COMPRESSION_LEVEL_INSANE:
-		fdec->fileinfo.format_minor = MAC_COMP_INSANE;
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Insane"));
 		break;
 	default:
 		printf("Unknown MAC compression level %d\n", pd->compression_level);
-		fdec->fileinfo.format_minor = 0;
 		break;
 	}
-
-	strcpy(dec->format_str, "Monkey's Audio");
-
-	switch (fdec->fileinfo.format_minor) {
-	case MAC_COMP_FAST:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Fast"));
-		break;
-	case MAC_COMP_NORMAL:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Normal"));
-		break;
-	case MAC_COMP_HIGH:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: High"));
-		break;
-	case MAC_COMP_EXTRA:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Extra High"));
-		break;
-	case MAC_COMP_INSANE:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Insane"));
-		break;
-	}
-
-	fdec->fileinfo.total_samples = (unsigned long long)(pd->sample_rate / 1000.0f * pd->length_in_ms);
-	fdec->fileinfo.format_major = FORMAT_MAC;
-	fdec->fileinfo.bps = pd->bitrate * 1000;
 
 	return DECODER_OPEN_SUCCESS;
 }

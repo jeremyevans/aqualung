@@ -1942,24 +1942,24 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
 
 #ifdef HAVE_TAGLIB
-	switch (meta->format_major) {
+	switch (meta->file_lib) {
 #ifdef HAVE_FLAC
-	case FORMAT_FLAC:
+	case FLAC_LIB:
 		build_nb_pages_flac(meta, GTK_NOTEBOOK(nb), hbox_tagbuttons, mode);
 		break;
 #endif /* HAVE_FLAC */
 #ifdef HAVE_OGG_VORBIS
-	case FORMAT_VORBIS:
+	case VORBIS_LIB:
 		build_nb_pages_oggv(meta, GTK_NOTEBOOK(nb), hbox_tagbuttons, mode);
 		break;
 #endif /* HAVE_OGG_VORBIS */
 #ifdef HAVE_MPEG
-	case FORMAT_MAD:
+	case MAD_LIB:
 		build_nb_pages_mpeg(meta, GTK_NOTEBOOK(nb), hbox_tagbuttons, mode);
 		break;
 #endif /* HAVE_MPEG */
 #ifdef HAVE_MPC
-	case FORMAT_MPC:
+	case MPC_LIB:
 		build_nb_pages_mpc(meta, GTK_NOTEBOOK(nb), hbox_tagbuttons, mode);
 		break;
 #endif /* HAVE_MPC */

@@ -107,7 +107,7 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 	fdec->fileinfo.format_major = pd->sf_info.format & SF_FORMAT_TYPEMASK;
 	fdec->fileinfo.format_minor = pd->sf_info.format & SF_FORMAT_SUBMASK;
 	
-	switch (fdec->fileinfo.format_minor) {
+	switch (pd->sf_info.format & SF_FORMAT_SUBMASK) {
 	case SF_FORMAT_PCM_S8:
 	case SF_FORMAT_PCM_U8:
 		fdec->fileinfo.bps = 8;
@@ -134,7 +134,7 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 	fdec->fileinfo.bps *= fdec->SR * fdec->channels;
 
 
-	switch (fdec->fileinfo.format_major) {
+	switch (pd->sf_info.format & SF_FORMAT_TYPEMASK) {
 	case SF_FORMAT_WAV:
 		strcpy(dec->format_str, "Microsoft WAV");
 		break;
@@ -197,7 +197,7 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 #endif /* HAVE_NEW_SNDFILE */
 	}
 		
-	switch (fdec->fileinfo.format_minor) {
+	switch (pd->sf_info.format & SF_FORMAT_SUBMASK) {
 	case SF_FORMAT_PCM_S8:
 		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(8 ", _("bit signed"), ")");
 		break;

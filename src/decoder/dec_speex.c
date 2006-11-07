@@ -274,8 +274,6 @@ speex_dec_open(decoder_t * dec, char * filename) {
 
 	length_in_samples = pd->granulepos + pd->nframes - 1;
 	fdec->fileinfo.total_samples = length_in_samples;
-	fdec->fileinfo.format_major = FORMAT_SPEEX;
-	fdec->fileinfo.format_minor = 0;
 	fdec->fileinfo.bps = 8 * length_in_bytes / (length_in_samples / pd->sample_rate);
 
 	return DECODER_OPEN_SUCCESS;

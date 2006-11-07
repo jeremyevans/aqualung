@@ -150,8 +150,6 @@ vorbis_decoder_open(decoder_t * dec, char * filename) {
 	strcpy(dec->format_str, "Ogg Vorbis");
 	
 	fdec->fileinfo.total_samples = ov_pcm_total(&(pd->vf), -1);
-	fdec->fileinfo.format_major = FORMAT_VORBIS;
-	fdec->fileinfo.format_minor = 0;
 	fdec->fileinfo.bps = ov_bitrate(&(pd->vf), -1);
 	
 	return DECODER_OPEN_SUCCESS;

@@ -44,6 +44,23 @@
 #define MPEG_VERSION2   1
 #define MPEG_VERSION2_5 2
 
+/* MPEG Audio subformats */
+#define MPEG_LAYER_I     0x001
+#define MPEG_LAYER_II    0x002
+#define MPEG_LAYER_III   0x004
+#define MPEG_LAYER_MASK  0x007
+#define MPEG_MODE_SINGLE 0x010
+#define MPEG_MODE_DUAL   0x020
+#define MPEG_MODE_JOINT  0x040
+#define MPEG_MODE_STEREO 0x080
+#define MPEG_MODE_MASK   0x0F0
+#define MPEG_EMPH_NONE   0x100
+#define MPEG_EMPH_5015   0x200
+#define MPEG_EMPH_J_17   0x400
+#define MPEG_EMPH_RES    0x800
+#define MPEG_EMPH_MASK   0xF00
+
+
 typedef struct {
 	/* Standard MP3 frame header fields */
 	int version;

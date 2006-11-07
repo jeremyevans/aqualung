@@ -1193,7 +1193,6 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	
 	if (pd->mp3info.is_vbr) {
 		pd->total_samples_est = (double)pd->SR * pd->mp3info.file_time / 1000.0f;
-		pd->mpeg_subformat |= MPEG_VBR;
 		dec->format_flags |= FORMAT_VBR;
 	} else {
 		if (pd->bitrate == 0) {
@@ -1203,7 +1202,6 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 			pd->bitrate = pd->mp3info.bitrate = 8 *
 				(double)(pd->filesize - pd->mp3info.start_byteoffset) /
 				(pd->total_samples_est / pd->SR);
-			pd->mpeg_subformat |= MPEG_UBR;
 			dec->format_flags |= FORMAT_UBR;
 		} else {
 			pd->total_samples_est =
@@ -1289,11 +1287,8 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 		break;
 	}
 	strcat(dec->format_str, ")");
-	
-	
+		
 	fdec->fileinfo.total_samples = pd->total_samples_est;
-	fdec->fileinfo.format_major = FORMAT_MAD;
-	fdec->fileinfo.format_minor = pd->mpeg_subformat;
 	fdec->fileinfo.bps = pd->bitrate;
 
 	/* setup playback */

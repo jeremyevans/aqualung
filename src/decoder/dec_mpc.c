@@ -143,6 +143,9 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 	
 	fdec->channels = pd->mpc_i.channels;
 	fdec->SR = pd->mpc_i.sample_freq;
+	fdec->fileinfo.total_samples = mpc_streaminfo_get_length_samples(&pd->mpc_i);
+	fdec->fileinfo.bps = pd->mpc_i.average_bitrate;
+
 	fdec->file_lib = MPC_LIB;
 	strcpy(dec->format_str, "Musepack");
 
@@ -169,11 +172,6 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Braindead"));
 		break;
 	}
-
-	fdec->fileinfo.total_samples = mpc_streaminfo_get_length_samples(&pd->mpc_i);
-	fdec->fileinfo.format_major = FORMAT_MPC;
-	fdec->fileinfo.format_minor = pd->mpc_i.profile;
-	fdec->fileinfo.bps = pd->mpc_i.average_bitrate;
 	
 	return DECODER_OPEN_SUCCESS;
 }

@@ -343,8 +343,6 @@ char *filename = NULL;
 	
 	fdec->fileinfo.total_samples = ModPlug_GetLength(pd->mpf)
 		/ 1000.0f * pd->mp_settings.mFrequency;
-	fdec->fileinfo.format_major = FORMAT_MOD;
-	fdec->fileinfo.format_minor = 0;
 	fdec->fileinfo.bps = pd->st.st_size * 8000.0f /	ModPlug_GetLength(pd->mpf);
 	
 	return DECODER_OPEN_SUCCESS;

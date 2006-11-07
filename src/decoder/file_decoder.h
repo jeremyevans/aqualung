@@ -43,60 +43,6 @@ extern "C" {
 #define N_DECODERS  9
 
 
-/* formats other than libsndfile internal formats */
-#ifdef HAVE_FLAC
-#define FORMAT_FLAC   0x1000000
-#endif /* HAVE_FLAC */
-
-#ifdef HAVE_OGG_VORBIS
-#define FORMAT_VORBIS 0x2000000
-#endif /* HAVE_OGG_VORBIS */
-
-#ifdef HAVE_MPEG
-#define FORMAT_MAD    0x4000000
-/* MPEG Audio subformats */
-#define MPEG_LAYER_I     0x001
-#define MPEG_LAYER_II    0x002
-#define MPEG_LAYER_III   0x004
-#define MPEG_LAYER_MASK  0x007
-#define MPEG_MODE_SINGLE 0x010
-#define MPEG_MODE_DUAL   0x020
-#define MPEG_MODE_JOINT  0x040
-#define MPEG_MODE_STEREO 0x080
-#define MPEG_MODE_MASK   0x0F0
-#define MPEG_EMPH_NONE   0x100
-#define MPEG_EMPH_5015   0x200
-#define MPEG_EMPH_J_17   0x400
-#define MPEG_EMPH_RES    0x800
-#define MPEG_EMPH_MASK   0xF00
-
-#define MPEG_VBR         0x1000
-#define MPEG_UBR         0x2000
-#endif /* HAVE_MPEG */
-
-#ifdef HAVE_MOD
-#define FORMAT_MOD   0x8000000
-#endif /* HAVE_MOD */
-
-#ifdef HAVE_MPC
-#define FORMAT_MPC   0x10000000
-#endif /* HAVE_MPC */
-
-#ifdef HAVE_MAC
-#define FORMAT_MAC   0x20000000
-/* Monkey's Audio subformats */
-#define MAC_COMP_FAST   1
-#define MAC_COMP_NORMAL 2
-#define MAC_COMP_HIGH   3
-#define MAC_COMP_EXTRA  4
-#define MAC_COMP_INSANE 5
-#endif /* HAVE_MAC */
-
-#ifdef HAVE_SPEEX
-#define FORMAT_SPEEX 0x40000000
-#endif /* HAVE_SPEEX */
-
-
 /* format_flags */
 #define FORMAT_VBR 0x0001
 #define FORMAT_UBR 0x0002

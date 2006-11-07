@@ -270,6 +270,7 @@ speex_dec_open(decoder_t * dec, char * filename) {
 	fdec->channels = pd->channels;
 	fdec->SR = pd->sample_rate;
 	fdec->file_lib = SPEEX_LIB;
+	strcpy(dec->format_str, "Ogg Speex");
 
 	length_in_samples = pd->granulepos + pd->nframes - 1;
 	fdec->fileinfo.total_samples = length_in_samples;

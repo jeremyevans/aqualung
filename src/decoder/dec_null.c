@@ -84,6 +84,12 @@ null_decoder_open(decoder_t * dec, char * filename) {
 
 	   DECODER_OPEN_FERROR : file nonexistent/nonaccessible, so
 	       trying other decoders is pointless.
+
+
+	   If opening was successful, put a string describing the
+	   format/decoder in format_str[]:
+
+	   strcpy(dec->format_str, "NULL Audio");
 	*/
 
 	return DECODER_OPEN_BADLIB;

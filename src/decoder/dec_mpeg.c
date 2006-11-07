@@ -36,6 +36,7 @@
 #include <pthread.h>
 #endif /* _WIN32 */
 
+#include "../i18n.h"
 #ifdef HAVE_MOD
 #include "dec_mod.h"
 #endif /* HAVE_MOD */
@@ -1193,6 +1194,7 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	if (pd->mp3info.is_vbr) {
 		pd->total_samples_est = (double)pd->SR * pd->mp3info.file_time / 1000.0f;
 		pd->mpeg_subformat |= MPEG_VBR;
+		dec->format_flags |= FORMAT_VBR;
 	} else {
 		if (pd->bitrate == 0) {
 			pd->total_samples_est = (long long)(pd->filesize - pd->mp3info.start_byteoffset)
@@ -1202,6 +1204,7 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 				(double)(pd->filesize - pd->mp3info.start_byteoffset) /
 				(pd->total_samples_est / pd->SR);
 			pd->mpeg_subformat |= MPEG_UBR;
+			dec->format_flags |= FORMAT_UBR;
 		} else {
 			pd->total_samples_est =
 				(double)(pd->filesize - pd->mp3info.start_byteoffset)
@@ -1232,6 +1235,61 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	fdec->channels = pd->channels;
 	fdec->SR = pd->SR;
 	fdec->file_lib = MAD_LIB;
+	strcpy(dec->format_str, "MPEG Audio");
+
+	if (pd->mpeg_subformat & 0xff7) {
+		strcat(dec->format_str, " (");
+		switch (pd->mpeg_subformat & MPEG_LAYER_MASK) {
+		case MPEG_LAYER_I:
+			strcat(dec->format_str, _("Layer I"));
+			break;
+		case MPEG_LAYER_II:
+			strcat(dec->format_str, _("Layer II"));
+			break;
+		case MPEG_LAYER_III:
+			strcat(dec->format_str, _("Layer III"));
+			break;
+		default:
+			strcat(dec->format_str, _("Unrecognized"));
+			break;
+		}
+	}
+	
+	if ((pd->mpeg_subformat & MPEG_LAYER_MASK) && (pd->mpeg_subformat & (MPEG_MODE_MASK | MPEG_EMPH_MASK)))
+		strcat(dec->format_str, ", ");
+	switch (pd->mpeg_subformat & MPEG_MODE_MASK) {
+	case MPEG_MODE_SINGLE:
+		strcat(dec->format_str, _("Single channel"));
+		break;
+	case MPEG_MODE_DUAL:
+		strcat(dec->format_str, _("Dual channel"));
+		break;
+	case MPEG_MODE_JOINT:
+		strcat(dec->format_str, _("Joint stereo"));
+		break;
+	case MPEG_MODE_STEREO:
+		strcat(dec->format_str, _("Stereo"));
+		break;
+	}
+	
+	if ((pd->mpeg_subformat & MPEG_MODE_MASK) && (pd->mpeg_subformat & MPEG_EMPH_MASK))
+		strcat(dec->format_str, ", ");
+	switch (pd->mpeg_subformat & MPEG_EMPH_MASK) {
+	case MPEG_EMPH_NONE:
+		strcat(dec->format_str, _("Emphasis: none"));
+		break;
+	case MPEG_EMPH_5015:
+		sprintf(dec->format_str, "%s%s 50/15 us", dec->format_str, _("Emphasis:"));
+		break;
+	case MPEG_EMPH_J_17:
+		sprintf(dec->format_str, "%s%s CCITT J.17", dec->format_str, _("Emphasis:"));
+		break;
+	case MPEG_EMPH_RES:
+		strcat(dec->format_str, _("Emphasis: reserved"));
+		break;
+	}
+	strcat(dec->format_str, ")");
+	
 	
 	fdec->fileinfo.total_samples = pd->total_samples_est;
 	fdec->fileinfo.format_major = FORMAT_MAD;

@@ -527,311 +527,7 @@ set_title_label(char * str) {
 
 
 void
-assembly_format_label(char * str, int v_major, int v_minor) {
-
-	switch (v_major) {
-	case 0:
-		str[0] = '\0';
-		break;
-
-#ifdef HAVE_SNDFILE
-	case SF_FORMAT_WAV:
-		strcpy(str, "Microsoft WAV");
-		break;
-	case SF_FORMAT_AIFF:
-		strcpy(str, "Apple/SGI AIFF");
-		break;
-	case SF_FORMAT_AU:
-		strcpy(str, "Sun/NeXT AU");
-		break;
-	case SF_FORMAT_PAF:
-		strcpy(str, "Ensoniq PARIS");
-		break;
-	case SF_FORMAT_SVX:
-		strcpy(str, "Amiga IFF / SVX8 / SV16");
-		break;
-	case SF_FORMAT_NIST:
-		strcpy(str, "Sphere NIST");
-		break;
-	case SF_FORMAT_VOC:
-		strcpy(str, "VOC");
-		break;
-	case SF_FORMAT_IRCAM:
-		strcpy(str, "Berkeley/IRCAM/CARL");
-		break;
-	case SF_FORMAT_W64:
-		strcpy(str, "Sonic Foundry 64 bit RIFF/WAV");
-		break;
-	case SF_FORMAT_MAT4:
-		strcpy(str, "Matlab (tm) V4.2 / GNU Octave 2.0");
-		break;
-    #ifdef HAVE_NEW_SNDFILE
-    /* version(libsndfile) >= 1.0.12 */
-	case SF_FORMAT_PVF:
-		strcpy(str, "Portable Voice Format");
-		break;
-	case SF_FORMAT_XI:
-		strcpy(str, "Fasttracker 2 Extended Instrument");
-		break;
-	case SF_FORMAT_HTK:
-		strcpy(str, "HMM Tool Kit");
-		break;
-	case SF_FORMAT_SDS:
-		strcpy(str, "Midi Sample Dump Standard");
-		break;
-	case SF_FORMAT_AVR:
-		strcpy(str, "Audio Visual Research");
-		break;
-	case SF_FORMAT_WAVEX:
-		strcpy(str, "MS WAVE with WAVEFORMATEX");
-		break;
-	case SF_FORMAT_SD2:
-		strcpy(str, "Sound Designer 2");
-		break;
-	case SF_FORMAT_FLAC:
-		strcpy(str, "FLAC");
-		break;
-	case SF_FORMAT_CAF:
-		strcpy(str, "Core Audio File");
-		break;
-    #endif /* HAVE_NEW_SNDFILE */
-#endif /* HAVE_SNDFILE */
-
-#ifdef HAVE_FLAC
-	case FORMAT_FLAC:
-		strcpy(str, "FLAC");
-		break;
-#endif /* HAVE_FLAC */
-
-#ifdef HAVE_OGG_VORBIS
-	case FORMAT_VORBIS:
-		strcpy(str, "Ogg Vorbis");
-		break;
-#endif /* HAVE_OGG_VORBIS */
-
-#ifdef HAVE_SPEEX
-	case FORMAT_SPEEX:
-		strcpy(str, "Ogg Speex");
-		break;
-#endif /* HAVE_SPEEX */
-
-#ifdef HAVE_MPC
-	case FORMAT_MPC:
-		strcpy(str, "Musepack");
-		break;
-#endif /* HAVE_MPC */
-
-#ifdef HAVE_MPEG
-	case FORMAT_MAD:
-		strcpy(str, "MPEG Audio");
-		break;
-#endif /* HAVE_MPEG */
-
-#ifdef HAVE_MOD
-        case FORMAT_MOD:
-                strcpy(str, "MOD Audio");
-                break;
-#endif /* HAVE_MOD */
-
-#ifdef HAVE_MAC
-        case FORMAT_MAC:
-                strcpy(str, "Monkey's Audio");
-                break;
-#endif /* HAVE_MAC */
-
-	default:
-		strcpy(str, _("Unrecognized"));
-		break;
-	}
-
-#ifdef HAVE_SNDFILE
-	if (v_major < 0x1000000) {
-		switch (v_minor) {
-		case SF_FORMAT_PCM_S8:
-			sprintf(str, "%s %s%s%s", str, "(8 ", _("bit signed"), ")");
-			break;
-		case SF_FORMAT_PCM_U8:
-			sprintf(str, "%s %s%s%s", str, "(16 ", _("bit unsigned"), ")");
-			break;
-		case SF_FORMAT_PCM_16:
-			sprintf(str, "%s %s%s%s", str, "(16 ", _("bit signed"), ")");
-			break;
-		case SF_FORMAT_PCM_24:
-			sprintf(str, "%s %s%s%s", str, "(24 ", _("bit signed"), ")");
-			break;
-		case SF_FORMAT_PCM_32:
-			sprintf(str, "%s %s%s%s", str, "(32 ", _("bit signed"), ")");
-			break;
-		case SF_FORMAT_FLOAT:
-			sprintf(str, "%s %s%s%s", str, "(32 ", _("bit float"), ")");
-			break;
-		case SF_FORMAT_DOUBLE:
-			sprintf(str, "%s %s%s%s", str, "(64 ", _("bit double"), ")");
-			break;
-		case SF_FORMAT_ULAW:
-			sprintf(str, "%s %s%s%s", str, "(u-Law ", _("encoding"), ")");
-			break;
-		case SF_FORMAT_ALAW:
-			sprintf(str, "%s %s%s%s", str, "(A-Law ", _("encoding"), ")");
-			break;
-		case SF_FORMAT_IMA_ADPCM:
-			sprintf(str, "%s %s%s%s", str, "(IMA ADPCM ", _("encoding"), ")");
-			break;
-		case SF_FORMAT_MS_ADPCM:
-			sprintf(str, "%s %s%s%s", str, "(Microsoft ADPCM ", _("encoding"), ")");
-			break;
-		case SF_FORMAT_GSM610:
-			sprintf(str, "%s %s%s%s", str, "(GSM 6.10 ", _("encoding"), ")");
-			break;
-		case SF_FORMAT_VOX_ADPCM:
-			sprintf(str, "%s %s%s%s", str, "(Oki Dialogic ADPCM ", _("encoding"), ")");
-			break;
-		case SF_FORMAT_G721_32:
-			sprintf(str, "%s %s%s%s", str, "(32kbps G721 ADPCM ", _("encoding"), ")");
-			break;
-		case SF_FORMAT_G723_24:
-			sprintf(str, "%s %s%s%s", str, "(24kbps G723 ADPCM ", _("encoding"), ")");
-			break;
-		case SF_FORMAT_G723_40:
-			sprintf(str, "%s %s%s%s", str, "(40kbps G723 ADPCM ", _("encoding"), ")");
-			break;
-		case SF_FORMAT_DWVW_12:
-			sprintf(str, "%s %s%s%s", str, "(12 bit DWVW ", _("encoding"), ")");
-			break;
-		case SF_FORMAT_DWVW_16:
-			sprintf(str, "%s %s%s%s", str, "(16 bit DWVW ", _("encoding"), ")");
-			break;
-		case SF_FORMAT_DWVW_24:
-			sprintf(str, "%s %s%s%s", str, "(24 bit DWVW ", _("encoding"), ")");
-			break;
-		case SF_FORMAT_DWVW_N:
-			sprintf(str, "%s %s%s%s", str, "(N bit DWVW ", _("encoding"), ")");
-			break;
-		}
-	}
-#endif /* HAVE_SNDFILE */
-
-#ifdef HAVE_MPC
-	if (v_major == FORMAT_MPC) {
-		
-		switch (v_minor) {
-		case 7:
-			sprintf(str, "%s (%s)", str, _("Profile: Telephone"));
-			break;
-		case 8:
-			sprintf(str, "%s (%s)", str, _("Profile: Thumb"));
-			break;
-		case 9:
-			sprintf(str, "%s (%s)", str, _("Profile: Radio"));
-			break;
-		case 10:
-			sprintf(str, "%s (%s)", str, _("Profile: Standard"));
-			break;
-		case 11:
-			sprintf(str, "%s (%s)", str, _("Profile: Xtreme"));
-			break;
-		case 12:
-			sprintf(str, "%s (%s)", str, _("Profile: Insane"));
-			break;
-		case 13:
-			sprintf(str, "%s (%s)", str, _("Profile: Braindead"));
-			break;
-		}
-	}
-#endif /* HAVE_MPC */
-
-#ifdef HAVE_MPEG
-	if (v_major == FORMAT_MAD) {
-		
-		if (v_minor & 0xff7) {
-			
-			strcat(str, " (");
-			
-			switch (v_minor & MPEG_LAYER_MASK) {
-			case MPEG_LAYER_I:
-				strcat(str, _("Layer I"));
-				break;
-			case MPEG_LAYER_II:
-				strcat(str, _("Layer II"));
-				break;
-			case MPEG_LAYER_III:
-				strcat(str, _("Layer III"));
-				break;
-			default:
-				strcat(str, _("Unrecognized"));
-				break;
-			}
-		}
-
-	        if ((v_minor & MPEG_LAYER_MASK) && (v_minor & (MPEG_MODE_MASK | MPEG_EMPH_MASK)))
-			strcat(str, ", ");
-
-		switch (v_minor & MPEG_MODE_MASK) {
-		case MPEG_MODE_SINGLE:
-			strcat(str, _("Single channel"));
-			break;
-		case MPEG_MODE_DUAL:
-			strcat(str, _("Dual channel"));
-			break;
-		case MPEG_MODE_JOINT:
-			strcat(str, _("Joint stereo"));
-			break;
-		case MPEG_MODE_STEREO:
-			strcat(str, _("Stereo"));
-			break;
-		}
-
-		if ((v_minor & MPEG_MODE_MASK) && (v_minor & MPEG_EMPH_MASK))
-			strcat(str, ", ");
-
-
-		switch (v_minor & MPEG_EMPH_MASK) {
-		case MPEG_EMPH_NONE:
-			strcat(str, _("Emphasis: none"));
-			break;
-		case MPEG_EMPH_5015:
-			sprintf(str, "%s%s 50/15 us", str, _("Emphasis:"));
-			break;
-		case MPEG_EMPH_J_17:
-			sprintf(str, "%s%s CCITT J.17", str, _("Emphasis:"));
-			break;
-		case MPEG_EMPH_RES:
-			strcat(str, _("Emphasis: reserved"));
-			break;
-		}
-		
-		strcat(str, ")");
-	}
-#endif /* HAVE_MPEG */
-
-#ifdef HAVE_MAC
-	if (v_major == FORMAT_MAC) {
-
-		switch (v_minor) {
-		case MAC_COMP_FAST:
-			sprintf(str, "%s (%s)", str, _("Compression: Fast"));
-			break;
-		case MAC_COMP_NORMAL:
-			sprintf(str, "%s (%s)", str, _("Compression: Normal"));
-			break;
-		case MAC_COMP_HIGH:
-			sprintf(str, "%s (%s)", str, _("Compression: High"));
-			break;
-		case MAC_COMP_EXTRA:
-			sprintf(str, "%s (%s)", str, _("Compression: Extra High"));
-			break;
-		case MAC_COMP_INSANE:
-			sprintf(str, "%s (%s)", str, _("Compression: Insane"));
-			break;
-		}
-	}
-#endif /* HAVE_MAC */
-}
-
-void
-set_format_label(int v_major, int v_minor) {
-
-	char str[MAXLEN];
+set_format_label(char * format_str) {
 
 	if (!is_file_loaded) {
 		if (GTK_IS_LABEL(label_format))
@@ -839,26 +535,31 @@ set_format_label(int v_major, int v_minor) {
 		return;
 	}
 
-	assembly_format_label(str, v_major, v_minor);
-
 	if (GTK_IS_LABEL(label_format))
-		gtk_label_set_text(GTK_LABEL(label_format), str);
+		gtk_label_set_text(GTK_LABEL(label_format), format_str);
 }
 
-void
-set_bps_label(int bps, int is_vbr, int is_ubr) {
-	
-	char str[MAXLEN];
 
-	if (is_vbr) {
+void
+format_bps_label(int bps, int format_flags, char * str) {
+
+	if (format_flags & FORMAT_VBR) {
 		sprintf(str, "%.1f kbit/s VBR", bps/1000.0);
 	} else {
-		if (is_ubr) {
+		if (format_flags & FORMAT_UBR) {
 			sprintf(str, "%.1f kbit/s UBR", bps/1000.0);
 		} else {
 			sprintf(str, "%.1f kbit/s", bps/1000.0);
 		}
 	}
+}
+
+void
+set_bps_label(int bps, int format_flags) {
+	
+	char str[MAXLEN];
+
+	format_bps_label(bps, format_flags, str);
 
 	if (is_file_loaded) {
 		if (GTK_IS_LABEL(label_bps))
@@ -1052,29 +753,12 @@ refresh_displays(void) {
 		gtk_widget_hide(cover_align);
 	}
 
-	set_format_label(disp_info.format_major, disp_info.format_minor);
+	set_format_label(disp_info.format_str);
 	set_samplerate_label(disp_info.sample_rate);
-
-#ifdef HAVE_MPEG
-	if (disp_info.format_major == FORMAT_MAD) {
-		if (disp_info.format_minor & MPEG_VBR) {
-			set_bps_label(disp_info.bps, 1, 0);
-		} else if (disp_info.format_minor & MPEG_UBR) {
-			set_bps_label(disp_info.bps, 0, 1);
-		} else {
-			set_bps_label(disp_info.bps, 0, 0);
-		}
-	} else {
-		set_bps_label(disp_info.bps, 0, 0);
-	}
-#else
-	set_bps_label(disp_info.bps, 0, 0);
-#endif /* HAVE_MPEG */
+	set_bps_label(disp_info.bps, disp_info.format_flags);
 	set_mono_label(disp_info.is_mono);
-
 	set_output_label(output, out_SR);
 	set_src_type_label(src_type);
-
 }
 
 

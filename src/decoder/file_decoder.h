@@ -22,6 +22,7 @@
 #ifndef _FILE_DECODER_H
 #define _FILE_DECODER_H
 
+#include "../common.h"
 #include "../rb.h"
 
 #ifdef __cplusplus
@@ -96,13 +97,19 @@ extern "C" {
 #endif /* HAVE_SPEEX */
 
 
+/* format_flags */
+#define FORMAT_VBR 0x0001
+#define FORMAT_UBR 0x0002
+
 typedef struct _fileinfo_t {
         unsigned long long total_samples;
         unsigned long sample_rate;
         int is_mono;
+        int bps;
         int format_major;
         int format_minor;
-        int bps;
+	char * format_str; /* buffer allocated in pdec */
+	int format_flags;
 } fileinfo_t;
 
 
@@ -136,7 +143,9 @@ typedef struct _decoder_t {
 	void (* close)(struct _decoder_t * dec);
 	unsigned int (* read)(struct _decoder_t * dec, float * dest, int num);
 	void (* seek)(struct _decoder_t * dec, unsigned long long seek_to_pos);
-	
+
+	char format_str[MAXLEN];
+	int format_flags;
 } decoder_t;
 
 

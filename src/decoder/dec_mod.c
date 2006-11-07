@@ -339,6 +339,7 @@ char *filename = NULL;
 	fdec->channels = pd->mp_settings.mChannels;
 	fdec->SR = pd->mp_settings.mFrequency;
 	fdec->file_lib = MOD_LIB;
+	strcpy(dec->format_str, "MOD Audio");
 	
 	fdec->fileinfo.total_samples = ModPlug_GetLength(pd->mpf)
 		/ 1000.0f * pd->mp_settings.mFrequency;

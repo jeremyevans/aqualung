@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "dec_flac.h"
 
@@ -189,11 +190,11 @@ flac_decoder_open(decoder_t * dec, char * filename) {
 				goto try_flac;
 			}
 			
-			pd->rb = rb_create(pd->channels *
-							sample_size * RB_FLAC_SIZE);
+			pd->rb = rb_create(pd->channels * sample_size * RB_FLAC_SIZE);
 			fdec->channels = pd->channels;
 			fdec->SR = pd->SR;
 			fdec->file_lib = FLAC_LIB;
+			strcpy(dec->format_str, "FLAC");
 			
 			fdec->fileinfo.total_samples = pd->total_samples;
 			fdec->fileinfo.format_major = FORMAT_FLAC;

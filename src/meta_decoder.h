@@ -28,6 +28,7 @@
 #endif /* HAVE_MOD */
 
 
+#include "common.h"
 #include "decoder/file_decoder.h"
 
 
@@ -55,6 +56,8 @@ typedef struct _metadata {
 	/* audio stream properties */
 	int format_major;
 	int format_minor;
+	char format_str[MAXLEN];
+	int format_flags;
 	unsigned long long total_samples;
 	unsigned long sample_rate;
 	int is_mono;

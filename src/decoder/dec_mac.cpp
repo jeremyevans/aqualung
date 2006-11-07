@@ -40,6 +40,7 @@
 #endif /* HAVE_MAC */
 
 
+#include "../i18n.h"
 #include "dec_mac.h"
 
 
@@ -224,7 +225,27 @@ mac_decoder_open(decoder_t * dec, char * filename) {
 		fdec->fileinfo.format_minor = 0;
 		break;
 	}
-	
+
+	strcpy(dec->format_str, "Monkey's Audio");
+
+	switch (fdec->fileinfo.format_minor) {
+	case MAC_COMP_FAST:
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Fast"));
+		break;
+	case MAC_COMP_NORMAL:
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Normal"));
+		break;
+	case MAC_COMP_HIGH:
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: High"));
+		break;
+	case MAC_COMP_EXTRA:
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Extra High"));
+		break;
+	case MAC_COMP_INSANE:
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Insane"));
+		break;
+	}
+
 	fdec->fileinfo.total_samples = (unsigned long long)(pd->sample_rate / 1000.0f * pd->length_in_ms);
 	fdec->fileinfo.format_major = FORMAT_MAC;
 	fdec->fileinfo.bps = pd->bitrate * 1000;

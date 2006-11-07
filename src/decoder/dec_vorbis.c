@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "dec_vorbis.h"
 
@@ -146,6 +147,7 @@ vorbis_decoder_open(decoder_t * dec, char * filename) {
 	fdec->channels = pd->vi->channels;
 	fdec->SR = pd->vi->rate;
 	fdec->file_lib = VORBIS_LIB;
+	strcpy(dec->format_str, "Ogg Vorbis");
 	
 	fdec->fileinfo.total_samples = ov_pcm_total(&(pd->vf), -1);
 	fdec->fileinfo.format_major = FORMAT_VORBIS;

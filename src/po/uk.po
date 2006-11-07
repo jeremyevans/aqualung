@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=koi8-u\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../about.c:94 ../gui_main.c:3150
+#: ../about.c:94 ../gui_main.c:2840
 msgid "About"
 msgstr "Про програму"
 
@@ -574,155 +574,40 @@ msgstr "Трапилась помилка при спроб╕ п╕д'╓днання до сервера CDDB."
 msgid "No matching record found."
 msgstr "Схожих запис╕в не знайдено."
 
-#: ../gui_main.c:434 ../gui_main.c:436
+#: ../gui_main.c:435 ../gui_main.c:437
 msgid "day"
 msgstr ""
 
-#: ../gui_main.c:438 ../gui_main.c:440
+#: ../gui_main.c:439 ../gui_main.c:441
 msgid "days"
 msgstr ""
 
-#: ../gui_main.c:642 ../gui_main.c:760
-msgid "Unrecognized"
-msgstr "Нерозп╕знано"
-
-#: ../gui_main.c:650 ../gui_main.c:656 ../gui_main.c:659 ../gui_main.c:662
-msgid "bit signed"
-msgstr "знаковий б╕т"
-
-#: ../gui_main.c:653
-msgid "bit unsigned"
-msgstr "беззнаковий б╕т"
-
-#: ../gui_main.c:665
-msgid "bit float"
-msgstr "плаваючий б╕т"
-
-#: ../gui_main.c:668
-msgid "bit double"
-msgstr "подв╕йний б╕т"
-
-#: ../gui_main.c:671 ../gui_main.c:674 ../gui_main.c:677 ../gui_main.c:680
-#: ../gui_main.c:683 ../gui_main.c:686 ../gui_main.c:689 ../gui_main.c:692
-#: ../gui_main.c:695 ../gui_main.c:698 ../gui_main.c:701 ../gui_main.c:704
-#: ../gui_main.c:707
-msgid "encoding"
-msgstr "кодування"
-
-#: ../gui_main.c:718
-msgid "Profile: Telephone"
-msgstr "Проф╕ль: Телефон"
-
-#: ../gui_main.c:721
-msgid "Profile: Thumb"
-msgstr "Проф╕ль: Еск╕з"
-
-#: ../gui_main.c:724
-msgid "Profile: Radio"
-msgstr "Проф╕ль: Рад╕о"
-
-#: ../gui_main.c:727
-msgid "Profile: Standard"
-msgstr "Проф╕ль: Стандарт"
-
-#: ../gui_main.c:730
-msgid "Profile: Xtreme"
-msgstr "Проф╕ль: Екстремальний"
-
-#: ../gui_main.c:733
-msgid "Profile: Insane"
-msgstr "Проф╕ль: Божев╕льний"
-
-#: ../gui_main.c:736
-msgid "Profile: Braindead"
-msgstr "Проф╕ль: Без башн╕"
-
-#: ../gui_main.c:751
-msgid "Layer I"
-msgstr ""
-
-#: ../gui_main.c:754
-msgid "Layer II"
-msgstr ""
-
-#: ../gui_main.c:757
-msgid "Layer III"
-msgstr ""
-
-#: ../gui_main.c:770
-msgid "Single channel"
-msgstr "Один канал"
-
-#: ../gui_main.c:773
-msgid "Dual channel"
-msgstr "Два канала"
-
-#: ../gui_main.c:776
-msgid "Joint stereo"
-msgstr "Об'╓днане стерео"
-
-#: ../gui_main.c:779
-msgid "Stereo"
-msgstr "Стерео"
-
-#: ../gui_main.c:789
-msgid "Emphasis: none"
-msgstr "Наголос: нема╓"
-
-#: ../gui_main.c:792 ../gui_main.c:795
-msgid "Emphasis:"
-msgstr "Наголос:"
-
-#: ../gui_main.c:798
-msgid "Emphasis: reserved"
-msgstr "Наголос: резервний"
-
-#: ../gui_main.c:811
-msgid "Compression: Fast"
-msgstr "Ступ╕нь стиснення: Швидка"
-
-#: ../gui_main.c:814
-msgid "Compression: Normal"
-msgstr "Ступ╕нь стиснення: Нормальна"
-
-#: ../gui_main.c:817
-msgid "Compression: High"
-msgstr "Ступ╕нь стиснення: Висока"
-
-#: ../gui_main.c:820
-msgid "Compression: Extra High"
-msgstr "Ступ╕нь стиснення: Дуже висока"
-
-#: ../gui_main.c:823
-msgid "Compression: Insane"
-msgstr "Ступ╕нь стиснення: Божев╕льна"
-
-#: ../gui_main.c:895 ../file_info.cpp:1908
+#: ../gui_main.c:597 ../file_info.cpp:1911
 msgid "MONO"
 msgstr "МОНО"
 
-#: ../gui_main.c:898 ../file_info.cpp:1910
+#: ../gui_main.c:600 ../file_info.cpp:1913
 msgid "STEREO"
 msgstr "СТЕРЕО"
 
-#: ../gui_main.c:916 ../gui_main.c:921 ../gui_main.c:926 ../gui_main.c:931
+#: ../gui_main.c:618 ../gui_main.c:623 ../gui_main.c:628 ../gui_main.c:633
 msgid "Output:"
 msgstr "Вив╕д:"
 
-#: ../gui_main.c:935
+#: ../gui_main.c:637
 #, fuzzy
 msgid "No output"
 msgstr "Вив╕д:"
 
-#: ../gui_main.c:949
+#: ../gui_main.c:651
 msgid "SRC Type: "
 msgstr "SRC Тип: "
 
-#: ../gui_main.c:953 ../ifp_device.c:217 ../ifp_device.c:924
+#: ../gui_main.c:655 ../ifp_device.c:217 ../ifp_device.c:924
 msgid "None"
 msgstr "Нема╓"
 
-#: ../gui_main.c:1325
+#: ../gui_main.c:1014
 #, fuzzy
 msgid ""
 "One or more stores in Music Store have been modified.\n"
@@ -731,56 +616,56 @@ msgstr ""
 "Музичний склад було зм╕нено.\n"
 "Чи ви бажа╓те зберегти зм╕ни перед виходом?"
 
-#: ../gui_main.c:1834
+#: ../gui_main.c:1523
 #, c-format
 msgid "Position: %d%%"
 msgstr ""
 
-#: ../gui_main.c:1852 ../gui_main.c:1879
+#: ../gui_main.c:1541 ../gui_main.c:1568
 #, c-format
 msgid "Mute"
 msgstr "Приглушити"
 
-#: ../gui_main.c:1854 ../gui_main.c:1881
+#: ../gui_main.c:1543 ../gui_main.c:1570
 #, c-format
 msgid "%d dB"
 msgstr "%d Дб"
 
-#: ../gui_main.c:1888
+#: ../gui_main.c:1577
 #, fuzzy, c-format
 msgid "Volume: %s"
 msgstr "Р╕вень гучност╕:"
 
-#: ../gui_main.c:1916 ../gui_main.c:1947
+#: ../gui_main.c:1605 ../gui_main.c:1636
 #, c-format
 msgid "%d%% R"
 msgstr "%d%% П"
 
-#: ../gui_main.c:1918 ../gui_main.c:1949
+#: ../gui_main.c:1607 ../gui_main.c:1638
 #, c-format
 msgid "%d%% L"
 msgstr "%d%% Л"
 
-#: ../gui_main.c:1921 ../gui_main.c:1952
+#: ../gui_main.c:1610 ../gui_main.c:1641
 #, c-format
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:1959
+#: ../gui_main.c:1648
 #, c-format
 msgid "Balance: %s"
 msgstr ""
 
-#: ../gui_main.c:2035
+#: ../gui_main.c:1724
 #, c-format
 msgid " (%d/%d)"
 msgstr ""
 
-#: ../gui_main.c:2893
+#: ../gui_main.c:2583
 msgid "JACK connection lost"
 msgstr "JACK п╕д'╓днання втрачено"
 
-#: ../gui_main.c:2896
+#: ../gui_main.c:2586
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -792,169 +677,169 @@ msgstr ""
 "швидкий. Все що ви можете тепер зробити\n"
 "це перезапустити обидва JACK та Aqualung.\n"
 
-#: ../gui_main.c:2943
+#: ../gui_main.c:2633
 msgid ""
 "Aqualung is compiled with system tray support, but the status icon could not "
 "be embedded in the notification area. Your desktop may not have support for "
 "a system tray, or it has not been configured correctly."
 msgstr ""
 
-#: ../gui_main.c:3143 ../options.c:1602
+#: ../gui_main.c:2833 ../options.c:1602
 msgid "Settings"
 msgstr "Налаштування"
 
-#: ../gui_main.c:3144 ../skin.c:145
+#: ../gui_main.c:2834 ../skin.c:145
 msgid "Skin chooser"
 msgstr "Виб╕р жупан╕в"
 
-#: ../gui_main.c:3145
+#: ../gui_main.c:2835
 msgid "JACK port setup"
 msgstr "Налаштування порту JACK"
 
-#: ../gui_main.c:3147 ../file_info.cpp:1794
+#: ../gui_main.c:2837 ../file_info.cpp:1795
 msgid "File info"
 msgstr "╤нформац╕я про файл"
 
-#: ../gui_main.c:3152 ../gui_main.c:3697
+#: ../gui_main.c:2842 ../gui_main.c:3389
 msgid "Quit"
 msgstr ""
 
-#: ../gui_main.c:3428
+#: ../gui_main.c:3120
 #, fuzzy
 msgid "Previous song"
 msgstr "Попередня п╕сня (вгору)"
 
-#: ../gui_main.c:3432 ../gui_main.c:3683
+#: ../gui_main.c:3124 ../gui_main.c:3375
 #, fuzzy
 msgid "Stop"
 msgstr "Зупинити (s)"
 
-#: ../gui_main.c:3436
+#: ../gui_main.c:3128
 #, fuzzy
 msgid "Next song"
 msgstr "Наступна п╕сня (вниз)"
 
-#: ../gui_main.c:3440 ../gui_main.c:3675
+#: ../gui_main.c:3132 ../gui_main.c:3367
 #, fuzzy
 msgid "Play"
 msgstr "Список програвання"
 
-#: ../gui_main.c:3444 ../gui_main.c:3679
+#: ../gui_main.c:3136 ../gui_main.c:3371
 msgid "Pause"
 msgstr ""
 
-#: ../gui_main.c:3470
+#: ../gui_main.c:3162
 msgid "Repeat current song"
 msgstr "Повторювати поточну п╕сню"
 
-#: ../gui_main.c:3478
+#: ../gui_main.c:3170
 msgid "Repeat all songs"
 msgstr "Повторювати вс╕ п╕сн╕"
 
-#: ../gui_main.c:3486
+#: ../gui_main.c:3178
 msgid "Shuffle songs"
 msgstr "Перем╕шати п╕сн╕"
 
-#: ../gui_main.c:3499
+#: ../gui_main.c:3191
 msgid "Toggle playlist"
 msgstr "Вимикач списку програвання"
 
-#: ../gui_main.c:3504
+#: ../gui_main.c:3196
 msgid "Toggle music store"
 msgstr "Вимикач музичного складу"
 
-#: ../gui_main.c:3509
+#: ../gui_main.c:3201
 msgid "Toggle LADSPA patch builder"
 msgstr "Вимикач буд╕вельника шлях╕в LADSPA"
 
-#: ../gui_main.c:3668
+#: ../gui_main.c:3360
 #, fuzzy
 msgid "Show Aqualung"
 msgstr "Значення ПВР"
 
-#: ../gui_main.c:3669
+#: ../gui_main.c:3361
 #, fuzzy
 msgid "Hide Aqualung"
 msgstr "Значення ПВР"
 
-#: ../gui_main.c:3687
+#: ../gui_main.c:3379
 #, fuzzy
 msgid "Previous"
 msgstr "Попередня п╕сня (вгору)"
 
-#: ../gui_main.c:3691
+#: ../gui_main.c:3383
 #, fuzzy
 msgid "Next"
 msgstr "Наступна п╕сня (вниз)"
 
-#: ../gui_main.c:5260
+#: ../gui_main.c:4957
 msgid "Aqualung playlist (*.xml)"
 msgstr ""
 
-#: ../gui_main.c:5261
+#: ../gui_main.c:4958
 #, fuzzy
 msgid "MP3 Playlist (*.m3u)"
 msgstr "Список програвання: "
 
-#: ../gui_main.c:5262
+#: ../gui_main.c:4959
 msgid "Multimedia Playlist (*.pls)"
 msgstr ""
 
-#: ../gui_main.c:5275 ../gui_main.c:5335
+#: ../gui_main.c:4972 ../gui_main.c:5032
 msgid "All Files"
 msgstr ""
 
-#: ../gui_main.c:5285
+#: ../gui_main.c:4982
 #, fuzzy
 msgid "All Playlist Files"
 msgstr "Список програвання: "
 
-#: ../gui_main.c:5340
+#: ../gui_main.c:5037
 #, fuzzy
 msgid "All Audio Files"
 msgstr "Ауд╕оф╕л"
 
-#: ../gui_main.c:5346
+#: ../gui_main.c:5043
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
 msgstr ""
 
-#: ../gui_main.c:5353
+#: ../gui_main.c:5050
 msgid "Free Lossless Audio Codec (*.flac)"
 msgstr ""
 
-#: ../gui_main.c:5361
+#: ../gui_main.c:5058
 msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
 msgstr ""
 
-#: ../gui_main.c:5368
+#: ../gui_main.c:5065
 msgid "Ogg Vorbis (*.ogg)"
 msgstr ""
 
-#: ../gui_main.c:5376
+#: ../gui_main.c:5073
 msgid "Ogg Speex (*.spx)"
 msgstr ""
 
-#: ../gui_main.c:5384
+#: ../gui_main.c:5081
 msgid "Musepack (*.mpc)"
 msgstr ""
 
-#: ../gui_main.c:5392
+#: ../gui_main.c:5089
 msgid "Monkey's Audio Codec (*.ape)"
 msgstr ""
 
-#: ../gui_main.c:5400
+#: ../gui_main.c:5097
 msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
 msgstr ""
 
-#: ../gui_main.c:5408
+#: ../gui_main.c:5105
 msgid "Compressed modules (*.gz, *.bz2)"
 msgstr ""
 
-#: ../gui_main.c:5410
+#: ../gui_main.c:5107
 msgid "Compressed modules (*.gz)"
 msgstr ""
 
-#: ../gui_main.c:5412
+#: ../gui_main.c:5109
 msgid "Compressed modules (*.bz2)"
 msgstr ""
 
@@ -1269,7 +1154,7 @@ msgstr "Назва дор╕жки"
 msgid "Track number"
 msgstr "Назва дор╕жки"
 
-#: ../music_browser.c:3640 ../volume.c:243 ../file_info.cpp:1828
+#: ../music_browser.c:3640 ../volume.c:243 ../file_info.cpp:1829
 msgid "File:"
 msgstr "Файл:"
 
@@ -2217,7 +2102,7 @@ msgstr "Наявн╕ втулки"
 msgid "ID"
 msgstr "╤дентиф╕катор"
 
-#: ../plugin.c:1899 ../plugin.c:1982 ../file_info.cpp:2329
+#: ../plugin.c:1899 ../plugin.c:1982 ../file_info.cpp:2332
 msgid "Name"
 msgstr "╤м'я"
 
@@ -2392,7 +2277,7 @@ msgstr "Альбом"
 msgid "Import as Record"
 msgstr "╤мпортувати як Запис"
 
-#: ../file_info.cpp:824 ../file_info.cpp:892 ../file_info.cpp:1815
+#: ../file_info.cpp:824 ../file_info.cpp:892 ../file_info.cpp:1816
 msgid "Track:"
 msgstr "Дор╕жка:"
 
@@ -2553,83 +2438,78 @@ msgstr ""
 msgid "Remove APE"
 msgstr "Прибрати"
 
-#: ../file_info.cpp:1862
+#: ../file_info.cpp:1866
 msgid "Audio data"
 msgstr "Ауд╕о дан╕"
 
-#: ../file_info.cpp:1866
+#: ../file_info.cpp:1870
 msgid "Format:"
 msgstr "Формат:"
 
-#: ../file_info.cpp:1878
+#: ../file_info.cpp:1881
 msgid "Length:"
 msgstr "Довжина:"
 
-#: ../file_info.cpp:1890
+#: ../file_info.cpp:1893
 msgid "Samplerate:"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:1895
+#: ../file_info.cpp:1898
 #, c-format
 msgid "%ld Hz"
 msgstr "%ld Гц"
 
-#: ../file_info.cpp:1902
+#: ../file_info.cpp:1905
 msgid "Channel count:"
 msgstr "К╕льк╕сть канал╕в:"
 
-#: ../file_info.cpp:1917
+#: ../file_info.cpp:1920
 msgid "Bandwidth:"
 msgstr "Швидк╕сть потоку:"
 
-#: ../file_info.cpp:1922
-#, c-format
-msgid "%.1f kbit/s"
-msgstr "%.1f кб╕т/с"
-
-#: ../file_info.cpp:1929
+#: ../file_info.cpp:1932
 msgid "Total samples:"
 msgstr "Всього семпл╕в:"
 
-#: ../file_info.cpp:1980
+#: ../file_info.cpp:1983
 #, fuzzy
 msgid "Module info"
 msgstr "╤нформац╕я про файл"
 
-#: ../file_info.cpp:2126 ../file_info.cpp:2229
+#: ../file_info.cpp:2129 ../file_info.cpp:2232
 #, fuzzy
 msgid "Type:"
 msgstr "SRC Тип: "
 
-#: ../file_info.cpp:2139 ../file_info.cpp:2242
+#: ../file_info.cpp:2142 ../file_info.cpp:2245
 #, fuzzy
 msgid "Channels:"
 msgstr "К╕льк╕сть канал╕в:"
 
-#: ../file_info.cpp:2152 ../file_info.cpp:2255
+#: ../file_info.cpp:2155 ../file_info.cpp:2258
 #, fuzzy
 msgid "Patterns:"
 msgstr "Категор╕я"
 
-#: ../file_info.cpp:2165 ../file_info.cpp:2268
+#: ../file_info.cpp:2168 ../file_info.cpp:2271
 #, fuzzy
 msgid "Samples:"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:2178
+#: ../file_info.cpp:2181
 msgid "Instruments:"
 msgstr ""
 
-#: ../file_info.cpp:2201
+#: ../file_info.cpp:2204
 #, fuzzy
 msgid "Samples"
 msgstr "Частота семплювання:"
 
-#: ../file_info.cpp:2211
+#: ../file_info.cpp:2214
 msgid "Instruments"
 msgstr ""
 
-#: ../file_info.cpp:2322
+#: ../file_info.cpp:2325
 msgid "No."
 msgstr ""
 
@@ -2804,6 +2684,128 @@ msgstr "Перекривати установки жупана"
 #, fuzzy
 msgid "Set subtitle"
 msgstr "П╕дпис"
+
+#: ../decoder/dec_mpc.c:151
+msgid "Profile: Telephone"
+msgstr "Проф╕ль: Телефон"
+
+#: ../decoder/dec_mpc.c:154
+msgid "Profile: Thumb"
+msgstr "Проф╕ль: Еск╕з"
+
+#: ../decoder/dec_mpc.c:157
+msgid "Profile: Radio"
+msgstr "Проф╕ль: Рад╕о"
+
+#: ../decoder/dec_mpc.c:160
+msgid "Profile: Standard"
+msgstr "Проф╕ль: Стандарт"
+
+#: ../decoder/dec_mpc.c:163
+msgid "Profile: Xtreme"
+msgstr "Проф╕ль: Екстремальний"
+
+#: ../decoder/dec_mpc.c:166
+msgid "Profile: Insane"
+msgstr "Проф╕ль: Божев╕льний"
+
+#: ../decoder/dec_mpc.c:169
+msgid "Profile: Braindead"
+msgstr "Проф╕ль: Без башн╕"
+
+#: ../decoder/dec_mpeg.c:1244
+msgid "Layer I"
+msgstr ""
+
+#: ../decoder/dec_mpeg.c:1247
+msgid "Layer II"
+msgstr ""
+
+#: ../decoder/dec_mpeg.c:1250
+msgid "Layer III"
+msgstr ""
+
+#: ../decoder/dec_mpeg.c:1253
+msgid "Unrecognized"
+msgstr "Нерозп╕знано"
+
+#: ../decoder/dec_mpeg.c:1262
+msgid "Single channel"
+msgstr "Один канал"
+
+#: ../decoder/dec_mpeg.c:1265
+msgid "Dual channel"
+msgstr "Два канала"
+
+#: ../decoder/dec_mpeg.c:1268
+msgid "Joint stereo"
+msgstr "Об'╓днане стерео"
+
+#: ../decoder/dec_mpeg.c:1271
+msgid "Stereo"
+msgstr "Стерео"
+
+#: ../decoder/dec_mpeg.c:1279
+msgid "Emphasis: none"
+msgstr "Наголос: нема╓"
+
+#: ../decoder/dec_mpeg.c:1282 ../decoder/dec_mpeg.c:1285
+msgid "Emphasis:"
+msgstr "Наголос:"
+
+#: ../decoder/dec_mpeg.c:1288
+msgid "Emphasis: reserved"
+msgstr "Наголос: резервний"
+
+#: ../decoder/dec_sndfile.c:202 ../decoder/dec_sndfile.c:208
+#: ../decoder/dec_sndfile.c:211 ../decoder/dec_sndfile.c:214
+msgid "bit signed"
+msgstr "знаковий б╕т"
+
+#: ../decoder/dec_sndfile.c:205
+msgid "bit unsigned"
+msgstr "беззнаковий б╕т"
+
+#: ../decoder/dec_sndfile.c:217
+msgid "bit float"
+msgstr "плаваючий б╕т"
+
+#: ../decoder/dec_sndfile.c:220
+msgid "bit double"
+msgstr "подв╕йний б╕т"
+
+#: ../decoder/dec_sndfile.c:223 ../decoder/dec_sndfile.c:226
+#: ../decoder/dec_sndfile.c:229 ../decoder/dec_sndfile.c:232
+#: ../decoder/dec_sndfile.c:235 ../decoder/dec_sndfile.c:238
+#: ../decoder/dec_sndfile.c:241 ../decoder/dec_sndfile.c:244
+#: ../decoder/dec_sndfile.c:247 ../decoder/dec_sndfile.c:250
+#: ../decoder/dec_sndfile.c:253 ../decoder/dec_sndfile.c:256
+#: ../decoder/dec_sndfile.c:259
+msgid "encoding"
+msgstr "кодування"
+
+#: ../decoder/dec_mac.cpp:233
+msgid "Compression: Fast"
+msgstr "Ступ╕нь стиснення: Швидка"
+
+#: ../decoder/dec_mac.cpp:236
+msgid "Compression: Normal"
+msgstr "Ступ╕нь стиснення: Нормальна"
+
+#: ../decoder/dec_mac.cpp:239
+msgid "Compression: High"
+msgstr "Ступ╕нь стиснення: Висока"
+
+#: ../decoder/dec_mac.cpp:242
+msgid "Compression: Extra High"
+msgstr "Ступ╕нь стиснення: Дуже висока"
+
+#: ../decoder/dec_mac.cpp:245
+msgid "Compression: Insane"
+msgstr "Ступ╕нь стиснення: Божев╕льна"
+
+#~ msgid "%.1f kbit/s"
+#~ msgstr "%.1f кб╕т/с"
 
 #, fuzzy
 #~ msgid "Close"

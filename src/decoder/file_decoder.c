@@ -213,6 +213,8 @@ file_decoder_open(file_decoder_t * fdec, char * filename) {
 	fdec->fileinfo.sample_rate = fdec->SR;
 	fdec->file_open = 1;
 	fdec->samples_left = fdec->fileinfo.total_samples;
+	fdec->fileinfo.format_str = dec->format_str;
+	fdec->fileinfo.format_flags = dec->format_flags;
 	return 0;
 
  no_open:

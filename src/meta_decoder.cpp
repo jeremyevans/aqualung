@@ -377,6 +377,8 @@ meta_read(metadata * meta, char * file) {
 
 	meta->format_major = fdec->fileinfo.format_major;
 	meta->format_minor = fdec->fileinfo.format_minor;
+	strcpy(meta->format_str, fdec->fileinfo.format_str);
+	meta->format_flags = fdec->fileinfo.format_flags;
 	meta->total_samples = fdec->fileinfo.total_samples;
 	meta->sample_rate = fdec->fileinfo.sample_rate;
 	meta->is_mono = fdec->fileinfo.is_mono;

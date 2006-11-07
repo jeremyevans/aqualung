@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../i18n.h"
 #include "dec_mpc.h"
 
 
@@ -143,7 +144,32 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 	fdec->channels = pd->mpc_i.channels;
 	fdec->SR = pd->mpc_i.sample_freq;
 	fdec->file_lib = MPC_LIB;
-	
+	strcpy(dec->format_str, "Musepack");
+
+	switch (pd->mpc_i.profile) {
+	case 7:
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Telephone"));
+		break;
+	case 8:
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Thumb"));
+		break;
+	case 9:
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Radio"));
+		break;
+	case 10:
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Standard"));
+		break;
+	case 11:
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Xtreme"));
+		break;
+	case 12:
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Insane"));
+		break;
+	case 13:
+		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Braindead"));
+		break;
+	}
+
 	fdec->fileinfo.total_samples = mpc_streaminfo_get_length_samples(&pd->mpc_i);
 	fdec->fileinfo.format_major = FORMAT_MPC;
 	fdec->fileinfo.format_minor = pd->mpc_i.profile;

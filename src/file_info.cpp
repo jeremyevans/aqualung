@@ -1872,8 +1872,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
 	entry = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
-	assembly_format_label(str, meta->format_major, meta->format_minor);
-	gtk_entry_set_text(GTK_ENTRY(entry), str);
+	gtk_entry_set_text(GTK_ENTRY(entry), meta->format_str);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 0, 1,
 			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
@@ -1923,7 +1922,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 4, 5, GTK_FILL, GTK_FILL, 5, 3);
 	entry = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
-	sprintf(str, _("%.1f kbit/s"), meta->bps / 1000.0f);
+	format_bps_label(meta->bps, meta->format_flags, str);
 	gtk_entry_set_text(GTK_ENTRY(entry), str);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 4, 5,

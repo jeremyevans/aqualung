@@ -57,7 +57,7 @@ void save_config(void);
 
 void sample2time(unsigned long SR, unsigned long long sample, char * str, int sign);
 void time2time(float samples, char * str);
-void assembly_format_label(char * str, int v_major, int v_minor);
+void format_bps_label(int bps, int format_flags, char * str);
 
 void refresh_displays(void);
 

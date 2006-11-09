@@ -1883,7 +1883,11 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
 	entry = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
-	sample2time(meta->sample_rate, meta->total_samples, str, 0);
+	if (meta->total_samples == 0) {
+		strcpy(str, "N/A");
+	} else {
+		sample2time(meta->sample_rate, meta->total_samples, str, 0);
+	}
 	gtk_entry_set_text(GTK_ENTRY(entry), str);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 1, 2,
@@ -1922,7 +1926,11 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 4, 5, GTK_FILL, GTK_FILL, 5, 3);
 	entry = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
-	format_bps_label(meta->bps, meta->format_flags, str);
+	if (meta->bps == 0) {
+		strcpy(str, "N/A kbit/s");
+	} else {
+		format_bps_label(meta->bps, meta->format_flags, str);
+	}
 	gtk_entry_set_text(GTK_ENTRY(entry), str);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 4, 5,
@@ -1934,7 +1942,11 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 5, 6, GTK_FILL, GTK_FILL, 5, 3);
 	entry = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
-	sprintf(str, "%lld", meta->total_samples);
+	if (meta->total_samples == 0) {
+		strcpy(str, "N/A");
+	} else {
+		sprintf(str, "%lld", meta->total_samples);
+	}
 	gtk_entry_set_text(GTK_ENTRY(entry), str);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 5, 6,

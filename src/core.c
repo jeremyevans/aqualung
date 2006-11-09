@@ -291,6 +291,7 @@ disk_thread(void * arg) {
 						info->in_SR_prev = info->in_SR;
 						info->in_SR = fdec->fileinfo.sample_rate;
 						info->is_mono = fdec->fileinfo.is_mono;
+						fdec->sample_pos = 0;
 
 						sample_offset = 0;
 
@@ -445,8 +446,11 @@ disk_thread(void * arg) {
 		rb_write(rb, framebuf, n_src * 2*sample_size);
 
 		/* update & send STATUS */
-		fdec->samples_left -= n_read;
+		fdec->sample_pos += n_read;
+		if (fdec->samples_left > n_read)
+			fdec->samples_left -= n_read;
 		sample_offset =	rb_read_space(rb) / (2 * sample_size);
+		disk_thread_status.sample_pos = fdec->sample_pos;
 		disk_thread_status.samples_left = fdec->samples_left;
 		disk_thread_status.sample_offset = sample_offset / src_ratio;
 		if (disk_thread_status.samples_left < 0) {

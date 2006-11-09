@@ -1121,7 +1121,7 @@ playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 		return NULL;
 	}
 
-	if ((plfm->duration = get_file_duration(physical_name)) <= 0.0f) {
+	if ((plfm->duration = get_file_duration(physical_name)) < 0.0f) {
 		return NULL;
 	}
 

@@ -65,6 +65,7 @@ typedef struct _file_decoder_t {
 	int file_open;
 	int file_lib;
 	fileinfo_t fileinfo;
+	unsigned long long sample_pos; /* used w/unknown length files only */
 	unsigned long long samples_left;
 	float voladj_db;
 	float voladj_lin;

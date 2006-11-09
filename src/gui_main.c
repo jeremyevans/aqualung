@@ -426,6 +426,11 @@ time2time(float seconds, char * str) {
 	int d, h;
 	char m, s;
 
+	if (seconds == 0.0f) {
+		strcpy(str, "N/A");
+		return;
+	}
+
         d = seconds / 86400;
 	h = seconds / 3600;
 	m = seconds / 60 - h * 60;
@@ -544,6 +549,11 @@ set_format_label(char * format_str) {
 
 void
 format_bps_label(int bps, int format_flags, char * str) {
+
+	if (bps == 0) {
+		strcpy(str, "N/A kbit/s");
+		return;
+	}
 
 	if (format_flags & FORMAT_VBR) {
 		sprintf(str, "%.1f kbit/s VBR", bps/1000.0);
@@ -676,14 +686,22 @@ refresh_time_displays(void) {
 		}
 
 		if (refresh_time_label || time_idx[0] != 1) {
-			sample2time(disp_info.sample_rate, disp_samples - disp_pos, str, 1);
+			if (disp_samples == 0) {
+				strcpy(str, " N/A ");
+			} else {
+				sample2time(disp_info.sample_rate, disp_samples - disp_pos, str, 1);
+			}
 			if (GTK_IS_LABEL(time_labels[1])) 
 				gtk_label_set_text(GTK_LABEL(time_labels[1]), str);
                         
 		}
 		
 		if (refresh_time_label || time_idx[0] != 2) {
-			sample2time(disp_info.sample_rate, disp_samples, str, 0);
+			if (disp_samples == 0) {
+				strcpy(str, " N/A ");
+			} else {
+				sample2time(disp_info.sample_rate, disp_samples, str, 0);
+			}
 			if (GTK_IS_LABEL(time_labels[2])) 
 				gtk_label_set_text(GTK_LABEL(time_labels[2]), str);
                         
@@ -1191,14 +1209,14 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		}
 		return TRUE;
 	case GDK_Right:
-		if (is_file_loaded && allow_seeks) {
+		if (is_file_loaded && allow_seeks && total_samples != 0) {
 			refresh_scale = 0;
 			g_signal_emit_by_name(G_OBJECT(scale_pos), "move-slider",
 					      GTK_SCROLL_STEP_FORWARD, NULL);
 		}
 		return TRUE;
 	case GDK_Left:
-		if (is_file_loaded && allow_seeks) {
+		if (is_file_loaded && allow_seeks && total_samples != 0) {
 			refresh_scale = 0;
 			g_signal_emit_by_name(G_OBJECT(scale_pos), "move-slider",
 					      GTK_SCROLL_STEP_BACKWARD, NULL);
@@ -1248,7 +1266,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
                 }
                 break;
 	case GDK_BackSpace:
-		if (allow_seeks) {
+		if (allow_seeks && total_samples != 0) {
 			seek_t seek;
 			
 			send_cmd = CMD_SEEKTO;
@@ -1336,7 +1354,7 @@ main_window_key_released(GtkWidget * widget, GdkEventKey * event) {
 	switch (event->keyval) {
         case GDK_Right:
         case GDK_Left:
-                if (is_file_loaded && allow_seeks && refresh_scale == 0) {
+                if (is_file_loaded && allow_seeks && refresh_scale == 0 && total_samples != 0) {
                         seek_t seek;
 
                         refresh_scale = 1;
@@ -1367,66 +1385,65 @@ main_window_focus_out(GtkWidget * widget, GdkEventFocus * event, gpointer data) 
 gint
 main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpointer data) {
 
-        if (options.united_minimization) {
-
-                if (event->new_window_state == GDK_WINDOW_STATE_ICONIFIED) {
-                        if (browser_on) {
-                                gtk_window_iconify(GTK_WINDOW(browser_window));
-			}
-
-                        if (!options.playlist_is_embedded && playlist_on) {
-                                gtk_window_iconify(GTK_WINDOW(playlist_window));
-			}
-
-                        if (vol_window) {
-                                gtk_window_iconify(GTK_WINDOW(vol_window));
-			}
-
-                        if (info_window) {
-                                gtk_window_iconify(GTK_WINDOW(info_window));
-			}
-
+        if (!options.united_minimization)
+		return FALSE;
+	
+	if (event->new_window_state == GDK_WINDOW_STATE_ICONIFIED) {
+		if (browser_on) {
+			gtk_window_iconify(GTK_WINDOW(browser_window));
+		}
+		
+		if (!options.playlist_is_embedded && playlist_on) {
+			gtk_window_iconify(GTK_WINDOW(playlist_window));
+		}
+		
+		if (vol_window) {
+			gtk_window_iconify(GTK_WINDOW(vol_window));
+		}
+		
+		if (info_window) {
+			gtk_window_iconify(GTK_WINDOW(info_window));
+		}
+		
 #ifdef HAVE_LADSPA
-                        if (fxbuilder_on) {
-                                GtkTreeIter iter;
-                                gpointer gp_instance;
-                                int i = 0;
-
-                                gtk_window_iconify(GTK_WINDOW(fxbuilder_window));
-
-                                while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, i) &&
-                                       i < MAX_PLUGINS) {
-                                        gtk_tree_model_get(GTK_TREE_MODEL(running_store), &iter, 1, &gp_instance, -1);
-                                        gtk_widget_hide(((plugin_instance *)gp_instance)->window);
-                                        ++i;
-                                }
-                        }
+		if (fxbuilder_on) {
+			GtkTreeIter iter;
+			gpointer gp_instance;
+			int i = 0;
+			
+			gtk_window_iconify(GTK_WINDOW(fxbuilder_window));
+			
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, i) &&
+			       i < MAX_PLUGINS) {
+				gtk_tree_model_get(GTK_TREE_MODEL(running_store), &iter, 1, &gp_instance, -1);
+				gtk_widget_hide(((plugin_instance *)gp_instance)->window);
+				++i;
+			}
+		}
 #endif /* HAVE_LADSPA */
-                }
-
-                if (event->new_window_state == 0) {
-                        if (browser_on) {
-                                gtk_window_deiconify(GTK_WINDOW(browser_window));
-			}
-
-                        if (!options.playlist_is_embedded && playlist_on) {
-                                gtk_window_deiconify(GTK_WINDOW(playlist_window));
-			}
-
-                        if (vol_window) {
-                                gtk_window_deiconify(GTK_WINDOW(vol_window));
-			}
-
-                        if (info_window) {
-                                gtk_window_deiconify(GTK_WINDOW(info_window));
-			}
-
-                        if (fxbuilder_on) {
-                                gtk_window_deiconify(GTK_WINDOW(fxbuilder_window));
-			}
-                }
-        }	
-
+	}
+	
+	if (event->new_window_state == 0) {
+		if (browser_on) {
+			gtk_window_deiconify(GTK_WINDOW(browser_window));
+		}
+		
+		if (!options.playlist_is_embedded && playlist_on) {
+			gtk_window_deiconify(GTK_WINDOW(playlist_window));
+		}
+		
+		if (vol_window) {
+			gtk_window_deiconify(GTK_WINDOW(vol_window));
+		}
+		
+		if (info_window) {
+			gtk_window_deiconify(GTK_WINDOW(info_window));
+		}
+		
+		if (fxbuilder_on) {
+			gtk_window_deiconify(GTK_WINDOW(fxbuilder_window));
+		}
+	}
         return FALSE;
 }
 
@@ -1480,6 +1497,9 @@ scale_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 	if (!allow_seeks)
 		return FALSE;
 
+	if (total_samples == 0)
+		return FALSE;
+
 	refresh_scale = 0;
 	return FALSE;
 }
@@ -1493,6 +1513,9 @@ scale_button_release_event(GtkWidget * widget, GdkEventButton * event) {
 	if (is_file_loaded) {
 		
 		if (!allow_seeks)
+			return FALSE;
+
+		if (total_samples == 0)
 			return FALSE;
 		
 		if (refresh_scale == 0) {
@@ -3737,6 +3760,7 @@ timeout_callback(gpointer data) {
 
 			total_samples = fileinfo.total_samples;
 			status.samples_left = fileinfo.total_samples;
+			status.sample_pos = 0;
 			status.sample_offset = 0;
 			fresh_new_file = fresh_new_file_prev = 0;
 			break;
@@ -3752,6 +3776,12 @@ timeout_callback(gpointer data) {
 				allow_seeks = 0;
 			} else {
 				allow_seeks = 1;
+			}
+
+			/* treat files with unknown length */
+			if (total_samples == 0) {
+				allow_seeks = 1;
+				pos = status.sample_pos - status.sample_offset;
 			}
 
 			if ((!fresh_new_file) && (pos > status.sample_offset))
@@ -3778,8 +3808,12 @@ timeout_callback(gpointer data) {
 			fresh_new_file_prev = fresh_new_file;
 
 			if (refresh_scale && !refresh_scale_suppress && GTK_IS_ADJUSTMENT(adj_pos)) {
-				gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos),
-							 100.0f * (double)(pos) / total_samples);
+				if (total_samples == 0) {
+					gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
+				} else {
+					gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos),
+								 100.0f * (double)(pos) / total_samples);
+				}
 			}
 
 			if (refresh_scale_suppress > 0) {
@@ -5126,7 +5160,8 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
         gtk_file_filter_set_name(filter, _("LAVC audio/video files"));
 	{
 		char * valid_ext_lavc[] = {
-			"aac", "ac3", "avi", "mp3", "ra", "wav", "wma", "wv", NULL };
+			"aac", "ac3", "asf", "avi", "mpeg", "mpg", "mp3", "ra",
+			"wav", "wma", "wv", NULL };
 		build_filter_from_extensions(filter, filter_all, valid_ext_lavc);
 	}
         gtk_file_chooser_add_filter(fc, filter);

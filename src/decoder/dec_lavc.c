@@ -24,11 +24,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "dec_lavc.h"
 
 
 #ifdef HAVE_LAVC
+
+/* uncomment this to get some debug info */
+/* #define LAVC_DEBUG */
 
 extern size_t sample_size;
 
@@ -113,9 +117,9 @@ lavc_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_BADLIB;
 
 	/* debug */
-/*
+#ifdef LAVC_DEBUG
 	dump_format(pd->avFormatCtx, 0, filename, 0);
-*/
+#endif /* LAVC_DEBUG */
 
 	pd->audioStream = -1;
 	for (i = 0; i < pd->avFormatCtx->nb_streams; i++) {
@@ -151,10 +155,18 @@ lavc_decoder_open(decoder_t * dec, char * filename) {
 	fdec->fileinfo.channels = pd->avCodecCtx->channels;
 	fdec->fileinfo.sample_rate = pd->avCodecCtx->sample_rate;
 	fdec->fileinfo.bps = pd->avCodecCtx->bit_rate;
-	fdec->fileinfo.total_samples = pd->avFormatCtx->duration / 1000000.0 * pd->avCodecCtx->sample_rate;
+	if (pd->avFormatCtx->duration > 0) {
+		fdec->fileinfo.total_samples = pd->avFormatCtx->duration
+			/ 1000000.0 * pd->avCodecCtx->sample_rate;
+	} else {
+		fdec->fileinfo.total_samples = 0;
+	}
 
 	fdec->file_lib = LAVC_LIB;
-	strcpy(dec->format_str, pd->avCodec->name);
+	snprintf(dec->format_str, MAXLEN-1, "%s/%s", pd->avFormatCtx->iformat->name, pd->avCodec->name);
+	for (i = 0; dec->format_str[i] != '\0'; i++) {
+		dec->format_str[i] = toupper(dec->format_str[i]);
+	}
 	
 	return DECODER_OPEN_SUCCESS;
 }

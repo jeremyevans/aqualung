@@ -426,11 +426,6 @@ time2time(float seconds, char * str) {
 	int d, h;
 	char m, s;
 
-	if (seconds == 0.0f) {
-		strcpy(str, "N/A");
-		return;
-	}
-
         d = seconds / 86400;
 	h = seconds / 3600;
 	m = seconds / 60 - h * 60;
@@ -455,6 +450,17 @@ time2time(float seconds, char * str) {
 		}
 	} else {
 		sprintf(str, "%02d:%02d", m, s);
+	}
+}
+
+
+void
+time2time_na(float seconds, char * str) {
+
+	if (seconds == 0.0) {
+		strcpy(str, "N/A");
+	} else {
+		time2time(seconds, str);
 	}
 }
 

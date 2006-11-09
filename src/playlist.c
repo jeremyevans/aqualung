@@ -935,8 +935,8 @@ plist__reread_file_meta_foreach(GtkTreeIter * iter, void * data) {
 	}
 			
 	voladj2str(plfm->voladj, voladj_str);
-	time2time(plfm->duration, duration_str);
-			
+	time2time_na(plfm->duration, duration_str);
+	
 	gtk_tree_store_set(play_store, iter,
 			   COLUMN_TRACK_NAME, plfm->title,
 			   COLUMN_PHYSICAL_FILENAME, fullname,
@@ -1247,7 +1247,7 @@ add_file_to_playlist(gchar *filename) {
 	}
 
         voladj2str(plfm->voladj, voladj_str);
-        time2time(plfm->duration, duration_str);
+	time2time_na(plfm->duration, duration_str);
 
         gtk_tree_store_append(play_store, &play_iter, NULL);
         gtk_tree_store_set(play_store, &play_iter, COLUMN_TRACK_NAME, plfm->title, COLUMN_PHYSICAL_FILENAME, filename,
@@ -2802,7 +2802,7 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * pparent_iter, 
 				duration = convf((char *) key);
                         }
                         xmlFree(key);
-			time2time(duration, duration_str);
+			time2time_na(duration, duration_str);
 			gtk_tree_store_set(play_store, &iter, COLUMN_DURATION, duration, COLUMN_DURATION_DISP, duration_str, -1);
                 } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"track"))) {
                         parse_playlist_track(doc, cur, &iter, sel_ok);
@@ -2995,7 +2995,7 @@ load_m3u(char * filename, int enqueue) {
 					continue;
 				}
 
-				time2time(plfm->duration, duration_str);
+				time2time_na(plfm->duration, duration_str);
 				voladj2str(plfm->voladj, voladj_str);
 
 				gtk_tree_store_append(play_store, &iter, NULL);
@@ -3197,7 +3197,7 @@ load_pls(char * filename, int enqueue) {
 				continue;
 			}
 
-			time2time(plfm->duration, duration_str);
+			time2time_na(plfm->duration, duration_str);
 			voladj2str(plfm->voladj, voladj_str);
 
 			gtk_tree_store_append(play_store, &iter, NULL);
@@ -3319,7 +3319,7 @@ add_to_playlist(char * filename, int enqueue) {
 		}
 
 		voladj2str(plfm->voladj, voladj_str);
-		time2time(plfm->duration, duration_str);
+		time2time_na(plfm->duration, duration_str);
 
                 gtk_tree_store_append(play_store, &iter, NULL);
                 gtk_tree_store_set(play_store, &iter,

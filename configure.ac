@@ -727,7 +727,6 @@ echo "  iRiver iFP driver support               :  $ifp"
 echo "  Systray support                         :  $systray"
 echo "----------------------------------------------------------------------"
 
-
 if test "$metaedit" = "yes"; then
 echo
 echo " WARNING: compiling with metadata edit support is currently DANGEROUS"

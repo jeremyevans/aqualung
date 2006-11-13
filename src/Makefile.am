@@ -29,5 +29,7 @@ trashlist.c trashlist.h \
 version.h \
 volume.c volume.h
 
-version.h:
-	cd ..; echo "#define AQUALUNG_VERSION \"R-`svn info | grep '^Revision' | awk '{print $$2}'`\"" > src/version.h
+all-local:
+	if test -e version.h; then svn_v1="`cat version.h`"; else svn_v1=""; fi; \
+	if test -e .svn; then svn_v2="#define AQUALUNG_VERSION \"R-`cd ..; svn info | grep '^Revision' | awk '{print $$2}'`\""; else svn_v2="$$svn_v1"; fi; \
+	if test "$$svn_v1" != "$$svn_v2"; then echo "$$svn_v2" > version.h; fi;

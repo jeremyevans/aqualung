@@ -528,7 +528,7 @@ set_title_label(char * str) {
 		}
 	} else {
 		if (GTK_IS_LABEL(label_title)) {
-                        sprintf(default_title, "Aqualung %s", aqualung_version);
+                        sprintf(default_title, "Aqualung %s", AQUALUNG_VERSION);
 			gtk_label_set_text(GTK_LABEL(label_title), default_title);
 			gtk_window_set_title(GTK_WINDOW(main_window), win_title);
 #ifdef HAVE_SYSTRAY

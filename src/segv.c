@@ -65,7 +65,7 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 	fprintf(stderr, "along with a short description of what you were doing when\n");
 	fprintf(stderr, "the program crashed. Please also send the output of `aqualung -v'.\n");
 	fprintf(stderr, "Thank you in advance!\n\n");
-	fprintf(stderr, "  Aqualung %s\n\n", aqualung_version);
+	fprintf(stderr, "  Aqualung %s\n\n", AQUALUNG_VERSION);
 	fprintf(stderr, "  si_signo = %d (%s)\n", signum, strsignal(signum));
 	fprintf(stderr, "  si_errno = %d\n", info->si_errno);
 	fprintf(stderr, "  si_code  = %d (%s)\n", info->si_code, si_codes[info->si_code]);

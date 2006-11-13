@@ -2,8 +2,6 @@ SUBDIRS = decoder img po
 
 bin_PROGRAMS = aqualung
 
-EXTRA_DIST = version.sh version.h.in
-
 aqualung_SOURCES = \
 about.h about.c \
 build_store.h build_store.c \
@@ -30,3 +28,6 @@ transceiver.c transceiver.h \
 trashlist.c trashlist.h \
 version.h \
 volume.c volume.h
+
+version.h:
+	cd ..; echo "#define AQUALUNG_VERSION \"R-`svn info | grep '^Revision' | awk '{print $$2}'`\"" > src/version.h

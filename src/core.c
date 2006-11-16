@@ -1733,6 +1733,13 @@ print_version(void) {
 	fprintf(stderr, "no\n");
 #endif /* HAVE_LADSPA */
 	
+	fprintf(stderr, "\tCDDA (Audio CD) support                     : ");
+#ifdef HAVE_CDDA
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_CDDA */
+	
 	fprintf(stderr, "\tCDDB support                                : ");
 #ifdef HAVE_CDDB
 	fprintf(stderr, "yes\n");

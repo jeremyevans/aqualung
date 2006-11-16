@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../about.c:94 ../gui_main.c:2841
+#: ../about.c:94 ../gui_main.c:2870
 msgid "About"
 msgstr "Über Aqualung"
 
@@ -147,20 +147,25 @@ msgid "LADSPA plugin support\n"
 msgstr "LADSPA Plugin Verarbeitung"
 
 #: ../about.c:388
-msgid "CDDB support\n"
+#, fuzzy
+msgid "CDDA (Audio CD) support\n"
 msgstr "CDDB Unterstützung\n"
 
 #: ../about.c:399
+msgid "CDDB support\n"
+msgstr "CDDB Unterstützung\n"
+
+#: ../about.c:410
 #, fuzzy
 msgid "iRiver iFP driver support\n"
 msgstr "Ausgabe Treiber Unterstützung:"
 
-#: ../about.c:410
+#: ../about.c:421
 #, fuzzy
 msgid "Systray support\n"
 msgstr "CDDB Unterstützung\n"
 
-#: ../about.c:415
+#: ../about.c:426
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -609,32 +614,32 @@ msgstr ""
 msgid "days"
 msgstr ""
 
-#: ../gui_main.c:599 ../file_info.cpp:1911
+#: ../gui_main.c:615 ../file_info.cpp:1915
 msgid "MONO"
 msgstr ""
 
-#: ../gui_main.c:602 ../file_info.cpp:1913
+#: ../gui_main.c:618 ../file_info.cpp:1917
 msgid "STEREO"
 msgstr ""
 
-#: ../gui_main.c:620 ../gui_main.c:625 ../gui_main.c:630 ../gui_main.c:635
+#: ../gui_main.c:636 ../gui_main.c:641 ../gui_main.c:646 ../gui_main.c:651
 msgid "Output:"
 msgstr "Ausgabe:"
 
-#: ../gui_main.c:639
+#: ../gui_main.c:655
 #, fuzzy
 msgid "No output"
 msgstr "Ausgabe:"
 
-#: ../gui_main.c:653
+#: ../gui_main.c:669
 msgid "SRC Type: "
 msgstr "SRC Typ: "
 
-#: ../gui_main.c:657 ../ifp_device.c:217 ../ifp_device.c:924
+#: ../gui_main.c:673 ../ifp_device.c:217 ../ifp_device.c:924
 msgid "None"
 msgstr "Keine"
 
-#: ../gui_main.c:1015
+#: ../gui_main.c:1039
 #, fuzzy
 msgid ""
 "One or more stores in Music Store have been modified.\n"
@@ -643,56 +648,56 @@ msgstr ""
 "Musikladen ist verändert werden.\n"
 "Wollen Sie es sparen bevor aussteigen?"
 
-#: ../gui_main.c:1524
+#: ../gui_main.c:1553
 #, c-format
 msgid "Position: %d%%"
 msgstr ""
 
-#: ../gui_main.c:1542 ../gui_main.c:1569
+#: ../gui_main.c:1571 ../gui_main.c:1598
 #, c-format
 msgid "Mute"
 msgstr ""
 
-#: ../gui_main.c:1544 ../gui_main.c:1571
+#: ../gui_main.c:1573 ../gui_main.c:1600
 #, c-format
 msgid "%d dB"
 msgstr ""
 
-#: ../gui_main.c:1578
+#: ../gui_main.c:1607
 #, fuzzy, c-format
 msgid "Volume: %s"
 msgstr "Lautstärke:"
 
-#: ../gui_main.c:1606 ../gui_main.c:1637
+#: ../gui_main.c:1635 ../gui_main.c:1666
 #, c-format
 msgid "%d%% R"
 msgstr ""
 
-#: ../gui_main.c:1608 ../gui_main.c:1639
+#: ../gui_main.c:1637 ../gui_main.c:1668
 #, c-format
 msgid "%d%% L"
 msgstr ""
 
-#: ../gui_main.c:1611 ../gui_main.c:1642
+#: ../gui_main.c:1640 ../gui_main.c:1671
 #, c-format
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:1649
+#: ../gui_main.c:1678
 #, c-format
 msgid "Balance: %s"
 msgstr ""
 
-#: ../gui_main.c:1725
+#: ../gui_main.c:1754
 #, c-format
 msgid " (%d/%d)"
 msgstr ""
 
-#: ../gui_main.c:2584
+#: ../gui_main.c:2613
 msgid "JACK connection lost"
 msgstr "JACK Verbindung verloren"
 
-#: ../gui_main.c:2587
+#: ../gui_main.c:2616
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -704,176 +709,176 @@ msgstr ""
 "nicht schnell genug war. Sie sollten JACK\n"
 "sowie Aqualung neu starten.\n"
 
-#: ../gui_main.c:2634
+#: ../gui_main.c:2663
 msgid ""
 "Aqualung is compiled with system tray support, but the status icon could not "
 "be embedded in the notification area. Your desktop may not have support for "
 "a system tray, or it has not been configured correctly."
 msgstr ""
 
-#: ../gui_main.c:2834 ../options.c:1602
+#: ../gui_main.c:2863 ../options.c:1602
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: ../gui_main.c:2835 ../skin.c:146
+#: ../gui_main.c:2864 ../skin.c:146
 msgid "Skin chooser"
 msgstr "Skin-Browser"
 
-#: ../gui_main.c:2836
+#: ../gui_main.c:2865
 msgid "JACK port setup"
 msgstr "JACK Port Einrichtung"
 
-#: ../gui_main.c:2838 ../file_info.cpp:1795
+#: ../gui_main.c:2867 ../file_info.cpp:1795
 msgid "File info"
 msgstr "Datei-Info"
 
-#: ../gui_main.c:2843 ../gui_main.c:3390
+#: ../gui_main.c:2872 ../gui_main.c:3419
 msgid "Quit"
 msgstr ""
 
-#: ../gui_main.c:3121
+#: ../gui_main.c:3150
 #, fuzzy
 msgid "Previous song"
 msgstr "Voriger (oben)"
 
-#: ../gui_main.c:3125 ../gui_main.c:3376
+#: ../gui_main.c:3154 ../gui_main.c:3405
 #, fuzzy
 msgid "Stop"
 msgstr "Stop (s)"
 
-#: ../gui_main.c:3129
+#: ../gui_main.c:3158
 #, fuzzy
 msgid "Next song"
 msgstr "Nächster (unten)"
 
-#: ../gui_main.c:3133 ../gui_main.c:3368
+#: ../gui_main.c:3162 ../gui_main.c:3397
 #, fuzzy
 msgid "Play"
 msgstr "Playliste"
 
-#: ../gui_main.c:3137 ../gui_main.c:3372
+#: ../gui_main.c:3166 ../gui_main.c:3401
 msgid "Pause"
 msgstr ""
 
-#: ../gui_main.c:3163
+#: ../gui_main.c:3192
 msgid "Repeat current song"
 msgstr "Wiederholen"
 
-#: ../gui_main.c:3171
+#: ../gui_main.c:3200
 msgid "Repeat all songs"
 msgstr "Playliste wiederholen"
 
-#: ../gui_main.c:3179
+#: ../gui_main.c:3208
 msgid "Shuffle songs"
 msgstr "Zufall"
 
-#: ../gui_main.c:3192
+#: ../gui_main.c:3221
 #, fuzzy
 msgid "Toggle playlist"
 msgstr "Playliste speichern"
 
-#: ../gui_main.c:3197
+#: ../gui_main.c:3226
 #, fuzzy
 msgid "Toggle music store"
 msgstr "Musikladen"
 
-#: ../gui_main.c:3202
+#: ../gui_main.c:3231
 #, fuzzy
 msgid "Toggle LADSPA patch builder"
 msgstr "LADSPA Patch Bauer"
 
-#: ../gui_main.c:3361
+#: ../gui_main.c:3390
 #, fuzzy
 msgid "Show Aqualung"
 msgstr "Zeige RVA in Playliste"
 
-#: ../gui_main.c:3362
+#: ../gui_main.c:3391
 #, fuzzy
 msgid "Hide Aqualung"
 msgstr "Zeige RVA in Playliste"
 
-#: ../gui_main.c:3380
+#: ../gui_main.c:3409
 #, fuzzy
 msgid "Previous"
 msgstr "Voriger (oben)"
 
-#: ../gui_main.c:3384
+#: ../gui_main.c:3413
 #, fuzzy
 msgid "Next"
 msgstr "Nächster (unten)"
 
-#: ../gui_main.c:4958
+#: ../gui_main.c:4998
 msgid "Aqualung playlist (*.xml)"
 msgstr ""
 
-#: ../gui_main.c:4959
+#: ../gui_main.c:4999
 #, fuzzy
 msgid "MP3 Playlist (*.m3u)"
 msgstr "Playliste"
 
-#: ../gui_main.c:4960
+#: ../gui_main.c:5000
 msgid "Multimedia Playlist (*.pls)"
 msgstr ""
 
-#: ../gui_main.c:4973 ../gui_main.c:5033
+#: ../gui_main.c:5013 ../gui_main.c:5073
 msgid "All Files"
 msgstr ""
 
-#: ../gui_main.c:4983
+#: ../gui_main.c:5023
 #, fuzzy
 msgid "All Playlist Files"
 msgstr "Playliste"
 
-#: ../gui_main.c:5038
+#: ../gui_main.c:5078
 #, fuzzy
 msgid "All Audio Files"
 msgstr "Audiophil"
 
-#: ../gui_main.c:5044
+#: ../gui_main.c:5084
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
 msgstr ""
 
-#: ../gui_main.c:5051
+#: ../gui_main.c:5091
 msgid "Free Lossless Audio Codec (*.flac)"
 msgstr ""
 
-#: ../gui_main.c:5059
+#: ../gui_main.c:5099
 msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
 msgstr ""
 
-#: ../gui_main.c:5066
+#: ../gui_main.c:5106
 msgid "Ogg Vorbis (*.ogg)"
 msgstr ""
 
-#: ../gui_main.c:5074
+#: ../gui_main.c:5114
 msgid "Ogg Speex (*.spx)"
 msgstr ""
 
-#: ../gui_main.c:5082
+#: ../gui_main.c:5122
 msgid "Musepack (*.mpc)"
 msgstr ""
 
-#: ../gui_main.c:5090
+#: ../gui_main.c:5130
 msgid "Monkey's Audio Codec (*.ape)"
 msgstr ""
 
-#: ../gui_main.c:5098
+#: ../gui_main.c:5138
 msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
 msgstr ""
 
-#: ../gui_main.c:5106
+#: ../gui_main.c:5146
 msgid "Compressed modules (*.gz, *.bz2)"
 msgstr ""
 
-#: ../gui_main.c:5108
+#: ../gui_main.c:5148
 msgid "Compressed modules (*.gz)"
 msgstr ""
 
-#: ../gui_main.c:5110
+#: ../gui_main.c:5150
 msgid "Compressed modules (*.bz2)"
 msgstr ""
 
-#: ../gui_main.c:5126
+#: ../gui_main.c:5166
 msgid "LAVC audio/video files"
 msgstr ""
 
@@ -2155,7 +2160,7 @@ msgstr "Verfügbare Plugins"
 msgid "ID"
 msgstr ""
 
-#: ../plugin.c:1899 ../plugin.c:1982 ../file_info.cpp:2332
+#: ../plugin.c:1899 ../plugin.c:1982 ../file_info.cpp:2344
 msgid "Name"
 msgstr "Name"
 
@@ -2509,67 +2514,67 @@ msgstr "Abbrechen"
 msgid "Length:"
 msgstr "Länge:"
 
-#: ../file_info.cpp:1893
+#: ../file_info.cpp:1897
 #, fuzzy
 msgid "Samplerate:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:1898
+#: ../file_info.cpp:1902
 #, c-format
 msgid "%ld Hz"
 msgstr ""
 
-#: ../file_info.cpp:1905
+#: ../file_info.cpp:1909
 msgid "Channel count:"
 msgstr "Kanalanzahl:"
 
-#: ../file_info.cpp:1920
+#: ../file_info.cpp:1924
 msgid "Bandwidth:"
 msgstr "Bandbreite:"
 
-#: ../file_info.cpp:1932
+#: ../file_info.cpp:1940
 msgid "Total samples:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:1983
+#: ../file_info.cpp:1995
 #, fuzzy
 msgid "Module info"
 msgstr "Datei-Info"
 
-#: ../file_info.cpp:2129 ../file_info.cpp:2232
+#: ../file_info.cpp:2141 ../file_info.cpp:2244
 #, fuzzy
 msgid "Type:"
 msgstr "SRC Typ: "
 
-#: ../file_info.cpp:2142 ../file_info.cpp:2245
+#: ../file_info.cpp:2154 ../file_info.cpp:2257
 #, fuzzy
 msgid "Channels:"
 msgstr "Kanalanzahl:"
 
-#: ../file_info.cpp:2155 ../file_info.cpp:2258
+#: ../file_info.cpp:2167 ../file_info.cpp:2270
 #, fuzzy
 msgid "Patterns:"
 msgstr "Kategorie"
 
-#: ../file_info.cpp:2168 ../file_info.cpp:2271
+#: ../file_info.cpp:2180 ../file_info.cpp:2283
 #, fuzzy
 msgid "Samples:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:2181
+#: ../file_info.cpp:2193
 msgid "Instruments:"
 msgstr ""
 
-#: ../file_info.cpp:2204
+#: ../file_info.cpp:2216
 #, fuzzy
 msgid "Samples"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:2214
+#: ../file_info.cpp:2226
 msgid "Instruments"
 msgstr ""
 
-#: ../file_info.cpp:2325
+#: ../file_info.cpp:2337
 msgid "No."
 msgstr ""
 

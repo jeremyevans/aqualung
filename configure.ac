@@ -595,7 +595,11 @@ AC_ARG_WITH(
 if test "$cdda" = "no"; then
 	AC_MSG_RESULT(no)
 else
-	AC_CHECK_LIB(cdio, cdio_open, [lib=yes], [lib=no])
+        if test $win32 = "no" ; then
+	        AC_CHECK_LIB(cdio, cdio_open, [lib=yes], [lib=no])
+        else
+	        AC_CHECK_LIB(cdio, cdio_open, [lib=yes], [lib=no], [-lwinmm])
+        fi
 	if test "$lib" = "yes"; then
 		if `pkg-config --exists 'libcdio'`; then
 			AC_MSG_RESULT(yes)

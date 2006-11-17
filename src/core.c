@@ -267,7 +267,12 @@ disk_thread(void * arg) {
 				if (fdec->file_lib != 0)
 					file_decoder_close(fdec);
 				if (filename[0] != '\0') {
+/* XXX */
+#if 1
 					if (file_decoder_open(fdec, filename)) {
+#else
+					if (file_decoder_open(fdec, "CDDA /dev/scd0 1")) {
+#endif
 						fdec->samples_left = 0;
 						info->is_streaming = 0;
 						end_of_file = 1;
@@ -1960,7 +1965,7 @@ main(int argc, char ** argv) {
 
 #ifdef HAVE_CDDA
 	/* testbed for CDDA functions */
-	cdda_test();
+	cdda_scan_all_drives();
 #endif /* HAVE_CDDA */
 
 	setlocale(LC_ALL, "");

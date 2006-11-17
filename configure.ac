@@ -601,9 +601,9 @@ else
 	        AC_CHECK_LIB(cdio, cdio_open, [lib=yes], [lib=no], [-lwinmm])
         fi
 	if test "$lib" = "yes"; then
-		if `pkg-config --exists 'libcdio'`; then
+		if `pkg-config --exists 'libcdio_paranoia'`; then
 			AC_MSG_RESULT(yes)
-		        cdda_LIBS=`pkg-config --libs libcdio`
+		        cdda_LIBS=`pkg-config --libs libcdio_paranoia`
 			AC_DEFINE([HAVE_CDDA], [1], [Defined if compile with CDDA support])
 		else
 			AC_MSG_RESULT(no)

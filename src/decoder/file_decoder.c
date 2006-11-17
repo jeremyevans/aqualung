@@ -40,6 +40,7 @@
 
 #include "file_decoder.h"
 #include "dec_null.h"
+#include "dec_cdda.h"
 #include "dec_sndfile.h"
 #include "dec_flac.h"
 #include "dec_vorbis.h"
@@ -59,6 +60,7 @@ typedef decoder_t * decoder_init_t(file_decoder_t * fdec);
 /* this controls the order in which decoders are probed for a file */
 decoder_init_t * decoder_init_v[N_DECODERS] = {
 	null_decoder_init,
+	cdda_decoder_init,
 	sndfile_decoder_init,
 	flac_decoder_init,
 	vorbis_decoder_init,

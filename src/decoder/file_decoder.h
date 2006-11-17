@@ -31,17 +31,18 @@ extern "C" {
 
 /* input libs */
 #define NULL_LIB    0
-#define SNDFILE_LIB 1
-#define FLAC_LIB    2
-#define VORBIS_LIB  3
-#define SPEEX_LIB   4
-#define MPC_LIB     5
-#define MAD_LIB     6
-#define MOD_LIB     7
-#define MAC_LIB     8
-#define LAVC_LIB    9
+#define CDDA_LIB    1
+#define SNDFILE_LIB 2
+#define FLAC_LIB    3
+#define VORBIS_LIB  4
+#define SPEEX_LIB   5
+#define MPC_LIB     6
+#define MAD_LIB     7
+#define MOD_LIB     8
+#define MAC_LIB     9
+#define LAVC_LIB    10
 
-#define N_DECODERS  10
+#define N_DECODERS  11
 
 
 /* format_flags */

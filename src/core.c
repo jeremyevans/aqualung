@@ -1958,6 +1958,11 @@ main(int argc, char ** argv) {
 
 	file_decoder_init();
 
+#ifdef HAVE_CDDA
+	/* testbed for CDDA functions */
+	cdda_test();
+#endif /* HAVE_CDDA */
+
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, AQUALUNG_LOCALEDIR);
 	textdomain(PACKAGE);

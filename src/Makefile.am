@@ -6,6 +6,7 @@ aqualung_SOURCES = \
 about.h about.c \
 build_store.h build_store.c \
 common.h \
+cdda.h cdda.c \
 cddb_lookup.h cddb_lookup.c \
 core.h core.c \
 cover.h cover.c \

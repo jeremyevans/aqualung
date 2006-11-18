@@ -2454,17 +2454,17 @@ store__edit_cb(gpointer data) {
 	char * pcomment;
 	char * pfile = NULL;
 
-	char name[MAXLEN];
+	char name[MAXLEN+1];
 	char comment[MAXLEN];
 	char file[MAXLEN];
 	float state;
-
+	float dirty;
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
 		if (is_store_iter_readonly(&iter)) return;
 
-                gtk_tree_model_get(model, &iter, 0, &pname, 2, &pfile, 3, &pcomment, 7, &state, -1);
+                gtk_tree_model_get(model, &iter, 0, &pname, 2, &pfile, 3, &pcomment, 6, &dirty, 7, &state, -1);
 
 		if (state < 0) {
 			g_free(pname);
@@ -2481,7 +2481,7 @@ store__edit_cb(gpointer data) {
                 g_free(pcomment);
 		g_free(pfile);
 
-		if (edit_store_dialog(name, file, comment)) {
+		if (edit_store_dialog(name + ((dirty < 0) ? 1 : 0), file, comment)) {
 			gtk_tree_store_set(music_store, &iter, 0, name, 3, comment, -1);
 			tree_selection_changed_cb(music_select, NULL);
 			music_store_mark_changed(&iter);

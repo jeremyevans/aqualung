@@ -55,28 +55,31 @@ cdda_reader_thread(void * arg) {
 	cdio_paranoia_seek(pd->paranoia, pd->pos_lsn, SEEK_SET);
 
 	while ((rb_write_space(pd->rb) > CDIO_CD_FRAMESIZE_RAW * 2) &&
-	       (pd->pos_lsn < pd->last_lsn)) {
+	       (pd->pos_lsn < pd->disc_last_lsn)) {
 
 		AQUALUNG_MUTEX_LOCK(pd->cdda_reader_mutex)
 		if (pd->cdda_reader_status == CDDA_READER_FREE) {
 			AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
 			printf("CANCELLED cdda_reader_thread\n");
+			pd->overread_sectors = 0;
 			paranoia_free(pd->paranoia);
 			return NULL;
 		}
 		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
 
 		readbuf = cdio_paranoia_read(pd->paranoia, NULL);
+		if (pd->pos_lsn > pd->last_lsn)
+			++pd->overread_sectors;
 		++pd->pos_lsn;
 		for (i = 0; i < CDIO_CD_FRAMESIZE_RAW / 2; i++) {
 			float f = readbuf[i] / 32768.0 * fdec->voladj_lin;
 			rb_write(pd->rb, (char *)&f, sample_size);
 		}
+		pd->is_eos = (pd->pos_lsn >= pd->last_lsn ? 1 : 0);
 	}
-	pd->is_eos = (pd->pos_lsn >= pd->last_lsn ? 1 : 0);
 
 	if (pd->is_eos)
-		printf("end of track\n");
+		printf("end of track, overread = %d\n", pd->overread_sectors);
 
 	paranoia_free(pd->paranoia);
 	printf("FINISH cdda_reader_thread\n");
@@ -174,7 +177,9 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 
 	pd->first_lsn = cdio_cddap_track_firstsector(pd->drive, pd->track_no);
 	pd->last_lsn = cdio_cddap_track_lastsector(pd->drive, pd->track_no);
+	pd->disc_last_lsn = cdio_cddap_disc_lastsector(pd->drive);
 	pd->pos_lsn = pd->first_lsn;
+	pd->overread_sectors = 0;
 	pd->is_eos = 0;
 
 	pd->rb = rb_create(2 * sample_size * RB_CDDA_SIZE);
@@ -218,9 +223,16 @@ cdda_decoder_reopen(decoder_t * dec, char * filename) {
 
 	printf("=== CDDA REOPEN for track=%u\n", pd->track_no);
 
+	if (pd->overread_sectors > 0) {
+		char flush_dest;
+		while (rb_read_space(pd->rb) > pd->overread_sectors * CDIO_CD_FRAMESIZE_RAW * 2)
+			rb_read(pd->rb, &flush_dest, sizeof(char));
+	}
+
 	pd->first_lsn = cdio_cddap_track_firstsector(pd->drive, pd->track_no);
 	pd->last_lsn = cdio_cddap_track_lastsector(pd->drive, pd->track_no);
-	pd->pos_lsn = pd->first_lsn;
+	pd->pos_lsn = pd->first_lsn + pd->overread_sectors;
+	pd->overread_sectors = 0;
 	pd->is_eos = 0;
 
 	fdec->fileinfo.total_samples = (pd->last_lsn - pd->first_lsn + 1) * 588;
@@ -270,7 +282,8 @@ cdda_decoder_read(decoder_t * dec, float * dest, int num) {
 		}
 	}
 
-        while ((rb_read_space(pd->rb) < num * 2 * sample_size) && (!pd->is_eos)) {
+        while ((rb_read_space(pd->rb) - (pd->overread_sectors * CDIO_CD_FRAMESIZE_RAW * 2) <
+		num * 2 * sample_size) && (!pd->is_eos)) {
 		struct timespec req;
 		struct timespec rem;
 		req.tv_sec = 0;
@@ -279,7 +292,8 @@ cdda_decoder_read(decoder_t * dec, float * dest, int num) {
 		nanosleep(&req, &rem);
 	}
 
-        n_avail = rb_read_space(pd->rb) / (2 * sample_size);
+        n_avail = (rb_read_space(pd->rb) - pd->overread_sectors * CDIO_CD_FRAMESIZE_RAW * 2)
+		/ (2 * sample_size);
 
         if (n_avail > num)
                 n_avail = num;
@@ -311,6 +325,7 @@ cdda_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 
 	while (rb_read_space(pd->rb))
 		rb_read(pd->rb, &flush_dest, sizeof(char));
+	pd->overread_sectors = 0;
 
 	AQUALUNG_MUTEX_LOCK(pd->cdda_reader_mutex)
 	if ((pd->pos_lsn < pd->last_lsn) && (pd->cdda_reader_status == CDDA_READER_FREE)) {

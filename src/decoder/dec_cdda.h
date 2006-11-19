@@ -54,6 +54,8 @@ typedef struct _cdda_pdata_t {
 	cdrom_paranoia_t * paranoia;
 	lsn_t first_lsn;
 	lsn_t last_lsn;
+	lsn_t disc_last_lsn;
+	int overread_sectors;
 	lsn_t pos_lsn;
 	int is_eos;
 	AQUALUNG_THREAD_DECLARE(cdda_reader_id)

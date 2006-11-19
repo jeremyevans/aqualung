@@ -331,7 +331,6 @@ disk_thread(void * arg) {
 						decoder_t * dec = (decoder_t *)fdec->pdec;
 						cdda_decoder_reopen(dec, filename);
 						fdec->samples_left = fdec->fileinfo.total_samples;
-						file_decoder_seek(fdec, 0);
 
 						file_decoder_set_rva(fdec, cue.voladj);
 						fdec->sample_pos = 0;

@@ -73,11 +73,11 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 		return cdda_drive->disc.n_tracks;
 	}
 
-#ifndef NATIVE_WIN32
+#ifndef _WIN32
 	if (g_file_test(device_path, G_FILE_TEST_IS_SYMLINK)) {
 		return -1;
 	}
-#endif /* !NATIVE_WIN32 */
+#endif /* !_WIN32 */
 
 	cdio = cdio_open(device_path, DRIVER_DEVICE);
 	if (!cdio) {

@@ -131,7 +131,7 @@ void
 cdda_decoder_destroy(decoder_t * dec) {
 
 #ifdef _WIN32
-	cdda_pdata_t * pd = (cdda_pdata_t *)dec_pdata;
+	cdda_pdata_t * pd = (cdda_pdata_t *)dec->pdata;
 	g_mutex_free(pd->cdda_reader_mutex);
 #endif /* _WIN32 */
 	free(dec->pdata);

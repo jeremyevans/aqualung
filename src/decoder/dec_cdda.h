@@ -29,6 +29,12 @@
 #undef HAVE_CDDB
 #endif /* HAVE_CDDB */
 
+#ifdef _WIN32
+#include <glib.h>
+#else
+#include <pthread.h>
+#endif /* _WIN32*/
+
 #include "../cdda.h"
 #endif /* HAVE_CDDA */
 
@@ -36,17 +42,23 @@
 
 
 #ifdef HAVE_CDDA
+
+/* size of ringbuffer for decoded CD Audio data (in frames) */
+#define RB_CDDA_SIZE (1<<20)
+
 typedef struct _cdda_pdata_t {
+	rb_t * rb;
 	char device_path[CDDA_MAXLEN];
 	track_t track_no;
 	cdrom_drive_t * drive;
 	cdrom_paranoia_t * paranoia;
 	lsn_t first_lsn;
 	lsn_t last_lsn;
-	lsn_t current_lsn;
-
-	float buf[CDIO_CD_FRAMESIZE_RAW / 2];
-	int bufptr;
+	lsn_t pos_lsn;
+	int is_eos;
+	AQUALUNG_THREAD_DECLARE(cdda_reader_id)
+	AQUALUNG_MUTEX_DECLARE(cdda_reader_mutex)
+	int cdda_reader_status;
 } cdda_pdata_t;
 #endif /* HAVE_CDDA */
 
@@ -55,6 +67,7 @@ decoder_t * cdda_decoder_init(file_decoder_t * fdec);
 #ifdef HAVE_CDDA
 void cdda_decoder_destroy(decoder_t * dec);
 int cdda_decoder_open(decoder_t * dec, char * filename);
+int cdda_decoder_reopen(decoder_t * dec, char * filename);
 void cdda_decoder_close(decoder_t * dec);
 unsigned int cdda_decoder_read(decoder_t * dec, float * dest, int num);
 void cdda_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);

@@ -24,12 +24,70 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "../i18n.h"
 #include "../cdda.h"
 #include "dec_cdda.h"
 
 #ifdef HAVE_CDDA
+
+extern size_t sample_size;
+
+#define CDDA_READER_FREE   0
+#define CDDA_READER_BUSY   1
+
+void *
+cdda_reader_thread(void * arg) {
+
+        decoder_t * dec = (decoder_t *)arg;
+	cdda_pdata_t * pd = (cdda_pdata_t *)dec->pdata;
+	file_decoder_t * fdec = dec->fdec;
+
+	int16_t * readbuf;
+	int i;
+
+	printf("START cdda_reader_thread\n");
+
+	pd->paranoia = cdio_paranoia_init(pd->drive);
+	cdio_paranoia_modeset(pd->paranoia, PARANOIA_MODE_FULL^PARANOIA_MODE_NEVERSKIP);
+	//cdio_paranoia_modeset(pd->paranoia, PARANOIA_MODE_DISABLE);
+	cdio_paranoia_seek(pd->paranoia, pd->pos_lsn, SEEK_SET);
+
+	while ((rb_write_space(pd->rb) > CDIO_CD_FRAMESIZE_RAW * 2) &&
+	       (pd->pos_lsn < pd->last_lsn)) {
+
+		AQUALUNG_MUTEX_LOCK(pd->cdda_reader_mutex)
+		if (pd->cdda_reader_status == CDDA_READER_FREE) {
+			AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
+			printf("CANCELLED cdda_reader_thread\n");
+			paranoia_free(pd->paranoia);
+			return NULL;
+		}
+		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
+
+		readbuf = cdio_paranoia_read(pd->paranoia, NULL);
+		++pd->pos_lsn;
+		for (i = 0; i < CDIO_CD_FRAMESIZE_RAW / 2; i++) {
+			float f = readbuf[i] / 32768.0 * fdec->voladj_lin;
+			rb_write(pd->rb, (char *)&f, sample_size);
+		}
+	}
+	pd->is_eos = (pd->pos_lsn >= pd->last_lsn ? 1 : 0);
+
+	if (pd->is_eos)
+		printf("end of track\n");
+
+	paranoia_free(pd->paranoia);
+	printf("FINISH cdda_reader_thread\n");
+
+	AQUALUNG_MUTEX_LOCK(pd->cdda_reader_mutex)
+	pd->cdda_reader_status = CDDA_READER_FREE;
+	AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
+
+	return NULL;
+}
+
 
 decoder_t *
 cdda_decoder_init(file_decoder_t * fdec) {
@@ -54,6 +112,9 @@ cdda_decoder_init(file_decoder_t * fdec) {
 	dec->close = cdda_decoder_close;
 	dec->read = cdda_decoder_read;
 	dec->seek = cdda_decoder_seek;
+#ifdef _WIN32
+	dec->pdata->cdda_reader_mutex = g_mutex_new();
+#endif /* _WIN32 */
 
 	return dec;
 }
@@ -62,6 +123,9 @@ cdda_decoder_init(file_decoder_t * fdec) {
 void
 cdda_decoder_destroy(decoder_t * dec) {
 
+#ifdef _WIN32
+	g_mutex_free(dec->pdata->cdda_reader_mutex);
+#endif /* _WIN32 */
 	free(dec->pdata);
 	free(dec);
 }
@@ -95,31 +159,25 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 
 	printf("=== CDDA file_decoder, device=%s track=%u\n", pd->device_path, pd->track_no);
 
-	pd->drive = cdio_cddap_identify(pd->device_path, 1, NULL);
+	pd->drive = cdio_cddap_identify(pd->device_path, 0, NULL);
 	if (!pd->drive) {
-		printf("Couldn't open drive\n");
+		printf("dec_cdda.c: Couldn't open drive %s\n", pd->device_path);
 		return DECODER_OPEN_BADLIB;
 	}
 
-	cdio_cddap_verbose_set(pd->drive, CDDA_MESSAGE_PRINTIT, CDDA_MESSAGE_PRINTIT);
+	cdio_cddap_verbose_set(pd->drive, CDDA_MESSAGE_PRINTIT, CDDA_MESSAGE_FORGETIT);
 
 	if (cdio_cddap_open(pd->drive) != 0) {
-		printf("Unable to open disc.\n");
+		printf("dec_cdda.c: Unable to open disc.\n");
 		return DECODER_OPEN_BADLIB;
 	}
 
-	pd->paranoia = cdio_paranoia_init(pd->drive);
 	pd->first_lsn = cdio_cddap_track_firstsector(pd->drive, pd->track_no);
 	pd->last_lsn = cdio_cddap_track_lastsector(pd->drive, pd->track_no);
+	pd->pos_lsn = pd->first_lsn;
+	pd->is_eos = 0;
 
-	pd->bufptr = 0;
-
-	printf("first = %u  last = %u  nsectors = %d\n", pd->first_lsn, pd->last_lsn, pd->drive->nsectors);
-
-	cdio_paranoia_modeset(pd->paranoia, PARANOIA_MODE_FULL^PARANOIA_MODE_NEVERSKIP);
-	//cdio_paranoia_modeset(pd->paranoia, PARANOIA_MODE_DISABLE);
-	cdio_paranoia_seek(pd->paranoia, pd->first_lsn, SEEK_SET);
-	pd->current_lsn = pd->first_lsn;
+	pd->rb = rb_create(2 * sample_size * RB_CDDA_SIZE);
 
 	fdec->fileinfo.channels = 2;
 	fdec->fileinfo.sample_rate = 44100;
@@ -134,14 +192,62 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 }
 
 
+/* set a new track on the same CD without closing -- this is fast */
+int
+cdda_decoder_reopen(decoder_t * dec, char * filename) {
+
+	cdda_pdata_t * pd = (cdda_pdata_t *)dec->pdata;
+	file_decoder_t * fdec = dec->fdec;
+	unsigned int track;
+
+	if (strlen(filename) < 4) {
+		return DECODER_OPEN_BADLIB;
+	}
+
+	if ((filename[0] != 'C') ||
+	    (filename[1] != 'D') ||
+	    (filename[2] != 'D') ||
+	    (filename[3] != 'A')) {
+		return DECODER_OPEN_BADLIB;
+	}
+
+	if (sscanf(filename, "CDDA %s %u", pd->device_path, &track) < 2) {
+		return DECODER_OPEN_BADLIB;
+	}
+	pd->track_no = track;
+
+	printf("=== CDDA REOPEN for track=%u\n", pd->track_no);
+
+	pd->first_lsn = cdio_cddap_track_firstsector(pd->drive, pd->track_no);
+	pd->last_lsn = cdio_cddap_track_lastsector(pd->drive, pd->track_no);
+	pd->pos_lsn = pd->first_lsn;
+	pd->is_eos = 0;
+
+	fdec->fileinfo.total_samples = (pd->last_lsn - pd->first_lsn + 1) * 588;
+
+	return DECODER_OPEN_SUCCESS;
+}
+
+
 void
 cdda_decoder_close(decoder_t * dec) {
 
 	cdda_pdata_t * pd = (cdda_pdata_t *)dec->pdata;
 
-	paranoia_free(pd->paranoia);
+	AQUALUNG_MUTEX_LOCK(pd->cdda_reader_mutex)
+	if (pd->cdda_reader_status == CDDA_READER_BUSY) {
+		pd->cdda_reader_status = CDDA_READER_FREE;
+		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
+		AQUALUNG_THREAD_JOIN(pd->cdda_reader_id);
+	} else {
+		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
+	}
+
+	rb_free(pd->rb);
 	cdda_close(pd->drive);
 	/* TODO mark drive as unused */
+
+	printf("=== CDDA file_decoder CLOSE\n");
 }
 
 
@@ -149,55 +255,72 @@ unsigned int
 cdda_decoder_read(decoder_t * dec, float * dest, int num) {
 
 	cdda_pdata_t * pd = (cdda_pdata_t *)dec->pdata;
-	file_decoder_t * fdec = dec->fdec;
-	int i, j = 0;
-	unsigned int numread = 0;
 
-	/* empty buffer (leftover from prev read) */
-	for (i = 0; i < pd->bufptr; i++)
-		dest[j++] = pd->buf[i];
-	numread += pd->bufptr;
-	pd->bufptr = 0;
+        unsigned int numread = 0;
+        unsigned int n_avail = 0;
 
-	while (num - numread >= 588) {
-		int16_t * readbuf = cdio_paranoia_read(pd->paranoia, NULL);
-		++pd->current_lsn;
-		for (i = 0; i < CDIO_CD_FRAMESIZE_RAW / 2; i++) {
-			dest[j++] = readbuf[i] / 65536.0 * fdec->voladj_lin;
+	if ((rb_read_space(pd->rb) / sample_size < RB_CDDA_SIZE >> 2) && (!pd->is_eos)) {
+		AQUALUNG_MUTEX_LOCK(pd->cdda_reader_mutex)
+		if (pd->cdda_reader_status != CDDA_READER_BUSY) {
+			pd->cdda_reader_status = CDDA_READER_BUSY;
+			AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
+			AQUALUNG_THREAD_CREATE(pd->cdda_reader_id, NULL, cdda_reader_thread, dec)
+		} else {
+			AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
 		}
-		numread += 588;
 	}
 
-	if (num - numread > 0) {
-		int k = 0;
-		int16_t * readbuf = cdio_paranoia_read(pd->paranoia, NULL);
-		++pd->current_lsn;
-		for (i = 0; i < num - numread; i++) {
-			dest[j++] = readbuf[i] / 65536.0 * fdec->voladj_lin;
-		}
-		for (i = num - numread; i < CDIO_CD_FRAMESIZE_RAW / 2; i++) {
-			pd->buf[k++] = readbuf[i] / 65536.0 * fdec->voladj_lin;
-		}
-		pd->bufptr = k;
-		numread = num;
+        while ((rb_read_space(pd->rb) < num * 2 * sample_size) && (!pd->is_eos)) {
+		struct timespec req;
+		struct timespec rem;
+		req.tv_sec = 0;
+		req.tv_nsec = 100000000; /* 100 ms */
+		printf("cdda_decoder_read: data not ready, waiting...\n");
+		nanosleep(&req, &rem);
 	}
 
-	return numread;
+        n_avail = rb_read_space(pd->rb) / (2 * sample_size);
+
+        if (n_avail > num)
+                n_avail = num;
+
+        rb_read(pd->rb, (char *)dest, n_avail * 2 * sample_size);
+        numread = n_avail;
+        return numread;
 }
 
 
 void
 cdda_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
-/*	
+
 	cdda_pdata_t * pd = (cdda_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
+	char flush_dest;
 
-	if ((pd->nframes = sf_seek(pd->sf, seek_to_pos, SEEK_SET)) != -1) {
-		fdec->samples_left = fdec->fileinfo.total_samples - pd->nframes;
+	AQUALUNG_MUTEX_LOCK(pd->cdda_reader_mutex)
+	if (pd->cdda_reader_status == CDDA_READER_BUSY) {
+		pd->cdda_reader_status = CDDA_READER_FREE;
+		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
+		AQUALUNG_THREAD_JOIN(pd->cdda_reader_id);
 	} else {
-		fprintf(stderr, "cdda_decoder_seek: warning: sf_seek() failed\n");
+		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
 	}
-*/
+
+	pd->pos_lsn = pd->first_lsn + seek_to_pos / 588;
+	fdec->samples_left = fdec->fileinfo.total_samples - (seek_to_pos / 588) * 588;
+
+	while (rb_read_space(pd->rb))
+		rb_read(pd->rb, &flush_dest, sizeof(char));
+
+	AQUALUNG_MUTEX_LOCK(pd->cdda_reader_mutex)
+	if ((pd->pos_lsn < pd->last_lsn) && (pd->cdda_reader_status == CDDA_READER_FREE)) {
+		pd->cdda_reader_status = CDDA_READER_BUSY;
+		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
+		pd->is_eos = 0;
+		AQUALUNG_THREAD_CREATE(pd->cdda_reader_id, NULL, cdda_reader_thread, dec)
+	} else {
+		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
+	}
 }
 
 

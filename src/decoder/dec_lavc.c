@@ -213,6 +213,7 @@ lavc_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	
 	lavc_pdata_t * pd = (lavc_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
+	char flush_dest;
 
 	long long pos = fdec->fileinfo.total_samples - fdec->samples_left;
 	int64_t timestamp = (double)seek_to_pos / fdec->fileinfo.sample_rate
@@ -221,6 +222,9 @@ lavc_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 
 	if (av_seek_frame(pd->avFormatCtx, pd->audioStream, timestamp, flags) >= 0) {
 		fdec->samples_left = fdec->fileinfo.total_samples - seek_to_pos;
+		/* empty lavc decoder ringbuffer */
+		while (rb_read_space(pd->rb))
+			rb_read(pd->rb, &flush_dest, sizeof(char));
 	} else {
 		fprintf(stderr, "lavc_decoder_seek: warning: av_seek_frame() failed\n");
 	}

@@ -2644,7 +2644,15 @@ save_track_node(GtkTreeIter * piter, xmlNodePtr root, char * nodeID) {
 	if (!strcmp(nodeID,"record")) {
 		xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) phys_name);
 	} else {
-		converted_temp = g_filename_to_uri(phys_name, NULL, NULL);
+		if ((strlen(phys_name) > 4) &&
+		    (phys_name[0] == 'C') &&
+		    (phys_name[1] == 'D') &&
+		    (phys_name[2] == 'D') &&
+		    (phys_name[3] == 'A')) {
+			converted_temp = strdup(phys_name);
+		} else {
+			converted_temp = g_filename_to_uri(phys_name, NULL, NULL);
+		}
 		xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) converted_temp);
 		g_free(converted_temp);
 	};

@@ -74,6 +74,10 @@
 #include "gui_main.h"
 #include "plugin.h"
 #include "i18n.h"
+#include "cdda.h"
+#ifdef HAVE_CDDA
+#include "decoder/dec_cdda.h"
+#endif /* HAVE_CDDA */
 #include "core.h"
 
 extern options_t options;
@@ -195,6 +199,42 @@ sample_rates_ok(int out_SR, int file_SR) {
 }
 
 
+#ifdef HAVE_CDDA
+int
+same_disc_next_track(char * filename, char * filename_prev) {
+
+	char device[CDDA_MAXLEN];
+	char device_prev[CDDA_MAXLEN];
+	int track, track_prev;
+
+	if ((strlen(filename) < 4) ||
+	    (filename[0] != 'C') ||
+	    (filename[1] != 'D') ||
+	    (filename[2] != 'D') ||
+	    (filename[3] != 'A'))
+		return 0;
+
+	if ((strlen(filename_prev) < 4) ||
+	    (filename_prev[0] != 'C') ||
+	    (filename_prev[1] != 'D') ||
+	    (filename_prev[2] != 'D') ||
+	    (filename_prev[3] != 'A'))
+		return 0;
+
+        if (sscanf(filename, "CDDA %s %u", device, &track) < 2)
+		return 0;
+
+        if (sscanf(filename_prev, "CDDA %s %u", device_prev, &track_prev) < 2)
+		return 0;
+
+	if (strcmp(device, device_prev) != 0)
+		return 0;
+
+	return (track == track_prev + 1) ? 1 : 0;
+}
+#endif /* HAVE_CDDA */
+
+
 void *
 disk_thread(void * arg) {
 
@@ -211,6 +251,9 @@ disk_thread(void * arg) {
 	size_t n_space;
 	char send_cmd, recv_cmd;
 	char filename[RB_CONTROL_SIZE];
+#ifdef HAVE_CDDA
+	char filename_prev[RB_CONTROL_SIZE];
+#endif /* HAVE_CDDA */
 	seek_t seek;
 	cue_t cue;
 	int i;
@@ -243,6 +286,9 @@ disk_thread(void * arg) {
 	AQUALUNG_MUTEX_LOCK(disk_thread_lock)
 
 	filename[0] = '\0';
+#ifdef HAVE_CDDA
+	filename_prev[0] = '\0';
+#endif /* HAVE_CDDA */
 
 	while (1) {
 
@@ -257,6 +303,9 @@ disk_thread(void * arg) {
 
 				rb_read(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 				
+#ifdef HAVE_CDDA
+				strcpy(filename_prev, filename);
+#endif /* HAVE_CDDA */
 				if (cue.filename != NULL) {
 					strncpy(filename, cue.filename, MAXLEN-1);
 					free(cue.filename);
@@ -264,15 +313,43 @@ disk_thread(void * arg) {
 					filename[0] = '\0';
 				}
 
+#ifdef HAVE_CDDA
+				if (same_disc_next_track(filename, filename_prev)) {
+					printf("same disc, next track\n");
+				} else {
+					if (fdec->file_lib != 0)
+						file_decoder_close(fdec);
+				}
+#else
 				if (fdec->file_lib != 0)
 					file_decoder_close(fdec);
+#endif /* HAVE_CDDA */
+
 				if (filename[0] != '\0') {
-/* XXX */
-#if 1
+#ifdef HAVE_CDDA
+					if (same_disc_next_track(filename, filename_prev)) {
+						decoder_t * dec = (decoder_t *)fdec->pdec;
+						cdda_decoder_reopen(dec, filename);
+						fdec->samples_left = fdec->fileinfo.total_samples;
+						file_decoder_seek(fdec, 0);
+
+						file_decoder_set_rva(fdec, cue.voladj);
+						fdec->sample_pos = 0;
+
+						sample_offset = 0;
+
+						send_cmd = CMD_FILEINFO;
+						rb_write(rb_disk2gui, &send_cmd,
+								      sizeof(send_cmd));
+						rb_write(rb_disk2gui,
+								      (char *)&(fdec->fileinfo),
+								      sizeof(fileinfo_t));
+
+						info->is_streaming = 1;
+						end_of_file = 0;
+					} else {
+#endif /* HAVE_CDDA */
 					if (file_decoder_open(fdec, filename)) {
-#else
-					if (file_decoder_open(fdec, "CDDA /dev/scd0 1")) {
-#endif
 						fdec->samples_left = 0;
 						info->is_streaming = 0;
 						end_of_file = 1;
@@ -310,6 +387,9 @@ disk_thread(void * arg) {
 						info->is_streaming = 1;
 						end_of_file = 0;
 					}
+#ifdef HAVE_CDDA
+					}
+#endif /* HAVE_CDDA */
 				} else { /* STOP */
 					info->is_streaming = 0;
 
@@ -321,6 +401,8 @@ disk_thread(void * arg) {
 				break;
 			case CMD_STOPWOFL: /* STOP but first flush output ringbuffer. */
 				info->is_streaming = 0;
+				if (fdec->file_lib != 0)
+					file_decoder_close(fdec);
 				goto flush;
 				break;
 			case CMD_PAUSE:
@@ -437,9 +519,6 @@ disk_thread(void * arg) {
 			}
 			
 			if (end_of_file) {
-
-				file_decoder_close(fdec);
-
 				/* send request for a new filename */
 				send_cmd = CMD_FILEREQ;
 				rb_write(rb_disk2gui, &send_cmd, 1);
@@ -2674,6 +2753,9 @@ main(int argc, char ** argv) {
 	if (output == WIN32_DRIVER) {
 		AQUALUNG_THREAD_JOIN(thread_info.win32_thread_id)
 	}
+
+	g_mutex_free(disk_thread_lock);
+	g_cond_free(disk_thread_wake);
 #endif /* _WIN32 */
 
 	if (device_name != NULL)

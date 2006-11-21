@@ -75,6 +75,7 @@
 #include "plugin.h"
 #include "file_info.h"
 #include "i18n.h"
+#include "cdda.h"
 #include "gui_main.h"
 #include "version.h"
 
@@ -116,6 +117,7 @@ extern int aqualung_session_id;
 
 extern GtkListStore * ms_pathlist_store;
 extern GtkTreeStore * play_store;
+extern GtkTreeStore * music_store;
 extern GtkListStore * running_store;
 extern GtkWidget * play_list;
 
@@ -1029,6 +1031,10 @@ main_window_close(GtkWidget * widget, gpointer data) {
 	try_waking_disk_thread();
 
 	vol_cancelled = 1;
+
+#ifdef HAVE_CDDA
+	cdda_scanner_stop();
+#endif /* HAVE_CDDA */
 
 	if (music_store_changed) {
 		GtkWidget * dialog;
@@ -3548,6 +3554,10 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 #endif /* HAVE_LADSPA */
 
 	load_all_music_store();
+#ifdef HAVE_CDDA
+	create_cdda_node(music_store);
+	cdda_scanner_start();
+#endif /* HAVE_CDDA */
 
 	if (options.auto_save_playlist) {
 		char playlist_name[MAXLEN];

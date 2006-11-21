@@ -15,7 +15,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: cdda.h 339 2006-09-10 17:37:58Z tszilagyi $
+    $Id$
 */
 
 #ifndef _CDDA_H
@@ -26,6 +26,7 @@
 
 #ifdef HAVE_CDDA
 
+#include <gtk/gtk.h>
 #include <cdio/cdio.h>
 #ifdef HAVE_CDDB
 #undef HAVE_CDDB
@@ -42,6 +43,8 @@ typedef struct {
 } cdda_disc_t;
 
 typedef struct {
+	CdIo_t * cdio;
+	int media_changed;
 	int is_used; /* drive under use should not be scanned */
 	char device_path[CDDA_MAXLEN];
 	char vendor[CDDA_MAXLEN];
@@ -50,10 +53,10 @@ typedef struct {
 	cdda_disc_t disc;
 } cdda_drive_t;
 
-cdda_drive_t * cdda_get_drive(int n);
-cdda_drive_t * cdda_get_drive_by_device_path(char * device_path);
-int cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive);
-int cdda_scan_all_drives(void);
+void cdda_scanner_start(void);
+void cdda_scanner_stop(void);
+
+void create_cdda_node(GtkTreeStore * store);
 
 #endif /* HAVE_CDDA */
 

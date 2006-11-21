@@ -44,6 +44,7 @@
 #include "volume.h"
 #include "playlist.h"
 #include "search.h"
+#include "cdda.h"
 #include "i18n.h"
 #include "music_browser.h"
 
@@ -303,6 +304,8 @@ struct keybinds track_keybinds[] = {
         {collapse_all_items_cb, GDK_w, GDK_W},
 	{NULL, 0}
 };
+
+
 
 
 
@@ -1960,6 +1963,7 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 				
 				gtk_tree_view_set_cursor(GTK_TREE_VIEW(music_tree), path, NULL, FALSE);
 
+				/* XXX: popup cdda_menus as appropriate */
 				switch (gtk_tree_path_get_depth(path)) {
 				case 1:
 					gtk_menu_popup(GTK_MENU(store_menu), NULL, NULL, NULL, NULL,
@@ -4067,6 +4071,7 @@ music_store_set_status_bar_info(void) {
 		switch (gtk_tree_path_get_depth(path)) {
 		case 1: /* music store */
 			i = 0;
+
 			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, &iter, i++)) {
 				n_artist++;
 
@@ -5473,6 +5478,13 @@ save_music_store(GtkTreeIter * iter_store) {
 	root = xmlNewNode(NULL, (const xmlChar *) "music_store");
 	xmlDocSetRootElement(doc, root);
 
+	if (strcmp(store_file, "CDDA_STORE") == 0) {
+		g_free(name);
+		g_free(comment);
+		g_free(store_file);
+		return;
+	}
+
 	if (name[0] == '\0') {
 		fprintf(stderr, "saving music_store XML: warning: empty <name>\n");
 	}
@@ -5483,6 +5495,7 @@ save_music_store(GtkTreeIter * iter_store) {
 
 	g_free(name);
 	g_free(comment);
+	g_free(store_file);
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, iter_store, i++)) {

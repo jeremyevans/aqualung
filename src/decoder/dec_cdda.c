@@ -15,7 +15,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: dec_cdda.c 397 2006-11-07 11:21:56Z tszilagyi $
+    $Id$
 */
 
 
@@ -320,7 +320,7 @@ cdda_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	if (pd->cdda_reader_status == CDDA_READER_BUSY) {
 		pd->cdda_reader_status = CDDA_READER_FREE;
 		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
-		AQUALUNG_THREAD_JOIN(pd->cdda_reader_id);
+		AQUALUNG_THREAD_JOIN(pd->cdda_reader_id)
 	} else {
 		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
 	}

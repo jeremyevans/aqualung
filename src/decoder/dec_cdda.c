@@ -37,6 +37,27 @@ extern size_t sample_size;
 #define CDDA_READER_FREE   0
 #define CDDA_READER_BUSY   1
 
+
+/* XXX this is bad, but cdda_paranoia_callback() cannot be given
+ * a context which could be used. Solution would be to use a map
+ * with the decoder pointer as key, and cdda_read_error as value.
+ * The map could then safely be a global variable.
+ */
+volatile int cdda_read_error = 0;
+
+void
+cdda_paranoia_callback(long int inpos, paranoia_cb_mode_t function) {
+
+	switch (function) {
+	case PARANOIA_CB_READERR:
+		cdda_read_error = 1;
+		break;
+	default:
+		break;
+	}
+}
+
+
 void *
 cdda_reader_thread(void * arg) {
 
@@ -45,6 +66,7 @@ cdda_reader_thread(void * arg) {
 	file_decoder_t * fdec = dec->fdec;
 
 	int16_t * readbuf;
+	char * errors;
 	int i;
 
 	printf("START cdda_reader_thread\n");
@@ -67,7 +89,7 @@ cdda_reader_thread(void * arg) {
 		}
 		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
 
-		readbuf = cdio_paranoia_read(pd->paranoia, NULL);
+		readbuf = cdio_paranoia_read(pd->paranoia, cdda_paranoia_callback);
 		if (pd->pos_lsn > pd->last_lsn)
 			++pd->overread_sectors;
 		++pd->pos_lsn;
@@ -76,6 +98,16 @@ cdda_reader_thread(void * arg) {
 			rb_write(pd->rb, (char *)&f, sample_size);
 		}
 		pd->is_eos = (pd->pos_lsn >= pd->last_lsn ? 1 : 0);
+
+		if (cdda_read_error) {
+			char flush_dest;
+
+			pd->is_eos = 1;
+			pd->pos_lsn = pd->last_lsn;
+
+			while (rb_read_space(pd->rb))
+				rb_read(pd->rb, &flush_dest, sizeof(char));
+		}
 	}
 
 	if (pd->is_eos)
@@ -173,7 +205,7 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_BADLIB;
 	}
 
-	cdio_cddap_verbose_set(pd->drive, CDDA_MESSAGE_PRINTIT, CDDA_MESSAGE_FORGETIT);
+	cdio_cddap_verbose_set(pd->drive, CDDA_MESSAGE_FORGETIT, CDDA_MESSAGE_FORGETIT);
 
 	if (cdio_cddap_open(pd->drive) != 0) {
 		printf("dec_cdda.c: Unable to open disc.\n");

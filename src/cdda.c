@@ -26,8 +26,13 @@
 #include <string.h>
 #include <glib.h>
 #include <glib/gstdio.h>
+#ifndef _WIN32
+#include <pthread.h>
+#endif /* _WIN32 */
 
 #include <cdio/cdio.h>
+#include <cdio/cdda.h>
+#include <cdio/logging.h>
 #ifdef HAVE_CDDB
 #undef HAVE_CDDB
 #endif /* HAVE_CDDB */
@@ -44,6 +49,20 @@ extern GdkPixbuf * icon_store;
 cdda_drive_t cdda_drives[CDDA_DRIVES_MAX];
 AQUALUNG_THREAD_DECLARE(cdda_scanner_id)
 int cdda_scanner_working;
+
+
+static void
+cdda_log_handler(cdio_log_level_t level, const char message[]) {
+
+	switch(level) {
+	case CDIO_LOG_DEBUG:
+	case CDIO_LOG_INFO:
+	case CDIO_LOG_WARN:
+		return;
+	default:
+		printf("cdio %d: %s\n", level, message);
+	}
+}
 
 
 int
@@ -97,6 +116,10 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 
 	cdio_hwinfo_t hwinfo;
 	track_t tracks;
+	track_t first_track;
+	track_t last_track;
+	int i, n = 0;
+	cdrom_drive_t * d;
 
 	/* if the drive is being used (currently playing), we should not access it */
 	if (cdda_drive->is_used) {
@@ -121,53 +144,48 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 			return -1;
 		}
 		
-		printf("\nDrive = %s\n", device_path);
-		printf("%-28s: %s\n%-28s: %s\n%-28s: %s\n",
-		       "Vendor"  , hwinfo.psz_vendor,
-		       "Model"   , hwinfo.psz_model,
-		       "Revision", hwinfo.psz_revision);
-		printf("\n");
-		
 		strncpy(cdda_drive->device_path, device_path, CDDA_MAXLEN-1);
 		strncpy(cdda_drive->vendor, hwinfo.psz_vendor, CDDA_MAXLEN-1);
 		strncpy(cdda_drive->model, hwinfo.psz_model, CDDA_MAXLEN-1);
 		strncpy(cdda_drive->revision, hwinfo.psz_revision, CDDA_MAXLEN-1);
 	}
 	
+	cdda_drive->disc.n_tracks = 0;
 	tracks = cdio_get_num_tracks(cdda_drive->cdio);
-	printf("tracks = %d\n", tracks);
 
-	/* see if there is a CD in the drive */
-	if (tracks > 0 && tracks < 100) {
-		track_t first_track;
-		track_t last_track;
-		int j, n_track = 0;
+	if (tracks < 1 || tracks >= 100)
+		return 0;
 
-		/* XXX: it might be any CD at this point, not just CD-DA */
-		
-		first_track = cdio_get_first_track_num(cdda_drive->cdio);
-		last_track = cdio_get_last_track_num(cdda_drive->cdio);
-		
-		printf("first_track = %d\n", first_track);
-		printf("last_track = %d\n", last_track);
-		printf("CD-ROM Track List (%i - %i)\n", first_track, last_track);
-		printf("  #:  LSN\n");
-		
-		cdda_drive->disc.n_tracks = tracks;
-		for (j = first_track; j <= last_track; j++) {
-			lsn_t lsn = cdio_get_track_lsn(cdda_drive->cdio, j);
-			if (lsn != CDIO_INVALID_LSN) {
-				printf("%3d: %06lu\n", (int) j, (long unsigned int) lsn);
-				cdda_drive->disc.toc[n_track++] = lsn;
-			}
-		}
-		cdda_drive->disc.toc[n_track] =
-			cdio_get_track_lsn(cdda_drive->cdio, CDIO_CDROM_LEADOUT_TRACK);
-		printf("%3X: %06lu  leadout\n", CDIO_CDROM_LEADOUT_TRACK,
-		       (long unsigned int) cdio_get_track_lsn(cdda_drive->cdio, CDIO_CDROM_LEADOUT_TRACK));
-	} else {
-		cdda_drive->disc.n_tracks = 0;
+	d = cdio_cddap_identify_cdio(cdda_drive->cdio, 0, NULL);
+	if (d == NULL) {
+		return -1;
 	}
+		
+	first_track = cdio_get_first_track_num(cdda_drive->cdio);
+	last_track = cdio_get_last_track_num(cdda_drive->cdio);
+
+	for (i = first_track; i <= last_track; i++) {
+		if (!cdio_cddap_track_audiop(d, i)) {
+			last_track = i-1;
+			break;
+		}
+	}
+
+	cdio_cddap_close_no_free_cdio(d);
+	
+	if (last_track < first_track) {
+		return 0;
+	}
+
+	cdda_drive->disc.n_tracks = tracks;
+	for (i = first_track; i <= last_track; i++) {
+		lsn_t lsn = cdio_get_track_lsn(cdda_drive->cdio, i);
+		if (lsn != CDIO_INVALID_LSN) {
+			cdda_drive->disc.toc[n++] = lsn;
+		}
+	}
+	cdda_drive->disc.toc[n] = cdio_get_track_lsn(cdda_drive->cdio, CDIO_CDROM_LEADOUT_TRACK);
+
 	return 0;
 }
 
@@ -209,7 +227,7 @@ cdda_scan_all_drives(void) {
 			}
 		} else { /* no, scan the drive */
 			if (cdda_get_first_free_slot(&n) < 0) {
-				printf("cdda.c: error: too many drives");
+				printf("cdda.c: error: too many drives\n");
 				return;
 			}
 			if (cdda_scan_drive(drives[i], cdda_get_drive(n)) >= 0) {
@@ -232,7 +250,6 @@ cdda_scan_all_drives(void) {
 			memset(cdda_drives + i, 0, sizeof(cdda_drive_t));
 		}
 	}
-	return;
 }
 
 
@@ -241,8 +258,7 @@ cdda_scanner(void * arg) {
 
 	int i = 0;
 
-	printf("START cdda_reader thread\n");
-
+	cdio_log_set_handler(cdda_log_handler);
 	cdda_scan_all_drives();
 
 	while (cdda_scanner_working) {
@@ -255,7 +271,6 @@ cdda_scanner(void * arg) {
 		nanosleep(&req_time, &rem_time);
 
 		if (i == 50) {
-			printf("scanning...\n");
 			cdda_scan_all_drives();
 			i = 0;
 		}
@@ -269,7 +284,6 @@ cdda_scanner(void * arg) {
 		}
 	}
 
-	printf("STOP cdda_reader thread");
 	return NULL;
 }
 

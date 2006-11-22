@@ -384,6 +384,8 @@ cdda_scanner_stop(void) {
 #ifdef _WIN32
 	g_mutex_free(cdda_mutex);
 #endif /* _WIN32 */
+
+	rb_free(cdda_notify_rb);
 }
 
 

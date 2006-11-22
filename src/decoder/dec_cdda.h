@@ -23,11 +23,20 @@
 #define _DEC_CDDA_H
 
 #ifdef HAVE_CDDA
+
+#ifdef HAVE_CDDB
+#define _TMP_HAVE_CDDB 1
+#undef HAVE_CDDB
+#endif /* HAVE_CDDB */
 #include <cdio/cdio.h>
 #include <cdio/paranoia.h>
 #ifdef HAVE_CDDB
 #undef HAVE_CDDB
 #endif /* HAVE_CDDB */
+#ifdef _TMP_HAVE_CDDB
+#define HAVE_CDDB 1
+#undef _TMP_HAVE_CDDB
+#endif /* _TMP_HAVE_CDDB */
 
 #ifdef _WIN32
 #include <glib.h>

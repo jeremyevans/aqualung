@@ -23,6 +23,7 @@
 #ifdef HAVE_CDDA
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -39,16 +40,35 @@
 
 #include "common.h"
 #include "options.h"
+#include "rb.h"
 #include "i18n.h"
 #include "cdda.h"
 
 
 extern options_t options;
 extern GdkPixbuf * icon_store;
+extern GdkPixbuf * icon_record;
+extern GdkPixbuf * icon_track;
+extern GtkTreeStore * music_store;
+
+typedef struct {
+	int event_type;
+	char * device_path;
+} cdda_notify_t;
+
+#define CDDA_NOTIFY_RB_SIZE (16*sizeof(cdda_notify_t))
+#define CDDA_TIMEOUT_PERIOD 500
+
+#define CDDA_EVENT_NEW_DRIVE     1
+#define CDDA_EVENT_REMOVED_DRIVE 2
+#define CDDA_EVENT_CHANGED_DRIVE 3
 
 cdda_drive_t cdda_drives[CDDA_DRIVES_MAX];
 AQUALUNG_THREAD_DECLARE(cdda_scanner_id)
+AQUALUNG_MUTEX_DECLARE(cdda_mutex)
 int cdda_scanner_working;
+guint cdda_timeout_tag;
+rb_t * cdda_notify_rb;
 
 
 static void
@@ -195,6 +215,7 @@ cdda_scan_all_drives(void) {
 
 	char ** drives = NULL;
 	char touched[CDDA_DRIVES_MAX];
+	cdda_notify_t notify;
 	int i;
 
 	for (i = 0; i < CDDA_DRIVES_MAX; i++) {
@@ -223,17 +244,22 @@ cdda_scan_all_drives(void) {
 			touched[n] = 1;
 			if (cdda_drives[n].media_changed) {
 				cdda_scan_drive(drives[i], cdda_get_drive(n));
-				/* EVENT do something to refresh disc data */
+				/* EVENT refresh disc data */
+				notify.event_type = CDDA_EVENT_CHANGED_DRIVE;
+				notify.device_path = strdup(drives[i]);
+				rb_write(cdda_notify_rb, (char *)&notify, sizeof(cdda_notify_t));
 			}
 		} else { /* no, scan the drive */
 			if (cdda_get_first_free_slot(&n) < 0) {
-				printf("cdda.c: error: too many drives\n");
+				printf("cdda.c: error: too many CD drives\n");
 				return;
 			}
 			if (cdda_scan_drive(drives[i], cdda_get_drive(n)) >= 0) {
 				touched[n] = 1;
-				/* EVENT do something to insert newly discovered drive */
-				printf("discovered drive %s\n", drives[i]);
+				/* EVENT newly discovered drive */
+				notify.event_type = CDDA_EVENT_NEW_DRIVE;
+				notify.device_path = strdup(drives[i]);
+				rb_write(cdda_notify_rb, (char *)&notify, sizeof(cdda_notify_t));
 			}
 		}
 	}
@@ -243,9 +269,11 @@ cdda_scan_all_drives(void) {
 	for (i = 0; i < CDDA_DRIVES_MAX; i++) {
 		if ((cdda_drives[i].device_path[0] != '\0') && (touched[i] == 0)) {
 
-			/* EVENT do something to remove drive */
+			/* EVENT removed drive */
+			notify.event_type = CDDA_EVENT_REMOVED_DRIVE;
+			notify.device_path = strdup(cdda_drives[i].device_path);
+			rb_write(cdda_notify_rb, (char *)&notify, sizeof(cdda_notify_t));
 
-			printf("drive %s does not exist anymore, removing.\n", cdda_drives[i].device_path);
 			cdio_destroy(cdda_drives[i].cdio);
 			memset(cdda_drives + i, 0, sizeof(cdda_drive_t));
 		}
@@ -259,7 +287,9 @@ cdda_scanner(void * arg) {
 	int i = 0;
 
 	cdio_log_set_handler(cdda_log_handler);
+	AQUALUNG_MUTEX_LOCK(cdda_mutex)
 	cdda_scan_all_drives();
+	AQUALUNG_MUTEX_UNLOCK(cdda_mutex)
 
 	while (cdda_scanner_working) {
 
@@ -270,21 +300,57 @@ cdda_scanner(void * arg) {
 
 		nanosleep(&req_time, &rem_time);
 
-		if (i == 50) {
+		if (i == 50) { /* scan every 5 seconds */
+			AQUALUNG_MUTEX_LOCK(cdda_mutex)
 			cdda_scan_all_drives();
+			AQUALUNG_MUTEX_UNLOCK(cdda_mutex)
 			i = 0;
 		}
 		++i;
 	}
 
+	AQUALUNG_MUTEX_LOCK(cdda_mutex)
 	for (i = 0; i < CDDA_DRIVES_MAX; i++) {
 		if (cdda_drives[i].cdio != NULL) {
 			cdio_destroy(cdda_drives[i].cdio);
 			memset(cdda_drives + i, 0, sizeof(cdda_drive_t));
 		}
 	}
+	AQUALUNG_MUTEX_UNLOCK(cdda_mutex)
 
 	return NULL;
+}
+
+
+gint
+cdda_timeout_callback(gpointer data) {
+
+	cdda_notify_t notify;
+
+	while (rb_read_space(cdda_notify_rb) >= sizeof(cdda_notify_t)) {
+		rb_read(cdda_notify_rb, (char *)&notify, sizeof(cdda_notify_t));
+		switch (notify.event_type) {
+		case CDDA_EVENT_NEW_DRIVE:
+			AQUALUNG_MUTEX_LOCK(cdda_mutex)
+			insert_cdda_drive_node(notify.device_path);
+			AQUALUNG_MUTEX_UNLOCK(cdda_mutex)
+			free(notify.device_path);
+			break;
+		case CDDA_EVENT_CHANGED_DRIVE:
+			AQUALUNG_MUTEX_LOCK(cdda_mutex)
+			refresh_cdda_drive_node(notify.device_path);
+			AQUALUNG_MUTEX_UNLOCK(cdda_mutex)
+			free(notify.device_path);
+			break;
+		case CDDA_EVENT_REMOVED_DRIVE:
+			AQUALUNG_MUTEX_LOCK(cdda_mutex)
+			remove_cdda_drive_node(notify.device_path);
+			AQUALUNG_MUTEX_UNLOCK(cdda_mutex)
+			free(notify.device_path);
+			break;
+		}
+	}
+	return TRUE;
 }
 
 
@@ -293,6 +359,13 @@ cdda_scanner_start(void) {
 
 	if (cdda_scanner_working)
 		return;
+
+	cdda_notify_rb = rb_create(CDDA_NOTIFY_RB_SIZE);
+#ifdef _WIN32
+	cdda_mutex = g_mutex_new();
+#endif /* _WIN32 */
+
+	cdda_timeout_tag = g_timeout_add(CDDA_TIMEOUT_PERIOD, cdda_timeout_callback, NULL);
 
 	cdda_scanner_working = 1;
 	AQUALUNG_THREAD_CREATE(cdda_scanner_id, NULL, cdda_scanner, NULL)
@@ -304,17 +377,74 @@ cdda_scanner_stop(void) {
 
 	cdda_scanner_working = 0;
 	AQUALUNG_THREAD_JOIN(cdda_scanner_id)
+
+	cdda_timeout_callback(NULL); /* cleanup any leftover messages */
+	g_source_remove(cdda_timeout_tag);
+
+#ifdef _WIN32
+	g_mutex_free(cdda_mutex);
+#endif /* _WIN32 */
+}
+
+
+/* For some odd reason, drive names on Win32 begin with "\\.\" so eg. D: has a
+ * device_path of "\\.\D:" This function gets rid of that. Returns a pointer to
+ * the same buffer that is passed in (no mem allocated).
+ */
+char *
+cdda_displayed_device_path(char * device_path) {
+#ifdef _WIN32
+	if (strstr(device_path, "\\\\.\\") == device_path) {
+		return device_path + 4;
+	} else {
+		return device_path;
+	}
+#else
+	return device_path;
+#endif /* _WIN32 */
+}
+
+
+void
+update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
+
+	int i;
+	for (i = 0; i < drive->disc.n_tracks; i++) {
+		
+		GtkTreeIter iter_track;
+		char title[MAXLEN];
+		char path[CDDA_MAXLEN];
+		char sort[16];
+		float duration = (drive->disc.toc[i+1] - drive->disc.toc[i]) / 75.0;
+		
+		snprintf(title, MAXLEN-1, "Track %d", i+1);
+		snprintf(path, CDDA_MAXLEN-1, "CDDA %s %d", drive->device_path, i);
+		snprintf(sort, 15, "%d", i);
+		
+		gtk_tree_store_append(music_store, &iter_track, &iter_drive);
+		gtk_tree_store_set(music_store, &iter_track,
+				   0, title,
+				   1, sort,
+				   2, path,
+				   3, "",
+				   4, duration,
+				   -1);
+
+		if (options.enable_ms_tree_icons) {
+			gtk_tree_store_set(music_store, &iter_track, 9, icon_track, -1);
+		}
+	}
 }
 
 
 /* create toplevel Music Store node for CD Audio */
 void
-create_cdda_node(GtkTreeStore * store) {
+create_cdda_node(void) {
 
 	GtkTreeIter iter;
 
-	gtk_tree_store_insert(store, &iter, NULL, 0);
-	gtk_tree_store_set(store, &iter,
+	gtk_tree_store_insert(music_store, &iter, NULL, 0);
+	gtk_tree_store_set(music_store, &iter,
 			   0, _("CD Audio"),
 			   1, "",
 			   2, "CDDA_STORE",
@@ -323,8 +453,135 @@ create_cdda_node(GtkTreeStore * store) {
 			   -1);
 
 	if (options.enable_ms_tree_icons) {
-		gtk_tree_store_set(store, &iter, 9, icon_store, -1);
+		gtk_tree_store_set(music_store, &iter, 9, icon_store, -1);
 	}
+}
+
+
+void
+insert_cdda_drive_node(char * device_path) {
+
+	GtkTreeIter iter_cdda;
+	GtkTreeIter iter_drive;
+	cdda_drive_t * drive = cdda_get_drive_by_device_path(device_path);
+	char str_title[MAXLEN];
+	char str_path[CDDA_MAXLEN];
+	char str_sort[16];
+
+	if (drive->disc.n_tracks > 0) {
+		snprintf(str_title, MAXLEN-1, "Unknown disc [%s]",
+			 cdda_displayed_device_path(device_path));
+	} else {
+		snprintf(str_title, MAXLEN-1, "No disc [%s]",
+			 cdda_displayed_device_path(device_path));
+	}
+
+	snprintf(str_path, CDDA_MAXLEN-1, "CDDA_DRIVE %s", device_path);
+	snprintf(str_sort, 15, "%d", cdda_get_n(device_path));
+
+	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(music_store), &iter_cdda);
+
+	gtk_tree_store_append(music_store, &iter_drive, &iter_cdda);
+	gtk_tree_store_set(music_store, &iter_drive,
+			   0, str_title,
+			   1, str_sort,
+			   2, str_path,
+			   3, "",
+			   -1);
+
+	if (options.enable_ms_tree_icons) {
+		gtk_tree_store_set(music_store, &iter_drive, 9, icon_record, -1);
+	}
+
+	if (drive->disc.n_tracks > 0) {
+		update_track_data(drive, iter_drive);
+	}
+
+	printf("discovered drive %s\n", device_path);
+}
+
+
+void
+remove_cdda_drive_node(char * device_path) {
+
+	GtkTreeIter iter_cdda;
+	GtkTreeIter iter_drive;
+	char str_path[CDDA_MAXLEN];
+	int i, found;
+
+	snprintf(str_path, CDDA_MAXLEN-1, "CDDA_DRIVE %s", device_path);
+
+	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(music_store), &iter_cdda);
+
+	i = found = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_drive, &iter_cdda, i++)) {
+		gchar * tmp;
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_drive, 2, &tmp, -1);
+		if (strcmp(str_path, tmp) == 0) {
+			found = 1;
+			g_free(tmp);
+			break;
+		}
+		g_free(tmp);
+	}
+
+	if (!found)
+		return;
+
+	gtk_tree_store_remove(music_store, &iter_drive);
+	printf("drive %s does not exist anymore\n", device_path);
+}
+
+
+void
+refresh_cdda_drive_node(char * device_path) {
+
+	GtkTreeIter iter_cdda;
+	GtkTreeIter iter_drive;
+	GtkTreeIter iter_tmp;
+	cdda_drive_t * drive = cdda_get_drive_by_device_path(device_path);
+	char str_title[MAXLEN];
+	char str_path[CDDA_MAXLEN];
+	int i, found;
+
+	if (drive->disc.n_tracks > 0) {
+		snprintf(str_title, MAXLEN-1, "Unknown disc [%s]",
+			 cdda_displayed_device_path(device_path));
+	} else {
+		snprintf(str_title, MAXLEN-1, "No disc [%s]",
+			 cdda_displayed_device_path(device_path));
+	}
+
+	snprintf(str_path, CDDA_MAXLEN-1, "CDDA_DRIVE %s", device_path);
+
+	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(music_store), &iter_cdda);
+
+	i = found = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_drive, &iter_cdda, i++)) {
+		gchar * tmp;
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_drive, 2, &tmp, -1);
+		if (strcmp(str_path, tmp) == 0) {
+			found = 1;
+			g_free(tmp);
+			break;
+		}
+		g_free(tmp);
+	}
+
+	if (!found)
+		return;
+
+	gtk_tree_store_set(music_store, &iter_drive, 0, str_title, -1);
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_tmp, &iter_drive, 0)) {
+		gtk_tree_store_remove(music_store, &iter_tmp);
+	}
+
+	if (drive->disc.n_tracks > 0) {
+		update_track_data(drive, iter_drive);
+	}
+
+	printf("changed drive %s\n", device_path);
 }
 
 

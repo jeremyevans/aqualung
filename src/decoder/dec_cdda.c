@@ -66,7 +66,6 @@ cdda_reader_thread(void * arg) {
 	file_decoder_t * fdec = dec->fdec;
 
 	int16_t * readbuf;
-	char * errors;
 	int i;
 
 	printf("START cdda_reader_thread\n");

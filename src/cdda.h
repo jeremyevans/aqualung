@@ -56,7 +56,11 @@ typedef struct {
 void cdda_scanner_start(void);
 void cdda_scanner_stop(void);
 
-void create_cdda_node(GtkTreeStore * store);
+void create_cdda_node(void);
+void insert_cdda_drive_node(char * device_path);
+void remove_cdda_drive_node(char * device_path);
+void refresh_cdda_drive_node(char * device_path);
+
 
 #endif /* HAVE_CDDA */
 

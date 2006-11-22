@@ -117,7 +117,6 @@ extern int aqualung_session_id;
 
 extern GtkListStore * ms_pathlist_store;
 extern GtkTreeStore * play_store;
-extern GtkTreeStore * music_store;
 extern GtkListStore * running_store;
 extern GtkWidget * play_list;
 
@@ -3555,7 +3554,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	load_all_music_store();
 #ifdef HAVE_CDDA
-	create_cdda_node(music_store);
+	create_cdda_node();
 	cdda_scanner_start();
 #endif /* HAVE_CDDA */
 

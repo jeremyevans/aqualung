@@ -17,155 +17,118 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../about.c:94 ../gui_main.c:2870
 msgid "About"
 msgstr "Über Aqualung"
 
-#: ../about.c:153
 msgid "Build version: "
 msgstr "Version: "
 
-#: ../about.c:158
 msgid "Homepage:"
 msgstr ""
 
-#: ../about.c:164
 msgid "Authors:"
 msgstr "Autoren:"
 
-#: ../about.c:166
 msgid "Core design, engineering & programming:\n"
 msgstr "Kern, Teknische Planung & Programmierung:\n"
 
-#: ../about.c:168
 msgid "Skin support, look & feel, GUI hacks:\n"
 msgstr "Skin Unterstützung, Aussehen, Gefühl:\n"
 
-#: ../about.c:170
 msgid "Programming, GUI engineering:\n"
 msgstr "Programmierung, GUI Planung:\n"
 
-#: ../about.c:174
 msgid "Translators:"
 msgstr "Übersetzer:"
 
-#: ../about.c:176
 msgid "German, Hungarian:\n"
 msgstr "Deutsch, Ungarisch:\n"
 
-#: ../about.c:178
 msgid "Ukrainian:\n"
 msgstr "Ukrainisch:\n"
 
-#: ../about.c:182
 msgid "Graphics:"
 msgstr "Graphik:"
 
-#: ../about.c:184
 msgid "Logo, icons:\n"
 msgstr ""
 
-#: ../about.c:190
 msgid "This Aqualung binary is compiled with:"
 msgstr "Dieser Aqualung Binärcode wurde kompiliert mit:"
 
-#: ../about.c:194
 msgid "File format support:"
 msgstr "Unterstützte Dateiformat:"
 
-#: ../about.c:206
 msgid "sndfile (WAV, AIFF, etc.)\n"
 msgstr ""
 
-#: ../about.c:217
 msgid "Free Lossless Audio Codec (FLAC)\n"
 msgstr ""
 
-#: ../about.c:228
 msgid "Ogg Vorbis\n"
 msgstr ""
 
-#: ../about.c:239
 msgid "Ogg Speex\n"
 msgstr ""
 
-#: ../about.c:250
 msgid "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
 msgstr ""
 
-#: ../about.c:261
 msgid "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
 msgstr ""
 
-#: ../about.c:272
 msgid "Musepack\n"
 msgstr ""
 
-#: ../about.c:283
 msgid "Monkey's Audio Codec\n"
 msgstr ""
 
-#: ../about.c:293
 msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
 msgstr ""
 
-#: ../about.c:303
 msgid "Metadata (ID3, APE, Ogg comments)\n"
 msgstr ""
 
-#: ../about.c:307
 msgid "Output driver support:"
 msgstr "Ausgabe Treiber Unterstützung:"
 
-#: ../about.c:319
 msgid "OSS Audio\n"
 msgstr ""
 
-#: ../about.c:330
 msgid "ALSA Audio\n"
 msgstr ""
 
-#: ../about.c:341
 msgid "JACK Audio Server\n"
 msgstr ""
 
-#: ../about.c:351
 msgid "Win32 Sound API\n"
 msgstr ""
 
-#: ../about.c:355
 msgid "Miscellaneous:"
 msgstr "Sonstiges:"
 
-#: ../about.c:367
 msgid "Internal Sample Rate Converter support\n"
 msgstr "Interner Samplerate Konverter Unterstützung\n"
 
-#: ../about.c:377
 #, fuzzy
 msgid "LADSPA plugin support\n"
 msgstr "LADSPA Plugin Verarbeitung"
 
-#: ../about.c:388
 #, fuzzy
 msgid "CDDA (Audio CD) support\n"
 msgstr "CDDB Unterstützung\n"
 
-#: ../about.c:399
 msgid "CDDB support\n"
 msgstr "CDDB Unterstützung\n"
 
-#: ../about.c:410
 #, fuzzy
 msgid "iRiver iFP driver support\n"
 msgstr "Ausgabe Treiber Unterstützung:"
 
-#: ../about.c:421
 #, fuzzy
 msgid "Systray support\n"
 msgstr "CDDB Unterstützung\n"
 
-#: ../about.c:426
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -197,449 +160,343 @@ msgstr ""
 "diesem Programm erhalten haben. Falls nicht, schreiben Sie an die Free\n"
 "Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 
-#: ../build_store.c:532
 #, fuzzy
 msgid "Please select the root directory."
 msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
 
-#: ../build_store.c:625 ../build_store.c:1498
 msgid "Regexp matches empty string"
 msgstr ""
 
-#: ../build_store.c:709
 #, fuzzy
 msgid "Build/Update store"
 msgstr "Track editieren..."
 
-#: ../build_store.c:711
 #, fuzzy
 msgid "Build/Update artist"
 msgstr "Track editieren..."
 
-#: ../build_store.c:734 ../options.c:1622
 msgid "General"
 msgstr "Generell"
 
-#: ../build_store.c:738
 msgid "Root path"
 msgstr ""
 
-#: ../build_store.c:740
 #, fuzzy
 msgid "Artist path"
 msgstr "Artist"
 
-#: ../build_store.c:752 ../music_browser.c:514 ../music_browser.c:1497
-#: ../music_browser.c:1679
 #, fuzzy
 msgid "_Browse..."
 msgstr "Blättern..."
 
-#: ../build_store.c:758
 msgid "Data source priority"
 msgstr ""
 
-#: ../build_store.c:768
 msgid "Metadata, CDDB, Filesystem"
 msgstr ""
 
-#: ../build_store.c:769
 msgid "CDDB, Metadata, Filesystem"
 msgstr ""
 
-#: ../build_store.c:780
 #, fuzzy
 msgid "Sort artists by"
 msgstr "Als Artist importieren"
 
-#: ../build_store.c:790 ../build_store.c:1085 ../build_store.c:1171
-#: ../music_browser.c:3531 ../options.c:2327 ../options.c:2362
 msgid "Artist name"
 msgstr "Artist"
 
-#: ../build_store.c:791
 #, fuzzy
 msgid "Artist name (lowercase)"
 msgstr "Artist"
 
-#: ../build_store.c:792 ../build_store.c:824
 #, fuzzy
 msgid "Directory name"
 msgstr "Album"
 
-#: ../build_store.c:793 ../build_store.c:825
 #, fuzzy
 msgid "Directory name (lowercase)"
 msgstr "Album"
 
-#: ../build_store.c:811
 #, fuzzy
 msgid "Sort records by"
 msgstr "Als Album importieren"
 
-#: ../build_store.c:821 ../music_browser.c:3536
 msgid "Year"
 msgstr "Jahr"
 
-#: ../build_store.c:822 ../build_store.c:1097 ../build_store.c:1183
-#: ../music_browser.c:3532 ../options.c:2336 ../options.c:2371
 msgid "Record name"
 msgstr "Album"
 
-#: ../build_store.c:823
 #, fuzzy
 msgid "Record name (lowercase)"
 msgstr "Album"
 
-#: ../build_store.c:846
 msgid "Exclude files matching wildcard"
 msgstr ""
 
-#: ../build_store.c:870
 msgid "Include only files matching wildcard"
 msgstr ""
 
-#: ../build_store.c:946
 msgid "Capitalization"
 msgstr ""
 
-#: ../build_store.c:956
 #, fuzzy
 msgid "Capitalize: "
 msgstr "Total Samples:"
 
-#: ../build_store.c:968
 #, fuzzy
 msgid "All words"
 msgstr "Track"
 
-#: ../build_store.c:969
 msgid "First word only"
 msgstr ""
 
-#: ../build_store.c:971
 #, fuzzy
 msgid "Force case: "
 msgstr "Dateiname:"
 
-#: ../build_store.c:985
 msgid "Force other letters to lowercase"
 msgstr ""
 
-#: ../build_store.c:1020
 msgid "Trim leading, tailing and duplicate spaces"
 msgstr ""
 
-#: ../build_store.c:1029
 #, fuzzy
 msgid "Add year to the comments of new records"
 msgstr "Zum Kommentar hinzufügen"
 
-#: ../build_store.c:1039
 msgid "Reread data for existing tracks"
 msgstr ""
 
-#: ../build_store.c:1052 ../options.c:2316
 msgid "Metadata"
 msgstr "Metadaten"
 
-#: ../build_store.c:1056
 #, fuzzy
 msgid "Import file metadata"
 msgstr "Als Titel importieren"
 
-#: ../build_store.c:1068
 msgid "Exclude whitespace-only metadata"
 msgstr ""
 
-#: ../build_store.c:1077 ../build_store.c:1163
 #, fuzzy
 msgid "Import"
 msgstr "Als RVA importieren"
 
-#: ../build_store.c:1106 ../build_store.c:1192 ../music_browser.c:3533
-#: ../options.c:2345 ../options.c:2380
 msgid "Track name"
 msgstr "Track"
 
-#: ../build_store.c:1115
 msgid "Comment"
 msgstr "Kommentar"
 
-#: ../build_store.c:1124
 msgid "Replaygain tag as manual RVA"
 msgstr ""
 
-#: ../build_store.c:1147 ../options.c:2412
 msgid "CDDB"
 msgstr ""
 
-#: ../build_store.c:1151
 msgid "Perform CDDB lookup for records"
 msgstr ""
 
-#: ../build_store.c:1211
 msgid "Filesystem"
 msgstr ""
 
-#: ../build_store.c:1220
 msgid "Predefined transformations"
 msgstr ""
 
-#: ../build_store.c:1228
 msgid "Remove leading number"
 msgstr ""
 
-#: ../build_store.c:1237
 #, fuzzy
 msgid "Remove file extension"
 msgstr "Markierte entfernen"
 
-#: ../build_store.c:1246
 msgid "Convert underscore to space"
 msgstr ""
 
-#: ../build_store.c:1262
 msgid "Regular expression"
 msgstr ""
 
-#: ../build_store.c:1271
 msgid "Regexp:"
 msgstr ""
 
-#: ../build_store.c:1281
 #, fuzzy
 msgid "Replace:"
 msgstr "Pause (space)"
 
-#: ../build_store.c:1304
 msgid "Sandbox"
 msgstr ""
 
-#: ../build_store.c:1312 ../music_browser.c:488 ../music_browser.c:641
-#: ../music_browser.c:1482 ../music_browser.c:1659
 msgid "Filename:"
 msgstr "Dateiname:"
 
-#: ../build_store.c:1321
 msgid "Test"
 msgstr ""
 
-#: ../build_store.c:1578
 #, fuzzy
 msgid "Building store from filesystem"
 msgstr "Track editieren..."
 
-#: ../build_store.c:1580
 #, fuzzy
 msgid "Building artist from filesystem"
 msgstr "Track editieren..."
 
-#: ../build_store.c:1598
 #, fuzzy
 msgid "Directory:"
 msgstr "Album"
 
-#: ../build_store.c:1609
 #, fuzzy
 msgid "Action:"
 msgstr "Zeitdauer:"
 
-#: ../build_store.c:1627 ../cddb_lookup.c:135 ../music_browser.c:3676
-#: ../volume.c:273
 msgid "Abort"
 msgstr "Abbrechen"
 
-#: ../build_store.c:2267
 msgid "Scanning files"
 msgstr ""
 
-#: ../build_store.c:2378 ../build_store.c:2398
 #, fuzzy
 msgid "Processing metadata"
 msgstr "In Arbeit..."
 
-#: ../build_store.c:2384 ../build_store.c:2404
 msgid "CDDB lookup"
 msgstr ""
 
-#: ../build_store.c:2416
 msgid "File name transformation"
 msgstr ""
 
-#: ../cddb_lookup.c:110 ../cddb_lookup.c:356
+msgid "CD Audio"
+msgstr ""
+
 msgid "CDDB query"
 msgstr "CDDB Abfrage"
 
-#: ../cddb_lookup.c:120
 msgid "Retrieving matches from server..."
 msgstr "Treffer aus dem Server wiedergewinnen"
 
-#: ../cddb_lookup.c:124
 #, fuzzy
 msgid "Connecting to CDDB server..."
 msgstr "JACK Verbindung verloren"
 
-#: ../cddb_lookup.c:373
 msgid "Matches:"
 msgstr "Treffer:"
 
-#: ../cddb_lookup.c:394 ../cddb_lookup.c:660 ../file_info.cpp:794
-#: ../file_info.cpp:879
 #, fuzzy
 msgid "Artist:"
 msgstr "Artist"
 
-#: ../cddb_lookup.c:400 ../file_info.cpp:794
 msgid "Import as Artist"
 msgstr "Als Artist importieren"
 
-#: ../cddb_lookup.c:408 ../cddb_lookup.c:675 ../file_info.cpp:779
-#: ../file_info.cpp:874
 #, fuzzy
 msgid "Title:"
 msgstr "Titel:"
 
-#: ../cddb_lookup.c:414 ../file_info.cpp:779
 msgid "Import as Title"
 msgstr "Als Titel importieren"
 
-#: ../cddb_lookup.c:422 ../cddb_lookup.c:690 ../file_info.cpp:833
-#: ../file_info.cpp:839 ../file_info.cpp:900
 #, fuzzy
 msgid "Year:"
 msgstr "Jahr"
 
-#: ../cddb_lookup.c:428
 #, fuzzy
 msgid "Import as Sort Key"
 msgstr "Als Titel importieren"
 
-#: ../cddb_lookup.c:436 ../cddb_lookup.c:715
 #, fuzzy
 msgid "Category:"
 msgstr "Kategorie"
 
-#: ../cddb_lookup.c:442 ../cddb_lookup.c:456 ../cddb_lookup.c:470
-#: ../file_info.cpp:839 ../file_info.cpp:854 ../file_info.cpp:869
-#: ../file_info.cpp:976 ../file_info.cpp:1199
 msgid "Add to Comments"
 msgstr "Zum Kommentar hinzufügen"
 
-#: ../cddb_lookup.c:450 ../cddb_lookup.c:737 ../file_info.cpp:851
-#: ../file_info.cpp:853 ../file_info.cpp:904
 #, fuzzy
 msgid "Genre:"
 msgstr "Genre"
 
-#: ../cddb_lookup.c:464 ../cddb_lookup.c:746
 msgid "Extended data:"
 msgstr "Erweiterte Daten:"
 
-#: ../cddb_lookup.c:482 ../cddb_lookup.c:769
 #, fuzzy
 msgid "Tracks"
 msgstr "Track"
 
-#: ../cddb_lookup.c:555 ../options.c:1299 ../playlist.c:852
 msgid "Warning"
 msgstr "Warnung"
 
-#: ../cddb_lookup.c:643
 msgid "CDDB submission"
 msgstr ""
 
-#: ../cddb_lookup.c:719
 msgid "(choose a category)"
 msgstr ""
 
-#: ../cddb_lookup.c:805
 msgid ""
 "Artist appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
 
-#: ../cddb_lookup.c:812
 msgid ""
 "Artist appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
 
-#: ../cddb_lookup.c:825
 msgid ""
 "Title appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
 
-#: ../cddb_lookup.c:832
 msgid ""
 "Title appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
 
-#: ../cddb_lookup.c:841
 msgid ""
 "It is very likely that the year is wrong.\n"
 "Do you want to proceed?"
 msgstr ""
 
-#: ../cddb_lookup.c:1036
 msgid "The email address provided for submission is invalid."
 msgstr ""
 
-#: ../cddb_lookup.c:1071
 #, fuzzy
 msgid "An error occurred while submitting the record to the CDDB server."
 msgstr "Fehler während des Verbindungen zur CDDB Server."
 
-#: ../cddb_lookup.c:1102
 #, c-format
 msgid "%d of %d"
 msgstr "%d aus %d"
 
-#: ../cddb_lookup.c:1118
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr "Fehler während des Verbindungen zur CDDB Server."
 
-#: ../cddb_lookup.c:1135
 #, fuzzy
 msgid "No matching record found."
 msgstr "Neues Track zu diesem Album hinzufügen..."
 
-#: ../gui_main.c:437 ../gui_main.c:439
 msgid "day"
 msgstr ""
 
-#: ../gui_main.c:441 ../gui_main.c:443
 msgid "days"
 msgstr ""
 
-#: ../gui_main.c:615 ../file_info.cpp:1915
 msgid "MONO"
 msgstr ""
 
-#: ../gui_main.c:618 ../file_info.cpp:1917
 msgid "STEREO"
 msgstr ""
 
-#: ../gui_main.c:636 ../gui_main.c:641 ../gui_main.c:646 ../gui_main.c:651
 msgid "Output:"
 msgstr "Ausgabe:"
 
-#: ../gui_main.c:655
 #, fuzzy
 msgid "No output"
 msgstr "Ausgabe:"
 
-#: ../gui_main.c:669
 msgid "SRC Type: "
 msgstr "SRC Typ: "
 
-#: ../gui_main.c:673 ../ifp_device.c:217 ../ifp_device.c:924
 msgid "None"
 msgstr "Keine"
 
-#: ../gui_main.c:1039
 #, fuzzy
 msgid ""
 "One or more stores in Music Store have been modified.\n"
@@ -648,56 +505,45 @@ msgstr ""
 "Musikladen ist verändert werden.\n"
 "Wollen Sie es sparen bevor aussteigen?"
 
-#: ../gui_main.c:1553
 #, c-format
 msgid "Position: %d%%"
 msgstr ""
 
-#: ../gui_main.c:1571 ../gui_main.c:1598
 #, c-format
 msgid "Mute"
 msgstr ""
 
-#: ../gui_main.c:1573 ../gui_main.c:1600
 #, c-format
 msgid "%d dB"
 msgstr ""
 
-#: ../gui_main.c:1607
 #, fuzzy, c-format
 msgid "Volume: %s"
 msgstr "Lautstärke:"
 
-#: ../gui_main.c:1635 ../gui_main.c:1666
 #, c-format
 msgid "%d%% R"
 msgstr ""
 
-#: ../gui_main.c:1637 ../gui_main.c:1668
 #, c-format
 msgid "%d%% L"
 msgstr ""
 
-#: ../gui_main.c:1640 ../gui_main.c:1671
 #, c-format
 msgid "C"
 msgstr ""
 
-#: ../gui_main.c:1678
 #, c-format
 msgid "Balance: %s"
 msgstr ""
 
-#: ../gui_main.c:1754
 #, c-format
 msgid " (%d/%d)"
 msgstr ""
 
-#: ../gui_main.c:2613
 msgid "JACK connection lost"
 msgstr "JACK Verbindung verloren"
 
-#: ../gui_main.c:2616
 msgid ""
 "JACK has either been shutdown or it\n"
 "disconnected Aqualung because it was\n"
@@ -709,217 +555,169 @@ msgstr ""
 "nicht schnell genug war. Sie sollten JACK\n"
 "sowie Aqualung neu starten.\n"
 
-#: ../gui_main.c:2663
 msgid ""
 "Aqualung is compiled with system tray support, but the status icon could not "
 "be embedded in the notification area. Your desktop may not have support for "
 "a system tray, or it has not been configured correctly."
 msgstr ""
 
-#: ../gui_main.c:2863 ../options.c:1602
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: ../gui_main.c:2864 ../skin.c:146
 msgid "Skin chooser"
 msgstr "Skin-Browser"
 
-#: ../gui_main.c:2865
 msgid "JACK port setup"
 msgstr "JACK Port Einrichtung"
 
-#: ../gui_main.c:2867 ../file_info.cpp:1795
 msgid "File info"
 msgstr "Datei-Info"
 
-#: ../gui_main.c:2872 ../gui_main.c:3419
 msgid "Quit"
 msgstr ""
 
-#: ../gui_main.c:3150
 #, fuzzy
 msgid "Previous song"
 msgstr "Voriger (oben)"
 
-#: ../gui_main.c:3154 ../gui_main.c:3405
 #, fuzzy
 msgid "Stop"
 msgstr "Stop (s)"
 
-#: ../gui_main.c:3158
 #, fuzzy
 msgid "Next song"
 msgstr "Nächster (unten)"
 
-#: ../gui_main.c:3162 ../gui_main.c:3397
 #, fuzzy
 msgid "Play"
 msgstr "Playliste"
 
-#: ../gui_main.c:3166 ../gui_main.c:3401
 msgid "Pause"
 msgstr ""
 
-#: ../gui_main.c:3192
 msgid "Repeat current song"
 msgstr "Wiederholen"
 
-#: ../gui_main.c:3200
 msgid "Repeat all songs"
 msgstr "Playliste wiederholen"
 
-#: ../gui_main.c:3208
 msgid "Shuffle songs"
 msgstr "Zufall"
 
-#: ../gui_main.c:3221
 #, fuzzy
 msgid "Toggle playlist"
 msgstr "Playliste speichern"
 
-#: ../gui_main.c:3226
 #, fuzzy
 msgid "Toggle music store"
 msgstr "Musikladen"
 
-#: ../gui_main.c:3231
 #, fuzzy
 msgid "Toggle LADSPA patch builder"
 msgstr "LADSPA Patch Bauer"
 
-#: ../gui_main.c:3390
 #, fuzzy
 msgid "Show Aqualung"
 msgstr "Zeige RVA in Playliste"
 
-#: ../gui_main.c:3391
 #, fuzzy
 msgid "Hide Aqualung"
 msgstr "Zeige RVA in Playliste"
 
-#: ../gui_main.c:3409
 #, fuzzy
 msgid "Previous"
 msgstr "Voriger (oben)"
 
-#: ../gui_main.c:3413
 #, fuzzy
 msgid "Next"
 msgstr "Nächster (unten)"
 
-#: ../gui_main.c:4998
 msgid "Aqualung playlist (*.xml)"
 msgstr ""
 
-#: ../gui_main.c:4999
 #, fuzzy
 msgid "MP3 Playlist (*.m3u)"
 msgstr "Playliste"
 
-#: ../gui_main.c:5000
 msgid "Multimedia Playlist (*.pls)"
 msgstr ""
 
-#: ../gui_main.c:5013 ../gui_main.c:5073
 msgid "All Files"
 msgstr ""
 
-#: ../gui_main.c:5023
 #, fuzzy
 msgid "All Playlist Files"
 msgstr "Playliste"
 
-#: ../gui_main.c:5078
 #, fuzzy
 msgid "All Audio Files"
 msgstr "Audiophil"
 
-#: ../gui_main.c:5084
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
 msgstr ""
 
-#: ../gui_main.c:5091
 msgid "Free Lossless Audio Codec (*.flac)"
 msgstr ""
 
-#: ../gui_main.c:5099
 msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
 msgstr ""
 
-#: ../gui_main.c:5106
 msgid "Ogg Vorbis (*.ogg)"
 msgstr ""
 
-#: ../gui_main.c:5114
 msgid "Ogg Speex (*.spx)"
 msgstr ""
 
-#: ../gui_main.c:5122
 msgid "Musepack (*.mpc)"
 msgstr ""
 
-#: ../gui_main.c:5130
 msgid "Monkey's Audio Codec (*.ape)"
 msgstr ""
 
-#: ../gui_main.c:5138
 msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
 msgstr ""
 
-#: ../gui_main.c:5146
 msgid "Compressed modules (*.gz, *.bz2)"
 msgstr ""
 
-#: ../gui_main.c:5148
 msgid "Compressed modules (*.gz)"
 msgstr ""
 
-#: ../gui_main.c:5150
 msgid "Compressed modules (*.bz2)"
 msgstr ""
 
-#: ../gui_main.c:5166
 msgid "LAVC audio/video files"
 msgstr ""
 
-#: ../ifp_device.c:107
 #, c-format
 msgid "%.1f MB / %.1f MB"
 msgstr ""
 
-#: ../ifp_device.c:150
 #, fuzzy, c-format
 msgid "%d / %d files"
 msgstr "Dateien hinzufügen..."
 
-#: ../ifp_device.c:192 ../ifp_device.c:193
 #, fuzzy
 msgid "Done"
 msgstr "Keine"
 
-#: ../ifp_device.c:195 ../ifp_device.c:197
 #, fuzzy
 msgid "Aborted..."
 msgstr "Abbrechen"
 
-#: ../ifp_device.c:241
 msgid "Please enter directory name"
 msgstr ""
 
-#: ../ifp_device.c:243
 msgid "Create directory"
 msgstr ""
 
-#: ../ifp_device.c:296
 msgid "Please enter a new name"
 msgstr ""
 
-#: ../ifp_device.c:298 ../ifp_device.c:869
 #, fuzzy
 msgid "Rename directory"
 msgstr "Album entfernen"
 
-#: ../ifp_device.c:343
 #, c-format
 msgid ""
 "Directory '%s' will be removed with its entire contents.\n"
@@ -927,543 +725,410 @@ msgid ""
 "Are you sure?"
 msgstr ""
 
-#: ../ifp_device.c:350
 #, fuzzy
 msgid "Remove directory"
 msgstr "Album entfernen"
 
-#: ../ifp_device.c:475
 #, fuzzy, c-format
 msgid " (%.1f MB)"
 msgstr "Track"
 
-#: ../ifp_device.c:484
 #, c-format
 msgid " (capacity = %.1f MB)"
 msgstr ""
 
-#: ../ifp_device.c:489
 #, fuzzy, c-format
 msgid " Free space (%.1f MB)"
 msgstr "Pause (space)"
 
-#: ../ifp_device.c:553
 msgid ""
 "No suitable iRiver iFP device found.\n"
 "Perhaps it is unplugged or turned off."
 msgstr ""
 
-#: ../ifp_device.c:563
 msgid ""
 "Device is busy.\n"
 "(Aqualung was unable to claim its interface.)"
 msgstr ""
 
-#: ../ifp_device.c:577
 #, c-format
 msgid ""
 "Device is not responding.\n"
 "Try jiggling the handle. (error %d)"
 msgstr ""
 
-#: ../ifp_device.c:687
 #, fuzzy
 msgid "Please select at least one song from playlist."
 msgstr "Playliste speichern"
 
-#: ../ifp_device.c:696
 msgid "iFP device manager"
 msgstr ""
 
-#: ../ifp_device.c:732
 #, fuzzy
 msgid "Selected files:"
 msgstr "Dateien hinzufügen..."
 
-#: ../ifp_device.c:737
 msgid "label_songs"
 msgstr ""
 
-#: ../ifp_device.c:744
 msgid "<b>Songs info</b>"
 msgstr ""
 
-#: ../ifp_device.c:769
 msgid "Model:"
 msgstr ""
 
-#: ../ifp_device.c:788
 #, fuzzy
 msgid "Battery"
 msgstr "Kategorie"
 
-#: ../ifp_device.c:793
 #, fuzzy
 msgid "Free space"
 msgstr "Pause (space)"
 
-#: ../ifp_device.c:795
 msgid "<b>Device status</b>"
 msgstr ""
 
-#: ../ifp_device.c:868
 msgid "Create a new directory"
 msgstr ""
 
-#: ../ifp_device.c:870
 msgid "Remove directory with its entire contents"
 msgstr ""
 
-#: ../ifp_device.c:873
 msgid "<b>Destination directory</b>"
 msgstr ""
 
-#: ../ifp_device.c:896
 #, fuzzy
 msgid "File name: "
 msgstr "Dateiname:"
 
-#: ../ifp_device.c:903
 msgid "Current file: "
 msgstr ""
 
-#: ../ifp_device.c:910
 msgid "Overall: "
 msgstr ""
 
-#: ../ifp_device.c:928 ../ifp_device.c:935
 msgid "Idle"
 msgstr ""
 
-#: ../ifp_device.c:940
 msgid "<b>Uploading progress</b>"
 msgstr ""
 
-#: ../ifp_device.c:956
 msgid "_Upload"
 msgstr ""
 
-#: ../ifp_device.c:963
 #, fuzzy
 msgid "_Abort"
 msgstr "Abbrechen"
 
-#: ../music_browser.c:386
 #, fuzzy
 msgid "Please select the xml file for this store."
 msgstr "Bitte wählen Sie die audio Datei für dieses Track aus."
 
-#: ../music_browser.c:474
 msgid "Create empty store"
 msgstr ""
 
-#: ../music_browser.c:503 ../music_browser.c:630
 #, fuzzy
 msgid "Name:"
 msgstr "Name"
 
-#: ../music_browser.c:520 ../music_browser.c:657 ../music_browser.c:782
-#: ../music_browser.c:899 ../music_browser.c:1138 ../music_browser.c:1290
-#: ../music_browser.c:1503 ../music_browser.c:1685
 msgid "Comments:"
 msgstr "Kommentar:"
 
-#: ../music_browser.c:617
 #, fuzzy
 msgid "Edit Store"
 msgstr "Musikladen"
 
-#: ../music_browser.c:746
 msgid "Add Artist"
 msgstr "Artist hinzufügen"
 
-#: ../music_browser.c:759 ../music_browser.c:876 ../music_browser.c:1081
-#: ../music_browser.c:1267 ../music_browser.c:1460 ../music_browser.c:1637
 msgid "Visible name:"
 msgstr "Sichtbar Name:"
 
-#: ../music_browser.c:771 ../music_browser.c:888 ../music_browser.c:1093
-#: ../music_browser.c:1279 ../music_browser.c:1471 ../music_browser.c:1648
 msgid "Name to sort by:"
 msgstr "Sortiere nach:"
 
-#: ../music_browser.c:863
 msgid "Edit Artist"
 msgstr "Artist editieren"
 
-#: ../music_browser.c:971
 msgid "Please select the audio files for this record."
 msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
 
-#: ../music_browser.c:1068
 msgid "Add Record"
 msgstr "Album hinzufügen"
 
-#: ../music_browser.c:1105
 msgid "Auto-create tracks from these files:"
 msgstr "Tracks aus dieser Dateien automatische erstellen:"
 
-#: ../music_browser.c:1126 ../plugin.c:1995
 msgid "Clear list"
 msgstr "Liste aufklären"
 
-#: ../music_browser.c:1133
 #, fuzzy
 msgid "_Add files..."
 msgstr "Dateien hinzufügen..."
 
-#: ../music_browser.c:1254
 msgid "Edit Record"
 msgstr "Album editieren"
 
-#: ../music_browser.c:1358
 msgid "Please select the audio file for this track."
 msgstr "Bitte wählen Sie die audio Datei für dieses Track aus."
 
-#: ../music_browser.c:1447
 msgid "Add Track"
 msgstr "Track hinzufügen"
 
-#: ../music_browser.c:1624
 msgid "Edit Track"
 msgstr "Track editieren"
 
-#: ../music_browser.c:1712
 msgid "Duration:"
 msgstr "Zeitdauer:"
 
-#: ../music_browser.c:1727
 msgid "Volume level:"
 msgstr "Lautstärke:"
 
-#: ../music_browser.c:1739
 #, c-format
 msgid "Unmeasured"
 msgstr "Unbekannt"
 
-#: ../music_browser.c:1752
 msgid "Use manual RVA value [dB]"
 msgstr "Manuelles RVA Level benutzen [dB]"
 
-#: ../music_browser.c:2402
 #, c-format
 msgid ""
 "The store '%s' already exists.\n"
 "Add it on the Settings/Music Store tab."
 msgstr ""
 
-#: ../music_browser.c:2429 ../options.c:1253
 msgid "rw"
 msgstr ""
 
-#: ../music_browser.c:2583 ../music_browser.c:2838 ../music_browser.c:3075
-#: ../music_browser.c:3343
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
 msgstr "Wirklich entfernen \"%s\" aus dem Musikladen?"
 
-#: ../music_browser.c:2585 ../music_browser.c:2588
 #, fuzzy
 msgid "Remove Store"
 msgstr "Track entfernen"
 
-#: ../music_browser.c:2589
 msgid "Do you want to save the store before removing?"
 msgstr ""
 
-#: ../music_browser.c:2839
 msgid "Remove Artist"
 msgstr "Artist entfernen"
 
-#: ../music_browser.c:3076
 msgid "Remove Record"
 msgstr "Album entfernen"
 
-#: ../music_browser.c:3344
 msgid "Remove Track"
 msgstr "Track entfernen"
 
-#: ../music_browser.c:3524 ../music_browser.c:3626
 #, fuzzy
 msgid "Update file metadata"
 msgstr "Als Titel importieren"
 
-#: ../music_browser.c:3534
 #, fuzzy
 msgid "Track comment"
 msgstr "Track"
 
-#: ../music_browser.c:3535 ../meta_decoder.cpp:236
 #, fuzzy
 msgid "Track number"
 msgstr "Track"
 
-#: ../music_browser.c:3640 ../volume.c:243 ../file_info.cpp:1829
 msgid "File:"
 msgstr "Datei:"
 
-#: ../music_browser.c:3654
 msgid "Failed to set metadata at the following files:"
 msgstr ""
 
-#: ../music_browser.c:4007
 msgid "(no comment)"
 msgstr "(kein Kommentar)"
 
-#: ../music_browser.c:4099 ../music_browser.c:4160 ../music_browser.c:4207
-#: ../music_browser.c:4235
 #, fuzzy
 msgid "time unmeasured"
 msgstr "Unbekannt"
 
-#: ../music_browser.c:4107 ../music_browser.c:4117 ../music_browser.c:4127
 #, fuzzy
 msgid "artists"
 msgstr "Artist"
 
-#: ../music_browser.c:4107 ../music_browser.c:4117 ../music_browser.c:4127
 #, fuzzy
 msgid "artist"
 msgstr "Artist"
 
-#: ../music_browser.c:4109 ../music_browser.c:4119 ../music_browser.c:4128
-#: ../music_browser.c:4167 ../music_browser.c:4174 ../music_browser.c:4181
 #, fuzzy
 msgid "records"
 msgstr "Album"
 
-#: ../music_browser.c:4109 ../music_browser.c:4119 ../music_browser.c:4128
-#: ../music_browser.c:4167 ../music_browser.c:4174 ../music_browser.c:4181
 #, fuzzy
 msgid "record"
 msgstr "Album"
 
-#: ../music_browser.c:4111 ../music_browser.c:4121 ../music_browser.c:4129
-#: ../music_browser.c:4169 ../music_browser.c:4176 ../music_browser.c:4182
-#: ../music_browser.c:4214 ../music_browser.c:4219 ../music_browser.c:4224
 #, fuzzy
 msgid "tracks"
 msgstr "Track"
 
-#: ../music_browser.c:4111 ../music_browser.c:4121 ../music_browser.c:4129
-#: ../music_browser.c:4169 ../music_browser.c:4176 ../music_browser.c:4182
-#: ../music_browser.c:4214 ../music_browser.c:4219 ../music_browser.c:4224
-#: ../music_browser.c:4249 ../music_browser.c:4252 ../music_browser.c:4255
 #, fuzzy
 msgid "track"
 msgstr "Track"
 
-#: ../music_browser.c:4359 ../music_browser.c:5165 ../music_browser.c:5315
-#: ../options.c:1890
 msgid "Music Store"
 msgstr "Musikladen"
 
-#: ../music_browser.c:4378 ../music_browser.c:4518 ../music_browser.c:4550
-#: ../music_browser.c:4625 ../music_browser.c:4700 ../music_browser.c:4779
-#: ../playlist.c:3374
 msgid "Search..."
 msgstr "Suche..."
 
-#: ../music_browser.c:4384
 msgid "Collapse all items"
 msgstr ""
 
-#: ../music_browser.c:4390
 #, fuzzy
 msgid "Edit item..."
 msgstr "Track editieren..."
 
-#: ../music_browser.c:4396
 #, fuzzy
 msgid "Add item..."
 msgstr "Dateien hinzufügen..."
 
-#: ../music_browser.c:4402
 #, fuzzy
 msgid "Remove item..."
 msgstr "Track entfernen"
 
-#: ../music_browser.c:4409 ../music_browser.c:4519
 #, fuzzy
 msgid "Save all stores"
 msgstr "Musikladen"
 
-#: ../music_browser.c:4517 ../music_browser.c:4535
 msgid "Create empty store..."
 msgstr ""
 
-#: ../music_browser.c:4532 ../music_browser.c:4608 ../music_browser.c:4680
-#: ../music_browser.c:4764
 msgid "Add to playlist"
 msgstr "Zur Playliste hinzufügen"
 
-#: ../music_browser.c:4533 ../music_browser.c:4609 ../music_browser.c:4681
 #, fuzzy
 msgid "Add to playlist (Album mode)"
 msgstr "Zur Playliste hinzufügen"
 
-#: ../music_browser.c:4536
 #, fuzzy
 msgid "Build/Update store from filesystem..."
 msgstr "Track editieren..."
 
-#: ../music_browser.c:4537
 #, fuzzy
 msgid "Edit store..."
 msgstr "Track editieren..."
 
-#: ../music_browser.c:4538
 #, fuzzy
 msgid "Save store"
 msgstr "Musikladen"
 
-#: ../music_browser.c:4539
 #, fuzzy
 msgid "Remove store"
 msgstr "Track entfernen"
 
-#: ../music_browser.c:4541
 #, fuzzy
 msgid "Add new artist to this store..."
 msgstr "Neues Track zu diesem Album hinzufügen..."
 
-#: ../music_browser.c:4543 ../music_browser.c:4618 ../music_browser.c:4693
 msgid "Calculate volume (recursive)"
 msgstr "Lautstärke bestimmen (rekursiv)"
 
-#: ../music_browser.c:4545 ../music_browser.c:4620 ../music_browser.c:4695
 #, fuzzy
 msgid "Unmeasured tracks only"
 msgstr "Unbekannt"
 
-#: ../music_browser.c:4546 ../music_browser.c:4621 ../music_browser.c:4696
 #, fuzzy
 msgid "All tracks"
 msgstr "Track"
 
-#: ../music_browser.c:4548 ../music_browser.c:4623 ../music_browser.c:4698
 #, fuzzy
 msgid "Batch-update file metadata..."
 msgstr "Als Titel importieren"
 
-#: ../music_browser.c:4611
 msgid "Add new artist..."
 msgstr "Neuen Artist hinzufügen..."
 
-#: ../music_browser.c:4612
 #, fuzzy
 msgid "Build/Update artist from filesystem..."
 msgstr "Track editieren..."
 
-#: ../music_browser.c:4613
 msgid "Edit artist..."
 msgstr "Artist editieren..."
 
-#: ../music_browser.c:4614
 msgid "Remove artist"
 msgstr "Artist entfernen"
 
-#: ../music_browser.c:4616
 msgid "Add new record to this artist..."
 msgstr "Neues Album zu diesem Artist hinzufügen..."
 
-#: ../music_browser.c:4683
 msgid "Add new record..."
 msgstr "Neues Album hinzufügen..."
 
-#: ../music_browser.c:4684
 msgid "Edit record..."
 msgstr "Album editieren..."
 
-#: ../music_browser.c:4685
 msgid "Remove record"
 msgstr "Album entfernen"
 
-#: ../music_browser.c:4687
 msgid "Add new track to this record..."
 msgstr "Neues Track zu diesem Album hinzufügen..."
 
-#: ../music_browser.c:4689
 #, fuzzy
 msgid "CDDB query for this record..."
 msgstr "Neues Track zu diesem Album hinzufügen..."
 
-#: ../music_browser.c:4690
 msgid "Submit record to CDDB database..."
 msgstr ""
 
-#: ../music_browser.c:4766
 msgid "Add new track..."
 msgstr "Neues Track hinzufügen..."
 
-#: ../music_browser.c:4767
 msgid "Edit track..."
 msgstr "Track editieren..."
 
-#: ../music_browser.c:4768
 msgid "Remove track"
 msgstr "Track entfernen"
 
-#: ../music_browser.c:4770 ../playlist.c:3373
 msgid "File info..."
 msgstr "Datei-Info..."
 
-#: ../music_browser.c:4772
 msgid "Calculate volume"
 msgstr "Lautstärke bestimmen"
 
-#: ../music_browser.c:4774
 #, fuzzy
 msgid "Only if unmeasured"
 msgstr "Unbekannt"
 
-#: ../music_browser.c:4775
 msgid "In any case"
 msgstr ""
 
-#: ../music_browser.c:4777
 #, fuzzy
 msgid "Update file metadata..."
 msgstr "Als Titel importieren"
 
-#: ../music_browser.c:5281
 #, fuzzy
 msgid "*Music Store"
 msgstr "Musikladen"
 
-#: ../options.c:540
 #, c-format
 msgid "Do you want to save store \"%s\" before removing from Music Store?"
 msgstr ""
 
-#: ../options.c:925
 #, fuzzy
 msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
 msgstr "Aqualung muss new gestartet werden damit die Veränderungen wirken."
 
-#: ../options.c:1255
 msgid "r"
 msgstr ""
 
-#: ../options.c:1257
 msgid "unreachable"
 msgstr "unerreichtbar"
 
-#: ../options.c:1308
 msgid "Paths must either be absolute or starting with a tilde."
 msgstr ""
 
-#: ../options.c:1340
 msgid "The specified store has already been added to the list."
 msgstr ""
 
-#: ../options.c:1385
 #, fuzzy
 msgid "Please select a Music Store database."
 msgstr "Bitte wählen Sie die audio Datei für dieses Track aus."
 
-#: ../options.c:1455
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -1480,7 +1145,6 @@ msgstr ""
 "Alles andere wird in die ergebende Zeichenkette wörtlich\n"
 "kopiert werden.\n"
 
-#: ../options.c:1475
 msgid ""
 "\n"
 "The string you enter here will be parsed as a command\n"
@@ -1498,7 +1162,6 @@ msgstr ""
 "Beispiel: eingabe Sie '-o alsa -R' zu benutzen ALSA Ausgabe\n"
 "in Echtzeit als eine Voreinstellung.\n"
 
-#: ../options.c:1496
 msgid ""
 "Paths must either be absolute or starting with a tilde, which will be "
 "expanded to the user's home directory.\n"
@@ -1506,255 +1169,197 @@ msgid ""
 "Drag and drop entries in the list to set the store order in the Music Store."
 msgstr ""
 
-#: ../options.c:1624
 msgid "Title format"
 msgstr "Namensformat"
 
-#: ../options.c:1640
 msgid "Implicit command line"
 msgstr "Implizite Kommandlinie"
 
-#: ../options.c:1657
 msgid "Miscellaneous"
 msgstr "Sonstiges"
 
-#: ../options.c:1664
 msgid "Enable tooltips"
 msgstr "Tooltips erlauben"
 
-#: ../options.c:1672 ../options.c:1679
 msgid "Put control buttons at the bottom of playlist"
 msgstr "Schaltknöpfe unten an die Playliste plazieren"
 
-#: ../options.c:1682
 msgid "Disable control buttons relief"
 msgstr ""
 
-#: ../options.c:1690
 msgid "Keep main window always on top"
 msgstr ""
 
-#: ../options.c:1700 ../options.c:1707
 #, fuzzy
 msgid "Simple view in LADSPA patch builder"
 msgstr "LADSPA Patch Bauer"
 
-#: ../options.c:1711
 msgid "United windows minimization"
 msgstr ""
 
-#: ../options.c:1719
 msgid "Show song name in the main window's title"
 msgstr ""
 
-#: ../options.c:1727
 msgid "Show hidden files and directories in file choosers"
 msgstr ""
 
-#: ../options.c:1734
 msgid "Show tags tab first in the file info dialog"
 msgstr ""
 
-#: ../options.c:1746 ../playlist.c:2251
 msgid "Playlist"
 msgstr "Playliste"
 
-#: ../options.c:1749 ../options.c:1756
 #, fuzzy
 msgid "Embed playlist into main window"
 msgstr ""
 "Playliste ins Hauptfenster einbetten\n"
 "(wirkt nachdem Aqualung neu gestartet worden ist)"
 
-#: ../options.c:1759
 msgid "Save and restore the playlist on exit/startup"
 msgstr "Laden und speichern die Playliste beim Anfang/Beendung"
 
-#: ../options.c:1767
 msgid "Album mode is the default when adding entire records"
 msgstr ""
 
-#: ../options.c:1775
 msgid "When shuffling, records added in Album mode are played in order"
 msgstr ""
 
-#: ../options.c:1784 ../options.c:1913
 #, fuzzy
 msgid "Enable statusbar"
 msgstr "Statusbar an die Playliste erlauben"
 
-#: ../options.c:1790
 msgid "Enable statusbar in playlist"
 msgstr "Statusbar an die Playliste erlauben"
 
-#: ../options.c:1794 ../options.c:1923
 msgid "Show soundfile size in statusbar"
 msgstr ""
 
-#: ../options.c:1802
 #, fuzzy
 msgid "Show RVA values"
 msgstr "Zeige RVA in Playliste"
 
-#: ../options.c:1810
 #, fuzzy
 msgid "Show track lengths"
 msgstr "Trackslänge"
 
-#: ../options.c:1818
 msgid "Show active track name in bold"
 msgstr "Aktiver Trackname fättlich vorstellungen"
 
-#: ../options.c:1827 ../options.c:1939
 #, fuzzy
 msgid "Enable rules hint"
 msgstr "Verfügbare Plugins"
 
-#: ../options.c:1834
 msgid "Playlist column order"
 msgstr "Reihenfolge der Kolumnen in Playliste"
 
-#: ../options.c:1841
 msgid ""
 "Drag and drop entries in the list below \n"
 "to set the column order in the Playlist."
 msgstr ""
 
-#: ../options.c:1853
 msgid "Column"
 msgstr "Kolumne"
 
-#: ../options.c:1870 ../search.c:545
 msgid "Track titles"
 msgstr "Track Titel"
 
-#: ../options.c:1875
 msgid "RVA values"
 msgstr ""
 
-#: ../options.c:1880
 msgid "Track lengths"
 msgstr "Trackslänge"
 
-#: ../options.c:1893
 #, fuzzy
 msgid "Hide comment pane"
 msgstr "Suchen im Musikladen"
 
-#: ../options.c:1900
 #, fuzzy
 msgid "Hide the Music Store comment pane"
 msgstr "Suchen im Musikladen"
 
-#: ../options.c:1903
 #, fuzzy
 msgid "Enable toolbar"
 msgstr "Tooltips erlauben"
 
-#: ../options.c:1909
 #, fuzzy
 msgid "Enable toolbar in Music Store"
 msgstr "Statusbar an die Playliste erlauben"
 
-#: ../options.c:1919
 #, fuzzy
 msgid "Enable statusbar in Music Store"
 msgstr "Statusbar an die Playliste erlauben"
 
-#: ../options.c:1931
 msgid "Expand Stores on startup"
 msgstr ""
 
-#: ../options.c:1947
 #, fuzzy
 msgid "Enable tree node icons"
 msgstr "Musikladen"
 
-#: ../options.c:1953
 #, fuzzy
 msgid "Enable Music Store tree node icons"
 msgstr "Musikladen"
 
-#: ../options.c:1956
 #, fuzzy
 msgid "Cover art"
 msgstr "Artist entfernen"
 
-#: ../options.c:1965
 msgid "Default cover width:"
 msgstr "Default Hüllenbreite:"
 
-#: ../options.c:1973
 msgid "50 pixels"
 msgstr ""
 
-#: ../options.c:1974
 msgid "100 pixels"
 msgstr ""
 
-#: ../options.c:1975
 msgid "200 pixels"
 msgstr ""
 
-#: ../options.c:1976
 msgid "300 pixels"
 msgstr ""
 
-#: ../options.c:1977
 msgid "use browser window width"
 msgstr ""
 
-#: ../options.c:1982
 msgid "Do not magnify images with smaller width"
 msgstr ""
 
-#: ../options.c:1990
 #, fuzzy
 msgid "Paths to Music Store databases"
 msgstr "Suchen im Musikladen"
 
-#: ../options.c:2001
 msgid "Path"
 msgstr ""
 
-#: ../options.c:2008
 msgid "Access"
 msgstr ""
 
-#: ../options.c:2032
 #, fuzzy
 msgid "Browse"
 msgstr "Blättern..."
 
-#: ../options.c:2046
 msgid "Refresh"
 msgstr ""
 
-#: ../options.c:2052
 msgid "Remove"
 msgstr "Entfernen"
 
-#: ../options.c:2058
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: ../options.c:2069
 msgid "DSP"
 msgstr ""
 
-#: ../options.c:2071
 msgid "LADSPA plugin processing"
 msgstr "LADSPA Plugin Verarbeitung"
 
-#: ../options.c:2082
 msgid "Pre Fader (before Volume & Balance)"
 msgstr "Pre Fader (bevor Volume & Balance)"
 
-#: ../options.c:2083
 msgid "Post Fader (after Volume & Balance)"
 msgstr "Post Fader (nach Volume & Balance)"
 
-#: ../options.c:2090
 #, fuzzy
 msgid ""
 "Aqualung is compiled without LADSPA plugin support.\n"
@@ -1763,11 +1368,9 @@ msgstr ""
 "Aqualung wurde ohne Samplerate Konverter Unterstützung kompiliert.\n"
 "Details finden Sie in der Über Aqualung Box und in der Dokumentation."
 
-#: ../options.c:2097
 msgid "Sample Rate Converter type"
 msgstr "Samplerate Konverter Typ"
 
-#: ../options.c:2126
 msgid ""
 "Aqualung is compiled without Sample Rate Converter support.\n"
 "See the About box and the documentation for details."
@@ -1775,1094 +1378,837 @@ msgstr ""
 "Aqualung wurde ohne Samplerate Konverter Unterstützung kompiliert.\n"
 "Details finden Sie in der Über Aqualung Box und in der Dokumentation."
 
-#: ../options.c:2138
 msgid "Playback RVA"
 msgstr "RVA durch Abspiel"
 
-#: ../options.c:2140
 msgid "Enable playback RVA"
 msgstr "RVA durch Abspiel erlauben"
 
-#: ../options.c:2169
 msgid "Listening environment:"
 msgstr "Anhörensumwelt:"
 
-#: ../options.c:2179
 msgid "Audiophile"
 msgstr "Audiophil"
 
-#: ../options.c:2180
 msgid "Living room"
 msgstr "Wohnzimmer"
 
-#: ../options.c:2181
 msgid "Office"
 msgstr "Büro"
 
-#: ../options.c:2182
 msgid "Noisy workshop"
 msgstr "Laute Werkstatt"
 
-#: ../options.c:2189
 msgid "Reference volume [dBFS] :"
 msgstr "Referenzlautstärke [dBFS] :"
 
-#: ../options.c:2205
 msgid "Steepness [dB/dB] :"
 msgstr "Steilheit [dB/dB] :"
 
-#: ../options.c:2223
 msgid "Apply averaged RVA to tracks of the same record"
 msgstr "Durchschnittlich RVA auf dieselbes Album anwenden"
 
-#: ../options.c:2236
 msgid "Drop statistical aberrations based on"
 msgstr "Abwerfen der statistische Aberration basiert auf"
 
-#: ../options.c:2246
 #, c-format
 msgid "% of standard deviation"
 msgstr "% der Standardabweichung"
 
-#: ../options.c:2247
 msgid "Linear threshold [dB]"
 msgstr "Linearschwelle [dB]"
 
-#: ../options.c:2254
 msgid "Linear threshold [dB] :"
 msgstr "Linearschwelle [dB] :"
 
-#: ../options.c:2270
 #, c-format
 msgid "% of standard deviation :"
 msgstr "% der Standardabweichung :"
 
-#: ../options.c:2321
 msgid ""
 "When adding to playlist, use file metadata (if available) instead of\n"
 "information from the Music Store for:"
 msgstr ""
 
-#: ../options.c:2356
 msgid ""
 "When adding external files to playlist, use file metadata (if available) for:"
 msgstr ""
 
-#: ../options.c:2391
 #, fuzzy
 msgid "Replaygain tag to extract from Ogg Xiph and APE tags: "
 msgstr "Replaygain tag in Ogg Vorbis und FLAC Dateien benutzen: "
 
-#: ../options.c:2401
 msgid "Replaygain_track_gain"
 msgstr ""
 
-#: ../options.c:2402
 msgid "Replaygain_album_gain"
 msgstr ""
 
-#: ../options.c:2414
 msgid "CDDB server:"
 msgstr ""
 
-#: ../options.c:2425
 msgid "Connection timeout [sec]:"
 msgstr ""
 
-#: ../options.c:2436
 msgid "Email address for submission:"
 msgstr ""
 
-#: ../options.c:2447
 #, fuzzy
 msgid "Direct connection to CDDB server"
 msgstr "JACK Verbindung verloren"
 
-#: ../options.c:2454
 msgid "Protocol for querying:"
 msgstr ""
 
-#: ../options.c:2461
 msgid "CDDBP (port 888)"
 msgstr ""
 
-#: ../options.c:2462
 msgid "HTTP (port 80)"
 msgstr ""
 
-#: ../options.c:2472
 msgid "HTTP tunneling through proxy"
 msgstr ""
 
-#: ../options.c:2477
 msgid "HTTP proxy:"
 msgstr ""
 
-#: ../options.c:2488
 #, fuzzy
 msgid "Port:"
 msgstr "Abbrechen"
 
-#: ../options.c:2515
 msgid "Appearance"
 msgstr ""
 
-#: ../options.c:2518
 msgid "Override skin settings"
 msgstr ""
 
-#: ../options.c:2528
 #, fuzzy
 msgid "Fonts"
 msgstr "Kommentar"
 
-#: ../options.c:2540
 #, fuzzy
 msgid "Playlist: "
 msgstr "Playliste"
 
-#: ../options.c:2557 ../options.c:2588 ../options.c:2620 ../options.c:2651
-#: ../options.c:2682 ../options.c:2713 ../options.c:2744
 #, fuzzy
 msgid "Select"
 msgstr "Alles auswählen"
 
-#: ../options.c:2567
 #, fuzzy
 msgid "Music Store: "
 msgstr "Musikladen"
 
-#: ../options.c:2599
 #, fuzzy
 msgid "Big timer: "
 msgstr "Musikladen"
 
-#: ../options.c:2630
 #, fuzzy
 msgid "Small timers: "
 msgstr "Playliste"
 
-#: ../options.c:2661
 #, fuzzy
 msgid "Song title: "
 msgstr "Musikladen"
 
-#: ../options.c:2692
 msgid "Song info: "
 msgstr ""
 
-#: ../options.c:2723
 msgid "Statusbar: "
 msgstr ""
 
-#: ../options.c:2751
 #, fuzzy
 msgid "Colors"
 msgstr "Schließen"
 
-#: ../options.c:2763
 #, fuzzy
 msgid "Active song in playlist: "
 msgstr "Zeige RVA in Playliste"
 
-#: ../playlist.c:588
 msgid "Please specify the file to save the playlist to."
 msgstr "Playliste speichern"
 
-#: ../playlist.c:609
 #, fuzzy
 msgid "Saving playlist..."
 msgstr "Playliste speichern"
 
-#: ../playlist.c:634 ../playlist.c:694
 msgid "Please specify the file to load the playlist from."
 msgstr "Playliste laden"
 
-#: ../playlist.c:654
 #, fuzzy
 msgid "Loading playlist..."
 msgstr "Playliste laden"
 
-#: ../playlist.c:715
 #, fuzzy
 msgid "Enqueuing playlist..."
 msgstr "Playliste einreihen"
 
-#: ../playlist.c:860
 msgid ""
 "Playback RVA is currently disabled.\n"
 "Do you want to enable it now?"
 msgstr ""
 
-#: ../playlist.c:1185 ../playlist.c:1188 ../playlist.c:1191
 msgid "Unknown"
 msgstr "Unnbekannt"
 
-#: ../playlist.c:1305
 #, fuzzy
 msgid "Select files"
 msgstr "Dateien hinzufügen..."
 
-#: ../playlist.c:1326
 #, fuzzy
 msgid "Adding files..."
 msgstr "Dateien hinzufügen..."
 
-#: ../playlist.c:1363
 #, fuzzy
 msgid "Select directory"
 msgstr "Album entfernen"
 
-#: ../playlist.c:1383
 #, fuzzy
 msgid "Adding files recursively..."
 msgstr "Dateien hinzufügen..."
 
-#: ../playlist.c:1826
 #, fuzzy, c-format
 msgid "%d track [%s] (%.1f MB)"
 msgstr "Track"
 
-#: ../playlist.c:1828
 #, fuzzy, c-format
 msgid "%d track [%s] (%.1f GB)"
 msgstr "Track"
 
-#: ../playlist.c:1831
 #, fuzzy, c-format
 msgid "%d track [%s] "
 msgstr "Track"
 
-#: ../playlist.c:1836
 #, fuzzy, c-format
 msgid "%d tracks [%s] (%.1f MB)"
 msgstr "Track"
 
-#: ../playlist.c:1838
 #, fuzzy, c-format
 msgid "%d tracks [%s] (%.1f GB)"
 msgstr "Track"
 
-#: ../playlist.c:1841
 #, c-format
 msgid "%d tracks [%s] "
 msgstr ""
 
-#: ../playlist.c:2465
 #, fuzzy
 msgid "Selected: "
 msgstr "Alles auswählen"
 
-#: ../playlist.c:2475
 msgid "Total: "
 msgstr ""
 
-#: ../playlist.c:2495 ../playlist.c:2521
 #, fuzzy
 msgid "Add files"
 msgstr "Dateien hinzufügen..."
 
-#: ../playlist.c:2497
 msgid ""
 "Add files to playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2501 ../playlist.c:2541
 msgid "Select all"
 msgstr "Alles auswählen"
 
-#: ../playlist.c:2503
 msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2507 ../playlist.c:2566
 msgid "Remove selected"
 msgstr "Markierte entfernen"
 
-#: ../playlist.c:2509
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
 
-#: ../playlist.c:2516
 #, fuzzy
 msgid "Add directory"
 msgstr "Album hinzufügen"
 
-#: ../playlist.c:2531
 msgid "Select none"
 msgstr "Nichts auswählen"
 
-#: ../playlist.c:2536
 msgid "Invert selection"
 msgstr "Markierungen invertieren"
 
-#: ../playlist.c:2551
 msgid "Remove all"
 msgstr "Alle entfernen"
 
-#: ../playlist.c:2556
 #, fuzzy
 msgid "Remove dead"
 msgstr "Alle entfernen"
 
-#: ../playlist.c:2561
 #, fuzzy
 msgid "Cut selected"
 msgstr "Markierte entfernen"
 
-#: ../playlist.c:3357
 msgid "Save playlist"
 msgstr "Playliste speichern"
 
-#: ../playlist.c:3358
 msgid "Load playlist"
 msgstr "Playliste laden"
 
-#: ../playlist.c:3359
 msgid "Enqueue playlist"
 msgstr "Playliste einreihen"
 
-#: ../playlist.c:3363
 msgid "Send to iFP device"
 msgstr ""
 
-#: ../playlist.c:3367
 #, fuzzy
 msgid "Calculate RVA"
 msgstr "Lautstärke bestimmen"
 
-#: ../playlist.c:3369
 msgid "Separate"
 msgstr ""
 
-#: ../playlist.c:3370
 msgid "Average"
 msgstr ""
 
-#: ../playlist.c:3371
 msgid "Reread file metadata"
 msgstr ""
 
-#: ../plugin.c:1817
 msgid "LADSPA patch builder"
 msgstr "LADSPA Patch Bauer"
 
-#: ../plugin.c:1826
 msgid "Available plugins"
 msgstr "Verfügbare Plugins"
 
-#: ../plugin.c:1891
 msgid "ID"
 msgstr ""
 
-#: ../plugin.c:1899 ../plugin.c:1982 ../file_info.cpp:2344
 msgid "Name"
 msgstr "Name"
 
-#: ../plugin.c:1904
 msgid "Category"
 msgstr "Kategorie"
 
-#: ../plugin.c:1912
 msgid "Inputs"
 msgstr "Eingaben"
 
-#: ../plugin.c:1920 ../ports.c:477
 msgid "Outputs"
 msgstr "Ausgaben"
 
-#: ../plugin.c:1928
 msgid "Running plugins"
 msgstr "Laufende Plugins"
 
-#: ../plugin.c:1945
 #, fuzzy
 msgid "_Configure"
 msgstr "Konfigurieren"
 
-#: ../plugin.c:1990
 #, fuzzy
 msgid "Enable all plugins"
 msgstr "Verfügbare Plugins"
 
-#: ../plugin.c:1991
 #, fuzzy
 msgid "Disable all plugins"
 msgstr "Verfügbare Plugins"
 
-#: ../plugin.c:1993
 msgid "Invert current state"
 msgstr ""
 
-#: ../ports.c:455
 msgid "JACK Port Setup"
 msgstr "JACK Port Einrichtung"
 
-#: ../ports.c:467
 msgid "Rescan"
 msgstr "Neu abtasten"
 
-#: ../ports.c:481
 msgid "Available connections"
 msgstr "Verbindungsmöglichkeiten"
 
-#: ../ports.c:493
 msgid "Clear connections"
 msgstr "Verbindungen aufklären"
 
-#: ../ports.c:558
 msgid " out L"
 msgstr " aus L"
 
-#: ../ports.c:559
 msgid " out R"
 msgstr " aus R"
 
-#: ../search.c:473
 msgid "Search the Music Store"
 msgstr "Suchen im Musikladen"
 
-#: ../search.c:492 ../search_playlist.c:342
 msgid "Key: "
 msgstr "Schlüssel: "
 
-#: ../search.c:505 ../search_playlist.c:355
 msgid "Case sensitive"
 msgstr "Groß-/Kleinschreibung unterschieden"
 
-#: ../search.c:511 ../search_playlist.c:361
 msgid "Exact matches only"
 msgstr "Nur pünktliche Anpassungen"
 
-#: ../search.c:517 ../search_playlist.c:367
 msgid "Select first and close window"
 msgstr ""
 
-#: ../search.c:526
 msgid "Search in:"
 msgstr "Suche in:"
 
-#: ../search.c:533
 msgid "Artist names"
 msgstr "Artist"
 
-#: ../search.c:539
 msgid "Record titles"
 msgstr "Album Titel"
 
-#: ../search.c:551
 msgid "Comments"
 msgstr "Kommentar"
 
-#: ../search.c:591 ../meta_decoder.cpp:229
 msgid "Artist"
 msgstr "Artist"
 
-#: ../search.c:602
 msgid "Record"
 msgstr "Album"
 
-#: ../search.c:613
 msgid "Track"
 msgstr "Track"
 
-#: ../search.c:633 ../search_playlist.c:427
 msgid "Search"
 msgstr "Suche"
 
-#: ../search_playlist.c:318
 #, fuzzy
 msgid "Search the Playlist"
 msgstr "Playliste speichern"
 
-#: ../search_playlist.c:407 ../meta_decoder.cpp:216
 msgid "Title"
 msgstr "Titel:"
 
-#: ../skin.c:173
 msgid "Available skins"
 msgstr "Verfügbare Skins"
 
-#: ../volume.c:197 ../volume.c:210 ../volume.c:227
 #, fuzzy
 msgid "Calculating volume level"
 msgstr "Lautstärke bestimmen: %s"
 
-#: ../volume.c:254
 msgid "Progress:"
 msgstr ""
 
-#: ../file_info.cpp:480
 #, fuzzy
 msgid "(not set)"
 msgstr "(kein Kommentar)"
 
-#: ../file_info.cpp:532
 #, fuzzy
 msgid "Please specify the file to save the image to."
 msgstr "Playliste speichern"
 
-#: ../file_info.cpp:592
 #, fuzzy
 msgid "Type"
 msgstr "SRC Typ: "
 
-#: ../file_info.cpp:594
 #, fuzzy
 msgid "Description"
 msgstr "Zeitdauer:"
 
-#: ../file_info.cpp:596
 msgid "No description"
 msgstr ""
 
-#: ../file_info.cpp:599
 msgid "Embedded picture"
 msgstr ""
 
-#: ../file_info.cpp:618
 #, fuzzy
 msgid "Save to file..."
 msgstr "Musikladen"
 
-#: ../file_info.cpp:809 ../file_info.cpp:884
 #, fuzzy
 msgid "Album:"
 msgstr "Album"
 
-#: ../file_info.cpp:809
 msgid "Import as Record"
 msgstr "Als Album importieren"
 
-#: ../file_info.cpp:824 ../file_info.cpp:892 ../file_info.cpp:1816
 #, fuzzy
 msgid "Track:"
 msgstr "Track"
 
-#: ../file_info.cpp:824
 msgid "Import as Track number"
 msgstr "Als Tracknummer importieren"
 
-#: ../file_info.cpp:866 ../file_info.cpp:869 ../file_info.cpp:909
 #, fuzzy
 msgid "Comment:"
 msgstr "Kommentar:"
 
-#: ../file_info.cpp:919
 #, fuzzy
 msgid "Save basic fields"
 msgstr "Musikladen"
 
-#: ../file_info.cpp:941
 msgid "ID3v1"
 msgstr ""
 
-#: ../file_info.cpp:1001 ../file_info.cpp:1003
 #, fuzzy
 msgid "Relative Volume Adj.:"
 msgstr "Relative Lautstärke"
 
-#: ../file_info.cpp:1001 ../file_info.cpp:1195
 msgid "Import as RVA"
 msgstr "Als RVA importieren"
 
-#: ../file_info.cpp:1015
 msgid "Other"
 msgstr ""
 
-#: ../file_info.cpp:1017
 msgid "File icon (32x32 PNG)"
 msgstr ""
 
-#: ../file_info.cpp:1019
 #, fuzzy
 msgid "File icon (other)"
 msgstr "Datei-Info"
 
-#: ../file_info.cpp:1021
 msgid "Front cover"
 msgstr ""
 
-#: ../file_info.cpp:1023
 msgid "Back cover"
 msgstr ""
 
-#: ../file_info.cpp:1025
 msgid "Leaflet page"
 msgstr ""
 
-#: ../file_info.cpp:1027
 #, fuzzy
 msgid "Album image"
 msgstr "Album"
 
-#: ../file_info.cpp:1029
 msgid "Lead artist/performer"
 msgstr ""
 
-#: ../file_info.cpp:1031
 msgid "Artist/performer"
 msgstr ""
 
-#: ../file_info.cpp:1033 ../meta_decoder.cpp:231
 msgid "Conductor"
 msgstr "Dirigent"
 
-#: ../file_info.cpp:1035
 #, fuzzy
 msgid "Band/orchestra"
 msgstr "Orchester"
 
-#: ../file_info.cpp:1037 ../meta_decoder.cpp:202
 msgid "Composer"
 msgstr "Komponist"
 
-#: ../file_info.cpp:1039
 msgid "Lyricist/text writer"
 msgstr ""
 
-#: ../file_info.cpp:1041
 #, fuzzy
 msgid "Recording location/studio"
 msgstr "Album Titel"
 
-#: ../file_info.cpp:1043
 msgid "During recording"
 msgstr ""
 
-#: ../file_info.cpp:1045
 msgid "During performance"
 msgstr ""
 
-#: ../file_info.cpp:1047
 msgid "Movie/video screen capture"
 msgstr ""
 
-#: ../file_info.cpp:1049
 msgid "A large, coloured fish"
 msgstr ""
 
-#: ../file_info.cpp:1051
 #, fuzzy
 msgid "Illustration"
 msgstr "Zeitdauer:"
 
-#: ../file_info.cpp:1053
 msgid "Band/artist logotype"
 msgstr ""
 
-#: ../file_info.cpp:1055
 msgid "Publisher/studio logotype"
 msgstr ""
 
-#: ../file_info.cpp:1138
 msgid "ID3v2"
 msgstr ""
 
-#: ../file_info.cpp:1215
 msgid "APE"
 msgstr ""
 
-#: ../file_info.cpp:1268
 #, fuzzy
 msgid "Ogg comments"
 msgstr "Kommentar"
 
-#: ../file_info.cpp:1304
 #, fuzzy
 msgid "Vendor:"
 msgstr "Genre"
 
-#: ../file_info.cpp:1491
 #, fuzzy
 msgid "Remove ID3v1"
 msgstr "Entfernen"
 
-#: ../file_info.cpp:1503
 msgid "Create ID3v2"
 msgstr ""
 
-#: ../file_info.cpp:1514
 #, fuzzy
 msgid "Remove ID3v2"
 msgstr "Entfernen"
 
-#: ../file_info.cpp:1525
 msgid "Create APE"
 msgstr ""
 
-#: ../file_info.cpp:1536
 #, fuzzy
 msgid "Remove APE"
 msgstr "Entfernen"
 
-#: ../file_info.cpp:1866
 msgid "Audio data"
 msgstr "Audio-Daten"
 
-#: ../file_info.cpp:1870
 #, fuzzy
 msgid "Format:"
 msgstr "Abbrechen"
 
-#: ../file_info.cpp:1881
 msgid "Length:"
 msgstr "Länge:"
 
-#: ../file_info.cpp:1897
 #, fuzzy
 msgid "Samplerate:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:1902
 #, c-format
 msgid "%ld Hz"
 msgstr ""
 
-#: ../file_info.cpp:1909
 msgid "Channel count:"
 msgstr "Kanalanzahl:"
 
-#: ../file_info.cpp:1924
 msgid "Bandwidth:"
 msgstr "Bandbreite:"
 
-#: ../file_info.cpp:1940
 msgid "Total samples:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:1995
 #, fuzzy
 msgid "Module info"
 msgstr "Datei-Info"
 
-#: ../file_info.cpp:2141 ../file_info.cpp:2244
 #, fuzzy
 msgid "Type:"
 msgstr "SRC Typ: "
 
-#: ../file_info.cpp:2154 ../file_info.cpp:2257
 #, fuzzy
 msgid "Channels:"
 msgstr "Kanalanzahl:"
 
-#: ../file_info.cpp:2167 ../file_info.cpp:2270
 #, fuzzy
 msgid "Patterns:"
 msgstr "Kategorie"
 
-#: ../file_info.cpp:2180 ../file_info.cpp:2283
 #, fuzzy
 msgid "Samples:"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:2193
 msgid "Instruments:"
 msgstr ""
 
-#: ../file_info.cpp:2216
 #, fuzzy
 msgid "Samples"
 msgstr "Total Samples:"
 
-#: ../file_info.cpp:2226
 msgid "Instruments"
 msgstr ""
 
-#: ../file_info.cpp:2337
 msgid "No."
 msgstr ""
 
-#: ../meta_decoder.cpp:200
 msgid "Album"
 msgstr "Album"
 
-#: ../meta_decoder.cpp:201
 msgid "Beats per minute"
 msgstr ""
 
-#: ../meta_decoder.cpp:203
 msgid "Content type"
 msgstr ""
 
-#: ../meta_decoder.cpp:204
 msgid "Copyright"
 msgstr ""
 
-#: ../meta_decoder.cpp:205
 #, fuzzy
 msgid "Encoding time"
 msgstr "Kodierung"
 
-#: ../meta_decoder.cpp:206
 #, fuzzy
 msgid "Playlist delay"
 msgstr "Playliste"
 
-#: ../meta_decoder.cpp:207
 msgid "Original release time"
 msgstr ""
 
-#: ../meta_decoder.cpp:208
 #, fuzzy
 msgid "Recording time"
 msgstr "Album Titel"
 
-#: ../meta_decoder.cpp:209
 msgid "Release time"
 msgstr ""
 
-#: ../meta_decoder.cpp:210
 #, fuzzy
 msgid "Tagging time"
 msgstr "Musikladen"
 
-#: ../meta_decoder.cpp:211
 #, fuzzy
 msgid "Encoded by"
 msgstr "Kodier"
 
-#: ../meta_decoder.cpp:212
 msgid "Lyricist"
 msgstr "Lyriker"
 
-#: ../meta_decoder.cpp:213
 #, fuzzy
 msgid "File type"
 msgstr "Dateiname:"
 
-#: ../meta_decoder.cpp:214
 msgid "Involved people"
 msgstr ""
 
-#: ../meta_decoder.cpp:215
 msgid "Content group"
 msgstr ""
 
-#: ../meta_decoder.cpp:217
 msgid "Subtitle"
 msgstr "Untertitel"
 
-#: ../meta_decoder.cpp:218
 msgid "Initial key"
 msgstr ""
 
-#: ../meta_decoder.cpp:219
 msgid "Language"
 msgstr ""
 
-#: ../meta_decoder.cpp:220
 #, fuzzy
 msgid "Length (ms)"
 msgstr "Länge:"
 
-#: ../meta_decoder.cpp:221
 msgid "Musician credits"
 msgstr ""
 
-#: ../meta_decoder.cpp:222
 msgid "Media type"
 msgstr ""
 
-#: ../meta_decoder.cpp:223
 msgid "Mood"
 msgstr ""
 
-#: ../meta_decoder.cpp:224
 msgid "Original album"
 msgstr ""
 
-#: ../meta_decoder.cpp:225
 msgid "Original filename"
 msgstr ""
 
-#: ../meta_decoder.cpp:226
 msgid "Original lyricist"
 msgstr ""
 
-#: ../meta_decoder.cpp:227
 msgid "Original artist"
 msgstr ""
 
-#: ../meta_decoder.cpp:228
 msgid "Owner/licensee"
 msgstr ""
 
-#: ../meta_decoder.cpp:230
 msgid "Orchestra"
 msgstr "Orchester"
 
-#: ../meta_decoder.cpp:232
 msgid "Interpreted/remixed"
 msgstr ""
 
-#: ../meta_decoder.cpp:233
 msgid "Part of set"
 msgstr ""
 
-#: ../meta_decoder.cpp:234
 msgid "Produced"
 msgstr ""
 
-#: ../meta_decoder.cpp:235
 msgid "Publisher"
 msgstr "Herausgeber"
 
-#: ../meta_decoder.cpp:237
 msgid "Radio station name"
 msgstr ""
 
-#: ../meta_decoder.cpp:238
 msgid "Radio station owner"
 msgstr ""
 
-#: ../meta_decoder.cpp:239
 msgid "Album sort order"
 msgstr ""
 
-#: ../meta_decoder.cpp:240
 msgid "Artist sort order"
 msgstr ""
 
-#: ../meta_decoder.cpp:241
 #, fuzzy
 msgid "Title sort order"
 msgstr "Namensformat"
 
-#: ../meta_decoder.cpp:242
 msgid "ISRC"
 msgstr ""
 
-#: ../meta_decoder.cpp:243
 msgid "Encoding settings"
 msgstr ""
 
-#: ../meta_decoder.cpp:244
 #, fuzzy
 msgid "Set subtitle"
 msgstr "Untertitel"
 
-#: ../decoder/dec_mpc.c:154
 msgid "Profile: Telephone"
 msgstr ""
 
-#: ../decoder/dec_mpc.c:157
 msgid "Profile: Thumb"
 msgstr ""
 
-#: ../decoder/dec_mpc.c:160
 msgid "Profile: Radio"
 msgstr ""
 
-#: ../decoder/dec_mpc.c:163
 msgid "Profile: Standard"
 msgstr ""
 
-#: ../decoder/dec_mpc.c:166
 msgid "Profile: Xtreme"
 msgstr ""
 
-#: ../decoder/dec_mpc.c:169
 msgid "Profile: Insane"
 msgstr ""
 
-#: ../decoder/dec_mpc.c:172
 msgid "Profile: Braindead"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1242
 msgid "Layer I"
 msgstr "Schicht I"
 
-#: ../decoder/dec_mpeg.c:1245
 msgid "Layer II"
 msgstr "Schicht II"
 
-#: ../decoder/dec_mpeg.c:1248
 msgid "Layer III"
 msgstr "Schicht III"
 
-#: ../decoder/dec_mpeg.c:1251
 msgid "Unrecognized"
 msgstr "Unbekannt"
 
-#: ../decoder/dec_mpeg.c:1260
 msgid "Single channel"
 msgstr "Einzelkanal"
 
-#: ../decoder/dec_mpeg.c:1263
 msgid "Dual channel"
 msgstr "Doppelkanal"
 
-#: ../decoder/dec_mpeg.c:1266
 msgid "Joint stereo"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1269
 msgid "Stereo"
 msgstr ""
 
-#: ../decoder/dec_mpeg.c:1277
 msgid "Emphasis: none"
 msgstr "Betonung: none"
 
-#: ../decoder/dec_mpeg.c:1280 ../decoder/dec_mpeg.c:1283
 msgid "Emphasis:"
 msgstr "Betonung:"
 
-#: ../decoder/dec_mpeg.c:1286
 msgid "Emphasis: reserved"
 msgstr "Betonung: reserviert"
 
-#: ../decoder/dec_sndfile.c:200 ../decoder/dec_sndfile.c:206
-#: ../decoder/dec_sndfile.c:209 ../decoder/dec_sndfile.c:212
 msgid "bit signed"
 msgstr "bit gezeichnet"
 
-#: ../decoder/dec_sndfile.c:203
 msgid "bit unsigned"
 msgstr "bit vorzeichenlos"
 
-#: ../decoder/dec_sndfile.c:215
 msgid "bit float"
 msgstr "Floß"
 
-#: ../decoder/dec_sndfile.c:218
 msgid "bit double"
 msgstr "bit Doppelt"
 
-#: ../decoder/dec_sndfile.c:221 ../decoder/dec_sndfile.c:224
-#: ../decoder/dec_sndfile.c:227 ../decoder/dec_sndfile.c:230
-#: ../decoder/dec_sndfile.c:233 ../decoder/dec_sndfile.c:236
-#: ../decoder/dec_sndfile.c:239 ../decoder/dec_sndfile.c:242
-#: ../decoder/dec_sndfile.c:245 ../decoder/dec_sndfile.c:248
-#: ../decoder/dec_sndfile.c:251 ../decoder/dec_sndfile.c:254
-#: ../decoder/dec_sndfile.c:257
 msgid "encoding"
 msgstr "Kodierung"
 
-#: ../decoder/dec_mac.cpp:223
 msgid "Compression: Fast"
 msgstr ""
 
-#: ../decoder/dec_mac.cpp:226
 msgid "Compression: Normal"
 msgstr ""
 
-#: ../decoder/dec_mac.cpp:229
 msgid "Compression: High"
 msgstr ""
 
-#: ../decoder/dec_mac.cpp:232
 msgid "Compression: Extra High"
 msgstr ""
 
-#: ../decoder/dec_mac.cpp:235
 msgid "Compression: Insane"
 msgstr ""
 

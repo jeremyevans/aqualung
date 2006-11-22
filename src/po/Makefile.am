@@ -37,12 +37,10 @@ $(DOMAIN).pot: $(POTFILES)
 	if test ! -e $(DOMAIN).pot; then \
 		mv $(DOMAIN).pot.new $(DOMAIN).pot; \
 	else \
-		cat $(DOMAIN).pot | sed 's/^#.*//g' > pot; \
-		cat $(DOMAIN).pot.new | sed 's/^#.*//g' > pot.new; \
-		if ! diff -q pot pot.new; then \
+		if ! diff -q $(DOMAIN).pot $(DOMAIN).pot.new; then \
 			mv $(DOMAIN).pot.new $(DOMAIN).pot; \
 		fi; \
-		rm -f pot pot.new $(DOMAIN).pot.new; \
+		rm -f $(DOMAIN).pot.new; \
 	fi
 
 install:

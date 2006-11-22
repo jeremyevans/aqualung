@@ -1,4 +1,4 @@
-XGETTEXT_OPTS = --keyword=_ --keyword=N_ --keyword=X_ --omit-header --copyright-holder='$(COPYRIGHT_HOLDER)'
+XGETTEXT_OPTS = --keyword=_ --keyword=N_ --keyword=X_ --omit-header --no-location --copyright-holder='$(COPYRIGHT_HOLDER)'
 
 DOMAIN = aqualung
 COPYRIGHT_HOLDER = Tom Szilagyi

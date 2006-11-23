@@ -4924,6 +4924,7 @@ create_music_browser(void) {
 #endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_widget_show(track__search);
 
+#ifdef HAVE_CDDA
 	/* create popup menu for cdda_record tree items */
 	cdda_record_menu = gtk_menu_new();
 	cdda_record__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
@@ -4978,6 +4979,7 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_track_menu), cdda_track__addlist);
  	g_signal_connect_swapped(G_OBJECT(cdda_track__addlist), "activate", G_CALLBACK(track__addlist_cb), NULL);
 	gtk_widget_show(cdda_track__addlist);
+#endif /* HAVE_CDDA */
 
 
 	/* attach event handler that will popup the menus */

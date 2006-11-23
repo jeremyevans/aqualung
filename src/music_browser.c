@@ -1951,6 +1951,24 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gtk_widget_set_sensitive(track__tag, val3);
 #endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 
+#ifdef HAVE_CDDA
+	if (is_store_path_cdda(path) && (gtk_tree_path_get_depth(path) == 2)) {
+		gboolean val_cdda;
+		GtkTreeIter iter;
+
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
+		val_cdda = (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter) > 0) ?
+			TRUE : FALSE;
+
+		gtk_widget_set_sensitive(cdda_record__addlist, val_cdda);
+		gtk_widget_set_sensitive(cdda_record__addlist_albummode, val_cdda);
+		gtk_widget_set_sensitive(cdda_record__cddb, val_cdda);
+		gtk_widget_set_sensitive(cdda_record__cddb_submit, val_cdda);
+		gtk_widget_set_sensitive(cdda_record__rip, val_cdda);
+		gtk_widget_set_sensitive(cdda_record__disc_info, val_cdda);
+	}
+#endif /* HAVE_CDDA */
+
 	gtk_widget_set_sensitive(store__build, val);
 	gtk_widget_set_sensitive(store__edit, val);
 	gtk_widget_set_sensitive(store__save, val);
@@ -2213,6 +2231,9 @@ track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * d
 	strncpy(artist_name, partist_name, MAXLEN-1);
 	g_free(partist_name);
 
+#ifdef HAVE_CDDA
+	if (!is_store_iter_cdda(&iter_track)) {
+#endif /* HAVE_CDDA */
 	if (options.auto_use_meta_artist || options.auto_use_meta_record || options.auto_use_meta_track) {
 		meta = meta_new();
 		if (!meta_read(meta, file)) {
@@ -2237,6 +2258,9 @@ track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * d
 		meta_free(meta);
 		meta = NULL;
 	}
+#ifdef HAVE_CDDA
+	}
+#endif /* HAVE_CDDA */
 	
 	if (parent != NULL) {
 		strcpy(list_str, track_name);

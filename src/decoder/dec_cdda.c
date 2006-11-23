@@ -68,8 +68,6 @@ cdda_reader_thread(void * arg) {
 	int16_t * readbuf;
 	int i;
 
-	printf("START cdda_reader_thread\n");
-
 	pd->paranoia = cdio_paranoia_init(pd->drive);
 	cdio_paranoia_modeset(pd->paranoia, PARANOIA_MODE_FULL^PARANOIA_MODE_NEVERSKIP);
 	//cdio_paranoia_modeset(pd->paranoia, PARANOIA_MODE_DISABLE);
@@ -81,7 +79,6 @@ cdda_reader_thread(void * arg) {
 		AQUALUNG_MUTEX_LOCK(pd->cdda_reader_mutex)
 		if (pd->cdda_reader_status == CDDA_READER_FREE) {
 			AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
-			printf("CANCELLED cdda_reader_thread\n");
 			pd->overread_sectors = 0;
 			paranoia_free(pd->paranoia);
 			return NULL;
@@ -109,11 +106,7 @@ cdda_reader_thread(void * arg) {
 		}
 	}
 
-	if (pd->is_eos)
-		printf("end of track, overread = %d\n", pd->overread_sectors);
-
 	paranoia_free(pd->paranoia);
-	printf("FINISH cdda_reader_thread\n");
 
 	AQUALUNG_MUTEX_LOCK(pd->cdda_reader_mutex)
 	pd->cdda_reader_status = CDDA_READER_FREE;
@@ -196,8 +189,6 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 	}
 	pd->track_no = track;
 
-	printf("=== CDDA file_decoder, device=%s track=%u\n", pd->device_path, pd->track_no);
-
 	pd->drive = cdio_cddap_identify(pd->device_path, 0, NULL);
 	if (!pd->drive) {
 		printf("dec_cdda.c: Couldn't open drive %s\n", pd->device_path);
@@ -257,8 +248,6 @@ cdda_decoder_reopen(decoder_t * dec, char * filename) {
 	}
 	pd->track_no = track;
 
-	printf("=== CDDA REOPEN for track=%u\n", pd->track_no);
-
 	if (pd->overread_sectors > 0) {
 		char flush_dest;
 		while (rb_read_space(pd->rb) > pd->overread_sectors * CDIO_CD_FRAMESIZE_RAW * 2)
@@ -294,8 +283,6 @@ cdda_decoder_close(decoder_t * dec) {
 	rb_free(pd->rb);
 	cdda_close(pd->drive);
 	/* TODO mark drive as unused */
-
-	printf("=== CDDA file_decoder CLOSE\n");
 }
 
 
@@ -324,7 +311,6 @@ cdda_decoder_read(decoder_t * dec, float * dest, int num) {
 		struct timespec rem;
 		req.tv_sec = 0;
 		req.tv_nsec = 100000000; /* 100 ms */
-		printf("cdda_decoder_read: data not ready, waiting...\n");
 		nanosleep(&req, &rem);
 	}
 

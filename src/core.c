@@ -314,9 +314,7 @@ disk_thread(void * arg) {
 				}
 
 #ifdef HAVE_CDDA
-				if (same_disc_next_track(filename, filename_prev)) {
-					printf("same disc, next track\n");
-				} else {
+				if (!same_disc_next_track(filename, filename_prev)) {
 					if (fdec->file_lib != 0)
 						file_decoder_close(fdec);
 				}

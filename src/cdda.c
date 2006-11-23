@@ -431,7 +431,7 @@ update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 		snprintf(title, MAXLEN-1, "Track %d", i+1);
 		snprintf(path, CDDA_MAXLEN-1, "CDDA %s %d", drive->device_path, i+1);
 		snprintf(sort, 15, "%02d", i+1);
-		
+
 		gtk_tree_store_append(music_store, &iter_track, &iter_drive);
 		gtk_tree_store_set(music_store, &iter_track,
 				   0, title,
@@ -507,8 +507,6 @@ insert_cdda_drive_node(char * device_path) {
 	if (drive->disc.n_tracks > 0) {
 		update_track_data(drive, iter_drive);
 	}
-
-	printf("discovered drive %s\n", device_path);
 }
 
 
@@ -540,7 +538,6 @@ remove_cdda_drive_node(char * device_path) {
 		return;
 
 	gtk_tree_store_remove(music_store, &iter_drive);
-	printf("drive %s does not exist anymore\n", device_path);
 }
 
 
@@ -554,6 +551,9 @@ refresh_cdda_drive_node(char * device_path) {
 	char str_title[MAXLEN];
 	char str_path[CDDA_MAXLEN];
 	int i, found;
+
+	if (drive == NULL)
+		return;
 
 	if (drive->disc.n_tracks > 0) {
 		snprintf(str_title, MAXLEN-1, "Unknown disc [%s]",
@@ -591,8 +591,6 @@ refresh_cdda_drive_node(char * device_path) {
 	if (drive->disc.n_tracks > 0) {
 		update_track_data(drive, iter_drive);
 	}
-
-	printf("changed drive %s\n", device_path);
 }
 
 

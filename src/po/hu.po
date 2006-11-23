@@ -1025,6 +1025,25 @@ msgstr "Minden esetben"
 msgid "Update file metadata..."
 msgstr "Metaadatok frissítése..."
 
+#, fuzzy
+msgid "CDDB query for this CD..."
+msgstr "Album lekérdezése CDDB adatbázisból..."
+
+#, fuzzy
+msgid "Submit CD to CDDB database..."
+msgstr "Album feltöltése CDDB adatbázisba..."
+
+msgid "Rip CD..."
+msgstr ""
+
+#, fuzzy
+msgid "Disc info..."
+msgstr "Fájl infó..."
+
+#, fuzzy
+msgid "Drive info..."
+msgstr "Fájl infó..."
+
 msgid "*Music Store"
 msgstr "*Zenetár"
 

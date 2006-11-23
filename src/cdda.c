@@ -429,8 +429,8 @@ update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 		float duration = (drive->disc.toc[i+1] - drive->disc.toc[i]) / 75.0;
 		
 		snprintf(title, MAXLEN-1, "Track %d", i+1);
-		snprintf(path, CDDA_MAXLEN-1, "CDDA %s %d", drive->device_path, i);
-		snprintf(sort, 15, "%d", i);
+		snprintf(path, CDDA_MAXLEN-1, "CDDA %s %d", drive->device_path, i+1);
+		snprintf(sort, 15, "%02d", i+1);
 		
 		gtk_tree_store_append(music_store, &iter_track, &iter_drive);
 		gtk_tree_store_set(music_store, &iter_track,

@@ -47,6 +47,11 @@ void artist__addlist_defmode(gpointer data);
 void record__addlist_defmode(gpointer data);
 void track__addlist_cb(gpointer data);
 
+#ifdef HAVE_CDDA
+int is_store_path_cdda(GtkTreePath * p);
+int is_store_iter_cdda(GtkTreeIter * i);
+#endif /* HAVE_CDDA */
+
 void music_store_set_status_bar_info(void);
 
 #ifdef __cplusplus

@@ -166,6 +166,24 @@ GtkWidget * track__volume_unmeasured;
 GtkWidget * track__volume_all;
 GtkWidget * track__search;
 
+#ifdef HAVE_CDDA
+GtkWidget * cdda_track_menu;
+GtkWidget * cdda_track__addlist;
+
+GtkWidget * cdda_record_menu;
+GtkWidget * cdda_record__addlist;
+GtkWidget * cdda_record__addlist_albummode;
+GtkWidget * cdda_record__separator1;
+#ifdef HAVE_CDDB
+GtkWidget * cdda_record__cddb;
+GtkWidget * cdda_record__cddb_submit;
+#endif /* HAVE_CDDB */
+GtkWidget * cdda_record__rip;
+GtkWidget * cdda_record__separator2;
+GtkWidget * cdda_record__disc_info;
+GtkWidget * cdda_record__drive_info;
+#endif /* HAVE_CDDA */
+
 GtkWidget * blank_menu;
 GtkWidget * blank__add;
 GtkWidget * blank__search;
@@ -1883,8 +1901,39 @@ is_store_path_readonly(GtkTreePath * p) {
 int
 is_store_iter_readonly(GtkTreeIter * i) {
 
-        return is_store_path_readonly(gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), i));
+	GtkTreePath * path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), i);
+	int ret = is_store_path_readonly(path);
+	gtk_tree_path_free(path);
+        return ret;
 }
+
+
+#ifdef HAVE_CDDA
+int
+is_store_path_cdda(GtkTreePath * p) {
+
+	int i;
+	GtkTreePath * path = gtk_tree_path_copy(p);
+
+	while (gtk_tree_path_get_depth(path) > 1) {
+		gtk_tree_path_up(path);
+	}
+
+	i = gtk_tree_path_get_indices(path)[0];
+	gtk_tree_path_free(path);
+
+	return (i == 0);
+}
+
+int
+is_store_iter_cdda(GtkTreeIter * i) {
+
+	GtkTreePath * path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), i);
+	int ret = is_store_path_cdda(path);
+	gtk_tree_path_free(path);
+        return ret;
+}
+#endif /* HAVE_CDDA */
 
 
 void
@@ -1963,7 +2012,22 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 				
 				gtk_tree_view_set_cursor(GTK_TREE_VIEW(music_tree), path, NULL, FALSE);
 
-				/* XXX: popup cdda_menus as appropriate */
+#ifdef HAVE_CDDA
+				if (is_store_path_cdda(path)) {
+				switch (gtk_tree_path_get_depth(path)) {
+				case 1: /* no popup for CDDA_STORE */
+					break;
+				case 2:
+					gtk_menu_popup(GTK_MENU(cdda_record_menu), NULL, NULL, NULL, NULL,
+						       bevent->button, bevent->time);
+					break;
+				case 3:
+					gtk_menu_popup(GTK_MENU(cdda_track_menu), NULL, NULL, NULL, NULL,
+						       bevent->button, bevent->time);
+					break;
+				}
+				} else {
+#endif /* HAVE_CDDA */
 				switch (gtk_tree_path_get_depth(path)) {
 				case 1:
 					gtk_menu_popup(GTK_MENU(store_menu), NULL, NULL, NULL, NULL,
@@ -1982,6 +2046,9 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 						       bevent->button, bevent->time);
 					break;
 				}
+#ifdef HAVE_CDDA
+				}
+#endif /* HAVE_CDDA */
 			} else {
 				gtk_menu_popup(GTK_MENU(blank_menu), NULL, NULL, NULL, NULL,
                                                bevent->button, bevent->time);
@@ -3355,6 +3422,11 @@ track__remove_cb(gpointer data) {
 }
 
 
+/************************************/
+
+/* XXX cdda callbacks go here */
+
+/************************************/
 
 void
 search_cb(gpointer data) {
@@ -4827,6 +4899,62 @@ create_music_browser(void) {
 	gtk_widget_show(track__tag);
 #endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_widget_show(track__search);
+
+	/* create popup menu for cdda_record tree items */
+	cdda_record_menu = gtk_menu_new();
+	cdda_record__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
+	cdda_record__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
+	cdda_record__separator1 = gtk_separator_menu_item_new();
+#ifdef HAVE_CDDB
+	cdda_record__cddb = gtk_menu_item_new_with_label(_("CDDB query for this CD..."));
+	cdda_record__cddb_submit = gtk_menu_item_new_with_label(_("Submit CD to CDDB database..."));
+#endif /* HAVE_CDDB */
+	cdda_record__rip = gtk_menu_item_new_with_label(_("Rip CD..."));
+	cdda_record__disc_info = gtk_menu_item_new_with_label(_("Disc info..."));
+	cdda_record__separator2 = gtk_separator_menu_item_new();
+	cdda_record__drive_info = gtk_menu_item_new_with_label(_("Drive info..."));
+
+	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__addlist);
+	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__addlist_albummode);
+	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__separator1);
+#ifdef HAVE_CDDB
+	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__cddb);
+	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__cddb_submit);
+#endif /* HAVE_CDDB */
+	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__rip);
+	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__disc_info);
+	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__separator2);
+	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__drive_info);
+
+ 	g_signal_connect_swapped(G_OBJECT(cdda_record__addlist), "activate", G_CALLBACK(record__addlist_cb), NULL);
+ 	g_signal_connect_swapped(G_OBJECT(cdda_record__addlist_albummode), "activate", G_CALLBACK(record__addlist_albummode_cb), NULL);
+/* #ifdef HAVE_CDDB */
+/* 	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb), "activate", G_CALLBACK(cdda_record__cddb_cb), NULL); */
+/* 	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb_submit), "activate", G_CALLBACK(cdda_record__cddb_submit_cb), NULL); */
+/* #endif /\* HAVE_CDDB *\/ */
+/* 	g_signal_connect_swapped(G_OBJECT(cdda_record__rip), "activate", G_CALLBACK(cdda_record__rip_cb), NULL); */
+/* 	g_signal_connect_swapped(G_OBJECT(cdda_record__disc_info), "activate", G_CALLBACK(cdda_record__disc_info_cb), NULL); */
+/* 	g_signal_connect_swapped(G_OBJECT(cdda_record__drive_info), "activate", G_CALLBACK(cdda_record__drive_cb), NULL); */
+
+	gtk_widget_show(cdda_record__addlist);
+	gtk_widget_show(cdda_record__addlist_albummode);
+	gtk_widget_show(cdda_record__separator1);
+#ifdef HAVE_CDDB
+	gtk_widget_show(cdda_record__cddb);
+	gtk_widget_show(cdda_record__cddb_submit);
+#endif /* HAVE_CDDB */
+	gtk_widget_show(cdda_record__rip);
+	gtk_widget_show(cdda_record__disc_info);
+	gtk_widget_show(cdda_record__separator2);
+	gtk_widget_show(cdda_record__drive_info);
+
+	/* create popup menu for cdda_track tree items */
+	cdda_track_menu = gtk_menu_new();
+	cdda_track__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
+	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_track_menu), cdda_track__addlist);
+ 	g_signal_connect_swapped(G_OBJECT(cdda_track__addlist), "activate", G_CALLBACK(track__addlist_cb), NULL);
+	gtk_widget_show(cdda_track__addlist);
+
 
 	/* attach event handler that will popup the menus */
 	g_signal_connect_swapped(G_OBJECT(music_tree), "event", G_CALLBACK(music_tree_event_cb), NULL);

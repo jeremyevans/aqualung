@@ -964,6 +964,21 @@ msgstr ""
 msgid "Update file metadata..."
 msgstr ""
 
+msgid "CDDB query for this CD..."
+msgstr ""
+
+msgid "Submit CD to CDDB database..."
+msgstr ""
+
+msgid "Rip CD..."
+msgstr ""
+
+msgid "Disc info..."
+msgstr ""
+
+msgid "Drive info..."
+msgstr ""
+
 msgid "*Music Store"
 msgstr ""
 

@@ -2019,6 +2019,10 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 
 			if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 				depth = gtk_tree_path_get_depth(gtk_tree_model_get_path(model, &iter));
+#ifdef HAVE_CDDA
+				if (is_store_iter_cdda(&iter))
+					depth += 1;
+#endif /* HAVE_CDDA */
 			} else {
 				return FALSE;
 			}

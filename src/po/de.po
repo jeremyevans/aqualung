@@ -1101,6 +1101,24 @@ msgid "Update file metadata..."
 msgstr "Als Titel importieren"
 
 #, fuzzy
+msgid "CDDB query for this CD..."
+msgstr "Neues Track zu diesem Album hinzufügen..."
+
+msgid "Submit CD to CDDB database..."
+msgstr ""
+
+msgid "Rip CD..."
+msgstr ""
+
+#, fuzzy
+msgid "Disc info..."
+msgstr "Datei-Info..."
+
+#, fuzzy
+msgid "Drive info..."
+msgstr "Datei-Info..."
+
+#, fuzzy
 msgid "*Music Store"
 msgstr "Musikladen"
 

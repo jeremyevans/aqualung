@@ -1065,6 +1065,24 @@ msgstr ""
 msgid "Update file metadata..."
 msgstr "Перечитати ╕нформац╕ю про файл"
 
+#, fuzzy
+msgid "CDDB query for this CD..."
+msgstr "CDDB запит для цього запису..."
+
+msgid "Submit CD to CDDB database..."
+msgstr ""
+
+msgid "Rip CD..."
+msgstr ""
+
+#, fuzzy
+msgid "Disc info..."
+msgstr "╤нформац╕я про файл"
+
+#, fuzzy
+msgid "Drive info..."
+msgstr "╤нформац╕я про файл"
+
 msgid "*Music Store"
 msgstr "*Музичний Склад"
 

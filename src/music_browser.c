@@ -5474,16 +5474,16 @@ save_music_store(GtkTreeIter * iter_store) {
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter_store,
 			   0, &name, 2, &store_file, 3, &comment, -1);
 
-	doc = xmlNewDoc((const xmlChar *) "1.0");
-	root = xmlNewNode(NULL, (const xmlChar *) "music_store");
-	xmlDocSetRootElement(doc, root);
-
 	if (strcmp(store_file, "CDDA_STORE") == 0) {
 		g_free(name);
 		g_free(comment);
 		g_free(store_file);
 		return;
 	}
+
+	doc = xmlNewDoc((const xmlChar *) "1.0");
+	root = xmlNewNode(NULL, (const xmlChar *) "music_store");
+	xmlDocSetRootElement(doc, root);
 
 	if (name[0] == '\0') {
 		fprintf(stderr, "saving music_store XML: warning: empty <name>\n");
@@ -5495,7 +5495,6 @@ save_music_store(GtkTreeIter * iter_store) {
 
 	g_free(name);
 	g_free(comment);
-	g_free(store_file);
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, iter_store, i++)) {
@@ -5503,6 +5502,7 @@ save_music_store(GtkTreeIter * iter_store) {
 	}
 
 	xmlSaveFormatFile(store_file, doc, 1);
+	g_free(store_file);
 }
 
 

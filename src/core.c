@@ -252,6 +252,7 @@ disk_thread(void * arg) {
 	char send_cmd, recv_cmd;
 	char filename[RB_CONTROL_SIZE];
 #ifdef HAVE_CDDA
+	int flowthrough = 0;
 	char filename_prev[RB_CONTROL_SIZE];
 #endif /* HAVE_CDDA */
 	seek_t seek;
@@ -314,7 +315,7 @@ disk_thread(void * arg) {
 				}
 
 #ifdef HAVE_CDDA
-				if (!same_disc_next_track(filename, filename_prev)) {
+				if (!flowthrough || !same_disc_next_track(filename, filename_prev)) {
 					if (fdec->file_lib != 0)
 						file_decoder_close(fdec);
 				}
@@ -325,7 +326,7 @@ disk_thread(void * arg) {
 
 				if (filename[0] != '\0') {
 #ifdef HAVE_CDDA
-					if (same_disc_next_track(filename, filename_prev)) {
+					if (flowthrough && same_disc_next_track(filename, filename_prev)) {
 						decoder_t * dec = (decoder_t *)fdec->pdec;
 						cdda_decoder_reopen(dec, filename);
 						fdec->samples_left = fdec->fileinfo.total_samples;
@@ -386,6 +387,7 @@ disk_thread(void * arg) {
 					}
 #ifdef HAVE_CDDA
 					}
+					flowthrough = 0;
 #endif /* HAVE_CDDA */
 				} else { /* STOP */
 					info->is_streaming = 0;
@@ -517,6 +519,9 @@ disk_thread(void * arg) {
 			
 			if (end_of_file) {
 				/* send request for a new filename */
+#ifdef HAVE_CDDA
+				flowthrough = 1;
+#endif /* HAVE_CDDA */
 				send_cmd = CMD_FILEREQ;
 				rb_write(rb_disk2gui, &send_cmd, 1);
 				goto sleep;

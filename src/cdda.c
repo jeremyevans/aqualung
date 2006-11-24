@@ -49,6 +49,7 @@
 
 #include "common.h"
 #include "options.h"
+#include "music_browser.h"
 #include "rb.h"
 #include "i18n.h"
 #include "cdda.h"
@@ -359,6 +360,7 @@ cdda_timeout_callback(gpointer data) {
 			break;
 		}
 	}
+	update_cdda_status_bar();
 	return TRUE;
 }
 

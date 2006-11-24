@@ -26,6 +26,8 @@
 extern "C" {
 #endif
 
+#include <gtk/gtk.h>
+
 void tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data);
 
 void make_title_string(char * dest, char * templ, char * artist, char * record, char * track);
@@ -50,6 +52,7 @@ void track__addlist_cb(gpointer data);
 #ifdef HAVE_CDDA
 int is_store_path_cdda(GtkTreePath * p);
 int is_store_iter_cdda(GtkTreeIter * i);
+void update_cdda_status_bar(void);
 #endif /* HAVE_CDDA */
 
 void music_store_set_status_bar_info(void);

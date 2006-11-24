@@ -1821,7 +1821,7 @@ playlist_stats(int selected) {
         m_size = songs_size / 1024.0;
 
 	if (count == 1) {
-                if (options.pl_statusbar_show_size) {
+                if (options.pl_statusbar_show_size && (m_size > 0)) {
                         if(m_size < 1024) {
                                 sprintf(str, _("%d track [%s] (%.1f MB)"), count, time, m_size);
                         } else {
@@ -1831,7 +1831,7 @@ playlist_stats(int selected) {
                         sprintf(str, _("%d track [%s] "), count, time);
                 }
 	} else {
-                if (options.pl_statusbar_show_size) {
+                if (options.pl_statusbar_show_size && (m_size > 0)) {
                         if(m_size < 1024) {
                                 sprintf(str, _("%d tracks [%s] (%.1f MB)"), count, time, m_size);
                         } else {

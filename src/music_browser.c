@@ -4166,6 +4166,23 @@ set_comment_content(void) {
 	set_comment_text(&iter);
 }
 
+
+#ifdef HAVE_CDDA
+void
+update_cdda_status_bar(void) {
+
+	GtkTreeModel * model;
+	GtkTreeIter iter;
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
+		if (is_store_iter_cdda(&iter)) {
+			music_store_set_status_bar_info();
+		}
+	}
+}
+#endif /* HAVE_CDDA */
+
+
 void
 music_store_set_status_bar_info(void) {
 
@@ -4197,9 +4214,16 @@ music_store_set_status_bar_info(void) {
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
+		int depth;
 		path = gtk_tree_model_get_path(model, &iter);
+		depth = gtk_tree_path_get_depth(path);
 
-		switch (gtk_tree_path_get_depth(path)) {
+#ifdef HAVE_CDDA
+		if (is_store_path_cdda(path))
+			depth += 1;
+#endif /* HAVE_CDDA */
+
+		switch (depth) {
 		case 1: /* music store */
 			i = 0;
 
@@ -4296,7 +4320,11 @@ music_store_set_status_bar_info(void) {
 				strcpy(duration_str, _("time unmeasured"));
 			}
 
+#ifdef HAVE_CDDA
+			if (options.ms_statusbar_show_size && !is_store_path_cdda(path)) {
+#else
 			if (options.ms_statusbar_show_size) {
+#endif /* HAVE_CDDA */
 				if ((size /= 1024.0) < 1024) {
 					snprintf(str, MAXLEN-1, "%d %s, %d %s [%s] (%.1f MB)",
 						 n_record,
@@ -4343,7 +4371,11 @@ music_store_set_status_bar_info(void) {
 				strcpy(duration_str, _("time unmeasured"));
 			}
 
+#ifdef HAVE_CDDA
+			if (options.ms_statusbar_show_size && !is_store_path_cdda(path)) {
+#else
 			if (options.ms_statusbar_show_size) {
+#endif /* HAVE_CDDA */
 				if ((size /= 1024.0) < 1024) {
 					snprintf(str, MAXLEN-1, "%d %s [%s] (%.1f MB)",
 						 n_track,
@@ -4379,7 +4411,11 @@ music_store_set_status_bar_info(void) {
 
                         g_free(file);
 
+#ifdef HAVE_CDDA
+			if (options.ms_statusbar_show_size && !is_store_path_cdda(path)) {
+#else
 			if (options.ms_statusbar_show_size) {
+#endif /* HAVE_CDDA */
 				if ((size /= 1024.0) < 1024) {
 					snprintf(str, MAXLEN-1, "1 %s [%s] (%.1f MB)",
 						 _("track"), duration_str, size);
@@ -4393,6 +4429,7 @@ music_store_set_status_bar_info(void) {
 
 			break;
 		}
+		gtk_tree_path_free(path);
 
 	} else {
 		str[0] = '\0';

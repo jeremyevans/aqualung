@@ -2710,6 +2710,7 @@ main(int argc, char ** argv) {
 #ifdef _WIN32
 	if (output == WIN32_DRIVER) {
 		AQUALUNG_THREAD_CREATE(thread_info.win32_thread_id, NULL, win32_thread, &thread_info)
+		g_thread_set_priority(thread_info.win32_thread_id, G_THREAD_PRIORITY_URGENT);
 	}
 #endif /* _WIN32 */
 

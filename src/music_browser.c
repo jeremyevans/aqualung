@@ -1974,8 +1974,10 @@ set_popup_sensitivity(GtkTreePath * path) {
 
 		gtk_widget_set_sensitive(cdda_record__addlist, val_cdda);
 		gtk_widget_set_sensitive(cdda_record__addlist_albummode, val_cdda);
+#ifdef HAVE_CDDB
 		gtk_widget_set_sensitive(cdda_record__cddb, val_cdda);
 		gtk_widget_set_sensitive(cdda_record__cddb_submit, val_cdda);
+#endif /* HAVE_CDDB */
 		gtk_widget_set_sensitive(cdda_record__rip, val_cdda);
 		gtk_widget_set_sensitive(cdda_record__disc_info, val_cdda);
 	}

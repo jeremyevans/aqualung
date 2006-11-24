@@ -1323,9 +1323,9 @@ add_files(GtkWidget * widget, gpointer data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                iw_show_info(dialog, _("Adding files..."));
-
 		GSList *lfiles, *node;
+
+                iw_show_info(dialog, _("Adding files..."));
 
                 strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
 			MAXLEN-1);
@@ -1380,17 +1380,26 @@ add_directory(GtkWidget * widget, gpointer data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                iw_show_info(dialog, _("Adding files recursively..."));
+		GSList *lfiles, *node;
 
-		char dirname[MAXLEN];
+                iw_show_info(dialog, _("Adding files recursively..."));
 
                 strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
 			MAXLEN-1);
 
-                strncpy(dirname, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
-			MAXLEN-1);
+                lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
 
-		add_dir_to_playlist(dirname);
+                node = lfiles;
+
+                while (node) {
+
+                        add_dir_to_playlist((char *)node->data);
+                        g_free(node->data);
+
+                        node = node->next;
+                }
+
+                g_slist_free(lfiles);
                 iw_hide_info();
         }
 

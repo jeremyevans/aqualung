@@ -323,7 +323,19 @@ struct keybinds track_keybinds[] = {
 	{NULL, 0}
 };
 
+#ifdef HAVE_CDDA
+struct keybinds cdda_record_keybinds[] = {
+	{record__addlist_defmode, GDK_a, GDK_A},
+        {collapse_all_items_cb, GDK_w, GDK_W},
+	{NULL, 0}
+};
 
+struct keybinds cdda_track_keybinds[] = {
+	{track__addlist_cb, GDK_a, GDK_A},
+        {collapse_all_items_cb, GDK_w, GDK_W},
+	{NULL, 0}
+};
+#endif /* HAVE_CDDA */
 
 
 
@@ -2099,6 +2111,26 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 				break;
 			}
 
+#ifdef HAVE_CDDA
+			if (is_store_path_cdda(path)) {
+			switch (gtk_tree_path_get_depth(path)) {
+			case 1: /* no keybinds for CDDA_STORE */
+				break;
+			case 2:
+				for (i = 0; cdda_record_keybinds[i].callback; ++i)
+					if (kevent->keyval == cdda_record_keybinds[i].keyval1 ||
+					    kevent->keyval == cdda_record_keybinds[i].keyval2)
+						(cdda_record_keybinds[i].callback)(NULL);
+				break;
+			case 3:
+				for (i = 0; cdda_track_keybinds[i].callback; ++i)
+					if (kevent->keyval == cdda_track_keybinds[i].keyval1 ||
+					    kevent->keyval == cdda_track_keybinds[i].keyval2)
+						(cdda_track_keybinds[i].callback)(NULL);
+				break;
+			}
+			} else {
+#endif /* HAVE_CDDA */
 			switch (gtk_tree_path_get_depth(path)) {
 			case 1: 
 				for (i = 0; store_keybinds[i].callback; ++i)
@@ -2125,6 +2157,9 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 						(track_keybinds[i].callback)(NULL);
 				break;
 			}
+#ifdef HAVE_CDDA
+			}
+#endif /* HAVE_CDDA */
 		} else {
 			int i;
                         for (i = 0; blank_keybinds[i].callback; ++i)

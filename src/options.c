@@ -494,7 +494,11 @@ options_window_accept(void) {
      
 
 
+#ifdef HAVE_CDDA
+	i = 1; /* 0-th store is STORE_CDDA, skip it */
+#else
 	i = 0;
+#endif /* HAVE_CDDA */
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
 					     &iter, NULL, i++)) {
 		char * p1;

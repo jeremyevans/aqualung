@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <glib.h>
 #include <glib/gstdio.h>
 #ifndef _WIN32
@@ -140,6 +141,50 @@ cdda_get_drive_by_device_path(char * device_path) {
 	return NULL;
 }
 
+
+/* return 1 if drives[i] is a symlink to a drive path
+ * also present in the drives[] string array, 0 else.
+ */
+int
+cdda_skip_extra_symlink(char ** drives, int i) {
+
+#ifndef _WIN32
+	if (g_file_test(drives[i], G_FILE_TEST_IS_SYMLINK)) {
+		int ret, j;
+		int found = 0;
+		char path[CDDA_MAXLEN];
+
+		ret = readlink(drives[i], path, CDDA_MAXLEN-1);
+		if (ret < 0)
+			return 1;
+		path[ret] = '\0';
+
+		if (!g_path_is_absolute(path)) {
+			char tmp[CDDA_MAXLEN];
+			char * dir = g_path_get_dirname(drives[i]);
+			snprintf(tmp, CDDA_MAXLEN-1, "%s/%s", dir, path);
+			strcpy(path, tmp);
+			g_free(dir);
+		}
+
+		for (j = 0; drives[j] != NULL; j++) {
+			if (i == j)
+				continue;
+			if (strcmp(drives[j], path) == 0) {
+				found = 1;
+				break;
+			}
+		}
+		return found;
+	} else {
+		return 0;
+	}
+#else
+	return 0;
+#endif /* !_WIN32 */
+}
+
+
 /* return 0 if OK, -1 if drive is apparently not available */
 int
 cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
@@ -155,12 +200,6 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 	if (cdda_drive->is_used) {
 		return 0;
 	}
-
-#ifndef _WIN32
-	if (g_file_test(device_path, G_FILE_TEST_IS_SYMLINK)) {
-		return -1;
-	}
-#endif /* !_WIN32 */
 
 	if (cdda_drive->cdio == NULL) {
 		cdda_drive->cdio = cdio_open(device_path, DRIVER_DEVICE);
@@ -260,6 +299,8 @@ cdda_scan_all_drives(void) {
 				rb_write(cdda_notify_rb, (char *)&notify, sizeof(cdda_notify_t));
 			}
 		} else { /* no, scan the drive */
+			if (cdda_skip_extra_symlink(drives, i))
+				continue;
 			if (cdda_get_first_free_slot(&n) < 0) {
 				printf("cdda.c: error: too many CD drives\n");
 				return;

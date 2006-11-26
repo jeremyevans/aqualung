@@ -2186,11 +2186,17 @@ dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data)
 		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(music_tree), event->x, event->y,
 						  &path, &column, NULL, NULL)) {
 			
+			int depth = gtk_tree_path_get_depth(path);
+#ifdef HAVE_CDDA
+			if (is_store_path_cdda(path))
+				depth += 1;
+#endif /* HAVE_CDDA */
+
 			if (!gtk_tree_selection_path_is_selected(music_select, path)) {
 				return FALSE;
 			}
 
-			switch (gtk_tree_path_get_depth(path)) {
+			switch (depth) {
 			case 1:
 				store__addlist_defmode(NULL);
 				return TRUE;

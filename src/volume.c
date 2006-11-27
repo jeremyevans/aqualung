@@ -449,6 +449,8 @@ volume_thread(void * arg) {
 
 	float * volumes = (float *)arg;
 
+	AQUALUNG_THREAD_DETACH()
+
 	while (process_volume(volumes) == TRUE);
 
 	return NULL;

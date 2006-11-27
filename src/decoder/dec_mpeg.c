@@ -873,6 +873,7 @@ build_seek_table_thread(void * args) {
 	printf("last_frames[0] = %ld\n", pd->last_frames[0]);
 #endif /* MPEG_DEBUG */
 	pd->builder_thread_running = 0;
+	AQUALUNG_THREAD_DETACH()
 	return NULL;
 }
 

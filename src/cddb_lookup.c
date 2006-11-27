@@ -932,6 +932,8 @@ cddb_thread(void * arg) {
 	int i;
 
 
+	AQUALUNG_THREAD_DETACH()
+
 	if (cddb_connection_setup(&conn) == 1) {
 		return NULL;
 	}
@@ -1026,6 +1028,8 @@ cddb_submit_thread(void * arg) {
 
 	req_time.tv_sec = 0;
         req_time.tv_nsec = 500000000;
+
+	AQUALUNG_THREAD_DETACH()
 
 	if (cddb_connection_setup(&conn) == 1) {
 		goto cleanup;

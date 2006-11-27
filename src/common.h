@@ -37,6 +37,7 @@
 #define AQUALUNG_THREAD_DECLARE(thread_id) GThread * thread_id;
 #define AQUALUNG_THREAD_CREATE(id, attr, func, args) id=g_thread_create(func, args, TRUE, NULL);
 #define AQUALUNG_THREAD_JOIN(thread_id) g_thread_join(thread_id);
+#define AQUALUNG_THREAD_DETACH() ;
 
 #define AQUALUNG_MUTEX_DECLARE(mutex) GMutex * mutex;
 #define AQUALUNG_MUTEX_DECLARE_INIT(mutex) GMutex * mutex = NULL;
@@ -54,6 +55,7 @@
 #define AQUALUNG_THREAD_DECLARE(thread_id) pthread_t thread_id;
 #define AQUALUNG_THREAD_CREATE(id, attr, func, args) pthread_create(&id, attr, func, args);
 #define AQUALUNG_THREAD_JOIN(thread_id) pthread_join(thread_id, NULL);
+#define AQUALUNG_THREAD_DETACH() pthread_detach(pthread_self());
 
 #define AQUALUNG_MUTEX_DECLARE(mutex) pthread_mutex_t mutex;
 #define AQUALUNG_MUTEX_DECLARE_INIT(mutex) pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;

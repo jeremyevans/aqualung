@@ -2549,6 +2549,8 @@ build_artist_thread(void * arg) {
 	char dir_record[MAXLEN];
 	char artist_d_name[MAXLEN];
 
+	AQUALUNG_THREAD_DETACH()
+
 	artist_iter_is_set = 1;
 
 	i = strlen(root);
@@ -2591,6 +2593,8 @@ build_store_thread(void * arg) {
 	char dir_artist[MAXLEN];
 	char dir_record[MAXLEN];
 
+
+	AQUALUNG_THREAD_DETACH()
 
 	for (i = 0; i < scandir(root, &ent_artist, filter, alphasort); i++) {
 

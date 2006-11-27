@@ -110,6 +110,7 @@ cdda_reader_thread(void * arg) {
 
 	AQUALUNG_MUTEX_LOCK(pd->cdda_reader_mutex)
 	pd->cdda_reader_status = CDDA_READER_FREE;
+	AQUALUNG_THREAD_DETACH()
 	AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
 
 	return NULL;

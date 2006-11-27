@@ -3871,6 +3871,8 @@ update_tag_thread(void * args) {
 	batch_tag_t * ptag = (batch_tag_t *)args;
 	batch_tag_t * _ptag = ptag;
 
+	AQUALUNG_THREAD_DETACH()
+
 	while (ptag) {
 
 		if (batch_tag_cancelled) {

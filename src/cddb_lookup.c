@@ -41,6 +41,7 @@
 #include "gui_main.h"
 #include "music_browser.h"
 #include "build_store.h"
+#include "cdda.h"
 #include "cddb_lookup.h"
 
 #define CASE_UP    0
@@ -63,6 +64,7 @@ volatile int cddb_query_aborted = 0;
 volatile int cddb_data_locked = 0;
 
 GtkTreeIter iter_record;
+GtkTreeIter iter_drive;
 
 GtkWidget * progress_win = NULL;
 GtkWidget * progress_label;
@@ -227,6 +229,35 @@ init_query_data_from_tracklist(build_track_t * tracks) {
 
 	return 0;
 }
+
+
+#ifdef HAVE_CDDA
+static int
+init_query_data_from_cdda_disc(cdda_disc_t * disc) {
+
+	int i;
+	float length = 0.0f;
+	float fr_offset = SECONDS_TO_FRAMES(2.0f); /* leading 2 secs in frames */
+
+	track_count = disc->n_tracks;
+
+	if ((frames = (int *)malloc(sizeof(int) * track_count)) == NULL) {
+		fprintf(stderr, "cddb_lookup.c: init_query_data_from_cdda_disc(): malloc error\n");
+		return 1;
+	}
+
+	for (i = 0; i < track_count; i++) {
+
+		frames[i] = (int)fr_offset;
+		length += (disc->toc[i+1] - disc->toc[i]) / 75.0;
+		fr_offset += disc->toc[i+1] - disc->toc[i];
+	}
+
+	record_length = length;
+
+	return 0;
+}
+#endif /* HAVE_CDDA */
 
 
 static void
@@ -1101,7 +1132,7 @@ cddb_timeout_callback(gpointer data) {
 		return FALSE;
 	}
 
-	if (cddb_thread_state == 0) {
+	if (cddb_thread_state == CDDB_THREAD_BUSY) {
 		if (progress_prev < progress_counter) {
 			snprintf(text, MAXLEN, _("%d of %d"), progress_counter, record_count);
 			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progbar),
@@ -1113,7 +1144,7 @@ cddb_timeout_callback(gpointer data) {
 	} else {
 		destroy_progress_window();
 
-		if (cddb_thread_state == -1) {
+		if (cddb_thread_state == CDDB_THREAD_ERROR) {
 			GtkWidget * dialog;
 
                         dialog = gtk_message_dialog_new(GTK_WINDOW(browser_window),
@@ -1128,7 +1159,7 @@ cddb_timeout_callback(gpointer data) {
 			aqualung_dialog_run(GTK_DIALOG(dialog));
 			gtk_widget_destroy(dialog);
 
-		} else if (cddb_thread_state == 1) {
+		} else if (cddb_thread_state == CDDB_THREAD_SUCCESS) {
 
 			if (record_count == 0) {
 				GtkWidget * dialog;
@@ -1166,6 +1197,111 @@ cddb_timeout_callback(gpointer data) {
 }
 
 
+static gint
+cdda_timeout_callback(gpointer data) {
+
+	int i, j;
+
+	map_t * map_artist = NULL;
+	map_t * map_record = NULL;
+	map_t ** map_tracks = NULL;
+
+	GtkTreeIter iter_track;
+
+	char tmp[MAXLEN];
+
+
+	if (cddb_thread_state == CDDB_THREAD_BUSY) {
+		return TRUE;
+	}
+
+	if ((map_tracks = (map_t **)malloc(sizeof(map_t *) * track_count)) == NULL) {
+		fprintf(stderr, "cddb_lookup.c: cdda_timeout_callback(): malloc error\n");
+		cddb_thread_state = CDDB_THREAD_FREE;
+		return FALSE;
+	}
+
+	for (i = 0; i < track_count; i++) {
+		map_tracks[i] = NULL;
+	}
+
+	for (i = 0; i < record_count; i++) {
+
+		strncpy(tmp, cddb_disc_get_artist(records[i]), MAXLEN-1);
+		map_put(&map_artist, tmp);
+
+		strncpy(tmp, cddb_disc_get_title(records[i]), MAXLEN-1);
+		map_put(&map_record, tmp);
+
+		for (j = 0; j < track_count; j++) {
+			strncpy(tmp,
+				cddb_track_get_title(cddb_disc_get_track(records[i], j)),
+				MAXLEN-1);
+			map_put(map_tracks + j, tmp);
+		}
+	}
+
+	tmp[0] = '\0';
+
+	if (map_artist) {
+
+		char * max = map_get_max(map_artist);
+
+		if (max) {
+			strcat(tmp, max);
+		} else {
+			strcat(tmp, _("Unknown"));
+		}
+	}
+
+	strcat(tmp, ": ");
+
+	if (map_record) {
+
+		char * max = map_get_max(map_record);
+
+		if (max) {
+			strcat(tmp, max);
+		} else {
+			strcat(tmp, _("Unknown"));
+		}
+	}
+
+	gtk_tree_store_set(music_store, &iter_drive, 0, tmp, -1);
+
+	for (i = 0; i < track_count &&
+		     gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+						   &iter_track, &iter_drive, i); i++) {
+
+		char * max = map_get_max(map_tracks[i]);
+
+		if (max) {
+			gtk_tree_store_set(music_store, &iter_track, 0, max, -1);
+		} else {
+			gtk_tree_store_set(music_store, &iter_track, 0, _("Unknown"), -1);
+		}
+
+		map_free(map_tracks[i]);
+	}
+
+	map_free(map_artist);
+	map_free(map_record);
+	free(map_tracks);
+
+	for (i = 0; i < record_count; i++) {
+		cddb_disc_destroy(records[i]);
+	}
+
+	free(records);
+	libcddb_shutdown();
+	free(frames);
+
+	cddb_thread_state = CDDB_THREAD_FREE;
+
+	return FALSE;
+}
+
+
 void
 cddb_get(GtkTreeIter * iter) {
 
@@ -1187,6 +1323,35 @@ cddb_get(GtkTreeIter * iter) {
 
 	g_timeout_add(100, cddb_timeout_callback, NULL);
 }
+
+
+#ifdef HAVE_CDDA
+void
+cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter) {
+
+	if (cddb_thread_state != CDDB_THREAD_FREE) {
+		return;
+	}
+
+	cddb_thread_state = CDDB_THREAD_BUSY;
+
+	if (init_query_data_from_cdda_disc(disc)) {
+		cddb_thread_state = CDDB_THREAD_FREE;
+		return;
+	}
+
+	iter_drive = iter;
+
+	cddb_query_aborted = 0;
+	progress_counter = 0;
+	progress_prev = 0;
+
+	AQUALUNG_THREAD_CREATE(cddb_thread_id, NULL, cddb_thread, NULL)
+
+	g_timeout_add(100, cdda_timeout_callback, NULL);
+}
+#endif /* HAVE_CDDA */
+
 
 void
 cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cddb_record) {
@@ -1319,6 +1484,7 @@ cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cdd
 
 	cddb_thread_state = CDDB_THREAD_FREE;
 }
+
 
 void
 cddb_submit(GtkTreeIter * iter) {

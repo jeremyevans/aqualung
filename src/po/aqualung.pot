@@ -400,6 +400,9 @@ msgstr ""
 msgid "No matching record found."
 msgstr ""
 
+msgid "Unknown"
+msgstr ""
+
 msgid "day"
 msgstr ""
 
@@ -1370,9 +1373,6 @@ msgstr ""
 msgid ""
 "Playback RVA is currently disabled.\n"
 "Do you want to enable it now?"
-msgstr ""
-
-msgid "Unknown"
 msgstr ""
 
 msgid "Select files"

@@ -472,6 +472,9 @@ msgstr "Fehler während des Verbindungen zur CDDB Server."
 msgid "No matching record found."
 msgstr "Neues Track zu diesem Album hinzufügen..."
 
+msgid "Unknown"
+msgstr "Unnbekannt"
+
 msgid "day"
 msgstr ""
 
@@ -1564,9 +1567,6 @@ msgid ""
 "Playback RVA is currently disabled.\n"
 "Do you want to enable it now?"
 msgstr ""
-
-msgid "Unknown"
-msgstr "Unnbekannt"
 
 #, fuzzy
 msgid "Select files"

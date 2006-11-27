@@ -62,6 +62,12 @@ extern GdkPixbuf * icon_record;
 extern GdkPixbuf * icon_track;
 extern GtkTreeStore * music_store;
 
+extern void cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter_drive);
+
+#ifdef HAVE_CDDB
+extern volatile int cddb_thread_state;
+#endif /* HAVE_CDDB */
+
 typedef struct {
 	int event_type;
 	char * device_path;
@@ -184,6 +190,37 @@ cdda_skip_extra_symlink(char ** drives, int i) {
 #endif /* !_WIN32 */
 }
 
+
+long
+calc_cdda_hash(cdda_disc_t * disc) {
+
+	long result = 0;
+	long tmp;
+	long discid;
+	int i;
+
+	if (disc->n_tracks == 0) {
+		return 0;
+	}
+
+	for (i = 0; i < disc->n_tracks; i++) {
+
+		tmp = (disc->toc[i] + 150) / 75;
+
+		do {
+			result += tmp % 10;
+			tmp /= 10;
+		} while (tmp != 0);
+	}
+
+        discid = (result % 0xff) << 24 | 
+		(disc->toc[disc->n_tracks] / 75) << 8 | 
+		disc->n_tracks;
+
+	printf("discid = %08X\n", (int)discid);
+
+	return discid;
+}
 
 /* return 0 if OK, -1 if drive is apparently not available */
 int
@@ -458,11 +495,11 @@ cdda_displayed_device_path(char * device_path) {
 #endif /* _WIN32 */
 }
 
-
 void
 update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 
 	int i;
+
 	for (i = 0; i < drive->disc.n_tracks; i++) {
 		
 		GtkTreeIter iter_track;
@@ -470,7 +507,7 @@ update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 		char path[CDDA_MAXLEN];
 		char sort[16];
 		float duration = (drive->disc.toc[i+1] - drive->disc.toc[i]) / 75.0;
-		
+
 		snprintf(title, MAXLEN-1, "Track %d", i+1);
 		snprintf(path, CDDA_MAXLEN-1, "CDDA %s %d", drive->device_path, i+1);
 		snprintf(sort, 15, "%02d", i+1);
@@ -488,6 +525,8 @@ update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 			gtk_tree_store_set(music_store, &iter_track, 9, icon_track, -1);
 		}
 	}
+
+	cddb_get_cdda(&drive->disc, iter_drive);
 }
 
 

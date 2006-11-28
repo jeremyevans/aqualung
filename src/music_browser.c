@@ -2196,6 +2196,13 @@ dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data)
 				return FALSE;
 			}
 
+			if (depth < 4) {
+				GtkTreeIter iter;
+				gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
+				if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter) == 0)
+					return FALSE;
+			}
+
 			switch (depth) {
 			case 1:
 				store__addlist_defmode(NULL);

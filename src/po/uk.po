@@ -449,9 +449,6 @@ msgstr "Трапилась помилка при спроб╕ п╕д'╓днання до сервера CDDB."
 msgid "No matching record found."
 msgstr "Схожих запис╕в не знайдено."
 
-msgid "Unknown"
-msgstr "Нев╕домо"
-
 msgid "day"
 msgstr ""
 
@@ -1525,6 +1522,9 @@ msgid ""
 "Do you want to enable it now?"
 msgstr ""
 "ПВР програвання зараз вимкнено. Ув╕мкн╕ть ╖╖ в Налаштування->ПВР програвання."
+
+msgid "Unknown"
+msgstr "Нев╕домо"
 
 #, fuzzy
 msgid "Select files"

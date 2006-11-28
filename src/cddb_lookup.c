@@ -966,6 +966,7 @@ cddb_thread(void * arg) {
 	AQUALUNG_THREAD_DETACH()
 
 	if (cddb_connection_setup(&conn) == 1) {
+		cddb_thread_state = CDDB_THREAD_ERROR;
 		return NULL;
 	}
 
@@ -1215,6 +1216,12 @@ cdda_timeout_callback(gpointer data) {
 		return TRUE;
 	}
 
+	if (cddb_thread_state != CDDB_THREAD_SUCCESS || record_count == 0) {
+		free(frames);
+		cddb_thread_state = CDDB_THREAD_FREE;
+		return FALSE;
+	}
+
 	if ((map_tracks = (map_t **)malloc(sizeof(map_t *) * track_count)) == NULL) {
 		fprintf(stderr, "cddb_lookup.c: cdda_timeout_callback(): malloc error\n");
 		cddb_thread_state = CDDB_THREAD_FREE;
@@ -1249,8 +1256,6 @@ cdda_timeout_callback(gpointer data) {
 
 		if (max) {
 			strcat(tmp, max);
-		} else {
-			strcat(tmp, _("Unknown"));
 		}
 	}
 
@@ -1262,8 +1267,6 @@ cdda_timeout_callback(gpointer data) {
 
 		if (max) {
 			strcat(tmp, max);
-		} else {
-			strcat(tmp, _("Unknown"));
 		}
 	}
 
@@ -1277,8 +1280,6 @@ cdda_timeout_callback(gpointer data) {
 
 		if (max) {
 			gtk_tree_store_set(music_store, &iter_track, 0, max, -1);
-		} else {
-			gtk_tree_store_set(music_store, &iter_track, 0, _("Unknown"), -1);
 		}
 
 		map_free(map_tracks[i]);

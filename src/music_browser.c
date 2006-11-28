@@ -1951,17 +1951,18 @@ is_store_iter_cdda(GtkTreeIter * i) {
 void
 set_popup_sensitivity(GtkTreePath * path) {
 
-	gboolean val = (is_store_path_readonly(path)) ? FALSE : TRUE;
-	gboolean val2 = (vol_window == NULL) ? val : FALSE;
+	gboolean writable = !is_store_path_readonly(path);
+	gboolean vol_free = (vol_window == NULL);
+	gboolean build_free = (build_thread_state == BUILD_THREAD_FREE);
+
+#ifdef HAVE_CDDB
+	gboolean cddb_free = (cddb_thread_state == CDDB_THREAD_FREE);
+#endif /* HAVE_CDDB */
 
 #if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
-	gboolean val3 = (batch_tag_root == NULL) ? TRUE : FALSE;
-
-	gtk_widget_set_sensitive(store__tag, val3);
-	gtk_widget_set_sensitive(artist__tag, val3);
-	gtk_widget_set_sensitive(record__tag, val3);
-	gtk_widget_set_sensitive(track__tag, val3);
+	gboolean tag_free = (batch_tag_root == NULL);
 #endif /* HAVE_TAGLIB && HAVE_METAEDIT */
+
 
 #ifdef HAVE_CDDA
 	if (is_store_path_cdda(path) && (gtk_tree_path_get_depth(path) == 2)) {
@@ -1969,60 +1970,61 @@ set_popup_sensitivity(GtkTreePath * path) {
 		GtkTreeIter iter;
 
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
-		val_cdda = (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter) > 0) ?
-			TRUE : FALSE;
+		val_cdda = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter) > 0;
 
 		gtk_widget_set_sensitive(cdda_record__addlist, val_cdda);
 		gtk_widget_set_sensitive(cdda_record__addlist_albummode, val_cdda);
 #ifdef HAVE_CDDB
-		gtk_widget_set_sensitive(cdda_record__cddb, val_cdda);
-		gtk_widget_set_sensitive(cdda_record__cddb_submit, val_cdda);
+		gtk_widget_set_sensitive(cdda_record__cddb, val_cdda && cddb_free && build_free);
+		gtk_widget_set_sensitive(cdda_record__cddb_submit, val_cdda && cddb_free && build_free);
 #endif /* HAVE_CDDB */
 		gtk_widget_set_sensitive(cdda_record__rip, val_cdda);
 		gtk_widget_set_sensitive(cdda_record__disc_info, val_cdda);
 	}
 #endif /* HAVE_CDDA */
 
-	gtk_widget_set_sensitive(store__build, val);
-	gtk_widget_set_sensitive(store__edit, val);
-	gtk_widget_set_sensitive(store__save, val);
-	gtk_widget_set_sensitive(store__addart, val);
-	gtk_widget_set_sensitive(store__volume, val2);
-
-	gtk_widget_set_sensitive(artist__add, val);
-	gtk_widget_set_sensitive(artist__build, val);
-	gtk_widget_set_sensitive(artist__edit, val);
-	gtk_widget_set_sensitive(artist__remove, val);
-	gtk_widget_set_sensitive(artist__addrec, val);
-	gtk_widget_set_sensitive(artist__volume, val2);
-
-	gtk_widget_set_sensitive(record__add, val);
-	gtk_widget_set_sensitive(record__edit, val);
-	gtk_widget_set_sensitive(record__remove, val);
-	gtk_widget_set_sensitive(record__addtrk, val);
+	gtk_widget_set_sensitive(store__build, writable &&
 #ifdef HAVE_CDDB
-	gtk_widget_set_sensitive(record__cddb, val);
-	gtk_widget_set_sensitive(record__cddb_submit, TRUE);
+				 cddb_free &&
 #endif /* HAVE_CDDB */
-	gtk_widget_set_sensitive(record__volume, val2);
+				 build_free);
+	gtk_widget_set_sensitive(store__edit, writable);
+	gtk_widget_set_sensitive(store__save, writable);
+	gtk_widget_set_sensitive(store__addart, writable);
+	gtk_widget_set_sensitive(store__volume, vol_free && writable);
 
-	gtk_widget_set_sensitive(track__add, val);
-	gtk_widget_set_sensitive(track__edit, val);
-	gtk_widget_set_sensitive(track__remove, val);
-	gtk_widget_set_sensitive(track__volume, val2);
+	gtk_widget_set_sensitive(artist__add, writable);
+	gtk_widget_set_sensitive(artist__build, writable &&
+#ifdef HAVE_CDDB
+				 cddb_free &&
+#endif /* HAVE_CDDB */
+				 build_free);
+	gtk_widget_set_sensitive(artist__edit, writable);
+	gtk_widget_set_sensitive(artist__remove, writable);
+	gtk_widget_set_sensitive(artist__addrec, writable);
+	gtk_widget_set_sensitive(artist__volume, vol_free && writable);
 
-	if (
+	gtk_widget_set_sensitive(record__add, writable);
+	gtk_widget_set_sensitive(record__edit, writable);
+	gtk_widget_set_sensitive(record__remove, writable);
+	gtk_widget_set_sensitive(record__addtrk, writable);
 #ifdef HAVE_CDDB
-	    cddb_thread_state != CDDB_THREAD_FREE ||
+	gtk_widget_set_sensitive(record__cddb, writable && cddb_free && build_free);
+	gtk_widget_set_sensitive(record__cddb_submit, cddb_free && build_free);
 #endif /* HAVE_CDDB */
-	    build_thread_state != BUILD_THREAD_FREE) {
-		gtk_widget_set_sensitive(store__build, FALSE);
-		gtk_widget_set_sensitive(artist__build, FALSE);
-#ifdef HAVE_CDDB
-		gtk_widget_set_sensitive(record__cddb, FALSE);
-		gtk_widget_set_sensitive(record__cddb_submit, FALSE);
-#endif /* HAVE_CDDB */
-	}
+	gtk_widget_set_sensitive(record__volume, vol_free && writable);
+
+	gtk_widget_set_sensitive(track__add, writable);
+	gtk_widget_set_sensitive(track__edit, writable);
+	gtk_widget_set_sensitive(track__remove, writable);
+	gtk_widget_set_sensitive(track__volume, vol_free && writable);
+
+#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
+	gtk_widget_set_sensitive(store__tag, tag_free);
+	gtk_widget_set_sensitive(artist__tag, tag_free);
+	gtk_widget_set_sensitive(record__tag, tag_free);
+	gtk_widget_set_sensitive(track__tag, tag_free);
+#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 }
 
 

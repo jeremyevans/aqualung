@@ -443,9 +443,6 @@ msgstr "Hiba történt a CDDB szerverhez való kapcsolódás közben."
 msgid "No matching record found."
 msgstr "Az album nem található az adatbázisban."
 
-msgid "Unknown"
-msgstr "Ismeretlen"
-
 msgid "day"
 msgstr "nap"
 
@@ -1474,6 +1471,9 @@ msgid ""
 msgstr ""
 "A lejátszáskori RVA jelenleg nem engedélyezett.\n"
 "Akarod most engedélyezni?"
+
+msgid "Unknown"
+msgstr "Ismeretlen"
 
 msgid "Select files"
 msgstr "Fájlok kiválasztása"

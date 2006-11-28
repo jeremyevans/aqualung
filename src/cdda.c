@@ -526,7 +526,9 @@ update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 		}
 	}
 
+#ifdef HAVE_CDDB
 	cddb_get_cdda(&drive->disc, iter_drive);
+#endif /* HAVE_CDDB */
 }
 
 

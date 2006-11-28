@@ -30,7 +30,7 @@
 #include <glib/gstdio.h>
 #ifndef _WIN32
 #include <pthread.h>
-#endif /* _WIN32 */
+#endif /* !_WIN32 */
 
 #ifdef HAVE_CDDB
 #define _TMP_HAVE_CDDB 1
@@ -148,43 +148,65 @@ cdda_get_drive_by_device_path(char * device_path) {
 }
 
 
+/* value should point to a buffer of size at least CDDA_MAXLEN */
+/* ret 0 if OK, -1 if readlink error */
+int
+symlink_deref_absolute(char * symlink, char * path) {
+
+	int ret = readlink(symlink, path, CDDA_MAXLEN-1);
+	if (ret < 0)
+		return -1;
+	path[ret] = '\0';
+	
+	if (!g_path_is_absolute(path)) {
+		char tmp[CDDA_MAXLEN];
+		char * dir = g_path_get_dirname(symlink);
+		snprintf(tmp, CDDA_MAXLEN-1, "%s/%s", dir, path);
+		strcpy(path, tmp);
+		g_free(dir);
+	}
+	return 0;
+}
+
 /* return 1 if drives[i] is a symlink to a drive path
- * also present in the drives[] string array, 0 else.
+ * also present in the drives[] string array, or the
+ * second, third, ... of symlinks pointing to the same
+ * physical device path. Return 0 else.
  */
 int
 cdda_skip_extra_symlink(char ** drives, int i) {
 
 #ifndef _WIN32
-	if (g_file_test(drives[i], G_FILE_TEST_IS_SYMLINK)) {
-		int ret, j;
-		int found = 0;
-		char path[CDDA_MAXLEN];
+	int j;
+	char path[CDDA_MAXLEN];
 
-		ret = readlink(drives[i], path, CDDA_MAXLEN-1);
-		if (ret < 0)
-			return 1;
-		path[ret] = '\0';
-
-		if (!g_path_is_absolute(path)) {
-			char tmp[CDDA_MAXLEN];
-			char * dir = g_path_get_dirname(drives[i]);
-			snprintf(tmp, CDDA_MAXLEN-1, "%s/%s", dir, path);
-			strcpy(path, tmp);
-			g_free(dir);
-		}
-
-		for (j = 0; drives[j] != NULL; j++) {
-			if (i == j)
-				continue;
-			if (strcmp(drives[j], path) == 0) {
-				found = 1;
-				break;
-			}
-		}
-		return found;
-	} else {
+	if (!g_file_test(drives[i], G_FILE_TEST_IS_SYMLINK))
 		return 0;
+
+	if ((symlink_deref_absolute(drives[i], path)) != 0)
+		return 1;
+
+	/* have the destination of the symlink in our device list */
+	for (j = 0; drives[j] != NULL; j++) {
+		if (i == j)
+			continue;
+		if (strcmp(drives[j], path) == 0) {
+			return 1;
+		}
 	}
+
+	/* have another symlink to the same destination with a smaller index */
+	for (j = 0; (j < i) && (drives[j] != NULL); j++) {
+		char path2[CDDA_MAXLEN];
+		if (!g_file_test(drives[j], G_FILE_TEST_IS_SYMLINK))
+			continue;
+		if ((symlink_deref_absolute(drives[j], path2)) != 0)
+			continue;
+		if (strcmp(path, path2) == 0)
+			return 1;
+	}
+	
+	return 0;
 #else
 	return 0;
 #endif /* !_WIN32 */

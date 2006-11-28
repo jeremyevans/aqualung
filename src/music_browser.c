@@ -182,6 +182,10 @@ GtkWidget * cdda_record__rip;
 GtkWidget * cdda_record__separator2;
 GtkWidget * cdda_record__disc_info;
 GtkWidget * cdda_record__drive_info;
+
+GtkWidget * cdda_store_menu;
+GtkWidget * cdda_store__addlist;
+GtkWidget * cdda_store__addlist_albummode;
 #endif /* HAVE_CDDA */
 
 GtkWidget * blank_menu;
@@ -324,6 +328,12 @@ struct keybinds track_keybinds[] = {
 };
 
 #ifdef HAVE_CDDA
+struct keybinds cdda_store_keybinds[] = {
+	{artist__addlist_defmode, GDK_a, GDK_A},
+        {collapse_all_items_cb, GDK_w, GDK_W},
+	{NULL, 0}
+};
+
 struct keybinds cdda_record_keybinds[] = {
 	{record__addlist_defmode, GDK_a, GDK_A},
         {collapse_all_items_cb, GDK_w, GDK_W},
@@ -2049,7 +2059,9 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 #ifdef HAVE_CDDA
 				if (is_store_path_cdda(path)) {
 				switch (gtk_tree_path_get_depth(path)) {
-				case 1: /* no popup for CDDA_STORE */
+				case 1:
+					gtk_menu_popup(GTK_MENU(cdda_store_menu), NULL, NULL, NULL, NULL,
+						       bevent->button, bevent->time);
 					break;
 				case 2:
 					gtk_menu_popup(GTK_MENU(cdda_record_menu), NULL, NULL, NULL, NULL,
@@ -2118,7 +2130,11 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 #ifdef HAVE_CDDA
 			if (is_store_path_cdda(path)) {
 			switch (gtk_tree_path_get_depth(path)) {
-			case 1: /* no keybinds for CDDA_STORE */
+			case 1:
+				for (i = 0; cdda_store_keybinds[i].callback; ++i)
+					if (kevent->keyval == cdda_store_keybinds[i].keyval1 ||
+					    kevent->keyval == cdda_store_keybinds[i].keyval2)
+						(cdda_store_keybinds[i].callback)(NULL);
 				break;
 			case 2:
 				for (i = 0; cdda_record_keybinds[i].callback; ++i)
@@ -2196,13 +2212,6 @@ dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data)
 
 			if (!gtk_tree_selection_path_is_selected(music_select, path)) {
 				return FALSE;
-			}
-
-			if (depth < 4) {
-				GtkTreeIter iter;
-				gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
-				if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter) == 0)
-					return FALSE;
 			}
 
 			switch (depth) {
@@ -2385,6 +2394,9 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 	float record_duration = 0.0f;
 
 
+	if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter_record) == 0)
+		return;
+
 	if (options.rva_is_enabled && options.rva_use_averaging) { /* save track volumes */
 
 		float * volumes = NULL;
@@ -2492,6 +2504,7 @@ store__addlist_with_mode(int mode, gpointer data) {
         GtkTreeIter iter_store;
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_store)) {
+
 		store_addlist_iter(iter_store, (GtkTreeIter *)data, mode);
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
@@ -5070,6 +5083,20 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_track_menu), cdda_track__addlist);
  	g_signal_connect_swapped(G_OBJECT(cdda_track__addlist), "activate", G_CALLBACK(track__addlist_cb), NULL);
 	gtk_widget_show(cdda_track__addlist);
+
+	/* create popup menu for cdda_store tree items */
+	cdda_store_menu = gtk_menu_new();
+	cdda_store__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
+	cdda_store__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
+
+	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_store_menu), cdda_store__addlist);
+	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_store_menu), cdda_store__addlist_albummode);
+
+ 	g_signal_connect_swapped(G_OBJECT(cdda_store__addlist), "activate", G_CALLBACK(artist__addlist_cb), NULL);
+ 	g_signal_connect_swapped(G_OBJECT(cdda_store__addlist_albummode), "activate", G_CALLBACK(artist__addlist_albummode_cb), NULL);
+
+	gtk_widget_show(cdda_store__addlist);
+	gtk_widget_show(cdda_store__addlist_albummode);
 #endif /* HAVE_CDDA */
 
 

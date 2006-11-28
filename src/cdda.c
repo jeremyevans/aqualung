@@ -541,6 +541,7 @@ update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 				   2, path,
 				   3, "",
 				   4, duration,
+				   5, 1.0f, /* volume - unmeasured */
 				   -1);
 
 		if (options.enable_ms_tree_icons) {

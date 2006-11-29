@@ -1393,6 +1393,9 @@ mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	int i;
 	unsigned long offset;
 	unsigned long long sample;
+#ifdef MPEG_DEBUG
+	int cnt = 0;
+#endif /* MPEG_DEBUG */
 
 	if (seek_to_pos < pd->mp3info.frame_samples) {
 		pd->frame_counter = 0;
@@ -1431,6 +1434,9 @@ mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 
 	offset = pd->seek_table[i].offset;
 	sample = pd->seek_table[i].sample;
+#ifdef MPEG_DEBUG
+	printf("seek table: byte_offset = %d  sample_pos = %d\n", offset, sample);
+#endif /* MPEG_DEBUG */
 
 	do {
 		if (offset > pd->filesize - 4) {
@@ -1446,13 +1452,25 @@ mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 				
 				sample += mp3info.frame_samples;
 				offset += mp3info.frame_size;
+#ifdef MPEG_DEBUG
+				cnt += mp3info.frame_size;
+#endif /* MPEG_DEBUG */
 			} else {
 				++offset;
+#ifdef MPEG_DEBUG
+				++cnt;
+#endif /* MPEG_DEBUG */
 			}
 		} else {
 			++offset;
+#ifdef MPEG_DEBUG
+			++cnt;
+#endif /* MPEG_DEBUG */
 		}
 	} while (sample + mp3info.frame_samples < seek_to_pos);
+#ifdef MPEG_DEBUG
+	printf("stream nudged by %d bytes\n", cnt);
+#endif /* MPEG_DEBUG */
 
 	pd->mpeg_stream.next_frame = pd->mpeg_stream.buffer - pd->mp3info.start_byteoffset + offset;
 	fdec->samples_left = fdec->fileinfo.total_samples - sample;

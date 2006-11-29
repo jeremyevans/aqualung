@@ -468,6 +468,9 @@ disk_thread(void * arg) {
 			n_src_prev = n_src;
 			want_read = floor((n_space - n_src) / src_ratio);
 
+			if (want_read == 0)
+				break;
+
 			if (want_read > MAX_RATIO * info->rb_size)
 				want_read = MAX_RATIO * info->rb_size;
 			

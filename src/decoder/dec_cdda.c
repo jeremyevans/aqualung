@@ -80,7 +80,7 @@ cdda_reader_thread(void * arg) {
 		if (pd->cdda_reader_status == CDDA_READER_FREE) {
 			AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
 			pd->overread_sectors = 0;
-			paranoia_free(pd->paranoia);
+			cdio_paranoia_free(pd->paranoia);
 			return NULL;
 		}
 		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
@@ -106,7 +106,7 @@ cdda_reader_thread(void * arg) {
 		}
 	}
 
-	paranoia_free(pd->paranoia);
+	cdio_paranoia_free(pd->paranoia);
 
 	AQUALUNG_MUTEX_LOCK(pd->cdda_reader_mutex)
 	pd->cdda_reader_status = CDDA_READER_FREE;
@@ -190,7 +190,14 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 	}
 	pd->track_no = track;
 
-	pd->drive = cdio_cddap_identify(pd->device_path, 0, NULL);
+	pd->cdio = cdio_open(pd->device_path, DRIVER_DEVICE);
+	if (!pd->cdio) {
+		printf("dec_cdda.c: Couldn't open cdio device%s\n", pd->device_path);
+		return DECODER_OPEN_BADLIB;
+	}
+	//cdio_set_speed(pd->cdio, 2);
+
+	pd->drive = cdio_cddap_identify_cdio(pd->cdio, 0, NULL);
 	if (!pd->drive) {
 		printf("dec_cdda.c: Couldn't open drive %s\n", pd->device_path);
 		return DECODER_OPEN_BADLIB;
@@ -282,7 +289,8 @@ cdda_decoder_close(decoder_t * dec) {
 	}
 
 	rb_free(pd->rb);
-	cdda_close(pd->drive);
+	cdio_cddap_close(pd->drive);
+	cdio_destroy(pd->cdio);
 	/* TODO mark drive as unused */
 }
 

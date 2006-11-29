@@ -59,6 +59,7 @@ typedef struct _cdda_pdata_t {
 	rb_t * rb;
 	char device_path[CDDA_MAXLEN];
 	track_t track_no;
+	CdIo_t * cdio;
 	cdrom_drive_t * drive;
 	cdrom_paranoia_t * paranoia;
 	lsn_t first_lsn;

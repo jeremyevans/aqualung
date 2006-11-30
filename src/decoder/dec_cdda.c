@@ -289,7 +289,7 @@ cdda_decoder_close(decoder_t * dec) {
 	}
 
 	rb_free(pd->rb);
-	cdio_cddap_close(pd->drive);
+	cdio_cddap_close_no_free_cdio(pd->drive);
 	cdio_destroy(pd->cdio);
 	/* TODO mark drive as unused */
 }

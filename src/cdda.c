@@ -51,6 +51,7 @@
 #include "common.h"
 #include "options.h"
 #include "music_browser.h"
+#include "gui_main.h"
 #include "rb.h"
 #include "i18n.h"
 #include "cdda.h"
@@ -61,6 +62,7 @@ extern GdkPixbuf * icon_store;
 extern GdkPixbuf * icon_record;
 extern GdkPixbuf * icon_track;
 extern GtkTreeStore * music_store;
+extern GtkWidget * browser_window;
 
 extern void cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter_drive);
 
@@ -248,7 +250,6 @@ calc_cdda_hash(cdda_disc_t * disc) {
 int
 cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 
-	cdio_hwinfo_t hwinfo;
 	track_t tracks;
 	track_t first_track;
 	track_t last_track;
@@ -264,18 +265,8 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 		cdda_drive->cdio = cdio_open(device_path, DRIVER_DEVICE);
 		if (!cdda_drive->cdio) {
 			return -1;
-		}
-		
-		if (!cdio_get_hwinfo(cdda_drive->cdio, &hwinfo)) {
-			cdio_destroy(cdda_drive->cdio);
-			cdda_drive->cdio = NULL;
-			return -1;
-		}
-		
+		}		
 		strncpy(cdda_drive->device_path, device_path, CDDA_MAXLEN-1);
-		strncpy(cdda_drive->vendor, hwinfo.psz_vendor, CDDA_MAXLEN-1);
-		strncpy(cdda_drive->model, hwinfo.psz_model, CDDA_MAXLEN-1);
-		strncpy(cdda_drive->revision, hwinfo.psz_revision, CDDA_MAXLEN-1);
 	}
 	
 	cdda_drive->disc.n_tracks = 0;
@@ -587,11 +578,11 @@ insert_cdda_drive_node(char * device_path) {
 	char str_sort[16];
 
 	if (drive->disc.n_tracks > 0) {
-		snprintf(str_title, MAXLEN-1, "Unknown disc [%s]",
-			 cdda_displayed_device_path(device_path));
+		snprintf(str_title, MAXLEN-1, "%s [%s]",
+			 _("Unknown disc"), cdda_displayed_device_path(device_path));
 	} else {
-		snprintf(str_title, MAXLEN-1, "No disc [%s]",
-			 cdda_displayed_device_path(device_path));
+		snprintf(str_title, MAXLEN-1, "%s [%s]",
+			 _("No disc"), cdda_displayed_device_path(device_path));
 	}
 
 	snprintf(str_path, CDDA_MAXLEN-1, "CDDA_DRIVE %s", device_path);
@@ -698,6 +689,164 @@ refresh_cdda_drive_node(char * device_path) {
 	if (drive->disc.n_tracks > 0) {
 		update_track_data(drive, iter_drive);
 	}
+}
+
+
+void
+cdda_info_row(char * text, int yes, GtkWidget * table, int * cnt) {
+
+	GtkWidget * image;
+	GtkWidget * label;
+	GtkWidget * hbox;
+
+	image = gtk_image_new_from_stock(yes ? GTK_STOCK_APPLY : GTK_STOCK_CANCEL, GTK_ICON_SIZE_BUTTON);
+	label = gtk_label_new(text);
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), image, 0, 1, *cnt, *cnt+1, GTK_FILL, GTK_FILL, 2, 1);
+	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, *cnt, *cnt+1, GTK_FILL, GTK_FILL, 5, 1);
+	(*cnt)++;
+}
+
+
+void
+cdda_drive_info(char * device_path) {
+
+	cdda_drive_t * drive = cdda_get_drive_by_device_path(device_path);
+	CdIo_t * cdio;
+	cdio_hwinfo_t hwinfo;
+	cdio_drive_read_cap_t read_cap;
+	cdio_drive_write_cap_t write_cap;
+	cdio_drive_misc_cap_t misc_cap;
+
+        GtkWidget * dialog;
+	GtkWidget * label;
+	GtkWidget * hbox;
+	GtkWidget * vbox;
+	GtkWidget * notebook;
+	GtkWidget * table;
+	char str[MAXLEN];
+
+	if (!drive)
+		return;
+
+	cdio = cdio_open(device_path, DRIVER_UNKNOWN);
+	if (!cdio_get_hwinfo(cdio, &hwinfo)) {
+		cdio_destroy(cdio);
+		return;
+	}
+	cdio_get_drive_cap(cdio, &read_cap, &write_cap, &misc_cap);
+	cdio_destroy(cdio);
+
+	snprintf(str, MAXLEN-1, "%s [%s]", _("Drive info"), cdda_displayed_device_path(device_path));
+
+        dialog = gtk_dialog_new_with_buttons(str,
+					     GTK_WINDOW(browser_window),
+					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					     GTK_STOCK_CLOSE, GTK_RESPONSE_OK,
+					     NULL);
+
+	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), vbox, FALSE, FALSE, 4);
+
+	snprintf(str, MAXLEN-1, "%s:\t%s", _("Vendor"), hwinfo.psz_vendor);
+	hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(str);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
+
+	snprintf(str, MAXLEN-1, "%s:\t%s", _("Model"), hwinfo.psz_model);
+	hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(str);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
+
+	snprintf(str, MAXLEN-1, "%s:\t%s", _("Revision"), hwinfo.psz_revision);
+	hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(str);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(_("The information below is reported by the drive, and\n"
+				"may not reflect the actual capabilities of the device."));
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 10);
+
+	if ((misc_cap == CDIO_DRIVE_CAP_ERROR) &&
+	    (read_cap == CDIO_DRIVE_CAP_ERROR) &&
+	    (write_cap == CDIO_DRIVE_CAP_ERROR)) {
+
+		goto cdda_info_finish;
+	}
+
+	notebook = gtk_notebook_new();
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), notebook, TRUE, TRUE, 0);
+
+	if (misc_cap != CDIO_DRIVE_CAP_ERROR) {
+		int cnt = 0;
+		label = gtk_label_new(_("General"));
+		table = gtk_table_new(8, 2, FALSE);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, label);
+
+		cdda_info_row(_("Eject"), misc_cap & CDIO_DRIVE_CAP_MISC_EJECT, table, &cnt);
+		cdda_info_row(_("Close tray"), misc_cap & CDIO_DRIVE_CAP_MISC_CLOSE_TRAY, table, &cnt);
+		cdda_info_row(_("Disable manual eject"), misc_cap & CDIO_DRIVE_CAP_MISC_LOCK, table, &cnt);
+		cdda_info_row(_("Select juke-box disc"), misc_cap & CDIO_DRIVE_CAP_MISC_SELECT_DISC, table, &cnt);
+		cdda_info_row(_("Set drive speed"), misc_cap & CDIO_DRIVE_CAP_MISC_SELECT_SPEED, table, &cnt);
+		cdda_info_row(_("Detect media change"), misc_cap & CDIO_DRIVE_CAP_MISC_MEDIA_CHANGED, table, &cnt);
+		cdda_info_row(_("Read multiple sessions"), misc_cap & CDIO_DRIVE_CAP_MISC_MULTI_SESSION, table, &cnt);
+		cdda_info_row(_("Hard reset device"), misc_cap & CDIO_DRIVE_CAP_MISC_RESET, table, &cnt);
+	}
+
+	if (read_cap != CDIO_DRIVE_CAP_ERROR) {
+		int cnt = 0;
+		label = gtk_label_new(_("Reading"));
+		table = gtk_table_new(16, 2, FALSE);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, label);
+
+		cdda_info_row(_("Play CD Audio"), read_cap & CDIO_DRIVE_CAP_READ_AUDIO, table, &cnt);
+		cdda_info_row(_("Read CD-DA"), read_cap & CDIO_DRIVE_CAP_READ_CD_DA, table, &cnt);
+		cdda_info_row(_("Read CD+G"), read_cap & CDIO_DRIVE_CAP_READ_CD_G, table, &cnt);
+		cdda_info_row(_("Read CD-R"), read_cap & CDIO_DRIVE_CAP_READ_CD_R, table, &cnt);
+		cdda_info_row(_("Read CD-RW"), read_cap & CDIO_DRIVE_CAP_READ_CD_RW, table, &cnt);
+		cdda_info_row(_("Read DVD-R"), read_cap & CDIO_DRIVE_CAP_READ_DVD_R, table, &cnt);
+		cdda_info_row(_("Read DVD+R"), read_cap & CDIO_DRIVE_CAP_READ_DVD_PR, table, &cnt);
+		cdda_info_row(_("Read DVD-RW"), read_cap & CDIO_DRIVE_CAP_READ_DVD_RW, table, &cnt);
+		cdda_info_row(_("Read DVD+RW"), read_cap & CDIO_DRIVE_CAP_READ_DVD_RPW, table, &cnt);
+		cdda_info_row(_("Read DVD-RAM"), read_cap & CDIO_DRIVE_CAP_READ_DVD_RAM, table, &cnt);
+		cdda_info_row(_("Read DVD-ROM"), read_cap & CDIO_DRIVE_CAP_READ_DVD_ROM, table, &cnt);
+		cdda_info_row(_("C2 Error Correction"), read_cap & CDIO_DRIVE_CAP_READ_C2_ERRS, table, &cnt);
+		cdda_info_row(_("Read Mode 2 Form 1"), read_cap & CDIO_DRIVE_CAP_READ_MODE2_FORM1, table, &cnt);
+		cdda_info_row(_("Read Mode 2 Form 2"), read_cap & CDIO_DRIVE_CAP_READ_MODE2_FORM2, table, &cnt);
+		cdda_info_row(_("Read MCN"), read_cap & CDIO_DRIVE_CAP_READ_MCN, table, &cnt);
+		cdda_info_row(_("Read ISRC"), read_cap & CDIO_DRIVE_CAP_READ_ISRC, table, &cnt);
+	}
+
+	if (write_cap != CDIO_DRIVE_CAP_ERROR) {
+		int cnt = 0;
+		label = gtk_label_new(_("Writing"));
+		table = gtk_table_new(9, 2, FALSE);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, label);
+
+		cdda_info_row(_("Write CD-R"), write_cap & CDIO_DRIVE_CAP_WRITE_CD_R, table, &cnt);
+		cdda_info_row(_("Write CD-RW"), write_cap & CDIO_DRIVE_CAP_WRITE_CD_RW, table, &cnt);
+		cdda_info_row(_("Write DVD-R"), write_cap & CDIO_DRIVE_CAP_WRITE_DVD_R, table, &cnt);
+		cdda_info_row(_("Write DVD+R"), write_cap & CDIO_DRIVE_CAP_WRITE_DVD_PR, table, &cnt);
+		cdda_info_row(_("Write DVD-RW"), write_cap & CDIO_DRIVE_CAP_WRITE_DVD_RW, table, &cnt);
+		cdda_info_row(_("Write DVD+RW"), write_cap & CDIO_DRIVE_CAP_WRITE_DVD_RPW, table, &cnt);
+		cdda_info_row(_("Write DVD-RAM"), write_cap & CDIO_DRIVE_CAP_WRITE_DVD_RAM, table, &cnt);
+		cdda_info_row(_("Mount Rainier"), write_cap & CDIO_DRIVE_CAP_WRITE_MT_RAINIER, table, &cnt);
+		cdda_info_row(_("Burn Proof"), write_cap & CDIO_DRIVE_CAP_WRITE_BURN_PROOF, table, &cnt);
+	}
+
+ cdda_info_finish:
+	gtk_widget_show_all(dialog);
+        aqualung_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
 }
 
 

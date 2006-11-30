@@ -352,6 +352,140 @@ msgstr ""
 msgid "CD Audio"
 msgstr ""
 
+#, fuzzy
+msgid "Unknown disc"
+msgstr "Нев╕домо"
+
+msgid "No disc"
+msgstr ""
+
+#, fuzzy
+msgid "Drive info"
+msgstr "╤нформац╕я про файл"
+
+#, fuzzy
+msgid "Vendor"
+msgstr "Постачальник:"
+
+msgid "Model"
+msgstr ""
+
+msgid "Revision"
+msgstr ""
+
+msgid ""
+"The information below is reported by the drive, and\n"
+"may not reflect the actual capabilities of the device."
+msgstr ""
+
+msgid "Eject"
+msgstr ""
+
+#, fuzzy
+msgid "Close tray"
+msgstr "Кольори"
+
+msgid "Disable manual eject"
+msgstr ""
+
+msgid "Select juke-box disc"
+msgstr ""
+
+msgid "Set drive speed"
+msgstr ""
+
+msgid "Detect media change"
+msgstr ""
+
+msgid "Read multiple sessions"
+msgstr ""
+
+msgid "Hard reset device"
+msgstr ""
+
+#, fuzzy
+msgid "Reading"
+msgstr "Пресканувати"
+
+msgid "Play CD Audio"
+msgstr ""
+
+msgid "Read CD-DA"
+msgstr ""
+
+msgid "Read CD+G"
+msgstr ""
+
+msgid "Read CD-R"
+msgstr ""
+
+msgid "Read CD-RW"
+msgstr ""
+
+msgid "Read DVD-R"
+msgstr ""
+
+msgid "Read DVD+R"
+msgstr ""
+
+msgid "Read DVD-RW"
+msgstr ""
+
+msgid "Read DVD+RW"
+msgstr ""
+
+msgid "Read DVD-RAM"
+msgstr ""
+
+msgid "Read DVD-ROM"
+msgstr ""
+
+msgid "C2 Error Correction"
+msgstr ""
+
+msgid "Read Mode 2 Form 1"
+msgstr ""
+
+msgid "Read Mode 2 Form 2"
+msgstr ""
+
+msgid "Read MCN"
+msgstr ""
+
+msgid "Read ISRC"
+msgstr ""
+
+#, fuzzy
+msgid "Writing"
+msgstr "Увага"
+
+msgid "Write CD-R"
+msgstr ""
+
+msgid "Write CD-RW"
+msgstr ""
+
+msgid "Write DVD-R"
+msgstr ""
+
+msgid "Write DVD+R"
+msgstr ""
+
+msgid "Write DVD-RW"
+msgstr ""
+
+msgid "Write DVD+RW"
+msgstr ""
+
+msgid "Write DVD-RAM"
+msgstr ""
+
+msgid "Mount Rainier"
+msgstr ""
+
+msgid "Burn Proof"
+msgstr ""
+
 msgid "CDDB query"
 msgstr "CDDB запит"
 
@@ -2181,12 +2315,12 @@ msgstr "Ступ╕нь стиснення: Дуже висока"
 msgid "Compression: Insane"
 msgstr "Ступ╕нь стиснення: Божев╕льна"
 
+#, fuzzy
+#~ msgid "Write"
+#~ msgstr "Назва"
+
 #~ msgid "%.1f kbit/s"
 #~ msgstr "%.1f кб╕т/с"
-
-#, fuzzy
-#~ msgid "Close"
-#~ msgstr "Кольори"
 
 #~ msgid "Protocol:"
 #~ msgstr "Протокол:"

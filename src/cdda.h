@@ -56,9 +56,6 @@ typedef struct {
 	int media_changed;
 	int is_used; /* drive under use should not be scanned */
 	char device_path[CDDA_MAXLEN];
-	char vendor[CDDA_MAXLEN];
-	char model[CDDA_MAXLEN];
-	char revision[CDDA_MAXLEN];
 	cdda_disc_t disc;
 } cdda_drive_t;
 
@@ -69,6 +66,8 @@ void create_cdda_node(void);
 void insert_cdda_drive_node(char * device_path);
 void remove_cdda_drive_node(char * device_path);
 void refresh_cdda_drive_node(char * device_path);
+
+void cdda_drive_info(char * device_path);
 
 
 #endif /* HAVE_CDDA */

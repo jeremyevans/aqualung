@@ -305,6 +305,134 @@ msgstr ""
 msgid "CD Audio"
 msgstr ""
 
+msgid "Unknown disc"
+msgstr ""
+
+msgid "No disc"
+msgstr ""
+
+msgid "Drive info"
+msgstr ""
+
+msgid "Vendor"
+msgstr ""
+
+msgid "Model"
+msgstr ""
+
+msgid "Revision"
+msgstr ""
+
+msgid ""
+"The information below is reported by the drive, and\n"
+"may not reflect the actual capabilities of the device."
+msgstr ""
+
+msgid "Eject"
+msgstr ""
+
+msgid "Close tray"
+msgstr ""
+
+msgid "Disable manual eject"
+msgstr ""
+
+msgid "Select juke-box disc"
+msgstr ""
+
+msgid "Set drive speed"
+msgstr ""
+
+msgid "Detect media change"
+msgstr ""
+
+msgid "Read multiple sessions"
+msgstr ""
+
+msgid "Hard reset device"
+msgstr ""
+
+msgid "Reading"
+msgstr ""
+
+msgid "Play CD Audio"
+msgstr ""
+
+msgid "Read CD-DA"
+msgstr ""
+
+msgid "Read CD+G"
+msgstr ""
+
+msgid "Read CD-R"
+msgstr ""
+
+msgid "Read CD-RW"
+msgstr ""
+
+msgid "Read DVD-R"
+msgstr ""
+
+msgid "Read DVD+R"
+msgstr ""
+
+msgid "Read DVD-RW"
+msgstr ""
+
+msgid "Read DVD+RW"
+msgstr ""
+
+msgid "Read DVD-RAM"
+msgstr ""
+
+msgid "Read DVD-ROM"
+msgstr ""
+
+msgid "C2 Error Correction"
+msgstr ""
+
+msgid "Read Mode 2 Form 1"
+msgstr ""
+
+msgid "Read Mode 2 Form 2"
+msgstr ""
+
+msgid "Read MCN"
+msgstr ""
+
+msgid "Read ISRC"
+msgstr ""
+
+msgid "Writing"
+msgstr ""
+
+msgid "Write CD-R"
+msgstr ""
+
+msgid "Write CD-RW"
+msgstr ""
+
+msgid "Write DVD-R"
+msgstr ""
+
+msgid "Write DVD+R"
+msgstr ""
+
+msgid "Write DVD-RW"
+msgstr ""
+
+msgid "Write DVD+RW"
+msgstr ""
+
+msgid "Write DVD-RAM"
+msgstr ""
+
+msgid "Mount Rainier"
+msgstr ""
+
+msgid "Burn Proof"
+msgstr ""
+
 msgid "CDDB query"
 msgstr ""
 

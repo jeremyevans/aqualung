@@ -526,30 +526,17 @@ msgstr "Treffer:"
 msgid "Artist:"
 msgstr "Artist"
 
-msgid "Import as Artist"
-msgstr "Als Artist importieren"
-
 #, fuzzy
 msgid "Title:"
 msgstr "Titel:"
-
-msgid "Import as Title"
-msgstr "Als Titel importieren"
 
 #, fuzzy
 msgid "Year:"
 msgstr "Jahr"
 
 #, fuzzy
-msgid "Import as Sort Key"
-msgstr "Als Titel importieren"
-
-#, fuzzy
 msgid "Category:"
 msgstr "Kategorie"
-
-msgid "Add to Comments"
-msgstr "Zum Kommentar hinzufügen"
 
 #, fuzzy
 msgid "Genre:"
@@ -557,6 +544,19 @@ msgstr "Genre"
 
 msgid "Extended data:"
 msgstr "Erweiterte Daten:"
+
+msgid "Import as Artist"
+msgstr "Als Artist importieren"
+
+msgid "Import as Title"
+msgstr "Als Titel importieren"
+
+#, fuzzy
+msgid "Import as Sort Key"
+msgstr "Als Titel importieren"
+
+msgid "Add to Comments"
+msgstr "Zum Kommentar hinzufügen"
 
 #, fuzzy
 msgid "Tracks"
@@ -602,10 +602,6 @@ msgstr ""
 #, fuzzy
 msgid "An error occurred while submitting the record to the CDDB server."
 msgstr "Fehler während des Verbindungen zur CDDB Server."
-
-#, c-format
-msgid "%d of %d"
-msgstr "%d aus %d"
 
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr "Fehler während des Verbindungen zur CDDB Server."
@@ -2405,6 +2401,9 @@ msgstr ""
 
 msgid "Compression: Insane"
 msgstr ""
+
+#~ msgid "%d of %d"
+#~ msgstr "%d aus %d"
 
 #, fuzzy
 #~ msgid "Write"

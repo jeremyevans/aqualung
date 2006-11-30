@@ -2293,7 +2293,7 @@ track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * d
 			gtk_tree_model_get(GTK_TREE_MODEL(music_store),
 					   &iter_record, 2, &device_path, -1);
 
-			disc = &cdda_get_drive_by_device_path(device_path + strlen("CDDA_DRIVE "))->disc;
+			disc = &cdda_get_drive_by_spec_device_path(device_path)->disc;
 
 			strncpy(artist_name, disc->artist_name, MAXLEN-1);
 			strncpy(record_name, disc->record_name, MAXLEN-1);
@@ -2471,7 +2471,7 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 
 			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 2, &device_path, -1);
 
-			disc = &cdda_get_drive_by_device_path(device_path + strlen("CDDA_DRIVE "))->disc;
+			disc = &cdda_get_drive_by_spec_device_path(device_path)->disc;
 
 			snprintf(name_str, MAXLEN-1, "%s: %s", disc->artist_name, disc->record_name);
 			pack_strings(disc->artist_name, disc->record_name, packed_str);
@@ -5130,10 +5130,10 @@ create_music_browser(void) {
 
  	g_signal_connect_swapped(G_OBJECT(cdda_record__addlist), "activate", G_CALLBACK(record__addlist_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(cdda_record__addlist_albummode), "activate", G_CALLBACK(record__addlist_albummode_cb), NULL);
-/* #ifdef HAVE_CDDB */
-/* 	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb), "activate", G_CALLBACK(cdda_record__cddb_cb), NULL); */
-/* 	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb_submit), "activate", G_CALLBACK(cdda_record__cddb_submit_cb), NULL); */
-/* #endif /\* HAVE_CDDB *\/ */
+#ifdef HAVE_CDDB
+	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb), "activate", G_CALLBACK(record__cddb_cb), NULL);
+ 	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb_submit), "activate", G_CALLBACK(record__cddb_submit_cb), NULL);
+#endif /* HAVE_CDDB */
 /* 	g_signal_connect_swapped(G_OBJECT(cdda_record__rip), "activate", G_CALLBACK(cdda_record__rip_cb), NULL); */
 /* 	g_signal_connect_swapped(G_OBJECT(cdda_record__disc_info), "activate", G_CALLBACK(cdda_record__disc_info_cb), NULL); */
  	g_signal_connect_swapped(G_OBJECT(cdda_record__drive_info), "activate", G_CALLBACK(cdda_record__drive_cb), NULL);

@@ -509,33 +509,33 @@ msgstr "Зб╕ги:"
 msgid "Artist:"
 msgstr "Виконавець:"
 
-msgid "Import as Artist"
-msgstr "╤мпортувати як Виконавця"
-
 msgid "Title:"
 msgstr "Назва:"
-
-msgid "Import as Title"
-msgstr "╤мпортувати як Альбом"
 
 msgid "Year:"
 msgstr "Р╕к:"
 
-#, fuzzy
-msgid "Import as Sort Key"
-msgstr "╤мпортувати як Альбом"
-
 msgid "Category:"
 msgstr "Категор╕я:"
-
-msgid "Add to Comments"
-msgstr "Додати до коментар╕в"
 
 msgid "Genre:"
 msgstr "Жанр:"
 
 msgid "Extended data:"
 msgstr "Додатков╕ дан╕:"
+
+msgid "Import as Artist"
+msgstr "╤мпортувати як Виконавця"
+
+msgid "Import as Title"
+msgstr "╤мпортувати як Альбом"
+
+#, fuzzy
+msgid "Import as Sort Key"
+msgstr "╤мпортувати як Альбом"
+
+msgid "Add to Comments"
+msgstr "Додати до коментар╕в"
 
 msgid "Tracks"
 msgstr "Дор╕жки"
@@ -580,10 +580,6 @@ msgstr ""
 #, fuzzy
 msgid "An error occurred while submitting the record to the CDDB server."
 msgstr "Трапилась помилка при спроб╕ п╕д'╓днання до сервера CDDB."
-
-#, c-format
-msgid "%d of %d"
-msgstr "%d з %d"
 
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr "Трапилась помилка при спроб╕ п╕д'╓днання до сервера CDDB."
@@ -2357,6 +2353,9 @@ msgstr "Ступ╕нь стиснення: Дуже висока"
 
 msgid "Compression: Insane"
 msgstr "Ступ╕нь стиснення: Божев╕льна"
+
+#~ msgid "%d of %d"
+#~ msgstr "%d з %d"
 
 #, fuzzy
 #~ msgid "Write"

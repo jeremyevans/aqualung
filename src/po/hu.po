@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2006-10-24 21:39+0200\n"
+"PO-Revision-Date: 2006-11-30 17:29+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -84,7 +84,7 @@ msgid "Monkey's Audio Codec\n"
 msgstr "Monkey's Audio Codec\n"
 
 msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
-msgstr ""
+msgstr "LAVC (AC3, AAC, WavPack, WMA, stb.)\n"
 
 msgid "Metadata (ID3, APE, Ogg comments)\n"
 msgstr "Metaadatok (ID3, APE, Ogg kommentek)\n"
@@ -113,9 +113,8 @@ msgstr "Beépített mintavételi frekvencia konverter\n"
 msgid "LADSPA plugin support\n"
 msgstr "LADSPA effekt támogatás\n"
 
-#, fuzzy
 msgid "CDDA (Audio CD) support\n"
-msgstr "CDDB támogatás\n"
+msgstr "CDDA (Audio CD) támogatás\n"
 
 msgid "CDDB support\n"
 msgstr "CDDB támogatás\n"
@@ -334,59 +333,54 @@ msgstr "CDDB lekérdezés"
 msgid "File name transformation"
 msgstr "Fájlnév transzformáció"
 
-#, fuzzy
 msgid "Unknown Artist"
-msgstr "Ismeretlen"
+msgstr "Ismeretlen elõadó"
 
-#, fuzzy
 msgid "Unknown Record"
-msgstr "Ismeretlen"
+msgstr "Ismeretlen album"
 
-#, fuzzy
 msgid "CD Audio"
-msgstr "OSS Audio\n"
+msgstr "CD Audio"
 
-#, fuzzy
 msgid "Unknown disc"
-msgstr "Ismeretlen"
+msgstr "Ismeretlen lemez"
 
 msgid "No disc"
-msgstr ""
+msgstr "Nincs lemez"
 
-#, fuzzy
 msgid "Drive info"
-msgstr "Fájl infó..."
+msgstr "Meghajtó infó"
 
-#, fuzzy
 msgid "Vendor"
-msgstr "Vendor:"
+msgstr "Vendor"
 
-#, fuzzy
 msgid "Model"
-msgstr "Modell:"
+msgstr "Model"
 
 msgid "Revision"
-msgstr ""
+msgstr "Revision"
 
 msgid ""
 "The information below is reported by the drive, and\n"
 "may not reflect the actual capabilities of the device."
 msgstr ""
+"Az alábbi információ a meghajtótól származik, ami lehet\n"
+"hogy nem felel meg a készülék valódi képességeinek."
 
 msgid "Eject"
-msgstr ""
+msgstr "Tálca kitolása"
 
 msgid "Close tray"
-msgstr ""
+msgstr "Tálca behúzása"
 
 msgid "Disable manual eject"
-msgstr ""
+msgstr "Tálca kézi kitolásának tiltása"
 
 msgid "Select juke-box disc"
 msgstr ""
 
 msgid "Set drive speed"
-msgstr ""
+msgstr "Meghajtó sebesség beállítása"
 
 msgid "Detect media change"
 msgstr ""
@@ -397,46 +391,44 @@ msgstr ""
 msgid "Hard reset device"
 msgstr ""
 
-#, fuzzy
 msgid "Reading"
-msgstr "Újraolvas"
+msgstr "Olvasás"
 
-#, fuzzy
 msgid "Play CD Audio"
-msgstr "OSS Audio\n"
+msgstr "Audio CD lejátszása"
 
 msgid "Read CD-DA"
-msgstr ""
+msgstr "CD-DA olvasása"
 
 msgid "Read CD+G"
-msgstr ""
+msgstr "CD+G olvasása"
 
 msgid "Read CD-R"
-msgstr ""
+msgstr "CD-R olvasása"
 
 msgid "Read CD-RW"
-msgstr ""
+msgstr "CD-RW olvasása"
 
 msgid "Read DVD-R"
-msgstr ""
+msgstr "DVD-R olvasása"
 
 msgid "Read DVD+R"
-msgstr ""
+msgstr "DVD+R olvasása"
 
 msgid "Read DVD-RW"
-msgstr ""
+msgstr "DVD-RW olvasása"
 
 msgid "Read DVD+RW"
-msgstr ""
+msgstr "DVD+RW olvasása"
 
 msgid "Read DVD-RAM"
-msgstr ""
+msgstr "DVD-RAM olvasása"
 
 msgid "Read DVD-ROM"
-msgstr ""
+msgstr "DVD-ROM olvasása"
 
 msgid "C2 Error Correction"
-msgstr ""
+msgstr "C2 hibajavítás"
 
 msgid "Read Mode 2 Form 1"
 msgstr ""
@@ -445,42 +437,40 @@ msgid "Read Mode 2 Form 2"
 msgstr ""
 
 msgid "Read MCN"
-msgstr ""
+msgstr "MCN olvasása"
 
-#, fuzzy
 msgid "Read ISRC"
-msgstr "ISRC"
+msgstr "ISRC olvasása"
 
-#, fuzzy
 msgid "Writing"
-msgstr "Figyelmeztetés"
+msgstr "Írás"
 
 msgid "Write CD-R"
-msgstr ""
+msgstr "CD-R írása"
 
 msgid "Write CD-RW"
-msgstr ""
+msgstr "CD-RW írása"
 
 msgid "Write DVD-R"
-msgstr ""
+msgstr "DVD-R írása"
 
 msgid "Write DVD+R"
-msgstr ""
+msgstr "DVD+R írása"
 
 msgid "Write DVD-RW"
-msgstr ""
+msgstr "DVD-RW írása"
 
 msgid "Write DVD+RW"
-msgstr ""
+msgstr "DVD+RW írása"
 
 msgid "Write DVD-RAM"
-msgstr ""
+msgstr "DVD-RAM írása"
 
 msgid "Mount Rainier"
-msgstr ""
+msgstr "Mount Rainier"
 
 msgid "Burn Proof"
-msgstr ""
+msgstr "Burn Proof"
 
 msgid "CDDB query"
 msgstr "CDDB lekérdezés"
@@ -497,32 +487,32 @@ msgstr "Találatok:"
 msgid "Artist:"
 msgstr "Elõadó:"
 
-msgid "Import as Artist"
-msgstr "Importálás elõadóként"
-
 msgid "Title:"
 msgstr "Cím:"
-
-msgid "Import as Title"
-msgstr "Importálás címként"
 
 msgid "Year:"
 msgstr "Év:"
 
-msgid "Import as Sort Key"
-msgstr "Importálás kulcsként"
-
 msgid "Category:"
 msgstr "Kategória:"
-
-msgid "Add to Comments"
-msgstr "Hozzáadás a kommentekhez"
 
 msgid "Genre:"
 msgstr "Mûfaj:"
 
 msgid "Extended data:"
 msgstr "Egyéb adat:"
+
+msgid "Import as Artist"
+msgstr "Importálás elõadóként"
+
+msgid "Import as Title"
+msgstr "Importálás címként"
+
+msgid "Import as Sort Key"
+msgstr "Importálás kulcsként"
+
+msgid "Add to Comments"
+msgstr "Hozzáadás a kommentekhez"
 
 msgid "Tracks"
 msgstr "Számok"
@@ -576,10 +566,6 @@ msgstr "A feltöltéshez megadott email cím érvénytelen."
 
 msgid "An error occurred while submitting the record to the CDDB server."
 msgstr "Hiba történt a lemez CDDB szerverhez való küldése közben."
-
-#, c-format
-msgid "%d of %d"
-msgstr "%d / %d"
 
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr "Hiba történt a CDDB szerverhez való kapcsolódás közben."
@@ -788,7 +774,7 @@ msgid "Compressed modules (*.bz2)"
 msgstr "Tömörített modulok (*.bz2)"
 
 msgid "LAVC audio/video files"
-msgstr ""
+msgstr "LAVC hang/video fájlok"
 
 #, c-format
 msgid "%.1f MB / %.1f MB"
@@ -1169,24 +1155,20 @@ msgstr "Minden esetben"
 msgid "Update file metadata..."
 msgstr "Metaadatok frissítése..."
 
-#, fuzzy
 msgid "CDDB query for this CD..."
-msgstr "Album lekérdezése CDDB adatbázisból..."
+msgstr "CD lekérdezése CDDB adatbázisból..."
 
-#, fuzzy
 msgid "Submit CD to CDDB database..."
-msgstr "Album feltöltése CDDB adatbázisba..."
+msgstr "CD feltöltése CDDB adatbázisba..."
 
 msgid "Rip CD..."
-msgstr ""
+msgstr "CD rippelés..."
 
-#, fuzzy
 msgid "Disc info..."
-msgstr "Fájl infó..."
+msgstr "Lemez infó..."
 
-#, fuzzy
 msgid "Drive info..."
-msgstr "Fájl infó..."
+msgstr "Meghajtó infó..."
 
 msgid "*Music Store"
 msgstr "*Zenetár"
@@ -1528,9 +1510,8 @@ msgstr ""
 "Külsõ fájlok Lejátszólistába adásakor metaadat használata (ha van)\n"
 "a következõknél:"
 
-#, fuzzy
 msgid "Replaygain tag to extract from Ogg Xiph and APE tags: "
-msgstr "Replaygain tag használata Ogg Vorbis és FLAC fájlokban: "
+msgstr "Replaygain tag használata Ogg Xiph és APE tagek esetén: "
 
 msgid "Replaygain_track_gain"
 msgstr "Replaygain_track_gain"
@@ -1629,20 +1610,17 @@ msgstr "Aktív szám a Lejátszólistában: "
 msgid "Please specify the file to save the playlist to."
 msgstr "Add meg az elmentendõ lejátszólista fájlt."
 
-#, fuzzy
 msgid "Saving playlist..."
-msgstr "Lejátszólista mentése"
+msgstr "Lejátszólista mentése..."
 
 msgid "Please specify the file to load the playlist from."
 msgstr "Add meg a betöltendõ lejátszólista fájlt."
 
-#, fuzzy
 msgid "Loading playlist..."
-msgstr "Lejátszólista betöltése"
+msgstr "Lejátszólista betöltése..."
 
-#, fuzzy
 msgid "Enqueuing playlist..."
-msgstr "Lejátszólista hozzáfûzése"
+msgstr "Lejátszólista hozzáfûzése..."
 
 msgid ""
 "Playback RVA is currently disabled.\n"
@@ -1657,16 +1635,14 @@ msgstr "Ismeretlen"
 msgid "Select files"
 msgstr "Fájlok kiválasztása"
 
-#, fuzzy
 msgid "Adding files..."
-msgstr "Fájlok _hozzáadása..."
+msgstr "Fájlok hozzáadása..."
 
 msgid "Select directory"
 msgstr "Könyvtár kiválasztása"
 
-#, fuzzy
 msgid "Adding files recursively..."
-msgstr "Fájlok _hozzáadása..."
+msgstr "Fájlok rekurzív hozzáadása..."
 
 #, c-format
 msgid "%d track [%s] (%.1f MB)"
@@ -2165,10 +2141,10 @@ msgid "Publisher"
 msgstr "Kiadó"
 
 msgid "Radio station name"
-msgstr "Rádióállomás neve"
+msgstr "RádióÂállomás neve"
 
 msgid "Radio station owner"
-msgstr "Rádióállomás tulajdonosa"
+msgstr "RádióÂállomás tulajdonosa"
 
 msgid "Album sort order"
 msgstr "Albumok sorrendje"
@@ -2271,13 +2247,3 @@ msgstr "Tömörítés: Extra magas"
 
 msgid "Compression: Insane"
 msgstr "Tömörítés: Elmebeteg"
-
-#, fuzzy
-#~ msgid "Write"
-#~ msgstr "Cím"
-
-#~ msgid "%.1f kbit/s"
-#~ msgstr "%.1f kbit/s"
-
-#~ msgid "%+.1f dB (Id: %s)"
-#~ msgstr "+.1f dB (Id: %s)"

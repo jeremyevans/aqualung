@@ -149,6 +149,16 @@ cdda_get_drive_by_device_path(char * device_path) {
 	return NULL;
 }
 
+cdda_drive_t *
+cdda_get_drive_by_spec_device_path(char * device_path) {
+
+	if (strstr(device_path, "CDDA_DRIVE ") == device_path) {
+		return cdda_get_drive_by_device_path(device_path + 11);
+	}
+
+	return NULL;
+}
+
 
 /* value should point to a buffer of size at least CDDA_MAXLEN */
 /* ret 0 if OK, -1 if readlink error */
@@ -743,7 +753,8 @@ cdda_drive_info(char * device_path) {
 
         dialog = gtk_dialog_new_with_buttons(str,
 					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT |
+					     GTK_DIALOG_NO_SEPARATOR,
 					     GTK_STOCK_CLOSE, GTK_RESPONSE_OK,
 					     NULL);
 

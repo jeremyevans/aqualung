@@ -454,31 +454,31 @@ msgstr ""
 msgid "Artist:"
 msgstr ""
 
-msgid "Import as Artist"
-msgstr ""
-
 msgid "Title:"
-msgstr ""
-
-msgid "Import as Title"
 msgstr ""
 
 msgid "Year:"
 msgstr ""
 
-msgid "Import as Sort Key"
-msgstr ""
-
 msgid "Category:"
-msgstr ""
-
-msgid "Add to Comments"
 msgstr ""
 
 msgid "Genre:"
 msgstr ""
 
 msgid "Extended data:"
+msgstr ""
+
+msgid "Import as Artist"
+msgstr ""
+
+msgid "Import as Title"
+msgstr ""
+
+msgid "Import as Sort Key"
+msgstr ""
+
+msgid "Add to Comments"
 msgstr ""
 
 msgid "Tracks"
@@ -522,10 +522,6 @@ msgid "The email address provided for submission is invalid."
 msgstr ""
 
 msgid "An error occurred while submitting the record to the CDDB server."
-msgstr ""
-
-#, c-format
-msgid "%d of %d"
 msgstr ""
 
 msgid "An error occurred while attempting to connect to the CDDB server."

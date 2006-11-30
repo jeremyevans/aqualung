@@ -372,6 +372,14 @@ disk_thread(void * arg) {
 						info->in_SR = fdec->fileinfo.sample_rate;
 						info->is_mono = fdec->fileinfo.is_mono;
 						fdec->sample_pos = 0;
+#ifdef HAVE_CDDA
+						if (fdec->file_lib == CDDA_LIB) {
+							cdda_decoder_set_mode(((decoder_t *)fdec->pdec),
+									      options.cdda_drive_speed,
+									      options.cdda_paranoia_mode,
+									      options.cdda_paranoia_maxretries);
+						}
+#endif /* HAVE_CDDA */
 
 						sample_offset = 0;
 

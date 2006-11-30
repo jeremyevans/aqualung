@@ -71,6 +71,8 @@ typedef struct _cdda_pdata_t {
 	AQUALUNG_THREAD_DECLARE(cdda_reader_id)
 	AQUALUNG_MUTEX_DECLARE(cdda_reader_mutex)
 	int cdda_reader_status;
+	int paranoia_mode;
+	int paranoia_maxretries;
 } cdda_pdata_t;
 #endif /* HAVE_CDDA */
 
@@ -80,6 +82,7 @@ decoder_t * cdda_decoder_init(file_decoder_t * fdec);
 void cdda_decoder_destroy(decoder_t * dec);
 int cdda_decoder_open(decoder_t * dec, char * filename);
 int cdda_decoder_reopen(decoder_t * dec, char * filename);
+void cdda_decoder_set_mode(decoder_t * dec, int drive_speed, int paranoia_mode, int paranoia_maxretries);
 void cdda_decoder_close(decoder_t * dec);
 unsigned int cdda_decoder_read(decoder_t * dec, float * dest, int num);
 void cdda_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);

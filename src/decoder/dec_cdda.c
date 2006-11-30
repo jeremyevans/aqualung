@@ -69,8 +69,7 @@ cdda_reader_thread(void * arg) {
 	int i;
 
 	pd->paranoia = cdio_paranoia_init(pd->drive);
-	cdio_paranoia_modeset(pd->paranoia, PARANOIA_MODE_FULL^PARANOIA_MODE_NEVERSKIP);
-	//cdio_paranoia_modeset(pd->paranoia, PARANOIA_MODE_DISABLE);
+	cdio_paranoia_modeset(pd->paranoia, pd->paranoia_mode);
 	cdio_paranoia_seek(pd->paranoia, pd->pos_lsn, SEEK_SET);
 
 	while ((rb_write_space(pd->rb) > CDIO_CD_FRAMESIZE_RAW * 2) &&
@@ -85,7 +84,12 @@ cdda_reader_thread(void * arg) {
 		}
 		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
 
-		readbuf = cdio_paranoia_read(pd->paranoia, cdda_paranoia_callback);
+		if (pd->paranoia_mode & PARANOIA_MODE_NEVERSKIP) {
+			readbuf = cdio_paranoia_read(pd->paranoia, cdda_paranoia_callback);
+		} else {
+			readbuf = cdio_paranoia_read_limited(pd->paranoia, cdda_paranoia_callback,
+							     pd->paranoia_maxretries);
+		}
 		if (pd->pos_lsn > pd->last_lsn)
 			++pd->overread_sectors;
 		++pd->pos_lsn;
@@ -195,7 +199,6 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 		printf("dec_cdda.c: Couldn't open cdio device%s\n", pd->device_path);
 		return DECODER_OPEN_BADLIB;
 	}
-	//cdio_set_speed(pd->cdio, 2);
 
 	pd->drive = cdio_cddap_identify_cdio(pd->cdio, 0, NULL);
 	if (!pd->drive) {
@@ -275,6 +278,24 @@ cdda_decoder_reopen(decoder_t * dec, char * filename) {
 
 
 void
+cdda_decoder_set_mode(decoder_t * dec, int drive_speed,
+		      int paranoia_mode, int paranoia_maxretries) {
+
+	cdda_pdata_t * pd = (cdda_pdata_t *)dec->pdata;
+
+	if (pd->cdio == NULL)
+		return;
+
+	if (cdio_set_speed(pd->cdio, drive_speed) != DRIVER_OP_SUCCESS) {
+		fprintf(stderr, "Warning: setting CD drive speed seems to be unsupported.\n");
+	}
+
+	pd->paranoia_mode = paranoia_mode;
+	pd->paranoia_maxretries = paranoia_maxretries;
+}
+
+
+void
 cdda_decoder_close(decoder_t * dec) {
 
 	cdda_pdata_t * pd = (cdda_pdata_t *)dec->pdata;
@@ -290,7 +311,9 @@ cdda_decoder_close(decoder_t * dec) {
 
 	rb_free(pd->rb);
 	cdio_cddap_close_no_free_cdio(pd->drive);
+	pd->drive = NULL;
 	cdio_destroy(pd->cdio);
+	pd->cdio = NULL;
 	/* TODO mark drive as unused */
 }
 

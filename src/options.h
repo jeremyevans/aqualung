@@ -103,6 +103,11 @@ typedef struct {
 	int auto_use_ext_meta_track;
 	int replaygain_tag_to_use;
 
+	/* CD audio */
+	int cdda_drive_speed;
+	int cdda_paranoia_mode;
+	int cdda_paranoia_maxretries;
+
 	/* CDDB */
 	char cddb_server[MAXLEN];
 	int cddb_timeout;

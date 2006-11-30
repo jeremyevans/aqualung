@@ -1166,6 +1166,22 @@ msgid ""
 "Drag and drop entries in the list to set the store order in the Music Store."
 msgstr ""
 
+msgid ""
+"\n"
+"Set the drive speed for CD playing in CD-ROM speed units.\n"
+"One speed unit equals to 176 kBps raw data reading speed.\n"
+"Warning: not all drives honor this setting.\n"
+"\n"
+"Lower speed usually means less drive noise. However,\n"
+"when using Paranoia error correction modes for increased\n"
+"accuracy, generally much larger speeds are required to\n"
+"prevent buffer underruns (and thus audible drop-outs).\n"
+"\n"
+"Please note that these settings do not apply to CD Ripping,\n"
+"which always happens with maximum available speed and\n"
+"with error correction modes manually set before every run."
+msgstr ""
+
 msgid "Title format"
 msgstr ""
 
@@ -1415,6 +1431,24 @@ msgid "Replaygain_track_gain"
 msgstr ""
 
 msgid "Replaygain_album_gain"
+msgstr ""
+
+msgid "CD drive speed:"
+msgstr ""
+
+msgid "Paranoia error correction"
+msgstr ""
+
+msgid "Perform overlapped reads"
+msgstr ""
+
+msgid "Verify data integrity in overlap area"
+msgstr ""
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+
+msgid "\tMaximum number of retries:"
 msgstr ""
 
 msgid "CDDB server:"

@@ -4178,6 +4178,13 @@ save_config(void) {
 	snprintf(str, 31, "%d", search_ms_flags);
         xmlNewTextChild(root, NULL, (const xmlChar *) "search_ms_flags", (xmlChar *) str);
 
+	snprintf(str, 31, "%d", options.cdda_drive_speed);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cdda_drive_speed", (xmlChar *) str);
+	snprintf(str, 31, "%d", options.cdda_paranoia_mode);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cdda_paranoia_mode", (xmlChar *) str);
+	snprintf(str, 31, "%d", options.cdda_paranoia_maxretries);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cdda_paranoia_maxretries", (xmlChar *) str);
+
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_server", (xmlChar *) options.cddb_server);
 	snprintf(str, 31, "%d", options.cddb_timeout);
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_timeout", (xmlChar *) str);
@@ -4314,6 +4321,10 @@ load_config(void) {
 	options.auto_use_ext_meta_artist = 1;
 	options.auto_use_ext_meta_record = 1;
 	options.auto_use_ext_meta_track = 1;
+
+	options.cdda_drive_speed = 4;
+	options.cdda_paranoia_mode = 0; /* no paranoia */
+	options.cdda_paranoia_maxretries = 20;
 
 	options.cddb_server[0] = '\0';
 	options.cddb_email[0] = '\0';
@@ -4887,6 +4898,25 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
                                 sscanf((char *) key, "%d", &search_ms_flags);
+                        xmlFree(key);
+                }
+
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cdda_drive_speed"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf((char *) key, "%d", &options.cdda_drive_speed);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cdda_paranoia_mode"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf((char *) key, "%d", &options.cdda_paranoia_mode);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cdda_paranoia_maxretries"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf((char *) key, "%d", &options.cdda_paranoia_maxretries);
                         xmlFree(key);
                 }
 

@@ -30,6 +30,22 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 
+#ifdef HAVE_CDDA
+#ifdef HAVE_CDDB
+#define _TMP_HAVE_CDDB 1
+#undef HAVE_CDDB
+#endif /* HAVE_CDDB */
+#include <cdio/cdio.h>
+#include <cdio/paranoia.h>
+#ifdef HAVE_CDDB
+#undef HAVE_CDDB
+#endif /* HAVE_CDDB */
+#ifdef _TMP_HAVE_CDDB
+#define HAVE_CDDB 1
+#undef _TMP_HAVE_CDDB
+#endif /* _TMP_HAVE_CDDB */
+#endif /* HAVE_CDDA */
+
 #ifdef HAVE_SRC
 #include <samplerate.h>
 #endif /* HAVE_SRC */
@@ -189,6 +205,15 @@ GtkWidget * check_auto_use_ext_meta_artist;
 GtkWidget * check_auto_use_ext_meta_record;
 GtkWidget * check_auto_use_ext_meta_track;
 GtkWidget * combo_replaygain;
+
+#ifdef HAVE_CDDA
+GtkWidget * cdda_drive_speed_spinner;
+GtkWidget * check_cdda_mode_overlap;
+GtkWidget * check_cdda_mode_verify;
+GtkWidget * check_cdda_mode_neverskip;
+GtkWidget * label_cdda_maxretries;
+GtkWidget * cdda_paranoia_maxretries_spinner;
+#endif /* HAVE_CDDA */
 
 #ifdef HAVE_CDDB
 GtkWidget * cddb_server_entry;
@@ -387,8 +412,18 @@ options_window_accept(void) {
 	set_option_from_combo(combo_replaygain, &options.replaygain_tag_to_use);
 
 
-	/* CDDB */
+	/* CDDA */
+#ifdef HAVE_CDDA
+	set_option_from_spin(cdda_drive_speed_spinner, &options.cdda_drive_speed);
+	options.cdda_paranoia_mode =
+		(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_overlap)) ? PARANOIA_MODE_OVERLAP : 0) |
+		(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_verify)) ? PARANOIA_MODE_VERIFY : 0) |
+		(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_neverskip)) ? PARANOIA_MODE_NEVERSKIP : 0);
+	set_option_from_spin(cdda_paranoia_maxretries_spinner, &options.cdda_paranoia_maxretries);
+#endif /* HAVE_CDDA */
 
+
+	/* CDDB */
 #ifdef HAVE_CDDB
 	set_option_from_entry(cddb_server_entry, options.cddb_server);
 	set_option_from_spin(cddb_tout_spinner, &options.cddb_timeout);
@@ -1505,6 +1540,49 @@ display_pathlist_help(void) {
         gtk_widget_destroy(help_dialog);
 }
 
+#ifdef HAVE_CDDA
+void
+display_cdda_drive_speed_help(void) {
+
+	GtkWidget *help_dialog;
+
+        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
+                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
+					      _("\nSet the drive speed for CD playing in CD-ROM speed units.\n"
+						"One speed unit equals to 176 kBps raw data reading speed.\n"
+						"Warning: not all drives honor this setting.\n\n"
+
+						"Lower speed usually means less drive noise. However,\n"
+						"when using Paranoia error correction modes for increased\n"
+						"accuracy, generally much larger speeds are required to\n"
+						"prevent buffer underruns (and thus audible drop-outs).\n\n"
+
+						"Please note that these settings do not apply to CD Ripping,\n"
+						"which always happens with maximum available speed and\n"
+						"with error correction modes manually set before every run."));
+
+        gtk_widget_show (help_dialog);
+        aqualung_dialog_run(GTK_DIALOG(help_dialog));
+        gtk_widget_destroy(help_dialog);
+}
+
+void
+cdda_toggled(GtkWidget * widget, gpointer * data) {
+
+	if (widget == check_cdda_mode_overlap) {
+		gtk_widget_set_sensitive(check_cdda_mode_verify,
+					 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_overlap)));
+	} else if (widget == check_cdda_mode_neverskip) {
+		gtk_widget_set_sensitive(cdda_paranoia_maxretries_spinner,
+					 !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_neverskip)));
+		gtk_widget_set_sensitive(label_cdda_maxretries,
+					 !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_neverskip)));
+	}
+}
+#endif /* HAVE_CDDA */
+
+
 #ifdef HAVE_CDDB
 void
 cddb_radio_direct_toggled(GtkWidget * widget, gpointer * data) {
@@ -1572,6 +1650,14 @@ create_options_window(void) {
 	GtkWidget * hbox_cwidth;
 
 	GtkWidget * vbox_meta;
+
+#ifdef HAVE_CDDA
+	GtkWidget * table_cdda;
+	GtkWidget * help_btn_cdda_drive_speed;
+	GtkWidget * frame_cdda;
+	GtkWidget * vbox_cdda;
+	GtkWidget * hbox_cdda;
+#endif /* HAVE_CDDA */
 
 #ifdef HAVE_CDDB
 	GtkWidget * table_cddb;
@@ -2406,6 +2492,82 @@ See the About box and the documentation for details."));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_replaygain), _("Replaygain_album_gain"));
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_replaygain), options.replaygain_tag_to_use);
+
+
+	/* CDDA notebook page */
+#ifdef HAVE_CDDA
+	table_cdda = gtk_table_new(2, 3, FALSE);
+        gtk_container_set_border_width(GTK_CONTAINER(table_cdda), 8);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table_cdda, create_notebook_tab(_("CD Audio"), "cdda.png"));
+
+	label = gtk_label_new(_("CD drive speed:"));
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_cdda), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
+
+	cdda_drive_speed_spinner = gtk_spin_button_new_with_range(1, 99, 1);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cdda_drive_speed_spinner), options.cdda_drive_speed);
+        gtk_table_attach(GTK_TABLE(table_cdda), cdda_drive_speed_spinner, 1, 2, 0, 1,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
+
+        help_btn_cdda_drive_speed = gtk_button_new_from_stock(GTK_STOCK_HELP); 
+	g_signal_connect(help_btn_cdda_drive_speed, "clicked", G_CALLBACK(display_cdda_drive_speed_help), NULL);
+        gtk_table_attach(GTK_TABLE(table_cdda), help_btn_cdda_drive_speed, 2, 3, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
+
+	frame_cdda = gtk_frame_new(_("Paranoia error correction"));
+        gtk_table_attach(GTK_TABLE(table_cdda), frame_cdda, 0, 3, 1, 2,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
+
+	vbox_cdda = gtk_vbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_cdda), 8);
+	gtk_container_add(GTK_CONTAINER(frame_cdda), vbox_cdda);
+
+	check_cdda_mode_overlap = gtk_check_button_new_with_label(_("Perform overlapped reads"));
+        gtk_widget_set_name(check_cdda_mode_overlap, "check_on_notebook");
+	gtk_box_pack_start(GTK_BOX(vbox_cdda), check_cdda_mode_overlap, FALSE, FALSE, 0);
+	g_signal_connect(check_cdda_mode_overlap, "toggled", G_CALLBACK(cdda_toggled), NULL);
+
+	check_cdda_mode_verify = gtk_check_button_new_with_label(_("Verify data integrity in overlap area"));
+        gtk_widget_set_name(check_cdda_mode_verify, "check_on_notebook");
+	gtk_box_pack_start(GTK_BOX(vbox_cdda), check_cdda_mode_verify, FALSE, FALSE, 0);
+
+	check_cdda_mode_neverskip = gtk_check_button_new_with_label(_("Unlimited retry on failed reads (never skip)"));
+        gtk_widget_set_name(check_cdda_mode_neverskip, "check_on_notebook");
+	if (options.cdda_paranoia_mode & PARANOIA_MODE_NEVERSKIP) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_cdda_mode_neverskip), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_cdda), check_cdda_mode_neverskip, FALSE, FALSE, 0);
+	g_signal_connect(check_cdda_mode_neverskip, "toggled", G_CALLBACK(cdda_toggled), NULL);
+
+        hbox_cdda = gtk_hbox_new(FALSE, 3);
+	gtk_box_pack_start(GTK_BOX(vbox_cdda), hbox_cdda, FALSE, FALSE, 0);
+
+	label_cdda_maxretries = gtk_label_new(_("\tMaximum number of retries:"));
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label_cdda_maxretries, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(hbox_cdda), hbox, FALSE, FALSE, 0);
+
+	cdda_paranoia_maxretries_spinner = gtk_spin_button_new_with_range(1, 50, 1);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cdda_paranoia_maxretries_spinner), options.cdda_paranoia_maxretries);
+	gtk_box_pack_start(GTK_BOX(hbox_cdda), cdda_paranoia_maxretries_spinner, FALSE, FALSE, 5);
+
+	if (options.cdda_paranoia_mode & PARANOIA_MODE_OVERLAP) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_cdda_mode_overlap), TRUE);
+	} else {
+		gtk_widget_set_sensitive(check_cdda_mode_verify, FALSE);
+	}
+
+	if (options.cdda_paranoia_mode & PARANOIA_MODE_VERIFY) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_cdda_mode_verify), TRUE);
+	}
+
+	if (options.cdda_paranoia_mode & PARANOIA_MODE_NEVERSKIP) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_cdda_mode_neverskip), TRUE);
+		gtk_widget_set_sensitive(cdda_paranoia_maxretries_spinner, FALSE);
+		gtk_widget_set_sensitive(label_cdda_maxretries, FALSE);
+	}
+
+#endif /* HAVE_CDDA */
 
 
 	/* CDDB notebook page */

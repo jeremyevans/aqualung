@@ -2253,10 +2253,8 @@ track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * d
         GtkTreeIter iter_record;
 	GtkTreeIter list_iter;
 
-        char * partist_name;
-        char * precord_name;
-        char * ptrack_name;
         char * pfile;
+	char * ptrack_name;
 
         char artist_name[MAXLEN];
         char record_name[MAXLEN];
@@ -2281,16 +2279,47 @@ track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * d
 	strncpy(file, pfile, MAXLEN-1);
 	g_free(ptrack_name);
 	g_free(pfile);
-		
-	gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_record, &iter_track);
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 0, &precord_name, -1);
-	strncpy(record_name, precord_name, MAXLEN-1);
-	g_free(precord_name);
 
-	gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_artist, &iter_record);
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist, 0, &partist_name, -1);
-	strncpy(artist_name, partist_name, MAXLEN-1);
-	g_free(partist_name);
+
+	if (parent == NULL) {
+#ifdef HAVE_CDDA
+		if (is_store_iter_cdda(&iter_track)) {
+
+			char * device_path = NULL;
+			cdda_disc_t * disc = NULL;
+
+			gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store),
+						   &iter_record, &iter_track);
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store),
+					   &iter_record, 2, &device_path, -1);
+
+			disc = &cdda_get_drive_by_device_path(device_path + strlen("CDDA_DRIVE "))->disc;
+
+			strncpy(artist_name, disc->artist_name, MAXLEN-1);
+			strncpy(record_name, disc->record_name, MAXLEN-1);
+
+			g_free(device_path);
+		} else
+#endif /* HAVE_CDDA */
+		{
+			char * partist_name;
+			char * precord_name;
+
+			gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store),
+						   &iter_record, &iter_track);
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store),
+					   &iter_record, 0, &precord_name, -1);
+			strncpy(record_name, precord_name, MAXLEN-1);
+			g_free(precord_name);
+
+			gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store),
+						   &iter_artist, &iter_record);
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store),
+					   &iter_artist, 0, &partist_name, -1);
+			strncpy(artist_name, partist_name, MAXLEN-1);
+			g_free(partist_name);
+		}
+	}
 
 #ifdef HAVE_CDDA
 	if (!is_store_iter_cdda(&iter_track)) {
@@ -2303,12 +2332,14 @@ track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * d
 		}
 	}
 
-	if ((meta != NULL) && options.auto_use_meta_artist) {
-		meta_get_artist(meta, artist_name);
-	}
+	if (parent == NULL) {
+		if ((meta != NULL) && options.auto_use_meta_artist) {
+			meta_get_artist(meta, artist_name);
+		}
 
-	if ((meta != NULL) && options.auto_use_meta_record) {
-		meta_get_record(meta, record_name);
+		if ((meta != NULL) && options.auto_use_meta_record) {
+			meta_get_record(meta, record_name);
+		}
 	}
 
 	if ((meta != NULL) && options.auto_use_meta_track) {
@@ -2428,21 +2459,45 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 	}
 	
 	if (album_mode) {
-		char * precord_name;
-		char * partist_name;
+
 		char name_str[MAXLEN];
 		char packed_str[MAXLEN];
-		GtkTreeIter iter_artist;
 
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 0, &precord_name, -1);
-		gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_artist, &iter_record);
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist, 0, &partist_name, -1);
+#ifdef HAVE_CDDA
+		if (is_store_iter_cdda(&iter_record)) {
 
-		sprintf(name_str, "%s: %s", partist_name, precord_name);
-		pack_strings(partist_name, precord_name, packed_str);
+			char * device_path = NULL;
+			cdda_disc_t * disc = NULL;
 
-		g_free(precord_name);
-		g_free(partist_name);
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 2, &device_path, -1);
+
+			disc = &cdda_get_drive_by_device_path(device_path + strlen("CDDA_DRIVE "))->disc;
+
+			snprintf(name_str, MAXLEN-1, "%s: %s", disc->artist_name, disc->record_name);
+			pack_strings(disc->artist_name, disc->record_name, packed_str);
+
+			g_free(device_path);
+
+		} else
+
+#endif /* HAVE_CDDA */
+
+		{
+
+			GtkTreeIter iter_artist;
+			char * precord_name;
+			char * partist_name;
+
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 0, &precord_name, -1);
+			gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_artist, &iter_record);
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist, 0, &partist_name, -1);
+
+			snprintf(name_str, MAXLEN-1, "%s: %s", partist_name, precord_name);
+			pack_strings(partist_name, precord_name, packed_str);
+
+			g_free(precord_name);
+			g_free(partist_name);
+		}
 
 		gtk_tree_store_insert_before(play_store, &list_iter, NULL, dest);
 		gtk_tree_store_set(play_store, &list_iter, 0, name_str, 1, packed_str,

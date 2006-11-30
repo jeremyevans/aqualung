@@ -934,6 +934,7 @@ cddb_connection_setup(cddb_conn_t ** conn) {
 	cddb_set_server_name(*conn, options.cddb_server);
 	cddb_set_timeout(*conn, options.cddb_timeout);
 	cddb_set_charset(*conn, "UTF-8");
+	//cddb_cache_only(*conn);
 
 	if (options.cddb_use_proxy) {
 		cddb_http_proxy_enable(*conn);
@@ -1198,6 +1199,31 @@ cddb_timeout_callback(gpointer data) {
 }
 
 
+void
+cddb_get(GtkTreeIter * iter) {
+
+	cddb_thread_state = CDDB_THREAD_BUSY;
+
+	iter_record = *iter;
+
+	if (init_query_data()) {
+		cddb_thread_state = CDDB_THREAD_FREE;
+		return;
+	}
+
+	create_progress_window();
+
+	cddb_query_aborted = 0;
+	progress_counter = 0;
+	progress_prev = 0;
+	AQUALUNG_THREAD_CREATE(cddb_thread_id, NULL, cddb_thread, NULL)
+
+	g_timeout_add(100, cddb_timeout_callback, NULL);
+}
+
+
+#ifdef HAVE_CDDA
+
 static gint
 cdda_timeout_callback(gpointer data) {
 
@@ -1208,6 +1234,8 @@ cdda_timeout_callback(gpointer data) {
 	map_t ** map_tracks = NULL;
 
 	GtkTreeIter iter_track;
+	cdda_disc_t * disc = NULL;
+	char * device_path = NULL;
 
 	char tmp[MAXLEN];
 
@@ -1248,6 +1276,10 @@ cdda_timeout_callback(gpointer data) {
 		}
 	}
 
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_drive, 2, &device_path, -1);
+	disc = &cdda_get_drive_by_device_path(device_path + strlen("CDDA_DRIVE "))->disc;
+	g_free(device_path);
+
 	tmp[0] = '\0';
 
 	if (map_artist) {
@@ -1255,18 +1287,20 @@ cdda_timeout_callback(gpointer data) {
 		char * max = map_get_max(map_artist);
 
 		if (max) {
-			strcat(tmp, max);
+			strncat(tmp, max, MAXLEN-1);
+			strncpy(disc->artist_name, max, MAXLEN-1);
 		}
 	}
 
-	strcat(tmp, ": ");
+	strncat(tmp, ": ", MAXLEN - strlen(tmp) - 1);
 
 	if (map_record) {
 
 		char * max = map_get_max(map_record);
 
 		if (max) {
-			strcat(tmp, max);
+			strncat(tmp, max, MAXLEN - strlen(tmp) - 1);
+			strncpy(disc->record_name, max, MAXLEN-1);
 		}
 	}
 
@@ -1302,31 +1336,6 @@ cdda_timeout_callback(gpointer data) {
 	return FALSE;
 }
 
-
-void
-cddb_get(GtkTreeIter * iter) {
-
-	cddb_thread_state = CDDB_THREAD_BUSY;
-
-	iter_record = *iter;
-
-	if (init_query_data()) {
-		cddb_thread_state = CDDB_THREAD_FREE;
-		return;
-	}
-
-	create_progress_window();
-
-	cddb_query_aborted = 0;
-	progress_counter = 0;
-	progress_prev = 0;
-	AQUALUNG_THREAD_CREATE(cddb_thread_id, NULL, cddb_thread, NULL)
-
-	g_timeout_add(100, cddb_timeout_callback, NULL);
-}
-
-
-#ifdef HAVE_CDDA
 void
 cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter) {
 
@@ -1351,6 +1360,7 @@ cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter) {
 
 	g_timeout_add(100, cdda_timeout_callback, NULL);
 }
+
 #endif /* HAVE_CDDA */
 
 

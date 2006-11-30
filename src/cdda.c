@@ -241,8 +241,6 @@ calc_cdda_hash(cdda_disc_t * disc) {
 		(disc->toc[disc->n_tracks] / 75) << 8 | 
 		disc->n_tracks;
 
-	printf("discid = %08X\n", (int)discid);
-
 	return discid;
 }
 
@@ -304,6 +302,9 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 		}
 	}
 	cdda_drive->disc.toc[n] = cdio_get_track_lsn(cdda_drive->cdio, CDIO_CDROM_LEADOUT_TRACK);
+
+	strncpy(cdda_drive->disc.artist_name, _("Unknown Artist"), MAXLEN-1);
+	strncpy(cdda_drive->disc.record_name, _("Unknown Record"), MAXLEN-1);
 
 	return 0;
 }

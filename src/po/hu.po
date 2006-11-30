@@ -335,6 +335,14 @@ msgid "File name transformation"
 msgstr "Fájlnév transzformáció"
 
 #, fuzzy
+msgid "Unknown Artist"
+msgstr "Ismeretlen"
+
+#, fuzzy
+msgid "Unknown Record"
+msgstr "Ismeretlen"
+
+#, fuzzy
 msgid "CD Audio"
 msgstr "OSS Audio\n"
 

@@ -349,6 +349,14 @@ msgstr ""
 msgid "File name transformation"
 msgstr ""
 
+#, fuzzy
+msgid "Unknown Artist"
+msgstr "Нев╕домо"
+
+#, fuzzy
+msgid "Unknown Record"
+msgstr "Нев╕домо"
+
 msgid "CD Audio"
 msgstr ""
 

@@ -302,6 +302,12 @@ msgstr ""
 msgid "File name transformation"
 msgstr ""
 
+msgid "Unknown Artist"
+msgstr ""
+
+msgid "Unknown Record"
+msgstr ""
+
 msgid "CD Audio"
 msgstr ""
 

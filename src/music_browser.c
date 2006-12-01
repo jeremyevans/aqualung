@@ -94,7 +94,6 @@ GtkWidget * comment_view;
 GtkWidget * browser_paned;
 GtkWidget * statusbar_ms;
 
-
 /* popup menus for tree items */
 GtkWidget * store_menu;
 GtkWidget * store__addlist;
@@ -193,7 +192,10 @@ GtkWidget * blank__add;
 GtkWidget * blank__search;
 GtkWidget * blank__save;
 
-GtkWidget * save_button;
+GtkWidget * toolbar_save_button;
+GtkWidget * toolbar_edit_button;
+GtkWidget * toolbar_add_button;
+GtkWidget * toolbar_remove_button;
 
 GtkWidget * name_entry;
 GtkWidget * sort_name_entry;
@@ -2047,7 +2049,23 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 	if (event->type == GDK_BUTTON_PRESS) {
 		GdkEventButton * bevent = (GdkEventButton *) event;
 
-		if (bevent->button == 3) {
+		if (bevent->button == 1 && options.enable_mstore_toolbar) {
+                        if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(music_tree), bevent->x, bevent->y,
+                                                          &path, &column, NULL, NULL)) {
+                          
+                                if (is_store_path_cdda(path)) {
+                                        gtk_widget_set_sensitive(toolbar_edit_button, FALSE);
+                                        gtk_widget_set_sensitive(toolbar_add_button, FALSE);
+                                        gtk_widget_set_sensitive(toolbar_remove_button, FALSE);
+                                } else {
+                                        gtk_widget_set_sensitive(toolbar_edit_button, TRUE);
+                                        gtk_widget_set_sensitive(toolbar_add_button, TRUE);
+                                        gtk_widget_set_sensitive(toolbar_remove_button, TRUE);
+                                }
+                        }
+                }
+
+                if (bevent->button == 3) {
 
 			if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(music_tree), bevent->x, bevent->y,
 							  &path, &column, NULL, NULL)) {
@@ -4614,11 +4632,8 @@ create_music_browser(void) {
 	GtkWidget * statusbar_viewport;
 	GtkWidget * statusbar_scrolledwin;
 	GtkWidget * statusbar_hbox;
-       	GtkWidget * edit_button;
-	GtkWidget * add_button;
-	GtkWidget * remove_button;
-	GtkWidget * search_button;
-	GtkWidget * collapse_all_button;
+	GtkWidget * toolbar_search_button;
+	GtkWidget * toolbar_collapse_all_button;
 
 	GtkCellRenderer * renderer;
 	GtkTreeViewColumn * column;
@@ -4649,42 +4664,42 @@ create_music_browser(void) {
                 hbox = gtk_hbox_new(FALSE, 0);
                 gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 3);
 
-                search_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_FIND);
-                GTK_WIDGET_UNSET_FLAGS(search_button, GTK_CAN_FOCUS);
-                g_signal_connect(G_OBJECT(search_button), "clicked", G_CALLBACK(search_cb), NULL);
-                gtk_box_pack_start(GTK_BOX(hbox), search_button, FALSE, TRUE, 3);
-                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), search_button, _("Search..."), NULL);
+                toolbar_search_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_FIND);
+                GTK_WIDGET_UNSET_FLAGS(toolbar_search_button, GTK_CAN_FOCUS);
+                g_signal_connect(G_OBJECT(toolbar_search_button), "clicked", G_CALLBACK(search_cb), NULL);
+                gtk_box_pack_start(GTK_BOX(hbox), toolbar_search_button, FALSE, TRUE, 3);
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), toolbar_search_button, _("Search..."), NULL);
 
-                collapse_all_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_REFRESH);
-                GTK_WIDGET_UNSET_FLAGS(collapse_all_button, GTK_CAN_FOCUS);
-                gtk_box_pack_start(GTK_BOX(hbox), collapse_all_button, FALSE, TRUE, 3);
-                g_signal_connect(G_OBJECT(collapse_all_button), "pressed", G_CALLBACK(collapse_all_items_cb), NULL);
-                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), collapse_all_button, _("Collapse all items"), NULL);
+                toolbar_collapse_all_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_REFRESH);
+                GTK_WIDGET_UNSET_FLAGS(toolbar_collapse_all_button, GTK_CAN_FOCUS);
+                gtk_box_pack_start(GTK_BOX(hbox), toolbar_collapse_all_button, FALSE, TRUE, 3);
+                g_signal_connect(G_OBJECT(toolbar_collapse_all_button), "pressed", G_CALLBACK(collapse_all_items_cb), NULL);
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), toolbar_collapse_all_button, _("Collapse all items"), NULL);
 
-                edit_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_EDIT);
-                GTK_WIDGET_UNSET_FLAGS(edit_button, GTK_CAN_FOCUS);
-                gtk_box_pack_start(GTK_BOX(hbox), edit_button, FALSE, TRUE, 3);
-                g_signal_connect(G_OBJECT(edit_button), "pressed", G_CALLBACK(edit_item_cb), NULL);
-                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), edit_button, _("Edit item..."), NULL);
+                toolbar_edit_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_EDIT);
+                GTK_WIDGET_UNSET_FLAGS(toolbar_edit_button, GTK_CAN_FOCUS);
+                gtk_box_pack_start(GTK_BOX(hbox), toolbar_edit_button, FALSE, TRUE, 3);
+                g_signal_connect(G_OBJECT(toolbar_edit_button), "pressed", G_CALLBACK(edit_item_cb), NULL);
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), toolbar_edit_button, _("Edit item..."), NULL);
 
-                add_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_ADD);
-                GTK_WIDGET_UNSET_FLAGS(add_button, GTK_CAN_FOCUS);
-                gtk_box_pack_start(GTK_BOX(hbox), add_button, FALSE, TRUE, 3);
-                g_signal_connect(G_OBJECT(add_button), "pressed", G_CALLBACK(add_item_cb), NULL);
-                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), add_button, _("Add item..."), NULL);
+                toolbar_add_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_ADD);
+                GTK_WIDGET_UNSET_FLAGS(toolbar_add_button, GTK_CAN_FOCUS);
+                gtk_box_pack_start(GTK_BOX(hbox), toolbar_add_button, FALSE, TRUE, 3);
+                g_signal_connect(G_OBJECT(toolbar_add_button), "pressed", G_CALLBACK(add_item_cb), NULL);
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), toolbar_add_button, _("Add item..."), NULL);
 
-                remove_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_REMOVE);
-                GTK_WIDGET_UNSET_FLAGS(remove_button, GTK_CAN_FOCUS);
-                gtk_box_pack_start(GTK_BOX(hbox), remove_button, FALSE, TRUE, 3);
-                g_signal_connect(G_OBJECT(remove_button), "pressed", G_CALLBACK(remove_item_cb), NULL);
-                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), remove_button, _("Remove item..."), NULL);
+                toolbar_remove_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_REMOVE);
+                GTK_WIDGET_UNSET_FLAGS(toolbar_remove_button, GTK_CAN_FOCUS);
+                gtk_box_pack_start(GTK_BOX(hbox), toolbar_remove_button, FALSE, TRUE, 3);
+                g_signal_connect(G_OBJECT(toolbar_remove_button), "pressed", G_CALLBACK(remove_item_cb), NULL);
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), toolbar_remove_button, _("Remove item..."), NULL);
 
-                save_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_SAVE);
-                GTK_WIDGET_UNSET_FLAGS(save_button, GTK_CAN_FOCUS);
-                gtk_box_pack_start(GTK_BOX(hbox), save_button, FALSE, TRUE, 3);
-                g_signal_connect(G_OBJECT(save_button), "pressed", G_CALLBACK(store__save_all_cb), NULL);
-                gtk_widget_set_sensitive(save_button, FALSE);
-                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), save_button, _("Save all stores"), NULL);
+                toolbar_save_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_SAVE);
+                GTK_WIDGET_UNSET_FLAGS(toolbar_save_button, GTK_CAN_FOCUS);
+                gtk_box_pack_start(GTK_BOX(hbox), toolbar_save_button, FALSE, TRUE, 3);
+                g_signal_connect(G_OBJECT(toolbar_save_button), "pressed", G_CALLBACK(store__save_all_cb), NULL);
+                gtk_widget_set_sensitive(toolbar_save_button, FALSE);
+                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), toolbar_save_button, _("Save all stores"), NULL);
         }
 
 
@@ -5630,7 +5645,7 @@ music_store_mark_changed(GtkTreeIter * iter) {
 	music_store_changed = 1;
 	gtk_window_set_title(GTK_WINDOW(browser_window), _("*Music Store"));
 	if (options.enable_mstore_toolbar) {
-		gtk_widget_set_sensitive(save_button, TRUE);
+		gtk_widget_set_sensitive(toolbar_save_button, TRUE);
 	}
 }
 
@@ -5664,7 +5679,7 @@ music_store_mark_saved(GtkTreeIter * iter_store) {
 	music_store_changed = 0;
 	gtk_window_set_title(GTK_WINDOW(browser_window), _("Music Store"));
 	if (options.enable_mstore_toolbar) {
-		gtk_widget_set_sensitive(save_button, FALSE);
+		gtk_widget_set_sensitive(toolbar_save_button, FALSE);
 	}
 }
 

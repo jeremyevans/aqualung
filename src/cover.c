@@ -191,11 +191,27 @@ draw_cover_frame(GdkPixbuf *pixbuf, gint width, gint height, gboolean bevel) {
         gint rowstride, channels;
         gint i, bc1, bc2, bc3, bc4;
         guchar *pixels, *p;
+        gchar *c = NULL;
 
         bc1 = bc2 = bc3 = bc4 = 64;      /* dark edges */
 
         if (bevel == TRUE) {
                 bc2 = bc4 = 160;        /* light edges */
+        }
+
+        /* set high contrast bevel if "plain" is the current skin */
+
+        if ((c = strrchr(options.skin, '/')) != NULL) {
+                ++c;
+                
+                if (strcasecmp(c, "plain") == 0) {
+
+                        bc1 = bc2 = bc3 = bc4 = 0;      /* dark edges */
+
+                        if (bevel == TRUE) {
+                                bc2 = bc4 = 255;        /* light edges */
+                        }
+                }
         }
 
         /* draw frame */

@@ -1036,15 +1036,21 @@ cddb_thread(void * arg) {
 		return NULL;
 	}
 
+	printf("\n\n=== cddb_thread\n");
 	cddb_disc_set_length(disc, record_length);
+	printf("cddb_disc_set_length(%d)\n", record_length);
 
 	for (i = 0; i < track_count; i++) {
 		track = cddb_track_new();
 		cddb_track_set_frame_offset(track, frames[i]);
+		printf("cddb_track_set_frame_offset(%d) for track %d\n", frames[i], i);
 		cddb_disc_add_track(disc, track);
+		printf("added track to query set\n");
 	}
 
+	printf("running cddb_query...\n");
 	record_count = cddb_query(conn, disc);
+	printf("done!\n");
 
 	if (record_count < 0) {
 		cddb_thread_state = CDDB_THREAD_ERROR;

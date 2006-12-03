@@ -2053,6 +2053,7 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
                         if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(music_tree), bevent->x, bevent->y,
                                                           &path, &column, NULL, NULL)) {
                           
+#ifdef HAVE_CDDA
                                 if (is_store_path_cdda(path)) {
                                         gtk_widget_set_sensitive(toolbar_edit_button, FALSE);
                                         gtk_widget_set_sensitive(toolbar_add_button, FALSE);
@@ -2062,6 +2063,7 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
                                         gtk_widget_set_sensitive(toolbar_add_button, TRUE);
                                         gtk_widget_set_sensitive(toolbar_remove_button, TRUE);
                                 }
+#endif /* HAVE_CDDA */
                         }
                 }
 

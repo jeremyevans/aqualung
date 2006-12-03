@@ -1602,7 +1602,6 @@ void
 load_default_cl(int * argc, char *** argv) {
 
 	int i = 0;
-	char * home;
 	xmlDocPtr doc;
         xmlNodePtr cur;
         xmlNodePtr root;
@@ -1614,24 +1613,19 @@ load_default_cl(int * argc, char *** argv) {
 	char cl[MAXLEN];
 	int ret;
 
-        if (!(home = getenv("HOME"))) {
-                fprintf(stderr, "Warning: $HOME not set, using \".\" (current directory) as home\n");
-                home = ".";
-        }
 
-        sprintf(confdir, "%s/.aqualung", home);
-        if ((ret = chdir(confdir)) != 0) {
+        if ((ret = chdir(options.confdir)) != 0) {
                 if (errno == ENOENT) {
-                        fprintf(stderr, "Creating directory %s\n", confdir);
+                        fprintf(stderr, "Creating directory %s\n", options.confdir);
                         mkdir(confdir, S_IRUSR | S_IWUSR | S_IXUSR);
                         chdir(confdir);
                 } else {
                         fprintf(stderr, "An error occured while attempting chdir(\"%s\"). errno = %d\n",
-                                confdir, errno);
+                                options.confdir, errno);
                 }
         }
 
-        sprintf(config_file, "%s/.aqualung/config.xml", home);
+        sprintf(config_file, "%s/config.xml", options.confdir);
         if ((f = fopen(config_file, "rt")) == NULL) {
                 fprintf(stderr, "No config.xml -- creating empty one: %s\n", config_file);
                 fprintf(stderr, "Wired-in defaults will be used.\n");
@@ -1966,6 +1960,28 @@ print_jack_SR_out_of_range(int SR) {
 #endif /* HAVE_JACK */
 
 
+void
+setup_app_directories(void) {
+
+	char * home = getenv("HOME");
+	if (!home) {
+		char * homedir = (char *)g_get_home_dir();
+		strcpy(options.home, homedir);
+		snprintf(options.currdir, MAXLEN-1, "%s/.aqualung", homedir);
+		g_free(homedir);
+	} else {
+		strcpy(options.home, home);
+		snprintf(options.currdir, MAXLEN-1, "%s/.aqualung", home);
+	}
+	strcpy(options.confdir, options.currdir);
+
+	if (getcwd(options.cwd, MAXLEN) == NULL) {
+		fprintf(stderr, "setup_app_directories(): warning: getcwd() returned NULL, using . as cwd\n");
+		strcpy(options.cwd, ".");
+	}
+}
+
+
 int
 main(int argc, char ** argv) {
 
@@ -2061,22 +2077,8 @@ main(int argc, char ** argv) {
 	
 	setup_app_socket();
 
-	if (getcwd(options.cwd, MAXLEN) == NULL) {
-		fprintf(stderr, "main(): warning: getcwd() returned NULL, using . as cwd\n");
-		strcpy(options.cwd, ".");
-	}
+	setup_app_directories();
 
-        {
-                char * home = getenv("HOME");
-                if (!home) {
-                        char * homedir = (char *)g_get_home_dir();
-                        snprintf(options.currdir, MAXLEN-1, "%s/.aqualung", homedir);
-                        g_free(homedir);
-                } else {
-                        snprintf(options.currdir, MAXLEN-1, "%s/.aqualung", home);
-                }
-        }
-	
 	load_default_cl(&argc_def, &argv_def);
 
         playlist_state = browser_state = -1;
@@ -2401,7 +2403,6 @@ main(int argc, char ** argv) {
 		int i;
 		char buffer[MAXLEN];
 		char fullname[MAXLEN];
-		char * home;
 		char * path;
 
 		if ((no_session != -1) && (no_session != aqualung_session_id)) {
@@ -2414,11 +2415,7 @@ main(int argc, char ** argv) {
 				case '~':
 					path = argv[i];
 					++path;
-					if (!(home = getenv("HOME"))) {
-						fprintf(stderr,	"main(): cannot resolve home directory\n");
-						return 1;
-					}
-					snprintf(fullname, MAXLEN-1, "%s/%s", home, path);
+					snprintf(fullname, MAXLEN-1, "%s/%s", options.home, path);
 					break;
 				default:
 					snprintf(fullname, MAXLEN-1, "%s/%s", options.cwd, argv[i]);

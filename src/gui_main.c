@@ -3462,7 +3462,6 @@ void
 create_gui(int argc, char ** argv, int optind, int enqueue,
 	   unsigned long rate, unsigned long rb_audio_size) {
 
-	char * home;
 	char path[MAXLEN];
 	GList * glist = NULL;
 	GdkPixbuf * pixbuf = NULL;
@@ -3477,14 +3476,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 #ifdef HAVE_LADSPA
 	lrdf_init();
 #endif /* HAVE_LADSPA */
-
-	if (!(home = getenv("HOME"))) {
-		/* no warning -- done that in core.c::load_default_cl() */
-		home = ".";
-	}
-
-	strcpy(options.home, home);
-	sprintf(options.confdir, "%s/.aqualung", home);
 
 	if (chdir(options.confdir) != 0) {
 		if (errno == ENOENT) {

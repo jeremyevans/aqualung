@@ -3295,7 +3295,6 @@ void
 add_to_playlist(char * filename, int enqueue) {
 
 	gchar fullname[MAXLEN];
-	gchar * home;
 	gchar * path = filename;
 	GtkTreeIter iter;
 	gchar voladj_str[32];
@@ -3312,11 +3311,7 @@ add_to_playlist(char * filename, int enqueue) {
 		break;
 	case '~':
 		++path;
-		if (!(home = getenv("HOME"))) {
-			fprintf(stderr, "add_to_playlist(): cannot resolve home directory\n");
-			return;
-		}
-		snprintf(fullname, MAXLEN-1, "%s/%s", home, path);
+		snprintf(fullname, MAXLEN-1, "%s/%s", options.home, path);
 		break;
 	default:
 		snprintf(fullname, MAXLEN-1, "%s/%s", options.cwd, filename);

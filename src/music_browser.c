@@ -5626,6 +5626,13 @@ music_store_mark_changed(GtkTreeIter * iter) {
                 gtk_tree_path_up(path);
         }
 
+#ifdef HAVE_CDDA
+	if (is_store_path_cdda(path)) {
+		gtk_tree_path_free(path);
+		return;
+	}
+#endif /* HAVE_CDDA */
+
 	gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter_store, path);
 	gtk_tree_path_free(path);
 
@@ -5658,6 +5665,12 @@ music_store_mark_saved(GtkTreeIter * iter_store) {
 	int i;
 	float dirty;
 	char * pname;
+
+#ifdef HAVE_CDDA
+	if (is_store_iter_cdda(iter_store)) {
+		return;
+	}
+#endif /* HAVE_CDDA */
 
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter_store, 6, &dirty, -1);
 

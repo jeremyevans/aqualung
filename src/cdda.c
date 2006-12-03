@@ -162,6 +162,7 @@ cdda_get_drive_by_spec_device_path(char * device_path) {
 
 /* value should point to a buffer of size at least CDDA_MAXLEN */
 /* ret 0 if OK, -1 if readlink error */
+#ifndef _WIN32
 int
 symlink_deref_absolute(char * symlink, char * path) {
 
@@ -179,6 +180,7 @@ symlink_deref_absolute(char * symlink, char * path) {
 	}
 	return 0;
 }
+#endif /* !_WIN32 */
 
 /* return 1 if drives[i] is a symlink to a drive path
  * also present in the drives[] string array, or the

@@ -993,7 +993,14 @@ cddb_connection_setup(cddb_conn_t ** conn) {
 	cddb_set_server_name(*conn, options.cddb_server);
 	cddb_set_timeout(*conn, options.cddb_timeout);
 	cddb_set_charset(*conn, "UTF-8");
-	//cddb_cache_only(*conn);
+
+	if (options.cddb_local[0] != '\0') {
+		cddb_cache_set_dir(*conn, options.cddb_local);
+	}
+
+	if (options.cddb_cache_only) {
+		cddb_cache_only(*conn);
+	}
 
 	if (options.cddb_use_proxy) {
 		cddb_http_proxy_enable(*conn);

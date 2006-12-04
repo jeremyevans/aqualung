@@ -4180,6 +4180,9 @@ save_config(void) {
 	snprintf(str, 31, "%d", options.cddb_timeout);
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_timeout", (xmlChar *) str);
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_email", (xmlChar *) options.cddb_email);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_local", (xmlChar *) options.cddb_local);
+	snprintf(str, 31, "%d", options.cddb_cache_only);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_cache_only", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.cddb_use_http);
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_use_http", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.cddb_use_proxy);
@@ -4319,6 +4322,7 @@ load_config(void) {
 
 	options.cddb_server[0] = '\0';
 	options.cddb_email[0] = '\0';
+	options.cddb_local[0] = '\0';
 	options.cddb_proxy[0] = '\0';
 	options.cddb_timeout = 10;
 
@@ -4927,6 +4931,18 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
                                 strncpy(options.cddb_email, (char *) key, MAXLEN-1);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_local"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                strncpy(options.cddb_local, (char *) key, MAXLEN-1);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_cache_only"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf((char *) key, "%d", &options.cddb_cache_only);
                         xmlFree(key);
                 }
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_use_http"))) {

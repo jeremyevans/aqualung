@@ -1609,6 +1609,13 @@ msgid "Email address for submission:"
 msgstr ""
 
 #, fuzzy
+msgid "Local CDDB directory:"
+msgstr "Запис"
+
+msgid "Use the local database only"
+msgstr ""
+
+#, fuzzy
 msgid "Direct connection to CDDB server"
 msgstr "П╕д'╓днуюсь до сервера CDDB..."
 

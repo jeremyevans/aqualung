@@ -1456,6 +1456,12 @@ msgstr ""
 msgid "Email address for submission:"
 msgstr ""
 
+msgid "Local CDDB directory:"
+msgstr ""
+
+msgid "Use the local database only"
+msgstr ""
+
 msgid "Direct connection to CDDB server"
 msgstr ""
 

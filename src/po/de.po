@@ -1644,6 +1644,13 @@ msgid "Email address for submission:"
 msgstr ""
 
 #, fuzzy
+msgid "Local CDDB directory:"
+msgstr "Album"
+
+msgid "Use the local database only"
+msgstr ""
+
+#, fuzzy
 msgid "Direct connection to CDDB server"
 msgstr "JACK Verbindung verloren"
 

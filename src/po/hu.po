@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2006-11-30 17:29+0100\n"
+"PO-Revision-Date: 2006-12-04 20:23+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -377,13 +377,13 @@ msgid "Disable manual eject"
 msgstr "Tálca kézi kitolásának tiltása"
 
 msgid "Select juke-box disc"
-msgstr ""
+msgstr "Juke-box lemez kiválasztása"
 
 msgid "Set drive speed"
 msgstr "Meghajtó sebesség beállítása"
 
 msgid "Detect media change"
-msgstr ""
+msgstr "Lemezcsere érzékelése"
 
 msgid "Read multiple sessions"
 msgstr ""
@@ -1520,11 +1520,10 @@ msgid "Replaygain_album_gain"
 msgstr "Replaygain_album_gain"
 
 msgid "CD drive speed:"
-msgstr ""
+msgstr "CD meghajtó sebesség:"
 
-#, fuzzy
 msgid "Paranoia error correction"
-msgstr "Kódolási beállítások"
+msgstr "Paranoia hibajavítás"
 
 msgid "Perform overlapped reads"
 msgstr ""
@@ -1546,6 +1545,12 @@ msgstr "Kapcsolódás idõkorlátja [sec]:"
 
 msgid "Email address for submission:"
 msgstr "Email cím feltöltéshez:"
+
+msgid "Local CDDB directory:"
+msgstr "Helyi CDDB könyvtár:"
+
+msgid "Use the local database only"
+msgstr "Kizárólag a helyi adatbázis használata"
 
 msgid "Direct connection to CDDB server"
 msgstr "Kapcsolódás közvetlenül a CDDB szerverhez"

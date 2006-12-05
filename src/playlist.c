@@ -554,7 +554,8 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_da
 		    gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path) &&
 		    !gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), &iter)) {
 
-			gtk_tree_view_set_cursor(GTK_TREE_VIEW(play_list), path, NULL, FALSE);
+			if (gtk_tree_selection_count_selected_rows(play_select) == 0)
+				gtk_tree_view_set_cursor(GTK_TREE_VIEW(play_list), path, NULL, FALSE);
 
 			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 					   COLUMN_TRACK_NAME, &pname, COLUMN_PHYSICAL_FILENAME, &pfile, -1);

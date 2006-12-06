@@ -64,9 +64,9 @@ extern GdkPixbuf * icon_track;
 extern GtkTreeStore * music_store;
 extern GtkWidget * browser_window;
 
-extern void cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter_drive);
 
 #ifdef HAVE_CDDB
+extern void cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter_drive);
 extern volatile int cddb_thread_state;
 #endif /* HAVE_CDDB */
 
@@ -667,10 +667,10 @@ refresh_cdda_drive_node(char * device_path) {
 		return;
 
 	if (drive->disc.n_tracks > 0) {
-		snprintf(str_title, MAXLEN-1, "Unknown disc [%s]",
+		snprintf(str_title, MAXLEN-1, "%s [%s]", _("Unknown disc"),
 			 cdda_displayed_device_path(device_path));
 	} else {
-		snprintf(str_title, MAXLEN-1, "No disc [%s]",
+		snprintf(str_title, MAXLEN-1, "%s [%s]", _("No disc"),
 			 cdda_displayed_device_path(device_path));
 	}
 

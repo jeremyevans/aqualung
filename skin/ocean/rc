@@ -130,6 +130,19 @@ style "scale"
 	fg[NORMAL] = "#287693"
 }
 
+style "loop_bar"
+{
+	bg_pixmap[NORMAL] = "<none>"
+	
+        bg[NORMAL] = "#8eb3bb"
+        bg[ACTIVE] = "#5f8087"
+        bg[SELECTED] = "#688496"
+
+        fg[NORMAL] = "#94b3bb"
+        fg[PRELIGHT] = "#b4d8e1"
+}
+
+
 style "nostyle"
 {
 	bg_pixmap[NORMAL] = "<none>"
@@ -158,6 +171,7 @@ widget "*Menu*" style "menu"
 
 widget "*SpinButton*" style "spin_button"
 widget "*Scale*" style "scale"
+widget "*AqualungLoopBar*" style "loop_bar"
 widget "*Button*" style "button"
 widget "*GtkEntry*" style "entry"
 widget "*Combo*" style "combo_box"

@@ -1268,6 +1268,10 @@ cddb_timeout_callback(gpointer data) {
 void
 cddb_get(GtkTreeIter * iter) {
 
+	if (cddb_thread_state != CDDB_THREAD_FREE) {
+		return;
+	}
+
 	cddb_thread_state = CDDB_THREAD_BUSY;
 
 	iter_record = *iter;
@@ -1402,10 +1406,45 @@ cdda_timeout_callback(gpointer data) {
 	return FALSE;
 }
 
+typedef struct {
+
+	cdda_disc_t * disc;
+	GtkTreeIter iter;
+} cdda_get_t;
+
+void cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter);
+
+gboolean
+cddb_get_cdda_timeout(gpointer data) {
+
+	cdda_get_t * get = NULL;
+
+	if (cddb_thread_state != CDDB_THREAD_FREE) {
+		return TRUE;
+	}
+
+	get = (cdda_get_t *)data;
+	cddb_get_cdda(get->disc, get->iter);
+	free(get);
+
+	return FALSE;
+}
+
 void
 cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter) {
 
 	if (cddb_thread_state != CDDB_THREAD_FREE) {
+
+		cdda_get_t * get = NULL;
+
+		if ((get = (cdda_get_t *)malloc(sizeof(cdda_get_t))) == NULL) {
+			fprintf(stderr, "cddb_lookup.c: cddb_get_cdda(): malloc error\n");
+			return;
+		}
+		
+		get->disc = disc;
+		get->iter = iter;
+		g_timeout_add(1000, cddb_get_cdda_timeout, get);
 		return;
 	}
 
@@ -1444,6 +1483,10 @@ cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cdd
 	char tmp[MAXLEN];
 
 
+	if (cddb_thread_state != CDDB_THREAD_FREE) {
+		return;
+	}
+
 	cddb_thread_state = CDDB_THREAD_BUSY;
 
 	if (init_query_data_from_tracklist(record->tracks)) {
@@ -1458,6 +1501,7 @@ cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cdd
 	cddb_thread(NULL);
 
 	if (cddb_thread_state != CDDB_THREAD_SUCCESS || record_count == 0) {
+		free(frames);
 		cddb_thread_state = CDDB_THREAD_FREE;
 		return;
 	}
@@ -1565,6 +1609,10 @@ cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cdd
 
 void
 cddb_submit(GtkTreeIter * iter) {
+
+	if (cddb_thread_state != CDDB_THREAD_FREE) {
+		return;
+	}
 
 	cddb_thread_state = CDDB_THREAD_BUSY;
 

@@ -143,6 +143,18 @@ style "scale"
 	fg[NORMAL] = { 0.3, 0.2, 0.0 }
 }
 
+style "loop_bar"
+{
+	bg_pixmap[NORMAL] = "scale_bg.png"
+	
+	bg[NORMAL] = { 0.05, 0.1, 0.15 }
+	bg[ACTIVE] = { 0.0, 0.0, 0.0 }
+	bg[SELECTED] = { 0.3, 0.2, 0.1 }
+
+	fg[NORMAL] = { 0.55, 0.5, 0.4 }
+	fg[PRELIGHT] = { 0.75, 0.6, 0.4 }
+}
+
 style "nostyle"
 {
 	bg_pixmap[NORMAL] = "<none>"
@@ -171,6 +183,7 @@ widget "*Menu*" style "menu"
 
 widget "*SpinButton*" style "spin_button"
 widget "*Scale*" style "scale"
+widget "*AqualungLoopBar*" style "loop_bar"
 widget "*Button*" style "button"
 widget "*GtkEntry*" style "entry"
 widget "*Combo*" style "combo_box"

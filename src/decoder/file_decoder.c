@@ -192,8 +192,10 @@ file_decoder_open(file_decoder_t * fdec, char * filename) {
 		}
 		ret = dec->open(dec, filename);
 		if (ret == DECODER_OPEN_FERROR) {
+			dec->destroy(dec);
 			goto no_open;
 		} else if (ret == DECODER_OPEN_BADLIB) {
+			dec->destroy(dec);
 			continue;
 		} else if (ret != DECODER_OPEN_SUCCESS) {
 			printf("programmer error, please report: "

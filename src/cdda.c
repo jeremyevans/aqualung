@@ -470,6 +470,20 @@ cdda_timeout_callback(gpointer data) {
 
 
 void
+cdda_timeout_start(void) {
+
+	cdda_timeout_tag = g_timeout_add(CDDA_TIMEOUT_PERIOD, cdda_timeout_callback, NULL);
+}
+
+
+void
+cdda_timeout_stop(void) {
+
+	g_source_remove(cdda_timeout_tag);
+}
+
+
+void
 cdda_scanner_start(void) {
 
 	if (cdda_scanner_working)
@@ -480,7 +494,7 @@ cdda_scanner_start(void) {
 	cdda_mutex = g_mutex_new();
 #endif /* _WIN32 */
 
-	cdda_timeout_tag = g_timeout_add(CDDA_TIMEOUT_PERIOD, cdda_timeout_callback, NULL);
+	cdda_timeout_start();
 
 	cdda_scanner_working = 1;
 	AQUALUNG_THREAD_CREATE(cdda_scanner_id, NULL, cdda_scanner, NULL)
@@ -494,7 +508,7 @@ cdda_scanner_stop(void) {
 	AQUALUNG_THREAD_JOIN(cdda_scanner_id)
 
 	cdda_timeout_callback(NULL); /* cleanup any leftover messages */
-	g_source_remove(cdda_timeout_tag);
+	cdda_timeout_stop();
 
 #ifdef _WIN32
 	g_mutex_free(cdda_mutex);

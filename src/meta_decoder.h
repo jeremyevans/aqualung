@@ -82,6 +82,7 @@ int lookup_id3v2_textframe(char * frameID, char * descr);
 
 metadata * meta_new(void);
 int meta_read(metadata * meta, char * filename);
+int meta_read_fdec(metadata * meta, char * filename, file_decoder_t * fdec);
 void meta_free(metadata * meta);
 
 int meta_get_rva(metadata * meta, float * fval);

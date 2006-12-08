@@ -362,10 +362,10 @@ int
 meta_read(metadata * meta, char * file) {
 
         file_decoder_t * fdec = NULL;
+	int ret;
 
         if ((fdec = file_decoder_new()) == NULL) {
                 fprintf(stderr, "meta_read(): error: file_decoder_new() returned NULL\n");
-		file_decoder_delete(fdec);
                 return 0;
         }
 
@@ -374,6 +374,19 @@ meta_read(metadata * meta, char * file) {
 		file_decoder_delete(fdec);
                 return 0;
         }
+
+	ret = meta_read_fdec(meta, file, fdec);
+
+        file_decoder_close(fdec);
+        file_decoder_delete(fdec);
+
+	return ret;
+}
+
+
+/* meta_read if we already have a file_decoder open for the file */
+int
+meta_read_fdec(metadata * meta, char * file, file_decoder_t * fdec) {
 
 	meta->file_lib = fdec->file_lib;
 	strcpy(meta->format_str, fdec->fileinfo.format_str);
@@ -437,9 +450,6 @@ meta_read(metadata * meta, char * file) {
                 append_mod(meta, mi);
         }
 #endif /* HAVE_MOD */
-
-        file_decoder_close(fdec);
-        file_decoder_delete(fdec);
 
 	return 1;
 }

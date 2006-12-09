@@ -204,6 +204,9 @@ GdkPixbuf * icon_artist;
 GdkPixbuf * icon_record;
 GdkPixbuf * icon_store;
 GdkPixbuf * icon_track;
+GdkPixbuf * icon_cdda;
+GdkPixbuf * icon_cdda_disc;
+GdkPixbuf * icon_cdda_nodisc;
 
 #if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 GtkWidget * store__tag;
@@ -4720,6 +4723,12 @@ create_music_browser(void) {
                 icon_record = gdk_pixbuf_new_from_file (path, NULL);
                 sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-track.png");
                 icon_track = gdk_pixbuf_new_from_file (path, NULL);
+                sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda.png");
+                icon_cdda = gdk_pixbuf_new_from_file (path, NULL);
+                sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda-disk.png");
+                icon_cdda_disc = gdk_pixbuf_new_from_file (path, NULL);
+                sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda-nodisk.png");
+                icon_cdda_nodisc = gdk_pixbuf_new_from_file (path, NULL);
         }
 
 	/* create music store tree */

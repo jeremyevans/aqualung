@@ -61,6 +61,9 @@ extern options_t options;
 extern GdkPixbuf * icon_store;
 extern GdkPixbuf * icon_record;
 extern GdkPixbuf * icon_track;
+extern GdkPixbuf * icon_cdda;
+extern GdkPixbuf * icon_cdda_disc;
+extern GdkPixbuf * icon_cdda_nodisc;
 extern GtkTreeStore * music_store;
 extern GtkWidget * browser_window;
 
@@ -589,7 +592,7 @@ create_cdda_node(void) {
 			   -1);
 
 	if (options.enable_ms_tree_icons) {
-		gtk_tree_store_set(music_store, &iter, 9, icon_store, -1);
+		gtk_tree_store_set(music_store, &iter, 9, icon_cdda, -1);
 	}
 }
 
@@ -626,7 +629,11 @@ insert_cdda_drive_node(char * device_path) {
 			   -1);
 
 	if (options.enable_ms_tree_icons) {
-		gtk_tree_store_set(music_store, &iter_drive, 9, icon_record, -1);
+		if (drive->disc.n_tracks > 0) {
+			gtk_tree_store_set(music_store, &iter_drive, 9, icon_cdda_disc, -1);
+		} else {
+			gtk_tree_store_set(music_store, &iter_drive, 9, icon_cdda_nodisc, -1);
+		}
 	}
 
 	if (drive->disc.n_tracks > 0) {
@@ -711,6 +718,14 @@ refresh_cdda_drive_node(char * device_path) {
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_tmp, &iter_drive, 0)) {
 		gtk_tree_store_remove(music_store, &iter_tmp);
+	}
+
+	if (options.enable_ms_tree_icons) {
+		if (drive->disc.n_tracks > 0) {
+			gtk_tree_store_set(music_store, &iter_drive, 9, icon_cdda_disc, -1);
+		} else {
+			gtk_tree_store_set(music_store, &iter_drive, 9, icon_cdda_nodisc, -1);
+		}
 	}
 
 	if (drive->disc.n_tracks > 0) {

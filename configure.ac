@@ -292,16 +292,29 @@ AC_ARG_WITH(
 if test "$flac" = "no"; then
 	AC_MSG_RESULT(no)
 else
-	AC_CHECK_LIB(FLAC, FLAC__file_decoder_new, [lib=yes], [lib=no])
+	AC_CHECK_LIB(FLAC, FLAC__stream_decoder_init_file, [lib=yes], [lib=no], [-logg])
 	if test "$lib" = "yes"; then
 	        flac_LIBS="-lFLAC"
-		AC_DEFINE([HAVE_FLAC], [1], [Defined if compile with FLAC support])
+		AC_DEFINE([HAVE_FLAC_8], [1], [Defined if compile with FLAC (1.1.3 and newer API)])
+		AC_DEFINE([HAVE_FLAC], [1], [Defined if compile with some kind of FLAC support])
 	fi
-	if test "$lib" = "no" -a "$flac" = "yes"; then
+	AC_CHECK_LIB(FLAC, FLAC__file_decoder_new, [lib2=yes], [lib2=no])
+	if test "$lib2" = "yes"; then
+	        flac_LIBS="-lFLAC"
+		AC_DEFINE([HAVE_FLAC_7], [1], [Defined if compile with FLAC (1.1.2 and older API)])
+		AC_DEFINE([HAVE_FLAC], [1], [Defined if compile with some kind of FLAC support])
+	fi
+	if test "$lib" = "no" -a "$lib2" = "no" -a "$flac" = "yes"; then
 		AC_MSG_ERROR(You do not appear to have the FLAC library installed. Grab it from http://flac.sourceforge.net)
 	fi
 	if test "$flac" = "detect"; then
-		flac=$lib
+		if test "$lib2" = "yes" -o "$lib" = "yes"; then
+			flac="yes"
+		        AC_MSG_RESULT(yes)
+		else
+			flac="no"
+		        AC_MSG_RESULT(no)
+		fi
 	fi
 fi
 

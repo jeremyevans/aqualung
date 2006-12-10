@@ -73,6 +73,9 @@ extern char pl_color_inactive[14];
 extern GtkWidget * gui_stock_label_button(gchar * label, const gchar * stock);
 extern void assign_audio_fc_filters(GtkFileChooser * fc);
 
+extern void iw_show_info (GtkWidget *dialog, GtkWindow *transient, gchar *message);
+extern void iw_hide_info (void);
+
 extern GtkTooltips * aqualung_tooltips;
 
 GtkWidget * browser_window;
@@ -2583,9 +2586,11 @@ store__addlist_with_mode(int mode, gpointer data) {
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_store)) {
 
+                iw_show_info (NULL, GTK_WINDOW(browser_window), _("Adding songs..."));
 		store_addlist_iter(iter_store, (GtkTreeIter *)data, mode);
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
+                iw_hide_info ();
 	}
 }
 
@@ -2877,9 +2882,11 @@ artist__addlist_with_mode(int mode, gpointer data) {
         GtkTreeIter iter_artist;
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_artist)) {
+                iw_show_info (NULL, GTK_WINDOW(browser_window), _("Adding songs..."));
 		artist_addlist_iter(iter_artist, (GtkTreeIter *)data, mode);
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
+                iw_hide_info ();
 	}
 }
 
@@ -3093,9 +3100,11 @@ record__addlist_with_mode(int mode, gpointer data) {
         GtkTreeIter iter_record;
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_record)) {
+                iw_show_info (NULL, GTK_WINDOW(browser_window), _("Adding songs..."));
 		record_addlist_iter(iter_record, (GtkTreeIter *)data, mode);
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
+                iw_hide_info ();
 	}
 }
 
@@ -4772,6 +4781,7 @@ create_music_browser(void) {
         gtk_tree_view_column_pack_start (column, renderer, TRUE);
         gtk_tree_view_column_add_attribute (column, renderer, "text", 0);
         gtk_tree_view_column_add_attribute (column, renderer, "weight", 8);
+        g_object_set(G_OBJECT(renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
 
 	gtk_tree_view_append_column(GTK_TREE_VIEW(music_tree), column);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(music_tree), FALSE);

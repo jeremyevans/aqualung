@@ -1501,6 +1501,7 @@ display_title_format_help(void) {
                                               "respectively. Everything else you enter here will be\n"
                                               "literally copied into the resulting string.\n"));
 
+        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
         gtk_widget_show (help_dialog);
         aqualung_dialog_run(GTK_DIALOG(help_dialog));
         gtk_widget_destroy(help_dialog);
@@ -1522,6 +1523,7 @@ display_implict_command_line_help(void) {
                                               "Example: enter '-o alsa -R' below to use ALSA output\n"
                                               "running realtime as a default.\n"));
 
+        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
         gtk_widget_show (help_dialog);
         aqualung_dialog_run(GTK_DIALOG(help_dialog));
         gtk_widget_destroy(help_dialog);
@@ -1539,6 +1541,7 @@ display_pathlist_help(void) {
 	                                      _("Paths must either be absolute or starting with a tilde, which will be expanded to the user's home directory.\n\n"
 						"Drag and drop entries in the list to set the store order in the Music Store."));
 
+        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
         gtk_widget_show (help_dialog);
         aqualung_dialog_run(GTK_DIALOG(help_dialog));
         gtk_widget_destroy(help_dialog);
@@ -1566,6 +1569,7 @@ display_cdda_drive_speed_help(void) {
 						"which always happens with maximum available speed and\n"
 						"with error correction modes manually set before every run."));
 
+        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
         gtk_widget_show (help_dialog);
         aqualung_dialog_run(GTK_DIALOG(help_dialog));
         gtk_widget_destroy(help_dialog);

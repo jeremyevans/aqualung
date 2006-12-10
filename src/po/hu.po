@@ -604,6 +604,10 @@ msgstr ""
 "Zenetárban egy vagy több tároló tartalma megváltozott.\n"
 "Szeretnéd elmenteni õket kilépés elõtt?"
 
+#, fuzzy
+msgid "Question"
+msgstr "Leírás"
+
 #, c-format
 msgid "Position: %d%%"
 msgstr "Pozíció: %d%%"
@@ -972,6 +976,10 @@ msgstr "Ismeretlen"
 msgid "Use manual RVA value [dB]"
 msgstr "Rögzített RVA használata [dB]"
 
+#, fuzzy
+msgid "Adding songs..."
+msgstr "Fájlok hozzáadása..."
+
 #, c-format
 msgid ""
 "The store '%s' already exists.\n"
@@ -1213,6 +1221,9 @@ msgstr ""
 "A %%a, %%r és %%t vezérlõk rendre az elõadót, a lemezt és a\n"
 "szám címét jelölik. A sablonban szereplõ egyéb karakterek\n"
 "változtatás nélkül jelennek meg a címsorban.\n"
+
+msgid "Help"
+msgstr ""
 
 msgid ""
 "\n"
@@ -1750,6 +1761,26 @@ msgstr "Átlagos"
 
 msgid "Reread file metadata"
 msgstr "Metaadatok újraolvasása"
+
+#, c-format
+msgid ""
+"The selected file will be deleted. No recovery will be possible after this "
+"operation.\n"
+"\n"
+"Are you sure?"
+msgstr ""
+
+#, c-format
+msgid ""
+"All selected files will be deleted. No recovery will be possible after this "
+"operation.\n"
+"\n"
+"Are you sure?"
+msgstr ""
+
+#, fuzzy
+msgid "Remove file"
+msgstr "Mindent eltávolít"
 
 msgid "LADSPA patch builder"
 msgstr "LADSPA effekt szerkesztõ"

@@ -559,6 +559,9 @@ msgid ""
 "Do you want to save them before exiting?"
 msgstr ""
 
+msgid "Question"
+msgstr ""
+
 #, c-format
 msgid "Position: %d%%"
 msgstr ""
@@ -913,6 +916,9 @@ msgstr ""
 msgid "Use manual RVA value [dB]"
 msgstr ""
 
+msgid "Adding songs..."
+msgstr ""
+
 #, c-format
 msgid ""
 "The store '%s' already exists.\n"
@@ -1143,6 +1149,9 @@ msgid ""
 "and a Track name. These are denoted by %%a, %%r and %%t,\n"
 "respectively. Everything else you enter here will be\n"
 "literally copied into the resulting string.\n"
+msgstr ""
+
+msgid "Help"
 msgstr ""
 
 msgid ""
@@ -1651,6 +1660,25 @@ msgid "Average"
 msgstr ""
 
 msgid "Reread file metadata"
+msgstr ""
+
+#, c-format
+msgid ""
+"The selected file will be deleted. No recovery will be possible after this "
+"operation.\n"
+"\n"
+"Are you sure?"
+msgstr ""
+
+#, c-format
+msgid ""
+"All selected files will be deleted. No recovery will be possible after this "
+"operation.\n"
+"\n"
+"Are you sure?"
+msgstr ""
+
+msgid "Remove file"
 msgstr ""
 
 msgid "LADSPA patch builder"

@@ -1048,6 +1048,7 @@ main_window_close(GtkWidget * widget, gpointer data) {
 		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_YES);
 		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+                gtk_window_set_title(GTK_WINDOW(dialog), _("Question"));
 		
 		if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
 			save_all_music_store();
@@ -2668,6 +2669,8 @@ hide_all_windows(gpointer data) {
 							GTK_MESSAGE_WARNING,
 							GTK_BUTTONS_CLOSE,
 							_("Aqualung is compiled with system tray support, but the status icon could not be embedded in the notification area. Your desktop may not have support for a system tray, or it has not been configured correctly."));
+
+                        gtk_window_set_title(GTK_WINDOW(dialog), _("Warning"));
 			gtk_widget_show(dialog);
 			aqualung_dialog_run(GTK_DIALOG(dialog));
 			gtk_widget_destroy(dialog);

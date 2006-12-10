@@ -193,8 +193,9 @@ typedef struct _playlist_filemeta {
 playlist_filemeta * playlist_filemeta_get(char * physical_name, char * alt_name, int composit);
 void playlist_filemeta_free(playlist_filemeta * plfm);
 
-void iw_show_info (GtkWidget *dialog, gchar *message);
+void iw_show_info (GtkWidget *dialog, GtkWindow *transient, gchar *message);
 void iw_hide_info (void);
+void remove_files (void);
 
 void rem__sel_cb(gpointer data);
 void cut__sel_cb(gpointer data);
@@ -507,6 +508,8 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                 if(kevent->state & GDK_SHIFT_MASK) {  /* SHIFT + Delete */
                         gtk_tree_store_clear(play_store);
 			playlist_content_changed();
+                } else if(kevent->state & GDK_CONTROL_MASK) {  /* CTRL + Delete */
+                        remove_files();
                 } else {
 			rem__sel_cb(NULL);
                 }
@@ -609,7 +612,7 @@ plist__save_cb(gpointer data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                iw_show_info(dialog, _("Saving playlist..."));
+                iw_show_info(dialog, options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), _("Saving playlist..."));
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
@@ -654,7 +657,7 @@ plist__load_cb(gpointer data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                iw_show_info(dialog, _("Loading playlist..."));
+                iw_show_info(dialog, options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), _("Loading playlist..."));
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
@@ -715,7 +718,7 @@ plist__enqueue_cb(gpointer data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                iw_show_info(dialog, _("Enqueuing playlist..."));
+                iw_show_info(dialog, options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), _("Enqueuing playlist..."));
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
@@ -1328,7 +1331,7 @@ add_files(GtkWidget * widget, gpointer data) {
 
 		GSList *lfiles, *node;
 
-                iw_show_info(dialog, _("Adding files..."));
+                iw_show_info(dialog, options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), _("Adding files..."));
 
                 strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
 			MAXLEN-1);
@@ -1385,7 +1388,7 @@ add_directory(GtkWidget * widget, gpointer data) {
 
 		GSList *lfiles, *node;
 
-                iw_show_info(dialog, _("Adding files recursively..."));
+                iw_show_info(dialog, options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), _("Adding files recursively..."));
 
                 strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
 			MAXLEN-1);
@@ -3612,21 +3615,22 @@ expand_collapse_album_node(void) {
 }
 
 void
-iw_show_info (GtkWidget *dialog, gchar *message) {
+iw_show_info (GtkWidget *dialog, GtkWindow *transient, gchar *message) {
 
         GtkWidget *frame;
         GtkWidget *label;
 
-        gtk_widget_hide (dialog);
-        deflicker();
+        if (dialog != NULL) {
+                gtk_widget_hide (dialog);
+                deflicker();
+        }
 
         iw_widget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_position(GTK_WINDOW(iw_widget), GTK_WIN_POS_CENTER_ON_PARENT);
         GTK_WIDGET_UNSET_FLAGS(iw_widget, GTK_CAN_FOCUS);
         gtk_widget_set_events(iw_widget, GDK_BUTTON_PRESS_MASK);
         gtk_window_set_modal(GTK_WINDOW(iw_widget), TRUE);
-        gtk_window_set_transient_for(GTK_WINDOW(iw_widget),
-                                     options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window));
+        gtk_window_set_transient_for(GTK_WINDOW(iw_widget), GTK_WINDOW(transient));
         gtk_window_set_decorated(GTK_WINDOW(iw_widget), FALSE);
 
         frame = gtk_frame_new(NULL);
@@ -3655,6 +3659,87 @@ iw_hide_info (void) {
         }
 
         deflicker();
+}
+
+
+void
+remove_files (void) {
+
+        GtkWidget *info_dialog;
+        gint response, n = 0, i = 0, j, files, last_pos;
+	GtkTreeIter iter, iter_child;
+        GtkTreePath *visible_path;
+        gchar temp[MAXLEN], *filename;
+
+        files = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+
+                if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+		        n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter);
+                        files++;
+                }
+
+                j = 0;
+                while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, &iter, j++)) {
+                        if (gtk_tree_selection_iter_is_selected(play_select, &iter_child)) {
+                                n = 1;
+                        }
+                }
+                if(n) break;
+        }
+        
+        if (!n) {
+
+                if (files == 1) {
+                        sprintf(temp, _("The selected file will be deleted. No recovery will be possible after this operation.\n\nAre you sure?"));
+                } else {
+                        sprintf(temp, _("All selected files will be deleted. No recovery will be possible after this operation.\n\nAre you sure?"));
+                }
+
+                info_dialog = gtk_message_dialog_new (options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
+                                                      GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                                      GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, temp);
+
+                gtk_window_set_title(GTK_WINDOW(info_dialog), _("Remove file"));
+                gtk_widget_show (info_dialog);
+
+                response = aqualung_dialog_run (GTK_DIALOG (info_dialog));     
+
+                gtk_widget_destroy(info_dialog);
+
+                if (response == GTK_RESPONSE_YES) {   
+
+                        i = last_pos = 0;
+                	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+                                if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
+
+                                        gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, COLUMN_PHYSICAL_FILENAME, &filename, -1);
+
+                                        n = unlink(filename);
+                                        if (n != -1) {
+                                                gtk_tree_store_remove(play_store, &iter);
+                                                --i;
+                                                last_pos = (i-1) < 0 ? 0 : i-1;
+                                        }
+
+                                        g_free(filename);
+                                }
+                        }
+
+                        for(i=0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
+
+                        if(i) {
+                                gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, last_pos);
+                                visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
+                                if (visible_path) {
+                                        gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
+                                        gtk_tree_path_free(visible_path);
+                                }
+                        }
+                        playlist_content_changed();
+                }
+        }
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

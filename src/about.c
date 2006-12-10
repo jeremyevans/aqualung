@@ -127,6 +127,7 @@ create_about_window() {
 	gtk_widget_modify_bg(GTK_SCROLLED_WINDOW(scrolled_win)->vscrollbar, GTK_STATE_NORMAL, &blue1);
 	gtk_widget_modify_bg(GTK_SCROLLED_WINDOW(scrolled_win)->vscrollbar, GTK_STATE_PRELIGHT, &blue2);
 	gtk_widget_modify_bg(GTK_SCROLLED_WINDOW(scrolled_win)->vscrollbar, GTK_STATE_ACTIVE, &blue3);
+	gtk_widget_modify_bg(GTK_SCROLLED_WINDOW(scrolled_win)->vscrollbar, GTK_STATE_INSENSITIVE, &blue2);
 
 
         view = gtk_text_view_new();

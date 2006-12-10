@@ -620,6 +620,10 @@ msgstr ""
 "Музичний склад було зм╕нено.\n"
 "Чи ви бажа╓те зберегти зм╕ни перед виходом?"
 
+#, fuzzy
+msgid "Question"
+msgstr "Тривал╕сть:"
+
 #, c-format
 msgid "Position: %d%%"
 msgstr ""
@@ -999,6 +1003,10 @@ msgstr "Невим╕ряно"
 msgid "Use manual RVA value [dB]"
 msgstr "Використовувати значення ПВР встановлен╕ вручну [dB]"
 
+#, fuzzy
+msgid "Adding songs..."
+msgstr "_Додати файли..."
+
 #, c-format
 msgid ""
 "The store '%s' already exists.\n"
@@ -1263,6 +1271,9 @@ msgstr ""
 "та назви Дор╕жки. Це означа╓ться %a, %r та %t,\n"
 "в╕дпов╕дно. Все ╕нше, що ви впишете сюди буде\n"
 "скоп╕йовано до рядку-результату.\n"
+
+msgid "Help"
+msgstr ""
 
 msgid ""
 "\n"
@@ -1820,6 +1831,26 @@ msgstr "Середн╕"
 
 msgid "Reread file metadata"
 msgstr "Перечитати ╕нформац╕ю про файл"
+
+#, c-format
+msgid ""
+"The selected file will be deleted. No recovery will be possible after this "
+"operation.\n"
+"\n"
+"Are you sure?"
+msgstr ""
+
+#, c-format
+msgid ""
+"All selected files will be deleted. No recovery will be possible after this "
+"operation.\n"
+"\n"
+"Are you sure?"
+msgstr ""
+
+#, fuzzy
+msgid "Remove file"
+msgstr "Прибрати все"
 
 msgid "LADSPA patch builder"
 msgstr "Буд╕вельник шлях╕в LADSPA"

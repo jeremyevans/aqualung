@@ -643,6 +643,10 @@ msgstr ""
 "Musikladen ist verändert werden.\n"
 "Wollen Sie es sparen bevor aussteigen?"
 
+#, fuzzy
+msgid "Question"
+msgstr "Zeitdauer:"
+
 #, c-format
 msgid "Position: %d%%"
 msgstr ""
@@ -1029,6 +1033,10 @@ msgstr "Unbekannt"
 msgid "Use manual RVA value [dB]"
 msgstr "Manuelles RVA Level benutzen [dB]"
 
+#, fuzzy
+msgid "Adding songs..."
+msgstr "Dateien hinzufügen..."
+
 #, c-format
 msgid ""
 "The store '%s' already exists.\n"
@@ -1300,6 +1308,9 @@ msgstr ""
 "Sie sind von %a, %r und %t bezeichnet, respektive.\n"
 "Alles andere wird in die ergebende Zeichenkette wörtlich\n"
 "kopiert werden.\n"
+
+msgid "Help"
+msgstr ""
 
 msgid ""
 "\n"
@@ -1864,6 +1875,26 @@ msgstr ""
 
 msgid "Reread file metadata"
 msgstr ""
+
+#, c-format
+msgid ""
+"The selected file will be deleted. No recovery will be possible after this "
+"operation.\n"
+"\n"
+"Are you sure?"
+msgstr ""
+
+#, c-format
+msgid ""
+"All selected files will be deleted. No recovery will be possible after this "
+"operation.\n"
+"\n"
+"Are you sure?"
+msgstr ""
+
+#, fuzzy
+msgid "Remove file"
+msgstr "Alle entfernen"
 
 msgid "LADSPA patch builder"
 msgstr "LADSPA Patch Bauer"

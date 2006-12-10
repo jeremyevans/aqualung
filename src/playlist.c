@@ -3714,15 +3714,23 @@ remove_files (void) {
                 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
                                 if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
 
+					char * filename_locale;
+
                                         gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, COLUMN_PHYSICAL_FILENAME, &filename, -1);
 
-                                        n = unlink(filename);
+					if ((filename_locale = g_locale_from_utf8(filename, -1, NULL, NULL, NULL)) == NULL) {
+						g_free(filename);
+						continue;
+					}
+
+                                        n = unlink(filename_locale);
                                         if (n != -1) {
                                                 gtk_tree_store_remove(play_store, &iter);
                                                 --i;
                                                 last_pos = (i-1) < 0 ? 0 : i-1;
                                         }
 
+                                        g_free(filename_locale);
                                         g_free(filename);
                                 }
                         }

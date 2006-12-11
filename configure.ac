@@ -725,7 +725,7 @@ if test "$loop" = "no"; then
 	AC_MSG_RESULT(no)
 else
 	AC_MSG_CHECKING(whether GTK+ version >= 2.8)
-	if pkg-config --exists 'gtk+-2.0 >= 2.10'; then
+	if pkg-config --exists 'gtk+-2.0 >= 2.8'; then
 	        AC_MSG_RESULT(yes)
 		AC_DEFINE([HAVE_LOOP], [1], [Defined if version(GTK+-2.0) >= 2.8])
 		lib="yes"

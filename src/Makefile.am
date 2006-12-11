@@ -14,6 +14,7 @@ file_info.h file_info.cpp \
 gui_main.h gui_main.c \
 i18n.h \
 ifp_device.h ifp_device.c \
+loop_bar.h loop_bar.c \
 meta_decoder.h meta_decoder.cpp \
 music_browser.h music_browser.c \
 options.h options.c \

@@ -715,6 +715,33 @@ else
 	fi
 fi
 
+AC_MSG_CHECKING(for loop support)
+AC_ARG_WITH(
+	loop,
+	[  --with-loop=yes,no      compile with loop support (default: yes)],
+	loop="$withval",
+	loop="detect")
+if test "$loop" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_MSG_CHECKING(whether GTK+ version >= 2.8)
+	if pkg-config --exists 'gtk+-2.0 >= 2.10'; then
+	        AC_MSG_RESULT(yes)
+		AC_DEFINE([HAVE_LOOP], [1], [Defined if version(GTK+-2.0) >= 2.8])
+		lib="yes"
+	else
+		AC_MSG_RESULT(no)
+		lib="no"
+	fi
+
+	if test "$lib" = "no" -a "$loop" = "yes"; then
+		AC_MSG_ERROR(You need GTK+ version 2.8 or higher for loop support.)
+	fi
+	if test "$loop" = "detect"; then
+	        loop=$lib
+	fi
+fi
+
 
 # Compiler and linker variables
 AQUALUNG_SKINDIR="-DAQUALUNG_SKINDIR=\\\"$datadir/aqualung/skin\\\""
@@ -772,6 +799,7 @@ echo "  CDDA (Audio CD) support                 :  $cdda"
 echo "  CDDB support                            :  $cddb"
 echo "  iRiver iFP driver support               :  $ifp"
 echo "  Systray support                         :  $systray"
+echo "  Loop support                            :  $loop"
 echo "----------------------------------------------------------------------"
 
 if test "$metaedit" = "yes"; then

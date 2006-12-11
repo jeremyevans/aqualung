@@ -249,6 +249,7 @@ style "label_info"
 
 style "scale_pos" = "scale"
 {
+    GtkScale::slider-length	= 30
 }
 
 style "scale_vol" = "scale_pos"

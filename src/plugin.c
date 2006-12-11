@@ -2077,6 +2077,7 @@ save_plugin_data(void) {
 
         sprintf(tmpname, "%s/plugin.xml.temp", options.confdir);
         xmlSaveFormatFile(tmpname, doc, 1);
+	xmlFreeDoc(doc);
 
         if ((fin = fopen(plugin_file, "rt")) == NULL) {
                 fprintf(stderr, "Error opening file: %s\n", plugin_file);
@@ -2221,6 +2222,7 @@ load_plugin_data(void) {
                 root = xmlNewNode(NULL, (const xmlChar*) "aqualung_plugin");
                 xmlDocSetRootElement(doc, root);
                 xmlSaveFormatFile(plugin_file, doc, 1);
+		xmlFreeDoc(doc);
                 return;
         }
         fclose(f);

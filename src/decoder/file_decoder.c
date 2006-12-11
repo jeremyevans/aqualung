@@ -296,6 +296,7 @@ get_file_duration(char * file) {
 
         if (file_decoder_open(fdec, file)) {
                 fprintf(stderr, "file_decoder_open() failed on %s\n", file);
+		file_decoder_delete(fdec);
                 return 0.0f;
         }
 

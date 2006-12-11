@@ -2730,6 +2730,7 @@ save_playlist(char * filename) {
 		}
         }
         xmlSaveFormatFile(filename, doc, 1);
+	xmlFreeDoc(doc);
 }
 
 

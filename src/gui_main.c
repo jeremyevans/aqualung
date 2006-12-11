@@ -4289,6 +4289,7 @@ save_config(void) {
 	
         sprintf(tmpname, "%s/config.xml.temp", options.confdir);
         xmlSaveFormatFile(tmpname, doc, 1);
+	xmlFreeDoc(doc);
 
         if ((fin = fopen(config_file, "rt")) == NULL) {
                 fprintf(stderr, "Error opening file: %s\n", config_file);
@@ -4335,6 +4336,7 @@ load_config(void) {
                 root = xmlNewNode(NULL, (const xmlChar *) "aqualung_config");
                 xmlDocSetRootElement(doc, root);
                 xmlSaveFormatFile(config_file, doc, 1);
+		xmlFreeDoc(doc);
                 return;
         }
         fclose(f);

@@ -1633,6 +1633,7 @@ load_default_cl(int * argc, char *** argv) {
                 root = xmlNewNode(NULL, (const xmlChar *) "aqualung_config");
                 xmlDocSetRootElement(doc, root);
                 xmlSaveFormatFile(config_file, doc, 1);
+		xmlFreeDoc(doc);
 		*argc = 1;
                 return;
         }
@@ -2740,6 +2741,7 @@ main(int argc, char ** argv) {
 #ifdef HAVE_ALSA
 	if (output == ALSA_DRIVER) {
 		AQUALUNG_THREAD_JOIN(thread_info.alsa_thread_id)
+		free(thread_info.pcm_name);
 		snd_pcm_close(thread_info.pcm_handle);
 		if (thread_info.is_output_32bit)
 			free(thread_info.alsa_int_buf);

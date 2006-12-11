@@ -2667,6 +2667,7 @@ store__add_cb(gpointer data) {
 			xmlNewTextChild(root, NULL, (const xmlChar *) "comment", (xmlChar *) comment);
 
 			xmlSaveFormatFile(file, doc, 1);
+			xmlFreeDoc(doc);
 
 			gtk_list_store_append(ms_pathlist_store, &iter);
 			gtk_list_store_set(ms_pathlist_store, &iter, 0, file, 1, utf8, 2, _("rw"), -1);
@@ -5896,6 +5897,7 @@ save_music_store(GtkTreeIter * iter_store) {
 	}
 
 	xmlSaveFormatFile(store_file, doc, 1);
+	xmlFreeDoc(doc);
 	g_free(store_file);
 }
 

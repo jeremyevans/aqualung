@@ -65,6 +65,7 @@ rb_free (rb_t * rb)
   }
 #endif /* USE_MLOCK */
   free (rb->buf);
+  free (rb);
 }
 
 /* Lock the data block of `rb' using the system call 'mlock'.  */

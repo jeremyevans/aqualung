@@ -75,7 +75,6 @@
 #include "plugin.h"
 #include "i18n.h"
 #include "cdda.h"
-#include "meta_decoder.h" /* XXX benchmark only */
 #ifdef HAVE_CDDA
 #include "decoder/dec_cdda.h"
 #endif /* HAVE_CDDA */
@@ -1983,69 +1982,6 @@ setup_app_directories(void) {
 }
 
 
-#if 0
-
-#define N_SAMEFILE 1024
-#define N_READS 256
-//#define TESTFILE "/cygdrive/c/cygwin_home/destiny.mp3"
-#define TESTFILE "/cygdrive/c/etamszi/music/extreme/privsel/track05.flac"
-//#define TESTFILE "/cygdrive/c/etamszi/music/track01.cdda.wav"
-//#define TESTFILE "/cygdrive/c/etamszi/music/Palm/Music/ATOMIC01.OGG"
-
-void
-benchmark(void) {
-
-	int c;
-	int cnt;
-	file_decoder_t * fdec;
-
-	printf("benchmarking file decoder, press enter to start\n");
-	c = fgetc(stdin);
-
-	if ((fdec = file_decoder_new()) == NULL) {
-		printf("error: file_decoder_new() failed\n");
-		exit(1);
-	}
-
-	printf("opening and closing same file %d times\n", N_SAMEFILE);
-	for (cnt = 0; cnt < N_SAMEFILE; cnt++) {
-
-		fputc('.', stdout);
-		fflush(stdout);
-		if (file_decoder_open(fdec, TESTFILE)) {
-			printf("\nfile_decoder_open error at cnt = %d\n", cnt);
-			break;
-		}
-#if 0
-		{
-			metadata * meta = meta_new();
-			meta_read_fdec(meta, TESTFILE, fdec);
-			meta_free(meta);
-		}
-#endif
-
-#if 0
-		{
-			float buffer[1024];
-			int i;
-			
-			for (i = 0; i < N_READS; i++)
-				file_decoder_read(fdec, buffer, 1024);
-		}
-#endif
-		file_decoder_close(fdec);
-	}
-	printf("\n");
-
-	file_decoder_delete(fdec);
-
-	printf("benchmark complete, press enter to quit.\n");
-	c = fgetc(stdin);
-	exit(0);
-}
-#endif
-
-
 int
 main(int argc, char ** argv) {
 
@@ -2134,10 +2070,6 @@ main(int argc, char ** argv) {
 #endif /* _WIN32 */
 
 	file_decoder_init();
-
-#if 0
-	benchmark();
-#endif
 
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, AQUALUNG_LOCALEDIR);

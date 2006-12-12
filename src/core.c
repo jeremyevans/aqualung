@@ -1013,19 +1013,21 @@ process(u_int32_t nframes, void * arg) {
 		
 		/* plugin processing */
 #ifdef HAVE_LADSPA
-		plugin_lock = 1;
-		for (i = 0; i < n_plugins; i++) {
-			if (plugin_vect[i]->is_bypassed)
-				continue;
-			
-			if (plugin_vect[i]->handle) {
-				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle, ladspa_buflen);
+		if (n_avail > 0) {
+			plugin_lock = 1;
+			for (i = 0; i < n_plugins; i++) {
+				if (plugin_vect[i]->is_bypassed)
+					continue;
+				
+				if (plugin_vect[i]->handle) {
+					plugin_vect[i]->descriptor->run(plugin_vect[i]->handle, ladspa_buflen);
+				}
+				if (plugin_vect[i]->handle2) {
+					plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
+				}
 			}
-			if (plugin_vect[i]->handle2) {
-				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
-			}
+			plugin_lock = 0;
 		}
-		plugin_lock = 0;
 		
 		if (!options.ladspa_is_postfader) {
 			for (i = 0; i < nframes; i++) {

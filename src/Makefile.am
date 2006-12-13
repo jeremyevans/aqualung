@@ -1,4 +1,4 @@
-SUBDIRS = decoder img po
+SUBDIRS = decoder encoder img po
 
 bin_PROGRAMS = aqualung
 

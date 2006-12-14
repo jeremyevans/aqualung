@@ -4627,9 +4627,6 @@ music_tree_expand_stores(void) {
         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_store, NULL, i++)) {
 		path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), &iter_store);
 		gtk_tree_view_expand_row(GTK_TREE_VIEW(music_tree), path, FALSE);
-	}
-
-	if (path) {
 		gtk_tree_path_free(path);
 	}
 }

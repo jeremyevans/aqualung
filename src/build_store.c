@@ -361,6 +361,7 @@ store_get_iter_for_artist_and_record(GtkTreeIter * store_iter,
 				   0, &artist_name, -1);
 
 		if (collate(record->artist, artist_name)) {
+			g_free(artist_name);
 			continue;
 		}
 
@@ -373,8 +374,12 @@ store_get_iter_for_artist_and_record(GtkTreeIter * store_iter,
 					   0, &record_name, -1);
 
 			if (!collate(record->record, record_name)) {
+				g_free(record_name);
+				g_free(artist_name);
 				return 1;
 			}
+
+			g_free(record_name);
 		}
 
 		/* create record */
@@ -386,6 +391,7 @@ store_get_iter_for_artist_and_record(GtkTreeIter * store_iter,
                         gtk_tree_store_set(music_store, record_iter, 9, icon_record, -1);
                 }
 
+		g_free(artist_name);
 		return 0;
 	}
 
@@ -422,8 +428,10 @@ artist_get_iter_for_record(GtkTreeIter * artist_iter,
 				   0, &record_name, -1);
 
 		if (!collate(record->record, record_name)) {
+			g_free(record_name);
 			return 1;
 		}
+		g_free(record_name);
 	}
 
 	/* create record */
@@ -2272,6 +2280,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 		snprintf(filename, MAXLEN-1, "%s/%s", dir_record, ent_track[i]->d_name);
 
 		if (is_dir(filename)) {
+			free(ent_track[i]);
 			continue;
 		}
 
@@ -2300,6 +2309,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 			}
 
 			if (match) {
+				free(ent_track[i]);
 				continue;
 			}
 		}
@@ -2329,6 +2339,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 			}
 
 			if (!match) {
+				free(ent_track[i]);
 				continue;
 			}
 		}
@@ -2368,6 +2379,8 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	}
 
 	if (record.tracks == NULL) {
+		free(artist_d_name);
+		free(record_d_name);
 		return;
 	}
 
@@ -2544,7 +2557,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 void *
 build_artist_thread(void * arg) {
 
-	int i;
+	int i, n;
 	struct dirent ** ent_record;
 	char dir_record[MAXLEN];
 	char artist_d_name[MAXLEN];
@@ -2557,16 +2570,22 @@ build_artist_thread(void * arg) {
 	while (root[--i] != '/');
 	strncpy(artist_d_name, root + i + 1, MAXLEN-1);
 
-	for (i = 0; i < scandir(root, &ent_record, filter, alphasort); i++) {
+	for (i = 0; i < (n = scandir(root, &ent_record, filter, alphasort)); i++) {
 
 		snprintf(dir_record, MAXLEN-1, "%s/%s", root, ent_record[i]->d_name);
 		
 		if (!is_dir(dir_record)) {
+			free(ent_record[i]);
 			continue;
 		}
 
 		if (build_cancelled) {
 			g_idle_add(finish_build, NULL);
+			while (i <= n) {
+				free(ent_record[i]);
+				++i;
+			}
+			free(ent_record);
 			return NULL;
 		}
 
@@ -2587,7 +2606,7 @@ build_artist_thread(void * arg) {
 void *
 build_store_thread(void * arg) {
 
-	int i, j;
+	int i, j, n, m;
 	struct dirent ** ent_artist;
 	struct dirent ** ent_record;
 	char dir_artist[MAXLEN];
@@ -2596,26 +2615,38 @@ build_store_thread(void * arg) {
 
 	AQUALUNG_THREAD_DETACH()
 
-	for (i = 0; i < scandir(root, &ent_artist, filter, alphasort); i++) {
+	for (i = 0; i < (n = scandir(root, &ent_artist, filter, alphasort)); i++) {
 
 		snprintf(dir_artist, MAXLEN-1, "%s/%s", root, ent_artist[i]->d_name);
 
 		if (!is_dir(dir_artist)) {
+			free(ent_artist[i]);
 			continue;
 		}
 
 		artist_iter_is_set = 0;
 
-		for (j = 0; j < scandir(dir_artist, &ent_record, filter, alphasort); j++) {
+		for (j = 0; j < (m = scandir(dir_artist, &ent_record, filter, alphasort)); j++) {
 
 			snprintf(dir_record, MAXLEN-1, "%s/%s", dir_artist, ent_record[j]->d_name);
 
 			if (!is_dir(dir_record)) {
+				free(ent_record[j]);
 				continue;
 			}
 
 			if (build_cancelled) {
 				g_idle_add(finish_build, NULL);
+				while (i <= n) {
+					free(ent_artist[i]);
+					++i;
+				}
+				free(ent_artist);
+				while (j <= m) {
+					free(ent_record[j]);
+					++j;
+				}
+				free(ent_record);
 				return NULL;
 			}
 

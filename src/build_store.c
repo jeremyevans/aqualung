@@ -1867,28 +1867,25 @@ cap_pre(char * str) {
 int
 cap_after(gunichar ch) {
 
-	static gunichar * chars = NULL;
-	static int chars_set = 0;
-
-	if (!chars_set) {
-		chars = (gunichar *)malloc(6 * sizeof(gunichar));
-		chars[0] = g_utf8_get_char(" ");
-		chars[1] = g_utf8_get_char("\t");
-		chars[2] = g_utf8_get_char("(");
-		chars[3] = g_utf8_get_char("[");
-		chars[4] = g_utf8_get_char("/");
-		chars[5] = g_utf8_get_char("\"");
-		chars_set = 1;
-	}
-
 	int i;
+	gunichar * chars = NULL;
+
+	chars = (gunichar *)malloc(6 * sizeof(gunichar));
+	chars[0] = g_utf8_get_char(" ");
+	chars[1] = g_utf8_get_char("\t");
+	chars[2] = g_utf8_get_char("(");
+	chars[3] = g_utf8_get_char("[");
+	chars[4] = g_utf8_get_char("/");
+	chars[5] = g_utf8_get_char("\"");
 
 	for (i = 0; i < 6; i++) {
 		if (chars[i] == ch) {
+			free(chars);
 			return 1;
 		}
 	}
 
+	free(chars);
 	return 0;
 }
 
@@ -2581,7 +2578,7 @@ build_artist_thread(void * arg) {
 
 		if (build_cancelled) {
 			g_idle_add(finish_build, NULL);
-			while (i <= n) {
+			while (i < n) {
 				free(ent_record[i]);
 				++i;
 			}
@@ -2637,12 +2634,12 @@ build_store_thread(void * arg) {
 
 			if (build_cancelled) {
 				g_idle_add(finish_build, NULL);
-				while (i <= n) {
+				while (i < n) {
 					free(ent_artist[i]);
 					++i;
 				}
 				free(ent_artist);
-				while (j <= m) {
+				while (j < m) {
 					free(ent_record[j]);
 					++j;
 				}

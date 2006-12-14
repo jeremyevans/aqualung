@@ -2070,6 +2070,7 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
                                         gtk_widget_set_sensitive(toolbar_remove_button, TRUE);
                                 }
 #endif /* HAVE_CDDA */
+				gtk_tree_path_free(path);
                         }
                 }
 
@@ -2121,6 +2122,7 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 #ifdef HAVE_CDDA
 				}
 #endif /* HAVE_CDDA */
+				gtk_tree_path_free(path);
 			} else {
 				gtk_menu_popup(GTK_MENU(blank_menu), NULL, NULL, NULL, NULL,
                                                bevent->button, bevent->time);
@@ -2206,6 +2208,7 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 #ifdef HAVE_CDDA
 			}
 #endif /* HAVE_CDDA */
+			gtk_tree_path_free(path);
 		} else {
 			int i;
                         for (i = 0; blank_keybinds[i].callback; ++i)

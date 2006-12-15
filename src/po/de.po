@@ -129,6 +129,9 @@ msgstr "Ausgabe Treiber Unterstützung:"
 msgid "Systray support\n"
 msgstr "CDDB Unterstützung\n"
 
+msgid "Loop playback support\n"
+msgstr ""
+
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"

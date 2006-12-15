@@ -1843,17 +1843,24 @@ print_version(void) {
 	
 	fprintf(stderr, "\tiRiver iFP driver support                   : ");
 #ifdef HAVE_IFP
-	fprintf(stderr, "yes\n\n");
+	fprintf(stderr, "yes\n");
 #else
 	fprintf(stderr, "no\n");
 #endif /* HAVE_IFP */
 	
 	fprintf(stderr, "\tSystray support                             : ");
 #ifdef HAVE_SYSTRAY
+	fprintf(stderr, "yes\n");
+#else
+	fprintf(stderr, "no\n");
+#endif /* HAVE_SYSTRAY */
+
+	fprintf(stderr, "\tLoop playback support                       : ");
+#ifdef HAVE_LOOP
 	fprintf(stderr, "yes\n\n");
 #else
 	fprintf(stderr, "no\n\n");
-#endif /* HAVE_SYSTRAY */
+#endif /* HAVE_LOOP */
 }
 
 

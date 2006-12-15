@@ -715,10 +715,10 @@ else
 	fi
 fi
 
-AC_MSG_CHECKING(for loop support)
+AC_MSG_CHECKING(for loop playback support)
 AC_ARG_WITH(
 	loop,
-	[  --with-loop=yes,no      compile with loop support (default: yes)],
+	[  --with-loop=yes,no      compile with loop playback support (default: yes)],
 	loop="$withval",
 	loop="detect")
 if test "$loop" = "no"; then
@@ -735,7 +735,7 @@ else
 	fi
 
 	if test "$lib" = "no" -a "$loop" = "yes"; then
-		AC_MSG_ERROR(You need GTK+ version 2.8 or higher for loop support.)
+		AC_MSG_ERROR(You need GTK+ version 2.8 or higher for loop playback support.)
 	fi
 	if test "$loop" = "detect"; then
 	        loop=$lib
@@ -800,7 +800,7 @@ echo "  CDDA (Audio CD) support                 :  $cdda"
 echo "  CDDB support                            :  $cddb"
 echo "  iRiver iFP driver support               :  $ifp"
 echo "  Systray support                         :  $systray"
-echo "  Loop support                            :  $loop"
+echo "  Loop playback support                   :  $loop"
 echo "----------------------------------------------------------------------"
 
 if test "$metaedit" = "yes"; then

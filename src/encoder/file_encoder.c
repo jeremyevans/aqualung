@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "file_encoder.h"
+#include "enc_vorbis.h"
 #include "enc_sndfile.h"
 
 extern size_t sample_size;
@@ -36,7 +37,7 @@ typedef encoder_t * encoder_init_t(file_encoder_t * fenc);
 encoder_init_t * encoder_init_v[N_ENCODERS] = {
 	sndfile_encoder_init,
 	NULL,
-	NULL,
+	vorbisenc_encoder_init,
 	NULL
 };
 
@@ -114,6 +115,7 @@ file_encoder_close(file_encoder_t * fenc) {
 }
 
 
+/* data should point to (num * channels) number of float values */
 unsigned int
 file_encoder_write(file_encoder_t * fenc, float * data, int num) {
 

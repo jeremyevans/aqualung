@@ -43,7 +43,7 @@ typedef struct _encoder_mode_t {
 	char filename[MAXLEN];
         unsigned long sample_rate;
 	int channels;
-        int bps;
+        int bps; /* meaningful only with Vorbis and LAME */
 } encoder_mode_t;
 
 

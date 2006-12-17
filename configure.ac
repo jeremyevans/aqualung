@@ -342,6 +342,29 @@ else
 fi
 
 
+AC_MSG_CHECKING(for Ogg Vorbis encoding support)
+AC_ARG_WITH(
+	vorbisenc,
+	[  --with-vorbisenc=yes,no compile with Ogg Vorbis encoding support (default: yes)],
+	vorbisenc="$withval",
+	vorbisenc="detect")
+if test "$vorbisenc" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(vorbisenc, vorbis_encode_setup_init, [lib=yes], [lib=no], [-lvorbis])
+	if test "$lib" = "yes"; then
+		vorbisenc_LIBS="-lvorbis -lvorbisenc"
+		AC_DEFINE([HAVE_VORBISENC], [1], [Defined if compile with Ogg Vorbis encoding support])
+	fi
+	if test "$lib" = "no" -a "$vorbisenc" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the vorbis and vorbisenc libraries installed. Grab them from http://www.xiph.org/ogg/vorbis)
+	fi
+	if test "$vorbisenc" = "detect"; then
+		vorbisenc=$lib
+	fi
+fi
+
+
 AC_MSG_CHECKING(for Ogg Speex support)
 AC_ARG_WITH(
 	speex,
@@ -358,6 +381,7 @@ else
 			speex_LIBS="-loggz -logg -lspeex"
 			lib="yes"
 			AC_DEFINE([HAVE_SPEEX], [1], [Defined if compile with Ogg Speex support])
+			AC_MSG_RESULT(yes)
 		else
 			lib="no"
 		fi
@@ -751,7 +775,7 @@ AQUALUNG_DATADIR="-DAQUALUNG_DATADIR=\\\"$datadir/aqualung\\\""
 CFLAGS="$BUILD_CFLAGS -Wall $PLATFORM_CFLAGS $AQUALUNG_SKINDIR $AQUALUNG_LOCALEDIR $AQUALUNG_DATADIR -D_GNU_SOURCE"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $taglib_CFLAGS"
-LIBS="decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $taglib_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS"
+LIBS="decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $taglib_LIBS $vorbisenc_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS"
 
 
 AC_OUTPUT([Makefile \
@@ -776,7 +800,7 @@ echo "  ====================="
 echo
 echo "  Build type / target platform            :  $buildtype / $platform"
 echo
-echo "  File format support:"
+echo "  Decoding support:"
 echo "      sndfile (WAV, AIFF, AU, etc.)       :  $sndfile"
 echo "      Free Lossless Audio Codec (FLAC)    :  $flac"
 echo "      Ogg Vorbis                          :  $ogg"
@@ -787,6 +811,10 @@ echo "      Musepack                            :  $mpc"
 echo "      Monkey's Audio Codec                :  $mac"
 echo "      LAVC (AC3, AAC, WavPack, WMA, etc.) :  $lavc"
 echo "      Metadata (ID3, APE, Ogg comments)   :  $metadata"
+echo
+echo "  Encoding support:"
+echo "      WAV                                 :  $sndfile"
+echo "      Ogg Vorbis                          :  $vorbisenc"
 echo
 echo "  Output driver support:"
 echo "      OSS Audio                           :  $oss"

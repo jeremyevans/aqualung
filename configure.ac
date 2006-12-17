@@ -545,6 +545,29 @@ else
 fi
 
 
+AC_MSG_CHECKING(for LAME (MP3 encoding) support)
+AC_ARG_WITH(
+	lame,
+	[  --with-lame=yes,no      compile with LAME (MP3 encoding) support (default: yes)],
+	lame="$withval",
+	lame="detect")
+if test "$lame" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(mp3lame, lame_init, [lib=yes], [lib=no])
+	if test "$lib" = "yes"; then
+		lame_LIBS="-lmp3lame"
+		AC_DEFINE([HAVE_LAME], [1], [Defined if compile with LAME support])
+	fi
+	if test "$lib" = "no" -a "$lame" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the LAME library installed. Grab it from http://lame.sourceforge.net/)
+	fi
+	if test "$lame" = "detect"; then
+		lame=$lib
+	fi
+fi
+
+
 AC_MSG_CHECKING(for metadata support)
 AC_ARG_WITH(
 	metadata,
@@ -775,7 +798,7 @@ AQUALUNG_DATADIR="-DAQUALUNG_DATADIR=\\\"$datadir/aqualung\\\""
 CFLAGS="$BUILD_CFLAGS -Wall $PLATFORM_CFLAGS $AQUALUNG_SKINDIR $AQUALUNG_LOCALEDIR $AQUALUNG_DATADIR -D_GNU_SOURCE"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $taglib_CFLAGS"
-LIBS="decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $taglib_LIBS $vorbisenc_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS"
+LIBS="decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $taglib_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS"
 
 
 AC_OUTPUT([Makefile \
@@ -813,8 +836,10 @@ echo "      LAVC (AC3, AAC, WavPack, WMA, etc.) :  $lavc"
 echo "      Metadata (ID3, APE, Ogg comments)   :  $metadata"
 echo
 echo "  Encoding support:"
-echo "      WAV                                 :  $sndfile"
+echo "      sndfile (WAV)                       :  $sndfile"
+echo "      Free Lossless Audio Codec (FLAC)    :  $flac"
 echo "      Ogg Vorbis                          :  $vorbisenc"
+echo "      LAME (MP3)                          :  $lame"
 echo
 echo "  Output driver support:"
 echo "      OSS Audio                           :  $oss"

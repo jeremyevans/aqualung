@@ -44,6 +44,7 @@ typedef struct _encoder_mode_t {
         unsigned long sample_rate;
 	int channels;
         int bps; /* meaningful only with Vorbis and LAME */
+	int vbr; /* meaningful only with LAME */
 } encoder_mode_t;
 
 

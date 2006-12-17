@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "file_encoder.h"
+#include "enc_lame.h"
 #include "enc_vorbis.h"
 #include "enc_sndfile.h"
 
@@ -38,7 +39,7 @@ encoder_init_t * encoder_init_v[N_ENCODERS] = {
 	sndfile_encoder_init,
 	NULL,
 	vorbisenc_encoder_init,
-	NULL
+	lame_encoder_init
 };
 
 

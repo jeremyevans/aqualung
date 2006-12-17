@@ -142,6 +142,8 @@ find_cover_filename(gchar *song_filename) {
 
                 for (j = 0; j < n_extensions; j++) {
 
+			int n_files;
+
                         strcpy (current_filename, cover_filenames[i]);
                         strcat (current_filename, ".");
                         strcat (current_filename, cover_extensions[j]);
@@ -149,7 +151,8 @@ find_cover_filename(gchar *song_filename) {
                         ext_flag = FALSE;
                         str1 = g_utf8_casefold (current_filename, -1);
 
-	                for (n = 0; n < scandir(base_path, &d_entry, entry_filter, alphasort); n++) {
+			n_files = scandir(base_path, &d_entry, entry_filter, alphasort);
+	                for (n = 0; n < n_files; n++) {
 
                                 str2 = g_utf8_casefold(d_entry[n]->d_name, -1);
 
@@ -170,7 +173,7 @@ find_cover_filename(gchar *song_filename) {
                         }
 
                         g_free (str1);
-			if (n) {
+			if (n_files > 0) {
 				free(d_entry);
 			}
                 }

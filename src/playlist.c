@@ -1275,12 +1275,13 @@ filter(const struct dirent * de) {
 void
 add_dir_to_playlist(char * dirname) {
 
-	gint i;
+	gint i, n;
 	struct dirent ** ent;
 	struct stat st_file;
 	gchar path[MAXLEN];
 
-	for (i = 0; i < scandir(dirname, &ent, filter, alphasort); i++) {
+	n = scandir(dirname, &ent, filter, alphasort);
+	for (i = 0; i < n; i++) {
 
 		snprintf(path, MAXLEN-1, "%s/%s", dirname, ent[i]->d_name);
 
@@ -1297,7 +1298,7 @@ add_dir_to_playlist(char * dirname) {
 		free(ent[i]);
 	}
 
-	if (i) {
+	if (n > 0) {
 		free(ent);
 	}
 }

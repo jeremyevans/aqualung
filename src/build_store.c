@@ -2232,7 +2232,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 	struct timespec req_time;
 	struct timespec rem_time;
 
-	int i;
+	int i, n;
 	struct dirent ** ent_track;
 	char basename[MAXLEN];
 	char filename[MAXLEN];
@@ -2271,7 +2271,8 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 
 	g_idle_add(set_prog_action_label, (gpointer) _("Scanning files"));
 
-	for (i = 0; i < scandir(dir_record, &ent_track, filter, alphasort); i++) {
+	n = scandir(dir_record, &ent_track, filter, alphasort);
+	for (i = 0; i < n; i++) {
 
 		strncpy(basename, ent_track[i]->d_name, MAXLEN-1);
 		snprintf(filename, MAXLEN-1, "%s/%s", dir_record, ent_track[i]->d_name);
@@ -2282,11 +2283,11 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 		}
 
 		if (excl_enabled) {
-			int i;
+			int k;
 			int match = 0;
-			for (i = 0; excl_patternv[i]; i++) {
+			for (k = 0; excl_patternv[k]; k++) {
 
-				if (*(excl_patternv[i]) == '\0') {
+				if (*(excl_patternv[k]) == '\0') {
 					continue;
 				}
 
@@ -2297,7 +2298,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 					break;
 				}
 
-				if (fnmatch(excl_patternv[i], utf8, FNM_CASEFOLD) == 0) {
+				if (fnmatch(excl_patternv[k], utf8, FNM_CASEFOLD) == 0) {
 					match = 1;
 					g_free(utf8);
 					break;
@@ -2312,11 +2313,11 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 		}
 
 		if (incl_enabled) {
-			int i;
+			int k;
 			int match = 0;
-			for (i = 0; incl_patternv[i]; i++) {
+			for (k = 0; incl_patternv[k]; k++) {
 
-				if (*(incl_patternv[i]) == '\0') {
+				if (*(incl_patternv[k]) == '\0') {
 					continue;
 				}
 
@@ -2327,7 +2328,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 					break;
 				}
 
-				if (fnmatch(incl_patternv[i], utf8, FNM_CASEFOLD) == 0) {
+				if (fnmatch(incl_patternv[k], utf8, FNM_CASEFOLD) == 0) {
 					match = 1;
 					g_free(utf8);
 					break;
@@ -2371,7 +2372,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 		free(ent_track[i]);
 	}
 
-	if (i) {
+	if (n > 0) {
 		free(ent_track);
 	}
 
@@ -2567,7 +2568,8 @@ build_artist_thread(void * arg) {
 	while (root[--i] != '/');
 	strncpy(artist_d_name, root + i + 1, MAXLEN-1);
 
-	for (i = 0; i < (n = scandir(root, &ent_record, filter, alphasort)); i++) {
+	n = scandir(root, &ent_record, filter, alphasort);
+	for (i = 0; i < n; i++) {
 
 		snprintf(dir_record, MAXLEN-1, "%s/%s", root, ent_record[i]->d_name);
 		
@@ -2591,7 +2593,7 @@ build_artist_thread(void * arg) {
 		free(ent_record[i]);
 	}
 
-	if (i) {
+	if (n > 0) {
 		free(ent_record);
 	}
 
@@ -2612,7 +2614,8 @@ build_store_thread(void * arg) {
 
 	AQUALUNG_THREAD_DETACH()
 
-	for (i = 0; i < (n = scandir(root, &ent_artist, filter, alphasort)); i++) {
+	n = scandir(root, &ent_artist, filter, alphasort);
+	for (i = 0; i < n; i++) {
 
 		snprintf(dir_artist, MAXLEN-1, "%s/%s", root, ent_artist[i]->d_name);
 
@@ -2623,7 +2626,8 @@ build_store_thread(void * arg) {
 
 		artist_iter_is_set = 0;
 
-		for (j = 0; j < (m = scandir(dir_artist, &ent_record, filter, alphasort)); j++) {
+		m = scandir(dir_artist, &ent_record, filter, alphasort);
+		for (j = 0; j < m; j++) {
 
 			snprintf(dir_record, MAXLEN-1, "%s/%s", dir_artist, ent_record[j]->d_name);
 
@@ -2656,7 +2660,7 @@ build_store_thread(void * arg) {
 			free(ent_record[j]);
 		}
 
-		if (j) {
+		if (m > 0) {
 			free(ent_record);
 		}
 
@@ -2666,7 +2670,7 @@ build_store_thread(void * arg) {
 		free(ent_artist[i]);
 	}
 
-	if (i) {
+	if (n > 0) {
 		free(ent_artist);
 	}
 

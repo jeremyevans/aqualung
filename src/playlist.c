@@ -2255,11 +2255,11 @@ create_playlist(void) {
 	gchar path[MAXLEN];
 
 	GtkTargetEntry source_table[] = {
-		{ "", GTK_TARGET_SAME_APP, 0 }
+		{ "STRING", GTK_TARGET_SAME_APP, 0 }
 	};
 
 	GtkTargetEntry target_table[] = {
-		{ "", GTK_TARGET_SAME_APP, 0 },
+		{ "STRING", GTK_TARGET_SAME_APP, 0 },
 		{ "STRING", 0, 1 },
 		{ "text/plain", 0, 1 },
 		{ "text/uri-list", 0, 1 }

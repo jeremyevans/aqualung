@@ -4658,7 +4658,7 @@ create_music_browser(void) {
 	char path[MAXLEN];
 
 	GtkTargetEntry target_table[] = {
-		{ "", GTK_TARGET_SAME_APP, 0 }
+		{ "STRING", GTK_TARGET_SAME_APP, 0 }
 	};
 
 

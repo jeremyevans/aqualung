@@ -45,6 +45,7 @@ typedef struct _encoder_mode_t {
 	int channels;
         int bps; /* meaningful only with Vorbis and LAME */
 	int vbr; /* meaningful only with LAME */
+	int clevel; /* 0(fastest)-8(best), meaningful only with FLAC */
 } encoder_mode_t;
 
 

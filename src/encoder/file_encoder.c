@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "file_encoder.h"
+#include "enc_flac.h"
 #include "enc_lame.h"
 #include "enc_vorbis.h"
 #include "enc_sndfile.h"
@@ -37,7 +38,7 @@ typedef encoder_t * encoder_init_t(file_encoder_t * fenc);
 /* positions in this array have to agree with the ENC_*_LIB values in file_encoder.h */
 encoder_init_t * encoder_init_v[N_ENCODERS] = {
 	sndfile_encoder_init,
-	NULL,
+	flac_encoder_init,
 	vorbisenc_encoder_init,
 	lame_encoder_init
 };

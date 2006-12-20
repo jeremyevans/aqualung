@@ -107,6 +107,7 @@ typedef struct {
 	int cdda_drive_speed;
 	int cdda_paranoia_mode;
 	int cdda_paranoia_maxretries;
+	int cdda_force_drive_rescan;
 
 	/* CDDB */
 	char cddb_server[MAXLEN];

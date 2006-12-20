@@ -338,7 +338,8 @@ cdda_scan_all_drives(void) {
 
 	for (i = 0; i < CDDA_DRIVES_MAX; i++) {
 		if (cdda_drives[i].cdio != NULL) {
-			cdda_drives[i].media_changed = cdio_get_media_changed(cdda_drives[i].cdio);
+			cdda_drives[i].media_changed = options.cdda_force_drive_rescan ?
+				1 : cdio_get_media_changed(cdda_drives[i].cdio);
 			if (cdda_drives[i].media_changed) {
 				cdio_destroy(cdda_drives[i].cdio);
 				cdda_drives[i].cdio = NULL;

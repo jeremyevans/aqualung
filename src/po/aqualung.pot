@@ -323,13 +323,16 @@ msgstr ""
 msgid "Drive info"
 msgstr ""
 
-msgid "Vendor"
+msgid "Device path:"
 msgstr ""
 
-msgid "Model"
+msgid "Vendor:"
 msgstr ""
 
-msgid "Revision"
+msgid "Model:"
+msgstr ""
+
+msgid "Revision:"
 msgstr ""
 
 msgid ""
@@ -810,9 +813,6 @@ msgstr ""
 msgid "<b>Songs info</b>"
 msgstr ""
 
-msgid "Model:"
-msgstr ""
-
 msgid "Battery"
 msgstr ""
 
@@ -1190,6 +1190,15 @@ msgid ""
 "with error correction modes manually set before every run."
 msgstr ""
 
+msgid ""
+"\n"
+"Most drives let Aqualung know when a CD has been inserted\n"
+"or removed by providing a 'media changed' flag. However,\n"
+"some drives don't set this flag properly, and thus it may\n"
+"happen that a newly inserted CD remains unnoticed to\n"
+"Aqualung. In such cases, enabling this option should help."
+msgstr ""
+
 msgid "Title format"
 msgstr ""
 
@@ -1457,6 +1466,9 @@ msgid "Unlimited retry on failed reads (never skip)"
 msgstr ""
 
 msgid "\tMaximum number of retries:"
+msgstr ""
+
+msgid "Force TOC re-read on every drive scan"
 msgstr ""
 
 msgid "CDDB server:"
@@ -1910,9 +1922,6 @@ msgid "APE"
 msgstr ""
 
 msgid "Ogg comments"
-msgstr ""
-
-msgid "Vendor:"
 msgstr ""
 
 msgid "Remove ID3v1"

@@ -374,14 +374,16 @@ msgstr ""
 msgid "Drive info"
 msgstr "╤нформац╕я про файл"
 
-#, fuzzy
-msgid "Vendor"
-msgstr "Постачальник:"
-
-msgid "Model"
+msgid "Device path:"
 msgstr ""
 
-msgid "Revision"
+msgid "Vendor:"
+msgstr "Постачальник:"
+
+msgid "Model:"
+msgstr ""
+
+msgid "Revision:"
 msgstr ""
 
 msgid ""
@@ -893,9 +895,6 @@ msgstr ""
 msgid "<b>Songs info</b>"
 msgstr ""
 
-msgid "Model:"
-msgstr ""
-
 #, fuzzy
 msgid "Battery"
 msgstr "Категор╕я"
@@ -1318,6 +1317,15 @@ msgid ""
 "with error correction modes manually set before every run."
 msgstr ""
 
+msgid ""
+"\n"
+"Most drives let Aqualung know when a CD has been inserted\n"
+"or removed by providing a 'media changed' flag. However,\n"
+"some drives don't set this flag properly, and thus it may\n"
+"happen that a newly inserted CD remains unnoticed to\n"
+"Aqualung. In such cases, enabling this option should help."
+msgstr ""
+
 msgid "Title format"
 msgstr "Формат назви"
 
@@ -1611,6 +1619,9 @@ msgid "Unlimited retry on failed reads (never skip)"
 msgstr ""
 
 msgid "\tMaximum number of retries:"
+msgstr ""
+
+msgid "Force TOC re-read on every drive scan"
 msgstr ""
 
 msgid "CDDB server:"
@@ -2100,9 +2111,6 @@ msgstr ""
 msgid "Ogg comments"
 msgstr "Коментар╕"
 
-msgid "Vendor:"
-msgstr "Постачальник:"
-
 #, fuzzy
 msgid "Remove ID3v1"
 msgstr "Прибрати"
@@ -2394,6 +2402,10 @@ msgstr "Ступ╕нь стиснення: Дуже висока"
 
 msgid "Compression: Insane"
 msgstr "Ступ╕нь стиснення: Божев╕льна"
+
+#, fuzzy
+#~ msgid "Vendor"
+#~ msgstr "Постачальник:"
 
 #~ msgid "%d of %d"
 #~ msgstr "%d з %d"

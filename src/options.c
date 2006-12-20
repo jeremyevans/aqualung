@@ -211,6 +211,7 @@ GtkWidget * cdda_drive_speed_spinner;
 GtkWidget * check_cdda_mode_overlap;
 GtkWidget * check_cdda_mode_verify;
 GtkWidget * check_cdda_mode_neverskip;
+GtkWidget * check_cdda_force_drive_rescan;
 GtkWidget * label_cdda_maxretries;
 GtkWidget * cdda_paranoia_maxretries_spinner;
 #endif /* HAVE_CDDA */
@@ -422,6 +423,7 @@ options_window_accept(void) {
 		(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_verify)) ? PARANOIA_MODE_VERIFY : 0) |
 		(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_neverskip)) ? PARANOIA_MODE_NEVERSKIP : 0);
 	set_option_from_spin(cdda_paranoia_maxretries_spinner, &options.cdda_paranoia_maxretries);
+	set_option_from_toggle(check_cdda_force_drive_rescan, &options.cdda_force_drive_rescan);
 #endif /* HAVE_CDDA */
 
 
@@ -1576,6 +1578,26 @@ display_cdda_drive_speed_help(void) {
 }
 
 void
+display_cdda_force_drive_rescan_help(void) {
+
+	GtkWidget *help_dialog;
+
+        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
+                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
+					      _("\nMost drives let Aqualung know when a CD has been inserted\n"
+						"or removed by providing a 'media changed' flag. However,\n"
+						"some drives don't set this flag properly, and thus it may\n"
+						"happen that a newly inserted CD remains unnoticed to\n"
+						"Aqualung. In such cases, enabling this option should help."));
+
+        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
+        gtk_widget_show (help_dialog);
+        aqualung_dialog_run(GTK_DIALOG(help_dialog));
+        gtk_widget_destroy(help_dialog);
+}
+
+void
 cdda_toggled(GtkWidget * widget, gpointer * data) {
 
 	if (widget == check_cdda_mode_overlap) {
@@ -1662,6 +1684,7 @@ create_options_window(void) {
 #ifdef HAVE_CDDA
 	GtkWidget * table_cdda;
 	GtkWidget * help_btn_cdda_drive_speed;
+	GtkWidget * help_btn_cdda_force_drive_rescan;
 	GtkWidget * frame_cdda;
 	GtkWidget * vbox_cdda;
 	GtkWidget * hbox_cdda;
@@ -2326,7 +2349,6 @@ See the About box and the documentation for details."));
 	rva_use_averaging_shadow = options.rva_use_averaging;
 	g_signal_connect(G_OBJECT(check_rva_use_averaging), "toggled",
 			 G_CALLBACK(check_rva_use_averaging_toggled), NULL);
-        //gtk_box_pack_start(GTK_BOX(vbox_rva), check_rva_use_averaging, FALSE, TRUE, 5);
         gtk_table_attach(GTK_TABLE(table_rva), check_rva_use_averaging, 0, 2, 4, 5,
                          GTK_FILL, GTK_FILL, 5, 2);
 
@@ -2504,7 +2526,7 @@ See the About box and the documentation for details."));
 
 	/* CDDA notebook page */
 #ifdef HAVE_CDDA
-	table_cdda = gtk_table_new(2, 3, FALSE);
+	table_cdda = gtk_table_new(3, 3, FALSE);
         gtk_container_set_border_width(GTK_CONTAINER(table_cdda), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table_cdda, create_notebook_tab(_("CD Audio"), "cdda.png"));
 
@@ -2558,6 +2580,20 @@ See the About box and the documentation for details."));
 	cdda_paranoia_maxretries_spinner = gtk_spin_button_new_with_range(1, 50, 1);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cdda_paranoia_maxretries_spinner), options.cdda_paranoia_maxretries);
 	gtk_box_pack_start(GTK_BOX(hbox_cdda), cdda_paranoia_maxretries_spinner, FALSE, FALSE, 5);
+
+	check_cdda_force_drive_rescan =
+		gtk_check_button_new_with_label(_("Force TOC re-read on every drive scan"));
+        gtk_widget_set_name(check_cdda_force_drive_rescan, "check_on_notebook");
+        gtk_table_attach(GTK_TABLE(table_cdda), check_cdda_force_drive_rescan, 0, 2, 2, 3,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
+
+        help_btn_cdda_force_drive_rescan = gtk_button_new_from_stock(GTK_STOCK_HELP); 
+	g_signal_connect(help_btn_cdda_force_drive_rescan, "clicked", G_CALLBACK(display_cdda_force_drive_rescan_help), NULL);
+        gtk_table_attach(GTK_TABLE(table_cdda), help_btn_cdda_force_drive_rescan, 2, 3, 2, 3, GTK_FILL, GTK_FILL, 5, 3);
+
+	if (options.cdda_force_drive_rescan) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_cdda_force_drive_rescan), TRUE);
+	}
 
 	if (options.cdda_paranoia_mode & PARANOIA_MODE_OVERLAP) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_cdda_mode_overlap), TRUE);

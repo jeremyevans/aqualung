@@ -4259,6 +4259,8 @@ save_config(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) "cdda_paranoia_mode", (xmlChar *) str);
 	snprintf(str, 31, "%d", options.cdda_paranoia_maxretries);
         xmlNewTextChild(root, NULL, (const xmlChar *) "cdda_paranoia_maxretries", (xmlChar *) str);
+	snprintf(str, 31, "%d", options.cdda_force_drive_rescan);
+        xmlNewTextChild(root, NULL, (const xmlChar *) "cdda_force_drive_rescan", (xmlChar *) str);
 
         xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_server", (xmlChar *) options.cddb_server);
 	snprintf(str, 31, "%d", options.cddb_timeout);
@@ -4405,6 +4407,7 @@ load_config(void) {
 	options.cdda_drive_speed = 4;
 	options.cdda_paranoia_mode = 0; /* no paranoia */
 	options.cdda_paranoia_maxretries = 20;
+	options.cdda_force_drive_rescan = 0;
 
 	options.cddb_server[0] = '\0';
 	options.cddb_email[0] = '\0';
@@ -4998,6 +5001,12 @@ load_config(void) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
                                 sscanf((char *) key, "%d", &options.cdda_paranoia_maxretries);
+                        xmlFree(key);
+                }
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cdda_force_drive_rescan"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL)
+                                sscanf((char *) key, "%d", &options.cdda_force_drive_rescan);
                         xmlFree(key);
                 }
 

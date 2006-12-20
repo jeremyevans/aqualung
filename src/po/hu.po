@@ -354,13 +354,17 @@ msgstr "Nincs lemez"
 msgid "Drive info"
 msgstr "Meghajtó infó"
 
-msgid "Vendor"
-msgstr "Vendor"
+msgid "Device path:"
+msgstr ""
 
-msgid "Model"
-msgstr "Model"
+msgid "Vendor:"
+msgstr "Vendor:"
 
-msgid "Revision"
+msgid "Model:"
+msgstr "Modell:"
+
+#, fuzzy
+msgid "Revision:"
 msgstr "Revision"
 
 msgid ""
@@ -870,9 +874,6 @@ msgstr "label_songs"
 msgid "<b>Songs info</b>"
 msgstr "<b>Szám info</b>"
 
-msgid "Model:"
-msgstr "Modell:"
-
 msgid "Battery"
 msgstr "Elem"
 
@@ -1272,6 +1273,15 @@ msgid ""
 "with error correction modes manually set before every run."
 msgstr ""
 
+msgid ""
+"\n"
+"Most drives let Aqualung know when a CD has been inserted\n"
+"or removed by providing a 'media changed' flag. However,\n"
+"some drives don't set this flag properly, and thus it may\n"
+"happen that a newly inserted CD remains unnoticed to\n"
+"Aqualung. In such cases, enabling this option should help."
+msgstr ""
+
 msgid "Title format"
 msgstr "Címformátum"
 
@@ -1549,6 +1559,9 @@ msgid "Unlimited retry on failed reads (never skip)"
 msgstr ""
 
 msgid "\tMaximum number of retries:"
+msgstr ""
+
+msgid "Force TOC re-read on every drive scan"
 msgstr ""
 
 msgid "CDDB server:"
@@ -2013,9 +2026,6 @@ msgstr "APE"
 msgid "Ogg comments"
 msgstr "Ogg megjegyzések"
 
-msgid "Vendor:"
-msgstr "Vendor:"
-
 msgid "Remove ID3v1"
 msgstr "ID3v1 eltávolítása"
 
@@ -2286,3 +2296,9 @@ msgstr "Tömörítés: Extra magas"
 
 msgid "Compression: Insane"
 msgstr "Tömörítés: Elmebeteg"
+
+#~ msgid "Vendor"
+#~ msgstr "Vendor"
+
+#~ msgid "Model"
+#~ msgstr "Model"

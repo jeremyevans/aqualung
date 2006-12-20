@@ -3655,7 +3655,13 @@ cdda_record__eject_cb(gpointer data) {
 
 		drive = cdda_get_drive_by_device_path(device_path);
 		if (drive != NULL) {
-			cdio_eject_media_drive(device_path);
+			CdIo_t * cdio = cdio_open(device_path, DRIVER_DEVICE);
+			if (cdio) {
+				cdio_eject_media(&cdio);
+				if (cdio != NULL) {
+					cdio_destroy(cdio);
+				}
+			}
 		}
 	}
 }

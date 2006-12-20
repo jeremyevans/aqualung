@@ -801,28 +801,49 @@ cdda_drive_info(char * device_path) {
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), vbox, FALSE, FALSE, 4);
 
-	snprintf(str, MAXLEN-1, "%s:\t%s", _("Vendor"), hwinfo.psz_vendor);
-	hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(str);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
+	table = gtk_table_new(4, 2, FALSE);
+	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 2);
 
-	snprintf(str, MAXLEN-1, "%s:\t%s", _("Model"), hwinfo.psz_model);
 	hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(str);
+	label = gtk_label_new(_("Device path:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 4, 1);
+	hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(cdda_displayed_device_path(device_path));
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 1);
 
-	snprintf(str, MAXLEN-1, "%s:\t%s", _("Revision"), hwinfo.psz_revision);
 	hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(str);
+	label = gtk_label_new(_("Vendor:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 1);
+	hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(hwinfo.psz_vendor);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 1);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(_("Model:"));
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 4, 1);
+	hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(hwinfo.psz_model);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 2, 3, GTK_FILL, GTK_FILL, 4, 1);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(_("Revision:"));
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 4, 1);
+	hbox = gtk_hbox_new(FALSE, 0);
+	label = gtk_label_new(hwinfo.psz_revision);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 3, 4, GTK_FILL, GTK_FILL, 4, 1);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("The information below is reported by the drive, and\n"
 				"may not reflect the actual capabilities of the device."));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 10);
 
 	if ((misc_cap == CDIO_DRIVE_CAP_ERROR) &&

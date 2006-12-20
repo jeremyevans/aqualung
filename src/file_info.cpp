@@ -1786,7 +1786,6 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	fileinfo_trash = trashlist_new();
 
 	if (!meta_read(meta, file)) {
-		fprintf(stderr, "show_file_info(): meta_read() returned an error\n");
 		meta_free(meta);
 		return;
 	}

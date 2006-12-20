@@ -49,6 +49,7 @@
 
 #include "common.h"
 #include "core.h"
+#include "cdda.h"
 #include "i18n.h"
 #include "options.h"
 #include "decoder/file_decoder.h"
@@ -361,6 +362,37 @@ meta_read_mpc(char * file) {
 int
 meta_read(metadata * meta, char * file) {
 
+#ifdef HAVE_CDDA
+        if ((strlen(file) > 4) &&
+            (file[0] == 'C') &&
+            (file[1] == 'D') &&
+            (file[2] == 'D') &&
+            (file[3] == 'A')) {
+
+                char device_path[CDDA_MAXLEN];
+                long hash;
+                int track;
+                cdda_drive_t * drive;
+
+                if (sscanf(file, "CDDA %s %lX %u", device_path, &hash, &track) < 3) {
+                        return 0;
+                }
+
+                drive = cdda_get_drive_by_device_path(device_path);
+                if ((drive != NULL) && (drive->disc.hash != 0L)) {
+                        meta->file_lib = CDDA_LIB;
+                        strcpy(meta->format_str, "Audio CD");
+                        meta->sample_rate = 44100;
+                        meta->is_mono = 0;
+                        meta->format_flags = 0;
+                        meta->bps = 2*16*44100;
+                        meta->total_samples = (drive->disc.toc[track] - drive->disc.toc[track-1]) * 588;
+			return 1;
+                } else {
+                        return 0;
+                }
+        } else {
+#endif /* HAVE_CDDA */
         file_decoder_t * fdec = NULL;
 	int ret;
 
@@ -370,7 +402,6 @@ meta_read(metadata * meta, char * file) {
         }
 
         if (file_decoder_open(fdec, file)) {
-                fprintf(stderr, "file_decoder_open() failed on %s\n", file);
 		file_decoder_delete(fdec);
                 return 0;
         }
@@ -381,6 +412,9 @@ meta_read(metadata * meta, char * file) {
         file_decoder_delete(fdec);
 
 	return ret;
+#ifdef HAVE_CDDA
+	}
+#endif /* HAVE_CDDA */
 }
 
 

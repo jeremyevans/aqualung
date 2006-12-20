@@ -38,23 +38,64 @@ extern size_t sample_size;
 #define CDDA_READER_BUSY   1
 
 
-/* XXX this is bad, but cdda_paranoia_callback() cannot be given
- * a context which could be used. Solution would be to use a map
- * with the decoder pointer as key, and cdda_read_error as value.
- * The map could then safely be a global variable.
+int cdda_read_error[CDDA_DRIVES_MAX];
+
+/* This mess is mandated by the error callback of cdio_paranoia_read
+ * not having a context argument. We have to use a different callback
+ * for each possible decoder, with the context hard-coded. ARGH!
  */
-volatile int cdda_read_error = 0;
+#define DEFINE_ERROR_CB(n) \
+void \
+cdda_paranoia_callback_##n(long int inpos, paranoia_cb_mode_t function) { \
+\
+	switch (function) { \
+	case PARANOIA_CB_READERR: \
+		cdda_read_error[n] = 1; \
+		break; \
+	default: \
+		break; \
+	} \
+}
+
+#define ERROR_CB(n) cdda_paranoia_callback_##n
+
+/* These have to agree with the value of CDDA_DRIVES_MAX */
+DEFINE_ERROR_CB(0)
+DEFINE_ERROR_CB(1)
+DEFINE_ERROR_CB(2)
+DEFINE_ERROR_CB(3)
+DEFINE_ERROR_CB(4)
+DEFINE_ERROR_CB(5)
+DEFINE_ERROR_CB(6)
+DEFINE_ERROR_CB(7)
+DEFINE_ERROR_CB(8)
+DEFINE_ERROR_CB(9)
+DEFINE_ERROR_CB(10)
+DEFINE_ERROR_CB(11)
+DEFINE_ERROR_CB(12)
+DEFINE_ERROR_CB(13)
+DEFINE_ERROR_CB(14)
+DEFINE_ERROR_CB(15)
+
 
 void
-cdda_paranoia_callback(long int inpos, paranoia_cb_mode_t function) {
+cdda_reader_on_error(cdda_pdata_t * pd) {
 
-	switch (function) {
-	case PARANOIA_CB_READERR:
-		cdda_read_error = 1;
-		break;
-	default:
-		break;
+	char flush_dest;
+	cdda_drive_t * cdda_drive;
+	
+	pd->is_eos = 1;
+	pd->pos_lsn = pd->last_lsn;
+	
+	while (rb_read_space(pd->rb))
+		rb_read(pd->rb, &flush_dest, sizeof(char));
+
+	cdda_drive = cdda_get_drive_by_device_path(pd->device_path);
+	if (cdda_drive == NULL) {
+		return;
 	}
+	cdda_drive->disc.hash_prev = cdda_drive->disc.hash;
+	cdda_drive->disc.hash = 0L;
 }
 
 
@@ -64,9 +105,47 @@ cdda_reader_thread(void * arg) {
         decoder_t * dec = (decoder_t *)arg;
 	cdda_pdata_t * pd = (cdda_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
+	cdda_drive_t * cdda_drive;
 
 	int16_t * readbuf;
 	int i;
+
+	int n = cdda_get_n(pd->device_path);
+	void(*callback)(long int, paranoia_cb_mode_t);
+
+	cdda_drive = cdda_get_drive_by_device_path(pd->device_path);
+	if ((n < 0) || (cdda_drive == NULL)) {
+		cdda_reader_on_error(pd);
+		pd->cdda_reader_status = CDDA_READER_FREE;
+		AQUALUNG_THREAD_DETACH()
+		return NULL;
+	}
+	if (cdda_drive->disc.hash == 0L) { /* disc has been removed */
+		cdda_reader_on_error(pd);
+		pd->cdda_reader_status = CDDA_READER_FREE;
+		AQUALUNG_THREAD_DETACH()
+		return NULL;
+	}
+
+	switch (n) {
+        /* These have to agree with the value of CDDA_DRIVES_MAX */
+	case 0: callback = ERROR_CB(0); break;
+	case 1: callback = ERROR_CB(1); break;
+	case 2: callback = ERROR_CB(2); break;
+	case 3: callback = ERROR_CB(3); break;
+	case 4: callback = ERROR_CB(4); break;
+	case 5: callback = ERROR_CB(5); break;
+	case 6: callback = ERROR_CB(6); break;
+	case 7: callback = ERROR_CB(7); break;
+	case 8: callback = ERROR_CB(8); break;
+	case 9: callback = ERROR_CB(9); break;
+	case 10: callback = ERROR_CB(10); break;
+	case 11: callback = ERROR_CB(11); break;
+	case 12: callback = ERROR_CB(12); break;
+	case 13: callback = ERROR_CB(13); break;
+	case 14: callback = ERROR_CB(14); break;
+	case 15: callback = ERROR_CB(15); break;
+	}
 
 	pd->paranoia = cdio_paranoia_init(pd->drive);
 	cdio_paranoia_modeset(pd->paranoia, pd->paranoia_mode);
@@ -85,11 +164,18 @@ cdda_reader_thread(void * arg) {
 		AQUALUNG_MUTEX_UNLOCK(pd->cdda_reader_mutex)
 
 		if (pd->paranoia_mode & PARANOIA_MODE_NEVERSKIP) {
-			readbuf = cdio_paranoia_read(pd->paranoia, cdda_paranoia_callback);
+			readbuf = cdio_paranoia_read(pd->paranoia, callback);
 		} else {
-			readbuf = cdio_paranoia_read_limited(pd->paranoia, cdda_paranoia_callback,
+			readbuf = cdio_paranoia_read_limited(pd->paranoia, callback,
 							     pd->paranoia_maxretries);
 		}
+
+		if (cdda_read_error[n]) {
+			cdda_reader_on_error(pd);
+			pd->cdda_reader_status = CDDA_READER_FREE;
+			AQUALUNG_THREAD_DETACH()
+		}
+
 		if (pd->pos_lsn > pd->last_lsn)
 			++pd->overread_sectors;
 		++pd->pos_lsn;
@@ -98,16 +184,6 @@ cdda_reader_thread(void * arg) {
 			rb_write(pd->rb, (char *)&f, sample_size);
 		}
 		pd->is_eos = (pd->pos_lsn >= pd->last_lsn ? 1 : 0);
-
-		if (cdda_read_error) {
-			char flush_dest;
-
-			pd->is_eos = 1;
-			pd->pos_lsn = pd->last_lsn;
-
-			while (rb_read_space(pd->rb))
-				rb_read(pd->rb, &flush_dest, sizeof(char));
-		}
 	}
 
 	cdio_paranoia_free(pd->paranoia);
@@ -168,8 +244,8 @@ cdda_decoder_destroy(decoder_t * dec) {
 }
 
 
-/* filename must be of format "CDDA <device_path> <track_no>"
- * e.g. "CDDA /dev/cdrom 1"
+/* filename must be of format "CDDA <device_path> <disc hash> <track_no>"
+ * e.g. "CDDA /dev/cdrom 6809B809 1"
  */
 int
 cdda_decoder_open(decoder_t * dec, char * filename) {
@@ -177,6 +253,8 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 	cdda_pdata_t * pd = (cdda_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 	unsigned int track;
+	unsigned long hash;
+	cdda_drive_t * drive;
 
 	if (strlen(filename) < 4) {
 		return DECODER_OPEN_BADLIB;
@@ -189,28 +267,44 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_BADLIB;
 	}
 
-	if (sscanf(filename, "CDDA %s %u", pd->device_path, &track) < 2) {
+	if (sscanf(filename, "CDDA %s %lX %u", pd->device_path, &hash, &track) < 3) {
 		return DECODER_OPEN_BADLIB;
 	}
 	pd->track_no = track;
 
+	drive = cdda_get_drive_by_device_path(pd->device_path);
+	if (drive == NULL) {
+		return DECODER_OPEN_FERROR;
+	}
+	if (drive->disc.hash != hash) {
+		return DECODER_OPEN_FERROR;
+	}
+	if (drive->is_used) {
+		fprintf(stderr, "cdda_decoder_open: drive %s is already in use\n", pd->device_path);
+		return DECODER_OPEN_FERROR;
+	}
+	drive->is_used = 1;
+
 	pd->cdio = cdio_open(pd->device_path, DRIVER_DEVICE);
 	if (!pd->cdio) {
-		printf("dec_cdda.c: Couldn't open cdio device%s\n", pd->device_path);
-		return DECODER_OPEN_BADLIB;
+		printf("cdda_decoder_open: couldn't open cdio device %s\n", pd->device_path);
+		drive->is_used = 0;
+		return DECODER_OPEN_FERROR;
 	}
 
 	pd->drive = cdio_cddap_identify_cdio(pd->cdio, 0, NULL);
 	if (!pd->drive) {
-		printf("dec_cdda.c: Couldn't open drive %s\n", pd->device_path);
-		return DECODER_OPEN_BADLIB;
+		printf("cdda_decoder_open: couldn't open drive %s\n", pd->device_path);
+		drive->is_used = 0;
+		return DECODER_OPEN_FERROR;
 	}
 
 	cdio_cddap_verbose_set(pd->drive, CDDA_MESSAGE_FORGETIT, CDDA_MESSAGE_FORGETIT);
 
 	if (cdio_cddap_open(pd->drive) != 0) {
-		printf("dec_cdda.c: Unable to open disc.\n");
-		return DECODER_OPEN_BADLIB;
+		printf("cdda_decoder_open: unable to open disc.\n");
+		drive->is_used = 0;
+		return DECODER_OPEN_FERROR;
 	}
 
 	pd->first_lsn = cdio_cddap_track_firstsector(pd->drive, pd->track_no);
@@ -219,6 +313,9 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 	pd->pos_lsn = pd->first_lsn;
 	pd->overread_sectors = 0;
 	pd->is_eos = 0;
+
+	/* use this default in case cdda_decoder_set_mode() won't be called */
+	pd->paranoia_mode = PARANOIA_MODE_DISABLE;
 
 	pd->rb = rb_create(2 * sample_size * RB_CDDA_SIZE);
 
@@ -230,18 +327,19 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 	fdec->fileinfo.bps = 2 * 16 * 44100;
 	strcpy(dec->format_str, "Audio CD");
 
-	/* TODO mark drive as used */
 	return DECODER_OPEN_SUCCESS;
 }
 
 
-/* set a new track on the same CD without closing -- this is fast */
+/* set the next (pre-buffered) track on the same CD without closing */
 int
 cdda_decoder_reopen(decoder_t * dec, char * filename) {
 
 	cdda_pdata_t * pd = (cdda_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 	unsigned int track;
+	unsigned long hash;
+	cdda_drive_t * drive;
 
 	if (strlen(filename) < 4) {
 		return DECODER_OPEN_BADLIB;
@@ -254,10 +352,19 @@ cdda_decoder_reopen(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_BADLIB;
 	}
 
-	if (sscanf(filename, "CDDA %s %u", pd->device_path, &track) < 2) {
+	if (sscanf(filename, "CDDA %s %lX %u", pd->device_path, &hash, &track) < 3) {
 		return DECODER_OPEN_BADLIB;
 	}
 	pd->track_no = track;
+
+	drive = cdda_get_drive_by_device_path(pd->device_path);
+	if (drive == NULL) {
+		return DECODER_OPEN_FERROR;
+	}
+	if (drive->disc.hash != hash) {
+		drive->is_used = 0;
+		return DECODER_OPEN_FERROR;
+	}
 
 	if (pd->overread_sectors > 0) {
 		char flush_dest;
@@ -299,6 +406,7 @@ void
 cdda_decoder_close(decoder_t * dec) {
 
 	cdda_pdata_t * pd = (cdda_pdata_t *)dec->pdata;
+	cdda_drive_t * drive;
 
 	AQUALUNG_MUTEX_LOCK(pd->cdda_reader_mutex)
 	if (pd->cdda_reader_status == CDDA_READER_BUSY) {
@@ -312,9 +420,16 @@ cdda_decoder_close(decoder_t * dec) {
 	rb_free(pd->rb);
 	cdio_cddap_close_no_free_cdio(pd->drive);
 	pd->drive = NULL;
+	cdio_set_speed(pd->cdio, 100);
 	cdio_destroy(pd->cdio);
 	pd->cdio = NULL;
-	/* TODO mark drive as unused */
+
+	drive = cdda_get_drive_by_device_path(pd->device_path);
+	if (drive == NULL) {
+		return;
+	}
+	cdda_read_error[cdda_get_n(pd->device_path)] = 0;
+	drive->is_used = 0;
 }
 
 

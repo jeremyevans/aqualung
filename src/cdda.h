@@ -43,12 +43,18 @@
 
 #include "common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define CDDA_DRIVES_MAX 16
 #define CDDA_MAXLEN 256
 
 typedef struct {
 	int n_tracks;
 	lsn_t toc[100];
+	long hash;
+	long hash_prev;
 	char record_name[MAXLEN];
 	char artist_name[MAXLEN];
 } cdda_disc_t;
@@ -56,7 +62,7 @@ typedef struct {
 typedef struct {
 	CdIo_t * cdio;
 	int media_changed;
-	int is_used; /* drive under use should not be scanned */
+	int is_used;
 	char device_path[CDDA_MAXLEN];
 	cdda_disc_t disc;
 } cdda_drive_t;
@@ -74,7 +80,13 @@ void refresh_cdda_drive_node(char * device_path);
 
 void cdda_drive_info(char * device_path);
 
+int cdda_get_n(char * device_path);
+cdda_drive_t * cdda_get_drive_by_device_path(char * device_path);
 cdda_drive_t * cdda_get_drive_by_spec_device_path(char * device_path);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif /* HAVE_CDDA */
 

@@ -1986,9 +1986,21 @@ set_popup_sensitivity(GtkTreePath * path) {
 	if (is_store_path_cdda(path) && (gtk_tree_path_get_depth(path) == 2)) {
 		gboolean val_cdda;
 		GtkTreeIter iter;
+		gchar * device_path;
+		gboolean val_cdda_free;
 
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
 		val_cdda = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter) > 0;
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 2, &device_path, -1);
+		{
+			cdda_drive_t * drive = cdda_get_drive_by_spec_device_path(device_path);
+			if (drive == NULL) {
+				val_cdda_free = FALSE;
+			} else {
+				val_cdda_free = (drive->is_used == 0) ? TRUE : FALSE;
+			}
+		}
+		g_free(device_path);
 
 		gtk_widget_set_sensitive(cdda_record__addlist, val_cdda);
 		gtk_widget_set_sensitive(cdda_record__addlist_albummode, val_cdda);
@@ -1996,7 +2008,7 @@ set_popup_sensitivity(GtkTreePath * path) {
 		gtk_widget_set_sensitive(cdda_record__cddb, val_cdda && cddb_free && build_free);
 		gtk_widget_set_sensitive(cdda_record__cddb_submit, val_cdda && cddb_free && build_free);
 #endif /* HAVE_CDDB */
-		gtk_widget_set_sensitive(cdda_record__rip, val_cdda);
+		gtk_widget_set_sensitive(cdda_record__rip, val_cdda && val_cdda_free);
 		gtk_widget_set_sensitive(cdda_record__disc_info, val_cdda);
 	}
 #endif /* HAVE_CDDA */

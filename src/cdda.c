@@ -269,11 +269,6 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 	int i, n = 0;
 	cdrom_drive_t * d;
 
-	/* if the drive is being used (currently playing), we should not access it */
-	if (cdda_drive->is_used) {
-		return 0;
-	}
-
 	if (cdda_drive->cdio == NULL) {
 		cdda_drive->cdio = cdio_open(device_path, DRIVER_DEVICE);
 		if (!cdda_drive->cdio) {
@@ -285,8 +280,11 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 	cdda_drive->disc.n_tracks = 0;
 	tracks = cdio_get_num_tracks(cdda_drive->cdio);
 
-	if (tracks < 1 || tracks >= 100)
+	if (tracks < 1 || tracks >= 100) {
+		cdda_drive->disc.hash_prev = cdda_drive->disc.hash;
+		cdda_drive->disc.hash = 0L;
 		return 0;
+	}
 
 	d = cdio_cddap_identify_cdio(cdda_drive->cdio, 0, NULL);
 	if (d == NULL) {
@@ -318,8 +316,13 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 	}
 	cdda_drive->disc.toc[n] = cdio_get_track_lsn(cdda_drive->cdio, CDIO_CDROM_LEADOUT_TRACK);
 
-	strncpy(cdda_drive->disc.artist_name, _("Unknown Artist"), MAXLEN-1);
-	strncpy(cdda_drive->disc.record_name, _("Unknown Record"), MAXLEN-1);
+	cdda_drive->disc.hash_prev = cdda_drive->disc.hash;
+	cdda_drive->disc.hash = calc_cdda_hash(&cdda_drive->disc);
+
+	if (cdda_drive->disc.hash != cdda_drive->disc.hash_prev) {
+		strncpy(cdda_drive->disc.artist_name, _("Unknown Artist"), MAXLEN-1);
+		strncpy(cdda_drive->disc.record_name, _("Unknown Record"), MAXLEN-1);
+	}
 
 	return 0;
 }
@@ -359,10 +362,13 @@ cdda_scan_all_drives(void) {
 			touched[n] = 1;
 			if (cdda_drives[n].media_changed) {
 				cdda_scan_drive(drives[i], cdda_get_drive(n));
-				/* EVENT refresh disc data */
-				notify.event_type = CDDA_EVENT_CHANGED_DRIVE;
-				notify.device_path = strdup(drives[i]);
-				rb_write(cdda_notify_rb, (char *)&notify, sizeof(cdda_notify_t));
+				if ((cdda_drives[n].disc.hash == 0L) ||
+				    (cdda_drives[n].disc.hash != cdda_drives[n].disc.hash_prev)) {
+					/* EVENT refresh disc data */
+					notify.event_type = CDDA_EVENT_CHANGED_DRIVE;
+					notify.device_path = strdup(drives[i]);
+					rb_write(cdda_notify_rb, (char *)&notify, sizeof(cdda_notify_t));
+				}
 			}
 		} else { /* no, scan the drive */
 			if (cdda_skip_extra_symlink(drives, i))
@@ -552,7 +558,7 @@ update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 		float duration = (drive->disc.toc[i+1] - drive->disc.toc[i]) / 75.0;
 
 		snprintf(title, MAXLEN-1, "Track %d", i+1);
-		snprintf(path, CDDA_MAXLEN-1, "CDDA %s %d", drive->device_path, i+1);
+		snprintf(path, CDDA_MAXLEN-1, "CDDA %s %lX %d", drive->device_path, drive->disc.hash, i+1);
 		snprintf(sort, 15, "%02d", i+1);
 
 		gtk_tree_store_append(music_store, &iter_track, &iter_drive);

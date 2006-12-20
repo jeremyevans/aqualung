@@ -206,6 +206,7 @@ same_disc_next_track(char * filename, char * filename_prev) {
 	char device[CDDA_MAXLEN];
 	char device_prev[CDDA_MAXLEN];
 	int track, track_prev;
+	long hash, hash_prev;
 
 	if ((strlen(filename) < 4) ||
 	    (filename[0] != 'C') ||
@@ -221,13 +222,16 @@ same_disc_next_track(char * filename, char * filename_prev) {
 	    (filename_prev[3] != 'A'))
 		return 0;
 
-        if (sscanf(filename, "CDDA %s %u", device, &track) < 2)
+        if (sscanf(filename, "CDDA %s %lX %u", device, &hash, &track) < 3)
 		return 0;
 
-        if (sscanf(filename_prev, "CDDA %s %u", device_prev, &track_prev) < 2)
+        if (sscanf(filename_prev, "CDDA %s %lX %u", device_prev, &hash_prev, &track_prev) < 3)
 		return 0;
 
 	if (strcmp(device, device_prev) != 0)
+		return 0;
+
+	if (hash != hash_prev)
 		return 0;
 
 	return (track == track_prev + 1) ? 1 : 0;
@@ -326,8 +330,12 @@ disk_thread(void * arg) {
 
 				if (filename[0] != '\0') {
 #ifdef HAVE_CDDA
-					if (flowthrough && same_disc_next_track(filename, filename_prev)) {
+					if (flowthrough &&
+					    same_disc_next_track(filename, filename_prev) &&
+					    (fdec->pdec != NULL)) {
+
 						decoder_t * dec = (decoder_t *)fdec->pdec;
+						
 						cdda_decoder_reopen(dec, filename);
 						fdec->samples_left = fdec->fileinfo.total_samples;
 

@@ -661,17 +661,19 @@ else
 	        AC_CHECK_LIB(cdio, cdio_open, [lib=yes], [lib=no], [-lwinmm])
         fi
 	if test "$lib" = "yes"; then
-		if `pkg-config --exists 'libcdio_paranoia'`; then
+		AC_MSG_CHECKING(whether libcdio version >= 0.76)
+		if `pkg-config --exists 'libcdio_paranoia >= 0.76'`; then
 			AC_MSG_RESULT(yes)
 		        cdda_LIBS=`pkg-config --libs libcdio_paranoia`
 			AC_DEFINE([HAVE_CDDA], [1], [Defined if compile with CDDA support])
+			AC_MSG_RESULT(yes)
 		else
 			AC_MSG_RESULT(no)
 			lib="no"
 		fi
 	fi
 	if test "$lib" = "no" -a "$cdda" = "yes"; then
-		AC_MSG_ERROR(libcdio library not found. Grab it from http://www.gnu.org/software/libcdio/)
+		AC_MSG_ERROR(libcdio library not found or too old. Grab it from http://www.gnu.org/software/libcdio/)
 	fi
 	if test "$cdda" = "detect"; then
 		cdda=$lib

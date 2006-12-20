@@ -2031,11 +2031,12 @@ show_file_info(char * name, char * file, int is_called_from_browser,
  */
 void
 show_list (gint type) {
-GtkTreeIter iter;
-gint i, len;
-gchar temp[MAXLEN], number[MAXLEN];
-decoder_t * md_dec;
-mod_pdata_t * md_pd;
+
+	GtkTreeIter iter;
+	gint i, len;
+	gchar temp[MAXLEN], number[MAXLEN];
+	decoder_t * md_dec;
+	mod_pdata_t * md_pd;
         
         md_dec = (decoder_t *)(md_fdec->pdec);
         md_pd = (mod_pdata_t *)md_dec->pdata;
@@ -2067,8 +2068,9 @@ mod_pdata_t * md_pd;
 
 void
 set_first_row (void) {
-GtkTreeIter iter;
-GtkTreePath * visible_path;
+
+	GtkTreeIter iter;
+	GtkTreePath * visible_path;
 
         gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(smp_instr_list_store), &iter, NULL, 0);
         visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(smp_instr_list_store), &iter);
@@ -2092,33 +2094,33 @@ radio_buttons_cb (GtkToggleButton *toggle_button, gboolean state) {
 void
 fill_module_info_page(mod_info *mdi, GtkWidget *vbox, char *file) {
 
-gchar *a_type[] = {
-        "None", "MOD", "S3M", "XM", "MED", "MTM", "IT", "669",
-        "ULT", "STM", "FAR", "WAV", "AMF", "AMS", "DSM", "MDL",
-        "OKT", "MID", "DMF", "PTM", "DBM", "MT2", "AMF0", "PSM",
-        "J2B", "UMX"
-};
-
-gint i, n;
-gchar temp[MAXLEN];
-GtkWidget *table;
-GtkWidget *label;
-GtkWidget *mod_type_label;
-GtkWidget *mod_channels_label;
-GtkWidget *mod_patterns_label;
-GtkWidget *mod_samples_label;
-GtkWidget *mod_instruments_label;
-GtkWidget *vseparator;
-GtkWidget *hbox2;
-GtkWidget *vbox2;
-GtkWidget *vbox3;
-GtkWidget *samples_radiobutton = NULL;
-GtkWidget *instruments_radiobutton = NULL;
-GSList *samples_radiobutton_group = NULL;
-GtkWidget *scrolledwindow;
-
-GtkCellRenderer *renderer;
-GtkTreeViewColumn *column;
+	gchar *a_type[] = {
+		"None", "MOD", "S3M", "XM", "MED", "MTM", "IT", "669",
+		"ULT", "STM", "FAR", "WAV", "AMF", "AMS", "DSM", "MDL",
+		"OKT", "MID", "DMF", "PTM", "DBM", "MT2", "AMF0", "PSM",
+		"J2B", "UMX"
+	};
+	
+	gint i, n;
+	gchar temp[MAXLEN];
+	GtkWidget *table;
+	GtkWidget *label;
+	GtkWidget *mod_type_label;
+	GtkWidget *mod_channels_label;
+	GtkWidget *mod_patterns_label;
+	GtkWidget *mod_samples_label;
+	GtkWidget *mod_instruments_label;
+	GtkWidget *vseparator;
+	GtkWidget *hbox2;
+	GtkWidget *vbox2;
+	GtkWidget *vbox3;
+	GtkWidget *samples_radiobutton = NULL;
+	GtkWidget *instruments_radiobutton = NULL;
+	GSList *samples_radiobutton_group = NULL;
+	GtkWidget *scrolledwindow;
+	
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
 
 
         hbox2 = gtk_hbox_new (FALSE, 0);

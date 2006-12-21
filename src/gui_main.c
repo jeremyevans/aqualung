@@ -895,7 +895,9 @@ change_skin(char * path) {
         GdkColor color;
 
 	g_source_remove(timeout_tag);
+#ifdef HAVE_CDDA
 	cdda_timeout_stop();
+#endif /* HAVE_CDDA */
 
 	save_window_position();
 
@@ -1031,7 +1033,9 @@ change_skin(char * path) {
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
 
 	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
+#ifdef HAVE_CDDA
 	cdda_timeout_start();
+#endif /* HAVE_CDDA */
 
         show_active_position_in_playlist();
         gtk_widget_realize(play_list);

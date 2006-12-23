@@ -111,7 +111,7 @@ cdda_reader_thread(void * arg) {
 	int i;
 
 	int n = cdda_get_n(pd->device_path);
-	void(*callback)(long int, paranoia_cb_mode_t);
+	void(*callback)(long int, paranoia_cb_mode_t) = NULL;
 
 	cdda_drive = cdda_get_drive_by_device_path(pd->device_path);
 	if ((n < 0) || (cdda_drive == NULL)) {

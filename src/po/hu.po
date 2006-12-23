@@ -56,7 +56,33 @@ msgstr "Logo, ikonok:\n"
 msgid "This Aqualung binary is compiled with:"
 msgstr "Ez az Aqualung bináris a következõ opciókat támogatja:"
 
-msgid "File format support:"
+msgid "Optional features:"
+msgstr ""
+
+msgid "LADSPA plugin support\n"
+msgstr "LADSPA effekt támogatás\n"
+
+msgid "CDDA (Audio CD) support\n"
+msgstr "CDDA (Audio CD) támogatás\n"
+
+msgid "CDDB support\n"
+msgstr "CDDB támogatás\n"
+
+#, fuzzy
+msgid "Sample Rate Converter support\n"
+msgstr "Beépített mintavételi frekvencia konverter\n"
+
+msgid "iRiver iFP driver support\n"
+msgstr "iRiver iFP meghajtó támogatás\n"
+
+msgid "Loop playback support\n"
+msgstr ""
+
+msgid "Systray support\n"
+msgstr "Rendszertálca támogatás\n"
+
+#, fuzzy
+msgid "Decoding support:"
 msgstr "Támogatott fájltípusok:"
 
 msgid "sndfile (WAV, AIFF, etc.)\n"
@@ -89,6 +115,17 @@ msgstr "LAVC (AC3, AAC, WavPack, WMA, stb.)\n"
 msgid "Metadata (ID3, APE, Ogg comments)\n"
 msgstr "Metaadatok (ID3, APE, Ogg kommentek)\n"
 
+#, fuzzy
+msgid "Encoding support:"
+msgstr "Kimeneti meghajtók:"
+
+#, fuzzy
+msgid "sndfile (WAV)\n"
+msgstr "sndfile (WAV, AIFF, stb.)\n"
+
+msgid "LAME (MP3)\n"
+msgstr ""
+
 msgid "Output driver support:"
 msgstr "Kimeneti meghajtók:"
 
@@ -103,30 +140,6 @@ msgstr "JACK Audio Szerver\n"
 
 msgid "Win32 Sound API\n"
 msgstr "Win32 Sound API\n"
-
-msgid "Miscellaneous:"
-msgstr "Egyéb:"
-
-msgid "Internal Sample Rate Converter support\n"
-msgstr "Beépített mintavételi frekvencia konverter\n"
-
-msgid "LADSPA plugin support\n"
-msgstr "LADSPA effekt támogatás\n"
-
-msgid "CDDA (Audio CD) support\n"
-msgstr "CDDA (Audio CD) támogatás\n"
-
-msgid "CDDB support\n"
-msgstr "CDDB támogatás\n"
-
-msgid "iRiver iFP driver support\n"
-msgstr "iRiver iFP meghajtó támogatás\n"
-
-msgid "Systray support\n"
-msgstr "Rendszertálca támogatás\n"
-
-msgid "Loop playback support\n"
-msgstr ""
 
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
@@ -2296,6 +2309,9 @@ msgstr "Tömörítés: Extra magas"
 
 msgid "Compression: Insane"
 msgstr "Tömörítés: Elmebeteg"
+
+#~ msgid "Miscellaneous:"
+#~ msgstr "Egyéb:"
 
 #~ msgid "Vendor"
 #~ msgstr "Vendor"

@@ -56,7 +56,37 @@ msgstr ""
 msgid "This Aqualung binary is compiled with:"
 msgstr "Dieser Aqualung Binärcode wurde kompiliert mit:"
 
-msgid "File format support:"
+msgid "Optional features:"
+msgstr ""
+
+#, fuzzy
+msgid "LADSPA plugin support\n"
+msgstr "LADSPA Plugin Verarbeitung"
+
+#, fuzzy
+msgid "CDDA (Audio CD) support\n"
+msgstr "CDDB Unterstützung\n"
+
+msgid "CDDB support\n"
+msgstr "CDDB Unterstützung\n"
+
+#, fuzzy
+msgid "Sample Rate Converter support\n"
+msgstr "Interner Samplerate Konverter Unterstützung\n"
+
+#, fuzzy
+msgid "iRiver iFP driver support\n"
+msgstr "Ausgabe Treiber Unterstützung:"
+
+msgid "Loop playback support\n"
+msgstr ""
+
+#, fuzzy
+msgid "Systray support\n"
+msgstr "CDDB Unterstützung\n"
+
+#, fuzzy
+msgid "Decoding support:"
 msgstr "Unterstützte Dateiformat:"
 
 msgid "sndfile (WAV, AIFF, etc.)\n"
@@ -89,6 +119,16 @@ msgstr ""
 msgid "Metadata (ID3, APE, Ogg comments)\n"
 msgstr ""
 
+#, fuzzy
+msgid "Encoding support:"
+msgstr "Ausgabe Treiber Unterstützung:"
+
+msgid "sndfile (WAV)\n"
+msgstr ""
+
+msgid "LAME (MP3)\n"
+msgstr ""
+
 msgid "Output driver support:"
 msgstr "Ausgabe Treiber Unterstützung:"
 
@@ -102,34 +142,6 @@ msgid "JACK Audio Server\n"
 msgstr ""
 
 msgid "Win32 Sound API\n"
-msgstr ""
-
-msgid "Miscellaneous:"
-msgstr "Sonstiges:"
-
-msgid "Internal Sample Rate Converter support\n"
-msgstr "Interner Samplerate Konverter Unterstützung\n"
-
-#, fuzzy
-msgid "LADSPA plugin support\n"
-msgstr "LADSPA Plugin Verarbeitung"
-
-#, fuzzy
-msgid "CDDA (Audio CD) support\n"
-msgstr "CDDB Unterstützung\n"
-
-msgid "CDDB support\n"
-msgstr "CDDB Unterstützung\n"
-
-#, fuzzy
-msgid "iRiver iFP driver support\n"
-msgstr "Ausgabe Treiber Unterstützung:"
-
-#, fuzzy
-msgid "Systray support\n"
-msgstr "CDDB Unterstützung\n"
-
-msgid "Loop playback support\n"
 msgstr ""
 
 msgid ""
@@ -2450,6 +2462,9 @@ msgstr ""
 
 msgid "Compression: Insane"
 msgstr ""
+
+#~ msgid "Miscellaneous:"
+#~ msgstr "Sonstiges:"
 
 #, fuzzy
 #~ msgid "Vendor"

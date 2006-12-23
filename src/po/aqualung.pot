@@ -37,7 +37,31 @@ msgstr ""
 msgid "This Aqualung binary is compiled with:"
 msgstr ""
 
-msgid "File format support:"
+msgid "Optional features:"
+msgstr ""
+
+msgid "LADSPA plugin support\n"
+msgstr ""
+
+msgid "CDDA (Audio CD) support\n"
+msgstr ""
+
+msgid "CDDB support\n"
+msgstr ""
+
+msgid "Sample Rate Converter support\n"
+msgstr ""
+
+msgid "iRiver iFP driver support\n"
+msgstr ""
+
+msgid "Loop playback support\n"
+msgstr ""
+
+msgid "Systray support\n"
+msgstr ""
+
+msgid "Decoding support:"
 msgstr ""
 
 msgid "sndfile (WAV, AIFF, etc.)\n"
@@ -70,6 +94,15 @@ msgstr ""
 msgid "Metadata (ID3, APE, Ogg comments)\n"
 msgstr ""
 
+msgid "Encoding support:"
+msgstr ""
+
+msgid "sndfile (WAV)\n"
+msgstr ""
+
+msgid "LAME (MP3)\n"
+msgstr ""
+
 msgid "Output driver support:"
 msgstr ""
 
@@ -83,30 +116,6 @@ msgid "JACK Audio Server\n"
 msgstr ""
 
 msgid "Win32 Sound API\n"
-msgstr ""
-
-msgid "Miscellaneous:"
-msgstr ""
-
-msgid "Internal Sample Rate Converter support\n"
-msgstr ""
-
-msgid "LADSPA plugin support\n"
-msgstr ""
-
-msgid "CDDA (Audio CD) support\n"
-msgstr ""
-
-msgid "CDDB support\n"
-msgstr ""
-
-msgid "iRiver iFP driver support\n"
-msgstr ""
-
-msgid "Systray support\n"
-msgstr ""
-
-msgid "Loop playback support\n"
 msgstr ""
 
 msgid ""

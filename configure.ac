@@ -825,6 +825,15 @@ echo "  ====================="
 echo
 echo "  Build type / target platform            :  $buildtype / $platform"
 echo
+echo "  Optional features:"
+echo "      LADSPA plugin support               :  $ladspa"
+echo "      CDDA (Audio CD) support             :  $cdda"
+echo "      CDDB support                        :  $cddb"
+echo "      Sample Rate Converter support       :  $src"
+echo "      iRiver iFP driver support           :  $ifp"
+echo "      Loop playback support               :  $loop"
+echo "      Systray support                     :  $systray"
+echo
 echo "  Decoding support:"
 echo "      sndfile (WAV, AIFF, AU, etc.)       :  $sndfile"
 echo "      Free Lossless Audio Codec (FLAC)    :  $flac"
@@ -849,13 +858,6 @@ echo "      ALSA Audio                          :  $alsa"
 echo "      JACK Audio Server                   :  $jack"
 echo "      Win32 Sound API                     :  $win32"
 echo
-echo "  Internal Sample Rate Converter support  :  $src"
-echo "  LADSPA plugin support                   :  $ladspa"
-echo "  CDDA (Audio CD) support                 :  $cdda"
-echo "  CDDB support                            :  $cddb"
-echo "  iRiver iFP driver support               :  $ifp"
-echo "  Systray support                         :  $systray"
-echo "  Loop playback support                   :  $loop"
 echo "----------------------------------------------------------------------"
 
 if test "$metaedit" = "yes"; then

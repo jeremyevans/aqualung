@@ -1708,6 +1708,9 @@ load_default_cl(int * argc, char *** argv) {
 }
  
  
+#define V_YES "    [+] "
+#define V_NO  "    [ ] "
+
 void
 print_version(void) {
 
@@ -1718,157 +1721,195 @@ print_version(void) {
 		"This is free software, and you are welcome to redistribute it\n"
 		"under certain conditions; see the file COPYING for details.\n");
 	
-	fprintf(stderr, "\nThis Aqualung binary is compiled with:\n"
-		"\n\tFile format support:\n");
-	
-	fprintf(stderr, "\t\tsndfile (WAV, AIFF, etc.)           : ");
-#ifdef HAVE_SNDFILE
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_SNDFILE */
-	
-	fprintf(stderr, "\t\tFree Lossless Audio Codec (FLAC)    : ");
-#ifdef HAVE_FLAC
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_FLAC */
-	
-	fprintf(stderr, "\t\tOgg Vorbis                          : ");
-#ifdef HAVE_OGG_VORBIS
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_OGG_VORBIS */
-	
-	fprintf(stderr, "\t\tOgg Speex                           : ");
-#ifdef HAVE_SPEEX
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_SPEEX */
-	
-	fprintf(stderr, "\t\tMPEG Audio (MPEG 1-2.5 Layer I-III) : ");
-#ifdef HAVE_MPEG
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_MPEG */
-	
-	fprintf(stderr, "\t\tMOD Audio (MOD, S3M, XM, IT, etc.)  : ");
-#ifdef HAVE_MOD
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_MOD */
-	
-	fprintf(stderr, "\t\tMusepack                            : ");
-#ifdef HAVE_MPC
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_MPC */
-	
-	fprintf(stderr, "\t\tMonkey's Audio Codec                : ");
-#ifdef HAVE_MAC
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_MAC */
-	
-	fprintf(stderr, "\t\tLAVC (AC3, AAC, WavPack, WMA, etc.) : ");
-#ifdef HAVE_LAVC
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_LAVC */
-	
-	fprintf(stderr, "\t\tMetadata (ID3, APE, Ogg comments)   : ");
-#ifdef HAVE_TAGLIB
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_TAGLIB */
-	
-	fprintf(stderr, "\n\tOutput driver support:\n");
-	
-	fprintf(stderr, "\t\tOSS Audio                           : ");
-#ifdef HAVE_OSS
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_OSS */
-	
-	fprintf(stderr, "\t\tALSA Audio                          : ");
-#ifdef HAVE_ALSA
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_ALSA */
-	
-	fprintf(stderr, "\t\tJACK Audio Server                   : ");
-#ifdef HAVE_JACK
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_JACK */
-	
-	fprintf(stderr, "\t\tWin32 Sound API                     : ");
-#ifdef _WIN32
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* _WIN32 */
-	
-	fprintf(stderr, "\n\tInternal Sample Rate Converter support      : ");
-#ifdef HAVE_SRC
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_SRC */
-	
-	fprintf(stderr, "\tLADSPA plugin support                       : ");
-#ifdef HAVE_LADSPA
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_LADSPA */
-	
-	fprintf(stderr, "\tCDDA (Audio CD) support                     : ");
-#ifdef HAVE_CDDA
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_CDDA */
-	
-	fprintf(stderr, "\tCDDB support                                : ");
-#ifdef HAVE_CDDB
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_CDDB */
-	
-	fprintf(stderr, "\tiRiver iFP driver support                   : ");
-#ifdef HAVE_IFP
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_IFP */
-	
-	fprintf(stderr, "\tSystray support                             : ");
-#ifdef HAVE_SYSTRAY
-	fprintf(stderr, "yes\n");
-#else
-	fprintf(stderr, "no\n");
-#endif /* HAVE_SYSTRAY */
+	fprintf(stderr, "\nThis Aqualung binary is compiled with:\n");
 
-	fprintf(stderr, "\tLoop playback support                       : ");
-#ifdef HAVE_LOOP
-	fprintf(stderr, "yes\n\n");
+	fprintf(stderr, "\n  Optional features:\n");
+	
+#ifdef HAVE_LADSPA
+	fprintf(stderr, V_YES);
 #else
-	fprintf(stderr, "no\n\n");
+	fprintf(stderr, V_NO);
+#endif /* HAVE_LADSPA */
+	fprintf(stderr, "LADSPA plugin support\n");
+	
+#ifdef HAVE_CDDA
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_CDDA */
+	fprintf(stderr, "CDDA (Audio CD) support\n");
+	
+#ifdef HAVE_CDDB
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_CDDB */
+	fprintf(stderr, "CDDB support\n");
+	
+#ifdef HAVE_SRC
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_SRC */
+	fprintf(stderr, "Sample Rate Converter support\n");
+
+#ifdef HAVE_IFP
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_IFP */
+	fprintf(stderr, "iRiver iFP driver support\n");
+	
+#ifdef HAVE_LOOP
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
 #endif /* HAVE_LOOP */
+	fprintf(stderr, "Loop playback support\n");
+
+#ifdef HAVE_SYSTRAY
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_SYSTRAY */
+	fprintf(stderr, "Systray support\n");
+
+
+	fprintf(stderr, "\n  Decoding support:\n");
+	
+#ifdef HAVE_SNDFILE
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_SNDFILE */
+	fprintf(stderr, "sndfile (WAV, AIFF, etc.)\n");
+	
+#ifdef HAVE_FLAC
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_FLAC */
+	fprintf(stderr, "Free Lossless Audio Codec (FLAC)\n");
+	
+#ifdef HAVE_OGG_VORBIS
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_OGG_VORBIS */
+	fprintf(stderr, "Ogg Vorbis\n");
+	
+#ifdef HAVE_SPEEX
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_SPEEX */
+	fprintf(stderr, "Ogg Speex\n");
+	
+#ifdef HAVE_MPEG
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_MPEG */
+	fprintf(stderr, "MPEG Audio (MPEG 1-2.5 Layer I-III)\n");
+	
+#ifdef HAVE_MOD
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_MOD */
+	fprintf(stderr, "MOD Audio (MOD, S3M, XM, IT, etc.)\n");
+	
+#ifdef HAVE_MPC
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_MPC */
+	fprintf(stderr, "Musepack\n");
+	
+#ifdef HAVE_MAC
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_MAC */
+	fprintf(stderr, "Monkey's Audio Codec\n");
+	
+#ifdef HAVE_LAVC
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_LAVC */
+	fprintf(stderr, "LAVC (AC3, AAC, WavPack, WMA, etc.)\n");
+	
+#ifdef HAVE_TAGLIB
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_TAGLIB */
+	fprintf(stderr, "Metadata (ID3, APE, Ogg comments)\n");
+	
+
+	fprintf(stderr, "\n  Encoding support:\n");
+	
+#ifdef HAVE_SNDFILE
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_SNDFILE */
+	fprintf(stderr, "sndfile (WAV)\n");
+	
+#ifdef HAVE_FLAC
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_FLAC */
+	fprintf(stderr, "Free Lossless Audio Codec (FLAC)\n");
+	
+#ifdef HAVE_VORBISENC
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_VORBISENC */
+	fprintf(stderr, "Ogg Vorbis\n");
+
+#ifdef HAVE_LAME
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_LAME */
+	fprintf(stderr, "LAME (MP3)\n");
+	
+
+	fprintf(stderr, "\n  Output driver support:\n");
+	
+#ifdef HAVE_OSS
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_OSS */
+	fprintf(stderr, "OSS Audio\n");
+	
+#ifdef HAVE_ALSA
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_ALSA */
+	fprintf(stderr, "ALSA Audio\n");
+	
+#ifdef HAVE_JACK
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_JACK */
+	fprintf(stderr, "JACK Audio Server\n");
+	
+#ifdef _WIN32
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* _WIN32 */
+	fprintf(stderr, "Win32 Sound API\n");
+
+	fprintf(stderr, "\n");
 }
 
 

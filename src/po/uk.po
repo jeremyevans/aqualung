@@ -55,7 +55,37 @@ msgstr ""
 msgid "This Aqualung binary is compiled with:"
 msgstr "Цей Aqualung скомп╕льовано з:"
 
-msgid "File format support:"
+msgid "Optional features:"
+msgstr ""
+
+#, fuzzy
+msgid "LADSPA plugin support\n"
+msgstr "Обробка LADSPA втулками (Цифрова Обробка Сигналу)"
+
+#, fuzzy
+msgid "CDDA (Audio CD) support\n"
+msgstr "п╕дтримка CDDB\n"
+
+msgid "CDDB support\n"
+msgstr "п╕дтримка CDDB\n"
+
+#, fuzzy
+msgid "Sample Rate Converter support\n"
+msgstr "Вбудований перетворювач частоти семплювання\n"
+
+#, fuzzy
+msgid "iRiver iFP driver support\n"
+msgstr "Драйвери виводу:"
+
+msgid "Loop playback support\n"
+msgstr ""
+
+#, fuzzy
+msgid "Systray support\n"
+msgstr "п╕дтримка CDDB\n"
+
+#, fuzzy
+msgid "Decoding support:"
 msgstr "П╕дтримка формат╕в файл╕в:"
 
 msgid "sndfile (WAV, AIFF, etc.)\n"
@@ -88,6 +118,16 @@ msgstr ""
 msgid "Metadata (ID3, APE, Ogg comments)\n"
 msgstr ""
 
+#, fuzzy
+msgid "Encoding support:"
+msgstr "Драйвери виводу:"
+
+msgid "sndfile (WAV)\n"
+msgstr ""
+
+msgid "LAME (MP3)\n"
+msgstr ""
+
 msgid "Output driver support:"
 msgstr "Драйвери виводу:"
 
@@ -101,34 +141,6 @@ msgid "JACK Audio Server\n"
 msgstr ""
 
 msgid "Win32 Sound API\n"
-msgstr ""
-
-msgid "Miscellaneous:"
-msgstr "Р╕зне:"
-
-msgid "Internal Sample Rate Converter support\n"
-msgstr "Вбудований перетворювач частоти семплювання\n"
-
-#, fuzzy
-msgid "LADSPA plugin support\n"
-msgstr "Обробка LADSPA втулками (Цифрова Обробка Сигналу)"
-
-#, fuzzy
-msgid "CDDA (Audio CD) support\n"
-msgstr "п╕дтримка CDDB\n"
-
-msgid "CDDB support\n"
-msgstr "п╕дтримка CDDB\n"
-
-#, fuzzy
-msgid "iRiver iFP driver support\n"
-msgstr "Драйвери виводу:"
-
-#, fuzzy
-msgid "Systray support\n"
-msgstr "п╕дтримка CDDB\n"
-
-msgid "Loop playback support\n"
 msgstr ""
 
 msgid ""
@@ -2402,6 +2414,9 @@ msgstr "Ступ╕нь стиснення: Дуже висока"
 
 msgid "Compression: Insane"
 msgstr "Ступ╕нь стиснення: Божев╕льна"
+
+#~ msgid "Miscellaneous:"
+#~ msgstr "Р╕зне:"
 
 #, fuzzy
 #~ msgid "Vendor"

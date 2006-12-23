@@ -4028,6 +4028,37 @@ run_gui(void) {
 }
 
 
+#define SAVE_OPTION_STR(XmlStr, OptVar) \
+        xmlNewTextChild(root, NULL, (const xmlChar *) XmlStr, (xmlChar *) options.OptVar);
+
+#define SAVE_OPTION_STR_1(Var) SAVE_OPTION_STR(#Var, Var)
+
+#define SAVE_FONT(Font) \
+	snprintf(str, MAX_FONTNAME_LEN, "%s", options.Font); \
+        xmlNewTextChild(root, NULL, (const xmlChar *) #Font, (xmlChar *) str);
+
+#define SAVE_INT(XmlStr, Var) \
+	snprintf(str, 31, "%d", Var); \
+        xmlNewTextChild(root, NULL, (const xmlChar *) XmlStr, (xmlChar *) str);
+
+#define SAVE_INT_1(Var) SAVE_INT(#Var, Var)
+
+#define SAVE_OPTION_INT(XmlStr, OptVar) SAVE_INT(XmlStr, options.OptVar)
+
+#define SAVE_OPTION_INT_1(Var) SAVE_OPTION_INT(#Var, Var)
+
+#define SAVE_OPTION_INT_SH_1(Var) SAVE_OPTION_INT(#Var, Var##_shadow)
+
+#define SAVE_FLOAT(XmlStr, Var) \
+        snprintf(str, 31, "%f", Var); \
+        xmlNewTextChild(root, NULL, (const xmlChar *) XmlStr, (xmlChar *) str);
+
+#define SAVE_FLOAT_1(Var) SAVE_FLOAT(#Var, Var)
+
+#define SAVE_OPTION_FLOAT(XmlStr, OptVar) SAVE_FLOAT(XmlStr, options.OptVar)
+
+#define SAVE_OPTION_FLOAT_1(Var) SAVE_OPTION_FLOAT(#Var, Var)
+
 
 void
 save_config(void) {
@@ -4052,235 +4083,112 @@ save_config(void) {
         xmlDocSetRootElement(doc, root);
 
 
-        xmlNewTextChild(root, NULL, (const xmlChar *) "default_param", (xmlChar *) options.default_param);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "title_format", (xmlChar *) options.title_format);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "skin", (xmlChar *) options.skin);
-
-	snprintf(str, 31, "%d", src_type);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "src_type", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.ladspa_is_postfader);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "ladspa_is_postfader", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.auto_save_playlist);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_save_playlist", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.show_rva_in_playlist);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "show_rva_in_playlist", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.pl_statusbar_show_size);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "pl_statusbar_show_size", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.ms_statusbar_show_size);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "ms_statusbar_show_size", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.show_length_in_playlist);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "show_length_in_playlist", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.show_active_track_name_in_bold);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "show_active_track_name_in_bold", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.enable_pl_rules_hint);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_pl_rules_hint", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.enable_ms_rules_hint);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_ms_rules_hint", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.enable_ms_tree_icons_shadow);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_ms_tree_icons", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.auto_use_meta_artist);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_meta_artist", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.auto_use_meta_record);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_meta_record", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.auto_use_meta_track);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_meta_track", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.auto_use_ext_meta_artist);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_ext_meta_artist", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.auto_use_ext_meta_record);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_ext_meta_record", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.auto_use_ext_meta_track);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "auto_use_ext_meta_track", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.enable_tooltips);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_tooltips", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.buttons_at_the_bottom_shadow);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "buttons_at_the_bottom", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.disable_buttons_relief);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "disable_buttons_relief", (xmlChar *) str);
-
-        snprintf(str, 31, "%d", options.simple_view_in_fx_shadow);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "simple_view_in_fx", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.show_sn_title);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "show_song_name_in_window_title", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.united_minimization);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "united_windows_minimization", (xmlChar *) str);
-
-        snprintf(str, 31, "%d", options.magnify_smaller_images);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "magnify_smaller_images", (xmlChar *) str);
-
-        snprintf(str, 31, "%d", options.cover_width);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cover_width", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.hide_comment_pane_shadow);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "hide_comment_pane", (xmlChar *) str);
-
-        snprintf(str, 31, "%d", options.enable_mstore_toolbar_shadow);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_mstore_toolbar", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.enable_mstore_statusbar_shadow);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_mstore_statusbar", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.autoexpand_stores);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "autoexpand_stores", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.show_hidden);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "show_hidden", (xmlChar *) str);
-
-        snprintf(str, 31, "%d", options.main_window_always_on_top);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "main_window_always_on_top", (xmlChar *) str);
-
-        snprintf(str, 31, "%d", options.tags_tab_first);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "tags_tab_first", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.override_skin_settings);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "override_skin_settings", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.replaygain_tag_to_use);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "replaygain_tag_to_use", (xmlChar *) str);
-
-	snprintf(str, 31, "%f", vol);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "volume", (xmlChar *) str);
-	snprintf(str, 31, "%f", bal);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "balance", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.rva_is_enabled);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_is_enabled", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.rva_env);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_env", (xmlChar *) str);
-	snprintf(str, 31, "%f", options.rva_refvol);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_refvol", (xmlChar *) str);
-	snprintf(str, 31, "%f", options.rva_steepness);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_steepness", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.rva_use_averaging);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_use_averaging", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.rva_use_linear_thresh);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_use_linear_thresh", (xmlChar *) str);
-	snprintf(str, 31, "%f", options.rva_avg_linear_thresh);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_avg_linear_thresh", (xmlChar *) str);
-	snprintf(str, 31, "%f", options.rva_avg_stddev_thresh);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "rva_avg_stddev_thresh", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", main_pos_x);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "main_pos_x", (xmlChar *) str);
-	snprintf(str, 31, "%d", main_pos_y);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "main_pos_y", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", main_size_x);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "main_size_x", (xmlChar *) str);
+	SAVE_OPTION_STR_1(default_param)
+	SAVE_OPTION_STR_1(title_format)
+	SAVE_OPTION_STR_1(skin)
+	SAVE_INT_1(src_type)
+	SAVE_OPTION_INT_1(ladspa_is_postfader)
+	SAVE_OPTION_INT_1(auto_save_playlist)
+	SAVE_OPTION_INT_1(show_rva_in_playlist)
+	SAVE_OPTION_INT_1(pl_statusbar_show_size)
+	SAVE_OPTION_INT_1(ms_statusbar_show_size)
+	SAVE_OPTION_INT_1(show_length_in_playlist)
+	SAVE_OPTION_INT_1(show_active_track_name_in_bold)
+	SAVE_OPTION_INT_1(enable_pl_rules_hint)
+	SAVE_OPTION_INT_1(enable_ms_rules_hint)
+	SAVE_OPTION_INT_SH_1(enable_ms_tree_icons)
+	SAVE_OPTION_INT_1(auto_use_meta_artist)
+	SAVE_OPTION_INT_1(auto_use_meta_record)
+	SAVE_OPTION_INT_1(auto_use_meta_track)
+	SAVE_OPTION_INT_1(auto_use_ext_meta_artist)
+	SAVE_OPTION_INT_1(auto_use_ext_meta_record)
+	SAVE_OPTION_INT_1(auto_use_ext_meta_track)
+	SAVE_OPTION_INT_1(enable_tooltips)
+	SAVE_OPTION_INT_SH_1(buttons_at_the_bottom)
+	SAVE_OPTION_INT_1(disable_buttons_relief)
+	SAVE_OPTION_INT_SH_1(simple_view_in_fx)
+	SAVE_OPTION_INT("show_song_name_in_window_title", show_sn_title)
+	SAVE_OPTION_INT("united_windows_minimization", united_minimization)
+	SAVE_OPTION_INT_1(magnify_smaller_images)
+	SAVE_OPTION_INT_1(cover_width)
+	SAVE_OPTION_INT_SH_1(hide_comment_pane)
+	SAVE_OPTION_INT_SH_1(enable_mstore_toolbar)
+	SAVE_OPTION_INT_SH_1(enable_mstore_statusbar)
+	SAVE_OPTION_INT_1(autoexpand_stores)
+	SAVE_OPTION_INT_1(show_hidden)
+	SAVE_OPTION_INT_1(main_window_always_on_top)
+	SAVE_OPTION_INT_1(tags_tab_first)
+	SAVE_OPTION_INT_1(override_skin_settings)
+	SAVE_OPTION_INT_1(replaygain_tag_to_use)
+	SAVE_FLOAT("volume", vol)
+	SAVE_FLOAT("balance", bal)
+	SAVE_OPTION_INT_1(rva_is_enabled)
+	SAVE_OPTION_INT_1(rva_env)
+	SAVE_OPTION_FLOAT_1(rva_refvol)
+	SAVE_OPTION_FLOAT_1(rva_steepness)
+	SAVE_OPTION_INT_1(rva_use_averaging)
+	SAVE_OPTION_INT_1(rva_use_linear_thresh)
+	SAVE_OPTION_FLOAT_1(rva_avg_linear_thresh)
+	SAVE_OPTION_FLOAT_1(rva_avg_stddev_thresh)
+	SAVE_INT_1(main_pos_x)
+	SAVE_INT_1(main_pos_y)
+	SAVE_INT_1(main_size_x)
 	if (options.playlist_is_embedded && !options.playlist_is_embedded_shadow && playlist_on) {
 		snprintf(str, 31, "%d", main_size_y - playlist_window->allocation.height - 6);
 	} else {
 		snprintf(str, 31, "%d", main_size_y);
 	}
         xmlNewTextChild(root, NULL, (const xmlChar *) "main_size_y", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", browser_pos_x);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_pos_x", (xmlChar *) str);
-	snprintf(str, 31, "%d", browser_pos_y);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_pos_y", (xmlChar *) str);
-	snprintf(str, 31, "%d", browser_size_x);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_size_x", (xmlChar *) str);
-	snprintf(str, 31, "%d", browser_size_y);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_size_y", (xmlChar *) str);
-	snprintf(str, 31, "%d", browser_on);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_is_visible", (xmlChar *) str);
-	snprintf(str, 31, "%d", browser_paned_pos);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_paned_pos", (xmlChar *) str);
-	snprintf(str, MAX_FONTNAME_LEN, "%s", options.browser_font);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "browser_font", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", playlist_pos_x);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_pos_x", (xmlChar *) str);
-	snprintf(str, 31, "%d", playlist_pos_y);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_pos_y", (xmlChar *) str);
-	snprintf(str, 31, "%d", playlist_size_x);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_size_x", (xmlChar *) str);
-	snprintf(str, 31, "%d", playlist_size_y);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_size_y", (xmlChar *) str);
-	snprintf(str, 31, "%d", playlist_on);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_is_visible", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.playlist_is_embedded_shadow);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_is_embedded", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.playlist_is_tree);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_is_tree", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.album_shuffle_mode);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "album_shuffle_mode", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.enable_playlist_statusbar_shadow);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "enable_playlist_statusbar", (xmlChar *) str);
-	snprintf(str, MAX_FONTNAME_LEN, "%s", options.playlist_font);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "playlist_font", (xmlChar *) str);
-
-	snprintf(str, MAX_FONTNAME_LEN, "%s", options.bigtimer_font);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "bigtimer_font", (xmlChar *) str);
-	snprintf(str, MAX_FONTNAME_LEN, "%s", options.smalltimer_font);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "smalltimer_font", (xmlChar *) str);
-	snprintf(str, MAX_FONTNAME_LEN, "%s", options.songtitle_font);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "songtitle_font", (xmlChar *) str);
-	snprintf(str, MAX_FONTNAME_LEN, "%s", options.songinfo_font);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "songinfo_font", (xmlChar *) str);
-	snprintf(str, MAX_FONTNAME_LEN, "%s", options.statusbar_font);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "statusbar_font", (xmlChar *) str);
+	SAVE_INT_1(browser_pos_x)
+	SAVE_INT_1(browser_pos_y)
+	SAVE_INT_1(browser_size_x)
+	SAVE_INT_1(browser_size_y)
+	SAVE_INT("browser_is_visible", browser_on)
+	SAVE_INT_1(browser_paned_pos)
+	SAVE_INT_1(playlist_pos_x)
+	SAVE_INT_1(playlist_pos_y)
+	SAVE_INT_1(playlist_size_x)
+	SAVE_INT_1(playlist_size_y)
+	SAVE_INT("playlist_is_visible", playlist_on)
+	SAVE_OPTION_INT_SH_1(playlist_is_embedded)
+	SAVE_OPTION_INT_1(playlist_is_tree)
+	SAVE_OPTION_INT_1(album_shuffle_mode)
+	SAVE_OPTION_INT_SH_1(enable_playlist_statusbar)
+	SAVE_FONT(browser_font)
+	SAVE_FONT(playlist_font)
+	SAVE_FONT(bigtimer_font)
+	SAVE_FONT(smalltimer_font)
+	SAVE_FONT(songtitle_font)
+	SAVE_FONT(songinfo_font)
+	SAVE_FONT(statusbar_font)
 
 	snprintf(str, MAX_COLORNAME_LEN, "%s", options.activesong_color);
         xmlNewTextChild(root, NULL, (const xmlChar *) "activesong_color", (xmlChar *) str);
 
-	snprintf(str, 31, "%d", repeat_on);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "repeat_on", (xmlChar *) str);
-	snprintf(str, 31, "%d", repeat_all_on);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "repeat_all_on", (xmlChar *) str);
-	snprintf(str, 31, "%d", shuffle_on);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "shuffle_on", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", time_idx[0]);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "time_idx_0", (xmlChar *) str);
-	snprintf(str, 31, "%d", time_idx[1]);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "time_idx_1", (xmlChar *) str);
-	snprintf(str, 31, "%d", time_idx[2]);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "time_idx_2", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.plcol_idx[0]);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "plcol_idx_0", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.plcol_idx[1]);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "plcol_idx_1", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.plcol_idx[2]);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "plcol_idx_2", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", search_pl_flags);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "search_pl_flags", (xmlChar *) str);
-	snprintf(str, 31, "%d", search_ms_flags);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "search_ms_flags", (xmlChar *) str);
-
-	snprintf(str, 31, "%d", options.cdda_drive_speed);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cdda_drive_speed", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.cdda_paranoia_mode);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cdda_paranoia_mode", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.cdda_paranoia_maxretries);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cdda_paranoia_maxretries", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.cdda_force_drive_rescan);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cdda_force_drive_rescan", (xmlChar *) str);
-
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_server", (xmlChar *) options.cddb_server);
-	snprintf(str, 31, "%d", options.cddb_timeout);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_timeout", (xmlChar *) str);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_email", (xmlChar *) options.cddb_email);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_local", (xmlChar *) options.cddb_local);
-	snprintf(str, 31, "%d", options.cddb_cache_only);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_cache_only", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.cddb_use_http);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_use_http", (xmlChar *) str);
-	snprintf(str, 31, "%d", options.cddb_use_proxy);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_use_proxy", (xmlChar *) str);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_proxy", (xmlChar *) options.cddb_proxy);
-	snprintf(str, 31, "%d", options.cddb_proxy_port);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "cddb_proxy_port", (xmlChar *) str);
-
+	SAVE_INT_1(repeat_on)
+	SAVE_INT_1(repeat_all_on)
+	SAVE_INT_1(shuffle_on)
+	SAVE_INT("time_idx_0", time_idx[0])
+	SAVE_INT("time_idx_1", time_idx[1])
+	SAVE_INT("time_idx_2", time_idx[2])
+	SAVE_OPTION_INT("plcol_idx_0", plcol_idx[0])
+	SAVE_OPTION_INT("plcol_idx_1", plcol_idx[1])
+	SAVE_OPTION_INT("plcol_idx_2", plcol_idx[2])
+	SAVE_INT_1(search_pl_flags)
+	SAVE_INT_1(search_ms_flags)
+	SAVE_OPTION_INT_1(cdda_drive_speed)
+	SAVE_OPTION_INT_1(cdda_paranoia_mode)
+	SAVE_OPTION_INT_1(cdda_paranoia_maxretries)
+	SAVE_OPTION_INT_1(cdda_force_drive_rescan)
+	SAVE_OPTION_STR_1(cddb_server)
+	SAVE_OPTION_INT_1(cddb_timeout)
+	SAVE_OPTION_STR_1(cddb_email)
+	SAVE_OPTION_STR_1(cddb_local)
+	SAVE_OPTION_INT_1(cddb_cache_only)
+	SAVE_OPTION_INT_1(cddb_use_http)
+	SAVE_OPTION_INT_1(cddb_use_proxy)
+	SAVE_OPTION_STR_1(cddb_proxy)
+	SAVE_OPTION_INT_1(cddb_proxy_port)
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
@@ -4321,6 +4229,66 @@ save_config(void) {
         fclose(fout);
         unlink(tmpname);
 }
+
+
+#define LOAD_OPTION_STR(XmlStr, OptVar) \
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)XmlStr))) { \
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
+                        if (key != NULL) \
+                                strncpy(options.OptVar, (char *) key, MAXLEN-1); \
+                        xmlFree(key); \
+                }
+
+#define LOAD_OPTION_STR_1(Var) LOAD_OPTION_STR(#Var, Var)
+
+#define LOAD_FONT(Font) \
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)#Font))) { \
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
+                        if (key != NULL) \
+                                strncpy(options.Font, (char *) key, MAX_FONTNAME_LEN-1); \
+                        xmlFree(key); \
+                }
+
+#define LOAD_INT(XmlStr, Var) \
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)XmlStr))) { \
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
+                        if (key != NULL) \
+				sscanf((char *) key, "%d", &Var); \
+                        xmlFree(key); \
+                }
+
+#define LOAD_INT_1(Var) LOAD_INT(#Var, Var)
+
+#define LOAD_OPTION_INT(XmlStr, OptVar) LOAD_INT(XmlStr, options.OptVar)
+
+#define LOAD_OPTION_INT_1(Var) LOAD_OPTION_INT(#Var, Var)
+
+#define LOAD_OPTION_INT_SH(XmlStr, OptVar) \
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)XmlStr))) { \
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
+                        if (key != NULL) { \
+				sscanf((char *) key, "%d", &options.OptVar); \
+				options.OptVar##_shadow = options.OptVar; \
+			} \
+                        xmlFree(key); \
+                }
+
+#define LOAD_OPTION_INT_SH_1(Var) LOAD_OPTION_INT_SH(#Var, Var)
+
+#define LOAD_FLOAT(XmlStr, Var) \
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)XmlStr))) { \
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
+                        if (key != NULL) { \
+				Var = convf((char *) key); \
+			} \
+                        xmlFree(key); \
+                }
+
+#define LOAD_FLOAT_1(Var) LOAD_FLOAT(#Var, Var)
+
+#define LOAD_OPTION_FLOAT(XmlStr, OptVar) LOAD_FLOAT(XmlStr, options.OptVar)
+
+#define LOAD_OPTION_FLOAT_1(Var) LOAD_OPTION_FLOAT(#Var, Var)
 
 
 void
@@ -4430,487 +4398,86 @@ load_config(void) {
 
         cur = cur->xmlChildrenNode;
         while (cur != NULL) {
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"default_param"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.default_param, (char *) key, MAXLEN-1);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"title_format"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.title_format, (char *) key, MAXLEN-1);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"skin"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.skin, (char *) key, MAXLEN-1);
-                        xmlFree(key);
-                }
+		LOAD_OPTION_STR("default_param", default_param)
+		LOAD_OPTION_STR("title_format", title_format)
+		LOAD_OPTION_STR("skin", skin)
+
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"src_type"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if ((key != NULL) && (!src_type_parsed))
 				sscanf((char *) key, "%d", &src_type);
                         xmlFree(key);
                 }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"ladspa_is_postfader"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.ladspa_is_postfader);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_save_playlist"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.auto_save_playlist);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_meta_artist"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.auto_use_meta_artist);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_meta_record"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.auto_use_meta_record);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_meta_track"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.auto_use_meta_track);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_ext_meta_artist"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.auto_use_ext_meta_artist);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_ext_meta_record"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.auto_use_ext_meta_record);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"auto_use_ext_meta_track"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.auto_use_ext_meta_track);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_rva_in_playlist"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.show_rva_in_playlist);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"pl_statusbar_show_size"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &options.pl_statusbar_show_size);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"ms_statusbar_show_size"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &options.ms_statusbar_show_size);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_length_in_playlist"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.show_length_in_playlist);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_active_track_name_in_bold"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.show_active_track_name_in_bold);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_pl_rules_hint"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.enable_pl_rules_hint);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_ms_rules_hint"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.enable_ms_rules_hint);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_ms_tree_icons"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.enable_ms_tree_icons);
-				options.enable_ms_tree_icons_shadow = options.enable_ms_tree_icons;
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_tooltips"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.enable_tooltips);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"buttons_at_the_bottom"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.buttons_at_the_bottom);
-				options.buttons_at_the_bottom_shadow = options.buttons_at_the_bottom;
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"disable_buttons_relief"))) {
-                        key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-                                sscanf((char *) key, "%d", &options.disable_buttons_relief);
-                        }
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"simple_view_in_fx"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.simple_view_in_fx);
-				options.simple_view_in_fx_shadow = options.simple_view_in_fx;
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_song_name_in_window_title"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.show_sn_title);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"united_windows_minimization"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.united_minimization);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"magnify_smaller_images"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.magnify_smaller_images);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cover_width"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.cover_width);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"hide_comment_pane"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.hide_comment_pane);
-				options.hide_comment_pane_shadow = options.hide_comment_pane;
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_mstore_toolbar"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.enable_mstore_toolbar);
-				options.enable_mstore_toolbar_shadow = options.enable_mstore_toolbar;
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_mstore_statusbar"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.enable_mstore_statusbar);
-				options.enable_mstore_statusbar_shadow = options.enable_mstore_statusbar;
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"autoexpand_stores"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.autoexpand_stores);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"show_hidden"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.show_hidden);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"main_window_always_on_top"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.main_window_always_on_top);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"tags_tab_first"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.tags_tab_first);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"override_skin_settings"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				sscanf((char *) key, "%d", &options.override_skin_settings);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"replaygain_tag_to_use"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.replaygain_tag_to_use);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"volume"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				vol = convf((char *) key);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"balance"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				bal = convf((char *) key);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_is_enabled"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.rva_is_enabled);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_env"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.rva_env);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_refvol"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				options.rva_refvol = convf((char *) key);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_steepness"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				options.rva_steepness = convf((char *) key);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_use_averaging"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.rva_use_averaging);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_use_linear_thresh"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-				sscanf((char *) key, "%d", &options.rva_use_linear_thresh);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_avg_linear_thresh"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				options.rva_avg_linear_thresh = convf((char *) key);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"rva_avg_stddev_thresh"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				options.rva_avg_stddev_thresh = convf((char *) key);
-			}
-                        xmlFree(key);
-                }
 
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"main_pos_x"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &main_pos_x);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"main_pos_y"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &main_pos_y);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"main_size_x"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &main_size_x);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"main_size_y"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &main_size_y);
-                        xmlFree(key);
-                }
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_pos_x"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &browser_pos_x);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_pos_y"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &browser_pos_y);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_size_x"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &browser_size_x);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_size_y"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &browser_size_y);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_is_visible"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &browser_on);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_paned_pos"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &browser_paned_pos);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"browser_font"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.browser_font, (char *) key, MAX_FONTNAME_LEN-1);
-                        xmlFree(key);
-                }
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_pos_x"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &playlist_pos_x);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_pos_y"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &playlist_pos_y);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_size_x"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &playlist_size_x);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_size_y"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &playlist_size_y);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_is_visible"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &playlist_on);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_is_embedded"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-                                sscanf((char *) key, "%d", &options.playlist_is_embedded);
-				options.playlist_is_embedded_shadow = options.playlist_is_embedded;
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_is_tree"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-                                sscanf((char *) key, "%d", &options.playlist_is_tree);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"album_shuffle_mode"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-                                sscanf((char *) key, "%d", &options.album_shuffle_mode);
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"enable_playlist_statusbar"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-                                sscanf((char *) key, "%d", &options.enable_playlist_statusbar);
-				options.enable_playlist_statusbar_shadow = options.enable_playlist_statusbar;
-			}
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"playlist_font"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.playlist_font, (char *) key, MAX_FONTNAME_LEN-1);
-                        xmlFree(key);
-                }
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"bigtimer_font"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.bigtimer_font, (char *) key, MAX_FONTNAME_LEN-1);
-                        xmlFree(key);
-                }
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"smalltimer_font"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.smalltimer_font, (char *) key, MAX_FONTNAME_LEN-1);
-                        xmlFree(key);
-                }
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"songtitle_font"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.songtitle_font, (char *) key, MAX_FONTNAME_LEN-1);
-                        xmlFree(key);
-                }
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"songinfo_font"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.songinfo_font, (char *) key, MAX_FONTNAME_LEN-1);
-                        xmlFree(key);
-                }
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"statusbar_font"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.statusbar_font, (char *) key, MAX_FONTNAME_LEN-1);
-                        xmlFree(key);
-                }
+		LOAD_OPTION_INT_1(ladspa_is_postfader)
+		LOAD_OPTION_INT_1(auto_save_playlist)
+		LOAD_OPTION_INT_1(auto_use_meta_artist)
+		LOAD_OPTION_INT_1(auto_use_meta_record)
+		LOAD_OPTION_INT_1(auto_use_meta_track)
+		LOAD_OPTION_INT_1(auto_use_ext_meta_artist)
+		LOAD_OPTION_INT_1(auto_use_ext_meta_record)
+		LOAD_OPTION_INT_1(auto_use_ext_meta_track)
+		LOAD_OPTION_INT_1(show_rva_in_playlist)
+		LOAD_OPTION_INT_1(pl_statusbar_show_size)
+		LOAD_OPTION_INT_1(ms_statusbar_show_size)
+		LOAD_OPTION_INT_1(show_length_in_playlist)
+		LOAD_OPTION_INT_1(show_active_track_name_in_bold)
+		LOAD_OPTION_INT_1(enable_pl_rules_hint)
+		LOAD_OPTION_INT_1(enable_ms_rules_hint)
+		LOAD_OPTION_INT_1(enable_ms_tree_icons)
+		LOAD_OPTION_INT_1(enable_tooltips)
+		LOAD_OPTION_INT_1(buttons_at_the_bottom)
+		LOAD_OPTION_INT_1(disable_buttons_relief)
+		LOAD_OPTION_INT_SH_1(simple_view_in_fx)
+		LOAD_OPTION_INT("show_song_name_in_window_title", show_sn_title)
+		LOAD_OPTION_INT("united_windows_minimization", united_minimization)
+		LOAD_OPTION_INT_1(magnify_smaller_images)
+		LOAD_OPTION_INT_1(cover_width)
+		LOAD_OPTION_INT_SH_1(hide_comment_pane)
+		LOAD_OPTION_INT_SH_1(enable_mstore_toolbar)
+		LOAD_OPTION_INT_SH_1(enable_mstore_statusbar)
+		LOAD_OPTION_INT_1(autoexpand_stores)
+		LOAD_OPTION_INT_1(show_hidden)
+		LOAD_OPTION_INT_1(main_window_always_on_top)
+		LOAD_OPTION_INT_1(tags_tab_first)
+		LOAD_OPTION_INT_1(override_skin_settings)
+		LOAD_OPTION_INT_1(replaygain_tag_to_use)
+		LOAD_FLOAT("volume", vol)
+		LOAD_FLOAT("balance", bal)
+		LOAD_OPTION_INT_1(rva_is_enabled)
+		LOAD_OPTION_INT_1(rva_env)
+		LOAD_OPTION_FLOAT_1(rva_refvol)
+		LOAD_OPTION_FLOAT_1(rva_steepness)
+		LOAD_OPTION_INT_1(rva_use_averaging)
+		LOAD_OPTION_INT_1(rva_use_linear_thresh)
+		LOAD_OPTION_FLOAT_1(rva_avg_linear_thresh)
+		LOAD_OPTION_FLOAT_1(rva_avg_stddev_thresh)
+		LOAD_INT_1(main_pos_x)
+		LOAD_INT_1(main_pos_y)
+		LOAD_INT_1(main_size_x)
+		LOAD_INT_1(main_size_y)
+		LOAD_INT_1(browser_pos_x)
+		LOAD_INT_1(browser_pos_y)
+		LOAD_INT_1(browser_size_x)
+		LOAD_INT_1(browser_size_y)
+		LOAD_INT("browser_is_visible", browser_on)
+		LOAD_INT_1(browser_paned_pos)
+		LOAD_INT_1(playlist_pos_x)
+		LOAD_INT_1(playlist_pos_y)
+		LOAD_INT_1(playlist_size_x)
+		LOAD_INT_1(playlist_size_y)
+		LOAD_INT("playlist_is_visible", playlist_on)
+		LOAD_OPTION_INT_1(playlist_is_embedded)
+		LOAD_OPTION_INT_1(playlist_is_tree)
+		LOAD_OPTION_INT_1(album_shuffle_mode)
+		LOAD_OPTION_INT_SH_1(enable_playlist_statusbar)
+		LOAD_FONT(browser_font)
+		LOAD_FONT(playlist_font)
+		LOAD_FONT(bigtimer_font)
+		LOAD_FONT(smalltimer_font)
+		LOAD_FONT(songtitle_font)
+		LOAD_FONT(songinfo_font)
+		LOAD_FONT(statusbar_font)
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"activesong_color"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
@@ -4919,155 +4486,30 @@ load_config(void) {
                         xmlFree(key);
                 }
 
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"repeat_on"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &repeat_on);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"repeat_all_on"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &repeat_all_on);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"shuffle_on"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &shuffle_on);
-                        xmlFree(key);
-                }
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"time_idx_0"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &(time_idx[0]));
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"time_idx_1"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &(time_idx[1]));
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"time_idx_2"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &(time_idx[2]));
-                        xmlFree(key);
-                }
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"plcol_idx_0"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &(options.plcol_idx[0]));
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"plcol_idx_1"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &(options.plcol_idx[1]));
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"plcol_idx_2"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &(options.plcol_idx[2]));
-                        xmlFree(key);
-                }
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"search_pl_flags"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &search_pl_flags);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"search_ms_flags"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &search_ms_flags);
-                        xmlFree(key);
-                }
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cdda_drive_speed"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &options.cdda_drive_speed);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cdda_paranoia_mode"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &options.cdda_paranoia_mode);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cdda_paranoia_maxretries"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &options.cdda_paranoia_maxretries);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cdda_force_drive_rescan"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &options.cdda_force_drive_rescan);
-                        xmlFree(key);
-                }
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_server"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.cddb_server, (char *) key, MAXLEN-1);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_timeout"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &options.cddb_timeout);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_email"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.cddb_email, (char *) key, MAXLEN-1);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_local"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.cddb_local, (char *) key, MAXLEN-1);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_cache_only"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &options.cddb_cache_only);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_use_http"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &options.cddb_use_http);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_proxy"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.cddb_proxy, (char *) key, MAXLEN-1);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_proxy_port"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &options.cddb_proxy_port);
-                        xmlFree(key);
-                }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"cddb_use_proxy"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                sscanf((char *) key, "%d", &options.cddb_use_proxy);
-                        xmlFree(key);
-                }
+		LOAD_INT_1(repeat_on)
+		LOAD_INT_1(repeat_all_on)
+		LOAD_INT_1(shuffle_on)
+		LOAD_INT("time_idx_0", time_idx[0])
+		LOAD_INT("time_idx_1", time_idx[1])
+		LOAD_INT("time_idx_2", time_idx[2])
+		LOAD_OPTION_INT("plcol_idx_0", plcol_idx[0])
+		LOAD_OPTION_INT("plcol_idx_1", plcol_idx[1])
+		LOAD_OPTION_INT("plcol_idx_2", plcol_idx[2])
+		LOAD_INT_1(search_pl_flags)
+		LOAD_INT_1(search_ms_flags)
+		LOAD_OPTION_INT_1(cdda_drive_speed)
+		LOAD_OPTION_INT_1(cdda_paranoia_mode)
+		LOAD_OPTION_INT_1(cdda_paranoia_maxretries)
+		LOAD_OPTION_INT_1(cdda_force_drive_rescan)
+		LOAD_OPTION_STR_1(cddb_server)
+		LOAD_OPTION_INT_1(cddb_timeout)
+		LOAD_OPTION_STR_1(cddb_email)
+		LOAD_OPTION_STR_1(cddb_local)
+		LOAD_OPTION_INT_1(cddb_cache_only)
+		LOAD_OPTION_INT_1(cddb_use_http)
+		LOAD_OPTION_STR_1(cddb_proxy)
+		LOAD_OPTION_INT_1(cddb_proxy_port)
+		LOAD_OPTION_INT_1(cddb_use_proxy)
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
@@ -5092,6 +4534,7 @@ load_config(void) {
         xmlFreeDoc(doc);
         return;
 }
+
 
 /* create button with stock item 
  *

@@ -91,7 +91,14 @@ vorbisenc_encoder_open(encoder_t * enc, encoder_mode_t * mode) {
 		return -1;
 
 	vorbis_comment_init(&pd->vc);
-	vorbis_comment_add_tag(&pd->vc, "ENCODER", "Aqualung");
+        if (mode->write_meta) {
+		vorbis_comment_add_tag(&pd->vc, "ARTIST", mode->meta.artist);
+		vorbis_comment_add_tag(&pd->vc, "ALBUM", mode->meta.album);
+		vorbis_comment_add_tag(&pd->vc, "TITLE", mode->meta.title);
+		vorbis_comment_add_tag(&pd->vc, "TRACKNUMBER", mode->meta.track);
+		vorbis_comment_add_tag(&pd->vc, "GENRE", mode->meta.genre);
+		vorbis_comment_add_tag(&pd->vc, "DATE", mode->meta.year);
+        }
 	vorbis_analysis_init(&pd->vd, &pd->vi);
 	vorbis_block_init(&pd->vd, &pd->vb);
 

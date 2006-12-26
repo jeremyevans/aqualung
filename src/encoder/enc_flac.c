@@ -150,6 +150,8 @@ flac_encoder_open(encoder_t * enc, encoder_mode_t * mode) {
 	}
 #endif /* HAVE_FLAC_7 */
 
+	pd->mode = *mode;
+
 	pd->buf = (FLAC__int32 **)calloc(mode->channels, sizeof(FLAC__int32 *));
 	for (i = 0; i < mode->channels; i++) {
 		pd->buf[i] = NULL;
@@ -203,6 +205,65 @@ flac_encoder_write(encoder_t * enc, float * data, int num) {
 
 
 void
+flac_encoder_write_meta(flac_pencdata_t * pd) {
+
+	FLAC__StreamMetadata_VorbisComment_Entry vc;
+	FLAC__StreamMetadata * flacmeta = NULL;
+	FLAC__Metadata_SimpleIterator * iter = FLAC__metadata_simple_iterator_new();
+	if (iter == NULL)
+		return;
+	
+	flacmeta = FLAC__metadata_object_new(FLAC__METADATA_TYPE_VORBIS_COMMENT);
+	if (flacmeta == NULL) {
+		FLAC__metadata_simple_iterator_delete(iter);
+		return;
+	}
+	
+	if (FLAC__metadata_simple_iterator_init(iter, pd->mode.filename, false, false) != true) {
+		fprintf(stderr, "FLAC__metadata_simple_iterator_init returned error: %s\n",
+			FLAC__Metadata_SimpleIteratorStatusString[FLAC__metadata_simple_iterator_status(iter)]);
+		FLAC__metadata_simple_iterator_delete(iter);
+		return;
+	}
+	FLAC__metadata_simple_iterator_next(iter);
+	
+	FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&vc, "ARTIST", pd->mode.meta.artist);
+	if (FLAC__metadata_object_vorbiscomment_append_comment(flacmeta, vc, false) == false) {
+		free(vc.entry);
+	}
+	
+	FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&vc, "ALBUM", pd->mode.meta.album);
+	if (FLAC__metadata_object_vorbiscomment_append_comment(flacmeta, vc, false) == false) {
+		free(vc.entry);
+	}
+	
+	FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&vc, "TITLE", pd->mode.meta.title);
+	if (FLAC__metadata_object_vorbiscomment_append_comment(flacmeta, vc, false) == false) {
+		free(vc.entry);
+	}
+	
+	FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&vc, "TRACKNUMBER", pd->mode.meta.track);
+	if (FLAC__metadata_object_vorbiscomment_append_comment(flacmeta, vc, false) == false) {
+		free(vc.entry);
+	}
+	
+	FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&vc, "GENRE", pd->mode.meta.genre);
+	if (FLAC__metadata_object_vorbiscomment_append_comment(flacmeta, vc, false) == false) {
+		free(vc.entry);
+	}
+	
+	FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&vc, "DATE", pd->mode.meta.year);
+	if (FLAC__metadata_object_vorbiscomment_append_comment(flacmeta, vc, false) == false) {
+		free(vc.entry);
+	}
+	
+	FLAC__metadata_simple_iterator_set_block(iter, flacmeta, true);
+	FLAC__metadata_simple_iterator_delete(iter);
+	FLAC__metadata_object_delete(flacmeta);
+}
+
+
+void
 flac_encoder_close(encoder_t * enc) {
 
 	flac_pencdata_t * pd = (flac_pencdata_t *)enc->pdata;
@@ -223,6 +284,10 @@ flac_encoder_close(encoder_t * enc) {
 		}
 	}
 	free(pd->buf);
+
+	if (pd->mode.write_meta) {
+		flac_encoder_write_meta(pd);
+	}
 }
 
 

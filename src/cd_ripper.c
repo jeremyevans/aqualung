@@ -88,6 +88,8 @@ int ripper_vbr;
 int ripper_meta;
 char ripper_artist[MAXLEN];
 char ripper_album[MAXLEN];
+char ripper_genre[MAXLEN];
+char ripper_year[MAXLEN];
 int ripper_write_to_store;
 GtkTreeIter ripper_dest_store;
 GtkTreeIter ripper_dest_artist;
@@ -613,6 +615,9 @@ cd_ripper_dialog(char * device_path, GtkTreeIter * iter) {
 	if (drive == NULL)
 		return 0;
 
+	strncpy(ripper_genre, drive->disc.genre, MAXLEN-1);
+	strncpy(ripper_year, drive->disc.year, MAXLEN-1);
+
         ripper_dialog = gtk_dialog_new_with_buttons(_("Rip CD"),
                                              GTK_WINDOW(browser_window),
                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
@@ -785,6 +790,7 @@ cd_ripper_dialog(char * device_path, GtkTreeIter * iter) {
         gtk_widget_set_name(ripper_meta_check, "check_on_notebook");
         gtk_table_attach(GTK_TABLE(table), ripper_meta_check, 0, 2, 3, 4,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 4);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ripper_meta_check), TRUE);
 
         g_signal_connect(G_OBJECT(ripper_format_combo), "changed",
 			 G_CALLBACK(ripper_format_combo_changed), NULL);
@@ -1133,6 +1139,8 @@ ripper_thread(void * arg) {
 		file_encoder_t * fenc;
 		encoder_mode_t mode;
 
+		memset(&mode, 0, sizeof(encoder_mode_t));
+
                 gtk_tree_model_get(GTK_TREE_MODEL(ripper_source_store), &source_iter, 0, &b, -1);
 
 		if (!b)
@@ -1167,6 +1175,15 @@ ripper_thread(void * arg) {
 		} else if (mode.file_lib == ENC_LAME_LIB) {
 			mode.bps = ripper_bitrate * 1000;
 			mode.vbr = ripper_vbr;
+		}
+		mode.write_meta = ripper_meta;
+		if (mode.write_meta) {
+			strncpy(mode.meta.artist, ripper_artist, MAXLEN-1);
+			strncpy(mode.meta.album, ripper_album, MAXLEN-1);
+			strncpy(mode.meta.title, name, MAXLEN-1);
+			strncpy(mode.meta.genre, ripper_genre, MAXLEN-1);
+			strncpy(mode.meta.year, ripper_year, MAXLEN-1);
+			snprintf(mode.meta.track, MAXLEN-1, "%d", no);
 		}
 
 		fdec = file_decoder_new();

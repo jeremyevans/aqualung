@@ -134,6 +134,18 @@ lame_encoder_open(encoder_t * enc, encoder_mode_t * mode) {
 	lame_set_debugf(pd->gf, lame_encoder_printf);
 	lame_set_msgf(pd->gf, lame_encoder_printf);
 
+	if (mode->write_meta) {
+		id3tag_init(pd->gf);
+		id3tag_add_v2(pd->gf);
+		id3tag_pad_v2(pd->gf);
+		id3tag_set_artist(pd->gf, mode->meta.artist);
+		id3tag_set_album(pd->gf, mode->meta.album);
+		id3tag_set_title(pd->gf, mode->meta.title);
+		id3tag_set_track(pd->gf, mode->meta.track);
+		id3tag_set_genre(pd->gf, mode->meta.genre);
+		id3tag_set_year(pd->gf, mode->meta.year);
+	}
+
 	ret = lame_init_params(pd->gf);
 	return (ret >= 0) ? 0 : -1;
 }

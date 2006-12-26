@@ -57,6 +57,8 @@ typedef struct {
 	long hash_prev;
 	char record_name[MAXLEN];
 	char artist_name[MAXLEN];
+	char genre[MAXLEN];
+	char year[MAXLEN];
 } cdda_disc_t;
 
 typedef struct {

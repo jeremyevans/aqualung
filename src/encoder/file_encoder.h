@@ -38,6 +38,15 @@ extern "C" {
 #define N_ENCODERS      4
 
 
+typedef struct _encoder_meta_t {
+	char artist[MAXLEN];
+	char album[MAXLEN];
+	char title[MAXLEN];
+	char track[MAXLEN];
+	char genre[MAXLEN];
+	char year[MAXLEN];
+} encoder_meta_t;
+
 typedef struct _encoder_mode_t {
 	int file_lib;
 	char filename[MAXLEN];
@@ -46,6 +55,8 @@ typedef struct _encoder_mode_t {
         int bps; /* meaningful only with Vorbis and LAME */
 	int vbr; /* meaningful only with LAME */
 	int clevel; /* 0(fastest)-8(best), meaningful only with FLAC */
+	int write_meta;
+	encoder_meta_t meta;
 } encoder_mode_t;
 
 

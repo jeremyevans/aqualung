@@ -1301,6 +1301,8 @@ cdda_timeout_callback(gpointer data) {
 
 	map_t * map_artist = NULL;
 	map_t * map_record = NULL;
+	map_t * map_genre = NULL;
+	map_t * map_year = NULL;
 	map_t ** map_tracks = NULL;
 
 	GtkTreeIter iter_track;
@@ -1338,6 +1340,12 @@ cdda_timeout_callback(gpointer data) {
 		strncpy(tmp, cddb_disc_get_title(records[i]), MAXLEN-1);
 		map_put(&map_record, tmp);
 
+		strncpy(tmp, cddb_disc_get_genre(records[i]), MAXLEN-1);
+		map_put(&map_genre, tmp);
+
+		snprintf(tmp, MAXLEN-1, "%d", cddb_disc_get_year(records[i]));
+		map_put(&map_year, tmp);
+
 		for (j = 0; j < track_count; j++) {
 			strncpy(tmp,
 				cddb_track_get_title(cddb_disc_get_track(records[i], j)),
@@ -1374,6 +1382,24 @@ cdda_timeout_callback(gpointer data) {
 		}
 	}
 
+	if (map_genre) {
+
+		char * max = map_get_max(map_genre);
+
+		if (max) {
+			strncpy(disc->genre, max, MAXLEN-1);
+		}
+	}
+
+	if (map_year) {
+
+		char * max = map_get_max(map_year);
+
+		if (max) {
+			strncpy(disc->year, max, MAXLEN-1);
+		}
+	}
+
 	gtk_tree_store_set(music_store, &iter_drive, 0, tmp, -1);
 
 	for (i = 0; i < track_count &&
@@ -1391,6 +1417,8 @@ cdda_timeout_callback(gpointer data) {
 
 	map_free(map_artist);
 	map_free(map_record);
+	map_free(map_genre);
+	map_free(map_year);
 	free(map_tracks);
 
 	for (i = 0; i < record_count; i++) {

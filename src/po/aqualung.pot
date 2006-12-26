@@ -545,6 +545,137 @@ msgstr ""
 msgid "No matching record found."
 msgstr ""
 
+msgid "Please select the directory for ripped files."
+msgstr ""
+
+msgid "(none)"
+msgstr ""
+
+msgid "fast"
+msgstr ""
+
+msgid "best"
+msgstr ""
+
+msgid "Compression level:"
+msgstr ""
+
+msgid "Bitrate [kbps]:"
+msgstr ""
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+
+msgid "Artist/Album already existing, not empty"
+msgstr ""
+
+msgid "Rip CD"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "Album:"
+msgstr ""
+
+msgid "Rip"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Output"
+msgstr ""
+
+msgid "Destination"
+msgstr ""
+
+msgid "Target directory for ripped files"
+msgstr ""
+
+msgid "Add to Music Store"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
+msgid "File format:"
+msgstr ""
+
+msgid "VBR encoding"
+msgstr ""
+
+msgid "Tag files with metadata"
+msgstr ""
+
+msgid "Paranoia"
+msgstr ""
+
+msgid "Paranoia error correction"
+msgstr ""
+
+msgid "Perform overlapped reads"
+msgstr ""
+
+msgid "Verify data integrity"
+msgstr ""
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+
+msgid "\tMaximum number of retries:"
+msgstr ""
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+msgid "(audio only)"
+msgstr ""
+
+msgid "Ripping CD tracks..."
+msgstr ""
+
+msgid "Begin"
+msgstr ""
+
+msgid "Length"
+msgstr ""
+
+msgid "Progress"
+msgstr ""
+
+msgid "Close window when complete"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
 msgid "day"
 msgstr ""
 
@@ -564,9 +695,6 @@ msgid "No output"
 msgstr ""
 
 msgid "SRC Type: "
-msgstr ""
-
-msgid "None"
 msgstr ""
 
 msgid ""
@@ -1462,21 +1590,6 @@ msgstr ""
 msgid "CD drive speed:"
 msgstr ""
 
-msgid "Paranoia error correction"
-msgstr ""
-
-msgid "Perform overlapped reads"
-msgstr ""
-
-msgid "Verify data integrity in overlap area"
-msgstr ""
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
-
-msgid "\tMaximum number of retries:"
-msgstr ""
-
 msgid "Force TOC re-read on every drive scan"
 msgstr ""
 
@@ -1526,9 +1639,6 @@ msgid "Fonts"
 msgstr ""
 
 msgid "Playlist: "
-msgstr ""
-
-msgid "Select"
 msgstr ""
 
 msgid "Music Store: "
@@ -1801,9 +1911,6 @@ msgstr ""
 msgid "Search the Playlist"
 msgstr ""
 
-msgid "Title"
-msgstr ""
-
 msgid "Available skins"
 msgstr ""
 
@@ -1832,9 +1939,6 @@ msgid "Embedded picture"
 msgstr ""
 
 msgid "Save to file..."
-msgstr ""
-
-msgid "Album:"
 msgstr ""
 
 msgid "Import as Record"

@@ -593,6 +593,158 @@ msgstr "Hiba történt a CDDB szerverhez való kapcsolódás közben."
 msgid "No matching record found."
 msgstr "Az album nem található az adatbázisban."
 
+#, fuzzy
+msgid "Please select the directory for ripped files."
+msgstr "Válaszd ki a gyökérkönyvtárat."
+
+#, fuzzy
+msgid "(none)"
+msgstr "(nincs beállítva)"
+
+#, fuzzy
+msgid "fast"
+msgstr "elõadó"
+
+#, fuzzy
+msgid "best"
+msgstr "Teszt"
+
+#, fuzzy
+msgid "Compression level:"
+msgstr "Tömörítés: Normál"
+
+msgid "Bitrate [kbps]:"
+msgstr ""
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+
+msgid "Artist/Album already existing, not empty"
+msgstr ""
+
+#, fuzzy
+msgid "Rip CD"
+msgstr "CD rippelés..."
+
+msgid "Source"
+msgstr ""
+
+msgid "Album:"
+msgstr "Lemez:"
+
+#, fuzzy
+msgid "Rip"
+msgstr "CD rippelés..."
+
+#, fuzzy
+msgid "No"
+msgstr "No."
+
+msgid "Title"
+msgstr "Cím"
+
+msgid "Select"
+msgstr "Választ"
+
+msgid "All"
+msgstr ""
+
+msgid "None"
+msgstr "Nincs"
+
+#, fuzzy
+msgid "Output"
+msgstr "Kimenet:"
+
+#, fuzzy
+msgid "Destination"
+msgstr "Leírás"
+
+#, fuzzy
+msgid "Target directory for ripped files"
+msgstr "Válaszd ki a gyökérkönyvtárat."
+
+#, fuzzy
+msgid "Add to Music Store"
+msgstr "Zenetár"
+
+#, fuzzy
+msgid "Format"
+msgstr "Formátum:"
+
+#, fuzzy
+msgid "File format:"
+msgstr "Címformátum"
+
+#, fuzzy
+msgid "VBR encoding"
+msgstr "kódolású"
+
+#, fuzzy
+msgid "Tag files with metadata"
+msgstr "Metaadatok frissítése"
+
+msgid "Paranoia"
+msgstr ""
+
+msgid "Paranoia error correction"
+msgstr "Paranoia hibajavítás"
+
+msgid "Perform overlapped reads"
+msgstr ""
+
+msgid "Verify data integrity"
+msgstr ""
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+
+msgid "\tMaximum number of retries:"
+msgstr ""
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+#, fuzzy
+msgid "Total"
+msgstr "Összesen: "
+
+msgid "(audio only)"
+msgstr ""
+
+#, fuzzy
+msgid "Ripping CD tracks..."
+msgstr "CD rippelés..."
+
+msgid "Begin"
+msgstr ""
+
+#, fuzzy
+msgid "Length"
+msgstr "Hossz:"
+
+#, fuzzy
+msgid "Progress"
+msgstr "Feldolgozás:"
+
+msgid "Close window when complete"
+msgstr ""
+
+#, fuzzy
+msgid "Close"
+msgstr "Színek"
+
 msgid "day"
 msgstr "nap"
 
@@ -613,9 +765,6 @@ msgstr "Nincs kimenet"
 
 msgid "SRC Type: "
 msgstr "SRC Típus: "
-
-msgid "None"
-msgstr "Nincs"
 
 msgid ""
 "One or more stores in Music Store have been modified.\n"
@@ -1559,21 +1708,6 @@ msgstr "Replaygain_album_gain"
 msgid "CD drive speed:"
 msgstr "CD meghajtó sebesség:"
 
-msgid "Paranoia error correction"
-msgstr "Paranoia hibajavítás"
-
-msgid "Perform overlapped reads"
-msgstr ""
-
-msgid "Verify data integrity in overlap area"
-msgstr ""
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
-
-msgid "\tMaximum number of retries:"
-msgstr ""
-
 msgid "Force TOC re-read on every drive scan"
 msgstr ""
 
@@ -1624,9 +1758,6 @@ msgstr "Betûtípusok"
 
 msgid "Playlist: "
 msgstr "Lejátszólista: "
-
-msgid "Select"
-msgstr "Választ"
 
 msgid "Music Store: "
 msgstr "Zenetár: "
@@ -1907,9 +2038,6 @@ msgstr "Keresés"
 msgid "Search the Playlist"
 msgstr "Keresés a Lejátszólistában"
 
-msgid "Title"
-msgstr "Cím"
-
 msgid "Available skins"
 msgstr "Elérhetõ szkinek"
 
@@ -1939,9 +2067,6 @@ msgstr "Beágyazott kép"
 
 msgid "Save to file..."
 msgstr "Mentés fájlba..."
-
-msgid "Album:"
-msgstr "Lemez:"
 
 msgid "Import as Record"
 msgstr "Importálás albumként"
@@ -2309,6 +2434,10 @@ msgstr "Tömörítés: Extra magas"
 
 msgid "Compression: Insane"
 msgstr "Tömörítés: Elmebeteg"
+
+#, fuzzy
+#~ msgid "Source selection"
+#~ msgstr "Kijelölés megfordítása"
 
 #~ msgid "Miscellaneous:"
 #~ msgstr "Egyéb:"

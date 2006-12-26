@@ -80,6 +80,8 @@ void refresh_cdda_drive_node(char * device_path);
 
 void cdda_drive_info(char * device_path);
 
+long calc_cdda_hash(cdda_disc_t * disc);
+
 int cdda_get_n(char * device_path);
 cdda_drive_t * cdda_get_drive_by_device_path(char * device_path);
 cdda_drive_t * cdda_get_drive_by_spec_device_path(char * device_path);

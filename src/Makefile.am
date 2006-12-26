@@ -8,6 +8,7 @@ build_store.h build_store.c \
 common.h \
 cdda.h cdda.c \
 cddb_lookup.h cddb_lookup.c \
+cd_ripper.h cd_ripper.c \
 core.h core.c \
 cover.h cover.c \
 file_info.h file_info.cpp \

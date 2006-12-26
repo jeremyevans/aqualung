@@ -1600,15 +1600,10 @@ display_cdda_force_drive_rescan_help(void) {
 void
 cdda_toggled(GtkWidget * widget, gpointer * data) {
 
-	if (widget == check_cdda_mode_overlap) {
-		gtk_widget_set_sensitive(check_cdda_mode_verify,
-					 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_overlap)));
-	} else if (widget == check_cdda_mode_neverskip) {
-		gtk_widget_set_sensitive(cdda_paranoia_maxretries_spinner,
-					 !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_neverskip)));
-		gtk_widget_set_sensitive(label_cdda_maxretries,
-					 !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_neverskip)));
-	}
+	gtk_widget_set_sensitive(cdda_paranoia_maxretries_spinner,
+				 !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_neverskip)));
+	gtk_widget_set_sensitive(label_cdda_maxretries,
+				 !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_neverskip)));
 }
 #endif /* HAVE_CDDA */
 
@@ -2555,9 +2550,8 @@ See the About box and the documentation for details."));
 	check_cdda_mode_overlap = gtk_check_button_new_with_label(_("Perform overlapped reads"));
         gtk_widget_set_name(check_cdda_mode_overlap, "check_on_notebook");
 	gtk_box_pack_start(GTK_BOX(vbox_cdda), check_cdda_mode_overlap, FALSE, FALSE, 0);
-	g_signal_connect(check_cdda_mode_overlap, "toggled", G_CALLBACK(cdda_toggled), NULL);
 
-	check_cdda_mode_verify = gtk_check_button_new_with_label(_("Verify data integrity in overlap area"));
+	check_cdda_mode_verify = gtk_check_button_new_with_label(_("Verify data integrity"));
         gtk_widget_set_name(check_cdda_mode_verify, "check_on_notebook");
 	gtk_box_pack_start(GTK_BOX(vbox_cdda), check_cdda_mode_verify, FALSE, FALSE, 0);
 
@@ -2597,8 +2591,6 @@ See the About box and the documentation for details."));
 
 	if (options.cdda_paranoia_mode & PARANOIA_MODE_OVERLAP) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_cdda_mode_overlap), TRUE);
-	} else {
-		gtk_widget_set_sensitive(check_cdda_mode_verify, FALSE);
 	}
 
 	if (options.cdda_paranoia_mode & PARANOIA_MODE_VERIFY) {

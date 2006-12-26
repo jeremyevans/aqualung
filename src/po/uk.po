@@ -604,6 +604,157 @@ msgstr "Трапилась помилка при спроб╕ п╕д'╓днання до сервера CDDB."
 msgid "No matching record found."
 msgstr "Схожих запис╕в не знайдено."
 
+#, fuzzy
+msgid "Please select the directory for ripped files."
+msgstr "Будьласка обер╕ть звуков╕ файли для цього запису."
+
+#, fuzzy
+msgid "(none)"
+msgstr "(без коментаря)"
+
+#, fuzzy
+msgid "fast"
+msgstr "Виконавець"
+
+msgid "best"
+msgstr ""
+
+#, fuzzy
+msgid "Compression level:"
+msgstr "Ступ╕нь стиснення: Нормальна"
+
+msgid "Bitrate [kbps]:"
+msgstr ""
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+
+msgid "Artist/Album already existing, not empty"
+msgstr ""
+
+msgid "Rip CD"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+#, fuzzy
+msgid "Album:"
+msgstr "Альбом"
+
+msgid "Rip"
+msgstr ""
+
+#, fuzzy
+msgid "No"
+msgstr "Нема╓"
+
+msgid "Title"
+msgstr "Назва"
+
+msgid "Select"
+msgstr "Вибрати"
+
+msgid "All"
+msgstr ""
+
+msgid "None"
+msgstr "Нема╓"
+
+#, fuzzy
+msgid "Output"
+msgstr "Вив╕д:"
+
+#, fuzzy
+msgid "Destination"
+msgstr "Тривал╕сть:"
+
+#, fuzzy
+msgid "Target directory for ripped files"
+msgstr "Будьласка обер╕ть звуков╕ файли для цього запису."
+
+#, fuzzy
+msgid "Add to Music Store"
+msgstr "Музичний Склад"
+
+#, fuzzy
+msgid "Format"
+msgstr "Формат:"
+
+#, fuzzy
+msgid "File format:"
+msgstr "Формат назви"
+
+#, fuzzy
+msgid "VBR encoding"
+msgstr "кодування"
+
+#, fuzzy
+msgid "Tag files with metadata"
+msgstr "Перечитати ╕нформац╕ю про файл"
+
+msgid "Paranoia"
+msgstr ""
+
+#, fuzzy
+msgid "Paranoia error correction"
+msgstr "Перекривати установки жупана"
+
+msgid "Perform overlapped reads"
+msgstr ""
+
+msgid "Verify data integrity"
+msgstr ""
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+
+msgid "\tMaximum number of retries:"
+msgstr ""
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+#, fuzzy
+msgid "Total"
+msgstr "Разом: "
+
+msgid "(audio only)"
+msgstr ""
+
+#, fuzzy
+msgid "Ripping CD tracks..."
+msgstr "Редагувати дор╕жку..."
+
+msgid "Begin"
+msgstr ""
+
+#, fuzzy
+msgid "Length"
+msgstr "Довжина:"
+
+#, fuzzy
+msgid "Progress"
+msgstr "Прогрес:"
+
+msgid "Close window when complete"
+msgstr ""
+
+#, fuzzy
+msgid "Close"
+msgstr "Кольори"
+
 msgid "day"
 msgstr ""
 
@@ -625,9 +776,6 @@ msgstr "Вив╕д:"
 
 msgid "SRC Type: "
 msgstr "SRC Тип: "
-
-msgid "None"
-msgstr "Нема╓"
 
 #, fuzzy
 msgid ""
@@ -1617,22 +1765,6 @@ msgstr "П╕дсилення альбома"
 msgid "CD drive speed:"
 msgstr ""
 
-#, fuzzy
-msgid "Paranoia error correction"
-msgstr "Перекривати установки жупана"
-
-msgid "Perform overlapped reads"
-msgstr ""
-
-msgid "Verify data integrity in overlap area"
-msgstr ""
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
-
-msgid "\tMaximum number of retries:"
-msgstr ""
-
 msgid "Force TOC re-read on every drive scan"
 msgstr ""
 
@@ -1686,9 +1818,6 @@ msgstr "Шрифти"
 
 msgid "Playlist: "
 msgstr "Список програвання: "
-
-msgid "Select"
-msgstr "Вибрати"
 
 msgid "Music Store: "
 msgstr "Музичний Склад: "
@@ -1974,9 +2103,6 @@ msgstr "Шукати"
 msgid "Search the Playlist"
 msgstr "Шукати у списку програвання"
 
-msgid "Title"
-msgstr "Назва"
-
 msgid "Available skins"
 msgstr "Наявн╕ жупани"
 
@@ -2012,10 +2138,6 @@ msgstr ""
 #, fuzzy
 msgid "Save to file..."
 msgstr "Зберегти Музичний Склад"
-
-#, fuzzy
-msgid "Album:"
-msgstr "Альбом"
 
 msgid "Import as Record"
 msgstr "╤мпортувати як Запис"
@@ -2415,6 +2537,10 @@ msgstr "Ступ╕нь стиснення: Дуже висока"
 msgid "Compression: Insane"
 msgstr "Ступ╕нь стиснення: Божев╕льна"
 
+#, fuzzy
+#~ msgid "Source selection"
+#~ msgstr "Перевернути виб╕р"
+
 #~ msgid "Miscellaneous:"
 #~ msgstr "Р╕зне:"
 
@@ -2454,10 +2580,6 @@ msgstr "Ступ╕нь стиснення: Божев╕льна"
 #, fuzzy
 #~ msgid "Total size:"
 #~ msgstr "Всього семпл╕в:"
-
-#, fuzzy
-#~ msgid "Length"
-#~ msgstr "Довжина:"
 
 #~ msgid "ID3 tags\n"
 #~ msgstr "ID3 теги\n"

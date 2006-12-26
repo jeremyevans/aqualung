@@ -34,6 +34,7 @@
 #include "common.h"
 #include "build_store.h"
 #include "cddb_lookup.h"
+#include "cd_ripper.h"
 #include "core.h"
 #include "cover.h"
 #include "file_info.h"
@@ -3665,6 +3666,28 @@ cdda_record__eject_cb(gpointer data) {
 		}
 	}
 }
+
+
+void
+cdda_record__rip_cb(gpointer data) {
+
+	GtkTreeIter iter;
+	GtkTreeModel * model;
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
+		gchar * sort_name;
+		char device_path[CDDA_MAXLEN];
+                gtk_tree_model_get(model, &iter, 2, &sort_name, -1);
+
+		sscanf(sort_name, "CDDA_DRIVE %s", device_path);
+		g_free(sort_name);
+
+#if defined(HAVE_CDDA) && (defined(HAVE_SNDFILE) || defined(HAVE_FLAC) || defined(HAVE_VORBISENC) || defined(HAVE_LAME))
+		cd_ripper(device_path, &iter);
+#endif /* HAVE_CDDA & ... */
+	}
+}
+
 #endif /* HAVE_CDDA */
 
 /************************************/
@@ -5216,7 +5239,7 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb), "activate", G_CALLBACK(record__cddb_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb_submit), "activate", G_CALLBACK(record__cddb_submit_cb), NULL);
 #endif /* HAVE_CDDB */
-/* 	g_signal_connect_swapped(G_OBJECT(cdda_record__rip), "activate", G_CALLBACK(cdda_record__rip_cb), NULL); */
+ 	g_signal_connect_swapped(G_OBJECT(cdda_record__rip), "activate", G_CALLBACK(cdda_record__rip_cb), NULL);
 /* 	g_signal_connect_swapped(G_OBJECT(cdda_record__disc_info), "activate", G_CALLBACK(cdda_record__disc_info_cb), NULL); */
  	g_signal_connect_swapped(G_OBJECT(cdda_record__drive_info), "activate", G_CALLBACK(cdda_record__drive_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(cdda_record__eject), "activate", G_CALLBACK(cdda_record__eject_cb), NULL);
@@ -5228,7 +5251,9 @@ create_music_browser(void) {
 	gtk_widget_show(cdda_record__cddb);
 	gtk_widget_show(cdda_record__cddb_submit);
 #endif /* HAVE_CDDB */
+#if defined(HAVE_SNDFILE) || defined(HAVE_FLAC) || defined(HAVE_VORBISENC) || defined(HAVE_LAME)
 	gtk_widget_show(cdda_record__rip);
+#endif /* HAVE_* */
 	gtk_widget_show(cdda_record__disc_info);
 	gtk_widget_show(cdda_record__separator2);
 	gtk_widget_show(cdda_record__drive_info);

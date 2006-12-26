@@ -51,6 +51,7 @@ void lame_encoder_destroy(encoder_t * enc);
 int lame_encoder_open(encoder_t * enc, encoder_mode_t * mode);
 void lame_encoder_close(encoder_t * enc);
 unsigned int lame_encoder_write(encoder_t * enc, float * data, int num);
+int lame_encoder_validate_bitrate(int requested, int idx_offset);
 #endif /* HAVE_LAME */
 
 

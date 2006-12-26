@@ -43,21 +43,9 @@
 #include <lrdf.h>
 #endif /* HAVE_LADSPA */
 
-#ifdef HAVE_JACK
-#include <jack/jack.h>
-#endif /* HAVE_JACK */
-
-#ifdef HAVE_SNDFILE
-#include <sndfile.h>
-#endif /* HAVE_SNDFILE */
-
 #ifdef HAVE_SRC
 #include <samplerate.h>
 #endif /* HAVE_SRC */
-
-#ifdef HAVE_MPC
-#include <mpcdec/mpcdec.h>
-#endif /* HAVE_MPC */
 
 #include "common.h"
 #include "core.h"
@@ -194,6 +182,7 @@ extern GtkWidget * ports_window;
 extern GtkWidget * info_window;
 extern GtkWidget * vol_window;
 extern GtkWidget * build_prog_window;
+extern GtkWidget * ripper_prog_window;
 extern GtkWidget * browser_paned;
 
 int main_pos_x;
@@ -1002,6 +991,12 @@ change_skin(char * path) {
 	if (build_prog_window) {
 		gtk_widget_reset_rc_styles(build_prog_window);
 		gtk_widget_queue_draw(build_prog_window);
+		deflicker();
+	}
+
+	if (ripper_prog_window) {
+		gtk_widget_reset_rc_styles(ripper_prog_window);
+		gtk_widget_queue_draw(ripper_prog_window);
 		deflicker();
 	}
 
@@ -2733,6 +2728,10 @@ hide_all_windows(gpointer data) {
 
 	save_window_position();
 
+	if (ripper_prog_window) {
+		gtk_widget_hide(ripper_prog_window);
+	}
+
 	if (build_prog_window) {
 		gtk_widget_hide(build_prog_window);
 	}
@@ -2797,6 +2796,11 @@ show_all_windows(gpointer data) {
 
 	if (build_prog_window) {
 		gtk_widget_show(build_prog_window);
+		deflicker();
+	}
+
+	if (ripper_prog_window) {
+		gtk_widget_show(ripper_prog_window);
 		deflicker();
 	}
 

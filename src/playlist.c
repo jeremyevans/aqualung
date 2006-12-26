@@ -3472,6 +3472,7 @@ show_active_position_in_playlist(void) {
                                 }
                                 break;
                         }
+			g_free(str);
 
 		} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter));
 

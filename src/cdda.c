@@ -266,6 +266,7 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 	track_t tracks;
 	track_t first_track;
 	track_t last_track;
+	track_t skipped = 0;
 	int i, n = 0;
 	cdrom_drive_t * d;
 
@@ -296,6 +297,7 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 
 	for (i = first_track; i <= last_track; i++) {
 		if (!cdio_cddap_track_audiop(d, i)) {
+			skipped = i;
 			last_track = i-1;
 			break;
 		}
@@ -307,14 +309,22 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 		return 0;
 	}
 
-	cdda_drive->disc.n_tracks = tracks;
+	cdda_drive->disc.n_tracks = last_track - first_track + 1;
 	for (i = first_track; i <= last_track; i++) {
 		lsn_t lsn = cdio_get_track_lsn(cdda_drive->cdio, i);
 		if (lsn != CDIO_INVALID_LSN) {
 			cdda_drive->disc.toc[n++] = lsn;
 		}
 	}
-	cdda_drive->disc.toc[n] = cdio_get_track_lsn(cdda_drive->cdio, CDIO_CDROM_LEADOUT_TRACK);
+	if (skipped == 0) {
+		cdda_drive->disc.toc[n] = cdio_get_track_lsn(cdda_drive->cdio, CDIO_CDROM_LEADOUT_TRACK);
+	} else {
+		cdda_drive->disc.toc[n] = cdio_get_track_lsn(cdda_drive->cdio, skipped);
+		if ((cdda_drive->disc.toc[n] - cdda_drive->disc.toc[n-1]) >= 11400) {
+			/* compensate end of track with multisession offset */
+			cdda_drive->disc.toc[n] -= 11400;
+		}
+	}
 
 	cdda_drive->disc.hash_prev = cdda_drive->disc.hash;
 	cdda_drive->disc.hash = calc_cdda_hash(&cdda_drive->disc);

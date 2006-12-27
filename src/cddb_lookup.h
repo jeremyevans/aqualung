@@ -27,7 +27,7 @@
 #define CDDB_THREAD_FREE     2
 
 void cddb_get(GtkTreeIter * iter_record);
-void cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cddb_record);
+void cddb_get_batch(build_disc_t * disc);
 void cddb_submit(GtkTreeIter * iter_record);
 
 #endif /* _CDDB_LOOKUP_H */

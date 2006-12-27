@@ -134,70 +134,22 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-msgid "Please select the root directory."
+msgid "Enabled"
 msgstr ""
 
-msgid "Regexp matches empty string"
+msgid "Source"
 msgstr ""
 
-msgid "Build/Update store"
+msgid "CDDB"
 msgstr ""
 
-msgid "Build/Update artist"
+msgid "CDDB (not available)"
 msgstr ""
 
-msgid "General"
+msgid "Metadata"
 msgstr ""
 
-msgid "Root path"
-msgstr ""
-
-msgid "Artist path"
-msgstr ""
-
-msgid "_Browse..."
-msgstr ""
-
-msgid "Data source priority"
-msgstr ""
-
-msgid "Metadata, CDDB, Filesystem"
-msgstr ""
-
-msgid "CDDB, Metadata, Filesystem"
-msgstr ""
-
-msgid "Sort artists by"
-msgstr ""
-
-msgid "Artist name"
-msgstr ""
-
-msgid "Artist name (lowercase)"
-msgstr ""
-
-msgid "Directory name"
-msgstr ""
-
-msgid "Directory name (lowercase)"
-msgstr ""
-
-msgid "Sort records by"
-msgstr ""
-
-msgid "Year"
-msgstr ""
-
-msgid "Record name"
-msgstr ""
-
-msgid "Record name (lowercase)"
-msgstr ""
-
-msgid "Exclude files matching wildcard"
-msgstr ""
-
-msgid "Include only files matching wildcard"
+msgid "Filesystem"
 msgstr ""
 
 msgid "Capitalization"
@@ -218,57 +170,6 @@ msgstr ""
 msgid "Force other letters to lowercase"
 msgstr ""
 
-msgid "Trim leading, tailing and duplicate spaces"
-msgstr ""
-
-msgid "Add year to the comments of new records"
-msgstr ""
-
-msgid "Reread data for existing tracks"
-msgstr ""
-
-msgid "Metadata"
-msgstr ""
-
-msgid "Import file metadata"
-msgstr ""
-
-msgid "Exclude whitespace-only metadata"
-msgstr ""
-
-msgid "Import"
-msgstr ""
-
-msgid "Track name"
-msgstr ""
-
-msgid "Comment"
-msgstr ""
-
-msgid "Replaygain tag as manual RVA"
-msgstr ""
-
-msgid "CDDB"
-msgstr ""
-
-msgid "Perform CDDB lookup for records"
-msgstr ""
-
-msgid "Filesystem"
-msgstr ""
-
-msgid "Predefined transformations"
-msgstr ""
-
-msgid "Remove leading number"
-msgstr ""
-
-msgid "Remove file extension"
-msgstr ""
-
-msgid "Convert underscore to space"
-msgstr ""
-
 msgid "Regular expression"
 msgstr ""
 
@@ -276,6 +177,123 @@ msgid "Regexp:"
 msgstr ""
 
 msgid "Replace:"
+msgstr ""
+
+msgid "Predefined transformations"
+msgstr ""
+
+msgid "Remove file extension"
+msgstr ""
+
+msgid "Remove leading number"
+msgstr ""
+
+msgid "Convert underscore to space"
+msgstr ""
+
+msgid "Trim leading, tailing and duplicate spaces"
+msgstr ""
+
+msgid "Regexp matches empty string"
+msgstr ""
+
+msgid "Unknown Artist"
+msgstr ""
+
+msgid "Please select the root directory."
+msgstr ""
+
+msgid "Select build type"
+msgstr ""
+
+msgid "Directory driven"
+msgstr ""
+
+msgid "Independent"
+msgstr ""
+
+msgid "Build/Update store"
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid "Directory structure"
+msgstr ""
+
+msgid "Root path:"
+msgstr ""
+
+msgid "_Browse..."
+msgstr ""
+
+msgid "Structure:"
+msgstr ""
+
+msgid "root / record / track"
+msgstr ""
+
+msgid "root / artist / record / track"
+msgstr ""
+
+msgid "root / artist / artist / record / track"
+msgstr ""
+
+msgid "root / artist / artist / artist / record / track"
+msgstr ""
+
+msgid "Exclude files matching wildcard"
+msgstr ""
+
+msgid "Include only files matching wildcard"
+msgstr ""
+
+msgid "Reread data for existing tracks"
+msgstr ""
+
+msgid "Artist"
+msgstr ""
+
+msgid "Sort artists by"
+msgstr ""
+
+msgid "Artist name"
+msgstr ""
+
+msgid "Artist name (lowercase)"
+msgstr ""
+
+msgid "Directory name"
+msgstr ""
+
+msgid "Directory name (lowercase)"
+msgstr ""
+
+msgid "Record"
+msgstr ""
+
+msgid "Sort records by"
+msgstr ""
+
+msgid "Record name"
+msgstr ""
+
+msgid "Record name (lowercase)"
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Add year to the comments of new records"
+msgstr ""
+
+msgid "Track"
+msgstr ""
+
+msgid "Import Replaygain tag as manual RVA"
+msgstr ""
+
+msgid "Import Comment tag"
 msgstr ""
 
 msgid "Sandbox"
@@ -290,16 +308,19 @@ msgstr ""
 msgid "Building store from filesystem"
 msgstr ""
 
-msgid "Building artist from filesystem"
+msgid "Directory:"
 msgstr ""
 
-msgid "Directory:"
+msgid "File:"
 msgstr ""
 
 msgid "Action:"
 msgstr ""
 
 msgid "Abort"
+msgstr ""
+
+msgid "Unknown Record"
 msgstr ""
 
 msgid "Scanning files"
@@ -311,13 +332,10 @@ msgstr ""
 msgid "CDDB lookup"
 msgstr ""
 
-msgid "File name transformation"
+msgid "Name transformation"
 msgstr ""
 
-msgid "Unknown Artist"
-msgstr ""
-
-msgid "Unknown Record"
+msgid "Reading file"
 msgstr ""
 
 msgid "CD Audio"
@@ -576,9 +594,6 @@ msgid "Artist/Album already existing, not empty"
 msgstr ""
 
 msgid "Rip CD"
-msgstr ""
-
-msgid "Source"
 msgstr ""
 
 msgid "Album:"
@@ -1090,13 +1105,13 @@ msgstr ""
 msgid "Update file metadata"
 msgstr ""
 
+msgid "Track name"
+msgstr ""
+
 msgid "Track comment"
 msgstr ""
 
 msgid "Track number"
-msgstr ""
-
-msgid "File:"
 msgstr ""
 
 msgid "Failed to set metadata at the following files:"
@@ -1184,9 +1199,6 @@ msgid "Batch-update file metadata..."
 msgstr ""
 
 msgid "Add new artist..."
-msgstr ""
-
-msgid "Build/Update artist from filesystem..."
 msgstr ""
 
 msgid "Edit artist..."
@@ -1894,15 +1906,6 @@ msgid "Record titles"
 msgstr ""
 
 msgid "Comments"
-msgstr ""
-
-msgid "Artist"
-msgstr ""
-
-msgid "Record"
-msgstr ""
-
-msgid "Track"
 msgstr ""
 
 msgid "Search"

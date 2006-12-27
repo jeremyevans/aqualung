@@ -159,80 +159,22 @@ msgid ""
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
-#, fuzzy
-msgid "Please select the root directory."
-msgstr "Будьласка обер╕ть звуков╕ файли для цього запису."
-
-msgid "Regexp matches empty string"
+msgid "Enabled"
 msgstr ""
 
-#, fuzzy
-msgid "Build/Update store"
-msgstr "Редагувати склад..."
-
-#, fuzzy
-msgid "Build/Update artist"
-msgstr "Редагувати склад..."
-
-msgid "General"
-msgstr "Головне"
-
-msgid "Root path"
+msgid "Source"
 msgstr ""
 
-#, fuzzy
-msgid "Artist path"
-msgstr "Виконавець:"
-
-msgid "_Browse..."
-msgstr "_Оглянути..."
-
-msgid "Data source priority"
+msgid "CDDB"
 msgstr ""
 
-msgid "Metadata, CDDB, Filesystem"
+msgid "CDDB (not available)"
 msgstr ""
 
-msgid "CDDB, Metadata, Filesystem"
-msgstr ""
+msgid "Metadata"
+msgstr "Метадан╕"
 
-#, fuzzy
-msgid "Sort artists by"
-msgstr "╤мпортувати як Виконавця"
-
-msgid "Artist name"
-msgstr "Назва виконавця"
-
-#, fuzzy
-msgid "Artist name (lowercase)"
-msgstr "Назвах виконавц╕в"
-
-#, fuzzy
-msgid "Directory name"
-msgstr "Запис"
-
-#, fuzzy
-msgid "Directory name (lowercase)"
-msgstr "Запис"
-
-#, fuzzy
-msgid "Sort records by"
-msgstr "╤мпортувати як Запис"
-
-msgid "Year"
-msgstr "Р╕к"
-
-msgid "Record name"
-msgstr "Назва запису"
-
-#, fuzzy
-msgid "Record name (lowercase)"
-msgstr "Запис"
-
-msgid "Exclude files matching wildcard"
-msgstr ""
-
-msgid "Include only files matching wildcard"
+msgid "Filesystem"
 msgstr ""
 
 msgid "Capitalization"
@@ -256,63 +198,6 @@ msgstr "Назва файлу:"
 msgid "Force other letters to lowercase"
 msgstr ""
 
-msgid "Trim leading, tailing and duplicate spaces"
-msgstr ""
-
-#, fuzzy
-msgid "Add year to the comments of new records"
-msgstr "Додати до коментар╕в"
-
-msgid "Reread data for existing tracks"
-msgstr ""
-
-msgid "Metadata"
-msgstr "Метадан╕"
-
-#, fuzzy
-msgid "Import file metadata"
-msgstr "Перечитати ╕нформац╕ю про файл"
-
-msgid "Exclude whitespace-only metadata"
-msgstr ""
-
-#, fuzzy
-msgid "Import"
-msgstr "╤мпортувати як ПВР"
-
-msgid "Track name"
-msgstr "Назва дор╕жки"
-
-msgid "Comment"
-msgstr "Коментар"
-
-#, fuzzy
-msgid "Replaygain tag as manual RVA"
-msgstr "П╕дсилення дор╕жки"
-
-msgid "CDDB"
-msgstr ""
-
-msgid "Perform CDDB lookup for records"
-msgstr ""
-
-msgid "Filesystem"
-msgstr ""
-
-msgid "Predefined transformations"
-msgstr ""
-
-msgid "Remove leading number"
-msgstr ""
-
-#, fuzzy
-msgid "Remove file extension"
-msgstr "Прибрати вибране"
-
-#, fuzzy
-msgid "Convert underscore to space"
-msgstr "╤нвертувати поточний стан"
-
 msgid "Regular expression"
 msgstr ""
 
@@ -322,6 +207,140 @@ msgstr ""
 #, fuzzy
 msgid "Replace:"
 msgstr "Пауза (проб╕л)"
+
+msgid "Predefined transformations"
+msgstr ""
+
+#, fuzzy
+msgid "Remove file extension"
+msgstr "Прибрати вибране"
+
+msgid "Remove leading number"
+msgstr ""
+
+#, fuzzy
+msgid "Convert underscore to space"
+msgstr "╤нвертувати поточний стан"
+
+msgid "Trim leading, tailing and duplicate spaces"
+msgstr ""
+
+msgid "Regexp matches empty string"
+msgstr ""
+
+#, fuzzy
+msgid "Unknown Artist"
+msgstr "Нев╕домо"
+
+#, fuzzy
+msgid "Please select the root directory."
+msgstr "Будьласка обер╕ть звуков╕ файли для цього запису."
+
+#, fuzzy
+msgid "Select build type"
+msgstr "Вибрати файли..."
+
+#, fuzzy
+msgid "Directory driven"
+msgstr "Запис"
+
+msgid "Independent"
+msgstr ""
+
+#, fuzzy
+msgid "Build/Update store"
+msgstr "Редагувати склад..."
+
+msgid "General"
+msgstr "Головне"
+
+#, fuzzy
+msgid "Directory structure"
+msgstr "Запис"
+
+msgid "Root path:"
+msgstr ""
+
+msgid "_Browse..."
+msgstr "_Оглянути..."
+
+msgid "Structure:"
+msgstr ""
+
+msgid "root / record / track"
+msgstr ""
+
+msgid "root / artist / record / track"
+msgstr ""
+
+msgid "root / artist / artist / record / track"
+msgstr ""
+
+msgid "root / artist / artist / artist / record / track"
+msgstr ""
+
+msgid "Exclude files matching wildcard"
+msgstr ""
+
+msgid "Include only files matching wildcard"
+msgstr ""
+
+msgid "Reread data for existing tracks"
+msgstr ""
+
+msgid "Artist"
+msgstr "Виконавець"
+
+#, fuzzy
+msgid "Sort artists by"
+msgstr "╤мпортувати як Виконавця"
+
+msgid "Artist name"
+msgstr "Назва виконавця"
+
+#, fuzzy
+msgid "Artist name (lowercase)"
+msgstr "Назвах виконавц╕в"
+
+#, fuzzy
+msgid "Directory name"
+msgstr "Запис"
+
+#, fuzzy
+msgid "Directory name (lowercase)"
+msgstr "Запис"
+
+msgid "Record"
+msgstr "Запис"
+
+#, fuzzy
+msgid "Sort records by"
+msgstr "╤мпортувати як Запис"
+
+msgid "Record name"
+msgstr "Назва запису"
+
+#, fuzzy
+msgid "Record name (lowercase)"
+msgstr "Запис"
+
+msgid "Year"
+msgstr "Р╕к"
+
+#, fuzzy
+msgid "Add year to the comments of new records"
+msgstr "Додати до коментар╕в"
+
+msgid "Track"
+msgstr "Дор╕жка"
+
+#, fuzzy
+msgid "Import Replaygain tag as manual RVA"
+msgstr "П╕дсилення дор╕жки"
+
+#, fuzzy
+msgid "Import Comment tag"
+msgstr "(без коментаря)"
 
 msgid "Sandbox"
 msgstr ""
@@ -337,12 +356,11 @@ msgid "Building store from filesystem"
 msgstr "Редагувати склад..."
 
 #, fuzzy
-msgid "Building artist from filesystem"
-msgstr "Редагувати склад..."
-
-#, fuzzy
 msgid "Directory:"
 msgstr "Запис"
+
+msgid "File:"
+msgstr "Файл:"
 
 #, fuzzy
 msgid "Action:"
@@ -350,6 +368,10 @@ msgstr "Тривал╕сть:"
 
 msgid "Abort"
 msgstr "Перервати"
+
+#, fuzzy
+msgid "Unknown Record"
+msgstr "Нев╕домо"
 
 msgid "Scanning files"
 msgstr ""
@@ -361,16 +383,12 @@ msgstr "Обробка..."
 msgid "CDDB lookup"
 msgstr ""
 
-msgid "File name transformation"
+msgid "Name transformation"
 msgstr ""
 
 #, fuzzy
-msgid "Unknown Artist"
-msgstr "Нев╕домо"
-
-#, fuzzy
-msgid "Unknown Record"
-msgstr "Нев╕домо"
+msgid "Reading file"
+msgstr "Пресканувати"
 
 msgid "CD Audio"
 msgstr ""
@@ -639,9 +657,6 @@ msgid "Artist/Album already existing, not empty"
 msgstr ""
 
 msgid "Rip CD"
-msgstr ""
-
-msgid "Source"
 msgstr ""
 
 #, fuzzy
@@ -1201,6 +1216,9 @@ msgstr "Прибрати дор╕жку"
 msgid "Update file metadata"
 msgstr "Перечитати ╕нформац╕ю про файл"
 
+msgid "Track name"
+msgstr "Назва дор╕жки"
+
 #, fuzzy
 msgid "Track comment"
 msgstr "Назва дор╕жки"
@@ -1208,9 +1226,6 @@ msgstr "Назва дор╕жки"
 #, fuzzy
 msgid "Track number"
 msgstr "Назва дор╕жки"
-
-msgid "File:"
-msgstr "Файл:"
 
 msgid "Failed to set metadata at the following files:"
 msgstr ""
@@ -1315,10 +1330,6 @@ msgstr "Перечитати ╕нформац╕ю про файл"
 
 msgid "Add new artist..."
 msgstr "Додати нового виконавця..."
-
-#, fuzzy
-msgid "Build/Update artist from filesystem..."
-msgstr "Редагувати склад..."
 
 msgid "Edit artist..."
 msgstr "редагувати виконавця..."
@@ -2088,15 +2099,6 @@ msgstr "Назвах запис╕в"
 msgid "Comments"
 msgstr "Коментар╕"
 
-msgid "Artist"
-msgstr "Виконавець"
-
-msgid "Record"
-msgstr "Запис"
-
-msgid "Track"
-msgstr "Дор╕жка"
-
 msgid "Search"
 msgstr "Шукати"
 
@@ -2538,6 +2540,37 @@ msgid "Compression: Insane"
 msgstr "Ступ╕нь стиснення: Божев╕льна"
 
 #, fuzzy
+#~ msgid "Build/Update artist from filesystem..."
+#~ msgstr "Редагувати склад..."
+
+#, fuzzy
+#~ msgid "Build/Update artist"
+#~ msgstr "Редагувати склад..."
+
+#, fuzzy
+#~ msgid "Artist path"
+#~ msgstr "Виконавець:"
+
+#, fuzzy
+#~ msgid "Import file metadata"
+#~ msgstr "Перечитати ╕нформац╕ю про файл"
+
+#, fuzzy
+#~ msgid "Import"
+#~ msgstr "╤мпортувати як ПВР"
+
+#~ msgid "Comment"
+#~ msgstr "Коментар"
+
+#, fuzzy
+#~ msgid "Replaygain tag as manual RVA"
+#~ msgstr "П╕дсилення дор╕жки"
+
+#, fuzzy
+#~ msgid "Building artist from filesystem"
+#~ msgstr "Редагувати склад..."
+
+#, fuzzy
 #~ msgid "Source selection"
 #~ msgstr "Перевернути виб╕р"
 
@@ -2648,10 +2681,6 @@ msgstr "Ступ╕нь стиснення: Божев╕льна"
 #, fuzzy
 #~ msgid "Import RVA"
 #~ msgstr "╤мпортувати як ПВР"
-
-#, fuzzy
-#~ msgid "Import comment"
-#~ msgstr "(без коментаря)"
 
 #, fuzzy
 #~ msgid "%d track [%s] (%d MB)"

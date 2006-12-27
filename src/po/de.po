@@ -175,81 +175,22 @@ msgstr ""
 "diesem Programm erhalten haben. Falls nicht, schreiben Sie an die Free\n"
 "Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 
-#, fuzzy
-msgid "Please select the root directory."
-msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
-
-msgid "Regexp matches empty string"
+msgid "Enabled"
 msgstr ""
 
-#, fuzzy
-msgid "Build/Update store"
-msgstr "Track editieren..."
-
-#, fuzzy
-msgid "Build/Update artist"
-msgstr "Track editieren..."
-
-msgid "General"
-msgstr "Generell"
-
-msgid "Root path"
+msgid "Source"
 msgstr ""
 
-#, fuzzy
-msgid "Artist path"
-msgstr "Artist"
-
-#, fuzzy
-msgid "_Browse..."
-msgstr "Blättern..."
-
-msgid "Data source priority"
+msgid "CDDB"
 msgstr ""
 
-msgid "Metadata, CDDB, Filesystem"
+msgid "CDDB (not available)"
 msgstr ""
 
-msgid "CDDB, Metadata, Filesystem"
-msgstr ""
+msgid "Metadata"
+msgstr "Metadaten"
 
-#, fuzzy
-msgid "Sort artists by"
-msgstr "Als Artist importieren"
-
-msgid "Artist name"
-msgstr "Artist"
-
-#, fuzzy
-msgid "Artist name (lowercase)"
-msgstr "Artist"
-
-#, fuzzy
-msgid "Directory name"
-msgstr "Album"
-
-#, fuzzy
-msgid "Directory name (lowercase)"
-msgstr "Album"
-
-#, fuzzy
-msgid "Sort records by"
-msgstr "Als Album importieren"
-
-msgid "Year"
-msgstr "Jahr"
-
-msgid "Record name"
-msgstr "Album"
-
-#, fuzzy
-msgid "Record name (lowercase)"
-msgstr "Album"
-
-msgid "Exclude files matching wildcard"
-msgstr ""
-
-msgid "Include only files matching wildcard"
+msgid "Filesystem"
 msgstr ""
 
 msgid "Capitalization"
@@ -273,61 +214,6 @@ msgstr "Dateiname:"
 msgid "Force other letters to lowercase"
 msgstr ""
 
-msgid "Trim leading, tailing and duplicate spaces"
-msgstr ""
-
-#, fuzzy
-msgid "Add year to the comments of new records"
-msgstr "Zum Kommentar hinzufügen"
-
-msgid "Reread data for existing tracks"
-msgstr ""
-
-msgid "Metadata"
-msgstr "Metadaten"
-
-#, fuzzy
-msgid "Import file metadata"
-msgstr "Als Titel importieren"
-
-msgid "Exclude whitespace-only metadata"
-msgstr ""
-
-#, fuzzy
-msgid "Import"
-msgstr "Als RVA importieren"
-
-msgid "Track name"
-msgstr "Track"
-
-msgid "Comment"
-msgstr "Kommentar"
-
-msgid "Replaygain tag as manual RVA"
-msgstr ""
-
-msgid "CDDB"
-msgstr ""
-
-msgid "Perform CDDB lookup for records"
-msgstr ""
-
-msgid "Filesystem"
-msgstr ""
-
-msgid "Predefined transformations"
-msgstr ""
-
-msgid "Remove leading number"
-msgstr ""
-
-#, fuzzy
-msgid "Remove file extension"
-msgstr "Markierte entfernen"
-
-msgid "Convert underscore to space"
-msgstr ""
-
 msgid "Regular expression"
 msgstr ""
 
@@ -337,6 +223,139 @@ msgstr ""
 #, fuzzy
 msgid "Replace:"
 msgstr "Pause (space)"
+
+msgid "Predefined transformations"
+msgstr ""
+
+#, fuzzy
+msgid "Remove file extension"
+msgstr "Markierte entfernen"
+
+msgid "Remove leading number"
+msgstr ""
+
+msgid "Convert underscore to space"
+msgstr ""
+
+msgid "Trim leading, tailing and duplicate spaces"
+msgstr ""
+
+msgid "Regexp matches empty string"
+msgstr ""
+
+#, fuzzy
+msgid "Unknown Artist"
+msgstr "Unnbekannt"
+
+#, fuzzy
+msgid "Please select the root directory."
+msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
+
+#, fuzzy
+msgid "Select build type"
+msgstr "Dateien hinzufügen..."
+
+#, fuzzy
+msgid "Directory driven"
+msgstr "Album"
+
+msgid "Independent"
+msgstr ""
+
+#, fuzzy
+msgid "Build/Update store"
+msgstr "Track editieren..."
+
+msgid "General"
+msgstr "Generell"
+
+#, fuzzy
+msgid "Directory structure"
+msgstr "Album"
+
+msgid "Root path:"
+msgstr ""
+
+#, fuzzy
+msgid "_Browse..."
+msgstr "Blättern..."
+
+msgid "Structure:"
+msgstr ""
+
+msgid "root / record / track"
+msgstr ""
+
+msgid "root / artist / record / track"
+msgstr ""
+
+msgid "root / artist / artist / record / track"
+msgstr ""
+
+msgid "root / artist / artist / artist / record / track"
+msgstr ""
+
+msgid "Exclude files matching wildcard"
+msgstr ""
+
+msgid "Include only files matching wildcard"
+msgstr ""
+
+msgid "Reread data for existing tracks"
+msgstr ""
+
+msgid "Artist"
+msgstr "Artist"
+
+#, fuzzy
+msgid "Sort artists by"
+msgstr "Als Artist importieren"
+
+msgid "Artist name"
+msgstr "Artist"
+
+#, fuzzy
+msgid "Artist name (lowercase)"
+msgstr "Artist"
+
+#, fuzzy
+msgid "Directory name"
+msgstr "Album"
+
+#, fuzzy
+msgid "Directory name (lowercase)"
+msgstr "Album"
+
+msgid "Record"
+msgstr "Album"
+
+#, fuzzy
+msgid "Sort records by"
+msgstr "Als Album importieren"
+
+msgid "Record name"
+msgstr "Album"
+
+#, fuzzy
+msgid "Record name (lowercase)"
+msgstr "Album"
+
+msgid "Year"
+msgstr "Jahr"
+
+#, fuzzy
+msgid "Add year to the comments of new records"
+msgstr "Zum Kommentar hinzufügen"
+
+msgid "Track"
+msgstr "Track"
+
+msgid "Import Replaygain tag as manual RVA"
+msgstr ""
+
+#, fuzzy
+msgid "Import Comment tag"
+msgstr "(kein Kommentar)"
 
 msgid "Sandbox"
 msgstr ""
@@ -352,12 +371,11 @@ msgid "Building store from filesystem"
 msgstr "Track editieren..."
 
 #, fuzzy
-msgid "Building artist from filesystem"
-msgstr "Track editieren..."
-
-#, fuzzy
 msgid "Directory:"
 msgstr "Album"
+
+msgid "File:"
+msgstr "Datei:"
 
 #, fuzzy
 msgid "Action:"
@@ -365,6 +383,10 @@ msgstr "Zeitdauer:"
 
 msgid "Abort"
 msgstr "Abbrechen"
+
+#, fuzzy
+msgid "Unknown Record"
+msgstr "Unnbekannt"
 
 msgid "Scanning files"
 msgstr ""
@@ -376,16 +398,12 @@ msgstr "In Arbeit..."
 msgid "CDDB lookup"
 msgstr ""
 
-msgid "File name transformation"
+msgid "Name transformation"
 msgstr ""
 
 #, fuzzy
-msgid "Unknown Artist"
-msgstr "Unnbekannt"
-
-#, fuzzy
-msgid "Unknown Record"
-msgstr "Unnbekannt"
+msgid "Reading file"
+msgstr "Neu abtasten"
 
 msgid "CD Audio"
 msgstr ""
@@ -663,9 +681,6 @@ msgid "Artist/Album already existing, not empty"
 msgstr ""
 
 msgid "Rip CD"
-msgstr ""
-
-msgid "Source"
 msgstr ""
 
 #, fuzzy
@@ -1232,6 +1247,9 @@ msgstr "Track entfernen"
 msgid "Update file metadata"
 msgstr "Als Titel importieren"
 
+msgid "Track name"
+msgstr "Track"
+
 #, fuzzy
 msgid "Track comment"
 msgstr "Track"
@@ -1239,9 +1257,6 @@ msgstr "Track"
 #, fuzzy
 msgid "Track number"
 msgstr "Track"
-
-msgid "File:"
-msgstr "Datei:"
 
 msgid "Failed to set metadata at the following files:"
 msgstr ""
@@ -1349,10 +1364,6 @@ msgstr "Als Titel importieren"
 
 msgid "Add new artist..."
 msgstr "Neuen Artist hinzufügen..."
-
-#, fuzzy
-msgid "Build/Update artist from filesystem..."
-msgstr "Track editieren..."
 
 msgid "Edit artist..."
 msgstr "Artist editieren..."
@@ -2135,15 +2146,6 @@ msgstr "Album Titel"
 msgid "Comments"
 msgstr "Kommentar"
 
-msgid "Artist"
-msgstr "Artist"
-
-msgid "Record"
-msgstr "Album"
-
-msgid "Track"
-msgstr "Track"
-
 msgid "Search"
 msgstr "Suche"
 
@@ -2585,6 +2587,33 @@ msgid "Compression: Insane"
 msgstr ""
 
 #, fuzzy
+#~ msgid "Build/Update artist from filesystem..."
+#~ msgstr "Track editieren..."
+
+#, fuzzy
+#~ msgid "Build/Update artist"
+#~ msgstr "Track editieren..."
+
+#, fuzzy
+#~ msgid "Artist path"
+#~ msgstr "Artist"
+
+#, fuzzy
+#~ msgid "Import file metadata"
+#~ msgstr "Als Titel importieren"
+
+#, fuzzy
+#~ msgid "Import"
+#~ msgstr "Als RVA importieren"
+
+#~ msgid "Comment"
+#~ msgstr "Kommentar"
+
+#, fuzzy
+#~ msgid "Building artist from filesystem"
+#~ msgstr "Track editieren..."
+
+#, fuzzy
 #~ msgid "Source selection"
 #~ msgstr "Markierungen invertieren"
 
@@ -2668,10 +2697,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Import RVA"
 #~ msgstr "Als RVA importieren"
-
-#, fuzzy
-#~ msgid "Import comment"
-#~ msgstr "(kein Kommentar)"
 
 #, fuzzy
 #~ msgid "%d track [%s] (%d MB)"

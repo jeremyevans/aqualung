@@ -1498,7 +1498,7 @@ cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter) {
 
 
 void
-cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cddb_record) {
+cddb_get_batch(build_disc_t * disc) {
 
 	int i, j;
 	build_track_t * ptrack = NULL;
@@ -1517,7 +1517,7 @@ cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cdd
 
 	cddb_thread_state = CDDB_THREAD_BUSY;
 
-	if (init_query_data_from_tracklist(record->tracks)) {
+	if (init_query_data_from_tracklist(disc->tracks)) {
 		cddb_thread_state = CDDB_THREAD_FREE;
 		return;
 	}
@@ -1546,33 +1546,31 @@ cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cdd
 
 	for (i = 0; i < record_count; i++) {
 
-		if (cddb_artist && !record->artist_valid) {
-			strncpy(tmp, cddb_disc_get_artist(records[i]), MAXLEN-1);
+		strncpy(tmp, cddb_disc_get_artist(records[i]), MAXLEN-1);
+		if (!is_all_wspace(tmp)) {
 			map_put(&map_artist, tmp);
 		}
 
-		if (cddb_record && !record->record_valid) {
-			strncpy(tmp, cddb_disc_get_title(records[i]), MAXLEN-1);
+		strncpy(tmp, cddb_disc_get_title(records[i]), MAXLEN-1);
+		if (!is_all_wspace(tmp)) {
 			map_put(&map_record, tmp);
 		}
 
-		if (!record->year_valid) {
+		if (disc->record.year[0] == '\0') {
 			int y = cddb_disc_get_year(records[i]);
 			if (is_valid_year(y)) {
 				snprintf(tmp, MAXLEN-1, "%d", y);
 				map_put(&map_year, tmp);
 			}
 		}
-		
-		if (cddb_title) {
-			for (j = 0, ptrack = record->tracks;
-			     ptrack && j < track_count; j++, ptrack = ptrack->next) {
-				if (!ptrack->valid) {
-					strncpy(tmp,
-						cddb_track_get_title(cddb_disc_get_track(records[i], j)),
-						MAXLEN-1);
-					map_put(map_tracks + j, tmp);
-				}
+
+		for (j = 0, ptrack = disc->tracks;
+		     ptrack && j < track_count; j++, ptrack = ptrack->next) {
+			strncpy(tmp,
+				cddb_track_get_title(cddb_disc_get_track(records[i], j)),
+				MAXLEN-1);
+			if (!is_all_wspace(tmp)) {
+				map_put(map_tracks + j, tmp);
 			}
 		}
 	}
@@ -1581,8 +1579,7 @@ cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cdd
 		char * max = map_get_max(map_artist);
 
 		if (max) {
-			strncpy(record->artist, max, MAXLEN-1);
-			record->artist_valid = 1;
+			strncpy(disc->artist.name[DATA_SRC_CDDB], max, MAXLEN-1);
 		}
 	}
 
@@ -1590,8 +1587,7 @@ cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cdd
 		char * max = map_get_max(map_record);
 
 		if (max) {
-			strncpy(record->record, max, MAXLEN-1);
-			record->record_valid = 1;
+			strncpy(disc->record.name[DATA_SRC_CDDB], max, MAXLEN-1);
 		}
 	}
 
@@ -1599,20 +1595,16 @@ cddb_get_batch(build_record_t * record, int cddb_title, int cddb_artist, int cdd
 		char * max = map_get_max(map_year);
 
 		if (max) {
-			strncpy(record->year, max, MAXLEN-1);
-			record->year_valid = 1;
+			strncpy(disc->record.year, max, MAXLEN-1);
 		}
 	}
 
-	for (j = 0, ptrack = record->tracks; ptrack && j < track_count; j++, ptrack = ptrack->next) {
+	for (j = 0, ptrack = disc->tracks; ptrack && j < track_count; j++, ptrack = ptrack->next) {
 
-		if (!ptrack->valid) {
-			char * max = map_get_max(map_tracks[j]);
+		char * max = map_get_max(map_tracks[j]);
 
-			if (max) {
-				strncpy(ptrack->name, max, MAXLEN-1);
-				ptrack->valid = 1;
-			}
+		if (max) {
+			strncpy(ptrack->name[DATA_SRC_CDDB], max, MAXLEN-1);
 		}
 
 		map_free(map_tracks[j]);

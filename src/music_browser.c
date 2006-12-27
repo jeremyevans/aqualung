@@ -122,7 +122,6 @@ GtkWidget * artist__addlist;
 GtkWidget * artist__addlist_albummode;
 GtkWidget * artist__separator1;
 GtkWidget * artist__add;
-GtkWidget * artist__build;
 GtkWidget * artist__edit;
 GtkWidget * artist__remove;
 GtkWidget * artist__separator2;
@@ -250,7 +249,6 @@ void store__volume_all_cb(gpointer data);
 void store__remove_cb(gpointer data);
 
 void artist__add_cb(gpointer data);
-void artist__build_cb(gpointer data);
 void artist__edit_cb(gpointer data);
 void artist__volume_unmeasured_cb(gpointer data);
 void artist__volume_all_cb(gpointer data);
@@ -303,7 +301,6 @@ struct keybinds store_keybinds[] = {
 struct keybinds artist_keybinds[] = {
 	{artist__addlist_defmode, GDK_a, GDK_A},
 	{artist__add_cb, GDK_n, GDK_N},
-	{artist__build_cb, GDK_b, GDK_B},
 	{artist__edit_cb, GDK_e, GDK_E},
 	{artist__volume_unmeasured_cb, GDK_v, GDK_V},
 	{artist__remove_cb, GDK_Delete, GDK_KP_Delete},
@@ -2027,11 +2024,6 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gtk_widget_set_sensitive(store__volume, vol_free && writable);
 
 	gtk_widget_set_sensitive(artist__add, writable);
-	gtk_widget_set_sensitive(artist__build, writable &&
-#ifdef HAVE_CDDB
-				 cddb_free &&
-#endif /* HAVE_CDDB */
-				 build_free);
 	gtk_widget_set_sensitive(artist__edit, writable);
 	gtk_widget_set_sensitive(artist__remove, writable);
 	gtk_widget_set_sensitive(artist__addrec, writable);
@@ -2966,17 +2958,6 @@ artist__add_cb(gpointer data) {
                         }
 			music_store_mark_changed(&iter);
 		}
-	}
-}
-
-
-void
-artist__build_cb(gpointer data) {
-
-	GtkTreeIter artist_iter;
-
-	if (gtk_tree_selection_get_selected(music_select, NULL, &artist_iter)) {
-		build_artist(artist_iter);
 	}
 }
 
@@ -4990,7 +4971,6 @@ create_music_browser(void) {
 	artist__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 	artist__separator1 = gtk_separator_menu_item_new();
 	artist__add = gtk_menu_item_new_with_label(_("Add new artist..."));
-	artist__build = gtk_menu_item_new_with_label(_("Build/Update artist from filesystem..."));
 	artist__edit = gtk_menu_item_new_with_label(_("Edit artist..."));
 	artist__remove = gtk_menu_item_new_with_label(_("Remove artist"));
 	artist__separator2 = gtk_separator_menu_item_new();
@@ -5009,7 +4989,6 @@ create_music_browser(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__addlist_albummode);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__separator1);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__add);
-	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__build);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__edit);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__remove);
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__separator2);
@@ -5027,7 +5006,6 @@ create_music_browser(void) {
 	g_signal_connect_swapped(G_OBJECT(artist__addlist), "activate", G_CALLBACK(artist__addlist_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__addlist_albummode), "activate", G_CALLBACK(artist__addlist_albummode_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__add), "activate", G_CALLBACK(artist__add_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(artist__build), "activate", G_CALLBACK(artist__build_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__edit), "activate", G_CALLBACK(artist__edit_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__remove), "activate", G_CALLBACK(artist__remove_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__addrec), "activate", G_CALLBACK(record__add_cb), NULL);
@@ -5042,7 +5020,6 @@ create_music_browser(void) {
 	gtk_widget_show(artist__addlist_albummode);
 	gtk_widget_show(artist__separator1);
 	gtk_widget_show(artist__add);
-	gtk_widget_show(artist__build);
 	gtk_widget_show(artist__edit);
 	gtk_widget_show(artist__remove);
 	gtk_widget_show(artist__separator2);

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2006-12-04 20:23+0100\n"
+"PO-Revision-Date: 2006-12-27 16:42+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -68,9 +68,8 @@ msgstr "CDDA (Audio CD) támogatás\n"
 msgid "CDDB support\n"
 msgstr "CDDB támogatás\n"
 
-#, fuzzy
 msgid "Sample Rate Converter support\n"
-msgstr "Beépített mintavételi frekvencia konverter\n"
+msgstr "Mintavételi frekvencia konverter támogatás\n"
 
 msgid "iRiver iFP driver support\n"
 msgstr "iRiver iFP meghajtó támogatás\n"
@@ -81,9 +80,8 @@ msgstr ""
 msgid "Systray support\n"
 msgstr "Rendszertálca támogatás\n"
 
-#, fuzzy
 msgid "Decoding support:"
-msgstr "Támogatott fájltípusok:"
+msgstr "Dekódolás támogatása:"
 
 msgid "sndfile (WAV, AIFF, etc.)\n"
 msgstr "sndfile (WAV, AIFF, stb.)\n"
@@ -115,16 +113,14 @@ msgstr "LAVC (AC3, AAC, WavPack, WMA, stb.)\n"
 msgid "Metadata (ID3, APE, Ogg comments)\n"
 msgstr "Metaadatok (ID3, APE, Ogg kommentek)\n"
 
-#, fuzzy
 msgid "Encoding support:"
-msgstr "Kimeneti meghajtók:"
+msgstr "Kódolás támogatása:"
 
-#, fuzzy
 msgid "sndfile (WAV)\n"
-msgstr "sndfile (WAV, AIFF, stb.)\n"
+msgstr "sndfile (WAV)\n"
 
 msgid "LAME (MP3)\n"
-msgstr ""
+msgstr "LAME (MP3)\n"
 
 msgid "Output driver support:"
 msgstr "Kimeneti meghajtók:"
@@ -169,71 +165,23 @@ msgstr ""
 "Szabad Szoftver Alapítvány címére: Free Software Foundation, Inc., 675\n"
 "Mass Ave, Cambridge, MA 02139, USA."
 
-msgid "Please select the root directory."
-msgstr "Válaszd ki a gyökérkönyvtárat."
+msgid "Enabled"
+msgstr "Érvényes"
 
-msgid "Regexp matches empty string"
-msgstr "A kifejezés fedi az üres karakterláncot"
+msgid "Source"
+msgstr "Forrás"
 
-msgid "Build/Update store"
-msgstr "Tároló felépítése/aktualizálása"
+msgid "CDDB"
+msgstr "CDDB"
 
-msgid "Build/Update artist"
-msgstr "Elõadó felépítése/aktualizálása"
+msgid "CDDB (not available)"
+msgstr "CDDB (nem elérhetõ)"
 
-msgid "General"
-msgstr "Általános"
+msgid "Metadata"
+msgstr "Metaadatok"
 
-msgid "Root path"
-msgstr "Gyökérkönyvtár"
-
-msgid "Artist path"
-msgstr "Elõadó könyvtára"
-
-msgid "_Browse..."
-msgstr "_Tallózás..."
-
-msgid "Data source priority"
-msgstr "Adatforrások sorrendje"
-
-msgid "Metadata, CDDB, Filesystem"
-msgstr "Metaadatok, CDDB, Fájlrendszer"
-
-msgid "CDDB, Metadata, Filesystem"
-msgstr "CDDB, Metaadatok, Fájlrendszer"
-
-msgid "Sort artists by"
-msgstr "Elõadók rendezése a következõ szerint"
-
-msgid "Artist name"
-msgstr "Elõadó neve"
-
-msgid "Artist name (lowercase)"
-msgstr "Elõadó neve (kisbetûvel)"
-
-msgid "Directory name"
-msgstr "Könyvtár neve"
-
-msgid "Directory name (lowercase)"
-msgstr "Könyvtár neve (kisbetûvel)"
-
-msgid "Sort records by"
-msgstr "Albumok rendezése a következõ szerint"
-
-msgid "Year"
-msgstr "Év"
-
-msgid "Record name"
-msgstr "Album címe"
-
-msgid "Record name (lowercase)"
-msgstr "Album címe (kisbetûvel)"
-
-msgid "Exclude files matching wildcard"
-msgstr "Mintára illeszkedõ fájlok kihagyása"
-
-msgid "Include only files matching wildcard"
-msgstr "Csak a mintára illeszkedõ fájlok vizsgálata"
+msgid "Filesystem"
+msgstr "Fájlrendszer"
 
 msgid "Capitalization"
 msgstr "Kis/nagybetû beállítása"
@@ -253,57 +201,6 @@ msgstr "Alak megõrzése: "
 msgid "Force other letters to lowercase"
 msgstr "A többi legyen kisbetû"
 
-msgid "Trim leading, tailing and duplicate spaces"
-msgstr "Kezdõ, végzõ és többszörös szóközök eltávolítása"
-
-msgid "Add year to the comments of new records"
-msgstr "Év hozzáadása az újonnan felvett albumok kommentjéhez"
-
-msgid "Reread data for existing tracks"
-msgstr "Létezõ számok adatainak újraolvasása"
-
-msgid "Metadata"
-msgstr "Metaadatok"
-
-msgid "Import file metadata"
-msgstr "Metaadatok importálása"
-
-msgid "Exclude whitespace-only metadata"
-msgstr "Csak szóközöket tartalmazó metaadatok kihagyása"
-
-msgid "Import"
-msgstr "Importálás"
-
-msgid "Track name"
-msgstr "Szám címe"
-
-msgid "Comment"
-msgstr "Komment"
-
-msgid "Replaygain tag as manual RVA"
-msgstr "Replaygain tag rögzített RVA-ként"
-
-msgid "CDDB"
-msgstr "CDDB"
-
-msgid "Perform CDDB lookup for records"
-msgstr "Albumok lekérdezése CDDB adatbázisból"
-
-msgid "Filesystem"
-msgstr "Fájlrendszer"
-
-msgid "Predefined transformations"
-msgstr "Elõre definiált transzformációk"
-
-msgid "Remove leading number"
-msgstr "Kezdõ számjegyek levágása"
-
-msgid "Remove file extension"
-msgstr "Kiterjesztés levágása"
-
-msgid "Convert underscore to space"
-msgstr "Aláhúzás szóközzé alakítása"
-
 msgid "Regular expression"
 msgstr "Reguláris kifejezés"
 
@@ -312,6 +209,123 @@ msgstr "Kifejezés:"
 
 msgid "Replace:"
 msgstr "Csere:"
+
+msgid "Predefined transformations"
+msgstr "Elõre definiált transzformációk"
+
+msgid "Remove file extension"
+msgstr "Kiterjesztés levágása"
+
+msgid "Remove leading number"
+msgstr "Kezdõ számjegyek levágása"
+
+msgid "Convert underscore to space"
+msgstr "Aláhúzás szóközzé alakítása"
+
+msgid "Trim leading, tailing and duplicate spaces"
+msgstr "Kezdõ, végzõ és többszörös szóközök eltávolítása"
+
+msgid "Regexp matches empty string"
+msgstr "A kifejezés fedi az üres karakterláncot"
+
+msgid "Unknown Artist"
+msgstr "Ismeretlen elõadó"
+
+msgid "Please select the root directory."
+msgstr "Válaszd ki a gyökérkönyvtárat."
+
+msgid "Select build type"
+msgstr "Felépítés típusának kiválasztása"
+
+msgid "Directory driven"
+msgstr "Könyvtár alapú"
+
+msgid "Independent"
+msgstr "Független"
+
+msgid "Build/Update store"
+msgstr "Tároló felépítése/aktualizálása"
+
+msgid "General"
+msgstr "Általános"
+
+msgid "Directory structure"
+msgstr "Könyvtár struktúra"
+
+msgid "Root path:"
+msgstr "Gyökérkönyvtár:"
+
+msgid "_Browse..."
+msgstr "_Tallózás..."
+
+msgid "Structure:"
+msgstr "Struktúra:"
+
+msgid "root / record / track"
+msgstr "gyökér / album / szám"
+
+msgid "root / artist / record / track"
+msgstr "gyökér / elõadó / album / szám"
+
+msgid "root / artist / artist / record / track"
+msgstr "gyökér / elõadó / elõadó / album / szám"
+
+msgid "root / artist / artist / artist / record / track"
+msgstr "gyökér / elõadó / elõadó / elõadó / album / szám"
+
+msgid "Exclude files matching wildcard"
+msgstr "Mintára illeszkedõ fájlok kihagyása"
+
+msgid "Include only files matching wildcard"
+msgstr "Csak a mintára illeszkedõ fájlok vizsgálata"
+
+msgid "Reread data for existing tracks"
+msgstr "Létezõ számok adatainak újraolvasása"
+
+msgid "Artist"
+msgstr "Elõadó"
+
+msgid "Sort artists by"
+msgstr "Elõadók rendezése a következõ szerint"
+
+msgid "Artist name"
+msgstr "Elõadó neve"
+
+msgid "Artist name (lowercase)"
+msgstr "Elõadó neve (kisbetûvel)"
+
+msgid "Directory name"
+msgstr "Könyvtár neve"
+
+msgid "Directory name (lowercase)"
+msgstr "Könyvtár neve (kisbetûvel)"
+
+msgid "Record"
+msgstr "Album"
+
+msgid "Sort records by"
+msgstr "Albumok rendezése a következõ szerint"
+
+msgid "Record name"
+msgstr "Album címe"
+
+msgid "Record name (lowercase)"
+msgstr "Album címe (kisbetûvel)"
+
+msgid "Year"
+msgstr "Év"
+
+msgid "Add year to the comments of new records"
+msgstr "Év hozzáadása az újonnan felvett albumok kommentjéhez"
+
+msgid "Track"
+msgstr "Szám"
+
+msgid "Import Replaygain tag as manual RVA"
+msgstr "Replaygain tag importálása rögzített RVA-ként"
+
+msgid "Import Comment tag"
+msgstr "Komment tag importálása"
 
 msgid "Sandbox"
 msgstr "Homokozó"
@@ -325,17 +339,20 @@ msgstr "Teszt"
 msgid "Building store from filesystem"
 msgstr "Tároló felépítése fájlrendszerrõl"
 
-msgid "Building artist from filesystem"
-msgstr "Elõadó felépítése fájlrendszerrõl..."
-
 msgid "Directory:"
 msgstr "Könyvtár:"
+
+msgid "File:"
+msgstr "Fájl:"
 
 msgid "Action:"
 msgstr "Mûvelet:"
 
 msgid "Abort"
 msgstr "Megszakítás"
+
+msgid "Unknown Record"
+msgstr "Ismeretlen album"
 
 msgid "Scanning files"
 msgstr "Fájlok vizsgálata"
@@ -346,14 +363,11 @@ msgstr "Metaadatok olvasása"
 msgid "CDDB lookup"
 msgstr "CDDB lekérdezés"
 
-msgid "File name transformation"
-msgstr "Fájlnév transzformáció"
+msgid "Name transformation"
+msgstr "Név transzformáció"
 
-msgid "Unknown Artist"
-msgstr "Ismeretlen elõadó"
-
-msgid "Unknown Record"
-msgstr "Ismeretlen album"
+msgid "Reading file"
+msgstr "Fájl olvasása"
 
 msgid "CD Audio"
 msgstr "CD Audio"
@@ -368,7 +382,7 @@ msgid "Drive info"
 msgstr "Meghajtó infó"
 
 msgid "Device path:"
-msgstr ""
+msgstr "Elérési út:"
 
 msgid "Vendor:"
 msgstr "Vendor:"
@@ -376,9 +390,8 @@ msgstr "Vendor:"
 msgid "Model:"
 msgstr "Modell:"
 
-#, fuzzy
 msgid "Revision:"
-msgstr "Revision"
+msgstr "Revision:"
 
 msgid ""
 "The information below is reported by the drive, and\n"
@@ -593,25 +606,20 @@ msgstr "Hiba történt a CDDB szerverhez való kapcsolódás közben."
 msgid "No matching record found."
 msgstr "Az album nem található az adatbázisban."
 
-#, fuzzy
 msgid "Please select the directory for ripped files."
-msgstr "Válaszd ki a gyökérkönyvtárat."
+msgstr "Válassz ki egy könyvtárat a rippelt fájloknak."
 
-#, fuzzy
 msgid "(none)"
-msgstr "(nincs beállítva)"
+msgstr "(nincs)"
 
-#, fuzzy
 msgid "fast"
-msgstr "elõadó"
+msgstr "gyors"
 
-#, fuzzy
 msgid "best"
-msgstr "Teszt"
+msgstr "legjobb"
 
-#, fuzzy
 msgid "Compression level:"
-msgstr "Tömörítés: Normál"
+msgstr "Tömörítés szintje:"
 
 msgid "Bitrate [kbps]:"
 msgstr ""
@@ -631,9 +639,6 @@ msgstr ""
 #, fuzzy
 msgid "Rip CD"
 msgstr "CD rippelés..."
-
-msgid "Source"
-msgstr ""
 
 msgid "Album:"
 msgstr "Lemez:"
@@ -674,9 +679,8 @@ msgstr "Válaszd ki a gyökérkönyvtárat."
 msgid "Add to Music Store"
 msgstr "Zenetár"
 
-#, fuzzy
 msgid "Format"
-msgstr "Formátum:"
+msgstr "Formátum"
 
 #, fuzzy
 msgid "File format:"
@@ -1179,14 +1183,14 @@ msgstr "Szám eltávolítása"
 msgid "Update file metadata"
 msgstr "Metaadatok frissítése"
 
+msgid "Track name"
+msgstr "Szám címe"
+
 msgid "Track comment"
 msgstr "Szám kommentje"
 
 msgid "Track number"
 msgstr "Track száma"
-
-msgid "File:"
-msgstr "Fájl:"
 
 msgid "Failed to set metadata at the following files:"
 msgstr "A következõ fájloknál nem sikerült beállítani a metaadatokat:"
@@ -1274,9 +1278,6 @@ msgstr "Metaadatok frissítése a háttérben..."
 
 msgid "Add new artist..."
 msgstr "Új elõadó hozzáadása..."
-
-msgid "Build/Update artist from filesystem..."
-msgstr "Elõadó felépítése/aktualizálása fájlrendszerrõl..."
 
 msgid "Edit artist..."
 msgstr "Elõadó szerkesztése..."
@@ -2023,15 +2024,6 @@ msgstr "Albumok"
 msgid "Comments"
 msgstr "Megjegyzések"
 
-msgid "Artist"
-msgstr "Elõadó"
-
-msgid "Record"
-msgstr "Album"
-
-msgid "Track"
-msgstr "Szám"
-
 msgid "Search"
 msgstr "Keresés"
 
@@ -2434,16 +2426,3 @@ msgstr "Tömörítés: Extra magas"
 
 msgid "Compression: Insane"
 msgstr "Tömörítés: Elmebeteg"
-
-#, fuzzy
-#~ msgid "Source selection"
-#~ msgstr "Kijelölés megfordítása"
-
-#~ msgid "Miscellaneous:"
-#~ msgstr "Egyéb:"
-
-#~ msgid "Vendor"
-#~ msgstr "Vendor"
-
-#~ msgid "Model"
-#~ msgstr "Model"

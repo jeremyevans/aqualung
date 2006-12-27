@@ -48,43 +48,67 @@ char * map_get_max(map_t * map);
 void map_free(map_t * map);
 
 
+enum {
+	DATA_SRC_CDDB = 0,
+	DATA_SRC_META,
+	DATA_SRC_FILE
+};
+
+
 typedef struct _build_track_t {
 
 	char filename[MAXLEN];
 	char d_name[MAXLEN];
-	char name[MAXLEN];
+
+	char name[3][MAXLEN];
+	char final[MAXLEN];
+
 	char comment[MAXLEN];
 	float duration;
 	float rva;
-	int valid;
 
 	struct _build_track_t * next;
 
 } build_track_t;
 
-typedef struct _build_record_t {
+typedef struct {
 
-	char artist[MAXLEN];
-	char artist_d_name[MAXLEN];
-	char record[MAXLEN];
+	char d_name[MAXLEN];
+	char sort[MAXLEN];
+
+	char name[3][MAXLEN];
+	char final[MAXLEN];
+
 	char year[MAXLEN];
-
-	char record_comment[MAXLEN];
-	char artist_sort_name[MAXLEN];
-	char record_sort_name[MAXLEN];
-
-	int artist_valid;
-	int record_valid;
-	int year_valid;
-
-	build_track_t * tracks;
+	char comment[MAXLEN];
 
 } build_record_t;
+
+typedef struct {
+
+	char d_name[MAXLEN];
+	char sort[MAXLEN];
+
+	char name[3][MAXLEN];
+	char final[MAXLEN];
+
+} build_artist_t;
+
+typedef struct {
+
+	build_artist_t artist;
+	build_record_t record;
+	build_track_t * tracks;
+
+	int flag;
+	GtkTreeIter iter;
+
+} build_disc_t;
+
 
 int is_valid_year(long y);
 int is_all_wspace(char * str);
 
-void build_artist(GtkTreeIter artist_iter);
 void build_store(GtkTreeIter store_iter);
 
 

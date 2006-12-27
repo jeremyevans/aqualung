@@ -4087,6 +4087,7 @@ save_config(void) {
         xmlDocSetRootElement(doc, root);
 
 
+	SAVE_OPTION_STR_1(currdir)
 	SAVE_OPTION_STR_1(default_param)
 	SAVE_OPTION_STR_1(title_format)
 	SAVE_OPTION_STR_1(skin)
@@ -4402,9 +4403,10 @@ load_config(void) {
 
         cur = cur->xmlChildrenNode;
         while (cur != NULL) {
-		LOAD_OPTION_STR("default_param", default_param)
-		LOAD_OPTION_STR("title_format", title_format)
-		LOAD_OPTION_STR("skin", skin)
+		LOAD_OPTION_STR_1(currdir)
+		LOAD_OPTION_STR_1(default_param)
+		LOAD_OPTION_STR_1(title_format)
+		LOAD_OPTION_STR_1(skin)
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"src_type"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);

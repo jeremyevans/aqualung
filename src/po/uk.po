@@ -9,84 +9,84 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-19 18:04+0300\n"
-"PO-Revision-Date: 2005-09-19 01:51+0200\n"
+"PO-Revision-Date: 2006-12-28 11:18+0100\n"
 "Last-Translator: Sergiy Niskorodov <sgh_punk@users.sourceforge.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=koi8-u\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "About"
-msgstr "Про програму"
+msgstr "п÷я─п╬ п©я─п╬пЁя─п╟п╪я┐"
 
 msgid "Build version: "
-msgstr "Верс╕я зб╕рки: "
+msgstr "п▓п╣я─я│я√я▐ п╥п╠я√я─п╨п╦: "
 
 msgid "Homepage:"
-msgstr "Домашня стор╕нка:"
+msgstr "п■п╬п╪п╟я┬п╫я▐ я│я┌п╬я─я√п╫п╨п╟:"
 
 msgid "Authors:"
-msgstr "Автори:"
+msgstr "п░п╡я┌п╬я─п╦:"
 
 msgid "Core design, engineering & programming:\n"
-msgstr "Головний дизайн, розробка та програмування:\n"
+msgstr "п⌠п╬п╩п╬п╡п╫п╦п╧ п╢п╦п╥п╟п╧п╫, я─п╬п╥я─п╬п╠п╨п╟ я┌п╟ п©я─п╬пЁя─п╟п╪я┐п╡п╟п╫п╫я▐:\n"
 
 msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr "П╕дтримка жупан╕в, вигляд та повед╕нка, програмування Г╤К:\n"
+msgstr "п÷я√п╢я┌я─п╦п╪п╨п╟ п╤я┐п©п╟п╫я√п╡, п╡п╦пЁп╩я▐п╢ я┌п╟ п©п╬п╡п╣п╢я√п╫п╨п╟, п©я─п╬пЁя─п╟п╪я┐п╡п╟п╫п╫я▐ п⌠п├п :\n"
 
 msgid "Programming, GUI engineering:\n"
-msgstr "Програмування, розробка Г╤К:\n"
+msgstr "п÷я─п╬пЁя─п╟п╪я┐п╡п╟п╫п╫я▐, я─п╬п╥я─п╬п╠п╨п╟ п⌠п├п :\n"
 
 msgid "Translators:"
-msgstr "Перекладач╕:"
+msgstr "п÷п╣я─п╣п╨п╩п╟п╢п╟я┤я√:"
 
 msgid "German, Hungarian:\n"
-msgstr "Н╕мецька, Угорська:\n"
+msgstr "п²я√п╪п╣я├я▄п╨п╟, пёпЁп╬я─я│я▄п╨п╟:\n"
 
 msgid "Ukrainian:\n"
-msgstr "Укра╖нська:\n"
+msgstr "пёп╨я─п╟я≈п╫я│я▄п╨п╟:\n"
 
 msgid "Graphics:"
-msgstr "Граф╕ка:"
+msgstr "п⌠я─п╟я└я√п╨п╟:"
 
 msgid "Logo, icons:\n"
 msgstr ""
 
 msgid "This Aqualung binary is compiled with:"
-msgstr "Цей Aqualung скомп╕льовано з:"
+msgstr "п╕п╣п╧ Aqualung я│п╨п╬п╪п©я√п╩я▄п╬п╡п╟п╫п╬ п╥:"
 
 msgid "Optional features:"
 msgstr ""
 
 #, fuzzy
 msgid "LADSPA plugin support\n"
-msgstr "Обробка LADSPA втулками (Цифрова Обробка Сигналу)"
+msgstr "п·п╠я─п╬п╠п╨п╟ LADSPA п╡я┌я┐п╩п╨п╟п╪п╦ (п╕п╦я└я─п╬п╡п╟ п·п╠я─п╬п╠п╨п╟ п║п╦пЁп╫п╟п╩я┐)"
 
 #, fuzzy
 msgid "CDDA (Audio CD) support\n"
-msgstr "п╕дтримка CDDB\n"
+msgstr "п©я√п╢я┌я─п╦п╪п╨п╟ CDDB\n"
 
 msgid "CDDB support\n"
-msgstr "п╕дтримка CDDB\n"
+msgstr "п©я√п╢я┌я─п╦п╪п╨п╟ CDDB\n"
 
 #, fuzzy
 msgid "Sample Rate Converter support\n"
-msgstr "Вбудований перетворювач частоти семплювання\n"
+msgstr "п▓п╠я┐п╢п╬п╡п╟п╫п╦п╧ п©п╣я─п╣я┌п╡п╬я─я▌п╡п╟я┤ я┤п╟я│я┌п╬я┌п╦ я│п╣п╪п©п╩я▌п╡п╟п╫п╫я▐\n"
 
 #, fuzzy
 msgid "iRiver iFP driver support\n"
-msgstr "Драйвери виводу:"
+msgstr "п■я─п╟п╧п╡п╣я─п╦ п╡п╦п╡п╬п╢я┐:"
 
 msgid "Loop playback support\n"
 msgstr ""
 
 #, fuzzy
 msgid "Systray support\n"
-msgstr "п╕дтримка CDDB\n"
+msgstr "п©я√п╢я┌я─п╦п╪п╨п╟ CDDB\n"
 
 #, fuzzy
 msgid "Decoding support:"
-msgstr "П╕дтримка формат╕в файл╕в:"
+msgstr "п÷я√п╢я┌я─п╦п╪п╨п╟ я└п╬я─п╪п╟я┌я√п╡ я└п╟п╧п╩я√п╡:"
 
 msgid "sndfile (WAV, AIFF, etc.)\n"
 msgstr ""
@@ -120,7 +120,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Encoding support:"
-msgstr "Драйвери виводу:"
+msgstr "п■я─п╟п╧п╡п╣я─п╦ п╡п╦п╡п╬п╢я┐:"
 
 msgid "sndfile (WAV)\n"
 msgstr ""
@@ -129,7 +129,7 @@ msgid "LAME (MP3)\n"
 msgstr ""
 
 msgid "Output driver support:"
-msgstr "Драйвери виводу:"
+msgstr "п■я─п╟п╧п╡п╣я─п╦ п╡п╦п╡п╬п╢я┐:"
 
 msgid "OSS Audio\n"
 msgstr ""
@@ -172,7 +172,7 @@ msgid "CDDB (not available)"
 msgstr ""
 
 msgid "Metadata"
-msgstr "Метадан╕"
+msgstr "п°п╣я┌п╟п╢п╟п╫я√"
 
 msgid "Filesystem"
 msgstr ""
@@ -182,18 +182,18 @@ msgstr ""
 
 #, fuzzy
 msgid "Capitalize: "
-msgstr "Всього семпл╕в:"
+msgstr "п▓я│я▄п╬пЁп╬ я│п╣п╪п©п╩я√п╡:"
 
 #, fuzzy
 msgid "All words"
-msgstr "Дор╕жки"
+msgstr "п■п╬я─я√п╤п╨п╦"
 
 msgid "First word only"
 msgstr ""
 
 #, fuzzy
 msgid "Force case: "
-msgstr "Назва файлу:"
+msgstr "п²п╟п╥п╡п╟ я└п╟п╧п╩я┐:"
 
 msgid "Force other letters to lowercase"
 msgstr ""
@@ -206,21 +206,21 @@ msgstr ""
 
 #, fuzzy
 msgid "Replace:"
-msgstr "Пауза (проб╕л)"
+msgstr "п÷п╟я┐п╥п╟ (п©я─п╬п╠я√п╩)"
 
 msgid "Predefined transformations"
 msgstr ""
 
 #, fuzzy
 msgid "Remove file extension"
-msgstr "Прибрати вибране"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╡п╦п╠я─п╟п╫п╣"
 
 msgid "Remove leading number"
 msgstr ""
 
 #, fuzzy
 msgid "Convert underscore to space"
-msgstr "╤нвертувати поточний стан"
+msgstr "п├п╫п╡п╣я─я┌я┐п╡п╟я┌п╦ п©п╬я┌п╬я┤п╫п╦п╧ я│я┌п╟п╫"
 
 msgid "Trim leading, tailing and duplicate spaces"
 msgstr ""
@@ -230,39 +230,39 @@ msgstr ""
 
 #, fuzzy
 msgid "Unknown Artist"
-msgstr "Нев╕домо"
+msgstr "п²п╣п╡я√п╢п╬п╪п╬"
 
 #, fuzzy
 msgid "Please select the root directory."
-msgstr "Будьласка обер╕ть звуков╕ файли для цього запису."
+msgstr "п▒я┐п╢я▄п╩п╟я│п╨п╟ п╬п╠п╣я─я√я┌я▄ п╥п╡я┐п╨п╬п╡я√ я└п╟п╧п╩п╦ п╢п╩я▐ я├я▄п╬пЁп╬ п╥п╟п©п╦я│я┐."
 
 #, fuzzy
 msgid "Select build type"
-msgstr "Вибрати файли..."
+msgstr "п▓п╦п╠я─п╟я┌п╦ я└п╟п╧п╩п╦..."
 
 #, fuzzy
 msgid "Directory driven"
-msgstr "Запис"
+msgstr "п≈п╟п©п╦я│"
 
 msgid "Independent"
 msgstr ""
 
 #, fuzzy
 msgid "Build/Update store"
-msgstr "Редагувати склад..."
+msgstr "п═п╣п╢п╟пЁя┐п╡п╟я┌п╦ я│п╨п╩п╟п╢..."
 
 msgid "General"
-msgstr "Головне"
+msgstr "п⌠п╬п╩п╬п╡п╫п╣"
 
 #, fuzzy
 msgid "Directory structure"
-msgstr "Запис"
+msgstr "п≈п╟п©п╦я│"
 
 msgid "Root path:"
 msgstr ""
 
 msgid "_Browse..."
-msgstr "_Оглянути..."
+msgstr "_п·пЁп╩я▐п╫я┐я┌п╦..."
 
 msgid "Structure:"
 msgstr ""
@@ -289,96 +289,96 @@ msgid "Reread data for existing tracks"
 msgstr ""
 
 msgid "Artist"
-msgstr "Виконавець"
+msgstr "п▓п╦п╨п╬п╫п╟п╡п╣я├я▄"
 
 #, fuzzy
 msgid "Sort artists by"
-msgstr "╤мпортувати як Виконавця"
+msgstr "п├п╪п©п╬я─я┌я┐п╡п╟я┌п╦ я▐п╨ п▓п╦п╨п╬п╫п╟п╡я├я▐"
 
 msgid "Artist name"
-msgstr "Назва виконавця"
+msgstr "п²п╟п╥п╡п╟ п╡п╦п╨п╬п╫п╟п╡я├я▐"
 
 #, fuzzy
 msgid "Artist name (lowercase)"
-msgstr "Назвах виконавц╕в"
+msgstr "п²п╟п╥п╡п╟я┘ п╡п╦п╨п╬п╫п╟п╡я├я√п╡"
 
 #, fuzzy
 msgid "Directory name"
-msgstr "Запис"
+msgstr "п≈п╟п©п╦я│"
 
 #, fuzzy
 msgid "Directory name (lowercase)"
-msgstr "Запис"
+msgstr "п≈п╟п©п╦я│"
 
 msgid "Record"
-msgstr "Запис"
+msgstr "п≈п╟п©п╦я│"
 
 #, fuzzy
 msgid "Sort records by"
-msgstr "╤мпортувати як Запис"
+msgstr "п├п╪п©п╬я─я┌я┐п╡п╟я┌п╦ я▐п╨ п≈п╟п©п╦я│"
 
 msgid "Record name"
-msgstr "Назва запису"
+msgstr "п²п╟п╥п╡п╟ п╥п╟п©п╦я│я┐"
 
 #, fuzzy
 msgid "Record name (lowercase)"
-msgstr "Запис"
+msgstr "п≈п╟п©п╦я│"
 
 msgid "Year"
-msgstr "Р╕к"
+msgstr "п═я√п╨"
 
 #, fuzzy
 msgid "Add year to the comments of new records"
-msgstr "Додати до коментар╕в"
+msgstr "п■п╬п╢п╟я┌п╦ п╢п╬ п╨п╬п╪п╣п╫я┌п╟я─я√п╡"
 
 msgid "Track"
-msgstr "Дор╕жка"
+msgstr "п■п╬я─я√п╤п╨п╟"
 
 #, fuzzy
 msgid "Import Replaygain tag as manual RVA"
-msgstr "П╕дсилення дор╕жки"
+msgstr "п÷я√п╢я│п╦п╩п╣п╫п╫я▐ п╢п╬я─я√п╤п╨п╦"
 
 #, fuzzy
 msgid "Import Comment tag"
-msgstr "(без коментаря)"
+msgstr "(п╠п╣п╥ п╨п╬п╪п╣п╫я┌п╟я─я▐)"
 
 msgid "Sandbox"
 msgstr ""
 
 msgid "Filename:"
-msgstr "Назва файлу:"
+msgstr "п²п╟п╥п╡п╟ я└п╟п╧п╩я┐:"
 
 msgid "Test"
 msgstr ""
 
 #, fuzzy
 msgid "Building store from filesystem"
-msgstr "Редагувати склад..."
+msgstr "п═п╣п╢п╟пЁя┐п╡п╟я┌п╦ я│п╨п╩п╟п╢..."
 
 #, fuzzy
 msgid "Directory:"
-msgstr "Запис"
+msgstr "п≈п╟п©п╦я│"
 
 msgid "File:"
-msgstr "Файл:"
+msgstr "п╓п╟п╧п╩:"
 
 #, fuzzy
 msgid "Action:"
-msgstr "Тривал╕сть:"
+msgstr "п╒я─п╦п╡п╟п╩я√я│я┌я▄:"
 
 msgid "Abort"
-msgstr "Перервати"
+msgstr "п÷п╣я─п╣я─п╡п╟я┌п╦"
 
 #, fuzzy
 msgid "Unknown Record"
-msgstr "Нев╕домо"
+msgstr "п²п╣п╡я√п╢п╬п╪п╬"
 
 msgid "Scanning files"
 msgstr ""
 
 #, fuzzy
 msgid "Processing metadata"
-msgstr "Обробка..."
+msgstr "п·п╠я─п╬п╠п╨п╟..."
 
 msgid "CDDB lookup"
 msgstr ""
@@ -388,27 +388,27 @@ msgstr ""
 
 #, fuzzy
 msgid "Reading file"
-msgstr "Пресканувати"
+msgstr "п÷я─п╣я│п╨п╟п╫я┐п╡п╟я┌п╦"
 
 msgid "CD Audio"
 msgstr ""
 
 #, fuzzy
 msgid "Unknown disc"
-msgstr "Нев╕домо"
+msgstr "п²п╣п╡я√п╢п╬п╪п╬"
 
 msgid "No disc"
 msgstr ""
 
 #, fuzzy
 msgid "Drive info"
-msgstr "╤нформац╕я про файл"
+msgstr "п├п╫я└п╬я─п╪п╟я├я√я▐ п©я─п╬ я└п╟п╧п╩"
 
 msgid "Device path:"
 msgstr ""
 
 msgid "Vendor:"
-msgstr "Постачальник:"
+msgstr "п÷п╬я│я┌п╟я┤п╟п╩я▄п╫п╦п╨:"
 
 msgid "Model:"
 msgstr ""
@@ -426,7 +426,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Close tray"
-msgstr "Кольори"
+msgstr "п п╬п╩я▄п╬я─п╦"
 
 msgid "Disable manual eject"
 msgstr ""
@@ -448,7 +448,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Reading"
-msgstr "Пресканувати"
+msgstr "п÷я─п╣я│п╨п╟п╫я┐п╡п╟я┌п╦"
 
 msgid "Play CD Audio"
 msgstr ""
@@ -500,7 +500,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Writing"
-msgstr "Увага"
+msgstr "пёп╡п╟пЁп╟"
 
 msgid "Write CD-R"
 msgstr ""
@@ -530,53 +530,53 @@ msgid "Burn Proof"
 msgstr ""
 
 msgid "CDDB query"
-msgstr "CDDB запит"
+msgstr "CDDB п╥п╟п©п╦я┌"
 
 msgid "Retrieving matches from server..."
-msgstr "Отримання зб╕г╕в з сервера..."
+msgstr "п·я┌я─п╦п╪п╟п╫п╫я▐ п╥п╠я√пЁя√п╡ п╥ я│п╣я─п╡п╣я─п╟..."
 
 msgid "Connecting to CDDB server..."
-msgstr "П╕д'╓днуюсь до сервера CDDB..."
+msgstr "п÷я√п╢'я■п╢п╫я┐я▌я│я▄ п╢п╬ я│п╣я─п╡п╣я─п╟ CDDB..."
 
 msgid "Matches:"
-msgstr "Зб╕ги:"
+msgstr "п≈п╠я√пЁп╦:"
 
 msgid "Artist:"
-msgstr "Виконавець:"
+msgstr "п▓п╦п╨п╬п╫п╟п╡п╣я├я▄:"
 
 msgid "Title:"
-msgstr "Назва:"
+msgstr "п²п╟п╥п╡п╟:"
 
 msgid "Year:"
-msgstr "Р╕к:"
+msgstr "п═я√п╨:"
 
 msgid "Category:"
-msgstr "Категор╕я:"
+msgstr "п п╟я┌п╣пЁп╬я─я√я▐:"
 
 msgid "Genre:"
-msgstr "Жанр:"
+msgstr "п√п╟п╫я─:"
 
 msgid "Extended data:"
-msgstr "Додатков╕ дан╕:"
+msgstr "п■п╬п╢п╟я┌п╨п╬п╡я√ п╢п╟п╫я√:"
 
 msgid "Import as Artist"
-msgstr "╤мпортувати як Виконавця"
+msgstr "п├п╪п©п╬я─я┌я┐п╡п╟я┌п╦ я▐п╨ п▓п╦п╨п╬п╫п╟п╡я├я▐"
 
 msgid "Import as Title"
-msgstr "╤мпортувати як Альбом"
+msgstr "п├п╪п©п╬я─я┌я┐п╡п╟я┌п╦ я▐п╨ п░п╩я▄п╠п╬п╪"
 
 #, fuzzy
 msgid "Import as Sort Key"
-msgstr "╤мпортувати як Альбом"
+msgstr "п├п╪п©п╬я─я┌я┐п╡п╟я┌п╦ я▐п╨ п░п╩я▄п╠п╬п╪"
 
 msgid "Add to Comments"
-msgstr "Додати до коментар╕в"
+msgstr "п■п╬п╢п╟я┌п╦ п╢п╬ п╨п╬п╪п╣п╫я┌п╟я─я√п╡"
 
 msgid "Tracks"
-msgstr "Дор╕жки"
+msgstr "п■п╬я─я√п╤п╨п╦"
 
 msgid "Warning"
-msgstr "Увага"
+msgstr "пёп╡п╟пЁп╟"
 
 msgid "CDDB submission"
 msgstr ""
@@ -614,32 +614,32 @@ msgstr ""
 
 #, fuzzy
 msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "Трапилась помилка при спроб╕ п╕д'╓днання до сервера CDDB."
+msgstr "п╒я─п╟п©п╦п╩п╟я│я▄ п©п╬п╪п╦п╩п╨п╟ п©я─п╦ я│п©я─п╬п╠я√ п©я√п╢'я■п╢п╫п╟п╫п╫я▐ п╢п╬ я│п╣я─п╡п╣я─п╟ CDDB."
 
 msgid "An error occurred while attempting to connect to the CDDB server."
-msgstr "Трапилась помилка при спроб╕ п╕д'╓днання до сервера CDDB."
+msgstr "п╒я─п╟п©п╦п╩п╟я│я▄ п©п╬п╪п╦п╩п╨п╟ п©я─п╦ я│п©я─п╬п╠я√ п©я√п╢'я■п╢п╫п╟п╫п╫я▐ п╢п╬ я│п╣я─п╡п╣я─п╟ CDDB."
 
 msgid "No matching record found."
-msgstr "Схожих запис╕в не знайдено."
+msgstr "п║я┘п╬п╤п╦я┘ п╥п╟п©п╦я│я√п╡ п╫п╣ п╥п╫п╟п╧п╢п╣п╫п╬."
 
 #, fuzzy
 msgid "Please select the directory for ripped files."
-msgstr "Будьласка обер╕ть звуков╕ файли для цього запису."
+msgstr "п▒я┐п╢я▄п╩п╟я│п╨п╟ п╬п╠п╣я─я√я┌я▄ п╥п╡я┐п╨п╬п╡я√ я└п╟п╧п╩п╦ п╢п╩я▐ я├я▄п╬пЁп╬ п╥п╟п©п╦я│я┐."
 
 #, fuzzy
 msgid "(none)"
-msgstr "(без коментаря)"
+msgstr "(п╠п╣п╥ п╨п╬п╪п╣п╫я┌п╟я─я▐)"
 
 #, fuzzy
 msgid "fast"
-msgstr "Виконавець"
+msgstr "п▓п╦п╨п╬п╫п╟п╡п╣я├я▄"
 
 msgid "best"
 msgstr ""
 
 #, fuzzy
 msgid "Compression level:"
-msgstr "Ступ╕нь стиснення: Нормальна"
+msgstr "п║я┌я┐п©я√п╫я▄ я│я┌п╦я│п╫п╣п╫п╫я▐: п²п╬я─п╪п╟п╩я▄п╫п╟"
 
 msgid "Bitrate [kbps]:"
 msgstr ""
@@ -661,65 +661,65 @@ msgstr ""
 
 #, fuzzy
 msgid "Album:"
-msgstr "Альбом"
+msgstr "п░п╩я▄п╠п╬п╪"
 
 msgid "Rip"
 msgstr ""
 
 #, fuzzy
 msgid "No"
-msgstr "Нема╓"
+msgstr "п²п╣п╪п╟я■"
 
 msgid "Title"
-msgstr "Назва"
+msgstr "п²п╟п╥п╡п╟"
 
 msgid "Select"
-msgstr "Вибрати"
+msgstr "п▓п╦п╠я─п╟я┌п╦"
 
 msgid "All"
 msgstr ""
 
 msgid "None"
-msgstr "Нема╓"
+msgstr "п²п╣п╪п╟я■"
 
 #, fuzzy
 msgid "Output"
-msgstr "Вив╕д:"
+msgstr "п▓п╦п╡я√п╢:"
 
 #, fuzzy
 msgid "Destination"
-msgstr "Тривал╕сть:"
+msgstr "п╒я─п╦п╡п╟п╩я√я│я┌я▄:"
 
 #, fuzzy
 msgid "Target directory for ripped files"
-msgstr "Будьласка обер╕ть звуков╕ файли для цього запису."
+msgstr "п▒я┐п╢я▄п╩п╟я│п╨п╟ п╬п╠п╣я─я√я┌я▄ п╥п╡я┐п╨п╬п╡я√ я└п╟п╧п╩п╦ п╢п╩я▐ я├я▄п╬пЁп╬ п╥п╟п©п╦я│я┐."
 
 #, fuzzy
 msgid "Add to Music Store"
-msgstr "Музичний Склад"
+msgstr "п°я┐п╥п╦я┤п╫п╦п╧ п║п╨п╩п╟п╢"
 
 #, fuzzy
 msgid "Format"
-msgstr "Формат:"
+msgstr "п╓п╬я─п╪п╟я┌:"
 
 #, fuzzy
 msgid "File format:"
-msgstr "Формат назви"
+msgstr "п╓п╬я─п╪п╟я┌ п╫п╟п╥п╡п╦"
 
 #, fuzzy
 msgid "VBR encoding"
-msgstr "кодування"
+msgstr "п╨п╬п╢я┐п╡п╟п╫п╫я▐"
 
 #, fuzzy
 msgid "Tag files with metadata"
-msgstr "Перечитати ╕нформац╕ю про файл"
+msgstr "п÷п╣я─п╣я┤п╦я┌п╟я┌п╦ я√п╫я└п╬я─п╪п╟я├я√я▌ п©я─п╬ я└п╟п╧п╩"
 
 msgid "Paranoia"
 msgstr ""
 
 #, fuzzy
 msgid "Paranoia error correction"
-msgstr "Перекривати установки жупана"
+msgstr "п÷п╣я─п╣п╨я─п╦п╡п╟я┌п╦ я┐я│я┌п╟п╫п╬п╡п╨п╦ п╤я┐п©п╟п╫п╟"
 
 msgid "Perform overlapped reads"
 msgstr ""
@@ -743,32 +743,32 @@ msgstr ""
 
 #, fuzzy
 msgid "Total"
-msgstr "Разом: "
+msgstr "п═п╟п╥п╬п╪: "
 
 msgid "(audio only)"
 msgstr ""
 
 #, fuzzy
 msgid "Ripping CD tracks..."
-msgstr "Редагувати дор╕жку..."
+msgstr "п═п╣п╢п╟пЁя┐п╡п╟я┌п╦ п╢п╬я─я√п╤п╨я┐..."
 
 msgid "Begin"
 msgstr ""
 
 #, fuzzy
 msgid "Length"
-msgstr "Довжина:"
+msgstr "п■п╬п╡п╤п╦п╫п╟:"
 
 #, fuzzy
 msgid "Progress"
-msgstr "Прогрес:"
+msgstr "п÷я─п╬пЁя─п╣я│:"
 
 msgid "Close window when complete"
 msgstr ""
 
 #, fuzzy
 msgid "Close"
-msgstr "Кольори"
+msgstr "п п╬п╩я▄п╬я─п╦"
 
 msgid "day"
 msgstr ""
@@ -777,32 +777,32 @@ msgid "days"
 msgstr ""
 
 msgid "MONO"
-msgstr "МОНО"
+msgstr "п°п·п²п·"
 
 msgid "STEREO"
-msgstr "СТЕРЕО"
+msgstr "п║п╒п∙п═п∙п·"
 
 msgid "Output:"
-msgstr "Вив╕д:"
+msgstr "п▓п╦п╡я√п╢:"
 
 #, fuzzy
 msgid "No output"
-msgstr "Вив╕д:"
+msgstr "п▓п╦п╡я√п╢:"
 
 msgid "SRC Type: "
-msgstr "SRC Тип: "
+msgstr "SRC п╒п╦п©: "
 
 #, fuzzy
 msgid ""
 "One or more stores in Music Store have been modified.\n"
 "Do you want to save them before exiting?"
 msgstr ""
-"Музичний склад було зм╕нено.\n"
-"Чи ви бажа╓те зберегти зм╕ни перед виходом?"
+"п°я┐п╥п╦я┤п╫п╦п╧ я│п╨п╩п╟п╢ п╠я┐п╩п╬ п╥п╪я√п╫п╣п╫п╬.\n"
+"п╖п╦ п╡п╦ п╠п╟п╤п╟я■я┌п╣ п╥п╠п╣я─п╣пЁя┌п╦ п╥п╪я√п╫п╦ п©п╣я─п╣п╢ п╡п╦я┘п╬п╢п╬п╪?"
 
 #, fuzzy
 msgid "Question"
-msgstr "Тривал╕сть:"
+msgstr "п╒я─п╦п╡п╟п╩я√я│я┌я▄:"
 
 #, c-format
 msgid "Position: %d%%"
@@ -810,23 +810,23 @@ msgstr ""
 
 #, c-format
 msgid "Mute"
-msgstr "Приглушити"
+msgstr "п÷я─п╦пЁп╩я┐я┬п╦я┌п╦"
 
 #, c-format
 msgid "%d dB"
-msgstr "%d Дб"
+msgstr "%d п■п╠"
 
 #, fuzzy, c-format
 msgid "Volume: %s"
-msgstr "Р╕вень гучност╕:"
+msgstr "п═я√п╡п╣п╫я▄ пЁя┐я┤п╫п╬я│я┌я√:"
 
 #, c-format
 msgid "%d%% R"
-msgstr "%d%% П"
+msgstr "%d%% п÷"
 
 #, c-format
 msgid "%d%% L"
-msgstr "%d%% Л"
+msgstr "%d%% п⌡"
 
 #, c-format
 msgid "C"
@@ -841,7 +841,7 @@ msgid " (%d/%d)"
 msgstr ""
 
 msgid "JACK connection lost"
-msgstr "JACK п╕д'╓днання втрачено"
+msgstr "JACK п©я√п╢'я■п╢п╫п╟п╫п╫я▐ п╡я┌я─п╟я┤п╣п╫п╬"
 
 msgid ""
 "JACK has either been shutdown or it\n"
@@ -849,10 +849,10 @@ msgid ""
 "not fast enough. All you can do now\n"
 "is restart both JACK and Aqualung.\n"
 msgstr ""
-"JACK було вимкнено, або в╕н в╕д'╓днав\n"
-"Aqualung тому що в╕н не достатньо\n"
-"швидкий. Все що ви можете тепер зробити\n"
-"це перезапустити обидва JACK та Aqualung.\n"
+"JACK п╠я┐п╩п╬ п╡п╦п╪п╨п╫п╣п╫п╬, п╟п╠п╬ п╡я√п╫ п╡я√п╢'я■п╢п╫п╟п╡\n"
+"Aqualung я┌п╬п╪я┐ я┴п╬ п╡я√п╫ п╫п╣ п╢п╬я│я┌п╟я┌п╫я▄п╬\n"
+"я┬п╡п╦п╢п╨п╦п╧. п▓я│п╣ я┴п╬ п╡п╦ п╪п╬п╤п╣я┌п╣ я┌п╣п©п╣я─ п╥я─п╬п╠п╦я┌п╦\n"
+"я├п╣ п©п╣я─п╣п╥п╟п©я┐я│я┌п╦я┌п╦ п╬п╠п╦п╢п╡п╟ JACK я┌п╟ Aqualung.\n"
 
 msgid ""
 "Aqualung is compiled with system tray support, but the status icon could not "
@@ -861,79 +861,79 @@ msgid ""
 msgstr ""
 
 msgid "Settings"
-msgstr "Налаштування"
+msgstr "п²п╟п╩п╟я┬я┌я┐п╡п╟п╫п╫я▐"
 
 msgid "Skin chooser"
-msgstr "Виб╕р жупан╕в"
+msgstr "п▓п╦п╠я√я─ п╤я┐п©п╟п╫я√п╡"
 
 msgid "JACK port setup"
-msgstr "Налаштування порту JACK"
+msgstr "п²п╟п╩п╟я┬я┌я┐п╡п╟п╫п╫я▐ п©п╬я─я┌я┐ JACK"
 
 msgid "File info"
-msgstr "╤нформац╕я про файл"
+msgstr "п├п╫я└п╬я─п╪п╟я├я√я▐ п©я─п╬ я└п╟п╧п╩"
 
 msgid "Quit"
 msgstr ""
 
 #, fuzzy
 msgid "Previous song"
-msgstr "Попередня п╕сня (вгору)"
+msgstr "п÷п╬п©п╣я─п╣п╢п╫я▐ п©я√я│п╫я▐ (п╡пЁп╬я─я┐)"
 
 #, fuzzy
 msgid "Stop"
-msgstr "Зупинити (s)"
+msgstr "п≈я┐п©п╦п╫п╦я┌п╦ (s)"
 
 #, fuzzy
 msgid "Next song"
-msgstr "Наступна п╕сня (вниз)"
+msgstr "п²п╟я│я┌я┐п©п╫п╟ п©я√я│п╫я▐ (п╡п╫п╦п╥)"
 
 #, fuzzy
 msgid "Play"
-msgstr "Список програвання"
+msgstr "п║п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Pause"
 msgstr ""
 
 msgid "Repeat current song"
-msgstr "Повторювати поточну п╕сню"
+msgstr "п÷п╬п╡я┌п╬я─я▌п╡п╟я┌п╦ п©п╬я┌п╬я┤п╫я┐ п©я√я│п╫я▌"
 
 msgid "Repeat all songs"
-msgstr "Повторювати вс╕ п╕сн╕"
+msgstr "п÷п╬п╡я┌п╬я─я▌п╡п╟я┌п╦ п╡я│я√ п©я√я│п╫я√"
 
 msgid "Shuffle songs"
-msgstr "Перем╕шати п╕сн╕"
+msgstr "п÷п╣я─п╣п╪я√я┬п╟я┌п╦ п©я√я│п╫я√"
 
 msgid "Toggle playlist"
-msgstr "Вимикач списку програвання"
+msgstr "п▓п╦п╪п╦п╨п╟я┤ я│п©п╦я│п╨я┐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Toggle music store"
-msgstr "Вимикач музичного складу"
+msgstr "п▓п╦п╪п╦п╨п╟я┤ п╪я┐п╥п╦я┤п╫п╬пЁп╬ я│п╨п╩п╟п╢я┐"
 
 msgid "Toggle LADSPA patch builder"
-msgstr "Вимикач буд╕вельника шлях╕в LADSPA"
+msgstr "п▓п╦п╪п╦п╨п╟я┤ п╠я┐п╢я√п╡п╣п╩я▄п╫п╦п╨п╟ я┬п╩я▐я┘я√п╡ LADSPA"
 
 #, fuzzy
 msgid "Show Aqualung"
-msgstr "Значення ПВР"
+msgstr "п≈п╫п╟я┤п╣п╫п╫я▐ п÷п▓п═"
 
 #, fuzzy
 msgid "Hide Aqualung"
-msgstr "Значення ПВР"
+msgstr "п≈п╫п╟я┤п╣п╫п╫я▐ п÷п▓п═"
 
 #, fuzzy
 msgid "Previous"
-msgstr "Попередня п╕сня (вгору)"
+msgstr "п÷п╬п©п╣я─п╣п╢п╫я▐ п©я√я│п╫я▐ (п╡пЁп╬я─я┐)"
 
 #, fuzzy
 msgid "Next"
-msgstr "Наступна п╕сня (вниз)"
+msgstr "п²п╟я│я┌я┐п©п╫п╟ п©я√я│п╫я▐ (п╡п╫п╦п╥)"
 
 msgid "Aqualung playlist (*.xml)"
 msgstr ""
 
 #, fuzzy
 msgid "MP3 Playlist (*.m3u)"
-msgstr "Список програвання: "
+msgstr "п║п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐: "
 
 msgid "Multimedia Playlist (*.pls)"
 msgstr ""
@@ -943,11 +943,11 @@ msgstr ""
 
 #, fuzzy
 msgid "All Playlist Files"
-msgstr "Список програвання: "
+msgstr "п║п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐: "
 
 #, fuzzy
 msgid "All Audio Files"
-msgstr "Ауд╕оф╕л"
+msgstr "п░я┐п╢я√п╬я└я√п╩"
 
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
 msgstr ""
@@ -991,15 +991,15 @@ msgstr ""
 
 #, fuzzy, c-format
 msgid "%d / %d files"
-msgstr "Додати файли..."
+msgstr "п■п╬п╢п╟я┌п╦ я└п╟п╧п╩п╦..."
 
 #, fuzzy
 msgid "Done"
-msgstr "Нема╓"
+msgstr "п²п╣п╪п╟я■"
 
 #, fuzzy
 msgid "Aborted..."
-msgstr "Перервати"
+msgstr "п÷п╣я─п╣я─п╡п╟я┌п╦"
 
 msgid "Please enter directory name"
 msgstr ""
@@ -1012,7 +1012,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Rename directory"
-msgstr "Прибрати запис"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╥п╟п©п╦я│"
 
 #, c-format
 msgid ""
@@ -1023,11 +1023,11 @@ msgstr ""
 
 #, fuzzy
 msgid "Remove directory"
-msgstr "Прибрати запис"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╥п╟п©п╦я│"
 
 #, fuzzy, c-format
 msgid " (%.1f MB)"
-msgstr "%d дор╕жка [%s]"
+msgstr "%d п╢п╬я─я√п╤п╨п╟ [%s]"
 
 #, c-format
 msgid " (capacity = %.1f MB)"
@@ -1035,7 +1035,7 @@ msgstr ""
 
 #, fuzzy, c-format
 msgid " Free space (%.1f MB)"
-msgstr "Пауза (проб╕л)"
+msgstr "п÷п╟я┐п╥п╟ (п©я─п╬п╠я√п╩)"
 
 msgid ""
 "No suitable iRiver iFP device found.\n"
@@ -1055,14 +1055,14 @@ msgstr ""
 
 #, fuzzy
 msgid "Please select at least one song from playlist."
-msgstr "Будьласка вкаж╕ть файл куди буде записано список програвання."
+msgstr "п▒я┐п╢я▄п╩п╟я│п╨п╟ п╡п╨п╟п╤я√я┌я▄ я└п╟п╧п╩ п╨я┐п╢п╦ п╠я┐п╢п╣ п╥п╟п©п╦я│п╟п╫п╬ я│п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐."
 
 msgid "iFP device manager"
 msgstr ""
 
 #, fuzzy
 msgid "Selected files:"
-msgstr "Вибрати файли..."
+msgstr "п▓п╦п╠я─п╟я┌п╦ я└п╟п╧п╩п╦..."
 
 msgid "label_songs"
 msgstr ""
@@ -1072,11 +1072,11 @@ msgstr ""
 
 #, fuzzy
 msgid "Battery"
-msgstr "Категор╕я"
+msgstr "п п╟я┌п╣пЁп╬я─я√я▐"
 
 #, fuzzy
 msgid "Free space"
-msgstr "Пауза (проб╕л)"
+msgstr "п÷п╟я┐п╥п╟ (п©я─п╬п╠я√п╩)"
 
 msgid "<b>Device status</b>"
 msgstr ""
@@ -1092,7 +1092,7 @@ msgstr ""
 
 #, fuzzy
 msgid "File name: "
-msgstr "Назва файлу:"
+msgstr "п²п╟п╥п╡п╟ я└п╟п╧п╩я┐:"
 
 msgid "Current file: "
 msgstr ""
@@ -1111,78 +1111,78 @@ msgstr ""
 
 #, fuzzy
 msgid "_Abort"
-msgstr "Перервати"
+msgstr "п÷п╣я─п╣я─п╡п╟я┌п╦"
 
 msgid "Please select the xml file for this store."
-msgstr "Будьласка обер╕ть xml файл для цього складу."
+msgstr "п▒я┐п╢я▄п╩п╟я│п╨п╟ п╬п╠п╣я─я√я┌я▄ xml я└п╟п╧п╩ п╢п╩я▐ я├я▄п╬пЁп╬ я│п╨п╩п╟п╢я┐."
 
 msgid "Create empty store"
 msgstr ""
 
 msgid "Name:"
-msgstr "╤м'я:"
+msgstr "п├п╪'я▐:"
 
 msgid "Comments:"
-msgstr "Коментар╕:"
+msgstr "п п╬п╪п╣п╫я┌п╟я─я√:"
 
 msgid "Edit Store"
-msgstr "Редагувати Склад"
+msgstr "п═п╣п╢п╟пЁя┐п╡п╟я┌п╦ п║п╨п╩п╟п╢"
 
 msgid "Add Artist"
-msgstr "Додати виконавця"
+msgstr "п■п╬п╢п╟я┌п╦ п╡п╦п╨п╬п╫п╟п╡я├я▐"
 
 msgid "Visible name:"
-msgstr "Видима назва:"
+msgstr "п▓п╦п╢п╦п╪п╟ п╫п╟п╥п╡п╟:"
 
 msgid "Name to sort by:"
-msgstr "Сортувати назви за:"
+msgstr "п║п╬я─я┌я┐п╡п╟я┌п╦ п╫п╟п╥п╡п╦ п╥п╟:"
 
 msgid "Edit Artist"
-msgstr "Редагувати виконавця"
+msgstr "п═п╣п╢п╟пЁя┐п╡п╟я┌п╦ п╡п╦п╨п╬п╫п╟п╡я├я▐"
 
 msgid "Please select the audio files for this record."
-msgstr "Будьласка обер╕ть звуков╕ файли для цього запису."
+msgstr "п▒я┐п╢я▄п╩п╟я│п╨п╟ п╬п╠п╣я─я√я┌я▄ п╥п╡я┐п╨п╬п╡я√ я└п╟п╧п╩п╦ п╢п╩я▐ я├я▄п╬пЁп╬ п╥п╟п©п╦я│я┐."
 
 msgid "Add Record"
-msgstr "Додати запис"
+msgstr "п■п╬п╢п╟я┌п╦ п╥п╟п©п╦я│"
 
 msgid "Auto-create tracks from these files:"
-msgstr "Автостворення дор╕жок з цих файл╕в:"
+msgstr "п░п╡я┌п╬я│я┌п╡п╬я─п╣п╫п╫я▐ п╢п╬я─я√п╤п╬п╨ п╥ я├п╦я┘ я└п╟п╧п╩я√п╡:"
 
 msgid "Clear list"
-msgstr "Очистити список"
+msgstr "п·я┤п╦я│я┌п╦я┌п╦ я│п©п╦я│п╬п╨"
 
 msgid "_Add files..."
-msgstr "_Додати файли..."
+msgstr "_п■п╬п╢п╟я┌п╦ я└п╟п╧п╩п╦..."
 
 msgid "Edit Record"
-msgstr "Редагувати запис"
+msgstr "п═п╣п╢п╟пЁя┐п╡п╟я┌п╦ п╥п╟п©п╦я│"
 
 msgid "Please select the audio file for this track."
-msgstr "Будьласка обер╕ть звуковий файл для ц╕╓╖ дор╕жки."
+msgstr "п▒я┐п╢я▄п╩п╟я│п╨п╟ п╬п╠п╣я─я√я┌я▄ п╥п╡я┐п╨п╬п╡п╦п╧ я└п╟п╧п╩ п╢п╩я▐ я├я√я■я≈ п╢п╬я─я√п╤п╨п╦."
 
 msgid "Add Track"
-msgstr "Додати дор╕жку"
+msgstr "п■п╬п╢п╟я┌п╦ п╢п╬я─я√п╤п╨я┐"
 
 msgid "Edit Track"
-msgstr "Редагувати дор╕жку"
+msgstr "п═п╣п╢п╟пЁя┐п╡п╟я┌п╦ п╢п╬я─я√п╤п╨я┐"
 
 msgid "Duration:"
-msgstr "Тривал╕сть:"
+msgstr "п╒я─п╦п╡п╟п╩я√я│я┌я▄:"
 
 msgid "Volume level:"
-msgstr "Р╕вень гучност╕:"
+msgstr "п═я√п╡п╣п╫я▄ пЁя┐я┤п╫п╬я│я┌я√:"
 
 #, c-format
 msgid "Unmeasured"
-msgstr "Невим╕ряно"
+msgstr "п²п╣п╡п╦п╪я√я─я▐п╫п╬"
 
 msgid "Use manual RVA value [dB]"
-msgstr "Використовувати значення ПВР встановлен╕ вручну [dB]"
+msgstr "п▓п╦п╨п╬я─п╦я│я┌п╬п╡я┐п╡п╟я┌п╦ п╥п╫п╟я┤п╣п╫п╫я▐ п÷п▓п═ п╡я│я┌п╟п╫п╬п╡п╩п╣п╫я√ п╡я─я┐я┤п╫я┐ [dB]"
 
 #, fuzzy
 msgid "Adding songs..."
-msgstr "_Додати файли..."
+msgstr "_п■п╬п╢п╟я┌п╦ я└п╟п╧п╩п╦..."
 
 #, c-format
 msgid ""
@@ -1195,198 +1195,198 @@ msgstr ""
 
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
-msgstr "Справд╕ прибрати \"%s\" з Музичного Складу?"
+msgstr "п║п©я─п╟п╡п╢я√ п©я─п╦п╠я─п╟я┌п╦ \"%s\" п╥ п°я┐п╥п╦я┤п╫п╬пЁп╬ п║п╨п╩п╟п╢я┐?"
 
 msgid "Remove Store"
-msgstr "Прибрати Склад"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п║п╨п╩п╟п╢"
 
 msgid "Do you want to save the store before removing?"
 msgstr ""
 
 msgid "Remove Artist"
-msgstr "Прибрати виконавця"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╡п╦п╨п╬п╫п╟п╡я├я▐"
 
 msgid "Remove Record"
-msgstr "Прибрати запис"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╥п╟п©п╦я│"
 
 msgid "Remove Track"
-msgstr "Прибрати дор╕жку"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╢п╬я─я√п╤п╨я┐"
 
 #, fuzzy
 msgid "Update file metadata"
-msgstr "Перечитати ╕нформац╕ю про файл"
+msgstr "п÷п╣я─п╣я┤п╦я┌п╟я┌п╦ я√п╫я└п╬я─п╪п╟я├я√я▌ п©я─п╬ я└п╟п╧п╩"
 
 msgid "Track name"
-msgstr "Назва дор╕жки"
+msgstr "п²п╟п╥п╡п╟ п╢п╬я─я√п╤п╨п╦"
 
 #, fuzzy
 msgid "Track comment"
-msgstr "Назва дор╕жки"
+msgstr "п²п╟п╥п╡п╟ п╢п╬я─я√п╤п╨п╦"
 
 #, fuzzy
 msgid "Track number"
-msgstr "Назва дор╕жки"
+msgstr "п²п╟п╥п╡п╟ п╢п╬я─я√п╤п╨п╦"
 
 msgid "Failed to set metadata at the following files:"
 msgstr ""
 
 msgid "(no comment)"
-msgstr "(без коментаря)"
+msgstr "(п╠п╣п╥ п╨п╬п╪п╣п╫я┌п╟я─я▐)"
 
 #, fuzzy
 msgid "time unmeasured"
-msgstr "Невим╕ряно"
+msgstr "п²п╣п╡п╦п╪я√я─я▐п╫п╬"
 
 #, fuzzy
 msgid "artists"
-msgstr "Виконавець"
+msgstr "п▓п╦п╨п╬п╫п╟п╡п╣я├я▄"
 
 #, fuzzy
 msgid "artist"
-msgstr "Виконавець"
+msgstr "п▓п╦п╨п╬п╫п╟п╡п╣я├я▄"
 
 #, fuzzy
 msgid "records"
-msgstr "Запис"
+msgstr "п≈п╟п©п╦я│"
 
 #, fuzzy
 msgid "record"
-msgstr "Запис"
+msgstr "п≈п╟п©п╦я│"
 
 #, fuzzy
 msgid "tracks"
-msgstr "Дор╕жки"
+msgstr "п■п╬я─я√п╤п╨п╦"
 
 #, fuzzy
 msgid "track"
-msgstr "Дор╕жка"
+msgstr "п■п╬я─я√п╤п╨п╟"
 
 msgid "Music Store"
-msgstr "Музичний Склад"
+msgstr "п°я┐п╥п╦я┤п╫п╦п╧ п║п╨п╩п╟п╢"
 
 msgid "Search..."
-msgstr "Шукати..."
+msgstr "п╗я┐п╨п╟я┌п╦..."
 
 msgid "Collapse all items"
 msgstr ""
 
 #, fuzzy
 msgid "Edit item..."
-msgstr "Редагувати склад..."
+msgstr "п═п╣п╢п╟пЁя┐п╡п╟я┌п╦ я│п╨п╩п╟п╢..."
 
 #, fuzzy
 msgid "Add item..."
-msgstr "_Додати файли..."
+msgstr "_п■п╬п╢п╟я┌п╦ я└п╟п╧п╩п╦..."
 
 #, fuzzy
 msgid "Remove item..."
-msgstr "Прибрати склад"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ я│п╨п╩п╟п╢"
 
 #, fuzzy
 msgid "Save all stores"
-msgstr "Зберегти Музичний Склад"
+msgstr "п≈п╠п╣я─п╣пЁя┌п╦ п°я┐п╥п╦я┤п╫п╦п╧ п║п╨п╩п╟п╢"
 
 msgid "Create empty store..."
 msgstr ""
 
 msgid "Add to playlist"
-msgstr "Додати до списку програвання"
+msgstr "п■п╬п╢п╟я┌п╦ п╢п╬ я│п©п╦я│п╨я┐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 #, fuzzy
 msgid "Add to playlist (Album mode)"
-msgstr "Додати до списку програвання"
+msgstr "п■п╬п╢п╟я┌п╦ п╢п╬ я│п©п╦я│п╨я┐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 #, fuzzy
 msgid "Build/Update store from filesystem..."
-msgstr "Редагувати склад..."
+msgstr "п═п╣п╢п╟пЁя┐п╡п╟я┌п╦ я│п╨п╩п╟п╢..."
 
 msgid "Edit store..."
-msgstr "Редагувати склад..."
+msgstr "п═п╣п╢п╟пЁя┐п╡п╟я┌п╦ я│п╨п╩п╟п╢..."
 
 #, fuzzy
 msgid "Save store"
-msgstr "Зберегти Музичний Склад"
+msgstr "п≈п╠п╣я─п╣пЁя┌п╦ п°я┐п╥п╦я┤п╫п╦п╧ п║п╨п╩п╟п╢"
 
 msgid "Remove store"
-msgstr "Прибрати склад"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ я│п╨п╩п╟п╢"
 
 msgid "Add new artist to this store..."
-msgstr "Додати нового виконавця до цього складу..."
+msgstr "п■п╬п╢п╟я┌п╦ п╫п╬п╡п╬пЁп╬ п╡п╦п╨п╬п╫п╟п╡я├я▐ п╢п╬ я├я▄п╬пЁп╬ я│п╨п╩п╟п╢я┐..."
 
 msgid "Calculate volume (recursive)"
-msgstr "П╕драхувати гучн╕сть (рекурсивно)"
+msgstr "п÷я√п╢я─п╟я┘я┐п╡п╟я┌п╦ пЁя┐я┤п╫я√я│я┌я▄ (я─п╣п╨я┐я─я│п╦п╡п╫п╬)"
 
 #, fuzzy
 msgid "Unmeasured tracks only"
-msgstr "Невим╕ряно"
+msgstr "п²п╣п╡п╦п╪я√я─я▐п╫п╬"
 
 #, fuzzy
 msgid "All tracks"
-msgstr "Дор╕жки"
+msgstr "п■п╬я─я√п╤п╨п╦"
 
 #, fuzzy
 msgid "Batch-update file metadata..."
-msgstr "Перечитати ╕нформац╕ю про файл"
+msgstr "п÷п╣я─п╣я┤п╦я┌п╟я┌п╦ я√п╫я└п╬я─п╪п╟я├я√я▌ п©я─п╬ я└п╟п╧п╩"
 
 msgid "Add new artist..."
-msgstr "Додати нового виконавця..."
+msgstr "п■п╬п╢п╟я┌п╦ п╫п╬п╡п╬пЁп╬ п╡п╦п╨п╬п╫п╟п╡я├я▐..."
 
 msgid "Edit artist..."
-msgstr "редагувати виконавця..."
+msgstr "я─п╣п╢п╟пЁя┐п╡п╟я┌п╦ п╡п╦п╨п╬п╫п╟п╡я├я▐..."
 
 msgid "Remove artist"
-msgstr "прибрати виконавця"
+msgstr "п©я─п╦п╠я─п╟я┌п╦ п╡п╦п╨п╬п╫п╟п╡я├я▐"
 
 msgid "Add new record to this artist..."
-msgstr "Додати новий запис до цього виконавця..."
+msgstr "п■п╬п╢п╟я┌п╦ п╫п╬п╡п╦п╧ п╥п╟п©п╦я│ п╢п╬ я├я▄п╬пЁп╬ п╡п╦п╨п╬п╫п╟п╡я├я▐..."
 
 msgid "Add new record..."
-msgstr "Додати новий запис..."
+msgstr "п■п╬п╢п╟я┌п╦ п╫п╬п╡п╦п╧ п╥п╟п©п╦я│..."
 
 msgid "Edit record..."
-msgstr "Редагувати запис..."
+msgstr "п═п╣п╢п╟пЁя┐п╡п╟я┌п╦ п╥п╟п©п╦я│..."
 
 msgid "Remove record"
-msgstr "Прибрати запис"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╥п╟п©п╦я│"
 
 msgid "Add new track to this record..."
-msgstr "Додати нову дор╕жку до цього запису..."
+msgstr "п■п╬п╢п╟я┌п╦ п╫п╬п╡я┐ п╢п╬я─я√п╤п╨я┐ п╢п╬ я├я▄п╬пЁп╬ п╥п╟п©п╦я│я┐..."
 
 msgid "CDDB query for this record..."
-msgstr "CDDB запит для цього запису..."
+msgstr "CDDB п╥п╟п©п╦я┌ п╢п╩я▐ я├я▄п╬пЁп╬ п╥п╟п©п╦я│я┐..."
 
 msgid "Submit record to CDDB database..."
 msgstr ""
 
 msgid "Add new track..."
-msgstr "Додати нову дор╕жку..."
+msgstr "п■п╬п╢п╟я┌п╦ п╫п╬п╡я┐ п╢п╬я─я√п╤п╨я┐..."
 
 msgid "Edit track..."
-msgstr "Редагувати дор╕жку..."
+msgstr "п═п╣п╢п╟пЁя┐п╡п╟я┌п╦ п╢п╬я─я√п╤п╨я┐..."
 
 msgid "Remove track"
-msgstr "Прибрати дор╕жку"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╢п╬я─я√п╤п╨я┐"
 
 msgid "File info..."
-msgstr "╤нформац╕я про файл"
+msgstr "п├п╫я└п╬я─п╪п╟я├я√я▐ п©я─п╬ я└п╟п╧п╩"
 
 msgid "Calculate volume"
-msgstr "П╕драхувати гучн╕сть"
+msgstr "п÷я√п╢я─п╟я┘я┐п╡п╟я┌п╦ пЁя┐я┤п╫я√я│я┌я▄"
 
 #, fuzzy
 msgid "Only if unmeasured"
-msgstr "Невим╕ряно"
+msgstr "п²п╣п╡п╦п╪я√я─я▐п╫п╬"
 
 msgid "In any case"
 msgstr ""
 
 #, fuzzy
 msgid "Update file metadata..."
-msgstr "Перечитати ╕нформац╕ю про файл"
+msgstr "п÷п╣я─п╣я┤п╦я┌п╟я┌п╦ я√п╫я└п╬я─п╪п╟я├я√я▌ п©я─п╬ я└п╟п╧п╩"
 
 #, fuzzy
 msgid "CDDB query for this CD..."
-msgstr "CDDB запит для цього запису..."
+msgstr "CDDB п╥п╟п©п╦я┌ п╢п╩я▐ я├я▄п╬пЁп╬ п╥п╟п©п╦я│я┐..."
 
 msgid "Submit CD to CDDB database..."
 msgstr ""
@@ -1396,14 +1396,14 @@ msgstr ""
 
 #, fuzzy
 msgid "Disc info..."
-msgstr "╤нформац╕я про файл"
+msgstr "п├п╫я└п╬я─п╪п╟я├я√я▐ п©я─п╬ я└п╟п╧п╩"
 
 #, fuzzy
 msgid "Drive info..."
-msgstr "╤нформац╕я про файл"
+msgstr "п├п╫я└п╬я─п╪п╟я├я√я▐ п©я─п╬ я└п╟п╧п╩"
 
 msgid "*Music Store"
-msgstr "*Музичний Склад"
+msgstr "*п°я┐п╥п╦я┤п╫п╦п╧ п║п╨п╩п╟п╢"
 
 #, c-format
 msgid "Do you want to save store \"%s\" before removing from Music Store?"
@@ -1412,13 +1412,13 @@ msgstr ""
 #, fuzzy
 msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
-msgstr "Вам знадобиться перезапустити Aqualung щоб зм╕ни набули чинност╕"
+msgstr "п▓п╟п╪ п╥п╫п╟п╢п╬п╠п╦я┌я▄я│я▐ п©п╣я─п╣п╥п╟п©я┐я│я┌п╦я┌п╦ Aqualung я┴п╬п╠ п╥п╪я√п╫п╦ п╫п╟п╠я┐п╩п╦ я┤п╦п╫п╫п╬я│я┌я√"
 
 msgid "r"
 msgstr ""
 
 msgid "unreachable"
-msgstr "недосяжний"
+msgstr "п╫п╣п╢п╬я│я▐п╤п╫п╦п╧"
 
 msgid "Paths must either be absolute or starting with a tilde."
 msgstr ""
@@ -1427,7 +1427,7 @@ msgid "The specified store has already been added to the list."
 msgstr ""
 
 msgid "Please select a Music Store database."
-msgstr "Будьласка обер╕ть базу даних Музичного Складу."
+msgstr "п▒я┐п╢я▄п╩п╟я│п╨п╟ п╬п╠п╣я─я√я┌я▄ п╠п╟п╥я┐ п╢п╟п╫п╦я┘ п°я┐п╥п╦я┤п╫п╬пЁп╬ п║п╨п╩п╟п╢я┐."
 
 #, fuzzy, c-format
 msgid ""
@@ -1439,11 +1439,11 @@ msgid ""
 "literally copied into the resulting string.\n"
 msgstr ""
 "\n"
-"Рядки шаблону, що ви впишете сюди, буде використано\n"
-"для складання одн╕╓╖ назви з Виконавця, Запису\n"
-"та назви Дор╕жки. Це означа╓ться %a, %r та %t,\n"
-"в╕дпов╕дно. Все ╕нше, що ви впишете сюди буде\n"
-"скоп╕йовано до рядку-результату.\n"
+"п═я▐п╢п╨п╦ я┬п╟п╠п╩п╬п╫я┐, я┴п╬ п╡п╦ п╡п©п╦я┬п╣я┌п╣ я│я▌п╢п╦, п╠я┐п╢п╣ п╡п╦п╨п╬я─п╦я│я┌п╟п╫п╬\n"
+"п╢п╩я▐ я│п╨п╩п╟п╢п╟п╫п╫я▐ п╬п╢п╫я√я■я≈ п╫п╟п╥п╡п╦ п╥ п▓п╦п╨п╬п╫п╟п╡я├я▐, п≈п╟п©п╦я│я┐\n"
+"я┌п╟ п╫п╟п╥п╡п╦ п■п╬я─я√п╤п╨п╦. п╕п╣ п╬п╥п╫п╟я┤п╟я■я┌я▄я│я▐ %a, %r я┌п╟ %t,\n"
+"п╡я√п╢п©п╬п╡я√п╢п╫п╬. п▓я│п╣ я√п╫я┬п╣, я┴п╬ п╡п╦ п╡п©п╦я┬п╣я┌п╣ я│я▌п╢п╦ п╠я┐п╢п╣\n"
+"я│п╨п╬п©я√п╧п╬п╡п╟п╫п╬ п╢п╬ я─я▐п╢п╨я┐-я─п╣п╥я┐п╩я▄я┌п╟я┌я┐.\n"
 
 msgid "Help"
 msgstr ""
@@ -1458,12 +1458,12 @@ msgid ""
 "running realtime as a default.\n"
 msgstr ""
 "\n"
-"Рядок, що ви введете тут буде проанал╕зовано як командний\n"
-"рядок перед анал╕зом параметр╕в справжнього командного рядку.\n"
-"Що ви впишете тут буде д╕яти як налаштування по замовчанню, та\n"
-"може бути, або не бути скасовано 'справжн╕м' командним рядком.\n"
-"Приклад: впиш╕ть '-o alsa -R' нижче щоб використовувати по\n"
-"замовчанню ALSA вив╕д запущений з приор╕тетом реального часу.\n"
+"п═я▐п╢п╬п╨, я┴п╬ п╡п╦ п╡п╡п╣п╢п╣я┌п╣ я┌я┐я┌ п╠я┐п╢п╣ п©я─п╬п╟п╫п╟п╩я√п╥п╬п╡п╟п╫п╬ я▐п╨ п╨п╬п╪п╟п╫п╢п╫п╦п╧\n"
+"я─я▐п╢п╬п╨ п©п╣я─п╣п╢ п╟п╫п╟п╩я√п╥п╬п╪ п©п╟я─п╟п╪п╣я┌я─я√п╡ я│п©я─п╟п╡п╤п╫я▄п╬пЁп╬ п╨п╬п╪п╟п╫п╢п╫п╬пЁп╬ я─я▐п╢п╨я┐.\n"
+"п╘п╬ п╡п╦ п╡п©п╦я┬п╣я┌п╣ я┌я┐я┌ п╠я┐п╢п╣ п╢я√я▐я┌п╦ я▐п╨ п╫п╟п╩п╟я┬я┌я┐п╡п╟п╫п╫я▐ п©п╬ п╥п╟п╪п╬п╡я┤п╟п╫п╫я▌, я┌п╟\n"
+"п╪п╬п╤п╣ п╠я┐я┌п╦, п╟п╠п╬ п╫п╣ п╠я┐я┌п╦ я│п╨п╟я│п╬п╡п╟п╫п╬ 'я│п©я─п╟п╡п╤п╫я√п╪' п╨п╬п╪п╟п╫п╢п╫п╦п╪ я─я▐п╢п╨п╬п╪.\n"
+"п÷я─п╦п╨п╩п╟п╢: п╡п©п╦я┬я√я┌я▄ '-o alsa -R' п╫п╦п╤я┤п╣ я┴п╬п╠ п╡п╦п╨п╬я─п╦я│я┌п╬п╡я┐п╡п╟я┌п╦ п©п╬\n"
+"п╥п╟п╪п╬п╡я┤п╟п╫п╫я▌ ALSA п╡п╦п╡я√п╢ п╥п╟п©я┐я┴п╣п╫п╦п╧ п╥ п©я─п╦п╬я─я√я┌п╣я┌п╬п╪ я─п╣п╟п╩я▄п╫п╬пЁп╬ я┤п╟я│я┐.\n"
 
 msgid ""
 "Paths must either be absolute or starting with a tilde, which will be "
@@ -1498,19 +1498,19 @@ msgid ""
 msgstr ""
 
 msgid "Title format"
-msgstr "Формат назви"
+msgstr "п╓п╬я─п╪п╟я┌ п╫п╟п╥п╡п╦"
 
 msgid "Implicit command line"
-msgstr "Неявний командний рядок"
+msgstr "п²п╣я▐п╡п╫п╦п╧ п╨п╬п╪п╟п╫п╢п╫п╦п╧ я─я▐п╢п╬п╨"
 
 msgid "Miscellaneous"
-msgstr "Р╕зне"
+msgstr "п═я√п╥п╫п╣"
 
 msgid "Enable tooltips"
-msgstr "Ув╕мкнути п╕дказки"
+msgstr "пёп╡я√п╪п╨п╫я┐я┌п╦ п©я√п╢п╨п╟п╥п╨п╦"
 
 msgid "Put control buttons at the bottom of playlist"
-msgstr "Кнопки керування знизу списку програвання"
+msgstr "п п╫п╬п©п╨п╦ п╨п╣я─я┐п╡п╟п╫п╫я▐ п╥п╫п╦п╥я┐ я│п©п╦я│п╨я┐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Disable control buttons relief"
 msgstr ""
@@ -1519,7 +1519,7 @@ msgid "Keep main window always on top"
 msgstr ""
 
 msgid "Simple view in LADSPA patch builder"
-msgstr "Спрощений вигляд буд╕вельника шлях╕в LADSPA"
+msgstr "п║п©я─п╬я┴п╣п╫п╦п╧ п╡п╦пЁп╩я▐п╢ п╠я┐п╢я√п╡п╣п╩я▄п╫п╦п╨п╟ я┬п╩я▐я┘я√п╡ LADSPA"
 
 msgid "United windows minimization"
 msgstr ""
@@ -1534,13 +1534,13 @@ msgid "Show tags tab first in the file info dialog"
 msgstr ""
 
 msgid "Playlist"
-msgstr "Список програвання"
+msgstr "п║п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Embed playlist into main window"
-msgstr "Вбудувати список програвання у головне в╕кно"
+msgstr "п▓п╠я┐п╢я┐п╡п╟я┌п╦ я│п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐ я┐ пЁп╬п╩п╬п╡п╫п╣ п╡я√п╨п╫п╬"
 
 msgid "Save and restore the playlist on exit/startup"
-msgstr "Запис та в╕дновлення списку програвання при виход╕/запуску"
+msgstr "п≈п╟п©п╦я│ я┌п╟ п╡я√п╢п╫п╬п╡п╩п╣п╫п╫я▐ я│п©п╦я│п╨я┐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐ п©я─п╦ п╡п╦я┘п╬п╢я√/п╥п╟п©я┐я│п╨я┐"
 
 msgid "Album mode is the default when adding entire records"
 msgstr ""
@@ -1550,228 +1550,228 @@ msgstr ""
 
 #, fuzzy
 msgid "Enable statusbar"
-msgstr "Ув╕мкнути рядок стану у списку програвання"
+msgstr "пёп╡я√п╪п╨п╫я┐я┌п╦ я─я▐п╢п╬п╨ я│я┌п╟п╫я┐ я┐ я│п©п╦я│п╨я┐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Enable statusbar in playlist"
-msgstr "Ув╕мкнути рядок стану у списку програвання"
+msgstr "пёп╡я√п╪п╨п╫я┐я┌п╦ я─я▐п╢п╬п╨ я│я┌п╟п╫я┐ я┐ я│п©п╦я│п╨я┐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Show soundfile size in statusbar"
 msgstr ""
 
 #, fuzzy
 msgid "Show RVA values"
-msgstr "Значення ПВР"
+msgstr "п≈п╫п╟я┤п╣п╫п╫я▐ п÷п▓п═"
 
 #, fuzzy
 msgid "Show track lengths"
-msgstr "Тривал╕сть дор╕жок"
+msgstr "п╒я─п╦п╡п╟п╩я√я│я┌я▄ п╢п╬я─я√п╤п╬п╨"
 
 msgid "Show active track name in bold"
-msgstr "Вид╕ляти жирним активну дор╕жку"
+msgstr "п▓п╦п╢я√п╩я▐я┌п╦ п╤п╦я─п╫п╦п╪ п╟п╨я┌п╦п╡п╫я┐ п╢п╬я─я√п╤п╨я┐"
 
 #, fuzzy
 msgid "Enable rules hint"
-msgstr "Зад╕яти ус╕ втулки"
+msgstr "п≈п╟п╢я√я▐я┌п╦ я┐я│я√ п╡я┌я┐п╩п╨п╦"
 
 msgid "Playlist column order"
-msgstr "Порядок стовпчик╕в списку пргравання"
+msgstr "п÷п╬я─я▐п╢п╬п╨ я│я┌п╬п╡п©я┤п╦п╨я√п╡ я│п©п╦я│п╨я┐ п©я─пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid ""
 "Drag and drop entries in the list below \n"
 "to set the column order in the Playlist."
 msgstr ""
-"Перетягуйте пункти у списку нижче \n"
-"для встановлення порядку стовпчик╕в у списку пргравання."
+"п÷п╣я─п╣я┌я▐пЁя┐п╧я┌п╣ п©я┐п╫п╨я┌п╦ я┐ я│п©п╦я│п╨я┐ п╫п╦п╤я┤п╣ \n"
+"п╢п╩я▐ п╡я│я┌п╟п╫п╬п╡п╩п╣п╫п╫я▐ п©п╬я─я▐п╢п╨я┐ я│я┌п╬п╡п©я┤п╦п╨я√п╡ я┐ я│п©п╦я│п╨я┐ п©я─пЁя─п╟п╡п╟п╫п╫я▐."
 
 msgid "Column"
-msgstr "Стовпчик"
+msgstr "п║я┌п╬п╡п©я┤п╦п╨"
 
 msgid "Track titles"
-msgstr "Назви дор╕жок"
+msgstr "п²п╟п╥п╡п╦ п╢п╬я─я√п╤п╬п╨"
 
 msgid "RVA values"
-msgstr "Значення ПВР"
+msgstr "п≈п╫п╟я┤п╣п╫п╫я▐ п÷п▓п═"
 
 msgid "Track lengths"
-msgstr "Тривал╕сть дор╕жок"
+msgstr "п╒я─п╦п╡п╟п╩я√я│я┌я▄ п╢п╬я─я√п╤п╬п╨"
 
 #, fuzzy
 msgid "Hide comment pane"
-msgstr "Приховати панель коментар╕в Музичного Складу"
+msgstr "п÷я─п╦я┘п╬п╡п╟я┌п╦ п©п╟п╫п╣п╩я▄ п╨п╬п╪п╣п╫я┌п╟я─я√п╡ п°я┐п╥п╦я┤п╫п╬пЁп╬ п║п╨п╩п╟п╢я┐"
 
 msgid "Hide the Music Store comment pane"
-msgstr "Приховати панель коментар╕в Музичного Складу"
+msgstr "п÷я─п╦я┘п╬п╡п╟я┌п╦ п©п╟п╫п╣п╩я▄ п╨п╬п╪п╣п╫я┌п╟я─я√п╡ п°я┐п╥п╦я┤п╫п╬пЁп╬ п║п╨п╩п╟п╢я┐"
 
 #, fuzzy
 msgid "Enable toolbar"
-msgstr "Ув╕мкнути п╕дказки"
+msgstr "пёп╡я√п╪п╨п╫я┐я┌п╦ п©я√п╢п╨п╟п╥п╨п╦"
 
 #, fuzzy
 msgid "Enable toolbar in Music Store"
-msgstr "Ув╕мкнути рядок стану у списку програвання"
+msgstr "пёп╡я√п╪п╨п╫я┐я┌п╦ я─я▐п╢п╬п╨ я│я┌п╟п╫я┐ я┐ я│п©п╦я│п╨я┐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 #, fuzzy
 msgid "Enable statusbar in Music Store"
-msgstr "Ув╕мкнути рядок стану у списку програвання"
+msgstr "пёп╡я√п╪п╨п╫я┐я┌п╦ я─я▐п╢п╬п╨ я│я┌п╟п╫я┐ я┐ я│п©п╦я│п╨я┐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Expand Stores on startup"
 msgstr ""
 
 #, fuzzy
 msgid "Enable tree node icons"
-msgstr "Зберегти Музичний Склад"
+msgstr "п≈п╠п╣я─п╣пЁя┌п╦ п°я┐п╥п╦я┤п╫п╦п╧ п║п╨п╩п╟п╢"
 
 #, fuzzy
 msgid "Enable Music Store tree node icons"
-msgstr "Зберегти Музичний Склад"
+msgstr "п≈п╠п╣я─п╣пЁя┌п╦ п°я┐п╥п╦я┤п╫п╦п╧ п║п╨п╩п╟п╢"
 
 msgid "Cover art"
-msgstr "Обкладинка"
+msgstr "п·п╠п╨п╩п╟п╢п╦п╫п╨п╟"
 
 msgid "Default cover width:"
-msgstr "Ширина обкладинки по замовчанню:"
+msgstr "п╗п╦я─п╦п╫п╟ п╬п╠п╨п╩п╟п╢п╦п╫п╨п╦ п©п╬ п╥п╟п╪п╬п╡я┤п╟п╫п╫я▌:"
 
 msgid "50 pixels"
-msgstr "50 п╕ксел╕в"
+msgstr "50 п©я√п╨я│п╣п╩я√п╡"
 
 msgid "100 pixels"
-msgstr "100 п╕ксел╕в"
+msgstr "100 п©я√п╨я│п╣п╩я√п╡"
 
 msgid "200 pixels"
-msgstr "200 п╕ксел╕в"
+msgstr "200 п©я√п╨я│п╣п╩я√п╡"
 
 msgid "300 pixels"
-msgstr "300 п╕ксел╕в"
+msgstr "300 п©я√п╨я│п╣п╩я√п╡"
 
 msgid "use browser window width"
-msgstr "використовувати ширину в╕кна оглядача"
+msgstr "п╡п╦п╨п╬я─п╦я│я┌п╬п╡я┐п╡п╟я┌п╦ я┬п╦я─п╦п╫я┐ п╡я√п╨п╫п╟ п╬пЁп╩я▐п╢п╟я┤п╟"
 
 #, fuzzy
 msgid "Do not magnify images with smaller width"
-msgstr "Не зб╕льшувати зображення меншого розм╕ру"
+msgstr "п²п╣ п╥п╠я√п╩я▄я┬я┐п╡п╟я┌п╦ п╥п╬п╠я─п╟п╤п╣п╫п╫я▐ п╪п╣п╫я┬п╬пЁп╬ я─п╬п╥п╪я√я─я┐"
 
 msgid "Paths to Music Store databases"
-msgstr "Шляхи до баз даних Музичного Складу"
+msgstr "п╗п╩я▐я┘п╦ п╢п╬ п╠п╟п╥ п╢п╟п╫п╦я┘ п°я┐п╥п╦я┤п╫п╬пЁп╬ п║п╨п╩п╟п╢я┐"
 
 msgid "Path"
-msgstr "Шлях"
+msgstr "п╗п╩я▐я┘"
 
 msgid "Access"
-msgstr "Доступ"
+msgstr "п■п╬я│я┌я┐п©"
 
 msgid "Browse"
-msgstr "Оглянути"
+msgstr "п·пЁп╩я▐п╫я┐я┌п╦"
 
 msgid "Refresh"
-msgstr "Оновити"
+msgstr "п·п╫п╬п╡п╦я┌п╦"
 
 msgid "Remove"
-msgstr "Прибрати"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦"
 
 msgid "Add"
-msgstr "Додати"
+msgstr "п■п╬п╢п╟я┌п╦"
 
 msgid "DSP"
-msgstr "ЦОС"
+msgstr "п╕п·п║"
 
 msgid "LADSPA plugin processing"
-msgstr "Обробка LADSPA втулками (Цифрова Обробка Сигналу)"
+msgstr "п·п╠я─п╬п╠п╨п╟ LADSPA п╡я┌я┐п╩п╨п╟п╪п╦ (п╕п╦я└я─п╬п╡п╟ п·п╠я─п╬п╠п╨п╟ п║п╦пЁп╫п╟п╩я┐)"
 
 msgid "Pre Fader (before Volume & Balance)"
-msgstr "Пре-згасання (перед Гучн╕стю та Балансом)"
+msgstr "п÷я─п╣-п╥пЁп╟я│п╟п╫п╫я▐ (п©п╣я─п╣п╢ п⌠я┐я┤п╫я√я│я┌я▌ я┌п╟ п▒п╟п╩п╟п╫я│п╬п╪)"
 
 msgid "Post Fader (after Volume & Balance)"
-msgstr "П╕сля-згасання (п╕сля Гучност╕ та Баланса)"
+msgstr "п÷я√я│п╩я▐-п╥пЁп╟я│п╟п╫п╫я▐ (п©я√я│п╩я▐ п⌠я┐я┤п╫п╬я│я┌я√ я┌п╟ п▒п╟п╩п╟п╫я│п╟)"
 
 #, fuzzy
 msgid ""
 "Aqualung is compiled without LADSPA plugin support.\n"
 "See the About box and the documentation for details."
 msgstr ""
-"Aqualung скомп╕льовано без п╕дтримки CDDB.\n"
-"Дивись в╕кно 'Про програму' та документац╕ю для подробиць."
+"Aqualung я│п╨п╬п╪п©я√п╩я▄п╬п╡п╟п╫п╬ п╠п╣п╥ п©я√п╢я┌я─п╦п╪п╨п╦ CDDB.\n"
+"п■п╦п╡п╦я│я▄ п╡я√п╨п╫п╬ 'п÷я─п╬ п©я─п╬пЁя─п╟п╪я┐' я┌п╟ п╢п╬п╨я┐п╪п╣п╫я┌п╟я├я√я▌ п╢п╩я▐ п©п╬п╢я─п╬п╠п╦я├я▄."
 
 msgid "Sample Rate Converter type"
-msgstr "Тип перетворювача частоти семплювання"
+msgstr "п╒п╦п© п©п╣я─п╣я┌п╡п╬я─я▌п╡п╟я┤п╟ я┤п╟я│я┌п╬я┌п╦ я│п╣п╪п©п╩я▌п╡п╟п╫п╫я▐"
 
 msgid ""
 "Aqualung is compiled without Sample Rate Converter support.\n"
 "See the About box and the documentation for details."
 msgstr ""
-"Aqualung скомп╕льовано без п╕дтримки Перетворювача Частоти Семплювання.\n"
-"Дивись в╕кно 'Про програму' та документац╕ю для подробиць."
+"Aqualung я│п╨п╬п╪п©я√п╩я▄п╬п╡п╟п╫п╬ п╠п╣п╥ п©я√п╢я┌я─п╦п╪п╨п╦ п÷п╣я─п╣я┌п╡п╬я─я▌п╡п╟я┤п╟ п╖п╟я│я┌п╬я┌п╦ п║п╣п╪п©п╩я▌п╡п╟п╫п╫я▐.\n"
+"п■п╦п╡п╦я│я▄ п╡я√п╨п╫п╬ 'п÷я─п╬ п©я─п╬пЁя─п╟п╪я┐' я┌п╟ п╢п╬п╨я┐п╪п╣п╫я┌п╟я├я√я▌ п╢п╩я▐ п©п╬п╢я─п╬п╠п╦я├я▄."
 
 msgid "Playback RVA"
-msgstr "ПВР програвання"
+msgstr "п÷п▓п═ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Enable playback RVA"
-msgstr "Зад╕яти ПВР (Поправку В╕дносного Р╕вня) програвання"
+msgstr "п≈п╟п╢я√я▐я┌п╦ п÷п▓п═ (п÷п╬п©я─п╟п╡п╨я┐ п▓я√п╢п╫п╬я│п╫п╬пЁп╬ п═я√п╡п╫я▐) п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Listening environment:"
-msgstr "Оточення:"
+msgstr "п·я┌п╬я┤п╣п╫п╫я▐:"
 
 msgid "Audiophile"
-msgstr "Ауд╕оф╕л"
+msgstr "п░я┐п╢я√п╬я└я√п╩"
 
 msgid "Living room"
-msgstr "Жила к╕мната"
+msgstr "п√п╦п╩п╟ п╨я√п╪п╫п╟я┌п╟"
 
 msgid "Office"
-msgstr "Оф╕с"
+msgstr "п·я└я√я│"
 
 msgid "Noisy workshop"
-msgstr "Шумна установа"
+msgstr "п╗я┐п╪п╫п╟ я┐я│я┌п╟п╫п╬п╡п╟"
 
 msgid "Reference volume [dBFS] :"
-msgstr "Бажана гучн╕сть [dbFS] :"
+msgstr "п▒п╟п╤п╟п╫п╟ пЁя┐я┤п╫я√я│я┌я▄ [dbFS] :"
 
 msgid "Steepness [dB/dB] :"
-msgstr "Крок [dB/dB] :"
+msgstr "п я─п╬п╨ [dB/dB] :"
 
 msgid "Apply averaged RVA to tracks of the same record"
-msgstr "Застосувати усереднен╕ ПВР до дор╕жок одного запису"
+msgstr "п≈п╟я│я┌п╬я│я┐п╡п╟я┌п╦ я┐я│п╣я─п╣п╢п╫п╣п╫я√ п÷п▓п═ п╢п╬ п╢п╬я─я√п╤п╬п╨ п╬п╢п╫п╬пЁп╬ п╥п╟п©п╦я│я┐"
 
 msgid "Drop statistical aberrations based on"
-msgstr "Скидання статистичного в╕дхилення базу╓ться на"
+msgstr "п║п╨п╦п╢п╟п╫п╫я▐ я│я┌п╟я┌п╦я│я┌п╦я┤п╫п╬пЁп╬ п╡я√п╢я┘п╦п╩п╣п╫п╫я▐ п╠п╟п╥я┐я■я┌я▄я│я▐ п╫п╟"
 
 #, c-format
 msgid "% of standard deviation"
-msgstr "% в╕д стандартного в╕дхилення"
+msgstr "% п╡я√п╢ я│я┌п╟п╫п╢п╟я─я┌п╫п╬пЁп╬ п╡я√п╢я┘п╦п╩п╣п╫п╫я▐"
 
 msgid "Linear threshold [dB]"
-msgstr "Л╕н╕йне обмеження [dB]"
+msgstr "п⌡я√п╫я√п╧п╫п╣ п╬п╠п╪п╣п╤п╣п╫п╫я▐ [dB]"
 
 msgid "Linear threshold [dB] :"
-msgstr "Л╕н╕йне обмеження [dB] :"
+msgstr "п⌡я√п╫я√п╧п╫п╣ п╬п╠п╪п╣п╤п╣п╫п╫я▐ [dB] :"
 
 #, c-format
 msgid "% of standard deviation :"
-msgstr "% в╕д стандартного в╕дхилення :"
+msgstr "% п╡я√п╢ я│я┌п╟п╫п╢п╟я─я┌п╫п╬пЁп╬ п╡я√п╢я┘п╦п╩п╣п╫п╫я▐ :"
 
 msgid ""
 "When adding to playlist, use file metadata (if available) instead of\n"
 "information from the Music Store for:"
 msgstr ""
-"При додаванн╕ до списку програвання, використовувати метадан╕ файла (якщо ╓) "
-"зам╕сть\n"
-"Зам╕сть ╕нформац╕╖ з Музичного Складу для:"
+"п÷я─п╦ п╢п╬п╢п╟п╡п╟п╫п╫я√ п╢п╬ я│п©п╦я│п╨я┐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐, п╡п╦п╨п╬я─п╦я│я┌п╬п╡я┐п╡п╟я┌п╦ п╪п╣я┌п╟п╢п╟п╫я√ я└п╟п╧п╩п╟ (я▐п╨я┴п╬ я■) "
+"п╥п╟п╪я√я│я┌я▄\n"
+"п≈п╟п╪я√я│я┌я▄ я√п╫я└п╬я─п╪п╟я├я√я≈ п╥ п°я┐п╥п╦я┤п╫п╬пЁп╬ п║п╨п╩п╟п╢я┐ п╢п╩я▐:"
 
 msgid ""
 "When adding external files to playlist, use file metadata (if available) for:"
 msgstr ""
-"При додаванн╕ зовн╕шн╕х файл╕в до списку програвання, використовувати "
-"метадан╕ файла (якщо ╓) для:"
+"п÷я─п╦ п╢п╬п╢п╟п╡п╟п╫п╫я√ п╥п╬п╡п╫я√я┬п╫я√я┘ я└п╟п╧п╩я√п╡ п╢п╬ я│п©п╦я│п╨я┐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐, п╡п╦п╨п╬я─п╦я│я┌п╬п╡я┐п╡п╟я┌п╦ "
+"п╪п╣я┌п╟п╢п╟п╫я√ я└п╟п╧п╩п╟ (я▐п╨я┴п╬ я■) п╢п╩я▐:"
 
 #, fuzzy
 msgid "Replaygain tag to extract from Ogg Xiph and APE tags: "
 msgstr ""
-"Тег п╕дсилення програвання що використову╓ться в Ogg Vorbis та FLAC файлах: "
+"п╒п╣пЁ п©я√п╢я│п╦п╩п╣п╫п╫я▐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐ я┴п╬ п╡п╦п╨п╬я─п╦я│я┌п╬п╡я┐я■я┌я▄я│я▐ п╡ Ogg Vorbis я┌п╟ FLAC я└п╟п╧п╩п╟я┘: "
 
 msgid "Replaygain_track_gain"
-msgstr "П╕дсилення дор╕жки"
+msgstr "п÷я√п╢я│п╦п╩п╣п╫п╫я▐ п╢п╬я─я√п╤п╨п╦"
 
 msgid "Replaygain_album_gain"
-msgstr "П╕дсилення альбома"
+msgstr "п÷я√п╢я│п╦п╩п╣п╫п╫я▐ п╟п╩я▄п╠п╬п╪п╟"
 
 msgid "CD drive speed:"
 msgstr ""
@@ -1780,33 +1780,33 @@ msgid "Force TOC re-read on every drive scan"
 msgstr ""
 
 msgid "CDDB server:"
-msgstr "CDDB сервер:"
+msgstr "CDDB я│п╣я─п╡п╣я─:"
 
 msgid "Connection timeout [sec]:"
-msgstr "Таймаут з'╓днання [сек]:"
+msgstr "п╒п╟п╧п╪п╟я┐я┌ п╥'я■п╢п╫п╟п╫п╫я▐ [я│п╣п╨]:"
 
 msgid "Email address for submission:"
 msgstr ""
 
 #, fuzzy
 msgid "Local CDDB directory:"
-msgstr "Запис"
+msgstr "п≈п╟п©п╦я│"
 
 msgid "Use the local database only"
 msgstr ""
 
 #, fuzzy
 msgid "Direct connection to CDDB server"
-msgstr "П╕д'╓днуюсь до сервера CDDB..."
+msgstr "п÷я√п╢'я■п╢п╫я┐я▌я│я▄ п╢п╬ я│п╣я─п╡п╣я─п╟ CDDB..."
 
 msgid "Protocol for querying:"
 msgstr ""
 
 msgid "CDDBP (port 888)"
-msgstr "CDDBP (порт 888)"
+msgstr "CDDBP (п©п╬я─я┌ 888)"
 
 msgid "HTTP (port 80)"
-msgstr "HTTP (порт 80)"
+msgstr "HTTP (п©п╬я─я┌ 80)"
 
 msgid "HTTP tunneling through proxy"
 msgstr ""
@@ -1816,32 +1816,32 @@ msgstr ""
 
 #, fuzzy
 msgid "Port:"
-msgstr "Формат:"
+msgstr "п╓п╬я─п╪п╟я┌:"
 
 msgid "Appearance"
-msgstr "Вигляд"
+msgstr "п▓п╦пЁп╩я▐п╢"
 
 msgid "Override skin settings"
-msgstr "Перекривати установки жупана"
+msgstr "п÷п╣я─п╣п╨я─п╦п╡п╟я┌п╦ я┐я│я┌п╟п╫п╬п╡п╨п╦ п╤я┐п©п╟п╫п╟"
 
 msgid "Fonts"
-msgstr "Шрифти"
+msgstr "п╗я─п╦я└я┌п╦"
 
 msgid "Playlist: "
-msgstr "Список програвання: "
+msgstr "п║п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐: "
 
 msgid "Music Store: "
-msgstr "Музичний Склад: "
+msgstr "п°я┐п╥п╦я┤п╫п╦п╧ п║п╨п╩п╟п╢: "
 
 msgid "Big timer: "
-msgstr "Великий таймер: "
+msgstr "п▓п╣п╩п╦п╨п╦п╧ я┌п╟п╧п╪п╣я─: "
 
 msgid "Small timers: "
-msgstr "Маленьк╕ таймери:"
+msgstr "п°п╟п╩п╣п╫я▄п╨я√ я┌п╟п╧п╪п╣я─п╦:"
 
 #, fuzzy
 msgid "Song title: "
-msgstr "Великий таймер: "
+msgstr "п▓п╣п╩п╦п╨п╦п╧ я┌п╟п╧п╪п╣я─: "
 
 msgid "Song info: "
 msgstr ""
@@ -1850,88 +1850,88 @@ msgid "Statusbar: "
 msgstr ""
 
 msgid "Colors"
-msgstr "Кольори"
+msgstr "п п╬п╩я▄п╬я─п╦"
 
 msgid "Active song in playlist: "
-msgstr "Активна п╕сня у списку програвання: "
+msgstr "п░п╨я┌п╦п╡п╫п╟ п©я√я│п╫я▐ я┐ я│п©п╦я│п╨я┐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐: "
 
 msgid "Please specify the file to save the playlist to."
-msgstr "Будьласка вкаж╕ть файл куди буде записано список програвання."
+msgstr "п▒я┐п╢я▄п╩п╟я│п╨п╟ п╡п╨п╟п╤я√я┌я▄ я└п╟п╧п╩ п╨я┐п╢п╦ п╠я┐п╢п╣ п╥п╟п©п╦я│п╟п╫п╬ я│п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐."
 
 #, fuzzy
 msgid "Saving playlist..."
-msgstr "Зберегти список програвання"
+msgstr "п≈п╠п╣я─п╣пЁя┌п╦ я│п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Please specify the file to load the playlist from."
-msgstr "Будьласка вкаж╕ть файл зв╕дки буде завантажено список програвання."
+msgstr "п▒я┐п╢я▄п╩п╟я│п╨п╟ п╡п╨п╟п╤я√я┌я▄ я└п╟п╧п╩ п╥п╡я√п╢п╨п╦ п╠я┐п╢п╣ п╥п╟п╡п╟п╫я┌п╟п╤п╣п╫п╬ я│п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐."
 
 #, fuzzy
 msgid "Loading playlist..."
-msgstr "Завантажити список програвання"
+msgstr "п≈п╟п╡п╟п╫я┌п╟п╤п╦я┌п╦ я│п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 #, fuzzy
 msgid "Enqueuing playlist..."
-msgstr "Поставити в чергу список програвання"
+msgstr "п÷п╬я│я┌п╟п╡п╦я┌п╦ п╡ я┤п╣я─пЁя┐ я│п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 #, fuzzy
 msgid ""
 "Playback RVA is currently disabled.\n"
 "Do you want to enable it now?"
 msgstr ""
-"ПВР програвання зараз вимкнено. Ув╕мкн╕ть ╖╖ в Налаштування->ПВР програвання."
+"п÷п▓п═ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐ п╥п╟я─п╟п╥ п╡п╦п╪п╨п╫п╣п╫п╬. пёп╡я√п╪п╨п╫я√я┌я▄ я≈я≈ п╡ п²п╟п╩п╟я┬я┌я┐п╡п╟п╫п╫я▐->п÷п▓п═ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐."
 
 msgid "Unknown"
-msgstr "Нев╕домо"
+msgstr "п²п╣п╡я√п╢п╬п╪п╬"
 
 #, fuzzy
 msgid "Select files"
-msgstr "Вибрати файли..."
+msgstr "п▓п╦п╠я─п╟я┌п╦ я└п╟п╧п╩п╦..."
 
 #, fuzzy
 msgid "Adding files..."
-msgstr "_Додати файли..."
+msgstr "_п■п╬п╢п╟я┌п╦ я└п╟п╧п╩п╦..."
 
 #, fuzzy
 msgid "Select directory"
-msgstr "Прибрати запис"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╥п╟п©п╦я│"
 
 #, fuzzy
 msgid "Adding files recursively..."
-msgstr "_Додати файли..."
+msgstr "_п■п╬п╢п╟я┌п╦ я└п╟п╧п╩п╦..."
 
 #, fuzzy, c-format
 msgid "%d track [%s] (%.1f MB)"
-msgstr "%d дор╕жка [%s]"
+msgstr "%d п╢п╬я─я√п╤п╨п╟ [%s]"
 
 #, fuzzy, c-format
 msgid "%d track [%s] (%.1f GB)"
-msgstr "%d дор╕жка [%s]"
+msgstr "%d п╢п╬я─я√п╤п╨п╟ [%s]"
 
 #, fuzzy, c-format
 msgid "%d track [%s] "
-msgstr "%d дор╕жка [%s]"
+msgstr "%d п╢п╬я─я√п╤п╨п╟ [%s]"
 
 #, fuzzy, c-format
 msgid "%d tracks [%s] (%.1f MB)"
-msgstr "%d дор╕жок [%s]"
+msgstr "%d п╢п╬я─я√п╤п╬п╨ [%s]"
 
 #, fuzzy, c-format
 msgid "%d tracks [%s] (%.1f GB)"
-msgstr "%d дор╕жок [%s]"
+msgstr "%d п╢п╬я─я√п╤п╬п╨ [%s]"
 
 #, fuzzy, c-format
 msgid "%d tracks [%s] "
-msgstr "%d дор╕жок [%s]"
+msgstr "%d п╢п╬я─я√п╤п╬п╨ [%s]"
 
 msgid "Selected: "
-msgstr "Вибрано: "
+msgstr "п▓п╦п╠я─п╟п╫п╬: "
 
 msgid "Total: "
-msgstr "Разом: "
+msgstr "п═п╟п╥п╬п╪: "
 
 #, fuzzy
 msgid "Add files"
-msgstr "Додати файли..."
+msgstr "п■п╬п╢п╟я┌п╦ я└п╟п╧п╩п╦..."
 
 msgid ""
 "Add files to playlist\n"
@@ -1939,7 +1939,7 @@ msgid ""
 msgstr ""
 
 msgid "Select all"
-msgstr "Вибрати все"
+msgstr "п▓п╦п╠я─п╟я┌п╦ п╡я│п╣"
 
 msgid ""
 "Select all songs in playlist\n"
@@ -1947,7 +1947,7 @@ msgid ""
 msgstr ""
 
 msgid "Remove selected"
-msgstr "Прибрати вибране"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╡п╦п╠я─п╟п╫п╣"
 
 msgid ""
 "Remove selected songs from playlist\n"
@@ -1956,47 +1956,47 @@ msgstr ""
 
 #, fuzzy
 msgid "Add directory"
-msgstr "Додати запис"
+msgstr "п■п╬п╢п╟я┌п╦ п╥п╟п©п╦я│"
 
 msgid "Select none"
-msgstr "Зняти виб╕р"
+msgstr "п≈п╫я▐я┌п╦ п╡п╦п╠я√я─"
 
 msgid "Invert selection"
-msgstr "Перевернути виб╕р"
+msgstr "п÷п╣я─п╣п╡п╣я─п╫я┐я┌п╦ п╡п╦п╠я√я─"
 
 msgid "Remove all"
-msgstr "Прибрати все"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╡я│п╣"
 
 #, fuzzy
 msgid "Remove dead"
-msgstr "Прибрати все"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╡я│п╣"
 
 msgid "Cut selected"
-msgstr "Прибрати обране"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╬п╠я─п╟п╫п╣"
 
 msgid "Save playlist"
-msgstr "Зберегти список програвання"
+msgstr "п≈п╠п╣я─п╣пЁя┌п╦ я│п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Load playlist"
-msgstr "Завантажити список програвання"
+msgstr "п≈п╟п╡п╟п╫я┌п╟п╤п╦я┌п╦ я│п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Enqueue playlist"
-msgstr "Поставити в чергу список програвання"
+msgstr "п÷п╬я│я┌п╟п╡п╦я┌п╦ п╡ я┤п╣я─пЁя┐ я│п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Send to iFP device"
 msgstr ""
 
 msgid "Calculate RVA"
-msgstr "П╕драхувати ПВР"
+msgstr "п÷я√п╢я─п╟я┘я┐п╡п╟я┌п╦ п÷п▓п═"
 
 msgid "Separate"
-msgstr "Окрем╕"
+msgstr "п·п╨я─п╣п╪я√"
 
 msgid "Average"
-msgstr "Середн╕"
+msgstr "п║п╣я─п╣п╢п╫я√"
 
 msgid "Reread file metadata"
-msgstr "Перечитати ╕нформац╕ю про файл"
+msgstr "п÷п╣я─п╣я┤п╦я┌п╟я┌п╦ я√п╫я└п╬я─п╪п╟я├я√я▌ п©я─п╬ я└п╟п╧п╩"
 
 #, c-format
 msgid ""
@@ -2016,120 +2016,120 @@ msgstr ""
 
 #, fuzzy
 msgid "Remove file"
-msgstr "Прибрати все"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦ п╡я│п╣"
 
 msgid "LADSPA patch builder"
-msgstr "Буд╕вельник шлях╕в LADSPA"
+msgstr "п▒я┐п╢я√п╡п╣п╩я▄п╫п╦п╨ я┬п╩я▐я┘я√п╡ LADSPA"
 
 msgid "Available plugins"
-msgstr "Наявн╕ втулки"
+msgstr "п²п╟я▐п╡п╫я√ п╡я┌я┐п╩п╨п╦"
 
 msgid "ID"
-msgstr "╤дентиф╕катор"
+msgstr "п├п╢п╣п╫я┌п╦я└я√п╨п╟я┌п╬я─"
 
 msgid "Name"
-msgstr "╤м'я"
+msgstr "п├п╪'я▐"
 
 msgid "Category"
-msgstr "Категор╕я"
+msgstr "п п╟я┌п╣пЁп╬я─я√я▐"
 
 msgid "Inputs"
-msgstr "Входи"
+msgstr "п▓я┘п╬п╢п╦"
 
 msgid "Outputs"
-msgstr "Виходи"
+msgstr "п▓п╦я┘п╬п╢п╦"
 
 msgid "Running plugins"
-msgstr "Запущен╕ втулки"
+msgstr "п≈п╟п©я┐я┴п╣п╫я√ п╡я┌я┐п╩п╨п╦"
 
 msgid "_Configure"
-msgstr "_Налаштувати"
+msgstr "_п²п╟п╩п╟я┬я┌я┐п╡п╟я┌п╦"
 
 msgid "Enable all plugins"
-msgstr "Зад╕яти ус╕ втулки"
+msgstr "п≈п╟п╢я√я▐я┌п╦ я┐я│я√ п╡я┌я┐п╩п╨п╦"
 
 msgid "Disable all plugins"
-msgstr "Вимкнути ус╕ втулки"
+msgstr "п▓п╦п╪п╨п╫я┐я┌п╦ я┐я│я√ п╡я┌я┐п╩п╨п╦"
 
 msgid "Invert current state"
-msgstr "╤нвертувати поточний стан"
+msgstr "п├п╫п╡п╣я─я┌я┐п╡п╟я┌п╦ п©п╬я┌п╬я┤п╫п╦п╧ я│я┌п╟п╫"
 
 msgid "JACK Port Setup"
-msgstr "Налаштування порту JACK"
+msgstr "п²п╟п╩п╟я┬я┌я┐п╡п╟п╫п╫я▐ п©п╬я─я┌я┐ JACK"
 
 msgid "Rescan"
-msgstr "Пресканувати"
+msgstr "п÷я─п╣я│п╨п╟п╫я┐п╡п╟я┌п╦"
 
 msgid "Available connections"
-msgstr "Доступн╕ з'╓днання"
+msgstr "п■п╬я│я┌я┐п©п╫я√ п╥'я■п╢п╫п╟п╫п╫я▐"
 
 msgid "Clear connections"
-msgstr "Очистити з'╓днання"
+msgstr "п·я┤п╦я│я┌п╦я┌п╦ п╥'я■п╢п╫п╟п╫п╫я▐"
 
 msgid " out L"
-msgstr " вих╕д Л"
+msgstr " п╡п╦я┘я√п╢ п⌡"
 
 msgid " out R"
-msgstr " вих╕д П"
+msgstr " п╡п╦я┘я√п╢ п÷"
 
 msgid "Search the Music Store"
-msgstr "Шукати у Музичному Склад╕"
+msgstr "п╗я┐п╨п╟я┌п╦ я┐ п°я┐п╥п╦я┤п╫п╬п╪я┐ п║п╨п╩п╟п╢я√"
 
 msgid "Key: "
-msgstr "Ключ: "
+msgstr "п п╩я▌я┤: "
 
 msgid "Case sensitive"
-msgstr "Враховувати рег╕стр"
+msgstr "п▓я─п╟я┘п╬п╡я┐п╡п╟я┌п╦ я─п╣пЁя√я│я┌я─"
 
 msgid "Exact matches only"
-msgstr "Т╕льки повний зб╕г"
+msgstr "п╒я√п╩я▄п╨п╦ п©п╬п╡п╫п╦п╧ п╥п╠я√пЁ"
 
 msgid "Select first and close window"
-msgstr "Обрати першу та закрити в╕кно"
+msgstr "п·п╠я─п╟я┌п╦ п©п╣я─я┬я┐ я┌п╟ п╥п╟п╨я─п╦я┌п╦ п╡я√п╨п╫п╬"
 
 msgid "Search in:"
-msgstr "Шукати у:"
+msgstr "п╗я┐п╨п╟я┌п╦ я┐:"
 
 msgid "Artist names"
-msgstr "Назвах виконавц╕в"
+msgstr "п²п╟п╥п╡п╟я┘ п╡п╦п╨п╬п╫п╟п╡я├я√п╡"
 
 msgid "Record titles"
-msgstr "Назвах запис╕в"
+msgstr "п²п╟п╥п╡п╟я┘ п╥п╟п©п╦я│я√п╡"
 
 msgid "Comments"
-msgstr "Коментар╕"
+msgstr "п п╬п╪п╣п╫я┌п╟я─я√"
 
 msgid "Search"
-msgstr "Шукати"
+msgstr "п╗я┐п╨п╟я┌п╦"
 
 msgid "Search the Playlist"
-msgstr "Шукати у списку програвання"
+msgstr "п╗я┐п╨п╟я┌п╦ я┐ я│п©п╦я│п╨я┐ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐"
 
 msgid "Available skins"
-msgstr "Наявн╕ жупани"
+msgstr "п²п╟я▐п╡п╫я√ п╤я┐п©п╟п╫п╦"
 
 #, fuzzy
 msgid "Calculating volume level"
-msgstr "<b>П╕драховую р╕вень гучност╕</b>"
+msgstr "<b>п÷я√п╢я─п╟я┘п╬п╡я┐я▌ я─я√п╡п╣п╫я▄ пЁя┐я┤п╫п╬я│я┌я√</b>"
 
 msgid "Progress:"
-msgstr "Прогрес:"
+msgstr "п÷я─п╬пЁя─п╣я│:"
 
 #, fuzzy
 msgid "(not set)"
-msgstr "(без коментаря)"
+msgstr "(п╠п╣п╥ п╨п╬п╪п╣п╫я┌п╟я─я▐)"
 
 #, fuzzy
 msgid "Please specify the file to save the image to."
-msgstr "Будьласка вкаж╕ть файл куди буде записано список програвання."
+msgstr "п▒я┐п╢я▄п╩п╟я│п╨п╟ п╡п╨п╟п╤я√я┌я▄ я└п╟п╧п╩ п╨я┐п╢п╦ п╠я┐п╢п╣ п╥п╟п©п╦я│п╟п╫п╬ я│п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐."
 
 #, fuzzy
 msgid "Type"
-msgstr "SRC Тип: "
+msgstr "SRC п╒п╦п©: "
 
 #, fuzzy
 msgid "Description"
-msgstr "Тривал╕сть:"
+msgstr "п╒я─п╦п╡п╟п╩я√я│я┌я▄:"
 
 msgid "No description"
 msgstr ""
@@ -2139,34 +2139,34 @@ msgstr ""
 
 #, fuzzy
 msgid "Save to file..."
-msgstr "Зберегти Музичний Склад"
+msgstr "п≈п╠п╣я─п╣пЁя┌п╦ п°я┐п╥п╦я┤п╫п╦п╧ п║п╨п╩п╟п╢"
 
 msgid "Import as Record"
-msgstr "╤мпортувати як Запис"
+msgstr "п├п╪п©п╬я─я┌я┐п╡п╟я┌п╦ я▐п╨ п≈п╟п©п╦я│"
 
 msgid "Track:"
-msgstr "Дор╕жка:"
+msgstr "п■п╬я─я√п╤п╨п╟:"
 
 msgid "Import as Track number"
-msgstr "╤мпортувати як Номер дор╕жки"
+msgstr "п├п╪п©п╬я─я┌я┐п╡п╟я┌п╦ я▐п╨ п²п╬п╪п╣я─ п╢п╬я─я√п╤п╨п╦"
 
 #, fuzzy
 msgid "Comment:"
-msgstr "Коментар╕:"
+msgstr "п п╬п╪п╣п╫я┌п╟я─я√:"
 
 #, fuzzy
 msgid "Save basic fields"
-msgstr "Зберегти Музичний Склад"
+msgstr "п≈п╠п╣я─п╣пЁя┌п╦ п°я┐п╥п╦я┤п╫п╦п╧ п║п╨п╩п╟п╢"
 
 msgid "ID3v1"
 msgstr ""
 
 #, fuzzy
 msgid "Relative Volume Adj.:"
-msgstr "В╕дносний Р╕вень"
+msgstr "п▓я√п╢п╫п╬я│п╫п╦п╧ п═я√п╡п╣п╫я▄"
 
 msgid "Import as RVA"
-msgstr "╤мпортувати як ПВР"
+msgstr "п├п╪п©п╬я─я┌я┐п╡п╟я┌п╦ я▐п╨ п÷п▓п═"
 
 msgid "Other"
 msgstr ""
@@ -2176,7 +2176,7 @@ msgstr ""
 
 #, fuzzy
 msgid "File icon (other)"
-msgstr "╤нформац╕я про файл"
+msgstr "п├п╫я└п╬я─п╪п╟я├я√я▐ п©я─п╬ я└п╟п╧п╩"
 
 msgid "Front cover"
 msgstr ""
@@ -2189,7 +2189,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Album image"
-msgstr "Альбом"
+msgstr "п░п╩я▄п╠п╬п╪"
 
 msgid "Lead artist/performer"
 msgstr ""
@@ -2198,21 +2198,21 @@ msgid "Artist/performer"
 msgstr ""
 
 msgid "Conductor"
-msgstr "Диригент"
+msgstr "п■п╦я─п╦пЁп╣п╫я┌"
 
 #, fuzzy
 msgid "Band/orchestra"
-msgstr "Оркестр"
+msgstr "п·я─п╨п╣я│я┌я─"
 
 msgid "Composer"
-msgstr "Автор"
+msgstr "п░п╡я┌п╬я─"
 
 msgid "Lyricist/text writer"
 msgstr ""
 
 #, fuzzy
 msgid "Recording location/studio"
-msgstr "Назвах запис╕в"
+msgstr "п²п╟п╥п╡п╟я┘ п╥п╟п©п╦я│я√п╡"
 
 msgid "During recording"
 msgstr ""
@@ -2228,7 +2228,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Illustration"
-msgstr "Тривал╕сть:"
+msgstr "п╒я─п╦п╡п╟п╩я√я│я┌я▄:"
 
 msgid "Band/artist logotype"
 msgstr ""
@@ -2238,84 +2238,84 @@ msgstr ""
 
 #, fuzzy
 msgid "ID3v2"
-msgstr "ID3v2 теги"
+msgstr "ID3v2 я┌п╣пЁп╦"
 
 msgid "APE"
 msgstr ""
 
 #, fuzzy
 msgid "Ogg comments"
-msgstr "Коментар╕"
+msgstr "п п╬п╪п╣п╫я┌п╟я─я√"
 
 #, fuzzy
 msgid "Remove ID3v1"
-msgstr "Прибрати"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦"
 
 msgid "Create ID3v2"
 msgstr ""
 
 #, fuzzy
 msgid "Remove ID3v2"
-msgstr "Прибрати"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦"
 
 msgid "Create APE"
 msgstr ""
 
 #, fuzzy
 msgid "Remove APE"
-msgstr "Прибрати"
+msgstr "п÷я─п╦п╠я─п╟я┌п╦"
 
 msgid "Audio data"
-msgstr "Ауд╕о дан╕"
+msgstr "п░я┐п╢я√п╬ п╢п╟п╫я√"
 
 msgid "Format:"
-msgstr "Формат:"
+msgstr "п╓п╬я─п╪п╟я┌:"
 
 msgid "Length:"
-msgstr "Довжина:"
+msgstr "п■п╬п╡п╤п╦п╫п╟:"
 
 msgid "Samplerate:"
-msgstr "Частота семплювання:"
+msgstr "п╖п╟я│я┌п╬я┌п╟ я│п╣п╪п©п╩я▌п╡п╟п╫п╫я▐:"
 
 #, c-format
 msgid "%ld Hz"
-msgstr "%ld Гц"
+msgstr "%ld п⌠я├"
 
 msgid "Channel count:"
-msgstr "К╕льк╕сть канал╕в:"
+msgstr "п я√п╩я▄п╨я√я│я┌я▄ п╨п╟п╫п╟п╩я√п╡:"
 
 msgid "Bandwidth:"
-msgstr "Швидк╕сть потоку:"
+msgstr "п╗п╡п╦п╢п╨я√я│я┌я▄ п©п╬я┌п╬п╨я┐:"
 
 msgid "Total samples:"
-msgstr "Всього семпл╕в:"
+msgstr "п▓я│я▄п╬пЁп╬ я│п╣п╪п©п╩я√п╡:"
 
 #, fuzzy
 msgid "Module info"
-msgstr "╤нформац╕я про файл"
+msgstr "п├п╫я└п╬я─п╪п╟я├я√я▐ п©я─п╬ я└п╟п╧п╩"
 
 #, fuzzy
 msgid "Type:"
-msgstr "SRC Тип: "
+msgstr "SRC п╒п╦п©: "
 
 #, fuzzy
 msgid "Channels:"
-msgstr "К╕льк╕сть канал╕в:"
+msgstr "п я√п╩я▄п╨я√я│я┌я▄ п╨п╟п╫п╟п╩я√п╡:"
 
 #, fuzzy
 msgid "Patterns:"
-msgstr "Категор╕я"
+msgstr "п п╟я┌п╣пЁп╬я─я√я▐"
 
 #, fuzzy
 msgid "Samples:"
-msgstr "Частота семплювання:"
+msgstr "п╖п╟я│я┌п╬я┌п╟ я│п╣п╪п©п╩я▌п╡п╟п╫п╫я▐:"
 
 msgid "Instruments:"
 msgstr ""
 
 #, fuzzy
 msgid "Samples"
-msgstr "Частота семплювання:"
+msgstr "п╖п╟я│я┌п╬я┌п╟ я│п╣п╪п©п╩я▌п╡п╟п╫п╫я▐:"
 
 msgid "Instruments"
 msgstr ""
@@ -2324,7 +2324,7 @@ msgid "No."
 msgstr ""
 
 msgid "Album"
-msgstr "Альбом"
+msgstr "п░п╩я▄п╠п╬п╪"
 
 msgid "Beats per minute"
 msgstr ""
@@ -2334,40 +2334,40 @@ msgstr ""
 
 #, fuzzy
 msgid "Copyright"
-msgstr "Авторське право (С)"
+msgstr "п░п╡я┌п╬я─я│я▄п╨п╣ п©я─п╟п╡п╬ (п║)"
 
 #, fuzzy
 msgid "Encoding time"
-msgstr "кодування"
+msgstr "п╨п╬п╢я┐п╡п╟п╫п╫я▐"
 
 #, fuzzy
 msgid "Playlist delay"
-msgstr "Список програвання: "
+msgstr "п║п©п╦я│п╬п╨ п©я─п╬пЁя─п╟п╡п╟п╫п╫я▐: "
 
 msgid "Original release time"
 msgstr ""
 
 #, fuzzy
 msgid "Recording time"
-msgstr "Назвах запис╕в"
+msgstr "п²п╟п╥п╡п╟я┘ п╥п╟п©п╦я│я√п╡"
 
 msgid "Release time"
 msgstr ""
 
 #, fuzzy
 msgid "Tagging time"
-msgstr "Великий таймер: "
+msgstr "п▓п╣п╩п╦п╨п╦п╧ я┌п╟п╧п╪п╣я─: "
 
 #, fuzzy
 msgid "Encoded by"
-msgstr "Кодувальник"
+msgstr "п п╬п╢я┐п╡п╟п╩я▄п╫п╦п╨"
 
 msgid "Lyricist"
-msgstr "Поет"
+msgstr "п÷п╬п╣я┌"
 
 #, fuzzy
 msgid "File type"
-msgstr "Назва файлу:"
+msgstr "п²п╟п╥п╡п╟ я└п╟п╧п╩я┐:"
 
 msgid "Involved people"
 msgstr ""
@@ -2376,7 +2376,7 @@ msgid "Content group"
 msgstr ""
 
 msgid "Subtitle"
-msgstr "П╕дпис"
+msgstr "п÷я√п╢п©п╦я│"
 
 msgid "Initial key"
 msgstr ""
@@ -2386,7 +2386,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Length (ms)"
-msgstr "Довжина:"
+msgstr "п■п╬п╡п╤п╦п╫п╟:"
 
 msgid "Musician credits"
 msgstr ""
@@ -2413,7 +2413,7 @@ msgid "Owner/licensee"
 msgstr ""
 
 msgid "Orchestra"
-msgstr "Оркестр"
+msgstr "п·я─п╨п╣я│я┌я─"
 
 msgid "Interpreted/remixed"
 msgstr ""
@@ -2423,10 +2423,10 @@ msgstr ""
 
 #, fuzzy
 msgid "Produced"
-msgstr "Виробник (Р)"
+msgstr "п▓п╦я─п╬п╠п╫п╦п╨ (п═)"
 
 msgid "Publisher"
-msgstr "Видавник"
+msgstr "п▓п╦п╢п╟п╡п╫п╦п╨"
 
 msgid "Radio station name"
 msgstr ""
@@ -2442,39 +2442,39 @@ msgstr ""
 
 #, fuzzy
 msgid "Title sort order"
-msgstr "Формат назви"
+msgstr "п╓п╬я─п╪п╟я┌ п╫п╟п╥п╡п╦"
 
 msgid "ISRC"
 msgstr ""
 
 #, fuzzy
 msgid "Encoding settings"
-msgstr "Перекривати установки жупана"
+msgstr "п÷п╣я─п╣п╨я─п╦п╡п╟я┌п╦ я┐я│я┌п╟п╫п╬п╡п╨п╦ п╤я┐п©п╟п╫п╟"
 
 #, fuzzy
 msgid "Set subtitle"
-msgstr "П╕дпис"
+msgstr "п÷я√п╢п©п╦я│"
 
 msgid "Profile: Telephone"
-msgstr "Проф╕ль: Телефон"
+msgstr "п÷я─п╬я└я√п╩я▄: п╒п╣п╩п╣я└п╬п╫"
 
 msgid "Profile: Thumb"
-msgstr "Проф╕ль: Еск╕з"
+msgstr "п÷я─п╬я└я√п╩я▄: п∙я│п╨я√п╥"
 
 msgid "Profile: Radio"
-msgstr "Проф╕ль: Рад╕о"
+msgstr "п÷я─п╬я└я√п╩я▄: п═п╟п╢я√п╬"
 
 msgid "Profile: Standard"
-msgstr "Проф╕ль: Стандарт"
+msgstr "п÷я─п╬я└я√п╩я▄: п║я┌п╟п╫п╢п╟я─я┌"
 
 msgid "Profile: Xtreme"
-msgstr "Проф╕ль: Екстремальний"
+msgstr "п÷я─п╬я└я√п╩я▄: п∙п╨я│я┌я─п╣п╪п╟п╩я▄п╫п╦п╧"
 
 msgid "Profile: Insane"
-msgstr "Проф╕ль: Божев╕льний"
+msgstr "п÷я─п╬я└я√п╩я▄: п▒п╬п╤п╣п╡я√п╩я▄п╫п╦п╧"
 
 msgid "Profile: Braindead"
-msgstr "Проф╕ль: Без башн╕"
+msgstr "п÷я─п╬я└я√п╩я▄: п▒п╣п╥ п╠п╟я┬п╫я√"
 
 msgid "Layer I"
 msgstr ""
@@ -2486,292 +2486,55 @@ msgid "Layer III"
 msgstr ""
 
 msgid "Unrecognized"
-msgstr "Нерозп╕знано"
+msgstr "п²п╣я─п╬п╥п©я√п╥п╫п╟п╫п╬"
 
 msgid "Single channel"
-msgstr "Один канал"
+msgstr "п·п╢п╦п╫ п╨п╟п╫п╟п╩"
 
 msgid "Dual channel"
-msgstr "Два канала"
+msgstr "п■п╡п╟ п╨п╟п╫п╟п╩п╟"
 
 msgid "Joint stereo"
-msgstr "Об'╓днане стерео"
+msgstr "п·п╠'я■п╢п╫п╟п╫п╣ я│я┌п╣я─п╣п╬"
 
 msgid "Stereo"
-msgstr "Стерео"
+msgstr "п║я┌п╣я─п╣п╬"
 
 msgid "Emphasis: none"
-msgstr "Наголос: нема╓"
+msgstr "п²п╟пЁп╬п╩п╬я│: п╫п╣п╪п╟я■"
 
 msgid "Emphasis:"
-msgstr "Наголос:"
+msgstr "п²п╟пЁп╬п╩п╬я│:"
 
 msgid "Emphasis: reserved"
-msgstr "Наголос: резервний"
+msgstr "п²п╟пЁп╬п╩п╬я│: я─п╣п╥п╣я─п╡п╫п╦п╧"
 
 msgid "bit signed"
-msgstr "знаковий б╕т"
+msgstr "п╥п╫п╟п╨п╬п╡п╦п╧ п╠я√я┌"
 
 msgid "bit unsigned"
-msgstr "беззнаковий б╕т"
+msgstr "п╠п╣п╥п╥п╫п╟п╨п╬п╡п╦п╧ п╠я√я┌"
 
 msgid "bit float"
-msgstr "плаваючий б╕т"
+msgstr "п©п╩п╟п╡п╟я▌я┤п╦п╧ п╠я√я┌"
 
 msgid "bit double"
-msgstr "подв╕йний б╕т"
+msgstr "п©п╬п╢п╡я√п╧п╫п╦п╧ п╠я√я┌"
 
 msgid "encoding"
-msgstr "кодування"
+msgstr "п╨п╬п╢я┐п╡п╟п╫п╫я▐"
 
 msgid "Compression: Fast"
-msgstr "Ступ╕нь стиснення: Швидка"
+msgstr "п║я┌я┐п©я√п╫я▄ я│я┌п╦я│п╫п╣п╫п╫я▐: п╗п╡п╦п╢п╨п╟"
 
 msgid "Compression: Normal"
-msgstr "Ступ╕нь стиснення: Нормальна"
+msgstr "п║я┌я┐п©я√п╫я▄ я│я┌п╦я│п╫п╣п╫п╫я▐: п²п╬я─п╪п╟п╩я▄п╫п╟"
 
 msgid "Compression: High"
-msgstr "Ступ╕нь стиснення: Висока"
+msgstr "п║я┌я┐п©я√п╫я▄ я│я┌п╦я│п╫п╣п╫п╫я▐: п▓п╦я│п╬п╨п╟"
 
 msgid "Compression: Extra High"
-msgstr "Ступ╕нь стиснення: Дуже висока"
+msgstr "п║я┌я┐п©я√п╫я▄ я│я┌п╦я│п╫п╣п╫п╫я▐: п■я┐п╤п╣ п╡п╦я│п╬п╨п╟"
 
 msgid "Compression: Insane"
-msgstr "Ступ╕нь стиснення: Божев╕льна"
-
-#, fuzzy
-#~ msgid "Build/Update artist from filesystem..."
-#~ msgstr "Редагувати склад..."
-
-#, fuzzy
-#~ msgid "Build/Update artist"
-#~ msgstr "Редагувати склад..."
-
-#, fuzzy
-#~ msgid "Artist path"
-#~ msgstr "Виконавець:"
-
-#, fuzzy
-#~ msgid "Import file metadata"
-#~ msgstr "Перечитати ╕нформац╕ю про файл"
-
-#, fuzzy
-#~ msgid "Import"
-#~ msgstr "╤мпортувати як ПВР"
-
-#~ msgid "Comment"
-#~ msgstr "Коментар"
-
-#, fuzzy
-#~ msgid "Replaygain tag as manual RVA"
-#~ msgstr "П╕дсилення дор╕жки"
-
-#, fuzzy
-#~ msgid "Building artist from filesystem"
-#~ msgstr "Редагувати склад..."
-
-#, fuzzy
-#~ msgid "Source selection"
-#~ msgstr "Перевернути виб╕р"
-
-#~ msgid "Miscellaneous:"
-#~ msgstr "Р╕зне:"
-
-#, fuzzy
-#~ msgid "Vendor"
-#~ msgstr "Постачальник:"
-
-#~ msgid "%d of %d"
-#~ msgstr "%d з %d"
-
-#, fuzzy
-#~ msgid "Write"
-#~ msgstr "Назва"
-
-#~ msgid "%.1f kbit/s"
-#~ msgstr "%.1f кб╕т/с"
-
-#~ msgid "Protocol:"
-#~ msgstr "Протокол:"
-
-#, fuzzy
-#~ msgid "miscellaneous"
-#~ msgstr "Р╕зне"
-
-#, fuzzy
-#~ msgid "rock"
-#~ msgstr "Дор╕жка"
-
-#, fuzzy
-#~ msgid "newage"
-#~ msgstr "Середн╕"
-
-#, fuzzy
-#~ msgid "reagge"
-#~ msgstr "Середн╕"
-
-#, fuzzy
-#~ msgid "Total size:"
-#~ msgstr "Всього семпл╕в:"
-
-#~ msgid "ID3 tags\n"
-#~ msgstr "ID3 теги\n"
-
-#~ msgid "Relative Volume"
-#~ msgstr "В╕дносний Р╕вень"
-
-#~ msgid "Genre"
-#~ msgstr "Жанр"
-
-#~ msgid "Station"
-#~ msgstr "Станц╕я"
-
-#~ msgid "Encoder"
-#~ msgstr "Кодувальник"
-
-#~ msgid "Copyright (C)"
-#~ msgstr "Авторське право (С)"
-
-#~ msgid "Produced (P)"
-#~ msgstr "Виробник (Р)"
-
-#~ msgid "ID3v2 tags"
-#~ msgstr "ID3v2 теги"
-
-#~ msgid "Vorbis comments"
-#~ msgstr "Коментар╕ Vorbis"
-
-#~ msgid "FLAC metadata"
-#~ msgstr "FLAC метадан╕"
-
-#~ msgid "Discard changes"
-#~ msgstr "Скасувати зм╕ни"
-
-#~ msgid ""
-#~ "Music Store has been changed. You have to save it before\n"
-#~ "refreshing if you want to keep the changes."
-#~ msgstr ""
-#~ "Музичний Склад було зм╕нено. Ви ма╓те зберегти його\n"
-#~ "перед оновленням якщо ви бажа╓те залишити зм╕ни."
-
-#, fuzzy
-#~ msgid "Enable the Music Store tree icons"
-#~ msgstr "Ув╕мкнути рядок стану у списку програвання"
-
-#, fuzzy
-#~ msgid "Case sensitive substitution"
-#~ msgstr "Враховувати рег╕стр"
-
-#, fuzzy
-#~ msgid "input:"
-#~ msgstr "Входи"
-
-#, fuzzy
-#~ msgid "Import track titles"
-#~ msgstr "╤мпортувати як Альбом"
-
-#, fuzzy
-#~ msgid "Import artist"
-#~ msgstr "╤мпортувати як Виконавця"
-
-#, fuzzy
-#~ msgid "Import record"
-#~ msgstr "╤мпортувати як Запис"
-
-#, fuzzy
-#~ msgid "Import RVA"
-#~ msgstr "╤мпортувати як ПВР"
-
-#, fuzzy
-#~ msgid "%d track [%s] (%d MB)"
-#~ msgstr "%d дор╕жка [%s]"
-
-#, fuzzy
-#~ msgid "%d tracks [%s] (%d MB)"
-#~ msgstr "%d дор╕жок [%s]"
-
-#, fuzzy
-#~ msgid "Import artist name"
-#~ msgstr "╤мпортувати як Виконавця"
-
-#~ msgid "Play (p)"
-#~ msgstr "Грати (p)"
-
-#~ msgid "Pause (space)"
-#~ msgstr "Пауза (проб╕л)"
-
-#~ msgid "yes"
-#~ msgstr "так"
-
-#~ msgid "no"
-#~ msgstr "н╕ "
-
-#~ msgid ""
-#~ "Aqualung could not be functional without the following libraries.\n"
-#~ "We would like to thank the authors of these software packages:\n"
-#~ "\n"
-#~ "* The GIMP Toolkit (GTK+), version 2.0\n"
-#~ "* libXML2, the XML C parser and toolkit of Gnome\n"
-#~ "* libJACK, the JACK Audio Connection Kit support library\n"
-#~ "* liblrdf, a library for manipulating RDF files about LADSPA plugins\n"
-#~ "* libsamplerate (aka Secret Rabbit Code), a high quality Sample Rate "
-#~ "Converter\n"
-#~ "* libsndfile, a library for accessing audio files containing sampled "
-#~ "sound\n"
-#~ "* libvorbis & libvorbisfile, for decoding Ogg Vorbis audio\n"
-#~ "* liboggz & libspeex, for decoding Ogg Speex\n"
-#~ "* libFLAC, the Free Lossless Audio Codec library\n"
-#~ "* libMAD, a GPL'ed MPEG Audio Decoder library\n"
-#~ "* libmodplug, a MOD decoder library in the public domain\n"
-#~ "* libmusepack, a GPL'ed Musepack decoder library\n"
-#~ "* libid3tag, a library for accessing ID3v2 tags\n"
-#~ "* libcddb, a CDDB server access library"
-#~ msgstr ""
-#~ "Aqualung не працюватиме без наступних б╕бл╕отек.\n"
-#~ "ми б хот╕ли подякувати авторам цих програмних продукт╕в:\n"
-#~ "\n"
-#~ "* The GIMP Toolkit (GTK+), version 2.0\n"
-#~ "* libXML2, the XML C parser and toolkit of Gnome\n"
-#~ "* libJACK, the JACK Audio Connection Kit support library\n"
-#~ "* liblrdf, a library for manipulating RDF files about LADSPA plugins\n"
-#~ "* libsamplerate (aka Secret Rabbit Code), a high quality Sample Rate "
-#~ "Converter\n"
-#~ "* libsndfile, a library for accessing audio files containing sampled "
-#~ "sound\n"
-#~ "* libvorbis & libvorbisfile, for decoding Ogg Vorbis audio\n"
-#~ "* liboggz & libspeex, for decoding Ogg Speex\n"
-#~ "* libFLAC, the Free Lossless Audio Codec library\n"
-#~ "* libMAD, a GPL'ed MPEG Audio Decoder library\n"
-#~ "* libmodplug, a MOD decoder library in the public domain\n"
-#~ "* libmusepack, a GPL'ed Musepack decoder library\n"
-#~ "* libid3tag, a library for accessing ID3v2 tags\n"
-#~ "* libcddb, a CDDB server access library"
-
-#, fuzzy
-#~ msgid "Add files to playlist"
-#~ msgstr "Додати до списку програвання"
-
-#~ msgid "Add Store"
-#~ msgstr "Додати склад"
-
-#~ msgid "Add new store..."
-#~ msgstr "Додати новий склад..."
-
-#, fuzzy
-#~ msgid "%d%% - Calculate volume level"
-#~ msgstr "П╕драхувати гучн╕сть"
-
-#~ msgid "Show RVA values in playlist"
-#~ msgstr "Показувати значення ПВР у списку програвання"
-
-#~ msgid "Show track lengths in playlist"
-#~ msgstr "Показувати тривал╕сть дор╕жок у списку програвання"
-
-#~ msgid ""
-#~ "Logo by Maja Kocon <ironya@ll.pl>\n"
-#~ "\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Розробка Логотипу: Maja Kocon <ironya@ll.pl>\n"
-#~ "\n"
-#~ "\n"
+msgstr "п║я┌я┐п©я√п╫я▄ я│я┌п╦я│п╫п╣п╫п╫я▐: п▒п╬п╤п╣п╡я√п╩я▄п╫п╟"

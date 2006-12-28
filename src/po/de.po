@@ -13,12 +13,12 @@ msgstr ""
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "About"
-msgstr "Über Aqualung"
+msgstr "Ãœber Aqualung"
 
 msgid "Build version: "
 msgstr "Version: "
@@ -33,13 +33,13 @@ msgid "Core design, engineering & programming:\n"
 msgstr "Kern, Teknische Planung & Programmierung:\n"
 
 msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr "Skin Unterstützung, Aussehen, Gefühl:\n"
+msgstr "Skin UnterstÃ¼tzung, Aussehen, GefÃ¼hl:\n"
 
 msgid "Programming, GUI engineering:\n"
 msgstr "Programmierung, GUI Planung:\n"
 
 msgid "Translators:"
-msgstr "Übersetzer:"
+msgstr "Ãœbersetzer:"
 
 msgid "German, Hungarian:\n"
 msgstr "Deutsch, Ungarisch:\n"
@@ -54,7 +54,7 @@ msgid "Logo, icons:\n"
 msgstr ""
 
 msgid "This Aqualung binary is compiled with:"
-msgstr "Dieser Aqualung Binärcode wurde kompiliert mit:"
+msgstr "Dieser Aqualung BinÃ¤rcode wurde kompiliert mit:"
 
 msgid "Optional features:"
 msgstr ""
@@ -65,29 +65,29 @@ msgstr "LADSPA Plugin Verarbeitung"
 
 #, fuzzy
 msgid "CDDA (Audio CD) support\n"
-msgstr "CDDB Unterstützung\n"
+msgstr "CDDB UnterstÃ¼tzung\n"
 
 msgid "CDDB support\n"
-msgstr "CDDB Unterstützung\n"
+msgstr "CDDB UnterstÃ¼tzung\n"
 
 #, fuzzy
 msgid "Sample Rate Converter support\n"
-msgstr "Interner Samplerate Konverter Unterstützung\n"
+msgstr "Interner Samplerate Konverter UnterstÃ¼tzung\n"
 
 #, fuzzy
 msgid "iRiver iFP driver support\n"
-msgstr "Ausgabe Treiber Unterstützung:"
+msgstr "Ausgabe Treiber UnterstÃ¼tzung:"
 
 msgid "Loop playback support\n"
 msgstr ""
 
 #, fuzzy
 msgid "Systray support\n"
-msgstr "CDDB Unterstützung\n"
+msgstr "CDDB UnterstÃ¼tzung\n"
 
 #, fuzzy
 msgid "Decoding support:"
-msgstr "Unterstützte Dateiformat:"
+msgstr "UnterstÃ¼tzte Dateiformat:"
 
 msgid "sndfile (WAV, AIFF, etc.)\n"
 msgstr ""
@@ -121,7 +121,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Encoding support:"
-msgstr "Ausgabe Treiber Unterstützung:"
+msgstr "Ausgabe Treiber UnterstÃ¼tzung:"
 
 msgid "sndfile (WAV)\n"
 msgstr ""
@@ -130,7 +130,7 @@ msgid "LAME (MP3)\n"
 msgstr ""
 
 msgid "Output driver support:"
-msgstr "Ausgabe Treiber Unterstützung:"
+msgstr "Ausgabe Treiber UnterstÃ¼tzung:"
 
 msgid "OSS Audio\n"
 msgstr ""
@@ -159,15 +159,15 @@ msgid ""
 "along with this program; if not, write to the Free Software\n"
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
-"Dieses Programm ist freie Software. Sie können es unter den\n"
+"Dieses Programm ist freie Software. Sie kÃ¶nnen es unter den\n"
 "Bedingungen der GNU General Public License, wie von der Free Software\n"
 "Foundation herausgegeben, weitergeben und/oder modifizieren, entweder\n"
-"gemäß Version 2 der Lizenz oder (nach Ihrer Option) jeder späteren\n"
+"gemÃ¤ÃŸ Version 2 der Lizenz oder (nach Ihrer Option) jeder spÃ¤teren\n"
 "Version.\n"
 "\n"
-"Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es\n"
-"Ihnen von Nutzen sein wird, aber OHNE JEDE GEWÄHRLEISTUNG, sogar ohne\n"
-"die implizite Gewährleistung der MARKTREIFE oder der EIGNUNG FÜR EINEN\n"
+"Die VerÃ¶ffentlichung dieses Programms erfolgt in der Hoffnung, daÃŸ es\n"
+"Ihnen von Nutzen sein wird, aber OHNE JEDE GEWÃ„HRLEISTUNG, sogar ohne\n"
+"die implizite GewÃ¤hrleistung der MARKTREIFE oder der EIGNUNG FÃœR EINEN\n"
 "BESTIMMTEN ZWECK. Details finden Sie in der GNU General Public\n"
 "License.\n"
 "\n"
@@ -249,11 +249,11 @@ msgstr "Unnbekannt"
 
 #, fuzzy
 msgid "Please select the root directory."
-msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
+msgstr "Bitte wÃ¤hlen Sie die audio Dateien fÃ¼r diese Album aus."
 
 #, fuzzy
 msgid "Select build type"
-msgstr "Dateien hinzufügen..."
+msgstr "Dateien hinzufÃ¼gen..."
 
 #, fuzzy
 msgid "Directory driven"
@@ -278,7 +278,7 @@ msgstr ""
 
 #, fuzzy
 msgid "_Browse..."
-msgstr "Blättern..."
+msgstr "BlÃ¤ttern..."
 
 msgid "Structure:"
 msgstr ""
@@ -345,7 +345,7 @@ msgstr "Jahr"
 
 #, fuzzy
 msgid "Add year to the comments of new records"
-msgstr "Zum Kommentar hinzufügen"
+msgstr "Zum Kommentar hinzufÃ¼gen"
 
 msgid "Track"
 msgstr "Track"
@@ -442,7 +442,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Close tray"
-msgstr "Schließen"
+msgstr "SchlieÃŸen"
 
 msgid "Disable manual eject"
 msgstr ""
@@ -592,7 +592,7 @@ msgid "Import as Sort Key"
 msgstr "Als Titel importieren"
 
 msgid "Add to Comments"
-msgstr "Zum Kommentar hinzufügen"
+msgstr "Zum Kommentar hinzufÃ¼gen"
 
 #, fuzzy
 msgid "Tracks"
@@ -637,18 +637,18 @@ msgstr ""
 
 #, fuzzy
 msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "Fehler während des Verbindungen zur CDDB Server."
+msgstr "Fehler wÃ¤hrend des Verbindungen zur CDDB Server."
 
 msgid "An error occurred while attempting to connect to the CDDB server."
-msgstr "Fehler während des Verbindungen zur CDDB Server."
+msgstr "Fehler wÃ¤hrend des Verbindungen zur CDDB Server."
 
 #, fuzzy
 msgid "No matching record found."
-msgstr "Neues Track zu diesem Album hinzufügen..."
+msgstr "Neues Track zu diesem Album hinzufÃ¼gen..."
 
 #, fuzzy
 msgid "Please select the directory for ripped files."
-msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
+msgstr "Bitte wÃ¤hlen Sie die audio Dateien fÃ¼r diese Album aus."
 
 #, fuzzy
 msgid "(none)"
@@ -663,7 +663,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Compression level:"
-msgstr "Lautstärke:"
+msgstr "LautstÃ¤rke:"
 
 msgid "Bitrate [kbps]:"
 msgstr ""
@@ -699,7 +699,7 @@ msgstr "Titel:"
 
 #, fuzzy
 msgid "Select"
-msgstr "Alles auswählen"
+msgstr "Alles auswÃ¤hlen"
 
 msgid "All"
 msgstr ""
@@ -717,7 +717,7 @@ msgstr "Zeitdauer:"
 
 #, fuzzy
 msgid "Target directory for ripped files"
-msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
+msgstr "Bitte wÃ¤hlen Sie die audio Dateien fÃ¼r diese Album aus."
 
 #, fuzzy
 msgid "Add to Music Store"
@@ -781,7 +781,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Length"
-msgstr "Länge:"
+msgstr "LÃ¤nge:"
 
 msgid "Progress"
 msgstr ""
@@ -791,7 +791,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Close"
-msgstr "Schließen"
+msgstr "SchlieÃŸen"
 
 msgid "day"
 msgstr ""
@@ -820,7 +820,7 @@ msgid ""
 "One or more stores in Music Store have been modified.\n"
 "Do you want to save them before exiting?"
 msgstr ""
-"Musikladen ist verändert werden.\n"
+"Musikladen ist verÃ¤ndert werden.\n"
 "Wollen Sie es sparen bevor aussteigen?"
 
 #, fuzzy
@@ -841,7 +841,7 @@ msgstr ""
 
 #, fuzzy, c-format
 msgid "Volume: %s"
-msgstr "Lautstärke:"
+msgstr "LautstÃ¤rke:"
 
 #, c-format
 msgid "%d%% R"
@@ -908,7 +908,7 @@ msgstr "Stop (s)"
 
 #, fuzzy
 msgid "Next song"
-msgstr "Nächster (unten)"
+msgstr "NÃ¤chster (unten)"
 
 #, fuzzy
 msgid "Play"
@@ -952,7 +952,7 @@ msgstr "Voriger (oben)"
 
 #, fuzzy
 msgid "Next"
-msgstr "Nächster (unten)"
+msgstr "NÃ¤chster (unten)"
 
 msgid "Aqualung playlist (*.xml)"
 msgstr ""
@@ -1017,7 +1017,7 @@ msgstr ""
 
 #, fuzzy, c-format
 msgid "%d / %d files"
-msgstr "Dateien hinzufügen..."
+msgstr "Dateien hinzufÃ¼gen..."
 
 #, fuzzy
 msgid "Done"
@@ -1088,7 +1088,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Selected files:"
-msgstr "Dateien hinzufügen..."
+msgstr "Dateien hinzufÃ¼gen..."
 
 msgid "label_songs"
 msgstr ""
@@ -1141,7 +1141,7 @@ msgstr "Abbrechen"
 
 #, fuzzy
 msgid "Please select the xml file for this store."
-msgstr "Bitte wählen Sie die audio Datei für dieses Track aus."
+msgstr "Bitte wÃ¤hlen Sie die audio Datei fÃ¼r dieses Track aus."
 
 msgid "Create empty store"
 msgstr ""
@@ -1158,7 +1158,7 @@ msgid "Edit Store"
 msgstr "Musikladen"
 
 msgid "Add Artist"
-msgstr "Artist hinzufügen"
+msgstr "Artist hinzufÃ¼gen"
 
 msgid "Visible name:"
 msgstr "Sichtbar Name:"
@@ -1170,29 +1170,29 @@ msgid "Edit Artist"
 msgstr "Artist editieren"
 
 msgid "Please select the audio files for this record."
-msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
+msgstr "Bitte wÃ¤hlen Sie die audio Dateien fÃ¼r diese Album aus."
 
 msgid "Add Record"
-msgstr "Album hinzufügen"
+msgstr "Album hinzufÃ¼gen"
 
 msgid "Auto-create tracks from these files:"
 msgstr "Tracks aus dieser Dateien automatische erstellen:"
 
 msgid "Clear list"
-msgstr "Liste aufklären"
+msgstr "Liste aufklÃ¤ren"
 
 #, fuzzy
 msgid "_Add files..."
-msgstr "Dateien hinzufügen..."
+msgstr "Dateien hinzufÃ¼gen..."
 
 msgid "Edit Record"
 msgstr "Album editieren"
 
 msgid "Please select the audio file for this track."
-msgstr "Bitte wählen Sie die audio Datei für dieses Track aus."
+msgstr "Bitte wÃ¤hlen Sie die audio Datei fÃ¼r dieses Track aus."
 
 msgid "Add Track"
-msgstr "Track hinzufügen"
+msgstr "Track hinzufÃ¼gen"
 
 msgid "Edit Track"
 msgstr "Track editieren"
@@ -1201,7 +1201,7 @@ msgid "Duration:"
 msgstr "Zeitdauer:"
 
 msgid "Volume level:"
-msgstr "Lautstärke:"
+msgstr "LautstÃ¤rke:"
 
 #, c-format
 msgid "Unmeasured"
@@ -1212,7 +1212,7 @@ msgstr "Manuelles RVA Level benutzen [dB]"
 
 #, fuzzy
 msgid "Adding songs..."
-msgstr "Dateien hinzufügen..."
+msgstr "Dateien hinzufÃ¼gen..."
 
 #, c-format
 msgid ""
@@ -1307,7 +1307,7 @@ msgstr "Track editieren..."
 
 #, fuzzy
 msgid "Add item..."
-msgstr "Dateien hinzufügen..."
+msgstr "Dateien hinzufÃ¼gen..."
 
 #, fuzzy
 msgid "Remove item..."
@@ -1321,11 +1321,11 @@ msgid "Create empty store..."
 msgstr ""
 
 msgid "Add to playlist"
-msgstr "Zur Playliste hinzufügen"
+msgstr "Zur Playliste hinzufÃ¼gen"
 
 #, fuzzy
 msgid "Add to playlist (Album mode)"
-msgstr "Zur Playliste hinzufügen"
+msgstr "Zur Playliste hinzufÃ¼gen"
 
 #, fuzzy
 msgid "Build/Update store from filesystem..."
@@ -1345,10 +1345,10 @@ msgstr "Track entfernen"
 
 #, fuzzy
 msgid "Add new artist to this store..."
-msgstr "Neues Track zu diesem Album hinzufügen..."
+msgstr "Neues Track zu diesem Album hinzufÃ¼gen..."
 
 msgid "Calculate volume (recursive)"
-msgstr "Lautstärke bestimmen (rekursiv)"
+msgstr "LautstÃ¤rke bestimmen (rekursiv)"
 
 #, fuzzy
 msgid "Unmeasured tracks only"
@@ -1363,7 +1363,7 @@ msgid "Batch-update file metadata..."
 msgstr "Als Titel importieren"
 
 msgid "Add new artist..."
-msgstr "Neuen Artist hinzufügen..."
+msgstr "Neuen Artist hinzufÃ¼gen..."
 
 msgid "Edit artist..."
 msgstr "Artist editieren..."
@@ -1372,10 +1372,10 @@ msgid "Remove artist"
 msgstr "Artist entfernen"
 
 msgid "Add new record to this artist..."
-msgstr "Neues Album zu diesem Artist hinzufügen..."
+msgstr "Neues Album zu diesem Artist hinzufÃ¼gen..."
 
 msgid "Add new record..."
-msgstr "Neues Album hinzufügen..."
+msgstr "Neues Album hinzufÃ¼gen..."
 
 msgid "Edit record..."
 msgstr "Album editieren..."
@@ -1384,17 +1384,17 @@ msgid "Remove record"
 msgstr "Album entfernen"
 
 msgid "Add new track to this record..."
-msgstr "Neues Track zu diesem Album hinzufügen..."
+msgstr "Neues Track zu diesem Album hinzufÃ¼gen..."
 
 #, fuzzy
 msgid "CDDB query for this record..."
-msgstr "Neues Track zu diesem Album hinzufügen..."
+msgstr "Neues Track zu diesem Album hinzufÃ¼gen..."
 
 msgid "Submit record to CDDB database..."
 msgstr ""
 
 msgid "Add new track..."
-msgstr "Neues Track hinzufügen..."
+msgstr "Neues Track hinzufÃ¼gen..."
 
 msgid "Edit track..."
 msgstr "Track editieren..."
@@ -1406,7 +1406,7 @@ msgid "File info..."
 msgstr "Datei-Info..."
 
 msgid "Calculate volume"
-msgstr "Lautstärke bestimmen"
+msgstr "LautstÃ¤rke bestimmen"
 
 #, fuzzy
 msgid "Only if unmeasured"
@@ -1421,7 +1421,7 @@ msgstr "Als Titel importieren"
 
 #, fuzzy
 msgid "CDDB query for this CD..."
-msgstr "Neues Track zu diesem Album hinzufügen..."
+msgstr "Neues Track zu diesem Album hinzufÃ¼gen..."
 
 msgid "Submit CD to CDDB database..."
 msgstr ""
@@ -1448,7 +1448,7 @@ msgstr ""
 #, fuzzy
 msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
-msgstr "Aqualung muss new gestartet werden damit die Veränderungen wirken."
+msgstr "Aqualung muss new gestartet werden damit die VerÃ¤nderungen wirken."
 
 msgid "r"
 msgstr ""
@@ -1464,7 +1464,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Please select a Music Store database."
-msgstr "Bitte wählen Sie die audio Datei für dieses Track aus."
+msgstr "Bitte wÃ¤hlen Sie die audio Datei fÃ¼r dieses Track aus."
 
 #, fuzzy, c-format
 msgid ""
@@ -1476,10 +1476,10 @@ msgid ""
 "literally copied into the resulting string.\n"
 msgstr ""
 "\n"
-"Diese Schablone Zeichenkette wird für die Konstruktion des\n"
+"Diese Schablone Zeichenkette wird fÃ¼r die Konstruktion des\n"
 "Titels aus einem Artist, einem Album und einer Tonspur benutzt.\n"
 "Sie sind von %a, %r und %t bezeichnet, respektive.\n"
-"Alles andere wird in die ergebende Zeichenkette wörtlich\n"
+"Alles andere wird in die ergebende Zeichenkette wÃ¶rtlich\n"
 "kopiert werden.\n"
 
 msgid "Help"
@@ -1547,7 +1547,7 @@ msgid "Enable tooltips"
 msgstr "Tooltips erlauben"
 
 msgid "Put control buttons at the bottom of playlist"
-msgstr "Schaltknöpfe unten an die Playliste plazieren"
+msgstr "SchaltknÃ¶pfe unten an die Playliste plazieren"
 
 msgid "Disable control buttons relief"
 msgstr ""
@@ -1605,14 +1605,14 @@ msgstr "Zeige RVA in Playliste"
 
 #, fuzzy
 msgid "Show track lengths"
-msgstr "Trackslänge"
+msgstr "TrackslÃ¤nge"
 
 msgid "Show active track name in bold"
-msgstr "Aktiver Trackname fättlich vorstellungen"
+msgstr "Aktiver Trackname fÃ¤ttlich vorstellungen"
 
 #, fuzzy
 msgid "Enable rules hint"
-msgstr "Verfügbare Plugins"
+msgstr "VerfÃ¼gbare Plugins"
 
 msgid "Playlist column order"
 msgstr "Reihenfolge der Kolumnen in Playliste"
@@ -1632,7 +1632,7 @@ msgid "RVA values"
 msgstr ""
 
 msgid "Track lengths"
-msgstr "Trackslänge"
+msgstr "TrackslÃ¤nge"
 
 #, fuzzy
 msgid "Hide comment pane"
@@ -1670,7 +1670,7 @@ msgid "Cover art"
 msgstr "Artist entfernen"
 
 msgid "Default cover width:"
-msgstr "Default Hüllenbreite:"
+msgstr "Default HÃ¼llenbreite:"
 
 msgid "50 pixels"
 msgstr ""
@@ -1702,7 +1702,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Browse"
-msgstr "Blättern..."
+msgstr "BlÃ¤ttern..."
 
 msgid "Refresh"
 msgstr ""
@@ -1711,7 +1711,7 @@ msgid "Remove"
 msgstr "Entfernen"
 
 msgid "Add"
-msgstr "Hinzufügen"
+msgstr "HinzufÃ¼gen"
 
 msgid "DSP"
 msgstr ""
@@ -1730,8 +1730,8 @@ msgid ""
 "Aqualung is compiled without LADSPA plugin support.\n"
 "See the About box and the documentation for details."
 msgstr ""
-"Aqualung wurde ohne Samplerate Konverter Unterstützung kompiliert.\n"
-"Details finden Sie in der Über Aqualung Box und in der Dokumentation."
+"Aqualung wurde ohne Samplerate Konverter UnterstÃ¼tzung kompiliert.\n"
+"Details finden Sie in der Ãœber Aqualung Box und in der Dokumentation."
 
 msgid "Sample Rate Converter type"
 msgstr "Samplerate Konverter Typ"
@@ -1740,8 +1740,8 @@ msgid ""
 "Aqualung is compiled without Sample Rate Converter support.\n"
 "See the About box and the documentation for details."
 msgstr ""
-"Aqualung wurde ohne Samplerate Konverter Unterstützung kompiliert.\n"
-"Details finden Sie in der Über Aqualung Box und in der Dokumentation."
+"Aqualung wurde ohne Samplerate Konverter UnterstÃ¼tzung kompiliert.\n"
+"Details finden Sie in der Ãœber Aqualung Box und in der Dokumentation."
 
 msgid "Playback RVA"
 msgstr "RVA durch Abspiel"
@@ -1750,7 +1750,7 @@ msgid "Enable playback RVA"
 msgstr "RVA durch Abspiel erlauben"
 
 msgid "Listening environment:"
-msgstr "Anhörensumwelt:"
+msgstr "AnhÃ¶rensumwelt:"
 
 msgid "Audiophile"
 msgstr "Audiophil"
@@ -1759,13 +1759,13 @@ msgid "Living room"
 msgstr "Wohnzimmer"
 
 msgid "Office"
-msgstr "Büro"
+msgstr "BÃ¼ro"
 
 msgid "Noisy workshop"
 msgstr "Laute Werkstatt"
 
 msgid "Reference volume [dBFS] :"
-msgstr "Referenzlautstärke [dBFS] :"
+msgstr "ReferenzlautstÃ¤rke [dBFS] :"
 
 msgid "Steepness [dB/dB] :"
 msgstr "Steilheit [dB/dB] :"
@@ -1892,7 +1892,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Colors"
-msgstr "Schließen"
+msgstr "SchlieÃŸen"
 
 #, fuzzy
 msgid "Active song in playlist: "
@@ -1926,11 +1926,11 @@ msgstr "Unnbekannt"
 
 #, fuzzy
 msgid "Select files"
-msgstr "Dateien hinzufügen..."
+msgstr "Dateien hinzufÃ¼gen..."
 
 #, fuzzy
 msgid "Adding files..."
-msgstr "Dateien hinzufügen..."
+msgstr "Dateien hinzufÃ¼gen..."
 
 #, fuzzy
 msgid "Select directory"
@@ -1938,7 +1938,7 @@ msgstr "Album entfernen"
 
 #, fuzzy
 msgid "Adding files recursively..."
-msgstr "Dateien hinzufügen..."
+msgstr "Dateien hinzufÃ¼gen..."
 
 #, fuzzy, c-format
 msgid "%d track [%s] (%.1f MB)"
@@ -1966,14 +1966,14 @@ msgstr ""
 
 #, fuzzy
 msgid "Selected: "
-msgstr "Alles auswählen"
+msgstr "Alles auswÃ¤hlen"
 
 msgid "Total: "
 msgstr ""
 
 #, fuzzy
 msgid "Add files"
-msgstr "Dateien hinzufügen..."
+msgstr "Dateien hinzufÃ¼gen..."
 
 msgid ""
 "Add files to playlist\n"
@@ -1981,7 +1981,7 @@ msgid ""
 msgstr ""
 
 msgid "Select all"
-msgstr "Alles auswählen"
+msgstr "Alles auswÃ¤hlen"
 
 msgid ""
 "Select all songs in playlist\n"
@@ -1998,10 +1998,10 @@ msgstr ""
 
 #, fuzzy
 msgid "Add directory"
-msgstr "Album hinzufügen"
+msgstr "Album hinzufÃ¼gen"
 
 msgid "Select none"
-msgstr "Nichts auswählen"
+msgstr "Nichts auswÃ¤hlen"
 
 msgid "Invert selection"
 msgstr "Markierungen invertieren"
@@ -2031,7 +2031,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Calculate RVA"
-msgstr "Lautstärke bestimmen"
+msgstr "LautstÃ¤rke bestimmen"
 
 msgid "Separate"
 msgstr ""
@@ -2066,7 +2066,7 @@ msgid "LADSPA patch builder"
 msgstr "LADSPA Patch Bauer"
 
 msgid "Available plugins"
-msgstr "Verfügbare Plugins"
+msgstr "VerfÃ¼gbare Plugins"
 
 msgid "ID"
 msgstr ""
@@ -2092,11 +2092,11 @@ msgstr "Konfigurieren"
 
 #, fuzzy
 msgid "Enable all plugins"
-msgstr "Verfügbare Plugins"
+msgstr "VerfÃ¼gbare Plugins"
 
 #, fuzzy
 msgid "Disable all plugins"
-msgstr "Verfügbare Plugins"
+msgstr "VerfÃ¼gbare Plugins"
 
 msgid "Invert current state"
 msgstr ""
@@ -2108,10 +2108,10 @@ msgid "Rescan"
 msgstr "Neu abtasten"
 
 msgid "Available connections"
-msgstr "Verbindungsmöglichkeiten"
+msgstr "VerbindungsmÃ¶glichkeiten"
 
 msgid "Clear connections"
-msgstr "Verbindungen aufklären"
+msgstr "Verbindungen aufklÃ¤ren"
 
 msgid " out L"
 msgstr " aus L"
@@ -2123,13 +2123,13 @@ msgid "Search the Music Store"
 msgstr "Suchen im Musikladen"
 
 msgid "Key: "
-msgstr "Schlüssel: "
+msgstr "SchlÃ¼ssel: "
 
 msgid "Case sensitive"
-msgstr "Groß-/Kleinschreibung unterschieden"
+msgstr "GroÃŸ-/Kleinschreibung unterschieden"
 
 msgid "Exact matches only"
-msgstr "Nur pünktliche Anpassungen"
+msgstr "Nur pÃ¼nktliche Anpassungen"
 
 msgid "Select first and close window"
 msgstr ""
@@ -2154,11 +2154,11 @@ msgid "Search the Playlist"
 msgstr "Playliste speichern"
 
 msgid "Available skins"
-msgstr "Verfügbare Skins"
+msgstr "VerfÃ¼gbare Skins"
 
 #, fuzzy
 msgid "Calculating volume level"
-msgstr "Lautstärke bestimmen: %s"
+msgstr "LautstÃ¤rke bestimmen: %s"
 
 msgid "Progress:"
 msgstr ""
@@ -2212,7 +2212,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Relative Volume Adj.:"
-msgstr "Relative Lautstärke"
+msgstr "Relative LautstÃ¤rke"
 
 msgid "Import as RVA"
 msgstr "Als RVA importieren"
@@ -2321,7 +2321,7 @@ msgid "Format:"
 msgstr "Abbrechen"
 
 msgid "Length:"
-msgstr "Länge:"
+msgstr "LÃ¤nge:"
 
 #, fuzzy
 msgid "Samplerate:"
@@ -2435,7 +2435,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Length (ms)"
-msgstr "Länge:"
+msgstr "LÃ¤nge:"
 
 msgid "Musician credits"
 msgstr ""
@@ -2563,7 +2563,7 @@ msgid "bit unsigned"
 msgstr "bit vorzeichenlos"
 
 msgid "bit float"
-msgstr "Floß"
+msgstr "FloÃŸ"
 
 msgid "bit double"
 msgstr "bit Doppelt"
@@ -2643,7 +2643,7 @@ msgstr ""
 #~ msgstr "Track"
 
 #~ msgid "Relative Volume"
-#~ msgstr "Relative Lautstärke"
+#~ msgstr "Relative LautstÃ¤rke"
 
 #~ msgid "Genre"
 #~ msgstr "Genre"
@@ -2661,14 +2661,14 @@ msgstr ""
 #~ msgstr "FLAC-Metadaten"
 
 #~ msgid "Discard changes"
-#~ msgstr "Veränderungen ausschalten"
+#~ msgstr "VerÃ¤nderungen ausschalten"
 
 #~ msgid ""
 #~ "Music Store has been changed. You have to save it before\n"
 #~ "refreshing if you want to keep the changes."
 #~ msgstr ""
-#~ "Musikladen ist verändert werden. Sie müssen es speichern\n"
-#~ "bevor Auffrischen um die Veränderungen zu behalten."
+#~ "Musikladen ist verÃ¤ndert werden. Sie mÃ¼ssen es speichern\n"
+#~ "bevor Auffrischen um die VerÃ¤nderungen zu behalten."
 
 #, fuzzy
 #~ msgid "Enable the Music Store tree icons"
@@ -2676,7 +2676,7 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Case sensitive substitution"
-#~ msgstr "Groß-/Kleinschreibung unterschieden"
+#~ msgstr "GroÃŸ-/Kleinschreibung unterschieden"
 
 #, fuzzy
 #~ msgid "input:"
@@ -2744,31 +2744,31 @@ msgstr ""
 #~ "* libid3tag, a library for accessing ID3v2 tags\n"
 #~ "* libcddb, a CDDB server access library"
 #~ msgstr ""
-#~ "Aqualung könnte ohne die folgende Bibliotheken nicht funktionieren.\n"
-#~ "Wir möchten die Autoren dieser Softwarepaketen danken.\n"
+#~ "Aqualung kÃ¶nnte ohne die folgende Bibliotheken nicht funktionieren.\n"
+#~ "Wir mÃ¶chten die Autoren dieser Softwarepaketen danken.\n"
 #~ "\n"
 #~ "* The GIMP Toolkit (GTK+), Version 2.0\n"
-#~ "* libXML2, der XML C Syntaxanalysierer und Werkzeugsatz für Gnome\n"
+#~ "* libXML2, der XML C Syntaxanalysierer und Werkzeugsatz fÃ¼r Gnome\n"
 #~ "* libJACK, die JACK Audio Verbindungssatz support library"
 
 #, fuzzy
 #~ msgid "Add files to playlist"
-#~ msgstr "Zur Playliste hinzufügen"
+#~ msgstr "Zur Playliste hinzufÃ¼gen"
 
 #, fuzzy
 #~ msgid "Add Store"
-#~ msgstr "Album hinzufügen"
+#~ msgstr "Album hinzufÃ¼gen"
 
 #, fuzzy
 #~ msgid "Add new store..."
-#~ msgstr "Neues Track hinzufügen..."
+#~ msgstr "Neues Track hinzufÃ¼gen..."
 
 #, fuzzy
 #~ msgid "%d%% - Calculate volume level"
-#~ msgstr "Lautstärke bestimmen"
+#~ msgstr "LautstÃ¤rke bestimmen"
 
 #~ msgid "Show track lengths in playlist"
-#~ msgstr "Zeige Trackslänge in Playliste"
+#~ msgstr "Zeige TrackslÃ¤nge in Playliste"
 
 #~ msgid ""
 #~ "Logo by Maja Kocon <ironya@ll.pl>\n"
@@ -2792,7 +2792,7 @@ msgstr ""
 #~ msgstr "Musikladen"
 
 #~ msgid "Dismiss"
-#~ msgstr "Schließen"
+#~ msgstr "SchlieÃŸen"
 
 #, fuzzy
 #~ msgid "Playlist font: "
@@ -2803,7 +2803,7 @@ msgstr ""
 #~ msgstr "Musikladen"
 
 #~ msgid "Please select the audio files for direct adding."
-#~ msgstr "Bitte wählen Sie die audio Dateien für Direkt Beigabe aus."
+#~ msgstr "Bitte wÃ¤hlen Sie die audio Dateien fÃ¼r Direkt Beigabe aus."
 
 #~ msgid "Direct add"
 #~ msgstr "Direkt Beigabe"
@@ -2813,7 +2813,7 @@ msgstr ""
 #~ "Directly add these files to playlist:"
 #~ msgstr ""
 #~ "\n"
-#~ "Ausgewählte Dateien hinzufügen:"
+#~ "AusgewÃ¤hlte Dateien hinzufÃ¼gen:"
 
 #~ msgid "Contributors:"
 #~ msgstr "Beitragender:"
@@ -2832,7 +2832,7 @@ msgstr ""
 #~ msgstr "OK"
 
 #~ msgid "Apply"
-#~ msgstr "Übernehmen"
+#~ msgstr "Ãœbernehmen"
 
 #~ msgid "yes (always)"
 #~ msgstr "ja (immer)"

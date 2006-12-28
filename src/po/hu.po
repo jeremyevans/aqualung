@@ -9,43 +9,43 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2006-12-27 16:42+0100\n"
+"PO-Revision-Date: 2006-12-28 11:11+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgid "About"
-msgstr "Névjegy"
+msgstr "NÃ©vjegy"
 
 msgid "Build version: "
-msgstr "Fordítási verzió: "
+msgstr "FordÃ­tÃ¡si verziÃ³: "
 
 msgid "Homepage:"
 msgstr "Honlap:"
 
 msgid "Authors:"
-msgstr "Szerzõk:"
+msgstr "SzerzÅ‘k:"
 
 msgid "Core design, engineering & programming:\n"
-msgstr "Architektúra, tervezés & programozás:\n"
+msgstr "ArchitektÃºra, tervezÃ©s & programozÃ¡s:\n"
 
 msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr "Skin támogatás, kinézet, jusztírozás:\n"
+msgstr "Skin tÃ¡mogatÃ¡s, kinÃ©zet, jusztÃ­rozÃ¡s:\n"
 
 msgid "Programming, GUI engineering:\n"
-msgstr "Programozás, GUI tervezés:\n"
+msgstr "ProgramozÃ¡s, GUI tervezÃ©s:\n"
 
 msgid "Translators:"
-msgstr "Fordítók:"
+msgstr "FordÃ­tÃ³k:"
 
 msgid "German, Hungarian:\n"
-msgstr "Német, Magyar:\n"
+msgstr "NÃ©met, Magyar:\n"
 
 msgid "Ukrainian:\n"
-msgstr "Ukrán:\n"
+msgstr "UkrÃ¡n:\n"
 
 msgid "Graphics:"
 msgstr "Grafika:"
@@ -54,34 +54,34 @@ msgid "Logo, icons:\n"
 msgstr "Logo, ikonok:\n"
 
 msgid "This Aqualung binary is compiled with:"
-msgstr "Ez az Aqualung bináris a következõ opciókat támogatja:"
+msgstr "Ez az Aqualung binÃ¡ris a kÃ¶vetkezÅ‘ opciÃ³kat tÃ¡mogatja:"
 
 msgid "Optional features:"
 msgstr ""
 
 msgid "LADSPA plugin support\n"
-msgstr "LADSPA effekt támogatás\n"
+msgstr "LADSPA effekt tÃ¡mogatÃ¡s\n"
 
 msgid "CDDA (Audio CD) support\n"
-msgstr "CDDA (Audio CD) támogatás\n"
+msgstr "CDDA (Audio CD) tÃ¡mogatÃ¡s\n"
 
 msgid "CDDB support\n"
-msgstr "CDDB támogatás\n"
+msgstr "CDDB tÃ¡mogatÃ¡s\n"
 
 msgid "Sample Rate Converter support\n"
-msgstr "Mintavételi frekvencia konverter támogatás\n"
+msgstr "MintavÃ©teli frekvencia konverter tÃ¡mogatÃ¡s\n"
 
 msgid "iRiver iFP driver support\n"
-msgstr "iRiver iFP meghajtó támogatás\n"
+msgstr "iRiver iFP meghajtÃ³ tÃ¡mogatÃ¡s\n"
 
 msgid "Loop playback support\n"
 msgstr ""
 
 msgid "Systray support\n"
-msgstr "Rendszertálca támogatás\n"
+msgstr "RendszertÃ¡lca tÃ¡mogatÃ¡s\n"
 
 msgid "Decoding support:"
-msgstr "Dekódolás támogatása:"
+msgstr "DekÃ³dolÃ¡s tÃ¡mogatÃ¡sa:"
 
 msgid "sndfile (WAV, AIFF, etc.)\n"
 msgstr "sndfile (WAV, AIFF, stb.)\n"
@@ -96,7 +96,7 @@ msgid "Ogg Speex\n"
 msgstr "Ogg Speex\n"
 
 msgid "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
-msgstr "MPEG Audio (MPEG 1-2.5 I-III. Réteg)\n"
+msgstr "MPEG Audio (MPEG 1-2.5 I-III. RÃ©teg)\n"
 
 msgid "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
 msgstr "MOD Audio (MOD, S3M, XM, IT, stb.)\n"
@@ -114,7 +114,7 @@ msgid "Metadata (ID3, APE, Ogg comments)\n"
 msgstr "Metaadatok (ID3, APE, Ogg kommentek)\n"
 
 msgid "Encoding support:"
-msgstr "Kódolás támogatása:"
+msgstr "KÃ³dolÃ¡s tÃ¡mogatÃ¡sa:"
 
 msgid "sndfile (WAV)\n"
 msgstr "sndfile (WAV)\n"
@@ -123,7 +123,7 @@ msgid "LAME (MP3)\n"
 msgstr "LAME (MP3)\n"
 
 msgid "Output driver support:"
-msgstr "Kimeneti meghajtók:"
+msgstr "Kimeneti meghajtÃ³k:"
 
 msgid "OSS Audio\n"
 msgstr "OSS Audio\n"
@@ -152,222 +152,222 @@ msgid ""
 "along with this program; if not, write to the Free Software\n"
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
-"Ez egy szabad szoftver; terjeszthetõ illetve módosítható a Szabad\n"
-"Szoftver Alapítvány által kiadott GNU Általános Közreadási Feltételek\n"
-"(GPL) második (vagy bármely késõbbi) változatában foglaltak alapján.\n"
+"Ez egy szabad szoftver; terjeszthetÅ‘ illetve mÃ³dosÃ­thatÃ³ a Szabad\n"
+"Szoftver AlapÃ­tvÃ¡ny Ã¡ltal kiadott GNU ÃltalÃ¡nos KÃ¶zreadÃ¡si FeltÃ©telek\n"
+"(GPL) mÃ¡sodik (vagy bÃ¡rmely kÃ©sÅ‘bbi) vÃ¡ltozatÃ¡ban foglaltak alapjÃ¡n.\n"
 "\n"
-"A programot abban a reményben adjuk közre, hogy hasznos lesz, de nem\n"
-"vállalunk SEMMIFÉLE GARANCIÁT; beleértve az ELADHATÓSÁGRA vagy egy\n"
-"BIZONYOS FELADAT ELVÉGZÉSÉRE vonatkozó származtatott garanciát\n"
-"is. További részletek a GNU GPL dokumentumában.\n"
+"A programot abban a remÃ©nyben adjuk kÃ¶zre, hogy hasznos lesz, de nem\n"
+"vÃ¡llalunk SEMMIFÃ‰LE GARANCIÃT; beleÃ©rtve az ELADHATÃ“SÃGRA vagy egy\n"
+"BIZONYOS FELADAT ELVÃ‰GZÃ‰SÃ‰RE vonatkozÃ³ szÃ¡rmaztatott garanciÃ¡t\n"
+"is. TovÃ¡bbi rÃ©szletek a GNU GPL dokumentumÃ¡ban.\n"
 "\n"
-"A programhoz a GNU GPL egy példánya is jár; ha nem kaptad meg, írj a\n"
-"Szabad Szoftver Alapítvány címére: Free Software Foundation, Inc., 675\n"
+"A programhoz a GNU GPL egy pÃ©ldÃ¡nya is jÃ¡r; ha nem kaptad meg, Ã­rj a\n"
+"Szabad Szoftver AlapÃ­tvÃ¡ny cÃ­mÃ©re: Free Software Foundation, Inc., 675\n"
 "Mass Ave, Cambridge, MA 02139, USA."
 
 msgid "Enabled"
-msgstr "Érvényes"
+msgstr "Ã‰rvÃ©nyes"
 
 msgid "Source"
-msgstr "Forrás"
+msgstr "ForrÃ¡s"
 
 msgid "CDDB"
 msgstr "CDDB"
 
 msgid "CDDB (not available)"
-msgstr "CDDB (nem elérhetõ)"
+msgstr "CDDB (nem elÃ©rhetÅ‘)"
 
 msgid "Metadata"
 msgstr "Metaadatok"
 
 msgid "Filesystem"
-msgstr "Fájlrendszer"
+msgstr "FÃ¡jlrendszer"
 
 msgid "Capitalization"
-msgstr "Kis/nagybetû beállítása"
+msgstr "Kis/nagybetÅ± beÃ¡llÃ­tÃ¡sa"
 
 msgid "Capitalize: "
-msgstr "Nagy kezdõbetû:"
+msgstr "Nagy kezdÅ‘betÅ±:"
 
 msgid "All words"
-msgstr "Minden szónál"
+msgstr "Minden szÃ³nÃ¡l"
 
 msgid "First word only"
-msgstr "Csak az elsõ szónál"
+msgstr "Csak az elsÅ‘ szÃ³nÃ¡l"
 
 msgid "Force case: "
-msgstr "Alak megõrzése: "
+msgstr "Alak megÅ‘rzÃ©se: "
 
 msgid "Force other letters to lowercase"
-msgstr "A többi legyen kisbetû"
+msgstr "A tÃ¶bbi legyen kisbetÅ±"
 
 msgid "Regular expression"
-msgstr "Reguláris kifejezés"
+msgstr "RegulÃ¡ris kifejezÃ©s"
 
 msgid "Regexp:"
-msgstr "Kifejezés:"
+msgstr "KifejezÃ©s:"
 
 msgid "Replace:"
 msgstr "Csere:"
 
 msgid "Predefined transformations"
-msgstr "Elõre definiált transzformációk"
+msgstr "ElÅ‘re definiÃ¡lt transzformÃ¡ciÃ³k"
 
 msgid "Remove file extension"
-msgstr "Kiterjesztés levágása"
+msgstr "KiterjesztÃ©s levÃ¡gÃ¡sa"
 
 msgid "Remove leading number"
-msgstr "Kezdõ számjegyek levágása"
+msgstr "KezdÅ‘ szÃ¡mjegyek levÃ¡gÃ¡sa"
 
 msgid "Convert underscore to space"
-msgstr "Aláhúzás szóközzé alakítása"
+msgstr "AlÃ¡hÃºzÃ¡s szÃ³kÃ¶zzÃ© alakÃ­tÃ¡sa"
 
 msgid "Trim leading, tailing and duplicate spaces"
-msgstr "Kezdõ, végzõ és többszörös szóközök eltávolítása"
+msgstr "KezdÅ‘, vÃ©gzÅ‘ Ã©s tÃ¶bbszÃ¶rÃ¶s szÃ³kÃ¶zÃ¶k eltÃ¡volÃ­tÃ¡sa"
 
 msgid "Regexp matches empty string"
-msgstr "A kifejezés fedi az üres karakterláncot"
+msgstr "A kifejezÃ©s fedi az Ã¼res karakterlÃ¡ncot"
 
 msgid "Unknown Artist"
-msgstr "Ismeretlen elõadó"
+msgstr "Ismeretlen elÅ‘adÃ³"
 
 msgid "Please select the root directory."
-msgstr "Válaszd ki a gyökérkönyvtárat."
+msgstr "VÃ¡laszd ki a gyÃ¶kÃ©rkÃ¶nyvtÃ¡rat."
 
 msgid "Select build type"
-msgstr "Felépítés típusának kiválasztása"
+msgstr "FelÃ©pÃ­tÃ©s tÃ­pusÃ¡nak kivÃ¡lasztÃ¡sa"
 
 msgid "Directory driven"
-msgstr "Könyvtár alapú"
+msgstr "KÃ¶nyvtÃ¡r alapÃº"
 
 msgid "Independent"
-msgstr "Független"
+msgstr "FÃ¼ggetlen"
 
 msgid "Build/Update store"
-msgstr "Tároló felépítése/aktualizálása"
+msgstr "TÃ¡rolÃ³ felÃ©pÃ­tÃ©se/aktualizÃ¡lÃ¡sa"
 
 msgid "General"
-msgstr "Általános"
+msgstr "ÃltalÃ¡nos"
 
 msgid "Directory structure"
-msgstr "Könyvtár struktúra"
+msgstr "KÃ¶nyvtÃ¡r struktÃºra"
 
 msgid "Root path:"
-msgstr "Gyökérkönyvtár:"
+msgstr "GyÃ¶kÃ©rkÃ¶nyvtÃ¡r:"
 
 msgid "_Browse..."
-msgstr "_Tallózás..."
+msgstr "_TallÃ³zÃ¡s..."
 
 msgid "Structure:"
-msgstr "Struktúra:"
+msgstr "StruktÃºra:"
 
 msgid "root / record / track"
-msgstr "gyökér / album / szám"
+msgstr "gyÃ¶kÃ©r / album / szÃ¡m"
 
 msgid "root / artist / record / track"
-msgstr "gyökér / elõadó / album / szám"
+msgstr "gyÃ¶kÃ©r / elÅ‘adÃ³ / album / szÃ¡m"
 
 msgid "root / artist / artist / record / track"
-msgstr "gyökér / elõadó / elõadó / album / szám"
+msgstr "gyÃ¶kÃ©r / elÅ‘adÃ³ / elÅ‘adÃ³ / album / szÃ¡m"
 
 msgid "root / artist / artist / artist / record / track"
-msgstr "gyökér / elõadó / elõadó / elõadó / album / szám"
+msgstr "gyÃ¶kÃ©r / elÅ‘adÃ³ / elÅ‘adÃ³ / elÅ‘adÃ³ / album / szÃ¡m"
 
 msgid "Exclude files matching wildcard"
-msgstr "Mintára illeszkedõ fájlok kihagyása"
+msgstr "MintÃ¡ra illeszkedÅ‘ fÃ¡jlok kihagyÃ¡sa"
 
 msgid "Include only files matching wildcard"
-msgstr "Csak a mintára illeszkedõ fájlok vizsgálata"
+msgstr "Csak a mintÃ¡ra illeszkedÅ‘ fÃ¡jlok vizsgÃ¡lata"
 
 msgid "Reread data for existing tracks"
-msgstr "Létezõ számok adatainak újraolvasása"
+msgstr "LÃ©tezÅ‘ szÃ¡mok adatainak ÃºjraolvasÃ¡sa"
 
 msgid "Artist"
-msgstr "Elõadó"
+msgstr "ElÅ‘adÃ³"
 
 msgid "Sort artists by"
-msgstr "Elõadók rendezése a következõ szerint"
+msgstr "ElÅ‘adÃ³k rendezÃ©se a kÃ¶vetkezÅ‘ szerint"
 
 msgid "Artist name"
-msgstr "Elõadó neve"
+msgstr "ElÅ‘adÃ³ neve"
 
 msgid "Artist name (lowercase)"
-msgstr "Elõadó neve (kisbetûvel)"
+msgstr "ElÅ‘adÃ³ neve (kisbetÅ±vel)"
 
 msgid "Directory name"
-msgstr "Könyvtár neve"
+msgstr "KÃ¶nyvtÃ¡r neve"
 
 msgid "Directory name (lowercase)"
-msgstr "Könyvtár neve (kisbetûvel)"
+msgstr "KÃ¶nyvtÃ¡r neve (kisbetÅ±vel)"
 
 msgid "Record"
 msgstr "Album"
 
 msgid "Sort records by"
-msgstr "Albumok rendezése a következõ szerint"
+msgstr "Albumok rendezÃ©se a kÃ¶vetkezÅ‘ szerint"
 
 msgid "Record name"
-msgstr "Album címe"
+msgstr "Album cÃ­me"
 
 msgid "Record name (lowercase)"
-msgstr "Album címe (kisbetûvel)"
+msgstr "Album cÃ­me (kisbetÅ±vel)"
 
 msgid "Year"
-msgstr "Év"
+msgstr "Ã‰v"
 
 msgid "Add year to the comments of new records"
-msgstr "Év hozzáadása az újonnan felvett albumok kommentjéhez"
+msgstr "Ã‰v hozzÃ¡adÃ¡sa az Ãºjonnan felvett albumok kommentjÃ©hez"
 
 msgid "Track"
-msgstr "Szám"
+msgstr "SzÃ¡m"
 
 msgid "Import Replaygain tag as manual RVA"
-msgstr "Replaygain tag importálása rögzített RVA-ként"
+msgstr "Replaygain tag importÃ¡lÃ¡sa rÃ¶gzÃ­tett RVA-kÃ©nt"
 
 msgid "Import Comment tag"
-msgstr "Komment tag importálása"
+msgstr "Komment tag importÃ¡lÃ¡sa"
 
 msgid "Sandbox"
-msgstr "Homokozó"
+msgstr "HomokozÃ³"
 
 msgid "Filename:"
-msgstr "Fájlnév:"
+msgstr "FÃ¡jlnÃ©v:"
 
 msgid "Test"
 msgstr "Teszt"
 
 msgid "Building store from filesystem"
-msgstr "Tároló felépítése fájlrendszerrõl"
+msgstr "TÃ¡rolÃ³ felÃ©pÃ­tÃ©se fÃ¡jlrendszerrÅ‘l"
 
 msgid "Directory:"
-msgstr "Könyvtár:"
+msgstr "KÃ¶nyvtÃ¡r:"
 
 msgid "File:"
-msgstr "Fájl:"
+msgstr "FÃ¡jl:"
 
 msgid "Action:"
-msgstr "Mûvelet:"
+msgstr "MÅ±velet:"
 
 msgid "Abort"
-msgstr "Megszakítás"
+msgstr "MegszakÃ­tÃ¡s"
 
 msgid "Unknown Record"
 msgstr "Ismeretlen album"
 
 msgid "Scanning files"
-msgstr "Fájlok vizsgálata"
+msgstr "FÃ¡jlok vizsgÃ¡lata"
 
 msgid "Processing metadata"
-msgstr "Metaadatok olvasása"
+msgstr "Metaadatok olvasÃ¡sa"
 
 msgid "CDDB lookup"
-msgstr "CDDB lekérdezés"
+msgstr "CDDB lekÃ©rdezÃ©s"
 
 msgid "Name transformation"
-msgstr "Név transzformáció"
+msgstr "NÃ©v transzformÃ¡ciÃ³"
 
 msgid "Reading file"
-msgstr "Fájl olvasása"
+msgstr "FÃ¡jl olvasÃ¡sa"
 
 msgid "CD Audio"
 msgstr "CD Audio"
@@ -379,10 +379,10 @@ msgid "No disc"
 msgstr "Nincs lemez"
 
 msgid "Drive info"
-msgstr "Meghajtó infó"
+msgstr "MeghajtÃ³ infÃ³"
 
 msgid "Device path:"
-msgstr "Elérési út:"
+msgstr "ElÃ©rÃ©si Ãºt:"
 
 msgid "Vendor:"
 msgstr "Vendor:"
@@ -397,26 +397,26 @@ msgid ""
 "The information below is reported by the drive, and\n"
 "may not reflect the actual capabilities of the device."
 msgstr ""
-"Az alábbi információ a meghajtótól származik, ami lehet\n"
-"hogy nem felel meg a készülék valódi képességeinek."
+"Az alÃ¡bbi informÃ¡ciÃ³ a meghajtÃ³tÃ³l szÃ¡rmazik, ami lehet\n"
+"hogy nem felel meg a kÃ©szÃ¼lÃ©k valÃ³di kÃ©pessÃ©geinek."
 
 msgid "Eject"
-msgstr "Tálca kitolása"
+msgstr "TÃ¡lca kitolÃ¡sa"
 
 msgid "Close tray"
-msgstr "Tálca behúzása"
+msgstr "TÃ¡lca behÃºzÃ¡sa"
 
 msgid "Disable manual eject"
-msgstr "Tálca kézi kitolásának tiltása"
+msgstr "TÃ¡lca kÃ©zi kitolÃ¡sÃ¡nak tiltÃ¡sa"
 
 msgid "Select juke-box disc"
-msgstr "Juke-box lemez kiválasztása"
+msgstr "Juke-box lemez kivÃ¡lasztÃ¡sa"
 
 msgid "Set drive speed"
-msgstr "Meghajtó sebesség beállítása"
+msgstr "MeghajtÃ³ sebessÃ©g beÃ¡llÃ­tÃ¡sa"
 
 msgid "Detect media change"
-msgstr "Lemezcsere érzékelése"
+msgstr "Lemezcsere Ã©rzÃ©kelÃ©se"
 
 msgid "Read multiple sessions"
 msgstr ""
@@ -425,43 +425,43 @@ msgid "Hard reset device"
 msgstr ""
 
 msgid "Reading"
-msgstr "Olvasás"
+msgstr "OlvasÃ¡s"
 
 msgid "Play CD Audio"
-msgstr "Audio CD lejátszása"
+msgstr "Audio CD lejÃ¡tszÃ¡sa"
 
 msgid "Read CD-DA"
-msgstr "CD-DA olvasása"
+msgstr "CD-DA olvasÃ¡sa"
 
 msgid "Read CD+G"
-msgstr "CD+G olvasása"
+msgstr "CD+G olvasÃ¡sa"
 
 msgid "Read CD-R"
-msgstr "CD-R olvasása"
+msgstr "CD-R olvasÃ¡sa"
 
 msgid "Read CD-RW"
-msgstr "CD-RW olvasása"
+msgstr "CD-RW olvasÃ¡sa"
 
 msgid "Read DVD-R"
-msgstr "DVD-R olvasása"
+msgstr "DVD-R olvasÃ¡sa"
 
 msgid "Read DVD+R"
-msgstr "DVD+R olvasása"
+msgstr "DVD+R olvasÃ¡sa"
 
 msgid "Read DVD-RW"
-msgstr "DVD-RW olvasása"
+msgstr "DVD-RW olvasÃ¡sa"
 
 msgid "Read DVD+RW"
-msgstr "DVD+RW olvasása"
+msgstr "DVD+RW olvasÃ¡sa"
 
 msgid "Read DVD-RAM"
-msgstr "DVD-RAM olvasása"
+msgstr "DVD-RAM olvasÃ¡sa"
 
 msgid "Read DVD-ROM"
-msgstr "DVD-ROM olvasása"
+msgstr "DVD-ROM olvasÃ¡sa"
 
 msgid "C2 Error Correction"
-msgstr "C2 hibajavítás"
+msgstr "C2 hibajavÃ­tÃ¡s"
 
 msgid "Read Mode 2 Form 1"
 msgstr ""
@@ -470,34 +470,34 @@ msgid "Read Mode 2 Form 2"
 msgstr ""
 
 msgid "Read MCN"
-msgstr "MCN olvasása"
+msgstr "MCN olvasÃ¡sa"
 
 msgid "Read ISRC"
-msgstr "ISRC olvasása"
+msgstr "ISRC olvasÃ¡sa"
 
 msgid "Writing"
-msgstr "Írás"
+msgstr "ÃrÃ¡s"
 
 msgid "Write CD-R"
-msgstr "CD-R írása"
+msgstr "CD-R Ã­rÃ¡sa"
 
 msgid "Write CD-RW"
-msgstr "CD-RW írása"
+msgstr "CD-RW Ã­rÃ¡sa"
 
 msgid "Write DVD-R"
-msgstr "DVD-R írása"
+msgstr "DVD-R Ã­rÃ¡sa"
 
 msgid "Write DVD+R"
-msgstr "DVD+R írása"
+msgstr "DVD+R Ã­rÃ¡sa"
 
 msgid "Write DVD-RW"
-msgstr "DVD-RW írása"
+msgstr "DVD-RW Ã­rÃ¡sa"
 
 msgid "Write DVD+RW"
-msgstr "DVD+RW írása"
+msgstr "DVD+RW Ã­rÃ¡sa"
 
 msgid "Write DVD-RAM"
-msgstr "DVD-RAM írása"
+msgstr "DVD-RAM Ã­rÃ¡sa"
 
 msgid "Mount Rainier"
 msgstr "Mount Rainier"
@@ -506,108 +506,108 @@ msgid "Burn Proof"
 msgstr "Burn Proof"
 
 msgid "CDDB query"
-msgstr "CDDB lekérdezés"
+msgstr "CDDB lekÃ©rdezÃ©s"
 
 msgid "Retrieving matches from server..."
-msgstr "Találatok letöltése a szerverrõl..."
+msgstr "TalÃ¡latok letÃ¶ltÃ©se a szerverrÅ‘l..."
 
 msgid "Connecting to CDDB server..."
-msgstr "Kapcsolódás a CDDB szerverhez..."
+msgstr "KapcsolÃ³dÃ¡s a CDDB szerverhez..."
 
 msgid "Matches:"
-msgstr "Találatok:"
+msgstr "TalÃ¡latok:"
 
 msgid "Artist:"
-msgstr "Elõadó:"
+msgstr "ElÅ‘adÃ³:"
 
 msgid "Title:"
-msgstr "Cím:"
+msgstr "CÃ­m:"
 
 msgid "Year:"
-msgstr "Év:"
+msgstr "Ã‰v:"
 
 msgid "Category:"
-msgstr "Kategória:"
+msgstr "KategÃ³ria:"
 
 msgid "Genre:"
-msgstr "Mûfaj:"
+msgstr "MÅ±faj:"
 
 msgid "Extended data:"
-msgstr "Egyéb adat:"
+msgstr "EgyÃ©b adat:"
 
 msgid "Import as Artist"
-msgstr "Importálás elõadóként"
+msgstr "ImportÃ¡lÃ¡s elÅ‘adÃ³kÃ©nt"
 
 msgid "Import as Title"
-msgstr "Importálás címként"
+msgstr "ImportÃ¡lÃ¡s cÃ­mkÃ©nt"
 
 msgid "Import as Sort Key"
-msgstr "Importálás kulcsként"
+msgstr "ImportÃ¡lÃ¡s kulcskÃ©nt"
 
 msgid "Add to Comments"
-msgstr "Hozzáadás a kommentekhez"
+msgstr "HozzÃ¡adÃ¡s a kommentekhez"
 
 msgid "Tracks"
-msgstr "Számok"
+msgstr "SzÃ¡mok"
 
 msgid "Warning"
-msgstr "Figyelmeztetés"
+msgstr "FigyelmeztetÃ©s"
 
 msgid "CDDB submission"
-msgstr "CDDB feltöltés"
+msgstr "CDDB feltÃ¶ltÃ©s"
 
 msgid "(choose a category)"
-msgstr "(válassz egy kategóriát)"
+msgstr "(vÃ¡lassz egy kategÃ³riÃ¡t)"
 
 msgid ""
 "Artist appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
-"Az elõadó csupa kisbetûvel szerepel.\n"
+"Az elÅ‘adÃ³ csupa kisbetÅ±vel szerepel.\n"
 "Akarod folytatni?"
 
 msgid ""
 "Artist appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
-"Az elõadó csupa nagybetûvel szerepel.\n"
+"Az elÅ‘adÃ³ csupa nagybetÅ±vel szerepel.\n"
 "Akarod folytatni?"
 
 msgid ""
 "Title appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
-"A cím csupa kisbetûvel szerepel.\n"
+"A cÃ­m csupa kisbetÅ±vel szerepel.\n"
 "Akarod folytatni?"
 
 msgid ""
 "Title appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
-"A cím csupa nagybetûvel szerepel.\n"
+"A cÃ­m csupa nagybetÅ±vel szerepel.\n"
 "Akarod folytatni?"
 
 msgid ""
 "It is very likely that the year is wrong.\n"
 "Do you want to proceed?"
 msgstr ""
-"Nagyon valószínû, hogy az év hibás.\n"
+"Nagyon valÃ³szÃ­nÅ±, hogy az Ã©v hibÃ¡s.\n"
 "Akarod folytatni?"
 
 msgid "The email address provided for submission is invalid."
-msgstr "A feltöltéshez megadott email cím érvénytelen."
+msgstr "A feltÃ¶ltÃ©shez megadott email cÃ­m Ã©rvÃ©nytelen."
 
 msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "Hiba történt a lemez CDDB szerverhez való küldése közben."
+msgstr "Hiba tÃ¶rtÃ©nt a lemez CDDB szerverhez valÃ³ kÃ¼ldÃ©se kÃ¶zben."
 
 msgid "An error occurred while attempting to connect to the CDDB server."
-msgstr "Hiba történt a CDDB szerverhez való kapcsolódás közben."
+msgstr "Hiba tÃ¶rtÃ©nt a CDDB szerverhez valÃ³ kapcsolÃ³dÃ¡s kÃ¶zben."
 
 msgid "No matching record found."
-msgstr "Az album nem található az adatbázisban."
+msgstr "Az album nem talÃ¡lhatÃ³ az adatbÃ¡zisban."
 
 msgid "Please select the directory for ripped files."
-msgstr "Válassz ki egy könyvtárat a rippelt fájloknak."
+msgstr "VÃ¡lassz ki egy kÃ¶nyvtÃ¡rat a rippelt fÃ¡jloknak."
 
 msgid "(none)"
 msgstr "(nincs)"
@@ -619,7 +619,7 @@ msgid "best"
 msgstr "legjobb"
 
 msgid "Compression level:"
-msgstr "Tömörítés szintje:"
+msgstr "TÃ¶mÃ¶rÃ­tÃ©s szintje:"
 
 msgid "Bitrate [kbps]:"
 msgstr ""
@@ -638,24 +638,24 @@ msgstr ""
 
 #, fuzzy
 msgid "Rip CD"
-msgstr "CD rippelés..."
+msgstr "CD rippelÃ©s..."
 
 msgid "Album:"
 msgstr "Lemez:"
 
 #, fuzzy
 msgid "Rip"
-msgstr "CD rippelés..."
+msgstr "CD rippelÃ©s..."
 
 #, fuzzy
 msgid "No"
 msgstr "No."
 
 msgid "Title"
-msgstr "Cím"
+msgstr "CÃ­m"
 
 msgid "Select"
-msgstr "Választ"
+msgstr "VÃ¡laszt"
 
 msgid "All"
 msgstr ""
@@ -669,36 +669,36 @@ msgstr "Kimenet:"
 
 #, fuzzy
 msgid "Destination"
-msgstr "Leírás"
+msgstr "LeÃ­rÃ¡s"
 
 #, fuzzy
 msgid "Target directory for ripped files"
-msgstr "Válaszd ki a gyökérkönyvtárat."
+msgstr "VÃ¡laszd ki a gyÃ¶kÃ©rkÃ¶nyvtÃ¡rat."
 
 #, fuzzy
 msgid "Add to Music Store"
-msgstr "Zenetár"
+msgstr "ZenetÃ¡r"
 
 msgid "Format"
-msgstr "Formátum"
+msgstr "FormÃ¡tum"
 
 #, fuzzy
 msgid "File format:"
-msgstr "Címformátum"
+msgstr "CÃ­mformÃ¡tum"
 
 #, fuzzy
 msgid "VBR encoding"
-msgstr "kódolású"
+msgstr "kÃ³dolÃ¡sÃº"
 
 #, fuzzy
 msgid "Tag files with metadata"
-msgstr "Metaadatok frissítése"
+msgstr "Metaadatok frissÃ­tÃ©se"
 
 msgid "Paranoia"
 msgstr ""
 
 msgid "Paranoia error correction"
-msgstr "Paranoia hibajavítás"
+msgstr "Paranoia hibajavÃ­tÃ¡s"
 
 msgid "Perform overlapped reads"
 msgstr ""
@@ -722,14 +722,14 @@ msgstr ""
 
 #, fuzzy
 msgid "Total"
-msgstr "Összesen: "
+msgstr "Ã–sszesen: "
 
 msgid "(audio only)"
 msgstr ""
 
 #, fuzzy
 msgid "Ripping CD tracks..."
-msgstr "CD rippelés..."
+msgstr "CD rippelÃ©s..."
 
 msgid "Begin"
 msgstr ""
@@ -740,14 +740,14 @@ msgstr "Hossz:"
 
 #, fuzzy
 msgid "Progress"
-msgstr "Feldolgozás:"
+msgstr "FeldolgozÃ¡s:"
 
 msgid "Close window when complete"
 msgstr ""
 
 #, fuzzy
 msgid "Close"
-msgstr "Színek"
+msgstr "SzÃ­nek"
 
 msgid "day"
 msgstr "nap"
@@ -768,26 +768,26 @@ msgid "No output"
 msgstr "Nincs kimenet"
 
 msgid "SRC Type: "
-msgstr "SRC Típus: "
+msgstr "SRC TÃ­pus: "
 
 msgid ""
 "One or more stores in Music Store have been modified.\n"
 "Do you want to save them before exiting?"
 msgstr ""
-"Zenetárban egy vagy több tároló tartalma megváltozott.\n"
-"Szeretnéd elmenteni õket kilépés elõtt?"
+"ZenetÃ¡rban egy vagy tÃ¶bb tÃ¡rolÃ³ tartalma megvÃ¡ltozott.\n"
+"SzeretnÃ©d elmenteni Å‘ket kilÃ©pÃ©s elÅ‘tt?"
 
 #, fuzzy
 msgid "Question"
-msgstr "Leírás"
+msgstr "LeÃ­rÃ¡s"
 
 #, c-format
 msgid "Position: %d%%"
-msgstr "Pozíció: %d%%"
+msgstr "PozÃ­ciÃ³: %d%%"
 
 #, c-format
 msgid "Mute"
-msgstr "Néma"
+msgstr "NÃ©ma"
 
 #, c-format
 msgid "%d dB"
@@ -795,7 +795,7 @@ msgstr "%d dB"
 
 #, c-format
 msgid "Volume: %s"
-msgstr "Hangerõ: %s"
+msgstr "HangerÅ‘: %s"
 
 #, c-format
 msgid "%d%% R"
@@ -818,7 +818,7 @@ msgid " (%d/%d)"
 msgstr " (%d/%d)"
 
 msgid "JACK connection lost"
-msgstr "Megszakadt a JACK összeköttetés"
+msgstr "Megszakadt a JACK Ã¶sszekÃ¶ttetÃ©s"
 
 msgid ""
 "JACK has either been shutdown or it\n"
@@ -826,99 +826,99 @@ msgid ""
 "not fast enough. All you can do now\n"
 "is restart both JACK and Aqualung.\n"
 msgstr ""
-"A JACK szervert leállították, vagy lekapcsolta\n"
-"az Aqualungot, mert nem volt elég gyors. Újra\n"
-"kell indítani a JACK-et és az Aqualungot is.\n"
+"A JACK szervert leÃ¡llÃ­tottÃ¡k, vagy lekapcsolta\n"
+"az Aqualungot, mert nem volt elÃ©g gyors. Ãšjra\n"
+"kell indÃ­tani a JACK-et Ã©s az Aqualungot is.\n"
 
 msgid ""
 "Aqualung is compiled with system tray support, but the status icon could not "
 "be embedded in the notification area. Your desktop may not have support for "
 "a system tray, or it has not been configured correctly."
 msgstr ""
-"Az Aqualung támogatja a rendszertálca használatát, de az állapotikont nem "
-"sikerült a tálcára helyezni. Lehet, hogy az asztalodról hiányzik a "
-"rendszertálca, vagy nincs megfelelõen beállítva."
+"Az Aqualung tÃ¡mogatja a rendszertÃ¡lca hasznÃ¡latÃ¡t, de az Ã¡llapotikont nem "
+"sikerÃ¼lt a tÃ¡lcÃ¡ra helyezni. Lehet, hogy az asztalodrÃ³l hiÃ¡nyzik a "
+"rendszertÃ¡lca, vagy nincs megfelelÅ‘en beÃ¡llÃ­tva."
 
 msgid "Settings"
-msgstr "Beállítások"
+msgstr "BeÃ¡llÃ­tÃ¡sok"
 
 msgid "Skin chooser"
-msgstr "Szkin-választó"
+msgstr "Szkin-vÃ¡lasztÃ³"
 
 msgid "JACK port setup"
-msgstr "JACK port beállítás"
+msgstr "JACK port beÃ¡llÃ­tÃ¡s"
 
 msgid "File info"
-msgstr "Fájl infó"
+msgstr "FÃ¡jl infÃ³"
 
 msgid "Quit"
-msgstr "Kilépés"
+msgstr "KilÃ©pÃ©s"
 
 msgid "Previous song"
-msgstr "Elõzõ szám"
+msgstr "ElÅ‘zÅ‘ szÃ¡m"
 
 msgid "Stop"
-msgstr "Megállítás"
+msgstr "MegÃ¡llÃ­tÃ¡s"
 
 msgid "Next song"
-msgstr "Következõ szám"
+msgstr "KÃ¶vetkezÅ‘ szÃ¡m"
 
 msgid "Play"
-msgstr "Lejátszás"
+msgstr "LejÃ¡tszÃ¡s"
 
 msgid "Pause"
-msgstr "Szünet"
+msgstr "SzÃ¼net"
 
 msgid "Repeat current song"
-msgstr "Aktuális szám ismétlése"
+msgstr "AktuÃ¡lis szÃ¡m ismÃ©tlÃ©se"
 
 msgid "Repeat all songs"
-msgstr "Összes szám ismétlése"
+msgstr "Ã–sszes szÃ¡m ismÃ©tlÃ©se"
 
 msgid "Shuffle songs"
-msgstr "Véletlenszerû sorrend"
+msgstr "VÃ©letlenszerÅ± sorrend"
 
 msgid "Toggle playlist"
-msgstr "Lejátszólista"
+msgstr "LejÃ¡tszÃ³lista"
 
 msgid "Toggle music store"
-msgstr "Zenetár"
+msgstr "ZenetÃ¡r"
 
 msgid "Toggle LADSPA patch builder"
-msgstr "LADSPA effekt szerkesztõ"
+msgstr "LADSPA effekt szerkesztÅ‘"
 
 msgid "Show Aqualung"
-msgstr "Aqualung mutatása"
+msgstr "Aqualung mutatÃ¡sa"
 
 msgid "Hide Aqualung"
-msgstr "Aqualung elrejtése"
+msgstr "Aqualung elrejtÃ©se"
 
 msgid "Previous"
-msgstr "Elõzõ"
+msgstr "ElÅ‘zÅ‘"
 
 msgid "Next"
-msgstr "Következõ"
+msgstr "KÃ¶vetkezÅ‘"
 
 msgid "Aqualung playlist (*.xml)"
-msgstr "Aqualung lejátszólista (*.xml)"
+msgstr "Aqualung lejÃ¡tszÃ³lista (*.xml)"
 
 msgid "MP3 Playlist (*.m3u)"
-msgstr "MP3 lejátszólista (*.m3u) "
+msgstr "MP3 lejÃ¡tszÃ³lista (*.m3u) "
 
 msgid "Multimedia Playlist (*.pls)"
-msgstr "Multimedia lejátszólista (*.pls)"
+msgstr "Multimedia lejÃ¡tszÃ³lista (*.pls)"
 
 msgid "All Files"
-msgstr "Minden fájl"
+msgstr "Minden fÃ¡jl"
 
 msgid "All Playlist Files"
-msgstr "Minden lejátszólista"
+msgstr "Minden lejÃ¡tszÃ³lista"
 
 msgid "All Audio Files"
-msgstr "Minden hangfájl"
+msgstr "Minden hangfÃ¡jl"
 
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
-msgstr "Hangfájlok (*.wav, *.aiff, *.au, ...)"
+msgstr "HangfÃ¡jlok (*.wav, *.aiff, *.au, ...)"
 
 msgid "Free Lossless Audio Codec (*.flac)"
 msgstr "Free Lossless Audio Codec (*.flac)"
@@ -942,16 +942,16 @@ msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
 msgstr "Modulok (*.xm, *.mod, *.it, *.s3m, ...)"
 
 msgid "Compressed modules (*.gz, *.bz2)"
-msgstr "Tömörített modulok (*.gz, *.bz2)"
+msgstr "TÃ¶mÃ¶rÃ­tett modulok (*.gz, *.bz2)"
 
 msgid "Compressed modules (*.gz)"
-msgstr "Tömörített modulok (*.gz)"
+msgstr "TÃ¶mÃ¶rÃ­tett modulok (*.gz)"
 
 msgid "Compressed modules (*.bz2)"
-msgstr "Tömörített modulok (*.bz2)"
+msgstr "TÃ¶mÃ¶rÃ­tett modulok (*.bz2)"
 
 msgid "LAVC audio/video files"
-msgstr "LAVC hang/video fájlok"
+msgstr "LAVC hang/video fÃ¡jlok"
 
 #, c-format
 msgid "%.1f MB / %.1f MB"
@@ -959,25 +959,25 @@ msgstr "%.1f MB / %.1f MB"
 
 #, c-format
 msgid "%d / %d files"
-msgstr "%d / %d fájl"
+msgstr "%d / %d fÃ¡jl"
 
 msgid "Done"
-msgstr "Kész"
+msgstr "KÃ©sz"
 
 msgid "Aborted..."
-msgstr "Megszakítva..."
+msgstr "MegszakÃ­tva..."
 
 msgid "Please enter directory name"
-msgstr "Add meg a könyvtár nevét"
+msgstr "Add meg a kÃ¶nyvtÃ¡r nevÃ©t"
 
 msgid "Create directory"
-msgstr "Könyvtár létrehozása"
+msgstr "KÃ¶nyvtÃ¡r lÃ©trehozÃ¡sa"
 
 msgid "Please enter a new name"
-msgstr "Adj meg egy új nevet"
+msgstr "Adj meg egy Ãºj nevet"
 
 msgid "Rename directory"
-msgstr "Könyvtár átnevezése"
+msgstr "KÃ¶nyvtÃ¡r Ã¡tnevezÃ©se"
 
 #, c-format
 msgid ""
@@ -985,11 +985,11 @@ msgid ""
 "\n"
 "Are you sure?"
 msgstr ""
-"Biztosan el akarod távolítani a '%s' könyvtárat\n"
-"és teljes tartalmát?"
+"Biztosan el akarod tÃ¡volÃ­tani a '%s' kÃ¶nyvtÃ¡rat\n"
+"Ã©s teljes tartalmÃ¡t?"
 
 msgid "Remove directory"
-msgstr "Könyvtár eltávolítása"
+msgstr "KÃ¶nyvtÃ¡r eltÃ¡volÃ­tÃ¡sa"
 
 #, c-format
 msgid " (%.1f MB)"
@@ -997,7 +997,7 @@ msgstr " (%.1f MB)"
 
 #, c-format
 msgid " (capacity = %.1f MB)"
-msgstr " (kapacitás = %.1f MB)"
+msgstr " (kapacitÃ¡s = %.1f MB)"
 
 #, c-format
 msgid " Free space (%.1f MB)"
@@ -1007,38 +1007,38 @@ msgid ""
 "No suitable iRiver iFP device found.\n"
 "Perhaps it is unplugged or turned off."
 msgstr ""
-"Nem található megfelelõ iRiver iFP eszköz.\n"
+"Nem talÃ¡lhatÃ³ megfelelÅ‘ iRiver iFP eszkÃ¶z.\n"
 "Lehet, hogy nincs csatlakoztatva, vagy ki van kapcsolva."
 
 msgid ""
 "Device is busy.\n"
 "(Aqualung was unable to claim its interface.)"
 msgstr ""
-"Az eszköz foglalt.\n"
-"(Nem sikerült hozzáférni az interfészhez.)"
+"Az eszkÃ¶z foglalt.\n"
+"(Nem sikerÃ¼lt hozzÃ¡fÃ©rni az interfÃ©szhez.)"
 
 #, c-format
 msgid ""
 "Device is not responding.\n"
 "Try jiggling the handle. (error %d)"
 msgstr ""
-"Az eszköz nem válaszol.\n"
-"Próbáld meg mozgatni a fogantyúját (hibakód: %d)"
+"Az eszkÃ¶z nem vÃ¡laszol.\n"
+"PrÃ³bÃ¡ld meg mozgatni a fogantyÃºjÃ¡t (hibakÃ³d: %d)"
 
 msgid "Please select at least one song from playlist."
-msgstr "Válssz ki legalább egy számot a lejátszólistából."
+msgstr "VÃ¡lssz ki legalÃ¡bb egy szÃ¡mot a lejÃ¡tszÃ³listÃ¡bÃ³l."
 
 msgid "iFP device manager"
-msgstr "iFP eszközkezelõ"
+msgstr "iFP eszkÃ¶zkezelÅ‘"
 
 msgid "Selected files:"
-msgstr "Kiválasztott fájlok:"
+msgstr "KivÃ¡lasztott fÃ¡jlok:"
 
 msgid "label_songs"
 msgstr "label_songs"
 
 msgid "<b>Songs info</b>"
-msgstr "<b>Szám info</b>"
+msgstr "<b>SzÃ¡m info</b>"
 
 msgid "Battery"
 msgstr "Elem"
@@ -1047,165 +1047,165 @@ msgid "Free space"
 msgstr "Szabad hely"
 
 msgid "<b>Device status</b>"
-msgstr "<b>Eszköz állapota</b>"
+msgstr "<b>EszkÃ¶z Ã¡llapota</b>"
 
 msgid "Create a new directory"
-msgstr "Új könyvtár létrehozása"
+msgstr "Ãšj kÃ¶nyvtÃ¡r lÃ©trehozÃ¡sa"
 
 msgid "Remove directory with its entire contents"
-msgstr "Könyvtár eltávolítása teljes tartalmával együtt"
+msgstr "KÃ¶nyvtÃ¡r eltÃ¡volÃ­tÃ¡sa teljes tartalmÃ¡val egyÃ¼tt"
 
 msgid "<b>Destination directory</b>"
-msgstr "<b>Célkönyvtár</b>"
+msgstr "<b>CÃ©lkÃ¶nyvtÃ¡r</b>"
 
 msgid "File name: "
-msgstr "Fájlnév:"
+msgstr "FÃ¡jlnÃ©v:"
 
 msgid "Current file: "
-msgstr "Aktuális fájl: "
+msgstr "AktuÃ¡lis fÃ¡jl: "
 
 msgid "Overall: "
-msgstr "Összesen: "
+msgstr "Ã–sszesen: "
 
 msgid "Idle"
-msgstr "Tétlen"
+msgstr "TÃ©tlen"
 
 msgid "<b>Uploading progress</b>"
-msgstr "<b>Feltöltési folyamat</b>"
+msgstr "<b>FeltÃ¶ltÃ©si folyamat</b>"
 
 msgid "_Upload"
-msgstr "_Feltöltés"
+msgstr "_FeltÃ¶ltÃ©s"
 
 msgid "_Abort"
-msgstr "_Megszakítás"
+msgstr "_MegszakÃ­tÃ¡s"
 
 msgid "Please select the xml file for this store."
-msgstr "Add meg a tárolóhoz tartozó xml fájlt."
+msgstr "Add meg a tÃ¡rolÃ³hoz tartozÃ³ xml fÃ¡jlt."
 
 msgid "Create empty store"
-msgstr "Üres tároló létrehozása"
+msgstr "Ãœres tÃ¡rolÃ³ lÃ©trehozÃ¡sa"
 
 msgid "Name:"
-msgstr "Név:"
+msgstr "NÃ©v:"
 
 msgid "Comments:"
-msgstr "Megjegyzések:"
+msgstr "MegjegyzÃ©sek:"
 
 msgid "Edit Store"
-msgstr "Tároló szerkesztése"
+msgstr "TÃ¡rolÃ³ szerkesztÃ©se"
 
 msgid "Add Artist"
-msgstr "Elõadó hozzáadása"
+msgstr "ElÅ‘adÃ³ hozzÃ¡adÃ¡sa"
 
 msgid "Visible name:"
-msgstr "Látható név:"
+msgstr "LÃ¡thatÃ³ nÃ©v:"
 
 msgid "Name to sort by:"
-msgstr "Rendezési kulcs:"
+msgstr "RendezÃ©si kulcs:"
 
 msgid "Edit Artist"
-msgstr "Elõadó szerkesztése"
+msgstr "ElÅ‘adÃ³ szerkesztÃ©se"
 
 msgid "Please select the audio files for this record."
-msgstr "Válaszd ki az albumhoz adandó hangfájlokat."
+msgstr "VÃ¡laszd ki az albumhoz adandÃ³ hangfÃ¡jlokat."
 
 msgid "Add Record"
-msgstr "Album hozzáadása"
+msgstr "Album hozzÃ¡adÃ¡sa"
 
 msgid "Auto-create tracks from these files:"
-msgstr "Számok automatikus létrehozása a következõ fájlokból:"
+msgstr "SzÃ¡mok automatikus lÃ©trehozÃ¡sa a kÃ¶vetkezÅ‘ fÃ¡jlokbÃ³l:"
 
 msgid "Clear list"
-msgstr "Lista törlése"
+msgstr "Lista tÃ¶rlÃ©se"
 
 msgid "_Add files..."
-msgstr "Fájlok _hozzáadása..."
+msgstr "FÃ¡jlok _hozzÃ¡adÃ¡sa..."
 
 msgid "Edit Record"
-msgstr "Album szerkesztése"
+msgstr "Album szerkesztÃ©se"
 
 msgid "Please select the audio file for this track."
-msgstr "Add meg a számhoz tartozó fájlt."
+msgstr "Add meg a szÃ¡mhoz tartozÃ³ fÃ¡jlt."
 
 msgid "Add Track"
-msgstr "Szám hozzáadása"
+msgstr "SzÃ¡m hozzÃ¡adÃ¡sa"
 
 msgid "Edit Track"
-msgstr "Szám szerkesztése"
+msgstr "SzÃ¡m szerkesztÃ©se"
 
 msgid "Duration:"
 msgstr "Hossz:"
 
 msgid "Volume level:"
-msgstr "Hangerõ:"
+msgstr "HangerÅ‘:"
 
 #, c-format
 msgid "Unmeasured"
 msgstr "Ismeretlen"
 
 msgid "Use manual RVA value [dB]"
-msgstr "Rögzített RVA használata [dB]"
+msgstr "RÃ¶gzÃ­tett RVA hasznÃ¡lata [dB]"
 
 #, fuzzy
 msgid "Adding songs..."
-msgstr "Fájlok hozzáadása..."
+msgstr "FÃ¡jlok hozzÃ¡adÃ¡sa..."
 
 #, c-format
 msgid ""
 "The store '%s' already exists.\n"
 "Add it on the Settings/Music Store tab."
 msgstr ""
-"A '%s' táróló már létezik.\n"
-"Hozzáadása a Beállítások/Zenetár oldalon lehetséges."
+"A '%s' tÃ¡rÃ³lÃ³ mÃ¡r lÃ©tezik.\n"
+"HozzÃ¡adÃ¡sa a BeÃ¡llÃ­tÃ¡sok/ZenetÃ¡r oldalon lehetsÃ©ges."
 
 msgid "rw"
 msgstr "rw"
 
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
-msgstr "Biztosan eltávolítod a Zenetárból a következõt: \"%s\" ?"
+msgstr "Biztosan eltÃ¡volÃ­tod a ZenetÃ¡rbÃ³l a kÃ¶vetkezÅ‘t: \"%s\" ?"
 
 msgid "Remove Store"
-msgstr "Tároló eltávolítása"
+msgstr "TÃ¡rolÃ³ eltÃ¡volÃ­tÃ¡sa"
 
 msgid "Do you want to save the store before removing?"
-msgstr "El akarod menteni a tárolót eltávolítás elõtt?"
+msgstr "El akarod menteni a tÃ¡rolÃ³t eltÃ¡volÃ­tÃ¡s elÅ‘tt?"
 
 msgid "Remove Artist"
-msgstr "Elõadó eltávolítása"
+msgstr "ElÅ‘adÃ³ eltÃ¡volÃ­tÃ¡sa"
 
 msgid "Remove Record"
-msgstr "Album eltávolítása"
+msgstr "Album eltÃ¡volÃ­tÃ¡sa"
 
 msgid "Remove Track"
-msgstr "Szám eltávolítása"
+msgstr "SzÃ¡m eltÃ¡volÃ­tÃ¡sa"
 
 msgid "Update file metadata"
-msgstr "Metaadatok frissítése"
+msgstr "Metaadatok frissÃ­tÃ©se"
 
 msgid "Track name"
-msgstr "Szám címe"
+msgstr "SzÃ¡m cÃ­me"
 
 msgid "Track comment"
-msgstr "Szám kommentje"
+msgstr "SzÃ¡m kommentje"
 
 msgid "Track number"
-msgstr "Track száma"
+msgstr "Track szÃ¡ma"
 
 msgid "Failed to set metadata at the following files:"
-msgstr "A következõ fájloknál nem sikerült beállítani a metaadatokat:"
+msgstr "A kÃ¶vetkezÅ‘ fÃ¡jloknÃ¡l nem sikerÃ¼lt beÃ¡llÃ­tani a metaadatokat:"
 
 msgid "(no comment)"
-msgstr "(nincs megjegyzés)"
+msgstr "(nincs megjegyzÃ©s)"
 
 msgid "time unmeasured"
 msgstr "ismeretlen hossz"
 
 msgid "artists"
-msgstr "elõadó"
+msgstr "elÅ‘adÃ³"
 
 msgid "artist"
-msgstr "elõadó"
+msgstr "elÅ‘adÃ³"
 
 msgid "records"
 msgstr "album"
@@ -1214,112 +1214,112 @@ msgid "record"
 msgstr "album"
 
 msgid "tracks"
-msgstr "szám"
+msgstr "szÃ¡m"
 
 msgid "track"
-msgstr "szám"
+msgstr "szÃ¡m"
 
 msgid "Music Store"
-msgstr "Zenetár"
+msgstr "ZenetÃ¡r"
 
 msgid "Search..."
-msgstr "Keresés..."
+msgstr "KeresÃ©s..."
 
 msgid "Collapse all items"
-msgstr "Elemek bezárása"
+msgstr "Elemek bezÃ¡rÃ¡sa"
 
 msgid "Edit item..."
-msgstr "Elem szerkesztése..."
+msgstr "Elem szerkesztÃ©se..."
 
 msgid "Add item..."
-msgstr "Elem hozzáadása..."
+msgstr "Elem hozzÃ¡adÃ¡sa..."
 
 msgid "Remove item..."
-msgstr "Elem eltávolítása"
+msgstr "Elem eltÃ¡volÃ­tÃ¡sa"
 
 msgid "Save all stores"
-msgstr "Összes tároló mentése"
+msgstr "Ã–sszes tÃ¡rolÃ³ mentÃ©se"
 
 msgid "Create empty store..."
-msgstr "Üres tároló létrehozása..."
+msgstr "Ãœres tÃ¡rolÃ³ lÃ©trehozÃ¡sa..."
 
 msgid "Add to playlist"
-msgstr "Lejátszólistába"
+msgstr "LejÃ¡tszÃ³listÃ¡ba"
 
 msgid "Add to playlist (Album mode)"
-msgstr "Lejátszólistába (Album mód)"
+msgstr "LejÃ¡tszÃ³listÃ¡ba (Album mÃ³d)"
 
 msgid "Build/Update store from filesystem..."
-msgstr "Tároló felépítése/aktualizálása fájlrendszerrõl..."
+msgstr "TÃ¡rolÃ³ felÃ©pÃ­tÃ©se/aktualizÃ¡lÃ¡sa fÃ¡jlrendszerrÅ‘l..."
 
 msgid "Edit store..."
-msgstr "Tároló szerkesztése..."
+msgstr "TÃ¡rolÃ³ szerkesztÃ©se..."
 
 msgid "Save store"
-msgstr "Tároló mentése"
+msgstr "TÃ¡rolÃ³ mentÃ©se"
 
 msgid "Remove store"
-msgstr "Tároló eltávolítása"
+msgstr "TÃ¡rolÃ³ eltÃ¡volÃ­tÃ¡sa"
 
 msgid "Add new artist to this store..."
-msgstr "Új elõadó hozzáadása ehhez a tárolóhoz..."
+msgstr "Ãšj elÅ‘adÃ³ hozzÃ¡adÃ¡sa ehhez a tÃ¡rolÃ³hoz..."
 
 msgid "Calculate volume (recursive)"
-msgstr "Hangosság meghatározása (rekurzív)"
+msgstr "HangossÃ¡g meghatÃ¡rozÃ¡sa (rekurzÃ­v)"
 
 msgid "Unmeasured tracks only"
-msgstr "Ismeretlen hangerejû számokra"
+msgstr "Ismeretlen hangerejÅ± szÃ¡mokra"
 
 msgid "All tracks"
-msgstr "Minden számra"
+msgstr "Minden szÃ¡mra"
 
 msgid "Batch-update file metadata..."
-msgstr "Metaadatok frissítése a háttérben..."
+msgstr "Metaadatok frissÃ­tÃ©se a hÃ¡ttÃ©rben..."
 
 msgid "Add new artist..."
-msgstr "Új elõadó hozzáadása..."
+msgstr "Ãšj elÅ‘adÃ³ hozzÃ¡adÃ¡sa..."
 
 msgid "Edit artist..."
-msgstr "Elõadó szerkesztése..."
+msgstr "ElÅ‘adÃ³ szerkesztÃ©se..."
 
 msgid "Remove artist"
-msgstr "Elõadó eltávolítása"
+msgstr "ElÅ‘adÃ³ eltÃ¡volÃ­tÃ¡sa"
 
 msgid "Add new record to this artist..."
-msgstr "Új album hozzáadása ehhez az elõadóhoz..."
+msgstr "Ãšj album hozzÃ¡adÃ¡sa ehhez az elÅ‘adÃ³hoz..."
 
 msgid "Add new record..."
-msgstr "Új album hozzáadása..."
+msgstr "Ãšj album hozzÃ¡adÃ¡sa..."
 
 msgid "Edit record..."
-msgstr "Album szerkesztése..."
+msgstr "Album szerkesztÃ©se..."
 
 msgid "Remove record"
-msgstr "Album eltávolítása"
+msgstr "Album eltÃ¡volÃ­tÃ¡sa"
 
 msgid "Add new track to this record..."
-msgstr "Új szám hozzáadása ehhez az albumhoz..."
+msgstr "Ãšj szÃ¡m hozzÃ¡adÃ¡sa ehhez az albumhoz..."
 
 msgid "CDDB query for this record..."
-msgstr "Album lekérdezése CDDB adatbázisból..."
+msgstr "Album lekÃ©rdezÃ©se CDDB adatbÃ¡zisbÃ³l..."
 
 msgid "Submit record to CDDB database..."
-msgstr "Album feltöltése CDDB adatbázisba..."
+msgstr "Album feltÃ¶ltÃ©se CDDB adatbÃ¡zisba..."
 
 msgid "Add new track..."
-msgstr "Új szám hozzáadása..."
+msgstr "Ãšj szÃ¡m hozzÃ¡adÃ¡sa..."
 
 msgid "Edit track..."
-msgstr "Szám szerkesztése..."
+msgstr "SzÃ¡m szerkesztÃ©se..."
 
 msgid "Remove track"
-msgstr "Szám eltávolítása"
+msgstr "SzÃ¡m eltÃ¡volÃ­tÃ¡sa"
 
 msgid "File info..."
-msgstr "Fájl infó..."
+msgstr "FÃ¡jl infÃ³..."
 
 msgid "Calculate volume"
-msgstr "Hangosság meghatározása"
+msgstr "HangossÃ¡g meghatÃ¡rozÃ¡sa"
 
 msgid "Only if unmeasured"
 msgstr "Csak ha ismeretlen"
@@ -1328,50 +1328,50 @@ msgid "In any case"
 msgstr "Minden esetben"
 
 msgid "Update file metadata..."
-msgstr "Metaadatok frissítése..."
+msgstr "Metaadatok frissÃ­tÃ©se..."
 
 msgid "CDDB query for this CD..."
-msgstr "CD lekérdezése CDDB adatbázisból..."
+msgstr "CD lekÃ©rdezÃ©se CDDB adatbÃ¡zisbÃ³l..."
 
 msgid "Submit CD to CDDB database..."
-msgstr "CD feltöltése CDDB adatbázisba..."
+msgstr "CD feltÃ¶ltÃ©se CDDB adatbÃ¡zisba..."
 
 msgid "Rip CD..."
-msgstr "CD rippelés..."
+msgstr "CD rippelÃ©s..."
 
 msgid "Disc info..."
-msgstr "Lemez infó..."
+msgstr "Lemez infÃ³..."
 
 msgid "Drive info..."
-msgstr "Meghajtó infó..."
+msgstr "MeghajtÃ³ infÃ³..."
 
 msgid "*Music Store"
-msgstr "*Zenetár"
+msgstr "*ZenetÃ¡r"
 
 #, c-format
 msgid "Do you want to save store \"%s\" before removing from Music Store?"
 msgstr ""
-"El akarod menteni a(z) \"%s\" tárolót mielõtt eltávolítod a Zenetárból?"
+"El akarod menteni a(z) \"%s\" tÃ¡rolÃ³t mielÅ‘tt eltÃ¡volÃ­tod a ZenetÃ¡rbÃ³l?"
 
 msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
 msgstr ""
-"A következõ változtatások az Aqualung újraindítása után jutnak érvényre:"
+"A kÃ¶vetkezÅ‘ vÃ¡ltoztatÃ¡sok az Aqualung ÃºjraindÃ­tÃ¡sa utÃ¡n jutnak Ã©rvÃ©nyre:"
 
 msgid "r"
 msgstr "r"
 
 msgid "unreachable"
-msgstr "nem elérhetõ"
+msgstr "nem elÃ©rhetÅ‘"
 
 msgid "Paths must either be absolute or starting with a tilde."
-msgstr "Abszolút vagy tildével kezdõdõ elérési út szükséges."
+msgstr "AbszolÃºt vagy tildÃ©vel kezdÅ‘dÅ‘ elÃ©rÃ©si Ãºt szÃ¼ksÃ©ges."
 
 msgid "The specified store has already been added to the list."
-msgstr "A megadott tároló már szerepel a listában."
+msgstr "A megadott tÃ¡rolÃ³ mÃ¡r szerepel a listÃ¡ban."
 
 msgid "Please select a Music Store database."
-msgstr "Válassz egy adatbázist."
+msgstr "VÃ¡lassz egy adatbÃ¡zist."
 
 #, c-format
 msgid ""
@@ -1383,11 +1383,11 @@ msgid ""
 "literally copied into the resulting string.\n"
 msgstr ""
 "\n"
-"Az alábbi sablon az elõadó nevébõl, valamint a lemez- és\n"
-"számcímekbõl összeállított címsor formátumát adja meg.\n"
-"A %%a, %%r és %%t vezérlõk rendre az elõadót, a lemezt és a\n"
-"szám címét jelölik. A sablonban szereplõ egyéb karakterek\n"
-"változtatás nélkül jelennek meg a címsorban.\n"
+"Az alÃ¡bbi sablon az elÅ‘adÃ³ nevÃ©bÅ‘l, valamint a lemez- Ã©s\n"
+"szÃ¡mcÃ­mekbÅ‘l Ã¶sszeÃ¡llÃ­tott cÃ­msor formÃ¡tumÃ¡t adja meg.\n"
+"A %%a, %%r Ã©s %%t vezÃ©rlÅ‘k rendre az elÅ‘adÃ³t, a lemezt Ã©s a\n"
+"szÃ¡m cÃ­mÃ©t jelÃ¶lik. A sablonban szereplÅ‘ egyÃ©b karakterek\n"
+"vÃ¡ltoztatÃ¡s nÃ©lkÃ¼l jelennek meg a cÃ­msorban.\n"
 
 msgid "Help"
 msgstr ""
@@ -1402,12 +1402,12 @@ msgid ""
 "running realtime as a default.\n"
 msgstr ""
 "\n"
-"Az alábbi szöveget a program parancssorként értelmezi, az\n"
-"aktuális parancssor feldolgozása elõtt. Az ide írt kapcsolók\n"
-"alapértelmezett beállításokként mûködnek, amelyeket a valódi\n"
-"parancssori paraméterek felülbírálhatnak.\n"
-"Például a '-o alsa -R' az ALSA kimenet valós idejû használatát\n"
-"írja elõ alapértelmezettként.\n"
+"Az alÃ¡bbi szÃ¶veget a program parancssorkÃ©nt Ã©rtelmezi, az\n"
+"aktuÃ¡lis parancssor feldolgozÃ¡sa elÅ‘tt. Az ide Ã­rt kapcsolÃ³k\n"
+"alapÃ©rtelmezett beÃ¡llÃ­tÃ¡sokkÃ©nt mÅ±kÃ¶dnek, amelyeket a valÃ³di\n"
+"parancssori paramÃ©terek felÃ¼lbÃ­rÃ¡lhatnak.\n"
+"PÃ©ldÃ¡ul a '-o alsa -R' az ALSA kimenet valÃ³s idejÅ± hasznÃ¡latÃ¡t\n"
+"Ã­rja elÅ‘ alapÃ©rtelmezettkÃ©nt.\n"
 
 msgid ""
 "Paths must either be absolute or starting with a tilde, which will be "
@@ -1415,10 +1415,10 @@ msgid ""
 "\n"
 "Drag and drop entries in the list to set the store order in the Music Store."
 msgstr ""
-"Abszolút vagy tildével kezdõdõ elérési utak szükségesek.\n"
-"A tilde a saját könyvtár elérési útját jelenti.\n"
+"AbszolÃºt vagy tildÃ©vel kezdÅ‘dÅ‘ elÃ©rÃ©si utak szÃ¼ksÃ©gesek.\n"
+"A tilde a sajÃ¡t kÃ¶nyvtÃ¡r elÃ©rÃ©si ÃºtjÃ¡t jelenti.\n"
 "\n"
-"A lista elemeinek átrendezésével állítható a tárolók sorrendje a Zenetárban."
+"A lista elemeinek Ã¡trendezÃ©sÃ©vel Ã¡llÃ­thatÃ³ a tÃ¡rolÃ³k sorrendje a ZenetÃ¡rban."
 
 msgid ""
 "\n"
@@ -1446,205 +1446,205 @@ msgid ""
 msgstr ""
 
 msgid "Title format"
-msgstr "Címformátum"
+msgstr "CÃ­mformÃ¡tum"
 
 msgid "Implicit command line"
 msgstr "Implicit parancssor"
 
 msgid "Miscellaneous"
-msgstr "Egyéb"
+msgstr "EgyÃ©b"
 
 msgid "Enable tooltips"
-msgstr "Buboréksúgók engedélyezése"
+msgstr "BuborÃ©ksÃºgÃ³k engedÃ©lyezÃ©se"
 
 msgid "Put control buttons at the bottom of playlist"
-msgstr "Vezérlõgombok elhelyezése a Lejátszólista alján"
+msgstr "VezÃ©rlÅ‘gombok elhelyezÃ©se a LejÃ¡tszÃ³lista aljÃ¡n"
 
 msgid "Disable control buttons relief"
-msgstr "Vezérlõgombok kiemelkedésének tiltása"
+msgstr "VezÃ©rlÅ‘gombok kiemelkedÃ©sÃ©nek tiltÃ¡sa"
 
 msgid "Keep main window always on top"
-msgstr "A fõablak legyen mindig felül"
+msgstr "A fÅ‘ablak legyen mindig felÃ¼l"
 
 msgid "Simple view in LADSPA patch builder"
-msgstr "Egyszerû nézet a LADSPA effekt szerkesztõben"
+msgstr "EgyszerÅ± nÃ©zet a LADSPA effekt szerkesztÅ‘ben"
 
 msgid "United windows minimization"
-msgstr "Ablakok együttes minimalizálása"
+msgstr "Ablakok egyÃ¼ttes minimalizÃ¡lÃ¡sa"
 
 msgid "Show song name in the main window's title"
-msgstr "Szám címének megjelenítése a fõablak címsorában"
+msgstr "SzÃ¡m cÃ­mÃ©nek megjelenÃ­tÃ©se a fÅ‘ablak cÃ­msorÃ¡ban"
 
 msgid "Show hidden files and directories in file choosers"
-msgstr "Rejtett fájlok és könyvtárak mutatása tallózáskor"
+msgstr "Rejtett fÃ¡jlok Ã©s kÃ¶nyvtÃ¡rak mutatÃ¡sa tallÃ³zÃ¡skor"
 
 msgid "Show tags tab first in the file info dialog"
-msgstr "Elõször a tagek látszódjanak a fájl infó ablakban"
+msgstr "ElÅ‘szÃ¶r a tagek lÃ¡tszÃ³djanak a fÃ¡jl infÃ³ ablakban"
 
 msgid "Playlist"
-msgstr "Lejátszólista"
+msgstr "LejÃ¡tszÃ³lista"
 
 msgid "Embed playlist into main window"
-msgstr "A Lejátszólista beágyazása a fõablakba"
+msgstr "A LejÃ¡tszÃ³lista beÃ¡gyazÃ¡sa a fÅ‘ablakba"
 
 msgid "Save and restore the playlist on exit/startup"
-msgstr "Lejátszólista mentése és visszatöltése kilépéskor/indításkor"
+msgstr "LejÃ¡tszÃ³lista mentÃ©se Ã©s visszatÃ¶ltÃ©se kilÃ©pÃ©skor/indÃ­tÃ¡skor"
 
 msgid "Album mode is the default when adding entire records"
-msgstr "Lemezek alapértelmezett hozzáadása album módban"
+msgstr "Lemezek alapÃ©rtelmezett hozzÃ¡adÃ¡sa album mÃ³dban"
 
 msgid "When shuffling, records added in Album mode are played in order"
-msgstr "Véletlenszerû lejátszás esetén albumon belüli számsorrend megtartása"
+msgstr "VÃ©letlenszerÅ± lejÃ¡tszÃ¡s esetÃ©n albumon belÃ¼li szÃ¡msorrend megtartÃ¡sa"
 
 msgid "Enable statusbar"
-msgstr "Állapotsor engedélyezése"
+msgstr "Ãllapotsor engedÃ©lyezÃ©se"
 
 msgid "Enable statusbar in playlist"
-msgstr "Állapotsor engedélyezése a Lejátszólistában"
+msgstr "Ãllapotsor engedÃ©lyezÃ©se a LejÃ¡tszÃ³listÃ¡ban"
 
 msgid "Show soundfile size in statusbar"
-msgstr "Hangfálj méretének mutatása az állapotsorban"
+msgstr "HangfÃ¡lj mÃ©retÃ©nek mutatÃ¡sa az Ã¡llapotsorban"
 
 msgid "Show RVA values"
-msgstr "RVA értékek megjelenítése"
+msgstr "RVA Ã©rtÃ©kek megjelenÃ­tÃ©se"
 
 msgid "Show track lengths"
-msgstr "Szám hosszak megjelenítése"
+msgstr "SzÃ¡m hosszak megjelenÃ­tÃ©se"
 
 msgid "Show active track name in bold"
-msgstr "Aktív szám megjelenítése félkövérrel"
+msgstr "AktÃ­v szÃ¡m megjelenÃ­tÃ©se fÃ©lkÃ¶vÃ©rrel"
 
 msgid "Enable rules hint"
-msgstr "Sorok vonalazása"
+msgstr "Sorok vonalazÃ¡sa"
 
 msgid "Playlist column order"
-msgstr "Oszlopok sorrendje a Lejátszólistában"
+msgstr "Oszlopok sorrendje a LejÃ¡tszÃ³listÃ¡ban"
 
 msgid ""
 "Drag and drop entries in the list below \n"
 "to set the column order in the Playlist."
 msgstr ""
-"Az alábbi lista elemeinek átrendezésével\n"
-"állítható a Lejátszólista oszlopainak sorrendje."
+"Az alÃ¡bbi lista elemeinek Ã¡trendezÃ©sÃ©vel\n"
+"Ã¡llÃ­thatÃ³ a LejÃ¡tszÃ³lista oszlopainak sorrendje."
 
 msgid "Column"
 msgstr "Oszlop"
 
 msgid "Track titles"
-msgstr "Számcímek"
+msgstr "SzÃ¡mcÃ­mek"
 
 msgid "RVA values"
-msgstr "RVA értékek"
+msgstr "RVA Ã©rtÃ©kek"
 
 msgid "Track lengths"
-msgstr "Szám hosszak"
+msgstr "SzÃ¡m hosszak"
 
 msgid "Hide comment pane"
-msgstr "Komment mezõ elrejtése"
+msgstr "Komment mezÅ‘ elrejtÃ©se"
 
 msgid "Hide the Music Store comment pane"
-msgstr "A Zenetár komment mezõjének elrejtése"
+msgstr "A ZenetÃ¡r komment mezÅ‘jÃ©nek elrejtÃ©se"
 
 msgid "Enable toolbar"
-msgstr "Eszköztár engedélyezése"
+msgstr "EszkÃ¶ztÃ¡r engedÃ©lyezÃ©se"
 
 msgid "Enable toolbar in Music Store"
-msgstr "Eszköztár engedélyezése a Zenetárban"
+msgstr "EszkÃ¶ztÃ¡r engedÃ©lyezÃ©se a ZenetÃ¡rban"
 
 msgid "Enable statusbar in Music Store"
-msgstr "Állapotsor engedélyezése a Zenetárban"
+msgstr "Ãllapotsor engedÃ©lyezÃ©se a ZenetÃ¡rban"
 
 msgid "Expand Stores on startup"
-msgstr "Tárolók lenyitása indításkor"
+msgstr "TÃ¡rolÃ³k lenyitÃ¡sa indÃ­tÃ¡skor"
 
 msgid "Enable tree node icons"
-msgstr "Ikonok engedélyezése a csomópontokban"
+msgstr "Ikonok engedÃ©lyezÃ©se a csomÃ³pontokban"
 
 msgid "Enable Music Store tree node icons"
-msgstr "Ikonok engedélyezése a Zenetár csomópontjaiban"
+msgstr "Ikonok engedÃ©lyezÃ©se a ZenetÃ¡r csomÃ³pontjaiban"
 
 msgid "Cover art"
-msgstr "Lemezborító"
+msgstr "LemezborÃ­tÃ³"
 
 msgid "Default cover width:"
-msgstr "Alapértelmezett borítóméret:"
+msgstr "AlapÃ©rtelmezett borÃ­tÃ³mÃ©ret:"
 
 msgid "50 pixels"
-msgstr "50 képpont"
+msgstr "50 kÃ©ppont"
 
 msgid "100 pixels"
-msgstr "100 képpont"
+msgstr "100 kÃ©ppont"
 
 msgid "200 pixels"
-msgstr "200 képpont"
+msgstr "200 kÃ©ppont"
 
 msgid "300 pixels"
-msgstr "300 képpont"
+msgstr "300 kÃ©ppont"
 
 msgid "use browser window width"
-msgstr "ablak szélességéhez igazít"
+msgstr "ablak szÃ©lessÃ©gÃ©hez igazÃ­t"
 
 msgid "Do not magnify images with smaller width"
-msgstr "A kisebb képeket ne nagyítsa"
+msgstr "A kisebb kÃ©peket ne nagyÃ­tsa"
 
 msgid "Paths to Music Store databases"
-msgstr "A Zenetár adatbázisok elérési útja"
+msgstr "A ZenetÃ¡r adatbÃ¡zisok elÃ©rÃ©si Ãºtja"
 
 msgid "Path"
-msgstr "Elérési út"
+msgstr "ElÃ©rÃ©si Ãºt"
 
 msgid "Access"
-msgstr "Hozzáférés"
+msgstr "HozzÃ¡fÃ©rÃ©s"
 
 msgid "Browse"
-msgstr "Tallózás"
+msgstr "TallÃ³zÃ¡s"
 
 msgid "Refresh"
-msgstr "Frissítés"
+msgstr "FrissÃ­tÃ©s"
 
 msgid "Remove"
-msgstr "Eltávolítás"
+msgstr "EltÃ¡volÃ­tÃ¡s"
 
 msgid "Add"
-msgstr "Hozzáadás"
+msgstr "HozzÃ¡adÃ¡s"
 
 msgid "DSP"
 msgstr "DSP"
 
 msgid "LADSPA plugin processing"
-msgstr "LADSPA effekt processzálás"
+msgstr "LADSPA effekt processzÃ¡lÃ¡s"
 
 msgid "Pre Fader (before Volume & Balance)"
-msgstr "Pre Fader (Hangerõ- és balanszszabályozó elõtt)"
+msgstr "Pre Fader (HangerÅ‘- Ã©s balanszszabÃ¡lyozÃ³ elÅ‘tt)"
 
 msgid "Post Fader (after Volume & Balance)"
-msgstr "Post Fader (Hangerõ és balanszszabályozó után)"
+msgstr "Post Fader (HangerÅ‘ Ã©s balanszszabÃ¡lyozÃ³ utÃ¡n)"
 
 msgid ""
 "Aqualung is compiled without LADSPA plugin support.\n"
 "See the About box and the documentation for details."
 msgstr ""
-"Az Aqualungot LADSPA plugin támogatás nélkül fordították.\n"
-"Részletek a Névjegyben és a dokumentációban."
+"Az Aqualungot LADSPA plugin tÃ¡mogatÃ¡s nÃ©lkÃ¼l fordÃ­tottÃ¡k.\n"
+"RÃ©szletek a NÃ©vjegyben Ã©s a dokumentÃ¡ciÃ³ban."
 
 msgid "Sample Rate Converter type"
-msgstr "Mintavételi frekvencia konverter típusa"
+msgstr "MintavÃ©teli frekvencia konverter tÃ­pusa"
 
 msgid ""
 "Aqualung is compiled without Sample Rate Converter support.\n"
 "See the About box and the documentation for details."
 msgstr ""
-"Az Aqualungot mintavételi frekvencia konverter támogatás nélkül\n"
-"fordították. Részletek a Névjegyben és a dokumentációban."
+"Az Aqualungot mintavÃ©teli frekvencia konverter tÃ¡mogatÃ¡s nÃ©lkÃ¼l\n"
+"fordÃ­tottÃ¡k. RÃ©szletek a NÃ©vjegyben Ã©s a dokumentÃ¡ciÃ³ban."
 
 msgid "Playback RVA"
-msgstr "Lejátszáskori RVA"
+msgstr "LejÃ¡tszÃ¡skori RVA"
 
 msgid "Enable playback RVA"
-msgstr "Lejátszáskori RVA használata"
+msgstr "LejÃ¡tszÃ¡skori RVA hasznÃ¡lata"
 
 msgid "Listening environment:"
-msgstr "Lehallgatási környezet:"
+msgstr "LehallgatÃ¡si kÃ¶rnyezet:"
 
 msgid "Audiophile"
 msgstr "Audiofil"
@@ -1656,49 +1656,49 @@ msgid "Office"
 msgstr "Iroda"
 
 msgid "Noisy workshop"
-msgstr "Zajos mûhely"
+msgstr "Zajos mÅ±hely"
 
 msgid "Reference volume [dBFS] :"
-msgstr "Referencia-hangerõszint [dBFS] :"
+msgstr "Referencia-hangerÅ‘szint [dBFS] :"
 
 msgid "Steepness [dB/dB] :"
-msgstr "Meredekség [dB/dB] :"
+msgstr "MeredeksÃ©g [dB/dB] :"
 
 msgid "Apply averaged RVA to tracks of the same record"
-msgstr "Egyazon lemez számaira átlagolt RVA alkalmazása"
+msgstr "Egyazon lemez szÃ¡maira Ã¡tlagolt RVA alkalmazÃ¡sa"
 
 msgid "Drop statistical aberrations based on"
-msgstr "Beszámítás az átlagba, ha belül van:"
+msgstr "BeszÃ¡mÃ­tÃ¡s az Ã¡tlagba, ha belÃ¼l van:"
 
 #, c-format
 msgid "% of standard deviation"
-msgstr "a szórás megadott %-án"
+msgstr "a szÃ³rÃ¡s megadott %-Ã¡n"
 
 msgid "Linear threshold [dB]"
-msgstr "az átlagtól vett eltérésen [dB]"
+msgstr "az Ã¡tlagtÃ³l vett eltÃ©rÃ©sen [dB]"
 
 msgid "Linear threshold [dB] :"
-msgstr "Max. eltérés az átlagtól [dB] :"
+msgstr "Max. eltÃ©rÃ©s az Ã¡tlagtÃ³l [dB] :"
 
 #, c-format
 msgid "% of standard deviation :"
-msgstr "Max. eltérés a szórás %-ában :"
+msgstr "Max. eltÃ©rÃ©s a szÃ³rÃ¡s %-Ã¡ban :"
 
 msgid ""
 "When adding to playlist, use file metadata (if available) instead of\n"
 "information from the Music Store for:"
 msgstr ""
-"Ha van a fájlban metaadat, a Lejátszólistába adáskor ezt használja a\n"
-"Zenetárból származó információ helyett a következõknél:"
+"Ha van a fÃ¡jlban metaadat, a LejÃ¡tszÃ³listÃ¡ba adÃ¡skor ezt hasznÃ¡lja a\n"
+"ZenetÃ¡rbÃ³l szÃ¡rmazÃ³ informÃ¡ciÃ³ helyett a kÃ¶vetkezÅ‘knÃ©l:"
 
 msgid ""
 "When adding external files to playlist, use file metadata (if available) for:"
 msgstr ""
-"Külsõ fájlok Lejátszólistába adásakor metaadat használata (ha van)\n"
-"a következõknél:"
+"KÃ¼lsÅ‘ fÃ¡jlok LejÃ¡tszÃ³listÃ¡ba adÃ¡sakor metaadat hasznÃ¡lata (ha van)\n"
+"a kÃ¶vetkezÅ‘knÃ©l:"
 
 msgid "Replaygain tag to extract from Ogg Xiph and APE tags: "
-msgstr "Replaygain tag használata Ogg Xiph és APE tagek esetén: "
+msgstr "Replaygain tag hasznÃ¡lata Ogg Xiph Ã©s APE tagek esetÃ©n: "
 
 msgid "Replaygain_track_gain"
 msgstr "Replaygain_track_gain"
@@ -1707,7 +1707,7 @@ msgid "Replaygain_album_gain"
 msgstr "Replaygain_album_gain"
 
 msgid "CD drive speed:"
-msgstr "CD meghajtó sebesség:"
+msgstr "CD meghajtÃ³ sebessÃ©g:"
 
 msgid "Force TOC re-read on every drive scan"
 msgstr ""
@@ -1716,22 +1716,22 @@ msgid "CDDB server:"
 msgstr "CDDB szerver:"
 
 msgid "Connection timeout [sec]:"
-msgstr "Kapcsolódás idõkorlátja [sec]:"
+msgstr "KapcsolÃ³dÃ¡s idÅ‘korlÃ¡tja [sec]:"
 
 msgid "Email address for submission:"
-msgstr "Email cím feltöltéshez:"
+msgstr "Email cÃ­m feltÃ¶ltÃ©shez:"
 
 msgid "Local CDDB directory:"
-msgstr "Helyi CDDB könyvtár:"
+msgstr "Helyi CDDB kÃ¶nyvtÃ¡r:"
 
 msgid "Use the local database only"
-msgstr "Kizárólag a helyi adatbázis használata"
+msgstr "KizÃ¡rÃ³lag a helyi adatbÃ¡zis hasznÃ¡lata"
 
 msgid "Direct connection to CDDB server"
-msgstr "Kapcsolódás közvetlenül a CDDB szerverhez"
+msgstr "KapcsolÃ³dÃ¡s kÃ¶zvetlenÃ¼l a CDDB szerverhez"
 
 msgid "Protocol for querying:"
-msgstr "Lekérdezési protokoll:"
+msgstr "LekÃ©rdezÃ©si protokoll:"
 
 msgid "CDDBP (port 888)"
 msgstr "CDDBP (port 888)"
@@ -1740,7 +1740,7 @@ msgid "HTTP (port 80)"
 msgstr "HTTP (port 80)"
 
 msgid "HTTP tunneling through proxy"
-msgstr "HTTP tunneling proxyn keresztül"
+msgstr "HTTP tunneling proxyn keresztÃ¼l"
 
 msgid "HTTP proxy:"
 msgstr "HTTP proxy:"
@@ -1749,179 +1749,179 @@ msgid "Port:"
 msgstr "Port:"
 
 msgid "Appearance"
-msgstr "Megjelenés"
+msgstr "MegjelenÃ©s"
 
 msgid "Override skin settings"
-msgstr "Szkin beállítások felülbírálása"
+msgstr "Szkin beÃ¡llÃ­tÃ¡sok felÃ¼lbÃ­rÃ¡lÃ¡sa"
 
 msgid "Fonts"
-msgstr "Betûtípusok"
+msgstr "BetÅ±tÃ­pusok"
 
 msgid "Playlist: "
-msgstr "Lejátszólista: "
+msgstr "LejÃ¡tszÃ³lista: "
 
 msgid "Music Store: "
-msgstr "Zenetár: "
+msgstr "ZenetÃ¡r: "
 
 msgid "Big timer: "
-msgstr "Nagy idõkijelzõ: "
+msgstr "Nagy idÅ‘kijelzÅ‘: "
 
 msgid "Small timers: "
-msgstr "Kis idõkijelzõk: "
+msgstr "Kis idÅ‘kijelzÅ‘k: "
 
 msgid "Song title: "
-msgstr "Szám címe: "
+msgstr "SzÃ¡m cÃ­me: "
 
 msgid "Song info: "
-msgstr "Szám info: "
+msgstr "SzÃ¡m info: "
 
 msgid "Statusbar: "
-msgstr "Állapotsor: "
+msgstr "Ãllapotsor: "
 
 msgid "Colors"
-msgstr "Színek"
+msgstr "SzÃ­nek"
 
 msgid "Active song in playlist: "
-msgstr "Aktív szám a Lejátszólistában: "
+msgstr "AktÃ­v szÃ¡m a LejÃ¡tszÃ³listÃ¡ban: "
 
 msgid "Please specify the file to save the playlist to."
-msgstr "Add meg az elmentendõ lejátszólista fájlt."
+msgstr "Add meg az elmentendÅ‘ lejÃ¡tszÃ³lista fÃ¡jlt."
 
 msgid "Saving playlist..."
-msgstr "Lejátszólista mentése..."
+msgstr "LejÃ¡tszÃ³lista mentÃ©se..."
 
 msgid "Please specify the file to load the playlist from."
-msgstr "Add meg a betöltendõ lejátszólista fájlt."
+msgstr "Add meg a betÃ¶ltendÅ‘ lejÃ¡tszÃ³lista fÃ¡jlt."
 
 msgid "Loading playlist..."
-msgstr "Lejátszólista betöltése..."
+msgstr "LejÃ¡tszÃ³lista betÃ¶ltÃ©se..."
 
 msgid "Enqueuing playlist..."
-msgstr "Lejátszólista hozzáfûzése..."
+msgstr "LejÃ¡tszÃ³lista hozzÃ¡fÅ±zÃ©se..."
 
 msgid ""
 "Playback RVA is currently disabled.\n"
 "Do you want to enable it now?"
 msgstr ""
-"A lejátszáskori RVA jelenleg nem engedélyezett.\n"
-"Akarod most engedélyezni?"
+"A lejÃ¡tszÃ¡skori RVA jelenleg nem engedÃ©lyezett.\n"
+"Akarod most engedÃ©lyezni?"
 
 msgid "Unknown"
 msgstr "Ismeretlen"
 
 msgid "Select files"
-msgstr "Fájlok kiválasztása"
+msgstr "FÃ¡jlok kivÃ¡lasztÃ¡sa"
 
 msgid "Adding files..."
-msgstr "Fájlok hozzáadása..."
+msgstr "FÃ¡jlok hozzÃ¡adÃ¡sa..."
 
 msgid "Select directory"
-msgstr "Könyvtár kiválasztása"
+msgstr "KÃ¶nyvtÃ¡r kivÃ¡lasztÃ¡sa"
 
 msgid "Adding files recursively..."
-msgstr "Fájlok rekurzív hozzáadása..."
+msgstr "FÃ¡jlok rekurzÃ­v hozzÃ¡adÃ¡sa..."
 
 #, c-format
 msgid "%d track [%s] (%.1f MB)"
-msgstr "%d szám [%s] (%.1f MB)"
+msgstr "%d szÃ¡m [%s] (%.1f MB)"
 
 #, c-format
 msgid "%d track [%s] (%.1f GB)"
-msgstr "%d szám [%s] (%.1f GB)"
+msgstr "%d szÃ¡m [%s] (%.1f GB)"
 
 #, c-format
 msgid "%d track [%s] "
-msgstr "%d szám [%s] "
+msgstr "%d szÃ¡m [%s] "
 
 #, c-format
 msgid "%d tracks [%s] (%.1f MB)"
-msgstr "%d szám [%s] (%.1f MB)"
+msgstr "%d szÃ¡m [%s] (%.1f MB)"
 
 #, c-format
 msgid "%d tracks [%s] (%.1f GB)"
-msgstr "%d szám [%s] (%.1f GB)"
+msgstr "%d szÃ¡m [%s] (%.1f GB)"
 
 #, c-format
 msgid "%d tracks [%s] "
-msgstr "%d szám [%s] "
+msgstr "%d szÃ¡m [%s] "
 
 msgid "Selected: "
-msgstr "Kijelölve: "
+msgstr "KijelÃ¶lve: "
 
 msgid "Total: "
-msgstr "Összesen: "
+msgstr "Ã–sszesen: "
 
 msgid "Add files"
-msgstr "Fájlok hozzáadása"
+msgstr "FÃ¡jlok hozzÃ¡adÃ¡sa"
 
 msgid ""
 "Add files to playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
-"Fájlok hozzáadása a listához\n"
-"(jobb egérgomb: helyi menü)"
+"FÃ¡jlok hozzÃ¡adÃ¡sa a listÃ¡hoz\n"
+"(jobb egÃ©rgomb: helyi menÃ¼)"
 
 msgid "Select all"
-msgstr "Összes elem kijelölése"
+msgstr "Ã–sszes elem kijelÃ¶lÃ©se"
 
 msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
-"A lejátszólista összes számának kijelölése\n"
-"(jobb egérgomb: helyi menü)"
+"A lejÃ¡tszÃ³lista Ã¶sszes szÃ¡mÃ¡nak kijelÃ¶lÃ©se\n"
+"(jobb egÃ©rgomb: helyi menÃ¼)"
 
 msgid "Remove selected"
-msgstr "Kijelölt elemek törlése"
+msgstr "KijelÃ¶lt elemek tÃ¶rlÃ©se"
 
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
-"Kijelölt számok törlése a lejátszólistából\n"
-"(jobb egérgomb: helyi menü)"
+"KijelÃ¶lt szÃ¡mok tÃ¶rlÃ©se a lejÃ¡tszÃ³listÃ¡bÃ³l\n"
+"(jobb egÃ©rgomb: helyi menÃ¼)"
 
 msgid "Add directory"
-msgstr "Könyvtár hozzáadása"
+msgstr "KÃ¶nyvtÃ¡r hozzÃ¡adÃ¡sa"
 
 msgid "Select none"
-msgstr "Kijelölés megszüntetése"
+msgstr "KijelÃ¶lÃ©s megszÃ¼ntetÃ©se"
 
 msgid "Invert selection"
-msgstr "Kijelölés megfordítása"
+msgstr "KijelÃ¶lÃ©s megfordÃ­tÃ¡sa"
 
 msgid "Remove all"
-msgstr "Mindent eltávolít"
+msgstr "Mindent eltÃ¡volÃ­t"
 
 msgid "Remove dead"
-msgstr "Érvénytelen elemek eltávolítása"
+msgstr "Ã‰rvÃ©nytelen elemek eltÃ¡volÃ­tÃ¡sa"
 
 msgid "Cut selected"
-msgstr "Kijelölt elemek megtartása"
+msgstr "KijelÃ¶lt elemek megtartÃ¡sa"
 
 msgid "Save playlist"
-msgstr "Lejátszólista mentése"
+msgstr "LejÃ¡tszÃ³lista mentÃ©se"
 
 msgid "Load playlist"
-msgstr "Lejátszólista betöltése"
+msgstr "LejÃ¡tszÃ³lista betÃ¶ltÃ©se"
 
 msgid "Enqueue playlist"
-msgstr "Lejátszólista hozzáfûzése"
+msgstr "LejÃ¡tszÃ³lista hozzÃ¡fÅ±zÃ©se"
 
 msgid "Send to iFP device"
-msgstr "Küldés iFP eszközre"
+msgstr "KÃ¼ldÃ©s iFP eszkÃ¶zre"
 
 msgid "Calculate RVA"
-msgstr "Hangosság meghatározása"
+msgstr "HangossÃ¡g meghatÃ¡rozÃ¡sa"
 
 msgid "Separate"
-msgstr "Egyéni"
+msgstr "EgyÃ©ni"
 
 msgid "Average"
-msgstr "Átlagos"
+msgstr "Ãtlagos"
 
 msgid "Reread file metadata"
-msgstr "Metaadatok újraolvasása"
+msgstr "Metaadatok ÃºjraolvasÃ¡sa"
 
 #, c-format
 msgid ""
@@ -1941,22 +1941,22 @@ msgstr ""
 
 #, fuzzy
 msgid "Remove file"
-msgstr "Mindent eltávolít"
+msgstr "Mindent eltÃ¡volÃ­t"
 
 msgid "LADSPA patch builder"
-msgstr "LADSPA effekt szerkesztõ"
+msgstr "LADSPA effekt szerkesztÅ‘"
 
 msgid "Available plugins"
-msgstr "Rendelkezésre álló effektek"
+msgstr "RendelkezÃ©sre Ã¡llÃ³ effektek"
 
 msgid "ID"
 msgstr "ID"
 
 msgid "Name"
-msgstr "Név"
+msgstr "NÃ©v"
 
 msgid "Category"
-msgstr "Kategória"
+msgstr "KategÃ³ria"
 
 msgid "Inputs"
 msgstr "Bemenetek"
@@ -1965,31 +1965,31 @@ msgid "Outputs"
 msgstr "Kimenetek"
 
 msgid "Running plugins"
-msgstr "Mûködõ effektek"
+msgstr "MÅ±kÃ¶dÅ‘ effektek"
 
 msgid "_Configure"
-msgstr "_Beállítás"
+msgstr "_BeÃ¡llÃ­tÃ¡s"
 
 msgid "Enable all plugins"
-msgstr "Összes effekt engedélyezése"
+msgstr "Ã–sszes effekt engedÃ©lyezÃ©se"
 
 msgid "Disable all plugins"
-msgstr "Összes effekt letiltása"
+msgstr "Ã–sszes effekt letiltÃ¡sa"
 
 msgid "Invert current state"
-msgstr "Aktuális állapot invertálása"
+msgstr "AktuÃ¡lis Ã¡llapot invertÃ¡lÃ¡sa"
 
 msgid "JACK Port Setup"
-msgstr "JACK port beállítás"
+msgstr "JACK port beÃ¡llÃ­tÃ¡s"
 
 msgid "Rescan"
-msgstr "Újraolvas"
+msgstr "Ãšjraolvas"
 
 msgid "Available connections"
-msgstr "Elérhetõ összeköttetések"
+msgstr "ElÃ©rhetÅ‘ Ã¶sszekÃ¶ttetÃ©sek"
 
 msgid "Clear connections"
-msgstr "Összeköttetések törlése"
+msgstr "Ã–sszekÃ¶ttetÃ©sek tÃ¶rlÃ©se"
 
 msgid " out L"
 msgstr " out L"
@@ -1998,118 +1998,118 @@ msgid " out R"
 msgstr " out R"
 
 msgid "Search the Music Store"
-msgstr "Keresés a Zenetárban"
+msgstr "KeresÃ©s a ZenetÃ¡rban"
 
 msgid "Key: "
 msgstr "Kulcs:"
 
 msgid "Case sensitive"
-msgstr "Kis/nagybetûk különböznek"
+msgstr "Kis/nagybetÅ±k kÃ¼lÃ¶nbÃ¶znek"
 
 msgid "Exact matches only"
-msgstr "Csak teljes egyezés"
+msgstr "Csak teljes egyezÃ©s"
 
 msgid "Select first and close window"
-msgstr "Elsõ találat kiválasztása és az ablak bezárása"
+msgstr "ElsÅ‘ talÃ¡lat kivÃ¡lasztÃ¡sa Ã©s az ablak bezÃ¡rÃ¡sa"
 
 msgid "Search in:"
-msgstr "Keresés a következõ helyeken:"
+msgstr "KeresÃ©s a kÃ¶vetkezÅ‘ helyeken:"
 
 msgid "Artist names"
-msgstr "Elõadók"
+msgstr "ElÅ‘adÃ³k"
 
 msgid "Record titles"
 msgstr "Albumok"
 
 msgid "Comments"
-msgstr "Megjegyzések"
+msgstr "MegjegyzÃ©sek"
 
 msgid "Search"
-msgstr "Keresés"
+msgstr "KeresÃ©s"
 
 msgid "Search the Playlist"
-msgstr "Keresés a Lejátszólistában"
+msgstr "KeresÃ©s a LejÃ¡tszÃ³listÃ¡ban"
 
 msgid "Available skins"
-msgstr "Elérhetõ szkinek"
+msgstr "ElÃ©rhetÅ‘ szkinek"
 
 msgid "Calculating volume level"
-msgstr "Hangosság meghatározása"
+msgstr "HangossÃ¡g meghatÃ¡rozÃ¡sa"
 
 msgid "Progress:"
-msgstr "Feldolgozás:"
+msgstr "FeldolgozÃ¡s:"
 
 msgid "(not set)"
-msgstr "(nincs beállítva)"
+msgstr "(nincs beÃ¡llÃ­tva)"
 
 msgid "Please specify the file to save the image to."
-msgstr "Add meg az elmentendõ képfájlt."
+msgstr "Add meg az elmentendÅ‘ kÃ©pfÃ¡jlt."
 
 msgid "Type"
-msgstr "Típus"
+msgstr "TÃ­pus"
 
 msgid "Description"
-msgstr "Leírás"
+msgstr "LeÃ­rÃ¡s"
 
 msgid "No description"
-msgstr "Nincs leírás"
+msgstr "Nincs leÃ­rÃ¡s"
 
 msgid "Embedded picture"
-msgstr "Beágyazott kép"
+msgstr "BeÃ¡gyazott kÃ©p"
 
 msgid "Save to file..."
-msgstr "Mentés fájlba..."
+msgstr "MentÃ©s fÃ¡jlba..."
 
 msgid "Import as Record"
-msgstr "Importálás albumként"
+msgstr "ImportÃ¡lÃ¡s albumkÃ©nt"
 
 msgid "Track:"
-msgstr "Szám:"
+msgstr "SzÃ¡m:"
 
 msgid "Import as Track number"
-msgstr "Importálás sorszámként"
+msgstr "ImportÃ¡lÃ¡s sorszÃ¡mkÃ©nt"
 
 msgid "Comment:"
-msgstr "Megjegyzés:"
+msgstr "MegjegyzÃ©s:"
 
 msgid "Save basic fields"
-msgstr "Alap mezõk elmentése"
+msgstr "Alap mezÅ‘k elmentÃ©se"
 
 msgid "ID3v1"
 msgstr "ID3v1"
 
 msgid "Relative Volume Adj.:"
-msgstr "Relatív hangosság:"
+msgstr "RelatÃ­v hangossÃ¡g:"
 
 msgid "Import as RVA"
-msgstr "Importálás RVA-ként"
+msgstr "ImportÃ¡lÃ¡s RVA-kÃ©nt"
 
 msgid "Other"
-msgstr "Egyéb"
+msgstr "EgyÃ©b"
 
 msgid "File icon (32x32 PNG)"
-msgstr "Fájl ikon (32x32 PNG)"
+msgstr "FÃ¡jl ikon (32x32 PNG)"
 
 msgid "File icon (other)"
-msgstr "Fájl ikon (egyéb)"
+msgstr "FÃ¡jl ikon (egyÃ©b)"
 
 msgid "Front cover"
-msgstr "Elsõ borító"
+msgstr "ElsÅ‘ borÃ­tÃ³"
 
 msgid "Back cover"
-msgstr "Hátsó borító"
+msgstr "HÃ¡tsÃ³ borÃ­tÃ³"
 
 msgid "Leaflet page"
-msgstr "Füzetlap"
+msgstr "FÃ¼zetlap"
 
 msgid "Album image"
-msgstr "Album kép"
+msgstr "Album kÃ©p"
 
 msgid "Lead artist/performer"
-msgstr "Vezetõ mûvész/elõadó"
+msgstr "VezetÅ‘ mÅ±vÃ©sz/elÅ‘adÃ³"
 
 msgid "Artist/performer"
-msgstr "Mûvész/elõadó"
+msgstr "MÅ±vÃ©sz/elÅ‘adÃ³"
 
 msgid "Conductor"
 msgstr "Karmester"
@@ -2118,34 +2118,34 @@ msgid "Band/orchestra"
 msgstr "Zenekar/orchestra"
 
 msgid "Composer"
-msgstr "Zeneszerzõ"
+msgstr "ZeneszerzÅ‘"
 
 msgid "Lyricist/text writer"
-msgstr "Szövegíró"
+msgstr "SzÃ¶vegÃ­rÃ³"
 
 msgid "Recording location/studio"
-msgstr "Felvétel helye/stúdió"
+msgstr "FelvÃ©tel helye/stÃºdiÃ³"
 
 msgid "During recording"
-msgstr "Felvétel közben"
+msgstr "FelvÃ©tel kÃ¶zben"
 
 msgid "During performance"
-msgstr "Elõadás közben"
+msgstr "ElÅ‘adÃ¡s kÃ¶zben"
 
 msgid "Movie/video screen capture"
-msgstr "Mozi/videó felvétel"
+msgstr "Mozi/videÃ³ felvÃ©tel"
 
 msgid "A large, coloured fish"
-msgstr "Egy nagy, színes hal"
+msgstr "Egy nagy, szÃ­nes hal"
 
 msgid "Illustration"
-msgstr "Illusztráció"
+msgstr "IllusztrÃ¡ciÃ³"
 
 msgid "Band/artist logotype"
-msgstr "Zenekar/elõadó logótípus"
+msgstr "Zenekar/elÅ‘adÃ³ logÃ³tÃ­pus"
 
 msgid "Publisher/studio logotype"
-msgstr "Kiadó/stúdió logótípus"
+msgstr "KiadÃ³/stÃºdiÃ³ logÃ³tÃ­pus"
 
 msgid "ID3v2"
 msgstr "ID3v2"
@@ -2154,68 +2154,68 @@ msgid "APE"
 msgstr "APE"
 
 msgid "Ogg comments"
-msgstr "Ogg megjegyzések"
+msgstr "Ogg megjegyzÃ©sek"
 
 msgid "Remove ID3v1"
-msgstr "ID3v1 eltávolítása"
+msgstr "ID3v1 eltÃ¡volÃ­tÃ¡sa"
 
 msgid "Create ID3v2"
-msgstr "ID3v2 létrehozása"
+msgstr "ID3v2 lÃ©trehozÃ¡sa"
 
 msgid "Remove ID3v2"
-msgstr "ID3v2 eltávolítása"
+msgstr "ID3v2 eltÃ¡volÃ­tÃ¡sa"
 
 msgid "Create APE"
-msgstr "APE létrehozása"
+msgstr "APE lÃ©trehozÃ¡sa"
 
 msgid "Remove APE"
-msgstr "APE eltávolítása"
+msgstr "APE eltÃ¡volÃ­tÃ¡sa"
 
 msgid "Audio data"
-msgstr "Audio jellemzõk"
+msgstr "Audio jellemzÅ‘k"
 
 msgid "Format:"
-msgstr "Formátum:"
+msgstr "FormÃ¡tum:"
 
 msgid "Length:"
 msgstr "Hossz:"
 
 msgid "Samplerate:"
-msgstr "Mintavételi frekvencia:"
+msgstr "MintavÃ©teli frekvencia:"
 
 #, c-format
 msgid "%ld Hz"
 msgstr "%ld Hz"
 
 msgid "Channel count:"
-msgstr "Csatornák száma:"
+msgstr "CsatornÃ¡k szÃ¡ma:"
 
 msgid "Bandwidth:"
-msgstr "Sávszélesség:"
+msgstr "SÃ¡vszÃ©lessÃ©g:"
 
 msgid "Total samples:"
-msgstr "Összes mintavétel:"
+msgstr "Ã–sszes mintavÃ©tel:"
 
 msgid "Module info"
-msgstr "Modul infó"
+msgstr "Modul infÃ³"
 
 msgid "Type:"
-msgstr "Típus: "
+msgstr "TÃ­pus: "
 
 msgid "Channels:"
-msgstr "Csatornák:"
+msgstr "CsatornÃ¡k:"
 
 msgid "Patterns:"
-msgstr "Minták:"
+msgstr "MintÃ¡k:"
 
 msgid "Samples:"
-msgstr "Mintavételek:"
+msgstr "MintavÃ©telek:"
 
 msgid "Instruments:"
 msgstr "Hangszerek:"
 
 msgid "Samples"
-msgstr "Mintavételek:i frekvencia:"
+msgstr "MintavÃ©telek:i frekvencia:"
 
 msgid "Instruments"
 msgstr "Hangszerek"
@@ -2227,52 +2227,52 @@ msgid "Album"
 msgstr "Lemez"
 
 msgid "Beats per minute"
-msgstr "Percenkénti ütésszám"
+msgstr "PercenkÃ©nti Ã¼tÃ©sszÃ¡m"
 
 msgid "Content type"
-msgstr "Tartalom típusa"
+msgstr "Tartalom tÃ­pusa"
 
 msgid "Copyright"
 msgstr "Copyright"
 
 msgid "Encoding time"
-msgstr "Kódolás ideje"
+msgstr "KÃ³dolÃ¡s ideje"
 
 msgid "Playlist delay"
-msgstr "Lejátszólista késleltetés"
+msgstr "LejÃ¡tszÃ³lista kÃ©sleltetÃ©s"
 
 msgid "Original release time"
-msgstr "Eredeti kiadás ideje"
+msgstr "Eredeti kiadÃ¡s ideje"
 
 msgid "Recording time"
-msgstr "Felvétel ideje"
+msgstr "FelvÃ©tel ideje"
 
 msgid "Release time"
-msgstr "Kiadás ideje"
+msgstr "KiadÃ¡s ideje"
 
 msgid "Tagging time"
-msgstr "Taggelés ideje"
+msgstr "TaggelÃ©s ideje"
 
 msgid "Encoded by"
-msgstr "Kódoló"
+msgstr "KÃ³dolÃ³"
 
 msgid "Lyricist"
-msgstr "Szövegíró"
+msgstr "SzÃ¶vegÃ­rÃ³"
 
 msgid "File type"
-msgstr "Fájltípus"
+msgstr "FÃ¡jltÃ­pus"
 
 msgid "Involved people"
-msgstr "Résztvevõ emberek"
+msgstr "RÃ©sztvevÅ‘ emberek"
 
 msgid "Content group"
 msgstr "Tartalom csoport"
 
 msgid "Subtitle"
-msgstr "Alcím"
+msgstr "AlcÃ­m"
 
 msgid "Initial key"
-msgstr "Kezdeti elõjegyzés"
+msgstr "Kezdeti elÅ‘jegyzÃ©s"
 
 msgid "Language"
 msgstr "Nyelv"
@@ -2281,10 +2281,10 @@ msgid "Length (ms)"
 msgstr "Hossz (ms)"
 
 msgid "Musician credits"
-msgstr "Zenészek elismerése"
+msgstr "ZenÃ©szek elismerÃ©se"
 
 msgid "Media type"
-msgstr "Média típus"
+msgstr "MÃ©dia tÃ­pus"
 
 msgid "Mood"
 msgstr "Hangnem"
@@ -2293,55 +2293,55 @@ msgid "Original album"
 msgstr "Eredeti album"
 
 msgid "Original filename"
-msgstr "Eredeti fájlnév"
+msgstr "Eredeti fÃ¡jlnÃ©v"
 
 msgid "Original lyricist"
-msgstr "Eredeti szövegíró"
+msgstr "Eredeti szÃ¶vegÃ­rÃ³"
 
 msgid "Original artist"
-msgstr "Eredeti elõadó"
+msgstr "Eredeti elÅ‘adÃ³"
 
 msgid "Owner/licensee"
-msgstr "Tulajdonos/engedélyezõ"
+msgstr "Tulajdonos/engedÃ©lyezÅ‘"
 
 msgid "Orchestra"
 msgstr "Zenekar"
 
 msgid "Interpreted/remixed"
-msgstr "Feldolgozás/remix"
+msgstr "FeldolgozÃ¡s/remix"
 
 msgid "Part of set"
-msgstr "Összetett mû része"
+msgstr "Ã–sszetett mÅ± rÃ©sze"
 
 msgid "Produced"
 msgstr "Produced"
 
 msgid "Publisher"
-msgstr "Kiadó"
+msgstr "KiadÃ³"
 
 msgid "Radio station name"
-msgstr "RádióÂállomás neve"
+msgstr "RÃ¡diÃ³Ã‚Ã¡llomÃ¡s neve"
 
 msgid "Radio station owner"
-msgstr "RádióÂállomás tulajdonosa"
+msgstr "RÃ¡diÃ³Ã‚Ã¡llomÃ¡s tulajdonosa"
 
 msgid "Album sort order"
 msgstr "Albumok sorrendje"
 
 msgid "Artist sort order"
-msgstr "Elõadók sorrendje"
+msgstr "ElÅ‘adÃ³k sorrendje"
 
 msgid "Title sort order"
-msgstr "Címek sorrendje"
+msgstr "CÃ­mek sorrendje"
 
 msgid "ISRC"
 msgstr "ISRC"
 
 msgid "Encoding settings"
-msgstr "Kódolási beállítások"
+msgstr "KÃ³dolÃ¡si beÃ¡llÃ­tÃ¡sok"
 
 msgid "Set subtitle"
-msgstr "Alcím beállítása"
+msgstr "AlcÃ­m beÃ¡llÃ­tÃ¡sa"
 
 msgid "Profile: Telephone"
 msgstr "Profile: Telephone"
@@ -2365,64 +2365,64 @@ msgid "Profile: Braindead"
 msgstr "Profile: Braindead"
 
 msgid "Layer I"
-msgstr "I. Réteg"
+msgstr "I. RÃ©teg"
 
 msgid "Layer II"
-msgstr "II. Réteg"
+msgstr "II. RÃ©teg"
 
 msgid "Layer III"
-msgstr "III. Réteg"
+msgstr "III. RÃ©teg"
 
 msgid "Unrecognized"
 msgstr "Ismeretlen"
 
 msgid "Single channel"
-msgstr "Egycsatornás"
+msgstr "EgycsatornÃ¡s"
 
 msgid "Dual channel"
-msgstr "Kétcsatornás"
+msgstr "KÃ©tcsatornÃ¡s"
 
 msgid "Joint stereo"
-msgstr "Kapcsolt sztereó"
+msgstr "Kapcsolt sztereÃ³"
 
 msgid "Stereo"
-msgstr "Sztereó"
+msgstr "SztereÃ³"
 
 msgid "Emphasis: none"
-msgstr "Elõkiemelés: nincs"
+msgstr "ElÅ‘kiemelÃ©s: nincs"
 
 msgid "Emphasis:"
-msgstr "Elõkiemelés:"
+msgstr "ElÅ‘kiemelÃ©s:"
 
 msgid "Emphasis: reserved"
-msgstr "Elõkiemelés: fenntartott"
+msgstr "ElÅ‘kiemelÃ©s: fenntartott"
 
 msgid "bit signed"
-msgstr "bites elõjeles egész"
+msgstr "bites elÅ‘jeles egÃ©sz"
 
 msgid "bit unsigned"
-msgstr "bites elõjel nélküli egész"
+msgstr "bites elÅ‘jel nÃ©lkÃ¼li egÃ©sz"
 
 msgid "bit float"
-msgstr "bites lebegõpontos"
+msgstr "bites lebegÅ‘pontos"
 
 msgid "bit double"
-msgstr "bites dupla pontosságú lebegõpontos"
+msgstr "bites dupla pontossÃ¡gÃº lebegÅ‘pontos"
 
 msgid "encoding"
-msgstr "kódolású"
+msgstr "kÃ³dolÃ¡sÃº"
 
 msgid "Compression: Fast"
-msgstr "Tömörítés: Gyors"
+msgstr "TÃ¶mÃ¶rÃ­tÃ©s: Gyors"
 
 msgid "Compression: Normal"
-msgstr "Tömörítés: Normál"
+msgstr "TÃ¶mÃ¶rÃ­tÃ©s: NormÃ¡l"
 
 msgid "Compression: High"
-msgstr "Tömörítés: Magas"
+msgstr "TÃ¶mÃ¶rÃ­tÃ©s: Magas"
 
 msgid "Compression: Extra High"
-msgstr "Tömörítés: Extra magas"
+msgstr "TÃ¶mÃ¶rÃ­tÃ©s: Extra magas"
 
 msgid "Compression: Insane"
-msgstr "Tömörítés: Elmebeteg"
+msgstr "TÃ¶mÃ¶rÃ­tÃ©s: Elmebeteg"

@@ -14,19 +14,13 @@ EXTRA_DIST = $(DOMAIN).pot $(POFILES) $(MOFILES) Makevars ABOUT-NLS
 all: $(DOMAIN).pot $(MOFILES)
 
 hu.mo: hu.po
-	iconv -f iso8859-2 -t utf-8 $< > $<.utf8; \
-	msgfmt $<.utf8 -o $@; \
-	rm $<.utf8
+	msgfmt $< -o $@
 
 de.mo: de.po
-	iconv -f iso8859-1 -t utf-8 $< > $<.utf8; \
-	msgfmt $<.utf8 -o $@; \
-	rm $<.utf8
+	msgfmt $< -o $@
 
 uk.mo: uk.po
-	iconv -f koi8-u -t utf-8 $< > $<.utf8; \
-	msgfmt $<.utf8 -o $@; \
-	rm $<.utf8
+	msgfmt $< -o $@
 
 %.po: $(DOMAIN).pot
 	$(MSGMERGE) $@ $< -o $@.in; \

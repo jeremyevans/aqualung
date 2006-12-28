@@ -2133,6 +2133,7 @@ main(int argc, char ** argv) {
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, AQUALUNG_LOCALEDIR);
 	textdomain(PACKAGE);
+	bind_textdomain_codeset(PACKAGE, "UTF-8");
 	
 	setup_app_socket();
 

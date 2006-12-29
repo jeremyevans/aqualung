@@ -3637,11 +3637,14 @@ cdda_record__eject_cb(gpointer data) {
 
 		drive = cdda_get_drive_by_device_path(device_path);
 		if (drive != NULL) {
-			CdIo_t * cdio = cdio_open(device_path, DRIVER_DEVICE);
-			if (cdio) {
-				cdio_eject_media(&cdio);
-				if (cdio != NULL) {
-					cdio_destroy(cdio);
+			if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter) > 0 ||
+			    cdio_close_tray(device_path, NULL) != DRIVER_OP_SUCCESS) {
+				CdIo_t * cdio = cdio_open(device_path, DRIVER_DEVICE);
+				if (cdio) {
+					cdio_eject_media(&cdio);
+					if (cdio != NULL) {
+						cdio_destroy(cdio);
+					}
 				}
 			}
 		}
@@ -4895,7 +4898,7 @@ create_music_browser(void) {
 	store__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 	store__separator1 = gtk_separator_menu_item_new();
 	store__add = gtk_menu_item_new_with_label(_("Create empty store..."));
-	store__build = gtk_menu_item_new_with_label(_("Build/Update store from filesystem..."));
+	store__build = gtk_menu_item_new_with_label(_("Build / Update store from filesystem..."));
 	store__edit = gtk_menu_item_new_with_label(_("Edit store..."));
 	store__save = gtk_menu_item_new_with_label(_("Save store"));
 	store__remove = gtk_menu_item_new_with_label(_("Remove store"));
@@ -5195,7 +5198,7 @@ create_music_browser(void) {
 	cdda_record__disc_info = gtk_menu_item_new_with_label(_("Disc info..."));
 	cdda_record__separator2 = gtk_separator_menu_item_new();
 	cdda_record__drive_info = gtk_menu_item_new_with_label(_("Drive info..."));
-	cdda_record__eject = gtk_menu_item_new_with_label(_("Eject"));
+	cdda_record__eject = gtk_menu_item_new_with_label(_("Eject / Close tray"));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__addlist_albummode);

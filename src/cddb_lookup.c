@@ -573,6 +573,10 @@ create_cddb_dialog(void) {
 				MAXLEN-1);
 			strncpy(disc->record_name, gtk_entry_get_text(GTK_ENTRY(title_entry)),
 				MAXLEN-1);
+			strncpy(disc->genre, gtk_entry_get_text(GTK_ENTRY(genre_entry)),
+				MAXLEN-1);
+			strncpy(disc->year, gtk_entry_get_text(GTK_ENTRY(year_entry)),
+				MAXLEN-1);
 
 			snprintf(name_str, MAXLEN-1, "%s: %s",
 				 disc->artist_name, disc->record_name);
@@ -741,6 +745,7 @@ create_cddb_submit_dialog(gpointer data) {
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
 
 	title_entry = gtk_entry_new();
+	genre_entry = gtk_entry_new();
 
 #ifdef HAVE_CDDA
 	if (is_store_iter_cdda(&iter_record)) {
@@ -755,7 +760,9 @@ create_cddb_submit_dialog(gpointer data) {
 		
 		gtk_entry_set_text(GTK_ENTRY(artist_entry), disc->artist_name);
 		gtk_entry_set_text(GTK_ENTRY(title_entry), disc->record_name);
-		
+		gtk_entry_set_text(GTK_ENTRY(genre_entry), disc->genre);
+		year = strtol(disc->year, NULL, 10);
+
 		g_free(device_path);
 
 	} else
@@ -770,6 +777,16 @@ create_cddb_submit_dialog(gpointer data) {
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 0, &str, -1);
 		gtk_entry_set_text(GTK_ENTRY(title_entry), str);
 		g_free(str);
+
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 1, &str, -1);
+		year = strtol(str, NULL, 10);
+		g_free(str);
+
+		if (!is_valid_year(year)) {
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 3, &str, -1);
+			year = strtol(str, NULL, 10);
+			g_free(str);
+		}
 	}
 
 	gtk_table_attach(GTK_TABLE(table), title_entry, 1, 2, 1, 2,
@@ -782,16 +799,6 @@ create_cddb_submit_dialog(gpointer data) {
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
 
 	year_spinner = gtk_spin_button_new_with_range(YEAR_MIN, YEAR_MAX, 1);
-
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 1, &str, -1);
-	year = strtol(str, NULL, 10);
-	g_free(str);
-
-	if (!is_valid_year(year)) {
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 3, &str, -1);
-		year = strtol(str, NULL, 10);
-		g_free(str);
-	}
 
 	if (is_valid_year(year)) {
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(year_spinner), year);
@@ -827,7 +834,6 @@ create_cddb_submit_dialog(gpointer data) {
 	label = gtk_label_new(_("Genre:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
 
-	genre_entry = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), genre_entry, 1, 2, 4, 5,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
 

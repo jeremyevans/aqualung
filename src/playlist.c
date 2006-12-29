@@ -3695,9 +3695,13 @@ remove_files (void) {
         if (!n) {
 
                 if (files == 1) {
-                        sprintf(temp, _("The selected file will be deleted. No recovery will be possible after this operation.\n\nAre you sure?"));
+                        sprintf(temp, _("The selected file will be deleted from the filesystem. "
+					"No recovery will be possible after this operation.\n\n"
+					"Are you sure?"));
                 } else {
-                        sprintf(temp, _("All selected files will be deleted. No recovery will be possible after this operation.\n\nAre you sure?"));
+                        sprintf(temp, _("All selected files will be deleted from the filesystem. "
+					"No recovery will be possible after this operation.\n\n"
+					"Are you sure?"));
                 }
 
                 info_dialog = gtk_message_dialog_new (options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 

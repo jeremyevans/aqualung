@@ -4,7 +4,7 @@ echo "
 checking basic compilation tools ...
 "
 
-for tool in pkg-config aclocal autoheader autoconf automake gettext msgfmt iconv
+for tool in pkg-config aclocal autoheader autoconf automake gettext msgfmt
 do
     echo -n "$tool... "
     if which $tool >/dev/null 2>&1 ; then

@@ -78,6 +78,7 @@ GtkWidget * ripper_prog_window;
 GtkWidget * ripper_cancel_button;
 GtkWidget * ripper_close_when_ready_check;
 GtkWidget * ripper_hbox;
+int ripper_prog_window_visible;
 
 AQUALUNG_THREAD_DECLARE(ripper_thread_id)
 int ripper_thread_busy;
@@ -987,6 +988,17 @@ ripper_cancel(GtkWidget * widget, gpointer data) {
 }
 
 
+gboolean
+ripper_prog_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpointer user_data) {
+
+	if ((ripper_prog_window_visible = !(event->new_window_state & GDK_WINDOW_STATE_ICONIFIED))) {
+		gtk_window_set_title(GTK_WINDOW(ripper_prog_window), _("Ripping CD tracks"));
+	}
+
+	return FALSE;
+}
+
+
 void
 ripper_window(void) {
 
@@ -999,10 +1011,12 @@ ripper_window(void) {
 	GtkWidget * hseparator;
 
         ripper_prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(ripper_prog_window), _("Ripping CD tracks..."));
+        gtk_window_set_title(GTK_WINDOW(ripper_prog_window), _("Ripping CD tracks"));
         gtk_window_set_position(GTK_WINDOW(ripper_prog_window), GTK_WIN_POS_CENTER);
         g_signal_connect(G_OBJECT(ripper_prog_window), "delete_event",
                          G_CALLBACK(ripper_prog_window_close), NULL);
+        g_signal_connect(G_OBJECT(ripper_prog_window), "window_state_event",
+                         G_CALLBACK(ripper_prog_window_state_changed), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(ripper_prog_window), 5);
 
         vbox = gtk_vbox_new(FALSE, 0);
@@ -1027,6 +1041,7 @@ ripper_window(void) {
         }
 
         cell = gtk_cell_renderer_text_new();
+	g_object_set((gpointer)cell, "xalign", 1.0, NULL);
         column = gtk_tree_view_column_new_with_attributes(_("No"), cell, "text", 0, NULL);
         gtk_tree_view_append_column(GTK_TREE_VIEW(prog_tree), GTK_TREE_VIEW_COLUMN(column));
 
@@ -1088,11 +1103,19 @@ ripper_update_status(gpointer pdata) {
 		gtk_list_store_set(ripper_prog_store, &iter, 3, prog_total, -1);
 	}
 
+	if (!ripper_prog_window_visible) {
+		char title[MAXLEN];
+
+		snprintf(title, MAXLEN, "%d%% - %s", prog_total, _("Ripping CD tracks"));
+		gtk_window_set_title(GTK_WINDOW(ripper_prog_window), title);
+	}
+
 	if (prog_total == 100) {
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ripper_close_when_ready_check))) {
 			ripper_prog_window_close(NULL, NULL);
 		} else {
 			gtk_widget_destroy(ripper_cancel_button);
+			gtk_widget_destroy(ripper_close_when_ready_check);
 			ripper_cancel_button = gui_stock_label_button (_("Close"), GTK_STOCK_CLOSE);
 			g_signal_connect(ripper_cancel_button, "clicked", G_CALLBACK(ripper_cancel), NULL);
 			gtk_box_pack_end(GTK_BOX(ripper_hbox), ripper_cancel_button, FALSE, TRUE, 0);

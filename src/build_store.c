@@ -1282,8 +1282,8 @@ build_type_dialog(void) {
 	gtk_widget_set_name(radio_strict, "check_on_notebook");
 	gtk_box_pack_start(GTK_BOX(vbox), radio_strict, FALSE, FALSE, 0);
 
-	label = gtk_label_new("Follows the directory structure to identify the artists and\n"
-			      "records. The files are added on a record basis.");
+	label = gtk_label_new(_("Follows the directory structure to identify the artists and\n"
+				"records. The files are added on a record basis."));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 30);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 5);
@@ -1293,9 +1293,9 @@ build_type_dialog(void) {
 	gtk_widget_set_name(radio_loose, "check_on_notebook");
 	gtk_box_pack_start(GTK_BOX(vbox), radio_loose, FALSE, FALSE, 5);
 
-	label = gtk_label_new("Recursive search from the root directory for audio files.\n"
-			      "The files are processed independently, so only metadata\n"
-			      "and filename transformation are available.");
+	label = gtk_label_new(_("Recursive search from the root directory for audio files.\n"
+				"The files are processed independently, so only metadata\n"
+				"and filename transformation are available."));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 30);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);

@@ -244,7 +244,18 @@ msgstr "Вибрати файли..."
 msgid "Directory driven"
 msgstr "Запис"
 
+msgid ""
+"Follows the directory structure to identify the artists and\n"
+"records. The files are added on a record basis."
+msgstr ""
+
 msgid "Independent"
+msgstr ""
+
+msgid ""
+"Recursive search from the root directory for audio files.\n"
+"The files are processed independently, so only metadata\n"
+"and filename transformation are available."
 msgstr ""
 
 #, fuzzy
@@ -749,7 +760,7 @@ msgid "(audio only)"
 msgstr ""
 
 #, fuzzy
-msgid "Ripping CD tracks..."
+msgid "Ripping CD tracks"
 msgstr "Редагувати доріжку..."
 
 msgid "Begin"
@@ -1297,7 +1308,7 @@ msgid "Add to playlist (Album mode)"
 msgstr "Додати до списку програвання"
 
 #, fuzzy
-msgid "Build/Update store from filesystem..."
+msgid "Build / Update store from filesystem..."
 msgstr "Редагувати склад..."
 
 msgid "Edit store..."
@@ -1401,6 +1412,10 @@ msgstr "Інформація про файл"
 #, fuzzy
 msgid "Drive info..."
 msgstr "Інформація про файл"
+
+#, fuzzy
+msgid "Eject / Close tray"
+msgstr "Кольори"
 
 msgid "*Music Store"
 msgstr "*Музичний Склад"
@@ -2000,16 +2015,16 @@ msgstr "Перечитати інформацію про файл"
 
 #, c-format
 msgid ""
-"The selected file will be deleted. No recovery will be possible after this "
-"operation.\n"
+"The selected file will be deleted from the filesystem. No recovery will be "
+"possible after this operation.\n"
 "\n"
 "Are you sure?"
 msgstr ""
 
 #, c-format
 msgid ""
-"All selected files will be deleted. No recovery will be possible after this "
-"operation.\n"
+"All selected files will be deleted from the filesystem. No recovery will be "
+"possible after this operation.\n"
 "\n"
 "Are you sure?"
 msgstr ""

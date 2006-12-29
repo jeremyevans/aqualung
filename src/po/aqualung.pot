@@ -209,7 +209,18 @@ msgstr ""
 msgid "Directory driven"
 msgstr ""
 
+msgid ""
+"Follows the directory structure to identify the artists and\n"
+"records. The files are added on a record basis."
+msgstr ""
+
 msgid "Independent"
+msgstr ""
+
+msgid ""
+"Recursive search from the root directory for audio files.\n"
+"The files are processed independently, so only metadata\n"
+"and filename transformation are available."
 msgstr ""
 
 msgid "Build/Update store"
@@ -673,7 +684,7 @@ msgstr ""
 msgid "(audio only)"
 msgstr ""
 
-msgid "Ripping CD tracks..."
+msgid "Ripping CD tracks"
 msgstr ""
 
 msgid "Begin"
@@ -1171,7 +1182,7 @@ msgstr ""
 msgid "Add to playlist (Album mode)"
 msgstr ""
 
-msgid "Build/Update store from filesystem..."
+msgid "Build / Update store from filesystem..."
 msgstr ""
 
 msgid "Edit store..."
@@ -1265,6 +1276,9 @@ msgid "Disc info..."
 msgstr ""
 
 msgid "Drive info..."
+msgstr ""
+
+msgid "Eject / Close tray"
 msgstr ""
 
 msgid "*Music Store"
@@ -1810,16 +1824,16 @@ msgstr ""
 
 #, c-format
 msgid ""
-"The selected file will be deleted. No recovery will be possible after this "
-"operation.\n"
+"The selected file will be deleted from the filesystem. No recovery will be "
+"possible after this operation.\n"
 "\n"
 "Are you sure?"
 msgstr ""
 
 #, c-format
 msgid ""
-"All selected files will be deleted. No recovery will be possible after this "
-"operation.\n"
+"All selected files will be deleted from the filesystem. No recovery will be "
+"possible after this operation.\n"
 "\n"
 "Are you sure?"
 msgstr ""

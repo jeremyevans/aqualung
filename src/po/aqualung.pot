@@ -1278,9 +1278,6 @@ msgstr ""
 msgid "Drive info..."
 msgstr ""
 
-msgid "Eject / Close tray"
-msgstr ""
-
 msgid "*Music Store"
 msgstr ""
 

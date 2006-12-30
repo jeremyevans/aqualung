@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-19 18:04+0300\n"
-"PO-Revision-Date: 2006-12-28 11:18+0100\n"
+"PO-Revision-Date: 2006-12-30 13:36+0100\n"
 "Last-Translator: Sergiy Niskorodov <sgh_punk@users.sourceforge.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1412,10 +1412,6 @@ msgstr "Інформація про файл"
 #, fuzzy
 msgid "Drive info..."
 msgstr "Інформація про файл"
-
-#, fuzzy
-msgid "Eject / Close tray"
-msgstr "Кольори"
 
 msgid "*Music Store"
 msgstr "*Музичний Склад"

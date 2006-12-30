@@ -3637,14 +3637,11 @@ cdda_record__eject_cb(gpointer data) {
 
 		drive = cdda_get_drive_by_device_path(device_path);
 		if (drive != NULL) {
-			if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter) > 0 ||
-			    cdio_close_tray(device_path, NULL) != DRIVER_OP_SUCCESS) {
-				CdIo_t * cdio = cdio_open(device_path, DRIVER_DEVICE);
-				if (cdio) {
-					cdio_eject_media(&cdio);
-					if (cdio != NULL) {
-						cdio_destroy(cdio);
-					}
+			CdIo_t * cdio = cdio_open(device_path, DRIVER_DEVICE);
+			if (cdio) {
+				cdio_eject_media(&cdio);
+				if (cdio != NULL) {
+					cdio_destroy(cdio);
 				}
 			}
 		}
@@ -5198,7 +5195,7 @@ create_music_browser(void) {
 	cdda_record__disc_info = gtk_menu_item_new_with_label(_("Disc info..."));
 	cdda_record__separator2 = gtk_separator_menu_item_new();
 	cdda_record__drive_info = gtk_menu_item_new_with_label(_("Drive info..."));
-	cdda_record__eject = gtk_menu_item_new_with_label(_("Eject / Close tray"));
+	cdda_record__eject = gtk_menu_item_new_with_label(_("Eject"));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__addlist_albummode);

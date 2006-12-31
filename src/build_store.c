@@ -2669,11 +2669,7 @@ is_dir(char * name) {
 int
 filter_excl_incl(char * basename) {
 
-	char * utf8 = g_locale_to_utf8(basename, -1, NULL, NULL, NULL);
-
-	if (utf8 == NULL) {
-		return 0;
-	}
+	char * utf8 = g_filename_display_name(basename);
 
 	if (excl_enabled) {
 		int k;

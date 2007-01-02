@@ -2563,6 +2563,24 @@ scroll_motion_notify(GtkWidget * widget, GdkEventMotion * event, gpointer * win)
 	return TRUE;
 }
 
+#ifdef HAVE_LOOP
+void
+hide_loop_bar() {
+	gtk_widget_hide(loop_bar);
+
+	if (options.playlist_is_embedded && !playlist_on) {
+		gtk_window_resize(GTK_WINDOW(main_window), main_size_x,
+				  main_size_y - 14 - 6 - 6 -
+				  playlist_window->allocation.height);
+	}
+
+	if (!options.playlist_is_embedded) {
+		gtk_window_resize(GTK_WINDOW(main_window),
+				  main_size_x, main_size_y - 14 - 6);
+	}
+}
+#endif /* HAVE_LOOP */
+
 void
 repeat_toggled(GtkWidget * widget, gpointer data) {
 
@@ -2578,7 +2596,7 @@ repeat_toggled(GtkWidget * widget, gpointer data) {
 	if (repeat_on) {
 		gtk_widget_show(loop_bar);
 	} else {
-		gtk_widget_hide(loop_bar);
+		hide_loop_bar();
 	}
 #endif /* HAVE_LOOP */
 }
@@ -3688,12 +3706,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	gtk_widget_show_all(main_window);
 
-#ifdef HAVE_LOOP
-	if (!repeat_on) {
-		gtk_widget_hide(loop_bar);
-	}
-#endif /* HAVE_LOOP */
-
 	deflicker();
 
         cover_show_flag = 0;
@@ -3707,6 +3719,13 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 			deflicker();
 		}
 	}
+
+#ifdef HAVE_LOOP
+	if (!repeat_on) {
+		hide_loop_bar();
+	}
+#endif /* HAVE_LOOP */
+
 
         /* update sliders' tooltips */
         if (options.enable_tooltips) {
@@ -3754,7 +3773,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
                 gtk_widget_set_sensitive(plist__fileinfo, FALSE);
                 gtk_widget_grab_focus(GTK_WIDGET(play_list));
         }
-
 }
 
 

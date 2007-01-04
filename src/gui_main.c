@@ -4213,6 +4213,11 @@ save_config(void) {
 	SAVE_OPTION_STR_1(cddb_proxy)
 	SAVE_OPTION_INT_1(cddb_proxy_port)
 
+#ifdef HAVE_LOOP
+	SAVE_FLOAT_1(loop_range_start)
+	SAVE_FLOAT_1(loop_range_end)
+#endif /* HAVE_LOOP */
+
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
 		char * utf8;
@@ -4534,6 +4539,11 @@ load_config(void) {
 		LOAD_OPTION_STR_1(cddb_proxy)
 		LOAD_OPTION_INT_1(cddb_proxy_port)
 		LOAD_OPTION_INT_1(cddb_use_proxy)
+
+#ifdef HAVE_LOOP
+		LOAD_FLOAT_1(loop_range_start)
+		LOAD_FLOAT_1(loop_range_end)
+#endif /* HAVE_LOOP */
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);

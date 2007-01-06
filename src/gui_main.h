@@ -79,3 +79,6 @@ GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 #endif
 
 #endif /* _GUI_MAIN_H */
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

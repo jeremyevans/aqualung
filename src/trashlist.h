@@ -41,3 +41,6 @@ void trashlist_free(trashlist_t * root);
 #endif
 
 #endif /* _TRASHLIST_H */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

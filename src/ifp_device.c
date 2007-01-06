@@ -535,6 +535,12 @@ aifp_show_message(gint type, gchar *message) {
                                               GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
                                               type, GTK_BUTTONS_CLOSE, message);
 
+        if (type == GTK_MESSAGE_ERROR) {
+                gtk_window_set_title(GTK_WINDOW(info_dialog), _("Error"));
+        } else if (type == GTK_MESSAGE_WARNING) {
+                gtk_window_set_title(GTK_WINDOW(info_dialog), _("Warning"));
+        }
+
         gtk_widget_show (info_dialog);
         aqualung_dialog_run(GTK_DIALOG(info_dialog));
         gtk_widget_destroy(info_dialog);

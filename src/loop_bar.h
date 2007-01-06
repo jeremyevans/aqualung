@@ -59,3 +59,6 @@ G_END_DECLS
 #endif /* HAVE_LOOP */
 
 #endif /* _LOOP_BAR_H */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

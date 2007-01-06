@@ -45,3 +45,6 @@ void send_message_to_session(int session_id, char * message, int len);
 
 
 #endif /* _TRANSCEIVER_H */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

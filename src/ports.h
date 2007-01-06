@@ -37,3 +37,6 @@ void ports_clicked_close(GtkWidget * widget, gpointer * data);
 #endif /* HAVE_JACK */
 
 #endif /* _ports_h */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

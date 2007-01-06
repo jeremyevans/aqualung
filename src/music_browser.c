@@ -270,6 +270,10 @@ void track__fileinfo_cb(gpointer data);
 void search_cb(gpointer data);
 void collapse_all_items_cb(gpointer data);
 
+#ifdef HAVE_CDDA
+void set_toolbar_buttons_sensitivity(GtkTreePath *path);
+#endif /* HAVE_CDDA */
+
 struct keybinds {
 	void (*callback)(gpointer);
 	int keyval1;
@@ -2059,27 +2063,32 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 	GtkTreePath * path;
 	GtkTreeViewColumn * column;
 
+#ifdef HAVE_CDDA
+	if (event->type == GDK_KEY_RELEASE) {
+
+                GtkTreeIter iter;
+                GtkTreeModel * model;
+
+                if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
+                        GtkTreePath * path = gtk_tree_model_get_path(model, &iter);
+
+                        set_toolbar_buttons_sensitivity(path);
+                }
+        }
+#endif /* HAVE_CDDA */
+
 	if (event->type == GDK_BUTTON_PRESS) {
 		GdkEventButton * bevent = (GdkEventButton *) event;
 
-		if (bevent->button == 1 && options.enable_mstore_toolbar) {
-                        if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(music_tree), bevent->x, bevent->y,
-                                                          &path, &column, NULL, NULL)) {
-                          
 #ifdef HAVE_CDDA
-                                if (is_store_path_cdda(path)) {
-                                        gtk_widget_set_sensitive(toolbar_edit_button, FALSE);
-                                        gtk_widget_set_sensitive(toolbar_add_button, FALSE);
-                                        gtk_widget_set_sensitive(toolbar_remove_button, FALSE);
-                                } else {
-                                        gtk_widget_set_sensitive(toolbar_edit_button, TRUE);
-                                        gtk_widget_set_sensitive(toolbar_add_button, TRUE);
-                                        gtk_widget_set_sensitive(toolbar_remove_button, TRUE);
-                                }
-#endif /* HAVE_CDDA */
+		if (bevent->button == 1) {
+		        if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(music_tree), bevent->x, bevent->y,
+							  &path, &column, NULL, NULL)) {
+                                set_toolbar_buttons_sensitivity(path);
 				gtk_tree_path_free(path);
                         }
                 }
+#endif /* HAVE_CDDA */
 
                 if (bevent->button == 3) {
 
@@ -2087,6 +2096,9 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 							  &path, &column, NULL, NULL)) {
 
 				set_popup_sensitivity(path);
+#ifdef HAVE_CDDA
+                                set_toolbar_buttons_sensitivity(path);
+#endif /* HAVE_CDDA */
 				
 				gtk_tree_view_set_cursor(GTK_TREE_VIEW(music_tree), path, NULL, FALSE);
 
@@ -2227,7 +2239,6 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 	}
 	return FALSE;
 }
-
 
 gint
 dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data) {
@@ -3682,7 +3693,17 @@ search_cb(gpointer data) {
 void
 collapse_all_items_cb(gpointer data) {
 
+        GtkTreeIter iter;
+        GtkTreePath * path;
+
         gtk_tree_view_collapse_all(GTK_TREE_VIEW(music_tree));  
+
+        gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter, NULL, 0);
+        path = gtk_tree_model_get_path (GTK_TREE_MODEL(music_store), &iter);
+        if (path) {
+                gtk_tree_view_set_cursor (GTK_TREE_VIEW (music_tree), path, NULL, TRUE);
+                gtk_tree_path_free(path);
+        }
 }
 
 void
@@ -5962,6 +5983,24 @@ save_all_music_store(void) {
 		save_music_store(&iter_store);
 	}
 }
+
+#ifdef HAVE_CDDA
+void
+set_toolbar_buttons_sensitivity(GtkTreePath *path) {
+
+        if (options.enable_mstore_toolbar) {
+                if (is_store_path_cdda(path)) {
+                        gtk_widget_set_sensitive(toolbar_edit_button, FALSE);
+                        gtk_widget_set_sensitive(toolbar_add_button, FALSE);
+                        gtk_widget_set_sensitive(toolbar_remove_button, FALSE);
+                } else {
+                        gtk_widget_set_sensitive(toolbar_edit_button, TRUE);
+                        gtk_widget_set_sensitive(toolbar_add_button, TRUE);
+                        gtk_widget_set_sensitive(toolbar_remove_button, TRUE);
+                }
+        }
+}
+#endif /* HAVE_CDDA */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

@@ -932,3 +932,6 @@ cdda_drive_info(char * device_path) {
 
 
 #endif /* HAVE_CDDA */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

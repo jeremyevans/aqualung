@@ -86,3 +86,6 @@ trashlist_free(trashlist_t * root) {
 
 	free(root);
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

@@ -42,3 +42,6 @@ float rva_from_multiple_volumes(int nlevels, float * volumes,
 				float rva_refvol, float rva_steepness);
 
 #endif /* _VOLUME_H */
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

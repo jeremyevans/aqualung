@@ -1308,3 +1308,7 @@ cd_ripper(char * device_path, GtkTreeIter * iter) {
 GtkWidget * ripper_prog_window = NULL;
 
 #endif /* HAVE_CDDA && ... */
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

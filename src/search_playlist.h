@@ -26,3 +26,6 @@ void search_playlist_dialog(void);
 
 
 #endif /* _SEARCH_PLAYLIST_H */
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

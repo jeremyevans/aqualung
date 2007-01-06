@@ -234,3 +234,6 @@ size_t rb_write_space(const rb_t *rb);
 #endif
 
 #endif
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

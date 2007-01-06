@@ -34,3 +34,6 @@ void search_dialog(void);
 
 
 #endif /* _SEARCH_H */
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

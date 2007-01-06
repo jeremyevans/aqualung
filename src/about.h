@@ -25,3 +25,5 @@
 void create_about_window(void);
 
 #endif /* _ABOUT_H */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

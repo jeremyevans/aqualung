@@ -34,3 +34,7 @@ void cd_ripper(char * device_path, GtkTreeIter * iter);
 #endif /* HAVE_CDDA && ... */
 
 #endif /* _CD_RIPPER_H */
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

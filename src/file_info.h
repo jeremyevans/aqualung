@@ -37,3 +37,6 @@ void show_file_info(char * name, char * file, int is_called_from_browser,
 #endif
 
 #endif /* _FILE_INFO_H */
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

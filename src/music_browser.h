@@ -63,3 +63,5 @@ void music_store_set_status_bar_info(void);
 
 
 #endif /* _MUSIC_BROWSER_H */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

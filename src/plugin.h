@@ -64,3 +64,6 @@ void load_plugin_data(void);
 #endif /* HAVE_LADSPA */
 
 #endif /* _PLUGIN_H */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

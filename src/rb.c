@@ -360,3 +360,6 @@ rb_get_write_vector (const rb_t * rb,
     vec[1].len = 0;
   }
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

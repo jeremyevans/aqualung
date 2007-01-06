@@ -137,3 +137,6 @@ void create_options_window(void);
 void append_ms_pathlist(char * path, char * name);
 
 #endif /* _OPTIONS_H */
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

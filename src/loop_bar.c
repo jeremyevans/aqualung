@@ -427,3 +427,6 @@ aqualung_loop_bar_new(float start, float end) {
 }
 
 #endif /* HAVE_LOOP */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

@@ -210,3 +210,6 @@ close_app_socket(void) {
 	remove(aqualung_socket_filename);
 	close(aqualung_socket_fd);
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

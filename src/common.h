@@ -72,3 +72,5 @@
 
 
 #endif /* _COMMON_H */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

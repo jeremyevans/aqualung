@@ -179,6 +179,13 @@ cdda_reader_thread(void * arg) {
 		if (pd->pos_lsn > pd->last_lsn)
 			++pd->overread_sectors;
 		++pd->pos_lsn;
+
+		if (cdda_drive->bigendian) {
+			for (i = 0; i < CDIO_CD_FRAMESIZE_RAW / 2; i++) {
+				readbuf[i] = UINT16_SWAP_LE_BE_C(readbuf[i]);
+			}
+		}
+
 		for (i = 0; i < CDIO_CD_FRAMESIZE_RAW / 2; i++) {
 			float f = readbuf[i] / 32768.0 * fdec->voladj_lin;
 			rb_write(pd->rb, (char *)&f, sample_size);
@@ -296,6 +303,8 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 	if (!pd->drive) {
 		printf("cdda_decoder_open: couldn't open drive %s\n", pd->device_path);
 		drive->is_used = 0;
+		cdio_destroy(pd->cdio);
+		pd->cdio = NULL;
 		return DECODER_OPEN_FERROR;
 	}
 
@@ -304,6 +313,10 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 	if (cdio_cddap_open(pd->drive) != 0) {
 		printf("cdda_decoder_open: unable to open disc.\n");
 		drive->is_used = 0;
+		cdio_cddap_close_no_free_cdio(pd->drive);
+		pd->drive = NULL;
+		cdio_destroy(pd->cdio);
+		pd->cdio = NULL;
 		return DECODER_OPEN_FERROR;
 	}
 
@@ -313,6 +326,19 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 	pd->pos_lsn = pd->first_lsn;
 	pd->overread_sectors = 0;
 	pd->is_eos = 0;
+
+	if (drive->bigendian == -1) {
+		drive->bigendian = data_bigendianp(pd->drive);
+	}
+	if (drive->bigendian == -1) {
+		printf("cdda_decoder_open: unable to determine endianness of drive.\n");
+		drive->is_used = 0;
+		cdio_cddap_close_no_free_cdio(pd->drive);
+		pd->drive = NULL;
+		cdio_destroy(pd->cdio);
+		pd->cdio = NULL;
+		return DECODER_OPEN_FERROR;
+	}
 
 	/* use this default in case cdda_decoder_set_mode() won't be called */
 	pd->paranoia_mode = PARANOIA_MODE_DISABLE;

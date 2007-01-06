@@ -65,6 +65,7 @@ typedef struct {
 	CdIo_t * cdio;
 	int media_changed;
 	int is_used;
+	int bigendian;
 	char device_path[CDDA_MAXLEN];
 	cdda_disc_t disc;
 } cdda_drive_t;

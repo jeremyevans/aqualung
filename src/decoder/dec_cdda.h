@@ -30,6 +30,7 @@
 #endif /* HAVE_CDDB */
 #include <cdio/cdio.h>
 #include <cdio/paranoia.h>
+#include <cdio/bytesex.h>
 #ifdef HAVE_CDDB
 #undef HAVE_CDDB
 #endif /* HAVE_CDDB */

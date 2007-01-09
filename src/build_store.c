@@ -2504,8 +2504,6 @@ write_record_to_store(gpointer data) {
 
 	GtkTreeIter record_iter;
 
-	char * low1 = g_utf8_strdown(disc->artist.d_name, -1);
-	char * low2 = g_utf8_strdown(disc->artist.final, -1);
 
 	if (artist_iter_is_set) {
 		result = artist_get_iter_for_tracklist(&artist_iter, &record_iter, disc);
@@ -2517,17 +2515,24 @@ write_record_to_store(gpointer data) {
 		artist_iter_is_set = 1;
 	}
 
-	if (artist_name_map != NULL && strcmp(low1, low2)) {
+	if (artist_name_map != NULL) {
 
 		char * max = NULL;
 		map_put(&artist_name_map, disc->artist.final);
 		max = map_get_max(artist_name_map);
 
 		gtk_tree_store_set(music_store, &artist_iter, 0, max, -1);
+
+		if (artist_sort_by == SORT_NAME) {
+			gtk_tree_store_set(music_store, &artist_iter, 1, max, -1);
+		}
+
+		if (artist_sort_by == SORT_NAME_LOW) {
+			char * utf8 = g_utf8_strdown(disc->artist.final, -1);
+			gtk_tree_store_set(music_store, &artist_iter, 1, utf8, -1);
+			g_free(utf8);
+		}
 	}
-	
-	g_free(low1);
-	g_free(low2);
 
 	if (result == RECORD_NEW) {
 		for (i = 0, ptrack = disc->tracks; ptrack; i++, ptrack = ptrack->next) {

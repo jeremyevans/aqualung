@@ -1717,7 +1717,7 @@ print_version(void) {
 	fprintf(stderr,	"Aqualung -- Music player for GNU/Linux\n");
 	fprintf(stderr, "Build version: %s\n", AQUALUNG_VERSION);
 	fprintf(stderr,
-		"(C) 2004-2006 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
+		"(C) 2004-2007 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
 		"This is free software, and you are welcome to redistribute it\n"
 		"under certain conditions; see the file COPYING for details.\n");
 	
@@ -1919,7 +1919,7 @@ print_usage(void) {
 	fprintf(stderr,	"Aqualung -- Music player for GNU/Linux\n");
 	fprintf(stderr, "Build version: %s\n", AQUALUNG_VERSION);
 	fprintf(stderr,
-		"(C) 2004-2006 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
+		"(C) 2004-2007 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
 		"This is free software, and you are welcome to redistribute it\n"
 		"under certain conditions; see the file COPYING for details.\n");
 	
@@ -1979,8 +1979,8 @@ print_usage(void) {
 		"specify.\n"
 		
 		"\nOptions for changing state of Playlist/Music Store windows:\n"
-		"-l [yes, no], --show-pl=yes, no: Show/hide playlist window.\n"
-		"-m [yes, no], --show-ms=yes, no: Show/hide music store window.\n"
+		"-l [yes|no], --show-pl=[yes|no]: Show/hide playlist window.\n"
+		"-m [yes|no], --show-ms=[yes|no]: Show/hide music store window.\n"
 		
 		"\nExamples:\n"
 		"$ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2\n"

@@ -332,9 +332,10 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 	if (cdda_drive->disc.hash != cdda_drive->disc.hash_prev) {
 		strncpy(cdda_drive->disc.artist_name, _("Unknown Artist"), MAXLEN-1);
 		strncpy(cdda_drive->disc.record_name, _("Unknown Record"), MAXLEN-1);
+
+		cdda_drive->bigendian = -1; /* unmeasured */
 	}
 
-	cdda_drive->bigendian = -1; /* unmeasured */
 	return 0;
 }
 

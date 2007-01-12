@@ -1,4 +1,4 @@
-#LyX 1.4.2 created this file. For more info see http://www.lyx.org/
+#LyX 1.4.3 created this file. For more info see http://www.lyx.org/
 \lyxformat 245
 \begin_document
 \begin_header
@@ -188,7 +188,7 @@ vspace{60mm}
 
 Copyright 
 \backslash
-copyright{} 2006 Peter Szilagyi
+copyright{} 2006-2007 Peter Szilagyi
 \end_layout
 
 \begin_layout Standard
@@ -287,14 +287,23 @@ Aqualung is a music player for the GNU/Linux operating system.
 \end_layout
 
 \begin_layout Standard
+Audio CDs can be played back and ripped with on-the-fly conversion to WAV,
+ FLAC, Ogg Vorbis or CBR/VBR MP3 (gapless via LAME).
+ Seamless tagging of the created files is offered as part of the process.
+\end_layout
+
+\begin_layout Standard
 Almost all sample-based, uncompressed formats (e.g.\InsetSpace ~
 WAV, AIFF, AU etc.) are
  supported.
  Files encoded with FLAC (the Free Lossless Audio Codec), Ogg Vorbis, Ogg
  Speex, MPEG Audio (including the infamous MP3 format), MOD audio formats
  (MOD, S3M, XM, IT, etc.), Musepack and Monkey's Audio Codec are also supported.
+ Numerous formats and codecs are supported via the FFmpeg project, including
+ AC3, AAC, WMA, WavPack and the soundtrack of many video formats.
  The program can play the music through OSS, ALSA or the JACK Audio Connection
- Kit, or even using the Win32 Sound API (available only under Cygwin).
+ Kit, or even using the Win32 Sound API (available only under Cygwin or
+ native Win32).
  Depending on the compile-time options, not all file formats and output
  drivers may be usable.
  Type `aqualung -v' to get a list of all the compiled-in features.
@@ -311,6 +320,7 @@ Other features of the program are internally working volume and balance
  controls (not touching the soundcard mixer), multiple skin support, random
  seeking during playback, track repeat, list repeat and shuffle mode (besides
  normal playback).
+ In track repeat mode the looping range is adjustable.
  Aqualung will come up in the same state as it was when you closed it, including
  playback modes, volume and balance settings, currently processing LADSPA
  plugins, window sizes, positions and visibility, and other miscellaneous
@@ -334,7 +344,7 @@ In addition to all this, Aqualung provides a so-called Music Store that
  You can (and should) organize your music into trees of Artists/Records/Tracks,
  thereby making life easier than with the all-in-one Winamp/XMMS playlist.
  Importing file metadata (ID3v1, ID3v2 tags, Ogg Xiph comments, APE metadata)
- into the Music Store as well as getting track names from a CDDB/Freedb
+ into the Music Store as well as getting track names from a CDDB/FreeDB
  database is supported.
 \end_layout
 
@@ -643,8 +653,8 @@ client\InsetSpace ~
 \end_layout
 
 \begin_layout Standard
-NOTE: In the case when JACK output has been selected as part of the automatic
- output device detection, the -a option is implicitly applied.
+Note that in the case when JACK output has been selected as part of the
+ automatic output device detection, the -a option is implicitly applied.
 \end_layout
 
 \begin_layout Subsubsection
@@ -693,6 +703,12 @@ srctype[=<int>] Choose the SRC type, or print the list of available types
 
 \begin_layout Subsection
 Options for remote cue control
+\end_layout
+
+\begin_layout Standard
+Note that remote controlling of instances is only possible if the instance
+ you want to send a command to is running as the same user as you are when
+ you issue the remote command.
 \end_layout
 
 \begin_layout Description
@@ -839,6 +855,25 @@ quit Terminate remote instance.
 Options for file loading
 \end_layout
 
+\begin_layout Standard
+You may specify filenames on the command line.
+ These may be ordinary soundfiles playable by Aqualung, or playlist files
+ you saved earlier.
+ The program will decide if a file is a playlist, and add its contents according
+ly.
+ In addition to Aqualung's native (XML) playlist format, the program will
+ load M3U and PLS playlists whenever possible.
+\end_layout
+
+\begin_layout Standard
+If you used the --session option (see above), the files will be sent to
+ the Aqualung instance you specified.
+ Otherwise a new instance will start up with the files you specified.
+ Note that if you enabled the `Save and restore the playlist on exit/startup'
+ option in the program setup dialog, the files you specify will be loaded
+ after the automatically loaded ones.
+\end_layout
+
 \begin_layout Description
 -E,\InsetSpace ~
 
@@ -852,8 +887,9 @@ status collapsed
 
 \end_inset
 
-enqueue Don't clear the contents of the playlist when adding new items.
- 
+enqueue Enqueue added files to the playlist instead of loading them (which
+ removes the previous contents of the playlist).
+ Use this if you want to keep the existing items in the playlist.
 \end_layout
 
 \begin_layout Subsection
@@ -861,7 +897,8 @@ Options for changing state of Playlist/Music Store windows
 \end_layout
 
 \begin_layout Description
--l,\InsetSpace ~
+-l\InsetSpace ~
+[yes|no],\InsetSpace ~
 
 \begin_inset ERT
 status collapsed
@@ -877,7 +914,8 @@ show-pl=[yes|no] Show/hide playlist window.
 \end_layout
 
 \begin_layout Description
--m,\InsetSpace ~
+-m\InsetSpace ~
+[yes|no],\InsetSpace ~
 
 \begin_inset ERT
 status collapsed
@@ -1040,13 +1078,12 @@ You can control most of the program from this window.
 OSS, ALSA, JACK) etc.
  The first trick to learn is that these lines are horizontally draggable
  with the mouse if the text does not fit in the available visible space.
- However, they don't scroll automatically (as in XMMS), and for a very good
- reason.
+ However, they don't scroll automatically, and for a very good reason.
 \end_layout
 
 \begin_layout Standard
 In the upper left corner, you find one bigger and two smaller displays that
- show track times: elapsed time and remaining time and total track time.
+ show track times: elapsed time, remaining time and total track time.
  The big display also shows the current volume and balance setting when
  appropriate.
  By clicking in these displays with the left or right mouse button, you
@@ -1403,6 +1440,10 @@ The remaining three buttons are to select the playback mode.
  The buttons are mutually exclusive, and select track repeat, list repeat
  or shuffle mode.
  I'm sure you can figure out which is which.
+ If you select track repeat, a loop bar appears above the seek bar, with
+ two markers.
+ The markers can be dragged to select the looping range.
+ When they are at the left and right end positions, the whole song is repeated.
 \end_layout
 
 \begin_layout Standard
@@ -1412,6 +1453,8 @@ Volume and balance slider tricks:
 \begin_layout Itemize
 Shift + any mouse button sets the volume and balance sliders back to 0 dB
  and Center position, respectively.
+ This combination also works for the loop bar, in which case the looping
+ range is set to the whole song.
 \end_layout
 
 \begin_layout Itemize
@@ -1431,9 +1474,9 @@ An additional thing to know about the volume control is that it ranges up
  than simple analog overdrive.
  If you have a track with a reasonably low level, you can go above 0 dB
  with the volume control.
- But today most CD's are mastered to keep the average volume level very
- close to the 0 dB (or 100%) top, and so they will likely distort with as
- little as +1 dB additional gain.
+ But today most CDs are mastered to keep the average volume level very close
+ to the 0 dB (or 100%) top, and so they will likely distort with as little
+ as +1 dB additional gain.
  The moral is: if you want it loud, turn up your external amp.
  You can also consider using RVA if the volume level of your tracks tends
  to vary in a wide range -- see section 
@@ -1449,10 +1492,10 @@ On a related note, another thing to watch out for is LADSPA plugins (in
  case you use them).
  It is very common that the signal level leaving a plugin is greater than
  the signal level the plugin gets on its input.
- So it is best to leave a few dB's of headroom if you do that.
- A very typical case is boosting some frequency bands a few dB's with an
- EQ plugin.
- You should decrease the overall volume level with as much dB's as the largest
+ So it is best to leave a few dB of headroom if you do that.
+ A very typical case is boosting some frequency bands a few dB with an EQ
+ plugin.
+ You should decrease the overall volume level with as much dB as the largest
  boost (or even more), or you are risking that the signal will get chopped
  causing bad distortion.
  Alternatively, apply 
@@ -2116,7 +2159,7 @@ show Settings
 \begin_inset Text
 
 \begin_layout Standard
-toggle repeat
+toggle track repeat
 \end_layout
 
 \end_inset
@@ -2234,7 +2277,7 @@ The Music Store is a simple database of all your music.
  for all the music (for example, /music would be a convenient place to store
  files that are owned by root, but readable by all users).
  Moreover, you can maintain several collections on different machines this
- way, and share them with other users via nfs, while keeping a (probably
+ way, and share them with other users via NFS, while keeping a (probably
  smaller) collection on your local hard drive.
 \end_layout
 
@@ -2301,7 +2344,7 @@ You don't have to add all the tracks to all records one by one, if you already
 
 \begin_layout Standard
 Now all you have to do is set the correct visible names for the tracks,
- which is quite easy due to the CDDB/Freedb support.
+ which is quite easy due to the CDDB/FreeDB support.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2314,64 +2357,123 @@ You might think that the way stores are built up and filled with data is
  music collection, and cannot bring yourself to add each record one by one.
  Luckily Aqualung comes with a Music Store builder facility, which allows
  you to easily create a store from your audio files.
- However, it requires the collection to be organized in a music/artist/record/tr
-ackXX.* filesystem structure, which is one more argument for doing it this
- way.
+\end_layout
+
+\begin_layout Standard
+The Builder supports two approaches for automatically adding audio files
+ to the Music Store.
+ The directory driven mode requires the collection to be organized in a
+ strict filesystem structure, where the directory structure itself specifies
+ which files belong to a record, and which records belong to an artist.
+ The structure should conform to one of the following patterns:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Standard
+
+
+\backslash
+item[a)] root / record / track
+\end_layout
+
+\begin_layout Standard
+
+
+\backslash
+item[b)] root / artist / record / track
+\end_layout
+
+\begin_layout Standard
+
+
+\backslash
+item[c)] root / artist / artist / record / track
+\end_layout
+
+\begin_layout Standard
+
+
+\backslash
+item[d)] root / artist / artist / artist / record / track
+\end_layout
+
+\begin_layout Standard
+
+
+\backslash
+end{itemize}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Pattern a) is useful when you do not have separate subdirectories for artist,
+ only for records.
+ The b) means that each artist and record has its own subdirectory.
+ It corresponds to the structure introduced above along with the Music Store.
+ The patterns c) and d) are for those who have too many artists to keep
+ them at the same level; you may thus have a subdirectory for every artist
+ starting with letter a, b, etc., or you can even dedicate two levels to
+ them, perhaps as b/be/beatles, c/cr/crimson, etc.
+\end_layout
+
+\begin_layout Standard
+The independent mode does not follow any directory structure, only searches
+ for audio files recursively starting from root.
+ This doesn't allow the builder to perform CDDB lookups, so only metadata
+ and filename transformations are available with this mode.
+ If your audio files are basically organized in a directory structure that
+ allows a directory driven build to be performed, but you also happen to
+ have audio files on higher (record or artist) levels, run the builder in
+ directory driven mode first, then use the independent mode on the same
+ root directory to add the outstanding files too.
 \end_layout
 
 \begin_layout Standard
 The builder can gain information about your music from three sources: metadata
- (if your audio files are correctly tagged), CDDB query (if you compiled
- Aqualung with CDDB support) and the filesystem names of the audio files
- themselves.
+ (if your audio files are correctly tagged), CDDB lookups, and the filesystem
+ names of the audio files and directories themselves.
 \end_layout
 
 \begin_layout Standard
 If you are up to building a new store, first create an empty store (right-click
  in Music Store, then choose the `Create empty store' item), then right-click
- on the new store and choose `Build store from filesystem'.
- You will be shown the builder dialog with several options broken down into
- four notebook pages.
+ on the new store and choose `Build / Update store from filesystem'.
+ After selecting the desired building mode, the builder dialog appears with
+ several options broken down into five notebook pages.
  Later, if you only want to update the content of a store, you can start
  a build process on a non-empty store as well.
 \end_layout
 
 \begin_layout Standard
 On the `General' page you have to select the root directory of your music
- collection, the one which contains a directory for each artist.
- The priority of the metadata and CDDB lookup can be set there too (filename
- transformation is always the last step, if the other two have both failed).
- The priority applies independently to the artist name, record name and
- track titles, so each string will be set from the highest priority source
- that provides the necessary data.
- Thus it is possible that the artist and e.g.\InsetSpace ~
-tracks 1-5 are filled with metadata,
- while the record name and the rest of the track titles are set after a
- CDDB lookup.
- In case of multiple matches (e.g.\InsetSpace ~
-through CDDB query, or more than one track
- has metadata for the artist or record name) the string candidate that occurred
- most cases is chosen in order to avoid typos and other garbage whenever
- possible.
+ collection.
+ With the directory driven mode, the appropriate structure should also be
+ selected.
 \end_layout
 
 \begin_layout Standard
-The sort key for artists and records can be chosen between the real name
- and the directory name of the corresponding artist or record, both can
- be forced lowercase.
- For records there is another choice, the year of the album, which can be
- retrieved from metadata or through CDDB query (the priority of the sources
- applies here too).
- The year can also be automatically added to the comment field of new records
- found by the build process.
-\end_layout
-
-\begin_layout Standard
-You can exclude files from the build process that match a wildcard pattern.
- The pattern is a comma-separated list of wildcards, e.g.\InsetSpace ~
-`*.jpg,*.png,*.gif'
- will cause all files having jpg, png, or gif extension to be left out.
+You can exclude files from the build process that match a wildcard pattern
+ (or more precisely, at least one element in a list of wildcard patterns).
+ The list is comma-separated, e.g.\InsetSpace ~
+`*.jpg,*.png,*.gif' will cause all files having
+ jpg, png, or gif extension to be left out.
  Note that hidden files (whose name starts with a period) are always excluded.
+ Also note that no spaces should be used around the commas, because they
+ would be counted in the wildcard patterns, causing a lot of headache.
 \end_layout
 
 \begin_layout Standard
@@ -2385,61 +2487,132 @@ encoded with
 \end_layout
 
 \begin_layout Standard
-Capitalization of the strings can be controlled too.
- You may choose from capitalizing all words, or only the first one.
- If you allow one of them, you can supply a case-sensitive comma-separated
- list of words, whose case will be preserved.
- It is useful to make roman numerals and other acronyms appear uppercase
- (or in the case you like them).
+If you choose to reset existing data, only track name, length, manual rva
+ and empty comment fields will be overwritten, and the latter two are only
+ if you have enabled them.
 \end_layout
 
 \begin_layout Standard
-If you rebuild a store, existing data is not touched in any way.
- The only change to be made to the store is that new audio files in a record's
- directory will be added to the record.
- However, you have the option to re-read data for existing tracks too.
- It will only reset the track title, duration and RVA from the appropriate
- Replaygain tag (if such tag exists and you enabled RVA import on the `Metadata'
- page, see below).
- Note that any other data such as comment or manual RVA value will strictly
- be kept intact.
+The builder dialog has separate notebook pages for artists, records and
+ tracks.
+ The settings made on a page only concern the appropriate category (either
+ artist, record or track).
+ The operations and transformations are performed in the same order as they
+ are placed on the page, from top to bottom.
+\end_layout
+
+\begin_layout Paragraph*
+Data sources
 \end_layout
 
 \begin_layout Standard
-The `Metadata' page lets you choose whether to use metadata at all, and
- if yes, where.
- You have the option to exclude metadata containing only whitespace, which
- is a kind of protection.
+With each mode you can set the priority of data sources for artist names,
+ record titles and tracks independently (highest comes first).
+ Simply drag & drop the lines of the list to achieve the desired order.
+ For example, if you have proper tags in you audio files for track names
+ only, but none for artists and records, you may use metadata for tracks
+ at first place, and use CDDB for artists and records instead.
+ The data sources can also be disabled by clicking on the check boxes.
 \end_layout
 
 \begin_layout Standard
-The `CDDB' page has similar settings for the CDDB lookup as the `Metadata'
- page had for metadata -- you can decide whether to perform CDDB lookup
- and for what kind of strings.
+The builder looks for usable data in the given priority, and will use the
+ first suitable one.
 \end_layout
 
 \begin_layout Standard
-At last, the `Filesystem' page is for generating the track names from the
- filenames.
- You can decide whether to use the predefined transformations, or an extended
- regular expression based substitution method.
- The former choice should be quite obvious and intended to provide acceptable
- result in most cases.
- The regexp is for those who are familiar with the regexp syntax and have
- to perform some unusual transformations.
- It has the effect of a `sed s/regexp/replacement/g' call on each filename.
- The regexp must not match the empty string, but the replacement is allowed
- to be empty in which case the matched parts are deleted.
- The replacement may contain the special escapes 
+A short note on the Filesystem source.
+ When using the directory driven mode with structure a), the artists and
+ records will have the same filesystem name, which is the name of the record
+ directory.
+ Using pattern b), c) or d) will result in all artists, records and tracks
+ having the name of their respective directory (or file, for tracks) as
+ the filesystem name.
+ With c) and d), the name of the rightmost artist directory is used.
+ When using the independent mode, artists, records and tracks will have
+ the same filesystem name, which is the filename of the audio file being
+ imported.
+\end_layout
+
+\begin_layout Standard
+Regardless of the data source that won the contest for being the source
+ of your artist, record or track name, you can perform several transformations
+ on this string before accepting it as final.
+\end_layout
+
+\begin_layout Paragraph*
+Regular expressions
+\end_layout
+
+\begin_layout Standard
+The main goal of the regexp module is to perform sed-like substitutions,
+ allowing you to extract the artist, record or track name from the string.
+ It has the effect of a `sed\InsetSpace ~
+s/regexp/replacement/g' command.
+ The regexp must not match the empty string (the only exception is leaving
+ the regexp entry empty, which disables the whole regexp module).
+ The replacement is allowed to be empty in which case the matched parts
+ are deleted.
+ The replacement may also contain the special escapes 
 \backslash
 1 through 
 \backslash
 9 to refer to the corresponding matching sub-expressions in the regexp.
  See sed(1) and grep(1) for more information on sed substitution and regexp
  syntax.
- There is a sandbox where you can enter a filename and see how it would
- be transformed, providing a safe environment for experiments.
- It works both for predefined and regexp transforms.
+ There is a sandbox where you can enter a string and see how it would be
+ transformed, providing a safe environment for experiments.
+\end_layout
+
+\begin_layout Paragraph*
+Predefined transformations
+\end_layout
+
+\begin_layout Standard
+They provide some basic fixes, such as removing the extension or leading
+ numbers, converting underscores to spaces, and trimming leading, tailing
+ or multiple spaces.
+ You can use them together with the regexp module as well, in which case
+ only the replacement will be transformed, as expected.
+\end_layout
+
+\begin_layout Paragraph*
+Capitalization
+\end_layout
+
+\begin_layout Standard
+Finally, with this module you can force a capitalization pattern on the
+ string.
+ The force case entry is a comma-separated list of words or expressions
+ that will be left in the form you entered them.
+ An obvious example is the case of roman numbers.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+hspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After the standard modules present for artist, record and track names, there
+ are some category dependent settings.
+ For artists and records you can set the source of the sort name field,
+ for tracks you can decide whether to import the Replaygain and Comment
+ tags, if available.
+ If you choose to reset existing data (on the General tab), only track name,
+ length, manual rva and empty comment fields are overwritten, and the latter
+ two are only if you enabled them.
 \end_layout
 
 \begin_layout Standard
@@ -2448,16 +2621,6 @@ Once you are satisfied with the settings click `OK'.
  up.
  You can abort the process if you encounter some error or weirdness, or
  just want to refine some settings.
-\end_layout
-
-\begin_layout Standard
-The building process can be narrowed to only one artist, which can strongly
- speed up the operation.
- It may come in handy if you made changes to only one artist (or just a
- few ones).
- The feature is accessible from the right-click menu of the artists.
- Note that you will have to specify the directory of the artist instead
- of the root directory of the entire music collection.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2534,6 +2697,57 @@ On the Settings/Music Store page you can specify several database files
 The order in which the stores appear in the Music Store is the order of
  the corresponding database files in the list.
  The list can be reordered via drag & drop.
+\end_layout
+
+\begin_layout Subsubsection
+Audio CD
+\end_layout
+
+\begin_layout Standard
+If Aqualung was compiled with Audio CD support, a store called `CD Audio'
+ appears as the first store in Music Store.
+ This special store contains a node for each drive in your machine.
+ When you insert a CD in a drive, the corresponding node will contain the
+ audio tracks on that disc.
+ The artist, record and track names are automatically set from a CDDB lookup.
+\end_layout
+
+\begin_layout Standard
+The drive nodes have options available from the popup menu for adding content
+ to the Playlist, manual CDDB lookup and submission just like normal album
+ nodes do.
+ They have some further CD specific options as well.
+\end_layout
+
+\begin_layout Standard
+The most important feature is ripping the CD.
+ Choosing `Rip CD\SpecialChar \ldots{}
+' from the popup menu will bring up a dialog with several
+ options broken into notebook pages.
+ The `Source' page is for selecting the tracks to be ripped, and specifying
+ the artist, record and track names.
+ If the CDDB lookup was successful, these fields are initialized appropriately.
+ On the `Output' page you can select the directory where to put the audio
+ files, and optionally the store to which you would like to add the ripped
+ CD.
+ Only stores with write permission are offered.
+ The desired file format can also be selected, along with settings concerning
+ quality, such as compression level or bitrate.
+ There is also an option to set whether the files should be tagged with
+ metadata.
+ CD Ripping always happens with maximum available speed and with error correctio
+n modes manually set before every run on the last page titled `Paranoia'.
+\end_layout
+
+\begin_layout Standard
+It is possible to display information about the inserted disc, or the drive
+ itself (general info, reading or writing capabilities, etc.).
+ The tray can also be ejected, if the driver supports this operation.
+\end_layout
+
+\begin_layout Standard
+CD Ripping always happens with maximum available speed and with error correction
+ modes manually set before every run.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3392,8 +3606,8 @@ hide window (same as Alt+S in main window)
 
 \begin_layout Standard
 In addition to the popup menu items and keyboard shortcuts, you can also
- add an item to the playlist by dragging and dropping from the Music Store
- window into the Playlist.
+ add an item to the playlist by drag & dropping from the Music Store window
+ into the Playlist.
  This method has a further advantage: you can place the newly added items
  in any position, not just append to the end of the list.
 \end_layout
@@ -3447,13 +3661,13 @@ The playlist can not only maintain a linear list of songs, but also capable
  using the so-called Album mode, available from the popup menu in Music
  Store.
  If you tend to use it extensively, there is an option on the Settings/Playlist
- page to make it default, so drag and drop and keyboard adding will use
- this mode automatically.
+ page to make it default, so drag & drop and adding via keyboard shortcut
+ will use this mode automatically.
 \end_layout
 
 \begin_layout Standard
-You can rearrange the list at any time by dragging and dropping items with
- the mouse.
+You can rearrange the list at any time by drag & dropping items with the
+ mouse.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3463,7 +3677,7 @@ Shortcuts for this window
 \begin_layout Standard
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="13" columns="2">
+<lyxtabular version="3" rows="14" columns="2">
 <features>
 <column alignment="center" valignment="top" leftline="true" width="0">
 <column alignment="block" valignment="top" leftline="true" rightline="true" width="10cm">
@@ -3558,6 +3772,26 @@ SHIFT+delete
 
 \begin_layout Standard
 remove all tracks
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+CTRL+delete
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+remove selected tracks from filesystem
 \end_layout
 
 \end_inset
@@ -3901,7 +4135,7 @@ The option to save/restore the playlist when exiting and starting the program
  If you prefer starting with an empty playlist every time, turn it off.
  Here you can also set the visibility of the track lengths and RVA values
  in the playlist.
- By dragging and dropping entries in the list, you can rearrange the columns.
+ By drag & dropping entries in the list, you can rearrange the columns.
  The position of those that are not shown is of course irrelevant.
  Other options should be obvious, such as embedding the Playlist in the
  Main window, hiding the statusbar, and showing active track name in bold.
@@ -4008,13 +4242,32 @@ On this page you can decide whether you prefer using file metadata (if available
 \end_layout
 
 \begin_layout Subsubsection
+CD Audio
+\end_layout
+
+\begin_layout Standard
+You can set the drive speed for CD playing in CD-ROM speed units.
+ Lower speed usually means less drive noise.
+ However, when using Paranoia error correction modes for increased accuracy,
+ generally much larger speeds are required to prevent buffer underruns (and
+ thus audible drop-outs).
+\end_layout
+
+\begin_layout Standard
+Most drives let Aqualung know when a CD has been inserted or removed.
+ However, some drives don't report correctly, and thus it may happen that
+ a newly inserted CD remains unnoticed to Aqualung.
+ In such cases, forcing TOC re-read on every drive scan should help.
+\end_layout
+
+\begin_layout Subsubsection
 CDDB
 \end_layout
 
 \begin_layout Standard
 You can customize the CDDB lookup here.
- As for the protocol for querying, standard CDDBP (port 888) and CDDB over
- HTTP (port 80) are supported.
+ As for the query protocol, standard CDDBP (port 888) and CDDB over HTTP
+ (port 80) are supported.
  The standard CDDBP port is the recommended choice unless some unavoidable
  firewall settings prevent you from using it.
  For submission always HTTP is used.

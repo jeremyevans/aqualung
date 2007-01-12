@@ -1,4 +1,4 @@
-.TH AQUALUNG 1 "27 September 2006"
+.TH AQUALUNG 1 "12 January 2007"
 
 
 .SH NAME
@@ -21,13 +21,20 @@ inserting \fBno gaps\fR between adjacent tracks. It also supports high
 quality sample rate conversion between the file and the output device,
 when necessary.
 
+Audio CDs can be played back and ripped with on-the-fly conversion to
+WAV, FLAC, Ogg Vorbis or CBR/VBR MP3 (gapless via LAME). Seamless
+tagging of the created files is offered as part of the process.
+
 Almost all sample-based, uncompressed formats (e.g. WAV, AIFF, AU
-etc.)  are supported. Files encoded with FLAC (the Free Lossless Audio
+etc.) are supported. Files encoded with FLAC (the Free Lossless Audio
 Codec), Ogg Vorbis, Ogg Speex, MPEG Audio (including the infamous MP3
-format) and MOD audio formats (MOD, S3M, XM, IT, etc.), Musepack and
-Monkey's Audio Codec are also supported. The program can play the
-music through OSS, ALSA or using the JACK Audio Connection Kit, or
-even the Win32 Sound API (available only under Cygwin).
+format), MOD audio formats (MOD, S3M, XM, IT, etc.), Musepack and
+Monkey's Audio Codec are also supported. Numerous formats and codecs
+are supported via the FFmpeg project, including AC3, AAC, WMA, WavPack
+and the soundtrack of many video formats. The program can play the
+music through OSS, ALSA or the JACK Audio Connection Kit, or even
+using the Win32 Sound API (available only under Cygwin or native
+Win32).
 
 Aqualung supports the LADSPA 1.1 plugin standard. You can use any
 suitable plugin to enhance the music you are listening to.
@@ -35,12 +42,13 @@ suitable plugin to enhance the music you are listening to.
 Other features of the program are internally working volume and
 balance controls (not touching the soundcard mixer), multiple skin
 support, random seeking during playback, track repeat, list repeat and
-shuffle mode (besides normal playback). Aqualung will come up in the
-same state as it was when you closed it, including playback modes,
-volume and balance settings, currently processing LADSPA plugins,
-window sizes, positions and visibility, and other miscellaneous
-options. Aqualung has the ability to display and edit Ogg Xiph
-comments, ID3v1, ID3v2 and APE tags found in files that support them.
+shuffle mode (besides normal playback). In track repeat mode the
+looping range is adjustable. Aqualung will come up in the same state
+as it was when you closed it, including playback modes, volume and
+balance settings, currently processing LADSPA plugins, window sizes,
+positions and visibility, and other miscellaneous options. Aqualung
+has the ability to display and edit Ogg Xiph comments, ID3v1, ID3v2
+and APE tags found in files that support them.
 
 You can control any running instance of the program remotely from the
 command line (start, stop, pause etc.). Remote loading or enqueueing
@@ -54,7 +62,7 @@ the names of artists, and the titles of records and tracks). You can
 thereby making life easier than with the all-in-one Winamp/XMMS
 playlist. Importing file metadata (ID3v1, ID3v2 tags, Ogg Xiph
 comments, APE metadata) into the Music Store as well as getting track
-names from a CDDB/Freedb database is supported.
+names from a CDDB/FreeDB database is supported.
 
 Please refer to the documentation provided with the program for a
 detailed description of features, usage tips and troubleshooting
@@ -93,15 +101,6 @@ Try to use realtime (SCHED_FIFO) scheduling for disk thread.
 \-Y, \-\-disk-priority <int>
 .br
 When running \-D, set scheduler priority to <int> (defaults to 1).
-.br
-.TP
-\-l, \-\-show-pl [yes|no]
-.br
-Change visibility of Playlist.
-.TP
-\-m, \-\-show-ms [yes|no]
-.br
-Change visibility of Music Store.
 
 .TP
 .B Options relevant to ALSA output:
@@ -154,8 +153,8 @@ hardware playback ports).
 Set client name (needed if you want to run multiple instances of the program).
 
 .P
-NOTE: In the case when JACK output has been selected as part of the
-automatic output device detection, the -a option is implicitly
+Note that in the case when JACK output has been selected as part of
+the automatic output device detection, the -a option is implicitly
 applied.
 
 .TP
@@ -255,6 +254,17 @@ Enqueue added files to the playlist instead of loading them (which
 removes the previous contents of the playlist). Use this if you want
 to keep the existing items in the playlist.
 
+
+.TP
+.B Options for changing state of Playlist/Music Store windows
+.TP
+\-l [yes|no], \-\-show-pl=[yes|no]
+.br
+Show/hide playlist window.
+.TP
+\-m [yes|no], \-\-show-ms=[yes|no]
+.br
+Show/hide music store window.
 
 .TP
 .B Examples:

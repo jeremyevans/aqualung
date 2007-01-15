@@ -40,6 +40,12 @@
 # define REGFORMAT "%x"
 #endif
 
+#if defined(__ppc__) || defined(__powerpc__)
+#define UC_MCONTEXT_GREGS uc_mcontext.uc_regs->gregs
+#else
+#define UC_MCONTEXT_GREGS uc_mcontext.gregs
+#endif
+
 
 static void
 signal_segv(int signum, siginfo_t * info, void * ptr) {
@@ -73,7 +79,7 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 
 	for (i = 0; i < NGREG; i++) {
 		fprintf(stderr, "  R[%02d] = 0x" REGFORMAT,
-			i, ucontext->uc_mcontext.gregs[i]);
+			i, ucontext->UC_MCONTEXT_GREGS[i]);
 		if ((i % 4) == 3) {
 			fprintf(stderr, "\n");
 		}

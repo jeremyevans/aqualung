@@ -184,7 +184,7 @@ init_query_data() {
 		g_free(pfile);
 
 		if (duration == 0.0f) {
-			if ((duration = get_file_duration(file)) == 0.0f) {
+			if ((duration = get_file_duration(file)) <= 0.0f) {
 				return 1;
 			}
 			gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);

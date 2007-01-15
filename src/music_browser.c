@@ -3193,12 +3193,13 @@ record__add_cb(gpointer data) {
 						float volume = 1.0f;
 						float use_rva = -1.0f;
 						char * utf8 = g_locale_to_utf8(str, -1, NULL, NULL, NULL);
+						float duration = get_file_duration(strings[i]);
 
 						gtk_tree_store_append(music_store, &child_iter, &iter);
 						gtk_tree_store_set(music_store, &child_iter,
 								   0, utf8, 1, str_n,
 								   2, strings[i], 3, "",
-								   4, get_file_duration(strings[i]),
+								   4, duration > 0.0f ? duration : 0.0f,
 								   5, volume, 7, use_rva, 
 								   9, icon_track, -1);
                                                 if (options.enable_ms_tree_icons) {
@@ -3416,11 +3417,13 @@ track__add_cb(gpointer data) {
 		gtk_tree_model_get_iter(model, &parent_iter, parent_path);
 		
 		if (add_track_dialog(name, sort_name, file, comment)) {
+
+			float duration = get_file_duration(file);
 			
 			gtk_tree_store_append(music_store, &iter, &parent_iter);
 			gtk_tree_store_set(music_store, &iter, 0, name, 1, sort_name, 2, file,
-					   3, comment, 4, get_file_duration(file), 5, volume, 
-					   7, use_rva, -1);
+					   3, comment, 4, duration > 0.0f ? duration : 0.0f,
+					   5, volume, 7, use_rva, -1);
 	                if (options.enable_ms_tree_icons) {
                                 gtk_tree_store_set(music_store, &iter, 9, icon_track, -1);
                         }
@@ -3471,7 +3474,7 @@ track__edit_cb(gpointer data) {
 
 		if (duration == 0.0f) {
 			duration = get_file_duration(file);
-			gtk_tree_store_set(music_store, &iter, 4, duration, -1);
+			gtk_tree_store_set(music_store, &iter, 4, duration > 0.0f ? duration : 0.0f, -1);
 		}
 
                 if (edit_track_dialog(name, sort_name, file, comment, duration, volume, &rva, &use_rva)) {

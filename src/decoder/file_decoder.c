@@ -291,13 +291,13 @@ get_file_duration(char * file) {
 
 	if ((fdec = file_decoder_new()) == NULL) {
                 fprintf(stderr, "get_file_duration: error: file_decoder_new() returned NULL\n");
-                return 0.0f;
+                return -1.0f;
         }
 
         if (file_decoder_open(fdec, file)) {
                 fprintf(stderr, "file_decoder_open() failed on %s\n", file);
 		file_decoder_delete(fdec);
-                return 0.0f;
+                return -1.0f;
         }
 
 	duration = (float)fdec->fileinfo.total_samples / fdec->fileinfo.sample_rate;

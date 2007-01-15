@@ -180,7 +180,7 @@ cdda_reader_thread(void * arg) {
 			++pd->overread_sectors;
 		++pd->pos_lsn;
 
-		if (cdda_drive->bigendian) {
+		if (cdda_drive->swap_bytes) {
 			for (i = 0; i < CDIO_CD_FRAMESIZE_RAW / 2; i++) {
 				readbuf[i] = UINT16_SWAP_LE_BE_C(readbuf[i]);
 			}
@@ -327,10 +327,13 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 	pd->overread_sectors = 0;
 	pd->is_eos = 0;
 
-	if (drive->bigendian == -1) {
-		drive->bigendian = data_bigendianp(pd->drive);
+	if (drive->swap_bytes == -1) {
+		int bigendian = data_bigendianp(pd->drive);
+		if (bigendian != -1) {
+			drive->swap_bytes = bigendian ? !bigendianp() : bigendianp();
+		}
 	}
-	if (drive->bigendian == -1) {
+	if (drive->swap_bytes == -1) {
 		printf("cdda_decoder_open: unable to determine endianness of drive.\n");
 		drive->is_used = 0;
 		cdio_cddap_close_no_free_cdio(pd->drive);

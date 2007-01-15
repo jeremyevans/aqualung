@@ -116,6 +116,7 @@ void file_decoder_seek(file_decoder_t * fdec, unsigned long long seek_to_pos);
 
 float get_file_duration(char * file);
 
+int bigendianp(void);
 
 #define db2lin(x) ((x) > -90.0f ? powf(10.0f, (x) * 0.05f) : 0.0f)
 

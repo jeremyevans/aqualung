@@ -46,7 +46,7 @@ decode_vorbis(decoder_t * dec) {
 	int current_section;
 
 
-        bytes_read = ov_read(&(pd->vf), buffer, VORBIS_BUFSIZE, 0, 2, 1, &current_section);
+        bytes_read = ov_read(&(pd->vf), buffer, VORBIS_BUFSIZE, bigendianp(), 2, 1, &current_section);
 
 	switch (bytes_read) {
 	case 0:

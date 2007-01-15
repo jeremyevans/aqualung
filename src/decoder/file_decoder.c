@@ -308,5 +308,16 @@ get_file_duration(char * file) {
 	return duration;
 }
 
+/* taken from cdparanoia source */
+int
+bigendianp(void) {
+
+	int test=1;
+	char *hack=(char *)(&test);
+	if(hack[0])return(0);
+	return(1);
+}
+
+
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

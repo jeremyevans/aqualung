@@ -3317,5 +3317,11 @@ build_store(GtkTreeIter iter) {
 }
 
 
+int
+build_thread_test(int state) {
+
+	return build_thread_state == state;
+}
+
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

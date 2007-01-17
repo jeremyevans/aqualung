@@ -22,6 +22,7 @@
 #ifndef _PLAYLIST_H
 #define _PLAYLIST_H
 
+#include <config.h>
 
 void voladj2str(float voladj, char * str);
 GtkTreePath * get_playing_path(GtkTreeStore * store);
@@ -41,6 +42,11 @@ void playlist_content_changed(void);
 void playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer data);
 gint playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent);
 void playlist_foreach_selected(void (* foreach)(GtkTreeIter *, void *), void * data);
+
+#ifdef HAVE_CDDA
+void playlist_add_cdda(GtkTreeIter * iter_drive, unsigned long hash);
+void playlist_remove_cdda(char * device_path);
+#endif /* HAVE_CDDA */
 
 enum {
     COLUMN_TRACK_NAME = 0,          

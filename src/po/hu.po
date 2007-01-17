@@ -1738,6 +1738,12 @@ msgstr "CD meghajtó sebesség:"
 msgid "Force TOC re-read on every drive scan"
 msgstr "TOC újraolvasás kényszerítése minden meghajtó scannelésnél"
 
+msgid "Automatically add CDs to Playlist"
+msgstr ""
+
+msgid "Automatically remove CDs from Playlist"
+msgstr ""
+
 msgid "CDDB server:"
 msgstr "CDDB szerver:"
 

@@ -51,6 +51,7 @@
 #include "common.h"
 #include "options.h"
 #include "music_browser.h"
+#include "playlist.h"
 #include "gui_main.h"
 #include "rb.h"
 #include "i18n.h"
@@ -70,7 +71,6 @@ extern GtkWidget * browser_window;
 
 #ifdef HAVE_CDDB
 extern void cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter_drive);
-extern volatile int cddb_thread_state;
 #endif /* HAVE_CDDB */
 
 typedef struct {
@@ -230,12 +230,12 @@ cdda_skip_extra_symlink(char ** drives, int i) {
 }
 
 
-long
+unsigned long
 calc_cdda_hash(cdda_disc_t * disc) {
 
-	long result = 0;
-	long tmp;
-	long discid;
+	unsigned long result = 0;
+	unsigned long tmp;
+	unsigned long discid;
 	int i;
 
 	if (disc->n_tracks == 0) {
@@ -258,6 +258,22 @@ calc_cdda_hash(cdda_disc_t * disc) {
 
 	return discid;
 }
+
+
+int
+cdda_hash_matches(char * filename, unsigned long hash) {
+
+	char device_path[CDDA_MAXLEN];
+	unsigned long fhash;
+	unsigned int track;
+
+	if (sscanf(filename, "CDDA %s %lX %u", device_path, &fhash, &track) < 3) {
+		return 0;
+	}
+
+	return fhash == hash;
+}
+
 
 /* return 0 if OK, -1 if drive is apparently not available */
 int
@@ -333,7 +349,7 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 		strncpy(cdda_drive->disc.artist_name, _("Unknown Artist"), MAXLEN-1);
 		strncpy(cdda_drive->disc.record_name, _("Unknown Record"), MAXLEN-1);
 
-		cdda_drive->swap_bytes = -1; /* unnkown */
+		cdda_drive->swap_bytes = -1; /* unknown */
 	}
 
 	return 0;
@@ -591,6 +607,10 @@ update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 
 #ifdef HAVE_CDDB
 	cddb_get_cdda(&drive->disc, iter_drive);
+#else
+	if (options.cdda_add_to_playlist) {
+		playlist_add_cdda(&iter_drive, drive->disc.hash);
+	}
 #endif /* HAVE_CDDB */
 }
 
@@ -735,8 +755,15 @@ refresh_cdda_drive_node(char * device_path) {
 
 	gtk_tree_store_set(music_store, &iter_drive, 0, str_title, -1);
 
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_tmp, &iter_drive, 0)) {
-		gtk_tree_store_remove(music_store, &iter_tmp);
+	if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter_drive) > 0) {
+
+		if (options.cdda_remove_from_playlist) {
+			playlist_remove_cdda(device_path);
+		}
+
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_tmp, &iter_drive, 0)) {
+			gtk_tree_store_remove(music_store, &iter_tmp);
+		}
 	}
 
 	if (options.enable_ms_tree_icons) {

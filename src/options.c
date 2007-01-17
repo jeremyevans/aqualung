@@ -212,6 +212,8 @@ GtkWidget * check_cdda_mode_overlap;
 GtkWidget * check_cdda_mode_verify;
 GtkWidget * check_cdda_mode_neverskip;
 GtkWidget * check_cdda_force_drive_rescan;
+GtkWidget * check_cdda_add_to_playlist;
+GtkWidget * check_cdda_remove_from_playlist;
 GtkWidget * label_cdda_maxretries;
 GtkWidget * cdda_paranoia_maxretries_spinner;
 #endif /* HAVE_CDDA */
@@ -424,6 +426,8 @@ options_window_accept(void) {
 		(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_cdda_mode_neverskip)) ? PARANOIA_MODE_NEVERSKIP : 0);
 	set_option_from_spin(cdda_paranoia_maxretries_spinner, &options.cdda_paranoia_maxretries);
 	set_option_from_toggle(check_cdda_force_drive_rescan, &options.cdda_force_drive_rescan);
+	set_option_from_toggle(check_cdda_add_to_playlist, &options.cdda_add_to_playlist);
+	set_option_from_toggle(check_cdda_remove_from_playlist, &options.cdda_remove_from_playlist);
 #endif /* HAVE_CDDA */
 
 
@@ -2521,7 +2525,7 @@ See the About box and the documentation for details."));
 
 	/* CDDA notebook page */
 #ifdef HAVE_CDDA
-	table_cdda = gtk_table_new(3, 3, FALSE);
+	table_cdda = gtk_table_new(5, 3, FALSE);
         gtk_container_set_border_width(GTK_CONTAINER(table_cdda), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table_cdda, create_notebook_tab(_("CD Audio"), "cdda.png"));
 
@@ -2585,6 +2589,18 @@ See the About box and the documentation for details."));
 	g_signal_connect(help_btn_cdda_force_drive_rescan, "clicked", G_CALLBACK(display_cdda_force_drive_rescan_help), NULL);
         gtk_table_attach(GTK_TABLE(table_cdda), help_btn_cdda_force_drive_rescan, 2, 3, 2, 3, GTK_FILL, GTK_FILL, 5, 3);
 
+	check_cdda_add_to_playlist =
+		gtk_check_button_new_with_label(_("Automatically add CDs to Playlist"));
+        gtk_widget_set_name(check_cdda_add_to_playlist, "check_on_notebook");
+        gtk_table_attach(GTK_TABLE(table_cdda), check_cdda_add_to_playlist, 0, 3, 3, 4,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
+
+	check_cdda_remove_from_playlist =
+		gtk_check_button_new_with_label(_("Automatically remove CDs from Playlist"));
+        gtk_widget_set_name(check_cdda_remove_from_playlist, "check_on_notebook");
+        gtk_table_attach(GTK_TABLE(table_cdda), check_cdda_remove_from_playlist, 0, 3, 4, 5,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
+
 	if (options.cdda_force_drive_rescan) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_cdda_force_drive_rescan), TRUE);
 	}
@@ -2601,6 +2617,14 @@ See the About box and the documentation for details."));
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_cdda_mode_neverskip), TRUE);
 		gtk_widget_set_sensitive(cdda_paranoia_maxretries_spinner, FALSE);
 		gtk_widget_set_sensitive(label_cdda_maxretries, FALSE);
+	}
+
+	if (options.cdda_add_to_playlist) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_cdda_add_to_playlist), TRUE);
+	}
+
+	if (options.cdda_remove_from_playlist) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_cdda_remove_from_playlist), TRUE);
 	}
 
 #endif /* HAVE_CDDA */

@@ -106,6 +106,7 @@ extern int aqualung_session_id;
 
 extern GtkListStore * ms_pathlist_store;
 extern GtkTreeStore * play_store;
+extern GtkTreeStore * music_store;
 extern GtkListStore * running_store;
 extern GtkWidget * play_list;
 
@@ -1051,6 +1052,26 @@ main_window_close(GtkWidget * widget, gpointer data) {
 	vol_cancelled = 1;
 
 #ifdef HAVE_CDDA
+	if (options.cdda_remove_from_playlist) {
+		int i = 0;
+		GtkTreeIter iter_cdda;
+		GtkTreeIter iter_drive;
+
+		gtk_tree_model_get_iter_first(GTK_TREE_MODEL(music_store), &iter_cdda);
+
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_drive, &iter_cdda, i++)) {
+
+			gchar * tmp;
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_drive, 2, &tmp, -1);
+
+			if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter_drive) > 0) {
+				playlist_remove_cdda(tmp + 11);
+			}
+
+			g_free(tmp);
+		}
+	}
+
 	cdda_scanner_stop();
 #endif /* HAVE_CDDA */
 
@@ -4203,6 +4224,8 @@ save_config(void) {
 	SAVE_OPTION_INT_1(cdda_paranoia_mode)
 	SAVE_OPTION_INT_1(cdda_paranoia_maxretries)
 	SAVE_OPTION_INT_1(cdda_force_drive_rescan)
+	SAVE_OPTION_INT_1(cdda_add_to_playlist)
+	SAVE_OPTION_INT_1(cdda_remove_from_playlist)
 	SAVE_OPTION_STR_1(cddb_server)
 	SAVE_OPTION_INT_1(cddb_timeout)
 	SAVE_OPTION_STR_1(cddb_email)
@@ -4530,6 +4553,8 @@ load_config(void) {
 		LOAD_OPTION_INT_1(cdda_paranoia_mode)
 		LOAD_OPTION_INT_1(cdda_paranoia_maxretries)
 		LOAD_OPTION_INT_1(cdda_force_drive_rescan)
+		LOAD_OPTION_INT_1(cdda_add_to_playlist)
+		LOAD_OPTION_INT_1(cdda_remove_from_playlist)
 		LOAD_OPTION_STR_1(cddb_server)
 		LOAD_OPTION_INT_1(cddb_timeout)
 		LOAD_OPTION_STR_1(cddb_email)

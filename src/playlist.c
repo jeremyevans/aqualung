@@ -37,6 +37,7 @@
 #include "common.h"
 #include "core.h"
 #include "rb.h"
+#include "cdda.h"
 #include "gui_main.h"
 #include "music_browser.h"
 #include "file_info.h"
@@ -1587,11 +1588,16 @@ rem__dead_cb(gpointer data) {
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
 
+		GtkTreeIter iter_child;
+		gint j = 0;
+
+
                 gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, COLUMN_PHYSICAL_FILENAME, &filename, -1);
 
                 gint n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter);
 
-                if (!n && g_file_test (filename, G_FILE_TEST_IS_REGULAR) == FALSE) {
+                if (n == 0 && strstr(filename, "CDDA") != filename &&
+		    g_file_test (filename, G_FILE_TEST_IS_REGULAR) == FALSE) {
                         g_free (filename);
                         gtk_tree_store_remove(play_store, &iter);
                         --i;
@@ -1600,15 +1606,13 @@ rem__dead_cb(gpointer data) {
 
                 g_free (filename);
 
-		GtkTreeIter iter_child;
-		gint j = 0;
-
                 if (n) {
 
                         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, &iter, j++)) {
                                 gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter_child, 1, &filename, -1);
 
-                                if (g_file_test (filename, G_FILE_TEST_IS_REGULAR) == FALSE) {
+                                if (strstr(filename, "CDDA") != filename &&
+				    g_file_test (filename, G_FILE_TEST_IS_REGULAR) == FALSE) {
                                         gtk_tree_store_remove(play_store, &iter_child);
                                         --j;
                                 }
@@ -2231,6 +2235,153 @@ playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer da
 
 	playlist_remove_scroll_tags();
 }
+
+
+#ifdef HAVE_CDDA
+
+void
+playlist_add_cdda(GtkTreeIter * iter_drive, unsigned long hash) {
+
+	int i = 0;
+	GtkTreeIter iter;
+
+	int target_found = 0;
+	GtkTreeIter target_iter;
+
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+
+		if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter) > 0) {
+
+			int j = 0;
+			int has_cdda = 0;
+			GtkTreeIter child;
+
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &child, &iter, j++)) {
+
+				char * pfile;
+				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &child,
+						   COLUMN_PHYSICAL_FILENAME, &pfile, -1);
+
+				if (!target_found && strstr(pfile, "CDDA") == pfile) {
+					has_cdda = 1;
+				}
+
+				if (cdda_hash_matches(pfile, hash)) {
+					g_free(pfile);
+					return;
+				}
+
+				g_free(pfile);
+			}
+
+			if (!target_found && !has_cdda) {
+				target_iter = iter;
+				target_found = 1;
+			}
+		} else {
+
+			char * pfile;
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
+					   COLUMN_PHYSICAL_FILENAME, &pfile, -1);
+
+			if (!target_found && strstr(pfile, "CDDA") != pfile) {
+				target_iter = iter;
+				target_found = 1;
+			}
+
+			if (cdda_hash_matches(pfile, hash)) {
+				g_free(pfile);
+				return;
+			}
+				
+			g_free(pfile);
+		}
+	}
+
+	if (target_found) {
+		record_addlist_iter(*iter_drive, &target_iter, options.playlist_is_tree);
+	} else {
+		record_addlist_iter(*iter_drive, NULL, options.playlist_is_tree);
+	}
+}
+
+void
+playlist_remove_cdda(char * device_path) {
+
+	int i = 0;
+	GtkTreeIter iter;
+	unsigned long hash;
+
+	cdda_drive_t * drive = cdda_get_drive_by_device_path(device_path);
+
+
+	if (drive == NULL) {
+		return;
+	}
+
+	if (drive->disc.hash == 0) {
+		hash = drive->disc.hash_prev;
+	} else {
+		hash = drive->disc.hash;
+	}
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+
+		if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter) > 0) {
+
+			int j = 0;
+			GtkTreeIter child;
+
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &child, &iter, j++)) {
+
+				char * pfile;
+				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &child,
+						   COLUMN_PHYSICAL_FILENAME, &pfile, -1);
+
+				if (cdda_hash_matches(pfile, hash)) {
+					gtk_tree_store_remove(play_store, &child);
+					--j;
+				}
+				
+				g_free(pfile);
+			}
+
+			if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter) == 0) {
+				gtk_tree_store_remove(play_store, &iter);
+				--i;
+			} else {
+				char * str;
+
+				recalc_album_node(&iter);
+
+				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, COLUMN_SELECTION_COLOR, &str, -1);
+				if (strcmp(str, pl_color_active) == 0) {
+					unmark_track(&iter);
+					mark_track(&iter);
+				}
+				g_free(str);
+			}
+			
+		} else {
+
+			char * pfile;
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
+					   COLUMN_PHYSICAL_FILENAME, &pfile, -1);
+			
+			if (cdda_hash_matches(pfile, hash)) {
+				gtk_tree_store_remove(play_store, &iter);
+				--i;
+			}
+
+			g_free(pfile);
+		}
+	}
+
+	playlist_content_changed();
+}
+
+#endif /* HAVE_CDDA */
 
 
 void

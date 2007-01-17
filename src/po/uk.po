@@ -1790,6 +1790,12 @@ msgstr ""
 msgid "Force TOC re-read on every drive scan"
 msgstr ""
 
+msgid "Automatically add CDs to Playlist"
+msgstr ""
+
+msgid "Automatically remove CDs from Playlist"
+msgstr ""
+
 msgid "CDDB server:"
 msgstr "CDDB сервер:"
 

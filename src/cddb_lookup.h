@@ -30,6 +30,8 @@ void cddb_get(GtkTreeIter * iter_record);
 void cddb_get_batch(build_disc_t * disc);
 void cddb_submit(GtkTreeIter * iter_record);
 
+int cddb_thread_test(int state);
+
 #endif /* _CDDB_LOOKUP_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

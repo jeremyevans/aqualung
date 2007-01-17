@@ -53,8 +53,8 @@ extern "C" {
 typedef struct {
 	int n_tracks;
 	lsn_t toc[100];
-	long hash;
-	long hash_prev;
+	unsigned long hash;
+	unsigned long hash_prev;
 	char record_name[MAXLEN];
 	char artist_name[MAXLEN];
 	char genre[MAXLEN];
@@ -83,7 +83,8 @@ void refresh_cdda_drive_node(char * device_path);
 
 void cdda_drive_info(char * device_path);
 
-long calc_cdda_hash(cdda_disc_t * disc);
+unsigned long calc_cdda_hash(cdda_disc_t * disc);
+int cdda_hash_matches(char * filename, unsigned long hash);
 
 int cdda_get_n(char * device_path);
 cdda_drive_t * cdda_get_drive_by_device_path(char * device_path);

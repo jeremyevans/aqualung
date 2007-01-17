@@ -52,12 +52,6 @@
 
 extern options_t options;
 
-extern volatile int build_thread_state;
-
-#ifdef HAVE_CDDB
-extern volatile int cddb_thread_state;
-#endif /* HAVE_CDDB */
-
 extern GtkWidget * vol_window;
 extern GtkWidget * play_list;
 extern GtkWidget * musicstore_toggle;
@@ -1974,10 +1968,10 @@ set_popup_sensitivity(GtkTreePath * path) {
 
 	gboolean writable = !is_store_path_readonly(path);
 	gboolean vol_free = (vol_window == NULL);
-	gboolean build_free = (build_thread_state == BUILD_THREAD_FREE);
+	gboolean build_free = build_thread_test(BUILD_THREAD_FREE);
 
 #ifdef HAVE_CDDB
-	gboolean cddb_free = (cddb_thread_state == CDDB_THREAD_FREE);
+	gboolean cddb_free = cddb_thread_test(CDDB_THREAD_FREE);
 #endif /* HAVE_CDDB */
 
 #if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)

@@ -40,6 +40,7 @@
 #include "decoder/file_decoder.h"
 #include "gui_main.h"
 #include "music_browser.h"
+#include "playlist.h"
 #include "build_store.h"
 #include "cdda.h"
 #include "cddb_lookup.h"
@@ -1435,6 +1436,10 @@ cdda_timeout_callback(gpointer data) {
 	libcddb_shutdown();
 	free(frames);
 
+	if (options.cdda_add_to_playlist) {
+		playlist_add_cdda(&iter_drive, disc->hash);
+	}
+
 	cddb_thread_state = CDDB_THREAD_FREE;
 
 	return FALSE;
@@ -1650,6 +1655,12 @@ cddb_submit(GtkTreeIter * iter) {
 	}
 
 	AQUALUNG_THREAD_CREATE(cddb_thread_id, NULL, cddb_submit_thread, NULL)
+}
+
+int
+cddb_thread_test(int state) {
+
+	return cddb_thread_state == state;
 }
 
 #endif /* HAVE_CDDB */

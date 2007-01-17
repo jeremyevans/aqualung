@@ -111,6 +111,7 @@ int is_all_wspace(char * str);
 
 void build_store(GtkTreeIter store_iter);
 
+int build_thread_test(int state);
 
 #ifdef __cplusplus
 } /* extern "C" */

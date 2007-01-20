@@ -4108,7 +4108,7 @@ save_config(void) {
 
         xmlDocPtr doc;
         xmlNodePtr root;
-        char c, d;
+        int c, d;
         FILE * fin;
         FILE * fout;
         char tmpname[MAXLEN];

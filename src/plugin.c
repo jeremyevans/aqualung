@@ -2028,7 +2028,7 @@ save_plugin_data(void) {
         xmlNodePtr root;
         xmlNodePtr plugin_node;
         xmlNodePtr port_node;
-        char c, d;
+        int c, d;
         FILE * fin;
         FILE * fout;
         char tmpname[MAXLEN];

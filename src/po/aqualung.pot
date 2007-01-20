@@ -483,6 +483,15 @@ msgstr ""
 msgid "Burn Proof"
 msgstr ""
 
+msgid "Disc info"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "This CD does not contain CD-Text information."
+msgstr ""
+
 msgid "CDDB query"
 msgstr ""
 
@@ -611,9 +620,6 @@ msgid "Album:"
 msgstr ""
 
 msgid "Rip"
-msgstr ""
-
-msgid "No"
 msgstr ""
 
 msgid "Title"

@@ -540,6 +540,17 @@ msgstr ""
 msgid "Burn Proof"
 msgstr ""
 
+#, fuzzy
+msgid "Disc info"
+msgstr "Інформація про файл"
+
+#, fuzzy
+msgid "No"
+msgstr "Немає"
+
+msgid "This CD does not contain CD-Text information."
+msgstr ""
+
 msgid "CDDB query"
 msgstr "CDDB запит"
 
@@ -676,10 +687,6 @@ msgstr "Альбом"
 
 msgid "Rip"
 msgstr ""
-
-#, fuzzy
-msgid "No"
-msgstr "Немає"
 
 msgid "Title"
 msgstr "Назва"
@@ -2555,3 +2562,7 @@ msgstr "Ступінь стиснення: Дуже висока"
 
 msgid "Compression: Insane"
 msgstr "Ступінь стиснення: Божевільна"
+
+#, fuzzy
+#~ msgid "Record:"
+#~ msgstr "Запис"

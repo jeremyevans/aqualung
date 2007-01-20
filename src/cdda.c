@@ -573,6 +573,70 @@ cdda_displayed_device_path(char * device_path) {
 #endif /* _WIN32 */
 }
 
+
+/* Returns 0 on success, 1 on failure */
+int
+update_track_data_from_cdtext(cdda_drive_t * drive, GtkTreeIter * iter_drive) {
+
+	CdIo_t * cdio;
+	cdtext_t * cdtext;
+	GtkTreeIter iter;
+	int i;
+	int ret = 0;
+
+	cdio = cdio_open(drive->device_path, DRIVER_UNKNOWN);
+	cdtext = cdio_get_cdtext(cdio, 0);
+
+	if (cdtext == NULL) {
+		ret = 1;
+	} else {
+		char tmp[MAXLEN];
+
+		tmp[0] = '\0';
+
+		if (cdtext->field[CDTEXT_PERFORMER] != NULL && *(cdtext->field[CDTEXT_PERFORMER]) != '\0') {
+			strncat(tmp, cdtext->field[CDTEXT_PERFORMER], MAXLEN-1);
+			strncpy(drive->disc.artist_name, cdtext->field[CDTEXT_PERFORMER], MAXLEN-1);
+		} else {
+			ret = 1;
+		}
+
+		strncat(tmp, ": ", MAXLEN - strlen(tmp) - 1);
+
+		if (cdtext->field[CDTEXT_TITLE] != NULL && *(cdtext->field[CDTEXT_TITLE]) != '\0') {
+			strncat(tmp, cdtext->field[CDTEXT_TITLE], MAXLEN - strlen(tmp) - 1);
+			strncpy(drive->disc.record_name, cdtext->field[CDTEXT_TITLE], MAXLEN-1);
+		} else {
+			ret = 1;
+		}
+
+		gtk_tree_store_set(music_store, iter_drive, 0, tmp, -1);
+	}
+
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter, iter_drive, i++)) {
+
+		cdtext = cdio_get_cdtext(cdio, i);
+
+		if (cdtext == NULL) {
+			ret = 1;
+			continue;
+		}
+
+		if (cdtext->field[CDTEXT_TITLE] != NULL && *(cdtext->field[CDTEXT_TITLE]) != '\0') {
+			gtk_tree_store_set(music_store, &iter, 0, cdtext->field[CDTEXT_TITLE], -1);
+		} else {
+			ret = 1;
+		}
+	}
+
+	cdio_destroy(cdio);
+
+	return ret;
+}
+
+
 void
 update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 
@@ -605,13 +669,17 @@ update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 		}
 	}
 
+	if (update_track_data_from_cdtext(drive, &iter_drive) != 0) {
 #ifdef HAVE_CDDB
-	cddb_get_cdda(&drive->disc, iter_drive);
+		cddb_get_cdda(&drive->disc, iter_drive);
 #else
-	if (options.cdda_add_to_playlist) {
+		if (options.cdda_add_to_playlist) {
+			playlist_add_cdda(&iter_drive, drive->disc.hash);
+		}
+#endif /* HAVE_CDDB */
+	} else if (options.cdda_add_to_playlist) {
 		playlist_add_cdda(&iter_drive, drive->disc.hash);
 	}
-#endif /* HAVE_CDDB */
 }
 
 
@@ -957,6 +1025,163 @@ cdda_drive_info(char * device_path) {
 	gtk_widget_show_all(dialog);
         aqualung_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
+}
+
+
+void
+cdda_disc_info(char * device_path) {
+
+	CdIo_t * cdio;
+	cdtext_t * cdtext;
+	track_t itrack;
+	track_t ntracks;
+	track_t track_last;
+	int i;
+
+        GtkWidget * dialog;
+	GtkWidget * table;
+	GtkWidget * label;
+	GtkWidget * vbox;
+	GtkWidget * hbox;
+
+	GtkListStore * list;
+	GtkWidget * view;
+	GtkWidget * viewport;
+	GtkWidget * scrolled_win;
+	GtkCellRenderer * cell;
+
+	GType types[MAX_CDTEXT_FIELDS + 1];
+	GtkTreeViewColumn * columns[MAX_CDTEXT_FIELDS + 1];
+	int visible[MAX_CDTEXT_FIELDS + 1];
+	int has_some_cdtext = 0;
+
+
+        dialog = gtk_dialog_new_with_buttons(_("Disc info"),
+					     GTK_WINDOW(browser_window),
+					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT |
+					     GTK_DIALOG_NO_SEPARATOR,
+					     GTK_STOCK_CLOSE, GTK_RESPONSE_OK,
+					     NULL);
+
+	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+	gtk_widget_set_size_request(GTK_WIDGET(dialog), 500, 400);
+
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), vbox, TRUE, TRUE, 4);
+
+
+	cdio = cdio_open(device_path, DRIVER_UNKNOWN);
+	cdtext = cdio_get_cdtext(cdio, 0);
+
+	if (cdtext != NULL) {
+		table = gtk_table_new(MAX_CDTEXT_FIELDS, 2, FALSE);
+		gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 2);
+
+
+		for (i = 0; i < MAX_CDTEXT_FIELDS; i++) {
+
+			if (cdtext->field[i] == NULL || *(cdtext->field[i]) == '\0') {
+				continue;
+			}
+
+			has_some_cdtext = 1;
+
+			hbox = gtk_hbox_new(FALSE, 0);
+			label = gtk_label_new(cdtext_field2str(i));
+			gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+			gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, i, i + 1, GTK_FILL, GTK_FILL, 4, 1);
+
+			hbox = gtk_hbox_new(FALSE, 0);
+			label = gtk_label_new(cdtext->field[i]);
+			gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+			gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, i, i + 1, GTK_FILL, GTK_FILL, 4, 1);
+		}
+	}
+
+
+	types[0] = G_TYPE_INT;
+	for (i = 1; i <= MAX_CDTEXT_FIELDS; i++) {
+		types[i] = G_TYPE_STRING;
+		visible[i] = 0;
+	}
+
+	list = gtk_list_store_newv(MAX_CDTEXT_FIELDS + 1,
+				   types);
+
+        view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(list));
+        viewport = gtk_viewport_new(NULL, NULL);
+        scrolled_win = gtk_scrolled_window_new(NULL, NULL);
+        gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
+                                       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_box_pack_start(GTK_BOX(vbox), viewport, TRUE, TRUE, 2);
+        gtk_container_add(GTK_CONTAINER(viewport), scrolled_win);
+        gtk_container_add(GTK_CONTAINER(scrolled_win), view);
+
+        cell = gtk_cell_renderer_text_new();
+	g_object_set((gpointer)cell, "xalign", 1.0, NULL);
+        columns[0] = gtk_tree_view_column_new_with_attributes(_("No"), cell, "text", 0, NULL);
+        gtk_tree_view_append_column(GTK_TREE_VIEW(view), GTK_TREE_VIEW_COLUMN(columns[0]));
+
+	for (i = 0; i < MAX_CDTEXT_FIELDS; i++) {
+
+		cell = gtk_cell_renderer_text_new();
+		columns[i + 1] = gtk_tree_view_column_new_with_attributes(cdtext_field2str(i),
+									  cell, "text", i + 1, NULL);
+		gtk_tree_view_append_column(GTK_TREE_VIEW(view), GTK_TREE_VIEW_COLUMN(columns[i + 1]));
+	}
+
+	itrack = cdio_get_first_track_num(cdio);
+	ntracks = cdio_get_num_tracks(cdio);
+	track_last = itrack + ntracks;
+
+	for (; itrack < track_last; itrack++) {
+
+		GtkTreeIter iter;
+
+		gtk_list_store_append(list, &iter);
+		gtk_list_store_set(list, &iter, 0, itrack, -1);
+
+		cdtext = cdio_get_cdtext(cdio, itrack);
+
+		if (cdtext == NULL) {
+			continue;
+		}
+
+		for (i = 0; i < MAX_CDTEXT_FIELDS; i++) {
+
+			if (cdtext->field[i] != NULL && *(cdtext->field[i]) != '\0') {
+				gtk_list_store_set(list, &iter, i + 1, cdtext->field[i], -1);
+				visible[i + 1] = 1;
+				has_some_cdtext = 1;
+			}
+		}
+	}
+
+	for (i = 1; i <= MAX_CDTEXT_FIELDS; i++) {
+		gtk_tree_view_column_set_visible(columns[i], visible[i]);
+	}
+
+	cdio_destroy(cdio);
+
+	gtk_widget_show_all(dialog);
+
+	if (has_some_cdtext) {
+		aqualung_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
+	} else {
+		gtk_widget_destroy(dialog);
+
+		dialog = gtk_message_dialog_new(GTK_WINDOW(browser_window),
+						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+						GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, 
+						_("This CD does not contain CD-Text information."));
+		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+		
+		aqualung_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
+	}
 }
 
 

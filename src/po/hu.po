@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2006-12-30 13:35+0100\n"
+"PO-Revision-Date: 2007-01-20 10:31+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -520,6 +520,15 @@ msgstr "Mount Rainier"
 msgid "Burn Proof"
 msgstr "Burn Proof"
 
+msgid "Disc info"
+msgstr "Lemez infó"
+
+msgid "No"
+msgstr "No"
+
+msgid "This CD does not contain CD-Text information."
+msgstr "Ez a lemez nem tartalmaz CD-Text információt."
+
 msgid "CDDB query"
 msgstr "CDDB lekérdezés"
 
@@ -665,9 +674,6 @@ msgstr "Lemez:"
 
 msgid "Rip"
 msgstr "Rippelés"
-
-msgid "No"
-msgstr "No"
 
 msgid "Title"
 msgstr "Cím"
@@ -1739,10 +1745,10 @@ msgid "Force TOC re-read on every drive scan"
 msgstr "TOC újraolvasás kényszerítése minden meghajtó scannelésnél"
 
 msgid "Automatically add CDs to Playlist"
-msgstr ""
+msgstr "CD-k automatikus hozzáadása a Lejátszólistához"
 
 msgid "Automatically remove CDs from Playlist"
-msgstr ""
+msgstr "CD-k automatikus eltávolítása a Lejátszólistából"
 
 msgid "CDDB server:"
 msgstr "CDDB szerver:"

@@ -629,8 +629,8 @@ create_cddb_write_warn_dialog(char * text) {
         dialog = gtk_dialog_new_with_buttons(_("Warning"),
 					     NULL,
 					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					     GTK_STOCK_YES, GTK_RESPONSE_ACCEPT,
+					     GTK_STOCK_NO, GTK_RESPONSE_REJECT,
 					     NULL);
 
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
@@ -1228,7 +1228,6 @@ cddb_timeout_callback(gpointer data) {
                                              _("An error occurred while attempting "
 						"to connect to the CDDB server."));
 			gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-			gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 			gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 		
 			aqualung_dialog_run(GTK_DIALOG(dialog));
@@ -1244,7 +1243,6 @@ cddb_timeout_callback(gpointer data) {
                                                      GTK_MESSAGE_WARNING, GTK_BUTTONS_CLOSE, 
                                                      _("No matching record found."));
 				gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-				gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 				gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 		
 				aqualung_dialog_run(GTK_DIALOG(dialog));

@@ -556,6 +556,17 @@ msgstr ""
 msgid "Burn Proof"
 msgstr ""
 
+#, fuzzy
+msgid "Disc info"
+msgstr "Datei-Info..."
+
+#, fuzzy
+msgid "No"
+msgstr "Keine"
+
+msgid "This CD does not contain CD-Text information."
+msgstr ""
+
 msgid "CDDB query"
 msgstr "CDDB Abfrage"
 
@@ -700,10 +711,6 @@ msgstr "Album"
 
 msgid "Rip"
 msgstr ""
-
-#, fuzzy
-msgid "No"
-msgstr "Keine"
 
 msgid "Title"
 msgstr "Titel:"
@@ -2602,3 +2609,7 @@ msgstr ""
 
 msgid "Compression: Insane"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Record:"
+#~ msgstr "Album"

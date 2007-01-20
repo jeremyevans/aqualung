@@ -2709,7 +2709,8 @@ If Aqualung was compiled with Audio CD support, a store called `CD Audio'
  This special store contains a node for each drive in your machine.
  When you insert a CD in a drive, the corresponding node will contain the
  audio tracks on that disc.
- The artist, record and track names are automatically set from a CDDB lookup.
+ The artist, record and track names are automatically set from CD-Text informati
+on if found on the CD, or a CDDB lookup.
 \end_layout
 
 \begin_layout Standard
@@ -2740,14 +2741,9 @@ n modes manually set before every run on the last page titled `Paranoia'.
 \end_layout
 
 \begin_layout Standard
-It is possible to display information about the inserted disc, or the drive
- itself (general info, reading or writing capabilities, etc.).
+It is possible to display information about the inserted disc (CD-Text),
+ or the drive itself (general info, reading or writing capabilities, etc.).
  The tray can also be ejected, if the driver supports this operation.
-\end_layout
-
-\begin_layout Standard
-CD Ripping always happens with maximum available speed and with error correction
- modes manually set before every run.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4258,6 +4254,22 @@ Most drives let Aqualung know when a CD has been inserted or removed.
  However, some drives don't report correctly, and thus it may happen that
  a newly inserted CD remains unnoticed to Aqualung.
  In such cases, forcing TOC re-read on every drive scan should help.
+\end_layout
+
+\begin_layout Standard
+Aqualung can automatically add newly inserted CDs to the Playlist, and remove
+ them when the CD is removed from the drive.
+ A CD will only be added if the Playlist doesn't already contain any of
+ its tracks.
+ The newly added CD will appear at the top of the Playlist, but after all
+ CD tracks or albums being in the list.
+\end_layout
+
+\begin_layout Standard
+Removal from Playlist will happen if the CD is removed from the drive, or
+ the user quits Aqualung while the CD is in the drive.
+ All tracks of the CD will be removed, even if they were mixed with other
+ audio files or some of them were removed manually.
 \end_layout
 
 \begin_layout Subsubsection

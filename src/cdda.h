@@ -82,6 +82,7 @@ void remove_cdda_drive_node(char * device_path);
 void refresh_cdda_drive_node(char * device_path);
 
 void cdda_drive_info(char * device_path);
+void cdda_disc_info(char * device_path);
 
 unsigned long calc_cdda_hash(cdda_disc_t * disc);
 int cdda_hash_matches(char * filename, unsigned long hash);

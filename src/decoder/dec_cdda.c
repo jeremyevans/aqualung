@@ -328,10 +328,7 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 	pd->is_eos = 0;
 
 	if (drive->swap_bytes == -1) {
-		int bigendian = data_bigendianp(pd->drive);
-		if (bigendian != -1) {
-			drive->swap_bytes = bigendian ? !bigendianp() : bigendianp();
-		}
+		drive->swap_bytes = data_bigendianp(pd->drive);
 	}
 	if (drive->swap_bytes == -1) {
 		printf("cdda_decoder_open: unable to determine endianness of drive.\n");

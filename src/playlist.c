@@ -186,6 +186,7 @@ extern GtkWidget * playlist_toggle;
 
 typedef struct _playlist_filemeta {
         char * title;
+	char * filename;
         float duration;
         float voladj;
 } playlist_filemeta;
@@ -1213,10 +1214,11 @@ playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 		if (alt_name != NULL) {
 			strcpy(display_name, alt_name);
 		} else {
-    			if ((substr = strrchr(physical_name, '/')) == NULL)
+    			if ((substr = strrchr(physical_name, '/')) == NULL) {
             			substr = physical_name;
-    			else
+			} else {
             			++substr;
+			}
 			substr = g_filename_display_name(substr);
 			strcpy(display_name, substr);
 			g_free(substr);
@@ -1227,6 +1229,7 @@ playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 		meta = NULL;
 	}
 
+	plfm->filename = g_strdup(physical_name);
 	plfm->title = g_strdup(display_name);
 
 	return plfm;
@@ -1236,33 +1239,9 @@ playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 void
 playlist_filemeta_free(playlist_filemeta * plfm) {
 
+	free(plfm->filename);
 	free(plfm->title);
 	free(plfm);
-}
-
-
-void
-add_file_to_playlist(gchar *filename) {
-
-	gchar voladj_str[32];
-	gchar duration_str[MAXLEN];
-	GtkTreeIter play_iter;
-	playlist_filemeta * plfm = NULL;
-
-	if ((plfm = playlist_filemeta_get(filename, NULL, 1)) == NULL) {
-		return;
-	}
-
-        voladj2str(plfm->voladj, voladj_str);
-	time2time_na(plfm->duration, duration_str);
-
-        gtk_tree_store_append(play_store, &play_iter, NULL);
-        gtk_tree_store_set(play_store, &play_iter, COLUMN_TRACK_NAME, plfm->title, COLUMN_PHYSICAL_FILENAME, filename,
-                           COLUMN_SELECTION_COLOR, pl_color_inactive,
-                           COLUMN_VOLUME_ADJUSTMENT, plfm->voladj, COLUMN_VOLUME_ADJUSTMENT_DISP, voladj_str,
-                           COLUMN_DURATION, plfm->duration, COLUMN_DURATION_DISP, duration_str, COLUMN_FONT_WEIGHT, PANGO_WEIGHT_NORMAL, -1);
-
-	playlist_filemeta_free(plfm);
 }
 
 
@@ -1273,35 +1252,77 @@ filter(const struct dirent * de) {
 }
 
 
-void
-add_dir_to_playlist(char * dirname) {
+gboolean
+finalize_add_to_playlist(gpointer data) {
 
-	gint i, n;
-	struct dirent ** ent;
-	struct stat st_file;
-	gchar path[MAXLEN];
+	playlist_content_changed();
+        delayed_playlist_rearrange(100);
 
-	n = scandir(dirname, &ent, filter, alphasort);
-	for (i = 0; i < n; i++) {
+	iw_hide_info();
 
-		snprintf(path, MAXLEN-1, "%s/%s", dirname, ent[i]->d_name);
+	return FALSE;
+}
 
-		if (stat(path, &st_file) == -1) {
-			continue;
+
+gboolean
+add_file_to_playlist(gpointer data) {
+
+	gchar voladj_str[32];
+	gchar duration_str[MAXLEN];
+	GtkTreeIter iter;
+	playlist_filemeta * plfm = (playlist_filemeta *)data;
+
+
+	voladj2str(plfm->voladj, voladj_str);
+	time2time_na(plfm->duration, duration_str);
+
+	gtk_tree_store_append(play_store, &iter, NULL);
+	gtk_tree_store_set(play_store, &iter,
+			   COLUMN_TRACK_NAME, plfm->title,
+			   COLUMN_PHYSICAL_FILENAME, plfm->filename,
+			   COLUMN_SELECTION_COLOR, pl_color_inactive,
+			   COLUMN_VOLUME_ADJUSTMENT, plfm->voladj,
+			   COLUMN_VOLUME_ADJUSTMENT_DISP, voladj_str,
+			   COLUMN_DURATION, plfm->duration,
+			   COLUMN_DURATION_DISP, duration_str,
+			   COLUMN_FONT_WEIGHT, PANGO_WEIGHT_NORMAL, -1);
+
+	playlist_filemeta_free(plfm);
+
+	return FALSE;
+}
+
+
+void *
+add_files_to_playlist_thread(void * arg) {
+
+	GSList * lfiles;
+	GSList * node;
+
+	AQUALUNG_THREAD_DETACH()
+
+	lfiles = (GSList *)arg;
+
+	for (node = lfiles; node; node = node->next) {
+
+		playlist_filemeta * plfm = NULL;
+
+		if ((plfm = playlist_filemeta_get((char *)node->data, NULL, 1)) != NULL) {
+
+			g_idle_add_full(G_PRIORITY_HIGH_IDLE,
+					add_file_to_playlist,
+					(gpointer)plfm,
+					NULL);
 		}
 
-		if (S_ISDIR(st_file.st_mode)) {
-			add_dir_to_playlist(path);
-		} else {
-			add_file_to_playlist(path);
-		}
-
-		free(ent[i]);
+		g_free(node->data);
 	}
 
-	if (n > 0) {
-		free(ent);
-	}
+	g_slist_free(lfiles);
+
+	g_idle_add(finalize_add_to_playlist, NULL);
+
+	return NULL;
 }
 
 
@@ -1331,35 +1352,87 @@ add_files(GtkWidget * widget, gpointer data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		GSList *lfiles, *node;
+		GSList *lfiles;
+		AQUALUNG_THREAD_DECLARE(thread_id)
 
-                iw_show_info(dialog, options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), _("Adding files..."));
+		iw_show_info(dialog,
+			     options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
+			     _("Adding files..."));
 
                 strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
 			MAXLEN-1);
 
                 lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
 
-                node = lfiles;
-
-                while (node) {
-
-                        add_file_to_playlist((char *)node->data);
-                        g_free(node->data);
-
-                        node = node->next;
-                }
-
-                g_slist_free(lfiles);
-                iw_hide_info();
+		AQUALUNG_THREAD_CREATE(thread_id, NULL, add_files_to_playlist_thread, lfiles)
         }
 
-
         gtk_widget_destroy(dialog);
+}
 
-	playlist_content_changed();
 
-        delayed_playlist_rearrange(100);
+void
+add_dir_to_playlist(char * dirname) {
+
+	gint i, n;
+	struct dirent ** ent;
+	struct stat st_file;
+	gchar path[MAXLEN];
+
+	n = scandir(dirname, &ent, filter, alphasort);
+	for (i = 0; i < n; i++) {
+
+		snprintf(path, MAXLEN-1, "%s/%s", dirname, ent[i]->d_name);
+
+		if (stat(path, &st_file) == -1) {
+			continue;
+		}
+
+		if (S_ISDIR(st_file.st_mode)) {
+			add_dir_to_playlist(path);
+		} else {
+			playlist_filemeta * plfm = NULL;
+
+			if ((plfm = playlist_filemeta_get(path, NULL, 1)) != NULL) {
+
+				g_idle_add_full(G_PRIORITY_HIGH_IDLE,
+						add_file_to_playlist,
+						(gpointer)plfm,
+						NULL);
+			}
+		}
+
+		free(ent[i]);
+	}
+
+	if (n > 0) {
+		free(ent);
+	}
+}
+
+
+void *
+add_dir_to_playlist_thread(void * arg) {
+
+
+	GSList * lfiles;
+	GSList * node;
+
+	AQUALUNG_THREAD_DETACH()
+
+	lfiles = (GSList *)arg;
+
+	for (node = lfiles; node; node = node->next) {
+
+		add_dir_to_playlist((char *)node->data);
+		g_free(node->data);
+	}
+
+	g_slist_free(lfiles);
+
+	g_idle_add(finalize_add_to_playlist, NULL);
+
+	return NULL;
 }
 
 
@@ -1388,35 +1461,22 @@ add_directory(GtkWidget * widget, gpointer data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		GSList *lfiles, *node;
+		GSList *lfiles;
+		AQUALUNG_THREAD_DECLARE(thread_id)
 
-                iw_show_info(dialog, options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), _("Adding files recursively..."));
+		iw_show_info(dialog,
+			     options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
+			     _("Adding files recursively..."));
 
                 strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
 			MAXLEN-1);
 
                 lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
 
-                node = lfiles;
-
-                while (node) {
-
-                        add_dir_to_playlist((char *)node->data);
-                        g_free(node->data);
-
-                        node = node->next;
-                }
-
-                g_slist_free(lfiles);
-                iw_hide_info();
+		AQUALUNG_THREAD_CREATE(thread_id, NULL, add_dir_to_playlist_thread, lfiles)
         }
 
-
         gtk_widget_destroy(dialog);
-
-	playlist_content_changed();
-
-        delayed_playlist_rearrange(100);
 }
 
 
@@ -3785,7 +3845,6 @@ iw_show_info (GtkWidget *dialog, GtkWindow *transient, gchar *message) {
         gtk_window_set_position(GTK_WINDOW(iw_widget), GTK_WIN_POS_CENTER_ON_PARENT);
         GTK_WIDGET_UNSET_FLAGS(iw_widget, GTK_CAN_FOCUS);
         gtk_widget_set_events(iw_widget, GDK_BUTTON_PRESS_MASK);
-        gtk_window_set_modal(GTK_WINDOW(iw_widget), TRUE);
         gtk_window_set_transient_for(GTK_WINDOW(iw_widget), GTK_WINDOW(transient));
         gtk_window_set_decorated(GTK_WINDOW(iw_widget), FALSE);
 

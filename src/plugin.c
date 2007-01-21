@@ -1567,6 +1567,7 @@ remove_clicked(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		if (instance->window)
 			gtk_widget_destroy(instance->window);
 
+                dlclose(instance->library);
 		trashlist_free(instance->trashlist);
 		free(instance);
 	}

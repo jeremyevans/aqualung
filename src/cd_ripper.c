@@ -1066,6 +1066,7 @@ ripper_window(void) {
         gtk_box_pack_end(GTK_BOX(vbox), ripper_hbox, FALSE, TRUE, 0);
 
 	ripper_close_when_ready_check = gtk_check_button_new_with_label(_("Close window when complete"));
+	gtk_widget_set_name(ripper_close_when_ready_check, "check_on_notebook");
         gtk_box_pack_start(GTK_BOX(ripper_hbox), ripper_close_when_ready_check, FALSE, TRUE, 0);
 
         ripper_cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL);

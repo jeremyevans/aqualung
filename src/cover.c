@@ -164,6 +164,14 @@ find_cover_filename(gchar *song_filename) {
                                         if (g_file_test (cover_filename, G_FILE_TEST_IS_REGULAR) == TRUE) {
                                                 g_free (str1);
                                                 g_free (str2);
+
+						while (n < n_files) {
+							free(d_entry[n]);
+							++n;
+						}
+						
+						free(d_entry);
+
                                                 return cover_filename;
                                         }
                                 }

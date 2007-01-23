@@ -1386,6 +1386,7 @@ add_dir_to_playlist(char * dirname) {
 		snprintf(path, MAXLEN-1, "%s/%s", dirname, ent[i]->d_name);
 
 		if (stat(path, &st_file) == -1) {
+			free(ent[i]);
 			continue;
 		}
 

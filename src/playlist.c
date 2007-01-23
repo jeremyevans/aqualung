@@ -939,6 +939,8 @@ plist__reread_file_meta_foreach(GtkTreeIter * iter, void * data) {
 	if (plfm == NULL) {
 		fprintf(stderr, "plist__reread_file_meta_foreach(): "
 			"playlist_filemeta_get() returned NULL\n");
+		g_free(title);
+		g_free(fullname);
 		return;
 	}
 			
@@ -1082,7 +1084,6 @@ rem_cb(GtkWidget * widget, GdkEvent * event) {
 }
 
 
-/* physical_name should be UTF8 encoded */
 /* if alt_name != NULL, it will be used as title if no meta is found */
 playlist_filemeta *
 playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
@@ -3131,9 +3132,6 @@ load_m3u(char * filename, int enqueue) {
 	gchar path[MAXLEN];
 	gchar tmp[MAXLEN];
 	gint have_name = 0;
-	GtkTreeIter iter;
-	gchar voladj_str[32];
-	gchar duration_str[MAXLEN];
 	playlist_filemeta * plfm = NULL;
 
 
@@ -3235,20 +3233,7 @@ load_m3u(char * filename, int enqueue) {
 					continue;
 				}
 
-				time2time_na(plfm->duration, duration_str);
-				voladj2str(plfm->voladj, voladj_str);
-
-				gtk_tree_store_append(play_store, &iter, NULL);
-				gtk_tree_store_set(play_store, &iter,
-						   COLUMN_TRACK_NAME, plfm->title,
-						   COLUMN_PHYSICAL_FILENAME, g_locale_to_utf8(path, -1, NULL, NULL, NULL),
-						   COLUMN_SELECTION_COLOR, pl_color_inactive,
-						   COLUMN_VOLUME_ADJUSTMENT, plfm->voladj, COLUMN_VOLUME_ADJUSTMENT_DISP, voladj_str,
-						   COLUMN_DURATION, plfm->duration, COLUMN_DURATION_DISP, duration_str,
-						   COLUMN_FONT_WEIGHT, PANGO_WEIGHT_NORMAL, -1);
-
-				playlist_filemeta_free(plfm);
-				plfm = NULL;
+				add_file_to_playlist(plfm);
 			}
 		}
 	}
@@ -3273,9 +3258,6 @@ load_pls(char * filename, int enqueue) {
 	gint have_title = 0;
 	gchar numstr_file[10];
 	gchar numstr_title[10];
-	GtkTreeIter iter;
-	gchar voladj_str[32];
-	gchar duration_str[32];
 	playlist_filemeta * plfm = NULL;
 
 
@@ -3437,19 +3419,7 @@ load_pls(char * filename, int enqueue) {
 				continue;
 			}
 
-			time2time_na(plfm->duration, duration_str);
-			voladj2str(plfm->voladj, voladj_str);
-
-			gtk_tree_store_append(play_store, &iter, NULL);
-			gtk_tree_store_set(play_store, &iter,
-					   COLUMN_TRACK_NAME, plfm->title,
-					   COLUMN_PHYSICAL_FILENAME, g_locale_to_utf8(file, -1, NULL, NULL, NULL),
-					   COLUMN_SELECTION_COLOR, pl_color_inactive,
-					   COLUMN_VOLUME_ADJUSTMENT, plfm->voladj, COLUMN_VOLUME_ADJUSTMENT_DISP, voladj_str,
-					   COLUMN_DURATION, plfm->duration, COLUMN_DURATION_DISP, duration_str, -1);
-
-			playlist_filemeta_free(plfm);
-			plfm = NULL;
+			add_file_to_playlist(plfm);
 		}
 	}
 	delayed_playlist_rearrange(100);
@@ -3512,10 +3482,6 @@ void
 add_to_playlist(char * filename, int enqueue) {
 
 	gchar fullname[MAXLEN];
-	gchar * path = filename;
-	GtkTreeIter iter;
-	gchar voladj_str[32];
-	gchar duration_str[MAXLEN];
 	playlist_filemeta * plfm = NULL;
 
 
@@ -3527,8 +3493,7 @@ add_to_playlist(char * filename, int enqueue) {
 		strcpy(fullname, filename);
 		break;
 	case '~':
-		++path;
-		snprintf(fullname, MAXLEN-1, "%s/%s", options.home, path);
+		snprintf(fullname, MAXLEN-1, "%s/%s", options.home, filename + 1);
 		break;
 	default:
 		snprintf(fullname, MAXLEN-1, "%s/%s", options.cwd, filename);
@@ -3553,21 +3518,7 @@ add_to_playlist(char * filename, int enqueue) {
 			return;
 		}
 
-		voladj2str(plfm->voladj, voladj_str);
-		time2time_na(plfm->duration, duration_str);
-
-                gtk_tree_store_append(play_store, &iter, NULL);
-                gtk_tree_store_set(play_store, &iter,
-				   COLUMN_TRACK_NAME, plfm->title,
-				   COLUMN_PHYSICAL_FILENAME, g_locale_to_utf8(fullname, -1, NULL, NULL, NULL),
-				   COLUMN_SELECTION_COLOR, pl_color_inactive,
-				   COLUMN_VOLUME_ADJUSTMENT, plfm->voladj, COLUMN_VOLUME_ADJUSTMENT_DISP, voladj_str,
-				   COLUMN_DURATION, plfm->duration, COLUMN_DURATION_DISP, duration_str,
-				   -1);
-
-		playlist_filemeta_free(plfm);
-		plfm = NULL;
-
+		add_file_to_playlist(plfm);
 		delayed_playlist_rearrange(100);
 		break;
 

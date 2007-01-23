@@ -1106,6 +1106,10 @@ main_window_close(GtkWidget * widget, gpointer data) {
 	lrdf_cleanup();
 #endif /* HAVE_LADSPA */
 
+#ifdef HAVE_SYSTRAY
+        gtk_status_icon_set_visible(GTK_STATUS_ICON(systray_icon), FALSE);
+#endif /* HAVE_SYSTRAY */
+
 	if (options.auto_save_playlist) {
 		char playlist_name[MAXLEN];
 

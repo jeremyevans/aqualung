@@ -610,7 +610,8 @@ update_track_data_from_cdtext(cdda_drive_t * drive, GtkTreeIter * iter_drive) {
 			ret = 1;
 		}
 
-		gtk_tree_store_set(music_store, iter_drive, 0, tmp, -1);
+		if (ret == 0)
+			gtk_tree_store_set(music_store, iter_drive, 0, tmp, -1);
 	}
 
 

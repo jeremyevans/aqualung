@@ -4159,10 +4159,12 @@ The purpose and usage of Music Store and database files have been covered
 There are also some options to handle the cover arts of your records.
  The feature can be turned on by placing an image file in the same directory
  where you keep the tracks of a record.
- The filename must be one of `cover.ext', `.cover.ext', `front.ext', `.front.ext',
- `folder.ext', `.folder.ext', where `ext' is one of `jpg', `jpeg', `png', `gif',
- `bmp', `tif', `tiff'.
- If you select this record (or one of its tracks) in the Music Store, the
+ The filenames that will at first be looked for are `cover.ext', `.cover.ext',
+ `front.ext', `.front.ext', `folder.ext', `.folder.ext', where `ext' is one of
+ `jpg', `jpeg', `png', `gif', `bmp', `tif', `tiff'.
+ If none of them exists, the first image file having an appropriate extension
+ will be used.
+ If you select the record (or one of its tracks) in the Music Store, the
  image will be displayed in the comment pane and the File Info dialog, as
  well as in the Main window during the playback of a track from this album.
  Clicking the image will show a zoomed version of the cover.
@@ -4172,7 +4174,7 @@ There are also some options to handle the cover arts of your records.
 At last, as already mentioned before, this page is the place to manage music
  store database files too.
  Pressing the `Refresh' button will update the accessibility (r, rw, unreachable
-) of the specified store files.
+) flags of the specified store files.
 \end_layout
 
 \begin_layout Subsubsection

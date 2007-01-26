@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2007-01-20 10:31+0100\n"
+"PO-Revision-Date: 2007-01-26 09:51+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1822,20 +1822,17 @@ msgstr "Színek"
 msgid "Active song in playlist: "
 msgstr "Aktív szám a Lejátszólistában: "
 
+msgid "Select files"
+msgstr "Fájlok kiválasztása"
+
+msgid "Select directory"
+msgstr "Könyvtár kiválasztása"
+
 msgid "Please specify the file to save the playlist to."
 msgstr "Add meg az elmentendő lejátszólista fájlt."
 
-msgid "Saving playlist..."
-msgstr "Lejátszólista mentése..."
-
 msgid "Please specify the file to load the playlist from."
 msgstr "Add meg a betöltendő lejátszólista fájlt."
-
-msgid "Loading playlist..."
-msgstr "Lejátszólista betöltése..."
-
-msgid "Enqueuing playlist..."
-msgstr "Lejátszólista hozzáfűzése..."
 
 msgid ""
 "Playback RVA is currently disabled.\n"
@@ -1846,18 +1843,6 @@ msgstr ""
 
 msgid "Unknown"
 msgstr "Ismeretlen"
-
-msgid "Select files"
-msgstr "Fájlok kiválasztása"
-
-msgid "Adding files..."
-msgstr "Fájlok hozzáadása..."
-
-msgid "Select directory"
-msgstr "Könyvtár kiválasztása"
-
-msgid "Adding files recursively..."
-msgstr "Fájlok rekurzív hozzáadása..."
 
 #, c-format
 msgid "%d track [%s] (%.1f MB)"
@@ -1960,6 +1945,9 @@ msgstr "Átlagos"
 
 msgid "Reread file metadata"
 msgstr "Metaadatok újraolvasása"
+
+msgid "Stop adding files"
+msgstr "Hozzáadás leállítása"
 
 #, c-format
 msgid ""

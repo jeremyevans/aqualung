@@ -129,6 +129,21 @@ GtkWidget * statusbar_selected_label;
 
 GtkWidget * iw_widget;
 
+volatile int playlist_thread_stop;
+int playlist_progress_bar_semaphore;
+
+GtkWidget * progress_bar;
+GtkWidget * progress_bar_container;
+GtkWidget * progress_bar_stop_button;
+
+volatile int playlist_data_written;
+
+AQUALUNG_THREAD_DECLARE(playlist_thread_id)
+AQUALUNG_MUTEX_DECLARE(playlist_thread_mutex)
+AQUALUNG_MUTEX_DECLARE(playlist_wait_mutex)
+AQUALUNG_COND_DECLARE_INIT(playlist_thread_wait)
+
+
 /* popup menus */
 GtkWidget * add_menu;
 GtkWidget * add__files;
@@ -161,13 +176,6 @@ GtkWidget * plist__send_songs_to_iriver;
 GtkWidget * plist__separator3;
 #endif /* HAVE_IFP */
 
-void add_directory(GtkWidget * widget, gpointer data);
-void init_plist_menu(GtkWidget *append_menu);
-void show_active_position_in_playlist(void);
-void show_active_position_in_playlist_toggle(void);
-void show_last_position_in_playlist(void);
-void expand_collapse_album_node(void);
-
 gchar command[RB_CONTROL_SIZE];
 
 gchar fileinfo_name[MAXLEN];
@@ -189,6 +197,8 @@ typedef struct _playlist_filemeta {
 	char * filename;
         float duration;
         float voladj;
+	int active;
+	int level;
 } playlist_filemeta;
 
 
@@ -204,6 +214,19 @@ void cut__sel_cb(gpointer data);
 void plist__search_cb(gpointer data);
 void add_files(GtkWidget * widget, gpointer data);
 void recalc_album_node(GtkTreeIter * iter);
+
+void add_directory(GtkWidget * widget, gpointer data);
+void init_plist_menu(GtkWidget *append_menu);
+void show_active_position_in_playlist(void);
+void show_active_position_in_playlist_toggle(void);
+void show_last_position_in_playlist(void);
+void expand_collapse_album_node(void);
+
+void load_playlist(char * filename, int enqueue);
+void load_m3u(char * filename, int enqueue);
+void load_pls(char * filename, int enqueue);
+gint is_playlist(char * filename);
+
 
 
 void
@@ -253,8 +276,9 @@ adjust_playlist_item_color(GtkTreeIter * piter, char * active, char * inactive) 
 	}
 	
 	if (strcmp(str, pl_color_inactive) == 0) {
-		gtk_tree_store_set(play_store, piter, COLUMN_SELECTION_COLOR, inactive, -1);
-		gtk_tree_store_set(play_store, piter, COLUMN_FONT_WEIGHT, PANGO_WEIGHT_NORMAL, -1);
+		gtk_tree_store_set(play_store, piter,
+				   COLUMN_SELECTION_COLOR, inactive,
+				   COLUMN_FONT_WEIGHT, PANGO_WEIGHT_NORMAL, -1);
 	}
 
 	g_free(str);
@@ -264,10 +288,22 @@ adjust_playlist_item_color(GtkTreeIter * piter, char * active, char * inactive) 
 void
 set_playlist_color() {
 	
+        GdkColor color;
 	GtkTreeIter iter;
 	gchar active[14];
 	gchar inactive[14];
 	gint i = 0;
+
+        if (options.override_skin_settings && (gdk_color_parse(options.activesong_color, &color) == TRUE)) {
+
+                if (!color.red && !color.green && !color.blue) {
+                        color.red++;
+		}
+
+                play_list->style->fg[SELECTED].red = color.red;
+                play_list->style->fg[SELECTED].green = color.green;
+                play_list->style->fg[SELECTED].blue = color.blue;
+        }
 
         sprintf(active, "#%04X%04X%04X",
 		play_list->style->fg[SELECTED].red,
@@ -330,33 +366,43 @@ GtkTreePath *
 get_playing_path(GtkTreeStore * store) {
 
 	GtkTreeIter iter;
-	GtkTreeIter iter_child;
-	gchar * str;
-	gint i = 0;
+	gchar * color;
+	int i = 0;
 
-	if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter))
-		return NULL;
 
-	do {
-		gint j = 0;
-		gtk_tree_model_get(GTK_TREE_MODEL(store), &iter, COLUMN_SELECTION_COLOR, &str, -1);
-		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(store), &iter_child, &iter, j++)) {
-			gtk_tree_model_get(GTK_TREE_MODEL(store), &iter_child, COLUMN_SELECTION_COLOR, &str, -1);
-			if (strcmp(str, pl_color_active) == 0) {
-				g_free(str);
-				return gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iter_child);
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+
+		gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, COLUMN_SELECTION_COLOR, &color, -1);
+
+		if (strcmp(color, pl_color_active) == 0) {
+			if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter) > 0) {
+
+				GtkTreeIter iter_child;
+				gchar * color_child;
+				int j = 0;
+
+				while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
+								     &iter_child, &iter, j++)) {
+
+					gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter_child,
+							   COLUMN_SELECTION_COLOR, &color_child, -1);
+
+					if (strcmp(color_child, pl_color_active) == 0) {
+						g_free(color);
+						g_free(color_child);
+						return gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), &iter_child);
+					}
+
+					g_free(color_child);
+				}
+			} else {
+				g_free(color);
+				return gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), &iter);
 			}
-			g_free(str);
 		}
-		if (j == 1) { /* toplevel leafnode a.k.a. ordinary track */
-			if (strcmp(str, pl_color_active) == 0) {
-				g_free(str);
-				return gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iter);
-			}		
-			g_free(str);
-		}
-		
-	} while (i++, gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter));
+
+		g_free(color);
+	}
 
 	return NULL;
 }
@@ -585,12 +631,317 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_da
 }
 
 
+static int
+filter(const struct dirent * de) {
+
+	return de->d_name[0] != '.';
+}
+
+
+gboolean
+finalize_add_to_playlist(gpointer data) {
+
+	--playlist_progress_bar_semaphore;
+
+	playlist_thread_stop = 0;
+
+	if (main_window != NULL && playlist_window != NULL) {
+
+		playlist_content_changed();
+		delayed_playlist_rearrange(100);
+
+		if (playlist_progress_bar_semaphore == 0) {
+			playlist_progress_bar_hide();
+		}
+	}
+
+	return FALSE;
+}
+
+
+/* if data == NULL clears playlist */
+gboolean
+add_file_to_playlist(gpointer data) {
+
+	playlist_filemeta * plfm = (playlist_filemeta *)data;
+
+
+	AQUALUNG_MUTEX_LOCK(playlist_wait_mutex)
+
+	if (plfm == NULL) {
+		gtk_tree_store_clear(play_store);
+	} else {
+		GtkTreeIter iter;
+		GtkTreePath * path;
+		gchar voladj_str[32];
+		gchar duration_str[MAXLEN];
+
+
+		voladj2str(plfm->voladj, voladj_str);
+		time2time_na(plfm->duration, duration_str);
+
+		if (plfm->level == 0) {
+
+			/* deactivate toplevel item if playing path already exists */
+			if (plfm->active && (path = get_playing_path(play_store)) != NULL) {
+				plfm->active = 0;
+				gtk_tree_path_free(path);
+			}
+
+			gtk_tree_store_append(play_store, &iter, NULL);
+		} else {
+			GtkTreeIter parent;
+			int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
+
+			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &parent, NULL, n-1);
+			gtk_tree_store_append(play_store, &iter, &parent);
+		}
+
+		gtk_tree_store_set(play_store, &iter,
+			   COLUMN_TRACK_NAME, plfm->title,
+			   COLUMN_PHYSICAL_FILENAME, plfm->filename,
+			   COLUMN_SELECTION_COLOR, plfm->active ? pl_color_active : pl_color_inactive,
+			   COLUMN_VOLUME_ADJUSTMENT, plfm->voladj,
+			   COLUMN_VOLUME_ADJUSTMENT_DISP, voladj_str,
+			   COLUMN_DURATION, plfm->duration,
+			   COLUMN_DURATION_DISP, duration_str,
+			   COLUMN_FONT_WEIGHT, PANGO_WEIGHT_NORMAL, -1);
+
+		playlist_filemeta_free(plfm);
+	}
+
+	--playlist_data_written;
+
+	if (playlist_data_written < 10) {
+		AQUALUNG_COND_SIGNAL(playlist_thread_wait)
+	}
+
+	AQUALUNG_MUTEX_UNLOCK(playlist_wait_mutex)
+
+	return FALSE;
+}
+
+
+void
+playlist_thread_add_to_list(playlist_filemeta * plfm) {
+
+	AQUALUNG_MUTEX_LOCK(playlist_wait_mutex)
+
+	++playlist_data_written;
+
+	g_idle_add(add_file_to_playlist, (gpointer)plfm);
+
+	if (playlist_data_written > 100) {
+		AQUALUNG_COND_WAIT(playlist_thread_wait, playlist_wait_mutex)
+	}
+
+	AQUALUNG_MUTEX_UNLOCK(playlist_wait_mutex)
+}
+
+
+void *
+add_files_to_playlist_thread(void * arg) {
+
+	GSList * lfiles;
+	GSList * node;
+
+	AQUALUNG_THREAD_DETACH()
+
+	AQUALUNG_MUTEX_LOCK(playlist_thread_mutex)
+
+	lfiles = (GSList *)arg;
+
+	for (node = lfiles; node; node = node->next) {
+
+		if (!playlist_thread_stop) {
+			playlist_filemeta * plfm = NULL;
+
+			if ((plfm = playlist_filemeta_get((char *)node->data, NULL, 1)) != NULL) {
+
+				playlist_thread_add_to_list(plfm);
+			}
+		}
+
+		g_free(node->data);
+	}
+
+	g_slist_free(lfiles);
+
+	g_idle_add(finalize_add_to_playlist, NULL);
+
+	AQUALUNG_MUTEX_UNLOCK(playlist_thread_mutex)
+
+	return NULL;
+}
+
+
+void
+add_files(GtkWidget * widget, gpointer data) {
+
+        GtkWidget *dialog;
+
+        dialog = gtk_file_chooser_dialog_new(_("Select files"), 
+                                             options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
+                                             GTK_FILE_CHOOSER_ACTION_OPEN,
+                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
+                                             NULL);
+
+        deflicker();
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
+        gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+        assign_audio_fc_filters(GTK_FILE_CHOOSER(dialog));
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
+
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+
+		GSList *lfiles;
+
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+			MAXLEN-1);
+
+                lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
+
+		playlist_progress_bar_show();
+		AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, add_files_to_playlist_thread, lfiles)
+        }
+
+        gtk_widget_destroy(dialog);
+}
+
+
+void
+add_dir_to_playlist(char * dirname) {
+
+	gint i, n;
+	struct dirent ** ent;
+	struct stat st_file;
+	gchar path[MAXLEN];
+
+
+	if (playlist_thread_stop) {
+		return;
+	}
+
+	n = scandir(dirname, &ent, filter, alphasort);
+	for (i = 0; i < n; i++) {
+
+		if (playlist_thread_stop) {
+			break;
+		}
+
+		snprintf(path, MAXLEN-1, "%s/%s", dirname, ent[i]->d_name);
+
+		if (stat(path, &st_file) == -1) {
+			free(ent[i]);
+			continue;
+		}
+
+		if (S_ISDIR(st_file.st_mode)) {
+			add_dir_to_playlist(path);
+		} else {
+			playlist_filemeta * plfm = NULL;
+
+			if ((plfm = playlist_filemeta_get(path, NULL, 1)) != NULL) {
+
+				playlist_thread_add_to_list(plfm);
+			}
+		}
+
+		free(ent[i]);
+	}
+
+	while (i < n) {
+		free(ent[i]);
+		++i;
+	}
+
+	if (n > 0) {
+		free(ent);
+	}
+}
+
+
+void *
+add_dir_to_playlist_thread(void * arg) {
+
+
+	GSList * lfiles;
+	GSList * node;
+
+	AQUALUNG_THREAD_DETACH()
+
+	AQUALUNG_MUTEX_LOCK(playlist_thread_mutex)
+
+	lfiles = (GSList *)arg;
+
+	for (node = lfiles; node; node = node->next) {
+
+		add_dir_to_playlist((char *)node->data);
+		g_free(node->data);
+	}
+
+	g_slist_free(lfiles);
+
+	g_idle_add(finalize_add_to_playlist, NULL);
+
+	AQUALUNG_MUTEX_UNLOCK(playlist_thread_mutex)
+
+	return NULL;
+}
+
+
+void
+add_directory(GtkWidget * widget, gpointer data) {
+
+        GtkWidget *dialog;
+
+        dialog = gtk_file_chooser_dialog_new(_("Select directory"), 
+                                             options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
+					     GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
+                                             NULL);
+
+        deflicker();
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
+        gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
+
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+
+		GSList *lfiles;
+
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+			MAXLEN-1);
+
+                lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
+
+		playlist_progress_bar_show();
+		AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, add_dir_to_playlist_thread, lfiles)
+        }
+
+        gtk_widget_destroy(dialog);
+}
+
+
 void
 plist__save_cb(gpointer data) {
 
         GtkWidget * dialog;
         gchar * selected_filename;
-	gchar filename[MAXLEN];
 
 
         dialog = gtk_file_chooser_dialog_new(_("Please specify the file to save the playlist to."), 
@@ -614,20 +965,73 @@ plist__save_cb(gpointer data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                iw_show_info(dialog, options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), _("Saving playlist..."));
-
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+                strncpy(options.currdir, selected_filename, MAXLEN-1);
 
-		strncpy(filename, selected_filename, MAXLEN-1);
-		save_playlist(filename);
+		save_playlist(selected_filename);
 
-                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
-                                                                         MAXLEN-1);
-                iw_hide_info();
                 g_free(selected_filename);
         }
 
         gtk_widget_destroy(dialog);
+}
+
+
+void *
+playlist_load_thread(void * arg) {
+
+	char * filename = (char *)arg;
+	char fullname[MAXLEN];
+	playlist_filemeta * plfm = NULL;
+
+
+	AQUALUNG_THREAD_DETACH()
+
+	AQUALUNG_MUTEX_LOCK(playlist_thread_mutex)
+
+	if (!filename) {
+		return NULL;
+	}
+
+	switch (filename[0]) {
+	case '/':
+		strncpy(fullname, filename, MAXLEN-1);
+		break;
+	case '~':
+		snprintf(fullname, MAXLEN-1, "%s/%s", options.home, filename + 1);
+		break;
+	default:
+		snprintf(fullname, MAXLEN-1, "%s/%s", options.cwd, filename);
+		break;
+	}
+
+	switch (is_playlist(filename)) {
+	case 0:
+		if ((plfm = playlist_filemeta_get(fullname, NULL, 1)) == NULL) {
+			fprintf(stderr, "playlist_load_thread(): playlist_filemeta_get() returned NULL\n");
+		} else {
+			playlist_thread_add_to_list(NULL);
+			playlist_thread_add_to_list(plfm);
+		}
+		break;
+	case 1:
+		load_playlist(filename, 0);
+		break;
+	case 2:
+		load_m3u(filename, 0);
+		break;
+	case 3:
+		load_pls(filename, 0);
+		break;
+	}
+
+	free(filename);
+
+	g_idle_add(finalize_add_to_playlist, NULL);
+
+	AQUALUNG_MUTEX_UNLOCK(playlist_thread_mutex)
+
+	return NULL;
 }
 
 
@@ -636,7 +1040,6 @@ plist__load_cb(gpointer data) {
 
         GtkWidget * dialog;
         const gchar * selected_filename;
-	gchar filename[MAXLEN];
 
 
         dialog = gtk_file_chooser_dialog_new(_("Please specify the file to load the playlist from."), 
@@ -659,35 +1062,72 @@ plist__load_cb(gpointer data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                iw_show_info(dialog, options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), _("Loading playlist..."));
-
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+                strncpy(options.currdir, selected_filename, MAXLEN-1);
 
-                strncpy(filename, selected_filename, MAXLEN-1);
-		switch (is_playlist(filename)) {
-		case 0:
-			fprintf(stderr,
-				"error: %s does not appear to be a valid playlist\n", filename);
-			break;
-		case 1:
-			load_playlist(filename, 0);
-			break;
-		case 2:
-			load_m3u(filename, 0);
-			break;
-		case 3:
-			load_pls(filename, 0);
-			break;
-		}
+		playlist_progress_bar_show();
 
-                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
-                                                                         MAXLEN-1);
-                iw_hide_info();
+		AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_load_thread, strdup(selected_filename))
         }
 
         gtk_widget_destroy(dialog);
+}
 
-	playlist_content_changed();
+
+void *
+playlist_enqueue_thread(void * arg) {
+
+	char * filename = (char *)arg;
+	char fullname[MAXLEN];
+	playlist_filemeta * plfm = NULL;
+
+
+	AQUALUNG_THREAD_DETACH()
+
+	AQUALUNG_MUTEX_LOCK(playlist_thread_mutex)
+
+	if (!filename) {
+		return NULL;
+	}
+
+	switch (filename[0]) {
+	case '/':
+		strncpy(fullname, filename, MAXLEN-1);
+		break;
+	case '~':
+		snprintf(fullname, MAXLEN-1, "%s/%s", options.home, filename + 1);
+		break;
+	default:
+		snprintf(fullname, MAXLEN-1, "%s/%s", options.cwd, filename);
+		break;
+	}
+
+	switch (is_playlist(filename)) {
+	case 0:
+		if ((plfm = playlist_filemeta_get(fullname, NULL, 1)) == NULL) {
+			fprintf(stderr, "playlist_enqueue_thread(): playlist_filemeta_get() returned NULL\n");
+		} else {
+			playlist_thread_add_to_list(plfm);
+		}
+		break;
+	case 1:
+		load_playlist(filename, 1);
+		break;
+	case 2:
+		load_m3u(filename, 1);
+		break;
+	case 3:
+		load_pls(filename, 1);
+		break;
+	}
+
+	free(filename);
+
+	g_idle_add(finalize_add_to_playlist, NULL);
+
+	AQUALUNG_MUTEX_UNLOCK(playlist_thread_mutex)
+
+	return NULL;
 }
 
 
@@ -696,7 +1136,6 @@ plist__enqueue_cb(gpointer data) {
 
         GtkWidget * dialog;
         const gchar * selected_filename;
-	gchar filename[MAXLEN];
 
 
         dialog = gtk_file_chooser_dialog_new(_("Please specify the file to load the playlist from."), 
@@ -720,35 +1159,14 @@ plist__enqueue_cb(gpointer data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                iw_show_info(dialog, options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), _("Enqueuing playlist..."));
-
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+                strncpy(options.currdir, selected_filename, MAXLEN-1);
 
-                strncpy(filename, selected_filename, MAXLEN-1);
-		switch (is_playlist(filename)) {
-		case 0:
-			fprintf(stderr,
-				"error: %s does not appear to be a valid playlist\n", filename);
-			break;
-		case 1:
-			load_playlist(filename, 1);
-			break;
-		case 2:
-			load_m3u(filename, 1);
-			break;
-		case 3:
-			load_pls(filename, 1);
-			break;
-		}
-
-                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
-                                                                         MAXLEN-1);
-                iw_hide_info();
+		playlist_progress_bar_show();
+		AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_enqueue_thread, strdup(selected_filename))
         }
 
         gtk_widget_destroy(dialog);
-
-        playlist_content_changed();
 }
 
 
@@ -1246,242 +1664,6 @@ playlist_filemeta_free(playlist_filemeta * plfm) {
 }
 
 
-static int
-filter(const struct dirent * de) {
-
-	return de->d_name[0] != '.';
-}
-
-
-gboolean
-finalize_add_to_playlist(gpointer data) {
-
-	playlist_content_changed();
-        delayed_playlist_rearrange(100);
-
-	iw_hide_info();
-
-	return FALSE;
-}
-
-
-gboolean
-add_file_to_playlist(gpointer data) {
-
-	gchar voladj_str[32];
-	gchar duration_str[MAXLEN];
-	GtkTreeIter iter;
-	playlist_filemeta * plfm = (playlist_filemeta *)data;
-
-
-	voladj2str(plfm->voladj, voladj_str);
-	time2time_na(plfm->duration, duration_str);
-
-	gtk_tree_store_append(play_store, &iter, NULL);
-	gtk_tree_store_set(play_store, &iter,
-			   COLUMN_TRACK_NAME, plfm->title,
-			   COLUMN_PHYSICAL_FILENAME, plfm->filename,
-			   COLUMN_SELECTION_COLOR, pl_color_inactive,
-			   COLUMN_VOLUME_ADJUSTMENT, plfm->voladj,
-			   COLUMN_VOLUME_ADJUSTMENT_DISP, voladj_str,
-			   COLUMN_DURATION, plfm->duration,
-			   COLUMN_DURATION_DISP, duration_str,
-			   COLUMN_FONT_WEIGHT, PANGO_WEIGHT_NORMAL, -1);
-
-	playlist_filemeta_free(plfm);
-
-	return FALSE;
-}
-
-
-void *
-add_files_to_playlist_thread(void * arg) {
-
-	GSList * lfiles;
-	GSList * node;
-
-	AQUALUNG_THREAD_DETACH()
-
-	lfiles = (GSList *)arg;
-
-	for (node = lfiles; node; node = node->next) {
-
-		playlist_filemeta * plfm = NULL;
-
-		if ((plfm = playlist_filemeta_get((char *)node->data, NULL, 1)) != NULL) {
-
-			g_idle_add_full(G_PRIORITY_HIGH_IDLE,
-					add_file_to_playlist,
-					(gpointer)plfm,
-					NULL);
-		}
-
-		g_free(node->data);
-	}
-
-	g_slist_free(lfiles);
-
-	g_idle_add(finalize_add_to_playlist, NULL);
-
-	return NULL;
-}
-
-
-void
-add_files(GtkWidget * widget, gpointer data) {
-
-        GtkWidget *dialog;
-
-        dialog = gtk_file_chooser_dialog_new(_("Select files"), 
-                                             options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
-                                             GTK_FILE_CHOOSER_ACTION_OPEN,
-                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
-                                             NULL);
-
-        deflicker();
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
-        gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
-        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
-        assign_audio_fc_filters(GTK_FILE_CHOOSER(dialog));
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-
-	if (options.show_hidden) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
-	}
-
-        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-		GSList *lfiles;
-		AQUALUNG_THREAD_DECLARE(thread_id)
-
-		iw_show_info(dialog,
-			     options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
-			     _("Adding files..."));
-
-                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
-			MAXLEN-1);
-
-                lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
-
-		AQUALUNG_THREAD_CREATE(thread_id, NULL, add_files_to_playlist_thread, lfiles)
-        }
-
-        gtk_widget_destroy(dialog);
-}
-
-
-void
-add_dir_to_playlist(char * dirname) {
-
-	gint i, n;
-	struct dirent ** ent;
-	struct stat st_file;
-	gchar path[MAXLEN];
-
-	n = scandir(dirname, &ent, filter, alphasort);
-	for (i = 0; i < n; i++) {
-
-		snprintf(path, MAXLEN-1, "%s/%s", dirname, ent[i]->d_name);
-
-		if (stat(path, &st_file) == -1) {
-			free(ent[i]);
-			continue;
-		}
-
-		if (S_ISDIR(st_file.st_mode)) {
-			add_dir_to_playlist(path);
-		} else {
-			playlist_filemeta * plfm = NULL;
-
-			if ((plfm = playlist_filemeta_get(path, NULL, 1)) != NULL) {
-
-				g_idle_add_full(G_PRIORITY_HIGH_IDLE,
-						add_file_to_playlist,
-						(gpointer)plfm,
-						NULL);
-			}
-		}
-
-		free(ent[i]);
-	}
-
-	if (n > 0) {
-		free(ent);
-	}
-}
-
-
-void *
-add_dir_to_playlist_thread(void * arg) {
-
-
-	GSList * lfiles;
-	GSList * node;
-
-	AQUALUNG_THREAD_DETACH()
-
-	lfiles = (GSList *)arg;
-
-	for (node = lfiles; node; node = node->next) {
-
-		add_dir_to_playlist((char *)node->data);
-		g_free(node->data);
-	}
-
-	g_slist_free(lfiles);
-
-	g_idle_add(finalize_add_to_playlist, NULL);
-
-	return NULL;
-}
-
-
-void
-add_directory(GtkWidget * widget, gpointer data) {
-
-        GtkWidget *dialog;
-
-        dialog = gtk_file_chooser_dialog_new(_("Select directory"), 
-                                             options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
-					     GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
-                                             NULL);
-
-        deflicker();
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
-        gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
-        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-
-	if (options.show_hidden) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
-	}
-
-        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-		GSList *lfiles;
-		AQUALUNG_THREAD_DECLARE(thread_id)
-
-		iw_show_info(dialog,
-			     options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
-			     _("Adding files recursively..."));
-
-                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
-			MAXLEN-1);
-
-                lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
-
-		AQUALUNG_THREAD_CREATE(thread_id, NULL, add_dir_to_playlist_thread, lfiles)
-        }
-
-        gtk_widget_destroy(dialog);
-}
-
-
 void
 add__files_cb(gpointer data) {
 
@@ -1789,6 +1971,10 @@ playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event) {
 	gint rva_width;
 	gint length_width;
 
+
+	if (main_window == NULL || playlist_window == NULL) {
+		return TRUE;
+	}
 
 	avail = play_list->allocation.width;
 
@@ -2535,6 +2721,13 @@ create_playlist(void) {
 
         playlist_color_is_set = 0;
 
+	if (pl_color_active[0] == '\0') {
+		strcpy(pl_color_active, "#ffffff");
+	}
+	if (pl_color_inactive[0] == '\0') {
+		strcpy(pl_color_inactive, "#010101");
+	}
+
 	for (i = 0; i < 3; i++) {
 		switch (options.plcol_idx[i]) {
 		case 0:
@@ -2661,6 +2854,13 @@ create_playlist(void) {
 
 	gtk_container_add(GTK_CONTAINER(scrolled_win), play_list);
 
+
+	progress_bar_container = gtk_hbox_new(FALSE, 4);
+        gtk_box_pack_start(GTK_BOX(vbox), progress_bar_container, FALSE, FALSE, 0);
+
+	if (playlist_progress_bar_semaphore > 0) {
+		playlist_progress_bar_show();
+	}
 
 	/* statusbar */
 	if (options.enable_playlist_statusbar) {
@@ -2949,118 +3149,100 @@ save_playlist(char * filename) {
 
 
 void
-parse_playlist_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * pparent_iter, int sel_ok) {
+parse_playlist_track(xmlDocPtr doc, xmlNodePtr _cur, int level) {
 
         xmlChar * key;
 	gchar *converted_temp;
-	GError *error;
-	GtkTreeIter iter;
 	gint is_record_node;
-	gchar track_name[MAXLEN];
-	gchar phys_name[MAXLEN];
-	gchar color[32];
-	gfloat voladj = 0.0f;
-	gchar voladj_str[32];
-	gfloat duration = 0.0f;
-	gchar duration_str[MAXLEN];
 
-	track_name[0] = '\0';
-	phys_name[0] = '\0';
-	color[0] = '\0';
+	xmlNodePtr cur;
+	playlist_filemeta * plfm = NULL;
+
 	
-	is_record_node = !xmlStrcmp(cur->name, (const xmlChar *)"record");
-        cur = cur->xmlChildrenNode;
-	if (cur) {
-	    gtk_tree_store_append(play_store, &iter, pparent_iter);
-	    gtk_tree_store_set(play_store, &iter, COLUMN_TRACK_NAME, "", COLUMN_PHYSICAL_FILENAME, "", 
-                               COLUMN_SELECTION_COLOR, "", COLUMN_VOLUME_ADJUSTMENT, 0.0f, 
-			       COLUMN_VOLUME_ADJUSTMENT_DISP, "", COLUMN_DURATION, 0.0f, COLUMN_DURATION_DISP, "", -1);
+	is_record_node = !xmlStrcmp(_cur->name, (const xmlChar *)"record");
+
+	if ((plfm = (playlist_filemeta *)calloc(1, sizeof(playlist_filemeta))) == NULL) {
+		fprintf(stderr, "calloc error in parse_playlist_track()\n");
+		return;
 	}
 
-        while (cur != NULL) {
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"track_name"))) {
+	plfm->level = level;
+
+        for (cur = _cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
+
+                if (!xmlStrcmp(cur->name, (const xmlChar *)"track_name")) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-                                strncpy(track_name, (char *) key, sizeof(track_name)-1);
-				track_name[sizeof(track_name)-1] = '\0';
-			};
+				plfm->title = strndup((char *)key, MAXLEN-1);
+			}
                         xmlFree(key);
-			gtk_tree_store_set(play_store, &iter, COLUMN_TRACK_NAME, track_name, -1); 
-                } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"phys_name"))) {
+                } else if (!xmlStrcmp(cur->name, (const xmlChar *)"phys_name")) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
 				if (is_record_node) {
-				    /* "record" node keeps special data here */
-				    strncpy(phys_name, (char *) key, sizeof(phys_name)-1);
-				    phys_name[sizeof(phys_name)-1] = '\0';
+					/* "record" node keeps special data here */
+					plfm->filename = strndup((char *)key, MAXLEN-1);
 				} else if ((converted_temp = g_filename_from_uri((char *) key, NULL, NULL))) {
-                            	    strncpy(phys_name, converted_temp, sizeof(phys_name)-1);
-				    phys_name[sizeof(phys_name)-1] = '\0';
-				    g_free(converted_temp);
-				} else {
-				    /* try to read utf8 filename from outdated file  */
-				    converted_temp = g_locale_from_utf8((char *) key, -1, NULL, NULL, &error);
-				    if ((converted_temp!=NULL)) {
-					strncpy(phys_name, converted_temp, sizeof(phys_name)-1);
-					phys_name[sizeof(phys_name)-1] = '\0';
+					plfm->filename = strndup(converted_temp, MAXLEN-1);
 					g_free(converted_temp);
-				    } else {
-				        /* last try - maybe it's plain locale filename */
-					strncpy(phys_name, (char *) key, sizeof(phys_name)-1);
-					phys_name[sizeof(phys_name)-1] = '\0';
-				    };
-				};
-			};
-                        xmlFree(key);
-			gtk_tree_store_set(play_store, &iter, COLUMN_PHYSICAL_FILENAME, phys_name, -1); 
-                } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"is_active"))) {
-                        key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-				if ((xmlStrcmp(key, (const xmlChar *)"yes")) || (!sel_ok)) {
-					strncpy(color, pl_color_inactive, sizeof(color)-1);
-					color[sizeof(color)-1] = '\0';
 				} else {
-					strncpy(color, pl_color_active, sizeof(color)-1);
-					color[sizeof(color)-1] = '\0';
-				};
+					/* try to read utf8 filename from outdated file  */
+					converted_temp = g_locale_from_utf8((char *) key, -1, NULL, NULL, NULL);
+					if (converted_temp != NULL) {
+						plfm->filename = strndup(converted_temp, MAXLEN-1);
+						g_free(converted_temp);
+					} else {
+						/* last try - maybe it's plain locale filename */
+						plfm->filename = strndup((char *)key, MAXLEN-1);
+					}
+				}
+			}
+                        xmlFree(key);
+                } else if (!xmlStrcmp(cur->name, (const xmlChar *)"is_active")) {
+                        key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				if (!xmlStrcmp(key, (const xmlChar *)"yes")) {
+					plfm->active = 1;
+				} else {
+					plfm->active = 0;
+				}
 			} else {
-			    strncpy(color, pl_color_inactive, sizeof(color)-1);
-			    color[sizeof(color)-1] = '\0';
-			};
+				plfm->active = 0;
+			}
                         xmlFree(key);
-			gtk_tree_store_set(play_store, &iter, COLUMN_SELECTION_COLOR, color, -1);
-                } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"voladj"))) {
+                } else if (!xmlStrcmp(cur->name, (const xmlChar *)"voladj")) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				voladj = convf((char *) key);
+				plfm->voladj = convf((char *)key);
                         }
                         xmlFree(key);
-			voladj2str(voladj, voladj_str);
-			gtk_tree_store_set(play_store, &iter, COLUMN_VOLUME_ADJUSTMENT, voladj, 
-                                           COLUMN_VOLUME_ADJUSTMENT_DISP, voladj_str, -1);
-                } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"duration"))) {
+                } else if (!xmlStrcmp(cur->name, (const xmlChar *)"duration")) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL) {
-				duration = convf((char *) key);
+				plfm->duration = convf((char *)key);
                         }
                         xmlFree(key);
-			time2time_na(duration, duration_str);
-			gtk_tree_store_set(play_store, &iter, COLUMN_DURATION, duration, COLUMN_DURATION_DISP, duration_str, -1);
-                } else if ((!xmlStrcmp(cur->name, (const xmlChar *)"track"))) {
-                        parse_playlist_track(doc, cur, &iter, sel_ok);
+                }
+	}
+
+	playlist_thread_add_to_list(plfm);
+
+	if (is_record_node) {
+
+		for (cur = _cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
+			if (!xmlStrcmp(cur->name, (const xmlChar *)"track")) {
+				parse_playlist_track(doc, cur, 1);
+			}
 		}
-		cur = cur->next;
 	}
 }
 
 void
 load_playlist(char * filename, int enqueue) {
 
-	GtkTreePath * p;
         xmlDocPtr doc;
         xmlNodePtr cur;
 	FILE * f;
-	gint sel_ok = 0;
 
         if ((f = fopen(filename, "rt")) == NULL) {
                 return;
@@ -3087,35 +3269,18 @@ load_playlist(char * filename, int enqueue) {
                 return;
         }
 
-	if (pl_color_active[0] == '\0')
-		strcpy(pl_color_active, "#ffffff");
-	if (pl_color_inactive[0] == '\0')
-		strcpy(pl_color_inactive, "#000000");
-
-	if (!enqueue)
-		gtk_tree_store_clear(play_store);
-
-	if ((p = get_playing_path(play_store)) == NULL) {
-		sel_ok = 1;
-	} else {
-		gtk_tree_path_free(p);
+	if (!enqueue) {
+		playlist_thread_add_to_list(NULL);
 	}
-		
-        cur = cur->xmlChildrenNode;
-        while (cur != NULL) {
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"track"))) {
-                        parse_playlist_track(doc, cur, NULL, sel_ok);
+
+        for (cur = cur->xmlChildrenNode; cur != NULL && !playlist_thread_stop; cur = cur->next) {
+                if (!xmlStrcmp(cur->name, (const xmlChar *)"track") ||
+		    !xmlStrcmp(cur->name, (const xmlChar *)"record")) {
+                        parse_playlist_track(doc, cur, 0);
                 }
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"record"))) {
-                        parse_playlist_track(doc, cur, NULL, sel_ok);
-                }
-                cur = cur->next;
         }
 
         xmlFreeDoc(doc);
-
-	delayed_playlist_rearrange(100);
-	playlist_content_changed();
 }
 
 
@@ -3149,11 +3314,12 @@ load_m3u(char * filename, int enqueue) {
 		return;
 	}
 
-	if (!enqueue)
-		gtk_tree_store_clear(play_store);
+	if (!enqueue) {
+		playlist_thread_add_to_list(NULL);
+	}
 
 	i = 0;
-	while ((c = fgetc(f)) != EOF) {
+	while ((c = fgetc(f)) != EOF && !playlist_thread_stop) {
 		if ((c != '\n') && (c != '\r') && (i < MAXLEN)) {
 			if ((i > 0) || ((c != ' ') && (c != '\t'))) {
 				line[i++] = c;
@@ -3231,14 +3397,12 @@ load_m3u(char * filename, int enqueue) {
 							     1);
 				if (plfm == NULL) {
 					fprintf(stderr, "load_m3u(): playlist_filemeta_get() returned NULL\n");
-					continue;
+				} else {
+					playlist_thread_add_to_list(plfm);
 				}
-
-				add_file_to_playlist(plfm);
 			}
 		}
 	}
-	delayed_playlist_rearrange(100);
 }
 
 
@@ -3275,11 +3439,12 @@ load_pls(char * filename, int enqueue) {
 		return;
 	}
 
-	if (!enqueue)
-		gtk_tree_store_clear(play_store);
+	if (!enqueue) {
+		playlist_thread_add_to_list(NULL);
+	}
 
 	i = 0;
-	while ((c = fgetc(f)) != EOF) {
+	while ((c = fgetc(f)) != EOF && !playlist_thread_stop) {
 		if ((c != '\n') && (c != '\r') && (i < MAXLEN)) {
 			if ((i > 0) || ((c != ' ') && (c != '\t'))) {
 				line[i++] = c;
@@ -3417,13 +3582,11 @@ load_pls(char * filename, int enqueue) {
 						     1);
 			if (plfm == NULL) {
 				fprintf(stderr, "load_pls(): playlist_filemeta_get() returned NULL\n");
-				continue;
+			} else {
+				playlist_thread_add_to_list(plfm);
 			}
-
-			add_file_to_playlist(plfm);
 		}
 	}
-	delayed_playlist_rearrange(100);
 }
 
 
@@ -3437,7 +3600,7 @@ int
 is_playlist(char * filename) {
 
 	FILE * f;
-	gchar buf[] = "<?xml version=\"1.0\"?>\n<aqualung_playlist>\0";
+	gchar buf[] = "<?xml version=\"1.0\"?>\n<aqualung_playlist";
 	gchar inbuf[64];
 	gint len;
 
@@ -3478,65 +3641,6 @@ is_playlist(char * filename) {
 	return 0;
 }
 
-
-void
-add_to_playlist(char * filename, int enqueue) {
-
-	gchar fullname[MAXLEN];
-	playlist_filemeta * plfm = NULL;
-
-
-	if (!filename)
-		return;
-
-	switch (filename[0]) {
-	case '/':
-		strcpy(fullname, filename);
-		break;
-	case '~':
-		snprintf(fullname, MAXLEN-1, "%s/%s", options.home, filename + 1);
-		break;
-	default:
-		snprintf(fullname, MAXLEN-1, "%s/%s", options.cwd, filename);
-		break;
-	}
-
-
-        if (pl_color_active[0] == '\0')
-                strcpy(pl_color_active, "#ffffff");
-        if (pl_color_inactive[0] == '\0')
-                strcpy(pl_color_inactive, "#000000");
-
-	switch (is_playlist(fullname)) {
-
-	case 0: /* not a playlist -- load the file itself */
-		if (!enqueue)
-			gtk_tree_store_clear(play_store);
-
-		plfm = playlist_filemeta_get(fullname, NULL, 1);
-		if (plfm == NULL) {
-			fprintf(stderr, "add_to_playlist(): playlist_filemeta_get() returned NULL\n");
-			return;
-		}
-
-		add_file_to_playlist(plfm);
-		delayed_playlist_rearrange(100);
-		break;
-
-	case 1: /* native aqualung playlist (XML) */
-		load_playlist(fullname, enqueue);
-		break;
-
-	case 2: /* .m3u */
-		load_m3u(fullname, enqueue);
-		break;
-
-	case 3: /* .pls */
-		load_pls(fullname, enqueue);
-		break;
-	}
-	playlist_content_changed();
-}
 
 void
 init_plist_menu(GtkWidget *append_menu) {
@@ -3781,6 +3885,64 @@ expand_collapse_album_node(void) {
                 }
         }
 }
+
+
+gboolean
+progress_bar_update(gpointer data) {
+
+	if (progress_bar != NULL) {
+		gtk_progress_bar_pulse(GTK_PROGRESS_BAR(progress_bar));
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+void
+progress_bar_stop_clicked(GtkWidget * widget, gpointer data) {
+
+	playlist_thread_stop = 1;
+}
+
+void
+playlist_progress_bar_show(void) {
+
+	++playlist_progress_bar_semaphore;
+
+	if (progress_bar != NULL) {
+		return;
+	}
+
+	playlist_thread_stop = 0;
+
+	progress_bar = gtk_progress_bar_new();
+        gtk_box_pack_start(GTK_BOX(progress_bar_container), progress_bar, TRUE, TRUE, 0);
+
+	progress_bar_stop_button = gtk_button_new_with_label(_("Stop adding files"));
+        gtk_box_pack_start(GTK_BOX(progress_bar_container), progress_bar_stop_button, FALSE, FALSE, 0);
+        g_signal_connect(G_OBJECT(progress_bar_stop_button), "clicked",
+			 G_CALLBACK(progress_bar_stop_clicked), NULL);
+
+	gtk_widget_show_all(progress_bar_container);
+
+	g_timeout_add(200, progress_bar_update, NULL);
+}
+
+
+void
+playlist_progress_bar_hide(void) {
+
+	if (progress_bar != NULL) {
+		gtk_widget_destroy(progress_bar);
+		progress_bar = NULL;
+	}
+
+	if (progress_bar_stop_button != NULL) {
+		gtk_widget_destroy(progress_bar_stop_button);
+		progress_bar_stop_button = NULL;
+	}
+}
+
 
 void
 iw_show_info (GtkWidget *dialog, GtkWindow *transient, gchar *message) {

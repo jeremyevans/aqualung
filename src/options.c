@@ -316,7 +316,6 @@ options_window_accept(void) {
 	int n_prev = 3;
 	GtkTreeIter iter;
 	GtkTreeIter iter2;
-        GdkColor color;
 
 
         if (restart_flag) {
@@ -512,21 +511,7 @@ options_window_accept(void) {
 			gtk_widget_modify_font (statusbar_ms, fd_statusbar);
 		}
 
-                /* apply colors */               
-
-                if (gdk_color_parse(options.activesong_color, &color) == TRUE) {
- 
-                        /* sorry for this, but it's temporary workaround */
-                        /* see playlist.c:1848 FIXME tag for details */
-
-                        if (!color.red && !color.green && !color.blue)
-                                color.red++;
-
-                        play_list->style->fg[SELECTED].red = color.red;
-                        play_list->style->fg[SELECTED].green = color.green;
-                        play_list->style->fg[SELECTED].blue = color.blue;
-                        set_playlist_color();
-                }
+		set_playlist_color();
 
                 if (appearance_changed) {
 			reskin_flag = 1;

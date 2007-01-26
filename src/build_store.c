@@ -693,6 +693,10 @@ map_put(map_t ** map, char * str) {
 	map_t * pmap;
 	map_t * _pmap;
 
+	if (str == NULL || str[0] == '\0') {
+		return;
+	}
+
 	if (*map == NULL) {
 		*map = map_new(str);
 	} else {

@@ -243,10 +243,12 @@ find_plugins(char * path_entry) {
 			snprintf(lib_name, MAXLEN-1, "%s/%s", path_entry, de[c]->d_name);
 			library = dlopen(lib_name, RTLD_LAZY);
 			if (library == NULL) {
+				free(de[c]);
 				continue;
 			}
 			descriptor_fn = dlsym(library, "ladspa_descriptor");
 			if (descriptor_fn == NULL) {
+				free(de[c]);
 				dlclose(library);
 				continue;
 			}

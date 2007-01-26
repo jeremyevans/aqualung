@@ -49,6 +49,7 @@
 #define AQUALUNG_COND_DECLARE_INIT(cond) GCond * cond = NULL;
 #define AQUALUNG_COND_SIGNAL(cond) g_cond_signal(cond);
 #define AQUALUNG_COND_TIMEDWAIT(cond, mutex, timeout) g_cond_timed_wait(cond, mutex, timeout);
+#define AQUALUNG_COND_WAIT(cond, mutex) g_cond_wait(cond, mutex);
 
 #else
 
@@ -67,6 +68,7 @@
 #define AQUALUNG_COND_DECLARE_INIT(cond) pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 #define AQUALUNG_COND_SIGNAL(cond) pthread_cond_signal(&cond);
 #define AQUALUNG_COND_TIMEDWAIT(cond, mutex, timeout) pthread_cond_timedwait(&cond, &mutex, &timeout);
+#define AQUALUNG_COND_WAIT(cond, mutex) pthread_cond_wait(&cond, &mutex);
 
 #endif /* _WIN32 */
 

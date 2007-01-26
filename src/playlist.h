@@ -31,17 +31,20 @@ gint playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event);
 void create_playlist(void);
 void show_playlist(void);
 void hide_playlist(void);
+
+void playlist_progress_bar_show(void);
+void playlist_progress_bar_hide(void);
+
 void set_playlist_color(void);
 void save_playlist(char * filename);
-void load_playlist(char * filename, int enqueue);
-void load_m3u(char * filename, int enqueue);
-void load_pls(char * filename, int enqueue);
-gint is_playlist(char * filename);
-void add_to_playlist(char * filename, int enqueue);
 void playlist_content_changed(void);
 void playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer data);
 gint playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent);
 void playlist_foreach_selected(void (* foreach)(GtkTreeIter *, void *), void * data);
+
+void * playlist_load_thread(void * arg);
+void * playlist_enqueue_thread(void * arg);
+
 
 #ifdef HAVE_CDDA
 void playlist_add_cdda(GtkTreeIter * iter_drive, unsigned long hash);

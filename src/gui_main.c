@@ -99,6 +99,11 @@ extern char * client_name;
 extern int jack_is_shutdown;
 #endif /* HAVE_JACK */
 
+extern AQUALUNG_THREAD_DECLARE(playlist_thread_id)
+extern AQUALUNG_MUTEX_DECLARE(playlist_thread_mutex)
+extern AQUALUNG_MUTEX_DECLARE(playlist_wait_mutex)
+extern AQUALUNG_COND_DECLARE(playlist_thread_wait)
+
 extern volatile int vol_cancelled;
 
 extern int aqualung_socket_fd;
@@ -355,7 +360,6 @@ extern void direct_add(GtkWidget * widget, gpointer * data);
 extern void start_playback_from_playlist(GtkTreePath * path);
 
 extern void show_active_position_in_playlist(void);
-extern void show_last_position_in_playlist(void);
 
 extern char fileinfo_name[MAXLEN];
 extern char fileinfo_file[MAXLEN];
@@ -882,8 +886,6 @@ change_skin(char * path) {
 
 	char rcpath[MAXLEN];
 
-        GdkColor color;
-
 	g_source_remove(timeout_tag);
 #ifdef HAVE_CDDA
 	cdda_timeout_stop();
@@ -891,11 +893,13 @@ change_skin(char * path) {
 
 	save_window_position();
 
+	playlist_progress_bar_hide();
+
 	gtk_widget_destroy(main_window);
-	deflicker();
+	main_window = NULL;
 	if (!options.playlist_is_embedded) {
 		gtk_widget_destroy(playlist_window);
-		deflicker();
+		playlist_window = NULL;
 	}
 	gtk_widget_destroy(browser_window);
 	deflicker();
@@ -1010,18 +1014,6 @@ change_skin(char * path) {
 	restore_window_position();
 	deflicker();
 	refresh_displays();
-
-        if (options.override_skin_settings && (gdk_color_parse(options.activesong_color, &color) == TRUE)) {
-
-                /* it's temporary workaround - see playlist.c FIXME tag for details */
-
-                if (!color.red && !color.green && !color.blue)
-                        color.red++;
-
-                play_list->style->fg[SELECTED].red = color.red;
-                play_list->style->fg[SELECTED].green = color.green;
-                play_list->style->fg[SELECTED].blue = color.blue;
-        }
 
 	set_playlist_color();
 	
@@ -3378,12 +3370,14 @@ process_filenames(char ** argv, int optind, int enqueue) {
 	
 	for (i = optind; argv[i] != NULL; i++) {
 		if ((enqueue) || (i > optind)) {
-			add_to_playlist(argv[i], 1);
+			playlist_progress_bar_show();
+			AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_enqueue_thread, strdup(argv[i]))
 		} else {
-			add_to_playlist(argv[i], 0);
+			playlist_progress_bar_show();
+			AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_load_thread, strdup(argv[i]))
 		}
 	}
-}	
+}
 
 
 /*** Systray support ***/
@@ -3571,7 +3565,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	char path[MAXLEN];
 	GList * glist = NULL;
 	GdkPixbuf * pixbuf = NULL;
-        GdkColor color;
 
 	srand(time(0));
 	sample_pos = 0;
@@ -3655,12 +3648,11 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	cdda_scanner_start();
 #endif /* HAVE_CDDA */
 
-	if (options.auto_save_playlist) {
-		char playlist_name[MAXLEN];
-
-		snprintf(playlist_name, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
-		load_playlist(playlist_name, 0);
-	}
+#ifdef _WIN32
+	playlist_thread_mutex = g_mutex_new();
+	playlist_wait_mutex = g_mutex_new();
+	playlist_thread_wait = g_cond_new();
+#endif /* _WIN32 */
 
 	sprintf(path, "%s/icon_16.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
@@ -3689,6 +3681,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	if (glist != NULL) {
 		gtk_window_set_default_icon_list(glist);
+		g_list_free(glist);
 	}
 
 	if (repeat_on) {
@@ -3759,22 +3752,16 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	        changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
         }
 
-        /* change color of active song in playlist */
-        if (options.override_skin_settings && (gdk_color_parse(options.activesong_color, &color) == TRUE)) {
-
-                /* sorry for this, but it's temporary workaround */
-                /* see playlist.c:1848 FIXME tag for details */
-
-                if (!color.red && !color.green && !color.blue)
-                        color.red++;
-
-                play_list->style->fg[SELECTED].red = color.red;
-                play_list->style->fg[SELECTED].green = color.green;
-                play_list->style->fg[SELECTED].blue = color.blue;
-        }
-
 	zero_displays();
 	set_playlist_color();
+
+	if (options.auto_save_playlist) {
+		char playlist_name[MAXLEN];
+
+		snprintf(playlist_name, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
+		playlist_progress_bar_show();
+		AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_load_thread, strdup(playlist_name))
+	}
 
 	/* read command line filenames */
 	process_filenames(argv, optind, enqueue);
@@ -4015,12 +4002,13 @@ timeout_callback(gpointer data) {
 			last_rcmd_loadenq = 0;
 			break;
 		case RCMD_LOAD:
-			add_to_playlist(cmdbuf, 0);
+			playlist_progress_bar_show();
+			AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_load_thread, strdup(cmdbuf))
 			last_rcmd_loadenq = 1;
 			break;
 		case RCMD_ENQUEUE:
-			add_to_playlist(cmdbuf, 1);
-                        show_last_position_in_playlist();  
+			playlist_progress_bar_show();
+			AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_enqueue_thread, strdup(cmdbuf))
 			if (last_rcmd_loadenq != 1)
 				last_rcmd_loadenq = 2;
 			break;

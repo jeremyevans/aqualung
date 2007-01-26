@@ -62,7 +62,6 @@ extern GtkListStore * ms_pathlist_store;
 extern PangoFontDescription *fd_browser;
 extern PangoFontDescription *fd_statusbar;
 
-extern char pl_color_active[14];
 extern char pl_color_inactive[14];
 
 extern GtkWidget * gui_stock_label_button(gchar * label, const gchar * stock);

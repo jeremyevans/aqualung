@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2006-12-30 13:36+0100\n"
+"PO-Revision-Date: 2007-01-26 09:51+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1922,23 +1922,19 @@ msgstr "Schließen"
 msgid "Active song in playlist: "
 msgstr "Zeige RVA in Playliste"
 
-msgid "Please specify the file to save the playlist to."
-msgstr "Playliste speichern"
+#, fuzzy
+msgid "Select files"
+msgstr "Dateien hinzufügen..."
 
 #, fuzzy
-msgid "Saving playlist..."
+msgid "Select directory"
+msgstr "Album entfernen"
+
+msgid "Please specify the file to save the playlist to."
 msgstr "Playliste speichern"
 
 msgid "Please specify the file to load the playlist from."
 msgstr "Playliste laden"
-
-#, fuzzy
-msgid "Loading playlist..."
-msgstr "Playliste laden"
-
-#, fuzzy
-msgid "Enqueuing playlist..."
-msgstr "Playliste einreihen"
 
 msgid ""
 "Playback RVA is currently disabled.\n"
@@ -1947,22 +1943,6 @@ msgstr ""
 
 msgid "Unknown"
 msgstr "Unnbekannt"
-
-#, fuzzy
-msgid "Select files"
-msgstr "Dateien hinzufügen..."
-
-#, fuzzy
-msgid "Adding files..."
-msgstr "Dateien hinzufügen..."
-
-#, fuzzy
-msgid "Select directory"
-msgstr "Album entfernen"
-
-#, fuzzy
-msgid "Adding files recursively..."
-msgstr "Dateien hinzufügen..."
 
 #, fuzzy, c-format
 msgid "%d track [%s] (%.1f MB)"
@@ -2065,6 +2045,10 @@ msgstr ""
 
 msgid "Reread file metadata"
 msgstr ""
+
+#, fuzzy
+msgid "Stop adding files"
+msgstr "Neu abtasten"
 
 #, c-format
 msgid ""
@@ -2609,7 +2593,3 @@ msgstr ""
 
 msgid "Compression: Insane"
 msgstr ""
-
-#, fuzzy
-#~ msgid "Record:"
-#~ msgstr "Album"

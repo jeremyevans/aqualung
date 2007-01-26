@@ -1700,19 +1700,16 @@ msgstr ""
 msgid "Active song in playlist: "
 msgstr ""
 
+msgid "Select files"
+msgstr ""
+
+msgid "Select directory"
+msgstr ""
+
 msgid "Please specify the file to save the playlist to."
 msgstr ""
 
-msgid "Saving playlist..."
-msgstr ""
-
 msgid "Please specify the file to load the playlist from."
-msgstr ""
-
-msgid "Loading playlist..."
-msgstr ""
-
-msgid "Enqueuing playlist..."
 msgstr ""
 
 msgid ""
@@ -1721,18 +1718,6 @@ msgid ""
 msgstr ""
 
 msgid "Unknown"
-msgstr ""
-
-msgid "Select files"
-msgstr ""
-
-msgid "Adding files..."
-msgstr ""
-
-msgid "Select directory"
-msgstr ""
-
-msgid "Adding files recursively..."
 msgstr ""
 
 #, c-format
@@ -1829,6 +1814,9 @@ msgid "Average"
 msgstr ""
 
 msgid "Reread file metadata"
+msgstr ""
+
+msgid "Stop adding files"
 msgstr ""
 
 #, c-format

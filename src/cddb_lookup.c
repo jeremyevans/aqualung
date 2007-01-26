@@ -1321,10 +1321,12 @@ cdda_timeout_callback(gpointer data) {
 		return TRUE;
 	}
 
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_drive, 2, &device_path, -1);
+	disc = &cdda_get_drive_by_spec_device_path(device_path)->disc;
+	g_free(device_path);
+
 	if (cddb_thread_state != CDDB_THREAD_SUCCESS || record_count == 0) {
-		free(frames);
-		cddb_thread_state = CDDB_THREAD_FREE;
-		return FALSE;
+		goto finish;
 	}
 
 	if ((map_tracks = (map_t **)malloc(sizeof(map_t *) * track_count)) == NULL) {
@@ -1359,10 +1361,6 @@ cdda_timeout_callback(gpointer data) {
 		}
 	}
 
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_drive, 2, &device_path, -1);
-	disc = &cdda_get_drive_by_spec_device_path(device_path)->disc;
-	g_free(device_path);
-
 	tmp[0] = '\0';
 
 	if (map_artist) {
@@ -1387,6 +1385,10 @@ cdda_timeout_callback(gpointer data) {
 		}
 	}
 
+	if (map_artist && map_record) {
+		gtk_tree_store_set(music_store, &iter_drive, 0, tmp, -1);
+	}
+
 	if (map_genre) {
 
 		char * max = map_get_max(map_genre);
@@ -1404,8 +1406,6 @@ cdda_timeout_callback(gpointer data) {
 			strncpy(disc->year, max, MAXLEN-1);
 		}
 	}
-
-	gtk_tree_store_set(music_store, &iter_drive, 0, tmp, -1);
 
 	for (i = 0; i < track_count &&
 		     gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
@@ -1432,6 +1432,9 @@ cdda_timeout_callback(gpointer data) {
 
 	free(records);
 	libcddb_shutdown();
+
+ finish:
+
 	free(frames);
 
 	if (options.cdda_add_to_playlist) {

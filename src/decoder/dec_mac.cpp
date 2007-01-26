@@ -61,6 +61,10 @@ extern size_t sample_size;
 
 
 #ifdef HAVE_MAC
+
+#define SWAP_16(x) ((((x)&0x00ff)<<8) | (((x)&0xff00)>>8))
+#define SWAP_32(x) ((((x)&0xff)<<24) | (((x)&0xff00)<<8) | (((x)&0xff0000)>>8) | (((x)&0xff000000)>>24))
+
 /* return 1 if reached end of stream, 0 else */
 int
 decode_mac(decoder_t * dec) {
@@ -96,13 +100,14 @@ decode_mac(decoder_t * dec) {
 
 	case 16:
 		short data16[2 * SAMPLES_PER_READ];
-
 		pdecompress->GetData((char *)data16, blocks_to_read, &act_read);
 		if (!act_read) {
 			return 1;
 		}
 		for (int i = 0; i < act_read; i++) {
 			for (unsigned int j = 0; j < pd->channels; j++) {
+				if (pd->swap_bytes)
+					data16[n] = SWAP_16(data16[n]);
 				fbuf[n] = (float)(data16[n] * fdec->voladj_lin / scale);
 				++n;
 			}
@@ -117,6 +122,8 @@ decode_mac(decoder_t * dec) {
 		}
 		for (int i = 0; i < act_read; i++) {
 			for (unsigned int j = 0; j < pd->channels; j++) {
+				if (pd->swap_bytes)
+					data32[n] = SWAP_32(data32[n]);
 				fbuf[n] = (float)(data32[n] * fdec->voladj_lin / scale);
 				++n;
 			}
@@ -207,6 +214,8 @@ mac_decoder_open(decoder_t * dec, char * filename) {
 		printf("Sorry, MAC file with %d bits per sample is not supported.\n", pd->bits_per_sample);
 		return DECODER_OPEN_BADLIB;
 	}
+
+	pd->swap_bytes = bigendianp();
 
 	pd->is_eos = 0;
 	pd->rb = rb_create(pd->channels * sample_size * RB_MAC_SIZE);

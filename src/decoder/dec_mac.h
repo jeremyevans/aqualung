@@ -43,6 +43,7 @@ typedef struct _mac_pdata_t {
 	unsigned int length_in_ms;
 	unsigned int block_align;
 	unsigned int compression_level;
+	int swap_bytes;
         int is_eos;
 } mac_pdata_t;
 #endif /* HAVE_MAC */

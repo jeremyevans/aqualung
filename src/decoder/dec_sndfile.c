@@ -281,7 +281,7 @@ sndfile_decoder_read(decoder_t * dec, float * dest, int num) {
 
 	numread = sf_readf_float(pd->sf, dest, num);
 
-	for (i = 0; i < numread; i++) {
+	for (i = 0; i < pd->sf_info.channels * numread; i++) {
 		dest[i] *= fdec->voladj_lin;
 	}
 

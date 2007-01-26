@@ -477,6 +477,7 @@ disk_thread(void * arg) {
 		if (!info->is_streaming)
 			goto sleep;
 
+		n_read = 0;
 		n_space = rb_write_space(rb) / (2 * sample_size);
 		while (n_src < 0.95 * n_space) {
 			

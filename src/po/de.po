@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2007-01-26 09:51+0100\n"
+"PO-Revision-Date: 2007-01-26 20:32+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1229,8 +1229,8 @@ msgid "Use manual RVA value [dB]"
 msgstr "Manuelles RVA Level benutzen [dB]"
 
 #, fuzzy
-msgid "Adding songs..."
-msgstr "Dateien hinzufügen..."
+msgid "Stop adding songs"
+msgstr "Neu abtasten"
 
 #, c-format
 msgid ""
@@ -1943,6 +1943,9 @@ msgstr ""
 
 msgid "Unknown"
 msgstr "Unnbekannt"
+
+msgid "counting..."
+msgstr ""
 
 #, fuzzy, c-format
 msgid "%d track [%s] (%.1f MB)"

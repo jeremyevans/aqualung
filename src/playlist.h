@@ -25,13 +25,14 @@
 #include <config.h>
 
 void voladj2str(float voladj, char * str);
-GtkTreePath * get_playing_path(GtkTreeStore * store);
+GtkTreePath * get_playing_path(void);
 void delayed_playlist_rearrange(int delay);
 gint playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event);
 void create_playlist(void);
 void show_playlist(void);
 void hide_playlist(void);
 
+void playlist_stats_set_busy();
 void playlist_progress_bar_show(void);
 void playlist_progress_bar_hide(void);
 

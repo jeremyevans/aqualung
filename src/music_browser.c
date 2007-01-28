@@ -67,9 +67,6 @@ extern char pl_color_inactive[14];
 extern GtkWidget * gui_stock_label_button(gchar * label, const gchar * stock);
 extern void assign_audio_fc_filters(GtkFileChooser * fc);
 
-extern void iw_show_info (GtkWidget *dialog, GtkWindow *transient, gchar *message);
-extern void iw_hide_info (void);
-
 extern GtkTooltips * aqualung_tooltips;
 
 GtkWidget * browser_window;
@@ -90,6 +87,15 @@ GtkTreeSelection * music_select;
 GtkWidget * comment_view;
 GtkWidget * browser_paned;
 GtkWidget * statusbar_ms;
+
+int stop_adding_to_playlist;
+int ms_progress_bar_semaphore;
+int ms_progress_bar_num;
+int ms_progress_bar_den;
+
+GtkWidget * ms_progress_bar;
+GtkWidget * ms_progress_bar_container;
+GtkWidget * ms_progress_bar_stop_button;
 
 /* popup menus for tree items */
 GtkWidget * store_menu;
@@ -2563,28 +2569,241 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 }
 
 
+typedef struct {
+
+	GtkTreeIter iter_store;
+	GtkTreeIter iter_artist;
+	GtkTreeIter iter_record;
+	GtkTreeIter dest;
+	int dest_null;
+	int album_mode;
+	int i_artist;
+	int i_record;
+	int count;
+
+} addlist_iter_t;
+
+
+void
+ms_progress_bar_update() {
+
+	if (ms_progress_bar != NULL) {
+		++ms_progress_bar_num;
+		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(ms_progress_bar),
+					      (double)(ms_progress_bar_num) / ms_progress_bar_den);
+	}
+}
+
+
+void
+ms_progress_bar_stop_clicked(GtkWidget * widget, gpointer data) {
+
+	stop_adding_to_playlist = 1;
+}
+
+void
+ms_progress_bar_show(void) {
+
+	++ms_progress_bar_semaphore;
+
+	if (ms_progress_bar != NULL) {
+		return;
+	}
+
+	stop_adding_to_playlist = 0;
+
+	playlist_stats_set_busy();
+
+	ms_progress_bar = gtk_progress_bar_new();
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(ms_progress_bar), 0.0);
+        gtk_box_pack_start(GTK_BOX(ms_progress_bar_container), ms_progress_bar, TRUE, TRUE, 0);
+
+	ms_progress_bar_stop_button = gtk_button_new_with_label(_("Stop adding songs"));
+        gtk_box_pack_start(GTK_BOX(ms_progress_bar_container), ms_progress_bar_stop_button, FALSE, FALSE, 0);
+        g_signal_connect(G_OBJECT(ms_progress_bar_stop_button), "clicked",
+			 G_CALLBACK(ms_progress_bar_stop_clicked), NULL);
+
+	gtk_widget_show_all(ms_progress_bar_container);
+}
+
+
+void
+music_store_progress_bar_hide(void) {
+
+	if (ms_progress_bar != NULL) {
+		gtk_widget_destroy(ms_progress_bar);
+		ms_progress_bar = NULL;
+	}
+
+	if (ms_progress_bar_stop_button != NULL) {
+		gtk_widget_destroy(ms_progress_bar_stop_button);
+		ms_progress_bar_stop_button = NULL;
+	}
+}
+
+void
+finalize_addlist_iter(addlist_iter_t * add_list) {
+
+	--ms_progress_bar_semaphore;
+
+	if (!stop_adding_to_playlist) {
+		ms_progress_bar_num -= add_list->count;
+		ms_progress_bar_den -= add_list->count;
+	}
+
+	if (browser_window != NULL && ms_progress_bar_semaphore == 0) {
+		music_store_progress_bar_hide();
+		playlist_content_changed();
+		delayed_playlist_rearrange(100);
+
+		ms_progress_bar_num = 0;
+		ms_progress_bar_den = 0;
+	}
+}
+
+
+gboolean
+artist_addlist_iter_cb(gpointer data) {
+
+	addlist_iter_t * add_iter = (addlist_iter_t *)data;
+
+	if (stop_adding_to_playlist) {
+		goto finish;
+	}
+
+	if (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+			  &add_iter->iter_record, &add_iter->iter_artist, add_iter->i_record++)) {
+
+		if (!add_iter->dest_null && !gtk_tree_store_iter_is_valid(play_store, &add_iter->dest)) {
+			add_iter->dest_null = 1;
+		}
+
+		record_addlist_iter(add_iter->iter_record,
+				    add_iter->dest_null ? NULL : &add_iter->dest,
+				    add_iter->album_mode);
+
+		ms_progress_bar_update();
+
+		return TRUE;
+	}
+
+ finish:
+
+	finalize_addlist_iter(add_iter);
+	free(add_iter);
+
+	return FALSE;
+}
+
+gboolean
+store_addlist_iter_cb(gpointer data) {
+
+	addlist_iter_t * add_iter = (addlist_iter_t *)data;
+
+	if (stop_adding_to_playlist) {
+		goto finish;
+	}
+
+	if (add_iter->i_artist > 0 && gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+					  &add_iter->iter_record, &add_iter->iter_artist, add_iter->i_record++)) {
+
+		if (!add_iter->dest_null && !gtk_tree_store_iter_is_valid(play_store, &add_iter->dest)) {
+			add_iter->dest_null = 1;
+		}
+
+		record_addlist_iter(add_iter->iter_record,
+				    add_iter->dest_null ? NULL : &add_iter->dest,
+				    add_iter->album_mode);
+
+		return TRUE;
+	} else {
+		add_iter->i_record = 0;
+
+		if (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+					  &add_iter->iter_artist, &add_iter->iter_store, add_iter->i_artist++)) {
+
+			ms_progress_bar_update();
+
+			return TRUE;
+		}
+	}
+
+ finish:
+
+	finalize_addlist_iter(add_iter);
+	free(add_iter);
+
+	return FALSE;
+}
+
+
 void
 artist_addlist_iter(GtkTreeIter iter_artist, GtkTreeIter * dest, int album_mode) {
 
-	GtkTreeIter iter_record;
-	int i = 0;
+	addlist_iter_t * add_iter;
 
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_record, &iter_artist, i++)) {
-		record_addlist_iter(iter_record, dest, album_mode);
+	if ((add_iter = (addlist_iter_t *)malloc(sizeof(addlist_iter_t))) == NULL) {
+		fprintf(stderr, "malloc error in artist_adlist_iter\n");
+		return;
 	}
 
+	if ((add_iter->count = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter_artist)) == 0) {
+		free(add_iter);
+		return;
+	}
+
+	ms_progress_bar_den += add_iter->count;
+
+	if (dest == NULL) {
+		add_iter->dest_null = 1;
+	} else {
+		add_iter->dest_null = 0;
+		add_iter->dest = *dest;
+	}
+
+	add_iter->iter_artist = iter_artist;
+	add_iter->album_mode = album_mode;
+	add_iter->i_record = 0;
+
+	playlist_stats_set_busy();
+
+	ms_progress_bar_show();
+	g_idle_add(artist_addlist_iter_cb, (gpointer)add_iter);
 }
 
 
 void
 store_addlist_iter(GtkTreeIter iter_store, GtkTreeIter * dest, int album_mode) {
 
-	GtkTreeIter iter_artist;
-	int i = 0;
+	addlist_iter_t * add_iter;
 
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, &iter_store, i++)) {
-		artist_addlist_iter(iter_artist, dest, album_mode);
+	if ((add_iter = (addlist_iter_t *)malloc(sizeof(addlist_iter_t))) == NULL) {
+		fprintf(stderr, "malloc error in store_adlist_iter\n");
+		return;
 	}
+
+	if ((add_iter->count = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter_store)) == 0) {
+		free(add_iter);
+		return;
+	}
+
+	ms_progress_bar_den += add_iter->count;
+
+	if (dest == NULL) {
+		add_iter->dest_null = 1;
+	} else {
+		add_iter->dest_null = 0;
+		add_iter->dest = *dest;
+	}
+
+	add_iter->iter_store = iter_store;
+	add_iter->album_mode = album_mode;
+	add_iter->i_artist = 0;
+
+	playlist_stats_set_busy();
+
+	ms_progress_bar_show();
+	g_idle_add(store_addlist_iter_cb, (gpointer)add_iter);
 }
 
 
@@ -2599,12 +2818,7 @@ store__addlist_with_mode(int mode, gpointer data) {
         GtkTreeIter iter_store;
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_store)) {
-
-                iw_show_info (NULL, GTK_WINDOW(browser_window), _("Adding songs..."));
 		store_addlist_iter(iter_store, (GtkTreeIter *)data, mode);
-		playlist_content_changed();
-		delayed_playlist_rearrange(100);
-                iw_hide_info ();
 	}
 }
 
@@ -2897,11 +3111,7 @@ artist__addlist_with_mode(int mode, gpointer data) {
         GtkTreeIter iter_artist;
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_artist)) {
-                iw_show_info (NULL, GTK_WINDOW(browser_window), _("Adding songs..."));
 		artist_addlist_iter(iter_artist, (GtkTreeIter *)data, mode);
-		playlist_content_changed();
-		delayed_playlist_rearrange(100);
-                iw_hide_info ();
 	}
 }
 
@@ -3104,11 +3314,9 @@ record__addlist_with_mode(int mode, gpointer data) {
         GtkTreeIter iter_record;
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_record)) {
-                iw_show_info (NULL, GTK_WINDOW(browser_window), _("Adding songs..."));
 		record_addlist_iter(iter_record, (GtkTreeIter *)data, mode);
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
-                iw_hide_info ();
 	}
 }
 
@@ -5312,6 +5520,13 @@ create_music_browser(void) {
 
 	if (!options.hide_comment_pane) {
 		gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
+	}
+
+	ms_progress_bar_container = gtk_hbox_new(FALSE, 4);
+        gtk_box_pack_start(GTK_BOX(vbox), ms_progress_bar_container, FALSE, FALSE, 1);
+
+	if (ms_progress_bar_semaphore > 0) {
+		ms_progress_bar_show();
 	}
 
 	if (options.enable_mstore_statusbar) {

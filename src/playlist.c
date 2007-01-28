@@ -127,14 +127,12 @@ GtkWidget * statusbar_total_label;
 GtkWidget * statusbar_selected;
 GtkWidget * statusbar_selected_label;
 
-GtkWidget * iw_widget;
+volatile int playlist_thread_stop; 
+int pl_progress_bar_semaphore;
 
-volatile int playlist_thread_stop;
-int playlist_progress_bar_semaphore;
-
-GtkWidget * progress_bar;
-GtkWidget * progress_bar_container;
-GtkWidget * progress_bar_stop_button;
+GtkWidget * pl_progress_bar;
+GtkWidget * pl_progress_bar_container;
+GtkWidget * pl_progress_bar_stop_button;
 
 volatile int playlist_data_written;
 
@@ -205,8 +203,6 @@ typedef struct _playlist_filemeta {
 playlist_filemeta * playlist_filemeta_get(char * physical_name, char * alt_name, int composit);
 void playlist_filemeta_free(playlist_filemeta * plfm);
 
-void iw_show_info (GtkWidget *dialog, GtkWindow *transient, gchar *message);
-void iw_hide_info (void);
 void remove_files (void);
 
 void rem__sel_cb(gpointer data);
@@ -363,7 +359,7 @@ playlist_foreach_selected(void (* foreach)(GtkTreeIter *, void *), void * data) 
 
 
 GtkTreePath *
-get_playing_path(GtkTreeStore * store) {
+get_playing_path(void) {
 
 	GtkTreeIter iter;
 	gchar * color;
@@ -419,7 +415,7 @@ start_playback_from_playlist(GtkTreePath * path) {
 	if (!allow_seeks)
 		return;
 
-	p = get_playing_path(play_store);
+	p = get_playing_path();
 	if (p != NULL) {
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
 		gtk_tree_path_free(p);
@@ -435,7 +431,7 @@ start_playback_from_playlist(GtkTreePath * path) {
 		mark_track(&iter);
 	}
 	
-	p = get_playing_path(play_store);
+	p = get_playing_path();
 	gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
 	gtk_tree_path_free(p);
 	cue_track_for_playback(&iter, &cue);
@@ -483,7 +479,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 
         case GDK_Insert:
 	case GDK_KP_Insert:
-                if(kevent->state & GDK_SHIFT_MASK) {  /* SHIFT + Insert */
+                if (kevent->state & GDK_SHIFT_MASK) {  /* SHIFT + Insert */
                         add_directory(NULL, NULL);
                 } else {
                         add_files(NULL, NULL);
@@ -553,10 +549,10 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                 break;
         case GDK_Delete:
 	case GDK_KP_Delete:
-                if(kevent->state & GDK_SHIFT_MASK) {  /* SHIFT + Delete */
+                if (kevent->state & GDK_SHIFT_MASK) {  /* SHIFT + Delete */
                         gtk_tree_store_clear(play_store);
 			playlist_content_changed();
-                } else if(kevent->state & GDK_CONTROL_MASK) {  /* CTRL + Delete */
+                } else if (kevent->state & GDK_CONTROL_MASK) {  /* CTRL + Delete */
                         remove_files();
                 } else {
 			rem__sel_cb(NULL);
@@ -641,18 +637,12 @@ filter(const struct dirent * de) {
 gboolean
 finalize_add_to_playlist(gpointer data) {
 
-	--playlist_progress_bar_semaphore;
+	--pl_progress_bar_semaphore;
 
-	playlist_thread_stop = 0;
-
-	if (main_window != NULL && playlist_window != NULL) {
-
+	if (playlist_window != NULL && pl_progress_bar_semaphore == 0) {
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
-
-		if (playlist_progress_bar_semaphore == 0) {
-			playlist_progress_bar_hide();
-		}
+		playlist_progress_bar_hide();
 	}
 
 	return FALSE;
@@ -683,7 +673,7 @@ add_file_to_playlist(gpointer data) {
 		if (plfm->level == 0) {
 
 			/* deactivate toplevel item if playing path already exists */
-			if (plfm->active && (path = get_playing_path(play_store)) != NULL) {
+			if (plfm->active && (path = get_playing_path()) != NULL) {
 				plfm->active = 0;
 				gtk_tree_path_free(path);
 			}
@@ -692,6 +682,12 @@ add_file_to_playlist(gpointer data) {
 		} else {
 			GtkTreeIter parent;
 			int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL);
+
+			if (n == 0) {
+				/* someone viciously cleared the list while adding tracks to album node;
+				   ignore further tracks to this node */
+				goto finish;
+			}
 
 			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &parent, NULL, n-1);
 			gtk_tree_store_append(play_store, &iter, &parent);
@@ -706,13 +702,16 @@ add_file_to_playlist(gpointer data) {
 			   COLUMN_DURATION, plfm->duration,
 			   COLUMN_DURATION_DISP, duration_str,
 			   COLUMN_FONT_WEIGHT, PANGO_WEIGHT_NORMAL, -1);
+	}
 
+ finish:
+	if (plfm != NULL) {
 		playlist_filemeta_free(plfm);
 	}
 
 	--playlist_data_written;
 
-	if (playlist_data_written < 10) {
+	if (playlist_data_written == 0) {
 		AQUALUNG_COND_SIGNAL(playlist_thread_wait)
 	}
 
@@ -726,7 +725,6 @@ void
 playlist_thread_add_to_list(playlist_filemeta * plfm) {
 
 	AQUALUNG_MUTEX_LOCK(playlist_wait_mutex)
-
 	++playlist_data_written;
 
 	g_idle_add(add_file_to_playlist, (gpointer)plfm);
@@ -1742,38 +1740,55 @@ void
 rem__sel_cb(gpointer data) {
 
 	GtkTreeIter iter;
-	gint i = 0, old_pos = 0, old_pos_child = -1;
-        GtkTreePath * visible_path;
+	int i = 0;
+	int last;
+	gboolean valid = FALSE;
+	GtkTreeIter iter_next;
+
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
 
 		GtkTreeIter iter_child;
 		gint j = 0;
 		gint modified = 0;
-		gchar * str;
+		gchar * color;
 
 		gint n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter);
 
 		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
-			gtk_tree_store_remove(play_store, &iter);
+			if ((valid = gtk_tree_store_remove(play_store, &iter))) {
+				iter_next = iter;
+			} else {
+				if ((last = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL))) {
+					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
+								      &iter_next, NULL, last-1);
+					valid = TRUE;
+				}
+			}
 			--i;
-                        old_pos = i;
 			continue;
 		}
 
 		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, &iter, j++)) {
 			if (gtk_tree_selection_iter_is_selected(play_select, &iter_child)) {
 
-				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter_child, COLUMN_SELECTION_COLOR, &str, -1);
-				if (strcmp(str, pl_color_active) == 0) {
+				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter_child, COLUMN_SELECTION_COLOR, &color, -1);
+				if (strcmp(color, pl_color_active) == 0) {
 					unmark_track(&iter_child);
 				}
 
-				g_free(str);
+				g_free(color);
 
-				gtk_tree_store_remove(play_store, &iter_child);
+				if ((valid = gtk_tree_store_remove(play_store, &iter_child))) {
+					iter_next = iter_child;
+				} else {
+					if ((last = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter))) {
+						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
+									      &iter_next, &iter, last-1);
+						valid = TRUE;
+					}
+				}
 				--j;
-                                old_pos_child = j;
 				modified = 1;
 			}
 		}
@@ -1781,43 +1796,37 @@ rem__sel_cb(gpointer data) {
 		/* if all tracks have been removed, also remove album node; else recalc album node */
 		if (n) {
 			if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter) == 0) {
-				gtk_tree_store_remove(play_store, &iter);
+				if ((valid = gtk_tree_store_remove(play_store, &iter))) {
+					iter_next = iter;
+				} else {
+					if ((last = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL))) {
+						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
+									      &iter_next, NULL, last-1);
+						valid = TRUE;
+					}
+				}
 				--i;
-                                old_pos = i;
 			} else if (modified) {
 				recalc_album_node(&iter);
 
-				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, COLUMN_SELECTION_COLOR, &str, -1);
-				if (strcmp(str, pl_color_active) == 0) {
+				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, COLUMN_SELECTION_COLOR, &color, -1);
+				if (strcmp(color, pl_color_active) == 0) {
 					unmark_track(&iter);
 					mark_track(&iter);
 				}
-				g_free(str);
+				g_free(color);
 			}
 		}
 	}
 
+	if (valid) {
+		GtkTreePath * visible_path = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), &iter_next);
 
-        if (old_pos_child == -1) {
-
-                for(i=0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
-
-                if (i) {
-                        if (!gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, old_pos)) {
-                                gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i-1);
-                        }
-
-                        if(!old_pos) {
-                                gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, 0);
-                        }
-
-                        visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
-                        if (visible_path) {
-                                gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
-                                gtk_tree_path_free(visible_path);
-                        }
-                }
-        }
+		if (visible_path) {
+			gtk_tree_view_set_cursor(GTK_TREE_VIEW(play_list), visible_path, NULL, TRUE);
+			gtk_tree_path_free(visible_path);
+		}
+	}
 
 	playlist_content_changed();
 }
@@ -2041,6 +2050,13 @@ playlist_child_stats(GtkTreeIter * iter, int * count, float * duration, float * 
 }
 
 
+void
+playlist_stats_set_busy() {
+
+	gtk_label_set_text(GTK_LABEL(statusbar_total), _("counting..."));
+}
+
+
 /* if selected == true -> stats for selected tracks; else: all tracks */
 void
 playlist_stats(int selected) {
@@ -2057,7 +2073,13 @@ playlist_stats(int selected) {
         gfloat songs_size, m_size;
         struct stat statbuf;
 
-	if (!options.enable_playlist_statusbar) return;
+	if (!options.enable_playlist_statusbar) {
+		return;
+	}
+
+	if (main_window == NULL || playlist_window == NULL) {
+		return;
+	}
 
         songs_size = 0;
 
@@ -2090,7 +2112,7 @@ playlist_stats(int selected) {
 
 	if (count == 1) {
                 if (options.pl_statusbar_show_size && (m_size > 0)) {
-                        if(m_size < 1024) {
+                        if (m_size < 1024) {
                                 sprintf(str, _("%d track [%s] (%.1f MB)"), count, time, m_size);
                         } else {
                                 sprintf(str, _("%d track [%s] (%.1f GB)"), count, time, m_size / 1024.0);
@@ -2100,7 +2122,7 @@ playlist_stats(int selected) {
                 }
 	} else {
                 if (options.pl_statusbar_show_size && (m_size > 0)) {
-                        if(m_size < 1024) {
+                        if (m_size < 1024) {
                                 sprintf(str, _("%d tracks [%s] (%.1f MB)"), count, time, m_size);
                         } else {
                                 sprintf(str, _("%d tracks [%s] (%.1f GB)"), count, time, m_size / 1024.0);
@@ -2141,7 +2163,9 @@ playlist_selection_changed(GtkTreeSelection * sel, gpointer data) {
 void
 playlist_content_changed(void) {
 
-	playlist_stats(0/*false*/);
+	if (pl_progress_bar_semaphore == 0) {
+		playlist_stats(0/*false*/);
+	}
 }
 
 
@@ -2855,10 +2879,10 @@ create_playlist(void) {
 	gtk_container_add(GTK_CONTAINER(scrolled_win), play_list);
 
 
-	progress_bar_container = gtk_hbox_new(FALSE, 4);
-        gtk_box_pack_start(GTK_BOX(vbox), progress_bar_container, FALSE, FALSE, 0);
+	pl_progress_bar_container = gtk_hbox_new(FALSE, 4);
+        gtk_box_pack_start(GTK_BOX(vbox), pl_progress_bar_container, FALSE, FALSE, 0);
 
-	if (playlist_progress_bar_semaphore > 0) {
+	if (pl_progress_bar_semaphore > 0) {
 		playlist_progress_bar_show();
 	}
 
@@ -3222,7 +3246,7 @@ parse_playlist_track(xmlDocPtr doc, xmlNodePtr _cur, int level) {
 				plfm->duration = convf((char *)key);
                         }
                         xmlFree(key);
-                }
+		}
 	}
 
 	playlist_thread_add_to_list(plfm);
@@ -3827,9 +3851,9 @@ show_last_position_in_playlist(void) {
 	gint i;
         GtkTreePath * visible_path;
 
-        for(i=0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
+        for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
         
-        if(i) {
+        if (i) {
                 gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i-1);
 
                 visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
@@ -3887,19 +3911,19 @@ expand_collapse_album_node(void) {
 }
 
 
-gboolean
-progress_bar_update(gpointer data) {
+static gboolean
+pl_progress_bar_update(gpointer data) {
 
-	if (progress_bar != NULL) {
-		gtk_progress_bar_pulse(GTK_PROGRESS_BAR(progress_bar));
+	if (pl_progress_bar != NULL) {
+		gtk_progress_bar_pulse(GTK_PROGRESS_BAR(pl_progress_bar));
 		return TRUE;
 	}
 
 	return FALSE;
 }
 
-void
-progress_bar_stop_clicked(GtkWidget * widget, gpointer data) {
+static void
+pl_progress_bar_stop_clicked(GtkWidget * widget, gpointer data) {
 
 	playlist_thread_stop = 1;
 }
@@ -3907,87 +3931,42 @@ progress_bar_stop_clicked(GtkWidget * widget, gpointer data) {
 void
 playlist_progress_bar_show(void) {
 
-	++playlist_progress_bar_semaphore;
+	++pl_progress_bar_semaphore;
 
-	if (progress_bar != NULL) {
+	if (pl_progress_bar != NULL) {
 		return;
 	}
 
 	playlist_thread_stop = 0;
 
-	progress_bar = gtk_progress_bar_new();
-        gtk_box_pack_start(GTK_BOX(progress_bar_container), progress_bar, TRUE, TRUE, 0);
+	playlist_stats_set_busy();
 
-	progress_bar_stop_button = gtk_button_new_with_label(_("Stop adding files"));
-        gtk_box_pack_start(GTK_BOX(progress_bar_container), progress_bar_stop_button, FALSE, FALSE, 0);
-        g_signal_connect(G_OBJECT(progress_bar_stop_button), "clicked",
-			 G_CALLBACK(progress_bar_stop_clicked), NULL);
+	pl_progress_bar = gtk_progress_bar_new();
+        gtk_box_pack_start(GTK_BOX(pl_progress_bar_container), pl_progress_bar, TRUE, TRUE, 0);
 
-	gtk_widget_show_all(progress_bar_container);
+	pl_progress_bar_stop_button = gtk_button_new_with_label(_("Stop adding files"));
+        gtk_box_pack_start(GTK_BOX(pl_progress_bar_container), pl_progress_bar_stop_button, FALSE, FALSE, 0);
+        g_signal_connect(G_OBJECT(pl_progress_bar_stop_button), "clicked",
+			 G_CALLBACK(pl_progress_bar_stop_clicked), NULL);
 
-	g_timeout_add(200, progress_bar_update, NULL);
+	gtk_widget_show_all(pl_progress_bar_container);
+
+	g_timeout_add(200, pl_progress_bar_update, NULL);
 }
 
 
 void
 playlist_progress_bar_hide(void) {
 
-	if (progress_bar != NULL) {
-		gtk_widget_destroy(progress_bar);
-		progress_bar = NULL;
+	if (pl_progress_bar != NULL) {
+		gtk_widget_destroy(pl_progress_bar);
+		pl_progress_bar = NULL;
 	}
 
-	if (progress_bar_stop_button != NULL) {
-		gtk_widget_destroy(progress_bar_stop_button);
-		progress_bar_stop_button = NULL;
+	if (pl_progress_bar_stop_button != NULL) {
+		gtk_widget_destroy(pl_progress_bar_stop_button);
+		pl_progress_bar_stop_button = NULL;
 	}
-}
-
-
-void
-iw_show_info (GtkWidget *dialog, GtkWindow *transient, gchar *message) {
-
-        GtkWidget *frame;
-        GtkWidget *label;
-
-        if (dialog != NULL) {
-                gtk_widget_hide (dialog);
-                deflicker();
-        }
-
-        iw_widget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_position(GTK_WINDOW(iw_widget), GTK_WIN_POS_CENTER_ON_PARENT);
-        GTK_WIDGET_UNSET_FLAGS(iw_widget, GTK_CAN_FOCUS);
-        gtk_widget_set_events(iw_widget, GDK_BUTTON_PRESS_MASK);
-        gtk_window_set_transient_for(GTK_WINDOW(iw_widget), GTK_WINDOW(transient));
-        gtk_window_set_decorated(GTK_WINDOW(iw_widget), FALSE);
-
-        frame = gtk_frame_new(NULL);
-        gtk_container_add (GTK_CONTAINER (iw_widget), frame);
-        gtk_frame_set_shadow_type (GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
-        gtk_widget_show_now(frame);
-        deflicker();
-
-        label = gtk_label_new (message);
-        gtk_container_add (GTK_CONTAINER (frame), label);
-        gtk_misc_set_padding (GTK_MISC (label), 8, 8);
-        gtk_widget_show_now(label);
-        deflicker();
-
-        gtk_widget_show_now(iw_widget);
-        deflicker();
-}
-
-
-void
-iw_hide_info (void) {
-
-        if (iw_widget != NULL) {
-                gtk_widget_destroy(iw_widget);
-                iw_widget = NULL;
-        }
-
-        deflicker();
 }
 
 
@@ -4015,7 +3994,7 @@ remove_files (void) {
                                 n = 1;
                         }
                 }
-                if(n) break;
+                if (n) break;
         }
         
         if (!n) {
@@ -4068,9 +4047,9 @@ remove_files (void) {
                                 }
                         }
 
-                        for(i=0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
+                        for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i); i++);
 
-                        if(i) {
+                        if (i) {
                                 gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, last_pos);
                                 visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
                                 if (visible_path) {

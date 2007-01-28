@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-19 18:04+0300\n"
-"PO-Revision-Date: 2007-01-26 09:51+0100\n"
+"PO-Revision-Date: 2007-01-26 20:32+0100\n"
 "Last-Translator: Sergiy Niskorodov <sgh_punk@users.sourceforge.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1199,8 +1199,8 @@ msgid "Use manual RVA value [dB]"
 msgstr "Використовувати значення ПВР встановлені вручну [dB]"
 
 #, fuzzy
-msgid "Adding songs..."
-msgstr "_Додати файли..."
+msgid "Stop adding songs"
+msgstr "Пресканувати"
 
 #, c-format
 msgid ""
@@ -1902,6 +1902,9 @@ msgstr ""
 
 msgid "Unknown"
 msgstr "Невідомо"
+
+msgid "counting..."
+msgstr ""
 
 #, fuzzy, c-format
 msgid "%d track [%s] (%.1f MB)"

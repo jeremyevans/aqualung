@@ -57,6 +57,7 @@ int is_store_iter_cdda(GtkTreeIter * i);
 void update_cdda_status_bar(void);
 #endif /* HAVE_CDDA */
 
+void music_store_progress_bar_hide(void);
 void music_store_set_status_bar_info(void);
 
 #ifdef __cplusplus

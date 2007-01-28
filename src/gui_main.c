@@ -330,6 +330,8 @@ int systray_main_window_on = 1;
 
 void create_main_window(char * skin_path);
 
+void toggle_noeffect(int id, int state);
+
 gint prev_event(GtkWidget * widget, GdkEvent * event, gpointer data);
 gint play_event(GtkWidget * widget, GdkEvent * event, gpointer data);
 gint pause_event(GtkWidget * widget, GdkEvent * event, gpointer data);
@@ -737,7 +739,7 @@ refresh_displays(void) {
 	refresh_time_displays();
 
 	if (play_store) {
-		p = get_playing_path(play_store);
+		p = get_playing_path();
 		if (p != NULL) {
 			int n = gtk_tree_path_get_depth(p);
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
@@ -893,16 +895,22 @@ change_skin(char * path) {
 
 	save_window_position();
 
+	music_store_progress_bar_hide();
 	playlist_progress_bar_hide();
 
 	gtk_widget_destroy(main_window);
 	main_window = NULL;
+
 	if (!options.playlist_is_embedded) {
 		gtk_widget_destroy(playlist_window);
 		playlist_window = NULL;
 	}
+
 	gtk_widget_destroy(browser_window);
+	browser_window = NULL;
+
 	deflicker();
+
 #ifdef HAVE_LADSPA
 	gtk_widget_destroy(fxbuilder_window);
 	deflicker();
@@ -922,13 +930,8 @@ change_skin(char * path) {
 	deflicker();
 #endif /* HAVE_LADSPA */
 	
-	g_signal_handler_block(G_OBJECT(play_button), play_id);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button), st_play);
-	g_signal_handler_unblock(G_OBJECT(play_button), play_id);
-
-	g_signal_handler_block(G_OBJECT(pause_button), pause_id);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button), st_pause);
-	g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
+	toggle_noeffect(PLAY, st_play);
+	toggle_noeffect(PAUSE, st_pause);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_button), st_r_track);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_all_button), st_r_all);
@@ -2151,7 +2154,7 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
 		/* normal or repeat mode */
-		p = get_playing_path(play_store);
+		p = get_playing_path();
 		if (p != NULL) {
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
 			gtk_tree_path_free(p);
@@ -2166,7 +2169,7 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		}
 	} else {
 		/* shuffle mode */
-		p = get_playing_path(play_store);
+		p = get_playing_path();
 		if (p != NULL) {
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
 			gtk_tree_path_free(p);
@@ -2178,7 +2181,7 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	}
 
 	if (is_file_loaded) {
-		if ((p = get_playing_path(play_store)) == NULL) {
+		if ((p = get_playing_path()) == NULL) {
 			if (is_paused) {
 				is_paused = 0;
 				toggle_noeffect(PAUSE, FALSE);
@@ -2219,7 +2222,7 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
 		/* normal or repeat mode */
-		p = get_playing_path(play_store);
+		p = get_playing_path();
 		if (p != NULL) {
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
 			gtk_tree_path_free(p);
@@ -2234,7 +2237,7 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		}
 	} else {
 		/* shuffle mode */
-		p = get_playing_path(play_store);
+		p = get_playing_path();
 		if (p != NULL) {
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
 			gtk_tree_path_free(p);
@@ -2246,7 +2249,7 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	}
 
 	if (is_file_loaded) {
-		if ((p = get_playing_path(play_store)) == NULL) {
+		if ((p = get_playing_path()) == NULL) {
 			if (is_paused) {
 				is_paused = 0;
 				toggle_noeffect(PAUSE, FALSE);
@@ -2294,7 +2297,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	cmd = CMD_CUE;
 	cue.filename = NULL;
 	
-	p = get_playing_path(play_store);
+	p = get_playing_path();
 	if (p != NULL) {
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
 		gtk_tree_path_free(p);
@@ -2392,7 +2395,7 @@ decide_next_track(cue_t * pcue) {
 	GtkTreePath * p;
 	GtkTreeIter iter;
 
-	p = get_playing_path(play_store);
+	p = get_playing_path();
 	if (p != NULL) { /* there is a marked track in playlist */
 		if ((!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) &&
 		    (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_button)))) {
@@ -2855,7 +2858,7 @@ cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_d
 
 	if (event->type == GDK_BUTTON_PRESS && event->button == 1) { /* LMB ? */
                 if (play_store) {
-                        p = get_playing_path(play_store);
+                        p = get_playing_path();
                         if (p != NULL) {
                                 gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, p);
                                 gtk_tree_path_free(p);
@@ -3983,8 +3986,7 @@ timeout_callback(gpointer data) {
 				if (is_paused) {
 					stop_event(NULL, NULL, NULL);
 				}
-				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
-					!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
+				immediate_start = 1;
 			}
 			last_rcmd_loadenq = 0;
 			break;
@@ -4002,6 +4004,7 @@ timeout_callback(gpointer data) {
 			last_rcmd_loadenq = 0;
 			break;
 		case RCMD_LOAD:
+			gtk_tree_store_clear(play_store);
 			playlist_progress_bar_show();
 			AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_load_thread, strdup(cmdbuf))
 			last_rcmd_loadenq = 1;
@@ -4027,7 +4030,10 @@ timeout_callback(gpointer data) {
 	if (immediate_start) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
 		        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
-		immediate_start = 0;
+
+		if (is_file_loaded) {
+			immediate_start = 0;
+		}
 	}
 
 	/* check for JACK shutdown condition */

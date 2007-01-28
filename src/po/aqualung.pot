@@ -1088,7 +1088,7 @@ msgstr ""
 msgid "Use manual RVA value [dB]"
 msgstr ""
 
-msgid "Adding songs..."
+msgid "Stop adding songs"
 msgstr ""
 
 #, c-format
@@ -1718,6 +1718,9 @@ msgid ""
 msgstr ""
 
 msgid "Unknown"
+msgstr ""
+
+msgid "counting..."
 msgstr ""
 
 #, c-format

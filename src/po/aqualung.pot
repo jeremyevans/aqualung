@@ -1088,6 +1088,10 @@ msgstr ""
 msgid "Use manual RVA value [dB]"
 msgstr ""
 
+#, c-format
+msgid "Really remove \"%s\" from the Music Store?"
+msgstr ""
+
 msgid "Stop adding songs"
 msgstr ""
 
@@ -1098,10 +1102,6 @@ msgid ""
 msgstr ""
 
 msgid "rw"
-msgstr ""
-
-#, c-format
-msgid "Really remove \"%s\" from the Music Store?"
 msgstr ""
 
 msgid "Remove Store"

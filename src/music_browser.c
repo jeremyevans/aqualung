@@ -2290,6 +2290,53 @@ dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data)
 /****************************************/
 
 
+void
+generic_remove_cb(char * title) {
+
+	GtkTreeIter iter;
+	GtkTreeModel * model;
+	char * pname;
+	char name[MAXLEN];
+	char text[MAXLEN];
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
+
+		if (is_store_iter_readonly(&iter)) return;
+
+                gtk_tree_model_get(model, &iter, 0, &pname, -1);
+		strncpy(name, pname, MAXLEN-1);
+                g_free(pname);
+		
+		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
+		if (confirm_dialog(title, text, GTK_RESPONSE_NO)) {
+
+			GtkTreeIter parent;
+
+			music_store_mark_changed(&iter);
+			gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &parent, &iter);
+
+			if (gtk_tree_store_remove(music_store, &iter)) {
+
+				gtk_tree_selection_select_iter(music_select, &iter);
+
+			} else {
+				int last;
+
+				if ((last = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &parent))) {
+					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+								      &iter, &parent, last-1);
+					gtk_tree_selection_select_iter(music_select, &iter);
+				} else {
+					gtk_tree_selection_select_iter(music_select, &parent);
+				}
+			}
+
+			tree_selection_changed_cb(music_select, NULL);
+		}
+	}
+}
+
+
 /* returns the duration of the track */
 float
 track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * dest,
@@ -3066,7 +3113,18 @@ store__remove_cb(gpointer data) {
 				}
 			}
 
-			gtk_tree_store_remove(music_store, &iter);
+			if (gtk_tree_store_remove(music_store, &iter)) {
+				gtk_tree_selection_select_iter(music_select, &iter);
+			} else {
+				int last;
+
+				if ((last = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), NULL))) {
+					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+								      &iter, NULL, last-1);
+					gtk_tree_selection_select_iter(music_select, &iter);
+				}
+			}
+
 			tree_selection_changed_cb(music_select, NULL);
 			
 			i = 0;
@@ -3280,27 +3338,7 @@ artist__volume_all_cb(gpointer data) {
 void
 artist__remove_cb(gpointer data) {
 
-	GtkTreeIter iter;
-	GtkTreeModel * model;
-	char * pname;
-	char name[MAXLEN];
-	char text[MAXLEN];
-
-	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
-
-		if (is_store_iter_readonly(&iter)) return;
-
-                gtk_tree_model_get(model, &iter, 0, &pname, -1);
-		strncpy(name, pname, MAXLEN-1);
-                g_free(pname);
-		
-		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
-		if (confirm_dialog(_("Remove Artist"), text, GTK_RESPONSE_NO)) {
-			music_store_mark_changed(&iter);
-			gtk_tree_store_remove(music_store, &iter);
-			tree_selection_changed_cb(music_select, NULL);
-		}
-	}
+	generic_remove_cb(_("Remove Artist"));
 }
 
 /************************************/
@@ -3518,28 +3556,7 @@ record__volume_all_cb(gpointer data) {
 void
 record__remove_cb(gpointer data) {
 
-	GtkTreeIter iter;
-	GtkTreeModel * model;
-	char * pname;
-	char name[MAXLEN];
-	char text[MAXLEN];
-
-	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
-
-		if (is_store_iter_readonly(&iter)) return;
-
-                gtk_tree_model_get(model, &iter, 0, &pname, -1);
-		strncpy(name, pname, MAXLEN-1);
-                g_free(pname);
-		
-		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
-		if (confirm_dialog(_("Remove Record"), text, GTK_RESPONSE_NO)) {
-			music_store_mark_changed(&iter);
-			gtk_tree_store_remove(music_store, &iter);
-			gtk_tree_selection_unselect_all(music_select);
-			tree_selection_changed_cb(music_select, NULL);
-		}
-	}
+	generic_remove_cb(_("Remove Record"));
 }
 
 
@@ -3788,28 +3805,7 @@ track__volume_all_cb(gpointer data) {
 void
 track__remove_cb(gpointer data) {
 
-	GtkTreeIter iter;
-	GtkTreeModel * model;
-	char * pname;
-	char name[MAXLEN];
-	char text[MAXLEN];
-
-	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
-
-		if (is_store_iter_readonly(&iter)) return;
-
-                gtk_tree_model_get(model, &iter, 0, &pname, -1);
-		strncpy(name, pname, MAXLEN-1);
-                g_free(pname);
-		
-		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
-		if (confirm_dialog(_("Remove Track"), text, GTK_RESPONSE_NO)) {
-			music_store_mark_changed(&iter);
-			gtk_tree_store_remove(music_store, &iter);
-			gtk_tree_selection_unselect_all(music_select);
-			tree_selection_changed_cb(music_select, NULL);
-		}
-	}
+	generic_remove_cb(_("Remove Track"));
 }
 
 
@@ -3932,7 +3928,7 @@ edit_item_cb(gpointer data) {
 		parent_path = gtk_tree_model_get_path(model, &parent_iter);
 		level = gtk_tree_path_get_depth(parent_path);
 
-                switch(level) {
+                switch (level) {
 
                         case 1: /* store */
                                 store__edit_cb(NULL);
@@ -3969,7 +3965,7 @@ add_item_cb(gpointer data) {
 		parent_path = gtk_tree_model_get_path(model, &parent_iter);
 		level = gtk_tree_path_get_depth(parent_path);
 
-                switch(level) {
+                switch (level) {
 
                         case 1: /* store */
                                 store__add_cb(NULL);
@@ -4006,7 +4002,7 @@ remove_item_cb(gpointer data) {
 		parent_path = gtk_tree_model_get_path(model, &parent_iter);
 		level = gtk_tree_path_get_depth(parent_path);
 
-                switch(level) {
+                switch (level) {
 
                         case 1: /* store */
                                 store__remove_cb(NULL);

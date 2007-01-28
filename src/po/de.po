@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2007-01-26 20:32+0100\n"
+"PO-Revision-Date: 2007-01-28 18:38+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1228,6 +1228,10 @@ msgstr "Unbekannt"
 msgid "Use manual RVA value [dB]"
 msgstr "Manuelles RVA Level benutzen [dB]"
 
+#, c-format
+msgid "Really remove \"%s\" from the Music Store?"
+msgstr "Wirklich entfernen \"%s\" aus dem Musikladen?"
+
 #, fuzzy
 msgid "Stop adding songs"
 msgstr "Neu abtasten"
@@ -1240,10 +1244,6 @@ msgstr ""
 
 msgid "rw"
 msgstr ""
-
-#, c-format
-msgid "Really remove \"%s\" from the Music Store?"
-msgstr "Wirklich entfernen \"%s\" aus dem Musikladen?"
 
 #, fuzzy
 msgid "Remove Store"

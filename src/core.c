@@ -1618,7 +1618,6 @@ load_default_cl(int * argc, char *** argv) {
         xmlNodePtr root;
         xmlChar * key;
         FILE * f;
-	char confdir[MAXLEN];
         char config_file[MAXLEN];
 	char default_param[MAXLEN];
 	char cl[MAXLEN];

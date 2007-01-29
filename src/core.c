@@ -1628,8 +1628,13 @@ load_default_cl(int * argc, char *** argv) {
         if ((ret = chdir(options.confdir)) != 0) {
                 if (errno == ENOENT) {
                         fprintf(stderr, "Creating directory %s\n", options.confdir);
-                        mkdir(confdir, S_IRUSR | S_IWUSR | S_IXUSR);
-                        chdir(confdir);
+                        if (mkdir(options.confdir, S_IRUSR | S_IWUSR | S_IXUSR) < 0) {
+				fprintf(stderr, "fatal error: cannot create config directory.\n");
+				fprintf(stderr, "mkdir: %s\n", strerror(errno));
+				exit(1);
+			} else {
+				chdir(confdir);
+			}
                 } else {
                         fprintf(stderr, "An error occured while attempting chdir(\"%s\"). errno = %d\n",
                                 options.confdir, errno);
@@ -2391,6 +2396,7 @@ main(int argc, char ** argv) {
 			}
 		}
 	}
+	free(argv_def);
 	
 	if (show_version) {
 		print_version();

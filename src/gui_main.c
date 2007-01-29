@@ -3762,8 +3762,10 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		char playlist_name[MAXLEN];
 
 		snprintf(playlist_name, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
-		playlist_progress_bar_show();
-		AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_load_thread, strdup(playlist_name))
+		if (g_file_test(playlist_name, G_FILE_TEST_EXISTS) == TRUE) {
+			playlist_progress_bar_show();
+			AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_load_thread, strdup(playlist_name))
+		}
 	}
 
 	/* read command line filenames */

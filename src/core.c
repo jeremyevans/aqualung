@@ -1633,7 +1633,7 @@ load_default_cl(int * argc, char *** argv) {
 				fprintf(stderr, "mkdir: %s\n", strerror(errno));
 				exit(1);
 			} else {
-				chdir(confdir);
+				chdir(options.confdir);
 			}
                 } else {
                         fprintf(stderr, "An error occured while attempting chdir(\"%s\"). errno = %d\n",

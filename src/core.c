@@ -2470,24 +2470,11 @@ main(int argc, char ** argv) {
 		int i;
 		char buffer[MAXLEN];
 		char fullname[MAXLEN];
-		char * path;
 
 		if ((no_session != -1) && (no_session != aqualung_session_id)) {
-			for (i = optind; argv[i] != NULL; i++) {
-				
-				switch (argv[i][0]) {
-				case '/':
-					strcpy(fullname, argv[i]);
-					break;
-				case '~':
-					path = argv[i];
-					++path;
-					snprintf(fullname, MAXLEN-1, "%s/%s", options.home, path);
-					break;
-				default:
-					snprintf(fullname, MAXLEN-1, "%s/%s", options.cwd, argv[i]);
-					break;
-				}
+			for (i = optind; argv[i] != NULL; i++) {				
+
+				normalize_filename(argv[i], fullname);
 
 				if ((enqueue) || (i > optind)) {
 					buffer[0] = RCMD_ENQUEUE;

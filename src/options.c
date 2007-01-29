@@ -1437,16 +1437,8 @@ browse_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 			return;
 		}
 
-		if (locale[0] == '~') {
-			snprintf(tmp, MAXLEN-1, "%s%s", options.home, locale + 1);
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
-		} else if (locale[0] == '/') {
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), locale);
-		} else if (locale[0] != '\0') {
-			snprintf(tmp, MAXLEN-1, "%s/%s", options.cwd, locale + 1);
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
-		}
-
+		normalize_filename(locale, tmp);
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
 		g_free(locale);
 	} else {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);

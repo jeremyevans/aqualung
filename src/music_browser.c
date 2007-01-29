@@ -459,16 +459,8 @@ browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
 			return 0;
 		}
 
-		if (locale[0] == '~') {
-			snprintf(tmp, MAXLEN-1, "%s%s", options.home, locale + 1);
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
-		} else if (locale[0] == '/') {
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), locale);
-		} else if (locale[0] != '\0') {
-			snprintf(tmp, MAXLEN-1, "%s/%s", options.cwd, locale + 1);
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
-		}
-
+		normalize_filename(locale, tmp);
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
 		g_free(locale);
 	} else {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
@@ -612,16 +604,8 @@ add_store_dialog(char * name, char * file, char * comment) {
 			goto display;
 		}
 
-		if (pfile[0] == '~') {
-			snprintf(file, MAXLEN-1, "%s%s", options.home, pfile + 1);
-		} else if (pfile[0] == '/') {
-			strncpy(file, pfile, MAXLEN-1);
-		} else if (pfile[0] != '\0') {
-			snprintf(file, MAXLEN-1, "%s/%s", options.cwd, pfile);
-		}
-
+		normalize_filename(pfile, file);
                 strncpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), MAXLEN-1);
-
 		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
@@ -1427,16 +1411,8 @@ browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
 			return 0;
 		}
 
-		if (locale[0] == '~') {
-			snprintf(tmp, MAXLEN-1, "%s%s", options.home, locale + 1);
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
-		} else if (locale[0] == '/') {
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), locale);
-		} else if (locale[0] != '\0') {
-			snprintf(tmp, MAXLEN-1, "%s/%s", options.cwd, locale + 1);
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
-		}
-
+		normalize_filename(locale, tmp);
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
 		g_free(locale);
 	} else {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);

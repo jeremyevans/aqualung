@@ -508,6 +508,24 @@ unpack_strings(char * packed, char * str1, char * str2) {
 }
 
 
+/* out should be defined as char[MAXLEN] */
+void
+normalize_filename(const char * in, char * out) {
+
+	switch (in[0]) {
+	case '/':
+		strncpy(out, in, MAXLEN-1);
+		break;
+	case '~':
+		snprintf(out, MAXLEN-1, "%s%s", options.home, in + 1);
+		break;
+	default:
+		snprintf(out, MAXLEN-1, "%s/%s", options.cwd, in);
+		break;
+	}
+}
+
+
 void
 set_title_label(char * str) {
 

@@ -42,6 +42,7 @@ void deflicker(void);
 
 void pack_strings(char * str1, char * str2, char * result);
 void unpack_strings(char * packed, char * str1, char * str2);
+void normalize_filename(const char * in, char * out);
 
 void try_waking_disk_thread(void);
 void toggle_noeffect(int id, int state);

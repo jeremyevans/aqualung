@@ -1182,16 +1182,8 @@ browse_button_clicked(GtkWidget * widget, gpointer data) {
 			return 0;
 		}
 
-		if (locale[0] == '~') {
-			snprintf(tmp, MAXLEN-1, "%s%s", options.home, locale + 1);
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
-		} else if (locale[0] == '/') {
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), locale);
-		} else if (locale[0] != '\0') {
-			snprintf(tmp, MAXLEN-1, "%s/%s", options.cwd, locale + 1);
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
-		}
-
+		normalize_filename(locale, tmp);
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
 		g_free(locale);
 	} else {
                 gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
@@ -1827,14 +1819,7 @@ build_dialog(int type) {
 			goto display;
 		}
 
-		if (proot[0] == '~') {
-			snprintf(root, MAXLEN-1, "%s%s", options.home, proot + 1);
-		} else if (proot[0] == '/') {
-			strncpy(root, proot, MAXLEN-1);
-		} else if (proot[0] != '\0') {
-			snprintf(root, MAXLEN-1, "%s/%s", options.cwd, proot);
-		}
-
+		normalize_filename(proot, root);
 		g_free(proot);
 
 

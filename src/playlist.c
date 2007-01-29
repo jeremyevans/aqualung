@@ -991,19 +991,10 @@ playlist_load_thread(void * arg) {
 		return NULL;
 	}
 
-	switch (filename[0]) {
-	case '/':
-		strncpy(fullname, filename, MAXLEN-1);
-		break;
-	case '~':
-		snprintf(fullname, MAXLEN-1, "%s/%s", options.home, filename + 1);
-		break;
-	default:
-		snprintf(fullname, MAXLEN-1, "%s/%s", options.cwd, filename);
-		break;
-	}
+	normalize_filename(filename, fullname);
+	free(filename);
 
-	switch (is_playlist(filename)) {
+	switch (is_playlist(fullname)) {
 	case 0:
 		if ((plfm = playlist_filemeta_get(fullname, NULL, 1)) == NULL) {
 			fprintf(stderr, "playlist_load_thread(): playlist_filemeta_get() returned NULL\n");
@@ -1013,17 +1004,15 @@ playlist_load_thread(void * arg) {
 		}
 		break;
 	case 1:
-		load_playlist(filename, 0);
+		load_playlist(fullname, 0);
 		break;
 	case 2:
-		load_m3u(filename, 0);
+		load_m3u(fullname, 0);
 		break;
 	case 3:
-		load_pls(filename, 0);
+		load_pls(fullname, 0);
 		break;
 	}
-
-	free(filename);
 
 	g_idle_add(finalize_add_to_playlist, NULL);
 
@@ -1088,19 +1077,10 @@ playlist_enqueue_thread(void * arg) {
 		return NULL;
 	}
 
-	switch (filename[0]) {
-	case '/':
-		strncpy(fullname, filename, MAXLEN-1);
-		break;
-	case '~':
-		snprintf(fullname, MAXLEN-1, "%s/%s", options.home, filename + 1);
-		break;
-	default:
-		snprintf(fullname, MAXLEN-1, "%s/%s", options.cwd, filename);
-		break;
-	}
+	normalize_filename(filename, fullname);
+	free(filename);
 
-	switch (is_playlist(filename)) {
+	switch (is_playlist(fullname)) {
 	case 0:
 		if ((plfm = playlist_filemeta_get(fullname, NULL, 1)) == NULL) {
 			fprintf(stderr, "playlist_enqueue_thread(): playlist_filemeta_get() returned NULL\n");
@@ -1109,17 +1089,15 @@ playlist_enqueue_thread(void * arg) {
 		}
 		break;
 	case 1:
-		load_playlist(filename, 1);
+		load_playlist(fullname, 1);
 		break;
 	case 2:
-		load_m3u(filename, 1);
+		load_m3u(fullname, 1);
 		break;
 	case 3:
-		load_pls(filename, 1);
+		load_pls(fullname, 1);
 		break;
 	}
-
-	free(filename);
 
 	g_idle_add(finalize_add_to_playlist, NULL);
 

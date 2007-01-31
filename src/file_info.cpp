@@ -1098,7 +1098,8 @@ insert_id3v2_apic(GtkNotebook * nb, GtkWidget * table, int * cnt, fileinfo_mode_
 	trashlist_add(fileinfo_trash, image_data);
 	memcpy(image_data, bv.data(), bv.size());
 
-	strcpy(tmpname, "/tmp/aqualung-picture-XXXXXX.dat");
+	tmpname[0] = '\0';
+	strcpy(tmpname, "/tmp/aqualung-picture-XXXXXX");
 	int fd = g_mkstemp(tmpname);
 	if (fd < 0) {
 		printf("error: g_mkstemp() failed\n");

@@ -265,25 +265,35 @@ static void
 load_disc(cddb_disc_t * disc) {
 
 	GtkTreeIter iter;
-	char str[MAXLEN];
+	const char * str = NULL;
+	char year[16];
 	int i;
 
-	gtk_entry_set_text(GTK_ENTRY(artist_entry), cddb_disc_get_artist(disc));
-	gtk_entry_set_text(GTK_ENTRY(title_entry), cddb_disc_get_title(disc));
 
-	snprintf(str, MAXLEN-1, "%d", cddb_disc_get_year(disc));
-	gtk_entry_set_text(GTK_ENTRY(year_entry), str);
+	str = cddb_disc_get_artist(disc);
+	gtk_entry_set_text(GTK_ENTRY(artist_entry), str ? str : "");
 
-	gtk_entry_set_text(GTK_ENTRY(category_entry), cddb_disc_get_category_str(disc));
-	gtk_entry_set_text(GTK_ENTRY(genre_entry), cddb_disc_get_genre(disc));
-	gtk_entry_set_text(GTK_ENTRY(ext_entry), cddb_disc_get_ext_data(disc));
+	str = cddb_disc_get_title(disc);
+	gtk_entry_set_text(GTK_ENTRY(title_entry), str ? str : "");
+
+	str = cddb_disc_get_category_str(disc);
+	gtk_entry_set_text(GTK_ENTRY(category_entry), str ? str : "");
+
+	str = cddb_disc_get_genre(disc);
+	gtk_entry_set_text(GTK_ENTRY(genre_entry), str ? str : "");
+
+	str = cddb_disc_get_ext_data(disc);
+	gtk_entry_set_text(GTK_ENTRY(ext_entry), str ? str : "");
+
+	snprintf(year, 15, "%d", cddb_disc_get_year(disc));
+	gtk_entry_set_text(GTK_ENTRY(year_entry), year);
 
 	gtk_list_store_clear(GTK_LIST_STORE(track_store));
 
 	for (i = 0; i < track_count; i++) {
 		gtk_list_store_append(track_store, &iter);
-		gtk_list_store_set(track_store, &iter,
-				   0, cddb_track_get_title(cddb_disc_get_track(disc, i)), -1);
+		str = cddb_track_get_title(cddb_disc_get_track(disc, i));
+		gtk_list_store_set(track_store, &iter, 0, str ? str : "", -1);
 	}
 }
 
@@ -1061,6 +1071,8 @@ cddb_thread(void * arg) {
 	record_count = cddb_query(conn, disc);
 
 	if (record_count < 0) {
+		cddb_destroy(conn);
+		libcddb_shutdown();
 		cddb_thread_state = CDDB_THREAD_ERROR;
 		return NULL;
 	}

@@ -262,7 +262,7 @@ adjust_playlist_item_color(GtkTreeIter * piter, char * active, char * inactive) 
 
 	gchar * str;
 
-	gtk_tree_model_get(GTK_TREE_MODEL(play_store), piter, 2, &str, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(play_store), piter, COLUMN_SELECTION_COLOR, &str, -1);
 	
 	if (strcmp(str, pl_color_active) == 0) {
 		gtk_tree_store_set(play_store, piter, COLUMN_SELECTION_COLOR, active, -1);
@@ -701,7 +701,8 @@ add_file_to_playlist(gpointer data) {
 			   COLUMN_VOLUME_ADJUSTMENT_DISP, voladj_str,
 			   COLUMN_DURATION, plfm->duration,
 			   COLUMN_DURATION_DISP, duration_str,
-			   COLUMN_FONT_WEIGHT, PANGO_WEIGHT_NORMAL, -1);
+			   COLUMN_FONT_WEIGHT, (plfm->active && options.show_active_track_name_in_bold) ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL, 
+                           -1);
 	}
 
  finish:

@@ -279,9 +279,11 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-Aqualung is a music player for the GNU/Linux operating system.
- It plays audio files from your filesystem and has the feature of inserting
- no gaps between adjacent tracks.
+Aqualung is a music player originally designed for the GNU/Linux operating
+ system, but also running on FreeBSD and NT-based versions of Microsoft
+ Windows.
+ It plays audio CDs, as well as audio files from your filesystem and has
+ the feature of inserting no gaps between adjacent tracks.
  It also supports high quality sample rate conversion between the file and
  the output device, when necessary.
 \end_layout
@@ -290,10 +292,7 @@ Aqualung is a music player for the GNU/Linux operating system.
 Audio CDs can be played back and ripped with on-the-fly conversion to WAV,
  FLAC, Ogg Vorbis or CBR/VBR MP3 (gapless via LAME).
  Seamless tagging of the created files is offered as part of the process.
-\end_layout
-
-\begin_layout Standard
-Almost all sample-based, uncompressed formats (e.g.\InsetSpace ~
+ Almost all sample-based, uncompressed formats (e.g.\InsetSpace ~
 WAV, AIFF, AU etc.) are
  supported.
  Files encoded with FLAC (the Free Lossless Audio Codec), Ogg Vorbis, Ogg
@@ -306,7 +305,11 @@ WAV, AIFF, AU etc.) are
  native Win32).
  Depending on the compile-time options, not all file formats and output
  drivers may be usable.
- Type `aqualung -v' to get a list of all the compiled-in features.
+ Type `
+\family typewriter
+aqualung -v
+\family default
+' to get a list of all the compiled-in features.
 \end_layout
 
 \begin_layout Standard
@@ -316,7 +319,7 @@ Aqualung supports the LADSPA 1.1 plugin standard.
 \end_layout
 
 \begin_layout Standard
-Other features of the program are internally working volume and balance
+Other features of the program are: internally working volume and balance
  controls (not touching the soundcard mixer), multiple skin support, random
  seeking during playback, track repeat, list repeat and shuffle mode (besides
  normal playback).
@@ -327,6 +330,15 @@ Other features of the program are internally working volume and balance
  options.
  Aqualung has the ability to display and edit Ogg Xiph comments, ID3v1,
  ID3v2 and APE tags found in files that support them.
+\end_layout
+
+\begin_layout Standard
+Currently metadata editing capability is considered dangerous and is turned
+ off by default, because the TagLib library which Aqualung uses for metadata
+ access has some yet unfixed, serious bugs which may cause invalid tags
+ to be written or may result in outright corrupt (unplayable) files.
+ If you decide to build Aqualung with metadata editing support, make sure
+ to have backups of your files and proceed with care.
 \end_layout
 
 \begin_layout Standard
@@ -346,6 +358,255 @@ In addition to all this, Aqualung provides a so-called Music Store that
  Importing file metadata (ID3v1, ID3v2 tags, Ogg Xiph comments, APE metadata)
  into the Music Store as well as getting track names from a CDDB/FreeDB
  database is supported.
+ For audio CDs, CD-Text retrieval is also implemented.
+\end_layout
+
+\begin_layout Standard
+
+\newpage
+
+\end_layout
+
+\begin_layout Section
+Quick Start Guide
+\end_layout
+
+\begin_layout Standard
+If you'd like to get your hands on the program quickly rather than to spend
+ your evening reading the rest of the manual, here is the absolute minimum
+ you need to know to successfully use the program.
+ So make sure to read this (deliberately short) chapter, and come back for
+ the rest when you have questions while using the program.
+ Ultimately, you may ask questions on the Aqualung-friends mailing list.
+\end_layout
+
+\begin_layout Subsection
+Getting Aqualung
+\end_layout
+
+\begin_layout Standard
+It is not hard to get Aqualung up and running on your machine, although
+ for beginners the number of options might be intimidating at first.
+ The steps you need to take depend on the platform and operating system
+ you use.
+ For detailed information please look at the relevant page of the Aqualung
+ website: 
+\family typewriter
+http://aqualung.sourceforge.net/index.php?tab=compiling
+\family default
+ 
+\end_layout
+
+\begin_layout Standard
+In case you are not used to compiling software yourself, you may check whether
+ there is a distribution-provided package of Aqualung.
+ Installing such a package is generally the easiest and fastest way to get
+ Aqualung, however this way you won't be able to try the latest features.
+ Currently there are Aqualung packages for major Linux distributions such
+ as Debian, Gentoo, SuSE, etc.
+ If your distribution lacks such a package, consider contacting the organization
+ maintaining the distribution and ask them to provide a package of Aqualung.
+ Anyway, you might have to compile Aqualung from source.
+ This is not very hard, either -- the 
+\family typewriter
+configure
+\family default
+ script tries to adapt Aqualung to your system as much as possible without
+ breaking the program.
+ See the above website for more information.
+\end_layout
+
+\begin_layout Standard
+On Microsoft Windows, all you have to do is download and run the self-extracting
+ installer utility, which guides you through a few easy to follow steps
+ and installs the program on your machine.
+ Make sure to visit 
+\family typewriter
+http://aqualung.sf.net/win32
+\family default
+ for more information about the Windows version of Aqualung.
+\end_layout
+
+\begin_layout Subsection
+Starting the program for the first time
+\end_layout
+
+\begin_layout Standard
+Aqualung has a large number of configuration settings, which are adjustable
+ through the user interface at run-time (no need to edit config files by
+ hand), and are remembered across multiple invocations of the program.
+ When Aqualung starts for the first time, it creates a configuration based
+ on some wired-in defaults.
+ A good way of exploring the program's capabilities is poking through the
+ configuration area.
+ You can access this by clicking in the main window with the right mouse
+ button, which will pop up the program's main menu.
+ Choosing Settings from the menu will open the configuration dialog.
+\end_layout
+
+\begin_layout Standard
+In fact, clicking with the right mouse button almost anywhere is a generally
+ smart idea.
+ Aqualung has lots of context-sensitive popup menus in the Music Store,
+ the Playlist (often embedded in the main window) and elsewhere.
+ It's good to keep this in mind when taking the explorative approach instead
+ of reading the whole manual right away.
+\end_layout
+
+\begin_layout Standard
+Let's add some music to the playlist and start playback right away.
+ Right-click the 
+\family sans
+Add\InsetSpace ~
+files
+\family default
+ button, and choose 
+\family sans
+Add\InsetSpace ~
+directory
+\family default
+ from the menu.
+ (The right-clicking trick works for the other two buttons as well.
+ Left-clicking is a shortcut to immediately execute the action denoted by
+ the button's caption.) Choose a directory with some music under it.
+ It's OK to have subdirectories under this directory, the program will search
+ for playable files recursively.
+ After the playlist starts to get populated with tracks, press play, or
+ double-click on one of the tracks to play.
+ Press 'i' to see metadata information about the selected track.
+\end_layout
+
+\begin_layout Subsection
+Setting up a Music Store
+\end_layout
+
+\begin_layout Standard
+Now that you have some music playing, let's get more organised.
+ In the Music Store window click in the empty area with the right mouse
+ button and choose 
+\family sans
+Create\InsetSpace ~
+empty\InsetSpace ~
+store...
+
+\family default
+ from the menu.
+ Enter a meaningful name such as 
+\family sans
+Tom's Music
+\family default
+ and choose a location to save the XML file of the store to.
+ This should be a writable location, so it is wise to stick to a location
+ inside your home directory.
+ (A system-wide path or a remote NFS mount with read-only access won't do.)
+\end_layout
+
+\begin_layout Standard
+You can have any number of such stores in the Music Store organizer, and
+ it is indeed a great idea to have separate stores for music differentiated
+ by origin, genre, or some other aspect.
+ One great use is multiple stores with the actual music files stored on
+ multiple remote machines, one store for each machine.
+ Or just a store for your local music and another for files on your bedroom
+ file server box.
+ There are several possibilities.
+\end_layout
+
+\begin_layout Standard
+But how do you populate the store with music you already have on your drive?
+ It's easy if your music is stored in an organized manner on the filesystem
+ level.
+ As a minimum, this means that tracks intended to go into one store are
+ found under a common root directory in the filesystem (there may be several
+ directory layers down from the root to the individual files, but there
+ must be a common ancestor).
+ In this case the so-called Music Store Builder will take care of things
+ for you.
+ Right-click on your newly-created empty store and choose 
+\family sans
+Build\InsetSpace ~
+/\InsetSpace ~
+Update\InsetSpace ~
+store\InsetSpace ~
+from\InsetSpace ~
+filesystem
+\family default
+.
+ Choose 
+\family sans
+Independent
+\family default
+ mode and in the dialog you get, enter the root directory under which your
+ collection resides.
+ As you can probably guess at this point, the store builder interface is
+ pretty flexible, however the default settings should be good to get something
+ together quickly without further hassle.
+\end_layout
+
+\begin_layout Standard
+Pressing OK will start the process, during which the directory structure
+ below the root you specified will be traversed.
+ The artist/record/track names are determined from potentially multiple
+ data sources (CDDB, metadata e.g.
+ ID3v2 tags or Ogg Xiph comments, and filesystem names).
+ The logic involved is fairly elaborate.
+ You are strongly advised to read the detailed usage instructions for the
+ Music Store Builder at Section\InsetSpace ~
+
+\begin_inset LatexCommand \ref{sub:Building-or-Updating}
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Playing and ripping an Audio CD
+\end_layout
+
+\begin_layout Standard
+You can play CDs with Aqualung easily.
+ Just put the CD in one of your CD drives, and if everything goes well,
+ Aqualung will detect it, do a CDDB lookup to retrieve artist, record and
+ track info (CD-Text is also used if the CD has it), and make it available
+ to you through the special Music Store node called 
+\family sans
+CD\InsetSpace ~
+Audio
+\family default
+.
+\end_layout
+
+\begin_layout Standard
+You don't have to be happy with what you have so far.
+ The Music Store paradigm is fairly addictive, as it's much easier to drop
+ something into the playlist from the Music Store than physically placing
+ a CD in the drive.
+ So as you keep expanding your CD collection, you will probably want to
+ have those records in one of your music stores, too.
+ In this case all you have to do is choose 
+\family sans
+Rip\InsetSpace ~
+CD...
+
+\family default
+ from the disc's popup menu, and supply some information.
+ We won't go into details here (please refer to Section\InsetSpace ~
+
+\begin_inset LatexCommand \ref{sub:Audio-CD}
+
+\end_inset
+
+ in case the interface is not obvious).
+ However, it is worth stating that you should have a separate directory
+ for the files of each record.
+ Ripping multiple CDs into the same directory won't work.
+\end_layout
+
+\begin_layout Standard
+
+\newpage
+
 \end_layout
 
 \begin_layout Section
@@ -1056,6 +1317,8 @@ and other settings.
 
 \begin_layout Description
 ${prefix}/share/aqualung/skin System-wide skin directory.
+\newpage
+
 \end_layout
 
 \begin_layout Section
@@ -1068,7 +1331,7 @@ Main window
 
 \begin_layout Standard
 You can control most of the program from this window.
- The cue controls in the down-left corner are fairly obvious.
+ The cue controls in the bottom-left corner are fairly obvious.
  You can drag the large slider in the middle for seeking.
  There are two smaller sliders above that, the left one is for adjusting
  the volume and the right one for adjusting the balance.
@@ -2274,8 +2537,12 @@ The Music Store is a simple database of all your music.
  The audio files can be scattered around your system as long as you have
  read permissions to them.
  However, it is strongly recommended that you devote a separate directory
- for all the music (for example, /music would be a convenient place to store
- files that are owned by root, but readable by all users).
+ for all the music (for example, 
+\family typewriter
+/music
+\family default
+ would be a convenient place to store files that are owned by root, but
+ readable by all users).
  Moreover, you can maintain several collections on different machines this
  way, and share them with other users via NFS, while keeping a (probably
  smaller) collection on your local hard drive.
@@ -2283,80 +2550,52 @@ The Music Store is a simple database of all your music.
 
 \begin_layout Standard
 In these central directories, create subdirectories for each artist you
- have records from.
+ have CDs from.
  The directory names do not have to contain the exact names, you can for
- example create /music/ledzep for Led Zeppelin, /music/crimson for King
- Crimson, /music/hendrix for Jimi Hendrix and so on.
- In these directories, create subdirectories for each record you have.
+ example create 
+\family typewriter
+/music/ledzep
+\family default
+ for Led Zeppelin, 
+\family typewriter
+/music/crimson
+\family default
+ for King Crimson, 
+\family typewriter
+/music/hendrix
+\family default
+ for Jimi Hendrix and so on.
+ In these directories, create subdirectories for each CD you have.
  Once again, the directory names for the records do not need to fully contain
  the record titles; they can be short and without spaces and special characters.
 \end_layout
 
 \begin_layout Standard
-In the directories of records, you should cdparanoia the records, and have
- the resulting file names intact.
- Yes, you don't need to rename track01.cdda.wav to 01_Lark's Tongues In Aspic,
- Part One.wav -- this would be very unhealthy to do anyway.
-\end_layout
+Into the directories of records, you should rip the CD using the built-in
+ ripper of Aqualung, tagging the files and adding the record to the Music
+ Store as part of the process.
+ See Section\InsetSpace ~
 
-\begin_layout Standard
-So you have a bunch of directories containing lots of tracks.
- Now you can add all this to the Music Store, additionally specifying metadata
- about Artists, Records and Tracks.
- One such metadata is the actual name of these items instead of the directory
- and file names you have on your filesystem.
-\end_layout
+\begin_inset LatexCommand \ref{sub:Audio-CD}
 
-\begin_layout Standard
-To do so, you will utilize the popup menus in the Music Store window.
- When you have nothing initially, all that pops up is an option to create
- a new store, which is a top-level element holding artists.
- When creating a new store, you have to specify a file on your filesystem
- to hold all data about the artists, records and tracks in this store.
- Note that this creates an empty store; for adding an already existing database
- file, use the Settings/Music Store interface.
- We suggest that you place this file somewhere next to the audio files,
- so it will be available along with the music.
- This is particularly beneficial if you plan to share the music directory
- among other users.
-\end_layout
+\end_inset
 
-\begin_layout Standard
-Now clicking on the store with the right mouse button will let you add an
- artist to it.
- When you have at least one artist in a store, right-clicking on it will
- let you add a record to them.
- When you have a record, the popup menu will have the option to add tracks
- to the record.
-\end_layout
-
-\begin_layout Standard
-You don't have to add all the tracks to all records one by one, if you already
- have the audio files from which you want to create the record.
- When adding a record to an artist, the dialog that comes up has an option
- that says `Auto-create tracks from these files', where you can select a
- bunch of files.
- Ideally, when you have the tracks of a record in one directory as described
- above, this will be quite easy.
- And if you didn't mess with the cdparanoia-given names trackXX.*, the tracks
- will be in the right order without further attention.
-\end_layout
-
-\begin_layout Standard
-Now all you have to do is set the correct visible names for the tracks,
- which is quite easy due to the CDDB/FreeDB support.
+.
 \end_layout
 
 \begin_layout Subsubsection
 Building or Updating store from filesystem
+\begin_inset LatexCommand \label{sub:Building-or-Updating}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-You might think that the way stores are built up and filled with data is
- painfully slow and exhaustive -- especially if you already own a large
- music collection, and cannot bring yourself to add each record one by one.
- Luckily Aqualung comes with a Music Store builder facility, which allows
- you to easily create a store from your audio files.
+Aqualung comes with a Music Store builder facility, which allows you to
+ easily create a store from your existing audio files.
+ This is useful if you already have a large music collection on your harddrive.
 \end_layout
 
 \begin_layout Standard
@@ -2701,13 +2940,25 @@ The order in which the stores appear in the Music Store is the order of
 
 \begin_layout Subsubsection
 Audio CD
+\begin_inset LatexCommand \label{sub:Audio-CD}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 If Aqualung was compiled with Audio CD support, a store called `CD Audio'
  appears as the first store in Music Store.
  This special store contains a node for each drive in your machine.
- When you insert a CD in a drive, the corresponding node will contain the
+ Detecting hot-swappable devices such as external USB drives is supported,
+ so you don't need to restart the program after plugging in your drive.
+ Aqualung will notice not only the change of discs in devices, but device
+ changes themselves, too.
+\end_layout
+
+\begin_layout Standard
+When you insert a CD in a drive, the corresponding node will contain the
  audio tracks on that disc.
  The artist, record and track names are automatically set from CD-Text informati
 on if found on the CD, or a CDDB lookup.
@@ -2729,21 +2980,38 @@ The most important feature is ripping the CD.
  the artist, record and track names.
  If the CDDB lookup was successful, these fields are initialized appropriately.
  On the `Output' page you can select the directory where to put the audio
- files, and optionally the store to which you would like to add the ripped
- CD.
- Only stores with write permission are offered.
- The desired file format can also be selected, along with settings concerning
- quality, such as compression level or bitrate.
+ files, and optionally the music store to which you would like to add the
+ ripped CD.
+ The destination directory must be empty; it is best to create a fresh new
+ directory each time you rip a CD.
+ Only music stores with write permission are offered, so you might not see
+ all of them.
+ The desired file/encoding format can also be selected, along with settings
+ concerning quality, such as compression level or bitrate.
+ The supported destination formats are WAV, FLAC, Ogg Vorbis and MP3.
  There is also an option to set whether the files should be tagged with
  metadata.
- CD Ripping always happens with maximum available speed and with error correctio
-n modes manually set before every run on the last page titled `Paranoia'.
+ (WAV does not have a tagging mechanism.
+ Other formats are tagged according to their native tagging mechanism.)
+\end_layout
+
+\begin_layout Standard
+CD Ripping always happens with maximum available speed and with error correction
+ modes manually set before every run on the last page titled `Paranoia'.
+ Here you can basically choose between safe and slow ripping, and faster,
+ but more insecure operation.
+ The latter might be useful if you know by experience that your equipment
+ is reliable, and the CD you are about to rip is not scratched or dirty.
+ Even so, it is probably a good idea to use the available extra error protection
+ unless you are really in a hurry.
 \end_layout
 
 \begin_layout Standard
 It is possible to display information about the inserted disc (CD-Text),
  or the drive itself (general info, reading or writing capabilities, etc.).
  The tray can also be ejected, if the driver supports this operation.
+ Note that ripping and playing a CD at the same time is impossible for obvious
+ reasons.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4110,9 +4378,8 @@ status collapsed
 
 help' here, the program will always display the standard message and exit
  immediately; and there is no way to override that from the command line.
- Now you won't do that, since you are a smart user, aren't you? But if your
- sister does, all you have to (or can) do is grab a text editor and hack
- it out of ~/.aqualung/config.xml where it is stored.
+ If you get into trouble, all you have to (or can) do is grab a text editor
+ and hack it out of ~/.aqualung/config.xml where it is stored.
  You will find it between `<default_param>' and `</default_param>'.
 \end_layout
 
@@ -4340,6 +4607,11 @@ One great feature of the program is that you can apply LADSPA plugins to
  with other plugins.
  You can process your sound with Aqualung in ways that the author of this
  program never thought of.
+ A recommended set is TAP-plugins, downloadable from 
+\family typewriter
+http://tap-plugins.sf.net
+\family default
+.
 \end_layout
 
 \begin_layout Standard

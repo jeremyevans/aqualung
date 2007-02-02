@@ -1052,7 +1052,7 @@ ripper_window(void) {
         gtk_box_pack_end(GTK_BOX(vbox), ripper_hbox, FALSE, TRUE, 0);
 
 	ripper_close_when_ready_check = gtk_check_button_new_with_label(_("Close window when complete"));
-	gtk_widget_set_name(ripper_close_when_ready_check, "check_on_notebook");
+	gtk_widget_set_name(ripper_close_when_ready_check, "check_on_window");
         gtk_box_pack_start(GTK_BOX(ripper_hbox), ripper_close_when_ready_check, FALSE, TRUE, 0);
 
         ripper_cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL);
@@ -1198,8 +1198,16 @@ ripper_thread(void * arg) {
 
 		fdec = file_decoder_new();
 		fenc = file_encoder_new();
-		file_decoder_open(fdec, decoder_filename);
-		file_encoder_open(fenc, &mode);
+
+		if (file_decoder_open(fdec, decoder_filename)) {
+			free(device_path);
+			return NULL;
+		}
+
+		if (file_encoder_open(fenc, &mode)) {
+			free(device_path);
+			return NULL;
+		}
 
 		cdda_decoder_set_mode(((decoder_t *)fdec->pdec),
 				      100, /* max drive speed */

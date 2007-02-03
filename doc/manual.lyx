@@ -389,12 +389,20 @@ It is not hard to get Aqualung up and running on your machine, although
  for beginners the number of options might be intimidating at first.
  The steps you need to take depend on the platform and operating system
  you use.
- For detailed information please look at the relevant page of the Aqualung
- website: 
-\family typewriter
-http://aqualung.sourceforge.net/index.php?tab=compiling
-\family default
- 
+ For detailed information please look at the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+href{http://aqualung.sourceforge.net/index.php?tab=compiling}{relevant page}
+\end_layout
+
+\end_inset
+
+ of the Aqualung website.
 \end_layout
 
 \begin_layout Standard
@@ -421,9 +429,18 @@ On Microsoft Windows, all you have to do is download and run the self-extracting
  installer utility, which guides you through a few easy to follow steps
  and installs the program on your machine.
  Make sure to visit 
-\family typewriter
-http://aqualung.sf.net/win32
-\family default
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+href{http://aqualung.sourceforge.net/win32}{this page}
+\end_layout
+
+\end_inset
+
  for more information about the Windows version of Aqualung.
 \end_layout
 
@@ -2593,7 +2610,7 @@ Building or Updating store from filesystem
 \end_layout
 
 \begin_layout Standard
-Aqualung comes with a Music Store builder facility, which allows you to
+Aqualung comes with a Music Store Builder facility, which allows you to
  easily create a store from your existing audio files.
  This is useful if you already have a large music collection on your harddrive.
 \end_layout
@@ -2659,7 +2676,7 @@ end{itemize}
 \end_layout
 
 \begin_layout Standard
-Pattern a) is useful when you do not have separate subdirectories for artist,
+Pattern a) is useful when you do not have separate subdirectories for artists,
  only for records.
  The b) means that each artist and record has its own subdirectory.
  It corresponds to the structure introduced above along with the Music Store.
@@ -2672,17 +2689,17 @@ Pattern a) is useful when you do not have separate subdirectories for artist,
 \begin_layout Standard
 The independent mode does not follow any directory structure, only searches
  for audio files recursively starting from root.
- This doesn't allow the builder to perform CDDB lookups, so only metadata
+ This doesn't allow the Builder to perform CDDB lookups, so only metadata
  and filename transformations are available with this mode.
  If your audio files are basically organized in a directory structure that
  allows a directory driven build to be performed, but you also happen to
- have audio files on higher (record or artist) levels, run the builder in
+ have audio files on higher (record or artist) levels, run the Builder in
  directory driven mode first, then use the independent mode on the same
  root directory to add the outstanding files too.
 \end_layout
 
 \begin_layout Standard
-The builder can gain information about your music from three sources: metadata
+The Builder can gain information about your music from three sources: metadata
  (if your audio files are correctly tagged), CDDB lookups, and the filesystem
  names of the audio files and directories themselves.
 \end_layout
@@ -2755,7 +2772,7 @@ With each mode you can set the priority of data sources for artist names,
 \end_layout
 
 \begin_layout Standard
-The builder looks for usable data in the given priority, and will use the
+The Builder looks for usable data in the given priority, and will use the
  first suitable one.
 \end_layout
 
@@ -2878,7 +2895,8 @@ Each store, artist, record and track has fields you can fill in via bringing
 
 \begin_layout Standard
 For artists, you should enter the same here as the `Visible name' for ordinary
- band names (you can use copy & paste to do that).
+ band names (you can use copy & paste to do that, or simply press Enter
+ while the cursor is in the visible name entry).
  However, for some artists you will enter a slightly modified string: `Mayall,
  John' or just `Mayall' for John Mayall, for example.
  This is to ensure that `John Mayall' (which is the visible name) appears
@@ -4607,10 +4625,19 @@ One great feature of the program is that you can apply LADSPA plugins to
  with other plugins.
  You can process your sound with Aqualung in ways that the author of this
  program never thought of.
- A recommended set is TAP-plugins, downloadable from 
-\family typewriter
-http://tap-plugins.sf.net
-\family default
+ A recommended set is 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+href{http://tap-plugins.sourceforge.net}{TAP-plugins}
+\end_layout
+
+\end_inset
+
 .
 \end_layout
 
@@ -4748,7 +4775,7 @@ System Tray Support
 
 \begin_layout Standard
 When compiled with Systray support, Aqualung will place its icon in the
- system tray (notification area), and lets all of its windows to be closed
+ system tray (notification area), and lets all of its windows be closed
  while still playing music.
  In this mode pressing the upper right X on the main window will not exit
  the program, only hide its windows.

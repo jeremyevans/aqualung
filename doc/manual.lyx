@@ -472,17 +472,9 @@ In fact, clicking with the right mouse button almost anywhere is a generally
 
 \begin_layout Standard
 Let's add some music to the playlist and start playback right away.
- Right-click the 
-\family sans
-Add\InsetSpace ~
-files
-\family default
- button, and choose 
-\family sans
-Add\InsetSpace ~
-directory
-\family default
- from the menu.
+ Right-click the `Add\InsetSpace ~
+files' button, and choose `Add\InsetSpace ~
+directory' from the menu.
  (The right-clicking trick works for the other two buttons as well.
  Left-clicking is a shortcut to immediately execute the action denoted by
  the button's caption.) Choose a directory with some music under it.
@@ -490,7 +482,7 @@ directory
  for playable files recursively.
  After the playlist starts to get populated with tracks, press play, or
  double-click on one of the tracks to play.
- Press 'i' to see metadata information about the selected track.
+ Press `i' to see metadata information about the selected track.
 \end_layout
 
 \begin_layout Subsection
@@ -500,19 +492,12 @@ Setting up a Music Store
 \begin_layout Standard
 Now that you have some music playing, let's get more organised.
  In the Music Store window click in the empty area with the right mouse
- button and choose 
-\family sans
-Create\InsetSpace ~
+ button and choose `Create\InsetSpace ~
 empty\InsetSpace ~
-store...
-
-\family default
- from the menu.
- Enter a meaningful name such as 
-\family sans
-Tom's Music
-\family default
- and choose a location to save the XML file of the store to.
+store\SpecialChar \ldots{}
+' from the menu.
+ Enter a meaningful name such as `Tom's Music' and choose a location to
+ save the XML file of the store to.
  This should be a writable location, so it is wise to stick to a location
  inside your home directory.
  (A system-wide path or a remote NFS mount with read-only access won't do.)
@@ -539,22 +524,15 @@ But how do you populate the store with music you already have on your drive?
  must be a common ancestor).
  In this case the so-called Music Store Builder will take care of things
  for you.
- Right-click on your newly-created empty store and choose 
-\family sans
-Build\InsetSpace ~
+ Right-click on your newly-created empty store and choose `Build\InsetSpace ~
 /\InsetSpace ~
 Update\InsetSpace ~
 store\InsetSpace ~
 from\InsetSpace ~
-filesystem
-\family default
-.
- Choose 
-\family sans
-Independent
-\family default
- mode and in the dialog you get, enter the root directory under which your
- collection resides.
+
+filesystem'.
+ Choose Independent mode and in the dialog you get, enter the root directory
+ under which your collection resides.
  As you can probably guess at this point, the store builder interface is
  pretty flexible, however the default settings should be good to get something
  together quickly without further hassle.
@@ -564,8 +542,9 @@ Independent
 Pressing OK will start the process, during which the directory structure
  below the root you specified will be traversed.
  The artist/record/track names are determined from potentially multiple
- data sources (CDDB, metadata e.g.
- ID3v2 tags or Ogg Xiph comments, and filesystem names).
+ data sources (CDDB, metadata e.g.\InsetSpace ~
+ID3v2 tags or Ogg Xiph comments, and filesystem
+ names).
  The logic involved is fairly elaborate.
  You are strongly advised to read the detailed usage instructions for the
  Music Store Builder at Section\InsetSpace ~
@@ -586,12 +565,8 @@ You can play CDs with Aqualung easily.
  Just put the CD in one of your CD drives, and if everything goes well,
  Aqualung will detect it, do a CDDB lookup to retrieve artist, record and
  track info (CD-Text is also used if the CD has it), and make it available
- to you through the special Music Store node called 
-\family sans
-CD\InsetSpace ~
-Audio
-\family default
-.
+ to you through the special Music Store node called `CD\InsetSpace ~
+Audio'.
 \end_layout
 
 \begin_layout Standard
@@ -601,13 +576,10 @@ You don't have to be happy with what you have so far.
  a CD in the drive.
  So as you keep expanding your CD collection, you will probably want to
  have those records in one of your music stores, too.
- In this case all you have to do is choose 
-\family sans
-Rip\InsetSpace ~
-CD...
-
-\family default
- from the disc's popup menu, and supply some information.
+ In this case all you have to do is choose `Rip\InsetSpace ~
+CD\SpecialChar \ldots{}
+' from the disc's popup
+ menu, and supply some information.
  We won't go into details here (please refer to Section\InsetSpace ~
 
 \begin_inset LatexCommand \ref{sub:Audio-CD}
@@ -1314,8 +1286,7 @@ Here is a list of files that Aqualung creates, reads and relies on.
 \end_layout
 
 \begin_layout Description
-~/.aqualung/config.xml GUI (skin, window size/position, etc.)\InsetSpace ~
-and other settings.
+~/.aqualung/config.xml GUI (skin, window size/position, etc.) and other settings.
 \end_layout
 
 \begin_layout Description

@@ -645,6 +645,7 @@ finalize_add_to_playlist(gpointer data) {
 		playlist_content_changed();
 		delayed_playlist_rearrange(100);
 		playlist_progress_bar_hide();
+		select_active_position_in_playlist();
 	}
 
 	return FALSE;
@@ -711,8 +712,6 @@ add_file_to_playlist(gpointer data) {
 	if (plfm != NULL) {
 		playlist_filemeta_free(plfm);
 	}
-
-        select_active_position_in_playlist();
 
 	--playlist_data_written;
 
@@ -4032,7 +4031,6 @@ set_cursor_in_playlist (GtkTreeIter *iter, gboolean scroll) {
                 }
                 gtk_tree_path_free(visible_path);
         }
-
 }
 
 void
@@ -4047,7 +4045,10 @@ select_active_position_in_playlist(void) {
 			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, COLUMN_SELECTION_COLOR, &str, -1);
 		        if (strcmp(str, pl_color_active) == 0) {
                                 set_cursor_in_playlist(&iter, FALSE);
+				g_free(str);
+				break;
                         }
+			g_free(str);
 		} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter));
         }
 }

@@ -896,7 +896,7 @@ change_skin(char * path) {
 	int st_fx = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(plugin_toggle));
 	int st_mstore = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(musicstore_toggle));
 	int st_plist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(playlist_toggle));
-
+	char title[MAXLEN];
 
 #ifdef HAVE_LADSPA
 	GtkTreeIter iter;
@@ -905,6 +905,9 @@ change_skin(char * path) {
 #endif /* HAVE_LADSPA */
 
 	char rcpath[MAXLEN];
+
+
+	strncpy(title, gtk_label_get_text(GTK_LABEL(label_title)), MAXLEN-1);
 
 	g_source_remove(timeout_tag);
 #ifdef HAVE_CDDA
@@ -968,6 +971,14 @@ change_skin(char * path) {
 
 	gtk_widget_show_all(main_window);
 
+	refresh_displays();
+
+	if (is_file_loaded) {
+		set_title_label(title);
+		display_cover(cover_image_area, c_event_box, cover_align,
+			      48, 48, current_file, TRUE, TRUE);
+	}
+
 #ifdef HAVE_LOOP
 	if (!st_r_track) {
 		gtk_widget_hide(loop_bar);
@@ -975,11 +986,6 @@ change_skin(char * path) {
 #endif /* HAVE_LOOP */
 
 	deflicker();
-
-        cover_show_flag = 0;
-        gtk_widget_hide(cover_image_area);
-        gtk_widget_hide(c_event_box);
-	gtk_widget_hide(cover_align);
 
 	if (options.playlist_is_embedded) {
 		if (!playlist_on) {
@@ -1034,7 +1040,6 @@ change_skin(char * path) {
 
 	restore_window_position();
 	deflicker();
-	refresh_displays();
 
 	set_playlist_color();
 	

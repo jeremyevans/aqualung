@@ -204,6 +204,8 @@ playlist_filemeta * playlist_filemeta_get(char * physical_name, char * alt_name,
 void playlist_filemeta_free(playlist_filemeta * plfm);
 
 void remove_files (void);
+void set_cursor_in_playlist (GtkTreeIter *iter, gboolean scroll);
+void select_active_position_in_playlist(void);
 
 void rem__sel_cb(gpointer data);
 void cut__sel_cb(gpointer data);
@@ -709,6 +711,8 @@ add_file_to_playlist(gpointer data) {
 	if (plfm != NULL) {
 		playlist_filemeta_free(plfm);
 	}
+
+        select_active_position_in_playlist();
 
 	--playlist_data_written;
 
@@ -1799,12 +1803,7 @@ rem__sel_cb(gpointer data) {
 	}
 
 	if (valid) {
-		GtkTreePath * visible_path = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), &iter_next);
-
-		if (visible_path) {
-			gtk_tree_view_set_cursor(GTK_TREE_VIEW(play_list), visible_path, NULL, TRUE);
-			gtk_tree_path_free(visible_path);
-		}
+                set_cursor_in_playlist(&iter_next, FALSE);
 	}
 
 	playlist_content_changed();
@@ -3750,13 +3749,7 @@ show_active_position_in_playlist(void) {
                         gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, 0);
                 }
 
-                visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
-                if (visible_path) {
-                        gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
-                        gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (play_list), visible_path,
-                                                      NULL, TRUE, 0.3, 0.0);
-                        gtk_tree_path_free(visible_path);
-                }
+                set_cursor_in_playlist(&iter, TRUE);
         }
 }
 
@@ -3803,21 +3796,9 @@ show_active_position_in_playlist_toggle(void) {
 
                 if (flag) {
                         if (cflag) {
-                                visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter_child);
-                                if (visible_path) {
-                                        gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
-                                        gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (play_list), visible_path,
-                                                                      NULL, TRUE, 0.3, 0.0);
-                                        gtk_tree_path_free(visible_path);
-                                }
+                                set_cursor_in_playlist(&iter_child, TRUE);
                         } else {
-                                visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
-                                if (visible_path) {
-                                        gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
-                                        gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (play_list), visible_path,
-                                                                      NULL, TRUE, 0.3, 0.0);
-                                        gtk_tree_path_free(visible_path);
-                                }
+                                set_cursor_in_playlist(&iter, TRUE);
                         }
                 }
         }
@@ -3955,7 +3936,6 @@ remove_files (void) {
         GtkWidget *info_dialog;
         gint response, n = 0, i = 0, j, files, last_pos;
 	GtkTreeIter iter, iter_child;
-        GtkTreePath *visible_path;
         gchar temp[MAXLEN], *filename;
 
         files = 0;
@@ -4030,14 +4010,45 @@ remove_files (void) {
 
                         if (i) {
                                 gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, last_pos);
-                                visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), &iter);
-                                if (visible_path) {
-                                        gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
-                                        gtk_tree_path_free(visible_path);
-                                }
+                                set_cursor_in_playlist(&iter, FALSE);
                         }
                         playlist_content_changed();
                 }
+        }
+}
+
+void
+set_cursor_in_playlist (GtkTreeIter *iter, gboolean scroll) {
+
+        GtkTreePath *visible_path;
+
+        visible_path = gtk_tree_model_get_path (GTK_TREE_MODEL(play_store), iter);
+
+        if (visible_path) {
+                gtk_tree_view_set_cursor (GTK_TREE_VIEW (play_list), visible_path, NULL, TRUE);
+                if (scroll == TRUE) {
+                        gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (play_list), visible_path, 
+                                                      NULL, TRUE, 0.3, 0.0);
+                }
+                gtk_tree_path_free(visible_path);
+        }
+
+}
+
+void
+select_active_position_in_playlist(void) {
+
+	GtkTreeIter iter;
+	gchar * str;
+
+        if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(play_store), &iter)) {
+
+                do {
+			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, COLUMN_SELECTION_COLOR, &str, -1);
+		        if (strcmp(str, pl_color_active) == 0) {
+                                set_cursor_in_playlist(&iter, FALSE);
+                        }
+		} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(play_store), &iter));
         }
 }
 

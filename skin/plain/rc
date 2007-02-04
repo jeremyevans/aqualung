@@ -10,19 +10,19 @@
 
 style "window"
 {
-	bg_pixmap[NORMAL] = "<none>"
-	bg_pixmap[PRELIGHT] = "<none>"
-	bg_pixmap[ACTIVE] = "<none>"
+    bg_pixmap[NORMAL] = "<none>"
+    bg_pixmap[PRELIGHT] = "<none>"
+    bg_pixmap[ACTIVE] = "<none>"
 
-	bg[NORMAL] = "#dcdad5"
-	bg[PRELIGHT] = "#bab5ab"
-	bg[ACTIVE] = "#bab5ab"
+    bg[NORMAL] = "#dcdad5"
+    bg[PRELIGHT] = "#bab5ab"
+    bg[ACTIVE] = "#bab5ab"
 
-	fg[NORMAL] = "#000000"
-	fg[PRELIGHT] = "#000000"
-	fg[ACTIVE] = "#000000"
+    fg[NORMAL] = "#000000"
+    fg[PRELIGHT] = "#000000"
+    fg[ACTIVE] = "#000000"
 
-	font_name = "Sans 11"
+    font_name = "Sans 11"
 }
 
 style "main_window" = "window"
@@ -31,10 +31,10 @@ style "main_window" = "window"
 
 style "plugin_scrwin" = "window"
 {
-	bg_pixmap[NORMAL] = "<none>"
-	bg[NORMAL] = "#dcdad5"
-	
-	fg[NORMAL] = "#000000"
+    bg_pixmap[NORMAL] = "<none>"
+    bg[NORMAL] = "#dcdad5"
+    
+    fg[NORMAL] = "#000000"
 }
 
 widget "*GtkWindow*" style "window"
@@ -48,106 +48,106 @@ widget "*main_window" style "main_window"
 
 style "button"
 {
-	bg[NORMAL] = "#dcdad5"
-	bg[PRELIGHT] = "#eeebe7"
-	bg[ACTIVE] = "#bab5ab"
+    bg[NORMAL] = "#dcdad5"
+    bg[PRELIGHT] = "#eeebe7"
+    bg[ACTIVE] = "#bab5ab"
 
-	bg_pixmap[NORMAL] = "<none>"
-	bg_pixmap[PRELIGHT] = "<none>"
-	bg_pixmap[ACTIVE] = "<none>"
+    bg_pixmap[NORMAL] = "<none>"
+    bg_pixmap[PRELIGHT] = "<none>"
+    bg_pixmap[ACTIVE] = "<none>"
 
-	fg[NORMAL] = "#000000"
-	fg[PRELIGHT] = "#000000"
-	fg[ACTIVE] = "#000000"
+    fg[NORMAL] = "#000000"
+    fg[PRELIGHT] = "#000000"
+    fg[ACTIVE] = "#000000"
 
-	font_name = "Sans Bold 9"
+    font_name = "Sans 9"
 }
 
 style "view"
 {
-	text[NORMAL] = "#000000"
-	text[SELECTED] = "#ffffff"
-	text[ACTIVE] = "#000000"
+    text[NORMAL] = "#000000"
+    text[SELECTED] = "#ffffff"
+    text[ACTIVE] = "#000000"
 
-	base[NORMAL] = "#dbdbcc"
-	base[SELECTED] = "#306090"
-	base[ACTIVE] = "#b0c0d0"
+    base[NORMAL] = "#dbdbcc"
+    base[SELECTED] = "#306090"
+    base[ACTIVE] = "#b0c0d0"
 
-	fg[NORMAL] = "#000000"
-	fg[SELECTED] = "#dbdbcc"
+    fg[NORMAL] = "#000000"
+    fg[SELECTED] = "#dbdbcc"
 }
 
 style "scrollbar"
 {
-	bg_pixmap[NORMAL] = "<none>"
-	bg_pixmap[PRELIGHT] = "<none>"
-	bg_pixmap[ACTIVE] = "<none>"
+    bg_pixmap[NORMAL] = "<none>"
+    bg_pixmap[PRELIGHT] = "<none>"
+    bg_pixmap[ACTIVE] = "<none>"
 
-	bg[NORMAL] = "#dcdad5"
-	bg[PRELIGHT] = "#eeebe7"
-	bg[ACTIVE] = "#bab5ab"
+    bg[NORMAL] = "#dcdad5"
+    bg[PRELIGHT] = "#eeebe7"
+    bg[ACTIVE] = "#bab5ab"
 
-	fg[NORMAL] = "#000000"
-	fg[PRELIGHT] = "#000000"
+    fg[NORMAL] = "#000000"
+    fg[PRELIGHT] = "#000000"
 }
 
 style "progressbar"
 {
-	bg[NORMAL] = "#dcdad5"
-	bg[PRELIGHT] = "#4b6983"
+    bg[NORMAL] = "#dcdad5"
+    bg[PRELIGHT] = "#4b6983"
 
-	fg[PRELIGHT] = "#eeeeee"
+    fg[PRELIGHT] = "#eeeeee"
 }
 
 style "entry" = "view"
 {
-	font_name = "Sans 10"
+    font_name = "Sans 10"
 }
 
 style "combo_box"
 {
-	text[NORMAL] = "#000000"
-	fg[NORMAL] = "#000000"
+    text[NORMAL] = "#000000"
+    fg[NORMAL] = "#000000"
 }
 
 style "menu" = "button"
 {
-	text[NORMAL] = "#000000"
-	text[PRELIGHT] = "#000000"
+    text[NORMAL] = "#000000"
+    text[PRELIGHT] = "#000000"
 }
 
 style "spin_button" = "button"
 {
-	text[NORMAL] = "#000000"
-	text[SELECTED] = "#000000"
-	text[ACTIVE] = "#000000"
+    text[NORMAL] = "#000000"
+    text[SELECTED] = "#000000"
+    text[ACTIVE] = "#000000"
 
-	base[NORMAL] = "#e8e8de"
-	base[SELECTED] = "#bab5ab"
-	base[ACTIVE] = "#eeebe7"
+    base[NORMAL] = "#e8e8de"
+    base[SELECTED] = "#bab5ab"
+    base[ACTIVE] = "#eeebe7"
 }
 
 style "scale"
 {
-	bg[NORMAL] = "#dcdad5"
-	bg[PRELIGHT] = "#eeebe7"
-	bg[ACTIVE] = "#bab5ab"
+    bg[NORMAL] = "#dcdad5"
+    bg[PRELIGHT] = "#eeebe7"
+    bg[ACTIVE] = "#bab5ab"
 
-	bg_pixmap[NORMAL] = "<none>"
-	bg_pixmap[PRELIGHT] = "<none>"
-	bg_pixmap[ACTIVE] = "<none>"
+    bg_pixmap[NORMAL] = "<none>"
+    bg_pixmap[PRELIGHT] = "<none>"
+    bg_pixmap[ACTIVE] = "<none>"
 
-	fg[NORMAL] = "#404040"
+    fg[NORMAL] = "#404040"
 }
 
 style "loop_bar"
 {
-	bg_pixmap[NORMAL] = "<none>"
-	
+    bg_pixmap[NORMAL] = "<none>"
+    
         bg[NORMAL] = "#bab5ab"
         bg[ACTIVE] = "#868074"
-	bg[SELECTED] = "#4b6983"
-	
+    bg[SELECTED] = "#4b6983"
+    
         fg[NORMAL] = "#dcdad5"
         fg[PRELIGHT] = "#eeebe7"
 }
@@ -155,26 +155,26 @@ style "loop_bar"
 
 style "checkbutton"
 {
-	bg_pixmap[NORMAL] = "<none>"
-	bg_pixmap[PRELIGHT] = "<none>"
-	bg_pixmap[ACTIVE] = "<none>"
+    bg_pixmap[NORMAL] = "<none>"
+    bg_pixmap[PRELIGHT] = "<none>"
+    bg_pixmap[ACTIVE] = "<none>"
 
-	fg[NORMAL] = "#000000"
-	fg[PRELIGHT] = "#000000"
-	fg[ACTIVE] = "#000000"
+    fg[NORMAL] = "#000000"
+    fg[PRELIGHT] = "#000000"
+    fg[ACTIVE] = "#000000"
 }
 
 style "nostyle"
 {
-	bg_pixmap[NORMAL] = "<none>"
-	bg_pixmap[PRELIGHT] = "<none>"
-	bg_pixmap[ACTIVE] = "<none>"
+    bg_pixmap[NORMAL] = "<none>"
+    bg_pixmap[PRELIGHT] = "<none>"
+    bg_pixmap[ACTIVE] = "<none>"
 
-	fg[NORMAL] = "#ff0000"
-	fg[PRELIGHT] = "#ff0000"
-	fg[ACTIVE] = "#ff0000"
-	
-	bg[NORMAL] = "#ff0000"
+    fg[NORMAL] = "#ff0000"
+    fg[PRELIGHT] = "#ff0000"
+    fg[ACTIVE] = "#ff0000"
+    
+    bg[NORMAL] = "#ff0000"
 }
 
 widget "*ScrolledWindow*" style "scrollbar"
@@ -207,8 +207,8 @@ widget "*nostyle" style "nostyle"
 
 style "viewport"
 {
-	bg[NORMAL] = "#dcdad5"
-	bg_pixmap[NORMAL] = "<none>"
+    bg[NORMAL] = "#dcdad5"
+    bg_pixmap[NORMAL] = "<none>"
 }
 
 style "time_viewport" = "viewport"
@@ -225,41 +225,41 @@ style "info_viewport" = "title_viewport"
 
 style "big_timer_label"
 {
-	fg[NORMAL] = "#000000"
-	font_name = "Courier 10 Pitch 12"
+    fg[NORMAL] = "#000000"
+    font_name = "Courier 10 Pitch 12"
 }
 
 style "small_timer_label"
 {
-	fg[NORMAL] = "#000000"
-	font_name = "Courier 10 Pitch 10"
+    fg[NORMAL] = "#000000"
+    font_name = "Courier 10 Pitch 10"
 }
 
 style "label_title"
 {
-	fg[NORMAL] = "#000000"
-	font_name = "Sans Bold 12"
+    fg[NORMAL] = "#000000"
+    font_name = "Sans 12"
 }
 
 style "label_info"
 {
-	fg[NORMAL] = "#000000"
-	font_name = "Sans 8"
+    fg[NORMAL] = "#000000"
+    font_name = "Sans 8"
 }
 
 style "scale_pos" = "scale"
 {
-    GtkScale::slider-length	= 31
+    GtkScale::slider-length = 31
 }
 
 style "scale_vol" = "scale_pos"
 {
-    GtkScale::slider-length	= 11
+    GtkScale::slider-length = 11
 }
 
 style "scale_bal" = "scale_pos"
 {
-    GtkScale::slider-length	= 11
+    GtkScale::slider-length = 11
 }
 
 widget "*time_viewport" style "time_viewport"
@@ -280,12 +280,12 @@ widget "*scale_bal" style "scale_bal"
 
 style "music_tree" = "view"
 {
-	font_name = "Sans 11"
+    font_name = "Sans 11"
 }
 
 style "comment_view" = "view"
 {
-	font_name = "Sans 11"
+    font_name = "Sans 11"
 }
 
 widget "*music_tree" style "music_tree"
@@ -296,10 +296,10 @@ widget "*comment_view" style "comment_view"
 
 style "play_list" = "view"
 {
-	fg[SELECTED] = "#0505b8"
-	fg[INSENSITIVE] = "#000000"
+    fg[SELECTED] = "#0505b8"
+    fg[INSENSITIVE] = "#000000"
 
-	font_name = "Sans 9"
+    font_name = "Sans 9"
 }
 
 widget "*play_list" style "play_list"
@@ -309,39 +309,39 @@ widget "*play_list" style "play_list"
 
 style "plugin_name"
 {
-	font_name = "Sans Bold 12"
+    font_name = "Sans 12"
 }
 
 style "plugin_maker"
 {
-	font_name = "Sans Bold 10"
+    font_name = "Sans 10"
 }
 
 style "plugin_bypass_button" = "button"
 {
-	bg_pixmap[ACTIVE] = "<none>"
+    bg_pixmap[ACTIVE] = "<none>"
 
-	bg[ACTIVE] = "#bab5ab"
-	fg[NORMAL] = "#000000"
-	fg[PRELIGHT] = "#000000"
-	fg[ACTIVE] = "#000000"
+    bg[ACTIVE] = "#bab5ab"
+    fg[NORMAL] = "#000000"
+    fg[PRELIGHT] = "#000000"
+    fg[ACTIVE] = "#000000"
 }
 
 style "plugin_scale" = "scale"
 {
-	bg_pixmap[ACTIVE] = "<none>"
-	bg[ACTIVE] = "#bab5ab"
+    bg_pixmap[ACTIVE] = "<none>"
+    bg[ACTIVE] = "#bab5ab"
 }
 
 style "plugin_toggled" = "button"
 {
-	bg_pixmap[NORMAL] = "<none>"
-	bg_pixmap[PRELIGHT] = "<none>"
-	bg_pixmap[ACTIVE] = "<none>"
+    bg_pixmap[NORMAL] = "<none>"
+    bg_pixmap[PRELIGHT] = "<none>"
+    bg_pixmap[ACTIVE] = "<none>"
 
-	bg[NORMAL] = "#dcdad5"
-	bg[PRELIGHT] = "#eeebe7"
-	bg[ACTIVE] = "#bab5ab"
+    bg[NORMAL] = "#dcdad5"
+    bg[PRELIGHT] = "#eeebe7"
+    bg[ACTIVE] = "#bab5ab"
 }
 
 widget "*plugin_name" style "plugin_name"
@@ -354,15 +354,15 @@ widget "*plugin_toggled" style "plugin_toggled"
 
 style "samples_instruments_list"
 {
-	font_name = "Monospace 10"
+    font_name = "Monospace 10"
 
-	base[SELECTED] = "#e8e8de"
-	base[ACTIVE] = "#e8e8de"
-	fg[NORMAL] = "#e8e8de"
-	fg[SELECTED] = "#e8e8de"
+    base[SELECTED] = "#e8e8de"
+    base[ACTIVE] = "#e8e8de"
+    fg[NORMAL] = "#e8e8de"
+    fg[SELECTED] = "#e8e8de"
 
-	text[SELECTED] = "#000000"
-	text[ACTIVE] = "#000000"
+    text[SELECTED] = "#000000"
+    text[ACTIVE] = "#000000"
 }
 
 widget "*samples_instruments_list" style "samples_instruments_list"

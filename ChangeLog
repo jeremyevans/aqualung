@@ -1,3 +1,59 @@
+2007-02-05	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
+
+    * Aqualung 0.9beta7
+        http://aqualung.sf.net
+
+	This release introduces important new features and bugfixes.
+	Main reasons for upgrading:
+
+	* CD Audio support, complete with CDDB, CD-Text, etc. You can play
+	  Audio CDs directly, or rip them to WAV, FLAC, Ogg Vorbis or MP3
+	  (CBR/VBR, gapless via LAME) complete with tagging, on the fly.
+
+	* Revamped Music Store Builder: better operation, greater flexibility.
+	
+	* Support FFmpeg library enabling the recognition of numerous formats
+	  e.g. AC3, AAC, WMA, WavPack, and the soundtrack of many video files.
+	
+	* Replaygain support for APEv2 tags.
+
+	* Ability to set looping range when looping a single file. Should be
+	  useful for people playing along a recording, trying to learn phrases
+	  of a song.
+
+	* Adding music to the playlist is now a non-blocking, interruptible
+	  background operation.
+	
+	* Drag-and-drop files from external sources (Nautilus, Konqueror, etc)
+	  into the Aqualung playlist.
+
+	* Several critical memory leak fixes.
+
+	* Numerous GUI refinements; fixed some rare bugs in engine, too.
+
+	* Support for building against the new FLAC 1.1.3 API.
+
+	* Aqualung operates correctly on bigendian systems (32 and 64 bit).
+
+	* Running natively on MS Windows. A port of TAP-plugins is included
+	  in the installer. See http://aqualung.sf.net/win32 for more.
+
+	
+    NEW LIBRARY DEPENDENCIES:
+
+	All of these are optional; Aqualung will build without them,
+	disabling the functionality they provide.
+	
+	* libcdio >= 0.76 is required for CD audio support.
+	  http://www.gnu.org/software/libcdio/
+
+	* libvorbisenc for ripping into Ogg Vorbis.
+	  http://www.xiph.org/ogg/vorbis/
+
+	* libmp3lame for ripping into MP3.
+	  http://lame.sourceforge.net/
+
+	
 2006-10-03	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
 
     * Aqualung 0.9beta6

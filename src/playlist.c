@@ -2418,10 +2418,16 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 			}
 
 			if (stat(file, &st_file) == 0) {
+
+				GSList * list = g_slist_append(NULL, strdup(file));
+
+				playlist_progress_bar_show();
 				if (S_ISDIR(st_file.st_mode)) {
-					add_dir_to_playlist(file);
+					AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL,
+							       add_dir_to_playlist_thread, list)
 				} else {
-					add_file_to_playlist(file);
+					AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL,
+							       add_files_to_playlist_thread, list)
 				}
 			}
 		}

@@ -207,6 +207,9 @@ void remove_files (void);
 void set_cursor_in_playlist (GtkTreeIter *iter, gboolean scroll);
 void select_active_position_in_playlist(void);
 
+void playlist_selection_changed(GtkTreeSelection * sel, gpointer data);
+
+void rem__all_cb(gpointer data);
 void rem__sel_cb(gpointer data);
 void cut__sel_cb(gpointer data);
 void plist__search_cb(gpointer data);
@@ -552,8 +555,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
         case GDK_Delete:
 	case GDK_KP_Delete:
                 if (kevent->state & GDK_SHIFT_MASK) {  /* SHIFT + Delete */
-                        gtk_tree_store_clear(play_store);
-			playlist_content_changed();
+			rem__all_cb(NULL);
                 } else if (kevent->state & GDK_CONTROL_MASK) {  /* CTRL + Delete */
                         remove_files();
                 } else {
@@ -662,7 +664,7 @@ add_file_to_playlist(gpointer data) {
 	AQUALUNG_MUTEX_LOCK(playlist_wait_mutex)
 
 	if (plfm == NULL) {
-		gtk_tree_store_clear(play_store);
+		rem__all_cb(NULL);
 	} else {
 		GtkTreeIter iter;
 		GtkTreePath * path;
@@ -1680,132 +1682,192 @@ sel__none_cb(gpointer data) {
 
 
 void
-invert_item_selection(GtkTreeIter * piter) {
+sel__inv_foreach(GtkTreePath * path, gpointer data) {
 
-	if (gtk_tree_selection_iter_is_selected(play_select, piter)) {
-		gtk_tree_selection_unselect_iter(play_select, piter);
-	} else {
-		gtk_tree_selection_select_iter(play_select, piter);
-	}
+	gtk_tree_selection_unselect_path(play_select, path);
+	gtk_tree_path_free(path);
 }
 
 
 void
 sel__inv_cb(gpointer data) {
 
-	GtkTreeIter iter;
-	gint i = 0;
+	GList * list = gtk_tree_selection_get_selected_rows(play_select, NULL);
 
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+	g_signal_handlers_block_by_func(G_OBJECT(play_select), playlist_selection_changed, NULL);
 
-		GtkTreeIter iter_child;
-		int j = 0;
+	gtk_tree_selection_select_all(play_select);
+	g_list_foreach(list, (GFunc)sel__inv_foreach, NULL);
+	g_list_free(list);
 
-		invert_item_selection(&iter);
+	g_signal_handlers_unblock_by_func(G_OBJECT(play_select), playlist_selection_changed, NULL);
 
-		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, &iter, j++)) {
-			invert_item_selection(&iter_child);
-		}
-	}
+	playlist_selection_changed(NULL, NULL);
 }
 
 
 void
 rem__all_cb(gpointer data) {
 
+	g_signal_handlers_block_by_func(G_OBJECT(play_select), playlist_selection_changed, NULL);
+
 	gtk_tree_store_clear(play_store);
+
+	g_signal_handlers_unblock_by_func(G_OBJECT(play_select), playlist_selection_changed, NULL);
+
+        playlist_selection_changed(NULL, NULL);
         playlist_content_changed();
+}
+
+void
+rem__sel_foreach(GtkTreePath * path, gpointer data) {
+
+	GtkTreeIter iter;
+
+	if (path != NULL) {
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter, path);
+		gtk_tree_store_remove(play_store, &iter);
+		gtk_tree_path_free(path);
+	}
+}
+
+gint
+rem__sel_compare(gconstpointer p1, gconstpointer p2) {
+
+	return gtk_tree_path_compare((GtkTreePath *)p1, (GtkTreePath *)p2);
+}
+
+void
+rem__sel_save_expanded(GtkTreeView * tree_view, GtkTreePath * path, GList ** list) {
+
+	GtkTreeIter * iter;
+
+	if ((iter = (GtkTreeIter *)malloc(sizeof(GtkTreeIter))) == NULL) {
+		fprintf(stderr, "playlist.c: rem__sel_save_expanded(): malloc error\n");
+		return;
+	}
+
+	gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), iter, path);
+
+	*list = g_list_append(*list, iter);
+}
+
+void
+rem__sel_restore_expanded(GtkTreeIter * iter, gpointer data) {
+
+	if (gtk_tree_store_iter_is_valid(play_store, iter)) {
+
+		GtkTreePath * path = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), iter);
+
+		gtk_tree_view_expand_row(GTK_TREE_VIEW(play_list), path, FALSE);
+		gtk_tree_path_free(path);
+	}
+
+	free(iter);
 }
 
 
 void
 rem__sel_cb(gpointer data) {
 
-	GtkTreeIter iter;
-	int i = 0;
-	int last;
-	gboolean valid = FALSE;
-	GtkTreeIter iter_next;
+	GList * remove_list = gtk_tree_selection_get_selected_rows(play_select, NULL);
+	GList * expand_list = NULL;
+	GList * recalc_list = NULL;
+	GList * node = NULL;
+	GList * n = NULL;
 
+	GtkTreePath * last_path;
+	GtkTreeIter last_iter;
 
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter, NULL, i++)) {
+	if (remove_list == NULL) {
+		return;
+	}
 
-		GtkTreeIter iter_child;
-		gint j = 0;
-		gint modified = 0;
-		gchar * color;
+	last_path = gtk_tree_path_copy((GtkTreePath *)g_list_first(remove_list)->data);
 
-		gint n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter);
+	gtk_tree_view_map_expanded_rows(GTK_TREE_VIEW(play_list),
+					(GtkTreeViewMappingFunc)rem__sel_save_expanded, &expand_list);
 
-		if (gtk_tree_selection_iter_is_selected(play_select, &iter)) {
-			if ((valid = gtk_tree_store_remove(play_store, &iter))) {
-				iter_next = iter;
-			} else {
-				if ((last = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL))) {
-					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
-								      &iter_next, NULL, last-1);
-					valid = TRUE;
-				}
+	g_object_ref(play_store);
+	gtk_tree_view_set_model(GTK_TREE_VIEW(play_list), NULL);
+
+	remove_list = g_list_sort(remove_list, rem__sel_compare);
+	node = remove_list;
+
+	while (node) {
+
+		if (gtk_tree_path_get_depth((GtkTreePath *)node->data) == 1) {
+
+			/* if an album node is selected, it would be redundant to keep its children selected */
+
+			for (n = node->next; n && gtk_tree_path_is_ancestor((GtkTreePath *)node->data,
+									    (GtkTreePath *)n->data); n = n->next) {
+				gtk_tree_path_free((GtkTreePath *)n->data);
+				n->data = NULL;
 			}
-			--i;
-			continue;
-		}
 
-		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &iter_child, &iter, j++)) {
-			if (gtk_tree_selection_iter_is_selected(play_select, &iter_child)) {
+		} else {
 
-				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter_child, COLUMN_SELECTION_COLOR, &color, -1);
-				if (strcmp(color, pl_color_active) == 0) {
-					unmark_track(&iter_child);
-				}
+			/* if all children of an album node are selected, replace the children with the
+			   parent, so the whole album node will be removed */
 
-				g_free(color);
+			GtkTreeIter iter_parent;
+			GtkTreePath * path_parent = gtk_tree_path_copy((GtkTreePath *)node->data);
+			int i, c;
 
-				if ((valid = gtk_tree_store_remove(play_store, &iter_child))) {
-					iter_next = iter_child;
-				} else {
-					if ((last = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter))) {
-						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
-									      &iter_next, &iter, last-1);
-						valid = TRUE;
-					}
-				}
-				--j;
-				modified = 1;
-			}
-		}
 
-		/* if all tracks have been removed, also remove album node; else recalc album node */
-		if (n) {
-			if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter) == 0) {
-				if ((valid = gtk_tree_store_remove(play_store, &iter))) {
-					iter_next = iter;
-				} else {
-					if ((last = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), NULL))) {
-						gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
-									      &iter_next, NULL, last-1);
-						valid = TRUE;
-					}
-				}
+			gtk_tree_path_up(path_parent);
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &iter_parent, path_parent);
+
+			i = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(play_store), &iter_parent);
+			c = i;
+
+			for (n = node; n && gtk_tree_path_is_ancestor(path_parent, (GtkTreePath *)n->data); n = n->next) {
 				--i;
-			} else if (modified) {
-				recalc_album_node(&iter);
+			}
 
-				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, COLUMN_SELECTION_COLOR, &color, -1);
-				if (strcmp(color, pl_color_active) == 0) {
-					unmark_track(&iter);
-					mark_track(&iter);
+			if (i == 0) {
+				gtk_tree_path_free(node->data);
+				node->data = path_parent;
+				++i;
+
+				for (n = node->next; i < c; n = n->next, i++) {
+					gtk_tree_path_free((GtkTreePath *)n->data);
+					n->data = NULL;
 				}
-				g_free(color);
+			} else {
+				recalc_list = g_list_append(recalc_list, gtk_tree_iter_copy(&iter_parent));
+				gtk_tree_path_free(path_parent);
 			}
 		}
+
+		node = n;
 	}
 
-	if (valid) {
-                set_cursor_in_playlist(&iter_next, FALSE);
+	remove_list = g_list_reverse(remove_list);
+	g_list_foreach(remove_list, (GFunc)rem__sel_foreach, NULL);
+	g_list_free(remove_list);
+
+	g_list_foreach(recalc_list, (GFunc)recalc_album_node, NULL);
+	g_list_free(recalc_list);
+
+	gtk_tree_view_set_model(GTK_TREE_VIEW(play_list), GTK_TREE_MODEL(play_store));
+
+	g_list_foreach(expand_list, (GFunc)rem__sel_restore_expanded, NULL);
+	g_list_free(expand_list);
+
+
+	if (gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &last_iter, last_path)) {
+		set_cursor_in_playlist(&last_iter, FALSE);
+	} else if (gtk_tree_path_prev(last_path) &&
+		   gtk_tree_model_get_iter(GTK_TREE_MODEL(play_store), &last_iter, last_path)) {
+		set_cursor_in_playlist(&last_iter, FALSE);
 	}
+
+	gtk_tree_path_free(last_path);
 
 	playlist_content_changed();
+	playlist_selection_changed(NULL, NULL);
 }
 
 
@@ -2123,10 +2185,18 @@ recalc_album_node(GtkTreeIter * iter) {
 	gfloat duration = 0;
 	gfloat songs_size;
 	gchar time[MAXLEN];
+	gchar * color;
 
 	playlist_child_stats(iter, &count, &duration, &songs_size, 0/*false*/);
 	time2time(duration, time);
 	gtk_tree_store_set(play_store, iter, COLUMN_DURATION, duration, COLUMN_DURATION_DISP, time, -1);
+
+	gtk_tree_model_get(GTK_TREE_MODEL(play_store), iter, COLUMN_SELECTION_COLOR, &color, -1);
+	if (strcmp(color, pl_color_active) == 0) {
+		unmark_track(iter);
+		mark_track(iter);
+	}
+	g_free(color);
 }
 
 
@@ -2606,18 +2676,9 @@ playlist_remove_cdda(char * device_path) {
 				gtk_tree_store_remove(play_store, &iter);
 				--i;
 			} else {
-				char * str;
-
 				recalc_album_node(&iter);
-
-				gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter, COLUMN_SELECTION_COLOR, &str, -1);
-				if (strcmp(str, pl_color_active) == 0) {
-					unmark_track(&iter);
-					mark_track(&iter);
-				}
-				g_free(str);
 			}
-			
+
 		} else {
 
 			char * pfile;

@@ -543,7 +543,9 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		break;
         case GDK_a:
         case GDK_A:
-                show_active_position_in_playlist_toggle();
+		if (!(kevent->state & GDK_CONTROL_MASK)) {
+			show_active_position_in_playlist_toggle();
+		}
                 return TRUE;
                 break;
         case GDK_w:

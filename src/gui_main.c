@@ -788,7 +788,7 @@ refresh_displays(void) {
 					      48, 48, title_str, TRUE, TRUE);
         			g_free(title_str);
                         }
-		} else {
+		} else if (!is_file_loaded) {
 			set_title_label("");
                         cover_show_flag = 0;
                         gtk_widget_hide(cover_image_area);

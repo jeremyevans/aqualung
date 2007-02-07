@@ -209,6 +209,8 @@ void select_active_position_in_playlist(void);
 
 void playlist_selection_changed(GtkTreeSelection * sel, gpointer data);
 
+void sel__all_cb(gpointer data);
+void sel__none_cb(gpointer data);
 void rem__all_cb(gpointer data);
 void rem__sel_cb(gpointer data);
 void cut__sel_cb(gpointer data);
@@ -490,7 +492,6 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                         add_files(NULL, NULL);
                 }
                 return TRUE;
-                break;
         case GDK_q:
 	case GDK_Q:
 	case GDK_Escape:
@@ -498,7 +499,6 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                         playlist_window_close(NULL, NULL, NULL);
 		}
 		return TRUE;
-		break;
 	case GDK_F1:
 	case GDK_i:
 	case GDK_I:
@@ -519,9 +519,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 			free(pfile);
 			show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy);
 		}
-
 		return TRUE;
-		break;
 	case GDK_Return:
 	case GDK_KP_Enter:
 		gtk_tree_view_get_cursor(GTK_TREE_VIEW(play_list), &path, &column);
@@ -530,30 +528,31 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 			start_playback_from_playlist(path);
 		}		
 		return TRUE;
-		break;
 	case GDK_u:
 	case GDK_U:
 		cut__sel_cb(NULL);
 		return TRUE;
-		break;
 	case GDK_f:
 	case GDK_F:
 		plist__search_cb(NULL);
 		return TRUE;
-		break;
         case GDK_a:
         case GDK_A:
-		if (!(kevent->state & GDK_CONTROL_MASK)) {
+		if (kevent->state & GDK_CONTROL_MASK) {
+			if (kevent->state & GDK_SHIFT_MASK) {
+				sel__none_cb(NULL);
+			} else {
+				sel__all_cb(NULL);
+			}
+		} else {
 			show_active_position_in_playlist_toggle();
 		}
                 return TRUE;
-                break;
         case GDK_w:
         case GDK_W:
                 gtk_tree_view_collapse_all(GTK_TREE_VIEW(play_list));  
                 show_active_position_in_playlist();
                 return TRUE;
-                break;
         case GDK_Delete:
 	case GDK_KP_Delete:
                 if (kevent->state & GDK_SHIFT_MASK) {  /* SHIFT + Delete */
@@ -564,7 +563,6 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 			rem__sel_cb(NULL);
                 }
                 return TRUE;
-		break;
 #ifdef HAVE_IFP
 	case GDK_t:
 	case GDK_T:
@@ -576,8 +574,6 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
         case GDK_grave:
                 expand_collapse_album_node();
                 return TRUE;
-		break;
-
 	}
 
 	return FALSE;

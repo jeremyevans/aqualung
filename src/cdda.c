@@ -357,11 +357,28 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 
 
 void
+cdda_send_event(int event_type, char * drive) {
+
+	cdda_notify_t notify;
+
+	/* If there is no space for the message, it is dropped.
+	 * This may happen if GUI gets blocked (unable to run cdda_timeout_callback()
+	 * for several seconds), however it is not anticipated to happen very often.
+	 * In such case these events are not very much of use, anyway.
+	 */
+	if (rb_write_space(cdda_notify_rb) >= sizeof(cdda_notify_t)) {
+		notify.event_type = event_type;
+		notify.device_path = strdup(drive);
+		rb_write(cdda_notify_rb, (char *)&notify, sizeof(cdda_notify_t));
+	}
+}
+
+
+void
 cdda_scan_all_drives(void) {
 
 	char ** drives = NULL;
 	char touched[CDDA_DRIVES_MAX];
-	cdda_notify_t notify;
 	int i;
 
 	for (i = 0; i < CDDA_DRIVES_MAX; i++) {
@@ -394,9 +411,7 @@ cdda_scan_all_drives(void) {
 				if ((cdda_drives[n].disc.hash == 0L) ||
 				    (cdda_drives[n].disc.hash != cdda_drives[n].disc.hash_prev)) {
 					/* EVENT refresh disc data */
-					notify.event_type = CDDA_EVENT_CHANGED_DRIVE;
-					notify.device_path = strdup(drives[i]);
-					rb_write(cdda_notify_rb, (char *)&notify, sizeof(cdda_notify_t));
+					cdda_send_event(CDDA_EVENT_CHANGED_DRIVE, drives[i]);
 				}
 			}
 		} else { /* no, scan the drive */
@@ -409,9 +424,7 @@ cdda_scan_all_drives(void) {
 			if (cdda_scan_drive(drives[i], cdda_get_drive(n)) >= 0) {
 				touched[n] = 1;
 				/* EVENT newly discovered drive */
-				notify.event_type = CDDA_EVENT_NEW_DRIVE;
-				notify.device_path = strdup(drives[i]);
-				rb_write(cdda_notify_rb, (char *)&notify, sizeof(cdda_notify_t));
+				cdda_send_event(CDDA_EVENT_NEW_DRIVE, drives[i]);
 			}
 		}
 	}
@@ -422,9 +435,7 @@ cdda_scan_all_drives(void) {
 		if ((cdda_drives[i].device_path[0] != '\0') && (touched[i] == 0)) {
 
 			/* EVENT removed drive */
-			notify.event_type = CDDA_EVENT_REMOVED_DRIVE;
-			notify.device_path = strdup(cdda_drives[i].device_path);
-			rb_write(cdda_notify_rb, (char *)&notify, sizeof(cdda_notify_t));
+			cdda_send_event(CDDA_EVENT_REMOVED_DRIVE, cdda_drives[i].device_path);
 
 			cdio_destroy(cdda_drives[i].cdio);
 			memset(cdda_drives + i, 0, sizeof(cdda_drive_t));

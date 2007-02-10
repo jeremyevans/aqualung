@@ -76,26 +76,12 @@ extern GtkWidget * vol_window;
 
 extern GtkTreeSelection * music_select;
 
-gint playlist_pos_x;
-gint playlist_pos_y;
-gint playlist_size_x;
-gint playlist_size_y;
-gint playlist_on;
 gint playlist_color_is_set;
 
 gint playlist_drag_y;
 gint playlist_scroll_up_tag = -1;
 gint playlist_scroll_dn_tag = -1;
 
-extern int main_size_x;
-extern int main_size_y;
-
-extern int main_pos_x;
-extern int main_pos_y;
-
-extern int browser_pos_x;
-extern int browser_pos_y;
-extern int browser_on;
 
 extern gulong play_id;
 extern gulong pause_id;
@@ -3080,14 +3066,14 @@ create_playlist(void) {
 void
 show_playlist(void) {
 
-	playlist_on = 1;
+	options.playlist_on = 1;
 
 	if (!options.playlist_is_embedded) {
-		gtk_window_move(GTK_WINDOW(playlist_window), playlist_pos_x, playlist_pos_y);
-		gtk_window_resize(GTK_WINDOW(playlist_window), playlist_size_x, playlist_size_y);
+		gtk_window_move(GTK_WINDOW(playlist_window), options.playlist_pos_x, options.playlist_pos_y);
+		gtk_window_resize(GTK_WINDOW(playlist_window), options.playlist_size_x, options.playlist_size_y);
 	} else {
-		gtk_window_get_size(GTK_WINDOW(main_window), &main_size_x, &main_size_y);
-		gtk_window_resize(GTK_WINDOW(main_window), main_size_x, main_size_y + playlist_size_y + 6);
+		gtk_window_get_size(GTK_WINDOW(main_window), &options.main_size_x, &options.main_size_y);
+		gtk_window_resize(GTK_WINDOW(main_window), options.main_size_x, options.main_size_y + options.playlist_size_y + 6);
 	}
 
         gtk_widget_show_all(playlist_window);
@@ -3102,19 +3088,19 @@ show_playlist(void) {
 void
 hide_playlist(void) {
 
-	playlist_on = 0;
+	options.playlist_on = 0;
 	if (!options.playlist_is_embedded) {
-		gtk_window_get_position(GTK_WINDOW(playlist_window), &playlist_pos_x, &playlist_pos_y);
-		gtk_window_get_size(GTK_WINDOW(playlist_window), &playlist_size_x, &playlist_size_y);
+		gtk_window_get_position(GTK_WINDOW(playlist_window), &options.playlist_pos_x, &options.playlist_pos_y);
+		gtk_window_get_size(GTK_WINDOW(playlist_window), &options.playlist_size_x, &options.playlist_size_y);
 	} else {
-		playlist_size_x = playlist_window->allocation.width;
-		playlist_size_y = playlist_window->allocation.height;
-		gtk_window_get_size(GTK_WINDOW(main_window), &main_size_x, &main_size_y);
+		options.playlist_size_x = playlist_window->allocation.width;
+		options.playlist_size_y = playlist_window->allocation.height;
+		gtk_window_get_size(GTK_WINDOW(main_window), &options.main_size_x, &options.main_size_y);
 	}
         gtk_widget_hide(playlist_window);
 
 	if (options.playlist_is_embedded) {
-		gtk_window_resize(GTK_WINDOW(main_window), main_size_x, main_size_y - playlist_size_y - 6);
+		gtk_window_resize(GTK_WINDOW(main_window), options.main_size_x, options.main_size_y - options.playlist_size_y - 6);
 	}
 
 }

@@ -41,7 +41,6 @@ extern options_t options;
 
 extern gint cover_show_flag;
 
-extern gint browser_size_x;
 extern GtkWidget * comment_view;
 extern GtkWidget * main_window;
 extern GtkTreeSelection * music_select;
@@ -438,7 +437,7 @@ insert_cover(GtkTextIter * iter) {
 
                         if (k == -1) {
 
-                                d_cover_width = d_cover_height = browser_size_x - SCROLLBAR_WIDTH;      
+                                d_cover_width = d_cover_height = options.browser_size_x - SCROLLBAR_WIDTH;      
 
                         } else {
 

@@ -56,7 +56,6 @@
 #include "about.h"
 #include "options.h"
 #include "skin.h"
-#include "search.h"
 #include "ports.h"
 #include "music_browser.h"
 #include "playlist.h"
@@ -109,7 +108,6 @@ extern volatile int vol_cancelled;
 extern int aqualung_socket_fd;
 extern int aqualung_session_id;
 
-extern GtkListStore * ms_pathlist_store;
 extern GtkTreeStore * play_store;
 extern GtkTreeStore * music_store;
 extern GtkListStore * running_store;
@@ -135,20 +133,9 @@ unsigned long rb_size;
 unsigned long long total_samples;
 unsigned long long sample_pos;
 
-#ifdef HAVE_SRC
-extern int src_type;
-extern int src_type_parsed;
-#else
-int src_type = 0;
-int src_type_parsed = 0;
-#endif /* HAVE_SRC */
-
 /* this flag set to 1 in core.c if --play
    for current instance is specified. */
 int immediate_start = 0; 
-
-int search_pl_flags = 0;
-int search_ms_flags = SEARCH_F_AN | SEARCH_F_RT | SEARCH_F_TT | SEARCH_F_CO;
 
 
 #ifdef HAVE_SNDFILE
@@ -164,10 +151,8 @@ extern char * valid_extensions_mod[];
 #endif /* HAVE_MOD */
 
 /* volume & balance sliders */
-double vol = 0.0f;
 double vol_prev = 0.0f;
 double vol_lin = 1.0f;
-double bal = 0.0f;
 double bal_prev = 0.0f;
 extern double left_gain;
 extern double right_gain;
@@ -191,25 +176,7 @@ extern GtkWidget * build_prog_window;
 extern GtkWidget * ripper_prog_window;
 extern GtkWidget * browser_paned;
 
-int main_pos_x;
-int main_pos_y;
-int main_size_x;
-int main_size_y;
-
 extern int music_store_changed;
-
-extern int browser_pos_x;
-extern int browser_pos_y;
-extern int browser_size_x;
-extern int browser_size_y;
-extern int browser_on;
-extern int browser_paned_pos;
-
-extern int playlist_pos_x;
-extern int playlist_pos_y;
-extern int playlist_size_x;
-extern int playlist_size_y;
-extern int playlist_on;
 
 extern int fxbuilder_on;
 
@@ -221,15 +188,10 @@ GtkWidget * scale_vol;
 GtkWidget * scale_bal;
 
 #ifdef HAVE_LOOP
-
 GtkWidget * loop_bar;
-float loop_range_start = 0.0f;
-float loop_range_end = 1.0f;
-
 #endif /* HAVE_LOOP */
 
 GtkWidget * time_labels[3];
-int time_idx[3] = { 0, 1, 2 };
 int refresh_time_label = 1;
 
 
@@ -244,10 +206,6 @@ GtkWidget * next_button;
 GtkWidget * repeat_button;
 GtkWidget * repeat_all_button;
 GtkWidget * shuffle_button;
-
-int repeat_on = 0;
-int repeat_all_on = 0;
-int shuffle_on = 0;
 
 GtkWidget * label_title;
 GtkWidget * label_format;
@@ -351,15 +309,6 @@ GtkWidget * cover_image_area;
 gint cover_show_flag;
 
 void set_buttons_relief(void);
-
-
-/* externs form playlist.c */
-extern void clear_playlist_selection(void);
-extern void cut__sel_cb(gpointer data);
-extern void plist__search_cb(gpointer data);
-extern void direct_add(GtkWidget * widget, gpointer * data);
-
-extern void start_playback_from_playlist(GtkTreePath * path);
 
 extern void show_active_position_in_playlist(void);
 
@@ -708,14 +657,14 @@ refresh_time_displays(void) {
 	char str[MAXLEN];
 
 	if (is_file_loaded) {
-		if (refresh_time_label || time_idx[0] != 0) {
+		if (refresh_time_label || options.time_idx[0] != 0) {
 			sample2time(disp_info.sample_rate, disp_pos, str, 0);
 			if (GTK_IS_LABEL(time_labels[0])) 
 				gtk_label_set_text(GTK_LABEL(time_labels[0]), str);
                         
 		}
 
-		if (refresh_time_label || time_idx[0] != 1) {
+		if (refresh_time_label || options.time_idx[0] != 1) {
 			if (disp_samples == 0) {
 				strcpy(str, " N/A ");
 			} else {
@@ -726,7 +675,7 @@ refresh_time_displays(void) {
                         
 		}
 		
-		if (refresh_time_label || time_idx[0] != 2) {
+		if (refresh_time_label || options.time_idx[0] != 2) {
 			if (disp_samples == 0) {
 				strcpy(str, " N/A ");
 			} else {
@@ -808,7 +757,7 @@ refresh_displays(void) {
 	set_bps_label(disp_info.bps, disp_info.format_flags);
 	set_mono_label(disp_info.is_mono);
 	set_output_label(output, out_SR);
-	set_src_type_label(src_type);
+	set_src_type_label(options.src_type);
 }
 
 
@@ -831,28 +780,28 @@ zero_displays(void) {
 void
 save_window_position(void) {
 
-	gtk_window_get_position(GTK_WINDOW(main_window), &main_pos_x, &main_pos_y);
+	gtk_window_get_position(GTK_WINDOW(main_window), &options.main_pos_x, &options.main_pos_y);
 
-	if (!options.playlist_is_embedded && playlist_on) {
-		gtk_window_get_position(GTK_WINDOW(playlist_window), &playlist_pos_x, &playlist_pos_y);
+	if (!options.playlist_is_embedded && options.playlist_on) {
+		gtk_window_get_position(GTK_WINDOW(playlist_window), &options.playlist_pos_x, &options.playlist_pos_y);
 	}
 
-	if (browser_on) {
-		gtk_window_get_position(GTK_WINDOW(browser_window), &browser_pos_x, &browser_pos_y);
+	if (options.browser_on) {
+		gtk_window_get_position(GTK_WINDOW(browser_window), &options.browser_pos_x, &options.browser_pos_y);
 	}
 
-	gtk_window_get_size(GTK_WINDOW(main_window), &main_size_x, &main_size_y);
-	gtk_window_get_size(GTK_WINDOW(browser_window), &browser_size_x, &browser_size_y);
+	gtk_window_get_size(GTK_WINDOW(main_window), &options.main_size_x, &options.main_size_y);
+	gtk_window_get_size(GTK_WINDOW(browser_window), &options.browser_size_x, &options.browser_size_y);
 
 	if (!options.playlist_is_embedded) {
-		gtk_window_get_size(GTK_WINDOW(playlist_window), &playlist_size_x, &playlist_size_y);
+		gtk_window_get_size(GTK_WINDOW(playlist_window), &options.playlist_size_x, &options.playlist_size_y);
 	} else {
-		playlist_size_x = playlist_window->allocation.width;
-		playlist_size_y = playlist_window->allocation.height;
+		options.playlist_size_x = playlist_window->allocation.width;
+		options.playlist_size_y = playlist_window->allocation.height;
 	}
 
 	if (!options.hide_comment_pane) {
-		browser_paned_pos = gtk_paned_get_position(GTK_PANED(browser_paned));
+		options.browser_paned_pos = gtk_paned_get_position(GTK_PANED(browser_paned));
 	}
 }
 
@@ -860,26 +809,26 @@ save_window_position(void) {
 void
 restore_window_position(void) {
 
-	gtk_window_move(GTK_WINDOW(main_window), main_pos_x, main_pos_y);
+	gtk_window_move(GTK_WINDOW(main_window), options.main_pos_x, options.main_pos_y);
 	deflicker();
-	gtk_window_move(GTK_WINDOW(browser_window), browser_pos_x, browser_pos_y);
+	gtk_window_move(GTK_WINDOW(browser_window), options.browser_pos_x, options.browser_pos_y);
 	deflicker();
 	if (!options.playlist_is_embedded) {
-		gtk_window_move(GTK_WINDOW(playlist_window), playlist_pos_x, playlist_pos_y);
+		gtk_window_move(GTK_WINDOW(playlist_window), options.playlist_pos_x, options.playlist_pos_y);
 		deflicker();
 	}
 	
-	gtk_window_resize(GTK_WINDOW(main_window), main_size_x, main_size_y);
+	gtk_window_resize(GTK_WINDOW(main_window), options.main_size_x, options.main_size_y);
 	deflicker();
-	gtk_window_resize(GTK_WINDOW(browser_window), browser_size_x, browser_size_y);
+	gtk_window_resize(GTK_WINDOW(browser_window), options.browser_size_x, options.browser_size_y);
 	deflicker();
 	if (!options.playlist_is_embedded) {
-		gtk_window_resize(GTK_WINDOW(playlist_window), playlist_size_x, playlist_size_y);
+		gtk_window_resize(GTK_WINDOW(playlist_window), options.playlist_size_x, options.playlist_size_y);
 		deflicker();
 	}
 
 	if (!options.hide_comment_pane) {
-		gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
+		gtk_paned_set_position(GTK_PANED(browser_paned), options.browser_paned_pos);
 		deflicker();
 	}
 }
@@ -988,7 +937,7 @@ change_skin(char * path) {
 	deflicker();
 
 	if (options.playlist_is_embedded) {
-		if (!playlist_on) {
+		if (!options.playlist_on) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle), FALSE);
 			gtk_widget_hide(playlist_window);
 			deflicker();
@@ -1043,8 +992,8 @@ change_skin(char * path) {
 
 	set_playlist_color();
 	
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), vol);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), options.vol);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), options.bal);
 
 	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
 #ifdef HAVE_CDDA
@@ -1466,11 +1415,11 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
 		return FALSE;
 	
 	if (event->new_window_state == GDK_WINDOW_STATE_ICONIFIED) {
-		if (browser_on) {
+		if (options.browser_on) {
 			gtk_window_iconify(GTK_WINDOW(browser_window));
 		}
 		
-		if (!options.playlist_is_embedded && playlist_on) {
+		if (!options.playlist_is_embedded && options.playlist_on) {
 			gtk_window_iconify(GTK_WINDOW(playlist_window));
 		}
 		
@@ -1501,11 +1450,11 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
 	}
 	
 	if (event->new_window_state == 0) {
-		if (browser_on) {
+		if (options.browser_on) {
 			gtk_window_deiconify(GTK_WINDOW(browser_window));
 		}
 		
-		if (!options.playlist_is_embedded && playlist_on) {
+		if (!options.playlist_is_embedded && options.playlist_on) {
 			gtk_window_deiconify(GTK_WINDOW(playlist_window));
 		}
 		
@@ -1617,8 +1566,8 @@ scale_button_release_event(GtkWidget * widget, GdkEventButton * event) {
 void
 loop_range_changed_cb(AqualungLoopBar * bar, float start, float end, gpointer data) {
 
-	loop_range_start = start;
-	loop_range_end = end;
+	options.loop_range_start = start;
+	options.loop_range_end = end;
 }
 
 #endif /* HAVE_LOOP */
@@ -1642,20 +1591,20 @@ gint
 scale_vol_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 
 	char str[10];
-	vol = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_vol));
+	options.vol = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_vol));
 
         if (event->state & GDK_SHIFT_MASK) {  /* SHIFT */
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), 0);
 		return TRUE;
 	}
 
-	if (vol < -40.5f) {
+	if (options.vol < -40.5f) {
 		sprintf(str, _("Mute"));
 	} else {
-		sprintf(str, _("%d dB"), (int)vol);
+		sprintf(str, _("%d dB"), (int)options.vol);
 	}
 
-	gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
+	gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
 	
 	refresh_time_label = 0;
 
@@ -1672,18 +1621,17 @@ changed_vol(GtkAdjustment * adj, gpointer date) {
 
 	char str[10], str2[32];
 
-	vol = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_vol));
-	vol = (int)vol;
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), vol);
+	options.vol = (int)gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_vol));
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), options.vol);
 
-        if (vol < -40.5f) {
+        if (options.vol < -40.5f) {
                 sprintf(str, _("Mute"));
         } else {
-                sprintf(str, _("%d dB"), (int)vol);
+                sprintf(str, _("%d dB"), (int)options.vol);
         }
 
         if (!shift_state && !refresh_time_label) {
-		gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
+		gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
         }
 
         sprintf(str2, _("Volume: %s"), str);
@@ -1705,24 +1653,24 @@ gint
 scale_bal_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 
 	char str[10];
-	bal = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_bal));
+	options.bal = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_bal));
 
         if (event->state & GDK_SHIFT_MASK) {  /* SHIFT */
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), 0);
 		return TRUE;
 	}
 	
-	if (bal != 0.0f) {
-		if (bal > 0.0f) {
-			sprintf(str, _("%d%% R"), (int)bal);
+	if (options.bal != 0.0f) {
+		if (options.bal > 0.0f) {
+			sprintf(str, _("%d%% R"), (int)options.bal);
 		} else {
-			sprintf(str, _("%d%% L"), -1*(int)bal);
+			sprintf(str, _("%d%% L"), -1*(int)options.bal);
 		}
 	} else {
 		sprintf(str, _("C"));
 	}
 
-	gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
+	gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
 	
 	refresh_time_label = 0;
 
@@ -1739,22 +1687,21 @@ changed_bal(GtkAdjustment * adj, gpointer date) {
 
 	char str[10], str2[32];
 
-	bal = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_bal));
-	bal = (int)bal;
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
+	options.bal = (int)gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_bal));
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), options.bal);
 
-        if (bal != 0.0f) {
-                if (bal > 0.0f) {
-                        sprintf(str, _("%d%% R"), (int)bal);
+        if (options.bal != 0.0f) {
+                if (options.bal > 0.0f) {
+                        sprintf(str, _("%d%% R"), (int)options.bal);
                 } else {
-                        sprintf(str, _("%d%% L"), -1*(int)bal);
+                        sprintf(str, _("%d%% L"), -1*(int)options.bal);
                 }
         } else {
                 sprintf(str, _("C"));
         }
 	
         if (!shift_state && !refresh_time_label) {  /* SHIFT */
-		gtk_label_set_text(GTK_LABEL(time_labels[time_idx[0]]), str);
+		gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
 	}
 
         sprintf(str2, _("Balance: %s"), str);
@@ -2490,13 +2437,13 @@ swap_labels(int a, int b) {
 	GtkWidget * tmp;
 	int t;
 
-	tmp = time_labels[time_idx[a]];
-	time_labels[time_idx[a]] = time_labels[time_idx[b]] ;
-	time_labels[time_idx[b]] = tmp;
+	tmp = time_labels[options.time_idx[a]];
+	time_labels[options.time_idx[a]] = time_labels[options.time_idx[b]] ;
+	time_labels[options.time_idx[b]] = tmp;
 
-	t = time_idx[b];
-	time_idx[b] = time_idx[a];
-	time_idx[a] = t;
+	t = options.time_idx[b];
+	options.time_idx[b] = options.time_idx[a];
+	options.time_idx[a] = t;
 }
 
 
@@ -2611,15 +2558,15 @@ void
 hide_loop_bar() {
 	gtk_widget_hide(loop_bar);
 
-	if (options.playlist_is_embedded && !playlist_on) {
-		gtk_window_resize(GTK_WINDOW(main_window), main_size_x,
-				  main_size_y - 14 - 6 - 6 -
+	if (options.playlist_is_embedded && !options.playlist_on) {
+		gtk_window_resize(GTK_WINDOW(main_window), options.main_size_x,
+				  options.main_size_y - 14 - 6 - 6 -
 				  playlist_window->allocation.height);
 	}
 
 	if (!options.playlist_is_embedded) {
 		gtk_window_resize(GTK_WINDOW(main_window),
-				  main_size_x, main_size_y - 14 - 6);
+				  options.main_size_x, options.main_size_y - 14 - 6);
 	}
 }
 #endif /* HAVE_LOOP */
@@ -2630,13 +2577,13 @@ repeat_toggled(GtkWidget * widget, gpointer data) {
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_button))) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_all_button), FALSE);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), FALSE);
-		repeat_on = 1;
+		options.repeat_on = 1;
 	} else {
-		repeat_on = 0;
+		options.repeat_on = 0;
 	}
 
 #ifdef HAVE_LOOP
-	if (repeat_on) {
+	if (options.repeat_on) {
 		gtk_widget_show(loop_bar);
 	} else {
 		hide_loop_bar();
@@ -2651,9 +2598,9 @@ repeat_all_toggled(GtkWidget * widget, gpointer data) {
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_all_button))) {
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_button), FALSE);
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), FALSE);
-		repeat_all_on = 1;
+		options.repeat_all_on = 1;
 	} else {
-		repeat_all_on = 0;
+		options.repeat_all_on = 0;
 	}
 }
 
@@ -2664,9 +2611,9 @@ shuffle_toggled(GtkWidget * widget, gpointer data) {
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_button), FALSE);
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_all_button), FALSE);
-		shuffle_on = 1;
+		options.shuffle_on = 1;
 	} else {
-		shuffle_on = 0;
+		options.shuffle_on = 0;
 	}
 }
 
@@ -2805,11 +2752,11 @@ hide_all_windows(gpointer data) {
 		gtk_widget_hide(info_window);
 	}
 
-	if (!options.playlist_is_embedded && playlist_on) {
+	if (!options.playlist_is_embedded && options.playlist_on) {
 		gtk_widget_hide(playlist_window);
 	}
 
-	if (browser_on) {
+	if (options.browser_on) {
 		gtk_widget_hide(browser_window);
 	}
 
@@ -2830,12 +2777,12 @@ show_all_windows(gpointer data) {
 	systray_main_window_on = 1;
 	deflicker();
 
-	if (!options.playlist_is_embedded && playlist_on) {
+	if (!options.playlist_is_embedded && options.playlist_on) {
 		gtk_widget_show(playlist_window);
 		deflicker();
 	}
 
-	if (browser_on) {
+	if (options.browser_on) {
 		gtk_widget_show(browser_window);
 		deflicker();
 	}
@@ -3112,40 +3059,40 @@ create_main_window(char * skin_path) {
 	gtk_box_pack_start(GTK_BOX(disp_vbox), info_scrolledwin, TRUE, FALSE, 0);
 
 	/* labels */
-	bigtimer_label = time_labels[time_idx[0]] = gtk_label_new("");
+	bigtimer_label = time_labels[options.time_idx[0]] = gtk_label_new("");
 
         if (options.override_skin_settings) {
                 gtk_widget_modify_font (bigtimer_label, fd_bigtimer);
         }
 
-        gtk_widget_set_name(time_labels[time_idx[0]], "big_timer_label");
-	gtk_container_add(GTK_CONTAINER(time0_viewp), time_labels[time_idx[0]]);
+        gtk_widget_set_name(time_labels[options.time_idx[0]], "big_timer_label");
+	gtk_container_add(GTK_CONTAINER(time0_viewp), time_labels[options.time_idx[0]]);
 
 	time_hbox1 = gtk_hbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(time_hbox1), 2);
 	gtk_container_add(GTK_CONTAINER(time1_viewp), time_hbox1);
 
-	smalltimer_label_1 = time_labels[time_idx[1]] = gtk_label_new("");
+	smalltimer_label_1 = time_labels[options.time_idx[1]] = gtk_label_new("");
 
         if (options.override_skin_settings) {
                 gtk_widget_modify_font (smalltimer_label_1, fd_smalltimer);
         }
 
-        gtk_widget_set_name(time_labels[time_idx[1]], "small_timer_label");
-	gtk_box_pack_start(GTK_BOX(time_hbox1), time_labels[time_idx[1]], TRUE, TRUE, 0);
+        gtk_widget_set_name(time_labels[options.time_idx[1]], "small_timer_label");
+	gtk_box_pack_start(GTK_BOX(time_hbox1), time_labels[options.time_idx[1]], TRUE, TRUE, 0);
 
 	time_hbox2 = gtk_hbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(time_hbox2), 2);
 	gtk_container_add(GTK_CONTAINER(time2_viewp), time_hbox2);
 
-	smalltimer_label_2 = time_labels[time_idx[2]] = gtk_label_new("");
+	smalltimer_label_2 = time_labels[options.time_idx[2]] = gtk_label_new("");
 
         if (options.override_skin_settings) {
                 gtk_widget_modify_font (smalltimer_label_2, fd_smalltimer);
         }
 
-        gtk_widget_set_name(time_labels[time_idx[2]], "small_timer_label");
-	gtk_box_pack_start(GTK_BOX(time_hbox2), time_labels[time_idx[2]], TRUE, TRUE, 0);
+        gtk_widget_set_name(time_labels[options.time_idx[2]], "small_timer_label");
+	gtk_box_pack_start(GTK_BOX(time_hbox2), time_labels[options.time_idx[2]], TRUE, TRUE, 0);
 
 	label_title = gtk_label_new("");
         gtk_widget_set_name(label_title, "label_title");
@@ -3225,7 +3172,7 @@ create_main_window(char * skin_path) {
 	/* Loop bar */
 
 #ifdef HAVE_LOOP
-	loop_bar = aqualung_loop_bar_new(loop_range_start, loop_range_end);
+	loop_bar = aqualung_loop_bar_new(options.loop_range_start, options.loop_range_end);
 	g_signal_connect(loop_bar, "range-changed", G_CALLBACK(loop_range_changed_cb), NULL);
 	gtk_widget_set_size_request(loop_bar, -1, 14);
 	gtk_box_pack_start(GTK_BOX(vbox), loop_bar, FALSE, FALSE, 3);
@@ -3619,28 +3566,28 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		sprintf(options.title_format, "%%a: %%t [%%r]");
 	if (options.skin[0] == '\0') {
 		sprintf(options.skin, "%s/plain", AQUALUNG_SKINDIR);
-		main_pos_x = 280;
-		main_pos_y = 30;
-		main_size_x = 380;
-		main_size_y = 380;
-		browser_pos_x = 30;
-		browser_pos_y = 30;
-		browser_size_x = 240;
-		browser_size_y = 380;
-		browser_on = 1;
-		playlist_pos_x = 300;
-		playlist_pos_y = 180;
-		playlist_size_x = 400;
-		playlist_size_y = 500;
-		playlist_on = 1;
+		options.main_pos_x = 280;
+		options.main_pos_y = 30;
+		options.main_size_x = 380;
+		options.main_size_y = 380;
+		options.browser_pos_x = 30;
+		options.browser_pos_y = 30;
+		options.browser_size_x = 240;
+		options.browser_size_y = 380;
+		options.browser_on = 1;
+		options.playlist_pos_x = 300;
+		options.playlist_pos_y = 180;
+		options.playlist_size_x = 400;
+		options.playlist_size_y = 500;
+		options.playlist_on = 1;
 	}
 
 	if (options.cddb_server[0] == '\0') {
 		sprintf(options.cddb_server, "freedb.org");
 	}
 
-	if (src_type == -1) {
-		src_type = 4;
+	if (options.src_type == -1) {
+		options.src_type = 4;
 	}
 
 	sprintf(path, "%s/rc", options.skin);
@@ -3653,9 +3600,9 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	create_main_window(options.skin);
 
 	vol_prev = -101.0f;
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), vol);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), options.vol);
 	bal_prev = -101.0f;
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), bal);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), options.bal);
 
 	create_playlist();
 
@@ -3710,32 +3657,32 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		g_list_free(glist);
 	}
 
-	if (repeat_on) {
+	if (options.repeat_on) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_button), TRUE);
 	}
 
-	if (repeat_all_on) {
+	if (options.repeat_all_on) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_all_button), TRUE);
 	}
 
-	if (shuffle_on) {
+	if (options.shuffle_on) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), TRUE);
 	}
 
         if (playlist_state != -1) {
-                playlist_on = playlist_state;
+                options.playlist_on = playlist_state;
 	}
 
         if (browser_state != -1) {
-                browser_on = browser_state;
+                options.browser_on = browser_state;
 	}
 
-	if (browser_on) {
+	if (options.browser_on) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(musicstore_toggle), TRUE);
 		deflicker();
 	}
 
-	if (playlist_on) {
+	if (options.playlist_on) {
 		if (options.playlist_is_embedded) {
 			g_signal_handlers_block_by_func(G_OBJECT(playlist_toggle), playlist_toggled, NULL);
 		}
@@ -3758,14 +3705,14 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
         gtk_widget_hide(cover_image_area);
 
 	if (options.playlist_is_embedded) {
-		if (!playlist_on) {
+		if (!options.playlist_on) {
                         hide_playlist();
 			deflicker();
 		}
 	}
 
 #ifdef HAVE_LOOP
-	if (!repeat_on) {
+	if (!options.repeat_on) {
 		hide_loop_bar();
 	}
 #endif /* HAVE_LOOP */
@@ -3909,14 +3856,14 @@ timeout_callback(gpointer data) {
 			pos = total_samples - status.samples_left;
 
 #ifdef HAVE_LOOP
-			if (repeat_on &&
-			    (pos < total_samples * loop_range_start ||
-			     pos > total_samples * loop_range_end)) {
+			if (options.repeat_on &&
+			    (pos < total_samples * options.loop_range_start ||
+			     pos > total_samples * options.loop_range_end)) {
 
 				seek_t seek;
 
 				send_cmd = CMD_SEEKTO;
-				seek.seek_to_pos = loop_range_start * total_samples;
+				seek.seek_to_pos = options.loop_range_start * total_samples;
 				rb_write(rb_gui2disk, &send_cmd, 1);
 				rb_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
 				try_waking_disk_thread();
@@ -3983,16 +3930,16 @@ timeout_callback(gpointer data) {
 		}
 	}
         /* update volume & balance if necessary */
-	if ((vol != vol_prev) || (bal != bal_prev)) {
-		vol_prev = vol;
-		vol_lin = (vol < -40.5f) ? 0 : db2lin(vol);
-		bal_prev = bal;
-		if (bal >= 0.0f) {
-			left_gain_shadow = vol_lin * db2lin(-0.4f * bal);
+	if ((options.vol != vol_prev) || (options.bal != bal_prev)) {
+		vol_prev = options.vol;
+		vol_lin = (options.vol < -40.5f) ? 0 : db2lin(options.vol);
+		bal_prev = options.bal;
+		if (options.bal >= 0.0f) {
+			left_gain_shadow = vol_lin * db2lin(-0.4f * options.bal);
 			right_gain_shadow = vol_lin;
 		} else {
 			left_gain_shadow = vol_lin;
-			right_gain_shadow = vol_lin * db2lin(0.4f * bal);
+			right_gain_shadow = vol_lin * db2lin(0.4f * options.bal);
 		}
 			left_gain = left_gain_shadow;
 			right_gain = right_gain_shadow;
@@ -4091,530 +4038,6 @@ run_gui(void) {
 	gtk_main();
 
 	return;
-}
-
-
-#define SAVE_OPTION_STR(XmlStr, OptVar) \
-        xmlNewTextChild(root, NULL, (const xmlChar *) XmlStr, (xmlChar *) options.OptVar);
-
-#define SAVE_OPTION_STR_1(Var) SAVE_OPTION_STR(#Var, Var)
-
-#define SAVE_FONT(Font) \
-	snprintf(str, MAX_FONTNAME_LEN, "%s", options.Font); \
-        xmlNewTextChild(root, NULL, (const xmlChar *) #Font, (xmlChar *) str);
-
-#define SAVE_INT(XmlStr, Var) \
-	snprintf(str, 31, "%d", Var); \
-        xmlNewTextChild(root, NULL, (const xmlChar *) XmlStr, (xmlChar *) str);
-
-#define SAVE_INT_1(Var) SAVE_INT(#Var, Var)
-
-#define SAVE_OPTION_INT(XmlStr, OptVar) SAVE_INT(XmlStr, options.OptVar)
-
-#define SAVE_OPTION_INT_1(Var) SAVE_OPTION_INT(#Var, Var)
-
-#define SAVE_OPTION_INT_SH_1(Var) SAVE_OPTION_INT(#Var, Var##_shadow)
-
-#define SAVE_FLOAT(XmlStr, Var) \
-        snprintf(str, 31, "%f", Var); \
-        xmlNewTextChild(root, NULL, (const xmlChar *) XmlStr, (xmlChar *) str);
-
-#define SAVE_FLOAT_1(Var) SAVE_FLOAT(#Var, Var)
-
-#define SAVE_OPTION_FLOAT(XmlStr, OptVar) SAVE_FLOAT(XmlStr, options.OptVar)
-
-#define SAVE_OPTION_FLOAT_1(Var) SAVE_OPTION_FLOAT(#Var, Var)
-
-
-void
-save_config(void) {
-
-        xmlDocPtr doc;
-        xmlNodePtr root;
-        int c, d;
-        FILE * fin;
-        FILE * fout;
-        char tmpname[MAXLEN];
-        char config_file[MAXLEN];
-	char str[32];
-
-	GtkTreeIter iter;
-	int i = 0;
-	char * path;
-
-        sprintf(config_file, "%s/config.xml", options.confdir);
-
-        doc = xmlNewDoc((const xmlChar *) "1.0");
-        root = xmlNewNode(NULL, (const xmlChar *) "aqualung_config");
-        xmlDocSetRootElement(doc, root);
-
-
-	SAVE_OPTION_STR_1(currdir)
-	SAVE_OPTION_STR_1(default_param)
-	SAVE_OPTION_STR_1(title_format)
-	SAVE_OPTION_STR_1(skin)
-	SAVE_INT_1(src_type)
-	SAVE_OPTION_INT_1(ladspa_is_postfader)
-	SAVE_OPTION_INT_1(auto_save_playlist)
-	SAVE_OPTION_INT_1(show_rva_in_playlist)
-	SAVE_OPTION_INT_1(pl_statusbar_show_size)
-	SAVE_OPTION_INT_1(ms_statusbar_show_size)
-	SAVE_OPTION_INT_1(show_length_in_playlist)
-	SAVE_OPTION_INT_1(show_active_track_name_in_bold)
-	SAVE_OPTION_INT_1(enable_pl_rules_hint)
-	SAVE_OPTION_INT_1(enable_ms_rules_hint)
-	SAVE_OPTION_INT_SH_1(enable_ms_tree_icons)
-	SAVE_OPTION_INT_1(auto_use_meta_artist)
-	SAVE_OPTION_INT_1(auto_use_meta_record)
-	SAVE_OPTION_INT_1(auto_use_meta_track)
-	SAVE_OPTION_INT_1(auto_use_ext_meta_artist)
-	SAVE_OPTION_INT_1(auto_use_ext_meta_record)
-	SAVE_OPTION_INT_1(auto_use_ext_meta_track)
-	SAVE_OPTION_INT_1(enable_tooltips)
-	SAVE_OPTION_INT_SH_1(buttons_at_the_bottom)
-	SAVE_OPTION_INT_1(disable_buttons_relief)
-	SAVE_OPTION_INT_SH_1(simple_view_in_fx)
-	SAVE_OPTION_INT("show_song_name_in_window_title", show_sn_title)
-	SAVE_OPTION_INT("united_windows_minimization", united_minimization)
-	SAVE_OPTION_INT_1(magnify_smaller_images)
-	SAVE_OPTION_INT_1(cover_width)
-	SAVE_OPTION_INT_SH_1(hide_comment_pane)
-	SAVE_OPTION_INT_SH_1(enable_mstore_toolbar)
-	SAVE_OPTION_INT_SH_1(enable_mstore_statusbar)
-	SAVE_OPTION_INT_1(autoexpand_stores)
-	SAVE_OPTION_INT_1(show_hidden)
-	SAVE_OPTION_INT_1(main_window_always_on_top)
-	SAVE_OPTION_INT_1(tags_tab_first)
-	SAVE_OPTION_INT_1(override_skin_settings)
-	SAVE_OPTION_INT_1(replaygain_tag_to_use)
-	SAVE_FLOAT("volume", vol)
-	SAVE_FLOAT("balance", bal)
-	SAVE_OPTION_INT_1(rva_is_enabled)
-	SAVE_OPTION_INT_1(rva_env)
-	SAVE_OPTION_FLOAT_1(rva_refvol)
-	SAVE_OPTION_FLOAT_1(rva_steepness)
-	SAVE_OPTION_INT_1(rva_use_averaging)
-	SAVE_OPTION_INT_1(rva_use_linear_thresh)
-	SAVE_OPTION_FLOAT_1(rva_avg_linear_thresh)
-	SAVE_OPTION_FLOAT_1(rva_avg_stddev_thresh)
-	SAVE_INT_1(main_pos_x)
-	SAVE_INT_1(main_pos_y)
-	SAVE_INT_1(main_size_x)
-	if (options.playlist_is_embedded && !options.playlist_is_embedded_shadow && playlist_on) {
-		snprintf(str, 31, "%d", main_size_y - playlist_window->allocation.height - 6);
-	} else {
-		snprintf(str, 31, "%d", main_size_y);
-	}
-        xmlNewTextChild(root, NULL, (const xmlChar *) "main_size_y", (xmlChar *) str);
-	SAVE_INT_1(browser_pos_x)
-	SAVE_INT_1(browser_pos_y)
-	SAVE_INT_1(browser_size_x)
-	SAVE_INT_1(browser_size_y)
-	SAVE_INT("browser_is_visible", browser_on)
-	SAVE_INT_1(browser_paned_pos)
-	SAVE_INT_1(playlist_pos_x)
-	SAVE_INT_1(playlist_pos_y)
-	SAVE_INT_1(playlist_size_x)
-	SAVE_INT_1(playlist_size_y)
-	SAVE_INT("playlist_is_visible", playlist_on)
-	SAVE_OPTION_INT_SH_1(playlist_is_embedded)
-	SAVE_OPTION_INT_1(playlist_is_tree)
-	SAVE_OPTION_INT_1(album_shuffle_mode)
-	SAVE_OPTION_INT_SH_1(enable_playlist_statusbar)
-	SAVE_FONT(browser_font)
-	SAVE_FONT(playlist_font)
-	SAVE_FONT(bigtimer_font)
-	SAVE_FONT(smalltimer_font)
-	SAVE_FONT(songtitle_font)
-	SAVE_FONT(songinfo_font)
-	SAVE_FONT(statusbar_font)
-
-	snprintf(str, MAX_COLORNAME_LEN, "%s", options.activesong_color);
-        xmlNewTextChild(root, NULL, (const xmlChar *) "activesong_color", (xmlChar *) str);
-
-	SAVE_INT_1(repeat_on)
-	SAVE_INT_1(repeat_all_on)
-	SAVE_INT_1(shuffle_on)
-	SAVE_INT("time_idx_0", time_idx[0])
-	SAVE_INT("time_idx_1", time_idx[1])
-	SAVE_INT("time_idx_2", time_idx[2])
-	SAVE_OPTION_INT("plcol_idx_0", plcol_idx[0])
-	SAVE_OPTION_INT("plcol_idx_1", plcol_idx[1])
-	SAVE_OPTION_INT("plcol_idx_2", plcol_idx[2])
-	SAVE_INT_1(search_pl_flags)
-	SAVE_INT_1(search_ms_flags)
-	SAVE_OPTION_INT_1(cdda_drive_speed)
-	SAVE_OPTION_INT_1(cdda_paranoia_mode)
-	SAVE_OPTION_INT_1(cdda_paranoia_maxretries)
-	SAVE_OPTION_INT_1(cdda_force_drive_rescan)
-	SAVE_OPTION_INT_1(cdda_add_to_playlist)
-	SAVE_OPTION_INT_1(cdda_remove_from_playlist)
-	SAVE_OPTION_STR_1(cddb_server)
-	SAVE_OPTION_INT_1(cddb_timeout)
-	SAVE_OPTION_STR_1(cddb_email)
-	SAVE_OPTION_STR_1(cddb_local)
-	SAVE_OPTION_INT_1(cddb_cache_only)
-	SAVE_OPTION_INT_1(cddb_use_http)
-	SAVE_OPTION_INT_1(cddb_use_proxy)
-	SAVE_OPTION_STR_1(cddb_proxy)
-	SAVE_OPTION_INT_1(cddb_proxy_port)
-
-#ifdef HAVE_LOOP
-	SAVE_FLOAT_1(loop_range_start)
-	SAVE_FLOAT_1(loop_range_end)
-#endif /* HAVE_LOOP */
-
-	i = 0;
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
-		char * utf8;
-		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &path, -1);
-		utf8 = g_locale_to_utf8(path, -1, NULL, NULL, NULL);
-		xmlNewTextChild(root, NULL, (const xmlChar *) "music_store", (xmlChar *) utf8);
-		g_free(path);
-		g_free(utf8);
-	}
-
-	
-        sprintf(tmpname, "%s/config.xml.temp", options.confdir);
-        xmlSaveFormatFile(tmpname, doc, 1);
-	xmlFreeDoc(doc);
-
-        if ((fin = fopen(config_file, "rt")) == NULL) {
-                fprintf(stderr, "Error opening file: %s\n", config_file);
-                return;
-        }
-        if ((fout = fopen(tmpname, "rt")) == NULL) {
-                fprintf(stderr, "Error opening file: %s\n", tmpname);
-                return;
-        }
-
-        c = 0; d = 0;
-        while (((c = fgetc(fin)) != EOF) && ((d = fgetc(fout)) != EOF)) {
-                if (c != d) {
-                        fclose(fin);
-                        fclose(fout);
-                        unlink(config_file);
-                        rename(tmpname, config_file);
-                        return;
-                }
-        }
-
-        fclose(fin);
-        fclose(fout);
-        unlink(tmpname);
-}
-
-
-#define LOAD_OPTION_STR(XmlStr, OptVar) \
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)XmlStr))) { \
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
-                        if (key != NULL) \
-                                strncpy(options.OptVar, (char *) key, MAXLEN-1); \
-                        xmlFree(key); \
-                }
-
-#define LOAD_OPTION_STR_1(Var) LOAD_OPTION_STR(#Var, Var)
-
-#define LOAD_FONT(Font) \
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)#Font))) { \
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
-                        if (key != NULL) \
-                                strncpy(options.Font, (char *) key, MAX_FONTNAME_LEN-1); \
-                        xmlFree(key); \
-                }
-
-#define LOAD_INT(XmlStr, Var) \
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)XmlStr))) { \
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
-                        if (key != NULL) \
-				sscanf((char *) key, "%d", &Var); \
-                        xmlFree(key); \
-                }
-
-#define LOAD_INT_1(Var) LOAD_INT(#Var, Var)
-
-#define LOAD_OPTION_INT(XmlStr, OptVar) LOAD_INT(XmlStr, options.OptVar)
-
-#define LOAD_OPTION_INT_1(Var) LOAD_OPTION_INT(#Var, Var)
-
-#define LOAD_OPTION_INT_SH(XmlStr, OptVar) \
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)XmlStr))) { \
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
-                        if (key != NULL) { \
-				sscanf((char *) key, "%d", &options.OptVar); \
-				options.OptVar##_shadow = options.OptVar; \
-			} \
-                        xmlFree(key); \
-                }
-
-#define LOAD_OPTION_INT_SH_1(Var) LOAD_OPTION_INT_SH(#Var, Var)
-
-#define LOAD_FLOAT(XmlStr, Var) \
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)XmlStr))) { \
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
-                        if (key != NULL) { \
-				Var = convf((char *) key); \
-			} \
-                        xmlFree(key); \
-                }
-
-#define LOAD_FLOAT_1(Var) LOAD_FLOAT(#Var, Var)
-
-#define LOAD_OPTION_FLOAT(XmlStr, OptVar) LOAD_FLOAT(XmlStr, options.OptVar)
-
-#define LOAD_OPTION_FLOAT_1(Var) LOAD_OPTION_FLOAT(#Var, Var)
-
-
-void
-load_config(void) {
-
-        xmlDocPtr doc;
-        xmlNodePtr cur;
-        xmlNodePtr root;
-	xmlChar * key;
-        char config_file[MAXLEN];
-        FILE * f;
-
-
-        sprintf(config_file, "%s/config.xml", options.confdir);
-
-        if ((f = fopen(config_file, "rt")) == NULL) {
-		/* no warning -- done that in core.c::load_default_cl() */
-                doc = xmlNewDoc((const xmlChar *) "1.0");
-                root = xmlNewNode(NULL, (const xmlChar *) "aqualung_config");
-                xmlDocSetRootElement(doc, root);
-                xmlSaveFormatFile(config_file, doc, 1);
-		xmlFreeDoc(doc);
-                return;
-        }
-        fclose(f);
-
-        doc = xmlParseFile(config_file);
-        if (doc == NULL) {
-                fprintf(stderr, "An XML error occured while parsing %s\n", config_file);
-                return;
-        }
-
-        cur = xmlDocGetRootElement(doc);
-        if (cur == NULL) {
-                fprintf(stderr, "load_config: empty XML document\n");
-                xmlFreeDoc(doc);
-                return;
-        }
-
-        if (xmlStrcmp(cur->name, (const xmlChar *)"aqualung_config")) {
-                fprintf(stderr, "load_config: XML document of the wrong type, "
-			"root node != aqualung_config\n");
-                xmlFreeDoc(doc);
-                return;
-        }
-
-
-	vol = 0.0f;
-	bal = 0.0f;
-	browser_paned_pos = 400;
-
-	options.skin[0] = '\0';
-
-	options.default_param[0] = '\0';
-	options.title_format[0] = '\0';
-        options.enable_tooltips = 1;
-        options.show_sn_title = 1;
-        options.united_minimization = 1;
-        options.buttons_at_the_bottom = options.buttons_at_the_bottom_shadow = 1;
-	options.playlist_is_embedded = options.playlist_is_embedded_shadow = 1;
-	options.playlist_is_tree = 1;
-
-	options.enable_mstore_statusbar = options.enable_mstore_statusbar_shadow = 1;
-       	options.enable_mstore_toolbar = options.enable_mstore_toolbar_shadow = 1;
-        options.enable_ms_tree_icons = options.enable_ms_tree_icons_shadow = 1;
-	options.ms_statusbar_show_size = 1;
-
-        options.cover_width = 2;
-
-	options.autoexpand_stores = 1;
-
-	options.auto_save_playlist = 1;
-	options.show_length_in_playlist = 1;
-	options.enable_playlist_statusbar = options.enable_playlist_statusbar_shadow = 1;
-	options.pl_statusbar_show_size = 1;
-
-	options.rva_refvol = -12.0f;
-	options.rva_steepness = 1.0f;
-	options.rva_use_averaging = 1;
-	options.rva_use_linear_thresh = 0;
-	options.rva_avg_linear_thresh = 3.0f;
-	options.rva_avg_stddev_thresh = 2.0f;
-
-	options.auto_use_ext_meta_artist = 1;
-	options.auto_use_ext_meta_record = 1;
-	options.auto_use_ext_meta_track = 1;
-
-	options.cdda_drive_speed = 4;
-	options.cdda_paranoia_mode = 0; /* no paranoia */
-	options.cdda_paranoia_maxretries = 20;
-	options.cdda_force_drive_rescan = 0;
-
-	options.cddb_server[0] = '\0';
-	options.cddb_email[0] = '\0';
-	options.cddb_local[0] = '\0';
-	options.cddb_proxy[0] = '\0';
-	options.cddb_timeout = 10;
-
-	options.plcol_idx[0] = 0;
-	options.plcol_idx[1] = 1;
-	options.plcol_idx[2] = 2;
-
-	ms_pathlist_store = gtk_list_store_new(3,
-					       G_TYPE_STRING,   /* path */
-					       G_TYPE_STRING,   /* displayed name */
-					       G_TYPE_STRING);  /* state (rw, r, unreachable) */
-
-        cur = cur->xmlChildrenNode;
-        while (cur != NULL) {
-		LOAD_OPTION_STR_1(currdir)
-		LOAD_OPTION_STR_1(default_param)
-		LOAD_OPTION_STR_1(title_format)
-		LOAD_OPTION_STR_1(skin)
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"src_type"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if ((key != NULL) && (!src_type_parsed))
-				sscanf((char *) key, "%d", &src_type);
-                        xmlFree(key);
-                }
-
-		LOAD_OPTION_INT_1(ladspa_is_postfader)
-		LOAD_OPTION_INT_1(auto_save_playlist)
-		LOAD_OPTION_INT_1(auto_use_meta_artist)
-		LOAD_OPTION_INT_1(auto_use_meta_record)
-		LOAD_OPTION_INT_1(auto_use_meta_track)
-		LOAD_OPTION_INT_1(auto_use_ext_meta_artist)
-		LOAD_OPTION_INT_1(auto_use_ext_meta_record)
-		LOAD_OPTION_INT_1(auto_use_ext_meta_track)
-		LOAD_OPTION_INT_1(show_rva_in_playlist)
-		LOAD_OPTION_INT_1(pl_statusbar_show_size)
-		LOAD_OPTION_INT_1(ms_statusbar_show_size)
-		LOAD_OPTION_INT_1(show_length_in_playlist)
-		LOAD_OPTION_INT_1(show_active_track_name_in_bold)
-		LOAD_OPTION_INT_1(enable_pl_rules_hint)
-		LOAD_OPTION_INT_1(enable_ms_rules_hint)
-		LOAD_OPTION_INT_SH_1(enable_ms_tree_icons)
-		LOAD_OPTION_INT_1(enable_tooltips)
-		LOAD_OPTION_INT_SH_1(buttons_at_the_bottom)
-		LOAD_OPTION_INT_1(disable_buttons_relief)
-		LOAD_OPTION_INT_SH_1(simple_view_in_fx)
-		LOAD_OPTION_INT("show_song_name_in_window_title", show_sn_title)
-		LOAD_OPTION_INT("united_windows_minimization", united_minimization)
-		LOAD_OPTION_INT_1(magnify_smaller_images)
-		LOAD_OPTION_INT_1(cover_width)
-		LOAD_OPTION_INT_SH_1(hide_comment_pane)
-		LOAD_OPTION_INT_SH_1(enable_mstore_toolbar)
-		LOAD_OPTION_INT_SH_1(enable_mstore_statusbar)
-		LOAD_OPTION_INT_1(autoexpand_stores)
-		LOAD_OPTION_INT_1(show_hidden)
-		LOAD_OPTION_INT_1(main_window_always_on_top)
-		LOAD_OPTION_INT_1(tags_tab_first)
-		LOAD_OPTION_INT_1(override_skin_settings)
-		LOAD_OPTION_INT_1(replaygain_tag_to_use)
-		LOAD_FLOAT("volume", vol)
-		LOAD_FLOAT("balance", bal)
-		LOAD_OPTION_INT_1(rva_is_enabled)
-		LOAD_OPTION_INT_1(rva_env)
-		LOAD_OPTION_FLOAT_1(rva_refvol)
-		LOAD_OPTION_FLOAT_1(rva_steepness)
-		LOAD_OPTION_INT_1(rva_use_averaging)
-		LOAD_OPTION_INT_1(rva_use_linear_thresh)
-		LOAD_OPTION_FLOAT_1(rva_avg_linear_thresh)
-		LOAD_OPTION_FLOAT_1(rva_avg_stddev_thresh)
-		LOAD_INT_1(main_pos_x)
-		LOAD_INT_1(main_pos_y)
-		LOAD_INT_1(main_size_x)
-		LOAD_INT_1(main_size_y)
-		LOAD_INT_1(browser_pos_x)
-		LOAD_INT_1(browser_pos_y)
-		LOAD_INT_1(browser_size_x)
-		LOAD_INT_1(browser_size_y)
-		LOAD_INT("browser_is_visible", browser_on)
-		LOAD_INT_1(browser_paned_pos)
-		LOAD_INT_1(playlist_pos_x)
-		LOAD_INT_1(playlist_pos_y)
-		LOAD_INT_1(playlist_size_x)
-		LOAD_INT_1(playlist_size_y)
-		LOAD_INT("playlist_is_visible", playlist_on)
-		LOAD_OPTION_INT_SH_1(playlist_is_embedded)
-		LOAD_OPTION_INT_1(playlist_is_tree)
-		LOAD_OPTION_INT_1(album_shuffle_mode)
-		LOAD_OPTION_INT_SH_1(enable_playlist_statusbar)
-		LOAD_FONT(browser_font)
-		LOAD_FONT(playlist_font)
-		LOAD_FONT(bigtimer_font)
-		LOAD_FONT(smalltimer_font)
-		LOAD_FONT(songtitle_font)
-		LOAD_FONT(songinfo_font)
-		LOAD_FONT(statusbar_font)
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"activesong_color"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL)
-                                strncpy(options.activesong_color, (char *) key, MAX_COLORNAME_LEN-1);
-                        xmlFree(key);
-                }
-
-		LOAD_INT_1(repeat_on)
-		LOAD_INT_1(repeat_all_on)
-		LOAD_INT_1(shuffle_on)
-		LOAD_INT("time_idx_0", time_idx[0])
-		LOAD_INT("time_idx_1", time_idx[1])
-		LOAD_INT("time_idx_2", time_idx[2])
-		LOAD_OPTION_INT("plcol_idx_0", plcol_idx[0])
-		LOAD_OPTION_INT("plcol_idx_1", plcol_idx[1])
-		LOAD_OPTION_INT("plcol_idx_2", plcol_idx[2])
-		LOAD_INT_1(search_pl_flags)
-		LOAD_INT_1(search_ms_flags)
-		LOAD_OPTION_INT_1(cdda_drive_speed)
-		LOAD_OPTION_INT_1(cdda_paranoia_mode)
-		LOAD_OPTION_INT_1(cdda_paranoia_maxretries)
-		LOAD_OPTION_INT_1(cdda_force_drive_rescan)
-		LOAD_OPTION_INT_1(cdda_add_to_playlist)
-		LOAD_OPTION_INT_1(cdda_remove_from_playlist)
-		LOAD_OPTION_STR_1(cddb_server)
-		LOAD_OPTION_INT_1(cddb_timeout)
-		LOAD_OPTION_STR_1(cddb_email)
-		LOAD_OPTION_STR_1(cddb_local)
-		LOAD_OPTION_INT_1(cddb_cache_only)
-		LOAD_OPTION_INT_1(cddb_use_http)
-		LOAD_OPTION_STR_1(cddb_proxy)
-		LOAD_OPTION_INT_1(cddb_proxy_port)
-		LOAD_OPTION_INT_1(cddb_use_proxy)
-
-#ifdef HAVE_LOOP
-		LOAD_FLOAT_1(loop_range_start)
-		LOAD_FLOAT_1(loop_range_end)
-#endif /* HAVE_LOOP */
-
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                        if (key != NULL) {
-
-				char path[MAXLEN];
-				char * ppath;
-
-				snprintf(path, MAXLEN - 1, "%s", (char *)key);
-				ppath = g_locale_from_utf8(path, -1, NULL, NULL, NULL);
-
-				append_ms_pathlist(ppath, path);
-
-				g_free(ppath);
-			}
-
-                        xmlFree(key);
-		}
-                cur = cur->next;
-        }
-
-        xmlFreeDoc(doc);
-        return;
 }
 
 

@@ -53,6 +53,7 @@
 #include "common.h"
 #include "gui_main.h"
 #include "music_browser.h"
+#include "search.h"
 #include "playlist.h"
 #include "i18n.h"
 #include "options.h"
@@ -62,8 +63,10 @@ options_t options;
 
 static int current_notebook_page = 0;
 
+extern int src_type_parsed;
 
 extern GtkWidget * main_window;
+extern GtkWidget * playlist_window;
 extern GtkWidget * play_button;
 extern GtkTooltips * aqualung_tooltips;
 
@@ -171,7 +174,6 @@ GtkWidget * entry_ms_pathlist;
 GtkWidget * combo_ladspa;
 #endif /* HAVE_LADSPA */
 #ifdef HAVE_SRC
-extern int src_type;
 GtkWidget * combo_src;
 #endif /* HAVE_SRC */
 GtkWidget * label_src;
@@ -675,9 +677,9 @@ changed_ladspa_prepost(GtkWidget * widget, gpointer * data) {
 void
 changed_src_type(GtkWidget * widget, gpointer * data) {
 
-	src_type = gtk_combo_box_get_active(GTK_COMBO_BOX(combo_src));
-	gtk_label_set_text(GTK_LABEL(label_src), src_get_description(src_type));
-	set_src_type_label(src_type);
+	options.src_type = gtk_combo_box_get_active(GTK_COMBO_BOX(combo_src));
+	gtk_label_set_text(GTK_LABEL(label_src), src_get_description(options.src_type));
+	set_src_type_label(options.src_type);
 }
 #endif /* HAVE_SRC */
 
@@ -2214,10 +2216,10 @@ See the About box and the documentation for details."));
 
 	}
 
-	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_src), src_type);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_src), options.src_type);
 	g_signal_connect(combo_src, "changed", G_CALLBACK(changed_src_type), NULL);
 
-	gtk_label_set_text(GTK_LABEL(label_src), src_get_description(src_type));
+	gtk_label_set_text(GTK_LABEL(label_src), src_get_description(options.src_type));
 #else
 	gtk_label_set_text(GTK_LABEL(label_src),
 			   _("Aqualung is compiled without Sample Rate Converter support.\n\
@@ -3025,6 +3027,525 @@ See the About box and the documentation for details."));
 	} else {
 		gtk_widget_destroy(options_window);
 	}
+}
+
+
+#define SAVE_STR(Var) \
+        xmlNewTextChild(root, NULL, (const xmlChar *) #Var, (xmlChar *) options.Var);
+
+#define SAVE_FONT(Font) \
+	snprintf(str, MAX_FONTNAME_LEN, "%s", options.Font); \
+        xmlNewTextChild(root, NULL, (const xmlChar *) #Font, (xmlChar *) str);
+
+#define SAVE_COLOR(Color) \
+	snprintf(str, MAX_COLORNAME_LEN, "%s", options.Color); \
+        xmlNewTextChild(root, NULL, (const xmlChar *) #Color, (xmlChar *) str);
+
+#define SAVE_INT(Var) \
+	snprintf(str, 31, "%d", options.Var); \
+        xmlNewTextChild(root, NULL, (const xmlChar *) #Var, (xmlChar *) str);
+
+#define SAVE_INT_ARRAY(Var, Idx) \
+        snprintf(str, 31, "%d", options.Var[Idx]); \
+        xmlNewTextChild(root, NULL, (const xmlChar *) #Var "_" #Idx, (xmlChar *) str);
+
+#define SAVE_INT_SH(Var) \
+	snprintf(str, 31, "%d", options.Var##_shadow); \
+        xmlNewTextChild(root, NULL, (const xmlChar *) #Var, (xmlChar *) str);
+
+#define SAVE_FLOAT(Var) \
+        snprintf(str, 31, "%f", options.Var); \
+        xmlNewTextChild(root, NULL, (const xmlChar *) #Var, (xmlChar *) str);
+
+
+void
+save_config(void) {
+
+        xmlDocPtr doc;
+        xmlNodePtr root;
+        int c, d;
+        FILE * fin;
+        FILE * fout;
+        char tmpname[MAXLEN];
+        char config_file[MAXLEN];
+	char str[32];
+
+	GtkTreeIter iter;
+	int i = 0;
+	char * path;
+
+        sprintf(config_file, "%s/config.xml", options.confdir);
+
+        doc = xmlNewDoc((const xmlChar *) "1.0");
+        root = xmlNewNode(NULL, (const xmlChar *) "aqualung_config");
+        xmlDocSetRootElement(doc, root);
+
+
+	SAVE_STR(currdir);
+	SAVE_STR(default_param);
+	SAVE_STR(title_format);
+	SAVE_STR(skin);
+	SAVE_INT(src_type);
+	SAVE_INT(ladspa_is_postfader);
+	SAVE_INT(auto_save_playlist);
+	SAVE_INT(show_rva_in_playlist);
+	SAVE_INT(pl_statusbar_show_size);
+	SAVE_INT(ms_statusbar_show_size);
+	SAVE_INT(show_length_in_playlist);
+	SAVE_INT(show_active_track_name_in_bold);
+	SAVE_INT(enable_pl_rules_hint);
+	SAVE_INT(enable_ms_rules_hint);
+	SAVE_INT_SH(enable_ms_tree_icons);
+	SAVE_INT(auto_use_meta_artist);
+	SAVE_INT(auto_use_meta_record);
+	SAVE_INT(auto_use_meta_track);
+	SAVE_INT(auto_use_ext_meta_artist);
+	SAVE_INT(auto_use_ext_meta_record);
+	SAVE_INT(auto_use_ext_meta_track);
+	SAVE_INT(enable_tooltips);
+	SAVE_INT_SH(buttons_at_the_bottom);
+	SAVE_INT(disable_buttons_relief);
+	SAVE_INT_SH(simple_view_in_fx);
+	SAVE_INT(show_sn_title);
+	SAVE_INT(united_minimization);
+	SAVE_INT(magnify_smaller_images);
+	SAVE_INT(cover_width);
+	SAVE_INT_SH(hide_comment_pane);
+	SAVE_INT_SH(enable_mstore_toolbar);
+	SAVE_INT_SH(enable_mstore_statusbar);
+	SAVE_INT(autoexpand_stores);
+	SAVE_INT(show_hidden);
+	SAVE_INT(main_window_always_on_top);
+	SAVE_INT(tags_tab_first);
+	SAVE_INT(override_skin_settings);
+	SAVE_INT(replaygain_tag_to_use);
+	SAVE_FLOAT(vol);
+	SAVE_FLOAT(bal);
+	SAVE_INT(rva_is_enabled);
+	SAVE_INT(rva_env);
+	SAVE_FLOAT(rva_refvol);
+	SAVE_FLOAT(rva_steepness);
+	SAVE_INT(rva_use_averaging);
+	SAVE_INT(rva_use_linear_thresh);
+	SAVE_FLOAT(rva_avg_linear_thresh);
+	SAVE_FLOAT(rva_avg_stddev_thresh);
+	SAVE_INT(main_pos_x);
+	SAVE_INT(main_pos_y);
+	SAVE_INT(main_size_x);
+
+	if (options.playlist_is_embedded && !options.playlist_is_embedded_shadow && options.playlist_on) {
+		snprintf(str, 31, "%d", options.main_size_y - playlist_window->allocation.height - 6);
+	} else {
+		snprintf(str, 31, "%d", options.main_size_y);
+	}
+        xmlNewTextChild(root, NULL, (const xmlChar *) "main_size_y", (xmlChar *) str);
+
+	SAVE_INT(browser_pos_x);
+	SAVE_INT(browser_pos_y);
+	SAVE_INT(browser_size_x);
+	SAVE_INT(browser_size_y);
+	SAVE_INT(browser_on);
+	SAVE_INT(browser_paned_pos);
+	SAVE_INT(playlist_pos_x);
+	SAVE_INT(playlist_pos_y);
+	SAVE_INT(playlist_size_x);
+	SAVE_INT(playlist_size_y);
+	SAVE_INT(playlist_on);
+	SAVE_INT_SH(playlist_is_embedded);
+	SAVE_INT(playlist_is_tree);
+	SAVE_INT(album_shuffle_mode);
+	SAVE_INT_SH(enable_playlist_statusbar);
+	SAVE_FONT(browser_font);
+	SAVE_FONT(playlist_font);
+	SAVE_FONT(bigtimer_font);
+	SAVE_FONT(smalltimer_font);
+	SAVE_FONT(songtitle_font);
+	SAVE_FONT(songinfo_font);
+	SAVE_FONT(statusbar_font);
+	SAVE_COLOR(activesong_color);
+	SAVE_INT(repeat_on);
+	SAVE_INT(repeat_all_on);
+	SAVE_INT(shuffle_on);
+	SAVE_INT_ARRAY(time_idx, 0);
+	SAVE_INT_ARRAY(time_idx, 1);
+	SAVE_INT_ARRAY(time_idx, 2);
+	SAVE_INT_ARRAY(plcol_idx, 0);
+	SAVE_INT_ARRAY(plcol_idx, 1);
+	SAVE_INT_ARRAY(plcol_idx, 2);
+	SAVE_INT(search_pl_flags);
+	SAVE_INT(search_ms_flags);
+	SAVE_INT(cdda_drive_speed);
+	SAVE_INT(cdda_paranoia_mode);
+	SAVE_INT(cdda_paranoia_maxretries);
+	SAVE_INT(cdda_force_drive_rescan);
+	SAVE_INT(cdda_add_to_playlist);
+	SAVE_INT(cdda_remove_from_playlist);
+	SAVE_STR(cddb_server);
+	SAVE_INT(cddb_timeout);
+	SAVE_STR(cddb_email);
+	SAVE_STR(cddb_local);
+	SAVE_INT(cddb_cache_only);
+	SAVE_INT(cddb_use_http);
+	SAVE_INT(cddb_use_proxy);
+	SAVE_STR(cddb_proxy);
+	SAVE_INT(cddb_proxy_port);
+	SAVE_FLOAT(loop_range_start);
+	SAVE_FLOAT(loop_range_end);
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
+		char * utf8;
+		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &path, -1);
+		utf8 = g_locale_to_utf8(path, -1, NULL, NULL, NULL);
+		xmlNewTextChild(root, NULL, (const xmlChar *) "music_store", (xmlChar *) utf8);
+		g_free(path);
+		g_free(utf8);
+	}
+
+	
+        sprintf(tmpname, "%s/config.xml.temp", options.confdir);
+        xmlSaveFormatFile(tmpname, doc, 1);
+	xmlFreeDoc(doc);
+
+        if ((fin = fopen(config_file, "rt")) == NULL) {
+                fprintf(stderr, "Error opening file: %s\n", config_file);
+                return;
+        }
+        if ((fout = fopen(tmpname, "rt")) == NULL) {
+                fprintf(stderr, "Error opening file: %s\n", tmpname);
+                return;
+        }
+
+        c = 0; d = 0;
+        while (((c = fgetc(fin)) != EOF) && ((d = fgetc(fout)) != EOF)) {
+                if (c != d) {
+                        fclose(fin);
+                        fclose(fout);
+                        unlink(config_file);
+                        rename(tmpname, config_file);
+                        return;
+                }
+        }
+
+        fclose(fin);
+        fclose(fout);
+        unlink(tmpname);
+}
+
+
+#define LOAD_STR(Var) \
+                if ((!xmlStrcmp(cur->name, (const xmlChar *) #Var))) { \
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
+                        if (key != NULL) \
+                                strncpy(options.Var, (char *) key, MAXLEN-1); \
+                        xmlFree(key); \
+                }
+
+#define LOAD_FONT(Font) \
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)#Font))) { \
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
+                        if (key != NULL) \
+                                strncpy(options.Font, (char *) key, MAX_FONTNAME_LEN-1); \
+                        xmlFree(key); \
+                }
+
+#define LOAD_COLOR(Color) \
+                if ((!xmlStrcmp(cur->name, (const xmlChar *) #Color))) { \
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
+                        if (key != NULL) \
+                                strncpy(options.Color, (char *) key, MAX_COLORNAME_LEN-1); \
+                        xmlFree(key); \
+                }
+
+#define LOAD_INT(Var) \
+                if ((!xmlStrcmp(cur->name, (const xmlChar *) #Var))) { \
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
+                        if (key != NULL) \
+				sscanf((char *) key, "%d", &options.Var); \
+                        xmlFree(key); \
+                }
+
+#define LOAD_INT_ARRAY(Var, Idx) \
+                if ((!xmlStrcmp(cur->name, (const xmlChar *) #Var "_" #Idx))) { \
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
+                        if (key != NULL) \
+				sscanf((char *) key, "%d", options.Var + Idx); \
+                        xmlFree(key); \
+                }
+
+#define LOAD_INT_SH(Var) \
+                if ((!xmlStrcmp(cur->name, (const xmlChar *) #Var))) { \
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
+                        if (key != NULL) { \
+				sscanf((char *) key, "%d", &options.Var); \
+				options.Var##_shadow = options.Var; \
+			} \
+                        xmlFree(key); \
+                }
+
+#define LOAD_FLOAT(Var) \
+                if ((!xmlStrcmp(cur->name, (const xmlChar *) #Var))) { \
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
+                        if (key != NULL) { \
+				options.Var = convf((char *) key); \
+			} \
+                        xmlFree(key); \
+                }
+
+
+void
+load_config(void) {
+
+        xmlDocPtr doc;
+        xmlNodePtr cur;
+        xmlNodePtr root;
+	xmlChar * key;
+        char config_file[MAXLEN];
+        FILE * f;
+
+
+        sprintf(config_file, "%s/config.xml", options.confdir);
+
+        if ((f = fopen(config_file, "rt")) == NULL) {
+		/* no warning -- done that in core.c::load_default_cl() */
+                doc = xmlNewDoc((const xmlChar *) "1.0");
+                root = xmlNewNode(NULL, (const xmlChar *) "aqualung_config");
+                xmlDocSetRootElement(doc, root);
+                xmlSaveFormatFile(config_file, doc, 1);
+		xmlFreeDoc(doc);
+                return;
+        }
+        fclose(f);
+
+        doc = xmlParseFile(config_file);
+        if (doc == NULL) {
+                fprintf(stderr, "An XML error occured while parsing %s\n", config_file);
+                return;
+        }
+
+        cur = xmlDocGetRootElement(doc);
+        if (cur == NULL) {
+                fprintf(stderr, "load_config: empty XML document\n");
+                xmlFreeDoc(doc);
+                return;
+        }
+
+        if (xmlStrcmp(cur->name, (const xmlChar *)"aqualung_config")) {
+                fprintf(stderr, "load_config: XML document of the wrong type, "
+			"root node != aqualung_config\n");
+                xmlFreeDoc(doc);
+                return;
+        }
+
+
+	options.src_type = 4;
+	options.vol = 0.0f;
+	options.bal = 0.0f;
+
+	options.repeat_on = 0;
+	options.repeat_all_on = 0;
+	options.shuffle_on = 0;
+
+	options.loop_range_start = 0.0f;
+	options.loop_range_end = 1.0f;
+
+	options.search_pl_flags = 0;
+	options.search_ms_flags = SEARCH_F_AN | SEARCH_F_RT | SEARCH_F_TT | SEARCH_F_CO;
+
+	options.browser_paned_pos = 400;
+
+	options.skin[0] = '\0';
+
+	options.default_param[0] = '\0';
+	options.title_format[0] = '\0';
+        options.enable_tooltips = 1;
+        options.show_sn_title = 1;
+        options.united_minimization = 1;
+        options.buttons_at_the_bottom = options.buttons_at_the_bottom_shadow = 0;
+	options.playlist_is_embedded = options.playlist_is_embedded_shadow = 1;
+	options.playlist_is_tree = 1;
+
+	options.enable_mstore_statusbar = options.enable_mstore_statusbar_shadow = 1;
+       	options.enable_mstore_toolbar = options.enable_mstore_toolbar_shadow = 1;
+        options.enable_ms_tree_icons = options.enable_ms_tree_icons_shadow = 1;
+	options.ms_statusbar_show_size = 1;
+
+        options.cover_width = 2;
+
+	options.autoexpand_stores = 1;
+
+	options.auto_save_playlist = 1;
+	options.show_length_in_playlist = 1;
+	options.enable_playlist_statusbar = options.enable_playlist_statusbar_shadow = 1;
+	options.pl_statusbar_show_size = 1;
+
+	options.rva_refvol = -12.0f;
+	options.rva_steepness = 1.0f;
+	options.rva_use_averaging = 1;
+	options.rva_use_linear_thresh = 0;
+	options.rva_avg_linear_thresh = 3.0f;
+	options.rva_avg_stddev_thresh = 2.0f;
+
+	options.auto_use_ext_meta_artist = 1;
+	options.auto_use_ext_meta_record = 1;
+	options.auto_use_ext_meta_track = 1;
+
+	options.cdda_drive_speed = 4;
+	options.cdda_paranoia_mode = 0; /* no paranoia */
+	options.cdda_paranoia_maxretries = 20;
+	options.cdda_force_drive_rescan = 0;
+
+	options.cddb_server[0] = '\0';
+	options.cddb_email[0] = '\0';
+	options.cddb_local[0] = '\0';
+	options.cddb_proxy[0] = '\0';
+	options.cddb_timeout = 10;
+
+	options.time_idx[0] = 0;
+	options.time_idx[1] = 1;
+	options.time_idx[2] = 2;
+
+	options.plcol_idx[0] = 0;
+	options.plcol_idx[1] = 1;
+	options.plcol_idx[2] = 2;
+
+	ms_pathlist_store = gtk_list_store_new(3,
+					       G_TYPE_STRING,   /* path */
+					       G_TYPE_STRING,   /* displayed name */
+					       G_TYPE_STRING);  /* state (rw, r, unreachable) */
+
+        cur = cur->xmlChildrenNode;
+        while (cur != NULL) {
+		LOAD_STR(currdir);
+		LOAD_STR(default_param);
+		LOAD_STR(title_format);
+		LOAD_STR(skin);
+
+		if (!src_type_parsed) {
+			LOAD_INT(src_type)
+		}
+
+		LOAD_INT(ladspa_is_postfader);
+		LOAD_INT(auto_save_playlist);
+		LOAD_INT(auto_use_meta_artist);
+		LOAD_INT(auto_use_meta_record);
+		LOAD_INT(auto_use_meta_track);
+		LOAD_INT(auto_use_ext_meta_artist);
+		LOAD_INT(auto_use_ext_meta_record);
+		LOAD_INT(auto_use_ext_meta_track);
+		LOAD_INT(show_rva_in_playlist);
+		LOAD_INT(pl_statusbar_show_size);
+		LOAD_INT(ms_statusbar_show_size);
+		LOAD_INT(show_length_in_playlist);
+		LOAD_INT(show_active_track_name_in_bold);
+		LOAD_INT(enable_pl_rules_hint);
+		LOAD_INT(enable_ms_rules_hint);
+		LOAD_INT_SH(enable_ms_tree_icons);
+		LOAD_INT(enable_tooltips);
+		LOAD_INT_SH(buttons_at_the_bottom);
+		LOAD_INT(disable_buttons_relief);
+		LOAD_INT_SH(simple_view_in_fx);
+		LOAD_INT(show_sn_title);
+		LOAD_INT(united_minimization);
+		LOAD_INT(magnify_smaller_images);
+		LOAD_INT(cover_width);
+		LOAD_INT_SH(hide_comment_pane);
+		LOAD_INT_SH(enable_mstore_toolbar);
+		LOAD_INT_SH(enable_mstore_statusbar);
+		LOAD_INT(autoexpand_stores);
+		LOAD_INT(show_hidden);
+		LOAD_INT(main_window_always_on_top);
+		LOAD_INT(tags_tab_first);
+		LOAD_INT(override_skin_settings);
+		LOAD_INT(replaygain_tag_to_use);
+		LOAD_FLOAT(vol);
+		LOAD_FLOAT(bal);
+		LOAD_INT(rva_is_enabled);
+		LOAD_INT(rva_env);
+		LOAD_FLOAT(rva_refvol);
+		LOAD_FLOAT(rva_steepness);
+		LOAD_INT(rva_use_averaging);
+		LOAD_INT(rva_use_linear_thresh);
+		LOAD_FLOAT(rva_avg_linear_thresh);
+		LOAD_FLOAT(rva_avg_stddev_thresh);
+		LOAD_INT(main_pos_x);
+		LOAD_INT(main_pos_y);
+		LOAD_INT(main_size_x);
+		LOAD_INT(main_size_y);
+		LOAD_INT(browser_pos_x);
+		LOAD_INT(browser_pos_y);
+		LOAD_INT(browser_size_x);
+		LOAD_INT(browser_size_y);
+		LOAD_INT(browser_on);
+		LOAD_INT(browser_paned_pos);
+		LOAD_INT(playlist_pos_x);
+		LOAD_INT(playlist_pos_y);
+		LOAD_INT(playlist_size_x);
+		LOAD_INT(playlist_size_y);
+		LOAD_INT(playlist_on);
+		LOAD_INT_SH(playlist_is_embedded);
+		LOAD_INT(playlist_is_tree);
+		LOAD_INT(album_shuffle_mode);
+		LOAD_INT_SH(enable_playlist_statusbar);
+		LOAD_FONT(browser_font);
+		LOAD_FONT(playlist_font);
+		LOAD_FONT(bigtimer_font);
+		LOAD_FONT(smalltimer_font);
+		LOAD_FONT(songtitle_font);
+		LOAD_FONT(songinfo_font);
+		LOAD_FONT(statusbar_font);
+		LOAD_COLOR(activesong_color);
+		LOAD_INT(repeat_on);
+		LOAD_INT(repeat_all_on);
+		LOAD_INT(shuffle_on);
+		LOAD_INT_ARRAY(time_idx, 0);
+		LOAD_INT_ARRAY(time_idx, 1);
+		LOAD_INT_ARRAY(time_idx, 2);
+		LOAD_INT_ARRAY(plcol_idx, 0);
+		LOAD_INT_ARRAY(plcol_idx, 1);
+		LOAD_INT_ARRAY(plcol_idx, 2);
+		LOAD_INT(search_pl_flags);
+		LOAD_INT(search_ms_flags);
+		LOAD_INT(cdda_drive_speed);
+		LOAD_INT(cdda_paranoia_mode);
+		LOAD_INT(cdda_paranoia_maxretries);
+		LOAD_INT(cdda_force_drive_rescan);
+		LOAD_INT(cdda_add_to_playlist);
+		LOAD_INT(cdda_remove_from_playlist);
+		LOAD_STR(cddb_server);
+		LOAD_INT(cddb_timeout);
+		LOAD_STR(cddb_email);
+		LOAD_STR(cddb_local);
+		LOAD_INT(cddb_cache_only);
+		LOAD_INT(cddb_use_http);
+		LOAD_STR(cddb_proxy);
+		LOAD_INT(cddb_proxy_port);
+		LOAD_INT(cddb_use_proxy);
+		LOAD_FLOAT(loop_range_start);
+		LOAD_FLOAT(loop_range_end);
+
+                if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+
+				char path[MAXLEN];
+				char * ppath;
+
+				snprintf(path, MAXLEN - 1, "%s", (char *)key);
+				ppath = g_locale_from_utf8(path, -1, NULL, NULL, NULL);
+
+				append_ms_pathlist(ppath, path);
+
+				g_free(ppath);
+			}
+
+                        xmlFree(key);
+		}
+                cur = cur->next;
+        }
+
+        xmlFreeDoc(doc);
+        return;
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

@@ -71,12 +71,6 @@ extern GtkTooltips * aqualung_tooltips;
 
 GtkWidget * browser_window;
 GtkWidget * dialog;
-gint browser_pos_x;
-gint browser_pos_y;
-gint browser_size_x;
-gint browser_size_y;
-gint browser_on;
-gint browser_paned_pos;
 
 gint music_store_changed = 0;
 
@@ -5491,7 +5485,7 @@ create_music_browser(void) {
 	gtk_container_add(GTK_CONTAINER(scrolled_win2), comment_view);
 
 	if (!options.hide_comment_pane) {
-		gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
+		gtk_paned_set_position(GTK_PANED(browser_paned), options.browser_paned_pos);
 	}
 
 	ms_progress_bar_container = gtk_hbox_new(FALSE, 4);
@@ -5542,12 +5536,12 @@ create_music_browser(void) {
 void
 show_music_browser(void) {
 
-	browser_on = 1;
-	gtk_window_move(GTK_WINDOW(browser_window), browser_pos_x, browser_pos_y);
-	gtk_window_resize(GTK_WINDOW(browser_window), browser_size_x, browser_size_y);
+	options.browser_on = 1;
+	gtk_window_move(GTK_WINDOW(browser_window), options.browser_pos_x, options.browser_pos_y);
+	gtk_window_resize(GTK_WINDOW(browser_window), options.browser_size_x, options.browser_size_y);
 	gtk_widget_show_all(browser_window);
 	if (!options.hide_comment_pane) {
-		gtk_paned_set_position(GTK_PANED(browser_paned), browser_paned_pos);
+		gtk_paned_set_position(GTK_PANED(browser_paned), options.browser_paned_pos);
 	}
 }
 
@@ -5555,11 +5549,11 @@ show_music_browser(void) {
 void
 hide_music_browser(void) {
 
-	browser_on = 0;
-	gtk_window_get_position(GTK_WINDOW(browser_window), &browser_pos_x, &browser_pos_y);
-	gtk_window_get_size(GTK_WINDOW(browser_window), &browser_size_x, &browser_size_y);
+	options.browser_on = 0;
+	gtk_window_get_position(GTK_WINDOW(browser_window), &options.browser_pos_x, &options.browser_pos_y);
+	gtk_window_get_size(GTK_WINDOW(browser_window), &options.browser_size_x, &options.browser_size_y);
 	if (!options.hide_comment_pane) {
-		browser_paned_pos = gtk_paned_get_position(GTK_PANED(browser_paned));
+		options.browser_paned_pos = gtk_paned_get_position(GTK_PANED(browser_paned));
 	}
 	gtk_widget_hide(browser_window);
 }

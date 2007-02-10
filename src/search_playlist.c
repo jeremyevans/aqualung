@@ -40,8 +40,6 @@
 
 extern options_t options;
 
-extern int search_pl_flags;
-
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 extern GtkListStore * play_store;
@@ -102,7 +100,7 @@ static gint
 close_button_clicked(GtkWidget * widget, gpointer data) {
 
         get_toggle_buttons_state();
-        search_pl_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF);
+        options.search_pl_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF);
 
 	clear_search_store();
         gtk_widget_destroy(search_window);
@@ -115,7 +113,7 @@ static int
 search_window_close(GtkWidget * widget, gpointer * data) {
 
         get_toggle_buttons_state();
-        search_pl_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF);
+        options.search_pl_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF);
 
 	clear_search_store();
         search_window = NULL;
@@ -435,11 +433,11 @@ search_playlist_dialog(void) {
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(close_button_clicked), NULL);
 
 
-        if (search_pl_flags & SEARCH_F_CS)
+        if (options.search_pl_flags & SEARCH_F_CS)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_case), TRUE);
-        if (search_pl_flags & SEARCH_F_EM)
+        if (options.search_pl_flags & SEARCH_F_EM)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_exact), TRUE);
-        if (search_pl_flags & SEARCH_F_SF)
+        if (options.search_pl_flags & SEARCH_F_SF)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_sfac), TRUE);
 
         gtk_widget_show(search_window);

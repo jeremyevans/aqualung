@@ -115,10 +115,7 @@ unsigned long long sample_offset;
 status_t disk_thread_status;
 int output = 0; /* oss/alsa/jack */
 
-#ifdef HAVE_SRC
-int src_type = 4;
 int src_type_parsed = 0;
-#endif /* HAVE_SRC */
 
 /* Synchronization between disk thread and output thread */
 AQUALUNG_MUTEX_DECLARE_INIT(disk_thread_lock)
@@ -270,12 +267,12 @@ disk_thread(void * arg) {
 	SRC_DATA src_data;
 	int src_error;
 
-        if ((src_state = src_new(src_type, 2, &src_error)) == NULL) {
+        if ((src_state = src_new(options.src_type, 2, &src_error)) == NULL) {
 		fprintf(stderr, "disk thread: error: src_new() failed: %s.\n",
 			src_strerror(src_error));
 		exit(1);
 	}
-	src_type_prev = src_type;
+	src_type_prev = options.src_type;
 #endif /* HAVE_SRC */
 
 	if ((fdec = file_decoder_new()) == NULL) {
@@ -511,16 +508,16 @@ disk_thread(void * arg) {
 			} else { /* do SRC */
 #ifdef HAVE_SRC				
 				if ((info->in_SR_prev != info->in_SR) ||
-				    (src_type_prev != src_type)) { /* reinit SRC */
+				    (src_type_prev != options.src_type)) { /* reinit SRC */
 
 					src_state = src_delete(src_state);
-					if ((src_state = src_new(src_type, 2, &src_error)) == NULL) {
+					if ((src_state = src_new(options.src_type, 2, &src_error)) == NULL) {
 						fprintf(stderr, "disk thread: error: src_new() failed: "
 						       "%s.\n", src_strerror(src_error));
 						goto done;
 					}
 					info->in_SR_prev = info->in_SR;
-					src_type_prev = src_type;
+					src_type_prev = options.src_type;
 				}
 				
 				src_data.input_frames = n_read;
@@ -2307,7 +2304,7 @@ main(int argc, char ** argv) {
 			case 's':
 #ifdef HAVE_SRC
 				if (optarg) {
-					src_type = atoi(optarg);
+					options.src_type = atoi(optarg);
 					++src_type_parsed;
 				} else {
 					int i = 0;

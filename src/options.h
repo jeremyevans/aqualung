@@ -34,6 +34,32 @@ typedef struct {
 	
 	char skin[MAXLEN];
 
+	/* Misc - not accessible from the Settings dialog */
+	float vol;
+	float bal;
+	int time_idx[3];
+	int main_pos_x;
+	int main_pos_y;
+	int main_size_x;
+	int main_size_y;
+	int browser_pos_x;
+	int browser_pos_y;
+	int browser_size_x;
+	int browser_size_y;
+	int browser_on;
+	int browser_paned_pos;
+	int playlist_pos_x;
+	int playlist_pos_y;
+	int playlist_size_x;
+	int playlist_size_y;
+	int playlist_on;
+	int repeat_on;
+	int repeat_all_on;
+	int shuffle_on;
+	int search_pl_flags;
+	int search_ms_flags;
+	float loop_range_start;
+	float loop_range_end;
 
 	/* General */
 	char title_format[MAXLEN];
@@ -82,7 +108,7 @@ typedef struct {
 
 	/* DSP */
 	int ladspa_is_postfader;
-	/* TODO: int src_type;*/
+	int src_type;
 	
 	/* RVA */
 	int rva_is_enabled;
@@ -137,6 +163,9 @@ typedef struct {
 
 void create_options_window(void);
 void append_ms_pathlist(char * path, char * name);
+
+void save_config(void);
+void load_config(void);
 
 #endif /* _OPTIONS_H */
 

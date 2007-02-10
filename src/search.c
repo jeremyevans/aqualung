@@ -30,9 +30,10 @@
 #include "music_browser.h"
 #include "gui_main.h"
 #include "i18n.h"
+#include "options.h"
 #include "search.h"
 
-extern int search_ms_flags;
+extern options_t options;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
@@ -107,7 +108,7 @@ static gint
 close_button_clicked(GtkWidget * widget, gpointer data) {
 
         get_toggle_buttons_state();
-        search_ms_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF) |
+        options.search_ms_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF) |
                           (artist_yes * SEARCH_F_AN) | (record_yes * SEARCH_F_RT) | (track_yes * SEARCH_F_TT) |
                           (comment_yes * SEARCH_F_CO);
 
@@ -122,7 +123,7 @@ int
 search_window_close(GtkWidget * widget, gpointer * data) {
 
         get_toggle_buttons_state();
-        search_ms_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF) |
+        options.search_ms_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF) |
                           (artist_yes * SEARCH_F_AN) | (record_yes * SEARCH_F_RT) | (track_yes * SEARCH_F_TT) |
                           (comment_yes * SEARCH_F_CO);
 
@@ -640,19 +641,19 @@ search_dialog(void) {
   	gtk_container_add(GTK_CONTAINER(hbuttonbox), button);   
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(close_button_clicked), NULL);
 
-        if (search_ms_flags & SEARCH_F_CS)
+        if (options.search_ms_flags & SEARCH_F_CS)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_case), TRUE);
-        if (search_ms_flags & SEARCH_F_EM)
+        if (options.search_ms_flags & SEARCH_F_EM)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_exact), TRUE);
-        if (search_ms_flags & SEARCH_F_SF)
+        if (options.search_ms_flags & SEARCH_F_SF)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_sfac), TRUE);
-        if (search_ms_flags & SEARCH_F_AN)
+        if (options.search_ms_flags & SEARCH_F_AN)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_artist), TRUE);
-        if (search_ms_flags & SEARCH_F_RT)
+        if (options.search_ms_flags & SEARCH_F_RT)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_record), TRUE);
-        if (search_ms_flags & SEARCH_F_TT)
+        if (options.search_ms_flags & SEARCH_F_TT)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_track), TRUE);
-        if (search_ms_flags & SEARCH_F_CO)
+        if (options.search_ms_flags & SEARCH_F_CO)
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_comment), TRUE);
 
 	gtk_widget_show(search_window);

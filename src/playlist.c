@@ -1520,15 +1520,17 @@ playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 
 	if (options.rva_is_enabled) {
 		meta = meta_new();
-		if (meta_read(meta, physical_name)) {
+		if (meta != NULL && meta_read(meta, physical_name)) {
 			if (!meta_get_rva(meta, &(plfm->voladj))) {
 				plfm->voladj = 0.0f;
 			}
 		} else {
 			plfm->voladj = 0.0f;
 		}
-		meta_free(meta);
-		meta = NULL;
+		if (meta != NULL) {
+			meta_free(meta);
+			meta = NULL;
+		}
 	} else {
 		plfm->voladj = 0.0f;
 	}
@@ -1542,7 +1544,7 @@ playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 	    options.auto_use_ext_meta_track) {
 		
 		meta = meta_new();
-		if (!meta_read(meta, physical_name)) {
+		if (meta != NULL && !meta_read(meta, physical_name)) {
 			meta_free(meta);
 			meta = NULL;
 		}

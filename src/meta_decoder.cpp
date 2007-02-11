@@ -833,6 +833,11 @@ meta_get_rva(metadata * meta, float * fval) {
 int
 meta_lookup(char * str, int which, TagLib::Tag * tag) {
 
+	if (tag == NULL) {
+		fprintf(stderr, "meta_lookup(): assertion tag != NULL failed\n");
+		return 0;
+	}
+
 	switch (which) {
 	case META_TITLE:
 		if (tag->title().toCString(true)[0] != '\0') {
@@ -901,7 +906,9 @@ meta_get_title(metadata * meta, char * str) {
 #ifdef HAVE_TAGLIB
 	if (meta->taglib_file != NULL) {
 		TagLib::File * file = reinterpret_cast<TagLib::File *>(meta->taglib_file);
-		ret = meta_lookup(str, META_TITLE, file->tag());
+		if (file->tag() != NULL) {
+			ret = meta_lookup(str, META_TITLE, file->tag());
+		}
 	}
 	if (ret)
 		return ret;
@@ -922,14 +929,16 @@ meta_get_record(metadata * meta, char * str) {
 	int ret = 0;
 
 	if (meta == NULL) {
-		fprintf(stderr, "meta_get_title(): assertion meta != NULL failed\n");
+		fprintf(stderr, "meta_get_record(): assertion meta != NULL failed\n");
 		return 0;
 	}
 
 #ifdef HAVE_TAGLIB
 	if (meta->taglib_file != NULL) {
 		TagLib::File * file = reinterpret_cast<TagLib::File *>(meta->taglib_file);
-		ret = meta_lookup(str, META_RECORD, file->tag());
+		if (file->tag() != NULL) {
+			ret = meta_lookup(str, META_RECORD, file->tag());
+		}
 	}
 #endif /* HAVE_TAGLIB */
 	return ret;
@@ -942,14 +951,17 @@ meta_get_artist(metadata * meta, char * str) {
 	int ret = 0;
 
 	if (meta == NULL) {
-		fprintf(stderr, "meta_get_title(): assertion meta != NULL failed\n");
+		fprintf(stderr, "meta_get_artist(): assertion meta != NULL failed\n");
 		return 0;
 	}
 
 #ifdef HAVE_TAGLIB
 	if (meta->taglib_file != NULL) {
 		TagLib::File * file = reinterpret_cast<TagLib::File *>(meta->taglib_file);
-		ret = meta_lookup(str, META_ARTIST, file->tag());
+		if (file->tag() != NULL) {
+			ret = meta_lookup(str, META_ARTIST, file->tag());
+		}
+
 	}
 #endif /* HAVE_TAGLIB */
 	return ret;
@@ -962,14 +974,16 @@ meta_get_year(metadata * meta, char * str) {
 	int ret = 0;
 
 	if (meta == NULL) {
-		fprintf(stderr, "meta_get_title(): assertion meta != NULL failed\n");
+		fprintf(stderr, "meta_get_year(): assertion meta != NULL failed\n");
 		return 0;
 	}
 
 #ifdef HAVE_TAGLIB
 	if (meta->taglib_file != NULL) {
 		TagLib::File * file = reinterpret_cast<TagLib::File *>(meta->taglib_file);
-		ret = meta_lookup(str, META_YEAR, file->tag());
+		if (file->tag() != NULL) {
+			ret = meta_lookup(str, META_YEAR, file->tag());
+		}
 	}
 #endif /* HAVE_TAGLIB */
 	return ret;
@@ -982,14 +996,16 @@ meta_get_comment(metadata * meta, char * str) {
 	int ret = 0;
 
 	if (meta == NULL) {
-		fprintf(stderr, "meta_get_title(): assertion meta != NULL failed\n");
+		fprintf(stderr, "meta_get_comment(): assertion meta != NULL failed\n");
 		return 0;
 	}
 
 #ifdef HAVE_TAGLIB
 	if (meta->taglib_file != NULL) {
 		TagLib::File * file = reinterpret_cast<TagLib::File *>(meta->taglib_file);
-		ret = meta_lookup(str, META_COMMENT, file->tag());
+		if (file->tag() != NULL) {
+			ret = meta_lookup(str, META_COMMENT, file->tag());
+		}
 	}
 #endif /* HAVE_TAGLIB */
 	return ret;

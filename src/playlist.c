@@ -1775,7 +1775,10 @@ rem__sel_cb(gpointer data) {
 					(GtkTreeViewMappingFunc)rem__sel_save_expanded, &expand_list);
 
 	g_object_ref(play_store);
+
+	g_signal_handlers_block_by_func(G_OBJECT(play_select), playlist_selection_changed, NULL);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(play_list), NULL);
+	g_signal_handlers_unblock_by_func(G_OBJECT(play_select), playlist_selection_changed, NULL);
 
 	remove_list = g_list_sort(remove_list, rem__sel_compare);
 	node = remove_list;

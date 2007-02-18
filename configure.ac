@@ -578,8 +578,15 @@ if test "$wavpack" = "no"; then
 else
 	AC_CHECK_LIB(wavpack, WavpackOpenFileInput, [lib=yes], [lib=no])
 	if test "$lib" = "yes"; then
-		wavpack_LIBS="-lwavpack"
-		AC_DEFINE([HAVE_WAVPACK], [1], [Defined if compile with Wavpack support])
+		wavpack_LIBS=`pkg-config --libs wavpack`
+		AC_MSG_CHECKING(whether WavPack version >= 4.40.0)
+		if pkg-config --exists 'wavpack >= 4.40.0'; then
+		        AC_MSG_RESULT(yes)
+			AC_DEFINE([HAVE_WAVPACK], [1], [Defined if compile with Wavpack support])
+		else
+		        AC_MSG_RESULT(no)
+			AC_MSG_ERROR([Your WavPack is too old, upgrade to at least 4.40.0. Grab it from http://www.wavpack.com])
+		fi
 	fi
 	if test "$lib" = "no" -a "$wavpack" = "yes"; then
 		AC_MSG_ERROR(You do not appear to have the WavPack library installed. Grab it from http://www.wavpack.com)

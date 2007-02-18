@@ -106,6 +106,9 @@ msgstr "Musepack\n"
 msgid "Monkey's Audio Codec\n"
 msgstr "Monkey's Audio Codec\n"
 
+msgid "WavPack\n"
+msgstr ""
+
 msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
 msgstr "LAVC (AC3, AAC, WavPack, WMA, stb.)\n"
 
@@ -963,6 +966,9 @@ msgstr "Tömörített modulok (*.gz)"
 
 msgid "Compressed modules (*.bz2)"
 msgstr "Tömörített modulok (*.bz2)"
+
+msgid "WavPack (*.wv)"
+msgstr ""
 
 msgid "LAVC audio/video files"
 msgstr "LAVC hang/videó fájlok"
@@ -2231,6 +2237,14 @@ msgstr "Sávszélesség:"
 
 msgid "Total samples:"
 msgstr "Összes mintavétel:"
+
+#, fuzzy
+msgid "Mode:"
+msgstr "Modell:"
+
+#, fuzzy
+msgid "WavPack Metadata"
+msgstr "Metaadatok"
 
 msgid "Module info"
 msgstr "Modul infó"

@@ -12,4 +12,5 @@ dec_null.h dec_null.c \
 dec_sndfile.h dec_sndfile.c \
 dec_speex.h dec_speex.c \
 dec_vorbis.h dec_vorbis.c \
+dec_wavpack.h dec_wavpack.c \
 file_decoder.h file_decoder.c

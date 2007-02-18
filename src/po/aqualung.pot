@@ -88,6 +88,9 @@ msgstr ""
 msgid "Monkey's Audio Codec\n"
 msgstr ""
 
+msgid "WavPack\n"
+msgstr ""
+
 msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
 msgstr ""
 
@@ -898,6 +901,9 @@ msgid "Compressed modules (*.gz)"
 msgstr ""
 
 msgid "Compressed modules (*.bz2)"
+msgstr ""
+
+msgid "WavPack (*.wv)"
 msgstr ""
 
 msgid "LAVC audio/video files"
@@ -2092,6 +2098,12 @@ msgid "Bandwidth:"
 msgstr ""
 
 msgid "Total samples:"
+msgstr ""
+
+msgid "Mode:"
+msgstr ""
+
+msgid "WavPack Metadata"
 msgstr ""
 
 msgid "Module info"

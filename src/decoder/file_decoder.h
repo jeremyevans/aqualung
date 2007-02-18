@@ -41,8 +41,9 @@ extern "C" {
 #define MOD_LIB     8
 #define MAC_LIB     9
 #define LAVC_LIB    10
+#define WAVPACK_LIB 11
 
-#define N_DECODERS  11
+#define N_DECODERS  12
 
 
 /* format_flags */

@@ -298,7 +298,6 @@ create_about_window() {
 #endif /* HAVE_FLAC */
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Free Lossless Audio Codec (FLAC)\n"), -1);
-	
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
@@ -368,6 +367,17 @@ create_about_window() {
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
+#ifdef HAVE_WAVPACK
+	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
+#else
+	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
+#endif /* HAVE_WAVPACK */
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("WavPack\n"), -1);
+
+
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
+	gtk_text_buffer_get_end_iter(buffer, &iter);
 #ifdef HAVE_LAVC
 	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
 #else
@@ -414,7 +424,6 @@ create_about_window() {
 #endif /* HAVE_FLAC */
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Free Lossless Audio Codec (FLAC)\n"), -1);
-
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);

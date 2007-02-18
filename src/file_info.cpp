@@ -931,6 +931,57 @@ build_simple_page(save_basic_t * save_basic, TagLib::Tag * tag, int * cnt, GtkWi
 	return page_id;
 }
 
+#ifdef HAVE_WAVPACK
+
+/* This does not support metadata editing or anything besides basic metadata */
+void
+build_wavpack_page(metadata * meta, GtkNotebook * nb, GtkWidget * hbox, char * nb_label) {
+
+	GtkWidget * vbox = gtk_vbox_new(FALSE, 4);
+	GtkWidget * table = gtk_table_new(0, 3, FALSE);
+	GtkWidget * label = gtk_label_new(nb_label);
+	GtkWidget * scrwin = gtk_scrolled_window_new(NULL, NULL);
+	GtkWidget * viewp = gtk_viewport_new(NULL, NULL);
+	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewp), GTK_SHADOW_NONE);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrwin),
+				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 10);
+	gtk_container_add(GTK_CONTAINER(scrwin), viewp);
+	gtk_container_add(GTK_CONTAINER(viewp), vbox);
+
+	gtk_notebook_append_page(GTK_NOTEBOOK(nb), scrwin, label);
+
+	char str[MAXLEN];
+	int cnt = 0;
+
+	meta_get_title(meta, str);
+	cut_trailing_whitespace(str);
+	append_table(table, &cnt, EDITABLE_NO, _("Title:"), str,  NULL, NULL);
+
+	meta_get_artist(meta, str);
+	cut_trailing_whitespace(str);
+	append_table(table, &cnt, EDITABLE_NO, _("Artist:"), str, NULL, NULL);
+
+	meta_get_record(meta, str);
+	cut_trailing_whitespace(str);
+	append_table(table, &cnt, EDITABLE_NO, _("Album:"), str,  NULL, NULL);
+
+	meta_get_tracknum(meta, str);
+	append_table(table, &cnt, EDITABLE_NO, _("Track:"), str, NULL, NULL);
+
+	meta_get_year(meta, str);
+	append_table(table, &cnt, EDITABLE_NO, _("Year:"), str, NULL, NULL);
+
+	meta_get_genre(meta, str);
+	cut_trailing_whitespace(str);
+	append_table(table, &cnt, EDITABLE_NO, _("Genre:"), str,   NULL, NULL);
+
+	meta_get_comment(meta, str);
+	cut_trailing_whitespace(str);
+	append_table(table, &cnt, EDITABLE_NO, _("Comment:"), str, NULL, NULL);
+}
+
+#endif /* HAVE_WAVPACK */
 
 int
 build_id3v1_page(save_basic_t * save_basic, int edit_mode, TagLib::ID3v1::Tag * id3v1_tag) {
@@ -1952,6 +2003,30 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 5, 6,
 			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
 
+#ifdef HAVE_WAVPACK
+	if (meta->file_lib == WAVPACK_LIB) {
+		hbox = gtk_hbox_new(FALSE, 0);
+		label = gtk_label_new(_("Mode:"));
+		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+		gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 7, 8, GTK_FILL, GTK_FILL, 5, 3);
+		entry = gtk_entry_new();
+		GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
+		int mode = WavpackGetMode(meta->wpc);
+		if ((mode & MODE_LOSSLESS) && (mode & MODE_WVC)) {
+			strncpy(str, "Hybrid Lossless", MAXLEN-1);
+		} else if (mode & MODE_LOSSLESS) {
+			strncpy(str, "Lossless", MAXLEN-1);
+		} else {
+			strncpy(str, "Hybrid Lossy", MAXLEN-1);
+		}
+		cut_trailing_whitespace(str);
+		gtk_entry_set_text(GTK_ENTRY(entry), str);
+		gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
+		gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 7, 8,
+				(GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
+	}
+#endif /* HAVE_WAVPACK */
+
 
 #ifdef HAVE_TAGLIB
 	switch (meta->file_lib) {
@@ -1977,6 +2052,12 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 #endif /* HAVE_MPC */
 	}
 #endif /* HAVE_TAGLIB */
+
+#ifdef HAVE_WAVPACK
+	if (meta->file_lib == WAVPACK_LIB) {
+		build_wavpack_page(meta, GTK_NOTEBOOK(nb), hbox_tagbuttons, _("WavPack Metadata"));
+	}
+#endif /* HAVE_WAVPACK */
 
 #ifdef HAVE_MOD_INFO
 	mdi = meta->mod_root;

@@ -27,6 +27,9 @@
 #include <libmodplug/modplug.h>
 #endif /* HAVE_MOD */
 
+#ifdef HAVE_WAVPACK
+#include <wavpack/wavpack.h>
+#endif /* HAVE_WAVPACK */
 
 #include "common.h"
 #include "decoder/file_decoder.h"
@@ -71,6 +74,10 @@ typedef struct _metadata {
 	mod_info * mod_root;
 #endif /* HAVE_MOD */
 
+#ifdef HAVE_WAVPACK
+	WavpackContext *wpc;
+#endif /* HAVE_WAVPACK */
+
 } metadata;
 
 
@@ -91,6 +98,8 @@ int meta_get_record(metadata * meta, char * str);
 int meta_get_artist(metadata * meta, char * str);
 int meta_get_year(metadata * meta, char * str);
 int meta_get_comment(metadata * meta, char * str);
+int meta_get_genre(metadata * meta, char * str);
+int meta_get_tracknum(metadata * meta, char * str);
 
 #if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 int meta_update_basic(char * filename, char * title, char * artist, char * album,

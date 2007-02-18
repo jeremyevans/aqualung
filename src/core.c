@@ -1835,6 +1835,13 @@ print_version(void) {
 #endif /* HAVE_MAC */
 	fprintf(stderr, "Monkey's Audio Codec\n");
 	
+#ifdef HAVE_WAVPACK
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_WAVPACK */
+	fprintf(stderr, "WavPack\n");
+	
 #ifdef HAVE_LAVC
 	fprintf(stderr, V_YES);
 #else

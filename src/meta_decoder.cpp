@@ -61,6 +61,11 @@
 extern char * valid_extensions_mod[];
 #endif /* HAVE_MOD */
 
+#ifdef HAVE_WAVPACK
+extern "C" {
+#include <wavpack/wavpack.h>
+}
+#endif /* HAVE_WAVPACK */
 
 #define META_TITLE   1
 #define META_RECORD  2
@@ -293,6 +298,10 @@ meta_new(void) {
 	new_tag->mod_root = modinfo_new();
 #endif /* HAVE_MOD */
 
+#ifdef HAVE_WAVPACK
+	new_tag->wpc = NULL;
+#endif /* HAVE_WAVPACK */
+
 	return new_tag;
 }
 
@@ -455,6 +464,11 @@ meta_read_fdec(metadata * meta, char * file, file_decoder_t * fdec) {
 	}
 #endif /* HAVE_TAGLIB */
 
+#ifdef HAVE_WAVPACK
+	if (meta->file_lib == WAVPACK_LIB) {
+		meta->wpc = WavpackOpenFileInput(file, NULL, OPEN_TAGS | OPEN_WVC, 0);
+	}
+#endif /* HAVE_WAVPACK */
 
 #ifdef HAVE_MOD
         if (fdec->file_lib == MOD_LIB) {
@@ -578,6 +592,14 @@ meta_free(metadata * meta) {
                 free(mi);
         }
 #endif /* HAVE_MOD */
+
+#ifdef HAVE_WAVPACK
+	if  (meta->file_lib == WAVPACK_LIB && meta->wpc != NULL) {
+		WavpackCloseFile(meta->wpc);
+		meta->wpc = NULL;
+	}
+#endif /* HAVE_WAVPACK */
+
 
 	free(meta);
 }
@@ -919,6 +941,12 @@ meta_get_title(metadata * meta, char * str) {
 		ret = meta_get_title_mod(meta, str);
 	}
 #endif /* HAVE_MOD */
+
+#ifdef HAVE_WAVPACK
+	if (meta->file_lib == WAVPACK_LIB) {
+		ret = WavpackGetTagItem(meta->wpc, "title", str, MAXLEN);
+	}
+#endif /* HAVE_WAVPACK */
 	return ret;
 }
 
@@ -941,6 +969,12 @@ meta_get_record(metadata * meta, char * str) {
 		}
 	}
 #endif /* HAVE_TAGLIB */
+
+#ifdef HAVE_WAVPACK
+	if (meta->file_lib == WAVPACK_LIB) {
+		ret = WavpackGetTagItem(meta->wpc, "album", str, MAXLEN);
+	}
+#endif /* HAVE_WAVPACK */
 	return ret;
 }
 
@@ -964,6 +998,12 @@ meta_get_artist(metadata * meta, char * str) {
 
 	}
 #endif /* HAVE_TAGLIB */
+
+#ifdef HAVE_WAVPACK
+	if (meta->file_lib == WAVPACK_LIB) {
+		ret = WavpackGetTagItem(meta->wpc, "artist", str, MAXLEN);
+	}
+#endif /* HAVE_WAVPACK */
 	return ret;
 }
 
@@ -986,6 +1026,12 @@ meta_get_year(metadata * meta, char * str) {
 		}
 	}
 #endif /* HAVE_TAGLIB */
+
+#ifdef HAVE_WAVPACK
+	if (meta->file_lib == WAVPACK_LIB) {
+		ret = WavpackGetTagItem(meta->wpc, "year", str, MAXLEN);
+	}
+#endif /* HAVE_WAVPACK */
 	return ret;
 }
 
@@ -1008,10 +1054,38 @@ meta_get_comment(metadata * meta, char * str) {
 		}
 	}
 #endif /* HAVE_TAGLIB */
+
+#ifdef HAVE_WAVPACK
+	if (meta->file_lib == WAVPACK_LIB) {
+		ret = WavpackGetTagItem(meta->wpc, "comment", str, MAXLEN);
+	}
+#endif /* HAVE_WAVPACK */
 	return ret;
 }
 
+int
+meta_get_genre(metadata * meta, char * str) {
+	int ret = 0;
 
+#ifdef HAVE_WAVPACK
+	if (meta->file_lib == WAVPACK_LIB) {
+		ret = WavpackGetTagItem(meta->wpc, "genre", str, MAXLEN);
+	}
+#endif /* HAVE_WAVPACK */
+	return ret;
+}
+
+int
+meta_get_tracknum(metadata * meta, char * str) {
+	int ret = 0;
+
+#ifdef HAVE_WAVPACK
+	if (meta->file_lib == WAVPACK_LIB) {
+		ret = WavpackGetTagItem(meta->wpc, "track", str, MAXLEN);
+	}
+#endif /* HAVE_WAVPACK */
+	return ret;
+}
 
 #if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 

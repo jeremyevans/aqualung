@@ -4254,6 +4254,14 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
         gtk_file_chooser_add_filter(fc, filter);
 #endif /* (HAVE_MOD && HAVE LIBZ) */
 
+#ifdef HAVE_WAVPACK
+        filter = gtk_file_filter_new();
+        gtk_file_filter_set_name(filter, _("WavPack (*.wv)")); 
+        gtk_file_filter_add_pattern(filter, "*.[wW][vV]");
+        gtk_file_filter_add_pattern(filter_all, "*.[wW][vV]");
+        gtk_file_chooser_add_filter(fc, filter);
+#endif /* HAVE_WAVPACK */
+
 #ifdef HAVE_LAVC
         filter = gtk_file_filter_new();
         gtk_file_filter_set_name(filter, _("LAVC audio/video files"));

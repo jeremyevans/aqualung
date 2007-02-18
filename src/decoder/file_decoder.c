@@ -50,6 +50,7 @@
 #include "dec_mod.h"
 #include "dec_mac.h"
 #include "dec_lavc.h"
+#include "dec_wavpack.h"
 
 
 extern size_t sample_size;
@@ -68,6 +69,7 @@ decoder_init_t * decoder_init_v[N_DECODERS] = {
 	mpc_decoder_init,
 	mac_decoder_init,
 	mpeg_decoder_init,
+	wavpack_decoder_init,
 	lavc_decoder_init,
 	mod_decoder_init
 };

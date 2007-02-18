@@ -567,6 +567,27 @@ else
 	fi
 fi
 
+AC_MSG_CHECKING(for WavPack support)
+AC_ARG_WITH(
+	wavpack,
+	[  --with-wavpack=yes,no   compile with WavPack support (default: yes)],
+	wavpack="$withval",
+	wavpack="detect")
+if test "$wavpack" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(wavpack, WavpackOpenFileInput, [lib=yes], [lib=no])
+	if test "$lib" = "yes"; then
+		wavpack_LIBS="-lwavpack"
+		AC_DEFINE([HAVE_WAVPACK], [1], [Defined if compile with Wavpack support])
+	fi
+	if test "$lib" = "no" -a "$wavpack" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the WavPack library installed. Grab it from http://www.wavpack.com)
+	fi
+	if test "$wavpack" = "detect"; then
+		wavpack=$lib
+	fi
+fi
 
 AC_MSG_CHECKING(for metadata support)
 AC_ARG_WITH(
@@ -800,7 +821,7 @@ AQUALUNG_DATADIR="-DAQUALUNG_DATADIR=\\\"$datadir/aqualung\\\""
 CFLAGS="$BUILD_CFLAGS -Wall $PLATFORM_CFLAGS $AQUALUNG_SKINDIR $AQUALUNG_LOCALEDIR $AQUALUNG_DATADIR -D_GNU_SOURCE"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $taglib_CFLAGS"
-LIBS="decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $taglib_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS"
+LIBS="decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $taglib_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS"
 
 
 AC_OUTPUT([Makefile \
@@ -843,6 +864,7 @@ echo "      MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg"
 echo "      MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod"
 echo "      Musepack                            :  $mpc"
 echo "      Monkey's Audio Codec                :  $mac"
+echo "      WavPack                             :  $wavpack"
 echo "      LAVC (AC3, AAC, WavPack, WMA, etc.) :  $lavc"
 echo "      Metadata (ID3, APE, Ogg comments)   :  $metadata"
 echo

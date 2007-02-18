@@ -777,6 +777,14 @@ build_seek_table_thread(void * args) {
 		div = frame_count / 100;
 	}
 
+	if (div < 1) {
+#ifdef MPEG_DEBUG
+		printf("track is too short, not building seek table\n");
+#endif /* MPEG_DEBUG */
+		AQUALUNG_THREAD_DETACH()
+		return NULL;
+	}
+
 #ifdef MPEG_DEBUG
 	printf("building seek table, div = %d\n", div);
 #endif /* MPEG_DEBUG */
@@ -839,6 +847,7 @@ build_seek_table_thread(void * args) {
 #ifdef MPEG_DEBUG
 			printf("seek table builder thread cancelled, exiting.\n");
 #endif /* MPEG_DEBUG */
+			AQUALUNG_THREAD_DETACH()
 			return NULL;
 		}
 	}

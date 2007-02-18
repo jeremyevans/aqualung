@@ -584,12 +584,12 @@ else
 		        AC_MSG_RESULT(yes)
 			AC_DEFINE([HAVE_WAVPACK], [1], [Defined if compile with Wavpack support])
 		else
+			lib="no"
 		        AC_MSG_RESULT(no)
-			AC_MSG_ERROR([Your WavPack is too old, upgrade to at least 4.40.0. Grab it from http://www.wavpack.com])
 		fi
 	fi
 	if test "$lib" = "no" -a "$wavpack" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the WavPack library installed. Grab it from http://www.wavpack.com)
+		AC_MSG_ERROR([You do not appear to have the WavPack library installed, or it is older than the required version (4.40.0). Grab it from http://www.wavpack.com])
 	fi
 	if test "$wavpack" = "detect"; then
 		wavpack=$lib

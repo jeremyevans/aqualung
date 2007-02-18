@@ -1,3 +1,24 @@
+2007-02-18	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
+
+    * Aqualung 0.9beta7.1
+        http://aqualung.sf.net
+
+	This is a bugfix release, for some important fixes that were found
+	due to the greater user coverage after the beta7 release.
+
+	* Fixed drag and drop from external applications.
+
+	* Remove selected tracks and invert selection in Playlist are now
+	  fast (optimized and improved).
+
+	* Shortcut 'A' (show active song) doesn't interfere with CTRL+A
+	  (select all).
+
+	* Added checks for NULL pointers as a workaround for a TagLib bug.
+
+	* Added native WavPack decoder contributed by Maarten Maathuis.
+	
+
 2007-02-05	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
 
     * Aqualung 0.9beta7

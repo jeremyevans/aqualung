@@ -352,6 +352,137 @@ msgstr ""
 msgid "Reading file"
 msgstr ""
 
+msgid "Please select the directory for ripped files."
+msgstr ""
+
+msgid "(none)"
+msgstr ""
+
+msgid "fast"
+msgstr ""
+
+msgid "best"
+msgstr ""
+
+msgid "Compression level:"
+msgstr ""
+
+msgid "Bitrate [kbps]:"
+msgstr ""
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+
+msgid "Artist/Album already existing, not empty"
+msgstr ""
+
+msgid "Rip CD"
+msgstr ""
+
+msgid "Artist:"
+msgstr ""
+
+msgid "Album:"
+msgstr ""
+
+msgid "Rip"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Output"
+msgstr ""
+
+msgid "Destination"
+msgstr ""
+
+msgid "Target directory for ripped files"
+msgstr ""
+
+msgid "Add to Music Store"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
+msgid "File format:"
+msgstr ""
+
+msgid "VBR encoding"
+msgstr ""
+
+msgid "Tag files with metadata"
+msgstr ""
+
+msgid "Paranoia"
+msgstr ""
+
+msgid "Paranoia error correction"
+msgstr ""
+
+msgid "Perform overlapped reads"
+msgstr ""
+
+msgid "Verify data integrity"
+msgstr ""
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+
+msgid "\tMaximum number of retries:"
+msgstr ""
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+msgid "(audio only)"
+msgstr ""
+
+msgid "Ripping CD tracks"
+msgstr ""
+
+msgid "Begin"
+msgstr ""
+
+msgid "Length"
+msgstr ""
+
+msgid "Progress"
+msgstr ""
+
+msgid "Close window when complete"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
 msgid "CD Audio"
 msgstr ""
 
@@ -489,9 +620,6 @@ msgstr ""
 msgid "Disc info"
 msgstr ""
 
-msgid "No"
-msgstr ""
-
 msgid "This CD does not contain CD-Text information."
 msgstr ""
 
@@ -505,9 +633,6 @@ msgid "Connecting to CDDB server..."
 msgstr ""
 
 msgid "Matches:"
-msgstr ""
-
-msgid "Artist:"
 msgstr ""
 
 msgid "Title:"
@@ -584,131 +709,6 @@ msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr ""
 
 msgid "No matching record found."
-msgstr ""
-
-msgid "Please select the directory for ripped files."
-msgstr ""
-
-msgid "(none)"
-msgstr ""
-
-msgid "fast"
-msgstr ""
-
-msgid "best"
-msgstr ""
-
-msgid "Compression level:"
-msgstr ""
-
-msgid "Bitrate [kbps]:"
-msgstr ""
-
-msgid ""
-"\n"
-"The Music Store you selected has a matching Artist and Album, already "
-"containing some tracks. If you press OK, these tracks will be removed. The "
-"files themselves will be left intact, but they will be removed from the "
-"destination Music Store. Press Cancel to get back to change the Artist/Album "
-"or the destination Music Store."
-msgstr ""
-
-msgid "Artist/Album already existing, not empty"
-msgstr ""
-
-msgid "Rip CD"
-msgstr ""
-
-msgid "Album:"
-msgstr ""
-
-msgid "Rip"
-msgstr ""
-
-msgid "Title"
-msgstr ""
-
-msgid "Select"
-msgstr ""
-
-msgid "All"
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "Output"
-msgstr ""
-
-msgid "Destination"
-msgstr ""
-
-msgid "Target directory for ripped files"
-msgstr ""
-
-msgid "Add to Music Store"
-msgstr ""
-
-msgid "Format"
-msgstr ""
-
-msgid "File format:"
-msgstr ""
-
-msgid "VBR encoding"
-msgstr ""
-
-msgid "Tag files with metadata"
-msgstr ""
-
-msgid "Paranoia"
-msgstr ""
-
-msgid "Paranoia error correction"
-msgstr ""
-
-msgid "Perform overlapped reads"
-msgstr ""
-
-msgid "Verify data integrity"
-msgstr ""
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
-
-msgid "\tMaximum number of retries:"
-msgstr ""
-
-msgid ""
-"\n"
-"Destination directory is not read-write accessible!"
-msgstr ""
-
-msgid "Error"
-msgstr ""
-
-msgid "Total"
-msgstr ""
-
-msgid "(audio only)"
-msgstr ""
-
-msgid "Ripping CD tracks"
-msgstr ""
-
-msgid "Begin"
-msgstr ""
-
-msgid "Length"
-msgstr ""
-
-msgid "Progress"
-msgstr ""
-
-msgid "Close window when complete"
-msgstr ""
-
-msgid "Close"
 msgstr ""
 
 msgid "day"

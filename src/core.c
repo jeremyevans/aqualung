@@ -2197,6 +2197,7 @@ main(int argc, char ** argv) {
 						"compiled-in features.\n");
 					exit(1);
 #endif /* HAVE_OSS*/
+					free(output_str);
 					break;
 				}
 				if (strcmp(output_str, "alsa") == 0) {
@@ -2211,6 +2212,7 @@ main(int argc, char ** argv) {
 						"compiled-in features.\n");
 					exit(1);
 #endif /* HAVE_ALSA */
+					free(output_str);
 					break;
 				}
 				if (strcmp(output_str, "jack") == 0) {
@@ -2225,6 +2227,7 @@ main(int argc, char ** argv) {
 						"compiled-in features.\n");
 					exit(1);
 #endif /* HAVE_JACK */
+					free(output_str);
 					break;
 				}
 				if (strcmp(output_str, "win32") == 0) {
@@ -2239,9 +2242,13 @@ main(int argc, char ** argv) {
 						"compiled-in features.\n");
 					exit(1);
 #endif /* _WIN32 */
+					free(output_str);
 					break;
 				}
+				fprintf(stderr, "Invalid output device: %s\n", output_str);
 				free(output_str);
+				exit(0);
+				break;
 			case 'd':
 				device_name = strdup(optarg);
 				break;

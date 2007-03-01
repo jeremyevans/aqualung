@@ -419,6 +419,157 @@ msgstr ""
 msgid "Reading file"
 msgstr "Neu abtasten"
 
+#, fuzzy
+msgid "Please select the directory for ripped files."
+msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
+
+#, fuzzy
+msgid "(none)"
+msgstr "(kein Kommentar)"
+
+#, fuzzy
+msgid "fast"
+msgstr "Artist"
+
+msgid "best"
+msgstr ""
+
+#, fuzzy
+msgid "Compression level:"
+msgstr "Lautstärke:"
+
+msgid "Bitrate [kbps]:"
+msgstr ""
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+
+msgid "Artist/Album already existing, not empty"
+msgstr ""
+
+msgid "Rip CD"
+msgstr ""
+
+#, fuzzy
+msgid "Artist:"
+msgstr "Artist"
+
+#, fuzzy
+msgid "Album:"
+msgstr "Album"
+
+msgid "Rip"
+msgstr ""
+
+#, fuzzy
+msgid "No"
+msgstr "Keine"
+
+msgid "Title"
+msgstr "Titel:"
+
+#, fuzzy
+msgid "Select"
+msgstr "Alles auswählen"
+
+msgid "All"
+msgstr ""
+
+msgid "None"
+msgstr "Keine"
+
+#, fuzzy
+msgid "Output"
+msgstr "Ausgabe:"
+
+#, fuzzy
+msgid "Destination"
+msgstr "Zeitdauer:"
+
+#, fuzzy
+msgid "Target directory for ripped files"
+msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
+
+#, fuzzy
+msgid "Add to Music Store"
+msgstr "Musikladen"
+
+#, fuzzy
+msgid "Format"
+msgstr "Abbrechen"
+
+#, fuzzy
+msgid "File format:"
+msgstr "Namensformat"
+
+#, fuzzy
+msgid "VBR encoding"
+msgstr "Kodierung"
+
+#, fuzzy
+msgid "Tag files with metadata"
+msgstr "Als Titel importieren"
+
+msgid "Paranoia"
+msgstr ""
+
+msgid "Paranoia error correction"
+msgstr ""
+
+msgid "Perform overlapped reads"
+msgstr ""
+
+msgid "Verify data integrity"
+msgstr ""
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+
+msgid "\tMaximum number of retries:"
+msgstr ""
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+#, fuzzy
+msgid "Total"
+msgstr "Total Samples:"
+
+msgid "(audio only)"
+msgstr ""
+
+#, fuzzy
+msgid "Ripping CD tracks"
+msgstr "Track editieren..."
+
+msgid "Begin"
+msgstr ""
+
+#, fuzzy
+msgid "Length"
+msgstr "Länge:"
+
+msgid "Progress"
+msgstr ""
+
+msgid "Close window when complete"
+msgstr ""
+
+#, fuzzy
+msgid "Close"
+msgstr "Schließen"
+
 msgid "CD Audio"
 msgstr ""
 
@@ -563,10 +714,6 @@ msgstr ""
 msgid "Disc info"
 msgstr "Datei-Info..."
 
-#, fuzzy
-msgid "No"
-msgstr "Keine"
-
 msgid "This CD does not contain CD-Text information."
 msgstr ""
 
@@ -582,10 +729,6 @@ msgstr "JACK Verbindung verloren"
 
 msgid "Matches:"
 msgstr "Treffer:"
-
-#, fuzzy
-msgid "Artist:"
-msgstr "Artist"
 
 #, fuzzy
 msgid "Title:"
@@ -670,149 +813,6 @@ msgstr "Fehler während des Verbindungen zur CDDB Server."
 #, fuzzy
 msgid "No matching record found."
 msgstr "Neues Track zu diesem Album hinzufügen..."
-
-#, fuzzy
-msgid "Please select the directory for ripped files."
-msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
-
-#, fuzzy
-msgid "(none)"
-msgstr "(kein Kommentar)"
-
-#, fuzzy
-msgid "fast"
-msgstr "Artist"
-
-msgid "best"
-msgstr ""
-
-#, fuzzy
-msgid "Compression level:"
-msgstr "Lautstärke:"
-
-msgid "Bitrate [kbps]:"
-msgstr ""
-
-msgid ""
-"\n"
-"The Music Store you selected has a matching Artist and Album, already "
-"containing some tracks. If you press OK, these tracks will be removed. The "
-"files themselves will be left intact, but they will be removed from the "
-"destination Music Store. Press Cancel to get back to change the Artist/Album "
-"or the destination Music Store."
-msgstr ""
-
-msgid "Artist/Album already existing, not empty"
-msgstr ""
-
-msgid "Rip CD"
-msgstr ""
-
-#, fuzzy
-msgid "Album:"
-msgstr "Album"
-
-msgid "Rip"
-msgstr ""
-
-msgid "Title"
-msgstr "Titel:"
-
-#, fuzzy
-msgid "Select"
-msgstr "Alles auswählen"
-
-msgid "All"
-msgstr ""
-
-msgid "None"
-msgstr "Keine"
-
-#, fuzzy
-msgid "Output"
-msgstr "Ausgabe:"
-
-#, fuzzy
-msgid "Destination"
-msgstr "Zeitdauer:"
-
-#, fuzzy
-msgid "Target directory for ripped files"
-msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
-
-#, fuzzy
-msgid "Add to Music Store"
-msgstr "Musikladen"
-
-#, fuzzy
-msgid "Format"
-msgstr "Abbrechen"
-
-#, fuzzy
-msgid "File format:"
-msgstr "Namensformat"
-
-#, fuzzy
-msgid "VBR encoding"
-msgstr "Kodierung"
-
-#, fuzzy
-msgid "Tag files with metadata"
-msgstr "Als Titel importieren"
-
-msgid "Paranoia"
-msgstr ""
-
-msgid "Paranoia error correction"
-msgstr ""
-
-msgid "Perform overlapped reads"
-msgstr ""
-
-msgid "Verify data integrity"
-msgstr ""
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
-
-msgid "\tMaximum number of retries:"
-msgstr ""
-
-msgid ""
-"\n"
-"Destination directory is not read-write accessible!"
-msgstr ""
-
-msgid "Error"
-msgstr ""
-
-#, fuzzy
-msgid "Total"
-msgstr "Total Samples:"
-
-msgid "(audio only)"
-msgstr ""
-
-#, fuzzy
-msgid "Ripping CD tracks"
-msgstr "Track editieren..."
-
-msgid "Begin"
-msgstr ""
-
-#, fuzzy
-msgid "Length"
-msgstr "Länge:"
-
-msgid "Progress"
-msgstr ""
-
-msgid "Close window when complete"
-msgstr ""
-
-#, fuzzy
-msgid "Close"
-msgstr "Schließen"
 
 msgid "day"
 msgstr ""

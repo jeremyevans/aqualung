@@ -387,6 +387,146 @@ msgstr "Név transzformáció"
 msgid "Reading file"
 msgstr "Fájl olvasása"
 
+msgid "Please select the directory for ripped files."
+msgstr "Válassz ki egy könyvtárat a rippelt fájloknak."
+
+msgid "(none)"
+msgstr "(nincs)"
+
+msgid "fast"
+msgstr "gyors"
+
+msgid "best"
+msgstr "legjobb"
+
+msgid "Compression level:"
+msgstr "Tömörítés szintje:"
+
+msgid "Bitrate [kbps]:"
+msgstr "Bitráta [kbps]:"
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+"\n"
+"A kiválasztott tárolóban már van ilyen előadó és album, amely néhány számot "
+"is tartalmaz. Az OK gombot megnyomva ezek a számok eltűnnek a tárolóból. Ez "
+"maguk a fájlokat nem érinti, csak a célként megjelölt tárolóból törlődnek. "
+"Ha inkább szeretnél visszatérni a előadó, album vagy zenetár módosításához, "
+"válaszd a Mégse gombot."
+
+msgid "Artist/Album already existing, not empty"
+msgstr "Az előadó vagy album már létezik, és nem üres"
+
+msgid "Rip CD"
+msgstr "CD rippelés"
+
+msgid "Artist:"
+msgstr "Előadó:"
+
+msgid "Album:"
+msgstr "Lemez:"
+
+msgid "Rip"
+msgstr "Rippelés"
+
+msgid "No"
+msgstr "No"
+
+msgid "Title"
+msgstr "Cím"
+
+msgid "Select"
+msgstr "Kiválasztás"
+
+msgid "All"
+msgstr "Mind"
+
+msgid "None"
+msgstr "Egyik sem"
+
+msgid "Output"
+msgstr "Kimenet"
+
+msgid "Destination"
+msgstr "Cél"
+
+msgid "Target directory for ripped files"
+msgstr "Válassz egy könyvtárat a rippelt fájloknak"
+
+msgid "Add to Music Store"
+msgstr "Hozzáadás a Zenetárhoz"
+
+msgid "Format"
+msgstr "Formátum"
+
+msgid "File format:"
+msgstr "Fájl formátum:"
+
+msgid "VBR encoding"
+msgstr "VBR kódolás"
+
+msgid "Tag files with metadata"
+msgstr "Fájlok taggelése metaadatokkal"
+
+msgid "Paranoia"
+msgstr "Paranoia"
+
+msgid "Paranoia error correction"
+msgstr "Paranoia hibajavítás"
+
+msgid "Perform overlapped reads"
+msgstr "Átlapolt olvasások végzése"
+
+msgid "Verify data integrity"
+msgstr "Adat integritás ellenőrzése"
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+"Meghiúsult olvasások esetén tetszőleges számú újraolvasás (soha nem ugrik)"
+
+msgid "\tMaximum number of retries:"
+msgstr "\tÚjrapróbálások maximális száma:"
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+"\n"
+"A célkönyvtár nem írható-olvasható!"
+
+msgid "Error"
+msgstr "Hiba"
+
+msgid "Total"
+msgstr "Összesen"
+
+msgid "(audio only)"
+msgstr "(csak audio)"
+
+msgid "Ripping CD tracks"
+msgstr "Számok rippelése"
+
+msgid "Begin"
+msgstr "Kezdet"
+
+msgid "Length"
+msgstr "Hossz"
+
+msgid "Progress"
+msgstr "Feldolgozás"
+
+msgid "Close window when complete"
+msgstr "Ablak bezárása, ha kész"
+
+msgid "Close"
+msgstr "Bezárás"
+
 msgid "CD Audio"
 msgstr "CD Audio"
 
@@ -526,9 +666,6 @@ msgstr "Burn Proof"
 msgid "Disc info"
 msgstr "Lemez infó"
 
-msgid "No"
-msgstr "No"
-
 msgid "This CD does not contain CD-Text information."
 msgstr "Ez a lemez nem tartalmaz CD-Text információt."
 
@@ -543,9 +680,6 @@ msgstr "Kapcsolódás a CDDB szerverhez..."
 
 msgid "Matches:"
 msgstr "Találatok:"
-
-msgid "Artist:"
-msgstr "Előadó:"
 
 msgid "Title:"
 msgstr "Cím:"
@@ -632,140 +766,6 @@ msgstr "Hiba történt a CDDB szerverhez való kapcsolódás közben."
 
 msgid "No matching record found."
 msgstr "Az album nem található az adatbázisban."
-
-msgid "Please select the directory for ripped files."
-msgstr "Válassz ki egy könyvtárat a rippelt fájloknak."
-
-msgid "(none)"
-msgstr "(nincs)"
-
-msgid "fast"
-msgstr "gyors"
-
-msgid "best"
-msgstr "legjobb"
-
-msgid "Compression level:"
-msgstr "Tömörítés szintje:"
-
-msgid "Bitrate [kbps]:"
-msgstr "Bitráta [kbps]:"
-
-msgid ""
-"\n"
-"The Music Store you selected has a matching Artist and Album, already "
-"containing some tracks. If you press OK, these tracks will be removed. The "
-"files themselves will be left intact, but they will be removed from the "
-"destination Music Store. Press Cancel to get back to change the Artist/Album "
-"or the destination Music Store."
-msgstr ""
-"\n"
-"A kiválasztott tárolóban már van ilyen előadó és album, amely néhány számot "
-"is tartalmaz. Az OK gombot megnyomva ezek a számok eltűnnek a tárolóból. Ez "
-"maguk a fájlokat nem érinti, csak a célként megjelölt tárolóból törlődnek. "
-"Ha inkább szeretnél visszatérni a előadó, album vagy zenetár módosításához, "
-"válaszd a Mégse gombot."
-
-msgid "Artist/Album already existing, not empty"
-msgstr "Az előadó vagy album már létezik, és nem üres"
-
-msgid "Rip CD"
-msgstr "CD rippelés"
-
-msgid "Album:"
-msgstr "Lemez:"
-
-msgid "Rip"
-msgstr "Rippelés"
-
-msgid "Title"
-msgstr "Cím"
-
-msgid "Select"
-msgstr "Kiválasztás"
-
-msgid "All"
-msgstr "Mind"
-
-msgid "None"
-msgstr "Egyik sem"
-
-msgid "Output"
-msgstr "Kimenet"
-
-msgid "Destination"
-msgstr "Cél"
-
-msgid "Target directory for ripped files"
-msgstr "Válassz egy könyvtárat a rippelt fájloknak"
-
-msgid "Add to Music Store"
-msgstr "Hozzáadás a Zenetárhoz"
-
-msgid "Format"
-msgstr "Formátum"
-
-msgid "File format:"
-msgstr "Fájl formátum:"
-
-msgid "VBR encoding"
-msgstr "VBR kódolás"
-
-msgid "Tag files with metadata"
-msgstr "Fájlok taggelése metaadatokkal"
-
-msgid "Paranoia"
-msgstr "Paranoia"
-
-msgid "Paranoia error correction"
-msgstr "Paranoia hibajavítás"
-
-msgid "Perform overlapped reads"
-msgstr "Átlapolt olvasások végzése"
-
-msgid "Verify data integrity"
-msgstr "Adat integritás ellenőrzése"
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
-"Meghiúsult olvasások esetén tetszőleges számú újraolvasás (soha nem ugrik)"
-
-msgid "\tMaximum number of retries:"
-msgstr "\tÚjrapróbálások maximális száma:"
-
-msgid ""
-"\n"
-"Destination directory is not read-write accessible!"
-msgstr ""
-"\n"
-"A célkönyvtár nem írható-olvasható!"
-
-msgid "Error"
-msgstr "Hiba"
-
-msgid "Total"
-msgstr "Összesen"
-
-msgid "(audio only)"
-msgstr "(csak audio)"
-
-msgid "Ripping CD tracks"
-msgstr "Számok rippelése"
-
-msgid "Begin"
-msgstr "Kezdet"
-
-msgid "Length"
-msgstr "Hossz"
-
-msgid "Progress"
-msgstr "Feldolgozás"
-
-msgid "Close window when complete"
-msgstr "Ablak bezárása, ha kész"
-
-msgid "Close"
-msgstr "Bezárás"
 
 msgid "day"
 msgstr "nap"

@@ -1552,6 +1552,10 @@ build_dialog(int type) {
 		}
 #endif /* HAVE_MOD */
 
+#ifdef HAVE_WAVPACK
+		strcat(incl_pattern, "*.wv,");
+#endif /* HAVE_WAVPACK */
+
 		if ((pfilter = strrchr(incl_pattern, ',')) != NULL) {
 			*pfilter = '\0';
 		}

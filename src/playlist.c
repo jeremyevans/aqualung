@@ -2018,6 +2018,7 @@ playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event) {
 	if (gtk_tree_view_column_get_visible(GTK_TREE_VIEW_COLUMN(rva_column))) {
 		gtk_tree_view_column_cell_get_size(GTK_TREE_VIEW_COLUMN(rva_column),
 						   NULL, NULL, NULL, &rva_width, NULL);
+		rva_width += 5;
 	} else {
 		rva_width = 1;
 	}
@@ -2025,6 +2026,7 @@ playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event) {
 	if (gtk_tree_view_column_get_visible(GTK_TREE_VIEW_COLUMN(length_column))) {
 		gtk_tree_view_column_cell_get_size(GTK_TREE_VIEW_COLUMN(length_column),
 						   NULL, NULL, NULL, &length_width, NULL);
+		length_width += 5;
 	} else {
 		length_width = 1;
 	}

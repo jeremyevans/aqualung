@@ -1522,10 +1522,10 @@ playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 		meta = meta_new();
 		if (meta != NULL && meta_read(meta, physical_name)) {
 			if (!meta_get_rva(meta, &(plfm->voladj))) {
-				plfm->voladj = 0.0f;
+				plfm->voladj = options.rva_no_rva_voladj;
 			}
 		} else {
-			plfm->voladj = 0.0f;
+			plfm->voladj = options.rva_no_rva_voladj;
 		}
 		if (meta != NULL) {
 			meta_free(meta);

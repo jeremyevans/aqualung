@@ -119,6 +119,7 @@ typedef struct {
 	int rva_use_linear_thresh;
 	float rva_avg_linear_thresh;
 	float rva_avg_stddev_thresh;
+	float rva_no_rva_voladj;
 
 	/* Metadata */
 	int auto_use_meta_artist;

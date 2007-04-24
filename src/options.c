@@ -123,6 +123,7 @@ int rva_use_averaging_shadow;
 int rva_use_linear_thresh_shadow;
 float rva_avg_linear_thresh_shadow;
 float rva_avg_stddev_thresh_shadow;
+float rva_no_rva_voladj_shadow;
 
 int appearance_changed;
 int reskin_flag;
@@ -189,16 +190,19 @@ GtkWidget * check_rva_use_averaging;
 GtkWidget * combo_threshold;
 GtkWidget * spin_linthresh;
 GtkWidget * spin_stdthresh;
+GtkWidget * spin_defvol;
 GtkObject * adj_refvol;
 GtkObject * adj_steepness;
 GtkObject * adj_linthresh;
 GtkObject * adj_stdthresh;
+GtkObject * adj_defvol;
 GtkWidget * label_listening_env;
 GtkWidget * label_refvol;
 GtkWidget * label_steepness;
 GtkWidget * label_threshold;
 GtkWidget * label_linthresh;
 GtkWidget * label_stdthresh;
+GtkWidget * label_defvol;
 
 GtkWidget * check_auto_use_meta_artist;
 GtkWidget * check_auto_use_meta_record;
@@ -402,6 +406,7 @@ options_window_accept(void) {
 	options.rva_use_linear_thresh = rva_use_linear_thresh_shadow;
 	options.rva_avg_linear_thresh = rva_avg_linear_thresh_shadow;
 	options.rva_avg_stddev_thresh = rva_avg_stddev_thresh_shadow;
+	options.rva_no_rva_voladj = rva_no_rva_voladj_shadow;
 
 
 	/* Metadata */
@@ -698,6 +703,9 @@ check_rva_is_enabled_toggled(GtkWidget * widget, gpointer * data) {
 
 		gtk_widget_set_sensitive(check_rva_use_averaging, TRUE);
 
+		gtk_widget_set_sensitive(spin_defvol, TRUE);
+		gtk_widget_set_sensitive(label_defvol, TRUE);
+
 		if (rva_use_averaging_shadow) {
 			gtk_widget_set_sensitive(combo_threshold, TRUE);
 			gtk_widget_set_sensitive(label_threshold, TRUE);
@@ -722,6 +730,8 @@ check_rva_is_enabled_toggled(GtkWidget * widget, gpointer * data) {
 		gtk_widget_set_sensitive(label_linthresh, FALSE);
 		gtk_widget_set_sensitive(spin_stdthresh, FALSE);
 		gtk_widget_set_sensitive(label_stdthresh, FALSE);
+		gtk_widget_set_sensitive(spin_defvol, FALSE);
+		gtk_widget_set_sensitive(label_defvol, FALSE);
 	}
 
 	draw_rva_diagram();
@@ -943,6 +953,12 @@ void
 stdthresh_changed(GtkWidget * widget, gpointer * data) {
 
 	rva_avg_stddev_thresh_shadow = gtk_adjustment_get_value(GTK_ADJUSTMENT(widget)) / 100.0f;
+}
+
+void
+defvol_changed(GtkWidget * widget, gpointer * data) {
+
+	rva_no_rva_voladj_shadow = gtk_adjustment_get_value(GTK_ADJUSTMENT(widget));
 }
 
 void
@@ -2233,7 +2249,7 @@ See the About box and the documentation for details."));
 	/* "Playback RVA" notebook page */
 
 	vbox_rva = gtk_vbox_new(FALSE, 3);
-        gtk_container_set_border_width(GTK_CONTAINER(vbox_rva), 8);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox_rva), 10);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_rva, create_notebook_tab(_("Playback RVA"), "rva.png"));
 
 	check_rva_is_enabled = gtk_check_button_new_with_label(_("Enable playback RVA"));
@@ -2318,6 +2334,24 @@ See the About box and the documentation for details."));
 
 
 
+        hbox = gtk_hbox_new(FALSE, 0);
+        label_defvol = gtk_label_new(_("RVA for Unmeasured Files [dB] :"));
+        gtk_box_pack_start(GTK_BOX(hbox), label_defvol, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 4, 5,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+	rva_no_rva_voladj_shadow = options.rva_no_rva_voladj;
+        adj_defvol = gtk_adjustment_new(options.rva_no_rva_voladj, -10.0f, 10.0f, 0.1f, 1.0f, 0.0f);
+        spin_defvol = gtk_spin_button_new(GTK_ADJUSTMENT(adj_defvol), 0.1, 1);
+        gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_defvol), TRUE);
+        gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_defvol), FALSE);
+	g_signal_connect(G_OBJECT(adj_defvol), "value_changed",
+			 G_CALLBACK(defvol_changed), NULL);
+        gtk_table_attach(GTK_TABLE(table_rva), spin_defvol, 1, 2, 4, 5,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+
+
 	check_rva_use_averaging =
 	    gtk_check_button_new_with_label(_("Apply averaged RVA to tracks of the same record"));
 	gtk_widget_set_name(check_rva_use_averaging, "check_on_notebook");
@@ -2327,17 +2361,17 @@ See the About box and the documentation for details."));
 	rva_use_averaging_shadow = options.rva_use_averaging;
 	g_signal_connect(G_OBJECT(check_rva_use_averaging), "toggled",
 			 G_CALLBACK(check_rva_use_averaging_toggled), NULL);
-        gtk_table_attach(GTK_TABLE(table_rva), check_rva_use_averaging, 0, 2, 4, 5,
+        gtk_table_attach(GTK_TABLE(table_rva), check_rva_use_averaging, 0, 2, 5, 6,
                          GTK_FILL, GTK_FILL, 5, 2);
 
         hbox = gtk_hbox_new(FALSE, 0);
         label_threshold = gtk_label_new(_("Drop statistical aberrations based on"));
         gtk_box_pack_start(GTK_BOX(hbox), label_threshold, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 5, 6,
+        gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 6, 7,
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	combo_threshold = gtk_combo_box_new_text ();
-        gtk_table_attach(GTK_TABLE(table_rva), combo_threshold, 1, 2, 5, 6,
+        gtk_table_attach(GTK_TABLE(table_rva), combo_threshold, 1, 2, 6, 7,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 2);
 
 
@@ -2351,7 +2385,7 @@ See the About box and the documentation for details."));
         hbox = gtk_hbox_new(FALSE, 0);
         label_linthresh = gtk_label_new(_("Linear threshold [dB] :"));
         gtk_box_pack_start(GTK_BOX(hbox), label_linthresh, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 6, 7,
+        gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 7, 8,
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	rva_avg_linear_thresh_shadow = options.rva_avg_linear_thresh;
@@ -2361,13 +2395,13 @@ See the About box and the documentation for details."));
         gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_linthresh), FALSE);
 	g_signal_connect(G_OBJECT(adj_linthresh), "value_changed",
 			 G_CALLBACK(linthresh_changed), NULL);
-        gtk_table_attach(GTK_TABLE(table_rva), spin_linthresh, 1, 2, 6, 7,
+        gtk_table_attach(GTK_TABLE(table_rva), spin_linthresh, 1, 2, 7, 8,
                          GTK_FILL, GTK_FILL, 5, 2);
 
         hbox = gtk_hbox_new(FALSE, 0);
         label_stdthresh = gtk_label_new(_("% of standard deviation :"));
         gtk_box_pack_start(GTK_BOX(hbox), label_stdthresh, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 7, 8,
+        gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 8, 9,
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	rva_avg_stddev_thresh_shadow = options.rva_avg_stddev_thresh;
@@ -2378,9 +2412,8 @@ See the About box and the documentation for details."));
         gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_stdthresh), FALSE);
 	g_signal_connect(G_OBJECT(adj_stdthresh), "value_changed",
 			 G_CALLBACK(stdthresh_changed), NULL);
-        gtk_table_attach(GTK_TABLE(table_rva), spin_stdthresh, 1, 2, 7, 8,
+        gtk_table_attach(GTK_TABLE(table_rva), spin_stdthresh, 1, 2, 8, 9,
                          GTK_FILL, GTK_FILL, 5, 2);
-
 
 	if (!rva_use_averaging_shadow) {
 		gtk_widget_set_sensitive(combo_threshold, FALSE);
@@ -2405,6 +2438,8 @@ See the About box and the documentation for details."));
 		gtk_widget_set_sensitive(label_linthresh, FALSE);
 		gtk_widget_set_sensitive(spin_stdthresh, FALSE);
 		gtk_widget_set_sensitive(label_stdthresh, FALSE);
+		gtk_widget_set_sensitive(spin_defvol, FALSE);
+		gtk_widget_set_sensitive(label_defvol, FALSE);
 	}
 
 	/* "Metadata" notebook page */
@@ -3129,6 +3164,7 @@ save_config(void) {
 	SAVE_INT(rva_use_linear_thresh);
 	SAVE_FLOAT(rva_avg_linear_thresh);
 	SAVE_FLOAT(rva_avg_stddev_thresh);
+	SAVE_FLOAT(rva_no_rva_voladj);
 	SAVE_INT(main_pos_x);
 	SAVE_INT(main_pos_y);
 	SAVE_INT(main_size_x);
@@ -3468,6 +3504,7 @@ load_config(void) {
 		LOAD_INT(rva_use_linear_thresh);
 		LOAD_FLOAT(rva_avg_linear_thresh);
 		LOAD_FLOAT(rva_avg_stddev_thresh);
+		LOAD_FLOAT(rva_no_rva_voladj);
 		LOAD_INT(main_pos_x);
 		LOAD_INT(main_pos_y);
 		LOAD_INT(main_size_x);

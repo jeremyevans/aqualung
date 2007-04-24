@@ -23,6 +23,9 @@
 
 #include <gtk/gtk.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct _vol_queue_t {
         char * file;
@@ -36,10 +39,15 @@ void calculate_volume(vol_queue_t * q, float * volumes);
 
 
 float rva_from_volume(float volume, float rva_refvol, float rva_steepness);
-
+float volume_from_replaygain(float replaygain);
+float rva_from_replaygain(float volume, float rva_refvol, float rva_steepness);
 float rva_from_multiple_volumes(int nlevels, float * volumes,
 				int use_lin_thresh, float lin_thresh, float stddev_thresh,
 				float rva_refvol, float rva_steepness);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif /* _VOLUME_H */
 

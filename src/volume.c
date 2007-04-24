@@ -473,13 +473,28 @@ calculate_volume(vol_queue_t * q, float * volumes) {
 	AQUALUNG_THREAD_CREATE(volume_thread_id, NULL, volume_thread, volumes)
 }
 
-
 float
 rva_from_volume(float volume, float rva_refvol, float rva_steepness) {
 
 	return ((volume - rva_refvol) * (rva_steepness - 1.0f));
 }
 
+/* The reference signal for so called 89 dB SPL replaygain is -14 dBFS pink noise */
+/* The actual offset value is slightly different, based on emperical findings */
+/* The conditions for calculation are probably slightly different */
+/* I tried a few samples, and it usually varied +/- 0.5 dBFS */
+/* If someone knows the exact way to match this against rva, please change it */
+/* It is possible to do replaygain with a different reference level, this was not taken into account */
+float
+volume_from_replaygain(float replaygain) {
+	return (-(replaygain)-15.7)/0.97;
+}
+
+float
+rva_from_replaygain(float volume, float rva_refvol, float rva_steepness) {
+
+	return rva_from_volume(volume_from_replaygain(volume), rva_refvol, rva_steepness);
+}
 
 float
 rva_from_multiple_volumes(int nlevels, float * volumes,

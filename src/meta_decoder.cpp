@@ -54,6 +54,7 @@
 #include "options.h"
 #include "decoder/file_decoder.h"
 #include "meta_decoder.h"
+#include "volume.h"
 
 #ifdef HAVE_MOD
 #include "decoder/dec_mod.h"
@@ -846,6 +847,8 @@ meta_get_rva(metadata * meta, float * fval) {
 #endif /* HAVE_MPEG */
 	}
 #endif /* HAVE_TAGLIB */
+
+	*fval = rva_from_replaygain(*fval, options.rva_refvol, options.rva_steepness);
 
 	return ret;
 }

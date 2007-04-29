@@ -1474,7 +1474,7 @@ build_dialog(int type) {
         gtk_box_pack_start(GTK_BOX(gen_excl_frame_hbox), gen_check_excl, FALSE, FALSE, 0);
 
 	if (excl_pattern[0] == '\0') {
-		strcpy(excl_pattern, "*.jpg,*.jpeg,*.png,*.gif,*.pls,*.m3u,*.cue,*.xml,*.html,*.htm,*.txt,*.avi");
+		strcpy(excl_pattern, "*.jpg,*.jpeg,*.png,*.gif,*.pls,*.m3u,*.cue,*.xml,*.html,*.htm,*.txt,*.ini,*.nfo");
 	}
 
         gen_entry_excl = gtk_entry_new();

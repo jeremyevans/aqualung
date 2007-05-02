@@ -174,6 +174,83 @@ file_decoder_delete(file_decoder_t * fdec) {
 }
 
 
+int
+file_decoder_finalize_open(file_decoder_t * fdec, decoder_t * dec, char * filename) {
+
+	if (fdec->fileinfo.channels == 1) {
+		fdec->fileinfo.is_mono = 1;
+		goto ok_open;
+
+	} else if (fdec->fileinfo.channels == 2) {
+		fdec->fileinfo.is_mono = 0;
+		goto ok_open;
+
+	} else {
+		fprintf(stderr, "file_decoder_open: programmer error: "
+			"soundfile with %d\n channels is unsupported.\n",
+			fdec->fileinfo.channels);
+		goto no_open;
+	}
+
+ ok_open:
+	fdec->file_open = 1;
+	fdec->samples_left = fdec->fileinfo.total_samples;
+	fdec->fileinfo.format_str = dec->format_str;
+	fdec->fileinfo.format_flags = dec->format_flags;
+	return 0;
+
+ no_open:
+	fprintf(stderr, "file_decoder_open: unable to open %s\n", filename);
+	return 1;
+}
+
+
+int
+stream_decoder_open(file_decoder_t * fdec, char * URL) {
+
+	int ret;
+	decoder_t * dec;
+	http_session_t * session = httpc_new();
+	
+	/* XXX set proxy parameters instead of "NULL, 0" */
+	if ((ret = httpc_init(session, URL, NULL, 0)) != HTTPC_OK) {
+		fprintf(stderr, "stream_decoder_open: httpc_init failed, ret = %d\n", ret);
+		httpc_del(session);
+		return DECODER_OPEN_FERROR;
+	}
+
+	if (session->headers.content_type == NULL) {
+		fprintf(stderr, "stream_decoder_open: error: no Content-Type found\n");
+		httpc_close(session);
+		httpc_del(session);
+		return DECODER_OPEN_FERROR;
+	}
+
+	if (strcasecmp(session->headers.content_type, "application/ogg") == 0) {
+		int ret;
+
+		dec = vorbis_decoder_init(fdec);
+		if (!dec)
+			return DECODER_OPEN_FERROR;
+
+		ret = vorbis_stream_decoder_open(dec, session);
+		if (ret == DECODER_OPEN_FERROR) {
+			dec->destroy(dec);
+			return ret;
+		}
+		fdec->pdec = (void *)dec;
+	} else {
+		fprintf(stderr, "Sorry, no handler for this Content-type: %s\n",
+			session->headers.content_type);
+		httpc_close(session);
+		httpc_del(session);
+		return 1;
+	}
+
+	return file_decoder_finalize_open(fdec, dec, URL);
+}
+
+
 /* return: 0 is OK, >0 is error */
 int
 file_decoder_open(file_decoder_t * fdec, char * filename) {
@@ -186,6 +263,9 @@ file_decoder_open(file_decoder_t * fdec, char * filename) {
 		fprintf(stderr, "This is likely to be a programmer error, please report.\n");
 		return 1;
 	}
+
+	if (httpc_is_url(filename))
+		return stream_decoder_open(fdec, filename);
 
 	for (i = 0; i < N_DECODERS; i++) {
 		dec = decoder_init_v[i](fdec);

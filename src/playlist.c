@@ -3142,6 +3142,8 @@ save_track_node(GtkTreeIter * piter, xmlNodePtr root, char * nodeID) {
 		    (phys_name[2] == 'D') &&
 		    (phys_name[3] == 'A')) {
 			converted_temp = strdup(phys_name);
+		} else if (httpc_is_url(phys_name)) {
+			converted_temp = strdup(phys_name);
 		} else {
 			converted_temp = g_filename_to_uri(phys_name, NULL, NULL);
 		}

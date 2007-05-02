@@ -23,6 +23,7 @@
 #define _FILE_DECODER_H
 
 #include "../common.h"
+#include "../httpc.h"
 #include "../rb.h"
 
 #ifdef __cplusplus

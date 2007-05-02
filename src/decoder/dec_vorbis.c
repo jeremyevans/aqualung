@@ -32,6 +32,22 @@ extern size_t sample_size;
 
 
 #ifdef HAVE_OGG_VORBIS
+void
+dump_vc(vorbis_comment * vc) {
+
+	int i;
+
+	if (!vc) {
+		printf("vc = NULL\n");
+		return;
+	}
+
+	for (i = 0; i < vc->comments; i++) {
+		printf("[%d] %s\n", i, vc->user_comments[i]);
+	}
+	printf("[V] %s\n", vc->vendor);
+}
+
 /* return 1 if reached end of stream, 0 else */
 int
 decode_vorbis(decoder_t * dec) {
@@ -54,9 +70,15 @@ decode_vorbis(decoder_t * dec) {
                 return 1;
 		break;
 	case OV_HOLE:
-		printf("dec_vorbis.c/decode_vorbis(): ov_read() returned OV_HOLE\n");
-		printf("This indicates an interruption in the Vorbis data (one of:\n");
-		printf("garbage between Ogg pages, loss of sync, or corrupt page).\n");
+		if (pd->is_stream) {
+			vorbis_comment * vc = ov_comment(&pd->vf, -1);
+			dump_vc(vc);
+			break;
+		} else {
+			printf("dec_vorbis.c/decode_vorbis(): ov_read() returned OV_HOLE\n");
+			printf("This indicates an interruption in the Vorbis data (one of:\n");
+			printf("garbage between Ogg pages, loss of sync, or corrupt page).\n");
+		}
 		break;
 	case OV_EBADLINK:
 		printf("dec_vorbis.c/decode_vorbis(): ov_read() returned OV_EBADLINK\n");
@@ -110,23 +132,37 @@ vorbis_decoder_destroy(decoder_t * dec) {
 }
 
 
+size_t
+read_vorbis_stream(void *ptr, size_t size, size_t nmemb, void * datasource) {
+
+	http_session_t * session = (http_session_t *) datasource;
+	return httpc_read(session, (char *)ptr, size*nmemb);
+}
+
+
 int
-vorbis_decoder_open(decoder_t * dec, char * filename) {
+seek_vorbis_stream(void *datasource, ogg_int64_t offset, int whence) {
+
+	return -1; /* HTTP stream is not seekable */
+}
+
+
+int
+close_vorbis_stream(void * datasource) {
+
+	http_session_t * session = (http_session_t *) datasource;
+	httpc_close(session);
+	httpc_del(session);
+	return 0;
+}
+
+
+int
+vorbis_decoder_finish_open(decoder_t * dec) {
 
 	vorbis_pdata_t * pd = (vorbis_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
-
-
-	if ((pd->vorbis_file = fopen(filename, "rb")) == NULL) {
-		fprintf(stderr, "vorbis_decoder_open: fopen() failed\n");
-		return DECODER_OPEN_FERROR;
-	}
-	if (ov_open(pd->vorbis_file, &(pd->vf), NULL, 0) != 0) {
-		/* not an Ogg Vorbis file */
-		fclose(pd->vorbis_file);
-		return DECODER_OPEN_BADLIB;
-	}
-
+	
 	pd->vi = ov_info(&(pd->vf), -1);
 	if ((pd->vi->channels != 1) && (pd->vi->channels != 2)) {
 		fprintf(stderr,
@@ -146,13 +182,59 @@ vorbis_decoder_open(decoder_t * dec, char * filename) {
 	pd->rb = rb_create(pd->vi->channels * sample_size * RB_VORBIS_SIZE);
 	fdec->fileinfo.channels = pd->vi->channels;
 	fdec->fileinfo.sample_rate = pd->vi->rate;
-	fdec->fileinfo.total_samples = ov_pcm_total(&(pd->vf), -1);
+	if (pd->is_stream) {
+		fdec->fileinfo.total_samples = 0;
+	} else {
+		fdec->fileinfo.total_samples = ov_pcm_total(&(pd->vf), -1);
+	}
 	fdec->fileinfo.bps = ov_bitrate(&(pd->vf), -1);
 	
 	fdec->file_lib = VORBIS_LIB;
 	strcpy(dec->format_str, "Ogg Vorbis");
 	
 	return DECODER_OPEN_SUCCESS;
+}
+
+
+int
+vorbis_stream_decoder_open(decoder_t * dec, http_session_t * session) {
+
+	vorbis_pdata_t * pd = (vorbis_pdata_t *)dec->pdata;
+	
+	ov_callbacks ov_cb;
+        ov_cb.read_func = read_vorbis_stream;
+        ov_cb.seek_func = seek_vorbis_stream;
+        ov_cb.close_func = close_vorbis_stream;
+        ov_cb.tell_func = NULL;
+	
+	if (ov_open_callbacks((void *)session, &(pd->vf), NULL, 0, ov_cb) != 0) {
+		/* not an Ogg Vorbis stream */
+		return DECODER_OPEN_BADLIB;
+	}
+
+	pd->is_stream = 1;
+	return vorbis_decoder_finish_open(dec);
+}
+
+
+int
+vorbis_decoder_open(decoder_t * dec, char * filename) {
+
+	vorbis_pdata_t * pd = (vorbis_pdata_t *)dec->pdata;
+
+
+	if ((pd->vorbis_file = fopen(filename, "rb")) == NULL) {
+		fprintf(stderr, "vorbis_decoder_open: fopen() failed\n");
+		return DECODER_OPEN_FERROR;
+	}
+	if (ov_open(pd->vorbis_file, &(pd->vf), NULL, 0) != 0) {
+		/* not an Ogg Vorbis file */
+		fclose(pd->vorbis_file);
+		return DECODER_OPEN_BADLIB;
+	}
+
+	pd->is_stream = 0;
+	return vorbis_decoder_finish_open(dec);
 }
 
 

@@ -234,6 +234,19 @@ same_disc_next_track(char * filename, char * filename_prev) {
 	return (track == track_prev + 1) ? 1 : 0;
 }
 #endif /* HAVE_CDDA */
+ 
+
+/* roll back sample_offset samples, if possible */
+void
+rollback(rb_t * rb, file_decoder_t * fdec, double src_ratio) {
+
+	sample_offset = rb_read_space(rb) /
+		(2 * sample_size) * src_ratio;
+	if (sample_offset < fdec->fileinfo.total_samples - fdec->samples_left)
+		file_decoder_seek(fdec, fdec->fileinfo.total_samples - fdec->samples_left - sample_offset);
+	else
+		file_decoder_seek(fdec, 0);
+}
 
 
 void *
@@ -424,19 +437,16 @@ disk_thread(void * arg) {
 				send_cmd = CMD_FLUSH;
 				rb_write(rb_disk2out, &send_cmd, 1);
 
-				/* roll back sample_offset samples, if possible */
-				sample_offset = rb_read_space(rb) /
-					(2 * sample_size) * src_ratio;
-				if (sample_offset <
-				    fdec->fileinfo.total_samples - fdec->samples_left)
-					file_decoder_seek(fdec,
-					   fdec->fileinfo.total_samples - fdec->samples_left
-					   - sample_offset);
-				else
-				        file_decoder_seek(fdec, 0);
+				rollback(rb, fdec, src_ratio);
+				if (fdec->is_stream) {
+					file_decoder_pause(fdec);
+				}
 				break;
 			case CMD_RESUME:
 				info->is_streaming = 1;
+				if (fdec->is_stream) {
+					file_decoder_resume(fdec);
+				}
 				break;
 			case CMD_FINISH:
 				/* send FINISH to output thread, then goto exit */
@@ -453,6 +463,10 @@ disk_thread(void * arg) {
 					/* send a FLUSH command to output thread */
 					send_cmd = CMD_FLUSH;
 					rb_write(rb_disk2out, &send_cmd, 1);
+
+					if (fdec->is_stream && !info->is_streaming) {
+						file_decoder_pause(fdec);
+					}
 				} else {
 					/* send dummy STATUS to gui, to set pos slider to zero */
 					disk_thread_status.samples_left = 0;

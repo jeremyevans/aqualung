@@ -62,7 +62,7 @@ decode_vorbis(decoder_t * dec) {
 	int current_section;
 
 
-        bytes_read = ov_read(&(pd->vf), buffer, VORBIS_BUFSIZE, bigendianp(), 2, 1, &current_section);
+	bytes_read = ov_read(&(pd->vf), buffer, VORBIS_BUFSIZE, bigendianp(), 2, 1, &current_section);
 
 	switch (bytes_read) {
 	case 0:
@@ -70,7 +70,7 @@ decode_vorbis(decoder_t * dec) {
                 return 1;
 		break;
 	case OV_HOLE:
-		if (pd->is_stream) {
+		if (fdec->is_stream) {
 			vorbis_comment * vc = ov_comment(&pd->vf, -1);
 			dump_vc(vc);
 			break;
@@ -141,9 +141,21 @@ read_vorbis_stream(void *ptr, size_t size, size_t nmemb, void * datasource) {
 
 
 int
-seek_vorbis_stream(void *datasource, ogg_int64_t offset, int whence) {
+seek_vorbis_stream(void * datasource, ogg_int64_t offset, int whence) {
+	
+	http_session_t * session = (http_session_t *) datasource;
+	
+	if (session->type != HTTPC_SESSION_NORMAL)
+		return -1; /* HTTP stream is not seekable */
+	
+	return httpc_seek(session, offset, whence);
+}
 
-	return -1; /* HTTP stream is not seekable */
+long
+tell_vorbis_stream(void * datasource) {
+
+	http_session_t * session = (http_session_t *) datasource;
+	return httpc_tell(session);
 }
 
 
@@ -154,6 +166,24 @@ close_vorbis_stream(void * datasource) {
 	httpc_close(session);
 	httpc_del(session);
 	return 0;
+}
+
+
+void
+pause_vorbis_stream(decoder_t * dec) {
+
+	vorbis_pdata_t * pd = (vorbis_pdata_t *)dec->pdata;
+	printf("pause_vorbis_stream\n");
+	httpc_close(pd->session);
+}
+
+
+void
+resume_vorbis_stream(decoder_t * dec) {
+
+	vorbis_pdata_t * pd = (vorbis_pdata_t *)dec->pdata;
+	printf("resume_vorbis_stream\n");
+	httpc_reconnect(pd->session);
 }
 
 
@@ -182,7 +212,7 @@ vorbis_decoder_finish_open(decoder_t * dec) {
 	pd->rb = rb_create(pd->vi->channels * sample_size * RB_VORBIS_SIZE);
 	fdec->fileinfo.channels = pd->vi->channels;
 	fdec->fileinfo.sample_rate = pd->vi->rate;
-	if (pd->is_stream) {
+	if (fdec->is_stream && pd->session->type != HTTPC_SESSION_NORMAL) {
 		fdec->fileinfo.total_samples = 0;
 	} else {
 		fdec->fileinfo.total_samples = ov_pcm_total(&(pd->vf), -1);
@@ -200,19 +230,25 @@ int
 vorbis_stream_decoder_open(decoder_t * dec, http_session_t * session) {
 
 	vorbis_pdata_t * pd = (vorbis_pdata_t *)dec->pdata;
+	file_decoder_t * fdec = dec->fdec;
 	
 	ov_callbacks ov_cb;
         ov_cb.read_func = read_vorbis_stream;
         ov_cb.seek_func = seek_vorbis_stream;
         ov_cb.close_func = close_vorbis_stream;
-        ov_cb.tell_func = NULL;
+        ov_cb.tell_func = tell_vorbis_stream;
 	
 	if (ov_open_callbacks((void *)session, &(pd->vf), NULL, 0, ov_cb) != 0) {
 		/* not an Ogg Vorbis stream */
 		return DECODER_OPEN_BADLIB;
 	}
 
-	pd->is_stream = 1;
+	fdec->is_stream = 1;
+
+	pd->session = session;
+	dec->pause = pause_vorbis_stream;
+	dec->resume = resume_vorbis_stream;
+    
 	return vorbis_decoder_finish_open(dec);
 }
 
@@ -221,7 +257,7 @@ int
 vorbis_decoder_open(decoder_t * dec, char * filename) {
 
 	vorbis_pdata_t * pd = (vorbis_pdata_t *)dec->pdata;
-
+	file_decoder_t * fdec = dec->fdec;
 
 	if ((pd->vorbis_file = fopen(filename, "rb")) == NULL) {
 		fprintf(stderr, "vorbis_decoder_open: fopen() failed\n");
@@ -233,7 +269,7 @@ vorbis_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_BADLIB;
 	}
 
-	pd->is_stream = 0;
+	fdec->is_stream = 0;
 	return vorbis_decoder_finish_open(dec);
 }
 
@@ -282,6 +318,9 @@ vorbis_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	vorbis_pdata_t * pd = (vorbis_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 	char flush_dest;
+
+	if (fdec->is_stream && pd->session->type != HTTPC_SESSION_NORMAL)
+		return;
 
 	if (ov_pcm_seek(&(pd->vf), seek_to_pos) == 0) {
 		fdec->samples_left = fdec->fileinfo.total_samples - seek_to_pos;

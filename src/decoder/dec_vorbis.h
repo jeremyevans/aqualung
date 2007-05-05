@@ -48,7 +48,7 @@ typedef struct _vorbis_pdata_t {
         OggVorbis_File vf;
         vorbis_info * vi;
         int is_eos;
-	int is_stream;
+	http_session_t * session;
 } vorbis_pdata_t;
 #endif /* HAVE_OGG_VORBIS */
 

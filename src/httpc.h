@@ -42,11 +42,20 @@ typedef struct {
 } http_header_t;
 
 typedef struct {
+	/* original session parameters */
+	char * URL;
+	char * proxy;
+	int proxy_port;
+	
 	int sock;
+	int is_active;
 	http_header_t headers;
-
+	
 	int type; /* one of HTTPC_SESSION_* */
-
+	
+	/* variables for normal download: */
+	long long byte_pos;
+	
 	/* variables for chunked download: */
 	char * chunk_buf;
 	int chunk_size;
@@ -65,13 +74,18 @@ void httpc_del(http_session_t * session);
  *         host, port (optional), path.
  *    proxy_URL: proxy URL (NULL if none used)
  *    proxy_port : integer
+ *    start_byte : first byte of content we are interested in,
+ *                 should be 0L for most cases.
  *
  *  Return: one of HTTPC_*
  */
-int httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port);
-void httpc_close(http_session_t * session);
+int httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port, long long start_byte);
 
 int httpc_read(http_session_t * session, char * buf, int num);
+int httpc_seek(http_session_t * session, long long offset, int whence);
+long long httpc_tell(http_session_t * session);
+void httpc_close(http_session_t * session);
 
+int httpc_reconnect(http_session_t * session);
 
 #endif /* _HTTPC_H */

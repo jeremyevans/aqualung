@@ -203,7 +203,7 @@ parse_http_headers(http_session_t * session) {
 			header->status = strdup(line);
 			return -2;
 		}
-	} while ((strstr(line, "HTTP/1.1 200 OK") != NULL) &&
+	} while ((strstr(line, "HTTP/1.1 20") != NULL) &&
 		 (strstr(line, "HTTP/1.1 30") != NULL));
 	
 	header->status = strdup(line);
@@ -267,8 +267,16 @@ parse_chunk_size(char * line) {
 
 void
 make_http_request_text(char * host, int port, char * path,
-		       char * proxy, char * msg, int msg_len) {
+		       char * proxy, long long start_byte, char * msg, int msg_len) {
+
+	char extra_header[1024];
 	
+	if (start_byte != 0) {
+		snprintf(extra_header, sizeof(extra_header), "Range: bytes=%lld-\r\n", start_byte);
+	} else {
+		extra_header[0] = '\0';
+	}
+
 	if (proxy == NULL) {
 		if (port == 80) {
 			snprintf(msg, msg_len,
@@ -276,16 +284,18 @@ make_http_request_text(char * host, int port, char * path,
 				 "Host: %s\r\n"
 				 "User-Agent: Aqualung/%s\r\n"
 				 "icy-metadata: 1\r\n"
+				 "%s"
 				 "Connection: close\r\n\r\n",
-				 path, host, AQUALUNG_VERSION);
+				 path, host, AQUALUNG_VERSION, extra_header);
 		} else {
 			snprintf(msg, msg_len,
 				 "GET %s HTTP/1.1\r\n"
 				 "Host: %s:%d\r\n"
 				 "User-Agent: Aqualung/%s\r\n"
 				 "icy-metadata: 1\r\n"
+				 "%s"
 				 "Connection: close\r\n\r\n",
-				 path, host, port, AQUALUNG_VERSION);
+				 path, host, port, AQUALUNG_VERSION, extra_header);
 		}
 	} else {
 		if (port == 80) {
@@ -294,16 +304,18 @@ make_http_request_text(char * host, int port, char * path,
 				 "Host: %s\r\n"
 				 "User-Agent: Aqualung/%s\r\n"
 				 "icy-metadata: 1\r\n"
+				 "%s"
 				 "Connection: close\r\n\r\n",
-				 host, path, host, AQUALUNG_VERSION);
+				 host, path, host, AQUALUNG_VERSION, extra_header);
 		} else {
 			snprintf(msg, msg_len,
 				 "GET http://%s:%d%s HTTP/1.1\r\n"
 				 "Host: %s:%d\r\n"
 				 "User-Agent: Aqualung/%s\r\n"
 				 "icy-metadata: 1\r\n"
+				 "%s"
 				 "Connection: close\r\n\r\n",
-				 host, port, path, host, port, AQUALUNG_VERSION);
+				 host, port, path, host, port, AQUALUNG_VERSION, extra_header);
 		}
 	}
 }
@@ -321,6 +333,9 @@ httpc_new(void) {
 void
 httpc_del(http_session_t * session) {
 
+	free(session->URL);
+	if (session->proxy != NULL)
+		free(session->proxy);
 	free_headers(&session->headers);
 	free(session);
 }
@@ -328,11 +343,15 @@ httpc_del(http_session_t * session) {
 void
 httpc_close(http_session_t * session) {
 
-	close(session->sock);
+	if (session->is_active) {
+		printf("closing HTTP connection\n");
+		close(session->sock);
+		session->is_active = 0;
+	}
 }
 
 int
-httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port) {
+httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port, long long start_byte) {
 	
 	char * p;
 	char host[1024];
@@ -341,10 +360,16 @@ httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port) {
 	char msg_buf[1024];
 	
 	memset(session, 0, sizeof(http_session_t));
-
-	if (strstr(URL, "http://") != URL)
+	
+	if (!httpc_is_url(URL))
 		return HTTPC_URL_ERROR;
 	
+	session->URL = strdup(URL);
+	if (proxy != NULL) {
+		session->proxy = strdup(proxy);
+		session->proxy_port = proxy_port;
+	}
+    
 	URL += strlen("http://");
 	
 	if ((p = strstr(URL, ":")) != NULL) {
@@ -387,11 +412,8 @@ httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port) {
 		}
 	}
 	
-	//printf("host = '%s'\n", host);
-	//printf("port = %d\n", port);
-	//printf("path = '%s'\n", URL);
-	
-	make_http_request_text(host, port, URL, proxy, msg_buf, sizeof(msg_buf));
+	make_http_request_text(host, port, URL, proxy, start_byte, msg_buf, sizeof(msg_buf));
+	printf("%s\n", msg_buf);
 	
 	if (proxy == NULL) {
 		session->sock = open_socket(host, port);
@@ -416,7 +438,7 @@ httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port) {
 			int ret;
 			printf("redirecting to %s\n", session->headers.location);
 			close(session->sock);
-			ret = httpc_init(session, session->headers.location, proxy, port);
+			ret = httpc_init(session, session->headers.location, proxy, proxy_port, 0L);
 			return ret;
 		} else {
 			close(session->sock);
@@ -431,7 +453,7 @@ httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port) {
 		read_sock_line(session->sock, buf, sizeof(buf));
 		printf("following x-mpegurl to %s\n", buf);
 		close(session->sock);
-		ret = httpc_init(session, buf, proxy, port);
+		ret = httpc_init(session, buf, proxy, proxy_port, 0L);
 		return ret;
 	}
 
@@ -444,6 +466,9 @@ httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port) {
 		session->type = HTTPC_SESSION_STREAM;
 	}
 
+	session->is_active = 1;
+	session->byte_pos = start_byte;
+
 	printf("HTTP connection successfully opened, type = %d\n", session->type);
 	return 0;
 }
@@ -452,19 +477,25 @@ int
 httpc_read_normal(http_session_t * session, char * buf, int num) {
 
 	int sock = session->sock;
-	int tr = session->headers.content_length;
+	int tr = session->headers.content_length - session->byte_pos;
 	int n_read;
 
-	printf("httpc_read_normal, remaining length = %d\n", session->headers.content_length);
+	if (!session->is_active) {
+		printf("[HTTPC] Reopening stream\n");
+		httpc_reconnect(session);
+	}
+	
+	printf("httpc_read_normal num = %d, pos = %lld, ", num, session->byte_pos);
 	if (tr > num) {
 		tr = num;
 	}
 	n_read = read_socket(sock, buf, tr);
 	if (n_read < 0) {
+		printf("ret -1\n");
 		return -1;
-	} else {
-		session->headers.content_length -= n_read;
 	}
+	session->byte_pos += n_read;
+	printf("ret %d\n", n_read);
 	return n_read;
 }
 
@@ -547,3 +578,116 @@ httpc_read(http_session_t * session, char * buf, int num) {
 	}
 }
 
+
+int
+httpc_reconnect(http_session_t * session) {
+
+	char * URL;
+	char * proxy = NULL;
+	int proxy_port = 0;
+	long long start_byte;
+	int content_length;
+	int ret;
+	
+	URL = strdup(session->URL);
+	if (session->proxy != NULL) {
+		proxy = strdup(session->proxy);
+		proxy_port = session->proxy_port;
+	}
+	
+	if (session->type == HTTPC_SESSION_NORMAL) {
+		start_byte = session->byte_pos;
+		content_length = session->headers.content_length;
+	} else {
+		start_byte = 0;
+	}
+
+	ret = httpc_init(session, URL, proxy, proxy_port, start_byte);
+	if (ret != HTTPC_OK) {
+		fprintf(stderr, "http_reconnect: HTTP session reopen failed\n");
+	}
+
+	if (session->type == HTTPC_SESSION_NORMAL) {
+		session->headers.content_length = content_length;
+	}
+	
+	free(URL);
+	if (proxy != NULL)
+		free(proxy);
+	
+	return ret;
+}
+
+
+int
+httpc_seek(http_session_t * session, long long offset, int whence) {
+	
+	if (session->type != HTTPC_SESSION_NORMAL)
+		return -1;
+	
+	printf("[HTTPC_SEEK] offset = %lld  whence = %d  byte_pos = %lld\n",
+	       offset, whence, session->byte_pos);
+	switch (whence) {
+	case SEEK_SET:
+		if (offset == session->byte_pos) {
+			printf("noop SEEK_SET\n");
+			return session->byte_pos;
+		}
+		break;
+	case SEEK_CUR:
+		if (offset == 0) {
+			printf("noop SEEK_CUR\n");
+			return session->byte_pos;
+		}
+		break;
+	case SEEK_END:
+		if (session->headers.content_length - offset == session->byte_pos) {
+			printf("noop SEEK_END\n");
+			return session->byte_pos;
+		}
+		break;
+	}
+
+	if (session->is_active) {
+		printf("[HTTPC] Closing stream\n");
+		httpc_close(session);
+	}
+	
+	switch (whence) {
+	case SEEK_SET:
+		printf("[HTTPC] SEEK_SET offset = %lld\n", offset);
+		if (offset > session->headers.content_length) {
+			offset = session->headers.content_length;
+		}
+		session->byte_pos = offset;
+		break;
+	case SEEK_CUR:
+		printf("[HTTPC] SEEK_CUR offset = %lld\n", offset);
+		if (offset + session->byte_pos > session->headers.content_length) {
+			session->byte_pos = session->headers.content_length;
+		} else {
+			session->byte_pos += offset;
+		}
+		break;
+	case SEEK_END:
+		printf("[HTTPC] SEEK_END offset = %lld\n", offset);
+		if (offset > session->headers.content_length - session->byte_pos) {
+			session->byte_pos = 0L;
+		} else {
+			session->byte_pos = session->headers.content_length - offset;
+		}
+		break;
+	}
+	
+	return session->byte_pos;
+}
+
+long long
+httpc_tell(http_session_t * session) {
+	
+	if (session->type != HTTPC_SESSION_NORMAL)
+		return -1;
+	
+	printf("[HTTPC] TELL = %lld\n", session->byte_pos);
+	return session->byte_pos;
+}

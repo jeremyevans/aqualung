@@ -72,6 +72,7 @@ typedef struct _file_decoder_t {
 	unsigned long long samples_left;
 	float voladj_db;
 	float voladj_lin;
+	int is_stream;
 
 	/* private */
 	void * pdec; /* actually, it's (decoder_t *) */
@@ -91,6 +92,10 @@ typedef struct _decoder_t {
 	void (* close)(struct _decoder_t * dec);
 	unsigned int (* read)(struct _decoder_t * dec, float * dest, int num);
 	void (* seek)(struct _decoder_t * dec, unsigned long long seek_to_pos);
+
+	/* optional callbacks for stream decoders */
+	void (* pause)(struct _decoder_t * dec);
+	void (* resume)(struct _decoder_t * dec);
 
 	char format_str[MAXLEN];
 	int format_flags;
@@ -116,6 +121,9 @@ void file_decoder_close(file_decoder_t * fdec);
 unsigned int file_decoder_read(file_decoder_t * fdec, float * dest, int num);
 void file_decoder_seek(file_decoder_t * fdec, unsigned long long seek_to_pos);
 
+void file_decoder_pause(file_decoder_t * fdec);
+void file_decoder_resume(file_decoder_t * fdec);
+    
 float get_file_duration(char * file);
 
 int bigendianp(void);

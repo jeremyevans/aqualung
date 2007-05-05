@@ -213,7 +213,7 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 	http_session_t * session = httpc_new();
 	
 	/* XXX set proxy parameters instead of "NULL, 0" */
-	if ((ret = httpc_init(session, URL, NULL, 0)) != HTTPC_OK) {
+    	if ((ret = httpc_init(session, URL, NULL, 0, 0L)) != HTTPC_OK) {
 		fprintf(stderr, "stream_decoder_open: httpc_init failed, ret = %d\n", ret);
 		httpc_del(session);
 		return DECODER_OPEN_FERROR;
@@ -226,6 +226,7 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 		return DECODER_OPEN_FERROR;
 	}
 
+#ifdef HAVE_OGG_VORBIS
 	if (strcasecmp(session->headers.content_type, "application/ogg") == 0) {
 		int ret;
 
@@ -239,15 +240,15 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 			return ret;
 		}
 		fdec->pdec = (void *)dec;
-	} else {
-		fprintf(stderr, "Sorry, no handler for this Content-type: %s\n",
-			session->headers.content_type);
-		httpc_close(session);
-		httpc_del(session);
-		return 1;
+		return file_decoder_finalize_open(fdec, dec, URL);
 	}
+#endif /* HAVE_OGG_VORBIS */
 
-	return file_decoder_finalize_open(fdec, dec, URL);
+	fprintf(stderr, "Sorry, no handler for Content-Type: %s\n",
+		session->headers.content_type);
+	httpc_close(session);
+	httpc_del(session);
+	return 1;
 }
 
 
@@ -364,6 +365,24 @@ file_decoder_seek(file_decoder_t * fdec, unsigned long long seek_to_pos) {
 	dec->seek(dec, seek_to_pos);
 }
  
+
+void
+file_decoder_pause(file_decoder_t * fdec) {
+
+	decoder_t * dec = (decoder_t *)(fdec->pdec);
+	if (dec->pause != NULL)
+		dec->pause(dec);
+}
+
+
+void
+file_decoder_resume(file_decoder_t * fdec) {
+
+	decoder_t * dec = (decoder_t *)(fdec->pdec);
+	if (dec->resume != NULL)
+		dec->resume(dec);
+}
+
 
 float
 get_file_duration(char * file) {

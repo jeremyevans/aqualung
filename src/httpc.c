@@ -32,7 +32,7 @@
 #include "version.h"
 #include "httpc.h"
 
-int httpc_is_url(char * str) {
+int httpc_is_url(const char * str) {
 
 	if (strlen(str) < 8)
 		return 0;
@@ -72,6 +72,7 @@ open_socket(char * hostname, unsigned short portnum) {
 	int s;
 	
 	if ((hp = gethostbyname(hostname)) == NULL) {
+		printf("open_socket: gethostbyname() failed on %s\n", hostname);
 		return -1;
 	}
 	
@@ -80,10 +81,13 @@ open_socket(char * hostname, unsigned short portnum) {
 	sa.sin_family = hp->h_addrtype;
 	sa.sin_port = htons((u_short)portnum);
 	
-	if ((s = socket(hp->h_addrtype, SOCK_STREAM, 0)) < 0)
+	if ((s = socket(hp->h_addrtype, SOCK_STREAM, 0)) < 0) {
+		printf("open_socket: socket(): %s\n", strerror(errno));
 		return -1;
-	
+	}
+
 	if (connect(s, (struct sockaddr *)&sa, sizeof (sa)) < 0) {
+		printf("open_socket: connect(): %s\n", strerror(errno));
 		close(s);
 		return -1;
 	}
@@ -245,6 +249,19 @@ parse_http_headers(http_session_t * session) {
 			} else {
 				header->icy_metaint = l;
 			}
+		} else if (strcasecmp(name, "icy-br") == 0) {
+			int l;
+			if (sscanf(new_value, "%d", &l) != 1) {
+				return -3;
+			} else {
+				header->icy_br = l;
+			}
+		} else if (strcasecmp(name, "icy_genre") == 0) {
+			header->icy_genre = strdup(value);
+		} else if (strcasecmp(name, "icy_name") == 0) {
+			header->icy_name = strdup(value);
+		} else if (strcasecmp(name, "icy_description") == 0) {
+			header->icy_description = strdup(value);
 		}
 		printf("name = '%s'  value = '%s'\n", name, value);
 	}
@@ -420,10 +437,11 @@ httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port, l
 	} else {
 		session->sock = open_socket(proxy, proxy_port);
 	}
-	
-	if (session->sock < 0)
+
+	if (session->sock < 0) {
 		return HTTPC_CONNECTION_ERROR;
-	
+	}
+
 	write_socket(session->sock, msg_buf, strlen(msg_buf));
 	
 	if (parse_http_headers(session) != 0) {
@@ -586,7 +604,7 @@ httpc_reconnect(http_session_t * session) {
 	char * proxy = NULL;
 	int proxy_port = 0;
 	long long start_byte;
-	int content_length;
+	int content_length = 0;
 	int ret;
 	
 	URL = strdup(session->URL);
@@ -604,7 +622,7 @@ httpc_reconnect(http_session_t * session) {
 
 	ret = httpc_init(session, URL, proxy, proxy_port, start_byte);
 	if (ret != HTTPC_OK) {
-		fprintf(stderr, "http_reconnect: HTTP session reopen failed\n");
+		fprintf(stderr, "http_reconnect: HTTP session reopen failed, ret = %d\n", ret);
 	}
 
 	if (session->type == HTTPC_SESSION_NORMAL) {

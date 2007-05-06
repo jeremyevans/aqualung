@@ -64,6 +64,7 @@
 #include "i18n.h"
 #include "cdda.h"
 #include "loop_bar.h"
+#include "httpc.h"
 #include "gui_main.h"
 #include "version.h"
 
@@ -460,6 +461,11 @@ unpack_strings(char * packed, char * str1, char * str2) {
 /* out should be defined as char[MAXLEN] */
 void
 normalize_filename(const char * in, char * out) {
+
+	if (httpc_is_url(in)) {
+		strncpy(out, in, MAXLEN-1);
+		return;
+	}
 
 	switch (in[0]) {
 	case '/':

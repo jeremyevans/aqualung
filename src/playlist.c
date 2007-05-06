@@ -3412,13 +3412,7 @@ load_m3u(char * filename, int enqueue) {
 				have_name = 1;
 
 			} else {
-				/* safeguard against http:// and C:\ stuff */
-				if (strstr(line, "http://") == line) {
-					fprintf(stderr, "Ignoring playlist item: %s\n", line);
-					i = 0;
-					have_name = 0;
-					continue;
-				}
+				/* safeguard against C:\ stuff */
 				if ((line[1] == ':') && (line[2] == '\\')) {
 					fprintf(stderr, "Ignoring playlist item: %s\n", line);
 					i = 0;
@@ -3434,10 +3428,8 @@ load_m3u(char * filename, int enqueue) {
 						path[n] = '/';
 				}
 				
-				if (path[0] != '/') {
-					strncpy(tmp, path, MAXLEN-1);
-					snprintf(path, MAXLEN-1, "%s/%s", pl_dir, tmp);
-				}
+				normalize_filename(path, tmp);
+				strncpy(path, tmp, MAXLEN-1);
 
 				if (!have_name) {
 					gchar * ch;
@@ -3549,13 +3541,7 @@ load_pls(char * filename, int enqueue) {
 				numstr[m] = '\0';
 				strncpy(numstr_file, numstr, sizeof(numstr_file));
 
-				/* safeguard against http:// and C:\ stuff */
-				if (strstr(ch, "http://") == ch) {
-					fprintf(stderr, "Ignoring playlist item: %s\n", ch);
-					i = 0;
-					have_file = have_title = 0;
-					continue;
-				}
+				/* safeguard against C:\ stuff */
 				if ((ch[1] == ':') && (ch[2] == '\\')) {
 					fprintf(stderr, "Ignoring playlist item: %s\n", ch);
 					i = 0;
@@ -3572,10 +3558,8 @@ load_pls(char * filename, int enqueue) {
 						file[n] = '/';
 				}
 
-				if (file[0] != '/') {
-					strncpy(tmp, file, MAXLEN-1);
-					snprintf(file, MAXLEN-1, "%s/%s", pl_dir, tmp);
-				}
+				normalize_filename(file, tmp);
+				strncpy(file, tmp, MAXLEN-1);
 
 				have_file = 1;
 				

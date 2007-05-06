@@ -39,6 +39,10 @@ typedef struct {
 	char * content_type;
 	char * transfer_encoding;
 	int icy_metaint;
+	int icy_br;
+	char * icy_genre;
+	char * icy_name;
+	char * icy_description;
 } http_header_t;
 
 typedef struct {
@@ -64,7 +68,7 @@ typedef struct {
 } http_session_t;
 
 
-int httpc_is_url(char * str);
+int httpc_is_url(const char * str);
 
 http_session_t * httpc_new(void);
 void httpc_del(http_session_t * session);

@@ -102,7 +102,7 @@ typedef struct {
 #define MAX_XING_HEADER_SIZE 576
 
 unsigned long find_next_frame(int fd, long *offset, long max_offset,
-                              unsigned long last_header);
+                              unsigned long last_header, int is_ubr_allowed);
 int get_mp3file_info(int fd, mp3info_t *info);
 
 typedef struct {

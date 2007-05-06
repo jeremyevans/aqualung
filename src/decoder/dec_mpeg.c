@@ -111,7 +111,7 @@ static const long freq_table[3][3] = {
 
 /* check if 'head' is a valid mp3 frame header */
 static int
-is_mp3frameheader(unsigned long head) {
+is_mp3frameheader(unsigned long head, int is_ubr_allowed) {
 
 	if ((head & SYNC_MASK) != (unsigned long)SYNC_MASK) /* bad sync? */
 		return 0;
@@ -120,6 +120,8 @@ is_mp3frameheader(unsigned long head) {
 	if (!(head & LAYER_MASK)) /* no layer? */
 		return 0;
 	if ((head & BITRATE_MASK) == BITRATE_MASK) /* bad bitrate? */
+		return 0;
+	if ((head & BITRATE_MASK) == 0 && !is_ubr_allowed) /* no bitrate, no UBR */
 		return 0;
 	if ((head & SAMPLERATE_MASK) == SAMPLERATE_MASK) /* bad sample rate? */
 		return 0;
@@ -215,7 +217,8 @@ mp3headerinfo(mp3info_t *info, unsigned long header) {
 static unsigned long
 __find_next_frame(int fd, long *offset, long max_offset,
 		  unsigned long last_header,
-		  int(*getfunc)(int fd, unsigned char *c)) {
+		  int(*getfunc)(int fd, unsigned char *c),
+		  int is_ubr_allowed) {
 
 	unsigned long header=0;
 	unsigned char tmp;
@@ -244,7 +247,8 @@ __find_next_frame(int fd, long *offset, long max_offset,
 		pos++;
 		if (max_offset > 0 && pos > max_offset)
 			return 0;
-	} while(!is_mp3frameheader(header) || (last_header?((header & 0xffff0c00) != last_header):0));
+	} while(!is_mp3frameheader(header, is_ubr_allowed) ||
+		(last_header?((header & 0xffff0c00) != last_header):0));
 	
 	*offset = pos - 4;
 
@@ -263,8 +267,10 @@ fileread(int fd, unsigned char *c) {
 }
 
 unsigned long
-find_next_frame(int fd, long *offset, long max_offset, unsigned long last_header) {
-	return __find_next_frame(fd, offset, max_offset, last_header, fileread);
+find_next_frame(int fd, long *offset, long max_offset,
+		unsigned long last_header, int is_ubr_allowed) {
+	return __find_next_frame(fd, offset, max_offset,
+				 last_header, fileread, is_ubr_allowed);
 }
 
 
@@ -331,6 +337,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 	unsigned long header = 0;
 	unsigned char frame[1800];
 	unsigned char *vbrheader;
+	int is_ubr_allowed = 1;
 	long bytecount = 0;
 	int num_offsets;
 	int frames_per_entry;
@@ -339,6 +346,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 	long tmp;
 	int ret;
 
+ begin_info:
 	for (i = 0; i < 3; i++) {
 		vsn_counters[i] = 0;
 		layer_counters[i] = 0;
@@ -357,7 +365,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 
 #ifndef MPEG_STATREC
 	/* use first valid mpeg frame header to retrieve stream info */
-	headers[0] = find_next_frame(fd, &bytecount, 0x100000, 0);
+	headers[0] = find_next_frame(fd, &bytecount, 0x100000, 0, is_ubr_allowed);
 	/* Quit if we haven't found a valid header within 1M */
 	if (headers[0] == 0)
 		return -1;
@@ -376,7 +384,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 #else
 	/* more sophisticated approach - but slower as well. */
 	for (i = 0; i < 4; i++) {
-		headers[i] = find_next_frame(fd, &bytecount, 0x100000, 0);
+		headers[i] = find_next_frame(fd, &bytecount, 0x100000, 0, is_ubr_allowed);
 		/* Quit if we haven't found a valid header within 1M */
 		if (headers[i] == 0)
 			return -1;
@@ -411,7 +419,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 		printf("first 4 frames differ, gathering stats...\n");
 #endif /* MPEG_DEBUG */
 		for (i = 4; i < max_headers; i++) {
-			headers[i] = find_next_frame(fd, &bytecount, 0x100000, 0);
+			headers[i] = find_next_frame(fd, &bytecount, 0x100000, 0, is_ubr_allowed);
 			/* Quit if we haven't found a valid header within 1M */
 			if (headers[i] == 0)
 				break;
@@ -559,10 +567,11 @@ get_mp3file_info(int fd, mp3info_t *info) {
 		long offset_next;
 		long header_next;
 		mp3info_t info_next;
+		int cntdown = 8;
 
 		do {
-			header_next = find_next_frame(fd, &bytecount, 0x100000, 0);
-			/* Quit if we haven't found a valid header within 1M */
+			header_next = find_next_frame(fd, &bytecount, 0x20000, 0, 1);
+			/* Quit if we haven't found a valid header within 128K */
 			if (header_next == 0)
 				return -1;
 			
@@ -574,7 +583,16 @@ get_mp3file_info(int fd, mp3info_t *info) {
 			if (!mp3headerinfo(&info_next, header_next))
 				return -2;
 			
-		} while (!vlfc_cmp(info, &info_next));
+			--cntdown;
+
+		} while (cntdown > 0 && !vlfc_cmp(info, &info_next));
+
+		if (cntdown == 0 && is_ubr_allowed) {
+			fprintf(stderr, "dec_mpeg: corrupt stream, falling back to non-UBR only detection.\n");
+			is_ubr_allowed = 0;
+			lseek(fd, 0, SEEK_SET);
+			goto begin_info;
+		}
 
 		offset_next = lseek(fd, 0, SEEK_CUR);
 		info->frame_size = offset_next - offset;
@@ -625,7 +643,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 
 		/* Now get the next frame to find out the real info about
 		   the mp3 stream */
-		header = find_next_frame(fd, &tmp, 0x20000, 0);
+		header = find_next_frame(fd, &tmp, 0x20000, 0, is_ubr_allowed);
 		if(header == 0)
 			return -4;
 		
@@ -690,7 +708,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 		
 		/* Now get the next frame to find out the real info about
 		   the mp3 stream */
-		header = find_next_frame(fd, &tmp, 0x20000, 0);
+		header = find_next_frame(fd, &tmp, 0x20000, 0, is_ubr_allowed);
 		if(header == 0)
 			return -6;
 		
@@ -807,7 +825,7 @@ build_seek_table_thread(void * args) {
 		long header = BYTES2INT(bytes[i], bytes[i+1], bytes[i+2], bytes[i+3]);
 		mp3info_t mp3info;
 		
-		if (is_mp3frameheader(header)) {
+		if (is_mp3frameheader(header, 1)) {
 			mp3headerinfo(&mp3info, header);
 			if ((mp3info.layer == pd->mp3info.layer) &&
 			    (mp3info.version == pd->mp3info.version) &&
@@ -1453,7 +1471,7 @@ mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 			break;
 		}
 		header = BYTES2INT(bytes[offset], bytes[offset+1], bytes[offset+2], bytes[offset+3]);
-		if (is_mp3frameheader(header)) {
+		if (is_mp3frameheader(header, 1)) {
 			mp3headerinfo(&mp3info, header);
 			if ((mp3info.layer == pd->mp3info.layer) &&
 			    (mp3info.version == pd->mp3info.version) &&

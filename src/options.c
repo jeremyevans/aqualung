@@ -230,15 +230,21 @@ GtkWidget * cddb_tout_spinner;
 GtkWidget * cddb_email_entry;
 GtkWidget * cddb_local_entry;
 GtkWidget * cddb_local_check;
-GtkWidget * cddb_radio_direct;
-GtkWidget * cddb_radio_proxy;
 GtkWidget * cddb_proto_combo;
-GtkWidget * cddb_proxy_entry;
-GtkWidget * cddb_proxy_port_spinner;
 GtkWidget * cddb_label_proto;
-GtkWidget * cddb_label_proxy;
-GtkWidget * cddb_label_proxy_port;
 #endif /* HAVE_CDDB */
+
+GtkWidget * inet_radio_direct;
+GtkWidget * inet_radio_proxy;
+GtkWidget * inet_frame;
+GtkWidget * inet_label_proxy;
+GtkWidget * inet_entry_proxy;
+GtkWidget * inet_label_proxy_port;
+GtkWidget * inet_spinner_proxy_port;
+GtkWidget * inet_label_noproxy_domains;
+GtkWidget * inet_entry_noproxy_domains;
+GtkWidget * inet_help_noproxy_domains;
+
 
 GtkWidget * check_override_skin;
 
@@ -444,11 +450,16 @@ options_window_accept(void) {
 	set_option_from_entry(cddb_email_entry, options.cddb_email);
 	set_option_from_entry(cddb_local_entry, options.cddb_local);
         set_option_from_toggle(cddb_local_check, &options.cddb_cache_only);
-        set_option_from_toggle(cddb_radio_proxy, &options.cddb_use_proxy);
 	set_option_from_combo(cddb_proto_combo, &options.cddb_use_http);
-	set_option_from_entry(cddb_proxy_entry, options.cddb_proxy);
-	set_option_from_spin(cddb_proxy_port_spinner, &options.cddb_proxy_port);
 #endif /* HAVE_CDDB */
+
+
+	/* Internet */
+
+        set_option_from_toggle(inet_radio_proxy, &options.inet_use_proxy);
+	set_option_from_entry(inet_entry_proxy, options.inet_proxy);
+	set_option_from_spin(inet_spinner_proxy_port, &options.inet_proxy_port);
+	set_option_from_entry(inet_entry_noproxy_domains, options.inet_noproxy_domains);
 
 
 	/* Appearance */
@@ -1607,20 +1618,31 @@ cdda_toggled(GtkWidget * widget, gpointer * data) {
 #endif /* HAVE_CDDA */
 
 
-#ifdef HAVE_CDDB
 void
-cddb_radio_direct_toggled(GtkWidget * widget, gpointer * data) {
+inet_radio_direct_toggled(GtkWidget * widget, gpointer * data) {
 
-	gboolean state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cddb_radio_direct));
+	gboolean state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(inet_radio_direct));
 
-	gtk_widget_set_sensitive(cddb_proto_combo, state);
-	gtk_widget_set_sensitive(cddb_label_proto, state);
-	gtk_widget_set_sensitive(cddb_proxy_entry, !state);
-	gtk_widget_set_sensitive(cddb_proxy_port_spinner, !state);
-	gtk_widget_set_sensitive(cddb_label_proxy, !state);
-	gtk_widget_set_sensitive(cddb_label_proxy_port, !state);
+	gtk_widget_set_sensitive(inet_frame, !state);
 }
-#endif /* HAVE_CDDB */
+
+void
+display_inet_help_noproxy_domains(void) {
+
+	GtkWidget *help_dialog;
+
+        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
+                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
+					      _("\nHere you should enter a comma-separated list of domains\n"
+						"that should be accessed without using the proxy set above.\n"
+						"Example: localhost, .localdomain, .my.domain.com"));
+
+        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
+        gtk_widget_show (help_dialog);
+        aqualung_dialog_run(GTK_DIALOG(help_dialog));
+        gtk_widget_destroy(help_dialog);
+}
 
 void
 create_options_window(void) {
@@ -1687,6 +1709,9 @@ create_options_window(void) {
 #ifdef HAVE_CDDB
 	GtkWidget * table_cddb;
 #endif /* HAVE_CDDB */
+
+	GtkWidget * vbox_inet;
+	GtkWidget * table_inet;
 
         GtkSizeGroup * label_size;
 
@@ -2707,18 +2732,11 @@ See the About box and the documentation for details."));
 	}
 
 
-	cddb_radio_direct = gtk_radio_button_new_with_label(NULL, _("Direct connection to CDDB server"));
-	gtk_widget_set_name(cddb_radio_direct, "check_on_notebook");
-	g_signal_connect(G_OBJECT(cddb_radio_direct), "toggled",
-			 G_CALLBACK(cddb_radio_direct_toggled), NULL);
-        gtk_table_attach(GTK_TABLE(table_cddb), cddb_radio_direct, 0, 2, 5, 6,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
-
-	cddb_label_proto = gtk_label_new(_("Protocol for querying:"));
+	cddb_label_proto = gtk_label_new(_("Protocol for querying (direct connection only):"));
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), cddb_label_proto, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 6, 7,
-                         GTK_FILL, GTK_FILL, 35, 3);
+        gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 5, 6,
+                         GTK_FILL, GTK_FILL, 5, 3);
 
 	cddb_proto_combo = gtk_combo_box_new_text();
 	gtk_combo_box_append_text(GTK_COMBO_BOX(cddb_proto_combo), _("CDDBP (port 888)"));
@@ -2728,46 +2746,82 @@ See the About box and the documentation for details."));
 	} else {
 		gtk_combo_box_set_active(GTK_COMBO_BOX(cddb_proto_combo), 0);
 	}
-        gtk_table_attach(GTK_TABLE(table_cddb), cddb_proto_combo, 1, 2, 6, 7,
+        gtk_table_attach(GTK_TABLE(table_cddb), cddb_proto_combo, 1, 2, 5, 6,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
-
-	cddb_radio_proxy = gtk_radio_button_new_with_label_from_widget(
-		       GTK_RADIO_BUTTON(cddb_radio_direct), _("HTTP tunneling through proxy"));
-	gtk_widget_set_name(cddb_radio_proxy, "check_on_notebook");
-        gtk_table_attach(GTK_TABLE(table_cddb), cddb_radio_proxy, 0, 2, 7, 8,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
-
-	cddb_label_proxy = gtk_label_new(_("HTTP proxy:"));
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), cddb_label_proxy, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 8, 9,
-                         GTK_FILL, GTK_FILL, 35, 3);
-
-	cddb_proxy_entry = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(cddb_proxy_entry), options.cddb_proxy);
-        gtk_table_attach(GTK_TABLE(table_cddb), cddb_proxy_entry, 1, 2, 8, 9,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
-
-	cddb_label_proxy_port = gtk_label_new(_("Port:"));
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), cddb_label_proxy_port, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 9, 10,
-                         GTK_FILL, GTK_FILL, 35, 3);
-
-	cddb_proxy_port_spinner = gtk_spin_button_new_with_range(0, 65535, 1);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cddb_proxy_port_spinner), options.cddb_proxy_port);
-        gtk_table_attach(GTK_TABLE(table_cddb), cddb_proxy_port_spinner, 1, 2, 9, 10,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
-
-	if (options.cddb_use_proxy) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_radio_direct), TRUE);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_radio_proxy), TRUE);
-	} else {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_radio_proxy), TRUE);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cddb_radio_direct), TRUE);
-	}
 
 #endif /* HAVE_CDDB */
+
+	/* Internet notebook page */
+
+	vbox_inet = gtk_vbox_new(FALSE, 3);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox_inet), 8);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_inet, create_notebook_tab(_("Internet"), "inet.png"));
+
+	inet_radio_direct = gtk_radio_button_new_with_label(NULL, _("Direct connection to the Internet"));
+	gtk_widget_set_name(inet_radio_direct, "check_on_notebook");
+	gtk_box_pack_start(GTK_BOX(vbox_inet), inet_radio_direct, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(inet_radio_direct), "toggled",
+			 G_CALLBACK(inet_radio_direct_toggled), NULL);
+
+	inet_radio_proxy = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(inet_radio_direct),
+								       _("Connect via HTTP proxy"));
+	gtk_widget_set_name(inet_radio_proxy, "check_on_notebook");
+	gtk_box_pack_start(GTK_BOX(vbox_inet), inet_radio_proxy, FALSE, FALSE, 0);
+
+	inet_frame = gtk_frame_new(_("Proxy settings"));
+	gtk_box_pack_start(GTK_BOX(vbox_inet), inet_frame, FALSE, FALSE, 0);
+
+	table_inet = gtk_table_new(2/*row*/, 4, FALSE);
+        gtk_container_set_border_width(GTK_CONTAINER(table_inet), 8);
+	gtk_container_add(GTK_CONTAINER(inet_frame), table_inet);
+
+
+	inet_label_proxy = gtk_label_new(_("Proxy host:"));
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), inet_label_proxy, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_inet), hbox, 0, 1, 0, 1,
+                         GTK_FILL, GTK_FILL, 5, 3);
+
+	inet_entry_proxy = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(inet_entry_proxy), options.inet_proxy);
+        gtk_table_attach(GTK_TABLE(table_inet), inet_entry_proxy, 1, 2, 0, 1,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
+
+	inet_label_proxy_port = gtk_label_new(_("Port:"));
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), inet_label_proxy_port, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_inet), hbox, 2, 3, 0, 1,
+                         GTK_FILL, GTK_FILL, 5, 3);
+
+	inet_spinner_proxy_port = gtk_spin_button_new_with_range(0, 65535, 1);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(inet_spinner_proxy_port), options.inet_proxy_port);
+        gtk_table_attach(GTK_TABLE(table_inet), inet_spinner_proxy_port, 3, 4, 0, 1,
+                         GTK_FILL, GTK_FILL, 5, 3);
+
+	inet_label_noproxy_domains = gtk_label_new(_("No proxy for:"));
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), inet_label_noproxy_domains, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_inet), hbox, 0, 1, 1, 2,
+                         GTK_FILL, GTK_FILL, 5, 3);
+
+	inet_entry_noproxy_domains = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(inet_entry_noproxy_domains), options.inet_noproxy_domains);
+        gtk_table_attach(GTK_TABLE(table_inet), inet_entry_noproxy_domains, 1, 3, 1, 2,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
+
+        inet_help_noproxy_domains = gtk_button_new_from_stock(GTK_STOCK_HELP); 
+	g_signal_connect(inet_help_noproxy_domains, "clicked", G_CALLBACK(display_inet_help_noproxy_domains), NULL);
+        gtk_table_attach(GTK_TABLE(table_inet), inet_help_noproxy_domains, 3, 4, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
+
+	if (options.inet_use_proxy) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(inet_radio_direct), FALSE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(inet_radio_proxy), TRUE);
+	} else {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(inet_radio_direct), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(inet_radio_proxy), FALSE);
+		gtk_widget_set_sensitive(inet_frame, FALSE);
+	}
+
 
         /* Appearance notebook page */
 
@@ -3222,9 +3276,10 @@ save_config(void) {
 	SAVE_STR(cddb_local);
 	SAVE_INT(cddb_cache_only);
 	SAVE_INT(cddb_use_http);
-	SAVE_INT(cddb_use_proxy);
-	SAVE_STR(cddb_proxy);
-	SAVE_INT(cddb_proxy_port);
+	SAVE_INT(inet_use_proxy);
+	SAVE_STR(inet_proxy);
+	SAVE_INT(inet_proxy_port);
+	SAVE_STR(inet_noproxy_domains);
 	SAVE_FLOAT(loop_range_start);
 	SAVE_FLOAT(loop_range_end);
 
@@ -3434,8 +3489,12 @@ load_config(void) {
 	options.cddb_server[0] = '\0';
 	options.cddb_email[0] = '\0';
 	options.cddb_local[0] = '\0';
-	options.cddb_proxy[0] = '\0';
 	options.cddb_timeout = 10;
+
+	options.inet_use_proxy = 0;
+	options.inet_proxy[0] = '\0';
+	options.inet_proxy_port = 8080;
+	options.inet_noproxy_domains[0] = '\0';
 
 	options.time_idx[0] = 0;
 	options.time_idx[1] = 1;
@@ -3555,9 +3614,10 @@ load_config(void) {
 		LOAD_STR(cddb_local);
 		LOAD_INT(cddb_cache_only);
 		LOAD_INT(cddb_use_http);
-		LOAD_STR(cddb_proxy);
-		LOAD_INT(cddb_proxy_port);
-		LOAD_INT(cddb_use_proxy);
+		LOAD_INT(inet_use_proxy);
+		LOAD_STR(inet_proxy);
+		LOAD_INT(inet_proxy_port);
+		LOAD_STR(inet_noproxy_domains);
 		LOAD_FLOAT(loop_range_start);
 		LOAD_FLOAT(loop_range_end);
 

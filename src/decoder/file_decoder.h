@@ -23,6 +23,7 @@
 #define _FILE_DECODER_H
 
 #include "../common.h"
+#include "../options.h"
 #include "../httpc.h"
 #include "../rb.h"
 

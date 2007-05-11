@@ -1019,10 +1019,10 @@ cddb_connection_setup(cddb_conn_t ** conn) {
 		cddb_cache_only(*conn);
 	}
 
-	if (options.cddb_use_proxy) {
+	if (options.inet_use_proxy) {
 		cddb_http_proxy_enable(*conn);
-		cddb_set_http_proxy_server_name(*conn, options.cddb_proxy);
-		cddb_set_http_proxy_server_port(*conn, options.cddb_proxy_port);
+		cddb_set_http_proxy_server_name(*conn, options.inet_proxy);
+		cddb_set_http_proxy_server_port(*conn, options.inet_proxy_port);
 	} else {
 		cddb_http_proxy_disable(*conn);
 		if (options.cddb_use_http) {

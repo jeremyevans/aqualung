@@ -54,7 +54,7 @@
 
 
 extern size_t sample_size;
-
+extern options_t options;
 
 typedef decoder_t * decoder_init_t(file_decoder_t * fdec);
 
@@ -212,8 +212,11 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 	decoder_t * dec;
 	http_session_t * session = httpc_new();
 	
-	/* XXX set proxy parameters instead of "NULL, 0, NULL" */
-    	if ((ret = httpc_init(session, URL, NULL, 0, NULL, 0L)) != HTTPC_OK) {
+    	if ((ret = httpc_init(session, URL,
+			      options.inet_use_proxy,
+			      options.inet_proxy,
+			      options.inet_proxy_port,
+			      options.inet_noproxy_domains, 0L)) != HTTPC_OK) {
 		fprintf(stderr, "stream_decoder_open: httpc_init failed, ret = %d\n", ret);
 		httpc_del(session);
 		return DECODER_OPEN_FERROR;

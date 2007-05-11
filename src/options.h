@@ -21,6 +21,8 @@
 #ifndef _OPTIONS_H
 #define _OPTIONS_H
 
+#include "common.h"
+
 typedef struct {
 
 	/* home directory */
@@ -145,9 +147,12 @@ typedef struct {
 	char cddb_local[MAXLEN];
 	int cddb_cache_only;
 	int cddb_use_http;
-	int cddb_use_proxy;
-	char cddb_proxy[MAXLEN];
-	int cddb_proxy_port;
+
+	/* Internet */
+	int inet_use_proxy;
+	char inet_proxy[MAXLEN];
+	int inet_proxy_port;
+	char inet_noproxy_domains[MAXLEN];
 
 	/* Appearance */
 	int override_skin_settings;

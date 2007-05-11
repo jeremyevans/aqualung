@@ -132,6 +132,7 @@ AQUALUNG_COND_DECLARE_INIT(playlist_thread_wait)
 GtkWidget * add_menu;
 GtkWidget * add__files;
 GtkWidget * add__dir;
+GtkWidget * add__url;
 GtkWidget * sel_menu;
 GtkWidget * sel__none;
 GtkWidget * sel__all;
@@ -926,6 +927,86 @@ add_directory(GtkWidget * widget, gpointer data) {
 
 
 void
+add_url(GtkWidget * widget, gpointer data) {
+
+	GtkWidget * dialog;
+	GtkWidget * table;
+	GtkWidget * hbox;
+	GtkWidget * hbox2;
+	GtkWidget * url_entry;
+	GtkWidget * url_label;
+	char url[MAXLEN];
+
+        dialog = gtk_dialog_new_with_buttons(_("Add URL"),
+                                             options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
+					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					     NULL);
+
+        gtk_widget_set_size_request(GTK_WIDGET(dialog), 400, -1);
+	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
+
+	table = gtk_table_new(2, 2, FALSE);
+        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
+
+	url_label = gtk_label_new(_("URL:"));
+        hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), url_label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
+
+	hbox2 = gtk_hbox_new(FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox2, 1, 2, 0, 1,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
+
+        url_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(url_entry), MAXLEN - 1);
+	gtk_entry_set_text(GTK_ENTRY(url_entry), "http://");
+        gtk_box_pack_start(GTK_BOX(hbox2), url_entry, TRUE, TRUE, 0);
+
+	gtk_widget_grab_focus(url_entry);
+
+	gtk_widget_show_all(dialog);
+
+ display:
+	url[0] = '\0';
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+		
+		GtkTreeIter iter;
+		float duration = 0.0f;
+		float voladj = options.rva_no_rva_voladj;
+		gchar voladj_str[32];
+		gchar duration_str[MAXLEN];
+
+                strncpy(url, gtk_entry_get_text(GTK_ENTRY(url_entry)), MAXLEN-1);
+		
+		if (url[0] == '\0' || strstr(url, "http://") != url || strlen(url) <= strlen("http://")) {
+			gtk_widget_grab_focus(url_entry);
+			goto display;
+		}
+
+		voladj2str(voladj, voladj_str);
+		time2time_na(0.0f, duration_str);
+		gtk_tree_store_append(play_store, &iter, NULL);
+		gtk_tree_store_set(play_store, &iter,
+			   COLUMN_TRACK_NAME, url,
+			   COLUMN_PHYSICAL_FILENAME, url,
+			   COLUMN_SELECTION_COLOR, pl_color_inactive,
+			   COLUMN_VOLUME_ADJUSTMENT, voladj,
+			   COLUMN_VOLUME_ADJUSTMENT_DISP, voladj_str,
+			   COLUMN_DURATION, duration,
+			   COLUMN_DURATION_DISP, duration_str,
+			   COLUMN_FONT_WEIGHT, PANGO_WEIGHT_NORMAL,
+                           -1);
+        }
+
+        gtk_widget_destroy(dialog);
+        return;
+}
+
+
+void
 plist__save_cb(gpointer data) {
 
         GtkWidget * dialog;
@@ -1643,6 +1724,13 @@ void
 add__dir_cb(gpointer data) {
 
 	add_directory(NULL, NULL);
+}
+
+
+void
+add__url_cb(gpointer data) {
+
+	add_url(NULL, NULL);
 }
 
 
@@ -3009,6 +3097,11 @@ create_playlist(void) {
         gtk_menu_shell_append(GTK_MENU_SHELL(add_menu), add__dir);
         g_signal_connect_swapped(G_OBJECT(add__dir), "activate", G_CALLBACK(add__dir_cb), NULL);
 	gtk_widget_show(add__dir);
+
+        add__url = gtk_menu_item_new_with_label(_("Add URL"));
+        gtk_menu_shell_append(GTK_MENU_SHELL(add_menu), add__url);
+        g_signal_connect_swapped(G_OBJECT(add__url), "activate", G_CALLBACK(add__url_cb), NULL);
+	gtk_widget_show(add__url);
 
         add__files = gtk_menu_item_new_with_label(_("Add files"));
         gtk_menu_shell_append(GTK_MENU_SHELL(add_menu), add__files);

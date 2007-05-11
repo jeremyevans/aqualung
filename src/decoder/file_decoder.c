@@ -212,8 +212,8 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 	decoder_t * dec;
 	http_session_t * session = httpc_new();
 	
-	/* XXX set proxy parameters instead of "NULL, 0" */
-    	if ((ret = httpc_init(session, URL, NULL, 0, 0L)) != HTTPC_OK) {
+	/* XXX set proxy parameters instead of "NULL, 0, NULL" */
+    	if ((ret = httpc_init(session, URL, NULL, 0, NULL, 0L)) != HTTPC_OK) {
 		fprintf(stderr, "stream_decoder_open: httpc_init failed, ret = %d\n", ret);
 		httpc_del(session);
 		return DECODER_OPEN_FERROR;

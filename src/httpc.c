@@ -353,6 +353,8 @@ httpc_del(http_session_t * session) {
 	free(session->URL);
 	if (session->proxy != NULL)
 		free(session->proxy);
+	if (session->noproxy_domains != NULL)
+		free(session->noproxy_domains);
 	free_headers(&session->headers);
 	free(session);
 }
@@ -367,8 +369,35 @@ httpc_close(http_session_t * session) {
 	}
 }
 
+/* return 1 if host has to be accessed without the proxy */
 int
-httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port, long long start_byte) {
+noproxy_for_host(const char * noproxy_domains, const char * host) {
+
+	char * s;
+	char * nd;
+
+	if (noproxy_domains == NULL)
+		return 0;
+
+	nd = strdup(noproxy_domains);
+	s = strtok(nd, ",");
+	while (s != NULL) {
+		char * str = strip_whitespace(s);
+		if (strstr(host, str) != NULL) {
+			printf("%s matches %s, no proxy.\n", str, host);
+			free(nd);
+			return 1;
+		}
+		s = strtok(NULL, ",");
+	}
+
+	free(nd);
+	return 0;
+}
+
+
+int
+httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port, char * noproxy_domains, long long start_byte) {
 	
 	char * p;
 	char host[1024];
@@ -385,6 +414,9 @@ httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port, l
 	if (proxy != NULL) {
 		session->proxy = strdup(proxy);
 		session->proxy_port = proxy_port;
+		if (noproxy_domains != NULL) {
+			session->noproxy_domains = strdup(noproxy_domains);
+		}
 	}
     
 	URL += strlen("http://");
@@ -432,7 +464,7 @@ httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port, l
 	make_http_request_text(host, port, URL, proxy, start_byte, msg_buf, sizeof(msg_buf));
 	printf("%s\n", msg_buf);
 	
-	if (proxy == NULL) {
+	if (proxy == NULL || noproxy_for_host(noproxy_domains, host)) {
 		session->sock = open_socket(host, port);
 	} else {
 		session->sock = open_socket(proxy, proxy_port);
@@ -456,7 +488,7 @@ httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port, l
 			int ret;
 			printf("redirecting to %s\n", session->headers.location);
 			close(session->sock);
-			ret = httpc_init(session, session->headers.location, proxy, proxy_port, 0L);
+			ret = httpc_init(session, session->headers.location, proxy, proxy_port, noproxy_domains, 0L);
 			return ret;
 		} else {
 			close(session->sock);
@@ -471,7 +503,7 @@ httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port, l
 		read_sock_line(session->sock, buf, sizeof(buf));
 		printf("following x-mpegurl to %s\n", buf);
 		close(session->sock);
-		ret = httpc_init(session, buf, proxy, proxy_port, 0L);
+		ret = httpc_init(session, buf, proxy, proxy_port, noproxy_domains, 0L);
 		return ret;
 	}
 
@@ -603,6 +635,7 @@ httpc_reconnect(http_session_t * session) {
 	char * URL;
 	char * proxy = NULL;
 	int proxy_port = 0;
+	char * noproxy_domains = NULL;
 	long long start_byte;
 	int content_length = 0;
 	int ret;
@@ -611,6 +644,9 @@ httpc_reconnect(http_session_t * session) {
 	if (session->proxy != NULL) {
 		proxy = strdup(session->proxy);
 		proxy_port = session->proxy_port;
+		if (session->noproxy_domains != NULL) {
+			noproxy_domains = strdup(session->noproxy_domains);
+		}
 	}
 	
 	if (session->type == HTTPC_SESSION_NORMAL) {
@@ -620,7 +656,7 @@ httpc_reconnect(http_session_t * session) {
 		start_byte = 0;
 	}
 
-	ret = httpc_init(session, URL, proxy, proxy_port, start_byte);
+	ret = httpc_init(session, URL, proxy, proxy_port, noproxy_domains, start_byte);
 	if (ret != HTTPC_OK) {
 		fprintf(stderr, "http_reconnect: HTTP session reopen failed, ret = %d\n", ret);
 	}
@@ -632,6 +668,8 @@ httpc_reconnect(http_session_t * session) {
 	free(URL);
 	if (proxy != NULL)
 		free(proxy);
+	if (noproxy_domains != NULL)
+		free(noproxy_domains);
 	
 	return ret;
 }

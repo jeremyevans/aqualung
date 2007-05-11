@@ -50,6 +50,7 @@ typedef struct {
 	char * URL;
 	char * proxy;
 	int proxy_port;
+	char * noproxy_domains;
 	
 	int sock;
 	int is_active;
@@ -83,7 +84,8 @@ void httpc_del(http_session_t * session);
  *
  *  Return: one of HTTPC_*
  */
-int httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port, long long start_byte);
+int httpc_init(http_session_t * session, char * URL, char * proxy, int proxy_port,
+	       char * noproxy_domains, long long start_byte);
 
 int httpc_read(http_session_t * session, char * buf, int num);
 int httpc_seek(http_session_t * session, long long offset, int whence);

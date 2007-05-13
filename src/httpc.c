@@ -288,7 +288,8 @@ parse_chunk_size(char * line) {
 
 void
 make_http_request_text(char * host, int port, char * path,
-		       char * proxy, long long start_byte, char * msg, int msg_len) {
+		       int use_proxy, char * proxy,
+		       long long start_byte, char * msg, int msg_len) {
 
 	char extra_header[1024];
 	
@@ -298,7 +299,7 @@ make_http_request_text(char * host, int port, char * path,
 		extra_header[0] = '\0';
 	}
 
-	if (proxy == NULL) {
+	if (!use_proxy) {
 		if (port == 80) {
 			snprintf(msg, msg_len,
 				 "GET %s HTTP/1.1\r\n"
@@ -465,7 +466,8 @@ httpc_init(http_session_t * session, char * URL, int use_proxy, char * proxy, in
 		}
 	}
 	
-	make_http_request_text(host, port, URL, proxy, start_byte, msg_buf, sizeof(msg_buf));
+	make_http_request_text(host, port, URL, use_proxy, proxy,
+			       start_byte, msg_buf, sizeof(msg_buf));
 	printf("%s\n", msg_buf);
 	
 	if (!use_proxy || noproxy_for_host(noproxy_domains, host)) {

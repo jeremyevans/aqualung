@@ -237,7 +237,8 @@ parse_http_headers(http_session_t * session) {
 			header->location = strdup(value);
 		} else if (strcasecmp(name, "content-length") == 0) {
 			int l;
-			if (sscanf(new_value, "%d", &l) != 1) {
+			if (sscanf(value, "%d", &l) != 1) {
+				printf("sscanf error (content-length)\n");
 				return -3;
 			} else {
 				header->content_length = l;
@@ -248,15 +249,21 @@ parse_http_headers(http_session_t * session) {
 			header->transfer_encoding = strdup(value);
 		} else if (strcasecmp(name, "icy-metaint") == 0) {
 			int l;
-			if (sscanf(new_value, "%d", &l) != 1) {
+			if (sscanf(value, "%d", &l) != 1) {
+				printf("sscanf error (icy-metaint)\n");
 				return -3;
 			} else {
 				header->icy_metaint = l;
 			}
 		} else if (strcasecmp(name, "icy-br") == 0) {
 			int l;
-			if (sscanf(new_value, "%d", &l) != 1) {
-				return -3;
+			if (sscanf(value, "%d", &l) != 1) {
+				if (sscanf(value, "Quality %d", &l) != 1) {
+					printf("sscanf error (icy-br)\n");
+					return -3;
+				} else {
+					header->icy_br = l;
+				}
 			} else {
 				header->icy_br = l;
 			}

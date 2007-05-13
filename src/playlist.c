@@ -3553,6 +3553,28 @@ load_m3u(char * filename, int enqueue) {
 
 
 void
+load_pls_load(char * file, char * title, gint * have_file, gint * have_title) {
+
+	playlist_filemeta * plfm = NULL;
+
+	if (*have_file == 0) {
+		return;
+	}
+
+	plfm = playlist_filemeta_get(file,
+				     *have_title ? title : NULL,
+				     1);
+
+	if (plfm == NULL) {
+		fprintf(stderr, "load_pls_load(): playlist_filemeta_get() returned NULL\n");
+	} else {
+		playlist_thread_add_to_list(plfm);
+	}
+	
+	*have_file = *have_title = 0;
+}
+
+void
 load_pls(char * filename, int enqueue) {
 
 	FILE * f;
@@ -3569,7 +3591,6 @@ load_pls(char * filename, int enqueue) {
 	gint have_title = 0;
 	gchar numstr_file[10];
 	gchar numstr_title[10];
-	playlist_filemeta * plfm = NULL;
 
 
 	if ((str = strrchr(filename, '/')) == NULL) {
@@ -3616,6 +3637,10 @@ load_pls(char * filename, int enqueue) {
 				char numstr[10];
 				char * ch;
 				int m;
+
+				if (have_file) {
+					load_pls_load(file, title, &have_file, &have_title);
+				}
 
 				if ((ch = strstr(line, "=")) == NULL) {
 					fprintf(stderr, "Syntax error in %s\n", filename);
@@ -3713,18 +3738,10 @@ load_pls(char * filename, int enqueue) {
 				continue;
 			}
 
-			have_file = have_title = 0;
-
-			plfm = playlist_filemeta_get(file,
-						     have_title ? title : NULL,
-						     1);
-			if (plfm == NULL) {
-				fprintf(stderr, "load_pls(): playlist_filemeta_get() returned NULL\n");
-			} else {
-				playlist_thread_add_to_list(plfm);
-			}
+			load_pls_load(file, title, &have_file, &have_title);
 		}
 	}
+	load_pls_load(file, title, &have_file, &have_title);
 }
 
 

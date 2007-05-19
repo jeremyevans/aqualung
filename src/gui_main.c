@@ -2354,6 +2354,8 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
         rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 	try_waking_disk_thread();
 
+ 	gtk_widget_show(GTK_WIDGET(scale_pos));
+
         /* hide cover */
         cover_show_flag = 0;
         gtk_widget_hide(cover_image_area);

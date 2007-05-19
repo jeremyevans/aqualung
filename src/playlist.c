@@ -3633,7 +3633,7 @@ load_pls(char * filename, int enqueue) {
 			if (strstr(line, "[playlist]") == line) {
 				continue;
 			}
-			if (strstr(line, "NumberOfEntries") == line) {
+			if (strcasestr(line, "NumberOfEntries") == line) {
 				continue;
 			}
 			if (strstr(line, "Version") == line) {

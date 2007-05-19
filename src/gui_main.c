@@ -188,6 +188,8 @@ GtkWidget * scale_pos;
 GtkWidget * scale_vol;
 GtkWidget * scale_bal;
 
+GtkWidget * vbox_sep;
+
 #ifdef HAVE_LOOP
 GtkWidget * loop_bar;
 #endif /* HAVE_LOOP */
@@ -1096,6 +1098,20 @@ main_window_close(GtkWidget * widget, gpointer data) {
 	gtk_main_quit();
 }
 
+void
+main_window_resize(void) {
+
+        if (options.playlist_is_embedded && !options.playlist_on) {
+		gtk_window_resize(GTK_WINDOW(main_window), options.main_size_x,
+				  options.main_size_y - 14 - 6 - 6 -
+				  playlist_window->allocation.height);
+	}
+
+	if (!options.playlist_is_embedded) {
+		gtk_window_resize(GTK_WINDOW(main_window),
+				  options.main_size_x, options.main_size_y - 14 - 6);
+	}
+}
 
 /***********************************************************************************/
 
@@ -1722,6 +1738,20 @@ scale_bal_button_release_event(GtkWidget * widget, GdkEventButton * event) {
 	refresh_time_displays();
 
 	return FALSE;
+}
+
+
+void
+show_scale_pos(gboolean state) {
+
+        if (state == FALSE) {
+                gtk_widget_hide(GTK_WIDGET(scale_pos));
+                gtk_widget_show(GTK_WIDGET(vbox_sep));
+                main_window_resize();
+        } else {
+                gtk_widget_show(GTK_WIDGET(scale_pos));
+                gtk_widget_hide(GTK_WIDGET(vbox_sep));
+        }
 }
 
 
@@ -2354,7 +2384,7 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
         rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 	try_waking_disk_thread();
 
- 	gtk_widget_show(GTK_WIDGET(scale_pos));
+ 	show_scale_pos(TRUE);
 
         /* hide cover */
         cover_show_flag = 0;
@@ -2576,17 +2606,7 @@ scroll_motion_notify(GtkWidget * widget, GdkEventMotion * event, gpointer * win)
 void
 hide_loop_bar() {
 	gtk_widget_hide(loop_bar);
-
-	if (options.playlist_is_embedded && !options.playlist_on) {
-		gtk_window_resize(GTK_WINDOW(main_window), options.main_size_x,
-				  options.main_size_y - 14 - 6 - 6 -
-				  playlist_window->allocation.height);
-	}
-
-	if (!options.playlist_is_embedded) {
-		gtk_window_resize(GTK_WINDOW(main_window),
-				  options.main_size_x, options.main_size_y - 14 - 6);
-	}
+        main_window_resize();
 }
 #endif /* HAVE_LOOP */
 
@@ -3212,6 +3232,9 @@ create_main_window(char * skin_path) {
 	gtk_range_set_update_policy(GTK_RANGE(scale_pos), GTK_UPDATE_DISCONTINUOUS);
 	gtk_box_pack_start(GTK_BOX(vbox), scale_pos, FALSE, FALSE, 3);
 
+        vbox_sep = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), vbox_sep, FALSE, FALSE, 2);
+
         GTK_WIDGET_UNSET_FLAGS(scale_vol, GTK_CAN_FOCUS);
         GTK_WIDGET_UNSET_FLAGS(scale_bal, GTK_CAN_FOCUS);
         GTK_WIDGET_UNSET_FLAGS(scale_pos, GTK_CAN_FOCUS);
@@ -3549,7 +3572,6 @@ setup_systray(void) {
 }
 #endif /* HAVE_SYSTRAY */
 
-
 void
 create_gui(int argc, char ** argv, int optind, int enqueue,
 	   unsigned long rate, unsigned long rb_audio_size) {
@@ -3723,6 +3745,8 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
         gtk_widget_hide(c_event_box);
         gtk_widget_hide(cover_image_area);
 
+        gtk_widget_hide(vbox_sep);
+
 	if (options.playlist_is_embedded) {
 		if (!options.playlist_on) {
                         hide_playlist();
@@ -3892,10 +3916,10 @@ timeout_callback(gpointer data) {
 
 			if ((is_file_loaded) && (status.samples_left < 2*status.sample_offset)) {
 				allow_seeks = 0;
- 				gtk_widget_hide(GTK_WIDGET(scale_pos));
+                                show_scale_pos(FALSE);
 			} else {
 				allow_seeks = 1;
- 				gtk_widget_show(GTK_WIDGET(scale_pos));
+                                show_scale_pos(TRUE);
 			}
 
 			/* treat files with unknown length */

@@ -2535,6 +2535,7 @@ gint
 scroll_motion_notify(GtkWidget * widget, GdkEventMotion * event, gpointer * win) {
 
 	int dx = event->x - x_scroll_start;
+	gboolean dummy;
 
 	if (scroll_btn != 1)
 		return FALSE;
@@ -2543,14 +2544,24 @@ scroll_motion_notify(GtkWidget * widget, GdkEventMotion * event, gpointer * win)
 		return TRUE;
 
 	if (dx < -10) {
-		g_signal_emit_by_name(G_OBJECT(win), "scroll-child", GTK_SCROLL_STEP_FORWARD, TRUE, NULL);
+#if (GTK_CHECK_VERSION(2,8,0))
+		GtkRange * range = GTK_RANGE(gtk_scrolled_window_get_hscrollbar(GTK_SCROLLED_WINDOW(win)));
+		g_signal_emit_by_name(G_OBJECT(range), "move-slider", GTK_SCROLL_STEP_RIGHT, &dummy);
+#else
+		g_signal_emit_by_name(G_OBJECT(win), "scroll-child", GTK_SCROLL_STEP_FORWARD, &dummy);
+#endif /* GTK_CHECK_VERSION */
 		x_scroll_start = event->x;
 		gdk_window_set_cursor(gtk_widget_get_parent_window(GTK_WIDGET(win)),
 				      gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW));
 	}
 
 	if (dx > 10) {
-		g_signal_emit_by_name(G_OBJECT(win), "scroll-child", GTK_SCROLL_STEP_BACKWARD, TRUE, NULL);
+#if (GTK_CHECK_VERSION(2,8,0))
+		GtkRange * range = GTK_RANGE(gtk_scrolled_window_get_hscrollbar(GTK_SCROLLED_WINDOW(win)));
+		g_signal_emit_by_name(G_OBJECT(range), "move-slider", GTK_SCROLL_STEP_LEFT, &dummy);
+#else
+		g_signal_emit_by_name(G_OBJECT(win), "scroll-child", GTK_SCROLL_STEP_BACKWARD, &dummy);			
+#endif /* GTK_CHECK_VERSION */
 		x_scroll_start = event->x;
 		gdk_window_set_cursor(gtk_widget_get_parent_window(GTK_WIDGET(win)),
 				      gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW));

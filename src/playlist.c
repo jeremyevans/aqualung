@@ -2236,7 +2236,11 @@ playlist_stats(int selected) {
                                 sprintf(str, _("%d track [%s] (%.1f GB)"), count, time, m_size / 1024.0);
                         }
                 } else {
-                        sprintf(str, _("%d track [%s] "), count, time);
+                        if(fabsf(duration) < 1e-8) {
+                                sprintf(str, _("%d track "), count);
+                        } else {
+                                sprintf(str, _("%d track [%s] "), count, time);
+                        }
                 }
 	} else {
                 if (options.pl_statusbar_show_size && (m_size > 0)) {
@@ -2246,7 +2250,11 @@ playlist_stats(int selected) {
                                 sprintf(str, _("%d tracks [%s] (%.1f GB)"), count, time, m_size / 1024.0);
                         }
                 } else {
-                        sprintf(str, _("%d tracks [%s] "), count, time);
+                        if(fabsf(duration) < 1e-8) {
+                                sprintf(str, _("%d tracks "), count);
+                        } else {
+                                sprintf(str, _("%d tracks [%s] "), count, time);
+                        }
                 }
 	}
 

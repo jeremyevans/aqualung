@@ -3879,8 +3879,10 @@ timeout_callback(gpointer data) {
 
 			if ((is_file_loaded) && (status.samples_left < 2*status.sample_offset)) {
 				allow_seeks = 0;
+ 				gtk_widget_hide(GTK_WIDGET(scale_pos));
 			} else {
 				allow_seeks = 1;
+ 				gtk_widget_show(GTK_WIDGET(scale_pos));
 			}
 
 			/* treat files with unknown length */

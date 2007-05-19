@@ -843,3 +843,7 @@ httpc_tell(http_session_t * session) {
 	printf("[HTTPC] TELL = %lld\n", session->byte_pos);
 	return session->byte_pos;
 }
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

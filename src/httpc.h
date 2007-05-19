@@ -99,3 +99,7 @@ void httpc_close(http_session_t * session);
 int httpc_reconnect(http_session_t * session);
 
 #endif /* _HTTPC_H */
+
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+

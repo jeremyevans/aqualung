@@ -173,8 +173,15 @@ void
 pause_vorbis_stream(decoder_t * dec) {
 
 	vorbis_pdata_t * pd = (vorbis_pdata_t *)dec->pdata;
-	printf("pause_vorbis_stream\n");
+	char flush_dest;
+
 	httpc_close(pd->session);
+
+	if (pd->session->type == HTTPC_SESSION_STREAM) {
+		/* empty vorbis decoder ringbuffer */
+		while (rb_read_space(pd->rb))
+			rb_read(pd->rb, &flush_dest, sizeof(char));
+	}
 }
 
 
@@ -182,7 +189,6 @@ void
 resume_vorbis_stream(decoder_t * dec) {
 
 	vorbis_pdata_t * pd = (vorbis_pdata_t *)dec->pdata;
-	printf("resume_vorbis_stream\n");
 	httpc_reconnect(pd->session);
 }
 

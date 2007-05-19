@@ -912,6 +912,30 @@ build_seek_table(mpeg_pdata_t * pd) {
 }
 
 
+
+void
+pause_mpeg_stream(decoder_t * dec) {
+
+	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
+	char flush_dest;
+
+	httpc_close(pd->session);
+
+	if (pd->session->type == HTTPC_SESSION_STREAM) {
+		/* empty mpeg decoder ringbuffer */
+		while (rb_read_space(pd->rb))
+			rb_read(pd->rb, &flush_dest, sizeof(char));
+	}
+}
+
+
+void
+resume_mpeg_stream(decoder_t * dec) {
+
+	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
+	httpc_reconnect(pd->session);
+}
+
 /* MPEG input callback */
 static
 enum mad_flow
@@ -1442,6 +1466,9 @@ mpeg_stream_decoder_open(decoder_t * dec, http_session_t * session) {
 
 	fdec->is_stream = 1;
 	pd->session = session;
+
+	dec->pause = pause_mpeg_stream;
+	dec->resume = resume_mpeg_stream;
 
 	return mpeg_decoder_finish_open(dec);
 }

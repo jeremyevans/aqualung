@@ -66,6 +66,12 @@ free_headers(http_header_t * headers) {
 		free(headers->content_type);
 	if (headers->transfer_encoding != NULL)
 		free(headers->transfer_encoding);
+	if (headers->icy_genre != NULL)
+		free(headers->icy_genre);
+	if (headers->icy_name != NULL)
+		free(headers->icy_name);
+	if (headers->icy_description != NULL)
+		free(headers->icy_description);
 }
 
 int
@@ -164,6 +170,10 @@ strip_whitespace(char * str) {
 	
 	int i, j;
 	for (i = 0; str[i] != '\0' && (str[i] == ' ' || str[i] == '\t'); i++);
+	if (str[i] == '\0') {
+		str[0] = '\0';
+		return str;
+	}
 	for (j = strlen(str)-1; str[j] == ' ' || str[j] == '\t'; j--);
 	memmove(str, str+i, j-i+1);
 	str[j-i+1] = '\0';

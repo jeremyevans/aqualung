@@ -67,6 +67,9 @@ typedef struct {
 	int chunk_size;
 	int chunk_pos;
 	int end_of_data;
+
+	/* variables for stream download: */
+	int metapos;
 } http_session_t;
 
 

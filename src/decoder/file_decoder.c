@@ -222,12 +222,36 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 		return DECODER_OPEN_FERROR;
 	}
 
+
+#ifdef HAVE_MPEG
+	if (session->headers.content_type == NULL ||
+	    strcasecmp(session->headers.content_type, "audio/mpeg") == 0) {
+		int ret;
+
+		if (session->headers.content_type == NULL) {
+			fprintf(stderr, "Warning: no Content-Type, assuming audio/mpeg\n");
+		}
+
+		dec = mpeg_decoder_init(fdec);
+		if (!dec)
+			return DECODER_OPEN_FERROR;
+
+		ret = mpeg_stream_decoder_open(dec, session);
+		if (ret == DECODER_OPEN_FERROR) {
+			dec->destroy(dec);
+			return ret;
+		}
+		fdec->pdec = (void *)dec;
+		return file_decoder_finalize_open(fdec, dec, URL);
+	}
+#else
 	if (session->headers.content_type == NULL) {
 		fprintf(stderr, "stream_decoder_open: error: no Content-Type found\n");
 		httpc_close(session);
 		httpc_del(session);
 		return DECODER_OPEN_FERROR;
 	}
+#endif /* HAVE_MPEG */
 
 #ifdef HAVE_OGG_VORBIS
 	if (strcasecmp(session->headers.content_type, "application/ogg") == 0) {

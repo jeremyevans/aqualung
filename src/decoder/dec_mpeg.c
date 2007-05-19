@@ -915,11 +915,54 @@ build_seek_table(mpeg_pdata_t * pd) {
 /* MPEG input callback */
 static
 enum mad_flow
+mpeg_input_stream(decoder_t * dec, struct mad_stream * stream) {
+
+	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
+	size_t remaining;
+	size_t read_length;
+	unsigned char * read_start;
+	unsigned char * guard_ptr;
+
+	if (stream->next_frame != NULL) {
+		remaining = stream->bufend - stream->next_frame;
+		memmove(pd->inbuf, stream->next_frame, remaining);
+		read_start = pd->inbuf + remaining;
+		read_length = MPEG_INBUF_SIZE - remaining;
+	} else {
+		read_length = MPEG_INBUF_SIZE;
+		read_start = pd->inbuf;
+		remaining = 0;
+	}
+
+	read_length = httpc_read(pd->session, read_start, read_length);
+	if (read_length < 0)
+		return MAD_FLOW_STOP;
+
+	if (read_length == 0) {
+		guard_ptr = read_start + read_length;
+		memset(guard_ptr, 0, MAD_BUFFER_GUARD);
+		read_length += MAD_BUFFER_GUARD;
+	}
+
+	mad_stream_buffer(stream, pd->inbuf, read_length + remaining);
+	stream->error=0;
+
+        return MAD_FLOW_CONTINUE;
+}
+
+
+static
+enum mad_flow
 mpeg_input(void * data, struct mad_stream * stream) {
 
         decoder_t * dec = (decoder_t *)data;
+	file_decoder_t * fdec = dec->fdec;
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
 	size_t size = 0;
+
+	if (fdec->is_stream) {
+		return mpeg_input_stream(dec, stream);
+	}
 
         if (fstat(pd->fd, &(pd->mpeg_stat)) == -1 || pd->mpeg_stat.st_size == 0)
                 return MAD_FLOW_STOP;
@@ -1005,6 +1048,9 @@ mpeg_output(void * data, struct mad_header const * header, struct mad_pcm * pcm)
                         buf[j] = pd->error ? 0 : *(pcm->samples[j] + i);
                         fbuf[j] = (double)buf[j] * fdec->voladj_lin / scale;
                 }
+		if (fdec->is_stream && pcm->channels == 1) {
+			fbuf[1] = fbuf[0];
+		}
                 if (rb_write_space(pd->rb) >= pd->channels * sample_size) {
                         rb_write(pd->rb, (char *)fbuf, pd->channels * sample_size);
 		}
@@ -1051,15 +1097,26 @@ int
 decode_mpeg(decoder_t * dec) {
 
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
+	file_decoder_t * fdec = dec->fdec;
 
         if (mad_header_decode(&(pd->mpeg_frame.header), &(pd->mpeg_stream)) == -1) {
-                if (pd->mpeg_stream.error == MAD_ERROR_BUFLEN)
-                        return 1;
+                if (pd->mpeg_stream.error == MAD_ERROR_BUFLEN) {
+			if (fdec->is_stream) {
+				if (mpeg_input_stream(dec, &(pd->mpeg_stream)) == MAD_FLOW_STOP)
+					return 1;
+			} else {
+				return 1;
+			}
+		}
 
-                if (!MAD_RECOVERABLE(pd->mpeg_stream.error))
+		
+                if (pd->mpeg_stream.error != MAD_ERROR_NONE &&
+		    !MAD_RECOVERABLE(pd->mpeg_stream.error)) {
                         fprintf(stderr, "libMAD: unrecoverable error in MPEG Audio stream\n");
-
-                mpeg_error((void *)dec, &(pd->mpeg_stream), &(pd->mpeg_frame));
+			mpeg_error((void *)dec, &(pd->mpeg_stream), &(pd->mpeg_frame));
+		} else {
+			pd->error = 0;
+		}
         }
         mpeg_header((void *)dec, &(pd->mpeg_frame.header));
 
@@ -1067,7 +1124,8 @@ decode_mpeg(decoder_t * dec) {
                 if (pd->mpeg_stream.error == MAD_ERROR_BUFLEN)
                         return 1;
 
-                if (!MAD_RECOVERABLE(pd->mpeg_stream.error))
+                if (pd->mpeg_stream.error != MAD_ERROR_NONE &&
+		    !MAD_RECOVERABLE(pd->mpeg_stream.error))
                         fprintf(stderr, "libMAD: unrecoverable error in MPEG Audio stream\n");
 
                 mpeg_error((void *)dec, &(pd->mpeg_stream), &(pd->mpeg_frame));
@@ -1111,17 +1169,125 @@ mpeg_decoder_init(file_decoder_t * fdec) {
 void
 mpeg_decoder_destroy(decoder_t * dec) {
 
+	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
+	file_decoder_t * fdec = dec->fdec;
+	
+	if (fdec->is_stream)
+		httpc_del(pd->session);
+
 	free(dec->pdata);
 	free(dec);
 }
 
 
 int
-mpeg_decoder_open(decoder_t * dec, char * filename) {
+mpeg_decoder_finish_open(decoder_t * dec) {
 
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 	int i;
+
+	/* data init (so when seeking we know if an entry is not yet filled in) */
+	for (i = 0; i < 100; i++) {
+		pd->seek_table[i].frame = -1;
+	}
+	pd->builder_thread_running = 0;
+
+	for (i = 0; i < 2; i++) {
+		pd->last_frames[i] = -1;
+	}
+
+	pd->error = 0;
+	pd->is_eos = 0;
+	pd->seek_table_built = 0;
+	pd->rb = rb_create(pd->channels * sample_size * RB_MAD_SIZE);
+	fdec->fileinfo.channels = pd->channels;
+	fdec->fileinfo.sample_rate = pd->SR;
+	fdec->file_lib = MAD_LIB;
+	strcpy(dec->format_str, "MPEG Audio");
+
+	if (pd->mpeg_subformat & 0xff7) {
+		strcat(dec->format_str, " (");
+		switch (pd->mpeg_subformat & MPEG_LAYER_MASK) {
+		case MPEG_LAYER_I:
+			strcat(dec->format_str, _("Layer I"));
+			break;
+		case MPEG_LAYER_II:
+			strcat(dec->format_str, _("Layer II"));
+			break;
+		case MPEG_LAYER_III:
+			strcat(dec->format_str, _("Layer III"));
+			break;
+		default:
+			strcat(dec->format_str, _("Unrecognized"));
+			break;
+		}
+	}
+	
+	if ((pd->mpeg_subformat & MPEG_LAYER_MASK) && (pd->mpeg_subformat & (MPEG_MODE_MASK | MPEG_EMPH_MASK)))
+		strcat(dec->format_str, ", ");
+	switch (pd->mpeg_subformat & MPEG_MODE_MASK) {
+	case MPEG_MODE_SINGLE:
+		strcat(dec->format_str, _("Single channel"));
+		break;
+	case MPEG_MODE_DUAL:
+		strcat(dec->format_str, _("Dual channel"));
+		break;
+	case MPEG_MODE_JOINT:
+		strcat(dec->format_str, _("Joint stereo"));
+		break;
+	case MPEG_MODE_STEREO:
+		strcat(dec->format_str, _("Stereo"));
+		break;
+	}
+	
+	if ((pd->mpeg_subformat & MPEG_MODE_MASK) && (pd->mpeg_subformat & MPEG_EMPH_MASK))
+		strcat(dec->format_str, ", ");
+	switch (pd->mpeg_subformat & MPEG_EMPH_MASK) {
+	case MPEG_EMPH_NONE:
+		strcat(dec->format_str, _("Emphasis: none"));
+		break;
+	case MPEG_EMPH_5015:
+		sprintf(dec->format_str, "%s%s 50/15 us", dec->format_str, _("Emphasis:"));
+		break;
+	case MPEG_EMPH_J_17:
+		sprintf(dec->format_str, "%s%s CCITT J.17", dec->format_str, _("Emphasis:"));
+		break;
+	case MPEG_EMPH_RES:
+		strcat(dec->format_str, _("Emphasis: reserved"));
+		break;
+	}
+	strcat(dec->format_str, ")");
+		
+	fdec->fileinfo.total_samples = pd->total_samples_est;
+	fdec->fileinfo.bps = pd->bitrate;
+
+	/* setup playback */
+	mad_stream_init(&(pd->mpeg_stream));
+	mad_frame_init(&(pd->mpeg_frame));
+	mad_synth_init(&(pd->mpeg_synth));
+	
+	if (mpeg_input((void *)dec, &(pd->mpeg_stream)) == MAD_FLOW_STOP) {
+		mad_synth_finish(&(pd->mpeg_synth));
+		mad_frame_finish(&(pd->mpeg_frame));
+		mad_stream_finish(&(pd->mpeg_stream));
+		return DECODER_OPEN_FERROR;
+	}
+
+	pd->frame_counter = 0;
+
+#ifdef MPEG_DEBUG
+	printf("mpeg_decoder_open successful\n");
+#endif /* MPEG_DEBUG */
+	return DECODER_OPEN_SUCCESS;
+}
+
+
+int
+mpeg_decoder_open(decoder_t * dec, char * filename) {
+
+	file_decoder_t * fdec = dec->fdec;
+	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
 	struct stat exp_stat;
 
 	if (!is_valid_extension(valid_extensions_mpeg, filename, 0)) {
@@ -1130,6 +1296,8 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 #endif /* MPEG_DEBUG */
 		return DECODER_OPEN_BADLIB;
 	}
+
+	fdec->is_stream = 0;
 
 	if ((pd->fd = open(filename, O_RDONLY)) == 0) {
 		fprintf(stderr, "mpeg_decoder_open: open() failed for MPEG Audio file\n");
@@ -1243,101 +1411,39 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	} else {
 		pd->delay_frames = 0;
 	}
-	
-	/* data init (so when seeking we know if an entry is not yet filled in) */
-	for (i = 0; i < 100; i++) {
-		pd->seek_table[i].frame = -1;
-	}
-	pd->builder_thread_running = 0;
 
-	for (i = 0; i < 2; i++) {
-		pd->last_frames[i] = -1;
-	}
-
-	pd->error = 0;
-	pd->is_eos = 0;
-	pd->seek_table_built = 0;
-	pd->rb = rb_create(pd->channels * sample_size * RB_MAD_SIZE);
-	fdec->fileinfo.channels = pd->channels;
-	fdec->fileinfo.sample_rate = pd->SR;
-	fdec->file_lib = MAD_LIB;
-	strcpy(dec->format_str, "MPEG Audio");
-
-	if (pd->mpeg_subformat & 0xff7) {
-		strcat(dec->format_str, " (");
-		switch (pd->mpeg_subformat & MPEG_LAYER_MASK) {
-		case MPEG_LAYER_I:
-			strcat(dec->format_str, _("Layer I"));
-			break;
-		case MPEG_LAYER_II:
-			strcat(dec->format_str, _("Layer II"));
-			break;
-		case MPEG_LAYER_III:
-			strcat(dec->format_str, _("Layer III"));
-			break;
-		default:
-			strcat(dec->format_str, _("Unrecognized"));
-			break;
-		}
-	}
-	
-	if ((pd->mpeg_subformat & MPEG_LAYER_MASK) && (pd->mpeg_subformat & (MPEG_MODE_MASK | MPEG_EMPH_MASK)))
-		strcat(dec->format_str, ", ");
-	switch (pd->mpeg_subformat & MPEG_MODE_MASK) {
-	case MPEG_MODE_SINGLE:
-		strcat(dec->format_str, _("Single channel"));
-		break;
-	case MPEG_MODE_DUAL:
-		strcat(dec->format_str, _("Dual channel"));
-		break;
-	case MPEG_MODE_JOINT:
-		strcat(dec->format_str, _("Joint stereo"));
-		break;
-	case MPEG_MODE_STEREO:
-		strcat(dec->format_str, _("Stereo"));
-		break;
-	}
-	
-	if ((pd->mpeg_subformat & MPEG_MODE_MASK) && (pd->mpeg_subformat & MPEG_EMPH_MASK))
-		strcat(dec->format_str, ", ");
-	switch (pd->mpeg_subformat & MPEG_EMPH_MASK) {
-	case MPEG_EMPH_NONE:
-		strcat(dec->format_str, _("Emphasis: none"));
-		break;
-	case MPEG_EMPH_5015:
-		sprintf(dec->format_str, "%s%s 50/15 us", dec->format_str, _("Emphasis:"));
-		break;
-	case MPEG_EMPH_J_17:
-		sprintf(dec->format_str, "%s%s CCITT J.17", dec->format_str, _("Emphasis:"));
-		break;
-	case MPEG_EMPH_RES:
-		strcat(dec->format_str, _("Emphasis: reserved"));
-		break;
-	}
-	strcat(dec->format_str, ")");
-		
-	fdec->fileinfo.total_samples = pd->total_samples_est;
-	fdec->fileinfo.bps = pd->bitrate;
-
-	/* setup playback */
 	pd->fd = open(filename, O_RDONLY);
-	mad_stream_init(&(pd->mpeg_stream));
-	mad_frame_init(&(pd->mpeg_frame));
-	mad_synth_init(&(pd->mpeg_synth));
-	
-	if (mpeg_input((void *)dec, &(pd->mpeg_stream)) == MAD_FLOW_STOP) {
-		mad_synth_finish(&(pd->mpeg_synth));
-		mad_frame_finish(&(pd->mpeg_frame));
-		mad_stream_finish(&(pd->mpeg_stream));
+
+	return mpeg_decoder_finish_open(dec);
+}
+
+
+int
+mpeg_stream_decoder_open(decoder_t * dec, http_session_t * session) {
+
+	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
+	file_decoder_t * fdec = dec->fdec;
+
+	pd->inbuf = calloc(MPEG_INBUF_SIZE+MAD_BUFFER_GUARD, 1);
+	if (pd->inbuf == NULL) {
+		fprintf(stderr, "mpeg_stream_decoder_open: calloc error\n");
 		return DECODER_OPEN_FERROR;
 	}
 
-	pd->frame_counter = 0;
+	pd->channels = 2;
+	pd->SR = 44100;
+	pd->total_samples_est = 0;
+	pd->bitrate = 1000 * session->headers.icy_br;
 
-#ifdef MPEG_DEBUG
-	printf("mpeg_decoder_open successful\n");
-#endif /* MPEG_DEBUG */
-	return DECODER_OPEN_SUCCESS;
+	/* XXX: this is just so we can display something */
+	pd->mpeg_subformat |= MPEG_LAYER_III;
+	pd->mpeg_subformat |= MPEG_MODE_STEREO;
+	pd->mpeg_subformat |= MPEG_EMPH_NONE;
+
+	fdec->is_stream = 1;
+	pd->session = session;
+
+	return mpeg_decoder_finish_open(dec);
 }
 
 
@@ -1345,6 +1451,7 @@ void
 mpeg_decoder_close(decoder_t * dec) {
 
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
+	file_decoder_t * fdec = dec->fdec;
 
 	/* take care of seek table builder thread, if there is any */
 	if (pd->builder_thread_running) {
@@ -1361,9 +1468,14 @@ mpeg_decoder_close(decoder_t * dec) {
 	mad_synth_finish(&(pd->mpeg_synth));
 	mad_frame_finish(&(pd->mpeg_frame));
 	mad_stream_finish(&(pd->mpeg_stream));
-	if (munmap(pd->fdm, pd->mpeg_stat.st_size) == -1)
-		fprintf(stderr, "Error while munmap()'ing MPEG Audio file mapping\n");
-	close(pd->fd);
+	if (fdec->is_stream) {
+		free(pd->inbuf);
+		httpc_close(pd->session);
+	} else {
+		if (munmap(pd->fdm, pd->mpeg_stat.st_size) == -1)
+			fprintf(stderr, "Error while munmap()'ing MPEG Audio file mapping\n");
+		close(pd->fd);
+	}
 	rb_free(pd->rb);
 #ifdef MPEG_DEBUG
 	printf("mpeg_decoder_close successful\n");
@@ -1375,11 +1487,12 @@ unsigned int
 mpeg_decoder_read(decoder_t * dec, float * dest, int num) {
 
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
+	file_decoder_t * fdec = dec->fdec;
 
 	unsigned int numread = 0;
 	unsigned int n_avail = 0;
 
-	if (!pd->seek_table_built) {
+	if (!fdec->is_stream && !pd->seek_table_built) {
 #ifdef MPEG_DEBUG
 		printf("first read from mpeg file\n");
 #endif /* MPEG_DEBUG */

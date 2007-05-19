@@ -36,6 +36,8 @@
 /* size of ringbuffer for decoded MPEG Audio data (in frames) */
 #define RB_MAD_SIZE 262144
 
+/* for stream (non-mmap) decoding */
+#define MPEG_INBUF_SIZE (5*8192)
 
 #ifdef HAVE_MPEG
 
@@ -135,6 +137,11 @@ typedef struct _mpeg_pdata_t {
 	mpeg_seek_table_t seek_table[100];
 	unsigned long frame_counter;
 	long last_frames[2]; /* [0] is the last frame's byte offset, [1] the last-but-one */
+
+	/* for stream decoding */
+	http_session_t * session;
+	unsigned char * inbuf;
+
         struct mad_stream mpeg_stream;
         struct mad_frame mpeg_frame;
         struct mad_synth mpeg_synth;
@@ -146,6 +153,7 @@ decoder_t * mpeg_decoder_init(file_decoder_t * fdec);
 #ifdef HAVE_MPEG
 void mpeg_decoder_destroy(decoder_t * dec);
 int mpeg_decoder_open(decoder_t * dec, char * filename);
+int mpeg_stream_decoder_open(decoder_t * dec, http_session_t * session);
 void mpeg_decoder_close(decoder_t * dec);
 unsigned int mpeg_decoder_read(decoder_t * dec, float * dest, int num);
 void mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);

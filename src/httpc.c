@@ -627,13 +627,85 @@ httpc_read_chunked(http_session_t * session, char * buf, int num) {
 }
 
 int
-httpc_read_stream(http_session_t * session, char * buf, int num) {
+httpc_demux(http_session_t * session) {
+
+	unsigned char meta_len;
+	char * meta_buf;
+
+	if (read_socket(session->sock, &meta_len, 1) != 1)
+		return -1;
+
+	meta_len *= 16;
+	meta_buf = calloc(meta_len+1, 1);
+	if (read_socket(session->sock, meta_buf, meta_len) != meta_len)
+		return -1;
+
+	meta_buf[(int)meta_len] = '\0';
+
+	if (meta_len > 0) {
+		printf("%s\n", meta_buf);
+	}
+
+	free(meta_buf);
+	return 0;
+}
+
+int
+httpc_read_stream_simple(http_session_t * session, char * buf, int num) {
 
 	int n_read = read_socket(session->sock, buf, num);
 	if (n_read < 0) {
 		return 0;
 	}
 	return n_read;
+}
+
+int
+httpc_read_stream(http_session_t * session, char * buf, int num) {
+
+	int metaint = session->headers.icy_metaint;
+	int n_read, n_read2;
+
+	if (metaint == 0) {
+		return httpc_read_stream_simple(session, buf, num);
+	}
+
+	if (metaint - session->metapos >= num) {
+		n_read = read_socket(session->sock, buf, num);
+		if (n_read < 0)
+			return 0;
+		session->metapos += n_read;
+		return n_read;
+	} else {
+		n_read = metaint - session->metapos;
+		n_read2 = num - n_read;
+
+		n_read = read_socket(session->sock, buf, n_read);
+		if (n_read < 0)
+			return 0;
+
+		httpc_demux(session);
+
+		while (n_read2 > metaint) {
+			int n = read_socket(session->sock, buf + n_read, metaint);
+			if (n < 0)
+				return 0;
+			httpc_demux(session);
+			n_read2 -= n;
+			n_read += n;
+		}
+
+		if (n_read2 > 0) {
+			n_read2 = read_socket(session->sock, buf + n_read, n_read2);
+			if (n_read2 < 0)
+				return 0;
+			session->metapos = n_read2;
+		} else {
+			session->metapos = 0;
+		}
+
+		return n_read + n_read2;
+	}
 }
 
 int

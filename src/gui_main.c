@@ -3916,10 +3916,8 @@ timeout_callback(gpointer data) {
 
 			if ((is_file_loaded) && (status.samples_left < 2*status.sample_offset)) {
 				allow_seeks = 0;
-                                show_scale_pos(FALSE);
 			} else {
 				allow_seeks = 1;
-                                show_scale_pos(TRUE);
 			}
 
 			/* treat files with unknown length */
@@ -3967,6 +3965,8 @@ timeout_callback(gpointer data) {
 			if (refresh_scale_suppress > 0) {
 				--refresh_scale_suppress;
 			}
+
+                        show_scale_pos(!total_samples ? FALSE : TRUE);
 			break;
 
 		default:

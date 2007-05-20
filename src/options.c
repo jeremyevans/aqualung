@@ -827,13 +827,15 @@ draw_rva_diagram(void) {
                 cairo_set_source_rgb (rva_cr, 0.0, 0.0, 0.0);
                 cairo_paint (rva_cr);
 
-                cairo_set_line_width (rva_cr, 1.2);
+                cairo_set_line_width (rva_cr, 1.0);
 
                 if (rva_is_enabled_shadow) {
                         cairo_set_source_rgb (rva_cr, 10000 / 65536.0, 10000 / 65536.0, 10000 / 65536.0);
                 } else {
                         cairo_set_source_rgb (rva_cr, 5000 / 65536.0, 5000 / 65536.0, 5000 / 65536.0);
                 }
+
+                cairo_set_antialias (rva_cr, CAIRO_ANTIALIAS_NONE);
 
                 for (i = 0; i <= 24; i++) {
                         cairo_move_to (rva_cr, xoffs + i * dw, yoffs);
@@ -842,6 +844,8 @@ draw_rva_diagram(void) {
                         cairo_line_to (rva_cr, xoffs + 24 * dw, yoffs + i * dh);
                 }
                 cairo_stroke (rva_cr);
+
+                cairo_set_antialias (rva_cr, CAIRO_ANTIALIAS_DEFAULT);
 
                 if (rva_is_enabled_shadow) {
                         cairo_set_source_rgb (rva_cr, 0.0, 0.0, 1.0);

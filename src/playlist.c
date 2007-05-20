@@ -575,6 +575,7 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_da
 	GtkTreeIter iter;
 	gchar * pname;
 	gchar * pfile;
+        gboolean http;
 
 	if (event->type == GDK_2BUTTON_PRESS && event->button == 1) {
 		
@@ -595,8 +596,15 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_da
 
 			gtk_tree_model_get(GTK_TREE_MODEL(play_store), &iter,
 					   COLUMN_TRACK_NAME, &pname, COLUMN_PHYSICAL_FILENAME, &pfile, -1);
-					
-			strncpy(fileinfo_name, pname, MAXLEN-1);
+
+                        http = httpc_is_url(pfile);
+	                gtk_widget_set_sensitive(plist__rva_separate, !http);
+	                gtk_widget_set_sensitive(plist__rva_average, !http);
+#ifdef HAVE_IFP
+		        gtk_widget_set_sensitive(plist__send_songs_to_iriver, !http);
+#endif  /* HAVE_IFP */
+
+                        strncpy(fileinfo_name, pname, MAXLEN-1);
 			strncpy(fileinfo_file, pfile, MAXLEN-1);
 			free(pname);
 			free(pfile);

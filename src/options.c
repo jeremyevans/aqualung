@@ -805,8 +805,6 @@ changed_listening_env(GtkWidget * widget, gpointer * data) {
 void
 draw_rva_diagram(void) {
 
-	GdkGC * gc;
-	GdkColor fg_color;
 	int i;
 	int width = rva_viewport->allocation.width - 4;
 	int height = rva_viewport->allocation.height - 4;
@@ -816,6 +814,71 @@ draw_rva_diagram(void) {
 	int yoffs = (height - 24*dh) / 2 - 1;
 	float volx, voly;
 	int px1, py1, px2, py2;
+
+#if (GTK_CHECK_VERSION(2,8,0))
+
+        cairo_t *rva_cr = NULL;
+
+
+        rva_cr = gdk_cairo_create (rva_drawing_area->window);
+
+        if (rva_cr != NULL) {
+
+                cairo_set_source_rgb (rva_cr, 0.0, 0.0, 0.0);
+                cairo_paint (rva_cr);
+
+                cairo_set_line_width (rva_cr, 1.2);
+
+                if (rva_is_enabled_shadow) {
+                        cairo_set_source_rgb (rva_cr, 10000 / 65536.0, 10000 / 65536.0, 10000 / 65536.0);
+                } else {
+                        cairo_set_source_rgb (rva_cr, 5000 / 65536.0, 5000 / 65536.0, 5000 / 65536.0);
+                }
+
+                for (i = 0; i <= 24; i++) {
+                        cairo_move_to (rva_cr, xoffs + i * dw, yoffs);
+                        cairo_line_to (rva_cr, xoffs + i * dw, yoffs + 24 * dh);
+                        cairo_move_to (rva_cr, xoffs, yoffs + i * dh);
+                        cairo_line_to (rva_cr, xoffs + 24 * dw, yoffs + i * dh);
+                }
+                cairo_stroke (rva_cr);
+
+                if (rva_is_enabled_shadow) {
+                        cairo_set_source_rgb (rva_cr, 0.0, 0.0, 1.0);
+                } else {
+                        cairo_set_source_rgb (rva_cr, 0.0, 0.0, 30000 / 65536.0);
+                }
+
+                cairo_move_to (rva_cr, xoffs, yoffs + 24 * dh);
+                cairo_line_to (rva_cr, xoffs + 24 * dw, yoffs);
+                cairo_stroke (rva_cr);
+
+                if (rva_is_enabled_shadow) {
+                        cairo_set_source_rgb (rva_cr, 1.0, 0.0, 0.0);
+                } else {
+                        cairo_set_source_rgb (rva_cr, 30000 / 65536.0, 0.0, 0.0);
+                }
+
+                volx = -24.0f;
+                voly = volx + (volx - rva_refvol_shadow) * (rva_steepness_shadow - 1.0f);
+                px1 = xoffs;
+                py1 = yoffs - (voly * dh);
+
+                volx = 0.0f;
+                voly = volx + (volx - rva_refvol_shadow) * (rva_steepness_shadow - 1.0f);
+                px2 = xoffs + 24*dw;
+                py2 = yoffs - (voly * dh);
+
+                cairo_move_to (rva_cr, px1, py1);
+                cairo_line_to (rva_cr, px2, py2);
+                cairo_stroke (rva_cr);
+
+                cairo_destroy (rva_cr);
+        }
+#else
+
+        GdkGC * gc;
+	GdkColor fg_color;
 
 
 	gdk_draw_rectangle(rva_pixmap,
@@ -841,10 +904,7 @@ draw_rva_diagram(void) {
 		gdk_draw_line(rva_pixmap, gc,
 			      xoffs + i * dw, yoffs,
 			      xoffs + i * dw, yoffs + 24 * dh);
-	}
-
-	for (i = 0; i <= 24; i++) {
-		gdk_draw_line(rva_pixmap, gc,
+                gdk_draw_line(rva_pixmap, gc,
 			      xoffs, yoffs + i * dh,
 			      xoffs + 24 * dw, yoffs + i * dh);
 	}
@@ -892,6 +952,8 @@ draw_rva_diagram(void) {
 			width, height);
 
 	g_object_unref(gc);
+
+#endif /* GTK_CHECK_VERSION */
 }
 
 
@@ -914,7 +976,9 @@ steepness_changed(GtkWidget * widget, gpointer * data) {
 static gint
 rva_configure_event(GtkWidget * widget, GdkEventConfigure * event) {
 
-	if (rva_pixmap)
+#if (!GTK_CHECK_VERSION(2,8,0))
+
+        if (rva_pixmap)
 		g_object_unref(rva_pixmap);
 
 	rva_pixmap = gdk_pixmap_new(widget->window,
@@ -927,7 +991,10 @@ rva_configure_event(GtkWidget * widget, GdkEventConfigure * event) {
 			   0, 0,
 			   widget->allocation.width,
 			   widget->allocation.height);
-	draw_rva_diagram();
+
+#endif /* GTK_CHECK_VERSION */
+
+        draw_rva_diagram();
 	return TRUE;
 }
 
@@ -935,12 +1002,21 @@ rva_configure_event(GtkWidget * widget, GdkEventConfigure * event) {
 static gint
 rva_expose_event(GtkWidget * widget, GdkEventExpose * event) {
 
+#if (GTK_CHECK_VERSION(2,8,0))
+
+        draw_rva_diagram();
+
+#else
+
 	gdk_draw_drawable(widget->window,
 			widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
 			rva_pixmap,
 			event->area.x, event->area.y,
 			event->area.x, event->area.y,
 			event->area.width, event->area.height);
+
+#endif /* GTK_CHECK_VERSION */
+
 	return FALSE;
 }
 

@@ -30,5 +30,6 @@ segv.h segv.c \
 skin.h skin.c \
 transceiver.c transceiver.h \
 trashlist.c trashlist.h \
+utils.c utils.h \
 version.h \
 volume.c volume.h

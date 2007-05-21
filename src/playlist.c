@@ -35,6 +35,7 @@
 #include <libxml/parser.h>
 
 #include "common.h"
+#include "utils.h"
 #include "core.h"
 #include "rb.h"
 #include "cdda.h"

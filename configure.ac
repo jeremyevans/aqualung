@@ -77,7 +77,7 @@ AC_TYPE_SIZE_T
 AC_PROG_GCC_TRADITIONAL
 AC_FUNC_MALLOC
 AC_FUNC_STAT
-AC_CHECK_FUNCS([floor memset mkdir strdup strrchr strstr])
+AC_CHECK_FUNCS([floor memset mkdir strdup strrchr strstr strcasestr])
 
 
 

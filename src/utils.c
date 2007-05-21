@@ -18,6 +18,8 @@
     $Id$
 */
 
+#include <config.h>
+
 #ifndef HAVE_STRCASESTR
 
 #include <string.h>

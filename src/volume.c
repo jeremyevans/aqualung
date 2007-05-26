@@ -79,6 +79,17 @@ double fraction;
 rms_env * rms_vol;
 
 
+void
+voladj2str(float voladj, char * str) {
+
+	if (fabs(voladj) < 0.05f) {
+		sprintf(str, " %.1f dB", 0.0f);
+	} else {
+		sprintf(str, "% .1f dB", voladj);
+	}
+}
+
+
 vol_queue_t *
 vol_queue_push(vol_queue_t * q, char * file, GtkTreeIter iter) {
 

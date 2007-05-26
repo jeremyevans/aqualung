@@ -103,15 +103,14 @@ extern GtkWidget * music_tree;
 extern GtkTreeStore * music_store;
 
 extern GtkWidget * play_list;
+/*
 extern GtkTreeViewColumn * track_column;
 extern GtkTreeViewColumn * rva_column;
 extern GtkTreeViewColumn * length_column;
-
+*/
 extern GtkListStore * play_store;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
-extern void disable_bold_font_in_playlist(void);
-extern void playlist_selection_changed(GtkTreeSelection * sel, gpointer data);
 extern void set_buttons_relief(void);
 extern void show_active_position_in_playlist(void);
 
@@ -323,9 +322,9 @@ set_option_from_entry(GtkWidget * widget, char * opt) {
 void
 options_window_accept(void) {
 
+	/*int n;
+	  int n_prev = 3;*/
 	int i;
-	int n;
-	int n_prev = 3;
 	GtkTreeIter iter;
 	GtkTreeIter iter2;
 
@@ -361,7 +360,7 @@ options_window_accept(void) {
 
 
 	/* Playlist */
-
+	/*
 	set_option_from_toggle(check_autoplsave, &options.auto_save_playlist);
 	set_option_from_toggle(check_playlist_is_embedded, &options.playlist_is_embedded_shadow);
 	set_option_from_toggle(check_playlist_is_tree, &options.playlist_is_tree);
@@ -376,12 +375,12 @@ options_window_accept(void) {
 					 options.show_length_in_playlist);
 	set_option_from_toggle(check_show_active_track_name_in_bold, &options.show_active_track_name_in_bold);
 	if (!options.show_active_track_name_in_bold) {
-                disable_bold_font_in_playlist();
+                playlist_disable_bold_font();
 	}
 
 	set_option_from_toggle(check_enable_pl_rules_hint, &options.enable_pl_rules_hint);
 	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(play_list), options.enable_pl_rules_hint);
-
+	*/
 
 	/* Music Store */
 
@@ -468,7 +467,7 @@ options_window_accept(void) {
 
 
         /* refresh GUI */
-
+	/*
         for (i = 0; i < 3; i++) {
 
 		GtkTreeIter iter;
@@ -492,6 +491,7 @@ options_window_accept(void) {
 		options.plcol_idx[i] = n;
 		n_prev = n;
 	}	
+	*/
 
         if (!track_name_in_bold_shadow && options.show_active_track_name_in_bold == 1) {
 		reskin_flag = 1;
@@ -664,14 +664,14 @@ options_window_accept(void) {
 	refresh_displays();
 	gtk_window_set_keep_above(GTK_WINDOW(main_window), options.main_window_always_on_top);
 
-        playlist_content_changed();
-        playlist_selection_changed(NULL, NULL);
+        //playlist_content_changed(NULL); // TODO: do we need this anyway?
+        //playlist_selection_changed(NULL); // TODO: do we need this anyway?
 	music_store_set_status_bar_info();
 
         current_notebook_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
 
-	playlist_size_allocate(NULL, NULL);
-        show_active_position_in_playlist();
+	playlist_size_allocate_all();
+        //show_active_position_in_playlist(); // TODO
 
 	gtk_widget_destroy(options_window);
 

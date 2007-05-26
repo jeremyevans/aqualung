@@ -24,27 +24,98 @@
 
 #include <config.h>
 
-void voladj2str(float voladj, char * str);
-GtkTreePath * get_playing_path(void);
-void delayed_playlist_rearrange(int delay);
-gint playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event);
+#include "common.h"
+
+#define PLAYLIST_LOAD     0
+#define PLAYLIST_LOAD_TAB 1
+#define PLAYLIST_ENQUEUE  2
+
+typedef struct {
+
+	AQUALUNG_THREAD_DECLARE(thread_id)
+	AQUALUNG_MUTEX_DECLARE(thread_mutex)
+	AQUALUNG_MUTEX_DECLARE(wait_mutex)
+	AQUALUNG_COND_DECLARE(thread_wait)
+
+	volatile int data_written;
+	volatile int thread_stop;
+
+	int progbar_semaphore;
+	int ms_semaphore;
+
+	char name[MAXLEN];
+	int playing;
+
+	GtkTreeStore * store;
+	GtkTreeSelection * select;
+	GtkWidget * view;
+	GtkWidget * scroll;
+	GtkWidget * label;
+
+	GtkTreeViewColumn * track_column;
+	GtkTreeViewColumn * rva_column;
+	GtkTreeViewColumn * length_column;
+
+	GtkWidget * progbar;
+	GtkWidget * progbar_container;
+	GtkWidget * progbar_stop_button;
+
+	GtkWidget * widget;
+
+} playlist_t;
+
+typedef struct {
+
+	playlist_t * pl;
+	void * plfm;
+
+	GSList * list;
+
+	void * xml_doc;
+	void * xml_node;
+
+	int index;
+	int mode;
+
+} playlist_transfer_t;
+
+playlist_t * playlist_get_current(void);
+playlist_t * playlist_get_playing(void);
+
+playlist_transfer_t * playlist_transfer_new(playlist_t * pl);
+
+GtkTreePath * playlist_get_playing_path(playlist_t * pl);
+
+void delayed_playlist_rearrange(void);
+void playlist_size_allocate_all(void);
+
 void create_playlist(void);
 void show_playlist(void);
 void hide_playlist(void);
 
-void playlist_stats_set_busy();
-void playlist_progress_bar_show(void);
-void playlist_progress_bar_hide(void);
 
+void playlist_stats_set_busy(void);
+void playlist_progress_bar_show(playlist_t * pl);
+void playlist_progress_bar_hide_all(void);
+
+
+void playlist_load_entity(const char * filename, int mode);
+void playlist_load_xml(char * filename, int mode);
+void playlist_save_all(char * filename);
+
+void playlist_disable_bold_font(void);
 void set_playlist_color(void);
-void save_playlist(char * filename);
-void playlist_content_changed(void);
+
+void playlist_content_changed(playlist_t * pl);
+void playlist_selection_changed(playlist_t * pl);
 void playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer data);
 gint playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent);
-void playlist_foreach_selected(void (* foreach)(GtkTreeIter *, void *), void * data);
+void playlist_foreach_selected(playlist_t * pl,
+			       void (* foreach)(playlist_t *, GtkTreeIter *, void *),
+			       void * data);
 
-void * playlist_load_thread(void * arg);
-void * playlist_enqueue_thread(void * arg);
+void mark_track(GtkTreeStore * store, GtkTreeIter * piter);
+void unmark_track(GtkTreeStore * store, GtkTreeIter * piter);
 
 
 #ifdef HAVE_CDDA
@@ -53,16 +124,16 @@ void playlist_remove_cdda(char * device_path);
 #endif /* HAVE_CDDA */
 
 enum {
-    COLUMN_TRACK_NAME = 0,          
-    COLUMN_PHYSICAL_FILENAME,       
-    COLUMN_SELECTION_COLOR,         
-    COLUMN_VOLUME_ADJUSTMENT,       
-    COLUMN_VOLUME_ADJUSTMENT_DISP,  
-    COLUMN_DURATION,                
-    COLUMN_DURATION_DISP,           
-    COLUMN_FONT_WEIGHT,             
+	COLUMN_TRACK_NAME = 0,
+	COLUMN_PHYSICAL_FILENAME,
+	COLUMN_SELECTION_COLOR,
+	COLUMN_VOLUME_ADJUSTMENT,
+	COLUMN_VOLUME_ADJUSTMENT_DISP,
+	COLUMN_DURATION,  
+	COLUMN_DURATION_DISP,
+	COLUMN_FONT_WEIGHT,
 
-    NUMBER_OF_COLUMNS               /* it must be the last entry here */
+	NUMBER_OF_COLUMNS /* it must be the last entry here */
 };
 
 #endif /* _PLAYLIST_H */

@@ -33,6 +33,7 @@ typedef struct _vol_queue_t {
         struct _vol_queue_t * next;
 } vol_queue_t;
 
+void voladj2str(float voladj, char * str);
 
 vol_queue_t * vol_queue_push(vol_queue_t * q, char * file, GtkTreeIter iter);
 void calculate_volume(vol_queue_t * q, float * volumes);

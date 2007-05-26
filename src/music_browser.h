@@ -49,7 +49,6 @@ void artist__addlist_defmode(gpointer data);
 void record__addlist_defmode(gpointer data);
 void track__addlist_cb(gpointer data);
 
-void record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode);
 
 #ifdef HAVE_CDDA
 int is_store_path_cdda(GtkTreePath * p);

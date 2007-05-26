@@ -53,10 +53,8 @@
 extern options_t options;
 
 extern GtkWidget * vol_window;
-extern GtkWidget * play_list;
 extern GtkWidget * musicstore_toggle;
 
-extern GtkTreeStore * play_store;
 extern GtkListStore * ms_pathlist_store;
 
 extern PangoFontDescription *fd_browser;
@@ -2309,7 +2307,8 @@ generic_remove_cb(char * title) {
 
 /* returns the duration of the track */
 float
-track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * dest,
+track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
+		   GtkTreeIter * parent, GtkTreeIter * dest,
 		   float avg_voladj, int use_avg_voladj) {
 
         GtkTreeIter iter_artist;
@@ -2460,11 +2459,11 @@ track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * d
 	}
 	
 	/* either parent or dest should be set, but not both */
-	gtk_tree_store_insert_before(play_store, &list_iter, parent, dest);
+	gtk_tree_store_insert_before(pl->store, &list_iter, parent, dest);
 	
 	voladj2str(voladj, voladj_str);
 	
-	gtk_tree_store_set(play_store, &list_iter, 0, list_str, 1, file,
+	gtk_tree_store_set(pl->store, &list_iter, 0, list_str, 1, file,
 			   2, pl_color_inactive, 3, voladj, 4, voladj_str,
 			   5, duration, 6, duration_str, -1);
 
@@ -2473,7 +2472,8 @@ track_addlist_iter(GtkTreeIter iter_track, GtkTreeIter * parent, GtkTreeIter * d
 
 
 void
-record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode) {
+record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl,
+		    GtkTreeIter * dest, int album_mode) {
 
         GtkTreeIter iter_track;
 	GtkTreeIter list_iter;
@@ -2562,8 +2562,8 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 			g_free(partist_name);
 		}
 
-		gtk_tree_store_insert_before(play_store, &list_iter, NULL, dest);
-		gtk_tree_store_set(play_store, &list_iter, 0, name_str, 1, packed_str,
+		gtk_tree_store_insert_before(pl->store, &list_iter, NULL, dest);
+		gtk_tree_store_set(pl->store, &list_iter, 0, name_str, 1, packed_str,
 				   2, pl_color_inactive, 3, 0.0f/*voladj*/, 4, ""/*voladj_str*/,
 				   5, 0.0f/*duration*/, 6, "00:00"/*duration_str*/, -1);
 		plist_iter = &list_iter;
@@ -2574,14 +2574,14 @@ record_addlist_iter(GtkTreeIter iter_record, GtkTreeIter * dest, int album_mode)
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track, &iter_record, i++)) {
-		record_duration += track_addlist_iter(iter_track, plist_iter, dest, voladj,
+		record_duration += track_addlist_iter(iter_track, pl, plist_iter, dest, voladj,
 						      options.rva_use_averaging);
 	}
 
 	if (album_mode) {
 		char record_duration_str[MAXLEN];
 		time2time(record_duration, record_duration_str);
-		gtk_tree_store_set(play_store, &list_iter, 5, record_duration, 6, record_duration_str, -1);
+		gtk_tree_store_set(pl->store, &list_iter, 5, record_duration, 6, record_duration_str, -1);
 	}
 }
 
@@ -2592,6 +2592,7 @@ typedef struct {
 	GtkTreeIter iter_artist;
 	GtkTreeIter iter_record;
 	GtkTreeIter dest;
+	playlist_t * pl;
 	int dest_null;
 	int album_mode;
 	int i_artist;
@@ -2661,7 +2662,9 @@ music_store_progress_bar_hide(void) {
 void
 finalize_addlist_iter(addlist_iter_t * add_list) {
 
-	--ms_progress_bar_semaphore;
+	ms_progress_bar_semaphore--;
+
+	add_list->pl->ms_semaphore--;
 
 	if (!stop_adding_to_playlist) {
 		ms_progress_bar_num -= add_list->count;
@@ -2670,8 +2673,8 @@ finalize_addlist_iter(addlist_iter_t * add_list) {
 
 	if (browser_window != NULL && ms_progress_bar_semaphore == 0) {
 		music_store_progress_bar_hide();
-		playlist_content_changed();
-		delayed_playlist_rearrange(100);
+		playlist_content_changed(add_list->pl);
+		delayed_playlist_rearrange();
 
 		ms_progress_bar_num = 0;
 		ms_progress_bar_den = 0;
@@ -2691,11 +2694,11 @@ artist_addlist_iter_cb(gpointer data) {
 	if (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
 			  &add_iter->iter_record, &add_iter->iter_artist, add_iter->i_record++)) {
 
-		if (!add_iter->dest_null && !gtk_tree_store_iter_is_valid(play_store, &add_iter->dest)) {
+		if (!add_iter->dest_null && !gtk_tree_store_iter_is_valid(add_iter->pl->store, &add_iter->dest)) {
 			add_iter->dest_null = 1;
 		}
 
-		record_addlist_iter(add_iter->iter_record,
+		record_addlist_iter(add_iter->iter_record, add_iter->pl,
 				    add_iter->dest_null ? NULL : &add_iter->dest,
 				    add_iter->album_mode);
 
@@ -2724,11 +2727,11 @@ store_addlist_iter_cb(gpointer data) {
 	if (add_iter->i_artist > 0 && gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
 					  &add_iter->iter_record, &add_iter->iter_artist, add_iter->i_record++)) {
 
-		if (!add_iter->dest_null && !gtk_tree_store_iter_is_valid(play_store, &add_iter->dest)) {
+		if (!add_iter->dest_null && !gtk_tree_store_iter_is_valid(add_iter->pl->store, &add_iter->dest)) {
 			add_iter->dest_null = 1;
 		}
 
-		record_addlist_iter(add_iter->iter_record,
+		record_addlist_iter(add_iter->iter_record, add_iter->pl,
 				    add_iter->dest_null ? NULL : &add_iter->dest,
 				    add_iter->album_mode);
 
@@ -2755,7 +2758,7 @@ store_addlist_iter_cb(gpointer data) {
 
 
 void
-artist_addlist_iter(GtkTreeIter iter_artist, GtkTreeIter * dest, int album_mode) {
+artist_addlist_iter(GtkTreeIter iter_artist, playlist_t * pl, GtkTreeIter * dest, int album_mode) {
 
 	addlist_iter_t * add_iter;
 
@@ -2768,6 +2771,8 @@ artist_addlist_iter(GtkTreeIter iter_artist, GtkTreeIter * dest, int album_mode)
 		free(add_iter);
 		return;
 	}
+
+	add_iter->pl = pl;
 
 	ms_progress_bar_den += add_iter->count;
 
@@ -2785,12 +2790,13 @@ artist_addlist_iter(GtkTreeIter iter_artist, GtkTreeIter * dest, int album_mode)
 	playlist_stats_set_busy();
 
 	ms_progress_bar_show();
+	pl->ms_semaphore++;
 	g_idle_add(artist_addlist_iter_cb, (gpointer)add_iter);
 }
 
 
 void
-store_addlist_iter(GtkTreeIter iter_store, GtkTreeIter * dest, int album_mode) {
+store_addlist_iter(GtkTreeIter iter_store, playlist_t * pl, GtkTreeIter * dest, int album_mode) {
 
 	addlist_iter_t * add_iter;
 
@@ -2803,6 +2809,8 @@ store_addlist_iter(GtkTreeIter iter_store, GtkTreeIter * dest, int album_mode) {
 		free(add_iter);
 		return;
 	}
+
+	add_iter->pl = pl;
 
 	ms_progress_bar_den += add_iter->count;
 
@@ -2820,6 +2828,7 @@ store_addlist_iter(GtkTreeIter iter_store, GtkTreeIter * dest, int album_mode) {
 	playlist_stats_set_busy();
 
 	ms_progress_bar_show();
+	pl->ms_semaphore++;
 	g_idle_add(store_addlist_iter_cb, (gpointer)add_iter);
 }
 
@@ -2833,9 +2842,10 @@ void
 store__addlist_with_mode(int mode, gpointer data) {
 
         GtkTreeIter iter_store;
+	playlist_t * pl = playlist_get_current();
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_store)) {
-		store_addlist_iter(iter_store, (GtkTreeIter *)data, mode);
+		store_addlist_iter(iter_store, pl, (GtkTreeIter *)data, mode);
 	}
 }
 
@@ -3137,9 +3147,10 @@ void
 artist__addlist_with_mode(int mode, gpointer data) {
 
         GtkTreeIter iter_artist;
+	playlist_t * pl = playlist_get_current();
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_artist)) {
-		artist_addlist_iter(iter_artist, (GtkTreeIter *)data, mode);
+		artist_addlist_iter(iter_artist, pl, (GtkTreeIter *)data, mode);
 	}
 }
 
@@ -3320,11 +3331,12 @@ void
 record__addlist_with_mode(int mode, gpointer data) {
 
         GtkTreeIter iter_record;
+	playlist_t * pl = playlist_get_current();
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_record)) {
-		record_addlist_iter(iter_record, (GtkTreeIter *)data, mode);
-		playlist_content_changed();
-		delayed_playlist_rearrange(100);
+		record_addlist_iter(iter_record, pl, (GtkTreeIter *)data, mode);
+		playlist_content_changed(pl);
+		delayed_playlist_rearrange();
 	}
 }
 
@@ -3564,11 +3576,12 @@ void
 track__addlist_cb(gpointer data) {
 
         GtkTreeIter iter_track;
+	playlist_t * pl = playlist_get_current();
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_track)) {
-		track_addlist_iter(iter_track, NULL, (GtkTreeIter *)data, 0.0f, 0);
-		playlist_content_changed();
-		delayed_playlist_rearrange(100);
+		track_addlist_iter(iter_track, pl, NULL, (GtkTreeIter *)data, 0.0f, 0);
+		playlist_content_changed(pl);
+		delayed_playlist_rearrange();
 	}
 }
 

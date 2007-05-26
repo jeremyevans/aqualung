@@ -46,9 +46,7 @@ void normalize_filename(const char * in, char * out);
 
 void try_waking_disk_thread(void);
 void toggle_noeffect(int id, int state);
-void mark_track(GtkTreeIter * piter);
-void unmark_track(GtkTreeIter * piter);
-void cue_track_for_playback(GtkTreeIter * piter, cue_t * cue);
+void cue_track_for_playback(GtkTreeStore * store, GtkTreeIter * piter, cue_t * cue);
 
 void create_gui(int argc, char ** argv, int optind, int enqueue,
 		unsigned long rate, unsigned long rb_audio_size);

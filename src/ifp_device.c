@@ -44,8 +44,6 @@
 #include "playlist.h"
 
 extern options_t options;
-extern GtkListStore * play_store;
-extern GtkTreeSelection * play_select;
 extern GtkWidget * playlist_window;
 extern GtkWidget * main_window;
 extern GtkTooltips * aqualung_tooltips;
@@ -117,7 +115,7 @@ update_progress (void *context, struct ifp_transfer_status *status) {
 
 
 void
-upload_songs_cb_foreach(GtkTreeIter * iter, void * data) {
+upload_songs_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
 	int i;
 	int * n = (int *)data;
@@ -128,7 +126,7 @@ upload_songs_cb_foreach(GtkTreeIter * iter, void * data) {
 		return;
 	}
 
-	gtk_tree_model_get(GTK_TREE_MODEL(play_store), iter, 1, &str, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, 1, &str, -1);
 
 	i = strlen(str);
 
@@ -165,6 +163,11 @@ void
 upload_songs_cb(GtkButton * button, gpointer user_data) {
 
 	int n = 0;
+	playlist_t * pl = playlist_get_current();
+
+	if (pl == NULL) {
+		return;
+	}
 
         gtk_widget_set_sensitive(abort_button, TRUE);
         gtk_widget_set_sensitive(upload_button, FALSE);
@@ -181,7 +184,7 @@ upload_songs_cb(GtkButton * button, gpointer user_data) {
                 strncat(dest_dir, remote_directory, MAXLEN-1);
 	}
 
-	playlist_foreach_selected(upload_songs_cb_foreach, &n);
+	playlist_foreach_selected(pl, upload_songs_cb_foreach, &n);
 
         gtk_widget_set_sensitive(abort_button, FALSE);
         gtk_widget_set_sensitive(close_button, TRUE);
@@ -499,13 +502,13 @@ aifp_update_info(void) {
 /* get the number of songs to send and overall data size to be transmitted */
 
 void
-aifp_get_songs_info_foreach(GtkTreeIter * iter, void * data) {
+aifp_get_songs_info_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
         struct stat statbuf;
 	gchar * file;
 	gint * num = (int *)data;
 
-	gtk_tree_model_get(GTK_TREE_MODEL(play_store), iter, 1, &file, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, 1, &file, -1);
 
 	if (stat(file, &statbuf) != -1) {
 		songs_size += statbuf.st_size;
@@ -519,8 +522,11 @@ gint
 aifp_get_songs_info(void) {
 
 	gint num = 0;
+	playlist_t * pl = playlist_get_current();
 
-	playlist_foreach_selected(aifp_get_songs_info_foreach, &num);
+	if (pl != NULL) {
+		playlist_foreach_selected(pl, aifp_get_songs_info_foreach, &num);
+	}
 
 	return num;
 }

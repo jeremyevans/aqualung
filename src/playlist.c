@@ -2400,6 +2400,38 @@ cut__sel_cb(gpointer data) {
 }
 
 
+void
+playlist_reorder_columns_foreach(gpointer data, gpointer user_data) {
+
+	playlist_t * pl = (playlist_t *)data;
+	int * order = (int *)user_data;
+	GtkTreeViewColumn * cols[3];
+	int i;
+
+	cols[0] = pl->track_column;
+	cols[1] = pl->rva_column;
+	cols[2] = pl->length_column;
+
+        for (i = 2; i >= 0; i--) {
+		gtk_tree_view_move_column_after(GTK_TREE_VIEW(pl->view),
+						cols[order[i]], NULL);
+	}
+
+	gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(pl->rva_column),
+					 options.show_rva_in_playlist);
+	gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(pl->length_column),
+					 options.show_length_in_playlist);
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(pl->view), options.enable_pl_rules_hint);
+}
+
+void
+playlist_reorder_columns_all(int * order) {
+
+	g_list_foreach(playlists, playlist_reorder_columns_foreach, order);
+}
+
+
+
 gint
 playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event, gpointer data) {
 

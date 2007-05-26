@@ -102,14 +102,6 @@ extern int music_store_changed;
 extern GtkWidget * music_tree;
 extern GtkTreeStore * music_store;
 
-extern GtkWidget * play_list;
-/*
-extern GtkTreeViewColumn * track_column;
-extern GtkTreeViewColumn * rva_column;
-extern GtkTreeViewColumn * length_column;
-*/
-extern GtkListStore * play_store;
-
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern void set_buttons_relief(void);
 extern void show_active_position_in_playlist(void);
@@ -322,8 +314,6 @@ set_option_from_entry(GtkWidget * widget, char * opt) {
 void
 options_window_accept(void) {
 
-	/*int n;
-	  int n_prev = 3;*/
 	int i;
 	GtkTreeIter iter;
 	GtkTreeIter iter2;
@@ -360,7 +350,6 @@ options_window_accept(void) {
 
 
 	/* Playlist */
-	/*
 	set_option_from_toggle(check_autoplsave, &options.auto_save_playlist);
 	set_option_from_toggle(check_playlist_is_embedded, &options.playlist_is_embedded_shadow);
 	set_option_from_toggle(check_playlist_is_tree, &options.playlist_is_tree);
@@ -368,19 +357,13 @@ options_window_accept(void) {
 	set_option_from_toggle(check_enable_playlist_statusbar, &options.enable_playlist_statusbar_shadow);
 	set_option_from_toggle(check_pl_statusbar_show_size, &options.pl_statusbar_show_size);
 	set_option_from_toggle(check_show_rva_in_playlist, &options.show_rva_in_playlist);
-	gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(rva_column),
-					 options.show_rva_in_playlist);
 	set_option_from_toggle(check_show_length_in_playlist, &options.show_length_in_playlist);
-	gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(length_column),
-					 options.show_length_in_playlist);
 	set_option_from_toggle(check_show_active_track_name_in_bold, &options.show_active_track_name_in_bold);
 	if (!options.show_active_track_name_in_bold) {
                 playlist_disable_bold_font();
 	}
 
 	set_option_from_toggle(check_enable_pl_rules_hint, &options.enable_pl_rules_hint);
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(play_list), options.enable_pl_rules_hint);
-	*/
 
 	/* Music Store */
 
@@ -467,31 +450,18 @@ options_window_accept(void) {
 
 
         /* refresh GUI */
-	/*
-        for (i = 0; i < 3; i++) {
-
+	{
+		int i;
 		GtkTreeIter iter;
-		GtkTreeViewColumn * cols[4];
-		char * pnumstr;
 
-		cols[0] = track_column;
-		cols[1] = rva_column;
-		cols[2] = length_column;
-		cols[3] = NULL;
-
-		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(plistcol_store), &iter, NULL, i);
-		
-		gtk_tree_model_get(GTK_TREE_MODEL(plistcol_store), &iter, 1, &pnumstr, -1);
-		n = atoi(pnumstr);
-		g_free(pnumstr);
-
-		gtk_tree_view_move_column_after(GTK_TREE_VIEW(play_list),
-						cols[n], cols[n_prev]);
-
-		options.plcol_idx[i] = n;
-		n_prev = n;
-	}	
-	*/
+		for (i = 0; i < 3; i++) {
+			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(plistcol_store),
+						      &iter, NULL, i);
+			gtk_tree_model_get(GTK_TREE_MODEL(plistcol_store), &iter,
+					   1, options.plcol_idx + i, -1);
+		}
+		playlist_reorder_columns_all(options.plcol_idx);
+	}
 
         if (!track_name_in_bold_shadow && options.show_active_track_name_in_bold == 1) {
 		reskin_flag = 1;
@@ -505,7 +475,7 @@ options_window_accept(void) {
                 open_font_desc();
 
                 gtk_widget_modify_font (music_tree, fd_browser);
-                gtk_widget_modify_font (play_list, fd_playlist);
+                /*gtk_widget_modify_font (play_list, fd_playlist);*/
 
                 gtk_widget_modify_font (bigtimer_label, fd_bigtimer);
                 gtk_widget_modify_font (smalltimer_label_1, fd_smalltimer);
@@ -2065,7 +2035,7 @@ to set the column order in the Playlist."));
 
 	plistcol_store = gtk_list_store_new(2,
 					    G_TYPE_STRING,   /* Column name */
-					    G_TYPE_STRING);  /* Column index */
+					    G_TYPE_INT);     /* Column index */
 
         plistcol_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(plistcol_store));
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(plistcol_list), FALSE);
@@ -2087,17 +2057,17 @@ to set the column order in the Playlist."));
 		case 0:
 			gtk_list_store_append(plistcol_store, &iter);
 			gtk_list_store_set(plistcol_store, &iter,
-					   0, _("Track titles"), 1, "0", -1);
+					   0, _("Track titles"), 1, 0, -1);
 			break;
 		case 1:
 			gtk_list_store_append(plistcol_store, &iter);
 			gtk_list_store_set(plistcol_store, &iter,
-					   0, _("RVA values"), 1, "1", -1);
+					   0, _("RVA values"), 1, 1, -1);
 			break;
 		case 2:
 			gtk_list_store_append(plistcol_store, &iter);
 			gtk_list_store_set(plistcol_store, &iter,
-					   0, _("Track lengths"), 1, "2", -1);
+					   0, _("Track lengths"), 1, 2, -1);
 			break;
 		}
 	}
@@ -3166,11 +3136,12 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
 
         if (gdk_color_parse(options.activesong_color, &color) == FALSE) {
-
+		/*
                 color.red = play_list->style->fg[SELECTED].red; 
                 color.green = play_list->style->fg[SELECTED].green; 
                 color.blue = play_list->style->fg[SELECTED].blue; 
-                color.pixel = (gulong)((color.red & 0xff00)*256 + (color.green & 0xff00) + (color.blue & 0xff00)/256); 
+                color.pixel = (gulong)((color.red & 0xff00)*256 + (color.green & 0xff00) + (color.blue & 0xff00)/256);
+		*/
         }
 
         color_picker = gtk_color_button_new_with_color (&color);

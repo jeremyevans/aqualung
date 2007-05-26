@@ -195,6 +195,7 @@ void rem__all_cb(gpointer data);
 void rem__sel_cb(gpointer data);
 void cut__sel_cb(gpointer data);
 void plist__search_cb(gpointer data);
+void rem_all(playlist_t * pl);
 void add_files(GtkWidget * widget, gpointer data);
 void recalc_album_node(playlist_t * pl, GtkTreeIter * iter);
 
@@ -206,8 +207,7 @@ void expand_collapse_album_node(playlist_t * pl);
 
 void playlist_save(playlist_t * pl, char * filename);
 
-playlist_transfer_t * playlist_transfer_get(int mode, char * name);
-
+void playlist_load_xml(char * filename, int mode, playlist_transfer_t * ptrans);
 void load_m3u(char * filename, int enqueue);
 void load_pls(char * filename, int enqueue);
 gint is_playlist(char * filename);
@@ -466,7 +466,7 @@ set_playlist_color_foreach(gpointer data, gpointer user_data) {
 }
 
 void
-set_playlist_color() {
+set_playlist_color(void) {
 	
 	g_list_foreach(playlists, set_playlist_color_foreach, NULL);
 }
@@ -952,11 +952,15 @@ add_file_to_playlist(gpointer data) {
 	playlist_transfer_t * pt = (playlist_transfer_t *)data;
 	playlist_filemeta * plfm = (playlist_filemeta *)pt->plfm;
 
-	AQUALUNG_MUTEX_LOCK(pt->pl->wait_mutex)
+	AQUALUNG_MUTEX_LOCK(pt->pl->wait_mutex);
 
-	if (plfm == NULL) {
-		//rem__all_cb(pt->pl);
-	} else {
+	if (pt->clear) {
+		rem_all(pt->pl);
+		pt->clear = 0;
+	}
+
+	if (plfm != NULL) {
+
 		GtkTreeIter iter;
 		GtkTreePath * path;
 		gchar voladj_str[32];
@@ -1034,7 +1038,6 @@ playlist_thread_add_to_list(playlist_transfer_t * pt) {
 	AQUALUNG_MUTEX_UNLOCK(pt->pl->wait_mutex);
 }
 
-
 void *
 add_files_to_playlist_thread(void * arg) {
 
@@ -1045,13 +1048,14 @@ add_files_to_playlist_thread(void * arg) {
 
 	AQUALUNG_MUTEX_LOCK(pt->pl->thread_mutex);
 
+	printf("--> add_files_to_playlist_thread\n");
+
 	for (node = pt->list; node; node = node->next) {
 
 		if (!pt->pl->thread_stop) {
 			playlist_filemeta * plfm = NULL;
 
 			if ((plfm = playlist_filemeta_get((char *)node->data, NULL, 1)) != NULL) {
-
 				pt->plfm = plfm;
 				playlist_thread_add_to_list(pt);
 			}
@@ -1063,6 +1067,8 @@ add_files_to_playlist_thread(void * arg) {
 	g_slist_free(pt->list);
 
 	g_idle_add(finalize_add_to_playlist, pt);
+
+	printf("<-- add_files_to_playlist_thread\n");
 
 	AQUALUNG_MUTEX_UNLOCK(pt->pl->thread_mutex);
 
@@ -1182,6 +1188,8 @@ add_dir_to_playlist_thread(void * arg) {
 
 	AQUALUNG_MUTEX_LOCK(pt->pl->thread_mutex);
 
+	printf("--> add_dir_to_playlist_thread\n");
+
 	for (node = pt->list; node; node = node->next) {
 
 		add_dir_to_playlist(pt, (char *)node->data);
@@ -1191,6 +1199,8 @@ add_dir_to_playlist_thread(void * arg) {
 	g_slist_free(pt->list);
 
 	g_idle_add(finalize_add_to_playlist, pt);
+
+	printf("<-- add_dir_to_playlist_thread\n");
 
 	AQUALUNG_MUTEX_UNLOCK(pt->pl->thread_mutex)
 
@@ -1422,6 +1432,7 @@ playlist_transfer_get(int mode, char * name) {
 	if (mode == PLAYLIST_LOAD_TAB) {
 		pl = playlist_tab_new(name);
 		pt = playlist_transfer_new(pl);
+		pt->on_the_fly = 1;
 	} else {
 		if (name == NULL) {
 			pl = playlist_get_current();
@@ -1432,17 +1443,21 @@ playlist_transfer_get(int mode, char * name) {
 			pl = playlist_tab_new(name);
 		}
 		pt = playlist_transfer_new(pl);
+		pt->on_the_fly = 1;
 	}
 
 	if (mode == PLAYLIST_LOAD) {
-		gtk_tree_store_clear(pt->pl->store);
+		pt->clear = 1;
 	}
 
 	return pt;
 }
 
+
+/* if (ptrans == NULL) then loads file/dir/playlist according to mode,
+   else ignore the mode and use the supplied ptrans as destination */
 void
-playlist_load_entity(const char * filename, int mode) {
+playlist_load_entity(const char * filename, int mode, playlist_transfer_t * ptrans) {
 
 	playlist_transfer_t * pt = NULL;
 	char fullname[MAXLEN];
@@ -1451,8 +1466,11 @@ playlist_load_entity(const char * filename, int mode) {
 
 	switch (is_playlist(fullname)) {
 	case 0:
-
-		pt = playlist_transfer_get(mode, NULL);
+		if (ptrans != NULL) {
+			pt = ptrans;
+		} else {
+			pt = playlist_transfer_get(mode, NULL);
+		}
 		pt->list = g_slist_append(NULL, strdup(fullname));
 		playlist_progress_bar_show(pt->pl);
 
@@ -1468,13 +1486,13 @@ playlist_load_entity(const char * filename, int mode) {
 
 		break;
 	case 1:
-		playlist_load_xml(fullname, mode);
+		playlist_load_xml(fullname, mode, ptrans);
 		break;
 	case 2:
-		//playlist_load_m3u(fullname, mode);
+		//playlist_load_m3u(fullname, mode, ptrans);
 		break;
 	case 3:
-		//playlist_load_pls(fullname, mode);
+		//playlist_load_pls(fullname, mode, ptrans);
 		break;
 	}
 }
@@ -1508,7 +1526,7 @@ playlist_load_dialog(int mode) {
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
                 strncpy(options.currdir, selected_filename, MAXLEN-1);
 
-		playlist_load_entity(selected_filename, mode);
+		playlist_load_entity(selected_filename, mode, NULL);
         }
 
         gtk_widget_destroy(dialog);
@@ -1520,59 +1538,11 @@ plist__load_cb(gpointer data) {
 	playlist_load_dialog(PLAYLIST_LOAD);
 }
 
-/*
-void *
-playlist_enqueue_thread(void * arg) {
-
-	char * filename = (char *)arg;
-	char fullname[MAXLEN];
-	playlist_filemeta * plfm = NULL;
-
-
-	AQUALUNG_THREAD_DETACH()
-
-	if (!filename) {
-		return NULL;
-	}
-
-	AQUALUNG_MUTEX_LOCK(playlist_thread_mutex)
-
-	normalize_filename(filename, fullname);
-	free(filename);
-
-	switch (is_playlist(fullname)) {
-	case 0:
-		if ((plfm = playlist_filemeta_get(fullname, NULL, 1)) == NULL) {
-			fprintf(stderr, "playlist_enqueue_thread(): playlist_filemeta_get() returned NULL\n");
-		} else {
-			//playlist_thread_add_to_list(plfm); // TODO
-		}
-		break;
-	case 1:
-		load_playlist(fullname, 1);
-		break;
-	case 2:
-		load_m3u(fullname, 1);
-		break;
-	case 3:
-		load_pls(fullname, 1);
-		break;
-	}
-
-	g_idle_add(finalize_add_to_playlist, NULL);
-
-	AQUALUNG_MUTEX_UNLOCK(playlist_thread_mutex)
-
-	return NULL;
-}
-*/
-
 void
 plist__enqueue_cb(gpointer data) {
 
 	playlist_load_dialog(PLAYLIST_ENQUEUE);
 }
-
 
 void
 plist__load_tab_cb(gpointer data) {
@@ -2238,13 +2208,19 @@ rem__sel_cb(gpointer data) {
 					i--;
 				} else {
 					int j = 0;
+					int recalc = 0;
 					GtkTreeIter iter_child;
 
 					while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter_child, &iter, j++)) {
 						if (gtk_tree_selection_iter_is_selected(pl->select, &iter_child)) {
 							gtk_tree_store_remove(pl->store, &iter_child);
 							j--;
-		}
+							recalc = 1;
+						}
+					}
+
+					if (recalc) {
+						recalc_album_node(pl, &iter);
 					}
 				}
 			}
@@ -2428,6 +2404,11 @@ void
 playlist_reorder_columns_all(int * order) {
 
 	g_list_foreach(playlists, playlist_reorder_columns_foreach, order);
+
+	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(playlist_notebook)) == 1) {
+		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(playlist_notebook),
+					   options.playlist_always_show_tabs);
+	}
 }
 
 
@@ -3229,11 +3210,11 @@ playlist_tab_close(GtkButton * button, gpointer data) {
 			gtk_notebook_remove_page(GTK_NOTEBOOK(playlist_notebook), i);
 			playlist_free(pl);
 
-			/*
-			if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(playlist_notebook)) == 1) {
+			if (!options.playlist_always_show_tabs &&
+			    gtk_notebook_get_n_pages(GTK_NOTEBOOK(playlist_notebook)) == 1) {
 				gtk_notebook_set_show_tabs(GTK_NOTEBOOK(playlist_notebook), FALSE);
 			}
-			*/
+
 			return;
 		}
 	}
@@ -3464,6 +3445,12 @@ create_playlist_gui(playlist_t * pl) {
 				 pl->widget,
 				 create_playlist_tab_label(pl));
 
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(playlist_notebook), -1);
+
+	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(playlist_notebook)) > 1) {
+		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(playlist_notebook), TRUE);
+	}
+
 	playlist_rename(pl, NULL);
 }
 
@@ -3549,7 +3536,8 @@ create_playlist(void) {
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(playlist_notebook), FALSE);
 	gtk_notebook_popup_enable(GTK_NOTEBOOK(playlist_notebook));
 	gtk_notebook_set_scrollable(GTK_NOTEBOOK(playlist_notebook), TRUE);
-	/*gtk_notebook_set_show_tabs(GTK_NOTEBOOK(playlist_notebook), FALSE);*/
+	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(playlist_notebook),
+				   options.playlist_always_show_tabs);
         gtk_box_pack_start(GTK_BOX(vbox), playlist_notebook, TRUE, TRUE, 0);
 
 	if (playlists != NULL) {
@@ -3719,6 +3707,14 @@ create_playlist(void) {
 	*/
 }
        
+
+void
+playlist_ensure_tab_exists() {
+
+	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(playlist_notebook)) == 0) {
+		playlist_tab_new(NULL);
+	}
+}
 
 
 void
@@ -4008,6 +4004,8 @@ playlist_load_xml_thread(void * arg) {
 
 	AQUALUNG_MUTEX_LOCK(pt->pl->thread_mutex);
 
+	printf("--> playlist_load_xml_thread\n");
+
 	for (cur = cur->xmlChildrenNode; cur != NULL && !pt->pl->thread_stop; cur = cur->next) {
 
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"track") ||
@@ -4021,6 +4019,8 @@ playlist_load_xml_thread(void * arg) {
 
  	g_idle_add(finalize_add_to_playlist, pt);
 
+	printf("<-- playlist_load_xml_thread\n");
+
 	AQUALUNG_MUTEX_UNLOCK(pt->pl->thread_mutex);
 
 	return NULL;
@@ -4028,7 +4028,7 @@ playlist_load_xml_thread(void * arg) {
 
 
 void
-playlist_load_xml(char * filename, int mode) {
+playlist_load_xml(char * filename, int mode, playlist_transfer_t * ptrans) {
 
         xmlDocPtr doc;
         xmlNodePtr cur;
@@ -4055,6 +4055,12 @@ playlist_load_xml(char * filename, int mode) {
 	if (!xmlStrcmp(cur->name, (const xmlChar *)"aqualung_playlist_multi")) {
 
 		printf("multi playlist detected\n");
+
+		if (ptrans != NULL && ptrans->on_the_fly) {
+			/* unnecessary tab for multitab playlist */
+			playlist_tab_close(NULL, ptrans->pl);
+			free(ptrans);
+		}
 
 		for (cur = cur->xmlChildrenNode;
 		     cur != NULL && !playlist_thread_stop; cur = cur->next) {
@@ -4084,11 +4090,20 @@ playlist_load_xml(char * filename, int mode) {
 
 	} else if (!xmlStrcmp(cur->name, (const xmlChar *)"aqualung_playlist")) {
 
-		playlist_transfer_t * pt = playlist_transfer_get(mode, NULL);
+		playlist_transfer_t * pt = NULL;
 		xmlChar * name = parse_playlist_name(doc, cur);
 
+		if (ptrans != NULL) {
+			pt = ptrans;
+		} else {
+			pt = playlist_transfer_get(mode, NULL);
+		}
+
 		if (name != NULL) {
-			playlist_rename(pt->pl, (char *)name);
+			printf("name = %s\n", name);
+			if (ptrans == NULL || !strcmp(ptrans->pl->name, _("(Untitled)"))) {
+				playlist_rename(pt->pl, (char *)name);
+			}
 			xmlFree(name);
 		}
 

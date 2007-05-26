@@ -142,6 +142,7 @@ plugin_instance * plugin_vect[MAX_PLUGINS];
 #endif /* HAVE_LADSPA */
 
 /* remote control */
+extern char * tab_name;
 extern int immediate_start;
 extern int aqualung_session_id;
 extern int aqualung_socket_fd;
@@ -1996,6 +1997,7 @@ print_usage(void) {
 		
 		"\nOptions for file loading:\n"
 		"-E, --enqueue: Don't clear the contents of the playlist when adding new items.\n"
+		"-t[<name>], --tab[=<name>]: Add files to the specified playlist tab.\n"
 		
 		"\nIf you don't specify a session number via --session, the files will be opened by "
 		"the new\ninstance, otherwise they will be sent to the already running instance you "
@@ -2101,7 +2103,7 @@ main(int argc, char ** argv) {
 	int remote_quit = 0;
 	char * voladj_arg = NULL;
 
-	char * optstring = "vho:d:c:n:p:r:a::RP:DY:s::l:m:N:BLUTFEV:Q";
+	char * optstring = "vho:d:c:n:p:r:a::RP:DY:s::l:m:N:BLUTFEV:Qt::";
 	struct option long_options[] = {
 		{ "version", 0, 0, 'v' },
 		{ "help", 0, 0, 'h' },
@@ -2116,9 +2118,10 @@ main(int argc, char ** argv) {
 		{ "priority", 1, 0, 'P' },
 		{ "disk-realtime", 0, 0, 'D' },
 		{ "disk-priority", 1, 0, 'Y' },
-		{ "srctype", 2, 0, 's' },	
+		{ "srctype", 2, 0, 's' },
                 { "show-pl", 1, 0, 'l' },
 		{ "show-ms", 1, 0, 'm' },
+		{ "tab", 2, 0, 't' },
 
 		{ "session", 1, 0, 'N' },
 		{ "back", 0, 0, 'B' },
@@ -2386,6 +2389,13 @@ main(int argc, char ** argv) {
                                 }
                                 break;
 
+			case 't':
+				if (optarg != NULL) {
+					tab_name = strdup(optarg);
+				} else {
+					tab_name = strdup("");
+				}
+				break;
 			case 'N':
 				no_session = atoi(optarg);
 				break;
@@ -2499,7 +2509,8 @@ main(int argc, char ** argv) {
 			for (i = optind; argv[i] != NULL; i++) {				
 
 				normalize_filename(argv[i], fullname);
-
+				printf("CORE: %s\n", fullname);
+				/*
 				if ((enqueue) || (i > optind)) {
 					buffer[0] = RCMD_ENQUEUE;
 					buffer[1] = '\0';
@@ -2511,6 +2522,7 @@ main(int argc, char ** argv) {
 					strncat(buffer, fullname, MAXLEN-1);
 					send_message_to_session(no_session, buffer, strlen(buffer));
 				}
+				*/
 			}
 			if (play) {
 				rcmd = RCMD_PLAY;

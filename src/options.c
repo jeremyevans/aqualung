@@ -140,6 +140,7 @@ GtkWidget * check_tags_tab_first;
 GtkWidget * check_playlist_is_embedded;
 GtkWidget * check_autoplsave;
 GtkWidget * check_playlist_is_tree;
+GtkWidget * check_playlist_always_show_tabs;
 GtkWidget * check_album_shuffle_mode;
 GtkWidget * check_enable_playlist_statusbar;
 GtkWidget * check_pl_statusbar_show_size;
@@ -353,6 +354,7 @@ options_window_accept(void) {
 	set_option_from_toggle(check_autoplsave, &options.auto_save_playlist);
 	set_option_from_toggle(check_playlist_is_embedded, &options.playlist_is_embedded_shadow);
 	set_option_from_toggle(check_playlist_is_tree, &options.playlist_is_tree);
+	set_option_from_toggle(check_playlist_always_show_tabs, &options.playlist_always_show_tabs);
 	set_option_from_toggle(check_album_shuffle_mode, &options.album_shuffle_mode);
 	set_option_from_toggle(check_enable_playlist_statusbar, &options.enable_playlist_statusbar_shadow);
 	set_option_from_toggle(check_pl_statusbar_show_size, &options.pl_statusbar_show_size);
@@ -1961,6 +1963,14 @@ create_options_window(void) {
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_tree, FALSE, TRUE, 0);
 
+        check_playlist_always_show_tabs =
+		gtk_check_button_new_with_label(_("Always show the tab bar"));
+	gtk_widget_set_name(check_playlist_always_show_tabs, "check_on_notebook");
+	if (options.playlist_always_show_tabs) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_always_show_tabs), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_always_show_tabs, FALSE, TRUE, 0);
+
         check_album_shuffle_mode =
 		gtk_check_button_new_with_label(_("When shuffling, records added in Album mode "
 						  "are played in order"));
@@ -3294,6 +3304,7 @@ save_config(void) {
 	SAVE_INT(playlist_on);
 	SAVE_INT_SH(playlist_is_embedded);
 	SAVE_INT(playlist_is_tree);
+	SAVE_INT(playlist_always_show_tabs);
 	SAVE_INT(album_shuffle_mode);
 	SAVE_INT_SH(enable_playlist_statusbar);
 	SAVE_FONT(browser_font);
@@ -3632,6 +3643,7 @@ load_config(void) {
 		LOAD_INT(playlist_on);
 		LOAD_INT_SH(playlist_is_embedded);
 		LOAD_INT(playlist_is_tree);
+		LOAD_INT(playlist_always_show_tabs);
 		LOAD_INT(album_shuffle_mode);
 		LOAD_INT_SH(enable_playlist_statusbar);
 		LOAD_FONT(browser_font);

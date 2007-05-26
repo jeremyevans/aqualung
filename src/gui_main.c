@@ -136,6 +136,8 @@ unsigned long long sample_pos;
    for current instance is specified. */
 int immediate_start = 0; 
 
+/* the tab to load remote files */
+char * tab_name;
 
 #ifdef HAVE_SNDFILE
 extern char * valid_extensions_sndfile[];
@@ -3327,19 +3329,40 @@ create_main_window(char * skin_path) {
 
 void
 process_filenames(char ** argv, int optind, int enqueue) {
-	/*
+
 	int i;
-	
-	for (i = optind; argv[i] != NULL; i++) {
-		if ((enqueue) || (i > optind)) {
-			playlist_progress_bar_show();
-			AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_enqueue_thread, strdup(argv[i]))
+	int mode;
+	char * name = NULL;
+	playlist_transfer_t * pt = NULL;
+
+	if (tab_name == NULL) {
+		if (enqueue) {
+			mode = PLAYLIST_ENQUEUE;
 		} else {
-			playlist_progress_bar_show();
-			AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_load_thread, strdup(argv[i]))
+			mode = PLAYLIST_LOAD;
+		}
+	} else {
+		if (strlen(tab_name) == 0) {
+			mode = PLAYLIST_LOAD_TAB;
+		} else {
+			name = strdup(tab_name);
+			if (enqueue) {
+				mode = PLAYLIST_ENQUEUE;
+			} else {
+				mode = PLAYLIST_LOAD;
+			}
 		}
 	}
-	*/
+
+	pt = playlist_transfer_get(mode, name);
+
+	for (i = optind; argv[i] != NULL; i++) {
+		playlist_load_entity(argv[i], mode, pt);
+	}
+
+	free(name);
+	free(tab_name);
+	tab_name = NULL;
 }
 
 
@@ -3723,14 +3746,17 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 		snprintf(playlist_name, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
 		if (g_file_test(playlist_name, G_FILE_TEST_EXISTS) == TRUE) {
-			playlist_load_xml(playlist_name, PLAYLIST_LOAD_TAB);
+			playlist_load_entity(playlist_name, PLAYLIST_LOAD_TAB, NULL);
 		}
 	}
 
-	set_playlist_color();
-
 	/* read command line filenames */
 	process_filenames(argv, optind, enqueue);
+
+	/* ensure that at least one playlist has been created */
+	playlist_ensure_tab_exists();
+
+	set_playlist_color();
 
 	/* activate jack client and connect ports */
 #ifdef HAVE_JACK

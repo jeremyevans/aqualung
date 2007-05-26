@@ -2673,7 +2673,9 @@ finalize_addlist_iter(addlist_iter_t * add_list) {
 
 	if (browser_window != NULL && ms_progress_bar_semaphore == 0) {
 		music_store_progress_bar_hide();
-		playlist_content_changed(add_list->pl);
+		if (add_list->pl == playlist_get_current()) {
+			playlist_content_changed(add_list->pl);
+		}
 		delayed_playlist_rearrange();
 
 		ms_progress_bar_num = 0;
@@ -3335,7 +3337,9 @@ record__addlist_with_mode(int mode, gpointer data) {
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_record)) {
 		record_addlist_iter(iter_record, pl, (GtkTreeIter *)data, mode);
-		playlist_content_changed(pl);
+		if (pl == playlist_get_current()) {
+			playlist_content_changed(pl);
+		}
 		delayed_playlist_rearrange();
 	}
 }
@@ -3580,7 +3584,9 @@ track__addlist_cb(gpointer data) {
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_track)) {
 		track_addlist_iter(iter_track, pl, NULL, (GtkTreeIter *)data, 0.0f, 0);
-		playlist_content_changed(pl);
+		if (pl == playlist_get_current()) {
+			playlist_content_changed(pl);
+		}
 		delayed_playlist_rearrange();
 	}
 }

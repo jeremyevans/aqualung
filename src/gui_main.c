@@ -2233,14 +2233,14 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	cue.filename = NULL;
 	
 	while ((pl = playlist_get_playing()) != NULL) {
-		pl->playing = 0;
+		playlist_set_playing(pl, 0);
 	}
 
 	if ((pl = playlist_get_current()) == NULL) {
 		return FALSE;
 	}
 
-	pl->playing = 1;
+	playlist_set_playing(pl, 1);
 
 	p = playlist_get_playing_path(pl);
 	if (p != NULL) {
@@ -3740,7 +3740,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
         }
 
 	zero_displays();
-
 	if (options.auto_save_playlist) {
 		char playlist_name[MAXLEN];
 
@@ -3749,7 +3748,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 			playlist_load_entity(playlist_name, PLAYLIST_LOAD_TAB, NULL);
 		}
 	}
-
 	/* read command line filenames */
 	process_filenames(argv, optind, enqueue);
 

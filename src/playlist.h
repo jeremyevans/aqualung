@@ -37,7 +37,6 @@ typedef struct {
 	AQUALUNG_MUTEX_DECLARE(wait_mutex)
 	AQUALUNG_COND_DECLARE(thread_wait)
 
-	volatile int data_written;
 	volatile int thread_stop;
 
 	int progbar_semaphore;
@@ -67,9 +66,11 @@ typedef struct {
 typedef struct {
 
 	playlist_t * pl;
-	void * plfm;
+
+	volatile int data_written;
 
 	GSList * list;
+	GList * plfm_list;
 
 	void * xml_doc;
 	void * xml_node;
@@ -78,6 +79,7 @@ typedef struct {
 	int mode;
 	int on_the_fly;
 	int clear;
+	int start_playback;
 
 } playlist_transfer_t;
 
@@ -96,6 +98,7 @@ void create_playlist(void);
 void show_playlist(void);
 void hide_playlist(void);
 
+void playlist_set_playing(playlist_t * pl, int playing);
 
 void playlist_stats_set_busy(void);
 void playlist_progress_bar_show(playlist_t * pl);

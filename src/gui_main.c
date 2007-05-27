@@ -3328,13 +3328,12 @@ create_main_window(char * skin_path) {
 
 
 void
-process_filenames(char ** argv, int optind, int enqueue, int start_playback) {
+process_filenames(GList * list, int enqueue, int start_playback, int has_tab, char * tab_name) {
 
-	int i;
 	int mode;
 	char * name = NULL;
 
-	if (tab_name == NULL) {
+	if (!has_tab) {
 		if (enqueue) {
 			mode = PLAYLIST_ENQUEUE;
 		} else {
@@ -3344,7 +3343,7 @@ process_filenames(char ** argv, int optind, int enqueue, int start_playback) {
 		if (strlen(tab_name) == 0) {
 			mode = PLAYLIST_LOAD_TAB;
 		} else {
-			name = strdup(tab_name);
+			name = tab_name;
 			if (enqueue) {
 				mode = PLAYLIST_ENQUEUE;
 			} else {
@@ -3353,19 +3352,7 @@ process_filenames(char ** argv, int optind, int enqueue, int start_playback) {
 		}
 	}
 
-	for (i = optind; argv[i] != NULL; i++) {
-		playlist_load_entity(argv[i], mode, name, start_playback);
-		start_playback = 0;
-	}
-
-	if (name != NULL) {
-		free(name);
-	}
-
-	if (tab_name != NULL) {
-		free(tab_name);
-		tab_name = NULL;
-	}
+	playlist_load(list, mode, name, start_playback);
 }
 
 
@@ -3744,18 +3731,31 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	zero_displays();
 	if (options.auto_save_playlist) {
-		/* start playback only if no files to be loaded on cmd line */
+		/* start playback only if no files to be loaded on command line */
 		int start_playback = (argv[optind] == NULL) && immediate_start;
-		char playlist_name[MAXLEN];
+		char file[MAXLEN];
 
-		snprintf(playlist_name, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
-		if (g_file_test(playlist_name, G_FILE_TEST_EXISTS) == TRUE) {
-			playlist_load_entity(playlist_name, PLAYLIST_LOAD_TAB,
-					     NULL, start_playback);
+		snprintf(file, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
+		if (g_file_test(file, G_FILE_TEST_EXISTS) == TRUE) {
+			GList * list = NULL;
+			list = g_list_append(NULL, strdup(file));
+			playlist_load(list, PLAYLIST_LOAD_TAB, NULL, start_playback);
 		}
 	}
+
 	/* read command line filenames */
-	process_filenames(argv, optind, enqueue, immediate_start);
+	{
+		int i;
+		GList * list = NULL;
+
+		for (i = optind; argv[i] != NULL; i++) {
+			list = g_list_append(list, strdup(argv[i]));
+		}
+
+		if (list != NULL) {
+			process_filenames(list, 0, immediate_start, (tab_name == NULL), tab_name);
+		}
+	}
 
 	/* ensure that at least one playlist has been created */
 	playlist_ensure_tab_exists();
@@ -3827,7 +3827,7 @@ timeout_callback(gpointer data) {
 	char rcmd;
 	static char cmdbuf[MAXLEN];
 	int rcv_count;
-	static int last_rcmd_loadenq = 0;
+	static GList * file_list = NULL;
 #ifdef HAVE_JACK
 	static int jack_popup_beenthere = 0;
 #endif /* HAVE_JACK */
@@ -3975,68 +3975,39 @@ timeout_callback(gpointer data) {
 		switch (rcmd) {
 		case RCMD_BACK:
 			prev_event(NULL, NULL, NULL);
-			last_rcmd_loadenq = 0;
 			break;
 		case RCMD_PLAY:
-			if (last_rcmd_loadenq != 2) {
-				if (is_paused) {
-					stop_event(NULL, NULL, NULL);
-				}
-				//immediate_start = 1;
-			}
-			last_rcmd_loadenq = 0;
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
+			     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
 			break;
 		case RCMD_PAUSE:
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
 			        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
-			last_rcmd_loadenq = 0;
 			break;
 		case RCMD_STOP:
 			stop_event(NULL, NULL, NULL);
-			last_rcmd_loadenq = 0;
 			break;
 		case RCMD_FWD:
 			next_event(NULL, NULL, NULL);
-			last_rcmd_loadenq = 0;
 			break;
-		case RCMD_LOAD:
-			/*
-			gtk_tree_store_clear(play_store);
-			playlist_progress_bar_show();
-			AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_load_thread, strdup(cmdbuf))
-			*/
-			last_rcmd_loadenq = 1;
+		case RCMD_ADD_FILE:
+			printf("RCMD_ADD_FILE: file = '%s'\n", cmdbuf);
+			file_list = g_list_append(file_list, strdup(cmdbuf));
 			break;
-		case RCMD_ENQUEUE:
-			/*
-			playlist_progress_bar_show();
-			AQUALUNG_THREAD_CREATE(playlist_thread_id, NULL, playlist_enqueue_thread, strdup(cmdbuf))
-			*/
-			if (last_rcmd_loadenq != 1)
-				last_rcmd_loadenq = 2;
+		case RCMD_ADD_COMMIT:
+			printf("RCMD_ADD_COMMIT: enqueue = %d, start_playback = %d, has_tab = %d, tab_name = '%s'\n", cmdbuf[0], cmdbuf[1], cmdbuf[2], cmdbuf+3);
+			process_filenames(file_list, cmdbuf[0], cmdbuf[1], cmdbuf[2], cmdbuf+3);
+			file_list = NULL;
 			break;
 		case RCMD_VOLADJ:
 			adjust_remote_volume(cmdbuf);
-			last_rcmd_loadenq = 0;
 			break;
 		case RCMD_QUIT:
 			main_window_close(NULL, NULL);
-			last_rcmd_loadenq = 0;
 			break;
 		}
 		++rcv_count;
 	}
-
-	/*
-	if (immediate_start) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
-		        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
-
-		if (is_file_loaded) {
-			immediate_start = 0;
-		}
-	}
-	*/
 
 	/* check for JACK shutdown condition */
 #ifdef HAVE_JACK

@@ -24,16 +24,16 @@
 
 
 /* valid remote command codes */
-#define RCMD_PING     1
-#define RCMD_BACK     2
-#define RCMD_PLAY     3
-#define RCMD_PAUSE    4
-#define RCMD_STOP     5
-#define RCMD_FWD      6
-#define RCMD_LOAD     7
-#define RCMD_ENQUEUE  8
-#define RCMD_QUIT     9
-#define RCMD_VOLADJ  10
+#define RCMD_PING        1
+#define RCMD_BACK        2
+#define RCMD_PLAY        3
+#define RCMD_PAUSE       4
+#define RCMD_STOP        5
+#define RCMD_FWD         6
+#define RCMD_ADD_FILE    7
+#define RCMD_ADD_COMMIT  8
+#define RCMD_QUIT        9
+#define RCMD_VOLADJ     10
 
 int create_socket(const char * filename);
 char receive_message(int fd, char * cmd_arg);

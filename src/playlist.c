@@ -175,10 +175,20 @@ typedef struct _playlist_filemeta {
 	int is_album_node;
 } playlist_filemeta;
 
+enum {
+	PLAYLIST_INVALID,
+	PLAYLIST_XML_SINGLE,
+	PLAYLIST_XML_MULTI,
+	PLAYLIST_M3U,
+	PLAYLIST_PLS
+};
 
 playlist_t * playlist_tab_new(char * name);
 void playlist_tab_close(GtkButton * button, gpointer data);
 void playlist_progress_bar_hide(playlist_t * pl);
+
+playlist_transfer_t * playlist_transfer_get(int mode, char * tab_name, int start_playback);
+
 
 playlist_filemeta * playlist_filemeta_get(char * physical_name, char * alt_name, int composit);
 void playlist_filemeta_free(playlist_filemeta * plfm);
@@ -208,10 +218,11 @@ void expand_collapse_album_node(playlist_t * pl);
 
 void playlist_save(playlist_t * pl, char * filename);
 
-void playlist_load_xml(char * filename, int mode, char * name, int start_playback);
-void load_m3u(char * filename, int enqueue);
-void load_pls(char * filename, int enqueue);
-gint is_playlist(char * filename);
+int playlist_get_type(char * filename);
+void playlist_load_xml_multi(char * filename, int start_playback);
+void playlist_load_xml_single(char * filename, playlist_transfer_t * pt);
+void playlist_load_m3u(char * filename, playlist_transfer_t * pt);
+void playlist_load_pls(char * filename, playlist_transfer_t * pt);
 
 
 GtkWidget * playlist_notebook;
@@ -360,8 +371,6 @@ playlist_transfer_new(playlist_t * pl) {
 	} else {
 		pt->pl = pl;
 	}
-
-	pt->index = -1;
 
 	return pt;
 }
@@ -1018,8 +1027,6 @@ add_file_to_playlist(gpointer data) {
 			playlist_start_playback_at_path(pt->pl, p);
 			gtk_tree_path_free(p);
 			pt->start_playback = 0;
-
-			printf("playback\n");
 		}
 
 		free(plfm);
@@ -1456,23 +1463,23 @@ plist__save_all_cb(gpointer data) {
 
 
 playlist_transfer_t *
-playlist_transfer_get(int mode, char * name, int start_playback) {
+playlist_transfer_get(int mode, char * tab_name, int start_playback) {
 
 	playlist_t * pl = NULL;
 	playlist_transfer_t * pt = NULL;
 
 	if (mode == PLAYLIST_LOAD_TAB) {
-		pl = playlist_tab_new(name);
+		pl = playlist_tab_new(tab_name);
 		pt = playlist_transfer_new(pl);
 		pt->on_the_fly = 1;
 	} else {
-		if (name == NULL) {
+		if (tab_name == NULL) {
 			pl = playlist_get_current();
 		} else {
-			pl = playlist_get_by_name(name);
+			pl = playlist_get_by_name(tab_name);
 		}
 		if (pl == NULL) {
-			pl = playlist_tab_new(name);
+			pl = playlist_tab_new(tab_name);
 		}
 		pt = playlist_transfer_new(pl);
 		pt->on_the_fly = 1;
@@ -1488,53 +1495,68 @@ playlist_transfer_get(int mode, char * name, int start_playback) {
 }
 
 
-/* if (ptrans == NULL) then loads file/dir/playlist according to mode,
-   else ignore the mode and use the supplied ptrans as destination */
 void
-playlist_load_entity(const char * filename, int mode, //playlist_transfer_t * ptrans,
-		     char * name,
-		     int start_playback) {
+playlist_load(GList * list, int mode, char * tab_name, int start_playback) {
 
+	GList * node;
+	playlist_t * pl = NULL;
 	playlist_transfer_t * pt = NULL;
 	char fullname[MAXLEN];
+	int type;
 
-	normalize_filename(filename, fullname);
+	for (node = list; node; node = node->next) {
 
-	switch (is_playlist(fullname)) {
-	case 0:
-		/*
-		if (ptrans != NULL) {
-			pt = ptrans;
-		} else {
-			pt = playlist_transfer_get(mode, NULL);
-		}
-		*/
-		pt = playlist_transfer_get(mode, name, start_playback);
-		pt->list = g_slist_append(NULL, strdup(fullname));
-		playlist_progress_bar_show(pt->pl);
+		normalize_filename((char *)node->data, fullname);
+		type = playlist_get_type(fullname);
 
-		if (g_file_test(filename, G_FILE_TEST_IS_DIR)) {
-			AQUALUNG_THREAD_CREATE(pt->pl->thread_id,
-					       NULL,
-					       add_dir_to_playlist_thread, pt);
-		} else {
-			AQUALUNG_THREAD_CREATE(pt->pl->thread_id,
-					       NULL,
-					       add_files_to_playlist_thread, pt);
+		if (type != PLAYLIST_XML_MULTI) {
+			/* content goes to the same playlist */
+			if (pl == NULL) {
+				pt = playlist_transfer_get(mode, tab_name, start_playback);
+				pl = pt->pl;
+			} else {
+				pt = playlist_transfer_new(pl);
+			}
 		}
 
-		break;
-	case 1:
-		//playlist_load_xml(fullname, mode, ptrans);
-		playlist_load_xml(fullname, mode, name, start_playback);
-		break;
-	case 2:
-		//playlist_load_m3u(fullname, mode, ptrans);
-		break;
-	case 3:
-		//playlist_load_pls(fullname, mode, ptrans);
-		break;
+		switch (type) {
+		case PLAYLIST_INVALID:
+			pt->list = g_slist_append(NULL, strdup(fullname));
+			playlist_progress_bar_show(pt->pl);
+			
+			if (g_file_test(fullname, G_FILE_TEST_IS_DIR)) {
+				AQUALUNG_THREAD_CREATE(pt->pl->thread_id,
+						       NULL,
+						       add_dir_to_playlist_thread, pt);
+			} else {
+				AQUALUNG_THREAD_CREATE(pt->pl->thread_id,
+						       NULL,
+						       add_files_to_playlist_thread, pt);
+			}
+
+			break;
+
+		case PLAYLIST_XML_MULTI:
+			playlist_load_xml_multi(fullname, start_playback);
+			break;
+
+		case PLAYLIST_XML_SINGLE:
+			playlist_load_xml_single(fullname, pt);
+			break;
+
+		case PLAYLIST_M3U:
+			playlist_load_m3u(fullname, pt);
+			break;
+
+		case PLAYLIST_PLS:
+			playlist_load_pls(fullname, pt);
+			break;
+		}
+
+		free(node->data);
 	}
+
+	g_list_free(list);
 }
 
 void
@@ -1563,10 +1585,14 @@ playlist_load_dialog(int mode) {
 	}
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+
+		GList * list = NULL;
+
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
                 strncpy(options.currdir, selected_filename, MAXLEN-1);
 
-		playlist_load_entity(selected_filename, mode, NULL, 0);
+		list = g_list_append(NULL, strdup(selected_filename));
+		playlist_load(list, mode, NULL, 0);
         }
 
         gtk_widget_destroy(dialog);
@@ -2519,7 +2545,7 @@ playlist_size_allocate_all_foreach(gpointer data, gpointer user_data) {
 	playlist_size_allocate(NULL, NULL, data);
 }
 
-// This is the function to call from outside
+
 void
 playlist_size_allocate_all() {
 
@@ -3002,19 +3028,8 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 			}
 
 			if (stat(file, &st_file) == 0) {
-
-				playlist_transfer_t * pt = playlist_transfer_new(pl);
-
-				pt->list = g_slist_append(NULL, strdup(file));
-
-				playlist_progress_bar_show(pt->pl);
-				if (S_ISDIR(st_file.st_mode)) {
-					AQUALUNG_THREAD_CREATE(pt->pl->thread_id, NULL,
-							       add_dir_to_playlist_thread, pt);
-				} else {
-					AQUALUNG_THREAD_CREATE(pt->pl->thread_id, NULL,
-							       add_files_to_playlist_thread, pt);
-				}
+				GList * list = g_list_append(NULL, strdup(file));
+				playlist_load(list, PLAYLIST_ENQUEUE, NULL, 0);
 			}
 		}
 
@@ -3271,27 +3286,38 @@ playlist_tab_close(GtkButton * button, gpointer data) {
 	printf("WARNING: unable to locate playlist\n");
 }
 
+gint
+playlist_tab_label_clicked(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 
+	/*playlist_t * pl = (playlist_t *)data;*/
+
+	if (event->type == GDK_2BUTTON_PRESS && event->button == 1) {
+		
+	}
+
+	return FALSE;
+}
 
 GtkWidget *
 create_playlist_tab_label(playlist_t * pl) {
 
 	GtkWidget * hbox;
 	GtkWidget * button;
+	GtkWidget * event_box;
         GtkWidget * image;
         GdkPixbuf * pixbuf;
 
 	char path[MAXLEN];
 
 	hbox = gtk_hbox_new(FALSE, 4);
+
+	event_box = gtk_event_box_new();
 	pl->label = gtk_label_new(pl->name);
+	gtk_container_add(GTK_CONTAINER(event_box), pl->label);
+
 	button = gtk_button_new();
-
 	sprintf(path, "%s/tab-close.png", AQUALUNG_DATADIR);
-
-        pixbuf = gdk_pixbuf_new_from_file(path, NULL);
-
-	if (pixbuf) {
+	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		image = gtk_image_new_from_pixbuf(pixbuf);
 		gtk_container_add(GTK_CONTAINER(button), image);
 	}
@@ -3300,13 +3326,15 @@ create_playlist_tab_label(playlist_t * pl) {
         GTK_WIDGET_UNSET_FLAGS(button, GTK_CAN_FOCUS);
 	gtk_widget_set_size_request(button, 16, 16);
 
-        gtk_box_pack_start(GTK_BOX(hbox), pl->label, TRUE, TRUE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), event_box, TRUE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 
 	gtk_widget_show_all(hbox);
 
         g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(playlist_tab_close), pl);
 
+	g_signal_connect(G_OBJECT(event_box), "button_press_event",
+			 G_CALLBACK(playlist_tab_label_clicked), pl);
 
 	return hbox;
 }
@@ -4079,19 +4107,11 @@ playlist_load_xml_thread(void * arg) {
 	return NULL;
 }
 
-
 void
-playlist_load_xml(char * filename, int mode, //playlist_transfer_t * ptrans,
-		  char * name, int start_playback) {
+playlist_load_xml_single(char * filename, playlist_transfer_t * pt) {
 
         xmlDocPtr doc;
         xmlNodePtr cur;
-	FILE * f;
-
-        if ((f = fopen(filename, "rt")) == NULL) {
-                return;
-        }
-        fclose(f);
 
         doc = xmlParseFile(filename);
         if (doc == NULL) {
@@ -4106,71 +4126,90 @@ playlist_load_xml(char * filename, int mode, //playlist_transfer_t * ptrans,
                 return;
         }
 
-	if (!xmlStrcmp(cur->name, (const xmlChar *)"aqualung_playlist_multi")) {
-
-		printf("multi playlist detected\n");
-
-		for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
-
-			if (!xmlStrcmp(cur->name, (const xmlChar *)"tab")) {
-
-				/* ignore mode: multitab playlists are
-				   always loaded in separate tabs */
-				playlist_t * pl = NULL;
-				playlist_transfer_t * pt = NULL;
-				xmlChar * pl_name = NULL;
-
-				pl_name = parse_playlist_name(doc, cur);
-				pl = playlist_tab_new((char *)pl_name);
-				xmlFree(pl_name);
-
-				pt = playlist_transfer_new(pl);
-
-				pt->xml_doc = doc; /*(void *)xmlCopyDoc(doc, 1);*/
-				pt->xml_node = cur; /*(void *)xmlDocCopyNode(cur, doc, 1);*/
-
-				pt->start_playback = start_playback;
-				start_playback = 0;
-
-				playlist_progress_bar_show(pt->pl);
-				AQUALUNG_THREAD_CREATE(pt->pl->thread_id, NULL,
-						       playlist_load_xml_thread, pt);
-			}
-		}
-
-	} else if (!xmlStrcmp(cur->name, (const xmlChar *)"aqualung_playlist")) {
-
-		playlist_transfer_t * pt = NULL;
-
-		if (name != NULL) {
-			pt = playlist_transfer_get(mode, name, start_playback);
-		} else {
-			xmlChar * pl_name = parse_playlist_name(doc, cur);
-			pt = playlist_transfer_get(mode, NULL, start_playback);
-			playlist_rename(pt->pl, (char *)pl_name);
-			xmlFree(pl_name);
-		}
-
-		pt->xml_doc = doc;
-		pt->xml_node = cur;
-
-		playlist_progress_bar_show(pt->pl);
-		AQUALUNG_THREAD_CREATE(pt->pl->thread_id, NULL,
-				       playlist_load_xml_thread, pt);
-
-	} else {
+	if (xmlStrcmp(cur->name, (const xmlChar *)"aqualung_playlist")) {
 		fprintf(stderr, "load_playlist: XML document of the wrong type, "
 			"root node != aqualung_playlist\n");
 		xmlFreeDoc(doc);
 		return;
+	}
+
+	/*
+	if (name != NULL) {
+		xmlChar * pl_name = parse_playlist_name(doc, cur);
+		pt = playlist_transfer_get(mode, NULL, start_playback);
+		playlist_rename(pt->pl, (char *)pl_name);
+		xmlFree(pl_name);
+	}
+	*/
+
+	pt->xml_doc = doc;
+	pt->xml_node = cur;
+
+	playlist_progress_bar_show(pt->pl);
+	AQUALUNG_THREAD_CREATE(pt->pl->thread_id, NULL,
+			       playlist_load_xml_thread, pt);
+
+        /*xmlFreeDoc(doc);*/
+}
+
+void
+playlist_load_xml_multi(char * filename, int start_playback) {
+
+        xmlDocPtr doc;
+        xmlNodePtr cur;
+
+        doc = xmlParseFile(filename);
+        if (doc == NULL) {
+                fprintf(stderr, "An XML error occured while parsing %s\n", filename);
+                return;
         }
+
+        cur = xmlDocGetRootElement(doc);
+        if (cur == NULL) {
+                fprintf(stderr, "load_playlist: empty XML document\n");
+                xmlFreeDoc(doc);
+                return;
+        }
+
+	if (xmlStrcmp(cur->name, (const xmlChar *)"aqualung_playlist_multi")) {
+		fprintf(stderr, "load_playlist: XML document of the wrong type, "
+			"root node != aqualung_playlist\n");
+		xmlFreeDoc(doc);
+		return;
+	}
+
+	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
+
+		if (!xmlStrcmp(cur->name, (const xmlChar *)"tab")) {
+
+			playlist_t * pl = NULL;
+			playlist_transfer_t * pt = NULL;
+			xmlChar * pl_name = NULL;
+
+			pl_name = parse_playlist_name(doc, cur);
+			pl = playlist_tab_new((char *)pl_name);
+			xmlFree(pl_name);
+
+			pt = playlist_transfer_new(pl);
+
+			pt->xml_doc = doc; /*(void *)xmlCopyDoc(doc, 1);*/
+			pt->xml_node = cur; /*(void *)xmlDocCopyNode(cur, doc, 1);*/
+
+			pt->start_playback = start_playback;
+			start_playback = 0;
+
+			playlist_progress_bar_show(pt->pl);
+			AQUALUNG_THREAD_CREATE(pt->pl->thread_id, NULL,
+					       playlist_load_xml_thread, pt);
+		}
+	}
 
         /*xmlFreeDoc(doc);*/
 }
 
 
 void
-playlist_load_m3u(char * filename, int enqueue) {
+playlist_load_m3u(char * filename, playlist_transfer_t * pt) {
 
 	FILE * f;
 	gint c;
@@ -4183,12 +4222,9 @@ playlist_load_m3u(char * filename, int enqueue) {
 	gchar path[MAXLEN];
 	gchar tmp[MAXLEN];
 	gint have_name = 0;
-	playlist_filemeta * plfm = NULL;
+	/*playlist_filemeta * plfm = NULL;*/
 
 
-	if ((str = strrchr(filename, '/')) == NULL) {
-		printf("load_m3u(): programmer error: playlist path is not absolute\n");
-	}
 	for (i = 0; (i < (str - filename)) && (i < MAXLEN-1); i++) {
 		pl_dir[i] = filename[i];
 	}
@@ -4199,9 +4235,6 @@ playlist_load_m3u(char * filename, int enqueue) {
 		return;
 	}
 
-	if (!enqueue) {
-		//playlist_thread_add_to_list(NULL, NULL);
-	}
 
 	i = 0;
 	while ((c = fgetc(f)) != EOF && !playlist_thread_stop) {
@@ -4268,7 +4301,8 @@ playlist_load_m3u(char * filename, int enqueue) {
 				}
 				have_name = 0;
 
-				
+				pt->list = g_slist_append(pt->list, strdup(path));
+				/*
 				plfm = playlist_filemeta_get(path,
 							     have_name ? name : NULL,
 							     1);
@@ -4277,21 +4311,29 @@ playlist_load_m3u(char * filename, int enqueue) {
 				} else {
 					//playlist_thread_add_to_list(plfm); // TODO
 				}
+				*/
 			}
 		}
 	}
+
+	playlist_progress_bar_show(pt->pl);
+	AQUALUNG_THREAD_CREATE(pt->pl->thread_id,
+			       NULL,
+			       add_files_to_playlist_thread,
+			       pt);
 }
 
 
 void
-load_pls_load(char * file, char * title, gint * have_file, gint * have_title) {
+load_pls_load(playlist_transfer_t * pt, char * file, char * title, gint * have_file, gint * have_title) {
 
-	playlist_filemeta * plfm = NULL;
+	/*playlist_filemeta * plfm = NULL;*/
 
 	if (*have_file == 0) {
 		return;
 	}
 
+	/*
 	plfm = playlist_filemeta_get(file,
 				     *have_title ? title : NULL,
 				     1);
@@ -4301,12 +4343,15 @@ load_pls_load(char * file, char * title, gint * have_file, gint * have_title) {
 	} else {
 		//playlist_thread_add_to_list(plfm); // TODO
 	}
-	
+	*/
+
+	pt->list = g_slist_append(pt->list, strdup(file));
+
 	*have_file = *have_title = 0;
 }
 
 void
-load_pls(char * filename, int enqueue) {
+playlist_load_pls(char * filename, playlist_transfer_t * pt) {
 
 	FILE * f;
 	gint c;
@@ -4324,9 +4369,6 @@ load_pls(char * filename, int enqueue) {
 	gchar numstr_title[10];
 
 
-	if ((str = strrchr(filename, '/')) == NULL) {
-		printf("load_pls(): programmer error: playlist path is not absolute\n");
-	}
 	for (i = 0; (i < (str - filename)) && (i < MAXLEN-1); i++) {
 		pl_dir[i] = filename[i];
 	}
@@ -4335,10 +4377,6 @@ load_pls(char * filename, int enqueue) {
 	if ((f = fopen(filename, "rb")) == NULL) {
 		fprintf(stderr, "unable to open .pls playlist: %s\n", filename);
 		return;
-	}
-
-	if (!enqueue) {
-		//playlist_thread_add_to_list(NULL);
 	}
 
 	i = 0;
@@ -4370,7 +4408,7 @@ load_pls(char * filename, int enqueue) {
 				int m;
 
 				if (have_file) {
-					load_pls_load(file, title, &have_file, &have_title);
+					load_pls_load(pt, file, title, &have_file, &have_title);
 				}
 
 				if ((ch = strstr(line, "=")) == NULL) {
@@ -4469,62 +4507,69 @@ load_pls(char * filename, int enqueue) {
 				continue;
 			}
 
-			load_pls_load(file, title, &have_file, &have_title);
+			load_pls_load(pt, file, title, &have_file, &have_title);
 		}
 	}
-	load_pls_load(file, title, &have_file, &have_title);
+	load_pls_load(pt, file, title, &have_file, &have_title);
+
+	playlist_progress_bar_show(pt->pl);
+	AQUALUNG_THREAD_CREATE(pt->pl->thread_id,
+			       NULL,
+			       add_files_to_playlist_thread,
+			       pt);
 }
 
 
-/* return values: 
- *   0: not a playlist 
- *   1: native aqualung (XML)
- *   2: .m3u
- *   3: .pls
- */
 int
-is_playlist(char * filename) {
+playlist_get_type(char * filename) {
 
 	FILE * f;
-	gchar buf[] = "<?xml version=\"1.0\"?>\n<aqualung_playlist";
-	gchar inbuf[64];
+	gchar buf1[] = "<?xml version=\"1.0\"?>\n<aqualung_playlist_multi";
+	gchar buf2[] = "<?xml version=\"1.0\"?>\n<aqualung_playlist";
+	gchar inbuf[48];
 	gint len;
 
 	if ((f = fopen(filename, "rb")) == NULL) {
 		return 0;
 	}
-	if (fread(inbuf, 1, strlen(buf)+1, f) != strlen(buf)+1) {
-		fclose(f);
-		goto _readext;
-	}
+
+	len = fread(inbuf, 1, 47, f);
 	fclose(f);
-	inbuf[strlen(buf)] = '\0';
 
-	if (strcmp(buf, inbuf) == 0) {
-		return 1;
+	inbuf[len] = '\0';
+
+	if (strstr(inbuf, buf1) == inbuf) {
+		printf("multi\n");
+		return PLAYLIST_XML_MULTI;
 	}
 
- _readext:
+	if (strstr(inbuf, buf2) == inbuf) {
+		printf("single\n");
+		return PLAYLIST_XML_SINGLE;
+	}
+
+	/* not Aqualung playlist, decide by file extension */
+
 	len = strlen(filename);
 	if (len < 5) {
-		return 0;
+		return PLAYLIST_INVALID;
 	}
 
 	if ((filename[len-4] == '.') &&
 	    ((filename[len-3] == 'm') || (filename[len-3] == 'M')) &&
 	    (filename[len-2] == '3') &&
 	    ((filename[len-1] == 'u') || (filename[len-1] == 'U'))) {
-		return 2;
+		return PLAYLIST_M3U;
 	}
 
 	if ((filename[len-4] == '.') &&
 	    ((filename[len-3] == 'p') || (filename[len-3] == 'P')) &&
 	    ((filename[len-2] == 'l') || (filename[len-2] == 'L')) &&
 	    ((filename[len-1] == 's') || (filename[len-1] == 'S'))) {
-		return 3;
+		return PLAYLIST_PLS;
 	}
 
-	return 0;
+	return PLAYLIST_INVALID;
 }
 
 

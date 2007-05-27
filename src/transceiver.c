@@ -85,6 +85,7 @@ receive_message(int fd, char * cmdarg) {
 	if (select(fd + 1, &set, NULL, NULL, &tv) <= 0)
 		return 0;
 	
+	size = sizeof(name);
 	n_read = recvfrom(fd, buffer, MAXLEN-1, 0, (struct sockaddr *)&name, &size);
 	buffer[n_read] = '\0';
 
@@ -92,6 +93,7 @@ receive_message(int fd, char * cmdarg) {
 	switch (rcmd) {
 	case RCMD_PING:
 		break;
+
 	case RCMD_BACK:
 	case RCMD_PLAY:
 	case RCMD_PAUSE:
@@ -99,16 +101,19 @@ receive_message(int fd, char * cmdarg) {
 	case RCMD_FWD:
 	case RCMD_QUIT:
 		return rcmd;
-		break;
-	case RCMD_LOAD:
-	case RCMD_ENQUEUE:
+
 	case RCMD_VOLADJ:
-		for (i = 1; i < MAXLEN && buffer[i] != '\0'; i++)
-			buffer[i-1] = buffer[i];
-		buffer[i-1] = '\0';
-		strncpy(cmdarg, buffer, MAXLEN);
+	case RCMD_ADD_FILE:
+		strncpy(cmdarg, buffer + 1, MAXLEN-2);
 		return rcmd;
-		break;
+
+	case RCMD_ADD_COMMIT:
+		for (i = 1; i <= 3; i++) {
+			cmdarg[i-1] = buffer[i];
+		}
+		cmdarg[3] = '\0';
+		strncpy(cmdarg + 3, buffer + 4, MAXLEN-5);
+		return rcmd;
 
 	default:
 		fprintf(stderr, "Recv'd unrecognized remote command %d\n", rcmd);

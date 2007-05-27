@@ -2494,7 +2494,7 @@ main(int argc, char ** argv) {
 			no_session = 0;
 		buf[0] = RCMD_VOLADJ;
 		buf[1] = '\0';
-		strncat(buf, voladj_arg, MAXLEN-1);
+		strncat(buf, voladj_arg, MAXLEN-2);
 		send_message_to_session(no_session, buf, strlen(buf));
 		close_app_socket();
 		exit(1);
@@ -2506,30 +2506,33 @@ main(int argc, char ** argv) {
 		char fullname[MAXLEN];
 
 		if ((no_session != -1) && (no_session != aqualung_session_id)) {
+
 			for (i = optind; argv[i] != NULL; i++) {				
 
 				normalize_filename(argv[i], fullname);
-				printf("CORE: %s\n", fullname);
-				/*
-				if ((enqueue) || (i > optind)) {
-					buffer[0] = RCMD_ENQUEUE;
-					buffer[1] = '\0';
-					strncat(buffer, fullname, MAXLEN-1);
-					send_message_to_session(no_session, buffer, strlen(buffer));
-				} else {
-					buffer[0] = RCMD_LOAD;
-					buffer[1] = '\0';
-					strncat(buffer, fullname, MAXLEN-1);
-					send_message_to_session(no_session, buffer, strlen(buffer));
+
+				buffer[0] = RCMD_ADD_FILE;
+				buffer[1] = '\0';
+				strncat(buffer, fullname, MAXLEN-2);
+				send_message_to_session(no_session, buffer, strlen(buffer));
+			}
+
+			if (argv[optind] != NULL) {
+
+				buffer[0] = RCMD_ADD_COMMIT;
+				buffer[1] = (enqueue) ? 1 : 0;
+				buffer[2] = (play) ? 1 : 0;
+				buffer[3] = (tab_name != NULL) ? 1 : 0;
+				buffer[4] = '\0';
+
+				if (tab_name != NULL) {
+					strncat(buffer + 4, tab_name, MAXLEN-5);
 				}
-				*/
+
+				send_message_to_session(no_session, buffer, 4 + strlen(buffer + 4));
+				close_app_socket();
+				exit(0);
 			}
-			if (play) {
-				rcmd = RCMD_PLAY;
-				send_message_to_session(no_session, &rcmd, 1);
-			}
-			close_app_socket();
-			exit(0);
 		}
 	}
 

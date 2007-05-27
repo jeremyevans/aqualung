@@ -377,6 +377,22 @@ playlist_transfer_new(playlist_t * pl) {
 
 
 void
+playlist_transfer_free(playlist_transfer_t * pt) {
+
+	if (pt->xml_ref != NULL) {
+		*(pt->xml_ref) -= 1;
+		if (*(pt->xml_ref) == 0) {
+			xmlFreeDoc((xmlDocPtr)pt->xml_doc);
+			free(pt->xml_ref);
+		}
+	} else if (pt->xml_doc != NULL) {
+		xmlFreeDoc((xmlDocPtr)pt->xml_doc);
+	}
+
+	free(pt);
+}
+
+void
 playlist_disable_bold_font_foreach(gpointer data, gpointer user_data) {
 
         GtkTreeIter iter;
@@ -1109,7 +1125,7 @@ add_files_to_playlist_thread(void * arg) {
 
 	AQUALUNG_MUTEX_UNLOCK(pt->pl->thread_mutex);
 
-	free(pt);
+	playlist_transfer_free(pt);
 
 	return NULL;
 }
@@ -1239,9 +1255,9 @@ add_dir_to_playlist_thread(void * arg) {
 
 	printf("<-- add_dir_to_playlist_thread\n");
 
-	AQUALUNG_MUTEX_UNLOCK(pt->pl->thread_mutex)
+	AQUALUNG_MUTEX_UNLOCK(pt->pl->thread_mutex);
 
-	free(pt);
+	playlist_transfer_free(pt);
 
 	return NULL;
 }
@@ -1471,7 +1487,6 @@ playlist_transfer_get(int mode, char * tab_name, int start_playback) {
 	if (mode == PLAYLIST_LOAD_TAB) {
 		pl = playlist_tab_new(tab_name);
 		pt = playlist_transfer_new(pl);
-		pt->on_the_fly = 1;
 	} else {
 		if (tab_name == NULL) {
 			pl = playlist_get_current();
@@ -1482,7 +1497,6 @@ playlist_transfer_get(int mode, char * tab_name, int start_playback) {
 			pl = playlist_tab_new(tab_name);
 		}
 		pt = playlist_transfer_new(pl);
-		pt->on_the_fly = 1;
 	}
 
 	if (mode == PLAYLIST_LOAD) {
@@ -4093,16 +4107,13 @@ playlist_load_xml_thread(void * arg) {
 		}
 	}
 
-	/*xmlFreeNode((xmlNodePtr)pt->xml_node);
-	  xmlFreeDoc((xmlDocPtr)pt->xml_doc);*/
-
 	playlist_thread_add_to_list(pt, NULL);
 
 	printf("<-- playlist_load_xml_thread\n");
 
 	AQUALUNG_MUTEX_UNLOCK(pt->pl->thread_mutex);
 
-	free(pt);
+	playlist_transfer_free(pt);
 
 	return NULL;
 }
@@ -4148,8 +4159,6 @@ playlist_load_xml_single(char * filename, playlist_transfer_t * pt) {
 	playlist_progress_bar_show(pt->pl);
 	AQUALUNG_THREAD_CREATE(pt->pl->thread_id, NULL,
 			       playlist_load_xml_thread, pt);
-
-        /*xmlFreeDoc(doc);*/
 }
 
 void
@@ -4157,6 +4166,7 @@ playlist_load_xml_multi(char * filename, int start_playback) {
 
         xmlDocPtr doc;
         xmlNodePtr cur;
+	int * ref = NULL;
 
         doc = xmlParseFile(filename);
         if (doc == NULL) {
@@ -4178,6 +4188,13 @@ playlist_load_xml_multi(char * filename, int start_playback) {
 		return;
 	}
 
+	if ((ref = (int *)malloc(sizeof(int *))) == NULL) {
+		fprintf(stderr, "playlist_load_xml_multi(): malloc error\n");
+		return;
+	}
+
+	*ref = 1;
+
 	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
 
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"tab")) {
@@ -4192,8 +4209,11 @@ playlist_load_xml_multi(char * filename, int start_playback) {
 
 			pt = playlist_transfer_new(pl);
 
-			pt->xml_doc = doc; /*(void *)xmlCopyDoc(doc, 1);*/
-			pt->xml_node = cur; /*(void *)xmlDocCopyNode(cur, doc, 1);*/
+			pt->xml_doc = doc;
+			pt->xml_node = cur;
+			pt->xml_ref = ref;
+
+			*ref += 1;
 
 			pt->start_playback = start_playback;
 			start_playback = 0;
@@ -4204,7 +4224,7 @@ playlist_load_xml_multi(char * filename, int start_playback) {
 		}
 	}
 
-        /*xmlFreeDoc(doc);*/
+	*ref -= 1;
 }
 
 

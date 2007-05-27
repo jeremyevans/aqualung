@@ -86,7 +86,7 @@ typedef struct {
 playlist_t * playlist_get_current(void);
 playlist_t * playlist_get_playing(void);
 
-playlist_transfer_t * playlist_transfer_get(int mode, char * name);
+playlist_transfer_t * playlist_transfer_get(int mode, char * name, int start_playback);
 
 GtkTreePath * playlist_get_playing_path(playlist_t * pl);
 
@@ -105,7 +105,7 @@ void playlist_progress_bar_show(playlist_t * pl);
 void playlist_progress_bar_hide_all(void);
 
 void playlist_ensure_tab_exists(void);
-void playlist_load_entity(const char * filename, int mode, playlist_transfer_t * pt);
+void playlist_load_entity(const char * filename, int mode, char * name, int start_playback);
 void playlist_save_all(char * filename);
 
 void playlist_disable_bold_font(void);

@@ -3328,12 +3328,11 @@ create_main_window(char * skin_path) {
 
 
 void
-process_filenames(char ** argv, int optind, int enqueue) {
+process_filenames(char ** argv, int optind, int enqueue, int start_playback) {
 
 	int i;
 	int mode;
 	char * name = NULL;
-	playlist_transfer_t * pt = NULL;
 
 	if (tab_name == NULL) {
 		if (enqueue) {
@@ -3354,15 +3353,19 @@ process_filenames(char ** argv, int optind, int enqueue) {
 		}
 	}
 
-	pt = playlist_transfer_get(mode, name);
-
 	for (i = optind; argv[i] != NULL; i++) {
-		playlist_load_entity(argv[i], mode, pt);
+		playlist_load_entity(argv[i], mode, name, start_playback);
+		start_playback = 0;
 	}
 
-	free(name);
-	free(tab_name);
-	tab_name = NULL;
+	if (name != NULL) {
+		free(name);
+	}
+
+	if (tab_name != NULL) {
+		free(tab_name);
+		tab_name = NULL;
+	}
 }
 
 
@@ -3741,15 +3744,18 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	zero_displays();
 	if (options.auto_save_playlist) {
+		/* start playback only if no files to be loaded on cmd line */
+		int start_playback = (argv[optind] == NULL) && immediate_start;
 		char playlist_name[MAXLEN];
 
 		snprintf(playlist_name, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
 		if (g_file_test(playlist_name, G_FILE_TEST_EXISTS) == TRUE) {
-			playlist_load_entity(playlist_name, PLAYLIST_LOAD_TAB, NULL);
+			playlist_load_entity(playlist_name, PLAYLIST_LOAD_TAB,
+					     NULL, start_playback);
 		}
 	}
 	/* read command line filenames */
-	process_filenames(argv, optind, enqueue);
+	process_filenames(argv, optind, enqueue, immediate_start);
 
 	/* ensure that at least one playlist has been created */
 	playlist_ensure_tab_exists();
@@ -3976,7 +3982,7 @@ timeout_callback(gpointer data) {
 				if (is_paused) {
 					stop_event(NULL, NULL, NULL);
 				}
-				immediate_start = 1;
+				//immediate_start = 1;
 			}
 			last_rcmd_loadenq = 0;
 			break;
@@ -4021,6 +4027,7 @@ timeout_callback(gpointer data) {
 		++rcv_count;
 	}
 
+	/*
 	if (immediate_start) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
 		        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
@@ -4029,6 +4036,7 @@ timeout_callback(gpointer data) {
 			immediate_start = 0;
 		}
 	}
+	*/
 
 	/* check for JACK shutdown condition */
 #ifdef HAVE_JACK

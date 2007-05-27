@@ -417,12 +417,24 @@ playlist_disable_bold_font() {
 	g_list_foreach(playlists, playlist_disable_bold_font_foreach, NULL);
 }
 
+void
+playlist_set_markup(playlist_t * pl) {
+
+	if (pl->playing) {
+		char str[MAXLEN];
+		snprintf(str, MAXLEN-1, "<b>%s</b>", pl->name);
+		gtk_label_set_markup(GTK_LABEL(pl->label), str);
+	} else {
+		gtk_label_set_text(GTK_LABEL(pl->label), pl->name);
+	}
+}
 
 void
 playlist_set_playing(playlist_t * pl, int playing) {
 
-	/* TODO: set font weight */
 	pl->playing = playing;
+
+	playlist_set_markup(pl);
 }
 
 void
@@ -3262,7 +3274,7 @@ playlist_rename(playlist_t * pl, char * name) {
 		strncpy(pl->name, name, MAXLEN-1);
 	}
 
-	gtk_label_set_text(GTK_LABEL(pl->label), pl->name);
+	playlist_set_markup(pl);
 	gtk_notebook_set_menu_label_text(GTK_NOTEBOOK(playlist_notebook), pl->widget, pl->name);
 }
 
@@ -3301,12 +3313,32 @@ playlist_tab_close(GtkButton * button, gpointer data) {
 }
 
 gint
-playlist_tab_label_clicked(GtkWidget * widget, GdkEventButton * event, gpointer data) {
-
-	/*playlist_t * pl = (playlist_t *)data;*/
+playlist_notebook_clicked(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 
 	if (event->type == GDK_2BUTTON_PRESS && event->button == 1) {
-		
+		playlist_tab_new(NULL);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+gint
+playlist_tab_label_clicked(GtkWidget * widget, GdkEventButton * event, gpointer data) {
+
+	playlist_t * pl = (playlist_t *)data;
+
+	if (event->type == GDK_2BUTTON_PRESS && event->button == 1) {
+		return TRUE;
+	}
+
+	if (event->button == 2) {
+		playlist_tab_close(NULL, pl);
+		return TRUE;
+	}
+
+	if (event->button == 3) {
+		return TRUE;
 	}
 
 	return FALSE;
@@ -3327,7 +3359,7 @@ create_playlist_tab_label(playlist_t * pl) {
 
 	event_box = gtk_event_box_new();
 	pl->label = gtk_label_new(pl->name);
-	gtk_container_add(GTK_CONTAINER(event_box), pl->label);
+	gtk_container_add(GTK_CONTAINER(event_box), hbox);
 
 	button = gtk_button_new();
 	sprintf(path, "%s/tab-close.png", AQUALUNG_DATADIR);
@@ -3340,7 +3372,7 @@ create_playlist_tab_label(playlist_t * pl) {
         GTK_WIDGET_UNSET_FLAGS(button, GTK_CAN_FOCUS);
 	gtk_widget_set_size_request(button, 16, 16);
 
-        gtk_box_pack_start(GTK_BOX(hbox), event_box, TRUE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), pl->label, TRUE, TRUE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 
 	gtk_widget_show_all(hbox);
@@ -3350,7 +3382,7 @@ create_playlist_tab_label(playlist_t * pl) {
 	g_signal_connect(G_OBJECT(event_box), "button_press_event",
 			 G_CALLBACK(playlist_tab_label_clicked), pl);
 
-	return hbox;
+	return event_box;
 }
 
 void
@@ -3543,8 +3575,6 @@ create_playlist_gui(playlist_t * pl) {
 	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(playlist_notebook)) > 1) {
 		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(playlist_notebook), TRUE);
 	}
-
-	playlist_rename(pl, NULL);
 }
 
 playlist_t *
@@ -3632,6 +3662,9 @@ create_playlist(void) {
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(playlist_notebook),
 				   options.playlist_always_show_tabs);
         gtk_box_pack_start(GTK_BOX(vbox), playlist_notebook, TRUE, TRUE, 0);
+
+	g_signal_connect(G_OBJECT(playlist_notebook), "button_press_event",
+			 G_CALLBACK(playlist_notebook_clicked), NULL);
 
 	if (playlists != NULL) {
 		GList * list;
@@ -4559,12 +4592,10 @@ playlist_get_type(char * filename) {
 	inbuf[len] = '\0';
 
 	if (strstr(inbuf, buf1) == inbuf) {
-		printf("multi\n");
 		return PLAYLIST_XML_MULTI;
 	}
 
 	if (strstr(inbuf, buf2) == inbuf) {
-		printf("single\n");
 		return PLAYLIST_XML_SINGLE;
 	}
 

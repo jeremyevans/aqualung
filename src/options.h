@@ -82,6 +82,7 @@ typedef struct {
 	int playlist_is_embedded;
 	int playlist_is_embedded_shadow;
 	int playlist_always_show_tabs;
+	int playlist_show_close_button_in_tab;
 	int playlist_is_tree;
 	int album_shuffle_mode;
 	int auto_save_playlist;

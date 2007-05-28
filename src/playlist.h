@@ -51,6 +51,7 @@ typedef struct {
 	GtkWidget * view;
 	GtkWidget * scroll;
 	GtkWidget * label;
+	GtkWidget * tab_close_button;
 	GtkWidget * tab_menu;
 
 	GtkTreeViewColumn * track_column;
@@ -103,6 +104,7 @@ void playlist_set_playing(playlist_t * pl, int playing);
 void playlist_stats_set_busy(void);
 void playlist_progress_bar_show(playlist_t * pl);
 void playlist_progress_bar_hide_all(void);
+void show_hide_close_buttons(gboolean state);
 
 void playlist_ensure_tab_exists(void);
 void playlist_load(GList * list, int mode, char * tab_name, int start_playback);

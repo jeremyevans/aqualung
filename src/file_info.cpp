@@ -1845,7 +1845,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(info_window), _("File info"));
 	gtk_window_set_transient_for(GTK_WINDOW(info_window), GTK_WINDOW(main_window));
-	gtk_window_set_position(GTK_WINDOW(info_window), GTK_WIN_POS_CENTER_ON_PARENT);
+	gtk_window_set_position(GTK_WINDOW(info_window), GTK_WIN_POS_CENTER);
 	gtk_window_set_default_size(GTK_WINDOW(info_window), 600, 500);
         gtk_window_set_resizable(GTK_WINDOW(info_window), TRUE);
 	g_signal_connect(G_OBJECT(info_window), "delete_event",

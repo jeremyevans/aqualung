@@ -209,6 +209,8 @@ void rem_all(playlist_t * pl);
 void add_files(GtkWidget * widget, gpointer data);
 void recalc_album_node(playlist_t * pl, GtkTreeIter * iter);
 
+void tab__rename_cb(gpointer data);
+
 void add_directory(GtkWidget * widget, gpointer data);
 void init_plist_menu(GtkWidget *append_menu);
 void show_active_position_in_playlist(playlist_t * pl);
@@ -880,6 +882,13 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 #endif /* HAVE_IFP */
 		return TRUE;
 		break;
+	case GDK_r:
+	case GDK_R:
+		if (kevent->state & GDK_CONTROL_MASK) {  /* CTRL + R */
+                        tab__rename_cb(playlist_get_current());
+                }
+		return TRUE;
+		break;
         case GDK_grave:
                 expand_collapse_album_node(pl);
                 return TRUE;
@@ -1160,7 +1169,7 @@ add_files(GtkWidget * widget, gpointer data) {
                                              NULL);
 
         deflicker();
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
         gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
@@ -1292,7 +1301,7 @@ add_directory(GtkWidget * widget, gpointer data) {
                                              NULL);
 
         deflicker();
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
         gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
@@ -1322,6 +1331,16 @@ add_directory(GtkWidget * widget, gpointer data) {
         gtk_widget_destroy(dialog);
 }
 
+gint 
+add_url_key_press_cb (GtkWidget *widget, GdkEventKey *event, gpointer data) {
+
+        if (event->keyval == GDK_Return) {
+                gtk_dialog_response (GTK_DIALOG(widget), GTK_RESPONSE_ACCEPT);
+                return TRUE;
+        }
+
+        return FALSE;
+}
 
 void
 add_url(GtkWidget * widget, gpointer data) {
@@ -1344,6 +1363,8 @@ add_url(GtkWidget * widget, gpointer data) {
         gtk_widget_set_size_request(GTK_WIDGET(dialog), 400, -1);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
+        g_signal_connect (G_OBJECT (dialog), "key_press_event",
+                        G_CALLBACK (add_url_key_press_cb), NULL);
 
 	table = gtk_table_new(2, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
@@ -1603,7 +1624,7 @@ playlist_load_dialog(int mode) {
                                              NULL);
 
         deflicker();
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
         assign_playlist_fc_filters(GTK_FILE_CHOOSER(dialog));
@@ -3345,6 +3366,17 @@ playlist_tab_label_clicked(GtkWidget * widget, GdkEventButton * event, gpointer 
 	return FALSE;
 }
 
+gint 
+tab__rename_key_press_cb (GtkWidget *widget, GdkEventKey *event, gpointer data) {
+
+        if (event->keyval == GDK_Return) {
+                gtk_dialog_response (GTK_DIALOG(widget), GTK_RESPONSE_ACCEPT);
+                return TRUE;
+        }
+
+        return FALSE;
+}
+
 void
 tab__rename_cb(gpointer data) {
 
@@ -3369,6 +3401,8 @@ tab__rename_cb(gpointer data) {
         gtk_widget_set_size_request(GTK_WIDGET(dialog), 400, -1);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
+        g_signal_connect (G_OBJECT (dialog), "key_press_event",
+                        G_CALLBACK (tab__rename_key_press_cb), NULL);
 
 	table = gtk_table_new(2, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
@@ -3423,12 +3457,25 @@ tab__close_cb(gpointer data) {
 	playlist_tab_close(NULL, pl);
 }
 
+void
+show_hide_close_buttons(gboolean state) {
+
+    	GList * list;
+
+	for (list = playlists; list; list = list->next) {
+		playlist_t * pl = (playlist_t *)list->data;
+                if (state == TRUE) {
+                        gtk_widget_show(pl->tab_close_button);
+                } else {
+                        gtk_widget_hide(pl->tab_close_button);
+                }
+	}
+}
 
 GtkWidget *
 create_playlist_tab_label(playlist_t * pl) {
 
 	GtkWidget * hbox;
-	GtkWidget * button;
 	GtkWidget * event_box;
         GtkWidget * image;
         GdkPixbuf * pixbuf;
@@ -3447,23 +3494,23 @@ create_playlist_tab_label(playlist_t * pl) {
 	pl->label = gtk_label_new(pl->name);
 	gtk_container_add(GTK_CONTAINER(event_box), hbox);
 
-	button = gtk_button_new();
+	pl->tab_close_button = gtk_button_new();
 	sprintf(path, "%s/tab-close.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		image = gtk_image_new_from_pixbuf(pixbuf);
-		gtk_container_add(GTK_CONTAINER(button), image);
+		gtk_container_add(GTK_CONTAINER(pl->tab_close_button), image);
 	}
 
-	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
-        GTK_WIDGET_UNSET_FLAGS(button, GTK_CAN_FOCUS);
-	gtk_widget_set_size_request(button, 16, 16);
+	gtk_button_set_relief(GTK_BUTTON(pl->tab_close_button), GTK_RELIEF_NONE);
+        GTK_WIDGET_UNSET_FLAGS(pl->tab_close_button, GTK_CAN_FOCUS);
+	gtk_widget_set_size_request(pl->tab_close_button, 16, 16);
 
         gtk_box_pack_start(GTK_BOX(hbox), pl->label, TRUE, TRUE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), pl->tab_close_button, FALSE, FALSE, 0);
 
 	gtk_widget_show_all(hbox);
 
-        g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(playlist_tab_close), pl);
+        g_signal_connect(G_OBJECT(pl->tab_close_button), "clicked", G_CALLBACK(playlist_tab_close), pl);
 
 	g_signal_connect(G_OBJECT(event_box), "button_press_event",
 			 G_CALLBACK(playlist_tab_label_clicked), pl);
@@ -3491,6 +3538,10 @@ create_playlist_tab_label(playlist_t * pl) {
         gtk_widget_show(tab__rename);
         gtk_widget_show(tab__new);
         gtk_widget_show(tab__close);
+
+        if (options.playlist_show_close_button_in_tab == FALSE) {
+                gtk_widget_hide(pl->tab_close_button);
+        }
 
 	return event_box;
 }

@@ -43,6 +43,7 @@ typedef struct {
 	int ms_semaphore;
 
 	char name[MAXLEN];
+	int name_set;
 	int playing;
 
 	GtkTreeStore * store;
@@ -50,6 +51,7 @@ typedef struct {
 	GtkWidget * view;
 	GtkWidget * scroll;
 	GtkWidget * label;
+	GtkWidget * tab_menu;
 
 	GtkTreeViewColumn * track_column;
 	GtkTreeViewColumn * rva_column;
@@ -80,6 +82,8 @@ typedef struct {
 	int start_playback;
 
 } playlist_transfer_t;
+
+playlist_t * playlist_tab_new(char * name);
 
 playlist_t * playlist_get_current(void);
 playlist_t * playlist_get_playing(void);

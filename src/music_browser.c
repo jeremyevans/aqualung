@@ -2024,6 +2024,46 @@ set_popup_sensitivity(GtkTreePath * path) {
 }
 
 
+void
+add_path_to_playlist(GtkTreePath * path, int new_tab) {
+
+	int depth = gtk_tree_path_get_depth(path);
+#ifdef HAVE_CDDA
+	if (is_store_path_cdda(path))
+		depth += 1;
+#endif /* HAVE_CDDA */
+
+
+	gtk_tree_selection_select_path(music_select, path);
+
+	if (new_tab) {
+		char * name;
+		GtkTreeIter iter;
+
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 0, &name, -1);
+		playlist_tab_new(name);
+		g_free(name);
+	}
+
+	switch (depth) {
+	case 1:
+		store__addlist_defmode(NULL);
+		break;
+	case 2:
+		artist__addlist_defmode(NULL);
+		break;
+	case 3:
+		record__addlist_defmode(NULL);
+		break;
+	case 4:
+		track__addlist_cb(NULL);
+		break;
+	default:
+		break;
+	}
+}
+
 gboolean
 music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
 
@@ -2056,6 +2096,13 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event) {
                         }
                 }
 #endif /* HAVE_CDDA */
+
+		if (bevent->button == 2) {
+			if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(music_tree), bevent->x, bevent->y,
+							  &path, &column, NULL, NULL)) {
+				add_path_to_playlist(path, 1/*new_tab*/);
+			}
+		}
 
                 if (bevent->button == 3) {
 
@@ -2213,43 +2260,13 @@ dblclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer func_data)
         GtkTreePath * path;
         GtkTreeViewColumn * column;
 
-        if ((event->type==GDK_2BUTTON_PRESS) && (event->button == 1)) {
+        if (event->type == GDK_2BUTTON_PRESS && event->button == 1) {
 
 		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(music_tree), event->x, event->y,
 						  &path, &column, NULL, NULL)) {
 			
-			int depth = gtk_tree_path_get_depth(path);
-#ifdef HAVE_CDDA
-			if (is_store_path_cdda(path))
-				depth += 1;
-#endif /* HAVE_CDDA */
-
-			if (!gtk_tree_selection_path_is_selected(music_select, path)) {
-				return FALSE;
-			}
-
-			switch (depth) {
-			case 1:
-				store__addlist_defmode(NULL);
-				return TRUE;
-				break;
-			case 2:
-				artist__addlist_defmode(NULL);
-				return TRUE;
-				break;
-			case 3:
-				record__addlist_defmode(NULL);
-				return TRUE;
-				break;
-			case 4:
-				track__addlist_cb(NULL);
-				return TRUE;
-				break;
-			default:
-				return FALSE;
-			}
+			add_path_to_playlist(path, 0/*new_tab*/);
 		}
-		return FALSE;
 	}
 	return FALSE;
 }
@@ -5474,7 +5491,6 @@ create_music_browser(void) {
 	gtk_widget_show(cdda_store__addlist);
 	gtk_widget_show(cdda_store__addlist_albummode);
 #endif /* HAVE_CDDA */
-
 
 	/* attach event handler that will popup the menus */
 	g_signal_connect_swapped(G_OBJECT(music_tree), "event", G_CALLBACK(music_tree_event_cb), NULL);

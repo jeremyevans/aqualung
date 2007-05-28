@@ -11,14 +11,16 @@ AC_MSG_CHECKING(for type of build)
 AC_ARG_ENABLE(
 	debug,
 	[  --enable-debug=yes,no   compile with debugging support (default: no)],
-	buildtype="debug",
-	buildtype="release")
-if test "$buildtype" = "debug"; then
-        BUILD_CFLAGS="-rdynamic -ggdb -g -O0"
+	debug="$enableval", 
+	debug="no")
+if test "$debug" = "yes"; then
+	buildtype=debug
+	BUILD_CFLAGS="-rdynamic -ggdb -g -O0"
 	AC_DEFINE([DEBUG_BUILD], [1], [Defined if doing a debug build])
 	AC_MSG_RESULT(debug)
 else
-        BUILD_CFLAGS="-O2"
+	buildtype=release
+	BUILD_CFLAGS="-O2"
 	AC_DEFINE([RELEASE_BUILD], [1], [Defined if doing a release build])
 	AC_MSG_RESULT(release)
 fi

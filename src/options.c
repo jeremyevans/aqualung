@@ -104,7 +104,6 @@ extern GtkTreeStore * music_store;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern void set_buttons_relief(void);
-extern void show_active_position_in_playlist(void);
 
 int rva_is_enabled_shadow;
 int rva_env_shadow;
@@ -358,7 +357,7 @@ options_window_accept(void) {
 	set_option_from_toggle(check_playlist_always_show_tabs, &options.playlist_always_show_tabs);
 
         set_option_from_toggle(check_show_close_button_in_tab, &options.playlist_show_close_button_in_tab);
-        show_hide_close_buttons(options.playlist_show_close_button_in_tab);
+        playlist_show_hide_close_buttons(options.playlist_show_close_button_in_tab);
 
         set_option_from_toggle(check_album_shuffle_mode, &options.album_shuffle_mode);
 	set_option_from_toggle(check_enable_playlist_statusbar, &options.enable_playlist_statusbar_shadow);

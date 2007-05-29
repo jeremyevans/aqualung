@@ -3458,7 +3458,7 @@ tab__close_cb(gpointer data) {
 }
 
 void
-show_hide_close_buttons(gboolean state) {
+playlist_show_hide_close_buttons(gboolean state) {
 
     	GList * list;
 

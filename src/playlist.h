@@ -94,6 +94,7 @@ GtkTreePath * playlist_get_playing_path(playlist_t * pl);
 void delayed_playlist_rearrange(void);
 void playlist_size_allocate_all(void);
 void playlist_reorder_columns_all(int * order);
+void playlist_show_hide_close_buttons(gboolean state);
 
 void create_playlist(void);
 void show_playlist(void);

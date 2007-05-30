@@ -134,6 +134,7 @@ GtkWidget * rem__all;
 GtkWidget * rem__dead;
 GtkWidget * rem__sel;
 GtkWidget * plist_menu;
+GtkWidget * plist__tab_new;
 GtkWidget * plist__save;
 GtkWidget * plist__save_all;
 GtkWidget * plist__load;
@@ -3523,6 +3524,21 @@ tab__close_cb(gpointer data) {
 }
 
 void
+tab__close_other_cb(gpointer data) {
+
+	playlist_t * pl = (playlist_t *)data;
+	GList * node;
+
+	for (node = playlists; node && node->data != pl; node = playlists) {
+		playlist_tab_close(NULL, node->data);
+	}
+
+	for (node = playlists->next; node && node->data != pl; node = playlists->next) {
+		playlist_tab_close(NULL, node->data);
+	}
+}
+
+void
 playlist_show_hide_close_buttons(gboolean state) {
 
     	GList * list;
@@ -3546,9 +3562,10 @@ create_playlist_tab_label(playlist_t * pl) {
         GdkPixbuf * pixbuf;
 
 	GtkWidget * separator;
-	GtkWidget * tab__rename;
 	GtkWidget * tab__new;
+	GtkWidget * tab__rename;
 	GtkWidget * tab__close;
+	GtkWidget * tab__close_other;
 
 	char path[MAXLEN];
 
@@ -3583,26 +3600,35 @@ create_playlist_tab_label(playlist_t * pl) {
 	/* popup menu for tabs */
 
 	pl->tab_menu = gtk_menu_new();
-        tab__rename = gtk_menu_item_new_with_label(_("Rename"));
         tab__new = gtk_menu_item_new_with_label(_("New tab"));
+        tab__rename = gtk_menu_item_new_with_label(_("Rename"));
         tab__close = gtk_menu_item_new_with_label(_("Close tab"));
+	tab__close_other = gtk_menu_item_new_with_label(_("Close other tabs"));
 
+        gtk_menu_shell_append(GTK_MENU_SHELL(pl->tab_menu), tab__new);
         gtk_menu_shell_append(GTK_MENU_SHELL(pl->tab_menu), tab__rename);
 
 	separator = gtk_separator_menu_item_new();
         gtk_menu_shell_append(GTK_MENU_SHELL(pl->tab_menu), separator);
 	gtk_widget_show(separator);
 
-        gtk_menu_shell_append(GTK_MENU_SHELL(pl->tab_menu), tab__new);
         gtk_menu_shell_append(GTK_MENU_SHELL(pl->tab_menu), tab__close);
 
-        g_signal_connect_swapped(G_OBJECT(tab__rename), "activate", G_CALLBACK(tab__rename_cb), pl);
+	separator = gtk_separator_menu_item_new();
+        gtk_menu_shell_append(GTK_MENU_SHELL(pl->tab_menu), separator);
+	gtk_widget_show(separator);
+
+        gtk_menu_shell_append(GTK_MENU_SHELL(pl->tab_menu), tab__close_other);
+
         g_signal_connect_swapped(G_OBJECT(tab__new), "activate", G_CALLBACK(tab__new_cb), pl);
+        g_signal_connect_swapped(G_OBJECT(tab__rename), "activate", G_CALLBACK(tab__rename_cb), pl);
         g_signal_connect_swapped(G_OBJECT(tab__close), "activate", G_CALLBACK(tab__close_cb), pl);
+        g_signal_connect_swapped(G_OBJECT(tab__close_other), "activate", G_CALLBACK(tab__close_other_cb), pl);
 
         gtk_widget_show(tab__rename);
         gtk_widget_show(tab__new);
         gtk_widget_show(tab__close);
+        gtk_widget_show(tab__close_other);
 
         if (options.playlist_show_close_button_in_tab == FALSE) {
                 gtk_widget_hide(pl->tab_close_button);
@@ -3807,9 +3833,22 @@ create_playlist_gui(playlist_t * pl) {
 playlist_t *
 playlist_tab_new(char * name) {
 
-	playlist_t * pl = playlist_new(name);
-	create_playlist_gui(pl);
+	playlist_t * pl = NULL;
 
+	if (g_list_length(playlists) == 1) {
+
+		pl = (playlist_t *)playlists->data;
+		GtkTreeIter dummy;
+
+		if (!pl->name_set &&
+		    gtk_tree_model_get_iter_first(GTK_TREE_MODEL(pl->store), &dummy) == FALSE) {
+			playlist_rename(pl, name);
+			return pl;
+		}
+	}
+
+	pl = playlist_new(name);
+	create_playlist_gui(pl);
 	return pl;
 }
 
@@ -4864,6 +4903,7 @@ init_plist_menu(GtkWidget *append_menu) {
 
 	GtkWidget * separator;
 
+        plist__tab_new = gtk_menu_item_new_with_label(_("New tab"));
         plist__save = gtk_menu_item_new_with_label(_("Save playlist"));
         plist__save_all = gtk_menu_item_new_with_label(_("Save all playlists"));
         plist__load_tab = gtk_menu_item_new_with_label(_("Load playlist in new tab"));
@@ -4879,6 +4919,12 @@ init_plist_menu(GtkWidget *append_menu) {
         plist__reread_file_meta = gtk_menu_item_new_with_label(_("Reread file metadata"));
         plist__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
         plist__search = gtk_menu_item_new_with_label(_("Search..."));
+
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__tab_new);
+
+	separator = gtk_separator_menu_item_new();
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), separator);
+	gtk_widget_show(separator);
 
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__save);
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__save_all);
@@ -4916,6 +4962,7 @@ init_plist_menu(GtkWidget *append_menu) {
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__fileinfo);
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__search);
 
+        g_signal_connect_swapped(G_OBJECT(plist__tab_new), "activate", G_CALLBACK(tab__new_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(plist__save), "activate", G_CALLBACK(plist__save_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(plist__save_all), "activate", G_CALLBACK(plist__save_all_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(plist__load_tab), "activate", G_CALLBACK(plist__load_tab_cb), NULL);
@@ -4932,6 +4979,7 @@ init_plist_menu(GtkWidget *append_menu) {
         g_signal_connect_swapped(G_OBJECT(plist__fileinfo), "activate", G_CALLBACK(plist__fileinfo_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(plist__search), "activate", G_CALLBACK(plist__search_cb), NULL);
 
+        gtk_widget_show(plist__tab_new);
         gtk_widget_show(plist__save);
         gtk_widget_show(plist__save_all);
         gtk_widget_show(plist__load_tab);

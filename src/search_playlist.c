@@ -42,11 +42,9 @@ extern options_t options;
 
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
-extern GtkListStore * play_store;
-extern GtkWidget * play_list;
-
 extern GtkWidget * playlist_window;
 extern GtkWidget * main_window;
+extern GList * playlists;
 
 static GtkWidget * search_window = NULL;
 static GtkWidget * searchkey_entry;
@@ -73,6 +71,7 @@ get_toggle_buttons_state(void) {
 
 static void
 clear_search_store(void) {
+
 	int i;
 	GtkTreeIter iter;
 
@@ -126,15 +125,12 @@ sfac_clicked(GtkWidget * widget, gpointer data) {
         get_toggle_buttons_state();
 
         if (selectfc) {
-
                 gtk_widget_hide(sres_list);
                 gtk_window_resize(GTK_WINDOW(search_window), 420, 138);
 
         } else {
-
                 gtk_window_resize(GTK_WINDOW(search_window), 420, 355);
                 gtk_widget_show(sres_list);
-
         }
 
         return TRUE;
@@ -142,12 +138,12 @@ sfac_clicked(GtkWidget * widget, gpointer data) {
 
 
 void
-search_foreach(GPatternSpec * pattern, GtkTreeIter * list_iter) {
+search_foreach(playlist_t * pl, GPatternSpec * pattern, GtkTreeIter * list_iter) {
 
 	char * text;
 	char * tmp = NULL;
 
-	gtk_tree_model_get(GTK_TREE_MODEL(play_store), list_iter, PL_COL_TRACK_NAME, &text, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), list_iter, PL_COL_TRACK_NAME, &text, -1);
 
 	if (casesens) {
 		tmp = strdup(text);
@@ -160,14 +156,14 @@ search_foreach(GPatternSpec * pattern, GtkTreeIter * list_iter) {
 		GtkTreeIter iter;
 		GtkTreePath * path;
 
-		path = gtk_tree_model_get_path(GTK_TREE_MODEL(play_store), list_iter);
+		path = gtk_tree_model_get_path(GTK_TREE_MODEL(pl->store), list_iter);
 		gtk_list_store_append(search_store, &iter);
-		gtk_list_store_set(search_store, &iter, 0, text, 1, (gpointer)path, -1);
+		gtk_list_store_set(search_store, &iter, 0, text,
+				   1, (gpointer)path, 2, pl->name, 3, (gpointer)pl, -1);
 	}
 
 	g_free(tmp);
 	g_free(text);
-	deflicker();
 }
 
 static gint
@@ -181,6 +177,9 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 	int i;
 	GtkTreeIter list_iter;
 	GtkTreeIter sfac_iter;
+
+	GList * node = NULL;
+
 
         get_toggle_buttons_state();
 
@@ -209,20 +208,26 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 
 	pattern = g_pattern_spec_new(key);
 
-	i = 0;
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store), &list_iter, NULL, i++)) {
+	for (node = playlists; node; node = node->next) {
 
-		if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(play_store), &list_iter)) {
+		playlist_t * pl = (playlist_t *)node->data;
 
-			int j = 0;
-			GtkTreeIter iter;
+		i = 0;
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store),
+						     &list_iter, NULL, i++)) {
 
-			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(play_store),
-							     &iter, &list_iter, j++)) {
-				search_foreach(pattern, &iter);
+			if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(pl->store), &list_iter)) {
+
+				int j = 0;
+				GtkTreeIter iter;
+
+				while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store),
+								     &iter, &list_iter, j++)) {
+					search_foreach(pl, pattern, &iter);
+				}
+			} else {
+				search_foreach(pl, pattern, &list_iter);
 			}
-		} else {
-			search_foreach(pattern, &list_iter);
 		}
 	}
 
@@ -246,24 +251,30 @@ search_selection_changed(GtkTreeSelection * treeselection, gpointer user_data) {
 	GtkTreeIter iter;
 	GtkTreePath * path;
 	GtkTreePath * path_up;
-	gpointer gptr;
+	gpointer gptr1;
+	gpointer gptr2;
+	playlist_t * pl;
 
 	if (!gtk_tree_selection_get_selected(search_select, NULL, &iter)) {
 		return;
 	}
 
 	gtk_tree_model_get(GTK_TREE_MODEL(search_store), &iter,
-			   1, &gptr, -1);
+			   1, &gptr1, 3, &gptr2, -1);
 
-	path = (GtkTreePath *)gptr;
+	path = (GtkTreePath *)gptr1;
 	path_up = gtk_tree_path_copy(path);
 
+	pl = (playlist_t *)gptr2;
+
 	if (gtk_tree_path_up(path_up)) {
-		gtk_tree_view_expand_row(GTK_TREE_VIEW(play_list), path_up, FALSE);
+		gtk_tree_view_expand_row(GTK_TREE_VIEW(pl->view), path_up, FALSE);
 	}
 
-	gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(play_list), path, NULL, TRUE, 0.5f, 0.5f);
-	gtk_tree_view_set_cursor(GTK_TREE_VIEW(play_list), path, NULL, FALSE);
+	gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(pl->view), path, NULL, TRUE, 0.5f, 0.5f);
+	gtk_tree_view_set_cursor(GTK_TREE_VIEW(pl->view), path, NULL, FALSE);
+
+	playlist_set_current(pl);
 
 	gtk_tree_path_free(path_up);
 }
@@ -386,9 +397,11 @@ search_playlist_dialog(void) {
         gtk_container_add(GTK_CONTAINER(search_viewport), search_scrwin);
 
 
-        search_store = gtk_list_store_new(2,
+        search_store = gtk_list_store_new(4,
 					  G_TYPE_STRING,   /* title */
-					  G_TYPE_POINTER); /* GtkTreePath */
+					  G_TYPE_POINTER,  /* GtkTreePath */
+					  G_TYPE_STRING,   /* playlist name */
+					  G_TYPE_POINTER); /* playlist_t pointer */
 
         gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(search_store), 0, GTK_SORT_ASCENDING);
 
@@ -402,6 +415,17 @@ search_playlist_dialog(void) {
                          G_CALLBACK(search_selection_changed), NULL);
 
         search_renderer = gtk_cell_renderer_text_new();
+        search_column = gtk_tree_view_column_new_with_attributes(_("Playlist"),
+                                                             search_renderer,
+                                                             "text", 2,
+                                                             NULL);
+        gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(search_column),
+                                        GTK_TREE_VIEW_COLUMN_AUTOSIZE);
+        gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(search_column), TRUE);
+        gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(search_column), 2);
+        gtk_tree_view_append_column(GTK_TREE_VIEW(search_list), search_column);
+
+        search_renderer = gtk_cell_renderer_text_new();
         search_column = gtk_tree_view_column_new_with_attributes(_("Title"),
                                                              search_renderer,
                                                              "text", 0,
@@ -409,7 +433,7 @@ search_playlist_dialog(void) {
         gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(search_column),
                                         GTK_TREE_VIEW_COLUMN_AUTOSIZE);
         gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(search_column), TRUE);
-        gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(search_column), 0);
+        gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(search_column), 2);
         gtk_tree_view_append_column(GTK_TREE_VIEW(search_list), search_column);
 
         hseparator = gtk_hseparator_new ();

@@ -358,6 +358,20 @@ playlist_get_by_name(char * name) {
 }
 
 
+void
+playlist_set_current(playlist_t * pl) {
+
+	int n = gtk_notebook_get_n_pages(GTK_NOTEBOOK(playlist_notebook));
+	int i;
+
+	for (i = 0; i < n; i++) {
+		if (pl->widget == gtk_notebook_get_nth_page(GTK_NOTEBOOK(playlist_notebook), i)) {
+			gtk_notebook_set_current_page(GTK_NOTEBOOK(playlist_notebook), i);
+			return;
+		}
+	}
+}
+
 playlist_transfer_t *
 playlist_transfer_new(playlist_t * pl) {
 

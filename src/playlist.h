@@ -87,6 +87,7 @@ typedef struct {
 playlist_t * playlist_tab_new(char * name);
 
 playlist_t * playlist_get_current(void);
+void playlist_set_current(playlist_t * pl);
 playlist_t * playlist_get_playing(void);
 
 GtkTreePath * playlist_get_playing_path(playlist_t * pl);

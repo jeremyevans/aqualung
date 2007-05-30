@@ -227,8 +227,8 @@ void playlist_save(playlist_t * pl, char * filename);
 int playlist_get_type(char * filename);
 void playlist_load_xml_multi(char * filename, int start_playback);
 void playlist_load_xml_single(char * filename, playlist_transfer_t * pt);
-void playlist_load_m3u(char * filename, playlist_transfer_t * pt);
-void playlist_load_pls(char * filename, playlist_transfer_t * pt);
+void * playlist_load_m3u_thread(void * arg);
+void * playlist_load_pls_thread(void * arg);
 
 
 GtkWidget * playlist_notebook;
@@ -406,6 +406,10 @@ playlist_transfer_free(playlist_transfer_t * pt) {
 		}
 	} else if (pt->xml_doc != NULL) {
 		xmlFreeDoc((xmlDocPtr)pt->xml_doc);
+	}
+
+	if (pt->filename) {
+		free(pt->filename);
 	}
 
 	free(pt);
@@ -1144,8 +1148,6 @@ add_files_to_playlist_thread(void * arg) {
 
 	AQUALUNG_MUTEX_LOCK(pt->pl->thread_mutex);
 
-	printf("--> add_files_to_playlist_thread\n");
-
 	for (node = pt->list; node; node = node->next) {
 
 		if (!pt->pl->thread_stop) {
@@ -1162,8 +1164,6 @@ add_files_to_playlist_thread(void * arg) {
 	playlist_thread_add_to_list(pt, NULL);
 
 	g_slist_free(pt->list);
-
-	printf("<-- add_files_to_playlist_thread\n");
 
 	AQUALUNG_MUTEX_UNLOCK(pt->pl->thread_mutex);
 
@@ -1283,8 +1283,6 @@ add_dir_to_playlist_thread(void * arg) {
 
 	AQUALUNG_MUTEX_LOCK(pt->pl->thread_mutex);
 
-	printf("--> add_dir_to_playlist_thread\n");
-
 	for (node = pt->list; node; node = node->next) {
 
 		add_dir_to_playlist(pt, (char *)node->data);
@@ -1294,8 +1292,6 @@ add_dir_to_playlist_thread(void * arg) {
 	playlist_thread_add_to_list(pt, NULL);
 
 	g_slist_free(pt->list);
-
-	printf("<-- add_dir_to_playlist_thread\n");
 
 	AQUALUNG_MUTEX_UNLOCK(pt->pl->thread_mutex);
 
@@ -1612,11 +1608,21 @@ playlist_load(GList * list, int mode, char * tab_name, int start_playback) {
 			break;
 
 		case PLAYLIST_M3U:
-			playlist_load_m3u(fullname, pt);
+			playlist_progress_bar_show(pt->pl);
+			pt->filename = strdup(fullname);
+			AQUALUNG_THREAD_CREATE(pt->pl->thread_id,
+					       NULL,
+					       playlist_load_m3u_thread,
+					       pt);
 			break;
 
 		case PLAYLIST_PLS:
-			playlist_load_pls(fullname, pt);
+			playlist_progress_bar_show(pt->pl);
+			pt->filename = strdup(fullname);
+			AQUALUNG_THREAD_CREATE(pt->pl->thread_id,
+					       NULL,
+					       playlist_load_pls_thread,
+					       pt);
 			break;
 		}
 
@@ -4325,8 +4331,6 @@ playlist_load_xml_thread(void * arg) {
 
 	AQUALUNG_MUTEX_LOCK(pt->pl->thread_mutex);
 
-	printf("--> playlist_load_xml_thread\n");
-
 	for (cur = cur->xmlChildrenNode; cur != NULL && !pt->pl->thread_stop; cur = cur->next) {
 
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"track") ||
@@ -4338,8 +4342,6 @@ playlist_load_xml_thread(void * arg) {
 	}
 
 	playlist_thread_add_to_list(pt, NULL);
-
-	printf("<-- playlist_load_xml_thread\n");
 
 	AQUALUNG_MUTEX_UNLOCK(pt->pl->thread_mutex);
 
@@ -4454,9 +4456,8 @@ playlist_load_xml_multi(char * filename, int start_playback) {
 	*ref -= 1;
 }
 
-
-void
-playlist_load_m3u(char * filename, playlist_transfer_t * pt) {
+void *
+playlist_load_m3u_thread(void * arg) {
 
 	FILE * f;
 	gint c;
@@ -4469,17 +4470,23 @@ playlist_load_m3u(char * filename, playlist_transfer_t * pt) {
 	gchar path[MAXLEN];
 	gchar tmp[MAXLEN];
 	gint have_name = 0;
-	/*playlist_filemeta * plfm = NULL;*/
+
+	playlist_transfer_t * pt = (playlist_transfer_t *)arg;
+	playlist_filemeta * plfm = NULL;
 
 
-	for (i = 0; (i < (str - filename)) && (i < MAXLEN-1); i++) {
-		pl_dir[i] = filename[i];
+	AQUALUNG_THREAD_DETACH();
+
+	AQUALUNG_MUTEX_LOCK(pt->pl->thread_mutex);
+
+	for (i = 0; (i < (str - pt->filename)) && (i < MAXLEN-1); i++) {
+		pl_dir[i] = pt->filename[i];
 	}
 	pl_dir[i] = '\0';
 
-	if ((f = fopen(filename, "rb")) == NULL) {
-		fprintf(stderr, "unable to open .m3u playlist: %s\n", filename);
-		return;
+	if ((f = fopen(pt->filename, "rb")) == NULL) {
+		fprintf(stderr, "unable to open .m3u playlist: %s\n", pt->filename);
+		goto finish;
 	}
 
 
@@ -4546,41 +4553,43 @@ playlist_load_m3u(char * filename, playlist_transfer_t * pt) {
 						snprintf(name, MAXLEN-1, "%s", path);
 					}
 				}
-				have_name = 0;
 
 				pt->list = g_slist_append(pt->list, strdup(path));
-				/*
 				plfm = playlist_filemeta_get(path,
 							     have_name ? name : NULL,
 							     1);
+				have_name = 0;
+
 				if (plfm == NULL) {
 					fprintf(stderr, "load_m3u(): playlist_filemeta_get() returned NULL\n");
 				} else {
-					//playlist_thread_add_to_list(plfm); // TODO
+					playlist_thread_add_to_list(pt, plfm);
 				}
-				*/
 			}
 		}
 	}
 
-	playlist_progress_bar_show(pt->pl);
-	AQUALUNG_THREAD_CREATE(pt->pl->thread_id,
-			       NULL,
-			       add_files_to_playlist_thread,
-			       pt);
+	playlist_thread_add_to_list(pt, NULL);
+
+ finish:
+
+	AQUALUNG_MUTEX_UNLOCK(pt->pl->thread_mutex);
+
+	playlist_transfer_free(pt);
+
+	return NULL;
 }
 
 
 void
 load_pls_load(playlist_transfer_t * pt, char * file, char * title, gint * have_file, gint * have_title) {
 
-	/*playlist_filemeta * plfm = NULL;*/
+	playlist_filemeta * plfm = NULL;
 
 	if (*have_file == 0) {
 		return;
 	}
 
-	/*
 	plfm = playlist_filemeta_get(file,
 				     *have_title ? title : NULL,
 				     1);
@@ -4588,17 +4597,14 @@ load_pls_load(playlist_transfer_t * pt, char * file, char * title, gint * have_f
 	if (plfm == NULL) {
 		fprintf(stderr, "load_pls_load(): playlist_filemeta_get() returned NULL\n");
 	} else {
-		//playlist_thread_add_to_list(plfm); // TODO
+		playlist_thread_add_to_list(pt, plfm);
 	}
-	*/
-
-	pt->list = g_slist_append(pt->list, strdup(file));
 
 	*have_file = *have_title = 0;
 }
 
-void
-playlist_load_pls(char * filename, playlist_transfer_t * pt) {
+void *
+playlist_load_pls_thread(void * arg) {
 
 	FILE * f;
 	gint c;
@@ -4615,15 +4621,21 @@ playlist_load_pls(char * filename, playlist_transfer_t * pt) {
 	gchar numstr_file[10];
 	gchar numstr_title[10];
 
+	playlist_transfer_t * pt = (playlist_transfer_t *)arg;
 
-	for (i = 0; (i < (str - filename)) && (i < MAXLEN-1); i++) {
-		pl_dir[i] = filename[i];
+
+	AQUALUNG_THREAD_DETACH();
+
+	AQUALUNG_MUTEX_LOCK(pt->pl->thread_mutex);
+
+	for (i = 0; (i < (str - pt->filename)) && (i < MAXLEN-1); i++) {
+		pl_dir[i] = pt->filename[i];
 	}
 	pl_dir[i] = '\0';
 
-	if ((f = fopen(filename, "rb")) == NULL) {
-		fprintf(stderr, "unable to open .pls playlist: %s\n", filename);
-		return;
+	if ((f = fopen(pt->filename, "rb")) == NULL) {
+		fprintf(stderr, "unable to open .pls playlist: %s\n", pt->filename);
+		goto finish;
 	}
 
 	i = 0;
@@ -4659,8 +4671,8 @@ playlist_load_pls(char * filename, playlist_transfer_t * pt) {
 				}
 
 				if ((ch = strstr(line, "=")) == NULL) {
-					fprintf(stderr, "Syntax error in %s\n", filename);
-					return;
+					fprintf(stderr, "Syntax error in %s\n", pt->filename);
+					goto finish;
 				}
 				
 				++ch;
@@ -4705,8 +4717,8 @@ playlist_load_pls(char * filename, playlist_transfer_t * pt) {
 				int m;
 
 				if ((ch = strstr(line, "=")) == NULL) {
-					fprintf(stderr, "Syntax error in %s\n", filename);
-					return;
+					fprintf(stderr, "Syntax error in %s\n", pt->filename);
+					goto finish;
 				}
 				
 				++ch;
@@ -4732,8 +4744,8 @@ playlist_load_pls(char * filename, playlist_transfer_t * pt) {
 
 				char * ch;
 				if ((ch = strstr(line, "=")) == NULL) {
-					fprintf(stderr, "Syntax error in %s\n", filename);
-					return;
+					fprintf(stderr, "Syntax error in %s\n", pt->filename);
+					goto finish;
 				}
 				
 				++ch;
@@ -4743,7 +4755,7 @@ playlist_load_pls(char * filename, playlist_transfer_t * pt) {
 			} else {
 				fprintf(stderr, 
 					"Syntax error: invalid line in playlist: %s\n", line);
-				return;
+				goto finish;
 			}
 
 			if (!have_file || !have_title) {
@@ -4757,13 +4769,18 @@ playlist_load_pls(char * filename, playlist_transfer_t * pt) {
 			load_pls_load(pt, file, title, &have_file, &have_title);
 		}
 	}
+
 	load_pls_load(pt, file, title, &have_file, &have_title);
 
-	playlist_progress_bar_show(pt->pl);
-	AQUALUNG_THREAD_CREATE(pt->pl->thread_id,
-			       NULL,
-			       add_files_to_playlist_thread,
-			       pt);
+	playlist_thread_add_to_list(pt, NULL);
+
+ finish:
+
+	AQUALUNG_MUTEX_UNLOCK(pt->pl->thread_mutex);
+
+	playlist_transfer_free(pt);
+
+	return NULL;
 }
 
 

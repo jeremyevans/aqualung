@@ -79,6 +79,8 @@ typedef struct {
 	void * xml_node;
 	int * xml_ref;
 
+	char * filename;
+
 	int clear;
 	int start_playback;
 

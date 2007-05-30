@@ -290,7 +290,14 @@ style "play_list" = "view"
 	font_name = "Lucida 12"	
 }
 
+style "playlist_color"
+{
+	fg[SELECTED] = { 1.0, 0.0, 0.0 }
+	fg[INSENSITIVE] = { 0.0, 0.0, 0.0 }
+}
+
 widget "*play_list" style "play_list"
+widget "*playlist_color_indicator*" style "playlist_color"
 
 
 # --- plugins

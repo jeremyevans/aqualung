@@ -298,7 +298,14 @@ style "play_list" = "view"
 	font_name = "Sans 10"	
 }
 
+style "playlist_color"
+{
+	fg[SELECTED] = "#198ca5"				   		   
+ 	fg[INSENSITIVE] = "#000000"
+}
+
 widget "*play_list" style "play_list"
+widget "*playlist_color_indicator*" style "playlist_color"
 
 
 # --- plugins

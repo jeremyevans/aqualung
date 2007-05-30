@@ -91,7 +91,10 @@ style "progressbar"
 
 style "notebook"
 {
-	bg[NORMAL] = { 0.5, 0.55, 0.5 }
+	bg_pixmap[NORMAL] = "<none>"
+	bg_pixmap[PRELIGHT] = "<none>"
+	bg[NORMAL] = { 0.6, 0.6, 0.65 }
+	bg[PRELIGHT] = { 0.7, 0.7, 0.75 }
 	bg[ACTIVE] = { 0.55, 0.5, 0.5 }
 }
 
@@ -108,11 +111,11 @@ style "combo_box"
 
 style "menu"
 {
-	bg_pixmap[NORMAL] = "bg5.png"
-	bg_pixmap[PRELIGHT] = "bg5.png"
+	bg_pixmap[NORMAL] = "<none>"
+	bg_pixmap[PRELIGHT] = "<none>"
 
-	bg[NORMAL] = { 0.8, 0.75, 0.7 }
-	bg[PRELIGHT] = { 0.7, 0.75, 0.8 }
+	bg[NORMAL] = { 0.7, 0.7, 0.75 }
+	bg[PRELIGHT] = { 0.8, 0.8, 0.83 }
 
 	fg[NORMAL] = { 0.0, 0.0, 0.0 }
 	fg[PRELIGHT] = { 0.0, 0.0, 0.0 }
@@ -171,13 +174,6 @@ style "viewport"
 	bg[ACTIVE] = { 0.5, 0.5, 0.5 }
 }
 
-style "eventbox"
-{
-	bg_pixmap[NORMAL] = "<none>"
-	bg[NORMAL] = { 0.95, 0.95, 1.0 }
-	fg[NORMAL] = { 0.0, 0.0, 0.2 }
-}
-
 style "nostyle"
 {
 	bg_pixmap[NORMAL] = "<none>"
@@ -204,14 +200,13 @@ widget "*Progress*" style "progressbar"
 widget "*OptionMenu*" style "button"
 widget "*Menu*" style "menu"
 
+widget "*EventBox*" style "notebook"
 widget "*SpinButton*" style "spin_button"
 widget "*Scale*" style "scale"
 widget "*AqualungLoopBar*" style "loop_bar"
 widget "*Button*" style "button"
 widget "*GtkEntry*" style "entry"
 widget "*Combo*" style "combo_box"
-
-widget "*EventBox*" style "eventbox"
 
 widget "*nostyle" style "nostyle"
 
@@ -319,7 +314,14 @@ style "play_list" = "view"
 	font_name = "Lucida 12"	
 }
 
+style "playlist_color"
+{
+	fg[SELECTED] = { 1.0, 0.0, 0.0 }
+	fg[INSENSITIVE] = { 0.0, 0.0, 0.0 }
+}
+
 widget "*play_list" style "play_list"
+widget "*playlist_color_indicator*" style "playlist_color"
 
 
 # --- plugins

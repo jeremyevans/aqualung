@@ -126,7 +126,7 @@ upload_songs_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 		return;
 	}
 
-	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, 1, &str, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_PHYSICAL_FILENAME, &str, -1);
 
 	i = strlen(str);
 
@@ -508,7 +508,7 @@ aifp_get_songs_info_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 	gchar * file;
 	gint * num = (int *)data;
 
-	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, 1, &file, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_PHYSICAL_FILENAME, &file, -1);
 
 	if (stat(file, &statbuf) != -1) {
 		songs_size += statbuf.st_size;

@@ -181,6 +181,8 @@ extern int music_store_changed;
 
 extern int fxbuilder_on;
 
+int skin_being_changed;
+
 GtkObject * adj_pos;
 GtkObject * adj_vol;
 GtkObject * adj_bal;
@@ -720,8 +722,6 @@ refresh_displays(void) {
 
 	if ((pl = playlist_get_playing()) == NULL) {
 		if ((pl = playlist_get_current()) == NULL) {
-			printf("WARNING: refresh_displays(): "
-			       "playlist_get_current() returned NULL\n");
 			set_title_label("");
 			cover_show_flag = 0;
 			gtk_widget_hide(cover_image_area);
@@ -744,20 +744,20 @@ refresh_displays(void) {
 			char list_str[MAXLEN];
 			
 			gtk_tree_model_iter_parent(GTK_TREE_MODEL(pl->store), &iter_parent, &iter);
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter_parent, 1, &title_str, -1);
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter_parent, PL_COL_PHYSICAL_FILENAME, &title_str, -1);
 			unpack_strings(title_str, artist, record);
 			g_free(title_str);
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, 0, &title_str, -1);
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_TRACK_NAME, &title_str, -1);
 			make_title_string(list_str, options.title_format, artist, record, title_str);
 			g_free(title_str);
 			set_title_label(list_str);				
 		} else {
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, 0, &title_str, -1);
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_TRACK_NAME, &title_str, -1);
 			set_title_label(title_str);
 			g_free(title_str);
 		}
 		if (is_file_loaded) {
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, 1, &title_str, -1);
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_PHYSICAL_FILENAME, &title_str, -1);
 			display_cover(cover_image_area, c_event_box, cover_align,
 				      48, 48, title_str, TRUE, TRUE);
 			g_free(title_str);
@@ -866,6 +866,8 @@ change_skin(char * path) {
 
 	char rcpath[MAXLEN];
 
+
+	skin_being_changed = 1;
 
 	strncpy(title, gtk_label_get_text(GTK_LABEL(label_title)), MAXLEN-1);
 
@@ -1001,7 +1003,7 @@ change_skin(char * path) {
 	restore_window_position();
 	deflicker();
 
-	set_playlist_color();
+	playlist_set_color();
 	
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), options.vol);
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), options.bal);
@@ -1021,6 +1023,12 @@ change_skin(char * path) {
                 gtk_widget_grab_focus(GTK_WIDGET(play_list));
         }
 	*/
+
+	skin_being_changed = 0;
+
+        playlist_size_allocate_all();
+	playlist_content_changed(playlist_get_current());
+	playlist_selection_changed(playlist_get_current());
 }
 
 
@@ -2822,7 +2830,7 @@ cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_d
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 			gtk_tree_path_free(p);
 			if (is_file_loaded) {
-				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, 1, &title_str, -1);
+				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_PHYSICAL_FILENAME, &title_str, -1);
 				display_zoomed_cover(main_window, c_event_box, title_str);
 				g_free(title_str);
 			}
@@ -3760,7 +3768,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	/* ensure that at least one playlist has been created */
 	playlist_ensure_tab_exists();
 
-	set_playlist_color();
+	playlist_set_color();
 
 	/* activate jack client and connect ports */
 #ifdef HAVE_JACK

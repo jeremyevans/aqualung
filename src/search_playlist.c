@@ -147,7 +147,7 @@ search_foreach(GPatternSpec * pattern, GtkTreeIter * list_iter) {
 	char * text;
 	char * tmp = NULL;
 
-	gtk_tree_model_get(GTK_TREE_MODEL(play_store), list_iter, 0, &text, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(play_store), list_iter, PL_COL_TRACK_NAME, &text, -1);
 
 	if (casesens) {
 		tmp = strdup(text);

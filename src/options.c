@@ -67,6 +67,7 @@ extern int src_type_parsed;
 
 extern GtkWidget * main_window;
 extern GtkWidget * playlist_window;
+extern GtkWidget * playlist_color_indicator;
 extern GtkWidget * play_button;
 extern GtkTooltips * aqualung_tooltips;
 
@@ -479,9 +480,9 @@ options_window_accept(void) {
                 /* apply fonts */
 
                 open_font_desc();
-
+		/*
                 gtk_widget_modify_font (music_tree, fd_browser);
-                /*gtk_widget_modify_font (play_list, fd_playlist);*/
+                gtk_widget_modify_font (play_list, fd_playlist);
 
                 gtk_widget_modify_font (bigtimer_label, fd_bigtimer);
                 gtk_widget_modify_font (smalltimer_label_1, fd_smalltimer);
@@ -505,8 +506,8 @@ options_window_accept(void) {
 			gtk_widget_modify_font (statusbar_ms, fd_statusbar);
 		}
 
-		set_playlist_color();
-
+		playlist_set_color();
+		*/
                 if (appearance_changed) {
 			reskin_flag = 1;
 		}
@@ -3155,12 +3156,10 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
 
         if (gdk_color_parse(options.activesong_color, &color) == FALSE) {
-		/*
-                color.red = play_list->style->fg[SELECTED].red; 
-                color.green = play_list->style->fg[SELECTED].green; 
-                color.blue = play_list->style->fg[SELECTED].blue; 
+                color.red = playlist_color_indicator->style->fg[SELECTED].red; 
+                color.green = playlist_color_indicator->style->fg[SELECTED].green; 
+                color.blue = playlist_color_indicator->style->fg[SELECTED].blue; 
                 color.pixel = (gulong)((color.red & 0xff00)*256 + (color.green & 0xff00) + (color.blue & 0xff00)/256);
-		*/
         }
 
         color_picker = gtk_color_button_new_with_color (&color);

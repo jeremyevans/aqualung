@@ -111,8 +111,8 @@ void playlist_ensure_tab_exists(void);
 void playlist_load(GList * list, int mode, char * tab_name, int start_playback);
 void playlist_save_all(char * filename);
 
+void playlist_set_color(void);
 void playlist_disable_bold_font(void);
-void set_playlist_color(void);
 
 void playlist_content_changed(playlist_t * pl);
 void playlist_selection_changed(playlist_t * pl);
@@ -132,16 +132,16 @@ void playlist_remove_cdda(char * device_path);
 #endif /* HAVE_CDDA */
 
 enum {
-	COLUMN_TRACK_NAME = 0,
-	COLUMN_PHYSICAL_FILENAME,
-	COLUMN_SELECTION_COLOR,
-	COLUMN_VOLUME_ADJUSTMENT,
-	COLUMN_VOLUME_ADJUSTMENT_DISP,
-	COLUMN_DURATION,  
-	COLUMN_DURATION_DISP,
-	COLUMN_FONT_WEIGHT,
+	PL_COL_TRACK_NAME = 0,
+	PL_COL_PHYSICAL_FILENAME,
+	PL_COL_SELECTION_COLOR,
+	PL_COL_VOLUME_ADJUSTMENT,
+	PL_COL_VOLUME_ADJUSTMENT_DISP,
+	PL_COL_DURATION,  
+	PL_COL_DURATION_DISP,
+	PL_COL_FONT_WEIGHT,
 
-	NUMBER_OF_COLUMNS /* it must be the last entry here */
+	PL_NUM_OF_COLUMNS /* it must be the last entry here */
 };
 
 #endif /* _PLAYLIST_H */

@@ -1584,6 +1584,7 @@ playlist_load(GList * list, int mode, char * tab_name, int start_playback) {
 
 		switch (type) {
 		case PLAYLIST_INVALID:
+			/* not a playlist, trying to load as audio file */
 			pt->list = g_slist_append(NULL, strdup(fullname));
 			playlist_progress_bar_show(pt->pl);
 			
@@ -2822,117 +2823,139 @@ void
 playlist_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
 		      GtkSelectionData * data, guint info, guint time, gpointer user_data) {
 
-	gtk_selection_data_set(data, data->target, 8, (const guchar *) "list\0", 5);
+	char tmp[32];
+	sprintf(tmp, "%p", user_data);
+	gtk_selection_data_set(data, data->target, 8, tmp, strlen(tmp));
 }
 
+void
+playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
+		   GtkTreeStore * tstore, GtkTreeIter * titer,
+		   GtkTreeIter * iter, int mode) {
+
+	gchar * tname;
+	gchar * fname;
+	gchar * color;
+	gfloat voladj;
+	gchar * voldisp;
+	gfloat duration;
+	gchar * durdisp;
+	gint fontw;
+
+
+	gtk_tree_model_get(GTK_TREE_MODEL(sstore), siter,
+			   PL_COL_TRACK_NAME, &tname, 
+			   PL_COL_PHYSICAL_FILENAME, &fname,
+			   PL_COL_SELECTION_COLOR, &color,
+			   PL_COL_VOLUME_ADJUSTMENT, &voladj,
+			   PL_COL_VOLUME_ADJUSTMENT_DISP, &voldisp, 
+			   PL_COL_DURATION, &duration,
+			   PL_COL_DURATION_DISP, &durdisp, 
+			   PL_COL_FONT_WEIGHT, &fontw, -1);
+
+	if (mode == 0) {
+		gtk_tree_store_insert_after(tstore, iter, NULL, titer);
+	} else if (mode == 1) {
+		gtk_tree_store_insert_before(tstore, iter, NULL, titer);
+	} else {
+		gtk_tree_store_append(tstore, iter, titer);
+	}
+
+	gtk_tree_store_set(tstore, iter,
+			   PL_COL_TRACK_NAME, tname,
+			   PL_COL_PHYSICAL_FILENAME, fname,
+			   PL_COL_SELECTION_COLOR, color,
+			   PL_COL_VOLUME_ADJUSTMENT, voladj, 
+			   PL_COL_VOLUME_ADJUSTMENT_DISP, voldisp,
+			   PL_COL_DURATION, duration,
+			   PL_COL_DURATION_DISP, durdisp,
+			   PL_COL_FONT_WEIGHT, fontw, -1);
+
+	g_free(tname);
+	g_free(fname);
+	g_free(color);
+	g_free(voldisp);
+	g_free(durdisp);
+}
 
 void
-playlist_perform_drag(playlist_t * pl,
-		      GtkTreeIter * sel_iter, GtkTreePath * sel_path,
-		      GtkTreeIter * pos_iter, GtkTreePath * pos_path) {
+playlist_node_deep_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
+			GtkTreeStore * tstore, GtkTreeIter * titer,
+			int mode) {
 
-	gint cmp = gtk_tree_path_compare(sel_path, pos_path);
-	gint sel_depth = gtk_tree_path_get_depth(sel_path);
-	gint pos_depth = gtk_tree_path_get_depth(pos_path);
+	GtkTreeIter iter;
+	GtkTreeIter dummy;
+	GtkTreeIter child_siter;
+	int i;
 
-	gint * sel_idx = gtk_tree_path_get_indices(sel_path);
-	gint * pos_idx = gtk_tree_path_get_indices(pos_path);
 
-	if (cmp == 0) {
+	playlist_node_copy(sstore, siter, tstore, titer, &iter, mode);
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(sstore), &child_siter, siter, i++)) {
+
+		playlist_node_copy(sstore, &child_siter, tstore, &iter, &dummy, 2/*append*/);
+	}
+}
+
+void
+playlist_perform_drag(playlist_t * spl, GtkTreeIter * siter, GtkTreePath * spath,
+		      playlist_t * tpl, GtkTreeIter * titer, GtkTreePath * tpath) {
+
+	GtkTreeIter sparent;
+	GtkTreeIter tparent;
+	gint recalc_sparent = 0;
+	gint recalc_tparent = 0;
+	gint cmp = gtk_tree_path_compare(spath, tpath);
+
+
+	if (spl == tpl && cmp == 0) {
 		return;
 	}
 
-	if (sel_depth == pos_depth && (sel_depth == 1 /* top */ || sel_idx[0] == pos_idx[0])) {
+	if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(spl->store), siter) &&
+	    !gtk_tree_model_iter_has_child(GTK_TREE_MODEL(tpl->store), titer) &&
+	    gtk_tree_path_get_depth(tpath) == 2) {
+		return;
+	}
 
-		GtkTreeIter parent;
+	if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(spl->store), &sparent, siter)) {
+		recalc_sparent = 1;
+	}
 
-		if (cmp == 1) {
-			gtk_tree_store_move_before(pl->store, sel_iter, pos_iter);
-		} else {
-			gtk_tree_store_move_after(pl->store, sel_iter, pos_iter);
+	if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(tpl->store), &tparent, titer)) {
+		recalc_tparent = 1;
+	}
+
+	if (spl == playlist_get_playing()) {
+		char * color;
+		gtk_tree_model_get(GTK_TREE_MODEL(spl->store), siter,
+				   PL_COL_SELECTION_COLOR, &color, -1);
+		if (strcmp(color, pl_color_active) == 0) {
+			playlist_set_playing(spl, 0);
+			playlist_set_playing(tpl, 1);
 		}
-
-		if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(pl->store), &parent, sel_iter)) {
-			unmark_track(pl->store, &parent);
-			mark_track(pl->store, &parent);
-		}
-	} else {
-
-		GtkTreeIter iter;
-		GtkTreeIter sel_parent;
-		GtkTreeIter pos_parent;
-		gint recalc_sel_parent = 0;
-		gint recalc_pos_parent = 0;
-		gchar * tname;
-		gchar * fname;
-		gchar * color;
-		gfloat voladj;
-		gchar * voldisp;
-		gfloat duration;
-		gchar * durdisp;
-		gint fontw;
-
-		if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(pl->store), sel_iter)) {
-			return;
-		}
-
-		if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(pl->store), &sel_parent, sel_iter)) {
-			recalc_sel_parent = 1;
-		}
-
-		if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(pl->store), &pos_parent, pos_iter)) {
-			recalc_pos_parent = 1;
-		}
-
-		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), sel_iter,
-				   PL_COL_TRACK_NAME, &tname, 
-                                   PL_COL_PHYSICAL_FILENAME, &fname,
-				   PL_COL_SELECTION_COLOR, &color,
-				   PL_COL_VOLUME_ADJUSTMENT, &voladj,
-				   PL_COL_VOLUME_ADJUSTMENT_DISP, &voldisp, 
-                                   PL_COL_DURATION, &duration,
-				   PL_COL_DURATION_DISP, &durdisp, 
-                                   PL_COL_FONT_WEIGHT, &fontw, -1);
-
-		if (cmp == 1) {
-			gtk_tree_store_insert_before(pl->store, &iter, NULL, pos_iter);
-		} else {
-			gtk_tree_store_insert_after(pl->store, &iter, NULL, pos_iter);
-		}
-
-		gtk_tree_store_set(pl->store, &iter,
-				   PL_COL_TRACK_NAME, tname,
-				   PL_COL_PHYSICAL_FILENAME, fname,
-                                   PL_COL_SELECTION_COLOR, color,
-				   PL_COL_VOLUME_ADJUSTMENT, voladj, 
-                                   PL_COL_VOLUME_ADJUSTMENT_DISP, voldisp,
-				   PL_COL_DURATION, duration,
-				   PL_COL_DURATION_DISP, durdisp,
-				   PL_COL_FONT_WEIGHT, fontw, -1);
-
-		gtk_tree_store_remove(pl->store, sel_iter);
-
-		if (recalc_sel_parent) {
-			if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(pl->store), &sel_parent)) {
-				recalc_album_node(pl, &sel_parent);
-				unmark_track(pl->store, &sel_parent);
-				mark_track(pl->store, &sel_parent);
-			} else {
-				gtk_tree_store_remove(pl->store, &sel_parent);
-			}
-		}
-
-		if (recalc_pos_parent) {
-			recalc_album_node(pl, &pos_parent);
-			unmark_track(pl->store, &pos_parent);
-			mark_track(pl->store, &pos_parent);
-		}
-
-		g_free(tname);
-		g_free(fname);
 		g_free(color);
-		g_free(voldisp);
-		g_free(durdisp);
+	}
+
+	playlist_node_deep_copy(spl->store, siter, tpl->store, titer, (cmp == 1));
+
+	gtk_tree_store_remove(spl->store, siter);
+
+	if (recalc_sparent) {
+		if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(spl->store), &sparent)) {
+			recalc_album_node(spl, &sparent);
+			unmark_track(spl->store, &sparent);
+			mark_track(spl->store, &sparent);
+		} else {
+			gtk_tree_store_remove(spl->store, &sparent);
+		}
+	}
+
+	if (recalc_tparent) {
+		recalc_album_node(tpl, &tparent);
+		unmark_track(tpl->store, &tparent);
+		mark_track(tpl->store, &tparent);
 	}
 }
 
@@ -2955,106 +2978,104 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 			    GtkSelectionData * data, guint info, guint time, gpointer user_data) {
 
 	GtkTreeViewColumn * column;
-	playlist_t * pl = (playlist_t *)user_data;
+	playlist_t * tpl = (playlist_t *)user_data;
 
-	if (info == 0) { /* drag and drop inside Aqualung */
+	if (info == 0) { /* drag and drop inside or between playlists */
 
-		if (!strcmp((gchar *)data->data, "store")) {
+		GtkTreeIter siter;
+		GtkTreeIter titer;
+		GtkTreePath * spath = NULL;
+		GtkTreePath * tpath = NULL;
+		playlist_t * spl = NULL;
 
-			GtkTreePath * path = NULL;
-			GtkTreeIter * piter = NULL;
-			GtkTreeIter iter;
-			GtkTreeIter parent;
-			GtkTreeModel * model;
-			int depth;
 
-			if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
-				depth = gtk_tree_path_get_depth(gtk_tree_model_get_path(model, &iter));
-#ifdef HAVE_CDDA
-				if (is_store_iter_cdda(&iter))
-					depth += 1;
-#endif /* HAVE_CDDA */
-			} else {
-				return FALSE;
+		sscanf((char *)data->data, "%p", &spl);
+
+		gtk_tree_selection_set_mode(spl->select, GTK_SELECTION_SINGLE);
+
+		if (gtk_tree_selection_get_selected(spl->select, NULL, &siter)) {
+
+			spath = gtk_tree_model_get_path(GTK_TREE_MODEL(spl->store), &siter);
+
+			if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(tpl->view),
+							  x, y, &tpath, &column, NULL, NULL)) {
+
+				gtk_tree_model_get_iter(GTK_TREE_MODEL(tpl->store), &titer, tpath);
+
+				playlist_perform_drag(spl, &siter, spath, tpl, &titer, tpath);
 			}
-
-			if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(pl->view),
-							  x, y, &path, &column, NULL, NULL)) {
-
-				if (depth != 4) { /* dragging store, artist or record */
-					while (gtk_tree_path_get_depth(path) > 1) {
-						gtk_tree_path_up(path);
-					}
-				}
-
-				gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, path);
-				piter = &iter;
-			}
-
-			switch (depth) {
-			case 1:
-				store__addlist_defmode(piter);
-				break;
-			case 2:
-				artist__addlist_defmode(piter);
-				break;
-			case 3:
-				record__addlist_defmode(piter);
-				break;
-			case 4:
-				track__addlist_cb(piter);
-
-				if (piter && gtk_tree_model_iter_parent(GTK_TREE_MODEL(pl->store),
-									&parent, piter)) {
-					recalc_album_node(pl, &parent);
-					unmark_track(pl->store, &parent);
-					mark_track(pl->store, &parent);
-				}
-
-				break;
-			}
-
-			if (path) {
-				gtk_tree_path_free(path);
-			}
-			
-		} else if (!strcmp((gchar *)data->data, "list")) {
-
-			GtkTreeModel * model;
-			GtkTreeIter sel_iter;
-			GtkTreeIter pos_iter;
-			GtkTreePath * sel_path = NULL;
-			GtkTreePath * pos_path = NULL;
-
-			gtk_tree_selection_set_mode(pl->select, GTK_SELECTION_SINGLE);
-
-			if (gtk_tree_selection_get_selected(pl->select, &model, &sel_iter)) {
-
-				sel_path = gtk_tree_model_get_path(model, &sel_iter);
-
-				if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(pl->view),
-								  x, y, &pos_path, &column, NULL, NULL)) {
-
-					gtk_tree_model_get_iter(model, &pos_iter, pos_path);
-
-					playlist_perform_drag(pl,
-							      &sel_iter, sel_path,
-							      &pos_iter, pos_path);
-				}
-			}
-
-			if (sel_path) {
-				gtk_tree_path_free(sel_path);
-			}
-
-			if (pos_path) {
-				gtk_tree_path_free(pos_path);
-			}
-
-			gtk_tree_selection_set_mode(pl->select, GTK_SELECTION_MULTIPLE);
 		}
 
-	} else { /* drag and drop from external app */
+		if (spath) {
+			gtk_tree_path_free(spath);
+		}
+
+		if (tpath) {
+			gtk_tree_path_free(tpath);
+		}
+
+		gtk_tree_selection_set_mode(spl->select, GTK_SELECTION_MULTIPLE);
+
+	} else if (info == 1) { /* drag and drop from music store to playlist */
+
+		GtkTreePath * path = NULL;
+		GtkTreeIter * piter = NULL;
+		GtkTreeIter iter;
+		GtkTreeIter parent;
+		GtkTreeModel * model;
+		int depth;
+
+		if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
+			depth = gtk_tree_path_get_depth(gtk_tree_model_get_path(model, &iter));
+#ifdef HAVE_CDDA
+			if (is_store_iter_cdda(&iter))
+				depth += 1;
+#endif /* HAVE_CDDA */
+		} else {
+			return FALSE;
+		}
+
+		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(tpl->view),
+						  x, y, &path, &column, NULL, NULL)) {
+
+			if (depth != 4) { /* dragging store, artist or record */
+				while (gtk_tree_path_get_depth(path) > 1) {
+					gtk_tree_path_up(path);
+				}
+			}
+			
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(tpl->store), &iter, path);
+			piter = &iter;
+		}
+
+		switch (depth) {
+		case 1:
+			store__addlist_defmode(piter);
+			break;
+		case 2:
+			artist__addlist_defmode(piter);
+			break;
+		case 3:
+			record__addlist_defmode(piter);
+			break;
+		case 4:
+			track__addlist_cb(piter);
+
+			if (piter && gtk_tree_model_iter_parent(GTK_TREE_MODEL(tpl->store),
+								&parent, piter)) {
+				recalc_album_node(tpl, &parent);
+				unmark_track(tpl->store, &parent);
+				mark_track(tpl->store, &parent);
+			}
+
+			break;
+		}
+
+		if (path) {
+			gtk_tree_path_free(path);
+		}
+			
+	} else if (info == 2) { /* drag and drop from external app */
 
 		gchar ** uri_list;
 		gchar * str = NULL;
@@ -3604,14 +3625,15 @@ create_playlist_gui(playlist_t * pl) {
 	gchar path[MAXLEN];
 
 	GtkTargetEntry source_table[] = {
-		{ "STRING", GTK_TARGET_SAME_APP, 0 }
+		{ "aqualung-list-list", GTK_TARGET_SAME_APP, 0 }
 	};
 
 	GtkTargetEntry target_table[] = {
-		{ "STRING", GTK_TARGET_SAME_APP, 0 },
-		{ "STRING", 0, 1 },
-		{ "text/plain", 0, 1 },
-		{ "text/uri-list", 0, 1 }
+		{ "aqualung-list-list", GTK_TARGET_SAME_APP, 0 },
+		{ "aqualung-browser-list", GTK_TARGET_SAME_APP, 1 },
+		{ "STRING", 0, 2 },
+		{ "text/plain", 0, 2 },
+		{ "text/uri-list", 0, 2 }
 	};
 
 
@@ -3708,7 +3730,7 @@ create_playlist_gui(playlist_t * pl) {
 			    source_table,
 			    sizeof(source_table) / sizeof(GtkTargetEntry),
 			    GDK_ACTION_MOVE);
-	
+
 	gtk_drag_dest_set(pl->view,
 			  GTK_DEST_DEFAULT_ALL,
 			  target_table,
@@ -4337,7 +4359,9 @@ playlist_load_xml_thread(void * arg) {
 		    !xmlStrcmp(cur->name, (const xmlChar *)"record")) {
 			parse_playlist_track(pt, doc, cur, 0);
 		} else if (!xmlStrcmp(cur->name, (const xmlChar *)"is_active")) {
-			pt->pl->playing = 1;
+			if (playlist_get_playing() == NULL) {
+				playlist_set_playing(pt->pl, 1);
+			}
 		}
 	}
 

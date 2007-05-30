@@ -4939,7 +4939,7 @@ create_music_browser(void) {
 	char path[MAXLEN];
 
 	GtkTargetEntry target_table[] = {
-		{ "STRING", GTK_TARGET_SAME_APP, 0 }
+		{ "aqualung-browser-list", GTK_TARGET_SAME_APP, 1 }
 	};
 
 
@@ -5096,7 +5096,7 @@ create_music_browser(void) {
 	gtk_drag_source_set(music_tree,
 			    GDK_BUTTON1_MASK,
 			    target_table,
-			    1,
+			    sizeof(target_table) / sizeof(GtkTargetEntry),
 			    GDK_ACTION_COPY);
 
 	snprintf(path, MAXLEN-1, "%s/drag.png", AQUALUNG_DATADIR);

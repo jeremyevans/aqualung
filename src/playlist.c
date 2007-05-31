@@ -79,9 +79,6 @@ extern GtkWidget * vol_window;
 
 extern GtkTreeSelection * music_select;
 
-gint playlist_color_is_set;
-
-gint playlist_drag_y;
 gint playlist_scroll_up_tag = -1;
 gint playlist_scroll_dn_tag = -1;
 
@@ -856,7 +853,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 
 		if (path) {
 			playlist_start_playback_at_path(pl, path);
-		}		
+		}
 		return FALSE;
 	case GDK_u:
 	case GDK_U:
@@ -2907,14 +2904,19 @@ playlist_perform_drag(playlist_t * spl, GtkTreeIter * siter, GtkTreePath * spath
 	GtkTreeIter tparent;
 	gint recalc_sparent = 0;
 	gint recalc_tparent = 0;
-	gint cmp = gtk_tree_path_compare(spath, tpath);
+	gint cmp = 2/*append*/;
 
+
+	if (tpath != NULL) {
+		cmp = gtk_tree_path_compare(spath, tpath);
+	}
 
 	if (spl == tpl && cmp == 0) {
 		return;
 	}
 
-	if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(spl->store), siter) &&
+	if (titer && tpath &&
+	    gtk_tree_model_iter_has_child(GTK_TREE_MODEL(spl->store), siter) &&
 	    !gtk_tree_model_iter_has_child(GTK_TREE_MODEL(tpl->store), titer) &&
 	    gtk_tree_path_get_depth(tpath) == 2) {
 		return;
@@ -2924,7 +2926,7 @@ playlist_perform_drag(playlist_t * spl, GtkTreeIter * siter, GtkTreePath * spath
 		recalc_sparent = 1;
 	}
 
-	if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(tpl->store), &tparent, titer)) {
+	if (titer && gtk_tree_model_iter_parent(GTK_TREE_MODEL(tpl->store), &tparent, titer)) {
 		recalc_tparent = 1;
 	}
 
@@ -2939,7 +2941,7 @@ playlist_perform_drag(playlist_t * spl, GtkTreeIter * siter, GtkTreePath * spath
 		g_free(color);
 	}
 
-	playlist_node_deep_copy(spl->store, siter, tpl->store, titer, (cmp == 1));
+	playlist_node_deep_copy(spl->store, siter, tpl->store, titer, titer ? (cmp == 1) : 2);
 
 	gtk_tree_store_remove(spl->store, siter);
 
@@ -3004,6 +3006,8 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 				gtk_tree_model_get_iter(GTK_TREE_MODEL(tpl->store), &titer, tpath);
 
 				playlist_perform_drag(spl, &siter, spath, tpl, &titer, tpath);
+			} else {
+				playlist_perform_drag(spl, &siter, spath, tpl, NULL, NULL);
 			}
 		}
 
@@ -3158,15 +3162,7 @@ void
 playlist_drag_leave(GtkWidget * widget, GdkDragContext * drag_context,
 		    guint time, gpointer data) {
 
-	if (playlist_drag_y < widget->allocation.height / 2) {
-		if (playlist_scroll_up_tag == -1) {
-			playlist_scroll_up_tag = g_timeout_add(100, playlist_scroll_up, data);
-		}
-	} else {
-		if (playlist_scroll_dn_tag == -1) {
-			playlist_scroll_dn_tag = g_timeout_add(100, playlist_scroll_dn, data);
-		}
-	}
+	playlist_remove_scroll_tags();
 }
 
 
@@ -3174,12 +3170,30 @@ gboolean
 playlist_drag_motion(GtkWidget * widget, GdkDragContext * context,
 		     gint x, gint y, guint time, gpointer data) {
 
-	playlist_drag_y = y;
-	playlist_remove_scroll_tags();
+	if (y < 30) {
+		if (playlist_scroll_up_tag == -1) {
+			playlist_scroll_up_tag = g_timeout_add(100, playlist_scroll_up, data);
+		}
+	} else {
+		if (playlist_scroll_up_tag > 0) {	
+			g_source_remove(playlist_scroll_up_tag);
+			playlist_scroll_up_tag = -1;
+		}
+	}
+
+	if (y > widget->allocation.height - 30) {
+		if (playlist_scroll_dn_tag == -1) {
+			playlist_scroll_dn_tag = g_timeout_add(100, playlist_scroll_dn, data);
+		}
+	} else {
+		if (playlist_scroll_dn_tag > 0) {	
+			g_source_remove(playlist_scroll_dn_tag);
+			playlist_scroll_dn_tag = -1;
+		}
+	}
 
 	return TRUE;
 }
-
 
 void
 playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer data) {
@@ -3414,7 +3428,20 @@ playlist_tab_label_clicked(GtkWidget * widget, GdkEventButton * event, gpointer 
 	playlist_t * pl = (playlist_t *)data;
 
 	if (event->type == GDK_2BUTTON_PRESS && event->button == 1) {
-		/* start playback */
+
+		GtkTreePath * path = playlist_get_playing_path(pl);
+
+		if (path != NULL) {
+			playlist_start_playback_at_path(pl, path);
+		} else {
+			GtkTreeIter iter;
+			if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(pl->store), &iter)) {
+				path = gtk_tree_model_get_path(GTK_TREE_MODEL(pl->store), &iter);
+				playlist_start_playback_at_path(pl, path);
+				gtk_tree_path_free(path);
+			}
+		}
+
 		return TRUE;
 	}
 
@@ -3881,8 +3908,6 @@ create_playlist(void) {
 	GtkWidget * rem_button;
 
 
-        playlist_color_is_set = 0;
-
 	if (pl_color_active[0] == '\0') {
 		strcpy(pl_color_active, "#ffffff");
 	}
@@ -4120,11 +4145,6 @@ show_playlist(void) {
 	}
 
         gtk_widget_show_all(playlist_window);
-
-	if (!playlist_color_is_set) {
-        	playlist_set_color();
-		playlist_color_is_set = 1;
-	}
 }
 
 
@@ -4526,8 +4546,6 @@ playlist_load_m3u_thread(void * arg) {
 	gint c;
 	gint i = 0;
 	gint n;
-	gchar * str;
-	gchar pl_dir[MAXLEN];
 	gchar line[MAXLEN];
 	gchar name[MAXLEN];
 	gchar path[MAXLEN];
@@ -4541,11 +4559,6 @@ playlist_load_m3u_thread(void * arg) {
 	AQUALUNG_THREAD_DETACH();
 
 	AQUALUNG_MUTEX_LOCK(pt->pl->thread_mutex);
-
-	for (i = 0; (i < (str - pt->filename)) && (i < MAXLEN-1); i++) {
-		pl_dir[i] = pt->filename[i];
-	}
-	pl_dir[i] = '\0';
 
 	if ((f = fopen(pt->filename, "rb")) == NULL) {
 		fprintf(stderr, "unable to open .m3u playlist: %s\n", pt->filename);
@@ -4673,8 +4686,6 @@ playlist_load_pls_thread(void * arg) {
 	gint c;
 	gint i = 0;
 	gint n;
-	gchar * str;
-	gchar pl_dir[MAXLEN];
 	gchar line[MAXLEN];
 	gchar file[MAXLEN];
 	gchar title[MAXLEN];
@@ -4690,11 +4701,6 @@ playlist_load_pls_thread(void * arg) {
 	AQUALUNG_THREAD_DETACH();
 
 	AQUALUNG_MUTEX_LOCK(pt->pl->thread_mutex);
-
-	for (i = 0; (i < (str - pt->filename)) && (i < MAXLEN-1); i++) {
-		pl_dir[i] = pt->filename[i];
-	}
-	pl_dir[i] = '\0';
 
 	if ((f = fopen(pt->filename, "rb")) == NULL) {
 		fprintf(stderr, "unable to open .pls playlist: %s\n", pt->filename);

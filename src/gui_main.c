@@ -3351,7 +3351,15 @@ process_filenames(GList * list, int enqueue, int start_playback, int has_tab, ch
 		if (strlen(tab_name) == 0) {
 			mode = PLAYLIST_LOAD_TAB;
 		} else {
-			name = tab_name;
+			if (g_utf8_validate(tab_name, -1, NULL)) {
+				name = g_strdup(tab_name);
+			} else {
+				name = g_locale_to_utf8(tab_name, -1, NULL, NULL, NULL);
+			}
+			if (name == NULL) {
+				fprintf(stderr, "process_filenames(): unable to convert tab name to UTF-8\n");
+			}
+
 			if (enqueue) {
 				mode = PLAYLIST_ENQUEUE;
 			} else {
@@ -3361,6 +3369,10 @@ process_filenames(GList * list, int enqueue, int start_playback, int has_tab, ch
 	}
 
 	playlist_load(list, mode, name, start_playback);
+
+	if (name != NULL) {
+		g_free(name);
+	}
 }
 
 
@@ -3761,7 +3773,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		}
 
 		if (list != NULL) {
-			process_filenames(list, 0, immediate_start, (tab_name == NULL), tab_name);
+			process_filenames(list, 0, immediate_start, (tab_name != NULL), tab_name);
 		}
 	}
 
@@ -3999,11 +4011,9 @@ timeout_callback(gpointer data) {
 			next_event(NULL, NULL, NULL);
 			break;
 		case RCMD_ADD_FILE:
-			printf("RCMD_ADD_FILE: file = '%s'\n", cmdbuf);
 			file_list = g_list_append(file_list, strdup(cmdbuf));
 			break;
 		case RCMD_ADD_COMMIT:
-			printf("RCMD_ADD_COMMIT: enqueue = %d, start_playback = %d, has_tab = %d, tab_name = '%s'\n", cmdbuf[0], cmdbuf[1], cmdbuf[2], cmdbuf+3);
 			process_filenames(file_list, cmdbuf[0], cmdbuf[1], cmdbuf[2], cmdbuf+3);
 			file_list = NULL;
 			break;

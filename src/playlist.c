@@ -1048,14 +1048,6 @@ add_file_to_playlist(gpointer data) {
 		time2time_na(plfm->duration, duration_str);
 
 		if (plfm->level == 0) {
-
-			/* deactivate toplevel item if playing path already exists */
-			if (plfm->active &&
-			    (path = playlist_get_playing_path(pt->pl)) != NULL) {
-				plfm->active = 0;
-				gtk_tree_path_free(path);
-			}
-
 			gtk_tree_store_append(pt->pl->store, &iter, NULL);
 		} else {
 			GtkTreeIter parent;
@@ -1084,6 +1076,16 @@ add_file_to_playlist(gpointer data) {
 			   PL_COL_FONT_WEIGHT, (plfm->active && options.show_active_track_name_in_bold) ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL, 
                            -1);
 
+		if (plfm->active && !plfm->is_album_node &&
+		    (path = playlist_get_playing_path(pt->pl)) != NULL) {
+			/* deactivate item if playing path already exists */
+			GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(pt->pl->store), &iter);
+			if (gtk_tree_path_compare(path, p) != 0) {
+				unmark_track(pt->pl->store, &iter);
+			}
+			gtk_tree_path_free(path);
+			gtk_tree_path_free(p);
+		}
 
 		if (pt->start_playback && !plfm->is_album_node) {
 			GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(pt->pl->store), &iter);
@@ -3414,7 +3416,8 @@ playlist_tab_close(GtkButton * button, gpointer data) {
 gint
 playlist_notebook_clicked(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 
-	if (event->type == GDK_2BUTTON_PRESS && event->button == 1) {
+	if (event->type == GDK_2BUTTON_PRESS && event->button == 1 &&
+	    event->y < 25 && event->x > 25 && event->x < widget->allocation.width - 25) {
 		playlist_tab_new(NULL);
 		return TRUE;
 	}
@@ -4114,11 +4117,6 @@ create_playlist(void) {
     	gtk_widget_show(rem__sel);
 
         g_signal_connect_swapped(G_OBJECT(rem_button), "event", G_CALLBACK(rem_cb), NULL);
-
-	/*
-        g_signal_connect(G_OBJECT(playlist_window), "size_allocate",
-			 G_CALLBACK(playlist_size_allocate_all), NULL);
-	*/
 }
        
 
@@ -4303,7 +4301,6 @@ parse_playlist_name(xmlDocPtr doc, xmlNodePtr _cur) {
 	xmlNodePtr cur;
 
         for (cur = _cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
-
                 if (!xmlStrcmp(cur->name, (const xmlChar *)"name")) {
                         return xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                 }
@@ -4312,12 +4309,26 @@ parse_playlist_name(xmlDocPtr doc, xmlNodePtr _cur) {
 	return NULL;
 }
 
+int
+parse_playlist_is_active(xmlDocPtr doc, xmlNodePtr _cur) {
+
+	xmlNodePtr cur;
+
+        for (cur = _cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
+                if (!xmlStrcmp(cur->name, (const xmlChar *)"is_active")) {
+                        return 1;
+                }
+	}
+
+	return 0;
+}
+
 void
 parse_playlist_track(playlist_transfer_t * pt, xmlDocPtr doc, xmlNodePtr _cur, int level) {
 
         xmlChar * key;
 	gchar *converted_temp;
-	gint is_album_node;
+	int is_album_node;
 
 	xmlNodePtr cur;
 	playlist_filemeta * plfm = NULL;
@@ -4417,10 +4428,6 @@ playlist_load_xml_thread(void * arg) {
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"track") ||
 		    !xmlStrcmp(cur->name, (const xmlChar *)"record")) {
 			parse_playlist_track(pt, doc, cur, 0);
-		} else if (!xmlStrcmp(cur->name, (const xmlChar *)"is_active")) {
-			if (playlist_get_playing() == NULL) {
-				playlist_set_playing(pt->pl, 1);
-			}
 		}
 	}
 
@@ -4463,6 +4470,10 @@ playlist_load_xml_single(char * filename, playlist_transfer_t * pt) {
 		xmlChar * pl_name = parse_playlist_name(doc, cur);
 		playlist_rename(pt->pl, (char *)pl_name);
 		xmlFree(pl_name);
+	}
+
+	if (playlist_get_playing() == NULL) {
+		playlist_set_playing(pt->pl, parse_playlist_is_active(doc, cur));
 	}
 
 	pt->xml_doc = doc;
@@ -4518,6 +4529,10 @@ playlist_load_xml_multi(char * filename, int start_playback) {
 			pl_name = parse_playlist_name(doc, cur);
 			pl = playlist_tab_new((char *)pl_name);
 			xmlFree(pl_name);
+
+			if (playlist_get_playing() == NULL) {
+				playlist_set_playing(pl, parse_playlist_is_active(doc, cur));
+			}
 
 			pt = playlist_transfer_new(pl);
 

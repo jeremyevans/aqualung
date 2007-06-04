@@ -42,9 +42,12 @@ typedef struct {
 	int progbar_semaphore;
 	int ms_semaphore;
 
+	int index;
+
 	char name[MAXLEN];
 	int name_set;
 	int playing;
+	int closed;
 
 	GtkTreeStore * store;
 	GtkTreeSelection * select;
@@ -53,6 +56,7 @@ typedef struct {
 	GtkWidget * label;
 	GtkWidget * tab_close_button;
 	GtkWidget * tab_menu;
+	GtkWidget * tab__close_undo;
 
 	GtkTreeViewColumn * track_column;
 	GtkTreeViewColumn * rva_column;

@@ -2042,7 +2042,7 @@ add_path_to_playlist(GtkTreePath * path, int new_tab) {
 
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 0, &name, -1);
-		playlist_tab_new(name);
+		playlist_tab_new_if_nonempty(name);
 		g_free(name);
 	}
 

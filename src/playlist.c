@@ -2825,7 +2825,7 @@ playlist_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
 
 	char tmp[32];
 	sprintf(tmp, "%p", user_data);
-	gtk_selection_data_set(data, data->target, 8, tmp, strlen(tmp));
+	gtk_selection_data_set(data, data->target, 8, (guchar *)tmp, strlen(tmp));
 }
 
 void
@@ -3144,8 +3144,17 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 gint
 playlist_scroll_up(gpointer data) {
 
-	g_signal_emit_by_name(G_OBJECT(((playlist_t *)data)->scroll), "scroll-child",
-			      GTK_SCROLL_STEP_BACKWARD, FALSE/*vertical*/, NULL);
+	playlist_t * pl = (playlist_t *)data;
+
+#if (GTK_CHECK_VERSION(2,8,0))
+	gboolean dummy;
+	GtkRange * range = GTK_RANGE(gtk_scrolled_window_get_vscrollbar(GTK_SCROLLED_WINDOW(pl->scroll)));
+
+	g_signal_emit_by_name(G_OBJECT(range), "move-slider", GTK_SCROLL_STEP_UP, &dummy);
+#else
+        g_signal_emit_by_name(G_OBJECT(pl->scroll), "scroll-child",
+                              GTK_SCROLL_STEP_BACKWARD, FALSE/*vertical*/, NULL);
+#endif /* GTK_CHECK_VERSION */
 
 	return TRUE;
 }
@@ -3153,8 +3162,17 @@ playlist_scroll_up(gpointer data) {
 gint
 playlist_scroll_dn(gpointer data) {
 
-	g_signal_emit_by_name(G_OBJECT(((playlist_t *)data)->scroll), "scroll-child",
-			      GTK_SCROLL_STEP_FORWARD, FALSE/*vertical*/, NULL);
+	playlist_t * pl = (playlist_t *)data;
+
+#if (GTK_CHECK_VERSION(2,8,0))
+	gboolean dummy;
+	GtkRange * range = GTK_RANGE(gtk_scrolled_window_get_vscrollbar(GTK_SCROLLED_WINDOW(pl->scroll)));
+
+	g_signal_emit_by_name(G_OBJECT(range), "move-slider", GTK_SCROLL_STEP_DOWN, &dummy);
+#else
+        g_signal_emit_by_name(G_OBJECT(pl->scroll), "scroll-child",
+                              GTK_SCROLL_STEP_FORWARD, FALSE/*vertical*/, NULL);
+#endif /* GTK_CHECK_VERSION */
 
 	return TRUE;
 }
@@ -3865,7 +3883,17 @@ playlist_tab_new(char * name) {
 
 	playlist_t * pl = NULL;
 
-	if (g_list_length(playlists) == 1) {
+	pl = playlist_new(name);
+	create_playlist_gui(pl);
+	return pl;
+}
+
+playlist_t *
+playlist_tab_new_if_nonempty(char * name) {
+
+	playlist_t * pl = NULL;
+
+	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(playlist_notebook)) == 1) {
 
 		pl = (playlist_t *)playlists->data;
 		GtkTreeIter dummy;
@@ -3877,9 +3905,7 @@ playlist_tab_new(char * name) {
 		}
 	}
 
-	pl = playlist_new(name);
-	create_playlist_gui(pl);
-	return pl;
+	return playlist_tab_new(name);
 }
 
 void

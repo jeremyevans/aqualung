@@ -87,6 +87,7 @@ typedef struct {
 } playlist_transfer_t;
 
 playlist_t * playlist_tab_new(char * name);
+playlist_t * playlist_tab_new_if_nonempty(char * name);
 
 playlist_t * playlist_get_current(void);
 void playlist_set_current(playlist_t * pl);

@@ -316,12 +316,32 @@ style "play_list" = "view"
 
 style "playlist_color"
 {
+	fg[NORMAL] = { 0.0, 0.0, 0.0 }
+	fg[ACTIVE] = { 0.0, 0.0, 0.0 }
 	fg[SELECTED] = { 1.0, 0.0, 0.0 }
 	fg[INSENSITIVE] = { 0.0, 0.0, 0.0 }
 }
 
+style "playlist_tab_close_button" = "button"
+{
+	bg_pixmap[NORMAL] = "<none>"
+	bg_pixmap[PRELIGHT] = "<none>"
+	bg_pixmap[ACTIVE] = "<none>"
+
+	bg[NORMAL] = { 0.5, 0.55, 0.5 }
+	bg[PRELIGHT] = { 0.7, 0.5, 0.5 }
+	bg[ACTIVE] = { 0.4, 0.3, 0.3 }
+}
+
+style "playlist_tab_label"
+{
+	font_name = "Sans 10"
+}
+
 widget "*play_list" style "play_list"
 widget "*playlist_color_indicator*" style "playlist_color"
+widget "*playlist_tab_label*" style "playlist_tab_label"
+widget "*playlist_tab_close_button*" style "playlist_tab_close_button"
 
 
 # --- plugins

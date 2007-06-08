@@ -486,10 +486,19 @@ playlist_set_markup(playlist_t * pl) {
 
 	if (pl->playing) {
 		char str[MAXLEN];
+
 		snprintf(str, MAXLEN-1, "<b>%s</b>", pl->name);
 		gtk_label_set_markup(GTK_LABEL(pl->label), str);
+		gtk_widget_modify_fg(pl->label, GTK_STATE_NORMAL,
+				     &playlist_color_indicator->style->fg[GTK_STATE_ACTIVE]);
+		gtk_widget_modify_fg(pl->label, GTK_STATE_ACTIVE,
+				     &playlist_color_indicator->style->fg[GTK_STATE_ACTIVE]);
 	} else {
 		gtk_label_set_text(GTK_LABEL(pl->label), pl->name);
+		gtk_widget_modify_fg(pl->label, GTK_STATE_NORMAL,
+				     &playlist_color_indicator->style->fg[GTK_STATE_NORMAL]);
+		gtk_widget_modify_fg(pl->label, GTK_STATE_ACTIVE,
+				     &playlist_color_indicator->style->fg[GTK_STATE_NORMAL]);
 	}
 }
 
@@ -583,11 +592,15 @@ playlist_set_color(void) {
 	sprintf(inactive, "#%04X%04X%04X", ri, gi, bi);
 
 	for (node = playlists; node; node = node->next) {
-		adjust_playlist_color((playlist_t *)node->data, active, inactive);
+		playlist_t * pl = (playlist_t *)node->data;
+		adjust_playlist_color(pl, active, inactive);
+		playlist_set_playing(pl, pl->playing);
 	}
 
 	for (node = playlists_closed; node; node = node->next) {
-		adjust_playlist_color((playlist_t *)node->data, active, inactive);
+		playlist_t * pl = (playlist_t *)node->data;
+		adjust_playlist_color(pl, active, inactive);
+		playlist_set_playing(pl, pl->playing);
 	}
 
         strcpy(pl_color_active, active);
@@ -3474,6 +3487,7 @@ playlist_tab_close(GtkButton * button, gpointer data) {
 				playlist_free(pl);
 			} else {
 				pl->closed = 1;
+				pl->playing = 0;
 				pl->index = i;
 				playlists_closed = g_list_prepend(playlists_closed, pl);
 				playlists = g_list_remove(playlists, pl);
@@ -3715,12 +3729,15 @@ create_playlist_tab_label(playlist_t * pl) {
 
 
 	hbox = gtk_hbox_new(FALSE, 4);
+        GTK_WIDGET_UNSET_FLAGS(hbox, GTK_CAN_FOCUS);
 
 	event_box = gtk_event_box_new();
 	pl->label = gtk_label_new(pl->name);
+	gtk_widget_set_name(pl->label, "playlist_tab_label");
 	gtk_container_add(GTK_CONTAINER(event_box), hbox);
 
 	pl->tab_close_button = gtk_button_new();
+	gtk_widget_set_name(pl->tab_close_button, "playlist_tab_close_button");
 	sprintf(path, "%s/tab-close.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		image = gtk_image_new_from_pixbuf(pixbuf);
@@ -4444,6 +4461,13 @@ playlist_save_all(char * filename) {
 		}
 	}
 
+	{
+		int i = gtk_notebook_get_current_page(GTK_NOTEBOOK(playlist_notebook));
+		char str[32];
+		snprintf(str, 32, "%d", i);
+		xmlNewTextChild(root, NULL, (const xmlChar*) "current_page", (const xmlChar*)str);
+	}
+
         xmlSaveFormatFile(filename, doc, 1);
 	xmlFreeDoc(doc);
 }
@@ -4646,6 +4670,7 @@ playlist_load_xml_multi(char * filename, int start_playback) {
         xmlDocPtr doc;
         xmlNodePtr cur;
 	int * ref = NULL;
+	int current = -1;
 
         doc = xmlParseFile(filename);
         if (doc == NULL) {
@@ -4706,10 +4731,20 @@ playlist_load_xml_multi(char * filename, int start_playback) {
 			playlist_progress_bar_show(pt->pl);
 			AQUALUNG_THREAD_CREATE(pt->pl->thread_id, NULL,
 					       playlist_load_xml_thread, pt);
+
+		} else if (!xmlStrcmp(cur->name, (const xmlChar *)"current_page")) {
+                        xmlChar * key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				current = atoi((char *)key);
+				xmlFree(key);
+                        }
 		}
+
 	}
 
 	*ref -= 1;
+
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(playlist_notebook), current);
 }
 
 void *

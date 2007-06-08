@@ -419,157 +419,6 @@ msgstr ""
 msgid "Reading file"
 msgstr "Neu abtasten"
 
-#, fuzzy
-msgid "Please select the directory for ripped files."
-msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
-
-#, fuzzy
-msgid "(none)"
-msgstr "(kein Kommentar)"
-
-#, fuzzy
-msgid "fast"
-msgstr "Artist"
-
-msgid "best"
-msgstr ""
-
-#, fuzzy
-msgid "Compression level:"
-msgstr "Lautstärke:"
-
-msgid "Bitrate [kbps]:"
-msgstr ""
-
-msgid ""
-"\n"
-"The Music Store you selected has a matching Artist and Album, already "
-"containing some tracks. If you press OK, these tracks will be removed. The "
-"files themselves will be left intact, but they will be removed from the "
-"destination Music Store. Press Cancel to get back to change the Artist/Album "
-"or the destination Music Store."
-msgstr ""
-
-msgid "Artist/Album already existing, not empty"
-msgstr ""
-
-msgid "Rip CD"
-msgstr ""
-
-#, fuzzy
-msgid "Artist:"
-msgstr "Artist"
-
-#, fuzzy
-msgid "Album:"
-msgstr "Album"
-
-msgid "Rip"
-msgstr ""
-
-#, fuzzy
-msgid "No"
-msgstr "Keine"
-
-msgid "Title"
-msgstr "Titel:"
-
-#, fuzzy
-msgid "Select"
-msgstr "Alles auswählen"
-
-msgid "All"
-msgstr ""
-
-msgid "None"
-msgstr "Keine"
-
-#, fuzzy
-msgid "Output"
-msgstr "Ausgabe:"
-
-#, fuzzy
-msgid "Destination"
-msgstr "Zeitdauer:"
-
-#, fuzzy
-msgid "Target directory for ripped files"
-msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
-
-#, fuzzy
-msgid "Add to Music Store"
-msgstr "Musikladen"
-
-#, fuzzy
-msgid "Format"
-msgstr "Abbrechen"
-
-#, fuzzy
-msgid "File format:"
-msgstr "Namensformat"
-
-#, fuzzy
-msgid "VBR encoding"
-msgstr "Kodierung"
-
-#, fuzzy
-msgid "Tag files with metadata"
-msgstr "Als Titel importieren"
-
-msgid "Paranoia"
-msgstr ""
-
-msgid "Paranoia error correction"
-msgstr ""
-
-msgid "Perform overlapped reads"
-msgstr ""
-
-msgid "Verify data integrity"
-msgstr ""
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
-
-msgid "\tMaximum number of retries:"
-msgstr ""
-
-msgid ""
-"\n"
-"Destination directory is not read-write accessible!"
-msgstr ""
-
-msgid "Error"
-msgstr ""
-
-#, fuzzy
-msgid "Total"
-msgstr "Total Samples:"
-
-msgid "(audio only)"
-msgstr ""
-
-#, fuzzy
-msgid "Ripping CD tracks"
-msgstr "Track editieren..."
-
-msgid "Begin"
-msgstr ""
-
-#, fuzzy
-msgid "Length"
-msgstr "Länge:"
-
-msgid "Progress"
-msgstr ""
-
-msgid "Close window when complete"
-msgstr ""
-
-#, fuzzy
-msgid "Close"
-msgstr "Schließen"
-
 msgid "CD Audio"
 msgstr ""
 
@@ -714,6 +563,10 @@ msgstr ""
 msgid "Disc info"
 msgstr "Datei-Info..."
 
+#, fuzzy
+msgid "No"
+msgstr "Keine"
+
 msgid "This CD does not contain CD-Text information."
 msgstr ""
 
@@ -729,6 +582,10 @@ msgstr "JACK Verbindung verloren"
 
 msgid "Matches:"
 msgstr "Treffer:"
+
+#, fuzzy
+msgid "Artist:"
+msgstr "Artist"
 
 #, fuzzy
 msgid "Title:"
@@ -814,6 +671,149 @@ msgstr "Fehler während des Verbindungen zur CDDB Server."
 msgid "No matching record found."
 msgstr "Neues Track zu diesem Album hinzufügen..."
 
+#, fuzzy
+msgid "Please select the directory for ripped files."
+msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
+
+#, fuzzy
+msgid "(none)"
+msgstr "(kein Kommentar)"
+
+#, fuzzy
+msgid "fast"
+msgstr "Artist"
+
+msgid "best"
+msgstr ""
+
+#, fuzzy
+msgid "Compression level:"
+msgstr "Lautstärke:"
+
+msgid "Bitrate [kbps]:"
+msgstr ""
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+
+msgid "Artist/Album already existing, not empty"
+msgstr ""
+
+msgid "Rip CD"
+msgstr ""
+
+#, fuzzy
+msgid "Album:"
+msgstr "Album"
+
+msgid "Rip"
+msgstr ""
+
+msgid "Title"
+msgstr "Titel:"
+
+#, fuzzy
+msgid "Select"
+msgstr "Alles auswählen"
+
+msgid "All"
+msgstr ""
+
+msgid "None"
+msgstr "Keine"
+
+#, fuzzy
+msgid "Output"
+msgstr "Ausgabe:"
+
+#, fuzzy
+msgid "Destination"
+msgstr "Zeitdauer:"
+
+#, fuzzy
+msgid "Target directory for ripped files"
+msgstr "Bitte wählen Sie die audio Dateien für diese Album aus."
+
+#, fuzzy
+msgid "Add to Music Store"
+msgstr "Musikladen"
+
+#, fuzzy
+msgid "Format"
+msgstr "Abbrechen"
+
+#, fuzzy
+msgid "File format:"
+msgstr "Namensformat"
+
+#, fuzzy
+msgid "VBR encoding"
+msgstr "Kodierung"
+
+#, fuzzy
+msgid "Tag files with metadata"
+msgstr "Als Titel importieren"
+
+msgid "Paranoia"
+msgstr ""
+
+msgid "Paranoia error correction"
+msgstr ""
+
+msgid "Perform overlapped reads"
+msgstr ""
+
+msgid "Verify data integrity"
+msgstr ""
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+
+msgid "\tMaximum number of retries:"
+msgstr ""
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+#, fuzzy
+msgid "Total"
+msgstr "Total Samples:"
+
+msgid "(audio only)"
+msgstr ""
+
+#, fuzzy
+msgid "Ripping CD tracks"
+msgstr "Track editieren..."
+
+msgid "Begin"
+msgstr ""
+
+#, fuzzy
+msgid "Length"
+msgstr "Länge:"
+
+msgid "Progress"
+msgstr ""
+
+msgid "Close window when complete"
+msgstr ""
+
+#, fuzzy
+msgid "Close"
+msgstr "Schließen"
+
 msgid "day"
 msgstr ""
 
@@ -878,10 +878,6 @@ msgstr ""
 
 #, c-format
 msgid "Balance: %s"
-msgstr ""
-
-#, c-format
-msgid " (%d/%d)"
 msgstr ""
 
 msgid "JACK connection lost"
@@ -1558,6 +1554,13 @@ msgid ""
 "Aqualung. In such cases, enabling this option should help."
 msgstr ""
 
+msgid ""
+"\n"
+"Here you should enter a comma-separated list of domains\n"
+"that should be accessed without using the proxy set above.\n"
+"Example: localhost, .localdomain, .my.domain.com"
+msgstr ""
+
 msgid "Title format"
 msgstr "Namensformat"
 
@@ -1608,6 +1611,12 @@ msgid "Save and restore the playlist on exit/startup"
 msgstr "Laden und speichern die Playliste beim Anfang/Beendung"
 
 msgid "Album mode is the default when adding entire records"
+msgstr ""
+
+msgid "Always show the tab bar"
+msgstr ""
+
+msgid "Show close button in tab"
 msgstr ""
 
 msgid "When shuffling, records added in Album mode are played in order"
@@ -1794,6 +1803,9 @@ msgstr "Referenzlautstärke [dBFS] :"
 msgid "Steepness [dB/dB] :"
 msgstr "Steilheit [dB/dB] :"
 
+msgid "RVA for Unmeasured Files [dB] :"
+msgstr ""
+
 msgid "Apply averaged RVA to tracks of the same record"
 msgstr "Durchschnittlich RVA auf dieselbes Album anwenden"
 
@@ -1861,11 +1873,7 @@ msgstr "Album"
 msgid "Use the local database only"
 msgstr ""
 
-#, fuzzy
-msgid "Direct connection to CDDB server"
-msgstr "JACK Verbindung verloren"
-
-msgid "Protocol for querying:"
+msgid "Protocol for querying (direct connection only):"
 msgstr ""
 
 msgid "CDDBP (port 888)"
@@ -1874,15 +1882,29 @@ msgstr ""
 msgid "HTTP (port 80)"
 msgstr ""
 
-msgid "HTTP tunneling through proxy"
+msgid "Internet"
 msgstr ""
 
-msgid "HTTP proxy:"
+#, fuzzy
+msgid "Direct connection to the Internet"
+msgstr "JACK Verbindung verloren"
+
+msgid "Connect via HTTP proxy"
+msgstr ""
+
+#, fuzzy
+msgid "Proxy settings"
+msgstr "Einstellungen"
+
+msgid "Proxy host:"
 msgstr ""
 
 #, fuzzy
 msgid "Port:"
 msgstr "Abbrechen"
+
+msgid "No proxy for:"
+msgstr ""
 
 msgid "Appearance"
 msgstr ""
@@ -1928,6 +1950,13 @@ msgstr "Schließen"
 msgid "Active song in playlist: "
 msgstr "Zeige RVA in Playliste"
 
+msgid "(Untitled)"
+msgstr ""
+
+#, c-format
+msgid " (%d/%d)"
+msgstr ""
+
 #, fuzzy
 msgid "Select files"
 msgstr "Dateien hinzufügen..."
@@ -1935,6 +1964,13 @@ msgstr "Dateien hinzufügen..."
 #, fuzzy
 msgid "Select directory"
 msgstr "Album entfernen"
+
+#, fuzzy
+msgid "Add URL"
+msgstr "Hinzufügen"
+
+msgid "URL:"
+msgstr ""
 
 msgid "Please specify the file to save the playlist to."
 msgstr "Playliste speichern"
@@ -1962,6 +1998,10 @@ msgid "%d track [%s] (%.1f GB)"
 msgstr "Track"
 
 #, fuzzy, c-format
+msgid "%d track "
+msgstr "Track"
+
+#, fuzzy, c-format
 msgid "%d track [%s] "
 msgstr "Track"
 
@@ -1973,9 +2013,35 @@ msgstr "Track"
 msgid "%d tracks [%s] (%.1f GB)"
 msgstr "Track"
 
+#, fuzzy, c-format
+msgid "%d tracks "
+msgstr "Track"
+
 #, c-format
 msgid "%d tracks [%s] "
 msgstr ""
+
+#, fuzzy
+msgid "Rename playlist"
+msgstr "Playliste speichern"
+
+msgid "New tab"
+msgstr ""
+
+#, fuzzy
+msgid "Rename"
+msgstr "Album"
+
+#, fuzzy
+msgid "Close tab"
+msgstr "Schließen"
+
+msgid "Undo close tab"
+msgstr ""
+
+#, fuzzy
+msgid "Close other tabs"
+msgstr "Schließen"
 
 #, fuzzy
 msgid "Selected: "
@@ -2032,6 +2098,14 @@ msgstr "Markierte entfernen"
 
 msgid "Save playlist"
 msgstr "Playliste speichern"
+
+#, fuzzy
+msgid "Save all playlists"
+msgstr "Playliste speichern"
+
+#, fuzzy
+msgid "Load playlist in new tab"
+msgstr "Playliste laden"
 
 msgid "Load playlist"
 msgstr "Playliste laden"

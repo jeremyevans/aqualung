@@ -3531,6 +3531,13 @@ playlist_tab_close_undo(void) {
 }
 
 gint
+playlist_notebook_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
+
+	/* ignore default key handlers as they interfere with ours */
+	return TRUE;
+}
+
+gint
 playlist_notebook_clicked(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 
 	if (event->type == GDK_2BUTTON_PRESS && event->button == 1 &&
@@ -4119,6 +4126,9 @@ create_playlist(void) {
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(playlist_notebook),
 				   options.playlist_always_show_tabs);
         gtk_box_pack_start(GTK_BOX(vbox), playlist_notebook, TRUE, TRUE, 0);
+
+	g_signal_connect(G_OBJECT(playlist_notebook), "key_press_event",
+			 G_CALLBACK(playlist_notebook_key_pressed), NULL);
 
 	g_signal_connect(G_OBJECT(playlist_notebook), "button_press_event",
 			       G_CALLBACK(playlist_notebook_clicked), NULL);

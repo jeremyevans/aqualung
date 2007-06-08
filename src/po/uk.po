@@ -404,157 +404,6 @@ msgstr ""
 msgid "Reading file"
 msgstr "Пресканувати"
 
-#, fuzzy
-msgid "Please select the directory for ripped files."
-msgstr "Будьласка оберіть звукові файли для цього запису."
-
-#, fuzzy
-msgid "(none)"
-msgstr "(без коментаря)"
-
-#, fuzzy
-msgid "fast"
-msgstr "Виконавець"
-
-msgid "best"
-msgstr ""
-
-#, fuzzy
-msgid "Compression level:"
-msgstr "Ступінь стиснення: Нормальна"
-
-msgid "Bitrate [kbps]:"
-msgstr ""
-
-msgid ""
-"\n"
-"The Music Store you selected has a matching Artist and Album, already "
-"containing some tracks. If you press OK, these tracks will be removed. The "
-"files themselves will be left intact, but they will be removed from the "
-"destination Music Store. Press Cancel to get back to change the Artist/Album "
-"or the destination Music Store."
-msgstr ""
-
-msgid "Artist/Album already existing, not empty"
-msgstr ""
-
-msgid "Rip CD"
-msgstr ""
-
-msgid "Artist:"
-msgstr "Виконавець:"
-
-#, fuzzy
-msgid "Album:"
-msgstr "Альбом"
-
-msgid "Rip"
-msgstr ""
-
-#, fuzzy
-msgid "No"
-msgstr "Немає"
-
-msgid "Title"
-msgstr "Назва"
-
-msgid "Select"
-msgstr "Вибрати"
-
-msgid "All"
-msgstr ""
-
-msgid "None"
-msgstr "Немає"
-
-#, fuzzy
-msgid "Output"
-msgstr "Вивід:"
-
-#, fuzzy
-msgid "Destination"
-msgstr "Тривалість:"
-
-#, fuzzy
-msgid "Target directory for ripped files"
-msgstr "Будьласка оберіть звукові файли для цього запису."
-
-#, fuzzy
-msgid "Add to Music Store"
-msgstr "Музичний Склад"
-
-#, fuzzy
-msgid "Format"
-msgstr "Формат:"
-
-#, fuzzy
-msgid "File format:"
-msgstr "Формат назви"
-
-#, fuzzy
-msgid "VBR encoding"
-msgstr "кодування"
-
-#, fuzzy
-msgid "Tag files with metadata"
-msgstr "Перечитати інформацію про файл"
-
-msgid "Paranoia"
-msgstr ""
-
-#, fuzzy
-msgid "Paranoia error correction"
-msgstr "Перекривати установки жупана"
-
-msgid "Perform overlapped reads"
-msgstr ""
-
-msgid "Verify data integrity"
-msgstr ""
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
-
-msgid "\tMaximum number of retries:"
-msgstr ""
-
-msgid ""
-"\n"
-"Destination directory is not read-write accessible!"
-msgstr ""
-
-msgid "Error"
-msgstr ""
-
-#, fuzzy
-msgid "Total"
-msgstr "Разом: "
-
-msgid "(audio only)"
-msgstr ""
-
-#, fuzzy
-msgid "Ripping CD tracks"
-msgstr "Редагувати доріжку..."
-
-msgid "Begin"
-msgstr ""
-
-#, fuzzy
-msgid "Length"
-msgstr "Довжина:"
-
-#, fuzzy
-msgid "Progress"
-msgstr "Прогрес:"
-
-msgid "Close window when complete"
-msgstr ""
-
-#, fuzzy
-msgid "Close"
-msgstr "Кольори"
-
 msgid "CD Audio"
 msgstr ""
 
@@ -698,6 +547,10 @@ msgstr ""
 msgid "Disc info"
 msgstr "Інформація про файл"
 
+#, fuzzy
+msgid "No"
+msgstr "Немає"
+
 msgid "This CD does not contain CD-Text information."
 msgstr ""
 
@@ -712,6 +565,9 @@ msgstr "Під'єднуюсь до сервера CDDB..."
 
 msgid "Matches:"
 msgstr "Збіги:"
+
+msgid "Artist:"
+msgstr "Виконавець:"
 
 msgid "Title:"
 msgstr "Назва:"
@@ -791,6 +647,150 @@ msgstr "Трапилась помилка при спробі під'єднан�
 msgid "No matching record found."
 msgstr "Схожих записів не знайдено."
 
+#, fuzzy
+msgid "Please select the directory for ripped files."
+msgstr "Будьласка оберіть звукові файли для цього запису."
+
+#, fuzzy
+msgid "(none)"
+msgstr "(без коментаря)"
+
+#, fuzzy
+msgid "fast"
+msgstr "Виконавець"
+
+msgid "best"
+msgstr ""
+
+#, fuzzy
+msgid "Compression level:"
+msgstr "Ступінь стиснення: Нормальна"
+
+msgid "Bitrate [kbps]:"
+msgstr ""
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+
+msgid "Artist/Album already existing, not empty"
+msgstr ""
+
+msgid "Rip CD"
+msgstr ""
+
+#, fuzzy
+msgid "Album:"
+msgstr "Альбом"
+
+msgid "Rip"
+msgstr ""
+
+msgid "Title"
+msgstr "Назва"
+
+msgid "Select"
+msgstr "Вибрати"
+
+msgid "All"
+msgstr ""
+
+msgid "None"
+msgstr "Немає"
+
+#, fuzzy
+msgid "Output"
+msgstr "Вивід:"
+
+#, fuzzy
+msgid "Destination"
+msgstr "Тривалість:"
+
+#, fuzzy
+msgid "Target directory for ripped files"
+msgstr "Будьласка оберіть звукові файли для цього запису."
+
+#, fuzzy
+msgid "Add to Music Store"
+msgstr "Музичний Склад"
+
+#, fuzzy
+msgid "Format"
+msgstr "Формат:"
+
+#, fuzzy
+msgid "File format:"
+msgstr "Формат назви"
+
+#, fuzzy
+msgid "VBR encoding"
+msgstr "кодування"
+
+#, fuzzy
+msgid "Tag files with metadata"
+msgstr "Перечитати інформацію про файл"
+
+msgid "Paranoia"
+msgstr ""
+
+#, fuzzy
+msgid "Paranoia error correction"
+msgstr "Перекривати установки жупана"
+
+msgid "Perform overlapped reads"
+msgstr ""
+
+msgid "Verify data integrity"
+msgstr ""
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+
+msgid "\tMaximum number of retries:"
+msgstr ""
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+#, fuzzy
+msgid "Total"
+msgstr "Разом: "
+
+msgid "(audio only)"
+msgstr ""
+
+#, fuzzy
+msgid "Ripping CD tracks"
+msgstr "Редагувати доріжку..."
+
+msgid "Begin"
+msgstr ""
+
+#, fuzzy
+msgid "Length"
+msgstr "Довжина:"
+
+#, fuzzy
+msgid "Progress"
+msgstr "Прогрес:"
+
+msgid "Close window when complete"
+msgstr ""
+
+#, fuzzy
+msgid "Close"
+msgstr "Кольори"
+
 msgid "day"
 msgstr ""
 
@@ -855,10 +855,6 @@ msgstr ""
 
 #, c-format
 msgid "Balance: %s"
-msgstr ""
-
-#, c-format
-msgid " (%d/%d)"
 msgstr ""
 
 msgid "JACK connection lost"
@@ -1521,6 +1517,13 @@ msgid ""
 "Aqualung. In such cases, enabling this option should help."
 msgstr ""
 
+msgid ""
+"\n"
+"Here you should enter a comma-separated list of domains\n"
+"that should be accessed without using the proxy set above.\n"
+"Example: localhost, .localdomain, .my.domain.com"
+msgstr ""
+
 msgid "Title format"
 msgstr "Формат назви"
 
@@ -1567,6 +1570,12 @@ msgid "Save and restore the playlist on exit/startup"
 msgstr "Запис та відновлення списку програвання при виході/запуску"
 
 msgid "Album mode is the default when adding entire records"
+msgstr ""
+
+msgid "Always show the tab bar"
+msgstr ""
+
+msgid "Show close button in tab"
 msgstr ""
 
 msgid "When shuffling, records added in Album mode are played in order"
@@ -1752,6 +1761,9 @@ msgstr "Бажана гучність [dbFS] :"
 msgid "Steepness [dB/dB] :"
 msgstr "Крок [dB/dB] :"
 
+msgid "RVA for Unmeasured Files [dB] :"
+msgstr ""
+
 msgid "Apply averaged RVA to tracks of the same record"
 msgstr "Застосувати усереднені ПВР до доріжок одного запису"
 
@@ -1825,11 +1837,7 @@ msgstr "Запис"
 msgid "Use the local database only"
 msgstr ""
 
-#, fuzzy
-msgid "Direct connection to CDDB server"
-msgstr "Під'єднуюсь до сервера CDDB..."
-
-msgid "Protocol for querying:"
+msgid "Protocol for querying (direct connection only):"
 msgstr ""
 
 msgid "CDDBP (port 888)"
@@ -1838,15 +1846,29 @@ msgstr "CDDBP (порт 888)"
 msgid "HTTP (port 80)"
 msgstr "HTTP (порт 80)"
 
-msgid "HTTP tunneling through proxy"
+msgid "Internet"
 msgstr ""
 
-msgid "HTTP proxy:"
+#, fuzzy
+msgid "Direct connection to the Internet"
+msgstr "Під'єднуюсь до сервера CDDB..."
+
+msgid "Connect via HTTP proxy"
+msgstr ""
+
+#, fuzzy
+msgid "Proxy settings"
+msgstr "Перекривати установки жупана"
+
+msgid "Proxy host:"
 msgstr ""
 
 #, fuzzy
 msgid "Port:"
 msgstr "Формат:"
+
+msgid "No proxy for:"
+msgstr ""
 
 msgid "Appearance"
 msgstr "Вигляд"
@@ -1885,6 +1907,13 @@ msgstr "Кольори"
 msgid "Active song in playlist: "
 msgstr "Активна пісня у списку програвання: "
 
+msgid "(Untitled)"
+msgstr ""
+
+#, c-format
+msgid " (%d/%d)"
+msgstr ""
+
 #, fuzzy
 msgid "Select files"
 msgstr "Вибрати файли..."
@@ -1892,6 +1921,13 @@ msgstr "Вибрати файли..."
 #, fuzzy
 msgid "Select directory"
 msgstr "Прибрати запис"
+
+#, fuzzy
+msgid "Add URL"
+msgstr "Додати"
+
+msgid "URL:"
+msgstr ""
 
 msgid "Please specify the file to save the playlist to."
 msgstr "Будьласка вкажіть файл куди буде записано список програвання."
@@ -1921,6 +1957,10 @@ msgid "%d track [%s] (%.1f GB)"
 msgstr "%d доріжка [%s]"
 
 #, fuzzy, c-format
+msgid "%d track "
+msgstr "%d доріжка [%s]"
+
+#, fuzzy, c-format
 msgid "%d track [%s] "
 msgstr "%d доріжка [%s]"
 
@@ -1933,8 +1973,34 @@ msgid "%d tracks [%s] (%.1f GB)"
 msgstr "%d доріжок [%s]"
 
 #, fuzzy, c-format
+msgid "%d tracks "
+msgstr "%d доріжка [%s]"
+
+#, fuzzy, c-format
 msgid "%d tracks [%s] "
 msgstr "%d доріжок [%s]"
+
+#, fuzzy
+msgid "Rename playlist"
+msgstr "Зберегти список програвання"
+
+msgid "New tab"
+msgstr ""
+
+#, fuzzy
+msgid "Rename"
+msgstr "Назва запису"
+
+#, fuzzy
+msgid "Close tab"
+msgstr "Кольори"
+
+msgid "Undo close tab"
+msgstr ""
+
+#, fuzzy
+msgid "Close other tabs"
+msgstr "Кольори"
 
 msgid "Selected: "
 msgstr "Вибрано: "
@@ -1989,6 +2055,14 @@ msgstr "Прибрати обране"
 
 msgid "Save playlist"
 msgstr "Зберегти список програвання"
+
+#, fuzzy
+msgid "Save all playlists"
+msgstr "Зберегти список програвання"
+
+#, fuzzy
+msgid "Load playlist in new tab"
+msgstr "Завантажити список програвання"
 
 msgid "Load playlist"
 msgstr "Завантажити список програвання"

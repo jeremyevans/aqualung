@@ -352,137 +352,6 @@ msgstr ""
 msgid "Reading file"
 msgstr ""
 
-msgid "Please select the directory for ripped files."
-msgstr ""
-
-msgid "(none)"
-msgstr ""
-
-msgid "fast"
-msgstr ""
-
-msgid "best"
-msgstr ""
-
-msgid "Compression level:"
-msgstr ""
-
-msgid "Bitrate [kbps]:"
-msgstr ""
-
-msgid ""
-"\n"
-"The Music Store you selected has a matching Artist and Album, already "
-"containing some tracks. If you press OK, these tracks will be removed. The "
-"files themselves will be left intact, but they will be removed from the "
-"destination Music Store. Press Cancel to get back to change the Artist/Album "
-"or the destination Music Store."
-msgstr ""
-
-msgid "Artist/Album already existing, not empty"
-msgstr ""
-
-msgid "Rip CD"
-msgstr ""
-
-msgid "Artist:"
-msgstr ""
-
-msgid "Album:"
-msgstr ""
-
-msgid "Rip"
-msgstr ""
-
-msgid "No"
-msgstr ""
-
-msgid "Title"
-msgstr ""
-
-msgid "Select"
-msgstr ""
-
-msgid "All"
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "Output"
-msgstr ""
-
-msgid "Destination"
-msgstr ""
-
-msgid "Target directory for ripped files"
-msgstr ""
-
-msgid "Add to Music Store"
-msgstr ""
-
-msgid "Format"
-msgstr ""
-
-msgid "File format:"
-msgstr ""
-
-msgid "VBR encoding"
-msgstr ""
-
-msgid "Tag files with metadata"
-msgstr ""
-
-msgid "Paranoia"
-msgstr ""
-
-msgid "Paranoia error correction"
-msgstr ""
-
-msgid "Perform overlapped reads"
-msgstr ""
-
-msgid "Verify data integrity"
-msgstr ""
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
-
-msgid "\tMaximum number of retries:"
-msgstr ""
-
-msgid ""
-"\n"
-"Destination directory is not read-write accessible!"
-msgstr ""
-
-msgid "Error"
-msgstr ""
-
-msgid "Total"
-msgstr ""
-
-msgid "(audio only)"
-msgstr ""
-
-msgid "Ripping CD tracks"
-msgstr ""
-
-msgid "Begin"
-msgstr ""
-
-msgid "Length"
-msgstr ""
-
-msgid "Progress"
-msgstr ""
-
-msgid "Close window when complete"
-msgstr ""
-
-msgid "Close"
-msgstr ""
-
 msgid "CD Audio"
 msgstr ""
 
@@ -620,6 +489,9 @@ msgstr ""
 msgid "Disc info"
 msgstr ""
 
+msgid "No"
+msgstr ""
+
 msgid "This CD does not contain CD-Text information."
 msgstr ""
 
@@ -633,6 +505,9 @@ msgid "Connecting to CDDB server..."
 msgstr ""
 
 msgid "Matches:"
+msgstr ""
+
+msgid "Artist:"
 msgstr ""
 
 msgid "Title:"
@@ -711,6 +586,131 @@ msgstr ""
 msgid "No matching record found."
 msgstr ""
 
+msgid "Please select the directory for ripped files."
+msgstr ""
+
+msgid "(none)"
+msgstr ""
+
+msgid "fast"
+msgstr ""
+
+msgid "best"
+msgstr ""
+
+msgid "Compression level:"
+msgstr ""
+
+msgid "Bitrate [kbps]:"
+msgstr ""
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+
+msgid "Artist/Album already existing, not empty"
+msgstr ""
+
+msgid "Rip CD"
+msgstr ""
+
+msgid "Album:"
+msgstr ""
+
+msgid "Rip"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Output"
+msgstr ""
+
+msgid "Destination"
+msgstr ""
+
+msgid "Target directory for ripped files"
+msgstr ""
+
+msgid "Add to Music Store"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
+msgid "File format:"
+msgstr ""
+
+msgid "VBR encoding"
+msgstr ""
+
+msgid "Tag files with metadata"
+msgstr ""
+
+msgid "Paranoia"
+msgstr ""
+
+msgid "Paranoia error correction"
+msgstr ""
+
+msgid "Perform overlapped reads"
+msgstr ""
+
+msgid "Verify data integrity"
+msgstr ""
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+
+msgid "\tMaximum number of retries:"
+msgstr ""
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+msgid "(audio only)"
+msgstr ""
+
+msgid "Ripping CD tracks"
+msgstr ""
+
+msgid "Begin"
+msgstr ""
+
+msgid "Length"
+msgstr ""
+
+msgid "Progress"
+msgstr ""
+
+msgid "Close window when complete"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
 msgid "day"
 msgstr ""
 
@@ -770,10 +770,6 @@ msgstr ""
 
 #, c-format
 msgid "Balance: %s"
-msgstr ""
-
-#, c-format
-msgid " (%d/%d)"
 msgstr ""
 
 msgid "JACK connection lost"
@@ -1371,6 +1367,13 @@ msgid ""
 "Aqualung. In such cases, enabling this option should help."
 msgstr ""
 
+msgid ""
+"\n"
+"Here you should enter a comma-separated list of domains\n"
+"that should be accessed without using the proxy set above.\n"
+"Example: localhost, .localdomain, .my.domain.com"
+msgstr ""
+
 msgid "Title format"
 msgstr ""
 
@@ -1417,6 +1420,12 @@ msgid "Save and restore the playlist on exit/startup"
 msgstr ""
 
 msgid "Album mode is the default when adding entire records"
+msgstr ""
+
+msgid "Always show the tab bar"
+msgstr ""
+
+msgid "Show close button in tab"
 msgstr ""
 
 msgid "When shuffling, records added in Album mode are played in order"
@@ -1584,6 +1593,9 @@ msgstr ""
 msgid "Steepness [dB/dB] :"
 msgstr ""
 
+msgid "RVA for Unmeasured Files [dB] :"
+msgstr ""
+
 msgid "Apply averaged RVA to tracks of the same record"
 msgstr ""
 
@@ -1649,10 +1661,7 @@ msgstr ""
 msgid "Use the local database only"
 msgstr ""
 
-msgid "Direct connection to CDDB server"
-msgstr ""
-
-msgid "Protocol for querying:"
+msgid "Protocol for querying (direct connection only):"
 msgstr ""
 
 msgid "CDDBP (port 888)"
@@ -1661,13 +1670,25 @@ msgstr ""
 msgid "HTTP (port 80)"
 msgstr ""
 
-msgid "HTTP tunneling through proxy"
+msgid "Internet"
 msgstr ""
 
-msgid "HTTP proxy:"
+msgid "Direct connection to the Internet"
+msgstr ""
+
+msgid "Connect via HTTP proxy"
+msgstr ""
+
+msgid "Proxy settings"
+msgstr ""
+
+msgid "Proxy host:"
 msgstr ""
 
 msgid "Port:"
+msgstr ""
+
+msgid "No proxy for:"
 msgstr ""
 
 msgid "Appearance"
@@ -1706,10 +1727,23 @@ msgstr ""
 msgid "Active song in playlist: "
 msgstr ""
 
+msgid "(Untitled)"
+msgstr ""
+
+#, c-format
+msgid " (%d/%d)"
+msgstr ""
+
 msgid "Select files"
 msgstr ""
 
 msgid "Select directory"
+msgstr ""
+
+msgid "Add URL"
+msgstr ""
+
+msgid "URL:"
 msgstr ""
 
 msgid "Please specify the file to save the playlist to."
@@ -1738,6 +1772,10 @@ msgid "%d track [%s] (%.1f GB)"
 msgstr ""
 
 #, c-format
+msgid "%d track "
+msgstr ""
+
+#, c-format
 msgid "%d track [%s] "
 msgstr ""
 
@@ -1750,7 +1788,29 @@ msgid "%d tracks [%s] (%.1f GB)"
 msgstr ""
 
 #, c-format
+msgid "%d tracks "
+msgstr ""
+
+#, c-format
 msgid "%d tracks [%s] "
+msgstr ""
+
+msgid "Rename playlist"
+msgstr ""
+
+msgid "New tab"
+msgstr ""
+
+msgid "Rename"
+msgstr ""
+
+msgid "Close tab"
+msgstr ""
+
+msgid "Undo close tab"
+msgstr ""
+
+msgid "Close other tabs"
 msgstr ""
 
 msgid "Selected: "
@@ -1802,6 +1862,12 @@ msgid "Cut selected"
 msgstr ""
 
 msgid "Save playlist"
+msgstr ""
+
+msgid "Save all playlists"
+msgstr ""
+
+msgid "Load playlist in new tab"
 msgstr ""
 
 msgid "Load playlist"

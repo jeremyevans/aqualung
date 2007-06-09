@@ -99,6 +99,13 @@ style "progressbar"
     fg[PRELIGHT] = "#eeeeee"
 }
 
+style "notebook"
+{
+	bg[NORMAL] = "#dcdad5"
+	bg[PRELIGHT] = "#4b6983"
+	bg[ACTIVE] = "#bab5ab"
+}
+
 style "entry" = "view"
 {
     font_name = "Sans 10"
@@ -107,6 +114,7 @@ style "entry" = "view"
 style "combo_box"
 {
     text[NORMAL] = "#000000"
+    text[PRELIGHT] = "#000000"
     fg[NORMAL] = "#000000"
 }
 
@@ -144,12 +152,12 @@ style "loop_bar"
 {
     bg_pixmap[NORMAL] = "<none>"
     
-        bg[NORMAL] = "#bab5ab"
-        bg[ACTIVE] = "#868074"
+    bg[NORMAL] = "#bab5ab"
+    bg[ACTIVE] = "#868074"
     bg[SELECTED] = "#4b6983"
     
-        fg[NORMAL] = "#dcdad5"
-        fg[PRELIGHT] = "#eeebe7"
+    fg[NORMAL] = "#dcdad5"
+    fg[PRELIGHT] = "#eeebe7"
 }
 
 
@@ -173,8 +181,6 @@ style "nostyle"
     fg[NORMAL] = "#ff0000"
     fg[PRELIGHT] = "#ff0000"
     fg[ACTIVE] = "#ff0000"
-    
-    bg[NORMAL] = "#ff0000"
 }
 
 widget "*ScrolledWindow*" style "scrollbar"
@@ -184,10 +190,10 @@ widget "*TreeView*" style "view"
 widget "*TextView*" style "view"
 widget "*List*" style "view"
 
+widget "*Notebook*" style "notebook"
 widget "*Scrollbar*" style "scrollbar"
 widget "*Separator*" style "scrollbar"
 widget "*Progress*" style "progressbar"
-widget "*Notebook*" style "button"
 
 widget "*OptionMenu*" style "button"
 widget "*Menu*" style "menu"
@@ -202,6 +208,10 @@ widget "*CheckButton*" style "checkbutton"
 
 widget "*nostyle" style "nostyle"
 
+# --- checkbutton
+
+widget "*check_on_window" style "window"
+widget "*check_on_notebook" style "notebook"
 
 # --- main window
 
@@ -213,10 +223,12 @@ style "viewport"
 
 style "time_viewport" = "viewport"
 {
+    bg_pixmap[NORMAL] = "<none>"
 }
 
 style "title_viewport" = "viewport"
 {
+    bg_pixmap[NORMAL] = "<none>"
 }
 
 style "info_viewport" = "title_viewport"
@@ -304,12 +316,28 @@ style "play_list" = "view"
 
 style "playlist_color"
 {
+    fg[NORMAL] = "#000000"
+    fg[ACTIVE] = "#00026b"
     fg[SELECTED] = "#0505b8"
     fg[INSENSITIVE] = "#000000"
 }
 
+style "playlist_tab_close_button" = "button"
+{
+	bg_pixmap[NORMAL] = "<none>"
+	bg_pixmap[PRELIGHT] = "<none>"
+	bg_pixmap[ACTIVE] = "<none>"
+}
+
+style "playlist_tab_label"
+{
+	font_name = "Sans 10"
+}
+
 widget "*play_list" style "play_list"
 widget "*playlist_color_indicator*" style "playlist_color"
+widget "*playlist_tab_label*" style "playlist_tab_label"
+widget "*playlist_tab_close_button*" style "playlist_tab_close_button"
 
 
 # --- plugins

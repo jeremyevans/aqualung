@@ -880,14 +880,14 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                 } else {
                         add_files(NULL, NULL);
                 }
-                return FALSE;
+                return TRUE;
         case GDK_q:
 	case GDK_Q:
 	case GDK_Escape:
                 if (!options.playlist_is_embedded) {
                         playlist_window_close(NULL, NULL, NULL);
 		}
-		return FALSE;
+		return TRUE;
 	case GDK_F1:
 	case GDK_i:
 	case GDK_I:
@@ -909,7 +909,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 			free(pfile);
 			show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy);
 		}
-		return FALSE;
+		return TRUE;
 	case GDK_Return:
 	case GDK_KP_Enter:
 		gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &path, &column);
@@ -917,15 +917,15 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		if (path) {
 			playlist_start_playback_at_path(pl, path);
 		}
-		return FALSE;
+		return TRUE;
 	case GDK_u:
 	case GDK_U:
 		cut__sel_cb(NULL);
-		return FALSE;
+		return TRUE;
 	case GDK_f:
 	case GDK_F:
 		plist__search_cb(pl);
-		return FALSE;
+		return TRUE;
         case GDK_a:
         case GDK_A:
 		if (kevent->state & GDK_CONTROL_MASK) {
@@ -937,7 +937,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		} else {
 			show_active_position_in_playlist_toggle(pl);
 		}
-                return FALSE;
+                return TRUE;
         case GDK_w:
         case GDK_W:
 		if (kevent->state & GDK_CONTROL_MASK) {
@@ -946,7 +946,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 			gtk_tree_view_collapse_all(GTK_TREE_VIEW(pl->view));
 			show_active_position_in_playlist(pl);
 		}
-		return FALSE;
+		return TRUE;
         case GDK_Delete:
 	case GDK_KP_Delete:
                 if (kevent->state & GDK_SHIFT_MASK) {  /* SHIFT + Delete */
@@ -956,7 +956,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                 } else {
 			rem__sel_cb(NULL);
                 }
-		return FALSE;
+		return TRUE;
 	case GDK_t:
 	case GDK_T:
 		if (kevent->state & GDK_CONTROL_MASK) {
@@ -971,31 +971,56 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 			aifp_transfer_files();
 		}
 #endif /* HAVE_IFP */
-		return FALSE;
+		return TRUE;
 	case GDK_r:
 	case GDK_R:
 		if (kevent->state & GDK_CONTROL_MASK) {  /* CTRL + R */
                         tab__rename_cb(playlist_get_current());
                 }
-		return FALSE;
+		return TRUE;
         case GDK_grave:
                 expand_collapse_album_node(pl);
-                return FALSE;
+                return TRUE;
 	case GDK_Page_Up:
 		if (kevent->state & GDK_CONTROL_MASK) {
 			playlist_notebook_prev_page();
-			return FALSE;
+			return TRUE;
 		}
 		break;
 	case GDK_Page_Down:
 		if (kevent->state & GDK_CONTROL_MASK) {
 			playlist_notebook_next_page();
-			return FALSE;
+			return TRUE;
 		}
 		break;
 	}
 
-	return TRUE;
+	return FALSE;
+}
+
+gint
+playlist_notebook_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
+
+	if ((kevent->state & GDK_CONTROL_MASK) &&
+	    (kevent->keyval == GDK_Page_Up || kevent->keyval == GDK_Page_Down)) {
+		/* ignore default tab switching key handler */
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+gint
+playlist_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
+
+	if ((kevent->state & GDK_CONTROL_MASK) &&
+	    (kevent->keyval == GDK_Page_Up || kevent->keyval == GDK_Page_Down)) {
+		/* ignore default key handler for PageUp/Down when
+		   CTRL is pressed to prevent unwanted cursor motion */
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 
@@ -3531,13 +3556,6 @@ playlist_tab_close_undo(void) {
 }
 
 gint
-playlist_notebook_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
-
-	/* ignore default key handlers as they interfere with ours */
-	return TRUE;
-}
-
-gint
 playlist_notebook_clicked(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 
 	if (event->type == GDK_2BUTTON_PRESS && event->button == 1 &&
@@ -3840,6 +3858,9 @@ create_playlist_gui(playlist_t * pl) {
 	gtk_widget_set_name(pl->view, "play_list");
 	gtk_widget_set_size_request(pl->view, 100, 100);
 
+	g_signal_connect(G_OBJECT(pl->view), "key_press_event",
+			 G_CALLBACK(playlist_key_pressed), NULL);
+
         if (options.override_skin_settings) {
                 gtk_widget_modify_font(pl->view, fd_playlist);
         }
@@ -4005,6 +4026,8 @@ create_playlist_gui(playlist_t * pl) {
 #if (GTK_CHECK_VERSION(2,10,0))
 	gtk_notebook_set_tab_reorderable(GTK_NOTEBOOK(playlist_notebook), pl->widget, TRUE);
 #endif /* GTK_CHECK_VERSION */
+
+	gtk_widget_grab_focus(pl->view);
 }
 
 playlist_t *

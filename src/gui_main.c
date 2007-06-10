@@ -1026,9 +1026,8 @@ change_skin(char * path) {
         show_active_position_in_playlist(playlist_get_current());
 }
 
-
-void
-main_window_close(GtkWidget * widget, gpointer data) {
+gboolean
+main_window_close(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	send_cmd = CMD_FINISH;
 	rb_write(rb_gui2disk, &send_cmd, 1);
@@ -1058,26 +1057,6 @@ main_window_close(GtkWidget * widget, gpointer data) {
 	cdda_scanner_stop();
 #endif /* HAVE_CDDA */
 
-	if (music_store_changed) {
-		GtkWidget * dialog;
-
-                dialog = gtk_message_dialog_new(GTK_WINDOW(main_window),
-                                                GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                                GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, 
-                                                _("One or more stores in Music Store have been modified.\n"
-                                                "Do you want to save them before exiting?"));
-		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_YES);
-		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
-                gtk_window_set_title(GTK_WINDOW(dialog), _("Question"));
-		
-		if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
-			save_all_music_store();
-		}
-		
-		gtk_widget_destroy(dialog);
-	}
-	
 	if (systray_main_window_on) {
 		save_window_position();
 	}
@@ -1104,6 +1083,58 @@ main_window_close(GtkWidget * widget, gpointer data) {
         pango_font_description_free(fd_browser);
 
 	gtk_main_quit();
+
+	return FALSE;
+}
+
+void
+main_window_closing(void) {
+
+	if (music_store_changed) {
+		GtkWidget * dialog;
+		int resp;
+
+                dialog = gtk_message_dialog_new(GTK_WINDOW(main_window),
+                                                GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                                GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, 
+                                                _("One or more stores in Music Store have been modified.\n"
+                                                "Do you want to save them before exiting?"));
+
+		gtk_dialog_add_buttons(GTK_DIALOG(dialog),
+				       _("Yes"), GTK_RESPONSE_YES,
+				       _("No"), GTK_RESPONSE_NO,
+				       _("Cancel"), GTK_RESPONSE_CANCEL,
+				       NULL);
+
+		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_YES);
+		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+                gtk_window_set_title(GTK_WINDOW(dialog), _("Quit"));
+		
+		resp = aqualung_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
+
+		if (resp == GTK_RESPONSE_CANCEL) {
+			return;
+		}
+
+		if (resp == GTK_RESPONSE_YES) {
+			save_all_music_store();
+		}
+	}
+
+	main_window_close(NULL, NULL, NULL);
+}
+
+gboolean
+main_window_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
+
+	if (event->type == GDK_DELETE) {
+		main_window_closing();
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 void
@@ -1170,7 +1201,7 @@ conf__about_cb(gpointer data) {
 void
 conf__quit_cb(gpointer data) {
 
-	main_window_close(NULL, NULL);
+	main_window_closing();
 }
 
 
@@ -1356,7 +1387,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	case GDK_q:
 	case GDK_Q:
                 if (event->state & GDK_CONTROL_MASK) {  /* CTRL + q */
-			main_window_close(NULL, NULL);
+			main_window_closing();
 		}
 		return TRUE;
 	case GDK_k:
@@ -2910,6 +2941,8 @@ create_main_window(char * skin_path) {
 	gtk_status_icon_set_tooltip(systray_icon, win_title);
 #endif /* HAVE_SYSTRAY */
 
+        g_signal_connect(G_OBJECT(main_window), "event", G_CALLBACK(main_window_event), NULL);
+
 #ifdef HAVE_SYSTRAY
         g_signal_connect(G_OBJECT(main_window), "delete_event", G_CALLBACK(hide_all_windows), NULL);
 #else
@@ -3467,7 +3500,7 @@ systray__next_cb(gpointer data) {
 void
 systray__quit_cb(gpointer data) {
 
-	main_window_close(NULL, NULL);
+	main_window_closing();
 }
 
 void
@@ -3824,15 +3857,8 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	/* set timeout function */
 	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
 
-        /* make active row with last played song */
-
-        /*
-	show_active_position_in_playlist();
-        gtk_widget_realize(play_list);
-	*/
         if (options.playlist_is_embedded) {
                 gtk_widget_set_sensitive(plist__fileinfo, FALSE);
-                /*gtk_widget_grab_focus(GTK_WIDGET(play_list));*/
         }
 }
 
@@ -4063,7 +4089,7 @@ timeout_callback(gpointer data) {
 			adjust_remote_volume(cmdbuf);
 			break;
 		case RCMD_QUIT:
-			main_window_close(NULL, NULL);
+			main_window_closing();
 			break;
 		}
 		++rcv_count;

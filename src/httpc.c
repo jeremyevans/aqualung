@@ -277,11 +277,11 @@ parse_http_headers(http_session_t * session) {
 			} else {
 				header->icy_br = l;
 			}
-		} else if (strcasecmp(name, "icy_genre") == 0) {
+		} else if (strcasecmp(name, "icy-genre") == 0) {
 			header->icy_genre = strdup(value);
-		} else if (strcasecmp(name, "icy_name") == 0) {
+		} else if (strcasecmp(name, "icy-name") == 0) {
 			header->icy_name = strdup(value);
-		} else if (strcasecmp(name, "icy_description") == 0) {
+		} else if (strcasecmp(name, "icy-description") == 0) {
 			header->icy_description = strdup(value);
 		}
 		printf("name = '%s'  value = '%s'\n", name, value);
@@ -626,6 +626,20 @@ httpc_read_chunked(http_session_t * session, char * buf, int num) {
 	return buf_pos;
 }
 
+void
+httpc_add_headers_meta(http_session_t * session, metadata_t * meta) {
+
+	if (session->headers.icy_name != NULL) {
+		metadata_add_textframe_from_keyval(meta, "Icy-Name", session->headers.icy_name);
+	}
+	if (session->headers.icy_genre != NULL) {
+		metadata_add_textframe_from_keyval(meta, "Icy-Genre", session->headers.icy_genre);
+	}
+	if (session->headers.icy_description != NULL) {
+		metadata_add_textframe_from_keyval(meta, "Icy-Description", session->headers.icy_description);
+	}
+}
+
 int
 httpc_demux(http_session_t * session) {
 
@@ -642,8 +656,10 @@ httpc_demux(http_session_t * session) {
 
 	meta_buf[(int)meta_len] = '\0';
 
-	if (meta_len > 0) {
-		printf("%s\n", meta_buf);
+	if (meta_len > 0 && session->fdec != NULL && session->fdec->meta_cb != NULL) {
+		metadata_t * meta = metadata_from_mpeg_stream_data(meta_buf);
+		httpc_add_headers_meta(session, meta);
+		session->fdec->meta_cb(meta);
 	}
 
 	free(meta_buf);

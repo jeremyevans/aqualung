@@ -32,6 +32,7 @@
 #endif /* _WIN32 */
 #endif /* HAVE_OGG_VORBIS */
 
+#include "../httpc.h"
 #include "file_decoder.h"
 
 

@@ -65,6 +65,7 @@
 #include "cdda.h"
 #include "loop_bar.h"
 #include "httpc.h"
+#include "metadata.h"
 #include "gui_main.h"
 #include "version.h"
 
@@ -3850,6 +3851,7 @@ timeout_callback(gpointer data) {
 #ifdef HAVE_JACK
 	static int jack_popup_beenthere = 0;
 #endif /* HAVE_JACK */
+	metadata_t * meta;
 
 
 	while (rb_read_space(rb_disk2gui)) {
@@ -3965,6 +3967,15 @@ timeout_callback(gpointer data) {
 			}
 
                         show_scale_pos(!total_samples ? FALSE : TRUE);
+			break;
+
+		case CMD_METABLOCK:
+			while (rb_read_space(rb_disk2gui) < sizeof(metadata_t *))
+				;
+			rb_read(rb_disk2gui, (char *)&meta, sizeof(metadata_t *));
+
+			metadata_dump(meta);
+			metadata_free(meta);
 			break;
 
 		default:

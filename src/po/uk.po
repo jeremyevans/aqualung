@@ -1133,6 +1133,10 @@ msgstr ""
 msgid "_Abort"
 msgstr "Перервати"
 
+#, fuzzy
+msgid "Vendor"
+msgstr "Постачальник:"
+
 msgid "Please select the xml file for this store."
 msgstr "Будьласка оберіть xml файл для цього складу."
 

@@ -1095,6 +1095,10 @@ msgstr "_Feltöltés"
 msgid "_Abort"
 msgstr "_Megszakítás"
 
+#, fuzzy
+msgid "Vendor"
+msgstr "Vendor:"
+
 msgid "Please select the xml file for this store."
 msgstr "Add meg a tárolóhoz tartozó xml fájlt."
 

@@ -1023,6 +1023,9 @@ msgstr ""
 msgid "_Abort"
 msgstr ""
 
+msgid "Vendor"
+msgstr ""
+
 msgid "Please select the xml file for this store."
 msgstr ""
 

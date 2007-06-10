@@ -30,6 +30,7 @@
 
 
 #include "../common.h"
+#include "../httpc.h"
 #include "file_decoder.h"
 
 

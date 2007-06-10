@@ -24,7 +24,7 @@
 
 #include "../common.h"
 #include "../options.h"
-#include "../httpc.h"
+#include "../metadata.h"
 #include "../rb.h"
 
 #ifdef __cplusplus
@@ -74,6 +74,8 @@ typedef struct _file_decoder_t {
 	float voladj_db;
 	float voladj_lin;
 	int is_stream;
+	metadata_t meta;
+	void (* meta_cb)(metadata_t *);
 
 	/* private */
 	void * pdec; /* actually, it's (decoder_t *) */
@@ -118,6 +120,7 @@ void file_decoder_delete(file_decoder_t * fdec);
 
 int file_decoder_open(file_decoder_t * fdec, char * filename);
 void file_decoder_set_rva(file_decoder_t * fdec, float voladj);
+void file_decoder_set_meta_cb(file_decoder_t * fdec, void (* meta_cb)(metadata_t * meta));
 void file_decoder_close(file_decoder_t * fdec);
 unsigned int file_decoder_read(file_decoder_t * fdec, float * dest, int num);
 void file_decoder_seek(file_decoder_t * fdec, unsigned long long seek_to_pos);

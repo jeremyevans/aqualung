@@ -32,6 +32,7 @@ extern size_t sample_size;
 
 
 #ifdef HAVE_OGG_VORBIS
+/*
 void
 dump_vc(vorbis_comment * vc) {
 
@@ -47,6 +48,7 @@ dump_vc(vorbis_comment * vc) {
 	}
 	printf("[V] %s\n", vc->vendor);
 }
+*/
 
 /* return 1 if reached end of stream, 0 else */
 int
@@ -71,8 +73,13 @@ decode_vorbis(decoder_t * dec) {
 		break;
 	case OV_HOLE:
 		if (fdec->is_stream) {
-			vorbis_comment * vc = ov_comment(&pd->vf, -1);
-			dump_vc(vc);
+			if (fdec->meta_cb != NULL) {
+				vorbis_comment * vc = ov_comment(&pd->vf, -1);
+				metadata_t * meta = metadata_from_vorbis_comment(vc);
+				meta->writable = 0;
+				httpc_add_headers_meta(pd->session, meta);
+				fdec->meta_cb(meta);
+			}
 			break;
 		} else {
 			printf("dec_vorbis.c/decode_vorbis(): ov_read() returned OV_HOLE\n");

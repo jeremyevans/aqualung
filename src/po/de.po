@@ -1160,6 +1160,10 @@ msgid "_Abort"
 msgstr "Abbrechen"
 
 #, fuzzy
+msgid "Vendor"
+msgstr "Genre"
+
+#, fuzzy
 msgid "Please select the xml file for this store."
 msgstr "Bitte wählen Sie die audio Datei für dieses Track aus."
 

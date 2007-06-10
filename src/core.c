@@ -250,6 +250,15 @@ rollback(rb_t * rb, file_decoder_t * fdec, double src_ratio) {
 }
 
 
+void
+send_meta(metadata_t * meta) {
+
+	char send_cmd = CMD_METABLOCK;
+	rb_write(rb_disk2gui, &send_cmd, 1);
+	rb_write(rb_disk2gui, (char *)&meta, sizeof(metadata_t *));
+}
+
+
 void *
 disk_thread(void * arg) {
 
@@ -387,6 +396,7 @@ disk_thread(void * arg) {
 						goto sleep;
 					} else {
 						file_decoder_set_rva(fdec, cue.voladj);
+						file_decoder_set_meta_cb(fdec, send_meta);
 						info->in_SR_prev = info->in_SR;
 						info->in_SR = fdec->fileinfo.sample_rate;
 						info->is_mono = fdec->fileinfo.is_mono;

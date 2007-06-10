@@ -17,6 +17,7 @@ httpc.h httpc.c \
 i18n.h \
 ifp_device.h ifp_device.c \
 loop_bar.h loop_bar.c \
+metadata.h metadata.c \
 meta_decoder.h meta_decoder.cpp \
 music_browser.h music_browser.c \
 options.h options.c \

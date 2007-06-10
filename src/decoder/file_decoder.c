@@ -222,6 +222,7 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 		return DECODER_OPEN_FERROR;
 	}
 
+	session->fdec = fdec;
 
 #ifdef HAVE_MPEG
 	if (session->headers.content_type == NULL ||
@@ -354,6 +355,13 @@ file_decoder_set_rva(file_decoder_t * fdec, float voladj) {
 
 	fdec->voladj_db = voladj;
 	fdec->voladj_lin = db2lin(voladj);
+}
+
+
+void
+file_decoder_set_meta_cb(file_decoder_t * fdec, void (* meta_cb)(metadata_t * meta)) {
+
+	fdec->meta_cb = meta_cb;
 }
 
 

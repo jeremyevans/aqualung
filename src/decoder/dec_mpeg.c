@@ -1291,11 +1291,15 @@ mpeg_decoder_finish_open(decoder_t * dec) {
 	mad_frame_init(&(pd->mpeg_frame));
 	mad_synth_init(&(pd->mpeg_synth));
 	
-	if (mpeg_input((void *)dec, &(pd->mpeg_stream)) == MAD_FLOW_STOP) {
-		mad_synth_finish(&(pd->mpeg_synth));
-		mad_frame_finish(&(pd->mpeg_frame));
-		mad_stream_finish(&(pd->mpeg_stream));
-		return DECODER_OPEN_FERROR;
+	if (fdec->is_stream) {
+		mad_stream_buffer(&pd->mpeg_stream, pd->inbuf, 0);
+	} else {
+		if (mpeg_input((void *)dec, &(pd->mpeg_stream)) == MAD_FLOW_STOP) {
+			mad_synth_finish(&(pd->mpeg_synth));
+			mad_frame_finish(&(pd->mpeg_frame));
+			mad_stream_finish(&(pd->mpeg_stream));
+			return DECODER_OPEN_FERROR;
+		}
 	}
 
 	pd->frame_counter = 0;

@@ -32,6 +32,8 @@
 #define HTTPC_SESSION_CHUNKED 2
 #define HTTPC_SESSION_STREAM  3
 
+#include "decoder/file_decoder.h"
+
 typedef struct {
 	char * status;
 	char * location;
@@ -70,6 +72,9 @@ typedef struct {
 
 	/* variables for stream download: */
 	int metapos;
+
+	/* file decoder that uses us - if that is the case */
+	file_decoder_t * fdec;
 } http_session_t;
 
 
@@ -97,6 +102,9 @@ long long httpc_tell(http_session_t * session);
 void httpc_close(http_session_t * session);
 
 int httpc_reconnect(http_session_t * session);
+
+void httpc_add_headers_meta(http_session_t * session, metadata_t * meta);
+
 
 #endif /* _HTTPC_H */
 

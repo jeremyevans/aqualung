@@ -127,8 +127,9 @@ typedef struct _thread_info {
 #define CMD_FILEREQ     7
 #define CMD_FILEINFO    8
 #define CMD_STATUS      9
+#define CMD_METABLOCK  10
 /* command numbers from disk to output */
-#define CMD_FLUSH      10
+#define CMD_FLUSH      11
 
 
 typedef struct _cue_t {

@@ -37,6 +37,7 @@
 #include "common.h"
 #include "utils.h"
 #include "core.h"
+#include "httpc.h"
 #include "rb.h"
 #include "cdda.h"
 #include "gui_main.h"

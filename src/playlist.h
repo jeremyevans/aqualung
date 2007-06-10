@@ -133,6 +133,7 @@ void playlist_foreach_selected(playlist_t * pl,
 void mark_track(GtkTreeStore * store, GtkTreeIter * piter);
 void unmark_track(GtkTreeStore * store, GtkTreeIter * piter);
 
+void show_active_position_in_playlist(playlist_t * pl);
 
 #ifdef HAVE_CDDA
 void playlist_add_cdda(GtkTreeIter * iter_drive, unsigned long hash);

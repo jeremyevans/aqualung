@@ -112,6 +112,7 @@ extern GtkTreeStore * music_store;
 extern GtkListStore * running_store;
 
 extern GtkWidget * plist_menu;
+extern GtkWidget * playlist_notebook;
 
 void init_plist_menu(GtkWidget *append_menu);
 
@@ -846,6 +847,8 @@ restore_window_position(void) {
 void
 change_skin(char * path) {
 
+	int current_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(playlist_notebook));
+
 	int st_play = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button));
 	int st_pause = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button));
 	int st_r_track = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_button));
@@ -1013,22 +1016,14 @@ change_skin(char * path) {
 	cdda_timeout_start();
 #endif /* HAVE_CDDA */
 
-        /*
-	show_active_position_in_playlist();
-        gtk_widget_realize(play_list);
-	*/
-
-	/*
-        if (options.playlist_is_embedded) {
-                gtk_widget_grab_focus(GTK_WIDGET(play_list));
-        }
-	*/
-
 	skin_being_changed = 0;
 
         playlist_size_allocate_all();
 	playlist_content_changed(playlist_get_current());
 	playlist_selection_changed(playlist_get_current());
+
+        gtk_notebook_set_current_page(GTK_NOTEBOOK(playlist_notebook), current_page);
+        show_active_position_in_playlist(playlist_get_current());
 }
 
 
@@ -1231,6 +1226,8 @@ plugin_toggled(GtkWidget * widget, gpointer data) {
 gint
 main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
+        int playlist_tabs = gtk_notebook_get_n_pages(GTK_NOTEBOOK(playlist_notebook));
+
         shift_state = event->state & GDK_SHIFT_MASK;
 
 	switch (event->keyval) {	
@@ -1371,25 +1368,60 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
                 create_options_window();
                 return TRUE;
 	case GDK_1:
-	        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_button))) {
-        		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_button), FALSE);
+                if (event->state & GDK_MOD1_MASK) {  /* ALT + 1 */
+                        if(playlist_tabs >= 1) {
+                                gtk_notebook_set_current_page(GTK_NOTEBOOK(playlist_notebook), 1-1);
+                        }
                 } else {
-        		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_button), TRUE);
-		}
+                        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_button))) {
+                                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_button), FALSE);
+                        } else {
+                                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_button), TRUE);
+                        }
+                }
                 return TRUE;
 	case GDK_2:
-	        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_all_button))) {
-        		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_all_button), FALSE);
-		} else {
-        		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_all_button), TRUE);
-		}
+                if (event->state & GDK_MOD1_MASK) {  /* ALT + 2 */
+                        if(playlist_tabs >= 2) {
+                                gtk_notebook_set_current_page(GTK_NOTEBOOK(playlist_notebook), 2-1);
+                        }
+                } else {
+                        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_all_button))) {
+                                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_all_button), FALSE);
+                        } else {
+                                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_all_button), TRUE);
+                        }
+                }
                 return TRUE;
 	case GDK_3:
-	        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
-        		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), FALSE);
-		} else {
-        		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), TRUE);
-		}
+                if (event->state & GDK_MOD1_MASK) {  /* ALT + 3 */
+                        if(playlist_tabs >= 3) {
+                                gtk_notebook_set_current_page(GTK_NOTEBOOK(playlist_notebook), 3-1);
+                        }
+                } else {
+                        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
+                                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), FALSE);
+                        } else {
+                                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), TRUE);
+                        }
+                }
+                return TRUE;
+	case GDK_4:
+	case GDK_5:
+	case GDK_6:
+	case GDK_7:
+	case GDK_8:
+	case GDK_9:
+	case GDK_0:
+                if (event->state & GDK_MOD1_MASK) {  /* ALT */
+
+                        int val = event->keyval - GDK_0;
+                        val = (val == 0) ? 10 : val;
+
+                        if(playlist_tabs >= val) {
+                                gtk_notebook_set_current_page(GTK_NOTEBOOK(playlist_notebook), val-1);
+                        }
+                }
                 return TRUE;
 #ifdef HAVE_SYSTRAY
 	case GDK_Escape:

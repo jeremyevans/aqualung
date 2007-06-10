@@ -119,6 +119,17 @@ skin_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	return FALSE;
 }
 
+static gint
+skin_list_double_click(GtkWidget * widget, GdkEventButton * event, gpointer func_data) {
+
+    if ((event->type==GDK_2BUTTON_PRESS) && (event->button == 1)) {
+	apply(NULL, NULL);
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
 
 void
 create_skin_window() {
@@ -167,6 +178,10 @@ create_skin_window() {
 					G_TYPE_STRING); /* path */
         skin_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(skin_store));
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(skin_list), FALSE);
+
+        g_signal_connect(G_OBJECT(skin_list), "button_press_event", 
+                         G_CALLBACK(skin_list_double_click), NULL);      
+
         skin_select = gtk_tree_view_get_selection(GTK_TREE_VIEW(skin_list));
 
 	renderer = gtk_cell_renderer_text_new();

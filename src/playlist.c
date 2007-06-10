@@ -914,7 +914,12 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 				sel__all_cb(NULL);
 			}
 		} else {
-			show_active_position_in_playlist_toggle(pl);
+                        if (kevent->state & GDK_MOD1_MASK) {  /* ALT + a */
+                                playlist_set_current(playlist_get_playing());
+                                show_active_position_in_playlist(playlist_get_playing());
+                        } else {
+        			show_active_position_in_playlist_toggle(pl);
+                        }
 		}
                 return TRUE;
         case GDK_w:

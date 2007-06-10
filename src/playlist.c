@@ -75,7 +75,6 @@ GtkWidget * playlist_color_indicator;
 
 extern GtkWidget * main_window;
 extern GtkWidget * info_window;
-extern GtkWidget * vol_window;
 
 extern GtkTreeSelection * music_select;
 
@@ -88,33 +87,12 @@ extern gulong pause_id;
 extern GtkWidget * play_button;
 extern GtkWidget * pause_button;
 
-extern int vol_finished;
-extern int vol_index;
-gint vol_n_tracks;
-gint vol_is_average;
-vol_queue_t * pl_vol_queue;
-
-/* used to store array of tree iters of tracks selected for RVA calc */
-GtkTreeIter * vol_iters;
-
-
-GtkWidget * play_list;
-GtkTreeStore * play_store = 0;
-GtkTreeSelection * play_select;
 
 GtkWidget * statusbar_total;
 GtkWidget * statusbar_selected;
 GtkWidget * statusbar_total_label;
 GtkWidget * statusbar_selected_label;
 
-volatile int playlist_thread_stop; 
-volatile int playlist_data_written;
-int pl_progress_bar_semaphore;
-
-AQUALUNG_THREAD_DECLARE(playlist_thread_id)
-AQUALUNG_MUTEX_DECLARE(playlist_thread_mutex)
-AQUALUNG_MUTEX_DECLARE(playlist_wait_mutex)
-AQUALUNG_COND_DECLARE_INIT(playlist_thread_wait)
 
 /* popup menus */
 GtkWidget * add_menu;
@@ -1072,8 +1050,6 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 			gtk_widget_set_sensitive(plist__fileinfo, FALSE);
 		}
 
-		gtk_widget_set_sensitive(plist__rva, (vol_window == NULL) ? TRUE : FALSE);
-
 		gtk_menu_popup(GTK_MENU(plist_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);
 		return TRUE;
@@ -1162,7 +1138,7 @@ add_file_to_playlist(gpointer data) {
 			   PL_COL_PHYSICAL_FILENAME, plfm->filename,
 			   PL_COL_SELECTION_COLOR, plfm->active ? pl_color_active : pl_color_inactive,
 			   PL_COL_VOLUME_ADJUSTMENT, plfm->voladj,
-			   PL_COL_VOLUME_ADJUSTMENT_DISP, voladj_str,
+			   PL_COL_VOLUME_ADJUSTMENT_DISP, plfm->is_album_node ? "" : voladj_str,
 			   PL_COL_DURATION, plfm->duration,
 			   PL_COL_DURATION_DISP, duration_str,
 			   PL_COL_FONT_WEIGHT, (plfm->active && options.show_active_track_name_in_bold) ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL, 
@@ -1782,118 +1758,35 @@ plist__load_tab_cb(gpointer data) {
 	playlist_load_dialog(PLAYLIST_LOAD_TAB);
 }
 
-gint
-watch_vol_calc(gpointer data) {
-
-        gfloat * volumes = (gfloat *)data;
-
-        if (!vol_finished) {
-                return TRUE;
-        }
-
-	if (vol_index != vol_n_tracks) {
-		free(volumes);
-		volumes = NULL;
-		return FALSE;
-	}
-
-	if (vol_is_average) {
-		gchar voladj_str[32];
-		gfloat voladj = rva_from_multiple_volumes(vol_n_tracks, volumes,
-							 options.rva_use_linear_thresh,
-							 options.rva_avg_linear_thresh,
-							 options.rva_avg_stddev_thresh,
-							 options.rva_refvol,
-							 options.rva_steepness);
-		gint i;
-
-		voladj2str(voladj, voladj_str);
-
-		for (i = 0; i < vol_n_tracks; i++) {
-
-			if (gtk_tree_store_iter_is_valid(play_store, &vol_iters[i])) {
-				gtk_tree_store_set(play_store, &vol_iters[i],
-						   PL_COL_VOLUME_ADJUSTMENT, voladj, PL_COL_VOLUME_ADJUSTMENT_DISP, voladj_str, -1);
-			}
-		}
-	} else {
-		gfloat voladj;
-		gchar voladj_str[32];
-
-		gint i;
-
-		for (i = 0; i < vol_n_tracks; i++) {
-			if (gtk_tree_store_iter_is_valid(play_store, &vol_iters[i])) {
-				voladj = rva_from_volume(volumes[i],
-							 options.rva_refvol,
-							 options.rva_steepness);
-				voladj2str(voladj, voladj_str);
-				gtk_tree_store_set(play_store, &vol_iters[i], PL_COL_VOLUME_ADJUSTMENT, voladj,
-						   PL_COL_VOLUME_ADJUSTMENT_DISP, voladj_str, -1);
-			}
-		}
-	}
-
-	free(volumes);
-	volumes = NULL;
-	free(vol_iters);
-	vol_iters = NULL;
-        return FALSE;
-}
-
 
 void
 plist_setup_vol_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
-        gchar * pfile;
+	volume_t * vol = (volume_t *)data;
+        char * file;
 
-	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_PHYSICAL_FILENAME, &pfile, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_PHYSICAL_FILENAME, &file, -1);
 
-	if (pl_vol_queue == NULL) {
-		pl_vol_queue = vol_queue_push(NULL, pfile, *iter/*dummy*/);
-	} else {
-		vol_queue_push(pl_vol_queue, pfile, *iter/*dummy*/);
-	}
-	++vol_n_tracks;
+	volume_push(vol, file, *iter);
 
-	vol_iters = (GtkTreeIter *)realloc(vol_iters, vol_n_tracks * sizeof(GtkTreeIter));
-	if (!vol_iters) {
-		fprintf(stderr, "realloc error in plist_setup_vol_foreach()\n");
-		return;
-	}
-	vol_iters[vol_n_tracks-1] = *iter;
-
-	g_free(pfile);
+	g_free(file);
 }
 
 void
-plist_setup_vol_calc(playlist_t * pl) {
+plist_setup_vol_calc(playlist_t * pl, int type) {
 
-	gfloat * volumes = NULL;
-
-	pl_vol_queue = NULL;
-
-        if (vol_window != NULL) {
-                return;
-        }
-
-	vol_n_tracks = 0;
-
-	playlist_foreach_selected(pl, plist_setup_vol_foreach, NULL);
-
-	if (vol_n_tracks == 0)
-		return;
+	volume_t * vol;
 
 	if (!options.rva_is_enabled) {
 
 		GtkWidget * dialog = gtk_dialog_new_with_buttons(
-				 _("Warning"),
-				 options.playlist_is_embedded ?
-				 GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
-				 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-				 GTK_STOCK_YES, GTK_RESPONSE_ACCEPT,
-				 GTK_STOCK_NO, GTK_RESPONSE_REJECT,
-				 NULL);
+                                _("Warning"),
+                                options.playlist_is_embedded ?
+                                GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
+                                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                GTK_STOCK_YES, GTK_RESPONSE_ACCEPT,
+                                GTK_STOCK_NO, GTK_RESPONSE_REJECT,
+                                NULL);
 
 		GtkWidget * label =  gtk_label_new(_("Playback RVA is currently disabled.\n"
 						     "Do you want to enable it now?"));
@@ -1902,10 +1795,7 @@ plist_setup_vol_calc(playlist_t * pl) {
 		gtk_widget_show(label);
 
 		if (aqualung_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
-			free(vol_iters);
-			vol_iters = NULL;
 			gtk_widget_destroy(dialog);
-
 			return;
 		} else {
 			options.rva_is_enabled = 1;
@@ -1913,40 +1803,37 @@ plist_setup_vol_calc(playlist_t * pl) {
 		}
 	}
 
-	if ((volumes = calloc(vol_n_tracks, sizeof(float))) == NULL) {
-		fprintf(stderr, "calloc error in plist__rva_separate_cb()\n");
-		free(vol_iters);
-		vol_iters = NULL;
+	if ((vol = volume_new(pl->store, type)) == NULL) {
 		return;
 	}
 
+	playlist_foreach_selected(pl, plist_setup_vol_foreach, vol);
 
-	calculate_volume(pl_vol_queue, volumes);
-	g_timeout_add(200, watch_vol_calc, (gpointer)volumes);
+	volume_start(vol);
 }
-
 
 void
 plist__rva_separate_cb(gpointer data) {
 
-	playlist_t * pl = playlist_get_current();
+	playlist_t * pl;
 
-	if (pl != NULL) {
-		vol_is_average = 0;
-		plist_setup_vol_calc(pl);
+	if ((pl = playlist_get_current()) == NULL) {
+		return;
 	}
-}
 
+	plist_setup_vol_calc(pl, VOLUME_SEPARATE);
+}
 
 void
 plist__rva_average_cb(gpointer data) {
 
-	playlist_t * pl = playlist_get_current();
+	playlist_t * pl;
 
-	if (pl != NULL) {
-		vol_is_average = 1;
-		plist_setup_vol_calc(pl);
+	if ((pl = playlist_get_current()) == NULL) {
+		return;
 	}
+
+	plist_setup_vol_calc(pl, VOLUME_AVERAGE);
 }
 
 
@@ -3892,6 +3779,7 @@ create_playlist_gui(playlist_t * pl) {
 
 		case 1:
 			rva_renderer = gtk_cell_renderer_text_new();
+			g_object_set((gpointer)rva_renderer, "xalign", 1.0, NULL);
 			pl->rva_column = gtk_tree_view_column_new_with_attributes("RVA",
 									      rva_renderer,
 									      "text", 4,
@@ -4665,13 +4553,13 @@ playlist_load_xml_single(char * filename, playlist_transfer_t * pt) {
 
         cur = xmlDocGetRootElement(doc);
         if (cur == NULL) {
-                fprintf(stderr, "load_playlist: empty XML document\n");
+                fprintf(stderr, "empty XML document\n");
                 xmlFreeDoc(doc);
                 return;
         }
 
 	if (xmlStrcmp(cur->name, (const xmlChar *)"aqualung_playlist")) {
-		fprintf(stderr, "load_playlist: XML document of the wrong type, "
+		fprintf(stderr, "XML document of the wrong type, "
 			"root node != aqualung_playlist\n");
 		xmlFreeDoc(doc);
 		return;
@@ -4713,13 +4601,13 @@ playlist_load_xml_multi(char * filename, int start_playback) {
 
         cur = xmlDocGetRootElement(doc);
         if (cur == NULL) {
-                fprintf(stderr, "load_playlist: empty XML document\n");
+                fprintf(stderr, "empty XML document\n");
                 xmlFreeDoc(doc);
                 return;
         }
 
 	if (xmlStrcmp(cur->name, (const xmlChar *)"aqualung_playlist_multi")) {
-		fprintf(stderr, "load_playlist: XML document of the wrong type, "
+		fprintf(stderr, "XML document of the wrong type, "
 			"root node != aqualung_playlist\n");
 		xmlFreeDoc(doc);
 		return;
@@ -4808,7 +4696,7 @@ playlist_load_m3u_thread(void * arg) {
 
 
 	i = 0;
-	while ((c = fgetc(f)) != EOF && !playlist_thread_stop) {
+	while ((c = fgetc(f)) != EOF && !pt->pl->thread_stop) {
 		if ((c != '\n') && (c != '\r') && (i < MAXLEN)) {
 			if ((i > 0) || ((c != ' ') && (c != '\t'))) {
 				line[i++] = c;
@@ -4949,7 +4837,7 @@ playlist_load_pls_thread(void * arg) {
 	}
 
 	i = 0;
-	while ((c = fgetc(f)) != EOF && !playlist_thread_stop) {
+	while ((c = fgetc(f)) != EOF && !pt->pl->thread_stop) {
 		if ((c != '\n') && (c != '\r') && (i < MAXLEN)) {
 			if ((i > 0) || ((c != ' ') && (c != '\t'))) {
 				line[i++] = c;

@@ -52,7 +52,6 @@
 
 extern options_t options;
 
-extern GtkWidget * vol_window;
 extern GtkWidget * musicstore_toggle;
 
 extern GtkListStore * ms_pathlist_store;
@@ -1940,7 +1939,6 @@ void
 set_popup_sensitivity(GtkTreePath * path) {
 
 	gboolean writable = !is_store_path_readonly(path);
-	gboolean vol_free = (vol_window == NULL);
 	gboolean build_free = build_thread_test(BUILD_THREAD_FREE);
 
 #ifdef HAVE_CDDB
@@ -1992,13 +1990,13 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gtk_widget_set_sensitive(store__edit, writable);
 	gtk_widget_set_sensitive(store__save, writable);
 	gtk_widget_set_sensitive(store__addart, writable);
-	gtk_widget_set_sensitive(store__volume, vol_free && writable);
+	gtk_widget_set_sensitive(store__volume, writable);
 
 	gtk_widget_set_sensitive(artist__add, writable);
 	gtk_widget_set_sensitive(artist__edit, writable);
 	gtk_widget_set_sensitive(artist__remove, writable);
 	gtk_widget_set_sensitive(artist__addrec, writable);
-	gtk_widget_set_sensitive(artist__volume, vol_free && writable);
+	gtk_widget_set_sensitive(artist__volume, writable);
 
 	gtk_widget_set_sensitive(record__add, writable);
 	gtk_widget_set_sensitive(record__edit, writable);
@@ -2008,12 +2006,12 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gtk_widget_set_sensitive(record__cddb, writable && cddb_free && build_free);
 	gtk_widget_set_sensitive(record__cddb_submit, cddb_free && build_free);
 #endif /* HAVE_CDDB */
-	gtk_widget_set_sensitive(record__volume, vol_free && writable);
+	gtk_widget_set_sensitive(record__volume, writable);
 
 	gtk_widget_set_sensitive(track__add, writable);
 	gtk_widget_set_sensitive(track__edit, writable);
 	gtk_widget_set_sensitive(track__remove, writable);
-	gtk_widget_set_sensitive(track__volume, vol_free && writable);
+	gtk_widget_set_sensitive(track__volume, writable);
 
 #if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_widget_set_sensitive(store__tag, tag_free);
@@ -2457,9 +2455,7 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 				voladj = rva;
 			} else {
 				if (volume <= 0.1f) {
-					voladj = rva_from_volume(volume,
-								 options.rva_refvol,
-								 options.rva_steepness);
+					voladj = rva_from_volume(volume);
 				} else { /* unmeasured, see if there is RVA data in the file */
 					metadata * meta = meta_new();
 					if (meta_read(meta, file)) {
@@ -2530,11 +2526,8 @@ record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl,
 			volumes[nlevels-1] = volume;
 		}
 		
-		voladj = rva_from_multiple_volumes(nlevels, volumes,
-						   options.rva_use_linear_thresh,
-						   options.rva_avg_linear_thresh,
-						   options.rva_avg_stddev_thresh,
-						   options.rva_refvol, options.rva_steepness);
+		voladj = rva_from_multiple_volumes(nlevels, volumes);
+
 		free(volumes);
 	}
 	
@@ -3017,20 +3010,18 @@ store_volume_calc(int unmeasured) {
         GtkTreeIter iter_track;
         GtkTreeModel * model;
 
-        char * pfile;
-        char file[MAXLEN];
+        char * file;
 	int h, i, j;
 
-	vol_queue_t * q = NULL;
-
-
-	if (vol_window != NULL) {
-		return;
-	}
+	volume_t * vol = NULL;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_store)) {
 
 		if (is_store_iter_readonly(&iter_store)) return;
+
+		if ((vol = volume_new(music_store, VOLUME_SEPARATE)) == NULL) {
+			return;
+		}
 
 		h = 0;
 		while (gtk_tree_model_iter_nth_child(model, &iter_artist, &iter_store, h++)) {
@@ -3040,24 +3031,20 @@ store_volume_calc(int unmeasured) {
 
 				j = 0;
 				while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, j++)) {
-					float vol;
+					float volume;
 
-					gtk_tree_model_get(model, &iter_track, 2, &pfile, 5, &vol, -1);
-					strncpy(file, pfile, MAXLEN-1);
-					g_free(pfile);
+					gtk_tree_model_get(model, &iter_track, 2, &file, 5, &volume, -1);
 
-					if (!unmeasured || vol > 0.1f) {
-						if (q == NULL) {
-							q = vol_queue_push(NULL, file, iter_track);
-						} else {
-							vol_queue_push(q, file, iter_track);
-						}
+					if (!unmeasured || volume > 0.1f) {
+						volume_push(vol, file, iter_track);
 					}
+
+					g_free(file);
 				}
 			}
 		}
 
-		calculate_volume(q, NULL);
+		volume_start(vol);
 	}
 }
 
@@ -3280,43 +3267,38 @@ artist_volume_calc(int unmeasured) {
         GtkTreeIter iter_track;
         GtkTreeModel * model;
 
-        char * pfile;
-        char file[MAXLEN];
+        char * file;
 	int i, j;
 
-	vol_queue_t * q = NULL;
+	volume_t * vol = NULL;
 
-
-	if (vol_window != NULL) {
-		return;
-	}
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_artist)) {
 
 		if (is_store_iter_readonly(&iter_artist)) return;
+
+		if ((vol = volume_new(music_store, VOLUME_SEPARATE)) == NULL) {
+			return;
+		}
 
 		i = 0;
 		while (gtk_tree_model_iter_nth_child(model, &iter_record, &iter_artist, i++)) {
 
 			j = 0;
 			while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, j++)) {
-				float vol;				
+				float volume;
 
-				gtk_tree_model_get(model, &iter_track, 2, &pfile, 5, &vol, -1);
-				strncpy(file, pfile, MAXLEN-1);
-				g_free(pfile);
+				gtk_tree_model_get(model, &iter_track, 2, &file, 5, &volume, -1);
 
-				if (!unmeasured || vol > 0.1f) {
-					if (q == NULL) {
-						q = vol_queue_push(NULL, file, iter_track);
-					} else {
-						vol_queue_push(q, file, iter_track);
-					}
+				if (!unmeasured || volume > 0.1f) {
+					volume_push(vol, file, iter_track);
 				}
+
+				g_free(file);
 			}
 		}
 
-		calculate_volume(q, NULL);
+		volume_start(vol);
 	}
 }
 
@@ -3504,41 +3486,36 @@ record_volume_calc(int unmeasured) {
         GtkTreeIter iter_track;
         GtkTreeModel * model;
 
-	vol_queue_t * q = NULL;
+	volume_t * vol = NULL;
 
 	int i;
-        char * pfile;
-        char file[MAXLEN];
+        char * file;
 
-
-	if (vol_window != NULL) {
-		return;
-	}
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_record)) {
 
 		if (is_store_iter_readonly(&iter_record)) return;
 
+		if ((vol = volume_new(music_store, VOLUME_SEPARATE)) == NULL) {
+			return;
+		}
+
 		i = 0;
 		while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, i++)) {
 		
-			float vol;
+			float volume;
 
-			gtk_tree_model_get(model, &iter_track, 2, &pfile, 5, &vol, -1);
-			strncpy(file, pfile, MAXLEN-1);
-			g_free(pfile);
+			gtk_tree_model_get(model, &iter_track, 2, &file, 5, &volume, -1);
 		
-			if (!unmeasured || vol > 0.1f) {
-				if (q == NULL) {
-					q = vol_queue_push(NULL, file, iter_track);
-				} else {
-					vol_queue_push(q, file, iter_track);
-				}
+			if (!unmeasured || volume > 0.1f) {
+				volume_push(vol, file, iter_track);
 			}
+
+			g_free(file);
 		}
 	}
 	
-	calculate_volume(q, NULL);
+	volume_start(vol);
 }
 
 
@@ -3768,28 +3745,27 @@ track_volume_calc(int unmeasured) {
 
         GtkTreeIter iter_track;
         GtkTreeModel * model;
-	char * pfile;
-	char file[MAXLEN];
-	float vol;
+	char * file;
+	float volume;
 	
-	vol_queue_t * q;
-
-	if (vol_window != NULL) {
-		return;
-	}
+	volume_t * vol = NULL;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
 
 		if (is_store_iter_readonly(&iter_track)) return;
 
-                gtk_tree_model_get(model, &iter_track, 2, &pfile, 5, &vol, -1);
-                strncpy(file, pfile, MAXLEN-1);
-                g_free(pfile);
-
-		if (!unmeasured || vol > 0.1f) {
-			q = vol_queue_push(NULL, file, iter_track);
-			calculate_volume(q, NULL);
+		if ((vol = volume_new(music_store, VOLUME_SEPARATE)) == NULL) {
+			return;
 		}
+
+                gtk_tree_model_get(model, &iter_track, 2, &file, 5, &volume, -1);
+
+		if (!unmeasured || volume > 0.1f) {
+			volume_push(vol, file, iter_track);
+			volume_start(vol);
+		}
+
+                g_free(file);
         }
 }
 

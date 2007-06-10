@@ -35,48 +35,19 @@
 #include "common.h"
 #include "core.h"
 #include "decoder/file_decoder.h"
+#include "options.h"
 #include "music_browser.h"
+#include "playlist.h"
 #include "i18n.h"
 #include "volume.h"
 
 
-#define RMSSIZE 100
 #define EPSILON 0.00000000001
 
-typedef struct {
-        float buffer[RMSSIZE];
-        unsigned int pos;
-        float sum;
-} rms_env;
-
+extern options_t options;
 
 extern GtkTreeStore * music_store;
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
-
-AQUALUNG_THREAD_DECLARE(volume_thread_id)
-
-
-GtkWidget * vol_window = NULL;
-GtkWidget * progress;
-GtkWidget * cancel_button;
-GtkWidget * file_entry;
-
-vol_queue_t * vol_queue = NULL;
-vol_queue_t * vol_queue_save = NULL;
-file_decoder_t * fdec_vol;
-unsigned long vol_chunk_size;
-unsigned long vol_n_chunks;
-unsigned long vol_chunks_read;
-float vol_result;
-int vol_running;
-int vol_cancelled;
-int vol_finished;
-int vol_index;
-int vol_window_visible;
-
-double fraction;
-
-rms_env * rms_vol;
 
 
 void
@@ -90,49 +61,73 @@ voladj2str(float voladj, char * str) {
 }
 
 
-vol_queue_t *
-vol_queue_push(vol_queue_t * q, char * file, GtkTreeIter iter) {
+volume_t *
+volume_new(GtkTreeStore * store, int type) {
 
-	vol_queue_t * q_item = NULL;
-	vol_queue_t * q_prev;
-	
-	if ((q_item = (vol_queue_t *)calloc(1, sizeof(vol_queue_t))) == NULL) {
-		fprintf(stderr, "vol_queue_push(): calloc error\n");
+	volume_t * vol = NULL;
+
+	if ((vol = (volume_t *)calloc(1, sizeof(volume_t))) == NULL) {
+		fprintf(stderr, "volume_new(): calloc error\n");
 		return NULL;
 	}
-	
-	q_item->file = strdup(file);
-	q_item->iter = iter;
-	q_item->next = NULL;
 
-	if (q != NULL) {
-		q_prev = q;
-		while (q_prev->next != NULL) {
-			q_prev = q_prev->next;
-		}
-		q_prev->next = q_item;
-	}
+	vol->store = store;
+	vol->type = type;
 
-	return q_item;
+	AQUALUNG_COND_INIT(vol->thread_wait);
+
+#ifdef _WIN32
+	vol->thread_mutex = g_mutex_new();
+	vol->wait_mutex = g_mutex_new();
+	vol->thread_wait = g_cond_new();
+#endif
+
+	return vol;
 }
 
+void
+volume_push(volume_t * vol, char * file, GtkTreeIter iter) {
+
+	vol_item_t * item = NULL;
+
+	if ((item = (vol_item_t *)calloc(1, sizeof(vol_item_t))) == NULL) {
+		fprintf(stderr, "volume_push(): calloc error\n");
+		return;
+	}
+
+	item->file = strdup(file);
+	item->iter = iter;
+
+	vol->queue = g_list_append(vol->queue, item);
+}
 
 void
-vol_queue_cleanup(vol_queue_t * q) {
+vol_item_free(vol_item_t * item) {
 
-	vol_queue_t * p;
+	free(item->file);
+	free(item);
+}
 
-	p = q;
-	while (p != NULL) {
-		q = p->next;
-		free(p);
-		p = q;
+void
+volume_free(volume_t * vol) {
+
+#ifdef _WIN32
+	g_mutex_free(vol->thread_mutex);
+	g_mutex_free(vol->wait_mutex);
+	g_cond_free(vol->thread_wait);
+#endif
+
+	if (vol->volumes != NULL) {
+		free(vol->volumes);
 	}
+
+	g_list_free(vol->queue);
+	free(vol);
 }
 
 
 inline static float
-rms_env_process(rms_env * r, const float x) {
+rms_env_process(rms_env_t * r, const float x) {
 
         r->sum -= r->buffer[r->pos];
         r->sum += x;
@@ -146,86 +141,175 @@ rms_env_process(rms_env * r, const float x) {
         return sqrt(r->sum / (float)RMSSIZE);
 }
 
+gboolean
+vol_window_close(GtkWidget * widget, GdkEvent * event, gpointer * data) {
 
-int
-vol_window_close(GtkWidget * widget, gpointer * data) {
+	volume_t * vol = (volume_t *)data;
 
-        vol_cancelled = 1;
-	vol_window = NULL;
+        vol->cancelled = 1;
+	vol->window = NULL;
 
-        return 0;
+        return FALSE;
 }
 
 
 gboolean
-vol_window_destroy(gpointer data) {
+volume_finalize(gpointer data) {
 
-	gtk_widget_destroy(vol_window);
-	vol_window = NULL;
+	volume_t * vol = (volume_t *)data;
+
+	if (vol->window) {
+		gtk_widget_destroy(vol->window);
+	}
+
+	g_source_remove(vol->update_tag);
+	volume_free(vol);
 
 	return FALSE;
 }
 
+void
+vol_cancel_event(GtkButton * button, gpointer data) {
 
-gint
-cancel_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
+	volume_t * vol = (volume_t *)data;
 
-        vol_cancelled = 1;
-        return TRUE;
+        vol->cancelled = 1;
 }
 
+
 gboolean
-set_filename_text(gpointer data) {
+vol_set_filename_text(gpointer data) {
 
-	if (vol_window) {
+	volume_t * vol = (volume_t *)data;
 
-		char * utf8 = g_filename_display_name((char *)data);
+	AQUALUNG_MUTEX_LOCK(vol->wait_mutex);
 
-		gtk_entry_set_text(GTK_ENTRY(file_entry), utf8);
-		gtk_editable_set_position(GTK_EDITABLE(file_entry), -1);
-		gtk_widget_grab_focus(cancel_button);
+	if (vol->window) {
+
+		char * utf8;
+
+		AQUALUNG_MUTEX_LOCK(vol->thread_mutex);
+		utf8 = g_filename_display_name(vol->item->file);
+		AQUALUNG_MUTEX_UNLOCK(vol->thread_mutex);
+
+		gtk_entry_set_text(GTK_ENTRY(vol->file_entry), utf8);
+		gtk_editable_set_position(GTK_EDITABLE(vol->file_entry), -1);
+		gtk_widget_grab_focus(vol->cancel_button);
 
 		g_free(utf8);
 	}
 
+	AQUALUNG_COND_SIGNAL(vol->thread_wait);
+	AQUALUNG_MUTEX_UNLOCK(vol->wait_mutex);
+
 	return FALSE;
 }
 
-static gboolean
-update_progress(gpointer data) {
+gboolean
+vol_update_progress(gpointer data) {
 
-	if (vol_window) {
-		if (vol_window_visible) {
+	volume_t * vol = (volume_t *)data;
+
+	if (vol->window) {
+
+		float fraction = 0.0f;
+
+		AQUALUNG_MUTEX_LOCK(vol->thread_mutex);
+		if (vol->n_chunks != 0) {
+			fraction = (float)vol->chunks_read / vol->n_chunks;
+		}
+		AQUALUNG_MUTEX_UNLOCK(vol->thread_mutex);
+
+		if (vol->window_visible) {
 			char str_progress[10];
 
-			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), fraction);
+			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(vol->progress), fraction);
 			snprintf(str_progress, 10, "%.0f%%", fraction * 100.0f);
-			gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress), str_progress);
+			gtk_progress_bar_set_text(GTK_PROGRESS_BAR(vol->progress), str_progress);
 		} else {
 			char title[MAXLEN];
 
 			snprintf(title, MAXLEN, "%.0f%% - %s", fraction * 100.0f,
 				 _("Calculating volume level"));
-			gtk_window_set_title(GTK_WINDOW(vol_window), title);
+			gtk_window_set_title(GTK_WINDOW(vol->window), title);
 		}
 	}
+
+	return TRUE;
+}
+
+void
+vol_store_voladj(GtkTreeStore * store, GtkTreeIter * iter, float voladj) {
+
+	if (!gtk_tree_store_iter_is_valid(store, iter)) {
+		return;
+	}
+
+	if (store == music_store) { /* music store */
+		gtk_tree_store_set(store, iter, 5, voladj, -1);
+		music_store_mark_changed(iter);
+
+	} else { /* playlist */
+		
+		char str[32];
+		voladj2str(voladj, str);
+		gtk_tree_store_set(store, iter,
+				   PL_COL_VOLUME_ADJUSTMENT, voladj,
+				   PL_COL_VOLUME_ADJUSTMENT_DISP, str, -1);
+	}
+}
+
+gboolean
+vol_store_result_sep(gpointer data) {
+
+	volume_t * vol = (volume_t *)data;
+
+	AQUALUNG_MUTEX_LOCK(vol->wait_mutex);
+
+	vol_store_voladj(vol->store, &vol->item->iter, vol->result);
+
+	AQUALUNG_COND_SIGNAL(vol->thread_wait);
+	AQUALUNG_MUTEX_UNLOCK(vol->wait_mutex);
 
 	return FALSE;
 }
 
+gboolean
+vol_store_result_avg(gpointer data) {
+
+	volume_t * vol = (volume_t *)data;
+	GList * node = NULL;
+	float voladj;
+
+	AQUALUNG_MUTEX_LOCK(vol->wait_mutex);
+
+	voladj = rva_from_multiple_volumes(vol->n_volumes, vol->volumes);
+
+	for (node = vol->queue; node; node = node->next) {
+		vol_item_t * item = (vol_item_t *)node->data;
+		vol_store_voladj(vol->store, &item->iter, voladj);
+	}
+
+	AQUALUNG_COND_SIGNAL(vol->thread_wait);
+	AQUALUNG_MUTEX_UNLOCK(vol->wait_mutex);
+
+	return FALSE;
+}
 
 gboolean
-vol_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpointer user_data) {
+vol_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpointer data) {
 
-	if ((vol_window_visible = !(event->new_window_state & GDK_WINDOW_STATE_ICONIFIED))) {
-		gtk_window_set_title(GTK_WINDOW(vol_window), _("Calculating volume level"));
+	volume_t * vol = (volume_t *)data;
+
+	if ((vol->window_visible = !(event->new_window_state & GDK_WINDOW_STATE_ICONIFIED))) {
+		gtk_window_set_title(GTK_WINDOW(vol->window), _("Calculating volume level"));
 	}
 
 	return FALSE;
 }
 
 void
-volume_window(void) {
+create_volume_window(volume_t * vol) {
 
 	GtkWidget * table;
 	GtkWidget * label;
@@ -234,18 +318,18 @@ volume_window(void) {
 	GtkWidget * hbuttonbox;
 	GtkWidget * hseparator;
 
-	vol_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(vol_window), _("Calculating volume level"));
-        gtk_window_set_position(GTK_WINDOW(vol_window), GTK_WIN_POS_CENTER);
-        gtk_window_resize(GTK_WINDOW(vol_window), 430, 110);
-        g_signal_connect(G_OBJECT(vol_window), "delete_event",
-                         G_CALLBACK(vol_window_close), NULL);
-        g_signal_connect(G_OBJECT(vol_window), "window_state_event",
-                         G_CALLBACK(vol_window_state_changed), NULL);
-        gtk_container_set_border_width(GTK_CONTAINER(vol_window), 5);
+	vol->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        gtk_window_set_title(GTK_WINDOW(vol->window), _("Calculating volume level"));
+        gtk_window_set_position(GTK_WINDOW(vol->window), GTK_WIN_POS_CENTER);
+        gtk_window_resize(GTK_WINDOW(vol->window), 430, 110);
+        g_signal_connect(G_OBJECT(vol->window), "delete_event",
+                         G_CALLBACK(vol_window_close), vol);
+        g_signal_connect(G_OBJECT(vol->window), "window_state_event",
+                         G_CALLBACK(vol_window_state_changed), vol);
+        gtk_container_set_border_width(GTK_CONTAINER(vol->window), 5);
 
         vbox = gtk_vbox_new(FALSE, 0);
-        gtk_container_add(GTK_CONTAINER(vol_window), vbox);
+        gtk_container_add(GTK_CONTAINER(vol->window), vbox);
 
 	table = gtk_table_new(2, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
@@ -256,9 +340,9 @@ volume_window(void) {
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
-        file_entry = gtk_entry_new();
-        gtk_editable_set_editable(GTK_EDITABLE(file_entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, 0, 1,
+        vol->file_entry = gtk_entry_new();
+        gtk_editable_set_editable(GTK_EDITABLE(vol->file_entry), FALSE);
+	gtk_table_attach(GTK_TABLE(table), vol->file_entry, 1, 2, 0, 1,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
 
         hbox = gtk_hbox_new(FALSE, 0);
@@ -267,10 +351,10 @@ volume_window(void) {
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
-	progress = gtk_progress_bar_new();
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.0f);
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress), "0.0%");
-	gtk_table_attach(GTK_TABLE(table), progress, 1, 2, 1, 2,
+	vol->progress = gtk_progress_bar_new();
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(vol->progress), 0.0f);
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(vol->progress), "0.0%");
+	gtk_table_attach(GTK_TABLE(table), vol->progress, 1, 2, 1, 2,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
 
         hseparator = gtk_hseparator_new ();
@@ -281,213 +365,181 @@ volume_window(void) {
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
-        cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL); 
-        g_signal_connect(cancel_button, "clicked", G_CALLBACK(cancel_event), NULL);
-  	gtk_container_add(GTK_CONTAINER(hbuttonbox), cancel_button);   
+        vol->cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL); 
+        g_signal_connect(vol->cancel_button, "clicked", G_CALLBACK(vol_cancel_event), vol);
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), vol->cancel_button);   
 
-        gtk_widget_grab_focus(cancel_button);
+        gtk_widget_grab_focus(vol->cancel_button);
 
-        gtk_widget_show_all(vol_window);
+        gtk_widget_show_all(vol->window);
 }
 
 
 /* if returns 1, file will be skipped */
 int
-process_volume_setup(vol_queue_t * q) {
+process_volume_setup(volume_t * vol) {
 
-	char msg[MAXLEN];
-
-
-	if (q == NULL) {
-		fprintf(stderr, "programmer error: process_volume_setup() called on NULL\n");
-		return 1;
-	}
-	
-        if ((fdec_vol = file_decoder_new()) == NULL) {
+        if ((vol->fdec = file_decoder_new()) == NULL) {
                 fprintf(stderr, "calculate_volume: error: file_decoder_new() returned NULL\n");
                 return 1;
         }
 
-        if (file_decoder_open(fdec_vol, q->file)) {
+        if (file_decoder_open(vol->fdec, vol->item->file)) {
                 fprintf(stderr, "file_decoder_open() failed on %s\n",
-                        q->file);
+                        vol->item->file);
                 return 1;
         }
 
-	if ((rms_vol = (rms_env *)calloc(1, sizeof(rms_env))) == NULL) {
+	if ((vol->rms = (rms_env_t *)calloc(1, sizeof(rms_env_t))) == NULL) {
 		fprintf(stderr, "calculate_volume(): calloc error\n");
 		return 1;
 	}
 
-	vol_chunk_size = fdec_vol->fileinfo.sample_rate / 100;
-	vol_n_chunks = fdec_vol->fileinfo.total_samples / vol_chunk_size + 1;
-	vol_chunks_read = 0;
-	
-	strncpy(msg, q->file, MAXLEN-1);
-	g_idle_add(set_filename_text, (gpointer)q->file);
+	vol->chunks_read = 0;
+	vol->chunk_size = vol->fdec->fileinfo.sample_rate / 100;
+	vol->n_chunks = vol->fdec->fileinfo.total_samples / vol->chunk_size + 1;
 
-	vol_running = 1;
-	vol_result = 0.0f;
+	AQUALUNG_MUTEX_LOCK(vol->wait_mutex);
+	g_idle_add(vol_set_filename_text, vol);
+	AQUALUNG_COND_WAIT(vol->thread_wait, vol->wait_mutex);
+	AQUALUNG_MUTEX_UNLOCK(vol->wait_mutex);
+
+	vol->result = 0.0f;
 
 	return 0;
-}
-
-
-
-gboolean
-process_volume(float * volumes) {
-
-	float * samples = NULL;
-	unsigned long numread;
-	float chunk_power = 0.0f;
-	float rms;
-	unsigned long i;
-	int runs;
-
-	if (!vol_running) {
-
-		if (vol_queue->next != NULL) {
-			vol_queue = vol_queue->next;
-			if (process_volume_setup(vol_queue)) {
-				vol_running = 0;
-				return TRUE;
-			}
-		} else {
-			vol_queue_cleanup(vol_queue_save);
-			vol_queue_save = vol_queue = NULL;
-			vol_finished = 1;
-
-			g_idle_add(vol_window_destroy, NULL);
-			return FALSE;
-		}
-	}
-
-	if (vol_cancelled) {
-		vol_queue_cleanup(vol_queue_save);
-		vol_queue_save = vol_queue = NULL;
-		vol_finished = 1;
-		file_decoder_close(fdec_vol);
-		file_decoder_delete(fdec_vol);
-		if (vol_window != NULL) {
-			g_idle_add(vol_window_destroy, NULL);
-			free(rms_vol);
-		}
-
-		return FALSE;
-	}
-
-	if ((samples = (float *)malloc(vol_chunk_size * fdec_vol->fileinfo.channels * sizeof(float))) == NULL) {
-
-		fprintf(stderr, "process_volume(): error: malloc() returned NULL\n");
-		vol_queue_cleanup(vol_queue_save);
-		vol_queue_save = vol_queue = NULL;
-		vol_finished = 1;
-		file_decoder_close(fdec_vol);
-		file_decoder_delete(fdec_vol);
-		g_idle_add(vol_window_destroy, NULL);
-		free(rms_vol);
-		return FALSE;
-	}
-
-
-	/* just to make things faster */
-	for (runs = 0; runs < 100; runs++) {
-
-		numread = file_decoder_read(fdec_vol, samples, vol_chunk_size);
-		++vol_chunks_read;
-
-		if (runs == 0) {
-			fraction = (double)vol_chunks_read / vol_n_chunks;
-			if (fraction > 1.0f) {
-				fraction = 1.0f;
-			}
-
-			g_idle_add(update_progress, NULL);
-		}
-
-		
-		/* calculate signal power of chunk and feed it in the rms envelope */
-		if (numread > 0) {
-			for (i = 0; i < numread * fdec_vol->fileinfo.channels; i++) {
-				chunk_power += samples[i] * samples[i];
-			}
-			chunk_power /= numread * fdec_vol->fileinfo.channels;
-			
-			rms = rms_env_process(rms_vol, chunk_power);
-
-			if (rms > vol_result) {
-				vol_result = rms;
-			}
-		}
-		
-		if ((numread < vol_chunk_size) || (vol_cancelled)) {
-
-			if (!vol_cancelled) {
-				
-				vol_result = 20.0f * log10f(vol_result);
-
-#ifdef HAVE_MPEG
-				/* compensate for anti-clip vol.reduction in dec_mpeg.c/mpeg_output() */
-				if (fdec_vol->file_lib == MAD_LIB) {
-					vol_result += 1.8f;
-				}
-#endif /* HAVE_MPEG */
-
-				if (volumes == NULL) {
-
-					/* seems to works from this thread */
-					gtk_tree_store_set(music_store, &(vol_queue->iter), 5, vol_result, -1);
-					music_store_mark_changed(&(vol_queue->iter));
-				} else {
-					volumes[vol_index++] = vol_result;
-				}
-			}
-			file_decoder_close(fdec_vol);
-			file_decoder_delete(fdec_vol);
-			free(rms_vol);
-			free(samples);
-			vol_running = 0;
-			return TRUE;
-		}
-	}
-	free(samples);
-	return TRUE;
 }
 
 
 void *
 volume_thread(void * arg) {
 
-	float * volumes = (float *)arg;
+	volume_t * vol = (volume_t *)arg;
 
-	AQUALUNG_THREAD_DETACH()
+	GList * node;
 
-	while (process_volume(volumes) == TRUE);
+	float * samples = NULL;
+	unsigned long numread;
+	float chunk_power = 0.0f;
+	float rms;
+	unsigned long i;
+
+
+	AQUALUNG_THREAD_DETACH();
+
+	for (node = vol->queue; node; node = node->next) {
+
+		vol->item = (vol_item_t *)node->data;
+
+		if (process_volume_setup(vol)) {
+			continue;
+		}
+
+		if ((samples = (float *)malloc(vol->chunk_size * vol->fdec->fileinfo.channels * sizeof(float))) == NULL) {
+
+			fprintf(stderr, "volume_thread(): malloc() error\n");
+			file_decoder_close(vol->fdec);
+			file_decoder_delete(vol->fdec);
+			free(vol->rms);
+			break;
+		}
+
+		do {
+			
+			numread = file_decoder_read(vol->fdec, samples, vol->chunk_size);
+			vol->chunks_read++;
+			
+			/* calculate signal power of chunk and feed it in the rms envelope */
+			if (numread > 0) {
+				for (i = 0; i < numread * vol->fdec->fileinfo.channels; i++) {
+					chunk_power += samples[i] * samples[i];
+				}
+				chunk_power /= numread * vol->fdec->fileinfo.channels;
+				
+				rms = rms_env_process(vol->rms, chunk_power);
+				
+				if (rms > vol->result) {
+					vol->result = rms;
+				}
+			}
+			
+		} while (numread == vol->chunk_size && !vol->cancelled);
+
+		if (!vol->cancelled) {
+					
+			vol->result = 20.0f * log10f(vol->result);
+					
+#ifdef HAVE_MPEG
+			/* compensate for anti-clip vol.reduction in dec_mpeg.c/mpeg_output() */
+			if (vol->fdec->file_lib == MAD_LIB) {
+				vol->result += 1.8f;
+			}
+#endif /* HAVE_MPEG */
+
+			if (vol->type == VOLUME_SEPARATE) {
+
+				AQUALUNG_MUTEX_LOCK(vol->wait_mutex);
+				g_idle_add(vol_store_result_sep, vol);
+				AQUALUNG_COND_WAIT(vol->thread_wait, vol->wait_mutex);
+				AQUALUNG_MUTEX_UNLOCK(vol->wait_mutex);
+
+			} else if (vol->type == VOLUME_AVERAGE) {
+
+				vol->n_volumes++;
+				if ((vol->volumes = realloc(vol->volumes, vol->n_volumes * sizeof(float))) == NULL) {
+					fprintf(stderr, "volume_thread(): realloc error\n");
+					return NULL;
+				}
+				vol->volumes[vol->n_volumes - 1] = vol->result;
+			}
+		}
+
+		file_decoder_close(vol->fdec);
+		file_decoder_delete(vol->fdec);
+		free(vol->rms);
+
+		free(samples);
+
+		if (vol->cancelled) {
+			break;
+		}
+	}
+
+	if (!vol->cancelled && vol->type == VOLUME_AVERAGE) {
+		AQUALUNG_MUTEX_LOCK(vol->wait_mutex);
+		g_idle_add(vol_store_result_avg, vol);
+		AQUALUNG_COND_WAIT(vol->thread_wait, vol->wait_mutex);
+		AQUALUNG_MUTEX_UNLOCK(vol->wait_mutex);
+	}
+
+	for (node = vol->queue; node; node = node->next) {
+		vol_item_free((vol_item_t *)node->data);
+	}
+
+	g_idle_add(volume_finalize, vol);
+
 
 	return NULL;
 }
 
-/* volumes == NULL: store in music_store, else: store in result vector */
-void
-calculate_volume(vol_queue_t * q, float * volumes) {
 
-	if (q == NULL) {
+void
+volume_start(volume_t * vol) {
+
+	if (vol->queue == NULL) {
 		return;
 	}
-	
-	vol_queue_save = vol_queue = q;
-	volume_window();
-	vol_index = 0;
-	vol_finished = 0;
-	vol_cancelled = 0;
-	process_volume_setup(vol_queue);
-	AQUALUNG_THREAD_CREATE(volume_thread_id, NULL, volume_thread, volumes)
+
+	create_volume_window(vol);
+
+	AQUALUNG_THREAD_CREATE(vol->thread_id, NULL, volume_thread, vol);
+
+	vol->update_tag = g_timeout_add(250, vol_update_progress, vol);
 }
 
 float
-rva_from_volume(float volume, float rva_refvol, float rva_steepness) {
+rva_from_volume(float volume) {
 
-	return ((volume - rva_refvol) * (rva_steepness - 1.0f));
+	return ((volume - options.rva_refvol) * (options.rva_steepness - 1.0f));
 }
 
 /* The reference signal for so called 89 dB SPL replaygain is -14 dBFS pink noise */
@@ -502,15 +554,14 @@ volume_from_replaygain(float replaygain) {
 }
 
 float
-rva_from_replaygain(float volume, float rva_refvol, float rva_steepness) {
+rva_from_replaygain(float volume, float dummy1, float dummy2) {
 
-	return rva_from_volume(volume_from_replaygain(volume), rva_refvol, rva_steepness);
+	return rva_from_volume(volume_from_replaygain(volume));
 }
 
+
 float
-rva_from_multiple_volumes(int nlevels, float * volumes,
-			  int use_lin_thresh, float lin_thresh, float stddev_thresh,
-			  float rva_refvol, float rva_steepness) {
+rva_from_multiple_volumes(int nlevels, float * volumes) {
 
 	int i, files_to_avg;
 	char * badlevels;
@@ -528,7 +579,7 @@ rva_from_multiple_volumes(int nlevels, float * volumes,
 	}
 	mean_level = sum / nlevels;
 
-	if (!use_lin_thresh) { /* use stddev_thresh */
+	if (!options.rva_use_linear_thresh) { /* use stddev_thresh */
 
 		sum = 0;
 		for (i = 0; i < nlevels; i++) {
@@ -544,9 +595,9 @@ rva_from_multiple_volumes(int nlevels, float * volumes,
 			std_dev = sqrt(variance);
 		}
 
-		threshold = stddev_thresh * std_dev;
+		threshold = options.rva_avg_stddev_thresh * std_dev;
 	} else {
-		threshold = lin_thresh;
+		threshold = options.rva_avg_linear_thresh;
 	}
 
 
@@ -574,11 +625,11 @@ rva_from_multiple_volumes(int nlevels, float * volumes,
 	if (files_to_avg == 0) {
 		fprintf(stderr,
 			"rva_from_multiple_volumes: all files ignored, using mean value.\n");
-		return rva_from_volume(20 * log10(mean_level), rva_refvol, rva_steepness);
+		return rva_from_volume(20 * log10(mean_level));
 	}
 
 	level = sum / files_to_avg;
-	return rva_from_volume(20 * log10(level), rva_refvol, rva_steepness);
+	return rva_from_volume(20 * log10(level));
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

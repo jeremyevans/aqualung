@@ -104,8 +104,6 @@ extern AQUALUNG_MUTEX_DECLARE(playlist_thread_mutex)
 extern AQUALUNG_MUTEX_DECLARE(playlist_wait_mutex)
 extern AQUALUNG_COND_DECLARE(playlist_thread_wait)
 
-extern volatile int vol_cancelled;
-
 extern int aqualung_socket_fd;
 extern int aqualung_session_id;
 
@@ -172,7 +170,6 @@ extern GtkWidget * playlist_window;
 extern GtkWidget * fxbuilder_window;
 extern GtkWidget * ports_window;
 extern GtkWidget * info_window;
-extern GtkWidget * vol_window;
 extern GtkWidget * build_prog_window;
 extern GtkWidget * ripper_prog_window;
 extern GtkWidget * browser_paned;
@@ -976,11 +973,13 @@ change_skin(char * path) {
 		deflicker();
 	}
 
+	/*
 	if (vol_window) {
 		gtk_widget_reset_rc_styles(vol_window);
 		gtk_widget_queue_draw(vol_window);
 		deflicker();
 	}
+	*/
 
 	if (build_prog_window) {
 		gtk_widget_reset_rc_styles(build_prog_window);
@@ -1038,8 +1037,6 @@ main_window_close(GtkWidget * widget, gpointer data) {
 	send_cmd = CMD_FINISH;
 	rb_write(rb_gui2disk, &send_cmd, 1);
 	try_waking_disk_thread();
-
-	vol_cancelled = 1;
 
 #ifdef HAVE_CDDA
 	if (options.cdda_remove_from_playlist) {
@@ -1460,10 +1457,12 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
 			gtk_window_iconify(GTK_WINDOW(playlist_window));
 		}
 		
+		/*
 		if (vol_window) {
 			gtk_window_iconify(GTK_WINDOW(vol_window));
 		}
-		
+		*/
+
 		if (info_window) {
 			gtk_window_iconify(GTK_WINDOW(info_window));
 		}
@@ -1494,11 +1493,11 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
 		if (!options.playlist_is_embedded && options.playlist_on) {
 			gtk_window_deiconify(GTK_WINDOW(playlist_window));
 		}
-		
+		/*
 		if (vol_window) {
 			gtk_window_deiconify(GTK_WINDOW(vol_window));
 		}
-		
+		*/
 		if (info_window) {
 			gtk_window_deiconify(GTK_WINDOW(info_window));
 		}
@@ -1534,10 +1533,6 @@ main_window_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 			gtk_widget_set_sensitive(fileinfo, TRUE);
 		} else {
 			gtk_widget_set_sensitive(fileinfo, FALSE);
-		}
-
-		if (options.playlist_is_embedded) {
-			gtk_widget_set_sensitive(plist__rva, (vol_window == NULL) ? TRUE : FALSE);
 		}
 
                 gtk_menu_popup(GTK_MENU(conf_menu), NULL, NULL, NULL, NULL,
@@ -2737,9 +2732,11 @@ hide_all_windows(gpointer data) {
 		gtk_widget_hide(build_prog_window);
 	}
 
+	/*
 	if (vol_window) {
 		gtk_widget_hide(vol_window);
 	}
+	*/
 
 	if (info_window) {
 		gtk_widget_hide(info_window);
@@ -2790,10 +2787,12 @@ show_all_windows(gpointer data) {
 		deflicker();
 	}
 
+	/*
 	if (vol_window) {
 		gtk_widget_show(vol_window);
 		deflicker();
 	}
+	*/
 
 	if (build_prog_window) {
 		gtk_widget_show(build_prog_window);

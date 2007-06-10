@@ -22,29 +22,71 @@
 #define _VOLUME_H
 
 #include <gtk/gtk.h>
+#include "common.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct _vol_queue_t {
-        char * file;
-        GtkTreeIter iter;
-        struct _vol_queue_t * next;
-} vol_queue_t;
+#define RMSSIZE 100
+
+#define VOLUME_SEPARATE 0
+#define VOLUME_AVERAGE  1
+
+typedef struct {
+        float buffer[RMSSIZE];
+        unsigned int pos;
+        float sum;
+} rms_env_t;
+
+
+typedef struct {
+	GtkTreeIter iter;
+	char * file;
+} vol_item_t;
+
+typedef struct {
+
+	GtkTreeStore * store;
+	GList * queue;
+	int update_tag;
+	int cancelled;
+	int window_visible;
+	int type;
+
+	AQUALUNG_THREAD_DECLARE(thread_id);
+	AQUALUNG_MUTEX_DECLARE(thread_mutex);
+	AQUALUNG_MUTEX_DECLARE(wait_mutex);
+	AQUALUNG_COND_DECLARE(thread_wait);
+
+	GtkWidget * window;
+	GtkWidget * progress;
+	GtkWidget * cancel_button;
+	GtkWidget * file_entry;
+
+	vol_item_t * item;
+	file_decoder_t * fdec;
+	unsigned long chunk_size;
+	unsigned long n_chunks;
+	unsigned long chunks_read;
+	float result;
+	rms_env_t * rms;
+
+	float * volumes;
+	unsigned int n_volumes;
+
+} volume_t;
+
+volume_t * volume_new(GtkTreeStore * store, int type);
+void volume_push(volume_t * vol, char * file, GtkTreeIter iter);
+void volume_start(volume_t * vol);
 
 void voladj2str(float voladj, char * str);
 
-vol_queue_t * vol_queue_push(vol_queue_t * q, char * file, GtkTreeIter iter);
-void calculate_volume(vol_queue_t * q, float * volumes);
-
-
-float rva_from_volume(float volume, float rva_refvol, float rva_steepness);
+float rva_from_volume(float volume);
 float volume_from_replaygain(float replaygain);
-float rva_from_replaygain(float volume, float rva_refvol, float rva_steepness);
-float rva_from_multiple_volumes(int nlevels, float * volumes,
-				int use_lin_thresh, float lin_thresh, float stddev_thresh,
-				float rva_refvol, float rva_steepness);
+float rva_from_replaygain(float volume, float /*dummy*/, float /*dummy*/);
+float rva_from_multiple_volumes(int nlevels, float * volumes);
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -952,8 +952,15 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		}
 #ifdef HAVE_IFP
 		else {
-			aifp_transfer_files();
-		}
+                        gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &path, &column);
+
+                        if (path && gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, path)) {
+                                gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_PHYSICAL_FILENAME, &pfile, -1);
+                                if (!httpc_is_url(pfile)) {
+                                        aifp_transfer_files();
+                                }
+                        }
+                }
 #endif /* HAVE_IFP */
 		return TRUE;
 	case GDK_r:

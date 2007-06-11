@@ -167,6 +167,7 @@ extern GtkWidget * playlist_window;
 extern GtkWidget * fxbuilder_window;
 extern GtkWidget * ports_window;
 extern GtkWidget * info_window;
+extern GtkWidget * vol_window;
 extern GtkWidget * build_prog_window;
 extern GtkWidget * ripper_prog_window;
 extern GtkWidget * browser_paned;
@@ -972,13 +973,11 @@ change_skin(char * path) {
 		deflicker();
 	}
 
-	/*
 	if (vol_window) {
 		gtk_widget_reset_rc_styles(vol_window);
 		gtk_widget_queue_draw(vol_window);
 		deflicker();
 	}
-	*/
 
 	if (build_prog_window) {
 		gtk_widget_reset_rc_styles(build_prog_window);
@@ -1516,11 +1515,9 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
 			gtk_window_iconify(GTK_WINDOW(playlist_window));
 		}
 		
-		/*
 		if (vol_window) {
 			gtk_window_iconify(GTK_WINDOW(vol_window));
 		}
-		*/
 
 		if (info_window) {
 			gtk_window_iconify(GTK_WINDOW(info_window));
@@ -1552,11 +1549,11 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
 		if (!options.playlist_is_embedded && options.playlist_on) {
 			gtk_window_deiconify(GTK_WINDOW(playlist_window));
 		}
-		/*
+
 		if (vol_window) {
 			gtk_window_deiconify(GTK_WINDOW(vol_window));
 		}
-		*/
+
 		if (info_window) {
 			gtk_window_deiconify(GTK_WINDOW(info_window));
 		}
@@ -2791,11 +2788,9 @@ hide_all_windows(gpointer data) {
 		gtk_widget_hide(build_prog_window);
 	}
 
-	/*
 	if (vol_window) {
 		gtk_widget_hide(vol_window);
 	}
-	*/
 
 	if (info_window) {
 		gtk_widget_hide(info_window);
@@ -2846,12 +2841,10 @@ show_all_windows(gpointer data) {
 		deflicker();
 	}
 
-	/*
 	if (vol_window) {
 		gtk_widget_show(vol_window);
 		deflicker();
 	}
-	*/
 
 	if (build_prog_window) {
 		gtk_widget_show(build_prog_window);

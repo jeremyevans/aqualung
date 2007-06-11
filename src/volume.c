@@ -49,6 +49,9 @@ extern options_t options;
 extern GtkTreeStore * music_store;
 extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
+GtkWidget * vol_window;
+int vol_slot_count;
+
 
 void
 voladj2str(float voladj, char * str) {
@@ -142,30 +145,52 @@ rms_env_process(rms_env_t * r, const float x) {
 }
 
 gboolean
-vol_window_close(GtkWidget * widget, GdkEvent * event, gpointer * data) {
+vol_window_event(GtkWidget * widget, GdkEvent * event, gpointer * data) {
 
-	volume_t * vol = (volume_t *)data;
+	if (event->type == GDK_DELETE) {
+		gtk_window_iconify(GTK_WINDOW(vol_window));
+		return TRUE;
+	}
 
-        vol->cancelled = 1;
-	vol->window = NULL;
-
-        return FALSE;
+	return FALSE;
 }
-
 
 gboolean
 volume_finalize(gpointer data) {
 
 	volume_t * vol = (volume_t *)data;
 
-	if (vol->window) {
-		gtk_widget_destroy(vol->window);
-	}
+	gtk_window_resize(GTK_WINDOW(vol_window),
+			  vol_window->allocation.width,
+			  vol_window->allocation.height - vol->slot->allocation.height);
+
+	gtk_widget_destroy(vol->slot);
+	vol->slot = NULL;
 
 	g_source_remove(vol->update_tag);
 	volume_free(vol);
 
+	--vol_slot_count;
+
+	if (vol_slot_count == 0) {
+		gtk_widget_destroy(vol_window);
+		vol_window = NULL;
+	}
+
 	return FALSE;
+}
+
+void
+vol_pause_event(GtkButton * button, gpointer data) {
+
+	volume_t * vol = (volume_t *)data;
+
+        vol->paused = !vol->paused;
+	if (vol->paused) {
+		gtk_button_set_label(button, _("Resume"));
+	} else {
+		gtk_button_set_label(button, _("Pause"));
+	}
 }
 
 void
@@ -184,7 +209,7 @@ vol_set_filename_text(gpointer data) {
 
 	AQUALUNG_MUTEX_LOCK(vol->wait_mutex);
 
-	if (vol->window) {
+	if (vol->slot) {
 
 		char * utf8;
 
@@ -194,7 +219,6 @@ vol_set_filename_text(gpointer data) {
 
 		gtk_entry_set_text(GTK_ENTRY(vol->file_entry), utf8);
 		gtk_editable_set_position(GTK_EDITABLE(vol->file_entry), -1);
-		gtk_widget_grab_focus(vol->cancel_button);
 
 		g_free(utf8);
 	}
@@ -210,9 +234,10 @@ vol_update_progress(gpointer data) {
 
 	volume_t * vol = (volume_t *)data;
 
-	if (vol->window) {
+	if (vol->slot) {
 
 		float fraction = 0.0f;
+		char str_progress[10];
 
 		AQUALUNG_MUTEX_LOCK(vol->thread_mutex);
 		if (vol->n_chunks != 0) {
@@ -220,19 +245,13 @@ vol_update_progress(gpointer data) {
 		}
 		AQUALUNG_MUTEX_UNLOCK(vol->thread_mutex);
 
-		if (vol->window_visible) {
-			char str_progress[10];
-
-			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(vol->progress), fraction);
-			snprintf(str_progress, 10, "%.0f%%", fraction * 100.0f);
-			gtk_progress_bar_set_text(GTK_PROGRESS_BAR(vol->progress), str_progress);
-		} else {
-			char title[MAXLEN];
-
-			snprintf(title, MAXLEN, "%.0f%% - %s", fraction * 100.0f,
-				 _("Calculating volume level"));
-			gtk_window_set_title(GTK_WINDOW(vol->window), title);
+		if (fraction < 0 || fraction > 1.0f) {
+			fraction = 0.0f;
 		}
+
+		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(vol->progress), fraction);
+		snprintf(str_progress, 10, "%.0f%%", fraction * 100.0f);
+		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(vol->progress), str_progress);
 	}
 
 	return TRUE;
@@ -296,82 +315,88 @@ vol_store_result_avg(gpointer data) {
 	return FALSE;
 }
 
-gboolean
-vol_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpointer data) {
+void
+create_volume_window() {
 
-	volume_t * vol = (volume_t *)data;
+	GtkWidget * vbox;
 
-	if ((vol->window_visible = !(event->new_window_state & GDK_WINDOW_STATE_ICONIFIED))) {
-		gtk_window_set_title(GTK_WINDOW(vol->window), _("Calculating volume level"));
-	}
+	vol_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        gtk_window_set_title(GTK_WINDOW(vol_window), _("Calculating volume level"));
+        gtk_window_set_position(GTK_WINDOW(vol_window), GTK_WIN_POS_CENTER);
+        gtk_window_resize(GTK_WINDOW(vol_window), 480, 110);
+        g_signal_connect(G_OBJECT(vol_window), "event",
+                         G_CALLBACK(vol_window_event), NULL);
 
-	return FALSE;
+        gtk_container_set_border_width(GTK_CONTAINER(vol_window), 5);
+
+        vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_add(GTK_CONTAINER(vol_window), vbox);
+
+        gtk_widget_show_all(vol_window);
 }
 
 void
-create_volume_window(volume_t * vol) {
+vol_create_gui(volume_t * vol) {
 
 	GtkWidget * table;
 	GtkWidget * label;
 	GtkWidget * vbox;
 	GtkWidget * hbox;
-	GtkWidget * hbuttonbox;
 	GtkWidget * hseparator;
 
-	vol->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(vol->window), _("Calculating volume level"));
-        gtk_window_set_position(GTK_WINDOW(vol->window), GTK_WIN_POS_CENTER);
-        gtk_window_resize(GTK_WINDOW(vol->window), 430, 110);
-        g_signal_connect(G_OBJECT(vol->window), "delete_event",
-                         G_CALLBACK(vol_window_close), vol);
-        g_signal_connect(G_OBJECT(vol->window), "window_state_event",
-                         G_CALLBACK(vol_window_state_changed), vol);
-        gtk_container_set_border_width(GTK_CONTAINER(vol->window), 5);
+	++vol_slot_count;
 
-        vbox = gtk_vbox_new(FALSE, 0);
-        gtk_container_add(GTK_CONTAINER(vol->window), vbox);
+	if (vol_window == NULL) {
+		create_volume_window();
+	}
 
-	table = gtk_table_new(2, 2, FALSE);
+	vbox = gtk_bin_get_child(GTK_BIN(vol_window));
+
+	vol->slot = table = gtk_table_new(2, 5, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
+
+        hseparator = gtk_hseparator_new();
+	gtk_table_attach(GTK_TABLE(table), hseparator, 0, 3, 0, 1,
+			 GTK_FILL, GTK_FILL, 5, 5);
 
         hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("File:"));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
         vol->file_entry = gtk_entry_new();
         gtk_editable_set_editable(GTK_EDITABLE(vol->file_entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table), vol->file_entry, 1, 2, 0, 1,
+	gtk_table_attach(GTK_TABLE(table), vol->file_entry, 1, 2, 1, 2,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
+
+	vol->pause_button = gtk_button_new_with_label(_("Pause"));
+	g_signal_connect(vol->pause_button, "clicked", G_CALLBACK(vol_pause_event), vol);
+	gtk_table_attach(GTK_TABLE(table), vol->pause_button, 2, 3, 1, 2,
+			 GTK_FILL, GTK_FILL, 5, 5);
 
         hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("Progress:"));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
 	vol->progress = gtk_progress_bar_new();
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(vol->progress), 0.0f);
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(vol->progress), "0.0%");
-	gtk_table_attach(GTK_TABLE(table), vol->progress, 1, 2, 1, 2,
+	gtk_table_attach(GTK_TABLE(table), vol->progress, 1, 2, 2, 3,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
 
-        hseparator = gtk_hseparator_new ();
-        gtk_widget_show (hseparator);
-        gtk_box_pack_start (GTK_BOX (vbox), hseparator, FALSE, TRUE, 5);
+	vol->cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL); 
+	g_signal_connect(vol->cancel_button, "clicked", G_CALLBACK(vol_cancel_event), vol);
+	gtk_table_attach(GTK_TABLE(table), vol->cancel_button, 2, 3, 2, 3,
+			 GTK_FILL, GTK_FILL, 5, 5);
 
-	hbuttonbox = gtk_hbutton_box_new();
-	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
+        hseparator = gtk_hseparator_new();
+	gtk_table_attach(GTK_TABLE(table), hseparator, 0, 3, 3, 4,
+			 GTK_FILL, GTK_FILL, 5, 5);
 
-        vol->cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL); 
-        g_signal_connect(vol->cancel_button, "clicked", G_CALLBACK(vol_cancel_event), vol);
-  	gtk_container_add(GTK_CONTAINER(hbuttonbox), vol->cancel_button);   
-
-        gtk_widget_grab_focus(vol->cancel_button);
-
-        gtk_widget_show_all(vol->window);
+	gtk_widget_show_all(vol->slot);
 }
 
 
@@ -423,6 +448,12 @@ volume_thread(void * arg) {
 	float rms;
 	unsigned long i;
 
+	struct timespec req_time;
+	struct timespec rem_time;
+
+	req_time.tv_sec = 0;
+        req_time.tv_nsec = 500000000;
+
 
 	AQUALUNG_THREAD_DETACH();
 
@@ -444,7 +475,6 @@ volume_thread(void * arg) {
 		}
 
 		do {
-			
 			numread = file_decoder_read(vol->fdec, samples, vol->chunk_size);
 			vol->chunks_read++;
 			
@@ -462,6 +492,10 @@ volume_thread(void * arg) {
 				}
 			}
 			
+			while (vol->paused && !vol->cancelled) {
+				nanosleep(&req_time, &rem_time);
+			}
+
 		} while (numread == vol->chunk_size && !vol->cancelled);
 
 		if (!vol->cancelled) {
@@ -529,7 +563,7 @@ volume_start(volume_t * vol) {
 		return;
 	}
 
-	create_volume_window(vol);
+	vol_create_gui(vol);
 
 	AQUALUNG_THREAD_CREATE(vol->thread_id, NULL, volume_thread, vol);
 

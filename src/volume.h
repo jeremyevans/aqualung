@@ -51,6 +51,7 @@ typedef struct {
 	GList * queue;
 	int update_tag;
 	int cancelled;
+	int paused;
 	int window_visible;
 	int type;
 
@@ -59,8 +60,9 @@ typedef struct {
 	AQUALUNG_MUTEX_DECLARE(wait_mutex);
 	AQUALUNG_COND_DECLARE(thread_wait);
 
-	GtkWidget * window;
+	GtkWidget * slot;
 	GtkWidget * progress;
+	GtkWidget * pause_button;
 	GtkWidget * cancel_button;
 	GtkWidget * file_entry;
 

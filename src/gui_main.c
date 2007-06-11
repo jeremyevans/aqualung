@@ -1123,10 +1123,12 @@ main_window_closing(void) {
 gboolean
 main_window_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
+#ifndef HAVE_SYSTRAY
 	if (event->type == GDK_DELETE) {
 		main_window_closing();
 		return TRUE;
 	}
+#endif /* !HAVE_SYSTRAY */
 
 	return FALSE;
 }

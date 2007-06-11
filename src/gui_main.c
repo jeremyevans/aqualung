@@ -100,11 +100,6 @@ extern char * client_name;
 extern int jack_is_shutdown;
 #endif /* HAVE_JACK */
 
-extern AQUALUNG_THREAD_DECLARE(playlist_thread_id)
-extern AQUALUNG_MUTEX_DECLARE(playlist_thread_mutex)
-extern AQUALUNG_MUTEX_DECLARE(playlist_wait_mutex)
-extern AQUALUNG_COND_DECLARE(playlist_thread_wait)
-
 extern int aqualung_socket_fd;
 extern int aqualung_session_id;
 
@@ -3707,12 +3702,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	create_cdda_node();
 	cdda_scanner_start();
 #endif /* HAVE_CDDA */
-
-#ifdef _WIN32
-	playlist_thread_mutex = g_mutex_new();
-	playlist_wait_mutex = g_mutex_new();
-	playlist_thread_wait = g_cond_new();
-#endif /* _WIN32 */
 
 	sprintf(path, "%s/icon_16.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {

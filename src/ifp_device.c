@@ -75,8 +75,6 @@ GtkWidget * rmdir_button;
 GtkWidget * label_songs;
 GtkWidget * label_songs_size;
 GtkWidget * label_model;
-/*GtkWidget * label_capacity;*/
-/*GtkWidget * label_freespace;*/
 GtkWidget * progressbar_battery;
 GtkWidget * progressbar_freespace;
 GtkWidget * progressbar_cf;

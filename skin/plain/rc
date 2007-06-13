@@ -178,9 +178,9 @@ style "nostyle"
     bg_pixmap[PRELIGHT] = "<none>"
     bg_pixmap[ACTIVE] = "<none>"
 
-    fg[NORMAL] = "#ff0000"
-    fg[PRELIGHT] = "#ff0000"
-    fg[ACTIVE] = "#ff0000"
+    fg[NORMAL] = "#000000"
+    fg[PRELIGHT] = "#000000"
+    fg[ACTIVE] = "#000000"
 }
 
 widget "*ScrolledWindow*" style "scrollbar"

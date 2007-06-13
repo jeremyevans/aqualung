@@ -959,6 +959,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                                 if (!httpc_is_url(pfile)) {
                                         aifp_transfer_files();
                                 }
+                                free(pfile);
                         }
                 }
 #endif /* HAVE_IFP */

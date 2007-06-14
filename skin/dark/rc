@@ -331,9 +331,8 @@ style "playlist_tab_close_button" = "button"
 	bg_pixmap[PRELIGHT] = "<none>"
 	bg_pixmap[ACTIVE] = "<none>"
 
-	bg[NORMAL] = { 0.28, 0.30, 0.28 }
-	bg[PRELIGHT] = { 0.40, 0.25, 0.25 }
-	bg[ACTIVE] = { 0.30, 0.20, 0.20 }
+        bg[PRELIGHT] = { 0.5, 0.15, 0.18 }
+        bg[ACTIVE] = { 0.30, 0.10, 0.10 }
 }
 
 style "playlist_tab_label"

@@ -153,6 +153,13 @@ typedef struct _playlist_filemeta {
 	int is_album_node;
 } playlist_filemeta;
 
+typedef struct {
+	GtkTreeStore * store;
+	int has_album_node;
+} clipboard_t;
+
+clipboard_t * clipboard;
+
 enum {
 	PLAYLIST_INVALID,
 	PLAYLIST_XML_SINGLE,
@@ -215,6 +222,20 @@ GList * playlists;
 GList * playlists_closed;
 
 
+GtkTreeStore *
+playlist_store_new() {
+
+	return gtk_tree_store_new(PL_NUM_OF_COLUMNS,
+				  G_TYPE_STRING,    /* track name */
+				  G_TYPE_STRING,    /* physical filename */
+				  G_TYPE_STRING,    /* color for selections */
+				  G_TYPE_FLOAT,     /* volume adjustment [dB] */
+				  G_TYPE_STRING,    /* volume adj. displayed */
+				  G_TYPE_FLOAT,     /* duration (in secs) */
+				  G_TYPE_STRING,    /* duration displayed */
+				  G_TYPE_INT);      /* font weight */
+}
+
 playlist_t *
 playlist_new(char * name) {
 
@@ -244,15 +265,8 @@ playlist_new(char * name) {
 
 	pl->index = -1;
 
-	pl->store = gtk_tree_store_new(PL_NUM_OF_COLUMNS,
-				       G_TYPE_STRING,    /* track name */
-				       G_TYPE_STRING,    /* physical filename */
-				       G_TYPE_STRING,    /* color for selections */
-				       G_TYPE_FLOAT,     /* volume adjustment [dB] */
-				       G_TYPE_STRING,    /* volume adj. displayed */
-				       G_TYPE_FLOAT,     /* duration (in secs) */
-				       G_TYPE_STRING,    /* duration displayed */
-				       G_TYPE_INT);      /* font weight */
+	pl->store = playlist_store_new();
+
 	return pl;
 }
 
@@ -387,6 +401,193 @@ playlist_is_empty(playlist_t * pl) {
 	}
 
 	return 0;
+}
+
+void
+playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
+		   GtkTreeStore * tstore, GtkTreeIter * titer,
+		   GtkTreeIter * iter, int mode) {
+
+	gchar * tname;
+	gchar * fname;
+	gchar * color;
+	gfloat voladj;
+	gchar * voldisp;
+	gfloat duration;
+	gchar * durdisp;
+	gint fontw;
+	int unmark = 0;
+
+
+	gtk_tree_model_get(GTK_TREE_MODEL(sstore), siter,
+			   PL_COL_TRACK_NAME, &tname, 
+			   PL_COL_PHYSICAL_FILENAME, &fname,
+			   PL_COL_SELECTION_COLOR, &color,
+			   PL_COL_VOLUME_ADJUSTMENT, &voladj,
+			   PL_COL_VOLUME_ADJUSTMENT_DISP, &voldisp, 
+			   PL_COL_DURATION, &duration,
+			   PL_COL_DURATION_DISP, &durdisp, 
+			   PL_COL_FONT_WEIGHT, &fontw, -1);
+
+	if (mode == 0) {
+		gtk_tree_store_insert_after(tstore, iter, NULL, titer);
+	} else if (mode == 1) {
+		gtk_tree_store_insert_before(tstore, iter, NULL, titer);
+	} else {
+		gtk_tree_store_append(tstore, iter, titer);
+	}
+
+	if (sstore != tstore && !strcmp(color, pl_color_active) &&
+	    !gtk_tree_model_iter_has_child(GTK_TREE_MODEL(sstore), siter)) {
+		unmark = 1;
+	}
+
+	gtk_tree_store_set(tstore, iter,
+			   PL_COL_TRACK_NAME, tname,
+			   PL_COL_PHYSICAL_FILENAME, fname,
+			   PL_COL_SELECTION_COLOR, color,
+			   PL_COL_VOLUME_ADJUSTMENT, voladj, 
+			   PL_COL_VOLUME_ADJUSTMENT_DISP, voldisp,
+			   PL_COL_DURATION, duration,
+			   PL_COL_DURATION_DISP, durdisp,
+			   PL_COL_FONT_WEIGHT, fontw, -1);
+
+	if (unmark) {
+		unmark_track(tstore, iter);
+	}
+
+	g_free(tname);
+	g_free(fname);
+	g_free(color);
+	g_free(voldisp);
+	g_free(durdisp);
+}
+
+void
+playlist_node_deep_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
+			GtkTreeStore * tstore, GtkTreeIter * titer,
+			int mode) {
+
+	GtkTreeIter iter;
+	GtkTreeIter dummy;
+	GtkTreeIter child_siter;
+	int i;
+
+
+	playlist_node_copy(sstore, siter, tstore, titer, &iter, mode);
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(sstore), &child_siter, siter, i++)) {
+
+		playlist_node_copy(sstore, &child_siter, tstore, &iter, &dummy, 2/*append*/);
+	}
+}
+
+int
+all_tracks_selected(playlist_t * pl, GtkTreeIter * piter) {
+
+	gint j = 0;
+	GtkTreeIter iter_child;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter_child, piter, j++)) {
+		if (!gtk_tree_selection_iter_is_selected(pl->select, &iter_child)) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+void
+playlist_copy(playlist_t * pl) {
+
+	GtkTreeIter iter;
+	gint i = 0;
+
+	if (clipboard == NULL) {
+		if ((clipboard = (clipboard_t *)calloc(1, sizeof(clipboard_t))) == NULL) {
+			fprintf(stderr, "playlist_copy(): calloc error\n");
+			return;
+		}
+		clipboard->store = playlist_store_new();
+	} else {
+		gtk_tree_store_clear(clipboard->store);
+	}
+
+	clipboard->has_album_node = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, NULL, i++)) {
+
+		if (gtk_tree_selection_iter_is_selected(pl->select, &iter)) {
+			playlist_node_deep_copy(pl->store, &iter, clipboard->store, NULL, 2);
+			clipboard->has_album_node = 1;
+			continue;
+		}
+
+		if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter) == 0) {
+			continue;
+		}
+
+		if (all_tracks_selected(pl, &iter)) {
+			playlist_node_deep_copy(pl->store, &iter, clipboard->store, NULL, 2);
+			clipboard->has_album_node = 1;
+		} else {
+			int j = 0;
+			GtkTreeIter iter_child;
+			GtkTreeIter dummy;
+
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter_child, &iter, j++)) {
+				if (gtk_tree_selection_iter_is_selected(pl->select, &iter_child)) {
+					playlist_node_copy(pl->store, &iter_child,
+							   clipboard->store, NULL, &dummy, 2);
+				}
+			}
+		}
+	}
+}
+
+void
+playlist_cut(playlist_t * pl) {
+
+	playlist_copy(pl);
+	rem__sel_cb(pl);
+}
+
+void
+playlist_paste(playlist_t * pl, int before) {
+
+	gint i = 0;
+	GtkTreeIter iter;
+	GtkTreeIter titer;
+	GtkTreePath * path;
+
+	gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &path, NULL);
+
+	if (path != NULL) {
+
+		if (clipboard->has_album_node && gtk_tree_path_get_depth(path) > 1) {
+			gtk_tree_path_free(path);
+			return;
+		}
+
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &titer, path);
+	}
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(clipboard->store), &iter, NULL, i++)) {
+
+		if (path == NULL) {
+			playlist_node_deep_copy(clipboard->store, &iter, pl->store, NULL, 2);
+		} else {
+			playlist_node_deep_copy(clipboard->store, &iter, pl->store, &titer,
+						before ? 1 : 0);
+		}
+	}
+
+	if (path != NULL) {
+		gtk_tree_path_free(path);
+	}
+
+	playlist_content_changed(pl);
+	delayed_playlist_rearrange(pl);
 }
 
 
@@ -980,6 +1181,31 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	case GDK_Page_Down:
 		if (kevent->state & GDK_CONTROL_MASK) {
 			playlist_notebook_next_page();
+			return TRUE;
+		}
+		break;
+	case GDK_c:
+	case GDK_C:
+		if (kevent->state & GDK_CONTROL_MASK) {
+			playlist_copy(playlist_get_current());
+			return TRUE;
+		}
+		break;
+	case GDK_x:
+	case GDK_X:
+		if (kevent->state & GDK_CONTROL_MASK) {
+			playlist_cut(playlist_get_current());
+			return TRUE;
+		}
+		break;
+	case GDK_v:
+	case GDK_V:
+		if (kevent->state & GDK_CONTROL_MASK) {
+			if (kevent->state & GDK_SHIFT_MASK) {
+				playlist_paste(playlist_get_current(), 0/*after*/);
+			} else {
+				playlist_paste(playlist_get_current(), 1/*before*/);
+			}
 			return TRUE;
 		}
 		break;
@@ -2307,20 +2533,6 @@ rem__all_cb(gpointer data) {
 	rem_all(pl);
 }
 
-int
-all_tracks_selected(playlist_t * pl, GtkTreeIter * piter) {
-
-	gint j = 0;
-	GtkTreeIter iter_child;
-
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter_child, piter, j++)) {
-		if (!gtk_tree_selection_iter_is_selected(pl->select, &iter_child)) {
-			return 0;
-		}
-	}
-	return 1;
-}
-
 void
 rem__sel_cb(gpointer data) {
 
@@ -2328,7 +2540,10 @@ rem__sel_cb(gpointer data) {
 	gint i = 0;
 	playlist_t * pl;
 
-	if ((pl = playlist_get_current()) == NULL) {
+
+	if (data != NULL) {
+		pl = (playlist_t *)data;
+	} else if ((pl = playlist_get_current()) == NULL) {
 		return;
 	}
 
@@ -2339,30 +2554,31 @@ rem__sel_cb(gpointer data) {
 		if (gtk_tree_selection_iter_is_selected(pl->select, &iter)) {
 			gtk_tree_store_remove(pl->store, &iter);
 			i--;
+			continue;
+		}
+
+		if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter) == 0) {
+			continue;
+		}
+
+		if (all_tracks_selected(pl, &iter)) {
+			gtk_tree_store_remove(pl->store, &iter);
+			i--;
 		} else {
-			int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter);
+			int j = 0;
+			int recalc = 0;
+			GtkTreeIter iter_child;
 
-			if (n > 0) {
-				if (all_tracks_selected(pl, &iter)) {
-					gtk_tree_store_remove(pl->store, &iter);
-					i--;
-				} else {
-					int j = 0;
-					int recalc = 0;
-					GtkTreeIter iter_child;
-
-					while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter_child, &iter, j++)) {
-						if (gtk_tree_selection_iter_is_selected(pl->select, &iter_child)) {
-							gtk_tree_store_remove(pl->store, &iter_child);
-							j--;
-							recalc = 1;
-						}
-					}
-
-					if (recalc) {
-						recalc_album_node(pl, &iter);
-					}
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter_child, &iter, j++)) {
+				if (gtk_tree_selection_iter_is_selected(pl->select, &iter_child)) {
+					gtk_tree_store_remove(pl->store, &iter_child);
+					j--;
+					recalc = 1;
 				}
+			}
+
+			if (recalc) {
+				recalc_album_node(pl, &iter);
 			}
 		}
 	}
@@ -2829,76 +3045,6 @@ playlist_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
 	char tmp[32];
 	sprintf(tmp, "%p", user_data);
 	gtk_selection_data_set(data, data->target, 8, (guchar *)tmp, strlen(tmp));
-}
-
-void
-playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
-		   GtkTreeStore * tstore, GtkTreeIter * titer,
-		   GtkTreeIter * iter, int mode) {
-
-	gchar * tname;
-	gchar * fname;
-	gchar * color;
-	gfloat voladj;
-	gchar * voldisp;
-	gfloat duration;
-	gchar * durdisp;
-	gint fontw;
-
-
-	gtk_tree_model_get(GTK_TREE_MODEL(sstore), siter,
-			   PL_COL_TRACK_NAME, &tname, 
-			   PL_COL_PHYSICAL_FILENAME, &fname,
-			   PL_COL_SELECTION_COLOR, &color,
-			   PL_COL_VOLUME_ADJUSTMENT, &voladj,
-			   PL_COL_VOLUME_ADJUSTMENT_DISP, &voldisp, 
-			   PL_COL_DURATION, &duration,
-			   PL_COL_DURATION_DISP, &durdisp, 
-			   PL_COL_FONT_WEIGHT, &fontw, -1);
-
-	if (mode == 0) {
-		gtk_tree_store_insert_after(tstore, iter, NULL, titer);
-	} else if (mode == 1) {
-		gtk_tree_store_insert_before(tstore, iter, NULL, titer);
-	} else {
-		gtk_tree_store_append(tstore, iter, titer);
-	}
-
-	gtk_tree_store_set(tstore, iter,
-			   PL_COL_TRACK_NAME, tname,
-			   PL_COL_PHYSICAL_FILENAME, fname,
-			   PL_COL_SELECTION_COLOR, color,
-			   PL_COL_VOLUME_ADJUSTMENT, voladj, 
-			   PL_COL_VOLUME_ADJUSTMENT_DISP, voldisp,
-			   PL_COL_DURATION, duration,
-			   PL_COL_DURATION_DISP, durdisp,
-			   PL_COL_FONT_WEIGHT, fontw, -1);
-
-	g_free(tname);
-	g_free(fname);
-	g_free(color);
-	g_free(voldisp);
-	g_free(durdisp);
-}
-
-void
-playlist_node_deep_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
-			GtkTreeStore * tstore, GtkTreeIter * titer,
-			int mode) {
-
-	GtkTreeIter iter;
-	GtkTreeIter dummy;
-	GtkTreeIter child_siter;
-	int i;
-
-
-	playlist_node_copy(sstore, siter, tstore, titer, &iter, mode);
-
-	i = 0;
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(sstore), &child_siter, siter, i++)) {
-
-		playlist_node_copy(sstore, &child_siter, tstore, &iter, &dummy, 2/*append*/);
-	}
 }
 
 void

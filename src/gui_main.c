@@ -1327,14 +1327,20 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		return TRUE;
 	case GDK_v:
 	case GDK_V:
-		stop_event(NULL, NULL, NULL);
-		return TRUE;
+		if (!(event->state & GDK_CONTROL_MASK)) {
+			stop_event(NULL, NULL, NULL);
+			return TRUE;
+		}
+		break;
 	case GDK_c:
 	case GDK_C:
 	case GDK_space:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
-					     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
-		return TRUE;
+		if (!(event->state & GDK_CONTROL_MASK)) {
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
+						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
+			return TRUE;
+		}
+		break;
 	case GDK_p:
 	case GDK_P:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
@@ -1372,6 +1378,9 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		return TRUE;
 	case GDK_x:
 	case GDK_X:
+		if (event->state & GDK_CONTROL_MASK) {
+			break;
+		}
                 if (event->state & GDK_MOD1_MASK) {  /* ALT + x */
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(plugin_toggle),
 						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(plugin_toggle)));

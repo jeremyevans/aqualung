@@ -71,23 +71,34 @@ extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern PangoFontDescription *fd_playlist;
 extern PangoFontDescription *fd_statusbar;
 
-GtkWidget * playlist_window;
-GtkWidget * playlist_color_indicator;
-
 extern GtkWidget * main_window;
 extern GtkWidget * info_window;
 
 extern GtkTreeSelection * music_select;
-
-gint playlist_scroll_up_tag = -1;
-gint playlist_scroll_dn_tag = -1;
-
 
 extern gulong play_id;
 extern gulong pause_id;
 extern GtkWidget * play_button;
 extern GtkWidget * pause_button;
 
+extern int skin_being_changed;
+
+extern int is_file_loaded;
+extern int is_paused;
+extern int allow_seeks;
+
+extern char current_file[MAXLEN];
+
+extern rb_t * rb_gui2disk;
+
+extern GtkWidget * playlist_toggle;
+
+
+GtkWidget * playlist_window;
+GtkWidget * playlist_color_indicator;
+
+gint playlist_scroll_up_tag = -1;
+gint playlist_scroll_dn_tag = -1;
 
 GtkWidget * statusbar_total;
 GtkWidget * statusbar_selected;
@@ -131,19 +142,6 @@ gchar command[RB_CONTROL_SIZE];
 
 gchar fileinfo_name[MAXLEN];
 gchar fileinfo_file[MAXLEN];
-
-extern int skin_being_changed;
-
-extern int is_file_loaded;
-extern int is_paused;
-extern int allow_seeks;
-
-extern char current_file[MAXLEN];
-
-extern rb_t * rb_gui2disk;
-
-extern GtkWidget * playlist_toggle;
-
 
 typedef struct _playlist_filemeta {
         char * title;
@@ -4705,10 +4703,12 @@ playlist_load_m3u_thread(void * arg) {
 	gint c;
 	gint i = 0;
 	gint n;
+	gchar * str;
 	gchar line[MAXLEN];
 	gchar name[MAXLEN];
 	gchar path[MAXLEN];
 	gchar tmp[MAXLEN];
+	gchar pl_dir[MAXLEN];
 	gint have_name = 0;
 
 	playlist_transfer_t * pt = (playlist_transfer_t *)arg;
@@ -4724,6 +4724,11 @@ playlist_load_m3u_thread(void * arg) {
 		goto finish;
 	}
 
+	str = strrchr(pt->filename, '/');
+	for (i = 0; (i < (str - pt->filename)) && (i < MAXLEN-1); i++) {
+ 		pl_dir[i] = pt->filename[i];
+ 	}
+ 	pl_dir[i] = '\0';
 
 	i = 0;
 	while ((c = fgetc(f)) != EOF && !pt->pl->thread_stop) {
@@ -4773,9 +4778,11 @@ playlist_load_m3u_thread(void * arg) {
 					if (path[n] == '\\')
 						path[n] = '/';
 				}
-				
-				normalize_filename(path, tmp);
-				strncpy(path, tmp, MAXLEN-1);
+
+				if (path[0] != '/') {
+ 					strncpy(tmp, path, MAXLEN-1);
+ 					snprintf(path, MAXLEN-1, "%s/%s", pl_dir, tmp);
+ 				}
 
 				if (!have_name) {
 					gchar * ch;
@@ -4845,10 +4852,12 @@ playlist_load_pls_thread(void * arg) {
 	gint c;
 	gint i = 0;
 	gint n;
+	gchar * str;
 	gchar line[MAXLEN];
 	gchar file[MAXLEN];
 	gchar title[MAXLEN];
 	gchar tmp[MAXLEN];
+	gchar pl_dir[MAXLEN];
 	gint have_file = 0;
 	gint have_title = 0;
 	gchar numstr_file[10];
@@ -4865,6 +4874,12 @@ playlist_load_pls_thread(void * arg) {
 		fprintf(stderr, "unable to open .pls playlist: %s\n", pt->filename);
 		goto finish;
 	}
+
+	str = strrchr(pt->filename, '/');
+	for (i = 0; (i < (str - pt->filename)) && (i < MAXLEN-1); i++) {
+ 		pl_dir[i] = pt->filename[i];
+ 	}
+ 	pl_dir[i] = '\0';
 
 	i = 0;
 	while ((c = fgetc(f)) != EOF && !pt->pl->thread_stop) {
@@ -4932,11 +4947,12 @@ playlist_load_pls_thread(void * arg) {
 						file[n] = '/';
 				}
 
-				normalize_filename(file, tmp);
-				strncpy(file, tmp, MAXLEN-1);
+				if (file[0] != '/') {
+ 					strncpy(tmp, file, MAXLEN-1);
+ 					snprintf(file, MAXLEN-1, "%s/%s", pl_dir, tmp);
+ 				}
 
 				have_file = 1;
-				
 
 			} else if (strstr(line, "Title") == line) {
 

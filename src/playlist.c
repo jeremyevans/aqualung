@@ -1015,6 +1015,13 @@ playlist_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	return FALSE;
 }
 
+void
+playlist_row_expand_collapse(GtkTreeView * view, GtkTreeIter * iter, GtkTreePath * path, gpointer data) {
+
+	playlist_t * pl = (playlist_t *)data;
+
+	delayed_playlist_rearrange(pl);
+}
 
 gint
 doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
@@ -1092,7 +1099,7 @@ finalize_add_to_playlist(gpointer data) {
 				playlist_content_changed(pt->pl);
 			}
 			playlist_progress_bar_hide(pt->pl);
-			delayed_playlist_rearrange();
+			delayed_playlist_rearrange(pt->pl);
 			select_active_position_in_playlist(pt->pl);
 		}
 	}
@@ -1943,7 +1950,7 @@ plist__reread_file_meta_cb(gpointer data) {
 		}
 	}
 	
-	delayed_playlist_rearrange();
+	delayed_playlist_rearrange(pl);
 }
 
 
@@ -2534,6 +2541,8 @@ playlist_reorder_columns_foreach(gpointer data, gpointer user_data) {
 	gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(pl->length_column),
 					 options.show_length_in_playlist);
 	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(pl->view), options.enable_pl_rules_hint);
+
+	delayed_playlist_rearrange(NULL);
 }
 
 void
@@ -2592,7 +2601,6 @@ playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event, gpointer d
 	gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(pl->rva_column), rva_width);
 	gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(pl->length_column), length_width);
 
-
 	if (options.playlist_is_embedded) {
 		if (main_window->window != NULL) {
 			gtk_widget_queue_draw(main_window);
@@ -2623,15 +2631,19 @@ playlist_size_allocate_all() {
 gint
 playlist_rearrange_timeout_cb(gpointer data) {   
 
-	playlist_size_allocate_all();
+	if (data == NULL) {
+		playlist_size_allocate_all();
+	} else {
+		playlist_size_allocate(NULL, NULL, (playlist_t *)data);
+	}
 
 	return FALSE;
 }
 
 void
-delayed_playlist_rearrange() {
+delayed_playlist_rearrange(playlist_t * pl) {
 
-	g_timeout_add(100, playlist_rearrange_timeout_cb, NULL);
+	g_timeout_add(100, playlist_rearrange_timeout_cb, pl);
 }
 
 
@@ -3761,6 +3773,10 @@ create_playlist_gui(playlist_t * pl) {
 
 	g_signal_connect(G_OBJECT(pl->view), "key_press_event",
 			 G_CALLBACK(playlist_key_pressed), NULL);
+	g_signal_connect(G_OBJECT(pl->view), "row_expanded",
+			 G_CALLBACK(playlist_row_expand_collapse), pl);
+	g_signal_connect(G_OBJECT(pl->view), "row_collapsed",
+			 G_CALLBACK(playlist_row_expand_collapse), pl);
 
         if (options.override_skin_settings) {
                 gtk_widget_modify_font(pl->view, fd_playlist);

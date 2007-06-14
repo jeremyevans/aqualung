@@ -1324,7 +1324,9 @@ finalize_add_to_playlist(gpointer data) {
 			}
 			playlist_progress_bar_hide(pt->pl);
 			delayed_playlist_rearrange(pt->pl);
-			select_active_position_in_playlist(pt->pl);
+			if (pt->xml_ref != NULL) {
+				select_active_position_in_playlist(pt->pl);
+			}
 		}
 	}
 
@@ -2536,9 +2538,12 @@ rem__all_cb(gpointer data) {
 void
 rem__sel_cb(gpointer data) {
 
+	GtkTreeModel * model;
 	GtkTreeIter iter;
 	gint i = 0;
 	playlist_t * pl;
+	GtkTreePath * path;
+	int path_set = 0;
 
 
 	if (data != NULL) {
@@ -2549,19 +2554,29 @@ rem__sel_cb(gpointer data) {
 
 	g_signal_handlers_block_by_func(G_OBJECT(pl->select), playlist_selection_changed_cb, pl);
 
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, NULL, i++)) {
+	model = GTK_TREE_MODEL(pl->store);
+
+	while (gtk_tree_model_iter_nth_child(model, &iter, NULL, i++)) {
 
 		if (gtk_tree_selection_iter_is_selected(pl->select, &iter)) {
+			if (!path_set) {
+				path = gtk_tree_model_get_path(model, &iter);
+				path_set = 1;
+			}
 			gtk_tree_store_remove(pl->store, &iter);
 			i--;
 			continue;
 		}
 
-		if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter) == 0) {
+		if (gtk_tree_model_iter_n_children(model, &iter) == 0) {
 			continue;
 		}
 
 		if (all_tracks_selected(pl, &iter)) {
+			if (!path_set) {
+				path = gtk_tree_model_get_path(model, &iter);
+				path_set = 1;
+			}
 			gtk_tree_store_remove(pl->store, &iter);
 			i--;
 		} else {
@@ -2569,11 +2584,15 @@ rem__sel_cb(gpointer data) {
 			int recalc = 0;
 			GtkTreeIter iter_child;
 
-			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter_child, &iter, j++)) {
+			while (gtk_tree_model_iter_nth_child(model, &iter_child, &iter, j++)) {
 				if (gtk_tree_selection_iter_is_selected(pl->select, &iter_child)) {
+					if (!path_set) {
+						path = gtk_tree_model_get_path(model, &iter_child);
+						path_set = 1;
+					}
 					gtk_tree_store_remove(pl->store, &iter_child);
-					j--;
 					recalc = 1;
+					j--;
 				}
 			}
 
@@ -2583,9 +2602,34 @@ rem__sel_cb(gpointer data) {
 		}
 	}
 
+	if (path_set) {
+		if (gtk_tree_model_get_iter(model, &iter, path)) {
+			set_cursor_in_playlist(pl, &iter, TRUE);
+		} else {
+			if (gtk_tree_path_get_depth(path) == 1) {
+				int n = gtk_tree_model_iter_n_children(model, NULL);
+				if (n > 0) {
+					gtk_tree_model_iter_nth_child(model, &iter, NULL, n-1);
+					set_cursor_in_playlist(pl, &iter, TRUE);
+				}
+			} else {
+				GtkTreeIter iter_child;
+
+				gtk_tree_path_up(path);
+				gtk_tree_model_get_iter(model, &iter, path);
+
+				gtk_tree_model_iter_nth_child(model, &iter_child, &iter,
+						gtk_tree_model_iter_n_children(model, &iter)-1);
+				set_cursor_in_playlist(pl, &iter_child, TRUE);
+			}
+		}
+
+		gtk_tree_path_free(path);
+	}
+
 	g_signal_handlers_unblock_by_func(G_OBJECT(pl->select), playlist_selection_changed_cb, pl);
 
-	gtk_tree_selection_unselect_all(pl->select);
+
 	playlist_content_changed(pl);
 	playlist_selection_changed(pl);
 }

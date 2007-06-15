@@ -25,7 +25,7 @@ do
     if $tool; then
 	echo "done."
     else
-	echo "faled.
+	echo "failed.
 
 *** $tool returned an error."
 	exit 1

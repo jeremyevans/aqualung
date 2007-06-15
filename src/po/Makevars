@@ -1,6 +1,0 @@
-XGETTEXT_OPTS = --keyword=_ --keyword=N_ --keyword=X_ --omit-header --no-location --copyright-holder='$(COPYRIGHT_HOLDER)'
-
-DOMAIN = aqualung
-COPYRIGHT_HOLDER = Tom Szilagyi
-
-POTFILES = $(wildcard ../*.c ../*.cpp ../decoder/*.c ../decoder/*.cpp)

@@ -1,4 +1,8 @@
-include Makevars
+DOMAIN = aqualung
+
+XGETTEXT_OPTS = --keyword=_ --keyword=N_ --keyword=X_ --no-location --copyright-holder='Tom Szilagyi'
+
+POTFILES = $(wildcard ../*.c ../*.cpp ../decoder/*.c ../decoder/*.cpp)
 
 localedir = $(datadir)/locale
 
@@ -6,38 +10,23 @@ MSGFMT = /usr/bin/msgfmt
 XGETTEXT = /usr/bin/xgettext
 MSGMERGE = /usr/bin/msgmerge
 
-POFILES = hu.po de.po uk.po
-MOFILES = hu.mo de.mo uk.mo
+POFILES = de.po hu.po uk.po
+MOFILES = $(POFILES:.po=.mo)
 
-EXTRA_DIST = $(DOMAIN).pot $(POFILES) $(MOFILES) Makevars ABOUT-NLS
+EXTRA_DIST = $(POFILES) $(MOFILES) README
 
-all: $(DOMAIN).pot $(MOFILES)
+all: $(MOFILES)
 
-hu.mo: hu.po
-	msgfmt $< -o $@
-
-de.mo: de.po
-	msgfmt $< -o $@
-
-uk.mo: uk.po
-	msgfmt $< -o $@
+%.mo: always
+	@po=$(@:.mo=.po); if test $$po -nt $@ ; then $(MSGFMT) $$po -o $@; echo "$@ updated."; fi
 
 %.po: $(DOMAIN).pot
-	$(MSGMERGE) $@ $< -o $@.in; \
-	mv $@.in $@
+	$(MSGMERGE) $@ $< -o $@.in && mv $@.in $@
 
 $(DOMAIN).pot: $(POTFILES)
-	$(XGETTEXT) $(XGETTEXT_OPTS) $(POTFILES) -o $(DOMAIN).pot.new;\
-	if test ! -e $(DOMAIN).pot; then \
-		mv $(DOMAIN).pot.new $(DOMAIN).pot; \
-	else \
-		if ! diff -q $(DOMAIN).pot $(DOMAIN).pot.new; then \
-			mv $(DOMAIN).pot.new $(DOMAIN).pot; \
-		fi; \
-		rm -f $(DOMAIN).pot.new; \
-	fi
+	$(XGETTEXT) $(XGETTEXT_OPTS) $(POTFILES) -o $(DOMAIN).pot
 
-install:
+install: $(MOFILES)
 	for i in $(MOFILES); do \
 		lang=`echo $$i | sed 's/\.mo$$//'`; \
 		$(mkinstalldirs) ${DESTDIR}$(localedir)/$$lang/LC_MESSAGES; \
@@ -50,3 +39,4 @@ uninstall:
 		rm -f ${DESTDIR}$(localedir)/$$lang/LC_MESSAGES/$(DOMAIN).mo; \
 	done
 
+always:

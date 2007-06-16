@@ -212,7 +212,7 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 	decoder_t * dec;
 	http_session_t * session = httpc_new();
 	
-    	if ((ret = httpc_init(session, URL,
+    	if ((ret = httpc_init(session, fdec, URL,
 			      options.inet_use_proxy,
 			      options.inet_proxy,
 			      options.inet_proxy_port,
@@ -221,8 +221,6 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 		httpc_del(session);
 		return DECODER_OPEN_FERROR;
 	}
-
-	session->fdec = fdec;
 
 #ifdef HAVE_MPEG
 	if (session->headers.content_type == NULL ||

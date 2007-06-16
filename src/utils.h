@@ -25,6 +25,8 @@
 
 void make_title_string(char * dest, char * templ,
 		       char * artist, char * record, char * track);
+void make_title_string_no_album(char * dest, char * templ,
+				char * artist, char * track);
 
 void pack_strings(char * str1, char * str2, char * result);
 void unpack_strings(char * packed, char * str1, char * str2);

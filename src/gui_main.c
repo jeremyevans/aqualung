@@ -577,6 +577,7 @@ refresh_displays(void) {
 	GtkTreePath * p;
 	GtkTreeIter iter;
 	char * title_str;
+	char * phys_str;
 	playlist_t * pl;
 
 	refresh_time_displays();
@@ -612,23 +613,39 @@ refresh_displays(void) {
 			char list_str[MAXLEN];
 			
 			gtk_tree_model_iter_parent(GTK_TREE_MODEL(pl->store), &iter_parent, &iter);
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter_parent, PL_COL_PHYSICAL_FILENAME, &title_str, -1);
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter_parent,
+					   PL_COL_PHYSICAL_FILENAME, &title_str,
+					   -1);
 			unpack_strings(title_str, artist, record);
 			g_free(title_str);
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_TRACK_NAME, &title_str, -1);
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
+					   PL_COL_TRACK_NAME, &title_str,
+					   PL_COL_PHYSICAL_FILENAME, &phys_str,
+					   -1);
 			make_title_string(list_str, options.title_format, artist, record, title_str);
+			if (!httpc_is_url(phys_str)) {
+				set_title_label(list_str);
+			}
 			g_free(title_str);
-			set_title_label(list_str);				
+			g_free(phys_str);
 		} else {
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_TRACK_NAME, &title_str, -1);
-			set_title_label(title_str);
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
+					   PL_COL_TRACK_NAME, &title_str,
+					   PL_COL_PHYSICAL_FILENAME, &phys_str,
+					   -1);
+			if (!httpc_is_url(phys_str)) {
+				set_title_label(title_str);
+			}
 			g_free(title_str);
+			g_free(phys_str);
 		}
 		if (is_file_loaded) {
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_PHYSICAL_FILENAME, &title_str, -1);
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
+					   PL_COL_PHYSICAL_FILENAME, &phys_str,
+					   -1);
 			display_cover(cover_image_area, c_event_box, cover_align,
 				      48, 48, title_str, TRUE, TRUE);
-			g_free(title_str);
+			g_free(phys_str);
 		}
 	} else if (!is_file_loaded) {
 		set_title_label("");
@@ -3760,6 +3777,38 @@ adjust_remote_volume(char * str) {
 }
 
 
+void
+process_metablock(metadata_t * meta) {
+
+	char title_str[MAXLEN];
+	char playlist_str[MAXLEN];
+	playlist_t * pl;
+
+	/* metadata_dump(meta); */
+
+	metadata_make_title_string(meta, title_str);
+	metadata_make_playlist_string(meta, playlist_str);
+
+	set_title_label(title_str);
+
+	/* set playlist_str for playlist entry */
+	if ((pl = playlist_get_playing()) != NULL) {
+		GtkTreePath * p = playlist_get_playing_path(pl);
+		GtkTreeIter iter;
+
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
+
+		gtk_tree_store_set(pl->store, &iter,
+				   PL_COL_TRACK_NAME, playlist_str,
+				   -1);
+
+		gtk_tree_path_free(p);
+	}
+
+	metadata_free(meta);
+}
+
+
 gint
 timeout_callback(gpointer data) {
 
@@ -3898,8 +3947,7 @@ timeout_callback(gpointer data) {
 				;
 			rb_read(rb_disk2gui, (char *)&meta, sizeof(metadata_t *));
 
-			metadata_dump(meta);
-			metadata_free(meta);
+			process_metablock(meta);
 			break;
 
 		default:

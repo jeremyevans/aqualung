@@ -126,6 +126,7 @@ GtkWidget * options_window;
 GtkWidget * notebook;
 
 GtkWidget * entry_title;
+GtkWidget * entry_title_no_album;
 GtkWidget * entry_param;
 GtkWidget * check_enable_tooltips;
 GtkWidget * check_buttons_at_the_bottom;
@@ -329,6 +330,7 @@ options_window_accept(void) {
 	/* General */
 
 	strncpy(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)), MAXLEN - 1);
+	strncpy(options.title_format_no_album, gtk_entry_get_text(GTK_ENTRY(entry_title_no_album)), MAXLEN - 1);
 	strncpy(options.default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN - 1);
 
 	set_option_from_toggle(check_enable_tooltips, &options.enable_tooltips);
@@ -1575,6 +1577,27 @@ display_title_format_help(void) {
 
 
 void
+display_title_format_no_album_help(void) {
+
+	GtkWidget *help_dialog;
+
+        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
+                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, 
+                                              _("\nThe template string you enter here will be used to\n"
+                                              "construct a single title line from an Artist and a Track\n"
+                                              "name. These are denoted by %%a and %%t, respectively.\n"
+                                              "Everything else you enter here will be literally\n"
+                                              "copied into the resulting string.\n"));
+
+        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
+        gtk_widget_show (help_dialog);
+        aqualung_dialog_run(GTK_DIALOG(help_dialog));
+        gtk_widget_destroy(help_dialog);
+}
+
+
+void
 display_implict_command_line_help(void) {
 
 	GtkWidget *help_dialog;
@@ -1706,7 +1729,8 @@ create_options_window(void) {
 	GtkWidget * frame_param;
 	GtkWidget * frame_misc;
 	GtkWidget * frame_cart;
-	GtkWidget * hbox_title;
+	GtkWidget * table_title;
+	GtkWidget * label_title;
 	GtkWidget * hbox_param;
 	GtkWidget * vbox_misc;
 	GtkWidget * vbox_cart;
@@ -1818,18 +1842,46 @@ create_options_window(void) {
 	frame_title = gtk_frame_new(_("Title format"));
 	gtk_box_pack_start(GTK_BOX(vbox_general), frame_title, FALSE, TRUE, 0);
 
-        hbox_title = gtk_hbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(hbox_title), 5);
-	gtk_container_add(GTK_CONTAINER(frame_title), hbox_title);
+	table_title = gtk_table_new(8, 3, FALSE);
+	gtk_container_set_border_width(GTK_CONTAINER(table_title), 5);
+	gtk_container_add(GTK_CONTAINER(frame_title), table_title);
+
+
+        hbox = gtk_hbox_new(FALSE, 0);
+        label_title = gtk_label_new(_("Full:"));
+        gtk_box_pack_start(GTK_BOX(hbox), label_title, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_title), hbox, 0, 1, 0, 1,
+                         GTK_FILL, GTK_FILL, 5, 2);
 
 	entry_title = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(entry_title), MAXLEN - 1);
 	gtk_entry_set_text(GTK_ENTRY(entry_title), options.title_format);
-	gtk_box_pack_start(GTK_BOX(hbox_title), entry_title, TRUE, TRUE, 0);
+        gtk_table_attach(GTK_TABLE(table_title), entry_title, 1, 2, 0, 1,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 2);
 
         help_btn_title = gtk_button_new_from_stock (GTK_STOCK_HELP); 
 	g_signal_connect(help_btn_title, "clicked", G_CALLBACK(display_title_format_help), NULL);
-	gtk_box_pack_start(GTK_BOX(hbox_title), help_btn_title, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_title), help_btn_title, 2, 3, 0, 1,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+
+        hbox = gtk_hbox_new(FALSE, 0);
+        label_title = gtk_label_new(_("No album:"));
+        gtk_box_pack_start(GTK_BOX(hbox), label_title, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table_title), hbox, 0, 1, 1, 2,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
+	entry_title_no_album = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(entry_title_no_album), MAXLEN - 1);
+	gtk_entry_set_text(GTK_ENTRY(entry_title_no_album), options.title_format_no_album);
+        gtk_table_attach(GTK_TABLE(table_title), entry_title_no_album, 1, 2, 1, 2,
+                         GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 2);
+
+        help_btn_title = gtk_button_new_from_stock (GTK_STOCK_HELP); 
+	g_signal_connect(help_btn_title, "clicked", G_CALLBACK(display_title_format_no_album_help), NULL);
+        gtk_table_attach(GTK_TABLE(table_title), help_btn_title, 2, 3, 1, 2,
+                         GTK_FILL, GTK_FILL, 5, 2);
+
 
 	frame_param = gtk_frame_new(_("Implicit command line"));
 	gtk_box_pack_start(GTK_BOX(vbox_general), frame_param, FALSE, TRUE, 5);
@@ -3242,6 +3294,7 @@ save_config(void) {
 	SAVE_STR(currdir);
 	SAVE_STR(default_param);
 	SAVE_STR(title_format);
+	SAVE_STR(title_format_no_album);
 	SAVE_STR(skin);
 	SAVE_INT(src_type);
 	SAVE_INT(ladspa_is_postfader);
@@ -3519,7 +3572,8 @@ load_config(void) {
 	options.skin[0] = '\0';
 
 	options.default_param[0] = '\0';
-	options.title_format[0] = '\0';
+	strcpy(options.title_format, "%a: %t [%r]");
+	strcpy(options.title_format_no_album, "%a: %t");
         options.enable_tooltips = 1;
         options.show_sn_title = 1;
         options.united_minimization = 1;
@@ -3586,6 +3640,7 @@ load_config(void) {
 		LOAD_STR(currdir);
 		LOAD_STR(default_param);
 		LOAD_STR(title_format);
+		LOAD_STR(title_format_no_album);
 		LOAD_STR(skin);
 
 		if (!src_type_parsed) {

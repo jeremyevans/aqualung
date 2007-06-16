@@ -419,7 +419,8 @@ noproxy_for_host(const char * noproxy_domains, const char * host) {
 
 
 int
-httpc_init(http_session_t * session, char * URL, int use_proxy, char * proxy, int proxy_port,
+httpc_init(http_session_t * session, file_decoder_t * fdec,
+	   char * URL, int use_proxy, char * proxy, int proxy_port,
 	   char * noproxy_domains, long long start_byte) {
 	
 	char * p;
@@ -511,7 +512,8 @@ httpc_init(http_session_t * session, char * URL, int use_proxy, char * proxy, in
 			int ret;
 			printf("redirecting to %s\n", session->headers.location);
 			close(session->sock);
-			ret = httpc_init(session, session->headers.location, use_proxy, proxy,
+			ret = httpc_init(session, fdec,
+					 session->headers.location, use_proxy, proxy,
 					 proxy_port, noproxy_domains, 0L);
 			return ret;
 		} else {
@@ -527,7 +529,9 @@ httpc_init(http_session_t * session, char * URL, int use_proxy, char * proxy, in
 		read_sock_line(session->sock, buf, sizeof(buf));
 		printf("following x-mpegurl to %s\n", buf);
 		close(session->sock);
-		ret = httpc_init(session, buf, use_proxy, proxy, proxy_port, noproxy_domains, 0L);
+		ret = httpc_init(session, fdec,
+				 buf, use_proxy, proxy, proxy_port,
+				 noproxy_domains, 0L);
 		return ret;
 	}
 
@@ -542,6 +546,13 @@ httpc_init(http_session_t * session, char * URL, int use_proxy, char * proxy, in
 
 	session->is_active = 1;
 	session->byte_pos = start_byte;
+
+	session->fdec = fdec;
+	if (fdec != NULL && fdec->meta_cb != NULL) {
+		metadata_t * meta = metadata_new();
+		httpc_add_headers_meta(session, meta);
+		fdec->meta_cb(meta);
+	}
 
 	printf("HTTP connection successfully opened, type = %d\n", session->type);
 	return 0;
@@ -768,7 +779,9 @@ httpc_reconnect(http_session_t * session) {
 		start_byte = 0;
 	}
 
-	ret = httpc_init(session, URL, use_proxy, proxy, proxy_port, noproxy_domains, start_byte);
+	ret = httpc_init(session, session->fdec,
+			 URL, use_proxy, proxy, proxy_port,
+			 noproxy_domains, start_byte);
 	if (ret != HTTPC_OK) {
 		fprintf(stderr, "http_reconnect: HTTP session reopen failed, ret = %d\n", ret);
 	}

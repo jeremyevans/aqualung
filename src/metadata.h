@@ -97,7 +97,15 @@ metadata_t * metadata_from_vorbis_comment(vorbis_comment * vc);
 metadata_t * metadata_from_mpeg_stream_data(char * str);
 void metadata_add_textframe_from_keyval(metadata_t * meta, char * key, char * val);
 
+meta_frame_t * metadata_get_frame(metadata_t * meta, int type, meta_frame_t * root);
+char * metadata_get_title(metadata_t * meta);
+char * metadata_get_artist(metadata_t * meta);
+char * metadata_get_album(metadata_t * meta);
+char * metadata_get_icy_name(metadata_t * meta);
+char * metadata_get_icy_descr(metadata_t * meta);
 
+void metadata_make_title_string(metadata_t * meta, char * dest);
+void metadata_make_playlist_string(metadata_t * meta, char * dest);
 
 /* debug functions */
 void metadata_dump(metadata_t * meta);

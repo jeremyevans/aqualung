@@ -26,7 +26,12 @@
 
 #include "common.h"
 #include "i18n.h"
+#include "utils.h"
+#include "options.h"
 #include "metadata.h"
+
+
+extern options_t options;
 
 
 metadata_t *
@@ -212,7 +217,6 @@ metadata_from_vorbis_comment(vorbis_comment * vc) {
 		}
 		val[k] = '\0';
 		
-		printf("%s = %s\n", key, val);
 		metadata_add_textframe_from_keyval(meta, key, val);
 	}
 
@@ -267,7 +271,6 @@ metadata_from_mpeg_stream_data(char * str) {
 		}
 		val[k] = '\0';
 
-		printf("key '%s'  val '%s'\n", key, val);
 		metadata_add_textframe_from_keyval(meta, key, val);
 
 		s = strtok(NULL, ";");
@@ -275,3 +278,145 @@ metadata_from_mpeg_stream_data(char * str) {
 	return meta;
 }
 
+
+/* Search for frame of given type. Passing NULL as root will search from
+ * the beginning of the frame list. Passing the previous return value of
+ * this function as root allows getting multiple frames of the same type.
+ * Returns NULL if there are no (more) frames of the specified type.
+ */
+meta_frame_t *
+metadata_get_frame(metadata_t * meta, int type, meta_frame_t * root) {
+
+	meta_frame_t * frame;
+
+	if (root == NULL) {
+		frame = meta->root;
+	} else {
+		frame = frame->next;
+	}
+
+	if (frame == NULL) {
+		return NULL;
+	}
+
+	while (frame->type != type) {
+		frame = frame->next;
+		if (frame == NULL) {
+			return NULL;
+		}
+	}
+
+	return frame;
+}
+
+
+char *
+metadata_get_title(metadata_t * meta) {
+
+	meta_frame_t * frame = metadata_get_frame(meta, META_FIELD_TITLE, NULL);
+	if (frame != NULL) {
+		return frame->field_val;
+	} else {
+		return "";
+	}
+}
+
+
+char *
+metadata_get_artist(metadata_t * meta) {
+
+	meta_frame_t * frame = metadata_get_frame(meta, META_FIELD_ARTIST, NULL);
+	if (frame != NULL) {
+		return frame->field_val;
+	} else {
+		return "";
+	}
+}
+
+
+char *
+metadata_get_album(metadata_t * meta) {
+
+	meta_frame_t * frame = metadata_get_frame(meta, META_FIELD_ALBUM, NULL);
+	if (frame != NULL) {
+		return frame->field_val;
+	} else {
+		return "";
+	}
+}
+
+
+char *
+metadata_get_icy_name(metadata_t * meta) {
+
+	meta_frame_t * frame = metadata_get_frame(meta, META_FIELD_ICY_NAME, NULL);
+	if (frame != NULL) {
+		return frame->field_val;
+	} else {
+		return "";
+	}
+}
+
+
+char *
+metadata_get_icy_descr(metadata_t * meta) {
+
+	meta_frame_t * frame = metadata_get_frame(meta, META_FIELD_ICY_DESCR, NULL);
+	if (frame != NULL) {
+		return frame->field_val;
+	} else {
+		return "";
+	}
+}
+
+
+void
+metadata_make_title_string(metadata_t * meta, char * dest) {
+
+	char dest1[MAXLEN];
+	char * artist = metadata_get_artist(meta);
+	char * album = metadata_get_album(meta);
+	char * title = metadata_get_title(meta);
+	char * icy_name = metadata_get_icy_name(meta);
+
+	if (title[0] != '\0' && artist[0] != '\0' && album[0] != '\0') {
+		make_title_string(dest1, options.title_format,
+				  artist, album, title);
+	} else if (title[0] != '\0' && artist[0] != '\0') {
+		make_title_string_no_album(dest1, options.title_format_no_album,
+					   artist, title);
+	} else if (title[0] != '\0') {
+		strncpy(dest1, metadata_get_title(meta), MAXLEN-1);
+	} else {
+		if (icy_name[0] == '\0') {
+			dest[0] = '\0';
+		} else {
+			strncpy(dest, icy_name, MAXLEN-1);
+		}
+		return;
+	}
+
+	if (icy_name[0] == '\0') {
+		strncpy(dest, dest1, MAXLEN-1);
+	} else {
+		snprintf(dest, MAXLEN-1, "%s (%s)", dest1, icy_name);
+	}
+}
+
+
+void
+metadata_make_playlist_string(metadata_t * meta, char * dest) {
+
+	char * name = metadata_get_icy_name(meta);
+	char * descr = metadata_get_icy_descr(meta);
+
+	if (name[0] == '\0') {
+		metadata_make_title_string(meta, dest);
+	} else {
+		if (descr[0] != '\0') {
+			snprintf(dest, MAXLEN-1, "%s (%s)", name, descr);
+		} else {
+			strncpy(dest, name, MAXLEN-1);
+		}
+	}
+}

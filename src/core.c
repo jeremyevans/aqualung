@@ -303,6 +303,7 @@ disk_thread(void * arg) {
 		fprintf(stderr, "disk thread: error: file_decoder_new() failed\n");
 		exit(1);
 	}
+	file_decoder_set_meta_cb(fdec, send_meta);
 
 	if ((!readbuf) || (!framebuf)) {
 		fprintf(stderr, "disk thread: malloc error\n");
@@ -397,7 +398,6 @@ disk_thread(void * arg) {
 						goto sleep;
 					} else {
 						file_decoder_set_rva(fdec, cue.voladj);
-						file_decoder_set_meta_cb(fdec, send_meta);
 						info->in_SR_prev = info->in_SR;
 						info->in_SR = fdec->fileinfo.sample_rate;
 						info->is_mono = fdec->fileinfo.is_mono;

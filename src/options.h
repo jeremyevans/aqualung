@@ -66,6 +66,7 @@ typedef struct {
 
 	/* General */
 	char title_format[MAXLEN];
+	char title_format_no_album[MAXLEN];
 	char default_param[MAXLEN];
 	int enable_tooltips;
 	int buttons_at_the_bottom;

@@ -84,17 +84,20 @@ http_session_t * httpc_new(void);
 void httpc_del(http_session_t * session);
 
 /*  Initiate a HTTP/1.1 request.
+ *    fdec: associated file_decoder (may be NULL if HTTPC is used
+ *          for purposes other than streaming audio data).
  *    URL: string containing location including protocol (http://),
  *         host, port (optional), path.
- *    proxy_URL: proxy URL (NULL if none used)
+ *    proxy_URL: may be NULL if none used
  *    proxy_port : integer
  *    start_byte : first byte of content we are interested in,
  *                 should be 0L for most cases.
  *
  *  Return: one of HTTPC_*
  */
-int httpc_init(http_session_t * session, char * URL, int use_proxy, char * proxy,
-	       int proxy_port, char * noproxy_domains, long long start_byte);
+int httpc_init(http_session_t * session, file_decoder_t * fdec, char * URL,
+	       int use_proxy, char * proxy, int proxy_port,
+	       char * noproxy_domains, long long start_byte);
 
 int httpc_read(http_session_t * session, char * buf, int num);
 int httpc_seek(http_session_t * session, long long offset, int whence);

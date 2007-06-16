@@ -78,6 +78,49 @@ make_title_string(char * dest, char * templ,
 }
 
 
+void
+make_title_string_no_album(char * dest, char * templ,
+			   char * artist, char * track) {
+	int i;
+	int j;
+	int argc = 0;
+	char * arg[2] = { "", "" };
+	char temp[MAXLEN];
+
+	temp[0] = templ[0];
+
+	for (i = j = 1; i < strlen(templ) && j < MAXLEN - 1; i++, j++) {
+		if (templ[i - 1] == '%') {
+			if (argc < 2) {
+				switch (templ[i]) {
+				case 'a':
+					arg[argc++] = artist;
+					temp[j] = 's';
+					break;
+				case 't':
+					arg[argc++] = track;
+					temp[j] = 's';
+					break;
+				default:
+					temp[j++] = '%';
+					temp[j] = templ[i];
+					break;
+				}
+			} else {
+				temp[j++] = '%';
+				temp[j] = templ[i];
+			}
+		} else {
+			temp[j] = templ[i];
+		}
+	}
+
+	temp[j] = '\0';
+	
+	snprintf(dest, MAXLEN - 1, temp, arg[0], arg[1]);
+}
+
+
 /* returns (hh:mm:ss) or (mm:ss) format time string from sample position */
 void
 sample2time(unsigned long SR, unsigned long long sample, char * str, int sign) {

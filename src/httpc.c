@@ -34,6 +34,9 @@
 #include "options.h"
 #include "httpc.h"
 
+/* Uncomment this to get debug printouts */
+/* #define HTTPC_DEBUG */
+
 extern options_t options;
 
 int httpc_is_url(const char * str) {
@@ -82,7 +85,7 @@ open_socket(char * hostname, unsigned short portnum) {
 	int s;
 	
 	if ((hp = gethostbyname(hostname)) == NULL) {
-		printf("open_socket: gethostbyname() failed on %s\n", hostname);
+		fprintf(stderr, "open_socket: gethostbyname() failed on %s\n", hostname);
 		return -1;
 	}
 	
@@ -92,17 +95,19 @@ open_socket(char * hostname, unsigned short portnum) {
 	sa.sin_port = htons((u_short)portnum);
 	
 	if ((s = socket(hp->h_addrtype, SOCK_STREAM, 0)) < 0) {
-		printf("open_socket: socket(): %s\n", strerror(errno));
+		fprintf(stderr, "open_socket: socket(): %s\n", strerror(errno));
 		return -1;
 	}
 
 	if (connect(s, (struct sockaddr *)&sa, sizeof (sa)) < 0) {
-		printf("open_socket: connect(): %s\n", strerror(errno));
+		fprintf(stderr, "open_socket: connect(): %s\n", strerror(errno));
 		close(s);
 		return -1;
 	}
-	
+
+#ifdef HTTPC_DEBUG
 	printf("socket successfully opened to %s:%d\n", hostname, portnum);
+#endif /* HTTPC_DEBUG */
 	return s;
 }
 
@@ -211,7 +216,9 @@ parse_http_headers(http_session_t * session) {
 	
 	do {
 		read_sock_line(s, line, sizeof(line));
+#ifdef HTTPC_DEBUG
 		printf("line = '%s'\n", line);
+#endif /* HTTPC_DEBUG */
 		
 		if (strstr(line, "HTTP/1.1 4") != NULL) {
 			header->status = strdup(line);
@@ -248,7 +255,9 @@ parse_http_headers(http_session_t * session) {
 		} else if (strcasecmp(name, "content-length") == 0) {
 			int l;
 			if (sscanf(value, "%d", &l) != 1) {
+#ifdef HTTPC_DEBUG
 				printf("sscanf error (content-length)\n");
+#endif /* HTTPC_DEBUG */
 				return -3;
 			} else {
 				header->content_length = l;
@@ -260,7 +269,9 @@ parse_http_headers(http_session_t * session) {
 		} else if (strcasecmp(name, "icy-metaint") == 0) {
 			int l;
 			if (sscanf(value, "%d", &l) != 1) {
+#ifdef HTTPC_DEBUG
 				printf("sscanf error (icy-metaint)\n");
+#endif /* HTTPC_DEBUG */
 				return -3;
 			} else {
 				header->icy_metaint = l;
@@ -269,7 +280,9 @@ parse_http_headers(http_session_t * session) {
 			int l;
 			if (sscanf(value, "%d", &l) != 1) {
 				if (sscanf(value, "Quality %d", &l) != 1) {
+#ifdef HTTPC_DEBUG
 					printf("sscanf error (icy-br)\n");
+#endif /* HTTPC_DEBUG */
 					return -3;
 				} else {
 					header->icy_br = l;
@@ -284,7 +297,9 @@ parse_http_headers(http_session_t * session) {
 		} else if (strcasecmp(name, "icy-description") == 0) {
 			header->icy_description = strdup(value);
 		}
+#ifdef HTTPC_DEBUG
 		printf("name = '%s'  value = '%s'\n", name, value);
+#endif /* HTTPC_DEBUG */
 	}
 	return 0;
 }
@@ -385,7 +400,9 @@ void
 httpc_close(http_session_t * session) {
 
 	if (session->is_active) {
+#ifdef HTTPC_DEBUG
 		printf("closing HTTP connection\n");
+#endif /* HTTPC_DEBUG */
 		close(session->sock);
 		session->is_active = 0;
 	}
@@ -406,7 +423,9 @@ noproxy_for_host(const char * noproxy_domains, const char * host) {
 	while (s != NULL) {
 		char * str = strip_whitespace(s);
 		if (strstr(host, str) != NULL) {
+#ifdef HTTPC_DEBUG
 			printf("%s matches %s, no proxy.\n", str, host);
+#endif /* HTTPC_DEBUG */
 			free(nd);
 			return 1;
 		}
@@ -486,7 +505,9 @@ httpc_init(http_session_t * session, file_decoder_t * fdec,
 	
 	make_http_request_text(host, port, URL, use_proxy, proxy,
 			       start_byte, msg_buf, sizeof(msg_buf));
+#ifdef HTTPC_DEBUG
 	printf("%s\n", msg_buf);
+#endif /* HTTPC_DEBUG */
 	
 	if (!use_proxy || noproxy_for_host(noproxy_domains, host)) {
 		session->sock = open_socket(host, port);
@@ -502,7 +523,9 @@ httpc_init(http_session_t * session, file_decoder_t * fdec,
 	
 	if (parse_http_headers(session) != 0) {
 		close(session->sock);
+#ifdef HTTPC_DEBUG
 		printf("http header error, server error or resource not found\n");
+#endif /* HTTPC_DEBUG */
 		return HTTPC_HEADER_ERROR;
 	}
 
@@ -510,7 +533,9 @@ httpc_init(http_session_t * session, file_decoder_t * fdec,
 		/* redirect */
 		if (session->headers.location != NULL) {
 			int ret;
+#ifdef HTTPC_DEBUG
 			printf("redirecting to %s\n", session->headers.location);
+#endif /* HTTPC_DEBUG */
 			close(session->sock);
 			ret = httpc_init(session, fdec,
 					 session->headers.location, use_proxy, proxy,
@@ -518,7 +543,9 @@ httpc_init(http_session_t * session, file_decoder_t * fdec,
 			return ret;
 		} else {
 			close(session->sock);
+#ifdef HTTPC_DEBUG
 			printf("redirect error\n");
+#endif /* HTTPC_DEBUG */
 			return HTTPC_REDIRECT_ERROR;
 		}
 	} else if ((session->headers.content_type != NULL) &&
@@ -527,7 +554,9 @@ httpc_init(http_session_t * session, file_decoder_t * fdec,
 		char buf[1024];
 		int ret;
 		read_sock_line(session->sock, buf, sizeof(buf));
+#ifdef HTTPC_DEBUG
 		printf("following x-mpegurl to %s\n", buf);
+#endif /* HTTPC_DEBUG */
 		close(session->sock);
 		ret = httpc_init(session, fdec,
 				 buf, use_proxy, proxy, proxy_port,
@@ -554,7 +583,9 @@ httpc_init(http_session_t * session, file_decoder_t * fdec,
 		fdec->meta_cb(meta);
 	}
 
+#ifdef HTTPC_DEBUG
 	printf("HTTP connection successfully opened, type = %d\n", session->type);
+#endif /* HTTPC_DEBUG */
 	return 0;
 }
 
@@ -566,21 +597,23 @@ httpc_read_normal(http_session_t * session, char * buf, int num) {
 	int n_read;
 
 	if (!session->is_active) {
+#ifdef HTTPC_DEBUG
 		printf("[HTTPC] Reopening stream\n");
+#endif /* HTTPC_DEBUG */
 		httpc_reconnect(session);
 	}
 	
+#ifdef HTTPC_DEBUG
 	printf("httpc_read_normal num = %d, pos = %lld, ", num, session->byte_pos);
+#endif /* HTTPC_DEBUG */
 	if (tr > num) {
 		tr = num;
 	}
 	n_read = read_socket(sock, buf, tr);
 	if (n_read < 0) {
-		printf("ret -1\n");
 		return -1;
 	}
 	session->byte_pos += n_read;
-	printf("ret %d\n", n_read);
 	return n_read;
 }
 
@@ -593,15 +626,19 @@ httpc_read_chunked(http_session_t * session, char * buf, int num) {
 	int buf_pos = 0;
 	char line[1024];
 
+#ifdef HTTPC_DEBUG
 	printf("httpc_read_chunked\n");
+#endif /* HTTPC_DEBUG */
 
 	while (buf_pos < num && !session->end_of_data) {
 		if (chunk_size - chunk_pos > 0) {
 			int tw = chunk_size - chunk_pos;
 			if (tw > num - buf_pos)
 				tw = num - buf_pos;
+#ifdef HTTPC_DEBUG
 			printf("buf_pos = %d  chunk_size = %d  chunk_pos = %d  tw = %d\n",
 			       buf_pos, chunk_size, chunk_pos, tw);
+#endif /* HTTPC_DEBUG */
 			memcpy(buf + buf_pos, session->chunk_buf + chunk_pos, tw);
 			chunk_pos += tw;
 			buf_pos += tw;
@@ -616,15 +653,21 @@ httpc_read_chunked(http_session_t * session, char * buf, int num) {
 			chunk_size = parse_chunk_size(line);
 			if (chunk_size > 0) {
 				int n_read;
+#ifdef HTTPC_DEBUG
 				printf("chunk size = %d\n", chunk_size);
+#endif /* HTTPC_DEBUG */
 				session->chunk_buf = malloc(chunk_size);
 				n_read = read_socket(sock, session->chunk_buf, chunk_size);
 				if (n_read != chunk_size) {
+#ifdef HTTPC_DEBUG
 					printf("httpc_read_chunked: premature end of chunk!\n");
+#endif /* HTTPC_DEBUG */
 				}
 				read_sock_line(sock, line, sizeof(line));
 			} else {
+#ifdef HTTPC_DEBUG
 				printf("end of data\n");
+#endif /* HTTPC_DEBUG */
 				session->end_of_data = 1;
 			}
 		}
@@ -746,7 +789,7 @@ httpc_read(http_session_t * session, char * buf, int num) {
 	case HTTPC_SESSION_STREAM:
 		return httpc_read_stream(session, buf, num);
 	default:
-		printf("httpc_read: unknown session type = %d\n", session->type);
+		fprintf(stderr, "httpc_read: unknown session type = %d\n", session->type);
 		return 0;
 	}
 }
@@ -806,44 +849,58 @@ httpc_seek(http_session_t * session, long long offset, int whence) {
 	if (session->type != HTTPC_SESSION_NORMAL)
 		return -1;
 	
+#ifdef HTTPC_DEBUG
 	printf("[HTTPC_SEEK] offset = %lld  whence = %d  byte_pos = %lld\n",
 	       offset, whence, session->byte_pos);
+#endif /* HTTPC_DEBUG */
 	switch (whence) {
 	case SEEK_SET:
 		if (offset == session->byte_pos) {
+#ifdef HTTPC_DEBUG
 			printf("noop SEEK_SET\n");
+#endif /* HTTPC_DEBUG */
 			return session->byte_pos;
 		}
 		break;
 	case SEEK_CUR:
 		if (offset == 0) {
+#ifdef HTTPC_DEBUG
 			printf("noop SEEK_CUR\n");
+#endif /* HTTPC_DEBUG */
 			return session->byte_pos;
 		}
 		break;
 	case SEEK_END:
 		if (session->headers.content_length - offset == session->byte_pos) {
+#ifdef HTTPC_DEBUG
 			printf("noop SEEK_END\n");
+#endif /* HTTPC_DEBUG */
 			return session->byte_pos;
 		}
 		break;
 	}
 
 	if (session->is_active) {
+#ifdef HTTPC_DEBUG
 		printf("[HTTPC] Closing stream\n");
+#endif /* HTTPC_DEBUG */
 		httpc_close(session);
 	}
 	
 	switch (whence) {
 	case SEEK_SET:
+#ifdef HTTPC_DEBUG
 		printf("[HTTPC] SEEK_SET offset = %lld\n", offset);
+#endif /* HTTPC_DEBUG */
 		if (offset > session->headers.content_length) {
 			offset = session->headers.content_length;
 		}
 		session->byte_pos = offset;
 		break;
 	case SEEK_CUR:
+#ifdef HTTPC_DEBUG
 		printf("[HTTPC] SEEK_CUR offset = %lld\n", offset);
+#endif /* HTTPC_DEBUG */
 		if (offset + session->byte_pos > session->headers.content_length) {
 			session->byte_pos = session->headers.content_length;
 		} else {
@@ -851,7 +908,9 @@ httpc_seek(http_session_t * session, long long offset, int whence) {
 		}
 		break;
 	case SEEK_END:
+#ifdef HTTPC_DEBUG
 		printf("[HTTPC] SEEK_END offset = %lld\n", offset);
+#endif /* HTTPC_DEBUG */
 		if (offset > session->headers.content_length - session->byte_pos) {
 			session->byte_pos = 0L;
 		} else {
@@ -869,7 +928,9 @@ httpc_tell(http_session_t * session) {
 	if (session->type != HTTPC_SESSION_NORMAL)
 		return -1;
 	
+#ifdef HTTPC_DEBUG
 	printf("[HTTPC] TELL = %lld\n", session->byte_pos);
+#endif /* HTTPC_DEBUG */
 	return session->byte_pos;
 }
 

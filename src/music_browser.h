@@ -30,8 +30,6 @@ extern "C" {
 
 void tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data);
 
-void make_title_string(char * dest, char * templ, char * artist, char * record, char * track);
-
 void create_music_browser(void);
 void show_music_browser(void);
 void hide_music_browser(void);

@@ -39,6 +39,7 @@
 #endif /* _WIN32*/
 
 #include "common.h"
+#include "utils.h"
 #include "i18n.h"
 #include "options.h"
 #include "music_browser.h"

@@ -32,6 +32,7 @@
 #include <libxml/parser.h>
 
 #include "common.h"
+#include "utils.h"
 #include "build_store.h"
 #include "cddb_lookup.h"
 #include "cd_ripper.h"
@@ -371,53 +372,6 @@ browser_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	}
 
 	return FALSE;
-}
-
-
-void
-make_title_string(char * dest, char * templ, char * artist, char * record, char * track) {
-
-	int i;
-	int j;
-	int argc = 0;
-	char * arg[3] = { "", "", "" };
-	char temp[MAXLEN];
-
-	temp[0] = templ[0];
-
-	for (i = j = 1; i < strlen(templ) && j < MAXLEN - 1; i++, j++) {
-		if (templ[i - 1] == '%') {
-			if (argc < 3) {
-				switch (templ[i]) {
-				case 'a':
-					arg[argc++] = artist;
-					temp[j] = 's';
-					break;
-				case 'r':
-					arg[argc++] = record;
-					temp[j] = 's';
-					break;
-				case 't':
-					arg[argc++] = track;
-					temp[j] = 's';
-					break;
-				default:
-					temp[j++] = '%';
-					temp[j] = templ[i];
-					break;
-				}
-			} else {
-				temp[j++] = '%';
-				temp[j] = templ[i];
-			}
-		} else {
-			temp[j] = templ[i];
-		}
-	}
-
-	temp[j] = '\0';
-	
-	snprintf(dest, MAXLEN - 1, temp, arg[0], arg[1], arg[2]);
 }
 
 

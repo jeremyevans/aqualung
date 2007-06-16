@@ -23,6 +23,13 @@
 
 #include <config.h>
 
+void make_title_string(char * dest, char * templ,
+		       char * artist, char * record, char * track);
+
+void pack_strings(char * str1, char * str2, char * result);
+void unpack_strings(char * packed, char * str1, char * str2);
+void normalize_filename(const char * in, char * out);
+
 #ifndef HAVE_STRCASESTR
 char * strcasestr(char * haystack, char * needle);
 #endif /* HAVE_STRCASESTR */

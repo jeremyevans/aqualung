@@ -32,6 +32,7 @@
 #endif /* _WIN32 */
 
 #include "common.h"
+#include "utils.h"
 #include "rb.h"
 #include "cover.h"
 #include "decoder/file_decoder.h"

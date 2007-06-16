@@ -66,6 +66,7 @@
 #endif /* _WIN32 */
 
 #include "common.h"
+#include "utils.h"
 #include "version.h"
 #include "rb.h"
 #include "options.h"

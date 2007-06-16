@@ -48,6 +48,7 @@
 #endif /* HAVE_SRC */
 
 #include "common.h"
+#include "utils.h"
 #include "core.h"
 #include "rb.h"
 #include "cover.h"
@@ -346,134 +347,6 @@ try_waking_disk_thread(void) {
 	if (AQUALUNG_MUTEX_TRYLOCK(disk_thread_lock)) {
 		AQUALUNG_COND_SIGNAL(disk_thread_wake)
 		AQUALUNG_MUTEX_UNLOCK(disk_thread_lock)
-	}
-}
-
-
-/* returns (hh:mm:ss) or (mm:ss) format time string from sample position */
-void
-sample2time(unsigned long SR, unsigned long long sample, char * str, int sign) {
-
-	int h;
-	char m, s;
-
-	if (!SR)
-		SR = 1;
-
-	h = (sample / SR) / 3600;
-	m = (sample / SR) / 60 - h * 60;
-	s = (sample / SR) - h * 3600 - m * 60;
-
-	if (h > 9)
-		sprintf(str, (sign)?("-%02d:%02d:%02d"):("%02d:%02d:%02d"), h, m, s);
-	else if (h > 0)
-		sprintf(str, (sign)?("-%1d:%02d:%02d"):("%1d:%02d:%02d"), h, m, s);
-	else
-		sprintf(str, (sign)?("-%02d:%02d"):("%02d:%02d"), m, s);
-}
-
-/* converts a length measured in seconds to the appropriate string */
-void
-time2time(float seconds, char * str) {
-
-	int d, h;
-	char m, s;
-
-        d = seconds / 86400;
-	h = seconds / 3600;
-	m = seconds / 60 - h * 60;
-	s = seconds - h * 3600 - m * 60;
-        h = h - d * 24;
-
-        if (d > 0) {
-                if (d == 1 && h > 9) {
-                        sprintf(str, "%d %s, %2d:%02d:%02d", d, _("day"), h, m, s);
-                } else if (d == 1 && h < 9) {
-                        sprintf(str, "%d %s, %1d:%02d:%02d", d, _("day"), h, m, s);
-                } else if (d != 1 && h > 9) {
-                        sprintf(str, "%d %s, %2d:%02d:%02d", d, _("days"), h, m, s);
-                } else {
-                        sprintf(str, "%d %s, %1d:%02d:%02d", d, _("days"), h, m, s);
-                }
-        } else if (h > 0) {
-		if (h > 9) {
-			sprintf(str, "%02d:%02d:%02d", h, m, s);
-		} else {
-			sprintf(str, "%1d:%02d:%02d", h, m, s);
-		}
-	} else {
-		sprintf(str, "%02d:%02d", m, s);
-	}
-}
-
-
-void
-time2time_na(float seconds, char * str) {
-
-	if (seconds == 0.0) {
-		strcpy(str, "N/A");
-	} else {
-		time2time(seconds, str);
-	}
-}
-
-
-/* pack 2 strings into one
- * output format: 4 hex digits -> length of 1st string (N)
- *                4 hex digits -> length of 2nd string (M)
- *                N characters of 1st string (w/o trailing zero)
- *                M characters of 2nd string (w/o trailing zero)
- *                trailing zero
- * sum: length(str1) + length(str2) + 4 + 4 + 1
- * result should point to an area with sufficient space
- */
-void
-pack_strings(char * str1, char * str2, char * result) {
-
-	sprintf(result, "%04X%04X%s%s", strlen(str1), strlen(str2), str1, str2);
-}
-
-/* inverse of pack_strings()
- * str1 and str2 should point to areas of sufficient space
- */
-void
-unpack_strings(char * packed, char * str1, char * str2) {
-
-	int len1, len2;
-
-	if (strlen(packed) < 8) {
-		str1[0] = '\0';
-		str2[0] = '\0';
-		return;
-	}
-
-	sscanf(packed, "%04X%04X", &len1, &len2);
-	strncpy(str1, packed + 8, len1);
-	strncpy(str2, packed + 8 + len1, len2);
-	str1[len1] = '\0';
-	str2[len2] = '\0';
-}
-
-
-/* out should be defined as char[MAXLEN] */
-void
-normalize_filename(const char * in, char * out) {
-
-	if (httpc_is_url(in)) {
-		strncpy(out, in, MAXLEN-1);
-		return;
-	}
-
-	switch (in[0]) {
-	case '/':
-		strncpy(out, in, MAXLEN-1);
-		break;
-	case '~':
-		snprintf(out, MAXLEN-1, "%s%s", options.home, in + 1);
-		break;
-	default:
-		snprintf(out, MAXLEN-1, "%s/%s", options.cwd, in);
-		break;
 	}
 }
 
@@ -1848,7 +1721,7 @@ toggle_noeffect(int id, int state) {
 		g_signal_handler_unblock(G_OBJECT(pause_button), pause_id);
 		break;
 	default:
-		printf("error in gui_main.c/toggle_without_effect(): unknown id value %d\n", id);
+		printf("error in gui_main.c/toggle_noeffect(): unknown id value %d\n", id);
 		break;
 	}
 }
@@ -1866,7 +1739,7 @@ cue_track_for_playback(GtkTreeStore * store, GtkTreeIter * piter, cue_t * cue) {
 }
 
 
-/* retcode for choose_X_track(): 1->success, 0->empty list */
+/* retcode for choose_*_track(): 1->success, 0->empty list */
 int
 choose_first_track(GtkTreeStore * store, GtkTreeIter * piter) {
 

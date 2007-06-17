@@ -3721,7 +3721,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		}
 
 		if (list != NULL) {
-			process_filenames(list, 0, immediate_start, (tab_name != NULL), tab_name);
+			process_filenames(list, enqueue, immediate_start, (tab_name != NULL), tab_name);
 		}
 	}
 

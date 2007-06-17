@@ -5766,21 +5766,6 @@ load_music_store(char * store_file, char * sort) {
 		return;
 	}
 
-	gtk_tree_store_append(music_store, &iter_store, NULL);
-
-	gtk_tree_store_set(music_store, &iter_store, 0, _("Music Store"), 1, sort,
-			   2, store_file, 3, "", 6, 1.0f, 8, PANGO_WEIGHT_BOLD, -1);
-
-	if (options.enable_ms_tree_icons) {
-		gtk_tree_store_set(music_store, &iter_store, 9, icon_store, -1);
-	}
-
-	if (access(store_file, W_OK) == 0) {
-		gtk_tree_store_set(music_store, &iter_store, 7, 1.0f, -1);
-	} else {
-		gtk_tree_store_set(music_store, &iter_store, 7, -1.0f, -1);
-	}
-	
 	doc = xmlParseFile(store_file);
 	if (doc == NULL) {
 		fprintf(stderr, "An XML error occured while parsing %s\n", store_file);
@@ -5801,13 +5786,29 @@ load_music_store(char * store_file, char * sort) {
 		return;
 	}
 	
+	gtk_tree_store_append(music_store, &iter_store, NULL);
+
+	gtk_tree_store_set(music_store, &iter_store, 0, _("Music Store"), 1, sort,
+			   2, store_file, 3, "", 6, 1.0f, 8, PANGO_WEIGHT_BOLD, -1);
+
+	if (options.enable_ms_tree_icons) {
+		gtk_tree_store_set(music_store, &iter_store, 9, icon_store, -1);
+	}
+
+	if (access(store_file, W_OK) == 0) {
+		gtk_tree_store_set(music_store, &iter_store, 7, 1.0f, -1);
+	} else {
+		gtk_tree_store_set(music_store, &iter_store, 7, -1.0f, -1);
+	}
+	
 	cur = cur->xmlChildrenNode;
 	while (cur != NULL) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-			if (key != NULL)
+			if (key != NULL) {
 				strncpy(name, (char *) key, MAXLEN-1);
-			xmlFree(key);
+				xmlFree(key);
+			}
 			if (name[0] == '\0') {
 				fprintf(stderr, "Error in XML music_store: "
 					"Music Store <name> is required, but NULL\n");

@@ -157,6 +157,7 @@ typedef struct {
 	char inet_proxy[MAXLEN];
 	int inet_proxy_port;
 	char inet_noproxy_domains[MAXLEN];
+	int inet_timeout;
 
 	/* Appearance */
 	int override_skin_settings;

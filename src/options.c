@@ -238,6 +238,7 @@ GtkWidget * inet_spinner_proxy_port;
 GtkWidget * inet_label_noproxy_domains;
 GtkWidget * inet_entry_noproxy_domains;
 GtkWidget * inet_help_noproxy_domains;
+GtkWidget * inet_spinner_timeout;
 
 
 GtkWidget * check_override_skin;
@@ -451,6 +452,7 @@ options_window_accept(void) {
 	set_option_from_entry(inet_entry_proxy, options.inet_proxy);
 	set_option_from_spin(inet_spinner_proxy_port, &options.inet_proxy_port);
 	set_option_from_entry(inet_entry_noproxy_domains, options.inet_noproxy_domains);
+	set_option_from_spin(inet_spinner_timeout, &options.inet_timeout);
 
 
 	/* Appearance */
@@ -1790,6 +1792,8 @@ create_options_window(void) {
 
 	GtkWidget * vbox_inet;
 	GtkWidget * table_inet;
+	GtkWidget * inet_hbox_timeout;
+	GtkWidget * inet_label_timeout;
 
         GtkSizeGroup * label_size;
 
@@ -2935,6 +2939,24 @@ See the About box and the documentation for details."));
 	g_signal_connect(inet_help_noproxy_domains, "clicked", G_CALLBACK(display_inet_help_noproxy_domains), NULL);
         gtk_table_attach(GTK_TABLE(table_inet), inet_help_noproxy_domains, 3, 4, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
 
+
+	inet_hbox_timeout = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_inet), inet_hbox_timeout, FALSE, FALSE, 5);
+
+	inet_label_timeout = gtk_label_new(_("Timeout for socket I/O:"));
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), inet_label_timeout, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(inet_hbox_timeout), hbox, FALSE, FALSE, 5);
+
+	inet_spinner_timeout = gtk_spin_button_new_with_range(1, 300, 1);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(inet_spinner_timeout), options.inet_timeout);
+	gtk_box_pack_start(GTK_BOX(inet_hbox_timeout), inet_spinner_timeout, FALSE, FALSE, 5);
+
+	inet_label_timeout = gtk_label_new(_("seconds"));
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), inet_label_timeout, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(inet_hbox_timeout), hbox, FALSE, FALSE, 5);
+
 	if (options.inet_use_proxy) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(inet_radio_direct), FALSE);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(inet_radio_proxy), TRUE);
@@ -3404,6 +3426,7 @@ save_config(void) {
 	SAVE_STR(inet_proxy);
 	SAVE_INT(inet_proxy_port);
 	SAVE_STR(inet_noproxy_domains);
+	SAVE_INT(inet_timeout);
 	SAVE_FLOAT(loop_range_start);
 	SAVE_FLOAT(loop_range_end);
 
@@ -3621,6 +3644,7 @@ load_config(void) {
 	options.inet_proxy[0] = '\0';
 	options.inet_proxy_port = 8080;
 	options.inet_noproxy_domains[0] = '\0';
+	options.inet_timeout = 5;
 
 	options.time_idx[0] = 0;
 	options.time_idx[1] = 1;
@@ -3747,6 +3771,7 @@ load_config(void) {
 		LOAD_STR(inet_proxy);
 		LOAD_INT(inet_proxy_port);
 		LOAD_STR(inet_noproxy_domains);
+		LOAD_INT(inet_timeout);
 		LOAD_FLOAT(loop_range_start);
 		LOAD_FLOAT(loop_range_end);
 

@@ -23,6 +23,7 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/wait.h>
@@ -77,6 +78,95 @@ free_headers(http_header_t * headers) {
 		free(headers->icy_description);
 }
 
+
+/* Checks whether bytes can be read/written from/to the socket within
+ * the specified time out period. Adapted from libcddb source code.
+ *
+ * sock     The socket to read from.
+ * timeout  Number of seconds after which to time out.
+ * to_write nonzero if checking for writing, zero for reading.
+ *
+ * return   nonzero if reading/writing is possible, zero otherwise.
+ */
+int
+sock_ready(int sock, int timeout, int to_write) {
+	
+	fd_set fds;
+	struct timeval tv;
+	int ret;
+	
+	tv.tv_sec = timeout;
+	tv.tv_usec = 0;
+	FD_ZERO(&fds);
+	FD_SET(sock, &fds);
+	
+	if (to_write) {
+		ret = select(sock + 1, NULL, &fds, NULL, &tv) ;
+	} else {
+		ret = select(sock + 1, &fds, NULL, NULL, &tv) ;
+	}
+	if (ret <= 0) {
+		if (ret == 0) {
+			errno = ETIMEDOUT;
+			fprintf(stderr, "httpc: socket I/O timed out\n");
+		}
+		return 0;
+	}
+	return 1;
+}
+
+#define sock_can_read(s,t) sock_ready(s, t, 0)
+#define sock_can_write(s,t) sock_ready(s, t, 1)
+
+/* Timeout-supporting version of connect(). Adapted from libcddb source. */
+int
+timeout_connect(int sockfd, const struct sockaddr *addr, 
+		size_t len, int timeout) {
+
+	int got_error = 0;
+	int flags;
+
+	flags = fcntl(sockfd, F_GETFL, 0);
+	flags |= O_NONBLOCK;
+	if (fcntl(sockfd, F_SETFL, flags) == -1) {
+		return -1;
+	}
+
+	if (connect(sockfd, addr, len) < 0) {
+		if (errno == EINPROGRESS) {
+			int ret;
+			fd_set wfds;
+			struct timeval tv;
+			size_t l;
+
+			tv.tv_sec = timeout;
+			tv.tv_usec = 0;
+			FD_ZERO(&wfds);
+			FD_SET(sockfd, &wfds);
+			
+			ret = select(sockfd + 1, NULL, &wfds, NULL, &tv);
+			switch (ret) {
+			case 0:
+				fprintf(stderr, "httpc: connect() timed out\n");
+				errno = ETIMEDOUT;
+			case -1:
+				got_error = -1;
+			default:
+				l = sizeof(ret);
+				getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &ret, &l);
+				if (ret) {
+					errno = ret;
+					got_error = -1;
+				}
+			}
+		} else {
+			got_error = -1;
+		}
+	}
+	return got_error;
+}
+
+
 int
 open_socket(char * hostname, unsigned short portnum) {
 	
@@ -99,7 +189,7 @@ open_socket(char * hostname, unsigned short portnum) {
 		return -1;
 	}
 
-	if (connect(s, (struct sockaddr *)&sa, sizeof (sa)) < 0) {
+	if (timeout_connect(s, (struct sockaddr *)&sa, sizeof (sa), options.inet_timeout) < 0) {
 		fprintf(stderr, "open_socket: connect(): %s\n", strerror(errno));
 		close(s);
 		return -1;
@@ -121,6 +211,9 @@ read_socket(int s, char * buf, int n) {
 	br = 0;
 	
 	while (bcount < n) {
+		if (!sock_can_read(s, options.inet_timeout)) {
+			return -1;
+		}
 		if ((br = read(s, buf, n-bcount)) > 0) {
 			bcount += br;
 			buf += br;
@@ -136,6 +229,8 @@ read_sock_line(int s, char * buf, int n) {
 	
 	int k;
 	for (k = 0; k < n; k++) {
+		if (!sock_can_read(s, options.inet_timeout))
+			return -1;
 		if (read(s, buf+k, 1) < 0)
 			return -1;
 		if (buf[k] == '\n') {
@@ -160,6 +255,9 @@ write_socket(int s, char * buf, int n) {
 	bw = 0;
 	
 	while (bcount < n) {
+		if (!sock_can_write(s, options.inet_timeout)) {
+			return -1;
+		}
 		if ((bw = write(s, buf, n-bcount)) > 0) {
 			bcount += bw;
 			buf += bw;

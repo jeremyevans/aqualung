@@ -2090,7 +2090,6 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
         dismiss_btn = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
 	g_signal_connect(dismiss_btn, "clicked", G_CALLBACK(dismiss), (gpointer)meta);
-        gtk_widget_set_size_request(dismiss_btn, 80, -1);
 	gtk_box_pack_end(GTK_BOX(hbox_tagbuttons), dismiss_btn, FALSE, FALSE, 3);
 
 	gtk_widget_show_all(info_window);

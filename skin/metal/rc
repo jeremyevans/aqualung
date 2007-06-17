@@ -83,6 +83,11 @@ style "scrollbar"
 	fg[ACTIVE] = { 0.0, 0.0, 0.0 }
 }
 
+style "scrolledwin" = "scrollbar"
+{
+	bg[NORMAL] = { 0.6, 0.6, 0.65 }
+}
+
 style "progressbar"
 {
 	bg[NORMAL] = { 1.0, 1.0, 1.0 }
@@ -185,7 +190,7 @@ style "nostyle"
 	fg[ACTIVE] = { 0.0, 0.0, 0.0 }
 }
 
-widget "*ScrolledWindow*" style "scrollbar"
+widget "*ScrolledWindow*" style "scrolledwin"
 widget "*plugin_scrwin*" style "plugin_scrwin"
 
 widget "*TreeView*" style "view"

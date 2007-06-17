@@ -588,7 +588,7 @@ volume_from_replaygain(float replaygain) {
 }
 
 float
-rva_from_replaygain(float volume, float dummy1, float dummy2) {
+rva_from_replaygain(float volume) {
 
 	return rva_from_volume(volume_from_replaygain(volume));
 }

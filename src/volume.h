@@ -87,7 +87,7 @@ void voladj2str(float voladj, char * str);
 
 float rva_from_volume(float volume);
 float volume_from_replaygain(float replaygain);
-float rva_from_replaygain(float volume, float /*dummy*/, float /*dummy*/);
+float rva_from_replaygain(float volume);
 float rva_from_multiple_volumes(int nlevels, float * volumes);
 
 #ifdef __cplusplus

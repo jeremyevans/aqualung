@@ -848,7 +848,7 @@ meta_get_rva(metadata * meta, float * fval) {
 	}
 #endif /* HAVE_TAGLIB */
 
-	*fval = rva_from_replaygain(*fval, options.rva_refvol, options.rva_steepness);
+	*fval = rva_from_replaygain(*fval);
 
 	return ret;
 }

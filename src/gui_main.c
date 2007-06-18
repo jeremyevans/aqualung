@@ -2307,6 +2307,7 @@ decide_next_track(cue_t * pcue) {
 		if ((pl = playlist_get_current()) == NULL) {
 			return;
 		}
+		playlist_set_playing(pl, 1);
 	}
 
 	p = playlist_get_playing_path(pl);

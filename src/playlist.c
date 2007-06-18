@@ -778,7 +778,6 @@ playlist_set_color(void) {
 	for (node = playlists_closed; node; node = node->next) {
 		playlist_t * pl = (playlist_t *)node->data;
 		adjust_playlist_color(pl, active, inactive);
-		playlist_set_playing(pl, pl->playing);
 	}
 
         strcpy(pl_color_active, active);
@@ -3131,7 +3130,6 @@ playlist_perform_drag(playlist_t * spl, GtkTreeIter * siter, GtkTreePath * spath
 				   PL_COL_SELECTION_COLOR, &color, -1);
 		if (strcmp(color, pl_color_active) == 0) {
 			playlist_set_playing(spl, 0);
-			playlist_set_playing(tpl, 1);
 		}
 		g_free(color);
 	}

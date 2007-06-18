@@ -3124,16 +3124,6 @@ playlist_perform_drag(playlist_t * spl, GtkTreeIter * siter, GtkTreePath * spath
 		recalc_tparent = 1;
 	}
 
-	if (spl == playlist_get_playing()) {
-		char * color;
-		gtk_tree_model_get(GTK_TREE_MODEL(spl->store), siter,
-				   PL_COL_SELECTION_COLOR, &color, -1);
-		if (strcmp(color, pl_color_active) == 0) {
-			playlist_set_playing(spl, 0);
-		}
-		g_free(color);
-	}
-
 	playlist_node_deep_copy(spl->store, siter, tpl->store, titer, titer ? (cmp == 1) : 2);
 
 	gtk_tree_store_remove(spl->store, siter);

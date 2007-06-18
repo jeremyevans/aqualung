@@ -623,7 +623,7 @@ refresh_displays(void) {
 					   PL_COL_PHYSICAL_FILENAME, &phys_str,
 					   -1);
 			make_title_string(list_str, options.title_format, artist, record, title_str);
-			if (!httpc_is_url(phys_str)) {
+			if (!is_file_loaded || !httpc_is_url(phys_str)) {
 				set_title_label(list_str);
 			}
 			g_free(title_str);
@@ -633,7 +633,7 @@ refresh_displays(void) {
 					   PL_COL_TRACK_NAME, &title_str,
 					   PL_COL_PHYSICAL_FILENAME, &phys_str,
 					   -1);
-			if (!httpc_is_url(phys_str)) {
+			if (!is_file_loaded || !httpc_is_url(phys_str)) {
 				set_title_label(title_str);
 			}
 			g_free(title_str);

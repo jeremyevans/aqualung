@@ -1132,7 +1132,7 @@ cdda_disc_info(char * device_path) {
 
         cell = gtk_cell_renderer_text_new();
 	g_object_set((gpointer)cell, "xalign", 1.0, NULL);
-        columns[0] = gtk_tree_view_column_new_with_attributes(_("No"), cell, "text", 0, NULL);
+        columns[0] = gtk_tree_view_column_new_with_attributes(_("No."), cell, "text", 0, NULL);
         gtk_tree_view_append_column(GTK_TREE_VIEW(view), GTK_TREE_VIEW_COLUMN(columns[0]));
 
 	for (i = 0; i < MAX_CDTEXT_FIELDS; i++) {

@@ -690,7 +690,7 @@ cd_ripper_dialog(char * device_path, GtkTreeIter * iter) {
         gtk_tree_view_append_column(GTK_TREE_VIEW(source_tree), GTK_TREE_VIEW_COLUMN(column));
 
         cell = gtk_cell_renderer_text_new();
-        column = gtk_tree_view_column_new_with_attributes(_("No"), cell, "text", 1, NULL);
+        column = gtk_tree_view_column_new_with_attributes(_("No."), cell, "text", 1, NULL);
 
         gtk_tree_view_append_column(GTK_TREE_VIEW(source_tree), GTK_TREE_VIEW_COLUMN(column));
         cell = gtk_cell_renderer_text_new();
@@ -1029,7 +1029,7 @@ ripper_window(void) {
 
         cell = gtk_cell_renderer_text_new();
 	g_object_set((gpointer)cell, "xalign", 1.0, NULL);
-        column = gtk_tree_view_column_new_with_attributes(_("No"), cell, "text", 0, NULL);
+        column = gtk_tree_view_column_new_with_attributes(_("No."), cell, "text", 0, NULL);
         gtk_tree_view_append_column(GTK_TREE_VIEW(prog_tree), GTK_TREE_VIEW_COLUMN(column));
 
         cell = gtk_cell_renderer_text_new();

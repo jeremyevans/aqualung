@@ -6,10 +6,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aqualung 0.9beta5\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-17 20:26+0200\n"
-"PO-Revision-Date: 2007-01-28 18:38+0100\n"
+"POT-Creation-Date: 2007-06-18 15:09+0200\n"
+"PO-Revision-Date: 2007-06-18 15:10+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -107,7 +105,7 @@ msgid "Monkey's Audio Codec\n"
 msgstr "Monkey's Audio Codec\n"
 
 msgid "WavPack\n"
-msgstr ""
+msgstr "WavPack\n"
 
 msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
 msgstr "LAVC (AC3, AAC, WavPack, WMA, stb.)\n"
@@ -526,8 +524,8 @@ msgstr "Burn Proof"
 msgid "Disc info"
 msgstr "Lemez infó"
 
-msgid "No"
-msgstr "No"
+msgid "No."
+msgstr "No."
 
 msgid "This CD does not contain CD-Text information."
 msgstr "Ez a lemez nem tartalmaz CD-Text információt."
@@ -767,12 +765,6 @@ msgstr "Ablak bezárása, ha kész"
 msgid "Close"
 msgstr "Bezárás"
 
-msgid "day"
-msgstr "nap"
-
-msgid "days"
-msgstr "nap"
-
 msgid "MONO"
 msgstr "MONO"
 
@@ -795,8 +787,17 @@ msgstr ""
 "Zenetárban egy vagy több tároló tartalma megváltozott.\n"
 "Szeretnéd elmenteni őket kilépés előtt?"
 
-msgid "Question"
-msgstr "Kérdés"
+msgid "Save"
+msgstr "Mentés"
+
+msgid "Discard changes"
+msgstr "Változások eldobása"
+
+msgid "Do not exit"
+msgstr "Ne lépjen ki"
+
+msgid "Quit"
+msgstr "Kilépés"
 
 #, c-format
 msgid "Position: %d%%"
@@ -863,9 +864,6 @@ msgstr "JACK port beállítás"
 
 msgid "File info"
 msgstr "Fájl infó"
-
-msgid "Quit"
-msgstr "Kilépés"
 
 msgid "Previous song"
 msgstr "Előző szám"
@@ -964,7 +962,7 @@ msgid "Compressed modules (*.bz2)"
 msgstr "Tömörített modulok (*.bz2)"
 
 msgid "WavPack (*.wv)"
-msgstr ""
+msgstr "WavPack (*.wv)"
 
 msgid "LAVC audio/video files"
 msgstr "LAVC hang/videó fájlok"
@@ -1095,9 +1093,8 @@ msgstr "_Feltöltés"
 msgid "_Abort"
 msgstr "_Megszakítás"
 
-#, fuzzy
 msgid "Vendor"
-msgstr "Vendor:"
+msgstr "Vendor"
 
 msgid "Please select the xml file for this store."
 msgstr "Add meg a tárolóhoz tartozó xml fájlt."
@@ -1383,14 +1380,14 @@ msgstr "r"
 msgid "unreachable"
 msgstr "nem elérhető"
 
+msgid "Please select a Music Store database."
+msgstr "Válassz egy adatbázist."
+
 msgid "Paths must either be absolute or starting with a tilde."
 msgstr "Abszolút vagy tildével kezdődő elérési út szükséges."
 
 msgid "The specified store has already been added to the list."
 msgstr "A megadott tároló már szerepel a listában."
-
-msgid "Please select a Music Store database."
-msgstr "Válassz egy adatbázist."
 
 #, c-format
 msgid ""
@@ -1410,6 +1407,22 @@ msgstr ""
 
 msgid "Help"
 msgstr "Súgó"
+
+#, c-format
+msgid ""
+"\n"
+"The template string you enter here will be used to\n"
+"construct a single title line from an Artist and a Track\n"
+"name. These are denoted by %%a and %%t, respectively.\n"
+"Everything else you enter here will be literally\n"
+"copied into the resulting string.\n"
+msgstr ""
+"\n"
+"Az alábbi sablon az előadó nevéből és a számcímekből\n"
+"összeállított címsor formátumát adja meg. A %%a és %%t\n"
+"vezérlők rendre az előadót és a szám címét jelölik.\n"
+"A sablonban szereplő egyéb karakterek változtatás nélkül\n"
+"jelennek meg a címsorban.\n"
 
 msgid ""
 "\n"
@@ -1489,9 +1502,19 @@ msgid ""
 "that should be accessed without using the proxy set above.\n"
 "Example: localhost, .localdomain, .my.domain.com"
 msgstr ""
+"\n"
+"Azon domainek vesszővel elválasztott felsorolása, amelyek\n"
+"eléréséhez ne használja a fent beállított proxyt.\n"
+"Példa: localhost, .localdomain, .my.domain.com"
 
 msgid "Title format"
 msgstr "Címformátum"
+
+msgid "Full:"
+msgstr "Teljes:"
+
+msgid "No album:"
+msgstr "Lemez nélkül:"
 
 msgid "Implicit command line"
 msgstr "Implicit parancssor"
@@ -1539,10 +1562,10 @@ msgid "Album mode is the default when adding entire records"
 msgstr "Lemezek alapértelmezett hozzáadása album módban"
 
 msgid "Always show the tab bar"
-msgstr ""
+msgstr "Mindig látszódjanak a fülek"
 
 msgid "Show close button in tab"
-msgstr ""
+msgstr "Legyen bezárás gomb a füleken"
 
 msgid "When shuffling, records added in Album mode are played in order"
 msgstr "Véletlenszerű lejátszás esetén albumon belüli számsorrend megtartása"
@@ -1716,7 +1739,7 @@ msgid "Steepness [dB/dB] :"
 msgstr "Meredekség [dB/dB] :"
 
 msgid "RVA for Unmeasured Files [dB] :"
-msgstr ""
+msgstr "RVA meghatározatlan hangosságú fájlokhoz [dB] :"
 
 msgid "Apply averaged RVA to tracks of the same record"
 msgstr "Egyazon lemez számaira átlagolt RVA alkalmazása"
@@ -1787,9 +1810,8 @@ msgstr "Helyi CDDB könyvtár:"
 msgid "Use the local database only"
 msgstr "Kizárólag a helyi adatbázis használata"
 
-#, fuzzy
 msgid "Protocol for querying (direct connection only):"
-msgstr "Lekérdezési protokoll:"
+msgstr "Lekérdezési protokoll (közvetlen kapcsolódás esetén):"
 
 msgid "CDDBP (port 888)"
 msgstr "CDDBP (port 888)"
@@ -1797,30 +1819,32 @@ msgstr "CDDBP (port 888)"
 msgid "HTTP (port 80)"
 msgstr "HTTP (port 80)"
 
-#, fuzzy
 msgid "Internet"
-msgstr "Független"
+msgstr "Internet"
 
-#, fuzzy
 msgid "Direct connection to the Internet"
-msgstr "Kapcsolódás közvetlenül a CDDB szerverhez"
+msgstr "Közvetlen Internetkapcsolat"
 
-#, fuzzy
 msgid "Connect via HTTP proxy"
-msgstr "HTTP proxy:"
+msgstr "Csatlakozás HTTP proxy-n keresztül"
 
-#, fuzzy
 msgid "Proxy settings"
-msgstr "Kódolási beállítások"
+msgstr "Proxy beállítások"
 
 msgid "Proxy host:"
-msgstr ""
+msgstr "Proxy host:"
 
 msgid "Port:"
 msgstr "Port:"
 
 msgid "No proxy for:"
-msgstr ""
+msgstr "Nincs proxy:"
+
+msgid "Timeout for socket I/O:"
+msgstr "Socket I/O időkorlátja:"
+
+msgid "seconds"
+msgstr "másodperc"
 
 msgid "Appearance"
 msgstr "Megjelenés"
@@ -1859,7 +1883,7 @@ msgid "Active song in playlist: "
 msgstr "Aktív szám a Lejátszólistában: "
 
 msgid "(Untitled)"
-msgstr ""
+msgstr "(Névtelen)"
 
 #, c-format
 msgid " (%d/%d)"
@@ -1871,12 +1895,11 @@ msgstr "Fájlok kiválasztása"
 msgid "Select directory"
 msgstr "Könyvtár kiválasztása"
 
-#, fuzzy
 msgid "Add URL"
-msgstr "Hozzáadás"
+msgstr "URL hozzáadása"
 
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 msgid "Please specify the file to save the playlist to."
 msgstr "Add meg az elmentendő lejátszólista fájlt."
@@ -1905,9 +1928,9 @@ msgstr "%d szám [%s] (%.1f MB)"
 msgid "%d track [%s] (%.1f GB)"
 msgstr "%d szám [%s] (%.1f GB)"
 
-#, fuzzy, c-format
+#, c-format
 msgid "%d track "
-msgstr "%d szám [%s] "
+msgstr "%d szám "
 
 #, c-format
 msgid "%d track [%s] "
@@ -1921,35 +1944,31 @@ msgstr "%d szám [%s] (%.1f MB)"
 msgid "%d tracks [%s] (%.1f GB)"
 msgstr "%d szám [%s] (%.1f GB)"
 
-#, fuzzy, c-format
+#, c-format
 msgid "%d tracks "
-msgstr "%d szám [%s] "
+msgstr "%d szám "
 
 #, c-format
 msgid "%d tracks [%s] "
 msgstr "%d szám [%s] "
 
-#, fuzzy
 msgid "Rename playlist"
-msgstr "Lejátszólista mentése"
+msgstr "Lejátszólista átnevezése"
 
 msgid "New tab"
-msgstr ""
+msgstr "Új lap"
 
-#, fuzzy
 msgid "Rename"
-msgstr "Album címe"
+msgstr "Átnevezés"
 
-#, fuzzy
 msgid "Close tab"
-msgstr "Tálca behúzása"
+msgstr "Lap bezárása"
 
 msgid "Undo close tab"
-msgstr ""
+msgstr "Lapbezárás visszavonása"
 
-#, fuzzy
 msgid "Close other tabs"
-msgstr "Tálca behúzása"
+msgstr "Többi lap bezárása"
 
 msgid "Selected: "
 msgstr "Kijelölve: "
@@ -2008,13 +2027,11 @@ msgstr "Kijelölt elemek megtartása"
 msgid "Save playlist"
 msgstr "Lejátszólista mentése"
 
-#, fuzzy
 msgid "Save all playlists"
-msgstr "Lejátszólista mentése"
+msgstr "Összes lejátszólista mentése"
 
-#, fuzzy
 msgid "Load playlist in new tab"
-msgstr "Lejátszólista betöltése"
+msgstr "Lejátszólista betöltése új lapon"
 
 msgid "Load playlist"
 msgstr "Lejátszólista betöltése"
@@ -2156,6 +2173,15 @@ msgstr "Keresés a Lejátszólistában"
 
 msgid "Available skins"
 msgstr "Elérhető szkinek"
+
+msgid "day"
+msgstr "nap"
+
+msgid "days"
+msgstr "nap"
+
+msgid "Resume"
+msgstr "Folytatás"
 
 msgid "Calculating volume level"
 msgstr "Hangosság meghatározása"
@@ -2320,13 +2346,11 @@ msgstr "Sávszélesség:"
 msgid "Total samples:"
 msgstr "Összes mintavétel:"
 
-#, fuzzy
 msgid "Mode:"
-msgstr "Modell:"
+msgstr "Mód:"
 
-#, fuzzy
 msgid "WavPack Metadata"
-msgstr "Metaadatok"
+msgstr "WavPack Metaadatok"
 
 msgid "Module info"
 msgstr "Modul infó"
@@ -2351,9 +2375,6 @@ msgstr "Mintavételek:i frekvencia:"
 
 msgid "Instruments"
 msgstr "Hangszerek"
-
-msgid "No."
-msgstr "No."
 
 msgid "Album"
 msgstr "Lemez"
@@ -2558,6 +2579,3 @@ msgstr "Tömörítés: Extra magas"
 
 msgid "Compression: Insane"
 msgstr "Tömörítés: Elmebeteg"
-
-#~ msgid "HTTP tunneling through proxy"
-#~ msgstr "HTTP tunneling proxyn keresztül"

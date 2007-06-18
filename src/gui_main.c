@@ -985,9 +985,9 @@ main_window_closing(void) {
                                                 "Do you want to save them before exiting?"));
 
 		gtk_dialog_add_buttons(GTK_DIALOG(dialog),
-				       _("Yes"), GTK_RESPONSE_YES,
-				       _("No"), GTK_RESPONSE_NO,
-				       _("Cancel"), GTK_RESPONSE_CANCEL,
+				       _("Save"), GTK_RESPONSE_YES,
+				       _("Discard changes"), GTK_RESPONSE_NO,
+				       _("Do not exit"), GTK_RESPONSE_CANCEL,
 				       NULL);
 
 		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);

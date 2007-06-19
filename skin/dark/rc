@@ -212,8 +212,13 @@ widget "*nostyle" style "nostyle"
 
 # --- checkbutton
 
-widget "*check_on_window" style "window"
-widget "*check_on_notebook" style "notebook"
+style "checkbutton"
+{
+	bg[PRELIGHT] = { 0.23, 0.25, 0.23 }
+}
+
+widget "*check_on_window" style "checkbutton"
+widget "*check_on_notebook" style "checkbutton"
 
 # --- main window
 

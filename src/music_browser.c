@@ -2630,11 +2630,6 @@ finalize_addlist_iter(addlist_iter_t * add_list) {
 
 	add_list->pl->ms_semaphore--;
 
-	if (!stop_adding_to_playlist) {
-		ms_progress_bar_num -= add_list->count;
-		ms_progress_bar_den -= add_list->count;
-	}
-
 	if (browser_window != NULL && ms_progress_bar_semaphore == 0) {
 		music_store_progress_bar_hide();
 		if (add_list->pl == playlist_get_current()) {

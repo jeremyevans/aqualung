@@ -10,7 +10,7 @@ MSGFMT = /usr/bin/msgfmt
 XGETTEXT = /usr/bin/xgettext
 MSGMERGE = /usr/bin/msgmerge
 
-POFILES = de.po hu.po uk.po
+POFILES = de.po hu.po it.po uk.po
 MOFILES = $(POFILES:.po=.mo)
 
 EXTRA_DIST = $(POFILES) $(MOFILES) README

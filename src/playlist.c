@@ -1337,6 +1337,7 @@ add_file_to_playlist(gpointer data) {
 
 	playlist_transfer_t * pt = (playlist_transfer_t *)data;
 	GList * node;
+	int finish = 0;
 
 	AQUALUNG_MUTEX_LOCK(pt->pl->wait_mutex);
 
@@ -1354,8 +1355,12 @@ add_file_to_playlist(gpointer data) {
 
 		playlist_filemeta * plfm = (playlist_filemeta *)node->data;
 
+		pt->data_written--;
+
 		if (plfm == NULL) {
-			goto finish;
+			pt->data_written = 0;
+			finish = 1;
+			break;
 		}
 
 		voladj2str(plfm->voladj, voladj_str);
@@ -1371,7 +1376,6 @@ add_file_to_playlist(gpointer data) {
 				/* someone viciously cleared the list while adding tracks to album node;
 				   ignore further tracks to this node */
 				free(plfm);
-				pt->data_written--;
 				continue;
 			}
 
@@ -1409,28 +1413,17 @@ add_file_to_playlist(gpointer data) {
 		}
 
 		free(plfm);
-
-		pt->data_written--;
 	}
 
-	if (pt->data_written == 0) {
-		g_list_free(pt->plfm_list);
-		pt->plfm_list = NULL;
-		AQUALUNG_COND_SIGNAL(pt->pl->thread_wait);
-	}
-
-	AQUALUNG_MUTEX_UNLOCK(pt->pl->wait_mutex);
-
-	return FALSE;
-
-
- finish:
 	g_list_free(pt->plfm_list);
+	pt->plfm_list = NULL;
 
-	finalize_add_to_playlist(pt);
+	if (finish) {
+		finalize_add_to_playlist(pt);
+	}
 
-	AQUALUNG_COND_SIGNAL(pt->pl->thread_wait);
 	AQUALUNG_MUTEX_UNLOCK(pt->pl->wait_mutex);
+	AQUALUNG_COND_SIGNAL(pt->pl->thread_wait);
 
 	return FALSE;
 }
@@ -1446,7 +1439,9 @@ playlist_thread_add_to_list(playlist_transfer_t * pt, playlist_filemeta * plfm) 
 
 	if (pt->data_written > 100 || plfm == NULL) {
 		g_idle_add(add_file_to_playlist, pt);
-		AQUALUNG_COND_WAIT(pt->pl->thread_wait, pt->pl->wait_mutex);
+		while (pt->data_written > 0) {
+			AQUALUNG_COND_WAIT(pt->pl->thread_wait, pt->pl->wait_mutex);
+		}
 	}
 
 	AQUALUNG_MUTEX_UNLOCK(pt->pl->wait_mutex);

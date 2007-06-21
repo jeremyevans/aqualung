@@ -726,6 +726,10 @@ insert_cdda_drive_node(char * device_path) {
 	char str_path[CDDA_MAXLEN];
 	char str_sort[16];
 
+	if (drive == NULL) {
+		return;
+	}
+
 	if (drive->disc.n_tracks > 0) {
 		snprintf(str_title, MAXLEN-1, "%s [%s]",
 			 _("Unknown disc"), cdda_displayed_device_path(device_path));

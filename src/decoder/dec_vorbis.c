@@ -170,6 +170,7 @@ int
 close_vorbis_stream(void * datasource) {
 
 	http_session_t * session = (http_session_t *) datasource;
+	session->fdec->is_stream = 0;
 	httpc_close(session);
 	httpc_del(session);
 	return 0;

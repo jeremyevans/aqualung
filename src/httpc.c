@@ -485,6 +485,10 @@ httpc_new(void) {
 void
 httpc_del(http_session_t * session) {
 
+	if (session == NULL) {
+		return;
+	}
+
 	free(session->URL);
 	if (session->proxy != NULL)
 		free(session->proxy);

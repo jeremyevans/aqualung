@@ -1196,8 +1196,10 @@ mpeg_decoder_destroy(decoder_t * dec) {
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 	
-	if (fdec->is_stream)
+	if (fdec->is_stream) {
 		httpc_del(pd->session);
+		fdec->is_stream = 0;
+	}
 
 	free(dec->pdata);
 	free(dec);

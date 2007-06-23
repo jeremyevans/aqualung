@@ -241,6 +241,9 @@ read_sock_line(int s, char * buf, int n) {
 			}
 			break;
 		}
+		if (buf[k] == '\0') {
+			break;
+		}
 	}
 	return strlen(buf);
 }

@@ -228,11 +228,19 @@ int
 read_sock_line(int s, char * buf, int n) {
 	
 	int k;
+	int ret;
+
 	for (k = 0; k < n; k++) {
-		if (!sock_can_read(s, options.inet_timeout))
+		if (!sock_can_read(s, options.inet_timeout)) {
 			return -1;
-		if (read(s, buf+k, 1) < 0)
+		}
+		if ((ret = read(s, buf+k, 1)) < 0) {
 			return -1;
+		}
+		if (ret == 0) {
+			buf[k] = '\0';
+			break;
+		}
 		if (buf[k] == '\n') {
 			if (k > 0 && buf[k-1] == '\r') {
 				buf[k-1] = '\0';
@@ -802,18 +810,19 @@ httpc_add_headers_meta(http_session_t * session, metadata_t * meta) {
 int
 httpc_demux(http_session_t * session) {
 
-	unsigned char meta_len;
+	int meta_len;
+	char meta_len_buf;
 	char * meta_buf;
 
-	if (read_socket(session->sock, &meta_len, 1) != 1)
+	if (read_socket(session->sock, &meta_len_buf, 1) != 1)
 		return -1;
 
-	meta_len *= 16;
+	meta_len = 16 * meta_len_buf;
 	meta_buf = calloc(meta_len+1, 1);
 	if (read_socket(session->sock, meta_buf, meta_len) != meta_len)
 		return -1;
 
-	meta_buf[(int)meta_len] = '\0';
+	meta_buf[meta_len] = '\0';
 
 	if (meta_len > 0 && session->fdec != NULL && session->fdec->meta_cb != NULL) {
 		metadata_t * meta = metadata_from_mpeg_stream_data(meta_buf);

@@ -3260,6 +3260,7 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 			
 	} else if (info == 2) { /* drag and drop from external app */
 
+		GList * list = NULL;
 		gchar ** uri_list;
 		gchar * str = NULL;
 		int i;
@@ -3303,10 +3304,13 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 				g_free(str);
 			}
 
-			if (stat(file, &st_file) == 0) {
-				GList * list = g_list_append(NULL, strdup(file));
-				playlist_load(list, PLAYLIST_ENQUEUE, NULL, 0);
+			if (stat(file, &st_file) == 0 || httpc_is_url(file)) {
+				list = g_list_append(list, strdup(file));
 			}
+		}
+
+		if (list != NULL) {
+			playlist_load(list, PLAYLIST_ENQUEUE, NULL, 0);
 		}
 
 		g_strfreev(uri_list);

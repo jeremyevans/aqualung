@@ -2152,12 +2152,12 @@ main(int argc, char ** argv) {
 #endif /* jack || alsa || oss */
 
 
-#ifndef _WIN32
+#ifdef HAVE_JACK
 	/* unlock memory (implicitly locked by libjack when Jack runs realtime) */
 	if (munlockall() < 0) {
 		fprintf(stderr, "aqualung main(): munlockall() failed\n");
 	}
-#endif /* !_WIN32 */
+#endif /* HAVE_JACK */
 
 #ifdef _WIN32
 	g_thread_init(NULL);

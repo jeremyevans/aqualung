@@ -119,12 +119,18 @@ upload_songs_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 	int * n = (int *)data;
 	char * str;
 	char file[MAXLEN];
+        struct stat statbuf;
 
 	if (abort_pressed) {
 		return;
 	}
 
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_PHYSICAL_FILENAME, &str, -1);
+
+	if (stat(file, &statbuf) == -1) {
+		g_free(str);
+		return;
+	}
 
 	i = strlen(str);
 

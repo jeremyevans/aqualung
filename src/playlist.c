@@ -1740,6 +1740,8 @@ add_url(GtkWidget * widget, gpointer data) {
 			   PL_COL_DURATION_DISP, duration_str,
 			   PL_COL_FONT_WEIGHT, PANGO_WEIGHT_NORMAL,
                            -1);
+
+		delayed_playlist_rearrange(pl);
         }
 
         gtk_widget_destroy(dialog);
@@ -2008,7 +2010,9 @@ plist_setup_vol_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_PHYSICAL_FILENAME, &file, -1);
 
-	volume_push(vol, file, *iter);
+	if (!httpc_is_url(file)) {
+		volume_push(vol, file, *iter);
+	}
 
 	g_free(file);
 }

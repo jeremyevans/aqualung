@@ -958,7 +958,7 @@ mpeg_input_stream(decoder_t * dec, struct mad_stream * stream) {
 		remaining = 0;
 	}
 
-	read_length = httpc_read(pd->session, read_start, read_length);
+	read_length = httpc_read(pd->session, (char *)read_start, read_length);
 	if (read_length < 0)
 		return MAD_FLOW_STOP;
 

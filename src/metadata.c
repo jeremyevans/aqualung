@@ -292,7 +292,7 @@ metadata_get_frame(metadata_t * meta, int type, meta_frame_t * root) {
 	if (root == NULL) {
 		frame = meta->root;
 	} else {
-		frame = frame->next;
+		frame = root->next;
 	}
 
 	if (frame == NULL) {

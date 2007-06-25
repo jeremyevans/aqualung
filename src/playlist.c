@@ -2540,8 +2540,7 @@ rem__sel_cb(gpointer data) {
 	GtkTreeIter iter;
 	gint i = 0;
 	playlist_t * pl;
-	GtkTreePath * path;
-	int path_set = 0;
+	GtkTreePath * path = NULL;
 
 
 	if (data != NULL) {
@@ -2557,9 +2556,8 @@ rem__sel_cb(gpointer data) {
 	while (gtk_tree_model_iter_nth_child(model, &iter, NULL, i++)) {
 
 		if (gtk_tree_selection_iter_is_selected(pl->select, &iter)) {
-			if (!path_set) {
+			if (path == NULL) {
 				path = gtk_tree_model_get_path(model, &iter);
-				path_set = 1;
 			}
 			gtk_tree_store_remove(pl->store, &iter);
 			i--;
@@ -2571,9 +2569,8 @@ rem__sel_cb(gpointer data) {
 		}
 
 		if (all_tracks_selected(pl, &iter)) {
-			if (!path_set) {
+			if (path == NULL) {
 				path = gtk_tree_model_get_path(model, &iter);
-				path_set = 1;
 			}
 			gtk_tree_store_remove(pl->store, &iter);
 			i--;
@@ -2584,9 +2581,8 @@ rem__sel_cb(gpointer data) {
 
 			while (gtk_tree_model_iter_nth_child(model, &iter_child, &iter, j++)) {
 				if (gtk_tree_selection_iter_is_selected(pl->select, &iter_child)) {
-					if (!path_set) {
+					if (path == NULL) {
 						path = gtk_tree_model_get_path(model, &iter_child);
-						path_set = 1;
 					}
 					gtk_tree_store_remove(pl->store, &iter_child);
 					recalc = 1;
@@ -2600,7 +2596,7 @@ rem__sel_cb(gpointer data) {
 		}
 	}
 
-	if (path_set) {
+	if (path != NULL) {
 		if (gtk_tree_model_get_iter(model, &iter, path)) {
 			set_cursor_in_playlist(pl, &iter, TRUE);
 		} else {

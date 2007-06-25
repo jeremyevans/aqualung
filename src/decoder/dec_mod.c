@@ -97,7 +97,7 @@ unpack_file (char *filename, int type) {
 
 			while (c != pos-1) {
 				unpacked_filename[i++] = *c;
-				*c++;
+				c++;
 			}
 		}
 

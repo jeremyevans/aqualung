@@ -127,7 +127,7 @@ void playlist_selection_changed(playlist_t * pl);
 void playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer data);
 gint playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent);
 void playlist_foreach_selected(playlist_t * pl,
-			       void (* foreach)(playlist_t *, GtkTreeIter *, void *),
+			       int (* foreach)(playlist_t *, GtkTreeIter *, void *),
 			       void * data);
 
 void mark_track(GtkTreeStore * store, GtkTreeIter * piter);

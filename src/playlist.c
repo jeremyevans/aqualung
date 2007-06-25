@@ -785,7 +785,7 @@ playlist_set_color(void) {
 }
 
 void
-playlist_foreach_selected(playlist_t * pl, void (* foreach)(playlist_t *, GtkTreeIter *, void *),
+playlist_foreach_selected(playlist_t * pl, int (* foreach)(playlist_t *, GtkTreeIter *, void *),
 			  void * data) {
 
 	GtkTreeIter iter_top;
@@ -803,16 +803,47 @@ playlist_foreach_selected(playlist_t * pl, void (* foreach)(playlist_t *, GtkTre
 			j = 0;
 			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, &iter_top, j++)) {
 				if (topsel || gtk_tree_selection_iter_is_selected(pl->select, &iter)) {
-					(*foreach)(pl, &iter, data);
+					if (foreach(pl, &iter, data)) {
+						return;
+					}
 				}
 			}
 
 		} else if (topsel) {
-			(*foreach)(pl, &iter_top, data);
+			if (foreach(pl, &iter_top, data)) {
+				return;
+			}
 		}
 	}
 }
 
+int
+playlist_selection_is_http_only_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
+
+	gchar * file;
+	int * i = (int *)data;
+
+	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter,
+			   PL_COL_PHYSICAL_FILENAME, &file, -1);
+
+	if (!httpc_is_url(file)) {
+		*i = 0;
+	}
+
+	g_free(file);
+
+	return *i == 0;
+}
+
+int
+playlist_selection_is_http_only(playlist_t * pl) {
+
+	int res = 1;
+
+	playlist_foreach_selected(pl, playlist_selection_is_http_only_foreach, &res);
+
+	return res;
+}
 
 GtkTreePath *
 playlist_get_playing_path(playlist_t * pl) {
@@ -1252,9 +1283,8 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 	GtkTreePath * path;
 	GtkTreeViewColumn * column;
 	GtkTreeIter iter;
-	gchar * pname;
-	gchar * pfile;
-        gboolean http;
+	int http_only = 0;
+	int has_selection = 0;
 	playlist_t * pl = (playlist_t *)data;
 
 	if (event->type == GDK_2BUTTON_PRESS && event->button == 1) {
@@ -1268,31 +1298,45 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
 		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(pl->view), event->x, event->y,
 						  &path, &column, NULL, NULL) &&
-		    gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, path) &&
-		    !gtk_tree_model_iter_has_child(GTK_TREE_MODEL(pl->store), &iter)) {
+		    gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, path)) {
 
-			if (gtk_tree_selection_count_selected_rows(pl->select) == 0)
+			if (gtk_tree_selection_count_selected_rows(pl->select) == 0) {
 				gtk_tree_view_set_cursor(GTK_TREE_VIEW(pl->view), path, NULL, FALSE);
+			}
 
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
-					   PL_COL_TRACK_NAME, &pname, PL_COL_PHYSICAL_FILENAME, &pfile, -1);
+			if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(pl->store), &iter)) {
+				gtk_widget_set_sensitive(plist__fileinfo, FALSE);
+			} else {
+				gchar * pname;
+				gchar * pfile;
 
-                        http = httpc_is_url(pfile);
-	                gtk_widget_set_sensitive(plist__rva_separate, !http);
-	                gtk_widget_set_sensitive(plist__rva_average, !http);
-#ifdef HAVE_IFP
-		        gtk_widget_set_sensitive(plist__send_songs_to_iriver, !http);
-#endif  /* HAVE_IFP */
+				gtk_widget_set_sensitive(plist__fileinfo, TRUE);
 
-                        strncpy(fileinfo_name, pname, MAXLEN-1);
-			strncpy(fileinfo_file, pfile, MAXLEN-1);
-			free(pname);
-			free(pfile);
-					
-			gtk_widget_set_sensitive(plist__fileinfo, TRUE);
+				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
+						   PL_COL_TRACK_NAME, &pname,
+						   PL_COL_PHYSICAL_FILENAME, &pfile, -1);
+
+				strncpy(fileinfo_name, pname, MAXLEN-1);
+				strncpy(fileinfo_file, pfile, MAXLEN-1);
+				free(pname);
+				free(pfile);
+			}
 		} else {
 			gtk_widget_set_sensitive(plist__fileinfo, FALSE);
 		}
+
+		has_selection = (gtk_tree_selection_count_selected_rows(pl->select) != 0);
+
+		if (has_selection) {
+			http_only = playlist_selection_is_http_only(pl);
+		}
+
+		gtk_widget_set_sensitive(plist__reread_file_meta, has_selection && !http_only);
+		gtk_widget_set_sensitive(plist__rva, has_selection && !http_only);
+#ifdef HAVE_IFP
+		gtk_widget_set_sensitive(plist__send_songs_to_iriver, has_selection && !http_only);
+#endif  /* HAVE_IFP */
+
 
 		gtk_menu_popup(GTK_MENU(plist_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);
@@ -2002,7 +2046,7 @@ plist__load_tab_cb(gpointer data) {
 }
 
 
-void
+int
 plist_setup_vol_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
 	volume_t * vol = (volume_t *)data;
@@ -2015,6 +2059,7 @@ plist_setup_vol_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 	}
 
 	g_free(file);
+	return 0;
 }
 
 void
@@ -2082,7 +2127,7 @@ plist__rva_average_cb(gpointer data) {
 }
 
 
-void
+int
 plist__reread_file_meta_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
 	gchar * title;
@@ -2099,6 +2144,12 @@ plist__reread_file_meta_foreach(playlist_t * pl, GtkTreeIter * iter, void * data
 			   PL_COL_PHYSICAL_FILENAME, &fullname,
 			   -1);
 
+	if (httpc_is_url(fullname)) {
+		g_free(title);
+		g_free(fullname);
+		return 0;
+	}
+
 	if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(pl->store), &dummy, iter)) {
 		composit = 0;
 	} else {
@@ -2111,7 +2162,7 @@ plist__reread_file_meta_foreach(playlist_t * pl, GtkTreeIter * iter, void * data
 			"playlist_filemeta_get() returned NULL\n");
 		g_free(title);
 		g_free(fullname);
-		return;
+		return 0;
 	}
 			
 	voladj2str(plfm->voladj, voladj_str);
@@ -2128,6 +2179,7 @@ plist__reread_file_meta_foreach(playlist_t * pl, GtkTreeIter * iter, void * data
 	plfm = NULL;
 	g_free(title);
 	g_free(fullname);
+	return 0;
 }
 
 

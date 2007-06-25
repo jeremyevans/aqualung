@@ -112,7 +112,7 @@ update_progress (void *context, struct ifp_transfer_status *status) {
 }
 
 
-void
+int
 upload_songs_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
 	int i;
@@ -122,14 +122,14 @@ upload_songs_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
         struct stat statbuf;
 
 	if (abort_pressed) {
-		return;
+		return 0;
 	}
 
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_PHYSICAL_FILENAME, &str, -1);
 
 	if (stat(file, &statbuf) == -1) {
 		g_free(str);
-		return;
+		return 0;
 	}
 
 	i = strlen(str);
@@ -161,6 +161,8 @@ upload_songs_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 	g_free(str);
 
 	(*n)++;
+
+	return 0;
 }
 
 void
@@ -505,7 +507,7 @@ aifp_update_info(void) {
 
 /* get the number of songs to send and overall data size to be transmitted */
 
-void
+int
 aifp_get_songs_info_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
         struct stat statbuf;
@@ -520,6 +522,7 @@ aifp_get_songs_info_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 	}
 
 	g_free(file);
+	return 0;
 }
 
 gint

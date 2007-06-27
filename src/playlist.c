@@ -818,7 +818,7 @@ playlist_foreach_selected(playlist_t * pl, int (* foreach)(playlist_t *, GtkTree
 }
 
 int
-playlist_selection_is_http_only_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
+playlist_selection_file_types_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
 	gchar * file;
 	int * i = (int *)data;
@@ -826,7 +826,9 @@ playlist_selection_is_http_only_foreach(playlist_t * pl, GtkTreeIter * iter, voi
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter,
 			   PL_COL_PHYSICAL_FILENAME, &file, -1);
 
-	if (!httpc_is_url(file)) {
+	if (strstr(file, "CDDA") == file) {
+		*i = 1;
+	} else if (!httpc_is_url(file)) {
 		*i = 0;
 	}
 
@@ -835,14 +837,15 @@ playlist_selection_is_http_only_foreach(playlist_t * pl, GtkTreeIter * iter, voi
 	return *i == 0;
 }
 
+/* return: 0: selection has audio file; 1: has cdda but no audio; 2: has only http or empty */
 int
-playlist_selection_is_http_only(playlist_t * pl) {
+playlist_selection_file_types(playlist_t * pl) {
 
-	int res = 1;
+	int type = 2;
 
-	playlist_foreach_selected(pl, playlist_selection_is_http_only_foreach, &res);
+	playlist_foreach_selected(pl, playlist_selection_file_types_foreach, &type);
 
-	return res;
+	return type;
 }
 
 GtkTreePath *
@@ -1283,7 +1286,7 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 	GtkTreePath * path;
 	GtkTreeViewColumn * column;
 	GtkTreeIter iter;
-	int http_only = 0;
+	int file_types = 0;
 	int has_selection = 0;
 	playlist_t * pl = (playlist_t *)data;
 
@@ -1328,13 +1331,13 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 		has_selection = (gtk_tree_selection_count_selected_rows(pl->select) != 0);
 
 		if (has_selection) {
-			http_only = playlist_selection_is_http_only(pl);
+			file_types = playlist_selection_file_types(pl);
 		}
 
-		gtk_widget_set_sensitive(plist__reread_file_meta, has_selection && !http_only);
-		gtk_widget_set_sensitive(plist__rva, has_selection && !http_only);
+		gtk_widget_set_sensitive(plist__reread_file_meta, has_selection && (file_types == 0));
+		gtk_widget_set_sensitive(plist__rva, has_selection && (file_types <= 1));
 #ifdef HAVE_IFP
-		gtk_widget_set_sensitive(plist__send_songs_to_iriver, has_selection && !http_only);
+		gtk_widget_set_sensitive(plist__send_songs_to_iriver, has_selection && (file_types == 0));
 #endif  /* HAVE_IFP */
 
 
@@ -2137,6 +2140,7 @@ plist__reread_file_meta_foreach(playlist_t * pl, GtkTreeIter * iter, void * data
 	gint composit;
 	playlist_filemeta * plfm = NULL;
 	GtkTreeIter dummy;
+        struct stat statbuf;
 
 
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter,
@@ -2144,7 +2148,7 @@ plist__reread_file_meta_foreach(playlist_t * pl, GtkTreeIter * iter, void * data
 			   PL_COL_PHYSICAL_FILENAME, &fullname,
 			   -1);
 
-	if (httpc_is_url(fullname)) {
+	if (stat(fullname, &statbuf) == -1) {
 		g_free(title);
 		g_free(fullname);
 		return 0;

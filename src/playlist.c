@@ -5029,7 +5029,6 @@ playlist_load_m3u_thread(void * arg) {
 					}
 				}
 
-				pt->list = g_slist_append(pt->list, strdup(path));
 				plfm = playlist_filemeta_get(path,
 							     have_name ? name : NULL,
 							     1);

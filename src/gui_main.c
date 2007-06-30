@@ -3794,15 +3794,17 @@ process_metablock(metadata_t * meta) {
 	/* set playlist_str for playlist entry */
 	if ((pl = playlist_get_playing()) != NULL) {
 		GtkTreePath * p = playlist_get_playing_path(pl);
-		GtkTreeIter iter;
+		if (p != NULL) {
+			GtkTreeIter iter;
 
-		gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 
-		gtk_tree_store_set(pl->store, &iter,
-				   PL_COL_TRACK_NAME, playlist_str,
-				   -1);
+			gtk_tree_store_set(pl->store, &iter,
+					   PL_COL_TRACK_NAME, playlist_str,
+					   -1);
 
-		gtk_tree_path_free(p);
+			gtk_tree_path_free(p);
+		}
 	}
 
 	metadata_free(meta);

@@ -2273,9 +2273,8 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	toggle_noeffect(PLAY, FALSE);
 	toggle_noeffect(PAUSE, FALSE);
 
-        if (is_paused) {
-                is_paused = 0;
-        }
+	is_paused = 0;
+	allow_seeks = 1;
 
 	cmd = CMD_CUE;
 	cue.filename = NULL;

@@ -216,7 +216,7 @@ read_socket(int s, char * buf, int n) {
 		if (!sock_can_read(s, options.inet_timeout)) {
 			return -1;
 		}
-		if ((br = read(s, buf, n-bcount)) > 0) {
+		if ((br = recv(s, buf, n-bcount, 0)) > 0) {
 			bcount += br;
 			buf += br;
 		} else if (br < 0) {
@@ -236,7 +236,7 @@ read_sock_line(int s, char * buf, int n) {
 		if (!sock_can_read(s, options.inet_timeout)) {
 			return -1;
 		}
-		if ((ret = read(s, buf+k, 1)) < 0) {
+		if ((ret = recv(s, buf+k, 1, 0)) < 0) {
 			return -1;
 		}
 		if (ret == 0) {
@@ -271,7 +271,7 @@ write_socket(int s, char * buf, int n) {
 		if (!sock_can_write(s, options.inet_timeout)) {
 			return -1;
 		}
-		if ((bw = write(s, buf, n-bcount)) > 0) {
+		if ((bw = send(s, buf, n-bcount, 0)) > 0) {
 			bcount += bw;
 			buf += bw;
 		} else if (bw < 0) {

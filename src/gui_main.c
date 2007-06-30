@@ -644,7 +644,7 @@ refresh_displays(void) {
 					   PL_COL_PHYSICAL_FILENAME, &phys_str,
 					   -1);
 			display_cover(cover_image_area, c_event_box, cover_align,
-				      48, 48, title_str, TRUE, TRUE);
+				      48, 48, phys_str, TRUE, TRUE);
 			g_free(phys_str);
 		}
 	} else if (!is_file_loaded) {

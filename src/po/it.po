@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-06-20 23:27+0200\n"
-"PO-Revision-Date: 2007-06-20 23:59+0200\n"
+"POT-Creation-Date: 2007-06-30 21:18+0200\n"
+"PO-Revision-Date: 2007-06-30 22:15+0200\n"
 "Last-Translator: Michele Petrecca <michelinux@alice.it>\n"
 "Language-Team: Italiano\n"
 "MIME-Version: 1.0\n"
@@ -42,6 +42,9 @@ msgstr "Traduttori:"
 
 msgid "German, Hungarian:\n"
 msgstr "Tedesco, Ungherese:\n"
+
+msgid "Italian:\n"
+msgstr "Italiano:\n"
 
 msgid "Ukrainian:\n"
 msgstr "Ucraino:\n"
@@ -369,10 +372,10 @@ msgid "Unknown Record"
 msgstr "Registrazione sconosciuta"
 
 msgid "Scanning files"
-msgstr ""
+msgstr "Scansione dei file in corso"
 
 msgid "Processing metadata"
-msgstr "Processo in corso dei metadati"
+msgstr "Analisi dei metadati in corso"
 
 msgid "CDDB lookup"
 msgstr ""
@@ -384,7 +387,7 @@ msgid "Reading file"
 msgstr "Lettura in corso dei file"
 
 msgid "Please select the directory for ripped files."
-msgstr ""
+msgstr "Seleziona la cartella per i file convertiti"
 
 msgid "(none)"
 msgstr ""
@@ -425,8 +428,8 @@ msgstr "Album:"
 msgid "Rip"
 msgstr "Rip"
 
-msgid "No"
-msgstr "No"
+msgid "No."
+msgstr "N.ro"
 
 msgid "Title"
 msgstr "Titolo"
@@ -684,10 +687,10 @@ msgid "Extended data:"
 msgstr "Dati estesi:"
 
 msgid "Import as Artist"
-msgstr ""
+msgstr "Importa come artista"
 
 msgid "Import as Title"
-msgstr ""
+msgstr "Importa come titolo"
 
 msgid "Import as Sort Key"
 msgstr ""
@@ -711,21 +714,29 @@ msgid ""
 "Artist appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
+"Il nome dell'artista sembra essere scritto tutto a lettere minuscole.\n"
+"Vuoi continuare?"
 
 msgid ""
 "Artist appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
+"Il nome dell'artista sembra essere scritto tutto in lettere maiuscole.\n"
+"Vuoi continuare?"
 
 msgid ""
 "Title appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
+"Il tittolo sembra essere scritto tutto a lettere minuscole.\n"
+"Vuoi continuare?"
 
 msgid ""
 "Title appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
+"Il titolo sembra essere scritto tutto a lettere minuscole.\n"
+"Vuoi continuare?"
 
 msgid ""
 "It is very likely that the year is wrong.\n"
@@ -742,7 +753,7 @@ msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr ""
 
 msgid "No matching record found."
-msgstr ""
+msgstr "Nessuna registrazione coincidente con le parole della ricerca è stata trovata"
 
 msgid "MONO"
 msgstr "MONO"
@@ -770,13 +781,13 @@ msgid "Save"
 msgstr "Salva"
 
 msgid "Discard changes"
-msgstr ""
+msgstr "Annulla i cambi"
 
 msgid "Do not exit"
-msgstr ""
+msgstr "Non uscire"
 
 msgid "Quit"
-msgstr ""
+msgstr "Esci"
 
 #, c-format
 msgid "Position: %d%%"
@@ -829,7 +840,11 @@ msgid ""
 "Aqualung is compiled with system tray support, but the status icon could not "
 "be embedded in the notification area. Your desktop may not have support for "
 "a system tray, or it has not been configured correctly."
-msgstr "Aqualung è stato compilato con il supporto alla system tray, ma lo stato dell'icona potrebbe non essere inserita nell'area di notificazione. L'ambiente desktop da te in uso potrebbe non avere il supporto alla system tray oppure non essere configurato in maniera appropriata."
+msgstr ""
+"Aqualung è stato compilato con il supporto alla system tray, ma lo stato "
+"dell'icona potrebbe non essere inserita nell'area di notificazione. "
+"L'ambiente desktop da te in uso potrebbe non avere il supporto alla system "
+"tray oppure non essere configurato in maniera appropriata."
 
 msgid "Settings"
 msgstr "Impostazioni"
@@ -868,10 +883,10 @@ msgid "Shuffle songs"
 msgstr ""
 
 msgid "Toggle playlist"
-msgstr ""
+msgstr "Visualizza playlist"
 
 msgid "Toggle music store"
-msgstr ""
+msgstr "Visualizza Music Store"
 
 msgid "Toggle LADSPA patch builder"
 msgstr ""
@@ -1168,13 +1183,13 @@ msgid "Remove Track"
 msgstr "Rimuovi traccia"
 
 msgid "Update file metadata"
-msgstr ""
+msgstr "Aggiorna i metadati del file"
 
 msgid "Track name"
 msgstr "Nome traccia"
 
 msgid "Track comment"
-msgstr ""
+msgstr "Commento traccia"
 
 msgid "Track number"
 msgstr "Numero traccia"
@@ -1303,7 +1318,7 @@ msgid "Remove track"
 msgstr "Rimuovi la traccia"
 
 msgid "File info..."
-msgstr "Info File..."
+msgstr "Informazioni sul file..."
 
 msgid "Calculate volume"
 msgstr ""
@@ -1340,7 +1355,7 @@ msgid "Do you want to save store \"%s\" before removing from Music Store?"
 msgstr ""
 
 msgid "You will need to restart Aqualung for the following changes to take effect:"
-msgstr ""
+msgstr "Necessiti di riavviare Aqualung affinché i seguenti cambi abbiano effetto:"
 
 msgid "r"
 msgstr "r"
@@ -1349,13 +1364,13 @@ msgid "unreachable"
 msgstr ""
 
 msgid "Please select a Music Store database."
-msgstr ""
+msgstr "Seleziona un database del Music Store."
 
 msgid "Paths must either be absolute or starting with a tilde."
 msgstr ""
 
 msgid "The specified store has already been added to the list."
-msgstr ""
+msgstr "Lo Store specificato è stato già aggiunto alla lista."
 
 #, c-format
 msgid ""
@@ -1466,7 +1481,7 @@ msgid "Show song name in the main window's title"
 msgstr ""
 
 msgid "Show hidden files and directories in file choosers"
-msgstr ""
+msgstr "Mostra file e cartelle nascoste nel percorso di scelta del file"
 
 msgid "Show tags tab first in the file info dialog"
 msgstr ""
@@ -1484,22 +1499,22 @@ msgid "Album mode is the default when adding entire records"
 msgstr ""
 
 msgid "Always show the tab bar"
-msgstr ""
+msgstr "Mostra sempre la barra dei tab"
 
 msgid "Show close button in tab"
-msgstr ""
+msgstr "Mostra il pulsante di chiusura sul tab"
 
 msgid "When shuffling, records added in Album mode are played in order"
 msgstr ""
 
 msgid "Enable statusbar"
-msgstr ""
+msgstr "Abilita la barra di stato"
 
 msgid "Enable statusbar in playlist"
-msgstr ""
+msgstr "Abilita la barra di stato nella playlist"
 
 msgid "Show soundfile size in statusbar"
-msgstr ""
+msgstr "Mostra dimensione del file nella barra di stato"
 
 msgid "Show RVA values"
 msgstr "Mostra valore RVA"
@@ -1540,13 +1555,13 @@ msgid "Hide the Music Store comment pane"
 msgstr ""
 
 msgid "Enable toolbar"
-msgstr ""
+msgstr "Abilita toolbar"
 
 msgid "Enable toolbar in Music Store"
-msgstr ""
+msgstr "Abilita la toolbar nel Music Store"
 
 msgid "Enable statusbar in Music Store"
-msgstr ""
+msgstr "Abilita la barra di stato nel Music Store"
 
 msgid "Expand Stores on startup"
 msgstr ""
@@ -1561,7 +1576,7 @@ msgid "Cover art"
 msgstr ""
 
 msgid "Default cover width:"
-msgstr ""
+msgstr "Ampiezza immagine album:"
 
 msgid "50 pixels"
 msgstr "50 pixel"
@@ -1609,15 +1624,17 @@ msgid "LADSPA plugin processing"
 msgstr ""
 
 msgid "Pre Fader (before Volume & Balance)"
-msgstr ""
+msgstr "Pre Fader (prima del Volume e del Bilanciamento)"
 
 msgid "Post Fader (after Volume & Balance)"
-msgstr ""
+msgstr "Post Fader (dopo il Volume e il Bilanciamento)"
 
 msgid ""
 "Aqualung is compiled without LADSPA plugin support.\n"
 "See the About box and the documentation for details."
 msgstr ""
+"Aqualung è stato compilato senza il supporto per per i plugin LADSPA.\n"
+"Andare nella sezione \"Altro\" e leggere la documentazione per ulteriori dettagli."
 
 msgid "Sample Rate Converter type"
 msgstr ""
@@ -1668,10 +1685,10 @@ msgid "% of standard deviation"
 msgstr ""
 
 msgid "Linear threshold [dB]"
-msgstr ""
+msgstr "Soglia lineare [dB]"
 
 msgid "Linear threshold [dB] :"
-msgstr ""
+msgstr "Soglia lineare [dB] :"
 
 #, c-format
 msgid "% of standard deviation :"
@@ -1681,9 +1698,11 @@ msgid ""
 "When adding to playlist, use file metadata (if available) instead of\n"
 "information from the Music Store for:"
 msgstr ""
+"Quando aggiungi alla playlist, usa i metadati del file (se possibile e se disponibili)\n"
+"invece delle informazioni dal Music Store per:"
 
 msgid "When adding external files to playlist, use file metadata (if available) for:"
-msgstr ""
+msgstr "Quando aggiungi file esterni alla playlist, usa i metadati del file (se disponibili) per:"
 
 msgid "Replaygain tag to extract from Ogg Xiph and APE tags: "
 msgstr ""
@@ -1701,10 +1720,10 @@ msgid "Force TOC re-read on every drive scan"
 msgstr ""
 
 msgid "Automatically add CDs to Playlist"
-msgstr ""
+msgstr "Aggiungi automaticamente i CD alla playlist"
 
 msgid "Automatically remove CDs from Playlist"
-msgstr ""
+msgstr "Rimuovi automaticamente i CD dalla playlist"
 
 msgid "CDDB server:"
 msgstr "Server CDDB:"
@@ -1731,16 +1750,16 @@ msgid "HTTP (port 80)"
 msgstr "HTTP (porta 80)"
 
 msgid "Internet"
-msgstr ""
+msgstr "Internet"
 
 msgid "Direct connection to the Internet"
-msgstr ""
+msgstr "Connessione diretta ad Internet"
 
 msgid "Connect via HTTP proxy"
-msgstr ""
+msgstr "Connessione attraverso proxy HTTP"
 
 msgid "Proxy settings"
-msgstr ""
+msgstr "Impostazioni Proxy"
 
 msgid "Proxy host:"
 msgstr ""
@@ -1770,13 +1789,13 @@ msgid "Playlist: "
 msgstr "Playlist: "
 
 msgid "Music Store: "
-msgstr ""
+msgstr "Music Store: "
 
 msgid "Big timer: "
-msgstr ""
+msgstr "Contatore - Cifre grandi:"
 
 msgid "Small timers: "
-msgstr ""
+msgstr "Contatore - Cifre piccole"
 
 msgid "Song title: "
 msgstr "Titolo canzone: "
@@ -1785,13 +1804,13 @@ msgid "Song info: "
 msgstr "Info canzone: "
 
 msgid "Statusbar: "
-msgstr ""
+msgstr "Barra di stato: "
 
 msgid "Colors"
 msgstr "Colori"
 
 msgid "Active song in playlist: "
-msgstr ""
+msgstr "Traccia in esecuzione nella playlist: "
 
 msgid "(Untitled)"
 msgstr ""
@@ -1900,6 +1919,8 @@ msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
+"Seleziona tutte le tracce nella playlist\n"
+"(Clicca con il tasto destro del mouse per il menù)"
 
 msgid "Remove selected"
 msgstr "Rimuovi selezione"
@@ -1908,12 +1929,14 @@ msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
+"Rimuovi le tracce selezionate nella playlist\n"
+"(Clicca con il tasto destro del mouse per il menù)"
 
 msgid "Add directory"
 msgstr "Aggiungi cartella"
 
 msgid "Select none"
-msgstr ""
+msgstr "Nessuna selezione"
 
 msgid "Invert selection"
 msgstr "Inverti selezione"
@@ -1928,13 +1951,13 @@ msgid "Cut selected"
 msgstr "Taglia selezione"
 
 msgid "Save playlist"
-msgstr ""
+msgstr "Salva la playlist"
 
 msgid "Save all playlists"
-msgstr ""
+msgstr "Salva tutte le playlist"
 
 msgid "Load playlist in new tab"
-msgstr ""
+msgstr "Carica la playlist in un nuovo tab"
 
 msgid "Load playlist"
 msgstr "Carica playlist"
@@ -1943,7 +1966,7 @@ msgid "Enqueue playlist"
 msgstr ""
 
 msgid "Send to iFP device"
-msgstr ""
+msgstr "Trasmetti al dispositivo iFP"
 
 msgid "Calculate RVA"
 msgstr "Calcola RVA"
@@ -1955,7 +1978,7 @@ msgid "Average"
 msgstr ""
 
 msgid "Reread file metadata"
-msgstr ""
+msgstr "Leggi di nuovo i metadati del file"
 
 msgid "Stop adding files"
 msgstr ""
@@ -1967,6 +1990,8 @@ msgid ""
 "\n"
 "Are you sure?"
 msgstr ""
+"Il file selezionato sarà cancellato dal disco. Nessun recupero sarà possibile dopo questa operazione.\n"
+"Sei sicuro di voler continuare?"
 
 #, c-format
 msgid ""
@@ -1975,6 +2000,8 @@ msgid ""
 "\n"
 "Are you sure?"
 msgstr ""
+"Tutti i file selezionati saranno cancellati dal disco. Nessun recupero sarà possibile dopo questa operazione.\n"
+"Sei sicuro di voler continuare?"
 
 msgid "Remove file"
 msgstr "Rimuovi file"
@@ -2019,7 +2046,7 @@ msgid "JACK Port Setup"
 msgstr "Impostazioni porte JACK"
 
 msgid "Rescan"
-msgstr ""
+msgstr "Scansiona di nuovo"
 
 msgid "Available connections"
 msgstr "Connessioni disponibili"
@@ -2052,7 +2079,7 @@ msgid "Search in:"
 msgstr "Cerca in:"
 
 msgid "Artist names"
-msgstr ""
+msgstr "Nome artista"
 
 msgid "Record titles"
 msgstr ""
@@ -2112,7 +2139,7 @@ msgid "Track:"
 msgstr "Traccia:"
 
 msgid "Import as Track number"
-msgstr ""
+msgstr "Importa come numero traccia"
 
 msgid "Comment:"
 msgstr "Commento:"
@@ -2130,13 +2157,13 @@ msgid "Import as RVA"
 msgstr "Importa come RVA"
 
 msgid "Other"
-msgstr ""
+msgstr "Altro"
 
 msgid "File icon (32x32 PNG)"
-msgstr ""
+msgstr "File icona (32x32 PNG)"
 
 msgid "File icon (other)"
-msgstr ""
+msgstr "File icona (altro)"
 
 msgid "Front cover"
 msgstr "Fronte"
@@ -2239,7 +2266,7 @@ msgid "Bandwidth:"
 msgstr "Banda passante:"
 
 msgid "Total samples:"
-msgstr ""
+msgstr "Campioni totali:"
 
 msgid "Mode:"
 msgstr ""
@@ -2260,22 +2287,22 @@ msgid "Patterns:"
 msgstr ""
 
 msgid "Samples:"
-msgstr ""
+msgstr "Campioni:"
 
 msgid "Instruments:"
 msgstr "Strumenti:"
 
 msgid "Samples"
-msgstr ""
+msgstr "Campioni"
 
 msgid "Instruments"
-msgstr ""
+msgstr "Strumenti"
 
 msgid "Album"
 msgstr "Album"
 
 msgid "Beats per minute"
-msgstr ""
+msgstr "Battute al minuto"
 
 msgid "Content type"
 msgstr ""
@@ -2302,7 +2329,7 @@ msgid "Tagging time"
 msgstr ""
 
 msgid "Encoded by"
-msgstr ""
+msgstr "Codificato da"
 
 msgid "Lyricist"
 msgstr ""
@@ -2311,7 +2338,7 @@ msgid "File type"
 msgstr ""
 
 msgid "Involved people"
-msgstr ""
+msgstr "Persone coinvolte nel progetto"
 
 msgid "Content group"
 msgstr ""
@@ -2323,10 +2350,10 @@ msgid "Initial key"
 msgstr ""
 
 msgid "Language"
-msgstr ""
+msgstr "Linguaggio"
 
 msgid "Length (ms)"
-msgstr ""
+msgstr "Lunghezza (ms)"
 
 msgid "Musician credits"
 msgstr ""
@@ -2341,28 +2368,28 @@ msgid "Original album"
 msgstr "Album originale"
 
 msgid "Original filename"
-msgstr ""
+msgstr "Nome originale del file"
 
 msgid "Original lyricist"
 msgstr ""
 
 msgid "Original artist"
-msgstr ""
+msgstr "Artista principale"
 
 msgid "Owner/licensee"
-msgstr ""
+msgstr "Proprietario/Licenza"
 
 msgid "Orchestra"
 msgstr "Orchestra"
 
 msgid "Interpreted/remixed"
-msgstr ""
+msgstr "Interpretato/Remixato"
 
 msgid "Part of set"
 msgstr ""
 
 msgid "Produced"
-msgstr ""
+msgstr "Prodotto"
 
 msgid "Publisher"
 msgstr ""
@@ -2389,7 +2416,7 @@ msgid "Encoding settings"
 msgstr "Impostazioni codifica"
 
 msgid "Set subtitle"
-msgstr ""
+msgstr "Imposta sottotitoli"
 
 msgid "Profile: Telephone"
 msgstr "Profilo: Telefono"
@@ -2425,10 +2452,10 @@ msgid "Unrecognized"
 msgstr ""
 
 msgid "Single channel"
-msgstr ""
+msgstr "Canale singolo"
 
 msgid "Dual channel"
-msgstr ""
+msgstr "Canale doppio"
 
 msgid "Joint stereo"
 msgstr ""
@@ -2437,25 +2464,25 @@ msgid "Stereo"
 msgstr "Stereo"
 
 msgid "Emphasis: none"
-msgstr ""
+msgstr "Enfasi: nessuna"
 
 msgid "Emphasis:"
-msgstr ""
+msgstr "Enfasi:"
 
 msgid "Emphasis: reserved"
-msgstr ""
+msgstr "Enfasi: riservata"
 
 msgid "bit signed"
-msgstr ""
+msgstr "bit con segno"
 
 msgid "bit unsigned"
-msgstr ""
+msgstr "bit senza segno"
 
 msgid "bit float"
-msgstr ""
+msgstr "bit float"
 
 msgid "bit double"
-msgstr ""
+msgstr "bit double"
 
 msgid "encoding"
 msgstr "Codifica"
@@ -2474,3 +2501,6 @@ msgstr "Compressione: Molto Alta"
 
 msgid "Compression: Insane"
 msgstr ""
+
+
+

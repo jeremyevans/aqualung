@@ -2,17 +2,17 @@ Aqualung README
 ===============
 
 
-Aqualung is an advanced music player primarily targeted for the
-GNU/Linux operating system, but also usable on FreeBSD and Cygwin.
+Aqualung is an advanced music player primarily targeted at the
+GNU/Linux operating system, but also usable on FreeBSD, Cygwin
+and also runs natively on Microsoft Windows.
 
 Homepage: http://aqualung.sf.net
 
 Please see the homepage for a general introduction to the program,
 including compilation instructions.
 
-Please refer to the documentation provided with the program for a
+Please refer to the documentation provided on the homepage for a
 detailed description of features, usage tips and miscellaneous info.
-You will find it in the doc/ directory in .pdf and .lyx formats.
 
 Please consider subscribing to the project's mailing list at:
 http://lists.sourceforge.net/lists/listinfo/aqualung-friends

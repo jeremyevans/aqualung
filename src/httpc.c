@@ -647,14 +647,18 @@ httpc_init(http_session_t * session, file_decoder_t * fdec,
 	if (strstr(session->headers.status, "HTTP/1.1 30") != NULL) {
 		/* redirect */
 		if (session->headers.location != NULL) {
+			char * location = strdup(session->headers.location);
 			int ret;
 #ifdef HTTPC_DEBUG
 			printf("redirecting to %s\n", session->headers.location);
 #endif /* HTTPC_DEBUG */
 			close(session->sock);
+			free(session->URL);
+			free_headers(&session->headers);
 			ret = httpc_init(session, fdec,
-					 session->headers.location, use_proxy, proxy,
+					 location, use_proxy, proxy,
 					 proxy_port, noproxy_domains, 0L);
+			free(location);
 			return ret;
 		} else {
 			close(session->sock);
@@ -673,6 +677,8 @@ httpc_init(http_session_t * session, file_decoder_t * fdec,
 		printf("following x-mpegurl to %s\n", buf);
 #endif /* HTTPC_DEBUG */
 		close(session->sock);
+		free(session->URL);
+		free_headers(&session->headers);
 		ret = httpc_init(session, fdec,
 				 buf, use_proxy, proxy, proxy_port,
 				 noproxy_domains, 0L);

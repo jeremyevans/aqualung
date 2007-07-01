@@ -1295,6 +1295,7 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(pl->view), event->x, event->y,
 						  &path, &column, NULL, NULL)) {
 			playlist_start_playback_at_path(pl, path);
+			gtk_tree_path_free(path);
 		}
 	}
 
@@ -1459,7 +1460,7 @@ add_file_to_playlist(gpointer data) {
 			pt->start_playback = 0;
 		}
 
-		free(plfm);
+		playlist_filemeta_free(plfm);
 	}
 
 	g_list_free(pt->plfm_list);

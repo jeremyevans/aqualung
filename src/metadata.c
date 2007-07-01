@@ -59,13 +59,12 @@ metadata_free(metadata_t * meta) {
 		return;
 	}
 	
-	p = meta->root->next;
+	p = meta->root;
 	while (p != NULL) {
 		q = p->next;
 		meta_frame_free(p);
 		p = q;
 	}
-	free(meta->root);
 	free(meta);
 }
 

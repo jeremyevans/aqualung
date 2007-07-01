@@ -1423,7 +1423,7 @@ add_file_to_playlist(gpointer data) {
 			if (n == 0) {
 				/* someone viciously cleared the list while adding tracks to album node;
 				   ignore further tracks to this node */
-				free(plfm);
+				playlist_filemeta_free(plfm);
 				continue;
 			}
 

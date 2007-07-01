@@ -1217,6 +1217,20 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 			return TRUE;
 		}
 		break;
+	case GDK_ISO_Left_Tab: /* it is usually mapped to SHIFT + TAB */
+		if (kevent->state & GDK_CONTROL_MASK) {
+			playlist_notebook_prev_page();
+		}
+		return TRUE;
+	case GDK_Tab:
+		if (kevent->state & GDK_CONTROL_MASK) {
+			if (kevent->state & GDK_SHIFT_MASK) {
+				playlist_notebook_prev_page();
+			} else {
+				playlist_notebook_next_page();
+			}
+		}
+		return TRUE;
 	case GDK_c:
 	case GDK_C:
 		if (kevent->state & GDK_CONTROL_MASK) {
@@ -1256,6 +1270,12 @@ playlist_notebook_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		return TRUE;
 	}
 
+	if (kevent->keyval == GDK_Tab ||
+	    kevent->keyval == GDK_ISO_Left_Tab) {
+		/* prevent focus traversal */
+		return TRUE;
+	}
+
 	return FALSE;
 }
 
@@ -1266,6 +1286,12 @@ playlist_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	    (kevent->keyval == GDK_Page_Up || kevent->keyval == GDK_Page_Down)) {
 		/* ignore default key handler for PageUp/Down when
 		   CTRL is pressed to prevent unwanted cursor motion */
+		return TRUE;
+	}
+
+	if (kevent->keyval == GDK_Tab ||
+	    kevent->keyval == GDK_ISO_Left_Tab) {
+		/* prevent focus traversal */
 		return TRUE;
 	}
 

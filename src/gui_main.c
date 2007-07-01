@@ -326,6 +326,7 @@ aqualung_dialog_run(GtkDialog * dialog) {
 #ifdef HAVE_SYSTRAY
 	int ret;
 	systray_semaphore++;
+	gtk_window_present(GTK_WINDOW(dialog));
 	ret = gtk_dialog_run(dialog);
 	systray_semaphore--;
 	return ret;

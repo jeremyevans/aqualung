@@ -216,7 +216,6 @@ GtkWidget * label_mono;
 GtkWidget * label_output;
 GtkWidget * label_src_type;
 
-int shift_state;
 int x_scroll_start;
 int x_scroll_pos;
 int scroll_btn;
@@ -1145,8 +1144,6 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
         int playlist_tabs = gtk_notebook_get_n_pages(GTK_NOTEBOOK(playlist_notebook));
 
-        shift_state = event->state & GDK_SHIFT_MASK;
-
 	switch (event->keyval) {	
 	case GDK_KP_Divide:
 		refresh_time_label = 0;
@@ -1367,8 +1364,6 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
 gint
 main_window_key_released(GtkWidget * widget, GdkEventKey * event) {
-
-        shift_state = event->state & GDK_SHIFT_MASK;
 
 	switch (event->keyval) {
         case GDK_Right:
@@ -1619,7 +1614,7 @@ changed_vol(GtkAdjustment * adj, gpointer date) {
                 sprintf(str, _("%d dB"), (int)options.vol);
         }
 
-        if (!shift_state && !refresh_time_label) {
+        if (!refresh_time_label) {
 		gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
         }
 
@@ -1689,7 +1684,7 @@ changed_bal(GtkAdjustment * adj, gpointer date) {
                 sprintf(str, _("C"));
         }
 	
-        if (!shift_state && !refresh_time_label) {  /* SHIFT */
+        if (!refresh_time_label) {
 		gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
 	}
 

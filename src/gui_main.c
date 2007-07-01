@@ -2298,10 +2298,8 @@ decide_next_track(cue_t * pcue) {
 	playlist_t * pl;
 
 	if ((pl = playlist_get_playing()) == NULL) {
-		if ((pl = playlist_get_current()) == NULL) {
-			return;
-		}
-		playlist_set_playing(pl, 1);
+		unprepare_playback();
+		return;
 	}
 
 	p = playlist_get_playing_path(pl);

@@ -3749,6 +3749,7 @@ playlist_tab_label_clicked(GtkWidget * widget, GdkEventButton * event, gpointer 
 
 		if (path != NULL) {
 			playlist_start_playback_at_path(pl, path);
+			gtk_tree_path_free(path);
 		} else {
 			GtkTreeIter iter;
 			if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(pl->store), &iter)) {

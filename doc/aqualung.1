@@ -1,357 +1,371 @@
-.TH AQUALUNG 1 "12 January 2007"
-
-
+.TH AQUALUNG 1 "07 July 2007"
 .SH NAME
 aqualung \- Music player for GNU/Linux
-
-
 .SH SYNOPSIS
-
-\fBaqualung\fR \-\-help
-.br
-\fBaqualung\fR \-\-version
-.br
-\fBaqualung\fR [\-\-output (oss|alsa|jack|win32)] [options] [file1 [file2 ...]]
-
+.TP
+aqualung --help
+.TP
+aqualung --version
+.TP
+aqualung [--output (oss|alsa|jack|win32)] [options] [file1 [file2 ...]]
 .SH DESCRIPTION
-
-Aqualung is a music player for the GNU/Linux operating system. It
-plays audio files from your filesystem and has the feature of
-inserting \fBno gaps\fR between adjacent tracks. It also supports high
-quality sample rate conversion between the file and the output device,
-when necessary.
-
-Audio CDs can be played back and ripped with on-the-fly conversion to
-WAV, FLAC, Ogg Vorbis or CBR/VBR MP3 (gapless via LAME). Seamless
-tagging of the created files is offered as part of the process.
-
-Almost all sample-based, uncompressed formats (e.g. WAV, AIFF, AU
-etc.) are supported. Files encoded with FLAC (the Free Lossless Audio
-Codec), Ogg Vorbis, Ogg Speex, MPEG Audio (including the infamous MP3
-format), MOD audio formats (MOD, S3M, XM, IT, etc.), Musepack and
-Monkey's Audio Codec are also supported. Numerous formats and codecs
-are supported via the FFmpeg project, including AC3, AAC, WMA, WavPack
-and the soundtrack of many video formats. The program can play the
-music through OSS, ALSA or the JACK Audio Connection Kit, or even
+.P
+Aqualung is a music player originally designed for the
+GNU/Linux operating system, but also running on FreeBSD, Cygwin
+and NT-based versions of Microsoft Windows. It plays audio CDs,
+streams and audio files from your filesystem and has the feature
+of inserting \fBno gaps\fR between adjacent tracks. It
+also supports high quality sample rate conversion between the
+file and the output device, when necessary.
+.P
+Audio CDs can be played back and ripped with on-the-fly
+conversion to WAV, FLAC, Ogg Vorbis or CBR/VBR MP3 (gapless via
+LAME). Seamless tagging of the created files is offered as part
+of the process. Internet radio stations streaming Ogg Vorbis or
+MP3 are supported. Almost all sample-based, uncompressed formats
+(e.g. WAV, AIFF, AU etc.), as well as files encoded with FLAC
+(the Free Lossless Audio Codec), Ogg Vorbis, Ogg Speex, MPEG
+Audio (including the infamous MP3 format), MOD audio formats
+(MOD, S3M, XM, IT, etc.), Musepack and Monkey's Audio Codec are
+supported. Numerous formats and codecs are also supported via
+the FFmpeg project, including AC3, AAC, WMA, WavPack and the
+soundtrack of many video formats. The program can play the music
+through OSS, ALSA or the JACK Audio Connection Kit, or even
 using the Win32 Sound API (available only under Cygwin or native
-Win32).
-
-Aqualung supports the LADSPA 1.1 plugin standard. You can use any
-suitable plugin to enhance the music you are listening to.
-
-Other features of the program are internally working volume and
-balance controls (not touching the soundcard mixer), multiple skin
-support, random seeking during playback, track repeat, list repeat and
-shuffle mode (besides normal playback). In track repeat mode the
-looping range is adjustable. Aqualung will come up in the same state
-as it was when you closed it, including playback modes, volume and
-balance settings, currently processing LADSPA plugins, window sizes,
-positions and visibility, and other miscellaneous options. Aqualung
-has the ability to display and edit Ogg Xiph comments, ID3v1, ID3v2
-and APE tags found in files that support them.
-
-You can control any running instance of the program remotely from the
-command line (start, stop, pause etc.). Remote loading or enqueueing
-soundfiles as well as complete playlists is also supported.
-
-In addition to all this, Aqualung provides a so-called Music Store
-that is an XML-based music database, capable of storing various
-metadata about music on your computer (including, but not limited to,
-the names of artists, and the titles of records and tracks). You can
-(and should) organize your music into trees of Artists/Records/Tracks,
-thereby making life easier than with the all-in-one Winamp/XMMS
-playlist. Importing file metadata (ID3v1, ID3v2 tags, Ogg Xiph
-comments, APE metadata) into the Music Store as well as getting track
-names from a CDDB/FreeDB database is supported.
-
-Please refer to the documentation provided with the program for a
+Win32). Depending on the compile-time options, not all file
+formats and output drivers may be usable. Type aqualung
+-v to get a list of all the compiled-in features.
+.P
+Aqualung supports the LADSPA 1.1 plugin standard. You can use
+any suitable plugin to enhance the music you are listening
+to.
+.P
+Other features of the program are: tabbed playlist,
+internally working volume and balance controls (not touching the
+soundcard mixer), multiple skin support, random seeking during
+playback, track repeat, list repeat and shuffle mode (besides
+normal playback). In track repeat mode the looping range is
+adjustable. Aqualung will come up in the same state as it was
+when you closed it, including playback modes, volume and balance
+settings, currently processing LADSPA plugins, window sizes,
+positions and visibility, and other miscellaneous
+options. Aqualung has the ability to display and edit Ogg Xiph
+comments, ID3v1, ID3v2 and APE tags found in files that support
+them.
+.P
+Currently metadata editing capability is considered dangerous
+and is turned off by default, because the TagLib library which
+Aqualung uses for metadata access has some yet unfixed, serious
+bugs which may cause invalid tags to be written or may result in
+outright corrupt (unplayable) files. If you decide to build
+Aqualung with metadata editing support, make sure to have
+backups of your files and proceed with care.
+.P
+You can control any running instance of the program remotely
+from the command line (start, stop, pause etc.). Remote loading
+or enqueueing soundfiles as well as complete playlists is also
+supported.
+.P
+In addition to all this, Aqualung provides a so-called Music
+Store that is an XML-based music database, capable of storing
+various metadata about music on your computer (including, but
+not limited to, the names of artists, and the titles of records
+and tracks). You can (and should) organize your music into trees
+of Artists/Records/Tracks, thereby making life easier than with
+the all-in-one Winamp/XMMS playlist. Importing file metadata
+(ID3v1, ID3v2 tags, Ogg Xiph comments, APE metadata) into the
+Music Store as well as getting track names from a CDDB/FreeDB
+database is supported. For audio CDs, CD-Text retrieval is also
+implemented.
+.P
+Please refer to the documentation available at the homepage for a
 detailed description of features, usage tips and troubleshooting
-issues. This manual page is only an abstract from the documentation,
-and documents only the program's command line interface for quick
+issues. This manual page is merely an abstract from the User's Manual,
+and documents only the command line interface of the program for quick
 reference.
-
-
 .SH OPTIONS
-
-Normally you should be able to start Aqualung without any
-options. This case the output device will be selected by probing for a
-usable driver (in order of JACK, ALSA, OSS) with default parameters.
-
-If no driver could be started with default parameters, or you want to
-explicitly choose a suitable output configuration, you have to tell
-the program which output device to use. This is possible with the -o
-(--output) option. There are specific optional parameters for all four
-output drivers. You can also specify which sample rate converter you
-want to use, or request a list of available converters. You may also
-control another instance of the program remotely, or add files to the
-playlist.
-
-The disk thread is a background worker thread doing file decoding and
-sample rate conversion. If you experience short audio dropouts caused
-by other programs (e.g. web browser loading a complex page) try to run
-this thread at realtime with the -D (and optionally -Y) options.
+.P
+Normally you should be able to start Aqualung
+without any options. This case the output device will be
+selected by probing for a usable driver (in order of JACK,
+ALSA, OSS) with default parameters.
+.P
+If no driver could be started with default
+parameters, or you want to explicitly choose a suitable output
+configuration, you have to tell the program which output
+device to use. This is possible with the -o
+(--output) option. There are specific optional
+parameters for all four output drivers. You can also specify
+which sample rate converter you want to use, or request a list
+of available converters. You may also control another instance
+of the program remotely, or add files to the Playlist.
 
 .TP
-.B General options:
+.B General options
 .TP
-\-D, \-\-disk-realtime
+-D, --disk-realtime
 .br
-Try to use realtime (SCHED_FIFO) scheduling for disk thread.
+Try to use realtime (SCHED_FIFO) scheduling
+for disk thread, a background worker thread doing file
+decoding and sample rate conversion. Try this (and
+optionally -Y) if you experience short audio
+dropouts caused by other programs (e.g. web browser loading
+a complex page).
 .TP
-\-Y, \-\-disk-priority <int>
+-Y, --disk-priority <int>
 .br
-When running \-D, set scheduler priority to <int> (defaults to 1).
+When running -D, set scheduler priority to
+<int> (defaults to 1).
 
 .TP
-.B Options relevant to ALSA output:
+.B Options relevant to ALSA output
 .TP
-\-d, \-\-device <name>
+-d, --device <name>
 .br
 Set the output device (defaults to plughw:0,0).
 .TP
-\-p, \-\-period <int>
+-p, --period <int>
 .br
 Set ALSA period size (defaults to 8192).
 .TP
-\-n, \-\-nperiods <int>
+-n, --nperiods <int>
 .br
-Specify the number of periods in hardware buffer (defaults to 2).
+Specify the number of periods in hardware buffer
+(defaults to 2).
 .TP
-\-r, \-\-rate <int>
-.br
-Set the output sample rate.
-.TP
-\-R, \-\-realtime
-.br
-Try to use realtime (SCHED_FIFO) scheduling for ALSA output thread.
-.TP
-\-P, \-\-priority <int>
-.br
-When running \-R, set scheduler priority to <int> (defaults to 1).
-
-.TP
-.B Options relevant to OSS output:
-.TP
-\-d, \-\-device <name>
-.br
-Set the output device (defaults to /dev/dsp).
-.TP
-\-r, \-\-rate <int>
+-r, --rate <int>
 .br
 Set the output sample rate.
+.TP
+-R, --realtime
+.br
+Try to use realtime (SCHED_FIFO) scheduling
+for ALSA output thread.
+.TP
+-P, --priority <int>
+.br
+When running --realtime, set scheduler
+priority to <int> (defaults to 1).
 
 .TP
-.B Options relevant to JACK output:
+.B Options relevant to OSS output
 .TP
-\-a[<port_L>,<port_R>], \-\-auto[=<port_L>,<port_R>]
+-d, --device <name>
 .br
-Auto-connect output ports to given JACK ports (defaults to first two
-hardware playback ports).
+Set the output device (defaults to
+/dev/dsp).
 .TP
-\-c, \-\-client <name>
+-r, --rate <int>
 .br
-Set client name (needed if you want to run multiple instances of the program).
+Set the output sample rate.
 
+.TP
+.B Options relevant to JACK output
+.TP
+-a[<port_L>,<port_R>],
+--auto[=<port_L>,<port_R>]
+.br
+Auto-connect output ports to given JACK ports
+(defaults to first two hardware playback ports).
+.TP
+-c, --client <name>
+.br
+Set client name (needed if you want to run multiple
+instances of the program).
 .P
-Note that in the case when JACK output has been selected as part of
-the automatic output device detection, the -a option is implicitly
-applied.
+Note that in the case when JACK output has been selected
+as part of the automatic output device detection, the
+-a option is implicitly applied.
 
 .TP
-.B Options relevant to Win32 output:
+.B Options relevant to Win32 output
 .TP
-\-r, \-\-rate <int>
+-r, --rate <int>
 .br
 Set the output sample rate.
 
 .TP
-.B Options relevant to the Sample Rate Converter:
+.B Options relevant to the Sample Rate Converter
 .TP
-\-s[<int>], \-\-srctype[=<int>]
+-s[<int>], --srctype[=<int>]
 .br
-Choose the SRC type, or print the list of available types if no number
-given. The default is SRC type 4 (Linear Interpolator).
+Choose the SRC type, or print the list of available
+types if no number given. The default is SRC type 4 (Linear
+Interpolator).
 
 .TP
-.B Options for remote cue control:
-
-.PP
-Note that remote controlling of instances is only possible if the
-instance you want to send a command to is running as the same user as
-you are when you issue the remote command.
-
+.B Options for remote cue control
+.P
+Note that remote controlling of instances is only possible
+if the instance you want to send a command to is running as
+the same user as you are when you issue the remote command.
 .TP
-\-N, \-\-session <int>
+-N, --session <int>
 .br
-Specify the instance number to send the remote command to. Instances
-are numbered on a per user basis, starting with 0. Except for the
-zero-th instance (started first), the instance number is displayed in
-the title bar of the main window (e.g.: Aqualung.3). If you don't use
-this option, the following options will control the zero-th instance
-by default, except for -L which defaults to the present instance (so
-as to be able to start playback immediately from the command line).
-
+Specify the instance number to send the remote command
+to. Instances are numbered on a per user basis, starting
+with 0. Except for the zero-th instance (started first), the
+instance number is displayed in the title bar of the main
+window (e.g.: `Aqualung.3'). If you don't use this
+option, the following options will control the zero-th
+instance by default, except for -L which defaults
+to the present instance (so as to be able to start playback
+immediately from the command line).
 .TP
-\-B, \-\-back
+-B, --back
 .br
 Jump to previous track.
-
 .TP
-\-F, \-\-fwd
+-F, --fwd
 .br
 Jump to next track.
-
 .TP
-\-L, \-\-play
+-L, --play
 .br
 Start playing.
-
 .TP
-\-U, \-\-pause
+-U, --pause
 .br
 Pause playback, or resume if already paused.
-
 .TP
-\-T, \-\-back
+-T, --stop
 .br
 Stop playback.
-
 .TP
-\-V, \-\-volume [m|M]|[=]<val>
+-V, --volume [m|M]|[=]<val>
 .br
-Adjust the volume. m/M means mute; if = is present, the remote
-instance's volume control will be set to the value specified,
-otherwise, the volume will be adjusted by the supplied (signed)
-value. The values are in dB units.
-
+Adjust the volume. m/M means
+mute; if = is present, the remote instance's
+volume control will be set to the value specified,
+otherwise, the volume will be adjusted by the supplied
+(signed) value. The values are in dB units.
 .TP
-\-Q, \-\-quit
+-Q, --quit
 .br
 Terminate remote instance.
 
-
 .TP
-.B Options for file loading:
-
-.PP
-You may specify filenames on the command line. These may be ordinary
-soundfiles playable by Aqualung, or playlist files you saved
-earlier. The program will decide if a file is a playlist, and add its
-contents accordingly. In addition to Aqualung's native (XML) playlist
-format, the program will load M3U and PLS playlists whenever possible.
-
-If you used the --session option (see above), the files will be sent
-to the Aqualung instance you specified. Otherwise a new instance will
-start up with the files you specified. Note that if you enabled the
-"Save and restore the playlist on exit/startup" option in the program
-setup dialog, the files you specify will be loaded \fBafter\fR the
-automatically loaded ones.
-
+.B Options for file loading
+.P
+You may specify filenames on the command line. These may be
+ordinary soundfiles playable by Aqualung, directories, or
+playlist files you saved earlier. The program will decide if a
+file is a playlist, and add its contents accordingly. In
+addition to Aqualung's native (XML) playlist format, the
+program will load M3U and PLS playlists whenever possible.
+.P
+If you used the --session option (see above),
+the files will be sent to the Aqualung instance you
+specified. Otherwise a new instance will start up with the
+files you specified. Note that if you enabled the \fBSave
+and restore the Playlist on exit/startup\fR option in the
+\fBSettings\fR dialog, the files you specify will be
+loaded \fBafter\fR the automatically loaded ones.
 .TP
-\-E, \-\-enqueue
+-E, --enqueue
 .br
-Enqueue added files to the playlist instead of loading them (which
-removes the previous contents of the playlist). Use this if you want
-to keep the existing items in the playlist.
-
+Enqueue added files to the Playlist instead of loading
+them (which removes the previous contents of the
+Playlist). Use this if you want to keep the existing items
+in the Playlist.
+.TP
+-t[<name>], --tab[=<name>]
+.br
+Specify target tab for file loading (either remotely
+using the --session option, or at startup). If
+--tab is used without the name parameter, the
+files will be added to a new (untitled) tab. If a name is
+supplied, Aqualung will check whether a tab with that name
+already exists. If so, the files will be loaded (or enqueued
+if you used -E) to that tab. If no such tab
+exists, one with that name will be created, and content goes
+there.
 
 .TP
 .B Options for changing state of Playlist/Music Store windows
 .TP
-\-l [yes|no], \-\-show-pl=[yes|no]
+-l [yes|no], --show-pl=[yes|no]
 .br
-Show/hide playlist window.
+Show/hide Playlist window.
 .TP
-\-m [yes|no], \-\-show-ms=[yes|no]
+-m [yes|no], --show-ms=[yes|no]
 .br
 Show/hide music store window.
 
 .TP
-.B Examples:
-.br
+.B Examples
+.TP
 $ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2
-.br
-$ aqualung --srctype=1 --output oss --rate 96000
-.br
-$ aqualung -o jack -a -E `find ./ledzeppelin/ -name "*.flac"`
-
-
-.PP
-Depending on the compile-time options, not all file formats
-and output drivers may be usable. Use the --version option to see the
-list of compiled-in features.
-
+.TP
+$ aqualung --srctype=1 -output oss -rate 96000
+.TP
+$ aqualung -o jack -a -E --tab="Led Zeppelin" `find ./ledzeppelin/ -name \*.flac`
 .SH FILES
-
+.P
+Here is a list of files that Aqualung creates, reads and
+relies on.
 .TP
 ~/.aqualung
 .br
 Directory containing user settings.
-
 .TP
 ~/.aqualung/config.xml
 .br
-GUI (skin, window size/position, etc.) and other settings.
-
+GUI (skin, window size/position, etc.) and other
+settings.
 .TP
 ~/.aqualung/plugin.xml
 .br
 List of running plugins and all their settings.
-
 .TP
 ~/.aqualung/playlist.xml
 .br
-Automatically saved and restored playlist (if you enable this feature).
-
+Automatically saved and restored playlist (if you enable
+this feature).
 .TP
 ~/.aqualung/<skin-name>
 .br
-Locally available skin <skin-name>.
-
+Locally available skin <skin-name> (useful for
+skin development).
 .TP
 ${prefix}/share/aqualung/skin
 .br
 System-wide skin directory.
-
-
 .SH ENVIRONMENT
-Aqualung obeys two environment variables concerning LADSPA plugins.
-
+.P
+Aqualung obeys two environment variables
+concerning LADSPA plugins.
 .TP
-.B LADSPA_PATH
-LADSPA_PATH should contain a colon-separated list of paths to search
-for LADSPA plugin .so files.
-
+LADSPA_PATH
+.br
+Colon-separated list of paths to search for LADSPA
+plugin .so files.
 .TP
-.B LADSPA_RDF_PATH
-LADSPA_RDF_PATH should contain a colon-separated list of paths to RDF
-metadata files about these plugins.
-
-.PP
-When any of these is not specified, the program will use sensible
-defaults and look in the obvious places.
+LADSPA_RDF_PATH
+.br
+Colon-separated list of paths to RDF metadata files
+about these plugins.
+.P
+When any of these is not specified, the
+program will use sensible defaults and look in the obvious
+places.
 
 .SH AUTHORS
-
 .br
 Tom Szilagyi <tszilagyi@users.sourceforge.net>
 .br
 Peter Szilagyi <peterszilagyi@users.sourceforge.net>
 .br
 Tomasz Maka <pasp@users.sourceforge.net>
-
 .SH BUGS
-
+.P
 Yes. Report them to our bugtracker at <http://aqualung.sf.net/mantis>
 or write to our mailing list (the subscription interface is accessible
 from the project homepage).
-
 .SH HOMEPAGE
-
-Please go to http://aqualung.sf.net to download the latest version,
+.P
+Please go to <http://aqualung.sf.net> to download the latest version,
 access the Aqualung bugtracker and subscribe to the mailing list.
-
 .SH USER'S MANUAL
-
-The User's Manual is available at ${prefix}/share/aqualung/doc in LyX
-and PDF formats.
+.P
+The latest version of the User's Manual is available at the project homepage.

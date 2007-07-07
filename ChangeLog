@@ -1,3 +1,41 @@
+2007-07-07	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
+
+    * Aqualung 0.9beta8
+        http://aqualung.sf.net
+
+	This is a major release bringing significant new functionality and
+	many important fixes. All users are encouraged to upgrade.
+
+	Major additions:
+	
+	* Support for internet radio streams using Ogg Vorbis and MP3
+	  audio encoding.
+
+	* Tabbed playlist support, very similar in concept to the tabbed
+	  browsing feature of Firefox.
+	
+	Smaller fixes, rewrites and additions have been also done,
+	particularly to the following areas:
+
+	* Cut/copy/paste functionality implemented in playlist. Works with
+	  the usual Ctrl-X/C/V key combinations.
+
+	* MPEG decoder: more robust in case of corrupt UBR files.
+
+	* Command-line local and remote file loading.
+
+	* M3U and PLS parsers.
+
+	* HTTP proxy handling.
+
+	* RVA handling: now supports setting a default value for
+	  unmeasured tracks.
+
+	* Icons and Documentation.
+
+	* Added Italian translation.
+	
+
 2007-02-18	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
 
     * Aqualung 0.9beta7.1

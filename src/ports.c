@@ -33,6 +33,7 @@
 #include <jack/jack.h>
 
 #include "common.h"
+#include "utils_gui.h"
 #include "i18n.h"
 #include "ports.h"
 
@@ -40,8 +41,6 @@
 #define LIST_WIDTH 200
 #define LIST_HEIGHT 100
 
-
-extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 extern GtkWidget * main_window;
 

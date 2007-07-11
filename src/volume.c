@@ -33,6 +33,7 @@
 #endif /* _WIN32 */
 
 #include "common.h"
+#include "utils_gui.h"
 #include "core.h"
 #include "decoder/file_decoder.h"
 #include "options.h"
@@ -47,7 +48,6 @@
 extern options_t options;
 
 extern GtkTreeStore * music_store;
-extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 GtkWidget * vol_window;
 int vol_slot_count;

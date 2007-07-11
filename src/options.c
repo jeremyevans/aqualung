@@ -51,6 +51,7 @@
 #endif /* HAVE_SRC */
 
 #include "common.h"
+#include "utils_gui.h"
 #include "gui_main.h"
 #include "music_browser.h"
 #include "search.h"
@@ -83,7 +84,6 @@ extern int music_store_changed;
 extern GtkWidget * music_tree;
 extern GtkTreeStore * music_store;
 
-extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 extern void set_buttons_relief(void);
 
 int rva_is_enabled_shadow;

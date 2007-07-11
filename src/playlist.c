@@ -36,6 +36,7 @@
 
 #include "common.h"
 #include "utils.h"
+#include "utils_gui.h"
 #include "core.h"
 #include "httpc.h"
 #include "rb.h"
@@ -65,8 +66,6 @@ extern char pl_color_active[14];
 extern char pl_color_inactive[14];
 
 extern GtkTooltips * aqualung_tooltips;
-
-extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 extern PangoFontDescription *fd_playlist;
 extern PangoFontDescription *fd_statusbar;

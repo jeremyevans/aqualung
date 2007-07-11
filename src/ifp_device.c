@@ -37,6 +37,7 @@
 #include <ifp.h>
 
 #include "common.h"
+#include "utils_gui.h"
 #include "i18n.h"
 #include "options.h"
 #include "gui_main.h"
@@ -48,10 +49,8 @@ extern GtkWidget * playlist_window;
 extern GtkWidget * main_window;
 extern GtkTooltips * aqualung_tooltips;
 
-void deflicker(void);
 gint aifp_directory_listing(gchar *name);
 void aifp_check_size(void);
-extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 struct usb_device *dev = NULL;
 usb_dev_handle *dh;

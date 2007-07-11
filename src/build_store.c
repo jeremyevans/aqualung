@@ -40,6 +40,7 @@
 
 #include "common.h"
 #include "utils.h"
+#include "utils_gui.h"
 #include "i18n.h"
 #include "options.h"
 #include "music_browser.h"
@@ -53,7 +54,6 @@ extern options_t options;
 extern GtkTreeStore * music_store;
 
 extern GtkWidget * browser_window;
-extern GtkWidget * gui_stock_label_button(gchar * blabel, const gchar * bstock);
 
 extern GdkPixbuf * icon_artist;
 extern GdkPixbuf * icon_record;

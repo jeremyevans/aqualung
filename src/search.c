@@ -27,6 +27,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "common.h"
+#include "utils_gui.h"
 #include "music_browser.h"
 #include "gui_main.h"
 #include "i18n.h"
@@ -34,8 +35,6 @@
 #include "search.h"
 
 extern options_t options;
-
-extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 extern GtkTreeStore * music_store;
 extern GtkWidget * music_tree;

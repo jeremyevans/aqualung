@@ -33,6 +33,7 @@
 
 #include "common.h"
 #include "utils.h"
+#include "utils_gui.h"
 #include "build_store.h"
 #include "cddb_lookup.h"
 #include "cd_ripper.h"
@@ -62,7 +63,6 @@ extern PangoFontDescription *fd_statusbar;
 
 extern char pl_color_inactive[14];
 
-extern GtkWidget * gui_stock_label_button(gchar * label, const gchar * stock);
 extern void assign_audio_fc_filters(GtkFileChooser * fc);
 
 extern GtkTooltips * aqualung_tooltips;

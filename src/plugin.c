@@ -36,6 +36,7 @@
 
 
 #include "common.h"
+#include "utils_gui.h"
 #include "i18n.h"
 #include "options.h"
 #include "trashlist.h"
@@ -48,8 +49,6 @@
 #endif /* __FreeBSD__ */
 
 extern options_t options;
-
-extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 extern volatile int plugin_lock;
 

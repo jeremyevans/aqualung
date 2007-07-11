@@ -27,6 +27,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "common.h"
+#include "utils_gui.h"
 #include "playlist.h"
 #include "gui_main.h"
 #include "options.h"
@@ -39,8 +40,6 @@
 
 
 extern options_t options;
-
-extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 extern GtkWidget * playlist_window;
 extern GtkWidget * main_window;

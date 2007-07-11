@@ -49,6 +49,7 @@
 
 #include "common.h"
 #include "utils.h"
+#include "utils_gui.h"
 #include "core.h"
 #include "rb.h"
 #include "cover.h"
@@ -278,7 +279,6 @@ GtkWidget * systray__next;
 GtkWidget * systray__quit;
 
 int warn_wm_not_systray_capable = 0;
-int systray_semaphore = 0;
 
 void hide_all_windows(gpointer data);
 
@@ -318,27 +318,6 @@ extern GtkWidget * plist__rva;
 
 extern gint playlist_state;
 extern gint browser_state;
-
-
-gint
-aqualung_dialog_run(GtkDialog * dialog) {
-
-#ifdef HAVE_SYSTRAY
-	int ret;
-	systray_semaphore++;
-	gtk_window_present(GTK_WINDOW(dialog));
-	ret = gtk_dialog_run(dialog);
-	systray_semaphore--;
-	return ret;
-#else
-	return gtk_dialog_run(dialog);
-#endif /* HAVE_SYSTRAY */
-}
-
-void
-deflicker(void) {
-	while (g_main_context_iteration(NULL, FALSE));
-}
 
 
 void
@@ -3329,7 +3308,7 @@ process_filenames(GList * list, int enqueue, int start_playback, int has_tab, ch
 void
 systray_popup_menu_cb(GtkStatusIcon * systray_icon, guint button, guint time, gpointer data) {
 
-	if (systray_semaphore == 0) {
+	if (get_systray_semaphore() == 0) {
 		gtk_menu_popup(GTK_MENU(systray_menu), NULL, NULL,
 			       gtk_status_icon_position_menu, data,
 			       button, time);
@@ -3389,7 +3368,7 @@ systray__quit_cb(gpointer data) {
 void
 systray_activate_cb(GtkStatusIcon * systray_icon, gpointer data) {
 
-	if (systray_semaphore == 0) {
+	if (get_systray_semaphore() == 0) {
 		if (!systray_main_window_on) {
 			systray__show_cb(NULL);
 		} else {
@@ -4035,49 +4014,6 @@ run_gui(void) {
 	gtk_main();
 
 	return;
-}
-
-
-/* create button with stock item 
- *
- * in: label - label for buttor        (label=NULL  to disable label, label=-1 to disable button relief)
- *     stock - stock icon identifier                                
- */
-
-GtkWidget* 
-gui_stock_label_button(gchar *label, const gchar *stock) {
-
-	GtkWidget *button;
-	GtkWidget *alignment;
-	GtkWidget *hbox;
-	GtkWidget *image;
-
-	button = g_object_new (GTK_TYPE_BUTTON, "visible", TRUE, NULL);
-
-        if (label== (gchar *)-1) {
-                gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);  
-        }
-
-	alignment = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
-	hbox = gtk_hbox_new (FALSE, 2);
-	gtk_container_add (GTK_CONTAINER (alignment), hbox);
-
-	image = gtk_image_new_from_stock (stock, GTK_ICON_SIZE_BUTTON);
-
-        if (image) {
-		gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, TRUE, 0);
-        }
-
-        if (label != NULL && label != (gchar *)-1) {
-		gtk_box_pack_start (GTK_BOX (hbox),
-		g_object_new (GTK_TYPE_LABEL, "label", label, "use_underline", TRUE, NULL),
-		FALSE, TRUE, 0);
-        }
-
-	gtk_widget_show_all (alignment);
-	gtk_container_add (GTK_CONTAINER (button), alignment);
-
-	return button;
 }
 
 

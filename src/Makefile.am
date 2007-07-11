@@ -32,5 +32,6 @@ skin.h skin.c \
 transceiver.c transceiver.h \
 trashlist.c trashlist.h \
 utils.c utils.h \
+utils_gui.c utils_gui.h \
 version.h \
 volume.c volume.h

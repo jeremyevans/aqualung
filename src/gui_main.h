@@ -37,9 +37,6 @@ extern "C" {
 #define PAUSE 2
 
 
-gint aqualung_dialog_run(GtkDialog * dialog);
-void deflicker(void);
-
 void try_waking_disk_thread(void);
 void toggle_noeffect(int id, int state);
 void cue_track_for_playback(GtkTreeStore * store, GtkTreeIter * piter, cue_t * cue);
@@ -65,8 +62,6 @@ void set_src_type_label(int src_type);
 gint scroll_btn_pressed(GtkWidget * widget, GdkEventButton * event);
 gint scroll_btn_released(GtkWidget * widget, GdkEventButton * event, gpointer * win);
 gint scroll_motion_notify(GtkWidget * widget, GdkEventMotion * event, gpointer * win);
-
-GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 
 #ifdef __cplusplus
 } /* extern "C" */

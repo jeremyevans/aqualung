@@ -35,6 +35,7 @@
 #endif /* _WIN32 */
 
 #include "common.h"
+#include "utils_gui.h"
 #include "i18n.h"
 #include "options.h"
 #include "decoder/file_decoder.h"
@@ -49,8 +50,6 @@
 #define CASE_DOWN  1
 
 extern options_t options;
-
-extern GtkWidget* gui_stock_label_button(gchar *blabel, const gchar *bstock);
 
 extern GtkWidget * browser_window;
 extern GtkTreeStore * music_store;

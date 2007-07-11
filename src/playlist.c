@@ -182,7 +182,7 @@ playlist_transfer_t * playlist_transfer_get(int mode, char * tab_name, int start
 playlist_filemeta * playlist_filemeta_get(char * physical_name, char * alt_name, int composit);
 void playlist_filemeta_free(playlist_filemeta * plfm);
 
-void remove_files(playlist_t * pl);
+void playlist_unlink_files(playlist_t * pl);
 void set_cursor_in_playlist(playlist_t * pl, GtkTreeIter *iter, gboolean scroll);
 void select_active_position_in_playlist(playlist_t * pl);
 
@@ -1168,7 +1168,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                 if (kevent->state & GDK_SHIFT_MASK) {  /* SHIFT + Delete */
 			rem__all_cb(NULL);
                 } else if (kevent->state & GDK_CONTROL_MASK) {  /* CTRL + Delete */
-                        remove_files(pl);
+                        playlist_unlink_files(pl);
                 } else {
 			rem__sel_cb(NULL);
                 }
@@ -5646,90 +5646,134 @@ playlist_progress_bar_hide_all() {
 }
 
 
-void
-remove_files(playlist_t * pl) {
+int
+playlist_unlink_files_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
-        GtkWidget *info_dialog;
-        gint response, n = 0, i = 0, j, files = 0, last_pos;
-	GtkTreeIter iter, iter_child;
-        gchar temp[MAXLEN], *filename;
+	gchar * file;
+        struct stat statbuf;
 
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, NULL, i++)) {
+	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter,
+			   PL_COL_PHYSICAL_FILENAME, &file, -1);
 
-                if (gtk_tree_selection_iter_is_selected(pl->select, &iter)) {
-		        n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter);
-                        files++;
-                }
+	if (stat(file, &statbuf) == 0) {
 
-                j = 0;
-                while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter_child, &iter, j++)) {
-                        if (gtk_tree_selection_iter_is_selected(pl->select, &iter_child)) {
-                                n = 1;
-                        }
-                }
-                if (n) break;
-        }
-        
-        if (!n) {
+		GtkListStore * store = (GtkListStore *)data;
+		GtkTreeIter i;
 
-                if (files == 1) {
-                        sprintf(temp, _("The selected file will be deleted from the filesystem. "
-					"No recovery will be possible after this operation.\n\n"
-					"Are you sure?"));
-                } else {
-                        sprintf(temp, _("All selected files will be deleted from the filesystem. "
-					"No recovery will be possible after this operation.\n\n"
-					"Are you sure?"));
-                }
+		gtk_list_store_append(store, &i);
+		gtk_list_store_set(store, &i, 0, file, 1, gtk_tree_iter_copy(iter), -1);
+	}
 
-                info_dialog = gtk_message_dialog_new (options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
-                                                      GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                                      GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, temp);
+	g_free(file);
 
-                gtk_window_set_title(GTK_WINDOW(info_dialog), _("Remove file"));
-                gtk_widget_show (info_dialog);
-
-                response = aqualung_dialog_run (GTK_DIALOG (info_dialog));     
-
-                gtk_widget_destroy(info_dialog);
-
-                if (response == GTK_RESPONSE_YES) {   
-
-                        i = last_pos = 0;
-                	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, NULL, i++)) {
-                                if (gtk_tree_selection_iter_is_selected(pl->select, &iter)) {
-
-					char * filename_locale;
-
-                                        gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_PHYSICAL_FILENAME, &filename, -1);
-
-					if ((filename_locale = g_locale_from_utf8(filename, -1, NULL, NULL, NULL)) == NULL) {
-						g_free(filename);
-						continue;
-					}
-
-                                        n = unlink(filename_locale);
-                                        if (n != -1) {
-                                                gtk_tree_store_remove(pl->store, &iter);
-                                                --i;
-                                                last_pos = (i-1) < 0 ? 0 : i-1;
-                                        }
-
-                                        g_free(filename_locale);
-                                        g_free(filename);
-                                }
-                        }
-
-                        for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, NULL, i); i++);
-
-                        if (i) {
-                                gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, NULL, last_pos);
-                                set_cursor_in_playlist(pl, &iter, FALSE);
-                        }
-                        playlist_content_changed(pl);
-                }
-        }
+	return 0;
 }
+
+void
+playlist_unlink_files(playlist_t * pl) {
+
+	GtkWidget * dialog;
+	GtkWidget * view;
+	GtkWidget * scrwin;
+	GtkWidget * viewport;
+	GtkCellRenderer * cell;
+	GtkTreeViewColumn * column;
+	GtkListStore * store;
+	GtkTreeIter iter;
+	int res;
+	int i;
+	int error = 0;
+
+
+	store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_POINTER);
+
+	playlist_foreach_selected(pl, playlist_unlink_files_foreach, store);
+
+	if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(store), NULL) == 0) {
+		return;
+	}
+
+	dialog = gtk_message_dialog_new(options.playlist_is_embedded ?
+				      GTK_WINDOW(main_window) :
+				      GTK_WINDOW(playlist_window), 
+				 GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+				 GTK_MESSAGE_QUESTION,
+				 GTK_BUTTONS_YES_NO,
+				 _("The selected files will be deleted from the filesystem. "
+				   "No recovery will be possible after this operation.\n\n"
+				   "Do you want to proceed?"));
+
+	gtk_window_set_title(GTK_WINDOW(dialog), _("Remove files"));
+        gtk_widget_set_size_request(GTK_WIDGET(dialog), -1, 300);
+
+	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	cell = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Files selected for removal"), cell, "text", 0, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view), GTK_TREE_VIEW_COLUMN(column));
+
+        viewport = gtk_viewport_new(NULL, NULL);
+
+        scrwin = gtk_scrolled_window_new(NULL, NULL);
+        gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), viewport, TRUE, TRUE, 0);
+        gtk_container_add(GTK_CONTAINER(viewport), scrwin);
+        gtk_container_add(GTK_CONTAINER(scrwin), view);
+
+	gtk_widget_show_all(dialog);
+
+	res = aqualung_dialog_run(GTK_DIALOG(dialog));     
+	gtk_widget_destroy(dialog);
+
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(store), &iter, NULL, i++)) {
+
+		GtkTreeIter * pl_iter;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(store), &iter, 1, &pl_iter, -1);
+
+		if (res == GTK_RESPONSE_YES) {
+
+			gchar * file;
+			gtk_tree_model_get(GTK_TREE_MODEL(store), &iter, 0, &file, -1);
+
+			if (unlink(file) != 0) {
+				fprintf(stderr, "unlink: unable to unlink %s\n", file);
+				perror("unlink");
+				gtk_tree_selection_unselect_iter(pl->select, pl_iter);
+				++error;
+			}
+
+			g_free(file);
+		}
+
+		gtk_tree_iter_free(pl_iter);
+	}
+
+	if (res == GTK_RESPONSE_YES) {
+		rem__sel_cb(pl);
+	}
+
+	if (error) {
+		dialog = gtk_message_dialog_new(options.playlist_is_embedded ?
+						     GTK_WINDOW(main_window) :
+						     GTK_WINDOW(playlist_window), 
+						GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+						GTK_MESSAGE_WARNING,
+						GTK_BUTTONS_OK,
+						(error == 1) ?
+						     _("Unable to remove %d file.") :
+						     _("Unable to remove %d files."),
+						error);
+
+		gtk_window_set_title(GTK_WINDOW(dialog), _("Remove files"));
+		gtk_widget_show(dialog);
+		aqualung_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
+	}
+}
+
 
 void
 set_cursor_in_playlist(playlist_t * pl, GtkTreeIter *iter, gboolean scroll) {

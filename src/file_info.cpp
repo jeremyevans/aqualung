@@ -526,50 +526,30 @@ void
 save_pic_button_pressed(GtkWidget * widget, gpointer data) {
 
 	save_pic_t * save_pic = (save_pic_t *)data;
-        GtkWidget * dialog;
-        gchar * selected_filename;
-	char filename[MAXLEN];
+	GSList * file;
 
-        dialog = gtk_file_chooser_dialog_new(_("Please specify the file to save the image to."), 
-                                             GTK_WINDOW(info_window), 
-                                             GTK_FILE_CHOOSER_ACTION_SAVE, 
-                                             GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                             NULL);
+        file = file_chooser(_("Please specify the file to save the image to."),
+			    info_window,
+			    GTK_FILE_CHOOSER_ACTION_SAVE,
+			    FILE_CHOOSER_FILTER_NONE,
+			    FALSE);
 
-        deflicker();
-        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
-        gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), save_pic->savefile);
+        if (file != NULL) {
 
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
-        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-
-	if (options.show_hidden) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
-	}
-
-        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		strncpy(filename, selected_filename, MAXLEN-1);
-                g_free(selected_filename);
-
-		FILE * f = fopen(filename, "wb");
+		FILE * f = fopen((char *)file->data, "wb");
 		if (f == NULL) {
 			printf("error: fopen() failed\n");
-			gtk_widget_destroy(dialog);
 			return;
 		}
 		if (fwrite(save_pic->image_data, 1, save_pic->image_size, f) != save_pic->image_size) {
 			printf("fwrite() error\n");
-			gtk_widget_destroy(dialog);
 			return;
 		}
 		fclose(f);
 
-                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)), MAXLEN-1);
+		g_free(file->data);
+		g_slist_free(file);
         }
-        gtk_widget_destroy(dialog);
 }
 
 

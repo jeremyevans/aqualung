@@ -21,21 +21,35 @@
 #ifndef _UTILS_GUI_H
 #define _UTILS_GUI_H
 
+#include <config.h>
+
 #include <gtk/gtk.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#ifdef HAVE_SYSTRAY
 int get_systray_semaphore(void);
+#endif /* HAVE_SYSTRAY */
+
 gint aqualung_dialog_run(GtkDialog * dialog);
 
 GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 
 void deflicker(void);
 
+GSList * file_chooser(char * title, GtkWidget * parent,
+		      GtkFileChooserAction action, int filter, gint multiple);
 void file_chooser_with_entry(char * title, GtkWidget * parent,
-			     GtkFileChooserAction action, GtkWidget * entry);
+			     GtkFileChooserAction action, int filter, GtkWidget * entry);
+
+enum {
+	FILE_CHOOSER_FILTER_NONE = 0,
+	FILE_CHOOSER_FILTER_AUDIO,
+	FILE_CHOOSER_FILTER_PLAYLIST,
+	FILE_CHOOSER_FILTER_STORE
+};
 
 #ifdef __cplusplus
 } /* extern "C" */

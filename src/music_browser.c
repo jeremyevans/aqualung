@@ -380,6 +380,7 @@ browse_button_store_clicked(GtkButton * button, gpointer * data) {
 	file_chooser_with_entry(_("Please select the xml file for this store."),
 				browser_window,
 				GTK_FILE_CHOOSER_ACTION_SAVE,
+				FILE_CHOOSER_FILTER_STORE,
 				(GtkWidget *)data);
 }
 
@@ -882,69 +883,36 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
         return ret;
 }
 
-
 void
 browse_button_record_clicked(GtkButton * button, gpointer * data) {
 
-        GtkWidget * dialog;
-        const gchar * selected_filename;
 	GtkListStore * model = (GtkListStore *)data;
 	GtkTreeIter iter;
-        GSList *lfiles, *node;
+        GSList * lfiles, * node;
 
 
-        dialog = gtk_file_chooser_dialog_new(_("Please select the audio files for this record."), 
-						    NULL,
-						    GTK_FILE_CHOOSER_ACTION_OPEN,
-						    GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-						    GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-						    NULL);
+	lfiles = file_chooser(_("Please select the audio files for this record."),
+			      browser_window,
+			      GTK_FILE_CHOOSER_ACTION_OPEN,
+			      FILE_CHOOSER_FILTER_AUDIO,
+			      TRUE);
 
-        deflicker();
+	for (node = lfiles; node; node = node->next) {
 
-	if (options.show_hidden) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+		char * filename = (char *)node->data;
+
+		if (filename[strlen(filename)-1] != '/') {
+
+			char * utf8 = g_locale_to_utf8(filename, -1, NULL, NULL, NULL);
+			gtk_list_store_append(model, &iter);
+			gtk_list_store_set(model, &iter, 0, utf8, -1);
+			g_free(utf8);
+		}
+
+		g_free(node->data);
 	}
 
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-        gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
-        gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
-        assign_audio_fc_filters(GTK_FILE_CHOOSER(dialog));
-
-
-        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
-                                                                         MAXLEN-1);
-
-                lfiles = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
-
-                node = lfiles;
-
-                while (node) {
-
-                        selected_filename = (char *) node->data;
-
-			if (selected_filename[strlen(selected_filename)-1] != '/') {
-
-				char * utf8 = g_locale_to_utf8(selected_filename, -1,
-							       NULL, NULL, NULL);
-				gtk_list_store_append(model, &iter);
-				gtk_list_store_set(model, &iter, 0, utf8, -1);
-				g_free(utf8);
-			}
-
-                        g_free(node->data);
-
-                        node = node->next;
-                }
-
-                g_slist_free(lfiles);
-        }
-                                                         
-        gtk_widget_destroy(dialog);
+	g_slist_free(lfiles);
 }
 
 
@@ -1094,17 +1062,14 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
+
+		if (name[0] == '\0') {
+			goto display;
+		}
+
                 strcpy(sort_name, gtk_entry_get_text(GTK_ENTRY(sort_name_entry)));
 
-		n = 0;
-		if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter)) {
-			/* count the number of list items */
-			n = 1;
-			while (gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter)) {
-				n++;
-			}
-		}
-		if ((n) && (name[0] != '\0')) {
+		if ((n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(model), NULL)) > 0) {
 
 			gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
 			if (!(*strings = calloc(n + 1, sizeof(char *)))) {
@@ -1137,10 +1102,6 @@ add_record_dialog(char * name, char * sort_name, char *** strings, char * commen
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
 		strcpy(comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
 							 &iter_start, &iter_end, TRUE));
-
-		if (name[0] == '\0') {
-			goto display;
-		}
 
 		ret = 1;
         } else {
@@ -1278,6 +1239,7 @@ browse_button_track_clicked(GtkButton * button, gpointer * data) {
 	file_chooser_with_entry(_("Please select the audio file for this track."),
 				browser_window,
 				GTK_FILE_CHOOSER_ACTION_OPEN,
+				FILE_CHOOSER_FILTER_AUDIO,
 				(GtkWidget *)data);
 }
 

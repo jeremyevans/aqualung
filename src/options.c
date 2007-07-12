@@ -1195,6 +1195,7 @@ browse_ms_pathlist_clicked(GtkButton * button, gpointer data) {
 	file_chooser_with_entry(_("Please select a Music Store database."),
 				options_window,
 				GTK_FILE_CHOOSER_ACTION_OPEN,
+				FILE_CHOOSER_FILTER_STORE,
 				(GtkWidget *)data);
 }
 

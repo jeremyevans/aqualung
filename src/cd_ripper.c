@@ -192,6 +192,7 @@ ripper_destdir_browse_cb(GtkButton * button, gpointer data) {
 	file_chooser_with_entry(_("Please select the directory for ripped files."),
 				ripper_dialog,
 				GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+				FILE_CHOOSER_FILTER_NONE,
 				(GtkWidget *)data);
 }
 

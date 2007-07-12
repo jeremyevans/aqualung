@@ -116,7 +116,7 @@ void playlist_progress_bar_hide_all(void);
 void show_hide_close_buttons(gboolean state);
 
 void playlist_ensure_tab_exists(void);
-void playlist_load(GList * list, int mode, char * tab_name, int start_playback);
+void playlist_load(GSList * list, int mode, char * tab_name, int start_playback);
 void playlist_save_all(char * filename);
 
 void playlist_set_color(void);

@@ -1989,7 +1989,7 @@ plist_setup_vol_calc(playlist_t * pl, int type) {
 		int ret = message_dialog(_("Warning"),
 					 options.playlist_is_embedded ? main_window : playlist_window,
 					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTON_YES_NO,
+					 GTK_BUTTONS_YES_NO,
 					 NULL,
 					 _("Playback RVA is currently disabled.\n"
 					   "Do you want to enable it now?"));

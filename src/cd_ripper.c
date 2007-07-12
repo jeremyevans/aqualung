@@ -794,16 +794,10 @@ cd_ripper_dialog(char * device_path, GtkTreeIter * iter) {
 		g_free(pdestdir);
 
 		if (access(destdir, R_OK | W_OK) != 0) {
-			GtkWidget * error_dialog =
-				gtk_message_dialog_new(GTK_WINDOW(ripper_dialog),
-						       GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-						       GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
-						       _("\nDestination directory is not read-write accessible!"));
-
-			gtk_window_set_title(GTK_WINDOW(error_dialog), _("Error"));
-			gtk_widget_show(error_dialog);			
-			aqualung_dialog_run(GTK_DIALOG(error_dialog));
-			gtk_widget_destroy(error_dialog);
+			message_dialog(_("Error"),
+				       ripper_dialog,
+				       GTK_MESSAGE_ERROR,
+				       _("\nDestination directory is not read-write accessible!"));
 			
                         gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 1);
                         gtk_widget_grab_focus(ripper_destdir_entry);

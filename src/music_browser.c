@@ -2699,18 +2699,11 @@ store__add_cb(gpointer data) {
 	if (add_store_dialog(name, file, comment)) {
 
 		if (access(file, F_OK) == 0) {
-
-			GtkWidget * dialog;
-
-			dialog = gtk_message_dialog_new(GTK_WINDOW (browser_window),
-							GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-							GTK_MESSAGE_INFO,
-							GTK_BUTTONS_OK,
-							_("The store '%s' already exists.\nAdd it on the Settings/Music Store tab."),
-							file);
-			gtk_widget_show_all(dialog);
-			aqualung_dialog_run(GTK_DIALOG(dialog));
-			gtk_widget_destroy(dialog);
+			message_dialog(_("Create empty store"),
+				       browser_window,
+				       GTK_MESSAGE_INFO,
+				       _("The store '%s' already exists.\nAdd it on the Settings/Music Store tab."),
+				       file);
 		} else {
 
 			char * utf8 = g_locale_to_utf8(file, -1, NULL, NULL, NULL);

@@ -5643,21 +5643,11 @@ playlist_unlink_files(playlist_t * pl) {
 	}
 
 	if (error) {
-		dialog = gtk_message_dialog_new(options.playlist_is_embedded ?
-						     GTK_WINDOW(main_window) :
-						     GTK_WINDOW(playlist_window), 
-						GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-						GTK_MESSAGE_WARNING,
-						GTK_BUTTONS_OK,
-						(error == 1) ?
-						     _("Unable to remove %d file.") :
-						     _("Unable to remove %d files."),
-						error);
-
-		gtk_window_set_title(GTK_WINDOW(dialog), _("Remove files"));
-		gtk_widget_show(dialog);
-		aqualung_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
+		message_dialog(_("Remove files"),
+			       options.playlist_is_embedded ? main_window : playlist_window,
+			       GTK_MESSAGE_WARNING,
+			       (error == 1) ? _("Unable to remove %d file.") : _("Unable to remove %d files."),
+			       error);
 	}
 }
 

@@ -1018,7 +1018,7 @@ show_restart_info(void) {
 					     GTK_MESSAGE_INFO,
 					     GTK_BUTTONS_OK,
 					     _("You will need to restart Aqualung for the following changes to take effect:"));
-
+	gtk_window_set_title(GTK_WINDOW(info_dialog), _("Settings"));
 
         list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(restart_list_store));
 	renderer = gtk_cell_renderer_text_new();
@@ -1234,17 +1234,10 @@ add_ms_pathlist_clicked(GtkButton * button, gpointer * data) {
 	} else if (pname[0] == '/') {
 		strncpy(name, pname, MAXLEN - 1);
 	} else {
-		GtkWidget * dialog;
-
-		dialog = gtk_message_dialog_new(GTK_WINDOW(options_window),
-					GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-					GTK_MESSAGE_WARNING,
-					GTK_BUTTONS_OK,
-					_("Paths must either be absolute or starting with a tilde."));
-
-		gtk_window_set_title(GTK_WINDOW(dialog), _("Warning"));
-		aqualung_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
+		message_dialog(_("Warning"),
+			       options_window,
+			       GTK_MESSAGE_WARNING,
+			       _("Paths must either be absolute or starting with a tilde."));
 		return;
 	}
 
@@ -1263,18 +1256,10 @@ add_ms_pathlist_clicked(GtkButton * button, gpointer * data) {
 		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &p, -1);
 
 		if (!strcmp(p, path)) {
-
-			GtkWidget * dialog;
-
-			dialog = gtk_message_dialog_new(GTK_WINDOW(options_window),
-							GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-							GTK_MESSAGE_WARNING,
-							GTK_BUTTONS_CLOSE,
-							_("The specified store has already been added to the list."));
-			gtk_window_set_title(GTK_WINDOW(dialog), _("Warning"));
-			aqualung_dialog_run(GTK_DIALOG(dialog));
-			gtk_widget_destroy(dialog);
-
+			message_dialog(_("Warning"),
+				       options_window,
+				       GTK_MESSAGE_WARNING,
+				       _("The specified store has already been added to the list."));
 			g_free(p);
 			g_free(path);
 			return;
@@ -1309,132 +1294,81 @@ remove_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 
 
 void
+display_help(char * text) {
+
+	message_dialog(_("Help"),
+		       options_window,
+		       GTK_MESSAGE_INFO,
+		       text);
+}
+
+void
 display_title_format_help(void) {
 
-	GtkWidget *help_dialog;
-
-        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
-                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, 
-                                              _("\nThe template string you enter here will be used to\n"
-                                              "construct a single title line from an Artist, a Record\n"
-                                              "and a Track name. These are denoted by %%a, %%r and %%t,\n"
-                                              "respectively. Everything else you enter here will be\n"
-                                              "literally copied into the resulting string.\n"));
-
-        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
-        gtk_widget_show (help_dialog);
-        aqualung_dialog_run(GTK_DIALOG(help_dialog));
-        gtk_widget_destroy(help_dialog);
+	display_help(_("\nThe template string you enter here will be used to\n"
+		       "construct a single title line from an Artist, a Record\n"
+		       "and a Track name. These are denoted by %%a, %%r and %%t,\n"
+		       "respectively. Everything else you enter here will be\n"
+		       "literally copied into the resulting string.\n"));
 }
 
 
 void
 display_title_format_no_album_help(void) {
 
-	GtkWidget *help_dialog;
-
-        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
-                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, 
-                                              _("\nThe template string you enter here will be used to\n"
-                                              "construct a single title line from an Artist and a Track\n"
-                                              "name. These are denoted by %%a and %%t, respectively.\n"
-                                              "Everything else you enter here will be literally\n"
-                                              "copied into the resulting string.\n"));
-
-        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
-        gtk_widget_show (help_dialog);
-        aqualung_dialog_run(GTK_DIALOG(help_dialog));
-        gtk_widget_destroy(help_dialog);
+	display_help(_("\nThe template string you enter here will be used to\n"
+		       "construct a single title line from an Artist and a Track\n"
+		       "name. These are denoted by %%a and %%t, respectively.\n"
+		       "Everything else you enter here will be literally\n"
+		       "copied into the resulting string.\n"));
 }
 
 
 void
 display_implict_command_line_help(void) {
 
-	GtkWidget *help_dialog;
-
-        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
-                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, 
-                                              _("\nThe string you enter here will be parsed as a command\n"
-                                              "line before parsing the actual command line parameters.\n"
-                                              "What you enter here will act as a default setting and may\n"
-                                              "or may not be overrided from the 'real' command line.\n"
-                                              "Example: enter '-o alsa -R' below to use ALSA output\n"
-                                              "running realtime as a default.\n"));
-
-        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
-        gtk_widget_show (help_dialog);
-        aqualung_dialog_run(GTK_DIALOG(help_dialog));
-        gtk_widget_destroy(help_dialog);
+	display_help(_("\nThe string you enter here will be parsed as a command\n"
+		       "line before parsing the actual command line parameters.\n"
+		       "What you enter here will act as a default setting and may\n"
+		       "or may not be overrided from the 'real' command line.\n"
+		       "Example: enter '-o alsa -R' below to use ALSA output\n"
+		       "running realtime as a default.\n"));
 }
 
 
 void
 display_pathlist_help(void) {
 
-	GtkWidget *help_dialog;
-
-        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
-                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, 
-	                                      _("Paths must either be absolute or starting with a tilde, which will be expanded to the user's home directory.\n\n"
-						"Drag and drop entries in the list to set the store order in the Music Store."));
-
-        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
-        gtk_widget_show (help_dialog);
-        aqualung_dialog_run(GTK_DIALOG(help_dialog));
-        gtk_widget_destroy(help_dialog);
+	display_help(_("Paths must either be absolute or starting with a tilde, which will be expanded to the user's home directory.\n\n"
+		       "Drag and drop entries in the list to set the store order in the Music Store."));
 }
 
 #ifdef HAVE_CDDA
 void
 display_cdda_drive_speed_help(void) {
 
-	GtkWidget *help_dialog;
+	display_help(_("\nSet the drive speed for CD playing in CD-ROM speed units.\n"
+		       "One speed unit equals to 176 kBps raw data reading speed.\n"
+		       "Warning: not all drives honor this setting.\n\n"
 
-        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
-                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
-					      _("\nSet the drive speed for CD playing in CD-ROM speed units.\n"
-						"One speed unit equals to 176 kBps raw data reading speed.\n"
-						"Warning: not all drives honor this setting.\n\n"
+		       "Lower speed usually means less drive noise. However,\n"
+		       "when using Paranoia error correction modes for increased\n"
+		       "accuracy, generally much larger speeds are required to\n"
+		       "prevent buffer underruns (and thus audible drop-outs).\n\n"
 
-						"Lower speed usually means less drive noise. However,\n"
-						"when using Paranoia error correction modes for increased\n"
-						"accuracy, generally much larger speeds are required to\n"
-						"prevent buffer underruns (and thus audible drop-outs).\n\n"
-
-						"Please note that these settings do not apply to CD Ripping,\n"
-						"which always happens with maximum available speed and\n"
-						"with error correction modes manually set before every run."));
-
-        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
-        gtk_widget_show (help_dialog);
-        aqualung_dialog_run(GTK_DIALOG(help_dialog));
-        gtk_widget_destroy(help_dialog);
+		       "Please note that these settings do not apply to CD Ripping,\n"
+		       "which always happens with maximum available speed and\n"
+		       "with error correction modes manually set before every run."));
 }
 
 void
 display_cdda_force_drive_rescan_help(void) {
 
-	GtkWidget *help_dialog;
-
-        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
-                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
-					      _("\nMost drives let Aqualung know when a CD has been inserted\n"
-						"or removed by providing a 'media changed' flag. However,\n"
-						"some drives don't set this flag properly, and thus it may\n"
-						"happen that a newly inserted CD remains unnoticed to\n"
-						"Aqualung. In such cases, enabling this option should help."));
-
-        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
-        gtk_widget_show (help_dialog);
-        aqualung_dialog_run(GTK_DIALOG(help_dialog));
-        gtk_widget_destroy(help_dialog);
+	display_help(_("\nMost drives let Aqualung know when a CD has been inserted\n"
+		       "or removed by providing a 'media changed' flag. However,\n"
+		       "some drives don't set this flag properly, and thus it may\n"
+		       "happen that a newly inserted CD remains unnoticed to\n"
+		       "Aqualung. In such cases, enabling this option should help."));
 }
 
 void
@@ -1459,19 +1393,9 @@ inet_radio_direct_toggled(GtkWidget * widget, gpointer * data) {
 void
 display_inet_help_noproxy_domains(void) {
 
-	GtkWidget *help_dialog;
-
-        help_dialog = gtk_message_dialog_new (GTK_WINDOW(options_window), 
-                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                              GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
-					      _("\nHere you should enter a comma-separated list of domains\n"
-						"that should be accessed without using the proxy set above.\n"
-						"Example: localhost, .localdomain, .my.domain.com"));
-
-        gtk_window_set_title(GTK_WINDOW(help_dialog), _("Help"));
-        gtk_widget_show (help_dialog);
-        aqualung_dialog_run(GTK_DIALOG(help_dialog));
-        gtk_widget_destroy(help_dialog);
+	display_help(_("\nHere you should enter a comma-separated list of domains\n"
+		       "that should be accessed without using the proxy set above.\n"
+		       "Example: localhost, .localdomain, .my.domain.com"));
 }
 
 void
@@ -1655,7 +1579,7 @@ create_options_window(void) {
 
         help_btn_param = gtk_button_new_from_stock (GTK_STOCK_HELP); 
 	g_signal_connect(help_btn_param, "clicked", G_CALLBACK(display_implict_command_line_help), NULL);
-	gtk_box_pack_start(GTK_BOX(hbox_param), help_btn_param, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_param), help_btn_param, FALSE, FALSE, 5);
 
 	frame_misc = gtk_frame_new(_("Miscellaneous"));
 	gtk_box_pack_start(GTK_BOX(vbox_general), frame_misc, FALSE, TRUE, 0);

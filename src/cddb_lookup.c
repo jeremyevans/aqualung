@@ -610,20 +610,10 @@ create_cddb_dialog(void) {
 gboolean
 create_cddb_write_error_dialog(gpointer data) {
 
-	GtkWidget * dialog;
-
-	dialog = gtk_message_dialog_new(GTK_WINDOW(browser_window),
-					GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-					GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
-					(char *)data);
-
-
-	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
-	
-	aqualung_dialog_run(GTK_DIALOG(dialog));
-	gtk_widget_destroy(dialog);
+	message_dialog(_("Error"),
+		       browser_window,
+		       GTK_MESSAGE_ERROR,
+		       (char *)data);
 
 	return FALSE;
 }
@@ -1233,34 +1223,21 @@ cddb_timeout_callback(gpointer data) {
 		destroy_progress_window();
 
 		if (cddb_thread_state == CDDB_THREAD_ERROR) {
-			GtkWidget * dialog;
 
-                        dialog = gtk_message_dialog_new(GTK_WINDOW(browser_window),
-                                             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                                             GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, 
-                                             _("An error occurred while attempting "
-						"to connect to the CDDB server."));
-			gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-			gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
-		
-			aqualung_dialog_run(GTK_DIALOG(dialog));
-			gtk_widget_destroy(dialog);
+			message_dialog(_("Error"),
+				       browser_window,
+				       GTK_MESSAGE_ERROR,
+				       _("An error occurred while attempting "
+					 "to connect to the CDDB server."));
 
 		} else if (cddb_thread_state == CDDB_THREAD_SUCCESS) {
 
 			if (record_count == 0) {
-				GtkWidget * dialog;
 
-				dialog = gtk_message_dialog_new(GTK_WINDOW(browser_window),
-		        			     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                     GTK_MESSAGE_WARNING, GTK_BUTTONS_CLOSE, 
-                                                     _("No matching record found."));
-				gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-				gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
-		
-				aqualung_dialog_run(GTK_DIALOG(dialog));
-				gtk_widget_destroy(dialog);
-
+				message_dialog(_("Warning"),
+					       browser_window,
+					       GTK_MESSAGE_WARNING,
+					       _("No matching record found."));
 			} else {
 
 				create_cddb_dialog();

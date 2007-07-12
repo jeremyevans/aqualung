@@ -288,9 +288,6 @@ void load_config(void);
 
 void playlist_toggled(GtkWidget * widget, gpointer data);
 
-void assign_audio_fc_filters(GtkFileChooser *fc);
-void assign_playlist_fc_filters(GtkFileChooser *fc);
-
 GtkWidget * cover_align;
 GtkWidget * c_event_box;
 GtkWidget * cover_image_area;
@@ -2614,20 +2611,13 @@ hide_all_windows(gpointer data) {
 	if (gtk_status_icon_is_embedded(systray_icon) == FALSE) {
 
 		if (!warn_wm_not_systray_capable) {
-
-			GtkWidget * dialog;
-
-			dialog = gtk_message_dialog_new(options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
-							GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-							GTK_MESSAGE_WARNING,
-							GTK_BUTTONS_CLOSE,
-							_("Aqualung is compiled with system tray support, but the status icon could not be embedded in the notification area. Your desktop may not have support for a system tray, or it has not been configured correctly."));
-
-                        gtk_window_set_title(GTK_WINDOW(dialog), _("Warning"));
-			gtk_widget_show(dialog);
-			aqualung_dialog_run(GTK_DIALOG(dialog));
-			gtk_widget_destroy(dialog);
-
+			message_dialog(_("Warning"),
+				       options.playlist_is_embedded ? main_window : playlist_window,
+				       GTK_MESSAGE_WARNING,
+				       _("Aqualung is compiled with system tray support, but "
+					 "the status icon could not be embedded in the notification "
+					 "area. Your desktop may not have support for a system tray, "
+					 "or it has not been configured correctly."));
 			warn_wm_not_systray_capable = 1;
 		}
 

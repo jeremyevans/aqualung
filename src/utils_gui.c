@@ -21,6 +21,7 @@
 #include <config.h>
 
 #include <ctype.h>
+#include <stdarg.h>
 #include <string.h>
 
 #include "common.h"
@@ -361,7 +362,6 @@ file_chooser(char * title, GtkWidget * parent, GtkFileChooserAction action, int 
                                              NULL);
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), multiple);
         gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
@@ -422,7 +422,6 @@ file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction a
 	}
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 	assign_fc_filters(GTK_FILE_CHOOSER(dialog), filter);
 
@@ -444,4 +443,28 @@ file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction a
         }
 
         gtk_widget_destroy(dialog);
+}
+
+void
+message_dialog(char * title, GtkWidget * parent, GtkMessageType type, char * text, ...) {
+
+	GtkWidget * dialog;
+	va_list args;
+	gchar * msg = NULL;
+
+
+	va_start(args, text);
+	msg = g_strdup_vprintf(text, args);
+	va_end(args);
+
+	dialog = gtk_message_dialog_new(GTK_WINDOW(parent),
+					GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					type,
+					GTK_BUTTONS_OK,
+					msg);
+	g_free(msg);
+
+	gtk_window_set_title(GTK_WINDOW(dialog), title);
+	aqualung_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
 }

@@ -1189,15 +1189,10 @@ cdda_disc_info(char * device_path) {
 	} else {
 		gtk_widget_destroy(dialog);
 
-		dialog = gtk_message_dialog_new(GTK_WINDOW(browser_window),
-						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, 
-						_("This CD does not contain CD-Text information."));
-		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
-		
-		aqualung_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
+		message_dialog(_("Disc info"),
+			       browser_window,
+			       GTK_MESSAGE_INFO,
+			       _("This CD does not contain CD-Text information."));
 	}
 }
 

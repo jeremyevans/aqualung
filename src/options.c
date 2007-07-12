@@ -1190,63 +1190,12 @@ refresh_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 
 
 void
-browse_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
+browse_ms_pathlist_clicked(GtkButton * button, gpointer data) {
 
-        GtkWidget * dialog;
-	const gchar * selected_filename = gtk_entry_get_text(GTK_ENTRY(data));
-
-
-        dialog = gtk_file_chooser_dialog_new(_("Please select a Music Store database."),
-                                             GTK_WINDOW(options_window),
-                                             GTK_FILE_CHOOSER_ACTION_OPEN,
-                                             GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT,
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                             NULL);
-
-	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-
-        if (strlen(selected_filename)) {
-		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
-		char tmp[MAXLEN];
-		tmp[0] = '\0';
-
-		if (locale == NULL) {
-			gtk_widget_destroy(dialog);
-			return;
-		}
-
-		normalize_filename(locale, tmp);
-		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
-		g_free(locale);
-	} else {
-                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
-	}
-
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_show_hidden))) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
-	}
-
-        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-		char * utf8;
-
-                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		utf8 = g_locale_to_utf8(selected_filename, -1, NULL, NULL, NULL);
-
-		if (utf8 == NULL) {
-			gtk_widget_destroy(dialog);
-			return;
-		}
-
-                gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), utf8);
-
-                strncpy(options.currdir, selected_filename, MAXLEN-1);
-		g_free(utf8);
-        }
-
-        gtk_widget_destroy(dialog);
+	file_chooser_with_entry(_("Please select a Music Store database."),
+				options_window,
+				GTK_FILE_CHOOSER_ACTION_OPEN,
+				(GtkWidget *)data);
 }
 
 
@@ -1263,7 +1212,7 @@ append_ms_pathlist(char * path, char * name) {
 
 
 void
-add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
+add_ms_pathlist_clicked(GtkButton * button, gpointer * data) {
 
 	const char * pname;
 	char name[MAXLEN];
@@ -1275,7 +1224,7 @@ add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 	pname = gtk_entry_get_text(GTK_ENTRY(entry_ms_pathlist));
 
 	if (pname[0] == '\0') {
-		browse_ms_pathlist_clicked(widget, entry_ms_pathlist);
+		browse_ms_pathlist_clicked(button, entry_ms_pathlist);
 		return;
 	}
 
@@ -1285,22 +1234,14 @@ add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 		strncpy(name, pname, MAXLEN - 1);
 	} else {
 		GtkWidget * dialog;
-		GtkWidget * label;
-		
-		dialog = gtk_dialog_new_with_buttons(_("Warning"),
-						     GTK_WINDOW(options_window),
-						     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-						     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-						     NULL);
-		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-		gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
-		
-		label = gtk_label_new(_("Paths must either be absolute or starting with a tilde."));
 
-		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
-		gtk_widget_show(label);
-		
+		dialog = gtk_message_dialog_new(GTK_WINDOW(options_window),
+					GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					GTK_MESSAGE_WARNING,
+					GTK_BUTTONS_OK,
+					_("Paths must either be absolute or starting with a tilde."));
+
+		gtk_window_set_title(GTK_WINDOW(dialog), _("Warning"));
 		aqualung_dialog_run(GTK_DIALOG(dialog));
 		gtk_widget_destroy(dialog);
 		return;
@@ -1329,7 +1270,7 @@ add_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 							GTK_MESSAGE_WARNING,
 							GTK_BUTTONS_CLOSE,
 							_("The specified store has already been added to the list."));
-			gtk_widget_show(dialog);
+			gtk_window_set_title(GTK_WINDOW(dialog), _("Warning"));
 			aqualung_dialog_run(GTK_DIALOG(dialog));
 			gtk_widget_destroy(dialog);
 

@@ -368,75 +368,19 @@ browser_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	case GDK_Escape:
 		browser_window_close(NULL, NULL, NULL);
 		return TRUE;
-		break;
 	}
 
 	return FALSE;
 }
 
 
-int
-browse_button_store_clicked(GtkWidget * widget, gpointer * data) {
+void
+browse_button_store_clicked(GtkButton * button, gpointer * data) {
 
-        GtkWidget * dialog;
-	const gchar * selected_filename = gtk_entry_get_text(GTK_ENTRY(data));
-
-        dialog = gtk_file_chooser_dialog_new(_("Please select the xml file for this store."),
-                                             GTK_WINDOW(browser_window),
-                                             GTK_FILE_CHOOSER_ACTION_SAVE,
-                                             GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT,
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                             NULL);
-
-	if (options.show_hidden) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
-	}
-
-        deflicker();
-
-        if (strlen(selected_filename)) {
-		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
-		char tmp[MAXLEN];
-		tmp[0] = '\0';
-
-		if (locale == NULL) {
-			gtk_widget_destroy(dialog);
-			return 0;
-		}
-
-		normalize_filename(locale, tmp);
-		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
-		g_free(locale);
-	} else {
-                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
-	}
-
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-
-
-        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-		char * locale;
-
-                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
-
-		if (locale == NULL) {
-			gtk_widget_destroy(dialog);
-			return 0;
-		}
-
-		gtk_entry_set_text(GTK_ENTRY(data), selected_filename);
-
-                strncpy(options.currdir, locale, MAXLEN-1);
-		g_free(locale);
-        }
-
-        gtk_widget_destroy(dialog);
-
-	return 0;
+	file_chooser_with_entry(_("Please select the xml file for this store."),
+				browser_window,
+				GTK_FILE_CHOOSER_ACTION_SAVE,
+				(GtkWidget *)data);
 }
 
 
@@ -486,7 +430,6 @@ add_store_dialog(char * name, char * file, char * comment) {
 
         file_entry = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(file_entry), MAXLEN - 1);
-	gtk_entry_set_text(GTK_ENTRY(file_entry), "~/music_store.xml");
         gtk_box_pack_start(GTK_BOX(hbox2), file_entry, TRUE, TRUE, 0);
 
 
@@ -940,8 +883,8 @@ edit_artist_dialog(char * name, char * sort_name, char * comment) {
 }
 
 
-int
-browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
+void
+browse_button_record_clicked(GtkButton * button, gpointer * data) {
 
         GtkWidget * dialog;
         const gchar * selected_filename;
@@ -1002,8 +945,6 @@ browse_button_record_clicked(GtkWidget * widget, gpointer * data) {
         }
                                                          
         gtk_widget_destroy(dialog);
-
-	return 0;
 }
 
 
@@ -1331,68 +1272,13 @@ edit_record_dialog(char * name, char * sort_name, char * comment) {
 }
 
 
-int
-browse_button_track_clicked(GtkWidget * widget, gpointer * data) {
+void
+browse_button_track_clicked(GtkButton * button, gpointer * data) {
 
-        GtkWidget * dialog;
-	const gchar * selected_filename = gtk_entry_get_text(GTK_ENTRY(data));
-
-        dialog = gtk_file_chooser_dialog_new(_("Please select the audio file for this track."), 
-                                             GTK_WINDOW(browser_window), 
-                                             GTK_FILE_CHOOSER_ACTION_OPEN, 
-                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
-                                             NULL);
-
-        deflicker();
-
-        if (strlen(selected_filename)) {
-		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
-		char tmp[MAXLEN];
-		tmp[0] = '\0';
-
-		if (locale == NULL) {
-			gtk_widget_destroy(dialog);
-			return 0;
-		}
-
-		normalize_filename(locale, tmp);
-		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
-		g_free(locale);
-	} else {
-                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
-	}
-
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-        assign_audio_fc_filters(GTK_FILE_CHOOSER(dialog));
-
-	if (options.show_hidden) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
-	}
-
-        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-		char * utf8;
-
-                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		utf8 = g_locale_to_utf8(selected_filename, -1, NULL, NULL, NULL);
-
-		if (utf8 == NULL) {
-			gtk_widget_destroy(dialog);
-			return 0;
-		}
-
-		gtk_entry_set_text(GTK_ENTRY(data), utf8);
-
-                strncpy(options.currdir, selected_filename, MAXLEN-1);
-		g_free(utf8);
-	}
-
-        gtk_widget_destroy(dialog);
-
-	return 0;
+	file_chooser_with_entry(_("Please select the audio file for this track."),
+				browser_window,
+				GTK_FILE_CHOOSER_ACTION_OPEN,
+				(GtkWidget *)data);
 }
 
 

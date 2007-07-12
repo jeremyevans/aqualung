@@ -34,6 +34,9 @@ GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 
 void deflicker(void);
 
+void file_chooser_with_entry(char * title, GtkWidget * parent,
+			     GtkFileChooserAction action, GtkWidget * entry);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

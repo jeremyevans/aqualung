@@ -20,12 +20,18 @@
 
 #include <config.h>
 
+#include <string.h>
+
+#include "common.h"
+#include "options.h"
 #include "utils_gui.h"
 
 
 #ifdef HAVE_SYSTRAY
 int systray_semaphore = 0;
 #endif /* HAVE_SYSTRAY */
+
+extern options_t options;
 
 
 #ifdef HAVE_SYSTRAY
@@ -100,3 +106,63 @@ deflicker(void) {
 	while (g_main_context_iteration(NULL, FALSE));
 }
 
+
+void
+file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction action, GtkWidget * entry) {
+
+        GtkWidget * dialog;
+	const gchar * selected_filename = gtk_entry_get_text(GTK_ENTRY(entry));
+
+        dialog = gtk_file_chooser_dialog_new(title,
+                                             GTK_WINDOW(parent),
+					     action,
+                                             GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT,
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                             NULL);
+
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), options.show_hidden);
+	} 
+
+        deflicker();
+
+        if (strlen(selected_filename)) {
+      		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
+                char tmp[MAXLEN];
+                tmp[0] = '\0';
+
+		if (locale == NULL) {
+			gtk_widget_destroy(dialog);
+			return;
+		}
+
+		normalize_filename(locale, tmp);
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
+		g_free(locale);
+	} else {
+                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+	}
+
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+
+		char * utf8;
+
+                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		utf8 = g_locale_to_utf8(selected_filename, -1, NULL, NULL, NULL);
+
+		if (utf8 == NULL) {
+			gtk_widget_destroy(dialog);
+		}
+
+		gtk_entry_set_text(GTK_ENTRY(entry), utf8);
+
+                strncpy(options.currdir, selected_filename, MAXLEN-1);
+		g_free(utf8);
+        }
+
+        gtk_widget_destroy(dialog);
+}

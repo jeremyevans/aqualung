@@ -400,7 +400,7 @@ file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction a
 
 	if (options.show_hidden) {
 		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), options.show_hidden);
-	} 
+	}
 
         deflicker();
 
@@ -445,12 +445,14 @@ file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction a
         gtk_widget_destroy(dialog);
 }
 
-void
-message_dialog(char * title, GtkWidget * parent, GtkMessageType type, char * text, ...) {
+int
+message_dialog(char * title, GtkWidget * parent, GtkMessageType type, GtkButtonsType buttons,
+	       GtkWidget * extra, char * text, ...) {
 
 	GtkWidget * dialog;
 	va_list args;
 	gchar * msg = NULL;
+	int res;
 
 
 	va_start(args, text);
@@ -460,11 +462,18 @@ message_dialog(char * title, GtkWidget * parent, GtkMessageType type, char * tex
 	dialog = gtk_message_dialog_new(GTK_WINDOW(parent),
 					GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					type,
-					GTK_BUTTONS_OK,
+					buttons,
 					msg);
 	g_free(msg);
 
+	if (extra != NULL) {
+		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), extra, FALSE, FALSE, 5);
+		gtk_widget_show_all(extra);
+	}
+
 	gtk_window_set_title(GTK_WINDOW(dialog), title);
-	aqualung_dialog_run(GTK_DIALOG(dialog));
+	res = aqualung_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
+
+	return res;
 }

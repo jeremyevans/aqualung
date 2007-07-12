@@ -429,34 +429,35 @@ ripper_paranoia_toggled(GtkWidget * widget, gpointer * data) {
 int
 ripper_handle_existing_record_iter(GtkTreeIter * iter) {
 
-	GtkWidget * error_dialog;
-	int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), iter);
-	if (n == 0)
-		return 0;
+	int ret;
 
-	error_dialog = gtk_message_dialog_new(GTK_WINDOW(ripper_dialog),
-					      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-					      GTK_MESSAGE_WARNING, GTK_BUTTONS_OK_CANCEL,
-					      _("\nThe Music Store you selected has a matching Artist and "
-						"Album, already containing some tracks. If you press OK, "
-						"these tracks will be removed. The files themselves will "
-						"be left intact, but they will be removed from the "
-						"destination Music Store. Press Cancel to get back to "
-						"change the Artist/Album or the destination Music Store."));
-	
-	gtk_window_set_title(GTK_WINDOW(error_dialog), _("Artist/Album already existing, not empty"));
-	gtk_widget_show(error_dialog);			
-	if (aqualung_dialog_run(GTK_DIALOG(error_dialog)) == GTK_RESPONSE_OK) {
+	if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), iter) == 0) {
+		return 0;
+	}
+
+	ret = message_dialog(_("Artist/Album already existing, not empty"),
+			     ripper_dialog,
+			     GTK_MESSAGE_WARNING,
+			     GTK_BUTTONS_OK_CANCEL,
+			     NULL,
+			     _("\nThe Music Store you selected has a matching Artist and "
+			       "Album, already containing some tracks. If you press OK, "
+			       "these tracks will be removed. The files themselves will "
+			       "be left intact, but they will be removed from the "
+			       "destination Music Store. Press Cancel to get back to "
+			       "change the Artist/Album or the destination Music Store."));
+
+	if (ret == GTK_RESPONSE_OK) {
 
 		GtkTreeIter track_iter;
+
 		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &track_iter, iter, 0);
 		while (gtk_tree_store_remove(music_store, &track_iter));
 		music_store_mark_changed(iter);
 		
-		gtk_widget_destroy(error_dialog);
 		return 0;
 	}
-	gtk_widget_destroy(error_dialog);
+
 	return 1;
 }
 
@@ -797,6 +798,8 @@ cd_ripper_dialog(char * device_path, GtkTreeIter * iter) {
 			message_dialog(_("Error"),
 				       ripper_dialog,
 				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       NULL,
 				       _("\nDestination directory is not read-write accessible!"));
 			
                         gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 1);

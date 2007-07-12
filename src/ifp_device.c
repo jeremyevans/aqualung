@@ -244,21 +244,17 @@ create_directory_cb (GtkButton *button, gpointer user_data) {
         GtkWidget *name_entry;
         gint response, k;
 
-        mkdir_dialog = gtk_message_dialog_new (GTK_WINDOW(aifp_window),
-                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                              GTK_MESSAGE_INFO, GTK_BUTTONS_OK_CANCEL, _("Please enter directory name"));
-
-        gtk_window_set_title(GTK_WINDOW(mkdir_dialog), _("Create directory"));
-
         name_entry = gtk_entry_new();
         g_signal_connect (G_OBJECT(name_entry), "key_press_event", G_CALLBACK(mkdir_key_press), NULL);
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(mkdir_dialog)->vbox), name_entry, FALSE, FALSE, 6);
         gtk_entry_set_max_length(GTK_ENTRY(name_entry), 64);
         gtk_widget_set_size_request(GTK_WIDGET(name_entry), 300, -1);
 
-        gtk_widget_show_all (mkdir_dialog);
-
-        response = aqualung_dialog_run (GTK_DIALOG (mkdir_dialog));
+	response = message_dialog(_("Create directory"),
+				  aifp_window,
+				  GTK_MESSAGE_INFO,
+				  GTK_BUTTONS_OK_CANCEL,
+				  name_entry,
+				  _("Please enter directory name"));
 
 
         if (response == GTK_RESPONSE_OK) {
@@ -274,8 +270,6 @@ create_directory_cb (GtkButton *button, gpointer user_data) {
 
                 }
         }
-
-        gtk_widget_destroy(mkdir_dialog);
 }
 
 
@@ -299,23 +293,19 @@ rename_directory_cb (GtkButton *button, gpointer user_data) {
 
         if (strcmp(remote_directory, ROOTDIR)) {
 
-                rename_dialog = gtk_message_dialog_new (GTK_WINDOW(aifp_window),
-                                                      GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                                      GTK_MESSAGE_INFO, GTK_BUTTONS_OK_CANCEL, _("Please enter a new name"));
-
-                gtk_window_set_title(GTK_WINDOW(rename_dialog), _("Rename directory"));
-
                 name_entry = gtk_entry_new();
                 g_signal_connect (G_OBJECT(name_entry), "key_press_event", G_CALLBACK(rename_key_press), NULL);
-                gtk_box_pack_start(GTK_BOX(GTK_DIALOG(rename_dialog)->vbox), name_entry, FALSE, FALSE, 6);
                 gtk_entry_set_max_length(GTK_ENTRY(name_entry), 64);
                 gtk_widget_set_size_request(GTK_WIDGET(name_entry), 300, -1);
 
                 gtk_entry_set_text(GTK_ENTRY(name_entry), remote_directory);
 
-                gtk_widget_show_all (rename_dialog);
-
-                response = aqualung_dialog_run (GTK_DIALOG (rename_dialog));
+		response = message_dialog(_("Rename directory"),
+					  aifp_window,
+					  GTK_MESSAGE_INFO,
+					  GTK_BUTTONS_OK_CANCEL,
+					  name_entry,
+					  _("Please enter a new name"));
 
                 if (response == GTK_RESPONSE_OK) {
 
@@ -335,32 +325,23 @@ rename_directory_cb (GtkButton *button, gpointer user_data) {
                                 aifp_directory_listing (NULL);
                         }
                 }
-
-                gtk_widget_destroy(rename_dialog);
         }
 }
 
 void
 remove_directory_cb (GtkButton *button, gpointer user_data) {
 
-        GtkWidget *info_dialog;
         gint response, k;
 
         if (strcmp(remote_directory, ROOTDIR)) {
 
-                sprintf(temp, _("Directory '%s' will be removed with its entire contents.\n\nAre you sure?"), 
-                        remote_directory);
-
-                info_dialog = gtk_message_dialog_new (GTK_WINDOW(aifp_window),
-                                                      GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                                      GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, temp);
-
-                gtk_window_set_title(GTK_WINDOW(info_dialog), _("Remove directory"));
-                gtk_widget_show (info_dialog);
-
-                response = aqualung_dialog_run (GTK_DIALOG (info_dialog));     
-
-                gtk_widget_destroy(info_dialog);
+		response = message_dialog(_("Remove directory"),
+					  aifp_window,
+					  GTK_MESSAGE_QUESTION,
+					  GTK_BUTTONS_YES_NO,
+					  NULL,
+					  _("Directory '%s' will be removed with its entire contents.\n\nAre you sure?"), 
+					  remote_directory);
 
                 if (response == GTK_RESPONSE_YES) {   
 
@@ -541,21 +522,12 @@ aifp_get_songs_info(void) {
 void 
 aifp_show_message(gint type, gchar *message) {
 
-        GtkWidget *info_dialog;
-
-        info_dialog = gtk_message_dialog_new (options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window), 
-                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                              type, GTK_BUTTONS_CLOSE, message);
-
-        if (type == GTK_MESSAGE_ERROR) {
-                gtk_window_set_title(GTK_WINDOW(info_dialog), _("Error"));
-        } else if (type == GTK_MESSAGE_WARNING) {
-                gtk_window_set_title(GTK_WINDOW(info_dialog), _("Warning"));
-        }
-
-        gtk_widget_show (info_dialog);
-        aqualung_dialog_run(GTK_DIALOG(info_dialog));
-        gtk_widget_destroy(info_dialog);
+	message_dialog((type == GTK_MESSAGE_ERROR) ? _("Error") : _("Warning"),
+		       options.playlist_is_embedded ? main_window : playlist_window,
+		       type,
+		       GTK_BUTTONS_CLOSE,
+		       NULL,
+		       message);
 }
 
 

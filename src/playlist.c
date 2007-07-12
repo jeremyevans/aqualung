@@ -1986,28 +1986,19 @@ plist_setup_vol_calc(playlist_t * pl, int type) {
 
 	if (!options.rva_is_enabled) {
 
-		GtkWidget * dialog = gtk_dialog_new_with_buttons(
-                                _("Warning"),
-                                options.playlist_is_embedded ?
-                                GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
-                                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                                GTK_STOCK_YES, GTK_RESPONSE_ACCEPT,
-                                GTK_STOCK_NO, GTK_RESPONSE_REJECT,
-                                NULL);
+		int ret = message_dialog(_("Warning"),
+					 options.playlist_is_embedded ? main_window : playlist_window,
+					 GTK_MESSAGE_WARNING,
+					 GTK_BUTTON_YES_NO,
+					 NULL,
+					 _("Playback RVA is currently disabled.\n"
+					   "Do you want to enable it now?"));
 
-		GtkWidget * label =  gtk_label_new(_("Playback RVA is currently disabled.\n"
-						     "Do you want to enable it now?"));
-
-		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, TRUE, 10);
-		gtk_widget_show(label);
-
-		if (aqualung_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
-			gtk_widget_destroy(dialog);
+		if (ret != GTK_RESPONSE_YES) {
 			return;
-		} else {
-			options.rva_is_enabled = 1;
-			gtk_widget_destroy(dialog);
 		}
+
+		options.rva_is_enabled = 1;
 	}
 
 	if ((vol = volume_new(pl->store, type)) == NULL) {
@@ -5559,7 +5550,6 @@ playlist_unlink_files_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) 
 void
 playlist_unlink_files(playlist_t * pl) {
 
-	GtkWidget * dialog;
 	GtkWidget * view;
 	GtkWidget * scrwin;
 	GtkWidget * viewport;
@@ -5580,38 +5570,27 @@ playlist_unlink_files(playlist_t * pl) {
 		return;
 	}
 
-	dialog = gtk_message_dialog_new(options.playlist_is_embedded ?
-				      GTK_WINDOW(main_window) :
-				      GTK_WINDOW(playlist_window), 
-				 GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-				 GTK_MESSAGE_QUESTION,
-				 GTK_BUTTONS_YES_NO,
-				 _("The selected files will be deleted from the filesystem. "
-				   "No recovery will be possible after this operation.\n\n"
-				   "Do you want to proceed?"));
-
-	gtk_window_set_title(GTK_WINDOW(dialog), _("Remove files"));
-        gtk_widget_set_size_request(GTK_WIDGET(dialog), -1, 300);
-
 	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	cell = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes(_("Files selected for removal"), cell, "text", 0, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(view), GTK_TREE_VIEW_COLUMN(column));
 
-        viewport = gtk_viewport_new(NULL, NULL);
+	viewport = gtk_viewport_new(NULL, NULL);
+	scrwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+        gtk_widget_set_size_request(scrwin, -1, 200);
 
-        scrwin = gtk_scrolled_window_new(NULL, NULL);
-        gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_container_add(GTK_CONTAINER(viewport), scrwin);
+	gtk_container_add(GTK_CONTAINER(scrwin), view);
 
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), viewport, TRUE, TRUE, 0);
-        gtk_container_add(GTK_CONTAINER(viewport), scrwin);
-        gtk_container_add(GTK_CONTAINER(scrwin), view);
-
-	gtk_widget_show_all(dialog);
-
-	res = aqualung_dialog_run(GTK_DIALOG(dialog));     
-	gtk_widget_destroy(dialog);
-
+	res = message_dialog(_("Remove files"),
+		       options.playlist_is_embedded ? main_window : playlist_window,
+		       GTK_MESSAGE_QUESTION,
+		       GTK_BUTTONS_YES_NO,
+		       viewport,
+		       _("The selected files will be deleted from the filesystem. "
+			 "No recovery will be possible after this operation.\n\n"
+			 "Do you want to proceed?"));
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(store), &iter, NULL, i++)) {
@@ -5646,6 +5625,8 @@ playlist_unlink_files(playlist_t * pl) {
 		message_dialog(_("Remove files"),
 			       options.playlist_is_embedded ? main_window : playlist_window,
 			       GTK_MESSAGE_WARNING,
+			       GTK_BUTTONS_OK,
+			       NULL,
 			       (error == 1) ? _("Unable to remove %d file.") : _("Unable to remove %d files."),
 			       error);
 	}

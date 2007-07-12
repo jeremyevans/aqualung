@@ -543,24 +543,22 @@ options_window_accept(void) {
 					   0, &name, 6, &dirty, -1);
 
 			if (dirty < 0) {
-				GtkWidget * dialog;
 
-				dialog = gtk_message_dialog_new(GTK_WINDOW(options_window),
-					GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-					GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, 
-					_("Do you want to save store \"%s\" before removing from Music Store?"), name + 1);
-				gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-				gtk_dialog_set_default_response(GTK_DIALOG(dialog),
-								GTK_RESPONSE_YES);
-				gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+				int ret = message_dialog(_("Settings"),
+							 options_window,
+							 GTK_MESSAGE_QUESTION,
+							 GTK_BUTTONS_YES_NO,
+							 NULL,
+							 _("Do you want to save store \"%s\" before "
+							   "removing from Music Store?"),
+							 name + 1);
 		
-				if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
+				if (ret == GTK_RESPONSE_YES) {
 					save_music_store(&iter);
 				} else {
 					music_store_mark_saved(&iter);
 				}
 
-				gtk_widget_destroy(dialog);
 				g_free(name);
 			}
 
@@ -1007,18 +1005,10 @@ defvol_changed(GtkWidget * widget, gpointer * data) {
 void
 show_restart_info(void) {
 
-	GtkWidget * info_dialog;
 	GtkWidget * list;
 	GtkWidget * viewport;
 	GtkCellRenderer * renderer;
 	GtkTreeViewColumn * column;
-
-        info_dialog = gtk_message_dialog_new(GTK_WINDOW (options_window),
-					     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-					     GTK_MESSAGE_INFO,
-					     GTK_BUTTONS_OK,
-					     _("You will need to restart Aqualung for the following changes to take effect:"));
-	gtk_window_set_title(GTK_WINDOW(info_dialog), _("Settings"));
 
         list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(restart_list_store));
 	renderer = gtk_cell_renderer_text_new();
@@ -1031,12 +1021,13 @@ show_restart_info(void) {
 
 	viewport = gtk_viewport_new(NULL, NULL);
 	gtk_container_add(GTK_CONTAINER(viewport), list);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(info_dialog)->vbox), viewport, FALSE, FALSE, 6);
 
-
-	gtk_widget_show_all(info_dialog);
-        aqualung_dialog_run(GTK_DIALOG(info_dialog));
-        gtk_widget_destroy(info_dialog);
+        message_dialog(_("Settings"),
+		       options_window,
+		       GTK_MESSAGE_INFO,
+		       GTK_BUTTONS_OK,
+		       viewport,
+		       _("You will need to restart Aqualung for the following changes to take effect:"));
 }
 
 void
@@ -1237,6 +1228,8 @@ add_ms_pathlist_clicked(GtkButton * button, gpointer * data) {
 		message_dialog(_("Warning"),
 			       options_window,
 			       GTK_MESSAGE_WARNING,
+			       GTK_BUTTONS_OK,
+			       NULL,
 			       _("Paths must either be absolute or starting with a tilde."));
 		return;
 	}
@@ -1259,6 +1252,8 @@ add_ms_pathlist_clicked(GtkButton * button, gpointer * data) {
 			message_dialog(_("Warning"),
 				       options_window,
 				       GTK_MESSAGE_WARNING,
+				       GTK_BUTTONS_OK,
+				       NULL,
 				       _("The specified store has already been added to the list."));
 			g_free(p);
 			g_free(path);
@@ -1299,6 +1294,8 @@ display_help(char * text) {
 	message_dialog(_("Help"),
 		       options_window,
 		       GTK_MESSAGE_INFO,
+		       GTK_BUTTONS_OK,
+		       NULL,
 		       text);
 }
 

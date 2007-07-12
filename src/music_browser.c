@@ -1656,25 +1656,14 @@ edit_track_dialog(char * name, char * sort_name, char * file, char * comment,
 int
 confirm_dialog(char * title, char * text, GtkResponseType resp) {
 
-        int ret;
+        int ret = message_dialog(title,
+				 browser_window,
+				 GTK_MESSAGE_QUESTION,
+				 GTK_BUTTONS_YES_NO,
+				 NULL,
+				 text);
 
-        dialog = gtk_message_dialog_new(GTK_WINDOW(browser_window),
-                                        GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                        GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, text);
-	gtk_window_set_title(GTK_WINDOW(dialog), title);
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), resp);
-        gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
-
-        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
-                ret = 1;
-        } else {
-                ret = 0;
-        }
-
-        gtk_widget_destroy(dialog);
-
-        return ret;
+        return (ret == GTK_RESPONSE_YES);
 }
 
 
@@ -2702,6 +2691,8 @@ store__add_cb(gpointer data) {
 			message_dialog(_("Create empty store"),
 				       browser_window,
 				       GTK_MESSAGE_INFO,
+				       GTK_BUTTONS_OK,
+				       NULL,
 				       _("The store '%s' already exists.\nAdd it on the Settings/Music Store tab."),
 				       file);
 		} else {

@@ -2614,6 +2614,8 @@ hide_all_windows(gpointer data) {
 			message_dialog(_("Warning"),
 				       options.playlist_is_embedded ? main_window : playlist_window,
 				       GTK_MESSAGE_WARNING,
+				       GTK_BUTTONS_OK,
+				       NULL,
 				       _("Aqualung is compiled with system tray support, but "
 					 "the status icon could not be embedded in the notification "
 					 "area. Your desktop may not have support for a system tray, "

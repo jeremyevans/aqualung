@@ -44,7 +44,8 @@ GSList * file_chooser(char * title, GtkWidget * parent,
 void file_chooser_with_entry(char * title, GtkWidget * parent,
 			     GtkFileChooserAction action, int filter, GtkWidget * entry);
 
-void message_dialog(char * title, GtkWidget * parent, GtkMessageType type, char * text, ...);
+int message_dialog(char * title, GtkWidget * parent, GtkMessageType type,
+		   GtkButtonsType buttons, GtkWidget * extra, char * text, ...);
 
 enum {
 	FILE_CHOOSER_FILTER_NONE = 0,

@@ -1192,6 +1192,8 @@ cdda_disc_info(char * device_path) {
 		message_dialog(_("Disc info"),
 			       browser_window,
 			       GTK_MESSAGE_INFO,
+			       GTK_BUTTONS_OK,
+			       NULL,
 			       _("This CD does not contain CD-Text information."));
 	}
 }

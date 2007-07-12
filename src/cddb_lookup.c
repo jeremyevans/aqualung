@@ -613,6 +613,8 @@ create_cddb_write_error_dialog(gpointer data) {
 	message_dialog(_("Error"),
 		       browser_window,
 		       GTK_MESSAGE_ERROR,
+		       GTK_BUTTONS_OK,
+		       NULL,
 		       (char *)data);
 
 	return FALSE;
@@ -621,34 +623,14 @@ create_cddb_write_error_dialog(gpointer data) {
 int
 create_cddb_write_warn_dialog(char * text) {
 
-	int ret;
-	GtkWidget * dialog;
-	GtkWidget * label;
+	int ret = message_dialog(_("Warning"),
+				 browser_window,
+				 GTK_MESSAGE_WARNING,
+				 GTK_BUTTONS_YES_NO,
+				 NULL,
+				 text);
 
-        dialog = gtk_dialog_new_with_buttons(_("Warning"),
-					     NULL,
-					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_YES, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_NO, GTK_RESPONSE_REJECT,
-					     NULL);
-
-	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
-	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
-	
-	label = gtk_label_new(text);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, FALSE, 0);
-	gtk_widget_show(label);
-
-	if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-		ret = 0;
-	} else {
-		ret = 1;
-	}
-
-	gtk_widget_destroy(dialog);
-
-	return ret;
+	return (ret != GTK_RESPONSE_YES);
 }
 
 static int
@@ -1227,6 +1209,8 @@ cddb_timeout_callback(gpointer data) {
 			message_dialog(_("Error"),
 				       browser_window,
 				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       NULL,
 				       _("An error occurred while attempting "
 					 "to connect to the CDDB server."));
 
@@ -1237,6 +1221,8 @@ cddb_timeout_callback(gpointer data) {
 				message_dialog(_("Warning"),
 					       browser_window,
 					       GTK_MESSAGE_WARNING,
+					       GTK_BUTTONS_OK,
+					       NULL,
 					       _("No matching record found."));
 			} else {
 

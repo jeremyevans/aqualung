@@ -285,7 +285,8 @@ vol_store_result_sep(gpointer data) {
 
 	AQUALUNG_MUTEX_LOCK(vol->wait_mutex);
 
-	vol_store_voladj(vol->store, &vol->item->iter, vol->result);
+	vol_store_voladj(vol->store, &vol->item->iter,
+			 (vol->store == music_store) ? vol->result : rva_from_volume(vol->result));
 
 	AQUALUNG_COND_SIGNAL(vol->thread_wait);
 	AQUALUNG_MUTEX_UNLOCK(vol->wait_mutex);

@@ -1708,9 +1708,11 @@ void
 cue_track_for_playback(GtkTreeStore * store, GtkTreeIter * piter, cue_t * cue) {
 
 	char * str;
+	float voladj;
 
-	gtk_tree_model_get(GTK_TREE_MODEL(store), piter, 1, &str, 3, &(cue->voladj), -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(store), piter, 1, &str, 3, &voladj, -1);
 	cue->filename = strdup(str);
+	cue->voladj = options.rva_is_enabled ? voladj : 0.0f;
 	strncpy(current_file, str, MAXLEN-1);
 	g_free(str);
 }

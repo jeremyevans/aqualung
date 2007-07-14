@@ -63,8 +63,6 @@ extern PangoFontDescription *fd_statusbar;
 
 extern char pl_color_inactive[14];
 
-extern void assign_audio_fc_filters(GtkFileChooser * fc);
-
 extern GtkTooltips * aqualung_tooltips;
 
 GtkWidget * browser_window;

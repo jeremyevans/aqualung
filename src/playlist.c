@@ -59,9 +59,6 @@ extern options_t options;
 extern void record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl,
 				GtkTreeIter * dest, int album_mode);
 
-extern void assign_audio_fc_filters(GtkFileChooser *fc);
-extern void assign_playlist_fc_filters(GtkFileChooser *fc);
-
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
 

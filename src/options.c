@@ -84,8 +84,6 @@ extern int music_store_changed;
 extern GtkWidget * music_tree;
 extern GtkTreeStore * music_store;
 
-extern void set_buttons_relief(void);
-
 int rva_is_enabled_shadow;
 int rva_env_shadow;
 float rva_refvol_shadow;

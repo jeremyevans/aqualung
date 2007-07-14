@@ -293,8 +293,6 @@ GtkWidget * c_event_box;
 GtkWidget * cover_image_area;
 gint cover_show_flag;
 
-void set_buttons_relief(void);
-
 extern char fileinfo_name[MAXLEN];
 extern char fileinfo_file[MAXLEN];
 

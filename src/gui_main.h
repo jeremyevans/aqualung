@@ -63,6 +63,8 @@ gint scroll_btn_pressed(GtkWidget * widget, GdkEventButton * event);
 gint scroll_btn_released(GtkWidget * widget, GdkEventButton * event, gpointer * win);
 gint scroll_motion_notify(GtkWidget * widget, GdkEventMotion * event, gpointer * win);
 
+void set_buttons_relief(void);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

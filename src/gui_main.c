@@ -60,6 +60,7 @@
 #include "skin.h"
 #include "ports.h"
 #include "music_browser.h"
+#include "store_file.h"
 #include "playlist.h"
 #include "plugin.h"
 #include "file_info.h"
@@ -880,27 +881,7 @@ main_window_close(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	try_waking_disk_thread();
 
 #ifdef HAVE_CDDA
-	if (options.cdda_remove_from_playlist) {
-		int i = 0;
-		GtkTreeIter iter_cdda;
-		GtkTreeIter iter_drive;
-
-		gtk_tree_model_get_iter_first(GTK_TREE_MODEL(music_store), &iter_cdda);
-
-		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_drive, &iter_cdda, i++)) {
-
-			gchar * tmp;
-			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_drive, 2, &tmp, -1);
-
-			if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter_drive) > 0) {
-				playlist_remove_cdda(tmp + 11);
-			}
-
-			g_free(tmp);
-		}
-	}
-
-	cdda_scanner_stop();
+	cdda_shutdown();
 #endif /* HAVE_CDDA */
 
 	if (systray_main_window_on) {

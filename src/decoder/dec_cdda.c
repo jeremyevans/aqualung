@@ -263,14 +263,7 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 	unsigned long hash;
 	cdda_drive_t * drive;
 
-	if (strlen(filename) < 4) {
-		return DECODER_OPEN_BADLIB;
-	}
-
-	if ((filename[0] != 'C') ||
-	    (filename[1] != 'D') ||
-	    (filename[2] != 'D') ||
-	    (filename[3] != 'A')) {
+	if (!cdda_is_cdtrack(filename)) {
 		return DECODER_OPEN_BADLIB;
 	}
 
@@ -367,14 +360,7 @@ cdda_decoder_reopen(decoder_t * dec, char * filename) {
 	unsigned long hash;
 	cdda_drive_t * drive;
 
-	if (strlen(filename) < 4) {
-		return DECODER_OPEN_BADLIB;
-	}
-
-	if ((filename[0] != 'C') ||
-	    (filename[1] != 'D') ||
-	    (filename[2] != 'D') ||
-	    (filename[3] != 'A')) {
+	if (!cdda_is_cdtrack(filename)) {
 		return DECODER_OPEN_BADLIB;
 	}
 

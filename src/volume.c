@@ -38,6 +38,7 @@
 #include "decoder/file_decoder.h"
 #include "options.h"
 #include "music_browser.h"
+#include "store_file.h"
 #include "playlist.h"
 #include "i18n.h"
 #include "volume.h"
@@ -265,7 +266,9 @@ vol_store_voladj(GtkTreeStore * store, GtkTreeIter * iter, float voladj) {
 	}
 
 	if (store == music_store) { /* music store */
-		gtk_tree_store_set(store, iter, 5, voladj, -1);
+		track_data_t * data;
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_DATA, &data, -1);
+		data->volume = voladj;
 		music_store_mark_changed(iter);
 
 	} else { /* playlist */

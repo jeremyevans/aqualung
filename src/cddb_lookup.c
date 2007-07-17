@@ -41,6 +41,8 @@
 #include "decoder/file_decoder.h"
 #include "gui_main.h"
 #include "music_browser.h"
+#include "store_cdda.h"
+#include "store_file.h"
 #include "playlist.h"
 #include "build_store.h"
 #include "cdda.h"
@@ -315,7 +317,7 @@ add_to_comments(GtkWidget * widget, gpointer data) {
 	strncat(comment, (char *)data, MAXLEN-1);
 
 	gtk_tree_store_set(music_store, &iter_record, 3, comment, -1);
-	tree_selection_changed_cb(music_select, NULL);
+	/*tree_selection_changed_cb(music_select, NULL);*/
 
 	music_store_mark_changed(&iter_record);
 }
@@ -485,7 +487,7 @@ create_cddb_dialog(void) {
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
 
 #ifdef HAVE_CDDA
-	if (!is_store_iter_cdda(&iter_record)) {
+	if (iter_get_store_type(&iter_record) != STORE_TYPE_CDDA) {
 #endif /* HAVE_CDDA */
 
 
@@ -568,7 +570,7 @@ create_cddb_dialog(void) {
 		}
 
 #ifdef HAVE_CDDA
-		if (is_store_iter_cdda(&iter_record)) {
+		if (iter_get_store_type(&iter_record) == STORE_TYPE_CDDA) {
 
 			char name_str[MAXLEN];
 			char * device_path = NULL;
@@ -600,7 +602,7 @@ create_cddb_dialog(void) {
 			music_store_mark_changed(&iter_record);
 		}
 
-		tree_selection_changed_cb(music_select, NULL);
+		/*tree_selection_changed_cb(music_select, NULL);*/
 	}
 
 	gtk_widget_destroy(dialog);
@@ -730,7 +732,7 @@ create_cddb_submit_dialog(gpointer data) {
 	genre_entry = gtk_entry_new();
 
 #ifdef HAVE_CDDA
-	if (is_store_iter_cdda(&iter_record)) {
+	if (iter_get_store_type(&iter_record) == STORE_TYPE_CDDA) {
 
 		char * device_path = NULL;
 		cdda_disc_t * disc = NULL;
@@ -1414,7 +1416,7 @@ cdda_timeout_callback(gpointer data) {
 	free(frames);
 
 	if (options.cdda_add_to_playlist) {
-		playlist_add_cdda(&iter_drive, disc->hash);
+		cdda_add_to_playlist(&iter_drive, disc->hash);
 	}
 
 	cddb_thread_state = CDDB_THREAD_FREE;

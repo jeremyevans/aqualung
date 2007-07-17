@@ -18,56 +18,30 @@
     $Id$
 */
 
+#ifndef _STORE_CDDA_H
+#define _STORE_CDDA_H
 
-#ifndef _MUSIC_BROWSER_H
-#define _MUSIC_BROWSER_H
+#include <config.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifdef HAVE_CDDA
 
 #include <gtk/gtk.h>
 
-void create_music_browser(void);
-void show_music_browser(void);
-void hide_music_browser(void);
+#include "cdda.h"
 
-int path_get_store_type(GtkTreePath * p);
-int iter_get_store_type(GtkTreeIter * i);
+void store_cdda_load_icons(void);
+void store_cdda_create_popup_menu(void);
+void store_cdda_selection_changed(void);
+gboolean store_cdda_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path);
 
-void music_store_progress_bar_hide(void);
-void music_store_set_status_bar_info(void);
-void music_tree_expand_stores(void);
+void cdda_add_to_playlist(GtkTreeIter * iter_drive, unsigned long hash);
+void cdda_remove_from_playlist(cdda_drive_t * drive);
 
-void search_cb(gpointer data);
+void cdda_update_statusbar(void);
 
-struct keybinds {
-	void (*callback)(gpointer);
-	int keyval1;
-	int keyval2;
-};
+#endif /* HAVE_CDDA */
 
-#define MS_COL_NAME    0
-#define MS_COL_SORT    1
-#define MS_COL_FONT    8
-#define MS_COL_ICON    9
-#define MS_COL_DATA   10
+#endif /* _STORE_CDDA_H */
 
-enum {
-	STORE_TYPE_FILE,
-	STORE_TYPE_CDDA
-};
-
-typedef union {
-	int type;
-} store_t;
-
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
-
-
-#endif /* _MUSIC_BROWSER_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

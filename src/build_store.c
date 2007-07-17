@@ -44,6 +44,7 @@
 #include "i18n.h"
 #include "options.h"
 #include "music_browser.h"
+#include "store_file.h"
 #include "gui_main.h"
 #include "meta_decoder.h"
 #include "build_store.h"

@@ -42,6 +42,7 @@
 #include "encoder/enc_lame.h"
 #include "gui_main.h"
 #include "music_browser.h"
+#include "store_file.h"
 #include "options.h"
 #include "i18n.h"
 #include "cdda.h"
@@ -214,7 +215,7 @@ create_ripper_deststore_combo(void) {
 		float writable;
                 gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 0, &name, 7, &writable, -1);
 
-		if (is_store_iter_cdda(&iter)) {
+		if (iter_get_store_type(&iter) == STORE_TYPE_CDDA) {
 			g_free(name);
 			continue;
 		}
@@ -250,7 +251,7 @@ get_ripper_deststore_iter(GtkTreeIter * iter_store) {
 		float writable;
                 gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 0, &name, 7, &writable, -1);
 
-		if (is_store_iter_cdda(&iter)) {
+		if (iter_get_store_type(&iter) == STORE_TYPE_CDDA) {
 			g_free(name);
 			continue;
 		}
@@ -534,7 +535,7 @@ ripper_make_dest_iters(GtkTreeIter * store_iter,
 
 
 int
-cd_ripper_dialog(char * device_path, GtkTreeIter * iter) {
+cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 
         GtkWidget * notebook;
         GtkWidget * table;
@@ -555,9 +556,6 @@ cd_ripper_dialog(char * device_path, GtkTreeIter * iter) {
 	GtkCellRenderer * cell;
 	GtkTreeViewColumn * column;
 
-	cdda_drive_t * drive = cdda_get_drive_by_device_path(device_path);
-	if (drive == NULL)
-		return 0;
 
 	strncpy(ripper_genre, drive->disc.genre, MAXLEN-1);
 	strncpy(ripper_year, drive->disc.year, MAXLEN-1);
@@ -853,7 +851,7 @@ sector_to_str(int sector, char * str) {
 
 
 void
-ripper_prog_store_make(char * device_path) {
+ripper_prog_store_make(cdda_drive_t * drive) {
 
 	GtkTreeIter source_iter;
 	GtkTreeIter iter;
@@ -861,9 +859,6 @@ ripper_prog_store_make(char * device_path) {
 	char begin[MAXLEN];
 	char length[MAXLEN];
 
-	cdda_drive_t * drive = cdda_get_drive_by_device_path(device_path);
-	if (drive == NULL)
-		return;
 
 	total_sectors = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ripper_source_store), &source_iter, NULL, n++)) {
@@ -1064,22 +1059,16 @@ ripper_update_status(gpointer pdata) {
 void *
 ripper_thread(void * arg) {
 
-	char * device_path = (char *)arg;
-	cdda_drive_t * drive;
+	cdda_drive_t * drive = (cdda_drive_t *)arg;
 	long hash;
 	int n = 0;
 	int track_cnt = 0;
 	int total_sectors_read = 0;
 	GtkTreeIter source_iter;
 
+
         AQUALUNG_THREAD_DETACH()
 
-        drive = cdda_get_drive_by_device_path(device_path);
-	if (drive == NULL) {
-		ripper_thread_busy = 0;
-		free(device_path);
-		return NULL;
-	}
 	hash = calc_cdda_hash(&drive->disc);
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ripper_source_store), &source_iter, NULL, n++)) {
@@ -1107,7 +1096,6 @@ ripper_thread(void * arg) {
 				   1, &no, 2, &name, -1);
 
 		if (ripper_thread_busy == 0) {
-			free(device_path);
 			return NULL;
 		}
 
@@ -1120,7 +1108,7 @@ ripper_thread(void * arg) {
 		case ENC_LAME_LIB:    ext = "mp3"; break;
 		}
 
-		snprintf(decoder_filename, 255, "CDDA %s %lX %d", device_path, hash, no);
+		snprintf(decoder_filename, 255, "CDDA %s %lX %d", drive->device_path, hash, no);
 		snprintf(mode.filename, MAXLEN-1, "%s/track%02d.%s", destdir, no, ext);
 		mode.file_lib = ripper_format;
 		mode.sample_rate = 44100;
@@ -1147,12 +1135,10 @@ ripper_thread(void * arg) {
 		fenc = file_encoder_new();
 
 		if (file_decoder_open(fdec, decoder_filename)) {
-			free(device_path);
 			return NULL;
 		}
 
 		if (file_encoder_open(fenc, &mode)) {
-			free(device_path);
 			return NULL;
 		}
 
@@ -1216,15 +1202,14 @@ ripper_thread(void * arg) {
 		++track_cnt;
 	}
 
-	free(device_path);
 	return NULL;
 }
 
 
 void
-cd_ripper(char * device_path, GtkTreeIter * iter) {
+cd_ripper(cdda_drive_t * drive, GtkTreeIter * iter) {
 
-	if (cd_ripper_dialog(device_path, iter)) {
+	if (cd_ripper_dialog(drive, iter)) {
 
 		if (ripper_prog_store == NULL) {
 			ripper_prog_store = gtk_list_store_new(4,
@@ -1236,11 +1221,11 @@ cd_ripper(char * device_path, GtkTreeIter * iter) {
 			gtk_list_store_clear(ripper_prog_store);
 		}
 
-		ripper_prog_store_make(device_path);
+		ripper_prog_store_make(drive);
 		ripper_window();
 
 		ripper_thread_busy = 1;
-                AQUALUNG_THREAD_CREATE(ripper_thread_id, NULL, ripper_thread, (void *)strdup(device_path))
+                AQUALUNG_THREAD_CREATE(ripper_thread_id, NULL, ripper_thread, drive);
 	}
 }
 

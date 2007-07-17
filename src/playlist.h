@@ -130,6 +130,7 @@ void playlist_foreach_selected(playlist_t * pl,
 			       int (* foreach)(playlist_t *, GtkTreeIter *, void *),
 			       void * data);
 
+void recalc_album_node(playlist_t * pl, GtkTreeIter * iter);
 void mark_track(GtkTreeStore * store, GtkTreeIter * piter);
 void unmark_track(GtkTreeStore * store, GtkTreeIter * piter);
 
@@ -146,7 +147,7 @@ enum {
 	PL_COL_SELECTION_COLOR,
 	PL_COL_VOLUME_ADJUSTMENT,
 	PL_COL_VOLUME_ADJUSTMENT_DISP,
-	PL_COL_DURATION,  
+	PL_COL_DURATION,
 	PL_COL_DURATION_DISP,
 	PL_COL_FONT_WEIGHT,
 

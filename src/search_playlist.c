@@ -308,7 +308,6 @@ search_playlist_dialog(void) {
 	GtkWidget * label;
 	GtkWidget * button;
 	GtkWidget * table;
-	GtkWidget * hseparator;
 	GtkWidget * hbuttonbox;
 
         GtkWidget * search_viewport;
@@ -434,10 +433,6 @@ search_playlist_dialog(void) {
         gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(search_column), TRUE);
         gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(search_column), 2);
         gtk_tree_view_append_column(GTK_TREE_VIEW(search_list), search_column);
-
-        hseparator = gtk_hseparator_new ();
-        gtk_widget_show (hseparator);
-        gtk_box_pack_start (GTK_BOX (vbox), hseparator, FALSE, TRUE, 5);
 
 	hbuttonbox = gtk_hbutton_box_new();
         gtk_widget_show (hbuttonbox);

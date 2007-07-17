@@ -29,6 +29,8 @@ search.h search.c \
 search_playlist.h search_playlist.c \
 segv.h segv.c \
 skin.h skin.c \
+store_cdda.h store_cdda.c \
+store_file.h store_file.c \
 transceiver.c transceiver.h \
 trashlist.c trashlist.h \
 utils.c utils.h \

@@ -29,6 +29,7 @@
 #include "common.h"
 #include "utils_gui.h"
 #include "music_browser.h"
+#include "store_file.h"
 #include "gui_main.h"
 #include "i18n.h"
 #include "options.h"
@@ -202,11 +203,12 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 						     &artist_iter, &store_iter, i++)) {
 
 			char * artist_name;
-			char * comment;
+			artist_data_t * artist_data;
 
 
 			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &artist_iter,
-					   0, &artist_name, 3, &comment, -1);
+					   MS_COL_NAME, &artist_name,
+					   MS_COL_DATA, &artist_data, -1);
 
 			if (artist_yes) {
 				char * tmp = NULL;
@@ -233,12 +235,12 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 				g_free(tmp);
 			}
 
-			if (comment_yes) {
+			if (comment_yes && artist_data->comment != NULL) {
 				char * tmp = NULL;
 				if (casesens) {
-					tmp = strdup(comment);
+					tmp = strdup(artist_data->comment);
 				} else {
-					tmp = g_utf8_strup(comment, -1);
+					tmp = g_utf8_strup(artist_data->comment, -1);
 				}
 				if (g_pattern_match_string(pattern, tmp)) {
 
@@ -247,26 +249,27 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 
 					path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store),
 								       &artist_iter);
-				gtk_list_store_append(search_store, &iter);
-				gtk_list_store_set(search_store, &iter,
-						   0, artist_name,
-						   1, "",
-						   2, "",
-						   3, (gpointer)path,
-						   -1);
+					gtk_list_store_append(search_store, &iter);
+					gtk_list_store_set(search_store, &iter,
+							   0, artist_name,
+							   1, "",
+							   2, "",
+							   3, (gpointer)path,
+							   -1);
 				}
 				g_free(tmp);
 			}
-			g_free(comment);
 
 			j = 0;
 			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &record_iter,
 							     &artist_iter, j++)) {
 
 				char * record_name;
+				record_data_t * record_data;
 
 				gtk_tree_model_get(GTK_TREE_MODEL(music_store), &record_iter,
-						   0, &record_name, 3, &comment, -1);
+						   MS_COL_NAME, &record_name,
+						   MS_COL_DATA, &record_data, -1);
 				
 				if (record_yes) {
 					char * tmp = NULL;
@@ -293,12 +296,12 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 					g_free(tmp);
 				}
 				
-				if (comment_yes) {
+				if (comment_yes && record_data->comment != NULL) {
 					char * tmp = NULL;
 					if (casesens) {
-						tmp = strdup(comment);
+						tmp = strdup(record_data->comment);
 					} else {
-						tmp = g_utf8_strup(comment, -1);
+						tmp = g_utf8_strup(record_data->comment, -1);
 					}
 					if (g_pattern_match_string(pattern, tmp)) {
 						
@@ -317,16 +320,17 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 					}
 					g_free(tmp);
 				}
-				g_free(comment);
 				
 				k = 0;
 				while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
 								     &track_iter, &record_iter, k++)) {
 					
 					char * track_name;
+					track_data_t * track_data;
 					
 					gtk_tree_model_get(GTK_TREE_MODEL(music_store), &track_iter,
-							   0, &track_name, 3, &comment, -1);
+							   MS_COL_NAME, &track_name,
+							   MS_COL_DATA, &track_data, -1);
 					
 					if (track_yes) {
 						char * tmp = NULL;
@@ -353,12 +357,12 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 						g_free(tmp);
 					}
 					
-					if (comment_yes) {
+					if (comment_yes && track_data->comment != NULL) {
 						char * tmp = NULL;
 						if (casesens) {
-							tmp = strdup(comment);
+							tmp = strdup(track_data->comment);
 						} else {
-							tmp = g_utf8_strup(comment, -1);
+							tmp = g_utf8_strup(track_data->comment, -1);
 						}
 						if (g_pattern_match_string(pattern, tmp)) {
 							
@@ -377,12 +381,10 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 						}
 						g_free(tmp);
 					}
-					g_free(comment);
+
 					g_free(track_name);
-					deflicker();
 				}
 				g_free(record_name);
-				deflicker();
 			}
 			g_free(artist_name);
 			deflicker();
@@ -455,7 +457,6 @@ search_dialog(void) {
 	GtkWidget * label;
 	GtkWidget * button;
 	GtkWidget * table;
-	GtkWidget * hseparator;
 	GtkWidget * hbuttonbox;
 
         GtkWidget * search_viewport;
@@ -619,10 +620,6 @@ search_dialog(void) {
         gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(search_column), TRUE);
         gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(search_column), 2);
         gtk_tree_view_append_column(GTK_TREE_VIEW(search_list), search_column);
-
-        hseparator = gtk_hseparator_new ();
-        gtk_widget_show (hseparator);
-        gtk_box_pack_start (GTK_BOX (vbox), hseparator, FALSE, TRUE, 5);
 
 	hbuttonbox = gtk_hbutton_box_new();
         gtk_widget_show (hbuttonbox);

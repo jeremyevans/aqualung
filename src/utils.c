@@ -21,6 +21,7 @@
 #include <config.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "i18n.h"
@@ -250,6 +251,14 @@ normalize_filename(const char * in, char * out) {
 	}
 }
 
+char *
+free_strdup(char * s) {
+
+	if (s != NULL) {
+		free(s);
+	}
+	return strdup(s);
+}
 
 #ifndef HAVE_STRCASESTR
 char

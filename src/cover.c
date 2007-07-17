@@ -34,6 +34,7 @@
 #include "cover.h"
 #include "gui_main.h"
 #include "music_browser.h"
+#include "store_file.h"
 #include "i18n.h"
 #include "options.h"
 
@@ -392,7 +393,6 @@ insert_cover(GtkTextIter * iter) {
         GdkPixbuf *pixbuf;
         GdkPixbuf *scaled;
         GdkPixbufFormat *format;
-        gchar *song_filename;
         gchar cover_filename[PATH_MAX];
         gint k, i;
         gint width, height;
@@ -412,22 +412,24 @@ insert_cover(GtkTextIter * iter) {
 
                 if (i == 3 || i == 4) {
 
+			track_data_t * data;
+
                         if (i == 3) { /* album selected */
 
                                 if (gtk_tree_model_iter_nth_child(model, &t_iter, &r_iter, 0)) {
-                                        gtk_tree_model_get(GTK_TREE_MODEL(model), &t_iter, 2, &song_filename, -1);
+                                        gtk_tree_model_get(GTK_TREE_MODEL(model), &t_iter,
+							   MS_COL_DATA, &data, -1);
                                 } else {
                                         return;
                                 }
 
                         } else { /* track selected */
  
-                                gtk_tree_model_get(GTK_TREE_MODEL(model), &r_iter, 2, &song_filename, -1);
- 
+				gtk_tree_model_get(GTK_TREE_MODEL(model), &r_iter,
+						   MS_COL_DATA, &data, -1);
                         }
 
-                        strcpy(cover_filename, find_cover_filename(song_filename));
-                        g_free (song_filename);
+                        strcpy(cover_filename, find_cover_filename(data->file));
 
                         pixbuf = NULL;
 

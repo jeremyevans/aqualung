@@ -63,11 +63,13 @@
 #endif /* HAVE_TAGLIB */
 
 #include "common.h"
+#include "utils.h"
 #include "utils_gui.h"
 #include "core.h"
 #include "cover.h"
 #include "decoder/file_decoder.h"
 #include "music_browser.h"
+#include "store_file.h"
 #include "gui_main.h"
 #include "options.h"
 #include "trashlist.h"
@@ -398,57 +400,56 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 	GtkTreeIter artist_iter;
 	GtkTreePath * path;
 	char tmp[MAXLEN];
-	char * ptmp;
-	float ftmp;
+	track_data_t * track_data;
 
 	switch (data->dest_type) {
 	case IMPORT_DEST_TITLE:
-		gtk_tree_store_set(music_store, &(data->track_iter), 0, data->str, -1);
+		gtk_tree_store_set(music_store, &(data->track_iter), MS_COL_NAME, data->str, -1);
 		music_store_mark_changed(&(data->track_iter));
 		break;
 	case IMPORT_DEST_RECORD:
 		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
-		gtk_tree_store_set(music_store, &record_iter, 0, data->str, -1);
+		gtk_tree_store_set(music_store, &record_iter, MS_COL_NAME, data->str, -1);
 		music_store_mark_changed(&(data->track_iter));
 		break;
 	case IMPORT_DEST_ARTIST:
 		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
 		gtk_tree_model_iter_parent(data->model, &artist_iter, &record_iter);
-		gtk_tree_store_set(music_store, &artist_iter, 0, data->str, -1);
-		gtk_tree_store_set(music_store, &artist_iter, 1, data->str, -1);
+		gtk_tree_store_set(music_store, &artist_iter, MS_COL_NAME, data->str, -1);
+		gtk_tree_store_set(music_store, &artist_iter, MS_COL_SORT, data->str, -1);
 		path = gtk_tree_model_get_path(data->model, &(data->track_iter));
 		gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(music_tree), path, NULL, TRUE, 0.5f, 0.0f);
 		music_store_mark_changed(&(data->track_iter));
 		break;
 	case IMPORT_DEST_NUMBER:
-		if (data->str[0] != '0') {
+		if (data->str[0] != '0' && atoi(data->str) < 10) {
 			tmp[0] = '0';
 			tmp[1] = '\0';
 		} else {
 			tmp[0] = '\0';
 		}
 		strncat(tmp, data->str, MAXLEN-1);
-		gtk_tree_store_set(music_store, &(data->track_iter), 1, tmp, -1);
+		gtk_tree_store_set(music_store, &(data->track_iter), MS_COL_SORT, tmp, -1);
 		music_store_mark_changed(&(data->track_iter));
 		break;
 	case IMPORT_DEST_COMMENT:
-		gtk_tree_model_get(data->model, &(data->track_iter), 3, &ptmp, -1);
+		gtk_tree_model_get(data->model, &(data->track_iter), MS_COL_DATA, &track_data, -1);
 		tmp[0] = '\0';
-		if (ptmp != NULL) {
-			strncat(tmp, ptmp, MAXLEN-1);
+		if (track_data->comment != NULL) {
+			strncat(tmp, track_data->comment, MAXLEN-1);
 		}
 		if ((tmp[strlen(tmp)-1] != '\n') && (tmp[0] != '\0')) {
 			strncat(tmp, "\n", MAXLEN-1);
 		}
 		strncat(tmp, data->str, MAXLEN-1);
-		gtk_tree_store_set(music_store, &(data->track_iter), 3, tmp, -1);
-		tree_selection_changed_cb(music_select, NULL);
+		track_data->comment = free_strdup(tmp);
+		/*tree_selection_changed_cb(music_select, NULL);*/
 		music_store_mark_changed(&(data->track_iter));
 		break;
 	case IMPORT_DEST_RVA:
-		ftmp = 1.0f;
-		gtk_tree_store_set(music_store, &(data->track_iter), 6, data->fval, -1);
-		gtk_tree_store_set(music_store, &(data->track_iter), 7, ftmp, -1);
+		gtk_tree_model_get(data->model, &(data->track_iter), MS_COL_DATA, &track_data, -1);
+		track_data->rva = data->fval;
+		track_data->use_rva = 1;
 		music_store_mark_changed(&(data->track_iter));
 		break;
 	}
@@ -1760,7 +1761,7 @@ build_nb_pages_mpc(metadata * meta, GtkNotebook * nb, GtkWidget * hbox, fileinfo
 gboolean    
 fi_cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_data) {
 
-	if (event->type == GDK_BUTTON_PRESS && event->button == 1) { /* LMB ? */
+	if (event->type == GDK_BUTTON_PRESS && event->button == 1) {
                 display_zoomed_cover(info_window, fi_event_box, (gchar *) user_data);
         }
         return TRUE;

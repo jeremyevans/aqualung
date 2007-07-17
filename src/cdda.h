@@ -51,6 +51,11 @@ extern "C" {
 #define CDDA_MAXLEN 256
 
 typedef struct {
+	char * path;
+	float duration;
+} cdda_track_t;
+
+typedef struct {
 	int n_tracks;
 	lsn_t toc[100];
 	unsigned long hash;
@@ -70,26 +75,37 @@ typedef struct {
 	cdda_disc_t disc;
 } cdda_drive_t;
 
+
+char * cdda_displayed_device_path(char * device_path);
+
 void cdda_scanner_start(void);
 void cdda_scanner_stop(void);
 
 void cdda_timeout_start(void);
 void cdda_timeout_stop(void);
 
+void cdda_shutdown(void);
+
 void create_cdda_node(void);
 void insert_cdda_drive_node(char * device_path);
 void remove_cdda_drive_node(char * device_path);
 void refresh_cdda_drive_node(char * device_path);
 
-void cdda_drive_info(char * device_path);
-void cdda_disc_info(char * device_path);
+void cdda_drive_info(cdda_drive_t * drive);
+void cdda_disc_info(cdda_drive_t * drive);
 
+int cdda_is_cdtrack(char * file);
 unsigned long calc_cdda_hash(cdda_disc_t * disc);
 int cdda_hash_matches(char * filename, unsigned long hash);
 
 int cdda_get_n(char * device_path);
 cdda_drive_t * cdda_get_drive_by_device_path(char * device_path);
 cdda_drive_t * cdda_get_drive_by_spec_device_path(char * device_path);
+
+void store_cdda_create_popup_menu(void);
+void store_cdda_selection_changed(void);
+gboolean store_cdda_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path);
+void store_cdda_load_icons(void);
 
 #ifdef __cplusplus
 } /* extern "C" */

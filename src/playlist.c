@@ -43,6 +43,7 @@
 #include "cdda.h"
 #include "gui_main.h"
 #include "music_browser.h"
+#include "store_file.h"
 #include "file_info.h"
 #include "decoder/dec_mod.h"
 #include "decoder/file_decoder.h"
@@ -193,7 +194,6 @@ void cut__sel_cb(gpointer data);
 void plist__search_cb(gpointer data);
 void rem_all(playlist_t * pl);
 void add_files(GtkWidget * widget, gpointer data);
-void recalc_album_node(playlist_t * pl, GtkTreeIter * iter);
 
 void tab__rename_cb(gpointer data);
 
@@ -822,7 +822,7 @@ playlist_selection_file_types_foreach(playlist_t * pl, GtkTreeIter * iter, void 
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter,
 			   PL_COL_PHYSICAL_FILENAME, &file, -1);
 
-	if (strstr(file, "CDDA") == file) {
+	if (cdda_is_cdtrack(file)) {
 		*i = 1;
 	} else if (!httpc_is_url(file)) {
 		*i = 0;
@@ -2590,8 +2590,7 @@ rem__sel_cb(gpointer data) {
 int
 rem__dead_skip(char * filename) {
 
-	return (strstr(filename, "CDDA") != filename &&
-		strstr(filename, "http") != filename &&
+	return (!cdda_is_cdtrack(filename) && !httpc_is_url(filename) &&
 		(g_file_test(filename, G_FILE_TEST_IS_REGULAR) == FALSE));
 }
 
@@ -3168,10 +3167,9 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 
 		if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 			depth = gtk_tree_path_get_depth(gtk_tree_model_get_path(model, &iter));
-#ifdef HAVE_CDDA
-			if (is_store_iter_cdda(&iter))
+			if (iter_get_store_type(&iter) == STORE_TYPE_CDDA) {
 				depth += 1;
-#endif /* HAVE_CDDA */
+			}
 		} else {
 			return FALSE;
 		}
@@ -3358,153 +3356,6 @@ playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer da
 
 	playlist_remove_scroll_tags();
 }
-
-
-#ifdef HAVE_CDDA
-
-void
-playlist_add_cdda(GtkTreeIter * iter_drive, unsigned long hash) {
-
-	int i = 0;
-	GtkTreeIter iter;
-
-	int target_found = 0;
-	GtkTreeIter target_iter;
-
-	playlist_t * pl = playlist_get_current();
-
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, NULL, i++)) {
-
-		if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter) > 0) {
-
-			int j = 0;
-			int has_cdda = 0;
-			GtkTreeIter child;
-
-			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &child, &iter, j++)) {
-
-				char * pfile;
-				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &child,
-						   PL_COL_PHYSICAL_FILENAME, &pfile, -1);
-
-				if (!target_found && strstr(pfile, "CDDA") == pfile) {
-					has_cdda = 1;
-				}
-
-				if (cdda_hash_matches(pfile, hash)) {
-					g_free(pfile);
-					return;
-				}
-
-				g_free(pfile);
-			}
-
-			if (!target_found && !has_cdda) {
-				target_iter = iter;
-				target_found = 1;
-			}
-		} else {
-
-			char * pfile;
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
-					   PL_COL_PHYSICAL_FILENAME, &pfile, -1);
-
-			if (!target_found && strstr(pfile, "CDDA") != pfile) {
-				target_iter = iter;
-				target_found = 1;
-			}
-
-			if (cdda_hash_matches(pfile, hash)) {
-				g_free(pfile);
-				return;
-			}
-				
-			g_free(pfile);
-		}
-	}
-
-	if (target_found) {
-		record_addlist_iter(*iter_drive, pl, &target_iter, options.playlist_is_tree);
-	} else {
-		record_addlist_iter(*iter_drive, pl, NULL, options.playlist_is_tree);
-	}
-}
-
-void
-playlist_remove_cdda_foreach(gpointer data, gpointer user_data) {
-
-	int i = 0;
-	GtkTreeIter iter;
-	unsigned long hash;
-
-	playlist_t * pl = (playlist_t *)data;
-	char * device_path = (char *)user_data;
-
-	cdda_drive_t * drive = cdda_get_drive_by_device_path(device_path);
-
-	if (drive == NULL) {
-		return;
-	}
-
-	if (drive->disc.hash == 0) {
-		hash = drive->disc.hash_prev;
-	} else {
-		hash = drive->disc.hash;
-	}
-
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, NULL, i++)) {
-
-		if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter) > 0) {
-
-			int j = 0;
-			GtkTreeIter child;
-
-			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &child, &iter, j++)) {
-
-				char * pfile;
-				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &child,
-						   PL_COL_PHYSICAL_FILENAME, &pfile, -1);
-
-				if (cdda_hash_matches(pfile, hash)) {
-					gtk_tree_store_remove(pl->store, &child);
-					--j;
-				}
-				
-				g_free(pfile);
-			}
-
-			if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter) == 0) {
-				gtk_tree_store_remove(pl->store, &iter);
-				--i;
-			} else {
-				recalc_album_node(pl, &iter);
-			}
-
-		} else {
-
-			char * pfile;
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
-					   PL_COL_PHYSICAL_FILENAME, &pfile, -1);
-			
-			if (cdda_hash_matches(pfile, hash)) {
-				gtk_tree_store_remove(pl->store, &iter);
-				--i;
-			}
-
-			g_free(pfile);
-		}
-	}
-
-	playlist_content_changed(pl);
-}
-
-void
-playlist_remove_cdda(char * device_path) {
-
-	g_list_foreach(playlists, playlist_remove_cdda_foreach, device_path);
-}
-
-#endif /* HAVE_CDDA */
 
 
 void
@@ -4423,7 +4274,7 @@ save_track_node(playlist_t * pl, GtkTreeIter * piter, xmlNodePtr root, char * no
 
 	gchar * track_name;
 	gchar * phys_name;
-	gchar *converted_temp;
+	gchar *tmp;
 	gchar * color;
 	gfloat voladj;
 	gfloat duration;
@@ -4441,19 +4292,15 @@ save_track_node(playlist_t * pl, GtkTreeIter * piter, xmlNodePtr root, char * no
 	if (!strcmp(nodeID,"record")) {
 		xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) phys_name);
 	} else {
-		if ((strlen(phys_name) > 4) &&
-		    (phys_name[0] == 'C') &&
-		    (phys_name[1] == 'D') &&
-		    (phys_name[2] == 'D') &&
-		    (phys_name[3] == 'A')) {
-			converted_temp = strdup(phys_name);
+		if (cdda_is_cdtrack(phys_name)) {
+			tmp = strdup(phys_name);
 		} else if (httpc_is_url(phys_name)) {
-			converted_temp = strdup(phys_name);
+			tmp = strdup(phys_name);
 		} else {
-			converted_temp = g_filename_to_uri(phys_name, NULL, NULL);
+			tmp = g_filename_to_uri(phys_name, NULL, NULL);
 		}
-		xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) converted_temp);
-		g_free(converted_temp);
+		xmlNewTextChild(node, NULL, (const xmlChar*) "phys_name", (const xmlChar*) tmp);
+		g_free(tmp);
 	};
 
 	if (strcmp(color, pl_color_active) == 0) {
@@ -4590,7 +4437,7 @@ void
 parse_playlist_track(playlist_transfer_t * pt, xmlDocPtr doc, xmlNodePtr _cur, int level) {
 
         xmlChar * key;
-	gchar *converted_temp;
+	gchar *tmp;
 	int is_album_node;
 
 	xmlNodePtr cur;
@@ -4621,15 +4468,15 @@ parse_playlist_track(playlist_transfer_t * pt, xmlDocPtr doc, xmlNodePtr _cur, i
 				if (is_album_node) {
 					/* "record" node keeps special data here */
 					plfm->filename = strndup((char *)key, MAXLEN-1);
-				} else if ((converted_temp = g_filename_from_uri((char *) key, NULL, NULL))) {
-					plfm->filename = strndup(converted_temp, MAXLEN-1);
-					g_free(converted_temp);
+				} else if ((tmp = g_filename_from_uri((char *) key, NULL, NULL))) {
+					plfm->filename = strndup(tmp, MAXLEN-1);
+					g_free(tmp);
 				} else {
 					/* try to read utf8 filename from outdated file  */
-					converted_temp = g_locale_from_utf8((char *) key, -1, NULL, NULL, NULL);
-					if (converted_temp != NULL) {
-						plfm->filename = strndup(converted_temp, MAXLEN-1);
-						g_free(converted_temp);
+					tmp = g_locale_from_utf8((char *) key, -1, NULL, NULL, NULL);
+					if (tmp != NULL) {
+						plfm->filename = strndup(tmp, MAXLEN-1);
+						g_free(tmp);
 					} else {
 						/* last try - maybe it's plain locale filename */
 						plfm->filename = strndup((char *)key, MAXLEN-1);

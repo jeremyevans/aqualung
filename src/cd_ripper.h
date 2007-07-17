@@ -28,8 +28,9 @@
 
 #include <gtk/gtk.h>
 
+#include "cdda.h"
 
-void cd_ripper(char * device_path, GtkTreeIter * iter);
+void cd_ripper(cdda_drive_t * drive, GtkTreeIter * iter);
 
 #endif /* HAVE_CDDA && ... */
 

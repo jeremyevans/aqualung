@@ -263,13 +263,6 @@ calc_cdda_hash(cdda_disc_t * disc) {
 }
 
 int
-cdda_is_cdtrack(char * file) {
-
-	return (strstr(file, "CDDA ") == file);
-}
-
-
-int
 cdda_hash_matches(char * filename, unsigned long hash) {
 
 	char device_path[CDDA_MAXLEN];

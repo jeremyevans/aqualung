@@ -157,8 +157,10 @@ music_store_iter_is_track(GtkTreeIter * iter) {
 	switch (iter_get_store_type(iter)) {
 	case STORE_TYPE_FILE:
 		return store_file_iter_is_track(iter);
+#ifdef HAVE_CDDA
 	case STORE_TYPE_CDDA:
 		return store_cdda_iter_is_track(iter);
+#endif /* HAVE_CDDA */
 	}
 
 	return 0;
@@ -171,9 +173,11 @@ music_store_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, i
 	case STORE_TYPE_FILE:
 		store_file_iter_addlist_defmode(ms_iter, pl_iter, new_tab);
 		break;
+#ifdef HAVE_CDDA
 	case STORE_TYPE_CDDA:
 		store_cdda_iter_addlist_defmode(ms_iter, pl_iter, new_tab);
 		break;
+#endif /* HAVE_CDDA */
 	}
 }
 
@@ -267,9 +271,11 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data) {
 		case STORE_TYPE_FILE:
 			store_file_event_cb(event, &iter, path);
 			break;
+#ifdef HAVE_CDDA
 		case STORE_TYPE_CDDA:
 			store_cdda_event_cb(event, &iter, path);
 			break;
+#endif /* HAVE_CDDA */
 		}
 
 		gtk_tree_path_free(path);
@@ -373,9 +379,11 @@ tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
 		case STORE_TYPE_FILE:
 			store_file_selection_changed();
 			break;
+#ifdef HAVE_CDDA
 		case STORE_TYPE_CDDA:
 			store_cdda_selection_changed();
 			break;
+#endif /* HAVE_CDDA */
 		}
 	}
 }

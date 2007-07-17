@@ -2903,12 +2903,11 @@ update_tag_thread(void * args) {
 gboolean
 track_batch_tag(gpointer data) {
 
-	char * filename;
 	char * title;
-	char * comment;
 	char * track;
 
 	batch_tag_t * ptag;
+	track_data_t * track_data;
 
 
 	if ((ptag = (batch_tag_t *)calloc(1, sizeof(batch_tag_t))) == NULL) {
@@ -2923,21 +2922,31 @@ track_batch_tag(gpointer data) {
 		batch_tag_curr = ptag;
 	}
 
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &track_tag_iter, 0, &title, 1, &track,
-			   2, &filename, 3, &comment, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &track_tag_iter,
+			   MS_COL_NAME, &title,
+			   MS_COL_SORT, &track,
+			   MS_COL_DATA, &track_data, -1);
 
 	strncpy(ptag->artist, artist_tag, MAXLEN-1);
 	strncpy(ptag->album, album_tag, MAXLEN-1);
 	strncpy(ptag->year, year_tag, MAXLEN-1);
 
-	strncpy(ptag->filename, filename, MAXLEN-1);
 	strncpy(ptag->title, title, MAXLEN-1);
 	strncpy(ptag->track, track, MAXLEN-1);
-	strncpy(ptag->comment, comment, MAXLEN-1);
 
-	g_free(filename);
+	if (track_data->file != NULL) {
+		strncpy(ptag->filename, track_data->file, MAXLEN-1);
+	} else {
+		ptag->filename[0] = '\0';
+	}
+
+	if (track_data->comment != NULL) {
+		strncpy(ptag->comment, track_data->comment, MAXLEN-1);
+	} else {
+		ptag->comment[0] = '\0';
+	}
+
 	g_free(title);
-	g_free(comment);
 	g_free(track);
 
 	if (data) {
@@ -2954,11 +2963,11 @@ record_batch_tag_set_from_iter(GtkTreeIter * iter) {
 
 	char * str;
 
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, 0, &str, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_NAME, &str, -1);
 	strncpy(album_tag, str, MAXLEN-1);
 	g_free(str);
 
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, 1, &str, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_SORT, &str, -1);
 	strncpy(year_tag, str, MAXLEN-1);
 	g_free(str);
 }
@@ -2990,7 +2999,7 @@ void
 artist_batch_tag_set_from_iter(GtkTreeIter * iter) {
 
 	char * str;
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, 0, &str, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_NAME, &str, -1);
 	strncpy(artist_tag, str, MAXLEN-1);
 	g_free(str);
 }

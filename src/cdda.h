@@ -94,7 +94,6 @@ void refresh_cdda_drive_node(char * device_path);
 void cdda_drive_info(cdda_drive_t * drive);
 void cdda_disc_info(cdda_drive_t * drive);
 
-int cdda_is_cdtrack(char * file);
 unsigned long calc_cdda_hash(cdda_disc_t * disc);
 int cdda_hash_matches(char * filename, unsigned long hash);
 

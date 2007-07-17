@@ -42,6 +42,8 @@ void normalize_filename(const char * in, char * out);
 
 void free_strdup(char ** s, char * str);
 
+int cdda_is_cdtrack(char * file);
+
 #ifndef HAVE_STRCASESTR
 char * strcasestr(char * haystack, char * needle);
 #endif /* HAVE_STRCASESTR */

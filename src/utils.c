@@ -261,6 +261,13 @@ free_strdup(char ** s, char * str) {
 	*s = strdup(str);
 }
 
+int
+cdda_is_cdtrack(char * file) {
+
+	return (strstr(file, "CDDA ") == file);
+}
+
+
 #ifndef HAVE_STRCASESTR
 char
 toupper(char c) {

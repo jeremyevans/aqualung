@@ -442,7 +442,7 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 			strncat(tmp, "\n", MAXLEN-1);
 		}
 		strncat(tmp, data->str, MAXLEN-1);
-		track_data->comment = free_strdup(tmp);
+		free_strdup(&track_data->comment, tmp);
 		/*tree_selection_changed_cb(music_select, NULL);*/
 		music_store_mark_changed(&(data->track_iter));
 		break;

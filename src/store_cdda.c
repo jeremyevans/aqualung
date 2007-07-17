@@ -54,6 +54,8 @@
 #include "utils_gui.h"
 #include "options.h"
 #include "music_browser.h"
+#include "build_store.h"
+#include "cddb_lookup.h"
 #include "playlist.h"
 #include "rb.h"
 #include "i18n.h"
@@ -787,6 +789,9 @@ cdda_add_to_playlist(GtkTreeIter * iter_drive, unsigned long hash) {
 	} else {
 		cdda_record_addlist_iter(*iter_drive, pl, NULL, options.playlist_is_tree);
 	}
+
+	playlist_content_changed(pl);
+	delayed_playlist_rearrange(pl);
 }
 
 void
@@ -856,6 +861,185 @@ void
 cdda_remove_from_playlist(cdda_drive_t * drive) {
 
 	g_list_foreach(playlists, cdda_remove_from_playlist_foreach, drive);
+}
+
+
+
+void
+cdda_update_statusbar(void) {
+}
+
+
+static void
+set_popup_sensitivity(GtkTreePath * path) {
+
+	gboolean build_free = build_thread_test(BUILD_THREAD_FREE);
+
+#ifdef HAVE_CDDB
+	gboolean cddb_free = cddb_thread_test(CDDB_THREAD_FREE);
+#endif /* HAVE_CDDB */
+
+
+	if (gtk_tree_path_get_depth(path) == 2) {
+
+		GtkTreeIter iter;
+		gboolean val_cdda;
+		gboolean val_cdda_free;
+		cdda_drive_t * drive;
+
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
+		val_cdda = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter) > 0;
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &drive, -1);
+		val_cdda_free = (drive->is_used == 0) ? TRUE : FALSE;
+
+		gtk_widget_set_sensitive(cdda_record__addlist, val_cdda);
+		gtk_widget_set_sensitive(cdda_record__addlist_albummode, val_cdda);
+
+#ifdef HAVE_CDDB
+		gtk_widget_set_sensitive(cdda_record__cddb, val_cdda && cddb_free && build_free);
+		gtk_widget_set_sensitive(cdda_record__cddb_submit, val_cdda && cddb_free && build_free);
+#endif /* HAVE_CDDB */
+
+		gtk_widget_set_sensitive(cdda_record__rip, val_cdda && val_cdda_free);
+		gtk_widget_set_sensitive(cdda_record__eject, val_cdda_free);
+		gtk_widget_set_sensitive(cdda_record__disc_info, val_cdda);
+	}
+}
+
+
+static void
+add_path_to_playlist(GtkTreePath * path, GtkTreeIter * piter, int new_tab) {
+
+	int depth = gtk_tree_path_get_depth(path);
+
+	gtk_tree_selection_select_path(music_select, path);
+
+	if (new_tab) {
+		char * name;
+		GtkTreeIter iter;
+
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_NAME, &name, -1);
+		playlist_tab_new_if_nonempty(name);
+
+		g_free(name);
+	}
+
+	switch (depth) {
+	case 1:
+		cdda_store__addlist_defmode(piter);
+		break;
+	case 2:
+		cdda_record__addlist_defmode(piter);
+		break;
+	case 3:
+		cdda_track__addlist_cb(piter);
+		break;
+	}
+}
+
+
+
+/************************************************/
+/* music store interface */
+
+
+int
+store_cdda_iter_is_track(GtkTreeIter * iter) {
+
+	GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), iter);
+	int ret = (gtk_tree_path_get_depth(p) == 3);
+	gtk_tree_path_free(p);
+	return ret;
+}
+
+
+void
+store_cdda_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, int new_tab) {
+
+	GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), ms_iter);
+	add_path_to_playlist(p, pl_iter, new_tab);
+	gtk_tree_path_free(p);
+}
+
+
+void
+store_cdda_selection_changed(void) {
+
+	printf("store_cdda_selection_changed\n");
+}
+
+
+gboolean
+store_cdda_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path) {
+
+	if (event->type == GDK_BUTTON_PRESS) {
+
+		GdkEventButton * bevent = (GdkEventButton *) event;
+
+                if (bevent->button == 3) {
+
+			set_popup_sensitivity(path);
+
+			switch (gtk_tree_path_get_depth(path)) {
+			case 1:
+				gtk_menu_popup(GTK_MENU(cdda_store_menu), NULL, NULL, NULL, NULL,
+					       bevent->button, bevent->time);
+				break;
+			case 2:
+				gtk_menu_popup(GTK_MENU(cdda_record_menu), NULL, NULL, NULL, NULL,
+					       bevent->button, bevent->time);
+				break;
+			case 3:
+				gtk_menu_popup(GTK_MENU(cdda_track_menu), NULL, NULL, NULL, NULL,
+					       bevent->button, bevent->time);
+				break;
+			}
+		}
+	} 
+
+	if (event->type == GDK_KEY_PRESS) {
+
+		GdkEventKey * kevent = (GdkEventKey *) event;
+		int i;
+
+		switch (gtk_tree_path_get_depth(path)) {
+		case 1:
+			for (i = 0; cdda_store_keybinds[i].callback; ++i)
+				if (kevent->keyval == cdda_store_keybinds[i].keyval1 ||
+				    kevent->keyval == cdda_store_keybinds[i].keyval2)
+					(cdda_store_keybinds[i].callback)(NULL);
+			break;
+		case 2:
+			for (i = 0; cdda_record_keybinds[i].callback; ++i)
+				if (kevent->keyval == cdda_record_keybinds[i].keyval1 ||
+				    kevent->keyval == cdda_record_keybinds[i].keyval2)
+					(cdda_record_keybinds[i].callback)(NULL);
+			break;
+		case 3:
+			for (i = 0; cdda_track_keybinds[i].callback; ++i)
+				if (kevent->keyval == cdda_track_keybinds[i].keyval1 ||
+				    kevent->keyval == cdda_track_keybinds[i].keyval2)
+					(cdda_track_keybinds[i].callback)(NULL);
+			break;
+		}
+	}
+
+	return FALSE;
+}
+
+
+void
+store_cdda_load_icons(void) {
+
+	char path[MAXLEN];
+
+	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda.png");
+	icon_cdda = gdk_pixbuf_new_from_file (path, NULL);
+	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda-disk.png");
+	icon_cdda_disc = gdk_pixbuf_new_from_file (path, NULL);
+	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda-nodisk.png");
+	icon_cdda_nodisc = gdk_pixbuf_new_from_file (path, NULL);
 }
 
 
@@ -936,162 +1120,6 @@ store_cdda_create_popup_menu(void) {
 
 	gtk_widget_show(cdda_store__addlist);
 	gtk_widget_show(cdda_store__addlist_albummode);
-}
-
-
-void
-cdda_update_statusbar(void) {
-}
-
-void
-store_cdda_selection_changed(void) {
-
-	printf("store_cdda_selection_changed\n");
-}
-
-
-static void
-set_popup_sensitivity(GtkTreePath * path) {
-
-	gboolean build_free = TRUE; //build_thread_test(BUILD_THREAD_FREE);//TODO
-
-#ifdef HAVE_CDDB
-	gboolean cddb_free = TRUE; //cddb_thread_test(CDDB_THREAD_FREE);//TODO
-#endif /* HAVE_CDDB */
-
-
-	if (gtk_tree_path_get_depth(path) == 2) {
-
-		GtkTreeIter iter;
-		gboolean val_cdda;
-		gboolean val_cdda_free;
-		cdda_drive_t * drive;
-
-		gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
-		val_cdda = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter) > 0;
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &drive, -1);
-		val_cdda_free = (drive->is_used == 0) ? TRUE : FALSE;
-
-		gtk_widget_set_sensitive(cdda_record__addlist, val_cdda);
-		gtk_widget_set_sensitive(cdda_record__addlist_albummode, val_cdda);
-
-#ifdef HAVE_CDDB
-		gtk_widget_set_sensitive(cdda_record__cddb, val_cdda && cddb_free && build_free);
-		gtk_widget_set_sensitive(cdda_record__cddb_submit, val_cdda && cddb_free && build_free);
-#endif /* HAVE_CDDB */
-
-		gtk_widget_set_sensitive(cdda_record__rip, val_cdda && val_cdda_free);
-		gtk_widget_set_sensitive(cdda_record__eject, val_cdda_free);
-		gtk_widget_set_sensitive(cdda_record__disc_info, val_cdda);
-	}
-}
-
-
-static void
-add_path_to_playlist(GtkTreePath * path, int new_tab) {
-
-	int depth = gtk_tree_path_get_depth(path);
-
-	gtk_tree_selection_select_path(music_select, path);
-
-	if (new_tab) {
-		char * name;
-		GtkTreeIter iter;
-
-		gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_NAME, &name, -1);
-		playlist_tab_new_if_nonempty(name);
-		g_free(name);
-	}
-
-	switch (depth) {
-	case 1:
-		cdda_store__addlist_defmode(NULL);
-		break;
-	case 2:
-		cdda_record__addlist_defmode(NULL);
-		break;
-	case 3:
-		cdda_track__addlist_cb(NULL);
-		break;
-	}
-}
-
-gboolean
-store_cdda_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path) {
-
-	if (event->type == GDK_BUTTON_PRESS) {
-
-		GdkEventButton * bevent = (GdkEventButton *) event;
-
-		if (bevent->button == 2) {
-			add_path_to_playlist(path, 1/*new_tab*/);
-		}
-
-                if (bevent->button == 3) {
-
-			set_popup_sensitivity(path);
-
-			switch (gtk_tree_path_get_depth(path)) {
-			case 1:
-				gtk_menu_popup(GTK_MENU(cdda_store_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
-				break;
-			case 2:
-				gtk_menu_popup(GTK_MENU(cdda_record_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
-				break;
-			case 3:
-				gtk_menu_popup(GTK_MENU(cdda_track_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
-				break;
-			}
-		}
-	} 
-
-	if (event->type == GDK_KEY_PRESS) {
-
-		GdkEventKey * kevent = (GdkEventKey *) event;
-		int i;
-
-		//set_popup_sensitivity(path);
-			
-		switch (gtk_tree_path_get_depth(path)) {
-		case 1:
-			for (i = 0; cdda_store_keybinds[i].callback; ++i)
-				if (kevent->keyval == cdda_store_keybinds[i].keyval1 ||
-				    kevent->keyval == cdda_store_keybinds[i].keyval2)
-					(cdda_store_keybinds[i].callback)(NULL);
-			break;
-		case 2:
-			for (i = 0; cdda_record_keybinds[i].callback; ++i)
-				if (kevent->keyval == cdda_record_keybinds[i].keyval1 ||
-				    kevent->keyval == cdda_record_keybinds[i].keyval2)
-					(cdda_record_keybinds[i].callback)(NULL);
-			break;
-		case 3:
-			for (i = 0; cdda_track_keybinds[i].callback; ++i)
-				if (kevent->keyval == cdda_track_keybinds[i].keyval1 ||
-				    kevent->keyval == cdda_track_keybinds[i].keyval2)
-					(cdda_track_keybinds[i].callback)(NULL);
-			break;
-		}
-	}
-
-	return FALSE;
-}
-
-void
-store_cdda_load_icons(void) {
-
-	char path[MAXLEN];
-
-	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda.png");
-	icon_cdda = gdk_pixbuf_new_from_file (path, NULL);
-	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda-disk.png");
-	icon_cdda_disc = gdk_pixbuf_new_from_file (path, NULL);
-	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda-nodisk.png");
-	icon_cdda_nodisc = gdk_pixbuf_new_from_file (path, NULL);
 }
 
 

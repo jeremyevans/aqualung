@@ -3115,7 +3115,6 @@ gint
 playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, gint x, gint y, 
 			    GtkSelectionData * data, guint info, guint time, gpointer user_data) {
 
-	GtkTreeViewColumn * column;
 	playlist_t * tpl = (playlist_t *)user_data;
 
 	if (info == 0) { /* drag and drop inside or between playlists */
@@ -3136,7 +3135,7 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 			spath = gtk_tree_model_get_path(GTK_TREE_MODEL(spl->store), &siter);
 
 			if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(tpl->view),
-							  x, y, &tpath, &column, NULL, NULL)) {
+							  x, y, &tpath, NULL, NULL, NULL)) {
 
 				gtk_tree_model_get_iter(GTK_TREE_MODEL(tpl->store), &titer, tpath);
 
@@ -3160,60 +3159,41 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 
 		GtkTreePath * path = NULL;
 		GtkTreeIter * piter = NULL;
-		GtkTreeIter iter;
+		GtkTreeIter ms_iter;
+		GtkTreeIter pl_iter;
 		GtkTreeIter parent;
 		GtkTreeModel * model;
-		int depth;
 
-		if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
-			depth = gtk_tree_path_get_depth(gtk_tree_model_get_path(model, &iter));
-			if (iter_get_store_type(&iter) == STORE_TYPE_CDDA) {
-				depth += 1;
-			}
-		} else {
+		if (!gtk_tree_selection_get_selected(music_select, &model, &ms_iter)) {
 			return FALSE;
 		}
 
 		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(tpl->view),
-						  x, y, &path, &column, NULL, NULL)) {
+						  x, y, &path, NULL, NULL, NULL)) {
 
-			if (depth != 4) { /* dragging store, artist or record */
+			if (!music_store_iter_is_track(&ms_iter)) {
 				while (gtk_tree_path_get_depth(path) > 1) {
 					gtk_tree_path_up(path);
 				}
 			}
 			
-			gtk_tree_model_get_iter(GTK_TREE_MODEL(tpl->store), &iter, path);
-			piter = &iter;
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(tpl->store), &pl_iter, path);
+			piter = &pl_iter;
 		}
 
-		switch (depth) {
-		case 1:
-			store__addlist_defmode(piter);
-			break;
-		case 2:
-			artist__addlist_defmode(piter);
-			break;
-		case 3:
-			record__addlist_defmode(piter);
-			break;
-		case 4:
-			track__addlist_cb(piter);
+		music_store_iter_addlist_defmode(&ms_iter, piter, 0/*new_tab*/);
 
-			if (piter && gtk_tree_model_iter_parent(GTK_TREE_MODEL(tpl->store),
-								&parent, piter)) {
-				recalc_album_node(tpl, &parent);
-				unmark_track(tpl->store, &parent);
-				mark_track(tpl->store, &parent);
-			}
-
-			break;
+		if (piter && gtk_tree_model_iter_parent(GTK_TREE_MODEL(tpl->store), &parent, piter) &&
+		    music_store_iter_is_track(&ms_iter)) {
+			recalc_album_node(tpl, &parent);
+			unmark_track(tpl->store, &parent);
+			mark_track(tpl->store, &parent);
 		}
 
 		if (path) {
 			gtk_tree_path_free(path);
 		}
-			
+
 	} else if (info == 2) { /* drag and drop from external app */
 
 		GSList * list = NULL;

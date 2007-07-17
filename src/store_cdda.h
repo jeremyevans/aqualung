@@ -29,10 +29,12 @@
 
 #include "cdda.h"
 
-void store_cdda_load_icons(void);
-void store_cdda_create_popup_menu(void);
+int store_cdda_iter_is_track(GtkTreeIter * iter);
+void store_cdda_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, int new_tab);
 void store_cdda_selection_changed(void);
 gboolean store_cdda_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path);
+void store_cdda_load_icons(void);
+void store_cdda_create_popup_menu(void);
 
 void cdda_add_to_playlist(GtkTreeIter * iter_drive, unsigned long hash);
 void cdda_remove_from_playlist(cdda_drive_t * drive);

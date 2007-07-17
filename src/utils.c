@@ -251,13 +251,14 @@ normalize_filename(const char * in, char * out) {
 	}
 }
 
-char *
-free_strdup(char * s) {
+void
+free_strdup(char ** s, char * str) {
 
-	if (s != NULL) {
-		free(s);
+	if (*s != NULL) {
+		free(*s);
 	}
-	return strdup(s);
+
+	*s = strdup(str);
 }
 
 #ifndef HAVE_STRCASESTR

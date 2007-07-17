@@ -32,14 +32,21 @@ void create_music_browser(void);
 void show_music_browser(void);
 void hide_music_browser(void);
 
+void music_store_search(void);
+
 int path_get_store_type(GtkTreePath * p);
 int iter_get_store_type(GtkTreeIter * i);
+void music_store_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, int new_tab);
+int music_store_iter_is_track(GtkTreeIter * iter);
 
-void music_store_progress_bar_hide(void);
 void music_store_set_status_bar_info(void);
-void music_tree_expand_stores(void);
 
-void search_cb(gpointer data);
+void music_store_mark_changed(GtkTreeIter * iter);
+void music_store_mark_saved(GtkTreeIter* iter_store);
+
+void music_store_load_all(void);
+void music_store_save_all(void);
+
 
 struct keybinds {
 	void (*callback)(gpointer);
@@ -47,13 +54,18 @@ struct keybinds {
 	int keyval2;
 };
 
-#define MS_COL_NAME    0
-#define MS_COL_SORT    1
-#define MS_COL_FONT    8
-#define MS_COL_ICON    9
-#define MS_COL_DATA   10
+enum {
+	MS_COL_NAME = 0,
+	MS_COL_SORT,
+	MS_COL_FONT,
+	MS_COL_ICON,
+	MS_COL_DATA,
+
+	MS_COL_COUNT
+};
 
 enum {
+	STORE_TYPE_INVALID,
 	STORE_TYPE_FILE,
 	STORE_TYPE_CDDA
 };

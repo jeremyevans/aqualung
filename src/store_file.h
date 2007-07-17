@@ -28,40 +28,21 @@ extern "C" {
 
 #include <gtk/gtk.h>
 
-gboolean store_file_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path);
+int store_file_iter_is_track(GtkTreeIter * iter);
+void store_file_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, int new_tab);
 void store_file_selection_changed(void);
+gboolean store_file_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path);
 void store_file_load_icons(void);
 void store_file_create_popup_menu(void);
-
-void music_store_mark_changed(GtkTreeIter * iter);
-void music_store_mark_saved(GtkTreeIter* iter_store);
-
-void load_music_store(char * file, char * sort);
-void load_all_music_store(void);
-void save_music_store(GtkTreeIter * iter_store);
-void save_all_music_store(void);
+void store_file_insert_progress_bar(GtkWidget * vbox);
+void store_file_toolbar__edit_cb(gpointer data);
+void store_file_toolbar__add_cb(gpointer data);
+void store_file_toolbar__remove_cb(gpointer data);
 
 void store__add_cb(gpointer data);
-void artist__add_cb(gpointer data);
-void record__add_cb(gpointer data);
-void track__add_cb(gpointer data);
 
-void store__edit_cb(gpointer data);
-void artist__edit_cb(gpointer data);
-void record__edit_cb(gpointer data);
-void track__edit_cb(gpointer data);
-
-void store__remove_cb(gpointer data);
-void artist__remove_cb(gpointer data);
-void record__remove_cb(gpointer data);
-void track__remove_cb(gpointer data);
-
-void store__save_all_cb(gpointer data);
-
-int is_store_iter_readonly(GtkTreeIter * i);
-void ms_progress_bar_show(void);
-
-
+void store_file_load(char * file, char * sort);
+void store_file_save(GtkTreeIter * iter_store);
 
 void store__addlist_defmode(gpointer data);
 void artist__addlist_defmode(gpointer data);
@@ -70,9 +51,9 @@ void track__addlist_cb(gpointer data);
 
 typedef struct {
 	int type;
-	char * file;    /* physical filename */
+	int dirty;
 	int readonly;
-	int dirty;      /* 1: modified since last save, 0: saved */
+	char * file;
 	char * comment;
 } store_data_t;
 
@@ -86,7 +67,7 @@ typedef struct {
 } record_data_t;
 
 typedef struct {
-	char * file;    /* physical filename */
+	char * file;
 	float duration; /* length in seconds */
 	float volume;   /* average volume in dBFS */
 	float rva;      /* manual RVA in dB */

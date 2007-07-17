@@ -40,7 +40,7 @@ void pack_strings(char * str1, char * str2, char * result);
 void unpack_strings(char * packed, char * str1, char * str2);
 void normalize_filename(const char * in, char * out);
 
-char * free_strdup(char * s);
+void free_strdup(char ** s, char * str);
 
 #ifndef HAVE_STRCASESTR
 char * strcasestr(char * haystack, char * needle);

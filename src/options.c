@@ -554,7 +554,7 @@ options_window_accept(void) {
 							 name + 1);
 		
 				if (ret == GTK_RESPONSE_YES) {
-					save_music_store(&iter);
+					store_file_save(&iter);
 				} else {
 					music_store_mark_saved(&iter);
 				}
@@ -605,7 +605,7 @@ options_window_accept(void) {
 		}
 
 		if (!has) {
-			load_music_store(file, sort);
+			store_file_load(file, sort);
 		}
 
 		g_free(file);

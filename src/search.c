@@ -198,6 +198,10 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 	h = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &store_iter, NULL, h++)) {
 
+		if (iter_get_store_type(&store_iter) != STORE_TYPE_FILE) {
+			continue;
+		}
+
 		i = 0;
 		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
 						     &artist_iter, &store_iter, i++)) {

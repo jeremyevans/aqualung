@@ -946,7 +946,7 @@ main_window_closing(void) {
 		}
 
 		if (resp == GTK_RESPONSE_YES) {
-			save_all_music_store();
+			music_store_save_all();
 		}
 	}
 
@@ -3525,7 +3525,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	load_plugin_data();
 #endif /* HAVE_LADSPA */
 
-	load_all_music_store();
+	music_store_load_all();
 #ifdef HAVE_CDDA
 	create_cdda_node();
 	cdda_scanner_start();

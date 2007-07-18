@@ -365,6 +365,16 @@ toolbar__save_cb(gpointer data) {
 	music_store_save_all();
 }
 
+void
+music_store_selection_changed(void) {
+
+	GtkTreeIter iter;
+
+	if (gtk_tree_selection_get_selected(music_select, NULL, &iter)) {
+		gtk_tree_selection_unselect_iter(music_select, &iter);
+		gtk_tree_selection_select_iter(music_select, &iter);
+	}
+}
 
 void
 tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
@@ -377,6 +387,8 @@ tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
         gtk_text_buffer_get_bounds(buffer, &a_iter, &b_iter);
 	gtk_text_buffer_delete(buffer, &a_iter, &b_iter);  
+
+	gtk_label_set_text(GTK_LABEL(statusbar_ms), "");
 
 	if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
 

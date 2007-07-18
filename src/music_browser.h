@@ -39,7 +39,7 @@ int iter_get_store_type(GtkTreeIter * i);
 void music_store_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, int new_tab);
 int music_store_iter_is_track(GtkTreeIter * iter);
 
-void music_store_set_status_bar_info(void);
+void music_store_selection_changed(void);
 
 void music_store_mark_changed(GtkTreeIter * iter);
 void music_store_mark_saved(GtkTreeIter* iter_store);

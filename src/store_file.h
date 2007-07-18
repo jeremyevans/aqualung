@@ -39,6 +39,11 @@ void store_file_toolbar__edit_cb(gpointer data);
 void store_file_toolbar__add_cb(gpointer data);
 void store_file_toolbar__remove_cb(gpointer data);
 
+gboolean store_file_remove_track(GtkTreeIter * iter);
+gboolean store_file_remove_record(GtkTreeIter * iter);
+gboolean store_file_remove_artist(GtkTreeIter * iter);
+gboolean store_file_remove_store(GtkTreeIter * iter);
+
 void store_file_progress_bar_hide(void);
 
 void store__add_cb(gpointer data);

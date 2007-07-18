@@ -61,6 +61,7 @@
 #include "i18n.h"
 #include "cdda.h"
 #include "cd_ripper.h"
+#include "store_cdda.h"
 
 
 extern GtkTreeSelection * music_select;
@@ -123,6 +124,36 @@ struct keybinds cdda_track_keybinds[] = {
 };
 
 
+void
+cdda_track_free(cdda_track_t * data) {
+
+	free(data->path);
+	free(data);
+}
+
+gboolean
+store_cdda_remove_track(GtkTreeIter * iter) {
+
+	cdda_track_t * data;
+
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_DATA, &data, -1);
+	cdda_track_free(data);
+
+	return gtk_tree_store_remove(music_store, iter);
+}
+
+gboolean
+store_cdda_remove_record(GtkTreeIter * iter) {
+
+	GtkTreeIter track_iter;
+	int i = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &track_iter, iter, i++)) {
+		store_cdda_remove_track(&track_iter);
+	}
+
+	return gtk_tree_store_remove(music_store, iter);
+}
 
 
 void
@@ -864,9 +895,103 @@ cdda_remove_from_playlist(cdda_drive_t * drive) {
 }
 
 
+static void
+track_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, float * length) {
 
-void
-cdda_update_statusbar(void) {
+	cdda_track_t * data;
+
+	gtk_tree_model_get(model, iter, MS_COL_DATA, &data, -1);
+
+	*length += data->duration;
+}
+
+static void
+record_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, float * length,
+		       int * ntrack, int * nrecord) {
+
+	GtkTreeIter track_iter;
+	int i = 0;
+
+	while (gtk_tree_model_iter_nth_child(model, &track_iter, iter, i++)) {
+		track_status_bar_info(model, &track_iter, length);
+	}
+
+	*ntrack += i - 1;
+
+	if (i > 1) {
+		(*nrecord)++;
+	}
+}
+
+static void
+store_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, float * length,
+		       int * ntrack, int * nrecord, int * ndrive) {
+
+	GtkTreeIter record_iter;
+	int i = 0;
+
+	while (gtk_tree_model_iter_nth_child(model, &record_iter, iter, i++)) {
+		record_status_bar_info(model, &record_iter, length, ntrack, nrecord);
+	}
+
+	*ndrive = i - 1;
+}
+
+static void
+set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
+
+	int ntrack = 0, nrecord = 0, ndrive = 0;
+	float length = 0.0f;
+
+	char str[MAXLEN];
+	char length_str[MAXLEN];
+	char tmp[MAXLEN];
+	char * name;
+
+	GtkTreeModel * model = GTK_TREE_MODEL(music_store);
+	GtkTreePath * path;
+	int depth;
+
+
+	path = gtk_tree_model_get_path(model, tree_iter);
+	depth = gtk_tree_path_get_depth(path);
+	gtk_tree_path_free(path);
+
+	gtk_tree_model_get(model, tree_iter, MS_COL_NAME, &name, -1);
+
+	switch (depth) {
+	case 3:
+		track_status_bar_info(model, tree_iter, &length);
+		sprintf(str, "%s: ", name);
+		break;
+	case 2:
+		record_status_bar_info(model, tree_iter, &length, &ntrack, &nrecord);
+		if (nrecord == 0) {
+			sprintf(str, "%s: %s ", _("CD Audio"), name);
+		} else {
+			sprintf(str, "%s: %d %s ", name,
+				ntrack, (ntrack == 1) ? _("track") : _("tracks"));
+		}
+		break;
+	case 1:
+		store_status_bar_info(model, tree_iter, &length, &ntrack, &nrecord, &ndrive);
+		sprintf(str, "%s: %d %s, %d %s, %d %s ", name,
+			ndrive, (ndrive == 1) ? _("drive") : _("drives"),
+			nrecord, (nrecord == 1) ? _("record") : _("records"),
+			ntrack, (ntrack == 1) ? _("track") : _("tracks"));
+		break;
+	}
+
+	g_free(name);
+
+	if (length > 0.0f) {
+		time2time(length, length_str);
+		sprintf(tmp, "[%s] ", length_str);
+		strcat(str, tmp);
+	}
+
+
+	gtk_label_set_text(statusbar, str);
 }
 
 
@@ -964,9 +1089,11 @@ store_cdda_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, in
 
 
 void
-store_cdda_selection_changed(GtkTreeIter * iter, GtkTextBuffer * buffer, GtkLabel * statusbar) {
+store_cdda_selection_changed(GtkTreeIter * tree_iter, GtkTextBuffer * buffer, GtkLabel * statusbar) {
 
-	printf("store_cdda_selection_changed\n");
+	if (options.enable_mstore_statusbar) {
+		set_status_bar_info(tree_iter, statusbar);
+	}
 }
 
 

@@ -36,10 +36,17 @@ gboolean store_cdda_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath *
 void store_cdda_load_icons(void);
 void store_cdda_create_popup_menu(void);
 
+gboolean store_cdda_remove_track(GtkTreeIter * iter);
+gboolean store_cdda_remove_record(GtkTreeIter * iter);
+
 void cdda_add_to_playlist(GtkTreeIter * iter_drive, unsigned long hash);
 void cdda_remove_from_playlist(cdda_drive_t * drive);
 
-void cdda_update_statusbar(void);
+typedef struct {
+	char * path;
+	float duration;
+} cdda_track_t;
+
 
 #endif /* HAVE_CDDA */
 

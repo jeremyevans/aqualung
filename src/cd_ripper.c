@@ -453,7 +453,7 @@ ripper_handle_existing_record_iter(GtkTreeIter * iter) {
 		GtkTreeIter track_iter;
 
 		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &track_iter, iter, 0);
-		while (gtk_tree_store_remove(music_store, &track_iter));
+		while (store_file_remove_track(&track_iter));
 		music_store_mark_changed(iter);
 		
 		return 0;

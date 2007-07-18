@@ -51,11 +51,6 @@ extern "C" {
 #define CDDA_MAXLEN 256
 
 typedef struct {
-	char * path;
-	float duration;
-} cdda_track_t;
-
-typedef struct {
 	int n_tracks;
 	lsn_t toc[100];
 	unsigned long hash;

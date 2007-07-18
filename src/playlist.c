@@ -2865,10 +2865,10 @@ playlist_stats_set_busy() {
 
 void
 playlist_child_stats(playlist_t * pl, GtkTreeIter * iter,
-		     int * count, float * duration, double * songs_size, int selected) {
+		     int * ntrack, float * length, double * songs_size, int selected) {
 
-	gint j = 0;
-	gchar * tstr;
+	int j = 0;
+	char * tstr;
 	struct stat statbuf;
 	GtkTreeIter iter_child;
 
@@ -2880,10 +2880,12 @@ playlist_child_stats(playlist_t * pl, GtkTreeIter * iter,
 
 			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter_child, PL_COL_DURATION, &len, 
                                            PL_COL_PHYSICAL_FILENAME, &tstr, -1);
-			*duration += len;
-			(*count)++;
-			if (stat(tstr, &statbuf) != -1) {
-				*songs_size += statbuf.st_size / 1024.0;
+			*length += len;
+			(*ntrack)++;
+			if (options.pl_statusbar_show_size) {
+				if (stat(tstr, &statbuf) != -1) {
+					*songs_size += statbuf.st_size / 1024.0;
+				}
 			}
 			g_free(tstr);
 		}
@@ -2896,16 +2898,20 @@ void
 playlist_stats(playlist_t * pl, int selected) {
 
 	GtkTreeIter iter;
-	gint i = 0;
+	int i = 0;
 
-	gint count = 0;
-	gfloat duration = 0;
-	gfloat len = 0;
-	gchar str[MAXLEN];
-	gchar time[MAXLEN];
-        gchar * tstr;
-        double songs_size, m_size;
+	int ntrack = 0;
+	float length = 0;
+	float len = 0;
+        double size = 0;
+
+	char str[MAXLEN];
+	char length_str[MAXLEN];
+	char tmp[MAXLEN];
+
+        char * tstr;
         struct stat statbuf;
+
 
 	if (!options.enable_playlist_statusbar) {
 		return;
@@ -2915,25 +2921,25 @@ playlist_stats(playlist_t * pl, int selected) {
 		return;
 	}
 
-        songs_size = 0;
-
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, NULL, i++)) {
 
 		gint n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter);
-		if (n > 0) { /* album node -- count children tracks */
+		if (n > 0) {
 			if (gtk_tree_selection_iter_is_selected(pl->select, &iter)) {
-				playlist_child_stats(pl, &iter, &count, &duration, &songs_size, 0/*false*/);
+				playlist_child_stats(pl, &iter, &ntrack, &length, &size, 0/*false*/);
 			} else {
-				playlist_child_stats(pl, &iter, &count, &duration, &songs_size, selected);
+				playlist_child_stats(pl, &iter, &ntrack, &length, &size, selected);
 			}
 		} else {
 			if (!selected || gtk_tree_selection_iter_is_selected(pl->select, &iter)) {
 				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DURATION, &len, 
                                                    PL_COL_PHYSICAL_FILENAME, &tstr, -1);
-				duration += len;
-				count++;
-				if (stat(tstr, &statbuf) != -1) {
-					songs_size += statbuf.st_size / 1024.0;
+				length += len;
+				ntrack++;
+				if (options.pl_statusbar_show_size) {
+					if (stat(tstr, &statbuf) != -1) {
+						size += statbuf.st_size / 1024.0;
+					}
 				}
 				g_free(tstr);
 			}
@@ -2941,37 +2947,22 @@ playlist_stats(playlist_t * pl, int selected) {
 	}
 
 
-	time2time(duration, time);
-        m_size = songs_size / 1024.0;
+	sprintf(str, "%d %s ", ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 
-	if (count == 1) {
-                if (options.pl_statusbar_show_size && (m_size > 0)) {
-                        if (m_size < 1024) {
-                                sprintf(str, _("%d track [%s] (%.1f MB)"), count, time, m_size);
-                        } else {
-                                sprintf(str, _("%d track [%s] (%.1f GB)"), count, time, m_size / 1024.0);
-                        }
-                } else {
-                        if(fabsf(duration) < 1e-8) {
-                                sprintf(str, _("%d track "), count);
-                        } else {
-                                sprintf(str, _("%d track [%s] "), count, time);
-                        }
-                }
-	} else {
-                if (options.pl_statusbar_show_size && (m_size > 0)) {
-                        if (m_size < 1024) {
-                                sprintf(str, _("%d tracks [%s] (%.1f MB)"), count, time, m_size);
-                        } else {
-                                sprintf(str, _("%d tracks [%s] (%.1f GB)"), count, time, m_size / 1024.0);
-                        }
-                } else {
-                        if(fabsf(duration) < 1e-8) {
-                                sprintf(str, _("%d tracks "), count);
-                        } else {
-                                sprintf(str, _("%d tracks [%s] "), count, time);
-                        }
-                }
+
+	time2time(length, length_str);
+	sprintf(tmp, "[%s] ", length_str);
+	strcat(str, tmp);
+
+	if (options.pl_statusbar_show_size) {
+		if (size > 1024 * 1024) {
+			sprintf(tmp, "(%.1f GB) ", size / (1024 * 1024));
+		} else if (size > (1 << 10)){
+			sprintf(tmp, "(%.1f MB) ", size / 1024);
+		} else {
+			sprintf(tmp, "(%.1f KB) ", size);
+		}
+		strcat(str, tmp);
 	}
 
 	if (selected) {
@@ -2985,16 +2976,16 @@ playlist_stats(playlist_t * pl, int selected) {
 void
 recalc_album_node(playlist_t * pl, GtkTreeIter * iter) {
 
-	gint count = 0;
-	gfloat duration = 0;
-	double songs_size;
+	gint ntrack = 0;
+	gfloat length = 0;
+	double size;
 	gchar time[MAXLEN];
 	gchar * color;
 
-	playlist_child_stats(pl, iter, &count, &duration, &songs_size, 0/*false*/);
-	time2time(duration, time);
+	playlist_child_stats(pl, iter, &ntrack, &length, &size, 0/*false*/);
+	time2time(length, time);
 	gtk_tree_store_set(pl->store, iter,
-			   PL_COL_DURATION, duration,
+			   PL_COL_DURATION, length,
 			   PL_COL_DURATION_DISP, time, -1);
 
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_SELECTION_COLOR, &color, -1);

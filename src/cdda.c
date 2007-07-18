@@ -515,7 +515,7 @@ cdda_timeout_callback(gpointer data) {
 			break;
 		}
 	}
-	cdda_update_statusbar();
+
 	return TRUE;
 }
 
@@ -676,7 +676,7 @@ update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 		}
 
 		data->path = strdup(path);
-		data->duration =  (drive->disc.toc[i+1] - drive->disc.toc[i]) / 75.0;
+		data->duration = (drive->disc.toc[i+1] - drive->disc.toc[i]) / 75.0;
 
 		gtk_tree_store_append(music_store, &iter_track, &iter_drive);
 		gtk_tree_store_set(music_store, &iter_track,
@@ -772,8 +772,9 @@ insert_cdda_drive_node(char * device_path) {
 	if (drive->disc.n_tracks > 0) {
 		update_track_data(drive, iter_drive);
 	}
-}
 
+	music_store_selection_changed();
+}
 
 void
 remove_cdda_drive_node(char * device_path) {
@@ -795,8 +796,10 @@ remove_cdda_drive_node(char * device_path) {
 	}
 
 	if (found) {
-		gtk_tree_store_remove(music_store, &iter_drive);
+		store_cdda_remove_record(&iter_drive);
 	}
+
+	music_store_selection_changed();
 }
 
 
@@ -842,7 +845,7 @@ refresh_cdda_drive_node(char * device_path) {
 		}
 
 		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_tmp, &iter_drive, 0)) {
-			gtk_tree_store_remove(music_store, &iter_tmp);
+			store_cdda_remove_track(&iter_tmp);
 		}
 	}
 
@@ -857,6 +860,8 @@ refresh_cdda_drive_node(char * device_path) {
 	if (drive->disc.n_tracks > 0) {
 		update_track_data(drive, iter_drive);
 	}
+
+	music_store_selection_changed();
 }
 
 void

@@ -565,7 +565,7 @@ options_window_accept(void) {
 				g_free(name);
 			}
 
-			gtk_tree_store_remove(music_store, &iter);
+			store_file_remove_store(&iter);
 			--i;
 		}
 	}
@@ -626,6 +626,7 @@ options_window_accept(void) {
 	refresh_displays();
 	gtk_window_set_keep_above(GTK_WINDOW(main_window), options.main_window_always_on_top);
 
+	music_store_selection_changed();
 	playlist_size_allocate_all();
 
 	save_config();

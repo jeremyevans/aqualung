@@ -266,6 +266,95 @@ struct keybinds track_keybinds[] = {
 
 
 void
+store_data_free(store_data_t * data) {
+
+	free(data->file);
+	if (data->comment != NULL) {
+		free(data->comment);
+	}
+	free(data);
+}
+
+void
+artist_data_free(artist_data_t * data) {
+
+	if (data->comment != NULL) {
+		free(data->comment);
+	}
+	free(data);
+}
+
+void
+record_data_free(record_data_t * data) {
+
+	if (data->comment != NULL) {
+		free(data->comment);
+	}
+	free(data);
+}
+
+void
+track_data_free(track_data_t * data) {
+
+	free(data->file);
+	if (data->comment != NULL) {
+		free(data->comment);
+	}
+	free(data);
+}
+
+gboolean
+store_file_remove_track(GtkTreeIter * iter) {
+
+	track_data_t * data;
+
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_DATA, &data, -1);
+	track_data_free(data);
+
+	return gtk_tree_store_remove(music_store, iter);
+}
+
+gboolean
+store_file_remove_record(GtkTreeIter * iter) {
+
+	GtkTreeIter track_iter;
+	int i = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &track_iter, iter, i++)) {
+		store_file_remove_track(&track_iter);
+	}
+
+	return gtk_tree_store_remove(music_store, iter);
+}
+
+gboolean
+store_file_remove_artist(GtkTreeIter * iter) {
+
+	GtkTreeIter record_iter;
+	int i = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &record_iter, iter, i++)) {
+		store_file_remove_record(&record_iter);
+	}
+
+	return gtk_tree_store_remove(music_store, iter);
+}
+
+gboolean
+store_file_remove_store(GtkTreeIter * iter) {
+
+	GtkTreeIter artist_iter;
+	int i = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &artist_iter, iter, i++)) {
+		store_file_remove_artist(&artist_iter);
+	}
+
+	return gtk_tree_store_remove(music_store, iter);
+}
+
+
+void
 create_dialog_layout(char * title, GtkWidget ** dialog, GtkWidget ** table, int rows) {
 
         *dialog = gtk_dialog_new_with_buttons(title,
@@ -1195,41 +1284,54 @@ generic_remove_cb(char * title) {
 
 	GtkTreeIter iter;
 	GtkTreeModel * model;
-	char * pname;
-	char name[MAXLEN];
+	char * name;
 	char text[MAXLEN];
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
-		if (is_store_iter_readonly(&iter)) return;
+		if (is_store_iter_readonly(&iter)) {
+			return;
+		}
 
-                gtk_tree_model_get(model, &iter, 0, &pname, -1);
-		strncpy(name, pname, MAXLEN-1);
-                g_free(pname);
-		
+                gtk_tree_model_get(model, &iter, MS_COL_NAME, &name, -1);
 		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
+                g_free(name);
+
 		if (confirm_dialog(title, text)) {
 
 			GtkTreeIter parent;
+			GtkTreePath * path = gtk_tree_model_get_path(model, &iter);
+			int ret;
 
 			music_store_mark_changed(&iter);
-			gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &parent, &iter);
+			gtk_tree_model_iter_parent(model, &parent, &iter);
 
-			if (gtk_tree_store_remove(music_store, &iter)) {
+			switch (gtk_tree_path_get_depth(path)) {
+			case 2:
+				ret = store_file_remove_artist(&iter);
+				break;
+			case 3:
+				ret = store_file_remove_record(&iter);
+				break;
+			case 4:
+				ret = store_file_remove_track(&iter);
+				break;
+			}
 
+			if (ret) {
 				gtk_tree_selection_select_iter(music_select, &iter);
-
 			} else {
 				int last;
 
-				if ((last = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &parent))) {
-					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
-								      &iter, &parent, last-1);
+				if ((last = gtk_tree_model_iter_n_children(model, &parent))) {
+					gtk_tree_model_iter_nth_child(model, &iter, &parent, last-1);
 					gtk_tree_selection_select_iter(music_select, &iter);
 				} else {
 					gtk_tree_selection_select_iter(music_select, &parent);
 				}
 			}
+
+			gtk_tree_path_free(path);
 		}
 	}
 }
@@ -1848,8 +1950,7 @@ store__edit_cb(gpointer user_data) {
 			gtk_tree_store_set(music_store, &iter,
 					   MS_COL_NAME, name, -1);
 
-			gtk_tree_selection_unselect_iter(music_select, &iter);
-			gtk_tree_selection_select_iter(music_select, &iter);
+			music_store_selection_changed();
 			music_store_mark_changed(&iter);
 		}
         }
@@ -1952,7 +2053,7 @@ store__remove_cb(gpointer user_data) {
 				}
 			}
 
-			if (gtk_tree_store_remove(music_store, &iter)) {
+			if (store_file_remove_store(&iter)) {
 				gtk_tree_selection_select_iter(music_select, &iter);
 			} else {
 				int last;
@@ -2102,8 +2203,7 @@ artist__edit_cb(gpointer user_data) {
 					   MS_COL_NAME, name,
 					   MS_COL_SORT, sort, -1);
 
-			gtk_tree_selection_unselect_iter(music_select, &iter);
-			gtk_tree_selection_select_iter(music_select, &iter);
+			music_store_selection_changed();
 			music_store_mark_changed(&iter);
 		}
         }
@@ -2337,8 +2437,7 @@ record__edit_cb(gpointer user_data) {
 					   MS_COL_NAME, name,
 					   MS_COL_SORT, sort, -1);
 
-			gtk_tree_selection_unselect_iter(music_select, &iter);
-			gtk_tree_selection_select_iter(music_select, &iter);
+			music_store_selection_changed();
 			music_store_mark_changed(&iter);
 		}
         }
@@ -2532,8 +2631,7 @@ track__edit_cb(gpointer user_data) {
 					   MS_COL_NAME, name,
 					   MS_COL_SORT, sort, -1);
 
-			gtk_tree_selection_unselect_iter(music_select, &iter);
-			gtk_tree_selection_select_iter(music_select, &iter);
+			music_store_selection_changed();
 			music_store_mark_changed(&iter);
                 }
         }
@@ -3202,19 +3300,25 @@ set_comment_text(GtkTreeIter * tree_iter, GtkTextIter * text_iter, GtkTextBuffer
 }
 
 
-void
+static void
 track_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, float * length) {
 
 	track_data_t * data;
 
-	gtk_tree_model_get(model, iter,
-			   MS_COL_DATA, &data, -1);
+	gtk_tree_model_get(model, iter, MS_COL_DATA, &data, -1);
 
-	*size += data->size >> 10;
+	if (data->size == 0) {
+		struct stat statbuf;
+		if (stat(data->file, &statbuf) != -1) {
+			data->size = statbuf.st_size;
+		}
+	}
+
+	*size += data->size / 1024.0;
 	*length += data->duration;
 }
 
-void
+static void
 record_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, float * length,
 		       int * ntrack) {
 
@@ -3228,7 +3332,7 @@ record_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, 
 	*ntrack += i - 1;
 }
 
-void
+static void
 artist_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, float * length,
 		       int * ntrack, int * nrecord) {
 
@@ -3257,7 +3361,7 @@ store_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, f
 }
 
 
-void
+static void
 set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
 	int ntrack = 0, nrecord = 0, nartist = 0;
@@ -3266,7 +3370,8 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
 	char str[MAXLEN];
 	char length_str[MAXLEN];
-	char size_str[MAXLEN];
+	char tmp[MAXLEN];
+	char * name;
 
 	GtkTreeModel * model = GTK_TREE_MODEL(music_store);
 	GtkTreePath * path;
@@ -3277,51 +3382,54 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 	depth = gtk_tree_path_get_depth(path);
 	gtk_tree_path_free(path);
 
+	gtk_tree_model_get(model, tree_iter, MS_COL_NAME, &name, -1);
+
 	switch (depth) {
 	case 4:
 		track_status_bar_info(model, tree_iter, &size, &length);
-		sprintf(str, "%s: ", _("track"));
+		sprintf(str, "%s: ", name);
 		break;
 	case 3:
 		record_status_bar_info(model, tree_iter, &size, &length, &ntrack);
-		sprintf(str, "%s: %d %s ", _("record"),
-			ntrack, (ntrack > 1) ? _("tracks") : _("track"));
+		sprintf(str, "%s: %d %s ", name,
+			ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 
 		break;
 	case 2:
 		artist_status_bar_info(model, tree_iter, &size, &length, &ntrack, &nrecord);
-		sprintf(str, "%s: %d %s, %d %s ", _("artist"),
-			nrecord, (nrecord > 1) ? _("records") : _("record"),
-			ntrack, (ntrack > 1) ? _("tracks") : _("track"));
+		sprintf(str, "%s: %d %s, %d %s ", name,
+			nrecord, (nrecord == 1) ? _("record") : _("records"),
+			ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 		break;
 	case 1:
 		store_status_bar_info(model, tree_iter, &size, &length, &ntrack, &nrecord, &nartist);
-		sprintf(str, "%s: %d %s, %d %s, %d %s ", _("store"),
-			nartist, (nartist > 1) ? _("artists") : _("artist"),
-			nrecord, (nrecord > 1) ? _("records") : _("record"),
-			ntrack, (ntrack > 1) ? _("tracks") : _("track"));
+		sprintf(str, "%s: %d %s, %d %s, %d %s ", name,
+			nartist, (nartist == 1) ? _("artist") : _("artists"),
+			nrecord, (nrecord == 1) ? _("record") : _("records"),
+			ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 		break;
 	}
 
+	g_free(name);
+
 	if (length > 0.0f) {
-		char tmp[MAXLEN];
-		time2time(length, tmp);
-		sprintf(length_str, "[%s] ", tmp);
+		time2time(length, length_str);
+		sprintf(tmp, "[%s] ", length_str);
 	} else {
-		sprintf(length_str, "[%s] ", _("unknown time"));
+		sprintf(tmp, "[%s] ", _("unknown time"));
 	}
 
-	strcat(str, length_str);
+	strcat(str, tmp);
 
 	if (options.ms_statusbar_show_size) {
 		if (size > 1024 * 1024) {
-			sprintf(size_str, "(%.1f GB) \n", size / (1024 * 1024));
+			sprintf(tmp, "(%.1f GB) ", size / (1024 * 1024));
 		} else if (size > (1 << 10)){
-			sprintf(size_str, "(%.1f MB) \n", size / 1024);
+			sprintf(tmp, "(%.1f MB) ", size / 1024);
 		} else {
-			sprintf(size_str, "(%.1f KB) \n", size);
+			sprintf(tmp, "(%.1f KB) ", size);
 		}
-		strcat(str, size_str);
+		strcat(str, tmp);
 	}
 
 	gtk_label_set_text(statusbar, str);

@@ -954,8 +954,8 @@ unmark_track(GtkTreeStore * store, GtkTreeIter * piter) {
 
 	int n;
 
-	gtk_tree_store_set(store, piter, 2, pl_color_inactive, -1);
-	gtk_tree_store_set(store, piter, 7, PANGO_WEIGHT_NORMAL, -1);
+	gtk_tree_store_set(store, piter, PL_COL_SELECTION_COLOR, pl_color_inactive, -1);
+	gtk_tree_store_set(store, piter, PL_COL_FONT_WEIGHT, PANGO_WEIGHT_NORMAL, -1);
 
         n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(store), piter);
 
@@ -977,7 +977,7 @@ unmark_track(GtkTreeStore * store, GtkTreeIter * piter) {
 		   names in music_browser.c: record_addlist_iter() */
 		name[len1 + len2 + 2] = '\0';
 
-		gtk_tree_store_set(store, piter, 0, name, -1);
+		gtk_tree_store_set(store, piter, PL_COL_TRACK_NAME, name, -1);
 
 		g_free(pack);
 		g_free(name);

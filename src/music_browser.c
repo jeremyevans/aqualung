@@ -265,8 +265,6 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data) {
 
 		GtkTreePath * path = gtk_tree_model_get_path(model, &iter);
 
-		set_toolbar_buttons_sensitivity(path);
-
 		switch (iter_get_store_type(&iter)) {
 		case STORE_TYPE_FILE:
 			store_file_event_cb(event, &iter, path);
@@ -372,8 +370,13 @@ void
 tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
 
 	GtkTreeIter iter;
+	GtkTreeModel * model;
 
-	if (gtk_tree_selection_get_selected(selection, NULL, &iter)) {
+	if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+
+		GtkTreePath * p = gtk_tree_model_get_path(model, &iter);
+		set_toolbar_buttons_sensitivity(p);
+		gtk_tree_path_free(p);
 
 		switch (iter_get_store_type(&iter)) {
 		case STORE_TYPE_FILE:
@@ -533,6 +536,8 @@ create_music_browser(void) {
 	gtk_widget_set_name(music_tree, "music_tree");
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(music_tree), FALSE);
 
+	g_signal_connect(G_OBJECT(music_tree), "event", G_CALLBACK(music_tree_event_cb), NULL);
+
         if (options.override_skin_settings) {
                 gtk_widget_modify_font(music_tree, fd_browser);
         }
@@ -574,7 +579,7 @@ create_music_browser(void) {
 	gtk_tree_selection_set_mode(music_select, GTK_SELECTION_BROWSE);
 	g_signal_connect(G_OBJECT(music_select), "changed", G_CALLBACK(tree_selection_changed_cb), NULL);
 
-	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(music_store), 1, GTK_SORT_ASCENDING);
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(music_store), MS_COL_SORT, GTK_SORT_ASCENDING);
 
 	music_tree_expand_stores();
 
@@ -614,9 +619,6 @@ create_music_browser(void) {
 #ifdef HAVE_CDDA
 	store_cdda_create_popup_menu();
 #endif /* HAVE_CDDA */
-
-	/* attach event handler */
-	g_signal_connect(G_OBJECT(music_tree), "event", G_CALLBACK(music_tree_event_cb), NULL);
 
 	/* create text widget for comments */
 	comment_view = gtk_text_view_new();

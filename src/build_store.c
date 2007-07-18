@@ -100,14 +100,6 @@ enum {
 	RECORD_EXISTS
 };
 
-
-int build_thread_state = BUILD_THREAD_FREE;
-int build_type = BUILD_TYPE_STRICT;
-
-volatile int build_cancelled = 0;
-volatile int write_data_locked = 0;
-
-
 typedef struct {
 
 	int enabled[3];
@@ -180,6 +172,12 @@ typedef struct {
 
 } file_transform_gui_t;
 
+
+int build_thread_state = BUILD_THREAD_FREE;
+int build_type = BUILD_TYPE_STRICT;
+
+volatile int build_cancelled = 0;
+volatile int write_data_locked = 0;
 
 data_src_t * data_src_artist;
 data_src_t * data_src_record;

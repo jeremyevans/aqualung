@@ -500,19 +500,22 @@ options_window_accept(void) {
         }
 
 
-#ifdef HAVE_CDDA
-	i = 1; /* 0-th store is STORE_CDDA, skip it */
-#else
 	i = 0;
-#endif /* HAVE_CDDA */
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
 					     &iter, NULL, i++)) {
 		int j;
 		int has;
-		store_data_t * data;
+		store_t * data;
+		store_data_t * store_data;
 
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &data, -1);
-		
+
+		if (data->type != STORE_TYPE_FILE) {
+			continue;
+		}
+
+		store_data = (store_data_t *)data;
+
 		j = 0;
 		has = 0;
 		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store),
@@ -520,7 +523,7 @@ options_window_accept(void) {
 			char * file;
 
 			gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter2, 0, &file, -1);
-			if (strcmp(data->file, file) == 0) {
+			if (strcmp(store_data->file, file) == 0) {
 
 				if (access(file, R_OK) == 0) {
 					has = 1;
@@ -584,19 +587,26 @@ options_window_accept(void) {
 		has = 0;
 		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
 						     &iter2, NULL, j++)) {
-			store_data_t * data;
+			store_t * data;
+			store_data_t * store_data;
 
 			gtk_tree_model_get(GTK_TREE_MODEL(music_store),
 					   &iter2, MS_COL_DATA, &data, -1);
 
-			if (strcmp(file, data->file) == 0) {
+			if (data->type != STORE_TYPE_FILE) {
+				continue;
+			}
+
+			store_data = (store_data_t *)data;
+
+			if (strcmp(file, store_data->file) == 0) {
 
 				gtk_tree_store_set(music_store, &iter2, MS_COL_SORT, sort, -1);
 
-				if (access(data->file, W_OK) == 0) {
-					data->readonly = 0;
+				if (access(store_data->file, W_OK) == 0) {
+					store_data->readonly = 0;
 				} else {
-					data->readonly = 1;
+					store_data->readonly = 1;
 				}
 
 				has = 1;
@@ -610,6 +620,7 @@ options_window_accept(void) {
 
 		g_free(file);
 	}
+
 
 	set_buttons_relief();
 	refresh_displays();

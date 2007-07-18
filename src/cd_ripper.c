@@ -206,24 +206,27 @@ create_ripper_deststore_combo(void) {
 	int n;
 
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), _("(none)"));
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), FALSE);
 
 	n = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter, NULL, n++)) {
 
 		char * name;
-		float writable;
-                gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 0, &name, 7, &writable, -1);
+		store_t * data;
 
-		if (iter_get_store_type(&iter) == STORE_TYPE_CDDA) {
-			g_free(name);
+                gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter,
+				   MS_COL_DATA, &data, -1);
+
+		if (data->type != STORE_TYPE_FILE) {
 			continue;
 		}
 
-		if (writable < 0.0f) { /* read-only or unreachable store */
-			g_free(name);
+		if (((store_data_t *)data)->readonly) {
 			continue;
 		}
+
+                gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter,
+				   MS_COL_NAME, &name, -1);
 
 		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), name);
 		g_free(name);
@@ -247,28 +250,25 @@ get_ripper_deststore_iter(GtkTreeIter * iter_store) {
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter, NULL, n++)) {
 
-		char * name;
-		float writable;
-                gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 0, &name, 7, &writable, -1);
+		store_t * data;
 
-		if (iter_get_store_type(&iter) == STORE_TYPE_CDDA) {
-			g_free(name);
+                gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter,
+				   MS_COL_DATA, &data, -1);
+
+		if (data->type != STORE_TYPE_FILE) {
 			continue;
 		}
 
-		if (writable < 0.0f) { /* read-only or unreachable store */
-			g_free(name);
+		if (((store_data_t *)data)->readonly) {
 			continue;
 		}
 
 		if (i == selected) {
 			*iter_store = iter;
-			g_free(name);
 			return 1;
 		}
 
 		++i;
-		g_free(name);
 	}
 	return 0;
 }
@@ -298,7 +298,7 @@ create_ripper_format_combo(void) {
 #endif /* HAVE_LAME */
 
 	if (gtk_combo_box_get_active(GTK_COMBO_BOX(combo)) == -1) {
-	    gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
+	    gtk_combo_box_set_active(GTK_COMBO_BOX(combo), FALSE);
 	}
 
 	return combo;
@@ -468,16 +468,17 @@ int
 ripper_make_dest_iters(GtkTreeIter * store_iter,
 		       GtkTreeIter * artist_iter,
 		       GtkTreeIter * record_iter) {
-
         int i;
         int j;
+	record_data_t * record_data;
+	artist_data_t * artist_data;
 
         i = 0;
         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
                                              artist_iter, store_iter, i++)) {
                 char * artist_name;
                 gtk_tree_model_get(GTK_TREE_MODEL(music_store), artist_iter,
-                                   0, &artist_name, -1);
+                                   MS_COL_NAME, &artist_name, -1);
 
                 if (g_utf8_collate(ripper_artist, artist_name)) {
                         g_free(artist_name);
@@ -489,7 +490,7 @@ ripper_make_dest_iters(GtkTreeIter * store_iter,
                                                      record_iter, artist_iter, j++)) {
                         char * record_name;
                         gtk_tree_model_get(GTK_TREE_MODEL(music_store), record_iter,
-                                           0, &record_name, -1);
+                                           MS_COL_NAME, &record_name, -1);
 
                         if (!g_utf8_collate(ripper_album, record_name)) {
 				int ret = ripper_handle_existing_record_iter(record_iter);
@@ -499,13 +500,21 @@ ripper_make_dest_iters(GtkTreeIter * store_iter,
                         }
                         g_free(record_name);
                 }
+
                 /* create record */
+		if ((record_data = (record_data_t *)calloc(1, sizeof(record_data_t))) == NULL) {
+			fprintf(stderr, "ripper_make_dest_iters: calloc error\n");
+			return 0;
+		}
+
                 gtk_tree_store_append(music_store, record_iter, artist_iter);
                 gtk_tree_store_set(music_store, record_iter,
-                                   0, ripper_album, 1, ripper_album,
-                                   2, "", 3, "", -1);
+                                   MS_COL_NAME, ripper_album,
+				   MS_COL_SORT, ripper_album,
+				   MS_COL_DATA, record_data, -1);
+
                 if (options.enable_ms_tree_icons) {
-                        gtk_tree_store_set(music_store, record_iter, 9, icon_record, -1);
+                        gtk_tree_store_set(music_store, record_iter, MS_COL_ICON, icon_record, -1);
                 }
 		music_store_mark_changed(record_iter);
 
@@ -514,20 +523,36 @@ ripper_make_dest_iters(GtkTreeIter * store_iter,
         }
 
         /* create both artist and record */
+	if ((artist_data = (artist_data_t *)calloc(1, sizeof(artist_data_t))) == NULL) {
+		fprintf(stderr, "ripper_make_dest_iters: calloc error\n");
+		return 0;
+	}
+
+	if ((record_data = (record_data_t *)calloc(1, sizeof(record_data_t))) == NULL) {
+		fprintf(stderr, "ripper_make_dest_iters: calloc error\n");
+		return 0;
+	}
+
         gtk_tree_store_append(music_store, artist_iter, store_iter);
         gtk_tree_store_set(music_store, artist_iter,
-                           0, ripper_artist, 1, ripper_artist, 2, "", 3, "", -1);
+                           MS_COL_NAME, ripper_artist,
+			   MS_COL_SORT, ripper_artist,
+			   MS_COL_DATA, artist_data, -1);
+
         if (options.enable_ms_tree_icons) {
-                gtk_tree_store_set(music_store, artist_iter, 9, icon_artist, -1);
+                gtk_tree_store_set(music_store, artist_iter, MS_COL_ICON, icon_artist, -1);
         }
 
         gtk_tree_store_append(music_store, record_iter, artist_iter);
         gtk_tree_store_set(music_store, record_iter,
-                           0, ripper_album, 1, ripper_album,
-                           2, "", 3, "", -1);
+                           MS_COL_NAME, ripper_album,
+			   MS_COL_SORT, ripper_album,
+                           MS_COL_DATA, record_data, -1);
+
         if (options.enable_ms_tree_icons) {
-                gtk_tree_store_set(music_store, record_iter, 9, icon_record, -1);
+                gtk_tree_store_set(music_store, record_iter, MS_COL_ICON, icon_record, -1);
         }
+
 	music_store_mark_changed(record_iter);
 
 	return 0;
@@ -936,7 +961,7 @@ ripper_window(void) {
 	GtkWidget * prog_tree;
 	GtkCellRenderer * cell;
 	GtkTreeViewColumn * column;
-	GtkWidget * hseparator;
+
 
         ripper_prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(ripper_prog_window), _("Ripping CD tracks"));
@@ -987,11 +1012,8 @@ ripper_window(void) {
         column = gtk_tree_view_column_new_with_attributes(_("Progress"), cell, "value", 3, NULL);
         gtk_tree_view_append_column(GTK_TREE_VIEW(prog_tree), GTK_TREE_VIEW_COLUMN(column));
 
-        hseparator = gtk_hseparator_new();
-        gtk_box_pack_start(GTK_BOX(vbox), hseparator, FALSE, TRUE, 5);
-
         ripper_hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_end(GTK_BOX(vbox), ripper_hbox, FALSE, TRUE, 0);
+        gtk_box_pack_end(GTK_BOX(vbox), ripper_hbox, FALSE, TRUE, 5);
 
 	ripper_close_when_ready_check = gtk_check_button_new_with_label(_("Close window when complete"));
 	gtk_widget_set_name(ripper_close_when_ready_check, "check_on_window");
@@ -1176,21 +1198,29 @@ ripper_thread(void * arg) {
 		if (ripper_write_to_store) {
 			GtkTreeIter iter;
 			char sort_name[3];
+			track_data_t * track_data;
+
+			if ((track_data = (track_data_t *)calloc(1, sizeof(track_data_t))) == NULL) {
+				fprintf(stderr, "ripper_thread: calloc error\n");
+				return 0;
+			}
+
+			track_data->file = strdup(mode.filename);
+			track_data->duration = track_sectors_read / 75.0;
+			track_data->volume = 1.0f;
+
 			snprintf(sort_name, 3, "%02d", no);
+
 			gtk_tree_store_append(music_store, &iter, &ripper_dest_record);
 			gtk_tree_store_set(music_store, &iter,
-					   0, name,
-					   1, sort_name,
-					   2, mode.filename,
-					   3, "",
-					   4, track_sectors_read / 75.0,
-					   5, 1.0f,
-					   6, 0.0f,
-					   7, -1.0f,
-					   -1);
+					   MS_COL_NAME, name,
+					   MS_COL_SORT, sort_name,
+					   MS_COL_DATA, track_data, -1);
+
 			if (options.enable_ms_tree_icons) {
-				gtk_tree_store_set(music_store, &iter, 9, icon_track, -1);
+				gtk_tree_store_set(music_store, &iter, MS_COL_ICON, icon_track, -1);
 			}
+
 			music_store_mark_changed(&iter);
 		}
 

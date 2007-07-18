@@ -337,6 +337,24 @@ insert_label_entry_browse(GtkWidget * table, char * ltext, GtkWidget ** entry, c
 }
 
 void
+insert_label_spin(GtkWidget * table, char * ltext, GtkWidget ** spin, int spinval,
+		   int y1, int y2) {
+
+	GtkWidget * label;
+	GtkWidget * hbox;
+
+	label = gtk_label_new(ltext);
+        hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
+
+	*spin = gtk_spin_button_new_with_range(YEAR_MIN, YEAR_MAX, 1);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(*spin), spinval);
+        gtk_table_attach(GTK_TABLE(table), *spin, 1, 2, y1, y2,
+                         GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 5);
+}
+
+void
 insert_comment_text_view(GtkWidget * vbox, GtkTextBuffer ** buffer, char * text) {
 
 	GtkWidget * hbox;
@@ -428,6 +446,8 @@ add_store_dialog(char * name, store_data_t ** data) {
 			fprintf(stderr, "add_store_dialog: calloc error\n");
 			return 0;
 		}
+
+		(*data)->type = STORE_TYPE_FILE;
 
 		normalize_filename(pfile, file);
 		free_strdup(&(*data)->file, file);
@@ -644,6 +664,7 @@ add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** d
 	GtkWidget * hbox;
 	GtkWidget * name_entry;
 	GtkWidget * sort_entry;
+	GtkWidget * year_spin;
 	GtkWidget * list_label;
 
 	GtkWidget * viewport;
@@ -662,9 +683,10 @@ add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** d
 	int n, i;
 
 
-	create_dialog_layout(_("Add Record"), &dialog, &table, 2);
+	create_dialog_layout(_("Add Record"), &dialog, &table, 3);
 	insert_label_entry(table, _("Visible name:"), &name_entry, name, 0, 1, TRUE);
 	insert_label_entry(table, _("Name to sort by:"), &sort_entry, sort, 1, 2, TRUE);
+	insert_label_spin(table, _("Year:"), &year_spin, 0, 2, 3);
 
 	list_label = gtk_label_new(_("Auto-create tracks from these files:"));
         hbox = gtk_hbox_new(FALSE, 0);
@@ -743,6 +765,13 @@ add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** d
 			(*strings)[i] = NULL;
 		}
 
+		if ((*data = (record_data_t *)calloc(1, sizeof(record_data_t))) == NULL) {
+			fprintf(stderr, "add_record_dialog: calloc error\n");
+			return 0;
+		}
+
+		(*data)->year = gtk_spin_button_get_value(GTK_SPIN_BUTTON(year_spin));
+
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
 		free_strdup(&(*data)->comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
@@ -764,13 +793,15 @@ edit_record_dialog(char * name, char * sort, record_data_t * data) {
 	GtkWidget * table;
 	GtkWidget * name_entry;
 	GtkWidget * sort_entry;
+	GtkWidget * year_spin;
         GtkTextBuffer * buffer;
 	GtkTextIter iter_start;
 	GtkTextIter iter_end;
 
-	create_dialog_layout(_("Edit Record"), &dialog, &table, 2);
+	create_dialog_layout(_("Edit Record"), &dialog, &table, 3);
 	insert_label_entry(table, _("Visible name:"), &name_entry, name, 0, 1, TRUE);
 	insert_label_entry(table, _("Name to sort by:"), &sort_entry, sort, 1, 2, TRUE);
+	insert_label_spin(table, _("Year:"), &year_spin, data->year, 2, 3);
 	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, data->comment);
 
 	gtk_widget_grab_focus(name_entry);
@@ -790,6 +821,8 @@ edit_record_dialog(char * name, char * sort, record_data_t * data) {
 		}
 
                 strcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)));
+
+		data->year = gtk_spin_button_get_value(GTK_SPIN_BUTTON(year_spin));
 
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
@@ -3602,6 +3635,10 @@ parse_record(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_artist) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
 				strncpy(sort, (char *) key, MAXLEN-1);
+				/* parse year from sort key if otherwise not set */
+				if (is_valid_year(atoi(sort)) && !is_valid_year(data->year)) {
+					data->year = atoi(sort);
+				}
 				xmlFree(key);
 			}
 			gtk_tree_store_set(music_store, &iter_record, MS_COL_SORT, sort, -1);

@@ -3519,13 +3519,13 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
         playlist_size_allocate_all();
 
 	create_music_browser();
+	music_store_load_all();
 
 #ifdef HAVE_LADSPA
 	create_fxbuilder();
 	load_plugin_data();
 #endif /* HAVE_LADSPA */
 
-	music_store_load_all();
 #ifdef HAVE_CDDA
 	create_cdda_node();
 	cdda_scanner_start();

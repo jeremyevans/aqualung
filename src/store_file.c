@@ -3414,20 +3414,22 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
 	if (length > 0.0f) {
 		time2time(length, length_str);
-		sprintf(tmp, "[%s] ", length_str);
+		sprintf(tmp, " [%s] ", length_str);
 	} else {
-		sprintf(tmp, "[%s] ", _("unknown time"));
+		strcpy(tmp, " [N/A] ");
 	}
 
 	strcat(str, tmp);
 
 	if (options.ms_statusbar_show_size) {
 		if (size > 1024 * 1024) {
-			sprintf(tmp, "(%.1f GB) ", size / (1024 * 1024));
+			sprintf(tmp, " (%.1f GB) ", size / (1024 * 1024));
 		} else if (size > (1 << 10)){
-			sprintf(tmp, "(%.1f MB) ", size / 1024);
+			sprintf(tmp, " (%.1f MB) ", size / 1024);
+		} else if (size > 0) {
+			sprintf(tmp, " (%.1f KB) ", size);
 		} else {
-			sprintf(tmp, "(%.1f KB) ", size);
+			strcpy(tmp, " (N/A) ");
 		}
 		strcat(str, tmp);
 	}

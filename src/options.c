@@ -628,6 +628,8 @@ options_window_accept(void) {
 
 	music_store_selection_changed();
 	playlist_size_allocate_all();
+	playlist_content_changed(playlist_get_current());
+	playlist_selection_changed(playlist_get_current());
 
 	save_config();
 }

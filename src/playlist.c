@@ -2950,17 +2950,23 @@ playlist_stats(playlist_t * pl, int selected) {
 	sprintf(str, "%d %s ", ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 
 
-	time2time(length, length_str);
-	sprintf(tmp, "[%s] ", length_str);
-	strcat(str, tmp);
+	if (length > 0.0f) {
+		time2time(length, length_str);
+		sprintf(tmp, " [%s] ", length_str);
+		strcat(str, tmp);
+	} else {
+		strcat(str, " [N/A] ");
+	}
 
 	if (options.pl_statusbar_show_size) {
 		if (size > 1024 * 1024) {
-			sprintf(tmp, "(%.1f GB) ", size / (1024 * 1024));
+			sprintf(tmp, " (%.1f GB) ", size / (1024 * 1024));
 		} else if (size > (1 << 10)){
-			sprintf(tmp, "(%.1f MB) ", size / 1024);
+			sprintf(tmp, " (%.1f MB) ", size / 1024);
+		} else if (size > 0) {
+			sprintf(tmp, " (%.1f KB) ", size);
 		} else {
-			sprintf(tmp, "(%.1f KB) ", size);
+			strcpy(tmp, " (N/A) ");
 		}
 		strcat(str, tmp);
 	}
@@ -4082,7 +4088,7 @@ create_playlist(void) {
 		gtk_widget_set_name(statusbar_selected, "label_info");
 		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_selected, FALSE, TRUE, 0);
 		
-		statusbar_selected_label = gtk_label_new(_("Selected: "));
+		statusbar_selected_label = gtk_label_new(_(" Selected: "));
 		gtk_widget_set_name(statusbar_selected_label, "label_info");
 		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_selected_label, FALSE, TRUE, 0);
 		

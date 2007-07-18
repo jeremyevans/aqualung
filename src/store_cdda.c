@@ -678,6 +678,10 @@ cdda_track__addlist_cb(gpointer data) {
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_track)) {
 		cdda_track_addlist_iter(iter_track, pl, NULL, (GtkTreeIter *)data);
+		if (pl == playlist_get_current()) {
+			playlist_content_changed(pl);
+		}
+		delayed_playlist_rearrange(pl);
 	}
 }
 
@@ -689,6 +693,10 @@ cdda_record__addlist_with_mode(int mode, gpointer data) {
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_record)) {
 		cdda_record_addlist_iter(iter_record, pl, (GtkTreeIter *)data, mode);
+		if (pl == playlist_get_current()) {
+			playlist_content_changed(pl);
+		}
+		delayed_playlist_rearrange(pl);
 	}
 }
 
@@ -731,6 +739,10 @@ cdda_store__addlist_with_mode(int mode, gpointer data) {
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_store)) {
 		cdda_store_addlist_iter(iter_store, pl, (GtkTreeIter *)data, mode);
+		if (pl == playlist_get_current()) {
+			playlist_content_changed(pl);
+		}
+		delayed_playlist_rearrange(pl);
 	}
 }
 
@@ -986,7 +998,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
 	if (length > 0.0f) {
 		time2time(length, length_str);
-		sprintf(tmp, "[%s] ", length_str);
+		sprintf(tmp, " [%s] ", length_str);
 		strcat(str, tmp);
 	}
 

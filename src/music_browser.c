@@ -371,6 +371,12 @@ tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
 
 	GtkTreeIter iter;
 	GtkTreeModel * model;
+	GtkTextBuffer * buffer;
+	GtkTextIter a_iter, b_iter;
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
+        gtk_text_buffer_get_bounds(buffer, &a_iter, &b_iter);
+	gtk_text_buffer_delete(buffer, &a_iter, &b_iter);  
 
 	if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
 
@@ -380,11 +386,15 @@ tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
 
 		switch (iter_get_store_type(&iter)) {
 		case STORE_TYPE_FILE:
-			store_file_selection_changed();
+			store_file_selection_changed(&iter,
+						     buffer,
+						     GTK_LABEL(statusbar_ms));
 			break;
 #ifdef HAVE_CDDA
 		case STORE_TYPE_CDDA:
-			store_cdda_selection_changed();
+			store_cdda_selection_changed(&iter,
+						     buffer,
+						     GTK_LABEL(statusbar_ms));
 			break;
 #endif /* HAVE_CDDA */
 		}

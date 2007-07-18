@@ -101,10 +101,6 @@ int cdda_get_n(char * device_path);
 cdda_drive_t * cdda_get_drive_by_device_path(char * device_path);
 cdda_drive_t * cdda_get_drive_by_spec_device_path(char * device_path);
 
-void store_cdda_create_popup_menu(void);
-void store_cdda_selection_changed(void);
-gboolean store_cdda_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path);
-void store_cdda_load_icons(void);
 
 #ifdef __cplusplus
 } /* extern "C" */

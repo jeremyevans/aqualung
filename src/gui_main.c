@@ -728,7 +728,7 @@ change_skin(char * path) {
 
 	save_window_position();
 
-	music_store_progress_bar_hide();
+	store_file_progress_bar_hide();
 	playlist_progress_bar_hide_all();
 
 	gtk_widget_destroy(main_window);

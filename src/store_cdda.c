@@ -964,7 +964,7 @@ store_cdda_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, in
 
 
 void
-store_cdda_selection_changed(void) {
+store_cdda_selection_changed(GtkTreeIter * iter, GtkTextBuffer * buffer, GtkLabel * statusbar) {
 
 	printf("store_cdda_selection_changed\n");
 }

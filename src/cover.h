@@ -36,7 +36,7 @@ void    display_cover           (GtkWidget *image_area, GtkWidget *event_area, G
 				 gint dest_width, gint dest_height,
                                  gchar *song_filename, gboolean hide, gboolean bevel);
 void    display_zoomed_cover    (GtkWidget *window, GtkWidget *event_area, gchar *song_filename);
-void    insert_cover            (GtkTextIter * iter);
+void    insert_cover            (GtkTreeIter * tree_iter, GtkTextIter * text_iter, GtkTextBuffer * buffer);
 
 
 #ifdef __cplusplus

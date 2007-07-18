@@ -626,8 +626,6 @@ options_window_accept(void) {
 	refresh_displays();
 	gtk_window_set_keep_above(GTK_WINDOW(main_window), options.main_window_always_on_top);
 
-	music_store_set_status_bar_info();
-
 	playlist_size_allocate_all();
 
 	save_config();

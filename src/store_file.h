@@ -30,7 +30,7 @@ extern "C" {
 
 int store_file_iter_is_track(GtkTreeIter * iter);
 void store_file_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, int new_tab);
-void store_file_selection_changed(void);
+void store_file_selection_changed(GtkTreeIter * iter, GtkTextBuffer * buffer, GtkLabel * statusbar);
 gboolean store_file_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path);
 void store_file_load_icons(void);
 void store_file_create_popup_menu(void);
@@ -38,6 +38,8 @@ void store_file_insert_progress_bar(GtkWidget * vbox);
 void store_file_toolbar__edit_cb(gpointer data);
 void store_file_toolbar__add_cb(gpointer data);
 void store_file_toolbar__remove_cb(gpointer data);
+
+void store_file_progress_bar_hide(void);
 
 void store__add_cb(gpointer data);
 
@@ -73,6 +75,7 @@ typedef struct {
 	float rva;      /* manual RVA in dB */
 	int use_rva;    /* use manual RVA */
 	char * comment;
+	unsigned size;  /* file size in bytes */
 } track_data_t;
 
 

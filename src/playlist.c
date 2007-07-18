@@ -2865,7 +2865,7 @@ playlist_stats_set_busy() {
 
 void
 playlist_child_stats(playlist_t * pl, GtkTreeIter * iter,
-		     int * count, float * duration, float * songs_size, int selected) {
+		     int * count, float * duration, double * songs_size, int selected) {
 
 	gint j = 0;
 	gchar * tstr;
@@ -2904,7 +2904,7 @@ playlist_stats(playlist_t * pl, int selected) {
 	gchar str[MAXLEN];
 	gchar time[MAXLEN];
         gchar * tstr;
-        gfloat songs_size, m_size;
+        double songs_size, m_size;
         struct stat statbuf;
 
 	if (!options.enable_playlist_statusbar) {
@@ -2987,7 +2987,7 @@ recalc_album_node(playlist_t * pl, GtkTreeIter * iter) {
 
 	gint count = 0;
 	gfloat duration = 0;
-	gfloat songs_size;
+	double songs_size;
 	gchar time[MAXLEN];
 	gchar * color;
 

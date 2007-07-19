@@ -363,7 +363,7 @@ create_dialog_layout(char * title, GtkWidget ** dialog, GtkWidget ** table, int 
 					      GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					      NULL);
-        /*gtk_widget_set_size_request(GTK_WIDGET(dialog), 350, 250);*/
+        gtk_widget_set_size_request(*dialog, 400, -1);
 	gtk_window_set_position(GTK_WINDOW(*dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_dialog_set_default_response(GTK_DIALOG(*dialog), GTK_RESPONSE_ACCEPT);
 
@@ -472,6 +472,7 @@ insert_comment_text_view(GtkWidget * vbox, GtkTextBuffer ** buffer, char * text)
 	}
 
         view = gtk_text_view_new_with_buffer(*buffer);
+        gtk_widget_set_size_request(view, -1, 100);
 	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(view), 3);
 	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(view), 3);
         gtk_text_view_set_editable(GTK_TEXT_VIEW(view), TRUE);
@@ -500,12 +501,12 @@ add_store_dialog(char * name, store_data_t ** data) {
 	GtkTextIter iter_end;
 
 	create_dialog_layout(_("Create empty store"), &dialog, &table, 2);
-	insert_label_entry_browse(table, _("Filename:"), &file_entry, NULL, 0, 1,
+	insert_label_entry(table, _("Visible name:"), &name_entry, NULL, 0, 1, TRUE);
+	insert_label_entry_browse(table, _("Filename:"), &file_entry, NULL, 1, 2,
 				  browse_button_store_clicked);
-	insert_label_entry(table, _("Visible name:"), &name_entry, NULL, 1, 2, TRUE);
 	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, NULL);
 
-	gtk_widget_grab_focus(file_entry);
+	gtk_widget_grab_focus(name_entry);
 	gtk_widget_show_all(dialog);
 
  display:
@@ -569,7 +570,7 @@ edit_store_dialog(char * name, store_data_t * data) {
 	insert_label_entry(table, _("Visible name:"), &name_entry, name, 0, 1, TRUE);
 
 	utf8 = g_locale_to_utf8(data->file, -1, NULL, NULL, NULL);
-	insert_label_entry(table, _("Fileame:"), &file_entry, utf8, 1, 2, FALSE);
+	insert_label_entry(table, _("Filename:"), &file_entry, utf8, 1, 2, FALSE);
 	g_free(utf8);
 
 	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, data->comment);
@@ -782,6 +783,7 @@ add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** d
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, TRUE, 2);
 
 	viewport = gtk_viewport_new(NULL, NULL);
+        gtk_widget_set_size_request(viewport, -1, 150);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), viewport, TRUE, TRUE, 2);
 
 	scrolled_win = gtk_scrolled_window_new(NULL, NULL);

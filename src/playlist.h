@@ -125,6 +125,8 @@ void playlist_disable_bold_font(void);
 void playlist_content_changed(playlist_t * pl);
 void playlist_selection_changed(playlist_t * pl);
 void playlist_drag_end(GtkWidget * widget, GdkDragContext * drag_context, gpointer data);
+
+void playlist_menu_set_popup_sensitivity(playlist_t * pl);
 gint playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent);
 void playlist_foreach_selected(playlist_t * pl,
 			       int (* foreach)(playlist_t *, GtkTreeIter *, void *),

@@ -979,15 +979,15 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 	case 2:
 		record_status_bar_info(model, tree_iter, &length, &ntrack, &nrecord);
 		if (nrecord == 0) {
-			sprintf(str, "%s: %s ", _("CD Audio"), name);
+			sprintf(str, "%s:  %s ", _("CD Audio"), name);
 		} else {
-			sprintf(str, "%s: %d %s ", name,
+			sprintf(str, "%s:  %d %s ", name,
 				ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 		}
 		break;
 	case 1:
 		store_status_bar_info(model, tree_iter, &length, &ntrack, &nrecord, &ndrive);
-		sprintf(str, "%s: %d %s, %d %s, %d %s ", name,
+		sprintf(str, "%s:  %d %s, %d %s, %d %s ", name,
 			ndrive, (ndrive == 1) ? _("drive") : _("drives"),
 			nrecord, (nrecord == 1) ? _("record") : _("records"),
 			ntrack, (ntrack == 1) ? _("track") : _("tracks"));

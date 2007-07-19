@@ -1431,6 +1431,10 @@ main_window_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 			gtk_widget_set_sensitive(fileinfo, FALSE);
 		}
 
+		if (options.playlist_is_embedded) {
+			playlist_menu_set_popup_sensitivity(playlist_get_current());
+                }
+
                 gtk_menu_popup(GTK_MENU(conf_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);
 	}

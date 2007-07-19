@@ -1301,7 +1301,7 @@ generic_remove_cb(char * title) {
 
 			GtkTreeIter parent;
 			GtkTreePath * path = gtk_tree_model_get_path(model, &iter);
-			int ret;
+			int ret = 0;
 
 			music_store_mark_changed(&iter);
 			gtk_tree_model_iter_parent(model, &parent, &iter);
@@ -3391,19 +3391,19 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 		break;
 	case 3:
 		record_status_bar_info(model, tree_iter, &size, &length, &ntrack);
-		sprintf(str, "%s: %d %s ", name,
+		sprintf(str, "%s:  %d %s ", name,
 			ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 
 		break;
 	case 2:
 		artist_status_bar_info(model, tree_iter, &size, &length, &ntrack, &nrecord);
-		sprintf(str, "%s: %d %s, %d %s ", name,
+		sprintf(str, "%s:  %d %s, %d %s ", name,
 			nrecord, (nrecord == 1) ? _("record") : _("records"),
 			ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 		break;
 	case 1:
 		store_status_bar_info(model, tree_iter, &size, &length, &ntrack, &nrecord, &nartist);
-		sprintf(str, "%s: %d %s, %d %s, %d %s ", name,
+		sprintf(str, "%s:  %d %s, %d %s, %d %s ", name,
 			nartist, (nartist == 1) ? _("artist") : _("artists"),
 			nrecord, (nrecord == 1) ? _("record") : _("records"),
 			ntrack, (ntrack == 1) ? _("track") : _("tracks"));

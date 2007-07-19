@@ -1302,14 +1302,29 @@ playlist_row_expand_collapse(GtkTreeView * view, GtkTreeIter * iter, GtkTreePath
 	delayed_playlist_rearrange(pl);
 }
 
+void
+playlist_menu_set_popup_sensitivity(playlist_t * pl) {
+
+	int file_types = 0;
+	int has_selection = (gtk_tree_selection_count_selected_rows(pl->select) != 0);
+
+	if (has_selection) {
+		file_types = playlist_selection_file_types(pl);
+	}
+
+	gtk_widget_set_sensitive(plist__reread_file_meta, has_selection && (file_types == 0));
+	gtk_widget_set_sensitive(plist__rva, has_selection && (file_types <= 1));
+#ifdef HAVE_IFP
+	gtk_widget_set_sensitive(plist__send_songs_to_iriver, has_selection && (file_types == 0));
+#endif  /* HAVE_IFP */
+}
+
 gint
 doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 
 	GtkTreePath * path;
 	GtkTreeViewColumn * column;
 	GtkTreeIter iter;
-	int file_types = 0;
-	int has_selection = 0;
 	playlist_t * pl = (playlist_t *)data;
 
 	if (event->type == GDK_2BUTTON_PRESS && event->button == 1) {
@@ -1351,18 +1366,7 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 			gtk_widget_set_sensitive(plist__fileinfo, FALSE);
 		}
 
-		has_selection = (gtk_tree_selection_count_selected_rows(pl->select) != 0);
-
-		if (has_selection) {
-			file_types = playlist_selection_file_types(pl);
-		}
-
-		gtk_widget_set_sensitive(plist__reread_file_meta, has_selection && (file_types == 0));
-		gtk_widget_set_sensitive(plist__rva, has_selection && (file_types <= 1));
-#ifdef HAVE_IFP
-		gtk_widget_set_sensitive(plist__send_songs_to_iriver, has_selection && (file_types == 0));
-#endif  /* HAVE_IFP */
-
+		playlist_menu_set_popup_sensitivity(pl);
 
 		gtk_menu_popup(GTK_MENU(plist_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);
@@ -2946,11 +2950,9 @@ playlist_stats(playlist_t * pl, int selected) {
                 }
 	}
 
+	sprintf(str, " %d %s ", ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 
-	sprintf(str, "%d %s ", ntrack, (ntrack == 1) ? _("track") : _("tracks"));
-
-
-	if (length > 0.0f) {
+	if (length > 0.0f || ntrack == 0) {
 		time2time(length, length_str);
 		sprintf(tmp, " [%s] ", length_str);
 		strcat(str, tmp);
@@ -2963,7 +2965,7 @@ playlist_stats(playlist_t * pl, int selected) {
 			sprintf(tmp, " (%.1f GB) ", size / (1024 * 1024));
 		} else if (size > (1 << 10)){
 			sprintf(tmp, " (%.1f MB) ", size / 1024);
-		} else if (size > 0) {
+		} else if (size > 0 || ntrack == 0) {
 			sprintf(tmp, " (%.1f KB) ", size);
 		} else {
 			strcpy(tmp, " (N/A) ");

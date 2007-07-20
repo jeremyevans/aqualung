@@ -587,36 +587,6 @@ cdda_auto_query_timeout_cb(gpointer user_data) {
 	return FALSE;
 }
 
-/*
-static int
-init_query_data_from_tracklist(build_track_t * tracks) {
-
-	int i;
-	float length = 0.0f;
-	float fr_offset = 150.0f; // leading 2 secs in frames
-
-	build_track_t * ptrack = NULL;
-
-	for (ntracks = 0, ptrack = tracks; ptrack; ntracks++, ptrack = ptrack->next);
-
-	if ((frames = (int *)malloc(sizeof(int) * ntracks)) == NULL) {
-		fprintf(stderr, "cddb_lookup.c: init_query_data_from_tracklist(): malloc error\n");
-		return 1;
-	}
-
-	for (i = 0, ptrack = tracks; ptrack; i++, ptrack = ptrack->next) {
-
-		frames[i] = (int)fr_offset;
-		length += ptrack->duration;
-		fr_offset += SECONDS_TO_FRAMES(ptrack->duration);
-	}
-
-	record_length = length;
-
-	return 0;
-}
-*/
-
 static void
 add_to_comments(cddb_lookup_t * data, GtkWidget * entry) {
 
@@ -1009,143 +979,6 @@ cddb_submit(cddb_lookup_t * data) {
 	cddb_destroy(conn);
 	cddb_disc_destroy(disc);
 }
-
-
-
-/*
-void
-cddb_get_batch(build_disc_t * disc) {
-
-	int i, j;
-	build_track_t * ptrack = NULL;
-
-	map_t * map_artist = NULL;
-	map_t * map_record = NULL;
-	map_t * map_year = NULL;
-	map_t ** map_tracks = NULL;
-
-	char tmp[MAXLEN];
-
-
-	if (cddb_thread_state != CDDB_THREAD_FREE) {
-		return;
-	}
-
-	cddb_thread_state = CDDB_THREAD_BUSY;
-
-	if (init_query_data_from_tracklist(disc->tracks)) {
-		cddb_thread_state = CDDB_THREAD_FREE;
-		return;
-	}
-
-	cddb_query_aborted = 0;
-	progress_counter = 0;
-	progress_prev = 0;
-
-	cddb_thread(NULL);
-
-	if (cddb_thread_state != CDDB_THREAD_SUCCESS || nrecords == 0) {
-		free(frames);
-		cddb_thread_state = CDDB_THREAD_FREE;
-		return;
-	}
-
-	if ((map_tracks = (map_t **)malloc(sizeof(map_t *) * ntracks)) == NULL) {
-		fprintf(stderr, "cddb_lookup.c: cddb_get_batch(): malloc error\n");
-		cddb_thread_state = CDDB_THREAD_FREE;
-		return;
-	}
-
-	for (i = 0; i < ntracks; i++) {
-		map_tracks[i] = NULL;
-	}
-
-	for (i = 0; i < nrecords; i++) {
-
-		strncpy(tmp, cddb_disc_get_artist(records[i]), MAXLEN-1);
-		if (!is_all_wspace(tmp)) {
-			map_put(&map_artist, tmp);
-		}
-
-		strncpy(tmp, cddb_disc_get_title(records[i]), MAXLEN-1);
-		if (!is_all_wspace(tmp)) {
-			map_put(&map_record, tmp);
-		}
-
-		if (disc->record.year[0] == '\0') {
-			int y = cddb_disc_get_year(records[i]);
-			if (is_valid_year(y)) {
-				snprintf(tmp, MAXLEN-1, "%d", y);
-				map_put(&map_year, tmp);
-			}
-		}
-
-		for (j = 0, ptrack = disc->tracks;
-		     ptrack && j < ntracks; j++, ptrack = ptrack->next) {
-			strncpy(tmp,
-				cddb_track_get_title(cddb_disc_get_track(records[i], j)),
-				MAXLEN-1);
-			if (!is_all_wspace(tmp)) {
-				map_put(map_tracks + j, tmp);
-			}
-		}
-	}
-
-	if (map_artist) {
-		char * max = map_get_max(map_artist);
-
-		if (max) {
-			strncpy(disc->artist.name[DATA_SRC_CDDB], max, MAXLEN-1);
-		}
-	}
-
-	if (map_record) {
-		char * max = map_get_max(map_record);
-
-		if (max) {
-			strncpy(disc->record.name[DATA_SRC_CDDB], max, MAXLEN-1);
-		}
-	}
-
-	if (map_year) {
-		char * max = map_get_max(map_year);
-
-		if (max) {
-			strncpy(disc->record.year, max, MAXLEN-1);
-		}
-	}
-
-	for (j = 0, ptrack = disc->tracks; ptrack && j < ntracks; j++, ptrack = ptrack->next) {
-
-		char * max = map_get_max(map_tracks[j]);
-
-		if (max) {
-			strncpy(ptrack->name[DATA_SRC_CDDB], max, MAXLEN-1);
-		}
-
-		map_free(map_tracks[j]);
-	}
-
-	map_free(map_artist);
-	map_free(map_record);
-	map_free(map_year);
-	free(map_tracks);
-
-	for (i = 0; i < nrecords; i++) {
-		cddb_disc_destroy(records[i]);
-	}
-
-	free(records);
-	libcddb_shutdown();
-	free(frames);
-
-	cddb_thread_state = CDDB_THREAD_FREE;
-}
-*/
-
-
-
-/*******************************************************/
 
 
 void
@@ -1595,6 +1428,26 @@ cddb_auto_query_cdda(GtkTreeIter * drive_iter, int ntracks, int * frames, int le
 				 0,
 				 ntracks, frames, length,
 				 cdda_auto_query_timeout_cb);
+}
+
+void
+cddb_query_batch(int ntracks, int * frames, int length,
+		 char * artist, char * record, int * year, char ** tracks) {
+
+	cddb_lookup_t * data;
+
+	if ((data = cddb_lookup_new()) == NULL) {
+		return;
+	}
+
+	data->type = CDDB_TYPE_QUERY;
+	data->ntracks = ntracks;
+	data->frames = frames;
+	data->record_length = length;
+
+	cddb_lookup(data);
+	cddb_lookup_merge(data, artist, record, NULL/*genre*/, year, tracks);
+	cddb_lookup_free(data);
 }
 
 #endif /* HAVE_CDDB */

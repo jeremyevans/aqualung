@@ -21,14 +21,12 @@
 #ifndef _CDDB_LOOKUP_H
 #define _CDDB_LOOKUP_H
 
-#define CDDB_THREAD_ERROR   -1
-#define CDDB_THREAD_BUSY     0
-#define CDDB_THREAD_SUCCESS  1
-#define CDDB_THREAD_FREE     2
-
 void cddb_start_query(GtkTreeIter * record_iter, int ntracks, int * frames, int length);
 void cddb_start_submit(GtkTreeIter * iter_record, int ntracks, int * frames, int length);
 void cddb_auto_query_cdda(GtkTreeIter * drive_iter, int ntracks, int * frames, int length);
+
+void cddb_query_batch(int ntracks, int * frames, int length,
+		      char * artist, char * record, int * year, char ** tracks);
 
 #endif /* _CDDB_LOOKUP_H */
 

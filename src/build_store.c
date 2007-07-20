@@ -639,7 +639,7 @@ file_transform_gui_sync(file_transform_gui_t * gui) {
 
 	gtk_widget_hide(gui->label_error);
 
-	if ((err = regcomp(&gui->model->compiled, gui->model->regexp, REG_EXTENDED))) {
+	if ((err = regcomp(&gui->model->compiled, gui->model->regexp, REG_EXTENDED | REG_ICASE))) {
 
 		char msg[MAXLEN];
 		char * utf8;
@@ -828,7 +828,6 @@ store_contains_disc(GtkTreeIter * store_iter,
 	GtkTreeIter artist_iter;
 	GtkTreeIter record_iter;
 	GtkTreeIter track_iter;
-	char * file;
 
 	build_track_t * ptrack = disc->tracks;
 
@@ -852,15 +851,15 @@ store_contains_disc(GtkTreeIter * store_iter,
 			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
 							     &track_iter, &record_iter, k++)) {
 
-				gtk_tree_model_get(GTK_TREE_MODEL(music_store), &track_iter, 2, &file, -1);
+				track_data_t * data;
 
-				if (strcmp(file, ptrack->filename)) {
+				gtk_tree_model_get(GTK_TREE_MODEL(music_store), &track_iter,
+						   MS_COL_DATA, &data, -1);
+
+				if (strcmp(data->file, ptrack->filename)) {
 					match = 0;
-					g_free(file);
 					break;
 				}
-				
-				g_free(file);
 
 				ptrack = ptrack->next;
 			}
@@ -890,7 +889,6 @@ store_contains_track(GtkTreeIter * store_iter,
 	GtkTreeIter artist_iter;
 	GtkTreeIter record_iter;
 	GtkTreeIter track_iter;
-	char * file;
 
 
 	i = 0;
@@ -903,20 +901,19 @@ store_contains_track(GtkTreeIter * store_iter,
 			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
 							     &track_iter, &record_iter, k++)) {
 
-				gtk_tree_model_get(GTK_TREE_MODEL(music_store), &track_iter, 2, &file, -1);
+				track_data_t * data;
 
-				if (!strcmp(file, filename)) {
+				gtk_tree_model_get(GTK_TREE_MODEL(music_store), &track_iter,
+						   MS_COL_DATA, &data, -1);
+
+				if (!strcmp(data->file, filename)) {
 
 					if (__track_iter) {
 						*__track_iter = track_iter;
 					}
 
-					g_free(file);
-
 					return 1;
 				}
-
-				g_free(file);
 			}
 		}
 	}
@@ -924,6 +921,51 @@ store_contains_track(GtkTreeIter * store_iter,
 	return 0;
 }
 
+
+void
+create_record(GtkTreeIter * artist_iter, GtkTreeIter * record_iter, build_disc_t * disc) {
+
+	record_data_t * record_data;
+
+	if ((record_data = (record_data_t *)calloc(1, sizeof(record_data_t))) == NULL) {
+		fprintf(stderr, "create_record: calloc error\n");
+		return;
+	}
+
+	gtk_tree_store_append(music_store, record_iter, artist_iter);
+	gtk_tree_store_set(music_store, record_iter,
+			   MS_COL_NAME, disc->record.final,
+			   MS_COL_SORT, disc->record.sort,
+			   MS_COL_DATA, record_data, -1);
+
+	record_data->comment = strdup(disc->record.comment);
+	record_data->year = atoi(disc->record.year);
+
+	if (options.enable_ms_tree_icons) {
+		gtk_tree_store_set(music_store, record_iter, MS_COL_ICON, icon_record, -1);
+	}
+}
+
+void
+create_artist(GtkTreeIter * store_iter, GtkTreeIter * artist_iter, build_disc_t * disc) {
+
+	artist_data_t * artist_data;
+
+	if ((artist_data = (artist_data_t *)calloc(1, sizeof(artist_data_t))) == NULL) {
+		fprintf(stderr, "create_artist: calloc error\n");
+		return;
+	}
+
+	gtk_tree_store_append(music_store, artist_iter, store_iter);
+	gtk_tree_store_set(music_store, artist_iter,
+			   MS_COL_NAME, disc->artist.final,
+			   MS_COL_SORT, disc->artist.sort,
+			   MS_COL_DATA, artist_data, -1);
+
+        if (options.enable_ms_tree_icons) {
+                gtk_tree_store_set(music_store, artist_iter, MS_COL_ICON, icon_artist, -1);
+        }
+}
 
 int
 store_get_iter_for_artist_and_record(GtkTreeIter * store_iter,
@@ -940,7 +982,7 @@ store_get_iter_for_artist_and_record(GtkTreeIter * store_iter,
 		char * artist_name;
 
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), artist_iter,
-				   0, &artist_name, -1);
+				   MS_COL_NAME, &artist_name, -1);
 
 		if (collate(disc->artist.final, artist_name)) {
 			g_free(artist_name);
@@ -953,7 +995,7 @@ store_get_iter_for_artist_and_record(GtkTreeIter * store_iter,
 			char * record_name;
 
 			gtk_tree_model_get(GTK_TREE_MODEL(music_store), record_iter,
-					   0, &record_name, -1);
+					   MS_COL_NAME, &record_name, -1);
 
 			if (!collate(disc->record.final, record_name)) {
 				g_free(record_name);
@@ -965,33 +1007,15 @@ store_get_iter_for_artist_and_record(GtkTreeIter * store_iter,
 		}
 
 		/* create record */
-		gtk_tree_store_append(music_store, record_iter, artist_iter);
-		gtk_tree_store_set(music_store, record_iter,
-				   0, disc->record.final, 1, disc->record.sort,
-				   2, "", 3, disc->record.comment, -1);
-                if (options.enable_ms_tree_icons) {
-                        gtk_tree_store_set(music_store, record_iter, 9, icon_record, -1);
-                }
+		create_record(artist_iter, record_iter, disc);
 
 		g_free(artist_name);
 		return RECORD_NEW;
 	}
 
 	/* create both artist and record */
-	gtk_tree_store_append(music_store, artist_iter, store_iter);
-	gtk_tree_store_set(music_store, artist_iter,
-			   0, disc->artist.final, 1, disc->artist.sort, 2, "", 3, "", -1);
-        if (options.enable_ms_tree_icons) {
-                gtk_tree_store_set(music_store, artist_iter, 9, icon_artist, -1);
-        }
-
-	gtk_tree_store_append(music_store, record_iter, artist_iter);
-	gtk_tree_store_set(music_store, record_iter,
-			   0, disc->record.final, 1, disc->record.sort,
-			   2, "", 3, disc->record.comment, -1);
-        if (options.enable_ms_tree_icons) {
-                gtk_tree_store_set(music_store, record_iter, 9, icon_record, -1);
-        }
+	create_artist(store_iter, artist_iter, disc);
+	create_record(artist_iter, record_iter, disc);
 
 	return RECORD_NEW;
 }
@@ -1009,12 +1033,12 @@ store_get_iter_for_tracklist(GtkTreeIter * store_iter,
 
 		char * name;
 
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), artist_iter, 0, &name, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), artist_iter, MS_COL_NAME, &name, -1);
 
 		if (strstr(name, _("Unknown Artist")) == name) {
 			gtk_tree_store_set(music_store, artist_iter,
-					   0, disc->artist.final,
-					   1, disc->artist.sort,
+					   MS_COL_NAME, disc->artist.final,
+					   MS_COL_SORT, disc->artist.sort,
 					   -1);
 		}
 
@@ -1033,7 +1057,7 @@ store_get_iter_for_tracklist(GtkTreeIter * store_iter,
 		char * artist_name;
 
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), artist_iter,
-				   0, &artist_name, -1);
+				   MS_COL_NAME, &artist_name, -1);
 
 		if (collate(disc->artist.final, artist_name)) {
 			g_free(artist_name);
@@ -1041,14 +1065,7 @@ store_get_iter_for_tracklist(GtkTreeIter * store_iter,
 		}
 
 		/* artist found, create record */
-
-		gtk_tree_store_append(music_store, record_iter, artist_iter);
-		gtk_tree_store_set(music_store, record_iter,
-				   0, disc->record.final, 1, disc->record.sort,
-				   2, "", 3, disc->record.comment, -1);
-                if (options.enable_ms_tree_icons) {
-                        gtk_tree_store_set(music_store, record_iter, 9, icon_record, -1);
-                }
+		create_record(artist_iter, record_iter, disc);
 
 		g_free(artist_name);
 		return RECORD_NEW;
@@ -1056,24 +1073,10 @@ store_get_iter_for_tracklist(GtkTreeIter * store_iter,
 
 
 	/* no such artist -- create both artist and record */
-
-	gtk_tree_store_append(music_store, artist_iter, store_iter);
-	gtk_tree_store_set(music_store, artist_iter,
-			   0, disc->artist.final, 1, disc->artist.sort, 2, "", 3, "", -1);
-        if (options.enable_ms_tree_icons) {
-                gtk_tree_store_set(music_store, artist_iter, 9, icon_artist, -1);
-        }
-
-	gtk_tree_store_append(music_store, record_iter, artist_iter);
-	gtk_tree_store_set(music_store, record_iter,
-			   0, disc->record.final, 1, disc->record.sort,
-			   2, "", 3, disc->record.comment, -1);
-        if (options.enable_ms_tree_icons) {
-                gtk_tree_store_set(music_store, record_iter, 9, icon_record, -1);
-        }
+	create_artist(store_iter, artist_iter, disc);
+	create_record(artist_iter, record_iter, disc);
 
 	/* start contest for artist name */
-
 	map_put(&artist_name_map, disc->artist.final);
 
 	return RECORD_NEW;
@@ -1087,7 +1090,6 @@ artist_get_iter_for_tracklist(GtkTreeIter * artist_iter,
 	int i, j;
 	int n_tracks;
 	GtkTreeIter track_iter;
-	char * file;
 
 	build_track_t * ptrack = disc->tracks;
 
@@ -1111,16 +1113,16 @@ artist_get_iter_for_tracklist(GtkTreeIter * artist_iter,
 		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
 						     &track_iter, record_iter, j++)) {
 
-			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &track_iter, 2, &file, -1);
+			track_data_t * data;
 
-			if (strcmp(file, ptrack->filename)) {
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &track_iter,
+					   MS_COL_DATA, &data, -1);
+
+			if (strcmp(data->file, ptrack->filename)) {
 				match = 0;
-				g_free(file);
 				break;
 			}
 				
-			g_free(file);
-
 			ptrack = ptrack->next;
 		}
 
@@ -1131,14 +1133,7 @@ artist_get_iter_for_tracklist(GtkTreeIter * artist_iter,
 
 
 	/* no such record -- create it */
-
-	gtk_tree_store_append(music_store, record_iter, artist_iter);
-	gtk_tree_store_set(music_store, record_iter,
-			   0, disc->record.final, 1, disc->record.sort,
-			   2, "", 3, disc->record.comment, -1);
-        if (options.enable_ms_tree_icons) {
-                gtk_tree_store_set(music_store, record_iter, 9, icon_record, -1);
-        }
+	create_record(artist_iter, record_iter, disc);
 
 	return RECORD_NEW;
 }
@@ -2391,43 +2386,43 @@ process_meta(build_disc_t * disc) {
 void
 add_new_track(GtkTreeIter * record_iter, build_track_t * ptrack, int i) {
 
-	GtkTreeIter iter;
-	char sort_name[3];
+	GtkTreeIter track_iter;
+	char sort_name[16];
+	track_data_t * track_data;
+
+
+	if ((track_data = (track_data_t *)calloc(1, sizeof(track_data_t))) == NULL) {
+		fprintf(stderr, "add_new_track: calloc error\n");
+		return;
+	}
 
 	if (i == 0) {
 		i = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), record_iter) + 1;
 	}
 
-	snprintf(sort_name, 3, "%02d", i);
+	snprintf(sort_name, 15, "%02d", i);
 
-	gtk_tree_store_append(music_store, &iter, record_iter);
+	gtk_tree_store_append(music_store, &track_iter, record_iter);
+	gtk_tree_store_set(music_store, &track_iter,
+			   MS_COL_NAME, ptrack->final,
+			   MS_COL_SORT, sort_name,
+			   MS_COL_DATA, track_data, -1);
+
+	track_data->file = strdup(ptrack->filename);
+	track_data->comment = strdup(ptrack->comment);
+	track_data->duration = ptrack->duration;
+	track_data->volume = 1.0f;
 
 	if (ptrack->rva > 0.1f) { /* rva unmeasured */
-		gtk_tree_store_set(music_store, &iter,
-				   0, ptrack->final,
-				   1, sort_name,
-				   2, ptrack->filename,
-				   3, ptrack->comment,
-				   4, ptrack->duration,
-				   5, 1.0f,
-				   6, 0.0f,
-				   7, -1.0f,
-				   -1);
+		track_data->rva = 0.0f;
+		track_data->use_rva = 0;
 	} else {
-		gtk_tree_store_set(music_store, &iter,
-				   0, ptrack->final,
-				   1, sort_name,
-				   2, ptrack->filename,
-				   3, ptrack->comment,
-				   4, ptrack->duration,
-				   5, 1.0f,
-				   6, ptrack->rva,
-				   7, 1.0f,
-				   -1);
+		track_data->rva = ptrack->rva;
+		track_data->use_rva = 1;
 	}
 
 	if (options.enable_ms_tree_icons) {
-		gtk_tree_store_set(music_store, &iter, 9, icon_track, -1);
+		gtk_tree_store_set(music_store, &track_iter, MS_COL_ICON, icon_track, -1);
 	}
 }
 
@@ -2459,15 +2454,15 @@ write_record_to_store(gpointer data) {
 		map_put(&artist_name_map, disc->artist.final);
 		max = map_get_max(artist_name_map);
 
-		gtk_tree_store_set(music_store, &artist_iter, 0, max, -1);
+		gtk_tree_store_set(music_store, &artist_iter, MS_COL_NAME, max, -1);
 
 		if (artist_sort_by == SORT_NAME) {
-			gtk_tree_store_set(music_store, &artist_iter, 1, max, -1);
+			gtk_tree_store_set(music_store, &artist_iter, MS_COL_SORT, max, -1);
 		}
 
 		if (artist_sort_by == SORT_NAME_LOW) {
 			char * utf8 = g_utf8_strdown(disc->artist.final, -1);
-			gtk_tree_store_set(music_store, &artist_iter, 1, utf8, -1);
+			gtk_tree_store_set(music_store, &artist_iter, MS_COL_SORT, utf8, -1);
 			g_free(utf8);
 		}
 	}
@@ -2483,12 +2478,12 @@ write_record_to_store(gpointer data) {
 		GtkTreeIter iter;
 		char * name;
 
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &record_iter, 0, &name, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &record_iter, MS_COL_NAME, &name, -1);
 
 		if (strstr(name, _("Unknown Record")) == name) {
 			gtk_tree_store_set(music_store, &record_iter,
-					   0, disc->record.final,
-					   1, disc->record.sort,
+					   MS_COL_NAME, disc->record.final,
+					   MS_COL_SORT, disc->record.sort,
 					   -1);
 		}
 
@@ -2499,28 +2494,21 @@ write_record_to_store(gpointer data) {
 		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
 						     &iter, &record_iter, i++)) {
 
-			char * comment;
+			track_data_t * track_data;
 
-			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, 3, &comment, -1);
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter,
+					   MS_COL_DATA, &track_data, -1);
 
-			if (comment[0] == '\0') {
-				gtk_tree_store_set(music_store, &iter, 3, ptrack->comment, -1);
+			if (track_data->comment == NULL || track_data->comment[0] == '\0') {
+				free_strdup(&track_data->comment, ptrack->comment);
 			}
 
-			g_free(comment);
+			gtk_tree_store_set(music_store, &iter, MS_COL_NAME, ptrack->final, -1);
+			track_data->duration = ptrack->duration;
 
-			if (ptrack->rva > 0.1f) { /* rva unmeasured */
-				gtk_tree_store_set(music_store, &iter,
-						   0, ptrack->final,
-						   4, ptrack->duration,
-						   -1);
-			} else {
-				gtk_tree_store_set(music_store, &iter,
-						   0, ptrack->final,
-						   4, ptrack->duration,
-						   6, ptrack->rva,
-						   7, 1.0f,
-						   -1);
+			if (ptrack->rva < 0.1f) { /* rva measured */
+				track_data->rva = ptrack->rva;
+				track_data->use_rva = 1;
 			}
 
 			ptrack = ptrack->next;
@@ -2547,28 +2535,20 @@ write_track_to_store(gpointer data) {
 
 	if (disc->flag) { /* track is present, reset data */
 
-		char * comment;
+		track_data_t * track_data;
 
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &disc->iter, 3, &comment, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &disc->iter, MS_COL_DATA, &data, -1);
 
-		if (comment[0] == '\0') {
-			gtk_tree_store_set(music_store, &disc->iter, 3, disc->tracks->comment, -1);
+		if (track_data->comment == NULL || track_data->comment[0] == '\0') {
+			free_strdup(&track_data->comment, disc->tracks->comment);
 		}
 
-		g_free(comment);
+		gtk_tree_store_set(music_store, &disc->iter, MS_COL_NAME, disc->tracks->final, -1);
+		track_data->duration = disc->tracks->duration;
 
-		if (disc->tracks->rva > 0.1f) { /* rva unmeasured */
-			gtk_tree_store_set(music_store, &disc->iter,
-					   0, disc->tracks->final,
-					   4, disc->tracks->duration,
-					   -1);
-		} else {
-			gtk_tree_store_set(music_store, &disc->iter,
-					   0, disc->tracks->final,
-					   4, disc->tracks->duration,
-					   6, disc->tracks->rva,
-					   7, 1.0f,
-					   -1);
+		if (disc->tracks->rva < 0.1f) { /* rva measured */
+			track_data->rva = disc->tracks->rva;
+			track_data->use_rva = 1;
 		}
 
 	} else {
@@ -2886,6 +2866,34 @@ process_filename(build_disc_t * disc) {
 }
 
 
+static int
+cddb_init_query_data(build_disc_t * disc, int * ntracks, int ** frames, int * length) {
+
+	int i;
+	float len = 0.0f;
+	float offset = 150.0f; // leading 2 secs in frames
+
+	build_track_t * ptrack = NULL;
+
+	for (*ntracks = 0, ptrack = disc->tracks; ptrack; (*ntracks)++, ptrack = ptrack->next);
+
+	if ((*frames = (int *)calloc(*ntracks, sizeof(int))) == NULL) {
+		fprintf(stderr, "build_store.c: cddb_init_query_data(): calloc error\n");
+		return 1;
+	}
+
+	for (i = 0, ptrack = disc->tracks; ptrack; i++, ptrack = ptrack->next) {
+
+		*((*frames) + i) = (int)offset;
+		len += ptrack->duration;
+		offset += 75.0f * ptrack->duration;
+	}
+
+	*length = (int)len;
+
+	return 0;
+}
+
 void
 process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 
@@ -2951,8 +2959,58 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 
 #ifdef HAVE_CDDB
 	if (cddb_enabled) {
+
+		int ntracks;
+		int * frames;
+		int length;
+
+		char artist[MAXLEN];
+		char record[MAXLEN];
+		int year = 0;
+		char ** tracks;
+		int i;
+
+		artist[0] = '\0';
+		record[0] = '\0';
+
 		g_idle_add(set_prog_action_label, (gpointer) _("CDDB lookup"));
-		//cddb_get_batch(disc);
+
+		if (cddb_init_query_data(disc, &ntracks, &frames, &length) != 0) {
+			return;
+		}
+
+		if ((tracks = calloc(ntracks, sizeof(char *))) == NULL) {
+			fprintf(stderr, "process_record: calloc error\n");
+			return;
+		}
+
+		for (i = 0; i < ntracks; i++) {
+			if ((tracks[i] = calloc(1, MAXLEN * sizeof(char))) == NULL) {
+				fprintf(stderr, "process_record: calloc error\n");
+				return;
+			}
+		}
+
+		cddb_query_batch(ntracks, frames, length, artist, record, &year, tracks);
+
+		if (artist[0] != '\0') {
+			strncpy(disc->artist.name[DATA_SRC_CDDB], artist, MAXLEN-1);
+		}
+
+		if (record[0] != '\0') {
+			strncpy(disc->record.name[DATA_SRC_CDDB], record, MAXLEN-1);
+		}
+
+		if (year > 0) {
+			snprintf(disc->record.year, MAXLEN-1, "%d", year);
+		}
+
+		for (i = 0, ptrack = disc->tracks; ptrack && i < ntracks; i++, ptrack = ptrack->next) {
+			strncpy(ptrack->name[DATA_SRC_CDDB], tracks[i], MAXLEN-1);
+			free(tracks[i]);
+		}
+
+		free(tracks);
 	}
 #endif /* HAVE_CDDB */
 

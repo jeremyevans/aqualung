@@ -355,6 +355,7 @@ create_query_progress_window(cddb_lookup_t * data) {
 }
 
 
+#ifdef HAVE_CDDA
 void
 store_cdda_export_merged(cddb_lookup_t * data, char * artist, char * record, char * genre, int year, char ** tracks) {
 
@@ -383,6 +384,8 @@ store_cdda_export_merged(cddb_lookup_t * data, char * artist, char * record, cha
 
 	gtk_tree_store_set(music_store, &data->iter_record, MS_COL_NAME, name, -1);
 }
+#endif /* HAVE_CDDA */
+
 
 void
 cddb_lookup_merge(cddb_lookup_t * data, char * artist, char * record, char * genre, int * year, char ** tracks) {
@@ -487,16 +490,7 @@ query_timeout_cb(gpointer user_data) {
 		return TRUE;
 	case CDDB_SUCCESS:
 		gtk_widget_destroy(data->progress_win);
-		if (data->type == CDDB_TYPE_SUBMIT) {
-			message_dialog(_("Warning"),
-				       browser_window,
-				       GTK_MESSAGE_WARNING,
-				       GTK_BUTTONS_OK,
-				       NULL,
-				       _("Matching record found, but overwriting existing records is currently unsupported."));
-		} else {
-			cddb_dialog(data);
-		}
+		cddb_dialog(data);
 		break;
 	case CDDB_ERROR:
 		gtk_widget_destroy(data->progress_win);
@@ -532,6 +526,8 @@ query_timeout_cb(gpointer user_data) {
 	return FALSE;
 }
 
+
+#ifdef HAVE_CDDA
 gboolean
 cdda_auto_query_timeout_cb(gpointer user_data) {
 
@@ -586,6 +582,8 @@ cdda_auto_query_timeout_cb(gpointer user_data) {
 
 	return FALSE;
 }
+#endif /* HAVE_CDDA */
+
 
 static void
 add_to_comments(cddb_lookup_t * data, GtkWidget * entry) {
@@ -1056,6 +1054,8 @@ cddb_dialog_load_store_file(cddb_lookup_t * data) {
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->year_spinner), record_data->year);
 }
 
+
+#ifdef HAVE_CDDA
 void
 cddb_dialog_load_store_cdda(cddb_lookup_t * data) {
 
@@ -1071,6 +1071,8 @@ cddb_dialog_load_store_cdda(cddb_lookup_t * data) {
 	gtk_entry_set_text(GTK_ENTRY(data->genre_entry), drive->disc.genre);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->year_spinner), drive->disc.year);
 }
+#endif /* HAVE_CDDA */
+
 
 void
 export_tracklist(cddb_lookup_t * data) {
@@ -1099,6 +1101,8 @@ store_file_export(cddb_lookup_t * data) {
 	music_store_mark_changed(&data->iter_record);
 }
 
+
+#ifdef HAVE_CDDA
 void
 store_cdda_export(cddb_lookup_t * data) {
 
@@ -1120,6 +1124,8 @@ store_cdda_export(cddb_lookup_t * data) {
 
 	gtk_tree_store_set(music_store, &data->iter_record, MS_COL_NAME, name, -1);
 }
+#endif /* HAVE_CDDA */
+
 
 void
 cddb_dialog(cddb_lookup_t * data) {
@@ -1327,7 +1333,9 @@ cddb_dialog(cddb_lookup_t * data) {
 		if (iter_get_store_type(&data->iter_record) == STORE_TYPE_FILE) {
 			cddb_dialog_load_store_file(data);
 		} else {
+#ifdef HAVE_CDDA
 			cddb_dialog_load_store_cdda(data);
+#endif /* HAVE_CDDA */
 		}
 	}
 
@@ -1337,8 +1345,6 @@ cddb_dialog(cddb_lookup_t * data) {
 
 		switch (data->type) {
 		case CDDB_TYPE_SUBMIT:
-			/* unsupported */
-			break;
 		case CDDB_TYPE_SUBMIT_NEW:
 			if (cddb_submit_check(data)) {
 				goto display;
@@ -1349,7 +1355,9 @@ cddb_dialog(cddb_lookup_t * data) {
 			if (iter_get_store_type(&data->iter_record) == STORE_TYPE_FILE) {
 				store_file_export(data);
 			} else {
+#ifdef HAVE_CDDA
 				store_cdda_export(data);
+#endif /* HAVE_CDDA */
 			}
 			break;
 		}
@@ -1420,6 +1428,7 @@ cddb_start_submit(GtkTreeIter * iter_record, int ntracks, int * frames, int leng
 				 query_timeout_cb);
 }
 
+#ifdef HAVE_CDDA
 void
 cddb_auto_query_cdda(GtkTreeIter * drive_iter, int ntracks, int * frames, int length) {
 
@@ -1429,6 +1438,7 @@ cddb_auto_query_cdda(GtkTreeIter * drive_iter, int ntracks, int * frames, int le
 				 ntracks, frames, length,
 				 cdda_auto_query_timeout_cb);
 }
+#endif /* HAVE_CDDA */
 
 void
 cddb_query_batch(int ntracks, int * frames, int length,

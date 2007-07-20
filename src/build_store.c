@@ -2537,7 +2537,7 @@ write_track_to_store(gpointer data) {
 
 		track_data_t * track_data;
 
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &disc->iter, MS_COL_DATA, &data, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &disc->iter, MS_COL_DATA, &track_data, -1);
 
 		if (track_data->comment == NULL || track_data->comment[0] == '\0') {
 			free_strdup(&track_data->comment, disc->tracks->comment);
@@ -2866,12 +2866,13 @@ process_filename(build_disc_t * disc) {
 }
 
 
+#ifdef HAVE_CDDB
 static int
 cddb_init_query_data(build_disc_t * disc, int * ntracks, int ** frames, int * length) {
 
 	int i;
 	float len = 0.0f;
-	float offset = 150.0f; // leading 2 secs in frames
+	float offset = 150.0f; /* leading 2 secs in frames */
 
 	build_track_t * ptrack = NULL;
 
@@ -2893,6 +2894,8 @@ cddb_init_query_data(build_disc_t * disc, int * ntracks, int ** frames, int * le
 
 	return 0;
 }
+#endif /* HAVE_CDDB */
+
 
 void
 process_record(char * dir_record, char * artist_d_name, char * record_d_name) {

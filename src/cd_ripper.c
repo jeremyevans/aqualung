@@ -93,7 +93,7 @@ int ripper_meta;
 char ripper_artist[MAXLEN];
 char ripper_album[MAXLEN];
 char ripper_genre[MAXLEN];
-char ripper_year[MAXLEN];
+int ripper_year;
 int ripper_write_to_store;
 GtkTreeIter ripper_dest_store;
 GtkTreeIter ripper_dest_artist;
@@ -583,7 +583,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 
 
 	strncpy(ripper_genre, drive->disc.genre, MAXLEN-1);
-	strncpy(ripper_year, drive->disc.year, MAXLEN-1);
+	ripper_year = drive->disc.year;
 
         ripper_dialog = gtk_dialog_new_with_buttons(_("Rip CD"),
                                              GTK_WINDOW(browser_window),
@@ -1149,7 +1149,7 @@ ripper_thread(void * arg) {
 			strncpy(mode.meta.album, ripper_album, MAXLEN-1);
 			strncpy(mode.meta.title, name, MAXLEN-1);
 			strncpy(mode.meta.genre, ripper_genre, MAXLEN-1);
-			strncpy(mode.meta.year, ripper_year, MAXLEN-1);
+			snprintf(mode.meta.year, MAXLEN-1, "%d", ripper_year);
 			snprintf(mode.meta.track, MAXLEN-1, "%d", no);
 		}
 

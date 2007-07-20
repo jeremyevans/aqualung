@@ -252,7 +252,7 @@ normalize_filename(const char * in, char * out) {
 }
 
 void
-free_strdup(char ** s, char * str) {
+free_strdup(char ** s, const char * str) {
 
 	if (*s != NULL) {
 		free(*s);

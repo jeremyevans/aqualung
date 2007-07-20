@@ -832,7 +832,7 @@ add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** d
 			gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter);
 			if (!(*strings = calloc(n + 1, sizeof(char *)))) {
 				fprintf(stderr, "add_record_dialog(): calloc error\n");
-				exit(1);
+				return 0;
 			}
 			for (i = 0; i < n; i++) {
 
@@ -845,7 +845,7 @@ add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** d
 
 				if (!((*strings)[i] = calloc(strlen(locale)+1, sizeof(char)))) {
 					fprintf(stderr, "add_record_dialog(): calloc error\n");
-					exit(1);
+					return 0;
 				}
 
 				strcpy((*strings)[i], locale);
@@ -1194,20 +1194,12 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gboolean writable = !is_store_path_readonly(path);
 	gboolean build_free = build_thread_test(BUILD_THREAD_FREE);
 
-#ifdef HAVE_CDDB
-	gboolean cddb_free = cddb_thread_test(CDDB_THREAD_FREE);
-#endif /* HAVE_CDDB */
-
 #if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gboolean tag_free = (batch_tag_root == NULL);
 #endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 
 
-	gtk_widget_set_sensitive(store__build, writable &&
-#ifdef HAVE_CDDB
-				 cddb_free &&
-#endif /* HAVE_CDDB */
-				 build_free);
+	gtk_widget_set_sensitive(store__build, writable && build_free);
 	gtk_widget_set_sensitive(store__edit, writable);
 	gtk_widget_set_sensitive(store__save, writable);
 	gtk_widget_set_sensitive(store__addart, writable);
@@ -1224,8 +1216,7 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gtk_widget_set_sensitive(record__remove, writable);
 	gtk_widget_set_sensitive(record__addtrk, writable);
 #ifdef HAVE_CDDB
-	gtk_widget_set_sensitive(record__cddb, writable && cddb_free && build_free);
-	gtk_widget_set_sensitive(record__cddb_submit, cddb_free && build_free);
+	gtk_widget_set_sensitive(record__cddb, writable);
 #endif /* HAVE_CDDB */
 	gtk_widget_set_sensitive(record__volume, writable);
 
@@ -1282,7 +1273,7 @@ add_path_to_playlist(GtkTreePath * path, GtkTreeIter * piter, int new_tab) {
 
 
 void
-generic_remove_cb(char * title) {
+generic_remove_cb(char * title, int (* remove_cb)(GtkTreeIter *)) {
 
 	GtkTreeIter iter;
 	GtkTreeModel * model;
@@ -1302,25 +1293,11 @@ generic_remove_cb(char * title) {
 		if (confirm_dialog(title, text)) {
 
 			GtkTreeIter parent;
-			GtkTreePath * path = gtk_tree_model_get_path(model, &iter);
-			int ret = 0;
 
 			music_store_mark_changed(&iter);
 			gtk_tree_model_iter_parent(model, &parent, &iter);
 
-			switch (gtk_tree_path_get_depth(path)) {
-			case 2:
-				ret = store_file_remove_artist(&iter);
-				break;
-			case 3:
-				ret = store_file_remove_record(&iter);
-				break;
-			case 4:
-				ret = store_file_remove_track(&iter);
-				break;
-			}
-
-			if (ret) {
+			if (remove_cb(&iter)) {
 				gtk_tree_selection_select_iter(music_select, &iter);
 			} else {
 				int last;
@@ -1332,8 +1309,6 @@ generic_remove_cb(char * title) {
 					gtk_tree_selection_select_iter(music_select, &parent);
 				}
 			}
-
-			gtk_tree_path_free(path);
 		}
 	}
 }
@@ -2271,7 +2246,7 @@ artist__volume_all_cb(gpointer data) {
 void
 artist__remove_cb(gpointer data) {
 
-	generic_remove_cb(_("Remove Artist"));
+	generic_remove_cb(_("Remove Artist"), store_file_remove_artist);
 }
 
 /************************************/
@@ -2500,20 +2475,62 @@ record__volume_all_cb(gpointer data) {
 void
 record__remove_cb(gpointer data) {
 
-	generic_remove_cb(_("Remove Record"));
+	generic_remove_cb(_("Remove Record"), store_file_remove_record);
 }
 
 
 #ifdef HAVE_CDDB
+
+static int
+cddb_init_query_data(GtkTreeIter * iter_record, int * ntracks, int ** frames, int * length) {
+
+	int i;
+	float len = 0.0f;
+	float offset = 150.0f; /* leading 2 secs in frames */
+
+	GtkTreeIter iter_track;
+	track_data_t * data;
+
+	*ntracks = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), iter_record);
+
+	if ((*frames = (int *)calloc(*ntracks, sizeof(int))) == NULL) {
+		fprintf(stderr, "store_file.c: cddb_init_query_data: calloc error\n");
+		return 1;
+	}
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+					     &iter_track, iter_record, i)) {
+
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track,
+				   MS_COL_DATA, &data, -1);
+
+		*((*frames) + i) = (int)offset;
+
+		len += data->duration;
+		offset += 75.0f * data->duration;
+		++i;
+	}
+
+	*length = (int)len;
+
+	return 0;
+}
 
 void
 record__cddb_cb(gpointer data) {
 
 	GtkTreeIter iter;
 
-	if (gtk_tree_selection_get_selected(music_select, NULL, &iter)) {
-		if (!is_store_iter_readonly(&iter)) {
-			cddb_get(&iter);
+	if (gtk_tree_selection_get_selected(music_select, NULL, &iter) &&
+	    !is_store_iter_readonly(&iter)) {
+
+		int ntracks;
+		int * frames;
+		int length;
+
+		if (cddb_init_query_data(&iter, &ntracks, &frames, &length) == 0) {
+			cddb_start_query(&iter, ntracks, frames, length);
 		}
 	}
 }
@@ -2523,8 +2540,16 @@ record__cddb_submit_cb(gpointer data) {
 
 	GtkTreeIter iter;
 
-	if (gtk_tree_selection_get_selected(music_select, NULL, &iter)) {
-		cddb_submit(&iter);
+	if (gtk_tree_selection_get_selected(music_select, NULL, &iter) &&
+	    !is_store_iter_readonly(&iter)) {
+
+		int ntracks;
+		int * frames;
+		int length;
+
+		if (cddb_init_query_data(&iter, &ntracks, &frames, &length) == 0) {
+			cddb_start_submit(&iter, ntracks, frames, length);
+		}
 	}
 }
 
@@ -2737,7 +2762,7 @@ track__volume_all_cb(gpointer data) {
 void
 track__remove_cb(gpointer data) {
 
-	generic_remove_cb(_("Remove Track"));
+	generic_remove_cb(_("Remove Track"), store_file_remove_track);
 }
 
 

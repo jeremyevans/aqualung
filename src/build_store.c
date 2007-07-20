@@ -2952,7 +2952,7 @@ process_record(char * dir_record, char * artist_d_name, char * record_d_name) {
 #ifdef HAVE_CDDB
 	if (cddb_enabled) {
 		g_idle_add(set_prog_action_label, (gpointer) _("CDDB lookup"));
-		cddb_get_batch(disc);
+		//cddb_get_batch(disc);
 	}
 #endif /* HAVE_CDDB */
 

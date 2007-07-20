@@ -48,9 +48,6 @@
 #include "cdda.h"
 #include "cddb_lookup.h"
 
-#define CASE_UP    0
-#define CASE_DOWN  1
-
 extern options_t options;
 
 extern GtkWidget * browser_window;
@@ -58,51 +55,262 @@ extern GtkTreeStore * music_store;
 extern GtkTreeSelection * music_select;
 
 
-AQUALUNG_THREAD_DECLARE(cddb_thread_id)
+enum {
+	CASE_UP,
+	CASE_DOWN
+};
 
-int cddb_thread_state = CDDB_THREAD_FREE;
+enum {
+	CDDB_INIT,
+	CDDB_BUSY,
+	CDDB_SUCCESS,
+	CDDB_ERROR,
+	CDDB_NO_MATCH,
+	CDDB_ABORTED
+};
 
-volatile int cddb_query_aborted = 0;
-volatile int cddb_data_locked = 0;
+enum {
+	CDDB_TYPE_QUERY,
+	CDDB_TYPE_SUBMIT,
+	CDDB_TYPE_SUBMIT_NEW
+};
 
-GtkTreeIter iter_record;
-GtkTreeIter iter_drive;
+typedef struct {
 
-GtkWidget * progress_win = NULL;
-GtkWidget * progress_label;
-GtkWidget * progbar;
-int progress_counter = 0;
-int progress_prev = 0;
+	AQUALUNG_THREAD_DECLARE(thread_id);
+	AQUALUNG_MUTEX_DECLARE(mutex);
 
-GtkWidget * combo;
-GtkListStore * track_store;
+	int state;
+	int type;
 
-GtkWidget * artist_entry;
-GtkWidget * title_entry;
-GtkWidget * year_entry;
-GtkWidget * year_spinner;
-GtkWidget * category_entry;
-GtkWidget * category_combo;
-GtkWidget * genre_entry;
-GtkWidget * ext_entry;
+	int ntracks;
+	int * frames;
+	int record_length;
 
-int * frames = NULL;
-int record_length;
-int track_count;
+	cddb_disc_t ** records;
+	int nrecords;
 
-cddb_disc_t ** records = NULL;
-int record_count;
+	int counter;
+	int aborted;
+
+	GtkTreeIter iter_record;
+
+	GtkWidget * progress_win;
+	GtkWidget * progress_label;
+	GtkWidget * progbar;
+
+	GtkWidget * combo;
+
+	GtkWidget * artist_entry;
+	GtkWidget * title_entry;
+	GtkWidget * year_spinner;
+	GtkWidget * category_entry;
+	GtkWidget * category_combo;
+	GtkWidget * genre_entry;
+	GtkWidget * ext_entry;
+	GtkWidget * track_list;
+	GtkListStore * track_store;
+
+	GtkWidget * year_import_button;
+	GtkWidget * title_import_button;
+
+	int year_imported;
+	int title_imported;
+
+} cddb_lookup_t;
 
 
-static void
-abort_cb(GtkWidget * widget, gpointer data) {
+void cddb_dialog(cddb_lookup_t * data);
+void cddb_dialog_load_disc(cddb_lookup_t * data, cddb_disc_t * disc);
 
-	cddb_query_aborted = 1;
+
+cddb_lookup_t *
+cddb_lookup_new () {
+
+	cddb_lookup_t * data;
+
+	if ((data = calloc(1, sizeof(cddb_lookup_t))) == NULL) {
+		fprintf(stderr, "cddb_lookup_new: calloc error\n");
+		return NULL;
+	}
+
+#ifdef _WIN32
+	data->mutex = g_mutex_new();
+#endif /* _WIN32 */
+
+	data->state = CDDB_INIT;
+
+	return data;
+}
+
+void
+cddb_lookup_set_state(cddb_lookup_t * data, int state) {
+
+	AQUALUNG_MUTEX_LOCK(data->mutex);
+	data->state = state;
+	AQUALUNG_MUTEX_UNLOCK(data->mutex);
+}
+
+int
+cddb_lookup_get_state(cddb_lookup_t * data) {
+
+	int state;
+
+	AQUALUNG_MUTEX_LOCK(data->mutex);
+	state = data->state;
+	AQUALUNG_MUTEX_UNLOCK(data->mutex);
+
+	return state;
+}
+
+void
+cddb_lookup_free(cddb_lookup_t * data) {
+
+	if (data->records != NULL) {
+		int i;
+		for (i = 0; i < data->nrecords; i++) {
+			if (data->records[i] != NULL) {
+				cddb_disc_destroy(data->records[i]);
+			}
+		}
+		free(data->records);
+	}
+
+	if (data->frames != NULL) {
+		free(data->frames);
+	}
+
+#ifdef _WIN32
+	g_mutex_free(data->mutexmutex);
+#endif /* _WIN32 */
+
+	free(data);
+}
+
+
+int
+cddb_connection_setup(cddb_conn_t ** conn) {
+
+	if ((*conn = cddb_new()) == NULL) {
+		fprintf(stderr, "cddb_lookup.c: cddb_connection_setup(): cddb_new error\n");
+		return 1;
+	}
+
+	cddb_set_server_name(*conn, options.cddb_server);
+	cddb_set_timeout(*conn, options.cddb_timeout);
+	cddb_set_charset(*conn, "UTF-8");
+
+	if (options.cddb_local[0] != '\0') {
+		cddb_cache_set_dir(*conn, options.cddb_local);
+	}
+
+	if (options.cddb_cache_only) {
+		cddb_cache_only(*conn);
+	}
+
+	if (options.inet_use_proxy) {
+		cddb_http_enable(*conn);
+		cddb_set_server_port(*conn, 80);
+		cddb_http_proxy_enable(*conn);
+		cddb_set_http_proxy_server_name(*conn, options.inet_proxy);
+		cddb_set_http_proxy_server_port(*conn, options.inet_proxy_port);
+	} else {
+		cddb_http_proxy_disable(*conn);
+		if (options.cddb_use_http) {
+			cddb_http_enable(*conn);
+			cddb_set_server_port(*conn, 80);
+		} else {
+			cddb_http_disable(*conn);
+			cddb_set_server_port(*conn, 888);
+		}
+	}
+
+	return 0;
+}
+
+void
+cddb_lookup(cddb_lookup_t * data) {
+
+	cddb_conn_t * conn = NULL;
+	cddb_disc_t * disc = NULL;
+	cddb_track_t * track = NULL;
+
+	int i;
+
+	if (cddb_connection_setup(&conn) == 1) {
+		cddb_lookup_set_state(data, CDDB_ERROR);
+		return;
+	}
+
+	if ((disc = cddb_disc_new()) == NULL) {
+		fprintf(stderr, "cddb_lookup(): cddb_disc_new error\n");
+		cddb_lookup_set_state(data, CDDB_ERROR);
+		return;
+	}
+
+	cddb_disc_set_length(disc, data->record_length);
+
+	for (i = 0; i < data->ntracks; i++) {
+		track = cddb_track_new();
+		cddb_track_set_frame_offset(track, data->frames[i]);
+		cddb_disc_add_track(disc, track);
+	}
+
+	data->nrecords = cddb_query(conn, disc);
+
+	if (data->nrecords <= 0) {
+		cddb_destroy(conn);
+		cddb_disc_destroy(disc);
+		cddb_lookup_set_state(data, (data->nrecords == 0) ? CDDB_NO_MATCH : CDDB_ERROR);
+		return;
+	}
+
+	cddb_lookup_set_state(data, CDDB_BUSY);
+
+	if ((data->records = (cddb_disc_t **)calloc(data->nrecords, sizeof(cddb_disc_t *))) == NULL) {
+		fprintf(stderr, "cddb_lookup(): malloc error\n");
+		cddb_lookup_set_state(data, CDDB_ERROR);
+		return;
+	}
+
+	for (i = 0; i < data->nrecords; i++) {
+
+		if (cddb_lookup_get_state(data) == CDDB_ABORTED) {
+			break;
+		}
+
+		if (i > 0 && !cddb_query_next(conn, disc)) {
+			break;
+		}
+		cddb_read(conn, disc);
+		data->records[i] = cddb_disc_clone(disc);
+
+		AQUALUNG_MUTEX_LOCK(data->mutex);
+		data->counter++;
+		AQUALUNG_MUTEX_UNLOCK(data->mutex);
+	}
+
+	cddb_destroy(conn);
+	cddb_disc_destroy(disc);
+
+	if (cddb_lookup_get_state(data) == CDDB_ABORTED) {
+		cddb_lookup_free(data);
+		return;
+	}
+
+	cddb_lookup_set_state(data, CDDB_SUCCESS);
 }
 
 
 static void
-create_progress_window(void) {
+abort_cb(GtkWidget * widget, gpointer user_data) {
+
+	cddb_lookup_set_state((cddb_lookup_t *)user_data, CDDB_ABORTED);
+}
+
+
+void
+create_query_progress_window(cddb_lookup_t * data) {
 
 	GtkWidget * vbox;
 	GtkWidget * hbuttonbox;
@@ -110,23 +318,23 @@ create_progress_window(void) {
 	GtkWidget * abort_button;
 
 
-	progress_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(progress_win), _("CDDB query"));
-        gtk_window_set_position(GTK_WINDOW(progress_win), GTK_WIN_POS_CENTER);
-        gtk_window_resize(GTK_WINDOW(progress_win), 330, 120);
-        g_signal_connect(G_OBJECT(progress_win), "delete_event",
-			 G_CALLBACK(abort_cb), NULL);
-        gtk_container_set_border_width(GTK_CONTAINER(progress_win), 10);
+	data->progress_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        gtk_window_set_title(GTK_WINDOW(data->progress_win), _("CDDB query"));
+        gtk_window_set_position(GTK_WINDOW(data->progress_win), GTK_WIN_POS_CENTER);
+        gtk_window_resize(GTK_WINDOW(data->progress_win), 330, 120);
+        g_signal_connect(G_OBJECT(data->progress_win), "delete_event",
+			 G_CALLBACK(abort_cb), data);
+        gtk_container_set_border_width(GTK_CONTAINER(data->progress_win), 10);
 	
 	vbox = gtk_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(progress_win), vbox);
+	gtk_container_add(GTK_CONTAINER(data->progress_win), vbox);
 
-	progress_label = gtk_label_new(_("Retrieving matches from server..."));
-	gtk_box_pack_start(GTK_BOX(vbox), progress_label, FALSE, FALSE, 0);
+	data->progress_label = gtk_label_new(_("Retrieving matches from server..."));
+	gtk_box_pack_start(GTK_BOX(vbox), data->progress_label, FALSE, FALSE, 0);
 	
-	progbar = gtk_progress_bar_new();
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progbar), _("Connecting to CDDB server..."));
-	gtk_box_pack_start(GTK_BOX(vbox), progbar, FALSE, FALSE, 6);
+	data->progbar = gtk_progress_bar_new();
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(data->progbar), _("Connecting to CDDB server..."));
+	gtk_box_pack_start(GTK_BOX(vbox), data->progbar, FALSE, FALSE, 6);
 	
         hseparator = gtk_hseparator_new ();
         gtk_widget_show (hseparator);
@@ -138,84 +346,260 @@ create_progress_window(void) {
 
         abort_button = gui_stock_label_button(_("Abort"), GTK_STOCK_CANCEL);
         g_signal_connect(G_OBJECT(abort_button), "clicked",
-			 G_CALLBACK(abort_cb), NULL);
+			 G_CALLBACK(abort_cb), data);
   	gtk_container_add(GTK_CONTAINER(hbuttonbox), abort_button);   
 
         gtk_widget_grab_focus(abort_button);
 
-	gtk_widget_show_all(progress_win);
+	gtk_widget_show_all(data->progress_win);
 }
 
 
-static void
-destroy_progress_window() {
-
-	gtk_widget_destroy(progress_win);
-	progress_win = NULL;
-}
-
-
-static int
-init_query_data() {
-
-	GtkTreeIter iter_track;
-
-	char * pfile;
-	char file[MAXLEN];
+void
+store_cdda_export_merged(cddb_lookup_t * data, char * artist, char * record, char * genre, int year, char ** tracks) {
 
 	int i;
-	float duration = 0.0f;
-	float length = 0.0f;
-	float fr_offset = SECONDS_TO_FRAMES(2.0f); /* leading 2 secs in frames */
+	GtkTreeIter iter;
 
-
-	track_count = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter_record);
-
-	if ((frames = (int *)malloc(sizeof(int) * track_count)) == NULL) {
-		fprintf(stderr, "cddb_lookup.c: init_query_data(): malloc error\n");
-		return 1;
-	}
+	char name[MAXLEN];
+	cdda_drive_t * drive;
 
 	for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
-						  &iter_track, &iter_record, i); i++) {
+						  &iter, &data->iter_record, i); i++) {
 
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store),
-				   &iter_track, 2, &pfile, 4, &duration, -1);
-
-		strncpy(file, pfile, MAXLEN-1);
-		g_free(pfile);
-
-		if (duration == 0.0f) {
-			if ((duration = get_file_duration(file)) <= 0.0f) {
-				return 1;
-			}
-			gtk_tree_store_set(music_store, &iter_track, 4, duration, -1);
-			music_store_mark_changed(&iter_track);
-		}
-
-		frames[i] = (int)fr_offset;
-
-		length += duration;
-		fr_offset += SECONDS_TO_FRAMES(duration);
+		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, tracks[i], -1);
 	}
 
-	record_length = length;
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &data->iter_record, MS_COL_DATA, &drive, -1);
 
-	return 0;
+	strncpy(drive->disc.artist_name, artist, MAXLEN-1);
+	strncpy(drive->disc.record_name, record, MAXLEN-1);
+	strncpy(drive->disc.genre, genre, MAXLEN-1);
+	drive->disc.year = year;
+
+	snprintf(name, MAXLEN-1, "%s: %s",
+		 drive->disc.artist_name,
+		 drive->disc.record_name);
+
+	gtk_tree_store_set(music_store, &data->iter_record, MS_COL_NAME, name, -1);
 }
 
+void
+cddb_lookup_merge(cddb_lookup_t * data, char * artist, char * record, char * genre, int * year, char ** tracks) {
+
+	int i, j, y;
+
+	map_t * map_artist = NULL;
+	map_t * map_record = NULL;
+	map_t * map_genre = NULL;
+	map_t * map_year = NULL;
+	map_t ** map_tracks = NULL;
+
+	char tmp[MAXLEN];
+
+
+	if ((map_tracks = (map_t **)calloc(data->ntracks, sizeof(map_t *))) == NULL) {
+		fprintf(stderr, "cddb_lookup_merge: calloc error\n");
+		return;
+	}
+
+	for (i = 0; i < data->nrecords; i++) {
+
+		strncpy(tmp, cddb_disc_get_artist(data->records[i]), MAXLEN-1);
+		if (!is_all_wspace(tmp)) {
+			map_put(&map_artist, tmp);
+		}
+
+		strncpy(tmp, cddb_disc_get_title(data->records[i]), MAXLEN-1);
+		if (!is_all_wspace(tmp)) {
+			map_put(&map_record, tmp);
+		}
+
+		if (genre != NULL) {
+			strncpy(tmp, cddb_disc_get_genre(data->records[i]), MAXLEN-1);
+			if (!is_all_wspace(tmp)) {
+				map_put(&map_genre, tmp);
+			}
+		}
+
+		y = cddb_disc_get_year(data->records[i]);
+		if (is_valid_year(y)) {
+			snprintf(tmp, MAXLEN-1, "%d", y);
+			map_put(&map_year, tmp);
+		}
+
+		for (j = 0; j < data->ntracks; j++) {
+			strncpy(tmp,
+				cddb_track_get_title(cddb_disc_get_track(data->records[i], j)),
+				MAXLEN-1);
+			if (!is_all_wspace(tmp)) {
+				map_put(map_tracks + j, tmp);
+			}
+		}
+	}
+
+	if (map_artist) {
+		strncpy(artist, map_get_max(map_artist), MAXLEN-1);
+	}
+
+	if (map_record) {
+		strncpy(record, map_get_max(map_record), MAXLEN-1);
+	}
+
+	if (map_genre) {
+		strncpy(genre, map_get_max(map_genre), MAXLEN-1);
+	}
+
+	if (map_year) {
+		*year = atoi(map_get_max(map_year));
+	}
+
+	for (j = 0; j < data->ntracks; j++) {
+
+		if (map_tracks[j]) {
+			strncpy(tracks[j], map_get_max(map_tracks[j]), MAXLEN-1);
+			map_free(map_tracks[j]);
+		}
+	}
+
+	map_free(map_artist);
+	map_free(map_record);
+	map_free(map_genre);
+	map_free(map_year);
+	free(map_tracks);
+}
+
+gboolean
+query_timeout_cb(gpointer user_data) {
+
+	cddb_lookup_t * data = (cddb_lookup_t *)user_data;
+	int state = cddb_lookup_get_state(data);
+	char text[MAXLEN];
+
+	switch (state) {
+	case CDDB_INIT:
+		return TRUE;
+	case CDDB_BUSY:
+		snprintf(text, MAXLEN, "%d / %d", data->counter, data->nrecords);
+		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(data->progbar),
+					      (double)data->counter / data->nrecords);
+		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(data->progbar), text);
+		return TRUE;
+	case CDDB_SUCCESS:
+		gtk_widget_destroy(data->progress_win);
+		if (data->type == CDDB_TYPE_SUBMIT) {
+			message_dialog(_("Warning"),
+				       browser_window,
+				       GTK_MESSAGE_WARNING,
+				       GTK_BUTTONS_OK,
+				       NULL,
+				       _("Matching record found, but overwriting existing records is currently unsupported."));
+		} else {
+			cddb_dialog(data);
+		}
+		break;
+	case CDDB_ERROR:
+		gtk_widget_destroy(data->progress_win);
+		message_dialog(_("Error"),
+			       browser_window,
+			       GTK_MESSAGE_ERROR,
+			       GTK_BUTTONS_OK,
+			       NULL,
+			       _("An error occurred while attempting "
+				 "to connect to the CDDB server."));
+		break;
+	case CDDB_NO_MATCH:
+		gtk_widget_destroy(data->progress_win);
+		if (data->type == CDDB_TYPE_QUERY) {
+			message_dialog(_("Warning"),
+				       browser_window,
+				       GTK_MESSAGE_WARNING,
+				       GTK_BUTTONS_OK,
+				       NULL,
+				       _("No matching record found."));
+		} else {
+			data->type = CDDB_TYPE_SUBMIT_NEW;
+			cddb_dialog(data);
+		}
+		break;
+	case CDDB_ABORTED:
+		gtk_widget_destroy(data->progress_win);
+		return FALSE;
+	}
+
+	cddb_lookup_free(data);
+
+	return FALSE;
+}
+
+gboolean
+cdda_auto_query_timeout_cb(gpointer user_data) {
+
+	cddb_lookup_t * data = (cddb_lookup_t *)user_data;
+	int state = cddb_lookup_get_state(data);
+
+	if (state == CDDB_INIT || state == CDDB_BUSY) {
+		return TRUE;
+	}
+
+	if (state == CDDB_SUCCESS) {
+		char artist[MAXLEN];
+		char record[MAXLEN];
+		char genre[MAXLEN];
+		int year = 0;
+		char ** tracks;
+		int i;
+
+		artist[0] = '\0';
+		record[0] = '\0';
+		genre[0] = '\0';
+
+		if ((tracks = calloc(data->ntracks, sizeof(char *))) == NULL) {
+			fprintf(stderr, "cdda_auto_query_timeout_cb(): calloc error\n");
+			return FALSE;
+		}
+
+		for (i = 0; i < data->ntracks; i++) {
+			if ((tracks[i] = calloc(1, MAXLEN * sizeof(char))) == NULL) {
+				fprintf(stderr, "cdda_auto_query_timeout_cb(): calloc error\n");
+				return FALSE;
+			}
+		}
+
+		cddb_lookup_merge(data, artist, record, genre, &year, tracks);
+		store_cdda_export_merged(data, artist, record, genre, year, tracks);
+
+		for (i = 0; i < data->ntracks; i++) {
+			free(tracks[i]);
+		}
+		free(tracks);
+	}
+
+	if (options.cdda_add_to_playlist) {
+		cdda_drive_t * drive;
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &data->iter_record,
+				   MS_COL_DATA, &drive, -1);
+		cdda_add_to_playlist(&data->iter_record, drive->disc.hash);
+	}
+
+	cddb_lookup_free(data);
+
+	return FALSE;
+}
+
+/*
 static int
 init_query_data_from_tracklist(build_track_t * tracks) {
 
 	int i;
 	float length = 0.0f;
-	float fr_offset = SECONDS_TO_FRAMES(2.0f); /* leading 2 secs in frames */
+	float fr_offset = 150.0f; // leading 2 secs in frames
 
 	build_track_t * ptrack = NULL;
 
-	for (track_count = 0, ptrack = tracks; ptrack; track_count++, ptrack = ptrack->next);
+	for (ntracks = 0, ptrack = tracks; ptrack; ntracks++, ptrack = ptrack->next);
 
-	if ((frames = (int *)malloc(sizeof(int) * track_count)) == NULL) {
+	if ((frames = (int *)malloc(sizeof(int) * ntracks)) == NULL) {
 		fprintf(stderr, "cddb_lookup.c: init_query_data_from_tracklist(): malloc error\n");
 		return 1;
 	}
@@ -231,381 +615,163 @@ init_query_data_from_tracklist(build_track_t * tracks) {
 
 	return 0;
 }
-
-
-#ifdef HAVE_CDDA
-static int
-init_query_data_from_cdda_disc(cdda_disc_t * disc) {
-
-	int i;
-	float length = 0.0f;
-	float fr_offset = SECONDS_TO_FRAMES(2.0f); /* leading 2 secs in frames */
-
-	track_count = disc->n_tracks;
-
-	if ((frames = (int *)malloc(sizeof(int) * track_count)) == NULL) {
-		fprintf(stderr, "cddb_lookup.c: init_query_data_from_cdda_disc(): malloc error\n");
-		return 1;
-	}
-
-	for (i = 0; i < track_count; i++) {
-
-		frames[i] = (int)fr_offset;
-		length += (disc->toc[i+1] - disc->toc[i]) / 75.0;
-		fr_offset += disc->toc[i+1] - disc->toc[i];
-	}
-
-	record_length = length;
-
-	return 0;
-}
-#endif /* HAVE_CDDA */
-
+*/
 
 static void
-load_disc(cddb_disc_t * disc) {
+add_to_comments(cddb_lookup_t * data, GtkWidget * entry) {
 
-	GtkTreeIter iter;
-	const char * str = NULL;
-	char year[16];
-	int i;
+	record_data_t * record_data;
 
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &data->iter_record, MS_COL_DATA, &record_data, -1);
 
-	str = cddb_disc_get_artist(disc);
-	gtk_entry_set_text(GTK_ENTRY(artist_entry), str ? str : "");
-
-	str = cddb_disc_get_title(disc);
-	gtk_entry_set_text(GTK_ENTRY(title_entry), str ? str : "");
-
-	str = cddb_disc_get_category_str(disc);
-	gtk_entry_set_text(GTK_ENTRY(category_entry), str ? str : "");
-
-	str = cddb_disc_get_genre(disc);
-	gtk_entry_set_text(GTK_ENTRY(genre_entry), str ? str : "");
-
-	str = cddb_disc_get_ext_data(disc);
-	gtk_entry_set_text(GTK_ENTRY(ext_entry), str ? str : "");
-
-	snprintf(year, 15, "%d", cddb_disc_get_year(disc));
-	gtk_entry_set_text(GTK_ENTRY(year_entry), year);
-
-	gtk_list_store_clear(GTK_LIST_STORE(track_store));
-
-	for (i = 0; i < track_count; i++) {
-		gtk_list_store_append(track_store, &iter);
-		str = cddb_track_get_title(cddb_disc_get_track(disc, i));
-		gtk_list_store_set(track_store, &iter, 0, str ? str : "", -1);
+	if (record_data->comment != NULL && record_data->comment[0] != '\0') {
+		char comment[MAXLEN];
+		snprintf(comment, MAXLEN-1, "%s\n%s",
+			 record_data->comment,
+			 gtk_entry_get_text(GTK_ENTRY(entry)));
+		free_strdup(&record_data->comment, comment);
+	} else {
+		free_strdup(&record_data->comment, gtk_entry_get_text(GTK_ENTRY(entry)));
 	}
+
+	music_store_selection_changed();
+	music_store_mark_changed(&data->iter_record);
 }
 
-
 static void
-add_to_comments(GtkWidget * widget, gpointer data) {
+add_category_to_comments(GtkWidget * widget, gpointer user_data) {
 
-	char * pcomment;
-	char comment[MAXLEN];
-
-	if (data == NULL) return;
-
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 3, &pcomment, -1);
-
-	comment[0] = '\0';
-
-	if (pcomment != NULL) {
-		strncpy(comment, pcomment, MAXLEN-1);
-	}
-	strncat(comment, (char *)data, MAXLEN-1);
-
-	gtk_tree_store_set(music_store, &iter_record, 3, comment, -1);
-	/*tree_selection_changed_cb(music_select, NULL);*/
-
-	music_store_mark_changed(&iter_record);
+	cddb_lookup_t * data = (cddb_lookup_t *)user_data;
+	add_to_comments(data, data->category_entry);
 }
 
+static void
+add_genre_to_comments(GtkWidget * widget, gpointer user_data) {
+
+	cddb_lookup_t * data = (cddb_lookup_t *)user_data;
+	add_to_comments(data, data->genre_entry);
+}
 
 static void
-import_as_artist(GtkWidget * widget, gpointer data) {
+add_ext_to_comments(GtkWidget * widget, gpointer user_data) {
 
-	GtkTreeIter iter;
+	cddb_lookup_t * data = (cddb_lookup_t *)user_data;
+	add_to_comments(data, data->ext_entry);
+}
+
+static void
+import_as_artist(GtkWidget * widget, gpointer user_data) {
+
+	GtkTreeIter parent;
 	GtkTreePath * path;
+	cddb_lookup_t * data = (cddb_lookup_t *)user_data;
 
-	path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), &iter_record);
+	path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), &data->iter_record);
 	gtk_tree_path_up(path);
-	gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
-	gtk_tree_store_set(music_store, &iter, 0, gtk_entry_get_text(GTK_ENTRY(artist_entry)), -1);
+	gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &parent, path);
+	gtk_tree_path_free(path);
+	gtk_tree_store_set(music_store, &parent,
+			   MS_COL_NAME, gtk_entry_get_text(GTK_ENTRY(data->artist_entry)), -1);
 
-	music_store_mark_changed(&iter);
+	music_store_selection_changed();
+	music_store_mark_changed(&parent);
 }
 
 
 static void
-import_as_title(GtkWidget * widget, gpointer data) {
+import_as_title(GtkWidget * widget, gpointer user_data) {
 
-	gtk_tree_store_set(music_store, &iter_record, 0, gtk_entry_get_text(GTK_ENTRY(title_entry)), -1);
-	music_store_mark_changed(&iter_record);
+	cddb_lookup_t * data = (cddb_lookup_t *)user_data;
+
+	if (data->title_imported) {
+		gtk_tree_store_set(music_store, &data->iter_record,
+				   MS_COL_SORT, gtk_entry_get_text(GTK_ENTRY(data->title_entry)), -1);
+	} else {
+		gtk_tree_store_set(music_store, &data->iter_record,
+				   MS_COL_NAME, gtk_entry_get_text(GTK_ENTRY(data->title_entry)), -1);
+
+		data->title_imported = 1;
+		gtk_button_set_label(GTK_BUTTON(data->title_import_button), _("Import as Sort Key"));
+	}
+
+	music_store_selection_changed();
+	music_store_mark_changed(&data->iter_record);
 }
 
 static void
-import_as_sort_key(GtkWidget * widget, gpointer data) {
+import_as_year(GtkWidget * widget, gpointer user_data) {
 
-	gtk_tree_store_set(music_store, &iter_record, 1, gtk_entry_get_text(GTK_ENTRY(year_entry)), -1);
-	music_store_mark_changed(&iter_record);
+	cddb_lookup_t * data = (cddb_lookup_t *)user_data;
+	int year = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->year_spinner));
+
+	if (data->year_imported) {
+		char buf[16];
+		snprintf(buf, 15, "%d", year);
+		gtk_tree_store_set(music_store, &data->iter_record, MS_COL_SORT, buf, -1);
+	} else {
+		record_data_t * record_data;
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &data->iter_record,
+				   MS_COL_DATA, &record_data, -1);
+		record_data->year = year;
+
+		data->year_imported = 1;
+		gtk_button_set_label(GTK_BUTTON(data->year_import_button), _("Import as Sort Key"));
+	}
+
+
+	music_store_selection_changed();
+	music_store_mark_changed(&data->iter_record);
+}
+
+gboolean
+title_entry_focused(GtkWidget * widget, GdkEventFocus * event, gpointer user_data) {
+
+	cddb_lookup_t * data = (cddb_lookup_t *)user_data;
+
+	data->title_imported = 0;
+	gtk_button_set_label(GTK_BUTTON(data->title_import_button), _("Import as Title"));
+
+	return FALSE;
+}
+
+gboolean
+year_spinner_focused(GtkWidget * widget, GdkEventFocus * event, gpointer user_data) {
+
+	cddb_lookup_t * data = (cddb_lookup_t *)user_data;
+
+	data->year_imported = 0;
+	gtk_button_set_label(GTK_BUTTON(data->year_import_button), _("Import as Year"));
+
+	return FALSE;
 }
 
 
 static void
-changed_combo(GtkWidget * widget, gpointer * data) {
+changed_combo(GtkWidget * widget, gpointer * user_data) {
 
-	int i = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
+	cddb_lookup_t * data = (cddb_lookup_t *)user_data;
+	int i = gtk_combo_box_get_active(GTK_COMBO_BOX(data->combo));
 
-	if (i >= 0 && i < record_count) {
-		load_disc(records[i]);
+	if (i >= 0 && i < data->nrecords) {
+		cddb_dialog_load_disc(data, data->records[i]);
+	}
+
+	if (data->type == CDDB_TYPE_QUERY && iter_get_store_type(&data->iter_record) == STORE_TYPE_FILE) {
+		title_entry_focused(data->title_entry, NULL, user_data);
+		year_spinner_focused(data->year_spinner, NULL, user_data);
 	}
 }
 
 
 static void
-cell_edited_callback(GtkCellRendererText * cell, gchar * path, gchar * text, gpointer data) {
+cell_edited_callback(GtkCellRendererText * cell, gchar * path, gchar * text, gpointer user_data) {
 
+	cddb_lookup_t * data = (cddb_lookup_t *)user_data;
 	GtkTreeIter iter;
 
-	if (gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(track_store), &iter, path)) {
-		gtk_list_store_set(track_store, &iter, 0, text, -1);
+	if (gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(data->track_store), &iter, path)) {
+		gtk_list_store_set(data->track_store, &iter, 0, text, -1);
 	}
-}
-
-static void
-create_cddb_dialog(void) {
-
-	GtkWidget * dialog;
-	GtkWidget * table;
-
-	GtkWidget * hbox;
-	GtkWidget * label;
-	GtkWidget * button;
-
-	GtkWidget * track_list;
-	GtkWidget * viewport;
-	GtkWidget * scrollwin;
-	GtkCellRenderer * renderer;
-	GtkTreeViewColumn * column;
-	GtkTreeIter iter_track;
-	GtkTreeIter iter_trlist;
-
-	int i;
-	char text[MAXLEN];
-
-
-        dialog = gtk_dialog_new_with_buttons(_("CDDB query"),
-					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-					     NULL);
-
-	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
-	gtk_window_set_modal(GTK_WINDOW(dialog), FALSE);
-
-	table = gtk_table_new(8, 3, FALSE);
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, FALSE, 2);
-
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
-	label = gtk_label_new(_("Matches:"));
-        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
-	combo = gtk_combo_box_new_text();
-	for (i = 0; i < record_count; i++) {
-		snprintf(text, MAXLEN, "%d. %s: %s (%s)",
-			 i + 1,
-			 cddb_disc_get_artist(records[i]),
-			 cddb_disc_get_title(records[i]),
-			 cddb_disc_get_category_str(records[i]));
-		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), text);
-	}
-
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
-	g_signal_connect(combo, "changed", G_CALLBACK(changed_combo), NULL);
-			 
-	gtk_table_attach(GTK_TABLE(table), combo, 1, 3, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
-
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
-	label = gtk_label_new(_("Artist:"));
-        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
-	artist_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), artist_entry, 1, 2, 1, 2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 3);
-	label = gtk_label_new(_("Title:"));
-        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
-	title_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), title_entry, 1, 2, 2, 3,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 5, 3);
-	label = gtk_label_new(_("Year:"));
-        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
-	year_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), year_entry, 1, 2, 3, 4,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 4, 5, GTK_FILL, GTK_FILL, 5, 3);
-	label = gtk_label_new(_("Category:"));
-        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
-	category_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), category_entry, 1, 2, 4, 5,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 5, 6, GTK_FILL, GTK_FILL, 5, 3);
-	label = gtk_label_new(_("Genre:"));
-        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
-	genre_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), genre_entry, 1, 2, 5, 6,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 6, 7, GTK_FILL, GTK_FILL, 5, 3);
-	label = gtk_label_new(_("Extended data:"));
-        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
-	ext_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), ext_entry, 1, 2, 6, 7,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-
-#ifdef HAVE_CDDA
-	if (iter_get_store_type(&iter_record) != STORE_TYPE_CDDA) {
-#endif /* HAVE_CDDA */
-
-
-	button = gtk_button_new_with_label(_("Import as Artist"));
-	g_signal_connect(G_OBJECT(button), "clicked",
-			 G_CALLBACK(import_as_artist), NULL);
-	gtk_table_attach(GTK_TABLE(table), button, 2, 3, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
-
-	button = gtk_button_new_with_label(_("Import as Title"));
-	g_signal_connect(G_OBJECT(button), "clicked",
-			 G_CALLBACK(import_as_title), NULL);
-	gtk_table_attach(GTK_TABLE(table), button, 2, 3, 2, 3, GTK_FILL, GTK_FILL, 5, 3);
-
-	button = gtk_button_new_with_label(_("Import as Sort Key"));
-	g_signal_connect(G_OBJECT(button), "clicked",
-			 G_CALLBACK(import_as_sort_key), NULL);
-	gtk_table_attach(GTK_TABLE(table), button, 2, 3, 3, 4, GTK_FILL, GTK_FILL, 5, 3);
-
-	button = gtk_button_new_with_label(_("Add to Comments"));
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(add_to_comments),
-			 (gpointer)gtk_entry_get_text(GTK_ENTRY(category_entry)));
-	gtk_table_attach(GTK_TABLE(table), button, 2, 3, 4, 5, GTK_FILL, GTK_FILL, 5, 3);
-
-	button = gtk_button_new_with_label(_("Add to Comments"));
-	g_signal_connect(G_OBJECT(button), "clicked",
-			 G_CALLBACK(add_to_comments), (gpointer)gtk_entry_get_text(GTK_ENTRY(genre_entry)));
-	gtk_table_attach(GTK_TABLE(table), button, 2, 3, 5, 6, GTK_FILL, GTK_FILL, 5, 3);
-
-	button = gtk_button_new_with_label(_("Add to Comments"));
-	g_signal_connect(G_OBJECT(button), "clicked",
-			 G_CALLBACK(add_to_comments), (gpointer)gtk_entry_get_text(GTK_ENTRY(ext_entry)));
-	gtk_table_attach(GTK_TABLE(table), button, 2, 3, 6, 7, GTK_FILL, GTK_FILL, 5, 3);
-
-
-#ifdef HAVE_CDDA
-	}
-#endif /* HAVE_CDDA */
-
-	track_store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_BOOLEAN);
-        track_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(track_store));
-
-	renderer = gtk_cell_renderer_text_new();
-	g_object_set(renderer, "editable", TRUE, NULL);
-	g_signal_connect(renderer, "edited", (GCallback)cell_edited_callback, NULL);
-	column = gtk_tree_view_column_new_with_attributes(_("Tracks"),
-							  renderer,
-							  "text", 0,
-							  NULL);
-        gtk_tree_view_append_column(GTK_TREE_VIEW(track_list), column);
-        gtk_tree_view_set_reorderable(GTK_TREE_VIEW(track_list), FALSE);
-
-        viewport = gtk_viewport_new(NULL, NULL);
-	scrollwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
-				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scrollwin, -1, 200);
-        gtk_table_attach(GTK_TABLE(table), viewport, 0, 3, 7, 8,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-        gtk_container_add(GTK_CONTAINER(viewport), scrollwin);
-        gtk_container_add(GTK_CONTAINER(scrollwin), track_list);
-
-	gtk_widget_show_all(dialog);
-
-	load_disc(records[0]);
-
-	if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-		for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
-							  &iter_track, &iter_record, i); i++) {
-
-			if (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(track_store),
-							  &iter_trlist, NULL, i)) {
-				char * name;
-				gtk_tree_model_get(GTK_TREE_MODEL(track_store),
-						   &iter_trlist, 0, &name, -1);
-				gtk_tree_store_set(music_store, &iter_track,
-						   0, name, -1);
-				g_free(name);
-			}
-		}
-
-#ifdef HAVE_CDDA
-		if (iter_get_store_type(&iter_record) == STORE_TYPE_CDDA) {
-
-			char name_str[MAXLEN];
-			char * device_path = NULL;
-			cdda_disc_t * disc = NULL;
-
-			gtk_tree_model_get(GTK_TREE_MODEL(music_store),
-					   &iter_record, 2, &device_path, -1);
-
-			disc = &cdda_get_drive_by_spec_device_path(device_path)->disc;
-
-			strncpy(disc->artist_name, gtk_entry_get_text(GTK_ENTRY(artist_entry)),
-				MAXLEN-1);
-			strncpy(disc->record_name, gtk_entry_get_text(GTK_ENTRY(title_entry)),
-				MAXLEN-1);
-			strncpy(disc->genre, gtk_entry_get_text(GTK_ENTRY(genre_entry)),
-				MAXLEN-1);
-			strncpy(disc->year, gtk_entry_get_text(GTK_ENTRY(year_entry)),
-				MAXLEN-1);
-
-			snprintf(name_str, MAXLEN-1, "%s: %s",
-				 disc->artist_name, disc->record_name);
-
-			gtk_tree_store_set(music_store, &iter_record, 0, name_str, -1);
-
-			g_free(device_path);
-		} else
-#endif /* HAVE_CDDA */
-		{
-			music_store_mark_changed(&iter_record);
-		}
-
-		/*tree_selection_changed_cb(music_select, NULL);*/
-	}
-
-	gtk_widget_destroy(dialog);
 }
 
 
@@ -673,820 +839,180 @@ check_case(char * text, int _case) {
 	return ret;
 }
 
-static gboolean
-create_cddb_submit_dialog(gpointer data) {
-
-	GtkWidget * dialog;
-	GtkWidget * table;
-
-	GtkWidget * hbox;
-	GtkWidget * label;
-
-	GtkWidget * track_list;
-	GtkWidget * viewport;
-	GtkWidget * scrollwin;
-	GtkCellRenderer * renderer;
-	GtkTreeViewColumn * column;
-	GtkTreeIter iter_artist;
-	GtkTreeIter iter_track;
-	GtkTreeIter iter_trlist;
-
-	int i;
-	char * str;
-	int year;
-
-	cddb_disc_t * disc = (cddb_disc_t *)data;
-
-        dialog = gtk_dialog_new_with_buttons(_("CDDB submission"),
-					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-					     NULL);
-
-	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-	gtk_widget_set_size_request(dialog, 400, -1);
-	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_REJECT);
-	gtk_window_set_modal(GTK_WINDOW(dialog), FALSE);
-
-	table = gtk_table_new(7, 2, FALSE);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, FALSE, 2);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
-	label = gtk_label_new(_("Artist:"));
-        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
-	artist_entry = gtk_entry_new();
-
-	gtk_table_attach(GTK_TABLE(table), artist_entry, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
-	label = gtk_label_new(_("Title:"));
-
-        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
-	title_entry = gtk_entry_new();
-	genre_entry = gtk_entry_new();
-
-#ifdef HAVE_CDDA
-	if (iter_get_store_type(&iter_record) == STORE_TYPE_CDDA) {
-
-		char * device_path = NULL;
-		cdda_disc_t * disc = NULL;
-
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store),
-				   &iter_record, 2, &device_path, -1);
-		
-		disc = &cdda_get_drive_by_spec_device_path(device_path)->disc;
-		
-		gtk_entry_set_text(GTK_ENTRY(artist_entry), disc->artist_name);
-		gtk_entry_set_text(GTK_ENTRY(title_entry), disc->record_name);
-		gtk_entry_set_text(GTK_ENTRY(genre_entry), disc->genre);
-		year = strtol(disc->year, NULL, 10);
-
-		g_free(device_path);
-
-	} else
-#endif /* HAVE_CDDA */
-	{
-		gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store),
-					   &iter_artist, &iter_record);
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist, 0, &str, -1);
-		gtk_entry_set_text(GTK_ENTRY(artist_entry), str);
-		g_free(str);
-
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 0, &str, -1);
-		gtk_entry_set_text(GTK_ENTRY(title_entry), str);
-		g_free(str);
-
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 1, &str, -1);
-		year = strtol(str, NULL, 10);
-		g_free(str);
-
-		if (!is_valid_year(year)) {
-			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 3, &str, -1);
-			year = strtol(str, NULL, 10);
-			g_free(str);
-		}
-	}
-
-	gtk_table_attach(GTK_TABLE(table), title_entry, 1, 2, 1, 2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 3);
-	label = gtk_label_new(_("Year:"));
-
-        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
-	year_spinner = gtk_spin_button_new_with_range(YEAR_MIN, YEAR_MAX, 1);
-
-	if (is_valid_year(year)) {
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(year_spinner), year);
-	}
-
-	gtk_table_attach(GTK_TABLE(table), year_spinner, 1, 2, 2, 3,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 5, 3);
-	label = gtk_label_new(_("Category:"));
-        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
-	category_combo = gtk_combo_box_new_text();
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), _("(choose a category)"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "data");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "folk");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "jazz");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "misc");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "rock");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "country");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "blues");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "newage");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "reagge");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "classical");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(category_combo), "soundtrack");
-	gtk_combo_box_set_active(GTK_COMBO_BOX(category_combo), 0);
-	gtk_table_attach(GTK_TABLE(table), category_combo, 1, 2, 3, 4,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 4, 5, GTK_FILL, GTK_FILL, 5, 3);
-	label = gtk_label_new(_("Genre:"));
-        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
-	gtk_table_attach(GTK_TABLE(table), genre_entry, 1, 2, 4, 5,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 5, 6, GTK_FILL, GTK_FILL, 5, 3);
-	label = gtk_label_new(_("Extended data:"));
-        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
-
-	ext_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), ext_entry, 1, 2, 5, 6,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-
-	track_store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_BOOLEAN);
-        track_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(track_store));
-
-	for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
-						  &iter_track, &iter_record, i); i++) {
-		char * name;
-
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, 0, &name, -1);
-		gtk_list_store_append(track_store, &iter_trlist);
-		gtk_list_store_set(track_store, &iter_trlist, 0, name, -1);
-		g_free(name);
-	}
-
-	renderer = gtk_cell_renderer_text_new();
-	g_object_set(renderer, "editable", TRUE, NULL);
-	g_signal_connect(renderer, "edited", (GCallback)cell_edited_callback, NULL);
-	column = gtk_tree_view_column_new_with_attributes(_("Tracks"),
-							  renderer,
-							  "text", 0,
-							  NULL);
-        gtk_tree_view_append_column(GTK_TREE_VIEW(track_list), column);
-        gtk_tree_view_set_reorderable(GTK_TREE_VIEW(track_list), FALSE);
-
-        viewport = gtk_viewport_new(NULL, NULL);
-	scrollwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
-				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scrollwin, -1, 200);
-        gtk_table_attach(GTK_TABLE(table), viewport, 0, 2, 6, 7,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
-        gtk_container_add(GTK_CONTAINER(viewport), scrollwin);
-        gtk_container_add(GTK_CONTAINER(scrollwin), track_list);
-
-	gtk_widget_show_all(dialog);
-
- display:
-
-	if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-		char * artist;
-		char * title;
-		char * genre;
-		int category;
-		int year;
-
-		artist = (char *)gtk_entry_get_text(GTK_ENTRY(artist_entry));
-		if (is_all_wspace(artist)) {
-			gtk_widget_grab_focus(artist_entry);
-			goto display;
-		}
-
-		if (!check_case(artist, CASE_DOWN)) {
-			if (create_cddb_write_warn_dialog(_("Artist appears to be in all lowercase.\n"
-							    "Do you want to proceed?"))) {
-				goto display;
-			}
-		}
-
-		if (!check_case(artist, CASE_UP)) {
-			if (create_cddb_write_warn_dialog(_("Artist appears to be in all uppercase.\n"
-							    "Do you want to proceed?"))) {
-				goto display;
-			}
-		}
-
-		title = (char *)gtk_entry_get_text(GTK_ENTRY(title_entry));
-		if (is_all_wspace(title)) {
-			gtk_widget_grab_focus(title_entry);
-			goto display;
-		}
-
-		if (!check_case(title, CASE_DOWN)) {
-			if (create_cddb_write_warn_dialog(_("Title appears to be in all lowercase.\n"
-							    "Do you want to proceed?"))) {
-				goto display;
-			}
-		}
-
-		if (!check_case(title, CASE_UP)) {
-			if (create_cddb_write_warn_dialog(_("Title appears to be in all uppercase.\n"
-							    "Do you want to proceed?"))) {
-				goto display;
-			}
-		}
-
-		year = gtk_spin_button_get_value(GTK_SPIN_BUTTON(year_spinner));
-
-		if (year == YEAR_MIN) {
-			if (create_cddb_write_warn_dialog(_("It is very likely that the year is wrong.\n"
-							    "Do you want to proceed?"))) {
-				goto display;
-			}
-		}
-
-		category = gtk_combo_box_get_active(GTK_COMBO_BOX(category_combo));
-		if (category == 0) {
-			gtk_widget_grab_focus(category_combo);
-			goto display;
-		}
-
-		genre = (char *)gtk_entry_get_text(GTK_ENTRY(genre_entry));
-		if (genre[0] != '\0' && is_all_wspace(genre)) {
-			gtk_widget_grab_focus(genre_entry);
-			goto display;
-		}
-
-		for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(track_store),
-							  &iter_trlist, NULL, i); i++) {
-			char * name;
-			gtk_tree_model_get(GTK_TREE_MODEL(track_store),
-					   &iter_trlist, 0, &name, -1);
-
-			if (is_all_wspace(name)) {
-				gtk_tree_selection_select_iter(gtk_tree_view_get_selection(GTK_TREE_VIEW(track_list)), &iter_trlist);
-				goto display;
-			}
-
-			cddb_track_set_title(cddb_disc_get_track(disc, i), name);
-			g_free(name);
-		}
-
-		cddb_disc_set_artist(disc, artist);
-		cddb_disc_set_title(disc, title);
-		cddb_disc_set_year(disc, year);
-		cddb_disc_set_category(disc, category - 1);
-		cddb_disc_set_genre(disc, genre);
-		cddb_disc_set_ext_data(disc, gtk_entry_get_text(GTK_ENTRY(ext_entry)));
-
-		cddb_thread_state = CDDB_THREAD_SUCCESS;
-	} else {
-		cddb_thread_state = CDDB_THREAD_ERROR;
-	}
-
-	gtk_widget_destroy(dialog);
-
-	cddb_data_locked = 0;
-
-	return FALSE;
-}
-
 
 int
-cddb_connection_setup(cddb_conn_t ** conn) {
+cddb_submit_check(cddb_lookup_t * data) {
 
-	if ((*conn = cddb_new()) == NULL) {
-		fprintf(stderr, "cddb_lookup.c: cddb_connection_setup(): cddb_new error\n");
-		cddb_thread_state = CDDB_THREAD_ERROR;
+	GtkTreeIter iter_trlist;
+	char * artist;
+	char * title;
+	char * genre;
+	char * ext;
+	int category;
+	int year;
+	int i;
+
+
+	artist = (char *)gtk_entry_get_text(GTK_ENTRY(data->artist_entry));
+	if (is_all_wspace(artist)) {
+		gtk_widget_grab_focus(data->artist_entry);
 		return 1;
 	}
 
-	cddb_set_server_name(*conn, options.cddb_server);
-	cddb_set_timeout(*conn, options.cddb_timeout);
-	cddb_set_charset(*conn, "UTF-8");
-
-	if (options.cddb_local[0] != '\0') {
-		cddb_cache_set_dir(*conn, options.cddb_local);
-	}
-
-	if (options.cddb_cache_only) {
-		cddb_cache_only(*conn);
-	}
-
-	if (options.inet_use_proxy) {
-		cddb_http_enable(*conn);
-		cddb_set_server_port(*conn, 80);
-		cddb_http_proxy_enable(*conn);
-		cddb_set_http_proxy_server_name(*conn, options.inet_proxy);
-		cddb_set_http_proxy_server_port(*conn, options.inet_proxy_port);
-	} else {
-		cddb_http_proxy_disable(*conn);
-		if (options.cddb_use_http) {
-			cddb_http_enable(*conn);
-			cddb_set_server_port(*conn, 80);
-		} else {
-			cddb_http_disable(*conn);
-			cddb_set_server_port(*conn, 888);
+	if (!check_case(artist, CASE_DOWN)) {
+		if (create_cddb_write_warn_dialog(_("Artist appears to be in all lowercase.\n"
+						    "Do you want to proceed?"))) {
+			gtk_widget_grab_focus(data->artist_entry);
+			return 1;
 		}
+	}
+
+	if (!check_case(artist, CASE_UP)) {
+		if (create_cddb_write_warn_dialog(_("Artist appears to be in all uppercase.\n"
+						    "Do you want to proceed?"))) {
+			gtk_widget_grab_focus(data->artist_entry);
+			return 1;
+		}
+	}
+
+	title = (char *)gtk_entry_get_text(GTK_ENTRY(data->title_entry));
+	if (is_all_wspace(title)) {
+		gtk_widget_grab_focus(data->title_entry);
+		return 1;
+	}
+
+	if (!check_case(title, CASE_DOWN)) {
+		if (create_cddb_write_warn_dialog(_("Title appears to be in all lowercase.\n"
+						    "Do you want to proceed?"))) {
+			gtk_widget_grab_focus(data->title_entry);
+			return 1;
+		}
+	}
+
+	if (!check_case(title, CASE_UP)) {
+		if (create_cddb_write_warn_dialog(_("Title appears to be in all uppercase.\n"
+						    "Do you want to proceed?"))) {
+			gtk_widget_grab_focus(data->title_entry);
+			return 1;
+		}
+	}
+
+	year = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->year_spinner));
+
+	if (year == YEAR_MIN) {
+		if (create_cddb_write_warn_dialog(_("It is very likely that the year is wrong.\n"
+						    "Do you want to proceed?"))) {
+			gtk_widget_grab_focus(data->year_spinner);
+			return 1;
+		}
+	}
+
+	category = gtk_combo_box_get_active(GTK_COMBO_BOX(data->category_combo));
+	if (category == 0) {
+		gtk_widget_grab_focus(data->category_combo);
+		return 1;
+	}
+
+	genre = (char *)gtk_entry_get_text(GTK_ENTRY(data->genre_entry));
+	if (genre[0] != '\0' && is_all_wspace(genre)) {
+		gtk_widget_grab_focus(data->genre_entry);
+		return 1;
+	}
+
+	ext = (char *)gtk_entry_get_text(GTK_ENTRY(data->ext_entry));
+	if (genre[0] != '\0' && is_all_wspace(ext)) {
+		gtk_widget_grab_focus(data->ext_entry);
+		return 1;
+	}
+
+	for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(data->track_store),
+						  &iter_trlist, NULL, i); i++) {
+		char * name;
+		gtk_tree_model_get(GTK_TREE_MODEL(data->track_store),
+				   &iter_trlist, 0, &name, -1);
+		
+		if (is_all_wspace(name)) {
+			gtk_tree_selection_select_iter(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->track_list)),
+						       &iter_trlist);
+			return 1;
+		}
+		
+		g_free(name);
 	}
 
 	return 0;
 }
 
-void *
-cddb_thread(void * arg) {
+void
+cddb_submit(cddb_lookup_t * data) {
 
+	GtkTreeIter iter_trlist;
 	cddb_conn_t * conn = NULL;
 	cddb_disc_t * disc = NULL;
 	cddb_track_t * track = NULL;
 
 	int i;
 
-
-	AQUALUNG_THREAD_DETACH()
-
 	if (cddb_connection_setup(&conn) == 1) {
-		cddb_thread_state = CDDB_THREAD_ERROR;
-		return NULL;
+		return;
 	}
 
-	if ((disc = cddb_disc_new()) == NULL) {
-		fprintf(stderr, "cddb_lookup.c: cddb_thread(): cddb_disc_new error\n");
-		cddb_thread_state = CDDB_THREAD_ERROR;
-		return NULL;
-	}
-
-	cddb_disc_set_length(disc, record_length);
-
-	for (i = 0; i < track_count; i++) {
-		track = cddb_track_new();
-		cddb_track_set_frame_offset(track, frames[i]);
-		cddb_disc_add_track(disc, track);
-	}
-
-	record_count = cddb_query(conn, disc);
-
-	if (record_count < 0) {
+	if (!cddb_set_email_address(conn, options.cddb_email)) {
+		create_cddb_write_error_dialog(_("The email address provided for submission is invalid."));
 		cddb_destroy(conn);
-		libcddb_shutdown();
-		cddb_thread_state = CDDB_THREAD_ERROR;
-		return NULL;
-	}
-
-	if (record_count == 0) {
-		cddb_destroy(conn);
-		cddb_disc_destroy(disc);
-
-		if (cddb_query_aborted) {
-			free(frames);
-		}
-
-		libcddb_shutdown();
-
-		cddb_thread_state = CDDB_THREAD_SUCCESS;
-		return NULL;
-	}
-
-	if ((records = (cddb_disc_t **)malloc(sizeof(cddb_disc_t *) * record_count)) == NULL) {
-		fprintf(stderr, "cddb_lookup.c: cddb_thread(): malloc error\n");
-		cddb_thread_state = CDDB_THREAD_ERROR;
-		return NULL;
-	}
-
-	cddb_read(conn, disc);
-	records[0] = cddb_disc_clone(disc);
-
-	progress_counter = 1;
-
-	for (i = 1; i < record_count && !cddb_query_aborted; i++) {
-		cddb_query_next(conn, disc);
-		cddb_read(conn, disc);
-		records[i] = cddb_disc_clone(disc);
-
-		progress_counter = i + 1;
-	}
-
-	cddb_destroy(conn);
-	cddb_disc_destroy(disc);
-
-	if (cddb_query_aborted) {
-		int j;
-		for (j = 0; j < i; j++) {
-			cddb_disc_destroy(records[j]);
-		}
-
-		libcddb_shutdown();
-
-		free(records);
-		free(frames);
-		
-		return NULL;
-	}
-
-	cddb_thread_state = CDDB_THREAD_SUCCESS;
-	return NULL;
-}
-
-
-void *
-cddb_submit_thread(void * arg) {
-
-	cddb_conn_t * conn = NULL;
-	cddb_disc_t * disc = NULL;
-	cddb_track_t * track = NULL;
-
-	int i;
-
-	struct timespec req_time;
-	struct timespec rem_time;
-
-	req_time.tv_sec = 0;
-        req_time.tv_nsec = 500000000;
-
-	AQUALUNG_THREAD_DETACH()
-
-	if (cddb_connection_setup(&conn) == 1) {
-		goto cleanup;
-	}
-
-	if (options.cddb_email[0] == '\0' || !cddb_set_email_address(conn, options.cddb_email)) {
-
-		g_idle_add(create_cddb_write_error_dialog, _("The email address provided for submission is invalid."));
-		goto cleanup;
+		return;
 	}
 
 	cddb_http_enable(conn);
 	cddb_set_server_port(conn, 80);
 
 	if ((disc = cddb_disc_new()) == NULL) {
-		fprintf(stderr, "cddb_lookup.c: cddb_submit_thread(): cddb_disc_new error\n");
-		goto cleanup;
+		fprintf(stderr, "cddb_lookup(): cddb_disc_new error\n");
+		return;
 	}
 
-	cddb_disc_set_length(disc, record_length);
-
-	for (i = 0; i < track_count; i++) {
+	for (i = 0; i < data->ntracks; i++) {
 		track = cddb_track_new();
-		cddb_track_set_frame_offset(track, frames[i]);
+		cddb_track_set_frame_offset(track, data->frames[i]);
 		cddb_disc_add_track(disc, track);
 	}
 
+	for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(data->track_store),
+						  &iter_trlist, NULL, i); i++) {
+		char * name;
+		gtk_tree_model_get(GTK_TREE_MODEL(data->track_store),
+				   &iter_trlist, 0, &name, -1);
+
+		cddb_track_set_title(cddb_disc_get_track(disc, i), name);
+		g_free(name);
+	}
+
+	cddb_disc_set_length(disc, data->record_length);
+	cddb_disc_set_artist(disc, gtk_entry_get_text(GTK_ENTRY(data->artist_entry)));
+	cddb_disc_set_title(disc, gtk_entry_get_text(GTK_ENTRY(data->title_entry)));
+	cddb_disc_set_year(disc, gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->year_spinner)));
+	cddb_disc_set_category(disc, gtk_combo_box_get_active(GTK_COMBO_BOX(data->category_combo)) - 1);
+	cddb_disc_set_genre(disc, gtk_entry_get_text(GTK_ENTRY(data->genre_entry)));
+	cddb_disc_set_ext_data(disc, gtk_entry_get_text(GTK_ENTRY(data->ext_entry)));
+
 	if (cddb_disc_calc_discid(disc) == 0) {
 		fprintf(stderr, "cddb_lookup.c: cddb_submit_thread(): cddb_disc_calc_discid error\n");
+		cddb_destroy(conn);
 		cddb_disc_destroy(disc);
-		goto cleanup;
+		return;
 	}
 
-	cddb_data_locked = 1;
-	g_idle_add(create_cddb_submit_dialog, (gpointer) disc);
-
-	while (cddb_data_locked) {
-		nanosleep(&req_time, &rem_time);
+	if (!cddb_write(conn, disc)) {
+		create_cddb_write_error_dialog(_("An error occurred while submitting the record to the CDDB server."));
 	}
-
-	if (cddb_thread_state == CDDB_THREAD_SUCCESS) {
-		if (!cddb_write(conn, disc)) {
-			g_idle_add(create_cddb_write_error_dialog, _("An error occurred while submitting the record to the CDDB server."));
-		}
-	}
-
-	cddb_disc_destroy(disc);
-
- cleanup:
 
 	cddb_destroy(conn);
-	libcddb_shutdown();
-	free(frames);
-	cddb_thread_state = CDDB_THREAD_FREE;
-
-	return NULL;
+	cddb_disc_destroy(disc);
 }
 
 
-static gint
-cddb_timeout_callback(gpointer data) {
 
-	int i;
-	char text[MAXLEN];
-
-	if (cddb_query_aborted) {
-		destroy_progress_window();
-		cddb_thread_state = CDDB_THREAD_FREE;
-		return FALSE;
-	}
-
-	if (cddb_thread_state == CDDB_THREAD_BUSY) {
-		if (progress_prev < progress_counter) {
-			snprintf(text, MAXLEN, "%d / %d", progress_counter, record_count);
-			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progbar),
-						      (double)progress_counter / record_count);
-			gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progbar), text);
-			progress_prev = progress_counter;
-		}
-		return TRUE;
-	} else {
-		destroy_progress_window();
-
-		if (cddb_thread_state == CDDB_THREAD_ERROR) {
-
-			message_dialog(_("Error"),
-				       browser_window,
-				       GTK_MESSAGE_ERROR,
-				       GTK_BUTTONS_OK,
-				       NULL,
-				       _("An error occurred while attempting "
-					 "to connect to the CDDB server."));
-
-		} else if (cddb_thread_state == CDDB_THREAD_SUCCESS) {
-
-			if (record_count == 0) {
-
-				message_dialog(_("Warning"),
-					       browser_window,
-					       GTK_MESSAGE_WARNING,
-					       GTK_BUTTONS_OK,
-					       NULL,
-					       _("No matching record found."));
-			} else {
-
-				create_cddb_dialog();
-
-				for (i = 0; i < record_count; i++) {
-					cddb_disc_destroy(records[i]);
-				}
-
-				free(records);
-				libcddb_shutdown();
-			}
-		}
-	}
-
-	free(frames);
-
-	cddb_thread_state = CDDB_THREAD_FREE;
-
-	return FALSE;
-}
-
-
-void
-cddb_get(GtkTreeIter * iter) {
-
-	if (cddb_thread_state != CDDB_THREAD_FREE) {
-		return;
-	}
-
-	cddb_thread_state = CDDB_THREAD_BUSY;
-
-	iter_record = *iter;
-
-	if (init_query_data()) {
-		cddb_thread_state = CDDB_THREAD_FREE;
-		return;
-	}
-
-	create_progress_window();
-
-	cddb_query_aborted = 0;
-	progress_counter = 0;
-	progress_prev = 0;
-	AQUALUNG_THREAD_CREATE(cddb_thread_id, NULL, cddb_thread, NULL)
-
-	g_timeout_add(100, cddb_timeout_callback, NULL);
-}
-
-
-#ifdef HAVE_CDDA
-
-static gint
-cdda_timeout_callback(gpointer data) {
-
-	int i, j;
-
-	map_t * map_artist = NULL;
-	map_t * map_record = NULL;
-	map_t * map_genre = NULL;
-	map_t * map_year = NULL;
-	map_t ** map_tracks = NULL;
-
-	GtkTreeIter iter_track;
-	cdda_disc_t * disc = NULL;
-	char * device_path = NULL;
-
-	char tmp[MAXLEN];
-
-
-	if (cddb_thread_state == CDDB_THREAD_BUSY) {
-		return TRUE;
-	}
-
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_drive, 2, &device_path, -1);
-	disc = &cdda_get_drive_by_spec_device_path(device_path)->disc;
-	g_free(device_path);
-
-	if (cddb_thread_state != CDDB_THREAD_SUCCESS || record_count == 0) {
-		goto finish;
-	}
-
-	if ((map_tracks = (map_t **)malloc(sizeof(map_t *) * track_count)) == NULL) {
-		fprintf(stderr, "cddb_lookup.c: cdda_timeout_callback(): malloc error\n");
-		cddb_thread_state = CDDB_THREAD_FREE;
-		return FALSE;
-	}
-
-	for (i = 0; i < track_count; i++) {
-		map_tracks[i] = NULL;
-	}
-
-	for (i = 0; i < record_count; i++) {
-
-		strncpy(tmp, cddb_disc_get_artist(records[i]), MAXLEN-1);
-		map_put(&map_artist, tmp);
-
-		strncpy(tmp, cddb_disc_get_title(records[i]), MAXLEN-1);
-		map_put(&map_record, tmp);
-
-		strncpy(tmp, cddb_disc_get_genre(records[i]), MAXLEN-1);
-		map_put(&map_genre, tmp);
-
-		snprintf(tmp, MAXLEN-1, "%d", cddb_disc_get_year(records[i]));
-		map_put(&map_year, tmp);
-
-		for (j = 0; j < track_count; j++) {
-			strncpy(tmp,
-				cddb_track_get_title(cddb_disc_get_track(records[i], j)),
-				MAXLEN-1);
-			map_put(map_tracks + j, tmp);
-		}
-	}
-
-	tmp[0] = '\0';
-
-	if (map_artist) {
-
-		char * max = map_get_max(map_artist);
-
-		if (max) {
-			strncat(tmp, max, MAXLEN-1);
-			strncpy(disc->artist_name, max, MAXLEN-1);
-		}
-	}
-
-	strncat(tmp, ": ", MAXLEN - strlen(tmp) - 1);
-
-	if (map_record) {
-
-		char * max = map_get_max(map_record);
-
-		if (max) {
-			strncat(tmp, max, MAXLEN - strlen(tmp) - 1);
-			strncpy(disc->record_name, max, MAXLEN-1);
-		}
-	}
-
-	if (map_artist && map_record) {
-		gtk_tree_store_set(music_store, &iter_drive, 0, tmp, -1);
-	}
-
-	if (map_genre) {
-
-		char * max = map_get_max(map_genre);
-
-		if (max) {
-			strncpy(disc->genre, max, MAXLEN-1);
-		}
-	}
-
-	if (map_year) {
-
-		char * max = map_get_max(map_year);
-
-		if (max) {
-			strncpy(disc->year, max, MAXLEN-1);
-		}
-	}
-
-	for (i = 0; i < track_count &&
-		     gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
-						   &iter_track, &iter_drive, i); i++) {
-
-		char * max = map_get_max(map_tracks[i]);
-
-		if (max) {
-			gtk_tree_store_set(music_store, &iter_track, 0, max, -1);
-		}
-
-		map_free(map_tracks[i]);
-	}
-
-	map_free(map_artist);
-	map_free(map_record);
-	map_free(map_genre);
-	map_free(map_year);
-	free(map_tracks);
-
-	for (i = 0; i < record_count; i++) {
-		cddb_disc_destroy(records[i]);
-	}
-
-	free(records);
-	libcddb_shutdown();
-
- finish:
-
-	free(frames);
-
-	if (options.cdda_add_to_playlist) {
-		cdda_add_to_playlist(&iter_drive, disc->hash);
-	}
-
-	cddb_thread_state = CDDB_THREAD_FREE;
-
-	return FALSE;
-}
-
-typedef struct {
-
-	cdda_disc_t * disc;
-	GtkTreeIter iter;
-} cdda_get_t;
-
-void cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter);
-
-gboolean
-cddb_get_cdda_timeout(gpointer data) {
-
-	cdda_get_t * get = NULL;
-
-	if (cddb_thread_state != CDDB_THREAD_FREE) {
-		return TRUE;
-	}
-
-	get = (cdda_get_t *)data;
-	cddb_get_cdda(get->disc, get->iter);
-	free(get);
-
-	return FALSE;
-}
-
-void
-cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter) {
-
-	if (cddb_thread_state != CDDB_THREAD_FREE) {
-
-		cdda_get_t * get = NULL;
-
-		if ((get = (cdda_get_t *)malloc(sizeof(cdda_get_t))) == NULL) {
-			fprintf(stderr, "cddb_lookup.c: cddb_get_cdda(): malloc error\n");
-			return;
-		}
-		
-		get->disc = disc;
-		get->iter = iter;
-		g_timeout_add(1000, cddb_get_cdda_timeout, get);
-		return;
-	}
-
-	cddb_thread_state = CDDB_THREAD_BUSY;
-
-	if (init_query_data_from_cdda_disc(disc)) {
-		cddb_thread_state = CDDB_THREAD_FREE;
-		return;
-	}
-
-	iter_drive = iter;
-
-	cddb_query_aborted = 0;
-	progress_counter = 0;
-	progress_prev = 0;
-
-	AQUALUNG_THREAD_CREATE(cddb_thread_id, NULL, cddb_thread, NULL)
-
-	g_timeout_add(100, cdda_timeout_callback, NULL);
-}
-
-#endif /* HAVE_CDDA */
-
-
+/*
 void
 cddb_get_batch(build_disc_t * disc) {
 
@@ -1518,23 +1044,23 @@ cddb_get_batch(build_disc_t * disc) {
 
 	cddb_thread(NULL);
 
-	if (cddb_thread_state != CDDB_THREAD_SUCCESS || record_count == 0) {
+	if (cddb_thread_state != CDDB_THREAD_SUCCESS || nrecords == 0) {
 		free(frames);
 		cddb_thread_state = CDDB_THREAD_FREE;
 		return;
 	}
 
-	if ((map_tracks = (map_t **)malloc(sizeof(map_t *) * track_count)) == NULL) {
+	if ((map_tracks = (map_t **)malloc(sizeof(map_t *) * ntracks)) == NULL) {
 		fprintf(stderr, "cddb_lookup.c: cddb_get_batch(): malloc error\n");
 		cddb_thread_state = CDDB_THREAD_FREE;
 		return;
 	}
 
-	for (i = 0; i < track_count; i++) {
+	for (i = 0; i < ntracks; i++) {
 		map_tracks[i] = NULL;
 	}
 
-	for (i = 0; i < record_count; i++) {
+	for (i = 0; i < nrecords; i++) {
 
 		strncpy(tmp, cddb_disc_get_artist(records[i]), MAXLEN-1);
 		if (!is_all_wspace(tmp)) {
@@ -1555,7 +1081,7 @@ cddb_get_batch(build_disc_t * disc) {
 		}
 
 		for (j = 0, ptrack = disc->tracks;
-		     ptrack && j < track_count; j++, ptrack = ptrack->next) {
+		     ptrack && j < ntracks; j++, ptrack = ptrack->next) {
 			strncpy(tmp,
 				cddb_track_get_title(cddb_disc_get_track(records[i], j)),
 				MAXLEN-1);
@@ -1589,7 +1115,7 @@ cddb_get_batch(build_disc_t * disc) {
 		}
 	}
 
-	for (j = 0, ptrack = disc->tracks; ptrack && j < track_count; j++, ptrack = ptrack->next) {
+	for (j = 0, ptrack = disc->tracks; ptrack && j < ntracks; j++, ptrack = ptrack->next) {
 
 		char * max = map_get_max(map_tracks[j]);
 
@@ -1605,7 +1131,7 @@ cddb_get_batch(build_disc_t * disc) {
 	map_free(map_year);
 	free(map_tracks);
 
-	for (i = 0; i < record_count; i++) {
+	for (i = 0; i < nrecords; i++) {
 		cddb_disc_destroy(records[i]);
 	}
 
@@ -1615,31 +1141,460 @@ cddb_get_batch(build_disc_t * disc) {
 
 	cddb_thread_state = CDDB_THREAD_FREE;
 }
+*/
+
+
+
+/*******************************************************/
 
 
 void
-cddb_submit(GtkTreeIter * iter) {
+cddb_dialog_load_disc(cddb_lookup_t * data, cddb_disc_t * disc) {
 
-	if (cddb_thread_state != CDDB_THREAD_FREE) {
-		return;
+	GtkTreeIter iter;
+	const char * str = NULL;
+	int i;
+
+
+	str = cddb_disc_get_artist(disc);
+	gtk_entry_set_text(GTK_ENTRY(data->artist_entry), str ? str : "");
+
+	str = cddb_disc_get_title(disc);
+	gtk_entry_set_text(GTK_ENTRY(data->title_entry), str ? str : "");
+
+	str = cddb_disc_get_category_str(disc);
+	gtk_entry_set_text(GTK_ENTRY(data->category_entry), str ? str : "");
+
+	str = cddb_disc_get_genre(disc);
+	gtk_entry_set_text(GTK_ENTRY(data->genre_entry), str ? str : "");
+
+	str = cddb_disc_get_ext_data(disc);
+	gtk_entry_set_text(GTK_ENTRY(data->ext_entry), str ? str : "");
+
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->year_spinner), cddb_disc_get_year(disc));
+
+	gtk_list_store_clear(GTK_LIST_STORE(data->track_store));
+
+	for (i = 0; i < data->ntracks; i++) {
+		gtk_list_store_append(data->track_store, &iter);
+		str = cddb_track_get_title(cddb_disc_get_track(disc, i));
+		gtk_list_store_set(data->track_store, &iter, 0, str ? str : "", -1);
 	}
-
-	cddb_thread_state = CDDB_THREAD_BUSY;
-
-	iter_record = *iter;
-
-	if (init_query_data()) {
-		cddb_thread_state = CDDB_THREAD_FREE;
-		return;
-	}
-
-	AQUALUNG_THREAD_CREATE(cddb_thread_id, NULL, cddb_submit_thread, NULL)
 }
 
-int
-cddb_thread_test(int state) {
 
-	return cddb_thread_state == state;
+void
+store_load_tracklist(cddb_lookup_t * data) {
+
+	GtkTreeIter iter;
+	GtkTreeIter iter_trlist;
+	int i = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+					     &iter, &data->iter_record, i++)) {
+		char * name;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_NAME, &name, -1);
+		gtk_list_store_append(data->track_store, &iter_trlist);
+		gtk_list_store_set(data->track_store, &iter_trlist, 0, name, -1);
+		g_free(name);
+	}
+}
+
+void
+cddb_dialog_load_store_file(cddb_lookup_t * data) {
+
+	GtkTreeIter iter_artist;
+	record_data_t * record_data;
+	char * str;
+
+	store_load_tracklist(data);
+
+	gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_artist, &data->iter_record);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist, MS_COL_NAME, &str, -1);
+	gtk_entry_set_text(GTK_ENTRY(data->artist_entry), str);
+	g_free(str);
+
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &data->iter_record, MS_COL_NAME, &str, -1);
+	gtk_entry_set_text(GTK_ENTRY(data->title_entry), str);
+	g_free(str);
+
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &data->iter_record, MS_COL_DATA, &record_data, -1);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->year_spinner), record_data->year);
+}
+
+void
+cddb_dialog_load_store_cdda(cddb_lookup_t * data) {
+
+	store_load_tracklist(data);
+
+	cdda_drive_t * drive;
+
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &data->iter_record,
+			   MS_COL_DATA, &drive, -1);
+
+	gtk_entry_set_text(GTK_ENTRY(data->artist_entry), drive->disc.artist_name);
+	gtk_entry_set_text(GTK_ENTRY(data->title_entry), drive->disc.record_name);
+	gtk_entry_set_text(GTK_ENTRY(data->genre_entry), drive->disc.genre);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->year_spinner), drive->disc.year);
+}
+
+void
+export_tracklist(cddb_lookup_t * data) {
+
+	int i;
+	GtkTreeIter iter;
+	GtkTreeIter iter_trlist;
+
+	for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+						  &iter, &data->iter_record, i); i++) {
+
+		if (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(data->track_store),
+						  &iter_trlist, NULL, i)) {
+			char * name;
+			gtk_tree_model_get(GTK_TREE_MODEL(data->track_store), &iter_trlist, 0, &name, -1);
+			gtk_tree_store_set(music_store, &iter, MS_COL_NAME, name, -1);
+			g_free(name);
+		}
+	}
+}
+
+void
+store_file_export(cddb_lookup_t * data) {
+
+	export_tracklist(data);
+	music_store_mark_changed(&data->iter_record);
+}
+
+void
+store_cdda_export(cddb_lookup_t * data) {
+
+	char name[MAXLEN];
+	cdda_drive_t * drive;
+
+	export_tracklist(data);
+
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &data->iter_record, MS_COL_DATA, &drive, -1);
+
+	strncpy(drive->disc.artist_name, gtk_entry_get_text(GTK_ENTRY(data->artist_entry)), MAXLEN-1);
+	strncpy(drive->disc.record_name, gtk_entry_get_text(GTK_ENTRY(data->title_entry)), MAXLEN-1);
+	strncpy(drive->disc.genre, gtk_entry_get_text(GTK_ENTRY(data->genre_entry)), MAXLEN-1);
+	drive->disc.year = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->year_spinner));
+
+	snprintf(name, MAXLEN-1, "%s: %s",
+		 drive->disc.artist_name,
+		 drive->disc.record_name);
+
+	gtk_tree_store_set(music_store, &data->iter_record, MS_COL_NAME, name, -1);
+}
+
+void
+cddb_dialog(cddb_lookup_t * data) {
+
+	GtkWidget * dialog;
+	GtkWidget * table;
+
+	GtkWidget * hbox;
+	GtkWidget * label;
+	GtkWidget * button;
+
+	GtkWidget * viewport;
+	GtkWidget * scrollwin;
+	GtkCellRenderer * renderer;
+	GtkTreeViewColumn * column;
+
+	int i;
+	char text[MAXLEN];
+
+
+        dialog = gtk_dialog_new_with_buttons(NULL,
+					     GTK_WINDOW(browser_window),
+					     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					     NULL);
+
+	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+	switch (data->type) {
+	case CDDB_TYPE_QUERY:
+		gtk_window_set_title(GTK_WINDOW(dialog), _("CDDB query"));
+		break;
+	case CDDB_TYPE_SUBMIT:
+		gtk_window_set_title(GTK_WINDOW(dialog), _("Correct existing record"));
+		break;
+	case CDDB_TYPE_SUBMIT_NEW:
+		gtk_window_set_title(GTK_WINDOW(dialog), _("Submit new record"));
+		break;
+	}
+
+	table = gtk_table_new(8, 3, FALSE);
+        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, FALSE, 2);
+
+	if (data->type != CDDB_TYPE_SUBMIT_NEW) {
+		hbox = gtk_hbox_new(FALSE, 0);
+		gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
+		label = gtk_label_new(_("Matches:"));
+		gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
+
+		data->combo = gtk_combo_box_new_text();
+		for (i = 0; i < data->nrecords; i++) {
+			snprintf(text, MAXLEN, "%d. %s: %s [%x] ",
+				 i + 1,
+				 cddb_disc_get_artist(data->records[i]),
+				 cddb_disc_get_title(data->records[i]),
+				 cddb_disc_get_discid(data->records[i]));
+			gtk_combo_box_append_text(GTK_COMBO_BOX(data->combo), text);
+		}
+
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data->combo), 0);
+		g_signal_connect(data->combo, "changed", G_CALLBACK(changed_combo), data);
+			 
+		gtk_table_attach(GTK_TABLE(table), data->combo, 1, 3, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
+	}
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
+	label = gtk_label_new(_("Artist:"));
+        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
+
+	data->artist_entry = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), data->artist_entry, 1, 2, 1, 2,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 3);
+	label = gtk_label_new(_("Title:"));
+        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
+
+	data->title_entry = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), data->title_entry, 1, 2, 2, 3,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 5, 3);
+	label = gtk_label_new(_("Year:"));
+        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
+
+	data->year_spinner = gtk_spin_button_new_with_range(YEAR_MIN, YEAR_MAX, 1);
+	gtk_table_attach(GTK_TABLE(table), data->year_spinner, 1, 2, 3, 4,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 4, 5, GTK_FILL, GTK_FILL, 5, 3);
+	label = gtk_label_new(_("Category:"));
+        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
+
+	if (data->type != CDDB_TYPE_SUBMIT_NEW) {
+		data->category_entry = gtk_entry_new();
+		gtk_table_attach(GTK_TABLE(table), data->category_entry, 1, 2, 4, 5,
+				 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+	} else {
+		data->category_combo = gtk_combo_box_new_text();
+		gtk_combo_box_append_text(GTK_COMBO_BOX(data->category_combo), _("(choose a category)"));
+		gtk_combo_box_append_text(GTK_COMBO_BOX(data->category_combo), "data");
+		gtk_combo_box_append_text(GTK_COMBO_BOX(data->category_combo), "folk");
+		gtk_combo_box_append_text(GTK_COMBO_BOX(data->category_combo), "jazz");
+		gtk_combo_box_append_text(GTK_COMBO_BOX(data->category_combo), "misc");
+		gtk_combo_box_append_text(GTK_COMBO_BOX(data->category_combo), "rock");
+		gtk_combo_box_append_text(GTK_COMBO_BOX(data->category_combo), "country");
+		gtk_combo_box_append_text(GTK_COMBO_BOX(data->category_combo), "blues");
+		gtk_combo_box_append_text(GTK_COMBO_BOX(data->category_combo), "newage");
+		gtk_combo_box_append_text(GTK_COMBO_BOX(data->category_combo), "reagge");
+		gtk_combo_box_append_text(GTK_COMBO_BOX(data->category_combo), "classical");
+		gtk_combo_box_append_text(GTK_COMBO_BOX(data->category_combo), "soundtrack");
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data->category_combo), 0);
+		gtk_table_attach(GTK_TABLE(table), data->category_combo, 1, 2, 4, 5,
+				 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+	}
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 5, 6, GTK_FILL, GTK_FILL, 5, 3);
+	label = gtk_label_new(_("Genre:"));
+        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
+
+	data->genre_entry = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), data->genre_entry, 1, 2, 5, 6,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 6, 7, GTK_FILL, GTK_FILL, 5, 3);
+	label = gtk_label_new(_("Extended data:"));
+        gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
+
+	data->ext_entry = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), data->ext_entry, 1, 2, 6, 7,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+
+	if (data->type == CDDB_TYPE_QUERY && iter_get_store_type(&data->iter_record) == STORE_TYPE_FILE) {
+
+		g_signal_connect(G_OBJECT(data->title_entry), "focus-in-event",
+				 G_CALLBACK(title_entry_focused), data);
+		g_signal_connect(G_OBJECT(data->year_spinner), "focus-in-event",
+				 G_CALLBACK(year_spinner_focused), data);
+
+		button = gtk_button_new_with_label(_("Import as Artist"));
+		g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(import_as_artist), data);
+		gtk_table_attach(GTK_TABLE(table), button, 2, 3, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
+
+		data->title_import_button = gtk_button_new_with_label(_("Import as Title"));
+		g_signal_connect(G_OBJECT(data->title_import_button), "clicked",
+				 G_CALLBACK(import_as_title), data);
+		gtk_table_attach(GTK_TABLE(table), data->title_import_button,
+				 2, 3, 2, 3, GTK_FILL, GTK_FILL, 5, 3);
+
+		data->year_import_button = gtk_button_new_with_label(_("Import as Year"));
+		g_signal_connect(G_OBJECT(data->year_import_button), "clicked",
+				 G_CALLBACK(import_as_year), data);
+		gtk_table_attach(GTK_TABLE(table), data->year_import_button,
+				 2, 3, 3, 4, GTK_FILL, GTK_FILL, 5, 3);
+
+		button = gtk_button_new_with_label(_("Add to Comments"));
+		g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(add_category_to_comments), data);
+		gtk_table_attach(GTK_TABLE(table), button, 2, 3, 4, 5, GTK_FILL, GTK_FILL, 5, 3);
+
+		button = gtk_button_new_with_label(_("Add to Comments"));
+		g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(add_genre_to_comments), data);
+		gtk_table_attach(GTK_TABLE(table), button, 2, 3, 5, 6, GTK_FILL, GTK_FILL, 5, 3);
+
+		button = gtk_button_new_with_label(_("Add to Comments"));
+		g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(add_ext_to_comments), data);
+		gtk_table_attach(GTK_TABLE(table), button, 2, 3, 6, 7, GTK_FILL, GTK_FILL, 5, 3);
+	}
+
+	data->track_store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_BOOLEAN);
+        data->track_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(data->track_store));
+
+	renderer = gtk_cell_renderer_text_new();
+	g_object_set(renderer, "editable", TRUE, NULL);
+	g_signal_connect(renderer, "edited", (GCallback)cell_edited_callback, data);
+	column = gtk_tree_view_column_new_with_attributes(_("Tracks"),
+							  renderer,
+							  "text", 0,
+							  NULL);
+        gtk_tree_view_append_column(GTK_TREE_VIEW(data->track_list), column);
+        gtk_tree_view_set_reorderable(GTK_TREE_VIEW(data->track_list), FALSE);
+
+        viewport = gtk_viewport_new(NULL, NULL);
+	scrollwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
+				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request(scrollwin, -1, 200);
+        gtk_table_attach(GTK_TABLE(table), viewport, 0, 3, 7, 8,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+        gtk_container_add(GTK_CONTAINER(viewport), scrollwin);
+        gtk_container_add(GTK_CONTAINER(scrollwin), data->track_list);
+
+	gtk_widget_show_all(dialog);
+
+	if (data->type != CDDB_TYPE_SUBMIT_NEW) {
+		cddb_dialog_load_disc(data, data->records[0]);
+	} else {
+		if (iter_get_store_type(&data->iter_record) == STORE_TYPE_FILE) {
+			cddb_dialog_load_store_file(data);
+		} else {
+			cddb_dialog_load_store_cdda(data);
+		}
+	}
+
+ display:
+
+	if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+
+		switch (data->type) {
+		case CDDB_TYPE_SUBMIT:
+			/* unsupported */
+			break;
+		case CDDB_TYPE_SUBMIT_NEW:
+			if (cddb_submit_check(data)) {
+				goto display;
+			}
+			cddb_submit(data);
+			/* no break */
+		case CDDB_TYPE_QUERY:
+			if (iter_get_store_type(&data->iter_record) == STORE_TYPE_FILE) {
+				store_file_export(data);
+			} else {
+				store_cdda_export(data);
+			}
+			break;
+		}
+	}
+
+	gtk_widget_destroy(dialog);
+}
+
+
+void *
+cddb_lookup_thread(void * arg) {
+
+	AQUALUNG_THREAD_DETACH();
+
+	cddb_lookup((cddb_lookup_t *)arg);
+
+	return NULL;
+}
+
+void
+cddb_start_lookup_thread(GtkTreeIter * iter_record,
+			 int type,
+			 int progress,
+			 int ntracks, int * frames, int length,
+			 gboolean (*timeout_cb)(gpointer)) {
+
+	cddb_lookup_t * data;
+
+	if ((data = cddb_lookup_new()) == NULL) {
+		return;
+	}
+
+	data->iter_record = *iter_record;
+	data->type = type;
+	data->ntracks = ntracks;
+	data->frames = frames;
+	data->record_length = length;
+
+	AQUALUNG_THREAD_CREATE(data->thread_id, NULL, cddb_lookup_thread, data);
+	if (progress) {
+		create_query_progress_window(data);
+	}
+	g_timeout_add(100, timeout_cb, data);
+}
+
+void
+cddb_start_query(GtkTreeIter * iter_record, int ntracks, int * frames, int length) {
+
+	cddb_start_lookup_thread(iter_record,
+				 CDDB_TYPE_QUERY,
+				 1,
+				 ntracks, frames, length,
+				 query_timeout_cb);
+}
+
+void
+cddb_start_submit(GtkTreeIter * iter_record, int ntracks, int * frames, int length) {
+
+	if (options.cddb_email[0] == '\0') {
+		create_cddb_write_error_dialog(_("You have to provide an email address for CDDB submission."));
+		return;
+	}
+
+	cddb_start_lookup_thread(iter_record,
+				 CDDB_TYPE_SUBMIT,
+				 1,
+				 ntracks, frames, length,
+				 query_timeout_cb);
+}
+
+void
+cddb_auto_query_cdda(GtkTreeIter * drive_iter, int ntracks, int * frames, int length) {
+
+	cddb_start_lookup_thread(drive_iter,
+				 CDDB_TYPE_QUERY,
+				 0,
+				 ntracks, frames, length,
+				 cdda_auto_query_timeout_cb);
 }
 
 #endif /* HAVE_CDDB */

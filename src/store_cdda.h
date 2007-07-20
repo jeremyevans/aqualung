@@ -39,6 +39,8 @@ void store_cdda_create_popup_menu(void);
 gboolean store_cdda_remove_track(GtkTreeIter * iter);
 gboolean store_cdda_remove_record(GtkTreeIter * iter);
 
+void cdda_record_auto_query_cddb(GtkTreeIter * drive_iter);
+
 void cdda_add_to_playlist(GtkTreeIter * iter_drive, unsigned long hash);
 void cdda_remove_from_playlist(cdda_drive_t * drive);
 

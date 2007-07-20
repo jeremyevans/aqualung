@@ -549,6 +549,92 @@ cdda_record__rip_cb(gpointer data) {
 #endif /* HAVE_* */
 
 
+#ifdef HAVE_CDDB
+
+static int
+cddb_init_query_data(GtkTreeIter * iter_record, int * ntracks, int ** frames, int * length) {
+
+	int i;
+	float len = 0.0f;
+	float offset = 150.0f; /* leading 2 secs in frames */
+
+	GtkTreeIter iter_track;
+	cdda_track_t * data;
+
+	*ntracks = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), iter_record);
+
+	if ((*frames = (int *)calloc(*ntracks, sizeof(int))) == NULL) {
+		fprintf(stderr, "store_cdda.c: cddb_init_query_data: calloc error\n");
+		return 1;
+	}
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+					     &iter_track, iter_record, i)) {
+
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track,
+				   MS_COL_DATA, &data, -1);
+
+		*((*frames) + i) = (int)offset;
+
+		len += data->duration;
+		offset += 75.0f * data->duration;
+		++i;
+	}
+
+	*length = (int)len;
+
+	return 0;
+}
+
+void
+cdda_record__cddb_cb(gpointer data) {
+
+	GtkTreeIter iter;
+
+	if (gtk_tree_selection_get_selected(music_select, NULL, &iter)) {
+
+		int ntracks;
+		int * frames;
+		int length;
+
+		if (cddb_init_query_data(&iter, &ntracks, &frames, &length) == 0) {
+			cddb_start_query(&iter, ntracks, frames, length);
+		}
+	}
+}
+
+void
+cdda_record__cddb_submit_cb(gpointer data) {
+
+	GtkTreeIter iter;
+
+	if (gtk_tree_selection_get_selected(music_select, NULL, &iter)) {
+
+		int ntracks;
+		int * frames;
+		int length;
+
+		if (cddb_init_query_data(&iter, &ntracks, &frames, &length) == 0) {
+			cddb_start_submit(&iter, ntracks, frames, length);
+		}
+	}
+}
+
+void
+cdda_record_auto_query_cddb(GtkTreeIter * drive_iter) {
+
+	int ntracks;
+	int * frames;
+	int length;
+
+	if (cddb_init_query_data(drive_iter, &ntracks, &frames, &length) == 0) {
+		cddb_auto_query_cdda(drive_iter, ntracks, frames, length);
+	}
+}
+
+#endif /* HAVE_CDDB */
+
 /********************************************/
 
 /* returns the duration of the track */
@@ -1010,13 +1096,6 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 static void
 set_popup_sensitivity(GtkTreePath * path) {
 
-	gboolean build_free = build_thread_test(BUILD_THREAD_FREE);
-
-#ifdef HAVE_CDDB
-	gboolean cddb_free = cddb_thread_test(CDDB_THREAD_FREE);
-#endif /* HAVE_CDDB */
-
-
 	if (gtk_tree_path_get_depth(path) == 2) {
 
 		GtkTreeIter iter;
@@ -1033,8 +1112,8 @@ set_popup_sensitivity(GtkTreePath * path) {
 		gtk_widget_set_sensitive(cdda_record__addlist_albummode, val_cdda);
 
 #ifdef HAVE_CDDB
-		gtk_widget_set_sensitive(cdda_record__cddb, val_cdda && cddb_free && build_free);
-		gtk_widget_set_sensitive(cdda_record__cddb_submit, val_cdda && cddb_free && build_free);
+		gtk_widget_set_sensitive(cdda_record__cddb, val_cdda);
+		gtk_widget_set_sensitive(cdda_record__cddb_submit, val_cdda);
 #endif /* HAVE_CDDB */
 
 		gtk_widget_set_sensitive(cdda_record__rip, val_cdda && val_cdda_free);
@@ -1216,8 +1295,8 @@ store_cdda_create_popup_menu(void) {
  	g_signal_connect_swapped(G_OBJECT(cdda_record__addlist), "activate", G_CALLBACK(cdda_record__addlist_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(cdda_record__addlist_albummode), "activate", G_CALLBACK(cdda_record__addlist_albummode_cb), NULL);
 #ifdef HAVE_CDDB
-	//g_signal_connect_swapped(G_OBJECT(cdda_record__cddb), "activate", G_CALLBACK(record__cddb_cb), NULL);
- 	//g_signal_connect_swapped(G_OBJECT(cdda_record__cddb_submit), "activate", G_CALLBACK(record__cddb_submit_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb), "activate", G_CALLBACK(cdda_record__cddb_cb), NULL);
+ 	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb_submit), "activate", G_CALLBACK(cdda_record__cddb_submit_cb), NULL);
 #endif /* HAVE_CDDB */
  	g_signal_connect_swapped(G_OBJECT(cdda_record__rip), "activate", G_CALLBACK(cdda_record__rip_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(cdda_record__disc_info), "activate", G_CALLBACK(cdda_record__disc_cb), NULL);

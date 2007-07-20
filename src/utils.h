@@ -40,7 +40,7 @@ void pack_strings(char * str1, char * str2, char * result);
 void unpack_strings(char * packed, char * str1, char * str2);
 void normalize_filename(const char * in, char * out);
 
-void free_strdup(char ** s, char * str);
+void free_strdup(char ** s, const char * str);
 
 int cdda_is_cdtrack(char * file);
 

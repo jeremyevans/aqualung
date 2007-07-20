@@ -58,7 +58,7 @@ typedef struct {
 	char record_name[MAXLEN];
 	char artist_name[MAXLEN];
 	char genre[MAXLEN];
-	char year[MAXLEN];
+	int year;
 } cdda_disc_t;
 
 typedef struct {

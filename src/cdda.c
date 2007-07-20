@@ -71,10 +71,6 @@ extern GtkTreeStore * music_store;
 extern GtkWidget * browser_window;
 
 
-#ifdef HAVE_CDDB
-extern void cddb_get_cdda(cdda_disc_t * disc, GtkTreeIter iter_drive);
-#endif /* HAVE_CDDB */
-
 typedef struct {
 	int event_type;
 	char * device_path;
@@ -691,7 +687,7 @@ update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 
 	if (update_track_data_from_cdtext(drive, &iter_drive) != 0) {
 #ifdef HAVE_CDDB
-		//cddb_get_cdda(&drive->disc, iter_drive);//TODO
+		cdda_record_auto_query_cddb(&iter_drive);
 #else
 		if (options.cdda_add_to_playlist) {
 			cdda_add_to_playlist(&iter_drive, drive->disc.hash);

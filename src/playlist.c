@@ -183,6 +183,7 @@ void playlist_unlink_files(playlist_t * pl);
 void set_cursor_in_playlist(playlist_t * pl, GtkTreeIter *iter, gboolean scroll);
 void select_active_position_in_playlist(playlist_t * pl);
 
+void delayed_playlist_rearrange(playlist_t * pl);
 void playlist_selection_changed(playlist_t * pl);
 void playlist_selection_changed_cb(GtkTreeSelection * select, gpointer data);
 
@@ -583,7 +584,6 @@ playlist_paste(playlist_t * pl, int before) {
 	}
 
 	playlist_content_changed(pl);
-	delayed_playlist_rearrange(pl);
 }
 
 
@@ -1396,7 +1396,6 @@ finalize_add_to_playlist(gpointer data) {
 				playlist_content_changed(pt->pl);
 			}
 			playlist_progress_bar_hide(pt->pl);
-			delayed_playlist_rearrange(pt->pl);
 			if (pt->xml_ref != NULL) {
 				select_active_position_in_playlist(pt->pl);
 			}
@@ -1770,7 +1769,7 @@ add_url(GtkWidget * widget, gpointer data) {
 			   PL_COL_FONT_WEIGHT, PANGO_WEIGHT_NORMAL,
                            -1);
 
-		delayed_playlist_rearrange(pl);
+		playlist_content_changed(pl);
         }
 
         gtk_widget_destroy(dialog);
@@ -2136,7 +2135,7 @@ plist__reread_file_meta_cb(gpointer data) {
 		}
 	}
 	
-	delayed_playlist_rearrange(pl);
+	playlist_content_changed(pl);
 }
 
 
@@ -3017,6 +3016,7 @@ playlist_content_changed(playlist_t * pl) {
 
 	if (pl->progbar_semaphore == 0 && pl->ms_semaphore == 0) {
 		playlist_stats(pl, 0/*false*/);
+		delayed_playlist_rearrange(pl);
 	} else {
 		playlist_stats_set_busy();
 	}
@@ -3094,6 +3094,8 @@ playlist_perform_drag(playlist_t * spl, GtkTreeIter * siter, GtkTreePath * spath
 		unmark_track(tpl->store, &tparent);
 		mark_track(tpl->store, &tparent);
 	}
+
+	playlist_content_changed(tpl);
 }
 
 

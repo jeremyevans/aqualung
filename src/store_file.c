@@ -1555,7 +1555,6 @@ finalize_addlist_iter(addlist_iter_t * add_list) {
 		if (add_list->pl == playlist_get_current()) {
 			playlist_content_changed(add_list->pl);
 		}
-		delayed_playlist_rearrange(add_list->pl);
 
 		ms_progress_bar_num = 0;
 		ms_progress_bar_den = 0;
@@ -2191,7 +2190,6 @@ record__addlist_with_mode(int mode, gpointer data) {
 		if (pl == playlist_get_current()) {
 			playlist_content_changed(pl);
 		}
-		delayed_playlist_rearrange(pl);
 	}
 }
 
@@ -2496,7 +2494,6 @@ track__addlist_cb(gpointer data) {
 		if (pl == playlist_get_current()) {
 			playlist_content_changed(pl);
 		}
-		delayed_playlist_rearrange(pl);
 	}
 }
 

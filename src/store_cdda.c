@@ -765,7 +765,6 @@ cdda_track__addlist_cb(gpointer data) {
 		if (pl == playlist_get_current()) {
 			playlist_content_changed(pl);
 		}
-		delayed_playlist_rearrange(pl);
 	}
 }
 
@@ -780,7 +779,6 @@ cdda_record__addlist_with_mode(int mode, gpointer data) {
 		if (pl == playlist_get_current()) {
 			playlist_content_changed(pl);
 		}
-		delayed_playlist_rearrange(pl);
 	}
 }
 
@@ -826,7 +824,6 @@ cdda_store__addlist_with_mode(int mode, gpointer data) {
 		if (pl == playlist_get_current()) {
 			playlist_content_changed(pl);
 		}
-		delayed_playlist_rearrange(pl);
 	}
 }
 
@@ -897,7 +894,7 @@ cdda_add_to_playlist(GtkTreeIter * iter_drive, unsigned long hash) {
 			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
 					   PL_COL_PHYSICAL_FILENAME, &pfile, -1);
 
-			if (!target_found && cdda_is_cdtrack(pfile)) {
+			if (!target_found && !cdda_is_cdtrack(pfile)) {
 				target_iter = iter;
 				target_found = 1;
 			}
@@ -918,7 +915,6 @@ cdda_add_to_playlist(GtkTreeIter * iter_drive, unsigned long hash) {
 	}
 
 	playlist_content_changed(pl);
-	delayed_playlist_rearrange(pl);
 }
 
 void

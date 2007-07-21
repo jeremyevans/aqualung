@@ -866,8 +866,8 @@ change_skin(char * path) {
 	skin_being_changed = 0;
 
         playlist_size_allocate_all();
-	playlist_content_changed(playlist_get_current());
 	playlist_selection_changed(playlist_get_current());
+	playlist_content_changed(playlist_get_current());
 
         gtk_notebook_set_current_page(GTK_NOTEBOOK(playlist_notebook), current_page);
         show_active_position_in_playlist(playlist_get_current());

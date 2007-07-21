@@ -41,13 +41,10 @@
 #include "file_info.h"
 #include "decoder/file_decoder.h"
 #include "meta_decoder.h"
-#include "gui_main.h"
 #include "options.h"
 #include "volume.h"
 #include "playlist.h"
 #include "search.h"
-#include "cdda.h"
-#include "store_cdda.h"
 #include "i18n.h"
 #include "music_browser.h"
 #include "store_file.h"
@@ -369,77 +366,6 @@ create_dialog_layout(char * title, GtkWidget ** dialog, GtkWidget ** table, int 
 
 	*table = gtk_table_new(rows, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(*dialog)->vbox), *table, FALSE, TRUE, 2);
-}
-
-void
-insert_label_entry(GtkWidget * table, char * ltext, GtkWidget ** entry, char * etext,
-		   int y1, int y2, gboolean editable) {
-
-	GtkWidget * label;
-	GtkWidget * hbox;
-
-	label = gtk_label_new(ltext);
-        hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
-
-        *entry = gtk_entry_new();
-        gtk_entry_set_max_length(GTK_ENTRY(*entry), MAXLEN-1);
-        gtk_entry_set_editable(GTK_ENTRY(*entry), editable);
-	if (etext != NULL) {
-		gtk_entry_set_text(GTK_ENTRY(*entry), etext);
-	}
-	gtk_table_attach(GTK_TABLE(table), *entry, 1, 2, y1, y2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
-}
-
-void
-insert_label_entry_browse(GtkWidget * table, char * ltext, GtkWidget ** entry, char * etext,
-			  int y1, int y2, 
-			  void (* browse_cb)(GtkButton * button, gpointer data)) {
-
-	GtkWidget * label;
-	GtkWidget * hbox;
-	GtkWidget * button;
-
-	label = gtk_label_new(ltext);
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, y1, y2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
-
-	*entry = gtk_entry_new();
-	gtk_entry_set_max_length(GTK_ENTRY(*entry), MAXLEN-1);
-	gtk_entry_set_editable(GTK_ENTRY(*entry), TRUE);
-	if (etext != NULL) {
-		gtk_entry_set_text(GTK_ENTRY(*entry), etext);
-	}
-	gtk_box_pack_start(GTK_BOX(hbox), *entry, TRUE, TRUE, 0);
-
-	button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 2);
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(browse_cb), *entry);
-}
-
-void
-insert_label_spin(GtkWidget * table, char * ltext, GtkWidget ** spin, int spinval,
-		   int y1, int y2) {
-
-	GtkWidget * label;
-	GtkWidget * hbox;
-
-	label = gtk_label_new(ltext);
-        hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
-
-	*spin = gtk_spin_button_new_with_range(YEAR_MIN, YEAR_MAX, 1);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(*spin), spinval);
-        gtk_table_attach(GTK_TABLE(table), *spin, 1, 2, y1, y2,
-                         GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 5);
 }
 
 void

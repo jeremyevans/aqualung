@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <glib.h>
 
 #include "i18n.h"
 #include "httpc.h"
@@ -262,6 +263,26 @@ free_strdup(char ** s, const char * str) {
 }
 
 int
+is_all_wspace(char * str) {
+
+	int i;
+
+	for (i = 0; str[i]; i++) {
+		if (str[i] != ' ' && str[i] != '\t') {
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
+int
+is_valid_year(int y) {
+
+	return y >= YEAR_MIN && y <= YEAR_MAX;
+}
+
+int
 cdda_is_cdtrack(char * file) {
 
 	return (strstr(file, "CDDA ") == file);
@@ -307,3 +328,83 @@ strcasestr(char *haystack, char *needle) {
 	return NULL;
 }
 #endif /* HAVE_STRCASESTR */
+
+
+map_t *
+map_new(char * str) {
+
+	map_t * map;
+
+	if ((map = (map_t *)malloc(sizeof(map_t))) == NULL) {
+		fprintf(stderr, "map_new(): malloc error\n");
+		return NULL;
+	}
+
+	strncpy(map->str, str, MAXLEN-1);
+	map->count = 1;
+	map->next = NULL;
+
+	return map;
+}
+
+void
+map_put(map_t ** map, char * str) {
+
+	map_t * pmap;
+	map_t * _pmap;
+
+	if (str == NULL || str[0] == '\0') {
+		return;
+	}
+
+	if (*map == NULL) {
+		*map = map_new(str);
+	} else {
+
+		for (_pmap = pmap = *map; pmap; _pmap = pmap, pmap = pmap->next) {
+
+			char * key1 = g_utf8_casefold(str, -1);
+			char * key2 = g_utf8_casefold(pmap->str, -1);
+
+			if (!g_utf8_collate(key1, key2)) {
+				pmap->count++;
+				g_free(key1);
+				g_free(key2);
+				return;
+			}
+
+			g_free(key1);
+			g_free(key2);
+		}
+
+		_pmap->next = map_new(str);
+	}
+}
+
+char *
+map_get_max(map_t * map) {
+
+	map_t * pmap;
+	int max = 0;
+	char * str = NULL;
+
+	for (pmap = map; pmap; pmap = pmap->next) {
+		if (max <= pmap->count) {
+			str = pmap->str;
+			max = pmap->count;
+		}
+	}
+
+	return str;
+}
+
+void
+map_free(map_t * map) {
+
+	map_t * pmap;
+
+	for (pmap = map; pmap; map = pmap) {
+		pmap = map->next;
+		free(map);
+	}
+}

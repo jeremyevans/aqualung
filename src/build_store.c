@@ -41,11 +41,11 @@
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"
+#include "decoder/file_decoder.h"
 #include "i18n.h"
 #include "options.h"
 #include "music_browser.h"
 #include "store_file.h"
-#include "gui_main.h"
 #include "meta_decoder.h"
 #include "build_store.h"
 #include "cddb_lookup.h"
@@ -99,6 +99,62 @@ enum {
 	RECORD_NEW = 0,
 	RECORD_EXISTS
 };
+
+enum {
+	DATA_SRC_CDDB = 0,
+	DATA_SRC_META,
+	DATA_SRC_FILE
+};
+
+typedef struct _build_track_t {
+
+	char filename[MAXLEN];
+	char d_name[MAXLEN];
+
+	char name[3][MAXLEN];
+	char final[MAXLEN];
+
+	char comment[MAXLEN];
+	float duration;
+	float rva;
+
+	struct _build_track_t * next;
+
+} build_track_t;
+
+typedef struct {
+
+	char d_name[MAXLEN];
+	char sort[MAXLEN];
+
+	char name[3][MAXLEN];
+	char final[MAXLEN];
+
+	char year[MAXLEN];
+	char comment[MAXLEN];
+
+} build_record_t;
+
+typedef struct {
+
+	char d_name[MAXLEN];
+	char sort[MAXLEN];
+
+	char name[3][MAXLEN];
+	char final[MAXLEN];
+
+} build_artist_t;
+
+typedef struct {
+
+	build_artist_t artist;
+	build_record_t record;
+	build_track_t * tracks;
+
+	int flag;
+	GtkTreeIter iter;
+
+} build_disc_t;
 
 typedef struct {
 
@@ -668,87 +724,6 @@ file_transform_gui_sync(file_transform_gui_t * gui) {
 
 	return 0;
 }
-
-
-map_t *
-map_new(char * str) {
-
-	map_t * map;
-
-	if ((map = (map_t *)malloc(sizeof(map_t))) == NULL) {
-		fprintf(stderr, "build_store.c: map_new(): malloc error\n");
-		return NULL;
-	}
-
-	strncpy(map->str, str, MAXLEN-1);
-	map->count = 1;
-	map->next = NULL;
-
-	return map;
-}
-
-void
-map_put(map_t ** map, char * str) {
-
-	map_t * pmap;
-	map_t * _pmap;
-
-	if (str == NULL || str[0] == '\0') {
-		return;
-	}
-
-	if (*map == NULL) {
-		*map = map_new(str);
-	} else {
-
-		for (_pmap = pmap = *map; pmap; _pmap = pmap, pmap = pmap->next) {
-
-			char * key1 = g_utf8_casefold(str, -1);
-			char * key2 = g_utf8_casefold(pmap->str, -1);
-
-			if (!g_utf8_collate(key1, key2)) {
-				pmap->count++;
-				g_free(key1);
-				g_free(key2);
-				return;
-			}
-
-			g_free(key1);
-			g_free(key2);
-		}
-
-		_pmap->next = map_new(str);
-	}
-}
-
-char *
-map_get_max(map_t * map) {
-
-	map_t * pmap;
-	int max = 0;
-	char * str = NULL;
-
-	for (pmap = map; pmap; pmap = pmap->next) {
-		if (max <= pmap->count) {
-			str = pmap->str;
-			max = pmap->count;
-		}
-	}
-
-	return str;
-}
-
-void
-map_free(map_t * map) {
-
-	map_t * pmap;
-
-	for (pmap = map; pmap; map = pmap) {
-		pmap = map->next;
-		free(map);
-	}
-}
-
 
 char *
 filter_string(const char * str) {
@@ -2016,28 +1991,6 @@ set_prog_all(gpointer file, gpointer label) {
 	return FALSE;
 }
 
-
-int
-is_all_wspace(char * str) {
-
-	int i;
-
-	for (i = 0; str[i]; i++) {
-		if (str[i] != ' ' && str[i] != '\t') {
-			return 0;
-		}
-	}
-
-	return 1;
-}
-
-int
-is_valid_year(long y) {
-
-	return y > YEAR_MIN && y < YEAR_MAX;
-}
-
-
 void
 file_transform(char * buf, file_transform_t * model) {
 
@@ -2335,7 +2288,7 @@ process_meta(build_disc_t * disc) {
 			}
 
 			if (disc->record.year[0] == '\0' && meta_get_year(meta, tmp)) {
-				long y = strtol(tmp, NULL, 10);
+				int y = atoi(tmp);
 				if (is_valid_year(y)) {
 					map_put(&map_year, tmp);
 				}

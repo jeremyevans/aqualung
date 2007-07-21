@@ -29,6 +29,15 @@
 extern "C" {
 #endif
 
+
+enum {
+	FILE_CHOOSER_FILTER_NONE = 0,
+	FILE_CHOOSER_FILTER_AUDIO,
+	FILE_CHOOSER_FILTER_PLAYLIST,
+	FILE_CHOOSER_FILTER_STORE
+};
+
+
 #ifdef HAVE_SYSTRAY
 int get_systray_semaphore(void);
 #endif /* HAVE_SYSTRAY */
@@ -47,12 +56,15 @@ void file_chooser_with_entry(char * title, GtkWidget * parent,
 int message_dialog(char * title, GtkWidget * parent, GtkMessageType type,
 		   GtkButtonsType buttons, GtkWidget * extra, char * text, ...);
 
-enum {
-	FILE_CHOOSER_FILTER_NONE = 0,
-	FILE_CHOOSER_FILTER_AUDIO,
-	FILE_CHOOSER_FILTER_PLAYLIST,
-	FILE_CHOOSER_FILTER_STORE
-};
+void insert_label_entry(GtkWidget * table, char * ltext, GtkWidget ** entry,
+			char * etext, int y1, int y2, gboolean editable);
+
+void insert_label_entry_browse(GtkWidget * table, char * ltext, GtkWidget ** entry,
+			       char * etext, int y1, int y2, 
+			       void (* browse_cb)(GtkButton * button, gpointer data));
+
+void insert_label_spin(GtkWidget * table, char * ltext, GtkWidget ** spin,
+		       int spinval, int y1, int y2);
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -73,19 +73,21 @@
 #include "gui_main.h"
 #include "options.h"
 #include "trashlist.h"
-#include "build_store.h"
 #include "i18n.h"
 #include "meta_decoder.h"
 #include "file_info.h"
 
 
 /* import destination codes */
-#define IMPORT_DEST_ARTIST   1
-#define IMPORT_DEST_RECORD   2
-#define IMPORT_DEST_TITLE    3
-#define IMPORT_DEST_NUMBER   4
-#define IMPORT_DEST_COMMENT  5
-#define IMPORT_DEST_RVA      6
+enum {
+	IMPORT_DEST_ARTIST,
+	IMPORT_DEST_RECORD,
+	IMPORT_DEST_TITLE,
+	IMPORT_DEST_YEAR,
+	IMPORT_DEST_NUMBER,
+	IMPORT_DEST_COMMENT,
+	IMPORT_DEST_RVA
+};
 
 
 extern options_t options;
@@ -400,6 +402,8 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 	GtkTreeIter artist_iter;
 	GtkTreePath * path;
 	char tmp[MAXLEN];
+
+	record_data_t * record_data;
 	track_data_t * track_data;
 
 	switch (data->dest_type) {
@@ -410,7 +414,7 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 	case IMPORT_DEST_RECORD:
 		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
 		gtk_tree_store_set(music_store, &record_iter, MS_COL_NAME, data->str, -1);
-		music_store_mark_changed(&(data->track_iter));
+		music_store_mark_changed(&record_iter);
 		break;
 	case IMPORT_DEST_ARTIST:
 		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
@@ -419,7 +423,13 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 		gtk_tree_store_set(music_store, &artist_iter, MS_COL_SORT, data->str, -1);
 		path = gtk_tree_model_get_path(data->model, &(data->track_iter));
 		gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(music_tree), path, NULL, TRUE, 0.5f, 0.0f);
-		music_store_mark_changed(&(data->track_iter));
+		music_store_mark_changed(&artist_iter);
+		break;
+	case IMPORT_DEST_YEAR:
+		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &record_iter, MS_COL_DATA, &record_data, -1);
+		record_data->year = atoi(data->str);
+		music_store_mark_changed(&record_iter);
 		break;
 	case IMPORT_DEST_NUMBER:
 		if (data->str[0] != '0' && atoi(data->str) < 10) {
@@ -443,7 +453,6 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 		}
 		strncat(tmp, data->str, MAXLEN-1);
 		free_strdup(&track_data->comment, tmp);
-		/*tree_selection_changed_cb(music_select, NULL);*/
 		music_store_mark_changed(&(data->track_iter));
 		break;
 	case IMPORT_DEST_RVA:
@@ -811,14 +820,14 @@ build_simple_page(save_basic_t * save_basic, TagLib::Tag * tag, int * cnt, GtkWi
 			trashlist_add(fileinfo_trash, data);
 			data->model = save_basic->mode.model;
 			data->track_iter = save_basic->mode.track_iter;
-			data->dest_type = IMPORT_DEST_COMMENT;
-			snprintf(data->str, MAXLEN-1, "%s %s", _("Year:"), str);
+			data->dest_type = IMPORT_DEST_YEAR;
+			strncpy(data->str, str, MAXLEN-1);
 		} else {
 			str[0] = '\0';
 			data = NULL;
 		}
 		save_basic->entry_year = append_table(table, cnt, edit_mode ? EDITABLE_YES : EDITABLE_NO,
-						      _("Year:"), str, _("Add to Comments"), data);
+						      _("Year:"), str, _("Import as Year"), data);
 
 		strncpy(str, (char *)tag->genre().toCString(true), MAXLEN-1);
 		cut_trailing_whitespace(str);

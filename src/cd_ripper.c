@@ -62,6 +62,8 @@ GtkListStore * ripper_source_store;
 GtkWidget * ripper_dialog;
 GtkWidget * ripper_artist_entry;
 GtkWidget * ripper_album_entry;
+GtkWidget * ripper_year_spinner;
+GtkWidget * ripper_genre_entry;
 GtkWidget * ripper_destdir_entry;
 GtkWidget * ripper_deststore_combo;
 GtkWidget * ripper_format_combo;
@@ -582,9 +584,6 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 	GtkTreeViewColumn * column;
 
 
-	strncpy(ripper_genre, drive->disc.genre, MAXLEN-1);
-	ripper_year = drive->disc.year;
-
         ripper_dialog = gtk_dialog_new_with_buttons(_("Rip CD"),
                                              GTK_WINDOW(browser_window),
                                              GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
@@ -605,29 +604,13 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 
 	vbox_source = create_notebook_page(notebook, _("Source"));
 
-        table = gtk_table_new(4, 2, FALSE);
+        table = gtk_table_new(6, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox_source), table, FALSE, FALSE, 0);
 
-        hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(_("Artist:")), FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
-
-        ripper_artist_entry = gtk_entry_new();
-        gtk_entry_set_max_length(GTK_ENTRY(ripper_artist_entry), MAXLEN-1);
-	gtk_entry_set_text(GTK_ENTRY(ripper_artist_entry), drive->disc.artist_name);
-        gtk_table_attach(GTK_TABLE(table), ripper_artist_entry, 1, 2, 0, 1,
-                         GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
-
-        hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(_("Album:")), FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
-
-        ripper_album_entry = gtk_entry_new();
-        gtk_entry_set_max_length(GTK_ENTRY(ripper_album_entry), MAXLEN-1);
-	gtk_entry_set_text(GTK_ENTRY(ripper_album_entry), drive->disc.record_name);
-        gtk_table_attach(GTK_TABLE(table), ripper_album_entry, 1, 2, 1, 2,
-                         GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
-
+	insert_label_entry(table, _("Artist:"), &ripper_artist_entry, drive->disc.artist_name, 0, 1, TRUE);
+	insert_label_entry(table, _("Album:"), &ripper_album_entry, drive->disc.record_name, 1, 2, TRUE);
+	insert_label_spin(table, _("Year:"), &ripper_year_spinner, drive->disc.year, 2, 3);
+	insert_label_entry(table, _("Genre:"), &ripper_genre_entry, drive->disc.genre, 3, 4, TRUE);
 
 	if (ripper_source_store == NULL) {
 		ripper_source_store = gtk_list_store_new(3,
@@ -640,8 +623,8 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 	ripper_source_store_make(iter);
 
         viewport = gtk_viewport_new(NULL, NULL);
-        gtk_table_attach(GTK_TABLE(table), viewport, 0, 2, 2, 3,
-                         GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 5, 5);
+        gtk_table_attach(GTK_TABLE(table), viewport, 0, 2, 4, 5,
+                         GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 5);
         scrolled_win = gtk_scrolled_window_new(NULL, NULL);
         gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
                                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -675,7 +658,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(hbox), 2);
-        gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 3, 4, GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
+        gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 5, 6, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
         gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(_("Select")), FALSE, FALSE, 5);
 
@@ -788,9 +771,9 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_para1), hbox, FALSE, FALSE, 3);
 
-	ripper_maxretries_label = gtk_label_new(_("\tMaximum number of retries:"));
+	ripper_maxretries_label = gtk_label_new(_("Maximum number of retries:"));
 	gtk_widget_set_sensitive(ripper_maxretries_label, FALSE);
-        gtk_box_pack_start(GTK_BOX(hbox), ripper_maxretries_label, FALSE, FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(hbox), ripper_maxretries_label, FALSE, FALSE, 35);
 
         ripper_maxretries_spinner = gtk_spin_button_new_with_range(1, 50, 1);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(ripper_maxretries_spinner), options.cdda_paranoia_maxretries);
@@ -836,6 +819,8 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 		ripper_meta = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ripper_meta_check));
 		strncpy(ripper_artist, gtk_entry_get_text(GTK_ENTRY(ripper_artist_entry)), MAXLEN-1);
 		strncpy(ripper_album, gtk_entry_get_text(GTK_ENTRY(ripper_album_entry)), MAXLEN-1);
+		strncpy(ripper_genre, gtk_entry_get_text(GTK_ENTRY(ripper_genre_entry)), MAXLEN-1);
+		ripper_year = gtk_spin_button_get_value(GTK_SPIN_BUTTON(ripper_year_spinner));
 		ripper_write_to_store = get_ripper_deststore_iter(&ripper_dest_store);
 
 		if (ripper_write_to_store) {

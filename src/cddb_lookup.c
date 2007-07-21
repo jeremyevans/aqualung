@@ -35,16 +35,13 @@
 #endif /* _WIN32 */
 
 #include "common.h"
+#include "utils.h"
 #include "utils_gui.h"
 #include "i18n.h"
 #include "options.h"
-#include "decoder/file_decoder.h"
-#include "gui_main.h"
 #include "music_browser.h"
 #include "store_cdda.h"
 #include "store_file.h"
-#include "playlist.h"
-#include "build_store.h"
 #include "cdda.h"
 #include "cddb_lookup.h"
 

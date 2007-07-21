@@ -27,6 +27,10 @@
 extern "C" {
 #endif
 
+/* Please update when we reach the 22nd century. */
+#define YEAR_MIN 1900
+#define YEAR_MAX 2100
+
 void make_title_string(char * dest, char * templ,
 		       char * artist, char * record, char * track);
 void make_title_string_no_album(char * dest, char * templ,
@@ -41,12 +45,27 @@ void unpack_strings(char * packed, char * str1, char * str2);
 void normalize_filename(const char * in, char * out);
 
 void free_strdup(char ** s, const char * str);
+int is_valid_year(int y);
+int is_all_wspace(char * str);
 
 int cdda_is_cdtrack(char * file);
 
 #ifndef HAVE_STRCASESTR
 char * strcasestr(char * haystack, char * needle);
 #endif /* HAVE_STRCASESTR */
+
+
+typedef struct _map_t {
+
+	char str[MAXLEN];
+	int count;
+	struct _map_t * next;
+
+} map_t;
+
+void map_put(map_t ** map, char * str);
+char * map_get_max(map_t * map);
+void map_free(map_t * map);
 
 
 #ifdef __cplusplus

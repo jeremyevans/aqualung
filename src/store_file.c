@@ -52,25 +52,13 @@
 
 extern options_t options;
 
-extern GtkWidget * musicstore_toggle;
-
 extern GtkListStore * ms_pathlist_store;
-
-extern PangoFontDescription *fd_browser;
-extern PangoFontDescription *fd_statusbar;
-
 extern char pl_color_inactive[14];
-
 extern GtkTooltips * aqualung_tooltips;
 
-
 extern GtkWidget * browser_window;
-
-extern GtkWidget * music_tree;
 extern GtkTreeStore * music_store;
 extern GtkTreeSelection * music_select;
-
-extern GtkWidget * statusbar_ms;
 
 int stop_adding_to_playlist;
 int ms_progress_bar_semaphore;
@@ -80,8 +68,6 @@ int ms_progress_bar_den;
 GtkWidget * ms_progress_bar;
 GtkWidget * ms_progress_bar_container;
 GtkWidget * ms_progress_bar_stop_button;
-
-extern int music_store_changed;
 
 /* popup menus for tree items */
 GtkWidget * store_menu;
@@ -529,6 +515,11 @@ edit_store_dialog(char * name, store_data_t * data) {
         }
 }
 
+void
+entry_copy_text(GtkEntry * entry, gpointer data) {
+
+	gtk_entry_set_text(GTK_ENTRY(data), gtk_entry_get_text(entry));
+}
 
 int
 add_artist_dialog(char * name, char * sort, artist_data_t ** data) {
@@ -545,6 +536,8 @@ add_artist_dialog(char * name, char * sort, artist_data_t ** data) {
 	insert_label_entry(table, _("Visible name:"), &name_entry, name, 0, 1, TRUE);
 	insert_label_entry(table, _("Name to sort by:"), &sort_entry, sort, 1, 2, TRUE);
 	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, NULL);
+
+        g_signal_connect(G_OBJECT(name_entry), "activate", G_CALLBACK(entry_copy_text), sort_entry);
 
 	gtk_widget_grab_focus(name_entry);
 	gtk_widget_show_all(dialog);
@@ -598,6 +591,8 @@ edit_artist_dialog(char * name, char * sort, artist_data_t * data) {
 	insert_label_entry(table, _("Visible name:"), &name_entry, name, 0, 1, TRUE);
 	insert_label_entry(table, _("Name to sort by:"), &sort_entry, sort, 1, 2, TRUE);
 	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, data->comment);
+
+        g_signal_connect(G_OBJECT(name_entry), "activate", G_CALLBACK(entry_copy_text), sort_entry);
 
 	gtk_widget_grab_focus(name_entry);
 	gtk_widget_show_all(dialog);
@@ -700,8 +695,11 @@ add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** d
 
 	create_dialog_layout(_("Add Record"), &dialog, &table, 3);
 	insert_label_entry(table, _("Visible name:"), &name_entry, name, 0, 1, TRUE);
-	insert_label_entry(table, _("Name to sort by:"), &sort_entry, sort, 1, 2, TRUE);
-	insert_label_spin(table, _("Year:"), &year_spin, 0, 2, 3);
+	insert_label_spin(table, _("Year:"), &year_spin, 0, 1, 2);
+	insert_label_entry(table, _("Name to sort by:"), &sort_entry, sort, 2, 3, TRUE);
+
+        g_signal_connect(G_OBJECT(name_entry), "activate", G_CALLBACK(entry_copy_text), sort_entry);
+        g_signal_connect(G_OBJECT(year_spin), "activate", G_CALLBACK(entry_copy_text), sort_entry);
 
 	list_label = gtk_label_new(_("Auto-create tracks from these files:"));
         hbox = gtk_hbox_new(FALSE, 0);
@@ -816,9 +814,12 @@ edit_record_dialog(char * name, char * sort, record_data_t * data) {
 
 	create_dialog_layout(_("Edit Record"), &dialog, &table, 3);
 	insert_label_entry(table, _("Visible name:"), &name_entry, name, 0, 1, TRUE);
-	insert_label_entry(table, _("Name to sort by:"), &sort_entry, sort, 1, 2, TRUE);
-	insert_label_spin(table, _("Year:"), &year_spin, data->year, 2, 3);
+	insert_label_spin(table, _("Year:"), &year_spin, data->year, 1, 2);
+	insert_label_entry(table, _("Name to sort by:"), &sort_entry, sort, 2, 3, TRUE);
 	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, data->comment);
+
+        g_signal_connect(G_OBJECT(name_entry), "activate", G_CALLBACK(entry_copy_text), sort_entry);
+        g_signal_connect(G_OBJECT(year_spin), "activate", G_CALLBACK(entry_copy_text), sort_entry);
 
 	gtk_widget_grab_focus(name_entry);
 	gtk_widget_show_all(dialog);
@@ -1852,7 +1853,6 @@ store__edit_cb(gpointer user_data) {
 			gtk_tree_store_set(music_store, &iter,
 					   MS_COL_NAME, name, -1);
 
-			music_store_selection_changed();
 			music_store_mark_changed(&iter);
 		}
         }
@@ -2105,7 +2105,6 @@ artist__edit_cb(gpointer user_data) {
 					   MS_COL_NAME, name,
 					   MS_COL_SORT, sort, -1);
 
-			music_store_selection_changed();
 			music_store_mark_changed(&iter);
 		}
         }
@@ -2338,7 +2337,6 @@ record__edit_cb(gpointer user_data) {
 					   MS_COL_NAME, name,
 					   MS_COL_SORT, sort, -1);
 
-			music_store_selection_changed();
 			music_store_mark_changed(&iter);
 		}
         }
@@ -2581,7 +2579,6 @@ track__edit_cb(gpointer user_data) {
 					   MS_COL_NAME, name,
 					   MS_COL_SORT, sort, -1);
 
-			music_store_selection_changed();
 			music_store_mark_changed(&iter);
                 }
         }
@@ -3314,7 +3311,7 @@ store_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, f
 static void
 set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
-	int ntrack = 0, nrecord = 0, nartist = 0;
+	int ntrack = 1, nrecord = 0, nartist = 0;
 	float length = 0.0f;
 	double size = 0.0;
 
@@ -3362,7 +3359,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
 	g_free(name);
 
-	if (length > 0.0f) {
+	if (length > 0.0f || ntrack == 0) {
 		time2time(length, length_str);
 		sprintf(tmp, " [%s] ", length_str);
 	} else {
@@ -3376,7 +3373,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 			sprintf(tmp, " (%.1f GB) ", size / (1024 * 1024));
 		} else if (size > (1 << 10)){
 			sprintf(tmp, " (%.1f MB) ", size / 1024);
-		} else if (size > 0) {
+		} else if (size > 0 || ntrack == 0) {
 			sprintf(tmp, " (%.1f KB) ", size);
 		} else {
 			strcpy(tmp, " (N/A) ");

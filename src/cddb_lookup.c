@@ -599,7 +599,6 @@ add_to_comments(cddb_lookup_t * data, GtkWidget * entry) {
 		free_strdup(&record_data->comment, gtk_entry_get_text(GTK_ENTRY(entry)));
 	}
 
-	music_store_selection_changed();
 	music_store_mark_changed(&data->iter_record);
 }
 
@@ -638,7 +637,6 @@ import_as_artist(GtkWidget * widget, gpointer user_data) {
 	gtk_tree_store_set(music_store, &parent,
 			   MS_COL_NAME, gtk_entry_get_text(GTK_ENTRY(data->artist_entry)), -1);
 
-	music_store_selection_changed();
 	music_store_mark_changed(&parent);
 }
 
@@ -659,7 +657,6 @@ import_as_title(GtkWidget * widget, gpointer user_data) {
 		gtk_button_set_label(GTK_BUTTON(data->title_import_button), _("Import as Sort Key"));
 	}
 
-	music_store_selection_changed();
 	music_store_mark_changed(&data->iter_record);
 }
 
@@ -684,7 +681,6 @@ import_as_year(GtkWidget * widget, gpointer user_data) {
 	}
 
 
-	music_store_selection_changed();
 	music_store_mark_changed(&data->iter_record);
 }
 

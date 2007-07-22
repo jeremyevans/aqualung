@@ -795,6 +795,8 @@ music_store_mark_changed(GtkTreeIter * iter) {
 	if (options.enable_mstore_toolbar) {
 		gtk_widget_set_sensitive(toolbar_save_button, TRUE);
 	}
+
+	music_store_selection_changed();
 }
 
 void

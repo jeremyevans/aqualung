@@ -3327,7 +3327,8 @@ build_store(GtkTreeIter * iter) {
 
 		if (build_dialog(data)) {
 			progress_window(data);
-			AQUALUNG_THREAD_CREATE(data->thread_id, NULL, build_thread_strict, data)
+			AQUALUNG_THREAD_CREATE(data->thread_id, NULL, build_thread_strict, data);
+			build_busy = 1;
 		}
 
 		break;
@@ -3336,13 +3337,12 @@ build_store(GtkTreeIter * iter) {
 
 		if (build_dialog(data)) {
 			progress_window(data);
-			AQUALUNG_THREAD_CREATE(data->thread_id, NULL, build_thread_loose, data)
+			AQUALUNG_THREAD_CREATE(data->thread_id, NULL, build_thread_loose, data);
+			build_busy = 1;
 		}
 
 		break;
 	}
-
-	build_busy = 1;
 }
 
 int build_is_busy(void) {

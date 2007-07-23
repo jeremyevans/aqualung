@@ -1119,14 +1119,13 @@ static void
 set_popup_sensitivity(GtkTreePath * path) {
 
 	gboolean writable = !is_store_path_readonly(path);
-	gboolean build_free = build_thread_test(BUILD_THREAD_FREE);
 
 #if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gboolean tag_free = (batch_tag_root == NULL);
 #endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 
 
-	gtk_widget_set_sensitive(store__build, writable && build_free);
+	gtk_widget_set_sensitive(store__build, writable && !build_is_busy());
 	gtk_widget_set_sensitive(store__edit, writable);
 	gtk_widget_set_sensitive(store__save, writable);
 	gtk_widget_set_sensitive(store__addart, writable);
@@ -1819,7 +1818,7 @@ store__build_cb(gpointer data) {
 	GtkTreeIter store_iter;
 
 	if (gtk_tree_selection_get_selected(music_select, NULL, &store_iter)) {
-		build_store(store_iter);
+		build_store(&store_iter);
 	}
 }
 
@@ -3311,7 +3310,7 @@ store_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, f
 static void
 set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
-	int ntrack = 1, nrecord = 0, nartist = 0;
+	int ntrack = 0, nrecord = 0, nartist = 0;
 	float length = 0.0f;
 	double size = 0.0;
 
@@ -3334,6 +3333,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 	switch (depth) {
 	case 4:
 		track_status_bar_info(model, tree_iter, &size, &length);
+		ntrack = 1;
 		sprintf(str, "%s: ", name);
 		break;
 	case 3:

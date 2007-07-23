@@ -121,6 +121,12 @@ void cddb_dialog(cddb_lookup_t * data);
 void cddb_dialog_load_disc(cddb_lookup_t * data, cddb_disc_t * disc);
 
 
+const char *
+notnull(const char * str) {
+
+	return str ? str : "";
+}
+
 cddb_lookup_t *
 cddb_lookup_new () {
 
@@ -405,18 +411,18 @@ cddb_lookup_merge(cddb_lookup_t * data, char * artist, char * record, char * gen
 
 	for (i = 0; i < data->nrecords; i++) {
 
-		strncpy(tmp, cddb_disc_get_artist(data->records[i]), MAXLEN-1);
+		strncpy(tmp, notnull(cddb_disc_get_artist(data->records[i])), MAXLEN-1);
 		if (!is_all_wspace(tmp)) {
 			map_put(&map_artist, tmp);
 		}
 
-		strncpy(tmp, cddb_disc_get_title(data->records[i]), MAXLEN-1);
+		strncpy(tmp, notnull(cddb_disc_get_title(data->records[i])), MAXLEN-1);
 		if (!is_all_wspace(tmp)) {
 			map_put(&map_record, tmp);
 		}
 
 		if (genre != NULL) {
-			strncpy(tmp, cddb_disc_get_genre(data->records[i]), MAXLEN-1);
+			strncpy(tmp, notnull(cddb_disc_get_genre(data->records[i])), MAXLEN-1);
 			if (!is_all_wspace(tmp)) {
 				map_put(&map_genre, tmp);
 			}
@@ -424,13 +430,12 @@ cddb_lookup_merge(cddb_lookup_t * data, char * artist, char * record, char * gen
 
 		y = cddb_disc_get_year(data->records[i]);
 		if (is_valid_year(y)) {
-			snprintf(tmp, MAXLEN-1, "%d", y);
 			map_put(&map_year, tmp);
 		}
 
 		for (j = 0; j < data->ntracks; j++) {
 			strncpy(tmp,
-				cddb_track_get_title(cddb_disc_get_track(data->records[i], j)),
+				notnull(cddb_track_get_title(cddb_disc_get_track(data->records[i], j))),
 				MAXLEN-1);
 			if (!is_all_wspace(tmp)) {
 				map_put(map_tracks + j, tmp);
@@ -976,24 +981,13 @@ void
 cddb_dialog_load_disc(cddb_lookup_t * data, cddb_disc_t * disc) {
 
 	GtkTreeIter iter;
-	const char * str = NULL;
 	int i;
 
-
-	str = cddb_disc_get_artist(disc);
-	gtk_entry_set_text(GTK_ENTRY(data->artist_entry), str ? str : "");
-
-	str = cddb_disc_get_title(disc);
-	gtk_entry_set_text(GTK_ENTRY(data->title_entry), str ? str : "");
-
-	str = cddb_disc_get_category_str(disc);
-	gtk_entry_set_text(GTK_ENTRY(data->category_entry), str ? str : "");
-
-	str = cddb_disc_get_genre(disc);
-	gtk_entry_set_text(GTK_ENTRY(data->genre_entry), str ? str : "");
-
-	str = cddb_disc_get_ext_data(disc);
-	gtk_entry_set_text(GTK_ENTRY(data->ext_entry), str ? str : "");
+	gtk_entry_set_text(GTK_ENTRY(data->artist_entry), notnull(cddb_disc_get_artist(disc)));
+	gtk_entry_set_text(GTK_ENTRY(data->title_entry), notnull(cddb_disc_get_title(disc)));
+	gtk_entry_set_text(GTK_ENTRY(data->category_entry), notnull(cddb_disc_get_category_str(disc)));
+	gtk_entry_set_text(GTK_ENTRY(data->genre_entry), notnull(cddb_disc_get_genre(disc)));
+	gtk_entry_set_text(GTK_ENTRY(data->ext_entry), notnull(cddb_disc_get_ext_data(disc)));
 
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->year_spinner), cddb_disc_get_year(disc));
 
@@ -1001,8 +995,8 @@ cddb_dialog_load_disc(cddb_lookup_t * data, cddb_disc_t * disc) {
 
 	for (i = 0; i < data->ntracks; i++) {
 		gtk_list_store_append(data->track_store, &iter);
-		str = cddb_track_get_title(cddb_disc_get_track(disc, i));
-		gtk_list_store_set(data->track_store, &iter, 0, str ? str : "", -1);
+		gtk_list_store_set(data->track_store, &iter, 0,
+				   notnull(cddb_track_get_title(cddb_disc_get_track(disc, i))), -1);
 	}
 }
 
@@ -1174,8 +1168,8 @@ cddb_dialog(cddb_lookup_t * data) {
 		for (i = 0; i < data->nrecords; i++) {
 			snprintf(text, MAXLEN, "%d. %s: %s [%x] ",
 				 i + 1,
-				 cddb_disc_get_artist(data->records[i]),
-				 cddb_disc_get_title(data->records[i]),
+				 notnull(cddb_disc_get_artist(data->records[i])),
+				 notnull(cddb_disc_get_title(data->records[i])),
 				 cddb_disc_get_discid(data->records[i]));
 			gtk_combo_box_append_text(GTK_COMBO_BOX(data->combo), text);
 		}

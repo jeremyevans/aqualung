@@ -22,11 +22,9 @@
 #ifndef _BUILD_STORE_H
 #define _BUILD_STORE_H
 
-#define BUILD_THREAD_BUSY  0
-#define BUILD_THREAD_FREE  1
+int build_is_busy(void);
 
-void build_store(GtkTreeIter store_iter);
-int build_thread_test(int state);
+void build_store(GtkTreeIter * store_iter);
 
 #endif /* _BUILD_STORE_H */
 

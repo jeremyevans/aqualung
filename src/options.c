@@ -289,34 +289,6 @@ open_font_desc(void) {
 }
 
 void
-set_option_from_toggle(GtkWidget * widget, int * opt) {
-
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
-		*opt = 1;
-	} else {
-		*opt = 0;
-	}
-}
-
-void
-set_option_from_combo(GtkWidget * widget, int * opt) {
-
-	*opt = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
-}
-
-void
-set_option_from_spin(GtkWidget * widget, int * opt) {
-
-	*opt = gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget));
-}
-
-void
-set_option_from_entry(GtkWidget * widget, char * opt, int n) {
-
-	strncpy(opt, gtk_entry_get_text(GTK_ENTRY(widget)), n-1);
-}
-
-void
 options_window_accept(void) {
 
 	int i;

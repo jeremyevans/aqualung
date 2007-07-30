@@ -22,9 +22,14 @@
 #ifndef _BUILD_STORE_H
 #define _BUILD_STORE_H
 
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+
 int build_is_busy(void);
 
-void build_store(GtkTreeIter * store_iter);
+void build_store(GtkTreeIter * store_iter, char * file);
+
+xmlNodePtr build_store_get_xml_node(char * file);
 
 #endif /* _BUILD_STORE_H */
 

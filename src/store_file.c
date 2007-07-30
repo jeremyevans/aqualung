@@ -1816,9 +1816,14 @@ void
 store__build_cb(gpointer data) {
 
 	GtkTreeIter store_iter;
+	GtkTreeModel * model;
 
-	if (gtk_tree_selection_get_selected(music_select, NULL, &store_iter)) {
-		build_store(&store_iter);
+	if (gtk_tree_selection_get_selected(music_select, &model, &store_iter)) {
+
+		store_data_t * data;
+
+                gtk_tree_model_get(model, &store_iter, MS_COL_DATA, &data, -1);
+		build_store(&store_iter, data->file);
 	}
 }
 
@@ -3889,6 +3894,7 @@ store_file_save(GtkTreeIter * iter_store) {
 
 	xmlDocPtr doc;
 	xmlNodePtr root;
+	xmlNodePtr build_node;
 	char * name;
 	int i;
 	store_data_t * data;
@@ -3921,6 +3927,10 @@ store_file_save(GtkTreeIter * iter_store) {
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, iter_store, i++)) {
 		save_artist(doc, root, &iter_artist);
+	}
+
+	if ((build_node = build_store_get_xml_node(data->file)) != NULL) {
+		xmlAddChild(root, build_node);
 	}
 
 	xmlSaveFormatFile(data->file, doc, 1);

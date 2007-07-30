@@ -28,8 +28,6 @@
 #include <sys/stat.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
 
 #include "common.h"
 #include "utils.h"

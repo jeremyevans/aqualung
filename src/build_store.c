@@ -105,6 +105,7 @@ enum {
 	DATA_SRC_FILE
 };
 
+
 typedef struct _build_track_t {
 
 	char filename[MAXLEN];
@@ -160,6 +161,7 @@ typedef struct {
 
 } build_disc_t;
 
+
 typedef struct {
 
 	int enabled[3];
@@ -167,7 +169,6 @@ typedef struct {
 	int cddb_mask;
 
 } data_src_t;
-
 
 typedef struct {
 
@@ -184,10 +185,10 @@ typedef struct {
 	int pre_enabled;
 	int low_enabled;
 	int mode;
+	char pattern[MAXLEN];
 	char ** pre_stringv;
 
 } capitalize_t;
-
 
 typedef struct {
 
@@ -215,7 +216,6 @@ typedef struct {
 
 } file_transform_t;
 
-
 typedef struct {
 
 	file_transform_t * model;
@@ -231,7 +231,6 @@ typedef struct {
 	GtkWidget * label_error;
 
 } file_transform_gui_t;
-
 
 typedef struct {
 
@@ -258,6 +257,7 @@ typedef struct {
 
 	file_transform_gui_t * snd_file_trans_gui;
 
+	char * file;
 
 	GtkTreeIter store_iter;
 	GtkTreeIter artist_iter;
@@ -301,60 +301,65 @@ typedef struct {
 } build_store_t;
 
 
+
 void file_transform(char * buf, file_transform_t * model);
 
 
-build_store_t *
-build_store_new(GtkTreeIter * store_iter) {
+void
+xml_save_str(xmlNodePtr node, char * varname, char * var) {
 
-	build_store_t * data;
-
-	if ((data = (build_store_t *)calloc(1, sizeof(build_store_t))) == NULL) {
-		fprintf(stderr, "build_store_new: calloc error\n");
-		return NULL;
-	}
-
-#ifdef _WIN32
-        data->mutex = g_mutex_new();
-#endif /* _WIN32 */
-
-	data->type = BUILD_TYPE_STRICT;
-        data->store_iter = *store_iter;
-	data->artist_dir_depth = 1;
-	data->artist_sort_by = SORT_NAME_LOW;
-	data->record_sort_by = SORT_YEAR;
-	data->excl_enabled = 1;
-
-	return data;
+	xmlNewTextChild(node, NULL, (const xmlChar *)varname, (xmlChar *)var);
 }
 
 void
-build_store_free(build_store_t * data) {
+xml_save_int(xmlNodePtr node, char * varname, int var) {
 
-#ifdef _WIN32
-	g_mutex_free(data->mutexmutex);
-#endif /* _WIN32 */
+	char str[32];
 
-	g_strfreev(data->capitalize_artist->pre_stringv);
-	data->capitalize_artist->pre_stringv = NULL;
+        snprintf(str, 31, "%d", var);
+        xmlNewTextChild(node, NULL, (const xmlChar *)varname, (xmlChar *)str);
+}
 
-	g_strfreev(data->capitalize_record->pre_stringv);
-	data->capitalize_record->pre_stringv = NULL;
+void
+xml_save_int_array(xmlNodePtr node, char * varname, int * var, int idx) {
 
-	g_strfreev(data->capitalize_track->pre_stringv);
-	data->capitalize_track->pre_stringv = NULL;
+	char name[MAXLEN];
 
-	g_strfreev(data->excl_patternv);
-	data->excl_patternv = NULL;
+	snprintf(name, MAXLEN-1, "%s_%d", varname, idx);
+	xml_save_int(node, name, var[idx]);
+}
 
-	g_strfreev(data->incl_patternv);
-	data->incl_patternv = NULL;
+void
+xml_load_str(xmlDocPtr doc, xmlNodePtr node, char * varname, char * var) {
 
-	regfree(&data->file_transform_artist->compiled);
-	regfree(&data->file_transform_record->compiled);
-	regfree(&data->file_transform_track->compiled);
+	if (!xmlStrcmp(node->name, (const xmlChar *)varname)) {
+		xmlChar * key = xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
+		if (key != NULL) {
+			strncpy(var, (char *)key, MAXLEN-1);
+			xmlFree(key);
+		}
+	}
+}
 
-        free(data);
+void
+xml_load_int(xmlDocPtr doc, xmlNodePtr node, char * varname, int * var) {
+
+	if ((!xmlStrcmp(node->name, (const xmlChar *)varname))) {
+		xmlChar * key = xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
+		if (key != NULL) {
+			sscanf((char *)key, "%d", var);
+			xmlFree(key);
+		}
+	}
+}
+
+void
+xml_load_int_array(xmlDocPtr doc, xmlNodePtr node, char * varname, int * var, int idx) {
+
+	char name[MAXLEN];
+
+	snprintf(name, MAXLEN-1, "%s_%d", varname, idx);
+	xml_load_int(doc, node, name, var + idx);
 }
 
 
@@ -384,6 +389,44 @@ data_src_new() {
 	model->enabled[2] = TRUE;
 
 	return model;
+}
+
+void
+data_src_save(xmlNodePtr root, char * nodeID, data_src_t * model) {
+
+	int i;
+	xmlNodePtr node = xmlNewTextChild(root, NULL, (const xmlChar *) nodeID, NULL);
+
+	for (i = 0; i < 3; i++) {
+		xml_save_int_array(node, "enabled", model->enabled, i);
+		xml_save_int_array(node, "type", model->type, i);
+	}
+}
+
+void
+data_src_load(xmlDocPtr doc, xmlNodePtr node, char * nodeID, data_src_t ** model) {
+
+	if (!xmlStrcmp(node->name, (const xmlChar *)nodeID)) {
+
+		int i;
+		xmlNodePtr cur;
+
+		*model = data_src_new();
+
+		for (cur = node->xmlChildrenNode; cur != NULL; cur = cur->next) {
+
+			for (i = 0; i < 3; i++) {
+				xml_load_int_array(doc, cur, "enabled", (*model)->enabled, i);
+				xml_load_int_array(doc, cur, "type", (*model)->type, i);
+			}
+		}
+
+#ifdef HAVE_CDDB
+		(*model)->cddb_mask = 1;
+#else
+		(*model)->cddb_mask = 0;
+#endif /* HAVE_CDDB */
+	}
 }
 
 void
@@ -472,15 +515,14 @@ void
 data_src_gui_sync(data_src_gui_t * gui) {
 
 	GtkTreeIter iter;
-	int i = 0;
+	int i;
 
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(gui->list), &iter, NULL, i)) {
+	for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(gui->list), &iter, NULL, i); i++) {
 
 		gtk_tree_model_get(GTK_TREE_MODEL(gui->list), &iter,
 				   0, gui->model->enabled + i,
 				   1, gui->model->type + i,
 				   -1);
-		++i;
 	}
 }
 
@@ -490,8 +532,8 @@ capitalize_new() {
 
 	capitalize_t * model;
 
-	if ((model = (capitalize_t *)malloc(sizeof(capitalize_t))) == NULL) {
-		fprintf(stderr, "build_store.c: capitalize_new(): malloc error\n");
+	if ((model = (capitalize_t *)calloc(1, sizeof(capitalize_t))) == NULL) {
+		fprintf(stderr, "build_store.c: capitalize_new(): calloc error\n");
 		return NULL;
 	}
 
@@ -499,9 +541,41 @@ capitalize_new() {
 	model->pre_enabled = TRUE;
 	model->low_enabled = TRUE;
 	model->mode = CAP_ALL_WORDS;
-	model->pre_stringv = NULL;
+
+	strncpy(model->pattern, "CD,a),b),c),d),I,II,III,IV,V,VI,VII,VIII,IX,X", MAXLEN-1);
 
 	return model;
+}
+
+void
+capitalize_save(xmlNodePtr root, char * nodeID, capitalize_t * model) {
+
+	xmlNodePtr node = xmlNewTextChild(root, NULL, (const xmlChar *) nodeID, NULL);
+
+	xml_save_int(node, "enabled", model->enabled);
+	xml_save_int(node, "pre_enabled", model->pre_enabled);
+	xml_save_int(node, "low_enabled", model->low_enabled);
+	xml_save_int(node, "mode", model->mode);
+	xml_save_str(node, "pattern", model->pattern);
+}
+
+void
+capitalize_load(xmlDocPtr doc, xmlNodePtr node, char * nodeID, capitalize_t ** model) {
+
+	if (!xmlStrcmp(node->name, (const xmlChar *)nodeID)) {
+
+		xmlNodePtr cur;
+
+		*model = capitalize_new();
+
+		for (cur = node->xmlChildrenNode; cur != NULL; cur = cur->next) {
+			xml_load_int(doc, cur, "enabled", &(*model)->enabled);
+			xml_load_int(doc, cur, "pre_enabled", &(*model)->pre_enabled);
+			xml_load_int(doc, cur, "low_enabled", &(*model)->low_enabled);
+			xml_load_int(doc, cur, "mode", &(*model)->mode);
+			xml_load_str(doc, cur, "pattern", (*model)->pattern);
+		}
+	}
 }
 
 void
@@ -581,7 +655,7 @@ capitalize_gui_new(capitalize_t * model, GtkWidget * target_vbox) {
 
         gui->entry_pre = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(gui->entry_pre), MAXLEN-1);
-	gtk_entry_set_text(GTK_ENTRY(gui->entry_pre), "CD,a),b),c),d),I,II,III,IV,V,VI,VII,VIII,IX,X");
+	gtk_entry_set_text(GTK_ENTRY(gui->entry_pre), model->pattern);
 	gtk_table_attach(GTK_TABLE(table), gui->entry_pre, 1, 2, 1, 2,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
 
@@ -630,6 +704,7 @@ capitalize_gui_sync(capitalize_gui_t * gui) {
 	gui->model->low_enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gui->check_low));
 
 	gui->model->mode = gtk_combo_box_get_active(GTK_COMBO_BOX(gui->combo));
+	strncpy(gui->model->pattern, gtk_entry_get_text(GTK_ENTRY(gui->entry_pre)), MAXLEN-1);
 
 	gui->model->pre_stringv =
 		g_strsplit(gtk_entry_get_text(GTK_ENTRY(gui->entry_pre)), ",", 0);
@@ -655,6 +730,42 @@ file_transform_new() {
 	model->rm_multi_spaces = 1;
 
 	return model;
+}
+
+void
+file_transform_save(xmlNodePtr root, char * nodeID, file_transform_t * model) {
+
+	xmlNodePtr node = xmlNewTextChild(root, NULL, (const xmlChar *) nodeID, NULL);
+
+	xml_save_str(node, "regexp", model->regexp);
+	xml_save_str(node, "replacement", model->replacement);
+
+	xml_save_int(node, "rm_number", model->rm_number);
+	xml_save_int(node, "rm_extension", model->rm_extension);
+	xml_save_int(node, "us_to_space", model->us_to_space);
+	xml_save_int(node, "rm_multi_spaces", model->rm_multi_spaces);
+}
+
+void
+file_transform_load(xmlDocPtr doc, xmlNodePtr node, char * nodeID, file_transform_t ** model) {
+
+	if (!xmlStrcmp(node->name, (const xmlChar *)nodeID)) {
+
+		xmlNodePtr cur;
+
+		*model = file_transform_new();
+
+		for (cur = node->xmlChildrenNode; cur != NULL; cur = cur->next) {
+
+			xml_load_str(doc, cur, "regexp", (*model)->regexp);
+			xml_load_str(doc, cur, "replacement", (*model)->replacement);
+
+			xml_load_int(doc, cur, "rm_number", &(*model)->rm_number);
+			xml_load_int(doc, cur, "rm_extension", &(*model)->rm_extension);
+			xml_load_int(doc, cur, "us_to_space", &(*model)->us_to_space);
+			xml_load_int(doc, cur, "rm_multi_spaces", &(*model)->rm_multi_spaces);
+		}
+	}
 }
 
 file_transform_gui_t *
@@ -793,6 +904,260 @@ file_transform_gui_sync(file_transform_gui_t * gui) {
 
 	return 0;
 }
+
+
+build_store_t *
+build_store_new(GtkTreeIter * store_iter, char * file) {
+
+	build_store_t * data;
+	char * pfilter = NULL;
+	int i;
+
+
+	if ((data = (build_store_t *)calloc(1, sizeof(build_store_t))) == NULL) {
+		fprintf(stderr, "build_store_new: calloc error\n");
+		return NULL;
+	}
+
+#ifdef _WIN32
+        data->mutex = g_mutex_new();
+#endif /* _WIN32 */
+
+        data->store_iter = *store_iter;
+	data->file = strdup(file);
+
+	data->type = BUILD_TYPE_STRICT;
+	data->artist_dir_depth = 1;
+	data->artist_sort_by = SORT_NAME_LOW;
+	data->record_sort_by = SORT_YEAR;
+	data->excl_enabled = 1;
+
+
+#ifdef HAVE_SNDFILE
+	for (i = 0; valid_extensions_sndfile[i] != NULL; i++) {
+		strcat(data->incl_pattern, "*.");
+		strcat(data->incl_pattern, valid_extensions_sndfile[i]);
+		strcat(data->incl_pattern, ",");
+	}
+#endif /* HAVE_SNDFILE */
+
+#ifdef HAVE_FLAC
+	strcat(data->incl_pattern, "*.flac,");
+#endif /* HAVE_FLAC */
+
+#ifdef HAVE_OGG_VORBIS
+	strcat(data->incl_pattern, "*.ogg,");
+#endif /* HAVE_OGG_VORBIS */
+
+#ifdef HAVE_MPEG
+	for (i = 0; valid_extensions_mpeg[i] != NULL; i++) {
+		strcat(data->incl_pattern, "*.");
+		strcat(data->incl_pattern, valid_extensions_mpeg[i]);
+		strcat(data->incl_pattern, ",");
+	}
+#endif /* HAVE_MPEG */
+
+#ifdef HAVE_SPEEX
+	strcat(data->incl_pattern, "*.spx,");
+#endif /* HAVE_SPEEX */
+
+#ifdef HAVE_MPC
+	strcat(data->incl_pattern, "*.mpc,");
+#endif /* HAVE_MPC */
+
+#ifdef HAVE_MAC
+	strcat(data->incl_pattern, "*.ape,");
+#endif /* HAVE_MAC */
+
+#ifdef HAVE_MOD
+	for (i = 0; valid_extensions_mod[i] != NULL; i++) {
+		strcat(data->incl_pattern, "*.");
+		strcat(data->incl_pattern, valid_extensions_mod[i]);
+		strcat(data->incl_pattern, ",");
+	}
+#endif /* HAVE_MOD */
+
+#ifdef HAVE_WAVPACK
+	strcat(data->incl_pattern, "*.wv,");
+#endif /* HAVE_WAVPACK */
+
+	if ((pfilter = strrchr(data->incl_pattern, ',')) != NULL) {
+		*pfilter = '\0';
+	}
+
+	strcpy(data->excl_pattern, "*.jpg,*.jpeg,*.png,*.gif,*.pls,*.m3u,*.cue,*.xml,*.html,*.htm,*.txt,*.ini,*.nfo");
+
+	return data;
+}
+
+
+void
+build_store_save(build_store_t * data) {
+
+	xmlDocPtr doc;
+	xmlNodePtr root;
+	xmlNodePtr node;
+
+	doc = xmlParseFile(data->file);
+        root = xmlDocGetRootElement(doc);
+
+	for (node = root->xmlChildrenNode; node != NULL; node = node->next) {
+
+		if (!xmlStrcmp(node->name, (const xmlChar *)"builder")) {
+			xmlUnlinkNode(node);
+			xmlFreeNode(node);
+			break;
+		}
+	}
+
+	node = xmlNewTextChild(root, NULL, (const xmlChar *)"builder", NULL);
+
+	xml_save_int(node, "type", data->type);
+	xml_save_str(node, "root", data->root);
+	xml_save_int(node, "artist_dir_depth", data->artist_dir_depth);
+	xml_save_int(node, "excl_enabled", data->excl_enabled);
+	xml_save_str(node, "excl_pattern", data->excl_pattern);
+	xml_save_int(node, "incl_enabled", data->incl_enabled);
+	xml_save_str(node, "incl_pattern", data->incl_pattern);
+	xml_save_int(node, "reset_existing_data", data->reset_existing_data);
+
+	xml_save_int(node, "artist_sort_by", data->artist_sort_by);
+	xml_save_int(node, "record_sort_by", data->record_sort_by);
+	xml_save_int(node, "rec_add_year_to_comment", data->rec_add_year_to_comment);
+	xml_save_int(node, "trk_rva_enabled", data->trk_rva_enabled);
+	xml_save_int(node, "trk_comment_enabled", data->trk_comment_enabled);
+
+	data_src_save(node, "data_src_artist", data->data_src_artist);
+	data_src_save(node, "data_src_record", data->data_src_record);
+	data_src_save(node, "data_src_track", data->data_src_track);
+
+	capitalize_save(node, "capitalize_artist", data->capitalize_artist);
+	capitalize_save(node, "capitalize_record", data->capitalize_record);
+	capitalize_save(node, "capitalize_track", data->capitalize_track);
+
+	file_transform_save(node, "file_transform_artist", data->file_transform_artist);
+	file_transform_save(node, "file_transform_record", data->file_transform_record);
+	file_transform_save(node, "file_transform_track", data->file_transform_track);
+
+        xmlSaveFormatFile(data->file, doc, 1);
+	xmlFreeDoc(doc);
+}
+
+int
+build_store_load(build_store_t * data, int test_only) {
+
+	int found = 0;
+	xmlDocPtr doc;
+	xmlNodePtr root;
+	xmlNodePtr node;
+
+	doc = xmlParseFile(data->file);
+        root = xmlDocGetRootElement(doc);
+
+	for (node = root->xmlChildrenNode; node != NULL; node = node->next) {
+
+		if (!xmlStrcmp(node->name, (const xmlChar *)"builder")) {
+			found = 1;
+			break;
+		}
+	}
+
+	if (test_only) {
+		xmlFreeDoc(doc);
+		return found;
+	}
+
+	if (found) {
+		xmlNodePtr cur;
+
+		for (cur = node->xmlChildrenNode; cur != NULL; cur = cur->next) {
+
+			xml_load_int(doc, cur, "type", &data->type);
+			xml_load_str(doc, cur, "root", data->root);
+			xml_load_int(doc, cur, "artist_dir_depth", &data->artist_dir_depth);
+			xml_load_int(doc, cur, "excl_enabled", &data->excl_enabled);
+			xml_load_str(doc, cur, "excl_pattern", data->excl_pattern);
+			xml_load_int(doc, cur, "incl_enabled", &data->incl_enabled);
+			xml_load_str(doc, cur, "incl_pattern", data->incl_pattern);
+			xml_load_int(doc, cur, "reset_existing_data", &data->reset_existing_data);
+
+			xml_load_int(doc, cur, "artist_sort_by", &data->artist_sort_by);
+			xml_load_int(doc, cur, "record_sort_by", &data->record_sort_by);
+			xml_load_int(doc, cur, "rec_add_year_to_comment", &data->rec_add_year_to_comment);
+			xml_load_int(doc, cur, "trk_rva_enabled", &data->trk_rva_enabled);
+			xml_load_int(doc, cur, "trk_comment_enabled", &data->trk_comment_enabled);
+
+			data_src_load(doc, cur, "data_src_artist", &data->data_src_artist);
+			data_src_load(doc, cur, "data_src_record", &data->data_src_record);
+			data_src_load(doc, cur, "data_src_track", &data->data_src_track);
+
+			capitalize_load(doc, cur, "capitalize_artist", &data->capitalize_artist);
+			capitalize_load(doc, cur, "capitalize_record", &data->capitalize_record);
+			capitalize_load(doc, cur, "capitalize_track", &data->capitalize_track);
+
+			file_transform_load(doc, cur, "file_transform_artist", &data->file_transform_artist);
+			file_transform_load(doc, cur, "file_transform_record", &data->file_transform_record);
+			file_transform_load(doc, cur, "file_transform_track", &data->file_transform_track);
+		}
+	}
+
+	xmlFreeDoc(doc);
+	return found;
+}
+
+xmlNodePtr
+build_store_get_xml_node(char * file) {
+
+	xmlDocPtr doc;
+	xmlNodePtr node;
+
+	doc = xmlParseFile(file);
+        node = xmlDocGetRootElement(doc);
+
+	for (node = node->xmlChildrenNode; node != NULL; node = node->next) {
+
+		if (!xmlStrcmp(node->name, (const xmlChar *)"builder")) {
+			xmlNodePtr res = xmlCopyNode(node, 1);
+			xmlFreeDoc(doc);
+			return res;
+		}
+	}
+
+	xmlFreeDoc(doc);
+	return NULL;
+}
+
+void
+build_store_free(build_store_t * data) {
+
+#ifdef _WIN32
+	g_mutex_free(data->mutexmutex);
+#endif /* _WIN32 */
+
+	free(data->file);
+
+	g_strfreev(data->capitalize_artist->pre_stringv);
+	data->capitalize_artist->pre_stringv = NULL;
+
+	g_strfreev(data->capitalize_record->pre_stringv);
+	data->capitalize_record->pre_stringv = NULL;
+
+	g_strfreev(data->capitalize_track->pre_stringv);
+	data->capitalize_track->pre_stringv = NULL;
+
+	g_strfreev(data->excl_patternv);
+	data->excl_patternv = NULL;
+
+	g_strfreev(data->incl_patternv);
+	data->incl_patternv = NULL;
+
+	regfree(&data->file_transform_artist->compiled);
+	regfree(&data->file_transform_record->compiled);
+	regfree(&data->file_transform_track->compiled);
+
+        free(data);
+}
+
 
 char *
 filter_string(const char * str) {
@@ -1229,6 +1594,7 @@ build_type_dialog(build_store_t * build_data) {
 
 	GtkWidget * dialog;
 	GtkWidget * notebook;
+	GtkWidget * radio_load;
 	GtkWidget * radio_strict;
 	GtkWidget * radio_loose;
 	GtkWidget * vbox;
@@ -1251,43 +1617,52 @@ build_type_dialog(build_store_t * build_data) {
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(notebook), FALSE);
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), notebook);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_vbox_new(FALSE, 5);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, NULL);
 
+
 	radio_strict = gtk_radio_button_new_with_label(NULL, _("Directory driven"));
 	gtk_widget_set_name(radio_strict, "check_on_notebook");
-	gtk_box_pack_start(GTK_BOX(vbox), radio_strict, FALSE, FALSE, 0);
+ 	gtk_box_pack_start(GTK_BOX(vbox), radio_strict, FALSE, FALSE, 0);
+ 
+ 	label = gtk_label_new(_("Follows the directory structure to identify the artists and\n"
+ 				"records. The files are added on a record basis."));
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 30);
+ 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new(_("Follows the directory structure to identify the artists and\n"
-				"records. The files are added on a record basis."));
-        hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 30);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 5);
 
-	radio_loose = gtk_radio_button_new_with_label_from_widget(
-			  GTK_RADIO_BUTTON(radio_strict), _("Independent"));
-	gtk_widget_set_name(radio_loose, "check_on_notebook");
-	gtk_box_pack_start(GTK_BOX(vbox), radio_loose, FALSE, FALSE, 5);
+ 	radio_loose = gtk_radio_button_new_with_label_from_widget(
+				  GTK_RADIO_BUTTON(radio_strict), _("Independent"));
+ 	gtk_widget_set_name(radio_loose, "check_on_notebook");
+ 	gtk_box_pack_start(GTK_BOX(vbox), radio_loose, FALSE, FALSE, 0);
+ 
+ 	label = gtk_label_new(_("Recursive search from the root directory for audio files.\n"
+ 				"The files are processed independently, so only metadata\n"
+ 				"and filename transformation are available."));
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 30);
+ 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new(_("Recursive search from the root directory for audio files.\n"
-				"The files are processed independently, so only metadata\n"
-				"and filename transformation are available."));
-        hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 30);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-	if (build_data->type == BUILD_TYPE_STRICT) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_strict), TRUE);
-	} else {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_loose), TRUE);
+	radio_load = gtk_radio_button_new_with_label_from_widget(
+				 GTK_RADIO_BUTTON(radio_strict), _("Load settings from Music Store file"));
+
+	if (build_store_load(build_data, 1)) {
+		gtk_widget_set_name(radio_load, "check_on_notebook");
+		gtk_box_pack_start(GTK_BOX(vbox), radio_load, FALSE, FALSE, 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_load), TRUE);
 	}
+
 
 	gtk_widget_show_all(dialog);
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_strict))) {
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_load))) {
+			build_store_load(build_data, 0);
+		} else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_strict))) {
 			build_data->type = BUILD_TYPE_STRICT;
 		} else {
 			build_data->type = BUILD_TYPE_LOOSE;
@@ -1366,7 +1741,6 @@ build_dialog(build_store_t * data) {
 	GtkWidget * snd_button_test;
 
         int i, ret;
-	char * pfilter = NULL;
 
 
         dialog = gtk_dialog_new_with_buttons(_("Build/Update store"),
@@ -1451,10 +1825,6 @@ build_dialog(build_store_t * data) {
 	gtk_widget_set_name(gen_check_excl, "check_on_notebook");
         gtk_box_pack_start(GTK_BOX(gen_excl_frame_hbox), gen_check_excl, FALSE, FALSE, 0);
 
-	if (data->excl_pattern[0] == '\0') {
-		strcpy(data->excl_pattern, "*.jpg,*.jpeg,*.png,*.gif,*.pls,*.m3u,*.cue,*.xml,*.html,*.htm,*.txt,*.ini,*.nfo");
-	}
-
         gen_entry_excl = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(gen_entry_excl), MAXLEN-1);
 	gtk_entry_set_text(GTK_ENTRY(gen_entry_excl), data->excl_pattern);
@@ -1482,63 +1852,6 @@ build_dialog(build_store_t * data) {
 
         gen_entry_incl = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(gen_entry_incl), MAXLEN-1);
-
-
-	if (data->incl_pattern[0] == '\0') {
-
-#ifdef HAVE_SNDFILE
-		for (i = 0; valid_extensions_sndfile[i] != NULL; i++) {
-			strcat(data->incl_pattern, "*.");
-			strcat(data->incl_pattern, valid_extensions_sndfile[i]);
-			strcat(data->incl_pattern, ",");
-		}
-#endif /* HAVE_SNDFILE */
-
-#ifdef HAVE_FLAC
-		strcat(data->incl_pattern, "*.flac,");
-#endif /* HAVE_FLAC */
-
-#ifdef HAVE_OGG_VORBIS
-		strcat(data->incl_pattern, "*.ogg,");
-#endif /* HAVE_OGG_VORBIS */
-
-#ifdef HAVE_MPEG
-		for (i = 0; valid_extensions_mpeg[i] != NULL; i++) {
-			strcat(data->incl_pattern, "*.");
-			strcat(data->incl_pattern, valid_extensions_mpeg[i]);
-			strcat(data->incl_pattern, ",");
-		}
-#endif /* HAVE_MPEG */
-
-#ifdef HAVE_SPEEX
-		strcat(data->incl_pattern, "*.spx,");
-#endif /* HAVE_SPEEX */
-
-#ifdef HAVE_MPC
-		strcat(data->incl_pattern, "*.mpc,");
-#endif /* HAVE_MPC */
-
-#ifdef HAVE_MAC
-		strcat(data->incl_pattern, "*.ape,");
-#endif /* HAVE_MAC */
-
-#ifdef HAVE_MOD
-		for (i = 0; valid_extensions_mod[i] != NULL; i++) {
-			strcat(data->incl_pattern, "*.");
-			strcat(data->incl_pattern, valid_extensions_mod[i]);
-			strcat(data->incl_pattern, ",");
-		}
-#endif /* HAVE_MOD */
-
-#ifdef HAVE_WAVPACK
-		strcat(data->incl_pattern, "*.wv,");
-#endif /* HAVE_WAVPACK */
-
-		if ((pfilter = strrchr(data->incl_pattern, ',')) != NULL) {
-			*pfilter = '\0';
-		}
-	}
-
 	gtk_entry_set_text(GTK_ENTRY(gen_entry_incl), data->incl_pattern);
         gtk_box_pack_end(GTK_BOX(gen_incl_frame_hbox), gen_entry_incl, TRUE, TRUE, 0);
 
@@ -1577,7 +1890,7 @@ build_dialog(build_store_t * data) {
 		}
 	}
 
-	if (data->type != BUILD_TYPE_STRICT) {
+	if (data->type == BUILD_TYPE_LOOSE) {
 		data->data_src_artist->cddb_mask = 0;
 		for (i = 0; i < 3; i++) {
 			if (data->data_src_artist->type[i] == DATA_SRC_CDDB) {
@@ -1585,8 +1898,6 @@ build_dialog(build_store_t * data) {
 				break;
 			}
 		}
-	} else {
-		data->data_src_artist->cddb_mask = 1;
 	}
 
 	art_src_gui = data_src_gui_new(data->data_src_artist, art_vbox);
@@ -1634,7 +1945,7 @@ build_dialog(build_store_t * data) {
 		}
 	}
 
-	if (data->type != BUILD_TYPE_STRICT) {
+	if (data->type == BUILD_TYPE_LOOSE) {
 		data->data_src_record->cddb_mask = 0;
 		for (i = 0; i < 3; i++) {
 			if (data->data_src_record->type[i] == DATA_SRC_CDDB) {
@@ -1642,8 +1953,6 @@ build_dialog(build_store_t * data) {
 				break;
 			}
 		}
-	} else {
-		data->data_src_record->cddb_mask = 1;
 	}
 
 	rec_src_gui = data_src_gui_new(data->data_src_record, rec_vbox);
@@ -1699,7 +2008,7 @@ build_dialog(build_store_t * data) {
 		data->data_src_track = data_src_new();
 	}
 
-	if (data->type != BUILD_TYPE_STRICT) {
+	if (data->type == BUILD_TYPE_LOOSE) {
 		data->data_src_track->cddb_mask = 0;
 		for (i = 0; i < 3; i++) {
 			if (data->data_src_track->type[i] == DATA_SRC_CDDB) {
@@ -1707,8 +2016,6 @@ build_dialog(build_store_t * data) {
 				break;
 			}
 		}
-	} else {
-		data->data_src_track->cddb_mask = 1;
 	}
 
 	trk_src_gui = data_src_gui_new(data->data_src_track, trk_vbox);
@@ -1886,6 +2193,8 @@ build_dialog(build_store_t * data) {
 				break;
 			}
 		}
+
+		build_store_save(data);
 
 		ret = 1;
 
@@ -3313,11 +3622,11 @@ build_thread_loose(void * arg) {
 
 
 void
-build_store(GtkTreeIter * iter) {
+build_store(GtkTreeIter * iter, char * file) {
 
 	build_store_t * data;
 
-        if ((data = build_store_new(iter)) == NULL) {
+        if ((data = build_store_new(iter, file)) == NULL) {
 		return;
         }
 

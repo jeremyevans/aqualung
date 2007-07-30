@@ -42,6 +42,7 @@
 #include "playlist.h"
 #include "i18n.h"
 #include "volume.h"
+#include "skin.h"
 
 
 #define EPSILON 0.00000000001
@@ -174,6 +175,7 @@ volume_finalize(gpointer data) {
 	--vol_slot_count;
 
 	if (vol_slot_count == 0) {
+		unregister_toplevel_window(vol_window);
 		gtk_widget_destroy(vol_window);
 		vol_window = NULL;
 	}
@@ -325,6 +327,7 @@ create_volume_window() {
 	GtkWidget * vbox;
 
 	vol_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	register_toplevel_window(vol_window);
         gtk_window_set_title(GTK_WINDOW(vol_window), _("Calculating volume level"));
         gtk_window_set_position(GTK_WINDOW(vol_window), GTK_WIN_POS_CENTER);
         gtk_window_resize(GTK_WINDOW(vol_window), 480, 110);

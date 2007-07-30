@@ -167,8 +167,6 @@ extern int music_store_changed;
 
 extern int fxbuilder_on;
 
-int skin_being_changed;
-
 GtkObject * adj_pos;
 GtkObject * adj_vol;
 GtkObject * adj_bal;
@@ -692,186 +690,6 @@ restore_window_position(void) {
 	}
 }
 
-
-void
-change_skin(char * path) {
-
-	int current_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(playlist_notebook));
-
-	int st_play = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button));
-	int st_pause = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button));
-	int st_r_track = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_button));
-	int st_r_all = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_all_button));
-	int st_shuffle = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button));
-	int st_fx = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(plugin_toggle));
-	int st_mstore = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(musicstore_toggle));
-	int st_plist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(playlist_toggle));
-	char title[MAXLEN];
-
-#ifdef HAVE_LADSPA
-	GtkTreeIter iter;
-	gpointer gp_instance;
-	int i = 0;
-#endif /* HAVE_LADSPA */
-
-	char rcpath[MAXLEN];
-
-
-	skin_being_changed = 1;
-
-	strncpy(title, gtk_label_get_text(GTK_LABEL(label_title)), MAXLEN-1);
-
-	g_source_remove(timeout_tag);
-#ifdef HAVE_CDDA
-	cdda_timeout_stop();
-#endif /* HAVE_CDDA */
-
-	save_window_position();
-
-	store_file_progress_bar_hide();
-	playlist_progress_bar_hide_all();
-
-	gtk_widget_destroy(main_window);
-	main_window = NULL;
-
-	if (!options.playlist_is_embedded) {
-		gtk_widget_destroy(playlist_window);
-		playlist_window = NULL;
-	}
-
-	gtk_widget_destroy(browser_window);
-	browser_window = NULL;
-
-	deflicker();
-
-#ifdef HAVE_LADSPA
-	gtk_widget_destroy(fxbuilder_window);
-	deflicker();
-#endif /* HAVE_LADSPA */
-	
-	sprintf(rcpath, "%s/rc", path);
-	gtk_rc_parse(rcpath);
-
-	create_main_window(path);
-	deflicker();
-	create_playlist();
-	deflicker();
-	create_music_browser();
-	deflicker();
-#ifdef HAVE_LADSPA
-	create_fxbuilder();
-	deflicker();
-#endif /* HAVE_LADSPA */
-	
-	toggle_noeffect(PLAY, st_play);
-	toggle_noeffect(PAUSE, st_pause);
-
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_button), st_r_track);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(repeat_all_button), st_r_all);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shuffle_button), st_shuffle);
-
-	if (options.playlist_is_embedded) {
-		g_signal_handlers_block_by_func(G_OBJECT(playlist_toggle), playlist_toggled, NULL);
-	}
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle), st_plist);
-	if (options.playlist_is_embedded) {
-		g_signal_handlers_unblock_by_func(G_OBJECT(playlist_toggle), playlist_toggled, NULL);
-	}
-
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(musicstore_toggle), st_mstore);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(plugin_toggle), st_fx);
-
-	gtk_widget_show_all(main_window);
-
-	refresh_displays();
-
-	if (is_file_loaded) {
-		set_title_label(title);
-		display_cover(cover_image_area, c_event_box, cover_align,
-			      48, 48, current_file, TRUE, TRUE);
-	}
-
-#ifdef HAVE_LOOP
-	if (!st_r_track) {
-		gtk_widget_hide(loop_bar);
-	}
-#endif /* HAVE_LOOP */
-
-	deflicker();
-
-	if (options.playlist_is_embedded) {
-		if (!options.playlist_on) {
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle), FALSE);
-			gtk_widget_hide(playlist_window);
-			deflicker();
-		}
-	}
-
-#ifdef HAVE_LADSPA
-        while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, i) &&
-		i < MAX_PLUGINS) {
-
-		gtk_tree_model_get(GTK_TREE_MODEL(running_store), &iter, 1, &gp_instance, -1);
-		gtk_widget_reset_rc_styles(((plugin_instance *)gp_instance)->window);
-		gtk_widget_queue_draw(((plugin_instance *)gp_instance)->window);
-		deflicker();
-		++i;
-	}
-#endif /* HAVE_LADSPA */
-
-	if (info_window) {
-		gtk_widget_reset_rc_styles(info_window);
-		gtk_widget_queue_draw(info_window);
-		gtk_window_present(GTK_WINDOW(info_window));
-		deflicker();
-	}
-
-	if (vol_window) {
-		gtk_widget_reset_rc_styles(vol_window);
-		gtk_widget_queue_draw(vol_window);
-		deflicker();
-	}
-        /*
-	if (build_prog_window) {
-		gtk_widget_reset_rc_styles(build_prog_window);
-		gtk_widget_queue_draw(build_prog_window);
-		deflicker();
-	}
-        */
-	if (ripper_prog_window) {
-		gtk_widget_reset_rc_styles(ripper_prog_window);
-		gtk_widget_queue_draw(ripper_prog_window);
-		deflicker();
-	}
-
-#ifdef HAVE_SYSTRAY
-	gtk_widget_reset_rc_styles(systray_menu);
-	gtk_widget_queue_draw(systray_menu);
-	deflicker();
-#endif /* HAVE_SYSTRAY */
-
-	restore_window_position();
-	deflicker();
-
-	playlist_set_color();
-	
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), options.vol);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), options.bal);
-
-	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
-#ifdef HAVE_CDDA
-	cdda_timeout_start();
-#endif /* HAVE_CDDA */
-
-	skin_being_changed = 0;
-
-        playlist_size_allocate_all();
-	playlist_selection_changed(playlist_get_current());
-	playlist_content_changed(playlist_get_current());
-
-        gtk_notebook_set_current_page(GTK_NOTEBOOK(playlist_notebook), current_page);
-        show_active_position_in_playlist(playlist_get_current());
-}
 
 gboolean
 main_window_close(GtkWidget * widget, GdkEvent * event, gpointer data) {
@@ -2506,42 +2324,55 @@ shuffle_toggled(GtkWidget * widget, gpointer data) {
 }
 
 
-GtkWidget *
-create_button_with_image(char * path, int toggle, char * alt) {
+void
+button_set_content(GtkWidget * button, char * imgpath, char * alt) {
 
-        GtkWidget * button;
         GdkPixbuf * pixbuf;
-        GtkWidget * image;
+	GtkWidget * widget;
 
-        gchar tmp_path[MAXLEN];
-
-        sprintf(tmp_path, "%s.xpm", path);
-
-        pixbuf = gdk_pixbuf_new_from_file(tmp_path, NULL);
-
-        if (!pixbuf) {
-                sprintf(tmp_path, "%s.png", path);
-                pixbuf = gdk_pixbuf_new_from_file(tmp_path, NULL);
-        }
-
-	if (pixbuf) {
-		image = gtk_image_new_from_pixbuf(pixbuf);
-		
-		if (toggle) {
-			button = gtk_toggle_button_new();
-		} else {
-			button = gtk_button_new();
-		}
-		gtk_container_add(GTK_CONTAINER(button), image);
-	} else {
-		if (toggle) {
-			button = gtk_toggle_button_new_with_label(alt);
-		} else {
-			button = gtk_button_new_with_label(alt);
-		}
+	if ((widget = gtk_bin_get_child(GTK_BIN(button))) != NULL) {
+		gtk_widget_destroy(widget);
 	}
 
-        return button;
+	if ((pixbuf = gdk_pixbuf_new_from_file(imgpath, NULL)) != NULL) {
+		widget = gtk_image_new_from_pixbuf(pixbuf);
+	} else {
+		widget = gtk_label_new(alt);
+	}
+
+	gtk_container_add(GTK_CONTAINER(button), widget);
+	gtk_widget_show(widget);
+}
+
+void
+main_buttons_set_content(char * skin_path) {
+
+	char path[MAXLEN];
+
+	sprintf(path, "%s/%s", skin_path, "prev.png");
+	button_set_content(prev_button, path, "prev");
+	sprintf(path, "%s/%s", skin_path, "stop.png");
+	button_set_content(stop_button, path, "stop");
+	sprintf(path, "%s/%s", skin_path, "next.png");
+	button_set_content(next_button, path, "next");
+	sprintf(path, "%s/%s", skin_path, "play.png");
+	button_set_content(play_button, path, "play");
+	sprintf(path, "%s/%s", skin_path, "pause.png");
+	button_set_content(pause_button, path, "pause");
+
+	sprintf(path, "%s/%s", skin_path, "repeat.png");
+	button_set_content(repeat_button, path, "repeat");
+	sprintf(path, "%s/%s", skin_path, "repeat_all.png");
+	button_set_content(repeat_all_button, path, "rep_all");
+	sprintf(path, "%s/%s", skin_path, "shuffle.png");
+	button_set_content(shuffle_button, path, "shuffle");
+
+	sprintf(path, "%s/%s", skin_path, "pl.png");
+	button_set_content(playlist_toggle, path, "PL");
+	sprintf(path, "%s/%s", skin_path, "ms.png");
+	button_set_content(musicstore_toggle, path, "MS");
+	sprintf(path, "%s/%s", skin_path, "fx.png");
+	button_set_content(plugin_toggle, path, "FX");
 }
 
 
@@ -2587,6 +2418,7 @@ set_win_title(void) {
 
 
 #ifdef HAVE_SYSTRAY
+extern GSList * toplevel_windows;
 void
 hide_all_windows(gpointer data) {
 	/* Inverse operation of show_all_windows().
@@ -2619,35 +2451,31 @@ hide_all_windows(gpointer data) {
 
 	save_window_position();
 
-	if (ripper_prog_window) {
-		gtk_widget_hide(ripper_prog_window);
-	}
-        /*
-	if (build_prog_window) {
-		gtk_widget_hide(build_prog_window);
-	}
-        */
-	if (vol_window) {
-		gtk_widget_hide(vol_window);
-	}
+ 	if (ripper_prog_window) {
+ 		gtk_widget_hide(ripper_prog_window);
+ 	}
 
-	if (info_window) {
-		gtk_widget_hide(info_window);
-	}
+ 	if (vol_window) {
+ 		gtk_widget_hide(vol_window);
+ 	}
 
-	if (!options.playlist_is_embedded && options.playlist_on) {
-		gtk_widget_hide(playlist_window);
-	}
+ 	if (info_window) {
+ 		gtk_widget_hide(info_window);
+ 	}
 
-	if (options.browser_on) {
-		gtk_widget_hide(browser_window);
-	}
+ 	if (!options.playlist_is_embedded && options.playlist_on) {
+ 		gtk_widget_hide(playlist_window);
+ 	}
 
-	if (fxbuilder_on) {
-		gtk_widget_hide(fxbuilder_window);
-	}
+ 	if (options.browser_on) {
+ 		gtk_widget_hide(browser_window);
+ 	}
 
-	gtk_widget_hide(main_window);
+ 	if (fxbuilder_on) {
+ 		gtk_widget_hide(fxbuilder_window);
+ 	}
+
+ 	gtk_widget_hide(main_window);
 
 	gtk_widget_hide(systray__hide);
 	gtk_widget_show(systray__show);
@@ -2658,41 +2486,29 @@ show_all_windows(gpointer data) {
 
 	gtk_widget_show(main_window);
 	systray_main_window_on = 1;
-	deflicker();
 
-	if (!options.playlist_is_embedded && options.playlist_on) {
-		gtk_widget_show(playlist_window);
-		deflicker();
-	}
+ 	if (!options.playlist_is_embedded && options.playlist_on) {
+ 		gtk_widget_show(playlist_window);
+ 	}
 
-	if (options.browser_on) {
-		gtk_widget_show(browser_window);
-		deflicker();
-	}
+ 	if (options.browser_on) {
+ 		gtk_widget_show(browser_window);
+ 	}
 
-	if (fxbuilder_on) {
-		gtk_widget_show(fxbuilder_window);
-		deflicker();
-	}
+ 	if (fxbuilder_on) {
+  		gtk_widget_show(fxbuilder_window);
+  	}
 
-	if (info_window) {
-		gtk_widget_show(info_window);
-		deflicker();
-	}
+  	if (info_window) {
+  		gtk_widget_show(info_window);
+  	}
 
-	if (vol_window) {
-		gtk_widget_show(vol_window);
-		deflicker();
-	}
-        /*
-	if (build_prog_window) {
-		gtk_widget_show(build_prog_window);
-		deflicker();
-	}
-        */
+  	if (vol_window) {
+  		gtk_widget_show(vol_window);
+  	}
+
 	if (ripper_prog_window) {
 		gtk_widget_show(ripper_prog_window);
-		deflicker();
 	}
 
 	restore_window_position();
@@ -2758,11 +2574,11 @@ create_main_window(char * skin_path) {
 
 	GtkWidget * sr_table;
 
-	char path[MAXLEN];
 
 	set_win_title();
 	main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_name(main_window, "main_window");
+	register_toplevel_window(main_window);
 	gtk_window_set_title(GTK_WINDOW(main_window), win_title);
 #ifdef HAVE_SYSTRAY
 	gtk_status_icon_set_tooltip(systray_icon, win_title);
@@ -2808,6 +2624,7 @@ create_main_window(char * skin_path) {
         aqualung_tooltips = gtk_tooltips_new();
 
         conf_menu = gtk_menu_new();
+	register_toplevel_window(conf_menu);
 
         if (options.playlist_is_embedded) {
                 init_plist_menu(conf_menu);
@@ -3112,24 +2929,19 @@ create_main_window(char * skin_path) {
 	btns_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), btns_hbox, FALSE, FALSE, 0);
 
-	sprintf(path, "%s/%s", skin_path, "prev");
-	prev_button = create_button_with_image(path, 0, "prev");
+	prev_button = gtk_button_new();
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), prev_button, _("Previous song"), NULL);
 
-	sprintf(path, "%s/%s", skin_path, "stop");
-	stop_button = create_button_with_image(path, 0, "stop");
+	stop_button = gtk_button_new();
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), stop_button, _("Stop"), NULL);
 
-	sprintf(path, "%s/%s", skin_path, "next");
-	next_button = create_button_with_image(path, 0, "next");
+	next_button = gtk_button_new();
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), next_button, _("Next song"), NULL);
 
-	sprintf(path, "%s/%s", skin_path, "play");
-	play_button = create_button_with_image(path, 1, "play");
+	play_button = gtk_toggle_button_new();
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), play_button, _("Play"), NULL);
 
-	sprintf(path, "%s/%s", skin_path, "pause");
-	pause_button = create_button_with_image(path, 1, "pause");
+	pause_button = gtk_toggle_button_new();
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), pause_button, _("Pause"), NULL);
 
 	GTK_WIDGET_UNSET_FLAGS(prev_button, GTK_CAN_FOCUS);
@@ -3154,24 +2966,21 @@ create_main_window(char * skin_path) {
 	/* toggle buttons for shuffle and repeat */
 	sr_table = gtk_table_new(2, 2, FALSE);
 
-	sprintf(path, "%s/%s", skin_path, "repeat");
-	repeat_button = create_button_with_image(path, 1, "repeat");
+	repeat_button = gtk_toggle_button_new();
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), repeat_button, _("Repeat current song"), NULL);
 	gtk_widget_set_size_request(repeat_button, -1, 1);
 	gtk_table_attach(GTK_TABLE(sr_table), repeat_button, 0, 1, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 0);
 	g_signal_connect(repeat_button, "toggled", G_CALLBACK(repeat_toggled), NULL);
 
-	sprintf(path, "%s/%s", skin_path, "repeat_all");
-	repeat_all_button = create_button_with_image(path, 1, "rep_all");
+	repeat_all_button = gtk_toggle_button_new();
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), repeat_all_button, _("Repeat all songs"), NULL);
 	gtk_widget_set_size_request(repeat_all_button, -1, 1);
 	gtk_table_attach(GTK_TABLE(sr_table), repeat_all_button, 0, 1, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 0);
 	g_signal_connect(repeat_all_button, "toggled", G_CALLBACK(repeat_all_toggled), NULL);
 
-	sprintf(path, "%s/%s", skin_path, "shuffle");
-	shuffle_button = create_button_with_image(path, 1, "shuffle");
+	shuffle_button = gtk_toggle_button_new();
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), shuffle_button, _("Shuffle songs"), NULL);
 	gtk_widget_set_size_request(shuffle_button, -1, 1);
 	gtk_table_attach(GTK_TABLE(sr_table), shuffle_button, 1, 2, 0, 2,
@@ -3183,18 +2992,15 @@ create_main_window(char * skin_path) {
 	GTK_WIDGET_UNSET_FLAGS(shuffle_button, GTK_CAN_FOCUS);
 
         /* toggle buttons for sub-windows visibility */
-	sprintf(path, "%s/%s", skin_path, "pl");
-	playlist_toggle = create_button_with_image(path, 1, "PL");
+	playlist_toggle = gtk_toggle_button_new();
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), playlist_toggle, _("Toggle playlist"), NULL);
 	gtk_box_pack_end(GTK_BOX(btns_hbox), playlist_toggle, FALSE, FALSE, 0);
 	
-	sprintf(path, "%s/%s", skin_path, "ms");
-	musicstore_toggle = create_button_with_image(path, 1, "MS");
+	musicstore_toggle = gtk_toggle_button_new();
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), musicstore_toggle, _("Toggle music store"), NULL);
 	gtk_box_pack_end(GTK_BOX(btns_hbox), musicstore_toggle, FALSE, FALSE, 3);
 
-	sprintf(path, "%s/%s", skin_path, "fx");
-	plugin_toggle = create_button_with_image(path, 1, "FX");
+	plugin_toggle = gtk_toggle_button_new();
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), plugin_toggle, _("Toggle LADSPA patch builder"), NULL);
 #ifdef HAVE_LADSPA
 	gtk_box_pack_end(GTK_BOX(btns_hbox), plugin_toggle, FALSE, FALSE, 0);
@@ -3210,6 +3016,7 @@ create_main_window(char * skin_path) {
 
 	gtk_box_pack_end(GTK_BOX(btns_hbox), sr_table, FALSE, FALSE, 3);
 
+	main_buttons_set_content(skin_path);
         set_buttons_relief();
 
 	/* Embedded playlist */
@@ -3379,6 +3186,7 @@ setup_systray(void) {
 				 G_CALLBACK(systray_popup_menu_cb), (gpointer)systray_icon);
 
         systray_menu = gtk_menu_new();
+	register_toplevel_window(systray_menu);
 
         systray__show = gtk_menu_item_new_with_label(_("Show Aqualung"));
         systray__hide = gtk_menu_item_new_with_label(_("Hide Aqualung"));

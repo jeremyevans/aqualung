@@ -60,6 +60,7 @@
 #include "cdda.h"
 #include "cd_ripper.h"
 #include "store_cdda.h"
+#include "skin.h"
 
 
 extern GtkTreeSelection * music_select;
@@ -1260,6 +1261,8 @@ store_cdda_create_popup_menu(void) {
 
 	/* create popup menu for cdda_record tree items */
 	cdda_record_menu = gtk_menu_new();
+	register_toplevel_window(cdda_record_menu);
+
 	cdda_record__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	cdda_record__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 	cdda_record__separator1 = gtk_separator_menu_item_new();
@@ -1314,6 +1317,7 @@ store_cdda_create_popup_menu(void) {
 
 	/* create popup menu for cdda_track tree items */
 	cdda_track_menu = gtk_menu_new();
+	register_toplevel_window(cdda_track_menu);
 	cdda_track__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_track_menu), cdda_track__addlist);
  	g_signal_connect_swapped(G_OBJECT(cdda_track__addlist), "activate", G_CALLBACK(cdda_track__addlist_cb), NULL);
@@ -1321,6 +1325,7 @@ store_cdda_create_popup_menu(void) {
 
 	/* create popup menu for cdda_store tree items */
 	cdda_store_menu = gtk_menu_new();
+	register_toplevel_window(cdda_store_menu);
 	cdda_store__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	cdda_store__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 

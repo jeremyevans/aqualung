@@ -48,6 +48,7 @@
 #include "i18n.h"
 #include "music_browser.h"
 #include "store_file.h"
+#include "skin.h"
 
 
 extern options_t options;
@@ -138,11 +139,6 @@ GtkWidget * track__volume_menu;
 GtkWidget * track__volume_unmeasured;
 GtkWidget * track__volume_all;
 GtkWidget * track__search;
-
-GtkWidget * blank_menu;
-GtkWidget * blank__add;
-GtkWidget * blank__search;
-GtkWidget * blank__save;
 
 extern GdkPixbuf * icon_store;
 GdkPixbuf * icon_artist;
@@ -4073,6 +4069,8 @@ store_file_create_popup_menu(void) {
 
 	/* create popup menu for music store tree items */
 	store_menu = gtk_menu_new();
+	register_toplevel_window(store_menu);
+
 	store__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	store__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 	store__separator1 = gtk_separator_menu_item_new();
@@ -4149,6 +4147,8 @@ store_file_create_popup_menu(void) {
 
 	/* create popup menu for artist tree items */
 	artist_menu = gtk_menu_new();
+	register_toplevel_window(artist_menu);
+
 	artist__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	artist__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 	artist__separator1 = gtk_separator_menu_item_new();
@@ -4217,6 +4217,8 @@ store_file_create_popup_menu(void) {
 
 	/* create popup menu for record tree items */
 	record_menu = gtk_menu_new();
+	register_toplevel_window(record_menu);
+
 	record__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	record__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
 	record__separator1 = gtk_separator_menu_item_new();
@@ -4301,6 +4303,8 @@ store_file_create_popup_menu(void) {
 
 	/* create popup menu for track tree items */
 	track_menu = gtk_menu_new();
+	register_toplevel_window(track_menu);
+
 	track__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	track__separator1 = gtk_separator_menu_item_new();
 	track__add = gtk_menu_item_new_with_label(_("Add new track..."));

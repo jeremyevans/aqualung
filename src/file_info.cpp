@@ -71,6 +71,7 @@
 #include "music_browser.h"
 #include "store_file.h"
 #include "gui_main.h"
+#include "skin.h"
 #include "options.h"
 #include "trashlist.h"
 #include "i18n.h"
@@ -267,6 +268,7 @@ dismiss(GtkWidget * widget, gpointer data) {
         }
 #endif /* HAVE_MOD_INFO */
 
+	unregister_toplevel_window(info_window);
         gtk_widget_destroy(info_window);
 	info_window = NULL;
 	trashlist_free(fileinfo_trash);
@@ -281,6 +283,7 @@ info_window_close(GtkWidget * widget, GdkEventAny * event, gpointer data) {
 	metadata * meta = (metadata *)data;
 	meta_free(meta);
 
+	unregister_toplevel_window(info_window);
 	info_window = NULL;
 	trashlist_free(fileinfo_trash);
 	fileinfo_trash = NULL;
@@ -1818,6 +1821,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	mode.track_iter = track_iter;
 
 	if (info_window != NULL) {
+		unregister_toplevel_window(info_window);
 		gtk_widget_destroy(info_window);
 		info_window = NULL;
 	}
@@ -1834,6 +1838,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	}
 
 	info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	register_toplevel_window(info_window);
         gtk_window_set_title(GTK_WINDOW(info_window), _("File info"));
 	gtk_window_set_transient_for(GTK_WINDOW(info_window), GTK_WINDOW(main_window));
 	gtk_window_set_position(GTK_WINDOW(info_window), GTK_WIN_POS_CENTER);

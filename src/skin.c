@@ -28,7 +28,7 @@
 #include <errno.h>
 
 #include "common.h"
-#include "gui_main.h"
+#include "playlist.h"
 #include "options.h"
 #include "i18n.h"
 #include "skin.h"
@@ -43,6 +43,45 @@ GtkWidget * skin_window;
 GtkListStore * skin_store;
 GtkTreeSelection * skin_select;
 
+GSList * toplevel_windows;
+
+
+void
+register_toplevel_window(GtkWidget * window) {
+
+	toplevel_windows = g_slist_append(toplevel_windows, window);
+}
+
+void
+unregister_toplevel_window(GtkWidget * window) {
+
+	toplevel_windows = g_slist_remove(toplevel_windows, window);
+}
+
+void
+apply_skin(char * path) {
+
+	GSList * node;
+	char rcpath[MAXLEN];
+	
+	sprintf(rcpath, "%s/rc", path);
+	gtk_rc_parse(rcpath);
+
+	for (node = toplevel_windows; node; node = node->next) {
+
+		GtkWidget * window = (GtkWidget *)node->data;
+
+		gtk_widget_reset_rc_styles(window);
+		gtk_widget_queue_draw(window);
+	}
+
+	main_buttons_set_content(path);
+
+	playlist_set_color();
+        playlist_size_allocate_all();
+	playlist_selection_changed(playlist_get_current());
+	playlist_content_changed(playlist_get_current());
+}
 
 static int
 filter(const struct dirent * de) {
@@ -77,22 +116,19 @@ cancel(GtkWidget * widget, gpointer data) {
 static gint
 apply(GtkWidget * widget, gpointer data) {
 
+	GtkTreeModel * model;
 	GtkTreeIter iter;
 	char * str;
-	int i = 0;
 
-	do {
-		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(skin_store), &iter, NULL, i++);
-
-	} while (!gtk_tree_selection_iter_is_selected(skin_select, &iter));
+	if (gtk_tree_selection_get_selected(skin_select, &model, &iter)) {
 	
-	gtk_tree_model_get(GTK_TREE_MODEL(skin_store), &iter, 1, &str, -1);
+		gtk_tree_model_get(model, &iter, 1, &str, -1);
+		strcpy(options.skin, str);
+		g_free(str);
 
-	gtk_widget_destroy(skin_window);
-	strcpy(options.skin, str);
-	g_free(str);
-
-	change_skin(options.skin);
+		gtk_widget_destroy(skin_window);
+		apply_skin(options.skin);
+	}
 
 	return TRUE;
 }
@@ -122,12 +158,12 @@ skin_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 static gint
 skin_list_double_click(GtkWidget * widget, GdkEventButton * event, gpointer func_data) {
 
-    if ((event->type==GDK_2BUTTON_PRESS) && (event->button == 1)) {
-	apply(NULL, NULL);
-        return TRUE;
-    }
+	if ((event->type == GDK_2BUTTON_PRESS) && (event->button == 1)) {
+		apply(NULL, NULL);
+		return TRUE;
+	}
 
-    return FALSE;
+	return FALSE;
 }
 
 

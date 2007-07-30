@@ -52,7 +52,7 @@ void refresh_displays(void);
 
 void save_window_position(void);
 void restore_window_position(void);
-void change_skin(char * skin_path);
+void main_buttons_set_content(char * skin_path);
 
 void set_src_type_label(int src_type);
 

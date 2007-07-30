@@ -41,6 +41,7 @@
 #include "options.h"
 #include "trashlist.h"
 #include "plugin.h"
+#include "skin.h"
 
 #ifdef __FreeBSD__
 #define dirent64 dirent
@@ -799,6 +800,7 @@ build_plugin_window(plugin_instance * instance) {
 
 
 	instance->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	register_toplevel_window(instance->window);
 	gtk_window_set_title(GTK_WINDOW(instance->window), plugin->Name);
 	gtk_window_set_position(GTK_WINDOW(instance->window), GTK_WIN_POS_CENTER);
 	gtk_window_set_transient_for(GTK_WINDOW(instance->window), GTK_WINDOW(fxbuilder_window));
@@ -1563,10 +1565,13 @@ remove_clicked(GtkWidget * widget, GdkEvent * event, gpointer data) {
 			instance->descriptor->cleanup(instance->handle2);
 			instance->handle2 = NULL;
 		}
-		if (instance->timeout)
+		if (instance->timeout) {
 			g_source_remove(instance->timeout);
-		if (instance->window)
+		}
+		if (instance->window) {
 			gtk_widget_destroy(instance->window);
+			unregister_toplevel_window(instance->window);
+		}
 
                 dlclose(instance->library);
 		trashlist_free(instance->trashlist);
@@ -1816,6 +1821,7 @@ create_fxbuilder(void) {
 
         /* window creating stuff */
         fxbuilder_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	register_toplevel_window(fxbuilder_window);
         gtk_window_set_title(GTK_WINDOW(fxbuilder_window), _("LADSPA patch builder"));
 	gtk_window_set_position(GTK_WINDOW(fxbuilder_window), GTK_WIN_POS_CENTER);
         g_signal_connect(G_OBJECT(fxbuilder_window), "delete_event", G_CALLBACK(fxbuilder_close), NULL);

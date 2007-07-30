@@ -37,6 +37,7 @@
 #include "file_info.h"
 #include "decoder/file_decoder.h"
 #include "gui_main.h"
+#include "skin.h"
 #include "options.h"
 #include "playlist.h"
 #include "search.h"
@@ -468,6 +469,7 @@ create_music_browser(void) {
 
 	/* window creating stuff */
 	browser_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	register_toplevel_window(browser_window);
 	gtk_window_set_title(GTK_WINDOW(browser_window), _("Music Store"));
 	g_signal_connect(G_OBJECT(browser_window), "delete_event", G_CALLBACK(browser_window_close), NULL);
 	g_signal_connect(G_OBJECT(browser_window), "key_press_event",
@@ -616,6 +618,8 @@ create_music_browser(void) {
 
         /* create popup menu for blank space */
         blank_menu = gtk_menu_new();
+	register_toplevel_window(blank_menu);
+
         blank__add = gtk_menu_item_new_with_label(_("Create empty store..."));
         blank__search = gtk_menu_item_new_with_label(_("Search..."));
         blank__save = gtk_menu_item_new_with_label(_("Save all stores"));

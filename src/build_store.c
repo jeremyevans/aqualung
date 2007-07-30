@@ -49,6 +49,7 @@
 #include "meta_decoder.h"
 #include "build_store.h"
 #include "cddb_lookup.h"
+#include "skin.h"
 
 
 extern options_t options;
@@ -2229,6 +2230,7 @@ prog_window_close(GtkWidget * widget, gpointer user_data) {
 	data->cancelled = 1;
 
 	if (data->prog_window) {
+		unregister_toplevel_window(data->prog_window);
 		gtk_widget_destroy(data->prog_window);
 		data->prog_window = NULL;
 	}
@@ -2246,6 +2248,7 @@ finish_build(gpointer user_data) {
 	build_store_t * data = (build_store_t *)user_data;
 
 	if (data->prog_window) {
+		unregister_toplevel_window(data->prog_window);
 		gtk_widget_destroy(data->prog_window);
 		data->prog_window = NULL;
 	}
@@ -2270,6 +2273,7 @@ progress_window(build_store_t * data) {
 
 
 	data->prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	register_toplevel_window(data->prog_window);
         gtk_window_set_title(GTK_WINDOW(data->prog_window), _("Building store from filesystem"));
         gtk_window_set_position(GTK_WINDOW(data->prog_window), GTK_WIN_POS_CENTER);
         gtk_window_resize(GTK_WINDOW(data->prog_window), 430, 110);

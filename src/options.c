@@ -59,6 +59,7 @@
 #include "playlist.h"
 #include "i18n.h"
 #include "options.h"
+#include "skin.h"
 
 
 options_t options;
@@ -2911,7 +2912,7 @@ See the About box and the documentation for details."));
 		gtk_widget_destroy(options_window);
 
 		if (reskin_flag) {
-			change_skin(options.skin);
+			apply_skin(options.skin);
 		}
 	} else {
 		gtk_widget_destroy(options_window);

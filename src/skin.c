@@ -28,6 +28,7 @@
 #include <errno.h>
 
 #include "common.h"
+#include "gui_main.h"
 #include "playlist.h"
 #include "options.h"
 #include "i18n.h"

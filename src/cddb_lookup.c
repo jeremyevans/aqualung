@@ -430,6 +430,7 @@ cddb_lookup_merge(cddb_lookup_t * data, char * artist, char * record, char * gen
 
 		y = cddb_disc_get_year(data->records[i]);
 		if (is_valid_year(y)) {
+			snprintf(tmp, MAXLEN-1, "%d", y);
 			map_put(&map_year, tmp);
 		}
 

@@ -117,13 +117,13 @@ typedef struct {
 } save_pic_t;
 
 
-#ifdef HAVE_TAGLIB
-
 /* edit modes */
 #define EDITABLE_NO    0x00
 #define EDITABLE_YES   0x01
 #define EDITABLE_GENRE 0x02
 
+
+#ifdef HAVE_TAGLIB
 
 /* used in flags below */
 #define CREATE_ID3v2 0x02
@@ -925,6 +925,8 @@ build_simple_page(save_basic_t * save_basic, TagLib::Tag * tag, int * cnt, GtkWi
 	return page_id;
 }
 
+#endif /* HAVE_TAGLIB */
+
 #ifdef HAVE_WAVPACK
 
 /* This does not support metadata editing or anything besides basic metadata */
@@ -976,6 +978,8 @@ build_wavpack_page(metadata * meta, GtkNotebook * nb, GtkWidget * hbox, char * n
 }
 
 #endif /* HAVE_WAVPACK */
+
+#ifdef HAVE_TAGLIB
 
 int
 build_id3v1_page(save_basic_t * save_basic, int edit_mode, TagLib::ID3v1::Tag * id3v1_tag) {

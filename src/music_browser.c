@@ -757,6 +757,9 @@ music_store_mark_changed(GtkTreeIter * iter) {
 	char * pname;
 	store_t * data;
 
+
+	music_store_selection_changed();
+
 	path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), iter);
 
         while (gtk_tree_path_get_depth(path) > 1) {
@@ -797,8 +800,6 @@ music_store_mark_changed(GtkTreeIter * iter) {
 	if (options.enable_mstore_toolbar) {
 		gtk_widget_set_sensitive(toolbar_save_button, TRUE);
 	}
-
-	music_store_selection_changed();
 }
 
 void
@@ -854,6 +855,8 @@ music_store_mark_saved(GtkTreeIter * iter_store) {
 	if (options.enable_mstore_toolbar) {
 		gtk_widget_set_sensitive(toolbar_save_button, FALSE);
 	}
+
+	music_store_selection_changed();
 }
 
 

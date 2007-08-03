@@ -475,6 +475,7 @@ ripper_make_dest_iters(GtkTreeIter * store_iter,
         int j;
 	record_data_t * record_data;
 	artist_data_t * artist_data;
+	char str_year[16];
 
         i = 0;
         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
@@ -510,10 +511,13 @@ ripper_make_dest_iters(GtkTreeIter * store_iter,
 			return 0;
 		}
 
+		record_data->year = ripper_year;
+		snprintf(str_year, 15, "%d", ripper_year);
+
                 gtk_tree_store_append(music_store, record_iter, artist_iter);
                 gtk_tree_store_set(music_store, record_iter,
                                    MS_COL_NAME, ripper_album,
-				   MS_COL_SORT, ripper_album,
+				   MS_COL_SORT, str_year,
 				   MS_COL_DATA, record_data, -1);
 
                 if (options.enable_ms_tree_icons) {
@@ -546,10 +550,13 @@ ripper_make_dest_iters(GtkTreeIter * store_iter,
                 gtk_tree_store_set(music_store, artist_iter, MS_COL_ICON, icon_artist, -1);
         }
 
+	record_data->year = ripper_year;
+	snprintf(str_year, 15, "%d", ripper_year);
+
         gtk_tree_store_append(music_store, record_iter, artist_iter);
         gtk_tree_store_set(music_store, record_iter,
                            MS_COL_NAME, ripper_album,
-			   MS_COL_SORT, ripper_album,
+			   MS_COL_SORT, str_year,
                            MS_COL_DATA, record_data, -1);
 
         if (options.enable_ms_tree_icons) {

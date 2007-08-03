@@ -1441,18 +1441,12 @@ store_get_iter_for_tracklist(GtkTreeIter * store_iter,
 
 	if (store_contains_disc(store_iter, artist_iter, record_iter, disc)) {
 
-		char * name;
-
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), artist_iter, MS_COL_NAME, &name, -1);
-
 		if (disc->artist.unknown) {
 			gtk_tree_store_set(music_store, artist_iter,
 					   MS_COL_NAME, disc->artist.final,
 					   MS_COL_SORT, disc->artist.sort,
 					   -1);
 		}
-
-		g_free(name);
 
 		return RECORD_EXISTS;
 	}
@@ -2793,8 +2787,7 @@ write_record_to_store(gpointer user_data) {
 		max = map_get_max(data->artist_name_map);
 
 		gtk_tree_store_set(music_store, &data->artist_iter,
-				   MS_COL_NAME, max,
-				   MS_COL_SORT, data->disc->artist.sort, -1);
+				   MS_COL_NAME, max, -1);
 	}
 
 	if (result == RECORD_NEW) {
@@ -2806,18 +2799,11 @@ write_record_to_store(gpointer user_data) {
 	if (result == RECORD_EXISTS) {
 
 		GtkTreeIter iter;
-		char * name;
-
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &record_iter, MS_COL_NAME, &name, -1);
 
 		if (data->disc->record.unknown) {
 			gtk_tree_store_set(music_store, &record_iter,
-					   MS_COL_NAME, data->disc->record.final,
-					   MS_COL_SORT, data->disc->record.sort,
-					   -1);
+					   MS_COL_NAME, data->disc->record.final, -1);
 		}
-
-		g_free(name);
 
 		i = 0;
 		ptrack = data->disc->tracks;

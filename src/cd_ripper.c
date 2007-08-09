@@ -823,12 +823,12 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 
 		ripper_format = get_ripper_format();
 		ripper_bitrate = gtk_range_get_value(GTK_RANGE(ripper_bitrate_scale));
-		ripper_vbr = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ripper_vbr_check));
-		ripper_meta = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ripper_meta_check));
-		strncpy(ripper_artist, gtk_entry_get_text(GTK_ENTRY(ripper_artist_entry)), MAXLEN-1);
-		strncpy(ripper_album, gtk_entry_get_text(GTK_ENTRY(ripper_album_entry)), MAXLEN-1);
-		strncpy(ripper_genre, gtk_entry_get_text(GTK_ENTRY(ripper_genre_entry)), MAXLEN-1);
-		ripper_year = gtk_spin_button_get_value(GTK_SPIN_BUTTON(ripper_year_spinner));
+		set_option_from_toggle(ripper_vbr_check, &ripper_vbr);
+		set_option_from_toggle(ripper_meta_check, &ripper_meta);
+		set_option_from_entry(ripper_artist_entry, ripper_artist, MAXLEN);
+		set_option_from_entry(ripper_album_entry, ripper_album, MAXLEN);
+		set_option_from_entry(ripper_genre_entry, ripper_genre, MAXLEN);
+		set_option_from_spin(ripper_year_spinner, &ripper_year);
 		ripper_write_to_store = get_ripper_deststore_iter(&ripper_dest_store);
 
 		if (ripper_write_to_store) {
@@ -844,7 +844,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 			(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ripper_overlap_check)) ? PARANOIA_MODE_OVERLAP : 0) |
 			(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ripper_verify_check)) ? PARANOIA_MODE_VERIFY : 0) |
 			(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ripper_neverskip_check)) ? PARANOIA_MODE_NEVERSKIP : 0);
-		ripper_paranoia_maxretries = gtk_spin_button_get_value(GTK_SPIN_BUTTON(ripper_maxretries_spinner));
+		set_option_from_spin(ripper_maxretries_spinner, &ripper_paranoia_maxretries);
 
 		gtk_widget_destroy(ripper_dialog);
 		return 1;
@@ -1190,7 +1190,9 @@ ripper_thread(void * arg) {
 				break;
 		}
 
-		if (ripper_write_to_store) {
+		if (ripper_write_to_store && ripper_thread_busy &&
+		    gtk_tree_store_iter_is_valid(music_store, &ripper_dest_record)) {
+
 			GtkTreeIter iter;
 			char sort_name[3];
 			track_data_t * track_data;

@@ -27,6 +27,7 @@
 
 #include "i18n.h"
 #include "httpc.h"
+#include "utils.h"
 
 
 extern options_t options;

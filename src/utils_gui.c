@@ -27,6 +27,7 @@
 #include "common.h"
 #include "i18n.h"
 #include "options.h"
+#include "utils.h"
 #include "utils_gui.h"
 
 

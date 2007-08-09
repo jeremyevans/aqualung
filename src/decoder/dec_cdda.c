@@ -28,6 +28,7 @@
 
 #include "../i18n.h"
 #include "../cdda.h"
+#include "../utils.h"
 #include "dec_cdda.h"
 
 #ifdef HAVE_CDDA

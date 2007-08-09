@@ -426,16 +426,15 @@ add_store_dialog(char * name, store_data_t ** data) {
 		const char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
 		char file[MAXLEN];
 
-		file[0] = '\0';
-
-		if (pfile == NULL || pfile[0] == '\0') {
-			gtk_widget_grab_focus(file_entry);
-			goto display;
-		}
-
 		strncpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), MAXLEN-1);
 		if (name[0] == '\0') {
 			gtk_widget_grab_focus(name_entry);
+			goto display;
+		}
+
+		file[0] = '\0';
+		if (pfile == NULL || pfile[0] == '\0') {
+			gtk_widget_grab_focus(file_entry);
 			goto display;
 		}
 
@@ -603,6 +602,7 @@ edit_artist_dialog(char * name, char * sort, artist_data_t * data) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
 
 		if (name[0] == '\0') {
+			gtk_widget_grab_focus(name_entry);
 			goto display;
 		}
 
@@ -742,6 +742,7 @@ add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** d
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
 
 		if (name[0] == '\0') {
+			gtk_widget_grab_focus(name_entry);
 			goto display;
 		}
 
@@ -830,6 +831,7 @@ edit_record_dialog(char * name, char * sort, record_data_t * data) {
                 strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
 
 		if (name[0] == '\0') {
+			gtk_widget_grab_focus(name_entry);
 			goto display;
 		}
 
@@ -894,16 +896,15 @@ add_track_dialog(char * name, char * sort, track_data_t ** data) {
 		char file[MAXLEN];
 		float duration;
 
-		file[0] = '\0';
-
-		if (pfile == NULL || pfile[0] == '\0') {
-			gtk_widget_grab_focus(file_entry);
-			goto display;
-		}
-
 		strncpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), MAXLEN-1);
 		if (name[0] == '\0') {
 			gtk_widget_grab_focus(name_entry);
+			goto display;
+		}
+
+		file[0] = '\0';
+		if (pfile == NULL || pfile[0] == '\0') {
+			gtk_widget_grab_focus(file_entry);
 			goto display;
 		}
 
@@ -1026,16 +1027,15 @@ edit_track_dialog(char * name, char * sort, track_data_t * data) {
 		const char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
 		char file[MAXLEN];
 
-		file[0] = '\0';
-
-		if (pfile == NULL || pfile[0] == '\0') {
-			gtk_widget_grab_focus(file_entry);
-			goto display;
-		}
-
 		strncpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), MAXLEN-1);
 		if (name[0] == '\0') {
 			gtk_widget_grab_focus(name_entry);
+			goto display;
+		}
+
+		file[0] = '\0';
+		if (pfile == NULL || pfile[0] == '\0') {
+			gtk_widget_grab_focus(file_entry);
 			goto display;
 		}
 

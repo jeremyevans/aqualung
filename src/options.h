@@ -22,7 +22,6 @@
 #define _OPTIONS_H
 
 #include "common.h"
-#include "utils.h"
 
 typedef struct {
 

@@ -1434,7 +1434,8 @@ store_get_iter_for_artist_and_record(GtkTreeIter * store_iter,
 int
 store_get_iter_for_tracklist(GtkTreeIter * store_iter,
 			     GtkTreeIter * artist_iter,
-			     GtkTreeIter * record_iter, build_disc_t * disc) {
+			     GtkTreeIter * record_iter,
+			     build_disc_t * disc, map_t ** artist_name_map) {
 	int i;
 
 	/* check if record already exists */
@@ -1479,6 +1480,9 @@ store_get_iter_for_tracklist(GtkTreeIter * store_iter,
 	/* no such artist -- create both artist and record */
 	create_artist(store_iter, artist_iter, disc);
 	create_record(artist_iter, record_iter, disc);
+
+	/* start contest for artist name */
+	map_put(artist_name_map, disc->artist.final);
 
 	return RECORD_NEW;
 }
@@ -2558,15 +2562,17 @@ cap_after(gunichar ch) {
 	int i;
 	gunichar * chars = NULL;
 
-	chars = (gunichar *)malloc(6 * sizeof(gunichar));
+	chars = (gunichar *)malloc(8 * sizeof(gunichar));
 	chars[0] = g_utf8_get_char(" ");
 	chars[1] = g_utf8_get_char("\t");
 	chars[2] = g_utf8_get_char("(");
 	chars[3] = g_utf8_get_char("[");
 	chars[4] = g_utf8_get_char("/");
 	chars[5] = g_utf8_get_char("\"");
+	chars[6] = g_utf8_get_char(".");
+	chars[7] = g_utf8_get_char("-");
 
-	for (i = 0; i < 6; i++) {
+	for (i = 0; i < 8; i++) {
 		if (chars[i] == ch) {
 			free(chars);
 			return 1;
@@ -2773,11 +2779,9 @@ write_record_to_store(gpointer user_data) {
 		result = store_get_iter_for_tracklist(&data->store_iter,
 						      &data->artist_iter,
 						      &record_iter,
-						      data->disc);
+						      data->disc, 
+						      &data->artist_name_map);
 		data->artist_iter_is_set = 1;
-
-		/* start contest for artist name */
-		map_put(&data->artist_name_map, data->disc->artist.final);
 	}
 
 	if (data->artist_name_map != NULL && !data->disc->artist.unknown) {
@@ -2787,7 +2791,8 @@ write_record_to_store(gpointer user_data) {
 		max = map_get_max(data->artist_name_map);
 
 		gtk_tree_store_set(music_store, &data->artist_iter,
-				   MS_COL_NAME, max, -1);
+				   MS_COL_NAME, max,
+				   MS_COL_SORT, data->disc->artist.sort, -1);
 	}
 
 	if (result == RECORD_NEW) {

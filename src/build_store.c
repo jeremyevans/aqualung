@@ -1132,7 +1132,7 @@ void
 build_store_free(build_store_t * data) {
 
 #ifdef _WIN32
-	g_mutex_free(data->mutexmutex);
+	g_mutex_free(data->mutex);
 #endif /* _WIN32 */
 
 	free(data->file);

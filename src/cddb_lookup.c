@@ -184,7 +184,7 @@ cddb_lookup_free(cddb_lookup_t * data) {
 	}
 
 #ifdef _WIN32
-	g_mutex_free(data->mutexmutex);
+	g_mutex_free(data->mutex);
 #endif /* _WIN32 */
 
 	free(data);

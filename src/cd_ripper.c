@@ -51,6 +51,8 @@
 
 #if defined(HAVE_CDDA) && (defined(HAVE_SNDFILE) || defined(HAVE_FLAC) || defined(HAVE_VORBISENC) || defined(HAVE_LAME))
 
+#define BUFSIZE 588
+
 extern options_t options;
 extern GtkWidget * browser_window;
 extern GtkTreeStore * music_store;
@@ -1102,6 +1104,12 @@ ripper_thread(void * arg) {
 		file_encoder_t * fenc;
 		encoder_mode_t mode;
 
+		float buf[2*BUFSIZE];
+		int n_read;
+
+		int prog_track;
+		int prog_total;
+
 		memset(&mode, 0, sizeof(encoder_mode_t));
 
                 gtk_tree_model_get(GTK_TREE_MODEL(ripper_source_store), &source_iter, 0, &b, -1);
@@ -1165,13 +1173,8 @@ ripper_thread(void * arg) {
 				      ripper_paranoia_maxretries);
 
 		while (ripper_thread_busy) {
-			float buf[2*588];
-			int n_read;
 
-			int prog_track;
-			int prog_total;
-
-			n_read = file_decoder_read(fdec, buf, 588);
+			n_read = file_decoder_read(fdec, buf, BUFSIZE);
 			file_encoder_write(fenc, buf, n_read);
 
 			++track_sectors_read;
@@ -1186,7 +1189,7 @@ ripper_thread(void * arg) {
 						      ((prog_track & 0xff) << 8) |
 						      (prog_total & 0xff)));
 
-			if ((track_sectors_read >= track_sectors) || (n_read < 588))
+			if ((track_sectors_read >= track_sectors) || (n_read < BUFSIZE))
 				break;
 		}
 

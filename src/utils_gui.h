@@ -63,8 +63,14 @@ void insert_label_entry_browse(GtkWidget * table, char * ltext, GtkWidget ** ent
 			       char * etext, int y1, int y2, 
 			       void (* browse_cb)(GtkButton * button, gpointer data));
 
+void insert_label_entry_button(GtkWidget * table, char * ltext, GtkWidget ** entry,
+			       char * etext, GtkWidget * button, int y1, int y2);
+
 void insert_label_spin(GtkWidget * table, char * ltext, GtkWidget ** spin,
 		       int spinval, int y1, int y2);
+
+void insert_label_spin_with_limits(GtkWidget * table, char * ltext, GtkWidget ** spin,
+				   int spinval, int min, int max, int y1, int y2);
 
 void set_option_from_toggle(GtkWidget * widget, int * opt);
 void set_option_from_combo(GtkWidget * widget, int * opt);

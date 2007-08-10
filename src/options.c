@@ -1283,7 +1283,7 @@ display_title_format_help(void) {
 
 	display_help(_("\nThe template string you enter here will be used to\n"
 		       "construct a single title line from an Artist, a Record\n"
-		       "and a Track name. These are denoted by %%a, %%r and %%t,\n"
+		       "and a Track name. These are denoted by %%%%a, %%%%r and %%%%t,\n"
 		       "respectively. Everything else you enter here will be\n"
 		       "literally copied into the resulting string.\n"));
 }
@@ -1294,7 +1294,7 @@ display_title_format_no_album_help(void) {
 
 	display_help(_("\nThe template string you enter here will be used to\n"
 		       "construct a single title line from an Artist and a Track\n"
-		       "name. These are denoted by %%a and %%t, respectively.\n"
+		       "name. These are denoted by %%%%a and %%%%t, respectively.\n"
 		       "Everything else you enter here will be literally\n"
 		       "copied into the resulting string.\n"));
 }

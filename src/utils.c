@@ -22,7 +22,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <glib.h>
 
 #include "i18n.h"
@@ -34,93 +36,78 @@ extern options_t options;
 
 
 void
+make_string_va(char * buf, char * format, ...) {
+
+	va_list args;
+	char ** strbuf = NULL;
+	int * cbuf = NULL;
+	int ch;
+	int num = 0;
+	int i, j, n, found;
+
+	va_start(args, format);
+
+	while ((ch = va_arg(args, int)) != 0) {
+
+		++num;
+		cbuf = (int *)realloc(cbuf, num * sizeof(int));
+		cbuf[num-1] = ch;
+		strbuf = (char **)realloc(strbuf, num * sizeof(char *));
+		strbuf[num-1] = strdup(va_arg(args, char *));
+	}
+
+	va_end(args);
+
+	i = 0;
+	j = 0;
+	while (format[i]) {
+
+		found = 0;
+
+		if (format[i] == '%') {
+			for (n = 0; n < num; n++) {
+				if (format[i+1] == cbuf[n]) {
+					found = 1;
+					++i;
+					break;
+				}
+			}
+		}
+
+		if (found) {
+			buf[j] = '\0';
+			strcat(buf, strbuf[n]);
+			j = strlen(buf);
+		} else {
+			buf[j] = format[i];
+			++j;
+		}
+
+		++i;
+	}
+
+	buf[j] = '\0';
+
+	for (n = 0; n < num; n++) {
+		free(strbuf[n]);
+	}
+
+	free(cbuf);
+	free(strbuf);
+}
+
+void
 make_title_string(char * dest, char * templ,
 		  char * artist, char * record, char * track) {
 
-	int i;
-	int j;
-	int argc = 0;
-	char * arg[3] = { "", "", "" };
-	char temp[MAXLEN];
-
-	temp[0] = templ[0];
-
-	for (i = j = 1; i < strlen(templ) && j < MAXLEN - 1; i++, j++) {
-		if (templ[i - 1] == '%') {
-			if (argc < 3) {
-				switch (templ[i]) {
-				case 'a':
-					arg[argc++] = artist;
-					temp[j] = 's';
-					break;
-				case 'r':
-					arg[argc++] = record;
-					temp[j] = 's';
-					break;
-				case 't':
-					arg[argc++] = track;
-					temp[j] = 's';
-					break;
-				default:
-					temp[j++] = '%';
-					temp[j] = templ[i];
-					break;
-				}
-			} else {
-				temp[j++] = '%';
-				temp[j] = templ[i];
-			}
-		} else {
-			temp[j] = templ[i];
-		}
-	}
-
-	temp[j] = '\0';
-	
-	snprintf(dest, MAXLEN - 1, temp, arg[0], arg[1], arg[2]);
+	make_string_va(dest, templ, '%', "%", 'a', artist, 'r', record, 't', track, 0);
 }
-
 
 void
 make_title_string_no_album(char * dest, char * templ,
 			   char * artist, char * track) {
-	int i;
-	int j;
-	int argc = 0;
-	char * arg[2] = { "", "" };
-	char temp[MAXLEN];
 
-	temp[0] = templ[0];
-
-	for (i = j = 1; i < strlen(templ) && j < MAXLEN - 1; i++, j++) {
-		if (templ[i - 1] == '%') {
-			if (argc < 2) {
-				switch (templ[i]) {
-				case 'a':
-					arg[argc++] = artist;
-					temp[j] = 's';
-					break;
-				case 't':
-					arg[argc++] = track;
-					temp[j] = 's';
-					break;
-				default:
-					temp[j++] = '%';
-					temp[j] = templ[i];
-					break;
-				}
-			} else {
-				temp[j++] = '%';
-				temp[j] = templ[i];
-			}
-		} else {
-			temp[j] = templ[i];
-		}
-	}
-
-	temp[j] = '\0';
-	
-	snprintf(dest, MAXLEN - 1, temp, arg[0], arg[1]);
+	make_string_va(dest, templ, '%', "%", 'a', artist, 't', track, 0);
 }
 
 
@@ -289,6 +276,17 @@ cdda_is_cdtrack(char * file) {
 	return (strstr(file, "CDDA ") == file);
 }
 
+int
+is_dir(char * path) {
+
+	struct stat st_file;
+
+	if (stat(path, &st_file) == -1) {
+		return 0;
+	}
+
+	return S_ISDIR(st_file.st_mode);
+}
 
 #ifndef HAVE_STRCASESTR
 char

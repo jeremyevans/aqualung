@@ -2267,7 +2267,6 @@ progress_window(build_store_t * data) {
 	GtkWidget * vbox;
 	GtkWidget * hbox;
 	GtkWidget * hbuttonbox;
-	GtkWidget * hseparator;
 
 
 	data->prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -2285,20 +2284,8 @@ progress_window(build_store_t * data) {
 	table = gtk_table_new(2, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 
-        hbox = gtk_hbox_new(FALSE, 0);
-	if (data->type == BUILD_TYPE_STRICT) {
-		label = gtk_label_new(_("Directory:"));
-	} else {
-		label = gtk_label_new(_("File:"));
-	}
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
-			 GTK_FILL, GTK_FILL, 5, 5);
-
-        data->prog_file_entry = gtk_entry_new();
-        gtk_editable_set_editable(GTK_EDITABLE(data->prog_file_entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table), data->prog_file_entry, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+	insert_label_entry(table, data->type == BUILD_TYPE_STRICT ? _("Directory:") : _("File:"),
+			   &data->prog_file_entry, NULL, 0, 1, FALSE);
 
         hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("Action:"));
@@ -2312,8 +2299,7 @@ progress_window(build_store_t * data) {
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 1, 2,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
-        hseparator = gtk_hseparator_new();
-        gtk_box_pack_start(GTK_BOX(vbox), hseparator, FALSE, TRUE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, TRUE, 5);
 
 	hbuttonbox = gtk_hbutton_box_new();
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
@@ -2897,19 +2883,6 @@ static int
 filter(const struct dirent * de) {
 
 	return de->d_name[0] != '.';
-}
-
-
-int
-is_dir(char * name) {
-
-	struct stat st_file;
-
-	if (stat(name, &st_file) == -1) {
-		return 0;
-	}
-
-	return S_ISDIR(st_file.st_mode);
 }
 
 

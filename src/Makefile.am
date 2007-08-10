@@ -11,6 +11,7 @@ cddb_lookup.h cddb_lookup.c \
 cd_ripper.h cd_ripper.c \
 core.h core.c \
 cover.h cover.c \
+export.h export.c \
 file_info.h file_info.cpp \
 gui_main.h gui_main.c \
 httpc.h httpc.c \

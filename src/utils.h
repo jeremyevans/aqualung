@@ -32,6 +32,7 @@ extern "C" {
 #define YEAR_MIN 1900
 #define YEAR_MAX 2100
 
+void make_string_va(char * buf, char * format, ...);
 void make_title_string(char * dest, char * templ,
 		       char * artist, char * record, char * track);
 void make_title_string_no_album(char * dest, char * templ,
@@ -50,6 +51,8 @@ int is_valid_year(int y);
 int is_all_wspace(char * str);
 
 int cdda_is_cdtrack(char * file);
+
+int is_dir(char * path);
 
 #ifndef HAVE_STRCASESTR
 char * strcasestr(char * haystack, char * needle);

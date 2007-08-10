@@ -502,13 +502,11 @@ insert_label_entry(GtkWidget * table, char * ltext, GtkWidget ** entry, char * e
 }
 
 void
-insert_label_entry_browse(GtkWidget * table, char * ltext, GtkWidget ** entry, char * etext,
-			  int y1, int y2, 
-			  void (* browse_cb)(GtkButton * button, gpointer data)) {
+insert_label_entry_button(GtkWidget * table, char * ltext, GtkWidget ** entry, char * etext,
+			  GtkWidget * button, int y1, int y2) {
 
 	GtkWidget * label;
 	GtkWidget * hbox;
-	GtkWidget * button;
 
 	label = gtk_label_new(ltext);
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -527,8 +525,16 @@ insert_label_entry_browse(GtkWidget * table, char * ltext, GtkWidget ** entry, c
 	}
 	gtk_box_pack_start(GTK_BOX(hbox), *entry, TRUE, TRUE, 0);
 
-	button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 2);
+}
+
+void
+insert_label_entry_browse(GtkWidget * table, char * ltext, GtkWidget ** entry, char * etext,
+			  int y1, int y2, 
+			  void (* browse_cb)(GtkButton * button, gpointer data)) {
+
+	GtkWidget * button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
+	insert_label_entry_button(table, ltext, entry, etext, button, y1, y2);
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(browse_cb), *entry);
 }
 
@@ -548,6 +554,16 @@ insert_label_spin(GtkWidget * table, char * ltext, GtkWidget ** spin, int spinva
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(*spin), spinval);
         gtk_table_attach(GTK_TABLE(table), *spin, 1, 2, y1, y2,
                          GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 5);
+}
+
+void
+insert_label_spin_with_limits(GtkWidget * table, char * ltext, GtkWidget ** spin, int spinval,
+			      int min, int max, int y1, int y2) {
+
+
+	insert_label_spin(table, ltext, spin, spinval, y1, y2);
+	gtk_spin_button_set_range(GTK_SPIN_BUTTON(*spin), min, max);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(*spin), spinval);
 }
 
 

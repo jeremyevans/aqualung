@@ -178,13 +178,14 @@ export_compress_str(char * buf, int limit) {
 }
 
 int
-export_item_set_path(export_t * export, export_item_t * item, char * path, char * ext) {
+export_item_set_path(export_t * export, export_item_t * item, char * path, char * ext, int index) {
 
 	char d_artist[MAXLEN];
 	char d_album[MAXLEN];
 	char track[MAXLEN];
 	char buf[3*MAXLEN];
 	char str_no[16];
+	char str_index[16];
 
 	d_artist[0] = '\0';
 	d_album[0] = '\0';
@@ -216,9 +217,10 @@ export_item_set_path(export_t * export, export_item_t * item, char * path, char 
 	}
 
 	snprintf(str_no, 15, "%02d", item->no);
+	snprintf(str_index, 15, "%04x", index);
 
 	make_string_va(track, export->template, '%', "%", 'a', item->artist, 'r', item->album,
-		       't', item->title, 'n', str_no, 'x', ext, 0);
+		       't', item->title, 'n', str_no, 'x', ext, 'i', str_index, 0);
 
 	snprintf(path, MAXLEN-1, "%s/%s", buf, track);
 
@@ -305,7 +307,7 @@ set_prog_trg_file_entry(export_t * export, char * file) {
 }
 
 void
-export_item(export_t * export, export_item_t * item) {
+export_item(export_t * export, export_item_t * item, int index) {
 
 	file_decoder_t * fdec;
 	file_encoder_t * fenc;
@@ -331,7 +333,7 @@ export_item(export_t * export, export_item_t * item) {
 		return;
 	}
 
-	if (export_item_set_path(export, item, mode.filename, ext) < 0) {
+	if (export_item_set_path(export, item, mode.filename, ext, index) < 0) {
 		return;
 	}
 
@@ -391,6 +393,7 @@ export_thread(void * arg) {
 
 	export_t * export = (export_t *)arg;
 	GSList * node;
+	int index = 0;
 
 	AQUALUNG_THREAD_DETACH();
 
@@ -400,7 +403,8 @@ export_thread(void * arg) {
 			break;
 		}
 
-		export_item(export, (export_item_t *)node->data);
+		++index;
+		export_item(export, (export_item_t *)node->data, index);
 	}
 
 	g_idle_add(export_finish, export);
@@ -586,7 +590,8 @@ export_format_help_cb(GtkButton * button, gpointer user_data) {
 			 "construct the filename of the exported files. The Artist,\n"
 			 "Record and Track names are denoted by %%%%a, %%%%r and %%%%t.\n"
 			 "The track number and format-dependent file extension are\n"
-			 "denoted by %%%%n and %%%%x, respectively."));
+			 "denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives\n"
+			 "an identifier which is unique within an export session."));
 }
 
 int
@@ -638,7 +643,7 @@ export_dialog(export_t * export) {
 
         help_button = gtk_button_new_from_stock(GTK_STOCK_HELP); 
 	g_signal_connect(help_button, "clicked", G_CALLBACK(export_format_help_cb), export);
-	insert_label_entry_button(table, _("Filename template:"), &templ_entry, "track%n.%x", help_button, 4, 5);
+	insert_label_entry_button(table, _("Filename template:"), &templ_entry, "track%i.%x", help_button, 4, 5);
 
 	frame = gtk_frame_new(_("Format"));
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(export->dialog)->vbox), frame, FALSE, FALSE, 2);

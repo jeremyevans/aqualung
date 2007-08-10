@@ -3049,6 +3049,10 @@ save_config(void) {
 	SAVE_INT(playlist_show_close_button_in_tab);
 	SAVE_INT(album_shuffle_mode);
 	SAVE_INT_SH(enable_playlist_statusbar);
+#ifdef HAVE_IFP
+	SAVE_INT(ifpmanager_size_x);
+	SAVE_INT(ifpmanager_size_y);
+#endif
 	SAVE_FONT(browser_font);
 	SAVE_FONT(playlist_font);
 	SAVE_FONT(bigtimer_font);
@@ -3394,6 +3398,10 @@ load_config(void) {
 		LOAD_INT(playlist_show_close_button_in_tab);
 		LOAD_INT(album_shuffle_mode);
 		LOAD_INT_SH(enable_playlist_statusbar);
+#ifdef HAVE_IFP
+		LOAD_INT(ifpmanager_size_x);
+		LOAD_INT(ifpmanager_size_y);
+#endif
 		LOAD_FONT(browser_font);
 		LOAD_FONT(playlist_font);
 		LOAD_FONT(bigtimer_font);

@@ -22,11 +22,28 @@
 #ifndef _IFP_DEVICE_H
 #define _IFP_DEVICE_H
 
-#define ROOTDIR _("<root>")
+#define PARENTDIR ("..")
+#define DIRID ("<dir>")
 
-void aifp_transfer_files(void);
+enum {
+        COLUMN_NAME = 0,
+        COLUMN_TYPE_SIZE
+};
+
+enum {
+        TYPE_NONE = 0,
+        TYPE_DIR,
+        TYPE_FILE
+};
+
+enum {
+        UPLOAD_MODE = 0,
+        DOWNLOAD_MODE
+};
+
+void aifp_transfer_files(gint mode);
 
 #endif /* _IFP_DEVICE_H */
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+// vim: shiftwidth=8:tabstop=8:softtabstop=8:
 

@@ -1179,14 +1179,10 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		}
 #ifdef HAVE_IFP
 		else {
-                        gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &path, &column);
-
-                        if (path && gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, path)) {
-                                gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_PHYSICAL_FILENAME, &pfile, -1);
-                                if (!httpc_is_url(pfile)) {
-                                        aifp_transfer_files();
-                                }
-                                free(pfile);
+			if (kevent->state & GDK_SHIFT_MASK) {   /* SHIFT T */
+                                aifp_transfer_files(DOWNLOAD_MODE);
+                        } else {
+                                aifp_transfer_files(UPLOAD_MODE);
                         }
                 }
 #endif /* HAVE_IFP */
@@ -2142,7 +2138,7 @@ plist__reread_file_meta_cb(gpointer data) {
 void
 plist__send_songs_to_iriver_cb(gpointer data) {
 
-        aifp_transfer_files();
+        aifp_transfer_files(UPLOAD_MODE);
 
 }
 #endif /* HAVE_IFP */

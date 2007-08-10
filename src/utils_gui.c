@@ -74,12 +74,12 @@ aqualung_dialog_run(GtkDialog * dialog) {
 }
 
 
-/* create button with stock item 
+/* create button with stock item
  *
  * in: label - label for buttor        (label=NULL  to disable label, label=-1 to disable button relief)
- *     stock - stock icon identifier                                
+ *     stock - stock icon identifier
  */
-GtkWidget* 
+GtkWidget*
 gui_stock_label_button(gchar *label, const gchar *stock) {
 
 	GtkWidget *button;
@@ -90,7 +90,7 @@ gui_stock_label_button(gchar *label, const gchar *stock) {
 	button = g_object_new (GTK_TYPE_BUTTON, "visible", TRUE, NULL);
 
         if (label== (gchar *)-1) {
-                gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);  
+                gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
         }
 
 	alignment = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
@@ -130,13 +130,13 @@ assign_store_fc_filters(GtkFileChooser *fc) {
         /* all files filter */
         filter_1 = gtk_file_filter_new();
         gtk_file_filter_add_pattern(filter_1, "*");
-        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_1), _("All Files")); 
+        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_1), _("All Files"));
         gtk_file_chooser_add_filter(fc, filter_1);
 
         /* music store files filter */
         filter_2 = gtk_file_filter_new();
         gtk_file_filter_add_pattern(filter_2, "*.[xX][mM][lL]");
-        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), _("Music Store Files (*.xml)")); 
+        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), _("Music Store Files (*.xml)"));
         gtk_file_chooser_add_filter(fc, filter_2);
 
         gtk_file_chooser_set_filter(fc, filter_2);
@@ -160,7 +160,7 @@ assign_playlist_fc_filters(GtkFileChooser *fc) {
         /* all files filter */
         filter_1 = gtk_file_filter_new();
         gtk_file_filter_add_pattern(filter_1, "*");
-        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_1), _("All Files")); 
+        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_1), _("All Files"));
         gtk_file_chooser_add_filter(fc, filter_1);
 
         /* all playlist files filter */
@@ -168,9 +168,9 @@ assign_playlist_fc_filters(GtkFileChooser *fc) {
 
         for (i = 0; i < len; i++) {
                 gtk_file_filter_add_pattern(filter_2, file_filters[2*i+1]);
-	}
+        }
 
-        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), _("All Playlist Files")); 
+        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), _("All Playlist Files"));
         gtk_file_chooser_add_filter(fc, filter_2);
         gtk_file_chooser_set_filter(fc, filter_2);
 
@@ -179,7 +179,7 @@ assign_playlist_fc_filters(GtkFileChooser *fc) {
 
                 filter_3 = gtk_file_filter_new();
                 gtk_file_filter_add_pattern(filter_3, file_filters[2*i+1]);
-                gtk_file_filter_set_name(GTK_FILE_FILTER(filter_3), file_filters[2*i]); 
+                gtk_file_filter_set_name(GTK_FILE_FILTER(filter_3), file_filters[2*i]);
                 gtk_file_chooser_add_filter(fc, filter_3);
         }
 }
@@ -219,12 +219,12 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
         GtkFileFilter * filter_all;
 
         filter = gtk_file_filter_new();
-        gtk_file_filter_set_name(filter, _("All Files")); 
+        gtk_file_filter_set_name(filter, _("All Files"));
         gtk_file_filter_add_pattern(filter, "*");
         gtk_file_chooser_add_filter(fc, filter);
 
         filter_all = gtk_file_filter_new();
-        gtk_file_filter_set_name(filter_all, _("All Audio Files")); 
+        gtk_file_filter_set_name(filter_all, _("All Audio Files"));
         gtk_file_chooser_add_filter(fc, filter_all);
         gtk_file_chooser_set_filter(fc, filter_all);
 
@@ -237,7 +237,7 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
 
 #ifdef HAVE_FLAC
         filter = gtk_file_filter_new();
-        gtk_file_filter_set_name(filter, _("Free Lossless Audio Codec (*.flac)")); 
+        gtk_file_filter_set_name(filter, _("Free Lossless Audio Codec (*.flac)"));
         gtk_file_filter_add_pattern(filter, "*.[fF][lL][aA][cC]");
         gtk_file_filter_add_pattern(filter_all, "*.[fF][lL][aA][cC]");
         gtk_file_chooser_add_filter(fc, filter);
@@ -252,7 +252,7 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
 
 #ifdef HAVE_OGG_VORBIS
         filter = gtk_file_filter_new();
-        gtk_file_filter_set_name(filter, _("Ogg Vorbis (*.ogg)")); 
+        gtk_file_filter_set_name(filter, _("Ogg Vorbis (*.ogg)"));
         gtk_file_filter_add_pattern(filter, "*.[oO][gG][gG]");
         gtk_file_filter_add_pattern(filter_all, "*.[oO][gG][gG]");
         gtk_file_chooser_add_filter(fc, filter);
@@ -260,7 +260,7 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
 
 #ifdef HAVE_SPEEX
         filter = gtk_file_filter_new();
-        gtk_file_filter_set_name(filter, _("Ogg Speex (*.spx)")); 
+        gtk_file_filter_set_name(filter, _("Ogg Speex (*.spx)"));
         gtk_file_filter_add_pattern(filter, "*.[sS][pP][xX]");
         gtk_file_filter_add_pattern(filter_all, "*.[sS][pP][xX]");
         gtk_file_chooser_add_filter(fc, filter);
@@ -268,7 +268,7 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
 
 #ifdef HAVE_MPC
         filter = gtk_file_filter_new();
-        gtk_file_filter_set_name(filter, _("Musepack (*.mpc)")); 
+        gtk_file_filter_set_name(filter, _("Musepack (*.mpc)"));
         gtk_file_filter_add_pattern(filter, "*.[mM][pP][cC]");
         gtk_file_filter_add_pattern(filter_all, "*.[mM][pP][cC]");
         gtk_file_chooser_add_filter(fc, filter);
@@ -276,7 +276,7 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
 
 #ifdef HAVE_MAC
         filter = gtk_file_filter_new();
-        gtk_file_filter_set_name(filter, _("Monkey's Audio Codec (*.ape)")); 
+        gtk_file_filter_set_name(filter, _("Monkey's Audio Codec (*.ape)"));
         gtk_file_filter_add_pattern(filter, "*.[aA][pP][eE]");
         gtk_file_filter_add_pattern(filter_all, "*.[aA][pP][eE]");
         gtk_file_chooser_add_filter(fc, filter);
@@ -284,7 +284,7 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
 
 #ifdef HAVE_MOD
         filter = gtk_file_filter_new();
-        gtk_file_filter_set_name(filter, _("Modules (*.xm, *.mod, *.it, *.s3m, ...)")); 
+        gtk_file_filter_set_name(filter, _("Modules (*.xm, *.mod, *.it, *.s3m, ...)"));
 	build_filter_from_extensions(filter, filter_all, valid_extensions_mod);
         gtk_file_chooser_add_filter(fc, filter);
 #endif /* HAVE_MOD */
@@ -292,11 +292,11 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
 #if defined(HAVE_MOD) && (defined(HAVE_LIBZ) || defined(HAVE_LIBBZ2))
         filter = gtk_file_filter_new();
 #if defined(HAVE_LIBZ) && defined(HAVE_LIBBZ2)
-        gtk_file_filter_set_name(filter, _("Compressed modules (*.gz, *.bz2)")); 
+        gtk_file_filter_set_name(filter, _("Compressed modules (*.gz, *.bz2)"));
 #elif defined(HAVE_LIBZ)
-        gtk_file_filter_set_name(filter, _("Compressed modules (*.gz)")); 
+        gtk_file_filter_set_name(filter, _("Compressed modules (*.gz)"));
 #elif defined(HAVE_LIBBZ2)
-        gtk_file_filter_set_name(filter, _("Compressed modules (*.bz2)")); 
+        gtk_file_filter_set_name(filter, _("Compressed modules (*.bz2)"));
 #endif /* HAVE_LIBZ, HAVE_LIBBZ2 */
 
 #ifdef HAVE_LIBZ
@@ -312,7 +312,7 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
 
 #ifdef HAVE_WAVPACK
         filter = gtk_file_filter_new();
-        gtk_file_filter_set_name(filter, _("WavPack (*.wv)")); 
+        gtk_file_filter_set_name(filter, _("WavPack (*.wv)"));
         gtk_file_filter_add_pattern(filter, "*.[wW][vV]");
         gtk_file_filter_add_pattern(filter_all, "*.[wW][vV]");
         gtk_file_chooser_add_filter(fc, filter);
@@ -348,18 +348,57 @@ assign_fc_filters(GtkFileChooser * fc, int filter) {
 	}
 }
 
+void
+directory_chooser(char * title, GtkWidget * parent, char * directory) {
+
+        GtkWidget * dialog;
+	const gchar * selected_directory;
+
+        dialog = gtk_file_chooser_dialog_new(title,
+                                             GTK_WINDOW(parent),
+                                             GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                             NULL);
+
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), directory);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
+
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+
+                char * utf8;
+
+                selected_directory = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		utf8 = g_locale_to_utf8(selected_directory, -1, NULL, NULL, NULL);
+
+		if (utf8 == NULL) {
+			gtk_widget_destroy(dialog);
+		}
+
+                strncpy(directory, selected_directory, MAXLEN-1);
+		g_free(utf8);
+        }
+
+        gtk_widget_destroy(dialog);
+}
+
 GSList *
 file_chooser(char * title, GtkWidget * parent, GtkFileChooserAction action, int filter, gint multiple) {
 
         GtkWidget * dialog;
 	GSList * files = NULL;
 
-        dialog = gtk_file_chooser_dialog_new(title, 
+        dialog = gtk_file_chooser_dialog_new(title,
                                              GTK_WINDOW(parent),
                                              action,
 					     (action == GTK_FILE_CHOOSER_ACTION_SAVE) ? GTK_STOCK_SAVE : GTK_STOCK_OPEN,
-					     GTK_RESPONSE_ACCEPT, 
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
+					     GTK_RESPONSE_ACCEPT,
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                              NULL);
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
@@ -493,7 +532,7 @@ insert_label_entry(GtkWidget * table, char * ltext, GtkWidget ** entry, char * e
 
         *entry = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(*entry), MAXLEN-1);
-        gtk_entry_set_editable(GTK_ENTRY(*entry), editable);
+        gtk_editable_set_editable(GTK_EDITABLE (*entry), TRUE);
 	if (etext != NULL) {
 		gtk_entry_set_text(GTK_ENTRY(*entry), etext);
 	}
@@ -519,7 +558,7 @@ insert_label_entry_button(GtkWidget * table, char * ltext, GtkWidget ** entry, c
 
 	*entry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(*entry), MAXLEN-1);
-	gtk_entry_set_editable(GTK_ENTRY(*entry), TRUE);
+        gtk_editable_set_editable(GTK_EDITABLE (*entry), TRUE);
 	if (etext != NULL) {
 		gtk_entry_set_text(GTK_ENTRY(*entry), etext);
 	}
@@ -594,4 +633,6 @@ set_option_from_entry(GtkWidget * widget, char * opt, int n) {
 
 	strncpy(opt, gtk_entry_get_text(GTK_ENTRY(widget)), n-1);
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8:
 

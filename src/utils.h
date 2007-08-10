@@ -77,3 +77,6 @@ void map_free(map_t * map);
 #endif
 
 #endif /* _UTILS_H */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8:
+

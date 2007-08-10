@@ -48,6 +48,7 @@ GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 
 void deflicker(void);
 
+void directory_chooser(char * title, GtkWidget * parent, char * directory);
 GSList * file_chooser(char * title, GtkWidget * parent,
 		      GtkFileChooserAction action, int filter, gint multiple);
 void file_chooser_with_entry(char * title, GtkWidget * parent,
@@ -82,3 +83,6 @@ void set_option_from_entry(GtkWidget * widget, char * opt, int n);
 #endif
 
 #endif /* _UTILS_GUI_H */
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8:
+

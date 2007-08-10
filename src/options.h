@@ -60,6 +60,10 @@ typedef struct {
 	int shuffle_on;
 	int search_pl_flags;
 	int search_ms_flags;
+#ifdef HAVE_IFP
+        int ifpmanager_size_x;
+        int ifpmanager_size_y;
+#endif
 	float loop_range_start;
 	float loop_range_end;
 

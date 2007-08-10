@@ -55,11 +55,10 @@
 #include "search_playlist.h"
 #include "playlist.h"
 #include "ifp_device.h"
+#include "export.h"
+
 
 extern options_t options;
-
-extern void record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl,
-				GtkTreeIter * dest, int album_mode);
 
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
@@ -133,6 +132,7 @@ GtkWidget * plist__search;
 #ifdef HAVE_IFP
 GtkWidget * plist__send_songs_to_iriver;
 #endif /* HAVE_IFP */
+GtkWidget * plist__export;
 
 gchar command[RB_CONTROL_SIZE];
 
@@ -1309,6 +1309,7 @@ playlist_menu_set_popup_sensitivity(playlist_t * pl) {
 
 	gtk_widget_set_sensitive(plist__reread_file_meta, has_selection && (file_types == 0));
 	gtk_widget_set_sensitive(plist__rva, has_selection && (file_types <= 1));
+	gtk_widget_set_sensitive(plist__export, has_selection && (file_types == 0));
 #ifdef HAVE_IFP
 	gtk_widget_set_sensitive(plist__send_songs_to_iriver, has_selection && (file_types == 0));
 #endif  /* HAVE_IFP */
@@ -2133,6 +2134,127 @@ plist__reread_file_meta_cb(gpointer data) {
 	playlist_content_changed(pl);
 }
 
+int
+plist__export_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
+
+	export_t * export = (export_t *)data;
+	metadata * meta;
+	struct stat statbuf;
+
+	char * file;
+	char artist[MAXLEN];
+	char album[MAXLEN];
+	char title[MAXLEN];
+	int year = 0;
+	int no = 0;
+
+
+	artist[0] = '\0';
+	album[0] = '\0';
+	title[0] = '\0';
+
+	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_PHYSICAL_FILENAME, &file, -1);
+
+	if (stat(file, &statbuf) == -1) {
+		g_free(file);
+		return 0;
+	}
+
+	meta = meta_new();
+	if (meta != NULL && meta_read(meta, file)) {
+
+		char tmp[MAXLEN];
+
+		if (meta_get_artist(meta, tmp)) {
+			strncpy(artist, tmp, MAXLEN-1);
+		}
+
+		if (meta_get_record(meta, tmp)) {
+			strncpy(album, tmp, MAXLEN-1);
+		}
+
+		if (meta_get_title(meta, tmp)) {
+			strncpy(title, tmp, MAXLEN-1);
+		}
+
+		if (meta_get_year(meta, tmp)) {
+			year = atoi(tmp);
+		}
+
+		if (meta_get_tracknum(meta, tmp)) {
+			no = atoi(tmp);
+		}
+	}
+
+	if (artist[0] == '\0' || album[0] == '\0' || no == 0) {
+
+		GtkTreeIter parent;
+
+		if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(pl->store), &parent, iter)) {
+
+			char * tmp;
+
+			if (artist[0] == '\0' || album[0] == '\0') {
+				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &parent,
+						   PL_COL_PHYSICAL_FILENAME, &tmp, -1);
+				unpack_strings(tmp, artist, album);
+				g_free(tmp);
+			}
+
+			if (no == 0) {
+				GtkTreeIter i;
+				int n = 0;
+				while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &i, &parent, n++)) {
+					gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &i,
+							   PL_COL_PHYSICAL_FILENAME, &tmp, -1);
+					if (strcmp(tmp, file) == 0) {
+						no = n;
+						g_free(tmp);
+						break;
+					}
+					g_free(tmp);
+				}
+			}
+		}
+	}
+
+	if (title[0] == '\0') {
+		char * tmp;
+		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter,
+				   PL_COL_TRACK_NAME, &tmp, -1);
+		strncat(title, tmp, MAXLEN-1);
+		g_free(tmp);
+	}
+
+	export_append_item(export, file, artist, album, title, year, no);
+
+	if (meta != NULL) {
+		meta_free(meta);
+	}
+
+	g_free(file);
+
+	return 0;
+}
+
+void
+plist__export_cb(gpointer data) {
+
+	export_t * export;
+	playlist_t * pl;
+
+	if ((pl = playlist_get_current()) == NULL) {
+		return;
+	}
+
+	if ((export = export_new()) == NULL) {
+		return;
+	}
+
+	playlist_foreach_selected(pl, plist__export_foreach, export);
+
+	export_start(export);
+}
 
 #ifdef HAVE_IFP
 void
@@ -5048,6 +5170,7 @@ init_plist_menu(GtkWidget *append_menu) {
 #ifdef HAVE_IFP
         plist__send_songs_to_iriver = gtk_menu_item_new_with_label(_("Send to iFP device"));
 #endif  /* HAVE_IFP */
+        plist__export = gtk_menu_item_new_with_label(_("Export files"));
         plist__rva = gtk_menu_item_new_with_label(_("Calculate RVA"));
         plist__rva_menu = gtk_menu_new();
         plist__rva_separate = gtk_menu_item_new_with_label(_("Separate"));
@@ -5079,11 +5202,12 @@ init_plist_menu(GtkWidget *append_menu) {
 
 #ifdef HAVE_IFP
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__send_songs_to_iriver);
+#endif  /* HAVE_IFP */
+        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__export);
 
 	separator = gtk_separator_menu_item_new();
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), separator);
 	gtk_widget_show(separator);
-#endif  /* HAVE_IFP */
 
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__rva);
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(plist__rva), plist__rva_menu);
@@ -5111,6 +5235,7 @@ init_plist_menu(GtkWidget *append_menu) {
 #ifdef HAVE_IFP
         g_signal_connect_swapped(G_OBJECT(plist__send_songs_to_iriver), "activate", G_CALLBACK(plist__send_songs_to_iriver_cb), NULL);
 #endif  /* HAVE_IFP */
+        g_signal_connect_swapped(G_OBJECT(plist__export), "activate", G_CALLBACK(plist__export_cb), NULL);
 
         g_signal_connect_swapped(G_OBJECT(plist__fileinfo), "activate", G_CALLBACK(plist__fileinfo_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(plist__search), "activate", G_CALLBACK(plist__search_cb), NULL);
@@ -5128,6 +5253,7 @@ init_plist_menu(GtkWidget *append_menu) {
 #ifdef HAVE_IFP
         gtk_widget_show(plist__send_songs_to_iriver);
 #endif  /* HAVE_IFP */
+        gtk_widget_show(plist__export);
         gtk_widget_show(plist__fileinfo);
         gtk_widget_show(plist__search);
 }

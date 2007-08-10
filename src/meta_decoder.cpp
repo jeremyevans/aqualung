@@ -73,6 +73,7 @@ extern "C" {
 #define META_ARTIST  3
 #define META_YEAR    4
 #define META_COMMENT 5
+#define META_TRACK   6
 
 
 extern options_t options;
@@ -894,6 +895,11 @@ meta_lookup(char * str, int which, TagLib::Tag * tag) {
 			return cut_trailing_whitespace(str);
 		}
 		break;
+	case META_TRACK:
+		if (tag->track() != 0) {
+			snprintf(str, MAXLEN-1, "%d", tag->track());
+			return 1;
+		}
 	}
 	return 0;
 }
@@ -1081,6 +1087,15 @@ meta_get_genre(metadata * meta, char * str) {
 int
 meta_get_tracknum(metadata * meta, char * str) {
 	int ret = 0;
+
+#ifdef HAVE_TAGLIB
+	if (meta->taglib_file != NULL) {
+		TagLib::File * file = reinterpret_cast<TagLib::File *>(meta->taglib_file);
+		if (file->tag() != NULL) {
+			ret = meta_lookup(str, META_TRACK, file->tag());
+		}
+	}
+#endif /* HAVE_TAGLIB */
 
 #ifdef HAVE_WAVPACK
 	if (meta->file_lib == WAVPACK_LIB) {

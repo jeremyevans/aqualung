@@ -107,9 +107,9 @@ export_append_item(export_t * export, char * infile,
 
 	item->infile = strdup(infile);
 
-	item->artist = artist ? strdup(artist) : strdup(_("Unknown Artist"));
-	item->album = album ? strdup(album) : strdup(_("Unknown Album"));
-	item->title = title ? strdup(title) : strdup(_("Unknown Track"));
+	item->artist = (artist && artist[0] != '\0') ? strdup(artist) : strdup(_("Unknown Artist"));
+	item->album = (album && album[0] != '\0') ? strdup(album) : strdup(_("Unknown Album"));
+	item->title = (title && title[0] != '\0') ? strdup(title) : strdup(_("Unknown Track"));
 	item->year = year;
 	item->no = no;
 
@@ -586,7 +586,7 @@ export_format_help_cb(GtkButton * button, gpointer user_data) {
 			 "construct the filename of the exported files. The Artist,\n"
 			 "Record and Track names are denoted by %%%%a, %%%%r and %%%%t.\n"
 			 "The track number and format-dependent file extension are\n"
-			 "denoted by %%%%n and %%%%x, respectively"));
+			 "denoted by %%%%n and %%%%x, respectively."));
 }
 
 int

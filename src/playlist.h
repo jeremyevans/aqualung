@@ -120,6 +120,7 @@ void playlist_save_all(char * filename);
 
 void playlist_set_color(void);
 void playlist_disable_bold_font(void);
+void playlist_set_font(int cond);
 
 void playlist_content_changed(playlist_t * pl);
 void playlist_selection_changed(playlist_t * pl);

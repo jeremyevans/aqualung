@@ -2497,6 +2497,23 @@ cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_d
 }    
 
 void
+main_window_set_font(int cond) {
+
+        if (cond) {
+		gtk_widget_modify_font(bigtimer_label, fd_bigtimer);
+		gtk_widget_modify_font(smalltimer_label_1, fd_smalltimer);
+		gtk_widget_modify_font(smalltimer_label_2, fd_smalltimer);
+		gtk_widget_modify_font(label_title, fd_songtitle);
+		gtk_widget_modify_font(label_mono, fd_songinfo);
+		gtk_widget_modify_font(label_samplerate, fd_songinfo);
+		gtk_widget_modify_font(label_bps, fd_songinfo);
+		gtk_widget_modify_font(label_format, fd_songinfo);
+		gtk_widget_modify_font(label_output, fd_songinfo);
+		gtk_widget_modify_font(label_src_type, fd_songinfo);
+	}
+}
+
+void
 create_main_window(char * skin_path) {
 
 	GtkWidget * vbox;
@@ -2720,10 +2737,6 @@ create_main_window(char * skin_path) {
 	/* labels */
 	bigtimer_label = time_labels[options.time_idx[0]] = gtk_label_new("");
 
-        if (options.override_skin_settings) {
-                gtk_widget_modify_font (bigtimer_label, fd_bigtimer);
-        }
-
         gtk_widget_set_name(time_labels[options.time_idx[0]], "big_timer_label");
 	gtk_container_add(GTK_CONTAINER(time0_viewp), time_labels[options.time_idx[0]]);
 
@@ -2733,10 +2746,6 @@ create_main_window(char * skin_path) {
 
 	smalltimer_label_1 = time_labels[options.time_idx[1]] = gtk_label_new("");
 
-        if (options.override_skin_settings) {
-                gtk_widget_modify_font (smalltimer_label_1, fd_smalltimer);
-        }
-
         gtk_widget_set_name(time_labels[options.time_idx[1]], "small_timer_label");
 	gtk_box_pack_start(GTK_BOX(time_hbox1), time_labels[options.time_idx[1]], TRUE, TRUE, 0);
 
@@ -2745,10 +2754,6 @@ create_main_window(char * skin_path) {
 	gtk_container_add(GTK_CONTAINER(time2_viewp), time_hbox2);
 
 	smalltimer_label_2 = time_labels[options.time_idx[2]] = gtk_label_new("");
-
-        if (options.override_skin_settings) {
-                gtk_widget_modify_font (smalltimer_label_2, fd_smalltimer);
-        }
 
         gtk_widget_set_name(time_labels[options.time_idx[2]], "small_timer_label");
 	gtk_box_pack_start(GTK_BOX(time_hbox2), time_labels[options.time_idx[2]], TRUE, TRUE, 0);
@@ -2784,16 +2789,7 @@ create_main_window(char * skin_path) {
 	gtk_widget_set_name(label_src_type, "label_info");
 	gtk_box_pack_start(GTK_BOX(info_hbox), label_src_type, FALSE, FALSE, 3);
 
-        if (options.override_skin_settings) {
-                gtk_widget_modify_font (label_title, fd_songtitle);
-
-                gtk_widget_modify_font (label_mono, fd_songinfo);
-                gtk_widget_modify_font (label_samplerate, fd_songinfo);
-                gtk_widget_modify_font (label_bps, fd_songinfo);
-                gtk_widget_modify_font (label_format, fd_songinfo);
-                gtk_widget_modify_font (label_output, fd_songinfo);
-                gtk_widget_modify_font (label_src_type, fd_songinfo);
-        }
+	main_window_set_font(options.override_skin_settings);
 
 	/* Volume and balance slider */
 	vb_table = gtk_table_new(1, 3, FALSE);

@@ -40,6 +40,7 @@ void music_store_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_it
 int music_store_iter_is_track(GtkTreeIter * iter);
 
 void music_store_selection_changed(void);
+void music_browser_set_font(int cond);
 
 void music_store_mark_changed(GtkTreeIter * iter);
 void music_store_mark_saved(GtkTreeIter* iter_store);

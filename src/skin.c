@@ -67,8 +67,6 @@ apply_skin(char * path) {
 
 	playlist_set_color();
         playlist_size_allocate_all();
-	playlist_selection_changed(playlist_get_current());
-	playlist_content_changed(playlist_get_current());
 }
 
 static int

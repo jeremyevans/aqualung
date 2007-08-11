@@ -648,9 +648,28 @@ playlist_disable_bold_font_foreach(gpointer data, gpointer user_data) {
 }
 
 void
-playlist_disable_bold_font() {
+playlist_disable_bold_font(void) {
 
 	g_list_foreach(playlists, playlist_disable_bold_font_foreach, NULL);
+}
+
+void
+playlist_set_font_foreach(gpointer data, gpointer user_data) {
+
+	gtk_widget_modify_font(((playlist_t *)data)->view, fd_playlist);
+}
+
+void
+playlist_set_font(int cond) {
+
+        if (cond) {
+		gtk_widget_modify_font(statusbar_selected, fd_statusbar);
+		gtk_widget_modify_font(statusbar_selected_label, fd_statusbar);
+		gtk_widget_modify_font(statusbar_total, fd_statusbar);
+		gtk_widget_modify_font(statusbar_total_label, fd_statusbar);
+
+		g_list_foreach(playlists, playlist_set_font_foreach, NULL);
+	}
 }
 
 void
@@ -3852,13 +3871,13 @@ create_playlist_gui(playlist_t * pl) {
 	g_signal_connect(G_OBJECT(pl->view), "row_collapsed",
 			 G_CALLBACK(playlist_row_expand_collapse), pl);
 
-        if (options.override_skin_settings) {
+	if (options.override_skin_settings) {
                 gtk_widget_modify_font(pl->view, fd_playlist);
-        }
+	}
 
-        if (options.enable_pl_rules_hint) {
-                gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(pl->view), TRUE);
-        }
+	if (options.enable_pl_rules_hint) {
+		gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(pl->view), TRUE);
+	}
 
 	for (i = 0; i < 3; i++) {
 		switch (options.plcol_idx[i]) {
@@ -4076,6 +4095,7 @@ notebook_page_reordered(GtkNotebook * notebook, GtkWidget * child,
 }
 #endif /* GTK_CHECK_VERSION */
 
+
 void
 create_playlist(void) {
 
@@ -4214,14 +4234,10 @@ create_playlist(void) {
 		statusbar_total_label = gtk_label_new(_("Total: "));
 		gtk_widget_set_name(statusbar_total_label, "label_info");
 		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_total_label, FALSE, TRUE, 0);
-
-                if (options.override_skin_settings) {
-                        gtk_widget_modify_font (statusbar_selected, fd_statusbar);
-                        gtk_widget_modify_font (statusbar_selected_label, fd_statusbar);
-                        gtk_widget_modify_font (statusbar_total, fd_statusbar);
-                        gtk_widget_modify_font (statusbar_total_label, fd_statusbar);
-                }
 	}
+
+
+	playlist_set_font(options.override_skin_settings);
 
 	/* bottom area of playlist window */
         hbox_bottom = gtk_hbox_new(FALSE, 0);

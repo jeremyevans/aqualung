@@ -216,7 +216,7 @@ export_item_set_path(export_t * export, export_item_t * item, char * path, char 
 	}
 
 	snprintf(str_no, 15, "%02d", item->no);
-	snprintf(str_index, 15, "%04x", index);
+	snprintf(str_index, 15, "%04d", index);
 
 	make_string_va(track, export->template, '%', "%", 'a', item->artist, 'r', item->album,
 		       't', item->title, 'n', str_no, 'x', ext, 'i', str_index, 0);

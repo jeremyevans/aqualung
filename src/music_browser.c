@@ -438,6 +438,14 @@ music_tree_expand_stores(void) {
 	}
 }
 
+void
+music_browser_set_font(int cond) {
+
+        if (cond) {
+		gtk_widget_modify_font(music_tree, fd_browser);
+		gtk_widget_modify_font(statusbar_ms, fd_statusbar);
+	}
+}
 
 void
 create_music_browser(void) {
@@ -552,10 +560,6 @@ create_music_browser(void) {
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(music_tree), FALSE);
 
 	g_signal_connect(G_OBJECT(music_tree), "event", G_CALLBACK(music_tree_event_cb), NULL);
-
-        if (options.override_skin_settings) {
-                gtk_widget_modify_font(music_tree, fd_browser);
-        }
 
         if (options.enable_ms_rules_hint) {
                 gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(music_tree), TRUE);
@@ -694,11 +698,9 @@ create_music_browser(void) {
 		statusbar_ms = gtk_label_new("");
 		gtk_widget_set_name(statusbar_ms, "label_info");
 		gtk_box_pack_end(GTK_BOX(statusbar_hbox), statusbar_ms, FALSE, FALSE, 0);
-
-                if (options.override_skin_settings) {
-                        gtk_widget_modify_font (statusbar_ms, fd_statusbar);
-                }
 	}
+
+	music_browser_set_font(options.override_skin_settings);
 }
 
 

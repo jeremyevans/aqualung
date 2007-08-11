@@ -49,6 +49,7 @@ void run_gui(void);
 void format_bps_label(int bps, int format_flags, char * str);
 
 void refresh_displays(void);
+void main_window_set_font(int cond);
 
 void save_window_position(void);
 void restore_window_position(void);

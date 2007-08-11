@@ -257,39 +257,48 @@ open_font_desc(void) {
 
         if (fd_playlist) {
 		pango_font_description_free(fd_playlist);
+		fd_playlist = NULL;
 	}
 
         if (fd_browser) {
 		pango_font_description_free(fd_browser);
+		fd_browser = NULL;
 	}
 
         if (fd_bigtimer) {
 		pango_font_description_free(fd_bigtimer);
+		fd_bigtimer = NULL;
 	}
 
         if (fd_smalltimer) {
 		pango_font_description_free(fd_smalltimer);
+		fd_smalltimer = NULL;
 	}
 
         if (fd_songtitle) {
 		pango_font_description_free(fd_songtitle);
+		fd_songtitle = NULL;
 	}
 
         if (fd_songinfo) {
 		pango_font_description_free(fd_songinfo);
+		fd_songinfo = NULL;
 	}
 
         if (fd_statusbar) {
 		pango_font_description_free(fd_statusbar);
+		fd_statusbar = NULL;
 	}
 
-	fd_playlist = pango_font_description_from_string(options.playlist_font);
-	fd_browser = pango_font_description_from_string(options.browser_font);
-	fd_bigtimer = pango_font_description_from_string(options.bigtimer_font);
-	fd_smalltimer = pango_font_description_from_string(options.smalltimer_font);
-	fd_songtitle = pango_font_description_from_string(options.songtitle_font);
-	fd_songinfo = pango_font_description_from_string(options.songinfo_font);
-	fd_statusbar = pango_font_description_from_string(options.statusbar_font);
+	if (options.override_skin_settings) {
+		fd_playlist = pango_font_description_from_string(options.playlist_font);
+		fd_browser = pango_font_description_from_string(options.browser_font);
+		fd_bigtimer = pango_font_description_from_string(options.bigtimer_font);
+		fd_smalltimer = pango_font_description_from_string(options.smalltimer_font);
+		fd_songtitle = pango_font_description_from_string(options.songtitle_font);
+		fd_songinfo = pango_font_description_from_string(options.songinfo_font);
+		fd_statusbar = pango_font_description_from_string(options.statusbar_font);
+	}
 }
 
 void
@@ -463,19 +472,21 @@ options_window_accept(void) {
                 track_name_in_bold_shadow = 0;
         }
 
-        if (options.override_skin_settings) {
 
-                /* apply fonts */
-                open_font_desc();
+	if (appearance_changed) {
+		/* apply fonts */
+		open_font_desc();
+		main_window_set_font(1);
+		music_browser_set_font(1);
+		playlist_set_font(1);
 
-        } else if (override_shadow) {
+		reskin_flag = 1;
+	}
+
+        if (!options.override_skin_settings && override_shadow) {
 		reskin_flag = 1;
                 override_shadow = 0;
         }
-
-	if (appearance_changed) {
-		reskin_flag = 1;
-	}
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
@@ -1023,7 +1034,8 @@ appearance_font_select(GtkWidget * widget, gpointer data) {
 	font_selector = gtk_font_selection_dialog_new ("Select a font...");
 	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
 	gtk_window_set_transient_for(GTK_WINDOW(font_selector), GTK_WINDOW(options_window));
-	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(font_selector), options.playlist_font);
+	gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(font_selector),
+						gtk_entry_get_text(GTK_ENTRY((GtkWidget *)data)));
 	gtk_widget_show (font_selector);
 	response = aqualung_dialog_run (GTK_DIALOG (font_selector));
 

@@ -467,15 +467,15 @@ options_window_accept(void) {
 
                 /* apply fonts */
                 open_font_desc();
-                if (appearance_changed) {
-			reskin_flag = 1;
-		}
 
         } else if (override_shadow) {
 		reskin_flag = 1;
                 override_shadow = 0;
         }
 
+	if (appearance_changed) {
+		reskin_flag = 1;
+	}
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
@@ -2666,6 +2666,7 @@ See the About box and the documentation for details."));
 
 	if (options.disable_skin_support_settings) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_disable_skin_support), TRUE);
+		gtk_widget_set_sensitive(check_override_skin, FALSE);
 	}
 	g_signal_connect (G_OBJECT (check_disable_skin_support), "toggled",
 						G_CALLBACK (cb_toggle_disable_skin_support), NULL);

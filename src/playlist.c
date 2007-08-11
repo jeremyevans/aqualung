@@ -42,7 +42,6 @@
 #include "rb.h"
 #include "cdda.h"
 #include "gui_main.h"
-#include "skin.h"
 #include "music_browser.h"
 #include "store_file.h"
 #include "file_info.h"
@@ -4104,7 +4103,6 @@ create_playlist(void) {
         /* window creating stuff */
 	if (!options.playlist_is_embedded) {
 		playlist_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-		register_toplevel_window(playlist_window);
 		gtk_window_set_title(GTK_WINDOW(playlist_window), _("Playlist"));
 		gtk_container_set_border_width(GTK_CONTAINER(playlist_window), 2);
 		g_signal_connect(G_OBJECT(playlist_window), "delete_event",
@@ -4124,7 +4122,7 @@ create_playlist(void) {
 
         if (!options.playlist_is_embedded) {
                 plist_menu = gtk_menu_new();
-		register_toplevel_window(plist_menu);
+		register_toplevel_window(plist_menu, TOP_WIN_SKIN);
                 init_plist_menu(plist_menu);
         }
 
@@ -4249,7 +4247,7 @@ create_playlist(void) {
 
 
         add_menu = gtk_menu_new();
-	register_toplevel_window(add_menu);
+	register_toplevel_window(add_menu, TOP_WIN_SKIN);
 
         add__dir = gtk_menu_item_new_with_label(_("Add directory"));
         gtk_menu_shell_append(GTK_MENU_SHELL(add_menu), add__dir);
@@ -4270,7 +4268,7 @@ create_playlist(void) {
 
 
         sel_menu = gtk_menu_new();
-	register_toplevel_window(sel_menu);
+	register_toplevel_window(sel_menu, TOP_WIN_SKIN);
 
         sel__none = gtk_menu_item_new_with_label(_("Select none"));
         gtk_menu_shell_append(GTK_MENU_SHELL(sel_menu), sel__none);
@@ -4291,7 +4289,7 @@ create_playlist(void) {
 
 
         rem_menu = gtk_menu_new();
-	register_toplevel_window(rem_menu);
+	register_toplevel_window(rem_menu, TOP_WIN_SKIN);
 
         rem__all = gtk_menu_item_new_with_label(_("Remove all"));
         gtk_menu_shell_append(GTK_MENU_SHELL(rem_menu), rem__all);
@@ -4334,6 +4332,7 @@ show_playlist(void) {
 	if (!options.playlist_is_embedded) {
 		gtk_window_move(GTK_WINDOW(playlist_window), options.playlist_pos_x, options.playlist_pos_y);
 		gtk_window_resize(GTK_WINDOW(playlist_window), options.playlist_size_x, options.playlist_size_y);
+		register_toplevel_window(playlist_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
 	} else {
 		gtk_window_get_size(GTK_WINDOW(main_window), &options.main_size_x, &options.main_size_y);
 		gtk_window_resize(GTK_WINDOW(main_window), options.main_size_x, options.main_size_y + options.playlist_size_y + 6);
@@ -4350,11 +4349,13 @@ hide_playlist(void) {
 	if (!options.playlist_is_embedded) {
 		gtk_window_get_position(GTK_WINDOW(playlist_window), &options.playlist_pos_x, &options.playlist_pos_y);
 		gtk_window_get_size(GTK_WINDOW(playlist_window), &options.playlist_size_x, &options.playlist_size_y);
+		register_toplevel_window(playlist_window, TOP_WIN_SKIN);
 	} else {
 		options.playlist_size_x = playlist_window->allocation.width;
 		options.playlist_size_y = playlist_window->allocation.height;
 		gtk_window_get_size(GTK_WINDOW(main_window), &options.main_size_x, &options.main_size_y);
 	}
+
         gtk_widget_hide(playlist_window);
 
 	if (options.playlist_is_embedded) {

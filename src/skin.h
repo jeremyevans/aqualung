@@ -21,20 +21,8 @@
 #ifndef _SKIN_H
 #define _SKIN_H
 
-#include <gtk/gtk.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void create_skin_window(void);
-void register_toplevel_window(GtkWidget * window);
-void unregister_toplevel_window(GtkWidget * window);
 void apply_skin(char * path);
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
 
 #endif /* _SKIN_H */
 

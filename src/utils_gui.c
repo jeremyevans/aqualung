@@ -21,6 +21,7 @@
 #include <config.h>
 
 #include <ctype.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 
@@ -44,6 +45,63 @@ extern char * valid_extensions_mpeg[];
 #ifdef HAVE_MOD
 extern char * valid_extensions_mod[];
 #endif /* HAVE_MOD */
+
+
+GSList * toplevel_windows;
+
+typedef struct {
+	GtkWidget * window;
+	int flag;
+} top_win_t;
+
+void
+unregister_toplevel_window(GtkWidget * window) {
+
+	GSList * node;
+
+	for (node = toplevel_windows; node; node = node->next) {
+
+		top_win_t * tw = (top_win_t *)node->data;
+
+		if (tw->window == window) {
+			toplevel_windows = g_slist_remove(toplevel_windows, tw);
+			free(tw);
+			break;
+		}
+	}
+}
+
+void
+register_toplevel_window(GtkWidget * window, int flag) {
+
+	top_win_t * tw;
+
+	if ((tw = (top_win_t *)calloc(1, sizeof(top_win_t))) == NULL) {
+		fprintf(stderr, "register_toplevel_window: calloc error\n");
+		return;
+	}
+
+	tw->window = window;
+	tw->flag = flag;
+
+	unregister_toplevel_window(window);
+	toplevel_windows = g_slist_append(toplevel_windows, tw);
+}
+
+void
+toplevel_window_foreach(int flag, void (* callback)(GtkWidget * window)) {
+
+	GSList * node;
+
+	for (node = toplevel_windows; node; node = node->next) {
+
+		top_win_t * tw = (top_win_t *)node->data;
+
+		if (tw->flag & flag) {
+			callback(tw->window);
+		}
+	}
+}
 
 
 #ifdef HAVE_SYSTRAY

@@ -37,7 +37,6 @@
 #include "file_info.h"
 #include "decoder/file_decoder.h"
 #include "gui_main.h"
-#include "skin.h"
 #include "options.h"
 #include "playlist.h"
 #include "search.h"
@@ -469,7 +468,6 @@ create_music_browser(void) {
 
 	/* window creating stuff */
 	browser_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	register_toplevel_window(browser_window);
 	gtk_window_set_title(GTK_WINDOW(browser_window), _("Music Store"));
 	g_signal_connect(G_OBJECT(browser_window), "delete_event", G_CALLBACK(browser_window_close), NULL);
 	g_signal_connect(G_OBJECT(browser_window), "key_press_event",
@@ -618,7 +616,7 @@ create_music_browser(void) {
 
         /* create popup menu for blank space */
         blank_menu = gtk_menu_new();
-	register_toplevel_window(blank_menu);
+	register_toplevel_window(blank_menu, TOP_WIN_SKIN);
 
         blank__add = gtk_menu_item_new_with_label(_("Create empty store..."));
         blank__search = gtk_menu_item_new_with_label(_("Search..."));
@@ -711,6 +709,7 @@ show_music_browser(void) {
 	gtk_window_move(GTK_WINDOW(browser_window), options.browser_pos_x, options.browser_pos_y);
 	gtk_window_resize(GTK_WINDOW(browser_window), options.browser_size_x, options.browser_size_y);
 	gtk_widget_show_all(browser_window);
+	register_toplevel_window(browser_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
 	if (!options.hide_comment_pane) {
 		gtk_paned_set_position(GTK_PANED(browser_paned), options.browser_paned_pos);
 	}
@@ -727,6 +726,7 @@ hide_music_browser(void) {
 		options.browser_paned_pos = gtk_paned_get_position(GTK_PANED(browser_paned));
 	}
 	gtk_widget_hide(browser_window);
+	register_toplevel_window(browser_window, TOP_WIN_SKIN);
 }
 
 

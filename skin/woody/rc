@@ -102,6 +102,7 @@ style "entry" = "view"
 style "combo_box"
 {
 	text[NORMAL] = { 0.0, 0.0, 0.0 }
+	text[PRELIGHT] = { 0.0, 0.0, 0.0 }
 	fg[NORMAL] = { 0.0, 0.0, 0.0 }
 }
 

@@ -40,7 +40,6 @@
 #include "i18n.h"
 #include "utils.h"
 #include "utils_gui.h"
-#include "skin.h"
 #include "decoder/file_decoder.h"
 #include "encoder/file_encoder.h"
 #include "encoder/enc_lame.h"
@@ -767,7 +766,7 @@ export_progress_window(export_t * export) {
 
 
 	export->prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	register_toplevel_window(export->prog_window);
+	register_toplevel_window(export->prog_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
         gtk_window_set_title(GTK_WINDOW(export->prog_window), _("Exporting files"));
         gtk_window_set_position(GTK_WINDOW(export->prog_window), GTK_WIN_POS_CENTER);
         gtk_window_resize(GTK_WINDOW(export->prog_window), 430, 110);

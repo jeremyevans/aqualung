@@ -28,6 +28,7 @@
 #include <errno.h>
 
 #include "common.h"
+#include "utils_gui.h"
 #include "gui_main.h"
 #include "playlist.h"
 #include "options.h"
@@ -44,37 +45,23 @@ GtkWidget * skin_window;
 GtkListStore * skin_store;
 GtkTreeSelection * skin_select;
 
-GSList * toplevel_windows;
-
 
 void
-register_toplevel_window(GtkWidget * window) {
+apply_skin_foreach(GtkWidget * window) {
 
-	toplevel_windows = g_slist_append(toplevel_windows, window);
-}
-
-void
-unregister_toplevel_window(GtkWidget * window) {
-
-	toplevel_windows = g_slist_remove(toplevel_windows, window);
+	gtk_widget_reset_rc_styles(window);
+	gtk_widget_queue_draw(window);
 }
 
 void
 apply_skin(char * path) {
 
-	GSList * node;
 	char rcpath[MAXLEN];
 	
 	sprintf(rcpath, "%s/rc", path);
 	gtk_rc_parse(rcpath);
 
-	for (node = toplevel_windows; node; node = node->next) {
-
-		GtkWidget * window = (GtkWidget *)node->data;
-
-		gtk_widget_reset_rc_styles(window);
-		gtk_widget_queue_draw(window);
-	}
+	toplevel_window_foreach(TOP_WIN_SKIN, apply_skin_foreach);
 
 	main_buttons_set_content(path);
 

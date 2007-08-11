@@ -49,7 +49,6 @@
 #include "music_browser.h"
 #include "store_file.h"
 #include "export.h"
-#include "skin.h"
 
 
 extern options_t options;
@@ -4279,7 +4278,7 @@ store_file_create_popup_menu(void) {
 
 	/* create popup menu for music store tree items */
 	store_menu = gtk_menu_new();
-	register_toplevel_window(store_menu);
+	register_toplevel_window(store_menu, TOP_WIN_SKIN);
 
 	store__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	store__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
@@ -4361,7 +4360,7 @@ store_file_create_popup_menu(void) {
 
 	/* create popup menu for artist tree items */
 	artist_menu = gtk_menu_new();
-	register_toplevel_window(artist_menu);
+	register_toplevel_window(artist_menu, TOP_WIN_SKIN);
 
 	artist__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	artist__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
@@ -4435,7 +4434,7 @@ store_file_create_popup_menu(void) {
 
 	/* create popup menu for record tree items */
 	record_menu = gtk_menu_new();
-	register_toplevel_window(record_menu);
+	register_toplevel_window(record_menu, TOP_WIN_SKIN);
 
 	record__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	record__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
@@ -4525,7 +4524,7 @@ store_file_create_popup_menu(void) {
 
 	/* create popup menu for track tree items */
 	track_menu = gtk_menu_new();
-	register_toplevel_window(track_menu);
+	register_toplevel_window(track_menu, TOP_WIN_SKIN);
 
 	track__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	track__separator1 = gtk_separator_menu_item_new();

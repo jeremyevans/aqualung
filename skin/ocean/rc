@@ -99,6 +99,7 @@ style "entry" = "view"
 style "combo_box"
 {
 	text[NORMAL] = "#000000"
+	text[PRELIGHT] = "#000000"
 	fg[NORMAL] = "#000000"
 }
 

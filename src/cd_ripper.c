@@ -47,7 +47,6 @@
 #include "i18n.h"
 #include "cdda.h"
 #include "cd_ripper.h"
-#include "skin.h"
 
 #if defined(HAVE_CDDA) && (defined(HAVE_SNDFILE) || defined(HAVE_FLAC) || defined(HAVE_VORBISENC) || defined(HAVE_LAME))
 
@@ -960,7 +959,7 @@ ripper_window(void) {
 
 
         ripper_prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	register_toplevel_window(ripper_prog_window);
+	register_toplevel_window(ripper_prog_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
         gtk_window_set_title(GTK_WINDOW(ripper_prog_window), _("Ripping CD tracks"));
         gtk_window_set_position(GTK_WINDOW(ripper_prog_window), GTK_WIN_POS_CENTER);
         g_signal_connect(G_OBJECT(ripper_prog_window), "delete_event",

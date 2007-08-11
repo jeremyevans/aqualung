@@ -29,6 +29,15 @@
 extern "C" {
 #endif
 
+enum {
+	TOP_WIN_SKIN = (1 << 0),
+	TOP_WIN_TRAY = (1 << 1)
+};
+
+void register_toplevel_window(GtkWidget * window, int flag);
+void unregister_toplevel_window(GtkWidget * window);
+void toplevel_window_foreach(int flag, void (* callback)(GtkWidget * window));
+
 
 enum {
 	FILE_CHOOSER_FILTER_NONE = 0,

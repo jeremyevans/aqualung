@@ -41,7 +41,7 @@
 #include "options.h"
 #include "trashlist.h"
 #include "plugin.h"
-#include "skin.h"
+
 
 #ifdef __FreeBSD__
 #define dirent64 dirent
@@ -326,6 +326,7 @@ show_fxbuilder(void) {
         set_active_state();
 	gtk_widget_show_all(fxbuilder_window);
 	fxbuilder_on = 1;
+	register_toplevel_window(fxbuilder_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
 }
 
 
@@ -334,6 +335,7 @@ hide_fxbuilder(void) {
 
 	gtk_widget_hide(fxbuilder_window);
 	fxbuilder_on = 0;
+	register_toplevel_window(fxbuilder_window, TOP_WIN_SKIN);
 }
 
 
@@ -574,6 +576,7 @@ static gboolean
 close_plugin_window(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
         gtk_widget_hide(widget);
+	register_toplevel_window(widget, TOP_WIN_SKIN);
         return TRUE;
 }
 
@@ -784,7 +787,7 @@ build_plugin_window(plugin_instance * instance) {
 
 	GtkWidget * scrwin;
 	GtkWidget * inner_vbox;
-	GtkWidget * table = NULL; /* gcc rulez, eh? */
+	GtkWidget * table;
 	GtkWidget * hseparator;
 	GtkObject * adjustment;
 	GtkWidget * combo;
@@ -800,7 +803,6 @@ build_plugin_window(plugin_instance * instance) {
 
 
 	instance->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	register_toplevel_window(instance->window);
 	gtk_window_set_title(GTK_WINDOW(instance->window), plugin->Name);
 	gtk_window_set_position(GTK_WINDOW(instance->window), GTK_WIN_POS_CENTER);
 	gtk_window_set_transient_for(GTK_WINDOW(instance->window), GTK_WINDOW(fxbuilder_window));
@@ -1594,8 +1596,10 @@ conf_clicked(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
                 gtk_tree_model_get(GTK_TREE_MODEL(running_store), &iter, 1, &gp_instance, -1);
                 instance = (plugin_instance *) gp_instance;
-		if (instance->window)
+		if (instance->window) {
+			register_toplevel_window(instance->window, TOP_WIN_SKIN | TOP_WIN_TRAY);
 			gtk_widget_show_all(instance->window);
+		}
 	}
 
 	return TRUE;
@@ -1821,7 +1825,6 @@ create_fxbuilder(void) {
 
         /* window creating stuff */
         fxbuilder_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	register_toplevel_window(fxbuilder_window);
         gtk_window_set_title(GTK_WINDOW(fxbuilder_window), _("LADSPA patch builder"));
 	gtk_window_set_position(GTK_WINDOW(fxbuilder_window), GTK_WIN_POS_CENTER);
         g_signal_connect(G_OBJECT(fxbuilder_window), "delete_event", G_CALLBACK(fxbuilder_close), NULL);

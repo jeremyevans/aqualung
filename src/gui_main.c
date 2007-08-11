@@ -1046,7 +1046,9 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		return TRUE;
 	case GDK_k:
 	case GDK_K:
-        	create_skin_window();
+                if (!options.disable_skin_support_settings) {
+                	create_skin_window();
+                }
                 return TRUE;
 	case GDK_o:
 	case GDK_O:
@@ -2574,6 +2576,7 @@ create_main_window(char * skin_path) {
 
 	GtkWidget * sr_table;
 
+        char path[MAXLEN];
 
 	set_win_title();
 	main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -2676,7 +2679,9 @@ create_main_window(char * skin_path) {
         }
 
         gtk_widget_show(conf__options);
-        gtk_widget_show(conf__skin);
+        if (!options.disable_skin_support_settings) {
+                gtk_widget_show(conf__skin);
+        }
         gtk_widget_show(conf__jack);
         gtk_widget_show(conf__separator1);
         gtk_widget_show(conf__about);
@@ -3016,7 +3021,12 @@ create_main_window(char * skin_path) {
 
 	gtk_box_pack_end(GTK_BOX(btns_hbox), sr_table, FALSE, FALSE, 3);
 
-	main_buttons_set_content(skin_path);
+        if (options.disable_skin_support_settings) {
+	        sprintf(path, "%s/no_skin", AQUALUNG_SKINDIR);
+	        main_buttons_set_content(path);
+        } else {
+	        main_buttons_set_content(skin_path);
+        }
         set_buttons_relief();
 
 	/* Embedded playlist */
@@ -3312,7 +3322,11 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		options.src_type = 4;
 	}
 
-	sprintf(path, "%s/rc", options.skin);
+        if (options.disable_skin_support_settings) {
+	        sprintf(path, "%s/no_skin/rc", AQUALUNG_SKINDIR);
+        } else {
+	        sprintf(path, "%s/rc", options.skin);
+        }
 	gtk_rc_parse(path);
 
 #ifdef HAVE_SYSTRAY

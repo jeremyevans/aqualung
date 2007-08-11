@@ -1,1 +1,1 @@
-SUBDIRS = dark default metal ocean plain woody
+SUBDIRS = dark default metal ocean plain woody no_skin

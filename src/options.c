@@ -86,6 +86,8 @@ extern int music_store_changed;
 extern GtkWidget * music_tree;
 extern GtkTreeStore * music_store;
 
+extern GtkWidget * conf__skin;
+
 int rva_is_enabled_shadow;
 int rva_env_shadow;
 float rva_refvol_shadow;
@@ -221,6 +223,7 @@ GtkWidget * inet_help_noproxy_domains;
 GtkWidget * inet_spinner_timeout;
 
 
+GtkWidget * check_disable_skin_support;
 GtkWidget * check_override_skin;
 
 #define DEFAULT_FONT_NAME "Sans 11"
@@ -431,6 +434,7 @@ options_window_accept(void) {
 
 	/* Appearance */
 
+        set_option_from_toggle(check_disable_skin_support, &options.disable_skin_support_settings);
         set_option_from_toggle(check_override_skin, &options.override_skin_settings);
 	set_option_from_entry(entry_pl_font, options.playlist_font, MAX_FONTNAME_LEN);
 	set_option_from_entry(entry_ms_font, options.browser_font, MAX_FONTNAME_LEN);
@@ -1081,6 +1085,20 @@ set_sensitive_part(void) {
 
         for (n = 0; n < items; n++) {
                 gtk_widget_set_sensitive(sensitive_table[n], state);
+        }
+}
+
+void
+cb_toggle_disable_skin_support(GtkToggleButton *togglebutton, gpointer user_data) {
+
+        appearance_changed = 1;
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_disable_skin_support)) == TRUE) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_override_skin), TRUE);
+		gtk_widget_set_sensitive(check_override_skin, FALSE);
+                restart_active(togglebutton, _("Disable skin support"));
+        } else {
+		gtk_widget_set_sensitive(check_override_skin, TRUE);
         }
 }
 
@@ -2628,6 +2646,13 @@ See the About box and the documentation for details."));
         gtk_container_set_border_width(GTK_CONTAINER(vbox_appearance), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_appearance, create_notebook_tab(_("Appearance"), "appearance.png"));
 
+
+        check_disable_skin_support =
+		gtk_check_button_new_with_label(_("Disable skin support"));
+
+        gtk_widget_set_name(check_disable_skin_support, "check_on_notebook");
+	gtk_box_pack_start(GTK_BOX(vbox_appearance), check_disable_skin_support, FALSE, FALSE, 0);
+
         check_override_skin =
 		gtk_check_button_new_with_label(_("Override skin settings"));
 
@@ -2638,6 +2663,12 @@ See the About box and the documentation for details."));
 	gtk_box_pack_start(GTK_BOX(vbox_appearance), check_override_skin, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_override_skin), "toggled",
 						G_CALLBACK (cb_toggle_override_skin), NULL);
+
+	if (options.disable_skin_support_settings) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_disable_skin_support), TRUE);
+	}
+	g_signal_connect (G_OBJECT (check_disable_skin_support), "toggled",
+						G_CALLBACK (cb_toggle_disable_skin_support), NULL);
 
 	frame_fonts = gtk_frame_new(_("Fonts"));
 	gtk_box_pack_start(GTK_BOX(vbox_appearance), frame_fonts, FALSE, TRUE, 5);
@@ -2912,7 +2943,12 @@ See the About box and the documentation for details."));
 		gtk_widget_destroy(options_window);
 
 		if (reskin_flag) {
-			apply_skin(options.skin);
+                        if (!options.disable_skin_support_settings) {
+        			apply_skin(options.skin);
+                                gtk_widget_show(conf__skin);
+                        } else {
+                                gtk_widget_hide(conf__skin);
+                        }
 		}
 	} else {
 		gtk_widget_destroy(options_window);
@@ -3008,6 +3044,7 @@ save_config(void) {
 	SAVE_INT(show_hidden);
 	SAVE_INT(main_window_always_on_top);
 	SAVE_INT(tags_tab_first);
+	SAVE_INT(disable_skin_support_settings);
 	SAVE_INT(override_skin_settings);
 	SAVE_INT(replaygain_tag_to_use);
 	SAVE_FLOAT(vol);
@@ -3364,6 +3401,7 @@ load_config(void) {
 		LOAD_INT(show_hidden);
 		LOAD_INT(main_window_always_on_top);
 		LOAD_INT(tags_tab_first);
+		LOAD_INT(disable_skin_support_settings);
 		LOAD_INT(override_skin_settings);
 		LOAD_INT(replaygain_tag_to_use);
 		LOAD_FLOAT(vol);

@@ -163,6 +163,7 @@ typedef struct {
 	int inet_timeout;
 
 	/* Appearance */
+	int disable_skin_support_settings;
 	int override_skin_settings;
 	char playlist_font[MAX_FONTNAME_LEN];
 	char browser_font[MAX_FONTNAME_LEN];

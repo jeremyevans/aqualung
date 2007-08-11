@@ -842,6 +842,7 @@ AC_OUTPUT([Makefile \
 	   skin/ocean/Makefile \
 	   skin/plain/Makefile \
 	   skin/woody/Makefile \
+	   skin/no_skin/Makefile \
 	   src/Makefile \
 	   src/decoder/Makefile \
 	   src/encoder/Makefile \

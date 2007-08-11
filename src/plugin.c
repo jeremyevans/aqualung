@@ -787,7 +787,7 @@ build_plugin_window(plugin_instance * instance) {
 
 	GtkWidget * scrwin;
 	GtkWidget * inner_vbox;
-	GtkWidget * table;
+	GtkWidget * table = NULL;
 	GtkWidget * hseparator;
 	GtkObject * adjustment;
 	GtkWidget * combo;
@@ -1898,6 +1898,7 @@ create_fxbuilder(void) {
         gtk_tree_selection_set_mode(avail_select, GTK_SELECTION_MULTIPLE);
 
 	renderer = gtk_cell_renderer_text_new();
+        g_object_set(G_OBJECT(renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
 
 	column = gtk_tree_view_column_new_with_attributes(_("ID"), renderer, "text", 0, NULL);
 	gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(column), TRUE);

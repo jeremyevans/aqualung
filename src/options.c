@@ -1456,7 +1456,7 @@ create_options_window(void) {
 	GtkWidget * frame_colors;
 	GtkWidget * vbox_ladspa;
 	GtkWidget * vbox_src;
-	GtkWidget * vbox_fonts;
+        GtkWidget * table_fonts;
 	GtkWidget * vbox_colors;
 
 	GtkWidget * vbox_rva;
@@ -2692,24 +2692,27 @@ See the About box and the documentation for details."));
 	frame_fonts = gtk_frame_new(_("Fonts"));
 	gtk_box_pack_start(GTK_BOX(vbox_appearance), frame_fonts, FALSE, TRUE, 5);
 
-	vbox_fonts = gtk_vbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox_fonts), 5);
-	gtk_container_add(GTK_CONTAINER(frame_fonts), vbox_fonts);
+        table_fonts = gtk_table_new (7, 3, FALSE);
+        gtk_widget_show (table_fonts);
+	gtk_container_add(GTK_CONTAINER(frame_fonts), table_fonts);
+	gtk_container_set_border_width(GTK_CONTAINER(table_fonts), 5);
+        gtk_table_set_row_spacings (GTK_TABLE (table_fonts), 4);
+        gtk_table_set_col_spacings (GTK_TABLE (table_fonts), 4);
 
         /* playlist font */
 
-	hbox = gtk_hbox_new(FALSE, 5);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, FALSE, 0);
-
 	label = gtk_label_new(_("Playlist: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-        gtk_size_group_add_widget(label_size, label);
+        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 0, 1,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_pl_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_pl_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_pl_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_pl_font), FALSE);
+        gtk_table_attach (GTK_TABLE (table_fonts), entry_pl_font, 1, 2, 0, 1,
+                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         if (strlen(options.playlist_font)) {
 		gtk_entry_set_text(GTK_ENTRY(entry_pl_font), options.playlist_font);
@@ -2719,196 +2722,185 @@ See the About box and the documentation for details."));
         }
 
         button_pl_font =  gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_pl_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_pl_font), "clicked",
 			  G_CALLBACK (appearance_font_select), entry_pl_font);
+        gtk_table_attach (GTK_TABLE (table_fonts), button_pl_font, 2, 3, 0, 1,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         /* music store font */
 
-	hbox = gtk_hbox_new(FALSE, 5);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 0);
-
 	label = gtk_label_new(_("Music Store: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-        gtk_size_group_add_widget(label_size, label);
+        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 1, 2,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_ms_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_ms_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_ms_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_ms_font), FALSE);
+        gtk_table_attach (GTK_TABLE (table_fonts), entry_ms_font, 1, 2, 1, 2,
+                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         if (strlen(options.browser_font)) {
-
 	        gtk_entry_set_text(GTK_ENTRY(entry_ms_font), options.browser_font);
-
         } else {
-
                 gtk_entry_set_text(GTK_ENTRY(entry_ms_font), DEFAULT_FONT_NAME);
                 strcpy(options.browser_font, DEFAULT_FONT_NAME);
-
         }
 
         button_ms_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_ms_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_ms_font), "clicked",
 			  G_CALLBACK (appearance_font_select), entry_ms_font);
-
+        gtk_table_attach (GTK_TABLE (table_fonts), button_ms_font, 2, 3, 1, 2,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         /* big timer font */
 
-	hbox = gtk_hbox_new(FALSE, 5);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 0);
-
 	label = gtk_label_new(_("Big timer: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-        gtk_size_group_add_widget(label_size, label);
+        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 2, 3,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_bt_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_bt_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_bt_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_bt_font), FALSE);
+        gtk_table_attach (GTK_TABLE (table_fonts), entry_bt_font, 1, 2, 2, 3,
+                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         if (strlen(options.bigtimer_font)) {
-
 	        gtk_entry_set_text(GTK_ENTRY(entry_bt_font), options.bigtimer_font);
-
         } else {
-
                 gtk_entry_set_text(GTK_ENTRY(entry_bt_font), DEFAULT_FONT_NAME);
                 strcpy(options.bigtimer_font, DEFAULT_FONT_NAME);
-
         }
 
         button_bt_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_bt_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_bt_font), "clicked",
 			  G_CALLBACK (appearance_font_select), entry_bt_font);
+        gtk_table_attach (GTK_TABLE (table_fonts), button_bt_font, 2, 3, 2, 3,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         /* small timer font */
 
-	hbox = gtk_hbox_new(FALSE, 5);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 0);
-
 	label = gtk_label_new(_("Small timers: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-        gtk_size_group_add_widget(label_size, label);
+        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 3, 4,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_st_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_st_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_st_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_st_font), FALSE);
+        gtk_table_attach (GTK_TABLE (table_fonts), entry_st_font, 1, 2, 3, 4,
+                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         if (strlen(options.smalltimer_font)) {
-
 	        gtk_entry_set_text(GTK_ENTRY(entry_st_font), options.smalltimer_font);
-
         } else {
-
                 gtk_entry_set_text(GTK_ENTRY(entry_st_font), DEFAULT_FONT_NAME);
                 strcpy(options.smalltimer_font, DEFAULT_FONT_NAME);
-
         }
 
         button_st_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_st_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_st_font), "clicked",
 			  G_CALLBACK (appearance_font_select), entry_st_font);
+        gtk_table_attach (GTK_TABLE (table_fonts), button_st_font, 2, 3, 3, 4,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         /* song title font */
 
-	hbox = gtk_hbox_new(FALSE, 5);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 0);
-
 	label = gtk_label_new(_("Song title: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-        gtk_size_group_add_widget(label_size, label);
+        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 4, 5,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_songt_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_songt_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_songt_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_songt_font), FALSE);
+        gtk_table_attach (GTK_TABLE (table_fonts), entry_songt_font, 1, 2, 4, 5,
+                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         if (strlen(options.songtitle_font)) {
-
 	        gtk_entry_set_text(GTK_ENTRY(entry_songt_font), options.songtitle_font);
-
         } else {
-
                 gtk_entry_set_text(GTK_ENTRY(entry_songt_font), DEFAULT_FONT_NAME);
                 strcpy(options.songtitle_font, DEFAULT_FONT_NAME);
-
         }
 
         button_songt_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_songt_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_songt_font), "clicked",
 			  G_CALLBACK (appearance_font_select), entry_songt_font);
+        gtk_table_attach (GTK_TABLE (table_fonts), button_songt_font, 2, 3, 4, 5,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         /* song info font */
 
-	hbox = gtk_hbox_new(FALSE, 5);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 0);
-
 	label = gtk_label_new(_("Song info: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-        gtk_size_group_add_widget(label_size, label);
+        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 5, 6,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_si_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_si_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_si_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_si_font), FALSE);
+        gtk_table_attach (GTK_TABLE (table_fonts), entry_si_font, 1, 2, 5, 6,
+                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         if (strlen(options.songinfo_font)) {
-
 	        gtk_entry_set_text(GTK_ENTRY(entry_si_font), options.songinfo_font);
-
         } else {
-
                 gtk_entry_set_text(GTK_ENTRY(entry_si_font), DEFAULT_FONT_NAME);
                 strcpy(options.songinfo_font, DEFAULT_FONT_NAME);
-
         }
 
         button_si_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_si_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_si_font), "clicked",
 			  G_CALLBACK (appearance_font_select), entry_si_font);
+        gtk_table_attach (GTK_TABLE (table_fonts), button_si_font, 2, 3, 5, 6,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         /* statusbar font */
 
-	hbox = gtk_hbox_new(FALSE, 5);
-        gtk_box_pack_start(GTK_BOX(vbox_fonts), hbox, FALSE, TRUE, 0);
-
 	label = gtk_label_new(_("Statusbar: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-        gtk_size_group_add_widget(label_size, label);
+        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 6, 7,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_sb_font = gtk_entry_new();
         GTK_WIDGET_UNSET_FLAGS(entry_sb_font, GTK_CAN_FOCUS);
-        gtk_box_pack_start(GTK_BOX(hbox), entry_sb_font, TRUE, TRUE, 0);
         gtk_editable_set_editable(GTK_EDITABLE(entry_sb_font), FALSE);
+        gtk_table_attach (GTK_TABLE (table_fonts), entry_sb_font, 1, 2, 6, 7,
+                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         if (strlen(options.statusbar_font)) {
-
 	        gtk_entry_set_text(GTK_ENTRY(entry_sb_font), options.statusbar_font);
-
         } else {
-
                 gtk_entry_set_text(GTK_ENTRY(entry_sb_font), DEFAULT_FONT_NAME);
                 strcpy(options.statusbar_font, DEFAULT_FONT_NAME);
-
         }
 
         button_sb_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-        gtk_box_pack_start(GTK_BOX(hbox), button_sb_font, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_sb_font), "clicked",
 			  G_CALLBACK (appearance_font_select), entry_sb_font);
+        gtk_table_attach (GTK_TABLE (table_fonts), button_sb_font, 2, 3, 6, 7,
+                         (GtkAttachOptions) (GTK_FILL),
+                         (GtkAttachOptions) (0), 0, 0);
 
         /* colors */
 

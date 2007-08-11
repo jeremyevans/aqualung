@@ -1809,6 +1809,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	GtkWidget * hbox;
 	GtkWidget * label;
 	GtkWidget * entry;
+	GtkWidget * hbuttonbox;
 
 #ifdef HAVE_MOD_INFO
         mod_info * mdi;
@@ -2087,9 +2088,14 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
 	gtk_widget_grab_focus(nb);
 
+        hbuttonbox = gtk_hbutton_box_new();
+	gtk_widget_set_name(hbuttonbox, "");
+	gtk_box_pack_end(GTK_BOX(hbox_tagbuttons), hbuttonbox, FALSE, FALSE, 3);
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
+
         dismiss_btn = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
 	g_signal_connect(dismiss_btn, "clicked", G_CALLBACK(dismiss), (gpointer)meta);
-	gtk_box_pack_end(GTK_BOX(hbox_tagbuttons), dismiss_btn, FALSE, FALSE, 3);
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), dismiss_btn);   
 
 	gtk_widget_show_all(info_window);
 

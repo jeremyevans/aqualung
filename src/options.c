@@ -479,6 +479,8 @@ options_window_accept(void) {
 		main_window_set_font(1);
 		music_browser_set_font(1);
 		playlist_set_font(1);
+        
+                playlist_set_color();
 
 		reskin_flag = 1;
 	}
@@ -1131,7 +1133,11 @@ color_selected(GtkColorButton *widget, gpointer user_data) {
         gtk_color_button_get_color(widget, &c);
         sprintf(str, "#%02X%02X%02X", c.red * 256 / 65536, c.green * 256 / 65536, c.blue * 256 / 65536);
 
-        strncpy(options.activesong_color, str, MAX_COLORNAME_LEN-1);
+        if ((gint)user_data == SONG_COLOR) {
+                strncpy(options.song_color, str, MAX_COLORNAME_LEN-1);
+        } else {
+                strncpy(options.activesong_color, str, MAX_COLORNAME_LEN-1);
+        }
 }
 
 GtkWidget *
@@ -2913,7 +2919,34 @@ See the About box and the documentation for details."));
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_colors), 5);
 	gtk_container_add(GTK_CONTAINER(frame_colors), vbox_colors);
 
-        /* active song */
+        /* song color */
+
+        hbox = gtk_hbox_new(FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_colors), hbox, FALSE, TRUE, 0);
+
+	label = gtk_label_new(_("Song in playlist: "));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
+        gtk_size_group_add_widget(label_size, label);
+        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+
+	hbox_s = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
+
+        if (gdk_color_parse(options.song_color, &color) == FALSE) {
+                color.red = playlist_color_indicator->style->fg[SELECTED].red; 
+                color.green = playlist_color_indicator->style->fg[SELECTED].green; 
+                color.blue = playlist_color_indicator->style->fg[SELECTED].blue; 
+                color.pixel = (gulong)((color.red & 0xff00)*256 + (color.green & 0xff00) + (color.blue & 0xff00)/256);
+        }
+
+        color_picker = gtk_color_button_new_with_color (&color);
+        gtk_widget_set_size_request(GTK_WIDGET(color_picker), 60, -1);
+        gtk_box_pack_start(GTK_BOX(hbox), color_picker, FALSE, TRUE, 0);
+	g_signal_connect (G_OBJECT (color_picker), "color-set",
+						G_CALLBACK (color_selected), (gpointer *) SONG_COLOR);
+
+
+        /* active song color */
 
 	hbox = gtk_hbox_new(FALSE, 5);
         gtk_box_pack_start(GTK_BOX(vbox_colors), hbox, FALSE, TRUE, 0);
@@ -2937,7 +2970,7 @@ See the About box and the documentation for details."));
         gtk_widget_set_size_request(GTK_WIDGET(color_picker), 60, -1);
         gtk_box_pack_start(GTK_BOX(hbox), color_picker, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (color_picker), "color-set",
-						G_CALLBACK (color_selected), NULL);
+						G_CALLBACK (color_selected), (gpointer *) ACTIVE_SONG_COLOR);
 
 
         set_sensitive_part();
@@ -3110,6 +3143,7 @@ save_config(void) {
 	SAVE_FONT(songtitle_font);
 	SAVE_FONT(songinfo_font);
 	SAVE_FONT(statusbar_font);
+	SAVE_COLOR(song_color);
 	SAVE_COLOR(activesong_color);
 	SAVE_INT(repeat_on);
 	SAVE_INT(repeat_all_on);
@@ -3366,6 +3400,8 @@ load_config(void) {
 	options.plcol_idx[1] = 1;
 	options.plcol_idx[2] = 2;
 
+        strncpy(options.song_color, "#888888", MAX_COLORNAME_LEN-1);
+
 	ms_pathlist_store = gtk_list_store_new(3,
 					       G_TYPE_STRING,   /* path */
 					       G_TYPE_STRING,   /* displayed name */
@@ -3460,6 +3496,7 @@ load_config(void) {
 		LOAD_FONT(songtitle_font);
 		LOAD_FONT(songinfo_font);
 		LOAD_FONT(statusbar_font);
+		LOAD_COLOR(song_color);
 		LOAD_COLOR(activesong_color);
 		LOAD_INT(repeat_on);
 		LOAD_INT(repeat_all_on);

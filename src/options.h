@@ -172,9 +172,15 @@ typedef struct {
 	char songtitle_font[MAX_FONTNAME_LEN];
 	char songinfo_font[MAX_FONTNAME_LEN];
 	char statusbar_font[MAX_FONTNAME_LEN];
+	char song_color[MAX_COLORNAME_LEN];
 	char activesong_color[MAX_COLORNAME_LEN];
 
 } options_t;
+
+enum {
+        SONG_COLOR = 1,
+        ACTIVE_SONG_COLOR
+};
 
 void create_options_window(void);
 void append_ms_pathlist(char * path, char * name);

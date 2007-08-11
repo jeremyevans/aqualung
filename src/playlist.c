@@ -775,9 +775,18 @@ playlist_set_color(void) {
 		bs = playlist_color_indicator->style->fg[SELECTED].blue;
 	}
 
-	ri = playlist_color_indicator->style->fg[INSENSITIVE].red;
-	gi = playlist_color_indicator->style->fg[INSENSITIVE].green;
-	bi = playlist_color_indicator->style->fg[INSENSITIVE].blue;
+        if (options.override_skin_settings &&
+	    (gdk_color_parse(options.song_color, &color) == TRUE)) {
+
+                ri = color.red;
+                gi = color.green;
+                bi = color.blue;
+
+        } else {
+        	ri = playlist_color_indicator->style->fg[INSENSITIVE].red;
+        	gi = playlist_color_indicator->style->fg[INSENSITIVE].green;
+        	bi = playlist_color_indicator->style->fg[INSENSITIVE].blue;
+        }
 
         sprintf(active, "#%04X%04X%04X", rs, gs, bs);
 	sprintf(inactive, "#%04X%04X%04X", ri, gi, bi);
@@ -3857,7 +3866,6 @@ create_playlist_gui(playlist_t * pl) {
 		{ "text/plain", 0, 2 },
 		{ "text/uri-list", 0, 2 }
 	};
-
 
         pl->view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(pl->store));
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(pl->view), FALSE);

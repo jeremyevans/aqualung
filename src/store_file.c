@@ -3599,7 +3599,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 /*********************************************************************************/
 
 void
-parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record) {
+parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record, int * save) {
 
 	GtkTreeIter iter_track;
 	xmlChar * key;
@@ -3657,8 +3657,6 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
 
-				struct stat statbuf;
-
 				if ((tmp = g_filename_from_uri((char *) key, NULL, NULL))) {
 					data->file = strndup(tmp, MAXLEN-1);
 					g_free(tmp);
@@ -3673,12 +3671,12 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record) {
 					}
 				}
 
-				if (stat(data->file, &statbuf) != -1) {
-					data->size = statbuf.st_size;
-				} else {
-					fprintf(stderr, "parse_track: cannot stat %s\n", data->file);
-				}
-
+				xmlFree(key);
+			}
+		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"size"))) {
+			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (key != NULL) {
+				sscanf((char *)key, "%u", &data->size);
 				xmlFree(key);
 			}
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"comment"))) {
@@ -3713,11 +3711,19 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record) {
                         }
                 }
 	}
+
+	if (data->size == 0) {
+		struct stat statbuf;
+		if (stat(data->file, &statbuf) != -1) {
+			data->size = statbuf.st_size;
+			*save = 1;
+		}
+	}
 }
 
 
 void
-parse_record(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_artist) {
+parse_record(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_artist, int * save) {
 
 	GtkTreeIter iter_record;
 	xmlChar * key;
@@ -3784,14 +3790,14 @@ parse_record(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_artist) {
 				xmlFree(key);
 			}
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"track"))) {
-			parse_track(doc, cur, &iter_record);
+			parse_track(doc, cur, &iter_record, save);
 		}
 	}
 }
 
 
 void
-parse_artist(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_store) {
+parse_artist(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_store, int * save) {
 
 	GtkTreeIter iter_artist;
 	xmlChar * key;
@@ -3848,7 +3854,7 @@ parse_artist(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_store) {
 				xmlFree(key);
 			}
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"record"))) {
-			parse_record(doc, cur, &iter_artist);
+			parse_record(doc, cur, &iter_artist, save);
 		}
 	}
 }
@@ -3868,6 +3874,7 @@ store_file_load(char * store_file, char * sort) {
 	xmlDocPtr doc;
 	xmlNodePtr cur;
 	xmlChar * key;
+	int save = 0;
 
 	store_data_t * data;
 
@@ -3942,11 +3949,16 @@ store_file_load(char * store_file, char * sort) {
 				xmlFree(key);
 			}
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"artist"))) {
-			parse_artist(doc, cur, &iter_store);
+			parse_artist(doc, cur, &iter_store, &save);
 		}
 	}
 
 	xmlFreeDoc(doc);
+
+	if (save && !data->readonly) {
+		music_store_mark_changed(&iter_store);
+		store_file_save(&iter_store);
+	}
 }
 
 
@@ -3984,6 +3996,11 @@ save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track) {
 		gchar * tmp = g_filename_to_uri(data->file, NULL, NULL);
 		xmlNewTextChild(node, NULL, (const xmlChar *) "file", (const xmlChar*) tmp);
 		g_free(tmp);
+	}
+
+	if (data->size != 0) {
+		snprintf(str, 31, "%u", data->size);
+		xmlNewTextChild(node, NULL, (const xmlChar *) "size", (const xmlChar*) str);
 	}
 
 	if (data->comment != NULL && data->comment[0] != '\0') {

@@ -3091,21 +3091,19 @@ playlist_stats(playlist_t * pl, int selected) {
 		time2time(length, length_str);
 		sprintf(tmp, " [%s] ", length_str);
 		strcat(str, tmp);
-	} else {
-		strcat(str, " [N/A] ");
-	}
+	} 
 
 	if (options.pl_statusbar_show_size) {
 		if (size > 1024 * 1024) {
 			sprintf(tmp, " (%.1f GB) ", size / (1024 * 1024));
+	        	strcat(str, tmp);
 		} else if (size > (1 << 10)){
 			sprintf(tmp, " (%.1f MB) ", size / 1024);
+        		strcat(str, tmp);
 		} else if (size > 0 || ntrack == 0) {
 			sprintf(tmp, " (%.1f KB) ", size);
-		} else {
-			strcpy(tmp, " (N/A) ");
+		        strcat(str, tmp);
 		}
-		strcat(str, tmp);
 	}
 
 	if (selected) {

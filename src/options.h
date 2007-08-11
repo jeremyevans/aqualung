@@ -66,6 +66,7 @@ typedef struct {
 #endif
 	float loop_range_start;
 	float loop_range_end;
+	int wm_systray_warn;
 
 	/* General */
 	char title_format[MAXLEN];

@@ -264,7 +264,7 @@ GtkWidget * systray__prev;
 GtkWidget * systray__next;
 GtkWidget * systray__quit;
 
-int warn_wm_not_systray_capable = 0;
+int wm_not_systray_capable = 0;
 
 void hide_all_windows(gpointer data);
 
@@ -2420,27 +2420,49 @@ set_win_title(void) {
 
 #ifdef HAVE_SYSTRAY
 void
+wm_systray_warn_cb(GtkWidget * widget, gpointer data) {
+
+	set_option_from_toggle(widget, &options.wm_systray_warn);
+}
+
+void
 hide_all_windows(gpointer data) {
-	/* Inverse operation of show_all_windows().
-	 * note that hiding/showing multiple windows has to be done in a
-	 * stack-like order, eg. hide main window last, show it first. */
+
+	if (wm_not_systray_capable) {
+		main_window_closing();
+		return;
+	}
 
 	if (gtk_status_icon_is_embedded(systray_icon) == FALSE) {
 
-		if (!warn_wm_not_systray_capable) {
+		if (!wm_not_systray_capable && options.wm_systray_warn) {
+
+			GtkWidget * check = gtk_check_button_new_with_label(_("Warn me if the Window Manager does not support system tray"));
+
+			gtk_widget_set_name(check, "check_on_window");
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), TRUE);
+			g_signal_connect(G_OBJECT(check), "toggled",
+					 G_CALLBACK(wm_systray_warn_cb), NULL);
+
 			message_dialog(_("Warning"),
 				       options.playlist_is_embedded ? main_window : playlist_window,
 				       GTK_MESSAGE_WARNING,
 				       GTK_BUTTONS_OK,
-				       NULL,
+				       check,
 				       _("Aqualung is compiled with system tray support, but "
 					 "the status icon could not be embedded in the notification "
 					 "area. Your desktop may not have support for a system tray, "
 					 "or it has not been configured correctly."));
-			warn_wm_not_systray_capable = 1;
+
+			wm_not_systray_capable = 1;
+		} else {
+			main_window_closing();
 		}
 
 		return;
+
+	} else {
+		options.wm_systray_warn = 1;
 	}
 
 	if (!systray_main_window_on) {
@@ -2468,6 +2490,7 @@ show_all_windows(gpointer data) {
 	gtk_widget_show(systray__hide);
 }
 #endif /* HAVE_SYSTRAY */
+
 
 gboolean    
 cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_data) {

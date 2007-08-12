@@ -141,7 +141,7 @@ ripper_source_store_make(GtkTreeIter * record_iter) {
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &track_iter, record_iter, n++)) {
 
 		char * track_name;
-                gtk_tree_model_get(GTK_TREE_MODEL(music_store), &track_iter, 0, &track_name, -1);
+                gtk_tree_model_get(GTK_TREE_MODEL(music_store), &track_iter, MS_COL_NAME, &track_name, -1);
 
 		gtk_list_store_append(ripper_source_store, &iter);
 		gtk_list_store_set(ripper_source_store, &iter,
@@ -154,6 +154,39 @@ ripper_source_store_make(GtkTreeIter * record_iter) {
 	}
 }
 
+void
+ripper_source_write_back(GtkTreeIter * record_iter, char * artist, char * record, char * genre, int year) {
+
+	GtkTreeIter track_iter;
+	GtkTreeIter iter;
+	int n = 0;
+	cdda_drive_t * drive;
+	cdda_disc_t * disc;
+	char * title;
+	char tmp[MAXLEN];
+
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), record_iter, MS_COL_DATA, &drive, -1);
+	disc = &drive->disc;
+
+	strncpy(disc->artist_name, artist, MAXLEN-1);
+	strncpy(disc->record_name, record, MAXLEN-1);
+	strncpy(disc->genre, genre, MAXLEN-1);
+	disc->year = year;
+
+	snprintf(tmp, MAXLEN-1, "%s: %s", artist, record);
+	gtk_tree_store_set(music_store, record_iter, MS_COL_NAME, tmp, -1);
+	
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &track_iter, record_iter, n)) {
+
+		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ripper_source_store), &iter, NULL, n);
+		gtk_tree_model_get(GTK_TREE_MODEL(ripper_source_store), &iter, 2, &title, -1);
+		gtk_tree_store_set(music_store, &track_iter, MS_COL_NAME, title, -1);
+		g_free(title);
+
+		++n;
+	}
+}
 
 void
 ripper_cell_edited_cb(GtkCellRendererText * cell, gchar * path, gchar * text, gpointer data) {
@@ -846,6 +879,8 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 			(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ripper_verify_check)) ? PARANOIA_MODE_VERIFY : 0) |
 			(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ripper_neverskip_check)) ? PARANOIA_MODE_NEVERSKIP : 0);
 		set_option_from_spin(ripper_maxretries_spinner, &ripper_paranoia_maxretries);
+
+		ripper_source_write_back(iter, ripper_artist, ripper_album, ripper_genre, ripper_year);
 
 		gtk_widget_destroy(ripper_dialog);
 		return 1;

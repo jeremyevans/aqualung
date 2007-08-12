@@ -75,6 +75,7 @@ typedef struct {
 	playlist_t * pl;
 
 	volatile int data_written;
+	int threshold;
 
 	GSList * list;
 	GList * plfm_list;

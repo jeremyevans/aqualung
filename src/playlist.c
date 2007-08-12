@@ -43,7 +43,6 @@
 #include "cdda.h"
 #include "gui_main.h"
 #include "music_browser.h"
-#include "store_file.h"
 #include "file_info.h"
 #include "decoder/dec_mod.h"
 #include "decoder/file_decoder.h"
@@ -603,6 +602,8 @@ playlist_transfer_new(playlist_t * pl) {
 	} else {
 		pt->pl = pl;
 	}
+
+	pt->threshold = 1;
 
 	return pt;
 }
@@ -1533,8 +1534,14 @@ playlist_thread_add_to_list(playlist_transfer_t * pt, playlist_filemeta * plfm) 
 	pt->plfm_list = g_list_append(pt->plfm_list, plfm);
 	pt->data_written++;
 
-	if (pt->data_written > 100 || plfm == NULL) {
+	if (pt->data_written >= pt->threshold || plfm == NULL) {
+
+		if (pt->threshold < 64) {
+			pt->threshold *= 2;
+		}
+
 		g_idle_add(add_file_to_playlist, pt);
+
 		while (pt->data_written > 0) {
 			AQUALUNG_COND_WAIT(pt->pl->thread_wait, pt->pl->wait_mutex);
 		}

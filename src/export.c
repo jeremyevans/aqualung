@@ -173,6 +173,8 @@ export_compress_str(char * buf, int limit) {
 	str[j] = '\0';
 
 	strcpy(buf, str);
+	g_free(str);
+
 	buf[limit] = '\0';
 }
 
@@ -727,13 +729,18 @@ export_dialog(export_t * export) {
 		}
 
 		set_option_from_entry(templ_entry, export->template, MAXLEN);
-		set_option_from_spin(export->dirlen_spin, &export->dir_len_limit);
 		export->format = export_get_format_from_combo(export->format_combo);
 		export->bitrate = gtk_range_get_value(GTK_RANGE(export->bitrate_scale));
 		set_option_from_toggle(export->vbr_check, &export->vbr);
 		set_option_from_toggle(export->meta_check, &export->write_meta);
 		set_option_from_toggle(export->check_dir_artist, &export->dir_for_artist);
 		set_option_from_toggle(export->check_dir_album, &export->dir_for_album);
+
+		if (export->dir_for_artist || export->dir_for_album) {
+			set_option_from_spin(export->dirlen_spin, &export->dir_len_limit);
+		} else {
+			export->dir_len_limit = MAXLEN-1;
+		}
 
 		gtk_widget_destroy(export->dialog);
 		return 1;

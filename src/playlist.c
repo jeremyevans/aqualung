@@ -1095,7 +1095,6 @@ gint
 playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 
 	GtkTreePath * path;
-	GtkTreeViewColumn * column;
 	GtkTreeIter iter;
 	gchar * pname;
 	gchar * pfile;
@@ -1125,7 +1124,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	case GDK_F1:
 	case GDK_i:
 	case GDK_I:
-		gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &path, &column);
+		gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &path, NULL);
 
 		if (path &&
 		    gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, path) &&
@@ -1143,13 +1142,19 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 			free(pfile);
 			show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy);
 		}
+
+		if (path) {
+			gtk_tree_path_free(path);
+		}
+
 		return TRUE;
 	case GDK_Return:
 	case GDK_KP_Enter:
-		gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &path, &column);
+		gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &path, NULL);
 
 		if (path) {
 			playlist_start_playback_at_path(pl, path);
+			gtk_tree_path_free(path);
 		}
 		return TRUE;
 	case GDK_u:
@@ -5294,12 +5299,8 @@ show_active_position_in_playlist(playlist_t * pl) {
 
         GtkTreeIter iter;
 	gchar * str;
-        gint flag;
-        GtkTreePath * visible_path;
-        GtkTreeViewColumn * visible_column;
+        gint flag = 0;
 
-
-        flag = 0;
 
         if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(pl->store), &iter)) {
 
@@ -5308,9 +5309,7 @@ show_active_position_in_playlist(playlist_t * pl) {
 					   PL_COL_SELECTION_COLOR, &str, -1);
 		        if (strcmp(str, pl_color_active) == 0) {
                                 flag = 1;
-		                if (gtk_tree_selection_iter_is_selected(pl->select, &iter)) {
-                                    gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &visible_path, &visible_column);
-                                }
+				g_free(str);
                                 break;
                         }
 			g_free(str);
@@ -5331,8 +5330,6 @@ show_active_position_in_playlist_toggle(playlist_t * pl) {
         GtkTreeIter iter, iter_child;
 	gchar * str;
         gint flag, cflag, j;
-        GtkTreePath * visible_path;
-        GtkTreeViewColumn * visible_column;
 
 
         flag = cflag = 0;
@@ -5346,24 +5343,33 @@ show_active_position_in_playlist_toggle(playlist_t * pl) {
 		                if (gtk_tree_selection_iter_is_selected(pl->select, &iter) &&
                                     gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter)) {
 
-                                        gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &visible_path, &visible_column);
+					GtkTreePath * visible_path;
+					gchar * color;
+
+                                        gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &visible_path, NULL);
 
                                         if (!gtk_tree_view_row_expanded(GTK_TREE_VIEW(pl->view), visible_path)) {
                                                 gtk_tree_view_expand_row(GTK_TREE_VIEW(pl->view), visible_path, FALSE);
                                         }
 
+					gtk_tree_path_free(visible_path);
+
                                         j = 0;
 
                                         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter_child, &iter, j++)) {
-                                                gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter_child, PL_COL_SELECTION_COLOR, &str, -1);
-                                                if (strcmp(str, pl_color_active) == 0) {
+                                                gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter_child, PL_COL_SELECTION_COLOR, &color, -1);
+                                                if (strcmp(color, pl_color_active) == 0) {
                                                         cflag = 1;
+							g_free(color);
                                                         break;
                                                 }
+						g_free(color);
                                         }
                                 }
+				g_free(str);
                                 break;
                         }
+			g_free(str);
 
 		} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(pl->store), &iter));
 
@@ -5384,7 +5390,6 @@ expand_collapse_album_node(playlist_t * pl) {
 	GtkTreeIter iter, iter_child;
 	gint i, j;
         GtkTreePath *path;
-        GtkTreeViewColumn *column;
 
 
         i = 0;
@@ -5394,7 +5399,7 @@ expand_collapse_album_node(playlist_t * pl) {
 		if (gtk_tree_selection_iter_is_selected(pl->select, &iter) &&
                     gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter)) {
 
-                        gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &path, &column);
+                        gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &path, NULL);
 
                         if (path && gtk_tree_view_row_expanded(GTK_TREE_VIEW(pl->view), path)) {
                                 gtk_tree_view_collapse_row(GTK_TREE_VIEW(pl->view), path);

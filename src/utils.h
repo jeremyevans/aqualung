@@ -24,13 +24,14 @@
 #include <config.h>
 #include "common.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /* Please update when we reach the 22nd century. */
 #define YEAR_MIN 1900
 #define YEAR_MAX 2100
+
+
+float convf(char * s);
+int cut_trailing_whitespace(char * str);
 
 void make_string_va(char * buf, char * format, ...);
 void make_title_string(char * dest, char * templ,
@@ -71,10 +72,6 @@ void map_put(map_t ** map, char * str);
 char * map_get_max(map_t * map);
 void map_free(map_t * map);
 
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
 
 #endif /* _UTILS_H */
 

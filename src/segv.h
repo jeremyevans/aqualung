@@ -12,17 +12,9 @@
 
 #include <config.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 
 int setup_sigsegv();
 
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* _SEGV_H */
 

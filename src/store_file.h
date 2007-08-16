@@ -22,10 +22,6 @@
 #ifndef _STORE_FILE_H
 #define _STORE_FILE_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <gtk/gtk.h>
 
 int store_file_iter_is_track(GtkTreeIter * iter);
@@ -83,10 +79,6 @@ typedef struct {
 	unsigned size;  /* file size in bytes */
 } track_data_t;
 
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
 
 #endif /* _STORE_FILE_H */
 

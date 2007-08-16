@@ -29,10 +29,211 @@
 #include "utils.h"
 #include "options.h"
 #include "metadata.h"
+#include "metadata_api.h"
 
 
 extern options_t options;
 
+
+/* Functions that reflect the data model */
+
+char *
+meta_get_tagname(int tag) {
+
+	switch (tag) {
+	case META_TAG_NULL: return _("NULL");
+	case META_TAG_ID3v1: return _("ID3v1");
+	case META_TAG_ID3v2: return _("ID3v2");
+	case META_TAG_APEv2: return _("APEv2");
+	case META_TAG_OXC: return _("Ogg Xiph Comments");
+	case META_TAG_GEN_STREAM: return _("Generic StreamMeta");
+	case META_TAG_MPEGSTREAM: return _("MPEG StreamMeta");
+	case META_TAG_MODINFO: return _("Module info");
+	default: return _("Unknown");
+	}
+}
+
+
+int
+meta_get_fieldname(int field, char ** str) {
+
+	switch (field) {
+	case META_FIELD_TITLE: *str = _("Title"); return 1;
+	case META_FIELD_ARTIST: *str = _("Artist"); return 1;
+	case META_FIELD_ALBUM: *str = _("Album"); return 1;
+	case META_FIELD_DATE: *str = _("Date"); return 1;
+	case META_FIELD_GENRE: *str = _("Genre"); return 1;
+	case META_FIELD_COMMENT: *str = _("Comment"); return 1;
+
+	case META_FIELD_PERFORMER: *str = _("Performer"); return 1;
+	case META_FIELD_DESCRIPTION: *str = _("Description"); return 1;
+	case META_FIELD_ORGANIZATION: *str = _("Organization"); return 1;
+	case META_FIELD_LOCATION: *str = _("Location"); return 1;
+	case META_FIELD_CONTACT: *str = _("Contact"); return 1;
+	case META_FIELD_LICENSE: *str = _("License"); return 1;
+	case META_FIELD_COPYRIGHT: *str = _("Copyright"); return 1;
+	case META_FIELD_ISRC: *str = _("ISRC"); return 1;
+	case META_FIELD_VERSION: *str = _("Version"); return 1;
+
+	case META_FIELD_VENDOR: *str = _("Vendor"); return 1;
+	case META_FIELD_ICY_NAME: *str = _("Icy-Name"); return 1;
+	case META_FIELD_ICY_DESCR: *str = _("Icy-Description"); return 1;
+	case META_FIELD_ICY_GENRE: *str = _("Icy-Genre"); return 1;
+	case META_FIELD_OTHER: *str = _("Other"); return 1;
+	case META_FIELD_TRACKNO: *str = _("Track No."); return 1;
+	case META_FIELD_RVA2: *str = _("RVA2"); return 1;
+	case META_FIELD_APIC: *str = _("Embedded Picture"); return 1;
+	case META_FIELD_GEOB: *str = _("General Encapsulated Object"); return 1;
+	default: return 0;
+	}
+}
+
+
+int
+meta_get_fieldname_embedded(int field, char ** str) {
+
+	switch (field) {
+	case META_FIELD_TITLE: *str = "title"; return 1;
+	case META_FIELD_ARTIST: *str = "artist"; return 1;
+	case META_FIELD_ALBUM: *str = "album"; return 1;
+	case META_FIELD_DATE: *str = "date"; return 1;
+	case META_FIELD_GENRE: *str = "genre"; return 1;
+	case META_FIELD_COMMENT: *str = "comment"; return 1;
+	case META_FIELD_TRACKNO: *str = "tracknumber"; return 1;
+
+	case META_FIELD_PERFORMER: *str = _("performer"); return 1;
+	case META_FIELD_DESCRIPTION: *str = _("description"); return 1;
+	case META_FIELD_ORGANIZATION: *str = _("organization"); return 1;
+	case META_FIELD_LOCATION: *str = _("location"); return 1;
+	case META_FIELD_CONTACT: *str = _("contact"); return 1;
+	case META_FIELD_LICENSE: *str = _("license"); return 1;
+	case META_FIELD_COPYRIGHT: *str = _("copyright"); return 1;
+	case META_FIELD_ISRC: *str = _("isrc"); return 1;
+	case META_FIELD_VERSION: *str = _("version"); return 1;
+
+	default: return 0;
+	}
+}
+
+
+GSList *
+meta_get_possible_fields(int tag) {
+
+	GSList * list = NULL;
+	switch (tag) {
+	case META_TAG_NULL: 
+	case META_TAG_GEN_STREAM:
+	case META_TAG_MPEGSTREAM:
+		return NULL;
+	case META_TAG_ID3v1:
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_TITLE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ARTIST));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ALBUM));
+		/* TODO */
+		return list;
+	case META_TAG_ID3v2:
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_TITLE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ARTIST));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ALBUM));
+		/* TODO */
+		return list;
+	case META_TAG_APEv2:
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_TITLE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ARTIST));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ALBUM));
+		/* TODO */
+		return list;
+	case META_TAG_OXC:
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_TITLE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ARTIST));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ALBUM));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_DATE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_GENRE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_COMMENT));
+
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_PERFORMER));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_DESCRIPTION));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ORGANIZATION));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_LOCATION));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_CONTACT));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_LICENSE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_COPYRIGHT));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ISRC));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_VERSION));
+
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_VENDOR));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_TRACKNO));
+		/* TODO */
+		return list;
+	default: return NULL;
+	}
+}
+
+
+int
+meta_get_default_flags(int tag, int type) {
+
+	switch (type) {
+		case META_FIELD_DATE:
+		case META_FIELD_GENRE:
+		case META_FIELD_TRACKNO:
+			return META_FIELD_UNIQUE;
+	}
+
+	switch (tag) {
+	case META_TAG_NULL: 
+	case META_TAG_GEN_STREAM:
+	case META_TAG_MPEGSTREAM:
+		return 0;
+	case META_TAG_ID3v1: return 0;
+	case META_TAG_ID3v2: return 0;
+	case META_TAG_APEv2: return 0;
+	case META_TAG_OXC:
+		switch (type) {
+		case META_FIELD_VENDOR:
+			return META_FIELD_MANDATORY | META_FIELD_UNIQUE;
+		default: return 0;
+		}
+	default: fprintf(stderr, "meta_get_default_flags: unknown tag=%d\n", tag);
+		return 0;
+	}
+}
+
+
+void
+metadata_add_mandatory_frames(metadata_t * meta, int tag) {
+
+	meta_frame_t * frame;
+
+	switch (tag) {
+	case META_TAG_NULL: 
+	case META_TAG_GEN_STREAM:
+	case META_TAG_MPEGSTREAM:
+		return;
+	case META_TAG_ID3v1:
+		/* TODO */
+		return;
+	case META_TAG_ID3v2:
+		/* TODO */
+		return;
+	case META_TAG_APEv2:
+		/* TODO */
+		return;
+	case META_TAG_OXC:
+		/* Vendor string is mandatory */
+		frame = meta_frame_new();
+		frame->tag = tag;
+		frame->type = META_FIELD_VENDOR;
+		frame->flags = meta_get_default_flags(tag, META_FIELD_VENDOR);
+		frame->field_name = strdup("Vendor");
+		frame->field_val = strdup("");
+		metadata_add_frame(meta, frame);
+		return;
+	default: return;
+	}
+}
+
+/* Generic functions */
 
 metadata_t *
 metadata_new(void) {
@@ -112,12 +313,74 @@ metadata_add_frame(metadata_t * meta, meta_frame_t * frame) {
 	}
 }
 
+/* take frame out of meta; does not free frame! */
+void
+metadata_remove_frame(metadata_t * meta, meta_frame_t * frame) {
+
+	meta_frame_t * prev;
+
+	if (meta->root == frame) {
+		meta->root = frame->next;
+		return;
+	}
+
+	prev = meta->root;
+	while (prev->next != frame) {
+		prev = prev->next;
+	}
+	
+	prev->next = frame->next;	
+}
+
+
+int
+meta_tag_from_name(char * name) {
+
+	int i = 1;
+	if (strcmp(name, meta_get_tagname(0)) == 0)
+		return 0;
+
+	while (1) {
+		if (strcmp(name, meta_get_tagname(i)) == 0) {
+			return i;
+		}
+		i <<= 1;
+	}
+}
+
+int
+meta_frame_type_from_name(int tag, char * name) {
+
+	int i;
+	int type = -1;
+	GSList * slist = meta_get_possible_fields(tag);
+	int length = g_slist_length(slist);
+	for (i = 0; i < length; i++) {
+		int t = GPOINTER_TO_INT(g_slist_nth_data(slist, i));
+		char * str;
+		if (meta_get_fieldname(t, &str)) {
+			if (strcmp(str, name) == 0) {
+				type = t;
+				break;
+			}
+		} else {
+			fprintf(stderr, "meta_frame_type_from_name(%d, %s): programmer error\n", tag, name);
+			return -1;
+		}
+	}
+	g_slist_free(slist);
+	return type;
+}
+
+
+/* Debug functions */
 
 void
 metadata_dump(metadata_t * meta) {
 
 	meta_frame_t * frame = meta->root;
-	printf("\nMetadata block dump, writable = %d\n", meta->writable);
+	printf("\nMetadata block dump, writable = %d, valid_tags = %d\n",
+	       meta->writable, meta->valid_tags);
 	while (frame) {
 		meta_dump_frame(frame);
 		frame = frame->next;
@@ -127,60 +390,196 @@ metadata_dump(metadata_t * meta) {
 
 void
 meta_dump_frame(meta_frame_t * frame) {
-	printf("  Type %4d  '%s'  '%s'  ",
-	       frame->type, frame->field_name, frame->field_val);
+	printf("  Tag %2d Type %4d  F=0x%04x  '%s'  '%s'  ",
+	       frame->tag, frame->type, frame->flags, frame->field_name, frame->field_val);
 	printf("int %d  float %f  ptr %p  len %d\n",
 	       frame->int_val, frame->float_val, frame->data, frame->length);
 }
 
 
+/* Utility functions */
+
 void
-metadata_add_textframe_from_keyval(metadata_t * meta, char * key, char * val) {
+metadata_add_textframe_from_keyval(metadata_t * meta, int tag, char * key, char * val) {
+
+	meta_frame_t * frame = meta_frame_new();
+	char * str;
+
+	frame->tag = tag;
+	if (meta_get_fieldname(frame->type, &str)) {
+		frame->field_name = strdup(str);
+	} else {
+		frame->field_name = strdup(key);
+	}
+	frame->field_val = strdup(val);
 
 	if (strcmp("Title", key) == 0) {
-		meta_frame_t * frame = meta_frame_new();
 		frame->type = META_FIELD_TITLE;
-		frame->field_name = strdup(key);
-		frame->field_val = strdup(val);
-		metadata_add_frame(meta, frame);
 	} else if (strcmp("Artist", key) == 0) {
-		meta_frame_t * frame = meta_frame_new();
 		frame->type = META_FIELD_ARTIST;
-		frame->field_name = strdup(key);
-		frame->field_val = strdup(val);
-		metadata_add_frame(meta, frame);
 	} else if (strcmp("Album", key) == 0) {
-		meta_frame_t * frame = meta_frame_new();
 		frame->type = META_FIELD_ALBUM;
-		frame->field_name = strdup(key);
-		frame->field_val = strdup(val);
-		metadata_add_frame(meta, frame);
+	} else if (strcmp("Date", key) == 0) {
+		frame->type = META_FIELD_DATE;
+	} else if (strcmp("Genre", key) == 0) {
+		frame->type = META_FIELD_GENRE;
+	} else if (strcmp("Comment", key) == 0) {
+		frame->type = META_FIELD_COMMENT;
 	} else if (strcmp("Icy-Name", key) == 0) {
-		meta_frame_t * frame = meta_frame_new();
 		frame->type = META_FIELD_ICY_NAME;
-		frame->field_name = strdup(key);
-		frame->field_val = strdup(val);
-		metadata_add_frame(meta, frame);
 	} else if (strcmp("Icy-Genre", key) == 0) {
-		meta_frame_t * frame = meta_frame_new();
 		frame->type = META_FIELD_ICY_GENRE;
-		frame->field_name = strdup(key);
-		frame->field_val = strdup(val);
-		metadata_add_frame(meta, frame);
 	} else if (strcmp("Icy-Description", key) == 0) {
-		meta_frame_t * frame = meta_frame_new();
 		frame->type = META_FIELD_ICY_DESCR;
+	} else {
+		frame->type = META_FIELD_OTHER;
+	}
+	frame->flags = meta_get_default_flags(tag, frame->type);
+	metadata_add_frame(meta, frame);
+}
+
+
+void
+metadata_add_frame_from_oxc_keyval(metadata_t * meta, char * key, char * val) {
+
+	char replaygain_label[MAXLEN];
+	switch (options.replaygain_tag_to_use) {
+	case 0: strcpy(replaygain_label, "Replaygain_track_gain");
+		break;
+	case 1: strcpy(replaygain_label, "Replaygain_album_gain");
+		break;
+	}
+	if (strcmp(key, replaygain_label) == 0) {
+		meta_frame_t * frame = meta_frame_new();
+		frame->tag = META_TAG_OXC;
+		frame->type = META_FIELD_RVA2;
+		frame->flags = meta_get_default_flags(frame->tag, frame->type);
 		frame->field_name = strdup(key);
-		frame->field_val = strdup(val);
+		frame->float_val = convf(val);
+		metadata_add_frame(meta, frame);
+	} else if (strcmp(key, "Tracknumber") == 0) {
+		meta_frame_t * frame = meta_frame_new();
+		char * str;
+		frame->tag = META_TAG_OXC;
+		frame->type = META_FIELD_TRACKNO;
+		frame->flags = meta_get_default_flags(frame->tag, frame->type);
+		if (meta_get_fieldname(frame->type, &str)) {
+			frame->field_name = strdup(str);
+		} else {
+			frame->field_name = strdup(key);
+		}
+		sscanf(val, "%d", &frame->int_val);
 		metadata_add_frame(meta, frame);
 	} else {
-		meta_frame_t * frame = meta_frame_new();
-		frame->type = META_FIELD_OTHER;
-		frame->field_name = strdup(key);
-		frame->field_val = strdup(val);
-		metadata_add_frame(meta, frame);
+		metadata_add_textframe_from_keyval(meta, META_TAG_OXC, key, val);
 	}
 }
+
+
+#ifdef HAVE_FLAC
+metadata_t *
+metadata_from_flac_streammeta(FLAC__StreamMetadata_VorbisComment * vc) {
+
+	int i;
+	metadata_t * meta;
+
+	if (!vc) {
+		return NULL;
+	}
+
+	meta = metadata_new();
+	meta->valid_tags = META_TAG_OXC;
+	for (i = 0; i < vc->num_comments; i++) {
+		char key[MAXLEN];
+		char val[MAXLEN];
+		char c;
+		int k, n = 0;
+
+		for (k = 0; ((c = vc->comments[i].entry[n]) != '=') &&
+			     (n < vc->comments[i].length) &&
+			     (k < MAXLEN-1); k++) {
+			key[k] = (k == 0) ? toupper(c) : tolower(c);
+			++n;
+		}
+		key[k] = '\0';
+		++n;
+		
+		for (k = 0; (n < vc->comments[i].length) && (k < MAXLEN-1); k++) {
+			val[k] = vc->comments[i].entry[n];
+			++n;
+		}
+		val[k] = '\0';
+		
+		metadata_add_frame_from_oxc_keyval(meta, key, val);
+	}
+
+	{ /* Add Vendor string */
+		meta_frame_t * frame = meta_frame_new();
+		frame->tag = META_TAG_OXC;
+		frame->type = META_FIELD_VENDOR;
+		frame->flags = meta_get_default_flags(frame->tag, frame->type);
+		frame->field_name = strdup(_("Vendor"));
+		frame->field_val = (vc->vendor_string.length > 0) ?
+			strdup((char *)vc->vendor_string.entry) : strdup("");
+		metadata_add_frame(meta, frame);
+	}
+
+	return meta;
+}
+
+void
+meta_entry_from_frame(FLAC__StreamMetadata_VorbisComment_Entry * entry,
+		      meta_frame_t * frame) {
+
+	char * key;
+	char * val;
+	char str[MAXLEN];
+
+	if (!meta_get_fieldname_embedded(frame->type, &key)) {
+		key = frame->field_name;
+	}
+	if (META_FIELD_TEXT(frame->type)) {
+		val = frame->field_val;
+	} else if (META_FIELD_INT(frame->type)) {
+		snprintf(str, MAXLEN-1, "%d", frame->int_val);
+		val = str;
+	} else if (META_FIELD_FLOAT(frame->type)) {
+		snprintf(str, MAXLEN-1, "%f", frame->float_val);
+		val = str;
+	} else {
+		printf("meta_entry_from_frame: frame type 0x%x is unsupported\n", frame->type);
+	}
+
+	FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(
+		entry, key, val);
+}
+
+FLAC__StreamMetadata *
+metadata_to_flac_streammeta(metadata_t * meta) {
+
+	FLAC__StreamMetadata * smeta =
+		FLAC__metadata_object_new(FLAC__METADATA_TYPE_VORBIS_COMMENT);
+	meta_frame_t * frame = metadata_get_frame_by_tag(meta, META_TAG_OXC, NULL);
+
+	while (frame != NULL) {
+		if (frame->type == META_FIELD_VENDOR) {
+			FLAC__StreamMetadata_VorbisComment_Entry entry;
+			entry.entry = (unsigned char *)strdup(frame->field_val);
+			entry.length = strlen(frame->field_val);
+			FLAC__metadata_object_vorbiscomment_set_vendor_string(
+			        smeta, entry, false);
+		} else {
+			FLAC__StreamMetadata_VorbisComment_Entry entry;
+			meta_entry_from_frame(&entry, frame);
+			FLAC__metadata_object_vorbiscomment_insert_comment(
+				smeta, smeta->data.vorbis_comment.num_comments,
+				entry, false);
+		}
+		frame = metadata_get_frame_by_tag(meta, META_TAG_OXC, frame);
+	}
+	return smeta;
+}
+#endif /* HAVE_FLAC */
 
 
 #ifdef HAVE_OGG_VORBIS
@@ -195,6 +594,7 @@ metadata_from_vorbis_comment(vorbis_comment * vc) {
 	}
 
 	meta = metadata_new();
+	meta->valid_tags = META_TAG_OXC;
 	for (i = 0; i < vc->comments; i++) {
 		char key[MAXLEN];
 		char val[MAXLEN];
@@ -215,15 +615,18 @@ metadata_from_vorbis_comment(vorbis_comment * vc) {
 			++n;
 		}
 		val[k] = '\0';
-		
-		metadata_add_textframe_from_keyval(meta, key, val);
+
+		metadata_add_frame_from_oxc_keyval(meta, key, val);
 	}
 
 	{ /* Add Vendor string */
 		meta_frame_t * frame = meta_frame_new();
+		frame->tag = META_TAG_OXC;
 		frame->type = META_FIELD_VENDOR;
+		frame->flags = meta_get_default_flags(frame->tag, frame->type);
 		frame->field_name = strdup(_("Vendor"));
-		frame->field_val = strdup(vc->vendor);
+		frame->field_val = (vc->vendor != NULL) ?
+			strdup(vc->vendor) : strdup("");
 		metadata_add_frame(meta, frame);
 	}
 
@@ -270,7 +673,7 @@ metadata_from_mpeg_stream_data(char * str) {
 		}
 		val[k] = '\0';
 
-		metadata_add_textframe_from_keyval(meta, key, val);
+		metadata_add_textframe_from_keyval(meta, META_TAG_MPEGSTREAM, key, val);
 
 		s = strtok(NULL, ";");
 	}
@@ -309,85 +712,92 @@ metadata_get_frame(metadata_t * meta, int type, meta_frame_t * root) {
 }
 
 
-char *
-metadata_get_title(metadata_t * meta) {
+/* Search for frame belonging to tag. Passing NULL as root will search from
+ * the beginning of the frame list. Passing the previous return value of
+ * this function as root allows getting multiple frames of the same tag.
+ * Returns NULL if there are no (more) frames of the specified tag.
+ */
+meta_frame_t *
+metadata_get_frame_by_tag(metadata_t * meta, int tag, meta_frame_t * root) {
 
-	meta_frame_t * frame = metadata_get_frame(meta, META_FIELD_TITLE, NULL);
-	if (frame != NULL) {
-		return frame->field_val;
+	meta_frame_t * frame;
+
+	if (root == NULL) {
+		frame = meta->root;
 	} else {
-		return "";
+		frame = root->next;
 	}
+
+	if (frame == NULL) {
+		return NULL;
+	}
+
+	while (frame->tag != tag) {
+		frame = frame->next;
+		if (frame == NULL) {
+			return NULL;
+		}
+	}
+
+	return frame;
 }
 
 
-char *
-metadata_get_artist(metadata_t * meta) {
+/* Search for frame of given type, belonging to tag. Passing NULL as
+ * root will search from the beginning of the frame list. Passing the
+ * previous return value of this function as root allows getting
+ * multiple frames of the same tag.  Returns NULL if there are no
+ * (more) frames of the specified tag.
+ */
+meta_frame_t *
+metadata_get_frame_by_tag_and_type(metadata_t * meta, int tag, int type,
+				   meta_frame_t * root) {
 
-	meta_frame_t * frame = metadata_get_frame(meta, META_FIELD_ARTIST, NULL);
-	if (frame != NULL) {
-		return frame->field_val;
+	meta_frame_t * frame;
+
+	if (root == NULL) {
+		frame = meta->root;
 	} else {
-		return "";
+		frame = root->next;
 	}
-}
 
-
-char *
-metadata_get_album(metadata_t * meta) {
-
-	meta_frame_t * frame = metadata_get_frame(meta, META_FIELD_ALBUM, NULL);
-	if (frame != NULL) {
-		return frame->field_val;
-	} else {
-		return "";
+	if (frame == NULL) {
+		return NULL;
 	}
-}
 
-
-char *
-metadata_get_icy_name(metadata_t * meta) {
-
-	meta_frame_t * frame = metadata_get_frame(meta, META_FIELD_ICY_NAME, NULL);
-	if (frame != NULL) {
-		return frame->field_val;
-	} else {
-		return "";
+	while (frame->tag != tag || frame->type != type) {
+		frame = frame->next;
+		if (frame == NULL) {
+			return NULL;
+		}
 	}
+
+	return frame;
 }
-
-
-char *
-metadata_get_icy_descr(metadata_t * meta) {
-
-	meta_frame_t * frame = metadata_get_frame(meta, META_FIELD_ICY_DESCR, NULL);
-	if (frame != NULL) {
-		return frame->field_val;
-	} else {
-		return "";
-	}
-}
-
 
 void
 metadata_make_title_string(metadata_t * meta, char * dest) {
 
 	char dest1[MAXLEN];
-	char * artist = metadata_get_artist(meta);
-	char * album = metadata_get_album(meta);
-	char * title = metadata_get_title(meta);
-	char * icy_name = metadata_get_icy_name(meta);
+	char * artist = NULL;
+	char * album = NULL;
+	char * title = NULL;
+	char * icy_name = NULL;
 
-	if (title[0] != '\0' && artist[0] != '\0' && album[0] != '\0') {
-		make_title_string(dest1, options.title_format,
-				  artist, album, title);
-	} else if (title[0] != '\0' && artist[0] != '\0') {
+	metadata_get_artist(meta, &artist);
+	metadata_get_album(meta, &album);
+	metadata_get_title(meta, &title);
+	metadata_get_icy_name(meta, &icy_name);
+
+	if (title != NULL && artist != NULL && album != NULL) {
+		make_title_string(dest1, options.title_format, artist, album, title);
+	} else if (title != NULL && artist != NULL) {
 		make_title_string_no_album(dest1, options.title_format_no_album,
 					   artist, title);
-	} else if (title[0] != '\0') {
-		strncpy(dest1, metadata_get_title(meta), MAXLEN-1);
+	} else if (title != NULL) {
+		strncpy(dest1, title, MAXLEN-1);
 	} else {
-		if (icy_name[0] == '\0') {
+		if (icy_name == NULL) {
 			dest[0] = '\0';
 		} else {
 			strncpy(dest, icy_name, MAXLEN-1);
@@ -395,7 +805,7 @@ metadata_make_title_string(metadata_t * meta, char * dest) {
 		return;
 	}
 
-	if (icy_name[0] == '\0') {
+	if (icy_name == NULL) {
 		strncpy(dest, dest1, MAXLEN-1);
 	} else {
 		snprintf(dest, MAXLEN-1, "%s (%s)", dest1, icy_name);
@@ -406,16 +816,20 @@ metadata_make_title_string(metadata_t * meta, char * dest) {
 void
 metadata_make_playlist_string(metadata_t * meta, char * dest) {
 
-	char * name = metadata_get_icy_name(meta);
-	char * descr = metadata_get_icy_descr(meta);
+	char * name = NULL;
+	char * descr = NULL;
 
-	if (name[0] == '\0') {
+	metadata_get_icy_name(meta, &name);
+	metadata_get_icy_descr(meta, &descr);
+
+	if (name == NULL) {
 		metadata_make_title_string(meta, dest);
 	} else {
-		if (descr[0] != '\0') {
+		if (descr != NULL) {
 			snprintf(dest, MAXLEN-1, "%s (%s)", name, descr);
 		} else {
 			strncpy(dest, name, MAXLEN-1);
 		}
 	}
 }
+

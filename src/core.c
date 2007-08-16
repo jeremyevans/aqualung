@@ -150,27 +150,6 @@ extern int aqualung_socket_fd;
 extern char aqualung_socket_filename[256];
 
 
-float convf(char * s) {
-
-        float val, pow;
-        int i, sign;
-
-        for (i = 0; s[i] == ' ' || s[i] == '\n' || s[i] == '\t'; i++);
-        sign = 1;
-        if (s[i] == '+' || s[i] == '-')
-                sign = (s[i++] == '+') ? 1 : -1;
-        for (val = 0; s[i] >= '0' && s[i] <= '9'; i++)
-                val = 10 * val + s[i] - '0';
-        if ((s[i] == '.') || (s[i] == ','))
-                i++;
-        for (pow = 1; s[i] >= '0' && s[i] <= '9'; i++) {
-                val = 10 * val + s[i] - '0';
-                pow *= 10;
-        }
-        return(sign * val / pow);
-}
-
-
 /* return 1 if conversion is possible, 0 if not */
 int
 sample_rates_ok(int out_SR, int file_SR) {
@@ -252,7 +231,7 @@ rollback(rb_t * rb, file_decoder_t * fdec, double src_ratio) {
 
 
 void
-send_meta(metadata_t * meta) {
+send_meta(metadata_t * meta, void * data) {
 
 	char send_cmd = CMD_METABLOCK;
 	rb_write(rb_disk2gui, &send_cmd, 1);
@@ -303,7 +282,7 @@ disk_thread(void * arg) {
 		fprintf(stderr, "disk thread: error: file_decoder_new() failed\n");
 		exit(1);
 	}
-	file_decoder_set_meta_cb(fdec, send_meta);
+	file_decoder_set_meta_cb(fdec, send_meta, NULL);
 
 	if ((!readbuf) || (!framebuf)) {
 		fprintf(stderr, "disk thread: malloc error\n");
@@ -1874,13 +1853,6 @@ print_version(void) {
 	fprintf(stderr, V_NO);
 #endif /* HAVE_LAVC */
 	fprintf(stderr, "LAVC (AC3, AAC, WavPack, WMA, etc.)\n");
-	
-#ifdef HAVE_TAGLIB
-	fprintf(stderr, V_YES);
-#else
-	fprintf(stderr, V_NO);
-#endif /* HAVE_TAGLIB */
-	fprintf(stderr, "Metadata (ID3, APE, Ogg comments)\n");
 	
 
 	fprintf(stderr, "\n  Encoding support:\n");

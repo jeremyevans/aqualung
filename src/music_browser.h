@@ -22,10 +22,6 @@
 #ifndef _MUSIC_BROWSER_H
 #define _MUSIC_BROWSER_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <gtk/gtk.h>
 
 void create_music_browser(void);
@@ -74,11 +70,6 @@ enum {
 typedef union {
 	int type;
 } store_t;
-
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
 
 
 #endif /* _MUSIC_BROWSER_H */

@@ -46,7 +46,7 @@
 #include "file_info.h"
 #include "decoder/dec_mod.h"
 #include "decoder/file_decoder.h"
-#include "meta_decoder.h"
+#include "metadata_api.h"
 #include "volume.h"
 #include "options.h"
 #include "i18n.h"
@@ -2177,7 +2177,7 @@ int
 plist__export_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
 	export_t * export = (export_t *)data;
-	metadata * meta;
+	file_decoder_t * fdec;
 	struct stat statbuf;
 
 	char * file;
@@ -2199,31 +2199,39 @@ plist__export_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 		return 0;
 	}
 
-	meta = meta_new();
-	if (meta != NULL && meta_read(meta, file)) {
+	fdec = file_decoder_new();
+	if (fdec == NULL) {
+		fprintf(stderr, "plist__export_foreach: file_decoder_new() failed\n");
+		return 0;
+	}
+	if (file_decoder_open(fdec, file) == 0) {
 
-		char tmp[MAXLEN];
+		char * tmp;
+		int val;
 
-		if (meta_get_artist(meta, tmp)) {
+		if (metadata_get_artist(fdec->meta, &tmp)) {
 			strncpy(artist, tmp, MAXLEN-1);
 		}
 
-		if (meta_get_record(meta, tmp)) {
+		if (metadata_get_album(fdec->meta, &tmp)) {
 			strncpy(album, tmp, MAXLEN-1);
 		}
 
-		if (meta_get_title(meta, tmp)) {
+		if (metadata_get_title(fdec->meta, &tmp)) {
 			strncpy(title, tmp, MAXLEN-1);
 		}
 
-		if (meta_get_year(meta, tmp)) {
+		if (metadata_get_date(fdec->meta, &tmp)) {
 			year = atoi(tmp);
 		}
 
-		if (meta_get_tracknum(meta, tmp)) {
-			no = atoi(tmp);
+		if (metadata_get_tracknum(fdec->meta, &val)) {
+			no = val;
 		}
+
+		file_decoder_close(fdec);
 	}
+	file_decoder_delete(fdec);
 
 	if (artist[0] == '\0' || album[0] == '\0' || no == 0) {
 
@@ -2266,10 +2274,6 @@ plist__export_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 	}
 
 	export_append_item(export, file, artist, album, title, year, no);
-
-	if (meta != NULL) {
-		meta_free(meta);
-	}
 
 	g_free(file);
 
@@ -2380,16 +2384,16 @@ rem_cb(GtkWidget * widget, GdkEvent * event) {
 playlist_filemeta *
 playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 
-	gchar display_name[MAXLEN];
-	gchar artist_name[MAXLEN];
-	gchar record_name[MAXLEN];
-	gchar track_name[MAXLEN];
-	metadata * meta = NULL;
-	gint use_meta = 0;
-	gchar * substr;
+	char display_name[MAXLEN];
+	char * artist_name;
+	char * record_name;
+	char * track_name;
+	file_decoder_t * fdec;
+	int use_meta = 0;
+	char * substr;
 
 #if defined(HAVE_MOD) && (defined(HAVE_LIBZ) || defined(HAV_LIBBZ2))
-        gchar * pos;
+        char * pos;
 #endif /* (HAVE_MOD && (HAVE_LIBZ || HAVE_LIBBZ2)) */
 
 #ifdef HAVE_MOD
@@ -2421,89 +2425,78 @@ playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 		fprintf(stderr, "calloc error in playlist_filemeta_get()\n");
 		return NULL;
 	}
-
-	if ((plfm->duration = get_file_duration(physical_name)) < 0.0f) {
+	
+	fdec = file_decoder_new();
+	if (fdec == NULL) {
+		fprintf(stderr, "playlist_filemeta_get: file_decoder_new() failed\n");
+		free(plfm);
+		return NULL;
+	}
+	if (file_decoder_open(fdec, physical_name) != 0) {
+		file_decoder_delete(fdec);
+		free(plfm);
 		return NULL;
 	}
 
+	plfm->duration = (float)fdec->fileinfo.total_samples / fdec->fileinfo.sample_rate;
+
 	if (options.rva_is_enabled) {
-		meta = meta_new();
-		if (meta != NULL && meta_read(meta, physical_name)) {
-			if (!meta_get_rva(meta, &(plfm->voladj))) {
-				plfm->voladj = options.rva_no_rva_voladj;
-			}
-		} else {
+		if (!metadata_get_rva(fdec->meta, &(plfm->voladj))) {
 			plfm->voladj = options.rva_no_rva_voladj;
-		}
-		if (meta != NULL) {
-			meta_free(meta);
-			meta = NULL;
 		}
 	} else {
 		plfm->voladj = 0.0f;
 	}
 	
-	artist_name[0] = '\0';
-	record_name[0] = '\0';
-	track_name[0] = '\0';
+	artist_name = NULL;
+	record_name = NULL;
+	track_name = NULL;
 
-	if (options.auto_use_ext_meta_artist ||
-	    options.auto_use_ext_meta_record ||
-	    options.auto_use_ext_meta_track) {
-		
-		meta = meta_new();
-		if (meta != NULL && !meta_read(meta, physical_name)) {
-			meta_free(meta);
-			meta = NULL;
-		}
-	}
-	
 	use_meta = 0;
-	if ((meta != NULL) && options.auto_use_ext_meta_artist) {
-		meta_get_artist(meta, artist_name);
-		if (artist_name[0] != '\0') {
+	if (options.auto_use_ext_meta_artist) {
+		if (metadata_get_artist(fdec->meta, &artist_name) &&
+		    !is_all_wspace(artist_name)) {
 			use_meta = 1;
 		}
 	}
 	
-	if ((meta != NULL) && options.auto_use_ext_meta_record) {
-		meta_get_record(meta, record_name);
-		if (record_name[0] != '\0') {
+	if (options.auto_use_ext_meta_record) {
+		if (metadata_get_album(fdec->meta, &record_name) &&
+		    !is_all_wspace(record_name)) {
 			use_meta = 1;
 		}
 	}
 	
-	if ((meta != NULL) && options.auto_use_ext_meta_track) {
-		meta_get_title(meta, track_name);
-		if (track_name[0] != '\0') {
+	if (options.auto_use_ext_meta_track) {
+		if (metadata_get_title(fdec->meta, &track_name) &&
+		    !is_all_wspace(track_name)) {
 			use_meta = 1;
 		}
 	}
 	
-	if ((artist_name[0] != '\0') ||
-	    (record_name[0] != '\0') ||
-	    (track_name[0] != '\0')) {
+	if ((artist_name != NULL) ||
+	    (record_name != NULL) ||
+	    (track_name != NULL)) {
 		
-		if (artist_name[0] == '\0') {
-			strcpy(artist_name, _("Unknown"));
+		if (artist_name == NULL) {
+			artist_name = _("Unknown");
 		}
-		if (record_name[0] == '\0') {
-			strcpy(record_name, _("Unknown"));
+		if (record_name == NULL) {
+			record_name = _("Unknown");
 		}
-		if (track_name[0] == '\0') {
-			strcpy(track_name, _("Unknown"));
+		if (track_name == NULL) {
+			track_name = _("Unknown");
 		}
 	} else {
 		use_meta = 0;
 	}
 	
-	if (use_meta && (meta != NULL)) {
+	if (use_meta) {
 		if (composit) {
 			make_title_string(display_name, options.title_format,
 					  artist_name, record_name, track_name);
 		} else {
 			strncpy(display_name, track_name, MAXLEN-1);
-
 		}
 	} else {
 		if (alt_name != NULL) {
@@ -2519,10 +2512,8 @@ playlist_filemeta_get(char * physical_name, char * alt_name, int composit) {
 			g_free(substr);
 		} 
 	}
-	if (meta != NULL) {
-		meta_free(meta);
-		meta = NULL;
-	}
+	file_decoder_close(fdec);
+	file_decoder_delete(fdec);
 
 	plfm->filename = g_strdup(physical_name);
 	plfm->title = g_strdup(display_name);

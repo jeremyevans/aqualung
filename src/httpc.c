@@ -699,9 +699,10 @@ httpc_init(http_session_t * session, file_decoder_t * fdec,
 
 	session->fdec = fdec;
 	if (fdec != NULL && fdec->meta_cb != NULL) {
-		metadata_t * meta = metadata_new();
-		httpc_add_headers_meta(session, meta);
-		fdec->meta_cb(meta);
+		fdec->meta = metadata_new();
+		fdec->meta->fdec = fdec;
+		httpc_add_headers_meta(session, fdec->meta);
+		fdec->meta_cb(fdec->meta, fdec->meta_cbdata);
 	}
 
 #ifdef HTTPC_DEBUG
@@ -805,13 +806,19 @@ void
 httpc_add_headers_meta(http_session_t * session, metadata_t * meta) {
 
 	if (session->headers.icy_name != NULL) {
-		metadata_add_textframe_from_keyval(meta, "Icy-Name", session->headers.icy_name);
+		metadata_add_textframe_from_keyval(meta, META_TAG_GEN_STREAM,
+						   "Icy-Name",
+						   session->headers.icy_name);
 	}
 	if (session->headers.icy_genre != NULL) {
-		metadata_add_textframe_from_keyval(meta, "Icy-Genre", session->headers.icy_genre);
+		metadata_add_textframe_from_keyval(meta, META_TAG_GEN_STREAM,
+						   "Icy-Genre",
+						   session->headers.icy_genre);
 	}
 	if (session->headers.icy_description != NULL) {
-		metadata_add_textframe_from_keyval(meta, "Icy-Description", session->headers.icy_description);
+		metadata_add_textframe_from_keyval(meta, META_TAG_GEN_STREAM,
+						   "Icy-Description",
+						   session->headers.icy_description);
 	}
 }
 
@@ -835,7 +842,7 @@ httpc_demux(http_session_t * session) {
 	if (meta_len > 0 && session->fdec != NULL && session->fdec->meta_cb != NULL) {
 		metadata_t * meta = metadata_from_mpeg_stream_data(meta_buf);
 		httpc_add_headers_meta(session, meta);
-		session->fdec->meta_cb(meta);
+		session->fdec->meta_cb(meta, session->fdec->meta_cbdata);
 	}
 
 	free(meta_buf);

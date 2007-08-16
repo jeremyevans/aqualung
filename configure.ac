@@ -598,53 +598,6 @@ else
 	fi
 fi
 
-AC_MSG_CHECKING(for metadata support)
-AC_ARG_WITH(
-	metadata,
-	[  --with-metadata=yes,no  compile with metadata support (default: yes)],
-	metadata="$withval",
-	metadata="detect")
-if test "$metadata" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_MSG_CHECKING(whether taglib >= 1.4 is present)
-	if `pkg-config --exists 'taglib >= 1.4'`; then
-	        lib="yes"
-	else
-		lib="no"
-		AC_MSG_RESULT(no)
-	fi
-	if test "$lib" = "yes"; then
-	        taglib_CFLAGS=`pkg-config --cflags taglib`
-		taglib_LIBS=`pkg-config --libs taglib`
-		AC_DEFINE([HAVE_TAGLIB], [1], [Defined if compile with metadata support])
-		AC_MSG_RESULT(yes)
-	fi
-	if test "$lib" = "no" -a "$metadata" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the TagLib library installed or it is too old. Grab it from http://developer.kde.org/~wheeler/taglib)
-	fi
-	if test "$metadata" = "detect"; then
-	        metadata=$lib
-	fi
-
-	if test "$metadata" = "yes"; then
-	        AC_MSG_CHECKING(for metadata edit support)
-		AC_ARG_WITH(
-		metaedit,
-		[  --with-metaedit=yes,no  compile with metadata edit support (default: no)],
-		metaedit="$withval",
-		metaedit="detect")
-		
-		if test "$metaedit" = "yes"; then
-			AC_DEFINE([HAVE_METAEDIT], [1], [Defined if compile with metadata edit support])
-			AC_MSG_RESULT(yes)
-		else
-		        AC_MSG_RESULT(no)
-		fi
-	fi
-fi
-
-
 
 AC_MSG_CHECKING(for LADSPA plugin support)
 AC_ARG_WITH(
@@ -829,8 +782,8 @@ AQUALUNG_DATADIR="-DAQUALUNG_DATADIR=\\\"$datadir/aqualung\\\""
 
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS $AQUALUNG_SKINDIR $AQUALUNG_LOCALEDIR $AQUALUNG_DATADIR -D_GNU_SOURCE"
 CXXFLAGS="$CFLAGS"
-CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $taglib_CFLAGS"
-LIBS="decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $taglib_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS"
+CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS"
+LIBS="decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS"
 
 
 AC_OUTPUT([Makefile \
@@ -876,7 +829,6 @@ echo "      Musepack                            :  $mpc"
 echo "      Monkey's Audio Codec                :  $mac"
 echo "      WavPack                             :  $wavpack"
 echo "      LAVC (AC3, AAC, WavPack, WMA, etc.) :  $lavc"
-echo "      Metadata (ID3, APE, Ogg comments)   :  $metadata"
 echo
 echo "  Encoding support:"
 echo "      sndfile (WAV)                       :  $sndfile"
@@ -891,12 +843,3 @@ echo "      JACK Audio Server                   :  $jack"
 echo "      Win32 Sound API                     :  $win32"
 echo
 echo "----------------------------------------------------------------------"
-
-if test "$metaedit" = "yes"; then
-echo
-echo " WARNING: compiling with metadata edit support is currently DANGEROUS"
-echo " because of serious bugs in the underlying TagLib library. Using this"
-echo " feature may result in DAMAGED or CORRUPT files. Compile with metadata"
-echo " edit support only if you intend to debug this feature."
-echo
-fi

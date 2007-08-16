@@ -66,6 +66,7 @@ typedef struct _fileinfo_t {
 typedef struct _file_decoder_t {
 
 	/* public */
+	char * filename;
 	int file_open;
 	int file_lib;
 	fileinfo_t fileinfo;
@@ -74,8 +75,16 @@ typedef struct _file_decoder_t {
 	float voladj_db;
 	float voladj_lin;
 	int is_stream;
-	metadata_t meta;
-	void (* meta_cb)(metadata_t *);
+
+	/* Note that the metadata block sent by meta_cb is still owned by
+	   the file_decoder instance and should not be freed externally.
+	   However, it can be modified and 'if (meta->writable)', it can be
+	   written back to file by calling meta_write().
+	*/
+	metadata_t * meta;
+	void (* meta_cb)(metadata_t *, void *);
+	void * meta_cbdata;
+	void (* meta_write)(struct _file_decoder_t *, metadata_t *);
 
 	/* private */
 	void * pdec; /* actually, it's (decoder_t *) */
@@ -120,7 +129,9 @@ void file_decoder_delete(file_decoder_t * fdec);
 
 int file_decoder_open(file_decoder_t * fdec, char * filename);
 void file_decoder_set_rva(file_decoder_t * fdec, float voladj);
-void file_decoder_set_meta_cb(file_decoder_t * fdec, void (* meta_cb)(metadata_t * meta));
+void file_decoder_set_meta_cb(file_decoder_t * fdec,
+			      void (* meta_cb)(metadata_t * meta, void * data),
+			      void * data);
 void file_decoder_close(file_decoder_t * fdec);
 unsigned int file_decoder_read(file_decoder_t * fdec, float * dest, int num);
 void file_decoder_seek(file_decoder_t * fdec, unsigned long long seek_to_pos);

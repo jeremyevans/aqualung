@@ -76,7 +76,7 @@ vorbisenc_encoder_open(encoder_t * enc, encoder_mode_t * mode) {
 
 	pd->out = fopen(mode->filename, "wb");
 	if (pd->out == NULL) {
-		fprintf(stdout, "vorbisenc_decoder_open(): unable to open file for writing: %s\n",
+		fprintf(stdout, "vorbisenc_encoder_open(): unable to open file for writing: %s\n",
 			mode->filename);
 		return -1;
 	}

@@ -12,14 +12,15 @@ cd_ripper.h cd_ripper.c \
 core.h core.c \
 cover.h cover.c \
 export.h export.c \
-file_info.h file_info.cpp \
+file_info.h file_info.c \
 gui_main.h gui_main.c \
 httpc.h httpc.c \
 i18n.h \
 ifp_device.h ifp_device.c \
 loop_bar.h loop_bar.c \
 metadata.h metadata.c \
-meta_decoder.h meta_decoder.cpp \
+metadata_api.h metadata_api.c \
+metadata_ogg.h metadata_ogg.c \
 music_browser.h music_browser.c \
 options.h options.c \
 playlist.h playlist.c \

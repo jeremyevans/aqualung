@@ -35,6 +35,63 @@
 extern options_t options;
 
 
+float convf(char * s) {
+
+        float val, pow;
+        int i, sign;
+
+        for (i = 0; s[i] == ' ' || s[i] == '\n' || s[i] == '\t'; i++);
+        sign = 1;
+        if (s[i] == '+' || s[i] == '-')
+                sign = (s[i++] == '+') ? 1 : -1;
+        for (val = 0; s[i] >= '0' && s[i] <= '9'; i++)
+                val = 10 * val + s[i] - '0';
+        if ((s[i] == '.') || (s[i] == ','))
+                i++;
+        for (pow = 1; s[i] >= '0' && s[i] <= '9'; i++) {
+                val = 10 * val + s[i] - '0';
+                pow *= 10;
+        }
+        return(sign * val / pow);
+}
+
+
+int
+is_all_wspace(char * str) {
+
+	int i;
+
+	if (str == NULL) {
+		return 1;
+	}
+
+	for (i = 0; str[i]; i++) {
+		if (str[i] != ' ' && str[i] != '\t') {
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
+
+int
+cut_trailing_whitespace(char * str) {
+
+	int i = strlen(str) - 1;
+
+	while (i >= 0) {
+		if ((str[i] == ' ') || (str[i] == '\t')) {
+			str[i] = '\0';
+		} else {
+			break;
+		}
+		--i;
+	}
+	return ((i >= 0) ? 1 : 0);
+}
+
+
 void
 make_string_va(char * buf, char * format, ...) {
 
@@ -248,20 +305,6 @@ free_strdup(char ** s, const char * str) {
 	}
 
 	*s = strdup(str);
-}
-
-int
-is_all_wspace(char * str) {
-
-	int i;
-
-	for (i = 0; str[i]; i++) {
-		if (str[i] != ' ' && str[i] != '\t') {
-			return 0;
-		}
-	}
-
-	return 1;
 }
 
 int

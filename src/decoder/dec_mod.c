@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <limits.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -38,6 +39,7 @@
 #include <bzlib.h>
 #endif /* HAVE_LIBBZ2 */
 
+#include "../metadata.h"
 #include "dec_mod.h"
 
 extern size_t sample_size;
@@ -248,6 +250,165 @@ is_valid_mod_extension(char * filename) {
 	return is_valid_extension(valid_extensions_mod, filename, 1);
 }
 
+void
+mod_name_filter(char *str) {
+
+        char buffer[MAXLEN];
+        int n, k, f, len;
+
+        strncpy(buffer, str, MAXLEN-1);
+
+        k = f = n = 0;
+        len = strlen(buffer);
+
+        while (buffer[n] == ' ' || buffer[n] == '\t' ||
+               buffer[n] == '_' || buffer[n] == '.') {
+                n++;
+        }
+
+        for(; n < len; n++) {
+                if (isprint(buffer[n])) {
+                        if (buffer[n] == '_' || buffer[n] == '.') {
+                                buffer[n] = ' ';
+                        }
+                        str[k++] = buffer[n];
+                        f = 1;
+                }
+        }
+
+        if (f) {
+                str[k] = '\0';
+        }
+}
+
+
+void
+mod_filename_filter(char *str, char **valid_extensions) {
+
+        char buffer[MAXLEN];
+        char *pos;
+        int i;
+
+        strncpy(buffer, str, MAXLEN-1);
+
+        if ((pos = strrchr(buffer, '/')) != NULL) {
+ 
+            pos++;
+            i = 0;
+ 
+            while(pos[i]) {
+                str[i] = pos[i];
+                i++;
+            }
+            str[i] = '\0';
+        }
+
+        if ((pos = strrchr(str, '.')) != NULL) {
+
+            if (strcasecmp(pos+1, "gz") == 0 || strcasecmp (pos+1, "bz2") == 0) {
+                *pos = '\0';
+            }
+        }
+
+        if ((pos = strrchr(str, '.')) != NULL) {
+ 
+            i = 0;           
+            while (valid_extensions[i] != NULL) {
+
+                    if (strcasecmp(pos+1, valid_extensions[i]) == 0) {
+                            *pos = '\0';
+                    }
+                    ++i;
+            }
+        }
+
+        strncpy(buffer, str, MAXLEN-1);
+
+        if ((pos = strchr(buffer, '.')) != NULL) {
+            *pos = '\0';
+
+            i = 0;           
+            while (valid_extensions[i] != NULL) {
+
+                if (strcasecmp(buffer, valid_extensions[i]) == 0) {
+
+                    *pos++;
+                    i = 0;
+
+                    while (pos[i] != '\0') {
+                        str[i] = pos[i];
+                        i++;
+                    }
+                    str[i] = '\0';
+                    break;
+                }
+                ++i;
+            }
+
+        }
+}
+
+void
+mod_send_metadata(decoder_t * dec) {
+
+	mod_pdata_t * pd = (mod_pdata_t *)dec->pdata;
+	file_decoder_t * fdec = dec->fdec;
+
+	metadata_t * meta = metadata_new();
+	meta_frame_t * frame = meta_frame_new();
+
+	mod_info mi;
+
+	if (meta == NULL) {
+		fprintf(stderr, "mod_send_metadata: metadata_new() failed\n");
+		return;
+	}
+	if (frame == NULL) {
+		fprintf(stderr, "mod_send_metadata: meta_frame_new() failed\n");
+		return;
+	}
+
+	memset(&mi, 0x00, sizeof(mod_info));
+	
+	strncpy(mi.title, ModPlug_GetName(pd->mpf), MAXLEN-1);
+	mod_name_filter(mi.title);
+	
+	if (!strlen(mi.title)) {
+		strncpy(mi.title, fdec->filename, MAXLEN-1);
+		mod_filename_filter(mi.title, valid_extensions_mod);
+		mod_name_filter(mi.title);
+	}
+	
+	mi.active = 1;
+#ifdef HAVE_MOD_INFO
+	mi.type = ModPlug_GetModuleType(pd->mpf);
+	mi.samples = ModPlug_NumSamples(pd->mpf);
+	mi.instruments = ModPlug_NumInstruments(pd->mpf);
+	mi.patterns = ModPlug_NumPatterns(pd->mpf);
+	mi.channels = ModPlug_NumChannels(pd->mpf);
+#endif /* HAVE_MOD_INFO */
+
+	metadata_add_frame(meta, frame);
+	frame->tag = META_TAG_MODINFO;
+	frame->type = META_FIELD_MODINFO;
+	frame->data = calloc(sizeof(mod_info), 1);
+	frame->length = sizeof(mod_info);
+
+	if (frame->data == NULL) {
+		fprintf(stderr, "mod_send_metadata: calloc() error\n");
+		metadata_free(meta);
+		return;
+	}
+
+	memcpy(frame->data, &mi, sizeof(mod_info));
+
+	meta->fdec = fdec;
+	fdec->meta = meta;
+	if (fdec->meta_cb != NULL) {
+		fdec->meta_cb(meta, fdec->meta_cbdata);
+	}
+}
+
 int
 mod_decoder_open(decoder_t * dec, char * mod_filename) {
 
@@ -343,7 +504,8 @@ char *filename = NULL;
 	fdec->fileinfo.total_samples = ModPlug_GetLength(pd->mpf)
 		/ 1000.0f * pd->mp_settings.mFrequency;
 	fdec->fileinfo.bps = pd->st.st_size * 8000.0f /	ModPlug_GetLength(pd->mpf);
-	
+
+	mod_send_metadata(dec);
 	return DECODER_OPEN_SUCCESS;
 }
 

@@ -290,6 +290,7 @@ file_decoder_open(file_decoder_t * fdec, char * filename) {
 		fprintf(stderr, "This is likely to be a programmer error, please report.\n");
 		return 1;
 	}
+	fdec->filename = strdup(filename);
 
 	if (httpc_is_url(filename))
 		return stream_decoder_open(fdec, filename);
@@ -357,9 +358,12 @@ file_decoder_set_rva(file_decoder_t * fdec, float voladj) {
 
 
 void
-file_decoder_set_meta_cb(file_decoder_t * fdec, void (* meta_cb)(metadata_t * meta)) {
+file_decoder_set_meta_cb(file_decoder_t * fdec,
+			 void (* meta_cb)(metadata_t * meta, void * data),
+			 void * data) {
 
 	fdec->meta_cb = meta_cb;
+	fdec->meta_cbdata = data;
 }
 
 
@@ -378,6 +382,14 @@ file_decoder_close(file_decoder_t * fdec) {
 	fdec->pdec = NULL;
 	fdec->file_open = 0;
 	fdec->file_lib = 0;
+	if (fdec->filename != NULL) {
+		free(fdec->filename);
+		fdec->filename = NULL;
+	}
+	if (fdec->meta != NULL) {
+		metadata_free(fdec->meta);
+		fdec->meta = NULL;
+	}
 }
 
 

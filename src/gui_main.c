@@ -158,7 +158,6 @@ extern GtkWidget * browser_window;
 extern GtkWidget * playlist_window;
 extern GtkWidget * fxbuilder_window;
 extern GtkWidget * ports_window;
-extern GtkWidget * info_window;
 extern GtkWidget * vol_window;
 extern GtkWidget * browser_paned;
 
@@ -1177,11 +1176,6 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
 		if (vol_window) {
 			gtk_window_iconify(GTK_WINDOW(vol_window));
 		}
-
-		if (info_window) {
-			gtk_window_iconify(GTK_WINDOW(info_window));
-		}
-		
 #ifdef HAVE_LADSPA
 		if (fxbuilder_on) {
 			GtkTreeIter iter;
@@ -1212,11 +1206,6 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
 		if (vol_window) {
 			gtk_window_deiconify(GTK_WINDOW(vol_window));
 		}
-
-		if (info_window) {
-			gtk_window_deiconify(GTK_WINDOW(info_window));
-		}
-		
 		if (fxbuilder_on) {
 			gtk_window_deiconify(GTK_WINDOW(fxbuilder_window));
 		}
@@ -3510,8 +3499,13 @@ process_metablock(metadata_t * meta) {
 	char title_str[MAXLEN];
 	char playlist_str[MAXLEN];
 	playlist_t * pl;
+	file_decoder_t * fdec = (file_decoder_t *)meta->fdec;
 
-	/* metadata_dump(meta); */
+	metadata_dump(meta);
+
+	if (!httpc_is_url(fdec->filename)) {
+		return;
+	}
 
 	metadata_make_title_string(meta, title_str);
 	metadata_make_playlist_string(meta, playlist_str);
@@ -3533,8 +3527,6 @@ process_metablock(metadata_t * meta) {
 			gtk_tree_path_free(p);
 		}
 	}
-
-	metadata_free(meta);
 }
 
 

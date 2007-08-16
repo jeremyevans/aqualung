@@ -391,18 +391,6 @@ create_about_window() {
         gtk_text_buffer_insert_at_cursor(buffer, _("LAVC (AC3, AAC, WavPack, WMA, etc.)\n"), -1);
 
 
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_TAGLIB
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_TAGLIB */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-        gtk_text_buffer_insert_at_cursor(buffer, _("Metadata (ID3, APE, Ogg comments)\n"), -1);
-
-
-
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Encoding support:"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);

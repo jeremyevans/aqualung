@@ -51,6 +51,7 @@
 #endif /* HAVE_SRC */
 
 #include "common.h"
+#include "utils.h"
 #include "utils_gui.h"
 #include "gui_main.h"
 #include "music_browser.h"

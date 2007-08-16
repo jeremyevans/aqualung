@@ -22,10 +22,6 @@
 #ifndef _RINGBUFFER_H
 #define _RINGBUFFER_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <sys/types.h>
 
 /** @file ringbuffer.h
@@ -229,11 +225,7 @@ void rb_write_advance(rb_t *rb, size_t cnt);
 size_t rb_write_space(const rb_t *rb);
 
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif
+#endif /* _RINGBUFFER_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

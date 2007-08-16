@@ -46,7 +46,7 @@
 #include "options.h"
 #include "music_browser.h"
 #include "store_file.h"
-#include "meta_decoder.h"
+#include "metadata_api.h"
 #include "build_store.h"
 #include "cddb_lookup.h"
 
@@ -2640,33 +2640,36 @@ void
 process_meta(build_store_t * data, build_disc_t * disc) {
 
 	build_track_t * ptrack;
-	metadata * meta = meta_new();
 
 	map_t * map_artist = NULL;
 	map_t * map_record = NULL;
 	map_t * map_year = NULL;
 
-	char tmp[MAXLEN];
-
 	for (ptrack = disc->tracks; ptrack; ptrack = ptrack->next) {
 
-		meta = meta_new();
+		char * tmp;
+		file_decoder_t * fdec = file_decoder_new();
+		if (fdec == NULL) {
+			fprintf(stderr, "process_meta: file_decoder_new() failed\n");
+			return;
+		}
+		if (file_decoder_open(fdec, ptrack->filename) == 0) {
 
-		if (meta_read(meta, ptrack->filename)) {
-
-			if (meta_get_artist(meta, tmp) && !is_all_wspace(tmp)) {
+			if (metadata_get_artist(fdec->meta, &tmp) && !is_all_wspace(tmp)) {
 				map_put(&map_artist, tmp);
 			}
 
-			if (meta_get_record(meta, tmp) && !is_all_wspace(tmp)) {
+			if (metadata_get_album(fdec->meta, &tmp) && !is_all_wspace(tmp)) {
 				map_put(&map_record, tmp);
 			}
 
-			if (meta_get_title(meta, tmp) && !is_all_wspace(tmp)) {
+			if (metadata_get_title(fdec->meta, &tmp) && !is_all_wspace(tmp)) {
 				strncpy(ptrack->name[DATA_SRC_META], tmp, MAXLEN-1);
 			}
 
-			if (disc->record.year[0] == '\0' && meta_get_year(meta, tmp)) {
+			if (disc->record.year[0] == '\0' &&
+			    metadata_get_date(fdec->meta, &tmp)) {
+
 				int y = atoi(tmp);
 				if (is_valid_year(y)) {
 					map_put(&map_year, tmp);
@@ -2674,15 +2677,18 @@ process_meta(build_store_t * data, build_disc_t * disc) {
 			}
 
 			if (data->trk_rva_enabled) {
-				meta_get_rva(meta, &ptrack->rva);
+				metadata_get_rva(fdec->meta, &ptrack->rva);
 			}
 
-			if (data->trk_comment_enabled && meta_get_comment(meta, tmp) && !is_all_wspace(tmp)) {
+			if (data->trk_comment_enabled &&
+			    metadata_get_comment(fdec->meta, &tmp) &&
+			    !is_all_wspace(tmp)) {
+
 				strncpy(ptrack->comment, tmp, MAXLEN-1);
 			}
+			file_decoder_close(fdec);
 		}
-
-		meta_free(meta);
+		file_decoder_delete(fdec);
 	}
 
 	if (map_artist) {

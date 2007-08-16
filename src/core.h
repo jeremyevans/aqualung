@@ -59,10 +59,6 @@
 #endif /* _WIN32 */
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define MAX_SAMPLERATE 96000
 
 
@@ -149,15 +145,10 @@ typedef struct _seek_t {
 } seek_t;
 
 
-float convf(char * s);
 void jack_client_start(void);
 
 #define db2lin(x) ((x) > -90.0f ? powf(10.0f, (x) * 0.05f) : 0.0f)
 
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
 
 #endif /* _CORE_H */
 

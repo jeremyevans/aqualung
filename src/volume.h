@@ -24,9 +24,6 @@
 #include <gtk/gtk.h>
 #include "common.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define RMSSIZE 100
 
@@ -90,9 +87,6 @@ float volume_from_replaygain(float replaygain);
 float rva_from_replaygain(float volume);
 float rva_from_multiple_volumes(int nlevels, float * volumes);
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
 
 #endif /* _VOLUME_H */
 

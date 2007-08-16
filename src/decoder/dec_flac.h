@@ -24,11 +24,13 @@
 
 #ifdef HAVE_FLAC_8
 #include <FLAC/format.h>
+#include <FLAC/metadata.h>
 #include <FLAC/stream_decoder.h>
 #endif /* HAVE_FLAC_8 */
 
 #ifdef HAVE_FLAC_7
 #include <FLAC/format.h>
+#include <FLAC/metadata.h>
 #include <FLAC/file_decoder.h>
 #endif /* HAVE_FLAC_7 */
 

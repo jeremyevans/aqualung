@@ -22,10 +22,6 @@
 #ifndef _COVER_H
 #define _COVER_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 
 /* FIXME  34 is space for scrollbar width, window border and it is theme dependent */
 #define SCROLLBAR_WIDTH         34
@@ -38,10 +34,6 @@ void    display_cover           (GtkWidget *image_area, GtkWidget *event_area, G
 void    display_zoomed_cover    (GtkWidget *window, GtkWidget *event_area, gchar *song_filename);
 void    insert_cover            (GtkTreeIter * tree_iter, GtkTextIter * text_iter, GtkTextBuffer * buffer);
 
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
 
 #endif /* _COVER_H */
 

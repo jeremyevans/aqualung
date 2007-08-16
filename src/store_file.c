@@ -40,7 +40,7 @@
 #include "cover.h"
 #include "file_info.h"
 #include "decoder/file_decoder.h"
-#include "meta_decoder.h"
+#include "metadata_api.h"
 #include "options.h"
 #include "volume.h"
 #include "playlist.h"
@@ -149,7 +149,6 @@ GdkPixbuf * icon_artist;
 GdkPixbuf * icon_record;
 GdkPixbuf * icon_track;
 
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 GtkWidget * store__tag;
 GtkWidget * artist__tag;
 GtkWidget * record__tag;
@@ -163,14 +162,13 @@ typedef struct _batch_tag_t {
 	char album[MAXLEN];
 	char comment[MAXLEN];
 	char year[MAXLEN];
-	char track[MAXLEN];
+	int trackno;
 
 	struct _batch_tag_t * next;
 
 } batch_tag_t;
 
 batch_tag_t * batch_tag_root = NULL;
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 
 
 void artist__add_cb(gpointer data);
@@ -1126,11 +1124,7 @@ static void
 set_popup_sensitivity(GtkTreePath * path) {
 
 	gboolean writable = !is_store_path_readonly(path);
-
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gboolean tag_free = (batch_tag_root == NULL);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
-
 
 	gtk_widget_set_sensitive(store__build, writable && !build_is_busy());
 	gtk_widget_set_sensitive(store__edit, writable);
@@ -1158,12 +1152,10 @@ set_popup_sensitivity(GtkTreePath * path) {
 	gtk_widget_set_sensitive(track__remove, writable);
 	gtk_widget_set_sensitive(track__volume, writable);
 
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_widget_set_sensitive(store__tag, tag_free);
 	gtk_widget_set_sensitive(artist__tag, tag_free);
 	gtk_widget_set_sensitive(record__tag, tag_free);
 	gtk_widget_set_sensitive(track__tag, tag_free);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 }
 
 
@@ -1270,7 +1262,8 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 	char voladj_str[32];
 	char duration_str[MAXLEN];
 
-	metadata * meta = NULL;
+	char * tmp;
+	file_decoder_t * fdec = NULL;
 
 
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track,
@@ -1298,32 +1291,40 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 		strncpy(artist_name, partist_name, MAXLEN-1);
 		g_free(partist_name);
 	}
+	
+	if (options.auto_use_meta_artist ||
+	    options.auto_use_meta_record ||
+	    options.auto_use_meta_track) {
 
-	if (options.auto_use_meta_artist || options.auto_use_meta_record || options.auto_use_meta_track) {
-		meta = meta_new();
-		if (!meta_read(meta, data->file)) {
-			meta_free(meta);
-			meta = NULL;
+		fdec = file_decoder_new();
+		if (fdec == NULL) {
+			fprintf(stderr, "track_addlist_iter: file_decoder_new() failed\n");
+		} else {
+			if (file_decoder_open(fdec, data->file) != 0) {
+				file_decoder_delete(fdec);
+				fdec = NULL;
+			}
 		}
 	}
 
 	if (parent == NULL) {
-		if ((meta != NULL) && options.auto_use_meta_artist) {
-			meta_get_artist(meta, artist_name);
+		if ((fdec != NULL) && options.auto_use_meta_artist) {
+			if (metadata_get_artist(fdec->meta, &tmp)) {
+				strncpy(artist_name, tmp, MAXLEN-1);
+			}
 		}
 
-		if ((meta != NULL) && options.auto_use_meta_record) {
-			meta_get_record(meta, record_name);
+		if ((fdec != NULL) && options.auto_use_meta_record) {
+			if (metadata_get_album(fdec->meta, &tmp)) {
+				strncpy(record_name, tmp, MAXLEN-1);
+			}
 		}
 	}
 
-	if ((meta != NULL) && options.auto_use_meta_track) {
-		meta_get_title(meta, track_name);
-	}
-
-	if (meta != NULL) {
-		meta_free(meta);
-		meta = NULL;
+	if ((fdec != NULL) && options.auto_use_meta_track) {
+		if (metadata_get_title(fdec->meta, &tmp)) {
+			strncpy(track_name, tmp, MAXLEN-1);
+		}
 	}
 
 	if (parent != NULL) {
@@ -1345,15 +1346,9 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 				if (data->volume <= 0.1f) {
 					voladj = rva_from_volume(data->volume);
 				} else { /* unmeasured, see if there is RVA data in the file */
-					metadata * meta = meta_new();
-					if (meta_read(meta, data->file)) {
-						if (!meta_get_rva(meta, &voladj)) {
-							voladj = 0.0f;
-						}
-					} else {
+					if (!metadata_get_rva(fdec->meta, &voladj)) {
 						voladj = 0.0f;
 					}
-					meta_free(meta);
 				}
 			}
 		}
@@ -1372,6 +1367,11 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 			   PL_COL_VOLUME_ADJUSTMENT_DISP, voladj_str,
 			   PL_COL_DURATION, data->duration,
 			   PL_COL_DURATION_DISP, duration_str, -1);
+
+	if (fdec != NULL) {
+		file_decoder_close(fdec);
+		file_decoder_delete(fdec);
+	}
 
 	return data->duration;
 }
@@ -2898,8 +2898,6 @@ store__export_cb(gpointer user_data) {
 /************************************/
 
 
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
-
 AQUALUNG_THREAD_DECLARE(tag_thread_id)
 volatile int batch_tag_cancelled;
 
@@ -3032,6 +3030,8 @@ create_tag_prog_window(void) {
 	GtkWidget * table;
 	GtkWidget * label;
 	GtkWidget * vbox;
+	GtkWidget * hbox_result;
+	GtkWidget * label_result;
 	GtkWidget * hbox;
 	GtkWidget * hbuttonbox;
 	GtkWidget * hseparator;
@@ -3044,7 +3044,7 @@ create_tag_prog_window(void) {
 	tag_prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(tag_prog_window), _("Update file metadata"));
         gtk_window_set_position(GTK_WINDOW(tag_prog_window), GTK_WIN_POS_CENTER);
-        gtk_window_resize(GTK_WINDOW(tag_prog_window), 500, 300);
+        gtk_window_resize(GTK_WINDOW(tag_prog_window), 600, 300);
         g_signal_connect(G_OBJECT(tag_prog_window), "delete_event",
                          G_CALLBACK(tag_prog_window_close), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(tag_prog_window), 5);
@@ -3052,7 +3052,7 @@ create_tag_prog_window(void) {
         vbox = gtk_vbox_new(FALSE, 0);
         gtk_container_add(GTK_CONTAINER(tag_prog_window), vbox);
 
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_table_new(3, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 0);
 
         hbox = gtk_hbox_new(FALSE, 0);
@@ -3066,13 +3066,25 @@ create_tag_prog_window(void) {
 	gtk_table_attach(GTK_TABLE(table), tag_prog_file_entry, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
-	tag_error_list = gtk_list_store_new(1, G_TYPE_STRING);
+
+	hbox_result = gtk_hbox_new(FALSE, 0);
+	label_result = gtk_label_new(_("Failed to set metadata for the following files:"));
+	gtk_box_pack_start(GTK_BOX(hbox_result), label_result, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox_result, 0, 2, 1, 2,
+			 GTK_FILL, GTK_FILL, 5, 5);
+
+	tag_error_list = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
         tag_error_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(tag_error_list));
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(tag_error_view), FALSE);
 	renderer = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes(_("Failed to set metadata at the following files:"),
+	column = gtk_tree_view_column_new_with_attributes(_("Filename"),
 							  renderer,
 							  "text", 0,
+							  NULL);
+        gtk_tree_view_append_column(GTK_TREE_VIEW(tag_error_view), column);
+	column = gtk_tree_view_column_new_with_attributes(_("Reason"),
+							  renderer,
+							  "text", 1,
 							  NULL);
         gtk_tree_view_append_column(GTK_TREE_VIEW(tag_error_view), column);
 
@@ -3080,10 +3092,10 @@ create_tag_prog_window(void) {
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
         viewport = gtk_viewport_new(NULL, NULL);
-	gtk_table_attach(GTK_TABLE(table), viewport, 0, 2, 1, 2,
+	gtk_table_attach(GTK_TABLE(table), viewport, 0, 2, 2, 3,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 5);
 	gtk_container_add(GTK_CONTAINER(viewport), scrollwin);
-        gtk_container_add(GTK_CONTAINER(scrollwin), tag_error_view);
+	gtk_container_add(GTK_CONTAINER(scrollwin), tag_error_view);
 
         hseparator = gtk_hseparator_new();
         gtk_box_pack_start(GTK_BOX(vbox), hseparator, FALSE, TRUE, 5);
@@ -3129,13 +3141,27 @@ batch_tag_finish(gpointer data) {
 	return FALSE;
 }
 
+
+typedef struct {
+	char * filename;
+	int ret;
+} batch_tag_error_t;
+
+
 gboolean
 batch_tag_append_error(gpointer data) {
 
+	batch_tag_error_t * err = (batch_tag_error_t *)data;
 	GtkTreeIter iter;
 
 	gtk_list_store_append(tag_error_list, &iter);
-	gtk_list_store_set(tag_error_list, &iter, 0, (char *)data, -1);
+	gtk_list_store_set(tag_error_list, &iter,
+			   0, err->filename,
+			   1, meta_update_strerror(err->ret),
+			   -1);
+
+	free(err->filename);
+	free(err);
 
 	return FALSE;
 }
@@ -3150,6 +3176,7 @@ update_tag_thread(void * args) {
 	AQUALUNG_THREAD_DETACH()
 
 	while (ptag) {
+		int ret;
 
 		if (batch_tag_cancelled) {
 
@@ -3166,16 +3193,25 @@ update_tag_thread(void * args) {
 
 		g_idle_add(set_tag_prog_file_entry, (gpointer)ptag->filename);
 
-		if (meta_update_basic(ptag->filename,
-				      (tag_flags & TAG_F_TITLE) ? ptag->title : NULL,
-				      (tag_flags & TAG_F_ARTIST) ? ptag->artist : NULL,
-				      (tag_flags & TAG_F_ALBUM) ? ptag->album : NULL,
-				      (tag_flags & TAG_F_COMMENT) ? ptag->comment : NULL,
-				      NULL /* genre */,
-				      (tag_flags & TAG_F_YEAR) ? ptag->year : NULL,
-				      (tag_flags & TAG_F_TRACKNO) ? ptag->track : NULL) < 0) {
+		ret = meta_update_basic(ptag->filename,
+					(tag_flags & TAG_F_TITLE) ? ptag->title : NULL,
+					(tag_flags & TAG_F_ARTIST) ? ptag->artist : NULL,
+					(tag_flags & TAG_F_ALBUM) ? ptag->album : NULL,
+					(tag_flags & TAG_F_COMMENT) ? ptag->comment : NULL,
+					NULL /* genre */,
+					(tag_flags & TAG_F_YEAR) ? ptag->year : NULL,
+					(tag_flags & TAG_F_TRACKNO) ? ptag->trackno : -1);
 
-			g_idle_add(batch_tag_append_error, (gpointer)ptag->filename);
+		if (ret < 0) {
+			batch_tag_error_t * err =
+				(batch_tag_error_t *)calloc(sizeof(batch_tag_error_t), 1);
+			if (err == NULL) {
+				fprintf(stderr, "update_tag_thread: calloc error\n");
+			} else {
+				err->filename = strdup(ptag->filename);
+				err->ret = ret;
+				g_idle_add(batch_tag_append_error, (gpointer)err);
+			}
 		}
 
 		ptag = ptag->next;
@@ -3218,9 +3254,10 @@ track_batch_tag(gpointer data) {
 	strncpy(ptag->artist, artist_tag, MAXLEN-1);
 	strncpy(ptag->album, album_tag, MAXLEN-1);
 	strncpy(ptag->year, year_tag, MAXLEN-1);
-
 	strncpy(ptag->title, title, MAXLEN-1);
-	strncpy(ptag->track, track, MAXLEN-1);
+	if (sscanf(track, "%d", &ptag->trackno) < 1) {
+		ptag->trackno = -1;
+	}
 
 	if (track_data->file != NULL) {
 		strncpy(ptag->filename, track_data->file, MAXLEN-1);
@@ -3250,14 +3287,14 @@ void
 record_batch_tag_set_from_iter(GtkTreeIter * iter) {
 
 	char * str;
+	record_data_t * data;
 
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_NAME, &str, -1);
 	strncpy(album_tag, str, MAXLEN-1);
 	g_free(str);
 
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_SORT, &str, -1);
-	strncpy(year_tag, str, MAXLEN-1);
-	g_free(str);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_DATA, &data, -1);
+	snprintf(year_tag, MAXLEN-1, "%d", data->year);
 }
 
 gboolean
@@ -3411,8 +3448,6 @@ store__tag_cb(gpointer data) {
 	}
 }
 
-
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 
 
 /************************************/
@@ -4313,9 +4348,7 @@ store_file_create_popup_menu(void) {
 	store__volume_menu = gtk_menu_new();
 	store__volume_unmeasured = gtk_menu_item_new_with_label(_("Unmeasured tracks only"));
 	store__volume_all = gtk_menu_item_new_with_label(_("All tracks"));
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	store__tag = gtk_menu_item_new_with_label(_("Batch-update file metadata..."));
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	store__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__addlist);
@@ -4334,9 +4367,7 @@ store_file_create_popup_menu(void) {
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(store__volume), store__volume_menu);
         gtk_menu_shell_append(GTK_MENU_SHELL(store__volume_menu), store__volume_unmeasured);
         gtk_menu_shell_append(GTK_MENU_SHELL(store__volume_menu), store__volume_all);
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__tag);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_menu_shell_append(GTK_MENU_SHELL(store_menu), store__search);
 
 	g_signal_connect_swapped(G_OBJECT(store__addlist), "activate", G_CALLBACK(store__addlist_cb), NULL);
@@ -4350,9 +4381,7 @@ store_file_create_popup_menu(void) {
 	g_signal_connect_swapped(G_OBJECT(store__addart), "activate", G_CALLBACK(artist__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(store__volume_unmeasured), "activate", G_CALLBACK(store__volume_unmeasured_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(store__volume_all), "activate", G_CALLBACK(store__volume_all_cb), NULL);
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	g_signal_connect_swapped(G_OBJECT(store__tag), "activate", G_CALLBACK(store__tag_cb), NULL);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	g_signal_connect_swapped(G_OBJECT(store__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(store__addlist);
@@ -4370,9 +4399,7 @@ store_file_create_popup_menu(void) {
 	gtk_widget_show(store__volume);
 	gtk_widget_show(store__volume_unmeasured);
 	gtk_widget_show(store__volume_all);
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_widget_show(store__tag);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_widget_show(store__search);
 
 	/* create popup menu for artist tree items */
@@ -4393,9 +4420,7 @@ store_file_create_popup_menu(void) {
 	artist__volume_menu = gtk_menu_new();
 	artist__volume_unmeasured = gtk_menu_item_new_with_label(_("Unmeasured tracks only"));
 	artist__volume_all = gtk_menu_item_new_with_label(_("All tracks"));
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	artist__tag = gtk_menu_item_new_with_label(_("Batch-update file metadata..."));
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	artist__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__addlist);
@@ -4412,9 +4437,7 @@ store_file_create_popup_menu(void) {
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(artist__volume), artist__volume_menu);
         gtk_menu_shell_append(GTK_MENU_SHELL(artist__volume_menu), artist__volume_unmeasured);
         gtk_menu_shell_append(GTK_MENU_SHELL(artist__volume_menu), artist__volume_all);
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__tag);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_menu_shell_append(GTK_MENU_SHELL(artist_menu), artist__search);
 
 	g_signal_connect_swapped(G_OBJECT(artist__addlist), "activate", G_CALLBACK(artist__addlist_cb), NULL);
@@ -4426,9 +4449,7 @@ store_file_create_popup_menu(void) {
 	g_signal_connect_swapped(G_OBJECT(artist__addrec), "activate", G_CALLBACK(record__add_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__volume_unmeasured), "activate", G_CALLBACK(artist__volume_unmeasured_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(artist__volume_all), "activate", G_CALLBACK(artist__volume_all_cb), NULL);
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	g_signal_connect_swapped(G_OBJECT(artist__tag), "activate", G_CALLBACK(artist__tag_cb), NULL);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	g_signal_connect_swapped(G_OBJECT(artist__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(artist__addlist);
@@ -4444,9 +4465,7 @@ store_file_create_popup_menu(void) {
 	gtk_widget_show(artist__volume);
 	gtk_widget_show(artist__volume_unmeasured);
 	gtk_widget_show(artist__volume_all);
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_widget_show(artist__tag);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_widget_show(artist__search);
 
 	/* create popup menu for record tree items */
@@ -4471,9 +4490,7 @@ store_file_create_popup_menu(void) {
 	record__volume_menu = gtk_menu_new();
 	record__volume_unmeasured = gtk_menu_item_new_with_label(_("Unmeasured tracks only"));
 	record__volume_all = gtk_menu_item_new_with_label(_("All tracks"));
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	record__tag = gtk_menu_item_new_with_label(_("Batch-update file metadata..."));
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	record__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addlist);
@@ -4494,9 +4511,7 @@ store_file_create_popup_menu(void) {
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(record__volume), record__volume_menu);
         gtk_menu_shell_append(GTK_MENU_SHELL(record__volume_menu), record__volume_unmeasured);
         gtk_menu_shell_append(GTK_MENU_SHELL(record__volume_menu), record__volume_all);
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__tag);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__search);
 
 	g_signal_connect_swapped(G_OBJECT(record__addlist), "activate", G_CALLBACK(record__addlist_cb), NULL);
@@ -4512,9 +4527,7 @@ store_file_create_popup_menu(void) {
 #endif /* HAVE_CDDB */
 	g_signal_connect_swapped(G_OBJECT(record__volume_unmeasured), "activate", G_CALLBACK(record__volume_unmeasured_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__volume_all), "activate", G_CALLBACK(record__volume_all_cb), NULL);
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	g_signal_connect_swapped(G_OBJECT(record__tag), "activate", G_CALLBACK(record__tag_cb), NULL);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	g_signal_connect_swapped(G_OBJECT(record__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(record__addlist);
@@ -4534,9 +4547,7 @@ store_file_create_popup_menu(void) {
 	gtk_widget_show(record__volume);
 	gtk_widget_show(record__volume_unmeasured);
 	gtk_widget_show(record__volume_all);
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_widget_show(record__tag);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_widget_show(record__search);
 
 	/* create popup menu for track tree items */
@@ -4556,9 +4567,7 @@ store_file_create_popup_menu(void) {
 	track__volume_menu = gtk_menu_new();
 	track__volume_unmeasured = gtk_menu_item_new_with_label(_("Only if unmeasured"));
 	track__volume_all = gtk_menu_item_new_with_label(_("In any case"));
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	track__tag = gtk_menu_item_new_with_label(_("Update file metadata..."));
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	track__search = gtk_menu_item_new_with_label(_("Search..."));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__addlist);
@@ -4574,9 +4583,7 @@ store_file_create_popup_menu(void) {
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(track__volume), track__volume_menu);
         gtk_menu_shell_append(GTK_MENU_SHELL(track__volume_menu), track__volume_unmeasured);
         gtk_menu_shell_append(GTK_MENU_SHELL(track__volume_menu), track__volume_all);
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__tag);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_menu_shell_append(GTK_MENU_SHELL(track_menu), track__search);
 
 	g_signal_connect_swapped(G_OBJECT(track__addlist), "activate", G_CALLBACK(track__addlist_cb), NULL);
@@ -4587,9 +4594,7 @@ store_file_create_popup_menu(void) {
 	g_signal_connect_swapped(G_OBJECT(track__fileinfo), "activate", G_CALLBACK(track__fileinfo_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__volume_unmeasured), "activate", G_CALLBACK(track__volume_unmeasured_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(track__volume_all), "activate", G_CALLBACK(track__volume_all_cb), NULL);
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	g_signal_connect_swapped(G_OBJECT(track__tag), "activate", G_CALLBACK(track__tag_cb), NULL);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	g_signal_connect_swapped(G_OBJECT(track__search), "activate", G_CALLBACK(search_cb), NULL);
 
 	gtk_widget_show(track__addlist);
@@ -4604,9 +4609,7 @@ store_file_create_popup_menu(void) {
 	gtk_widget_show(track__volume);
 	gtk_widget_show(track__volume_unmeasured);
 	gtk_widget_show(track__volume_all);
-#if defined(HAVE_TAGLIB) && defined(HAVE_METAEDIT)
 	gtk_widget_show(track__tag);
-#endif /* HAVE_TAGLIB && HAVE_METAEDIT */
 	gtk_widget_show(track__search);
 }
 

@@ -43,10 +43,6 @@
 
 #include "common.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define CDDA_DRIVES_MAX 16
 #define CDDA_MAXLEN 256
 
@@ -96,10 +92,6 @@ int cdda_get_n(char * device_path);
 cdda_drive_t * cdda_get_drive_by_device_path(char * device_path);
 cdda_drive_t * cdda_get_drive_by_spec_device_path(char * device_path);
 
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
 
 #endif /* HAVE_CDDA */
 

@@ -22,10 +22,6 @@
 #ifndef _TRASHLIST_H
 #define _TRASHLIST_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct _trashlist_t {
   void * ptr;
   struct _trashlist_t * next;
@@ -36,9 +32,6 @@ trashlist_t * trashlist_new(void);
 void trashlist_add(trashlist_t * root, void * ptr);
 void trashlist_free(trashlist_t * root);
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
 
 #endif /* _TRASHLIST_H */
 

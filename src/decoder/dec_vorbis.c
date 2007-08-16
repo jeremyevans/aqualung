@@ -24,7 +24,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
+#include "../metadata_ogg.h"
 #include "dec_vorbis.h"
 
 
@@ -50,6 +52,48 @@ dump_vc(vorbis_comment * vc) {
 }
 */
 
+void
+vorbis_write_metadata(file_decoder_t * fdec, metadata_t * meta) {
+
+	GSList * slist;
+
+	int n_pages;
+	unsigned char * payload;
+	unsigned int length;
+
+	slist = meta_ogg_parse(fdec->filename);
+	payload = meta_ogg_vc_render(meta, &length);
+	slist = meta_ogg_vc_encapsulate_payload(slist, &payload, length, &n_pages);
+	meta_ogg_render(slist, fdec->filename, n_pages);
+	meta_ogg_free(slist);
+	free(payload);
+}
+
+void
+vorbis_send_metadata(file_decoder_t * fdec, vorbis_pdata_t * pd) {
+	
+	vorbis_comment * vc = ov_comment(&pd->vf, -1);
+	metadata_t * meta = metadata_from_vorbis_comment(vc);
+	if (fdec->is_stream) {
+		meta->writable = 0;
+	} else {
+		if (access(fdec->filename, R_OK | W_OK) == 0) {
+			meta->writable = 1;
+			fdec->meta_write = vorbis_write_metadata;
+		} else {
+			meta->writable = 0;
+		}
+	}
+	if (fdec->is_stream) {
+		httpc_add_headers_meta(pd->session, meta);
+	}
+	meta->fdec = fdec;
+	fdec->meta = meta;
+	if (fdec->meta_cb != NULL) {
+		fdec->meta_cb(meta, fdec->meta_cbdata);
+	}
+}
+
 /* return 1 if reached end of stream, 0 else */
 int
 decode_vorbis(decoder_t * dec) {
@@ -73,13 +117,7 @@ decode_vorbis(decoder_t * dec) {
 		break;
 	case OV_HOLE:
 		if (fdec->is_stream) {
-			if (fdec->meta_cb != NULL) {
-				vorbis_comment * vc = ov_comment(&pd->vf, -1);
-				metadata_t * meta = metadata_from_vorbis_comment(vc);
-				meta->writable = 0;
-				httpc_add_headers_meta(pd->session, meta);
-				fdec->meta_cb(meta);
-			}
+			vorbis_send_metadata(fdec, pd);
 			break;
 		} else {
 			printf("dec_vorbis.c/decode_vorbis(): ov_read() returned OV_HOLE\n");
@@ -236,6 +274,8 @@ vorbis_decoder_finish_open(decoder_t * dec) {
 	fdec->file_lib = VORBIS_LIB;
 	strcpy(dec->format_str, "Ogg Vorbis");
 	
+	vorbis_send_metadata(fdec, pd);
+
 	return DECODER_OPEN_SUCCESS;
 }
 

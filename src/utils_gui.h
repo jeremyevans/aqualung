@@ -25,10 +25,6 @@
 
 #include <gtk/gtk.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 enum {
 	TOP_WIN_SKIN = (1 << 0),
 	TOP_WIN_TRAY = (1 << 1)
@@ -87,9 +83,6 @@ void set_option_from_combo(GtkWidget * widget, int * opt);
 void set_option_from_spin(GtkWidget * widget, int * opt);
 void set_option_from_entry(GtkWidget * widget, char * opt, int n);
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
 
 #endif /* _UTILS_GUI_H */
 

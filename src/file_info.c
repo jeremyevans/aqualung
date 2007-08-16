@@ -498,19 +498,11 @@ make_import_data_from_frame(fi_t * fi, meta_frame_t * frame, char * label) {
 		data->fval = frame->float_val;
 		strcpy(label, _("Import as RVA"));
 		break;
-	case META_FIELD_COMMENT:
-	case META_FIELD_GENRE:
-	case META_FIELD_VENDOR:
-	case META_FIELD_ICY_NAME:
-	case META_FIELD_ICY_DESCR:
-	case META_FIELD_ICY_GENRE:
-	case META_FIELD_OTHER:
+	default:
 		data->dest_type = IMPORT_DEST_COMMENT;
 		strncpy(data->str, frame->field_val, MAXLEN-1);
 		strcpy(label, _("Add to Comments"));
 		break;
-	default:
-		fprintf(stderr, "invalid frame type %d\n", frame->type);
 	}
 
 	return data;

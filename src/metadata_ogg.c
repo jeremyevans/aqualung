@@ -28,7 +28,7 @@
 #include "metadata_ogg.h"
 
 
-static const unsigned int crc_table[256] = {
+static const u_int32_t crc_table[256] = {
 
 	0x00000000, 0x04c11db7, 0x09823b6e, 0x0d4326d9, 0x130476dc, 0x17c56b6b,
 	0x1a864db2, 0x1e475005, 0x2608edb8, 0x22c9f00f, 0x2f8ad6d6, 0x2b4bcb61,
@@ -78,10 +78,10 @@ static const unsigned int crc_table[256] = {
 /* CRC for computing Ogg page checksums.
  * initial value and final XOR = 0, generator polynomial=0x04c11db7.
  */
-unsigned int
+u_int32_t
 meta_ogg_crc(unsigned char * data, int length) {
 
-	unsigned int sum = 0;
+	u_int32_t sum = 0;
 	int i;
 	for (i = 0; i < length; ++i) {
 		sum = (sum << 8) ^ crc_table[((sum >> 24) & 0xff) ^ data[i]];
@@ -129,30 +129,30 @@ meta_ogg_page_dump(meta_ogg_page_t * page) {
 }
 
 
-unsigned int
+u_int32_t
 meta_ogg_read_int32(unsigned char * buf) {
 
-	return ((((unsigned int)buf[0]))       |
-		(((unsigned int)buf[1]) << 8)  |
-		(((unsigned int)buf[2]) << 16) |
-		(((unsigned int)buf[3]) << 24));
+	return ((((u_int32_t)buf[0]))       |
+		(((u_int32_t)buf[1]) << 8)  |
+		(((u_int32_t)buf[2]) << 16) |
+		(((u_int32_t)buf[3]) << 24));
 }
 
-unsigned long long
+u_int64_t
 meta_ogg_read_int64(unsigned char * buf) {
 
-	return ((((unsigned long long)buf[0]))       |
-		(((unsigned long long)buf[1]) << 8)  |
-		(((unsigned long long)buf[2]) << 16) |
-		(((unsigned long long)buf[3]) << 24) |
-		(((unsigned long long)buf[4]) << 32) |
-		(((unsigned long long)buf[5]) << 40) |
-		(((unsigned long long)buf[6]) << 48) |
-		(((unsigned long long)buf[7]) << 56));
+	return ((((u_int64_t)buf[0]))       |
+		(((u_int64_t)buf[1]) << 8)  |
+		(((u_int64_t)buf[2]) << 16) |
+		(((u_int64_t)buf[3]) << 24) |
+		(((u_int64_t)buf[4]) << 32) |
+		(((u_int64_t)buf[5]) << 40) |
+		(((u_int64_t)buf[6]) << 48) |
+		(((u_int64_t)buf[7]) << 56));
 }
 
 void
-meta_ogg_write_int32(unsigned int val, unsigned char * buf) {
+meta_ogg_write_int32(u_int32_t val, unsigned char * buf) {
 
 	buf[0] = ((val & 0xff));
 	buf[1] = ((val >> 8)  & 0xff);
@@ -161,7 +161,7 @@ meta_ogg_write_int32(unsigned int val, unsigned char * buf) {
 }
 
 void
-meta_ogg_write_int64(unsigned long long val, unsigned char * buf) {
+meta_ogg_write_int64(u_int64_t val, unsigned char * buf) {
 
 	buf[0] = ((val & 0xff));
 	buf[1] = ((val >> 8)  & 0xff);
@@ -179,7 +179,7 @@ meta_ogg_render_page(meta_ogg_page_t * page, unsigned int * length) {
 	int i;
 	unsigned int total_length = 27;
 	unsigned int data_length = 0;
-	unsigned int crc;
+	u_int32_t crc;
 	unsigned char * data;
 
 	total_length += page->n_segments;
@@ -332,7 +332,7 @@ meta_ogg_render(GSList * slist, char * filename, int n_pages) {
 	meta_ogg_page_t * page;
 	unsigned char * data;
 	unsigned int length;
-	unsigned long long total_length = 0L;
+	u_int64_t total_length = 0L;
 	int page_count = 0;
 	
 	if ((file = fopen(filename, (n_pages == -1) ? "wb" : "r+b")) == NULL) {

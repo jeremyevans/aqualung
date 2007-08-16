@@ -37,10 +37,10 @@
 typedef struct {
 	unsigned char version;
 	char flags;
-	unsigned long long granulepos;
-	unsigned int serialno;
-	unsigned int seqno;
-	unsigned int checksum;
+	u_int64_t granulepos;
+	u_int32_t serialno;
+	u_int32_t seqno;
+	u_int32_t checksum;
 	unsigned char n_segments;
 	unsigned char segment_table[256];
 	unsigned char * data;

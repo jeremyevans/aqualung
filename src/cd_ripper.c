@@ -186,6 +186,8 @@ ripper_source_write_back(GtkTreeIter * record_iter, char * artist, char * record
 
 		++n;
 	}
+
+	music_store_selection_changed();
 }
 
 void

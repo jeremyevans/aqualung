@@ -79,14 +79,6 @@ GtkWidget * fi_event_box;
 #define FI_MAXPAGES 256
 
 typedef struct {
-        GtkTreeModel * model;
-        GtkTreeIter track_iter;
-        int dest_type; /* one of IMPORT_DEST_* */
-        char str[MAXLEN];
-        float fval;
-} import_data_t;
-
-typedef struct {
 	int tag;
 	GtkWidget * table;
 	int n_rows;
@@ -117,6 +109,12 @@ typedef struct {
 	GtkWidget * smp_instr_list;
 	GtkListStore * smp_instr_list_store;
 } fi_t;
+
+typedef struct {
+	fi_t * fi;
+	meta_frame_t * frame;
+        int dest_type; /* one of IMPORT_DEST_* */
+} import_data_t;
 
 
 /*
@@ -320,6 +318,10 @@ void
 import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 
 	import_data_t * data = (import_data_t *)gptr_data;
+	fi_t * fi = data->fi;
+	meta_frame_t * frame = data->frame;
+	GtkTreeModel * model = fi->model;
+	GtkTreeIter track_iter = fi->track_iter;
 	GtkTreeIter record_iter;
 	GtkTreeIter artist_iter;
 	GtkTreePath * path;
@@ -328,38 +330,53 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 	record_data_t * record_data;
 	track_data_t * track_data;
 
+	if (fi_set_frame_from_source(fi, frame) < 0) {
+		return;
+	}
+
 	switch (data->dest_type) {
 	case IMPORT_DEST_TITLE:
-		gtk_tree_store_set(music_store, &(data->track_iter), MS_COL_NAME, data->str, -1);
-		music_store_mark_changed(&(data->track_iter));
+		gtk_tree_store_set(music_store, &track_iter, MS_COL_NAME, frame->field_val, -1);
+		music_store_mark_changed(&track_iter);
 		break;
 	case IMPORT_DEST_RECORD:
-		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
-		gtk_tree_store_set(music_store, &record_iter, MS_COL_NAME, data->str, -1);
+		gtk_tree_model_iter_parent(model, &record_iter, &track_iter);
+		gtk_tree_store_set(music_store, &record_iter, MS_COL_NAME, frame->field_val, -1);
 		music_store_mark_changed(&record_iter);
 		break;
 	case IMPORT_DEST_ARTIST:
-		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
-		gtk_tree_model_iter_parent(data->model, &artist_iter, &record_iter);
-		gtk_tree_store_set(music_store, &artist_iter, MS_COL_NAME, data->str, -1);
-		gtk_tree_store_set(music_store, &artist_iter, MS_COL_SORT, data->str, -1);
-		path = gtk_tree_model_get_path(data->model, &(data->track_iter));
+		gtk_tree_model_iter_parent(model, &record_iter, &track_iter);
+		gtk_tree_model_iter_parent(model, &artist_iter, &record_iter);
+		gtk_tree_store_set(music_store, &artist_iter, MS_COL_NAME, frame->field_val, -1);
+		gtk_tree_store_set(music_store, &artist_iter, MS_COL_SORT, frame->field_val, -1);
+		path = gtk_tree_model_get_path(model, &track_iter);
 		gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(music_tree), path, NULL, TRUE, 0.5f, 0.0f);
 		music_store_mark_changed(&artist_iter);
 		break;
 	case IMPORT_DEST_YEAR:
-		gtk_tree_model_iter_parent(data->model, &record_iter, &(data->track_iter));
+		gtk_tree_model_iter_parent(model, &record_iter, &track_iter);
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &record_iter, MS_COL_DATA, &record_data, -1);
-		record_data->year = atoi(data->str);
-		music_store_mark_changed(&record_iter);
+		if (sscanf(frame->field_val, "%d", &record_data->year) < 1) {
+			char msg[MAXLEN];
+			snprintf(msg, MAXLEN-1,
+				 _("Error converting field %s to Year:\n"
+				   "'%s' is not an integer number!"),
+				 frame->field_name, frame->field_val);
+			message_dialog(_("Error"),
+				       fi->info_window, GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK, NULL, msg);
+			return;
+		} else {
+			music_store_mark_changed(&record_iter);
+		}
 		break;
 	case IMPORT_DEST_NUMBER:
-		snprintf(tmp, MAXLEN-1, "%02d", (int)data->fval);
-		gtk_tree_store_set(music_store, &(data->track_iter), MS_COL_SORT, tmp, -1);
-		music_store_mark_changed(&(data->track_iter));
+		snprintf(tmp, MAXLEN-1, "%02d", frame->int_val);
+		gtk_tree_store_set(music_store, &track_iter, MS_COL_SORT, tmp, -1);
+		music_store_mark_changed(&track_iter);
 		break;
 	case IMPORT_DEST_COMMENT:
-		gtk_tree_model_get(data->model, &(data->track_iter), MS_COL_DATA, &track_data, -1);
+		gtk_tree_model_get(model, &track_iter, MS_COL_DATA, &track_data, -1);
 		tmp[0] = '\0';
 		if (track_data->comment != NULL) {
 			strncat(tmp, track_data->comment, MAXLEN-1);
@@ -367,15 +384,15 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 		if ((tmp[strlen(tmp)-1] != '\n') && (tmp[0] != '\0')) {
 			strncat(tmp, "\n", MAXLEN-1);
 		}
-		strncat(tmp, data->str, MAXLEN-1);
+		strncat(tmp, frame->field_val, MAXLEN-1);
 		free_strdup(&track_data->comment, tmp);
-		music_store_mark_changed(&(data->track_iter));
+		music_store_mark_changed(&track_iter);
 		break;
 	case IMPORT_DEST_RVA:
-		gtk_tree_model_get(data->model, &(data->track_iter), MS_COL_DATA, &track_data, -1);
-		track_data->rva = data->fval;
+		gtk_tree_model_get(model, &track_iter, MS_COL_DATA, &track_data, -1);
+		track_data->rva = frame->float_val;
 		track_data->use_rva = 1;
-		music_store_mark_changed(&(data->track_iter));
+		music_store_mark_changed(&track_iter);
 		break;
 	}
 }
@@ -464,43 +481,36 @@ make_import_data_from_frame(fi_t * fi, meta_frame_t * frame, char * label) {
 
 	import_data_t * data = import_data_new();
 	trashlist_add(fi->trash, data);
-	data->model = fi->model;
-	data->track_iter = fi->track_iter;
+	data->fi = fi;
+	data->frame = frame;
 	
 	switch (frame->type) {
 	case META_FIELD_TITLE:
 		data->dest_type = IMPORT_DEST_TITLE;
-		strncpy(data->str, frame->field_val, MAXLEN-1);
 		strcpy(label, _("Import as Title"));
 		break;
 	case META_FIELD_ARTIST:
 		data->dest_type = IMPORT_DEST_ARTIST;
-		strncpy(data->str, frame->field_val, MAXLEN-1);
 		strcpy(label, _("Import as Artist"));
 		break;
 	case META_FIELD_ALBUM:
 		data->dest_type = IMPORT_DEST_RECORD;
-		strncpy(data->str, frame->field_val, MAXLEN-1);
 		strcpy(label, _("Import as Record"));
 		break;
 	case META_FIELD_DATE:
 		data->dest_type = IMPORT_DEST_YEAR;
-		strncpy(data->str, frame->field_val, MAXLEN-1);
 		strcpy(label, _("Import as Year"));
 		break;
 	case META_FIELD_TRACKNO:
 		data->dest_type = IMPORT_DEST_NUMBER;
-		data->fval = frame->int_val;
 		strcpy(label, _("Import as Track No."));
 		break;
 	case META_FIELD_RVA2:
 		data->dest_type = IMPORT_DEST_RVA;
-		data->fval = frame->float_val;
 		strcpy(label, _("Import as RVA"));
 		break;
 	default:
 		data->dest_type = IMPORT_DEST_COMMENT;
-		strncpy(data->str, frame->field_val, MAXLEN-1);
 		strcpy(label, _("Add to Comments"));
 		break;
 	}

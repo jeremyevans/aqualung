@@ -178,6 +178,27 @@ export_compress_str(char * buf, int limit) {
 	buf[limit] = '\0';
 }
 
+void
+export_make_path_unique(char * dir, char * file) {
+
+	char test[MAXLEN];
+	char i = '2';
+
+	snprintf(test, MAXLEN-1, "%s/%s", dir, file);
+
+	while (g_file_test(test, G_FILE_TEST_EXISTS) && i <= 'z') {
+
+		dir[strlen(dir)-1] = i;
+		snprintf(test, MAXLEN-1, "%s/%s", dir, file);
+
+		if ((i >= '2' && i < '9') || (i >= 'a' && i <= 'z')) {
+			++i;
+		} else {
+			i = 'a';
+		}
+	}
+}
+
 int
 export_item_set_path(export_t * export, export_item_t * item, char * path, char * ext, int index) {
 
@@ -224,6 +245,15 @@ export_item_set_path(export_t * export, export_item_t * item, char * path, char 
 		       't', item->title, 'n', str_no, 'x', ext, 'i', str_index, 0);
 
 	snprintf(path, MAXLEN-1, "%s/%s", buf, track);
+
+	if (export->dir_for_album && g_file_test(path, G_FILE_TEST_EXISTS)) {
+		export_make_path_unique(buf, track);
+		if (!is_dir(buf) && mkdir(buf, S_IRUSR | S_IWUSR | S_IXUSR) < 0) {
+			fprintf(stderr, "mkdir: %s: %s\n", buf, strerror(errno));
+			return -1;
+		}
+		snprintf(path, MAXLEN-1, "%s/%s", buf, track);
+	}
 
 	return 0;
 }

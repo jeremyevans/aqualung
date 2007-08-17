@@ -332,7 +332,7 @@ mod_filename_filter(char *str, char **valid_extensions) {
 
                 if (strcasecmp(buffer, valid_extensions[i]) == 0) {
 
-                    *pos++;
+		    pos++;
                     i = 0;
 
                     while (pos[i] != '\0') {

@@ -24,6 +24,10 @@
 
 #include <sys/types.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** @file ringbuffer.h
  *
  * A set of library functions to make lock-free ringbuffers available
@@ -224,6 +228,9 @@ void rb_write_advance(rb_t *rb, size_t cnt);
  */
 size_t rb_write_space(const rb_t *rb);
 
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif /* _RINGBUFFER_H */
 

@@ -129,50 +129,6 @@ meta_ogg_page_dump(meta_ogg_page_t * page) {
 }
 
 
-u_int32_t
-meta_ogg_read_int32(unsigned char * buf) {
-
-	return ((((u_int32_t)buf[0]))       |
-		(((u_int32_t)buf[1]) << 8)  |
-		(((u_int32_t)buf[2]) << 16) |
-		(((u_int32_t)buf[3]) << 24));
-}
-
-u_int64_t
-meta_ogg_read_int64(unsigned char * buf) {
-
-	return ((((u_int64_t)buf[0]))       |
-		(((u_int64_t)buf[1]) << 8)  |
-		(((u_int64_t)buf[2]) << 16) |
-		(((u_int64_t)buf[3]) << 24) |
-		(((u_int64_t)buf[4]) << 32) |
-		(((u_int64_t)buf[5]) << 40) |
-		(((u_int64_t)buf[6]) << 48) |
-		(((u_int64_t)buf[7]) << 56));
-}
-
-void
-meta_ogg_write_int32(u_int32_t val, unsigned char * buf) {
-
-	buf[0] = ((val & 0xff));
-	buf[1] = ((val >> 8)  & 0xff);
-	buf[2] = ((val >> 16) & 0xff);
-	buf[3] = ((val >> 24) & 0xff);
-}
-
-void
-meta_ogg_write_int64(u_int64_t val, unsigned char * buf) {
-
-	buf[0] = ((val & 0xff));
-	buf[1] = ((val >> 8)  & 0xff);
-	buf[2] = ((val >> 16) & 0xff);
-	buf[3] = ((val >> 24) & 0xff);
-	buf[4] = ((val >> 32) & 0xff);
-	buf[5] = ((val >> 40) & 0xff);
-	buf[6] = ((val >> 48) & 0xff);
-	buf[7] = ((val >> 56) & 0xff);
-}
-
 unsigned char *
 meta_ogg_render_page(meta_ogg_page_t * page, unsigned int * length) {
 
@@ -198,10 +154,10 @@ meta_ogg_render_page(meta_ogg_page_t * page, unsigned int * length) {
 	data[0] = 'O'; data[1] = 'g'; data[2] = 'g'; data[3] = 'S';
 	data[4] = page->version;
 	data[5] = page->flags;
-	meta_ogg_write_int64(page->granulepos, data + 6);
-	meta_ogg_write_int32(page->serialno, data + 14);
-	meta_ogg_write_int32(page->seqno, data + 18);
-	meta_ogg_write_int32(0x00000000, data + 22);
+	meta_write_int64(page->granulepos, data + 6);
+	meta_write_int32(page->serialno, data + 14);
+	meta_write_int32(page->seqno, data + 18);
+	meta_write_int32(0x00000000, data + 22);
 	data[26] = page->n_segments;
 
 	/* Render segment table */
@@ -214,7 +170,7 @@ meta_ogg_render_page(meta_ogg_page_t * page, unsigned int * length) {
 
 	/* Update CRC */
 	crc = meta_ogg_crc(data, total_length);
-	meta_ogg_write_int32(crc, data + 22);
+	meta_write_int32(crc, data + 22);
 
 	if (length != NULL) {
 		*length = total_length;
@@ -255,10 +211,10 @@ meta_ogg_read_page(FILE * file) {
 
 	page->version = buf[4];
 	page->flags = buf[5];
-	page->granulepos = meta_ogg_read_int64(buf + 6);
-	page->serialno = meta_ogg_read_int32(buf + 14);
-	page->seqno = meta_ogg_read_int32(buf + 18);
-	page->checksum  = meta_ogg_read_int32(buf + 22);
+	page->granulepos = meta_read_int64(buf + 6);
+	page->serialno = meta_read_int32(buf + 14);
+	page->seqno = meta_read_int32(buf + 18);
+	page->checksum  = meta_read_int32(buf + 22);
 	page->n_segments = buf[26];
 
 	for (i = 0; i < page->n_segments; i++) {
@@ -793,7 +749,7 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 		}
 
 		str_len = strlen(frame->field_val);
-		meta_ogg_write_int32(str_len, payload + 7);
+		meta_write_int32(str_len, payload + 7);
 
 		payload = realloc(payload, len + str_len);
 		memcpy(payload + 11, frame->field_val, str_len);
@@ -801,7 +757,7 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 
 		payload = realloc(payload, len + 4);
 		n_comments_pos = 11 + str_len;
-		meta_ogg_write_int32(0, payload + n_comments_pos); /* n_comments */
+		meta_write_int32(0, payload + n_comments_pos); /* n_comments */
 		len = n_comments_pos + 4;
 
 		payload[len] = 0x01;
@@ -823,7 +779,7 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 			continue;
 		}
 
-		if (!meta_get_fieldname_embedded(frame->type, &str)) {
+		if (!meta_get_vc_fieldname_embedded(frame->type, &str)) {
 			str = frame->field_name;
 		}
 
@@ -856,7 +812,7 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 		vc_len += field_len;
 
 		payload = realloc(payload, len + 4);
-		meta_ogg_write_int32(vc_len, payload + len);
+		meta_write_int32(vc_len, payload + len);
 		len += 4;
 		
 		payload = realloc(payload, len + vc_len);
@@ -868,7 +824,7 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 		frame = metadata_get_frame_by_tag(meta, META_TAG_OXC, frame);
 	}
 
-	meta_ogg_write_int32(n_comments, payload + n_comments_pos);
+	meta_write_int32(n_comments, payload + n_comments_pos);
 
 	if (n_comments > 0) {
 		/* XXX */printf("meta_ogg_vc_render: len = %d\n", len);

@@ -47,13 +47,15 @@
 #define META_TAG_NULL            0x00
 #define META_TAG_ID3v1           0x01
 #define META_TAG_ID3v2           0x02
-#define META_TAG_APEv2           0x04
+#define META_TAG_APE             0x04
 #define META_TAG_OXC             0x08
 #define META_TAG_GEN_STREAM      0x10
 #define META_TAG_MPEGSTREAM      0x20
 #define META_TAG_MODINFO         0x40
 
-/* string types */
+/* frame types -- string, integer, float, binary */
+
+/* string types (most basic ones) */
 #define META_FIELD_TITLE         0x01
 #define META_FIELD_ARTIST        0x02
 #define META_FIELD_ALBUM         0x03
@@ -61,6 +63,7 @@
 #define META_FIELD_GENRE         0x05
 #define META_FIELD_COMMENT       0x06
 
+/* string types added for OXC */
 #define META_FIELD_PERFORMER     0x07
 #define META_FIELD_DESCRIPTION   0x08
 #define META_FIELD_ORGANIZATION  0x09
@@ -71,10 +74,33 @@
 #define META_FIELD_ISRC          0x0e
 #define META_FIELD_VERSION       0x0f
 
-#define META_FIELD_VENDOR        0x10
-#define META_FIELD_ICY_NAME      0x11
-#define META_FIELD_ICY_DESCR     0x12
-#define META_FIELD_ICY_GENRE     0x13
+/* string types added for APE */
+#define META_FIELD_SUBTITLE      0x10
+#define META_FIELD_DEBUT_ALBUM   0x11
+#define META_FIELD_PUBLISHER     0x12
+#define META_FIELD_CONDUCTOR     0x13
+#define META_FIELD_COMPOSER      0x14
+#define META_FIELD_PRIGHT        0x15
+#define META_FIELD_FILE          0x16
+#define META_FIELD_EAN_UPC       0x17
+#define META_FIELD_ISBN          0x18
+#define META_FIELD_CATALOG       0x19
+#define META_FIELD_LC            0x1a
+#define META_FIELD_RECORD_DATE   0x1b
+#define META_FIELD_RECORD_LOC    0x1c
+#define META_FIELD_MEDIA         0x1d
+#define META_FIELD_INDEX         0x1e
+#define META_FIELD_RELATED       0x1f
+#define META_FIELD_ABSTRACT      0x20
+#define META_FIELD_LANGUAGE      0x21
+#define META_FIELD_BIBLIOGRAPHY  0x22
+#define META_FIELD_INTROPLAY     0x23
+
+/* misc. string types*/
+#define META_FIELD_VENDOR        0x30
+#define META_FIELD_ICY_NAME      0x31
+#define META_FIELD_ICY_DESCR     0x32
+#define META_FIELD_ICY_GENRE     0x33
 #define META_FIELD_OTHER         0xff
 
 /* integer types */
@@ -97,7 +123,7 @@
 /* field flags */
 #define META_FIELD_UNIQUE    0x01 /* only one instance is permitted */
 #define META_FIELD_MANDATORY 0x02 /* field cannot be removed */
-
+#define META_FIELD_LOCATOR   0x80 /* field_val is only a locator to the actual content */
 
 typedef struct _meta_frame_t {
 	int tag; /* one of META_TAG_*, owner tag of this frame */
@@ -148,8 +174,15 @@ void metadata_remove_frame(metadata_t * meta, meta_frame_t * frame);
 
 void metadata_add_mandatory_frames(metadata_t * meta, int tag);
 
-void metadata_add_textframe_from_keyval(metadata_t * meta, int tag,
-					char * key, char * val);
+meta_frame_t * metadata_add_textframe_from_keyval(metadata_t * meta, int tag,
+						  char * key, char * val);
+
+
+u_int32_t meta_read_int32(unsigned char * buf);
+u_int64_t meta_read_int64(unsigned char * buf);
+void meta_write_int32(u_int32_t val, unsigned char * buf);
+void meta_write_int64(u_int64_t val, unsigned char * buf);
+
 
 #ifdef HAVE_FLAC
 metadata_t * metadata_from_flac_streammeta(FLAC__StreamMetadata_VorbisComment * vc);
@@ -169,7 +202,8 @@ void metadata_make_playlist_string(metadata_t * meta, char * dest);
 /* data model functions */
 char * meta_get_tagname(int tag);
 int meta_get_fieldname(int field, char ** str);
-int meta_get_fieldname_embedded(int field, char ** str);
+int meta_get_vc_fieldname_embedded(int field, char ** str);
+int meta_get_ape_fieldname_embedded(int field, char ** str);
 int meta_tag_from_name(char * name);
 int meta_frame_type_from_name(int tag, char * name);
 GSList * meta_get_possible_fields(int tag);

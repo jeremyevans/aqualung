@@ -555,8 +555,8 @@ fi_fill_tagcombo(GtkComboBox * combo, int addable_tags) {
 		gtk_combo_box_append_text(combo, meta_get_tagname(META_TAG_ID3v1));
 	if (addable_tags & META_TAG_ID3v2)
 		gtk_combo_box_append_text(combo, meta_get_tagname(META_TAG_ID3v2));
-	if (addable_tags & META_TAG_APEv2)
-		gtk_combo_box_append_text(combo, meta_get_tagname(META_TAG_APEv2));
+	if (addable_tags & META_TAG_APE)
+		gtk_combo_box_append_text(combo, meta_get_tagname(META_TAG_APE));
 	if (addable_tags & META_TAG_OXC)
 		gtk_combo_box_append_text(combo, meta_get_tagname(META_TAG_OXC));
 

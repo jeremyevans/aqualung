@@ -44,7 +44,7 @@ meta_get_tagname(int tag) {
 	case META_TAG_NULL: return _("NULL");
 	case META_TAG_ID3v1: return _("ID3v1");
 	case META_TAG_ID3v2: return _("ID3v2");
-	case META_TAG_APEv2: return _("APEv2");
+	case META_TAG_APE: return _("APE");
 	case META_TAG_OXC: return _("Ogg Xiph Comments");
 	case META_TAG_GEN_STREAM: return _("Generic StreamMeta");
 	case META_TAG_MPEGSTREAM: return _("MPEG StreamMeta");
@@ -75,6 +75,27 @@ meta_get_fieldname(int field, char ** str) {
 	case META_FIELD_ISRC: *str = _("ISRC"); return 1;
 	case META_FIELD_VERSION: *str = _("Version"); return 1;
 
+	case META_FIELD_SUBTITLE: *str = _("Subtitle"); return 1;
+	case META_FIELD_DEBUT_ALBUM: *str = _("Debut Album"); return 1;
+	case META_FIELD_PUBLISHER: *str = _("Publisher"); return 1;
+	case META_FIELD_CONDUCTOR: *str = _("Conductor"); return 1;
+	case META_FIELD_COMPOSER: *str = _("Composer"); return 1;
+	case META_FIELD_PRIGHT: *str = _("Publication Right"); return 1;
+	case META_FIELD_FILE: *str = _("File"); return 1;
+	case META_FIELD_EAN_UPC: *str = _("EAN/UPC"); return 1;
+	case META_FIELD_ISBN: *str = _("ISBN"); return 1;
+	case META_FIELD_CATALOG: *str = _("Catalog"); return 1;
+	case META_FIELD_LC: *str = _("Label Code"); return 1;
+	case META_FIELD_RECORD_DATE: *str = _("Record Date"); return 1;
+	case META_FIELD_RECORD_LOC: *str = _("Record Location"); return 1;
+	case META_FIELD_MEDIA: *str = _("Media"); return 1;
+	case META_FIELD_INDEX: *str = _("Index"); return 1;
+	case META_FIELD_RELATED: *str = _("Related"); return 1;
+	case META_FIELD_ABSTRACT: *str = _("Abstract"); return 1;
+	case META_FIELD_LANGUAGE: *str = _("Language"); return 1;
+	case META_FIELD_BIBLIOGRAPHY: *str = _("Bibliography"); return 1;
+	case META_FIELD_INTROPLAY: *str = _("Introplay"); return 1;
+
 	case META_FIELD_VENDOR: *str = _("Vendor"); return 1;
 	case META_FIELD_ICY_NAME: *str = _("Icy-Name"); return 1;
 	case META_FIELD_ICY_DESCR: *str = _("Icy-Description"); return 1;
@@ -84,13 +105,66 @@ meta_get_fieldname(int field, char ** str) {
 	case META_FIELD_RVA2: *str = _("RVA2"); return 1;
 	case META_FIELD_APIC: *str = _("Embedded Picture"); return 1;
 	case META_FIELD_GEOB: *str = _("General Encapsulated Object"); return 1;
+
 	default: return 0;
 	}
 }
 
 
 int
-meta_get_fieldname_embedded(int field, char ** str) {
+meta_get_field_from_string(char * str) {
+
+	if (strcasecmp("Title", str) == 0) { return META_FIELD_TITLE; }
+	if (strcasecmp("Artist", str) == 0) { return META_FIELD_ARTIST; }
+	if (strcasecmp("Album", str) == 0) { return META_FIELD_ALBUM; }
+	if (strcasecmp("Date", str) == 0) { return META_FIELD_DATE; }
+	if (strcasecmp("Year", str) == 0) { return META_FIELD_DATE; }
+	if (strcasecmp("Genre", str) == 0) { return META_FIELD_GENRE; }
+	if (strcasecmp("Comment", str) == 0) { return META_FIELD_COMMENT; }
+	if (strcasecmp("Track", str) == 0) { return META_FIELD_TRACKNO; }
+	if (strcasecmp("Tracknumber", str) == 0) { return META_FIELD_TRACKNO; }
+
+	if (strcasecmp("Performer", str) == 0) { return META_FIELD_PERFORMER; }
+	if (strcasecmp("Description", str) == 0) { return META_FIELD_DESCRIPTION; }
+	if (strcasecmp("Organization", str) == 0) { return META_FIELD_ORGANIZATION; }
+	if (strcasecmp("Location", str) == 0) { return META_FIELD_LOCATION; } 
+	if (strcasecmp("Contact", str) == 0) { return META_FIELD_CONTACT; }
+	if (strcasecmp("License", str) == 0) { return META_FIELD_LICENSE; }
+	if (strcasecmp("Copyright", str) == 0) { return META_FIELD_COPYRIGHT; }
+	if (strcasecmp("ISRC", str) == 0) { return META_FIELD_ISRC; }
+	if (strcasecmp("Version", str) == 0) { return META_FIELD_VERSION; }
+
+	if (strcasecmp("Subtitle", str) == 0) { return META_FIELD_SUBTITLE; }
+	if (strcasecmp("Debut Album", str) == 0) { return META_FIELD_DEBUT_ALBUM; }
+	if (strcasecmp("Publisher", str) == 0) { return META_FIELD_PUBLISHER; }
+	if (strcasecmp("Conductor", str) == 0) { return META_FIELD_CONDUCTOR; }
+	if (strcasecmp("Composer", str) == 0) { return META_FIELD_COMPOSER; }
+	if (strcasecmp("Publicationright", str) == 0) { return META_FIELD_PRIGHT; }
+	if (strcasecmp("File", str) == 0) { return META_FIELD_FILE; }
+	if (strcasecmp("EAN/UPC", str) == 0) { return META_FIELD_EAN_UPC; }
+	if (strcasecmp("ISBN", str) == 0) { return META_FIELD_ISBN; }
+	if (strcasecmp("Catalog", str) == 0) { return META_FIELD_CATALOG; }
+	if (strcasecmp("LC", str) == 0) { return META_FIELD_LC; }
+	if (strcasecmp("Record Date", str) == 0) { return META_FIELD_RECORD_DATE; }
+	if (strcasecmp("Record Location", str) == 0) { return META_FIELD_RECORD_LOC; }
+	if (strcasecmp("Media", str) == 0) { return META_FIELD_MEDIA; }
+	if (strcasecmp("Index", str) == 0) { return META_FIELD_INDEX; }
+	if (strcasecmp("Related", str) == 0) { return META_FIELD_RELATED; }
+	if (strcasecmp("Abstract", str) == 0) { return META_FIELD_ABSTRACT; }
+	if (strcasecmp("Language", str) == 0) { return META_FIELD_LANGUAGE; }
+	if (strcasecmp("Bibliography", str) == 0) { return META_FIELD_BIBLIOGRAPHY; }
+	if (strcasecmp("Introplay", str) == 0) { return META_FIELD_INTROPLAY; }
+	
+	if (strcasecmp("Icy-Name", str) == 0) { return META_FIELD_ICY_NAME; }
+	if (strcasecmp("Icy-Genre", str) == 0) { return META_FIELD_ICY_GENRE; }
+	if (strcasecmp("Icy-Description", str) == 0) { return META_FIELD_ICY_DESCR; }
+	
+	return META_FIELD_OTHER; 
+}
+
+
+int
+meta_get_vc_fieldname_embedded(int field, char ** str) {
 
 	switch (field) {
 	case META_FIELD_TITLE: *str = "title"; return 1;
@@ -110,6 +184,46 @@ meta_get_fieldname_embedded(int field, char ** str) {
 	case META_FIELD_COPYRIGHT: *str = _("copyright"); return 1;
 	case META_FIELD_ISRC: *str = _("isrc"); return 1;
 	case META_FIELD_VERSION: *str = _("version"); return 1;
+
+	default: return 0;
+	}
+}
+
+
+int
+meta_get_ape_fieldname_embedded(int field, char ** str) {
+
+	switch (field) {
+	case META_FIELD_TITLE: *str = "Title"; return 1;
+	case META_FIELD_ARTIST: *str = "Artist"; return 1;
+	case META_FIELD_ALBUM: *str = "Album"; return 1;
+	case META_FIELD_DATE: *str = "Year"; return 1;
+	case META_FIELD_GENRE: *str = "Genre"; return 1;
+	case META_FIELD_COMMENT: *str = "Comment"; return 1;
+	case META_FIELD_TRACKNO: *str = "Track"; return 1;
+
+	case META_FIELD_SUBTITLE: *str = "Subtitle"; return 1;
+	case META_FIELD_DEBUT_ALBUM: *str = "Debut album"; return 1;
+	case META_FIELD_PUBLISHER: *str = "Publisher"; return 1;
+	case META_FIELD_CONDUCTOR: *str = "Conductor"; return 1;
+	case META_FIELD_COMPOSER: *str = "Composer"; return 1;
+	case META_FIELD_COPYRIGHT: *str = "Copyright"; return 1;
+	case META_FIELD_PRIGHT: *str = "Publicationright"; return 1;
+	case META_FIELD_FILE: *str = "File"; return 1;
+	case META_FIELD_EAN_UPC: *str = "EAN/UPC"; return 1;
+	case META_FIELD_ISBN: *str = "ISBN"; return 1;
+	case META_FIELD_ISRC: *str = "ISRC"; return 1;
+	case META_FIELD_CATALOG: *str = "Catalog"; return 1;
+	case META_FIELD_LC: *str = "LC"; return 1;
+	case META_FIELD_RECORD_DATE: *str = "Record Date"; return 1;
+	case META_FIELD_RECORD_LOC: *str = "Record Location"; return 1;
+	case META_FIELD_MEDIA: *str = "Media"; return 1;
+	case META_FIELD_INDEX: *str = "Index"; return 1;
+	case META_FIELD_RELATED: *str = "Related"; return 1;
+	case META_FIELD_ABSTRACT: *str = "Abstract"; return 1;
+	case META_FIELD_LANGUAGE: *str = "Language"; return 1;
+	case META_FIELD_BIBLIOGRAPHY: *str = "Bibliography"; return 1;
+	case META_FIELD_INTROPLAY: *str = "Introplay"; return 1;
 
 	default: return 0;
 	}
@@ -137,11 +251,37 @@ meta_get_possible_fields(int tag) {
 		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ALBUM));
 		/* TODO */
 		return list;
-	case META_TAG_APEv2:
+	case META_TAG_APE:
 		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_TITLE));
 		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ARTIST));
 		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ALBUM));
-		/* TODO */
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_DATE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_GENRE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_TRACKNO));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_COMMENT));
+
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_SUBTITLE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_DEBUT_ALBUM));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_PUBLISHER));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_CONDUCTOR));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_COMPOSER));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_COPYRIGHT));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_PRIGHT));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_FILE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_EAN_UPC));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ISBN));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ISRC));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_CATALOG));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_LC));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_RECORD_DATE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_RECORD_LOC));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_MEDIA));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_INDEX));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_RELATED));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ABSTRACT));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_LANGUAGE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_BIBLIOGRAPHY));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_INTROPLAY));
 		return list;
 	case META_TAG_OXC:
 		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_TITLE));
@@ -149,6 +289,7 @@ meta_get_possible_fields(int tag) {
 		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_ALBUM));
 		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_DATE));
 		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_GENRE));
+		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_TRACKNO));
 		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_COMMENT));
 
 		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_PERFORMER));
@@ -162,8 +303,6 @@ meta_get_possible_fields(int tag) {
 		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_VERSION));
 
 		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_VENDOR));
-		list = g_slist_append(list, GINT_TO_POINTER(META_FIELD_TRACKNO));
-		/* TODO */
 		return list;
 	default: return NULL;
 	}
@@ -187,7 +326,7 @@ meta_get_default_flags(int tag, int type) {
 		return 0;
 	case META_TAG_ID3v1: return 0;
 	case META_TAG_ID3v2: return 0;
-	case META_TAG_APEv2: return 0;
+	case META_TAG_APE: return 0;
 	case META_TAG_OXC:
 		switch (type) {
 		case META_FIELD_VENDOR:
@@ -216,7 +355,7 @@ metadata_add_mandatory_frames(metadata_t * meta, int tag) {
 	case META_TAG_ID3v2:
 		/* TODO */
 		return;
-	case META_TAG_APEv2:
+	case META_TAG_APE:
 		/* TODO */
 		return;
 	case META_TAG_OXC:
@@ -399,43 +538,68 @@ meta_dump_frame(meta_frame_t * frame) {
 
 /* Utility functions */
 
+u_int32_t
+meta_read_int32(unsigned char * buf) {
+
+	return ((((u_int32_t)buf[0]))       |
+		(((u_int32_t)buf[1]) << 8)  |
+		(((u_int32_t)buf[2]) << 16) |
+		(((u_int32_t)buf[3]) << 24));
+}
+
+u_int64_t
+meta_read_int64(unsigned char * buf) {
+
+	return ((((u_int64_t)buf[0]))       |
+		(((u_int64_t)buf[1]) << 8)  |
+		(((u_int64_t)buf[2]) << 16) |
+		(((u_int64_t)buf[3]) << 24) |
+		(((u_int64_t)buf[4]) << 32) |
+		(((u_int64_t)buf[5]) << 40) |
+		(((u_int64_t)buf[6]) << 48) |
+		(((u_int64_t)buf[7]) << 56));
+}
+
 void
+meta_write_int32(u_int32_t val, unsigned char * buf) {
+
+	buf[0] = ((val & 0xff));
+	buf[1] = ((val >> 8)  & 0xff);
+	buf[2] = ((val >> 16) & 0xff);
+	buf[3] = ((val >> 24) & 0xff);
+}
+
+void
+meta_write_int64(u_int64_t val, unsigned char * buf) {
+
+	buf[0] = ((val & 0xff));
+	buf[1] = ((val >> 8)  & 0xff);
+	buf[2] = ((val >> 16) & 0xff);
+	buf[3] = ((val >> 24) & 0xff);
+	buf[4] = ((val >> 32) & 0xff);
+	buf[5] = ((val >> 40) & 0xff);
+	buf[6] = ((val >> 48) & 0xff);
+	buf[7] = ((val >> 56) & 0xff);
+}
+
+
+meta_frame_t *
 metadata_add_textframe_from_keyval(metadata_t * meta, int tag, char * key, char * val) {
 
 	meta_frame_t * frame = meta_frame_new();
 	char * str;
 
 	frame->tag = tag;
+	frame->field_val = strdup(val);
+	frame->type = meta_get_field_from_string(key);
 	if (meta_get_fieldname(frame->type, &str)) {
 		frame->field_name = strdup(str);
 	} else {
 		frame->field_name = strdup(key);
 	}
-	frame->field_val = strdup(val);
-
-	if (strcmp("Title", key) == 0) {
-		frame->type = META_FIELD_TITLE;
-	} else if (strcmp("Artist", key) == 0) {
-		frame->type = META_FIELD_ARTIST;
-	} else if (strcmp("Album", key) == 0) {
-		frame->type = META_FIELD_ALBUM;
-	} else if (strcmp("Date", key) == 0) {
-		frame->type = META_FIELD_DATE;
-	} else if (strcmp("Genre", key) == 0) {
-		frame->type = META_FIELD_GENRE;
-	} else if (strcmp("Comment", key) == 0) {
-		frame->type = META_FIELD_COMMENT;
-	} else if (strcmp("Icy-Name", key) == 0) {
-		frame->type = META_FIELD_ICY_NAME;
-	} else if (strcmp("Icy-Genre", key) == 0) {
-		frame->type = META_FIELD_ICY_GENRE;
-	} else if (strcmp("Icy-Description", key) == 0) {
-		frame->type = META_FIELD_ICY_DESCR;
-	} else {
-		frame->type = META_FIELD_OTHER;
-	}
 	frame->flags = meta_get_default_flags(tag, frame->type);
 	metadata_add_frame(meta, frame);
+	return frame;
 }
 
 
@@ -535,7 +699,7 @@ meta_entry_from_frame(FLAC__StreamMetadata_VorbisComment_Entry * entry,
 	char * val;
 	char str[MAXLEN];
 
-	if (!meta_get_fieldname_embedded(frame->type, &key)) {
+	if (!meta_get_vc_fieldname_embedded(frame->type, &key)) {
 		key = frame->field_name;
 	}
 	if (META_FIELD_TEXT(frame->type)) {

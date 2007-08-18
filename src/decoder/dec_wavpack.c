@@ -27,6 +27,7 @@
 #include <string.h>
 #include <math.h>
 
+#include "../metadata_ape.h"
 #include "dec_wavpack.h"
 
 extern size_t sample_size;
@@ -167,6 +168,7 @@ wavpack_decoder_open(decoder_t * dec, char * filename) {
 		strcpy(dec->format_str, "WavPack");
 		fdec->file_lib = WAVPACK_LIB;
 
+		meta_ape_send_metadata(fdec);
 		return DECODER_OPEN_SUCCESS;
 	}
 

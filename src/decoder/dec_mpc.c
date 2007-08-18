@@ -110,66 +110,6 @@ mpc_decoder_destroy(decoder_t * dec) {
 }
 
 
-void
-mpc_write_metadata(file_decoder_t * fdec, metadata_t * meta) {
-
-	ape_tag_t tag;
-
-	memset(&tag, 0x00, sizeof(ape_tag_t));
-	metadata_to_ape_tag(meta, &tag);
-
-	if (tag.header.item_count > 0) {
-		meta_ape_replace_or_append(fdec->filename, &tag);
-	} else {
-		meta_ape_delete(fdec->filename);
-	}
-	meta_ape_free(&tag);
-}
-
-void
-mpc_send_metadata(file_decoder_t * fdec, mpc_pdata_t * pd) {
-
-	ape_tag_t tag;
-	metadata_t * meta;
-	int found_tag = 0;
-
-	memset(&tag, 0x00, sizeof(ape_tag_t));
-
-	if (meta_ape_parse(fdec->filename, &tag)) {
-		meta = metadata_from_ape_tag(&tag);
-		if (meta == NULL) {
-			meta_ape_free(&tag);
-			return;
-		}
-		found_tag = 1;
-	} else {
-		meta = metadata_new();
-		if (meta == NULL) {
-			fprintf(stderr, "mpc_send_metadata: metadata_new() failed\n");
-			return;
-		}
-	}
-
-	meta->valid_tags = META_TAG_APE;
-
-	if (found_tag) {
-		meta_ape_free(&tag);
-	}
-	
-	if (access(fdec->filename, R_OK | W_OK) == 0) {
-		meta->writable = 1;
-		fdec->meta_write = mpc_write_metadata;
-	} else {
-		meta->writable = 0;
-	}
-
-	meta->fdec = fdec;
-	fdec->meta = meta;
-	if (fdec->meta_cb != NULL) {
-		fdec->meta_cb(meta, fdec->meta_cbdata);
-	}
-}
-
 int
 mpc_decoder_open(decoder_t * dec, char * filename) {
 
@@ -235,7 +175,7 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 		break;
 	}
 
-	mpc_send_metadata(fdec, pd);
+	meta_ape_send_metadata(fdec);
 	return DECODER_OPEN_SUCCESS;
 }
 

@@ -58,10 +58,11 @@
 
 #endif /* HAVE_MAC */
 
-
+extern "C" {
 #include "../i18n.h"
+#include "../metadata_ape.h"
 #include "dec_mac.h"
-
+}
 
 extern size_t sample_size;
 
@@ -257,6 +258,7 @@ mac_decoder_open(decoder_t * dec, char * filename) {
 		break;
 	}
 
+	meta_ape_send_metadata(fdec);
 	return DECODER_OPEN_SUCCESS;
 }
 

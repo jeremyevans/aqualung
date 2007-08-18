@@ -27,6 +27,7 @@
 #include <glib.h>
 
 #include "common.h"
+#include "decoder/file_decoder.h"
 #include "metadata.h"
 
 #define APE_FLAG_READONLY      1
@@ -70,5 +71,10 @@ void meta_ape_render(ape_tag_t * tag, unsigned char * data);
 
 void meta_ape_delete(char * filename);
 void meta_ape_replace_or_append(char * filename, ape_tag_t * tag);
+
+/* for direct use by decoders */
+void meta_ape_write_metadata(file_decoder_t * fdec, metadata_t * meta);
+void meta_ape_send_metadata(file_decoder_t * fdec);
+
 
 #endif /* _METADATA_APE_H */

@@ -100,7 +100,6 @@ meta_get_fieldname(int field, char ** str) {
 	case META_FIELD_ICY_NAME: *str = _("Icy-Name"); return 1;
 	case META_FIELD_ICY_DESCR: *str = _("Icy-Description"); return 1;
 	case META_FIELD_ICY_GENRE: *str = _("Icy-Genre"); return 1;
-	case META_FIELD_OTHER: *str = _("Other"); return 1;
 	case META_FIELD_TRACKNO: *str = _("Track No."); return 1;
 	case META_FIELD_RVA2: *str = _("RVA2"); return 1;
 	case META_FIELD_APIC: *str = _("Embedded Picture"); return 1;
@@ -700,7 +699,9 @@ meta_entry_from_frame(FLAC__StreamMetadata_VorbisComment_Entry * entry,
 	char str[MAXLEN];
 
 	if (!meta_get_vc_fieldname_embedded(frame->type, &key)) {
-		key = frame->field_name;
+		key = g_ascii_strdown(frame->field_name, strlen(frame->field_name));
+		free(frame->field_name);
+		frame->field_name = key;
 	}
 	if (META_FIELD_TEXT(frame->type)) {
 		val = frame->field_val;

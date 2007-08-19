@@ -39,7 +39,7 @@
 #define META_TAG_MPEGSTREAM      0x20
 #define META_TAG_MODINFO         0x40
 
-#define META_N_TAGS              8
+#define META_N_TAGS  6  /* NULL and MODINFO are pseudo-tags */
 
 /* frame types -- string, integer, float, binary */
 
@@ -83,7 +83,7 @@
 #define META_FIELD_BIBLIOGRAPHY        0x21
 #define META_FIELD_INTROPLAY           0x22
 
-/* misc. string types*/
+/* misc. string types */
 #define META_FIELD_VENDOR              0x40
 #define META_FIELD_ICY_NAME            0x41
 #define META_FIELD_ICY_DESCR           0x42

@@ -243,7 +243,7 @@ metadata_to_ape_tag(metadata_t * meta, ape_tag_t * tag) {
 		}
 
 		item = meta_ape_item_new();
-		if (frame->flags && META_FIELD_LOCATOR != 0) {
+		if ((frame->flags & META_FIELD_LOCATOR) != 0) {
 			item->flags = APE_FLAG_LOCATOR;
 		}
 		if (meta_get_fieldname_embedded(META_TAG_APE, type, &str)) {

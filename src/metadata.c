@@ -214,7 +214,7 @@ struct {
 	{META_FIELD_APIC, X_("Picture"), "", "",
 	     0,
 	     {}},
-	{META_FIELD_GEOB, X_("Embedded Binary Object"), "", "",
+	{META_FIELD_GEOB, X_("Binary Object"), "", "",
 	     0,
 	     {}},
 

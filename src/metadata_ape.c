@@ -30,9 +30,6 @@
 #include "metadata_ape.h"
 
 
-extern options_t options;
-
-
 void
 meta_ape_free(ape_tag_t * tag) {
 
@@ -176,7 +173,7 @@ meta_ape_parse(char * filename, ape_tag_t * tag) {
 void
 meta_add_frame_from_ape_item(metadata_t * meta, ape_item_t * item) {
 
-	char replaygain_label[MAXLEN];
+	int i;
 	meta_frame_t * frame;
 
 	if (APE_FLAG_IS_BINARY(item->flags)) {
@@ -184,57 +181,20 @@ meta_add_frame_from_ape_item(metadata_t * meta, ape_item_t * item) {
 		return;
 	}
 
-	switch (options.replaygain_tag_to_use) {
-	case 0: strcpy(replaygain_label, "Replaygain_track_gain");
-		break;
-	case 1: strcpy(replaygain_label, "Replaygain_album_gain");
-		break;
+	frame = metadata_add_frame_from_keyval(meta, META_TAG_APE,
+					       (char *)item->key,
+					       (char *)item->value);
+	if (APE_FLAG_IS_LOCATOR(item->flags)) {
+		frame->flags |= META_FIELD_LOCATOR;
 	}
-	if (strcasecmp((char *)item->key, replaygain_label) == 0) {
-		frame = meta_frame_new();
-		frame->tag = META_TAG_APE;
-		frame->type = META_FIELD_RVA2;
-		frame->flags = meta_get_default_flags(frame->tag, frame->type);
-		frame->field_name = strdup((char *)item->key);
-		frame->float_val = convf((char *)item->value);
-		if (APE_FLAG_IS_LOCATOR(item->flags)) {
-			frame->flags |= META_FIELD_LOCATOR;
-		}
-		metadata_add_frame(meta, frame);
-	} else if (strcasecmp((char *)item->key, "Track") == 0) {
-		frame = meta_frame_new();
-		char * str;
-		frame->tag = META_TAG_APE;
-		frame->type = META_FIELD_TRACKNO;
-		frame->flags = meta_get_default_flags(frame->tag, frame->type);
-		if (meta_get_fieldname(frame->type, &str)) {
-			frame->field_name = strdup(str);
-		} else {
-			frame->field_name = strdup((char *)item->key);
-		}
-		sscanf((char *)item->value, "%d", &frame->int_val);
-		if (APE_FLAG_IS_LOCATOR(item->flags)) {
-			frame->flags |= META_FIELD_LOCATOR;
-		}
-		metadata_add_frame(meta, frame);
-	} else {
-		int i;
-		frame = metadata_add_textframe_from_keyval(meta, META_TAG_APE,
-							   (char *)item->key,
-							   (char *)item->value);
-		if (APE_FLAG_IS_LOCATOR(item->flags)) {
-			frame->flags |= META_FIELD_LOCATOR;
-		}
-		/* handle list of values */
-		for (i = 1; i < item->value_size; i++) {
-			if (item->value[i-1] == 0x00) {
-				frame = metadata_add_textframe_from_keyval(meta,
-				                META_TAG_APE,
-					        (char *)item->key,
-						(char *)item->value+i);
-				if (APE_FLAG_IS_LOCATOR(item->flags)) {
-					frame->flags |= META_FIELD_LOCATOR;
-				}
+	/* handle list of values */
+	for (i = 1; i < item->value_size; i++) {
+		if (item->value[i-1] == 0x00) {
+			frame = metadata_add_frame_from_keyval(meta, META_TAG_APE,
+							       (char *)item->key,
+							       (char *)item->value+i);
+			if (APE_FLAG_IS_LOCATOR(item->flags)) {
+				frame->flags |= META_FIELD_LOCATOR;
 			}
 		}
 	}
@@ -286,23 +246,26 @@ metadata_to_ape_tag(metadata_t * meta, ape_tag_t * tag) {
 		if (frame->flags && META_FIELD_LOCATOR != 0) {
 			item->flags = APE_FLAG_LOCATOR;
 		}
-		if (meta_get_ape_fieldname_embedded(type, &str)) {
+		if (meta_get_fieldname_embedded(META_TAG_APE, type, &str)) {
 			strncpy((char *)item->key, str, 255);
+		} else {
+			strncpy((char *)item->key, frame->field_name, 255);
 		}
 		while (frame != NULL) {
 			char fval[MAXLEN];
 			char * field_val;
 			int field_len;
+			char * renderfmt = meta_get_field_renderfmt(type);
 
 			if (META_FIELD_TEXT(type)) {
 				field_val = frame->field_val;
 				field_len = strlen(frame->field_val);
 			} else if (META_FIELD_INT(type)) {
-				snprintf(fval, MAXLEN-1, "%d", frame->int_val);
+				snprintf(fval, MAXLEN-1, renderfmt, frame->int_val);
 				field_val = fval;
 				field_len = strlen(field_val);
 			} else if (META_FIELD_FLOAT(frame->type)) {
-				snprintf(fval, MAXLEN-1, "%f", frame->float_val);
+				snprintf(fval, MAXLEN-1, renderfmt, frame->float_val);
 				field_val = fval;
 				field_len = strlen(field_val);
 			} else {

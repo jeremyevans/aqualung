@@ -21,6 +21,7 @@ loop_bar.h loop_bar.c \
 metadata.h metadata.c \
 metadata_api.h metadata_api.c \
 metadata_ape.h metadata_ape.c \
+metadata_flac.h metadata_flac.c \
 metadata_ogg.h metadata_ogg.c \
 music_browser.h music_browser.c \
 options.h options.c \

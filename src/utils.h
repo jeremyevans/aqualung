@@ -32,6 +32,7 @@
 
 float convf(char * s);
 int cut_trailing_whitespace(char * str);
+void escape_percents(char * in, char * out);
 
 void make_string_va(char * buf, char * format, ...);
 void make_title_string(char * dest, char * templ,

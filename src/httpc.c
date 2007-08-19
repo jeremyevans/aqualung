@@ -806,19 +806,19 @@ void
 httpc_add_headers_meta(http_session_t * session, metadata_t * meta) {
 
 	if (session->headers.icy_name != NULL) {
-		metadata_add_textframe_from_keyval(meta, META_TAG_GEN_STREAM,
-						   "Icy-Name",
-						   session->headers.icy_name);
+		metadata_add_frame_from_keyval(meta, META_TAG_GEN_STREAM,
+					       "Icy-Name",
+					       session->headers.icy_name);
 	}
 	if (session->headers.icy_genre != NULL) {
-		metadata_add_textframe_from_keyval(meta, META_TAG_GEN_STREAM,
-						   "Icy-Genre",
-						   session->headers.icy_genre);
+		metadata_add_frame_from_keyval(meta, META_TAG_GEN_STREAM,
+					       "Icy-Genre",
+					       session->headers.icy_genre);
 	}
 	if (session->headers.icy_description != NULL) {
-		metadata_add_textframe_from_keyval(meta, META_TAG_GEN_STREAM,
-						   "Icy-Description",
-						   session->headers.icy_description);
+		metadata_add_frame_from_keyval(meta, META_TAG_GEN_STREAM,
+					       "Icy-Description",
+					       session->headers.icy_description);
 	}
 }
 

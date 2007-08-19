@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../metadata_flac.h"
 #include "dec_flac.h"
 
 extern size_t sample_size;

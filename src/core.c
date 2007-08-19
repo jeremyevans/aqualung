@@ -2123,6 +2123,9 @@ main(int argc, char ** argv) {
 	int auto_driver_found = 0;
 #endif /* jack || alsa || oss */
 
+	if (setenv("LC_NUMERIC", "POSIX", 1) != 0) {
+		fprintf(stderr, "aqualung main(): setenv(\"LC_NUMERIC\", \"POSIX\") failed\n");
+	}
 
 #ifdef HAVE_JACK
 	/* unlock memory (implicitly locked by libjack when Jack runs realtime) */

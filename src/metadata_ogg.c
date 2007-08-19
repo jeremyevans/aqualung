@@ -18,6 +18,8 @@
     $Id$
 */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,6 +27,8 @@
 #include <ctype.h>
 #include <glib.h>
 
+#include "common.h"
+#include "i18n.h"
 #include "metadata_ogg.h"
 
 
@@ -738,7 +742,7 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 		*length = len;
 		return payload;
 	} else { /* vendor string */
-		frame = metadata_get_frame(meta, META_FIELD_VENDOR, NULL);
+		frame = metadata_get_frame_by_type(meta, META_FIELD_VENDOR, NULL);
 		unsigned int str_len;
 
 		if (frame == NULL) {
@@ -772,6 +776,7 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 		char * field_val;
 		char fval[MAXLEN];
 		char * str;
+		char * renderfmt = meta_get_field_renderfmt(frame->type);
 		int i;
 
 		if (frame->type == META_FIELD_VENDOR) {
@@ -779,7 +784,7 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 			continue;
 		}
 
-		if (!meta_get_vc_fieldname_embedded(frame->type, &str)) {
+		if (!meta_get_fieldname_embedded(META_TAG_OXC, frame->type, &str)) {
 			str = frame->field_name;
 		}
 
@@ -795,11 +800,11 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 			field_val = frame->field_val;
 			field_len = strlen(frame->field_val);
 		} else if (META_FIELD_INT(frame->type)) {
-			snprintf(fval, MAXLEN-1, "%d", frame->int_val);
+			snprintf(fval, MAXLEN-1, renderfmt, frame->int_val);
 			field_val = fval;
 			field_len = strlen(field_val);
 		} else if (META_FIELD_FLOAT(frame->type)) {
-			snprintf(fval, MAXLEN-1, "%f", frame->float_val);
+			snprintf(fval, MAXLEN-1, renderfmt, frame->float_val);
 			field_val = fval;
 			field_len = strlen(field_val);
 		} else {
@@ -835,3 +840,48 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 	*length = len;
 	return payload;
 }
+
+
+#ifdef HAVE_OGG_VORBIS
+metadata_t *
+metadata_from_vorbis_comment(vorbis_comment * vc) {
+
+	int i;
+	metadata_t * meta;
+
+	if (!vc) {
+		return NULL;
+	}
+
+	meta = metadata_new();
+	meta->valid_tags = META_TAG_OXC;
+	for (i = 0; i < vc->comments; i++) {
+		char key[MAXLEN];
+		char val[MAXLEN];
+		char c;
+		int k, n = 0;
+
+		for (k = 0; ((c = vc->user_comments[i][n]) != '\0') &&
+			     (c != '=') && (k < MAXLEN-1); k++) {
+			key[k] = (k == 0) ? toupper(c) : tolower(c);
+			++n;
+		}
+		key[k] = '\0';
+		++n;
+		
+		for (k = 0; ((c = vc->user_comments[i][n]) != '\0') &&
+			     (k < MAXLEN-1); k++) {
+			val[k] = c;
+			++n;
+		}
+		val[k] = '\0';
+
+		metadata_add_frame_from_keyval(meta, META_TAG_OXC, key, val);
+	}
+
+	/* Add Vendor string */
+	metadata_add_frame_from_keyval(meta, META_TAG_OXC, "vendor",
+				       (vc->vendor != NULL) ? vc->vendor : "");
+	return meta;
+}
+#endif /* HAVE_OGG_VORBIS */

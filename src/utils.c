@@ -92,6 +92,27 @@ cut_trailing_whitespace(char * str) {
 }
 
 
+/* To print a string containing printf formatters, but
+ * *not* followed by arguments -- I just want the plain
+ * string, please... 
+ */
+void
+escape_percents(char * in, char * out) {
+
+	int i;
+	int j = 0;
+	for (i = 0; in[i] != '\0'; i++) {
+		out[j] = in[i];
+		++j;
+		if (in[i] == '%') {
+			out[j] = '%';
+			++j;
+		}
+	}
+	out[j] = '\0';
+}
+
+
 void
 make_string_va(char * buf, char * format, ...) {
 

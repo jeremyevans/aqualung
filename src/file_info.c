@@ -242,6 +242,10 @@ info_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent, gpointer data)
 int
 fi_set_frame_from_source(fi_t * fi, meta_frame_t * frame) {
 
+	char * parsefmt = meta_get_field_parsefmt(frame->type);
+	char parsefmt_esc[MAXLEN];
+
+	escape_percents(parsefmt, parsefmt_esc);
 	if (META_FIELD_TEXT(frame->type)) {
 		if (frame->field_val != NULL) {
 			free(frame->field_val);
@@ -250,15 +254,15 @@ fi_set_frame_from_source(fi_t * fi, meta_frame_t * frame) {
 	} else if (META_FIELD_INT(frame->type)) {
 		int val = 0;
 		const char * str = gtk_entry_get_text(GTK_ENTRY(frame->source));
-		if (sscanf(str, "%d", &val) < 1) {
+		if (sscanf(str, parsefmt, &val) < 1) {
 			char msg[MAXLEN];
 			snprintf(msg, MAXLEN-1,
 				 _("Conversion error in field %s:\n"
-				   "'%s' is not an integer number!"),
-				 frame->field_name, str);
+				   "'%s' does not conform to format '%s'!"),
+				 frame->field_name, str, "%s");
 			message_dialog(_("Error"),
 				       fi->info_window, GTK_MESSAGE_ERROR,
-				       GTK_BUTTONS_OK, NULL, msg);
+				       GTK_BUTTONS_OK, NULL, msg, parsefmt_esc);
 			return -1;
 		} else {
 			frame->int_val = val;
@@ -266,15 +270,15 @@ fi_set_frame_from_source(fi_t * fi, meta_frame_t * frame) {
 	} else if (META_FIELD_FLOAT(frame->type)) {
 		float val = 0;
 		const char * str = gtk_entry_get_text(GTK_ENTRY(frame->source));
-		if (sscanf(str, "%f", &val) < 1) {
+		if (sscanf(str, parsefmt, &val) < 1) {
 			char msg[MAXLEN];
 			snprintf(msg, MAXLEN-1,
 				 _("Conversion error in field %s:\n"
-				   "'%s' is not a number!"),
-				 frame->field_name, str);
+				   "'%s' does not conform to format '%s'!"),
+				 frame->field_name, str, "%s");
 			message_dialog(_("Error"),
 				       fi->info_window, GTK_MESSAGE_ERROR,
-				       GTK_BUTTONS_OK, NULL, msg);
+				       GTK_BUTTONS_OK, NULL, msg, parsefmt_esc);
 			return -1;
 		} else {
 			frame->float_val = val;
@@ -446,21 +450,11 @@ fi_procframe_entry(fi_t * fi, meta_frame_t * frame) {
 
 	metadata_t * meta = fi->meta;
 	GtkWidget * entry = NULL;
-	if (META_FIELD_TEXT(frame->type)) {
+	if (META_FIELD_BIN(frame->type)) {
+		/* TODO create image/whatever widget, etc. */
+	} else {
 		entry = gtk_entry_new();
 		gtk_entry_set_text(GTK_ENTRY(entry), frame->field_val);
-	} else if (META_FIELD_INT(frame->type)) {
-		char str[MAXLEN];
-		entry = gtk_entry_new();
-		snprintf(str, MAXLEN-1, "%d", frame->int_val);
-		gtk_entry_set_text(GTK_ENTRY(entry), str);
-	} else if (META_FIELD_FLOAT(frame->type)) {
-		char str[MAXLEN];
-		entry = gtk_entry_new();
-		snprintf(str, MAXLEN-1, "%f", frame->float_val);
-		gtk_entry_set_text(GTK_ENTRY(entry), str);
-	} else {
-		/* TODO create image/whatever widget, etc. */
 	}
 
 	if ((META_FIELD_TEXT(frame->type)) ||
@@ -505,6 +499,8 @@ make_import_data_from_frame(fi_t * fi, meta_frame_t * frame, char * label) {
 		data->dest_type = IMPORT_DEST_NUMBER;
 		strcpy(label, _("Import as Track No."));
 		break;
+	case META_FIELD_RG_TRACK_GAIN:
+	case META_FIELD_RG_ALBUM_GAIN:
 	case META_FIELD_RVA2:
 		data->dest_type = IMPORT_DEST_RVA;
 		strcpy(label, _("Import as RVA"));
@@ -677,7 +673,7 @@ fi_add_button_pressed(GtkWidget * widget, gpointer data) {
 
 	/* Create new frame */
 	char * combo_entry = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
-	int type = meta_frame_type_from_name(fi_add->tag, combo_entry);
+	int type = meta_frame_type_from_name(combo_entry);
 	/* XXX test */printf("\ncombo_entry = %s, frametype = %d\n", combo_entry, type);
 	g_free(combo_entry);
 

@@ -27,11 +27,14 @@
 
 #include "common.h"
 #include "i18n.h"
+#include "options.h"
 #include "decoder/file_decoder.h"
 #include "utils.h"
 #include "metadata.h"
 #include "metadata_api.h"
 
+
+extern options_t options;
 
 int
 metadata_get_title(metadata_t * meta, char ** str) {
@@ -40,7 +43,7 @@ metadata_get_title(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame(meta, META_FIELD_TITLE, NULL);
+	frame = metadata_get_frame_by_type(meta, META_FIELD_TITLE, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -57,7 +60,7 @@ metadata_get_artist(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame(meta, META_FIELD_ARTIST, NULL);
+	frame = metadata_get_frame_by_type(meta, META_FIELD_ARTIST, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -74,7 +77,7 @@ metadata_get_album(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame(meta, META_FIELD_ALBUM, NULL);
+	frame = metadata_get_frame_by_type(meta, META_FIELD_ALBUM, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -91,7 +94,7 @@ metadata_get_date(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame(meta, META_FIELD_DATE, NULL);
+	frame = metadata_get_frame_by_type(meta, META_FIELD_DATE, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -108,7 +111,7 @@ metadata_get_genre(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame(meta, META_FIELD_GENRE, NULL);
+	frame = metadata_get_frame_by_type(meta, META_FIELD_GENRE, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -125,7 +128,7 @@ metadata_get_comment(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame(meta, META_FIELD_COMMENT, NULL);
+	frame = metadata_get_frame_by_type(meta, META_FIELD_COMMENT, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -142,7 +145,7 @@ metadata_get_icy_name(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame(meta, META_FIELD_ICY_NAME, NULL);
+	frame = metadata_get_frame_by_type(meta, META_FIELD_ICY_NAME, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -159,7 +162,7 @@ metadata_get_icy_descr(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame(meta, META_FIELD_ICY_DESCR, NULL);
+	frame = metadata_get_frame_by_type(meta, META_FIELD_ICY_DESCR, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -176,7 +179,7 @@ metadata_get_tracknum(metadata_t * meta, int * val) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame(meta, META_FIELD_TRACKNO, NULL);
+	frame = metadata_get_frame_by_type(meta, META_FIELD_TRACKNO, NULL);
 	if (frame != NULL) {
 		*val = frame->int_val;
 		return 1;
@@ -189,17 +192,31 @@ metadata_get_tracknum(metadata_t * meta, int * val) {
 int
 metadata_get_rva(metadata_t * meta, float * fval) {
 
+	int rva_type;
 	meta_frame_t * frame;
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame(meta, META_FIELD_RVA2, NULL);
+
+	switch (options.replaygain_tag_to_use) {
+	case 0: rva_type = META_FIELD_RG_TRACK_GAIN;
+		break;
+	case 1: rva_type = META_FIELD_RG_ALBUM_GAIN;
+		break;
+	}
+
+	frame = metadata_get_frame_by_type(meta, rva_type, NULL);
 	if (frame != NULL) {
 		*fval = frame->float_val;
 		return 1;
 	} else {
-		return 0;
+		frame = metadata_get_frame_by_type(meta, META_FIELD_RVA2, NULL);
+		if (frame != NULL) {
+			*fval = frame->float_val;
+			return 1;
+		}
 	}
+	return 0;
 }
 
 

@@ -24,6 +24,16 @@
 
 #include <config.h>
 
+#ifdef HAVE_OGG_VORBIS
+#ifdef _WIN32
+#undef _WIN32
+#include <vorbis/vorbisfile.h>
+#define _WIN32
+#else
+#include <vorbis/vorbisfile.h>
+#endif /* _WIN32 */
+#endif /* HAVE_OGG_VORBIS */
+
 #include <glib.h>
 
 #include "common.h"
@@ -62,5 +72,9 @@ GSList * meta_ogg_vc_encapsulate_payload(GSList * slist,
 					 int * n_pages_to_write);
 
 unsigned char * meta_ogg_vc_render(metadata_t * meta, unsigned int * length);
+
+#ifdef HAVE_OGG_VORBIS
+metadata_t * metadata_from_vorbis_comment(vorbis_comment * vc);
+#endif /* HAVE_OGG_VORBIS */
 
 #endif /* _METADATA_OGG_H */

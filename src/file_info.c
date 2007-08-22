@@ -104,6 +104,7 @@ typedef struct {
 	int addable_tags; /* META_TAG_*, bitwise or-ed */
 	gint n_pages; /* number of notebook pages */
 	pageidx_t pageidx[FI_MAXPAGES];
+	int dirty; /* whether the dialog has unsaved changes */
 
 	/* for MOD info */
 	GtkWidget * smp_instr_list;
@@ -136,6 +137,7 @@ void module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox);
 #endif /* HAVE_MOD_INFO */
 
 
+gint fi_save(GtkWidget * widget, gpointer data);
 void fi_procframe_ins(fi_t * fi, meta_frame_t * frame);
 void fi_procframe_add_tag_page(fi_t * fi, meta_frame_t * frame);
 
@@ -179,6 +181,28 @@ fi_delete(fi_t * fi) {
 }
 
 
+void
+fi_mark_changed(fi_t * fi) {
+
+	if (fi->dirty != 0)
+		return;
+
+	gtk_window_set_title(GTK_WINDOW(fi->info_window), _("*File info"));
+	fi->dirty = 1;
+}
+
+
+void
+fi_mark_unchanged(fi_t * fi) {
+
+	if (fi->dirty == 0)
+		return;
+
+	gtk_window_set_title(GTK_WINDOW(fi->info_window), _("File info"));
+	fi->dirty = 0;
+}
+
+
 import_data_t *
 import_data_new(void) {
 
@@ -192,13 +216,60 @@ import_data_new(void) {
 }
 
 
+int
+fi_close_dialog(fi_t * fi) {
+
+	int ret;
+	GtkWidget * dialog = gtk_message_dialog_new(GTK_WINDOW(fi->info_window),
+						    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+						    GTK_MESSAGE_WARNING,
+						    GTK_BUTTONS_NONE,
+						    _("There are unsaved changes to the file metadata."));
+
+	gtk_dialog_add_buttons(GTK_DIALOG(dialog),
+			       _("Save and close"), 1,
+			       _("Discard changes"), 2,
+			       _("Cancel"), 0,
+			       NULL);
+	gtk_dialog_set_default_response(GTK_DIALOG(dialog), 0);
+
+	ret = aqualung_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
+	return ret;
+}
+
+
+int
+fi_can_close(fi_t * fi) {
+
+	if (fi->dirty != 0) {
+		switch (fi_close_dialog(fi)) {
+		case 1: /* Save and close */
+			if (fi_save(NULL, fi) != TRUE) {
+				return FALSE;
+			}
+			break;
+		case 2: /* Discard changes */
+			break;
+		default: /* Cancel */
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
+
 gint
 dismiss(GtkWidget * widget, gpointer data) {
 
 	fi_t * fi = (fi_t *)data;
 
+	if (fi_can_close(fi) != TRUE) {
+		return TRUE;
+	}
+
 	unregister_toplevel_window(fi->info_window);
-        gtk_widget_destroy(fi->info_window);
+	gtk_widget_destroy(fi->info_window);
 	trashlist_free(fi->trash);
 
 	fi_delete(fi);
@@ -211,11 +282,16 @@ info_window_close(GtkWidget * widget, GdkEventAny * event, gpointer data) {
 
 	fi_t * fi = (fi_t *)data;
 
+	if (fi_can_close(fi) != TRUE) {
+		return TRUE;
+	}
+
 	unregister_toplevel_window(fi->info_window);
+	gtk_widget_destroy(fi->info_window);
 	trashlist_free(fi->trash);
 
 	fi_delete(fi);
-	return FALSE;
+	return TRUE;
 }
 
 
@@ -309,12 +385,14 @@ fi_save(GtkWidget * widget, gpointer data) {
 	if (status == 0) {
 		if (fi->fdec->meta_write != NULL) {
 			fi->fdec->meta_write(fi->fdec, fi->meta);
+			fi_mark_unchanged(fi);
+			return TRUE;
 		} else {
 			fprintf(stderr, "programmer error: fdec->meta_write == NULL\n");
 		}
 	}
 
-	return TRUE;
+	return FALSE;
 }
 
 
@@ -445,6 +523,15 @@ fi_procframe_label(char * field_name) {
 	return hbox;
 }
 
+
+void
+fi_entry_changed_cb(GtkEntry * entry, gpointer data) {
+
+	fi_t * fi = (fi_t *)data;
+	fi_mark_changed(fi);
+}
+
+
 GtkWidget *
 fi_procframe_entry(fi_t * fi, meta_frame_t * frame) {
 
@@ -463,6 +550,9 @@ fi_procframe_entry(fi_t * fi, meta_frame_t * frame) {
 		if (!meta->writable) {
 			GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
 			gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
+		} else {
+			g_signal_connect(G_OBJECT(entry), "changed",
+					 G_CALLBACK(fi_entry_changed_cb), (gpointer)fi);
 		}
 		gtk_widget_set_size_request(entry, 250, -1);
 	}
@@ -617,6 +707,7 @@ fi_del_button_pressed(GtkWidget * widget, gpointer data) {
 		gtk_widget_destroy(fi_del->importbtn);
 	}
 	gtk_widget_destroy(fi_del->delbtn);
+	fi_mark_changed(fi);
 
 	/* XXX testing only */
 	printf("\n\nDump after removal\n");
@@ -697,6 +788,7 @@ fi_add_button_pressed(GtkWidget * widget, gpointer data) {
 	}
 
 	fi_procframe_ins(fi, frame);
+	fi_mark_changed(fi);
 
 	/* XXX testing only */
 	printf("\n\nDump after addition\n");
@@ -747,6 +839,7 @@ fi_addtag_button_pressed(GtkWidget * widget, gpointer data) {
 		fi_procframe_ins(fi, frame);
 		frame = metadata_get_frame_by_tag(meta, tag, frame);
 	}
+	fi_mark_changed(fi);
 
 	/* XXX testing only */
 	printf("\n\nDump after tag addition\n");
@@ -891,6 +984,7 @@ fi_deltag_button_pressed(GtkWidget * widget, gpointer data) {
 
 	fi->addable_tags |= tag;
 	fi_fill_tagcombo(GTK_COMBO_BOX(fi->combo), fi->addable_tags);
+	fi_mark_changed(fi);
 
 	/* XXX testing only */
 	printf("\n\nDump after tag removal\n");

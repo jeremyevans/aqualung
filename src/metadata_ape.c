@@ -253,8 +253,8 @@ metadata_to_ape_tag(metadata_t * meta, ape_tag_t * tag) {
 		}
 		while (frame != NULL) {
 			char fval[MAXLEN];
-			char * field_val;
-			int field_len;
+			char * field_val = NULL;
+			int field_len = 0;
 			char * renderfmt = meta_get_field_renderfmt(type);
 
 			if (META_FIELD_TEXT(type)) {

@@ -841,6 +841,8 @@ httpc_demux(http_session_t * session) {
 
 	if (meta_len > 0 && session->fdec != NULL && session->fdec->meta_cb != NULL) {
 		metadata_t * meta = metadata_from_mpeg_stream_data(meta_buf);
+		meta->fdec = session->fdec;
+		session->fdec->meta = meta;
 		httpc_add_headers_meta(session, meta);
 		session->fdec->meta_cb(meta, session->fdec->meta_cbdata);
 	}

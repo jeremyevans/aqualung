@@ -51,17 +51,20 @@ struct {
 } const meta_model[] = {
 
 	{META_FIELD_TITLE, X_("Title"), "", "",
-	     META_TAG_APE | META_TAG_OXC,
+	     META_TAG_APE | META_TAG_OXC | META_TAG_MPEGSTREAM,
 	     {{META_TAG_APE, 0, "Title"},
-	      {META_TAG_OXC, 0, "title"}}},
+	      {META_TAG_OXC, 0, "title"},
+	      {META_TAG_MPEGSTREAM, 0, "Title"}}},
 	{META_FIELD_ARTIST, X_("Artist"), "", "",
-	     META_TAG_APE | META_TAG_OXC,
+	     META_TAG_APE | META_TAG_OXC | META_TAG_MPEGSTREAM,
 	     {{META_TAG_APE, 0, "Artist"},
-	      {META_TAG_OXC, 0, "artist"}}},
+	      {META_TAG_OXC, 0, "artist"},
+	      {META_TAG_MPEGSTREAM, 0, "Artist"}}},
 	{META_FIELD_ALBUM, X_("Album"), "", "",
-	     META_TAG_APE | META_TAG_OXC,
+	     META_TAG_APE | META_TAG_OXC | META_TAG_MPEGSTREAM,
 	     {{META_TAG_APE, 0, "Album"},
-	      {META_TAG_OXC, 0, "album"}}},
+	      {META_TAG_OXC, 0, "album"},
+	      {META_TAG_MPEGSTREAM, 0, "Album"}}},
 	{META_FIELD_DATE, X_("Date"), "", "",
 	     META_TAG_APE | META_TAG_OXC,
 	     {{META_TAG_APE, META_FIELD_UNIQUE, "Year"},
@@ -667,7 +670,7 @@ metadata_from_mpeg_stream_data(char * str) {
 		char c;
 		int k, n = 0;
 
-		for (k = 0; ((c = str[n]) != '\0') &&
+		for (k = 0; ((c = s[n]) != '\0') &&
 			     (c != '=') && (k < MAXLEN-1); k++) {
 			key[k] = c;
 			++n;
@@ -683,7 +686,7 @@ metadata_from_mpeg_stream_data(char * str) {
 			++n;
 		}
 
-		for (k = 0; ((c = str[n]) != '\0') &&
+		for (k = 0; ((c = s[n]) != '\0') &&
 			     (c != '\'') && (k < MAXLEN-1); k++) {
 			val[k] = c;
 			++n;

@@ -352,6 +352,18 @@ is_dir(char * path) {
 	return S_ISDIR(st_file.st_mode);
 }
 
+#ifndef HAVE_STRNDUP
+char *
+strndup(char * str, size_t len) {
+    char * dup = (char *)malloc(len + 1);
+    if (dup) {
+        strncpy(dup, str, len);
+        dup[len] =  '\0';
+    }
+    return dup;
+}
+#endif /* HAVE_STRNDUP */
+
 #ifndef HAVE_STRCASESTR
 char
 toupper(char c) {

@@ -201,7 +201,7 @@ metadata_get_rva(metadata_t * meta, float * fval) {
 	switch (options.replaygain_tag_to_use) {
 	case 0: rva_type = META_FIELD_RG_TRACK_GAIN;
 		break;
-	case 1: rva_type = META_FIELD_RG_ALBUM_GAIN;
+	default: rva_type = META_FIELD_RG_ALBUM_GAIN;
 		break;
 	}
 

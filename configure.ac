@@ -79,7 +79,7 @@ AC_TYPE_SIZE_T
 AC_PROG_GCC_TRADITIONAL
 AC_FUNC_MALLOC
 AC_FUNC_STAT
-AC_CHECK_FUNCS([floor memset mkdir strdup strrchr strstr strcasestr])
+AC_CHECK_FUNCS([floor memset mkdir strdup strrchr strstr strndup strcasestr])
 
 
 
@@ -647,6 +647,7 @@ else
 		AC_MSG_CHECKING(whether libcdio_paranoia version >= 0.76)
 		if `pkg-config --exists 'libcdio_paranoia >= 0.76'`; then
 			AC_MSG_RESULT(yes)
+		        cdda_CFLAGS=`pkg-config --cflags libcdio_paranoia`
 		        cdda_LIBS=`pkg-config --libs libcdio_paranoia`
 			AC_DEFINE([HAVE_CDDA], [1], [Defined if compile with CDDA support])
 			AC_MSG_RESULT(yes)
@@ -782,7 +783,7 @@ AQUALUNG_DATADIR="-DAQUALUNG_DATADIR=\\\"$datadir/aqualung\\\""
 
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS $AQUALUNG_SKINDIR $AQUALUNG_LOCALEDIR $AQUALUNG_DATADIR -D_GNU_SOURCE"
 CXXFLAGS="$CFLAGS"
-CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS"
+CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $cdda_CFLAGS"
 LIBS="decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS"
 
 

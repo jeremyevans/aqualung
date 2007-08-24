@@ -56,6 +56,10 @@ int cdda_is_cdtrack(char * file);
 
 int is_dir(char * path);
 
+#ifndef HAVE_STRNDUP
+char * strndup(char * str, size_t len);
+#endif /* HAVE_STRNDUP */
+
 #ifndef HAVE_STRCASESTR
 char * strcasestr(char * haystack, char * needle);
 #endif /* HAVE_STRCASESTR */

@@ -80,8 +80,8 @@ void
 meta_entry_from_frame(FLAC__StreamMetadata_VorbisComment_Entry * entry,
 		      meta_frame_t * frame) {
 
-	char * key;
-	char * val;
+	char * key = NULL;
+	char * val = NULL;
 	char * renderfmt = meta_get_field_renderfmt(frame->type);
 	char str[MAXLEN];
 

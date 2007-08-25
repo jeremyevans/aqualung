@@ -70,8 +70,8 @@ decoder_init_t * decoder_init_v[N_DECODERS] = {
 	mac_decoder_init,
 	mpeg_decoder_init,
 	wavpack_decoder_init,
-	lavc_decoder_init,
-	mod_decoder_init
+	mod_decoder_init,
+	lavc_decoder_init
 };
 
 

@@ -51,7 +51,14 @@ extern size_t sample_size;
 char * valid_extensions_mod[] = {
 	"669", "amf", "ams", "dbm", "dmf", "dsm", "far", "it",
 	"j2b", "mdl", "med", "mod", "mt2", "mtm", "okt", "psm",
-	"ptm", "s3m", "stm", "ult", "umx", "xm", NULL
+	"ptm", "s3m", "stm", "ult", "umx", "xm", 
+#ifdef HAVE_LIBZ
+        "gz",
+#endif /* HAVE_LIBZ */
+#ifdef HAVE_LIBBZ2
+        "bz2",
+#endif /* HAVE_LIBBZ2 */
+        NULL
 };
 
 #if defined(HAVE_LIBZ) || defined(HAVE_LIBBZ2)

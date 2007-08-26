@@ -226,6 +226,7 @@ fi_close_dialog(fi_t * fi) {
 						    GTK_BUTTONS_NONE,
 						    _("There are unsaved changes to the file metadata."));
 
+	gtk_window_set_title(GTK_WINDOW(dialog), _("Warning"));
 	gtk_dialog_add_buttons(GTK_DIALOG(dialog),
 			       _("Save and close"), 1,
 			       _("Discard changes"), 2,

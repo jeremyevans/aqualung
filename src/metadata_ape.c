@@ -201,24 +201,16 @@ meta_add_frame_from_ape_item(metadata_t * meta, ape_item_t * item) {
 }
 
 
-metadata_t *
-metadata_from_ape_tag(ape_tag_t * tag) {
+void
+metadata_from_ape_tag(metadata_t * meta, ape_tag_t * tag) {
 
-	metadata_t * meta = metadata_new();
 	GSList * list = tag->items;
-
-	if (meta == NULL) {
-		fprintf(stderr, "metadata_from_ape_tag: metadata_new() failed\n");
-		return NULL;
-	}
 
 	while (list != NULL) {
 		ape_item_t * item = (ape_item_t *)list->data;
 		meta_add_frame_from_ape_item(meta, item);
 		list = g_slist_next(list);
 	}
-
-	return meta;
 }
 
 
@@ -449,30 +441,20 @@ meta_ape_send_metadata(file_decoder_t * fdec) {
 
 	ape_tag_t tag;
 	metadata_t * meta;
-	int found_tag = 0;
 
 	memset(&tag, 0x00, sizeof(ape_tag_t));
 
+	meta = metadata_new();
+	if (meta == NULL) {
+		return;
+	}
 	if (meta_ape_parse(fdec->filename, &tag)) {
-		meta = metadata_from_ape_tag(&tag);
-		if (meta == NULL) {
-			meta_ape_free(&tag);
-			return;
-		}
-		found_tag = 1;
-	} else {
-		meta = metadata_new();
-		if (meta == NULL) {
-			return;
-		}
+		metadata_from_ape_tag(meta, &tag);
+		meta_ape_free(&tag);
 	}
 
 	meta->valid_tags = META_TAG_APE;
 
-	if (found_tag) {
-		meta_ape_free(&tag);
-	}
-	
 	if (access(fdec->filename, R_OK | W_OK) == 0) {
 		meta->writable = 1;
 		fdec->meta_write = meta_ape_write_metadata;

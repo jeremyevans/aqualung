@@ -40,6 +40,9 @@
 #ifdef HAVE_MOD
 #include "dec_mod.h"
 #endif /* HAVE_MOD */
+#include "../metadata.h"
+#include "../metadata_ape.h"
+#include "../metadata_id3v1.h"
 #include "dec_mpeg.h"
 
 
@@ -291,39 +294,88 @@ vlfc_cmp(mp3info_t *info1, mp3info_t *info2) {
 
 
 void
-skip_id3v2_header(int fd) {
+mpeg_write_metadata(file_decoder_t * fdec, metadata_t * meta) {
+
+	/* TODO */
+}
+
+
+void
+mpeg_send_metadata(file_decoder_t * fdec, int fd) {
+
+	metadata_t * meta;
+
+	char id3v1[128];
 
 	char buffer[12];
-	long id3_length = 0;
+	long id3v2_length = 0;
 
-	if (read(fd, buffer, 10) != 10) {
-		lseek(fd, 0, SEEK_SET);
+	ape_tag_t tag;
+
+	meta = metadata_new();
+	if (meta == NULL) {
 		return;
 	}
 
-	if ((buffer[0] != 'I') ||
-	    (buffer[1] != 'D') ||
-	    (buffer[2] != '3')) {
-		lseek(fd, 0, SEEK_SET);
-		return;
+	/* read ID3v1 */
+	lseek(fd, -128, SEEK_END);
+	if (read(fd, id3v1, 128) == 128) {
+		metadata_from_id3v1(meta, id3v1);
 	}
 
-	id3_length = (((long)(buffer[6] & 0x7F) << (3*7)) |
-		      ((long)(buffer[7] & 0x7F) << (2*7)) |
-		      ((long)(buffer[8] & 0x7F) << (1*7)) |
-		      ((long)(buffer[9] & 0x7F) << (0*7)));
-
-	id3_length += 10; /* add 10 byte header */
-
+	/* read ID3v2 */
+	lseek(fd, 0L, SEEK_SET);
+	if (read(fd, buffer, 10) == 10) {
+		if ((buffer[0] != 'I') || (buffer[1] != 'D') || (buffer[2] != '3')) {
+			lseek(fd, 0L, SEEK_SET);
+		} else {		
+			id3v2_length = (((long)(buffer[6] & 0x7F) << (3*7)) |
+					((long)(buffer[7] & 0x7F) << (2*7)) |
+					((long)(buffer[8] & 0x7F) << (1*7)) |
+					((long)(buffer[9] & 0x7F) << (0*7)));
+			
+			id3v2_length += 10; /* add 10 byte header */
+			
 #ifdef MPEG_DEBUG
-	printf("id3_length = %ld\n", id3_length);
+			printf("id3v2_length = %ld\n", id3v2_length);
 #endif /* MPEG_DEBUG */
-	lseek(fd, id3_length, SEEK_SET);
+			/* TODO read and parse the ID3v2 tag */			
+			lseek(fd, id3v2_length, SEEK_SET);
+		}
+	}
+
+	/* read APE */
+	memset(&tag, 0x00, sizeof(ape_tag_t));
+	if (meta_ape_parse(fdec->filename, &tag)) {
+		metadata_from_ape_tag(meta, &tag);
+		meta_ape_free(&tag);
+	}
+
+	/* setup and send metablock */
+	meta->valid_tags = META_TAG_APE | META_TAG_ID3v1 | META_TAG_ID3v2;
+
+	if (access(fdec->filename, R_OK | W_OK) == 0) {
+		meta->writable = 1;
+		fdec->meta_write = mpeg_write_metadata;
+	} else {
+		meta->writable = 0;
+	}
+
+	meta->fdec = fdec;
+	fdec->meta = meta;
+	if (fdec->meta_cb != NULL) {
+		fdec->meta_cb(meta, fdec->meta_cbdata);	
+	}
 }
 
 
 int
-get_mp3file_info(int fd, mp3info_t *info) {
+get_mp3file_info(decoder_t * dec) {
+
+	file_decoder_t * fdec = dec->fdec;
+	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
+	int fd = pd->fd;
+	mp3info_t * info = &pd->mp3info;
 
 	unsigned long headers[MAX_STAT_HEADERS];
 	mp3info_t infos[MAX_STAT_HEADERS];
@@ -361,7 +413,7 @@ get_mp3file_info(int fd, mp3info_t *info) {
 	}
 
 	/* skip ID3v2 header, if present */
-	skip_id3v2_header(fd);
+	mpeg_send_metadata(fdec, fd);
 
 #ifndef MPEG_STATREC
 	/* use first valid mpeg frame header to retrieve stream info */
@@ -1339,7 +1391,7 @@ mpeg_decoder_open(decoder_t * dec, char * filename) {
 	pd->SR = pd->channels = pd->bitrate = pd->mpeg_subformat = 0;
 	pd->error = 0;
 
-	pd->skip_bytes = get_mp3file_info(pd->fd, &pd->mp3info);
+	pd->skip_bytes = get_mp3file_info(dec);
 	close(pd->fd);
 
 #ifdef MPEG_DEBUG

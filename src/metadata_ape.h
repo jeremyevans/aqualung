@@ -65,7 +65,7 @@ typedef struct {
 int meta_ape_parse(char * filename, ape_tag_t * tag);
 void meta_ape_free(ape_tag_t * tag);
 
-metadata_t * metadata_from_ape_tag(ape_tag_t * tag);
+void metadata_from_ape_tag(metadata_t * meta, ape_tag_t * tag);
 void metadata_to_ape_tag(metadata_t * meta, ape_tag_t * tag);
 void meta_ape_render(ape_tag_t * tag, unsigned char * data);
 

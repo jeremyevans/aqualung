@@ -106,7 +106,6 @@ typedef struct {
 
 unsigned long find_next_frame(int fd, long *offset, long max_offset,
                               unsigned long last_header, int is_ubr_allowed);
-int get_mp3file_info(int fd, mp3info_t *info);
 
 typedef struct {
 	int frame; /* number of mpeg frame */

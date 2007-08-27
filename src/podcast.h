@@ -47,6 +47,12 @@ enum {
 	PODCAST_DATE_LIMIT  = (1 << 3)
 };
 
+enum {
+	PODCAST_STATE_IDLE = 0,
+	PODCAST_STATE_UPDATE,
+	PODCAST_STATE_ABORTED
+};
+
 typedef struct {
 
 	char * dir;
@@ -55,7 +61,6 @@ typedef struct {
 	char * desc;
 	char * url;
 
-	int flags;
 	unsigned check_interval; /* sec */
 	unsigned last_checked;   /* sec */
 
@@ -64,7 +69,8 @@ typedef struct {
 	unsigned size_limit;     /* MB */
 	unsigned date_limit;     /* sec */
 
-	int updating;
+	int flags;
+	int state;
 	GSList * items;
 
 } podcast_t;

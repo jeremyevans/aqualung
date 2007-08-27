@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
@@ -65,6 +66,7 @@ GtkWidget * podcast_feed__separator1;
 GtkWidget * podcast_feed__subscribe;
 GtkWidget * podcast_feed__edit;
 GtkWidget * podcast_feed__update;
+GtkWidget * podcast_feed__abort;
 GtkWidget * podcast_feed__remove;
 
 GtkWidget * podcast_store_menu;
@@ -582,7 +584,7 @@ podcast_feed__edit_cb(gpointer data) {
 		podcast_t * podcast;
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &podcast, -1);
 
-		if (podcast->updating) {
+		if (podcast->state != PODCAST_STATE_IDLE) {
 			return;
 		}
 
@@ -602,7 +604,7 @@ podcast_feed__update_cb(gpointer data) {
 		podcast_t * podcast;
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &podcast, -1);
 
-		if (podcast->updating) {
+		if (podcast->state != PODCAST_STATE_IDLE) {
 			return;
 		}
 
@@ -613,21 +615,72 @@ podcast_feed__update_cb(gpointer data) {
 }
 
 void
-podcast_feed__remove_cb(gpointer data) {
+podcast_feed__abort_cb(gpointer data) {
 
 	GtkTreeIter iter;
 
 	if (gtk_tree_selection_get_selected(music_select, NULL, &iter)) {
 		podcast_t * podcast;
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &podcast, -1);
+		if (podcast->state == PODCAST_STATE_UPDATE) {
+			podcast->state = PODCAST_STATE_ABORTED;
+		}
+	}
+}
 
-		if (podcast->updating) {
+void
+podcast_feed__remove_check_cb(GtkWidget * widget, gpointer data) {
+
+	set_option_from_toggle(widget, (int *)data);
+}
+
+void
+podcast_feed__remove_cb(gpointer data) {
+
+	GtkTreeIter iter;
+
+	if (gtk_tree_selection_get_selected(music_select, NULL, &iter)) {
+
+		GtkWidget * check;
+		int unlink_files = 1;
+		podcast_t * podcast;
+		char * title;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &podcast, -1);
+
+		if (podcast->state != PODCAST_STATE_IDLE) {
 			return;
 		}
 
-		store_podcast_remove_podcast_item(&iter);
-		store_podcast_save();
-		music_store_selection_changed();
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_NAME, &title, -1);
+
+		check = gtk_check_button_new_with_label(_("Delete downloaded items from the filesystem"));
+		gtk_widget_set_name(check, "check_on_window");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), unlink_files);
+		g_signal_connect(G_OBJECT(check), "toggled",
+				 G_CALLBACK(podcast_feed__remove_check_cb), &unlink_files);
+
+		if (message_dialog(_("Remove feed"),
+				   browser_window,
+				   GTK_MESSAGE_QUESTION,
+				   GTK_BUTTONS_YES_NO,
+				   check,
+				   _("Really remove '%s' from the Music Store?"),
+				   title) == GTK_RESPONSE_YES) {
+
+			if (unlink_files) {
+				GSList * node;
+				for (node = podcast->items; node; node = node->next) {
+					unlink(((podcast_item_t *)node->data)->file);
+				}
+			}
+
+			store_podcast_remove_podcast(&iter);
+			store_podcast_save();
+			music_store_selection_changed();
+		}
+
+		g_free(title);
 	}
 }
 
@@ -653,7 +706,7 @@ podcast_store__update_cb(gpointer data) {
 
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &podcast, -1);
 
-		if (podcast->updating) {
+		if (podcast->state != PODCAST_STATE_IDLE) {
 			continue;
 		}
 
@@ -732,7 +785,7 @@ store_podcast_update_podcast_cb(gpointer data) {
 	store_podcast_save();
 	music_store_selection_changed();
 
-	podcast->updating = 0;
+	podcast->state = PODCAST_STATE_IDLE;
 
 	return FALSE;
 }
@@ -972,16 +1025,22 @@ set_popup_sensitivity(GtkTreePath * path) {
 	if (gtk_tree_path_get_depth(path) == 2) {
 
 		GtkTreeIter iter;
-		gboolean val;
 		podcast_t * podcast;
 
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &podcast, -1);
-		val = podcast->updating ? FALSE : TRUE;
 
-		gtk_widget_set_sensitive(podcast_feed__edit, val);
-		gtk_widget_set_sensitive(podcast_feed__update, val);
-		gtk_widget_set_sensitive(podcast_feed__remove, val);
+		gtk_widget_set_sensitive(podcast_feed__edit, podcast->state == PODCAST_STATE_IDLE);
+		gtk_widget_set_sensitive(podcast_feed__remove, podcast->state == PODCAST_STATE_IDLE);
+		gtk_widget_set_sensitive(podcast_feed__abort, podcast->state != PODCAST_STATE_ABORTED);
+
+		if (podcast->state != PODCAST_STATE_IDLE) {
+			gtk_widget_hide(podcast_feed__update);
+			gtk_widget_show(podcast_feed__abort);
+		} else {
+			gtk_widget_show(podcast_feed__update);
+			gtk_widget_hide(podcast_feed__abort);
+		}
 	}
 }
 
@@ -1150,6 +1209,7 @@ store_podcast_create_popup_menu(void) {
 	podcast_feed__subscribe = gtk_menu_item_new_with_label(_("Subscribe to new feed"));
 	podcast_feed__edit = gtk_menu_item_new_with_label(_("Edit feed"));
 	podcast_feed__update = gtk_menu_item_new_with_label(_("Update feed"));
+	podcast_feed__abort = gtk_menu_item_new_with_label(_("Abort ongoing update"));
 	podcast_feed__remove = gtk_menu_item_new_with_label(_("Remove feed"));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__addlist);
@@ -1158,6 +1218,7 @@ store_podcast_create_popup_menu(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__subscribe);
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__edit);
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__update);
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__abort);
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__remove);
 
  	g_signal_connect_swapped(G_OBJECT(podcast_feed__addlist), "activate", G_CALLBACK(podcast_feed__addlist_cb), NULL);
@@ -1165,6 +1226,7 @@ store_podcast_create_popup_menu(void) {
  	g_signal_connect_swapped(G_OBJECT(podcast_feed__subscribe), "activate", G_CALLBACK(podcast_feed__subscribe_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_feed__edit), "activate", G_CALLBACK(podcast_feed__edit_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_feed__update), "activate", G_CALLBACK(podcast_feed__update_cb), NULL);
+ 	g_signal_connect_swapped(G_OBJECT(podcast_feed__abort), "activate", G_CALLBACK(podcast_feed__abort_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_feed__remove), "activate", G_CALLBACK(podcast_feed__remove_cb), NULL);
 
 	gtk_widget_show(podcast_feed__addlist);

@@ -38,6 +38,7 @@
 #endif /* _WIN32*/
 
 #include "common.h"
+#include "utils.h"
 #include "decoder/file_decoder.h"
 #include "options.h"
 #include "httpc.h"
@@ -59,6 +60,7 @@ podcast_new(void) {
 		return NULL;
 	}
 
+	podcast->state = PODCAST_STATE_IDLE;
 	podcast->items = NULL;
 
 	return podcast;
@@ -237,7 +239,7 @@ parse_rfc822(char * str) {
 }
 
 int
-podcast_generic_download(char * url, char * path) {
+podcast_generic_download(podcast_t * podcast, char * url, char * path) {
 
 	http_session_t * session;
 	char buf[BUFSIZE];
@@ -251,6 +253,8 @@ podcast_generic_download(char * url, char * path) {
 	}
 
 	if ((session = httpc_new()) == NULL) {
+		fclose(out);
+		unlink(path);
 		return -1;
 	}
 
@@ -262,10 +266,17 @@ podcast_generic_download(char * url, char * path) {
 
 		fprintf(stderr, "podcast_generic_download: httpc_init failed, ret = %d\n", ret);
 		httpc_del(session);
+		fclose(out);
+		unlink(path);
 		return -1;
 	}
 
 	while ((n_read = httpc_read(session, buf, BUFSIZE)) > 0) {
+
+		if (podcast->state == PODCAST_STATE_ABORTED) {
+			break;
+		}
+
 		fwrite(buf, sizeof(char), n_read, out);
 		printf(".");
 		fflush(stdout);
@@ -276,7 +287,10 @@ podcast_generic_download(char * url, char * path) {
 
 	fclose(out);
 
-	printf(" done.\n");
+	if (n_read < 0 || podcast->state == PODCAST_STATE_ABORTED) {
+		unlink(path);
+		return -1;
+	}
 
 	return 0;
 }
@@ -349,11 +363,11 @@ parse_rss(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr rss) {
 	for (node = channel->xmlChildrenNode; node != NULL; node = node->next) {
 
 		if (!xmlStrcmp(node->name, (const xmlChar *)"title")) {
-                        podcast->title = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
+                        free_strdup(&podcast->title, (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"author")) {
-                        podcast->author = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
+                        free_strdup(&podcast->author, (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"description")) {
-                        podcast->desc = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
+                        free_strdup(&podcast->desc, (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
 		}
 	}
 
@@ -376,7 +390,7 @@ podcast_parse(podcast_t * podcast, GSList ** list) {
 	snprintf(filename, MAXLEN-1, "%s/.%s", podcast->dir, file);
 	free(file);
 
-	if (podcast_generic_download(podcast->url, filename) < 0) {
+	if (podcast_generic_download(podcast, podcast->url, filename) < 0) {
 		return;
 	}
 
@@ -428,6 +442,7 @@ podcast_item_download(podcast_t * podcast, podcast_item_t * item) {
 	char * file;
 	char path[MAXLEN];
 	float duration;
+	int try = 3;
 	
 
 	printf("podcast_item_download\n");
@@ -439,8 +454,18 @@ podcast_item_download(podcast_t * podcast, podcast_item_t * item) {
 
 	printf("downloading '%s' => '%s'\n", item->url, item->file);
 
-	if (podcast_generic_download(item->url, item->file) < 0) {
+	while (try-- > 0 && podcast->state != PODCAST_STATE_ABORTED) {
+		printf("try %d\n", try+1);
+		if (podcast_generic_download(podcast, item->url, item->file) < 0) {
+			printf("\naborted or download error\n");
+		} else {
+			break;
+		}
+	}
+
+	if (try < 0 || podcast->state == PODCAST_STATE_ABORTED) {
 		podcast_item_free(item);
+		printf("aborted or premanent error, could not download\n");
 		return;
 	}
 
@@ -493,6 +518,11 @@ podcast_update_thread(void * arg) {
 	for (node = list; node; node = node->next) {
 		podcast_item_t * item = (podcast_item_t *)node->data;
 
+		if (podcast->state == PODCAST_STATE_ABORTED) {
+			podcast_item_free(item);
+			continue;
+		}
+
 		if (item->file == NULL) {
 			podcast_item_download(podcast, item);
 		}
@@ -508,11 +538,11 @@ podcast_update_thread(void * arg) {
 void
 podcast_update(podcast_t * podcast) {
 
-	if (podcast->updating == 0) {
+	if (podcast->state == PODCAST_STATE_IDLE) {
 
 		AQUALUNG_THREAD_DECLARE(thread_id);
 
-		podcast->updating = 1;
+		podcast->state = PODCAST_STATE_UPDATE;
 		AQUALUNG_THREAD_CREATE(thread_id, NULL, podcast_update_thread, podcast);
 	}
 }

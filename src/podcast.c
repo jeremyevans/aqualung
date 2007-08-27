@@ -186,12 +186,12 @@ parse_rfc822(char * str) {
 			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0 };
 	int i;
 
-	int y; /* year */
-	int m; /* month */
-	int d; /* day */
-	int H; /* hour */
-	int M; /* min */
-	int S; /* sec */
+	int y = 0;  /* year */
+	int m = 0;  /* month */
+	int d = 0;  /* day */
+	int H = 0;  /* hour */
+	int M = 0;  /* min */
+	int S = 0;  /* sec */
 	char a[16]; /* weekday (unused) */
 	char b[16]; /* month name */
 	char z[16]; /* timezone */
@@ -479,9 +479,9 @@ podcast_update_thread(void * arg) {
 	}
 
 	while ((list != NULL) &&
-	       ((podcast->date_limit > 0 && tval.tv_sec - ((podcast_item_t *)list->data)->date > podcast->date_limit) ||
-		(podcast->size_limit > 0 && size > podcast->size_limit) ||
-		(podcast->count_limit > 0 && count > podcast->count_limit))) {
+	       ((podcast->flags & PODCAST_DATE_LIMIT && tval.tv_sec - ((podcast_item_t *)list->data)->date > podcast->date_limit) ||
+		(podcast->flags & PODCAST_SIZE_LIMIT && size > podcast->size_limit) ||
+		(podcast->flags & PODCAST_COUNT_LIMIT && count > podcast->count_limit))) {
 
 		size -= ((podcast_item_t *)list->data)->size;
 		--count;

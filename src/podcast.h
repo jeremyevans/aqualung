@@ -40,6 +40,13 @@ typedef struct {
 
 } podcast_item_t;
 
+enum {
+	PODCAST_AUTO_CHECK  = (1 << 0),
+	PODCAST_COUNT_LIMIT = (1 << 1),
+	PODCAST_SIZE_LIMIT  = (1 << 2),
+	PODCAST_DATE_LIMIT  = (1 << 3)
+};
+
 typedef struct {
 
 	char * dir;
@@ -48,6 +55,7 @@ typedef struct {
 	char * desc;
 	char * url;
 
+	int flags;
 	unsigned check_interval; /* sec */
 	unsigned last_checked;   /* sec */
 

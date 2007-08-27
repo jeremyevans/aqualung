@@ -1616,7 +1616,7 @@ create_options_window(void) {
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_buttons_at_the_bottom, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_buttons_at_the_bottom), "toggled",
-						G_CALLBACK (restart_active), _("Put control buttons at the bottom of playlist"));
+			  G_CALLBACK (restart_active), _("Put control buttons at the bottom of playlist"));
 
         check_disable_buttons_relief =
 		gtk_check_button_new_with_label(_("Disable control buttons relief"));

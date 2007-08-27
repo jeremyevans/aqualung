@@ -191,6 +191,37 @@ podcast_browse_button_clicked(GtkButton * button, gpointer data) {
 				(GtkWidget *)data);
 }
 
+void
+check_button_toggle_sensitivity(GtkToggleButton * togglebutton, gpointer data) {
+
+	if (gtk_toggle_button_get_active(togglebutton)) {
+		gtk_widget_set_sensitive((GtkWidget *)data, TRUE);
+	} else {
+		gtk_widget_set_sensitive((GtkWidget *)data, FALSE);
+	}
+}
+
+void
+insert_check_label_spin(GtkWidget * table, GtkWidget ** check, char * ltext, GtkWidget ** spin,
+			double spinval, double min, double max, int y1, int y2, int active) {
+
+	*check = gtk_check_button_new_with_label(ltext);
+	gtk_widget_set_name(*check, "check_on_window");
+	gtk_table_attach(GTK_TABLE(table), *check, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
+
+	*spin = gtk_spin_button_new_with_range(min, max, 1);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(*spin), spinval);
+        gtk_table_attach(GTK_TABLE(table), *spin, 1, 2, y1, y2,
+                         GTK_EXPAND | GTK_FILL, GTK_FILL, 2, 5);
+
+	g_signal_connect(G_OBJECT(*check), "toggled",
+			 G_CALLBACK(check_button_toggle_sensitivity), *spin);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(*check), active);
+	gtk_widget_set_sensitive(*spin, active);
+}
+
+
 /* create == 1 : add new podcast; else edit existing podcast */
 int
 podcast_dialog(podcast_t ** podcast, int create) {
@@ -200,14 +231,18 @@ podcast_dialog(podcast_t ** podcast, int create) {
 
 	GtkWidget * url_entry;
 	GtkWidget * dir_entry;
+	GtkWidget * check_check;
 	GtkWidget * check_spin;
 
 	GtkWidget * frame;
+	GtkWidget * count_check;
+	GtkWidget * date_check;
+	GtkWidget * size_check;
 	GtkWidget * count_spin;
 	GtkWidget * date_spin;
 	GtkWidget * size_spin;
 
-        dialog = gtk_dialog_new_with_buttons(_("Subscribe new to feed"),
+        dialog = gtk_dialog_new_with_buttons(create ? _("Subscribe to new feed") : _("Edit feed settings"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
@@ -230,9 +265,10 @@ podcast_dialog(podcast_t ** podcast, int create) {
 		insert_label_entry(table, _("Download directory:"), &dir_entry, (*podcast)->dir, 1, 2, FALSE);
 	}
 
-	insert_label_spin_with_limits(table, _("Check interval [hour]:"), &check_spin,
-				      create ? 1.0 : (*podcast)->check_interval / 3600.0,
-				      0.25, 168.0, 2, 3);
+
+	insert_check_label_spin(table, &check_check, _("Check interval [hour]:"), &check_spin,
+				create ? 1.0 : (*podcast)->check_interval / 3600.0, 0.25, 168.0,
+				3, 4, create || (*podcast)->flags & PODCAST_AUTO_CHECK);
 	gtk_spin_button_set_digits(GTK_SPIN_BUTTON(check_spin), 2);
 	gtk_spin_button_set_increments(GTK_SPIN_BUTTON(check_spin), 0.25, 1.0);
 
@@ -241,15 +277,17 @@ podcast_dialog(podcast_t ** podcast, int create) {
 	table = gtk_table_new(3, 2, FALSE);
         gtk_container_add(GTK_CONTAINER(frame), table);
 
-	insert_label_spin_with_limits(table, _("Maximum number of items:"), &count_spin,
-				      create ? 10 : (*podcast)->count_limit,
-				      0, 100, 0, 1);
-	insert_label_spin_with_limits(table, _("Remove older items [day]:"), &date_spin,
-				      create ? 14 : (*podcast)->date_limit / 86400,
-				      0, 100, 1, 2);
-	insert_label_spin_with_limits(table, _("Maximum space to use [MB]:"), &size_spin,
-				      create ? 100 : (*podcast)->size_limit / (1024 * 1024),
-				      0, 1024, 2, 3);
+	insert_check_label_spin(table, &count_check, _("Maximum number of items:"), &count_spin,
+				create ? 10 : (*podcast)->count_limit, 0, 100,
+				0, 1, create || (*podcast)->flags & PODCAST_COUNT_LIMIT);
+
+	insert_check_label_spin(table, &date_check, _("Remove older items [day]:"), &date_spin,
+				create ? 14 : (*podcast)->date_limit / 86400, 0, 100,
+				1, 2, create ? FALSE : (*podcast)->flags & PODCAST_DATE_LIMIT);
+
+	insert_check_label_spin(table, &size_check, _("Maximum space to use [MB]:"), &size_spin,
+				create ? 100 : (*podcast)->size_limit / (1024 * 1024), 0, 1024,
+				2, 3, create || (*podcast)->flags & PODCAST_SIZE_LIMIT);
 
 	gtk_widget_grab_focus(url_entry);
 	gtk_widget_show_all(dialog);
@@ -289,6 +327,20 @@ podcast_dialog(podcast_t ** podcast, int create) {
 		(*podcast)->count_limit = gtk_spin_button_get_value(GTK_SPIN_BUTTON(count_spin));
 		(*podcast)->date_limit = gtk_spin_button_get_value(GTK_SPIN_BUTTON(date_spin)) * 86400;
 		(*podcast)->size_limit = gtk_spin_button_get_value(GTK_SPIN_BUTTON(size_spin)) * 1024 * 1024;
+
+		(*podcast)->flags = 0;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_check))) {
+			(*podcast)->flags |= PODCAST_AUTO_CHECK;
+		}
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(count_check))) {
+			(*podcast)->flags |= PODCAST_COUNT_LIMIT;
+		}
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(date_check))) {
+			(*podcast)->flags |= PODCAST_DATE_LIMIT;
+		}
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(size_check))) {
+			(*podcast)->flags |= PODCAST_SIZE_LIMIT;
+		}
 
 		gtk_widget_destroy(dialog);
 		return 1;
@@ -516,6 +568,7 @@ podcast_feed__subscribe_cb(gpointer data) {
 			gtk_tree_store_set(music_store, &pod_iter, MS_COL_ICON, icon_feed, -1);
 		}
 
+		music_store_selection_changed();
 		podcast_update(podcast);
 	}
 }
@@ -535,6 +588,7 @@ podcast_feed__edit_cb(gpointer data) {
 
 		if (podcast_dialog(&podcast, 0/*edit*/)) {
 			store_podcast_save();
+			music_store_selection_changed();
 		}
 	}
 }
@@ -553,6 +607,7 @@ podcast_feed__update_cb(gpointer data) {
 		}
 
 		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating..."), -1);
+		music_store_selection_changed();
 		podcast_update(podcast);
 	}
 }
@@ -572,9 +627,11 @@ podcast_feed__remove_cb(gpointer data) {
 
 		store_podcast_remove_podcast_item(&iter);
 		store_podcast_save();
+		music_store_selection_changed();
 	}
 }
 
+/* data != NULL indicates automatic update */
 void
 podcast_store__update_cb(gpointer data) {
 
@@ -597,16 +654,25 @@ podcast_store__update_cb(gpointer data) {
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &podcast, -1);
 
 		if (podcast->updating) {
-			return;
+			continue;
 		}
 
-		printf("diff = %lu\n", tval.tv_sec - podcast->last_checked);
+		if (data != NULL) {
+			printf("diff = %lu\n", tval.tv_sec - podcast->last_checked);
 
-		if (data != NULL && tval.tv_sec - podcast->last_checked < podcast->check_interval) {
-			return;
+			if (!(podcast->flags & PODCAST_AUTO_CHECK)) {
+				printf("auto check not enabled, skipping\n");
+				continue;
+			}
+
+			if (tval.tv_sec - podcast->last_checked < podcast->check_interval) {
+				printf("too young to be updated, skipping\n");
+				continue;
+			}
 		}
 
 		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating..."), -1);
+		music_store_selection_changed();
 		podcast_update(podcast);
 	}
 }
@@ -652,19 +718,23 @@ podcast_iter_set_display_name(podcast_t * podcast, GtkTreeIter * pod_iter) {
 	gtk_tree_store_set(music_store, pod_iter, MS_COL_NAME, name_str, -1);
 }
 
-void
-store_podcast_update_podcast(podcast_t * podcast) {
+gboolean
+store_podcast_update_podcast_cb(gpointer data) {
 
+	podcast_t * podcast = (podcast_t *)data;
 	GtkTreeIter pod_iter;
 
 	if (store_podcast_get_pod_iter(&pod_iter, podcast) != 0) {
-		return;
+		return FALSE;
 	}
 
 	podcast_iter_set_display_name(podcast, &pod_iter);
 	store_podcast_save();
+	music_store_selection_changed();
 
 	podcast->updating = 0;
+
+	return FALSE;
 }
 
 gboolean
@@ -696,6 +766,7 @@ store_podcast_add_item_cb(gpointer data) {
 	free(pt);
 
 	store_podcast_save();
+	music_store_selection_changed();
 
 	return FALSE;
 }
@@ -728,8 +799,15 @@ store_podcast_remove_item_cb(gpointer data) {
 	free(pt);
 
 	store_podcast_save();
+	music_store_selection_changed();
 
 	return FALSE;
+}
+
+void
+store_podcast_update_podcast(podcast_t * podcast) {
+
+	g_idle_add(store_podcast_update_podcast_cb, podcast);
 }
 
 void
@@ -1044,7 +1122,7 @@ store_podcast_load_icons(void) {
 
 	char path[MAXLEN];
 
-	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-podcasts.png");
+	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-podcast.png");
 	icon_podcasts = gdk_pixbuf_new_from_file (path, NULL);
 	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-feed.png");
 	icon_feed = gdk_pixbuf_new_from_file (path, NULL);
@@ -1209,6 +1287,7 @@ save_podcast(xmlDocPtr doc, xmlNodePtr root, GtkTreeIter * pod_iter) {
 	xml_save_str(node, "desc", podcast->desc);
 	xml_save_str(node, "url", podcast->url);
 
+	xml_save_int(node, "flags", podcast->flags);
 	xml_save_uint(node, "check_interval", podcast->check_interval);
 	xml_save_uint(node, "last_checked", podcast->last_checked);
 	xml_save_uint(node, "count_limit", podcast->count_limit);
@@ -1318,6 +1397,7 @@ parse_podcast(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_store) {
 		xml_load_str_dup(doc, cur, "desc", &podcast->desc);
 		xml_load_str_dup(doc, cur, "url", &podcast->url);
 
+		xml_load_int(doc, cur, "flags", &podcast->flags);
 		xml_load_uint(doc, cur, "check_interval", &podcast->check_interval);
 		xml_load_uint(doc, cur, "last_checked", &podcast->last_checked);
 		xml_load_uint(doc, cur, "count_limit", &podcast->count_limit);

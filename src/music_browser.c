@@ -44,7 +44,7 @@
 #include "music_browser.h"
 #include "store_cdda.h"
 #include "store_file.h"
-
+#include "store_podcast.h"
 
 extern options_t options;
 
@@ -154,6 +154,11 @@ music_store_iter_is_track(GtkTreeIter * iter) {
 	case STORE_TYPE_CDDA:
 		return store_cdda_iter_is_track(iter);
 #endif /* HAVE_CDDA */
+
+#ifdef HAVE_PODCAST
+	case STORE_TYPE_PODCAST:
+		return store_podcast_iter_is_track(iter);
+#endif /* HAVE_PODCAST */
 	}
 
 	return 0;
@@ -171,6 +176,12 @@ music_store_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, i
 		store_cdda_iter_addlist_defmode(ms_iter, pl_iter, new_tab);
 		break;
 #endif /* HAVE_CDDA */
+
+#ifdef HAVE_PODCAST
+	case STORE_TYPE_PODCAST:
+		store_podcast_iter_addlist_defmode(ms_iter, pl_iter, new_tab);
+		break;
+#endif /* HAVE_PODCAST */
 	}
 }
 
@@ -267,6 +278,12 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data) {
 			store_cdda_event_cb(event, &iter, path);
 			break;
 #endif /* HAVE_CDDA */
+
+#ifdef HAVE_PODCAST
+		case STORE_TYPE_PODCAST:
+			store_podcast_event_cb(event, &iter, path);
+			break;
+#endif /* HAVE_PODCAST */
 		}
 
 		gtk_tree_path_free(path);
@@ -402,6 +419,14 @@ tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
 						     GTK_LABEL(statusbar_ms));
 			break;
 #endif /* HAVE_CDDA */
+
+#ifdef HAVE_PODCAST
+		case STORE_TYPE_PODCAST:
+			store_podcast_selection_changed(&iter,
+							buffer,
+							GTK_LABEL(statusbar_ms));
+			break;
+#endif /* HAVE_PODCAST */
 		}
 	}
 }
@@ -543,6 +568,10 @@ create_music_browser(void) {
 #ifdef HAVE_CDDA
 		store_cdda_load_icons();
 #endif /* HAVE_CDDA */
+
+#ifdef HAVE_PODCAST
+		store_podcast_load_icons();
+#endif /* HAVE_PODCAST */
         }
 
 	/* create music store tree */
@@ -640,6 +669,10 @@ create_music_browser(void) {
 #ifdef HAVE_CDDA
 	store_cdda_create_popup_menu();
 #endif /* HAVE_CDDA */
+
+#ifdef HAVE_PODCAST
+	store_podcast_create_popup_menu();
+#endif /* HAVE_PODCAST */
 
 	/* create text widget for comments */
 	comment_view = gtk_text_view_new();
@@ -784,6 +817,7 @@ music_store_mark_changed(GtkTreeIter * iter) {
 		}
 		break;
 	case STORE_TYPE_CDDA:
+	case STORE_TYPE_PODCAST:
 		/* skip */
 		return;
 	}
@@ -825,6 +859,7 @@ music_store_mark_saved(GtkTreeIter * iter_store) {
 		}
 		break;
 	case STORE_TYPE_CDDA:
+	case STORE_TYPE_PODCAST:
 		/* skip */
 		return;
 	}
@@ -847,6 +882,7 @@ music_store_mark_saved(GtkTreeIter * iter_store) {
 			}
 			break;
 		case STORE_TYPE_CDDA:
+		case STORE_TYPE_PODCAST:
 			/* skip */
 			break;
 		}
@@ -875,6 +911,7 @@ music_store_load_all(void) {
 
 	GtkTreeIter iter_store;
 	char * store_file;
+	char sort[16];
 	int i = 0;
 
         while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store),
@@ -885,7 +922,8 @@ music_store_load_all(void) {
 
 		switch (music_store_get_type(store_file)) {
 		case STORE_TYPE_FILE:
-			store_file_load(store_file, "1");
+			snprintf(sort, 15, "%03d", i+1);
+			store_file_load(store_file, sort);
 			break;
 		}
 

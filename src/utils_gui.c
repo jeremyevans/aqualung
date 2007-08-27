@@ -590,7 +590,7 @@ insert_label_entry(GtkWidget * table, char * ltext, GtkWidget ** entry, char * e
 
         *entry = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(*entry), MAXLEN-1);
-        gtk_editable_set_editable(GTK_EDITABLE (*entry), TRUE);
+        gtk_editable_set_editable(GTK_EDITABLE (*entry), editable ? TRUE : FALSE);
 	if (etext != NULL) {
 		gtk_entry_set_text(GTK_ENTRY(*entry), etext);
 	}
@@ -616,7 +616,6 @@ insert_label_entry_button(GtkWidget * table, char * ltext, GtkWidget ** entry, c
 
 	*entry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(*entry), MAXLEN-1);
-        gtk_editable_set_editable(GTK_EDITABLE (*entry), TRUE);
 	if (etext != NULL) {
 		gtk_entry_set_text(GTK_ENTRY(*entry), etext);
 	}
@@ -650,12 +649,12 @@ insert_label_spin(GtkWidget * table, char * ltext, GtkWidget ** spin, int spinva
 	*spin = gtk_spin_button_new_with_range(YEAR_MIN, YEAR_MAX, 1);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(*spin), spinval);
         gtk_table_attach(GTK_TABLE(table), *spin, 1, 2, y1, y2,
-                         GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 5);
+                         GTK_EXPAND | GTK_FILL, GTK_FILL, 2, 5);
 }
 
 void
-insert_label_spin_with_limits(GtkWidget * table, char * ltext, GtkWidget ** spin, int spinval,
-			      int min, int max, int y1, int y2) {
+insert_label_spin_with_limits(GtkWidget * table, char * ltext, GtkWidget ** spin, double spinval,
+			      double min, double max, int y1, int y2) {
 
 
 	insert_label_spin(table, ltext, spin, spinval, y1, y2);

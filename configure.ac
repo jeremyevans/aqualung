@@ -312,7 +312,6 @@ else
 	if test "$flac" = "detect"; then
 		if test "$lib2" = "yes" -o "$lib" = "yes"; then
 			flac="yes"
-		        AC_MSG_RESULT(yes)
 		else
 			flac="no"
 		        AC_MSG_RESULT(no)
@@ -383,7 +382,6 @@ else
 			speex_LIBS="-loggz -logg -lspeex"
 			lib="yes"
 			AC_DEFINE([HAVE_SPEEX], [1], [Defined if compile with Ogg Speex support])
-			AC_MSG_RESULT(yes)
 		else
 			lib="no"
 		fi
@@ -534,7 +532,6 @@ else
 	if test "$avf_lib" = "yes" -a "$avc_lib" = "yes" ; then
 	        lavc_LIBS="-lavformat -lavcodec -lavutil -lz"
 		AC_DEFINE([HAVE_LAVC], [1], [Defined if compile with LAVC support])
-		AC_MSG_RESULT(yes)
 	fi
 	if test "$avf_lib" = "no" -o "$avc_lib" = "no" ; then
 	        if test "$lavc" = "yes"; then
@@ -646,7 +643,6 @@ else
 	if test "$lib" = "yes"; then
 		AC_MSG_CHECKING(whether libcdio_paranoia version >= 0.76)
 		if `pkg-config --exists 'libcdio_paranoia >= 0.76'`; then
-			AC_MSG_RESULT(yes)
 		        cdda_CFLAGS=`pkg-config --cflags libcdio_paranoia`
 		        cdda_LIBS=`pkg-config --libs libcdio_paranoia`
 			AC_DEFINE([HAVE_CDDA], [1], [Defined if compile with CDDA support])
@@ -775,6 +771,19 @@ else
 	fi
 fi
 
+AC_MSG_CHECKING(for podcast support)
+AC_ARG_WITH(
+	podcast,
+	[  --with-podcast=yes,no   compile with podcast support (default: yes)],
+	podcast="$withval",
+	podcast="yes")
+if test "$podcast" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_DEFINE([HAVE_PODCAST], [1], [Defined if compile with podcast support])
+	AC_MSG_RESULT(yes)
+fi
+
 
 # Compiler and linker variables
 AQUALUNG_SKINDIR="-DAQUALUNG_SKINDIR=\\\"$datadir/aqualung/skin\\\""
@@ -818,6 +827,7 @@ echo "      Sample Rate Converter support       :  $src"
 echo "      iRiver iFP driver support           :  $ifp"
 echo "      Loop playback support               :  $loop"
 echo "      Systray support                     :  $systray"
+echo "      Podcast support                     :  $podcast"
 echo
 echo "  Decoding support:"
 echo "      sndfile (WAV, AIFF, AU, etc.)       :  $sndfile"

@@ -568,9 +568,9 @@ options_window_accept(void) {
 		char * file;
 		int j;
 		int has;
-		char sort[4];
+		char sort[16];
 
-		snprintf(sort, 4, "%03d", i);
+		snprintf(sort, 15, "%03d", i+1);
 
 		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &file, -1);
 

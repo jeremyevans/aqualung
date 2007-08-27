@@ -55,7 +55,6 @@ extern options_t options;
 
 extern GtkListStore * ms_pathlist_store;
 extern char pl_color_inactive[14];
-extern GtkTooltips * aqualung_tooltips;
 
 extern GtkWidget * browser_window;
 extern GtkTreeStore * music_store;
@@ -211,6 +210,7 @@ struct keybinds store_keybinds[] = {
 	{store__add_cb, GDK_n, GDK_N},
 	{store__build_cb, GDK_b, GDK_B},
 	{store__edit_cb, GDK_e, GDK_E},
+	{store__build_cb, GDK_u, GDK_U},
 	{store__save_cb, GDK_s, GDK_S},
 	{store__volume_unmeasured_cb, GDK_v, GDK_V},
 	{store__remove_cb, GDK_Delete, GDK_KP_Delete},
@@ -305,6 +305,7 @@ store_file_remove_track(GtkTreeIter * iter) {
 gboolean
 store_file_remove_record(GtkTreeIter * iter) {
 
+	record_data_t * data;
 	GtkTreeIter track_iter;
 	int i = 0;
 
@@ -312,12 +313,16 @@ store_file_remove_record(GtkTreeIter * iter) {
 		store_file_remove_track(&track_iter);
 	}
 
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_DATA, &data, -1);
+	record_data_free(data);
+
 	return gtk_tree_store_remove(music_store, iter);
 }
 
 gboolean
 store_file_remove_artist(GtkTreeIter * iter) {
 
+	artist_data_t * data;
 	GtkTreeIter record_iter;
 	int i = 0;
 
@@ -325,18 +330,25 @@ store_file_remove_artist(GtkTreeIter * iter) {
 		store_file_remove_record(&record_iter);
 	}
 
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_DATA, &data, -1);
+	artist_data_free(data);
+
 	return gtk_tree_store_remove(music_store, iter);
 }
 
 gboolean
 store_file_remove_store(GtkTreeIter * iter) {
 
+	store_data_t * data;
 	GtkTreeIter artist_iter;
 	int i = 0;
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &artist_iter, iter, i++)) {
 		store_file_remove_artist(&artist_iter);
 	}
+
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_DATA, &data, -1);
+	store_data_free(data);
 
 	return gtk_tree_store_remove(music_store, iter);
 }
@@ -357,6 +369,8 @@ create_dialog_layout(char * title, GtkWidget ** dialog, GtkWidget ** table, int 
 
 	*table = gtk_table_new(rows, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(GTK_DIALOG(*dialog)->vbox), *table, FALSE, TRUE, 2);
+
+
 }
 
 void
@@ -1957,6 +1971,8 @@ store__remove_cb(gpointer user_data) {
 			 (data->dirty) ? (name + 1) : (name));
 		if (confirm_dialog(_("Remove Store"), text)) {
 
+			char * file = strdup(data->file);
+
 			if (data->dirty) {
 				if (confirm_dialog(_("Remove Store"),
 						   _("Do you want to save the store before removing?"))) {
@@ -1982,7 +1998,7 @@ store__remove_cb(gpointer user_data) {
 			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store),
 							     &iter, NULL, i++)) {
 				gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &pname, -1);
-				if (!strcmp(data->file, pname)) {
+				if (!strcmp(file, pname)) {
 					gtk_list_store_remove(ms_pathlist_store, &iter);
 				}
 				g_free(pname);
@@ -3453,7 +3469,7 @@ store__tag_cb(gpointer data) {
 /************************************/
 
 
-void
+static void
 set_comment_text(GtkTreeIter * tree_iter, GtkTextIter * text_iter, GtkTextBuffer * buffer) {
 
 	char * comment = NULL;
@@ -3616,7 +3632,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 	if (options.ms_statusbar_show_size) {
 		if (size > 1024 * 1024) {
 			sprintf(tmp, " (%.1f GB) ", size / (1024 * 1024));
-		} else if (size > (1 << 10)){
+		} else if (size > 1024) {
 			sprintf(tmp, " (%.1f MB) ", size / 1024);
 		} else if (size > 0 || ntrack == 0) {
 			sprintf(tmp, " (%.1f KB) ", size);

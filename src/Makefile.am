@@ -28,6 +28,7 @@ music_browser.h music_browser.c \
 options.h options.c \
 playlist.h playlist.c \
 plugin.h plugin.c \
+podcast.h podcast.c \
 ports.h ports.c \
 rb.h rb.c \
 search.h search.c \
@@ -36,6 +37,7 @@ segv.h segv.c \
 skin.h skin.c \
 store_cdda.h store_cdda.c \
 store_file.h store_file.c \
+store_podcast.h store_podcast.c \
 transceiver.c transceiver.h \
 trashlist.c trashlist.h \
 utils.c utils.h \

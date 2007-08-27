@@ -61,6 +61,7 @@
 #include "ports.h"
 #include "music_browser.h"
 #include "store_file.h"
+#include "store_podcast.h"
 #include "playlist.h"
 #include "plugin.h"
 #include "file_info.h"
@@ -3302,7 +3303,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
         playlist_size_allocate_all();
 
 	create_music_browser();
-	music_store_load_all();
 
 #ifdef HAVE_LADSPA
 	create_fxbuilder();
@@ -3313,6 +3313,14 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	create_cdda_node();
 	cdda_scanner_start();
 #endif /* HAVE_CDDA */
+
+#ifdef HAVE_PODCAST
+	create_podcast_node();
+	store_podcast_load();
+	store_podcast_updater_start();
+#endif /* HAVE_PODCAST */
+
+	music_store_load_all();
 
 	sprintf(path, "%s/icon_16.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {

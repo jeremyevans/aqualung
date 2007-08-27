@@ -64,7 +64,8 @@ enum {
 enum {
 	STORE_TYPE_INVALID,
 	STORE_TYPE_FILE,
-	STORE_TYPE_CDDA
+	STORE_TYPE_CDDA,
+	STORE_TYPE_PODCAST
 };
 
 typedef union {

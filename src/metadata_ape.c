@@ -121,6 +121,8 @@ meta_ape_parse(char * filename, ape_tag_t * tag) {
 
 	FILE * file;
 	unsigned char buf[32];
+	long offset = 0L;
+	int has_id3v1 = 0;
 	int i;
 
 	if ((file = fopen(filename, "rb")) == NULL) {
@@ -129,7 +131,9 @@ meta_ape_parse(char * filename, ape_tag_t * tag) {
 	}
 
 	/* At the moment we only support APE tags located at the end of the file. */
-	if (fseek(file, -32L, SEEK_END) != 0) {
+	/* However, there may be an ID3v1 tag after the APE tag. */
+ seek_to_footer:
+	if (fseek(file, -32L + offset, SEEK_END) != 0) {
 		fprintf(stderr, "meta_ape_parse: fseek() failed\n");
 		fclose(file);
 		return 0;
@@ -144,8 +148,14 @@ meta_ape_parse(char * filename, ape_tag_t * tag) {
 	if ((buf[0] != 'A') || (buf[1] != 'P') || (buf[2] != 'E') ||
 	    (buf[3] != 'T') || (buf[4] != 'A') || (buf[5] != 'G') ||
 	    (buf[6] != 'E') || (buf[7] != 'X')) {
-		fclose(file);
-		return 0;
+		if (has_id3v1 == 0) {
+			offset = -128L;
+			has_id3v1 = 1;
+			goto seek_to_footer;
+		} else {
+			fclose(file);
+			return 0;
+		}
 	}
 
 	tag->footer.version = meta_read_int32(buf+8);
@@ -153,7 +163,7 @@ meta_ape_parse(char * filename, ape_tag_t * tag) {
 	tag->footer.item_count = meta_read_int32(buf+16);
 	tag->footer.flags = meta_read_int32(buf+20);
 
-	if (fseek(file, -tag->footer.tag_size, SEEK_END) != 0) {
+	if (fseek(file, -tag->footer.tag_size + offset, SEEK_END) != 0) {
 		fprintf(stderr, "meta_ape_parse: fseek() failed\n");
 		fclose(file);
 		return 0;
@@ -331,7 +341,7 @@ meta_ape_render(ape_tag_t * tag, unsigned char * data) {
 }
 
 
-void
+int
 meta_ape_rewrite(char * filename, unsigned char * data, unsigned int length) {
 
 	FILE * file;
@@ -339,40 +349,85 @@ meta_ape_rewrite(char * filename, unsigned char * data, unsigned int length) {
 	u_int32_t tag_size, flags;
 	long pos;
 
+	long offset = 0L;
+	int has_id3v1 = 0;
+	unsigned char id3v1[128];
+
 	if ((file = fopen(filename, "r+b")) == NULL) {
 		fprintf(stderr, "meta_ape_rewrite: fopen() failed\n");
-		return;
+		return META_ERROR_NOT_WRITABLE;
 	}
 
-	if (fseek(file, -32L, SEEK_END) != 0) {
+ seek_to_footer:
+	if (fseek(file, -32L + offset, SEEK_END) != 0) {
 		fprintf(stderr, "meta_ape_rewrite: fseek() failed\n");
 		fclose(file);
-		return;
+		return META_ERROR_INTERNAL;
 	}
 
 	if (fread(buf, 1, 32, file) != 32) {
 		fprintf(stderr, "meta_ape_rewrite: fread() failed\n");
 		fclose(file);
-		return;
+		return META_ERROR_INTERNAL;
 	}
 
 	if ((buf[0] != 'A') || (buf[1] != 'P') || (buf[2] != 'E') ||
 	    (buf[3] != 'T') || (buf[4] != 'A') || (buf[5] != 'G') ||
 	    (buf[6] != 'E') || (buf[7] != 'X')) {
 
-		fseek(file, 0L, SEEK_END);
-		if (data != NULL && length > 0) {
-			if (fwrite(data, 1, length, file) != length) {
-				fprintf(stderr, "meta_ape_rewrite: fwrite() failed\n");
+		if (has_id3v1 == 0) {
+			/* read last 128 bytes of file */
+			if (fseek(file, -128L, SEEK_END) != 0) {
+				fprintf(stderr, "meta_ape_rewrite: fseek() failed\n");
+				fclose(file);
+				return META_ERROR_INTERNAL;
 			}
+			if (fread(id3v1, 1, 128, file) != 128) {
+				fprintf(stderr, "meta_ape_rewrite: fread() failed\n");
+				fclose(file);
+				return META_ERROR_INTERNAL;
+			}
+
+			if ((id3v1[0] == 'T') && (id3v1[1] == 'A') && (id3v1[2] == 'G')) {
+				has_id3v1 = 1;
+				offset = -128L;
+				goto seek_to_footer;
+			} else {
+				/* no ID3v1, no APE -> append APE */
+				fseek(file, 0L, SEEK_END);
+				if (data != NULL && length > 0) {
+					if (fwrite(data, 1, length, file) != length) {
+						fprintf(stderr, "meta_ape_rewrite: fwrite() failed\n");
+						fclose(file);
+						return META_ERROR_INTERNAL;
+					}
+					goto truncate_ape;
+				}
+			}
+		} else {
+			/* we have ID3v1, but no APE -> write APE and append ID3v1 */
+			fseek(file, -128L, SEEK_END);
+			if (data != NULL && length > 0) {
+				if (fwrite(data, 1, length, file) != length) {
+					fprintf(stderr, "meta_ape_rewrite: fwrite() failed\n");
+					fclose(file);
+					return META_ERROR_INTERNAL;
+				}
+			}
+			if (fwrite(id3v1, 1, 128, file) != 128) {
+				fprintf(stderr, "meta_ape_rewrite: fwrite() failed\n");
+				fclose(file);
+				return META_ERROR_INTERNAL;
+			}
+			goto truncate_ape;
 		}
-		fclose(file);
-		return;
 	}
+
+	/* overwrite existing APE tag, and append ID3v1 if we have it */
 
 	tag_size = meta_read_int32(buf+12);
 	flags = meta_read_int32(buf+20);
-	pos = -tag_size;
+	pos = -tag_size + offset;
 	if ((flags & APE_FLAG_HAS_HEADER) != 0) {
 		pos -= 32;
 	}
@@ -380,60 +435,74 @@ meta_ape_rewrite(char * filename, unsigned char * data, unsigned int length) {
 	if (fseek(file, pos, SEEK_END) != 0) {
 		fprintf(stderr, "meta_ape_rewrite: fseek() failed\n");
 		fclose(file);
-		return;
+		return META_ERROR_INTERNAL;
 	}
 
 	if (data != NULL && length > 0) {
 		if (fwrite(data, 1, length, file) != length) {
 			fprintf(stderr, "meta_ape_rewrite: fwrite() failed\n");
 			fclose(file);
-			return;
+			return META_ERROR_INTERNAL;
 		}
 	}
-
+	if (has_id3v1) {
+		if (fwrite(id3v1, 1, 128, file) != 128) {
+			fprintf(stderr, "meta_ape_rewrite: fwrite() failed\n");
+			fclose(file);
+			return META_ERROR_INTERNAL;
+		}
+	}
+ truncate_ape:
 	pos = ftell(file);
 	fclose(file);
 
 	/* XXX */printf("meta_ape_rewrite: truncating file at 0x%08x\n", (unsigned int)pos);
 	if (truncate(filename, pos) < 0) {
 		fprintf(stderr, "meta_ape_rewrite: truncate() failed on %s\n", filename);
+		return META_ERROR_INTERNAL;
 	}
+	
+	return META_ERROR_NONE;
 }
 
 
-void
+int
 meta_ape_delete(char * filename) {
 
-	meta_ape_rewrite(filename, NULL, 0);
+	return meta_ape_rewrite(filename, NULL, 0);
 }
 
-void
+int
 meta_ape_replace_or_append(char * filename, ape_tag_t * tag) {
 
+	int ret;
 	unsigned char * data = calloc(1, tag->header.tag_size + 32);
 	if (data == NULL) {
-		fprintf(stderr, "mpc_write_metadata: calloc error\n");
+		fprintf(stderr, "meta_ape_replace_or_append: calloc error\n");
 	}
 	meta_ape_render(tag, data);
-	meta_ape_rewrite(filename, data, tag->header.tag_size + 32);
+	ret = meta_ape_rewrite(filename, data, tag->header.tag_size + 32);
 	free(data);
+	return ret;
 }
 
 
-void
+int
 meta_ape_write_metadata(file_decoder_t * fdec, metadata_t * meta) {
 
+	int ret;
 	ape_tag_t tag;
 
 	memset(&tag, 0x00, sizeof(ape_tag_t));
 	metadata_to_ape_tag(meta, &tag);
 
 	if (tag.header.item_count > 0) {
-		meta_ape_replace_or_append(fdec->filename, &tag);
+		ret = meta_ape_replace_or_append(fdec->filename, &tag);
 	} else {
-		meta_ape_delete(fdec->filename);
+		ret = meta_ape_delete(fdec->filename);
 	}
 	meta_ape_free(&tag);
+	return ret;
 }
 
 void

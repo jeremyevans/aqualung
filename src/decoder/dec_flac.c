@@ -208,7 +208,7 @@ flac_decoder_destroy(decoder_t * dec) {
 	free(dec);
 }
 
-void
+int
 flac_meta_replace_or_append(file_decoder_t * fdec, FLAC__StreamMetadata * smeta) {
 
 	FLAC__Metadata_SimpleIterator * iter;
@@ -217,7 +217,7 @@ flac_meta_replace_or_append(file_decoder_t * fdec, FLAC__StreamMetadata * smeta)
 
 	iter = FLAC__metadata_simple_iterator_new();
 	if (iter == NULL) {
-		return;
+		return META_ERROR_NOMEM;
 	}
 
 	ret = FLAC__metadata_simple_iterator_init(iter, fdec->filename, false, false);
@@ -227,13 +227,13 @@ flac_meta_replace_or_append(file_decoder_t * fdec, FLAC__StreamMetadata * smeta)
 			  FLAC__metadata_simple_iterator_status(iter)]);
 
 		FLAC__metadata_simple_iterator_delete(iter);
-		return;
+		return META_ERROR_INTERNAL;
 	}
 
 	if (FLAC__metadata_simple_iterator_is_writable(iter) == false) {
 		fprintf(stderr, "error: FLAC meta not writable!\n");
 		FLAC__metadata_simple_iterator_delete(iter);
-		return;
+		return META_ERROR_NOT_WRITABLE;
 	}
 
 	do {
@@ -244,7 +244,7 @@ flac_meta_replace_or_append(file_decoder_t * fdec, FLAC__StreamMetadata * smeta)
 			if (ret == false) {
 				fprintf(stderr, "error: FLAC metadata write failed!\n");
 				FLAC__metadata_simple_iterator_delete(iter);
-				return;
+				return META_ERROR_INTERNAL;
 			}
 			found = 1;
 			break;
@@ -258,13 +258,16 @@ flac_meta_replace_or_append(file_decoder_t * fdec, FLAC__StreamMetadata * smeta)
 		ret = FLAC__metadata_simple_iterator_insert_block_after(iter, smeta, true);
 		if (ret == false) {
 			fprintf(stderr, "error: FLAC metadata write failed!\n");
+			FLAC__metadata_simple_iterator_delete(iter);
+			return META_ERROR_INTERNAL;
 		}
 	}
 
 	FLAC__metadata_simple_iterator_delete(iter);
+	return META_ERROR_NONE;
 }
 
-void
+int
 flac_meta_delete(file_decoder_t * fdec) {
 
 	FLAC__Metadata_SimpleIterator * iter;
@@ -272,7 +275,7 @@ flac_meta_delete(file_decoder_t * fdec) {
 
 	iter = FLAC__metadata_simple_iterator_new();
 	if (iter == NULL) {
-		return;
+		return META_ERROR_NOMEM;
 	}
 
 	ret = FLAC__metadata_simple_iterator_init(iter, fdec->filename, false, false);
@@ -282,13 +285,13 @@ flac_meta_delete(file_decoder_t * fdec) {
 			  FLAC__metadata_simple_iterator_status(iter)]);
 
 		FLAC__metadata_simple_iterator_delete(iter);
-		return;
+		return META_ERROR_INTERNAL;
 	}
 
 	if (FLAC__metadata_simple_iterator_is_writable(iter) == false) {
 		fprintf(stderr, "error: FLAC meta not writable!\n");
 		FLAC__metadata_simple_iterator_delete(iter);
-		return;
+		return META_ERROR_NOT_WRITABLE;
 	}
 
 	do {
@@ -300,26 +303,28 @@ flac_meta_delete(file_decoder_t * fdec) {
 				fprintf(stderr, "error: FLAC metadata delete failed!\n");
 			}
 			FLAC__metadata_simple_iterator_delete(iter);
-			return;
+			return META_ERROR_NONE;
 		default:
 			break;
 		}
 	} while (FLAC__metadata_simple_iterator_next(iter));
 	FLAC__metadata_simple_iterator_delete(iter);
+	return META_ERROR_NONE;
 }
 
-void
+int
 flac_write_metadata(file_decoder_t * fdec, metadata_t * meta) {
 
+	int ret;
 	FLAC__StreamMetadata * smeta;
 	if (metadata_get_frame_by_tag(meta, META_TAG_OXC, NULL) == NULL) {
 		/* no Ogg Xiph comment in this metablock -- remove it from file */
-		flac_meta_delete(fdec);
-		return;
+		return flac_meta_delete(fdec);
 	}
 	smeta = metadata_to_flac_streammeta(meta);
-	flac_meta_replace_or_append(fdec, smeta);
+	ret = flac_meta_replace_or_append(fdec, smeta);
 	FLAC__metadata_object_delete(smeta);
+	return ret;
 }
 
 void

@@ -25,6 +25,7 @@
 #include "../common.h"
 #include "../options.h"
 #include "../metadata.h"
+#include "../metadata_api.h"
 #include "../rb.h"
 
 #ifdef __cplusplus
@@ -84,7 +85,8 @@ typedef struct _file_decoder_t {
 	metadata_t * meta;
 	void (* meta_cb)(metadata_t *, void *);
 	void * meta_cbdata;
-	void (* meta_write)(struct _file_decoder_t *, metadata_t *);
+	/* meta_write() returns one of META_ERROR_*, defined in metadata_api.h */
+	int (* meta_write)(struct _file_decoder_t *, metadata_t *);
 
 	/* private */
 	void * pdec; /* actually, it's (decoder_t *) */

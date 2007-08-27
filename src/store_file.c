@@ -3173,7 +3173,7 @@ batch_tag_append_error(gpointer data) {
 	gtk_list_store_append(tag_error_list, &iter);
 	gtk_list_store_set(tag_error_list, &iter,
 			   0, err->filename,
-			   1, meta_update_strerror(err->ret),
+			   1, metadata_strerror(err->ret),
 			   -1);
 
 	free(err->filename);

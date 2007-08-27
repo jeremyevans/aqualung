@@ -29,7 +29,15 @@
 #include "common.h"
 #include "metadata.h"
 
-int metadata_from_id3v1(metadata_t * meta, char * buf);
-int metadata_to_id3v1(metadata_t * meta, char * buf);
+
+/* these return a newly allocated string, or NULL */
+char * meta_id3v1_utf8_to_tagenc(char * utf8);
+char * meta_id3v1_utf8_from_tagenc(char * tagenc);
+
+int metadata_from_id3v1(metadata_t * meta, unsigned char * buf);
+int metadata_to_id3v1(metadata_t * meta, unsigned char * buf);
+
+int meta_id3v1_delete(char * filename);
+int meta_id3v1_rewrite(char * filename, unsigned char * id3v1);
 
 #endif /* _METADATA_ID3V1_H */

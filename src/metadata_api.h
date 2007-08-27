@@ -56,12 +56,15 @@ int metadata_get_rva(metadata_t * meta, float * fval);
 
 
 /* Return values of meta_update_basic() */
-#define META_UPDATE_ERROR_NONE             0
-#define META_UPDATE_ERROR_NOMEM           -1
-#define META_UPDATE_ERROR_OPEN            -2
-#define META_UPDATE_ERROR_NO_METASUPPORT  -3
-#define META_UPDATE_ERROR_NOT_WRITABLE    -4
-#define META_UPDATE_ERROR_INTERNAL        -5
+#define META_ERROR_NONE                  0
+#define META_ERROR_NOMEM                -1
+#define META_ERROR_OPEN                 -2
+#define META_ERROR_NO_METASUPPORT       -3
+#define META_ERROR_NOT_WRITABLE         -4
+#define META_ERROR_INVALID_TRACKNO      -5
+#define META_ERROR_INVALID_GENRE        -6
+#define META_ERROR_INVALID_CODING       -7
+#define META_ERROR_INTERNAL             -8
 
 
 /* Update basic metadata fields of a file. Used for mass-tagging.
@@ -73,7 +76,7 @@ int metadata_get_rva(metadata_t * meta, float * fval);
  * filename should be locale encoded, text fields should be UTF8.
  *
  * Return 0 if OK, < 0 else.
- * Use meta_update_strerror() to get an error string from the
+ * Use metadata_strerror() to get an error string from the
  * return value.
  */
 int
@@ -81,7 +84,7 @@ meta_update_basic(char * filename,
 		  char * title, char * artist, char * album,
 		  char * comment, char * genre, char * date, int trackno);
 
-const char * meta_update_strerror(int error);
+const char * metadata_strerror(int error);
 
 
 #endif /* _METADATA_API_H */

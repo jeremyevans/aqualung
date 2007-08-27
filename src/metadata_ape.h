@@ -69,11 +69,11 @@ void metadata_from_ape_tag(metadata_t * meta, ape_tag_t * tag);
 void metadata_to_ape_tag(metadata_t * meta, ape_tag_t * tag);
 void meta_ape_render(ape_tag_t * tag, unsigned char * data);
 
-void meta_ape_delete(char * filename);
-void meta_ape_replace_or_append(char * filename, ape_tag_t * tag);
+int meta_ape_delete(char * filename);
+int meta_ape_replace_or_append(char * filename, ape_tag_t * tag);
 
 /* for direct use by decoders */
-void meta_ape_write_metadata(file_decoder_t * fdec, metadata_t * meta);
+int meta_ape_write_metadata(file_decoder_t * fdec, metadata_t * meta);
 void meta_ape_send_metadata(file_decoder_t * fdec);
 
 

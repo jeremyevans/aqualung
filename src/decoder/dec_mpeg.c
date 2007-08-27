@@ -293,10 +293,41 @@ vlfc_cmp(mp3info_t *info1, mp3info_t *info2) {
 }
 
 
-void
+int
 mpeg_write_metadata(file_decoder_t * fdec, metadata_t * meta) {
 
-	/* TODO */
+	int ret;
+
+	/* write ID3v1 */
+	if (metadata_get_frame_by_tag(meta, META_TAG_ID3v1, NULL) != NULL) {
+		unsigned char id3v1[128];
+		ret = metadata_to_id3v1(meta, id3v1);
+		if (ret != META_ERROR_NONE) {
+			return ret;
+		}
+		ret = meta_id3v1_rewrite(fdec->filename, id3v1);
+		if (ret != META_ERROR_NONE) {
+			return ret;
+		}
+	} else {
+		ret = meta_id3v1_delete(fdec->filename);
+		if (ret != META_ERROR_NONE) {
+			return ret;
+		}
+	}
+
+	/* TODO ID3v2 */
+
+
+	/* write APE */
+	if (metadata_get_frame_by_tag(meta, META_TAG_APE, NULL) != NULL) {
+		ret = meta_ape_write_metadata(fdec, meta);
+		if (ret != META_ERROR_NONE) {
+			return ret;
+		}
+	}
+
+	return META_ERROR_NONE;
 }
 
 
@@ -305,7 +336,7 @@ mpeg_send_metadata(file_decoder_t * fdec, int fd) {
 
 	metadata_t * meta;
 
-	char id3v1[128];
+	unsigned char id3v1[128];
 
 	char buffer[12];
 	long id3v2_length = 0;

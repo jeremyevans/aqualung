@@ -52,7 +52,7 @@ dump_vc(vorbis_comment * vc) {
 }
 */
 
-void
+int
 vorbis_write_metadata(file_decoder_t * fdec, metadata_t * meta) {
 
 	GSList * slist;
@@ -63,10 +63,18 @@ vorbis_write_metadata(file_decoder_t * fdec, metadata_t * meta) {
 
 	slist = meta_ogg_parse(fdec->filename);
 	payload = meta_ogg_vc_render(meta, &length);
+	if (payload == NULL) {
+		return META_ERROR_INTERNAL;
+	}
 	slist = meta_ogg_vc_encapsulate_payload(slist, &payload, length, &n_pages);
-	meta_ogg_render(slist, fdec->filename, n_pages);
+	if (meta_ogg_render(slist, fdec->filename, n_pages) < 0) {
+		meta_ogg_free(slist);
+		free(payload);
+		return META_ERROR_NOT_WRITABLE;
+	}
 	meta_ogg_free(slist);
 	free(payload);
+	return META_ERROR_NONE;
 }
 
 void

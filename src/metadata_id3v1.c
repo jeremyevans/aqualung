@@ -31,11 +31,12 @@
 #include "utils.h"
 #include "i18n.h"
 #include "metadata.h"
+#include "metadata_api.h"
 #include "metadata_id3v1.h"
 
 
 char *
-lookup_id3v1_genre(int code) {
+id3v1_genre_str_from_code(int code) {
 
 	switch (code) {
 	/* Standard ID3v1 */
@@ -167,7 +168,6 @@ lookup_id3v1_genre(int code) {
 	case 123: return "A capella";
 	case 124: return "Euro-House";
 	case 125: return "Dance Hall";
-
 	case 126: return "Goa";
 	case 127: return "Drum & Bass";
 	case 128: return "Club-House";
@@ -196,38 +196,87 @@ lookup_id3v1_genre(int code) {
 }
 
 
-void
-meta_add_id3v1_frame(metadata_t * meta, char * key, char * val) {
+/* ret: -1 if not found */
+int
+id3v1_genre_code_from_str(char * str) {
+
+	int i;
+	for (i = 0; i < 256; i++) {
+		char * lookup = id3v1_genre_str_from_code(i);
+		if (lookup == NULL) {
+			return -1;
+		}
+		if (strcmp(lookup, str) == 0) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+
+char *
+meta_id3v1_utf8_to_tagenc(char * utf8) {
+
+	char * str = NULL;
+	GError * error = NULL;
+
+	/* convert to iso-8859-1 */
+	str = g_convert(utf8, -1, "iso-8859-1", "utf8", NULL, NULL, &error);
+	if (str != NULL) {
+		return str;
+	} else {
+		fprintf(stderr,
+			"meta_id3v1_utf8_to_tagenc: error converting '%s': %s\n",
+			utf8, error->message);
+		g_clear_error(&error);
+		return NULL;
+	}
+}
+
+
+char *
+meta_id3v1_utf8_from_tagenc(char * tagenc) {
 
 	char * str = NULL;
 	GError * error = NULL;
 
 	/* try to use string as utf8, convert from iso-8859-1 if that fails. */
-	str = g_convert(val, -1, "utf8", "utf8", NULL, NULL, &error);
+	str = g_convert(tagenc, -1, "utf8", "utf8", NULL, NULL, &error);
 	if (str != NULL) {
-		metadata_add_frame_from_keyval(meta, META_TAG_ID3v1, key, str);
-		g_free(str);
-		str = NULL;
+		return str;
 	} else {
 		g_clear_error(&error);
 
-		str = g_convert(val, -1, "utf8", "iso-8859-1", NULL, NULL, &error);
+		str = g_convert(tagenc, -1, "utf8", "iso-8859-1", NULL, NULL, &error);
 		if (str != NULL) {
-			metadata_add_frame_from_keyval(meta, META_TAG_ID3v1, key, str);
-			g_free(str);
-			str = NULL;
+			return str;
 		} else {
 			fprintf(stderr,
-				"metadata_id3v1.c: error converting '%s' to utf8: %s\n",
-				val, error->message);
+				"meta_id3v1_utf8_from_tagenc: error converting '%s': %s\n",
+				tagenc, error->message);
 			g_clear_error(&error);
+			return NULL;
 		}
 	}
 }
 
 
+void
+meta_add_id3v1_frame(metadata_t * meta, char * key, char * val) {
+
+	char * str = meta_id3v1_utf8_from_tagenc(val);
+
+	if (str == NULL) {
+		return;
+	}
+
+	metadata_add_frame_from_keyval(meta, META_TAG_ID3v1, key, str);
+	g_free(str);
+}
+
+
 int
-metadata_from_id3v1(metadata_t * meta, char * buf) {
+metadata_from_id3v1(metadata_t * meta, unsigned char * buf) {
 
 	char raw[31];
 	char * genre;
@@ -264,7 +313,7 @@ metadata_from_id3v1(metadata_t * meta, char * buf) {
 		meta_add_id3v1_frame(meta, "Track", track);
 	}
 
-	genre = lookup_id3v1_genre(buf[127]);
+	genre = id3v1_genre_str_from_code(buf[127]);
 	if (genre != NULL) {
 		meta_add_id3v1_frame(meta, "Genre", genre);
 	}
@@ -277,8 +326,202 @@ metadata_from_id3v1(metadata_t * meta, char * buf) {
 
 
 int
-metadata_to_id3v1(metadata_t * meta, char * buf) {
+metadata_to_id3v1(metadata_t * meta, unsigned char * buf) {
 
-	/* TODO */
-	return 0;
+	meta_frame_t * frame;
+	int has_trackno = 0;
+
+	buf[0] = 'T'; buf[1] = 'A'; buf[2] = 'G';
+	memset(buf+3, 0x00, 125);
+
+	frame = metadata_get_frame_by_tag_and_type(meta, META_TAG_ID3v1,
+						   META_FIELD_TITLE, NULL);
+	if (frame != NULL) {
+		char * str = meta_id3v1_utf8_to_tagenc(frame->field_val);
+		if (str != NULL) {
+			strncpy((char *)buf+3, str, 30);
+			g_free(str);
+		} else {
+			return META_ERROR_INVALID_CODING;
+		}
+	}
+
+	frame = metadata_get_frame_by_tag_and_type(meta, META_TAG_ID3v1,
+						   META_FIELD_ARTIST, NULL);
+	if (frame != NULL) {
+		char * str = meta_id3v1_utf8_to_tagenc(frame->field_val);
+		if (str != NULL) {
+			strncpy((char *)buf+33, str, 30);
+			g_free(str);
+		} else {
+			return META_ERROR_INVALID_CODING;
+		}
+	}
+
+	frame = metadata_get_frame_by_tag_and_type(meta, META_TAG_ID3v1,
+						   META_FIELD_ALBUM, NULL);
+	if (frame != NULL) {
+		char * str = meta_id3v1_utf8_to_tagenc(frame->field_val);
+		if (str != NULL) {
+			strncpy((char *)buf+63, str, 30);
+			g_free(str);
+		} else {
+			return META_ERROR_INVALID_CODING;
+		}
+	}
+
+	frame = metadata_get_frame_by_tag_and_type(meta, META_TAG_ID3v1,
+						   META_FIELD_DATE, NULL);
+	if (frame != NULL) {
+		char * str = meta_id3v1_utf8_to_tagenc(frame->field_val);
+		if (str != NULL) {
+			strncpy((char *)buf+93, str, 4);
+			g_free(str);
+		} else {
+			return META_ERROR_INVALID_CODING;
+		}
+	}
+
+	frame = metadata_get_frame_by_tag_and_type(meta, META_TAG_ID3v1,
+						   META_FIELD_TRACKNO, NULL);
+	if (frame != NULL) {
+		if (frame->int_val == 0) {
+			fprintf(stderr, "error: Track no. 0 in ID3v1 is not possible.\n");
+			return META_ERROR_INVALID_TRACKNO;
+		} else if (frame->int_val > 255) {
+			fprintf(stderr, "error: Track no. %d > 255 in ID3v1 is not possible (does not fit on one byte).\n", frame->int_val);
+
+			return META_ERROR_INVALID_TRACKNO;
+		} else {
+			buf[126] = (unsigned char)frame->int_val;
+			has_trackno = 1;
+		}
+	}
+
+	frame = metadata_get_frame_by_tag_and_type(meta, META_TAG_ID3v1,
+						   META_FIELD_GENRE, NULL);
+	if (frame != NULL) {
+		int genre = id3v1_genre_code_from_str(frame->field_val);
+		if (genre != -1) {
+			buf[127] = genre;
+		} else {
+			fprintf(stderr, "error: Genre '%s' is not supported by ID3v1.\n", frame->field_val);
+			return META_ERROR_INVALID_GENRE;
+		}
+	}
+
+	frame = metadata_get_frame_by_tag_and_type(meta, META_TAG_ID3v1,
+						   META_FIELD_COMMENT, NULL);
+	if (frame != NULL) {
+		char * str = meta_id3v1_utf8_to_tagenc(frame->field_val);
+		if (str != NULL) {
+			strncpy((char *)buf+97, str, has_trackno ? 28 : 30);
+			g_free(str);
+		} else {
+			return META_ERROR_INVALID_CODING;
+		}
+	}
+
+	return META_ERROR_NONE;
+}
+
+
+int
+meta_id3v1_delete(char * filename) {
+
+	FILE * file;
+	unsigned char id3v1_file[128];
+	long pos;
+
+	if ((file = fopen(filename, "r+b")) == NULL) {
+		fprintf(stderr, "meta_id3v1_delete: fopen() failed\n");
+		return META_ERROR_NOT_WRITABLE;
+	}
+
+	if (fseek(file, -128L, SEEK_END) != 0) {
+		fprintf(stderr, "meta_id3v1_delete: fseek() failed\n");
+		fclose(file);
+		return META_ERROR_INTERNAL;
+	}
+	if (fread(id3v1_file, 1, 128, file) != 128) {
+		fprintf(stderr, "meta_id3v1_delete: fread() failed\n");
+		fclose(file);
+		return META_ERROR_INTERNAL;
+	}
+	
+	if ((id3v1_file[0] == 'T') && (id3v1_file[1] == 'A') && (id3v1_file[2] == 'G')) {
+		/* seek back to beginning of tag */
+		if (fseek(file, -128L, SEEK_END) != 0) {
+			fprintf(stderr, "meta_id3v1_delete: fseek() failed\n");
+			fclose(file);
+			return META_ERROR_INTERNAL;
+		}
+	} else {
+		/* seek to the end of file */
+		if (fseek(file, 0L, SEEK_END) != 0) {
+			fprintf(stderr, "meta_id3v1_delete: fseek() failed\n");
+			fclose(file);
+			return META_ERROR_INTERNAL;
+		}
+	}
+
+	pos = ftell(file);
+	fclose(file);
+
+	/* XXX */printf("meta_id3v1_delete: truncating file at 0x%08x\n", (unsigned int)pos);
+	if (truncate(filename, pos) < 0) {
+		fprintf(stderr, "meta_ape_rewrite: truncate() failed on %s\n", filename);
+		return META_ERROR_INTERNAL;
+	}
+
+	return META_ERROR_NONE;
+}
+
+int
+meta_id3v1_rewrite(char * filename, unsigned char * id3v1) {
+
+	FILE * file;
+	unsigned char id3v1_file[128];
+
+	if ((file = fopen(filename, "r+b")) == NULL) {
+		fprintf(stderr, "meta_id3v1_rewrite: fopen() failed\n");
+		return META_ERROR_NOT_WRITABLE;
+	}
+
+	if (fseek(file, -128L, SEEK_END) != 0) {
+		fprintf(stderr, "meta_id3v1_rewrite: fseek() failed\n");
+		fclose(file);
+		return META_ERROR_INTERNAL;
+	}
+	if (fread(id3v1_file, 1, 128, file) != 128) {
+		fprintf(stderr, "meta_id3v1_rewrite: fread() failed\n");
+		fclose(file);
+		return META_ERROR_INTERNAL;
+	}
+	
+	if ((id3v1_file[0] == 'T') && (id3v1_file[1] == 'A') && (id3v1_file[2] == 'G')) {
+		/* seek back to beginning of tag so it gets overwritten */
+		if (fseek(file, -128L, SEEK_END) != 0) {
+			fprintf(stderr, "meta_id3v1_rewrite: fseek() failed\n");
+			fclose(file);
+			return META_ERROR_INTERNAL;
+		}		
+	} else {
+		/* seek to the end of file to append tag */
+		if (fseek(file, 0L, SEEK_END) != 0) {
+			fprintf(stderr, "meta_id3v1_rewrite: fseek() failed\n");
+			fclose(file);
+			return META_ERROR_INTERNAL;
+		}
+	}
+
+	/* write new tag */
+	if (fwrite(id3v1, 1, 128, file) != 128) {
+		fprintf(stderr, "meta_id3v1_rewrite: fwrite() failed\n");
+		fclose(file);
+		return META_ERROR_INTERNAL;
+	}
+
+	fclose(file);
+	return META_ERROR_NONE;
 }

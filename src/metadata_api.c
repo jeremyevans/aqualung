@@ -277,33 +277,34 @@ meta_update_basic(char * filename,
 		  char * comment, char * genre, char * date, int trackno) {
 
 	file_decoder_t * fdec = file_decoder_new();
+	int ret;
 
 	if (fdec == NULL) {
-		return META_UPDATE_ERROR_NOMEM;
+		return META_ERROR_NOMEM;
 	}
 
 	if (file_decoder_open(fdec, filename) != 0) {
 		file_decoder_delete(fdec);
-		return META_UPDATE_ERROR_OPEN;
+		return META_ERROR_OPEN;
 	}
 
 	if (fdec->meta == NULL) {
 		file_decoder_close(fdec);
 		file_decoder_delete(fdec);
-		return META_UPDATE_ERROR_NO_METASUPPORT;
+		return META_ERROR_NO_METASUPPORT;
 	}
 
 	if (!fdec->meta->writable) {
 		file_decoder_close(fdec);
 		file_decoder_delete(fdec);
-		return META_UPDATE_ERROR_NOT_WRITABLE;
+		return META_ERROR_NOT_WRITABLE;
 	}
 	
 
 	if (fdec->meta_write == NULL) {
 		file_decoder_close(fdec);
 		file_decoder_delete(fdec);
-		return META_UPDATE_ERROR_INTERNAL;
+		return META_ERROR_INTERNAL;
 	}
 
 	if (title != NULL && !is_all_wspace(title)) {
@@ -336,24 +337,27 @@ meta_update_basic(char * filename,
 
 	printf("dump before write:\n");
 	metadata_dump(fdec->meta);
-	fdec->meta_write(fdec, fdec->meta);
+	ret = fdec->meta_write(fdec, fdec->meta);
 
 	file_decoder_close(fdec);
 	file_decoder_delete(fdec);
 
-	return META_UPDATE_ERROR_NONE;
+	return ret;
 }
 
 const char *
-meta_update_strerror(int error) {
+metadata_strerror(int error) {
 
 	switch (error) {
-	case META_UPDATE_ERROR_NONE: return _("Success");
-	case META_UPDATE_ERROR_NOMEM: return _("Memory allocation error");
-	case META_UPDATE_ERROR_OPEN: return _("Unable to open file");
-	case META_UPDATE_ERROR_NO_METASUPPORT: return _("No metadata support for this format");
-	case META_UPDATE_ERROR_NOT_WRITABLE: return _("File is not writable");
-	case META_UPDATE_ERROR_INTERNAL: return _("Internal error");
+	case META_ERROR_NONE: return _("Success");
+	case META_ERROR_NOMEM: return _("Memory allocation error");
+	case META_ERROR_OPEN: return _("Unable to open file");
+	case META_ERROR_NO_METASUPPORT: return _("No metadata support for this format");
+	case META_ERROR_NOT_WRITABLE: return _("File is not writable");
+	case META_ERROR_INVALID_TRACKNO: return _("Invalid 'Track no.' field value");
+	case META_ERROR_INVALID_GENRE: return _("Invalid 'Genre' field value");
+	case META_ERROR_INVALID_CODING: return _("Conversion to target charset failed");
+	case META_ERROR_INTERNAL: return _("Internal error");
 	default: return _("Unknown error");
 	}
 }

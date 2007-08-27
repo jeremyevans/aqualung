@@ -246,12 +246,9 @@ fi_can_close(fi_t * fi) {
 	if (fi->dirty != 0) {
 		switch (fi_close_dialog(fi)) {
 		case 1: /* Save and close */
-			if (fi_save(NULL, fi) != TRUE) {
-				return FALSE;
-			}
-			break;
+			return fi_save(NULL, fi);
 		case 2: /* Discard changes */
-			break;
+			return TRUE;
 		default: /* Cancel */
 			return FALSE;
 		}
@@ -385,9 +382,20 @@ fi_save(GtkWidget * widget, gpointer data) {
 
 	if (status == 0) {
 		if (fi->fdec->meta_write != NULL) {
-			fi->fdec->meta_write(fi->fdec, fi->meta);
-			fi_mark_unchanged(fi);
-			return TRUE;
+			int ret;
+			ret = fi->fdec->meta_write(fi->fdec, fi->meta);
+			if (ret == META_ERROR_NONE) {
+				fi_mark_unchanged(fi);
+				return TRUE;
+			} else {
+				message_dialog(_("Error"),
+					       fi->info_window, GTK_MESSAGE_ERROR,
+					       GTK_BUTTONS_OK, NULL,
+					       _("Failed to write metadata to file.\n"
+						 "Reason: %s"),
+					       metadata_strerror(ret));
+				return FALSE;
+			}
 		} else {
 			fprintf(stderr, "programmer error: fdec->meta_write == NULL\n");
 		}

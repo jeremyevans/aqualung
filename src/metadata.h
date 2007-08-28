@@ -193,11 +193,8 @@ meta_frame_t * metadata_get_frame_by_tag_and_type(metadata_t * meta,
 						  meta_frame_t * root);
 meta_frame_t * metadata_add_frame_from_keyval(metadata_t * meta, int tag,
 					      char * key, char * val);
-/*
-meta_frame_t * metadata_add_textframe_from_keyval(metadata_t * meta, int tag,
-						  char * key, char * val);
-void metadata_add_frame_from_oxc_keyval(metadata_t * meta, char * key, char * val);
-*/
+
+
 metadata_t * metadata_from_mpeg_stream_data(char * str);
 
 void metadata_make_title_string(metadata_t * meta, char * dest);

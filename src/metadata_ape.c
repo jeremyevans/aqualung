@@ -401,8 +401,8 @@ meta_ape_rewrite(char * filename, unsigned char * data, unsigned int length) {
 						fclose(file);
 						return META_ERROR_INTERNAL;
 					}
-					goto truncate_ape;
 				}
+				goto truncate_ape;
 			}
 		} else {
 			/* we have ID3v1, but no APE -> write APE and append ID3v1 */

@@ -30,6 +30,9 @@
 #include "metadata.h"
 
 
+char * id3v1_genre_str_from_code(int code);
+int id3v1_genre_code_from_str(char * str);
+
 /* these return a newly allocated string, or NULL */
 char * meta_id3v1_utf8_to_tagenc(char * utf8);
 char * meta_id3v1_utf8_from_tagenc(char * tagenc);

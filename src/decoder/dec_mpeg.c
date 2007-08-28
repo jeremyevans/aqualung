@@ -320,11 +320,9 @@ mpeg_write_metadata(file_decoder_t * fdec, metadata_t * meta) {
 
 
 	/* write APE */
-	if (metadata_get_frame_by_tag(meta, META_TAG_APE, NULL) != NULL) {
-		ret = meta_ape_write_metadata(fdec, meta);
-		if (ret != META_ERROR_NONE) {
-			return ret;
-		}
+	ret = meta_ape_write_metadata(fdec, meta);
+	if (ret != META_ERROR_NONE) {
+		return ret;
 	}
 
 	return META_ERROR_NONE;

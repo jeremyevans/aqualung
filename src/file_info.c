@@ -56,6 +56,7 @@
 #include "options.h"
 #include "trashlist.h"
 #include "i18n.h"
+#include "metadata_id3v1.h"
 #include "file_info.h"
 
 
@@ -230,7 +231,7 @@ fi_close_dialog(fi_t * fi) {
 	gtk_dialog_add_buttons(GTK_DIALOG(dialog),
 			       _("Save and close"), 1,
 			       _("Discard changes"), 2,
-			       _("Cancel"), 0,
+			       _("Do not close"), 0,
 			       NULL);
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), 0);
 
@@ -249,7 +250,7 @@ fi_can_close(fi_t * fi) {
 			return fi_save(NULL, fi);
 		case 2: /* Discard changes */
 			return TRUE;
-		default: /* Cancel */
+		default: /* Do not close */
 			return FALSE;
 		}
 	}
@@ -324,7 +325,11 @@ fi_set_frame_from_source(fi_t * fi, meta_frame_t * frame) {
 		if (frame->field_val != NULL) {
 			free(frame->field_val);
 		}
-		frame->field_val = strdup(gtk_entry_get_text(GTK_ENTRY(frame->source)));
+		if (frame->type == META_FIELD_GENRE) {
+			frame->field_val = strdup(gtk_combo_box_get_active_text(GTK_COMBO_BOX(frame->source)));
+		} else {
+			frame->field_val = strdup(gtk_entry_get_text(GTK_ENTRY(frame->source)));
+		}
 	} else if (META_FIELD_INT(frame->type)) {
 		int val = 0;
 		const char * str = gtk_entry_get_text(GTK_ENTRY(frame->source));
@@ -541,16 +546,73 @@ fi_entry_changed_cb(GtkEntry * entry, gpointer data) {
 }
 
 
+gint
+genre_cmp(gconstpointer a, gconstpointer b) {
+
+	return strcmp(id3v1_genre_str_from_code(GPOINTER_TO_INT(a)),
+		      id3v1_genre_str_from_code(GPOINTER_TO_INT(b)));
+}
+
+
+void
+make_genre_combo(meta_frame_t * frame, GtkWidget ** widget, GtkWidget ** entry) {
+
+	int i;
+	GtkWidget * combo = gtk_combo_box_entry_new_text();
+	GSList * list = NULL;
+	GSList * _list;
+
+	for (i = 0; i < 256; i++) {
+		char * genre = id3v1_genre_str_from_code(i);
+		if (genre == NULL) {
+			break;
+		}
+		list = g_slist_append(list, GINT_TO_POINTER(i));
+	}
+
+	list = g_slist_sort(list, genre_cmp);
+	_list = list;
+	while (_list != NULL) {
+		char * genre = id3v1_genre_str_from_code(GPOINTER_TO_INT(_list->data));
+		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), genre);
+		_list = g_slist_next(_list);
+	}
+	g_slist_free(list);
+
+	gtk_combo_box_set_wrap_width(GTK_COMBO_BOX(combo), 4);
+
+	*widget = combo;
+	*entry = GTK_WIDGET(GTK_BIN(combo)->child);
+
+	if (frame->field_val[0] == '\0') { /* set default genre if none present */
+		gtk_entry_set_text(GTK_ENTRY(*entry), id3v1_genre_str_from_code(0));
+	} else {
+		gtk_entry_set_text(GTK_ENTRY(*entry), frame->field_val);
+	}
+
+	/* for ID3v1, only predefined genres can be selected, no editing allowed */
+	if (frame->tag == META_TAG_ID3v1) {
+		GTK_WIDGET_UNSET_FLAGS(*entry, GTK_CAN_FOCUS);
+		gtk_editable_set_editable(GTK_EDITABLE(*entry), FALSE);
+	}
+}
+
+
 GtkWidget *
 fi_procframe_entry(fi_t * fi, meta_frame_t * frame) {
 
 	metadata_t * meta = fi->meta;
+	GtkWidget * widget = NULL;
 	GtkWidget * entry = NULL;
 	if (META_FIELD_BIN(frame->type)) {
 		/* TODO create image/whatever widget, etc. */
 	} else {
-		entry = gtk_entry_new();
-		gtk_entry_set_text(GTK_ENTRY(entry), frame->field_val);
+		if (meta->writable && (frame->type == META_FIELD_GENRE)) {
+			make_genre_combo(frame, &widget, &entry);
+		} else {
+			widget = entry = gtk_entry_new();
+			gtk_entry_set_text(GTK_ENTRY(entry), frame->field_val);
+		}
 	}
 
 	if ((META_FIELD_TEXT(frame->type)) ||
@@ -560,12 +622,12 @@ fi_procframe_entry(fi_t * fi, meta_frame_t * frame) {
 			GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
 			gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 		} else {
-			g_signal_connect(G_OBJECT(entry), "changed",
+			g_signal_connect(G_OBJECT(widget), "changed",
 					 G_CALLBACK(fi_entry_changed_cb), (gpointer)fi);
 		}
-		gtk_widget_set_size_request(entry, 250, -1);
+		gtk_widget_set_size_request(widget, 250, -1);
 	}
-	return entry;
+	return widget;
 }
 
 

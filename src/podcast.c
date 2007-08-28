@@ -38,6 +38,7 @@
 #endif /* _WIN32*/
 
 #include "common.h"
+#include "i18n.h"
 #include "utils.h"
 #include "decoder/file_decoder.h"
 #include "options.h"
@@ -377,6 +378,10 @@ parse_rss_item(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr it
 		return;
 	}
 
+	if (pitem->title == NULL) {
+		pitem->title = strdup(_("Untitled"));
+	}
+
 	if (pitem->date == 0) {
 		GTimeVal tval;
 		g_get_current_time(&tval);
@@ -417,6 +422,10 @@ parse_rss(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr rss) {
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"description")) {
                         free_strdup(&podcast->desc, (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
 		}
+	}
+
+	if (podcast->title == NULL) {
+		podcast->title = strdup(_("Untitled"));
 	}
 
 	for (node = channel->xmlChildrenNode; node != NULL; node = node->next) {

@@ -66,6 +66,131 @@ typedef struct {
 } export_item_t;
 
 
+char *
+export_compress_str(char * buf, int limit) {
+
+	char * str;
+	char * valid = "abcdefghijklmnopqrstuvwxyz0123456789";
+	int i = 0;
+	int j = 0;
+
+	str = g_ascii_strdown(buf, -1);
+	g_strcanon(str, valid, '_');
+
+	for (i = 0; str[i]; i++) {
+		if (str[i] == '_') {
+			continue;
+		}
+		str[j] = str[i];
+		j++;
+	}
+
+	if (limit < j) {
+		str[limit] = '\0';
+	} else {
+		str[j] = '\0';
+	}
+
+	return str;
+}
+
+int
+export_map_has(export_map_t * map, char * val) {
+
+	export_map_t * pmap;
+
+	for (pmap = map; pmap; pmap = pmap->next) {
+		if (!strcmp(pmap->val, val)) {
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+export_map_t *
+export_map_new(export_map_t * _map, char * key, int limit) {
+
+	export_map_t * map;
+	char * tmp;
+	int i = '2';
+
+	if ((map = (export_map_t *)malloc(sizeof(export_map_t))) == NULL) {
+		fprintf(stderr, "export_map_new(): malloc error\n");
+		return NULL;
+	}
+
+	map->next = NULL;
+	map->key = strdup(key);
+
+	tmp = export_compress_str(key, limit);
+
+	while (export_map_has(_map, tmp) && i <= 'z') {
+
+		tmp[strlen(tmp)-1] = i;
+
+		if ((i >= '2' && i < '9') || (i >= 'a' && i <= 'z')) {
+			++i;
+		} else {
+			i = 'a';
+		}
+	}
+
+	map->val = strdup(tmp);
+
+	g_free(tmp);
+	return map;
+}
+
+char *
+export_map_put(export_map_t ** map, char * key, int limit) {
+
+	export_map_t * pmap;
+	export_map_t * _pmap;
+
+	if (key == NULL || key[0] == '\0') {
+		return NULL;
+	}
+
+	if (*map == NULL) {
+		*map = export_map_new(NULL, key, limit);
+		return (*map)->val;
+	} else {
+
+		for (_pmap = pmap = *map; pmap; _pmap = pmap, pmap = pmap->next) {
+
+			char * key1 = g_utf8_casefold(key, -1);
+			char * key2 = g_utf8_casefold(pmap->key, -1);
+
+			if (!g_utf8_collate(key1, key2)) {
+				g_free(key1);
+				g_free(key2);
+				return pmap->val;
+			}
+
+			g_free(key1);
+			g_free(key2);
+		}
+
+		_pmap->next = export_map_new(*map, key, limit);
+		return _pmap->next->val;
+	}
+}
+
+void
+export_map_free(export_map_t * map) {
+
+	export_map_t * pmap;
+
+	for (pmap = map; pmap; map = pmap) {
+		pmap = map->next;
+		free(map->key);
+		free(map->val);
+		free(map);
+	}
+}
+
+
 export_t *
 export_new(void) {
 
@@ -90,6 +215,8 @@ export_free(export_t * export) {
 	g_mutex_free(export->mutex);
 #endif /* _WIN32 */
 
+	export_map_free(export->artist_map);
+	export_map_free(export->record_map);
 	free(export);
 }
 
@@ -151,76 +278,22 @@ export_finish(gpointer user_data) {
 	return FALSE;
 }
 
-void
-export_compress_str(char * buf, int limit) {
-
-	char * str;
-	char * valid = "abcdefghijklmnopqrstuvwxyz0123456789";
-	int i = 0;
-	int j = 0;
-
-	str = g_ascii_strdown(buf, -1);
-	g_strcanon(str, valid, '_');
-
-	for (i = 0; str[i]; i++) {
-		if (str[i] == '_') {
-			continue;
-		}
-		str[j] = str[i];
-		j++;
-	}
-
-	str[j] = '\0';
-
-	strcpy(buf, str);
-	g_free(str);
-
-	buf[limit] = '\0';
-}
-
-void
-export_make_path_unique(char * dir, char * file) {
-
-	char test[MAXLEN];
-	char i = '2';
-
-	snprintf(test, MAXLEN-1, "%s/%s", dir, file);
-
-	while (g_file_test(test, G_FILE_TEST_EXISTS) && i <= 'z') {
-
-		dir[strlen(dir)-1] = i;
-		snprintf(test, MAXLEN-1, "%s/%s", dir, file);
-
-		if ((i >= '2' && i < '9') || (i >= 'a' && i <= 'z')) {
-			++i;
-		} else {
-			i = 'a';
-		}
-	}
-}
-
 int
 export_item_set_path(export_t * export, export_item_t * item, char * path, char * ext, int index) {
 
-	char d_artist[MAXLEN];
-	char d_album[MAXLEN];
 	char track[MAXLEN];
 	char buf[3*MAXLEN];
 	char str_no[16];
 	char str_index[16];
 
-	d_artist[0] = '\0';
-	d_album[0] = '\0';
 	track[0] = '\0';
 	buf[0] = '\0';
 
 	strcat(buf, export->outdir);
 
 	if (export->dir_for_artist) {
-		strncpy(d_artist, item->artist, MAXLEN-1);
-		export_compress_str(d_artist, export->dir_len_limit);
 		strcat(buf, "/");
-		strcat(buf, d_artist);
+		strcat(buf, export_map_put(&export->artist_map, item->artist, export->dir_len_limit));
 		if (!is_dir(buf) && mkdir(buf, S_IRUSR | S_IWUSR | S_IXUSR) < 0) {
 			fprintf(stderr, "mkdir: %s: %s\n", buf, strerror(errno));
 			return -1;
@@ -228,10 +301,8 @@ export_item_set_path(export_t * export, export_item_t * item, char * path, char 
 	}
 
 	if (export->dir_for_album) {
-		strncpy(d_album, item->album, MAXLEN-1);
-		export_compress_str(d_album, export->dir_len_limit);
 		strcat(buf, "/");
-		strcat(buf, d_album);
+		strcat(buf, export_map_put(&export->record_map, item->album, export->dir_len_limit));
 		if (!is_dir(buf) && mkdir(buf, S_IRUSR | S_IWUSR | S_IXUSR) < 0) {
 			fprintf(stderr, "mkdir: %s: %s\n", buf, strerror(errno));
 			return -1;
@@ -245,16 +316,6 @@ export_item_set_path(export_t * export, export_item_t * item, char * path, char 
 		       't', item->title, 'n', str_no, 'x', ext, 'i', str_index, 0);
 
 	snprintf(path, MAXLEN-1, "%s/%s", buf, track);
-
-	if (export->dir_for_album && g_file_test(path, G_FILE_TEST_EXISTS)) {
-		export_make_path_unique(buf, track);
-		if (!is_dir(buf) && mkdir(buf, S_IRUSR | S_IWUSR | S_IXUSR) < 0) {
-			fprintf(stderr, "mkdir: %s: %s\n", buf, strerror(errno));
-			return -1;
-		}
-		snprintf(path, MAXLEN-1, "%s/%s", buf, track);
-	}
-
 	return 0;
 }
 

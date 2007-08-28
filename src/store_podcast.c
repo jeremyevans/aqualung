@@ -765,8 +765,7 @@ podcast_iter_set_display_name(podcast_t * podcast, GtkTreeIter * pod_iter) {
 	if (podcast->author != NULL) {
 		snprintf(name_str, MAXLEN-1, "%s: %s", podcast->author, podcast->title);
 	} else {
-		name_str[0] = '\0';
-		strncat(name_str, podcast->title, MAXLEN-1);
+		strncpy(name_str, podcast->title, MAXLEN-1);
 	}
 
 	gtk_tree_store_set(music_store, pod_iter, MS_COL_NAME, name_str, -1);

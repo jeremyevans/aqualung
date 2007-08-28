@@ -23,6 +23,14 @@
 
 #include "common.h"
 
+typedef struct _export_map_t {
+
+	char * key;
+	char * val;
+	struct _export_map_t * next;
+
+} export_map_t;
+
 typedef struct {
 
 	AQUALUNG_THREAD_DECLARE(thread_id);
@@ -35,6 +43,9 @@ typedef struct {
 	int dir_for_artist;
 	int dir_for_album;
 	int dir_len_limit;
+
+	export_map_t * artist_map;
+	export_map_t * record_map;
 
 	int format;
 	int bitrate;

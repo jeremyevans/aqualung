@@ -212,10 +212,14 @@ parse_rfc822(char * str) {
 			}
 		}
 
-		if (y < 90) {
+		if (y < 100) {
 			y += 2000;
-		} else if (y < 100) {
+		} else if (y < 1000) {
 			y += 1900;
+		}
+
+		if (!g_date_valid_dmy(d, m, y)) {
+			return 0;
 		}
 
 		for (i = 0; i < sizeof(tzval) / sizeof(int); i++) {
@@ -421,6 +425,10 @@ parse_rss(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr rss) {
                         free_strdup(&podcast->author, (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"description")) {
                         free_strdup(&podcast->desc, (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
+		} else if (!xmlStrcmp(node->name, (const xmlChar *)"summary")) {
+			if (podcast->desc == NULL) {
+				free_strdup(&podcast->desc, (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
+			}
 		}
 	}
 
@@ -453,12 +461,14 @@ podcast_parse(podcast_t * podcast, GSList ** list) {
 
 	doc = xmlParseFile(filename);
 	if (doc == NULL) {
+		unlink(filename);
 		return -1;
 	}
 
 	node = xmlDocGetRootElement(doc);
 	if (node == NULL) {
 		xmlFreeDoc(doc);
+		unlink(filename);
 		return -1;
 	}
 
@@ -470,6 +480,7 @@ podcast_parse(podcast_t * podcast, GSList ** list) {
 	}
 
 	xmlFreeDoc(doc);
+	unlink(filename);
 
 	return 0;
 }
@@ -501,7 +512,7 @@ podcast_item_download(podcast_t * podcast, podcast_item_t * item) {
 	char * file;
 	char path[MAXLEN];
 	float duration;
-	
+	struct stat statbuf;	
 
 	printf("podcast_item_download\n");
 
@@ -518,6 +529,10 @@ podcast_item_download(podcast_t * podcast, podcast_item_t * item) {
 
 	duration = get_file_duration(item->file);
 	item->duration = duration < 0.0f ? 0.0f : duration;
+
+	if (stat(item->file, &statbuf) == 0) {
+		item->size = statbuf.st_size;
+	}
 
 	podcast->items = g_slist_prepend(podcast->items, item);
 	store_podcast_add_item(podcast, item);
@@ -569,7 +584,8 @@ podcast_update_thread(void * arg) {
 	for (node = list; node; node = node->next) {
 		podcast_item_t * item = (podcast_item_t *)node->data;
 
-		if (podcast->state == PODCAST_STATE_ABORTED) {
+		if (podcast->state == PODCAST_STATE_ABORTED &&
+		    item->file == NULL) {
 			podcast_item_free(item);
 			continue;
 		}

@@ -4641,6 +4641,21 @@ store_file_insert_progress_bar(GtkWidget * vbox) {
 }
 
 void
+store_file_set_toolbar_sensitivity(GtkTreeIter * iter, GtkWidget * edit,
+				   GtkWidget * add, GtkWidget * remove) {
+
+	GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), iter);
+	int depth = gtk_tree_path_get_depth(p);
+	int val = !is_store_iter_readonly(iter);
+
+	gtk_widget_set_sensitive(edit, val);
+	gtk_widget_set_sensitive(add, val);
+	gtk_widget_set_sensitive(remove, val || depth == 1);
+
+	gtk_tree_path_free(p);
+}
+
+void
 store_file_toolbar__edit_cb(gpointer data) {
 
 	GtkTreeModel * model;
@@ -4649,8 +4664,6 @@ store_file_toolbar__edit_cb(gpointer data) {
         gint level;
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &parent_iter)) {
-
-		if (is_store_iter_readonly(&parent_iter)) return;
 
 		parent_path = gtk_tree_model_get_path(model, &parent_iter);
 		level = gtk_tree_path_get_depth(parent_path);
@@ -4686,8 +4699,6 @@ store_file_toolbar__add_cb(gpointer data) {
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &parent_iter)) {
 
-		if (is_store_iter_readonly(&parent_iter)) return;
-
 		parent_path = gtk_tree_model_get_path(model, &parent_iter);
 		level = gtk_tree_path_get_depth(parent_path);
 
@@ -4718,8 +4729,6 @@ store_file_toolbar__remove_cb(gpointer data) {
         gint level;
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &parent_iter)) {
-
-		if (is_store_iter_readonly(&parent_iter)) return;
 
 		parent_path = gtk_tree_model_get_path(model, &parent_iter);
 		level = gtk_tree_path_get_depth(parent_path);

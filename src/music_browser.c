@@ -87,8 +87,6 @@ gboolean music_tree_event_cb(GtkWidget * widget, GdkEvent * event, gpointer user
 
 void toolbar__collapse_cb(gpointer data);
 void toolbar__search_cb(gpointer data);
-void set_toolbar_buttons_sensitivity(GtkTreePath *path);
-
 
 
 gboolean
@@ -335,6 +333,11 @@ toolbar__edit_cb(gpointer data) {
 		case STORE_TYPE_FILE:
 			store_file_toolbar__edit_cb(data);
 			break;
+#ifdef HAVE_PODCAST
+		case STORE_TYPE_PODCAST:
+			store_podcast_toolbar__edit_cb(data);
+			break;
+#endif /* HAVE_PODCAST */
 		}
 	}
 }
@@ -350,6 +353,11 @@ toolbar__add_cb(gpointer data) {
 		case STORE_TYPE_FILE:
 			store_file_toolbar__add_cb(data);
 			break;
+#ifdef HAVE_PODCAST
+		case STORE_TYPE_PODCAST:
+			store_podcast_toolbar__add_cb(data);
+			break;
+#endif /* HAVE_PODCAST */
 		}
 	}
 }
@@ -365,6 +373,11 @@ toolbar__remove_cb(gpointer data) {
 		case STORE_TYPE_FILE:
 			store_file_toolbar__remove_cb(data);
 			break;
+#ifdef HAVE_PODCAST
+		case STORE_TYPE_PODCAST:
+			store_podcast_toolbar__remove_cb(data);
+			break;
+#endif /* HAVE_PODCAST */
 		}
 	}
 }
@@ -402,18 +415,25 @@ tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
 
 	if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
 
-		GtkTreePath * p = gtk_tree_model_get_path(model, &iter);
-		set_toolbar_buttons_sensitivity(p);
-		gtk_tree_path_free(p);
-
 		switch (iter_get_store_type(&iter)) {
 		case STORE_TYPE_FILE:
+			if (options.enable_mstore_toolbar) {
+				store_file_set_toolbar_sensitivity(&iter,
+								   toolbar_edit_button,
+								   toolbar_add_button,
+								   toolbar_remove_button);
+			}
 			store_file_selection_changed(&iter,
 						     buffer,
 						     GTK_LABEL(statusbar_ms));
 			break;
 #ifdef HAVE_CDDA
 		case STORE_TYPE_CDDA:
+			if (options.enable_mstore_toolbar) {
+				gtk_widget_set_sensitive(toolbar_edit_button, FALSE);
+				gtk_widget_set_sensitive(toolbar_add_button, FALSE);
+				gtk_widget_set_sensitive(toolbar_remove_button, FALSE);
+			}
 			store_cdda_selection_changed(&iter,
 						     buffer,
 						     GTK_LABEL(statusbar_ms));
@@ -422,6 +442,12 @@ tree_selection_changed_cb(GtkTreeSelection * selection, gpointer data) {
 
 #ifdef HAVE_PODCAST
 		case STORE_TYPE_PODCAST:
+			if (options.enable_mstore_toolbar) {
+				store_podcast_set_toolbar_sensitivity(&iter,
+								      toolbar_edit_button,
+								      toolbar_add_button,
+								      toolbar_remove_button);
+			}
 			store_podcast_selection_changed(&iter,
 							buffer,
 							GTK_LABEL(statusbar_ms));
@@ -751,7 +777,6 @@ show_music_browser(void) {
 	}
 }
 
-
 void
 hide_music_browser(void) {
 
@@ -763,24 +788,6 @@ hide_music_browser(void) {
 	}
 	gtk_widget_hide(browser_window);
 	register_toplevel_window(browser_window, TOP_WIN_SKIN);
-}
-
-
-void
-set_toolbar_buttons_sensitivity(GtkTreePath *path) {
-
-        if (options.enable_mstore_toolbar) {
-
-                if (path_get_store_type(path) != STORE_TYPE_FILE) {
-                        gtk_widget_set_sensitive(toolbar_edit_button, FALSE);
-                        gtk_widget_set_sensitive(toolbar_add_button, FALSE);
-                        gtk_widget_set_sensitive(toolbar_remove_button, FALSE);
-                } else {
-                        gtk_widget_set_sensitive(toolbar_edit_button, TRUE);
-                        gtk_widget_set_sensitive(toolbar_add_button, TRUE);
-                        gtk_widget_set_sensitive(toolbar_remove_button, TRUE);
-                }
-        }
 }
 
 

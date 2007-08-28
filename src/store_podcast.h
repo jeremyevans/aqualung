@@ -36,6 +36,11 @@ void store_podcast_selection_changed(GtkTreeIter * iter, GtkTextBuffer * buffer,
 gboolean store_podcast_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path);
 void store_podcast_load_icons(void);
 void store_podcast_create_popup_menu(void);
+void store_podcast_set_toolbar_sensitivity(GtkTreeIter * iter, GtkWidget * edit,
+					   GtkWidget * add, GtkWidget * remove);
+void store_podcast_toolbar__edit_cb(gpointer data);
+void store_podcast_toolbar__add_cb(gpointer data);
+void store_podcast_toolbar__remove_cb(gpointer data);
 
 void create_podcast_node(void);
 void store_podcast_updater_start(void);

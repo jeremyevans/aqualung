@@ -1266,6 +1266,38 @@ store_podcast_create_popup_menu(void) {
 }
 
 void
+store_podcast_set_toolbar_sensitivity(GtkTreeIter * iter, GtkWidget * edit,
+					   GtkWidget * add, GtkWidget * remove) {
+
+	GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), iter);
+	int depth = gtk_tree_path_get_depth(p);
+
+	gtk_widget_set_sensitive(edit, depth == 2);
+	gtk_widget_set_sensitive(add, depth < 3);
+	gtk_widget_set_sensitive(remove, depth == 2);
+
+	gtk_tree_path_free(p);
+}
+
+void
+store_podcast_toolbar__edit_cb(gpointer data) {
+
+	podcast_feed__edit_cb(NULL);
+}
+
+void
+store_podcast_toolbar__add_cb(gpointer data) {
+
+	podcast_feed__subscribe_cb(NULL);
+}
+
+void
+store_podcast_toolbar__remove_cb(gpointer data) {
+
+	podcast_feed__remove_cb(NULL);
+}
+
+void
 create_podcast_node(void) {
 
 	GtkTreeIter iter;

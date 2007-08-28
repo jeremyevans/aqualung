@@ -31,6 +31,8 @@ gboolean store_file_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath *
 void store_file_load_icons(void);
 void store_file_create_popup_menu(void);
 void store_file_insert_progress_bar(GtkWidget * vbox);
+void store_file_set_toolbar_sensitivity(GtkTreeIter * iter, GtkWidget * edit,
+					GtkWidget * add, GtkWidget * remove);
 void store_file_toolbar__edit_cb(gpointer data);
 void store_file_toolbar__add_cb(gpointer data);
 void store_file_toolbar__remove_cb(gpointer data);

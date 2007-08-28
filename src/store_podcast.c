@@ -570,6 +570,7 @@ podcast_feed__subscribe_cb(gpointer data) {
 			gtk_tree_store_set(music_store, &pod_iter, MS_COL_ICON, icon_feed, -1);
 		}
 
+		store_podcast_save();
 		music_store_selection_changed();
 		podcast_update(podcast);
 	}

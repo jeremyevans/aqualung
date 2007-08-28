@@ -244,54 +244,102 @@ podcast_generic_download(podcast_t * podcast, char * url, char * path) {
 	http_session_t * session;
 	char buf[BUFSIZE];
 	FILE * out;
+	long long pos = 0;
 	int n_read;
 	int ret;
+	int credit = 5;
+	int penalty = 0;
+
+	printf("downloading '%s' => '%s'\n", url, path);
 
 	if ((out = fopen(path, "wb")) == NULL) {
 		fprintf(stderr, "podcast_generic_download: unable to open file %s\n", path);
 		return -1;
 	}
 
-	if ((session = httpc_new()) == NULL) {
-		fclose(out);
-		unlink(path);
-		return -1;
-	}
+	printf("output file opened successfully.\n");
 
-	if ((ret = httpc_init(session, NULL, url,
-			      options.inet_use_proxy,
-			      options.inet_proxy,
-			      options.inet_proxy_port,
-			      options.inet_noproxy_domains, 0L)) != HTTPC_OK) {
-
-		fprintf(stderr, "podcast_generic_download: httpc_init failed, ret = %d\n", ret);
-		httpc_del(session);
-		fclose(out);
-		unlink(path);
-		return -1;
-	}
-
-	while ((n_read = httpc_read(session, buf, BUFSIZE)) > 0) {
+	while (credit > 0) {
 
 		if (podcast->state == PODCAST_STATE_ABORTED) {
 			break;
 		}
 
-		fwrite(buf, sizeof(char), n_read, out);
-		printf(".");
-		fflush(stdout);
+		printf("download credit = %d\n", credit);
+
+		if ((session = httpc_new()) == NULL) {
+			fclose(out);
+			unlink(path);
+			return -1;
+		}
+
+		printf("start position = %lld\n", pos);
+
+		if ((ret = httpc_init(session, NULL, url,
+				      options.inet_use_proxy,
+				      options.inet_proxy,
+				      options.inet_proxy_port,
+				      options.inet_noproxy_domains, 0L)) != HTTPC_OK) {
+
+			fprintf(stderr, "podcast_generic_download: httpc_init failed, ret = %d\n", ret);
+			httpc_del(session);
+			--credit;
+			continue;
+		}
+
+		printf("session type = %d\n", session->type);
+
+		if (httpc_seek(session, pos, SEEK_SET) < -1) {
+			fprintf(stderr, "httpc_seek failed\n");
+			--credit;
+			continue;
+		}
+
+		penalty = 1;
+		while ((n_read = httpc_read(session, buf, BUFSIZE)) > 0) {
+
+			if (podcast->state == PODCAST_STATE_ABORTED) {
+				break;
+			}
+
+			pos += n_read;
+			penalty = 0;
+			fwrite(buf, sizeof(char), n_read, out);
+			printf(".");
+			fflush(stdout);
+		}
+
+		httpc_close(session);
+		httpc_del(session);
+
+		if (podcast->state == PODCAST_STATE_ABORTED) {
+			break;
+		}
+
+		if (n_read < 0) {
+			printf("\ndownload error, penalty = %d\n", penalty);
+			credit -= penalty;
+			continue;
+		}
+
+		break;
 	}
 
-	httpc_close(session);
-	httpc_del(session);
+	if (podcast->state == PODCAST_STATE_ABORTED || credit == 0) {
 
-	fclose(out);
+		if (podcast->state == PODCAST_STATE_ABORTED) {
+			printf("\naborted by user, unlink downloaded file\n");
+		} else {
+			printf("\nno more credit, download failed\n");
+		}
 
-	if (n_read < 0 || podcast->state == PODCAST_STATE_ABORTED) {
+		fclose(out);
 		unlink(path);
 		return -1;
 	}
 
+	printf("\ndownload finished successfully, pos = %lld\n", pos);
+	fclose(out);
 	return 0;
 }
 
@@ -378,7 +426,7 @@ parse_rss(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr rss) {
 	}
 }
 
-void
+int
 podcast_parse(podcast_t * podcast, GSList ** list) {
 
 	xmlDocPtr doc;
@@ -391,18 +439,18 @@ podcast_parse(podcast_t * podcast, GSList ** list) {
 	free(file);
 
 	if (podcast_generic_download(podcast, podcast->url, filename) < 0) {
-		return;
+		return -1;
 	}
 
 	doc = xmlParseFile(filename);
 	if (doc == NULL) {
-		return;
+		return -1;
 	}
 
 	node = xmlDocGetRootElement(doc);
 	if (node == NULL) {
 		xmlFreeDoc(doc);
-		return;
+		return -1;
 	}
 
 	if (!xmlStrcmp(node->name, (const xmlChar *)"rss")) {
@@ -413,6 +461,8 @@ podcast_parse(podcast_t * podcast, GSList ** list) {
 	}
 
 	xmlFreeDoc(doc);
+
+	return 0;
 }
 
 
@@ -442,7 +492,6 @@ podcast_item_download(podcast_t * podcast, podcast_item_t * item) {
 	char * file;
 	char path[MAXLEN];
 	float duration;
-	int try = 3;
 	
 
 	printf("podcast_item_download\n");
@@ -452,20 +501,9 @@ podcast_item_download(podcast_t * podcast, podcast_item_t * item) {
 	free(file);
 	item->file = strdup(path);
 
-	printf("downloading '%s' => '%s'\n", item->url, item->file);
-
-	while (try-- > 0 && podcast->state != PODCAST_STATE_ABORTED) {
-		printf("try %d\n", try+1);
-		if (podcast_generic_download(podcast, item->url, item->file) < 0) {
-			printf("\naborted or download error\n");
-		} else {
-			break;
-		}
-	}
-
-	if (try < 0 || podcast->state == PODCAST_STATE_ABORTED) {
+	if (podcast_generic_download(podcast, item->url, item->file) < 0) {
 		podcast_item_free(item);
-		printf("aborted or premanent error, could not download\n");
+		printf("aborted by user or premanent download error, could not finish download\n");
 		return;
 	}
 
@@ -491,7 +529,11 @@ podcast_update_thread(void * arg) {
 
 
 	list = g_slist_copy(podcast->items);
-	podcast_parse(podcast, &list);
+
+	if (podcast_parse(podcast, &list) < 0) {
+		goto finish;
+	}
+
 	list = g_slist_sort(list, podcast_item_compare_date);
 
 	g_get_current_time(&tval);
@@ -528,6 +570,7 @@ podcast_update_thread(void * arg) {
 		}
 	}
 
+ finish:
 	g_slist_free(list);
 
 	store_podcast_update_podcast(podcast);

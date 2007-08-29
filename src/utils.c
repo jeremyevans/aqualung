@@ -325,7 +325,11 @@ free_strdup(char ** s, const char * str) {
 		free(*s);
 	}
 
-	*s = strdup(str);
+	if (str != NULL) {
+		*s = strdup(str);
+	} else {
+		*s = NULL;
+	}
 }
 
 int

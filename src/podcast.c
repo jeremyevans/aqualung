@@ -420,7 +420,7 @@ parse_rss_item(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr it
                         pitem->desc = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"summary")) {
 			if (pitem->desc == NULL) {
-				pitem->desc = strdup((char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
+				pitem->desc = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
 			}
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"enclosure")) {
 			xmlChar * tmp;
@@ -473,14 +473,23 @@ parse_rss(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr rss) {
 	for (node = channel->xmlChildrenNode; node != NULL; node = node->next) {
 
 		if (!xmlStrcmp(node->name, (const xmlChar *)"title")) {
-                        free_strdup(&podcast->title, (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
+			if (podcast->title) {
+				free(podcast->title);
+			}
+                        podcast->title = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"author")) {
-                        free_strdup(&podcast->author, (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
+			if (podcast->author) {
+				free(podcast->author);
+			}
+                        podcast->author = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"description")) {
-                        free_strdup(&podcast->desc, (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
+			if (podcast->desc) {
+				free(podcast->desc);
+			}
+                        podcast->desc = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"summary")) {
 			if (podcast->desc == NULL) {
-				podcast->desc = strdup((char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
+				podcast->desc = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
 			}
 		}
 	}

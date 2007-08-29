@@ -762,10 +762,12 @@ podcast_iter_set_display_name(podcast_t * podcast, GtkTreeIter * pod_iter) {
 
 	char name_str[MAXLEN];
 
-	if (podcast->author != NULL) {
+	if (podcast->author != NULL && podcast->title != NULL) {
 		snprintf(name_str, MAXLEN-1, "%s: %s", podcast->author, podcast->title);
-	} else {
+	} else if (podcast->title != NULL) {
 		strncpy(name_str, podcast->title, MAXLEN-1);
+	} else {
+		strncpy(name_str, _("Untitled"), MAXLEN-1);
 	}
 
 	gtk_tree_store_set(music_store, pod_iter, MS_COL_NAME, name_str, -1);

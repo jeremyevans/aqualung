@@ -133,9 +133,9 @@ podcast_item_compare_date(gconstpointer list1, gconstpointer list2) {
 	unsigned date2 = ((podcast_item_t *)list2)->date;
 
 	if (date1 < date2) {
-		return -1;
-	} else if (date1 > date2) {
 		return 1;
+	} else if (date1 > date2) {
+		return -1;
 	}
 
 	return 0;
@@ -178,10 +178,8 @@ podcast_file_from_url(char * url) {
 unsigned
 parse_rfc822(char * str) {
 
-	char * months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-			    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-			    "January", "February", "March", "April", "May", "June",
-			    "July", "August", "September", "October", "November", "December" };
+	char * months[] = { "Ja", "F", "Mar", "Ap", "May", "Jun",
+			    "Jul", "Au", "S", "O", "N", "D" };
 
 	char * tz[] = { "UT", "GMT", "EST", "EDT", "CST", "CDT", "MST", "MDT", "PST", "PDT",
 			"A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M",
@@ -206,9 +204,9 @@ parse_rfc822(char * str) {
 		GDate * epoch;
 		GDate * date;
 
-		for (i = 0; i < sizeof(months) / sizeof(char *); i++) {
-			if (!strcmp(months[i], b)) {
-				m = (i % 12) + 1;
+		for (i = 0; i < 12; i++) {
+			if (strstr(b, months[i]) != NULL) {
+				m = i + 1;
 				break;
 			}
 		}
@@ -420,6 +418,10 @@ parse_rss_item(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr it
                         pitem->title = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"description")) {
                         pitem->desc = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
+		} else if (!xmlStrcmp(node->name, (const xmlChar *)"summary")) {
+			if (pitem->desc == NULL) {
+				pitem->desc = strdup((char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
+			}
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"enclosure")) {
 			xmlChar * tmp;
 			pitem->url = (char *)xmlGetProp(node, (const xmlChar *)"url");
@@ -434,7 +436,7 @@ parse_rss_item(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr it
 		}
 	}
 
-	if (pitem->url == NULL || pitem->size == 0) {
+	if (pitem->url == NULL) {
 		podcast_item_free(pitem);
 		return;
 	}
@@ -478,7 +480,7 @@ parse_rss(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr rss) {
                         free_strdup(&podcast->desc, (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"summary")) {
 			if (podcast->desc == NULL) {
-				free_strdup(&podcast->desc, (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
+				podcast->desc = strdup((char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
 			}
 		}
 	}
@@ -538,9 +540,9 @@ podcast_parse(podcast_t * podcast, GSList ** list) {
 
 
 GSList *
-podcast_remove_first_item(podcast_t * podcast, GSList * list) {
+podcast_list_remove_item(podcast_t * podcast, GSList * list, GSList * litem) {
 
-	podcast_item_t * item = (podcast_item_t *)list->data;
+	podcast_item_t * item = (podcast_item_t *)litem->data;
 
 	if (item->file) {
 		if (unlink(item->file) < 0) {
@@ -554,12 +556,13 @@ podcast_remove_first_item(podcast_t * podcast, GSList * list) {
 		podcast_item_free(item);
 	}
 
-	return g_slist_remove_link(list, list);
+	return g_slist_delete_link(list, litem);
 }
 
 void
-podcast_item_download(podcast_t * podcast, podcast_item_t * item) {
+podcast_item_download(podcast_t * podcast, GSList ** list, GSList * node) {
 
+	podcast_item_t * item = (podcast_item_t *)node->data;
 	char * file;
 	char path[MAXLEN];
 	float duration;
@@ -570,14 +573,15 @@ podcast_item_download(podcast_t * podcast, podcast_item_t * item) {
 	file = podcast_file_from_url(item->url);
 	snprintf(path, MAXLEN-1, "%s/%s", podcast->dir, file);
 	free(file);
-	item->file = strdup(path);
 
-	if (podcast_generic_download(podcast, item->url, item->file) < 0) {
-		podcast_item_free(item);
+	if (podcast_generic_download(podcast, item->url, path) < 0) {
 		printf("aborted by user or premanent download error, could not finish download\n");
+		printf("moving on to next file\n");
+		*list = podcast_list_remove_item(podcast, *list, node);
 		return;
 	}
 
+	item->file = strdup(path);
 	duration = get_file_duration(item->file);
 	item->duration = duration < 0.0f ? 0.0f : duration;
 
@@ -589,16 +593,71 @@ podcast_item_download(podcast_t * podcast, podcast_item_t * item) {
 	store_podcast_add_item(podcast, item);
 }
 
+void
+podcast_apply_limits(podcast_t * podcast, GSList ** list) {
+
+	GSList * node;
+	unsigned size = 0;
+	int count = 0;
+
+	printf("podcast_apply_limits\n");
+	for (node = *list; node; node = node->next) {
+		podcast_item_t * item = (podcast_item_t *)node->data;
+		printf("item url = %s\n", item->url);
+		size += item->size;
+		++count;
+	}
+
+	node = g_slist_last(*list);
+	while (*list != NULL &&
+	       ((podcast->flags & PODCAST_DATE_LIMIT &&
+		 podcast->last_checked - ((podcast_item_t *)node->data)->date > podcast->date_limit)
+		||
+		(podcast->flags & PODCAST_SIZE_LIMIT &&
+		 size > podcast->size_limit)
+		||
+		(podcast->flags & PODCAST_COUNT_LIMIT &&
+		 count > podcast->count_limit))) {
+
+		size -= ((podcast_item_t *)node->data)->size;
+		--count;
+		*list = podcast_list_remove_item(podcast, *list, node);
+		node = g_slist_last(*list);
+	}
+}
+
+int
+podcast_download_next(podcast_t * podcast, GSList ** list) {
+
+	GSList * node;
+
+	printf("podcast_download_next\n");
+	for (node = *list; node; node = node->next) {
+		podcast_item_t * item = (podcast_item_t *)node->data;
+
+		if (podcast->state == PODCAST_STATE_ABORTED) {
+			if (item->file == NULL) {
+				podcast_item_free(item);
+			}
+			continue;
+		}
+
+		if (item->file == NULL) {
+			podcast_item_download(podcast, list, node);
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
 void *
 podcast_update_thread(void * arg) {
 
 	podcast_t * podcast = (podcast_t *)arg;
-	unsigned size = 0;
-	int count = 0;
 
 	GTimeVal tval;
 	GSList * list;
-	GSList * node;
 
 	AQUALUNG_THREAD_DETACH();
 
@@ -614,37 +673,9 @@ podcast_update_thread(void * arg) {
 	g_get_current_time(&tval);
 	podcast->last_checked = tval.tv_sec;
 
-	for (node = list; node; node = node->next) {
-		podcast_item_t * item = (podcast_item_t *)node->data;
-		size += item->size;
-		++count;
-	}
-
-	while ((list != NULL) &&
-	       ((podcast->flags & PODCAST_DATE_LIMIT && tval.tv_sec - ((podcast_item_t *)list->data)->date > podcast->date_limit) ||
-		(podcast->flags & PODCAST_SIZE_LIMIT && size > podcast->size_limit) ||
-		(podcast->flags & PODCAST_COUNT_LIMIT && count > podcast->count_limit))) {
-
-		size -= ((podcast_item_t *)list->data)->size;
-		--count;
-		list = podcast_remove_first_item(podcast, list);
-	}
-
-	list = g_slist_reverse(list);
-
-	for (node = list; node; node = node->next) {
-		podcast_item_t * item = (podcast_item_t *)node->data;
-
-		if (podcast->state == PODCAST_STATE_ABORTED &&
-		    item->file == NULL) {
-			podcast_item_free(item);
-			continue;
-		}
-
-		if (item->file == NULL) {
-			podcast_item_download(podcast, item);
-		}
-	}
+	do {
+		podcast_apply_limits(podcast, &list);
+	} while (podcast_download_next(podcast, &list));
 
  finish:
 	g_slist_free(list);

@@ -179,7 +179,9 @@ unsigned
 parse_rfc822(char * str) {
 
 	char * months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-			    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+			    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+			    "January", "February", "March", "April", "May", "June",
+			    "July", "August", "September", "October", "November", "December" };
 
 	char * tz[] = { "UT", "GMT", "EST", "EDT", "CST", "CDT", "MST", "MDT", "PST", "PDT",
 			"A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M",
@@ -195,19 +197,18 @@ parse_rfc822(char * str) {
 	int H = 0;  /* hour */
 	int M = 0;  /* min */
 	int S = 0;  /* sec */
-	char a[16]; /* weekday (unused) */
 	char b[16]; /* month name */
 	char z[16]; /* timezone */
 
 
-	if (sscanf(str, "%s %d %s %d %d:%d:%d %s", a, &d, b, &y, &H, &M, &S, z) == 8) {
+	if (sscanf(str, "%*[^,], %d %15s %d %d:%d:%d %15s", &d, b, &y, &H, &M, &S, z) == 7) {
 
 		GDate * epoch;
 		GDate * date;
 
-		for (i = 0; i < 12; i++) {
+		for (i = 0; i < sizeof(months) / sizeof(char *); i++) {
 			if (!strcmp(months[i], b)) {
-				m = i + 1;
+				m = (i % 12) + 1;
 				break;
 			}
 		}
@@ -241,6 +242,62 @@ parse_rfc822(char * str) {
 	}
 
 	return 0;
+}
+
+unsigned
+parse_ymd(char * str) {
+
+	int a = 0;
+	int b = 0;
+	int c = 0;
+
+	if (sscanf(str, "%d-%d-%d", &a, &b, &c) == 3) {
+
+		GDate * epoch;
+		GDate * date;
+		int y = 0, m = 0, d = 0;
+
+		if (a > 1900) {
+			y = a;
+			m = b;
+			d = c;
+		} else if (c > 1900) {
+			y = c;
+			m = a;
+			d = b;
+		} else {
+			return 0;
+		}
+
+		if (!g_date_valid_dmy(d, m, y)) {
+			return 0;
+		}
+
+		epoch = g_date_new_dmy(1, 1, 1970);
+		date = g_date_new_dmy(d, m, y);
+
+		return g_date_days_between(epoch, date) * 86400;
+	}
+
+	return 0;
+}
+
+unsigned
+parse_date(char * str) {
+
+	GTimeVal tval;
+	unsigned val;
+
+	if ((val = parse_rfc822(str)) > 0) {
+		return val;
+	}
+
+	if ((val = parse_ymd(str)) > 0) {
+		return val;
+	}
+
+	g_get_current_time(&tval);
+	return tval.tv_sec;
 }
 
 int
@@ -372,7 +429,7 @@ parse_rss_item(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr it
 			}
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"pubDate")) {
 			xmlChar * tmp = xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
-			pitem->date = parse_rfc822((char *)tmp);
+			pitem->date = parse_date((char *)tmp);
 			xmlFree(tmp);
 		}
 	}
@@ -384,12 +441,6 @@ parse_rss_item(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr it
 
 	if (pitem->title == NULL) {
 		pitem->title = strdup(_("Untitled"));
-	}
-
-	if (pitem->date == 0) {
-		GTimeVal tval;
-		g_get_current_time(&tval);
-		pitem->date = tval.tv_sec;
 	}
 
 	if (g_slist_find_custom(*list, pitem->url, podcast_item_compare_url) == NULL) {

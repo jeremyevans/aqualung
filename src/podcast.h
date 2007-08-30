@@ -34,6 +34,7 @@ typedef struct {
 	char * desc;
 	char * url;
 
+	int new;
 	float duration; /* sec */
 	unsigned size;  /* byte */
 	unsigned date;  /* sec */

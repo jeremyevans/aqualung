@@ -101,6 +101,7 @@ podcast_item_new(void) {
 		return NULL;
 	}
 
+	item->new = 1;
 	item->size = 0;
 	item->date = 0;
 	item->duration = 0.0f;

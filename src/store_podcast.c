@@ -408,6 +408,9 @@ podcast_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl, GtkTreeIter 
 			   PL_COL_DURATION, item->duration,
 			   PL_COL_DURATION_DISP, duration_str, -1);
 
+	item->new = 0;
+	gtk_tree_store_set(music_store, &iter_track, MS_COL_FONT, PANGO_WEIGHT_NORMAL, -1);
+
 	return item->duration;
 }
 
@@ -480,6 +483,7 @@ podcast_track__addlist_cb(gpointer data) {
 		if (pl == playlist_get_current()) {
 			playlist_content_changed(pl);
 		}
+		store_podcast_save();
 	}
 }
 
@@ -495,6 +499,7 @@ podcast_feed__addlist_with_mode(int mode, gpointer data) {
 		if (pl == playlist_get_current()) {
 			playlist_content_changed(pl);
 		}
+		store_podcast_save();
 	}
 }
 
@@ -539,6 +544,7 @@ podcast_store__addlist_with_mode(int mode, gpointer data) {
 		if (pl == playlist_get_current()) {
 			playlist_content_changed(pl);
 		}
+		store_podcast_save();
 	}
 }
 
@@ -834,6 +840,7 @@ store_podcast_add_item_cb(gpointer data) {
 	gtk_tree_store_set(music_store, &iter,
 			   MS_COL_NAME, pt->item->title,
 			   MS_COL_SORT, sort,
+			   MS_COL_FONT, PANGO_WEIGHT_BOLD,
 			   MS_COL_DATA, pt->item, -1);
 
 	if (options.enable_ms_tree_icons) {
@@ -1402,6 +1409,7 @@ save_podcast_item(xmlDocPtr doc, xmlNodePtr root, GtkTreeIter * iter) {
 	xml_save_str(node, "url", item->url);
 	xml_save_str(node, "sort", sort);
 
+	xml_save_int(node, "new", item->new);
 	xml_save_float(node, "duration", item->duration);
 	xml_save_uint(node, "size", item->size);
 	xml_save_uint(node, "date", item->date);
@@ -1499,11 +1507,15 @@ parse_podcast_item(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * pod_iter, podcas
 		xml_load_str_dup(doc, cur, "url", &item->url);
 		xml_load_str(doc, cur, "sort", sort);
 
+		xml_load_int(doc, cur, "new", &item->new);
 		xml_load_float(doc, cur, "duration", &item->duration);
 		xml_load_uint(doc, cur, "size", &item->size);
 		xml_load_uint(doc, cur, "date", &item->date);
 	}
 
+	if (item->new) {
+		gtk_tree_store_set(music_store, &iter, MS_COL_FONT, PANGO_WEIGHT_BOLD, -1);
+	}
 	gtk_tree_store_set(music_store, &iter, MS_COL_NAME, item->title, -1);
 	gtk_tree_store_set(music_store, &iter, MS_COL_SORT, sort, -1);
 }

@@ -802,6 +802,7 @@ music_store_mark_changed(GtkTreeIter * iter) {
 	char * pname;
 	store_t * data;
 
+	music_store_selection_changed(STORE_TYPE_FILE);
 
 	path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), iter);
 
@@ -837,7 +838,6 @@ music_store_mark_changed(GtkTreeIter * iter) {
 	g_free(pname);
 
 	gtk_tree_store_set(music_store, &iter_store, MS_COL_NAME, name, -1);
-	music_store_selection_changed(STORE_TYPE_FILE);
 
 	music_store_changed = 1;
 	gtk_window_set_title(GTK_WINDOW(browser_window), _("*Music Store"));

@@ -137,12 +137,22 @@ sfac_clicked(GtkWidget * widget, gpointer data) {
 
 
 void
-search_foreach(playlist_t * pl, GPatternSpec * pattern, GtkTreeIter * list_iter) {
+search_foreach(playlist_t * pl, GPatternSpec * pattern, GtkTreeIter * list_iter, int album_node) {
 
 	char * text;
 	char * tmp = NULL;
 
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), list_iter, PL_COL_TRACK_NAME, &text, -1);
+
+	if (album_node) {
+		int len1, len2;
+		char * pack;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), list_iter, PL_COL_PHYSICAL_FILENAME, &pack, -1);
+		sscanf(pack, "%04X%04X", &len1, &len2);
+		text[len1 + len2 + 2] = '\0';
+		g_free(pack);
+	}
 
 	if (casesens) {
 		tmp = strdup(text);
@@ -220,12 +230,14 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 				int j = 0;
 				GtkTreeIter iter;
 
+				search_foreach(pl, pattern, &list_iter, 1/*album node*/);
+
 				while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store),
 								     &iter, &list_iter, j++)) {
-					search_foreach(pl, pattern, &iter);
+					search_foreach(pl, pattern, &iter, 0/*track node*/);
 				}
 			} else {
-				search_foreach(pl, pattern, &list_iter);
+				search_foreach(pl, pattern, &list_iter, 0/*track node*/);
 			}
 		}
 	}

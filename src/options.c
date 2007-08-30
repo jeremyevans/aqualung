@@ -3169,6 +3169,7 @@ save_config(void) {
 	SAVE_FLOAT(loop_range_start);
 	SAVE_FLOAT(loop_range_end);
 	SAVE_INT(wm_systray_warn);
+	SAVE_INT(podcasts_autocheck);
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
@@ -3328,6 +3329,7 @@ load_config(void) {
 	options.loop_range_end = 1.0f;
 
 	options.wm_systray_warn = 1;
+	options.podcasts_autocheck = 1;
 
 	options.search_pl_flags = 0;
 	options.search_ms_flags = SEARCH_F_AN | SEARCH_F_RT | SEARCH_F_TT | SEARCH_F_CO;
@@ -3525,6 +3527,7 @@ load_config(void) {
 		LOAD_FLOAT(loop_range_start);
 		LOAD_FLOAT(loop_range_end);
 		LOAD_INT(wm_systray_warn);
+		LOAD_INT(podcasts_autocheck);
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);

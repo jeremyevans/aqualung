@@ -62,7 +62,6 @@ GtkWidget * podcast_track__addlist;
 GtkWidget * podcast_feed_menu;
 GtkWidget * podcast_feed__addlist;
 GtkWidget * podcast_feed__addlist_albummode;
-GtkWidget * podcast_feed__separator1;
 GtkWidget * podcast_feed__subscribe;
 GtkWidget * podcast_feed__edit;
 GtkWidget * podcast_feed__update;
@@ -72,9 +71,9 @@ GtkWidget * podcast_feed__remove;
 GtkWidget * podcast_store_menu;
 GtkWidget * podcast_store__addlist;
 GtkWidget * podcast_store__addlist_albummode;
-GtkWidget * podcast_store__separator1;
 GtkWidget * podcast_store__subscribe;
 GtkWidget * podcast_store__update;
+GtkWidget * podcast_store__update_enabled;
 
 void podcast_store__addlist_defmode(gpointer data);
 void podcast_feed__addlist_defmode(gpointer data);
@@ -223,6 +222,15 @@ insert_check_label_spin(GtkWidget * table, GtkWidget ** check, char * ltext, Gtk
 	gtk_widget_set_sensitive(*spin, active);
 }
 
+void
+set_option_bit_from_toggle(GtkWidget * toggle, int * option, int flag) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(toggle))) {
+		*option |= flag;
+	} else {
+		*option &= ~flag;
+	}
+}
 
 /* create == 1 : add new podcast; else edit existing podcast */
 int
@@ -268,14 +276,25 @@ podcast_dialog(podcast_t ** podcast, int create) {
 	}
 
 
-	insert_check_label_spin(table, &check_check, _("Check interval [hour]:"), &check_spin,
-				create ? 1.0 : (*podcast)->check_interval / 3600.0, 0.25, 168.0,
-				3, 4, create || (*podcast)->flags & PODCAST_AUTO_CHECK);
-	gtk_spin_button_set_digits(GTK_SPIN_BUTTON(check_spin), 2);
-	gtk_spin_button_set_increments(GTK_SPIN_BUTTON(check_spin), 0.25, 1.0);
+	if (options.podcasts_autocheck || create) {
+		insert_check_label_spin(table, &check_check, _("Auto-check interval [hour]:"), &check_spin,
+					create ? 1.0 : (*podcast)->check_interval / 3600.0, 0.25, 168.0,
+					3, 4, create || (*podcast)->flags & PODCAST_AUTO_CHECK);
+		gtk_spin_button_set_digits(GTK_SPIN_BUTTON(check_spin), 2);
+		gtk_spin_button_set_increments(GTK_SPIN_BUTTON(check_spin), 0.25, 1.0);
+	} else {
+		GtkWidget * label = gtk_label_new(_("Automatic update has been disabled for all feeds\n"
+						    "in the Podcasts store popup menu."));
+		GtkWidget * icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_BUTTON);
+		GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+
+		gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 5);
+		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
+		gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 3, 4, GTK_FILL, GTK_FILL, 5, 5);
+	}
 
 	frame = gtk_frame_new(_("Limits"));
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), frame, FALSE, TRUE, 2);
+        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), frame, FALSE, TRUE, 5);
 	table = gtk_table_new(3, 2, FALSE);
         gtk_container_add(GTK_CONTAINER(frame), table);
 
@@ -324,25 +343,18 @@ podcast_dialog(podcast_t ** podcast, int create) {
 			(*podcast)->url = strdup(url);
 		}
 
-		(*podcast)->check_interval = gtk_spin_button_get_value(GTK_SPIN_BUTTON(check_spin)) * 3600;
+		if (options.podcasts_autocheck || create) {
+			(*podcast)->check_interval = gtk_spin_button_get_value(GTK_SPIN_BUTTON(check_spin)) * 3600;
+			set_option_bit_from_toggle(check_check, &(*podcast)->flags, PODCAST_AUTO_CHECK);
+		}
+
+		set_option_bit_from_toggle(count_check, &(*podcast)->flags, PODCAST_COUNT_LIMIT);
+		set_option_bit_from_toggle(date_check, &(*podcast)->flags, PODCAST_DATE_LIMIT);
+		set_option_bit_from_toggle(size_check, &(*podcast)->flags, PODCAST_SIZE_LIMIT);
 
 		(*podcast)->count_limit = gtk_spin_button_get_value(GTK_SPIN_BUTTON(count_spin));
 		(*podcast)->date_limit = gtk_spin_button_get_value(GTK_SPIN_BUTTON(date_spin)) * 86400;
 		(*podcast)->size_limit = gtk_spin_button_get_value(GTK_SPIN_BUTTON(size_spin)) * 1024 * 1024;
-
-		(*podcast)->flags = 0;
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_check))) {
-			(*podcast)->flags |= PODCAST_AUTO_CHECK;
-		}
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(count_check))) {
-			(*podcast)->flags |= PODCAST_COUNT_LIMIT;
-		}
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(date_check))) {
-			(*podcast)->flags |= PODCAST_DATE_LIMIT;
-		}
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(size_check))) {
-			(*podcast)->flags |= PODCAST_SIZE_LIMIT;
-		}
 
 		gtk_widget_destroy(dialog);
 		return 1;
@@ -728,6 +740,16 @@ podcast_store__update_cb(gpointer data) {
 		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating..."), -1);
 		music_store_selection_changed();
 		podcast_update(podcast);
+	}
+}
+
+void
+podcast_store__update_enabled_cb(gpointer data) {
+
+	if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(podcast_store__update_enabled))) {
+		options.podcasts_autocheck = 1;
+	} else {
+		options.podcasts_autocheck = 0;
 	}
 }
 
@@ -1193,6 +1215,8 @@ store_podcast_load_icons(void) {
 void
 store_podcast_create_popup_menu(void) {
 
+	GtkWidget * separator;
+
 	/* create popup menu for podcast_track tree items */
 	podcast_track_menu = gtk_menu_new();
 	register_toplevel_window(podcast_track_menu, TOP_WIN_SKIN);
@@ -1207,7 +1231,6 @@ store_podcast_create_popup_menu(void) {
 
 	podcast_feed__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	podcast_feed__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
-	podcast_feed__separator1 = gtk_separator_menu_item_new();
 	podcast_feed__subscribe = gtk_menu_item_new_with_label(_("Subscribe to new feed"));
 	podcast_feed__edit = gtk_menu_item_new_with_label(_("Edit feed"));
 	podcast_feed__update = gtk_menu_item_new_with_label(_("Update feed"));
@@ -1216,7 +1239,11 @@ store_podcast_create_popup_menu(void) {
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__addlist_albummode);
-	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__separator1);
+
+	separator = gtk_separator_menu_item_new();
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), separator);
+	gtk_widget_show(separator);
+
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__subscribe);
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__edit);
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__update);
@@ -1233,7 +1260,6 @@ store_podcast_create_popup_menu(void) {
 
 	gtk_widget_show(podcast_feed__addlist);
 	gtk_widget_show(podcast_feed__addlist_albummode);
-	gtk_widget_show(podcast_feed__separator1);
 	gtk_widget_show(podcast_feed__subscribe);
 	gtk_widget_show(podcast_feed__edit);
 	gtk_widget_show(podcast_feed__update);
@@ -1244,26 +1270,39 @@ store_podcast_create_popup_menu(void) {
 	register_toplevel_window(podcast_store_menu, TOP_WIN_SKIN);
 	podcast_store__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
 	podcast_store__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
-	podcast_store__separator1 = gtk_separator_menu_item_new();
 	podcast_store__subscribe = gtk_menu_item_new_with_label(_("Subscribe to new feed"));
 	podcast_store__update = gtk_menu_item_new_with_label(_("Update all feeds"));
+	podcast_store__update_enabled = gtk_check_menu_item_new_with_label(_("Automatically update feeds"));
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), podcast_store__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), podcast_store__addlist_albummode);
-	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), podcast_store__separator1);
+
+	separator = gtk_separator_menu_item_new();
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), separator);
+	gtk_widget_show(separator);
+
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), podcast_store__subscribe);
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), podcast_store__update);
+
+	separator = gtk_separator_menu_item_new();
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), separator);
+	gtk_widget_show(separator);
+
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), podcast_store__update_enabled);
 
  	g_signal_connect_swapped(G_OBJECT(podcast_store__addlist), "activate", G_CALLBACK(podcast_store__addlist_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_store__addlist_albummode), "activate", G_CALLBACK(podcast_store__addlist_albummode_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_store__subscribe), "activate", G_CALLBACK(podcast_feed__subscribe_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_store__update), "activate", G_CALLBACK(podcast_store__update_cb), NULL);
+ 	g_signal_connect_swapped(G_OBJECT(podcast_store__update_enabled), "activate", G_CALLBACK(podcast_store__update_enabled_cb), NULL);
+
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(podcast_store__update_enabled), options.podcasts_autocheck);
 
 	gtk_widget_show(podcast_store__addlist);
 	gtk_widget_show(podcast_store__addlist_albummode);
-	gtk_widget_show(podcast_store__separator1);
 	gtk_widget_show(podcast_store__subscribe);
 	gtk_widget_show(podcast_store__update);
+	gtk_widget_show(podcast_store__update_enabled);
 }
 
 void
@@ -1327,7 +1366,11 @@ gboolean
 store_podcast_updater_cb(gpointer data) {
 
 	printf("store_podcast_updater_cb\n");
-	podcast_store__update_cb((gpointer)1);
+	if (options.podcasts_autocheck) {
+		podcast_store__update_cb((gpointer)1);
+	} else {
+		printf("auto-check disabled, skipping all feeds\n");
+	}
 
 	return TRUE;
 }

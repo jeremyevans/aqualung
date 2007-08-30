@@ -67,6 +67,7 @@ typedef struct {
 	float loop_range_start;
 	float loop_range_end;
 	int wm_systray_warn;
+	int podcasts_autocheck;
 
 	/* General */
 	char title_format[MAXLEN];

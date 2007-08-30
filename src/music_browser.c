@@ -389,11 +389,13 @@ toolbar__save_cb(gpointer data) {
 }
 
 void
-music_store_selection_changed(void) {
+music_store_selection_changed(int store_type) {
 
 	GtkTreeIter iter;
 
-	if (gtk_tree_selection_get_selected(music_select, NULL, &iter)) {
+	if (gtk_tree_selection_get_selected(music_select, NULL, &iter) &&
+	    (store_type == STORE_TYPE_ALL || iter_get_store_type(&iter) == store_type)) {
+
 		gtk_tree_selection_unselect_iter(music_select, &iter);
 		gtk_tree_selection_select_iter(music_select, &iter);
 	}
@@ -801,8 +803,6 @@ music_store_mark_changed(GtkTreeIter * iter) {
 	store_t * data;
 
 
-	music_store_selection_changed();
-
 	path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), iter);
 
         while (gtk_tree_path_get_depth(path) > 1) {
@@ -824,8 +824,7 @@ music_store_mark_changed(GtkTreeIter * iter) {
 			store_data->dirty = 1;
 		}
 		break;
-	case STORE_TYPE_CDDA:
-	case STORE_TYPE_PODCAST:
+	default:
 		/* skip */
 		return;
 	}
@@ -838,6 +837,7 @@ music_store_mark_changed(GtkTreeIter * iter) {
 	g_free(pname);
 
 	gtk_tree_store_set(music_store, &iter_store, MS_COL_NAME, name, -1);
+	music_store_selection_changed(STORE_TYPE_FILE);
 
 	music_store_changed = 1;
 	gtk_window_set_title(GTK_WINDOW(browser_window), _("*Music Store"));
@@ -866,8 +866,7 @@ music_store_mark_saved(GtkTreeIter * iter_store) {
 			store_data->dirty = 0;
 		}
 		break;
-	case STORE_TYPE_CDDA:
-	case STORE_TYPE_PODCAST:
+	default:
 		/* skip */
 		return;
 	}
@@ -889,8 +888,7 @@ music_store_mark_saved(GtkTreeIter * iter_store) {
 				}
 			}
 			break;
-		case STORE_TYPE_CDDA:
-		case STORE_TYPE_PODCAST:
+		default:
 			/* skip */
 			break;
 		}
@@ -902,7 +900,7 @@ music_store_mark_saved(GtkTreeIter * iter_store) {
 		gtk_widget_set_sensitive(toolbar_save_button, FALSE);
 	}
 
-	music_store_selection_changed();
+	music_store_selection_changed(STORE_TYPE_FILE);
 }
 
 

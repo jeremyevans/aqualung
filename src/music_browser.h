@@ -35,7 +35,7 @@ int iter_get_store_type(GtkTreeIter * i);
 void music_store_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, int new_tab);
 int music_store_iter_is_track(GtkTreeIter * iter);
 
-void music_store_selection_changed(void);
+void music_store_selection_changed(int store_type);
 void music_browser_set_font(int cond);
 
 void music_store_mark_changed(GtkTreeIter * iter);
@@ -65,7 +65,8 @@ enum {
 	STORE_TYPE_INVALID,
 	STORE_TYPE_FILE,
 	STORE_TYPE_CDDA,
-	STORE_TYPE_PODCAST
+	STORE_TYPE_PODCAST,
+	STORE_TYPE_ALL
 };
 
 typedef union {

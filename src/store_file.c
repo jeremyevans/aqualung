@@ -3595,7 +3595,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 	case 4:
 		track_status_bar_info(model, tree_iter, &size, &length);
 		ntrack = 1;
-		sprintf(str, "%s: ", name);
+		sprintf(str, "%s ", name);
 		break;
 	case 3:
 		record_status_bar_info(model, tree_iter, &size, &length, &ntrack);

@@ -405,6 +405,31 @@ podcast_generic_download(podcast_t * podcast, char * url, char * path) {
 }
 
 void
+string_remove_html(char * str) {
+
+	int i, j;
+
+	if (str == NULL) {
+		return;
+	}
+
+	for (i = j = 0; str[i]; i++) {
+		if (str[i] == '<') {
+			while (str[i] && str[i] != '>') {
+				++i;
+			}
+			if (str[i] == '\0') {
+				break;
+			}
+		} else {
+			str[j++] = str[i];
+		}
+	}
+
+	str[j] = '\0';
+}
+
+void
 parse_rss_item(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr item) {
 
 	podcast_item_t * pitem;
@@ -441,6 +466,8 @@ parse_rss_item(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr it
 		podcast_item_free(pitem);
 		return;
 	}
+
+	string_remove_html(pitem->desc);
 
 	if (pitem->title == NULL) {
 		pitem->title = strdup(_("Untitled"));
@@ -498,6 +525,8 @@ parse_rss(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr rss) {
 	if (podcast->title == NULL) {
 		podcast->title = strdup(_("Untitled"));
 	}
+
+	string_remove_html(podcast->desc);
 
 	for (node = channel->xmlChildrenNode; node != NULL; node = node->next) {
 		if (!xmlStrcmp(node->name, (const xmlChar *)"item")) {

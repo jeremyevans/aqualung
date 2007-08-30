@@ -769,7 +769,7 @@ insert_cdda_drive_node(char * device_path) {
 		update_track_data(drive, iter_drive);
 	}
 
-	music_store_selection_changed();
+	music_store_selection_changed(STORE_TYPE_CDDA);
 }
 
 void
@@ -795,7 +795,7 @@ remove_cdda_drive_node(char * device_path) {
 		store_cdda_remove_record(&iter_drive);
 	}
 
-	music_store_selection_changed();
+	music_store_selection_changed(STORE_TYPE_CDDA);
 }
 
 
@@ -857,7 +857,7 @@ refresh_cdda_drive_node(char * device_path) {
 		update_track_data(drive, iter_drive);
 	}
 
-	music_store_selection_changed();
+	music_store_selection_changed(STORE_TYPE_CDDA);
 }
 
 void

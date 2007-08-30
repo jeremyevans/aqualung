@@ -387,7 +387,7 @@ store_cdda_export_merged(cddb_lookup_t * data, char * artist, char * record, cha
 
 	gtk_tree_store_set(music_store, &data->iter_record, MS_COL_NAME, name, -1);
 
-	music_store_selection_changed();
+	music_store_selection_changed(STORE_TYPE_CDDA);
 }
 #endif /* HAVE_CDDA */
 

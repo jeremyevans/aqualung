@@ -589,7 +589,6 @@ podcast_feed__subscribe_cb(gpointer data) {
 		}
 
 		store_podcast_save();
-		music_store_selection_changed();
 		podcast_update(podcast);
 	}
 }
@@ -609,7 +608,6 @@ podcast_feed__edit_cb(gpointer data) {
 
 		if (podcast_dialog(&podcast, 0/*edit*/)) {
 			store_podcast_save();
-			music_store_selection_changed();
 		}
 	}
 }
@@ -628,7 +626,7 @@ podcast_feed__update_cb(gpointer data) {
 		}
 
 		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating..."), -1);
-		music_store_selection_changed();
+		music_store_selection_changed(STORE_TYPE_PODCAST);
 		podcast_update(podcast);
 	}
 }
@@ -696,7 +694,6 @@ podcast_feed__remove_cb(gpointer data) {
 
 			store_podcast_remove_podcast(&iter);
 			store_podcast_save();
-			music_store_selection_changed();
 		}
 
 		g_free(title);
@@ -744,7 +741,7 @@ podcast_store__update_cb(gpointer data) {
 		}
 
 		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating..."), -1);
-		music_store_selection_changed();
+		music_store_selection_changed(STORE_TYPE_PODCAST);
 		podcast_update(podcast);
 	}
 }
@@ -813,7 +810,6 @@ store_podcast_update_podcast_cb(gpointer data) {
 
 	podcast_iter_set_display_name(podcast, &pod_iter);
 	store_podcast_save();
-	music_store_selection_changed();
 
 	podcast->state = PODCAST_STATE_IDLE;
 
@@ -850,7 +846,6 @@ store_podcast_add_item_cb(gpointer data) {
 	free(pt);
 
 	store_podcast_save();
-	music_store_selection_changed();
 
 	return FALSE;
 }
@@ -883,7 +878,6 @@ store_podcast_remove_item_cb(gpointer data) {
 	free(pt);
 
 	store_podcast_save();
-	music_store_selection_changed();
 
 	return FALSE;
 }
@@ -944,7 +938,8 @@ set_comment_text(GtkTreeIter * tree_iter, GtkTextIter * text_iter, GtkTextBuffer
 }
 
 static void
-item_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, float * length) {
+item_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, float * length,
+		     int * nnewitem) {
 
 	podcast_item_t * item;
 
@@ -952,17 +947,21 @@ item_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, fl
 
 	*size += item->size / 1024.0;
 	*length += item->duration;
+
+	if (item->new) {
+		*nnewitem += 1;
+	}
 }
 
 static void
 feed_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, float * length,
-		     int * nitem) {
+		     int * nnewitem, int * nitem) {
 
 	GtkTreeIter track_iter;
 	int i = 0;
 
 	while (gtk_tree_model_iter_nth_child(model, &track_iter, iter, i++)) {
-		item_status_bar_info(model, &track_iter, size, length);
+		item_status_bar_info(model, &track_iter, size, length, nnewitem);
 	}
 
 	*nitem += i - 1;
@@ -970,13 +969,13 @@ feed_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, fl
 
 static void
 store_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, float * length,
-		       int * nitem, int * nfeed) {
+		      int * nnewitem, int * nitem, int * nfeed) {
 
 	GtkTreeIter record_iter;
 	int i = 0;
 
 	while (gtk_tree_model_iter_nth_child(model, &record_iter, iter, i++)) {
-		feed_status_bar_info(model, &record_iter, size, length, nitem);
+		feed_status_bar_info(model, &record_iter, size, length, nnewitem, nitem);
 	}
 
 	*nfeed = i - 1;
@@ -985,7 +984,7 @@ store_status_bar_info(GtkTreeModel * model, GtkTreeIter * iter, double * size, f
 static void
 set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
-	int nitem = 0, nfeed = 0;
+	int nnewitem = 0, nitem = 0, nfeed = 0;
 	float length = 0.0f;
 	double size = 0.0;
 
@@ -1007,19 +1006,32 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
 	switch (depth) {
 	case 3:
-		item_status_bar_info(model, tree_iter, &size, &length);
-		sprintf(str, "%s: ", name);
+		item_status_bar_info(model, tree_iter, &size, &length, &nnewitem);
+		sprintf(str, "%s ", name);
 		break;
 	case 2:
-		feed_status_bar_info(model, tree_iter, &size, &length, &nitem);
-		sprintf(str, "%s:  %d %s ", name,
-			nitem, (nitem == 1) ? _("item") : _("items"));
+		feed_status_bar_info(model, tree_iter, &size, &length, &nnewitem, &nitem);
+		if (nnewitem > 0) {
+			sprintf(str, "%s:  %d %s, %d %s ", name,
+				nitem, (nitem == 1) ? _("item") : _("items"),
+				nnewitem, (nnewitem == 1) ? _("new item") : _("new items"));
+		} else {
+			sprintf(str, "%s:  %d %s ", name,
+				nitem, (nitem == 1) ? _("item") : _("items"));
+		}
 		break;
 	case 1:
-		store_status_bar_info(model, tree_iter, &size, &length, &nitem, &nfeed);
-		sprintf(str, "%s:  %d %s, %d %s ", name,
-			nfeed, (nfeed == 1) ? _("feed") : _("feeds"),
-			nitem, (nitem == 1) ? _("item") : _("items"));
+		store_status_bar_info(model, tree_iter, &size, &length, &nnewitem, &nitem, &nfeed);
+		if (nnewitem > 0) {
+			sprintf(str, "%s:  %d %s, %d %s, %d %s ", name,
+				nfeed, (nfeed == 1) ? _("feed") : _("feeds"),
+				nitem, (nitem == 1) ? _("item") : _("items"),
+				nnewitem, (nnewitem == 1) ? _("new item") : _("new items"));
+		} else {
+			sprintf(str, "%s:  %d %s, %d %s ", name,
+				nfeed, (nfeed == 1) ? _("feed") : _("feeds"),
+				nitem, (nitem == 1) ? _("item") : _("items"));
+		}
 		break;
 	}
 
@@ -1474,6 +1486,8 @@ store_podcast_save(void) {
 	snprintf(file, MAXLEN-1, "%s/podcast.xml", options.confdir);
 	xmlSaveFormatFile(file, doc, 1);
 	xmlFreeDoc(doc);
+
+	music_store_selection_changed(STORE_TYPE_PODCAST);
 }
 
 void

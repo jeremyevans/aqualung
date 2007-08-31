@@ -221,7 +221,7 @@ meta_id3v1_utf8_to_tagenc(char * utf8) {
 	GError * error = NULL;
 
 	/* convert to iso-8859-1 */
-	str = g_convert(utf8, -1, "iso-8859-1", "utf8", NULL, NULL, &error);
+	str = g_convert_with_fallback(utf8, -1, "iso-8859-1", "utf8", "?", NULL, NULL, &error);
 	if (str != NULL) {
 		return str;
 	} else {
@@ -241,13 +241,12 @@ meta_id3v1_utf8_from_tagenc(char * tagenc) {
 	GError * error = NULL;
 
 	/* try to use string as utf8, convert from iso-8859-1 if that fails. */
-	str = g_convert(tagenc, -1, "utf8", "utf8", NULL, NULL, &error);
-	if (str != NULL) {
-		return str;
+	if (g_utf8_validate(tagenc, -1, NULL)) {
+		return g_strdup(tagenc);
 	} else {
 		g_clear_error(&error);
 
-		str = g_convert(tagenc, -1, "utf8", "iso-8859-1", NULL, NULL, &error);
+		str = g_convert_with_fallback(tagenc, -1, "utf8", "iso-8859-1", "?", NULL, NULL, &error);
 		if (str != NULL) {
 			return str;
 		} else {

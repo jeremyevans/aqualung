@@ -700,7 +700,7 @@ export_dialog(export_t * export) {
 
         export->dialog = gtk_dialog_new_with_buttons(_("Export files"),
                                              GTK_WINDOW(browser_window),
-                                             GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+                                             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
                                              GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
                                              NULL);

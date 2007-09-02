@@ -582,7 +582,7 @@ podcast_feed__subscribe_cb(gpointer data) {
 
 		gtk_tree_store_append(music_store, &pod_iter, &store_iter);
 		gtk_tree_store_set(music_store, &pod_iter,
-				   MS_COL_NAME, _("Updating..."),
+				   MS_COL_NAME, _("Updating... "),
 				   MS_COL_DATA, podcast, -1);
 
 		if (options.enable_ms_tree_icons) {
@@ -626,7 +626,7 @@ podcast_feed__update_cb(gpointer data) {
 			return;
 		}
 
-		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating..."), -1);
+		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating... "), -1);
 		music_store_selection_changed(STORE_TYPE_PODCAST);
 		podcast_update(podcast);
 	}
@@ -741,7 +741,7 @@ podcast_store__update_cb(gpointer data) {
 			}
 		}
 
-		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating..."), -1);
+		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating... "), -1);
 		music_store_selection_changed(STORE_TYPE_PODCAST);
 		podcast_update(podcast);
 	}
@@ -873,6 +873,21 @@ podcast_transfer_new(podcast_t * podcast, podcast_item_t * item) {
 	return pt;
 }
 
+podcast_download_t *
+podcast_download_new(podcast_t * podcast) {
+
+	podcast_download_t * pd;
+
+	if ((pd = (podcast_download_t *)calloc(1, sizeof(podcast_download_t))) == NULL) {
+		fprintf(stderr, "podcast_download_new: calloc error\n");
+		return NULL;
+	}
+
+	pd->podcast = podcast;
+
+	return pd;
+}
+
 void
 podcast_iter_set_display_name(podcast_t * podcast, GtkTreeIter * pod_iter) {
 
@@ -892,17 +907,36 @@ podcast_iter_set_display_name(podcast_t * podcast, GtkTreeIter * pod_iter) {
 gboolean
 store_podcast_update_podcast_cb(gpointer data) {
 
-	podcast_t * podcast = (podcast_t *)data;
+	podcast_download_t * pd = (podcast_download_t *)data;
 	GtkTreeIter pod_iter;
 
-	if (store_podcast_get_pod_iter(&pod_iter, podcast) != 0) {
+	if (store_podcast_get_pod_iter(&pod_iter, pd->podcast) != 0) {
 		return FALSE;
 	}
 
-	podcast_iter_set_display_name(podcast, &pod_iter);
+	podcast_iter_set_display_name(pd->podcast, &pod_iter);
 	store_podcast_save();
 
-	podcast->state = PODCAST_STATE_IDLE;
+	pd->podcast->state = PODCAST_STATE_IDLE;
+
+	free(pd);
+	return FALSE;
+}
+
+gboolean
+store_podcast_update_podcast_download_cb(gpointer data) {
+
+	podcast_download_t * pd = (podcast_download_t *)data;
+	GtkTreeIter pod_iter;
+	char name_str[MAXLEN];
+
+	if (store_podcast_get_pod_iter(&pod_iter, pd->podcast) != 0) {
+		return FALSE;
+	}
+
+	snprintf(name_str, MAXLEN-1, "Downloading %d/%d (%d%%) ... ", pd->ncurrent, pd->ndownloads, pd->percent);
+	gtk_tree_store_set(music_store, &pod_iter, MS_COL_NAME, name_str, -1);
+	music_store_selection_changed(STORE_TYPE_PODCAST);
 
 	return FALSE;
 }
@@ -974,9 +1008,15 @@ store_podcast_remove_item_cb(gpointer data) {
 }
 
 void
-store_podcast_update_podcast(podcast_t * podcast) {
+store_podcast_update_podcast(podcast_download_t * pd) {
 
-	g_idle_add(store_podcast_update_podcast_cb, podcast);
+	g_idle_add(store_podcast_update_podcast_cb, pd);
+}
+
+void
+store_podcast_update_podcast_download(podcast_download_t * pd) {
+
+	g_idle_add(store_podcast_update_podcast_download_cb, pd);
 }
 
 void

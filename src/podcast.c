@@ -282,7 +282,7 @@ parse_ymd(char * str) {
 }
 
 unsigned
-parse_date(char * str) {
+parse_rss_date(char * str) {
 
 	GTimeVal tval;
 	unsigned val;
@@ -299,8 +299,24 @@ parse_date(char * str) {
 	return tval.tv_sec;
 }
 
+unsigned
+parse_atom_date(char * str) {
+
+	GTimeVal tval;
+
+#if GLIB_CHECK_VERSION(2,12,0)
+	if (!g_time_val_from_iso8601(str, &tval))
+#endif /* GLIB_CHECK_VERSION */
+	{
+		g_get_current_time(&tval);
+	}
+
+	return tval.tv_sec;
+}
+
 int
-podcast_generic_download(podcast_t * podcast, char * url, char * path) {
+podcast_generic_download(podcast_t * podcast, char * url, char * path,
+			 void (* callback)(podcast_download_t *), podcast_download_t * pd) {
 
 	http_session_t * session;
 	char buf[BUFSIZE];
@@ -310,6 +326,9 @@ podcast_generic_download(podcast_t * podcast, char * url, char * path) {
 	int ret;
 	int credit = 5;
 	int penalty = 0;
+	int content_length = 0;
+	int percent = 0;
+	int _percent = 0;
 
 	printf("downloading '%s' => '%s'\n", url, path);
 
@@ -350,6 +369,9 @@ podcast_generic_download(podcast_t * podcast, char * url, char * path) {
 
 		printf("session type = %d\n", session->type);
 
+		content_length = session->headers.content_length;
+		printf("content length = %d\n", content_length);
+
 		if (httpc_seek(session, pos, SEEK_SET) < -1) {
 			fprintf(stderr, "httpc_seek failed\n");
 			--credit;
@@ -368,6 +390,14 @@ podcast_generic_download(podcast_t * podcast, char * url, char * path) {
 			fwrite(buf, sizeof(char), n_read, out);
 			printf(".");
 			fflush(stdout);
+
+			if (callback != NULL && content_length > 0) {
+				_percent = (int)((100.0 * pos) / content_length);
+				if (_percent > percent) {
+					pd->percent = percent = _percent;
+					callback(pd);
+				}
+			}
 		}
 
 		httpc_close(session);
@@ -449,15 +479,22 @@ parse_rss_item(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr it
 				pitem->desc = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
 			}
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"enclosure")) {
-			xmlChar * tmp;
-			pitem->url = (char *)xmlGetProp(node, (const xmlChar *)"url");
-			if ((tmp = xmlGetProp(node, (const xmlChar *)"length")) != NULL) {
-				sscanf((char *)tmp, "%u", &pitem->size);
-				xmlFree(tmp);
+			xmlChar * type = NULL;
+			if ((type = xmlGetProp(node, (const xmlChar *)"type")) != NULL &&
+			    strstr((char *)type, "audio") == (char *)type) {
+				xmlChar * len;
+				if ((len = xmlGetProp(node, (const xmlChar *)"length")) != NULL) {
+					sscanf((char *)len, "%u", &pitem->size);
+					xmlFree(len);
+				}
+				pitem->url = (char *)xmlGetProp(node, (const xmlChar *)"url");
+			}
+			if (type != NULL) {
+				xmlFree(type);
 			}
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"pubDate")) {
 			xmlChar * tmp = xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
-			pitem->date = parse_date((char *)tmp);
+			pitem->date = parse_rss_date((char *)tmp);
 			xmlFree(tmp);
 		}
 	}
@@ -535,6 +572,116 @@ parse_rss(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr rss) {
 	}
 }
 
+void
+parse_atom_item(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr entry) {
+
+	podcast_item_t * pitem;
+	xmlNodePtr node;
+
+	if ((pitem = podcast_item_new()) == NULL) {
+		return;
+	}
+
+	for (node = entry->xmlChildrenNode; node != NULL; node = node->next) {
+		if (!xmlStrcmp(node->name, (const xmlChar *)"title")) {
+                        pitem->title = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
+		} else if (!xmlStrcmp(node->name, (const xmlChar *)"summary")) {
+			if (pitem->desc) {
+				free(pitem->desc);
+			}
+                        pitem->desc = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
+		} else if (pitem->url == NULL && !xmlStrcmp(node->name, (const xmlChar *)"link")) {
+			xmlChar * rel = NULL;
+			if ((rel = xmlGetProp(node, (const xmlChar *)"rel")) != NULL &&
+			    !xmlStrcmp(rel, (const xmlChar *)"enclosure")) {
+				xmlChar * type = NULL;
+				if ((type = xmlGetProp(node, (const xmlChar *)"type")) != NULL &&
+				    strstr((char *)type, "audio") == (char *)type) {
+					xmlChar * len;
+					if ((len = xmlGetProp(node, (const xmlChar *)"length")) != NULL) {
+						sscanf((char *)len, "%u", &pitem->size);
+						xmlFree(len);
+					}
+					pitem->url = (char *)xmlGetProp(node, (const xmlChar *)"href");
+				}
+				if (type != NULL) {
+					xmlFree(type);
+				}
+			}
+			if (rel != NULL) {
+				xmlFree(rel);
+			}
+		} else if (!xmlStrcmp(node->name, (const xmlChar *)"updated") ||  /* Atom 1.0 */
+			   !xmlStrcmp(node->name, (const xmlChar *)"modified")) { /* Atom 0.3 */
+			xmlChar * tmp = xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
+			pitem->date = parse_atom_date((char *)tmp);
+			xmlFree(tmp);
+		}
+	}
+
+	if (pitem->url == NULL) {
+		podcast_item_free(pitem);
+		return;
+	}
+
+	string_remove_html(pitem->desc);
+
+	if (pitem->title == NULL) {
+		pitem->title = strdup(_("Untitled"));
+	}
+
+	if (g_slist_find_custom(*list, pitem->url, podcast_item_compare_url) == NULL) {
+		*list = g_slist_prepend(*list, pitem);
+	} else {
+		podcast_item_free(pitem);
+	}
+}
+
+void
+parse_atom(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr feed) {
+
+	xmlNodePtr node;
+
+	for (node = feed->xmlChildrenNode; node != NULL; node = node->next) {
+
+		if (!xmlStrcmp(node->name, (const xmlChar *)"title")) {
+			if (podcast->title) {
+				free(podcast->title);
+			}
+                        podcast->title = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
+		} else if (!xmlStrcmp(node->name, (const xmlChar *)"author")) {
+			xmlNodePtr n;
+			for (n = node->xmlChildrenNode; n; n = n->next) {
+				if (!xmlStrcmp(n->name, (const xmlChar *)"name")) {
+					if (podcast->author) {
+						free(podcast->author);
+					}
+					podcast->author = (char *)xmlNodeListGetString(doc, n->xmlChildrenNode, 1);
+					break;
+				}
+			}
+		} else if (!xmlStrcmp(node->name, (const xmlChar *)"subtitle") || /* Atom 1.0 */
+			   !xmlStrcmp(node->name, (const xmlChar *)"tagline")) {  /* Atom 0.3 */
+			if (podcast->desc) {
+				free(podcast->desc);
+			}
+                        podcast->desc = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
+		}
+	}
+
+	if (podcast->title == NULL) {
+		podcast->title = strdup(_("Untitled"));
+	}
+
+	string_remove_html(podcast->desc);
+
+	for (node = feed->xmlChildrenNode; node != NULL; node = node->next) {
+		if (!xmlStrcmp(node->name, (const xmlChar *)"entry")) {
+			parse_atom_item(podcast, list, doc, node);
+		}
+	}
+}
+
 int
 podcast_parse(podcast_t * podcast, GSList ** list) {
 
@@ -547,7 +694,7 @@ podcast_parse(podcast_t * podcast, GSList ** list) {
 	snprintf(filename, MAXLEN-1, "%s/.%s", podcast->dir, file);
 	free(file);
 
-	if (podcast_generic_download(podcast, podcast->url, filename) < 0) {
+	if (podcast_generic_download(podcast, podcast->url, filename, NULL, NULL) < 0) {
 		return -1;
 	}
 
@@ -567,8 +714,11 @@ podcast_parse(podcast_t * podcast, GSList ** list) {
 	if (!xmlStrcmp(node->name, (const xmlChar *)"rss")) {
 		printf("RSS detected\n");
 		parse_rss(podcast, list, doc, node);
+	} else if (!xmlStrcmp(node->name, (const xmlChar *)"feed")) {
+		printf("Atom detected\n");
+		parse_atom(podcast, list, doc, node);
 	} else {
-		printf("unknown format: %s\n", node->name);
+		fprintf(stderr, "unknown feed format: %s\n", node->name);
 	}
 
 	xmlFreeDoc(doc);
@@ -599,7 +749,7 @@ podcast_list_remove_item(podcast_t * podcast, GSList * list, GSList * litem) {
 }
 
 void
-podcast_item_download(podcast_t * podcast, GSList ** list, GSList * node) {
+podcast_item_download(podcast_download_t * pd, GSList ** list, GSList * node) {
 
 	podcast_item_t * item = (podcast_item_t *)node->data;
 	char * file;
@@ -610,13 +760,15 @@ podcast_item_download(podcast_t * podcast, GSList ** list, GSList * node) {
 	printf("podcast_item_download\n");
 
 	file = podcast_file_from_url(item->url);
-	snprintf(path, MAXLEN-1, "%s/%s", podcast->dir, file);
+	snprintf(path, MAXLEN-1, "%s/%s", pd->podcast->dir, file);
 	free(file);
 
-	if (podcast_generic_download(podcast, item->url, path) < 0) {
+	pd->ncurrent++;
+
+	if (podcast_generic_download(pd->podcast, item->url, path, store_podcast_update_podcast_download, pd) < 0) {
 		printf("aborted by user or premanent download error, could not finish download\n");
 		printf("moving on to next file\n");
-		*list = podcast_list_remove_item(podcast, *list, node);
+		*list = podcast_list_remove_item(pd->podcast, *list, node);
 		return;
 	}
 
@@ -628,8 +780,8 @@ podcast_item_download(podcast_t * podcast, GSList ** list, GSList * node) {
 		item->size = statbuf.st_size;
 	}
 
-	podcast->items = g_slist_prepend(podcast->items, item);
-	store_podcast_add_item(podcast, item);
+	pd->podcast->items = g_slist_prepend(pd->podcast->items, item);
+	store_podcast_add_item(pd->podcast, item);
 }
 
 void
@@ -666,7 +818,7 @@ podcast_apply_limits(podcast_t * podcast, GSList ** list) {
 }
 
 int
-podcast_download_next(podcast_t * podcast, GSList ** list) {
+podcast_download_next(podcast_download_t * pd, GSList ** list) {
 
 	GSList * node;
 
@@ -674,7 +826,7 @@ podcast_download_next(podcast_t * podcast, GSList ** list) {
 	for (node = *list; node; node = node->next) {
 		podcast_item_t * item = (podcast_item_t *)node->data;
 
-		if (podcast->state == PODCAST_STATE_ABORTED) {
+		if (pd->podcast->state == PODCAST_STATE_ABORTED) {
 			if (item->file == NULL) {
 				podcast_item_free(item);
 			}
@@ -682,7 +834,7 @@ podcast_download_next(podcast_t * podcast, GSList ** list) {
 		}
 
 		if (item->file == NULL) {
-			podcast_item_download(podcast, list, node);
+			podcast_item_download(pd, list, node);
 			return 1;
 		}
 	}
@@ -694,12 +846,17 @@ void *
 podcast_update_thread(void * arg) {
 
 	podcast_t * podcast = (podcast_t *)arg;
+	podcast_download_t * pd;
 
+	GSList * node;
 	GTimeVal tval;
 	GSList * list;
 
 	AQUALUNG_THREAD_DETACH();
 
+	if ((pd = podcast_download_new(podcast)) == NULL) {
+		return NULL;
+	}
 
 	list = g_slist_copy(podcast->items);
 
@@ -712,14 +869,24 @@ podcast_update_thread(void * arg) {
 	g_get_current_time(&tval);
 	podcast->last_checked = tval.tv_sec;
 
-	do {
+	podcast_apply_limits(podcast, &list);
+
+	for (node = list; node; node = node->next) {
+		if (((podcast_item_t *)node->data)->file == NULL) {
+			pd->ndownloads++;
+		}
+	}
+
+	printf("ndownloads = %d\n", pd->ndownloads);
+
+	while (podcast_download_next(pd, &list)) {
 		podcast_apply_limits(podcast, &list);
-	} while (podcast_download_next(podcast, &list));
+	}
 
  finish:
 	g_slist_free(list);
 
-	store_podcast_update_podcast(podcast);
+	store_podcast_update_podcast(pd);
 
 	return NULL;
 }

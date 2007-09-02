@@ -45,7 +45,19 @@ void store_podcast_toolbar__remove_cb(gpointer data);
 void create_podcast_node(void);
 void store_podcast_updater_start(void);
 
-void store_podcast_update_podcast(podcast_t * podcast);
+typedef struct {
+
+	podcast_t * podcast;
+	int ncurrent;
+	int ndownloads;
+	int percent;
+
+} podcast_download_t;
+
+podcast_download_t * podcast_download_new(podcast_t * podcast);
+
+void store_podcast_update_podcast(podcast_download_t * pd);
+void store_podcast_update_podcast_download(podcast_download_t * pd);
 void store_podcast_add_item(podcast_t * podcast, podcast_item_t * item);
 void store_podcast_remove_item(podcast_t * podcast, podcast_item_t * item);
 

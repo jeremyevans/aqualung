@@ -1182,11 +1182,17 @@ add_path_to_playlist(GtkTreePath * path, GtkTreeIter * piter, int new_tab) {
 
 	if (new_tab) {
 		char * name;
+		void * data;
 		GtkTreeIter iter;
 
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_NAME, &name, -1);
-		playlist_tab_new_if_nonempty(name);
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_NAME, &name, MS_COL_DATA, &data, -1);
+
+		if (depth == 1 && ((store_data_t *)data)->dirty) {
+			playlist_tab_new_if_nonempty(name + 1);
+		} else {
+			playlist_tab_new_if_nonempty(name);
+		}
 
 		g_free(name);
 	}
@@ -3575,6 +3581,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 	float length = 0.0f;
 	double size = 0.0;
 
+	store_data_t * store_data;
 	char str[MAXLEN];
 	char length_str[MAXLEN];
 	char tmp[MAXLEN];
@@ -3610,8 +3617,9 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 			ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 		break;
 	case 1:
+		gtk_tree_model_get(model, tree_iter, MS_COL_DATA, &store_data, -1);
 		store_status_bar_info(model, tree_iter, &size, &length, &ntrack, &nrecord, &nartist);
-		sprintf(str, "%s:  %d %s, %d %s, %d %s ", name,
+		sprintf(str, "%s:  %d %s, %d %s, %d %s ", store_data->dirty ? name+1 : name,
 			nartist, (nartist == 1) ? _("artist") : _("artists"),
 			nrecord, (nrecord == 1) ? _("record") : _("records"),
 			ntrack, (ntrack == 1) ? _("track") : _("tracks"));

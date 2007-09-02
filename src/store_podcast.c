@@ -627,7 +627,6 @@ podcast_feed__update_cb(gpointer data) {
 		}
 
 		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating... "), -1);
-		music_store_selection_changed(STORE_TYPE_PODCAST);
 		podcast_update(podcast);
 	}
 }
@@ -742,7 +741,6 @@ podcast_store__update_cb(gpointer data) {
 		}
 
 		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating... "), -1);
-		music_store_selection_changed(STORE_TYPE_PODCAST);
 		podcast_update(podcast);
 	}
 }
@@ -889,18 +887,23 @@ podcast_download_new(podcast_t * podcast) {
 }
 
 void
+podcast_get_display_name(podcast_t * podcast, char * buf) {
+
+	if (podcast->author != NULL && podcast->title != NULL) {
+		snprintf(buf, MAXLEN-1, "%s: %s", podcast->author, podcast->title);
+	} else if (podcast->title != NULL) {
+		strncpy(buf, podcast->title, MAXLEN-1);
+	} else {
+		strncpy(buf, _("Untitled"), MAXLEN-1);
+	}
+}
+
+void
 podcast_iter_set_display_name(podcast_t * podcast, GtkTreeIter * pod_iter) {
 
 	char name_str[MAXLEN];
 
-	if (podcast->author != NULL && podcast->title != NULL) {
-		snprintf(name_str, MAXLEN-1, "%s: %s", podcast->author, podcast->title);
-	} else if (podcast->title != NULL) {
-		strncpy(name_str, podcast->title, MAXLEN-1);
-	} else {
-		strncpy(name_str, _("Untitled"), MAXLEN-1);
-	}
-
+	podcast_get_display_name(podcast, name_str);
 	gtk_tree_store_set(music_store, pod_iter, MS_COL_NAME, name_str, -1);
 }
 
@@ -934,9 +937,8 @@ store_podcast_update_podcast_download_cb(gpointer data) {
 		return FALSE;
 	}
 
-	snprintf(name_str, MAXLEN-1, "Downloading %d/%d (%d%%) ... ", pd->ncurrent, pd->ndownloads, pd->percent);
+	snprintf(name_str, MAXLEN-1, _("Downloading %d/%d (%d%%) ... "), pd->ncurrent, pd->ndownloads, pd->percent);
 	gtk_tree_store_set(music_store, &pod_iter, MS_COL_NAME, name_str, -1);
-	music_store_selection_changed(STORE_TYPE_PODCAST);
 
 	return FALSE;
 }
@@ -1119,6 +1121,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 	float length = 0.0f;
 	double size = 0.0;
 
+	podcast_t * podcast;
 	char str[MAXLEN];
 	char length_str[MAXLEN];
 	char tmp[MAXLEN];
@@ -1141,13 +1144,15 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 		sprintf(str, "%s ", name);
 		break;
 	case 2:
+		gtk_tree_model_get(model, tree_iter, MS_COL_DATA, &podcast, -1);
+		podcast_get_display_name(podcast, tmp);
 		feed_status_bar_info(model, tree_iter, &size, &length, &nnewitem, &nitem);
 		if (nnewitem > 0) {
-			sprintf(str, "%s:  %d %s, %d %s ", name,
+			sprintf(str, "%s:  %d %s, %d %s ", tmp,
 				nitem, (nitem == 1) ? _("item") : _("items"),
 				nnewitem, (nnewitem == 1) ? _("new item") : _("new items"));
 		} else {
-			sprintf(str, "%s:  %d %s ", name,
+			sprintf(str, "%s:  %d %s ", tmp,
 				nitem, (nitem == 1) ? _("item") : _("items"));
 		}
 		break;
@@ -1237,14 +1242,23 @@ add_path_to_playlist(GtkTreePath * path, GtkTreeIter * piter, int new_tab) {
 	gtk_tree_selection_select_path(music_select, path);
 
 	if (new_tab) {
-		char * name;
 		GtkTreeIter iter;
 
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(music_store), &iter, path);
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_NAME, &name, -1);
-		playlist_tab_new_if_nonempty(name);
 
-		g_free(name);
+		if (depth == 2) {
+			char name[MAXLEN];
+			podcast_t * podcast;
+
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &podcast, -1);
+			podcast_get_display_name(podcast, name);
+			playlist_tab_new_if_nonempty(name);
+		} else {
+			char * name;
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_NAME, &name, -1);
+			playlist_tab_new_if_nonempty(name);
+			g_free(name);
+		}
 	}
 
 	switch (depth) {

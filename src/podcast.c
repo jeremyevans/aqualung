@@ -767,21 +767,28 @@ podcast_item_download(podcast_download_t * pd, GSList ** list, GSList * node) {
 
 	if (podcast_generic_download(pd->podcast, item->url, path, store_podcast_update_podcast_download, pd) < 0) {
 		printf("aborted by user or premanent download error, could not finish download\n");
-		printf("moving on to next file\n");
-		*list = podcast_list_remove_item(pd->podcast, *list, node);
-		return;
+		goto failed;
 	}
 
+	if (stat(path, &statbuf) < 0) {
+		goto failed;
+	}
+
+	if ((duration = get_file_duration(path)) < 0.0f) {
+		goto failed;
+	}
+
+	item->duration = duration;
+	item->size = statbuf.st_size;
 	item->file = strdup(path);
-	duration = get_file_duration(item->file);
-	item->duration = duration < 0.0f ? 0.0f : duration;
-
-	if (stat(item->file, &statbuf) == 0) {
-		item->size = statbuf.st_size;
-	}
 
 	pd->podcast->items = g_slist_prepend(pd->podcast->items, item);
 	store_podcast_add_item(pd->podcast, item);
+
+	return;
+
+ failed:
+	*list = podcast_list_remove_item(pd->podcast, *list, node);
 }
 
 void

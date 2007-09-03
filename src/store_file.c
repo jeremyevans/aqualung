@@ -537,6 +537,7 @@ void
 entry_copy_text(GtkEntry * entry, gpointer data) {
 
 	gtk_entry_set_text(GTK_ENTRY(data), gtk_entry_get_text(entry));
+	gtk_widget_grab_focus((GtkWidget *)data);
 }
 
 int
@@ -968,6 +969,11 @@ use_rva_check_button_cb(GtkWidget * widget, gpointer data) {
 	}
 }
 
+void
+edit_track_done(GtkEntry * entry, gpointer data) {
+
+	gtk_dialog_response(GTK_DIALOG(data), GTK_RESPONSE_ACCEPT);
+}
 
 int
 edit_track_dialog(char * name, char * sort, track_data_t * data) {
@@ -993,6 +999,8 @@ edit_track_dialog(char * name, char * sort, track_data_t * data) {
 	create_dialog_layout(_("Edit Track"), &dialog, &table, 6);
 	insert_label_entry(table, _("Visible name:"), &name_entry, name, 0, 1, TRUE);
 	insert_label_entry(table, _("Name to sort by:"), &sort_entry, sort, 1, 2, TRUE);
+
+        g_signal_connect(G_OBJECT(name_entry), "activate", G_CALLBACK(edit_track_done), dialog);
 
 	utf8 = g_locale_to_utf8(data->file, -1, NULL, NULL, NULL);
 	insert_label_entry_browse(table, _("Filename:"), &file_entry, utf8, 2, 3,
@@ -1222,8 +1230,7 @@ generic_remove_cb(char * title, int (* remove_cb)(GtkTreeIter *)) {
 
 	GtkTreeIter iter;
 	GtkTreeModel * model;
-	char * name;
-	char text[MAXLEN];
+	int ok = 1;
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
@@ -1231,11 +1238,18 @@ generic_remove_cb(char * title, int (* remove_cb)(GtkTreeIter *)) {
 			return;
 		}
 
-                gtk_tree_model_get(model, &iter, MS_COL_NAME, &name, -1);
-		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
-                g_free(name);
+		if (options.ms_confirm_removal) {
+			char * name;
+			char text[MAXLEN];
 
-		if (confirm_dialog(title, text)) {
+			gtk_tree_model_get(model, &iter, MS_COL_NAME, &name, -1);
+			snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
+			g_free(name);
+
+			ok = confirm_dialog(title, text);
+		}
+
+		if (ok) {
 
 			GtkTreeIter parent;
 
@@ -1973,7 +1987,7 @@ store__remove_cb(gpointer user_data) {
 		strncpy(name, pname, MAXLEN-1);
                 g_free(pname);
 		
-		snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"),
+		snprintf(text, MAXLEN-1, _("Really remove store \"%s\" from the Music Store?"),
 			 (data->dirty) ? (name + 1) : (name));
 		if (confirm_dialog(_("Remove Store"), text)) {
 

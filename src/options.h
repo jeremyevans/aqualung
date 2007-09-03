@@ -114,6 +114,7 @@ typedef struct {
 	int enable_ms_rules_hint;
 	int enable_ms_tree_icons;
 	int enable_ms_tree_icons_shadow;
+	int ms_confirm_removal;
 	int cover_width;
 	int magnify_smaller_images;
 

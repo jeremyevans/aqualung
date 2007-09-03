@@ -582,7 +582,7 @@ podcast_feed__subscribe_cb(gpointer data) {
 
 		gtk_tree_store_append(music_store, &pod_iter, &store_iter);
 		gtk_tree_store_set(music_store, &pod_iter,
-				   MS_COL_NAME, _("Updating... "),
+				   MS_COL_NAME, _("Updating..."),
 				   MS_COL_DATA, podcast, -1);
 
 		if (options.enable_ms_tree_icons) {
@@ -626,7 +626,7 @@ podcast_feed__update_cb(gpointer data) {
 			return;
 		}
 
-		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating... "), -1);
+		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating..."), -1);
 		podcast_update(podcast);
 	}
 }
@@ -740,7 +740,7 @@ podcast_store__update_cb(gpointer data) {
 			}
 		}
 
-		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating... "), -1);
+		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating..."), -1);
 		podcast_update(podcast);
 	}
 }
@@ -937,7 +937,7 @@ store_podcast_update_podcast_download_cb(gpointer data) {
 		return FALSE;
 	}
 
-	snprintf(name_str, MAXLEN-1, _("Downloading %d/%d (%d%%) ... "), pd->ncurrent, pd->ndownloads, pd->percent);
+	snprintf(name_str, MAXLEN-1, _("Downloading %d/%d (%d%%) ..."), pd->ncurrent, pd->ndownloads, pd->percent);
 	gtk_tree_store_set(music_store, &pod_iter, MS_COL_NAME, name_str, -1);
 
 	return FALSE;

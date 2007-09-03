@@ -142,6 +142,7 @@ GtkWidget * check_ms_statusbar_show_size;
 GtkWidget * check_expand_stores;
 GtkWidget * check_enable_ms_rules_hint;
 GtkWidget * check_enable_ms_tree_icons;
+GtkWidget * check_ms_confirm_removal;
 GtkWidget * combo_cwidth;
 GtkWidget * check_magnify_smaller_images;
 GtkListStore * ms_pathlist_store = NULL;
@@ -376,6 +377,7 @@ options_window_accept(void) {
 	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(music_tree), options.enable_ms_rules_hint);
 
 	set_option_from_toggle(check_enable_ms_tree_icons, &options.enable_ms_tree_icons_shadow);
+	set_option_from_toggle(check_ms_confirm_removal, &options.ms_confirm_removal);
 
 	set_option_from_combo(combo_cwidth, &options.cover_width);
 	set_option_from_toggle(check_magnify_smaller_images, &options.magnify_smaller_images);
@@ -1839,7 +1841,7 @@ to set the column order in the Playlist."));
 	}
 
 
-        /* "Music store" notebook page */
+        /* "Music Store" notebook page */
 
 	vbox_ms = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_ms), 8);
@@ -1908,6 +1910,13 @@ to set the column order in the Playlist."));
 	g_signal_connect (G_OBJECT (check_enable_ms_tree_icons), "toggled",
 			  G_CALLBACK (restart_active), _("Enable Music Store tree node icons"));
 	gtk_box_pack_start(GTK_BOX(vbox_ms), check_enable_ms_tree_icons, FALSE, TRUE, 0);
+
+	check_ms_confirm_removal = gtk_check_button_new_with_label(_("Ask for confirmation when removing items"));
+	gtk_widget_set_name(check_ms_confirm_removal, "check_on_notebook");
+	if (options.ms_confirm_removal) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_ms_confirm_removal), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_ms), check_ms_confirm_removal, FALSE, FALSE, 0);
 
 	frame_cart = gtk_frame_new(_("Cover art"));
 	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_cart, FALSE, TRUE, 5);
@@ -3062,6 +3071,7 @@ save_config(void) {
 	SAVE_INT(enable_pl_rules_hint);
 	SAVE_INT(enable_ms_rules_hint);
 	SAVE_INT_SH(enable_ms_tree_icons);
+	SAVE_INT(ms_confirm_removal);
 	SAVE_INT(auto_use_meta_artist);
 	SAVE_INT(auto_use_meta_record);
 	SAVE_INT(auto_use_meta_track);
@@ -3353,6 +3363,7 @@ load_config(void) {
        	options.enable_mstore_toolbar = options.enable_mstore_toolbar_shadow = 1;
         options.enable_ms_tree_icons = options.enable_ms_tree_icons_shadow = 1;
 	options.ms_statusbar_show_size = 1;
+	options.ms_confirm_removal = 1;
 
         options.cover_width = 2;
 
@@ -3433,6 +3444,7 @@ load_config(void) {
 		LOAD_INT(enable_pl_rules_hint);
 		LOAD_INT(enable_ms_rules_hint);
 		LOAD_INT_SH(enable_ms_tree_icons);
+		LOAD_INT(ms_confirm_removal);
 		LOAD_INT(enable_tooltips);
 		LOAD_INT_SH(buttons_at_the_bottom);
 		LOAD_INT(disable_buttons_relief);

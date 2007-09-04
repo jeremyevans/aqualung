@@ -548,7 +548,7 @@ xml_load_str_dup(xmlDocPtr doc, xmlNodePtr node, char * varname, char ** var) {
 	if (!xmlStrcmp(node->name, (const xmlChar *)varname)) {
 		xmlChar * key = xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
 		if (key != NULL) {
-			*var = strndup((char *)key, MAXLEN-1);
+			*var = strdup((char *)key);
 			xmlFree(key);
 		}
 	}

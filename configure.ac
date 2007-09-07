@@ -509,7 +509,7 @@ else
 	        mac_LIBS="-lstdc++"
 	fi
 	if test "$lib" = "no" -a "$mac" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the Monkey's Audio Codec decoder library installed. Grab it from http://sourceforge.net/projects/mac-port/)
+		AC_MSG_ERROR(You do not appear to have the Monkey's Audio Codec decoder library installed. Grab it from http://etree.org/shnutils/shntool/support/formats/ape/unix/)
 	fi
 	if test "$mac" = "detect"; then
 		mac=$lib

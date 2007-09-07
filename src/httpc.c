@@ -221,6 +221,8 @@ read_socket(int s, char * buf, int n) {
 			buf += br;
 		} else if (br < 0) {
 			return -1;
+		} else {
+			break;
 		}
 	}
 	return bcount;

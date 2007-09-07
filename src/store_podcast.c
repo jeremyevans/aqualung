@@ -607,9 +607,13 @@ podcast_feed__edit_cb(gpointer data) {
 			return;
 		}
 
+		podcast->state = PODCAST_STATE_UPDATE;
+
 		if (podcast_dialog(&podcast, 0/*edit*/)) {
 			store_podcast_save();
 		}
+
+		podcast->state = PODCAST_STATE_IDLE;
 	}
 }
 
@@ -798,14 +802,15 @@ podcast_store__reorder_cb(gpointer data) {
 	store_podcast_get_store_iter(&store_iter);
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &pod_iter, &store_iter, i++)) {
-		char * title;
+		char title[MAXLEN];
+		podcast_t * podcast;
 		GtkTreePath * path;
 
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &pod_iter, MS_COL_NAME, &title, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &pod_iter, MS_COL_DATA, &podcast, -1);
+		podcast_get_display_name(podcast, title);
 		path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), &pod_iter);
 		gtk_list_store_append(store, &list_iter);
 		gtk_list_store_set(store, &list_iter, 0, title, 1, gtk_tree_iter_copy(&pod_iter), -1);
-		g_free(title);
 	}
 
 	gtk_widget_show_all(dialog);
@@ -884,18 +889,6 @@ podcast_download_new(podcast_t * podcast) {
 	pd->podcast = podcast;
 
 	return pd;
-}
-
-void
-podcast_get_display_name(podcast_t * podcast, char * buf) {
-
-	if (podcast->author != NULL && podcast->title != NULL) {
-		snprintf(buf, MAXLEN-1, "%s: %s", podcast->author, podcast->title);
-	} else if (podcast->title != NULL) {
-		strncpy(buf, podcast->title, MAXLEN-1);
-	} else {
-		strncpy(buf, _("Untitled"), MAXLEN-1);
-	}
 }
 
 void

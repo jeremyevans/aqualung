@@ -77,6 +77,7 @@ typedef struct {
 } podcast_t;
 
 podcast_t * podcast_new(void);
+void podcast_get_display_name(podcast_t * podcast, char * buf);
 podcast_item_t * podcast_item_new(void);
 
 void podcast_free(podcast_t * podcast);

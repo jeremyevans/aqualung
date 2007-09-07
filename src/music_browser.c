@@ -243,6 +243,7 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data) {
 		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(music_tree), bevent->x, bevent->y,
 						  &path, NULL, NULL, NULL)) {
 			gtk_tree_selection_select_path(music_select, path);
+			gtk_tree_view_set_cursor(GTK_TREE_VIEW(music_tree), path, NULL, FALSE);
 			gtk_tree_path_free(path);
 
 			if (gtk_tree_selection_get_selected(music_select, NULL, &iter)) {
@@ -652,7 +653,7 @@ create_music_browser(void) {
 	gtk_container_add(GTK_CONTAINER(scrolled_win1), music_tree);
 
 	music_select = gtk_tree_view_get_selection(GTK_TREE_VIEW(music_tree));
-	gtk_tree_selection_set_mode(music_select, GTK_SELECTION_BROWSE);
+	gtk_tree_selection_set_mode(music_select, GTK_SELECTION_SINGLE);
 	g_signal_connect(G_OBJECT(music_select), "changed", G_CALLBACK(tree_selection_changed_cb), NULL);
 
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(music_store), MS_COL_SORT, GTK_SORT_ASCENDING);

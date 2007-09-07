@@ -68,6 +68,18 @@ podcast_new(void) {
 }
 
 void
+podcast_get_display_name(podcast_t * podcast, char * buf) {
+
+	if (podcast->author != NULL && podcast->title != NULL) {
+		snprintf(buf, MAXLEN-1, "%s: %s", podcast->author, podcast->title);
+	} else if (podcast->title != NULL) {
+		strncpy(buf, podcast->title, MAXLEN-1);
+	} else {
+		strncpy(buf, _("Untitled"), MAXLEN-1);
+	}
+}
+
+void
 podcast_free(podcast_t * podcast) {
 
 	if (podcast->dir) {
@@ -764,6 +776,7 @@ podcast_item_download(podcast_download_t * pd, GSList ** list, GSList * node) {
 	free(file);
 
 	pd->ncurrent++;
+	pd->percent = 0;
 
 	if (podcast_generic_download(pd->podcast, item->url, path, store_podcast_update_podcast_download, pd) < 0) {
 		printf("aborted by user or premanent download error, could not finish download\n");

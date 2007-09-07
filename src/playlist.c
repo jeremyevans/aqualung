@@ -5412,7 +5412,7 @@ expand_collapse_album_node(playlist_t * pl) {
 
                                 if (path) {
                                         gtk_tree_view_collapse_row(GTK_TREE_VIEW(pl->view), path);
-                                        gtk_tree_view_set_cursor (GTK_TREE_VIEW (pl->view), path, NULL, TRUE);
+                                        gtk_tree_view_set_cursor(GTK_TREE_VIEW(pl->view), path, NULL, FALSE);
                                 }
                         }
                 }
@@ -5610,7 +5610,7 @@ set_cursor_in_playlist(playlist_t * pl, GtkTreeIter *iter, gboolean scroll) {
         visible_path = gtk_tree_model_get_path(GTK_TREE_MODEL(pl->store), iter);
 
         if (visible_path) {
-                gtk_tree_view_set_cursor(GTK_TREE_VIEW(pl->view), visible_path, NULL, TRUE);
+                gtk_tree_view_set_cursor(GTK_TREE_VIEW(pl->view), visible_path, NULL, FALSE);
                 if (scroll == TRUE) {
                         gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW (pl->view), visible_path, 
 						     NULL, TRUE, 0.3, 0.0);

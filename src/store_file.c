@@ -3596,6 +3596,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 	double size = 0.0;
 
 	store_data_t * store_data;
+	record_data_t * record_data;
 	char str[MAXLEN];
 	char length_str[MAXLEN];
 	char tmp[MAXLEN];
@@ -3619,9 +3620,15 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 		sprintf(str, "%s ", name);
 		break;
 	case 3:
+		gtk_tree_model_get(model, tree_iter, MS_COL_DATA, &record_data, -1);
 		record_status_bar_info(model, tree_iter, &size, &length, &ntrack);
-		sprintf(str, "%s:  %d %s ", name,
-			ntrack, (ntrack == 1) ? _("track") : _("tracks"));
+		if (is_valid_year(record_data->year)) {
+			sprintf(str, "%s (%d):  %d %s ", name, record_data->year,
+				ntrack, (ntrack == 1) ? _("track") : _("tracks"));
+		} else {
+			sprintf(str, "%s:  %d %s ", name,
+				ntrack, (ntrack == 1) ? _("track") : _("tracks"));
+		}
 
 		break;
 	case 2:

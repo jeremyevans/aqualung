@@ -2381,11 +2381,11 @@ file_transform(char * buf, file_transform_t * model) {
 	if (model->rm_number) {
 
 		if (strlen(p) >= 3 && isdigit(*p) && isdigit(*(p + 1)) &&
-		    (*(p + 2) == ' ' || *(p + 2) == '_' || *(p + 2) == '-')) {
+		    (*(p + 2) == ' ' || *(p + 2) == '_' || *(p + 2) == '-' || *(p + 2) == '.')) {
 		
 			p += 3;
 
-			while (*p && (*p == ' ' || *p == '_' || *p == '-')) {
+			while (*p && (*p == ' ' || *p == '_' || *p == '-' || *p == '.')) {
 				++p;
 			}
 		}

@@ -6,7 +6,7 @@ checking basic compilation tools ...
 
 for tool in pkg-config aclocal autoheader autoconf automake gettext msgfmt
 do
-    echo -n "$tool... "
+    echo -n "$tool ... "
     if which $tool >/dev/null 2>&1 ; then
 	echo "found."
     else
@@ -19,9 +19,9 @@ done
 
 echo
 
-for tool in aclocal autoheader autoconf automake
+for tool in 'aclocal' 'autoheader' 'autoconf' 'automake --foreign'
 do
-    echo -n "running $tool... "
+    echo -n "running $tool ... "
     if $tool; then
 	echo "done."
     else

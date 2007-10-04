@@ -347,6 +347,13 @@ set_title_label(char * str) {
         }
 }
 
+void
+hide_cover_thumbnail(void) {
+        cover_show_flag = 0;
+        gtk_widget_hide(cover_image_area);
+        gtk_widget_hide(c_event_box);
+        gtk_widget_hide(cover_align);
+}
 
 void
 set_format_label(char * format_str) {
@@ -552,10 +559,7 @@ refresh_displays(void) {
 	if ((pl = playlist_get_playing()) == NULL) {
 		if ((pl = playlist_get_current()) == NULL) {
 			set_title_label("");
-			cover_show_flag = 0;
-			gtk_widget_hide(cover_image_area);
-			gtk_widget_hide(c_event_box);
-			gtk_widget_hide(cover_align);
+                        hide_cover_thumbnail();
 			return;
 		}
 	}
@@ -600,19 +604,18 @@ refresh_displays(void) {
 			g_free(phys_str);
 		}
 		if (is_file_loaded) {
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
-					   PL_COL_PHYSICAL_FILENAME, &phys_str,
-					   -1);
-			display_cover(cover_image_area, c_event_box, cover_align,
-				      48, 48, phys_str, TRUE, TRUE);
-			g_free(phys_str);
+                        if (!options.dont_show_cover) {
+                                gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
+                                                   PL_COL_PHYSICAL_FILENAME, &phys_str,
+                                                   -1);
+                                display_cover(cover_image_area, c_event_box, cover_align,
+                                              48, 48, phys_str, TRUE, TRUE);
+			        g_free(phys_str);
+                        }
 		}
 	} else if (!is_file_loaded) {
 		set_title_label("");
-		cover_show_flag = 0;
-		gtk_widget_hide(cover_image_area);
-		gtk_widget_hide(c_event_box);
-		gtk_widget_hide(cover_align);
+                hide_cover_thumbnail();
 	}
 }
 
@@ -2039,10 +2042,7 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
  	show_scale_pos(TRUE);
 
         /* hide cover */
-        cover_show_flag = 0;
-        gtk_widget_hide(cover_image_area);
-        gtk_widget_hide(c_event_box);
-	gtk_widget_hide(cover_align);
+        hide_cover_thumbnail();
 			
 	return FALSE;
 }
@@ -3394,10 +3394,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	deflicker();
 
-        cover_show_flag = 0;
-        gtk_widget_hide(cover_align);
-        gtk_widget_hide(c_event_box);
-        gtk_widget_hide(cover_image_area);
+        hide_cover_thumbnail();
 
         gtk_widget_hide(vbox_sep);
 

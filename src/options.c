@@ -120,6 +120,7 @@ GtkWidget * check_united_minimization;
 GtkWidget * check_show_sn_title;
 GtkWidget * check_show_hidden;
 GtkWidget * check_tags_tab_first;
+GtkWidget * check_dont_show_cover;
 
 GtkWidget * check_playlist_is_embedded;
 GtkWidget * check_autoplsave;
@@ -340,7 +341,11 @@ options_window_accept(void) {
 	set_option_from_toggle(check_show_sn_title, &options.show_sn_title);
 	set_option_from_toggle(check_show_hidden, &options.show_hidden);
         set_option_from_toggle(check_tags_tab_first, &options.tags_tab_first);
+        set_option_from_toggle(check_dont_show_cover, &options.dont_show_cover);
 
+        if(options.dont_show_cover) {
+                hide_cover_thumbnail();
+        }
 
 	/* Playlist */
 	set_option_from_toggle(check_autoplsave, &options.auto_save_playlist);
@@ -1679,6 +1684,13 @@ create_options_window(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_tags_tab_first), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_tags_tab_first, FALSE, FALSE, 0);
+
+        check_dont_show_cover = gtk_check_button_new_with_label(_("Don't show cover thumbnail in the main window"));
+	gtk_widget_set_name(check_dont_show_cover, "check_on_notebook");
+	if (options.dont_show_cover) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_dont_show_cover), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_dont_show_cover, FALSE, FALSE, 0);
 
 
         /* "Playlist" notebook page */
@@ -3093,6 +3105,7 @@ save_config(void) {
 	SAVE_INT(show_hidden);
 	SAVE_INT(main_window_always_on_top);
 	SAVE_INT(tags_tab_first);
+	SAVE_INT(dont_show_cover);
 	SAVE_INT(disable_skin_support_settings);
 	SAVE_INT(override_skin_settings);
 	SAVE_INT(replaygain_tag_to_use);
@@ -3460,6 +3473,7 @@ load_config(void) {
 		LOAD_INT(show_hidden);
 		LOAD_INT(main_window_always_on_top);
 		LOAD_INT(tags_tab_first);
+		LOAD_INT(dont_show_cover);
 		LOAD_INT(disable_skin_support_settings);
 		LOAD_INT(override_skin_settings);
 		LOAD_INT(replaygain_tag_to_use);

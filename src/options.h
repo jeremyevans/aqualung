@@ -84,6 +84,7 @@ typedef struct {
 	int show_hidden;
    	int main_window_always_on_top;
 	int tags_tab_first;
+	int dont_show_cover;
 
 	/* Playlist */
 	int playlist_is_embedded;

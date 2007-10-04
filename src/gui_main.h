@@ -57,6 +57,7 @@ gint scroll_btn_released(GtkWidget * widget, GdkEventButton * event, gpointer * 
 gint scroll_motion_notify(GtkWidget * widget, GdkEventMotion * event, gpointer * win);
 
 void set_buttons_relief(void);
+void hide_cover_thumbnail(void);
 
 #endif /* _GUI_MAIN_H */
 

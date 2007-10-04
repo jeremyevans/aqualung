@@ -307,7 +307,7 @@ display_cover(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
 	      gint dest_width, gint dest_height,
               gchar *song_filename, gboolean hide, gboolean bevel) {
 
-        GdkPixbuf * cover_pixbuf;
+        GdkPixbuf * cover_pixbuf = NULL;
         GdkPixbuf * cover_pixbuf_scaled;
         GdkPixbufFormat * format;
         gint width, height;
@@ -317,7 +317,6 @@ display_cover(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
         calculated_width = dest_width;
         calculated_height = dest_height;
 
-        cover_pixbuf = NULL;
 
         if (strlen(song_filename)) {
 
@@ -347,24 +346,27 @@ display_cover(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
                                                                        scaled_width, scaled_height, 
                                                                        GDK_INTERP_TILES);
                         g_object_unref (cover_pixbuf);
-                        cover_pixbuf = cover_pixbuf_scaled;
 
-                        draw_cover_frame(cover_pixbuf, scaled_width, scaled_height, bevel);
+                        if (cover_pixbuf_scaled != NULL) {
+                                cover_pixbuf = cover_pixbuf_scaled;
 
-                        calculated_width = scaled_width;
-                        calculated_height = scaled_height;
+                                draw_cover_frame(cover_pixbuf, scaled_width, scaled_height, bevel);
 
-                        gtk_image_set_from_pixbuf (GTK_IMAGE(image_area), cover_pixbuf);
+                                calculated_width = scaled_width;
+                                calculated_height = scaled_height;
 
-                        if (!cover_show_flag && hide == TRUE) {
-                                cover_show_flag = 1;      
-                                gtk_widget_show(image_area);
-                                gtk_widget_show(event_area);
-				if (align) {
-					gtk_widget_show(align);
-				}
+                                gtk_image_set_from_pixbuf (GTK_IMAGE(image_area), cover_pixbuf);
+                                g_object_unref (cover_pixbuf);
+
+                                if (!cover_show_flag && hide == TRUE) {
+                                        cover_show_flag = 1;      
+                                        gtk_widget_show(image_area);
+                                        gtk_widget_show(event_area);
+                                        if (align) {
+                                                gtk_widget_show(align);
+                                        }
+                                }
                         }
-
                 } else {
  
                         if (hide == TRUE) {
@@ -472,14 +474,16 @@ insert_cover(GtkTreeIter * tree_iter, GtkTextIter * text_iter, GtkTextBuffer * b
 				}                               
 			}
 
-			draw_cover_frame(pixbuf, scaled_width, scaled_height, FALSE);
+                        if (pixbuf != NULL) {
+                                draw_cover_frame(pixbuf, scaled_width, scaled_height, FALSE);
 
-			/* insert picture */
+                                /* insert picture */
 
-			gtk_text_buffer_insert_pixbuf (buffer, text_iter, pixbuf);
-			gtk_text_buffer_insert (buffer, text_iter, "\n\n", -1);
+                                gtk_text_buffer_insert_pixbuf (buffer, text_iter, pixbuf);
+                                gtk_text_buffer_insert (buffer, text_iter, "\n\n", -1);
 
-			g_object_unref (pixbuf);
+                                g_object_unref (pixbuf);
+                        }
 		}
 
                 gtk_tree_path_free(path);

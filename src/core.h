@@ -137,6 +137,7 @@ typedef struct _status_t {
 	long long sample_pos;
 	long long samples_left;
 	long long sample_offset;
+	unsigned long sample_rate;
 } status_t;
 
 

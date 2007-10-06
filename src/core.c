@@ -505,6 +505,7 @@ disk_thread(void * arg) {
 				}
 			}
 			
+			info->in_SR = fdec->fileinfo.sample_rate;
 			if (info->in_SR == info->out_SR) {
 				memcpy(framebuf + n_src_prev * 2*sample_size,
 				       readbuf, n_read * 2*sample_size);
@@ -561,6 +562,7 @@ disk_thread(void * arg) {
 		disk_thread_status.sample_pos = fdec->sample_pos;
 		disk_thread_status.samples_left = fdec->samples_left;
 		disk_thread_status.sample_offset = sample_offset / src_ratio;
+		disk_thread_status.sample_rate = info->in_SR;
 		if (disk_thread_status.samples_left < 0) {
 			disk_thread_status.samples_left = 0;
 		}

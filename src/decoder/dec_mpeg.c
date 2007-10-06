@@ -1174,9 +1174,14 @@ mpeg_header(void * data, struct mad_header const * header) {
 
         decoder_t * dec = (decoder_t *)data;
 	mpeg_pdata_t * pd = (mpeg_pdata_t *)dec->pdata;
+	file_decoder_t * fdec = dec->fdec;
 
 	if (pd->bitrate != header->bitrate) {
 		pd->bitrate = header->bitrate;
+	}
+
+	if (fdec->fileinfo.sample_rate != header->samplerate) {
+		fdec->fileinfo.sample_rate = header->samplerate;
 	}
 
         return MAD_FLOW_CONTINUE;

@@ -3645,6 +3645,11 @@ timeout_callback(gpointer data) {
 					disp_pos = 0;
 				}
 
+				if (disp_info.sample_rate != status.sample_rate) {
+					disp_info.sample_rate = status.sample_rate;
+					refresh_displays();
+				}
+
 				if (is_file_loaded) {
 					refresh_time_displays();
 				}

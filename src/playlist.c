@@ -5035,35 +5035,41 @@ playlist_load_pls_thread(void * arg) {
 				while ((*ch == ' ') || (*ch == '\t'))
 					++ch;
 
-				m = 0;
-				for (n = 0; (line[n+4] != '=') && (m < sizeof(numstr)); n++) {
-					if ((line[n+4] != ' ') && (line[n+4] != '\t'))
-						numstr[m++] = line[n+4];
-				}
-				numstr[m] = '\0';
-				strncpy(numstr_file, numstr, sizeof(numstr_file));
+                                if (!httpc_is_url(ch)) {
 
-				/* safeguard against C:\ stuff */
-				if ((ch[1] == ':') && (ch[2] == '\\')) {
-					fprintf(stderr, "Ignoring playlist item: %s\n", ch);
-					i = 0;
-					have_file = have_title = 0;
-					continue;
-				}
+                                        m = 0;
+                                        for (n = 0; (line[n+4] != '=') && (m < sizeof(numstr)); n++) {
+                                                if ((line[n+4] != ' ') && (line[n+4] != '\t'))
+                                                        numstr[m++] = line[n+4];
+                                        }
+                                        numstr[m] = '\0';
+                                        strncpy(numstr_file, numstr, sizeof(numstr_file));
 
-				snprintf(file, MAXLEN-1, "%s", ch);
+                                        /* safeguard against C:\ stuff */
+                                        if ((ch[1] == ':') && (ch[2] == '\\')) {
+                                                fprintf(stderr, "Ignoring playlist item: %s\n", ch);
+                                                i = 0;
+                                                have_file = have_title = 0;
+                                                continue;
+                                        }
 
-				/* path curing: turn \-s into /-s */
+                                        snprintf(file, MAXLEN-1, "%s", ch);
 
-				for (n = 0; n < strlen(file); n++) {
-					if (file[n] == '\\')
-						file[n] = '/';
-				}
+                                        /* path curing: turn \-s into /-s */
 
-				if (file[0] != '/') {
- 					strncpy(tmp, file, MAXLEN-1);
- 					snprintf(file, MAXLEN-1, "%s/%s", pl_dir, tmp);
- 				}
+                                        for (n = 0; n < strlen(file); n++) {
+                                                if (file[n] == '\\')
+                                                        file[n] = '/';
+                                        }
+
+                                        if (file[0] != '/') {
+                                                strncpy(tmp, file, MAXLEN-1);
+                                                snprintf(file, MAXLEN-1, "%s/%s", pl_dir, tmp);
+                                        }
+
+                                } else {
+                                        snprintf(file, MAXLEN-1, "%s", ch);
+                                }
 
 				have_file = 1;
 

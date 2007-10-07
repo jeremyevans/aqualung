@@ -3505,6 +3505,7 @@ process_metablock(metadata_t * meta) {
 	char playlist_str[MAXLEN];
 	playlist_t * pl;
 	file_decoder_t * fdec = (file_decoder_t *)meta->fdec;
+	char * str = NULL;
 
 	metadata_dump(meta);
 
@@ -3513,9 +3514,13 @@ process_metablock(metadata_t * meta) {
 	}
 
 	metadata_make_title_string(meta, title_str);
-	metadata_make_playlist_string(meta, playlist_str);
-
 	set_title_label(title_str);
+
+	if (!metadata_get_icy_name(meta, &str)) {
+		return;
+	}
+
+	metadata_make_playlist_string(meta, playlist_str);
 
 	/* set playlist_str for playlist entry */
 	if ((pl = playlist_get_playing()) != NULL) {

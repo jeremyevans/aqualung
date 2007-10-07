@@ -1135,6 +1135,16 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
 					   PL_COL_TRACK_NAME, &pname,
 					   PL_COL_PHYSICAL_FILENAME, &pfile, -1);
+
+			if (!pname || !pfile) {
+				if (pname) {
+					free(pname);
+				}
+				if (pfile) {
+					free(pfile);
+				}
+				return TRUE;
+			}
 			
 			strncpy(fileinfo_name, pname, MAXLEN-1);
 			strncpy(fileinfo_file, pfile, MAXLEN-1);

@@ -127,11 +127,14 @@ make_string_va(char * buf, char * format, ...) {
 
 	while ((ch = va_arg(args, int)) != 0) {
 
+		char * p;
+
 		++num;
 		cbuf = (int *)realloc(cbuf, num * sizeof(int));
 		cbuf[num-1] = ch;
 		strbuf = (char **)realloc(strbuf, num * sizeof(char *));
-		strbuf[num-1] = strdup(va_arg(args, char *));
+		p = va_arg(args, char *);
+		strbuf[num-1] = strdup(p ? p : "");
 	}
 
 	va_end(args);

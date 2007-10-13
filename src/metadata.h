@@ -83,11 +83,45 @@
 #define META_FIELD_BIBLIOGRAPHY        0x21
 #define META_FIELD_INTROPLAY           0x22
 
+/* string types added for ID3v2 */
+#define META_FIELD_TBPM                0x30
+#define META_FIELD_TDEN                0x31
+#define META_FIELD_TDLY                0x32
+#define META_FIELD_TDOR                0x33
+#define META_FIELD_TDRL                0x34
+#define META_FIELD_TDTG                0x35
+#define META_FIELD_TENC                0x36
+#define META_FIELD_T_E_X_T             0x37
+#define META_FIELD_TFLT                0x38
+#define META_FIELD_TIPL                0x39
+#define META_FIELD_TIT1                0x3a
+#define META_FIELD_TKEY                0x3b
+#define META_FIELD_TLEN                0x3c
+#define META_FIELD_TMCL                0x3d
+#define META_FIELD_TMOO                0x3e
+#define META_FIELD_TOAL                0x3f
+#define META_FIELD_TOFN                0x40
+#define META_FIELD_TOLY                0x41
+#define META_FIELD_TOPE                0x42
+#define META_FIELD_TOWN                0x43
+#define META_FIELD_TPE2                0x44
+#define META_FIELD_TPE4                0x45
+#define META_FIELD_TPOS                0x46
+#define META_FIELD_TPRO                0x47
+#define META_FIELD_TRSN                0x48
+#define META_FIELD_TRSO                0x49
+#define META_FIELD_TSOA                0x4a
+#define META_FIELD_TSOP                0x4b
+#define META_FIELD_TSOT                0x4c
+#define META_FIELD_TSSE                0x4d
+#define META_FIELD_TSST                0x4e
+#define META_FIELD_TXXX                0x4f
+
 /* misc. string types */
-#define META_FIELD_VENDOR              0x40
-#define META_FIELD_ICY_NAME            0x41
-#define META_FIELD_ICY_DESCR           0x42
-#define META_FIELD_ICY_GENRE           0x43
+#define META_FIELD_VENDOR              0x60
+#define META_FIELD_ICY_NAME            0x61
+#define META_FIELD_ICY_DESCR           0x62
+#define META_FIELD_ICY_GENRE           0x63
 #define META_FIELD_OTHER               0xff
 
 /* integer types */

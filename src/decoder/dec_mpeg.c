@@ -43,6 +43,7 @@
 #include "../metadata.h"
 #include "../metadata_ape.h"
 #include "../metadata_id3v1.h"
+#include "../metadata_id3v2.h"
 #include "dec_mpeg.h"
 
 
@@ -335,6 +336,8 @@ mpeg_send_metadata(file_decoder_t * fdec, int fd) {
 	metadata_t * meta;
 
 	unsigned char id3v1[128];
+	unsigned char * id3v2;
+	unsigned long file_size;
 
 	char buffer[12];
 	long id3v2_length = 0;
@@ -347,7 +350,7 @@ mpeg_send_metadata(file_decoder_t * fdec, int fd) {
 	}
 
 	/* read ID3v1 */
-	lseek(fd, -128, SEEK_END);
+	file_size = lseek(fd, -128, SEEK_END) + 128;
 	if (read(fd, id3v1, 128) == 128) {
 		metadata_from_id3v1(meta, id3v1);
 	}
@@ -357,7 +360,7 @@ mpeg_send_metadata(file_decoder_t * fdec, int fd) {
 	if (read(fd, buffer, 10) == 10) {
 		if ((buffer[0] != 'I') || (buffer[1] != 'D') || (buffer[2] != '3')) {
 			lseek(fd, 0L, SEEK_SET);
-		} else {		
+		} else {
 			id3v2_length = (((long)(buffer[6] & 0x7F) << (3*7)) |
 					((long)(buffer[7] & 0x7F) << (2*7)) |
 					((long)(buffer[8] & 0x7F) << (1*7)) |
@@ -368,7 +371,26 @@ mpeg_send_metadata(file_decoder_t * fdec, int fd) {
 #ifdef MPEG_DEBUG
 			printf("id3v2_length = %ld\n", id3v2_length);
 #endif /* MPEG_DEBUG */
-			/* TODO read and parse the ID3v2 tag */			
+
+			if (id3v2_length > file_size) {
+				fprintf(stderr, "error: ID3v2 tag length greater than file length\n");
+				return;
+			}
+
+			id3v2 = malloc(id3v2_length);
+			if (id3v2 == NULL) {
+				fprintf(stderr, "mpeg_send_metadata: malloc error\n");
+				return;
+			}
+			lseek(fd, 0L, SEEK_SET);
+			if (read(fd, id3v2, id3v2_length) != id3v2_length) {
+				fprintf(stderr, "mpeg_send_metadata: error reading ID3v2 tag\n");
+				return;
+			}
+
+			metadata_from_id3v2(meta, id3v2, id3v2_length);
+			free(id3v2);
+
 			lseek(fd, id3v2_length, SEEK_SET);
 		}
 	}

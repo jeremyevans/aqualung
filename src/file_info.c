@@ -1243,7 +1243,7 @@ fi_cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer dat
 
 void
 show_file_info(char * name, char * file, int is_called_from_browser,
-	       GtkTreeModel * model, GtkTreeIter track_iter) {
+	       GtkTreeModel * model, GtkTreeIter track_iter, gboolean cover_flag) {
 
         char str[MAXLEN];
 	gchar * file_display;
@@ -1398,8 +1398,17 @@ show_file_info(char * name, char * file, int is_called_from_browser,
         g_signal_connect(G_OBJECT(fi_event_box), "button_press_event",
                          G_CALLBACK(fi_cover_press_button_cb), (gpointer)fi);
 
-        display_cover(fi_cover_image_area, fi_event_box, fi_cover_align,
-		      48, 48, file, FALSE, TRUE);
+        if (options.show_cover_for_ms_tracks_only == TRUE) {
+                if (cover_flag == TRUE) {
+                        display_cover(fi_cover_image_area, fi_event_box, fi_cover_align,
+                                      48, 48, file, FALSE, TRUE);
+                } else {
+                        hide_cover_thumbnail();
+                }
+        } else {
+                display_cover(fi_cover_image_area, fi_event_box, fi_cover_align,
+                              48, 48, file, FALSE, TRUE);
+        }
 
 	fi->hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), fi->hbox, FALSE, FALSE, 5);

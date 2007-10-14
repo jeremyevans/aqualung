@@ -153,6 +153,7 @@ enum {
 	PL_COL_DURATION,
 	PL_COL_DURATION_DISP,
 	PL_COL_FONT_WEIGHT,
+        PL_COL_COVER_FLAG,
 
 	PL_NUM_OF_COLUMNS /* it must be the last entry here */
 };

@@ -145,6 +145,7 @@ typedef struct _playlist_filemeta {
 	int active;
 	int level;
 	int is_album_node;
+        int cover_flag;
 } playlist_filemeta;
 
 typedef struct {
@@ -227,7 +228,8 @@ playlist_store_new() {
 				  G_TYPE_STRING,    /* volume adj. displayed */
 				  G_TYPE_FLOAT,     /* duration (in secs) */
 				  G_TYPE_STRING,    /* duration displayed */
-				  G_TYPE_INT);      /* font weight */
+				  G_TYPE_INT,       /* font weight */
+                                  G_TYPE_BOOLEAN);  /* cover flag */
 }
 
 playlist_t *
@@ -410,6 +412,7 @@ playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 	gfloat duration;
 	gchar * durdisp;
 	gint fontw;
+        gboolean cover_flag;
 	int unmark = 0;
 
 
@@ -421,7 +424,8 @@ playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 			   PL_COL_VOLUME_ADJUSTMENT_DISP, &voldisp, 
 			   PL_COL_DURATION, &duration,
 			   PL_COL_DURATION_DISP, &durdisp, 
-			   PL_COL_FONT_WEIGHT, &fontw, -1);
+			   PL_COL_FONT_WEIGHT, &fontw, 
+                           PL_COL_COVER_FLAG, &cover_flag, -1);
 
 	if (mode == 0) {
 		gtk_tree_store_insert_after(tstore, iter, NULL, titer);
@@ -444,7 +448,8 @@ playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 			   PL_COL_VOLUME_ADJUSTMENT_DISP, voldisp,
 			   PL_COL_DURATION, duration,
 			   PL_COL_DURATION_DISP, durdisp,
-			   PL_COL_FONT_WEIGHT, fontw, -1);
+			   PL_COL_FONT_WEIGHT, fontw, 
+                           PL_COL_COVER_FLAG, -1);
 
 	if (unmark) {
 		unmark_track(tstore, iter);
@@ -1098,6 +1103,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	GtkTreeIter iter;
 	gchar * pname;
 	gchar * pfile;
+        gboolean cover_flag;
 	playlist_t * pl;
 
 	if ((pl = playlist_get_current()) == NULL) {
@@ -1150,7 +1156,9 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 			strncpy(fileinfo_file, pfile, MAXLEN-1);
 			free(pname);
 			free(pfile);
-			show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy);
+
+                        gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_COVER_FLAG, &cover_flag, -1);
+			show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy, cover_flag);
 		}
 
 		if (path) {
@@ -1504,6 +1512,7 @@ add_file_to_playlist(gpointer data) {
 			   PL_COL_DURATION, plfm->duration,
 			   PL_COL_DURATION_DISP, duration_str,
 			   PL_COL_FONT_WEIGHT, (plfm->active && options.show_active_track_name_in_bold) ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL, 
+                           PL_COL_COVER_FLAG, plfm->cover_flag,
                            -1);
 
 		if (plfm->active && !plfm->is_album_node &&
@@ -1812,6 +1821,7 @@ add_url(GtkWidget * widget, gpointer data) {
 			   PL_COL_DURATION, duration,
 			   PL_COL_DURATION_DISP, duration_str,
 			   PL_COL_FONT_WEIGHT, PANGO_WEIGHT_NORMAL,
+                           PL_COL_COVER_FLAG, FALSE,
                            -1);
 
 		playlist_content_changed(pl);
@@ -2322,8 +2332,24 @@ void
 plist__fileinfo_cb(gpointer data) {
 
 	GtkTreeIter dummy;
+	GtkTreePath * path;
+	GtkTreeIter iter;
+        gboolean cover_flag;
+        playlist_t * pl;
 
-	show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy);
+	if ((pl = playlist_get_current()) == NULL) {
+		return;
+	}
+
+        gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &path, NULL);
+
+        if (path &&
+            gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, path) &&
+            !gtk_tree_model_iter_has_child(GTK_TREE_MODEL(pl->store), &iter)) {
+
+                gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_COVER_FLAG, &cover_flag, -1);
+	        show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy, cover_flag);
+        }
 }
 
 void
@@ -4409,13 +4435,15 @@ save_track_node(playlist_t * pl, GtkTreeIter * piter, xmlNodePtr root, char * no
 	gchar * color;
 	gfloat voladj;
 	gfloat duration;
+        gboolean cover_flag;
         gchar str[32];
         xmlNodePtr node;
 
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), piter,
 			   PL_COL_TRACK_NAME, &track_name, PL_COL_PHYSICAL_FILENAME, &phys_name, 
                            PL_COL_SELECTION_COLOR, &color,
-			   PL_COL_VOLUME_ADJUSTMENT, &voladj, PL_COL_DURATION, &duration, -1);
+			   PL_COL_VOLUME_ADJUSTMENT, &voladj, PL_COL_DURATION, &duration, 
+                           PL_COL_COVER_FLAG, &cover_flag, -1);
 	
 	node = xmlNewTextChild(root, NULL, (const xmlChar*) nodeID, NULL);
 	
@@ -4443,6 +4471,9 @@ save_track_node(playlist_t * pl, GtkTreeIter * piter, xmlNodePtr root, char * no
 	
 	snprintf(str, 31, "%f", duration);
 	xmlNewTextChild(node, NULL, (const xmlChar*) "duration", (const xmlChar*) str);
+
+        snprintf(str, 31, "%d", cover_flag);
+	xmlNewTextChild(node, NULL, (const xmlChar*) "cover", (const xmlChar*) str);
 	
 	g_free(track_name);
 	g_free(phys_name);
@@ -4584,6 +4615,7 @@ parse_playlist_track(playlist_transfer_t * pt, xmlDocPtr doc, xmlNodePtr _cur, i
 
 	plfm->level = level;
 	plfm->is_album_node = is_album_node;
+	plfm->cover_flag = FALSE;
 
         for (cur = _cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
 
@@ -4639,7 +4671,14 @@ parse_playlist_track(playlist_transfer_t * pt, xmlDocPtr doc, xmlNodePtr _cur, i
 				plfm->duration = convf((char *)key);
                         }
                         xmlFree(key);
+		} else if (!xmlStrcmp(cur->name, (const xmlChar *)"cover")) {
+                        key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                        if (key != NULL) {
+				plfm->cover_flag = atoi((char *)key);
+                        }
+                        xmlFree(key);
 		}
+
 	}
 
 	playlist_thread_add_to_list(pt, plfm);

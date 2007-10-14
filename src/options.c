@@ -121,6 +121,7 @@ GtkWidget * check_show_sn_title;
 GtkWidget * check_show_hidden;
 GtkWidget * check_tags_tab_first;
 GtkWidget * check_dont_show_cover;
+GtkWidget * check_show_cover_for_ms_tracks_only;
 
 GtkWidget * check_playlist_is_embedded;
 GtkWidget * check_autoplsave;
@@ -342,6 +343,7 @@ options_window_accept(void) {
 	set_option_from_toggle(check_show_hidden, &options.show_hidden);
         set_option_from_toggle(check_tags_tab_first, &options.tags_tab_first);
         set_option_from_toggle(check_dont_show_cover, &options.dont_show_cover);
+        set_option_from_toggle(check_show_cover_for_ms_tracks_only, &options.show_cover_for_ms_tracks_only);
 
         if(options.dont_show_cover) {
                 hide_cover_thumbnail();
@@ -1692,6 +1694,12 @@ create_options_window(void) {
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_dont_show_cover, FALSE, FALSE, 0);
 
+        check_show_cover_for_ms_tracks_only = gtk_check_button_new_with_label(_("Show cover thumbnail for Music Store tracks only"));
+	gtk_widget_set_name(check_show_cover_for_ms_tracks_only, "check_on_notebook");
+	if (options.show_cover_for_ms_tracks_only) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_cover_for_ms_tracks_only), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_show_cover_for_ms_tracks_only, FALSE, FALSE, 0);
 
         /* "Playlist" notebook page */
 
@@ -3106,6 +3114,7 @@ save_config(void) {
 	SAVE_INT(main_window_always_on_top);
 	SAVE_INT(tags_tab_first);
 	SAVE_INT(dont_show_cover);
+	SAVE_INT(show_cover_for_ms_tracks_only);
 	SAVE_INT(disable_skin_support_settings);
 	SAVE_INT(override_skin_settings);
 	SAVE_INT(replaygain_tag_to_use);
@@ -3474,6 +3483,7 @@ load_config(void) {
 		LOAD_INT(main_window_always_on_top);
 		LOAD_INT(tags_tab_first);
 		LOAD_INT(dont_show_cover);
+		LOAD_INT(show_cover_for_ms_tracks_only);
 		LOAD_INT(disable_skin_support_settings);
 		LOAD_INT(override_skin_settings);
 		LOAD_INT(replaygain_tag_to_use);

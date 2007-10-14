@@ -1400,7 +1400,8 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 			   PL_COL_VOLUME_ADJUSTMENT, voladj,
 			   PL_COL_VOLUME_ADJUSTMENT_DISP, voladj_str,
 			   PL_COL_DURATION, data->duration,
-			   PL_COL_DURATION_DISP, duration_str, -1);
+			   PL_COL_DURATION_DISP, duration_str, 
+                           PL_COL_COVER_FLAG, TRUE, -1);
 
 	if (fdec != NULL) {
 		file_decoder_close(fdec);
@@ -1488,7 +1489,8 @@ record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl,
 				   PL_COL_VOLUME_ADJUSTMENT, 0.0f,
 				   PL_COL_VOLUME_ADJUSTMENT_DISP, "",
 				   PL_COL_DURATION, 0.0f,
-				   PL_COL_DURATION_DISP, "00:00", -1);
+				   PL_COL_DURATION_DISP, "00:00", 
+                                   PL_COL_COVER_FLAG, TRUE, -1);
 		plist_iter = &list_iter;
 		dest = NULL;
 	} else {
@@ -2675,9 +2677,9 @@ track__fileinfo_cb(gpointer user_data) {
 				  artist_name, record_name, track_name);
 
 		if (is_store_iter_readonly(&iter_track)) {
-			show_file_info(list_str, data->file, 0, model, iter_track);
+			show_file_info(list_str, data->file, 0, model, iter_track, TRUE);
 		} else {
-			show_file_info(list_str, data->file, 1, model, iter_track);
+			show_file_info(list_str, data->file, 1, model, iter_track, TRUE);
 		}
         }
 }

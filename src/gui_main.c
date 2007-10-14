@@ -545,6 +545,7 @@ refresh_displays(void) {
 	GtkTreeIter iter;
 	char * title_str;
 	char * phys_str;
+        gboolean cover_flag;
 	playlist_t * pl;
 
 	refresh_time_displays();
@@ -607,9 +608,19 @@ refresh_displays(void) {
                         if (!options.dont_show_cover) {
                                 gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
                                                    PL_COL_PHYSICAL_FILENAME, &phys_str,
+                                                   PL_COL_COVER_FLAG, &cover_flag,
                                                    -1);
-                                display_cover(cover_image_area, c_event_box, cover_align,
-                                              48, 48, phys_str, TRUE, TRUE);
+                                if (options.show_cover_for_ms_tracks_only == TRUE) {
+                                        if (cover_flag == TRUE) {
+                                                display_cover(cover_image_area, c_event_box, cover_align,
+                                                              48, 48, phys_str, TRUE, TRUE);
+                                        } else {
+                                                hide_cover_thumbnail();
+                                        }
+                                } else {
+                                        display_cover(cover_image_area, c_event_box, cover_align,
+                                                      48, 48, phys_str, TRUE, TRUE);
+                                }
 			        g_free(phys_str);
                         }
 		}
@@ -835,7 +846,7 @@ conf__fileinfo_cb(gpointer data) {
 		GtkTreeIter dummy;
 		const char * name = gtk_label_get_text(GTK_LABEL(label_title));
 	
-		show_file_info((char *)name, current_file, 0, NULL, dummy);
+		show_file_info((char *)name, current_file, 0, NULL, dummy, TRUE);
 	}
 }
 

@@ -25,7 +25,7 @@
 
 
 void show_file_info(char * name, char * file, int is_called_from_browser,
-		    GtkTreeModel * model, GtkTreeIter iter_track);
+		    GtkTreeModel * model, GtkTreeIter iter_track, gboolean cover_flag);
 
 
 #endif /* _FILE_INFO_H */

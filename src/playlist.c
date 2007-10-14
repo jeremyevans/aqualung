@@ -4877,42 +4877,50 @@ playlist_load_m3u_thread(void * arg) {
 				have_name = 1;
 
 			} else {
-				/* safeguard against C:\ stuff */
-				if ((line[1] == ':') && (line[2] == '\\')) {
-					fprintf(stderr, "Ignoring playlist item: %s\n", line);
-					i = 0;
-					have_name = 0;
-					continue;
-				}
+                                if (!httpc_is_url(line)) {
+                                        /* safeguard against C:\ stuff */
+                                        if ((line[1] == ':') && (line[2] == '\\')) {
+                                                fprintf(stderr, "Ignoring playlist item: %s\n", line);
+                                                i = 0;
+                                                have_name = 0;
+                                                continue;
+                                        }
 
-				snprintf(path, MAXLEN-1, "%s", line);
+                                        snprintf(path, MAXLEN-1, "%s", line);
 
-				/* path curing: turn \-s into /-s */
-				for (n = 0; n < strlen(path); n++) {
-					if (path[n] == '\\')
-						path[n] = '/';
-				}
+                                        /* path curing: turn \-s into /-s */
+                                        for (n = 0; n < strlen(path); n++) {
+                                                if (path[n] == '\\')
+                                                        path[n] = '/';
+                                        }
 
-				if (path[0] != '/') {
- 					strncpy(tmp, path, MAXLEN-1);
- 					snprintf(path, MAXLEN-1, "%s/%s", pl_dir, tmp);
- 				}
+                                        if (path[0] != '/') {
+                                                strncpy(tmp, path, MAXLEN-1);
+                                                snprintf(path, MAXLEN-1, "%s/%s", pl_dir, tmp);
+                                        }
 
-				if (!have_name) {
-					gchar * ch;
-					if ((ch = strrchr(path, '/')) != NULL) {
-						++ch;
-						snprintf(name, MAXLEN-1, "%s", ch);
-					} else {
-						fprintf(stderr,
-							"warning: ain't this a directory? : %s\n", path);
-						snprintf(name, MAXLEN-1, "%s", path);
-					}
-				}
+                                        if (!have_name) {
+                                                gchar * ch;
+                                                if ((ch = strrchr(path, '/')) != NULL) {
+                                                        ++ch;
+                                                        snprintf(name, MAXLEN-1, "%s", ch);
+                                                } else {
+                                                        fprintf(stderr,
+                                                                "warning: ain't this a directory? : %s\n", path);
+                                                        snprintf(name, MAXLEN-1, "%s", path);
+                                                }
+                                        }
 
-				plfm = playlist_filemeta_get(path,
-							     have_name ? name : NULL,
-							     1);
+                                        plfm = playlist_filemeta_get(path,
+                                                                     have_name ? name : NULL,
+                                                                     1);
+                                } else {
+
+                                        plfm = playlist_filemeta_get(line,
+                                                                     have_name ? line : NULL,
+                                                                     1);
+                                }
+
 				have_name = 0;
 
 				if (plfm == NULL) {

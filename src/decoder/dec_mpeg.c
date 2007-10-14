@@ -361,11 +361,7 @@ mpeg_send_metadata(file_decoder_t * fdec, int fd) {
 		if ((buffer[0] != 'I') || (buffer[1] != 'D') || (buffer[2] != '3')) {
 			lseek(fd, 0L, SEEK_SET);
 		} else {
-			id3v2_length = (((long)(buffer[6] & 0x7F) << (3*7)) |
-					((long)(buffer[7] & 0x7F) << (2*7)) |
-					((long)(buffer[8] & 0x7F) << (1*7)) |
-					((long)(buffer[9] & 0x7F) << (0*7)));
-			
+			id3v2_length = meta_id3v2_read_synchsafe_int(buffer+6);
 			id3v2_length += 10; /* add 10 byte header */
 			
 #ifdef MPEG_DEBUG

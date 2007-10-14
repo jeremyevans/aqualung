@@ -90,10 +90,11 @@ struct {
 	      {META_TAG_ID3v1, META_FIELD_UNIQUE, "Track"},
 	      {META_TAG_ID3v2, META_FIELD_UNIQUE, "TRCK"}}},
 	{META_FIELD_COMMENT, X_("Comment"), "", "",
-	     META_TAG_APE | META_TAG_OXC | META_TAG_ID3v1,
+	     META_TAG_APE | META_TAG_OXC | META_TAG_ID3v1 | META_TAG_ID3v2,
 	     {{META_TAG_APE, 0, "Comment"},
 	      {META_TAG_OXC, 0, "comment"},
-	      {META_TAG_ID3v1, META_FIELD_UNIQUE | META_FIELD_MANDATORY, "Comment"}}},
+	      {META_TAG_ID3v1, META_FIELD_UNIQUE | META_FIELD_MANDATORY, "Comment"},
+	      {META_TAG_ID3v2, META_FIELD_UNIQUE, "COMM"}}},
 
 	{META_FIELD_DISC, X_("Disc"), "%d", "%d",
 	     META_TAG_APE | META_TAG_OXC,

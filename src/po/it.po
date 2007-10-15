@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-17 23:36+0200\n"
-"PO-Revision-Date: 2007-08-18 12:15+0200\n"
+"POT-Creation-Date: 2007-10-15 22:21+0200\n"
+"PO-Revision-Date: 2007-10-15 23:23+0200\n"
 "Last-Translator: Michele Petrecca <michelinux@alice.it>\n"
 "Language-Team: Italiano\n"
 "MIME-Version: 1.0\n"
@@ -84,6 +84,9 @@ msgstr ""
 
 msgid "Systray support\n"
 msgstr "Supporto Systray\n"
+
+msgid "Podcast support\n"
+msgstr "Supporto Podcast\n"
 
 msgid "Decoding support:"
 msgstr "Supporto decoding:"
@@ -258,7 +261,7 @@ msgid ""
 msgstr ""
 
 msgid "Load settings from Music Store file"
-msgstr ""
+msgstr "Carica le impostazioni dal Music Store File"
 
 msgid "Build/Update store"
 msgstr "Costruisci/Aggiorna magazzino"
@@ -389,145 +392,6 @@ msgstr ""
 msgid "Reading file"
 msgstr "Lettura in corso dei file"
 
-msgid "Please select the directory for ripped files."
-msgstr "Seleziona la cartella per i file convertiti"
-
-msgid "(none)"
-msgstr ""
-
-msgid "fast"
-msgstr "veloce"
-
-msgid "best"
-msgstr "migliore"
-
-msgid "Compression level:"
-msgstr "Livello di compressione:"
-
-msgid "Bitrate [kbps]:"
-msgstr "Bitrate [kbps]:"
-
-msgid "Artist/Album already existing, not empty"
-msgstr "Artista/Album già esistente, non vuoto"
-
-msgid ""
-"\n"
-"The Music Store you selected has a matching Artist and Album, already "
-"containing some tracks. If you press OK, these tracks will be removed. The "
-"files themselves will be left intact, but they will be removed from the "
-"destination Music Store. Press Cancel to get back to change the Artist/Album "
-"or the destination Music Store."
-msgstr ""
-
-msgid "Rip CD"
-msgstr "Rip CD"
-
-msgid "Artist:"
-msgstr "Artista:"
-
-msgid "Album:"
-msgstr "Album:"
-
-msgid "Year:"
-msgstr "Anno:"
-
-msgid "Genre:"
-msgstr "Genere:"
-
-msgid "Rip"
-msgstr "Rip"
-
-msgid "No."
-msgstr "N.ro"
-
-msgid "Title"
-msgstr "Titolo"
-
-msgid "Select"
-msgstr "Seleziona"
-
-msgid "All"
-msgstr "Tutto"
-
-msgid "None"
-msgstr "Nessuno"
-
-msgid "Output"
-msgstr "Uscita"
-
-msgid "Destination"
-msgstr "Destinazione"
-
-msgid "Target directory for ripped files"
-msgstr ""
-
-msgid "Add to Music Store"
-msgstr "Aggiungi al Music Store"
-
-msgid "Format"
-msgstr "Formato"
-
-msgid "File format:"
-msgstr "Formato file:"
-
-msgid "VBR encoding"
-msgstr "Codifica VBR"
-
-msgid "Tag files with metadata"
-msgstr ""
-
-msgid "Paranoia"
-msgstr "Paranoia"
-
-msgid "Paranoia error correction"
-msgstr "Correzione d'errore con Paranoia"
-
-msgid "Perform overlapped reads"
-msgstr ""
-
-msgid "Verify data integrity"
-msgstr "Verifica integrità dei dati"
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
-
-msgid "Maximum number of retries:"
-msgstr "Numero massimo di tentativi:"
-
-msgid "Error"
-msgstr "Errore"
-
-msgid ""
-"\n"
-"Destination directory is not read-write accessible!"
-msgstr ""
-"\n"
-"La cartella di destinazione non è accessibile in lettura-scrittura!"
-
-msgid "Total"
-msgstr "Totale"
-
-msgid "(audio only)"
-msgstr "(solo audio)"
-
-msgid "Ripping CD tracks"
-msgstr "Rippaggio tracce CD in corso"
-
-msgid "Begin"
-msgstr "Inizio"
-
-msgid "Length"
-msgstr "Lunghezza"
-
-msgid "Progress"
-msgstr "Progresso"
-
-msgid "Close window when complete"
-msgstr "Chiudi la finestra quando ha terminato"
-
-msgid "Close"
-msgstr "Chiudi"
-
 msgid "CD Audio"
 msgstr "CD Audio"
 
@@ -545,6 +409,9 @@ msgstr ""
 
 msgid "Connecting to CDDB server..."
 msgstr "Connessione in corso al server CDDB..."
+
+msgid "Error"
+msgstr "Errore"
 
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr "Si è verificato un errore durante il tentativo di connessione al server CDDB."
@@ -607,19 +474,28 @@ msgid "Correct existing record"
 msgstr ""
 
 msgid "Submit new record"
-msgstr ""
+msgstr "Inserisci una nuova voce"
 
 msgid "Matches:"
 msgstr ""
 
+msgid "Artist:"
+msgstr "Artista:"
+
 msgid "Title:"
 msgstr "Titolo:"
+
+msgid "Year:"
+msgstr "Anno:"
 
 msgid "Category:"
 msgstr "Categoria:"
 
 msgid "(choose a category)"
 msgstr "(scegli una categoria)"
+
+msgid "Genre:"
+msgstr "Genere:"
 
 msgid "Extended data:"
 msgstr "Dati estesi:"
@@ -635,6 +511,133 @@ msgstr "Tracce"
 
 msgid "You have to provide an email address for CDDB submission."
 msgstr ""
+
+msgid "Please select the directory for ripped files."
+msgstr "Seleziona la cartella per i file convertiti"
+
+msgid "(none)"
+msgstr ""
+
+msgid "fast"
+msgstr "veloce"
+
+msgid "best"
+msgstr "migliore"
+
+msgid "Compression level:"
+msgstr "Livello di compressione:"
+
+msgid "Bitrate [kbps]:"
+msgstr "Bitrate [kbps]:"
+
+msgid "Artist/Album already existing, not empty"
+msgstr "Artista/Album già esistente, non vuoto"
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+
+msgid "Rip CD"
+msgstr "Rip CD"
+
+msgid "Album:"
+msgstr "Album:"
+
+msgid "Rip"
+msgstr "Rip"
+
+msgid "No."
+msgstr "N.ro"
+
+msgid "Title"
+msgstr "Titolo"
+
+msgid "Select"
+msgstr "Seleziona"
+
+msgid "All"
+msgstr "Tutto"
+
+msgid "None"
+msgstr "Nessuno"
+
+msgid "Output"
+msgstr "Uscita"
+
+msgid "Destination"
+msgstr "Destinazione"
+
+msgid "Target directory for ripped files"
+msgstr "Cartella di destinazione per i file rippati"
+
+msgid "Add to Music Store"
+msgstr "Aggiungi al Music Store"
+
+msgid "Format"
+msgstr "Formato"
+
+msgid "File format:"
+msgstr "Formato file:"
+
+msgid "VBR encoding"
+msgstr "Codifica VBR"
+
+msgid "Tag files with metadata"
+msgstr ""
+
+msgid "Paranoia"
+msgstr "Paranoia"
+
+msgid "Paranoia error correction"
+msgstr "Correzione d'errore con Paranoia"
+
+msgid "Perform overlapped reads"
+msgstr ""
+
+msgid "Verify data integrity"
+msgstr "Verifica integrità dei dati"
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+
+msgid "Maximum number of retries:"
+msgstr "Numero massimo di tentativi:"
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+"\n"
+"La cartella di destinazione non è accessibile in lettura-scrittura!"
+
+msgid "Total"
+msgstr "Totale"
+
+msgid "(audio only)"
+msgstr "(solo audio)"
+
+msgid "Ripping CD tracks"
+msgstr "Rippaggio tracce CD in corso"
+
+msgid "Begin"
+msgstr "Inizio"
+
+msgid "Length"
+msgstr "Lunghezza"
+
+msgid "Progress"
+msgstr "Progresso"
+
+msgid "Close window when complete"
+msgstr "Chiudi la finestra quando ha terminato"
+
+msgid "Close"
+msgstr "Chiudi"
 
 msgid "Unknown Album"
 msgstr "Album sconosciuto"
@@ -691,17 +694,37 @@ msgstr "File sorgente:"
 msgid "Target file:"
 msgstr ""
 
-#, c-format
-msgid ""
-"Conversion error in field %s:\n"
-"'%s' is not an integer number!"
-msgstr ""
+msgid "*File info"
+msgstr "*Info file"
+
+msgid "File info"
+msgstr "Info file"
+
+msgid "There are unsaved changes to the file metadata."
+msgstr "Ci sono cambi non salvati al file dei metadati"
+
+msgid "Save and close"
+msgstr "Salva e chiudi"
+
+msgid "Discard changes"
+msgstr "Annulla i cambi"
+
+msgid "Do not close"
+msgstr "Non chiudere"
 
 #, c-format
 msgid ""
 "Conversion error in field %s:\n"
-"'%s' is not a number!"
+"'%s' does not conform to format '%s'!"
 msgstr ""
+
+#, c-format
+msgid ""
+"Failed to write metadata to file.\n"
+"Reason: %s"
+msgstr ""
+"Non è stato possibile scrivere i metadati.\n"
+"Motivo: %s"
 
 #, c-format
 msgid ""
@@ -729,9 +752,6 @@ msgstr "tag:"
 
 msgid "Audio CD"
 msgstr "CD Audio"
-
-msgid "File info"
-msgstr "Info file"
 
 msgid "Track:"
 msgstr "Traccia:"
@@ -768,7 +788,7 @@ msgid "Total samples:"
 msgstr "Campioni totali:"
 
 msgid "Mode:"
-msgstr ""
+msgstr "Modo:"
 
 msgid "Type:"
 msgstr "Tipo:"
@@ -777,7 +797,7 @@ msgid "Channels:"
 msgstr "Canali:"
 
 msgid "Patterns:"
-msgstr ""
+msgstr "Pattern:"
 
 msgid "Samples:"
 msgstr "Campioni:"
@@ -812,9 +832,6 @@ msgstr ""
 
 msgid "Save"
 msgstr "Salva"
-
-msgid "Discard changes"
-msgstr "Annulla i cambi"
 
 msgid "Do not exit"
 msgstr "Non uscire"
@@ -870,7 +887,7 @@ msgstr ""
 "le playlist devi (ri)avviare entrambe.\n"
 
 msgid "Warn me if the Window Manager does not support system tray"
-msgstr ""
+msgstr "Avvisami se il Window Manager non supporta la system tray"
 
 msgid ""
 "Aqualung is compiled with system tray support, but the status icon could not "
@@ -1045,6 +1062,9 @@ msgid ""
 "\n"
 "Continue ?"
 msgstr ""
+"Le canzoni selezionate presentano un formatonon supportato dal player.\n"
+"\n"
+"Continuare?"
 
 #, c-format
 msgid ""
@@ -1052,6 +1072,9 @@ msgid ""
 "\n"
 "Continue ?"
 msgstr ""
+"Tutte le canzoni selezionate presentano un formatonon supportato dal player.\n"
+"\n"
+"Continuare?"
 
 msgid "iFP device manager (upload mode)"
 msgstr "Gestore dispositivo iFP (modalità upload)"
@@ -1081,7 +1104,7 @@ msgid "<b>Device status</b>"
 msgstr "<b>Stato dispositivo</b>"
 
 msgid "Size"
-msgstr ""
+msgstr "Ampiezza"
 
 msgid "Create a new directory"
 msgstr "Crea una nuova cartella"
@@ -1114,52 +1137,61 @@ msgid "Close window when transfer complete"
 msgstr "Chiudi la finestra quando il trasferimento ha termine"
 
 msgid "_Upload"
-msgstr ""
+msgstr "_Upload"
 
 msgid "_Download"
-msgstr ""
+msgstr "_Download"
 
 msgid "_Abort"
+msgstr "_Annullato"
+
+msgid "Success"
 msgstr ""
 
-msgid "NULL"
+msgid "Memory allocation error"
+msgstr "Errore di allocazione della memoria"
+
+msgid "Unable to open file"
+msgstr "Impossibile aprire il file"
+
+msgid "No metadata support for this format"
+msgstr "Nessun metadato supportato per questo formato di file "
+
+msgid "File is not writable"
+msgstr "Il file non è scrivibile"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "Il campo 'Numero traccia' presenta un valore non corretto"
+
+msgid "Invalid 'Genre' field value"
+msgstr "Il campo 'Genere' presenta un valore non corretto"
+
+msgid "Conversion to target charset failed"
 msgstr ""
 
-msgid "ID3v1"
-msgstr "ID3v1"
+msgid "Internal error"
+msgstr "Errore interno"
 
-msgid "ID3v2"
-msgstr "ID3v2"
-
-msgid "APEv2"
-msgstr "APEv2"
-
-msgid "Ogg Xiph Comments"
-msgstr "Commenti Ogg Xiph"
-
-msgid "Generic StreamMeta"
-msgstr ""
-
-msgid "MPEG StreamMeta"
-msgstr ""
-
-msgid "Module info"
-msgstr ""
-
-msgid "Unknown"
-msgstr "Sconosciuto"
+msgid "Unknown error"
+msgstr "Errore sconosciuto"
 
 msgid "Album"
 msgstr "Album"
 
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 msgid "Genre"
 msgstr "Genere"
 
+msgid "Track No."
+msgstr "Traccia N.ro"
+
 msgid "Comment"
 msgstr "Commento"
+
+msgid "Disc"
+msgstr "Disco"
 
 msgid "Performer"
 msgstr ""
@@ -1174,10 +1206,10 @@ msgid "Location"
 msgstr "Locazione"
 
 msgid "Contact"
-msgstr ""
+msgstr "Contatto"
 
 msgid "License"
-msgstr ""
+msgstr "Licenza"
 
 msgid "Copyright"
 msgstr "Copyright"
@@ -1188,8 +1220,176 @@ msgstr "ISRC"
 msgid "Version"
 msgstr "Versione"
 
+msgid "Subtitle"
+msgstr "Sottotitolo"
+
+msgid "Debut Album"
+msgstr "Album di debutto"
+
+msgid "Publisher"
+msgstr ""
+
+msgid "Conductor"
+msgstr ""
+
+msgid "Composer"
+msgstr "Compositore"
+
+msgid "Publication Right"
+msgstr "Diritti di pubblicazione"
+
+msgid "File"
+msgstr "File"
+
+msgid "EAN/UPC"
+msgstr "EAN/UPC"
+
+msgid "ISBN"
+msgstr "ISBN"
+
+msgid "Catalog Number"
+msgstr "Numero catalogo"
+
+msgid "Label Code"
+msgstr "Codice etichetta"
+
+msgid "Record Date"
+msgstr "Data della registrazione"
+
+msgid "Record Location"
+msgstr "Località della registrazione"
+
+msgid "Media"
+msgstr ""
+
+msgid "Index"
+msgstr "Indice"
+
+msgid "Related"
+msgstr ""
+
+msgid "Abstract"
+msgstr ""
+
+msgid "Language"
+msgstr "Lingua"
+
+msgid "Bibliography"
+msgstr "Bibliografia"
+
+msgid "Introplay"
+msgstr ""
+
+msgid "BPM"
+msgstr "BPM"
+
+msgid "Encoding Time"
+msgstr "Tempo di codifica"
+
+msgid "Playlist Delay"
+msgstr ""
+
+msgid "Original Release Time"
+msgstr ""
+
+msgid "Release Time"
+msgstr ""
+
+msgid "Tagging Time"
+msgstr ""
+
+msgid "Encoded by"
+msgstr ""
+
+msgid "Lyricist/Text Writer"
+msgstr ""
+
+msgid "File Type"
+msgstr "Tipo di file"
+
+msgid "Involved People"
+msgstr "Persone coinvolte"
+
+msgid "Content Group"
+msgstr ""
+
+msgid "Initial key"
+msgstr ""
+
+msgid "Musician Credits"
+msgstr ""
+
+msgid "Mood"
+msgstr ""
+
+msgid "Original Album"
+msgstr "Album originale"
+
+msgid "Original Filename"
+msgstr "Nome del file originale"
+
+msgid "Original Lyricist"
+msgstr ""
+
+msgid "Original Artist"
+msgstr "Artista originale"
+
+msgid "File Owner"
+msgstr "Proprietario del file"
+
+msgid "Band/Orchestra"
+msgstr "Band/Orchestra"
+
+msgid "Interpreted/Remixed"
+msgstr "Interpretato/Remixato"
+
+msgid "Part Of A Set"
+msgstr ""
+
+msgid "Produced"
+msgstr "Prodotto"
+
+msgid "Internet Radio Station Name"
+msgstr "Nome Stazione Radio Internet "
+
+msgid "Internet Radio Station Owner"
+msgstr ""
+
+msgid "Album Sort Order"
+msgstr ""
+
+msgid "Performer Sort Order"
+msgstr ""
+
+msgid "Title Sort Order"
+msgstr ""
+
+msgid "Software"
+msgstr "Software"
+
+msgid "Set Subtitle"
+msgstr "Imposta sottotitolo"
+
+msgid "User Defined Text"
+msgstr ""
+
 msgid "Vendor"
 msgstr "Vendor"
+
+msgid "ReplayGain Reference Loudness"
+msgstr ""
+
+msgid "ReplayGain Track Gain"
+msgstr ""
+
+msgid "ReplayGain Track Peak"
+msgstr ""
+
+msgid "ReplayGain Album Gain"
+msgstr ""
+
+msgid "ReplayGain Album Peak"
+msgstr ""
 
 msgid "Icy-Name"
 msgstr ""
@@ -1200,68 +1400,41 @@ msgstr ""
 msgid "Icy-Genre"
 msgstr ""
 
-msgid "Other"
-msgstr "Altro"
-
-msgid "Track No."
-msgstr "Traccia N.ro"
-
 msgid "RVA2"
+msgstr "RVA2"
+
+msgid "Picture"
 msgstr ""
 
-msgid "Embedded Picture"
+msgid "Binary Object"
 msgstr ""
 
-msgid "General Encapsulated Object"
+msgid "NULL"
+msgstr "NULL"
+
+msgid "ID3v1"
+msgstr "ID3v1"
+
+msgid "ID3v2"
+msgstr "ID3v2"
+
+msgid "APE"
+msgstr "APE"
+
+msgid "Ogg Xiph Comments"
+msgstr "Commenti Ogg Xiph"
+
+msgid "Generic StreamMeta"
 msgstr ""
 
-msgid "performer"
+msgid "MPEG StreamMeta"
+msgstr "MPEG StreamMeta"
+
+msgid "Module info"
 msgstr ""
 
-msgid "description"
-msgstr "descrizione"
-
-msgid "organization"
-msgstr "organizzazione"
-
-msgid "location"
-msgstr "locazione"
-
-msgid "contact"
-msgstr ""
-
-msgid "license"
-msgstr "licenza"
-
-msgid "copyright"
-msgstr "copyright"
-
-msgid "isrc"
-msgstr ""
-
-msgid "version"
-msgstr "versione"
-
-msgid "Success"
-msgstr ""
-
-msgid "Memory allocation error"
-msgstr ""
-
-msgid "Unable to open file"
-msgstr "Impossibile aprire il file"
-
-msgid "No metadata support for this format"
-msgstr ""
-
-msgid "File is not writable"
-msgstr ""
-
-msgid "Internal error"
-msgstr "Errore interno"
-
-msgid "Unknown error"
-msgstr "Errore sconosciuto"
+msgid "Unknown"
+msgstr "Sconosciuto"
 
 msgid "Music Store"
 msgstr "Music Store"
@@ -1298,7 +1471,7 @@ msgid "You will need to restart Aqualung for the following changes to take effec
 msgstr "Necessiti di riavviare Aqualung affinché i seguenti cambi abbiano effetto:"
 
 msgid "Disable skin support"
-msgstr ""
+msgstr "Disabilita il supporto alle diverse skin"
 
 msgid "rw"
 msgstr "rw"
@@ -1388,16 +1561,16 @@ msgid ""
 msgstr ""
 
 msgid "Title format"
-msgstr ""
+msgstr "Formato del titolo"
 
 msgid "Full:"
-msgstr ""
+msgstr "Completo"
 
 msgid "No album:"
-msgstr ""
+msgstr "Nessun album"
 
 msgid "Implicit command line"
-msgstr ""
+msgstr "Comandi impliciti ad una shell"
 
 msgid "Miscellaneous"
 msgstr "Varie"
@@ -1406,10 +1579,10 @@ msgid "Enable tooltips"
 msgstr "Abilita suggerimenti"
 
 msgid "Put control buttons at the bottom of playlist"
-msgstr ""
+msgstr "Sposta i pulsanti di controllo sotto la playlist"
 
 msgid "Disable control buttons relief"
-msgstr ""
+msgstr "Disabilita il rilievo per i pulsanti non attivi"
 
 msgid "Keep main window always on top"
 msgstr "Mantieni la finestra sopra le altre"
@@ -1418,15 +1591,45 @@ msgid "Simple view in LADSPA patch builder"
 msgstr ""
 
 msgid "United windows minimization"
-msgstr ""
+msgstr "Minimizza in contemporanea la finestra principale e il Music Store"
 
 msgid "Show song name in the main window's title"
-msgstr ""
+msgstr "Mostra il titolo della canzone nella barra del titolo della finestra principale"
 
 msgid "Show hidden files and directories in file choosers"
 msgstr "Mostra file e cartelle nascoste nel percorso di scelta del file"
 
 msgid "Show tags tab first in the file info dialog"
+msgstr ""
+
+msgid "Don't show cover thumbnail in the main window"
+msgstr "Non mostrare la miniatura dell'album nella finestra principale"
+
+msgid "Cover art"
+msgstr "Copertina"
+
+msgid "Default cover width:"
+msgstr "Ampiezza immagine album:"
+
+msgid "50 pixels"
+msgstr "50 pixel"
+
+msgid "100 pixels"
+msgstr "100 pixel"
+
+msgid "200 pixels"
+msgstr "200 pixel"
+
+msgid "300 pixels"
+msgstr "300 pixel"
+
+msgid "use browser window width"
+msgstr ""
+
+msgid "Do not magnify images with smaller width"
+msgstr ""
+
+msgid "Show cover thumbnail for Music Store tracks only"
 msgstr ""
 
 msgid "Playlist"
@@ -1436,7 +1639,7 @@ msgid "Embed playlist into main window"
 msgstr ""
 
 msgid "Save and restore the playlist on exit/startup"
-msgstr ""
+msgstr "Salva la playlist all'uscita e ripristinala all'avvio"
 
 msgid "Album mode is the default when adding entire records"
 msgstr ""
@@ -1515,32 +1718,11 @@ msgstr ""
 msgid "Enable Music Store tree node icons"
 msgstr ""
 
-msgid "Cover art"
-msgstr ""
-
-msgid "Default cover width:"
-msgstr "Ampiezza immagine album:"
-
-msgid "50 pixels"
-msgstr "50 pixel"
-
-msgid "100 pixels"
-msgstr "100 pixel"
-
-msgid "200 pixels"
-msgstr "200 pixel"
-
-msgid "300 pixels"
-msgstr "300 pixel"
-
-msgid "use browser window width"
-msgstr ""
-
-msgid "Do not magnify images with smaller width"
-msgstr ""
+msgid "Ask for confirmation when removing items"
+msgstr "Chiedi conferma quando rimuovi le voci"
 
 msgid "Paths to Music Store databases"
-msgstr ""
+msgstr "Percorso al database del Music Store"
 
 msgid "Path"
 msgstr "Percorso"
@@ -1555,7 +1737,7 @@ msgid "DSP"
 msgstr "DSP"
 
 msgid "LADSPA plugin processing"
-msgstr ""
+msgstr "Processamento plugin LADSPA"
 
 msgid "Pre Fader (before Volume & Balance)"
 msgstr "Pre Fader (prima del Volume e del Bilanciamento)"
@@ -1655,10 +1837,10 @@ msgid "Replaygain_album_gain"
 msgstr ""
 
 msgid "CD drive speed:"
-msgstr ""
+msgstr "Velocità lettore CD:"
 
 msgid "\tMaximum number of retries:"
-msgstr ""
+msgstr "\tMassimo numero di tentativi:"
 
 msgid "Force TOC re-read on every drive scan"
 msgstr ""
@@ -1679,10 +1861,10 @@ msgid "Email address for submission:"
 msgstr ""
 
 msgid "Local CDDB directory:"
-msgstr ""
+msgstr "Cartella locale CDDB:"
 
 msgid "Use the local database only"
-msgstr ""
+msgstr "Usa solo il database locale"
 
 msgid "Protocol for querying (direct connection only):"
 msgstr ""
@@ -1760,7 +1942,7 @@ msgid "Active song in playlist: "
 msgstr "Traccia in esecuzione nella playlist: "
 
 msgid "(Untitled)"
-msgstr ""
+msgstr "(Senza titolo)"
 
 #, c-format
 msgid " (%d/%d)"
@@ -1967,6 +2149,9 @@ msgstr "Inverti lo stato corrente"
 msgid "Clear list"
 msgstr "Cancella la lista"
 
+msgid "Untitled"
+msgstr "Senza titolo"
+
 msgid "JACK Port Setup"
 msgstr "Impostazioni porte JACK"
 
@@ -2051,7 +2236,7 @@ msgid "Select juke-box disc"
 msgstr ""
 
 msgid "Set drive speed"
-msgstr ""
+msgstr "Imposta velocità del lettore"
 
 msgid "Detect media change"
 msgstr ""
@@ -2256,6 +2441,10 @@ msgid ""
 "Add it on the Settings/Music Store tab."
 msgstr ""
 
+#, c-format
+msgid "Really remove store \"%s\" from the Music Store?"
+msgstr "Vuoi veramente rimuovere \"%s\" dal Music Store?"
+
 msgid "Remove Store"
 msgstr "Rimuovi il Music Store"
 
@@ -2387,6 +2576,102 @@ msgstr "In ogni caso"
 
 msgid "Update file metadata..."
 msgstr "Aggiornamento metadati del file..."
+
+msgid "Please select the download directory for this podcast."
+msgstr "Seleziona la cartella del downlaod per questo podcast."
+
+msgid "Subscribe to new feed"
+msgstr "Sottoscrivi un nuovo feed"
+
+msgid "Edit feed settings"
+msgstr "Modifica impostazioni feed"
+
+msgid "Podcast URL:"
+msgstr "URL Podcast:"
+
+msgid "Download directory:"
+msgstr "Cartella di download:"
+
+msgid "Auto-check interval [hour]:"
+msgstr ""
+
+msgid ""
+"Automatic update has been disabled for all feeds\n"
+"in the Podcasts store popup menu."
+msgstr ""
+
+msgid "Limits"
+msgstr "Limiti"
+
+msgid "Maximum number of items:"
+msgstr "Massimo numero di voci:"
+
+msgid "Remove older items [day]:"
+msgstr "Rimuovi le voci più vecchie [giorni]:"
+
+msgid "Maximum space to use [MB]:"
+msgstr "Massimo spazio da usare [MB]:"
+
+msgid "Podcasts"
+msgstr "Podcast"
+
+msgid "Updating..."
+msgstr "Aggiornamento in corso..."
+
+msgid "Delete downloaded items from the filesystem"
+msgstr "Cancella dal filesystem le voci scaricate"
+
+msgid "Remove feed"
+msgstr "Rimuovi feed"
+
+#, c-format
+msgid "Really remove '%s' from the Music Store?"
+msgstr "Vuoi veramente rimuovere '%s' dal Music Store?"
+
+msgid "Reorder feeds"
+msgstr ""
+
+msgid ""
+"Drag and drop entries in the list\n"
+"to set the feed order in the Music Store."
+msgstr ""
+
+#, c-format
+msgid "Downloading %d/%d (%d%%) ..."
+msgstr ""
+
+msgid "item"
+msgstr "voce"
+
+msgid "items"
+msgstr "voci"
+
+msgid "new item"
+msgstr "nuova voce"
+
+msgid "new items"
+msgstr "nuove voci"
+
+msgid "feed"
+msgstr ""
+
+msgid "feeds"
+msgstr ""
+
+msgid "Edit feed"
+msgstr ""
+
+msgid "Update feed"
+msgstr ""
+
+msgid "Abort ongoing update"
+msgstr ""
+
+msgid "Update all feeds"
+msgstr ""
+
+msgid "Automatically update feeds"
+msgstr ""
 
 msgid "day"
 msgstr "giorno"

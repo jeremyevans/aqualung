@@ -1694,12 +1694,45 @@ create_options_window(void) {
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_dont_show_cover, FALSE, FALSE, 0);
 
+	frame_cart = gtk_frame_new(_("Cover art"));
+	gtk_box_pack_start(GTK_BOX(vbox_general), frame_cart, FALSE, TRUE, 5);
+
+	vbox_cart = gtk_vbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_cart), 10);
+	gtk_container_add(GTK_CONTAINER(frame_cart), vbox_cart);
+
+        hbox_cwidth = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_cart), hbox_cwidth, FALSE, FALSE, 0);
+        label_cwidth = gtk_label_new(_("Default cover width:"));
+        gtk_box_pack_start(GTK_BOX(hbox_cwidth), label_cwidth, FALSE, FALSE, 0);
+
+        hbox_s = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox_cwidth), hbox_s, TRUE, TRUE, 3);
+
+	combo_cwidth = gtk_combo_box_new_text ();
+        gtk_box_pack_start(GTK_BOX(hbox_cwidth), combo_cwidth, FALSE, FALSE, 0);
+        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("50 pixels"));
+        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("100 pixels"));
+        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("200 pixels"));
+        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("300 pixels"));
+        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("use browser window width"));
+
+        gtk_combo_box_set_active (GTK_COMBO_BOX (combo_cwidth), options.cover_width);
+
+        check_magnify_smaller_images =
+		gtk_check_button_new_with_label(_("Do not magnify images with smaller width"));
+	gtk_widget_set_name(check_magnify_smaller_images, "check_on_notebook");
+	if (!options.magnify_smaller_images) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_magnify_smaller_images), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_cart), check_magnify_smaller_images, FALSE, FALSE, 0);
+
         check_show_cover_for_ms_tracks_only = gtk_check_button_new_with_label(_("Show cover thumbnail for Music Store tracks only"));
 	gtk_widget_set_name(check_show_cover_for_ms_tracks_only, "check_on_notebook");
 	if (options.show_cover_for_ms_tracks_only) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_cover_for_ms_tracks_only), TRUE);
 	}
-	gtk_box_pack_start(GTK_BOX(vbox_misc), check_show_cover_for_ms_tracks_only, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_cart), check_show_cover_for_ms_tracks_only, FALSE, FALSE, 0);
 
         /* "Playlist" notebook page */
 
@@ -1937,40 +1970,6 @@ to set the column order in the Playlist."));
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_ms_confirm_removal), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_ms), check_ms_confirm_removal, FALSE, FALSE, 0);
-
-	frame_cart = gtk_frame_new(_("Cover art"));
-	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_cart, FALSE, TRUE, 5);
-
-	vbox_cart = gtk_vbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox_cart), 10);
-	gtk_container_add(GTK_CONTAINER(frame_cart), vbox_cart);
-
-        hbox_cwidth = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_cart), hbox_cwidth, FALSE, FALSE, 0);
-        label_cwidth = gtk_label_new(_("Default cover width:"));
-        gtk_box_pack_start(GTK_BOX(hbox_cwidth), label_cwidth, FALSE, FALSE, 0);
-
-        hbox_s = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox_cwidth), hbox_s, TRUE, TRUE, 3);
-
-	combo_cwidth = gtk_combo_box_new_text ();
-        gtk_box_pack_start(GTK_BOX(hbox_cwidth), combo_cwidth, FALSE, FALSE, 0);
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("50 pixels"));
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("100 pixels"));
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("200 pixels"));
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("300 pixels"));
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("use browser window width"));
-
-        gtk_combo_box_set_active (GTK_COMBO_BOX (combo_cwidth), options.cover_width);
-
-        check_magnify_smaller_images =
-		gtk_check_button_new_with_label(_("Do not magnify images with smaller width"));
-	gtk_widget_set_name(check_magnify_smaller_images, "check_on_notebook");
-	if (!options.magnify_smaller_images) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_magnify_smaller_images), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_cart), check_magnify_smaller_images, FALSE, FALSE, 0);
-
 
 	frame_ms_pathlist = gtk_frame_new(_("Paths to Music Store databases"));
 	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_ms_pathlist, FALSE, TRUE, 0);

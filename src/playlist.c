@@ -449,7 +449,7 @@ playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 			   PL_COL_DURATION, duration,
 			   PL_COL_DURATION_DISP, durdisp,
 			   PL_COL_FONT_WEIGHT, fontw, 
-                           PL_COL_COVER_FLAG, -1);
+                           PL_COL_COVER_FLAG, cover_flag, -1);
 
 	if (unmark) {
 		unmark_track(tstore, iter);

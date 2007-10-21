@@ -134,7 +134,7 @@ aqualung_dialog_run(GtkDialog * dialog) {
 
 /* create button with stock item
  *
- * in: label - label for buttor        (label=NULL  to disable label, label=-1 to disable button relief)
+ * in: label - label for button        (label=NULL  to disable label, label=-1 to disable button relief)
  *     stock - stock icon identifier
  */
 GtkWidget*

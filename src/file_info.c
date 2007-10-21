@@ -57,7 +57,12 @@
 #include "trashlist.h"
 #include "i18n.h"
 #include "metadata_id3v1.h"
+#include "metadata_id3v2.h"
 #include "file_info.h"
+
+
+/* max. display width of APIC images */
+#define APIC_MAX_WIDTH 250
 
 
 /* import destination codes */
@@ -119,13 +124,29 @@ typedef struct {
 } import_data_t;
 
 
-/*
+
 typedef struct {
+	fi_t * fi;
 	char savefile[MAXLEN];
 	unsigned int image_size;
 	void * image_data;
 } save_pic_t;
-*/
+
+typedef struct {
+	fi_t * fi;
+	meta_frame_t * frame;
+	save_pic_t * save_pic;
+} change_pic_t;
+
+
+/* 'source widget' for APIC frames */
+typedef struct {
+	GtkWidget * descr_entry;
+	GtkWidget * type_combo;
+	GtkWidget * mime_label;
+	GtkWidget * image;
+} apic_source_t;
+
 
 extern GtkWidget * main_window;
 extern GtkTreeStore * music_store;
@@ -363,7 +384,14 @@ fi_set_frame_from_source(fi_t * fi, meta_frame_t * frame) {
 			frame->float_val = val;
 		}
 	} else if (META_FIELD_BIN(frame->type)) {
-		/* TODO */
+		if (frame->type == META_FIELD_APIC) {
+			apic_source_t * source = (apic_source_t *)frame->source;
+			if (frame->field_val != NULL) {
+				free(frame->field_val);
+			}
+			frame->field_val = strdup(gtk_entry_get_text(GTK_ENTRY(source->descr_entry)));
+			frame->int_val = gtk_combo_box_get_active(GTK_COMBO_BOX(source->type_combo));
+		}
 	}
 	return 0;
 }
@@ -525,16 +553,367 @@ fi_tabwidth(fi_t * fi, metadata_t * meta) {
 	return tabwidth;
 }
 
+
+void
+save_pic_button_pressed(GtkWidget * widget, gpointer data) {
+
+	save_pic_t * save_pic = (save_pic_t *)data;
+	fi_t * fi = save_pic->fi;
+        GtkWidget * dialog;
+        gchar * selected_filename;
+	char filename[MAXLEN];
+
+        dialog = gtk_file_chooser_dialog_new(_("Please specify the file to save the image to."), 
+                                             GTK_WINDOW(fi->info_window),
+                                             GTK_FILE_CHOOSER_ACTION_SAVE, 
+                                             GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                             NULL);
+
+        deflicker();
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+        gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), save_pic->savefile);
+
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
+        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
+
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		strncpy(filename, selected_filename, MAXLEN-1);
+                g_free(selected_filename);
+
+		FILE * f = fopen(filename, "wb");
+		if (f == NULL) {
+			printf("error: fopen() failed\n");
+			gtk_widget_destroy(dialog);
+			return;
+		}
+		if (fwrite(save_pic->image_data, 1, save_pic->image_size, f) != save_pic->image_size) {
+			printf("fwrite() error\n");
+			gtk_widget_destroy(dialog);
+			return;
+		}
+		fclose(f);
+
+                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)), MAXLEN-1);
+        }
+        gtk_widget_destroy(dialog);
+}
+
+
+void
+save_pic_update(save_pic_t * save_pic, fi_t * fi, meta_frame_t * frame) {
+
+	int i, r;
+	char mtype[20];
+	char savefilename[256];
+
+	mtype[0] = '\0';
+	strcpy(savefilename, "picture.");
+	r = sscanf(frame->field_name, "image/%s", mtype);
+	if (r == 0) {
+		strncpy(mtype, frame->field_name, 19);
+	}
+	for (i = 0; mtype[i] != '\0'; i++) {
+		mtype[i] = tolower(mtype[i]);
+	}
+	if (mtype[0] == '\0') {
+		strcpy(mtype, "dat");
+	}
+	strncat(savefilename, mtype, 255);
+	
+	save_pic->fi = fi;
+	strncpy(save_pic->savefile, savefilename, MAXLEN-1);
+	save_pic->image_size = frame->length;
+	save_pic->image_data = frame->data;
+}
+
+
 GtkWidget *
-fi_procframe_label(char * field_name) {
+make_image_from_binary(void * data, int length) {
+
+	char tmpname[256];
+	int fd;
+	FILE * file;
+	GdkPixbuf * pixbuf;
+	GtkWidget * image;
+	int width, height;
+
+	if (length == 0) {
+		return gtk_label_new(_("(no image)"));
+	}
+
+	tmpname[0] = '\0';
+	strcpy(tmpname, "/tmp/aqualung-picture-XXXXXX");
+	fd = g_mkstemp(tmpname);
+	if (fd < 0) {
+		fprintf(stderr, "make_image_from_binary: error: g_mkstemp() failed\n");
+		return NULL;
+	}
+	file = fdopen(fd, "wb");
+	if (file == NULL) {
+		fprintf(stderr, "make_image_from_binary: error: fdopen() failed\n");
+		return NULL;
+	}
+
+	if (fwrite(data, 1, length, file) != length) {
+		fprintf(stderr, "make_image_from_binary: error: fwrite() failed\n");
+		return NULL;
+	}
+	fclose(file);
+
+	
+	gdk_pixbuf_get_file_info(tmpname, &width, &height);
+	width = (width > APIC_MAX_WIDTH) ? APIC_MAX_WIDTH : -1;
+	pixbuf = gdk_pixbuf_new_from_file_at_size(tmpname, width, -1, NULL);
+	image = gtk_image_new_from_pixbuf(pixbuf);
+	if (g_unlink(tmpname) < 0) {
+		fprintf(stderr, "make_image_from_binary: error: g_unlink() failed on %s\n", tmpname);
+		return NULL;
+	}
+
+	return image;
+}
+
+
+void
+change_pic_button_pressed(GtkWidget * widget, gpointer data) {
+
+	change_pic_t * change_pic = (change_pic_t *)data;
+	save_pic_t * save_pic = change_pic->save_pic;
+	fi_t * fi = change_pic->fi;
+	meta_frame_t * frame = change_pic->frame;
+	apic_source_t * source = ((apic_source_t *)(frame->source));
+        GtkWidget * dialog;
+        gchar * selected_filename;
+	char filename[MAXLEN];
 
 	char str[MAXLEN];
-	GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+	GdkPixbufFormat * pformat;
+	gchar ** mime_types;
+
+	GtkWidget * vbox; /* parent of image */
+
+        dialog = gtk_file_chooser_dialog_new(_("Please specify the file to load the image from."), 
+                                             GTK_WINDOW(fi->info_window),
+                                             GTK_FILE_CHOOSER_ACTION_SAVE, 
+                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                             NULL);
+
+        deflicker();
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
+        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
+
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
+		gtk_widget_destroy(dialog);
+		return;
+	}
+
+	selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+	strncpy(filename, selected_filename, MAXLEN-1);
+	g_free(selected_filename);
+	
+	pformat = gdk_pixbuf_get_file_info(filename, NULL, NULL);
+	if (pformat == NULL) {
+		char msg[MAXLEN];
+		gtk_widget_destroy(dialog);
+		snprintf(msg, MAXLEN-1, _("Could not load image from:\n%s"), filename);
+		message_dialog(_("Error"), fi->info_window, GTK_MESSAGE_ERROR,
+			       GTK_BUTTONS_OK, NULL, msg);
+		return;
+	}
+	
+	if (frame->data != NULL) {
+		free(frame->data);
+	}
+	if (!g_file_get_contents(filename, ((gchar **)(&frame->data)),
+				 ((gsize *)(&frame->length)), NULL)) {
+		fprintf(stderr, "g_file_get_contents failed on %s\n", filename);
+		return;
+	}
+
+	mime_types = gdk_pixbuf_format_get_mime_types(pformat);
+	if (mime_types[0] != NULL) {
+		if (frame->field_name != NULL) {
+			free(frame->field_name);
+		}
+		frame->field_name = strdup(mime_types[0]);
+	} else {
+		fprintf(stderr, "error: no mime type for image %s\n", filename);
+		return;
+	}
+
+	vbox = gtk_widget_get_parent(source->image);
+	gtk_widget_destroy(source->image);
+	source->image = make_image_from_binary(frame->data, frame->length);
+	gtk_widget_show(source->image);
+	gtk_container_add(GTK_CONTAINER(vbox), source->image);
+	snprintf(str, MAXLEN-1, _("MIME type: %s"), frame->field_name);
+	gtk_label_set_text(GTK_LABEL(source->mime_label), str);
+	/* update callback data for 'Save picture' */
+	save_pic_update(save_pic, fi, frame);
+
+	fi_mark_changed(fi);
+
+	/* XXX testing only */
+	printf("\n\nDump after APIC change\n");
+	metadata_dump(fi->meta);
+
+        gtk_widget_destroy(dialog);
+}
+
+
+GtkWidget *
+fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
+
+	metadata_t * meta = fi->meta;
+	apic_source_t * source;
+
+	char * pic_caption;
+	char str[MAXLEN];
+	GtkWidget * label_frame;
+	GtkWidget * vbox = gtk_vbox_new(FALSE, 0);
+	GtkWidget * hbox;
 	GtkWidget * label;
-	snprintf(str, MAXLEN-1, "%s:", field_name);
-	label = gtk_label_new(str);
+	GtkWidget * button;
+	
+	change_pic_t * change_pic;
+
+	save_pic_t * save_pic = (save_pic_t *)malloc(sizeof(save_pic_t));
+	if (save_pic == NULL)
+		return NULL;
+	
+	save_pic_update(save_pic, fi, frame);
+	trashlist_add(fi->trash, save_pic);
+
+	change_pic = (change_pic_t *)malloc(sizeof(change_pic_t));
+	if (change_pic == NULL)
+		return NULL;
+
+	trashlist_add(fi->trash, change_pic);
+	change_pic->fi = fi;
+	change_pic->frame = frame;
+	change_pic->save_pic = save_pic;
+
+	frame->source = calloc(1, sizeof(apic_source_t));
+	if (frame->source == NULL)
+		return NULL;
+	source = ((apic_source_t *)(frame->source));
+
+	meta_get_fieldname(META_FIELD_APIC, &pic_caption);
+	snprintf(str, MAXLEN-1, "%s:", pic_caption);
+
+	label_frame = gtk_frame_new(pic_caption);
+	gtk_container_add(GTK_CONTAINER(label_frame), vbox);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
+
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
+	snprintf(str, MAXLEN-1, _("MIME type: %s"), frame->field_name);
+	source->mime_label = gtk_label_new(str);
+	gtk_box_pack_start(GTK_BOX(hbox), source->mime_label, FALSE, FALSE, 0);
+	
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
+	label = gtk_label_new(_("Picture type:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	return hbox;
+	
+	if (meta->writable) {
+		int i = 0;
+		char * type_str;
+		hbox = gtk_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
+		source->type_combo = gtk_combo_box_new_text();
+		while (1) {
+			type_str = meta_id3v2_apic_type_to_string(i);
+			if (type_str == NULL) {
+				break;
+			}
+			gtk_combo_box_append_text(GTK_COMBO_BOX(source->type_combo), type_str);				
+			++i;
+		}
+		gtk_combo_box_set_active(GTK_COMBO_BOX(source->type_combo), frame->int_val);
+		gtk_box_pack_start(GTK_BOX(hbox), source->type_combo, TRUE, TRUE, 0);
+	} else {
+		hbox = gtk_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
+		snprintf(str, MAXLEN-1, "%s",
+			 meta_id3v2_apic_type_to_string(frame->int_val));
+		label = gtk_label_new(str);
+		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	}
+	
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
+	label = gtk_label_new(_("Description:"));
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	
+	if (meta->writable) {
+		hbox = gtk_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
+		source->descr_entry = gtk_entry_new();
+		gtk_entry_set_text(GTK_ENTRY(source->descr_entry), frame->field_val);
+		gtk_box_pack_start(GTK_BOX(hbox), source->descr_entry, TRUE, TRUE, 0);
+	} else {
+		hbox = gtk_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
+		label = gtk_label_new((frame->field_val[0] == '\0') ?
+				      _("(no description)") : frame->field_val);
+		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	}
+	
+
+	hbox = gtk_hbox_new(TRUE, 0);
+	gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
+	
+	button = gui_stock_label_button(_("Change"), GTK_STOCK_OPEN);
+	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
+	if (meta->writable) {
+		g_signal_connect(G_OBJECT(button), "clicked",
+				 G_CALLBACK(change_pic_button_pressed),
+				 (gpointer)change_pic);
+	} else {
+		gtk_widget_set_sensitive(button, FALSE);
+	}
+	
+	button = gui_stock_label_button(_("Save"), GTK_STOCK_SAVE);
+	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
+	g_signal_connect(G_OBJECT(button), "clicked",
+			 G_CALLBACK(save_pic_button_pressed),
+			 (gpointer)save_pic);
+	
+	return label_frame;
+}
+
+
+GtkWidget *
+fi_procframe_label(fi_t * fi, meta_frame_t * frame) {
+
+	if (frame->type == META_FIELD_APIC) {
+		return fi_procframe_label_apic(fi, frame);
+	} else {
+		char str[MAXLEN];
+		GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+		GtkWidget * label;
+		snprintf(str, MAXLEN-1, "%s:", frame->field_name);
+		label = gtk_label_new(str);
+		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+		return hbox;
+	}
 }
 
 
@@ -598,6 +977,24 @@ make_genre_combo(meta_frame_t * frame, GtkWidget ** widget, GtkWidget ** entry) 
 }
 
 
+void
+make_apic_widget(meta_frame_t * frame, GtkWidget ** widget, GtkWidget ** entry) {
+
+	GtkWidget * apic_frame = gtk_frame_new(NULL);
+	GtkWidget * image = make_image_from_binary(frame->data, frame->length);
+	GtkWidget * vbox = gtk_vbox_new(FALSE, 0);
+
+	gtk_frame_set_shadow_type(GTK_FRAME(apic_frame), GTK_SHADOW_NONE);
+	gtk_container_add(GTK_CONTAINER(apic_frame), vbox);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
+	gtk_box_pack_start(GTK_BOX(vbox), image, TRUE, TRUE, 0);
+	
+	*widget = apic_frame;
+	*entry = apic_frame;
+	((apic_source_t *)(frame->source))->image = image;
+}
+
+
 GtkWidget *
 fi_procframe_entry(fi_t * fi, meta_frame_t * frame) {
 
@@ -606,6 +1003,9 @@ fi_procframe_entry(fi_t * fi, meta_frame_t * frame) {
 	GtkWidget * entry = NULL;
 	if (META_FIELD_BIN(frame->type)) {
 		/* TODO create image/whatever widget, etc. */
+		if (frame->type == META_FIELD_APIC) {
+			make_apic_widget(frame, &widget, &entry);
+		}
 	} else {
 		if (meta->writable && (frame->type == META_FIELD_GENRE)) {
 			make_genre_combo(frame, &widget, &entry);
@@ -971,7 +1371,7 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 	gtk_table_resize(GTK_TABLE(table), n_rows, n_cols);
 
 	/* Field label */
-	label = fi_procframe_label(frame->field_name);
+	label = fi_procframe_label(fi, frame);
 	gtk_table_attach(GTK_TABLE(table), label, col, col+1, n_rows-1, n_rows,
 			 GTK_FILL, GTK_FILL, 5, 3);
 	++col;
@@ -980,7 +1380,9 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 	entry = fi_procframe_entry(fi, frame);
 	gtk_table_attach(GTK_TABLE(table), entry, col, col+1, n_rows-1, n_rows,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
-	frame->source = entry;
+	if (frame->type != META_FIELD_APIC) {
+		frame->source = entry;
+	}
 	++col;
 
 	/* Import button */

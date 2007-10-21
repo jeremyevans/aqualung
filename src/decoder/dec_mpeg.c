@@ -339,7 +339,7 @@ mpeg_send_metadata(file_decoder_t * fdec, int fd) {
 	unsigned char * id3v2;
 	unsigned long file_size;
 
-	char buffer[12];
+	unsigned char buffer[12];
 	long id3v2_length = 0;
 
 	ape_tag_t tag;

@@ -288,6 +288,63 @@ meta_parse_id3v2_apic(metadata_t * meta, unsigned char * buf, int len) {
 }
 
 
+void
+meta_parse_id3v2_rva2(metadata_t * meta, unsigned char * buf, int len) {
+
+	char * id;
+	int len1;
+	int pos;
+
+	len1 = meta_id3v2_strlen(buf+10, len, 0x0/*ascii*/);
+	if (len1 > len) {
+		len1 = len;
+		fprintf(stderr, "warning: RVA2 identification field too large, truncating\n");
+	}
+
+	id = meta_id3v2_to_utf8(0x0/*ascii*/, buf+10, len1);
+
+	pos = 11 + len1;
+	len -= len1 + 1;
+	while (len >= 4) {
+		unsigned int peak_bytes = (buf[pos+3] + 7) / 8;
+		if (4 + peak_bytes > len)
+			break;
+		
+		if (buf[pos] == 0x01 /* MasterVolume */) {
+			signed int voladj_fixed;
+			double voladj_float;
+			char * field_name;
+			char str[MAXLEN];
+			meta_frame_t * frame;
+			
+			voladj_fixed = (buf[pos+1] << 8) | (buf[pos+2] << 0);
+			voladj_fixed |= -(voladj_fixed & 0x8000);
+			voladj_float = (double) voladj_fixed / 512.0;
+
+			frame = meta_frame_new();
+			frame->tag = META_TAG_ID3v2;
+			frame->type = META_FIELD_RVA2;
+			meta_get_fieldname(META_FIELD_RVA2, &field_name);
+			snprintf(str, MAXLEN-1, "%s (%s)", field_name, id);
+			frame->field_name = strdup(str);
+			frame->float_val = voladj_float;
+			metadata_add_frame(meta, frame);
+
+			if (id != NULL) {
+				g_free(id);
+			}
+			return;
+		}
+		pos += 4 + peak_bytes;
+		len -= 4 + peak_bytes;
+	}
+	
+	if (id != NULL) {
+		g_free(id);
+	}
+}
+
+
 int
 meta_parse_id3v2_frame(metadata_t * meta, unsigned char * buf, int len,
 		       int version, int unsynch_all) {
@@ -330,6 +387,8 @@ meta_parse_id3v2_frame(metadata_t * meta, unsigned char * buf, int len,
 		meta_parse_id3v2_comm(meta, buf, pay_len);
 	} else if (strcmp(frame_id, "APIC") == 0) {
 		meta_parse_id3v2_apic(meta, buf, pay_len);
+	} else if (strcmp(frame_id, "RVA2") == 0) {
+		meta_parse_id3v2_rva2(meta, buf, pay_len);
 	} else {
 		/* TODO some mechanism to preserve data of unrecognized
 		   frames between load/save */

@@ -1007,6 +1007,18 @@ fi_procframe_entry(fi_t * fi, meta_frame_t * frame) {
 		if (frame->type == META_FIELD_APIC) {
 			make_apic_widget(frame, &widget, &entry);
 		}
+	} else if (META_FIELD_INT(frame->type)) {
+		char str[MAXLEN];
+		char * format = meta_get_field_renderfmt(frame->type);
+		widget = entry = gtk_entry_new();
+		snprintf(str, MAXLEN-1, format, frame->int_val);
+		gtk_entry_set_text(GTK_ENTRY(entry), str);
+	} else if (META_FIELD_FLOAT(frame->type)) {
+		char str[MAXLEN];
+		char * format = meta_get_field_renderfmt(frame->type);
+		widget = entry = gtk_entry_new();
+		snprintf(str, MAXLEN-1, format, frame->float_val);
+		gtk_entry_set_text(GTK_ENTRY(entry), str);
 	} else {
 		if (meta->writable && (frame->type == META_FIELD_GENRE)) {
 			make_genre_combo(frame, &widget, &entry);

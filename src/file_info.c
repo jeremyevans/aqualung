@@ -61,8 +61,8 @@
 #include "file_info.h"
 
 
-/* max. display width of APIC images */
-#define APIC_MAX_WIDTH 250
+/* requested width of value display/edit widgets */
+#define VAL_WIDGET_WIDTH 250
 
 
 /* import destination codes */
@@ -669,7 +669,7 @@ make_image_from_binary(void * data, int length) {
 
 	
 	gdk_pixbuf_get_file_info(tmpname, &width, &height);
-	width = (width > APIC_MAX_WIDTH) ? APIC_MAX_WIDTH : -1;
+	width = (width > VAL_WIDGET_WIDTH) ? VAL_WIDGET_WIDTH : -1;
 	pixbuf = gdk_pixbuf_new_from_file_at_size(tmpname, width, -1, NULL);
 	image = gtk_image_new_from_pixbuf(pixbuf);
 	if (g_unlink(tmpname) < 0) {
@@ -811,6 +811,7 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 	frame->source = calloc(1, sizeof(apic_source_t));
 	if (frame->source == NULL)
 		return NULL;
+	trashlist_add(fi->trash, frame->source);
 	source = ((apic_source_t *)(frame->source));
 
 	meta_get_fieldname(META_FIELD_APIC, &pic_caption);
@@ -1025,7 +1026,7 @@ fi_procframe_entry(fi_t * fi, meta_frame_t * frame) {
 			g_signal_connect(G_OBJECT(widget), "changed",
 					 G_CALLBACK(fi_entry_changed_cb), (gpointer)fi);
 		}
-		gtk_widget_set_size_request(widget, 250, -1);
+		gtk_widget_set_size_request(widget, VAL_WIDGET_WIDTH, -1);
 	}
 	return widget;
 }
@@ -1120,6 +1121,25 @@ fi_fill_tagcombo(GtkComboBox * combo, int addable_tags) {
 	gtk_combo_box_set_active(combo, 0);	
 }
 
+gint
+fi_fill_combo_cmp(gconstpointer a, gconstpointer b) {
+
+	int field1 = GPOINTER_TO_INT(a);
+	int field2 = GPOINTER_TO_INT(b);
+	char * str1;
+	char * str2;
+
+	if (!meta_get_fieldname(field1, &str1)) {
+		fprintf(stderr, "fi_fill_combo_cmp: programmer error #1\n");
+	}
+	if (!meta_get_fieldname(field2, &str2)) {
+		fprintf(stderr, "fi_fill_combo_cmp: programmer error #2\n");
+	}
+
+	return strcmp(str1, str2);
+}
+
+
 void
 fi_fill_combo_foreach(gpointer data, gpointer user_data) {
 
@@ -1136,10 +1156,13 @@ void
 fi_fill_combo(GtkComboBox * combo, GSList * slist) {
 
 	int i;
+	GSList * sorted_list = g_slist_copy(slist);
 	for (i = 0; i < 100; i++) {
 		gtk_combo_box_remove_text(combo, 0);
 	}
-	g_slist_foreach(slist, fi_fill_combo_foreach, combo);
+	sorted_list = g_slist_sort(sorted_list, fi_fill_combo_cmp);
+	g_slist_foreach(sorted_list, fi_fill_combo_foreach, combo);
+	g_slist_free(sorted_list);
 	gtk_combo_box_set_active(combo, 0);
 }
 

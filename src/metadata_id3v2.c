@@ -327,7 +327,8 @@ meta_parse_id3v2_rva2(metadata_t * meta, unsigned char * buf, int len) {
 			meta_get_fieldname(META_FIELD_RVA2, &field_name);
 			snprintf(str, MAXLEN-1, "%s (%s)", field_name, id);
 			frame->field_name = strdup(str);
-			frame->float_val = voladj_float;
+			frame->field_val = strdup(id);
+ 			frame->float_val = voladj_float;
 			metadata_add_frame(meta, frame);
 
 			if (id != NULL) {

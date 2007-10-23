@@ -635,7 +635,7 @@ save_pic_update(save_pic_t * save_pic, fi_t * fi, meta_frame_t * frame) {
 
 
 GtkWidget *
-make_image_from_binary(void * data, int length) {
+make_image_from_binary(meta_frame_t * frame) {
 
 	char tmpname[256];
 	int fd;
@@ -644,8 +644,19 @@ make_image_from_binary(void * data, int length) {
 	GtkWidget * image;
 	int width, height;
 
+	void * data = frame->data;
+	int length = frame->length;
+
 	if (length == 0) {
 		return gtk_label_new(_("(no image)"));
+	}
+
+	if (strcmp(frame->field_name, "-->") == 0) {
+		/* display URL */
+		char * str = meta_id3v2_to_utf8(0x0/*ascii*/, data, length);
+		GtkWidget * label = gtk_label_new(str);
+		g_free(str);
+		return label;
 	}
 
 	tmpname[0] = '\0';
@@ -758,7 +769,7 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 
 	vbox = gtk_widget_get_parent(source->image);
 	gtk_widget_destroy(source->image);
-	source->image = make_image_from_binary(frame->data, frame->length);
+	source->image = make_image_from_binary(frame);
 	gtk_widget_show(source->image);
 	gtk_container_add(GTK_CONTAINER(vbox), source->image);
 	snprintf(str, MAXLEN-1, _("MIME type: %s"), frame->field_name);
@@ -982,7 +993,7 @@ void
 make_apic_widget(meta_frame_t * frame, GtkWidget ** widget, GtkWidget ** entry) {
 
 	GtkWidget * apic_frame = gtk_frame_new(NULL);
-	GtkWidget * image = make_image_from_binary(frame->data, frame->length);
+	GtkWidget * image = make_image_from_binary(frame);
 	GtkWidget * vbox = gtk_vbox_new(FALSE, 0);
 
 	gtk_frame_set_shadow_type(GTK_FRAME(apic_frame), GTK_SHADOW_NONE);
@@ -1393,6 +1404,10 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 	GtkWidget * entry = NULL;
 	GtkWidget * importbtn = NULL;
 	GtkWidget * delbtn = NULL;
+
+	if (frame->type == META_FIELD_HIDDEN) {
+		return;
+	}
 
 #ifdef HAVE_MOD_INFO
 	if (frame->type == META_FIELD_MODINFO) {

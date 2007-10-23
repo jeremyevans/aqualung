@@ -346,6 +346,23 @@ meta_parse_id3v2_rva2(metadata_t * meta, unsigned char * buf, int len) {
 }
 
 
+void
+meta_parse_id3v2_hidden(metadata_t * meta, unsigned char * buf, int len) {
+
+	meta_frame_t * frame = meta_frame_new();
+	frame->tag = META_TAG_ID3v2;
+	frame->type = META_FIELD_HIDDEN;
+	frame->length = len+10;
+	frame->data = malloc(frame->length);
+	if (frame->data == NULL) {
+		fprintf(stderr, "meta_parse_id3v2_hidden: malloc error\n");
+		return;
+	}
+	memcpy(frame->data, buf, frame->length);
+	metadata_add_frame(meta, frame);
+}
+
+
 int
 meta_parse_id3v2_frame(metadata_t * meta, unsigned char * buf, int len,
 		       int version, int unsynch_all) {
@@ -391,8 +408,8 @@ meta_parse_id3v2_frame(metadata_t * meta, unsigned char * buf, int len,
 	} else if (strcmp(frame_id, "RVA2") == 0) {
 		meta_parse_id3v2_rva2(meta, buf, pay_len);
 	} else {
-		/* TODO some mechanism to preserve data of unrecognized
-		   frames between load/save */
+		/* save the data in a hidden frame to preserve it for write-back */
+		meta_parse_id3v2_hidden(meta, buf, pay_len);
 	}
 
 	return frame_size+10;

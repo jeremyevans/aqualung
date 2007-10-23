@@ -141,6 +141,7 @@
 #define META_FIELD_APIC          0x01000000
 #define META_FIELD_GEOB          0x02000000
 #define META_FIELD_MODINFO       0x03000000
+#define META_FIELD_HIDDEN        0x04000000
 
 
 #define META_FIELD_TEXT(f)        ((f)&0xff)

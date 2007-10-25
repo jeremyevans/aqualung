@@ -114,7 +114,7 @@ int
 un_unsynch(unsigned char * buf, int len) {
 
 	int i;
-	for (i = 0; i < len-2; i++) {
+	for (i = 0; i < len-1; i++) {
 		if ((buf[i] == 0xff) && (buf[i+1] == 0x00)) {
 			memmove(buf+i+1, buf+i+2, len-i-2);
 			--len;
@@ -364,6 +364,23 @@ meta_parse_id3v2_hidden(metadata_t * meta, unsigned char * buf, int len) {
 
 
 int
+is_frame_char(char c) {
+	return (((c >= 'A') && (c <= 'Z')) ||
+		((c >= '0') && (c <= '9')));
+}
+
+
+int
+is_frame_id(char * buf) {
+
+	return (is_frame_char(buf[0]) &&
+		is_frame_char(buf[1]) &&
+		is_frame_char(buf[2]) &&
+		is_frame_char(buf[3]));
+}
+
+
+int
 meta_parse_id3v2_frame(metadata_t * meta, unsigned char * buf, int len,
 		       int version, int unsynch_all) {
 
@@ -383,6 +400,16 @@ meta_parse_id3v2_frame(metadata_t * meta, unsigned char * buf, int len,
 
 	memcpy(frame_id, buf, 4);
 	frame_id[4] = '\0';
+	
+	if (!is_frame_id(frame_id)) {
+		fprintf(stderr, "meta_parse_id3v2_frame: Frame ID expected, got 0x%x%x%x%x",
+			(unsigned char)frame_id[0],
+			(unsigned char)frame_id[1],
+			(unsigned char)frame_id[2],
+			(unsigned char)frame_id[3]);
+		return len;
+	}
+
 	if (version == 0x03) {
 		frame_size = pay_len = meta_id3v2_read_int(buf+4);
 	} else if (version == 0x04) {

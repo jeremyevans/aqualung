@@ -317,8 +317,26 @@ mpeg_write_metadata(file_decoder_t * fdec, metadata_t * meta) {
 		}
 	}
 
-	/* TODO ID3v2 */
-
+	/* write ID3v2 */
+	if (metadata_get_frame_by_tag(meta, META_TAG_ID3v2, NULL) != NULL) {
+		unsigned char * buf;
+		int length;
+		int ret = metadata_to_id3v2(meta, &buf, &length);
+		if (ret != META_ERROR_NONE) {
+			return ret;
+		}
+		ret = meta_id3v2_rewrite(fdec->filename, buf, length);
+		if (ret != META_ERROR_NONE) {
+			free(buf);
+			return ret;
+		}
+		free(buf);
+	} else {
+		ret = meta_id3v2_delete(fdec->filename);
+		if (ret != META_ERROR_NONE) {
+			return ret;
+		}
+	}
 
 	/* write APE */
 	ret = meta_ape_write_metadata(fdec, meta);

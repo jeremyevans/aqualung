@@ -2542,7 +2542,28 @@ main(int argc, char ** argv) {
 #endif /* _WIN32 */
 
 
+	/* Initialize thread_info and create ringbuffers */
 	memset(&thread_info, 0, sizeof(thread_info));
+
+	thread_info.rb_size = RB_AUDIO_SIZE;
+
+        rb = rb_create(2*sample_size * thread_info.rb_size);
+	memset(rb->buf, 0, rb->size);
+
+
+	rb_disk2gui = rb_create(RB_CONTROL_SIZE);
+	memset(rb_disk2gui->buf, 0, rb_disk2gui->size);
+
+	rb_gui2disk = rb_create(RB_CONTROL_SIZE);
+	memset(rb_gui2disk->buf, 0, rb_gui2disk->size);
+
+	rb_disk2out = rb_create(RB_CONTROL_SIZE);
+	memset(rb_disk2out->buf, 0, rb_disk2out->size);
+
+	thread_info.is_streaming = 0;
+	thread_info.is_mono = 0;
+	thread_info.in_SR = 0;
+
 
 #ifdef HAVE_JACK
 	if ((output != JACK_DRIVER) && (rate == 0)) {
@@ -2720,26 +2741,6 @@ main(int argc, char ** argv) {
 		thread_info.out_SR = rate;
 	}
 #endif /* _WIN32 */
-
-
-	thread_info.rb_size = RB_AUDIO_SIZE * thread_info.out_SR / 44100.0;
-
-        rb = rb_create(2*sample_size * thread_info.rb_size);
-	memset(rb->buf, 0, rb->size);
-
-
-	rb_disk2gui = rb_create(RB_CONTROL_SIZE);
-	memset(rb_disk2gui->buf, 0, rb_disk2gui->size);
-
-	rb_gui2disk = rb_create(RB_CONTROL_SIZE);
-	memset(rb_gui2disk->buf, 0, rb_gui2disk->size);
-
-	rb_disk2out = rb_create(RB_CONTROL_SIZE);
-	memset(rb_disk2out->buf, 0, rb_disk2out->size);
-
-	thread_info.is_streaming = 0;
-	thread_info.is_mono = 0;
-	thread_info.in_SR = 0;
 
 
 	/* startup disk thread */

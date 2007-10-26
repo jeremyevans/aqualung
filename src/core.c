@@ -2607,7 +2607,9 @@ main(int argc, char ** argv) {
 
 		period = 8192;
 		nperiods = 2;
-		device_name = strdup("plughw:0,0");
+		if (device_name == NULL) {
+			device_name = strdup("plughw:0,0");
+		}
 
 		thread_info.out_SR = rate;
 		thread_info.pcm_name = strdup(device_name);
@@ -2630,7 +2632,9 @@ main(int argc, char ** argv) {
 
 		printf("Probing OSS driver... ");
 
-		device_name = strdup("/dev/dsp");
+		if (device_name == NULL) {
+			device_name = strdup("/dev/dsp");
+		}
 		thread_info.out_SR = rate;
 
 		ret = oss_init(&thread_info, 0);

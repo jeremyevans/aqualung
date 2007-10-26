@@ -110,47 +110,6 @@ meta_id3v2_read_synchsafe_int(unsigned char * buf) {
 }
 
 
-void
-meta_id3v2_write_synchsafe_int(unsigned char * buf, u_int32_t val) {
-
-	buf[0] = ((val >> 21) & 0x7f);
-	buf[1] = ((val >> 14) & 0x7f);
-	buf[2] = ((val >> 7) & 0x7f);
-	buf[3] = (val & 0x7f);
-}
-
-
-void
-unsynch(unsigned char * inbuf, int inlen,
-	unsigned char ** outbuf, int * outlen) {
-
-	int i;
-	int outpos = 0;
-	*outlen = inlen;
-	*outbuf = (unsigned char *)malloc(*outlen);
-	if (*outbuf == NULL) {
-		fprintf(stderr, "unsynch(): malloc error");
-		return;
-	}
-
-	for (i = 0; i < inlen; i++) {
-		if ((i > 0) &&
-		    (inbuf[i-1] == 0xff) &&
-		    (((inbuf[i] & 0xe0) == 0xe0) || (inbuf[i] == 0x0))) {
-			
-			*outlen += 1;
-			*outbuf = (unsigned char *)realloc(*outbuf, *outlen);
-			if (*outbuf == NULL) {
-				fprintf(stderr, "unsynch(): realloc error");
-				return;
-			}
-			(*outbuf)[outpos++] = 0x0;
-		}
-		(*outbuf)[outpos++] = inbuf[i];
-	}
-}
-
-
 int
 un_unsynch(unsigned char * buf, int len) {
 
@@ -460,7 +419,7 @@ meta_parse_id3v2_frame(metadata_t * meta, unsigned char * buf, int len,
 		}
 	}
 	/* XXX */printf("frame_id = %s, size = %d\n", frame_id, frame_size);
-	/*
+
 	if (frame_id[0] == 'T') {
 		if ((frame_id[1] == 'X') &&
 		    (frame_id[2] == 'X') &&
@@ -475,10 +434,10 @@ meta_parse_id3v2_frame(metadata_t * meta, unsigned char * buf, int len,
 		meta_parse_id3v2_apic(meta, buf, pay_len);
 	} else if (strcmp(frame_id, "RVA2") == 0) {
 		meta_parse_id3v2_rva2(meta, buf, pay_len);
-		} else {*/
+	} else {
 		/* save the data in a hidden frame to preserve it for write-back */
 		meta_parse_id3v2_hidden(meta, buf, pay_len);
-		//}
+	}
 
 	return frame_size+10;
 }
@@ -527,110 +486,9 @@ metadata_from_id3v2(metadata_t * meta, unsigned char * buf, int length) {
 }
 
 
-
-void
-meta_render_id3v2_hidden(meta_frame_t * frame, unsigned char ** buf, int * size) {
-
-	unsigned char * data;
-	int length;
-
-	unsynch(frame->data+10, frame->length-10, &data, &length);
-	*buf = realloc(*buf, *size+10+length);
-	memcpy(*buf+*size, frame->data, 10);
-	(*buf)[*size+9] |= 0x2; /* set unsynchronization flag */
-	memcpy(*buf+*size+10, data, length);
-	*size += 10 + length;
-	free(data);
-}
-
-
-void
-metadata_render_id3v2_frame(meta_frame_t * frame, unsigned char ** buf, int * size) {
-
-	char * frame_id;
-	meta_get_fieldname_embedded(META_TAG_ID3v2, frame->type, &frame_id);
-
-	if (frame_id[0] == 'T') {
-		if ((frame_id[1] == 'X') &&
-		    (frame_id[2] == 'X') &&
-		    (frame_id[3] == 'X')) {
-			//meta_render_id3v2_txxx(frame, buf, size);
-		} else {
-			//meta_render_id3v2_t___(frame, buf, size);
-		}
-	} else if (strcmp(frame_id, "COMM") == 0) {
-		//meta_render_id3v2_comm(frame, buf, size);
-	} else if (strcmp(frame_id, "APIC") == 0) {
-		//meta_render_id3v2_apic(frame, buf, size);
-	} else if (strcmp(frame_id, "RVA2") == 0) {
-		//meta_render_id3v2_rva2(frame, buf, size);
-	} else {
-		meta_render_id3v2_hidden(frame, buf, size);
-	}
-}
-
-
-/* Render metadata to ID3v2 byte array.
- * Returns META_ERROR_*.
- * On success (META_ERROR_NONE) data and length
- * are set to a pointer of the newly allocated buffer
- * and the length of the data.
- */
 int
-metadata_to_id3v2(metadata_t * meta, unsigned char ** data, int * length) {
+metadata_to_id3v2(metadata_t * meta, unsigned char * buf) {
 
-	meta_frame_t * frame;
-	unsigned char * buf;
-	int size = 10;
-
-	buf = (unsigned char *)calloc(1, 10);
-	if (buf == NULL) {
-		return META_ERROR_NOMEM;
-	}
-
-	buf[0] = 'I'; buf[1] = 'D'; buf[2] = '3';
-	buf[3] = 0x4;  /* ID3v2.4 */
-	buf[5] = 0x80; /* Unsynchronize all frames */
-
-	frame = metadata_get_frame_by_tag(meta, META_TAG_ID3v2, NULL);
-	while (frame != NULL) {
-		metadata_render_id3v2_frame(frame, &buf, &size);
-		frame = metadata_get_frame_by_tag(meta, META_TAG_ID3v2, frame);
-	}
-
-	meta_id3v2_write_synchsafe_int(buf+6, size);
-
-	*data = buf;
-	*length = size;
-	return META_ERROR_NONE;
-}
-
-
-int
-meta_id3v2_delete(char * filename) {
 
 	return 0;
-}
-
-
-int
-meta_id3v2_rewrite(char * filename, unsigned char * buf, int len) {
-
-	FILE * file;
-
-	printf("meta_id3v2_rewrite: len=%d\n", len);
-
-	if ((file = fopen("/home/tszilagyi/tmp/meta_test/id3v2.bin", "wb")) == NULL) {
-		fprintf(stderr, "meta_id3v2_rewrite: fopen() failed\n");
-		return META_ERROR_NOT_WRITABLE;
-	}
-
-	if (fwrite(buf, 1, len, file) != len) {
-		fprintf(stderr, "meta_id3v2_rewrite: fwrite() failed\n");
-		fclose(file);
-		return META_ERROR_INTERNAL;
-	}
-
-	fclose(file);
-	return META_ERROR_NONE;
 }

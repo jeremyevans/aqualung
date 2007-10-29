@@ -36,11 +36,11 @@ u_int32_t meta_id3v2_read_int(unsigned char * buf);
 u_int32_t meta_id3v2_read_synchsafe_int(unsigned char * buf);
 
 int metadata_from_id3v2(metadata_t * meta, unsigned char * buf, int length);
-int metadata_to_id3v2(metadata_t * meta, unsigned char * buf);
+int metadata_to_id3v2(metadata_t * meta, unsigned char ** data, int * length);
 
 char * meta_id3v2_to_utf8(unsigned char enc, unsigned char * buf, int len);
 
-//int meta_id3v2_delete(char * filename);
-//int meta_id3v2_rewrite(char * filename, unsigned char * id3v2);
+int meta_id3v2_delete(char * filename);
+int meta_id3v2_rewrite(char * filename, unsigned char ** buf, int * len);
 
 #endif /* _METADATA_ID3V2_H */

@@ -130,6 +130,7 @@ typedef struct {
 	char savefile[MAXLEN];
 	unsigned int image_size;
 	void * image_data;
+	GtkWidget * save_button;
 } save_pic_t;
 
 typedef struct {
@@ -391,6 +392,14 @@ fi_set_frame_from_source(fi_t * fi, meta_frame_t * frame) {
 			}
 			frame->field_val = strdup(gtk_entry_get_text(GTK_ENTRY(source->descr_entry)));
 			frame->int_val = gtk_combo_box_get_active(GTK_COMBO_BOX(source->type_combo));
+			if (frame->length == 0) {
+				message_dialog(_("Error"),
+					       fi->info_window, GTK_MESSAGE_ERROR,
+					       GTK_BUTTONS_OK, NULL,
+					       _("Attached Picture frame with no picture set!\n"
+						 "Please set a picture or remove the frame."));
+				return -1;
+			}
 		}
 	}
 	return 0;
@@ -631,6 +640,12 @@ save_pic_update(save_pic_t * save_pic, fi_t * fi, meta_frame_t * frame) {
 	strncpy(save_pic->savefile, savefilename, MAXLEN-1);
 	save_pic->image_size = frame->length;
 	save_pic->image_data = frame->data;
+
+	if (save_pic->image_size > 0) {
+		gtk_widget_set_sensitive(save_pic->save_button, TRUE);
+	} else {
+		gtk_widget_set_sensitive(save_pic->save_button, FALSE);
+	}
 }
 
 
@@ -805,9 +820,8 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 
 	save_pic_t * save_pic = (save_pic_t *)malloc(sizeof(save_pic_t));
 	if (save_pic == NULL)
-		return NULL;
-	
-	save_pic_update(save_pic, fi, frame);
+		return NULL;	
+
 	trashlist_add(fi->trash, save_pic);
 
 	change_pic = (change_pic_t *)malloc(sizeof(change_pic_t));
@@ -902,11 +916,13 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 		gtk_widget_set_sensitive(button, FALSE);
 	}
 	
-	button = gui_stock_label_button(_("Save"), GTK_STOCK_SAVE);
-	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
-	g_signal_connect(G_OBJECT(button), "clicked",
+	save_pic->save_button = gui_stock_label_button(_("Save"), GTK_STOCK_SAVE);
+	gtk_box_pack_start(GTK_BOX(hbox), save_pic->save_button, TRUE, TRUE, 3);
+	g_signal_connect(G_OBJECT(save_pic->save_button), "clicked",
 			 G_CALLBACK(save_pic_button_pressed),
 			 (gpointer)save_pic);
+
+	save_pic_update(save_pic, fi, frame);
 	
 	return label_frame;
 }

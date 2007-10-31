@@ -778,6 +778,8 @@ podcast_item_download(podcast_download_t * pd, GSList ** list, GSList * node) {
 	pd->ncurrent++;
 	pd->percent = 0;
 
+	store_podcast_update_podcast_download(pd);
+
 	if (podcast_generic_download(pd->podcast, item->url, path, store_podcast_update_podcast_download, pd) < 0) {
 		printf("aborted by user or premanent download error, could not finish download\n");
 		goto failed;

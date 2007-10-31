@@ -797,96 +797,6 @@ metadata_to_id3v2(metadata_t * meta, unsigned char ** data, int * length) {
 
 
 int
-meta_id3v2_delete(char * filename) {
-
-	FILE * file;
-	unsigned char buffer[12];
-	u_int32_t file_size;
-	u_int32_t id3v2_length;
-	unsigned char * buf;
-	u_int32_t pos;
-	u_int32_t len;
-	int eof = 0;
-
-	printf("meta_id3v2_delete: %s\n", filename);
-
-	if ((file = fopen(filename, "r+b")) == NULL) {
-		fprintf(stderr, "meta_id3v2_delete: fopen() failed\n");
-		return META_ERROR_NOT_WRITABLE;
-	}
-
-	fseek(file, 0L, SEEK_END);
-	file_size = ftell(file);
-	fseek(file, 0L, SEEK_SET);
-
-	if (file_size < 21) { /* 10 bytes ID3v2 header + 10 bytes frame header + 1 */
-		fclose(file);
-		return META_ERROR_NONE;
-	}
-
-	if (fread(buffer, 1, 10, file) != 10) {
-		fprintf(stderr, "meta_id3v2_delete: fread() failed\n");
-		fclose(file);
-		return META_ERROR_INTERNAL;
-	}
-
-	if ((buffer[0] != 'I') || (buffer[1] != 'D') || (buffer[2] != '3')) {
-		/* no ID3v2 tag found -- we're done */
-		fclose(file);
-		return META_ERROR_NONE;
-	} else {
-		id3v2_length = meta_id3v2_read_synchsafe_int(buffer+6);
-		id3v2_length += 10; /* add 10 byte header */
-		/* XXX */printf("id3v2_length = %d\n", id3v2_length);
-
-		/* rewrite file */
-		buf = malloc(1024*1024);
-		if (buf == NULL) {
-			fprintf(stderr, "meta_id3v2_delete: malloc error\n");
-			fclose(file);
-			return META_ERROR_NOMEM;
-		}
-
-		pos = id3v2_length;
-		while (!eof) {
-			fseek(file, pos, SEEK_SET);
-			len = fread(buf, 1, 1024*1024, file);
-			if (len < 1024*1024) {
-				if (feof(file)) {
-					eof = 1;
-				} else {
-					fprintf(stderr, "meta_id3v2_delete: fread error\n");
-					free(buf);
-					fclose(file);
-					return META_ERROR_INTERNAL;
-				}
-			}
-			fseek(file, pos - id3v2_length, SEEK_SET);
-			if (fwrite(buf, 1, len, file) != len) {
-				fprintf(stderr, "meta_id3v2_delete: fwrite error\n");
-				free(buf);
-				fclose(file);
-				return META_ERROR_INTERNAL;
-			}
-			pos += len;
-		}
-		pos -= id3v2_length;
-
-		fclose(file);
-		free(buf);
-
-		/* XXX */printf("meta_id3v2_delete: truncating file at 0x%08x\n", (unsigned int)pos);
-		if (truncate(filename, pos) < 0) {
-			fprintf(stderr, "meta_id3v2_delete: truncate() failed on %s\n", filename);
-			return META_ERROR_INTERNAL;
-		}
-	}
-
-	return META_ERROR_NONE;
-}
-
-
-int
 meta_id3v2_padding_size(int size) {
 
 	/* pad the size of the tag to be an integer multiple of 2K,
@@ -909,7 +819,64 @@ meta_id3v2_pad(unsigned char ** buf, int * size, int padded_size) {
 }
 
 
-/* move forward the whole contents of the file with length bytes */
+/* move backward the whole contents of the file with length bytes,
+   so file will be length bytes shorter (delete from beginning). */
+int
+meta_id3v2_pull_file(char * filename, FILE * file, int length) {
+
+	u_int32_t pos;
+	u_int32_t len;
+	int bufsize = 1024*1024;
+	unsigned char * buf;
+	int eof = 0;
+
+	buf = malloc(bufsize);
+	if (buf == NULL) {
+		fprintf(stderr, "meta_id3v2_pull_file: malloc error\n");
+		fclose(file);
+		return META_ERROR_NOMEM;
+	}
+	
+	pos = length;
+	while (!eof) {
+		fseek(file, pos, SEEK_SET);
+		len = fread(buf, 1, bufsize, file);
+		if (len < bufsize) {
+			if (feof(file)) {
+				eof = 1;
+			} else {
+				fprintf(stderr, "meta_id3v2_pull_file: fread error\n");
+				free(buf);
+				fclose(file);
+				return META_ERROR_INTERNAL;
+			}
+		}
+		fseek(file, pos - length, SEEK_SET);
+		if (fwrite(buf, 1, len, file) != len) {
+			fprintf(stderr, "meta_id3v2_pull_file: fwrite error\n");
+			free(buf);
+			fclose(file);
+			return META_ERROR_INTERNAL;
+		}
+		pos += len;
+	}
+	pos -= length;
+
+	/* XXX */printf("meta_id3v2_pull_file: truncating file at 0x%08x\n", (unsigned int)pos);
+	if (truncate(filename, pos) < 0) {
+		fprintf(stderr, "meta_id3v2_pull_file: truncate() failed on %s\n", filename);
+		free(buf);
+		fclose(file);
+		return META_ERROR_INTERNAL;
+	}
+
+	free(buf);
+	return META_ERROR_NONE;
+}
+
+
+/* move forward the whole contents of the file with length bytes,
+   so file will be length bytes longer (add to beginning). */
 int
 meta_id3v2_push_file(FILE * file, int length) {
 
@@ -1036,14 +1003,72 @@ meta_id3v2_rewrite(char * filename, unsigned char ** buf, int * len) {
 				}
 				
 				return meta_id3v2_write_tag(file, *buf, *len);
+			} else if (*len + 32*1024 < id3v2_length) {
+				/* if new tag is more than 32K shorter than the old,
+				   rewrite file to shrink it. */
+				int padding_size = meta_id3v2_padding_size(*len);
+				meta_id3v2_pad(buf, len, padding_size);
+				ret = meta_id3v2_pull_file(filename, file, id3v2_length - padding_size);
+				if (ret != META_ERROR_NONE) {
+					return ret;
+				}
+				return meta_id3v2_write_tag(file, *buf, *len);
 			} else {
-				/* TODO if new tag is more than 64K (?) shorter
-				   than the old, rewrite file to shrink it. */
-
 				/* write new tag, with remaining space as padding */
 				meta_id3v2_pad(buf, len, id3v2_length);
 				return meta_id3v2_write_tag(file, *buf, *len);
 			}
 		}
 	}
+}
+
+
+int
+meta_id3v2_delete(char * filename) {
+
+	FILE * file;
+	unsigned char buffer[12];
+	u_int32_t file_size;
+	u_int32_t id3v2_length;
+	int ret;
+
+	printf("meta_id3v2_delete: %s\n", filename);
+
+	if ((file = fopen(filename, "r+b")) == NULL) {
+		fprintf(stderr, "meta_id3v2_delete: fopen() failed\n");
+		return META_ERROR_NOT_WRITABLE;
+	}
+
+	fseek(file, 0L, SEEK_END);
+	file_size = ftell(file);
+	fseek(file, 0L, SEEK_SET);
+
+	if (file_size < 21) { /* 10 bytes ID3v2 header + 10 bytes frame header + 1 */
+		fclose(file);
+		return META_ERROR_NONE;
+	}
+
+	if (fread(buffer, 1, 10, file) != 10) {
+		fprintf(stderr, "meta_id3v2_delete: fread() failed\n");
+		fclose(file);
+		return META_ERROR_INTERNAL;
+	}
+
+	if ((buffer[0] != 'I') || (buffer[1] != 'D') || (buffer[2] != '3')) {
+		/* no ID3v2 tag found -- we're done */
+		fclose(file);
+		return META_ERROR_NONE;
+	} else {
+		id3v2_length = meta_id3v2_read_synchsafe_int(buffer+6);
+		id3v2_length += 10; /* add 10 byte header */
+
+		ret = meta_id3v2_pull_file(filename, file, id3v2_length);
+		if (ret != META_ERROR_NONE) {
+			return ret;
+		}
+
+		fclose(file);
+	}
+
+	return META_ERROR_NONE;
 }

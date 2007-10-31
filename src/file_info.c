@@ -396,8 +396,8 @@ fi_set_frame_from_source(fi_t * fi, meta_frame_t * frame) {
 				message_dialog(_("Error"),
 					       fi->info_window, GTK_MESSAGE_ERROR,
 					       GTK_BUTTONS_OK, NULL,
-					       _("Attached Picture frame with no picture set!\n"
-						 "Please set a picture or remove the frame."));
+					       _("Attached Picture frame with no image set!\n"
+						 "Please set an image or remove the frame."));
 				return -1;
 			}
 		}

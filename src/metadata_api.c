@@ -36,6 +36,26 @@
 
 extern options_t options;
 
+/* get frame of given type, with preference between different tags.
+   preference order: MPEGSTREAM > GEN_STREAM > OXC > APE > ID3v2 > ID3v1 */
+meta_frame_t *
+metadata_pref_frame_by_type(metadata_t * meta, int type, meta_frame_t * root) {
+
+	meta_frame_t * frame;
+	int tag = META_TAG_MPEGSTREAM; /* real (non-pseudo) tag with highest bit */
+
+	while (tag > 0) {
+		frame = metadata_get_frame_by_tag_and_type(meta, tag, type, root);
+		if (frame) {
+			return frame;
+		}
+		tag >>= 1;
+	}
+
+	return NULL;
+}
+
+
 int
 metadata_get_title(metadata_t * meta, char ** str) {
 
@@ -43,7 +63,7 @@ metadata_get_title(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame_by_type(meta, META_FIELD_TITLE, NULL);
+	frame = metadata_pref_frame_by_type(meta, META_FIELD_TITLE, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -60,7 +80,7 @@ metadata_get_artist(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame_by_type(meta, META_FIELD_ARTIST, NULL);
+	frame = metadata_pref_frame_by_type(meta, META_FIELD_ARTIST, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -77,7 +97,7 @@ metadata_get_album(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame_by_type(meta, META_FIELD_ALBUM, NULL);
+	frame = metadata_pref_frame_by_type(meta, META_FIELD_ALBUM, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -94,7 +114,7 @@ metadata_get_date(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame_by_type(meta, META_FIELD_DATE, NULL);
+	frame = metadata_pref_frame_by_type(meta, META_FIELD_DATE, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -111,7 +131,7 @@ metadata_get_genre(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame_by_type(meta, META_FIELD_GENRE, NULL);
+	frame = metadata_pref_frame_by_type(meta, META_FIELD_GENRE, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -128,7 +148,7 @@ metadata_get_comment(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame_by_type(meta, META_FIELD_COMMENT, NULL);
+	frame = metadata_pref_frame_by_type(meta, META_FIELD_COMMENT, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -145,7 +165,7 @@ metadata_get_icy_name(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame_by_type(meta, META_FIELD_ICY_NAME, NULL);
+	frame = metadata_pref_frame_by_type(meta, META_FIELD_ICY_NAME, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -162,7 +182,7 @@ metadata_get_icy_descr(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame_by_type(meta, META_FIELD_ICY_DESCR, NULL);
+	frame = metadata_pref_frame_by_type(meta, META_FIELD_ICY_DESCR, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;
 		return 1;
@@ -179,7 +199,7 @@ metadata_get_tracknum(metadata_t * meta, int * val) {
 
 	if (meta == NULL)
 		return 0;
-	frame = metadata_get_frame_by_type(meta, META_FIELD_TRACKNO, NULL);
+	frame = metadata_pref_frame_by_type(meta, META_FIELD_TRACKNO, NULL);
 	if (frame != NULL) {
 		*val = frame->int_val;
 		return 1;
@@ -205,12 +225,12 @@ metadata_get_rva(metadata_t * meta, float * fval) {
 		break;
 	}
 
-	frame = metadata_get_frame_by_type(meta, rva_type, NULL);
+	frame = metadata_pref_frame_by_type(meta, rva_type, NULL);
 	if (frame != NULL) {
 		*fval = frame->float_val;
 		return 1;
 	} else {
-		frame = metadata_get_frame_by_type(meta, META_FIELD_RVA2, NULL);
+		frame = metadata_pref_frame_by_type(meta, META_FIELD_RVA2, NULL);
 		if (frame != NULL) {
 			*fval = frame->float_val;
 			return 1;

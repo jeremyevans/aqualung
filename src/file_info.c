@@ -348,7 +348,7 @@ fi_set_frame_from_source(fi_t * fi, meta_frame_t * frame) {
 			free(frame->field_val);
 		}
 		if (frame->type == META_FIELD_GENRE) {
-			frame->field_val = strdup(gtk_combo_box_get_active_text(GTK_COMBO_BOX(frame->source)));
+			frame->field_val = gtk_combo_box_get_active_text(GTK_COMBO_BOX(frame->source));
 		} else {
 			frame->field_val = strdup(gtk_entry_get_text(GTK_ENTRY(frame->source)));
 		}
@@ -777,8 +777,10 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 			free(frame->field_name);
 		}
 		frame->field_name = strdup(mime_types[0]);
+		g_strfreev(mime_types);
 	} else {
 		fprintf(stderr, "error: no mime type for image %s\n", filename);
+		g_strfreev(mime_types);
 		return;
 	}
 

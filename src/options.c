@@ -1475,6 +1475,9 @@ create_options_window(void) {
 	GtkWidget * hbox_cwidth;
 
 	GtkWidget * vbox_meta;
+	GtkWidget * hbox_meta;
+	GtkWidget * frame_meta;
+	GtkWidget * vbox_meta2;
 
 #ifdef HAVE_CDDA
 	GtkWidget * table_cdda;
@@ -2320,12 +2323,20 @@ See the About box and the documentation for details."));
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
 
-	label = gtk_label_new(_("When adding to playlist, use file metadata (if available) "
-				"instead of\ninformation from the Music Store for:"));
+	label = gtk_label_new(_("Use file metadata (if available) when adding files "
+				"to the Playlist"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
 
+	hbox_meta = gtk_hbox_new(FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 0);
+
+	frame_meta = gtk_frame_new(_("from the Music Store:"));
+        gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
+	vbox_meta2 = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(frame_meta), vbox_meta2);
+
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
 	check_auto_use_meta_artist = gtk_check_button_new_with_label(_("Artist name"));
 	gtk_widget_set_name(check_auto_use_meta_artist, "check_on_notebook");
 	if (options.auto_use_meta_artist) {
@@ -2334,7 +2345,7 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_artist, FALSE, TRUE, 35);
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
 	check_auto_use_meta_record = gtk_check_button_new_with_label(_("Record name"));
 	gtk_widget_set_name(check_auto_use_meta_record, "check_on_notebook");
 	if (options.auto_use_meta_record) {
@@ -2343,7 +2354,7 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_record, FALSE, TRUE, 35);
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
 	check_auto_use_meta_track = gtk_check_button_new_with_label(_("Track name"));
 	gtk_widget_set_name(check_auto_use_meta_track, "check_on_notebook");
 	if (options.auto_use_meta_track) {
@@ -2352,15 +2363,13 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_track, FALSE, TRUE, 35);
 
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 5);
-
-	label = gtk_label_new(_("When adding external files to playlist, use file metadata "
-				"(if available) for:"));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+	frame_meta = gtk_frame_new(_("from the filesystem:"));
+        gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
+	vbox_meta2 = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(frame_meta), vbox_meta2);
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
 	check_auto_use_ext_meta_artist = gtk_check_button_new_with_label(_("Artist name"));
 	gtk_widget_set_name(check_auto_use_ext_meta_artist, "check_on_notebook");
 	if (options.auto_use_ext_meta_artist) {
@@ -2369,7 +2378,7 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_artist, FALSE, TRUE, 35);
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
 	check_auto_use_ext_meta_record = gtk_check_button_new_with_label(_("Record name"));
 	gtk_widget_set_name(check_auto_use_ext_meta_record, "check_on_notebook");
 	if (options.auto_use_ext_meta_record) {
@@ -2378,7 +2387,7 @@ See the About box and the documentation for details."));
         gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_record, FALSE, TRUE, 35);
 
 	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
 	check_auto_use_ext_meta_track = gtk_check_button_new_with_label(_("Track name"));
 	gtk_widget_set_name(check_auto_use_ext_meta_track, "check_on_notebook");
 	if (options.auto_use_ext_meta_track) {

@@ -26,6 +26,8 @@
 #include <string.h>
 
 #include "../i18n.h"
+#include "../metadata.h"
+#include "../metadata_id3v2.h"
 #include "enc_lame.h"
 
 
@@ -96,6 +98,26 @@ lame_encoder_validate_bitrate(int requested, int idx_offset) {
 }
 
 
+metadata_t *
+lame_encoder_meta(encoder_mode_t * mode) {
+
+	metadata_t * meta = metadata_new();
+
+	if (meta == NULL) {
+		return NULL;
+	}
+
+	metadata_add_frame_from_keyval(meta, META_TAG_ID3v2, "TIT2", mode->meta.title);
+	metadata_add_frame_from_keyval(meta, META_TAG_ID3v2, "TPE1", mode->meta.artist);
+	metadata_add_frame_from_keyval(meta, META_TAG_ID3v2, "TALB", mode->meta.album);
+	metadata_add_frame_from_keyval(meta, META_TAG_ID3v2, "TRCK", mode->meta.track);
+	metadata_add_frame_from_keyval(meta, META_TAG_ID3v2, "TCON", mode->meta.genre);
+	metadata_add_frame_from_keyval(meta, META_TAG_ID3v2, "TDRC", mode->meta.year);
+
+	return meta;
+}
+
+
 int
 lame_encoder_open(encoder_t * enc, encoder_mode_t * mode) {
 
@@ -135,15 +157,17 @@ lame_encoder_open(encoder_t * enc, encoder_mode_t * mode) {
 	lame_set_msgf(pd->gf, lame_encoder_printf);
 
 	if (mode->write_meta) {
-		id3tag_init(pd->gf);
-		id3tag_add_v2(pd->gf);
-		id3tag_pad_v2(pd->gf);
-		id3tag_set_artist(pd->gf, mode->meta.artist);
-		id3tag_set_album(pd->gf, mode->meta.album);
-		id3tag_set_title(pd->gf, mode->meta.title);
-		id3tag_set_track(pd->gf, mode->meta.track);
-		id3tag_set_genre(pd->gf, mode->meta.genre);
-		id3tag_set_year(pd->gf, mode->meta.year);
+		metadata_t * meta = lame_encoder_meta(mode);
+		unsigned char * buf;
+		int length;
+		int padding_size;
+		
+		if (meta != NULL) {
+			metadata_to_id3v2(meta, &buf, &length);
+			padding_size = meta_id3v2_padding_size(length);
+			meta_id3v2_pad(&buf, &length, padding_size);
+			meta_id3v2_write_tag(pd->out, buf, length);
+		}
 	}
 
 	ret = lame_init_params(pd->gf);

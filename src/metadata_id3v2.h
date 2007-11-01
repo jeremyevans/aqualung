@@ -40,6 +40,10 @@ int metadata_to_id3v2(metadata_t * meta, unsigned char ** data, int * length);
 
 char * meta_id3v2_to_utf8(unsigned char enc, unsigned char * buf, int len);
 
+int meta_id3v2_padding_size(int size);
+void meta_id3v2_pad(unsigned char ** buf, int * size, int padded_size);
+int meta_id3v2_write_tag(FILE * file, unsigned char * buf, int len);
+
 int meta_id3v2_delete(char * filename);
 int meta_id3v2_rewrite(char * filename, unsigned char ** buf, int * len);
 

@@ -143,6 +143,9 @@ typedef struct {
 	int auto_use_ext_meta_record;
 	int auto_use_ext_meta_track;
 	int replaygain_tag_to_use;
+	int batch_mpeg_add_id3v1;
+	int batch_mpeg_add_id3v2;
+	int batch_mpeg_add_ape;
 
 	/* CD audio */
 	int cdda_drive_speed;

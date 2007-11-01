@@ -191,6 +191,9 @@ GtkWidget * check_auto_use_ext_meta_artist;
 GtkWidget * check_auto_use_ext_meta_record;
 GtkWidget * check_auto_use_ext_meta_track;
 GtkWidget * combo_replaygain;
+GtkWidget * check_batch_mpeg_add_id3v1;
+GtkWidget * check_batch_mpeg_add_id3v2;
+GtkWidget * check_batch_mpeg_add_ape;
 
 #ifdef HAVE_CDDA
 GtkWidget * cdda_drive_speed_spinner;
@@ -415,6 +418,10 @@ options_window_accept(void) {
 	set_option_from_toggle(check_auto_use_ext_meta_track, &options.auto_use_ext_meta_track);
 
 	set_option_from_combo(combo_replaygain, &options.replaygain_tag_to_use);
+
+	set_option_from_toggle(check_batch_mpeg_add_id3v1, &options.batch_mpeg_add_id3v1);
+	set_option_from_toggle(check_batch_mpeg_add_id3v2, &options.batch_mpeg_add_id3v2);
+	set_option_from_toggle(check_batch_mpeg_add_ape, &options.batch_mpeg_add_ape);
 
 
 	/* CDDA */
@@ -2415,6 +2422,60 @@ See the About box and the documentation for details."));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_replaygain), options.replaygain_tag_to_use);
 
 
+	hbox_meta = gtk_hbox_new(FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 5);
+
+	frame_meta = gtk_frame_new(_("Batch update (mass tagger)"));
+        gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
+	vbox_meta2 = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(frame_meta), vbox_meta2);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 5);
+
+	label = gtk_label_new(_("Tags to add when updating MPEG audio files:"));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
+	check_batch_mpeg_add_id3v1 = gtk_check_button_new_with_label(_("ID3v1"));
+	gtk_widget_set_name(check_batch_mpeg_add_id3v1, "check_on_notebook");
+	if (options.batch_mpeg_add_id3v1) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_batch_mpeg_add_id3v1), TRUE);
+	}
+        gtk_box_pack_start(GTK_BOX(hbox), check_batch_mpeg_add_id3v1, FALSE, TRUE, 35);
+
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
+	check_batch_mpeg_add_id3v2 = gtk_check_button_new_with_label(_("ID3v2"));
+	gtk_widget_set_name(check_batch_mpeg_add_id3v2, "check_on_notebook");
+	if (options.batch_mpeg_add_id3v2) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_batch_mpeg_add_id3v2), TRUE);
+	}
+        gtk_box_pack_start(GTK_BOX(hbox), check_batch_mpeg_add_id3v2, FALSE, TRUE, 35);
+
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
+	check_batch_mpeg_add_ape = gtk_check_button_new_with_label(_("APE"));
+	gtk_widget_set_name(check_batch_mpeg_add_ape, "check_on_notebook");
+	if (options.batch_mpeg_add_ape) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_batch_mpeg_add_ape), TRUE);
+	}
+        gtk_box_pack_start(GTK_BOX(hbox), check_batch_mpeg_add_ape, FALSE, TRUE, 35);
+
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 5);
+
+	label = gtk_label_new(_("Note: pre-existing tags will be updated even though they\n"
+				"might not be checked here."));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+
+
+
 	/* CDDA notebook page */
 #ifdef HAVE_CDDA
 	table_cdda = gtk_table_new(5, 3, FALSE);
@@ -3106,6 +3167,9 @@ save_config(void) {
 	SAVE_INT(auto_use_ext_meta_artist);
 	SAVE_INT(auto_use_ext_meta_record);
 	SAVE_INT(auto_use_ext_meta_track);
+	SAVE_INT(batch_mpeg_add_id3v1);
+	SAVE_INT(batch_mpeg_add_id3v2);
+	SAVE_INT(batch_mpeg_add_ape);
 	SAVE_INT(enable_tooltips);
 	SAVE_INT_SH(buttons_at_the_bottom);
 	SAVE_INT(disable_buttons_relief);
@@ -3414,6 +3478,9 @@ load_config(void) {
 	options.auto_use_ext_meta_artist = 1;
 	options.auto_use_ext_meta_record = 1;
 	options.auto_use_ext_meta_track = 1;
+	options.batch_mpeg_add_id3v1 = 0;
+	options.batch_mpeg_add_id3v2 = 1;
+	options.batch_mpeg_add_ape = 0;
 
 	options.cdda_drive_speed = 4;
 	options.cdda_paranoia_mode = 0; /* no paranoia */
@@ -3466,6 +3533,9 @@ load_config(void) {
 		LOAD_INT(auto_use_ext_meta_artist);
 		LOAD_INT(auto_use_ext_meta_record);
 		LOAD_INT(auto_use_ext_meta_track);
+		LOAD_INT(batch_mpeg_add_id3v1);
+		LOAD_INT(batch_mpeg_add_id3v2);
+		LOAD_INT(batch_mpeg_add_ape);
 		LOAD_INT(show_rva_in_playlist);
 		LOAD_INT(pl_statusbar_show_size);
 		LOAD_INT(ms_statusbar_show_size);

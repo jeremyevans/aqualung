@@ -241,50 +241,48 @@ metadata_get_rva(metadata_t * meta, float * fval) {
 
 
 void
-meta_update_frame(metadata_t * meta, int type, char * str, int val, float fval) {
+meta_update_frame_data(meta_frame_t * frame, char * str, int val, float fval) {
+
+	if (META_FIELD_TEXT(frame->type)) {
+		frame->field_val = strdup(str);
+	} else if (META_FIELD_INT(frame->type)) {
+		frame->int_val = val;
+	} else if (META_FIELD_FLOAT(frame->type)) {
+		frame->float_val = fval;
+	} else { /* no binary frames in update_basic mode */
+		fprintf(stderr, "meta_update_frame_data: programmer error\n");
+	}
+}
+
+
+void
+meta_update_frame(metadata_t * meta, int add_tags, int type,
+		  char * str, int val, float fval) {
 
 	int tag = 1;
-
 	while (tag) {
-		if ((meta->valid_tags & tag) != 0) {
-			meta_frame_t * frame;
-			frame = metadata_get_frame_by_tag_and_type(meta, tag, type, NULL);
-			if (frame == NULL) {
-				/* add new frame */
-				frame = meta_frame_new();
-				if (frame == NULL) {
-					fprintf(stderr, "meta_update_frame: calloc error\n");
-					return;
-				}
-				frame->tag = tag;
-				frame->type = type;
-				frame->flags = meta_get_default_flags(tag, type);
+		meta_frame_t * frame;
 
-				if (META_FIELD_TEXT(type)) {
-					frame->field_val = strdup(str);
-				} else if (META_FIELD_INT(type)) {
-					frame->int_val = val;
-				} else if (META_FIELD_FLOAT(type)) {
-					frame->float_val = fval;
-				} else { /* no binary frames in update_basic mode */
-					fprintf(stderr, "meta_update_frame: #1: programmer error\n");
-				}
-				metadata_add_frame(meta, frame);
-			} else {
-				/* update frame */
-				if (META_FIELD_TEXT(type)) {
-					if (frame->field_val != NULL) {
-						free(frame->field_val);
-					}
-					frame->field_val = strdup(str);
-				} else if (META_FIELD_INT(type)) {
-					frame->int_val = val;
-				} else if (META_FIELD_FLOAT(type)) {
-					frame->float_val = fval;
-				} else { /* no binary frames in update_basic mode */
-					fprintf(stderr, "meta_update_frame: #2: programmer error\n");
-				}
+		if ((meta->valid_tags & tag) == 0) {
+			tag <<= 1;
+			continue;
+		}
+
+		frame = metadata_get_frame_by_tag_and_type(meta, tag, type, NULL);
+		if ((frame == NULL) && ((add_tags & tag) != 0)) {
+			/* add new frame */
+			frame = meta_frame_new();
+			if (frame == NULL) {
+				fprintf(stderr, "meta_update_frame: calloc error\n");
+				return;
 			}
+			frame->tag = tag;
+			frame->type = type;
+			frame->flags = meta_get_default_flags(tag, type);
+			meta_update_frame_data(frame, str, val, fval);
+			metadata_add_frame(meta, frame);
+		} else if (frame != NULL) {
+			meta_update_frame_data(frame, str, val, fval);
 		}
 		tag <<= 1;
 	}
@@ -297,6 +295,7 @@ meta_update_basic(char * filename,
 		  char * comment, char * genre, char * date, int trackno) {
 
 	file_decoder_t * fdec = file_decoder_new();
+	int add_tags;
 	int ret;
 
 	if (fdec == NULL) {
@@ -319,7 +318,21 @@ meta_update_basic(char * filename,
 		file_decoder_delete(fdec);
 		return META_ERROR_NOT_WRITABLE;
 	}
-	
+
+	if (fdec->file_lib == MAD_LIB) {
+		add_tags = 0;
+		if (options.batch_mpeg_add_id3v1) {
+			add_tags |= META_TAG_ID3v1;
+		}
+		if (options.batch_mpeg_add_id3v2) {
+			add_tags |= META_TAG_ID3v2;
+		}
+		if (options.batch_mpeg_add_ape) {
+			add_tags |= META_TAG_APE;
+		}
+	} else {
+		add_tags = fdec->meta->valid_tags;
+	}
 
 	if (fdec->meta_write == NULL) {
 		file_decoder_close(fdec);
@@ -329,36 +342,37 @@ meta_update_basic(char * filename,
 
 	if (title != NULL && !is_all_wspace(title)) {
 		cut_trailing_whitespace(title);
-		meta_update_frame(fdec->meta, META_FIELD_TITLE, title, 0, 0.0f);
+		meta_update_frame(fdec->meta, add_tags, META_FIELD_TITLE, title, 0, 0.0f);
 	}
 	if (artist != NULL && !is_all_wspace(artist)) {
 		cut_trailing_whitespace(artist);
-		meta_update_frame(fdec->meta, META_FIELD_ARTIST, artist, 0, 0.0f);
+		meta_update_frame(fdec->meta, add_tags, META_FIELD_ARTIST, artist, 0, 0.0f);
 	}
 	if (album != NULL && !is_all_wspace(album)) {
 		cut_trailing_whitespace(album);
-		meta_update_frame(fdec->meta, META_FIELD_ALBUM, album, 0, 0.0f);
+		meta_update_frame(fdec->meta, add_tags, META_FIELD_ALBUM, album, 0, 0.0f);
 	}
 	if (trackno != -1) {
-		meta_update_frame(fdec->meta, META_FIELD_TRACKNO, NULL, trackno, 0.0f);
+		meta_update_frame(fdec->meta, add_tags, META_FIELD_TRACKNO, NULL, trackno, 0.0f);
 	}
 	if (date != NULL && !is_all_wspace(date)) {
 		cut_trailing_whitespace(date);
-		meta_update_frame(fdec->meta, META_FIELD_DATE, date, 0, 0.0f);
+		meta_update_frame(fdec->meta, add_tags, META_FIELD_DATE, date, 0, 0.0f);
 	}
 	if (genre != NULL && !is_all_wspace(genre)) {
 		cut_trailing_whitespace(genre);
-		meta_update_frame(fdec->meta, META_FIELD_GENRE, genre, 0, 0.0f);
+		meta_update_frame(fdec->meta, add_tags, META_FIELD_GENRE, genre, 0, 0.0f);
 	}
 	if (comment != NULL && !is_all_wspace(comment)) {
 		cut_trailing_whitespace(comment);
-		meta_update_frame(fdec->meta, META_FIELD_COMMENT, comment, 0, 0.0f);
+		meta_update_frame(fdec->meta, add_tags, META_FIELD_COMMENT, comment, 0, 0.0f);
 	}
 
+	/* XXX debug */
 	printf("dump before write:\n");
 	metadata_dump(fdec->meta);
-	ret = fdec->meta_write(fdec, fdec->meta);
 
+	ret = fdec->meta_write(fdec, fdec->meta);
 	file_decoder_close(fdec);
 	file_decoder_delete(fdec);
 

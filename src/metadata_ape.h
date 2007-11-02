@@ -34,9 +34,9 @@
 #define APE_FLAG_TEXT          0x00
 #define APE_FLAG_BINARY        0x02
 #define APE_FLAG_LOCATOR       0x04
-#define APE_FLAG_IS_TEXT(x)    (((x)&&0x06)==APE_FLAG_TEXT)
-#define APE_FLAG_IS_BINARY(x)  (((x)&&0x06)==APE_FLAG_BINARY)
-#define APE_FLAG_IS_LOCATOR(x) (((x)&&0x06)==APE_FLAG_LOCATOR)
+#define APE_FLAG_IS_TEXT(x)    (((x)&0x06)==APE_FLAG_TEXT)
+#define APE_FLAG_IS_BINARY(x)  (((x)&0x06)==APE_FLAG_BINARY)
+#define APE_FLAG_IS_LOCATOR(x) (((x)&0x06)==APE_FLAG_LOCATOR)
 #define APE_FLAG_HEADER        (1<<29)
 #define APE_FLAG_HAS_NO_FOOTER (1<<30)
 #define APE_FLAG_HAS_HEADER    (1<<31)

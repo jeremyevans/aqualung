@@ -491,19 +491,12 @@ parse_rss_item(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr it
 				pitem->desc = (char *)xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
 			}
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"enclosure")) {
-			xmlChar * type = NULL;
-			if ((type = xmlGetProp(node, (const xmlChar *)"type")) != NULL &&
-			    strstr((char *)type, "audio") == (char *)type) {
-				xmlChar * len;
-				if ((len = xmlGetProp(node, (const xmlChar *)"length")) != NULL) {
-					sscanf((char *)len, "%u", &pitem->size);
-					xmlFree(len);
-				}
-				pitem->url = (char *)xmlGetProp(node, (const xmlChar *)"url");
+			xmlChar * len;
+			if ((len = xmlGetProp(node, (const xmlChar *)"length")) != NULL) {
+				sscanf((char *)len, "%u", &pitem->size);
+				xmlFree(len);
 			}
-			if (type != NULL) {
-				xmlFree(type);
-			}
+			pitem->url = (char *)xmlGetProp(node, (const xmlChar *)"url");
 		} else if (!xmlStrcmp(node->name, (const xmlChar *)"pubDate")) {
 			xmlChar * tmp = xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
 			pitem->date = parse_rss_date((char *)tmp);
@@ -606,19 +599,12 @@ parse_atom_item(podcast_t * podcast, GSList ** list, xmlDocPtr doc, xmlNodePtr e
 			xmlChar * rel = NULL;
 			if ((rel = xmlGetProp(node, (const xmlChar *)"rel")) != NULL &&
 			    !xmlStrcmp(rel, (const xmlChar *)"enclosure")) {
-				xmlChar * type = NULL;
-				if ((type = xmlGetProp(node, (const xmlChar *)"type")) != NULL &&
-				    strstr((char *)type, "audio") == (char *)type) {
-					xmlChar * len;
-					if ((len = xmlGetProp(node, (const xmlChar *)"length")) != NULL) {
-						sscanf((char *)len, "%u", &pitem->size);
-						xmlFree(len);
-					}
-					pitem->url = (char *)xmlGetProp(node, (const xmlChar *)"href");
+				xmlChar * len;
+				if ((len = xmlGetProp(node, (const xmlChar *)"length")) != NULL) {
+					sscanf((char *)len, "%u", &pitem->size);
+					xmlFree(len);
 				}
-				if (type != NULL) {
-					xmlFree(type);
-				}
+				pitem->url = (char *)xmlGetProp(node, (const xmlChar *)"href");
 			}
 			if (rel != NULL) {
 				xmlFree(rel);

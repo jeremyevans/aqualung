@@ -205,6 +205,7 @@ int meta_frame_type_from_embedded_name(int tag, char * name);
 GSList * meta_get_possible_fields(int tag);
 int meta_get_default_flags(int tag, int type);
 void metadata_add_mandatory_frames(metadata_t * meta, int tag);
+void metadata_clone_frame(metadata_t * meta, meta_frame_t * frame);
 
 
 /* object methods */

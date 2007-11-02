@@ -194,6 +194,7 @@ GtkWidget * combo_replaygain;
 GtkWidget * check_batch_mpeg_add_id3v1;
 GtkWidget * check_batch_mpeg_add_id3v2;
 GtkWidget * check_batch_mpeg_add_ape;
+GtkWidget * check_metaedit_auto_clone;
 
 #ifdef HAVE_CDDA
 GtkWidget * cdda_drive_speed_spinner;
@@ -422,6 +423,8 @@ options_window_accept(void) {
 	set_option_from_toggle(check_batch_mpeg_add_id3v1, &options.batch_mpeg_add_id3v1);
 	set_option_from_toggle(check_batch_mpeg_add_id3v2, &options.batch_mpeg_add_id3v2);
 	set_option_from_toggle(check_batch_mpeg_add_ape, &options.batch_mpeg_add_ape);
+
+	set_option_from_toggle(check_metaedit_auto_clone, &options.metaedit_auto_clone);
 
 
 	/* CDDA */
@@ -1359,7 +1362,7 @@ display_implict_command_line_help(void) {
 	display_help(_("\nThe string you enter here will be parsed as a command\n"
 		       "line before parsing the actual command line parameters.\n"
 		       "What you enter here will act as a default setting and may\n"
-		       "or may not be overrided from the 'real' command line.\n"
+		       "or may not be overridden from the 'real' command line.\n"
 		       "Example: enter '-o alsa -R' below to use ALSA output\n"
 		       "running realtime as a default.\n"));
 }
@@ -2423,7 +2426,27 @@ See the About box and the documentation for details."));
 
 
 	hbox_meta = gtk_hbox_new(FALSE, 5);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 8);
+
+	frame_meta = gtk_frame_new(_("Metadata editor (File info dialog)"));
+        gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
+	vbox_meta2 = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(frame_meta), vbox_meta2);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 3);
+	check_metaedit_auto_clone =
+		gtk_check_button_new_with_label(_("When adding new frames, "
+		"try to set their contents\nfrom another tag's equivalent frame."));
+	gtk_widget_set_name(check_metaedit_auto_clone, "check_on_notebook");
+	if (options.metaedit_auto_clone) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_metaedit_auto_clone), TRUE);
+	}
+        gtk_box_pack_start(GTK_BOX(hbox), check_metaedit_auto_clone, FALSE, TRUE, 35);
+
+
+	hbox_meta = gtk_hbox_new(FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 0);
 
 	frame_meta = gtk_frame_new(_("Batch update (mass tagger)"));
         gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
@@ -3170,6 +3193,7 @@ save_config(void) {
 	SAVE_INT(batch_mpeg_add_id3v1);
 	SAVE_INT(batch_mpeg_add_id3v2);
 	SAVE_INT(batch_mpeg_add_ape);
+	SAVE_INT(metaedit_auto_clone);
 	SAVE_INT(enable_tooltips);
 	SAVE_INT_SH(buttons_at_the_bottom);
 	SAVE_INT(disable_buttons_relief);
@@ -3481,6 +3505,7 @@ load_config(void) {
 	options.batch_mpeg_add_id3v1 = 0;
 	options.batch_mpeg_add_id3v2 = 1;
 	options.batch_mpeg_add_ape = 0;
+	options.metaedit_auto_clone = 0;
 
 	options.cdda_drive_speed = 4;
 	options.cdda_paranoia_mode = 0; /* no paranoia */
@@ -3536,6 +3561,7 @@ load_config(void) {
 		LOAD_INT(batch_mpeg_add_id3v1);
 		LOAD_INT(batch_mpeg_add_id3v2);
 		LOAD_INT(batch_mpeg_add_ape);
+		LOAD_INT(metaedit_auto_clone);
 		LOAD_INT(show_rva_in_playlist);
 		LOAD_INT(pl_statusbar_show_size);
 		LOAD_INT(ms_statusbar_show_size);

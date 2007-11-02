@@ -515,6 +515,63 @@ meta_get_default_flags(int tag, int type) {
 }
 
 
+meta_frame_t *
+metadata_find_companion_frame(metadata_t * meta, meta_frame_t * frame) {
+
+	meta_frame_t * f;
+	int tag = META_TAG_MPEGSTREAM; /* real (non-pseudo) tag with highest bit */
+
+	while (tag > 0) {
+		if (tag != frame->tag) {
+			f = metadata_get_frame_by_tag_and_type(meta, tag, frame->type, NULL);
+			if (f) {
+				return f;
+			}
+		}
+		tag >>= 1;
+	}
+
+	return NULL;
+}
+
+
+/* search for frames other than the given frame itself
+   that are of the same type and copy their contents */
+void
+metadata_clone_frame(metadata_t * meta, meta_frame_t * frame) {
+
+	meta_frame_t * companion = metadata_find_companion_frame(meta, frame);
+
+	if (companion == NULL) {
+		return;
+	}
+	
+	if (companion->field_name != NULL) {
+		if (frame->field_name != NULL) {
+			free(frame->field_name);
+		}
+		frame->field_name = strdup(companion->field_name);
+	}
+
+	if (companion->field_val != NULL) {
+		frame->field_val = strdup(companion->field_val);
+	}
+	
+	frame->int_val = companion->int_val;
+	frame->float_val = companion->float_val;
+
+	if (companion->length > 0) {
+		frame->length = companion->length;
+		frame->data = (unsigned char *)malloc(frame->length);
+		if (frame->data == NULL) {
+			fprintf(stderr, "metadata_clone_frame: malloc error\n");
+			return;
+		}
+		memcpy(frame->data, companion->data, frame->length);
+	}
+}
+
+
 void
 metadata_add_mandatory_frames(metadata_t * meta, int tag) {
 
@@ -530,13 +587,20 @@ metadata_add_mandatory_frames(metadata_t * meta, int tag) {
 				frame->type = meta_model[i].type;
 				frame->flags = meta_get_default_flags(tag, frame->type);
 				if (meta_get_fieldname(frame->type, &str)) {
-					frame->field_name = strdup(str);
+					if (options.metaedit_auto_clone) {
+						metadata_clone_frame(meta, frame);
+					}
+					if (frame->field_name == NULL) {
+						frame->field_name = strdup(str);
+					}
 				} else {
 					fprintf(stderr, "metadata_add_mandatory_frames: programmer error\n");
 					meta_frame_free(frame);
 					return;
 				}
-				frame->field_val = strdup("");
+				if (frame->field_val == NULL) {
+					frame->field_val = strdup("");
+				}
 				metadata_add_frame(meta, frame);
 			}
 		}

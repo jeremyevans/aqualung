@@ -422,25 +422,27 @@ fi_save(GtkWidget * widget, gpointer data) {
 		frame = frame->next;
 	}
 
-	if (status == 0) {
-		if (fi->fdec->meta_write != NULL) {
-			int ret;
-			ret = fi->fdec->meta_write(fi->fdec, fi->meta);
-			if (ret == META_ERROR_NONE) {
-				fi_mark_unchanged(fi);
-				return TRUE;
-			} else {
-				message_dialog(_("Error"),
-					       fi->info_window, GTK_MESSAGE_ERROR,
-					       GTK_BUTTONS_OK, NULL,
-					       _("Failed to write metadata to file.\n"
-						 "Reason: %s"),
-					       metadata_strerror(ret));
-				return FALSE;
-			}
+	if (status != 0) {
+		return FALSE;
+	}
+
+	if (fi->fdec->meta_write != NULL) {
+		int ret;
+		ret = fi->fdec->meta_write(fi->fdec, fi->meta);
+		if (ret == META_ERROR_NONE) {
+			fi_mark_unchanged(fi);
+			return TRUE;
 		} else {
-			fprintf(stderr, "programmer error: fdec->meta_write == NULL\n");
+			message_dialog(_("Error"),
+				       fi->info_window, GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK, NULL,
+				       _("Failed to write metadata to file.\n"
+					 "Reason: %s"),
+				       metadata_strerror(ret));
+			return FALSE;
 		}
+	} else {
+		fprintf(stderr, "programmer error: fdec->meta_write == NULL\n");
 	}
 
 	return FALSE;
@@ -1284,6 +1286,7 @@ typedef struct {
 	int tag;
 } fi_add_t;
 
+
 void
 fi_add_button_pressed(GtkWidget * widget, gpointer data) {
 
@@ -1311,7 +1314,12 @@ fi_add_button_pressed(GtkWidget * widget, gpointer data) {
 	} else {
 		fprintf(stderr, "fi_add_button_pressed: programmer error\n");
 	}
-	frame->field_val = strdup("");
+	if (options.metaedit_auto_clone) {
+		metadata_clone_frame(meta, frame);
+	}
+	if (frame->field_val == NULL) {
+		frame->field_val = strdup("");
+	}
 	frame->next = NULL;
 
 	metadata_add_frame(meta, frame);

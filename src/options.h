@@ -146,6 +146,7 @@ typedef struct {
 	int batch_mpeg_add_id3v1;
 	int batch_mpeg_add_id3v2;
 	int batch_mpeg_add_ape;
+	int metaedit_auto_clone;
 
 	/* CD audio */
 	int cdda_drive_speed;

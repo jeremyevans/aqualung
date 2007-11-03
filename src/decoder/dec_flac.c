@@ -277,6 +277,7 @@ flac_meta_vc_replace_or_append(file_decoder_t * fdec, FLAC__StreamMetadata * sme
 }
 
 
+#ifdef HAVE_FLAC_8
 int
 flac_meta_append_pics(file_decoder_t * fdec, metadata_t * meta) {
 
@@ -343,6 +344,7 @@ flac_meta_append_pics(file_decoder_t * fdec, metadata_t * meta) {
 	FLAC__metadata_simple_iterator_delete(iter);
 	return META_ERROR_NONE;
 }
+#endif /* HAVE_FLAC_8 */
 
 
 int
@@ -385,6 +387,7 @@ flac_meta_delete(file_decoder_t * fdec, int del_vc) {
 				return META_ERROR_INTERNAL;
 			}
 			break;
+#ifdef HAVE_FLAC_8
 		case FLAC__METADATA_TYPE_PICTURE:
 			ret = FLAC__metadata_simple_iterator_delete_block(iter, true);
 			if (ret == false) {
@@ -393,6 +396,7 @@ flac_meta_delete(file_decoder_t * fdec, int del_vc) {
 				return META_ERROR_INTERNAL;
 			}
 			break;
+#endif /* HAVE_FLAC_8 */
 		default:
 			break;
 		}
@@ -425,12 +429,14 @@ flac_write_metadata(file_decoder_t * fdec, metadata_t * meta) {
 		FLAC__metadata_object_delete(smeta);
 	}
 
+#ifdef HAVE_FLAC_8
 	if (metadata_get_frame_by_tag(meta, META_TAG_FLAC_APIC, NULL) != NULL) {
 		ret = flac_meta_append_pics(fdec, meta);
 		if (ret != META_ERROR_NONE) {
 			return ret;
 		}
 	}
+#endif /* HAVE_FLAC_8 */
 
 	return META_ERROR_NONE;
 }
@@ -462,7 +468,11 @@ flac_send_metadata(decoder_t * dec) {
 	meta = metadata_new();
 	meta->fdec = fdec;
 	fdec->meta = meta;
+#ifdef HAVE_FLAC_8
 	meta->valid_tags = META_TAG_OXC | META_TAG_FLAC_APIC;
+#else
+	meta->valid_tags = META_TAG_OXC;
+#endif /* HAVE_FLAC_8 */
 	if (FLAC__metadata_simple_iterator_is_writable(iter) == true) {
 		meta->writable = 1;
 		fdec->meta_write = flac_write_metadata;
@@ -480,6 +490,7 @@ flac_send_metadata(decoder_t * dec) {
 
 			FLAC__metadata_object_delete(smeta);
 			break;
+#ifdef HAVE_FLAC_8
 		case FLAC__METADATA_TYPE_PICTURE:
 			smeta = FLAC__metadata_simple_iterator_get_block(iter);
 			FLAC__StreamMetadata_Picture pic =
@@ -489,6 +500,7 @@ flac_send_metadata(decoder_t * dec) {
 
 			FLAC__metadata_object_delete(smeta);
 			break;
+#endif /* HAVE_FLAC_8 */
 		default:
 			break;
 		}

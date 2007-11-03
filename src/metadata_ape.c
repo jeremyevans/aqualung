@@ -23,10 +23,12 @@
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <gtk/gtk.h>
 #include <glib.h>
 
 #include "utils.h"
 #include "options.h"
+#include "metadata_id3v2.h"
 #include "metadata_ape.h"
 
 
@@ -180,6 +182,126 @@ meta_ape_parse(char * filename, ape_tag_t * tag) {
 }
 
 
+int
+meta_ape_pictype_from_string(unsigned char * str) {
+
+	char * key;
+	int i = 0;
+
+	if (strstr((char *)str, "Cover Art (") == str) {
+		key = (char *)str+11;
+	} else {
+		key = (char *)str;
+	}
+	key[strlen(key)-1] = '\0';
+
+	while (1) {
+		char * pic_type = meta_id3v2_apic_type_to_string(i);
+		if (pic_type == NULL) {
+			return 0;
+		}
+		if (strcasestr(pic_type, key) == pic_type) {
+			return i;
+		}
+		++i;
+	}
+	return 0; /* type: other */
+}
+
+
+void
+meta_ape_add_pic_frame(metadata_t * meta, ape_item_t * item) {
+
+	meta_frame_t * frame;
+	GdkPixbufLoader * loader;
+	GdkPixbufFormat * format;
+	gchar ** mime_types;
+	int len1 = strlen((char *)item->value);
+	if (len1 > item->value_size) {
+		fprintf(stderr, "meta_ape_add_pic_frame: filename too long, discarding\n");
+		return;
+	}
+
+	frame = meta_frame_new();
+	if (frame == NULL) {
+		fprintf(stderr, "meta_ape_add_pic_frame: malloc error\n");
+		return;
+	}
+
+	frame->tag = META_TAG_APE;
+	frame->type = META_FIELD_APIC;
+	frame->int_val = meta_ape_pictype_from_string(item->key);
+	frame->field_val = strdup((char *)item->value);
+	frame->length = item->value_size - len1 - 1;
+	frame->data = (unsigned char *)malloc(frame->length);
+	if (frame->data == NULL) {
+		fprintf(stderr, "meta_ape_add_pic_frame: malloc error\n");
+		meta_frame_free(frame);
+		return;
+	}
+	memcpy(frame->data, item->value + len1 + 1, frame->length);
+
+	loader = gdk_pixbuf_loader_new();
+	if (gdk_pixbuf_loader_write(loader, frame->data, frame->length, NULL) != TRUE) {
+		fprintf(stderr, "meta_ape_add_apic_frame: failed to load image #1\n");
+		meta_frame_free(frame);
+		g_object_unref(loader);
+		return;
+	}
+
+	if (gdk_pixbuf_loader_close(loader, NULL) != TRUE) {
+		fprintf(stderr, "meta_ape_add_apic_frame: failed to load image #2\n");
+		meta_frame_free(frame);
+		g_object_unref(loader);
+		return;
+	}
+
+	format = gdk_pixbuf_loader_get_format(loader);
+	if (format == NULL) {
+		fprintf(stderr, "meta_ape_add_apic_frame: failed to load image #3\n");
+		meta_frame_free(frame);
+		g_object_unref(loader);
+		return;
+	}
+
+	mime_types = gdk_pixbuf_format_get_mime_types(format);
+	if (mime_types[0] != NULL) {
+		frame->field_name = strdup(mime_types[0]);
+		g_strfreev(mime_types);
+	} else {
+		fprintf(stderr, "meta_ape_add_apic_frame: error: no mime type for image\n");
+		g_strfreev(mime_types);
+		meta_frame_free(frame);
+		g_object_unref(loader);
+		return;
+	}
+
+	g_object_unref(loader);
+	metadata_add_frame(meta, frame);
+}
+
+
+void
+meta_ape_add_hidden_frame(metadata_t * meta, ape_item_t * item) {
+
+	meta_frame_t * frame = meta_frame_new();
+	frame->tag = META_TAG_APE;
+	frame->type = META_FIELD_HIDDEN;
+	if (APE_FLAG_IS_LOCATOR(item->flags)) {
+		frame->flags |= META_FIELD_LOCATOR;
+	}
+	frame->field_val = strdup((char *)item->key);
+	frame->length = item->value_size;
+	frame->data = malloc(frame->length);
+	if (frame->data == NULL) {
+		fprintf(stderr, "meta_ape_add_hidden_frame: malloc error\n");
+		return;
+	}
+	memcpy(frame->data, item->value, frame->length);
+	metadata_add_frame(meta, frame);
+}
+
+
 void
 meta_add_frame_from_ape_item(metadata_t * meta, ape_item_t * item) {
 
@@ -187,7 +309,11 @@ meta_add_frame_from_ape_item(metadata_t * meta, ape_item_t * item) {
 	meta_frame_t * frame;
 
 	if (APE_FLAG_IS_BINARY(item->flags)) {
-		/* TODO */
+		if (strcasestr((char *)item->key, "cover art") == item->key) {
+			meta_ape_add_pic_frame(meta, item);
+		} else {
+			meta_ape_add_hidden_frame(meta, item);
+		}
 		return;
 	}
 
@@ -225,6 +351,60 @@ metadata_from_ape_tag(metadata_t * meta, ape_tag_t * tag) {
 
 
 void
+meta_ape_render_apic(meta_frame_t * frame, ape_item_t * item) {
+
+	int len1 = strlen(frame->field_val);
+	item->value_size = frame->length + len1 + 1;
+	item->value = (unsigned char *)malloc(item->value_size);
+	memcpy(item->value, frame->field_val, len1);
+	(item->value)[len1] = '\0';
+	memcpy(item->value + len1 + 1, frame->data, frame->length);
+}
+
+
+void
+meta_ape_render_bin_frames(metadata_t * meta, ape_tag_t * tag, int type,
+			   u_int32_t * item_count, u_int32_t * total_size) {
+
+	meta_frame_t * frame;
+
+	frame = metadata_get_frame_by_tag_and_type(meta, META_TAG_APE, type, NULL);
+	while (frame) {
+		char key[255];
+		ape_item_t * item = meta_ape_item_new();
+		item->flags = APE_FLAG_BINARY;
+		if ((frame->flags & META_FIELD_LOCATOR) != 0) {
+			item->flags = APE_FLAG_LOCATOR;
+		}
+
+		switch (type) {
+		case META_FIELD_APIC:
+			snprintf(key, 254, "Cover Art (%s)",
+				 meta_id3v2_apic_type_to_string(frame->int_val));
+			strncpy((char *)item->key, key, 255);
+			meta_ape_render_apic(frame, item);
+			break;
+		case META_FIELD_HIDDEN:
+			strncpy((char *)item->key, frame->field_val, 255);
+			item->value_size = frame->length;
+			item->value = (unsigned char *)malloc(item->value_size);
+			memcpy(item->value, frame->data, item->value_size);
+			break;
+		default:
+			fprintf(stderr, "meta_ape_render_bin_frames: programmer error: unknown frame type %d\n", type);
+			free(item);
+			return;
+		}
+
+		*total_size += 9 + strlen((char *)item->key) + item->value_size;
+		++*item_count;
+		tag->items = g_slist_append(tag->items, item);
+		frame = metadata_get_frame_by_tag_and_type(meta, META_TAG_APE, type, frame);
+	}	
+}
+
+
+void
 metadata_to_ape_tag(metadata_t * meta, ape_tag_t * tag) {
 
 	GSList * pfields = meta_get_possible_fields(META_TAG_APE);
@@ -237,6 +417,13 @@ metadata_to_ape_tag(metadata_t * meta, ape_tag_t * tag) {
 		ape_item_t * item;
 		meta_frame_t * frame;
 		char * str;
+
+		if (META_FIELD_BIN(type)) {
+			meta_ape_render_bin_frames(meta, tag, type,
+						   &item_count, &total_size);
+			pfields = g_slist_next(pfields);
+			continue;
+		}
 
 		frame = metadata_get_frame_by_tag_and_type(meta, META_TAG_APE, type, NULL);
 		if (frame == NULL) {
@@ -266,13 +453,10 @@ metadata_to_ape_tag(metadata_t * meta, ape_tag_t * tag) {
 				snprintf(fval, MAXLEN-1, renderfmt, frame->int_val);
 				field_val = fval;
 				field_len = strlen(field_val);
-			} else if (META_FIELD_FLOAT(frame->type)) {
+			} else if (META_FIELD_FLOAT(type)) {
 				snprintf(fval, MAXLEN-1, renderfmt, frame->float_val);
 				field_val = fval;
 				field_len = strlen(field_val);
-			} else {
-				item->flags = APE_FLAG_BINARY;
-				/* TODO */
 			}
 
 			item->value = realloc(item->value, item->value_size + field_len + 1);

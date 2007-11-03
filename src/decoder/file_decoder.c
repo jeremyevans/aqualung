@@ -300,6 +300,7 @@ file_decoder_open(file_decoder_t * fdec, char * filename) {
 		if (!dec) {
 			continue;
 		}
+		fdec->pdec = (void *)dec;
 		ret = dec->open(dec, filename);
 		if (ret == DECODER_OPEN_FERROR) {
 			dec->destroy(dec);
@@ -313,7 +314,6 @@ file_decoder_open(file_decoder_t * fdec, char * filename) {
 			return 1;
 		}
 
-		fdec->pdec = (void *)dec;
 		break;
 	}
 

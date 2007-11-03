@@ -2094,7 +2094,7 @@ set_first_row(fi_t * fi) {
 }
 
 void 
-radio_buttons_cb(GtkToggleButton *toggle_button, gboolean state, gpointer data) {
+radio_buttons_cb(GtkToggleButton * toggle_button, gpointer data) {
 
 	fi_t * fi = (fi_t *)data;
 
@@ -2133,7 +2133,6 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
 	GtkWidget *vbox3;
 	GtkWidget *samples_radiobutton = NULL;
 	GtkWidget *instruments_radiobutton = NULL;
-	GSList *samples_radiobutton_group = NULL;
 	GtkWidget *scrolledwindow;
 	
 	GtkCellRenderer *renderer;
@@ -2237,18 +2236,14 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
                 gtk_table_attach (GTK_TABLE (table), samples_radiobutton, 0, 1, 0, 1,
                                   (GtkAttachOptions) (GTK_FILL | GTK_EXPAND),
                                   (GtkAttachOptions) (0), 0, 0);
-                gtk_radio_button_set_group (GTK_RADIO_BUTTON (samples_radiobutton), samples_radiobutton_group);
-                samples_radiobutton_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (samples_radiobutton));
 		g_signal_connect(G_OBJECT(samples_radiobutton), "toggled",
 				 G_CALLBACK(radio_buttons_cb), (gpointer)fi);
 
-                instruments_radiobutton = gtk_radio_button_new_with_mnemonic (NULL, _("Instruments"));
+                instruments_radiobutton = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON(samples_radiobutton), _("Instruments"));
                 gtk_widget_show (instruments_radiobutton);
                 gtk_table_attach (GTK_TABLE (table), instruments_radiobutton, 0, 1, 1, 2,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
-                gtk_radio_button_set_group (GTK_RADIO_BUTTON (instruments_radiobutton), samples_radiobutton_group);
-                samples_radiobutton_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (instruments_radiobutton));
 
 
         } else {

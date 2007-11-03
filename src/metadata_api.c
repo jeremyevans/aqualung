@@ -63,6 +63,16 @@ metadata_get_title(metadata_t * meta, char ** str) {
 
 	if (meta == NULL)
 		return 0;
+
+#ifdef HAVE_MOD
+	frame = metadata_get_frame_by_tag_and_type(meta, META_TAG_MODINFO, META_FIELD_MODINFO, NULL);
+	if (frame != NULL) {
+		mod_info * mi = (mod_info *)frame->data;
+		*str = mi->title;
+		return 1;
+	}
+#endif /* HAVE_MOD */
+
 	frame = metadata_pref_frame_by_type(meta, META_FIELD_TITLE, NULL);
 	if (frame != NULL) {
 		*str = frame->field_val;

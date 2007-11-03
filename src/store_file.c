@@ -1374,14 +1374,14 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 		if (options.rva_use_averaging && use_avg_voladj) {
 			voladj = avg_voladj;
 		} else {
-			if (data->use_rva >= 0.0f) {
+			if (data->use_rva > 0) {
 				voladj = data->rva;
 			} else {
 				if (data->volume <= 0.1f) {
 					voladj = rva_from_volume(data->volume);
 				} else { /* unmeasured, see if there is RVA data in the file */
 					if (!metadata_get_rva(fdec->meta, &voladj)) {
-						voladj = 0.0f;
+						voladj = options.rva_no_rva_voladj;
 					}
 				}
 			}

@@ -33,18 +33,16 @@
 
 
 #ifdef HAVE_FLAC
-metadata_t *
-metadata_from_flac_streammeta(FLAC__StreamMetadata_VorbisComment * vc) {
+void
+metadata_from_flac_streammeta_vc(metadata_t * meta,
+				 FLAC__StreamMetadata_VorbisComment * vc) {
 
 	int i;
-	metadata_t * meta;
 
-	if (!vc) {
-		return NULL;
+	if (!meta || !vc) {
+		return;
 	}
 
-	meta = metadata_new();
-	meta->valid_tags = META_TAG_OXC;
 	for (i = 0; i < vc->num_comments; i++) {
 		char key[MAXLEN];
 		char val[MAXLEN];
@@ -73,8 +71,35 @@ metadata_from_flac_streammeta(FLAC__StreamMetadata_VorbisComment * vc) {
 	metadata_add_frame_from_keyval(meta, META_TAG_OXC, "vendor",
 				       (vc->vendor_string.length > 0) ?
 				       (char *)vc->vendor_string.entry : "");
-	return meta;
 }
+
+
+void
+metadata_from_flac_streammeta_pic(metadata_t * meta,
+				  FLAC__StreamMetadata_Picture * pic) {
+
+	meta_frame_t * frame = meta_frame_new();
+
+	if (frame == NULL) {
+		return;
+	}
+
+	frame->tag = META_TAG_FLAC_APIC;
+	frame->type = META_FIELD_APIC;
+	frame->field_name = strdup(pic->mime_type);
+	frame->field_val = strdup((char *)pic->description);
+	frame->int_val = pic->type;
+	frame->length = pic->data_length;
+	frame->data = (unsigned char *)malloc(frame->length);
+	if (frame->data == NULL) {
+		meta_frame_free(frame);
+		return;
+	}
+	memcpy(frame->data, pic->data, frame->length);
+
+	metadata_add_frame(meta, frame);
+}
+
 
 void
 meta_entry_from_frame(FLAC__StreamMetadata_VorbisComment_Entry * entry,
@@ -132,4 +157,20 @@ metadata_to_flac_streammeta(metadata_t * meta) {
 	}
 	return smeta;
 }
+
+
+FLAC__StreamMetadata *
+metadata_apic_frame_to_smeta(meta_frame_t * frame) {
+
+	FLAC__StreamMetadata * smeta =
+		FLAC__metadata_object_new(FLAC__METADATA_TYPE_PICTURE);
+
+	FLAC__metadata_object_picture_set_mime_type(smeta, frame->field_name, true);
+	FLAC__metadata_object_picture_set_description(smeta, (unsigned char *)frame->field_val, true);
+	FLAC__metadata_object_picture_set_data(smeta, frame->data, frame->length, true);
+	smeta->data.picture.type = frame->int_val;
+
+	return smeta;
+}
+
 #endif /* HAVE_FLAC */

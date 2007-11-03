@@ -34,8 +34,12 @@
 #include "metadata.h"
 
 #ifdef HAVE_FLAC
-metadata_t * metadata_from_flac_streammeta(FLAC__StreamMetadata_VorbisComment * vc);
+void metadata_from_flac_streammeta_vc(metadata_t * meta,
+				      FLAC__StreamMetadata_VorbisComment * vc);
+void metadata_from_flac_streammeta_pic(metadata_t * meta,
+				       FLAC__StreamMetadata_Picture * pic);
 FLAC__StreamMetadata * metadata_to_flac_streammeta(metadata_t * meta);
+FLAC__StreamMetadata * metadata_apic_frame_to_smeta(meta_frame_t * frame);
 #endif /* HAVE_FLAC */
 
 

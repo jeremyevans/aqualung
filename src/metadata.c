@@ -335,8 +335,8 @@ struct {
 	     META_TAG_ID3v2,
 	     {{META_TAG_ID3v2, META_FIELD_UNIQUE, "RVA2"}}},
 	{META_FIELD_APIC, X_("Attached Picture"), "", "",
-	     META_TAG_ID3v2,
-	     {{META_TAG_ID3v2, 0, "APIC"}}},
+	     META_TAG_ID3v2 | META_TAG_FLAC_APIC,
+	     {{META_TAG_ID3v2, 0, "APIC"}, {META_TAG_FLAC_APIC, 0, "APIC"}}},
 	{META_FIELD_GEOB, X_("Binary Object"), "", "",
 	     0,
 	     {}},
@@ -355,6 +355,7 @@ meta_get_tagname(int tag) {
 	case META_TAG_ID3v2: return _("ID3v2");
 	case META_TAG_APE: return _("APE");
 	case META_TAG_OXC: return _("Ogg Xiph Comments");
+	case META_TAG_FLAC_APIC: return _("FLAC Pictures");
 	case META_TAG_GEN_STREAM: return _("Generic StreamMeta");
 	case META_TAG_MPEGSTREAM: return _("MPEG StreamMeta");
 	case META_TAG_MODINFO: return _("Module info");
@@ -519,7 +520,7 @@ meta_frame_t *
 metadata_find_companion_frame(metadata_t * meta, meta_frame_t * frame) {
 
 	meta_frame_t * f;
-	int tag = META_TAG_MPEGSTREAM; /* real (non-pseudo) tag with highest bit */
+	int tag = META_TAG_MAX;
 
 	while (tag > 0) {
 		if (tag != frame->tag) {

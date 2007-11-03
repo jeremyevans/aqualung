@@ -35,11 +35,14 @@
 #define META_TAG_ID3v2           0x02
 #define META_TAG_APE             0x04
 #define META_TAG_OXC             0x08
-#define META_TAG_GEN_STREAM      0x10
-#define META_TAG_MPEGSTREAM      0x20
-#define META_TAG_MODINFO         0x40
+#define META_TAG_FLAC_APIC       0x10
+#define META_TAG_GEN_STREAM      0x20
+#define META_TAG_MPEGSTREAM      0x40
+#define META_TAG_MODINFO         0x80
 
-#define META_N_TAGS  6  /* NULL and MODINFO are pseudo-tags */
+#define META_TAG_MAX             0x80
+
+#define META_N_TAGS  7  /* NULL and MODINFO are pseudo-tags */
 
 /* frame types -- string, integer, float, binary */
 

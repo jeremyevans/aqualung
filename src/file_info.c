@@ -1137,6 +1137,7 @@ void
 fi_fill_tagcombo(GtkComboBox * combo, int addable_tags) {
 
 	int i;
+	int tag = 1;
 
 	if (!GTK_IS_COMBO_BOX(combo))
 		return;
@@ -1152,14 +1153,12 @@ fi_fill_tagcombo(GtkComboBox * combo, int addable_tags) {
 
 	gtk_widget_set_sensitive(GTK_WIDGET(combo), TRUE);
 
-	if (addable_tags & META_TAG_ID3v1)
-		gtk_combo_box_append_text(combo, meta_get_tagname(META_TAG_ID3v1));
-	if (addable_tags & META_TAG_ID3v2)
-		gtk_combo_box_append_text(combo, meta_get_tagname(META_TAG_ID3v2));
-	if (addable_tags & META_TAG_APE)
-		gtk_combo_box_append_text(combo, meta_get_tagname(META_TAG_APE));
-	if (addable_tags & META_TAG_OXC)
-		gtk_combo_box_append_text(combo, meta_get_tagname(META_TAG_OXC));
+	while (tag <= META_TAG_MAX) {
+		if (addable_tags & tag) {
+			gtk_combo_box_append_text(combo, meta_get_tagname(tag));
+		}
+		tag <<= 1;
+	}
 
 	gtk_combo_box_set_active(combo, 0);	
 }

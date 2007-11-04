@@ -1380,7 +1380,7 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 				if (data->volume <= 0.1f) {
 					voladj = rva_from_volume(data->volume);
 				} else { /* unmeasured, see if there is RVA data in the file */
-					if (!metadata_get_rva(fdec->meta, &voladj)) {
+					if ((fdec == NULL) || !metadata_get_rva(fdec->meta, &voladj)) {
 						voladj = options.rva_no_rva_voladj;
 					}
 				}

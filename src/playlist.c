@@ -576,8 +576,12 @@ playlist_paste(playlist_t * pl, int before) {
 		if (path == NULL) {
 			playlist_node_deep_copy(clipboard->store, &iter, pl->store, NULL, 2);
 		} else {
-			playlist_node_deep_copy(clipboard->store, &iter, pl->store, &titer,
-						before ? 1 : 0);
+			if (before) {
+				playlist_node_deep_copy(clipboard->store, &iter, pl->store, &titer, 1);
+			} else {
+				playlist_node_deep_copy(clipboard->store, &iter, pl->store, &titer, 0);
+				gtk_tree_model_iter_next(GTK_TREE_MODEL(pl->store), &titer);
+			}
 		}
 	}
 

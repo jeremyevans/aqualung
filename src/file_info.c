@@ -654,7 +654,7 @@ save_pic_update(save_pic_t * save_pic, fi_t * fi, meta_frame_t * frame) {
 GtkWidget *
 make_image_from_binary(meta_frame_t * frame) {
 
-	char tmpname[256];
+	char * tmpname;
 	int fd;
 	FILE * file;
 	GdkPixbuf * pixbuf;
@@ -676,21 +676,22 @@ make_image_from_binary(meta_frame_t * frame) {
 		return label;
 	}
 
-	tmpname[0] = '\0';
-	strcpy(tmpname, "/tmp/aqualung-picture-XXXXXX");
-	fd = g_mkstemp(tmpname);
+	fd = g_file_open_tmp("aqualung-picture-XXXXXX", &tmpname, NULL);
 	if (fd < 0) {
-		fprintf(stderr, "make_image_from_binary: error: g_mkstemp() failed\n");
+		fprintf(stderr, "make_image_from_binary: error: g_file_open_tmp() failed\n");
 		return NULL;
 	}
 	file = fdopen(fd, "wb");
 	if (file == NULL) {
 		fprintf(stderr, "make_image_from_binary: error: fdopen() failed\n");
+		g_free(tmpname);
 		return NULL;
 	}
 
 	if (fwrite(data, 1, length, file) != length) {
 		fprintf(stderr, "make_image_from_binary: error: fwrite() failed\n");
+		g_free(tmpname);
+		fclose(file);
 		return NULL;
 	}
 	fclose(file);
@@ -702,9 +703,11 @@ make_image_from_binary(meta_frame_t * frame) {
 	image = gtk_image_new_from_pixbuf(pixbuf);
 	if (g_unlink(tmpname) < 0) {
 		fprintf(stderr, "make_image_from_binary: error: g_unlink() failed on %s\n", tmpname);
+		g_free(tmpname);
 		return NULL;
 	}
 
+	g_free(tmpname);
 	return image;
 }
 
@@ -1820,6 +1823,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	fi->info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	register_toplevel_window(fi->info_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
         gtk_window_set_title(GTK_WINDOW(fi->info_window), _("File info"));
+	gtk_window_set_modal(GTK_WINDOW(fi->info_window), TRUE);
 	gtk_window_set_transient_for(GTK_WINDOW(fi->info_window), GTK_WINDOW(main_window));
 	gtk_window_set_position(GTK_WINDOW(fi->info_window), GTK_WIN_POS_CENTER);
         gtk_window_set_resizable(GTK_WINDOW(fi->info_window), TRUE);

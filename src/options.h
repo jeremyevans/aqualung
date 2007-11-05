@@ -69,6 +69,11 @@ typedef struct {
 	int wm_systray_warn;
 	int podcasts_autocheck;
 
+        int export_file_format;
+        int export_bitrate;
+        int export_vbr;
+        int export_metadata;
+
 	/* General */
 	char title_format[MAXLEN];
 	char title_format_no_album[MAXLEN];

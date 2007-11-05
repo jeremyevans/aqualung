@@ -3298,6 +3298,10 @@ save_config(void) {
 	SAVE_FLOAT(loop_range_end);
 	SAVE_INT(wm_systray_warn);
 	SAVE_INT(podcasts_autocheck);
+	SAVE_INT(export_file_format);
+	SAVE_INT(export_bitrate);
+	SAVE_INT(export_vbr);
+	SAVE_INT(export_metadata);
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
@@ -3531,6 +3535,10 @@ load_config(void) {
 	options.plcol_idx[1] = 1;
 	options.plcol_idx[2] = 2;
 
+        options.export_bitrate = 256;
+        options.export_vbr = 1;
+        options.export_metadata = 1;
+
         strncpy(options.song_color, "#888888", MAX_COLORNAME_LEN-1);
 
 	ms_pathlist_store = gtk_list_store_new(3,
@@ -3668,6 +3676,10 @@ load_config(void) {
 		LOAD_FLOAT(loop_range_end);
 		LOAD_INT(wm_systray_warn);
 		LOAD_INT(podcasts_autocheck);
+		LOAD_INT(export_file_format);
+		LOAD_INT(export_bitrate);
+		LOAD_INT(export_vbr);
+		LOAD_INT(export_metadata);
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);

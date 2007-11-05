@@ -46,12 +46,14 @@
 #include "store_file.h"
 #include "playlist.h"
 #include "export.h"
+#include "options.h"
 
 
 #define BUFSIZE 10240
 
 
 extern GtkWidget * browser_window;
+extern options_t options;
 
 typedef struct {
 
@@ -589,7 +591,7 @@ export_format_combo_changed(GtkWidget * widget, gpointer data) {
 		gtk_widget_show(export->meta_check);
 
 		gtk_range_set_range(GTK_RANGE(export->bitrate_scale), 0, 8);
-		gtk_range_set_value(GTK_RANGE(export->bitrate_scale), 5);
+		gtk_range_set_value(GTK_RANGE(export->bitrate_scale), options.export_bitrate);
 	}
 	if (strcmp(text, "Ogg Vorbis") == 0) {
 		gtk_widget_show(export->bitrate_scale);
@@ -600,7 +602,7 @@ export_format_combo_changed(GtkWidget * widget, gpointer data) {
 		gtk_widget_show(export->meta_check);
 
 		gtk_range_set_range(GTK_RANGE(export->bitrate_scale), 32, 320);
-		gtk_range_set_value(GTK_RANGE(export->bitrate_scale), 256);
+		gtk_range_set_value(GTK_RANGE(export->bitrate_scale), options.export_bitrate);
 	}
 	if (strcmp(text, "MP3") == 0) {
 		gtk_widget_show(export->bitrate_scale);
@@ -611,8 +613,10 @@ export_format_combo_changed(GtkWidget * widget, gpointer data) {
 		gtk_widget_show(export->meta_check);
 
 		gtk_range_set_range(GTK_RANGE(export->bitrate_scale), 32, 320);
-		gtk_range_set_value(GTK_RANGE(export->bitrate_scale), 256);
+		gtk_range_set_value(GTK_RANGE(export->bitrate_scale), options.export_bitrate);
 	}
+
+        options.export_file_format = export_get_format_from_combo(widget);
 
 	g_free(text);
 }
@@ -775,15 +779,16 @@ export_dialog(export_t * export) {
         export->vbr_check = gtk_check_button_new_with_label(_("VBR encoding"));
         gtk_widget_set_name(export->vbr_check, "check_on_notebook");
         gtk_table_attach(GTK_TABLE(table), export->vbr_check, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->vbr_check), TRUE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->vbr_check), options.export_vbr);
 
         export->meta_check = gtk_check_button_new_with_label(_("Tag files with metadata"));
         gtk_widget_set_name(export->meta_check, "check_on_notebook");
         gtk_table_attach(GTK_TABLE(table), export->meta_check, 0, 2, 3, 4,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 4);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->meta_check), TRUE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->meta_check), options.export_metadata);
 
 	gtk_widget_show_all(export->dialog);
+        gtk_combo_box_set_active (GTK_COMBO_BOX (export->format_combo), options.export_file_format);
 	export_format_combo_changed(export->format_combo, export);
 
  display:
@@ -822,8 +827,12 @@ export_dialog(export_t * export) {
 		set_option_from_entry(templ_entry, export->template, MAXLEN);
 		export->format = export_get_format_from_combo(export->format_combo);
 		export->bitrate = gtk_range_get_value(GTK_RANGE(export->bitrate_scale));
+                options.export_file_format = export->format;
+                options.export_bitrate = export->bitrate;
 		set_option_from_toggle(export->vbr_check, &export->vbr);
+                options.export_vbr = export->vbr;
 		set_option_from_toggle(export->meta_check, &export->write_meta);
+                options.export_metadata = export->write_meta;
 		set_option_from_toggle(export->check_dir_artist, &export->dir_for_artist);
 		set_option_from_toggle(export->check_dir_album, &export->dir_for_album);
 
@@ -912,4 +921,6 @@ export_start(export_t * export) {
 		export_finish(export);
 	}
 }
+
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

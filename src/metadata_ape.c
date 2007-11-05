@@ -188,7 +188,7 @@ meta_ape_pictype_from_string(unsigned char * str) {
 	char * key;
 	int i = 0;
 
-	if (strstr((char *)str, "Cover Art (") == str) {
+	if (strstr((char *)str, "Cover Art (") == (char *)str) {
 		key = (char *)str+11;
 	} else {
 		key = (char *)str;
@@ -309,7 +309,7 @@ meta_add_frame_from_ape_item(metadata_t * meta, ape_item_t * item) {
 	meta_frame_t * frame;
 
 	if (APE_FLAG_IS_BINARY(item->flags)) {
-		if (strcasestr((char *)item->key, "cover art") == item->key) {
+		if (strcasestr((char *)item->key, "cover art") == (char *)item->key) {
 			meta_ape_add_pic_frame(meta, item);
 		} else {
 			meta_ape_add_hidden_frame(meta, item);

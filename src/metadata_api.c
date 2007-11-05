@@ -240,10 +240,23 @@ metadata_get_rva(metadata_t * meta, float * fval) {
 		*fval = frame->float_val;
 		return 1;
 	} else {
-		frame = metadata_pref_frame_by_type(meta, META_FIELD_RVA2, NULL);
+		/* fallback on the other ReplayGain frame */
+		if (rva_type == META_FIELD_RG_TRACK_GAIN) {
+			rva_type = META_FIELD_RG_ALBUM_GAIN;
+		} else {
+			rva_type = META_FIELD_RG_TRACK_GAIN;
+		}
+		frame = metadata_pref_frame_by_type(meta, rva_type, NULL);
 		if (frame != NULL) {
 			*fval = frame->float_val;
 			return 1;
+		} else {
+			/* fallback on RVA frame */
+			frame = metadata_pref_frame_by_type(meta, META_FIELD_RVA2, NULL);
+			if (frame != NULL) {
+				*fval = frame->float_val;
+				return 1;
+			}
 		}
 	}
 	return 0;

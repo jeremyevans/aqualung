@@ -55,10 +55,6 @@ extern size_t sample_size;
 /* Uncomment this to get debug printouts */
 /* #define MPEG_DEBUG */
 
-/* use the first MAX_STAT_HEADERS number of headers to gather
- * statistical info if needed */
-#define MAX_STAT_HEADERS 256
-
 #define BYTES2INT(b1,b2,b3,b4) (((long)(b1 & 0xFF) << (3*8)) | \
                                 ((long)(b2 & 0xFF) << (2*8)) | \
                                 ((long)(b3 & 0xFF) << (1*8)) | \
@@ -442,9 +438,6 @@ get_mp3file_info(decoder_t * dec) {
 	int fd = pd->fd;
 	mp3info_t * info = &pd->mp3info;
 
-	unsigned long headers[MAX_STAT_HEADERS];
-	mp3info_t infos[MAX_STAT_HEADERS];
-	long offsets[MAX_STAT_HEADERS];
 	int vsn_counters[4];
 	int layer_counters[3];
 	int freq_counters[7];
@@ -480,190 +473,21 @@ get_mp3file_info(decoder_t * dec) {
 	/* skip ID3v2 header, if present */
 	mpeg_send_metadata(fdec, fd);
 
-#ifndef MPEG_STATREC
 	/* use first valid mpeg frame header to retrieve stream info */
-	headers[0] = find_next_frame(fd, &bytecount, 0x100000, 0, is_ubr_allowed);
+	header = find_next_frame(fd, &bytecount, 0x100000, 0, is_ubr_allowed);
 	/* Quit if we haven't found a valid header within 1M */
-	if (headers[0] == 0)
+	if (header == 0)
 		return -1;
 	
-	memset(&infos[0], 0, sizeof(mp3info_t));
+	memset(info, 0, sizeof(mp3info_t));
 	
 	/* These two are needed for proper LAME gapless MP3 playback */
-	infos[0].enc_delay = -1;
-	infos[0].enc_padding = -1;
-	if (!mp3headerinfo(&infos[0], headers[0]))
+	info->enc_delay = -1;
+	info->enc_padding = -1;
+	if (!mp3headerinfo(info, header))
 		return -2;
 	
-	offsets[0] = lseek(fd, 0, SEEK_CUR);
-	offset = offsets[0];
-	header = headers[0];
-#else
-	/* more sophisticated approach - but slower as well. */
-	for (i = 0; i < 4; i++) {
-		headers[i] = find_next_frame(fd, &bytecount, 0x100000, 0, is_ubr_allowed);
-		/* Quit if we haven't found a valid header within 1M */
-		if (headers[i] == 0)
-			return -1;
-
-		memset(&infos[i], 0, sizeof(mp3info_t));
-
-		/* These two are needed for proper LAME gapless MP3 playback */
-		infos[i].enc_delay = -1;
-		infos[i].enc_padding = -1;
-		if (!mp3headerinfo(&infos[i], headers[i]))
-			return -2;
-
-		offsets[i] = lseek(fd, 0, SEEK_CUR);
-	}
-
-	if (vlfc_cmp(&infos[0], &infos[1]) &&
-	    vlfc_cmp(&infos[1], &infos[2]) &&
-	    vlfc_cmp(&infos[2], &infos[3])) {
-#ifdef MPEG_DEBUG
-		printf("first 4 frames OK!\n");
-#endif /* MPEG_DEBUG */
-		offset = offsets[0];
-		header = headers[0];
-	} else {
-		int max_vsn_index = 0;
-		int max_layer_index = 0;
-		int max_freq_index = 0;
-		int max_chmode_index = 0;
-		int ok_freq;
-		int max_headers = MAX_STAT_HEADERS;
-#ifdef MPEG_DEBUG
-		printf("first 4 frames differ, gathering stats...\n");
-#endif /* MPEG_DEBUG */
-		for (i = 4; i < max_headers; i++) {
-			headers[i] = find_next_frame(fd, &bytecount, 0x100000, 0, is_ubr_allowed);
-			/* Quit if we haven't found a valid header within 1M */
-			if (headers[i] == 0)
-				break;
-			
-			memset(&infos[i], 0, sizeof(mp3info_t));
-			
-			/* These two are needed for proper LAME gapless MP3 playback */
-			infos[i].enc_delay = -1;
-			infos[i].enc_padding = -1;
-			if (!mp3headerinfo(&infos[i], headers[i]))
-				return -2;
-
-			offsets[i] = lseek(fd, 0, SEEK_CUR);
-		}
-		max_headers = i;
-
-		for (i = 0; i < max_headers; i++) {
-			switch (infos[i].frequency) {
-			case 48000: freq_counters[0] += 1; break;
-			case 44100: freq_counters[1] += 1; break;
-			case 32000: freq_counters[2] += 1; break;
-			case 24000: freq_counters[3] += 1; break;
-			case 22050: freq_counters[4] += 1; break;
-			case 16000: freq_counters[5] += 1; break;
-			default   : freq_counters[6] += 1; break;
-			}
-		}
-
-		for (i = 0; i < 7; i++) {
-#ifdef MPEG_DEBUG
-			printf("freq_counters[%d] = %d\n", i, freq_counters[i]);
-#endif /* MPEG_DEBUG */
-			if (freq_counters[i] > freq_counters[max_freq_index]) {
-				max_freq_index = i;
-			}
-		}
-
-#ifdef MPEG_DEBUG
-		printf("max freq idx  = %d\n", max_freq_index);
-#endif /* MPEG_DEBUG */
-
-		switch (max_freq_index) {
-			case 0 : ok_freq = 48000; break;
-			case 1 : ok_freq = 44100; break;
-			case 2 : ok_freq = 32000; break;
-			case 3 : ok_freq = 24000; break;
-			case 4 : ok_freq = 22050; break;
-			case 5 : ok_freq = 16000; break;
-		        default:
-#ifdef MPEG_DEBUG
-				printf("MPEG statistical recognition failed 1\n");
-#endif /* MPEG_DEBUG */
-				return -2;
-				break;
-		}
-		
-		for (i = 0; i < max_headers; i++) {
-			if (infos[i].frequency != ok_freq)
-				continue;
-			vsn_counters[infos[i].version] += 1;
-			layer_counters[infos[i].layer] += 1;
-		}
-
-
-		for (i = 0; i < 4; i++) {
-#ifdef MPEG_DEBUG
-			printf("vsn_counters[%d] = %d\n", i, vsn_counters[i]);
-#endif /* MPEG_DEBUG */
-			if (vsn_counters[i] > vsn_counters[max_vsn_index]) {
-				max_vsn_index = i;
-			}
-		}
-		for (i = 0; i < 3; i++) {
-#ifdef MPEG_DEBUG
-			printf("layer_counters[%d] = %d\n", i, layer_counters[i]);
-#endif /* MPEG_DEBUG */
-			if (layer_counters[i] > layer_counters[max_layer_index]) {
-				max_layer_index = i;
-			}
-		}
-
-#ifdef MPEG_DEBUG
-		printf("max vsn idx   = %d\n", max_vsn_index);
-		printf("max layer idx = %d\n", max_layer_index);
-#endif /* MPEG_DEBUG */
-
-		for (i = 0; i < max_headers; i++) {
-			if ((infos[i].version != max_vsn_index) ||
-			    (infos[i].layer != max_layer_index) ||
-			    (infos[i].frequency != ok_freq))
-				continue;
-			chmode_counters[infos[i].channel_mode] += 1;
-		}
-
-		for (i = 0; i < 4; i++) {
-#ifdef MPEG_DEBUG
-			printf("chmode_counters[%d] = %d\n", i, chmode_counters[i]);
-#endif /* MPEG_DEBUG */
-			if (chmode_counters[i] > chmode_counters[max_chmode_index]) {
-				max_chmode_index = i;
-			}
-		}
-
-#ifdef MPEG_DEBUG
-		printf("max chmode idx   = %d\n", max_chmode_index);
-#endif /* MPEG_DEBUG */
-
-		offset = -1;
-		for (i = 0; i < max_headers; i++) {
-			if ((infos[i].version == max_vsn_index) &&
-			    (infos[i].layer == max_layer_index) &&
-			    (infos[i].channel_mode == max_chmode_index) &&
-			    (infos[i].frequency == ok_freq)) {
-
-				offset = offsets[i];
-				header = headers[i];
-				break;
-			}
-		}
-		if (offset == -1) {
-#ifdef MPEG_DEBUG
-			printf("MPEG statistical recognition failed 2\n");
-#endif /* MPEG_DEBUG */
-			return -2;
-		}
-	}
-#endif /* MPEG_STATISTICAL_RECOGNITION */
+	offset = lseek(fd, 0, SEEK_CUR);
 	
 	lseek(fd, offset, SEEK_SET);
 	memset(info, 0, sizeof(mp3info_t));

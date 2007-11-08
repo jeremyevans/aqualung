@@ -2,13 +2,13 @@ DOMAIN = aqualung
 
 XGETTEXT_OPTS = --keyword=_ --keyword=N_ --keyword=X_ --no-location --copyright-holder='Tom Szilagyi'
 
-POTFILES = $(wildcard ../*.c ../*.cpp ../decoder/*.c ../decoder/*.cpp)
+POTFILES = ../*.c ../decoder/*.c ../decoder/*.cpp
 
 localedir = $(datadir)/locale
 
-MSGFMT = /usr/bin/msgfmt
-XGETTEXT = /usr/bin/xgettext
-MSGMERGE = /usr/bin/msgmerge
+MSGFMT = msgfmt
+XGETTEXT = xgettext
+MSGMERGE = msgmerge
 
 POFILES = de.po hu.po it.po uk.po
 MOFILES = $(POFILES:.po=.mo)
@@ -17,11 +17,11 @@ EXTRA_DIST = $(POFILES) $(MOFILES) README
 
 all: $(MOFILES)
 
-%.mo: always
-	@po=$(@:.mo=.po); if test $$po -nt $@ ; then $(MSGFMT) $$po -o $@; echo "$@ updated."; fi
+$(MOFILES): always
+	@if test $(@:.mo=.po) -nt $@; then $(MSGFMT) $(@:.mo=.po) -o $@; echo "$@ updated."; fi
 
-%.po: $(DOMAIN).pot
-	$(MSGMERGE) $@ $< -o $@.in && mv $@.in $@
+$(POFILES): $(DOMAIN).pot
+	$(MSGMERGE) $@ $(DOMAIN).pot -o $@.in && mv $@.in $@
 
 $(DOMAIN).pot: $(POTFILES)
 	$(XGETTEXT) $(XGETTEXT_OPTS) $(POTFILES) -o $(DOMAIN).pot

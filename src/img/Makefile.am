@@ -1,3 +1,3 @@
 imagedir = $(pkgdatadir)
-image_DATA = $(wildcard *.png)
+image_DATA = *.png
 EXTRA_DIST = $(image_DATA)

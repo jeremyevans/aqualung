@@ -19,7 +19,7 @@ done
 
 echo
 
-for tool in 'aclocal' 'autoheader' 'autoconf' 'automake --foreign'
+for tool in aclocal autoheader autoconf automake
 do
     echo -n "running $tool ... "
     if $tool; then

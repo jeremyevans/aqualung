@@ -1,3 +1,3 @@
 skindir = $(pkgdatadir)/skin/plain
-skin_DATA = rc $(wildcard *.png)
+skin_DATA = rc *.png
 EXTRA_DIST = $(skin_DATA)

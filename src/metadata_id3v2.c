@@ -172,9 +172,13 @@ meta_id3v2_to_utf8(unsigned char enc, unsigned char * buf, int len) {
 	char * from;
 	GError * error = NULL;
 
+	if (buf[0] == '\0') {
+		return strdup("");
+	}
+
 	switch (enc) {
 	case 0x00: from = "iso-8859-1"; break;
-	case 0x01: from = "ucs-2"; break;
+	case 0x01: from = "utf-16"; break;
 	case 0x02: from = "utf-16be"; break;
 	case 0x03: from = "utf-8"; break;
 	default:

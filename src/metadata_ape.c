@@ -62,123 +62,169 @@ meta_ape_item_new(void) {
 	return item;
 }
 
-
-int
-meta_ape_read_item(FILE * file, ape_tag_t * tag) {
-
-	int i;
-	unsigned char buf[8];
-	ape_item_t * item = meta_ape_item_new();
-	if (item == NULL) {
-		return -1;
-	}
-
-	if (fread(buf, 1, 8, file) != 8) {
-		fprintf(stderr, "meta_ape_read_item: fread() failed\n");
-		free(item);
-		return -1;
-	}
-
-	/* catch corrupt files with wrong item_count */
-	if ((buf[0] == 'A') && (buf[1] == 'P') && (buf[2] == 'E') && (buf[3] == 'T') &&
-	    (buf[4] == 'A') && (buf[5] == 'G') && (buf[6] == 'E') && (buf[7] == 'X')) {
-
-		fprintf(stderr, "warning: corrupt APE tag: number of items too large\n");
-		return -1;
-	}
-
-	item->value_size = meta_read_int32(buf);
-	item->flags = meta_read_int32(buf+4);
-	
-	for (i = 0; i < 256; i++) {
-		if (fread(item->key+i, 1, 1, file) != 1) {
-			fprintf(stderr, "meta_ape_read_item: fread() failed\n");
-			free(item);
-			return -1;
-		}
-		if (item->key[i] == '\0') {
-			break;
-		}
-	}
-
-	item->value = malloc(item->value_size+1);
-	if (item->value == NULL) {
-		fprintf(stderr, "meta_ape_read_item: malloc error\n");
-		free(item);
-		return -1;
-	}
-	if (fread(item->value, 1, item->value_size, file) != item->value_size) {
-		fprintf(stderr, "meta_ape_read_item: fread() failed\n");
-		free(item);
-		return -1;
-	}
-	item->value[item->value_size] = '\0';
-
-	tag->items = g_slist_append(tag->items, (gpointer)item);
-	return 0;
-}
-
 int
 meta_ape_parse(char * filename, ape_tag_t * tag) {
 
 	FILE * file;
+	ape_item_t * item = NULL;
 	unsigned char buf[32];
+	unsigned char * data = NULL;
 	long offset = 0L;
-	int has_id3v1 = 0;
 	int i;
+	long file_size = 0L;
+	long id3_length = 0L;
+	long tag_data_size = 0L;
+	long last_possible_offset = 0L;
+	int ret = 0;
+	unsigned char * value_start = NULL;
+	unsigned char * key_start = NULL;
+	int key_length = 0;
 
 	if ((file = fopen(filename, "rb")) == NULL) {
 		fprintf(stderr, "meta_ape_parse: fopen() failed\n");
 		return 0;
 	}
 
-	/* At the moment we only support APE tags located at the end of the file. */
-	/* However, there may be an ID3v1 tag after the APE tag. */
- seek_to_footer:
-	if (fseek(file, -32L + offset, SEEK_END) != 0) {
+	/* Get file size */
+	if (fseek(file, 0, SEEK_END) == -1) {
 		fprintf(stderr, "meta_ape_parse: fseek() failed\n");
-		fclose(file);
-		return 0;
+		goto meta_ape_parse_error;
 	}
-
-	if (fread(buf, 1, 32, file) != 32) {
-		fprintf(stderr, "meta_ape_parse: fread() failed\n");
-		fclose(file);
-		return 0;
-	}
-
-	if ((buf[0] != 'A') || (buf[1] != 'P') || (buf[2] != 'E') ||
-	    (buf[3] != 'T') || (buf[4] != 'A') || (buf[5] != 'G') ||
-	    (buf[6] != 'E') || (buf[7] != 'X')) {
-		if (has_id3v1 == 0) {
-			offset = -128L;
-			has_id3v1 = 1;
-			goto seek_to_footer;
-		} else {
-			fclose(file);
-			return 0;
+	if ((file_size = ftell(file)) == -1) {
+		fprintf(stderr, "meta_ape_parse: ftell() failed\n");
+		goto meta_ape_parse_error;
+	} 
+	
+	/* No ape or id3 tag possible in this size */
+	if (file_size < APE_MINIMUM_TAG_SIZE) {
+		goto meta_ape_parse_error;
+	} 
+	if (file_size >= 128) {
+		/* Check for id3 tag */
+		if ((fseek(file, -128, SEEK_END)) != 0) {
+			fprintf(stderr, "meta_ape_parse: fseek() failed\n");
+			goto meta_ape_parse_error;
 		}
+		if (fread(buf, 1, 3, file) < 3) {
+			fprintf(stderr, "meta_ape_parse: fread() of id3 failed\n");
+			goto meta_ape_parse_error;
+		}
+		if (buf[0] == 'T' && buf[1] == 'A' && buf[2] == 'G' ) {
+			id3_length = 128L;
+		}
+	}
+	/* Recheck possibility for ape tag now that id3 presence is known */
+	if (file_size < APE_MINIMUM_TAG_SIZE + id3_length) {
+		goto meta_ape_parse_error;
+	}
+	
+	/* Check for existance of ape tag footer */
+	if (fseek(file, -32-id3_length, SEEK_END) != 0) {
+		fprintf(stderr, "meta_ape_parse: fseek() failed\n");
+		goto meta_ape_parse_error;
+	}
+	if (fread(buf, 1, 32, file) < 32) {
+		fprintf(stderr, "meta_ape_parse: fread() of tag footer failed\n");
+		goto meta_ape_parse_error;
+	}
+	if (memcmp(APE_PREAMBLE, buf, 8)) {
+		goto meta_ape_parse_error;
 	}
 
 	tag->footer.version = meta_read_int32(buf+8);
 	tag->footer.tag_size = meta_read_int32(buf+12);
 	tag->footer.item_count = meta_read_int32(buf+16);
 	tag->footer.flags = meta_read_int32(buf+20);
-
-	if (fseek(file, -tag->footer.tag_size + offset, SEEK_END) != 0) {
-		fprintf(stderr, "meta_ape_parse: fseek() failed\n");
-		fclose(file);
-		return 0;
+	tag_data_size = tag->footer.tag_size - 32;
+	
+	/* Check tag footer for validity */
+	if (tag->footer.tag_size < APE_MINIMUM_TAG_SIZE) {
+		fprintf(stderr, "meta_ape_parse: corrupt tag (too short)\n");
+		goto meta_ape_parse_error;
 	}
+	if (tag->footer.tag_size + id3_length > file_size) {
+		fprintf(stderr, "meta_ape_parse: corrupt tag (too large)\n");
+		goto meta_ape_parse_error;
+	}
+	if (tag->footer.item_count > tag_data_size / APE_ITEM_MINIMUM_SIZE) {
+		fprintf(stderr, "meta_ape_parse: corrupt tag (item count too large)\n");
+		goto meta_ape_parse_error;
+	}
+	if ((data = (unsigned char *)malloc(tag_data_size)) == NULL) {
+		fprintf(stderr, "meta_ape_parse: malloc() failed\n");
+		goto meta_ape_parse_error;
+	}
+	if (fseek(file, -(tag->footer.tag_size + id3_length), SEEK_END) != 0) {
+		fprintf(stderr, "meta_ape_parse: fseek() failed\n");
+		goto meta_ape_parse_error;
+	}
+	if (fread(data, 1, tag_data_size, file) < tag_data_size) {
+		fprintf(stderr, "meta_ape_parse: fread() of tag data failed\n");
+		goto meta_ape_parse_error;
+	}
+	
+	last_possible_offset = tag_data_size - APE_ITEM_MINIMUM_SIZE;
 
 	for (i = 0; i < tag->footer.item_count; i++) {
-		if (meta_ape_read_item(file, tag) < 0) {
-			break;
+		if (offset > last_possible_offset) {
+			fprintf(stderr, "meta_ape_parse: error: last_possible_offset passed\n");
+			goto meta_ape_parse_error;
 		}
-	}
+		
+		if ((item = meta_ape_item_new()) == NULL) {
+			fprintf(stderr, "meta_ape_parse: malloc() failed\n");
+			goto meta_ape_parse_error;
+		}
 
+		item->value_size = meta_read_int32(data+offset);
+		item->flags = meta_read_int32(data+offset+4);
+		key_start = data + offset + 8;
+		/* Find and check start of value */
+		if (item->value_size + offset + APE_ITEM_MINIMUM_SIZE > tag_data_size) {
+			fprintf(stderr, "meta_ape_parse: corrupt tag (bad item length)\n");
+			goto meta_ape_parse_error;
+		}
+		for (value_start=key_start; value_start < key_start+256 && \
+			*value_start != '\0'; value_start++) {
+			/* Left Blank */
+		}
+		if (*value_start != '\0') {
+			fprintf(stderr, "meta_ape_parse: corrupt tag (key length too large)\n");
+			goto meta_ape_parse_error;
+		}
+		value_start++;
+		key_length = value_start - key_start;
+		offset += 8 + key_length + item->value_size;
+		if (offset < 0 || offset > tag_data_size) {
+			fprintf(stderr, "meta_ape_parse: corrupt tag (item length too large)\n");
+			goto meta_ape_parse_error;
+		}
+		
+		/* Copy key and value from tag data to item */
+		if ((item->value = (unsigned char *)malloc(item->value_size + 1)) == NULL) {
+			fprintf(stderr, "meta_ape_parse: malloc() failed\n");
+			goto meta_ape_parse_error;
+		}
+		
+		memcpy(item->key, key_start, key_length);
+		memcpy(item->value, value_start, item->value_size);
+		item->value[item->value_size] = '\0';
+		tag->items = g_slist_append(tag->items, (gpointer)item);
+	}
+	
+	if (offset != tag_data_size) {
+		fprintf(stderr, "meta_ape_parse: corrupt tag (data remaining)\n");
+		goto meta_ape_parse_error;
+	}
+	ret = 1;
+	
+  meta_ape_parse_error:
+	if (ret == 0) {
+		meta_ape_free(tag);
+	}
 	fclose(file);
-	return 1;
+	free(data);
+	return ret;
 }
 
 

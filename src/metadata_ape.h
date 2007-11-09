@@ -41,6 +41,10 @@
 #define APE_FLAG_HAS_NO_FOOTER (1<<30)
 #define APE_FLAG_HAS_HEADER    (1<<31)
 
+#define APE_MINIMUM_TAG_SIZE   32
+#define APE_ITEM_MINIMUM_SIZE  11
+#define APE_PREAMBLE "APETAGEX"
+
 typedef struct {
 	u_int32_t flags;
 	unsigned char key[256];

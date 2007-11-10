@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "../metadata_flac.h"
 #include "dec_flac.h"
@@ -447,6 +448,7 @@ flac_send_metadata(decoder_t * dec) {
 	file_decoder_t * fdec = dec->fdec;
 	metadata_t * meta;
 	int found = 0;
+	int writable;
 	FLAC__Metadata_SimpleIterator * iter;
 	FLAC__bool ret;
 
@@ -455,7 +457,8 @@ flac_send_metadata(decoder_t * dec) {
 		return;
 	}
 
-	ret = FLAC__metadata_simple_iterator_init(iter, fdec->filename, false, false);
+	writable = (access(fdec->filename, R_OK | W_OK) == 0) ? 1 : 0;
+	ret = FLAC__metadata_simple_iterator_init(iter, fdec->filename, writable ? false : true, false);
 	if (!ret) {
 		fprintf(stderr, "dec_flac.c/flac_send_metadata: error: %s\n",
 			FLAC__Metadata_SimpleIteratorStatusString[
@@ -473,7 +476,7 @@ flac_send_metadata(decoder_t * dec) {
 #else
 	meta->valid_tags = META_TAG_OXC;
 #endif /* HAVE_FLAC_8 */
-	if (FLAC__metadata_simple_iterator_is_writable(iter) == true) {
+	if (writable && FLAC__metadata_simple_iterator_is_writable(iter) == true) {
 		meta->writable = 1;
 		fdec->meta_write = flac_write_metadata;
 	}

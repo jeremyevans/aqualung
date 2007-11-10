@@ -119,7 +119,7 @@ AC_CHECK_LIB(pthread,
 	[AC_MSG_ERROR(You do not appear to have a usable pthread library)])
 fi
 
-if test $win32 = "no" -a $freebsd = "no" ; then
+if test $win32 = "no" -a $freebsd = "no" -a $openbsd = "no" ; then
 AC_CHECK_LIB(dl,
 	dlopen,
 	[],

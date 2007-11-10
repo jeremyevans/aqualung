@@ -26,6 +26,12 @@
 
 #include "common.h"
 
+#ifdef _WIN32
+#include <glib.h>
+#else
+#include <pthread.h>
+#endif /* _WIN32 */
+
 #define PLAYLIST_LOAD     0
 #define PLAYLIST_LOAD_TAB 1
 #define PLAYLIST_ENQUEUE  2

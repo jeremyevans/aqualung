@@ -32,6 +32,8 @@ if test `uname -a | grep CYGWIN | wc -l` = "1" ; then
    PLATFORM_LIBS="-lintl -lwinmm"
    win32="yes"
    freebsd="no"
+   openbsd="no"
+   linux="no"
    if test "$buildtype" = "debug"; then
 	   AC_MSG_ERROR([Sorry, debug build under Cygwin is unsupported!])
    fi
@@ -43,14 +45,34 @@ if test `uname -a | grep FreeBSD | wc -l` = "1"  ; then
    PLATFORM_LIBS=""
    win32="no"
    freebsd="yes"
+   openbsd="no"
+   linux="no"
+   if test "$buildtype" = "debug"; then
+	   AC_MSG_ERROR([Sorry, debug build under FreeBSD is unsupported!])
+   fi
    platform="FreeBSD"
    AC_MSG_RESULT(FreeBSD)
+fi
+if test `uname -a | grep OpenBSD | wc -l` = "1"  ; then
+   PLATFORM_CFLAGS=""
+   PLATFORM_LIBS=""
+   win32="no"
+   freebsd="no"
+   openbsd="yes"
+   linux="no"
+   if test "$buildtype" = "debug"; then
+	   AC_MSG_ERROR([Sorry, debug build under OpenBSD is unsupported!])
+   fi
+   platform="OpenBSD"
+   AC_MSG_RESULT(OpenBSD)
 fi
 if test `uname -a | grep Linux | wc -l` = "1"  ; then
    PLATFORM_CFLAGS=""
    PLATFORM_LIBS=""
    win32="no"
    freebsd="no"
+   openbsd="no"
+   linux="yes"
    platform="Linux"
    AC_MSG_RESULT(Linux)
 fi
@@ -158,19 +180,28 @@ AC_ARG_WITH(
 if test "$oss" = no; then
 	AC_MSG_RESULT(no)
 else
-	if test $freebsd = "no" ; then
+	if test $freebsd = "yes" ; then
+	        AC_CHECK_HEADER([sys/soundcard.h], [hdr=yes], [hdr=no])
+	elif test $openbsd = "yes" ; then
+	        AC_CHECK_HEADER([soundcard.h], [hdr=yes], [hdr=no])
+	elif test $linux = "yes" ; then
 	        AC_CHECK_HEADER([linux/soundcard.h], [hdr=yes], [hdr=no])
 	else
-	        AC_CHECK_HEADER([sys/soundcard.h], [hdr=yes], [hdr=no])
+		hdr="no"
+		AC_MSG_RESULT(no)
 	fi
 	if test "$hdr" = "yes"; then
 		AC_DEFINE([HAVE_OSS], [1], [Defined if compile with OSS support])
 	fi
 	if test "$hdr" = "no" -a "$oss" = "yes"; then
-	        if test $freebsd = "no" ; then
+	        if test $freebsd = "yes" ; then
+		        AC_MSG_ERROR(You do not appear to have sys/soundcard.h needed by OSS sound support.)
+		elif test $openbsd = "yes" ; then
+			AC_MSG_ERROR(You do not appear to have soundcard.h needed by OSS sound support.)
+		elif test $linux = "yes" ; then
 		        AC_MSG_ERROR(You do not appear to have linux/soundcard.h needed by OSS sound support.)
 		else
-		        AC_MSG_ERROR(You do not appear to have sys/soundcard.h needed by OSS sound support.)
+		        AC_MSG_ERROR(OSS output is unsupported on current build platform.)
 		fi
 	fi
 	if test "$oss" = "detect"; then
@@ -329,13 +360,13 @@ AC_ARG_WITH(
 if test "$ogg" = "no"; then
 	AC_MSG_RESULT(no)
 else
-	AC_CHECK_LIB(vorbis, ov_open, [lib=yes], [lib=no], [-lvorbisfile])
+	AC_CHECK_LIB(vorbis, ov_open, [lib=yes], [lib=no], [-lvorbisfile -logg])
 	if test "$lib" = "yes"; then
-		ogg_LIBS="-lvorbis -lvorbisfile"
+		ogg_LIBS="-logg -lvorbis -lvorbisfile"
 		AC_DEFINE([HAVE_OGG_VORBIS], [1], [Defined if compile with Ogg Vorbis support])
 	fi
 	if test "$lib" = "no" -a "$ogg" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the vorbis and vorbisfile libraries installed. Grab them from http://www.xiph.org/ogg/vorbis)
+		AC_MSG_ERROR(You do not appear to have the ogg, vorbis and vorbisfile libraries installed. Grab them from http://www.xiph.org/ogg/vorbis)
 	fi
 	if test "$ogg" = "detect"; then
 		ogg=$lib
@@ -352,13 +383,13 @@ AC_ARG_WITH(
 if test "$vorbisenc" = "no"; then
 	AC_MSG_RESULT(no)
 else
-	AC_CHECK_LIB(vorbisenc, vorbis_encode_setup_init, [lib=yes], [lib=no], [-lvorbis])
+	AC_CHECK_LIB(vorbisenc, vorbis_encode_setup_init, [lib=yes], [lib=no], [-lvorbis -logg])
 	if test "$lib" = "yes"; then
-		vorbisenc_LIBS="-lvorbis -lvorbisenc"
+		vorbisenc_LIBS="-logg -lvorbis -lvorbisenc"
 		AC_DEFINE([HAVE_VORBISENC], [1], [Defined if compile with Ogg Vorbis encoding support])
 	fi
 	if test "$lib" = "no" -a "$vorbisenc" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the vorbis and vorbisenc libraries installed. Grab them from http://www.xiph.org/ogg/vorbis)
+		AC_MSG_ERROR(You do not appear to have the ogg, vorbis and vorbisenc libraries installed. Grab them from http://www.xiph.org/ogg/vorbis)
 	fi
 	if test "$vorbisenc" = "detect"; then
 		vorbisenc=$lib

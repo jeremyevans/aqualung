@@ -51,7 +51,11 @@
 #ifdef __FreeBSD__
 #include <sys/soundcard.h>
 #else
+#ifdef __OpenBSD__
+#include <soundcard.h>
+#else
 #include <linux/soundcard.h>
+#endif /* __OpenBSD__ */
 #endif /* __FreeBSD__ */
 #endif /* HAVE_OSS */
 
@@ -101,6 +105,10 @@ const size_t sample_size = sizeof(float);
 
 gint playlist_state, browser_state;
 
+#ifndef OSS_DEVICE
+#define OSS_DEVICE "/dev/dsp"
+#endif /* OSS_DEVICE */
+
 /* ALSA driver parameters */
 #ifdef HAVE_ALSA
 int nperiods = 0;
@@ -128,7 +136,6 @@ rb_t * rb_disk2out;
 rb_t * rb_gui2disk;
 rb_t * rb_disk2gui;
 
-/* Lock critical operations that could interfere with output thread */
 double left_gain = 1.0;
 double right_gain = 1.0;
 
@@ -1951,7 +1958,7 @@ print_usage(void) {
 		"-P, --priority <int>: When running -R, set scheduler priority to <int> (defaults to 1).\n"
 		
 		"\nOptions relevant to OSS output:\n"
-		"-d, --device <name>: Set the output device (defaults to /dev/dsp).\n"
+		"-d, --device <name>: Set the output device (defaults to " OSS_DEVICE ").\n"
 		"-r, --rate <int>: Set the output sample rate.\n"
 		
 		"\nOptions relevant to JACK output:\n"
@@ -2633,7 +2640,7 @@ main(int argc, char ** argv) {
 		printf("Probing OSS driver... ");
 
 		if (device_name == NULL) {
-			device_name = strdup("/dev/dsp");
+			device_name = strdup(OSS_DEVICE);
 		}
 		thread_info.out_SR = rate;
 
@@ -2676,7 +2683,7 @@ main(int argc, char ** argv) {
 	if (device_name == NULL) {
 #ifdef HAVE_OSS
 		if (output == OSS_DRIVER) {
-			device_name = strdup("/dev/dsp");
+			device_name = strdup(OSS_DEVICE);
 		}
 #endif /* HAVE_OSS */
 #ifdef HAVE_ALSA

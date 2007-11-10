@@ -133,11 +133,10 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 
 	fprintf(stderr, "Aqualung received signal %d (%s).\n\n",
 		signum, strsignal(signum));
-#ifdef _WIN32
-	fprintf(stderr, "If you were running on UNIX instead of Windows,\n");
-	fprintf(stderr, "you could help the developers by sending them the\n");
-	fprintf(stderr, "crash report (stacktrace) you'd get instead of\n");
-	fprintf(stderr, "this message...\n");
+#if defined(_WIN32) || defined (__FreeBSD__) || defined (__OpenBSD__)
+	fprintf(stderr, "If you were running on Linux, you could help the\n");
+	fprintf(stderr, "developers by sending them the backtrace you'd get\n");
+	fprintf(stderr, "instead of this message...\n");
 #else
 	fprintf(stderr, "To help the developers fix the bug causing this crash,\n");
 	fprintf(stderr, "please do the following:\n\n");
@@ -145,7 +144,7 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 	fprintf(stderr, "2) reproduce the crash\n");
 	fprintf(stderr, "3) send the crash report to the developers\n\n");
 	fprintf(stderr, "Thank you for supporting Aqualung!\n");
-#endif /* _WIN32 */
+#endif /* _WIN32 || __FreeBSD__ || __OpenBSD__ */
 	exit(-1);
 }
 #endif /* RELEASE_BUILD */

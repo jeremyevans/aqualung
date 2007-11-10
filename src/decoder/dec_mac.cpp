@@ -194,6 +194,7 @@ mac_decoder_open(decoder_t * dec, char * filename) {
 
 	mac_pdata_t * pd = (mac_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
+	metadata_t * meta;
 	IAPEDecompress * pdecompress = (IAPEDecompress *)pd->decompress;
 
 
@@ -258,7 +259,8 @@ mac_decoder_open(decoder_t * dec, char * filename) {
 		break;
 	}
 
-	meta_ape_send_metadata(fdec);
+	meta = metadata_new();
+	meta_ape_send_metadata(meta, fdec);
 	return DECODER_OPEN_SUCCESS;
 }
 

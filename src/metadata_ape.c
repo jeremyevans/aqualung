@@ -736,23 +736,22 @@ meta_ape_write_metadata(file_decoder_t * fdec, metadata_t * meta) {
 }
 
 void
-meta_ape_send_metadata(file_decoder_t * fdec) {
+meta_ape_send_metadata(metadata_t * meta, file_decoder_t * fdec) {
 
 	ape_tag_t tag;
-	metadata_t * meta;
 
-	memset(&tag, 0x00, sizeof(ape_tag_t));
-
-	meta = metadata_new();
 	if (meta == NULL) {
 		return;
 	}
+
+	memset(&tag, 0x00, sizeof(ape_tag_t));
+
 	if (meta_ape_parse(fdec->filename, &tag)) {
 		metadata_from_ape_tag(meta, &tag);
 		meta_ape_free(&tag);
 	}
 
-	meta->valid_tags = META_TAG_APE;
+	meta->valid_tags |= META_TAG_APE;
 
 	if (access(fdec->filename, R_OK | W_OK) == 0) {
 		meta->writable = 1;

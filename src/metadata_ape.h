@@ -78,7 +78,7 @@ int meta_ape_replace_or_append(char * filename, ape_tag_t * tag);
 
 /* for direct use by decoders */
 int meta_ape_write_metadata(file_decoder_t * fdec, metadata_t * meta);
-void meta_ape_send_metadata(file_decoder_t * fdec);
+void meta_ape_send_metadata(metadata_t * meta, file_decoder_t * fdec);
 
 
 #endif /* _METADATA_APE_H */

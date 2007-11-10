@@ -306,21 +306,25 @@ struct {
 	     {{META_TAG_APE, META_FIELD_UNIQUE, "Replaygain_reference_loudness"},
 	      {META_TAG_OXC, META_FIELD_UNIQUE, "replaygain_reference_loudness"}}},
 	{META_FIELD_RG_TRACK_GAIN, X_("ReplayGain Track Gain"), "%f", "%1.2f dB",
-	     META_TAG_APE | META_TAG_OXC,
+	     META_TAG_APE | META_TAG_OXC | META_TAG_MPC_RGDATA,
 	     {{META_TAG_APE, META_FIELD_UNIQUE, "Replaygain_track_gain"},
-	      {META_TAG_OXC, META_FIELD_UNIQUE, "replaygain_track_gain"}}},
+	      {META_TAG_OXC, META_FIELD_UNIQUE, "replaygain_track_gain"},
+	      {META_TAG_MPC_RGDATA, META_FIELD_UNIQUE | META_FIELD_MANDATORY, "track_gain"}}},
 	{META_FIELD_RG_TRACK_PEAK, X_("ReplayGain Track Peak"), "%f", "%f",
-	     META_TAG_APE | META_TAG_OXC,
+	     META_TAG_APE | META_TAG_OXC | META_TAG_MPC_RGDATA,
 	     {{META_TAG_APE, META_FIELD_UNIQUE, "Replaygain_track_peak"},
-	      {META_TAG_OXC, META_FIELD_UNIQUE, "replaygain_track_peak"}}},
+	      {META_TAG_OXC, META_FIELD_UNIQUE, "replaygain_track_peak"},
+	      {META_TAG_MPC_RGDATA, META_FIELD_UNIQUE | META_FIELD_MANDATORY, "track_peak"}}},
 	{META_FIELD_RG_ALBUM_GAIN, X_("ReplayGain Album Gain"), "%f dB", "%1.2f dB",
-	     META_TAG_APE | META_TAG_OXC,
+	     META_TAG_APE | META_TAG_OXC | META_TAG_MPC_RGDATA,
 	     {{META_TAG_APE, META_FIELD_UNIQUE, "Replaygain_album_gain"},
-	      {META_TAG_OXC, META_FIELD_UNIQUE, "replaygain_album_gain"}}},
+	      {META_TAG_OXC, META_FIELD_UNIQUE, "replaygain_album_gain"},
+	      {META_TAG_MPC_RGDATA, META_FIELD_UNIQUE | META_FIELD_MANDATORY, "album_gain"}}},
 	{META_FIELD_RG_ALBUM_PEAK, X_("ReplayGain Album Peak"), "%f", "%f",
-	     META_TAG_APE | META_TAG_OXC,
+	     META_TAG_APE | META_TAG_OXC | META_TAG_MPC_RGDATA,
 	     {{META_TAG_APE, META_FIELD_UNIQUE, "Replaygain_album_peak"},
-	      {META_TAG_OXC, META_FIELD_UNIQUE, "replaygain_album_peak"}}},
+	      {META_TAG_OXC, META_FIELD_UNIQUE, "replaygain_album_peak"},
+	      {META_TAG_MPC_RGDATA, META_FIELD_UNIQUE | META_FIELD_MANDATORY, "album_peak"}}},
 
 	{META_FIELD_ICY_NAME, X_("Icy-Name"), "", "",
 	     META_TAG_GEN_STREAM,
@@ -358,6 +362,7 @@ meta_get_tagname(int tag) {
 	case META_TAG_APE: return _("APE");
 	case META_TAG_OXC: return _("Ogg Xiph Comments");
 	case META_TAG_FLAC_APIC: return _("FLAC Pictures");
+	case META_TAG_MPC_RGDATA: return _("Musepack ReplayGain");
 	case META_TAG_GEN_STREAM: return _("Generic StreamMeta");
 	case META_TAG_MPEGSTREAM: return _("MPEG StreamMeta");
 	case META_TAG_MODINFO: return _("Module info");

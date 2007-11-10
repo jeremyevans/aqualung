@@ -30,19 +30,20 @@
 
 
 /* tag (and pseudo-tag) types */
-#define META_TAG_NULL            0x00
-#define META_TAG_ID3v1           0x01
-#define META_TAG_ID3v2           0x02
-#define META_TAG_APE             0x04
-#define META_TAG_OXC             0x08
-#define META_TAG_FLAC_APIC       0x10
-#define META_TAG_GEN_STREAM      0x20
-#define META_TAG_MPEGSTREAM      0x40
-#define META_TAG_MODINFO         0x80
+#define META_TAG_NULL            0x000
+#define META_TAG_ID3v1           0x001
+#define META_TAG_ID3v2           0x002
+#define META_TAG_APE             0x004
+#define META_TAG_OXC             0x008
+#define META_TAG_FLAC_APIC       0x010
+#define META_TAG_MPC_RGDATA      0x020
+#define META_TAG_GEN_STREAM      0x040
+#define META_TAG_MPEGSTREAM      0x080
+#define META_TAG_MODINFO         0x100
 
-#define META_TAG_MAX             0x80
+#define META_TAG_MAX             0x100
 
-#define META_N_TAGS  7  /* NULL and MODINFO are pseudo-tags */
+#define META_N_TAGS  8  /* NULL and MODINFO are pseudo-tags */
 
 /* frame types -- string, integer, float, binary */
 

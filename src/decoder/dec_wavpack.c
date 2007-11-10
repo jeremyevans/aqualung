@@ -126,9 +126,11 @@ wavpack_decoder_destroy(decoder_t * dec) {
 
 int
 wavpack_decoder_open(decoder_t * dec, char * filename) {
+
 	file_decoder_t * fdec = dec->fdec;
 	wavpack_pdata_t * pd = (wavpack_pdata_t *)dec->pdata;
 	int i, corrected_bits_per_sample;
+	metadata_t * meta;
 
 	/* More than 2 channels doesn't work */
 	/* Normalize is for floating point data only, it gets scaled to -1.0 and 1.0,
@@ -136,7 +138,7 @@ wavpack_decoder_open(decoder_t * dec, char * filename) {
 	/* Opening hybrid correction file if possible */
 	pd->flags = OPEN_2CH_MAX | OPEN_TAGS | OPEN_NORMALIZE | OPEN_WVC;
 
-	strcpy(pd->error, "No Error Yet");
+	strcpy(pd->error, "No Error");
 	pd->wpc = WavpackOpenFileInput(filename, pd->error, pd->flags, 0);
 
 	/* The decoder can actually do something with the file */
@@ -168,7 +170,8 @@ wavpack_decoder_open(decoder_t * dec, char * filename) {
 		strcpy(dec->format_str, "WavPack");
 		fdec->file_lib = WAVPACK_LIB;
 
-		meta_ape_send_metadata(fdec);
+		meta = metadata_new();
+		meta_ape_send_metadata(meta, fdec);
 		return DECODER_OPEN_SUCCESS;
 	}
 

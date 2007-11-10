@@ -110,11 +110,62 @@ mpc_decoder_destroy(decoder_t * dec) {
 }
 
 
+void
+mpc_add_rg_frame(metadata_t * meta, int type, float fval) {
+
+	meta_frame_t * frame = meta_frame_new();
+	char * str;
+
+	if (frame == NULL) {
+		return;
+	}
+
+	frame->tag = META_TAG_MPC_RGDATA;
+	frame->type = type;
+	frame->flags = META_FIELD_UNIQUE | META_FIELD_MANDATORY;
+	meta_get_fieldname(type, &str);
+	frame->field_name = strdup(str);
+	frame->float_val = fval;
+	metadata_add_frame(meta, frame);
+}
+
+
+void
+mpc_add_rg_meta(metadata_t * meta, mpc_streaminfo * si) {
+
+	float track_gain = si->gain_title / 100.0;
+	float album_gain = si->gain_album / 100.0;
+	float track_peak = si->peak_title / 32768.0;
+	float album_peak = si->peak_album / 32768.0;
+
+	if (meta == NULL) {
+		return;
+	}
+
+	/* XXX TODO FIXME:
+	 * This is commented just yet so as not to offer this tag
+	 * for creation since we don't support saving it anyway.
+	 */
+	/* meta->valid_tags |= META_TAG_MPC_RGDATA; */
+
+	if ((track_gain == 0.0f) && (album_gain == 0.0f) &&
+	    (track_peak == 0.0f) && (album_peak == 0.0f)) {
+		return;
+	}
+
+	mpc_add_rg_frame(meta, META_FIELD_RG_TRACK_GAIN, track_gain);
+	mpc_add_rg_frame(meta, META_FIELD_RG_ALBUM_GAIN, album_gain);
+	mpc_add_rg_frame(meta, META_FIELD_RG_TRACK_PEAK, track_peak);
+	mpc_add_rg_frame(meta, META_FIELD_RG_ALBUM_PEAK, album_peak);
+}
+
+
 int
 mpc_decoder_open(decoder_t * dec, char * filename) {
 
 	mpc_pdata_t * pd = (mpc_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
+	metadata_t * meta;
 	
 	
 	if ((pd->mpc_file = fopen(filename, "rb")) == NULL) {
@@ -175,7 +226,9 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 		break;
 	}
 
-	meta_ape_send_metadata(fdec);
+	meta = metadata_new();
+	mpc_add_rg_meta(meta, &pd->mpc_i);
+	meta_ape_send_metadata(meta, fdec);
 	return DECODER_OPEN_SUCCESS;
 }
 

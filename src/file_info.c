@@ -1300,11 +1300,16 @@ fi_add_button_pressed(GtkWidget * widget, gpointer data) {
 	GSList * slist = fi->pageidx[page].slist;
 
 	meta_frame_t * frame = meta_frame_new();
+	int type;
 	char * str;
 
 	/* Create new frame */
 	char * combo_entry = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
-	int type = meta_frame_type_from_name(combo_entry);
+	if (combo_entry == NULL) {
+		return;
+	}
+
+	type = meta_frame_type_from_name(combo_entry);
 	/* XXX test */printf("\ncombo_entry = %s, frametype = %d\n", combo_entry, type);
 	g_free(combo_entry);
 

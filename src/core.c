@@ -1096,9 +1096,11 @@ set_thread_priority(pthread_t thread, char * name, int realtime, int priority) {
 
 	if (realtime) {
 		policy = SCHED_FIFO;
+#ifndef __OpenBSD__
 		if (priority == -1) {
 			priority = 1;
 		}
+#endif /* !__OpenBSD__ */
 	}
 	if (priority != -1) {
 #ifdef PTHREAD_MIN_PRIORITY

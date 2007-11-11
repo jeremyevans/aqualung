@@ -1078,8 +1078,57 @@ jack_shutdown(void * arg) {
 }
 #endif /* HAVE_JACK */
 
+int
+set_thread_priority(pthread_t thread, char * name, int realtime, int priority) {
+#ifdef _WIN32
+	if(realtime) {
+		fprintf(stderr, "Warning: setting thread priorities is unsupported under Win32.\n");
+	}
+	return -1;
+#else
+	struct sched_param param;
+	int policy;
+	int x;
+	
+	if ((x = pthread_getschedparam(thread, &policy, &param)) != 0) {
+		return -1;
+	}
 
-
+	if (realtime) {
+		policy = SCHED_FIFO;
+		if (priority == -1) {
+			priority = 1;
+		}
+	}
+	if (priority != -1) {
+#ifdef PTHREAD_MIN_PRIORITY
+#ifdef PTHREAD_MAX_PRIORITY
+		if (priority < PTHREAD_MIN_PRIORITY) {
+			param.sched_priority = PTHREAD_MIN_PRIORITY;
+			fprintf(stderr, "Warning: %s thread priority (%d) too low, set to %d",
+				name, priority, PTHREAD_MIN_PRIORITY);
+		} else if (priority > PTHREAD_MAX_PRIORITY) {
+			param.sched_priority = PTHREAD_MAX_PRIORITY;
+			fprintf(stderr, "Warning: %s thread priority (%d) too high, set to %d",
+				name, priority, PTHREAD_MAX_PRIORITY);
+		} else
+#endif /* PTHREAD_MAX_PRIORITY */
+#endif /* PTHREAD_MIN_PRIORITY */
+		{
+			param.sched_priority = priority;
+		}
+	}
+	
+	if ((x = pthread_setschedparam(thread, policy, &param)) != 0) {
+		fprintf(stderr,
+			"Warning: cannot use real-time scheduling for %s thread (%s/%d) "
+			"(%d: %s)\n", name, policy == SCHED_FIFO ? "FIFO" : "RR", param.sched_priority,
+			x, strerror(x));
+	}
+	
+	return x;
+#endif /* _WIN32 */
+}
 
 #ifdef HAVE_OSS
 /* return values:
@@ -1088,7 +1137,7 @@ jack_shutdown(void * arg) {
  * -N : unable to start with given params
  */
 int
-oss_init(thread_info_t * info, int verbose) {
+oss_init(thread_info_t * info, int verbose, int realtime, int priority) {
 
 	int ioctl_arg;
 	int ioctl_status;
@@ -1161,6 +1210,7 @@ oss_init(thread_info_t * info, int verbose) {
 
 	/* start OSS output thread */
 	AQUALUNG_THREAD_CREATE(info->oss_thread_id, NULL, oss_thread, info)
+	set_thread_priority(info->oss_thread_id, "OSS output", realtime, priority);
 
 	return 0;
 }
@@ -1955,11 +2005,13 @@ print_usage(void) {
 		"-n, --nperiods <int>: Specify the number of periods in hardware buffer (defaults to 2).\n"
 		"-r, --rate <int>: Set the output sample rate.\n"
 		"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for ALSA output thread.\n"
-		"-P, --priority <int>: When running -R, set scheduler priority to <int> (defaults to 1).\n"
+		"-P, --priority <int>: Set scheduler priority to <int> (default is 1 when -R is used).\n"
 		
 		"\nOptions relevant to OSS output:\n"
 		"-d, --device <name>: Set the output device (defaults to " OSS_DEVICE ").\n"
 		"-r, --rate <int>: Set the output sample rate.\n"
+		"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for OSS output thread.\n"
+		"-P, --priority <int>: Set scheduler priority to <int> (default is 1 when -R is used).\n"
 		
 		"\nOptions relevant to JACK output:\n"
 		"-a[<port_L>,<port_R>], --auto[=<port_L>,<port_R>]: Auto-connect output ports to\n"
@@ -2068,9 +2120,6 @@ main(int argc, char ** argv) {
 	char ** argv_def = NULL;
 
 	thread_info_t thread_info;
-#ifndef _WIN32
-	struct sched_param param;
-#endif /* !_WIN32 */
 
 	int c;
 	int longopt_index = 0;
@@ -2080,9 +2129,9 @@ main(int argc, char ** argv) {
 	char * output_str = NULL;
 	int rate = 0;
 	int try_realtime = 0;
-	int priority = 1;
+	int priority = -1;
 	int disk_try_realtime = 0;
-	int disk_priority = 1;
+	int disk_priority = -1;
 
 	char rcmd;
 	int no_session = -1;
@@ -2644,7 +2693,7 @@ main(int argc, char ** argv) {
 		}
 		thread_info.out_SR = rate;
 
-		ret = oss_init(&thread_info, 0);
+		ret = oss_init(&thread_info, 0, try_realtime, priority);
 		if (ret == -1) {
 			printf("device busy\n");			
 		} else if (ret < 0) {
@@ -2753,31 +2802,15 @@ main(int argc, char ** argv) {
 	}
 #endif /* _WIN32 */
 
-
 	/* startup disk thread */
 	AQUALUNG_THREAD_CREATE(thread_info.disk_thread_id, NULL, disk_thread, &thread_info)
-
-	if (disk_try_realtime) {
-#ifdef _WIN32
-		printf("Warning: setting thread priorities is unsupported under Win32.\n");
-#else
-		int x;
-		memset(&param, 0, sizeof(param));
-		param.sched_priority = disk_priority;
-		if ((x = pthread_setschedparam(thread_info.disk_thread_id,
-					       SCHED_FIFO, &param)) != 0) {
-			fprintf(stderr,
-				"Warning: cannot use real-time scheduling for disk thread (FIFO/%d) "
-				"(%d: %s)\n", param.sched_priority, x, strerror(x));
-		}
-#endif /* _WIN32 */
-	}
-
+	set_thread_priority(thread_info.disk_thread_id, "disk",
+		disk_try_realtime, disk_priority);
 
 #ifdef HAVE_OSS
 	if (output == OSS_DRIVER) {
 		if (!auto_driver_found) {
-			int ret = oss_init(&thread_info, 1);
+			int ret = oss_init(&thread_info, 1, try_realtime, priority);
 			if (ret < 0) {
 				close_app_socket();
 				exit(1);
@@ -2789,22 +2822,7 @@ main(int argc, char ** argv) {
 #ifdef HAVE_ALSA
 	if (output == ALSA_DRIVER) {
 		AQUALUNG_THREAD_CREATE(thread_info.alsa_thread_id, NULL, alsa_thread, &thread_info)
-
-		if (try_realtime) {
-#ifdef _WIN32
-			printf("Warning: setting thread priorities is unsupported under Win32.\n");
-#else
-			int x;
-			memset(&param, 0, sizeof(param));
-			param.sched_priority = priority;
-			if ((x = pthread_setschedparam(thread_info.alsa_thread_id,
-						       SCHED_FIFO, &param)) != 0) {
-				fprintf(stderr,
-					"Warning: cannot use real-time scheduling for ALSA output thread (FIFO/%d) "
-					"(%d: %s)\n", param.sched_priority, x, strerror(x));
-			}
-#endif /* _WIN32 */
-		}
+		set_thread_priority(thread_info.alsa_thread_id, "ALSA output", try_realtime, priority);
 	}
 #endif /* HAVE_ALSA */
 

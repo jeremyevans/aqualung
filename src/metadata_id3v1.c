@@ -284,31 +284,36 @@ metadata_from_id3v1(metadata_t * meta, unsigned char * buf) {
 		return 0;
 	}
 
-	memcpy(raw, buf+3, 30);
 	raw[30] = '\0';
-	cut_trailing_whitespace(raw);
-	meta_add_id3v1_frame(meta, "Title", raw);
+	if(buf[3] != '\0') {
+		memcpy(raw, buf+3, 30);
+		cut_trailing_whitespace(raw);
+		meta_add_id3v1_frame(meta, "Title", raw);
+	}
 
-	memcpy(raw, buf+33, 30);
-	raw[30] = '\0';
-	cut_trailing_whitespace(raw);
-	meta_add_id3v1_frame(meta, "Artist", raw);
+	if(buf[33] != '\0') {
+		memcpy(raw, buf+33, 30);
+		cut_trailing_whitespace(raw);
+		meta_add_id3v1_frame(meta, "Artist", raw);
+	}
 
-	memcpy(raw, buf+63, 30);
-	raw[30] = '\0';
-	cut_trailing_whitespace(raw);
-	meta_add_id3v1_frame(meta, "Album", raw);
+	if(buf[63] != '\0') {
+		memcpy(raw, buf+63, 30);
+		cut_trailing_whitespace(raw);
+		meta_add_id3v1_frame(meta, "Album", raw);
+	}
 
-	memcpy(raw, buf+93, 4);
-	raw[4] = '\0';
-	cut_trailing_whitespace(raw);
-	meta_add_id3v1_frame(meta, "Year", raw);
+	if(buf[93] != '\0') {
+		memcpy(raw, buf+93, 4);
+		raw[4] = '\0';
+		cut_trailing_whitespace(raw);
+		meta_add_id3v1_frame(meta, "Year", raw);
+	}
 
 	memcpy(raw, buf+97, 30);
-	raw[30] = '\0';
 	if ((raw[28] == '\0') && (raw[29] != '\0')) { /* ID3v1.1 */
-		char track[16];
-		snprintf(track, 15, "%u", (unsigned char)raw[29]);
+		char track[4];
+		snprintf(track, 4, "%u", (unsigned char)raw[29]);
 		meta_add_id3v1_frame(meta, "Track", track);
 	}
 
@@ -317,8 +322,10 @@ metadata_from_id3v1(metadata_t * meta, unsigned char * buf) {
 		meta_add_id3v1_frame(meta, "Genre", genre);
 	}
 
-	cut_trailing_whitespace(raw);
-	meta_add_id3v1_frame(meta, "Comment", raw);
+	if(buf[97] != '\0') {
+		cut_trailing_whitespace(raw);
+		meta_add_id3v1_frame(meta, "Comment", raw);
+	}
 
 	return 1;
 }

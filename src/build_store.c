@@ -117,6 +117,7 @@ typedef struct _build_track_t {
 	char comment[MAXLEN];
 	float duration;
 	float rva;
+	int rva_found;
 
 	struct _build_track_t * next;
 
@@ -2619,7 +2620,9 @@ process_meta(build_store_t * data, build_disc_t * disc) {
 			}
 
 			if (data->trk_rva_enabled) {
-				metadata_get_rva(fdec->meta, &ptrack->rva);
+			        ptrack->rva_found = metadata_get_rva(fdec->meta, &ptrack->rva);
+			} else {
+				ptrack->rva_found = 0;
 			}
 
 			if (data->trk_comment_enabled &&
@@ -2681,10 +2684,7 @@ add_new_track(GtkTreeIter * record_iter, build_track_t * ptrack, int i) {
 	track_data->duration = ptrack->duration;
 	track_data->volume = 1.0f;
 
-	if (ptrack->rva > 0.1f) { /* rva unmeasured */
-		track_data->rva = 0.0f;
-		track_data->use_rva = 0;
-	} else {
+	if (ptrack->rva_found) {
 		track_data->rva = ptrack->rva;
 		track_data->use_rva = 1;
 	}
@@ -2760,7 +2760,7 @@ write_record_to_store(gpointer user_data) {
 			gtk_tree_store_set(music_store, &iter, MS_COL_NAME, ptrack->final, -1);
 			track_data->duration = ptrack->duration;
 
-			if (ptrack->rva < 0.1f) { /* rva measured */
+			if (ptrack->rva_found) {
 				track_data->rva = ptrack->rva;
 				track_data->use_rva = 1;
 			}
@@ -2801,7 +2801,7 @@ write_track_to_store(gpointer user_data) {
                                    MS_COL_NAME, data->disc->tracks->final, -1);
 		track_data->duration = data->disc->tracks->duration;
 
-		if (data->disc->tracks->rva < 0.1f) { /* rva measured */
+		if (data->disc->tracks->rva_found) { 
 			track_data->rva = data->disc->tracks->rva;
 			track_data->use_rva = 1;
 		}
@@ -2894,7 +2894,7 @@ get_file_list(build_store_t * data, char * dir_record, build_disc_t * disc, int 
 	char filename[MAXLEN];
 
 	build_track_t * last_track = NULL;
-	float duration = 0.0f;;
+	float duration = 0.0f;
 
 	char * utf8;
 
@@ -2926,6 +2926,7 @@ get_file_list(build_store_t * data, char * dir_record, build_disc_t * disc, int 
 
 				track->duration = duration;
 				track->rva = 1.0f;
+				track->rva_found = 0;
 			}
 
 			if (last_track == NULL) {
@@ -3345,6 +3346,7 @@ process_track(build_store_t * data, char * filename, char * d_name, float durati
 		strncpy(disc->tracks->filename, filename, MAXLEN-1);
 		disc->tracks->duration = duration;
 		disc->tracks->rva = 1.0f;
+		disc->tracks->rva_found = 0;
 	}
 
 

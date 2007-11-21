@@ -3449,7 +3449,10 @@ load_config(void) {
         }
 
 
-	options.src_type = 4;
+	if (!src_type_parsed) {
+		options.src_type = 4;
+	}
+
 	options.vol = 0.0f;
 	options.bal = 0.0f;
 

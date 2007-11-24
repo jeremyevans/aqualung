@@ -120,6 +120,15 @@
 #define META_FIELD_TSSE                0x4d
 #define META_FIELD_TSST                0x4e
 #define META_FIELD_TXXX                0x4f
+#define META_FIELD_WCOM                0x50
+#define META_FIELD_WCOP                0x51
+#define META_FIELD_WOAF                0x52
+#define META_FIELD_WOAR                0x53
+#define META_FIELD_WOAS                0x54
+#define META_FIELD_WORS                0x55
+#define META_FIELD_WPAY                0x56
+#define META_FIELD_WPUB                0x57
+#define META_FIELD_WXXX                0x58
 
 /* misc. string types */
 #define META_FIELD_VENDOR              0x60

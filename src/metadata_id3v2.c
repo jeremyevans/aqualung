@@ -199,6 +199,29 @@ meta_id3v2_to_utf8(unsigned char enc, unsigned char * buf, int len) {
 }
 
 
+char *
+meta_id3v2_latin1_from_utf8(char * buf, int len) {
+
+	char * str = NULL;
+	GError * error = NULL;
+
+	if (buf[0] == '\0') {
+		return strdup("");
+	}
+
+	str = g_convert_with_fallback((char *)buf, len, "iso-8859-1", "utf-8",
+				      "?", NULL, NULL, &error);
+	if (str != NULL) {
+		return str;
+	} else {
+		fprintf(stderr, "meta_id3v2_latin1_from_utf8: error converting '%s': %s\n",
+			buf, error->message);
+		g_clear_error(&error);
+		return NULL;
+	}
+}
+
+
 void
 meta_parse_id3v2_txxx(metadata_t * meta, unsigned char * buf, int len) {
 
@@ -249,6 +272,52 @@ meta_parse_id3v2_t___(metadata_t * meta, unsigned char * buf, int len) {
 
 	type = meta_frame_type_from_embedded_name(META_TAG_ID3v2, frame_id);
 	val = meta_id3v2_to_utf8(buf[10], buf+11, len-1);
+	if (val != NULL) {
+		metadata_add_frame_from_keyval(meta, META_TAG_ID3v2, frame_id, val);
+		g_free(val);
+	}
+}
+
+
+void
+meta_parse_id3v2_wxxx(metadata_t * meta, unsigned char * buf, int len) {
+
+	int type;
+	int len1;
+	char * val1;
+	char * val2;
+
+	type = meta_frame_type_from_embedded_name(META_TAG_ID3v2, "WXXX");
+	len1 = meta_id3v2_strlen(buf+11, len-1, buf[10]);
+	val1 = meta_id3v2_to_utf8(buf[10], buf+11, len1);
+	val2 = meta_id3v2_to_utf8(0x0 /* iso-8859-1 */, buf+12+len1, len-len1-2);
+
+	if ((val1 != NULL) && (val2 != NULL)) {
+		meta_frame_t * frame = metadata_add_frame_from_keyval(meta,
+				               META_TAG_ID3v2, val1, val2);
+		frame->type = META_FIELD_WXXX;
+	}
+	if (val1 != NULL) {
+		g_free(val1);
+	}
+	if (val2 != NULL) {
+		g_free(val2);
+	}
+}
+
+
+void
+meta_parse_id3v2_w___(metadata_t * meta, unsigned char * buf, int len) {
+
+	char frame_id[5];
+	int type;
+	char * val;
+
+	memcpy(frame_id, buf, 4);
+	frame_id[4] = '\0';
+
+	type = meta_frame_type_from_embedded_name(META_TAG_ID3v2, frame_id);
+	val = meta_id3v2_to_utf8(0x0 /* iso-8859-1 */, buf+10, len);
 	if (val != NULL) {
 		metadata_add_frame_from_keyval(meta, META_TAG_ID3v2, frame_id, val);
 		g_free(val);
@@ -475,6 +544,14 @@ meta_parse_id3v2_frame(metadata_t * meta, unsigned char * buf, int len,
 		} else {
 			meta_parse_id3v2_t___(meta, buf, pay_len);
 		}
+	} else if (frame_id[0] == 'W') {
+		if ((frame_id[1] == 'X') &&
+		    (frame_id[2] == 'X') &&
+		    (frame_id[3] == 'X')) {
+			meta_parse_id3v2_wxxx(meta, buf, pay_len);
+		} else {
+			meta_parse_id3v2_w___(meta, buf, pay_len);
+		}
 	} else if (strcmp(frame_id, "COMM") == 0) {
 		meta_parse_id3v2_comm(meta, buf, pay_len);
 	} else if (strcmp(frame_id, "APIC") == 0) {
@@ -603,8 +680,6 @@ meta_render_id3v2_t___(meta_frame_t * frame, unsigned char ** buf, int * size) {
 		snprintf(fval, MAXLEN-1, renderfmt, frame->float_val);
 		field_val = fval;
 		field_len = strlen(field_val);
-	} else {
-		/* TODO */
 	}
 
 	length = 11+field_len;
@@ -617,6 +692,69 @@ meta_render_id3v2_t___(meta_frame_t * frame, unsigned char ** buf, int * size) {
 	memcpy(data, frame_id, 4);
 	data[10] = 0x03; /* text encoding: UTF-8 */
 	memcpy(data+11, field_val, field_len);
+
+	meta_render_append_frame(data, length, buf, size);
+	free(data);
+}
+
+
+void
+meta_render_id3v2_wxxx(meta_frame_t * frame, unsigned char ** buf, int * size) {
+
+	unsigned char * data;
+	int length;
+	char * frame_id;
+	int len1 = strlen(frame->field_name);
+	int len2 = strlen(frame->field_val);
+	char * link = meta_id3v2_latin1_from_utf8(frame->field_val, len2);
+
+	if (link == NULL) {
+		fprintf(stderr, "meta_render_id3v2_wxxx: URL not convertible to iso-8859-1.\n");
+		return;
+	}
+	len2 = strlen(link);
+
+	length = 12 + len1 + len2;
+	data = (unsigned char *)malloc(length);
+	if (data == NULL) {
+		fprintf(stderr, "meta_render_id3v2_wxxx: malloc error\n");
+		return;
+	}
+	meta_get_fieldname_embedded(META_TAG_ID3v2, frame->type, &frame_id);
+	memcpy(data, frame_id, 4);
+	data[10] = 0x03; /* text encoding: UTF-8 */
+	memcpy(data+11, frame->field_name, len1);
+	data[11 + len1] = '\0';
+	memcpy(data + 12 + len1, link, len2);
+
+	meta_render_append_frame(data, length, buf, size);
+	free(data);
+}
+
+
+void
+meta_render_id3v2_w___(meta_frame_t * frame, unsigned char ** buf, int * size) {
+
+	unsigned char * data;
+	int length;
+	char * frame_id;	
+	int field_len = strlen(frame->field_val);
+	char * link = meta_id3v2_latin1_from_utf8(frame->field_val, field_len);
+	if (link == NULL) {
+		fprintf(stderr, "meta_render_id3v2_w___: URL not convertible to iso-8859-1.\n");
+		return;
+	}
+	field_len = strlen(link);
+	
+	length = 10+field_len;
+	data = (unsigned char *)malloc(length);
+	if (data == NULL) {
+		fprintf(stderr, "meta_render_id3v2_w___: malloc error\n");
+		return;
+	}
+	meta_get_fieldname_embedded(META_TAG_ID3v2, frame->type, &frame_id);
+	memcpy(data, frame_id, 4);
+	memcpy(data+10, link, field_len);
 
 	meta_render_append_frame(data, length, buf, size);
 	free(data);
@@ -751,6 +889,14 @@ metadata_render_id3v2_frame(meta_frame_t * frame, unsigned char ** buf, int * si
 			meta_render_id3v2_txxx(frame, buf, size);
 		} else {
 			meta_render_id3v2_t___(frame, buf, size);
+		}
+	} else if (frame_id[0] == 'W') {
+		if ((frame_id[1] == 'X') &&
+		    (frame_id[2] == 'X') &&
+		    (frame_id[3] == 'X')) {
+			meta_render_id3v2_wxxx(frame, buf, size);
+		} else {
+			meta_render_id3v2_w___(frame, buf, size);
 		}
 	} else if (strcmp(frame_id, "COMM") == 0) {
 		meta_render_id3v2_comm(frame, buf, size);
@@ -940,6 +1086,7 @@ meta_id3v2_write_tag(FILE * file, unsigned char * buf, int len) {
 		fclose(file);
 		return META_ERROR_INTERNAL;
 	}
+	fclose(file);
 	return META_ERROR_NONE;
 }
 

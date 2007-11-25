@@ -980,6 +980,71 @@ metadata_make_playlist_string(metadata_t * meta, char * dest) {
 }
 
 
+metadata_t *
+metadata_clone(metadata_t * meta, int tags) {
+
+	metadata_t * out = metadata_new();
+	int tag = META_TAG_MAX;
+
+	if (out == NULL) {
+		return NULL;
+	}
+
+	/* iterate on possible output tags */
+	while (tag) {
+		int i;
+		if ((tags & tag) == 0) {
+			tag >>= 1;
+			continue;
+		}
+
+		/* iterate on frame types supported by this tag */
+		for (i = 0; meta_model[i].type != -1; i++) {
+			meta_frame_t * frame;
+			int type = meta_model[i].type;
+			if ((tag & meta_model[i].tags) == 0) {
+				continue;
+			}
+
+			if (type == META_FIELD_VENDOR) {
+				continue;
+			}
+
+			/* for each frame type, iterate on tags that
+			   might have it in the input meta in pref.
+			   order and copy all of them */
+			frame = metadata_pref_frame_by_type(meta, type, NULL);
+			while (frame != NULL) {
+				meta_frame_t * fout = meta_frame_new();
+				fout->tag = tag;
+				fout->type = type;
+				if (frame->field_name) {
+					fout->field_name = strdup(frame->field_name);
+				}
+				if (frame->field_val) {
+					fout->field_val = strdup(frame->field_val);
+				}
+				fout->int_val = frame->int_val;
+				fout->float_val = frame->float_val;
+				fout->length = frame->length;
+				if (fout->length > 0) {
+					fout->data = malloc(fout->length);
+					if (fout->data == NULL) {
+						fprintf(stderr, "metadata_clone: malloc error\n");
+						return NULL;
+					}
+					memcpy(fout->data, frame->data, fout->length);
+				}
+				metadata_add_frame(out, fout);
+				frame = metadata_pref_frame_by_type(meta, type, frame);
+			}
+		}
+		tag >>= 1;
+	}
+	return out;
+}
+
+
 /* low-level utils */
 
 u_int32_t

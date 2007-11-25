@@ -42,7 +42,11 @@ meta_frame_t *
 metadata_pref_frame_by_type(metadata_t * meta, int type, meta_frame_t * root) {
 
 	meta_frame_t * frame;
-	int tag = META_TAG_MAX;
+	static int tag;
+
+	if (root == NULL) {
+		tag = META_TAG_MAX;
+	}
 
 	while (tag > 0) {
 		frame = metadata_get_frame_by_tag_and_type(meta, tag, type, root);

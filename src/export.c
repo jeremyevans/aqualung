@@ -407,6 +407,7 @@ export_item(export_t * export, export_item_t * item, int index) {
 	file_encoder_t * fenc;
 	encoder_mode_t mode;
 	char * ext = "raw";
+	int tags;
 
 	float buf[2*BUFSIZE];
 	int n_read;
@@ -415,10 +416,26 @@ export_item(export_t * export, export_item_t * item, int index) {
 	memset(&mode, 0, sizeof(encoder_mode_t));
 
 	switch (export->format) {
-	case ENC_SNDFILE_LIB: ext = "wav"; break;
-	case ENC_FLAC_LIB:    ext = "flac"; break;
-	case ENC_VORBIS_LIB:  ext = "ogg"; break;
-	case ENC_LAME_LIB:    ext = "mp3"; break;
+	case ENC_SNDFILE_LIB:
+		ext = "wav";
+		tags = 0;
+		break;
+	case ENC_FLAC_LIB:
+		ext = "flac";
+#ifdef HAVE_FLAC_8
+		tags = META_TAG_OXC | META_TAG_FLAC_APIC;
+#else
+		tags = META_TAG_OXC;
+#endif /* HAVE_FLAC_8 */
+		break;
+	case ENC_VORBIS_LIB:
+		ext = "ogg";
+		tags = META_TAG_OXC;
+		break;
+	case ENC_LAME_LIB:
+		ext = "mp3";
+		tags = META_TAG_ID3v1 | META_TAG_ID3v2 | META_TAG_APE;
+		break;
 	}
 
 	fdec = file_decoder_new();
@@ -449,11 +466,7 @@ export_item(export_t * export, export_item_t * item, int index) {
 
 	mode.write_meta = export->write_meta;
 	if (mode.write_meta) {
-		strncpy(mode.meta.artist, item->artist, MAXLEN-1);
-		strncpy(mode.meta.album, item->album, MAXLEN-1);
-		strncpy(mode.meta.title, item->title, MAXLEN-1);
-		snprintf(mode.meta.year, MAXLEN-1, "%d", item->year);
-		snprintf(mode.meta.track, MAXLEN-1, "%d", item->no);
+		mode.meta = metadata_clone(fdec->meta, tags);
 	}
 	
 	fenc = file_encoder_new();
@@ -480,6 +493,9 @@ export_item(export_t * export, export_item_t * item, int index) {
 	file_encoder_close(fenc);
 	file_decoder_delete(fdec);
 	file_encoder_delete(fenc);
+	if (mode.meta != NULL) {
+		metadata_free(mode.meta);
+	}
 }
 
 void *

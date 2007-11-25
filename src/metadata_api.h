@@ -35,6 +35,11 @@
 #include "metadata.h"
 
 
+/* Query frames of a given type, with respect to preference order
+   between tags. */
+meta_frame_t * metadata_pref_frame_by_type(metadata_t * meta, int type, meta_frame_t * root);
+
+
 /* High-level accessor functions
  *
  * Return value: 1 if found, 0 if not found.

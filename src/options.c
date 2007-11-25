@@ -2448,7 +2448,7 @@ See the About box and the documentation for details."));
 	hbox_meta = gtk_hbox_new(FALSE, 5);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 0);
 
-	frame_meta = gtk_frame_new(_("Batch update (mass tagger)"));
+	frame_meta = gtk_frame_new(_("Batch update & encode (mass tagger, CD ripper, file export)"));
         gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
 	vbox_meta2 = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(frame_meta), vbox_meta2);
@@ -2456,7 +2456,7 @@ See the About box and the documentation for details."));
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 5);
 
-	label = gtk_label_new(_("Tags to add when updating MPEG audio files:"));
+	label = gtk_label_new(_("Tags to add when creating or updating MPEG audio files:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
 
 

@@ -92,12 +92,28 @@ vorbisenc_encoder_open(encoder_t * enc, encoder_mode_t * mode) {
 
 	vorbis_comment_init(&pd->vc);
         if (mode->write_meta) {
-		vorbis_comment_add_tag(&pd->vc, "ARTIST", mode->meta.artist);
-		vorbis_comment_add_tag(&pd->vc, "ALBUM", mode->meta.album);
-		vorbis_comment_add_tag(&pd->vc, "TITLE", mode->meta.title);
-		vorbis_comment_add_tag(&pd->vc, "TRACKNUMBER", mode->meta.track);
-		vorbis_comment_add_tag(&pd->vc, "GENRE", mode->meta.genre);
-		vorbis_comment_add_tag(&pd->vc, "DATE", mode->meta.year);
+		meta_frame_t * frame;
+		frame = metadata_get_frame_by_tag(mode->meta, META_TAG_OXC, NULL);
+		while (frame != NULL) {
+			char * str;
+			char * field_val;
+			char fval[MAXLEN];
+			char * renderfmt = meta_get_field_renderfmt(frame->type);
+			meta_get_fieldname_embedded(META_TAG_OXC, frame->type, &str);
+
+			if (META_FIELD_TEXT(frame->type)) {
+				field_val = frame->field_val;
+			} else if (META_FIELD_INT(frame->type)) {
+				snprintf(fval, MAXLEN-1, renderfmt, frame->int_val);
+				field_val = fval;
+			} else if (META_FIELD_FLOAT(frame->type)) {
+				snprintf(fval, MAXLEN-1, renderfmt, frame->float_val);
+				field_val = fval;
+			}
+
+			vorbis_comment_add_tag(&pd->vc, str, field_val);
+			frame = metadata_get_frame_by_tag(mode->meta, META_TAG_OXC, frame);
+		}
         }
 	vorbis_analysis_init(&pd->vd, &pd->vi);
 	vorbis_block_init(&pd->vd, &pd->vb);

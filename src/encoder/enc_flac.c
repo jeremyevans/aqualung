@@ -26,6 +26,8 @@
 #include <string.h>
 
 #include "../i18n.h"
+#include "../metadata.h"
+#include "../metadata_flac.h"
 #include "enc_flac.h"
 
 
@@ -204,20 +206,65 @@ flac_encoder_write(encoder_t * enc, float * data, int num) {
 }
 
 
-void
-flac_encoder_write_meta(flac_pencdata_t * pd) {
+int
+flac_encoder_write_meta_vc(metadata_t * meta, FLAC__Metadata_SimpleIterator * iter) {
 
-	FLAC__StreamMetadata_VorbisComment_Entry vc;
-	FLAC__StreamMetadata * flacmeta = NULL;
+	int ret;
+	FLAC__StreamMetadata * smeta = metadata_to_flac_streammeta(meta);
+
+	if (FLAC__metadata_simple_iterator_get_block_type(iter) ==
+	    FLAC__METADATA_TYPE_VORBIS_COMMENT) {
+
+		ret = FLAC__metadata_simple_iterator_set_block(iter, smeta, true);
+		if (ret == false) {
+			fprintf(stderr, "error: FLAC metadata write failed!\n");
+			FLAC__metadata_simple_iterator_delete(iter);
+			return -1;
+		}
+	} else {
+		ret = FLAC__metadata_simple_iterator_insert_block_after(iter, smeta, true);
+		if (ret == false) {
+			fprintf(stderr, "error: FLAC metadata write failed!\n");
+			FLAC__metadata_object_delete(smeta);
+			FLAC__metadata_simple_iterator_delete(iter);
+			return -1;
+		}
+	}
+	FLAC__metadata_object_delete(smeta);
+	return 0;
+}
+
+
+#ifdef HAVE_FLAC_8
+int
+flac_encoder_write_meta_pics(metadata_t * meta, FLAC__Metadata_SimpleIterator * iter) {
+
+	meta_frame_t * frame = metadata_get_frame_by_tag(meta, META_TAG_FLAC_APIC, NULL);
+	while (frame) {
+		FLAC__StreamMetadata * smeta = metadata_apic_frame_to_smeta(frame);
+		int ret = FLAC__metadata_simple_iterator_insert_block_after(iter, smeta, true);
+		if (ret == false) {
+			fprintf(stderr, "error: FLAC metadata write failed!\n");
+			FLAC__metadata_object_delete(smeta);
+			FLAC__metadata_simple_iterator_delete(iter);
+			return -1;
+		}
+
+		FLAC__metadata_object_delete(smeta);
+		frame = metadata_get_frame_by_tag(meta, META_TAG_FLAC_APIC, frame);
+	}
+	return 0;
+}
+#endif /* HAVE_FLAC_8 */
+
+
+void
+flac_encoder_write_meta(encoder_t * enc) {
+
+	flac_pencdata_t * pd = (flac_pencdata_t *)enc->pdata;
 	FLAC__Metadata_SimpleIterator * iter = FLAC__metadata_simple_iterator_new();
 	if (iter == NULL)
 		return;
-	
-	flacmeta = FLAC__metadata_object_new(FLAC__METADATA_TYPE_VORBIS_COMMENT);
-	if (flacmeta == NULL) {
-		FLAC__metadata_simple_iterator_delete(iter);
-		return;
-	}
 	
 	if (FLAC__metadata_simple_iterator_init(iter, pd->mode.filename, false, false) != true) {
 		fprintf(stderr, "FLAC__metadata_simple_iterator_init returned error: %s\n",
@@ -226,40 +273,20 @@ flac_encoder_write_meta(flac_pencdata_t * pd) {
 		return;
 	}
 	FLAC__metadata_simple_iterator_next(iter);
-	
-	FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&vc, "ARTIST", pd->mode.meta.artist);
-	if (FLAC__metadata_object_vorbiscomment_append_comment(flacmeta, vc, false) == false) {
-		free(vc.entry);
+
+	if (metadata_get_frame_by_tag(enc->mode->meta, META_TAG_OXC, NULL) != NULL) {
+		if (flac_encoder_write_meta_vc(enc->mode->meta, iter) < 0) {
+			return;
+		}
 	}
-	
-	FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&vc, "ALBUM", pd->mode.meta.album);
-	if (FLAC__metadata_object_vorbiscomment_append_comment(flacmeta, vc, false) == false) {
-		free(vc.entry);
+
+#ifdef HAVE_FLAC_8
+	if (flac_encoder_write_meta_pics(enc->mode->meta, iter) < 0) {
+		return;
 	}
-	
-	FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&vc, "TITLE", pd->mode.meta.title);
-	if (FLAC__metadata_object_vorbiscomment_append_comment(flacmeta, vc, false) == false) {
-		free(vc.entry);
-	}
-	
-	FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&vc, "TRACKNUMBER", pd->mode.meta.track);
-	if (FLAC__metadata_object_vorbiscomment_append_comment(flacmeta, vc, false) == false) {
-		free(vc.entry);
-	}
-	
-	FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&vc, "GENRE", pd->mode.meta.genre);
-	if (FLAC__metadata_object_vorbiscomment_append_comment(flacmeta, vc, false) == false) {
-		free(vc.entry);
-	}
-	
-	FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&vc, "DATE", pd->mode.meta.year);
-	if (FLAC__metadata_object_vorbiscomment_append_comment(flacmeta, vc, false) == false) {
-		free(vc.entry);
-	}
-	
-	FLAC__metadata_simple_iterator_set_block(iter, flacmeta, true);
+#endif /* HAVE_FLAC_8 */
+
 	FLAC__metadata_simple_iterator_delete(iter);
-	FLAC__metadata_object_delete(flacmeta);
 }
 
 
@@ -286,7 +313,7 @@ flac_encoder_close(encoder_t * enc) {
 	free(pd->buf);
 
 	if (pd->mode.write_meta) {
-		flac_encoder_write_meta(pd);
+		flac_encoder_write_meta(enc);
 	}
 }
 

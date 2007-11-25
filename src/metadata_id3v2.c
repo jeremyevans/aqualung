@@ -1086,7 +1086,6 @@ meta_id3v2_write_tag(FILE * file, unsigned char * buf, int len) {
 		fclose(file);
 		return META_ERROR_INTERNAL;
 	}
-	fclose(file);
 	return META_ERROR_NONE;
 }
 
@@ -1120,7 +1119,9 @@ meta_id3v2_rewrite(char * filename, unsigned char ** buf, int * len) {
 			return ret;
 		}
 
-		return meta_id3v2_write_tag(file, *buf, *len);
+		ret = meta_id3v2_write_tag(file, *buf, *len);
+		fclose(file);
+		return ret;
 	} else {
 		if (fread(buffer, 1, 10, file) != 10) {
 			fprintf(stderr, "meta_id3v2_delete: fread() failed\n");
@@ -1138,7 +1139,9 @@ meta_id3v2_rewrite(char * filename, unsigned char ** buf, int * len) {
 				return ret;
 			}
 			
-			return meta_id3v2_write_tag(file, *buf, *len);
+			ret = meta_id3v2_write_tag(file, *buf, *len);
+			fclose(file);
+			return ret;
 		} else {
 			id3v2_length = meta_id3v2_read_synchsafe_int(buffer+6);
 			id3v2_length += 10; /* add 10 byte header */
@@ -1153,7 +1156,9 @@ meta_id3v2_rewrite(char * filename, unsigned char ** buf, int * len) {
 					return ret;
 				}
 				
-				return meta_id3v2_write_tag(file, *buf, *len);
+				ret = meta_id3v2_write_tag(file, *buf, *len);
+				fclose(file);
+				return ret;
 			} else if (*len + 32*1024 < id3v2_length) {
 				/* if new tag is more than 32K shorter than the old,
 				   rewrite file to shrink it. */
@@ -1163,11 +1168,15 @@ meta_id3v2_rewrite(char * filename, unsigned char ** buf, int * len) {
 				if (ret != META_ERROR_NONE) {
 					return ret;
 				}
-				return meta_id3v2_write_tag(file, *buf, *len);
+				ret = meta_id3v2_write_tag(file, *buf, *len);
+				fclose(file);
+				return ret;
 			} else {
 				/* write new tag, with remaining space as padding */
 				meta_id3v2_pad(buf, len, id3v2_length);
-				return meta_id3v2_write_tag(file, *buf, *len);
+				ret = meta_id3v2_write_tag(file, *buf, *len);
+				fclose(file);
+				return ret;
 			}
 		}
 	}

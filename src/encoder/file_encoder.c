@@ -94,6 +94,7 @@ file_encoder_open(file_encoder_t * fenc, encoder_mode_t * mode) {
 		return 1;
 	}
 	
+	enc->mode = mode;
 	fenc->penc = (void *)enc;
 	fenc->file_open = 1;
 	return 0;

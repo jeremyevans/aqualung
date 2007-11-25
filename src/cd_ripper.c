@@ -46,6 +46,7 @@
 #include "options.h"
 #include "i18n.h"
 #include "cdda.h"
+#include "metadata.h"
 #include "cd_ripper.h"
 
 #if defined(HAVE_CDDA) && (defined(HAVE_SNDFILE) || defined(HAVE_FLAC) || defined(HAVE_VORBISENC) || defined(HAVE_LAME))
@@ -1111,6 +1112,24 @@ ripper_update_status(gpointer pdata) {
 }
 
 
+void
+ripper_meta_add(metadata_t * meta, int tags, int type, char * str, int val) {
+
+	int tag = META_TAG_MAX;
+	while (tag) {
+		if (tags & tag) {
+			meta_frame_t * frame = meta_frame_new();
+			frame->tag = tag;
+			frame->type = type;
+			frame->field_val = strdup(str);
+			frame->int_val = val;
+			metadata_add_frame(meta, frame);
+		}
+		tag >>= 1;
+	}
+}
+
+
 void *
 ripper_thread(void * arg) {
 
@@ -1132,6 +1151,7 @@ ripper_thread(void * arg) {
 		int no;
 		char * name;
 		char * ext = "raw";
+		int tags;
 		char decoder_filename[256];
 		int track_sectors = 0;
 		int track_sectors_read = 0;
@@ -1163,10 +1183,22 @@ ripper_thread(void * arg) {
 		track_sectors = drive->disc.toc[no] - drive->disc.toc[no-1];
 
 		switch (ripper_format) {
-		case ENC_SNDFILE_LIB: ext = "wav"; break;
-		case ENC_FLAC_LIB:    ext = "flac"; break;
-		case ENC_VORBIS_LIB:  ext = "ogg"; break;
-		case ENC_LAME_LIB:    ext = "mp3"; break;
+		case ENC_SNDFILE_LIB:
+			ext = "wav";
+			tags = 0;
+			break;
+		case ENC_FLAC_LIB:
+			ext = "flac";
+			tags = META_TAG_OXC;
+			break;
+		case ENC_VORBIS_LIB:
+			ext = "ogg";
+			tags = META_TAG_OXC;
+			break;
+		case ENC_LAME_LIB:
+			ext = "mp3";
+			tags = META_TAG_ID3v1 | META_TAG_ID3v2 | META_TAG_APE;
+			break;
 		}
 
 		snprintf(decoder_filename, 255, "CDDA %s %lX %d", drive->device_path, hash, no);
@@ -1184,12 +1216,16 @@ ripper_thread(void * arg) {
 		}
 		mode.write_meta = ripper_meta;
 		if (mode.write_meta) {
-			strncpy(mode.meta.artist, ripper_artist, MAXLEN-1);
-			strncpy(mode.meta.album, ripper_album, MAXLEN-1);
-			strncpy(mode.meta.title, name, MAXLEN-1);
-			strncpy(mode.meta.genre, ripper_genre, MAXLEN-1);
-			snprintf(mode.meta.year, MAXLEN-1, "%d", ripper_year);
-			snprintf(mode.meta.track, MAXLEN-1, "%d", no);
+			mode.meta = metadata_new();
+			char date[8];
+			snprintf(date, 7, "%d", ripper_year);
+
+			ripper_meta_add(mode.meta, tags, META_FIELD_ARTIST, ripper_artist, 0);
+			ripper_meta_add(mode.meta, tags, META_FIELD_ALBUM, ripper_album, 0);
+			ripper_meta_add(mode.meta, tags, META_FIELD_TITLE, name, 0);
+			ripper_meta_add(mode.meta, tags, META_FIELD_GENRE, ripper_genre, 0);
+			ripper_meta_add(mode.meta, tags, META_FIELD_DATE, date, 0);
+			ripper_meta_add(mode.meta, tags, META_FIELD_TRACKNO, "", no);
 		}
 
 		fdec = file_decoder_new();
@@ -1264,6 +1300,9 @@ ripper_thread(void * arg) {
 		file_encoder_close(fenc);
 		file_decoder_delete(fdec);
 		file_encoder_delete(fenc);
+		if (mode.meta != NULL) {
+			metadata_free(mode.meta);
+		}
 
 		++track_cnt;
 	}

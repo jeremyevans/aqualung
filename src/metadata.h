@@ -249,6 +249,8 @@ metadata_t * metadata_from_mpeg_stream_data(char * str);
 void metadata_make_title_string(metadata_t * meta, char * dest);
 void metadata_make_playlist_string(metadata_t * meta, char * dest);
 
+metadata_t * metadata_clone(metadata_t * meta, int tags);
+
 
 /* low-level utils */
 u_int32_t meta_read_int32(unsigned char * buf);

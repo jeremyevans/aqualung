@@ -38,6 +38,7 @@
 #include "utils.h"
 #include "utils_gui.h"
 #include "options.h"
+#include "file_info.h"
 #include "playlist.h"
 #include "music_browser.h"
 #include "podcast.h"
@@ -58,6 +59,7 @@ GdkPixbuf * icon_podcasts;
 
 GtkWidget * podcast_track_menu;
 GtkWidget * podcast_track__addlist;
+GtkWidget * podcast_track__fileinfo;
 
 GtkWidget * podcast_feed_menu;
 GtkWidget * podcast_feed__addlist;
@@ -79,6 +81,7 @@ GtkWidget * podcast_store__update_enabled;
 void podcast_store__addlist_defmode(gpointer data);
 void podcast_feed__addlist_defmode(gpointer data);
 void podcast_track__addlist_cb(gpointer data);
+void podcast_track__fileinfo_cb(gpointer data);
 
 void podcast_store__update_cb(gpointer data);
 void podcast_feed__subscribe_cb(gpointer data);
@@ -104,6 +107,7 @@ struct keybinds podcast_feed_keybinds[] = {
 
 struct keybinds podcast_track_keybinds[] = {
 	{podcast_track__addlist_cb, GDK_a, GDK_A},
+	{podcast_track__fileinfo_cb, GDK_i, GDK_I},
 	{NULL, 0}
 };
 
@@ -488,6 +492,33 @@ podcast_track__addlist_cb(gpointer data) {
 	}
 }
 
+
+void
+podcast_track__fileinfo_cb(gpointer data) {
+
+	GtkTreeIter iter_track;
+	GtkTreeIter pod_iter;
+	GtkTreeModel * model;
+
+	char list_str[MAXLEN];
+
+	if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
+
+		podcast_item_t * item;
+		podcast_t * podcast;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, MS_COL_DATA, &item, -1);
+
+		gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &pod_iter, &iter_track);
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &pod_iter, MS_COL_DATA, &podcast, -1);
+
+		make_title_string(list_str, options.title_format,
+				  podcast->author ? podcast->author : _("Podcasts"),
+				  podcast->title, item->title);
+
+		show_file_info(list_str, item->file, 0, model, iter_track, TRUE);
+	}
+}
 
 void
 podcast_feed__addlist_with_mode(int mode, gpointer data) {
@@ -1389,9 +1420,13 @@ store_podcast_create_popup_menu(void) {
 	podcast_track_menu = gtk_menu_new();
 	register_toplevel_window(podcast_track_menu, TOP_WIN_SKIN);
 	podcast_track__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
+	podcast_track__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_track_menu), podcast_track__addlist);
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_track_menu), podcast_track__fileinfo);
  	g_signal_connect_swapped(G_OBJECT(podcast_track__addlist), "activate", G_CALLBACK(podcast_track__addlist_cb), NULL);
+ 	g_signal_connect_swapped(G_OBJECT(podcast_track__fileinfo), "activate", G_CALLBACK(podcast_track__fileinfo_cb), NULL);
 	gtk_widget_show(podcast_track__addlist);
+	gtk_widget_show(podcast_track__fileinfo);
 
 	/* create popup menu for podcast_feed tree items */
 	podcast_feed_menu = gtk_menu_new();

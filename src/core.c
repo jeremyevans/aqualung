@@ -1078,14 +1078,10 @@ jack_shutdown(void * arg) {
 }
 #endif /* HAVE_JACK */
 
+#ifndef _WIN32
 int
 set_thread_priority(pthread_t thread, char * name, int realtime, int priority) {
-#ifdef _WIN32
-	if(realtime) {
-		fprintf(stderr, "Warning: setting thread priorities is unsupported under Win32.\n");
-	}
-	return -1;
-#else
+
 	struct sched_param param;
 	int policy;
 	int x;
@@ -1129,8 +1125,8 @@ set_thread_priority(pthread_t thread, char * name, int realtime, int priority) {
 	}
 	
 	return x;
-#endif /* _WIN32 */
 }
+#endif /* _WIN32 */
 
 #ifdef HAVE_OSS
 /* return values:

@@ -271,6 +271,9 @@ void
 meta_update_frame_data(meta_frame_t * frame, char * str, int val, float fval) {
 
 	if (META_FIELD_TEXT(frame->type)) {
+		if (frame->field_val != NULL) {
+			free(frame->field_val);
+		}
 		frame->field_val = strdup(str);
 	} else if (META_FIELD_INT(frame->type)) {
 		frame->int_val = val;

@@ -407,7 +407,7 @@ export_item(export_t * export, export_item_t * item, int index) {
 	file_encoder_t * fenc;
 	encoder_mode_t mode;
 	char * ext = "raw";
-	int tags;
+	int tags = 0;
 
 	float buf[2*BUFSIZE];
 	int n_read;
@@ -926,16 +926,18 @@ export_progress_window(export_t * export) {
 }
 
 
-void
+int
 export_start(export_t * export) {
 
 	if (export_dialog(export)) {
 		export_progress_window(export);
 		export->progbar_tag = g_timeout_add(250, update_progbar_ratio, export);
 		AQUALUNG_THREAD_CREATE(export->thread_id, NULL, export_thread, export);
-	} else {
-		export_finish(export);
+		return 1;
 	}
+
+	export_finish(export);
+	return 0;
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

@@ -80,7 +80,7 @@ typedef struct {
 export_t * export_new(void);
 void export_append_item(export_t * export, char * infile,
 			char * artist, char * album, char * title, int year, int no);
-void export_start(export_t * export);
+int export_start(export_t * export);
 
 #endif /* _EXPORT_H */
 

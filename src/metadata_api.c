@@ -298,9 +298,9 @@ meta_update_frame(metadata_t * meta, int add_tags, int type,
 		frame = metadata_get_frame_by_tag_and_type(meta, tag, type, NULL);
 		if ((frame == NULL) && ((add_tags & tag) != 0)) {
 
-			char * str;
+			char * s;
 			/* make sure frame type is available in this tag */
-			if (!meta_get_fieldname_embedded(tag, type, &str)) {
+			if (!meta_get_fieldname_embedded(tag, type, &s)) {
 				tag <<= 1;
 				continue;
 			}

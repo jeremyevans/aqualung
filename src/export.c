@@ -400,6 +400,91 @@ set_prog_trg_file_entry(export_t * export, char * file) {
 	g_idle_add(set_prog_trg_file_entry_idle, export);
 }
 
+
+void
+export_meta_amend_frame(metadata_t * meta, int tag, int type, export_item_t * item) {
+
+	char * str;
+	meta_frame_t * frame;
+
+	/* see whether particular frame type is available in this tag */
+	if (!meta_get_fieldname_embedded(tag, type, &str)) {
+		return;
+	}
+
+	/* if yes, check for existance */
+	frame = metadata_get_frame_by_tag_and_type(meta, tag, type, NULL);
+	if (frame != NULL) {
+		return;
+	}
+
+	/* not found, add it with content from export item */
+	frame = meta_frame_new();
+	frame->tag = tag;
+	frame->type = type;
+	switch (type) {
+	case META_FIELD_TITLE:
+		frame->field_val = strdup(item->title);
+		break;
+	case META_FIELD_ARTIST:
+		frame->field_val = strdup(item->artist);
+		break;
+	case META_FIELD_ALBUM:
+		frame->field_val = strdup(item->album);
+		break;
+	case META_FIELD_DATE:
+		{
+			char str_year[6];
+			snprintf(str_year, 5, "%d", item->year);
+			frame->field_val = strdup(str_year);
+		}
+		break;
+	case META_FIELD_TRACKNO:
+		frame->int_val = item->no;
+		break;
+	}
+
+	metadata_add_frame(meta, frame);
+}
+
+
+/* Add metadata fields stored in Music Store / Playlist
+ * if they were not transferred from source file metadata.
+ */
+void
+export_meta_amend_stored_fields(metadata_t * meta, int tags, export_item_t * item) {
+
+	int tag = META_TAG_MAX;
+
+	/* iterate on possible output tags */
+	while (tag) {
+
+		if ((tags & tag) == 0) {
+			tag >>= 1;
+			continue;
+		}
+
+		if (strcmp(item->title, _("Unknown Track")) != 0) {
+			export_meta_amend_frame(meta, tag, META_FIELD_TITLE, item);
+		}
+		if (strcmp(item->artist, _("Unknown Artist")) != 0) {
+			export_meta_amend_frame(meta, tag, META_FIELD_ARTIST, item);
+		}
+		if (strcmp(item->album, _("Unknown Album")) != 0) {
+			export_meta_amend_frame(meta, tag, META_FIELD_ALBUM, item);
+		}
+		if (item->year != 0) {
+			export_meta_amend_frame(meta, tag, META_FIELD_DATE, item);
+		}
+		if (item->no != 0) {
+			export_meta_amend_frame(meta, tag, META_FIELD_TRACKNO, item);
+		}
+
+		tag >>= 1;
+	}
+}
+
+
 void
 export_item(export_t * export, export_item_t * item, int index) {
 
@@ -467,6 +552,7 @@ export_item(export_t * export, export_item_t * item, int index) {
 	mode.write_meta = export->write_meta;
 	if (mode.write_meta) {
 		mode.meta = metadata_clone(fdec->meta, tags);
+		export_meta_amend_stored_fields(mode.meta, tags, item);
 	}
 	
 	fenc = file_encoder_new();

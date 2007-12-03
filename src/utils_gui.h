@@ -72,6 +72,9 @@ void insert_label_entry_browse(GtkWidget * table, char * ltext, GtkWidget ** ent
 void insert_label_entry_button(GtkWidget * table, char * ltext, GtkWidget ** entry,
 			       char * etext, GtkWidget * button, int y1, int y2);
 
+void insert_label_progbar_button(GtkWidget * table, char * ltext, GtkWidget ** progbar,
+				 GtkWidget * button, int y1, int y2);
+
 void insert_label_spin(GtkWidget * table, char * ltext, GtkWidget ** spin,
 		       int spinval, int y1, int y2);
 

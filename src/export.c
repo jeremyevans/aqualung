@@ -51,9 +51,11 @@
 
 #define BUFSIZE 10240
 
-
 extern GtkWidget * browser_window;
 extern options_t options;
+
+GtkWidget * export_window;
+int export_slot_count;
 
 typedef struct {
 
@@ -260,15 +262,14 @@ export_finish(gpointer user_data) {
 	export_t * export = (export_t *)user_data;
 	GSList * node;
 
-	if (export->progbar_tag > 0) {
-		g_source_remove(export->progbar_tag);
-	}
+	gtk_window_resize(GTK_WINDOW(export_window),
+			  export_window->allocation.width,
+			  export_window->allocation.height - export->slot->allocation.height);
 
-	if (export->prog_window) {
-		unregister_toplevel_window(export->prog_window);
-		gtk_widget_destroy(export->prog_window);
-		export->prog_window = NULL;
-	}
+	gtk_widget_destroy(export->slot);
+	export->slot = NULL;
+
+	g_source_remove(export->progbar_tag);
 
 	for (node = export->slist; node; node = node->next) {
 		export_item_free((export_item_t *)node->data);
@@ -276,6 +277,14 @@ export_finish(gpointer user_data) {
 
 	g_slist_free(export->slist);
         export_free(export);
+
+	--export_slot_count;
+
+	if (export_slot_count == 0) {
+		unregister_toplevel_window(export_window);
+		gtk_widget_destroy(export_window);
+		export_window = NULL;
+	}
 
 	return FALSE;
 }
@@ -326,13 +335,13 @@ update_progbar_ratio(gpointer user_data) {
 
 	export_t * export = (export_t *)user_data;
 
-	if (export->prog_window) {
+	if (export->slot) {
+
 		char tmp[16];
+
 		snprintf(tmp, 15, "%d%%", (int)(export->ratio * 100));
 		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(export->progbar), export->ratio);
 		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(export->progbar), tmp);
-	} else {
-		return FALSE;
 	}
 
 	return TRUE;
@@ -343,7 +352,7 @@ set_prog_src_file_entry_idle(gpointer user_data) {
 
 	export_t * export = (export_t *)user_data;
 
-	if (export->prog_window) {
+	if (export->slot) {
 
 		char * utf8 = NULL;
 
@@ -364,7 +373,7 @@ set_prog_trg_file_entry_idle(gpointer user_data) {
 
 	export_t * export = (export_t *)user_data;
 
-	if (export->prog_window) {
+	if (export->slot) {
 
 		char * utf8 = NULL;
 
@@ -952,63 +961,78 @@ export_dialog(export_t * export) {
 	}
 }
 
-void
-export_prog_window_close(GtkWidget * widget, gpointer user_data) {
+gboolean
+export_window_event(GtkWidget * widget, GdkEvent * event, gpointer * data) {
 
-	export_t * export = (export_t *)user_data;
-
-	export->cancelled = 1;
-
-	if (export->prog_window) {
-		unregister_toplevel_window(export->prog_window);
-		gtk_widget_destroy(export->prog_window);
-		export->prog_window = NULL;
+	if (event->type == GDK_DELETE) {
+		gtk_window_iconify(GTK_WINDOW(export_window));
+		return TRUE;
 	}
+
+	return FALSE;
+}
+
+void
+export_cancel_event(GtkButton * button, gpointer data) {
+
+	export_t * export = (export_t *)data;
+
+        export->cancelled = 1;
+}
+
+void
+create_export_window() {
+
+	GtkWidget * vbox;
+
+	export_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	register_toplevel_window(export_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
+        gtk_window_set_title(GTK_WINDOW(export_window), _("Exporting files"));
+        gtk_window_set_position(GTK_WINDOW(export_window), GTK_WIN_POS_CENTER);
+        gtk_window_resize(GTK_WINDOW(export_window), 480, 110);
+        g_signal_connect(G_OBJECT(export_window), "event",
+                         G_CALLBACK(export_window_event), NULL);
+
+        gtk_container_set_border_width(GTK_CONTAINER(export_window), 5);
+
+        vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_add(GTK_CONTAINER(export_window), vbox);
+
+        gtk_widget_show_all(export_window);
 }
 
 void
 export_progress_window(export_t * export) {
 
-	GtkWidget * table;
 	GtkWidget * vbox;
-	GtkWidget * hbuttonbox;
 
+	++export_slot_count;
 
-	export->prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	register_toplevel_window(export->prog_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
-        gtk_window_set_title(GTK_WINDOW(export->prog_window), _("Exporting files"));
-        gtk_window_set_position(GTK_WINDOW(export->prog_window), GTK_WIN_POS_CENTER);
-        gtk_window_resize(GTK_WINDOW(export->prog_window), 430, 110);
-        g_signal_connect(G_OBJECT(export->prog_window), "delete_event",
-                         G_CALLBACK(export_prog_window_close), export);
-        gtk_container_set_border_width(GTK_CONTAINER(export->prog_window), 5);
+	if (export_window == NULL) {
+		create_export_window();
+	}
 
-        vbox = gtk_vbox_new(FALSE, 0);
-        gtk_container_add(GTK_CONTAINER(export->prog_window), vbox);
+	vbox = gtk_bin_get_child(GTK_BIN(export_window));
 
-	table = gtk_table_new(3, 2, FALSE);
-        gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
+	export->slot = gtk_table_new(5, 2, FALSE);
+        gtk_box_pack_start(GTK_BOX(vbox), export->slot, FALSE, FALSE, 0);
 
-	insert_label_entry(table, _("Source file:"), &export->prog_file_entry1, NULL, 0, 1, FALSE);
-	insert_label_entry(table, _("Target file:"), &export->prog_file_entry2, NULL, 1, 2, FALSE);
+	gtk_table_attach(GTK_TABLE(export->slot), gtk_hseparator_new(), 0, 2, 0, 1,
+			 GTK_FILL, GTK_FILL, 5, 5);
 
-	export->progbar = gtk_progress_bar_new();
-        gtk_table_attach(GTK_TABLE(table), export->progbar, 0, 2, 2, 3,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 5);
-
-        gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, TRUE, 5);
-
-	hbuttonbox = gtk_hbutton_box_new();
-	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
+	insert_label_entry(export->slot, _("Source file:"), &export->prog_file_entry1, NULL, 1, 2, FALSE);
+	insert_label_entry(export->slot, _("Target file:"), &export->prog_file_entry2, NULL, 2, 3, FALSE);
 
         export->prog_cancel_button = gui_stock_label_button(_("Abort"), GTK_STOCK_CANCEL);
-        g_signal_connect(export->prog_cancel_button, "clicked", G_CALLBACK(export_prog_window_close), export);
-  	gtk_container_add(GTK_CONTAINER(hbuttonbox), export->prog_cancel_button);
+        g_signal_connect(export->prog_cancel_button, "clicked", G_CALLBACK(export_cancel_event), export);
+	insert_label_progbar_button(export->slot, _("Progress:"), &export->progbar, export->prog_cancel_button, 3, 4);
+
+	gtk_table_attach(GTK_TABLE(export->slot), gtk_hseparator_new(), 0, 2, 4, 5,
+			 GTK_FILL, GTK_FILL, 5, 5);
 
         gtk_widget_grab_focus(export->prog_cancel_button);
 
-        gtk_widget_show_all(export->prog_window);
+        gtk_widget_show_all(export->slot);
 }
 
 

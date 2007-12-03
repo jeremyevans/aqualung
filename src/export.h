@@ -69,7 +69,7 @@ typedef struct {
 	GtkWidget * vbr_check;
 	GtkWidget * meta_check;
 
-	GtkWidget * prog_window;
+	GtkWidget * slot;
 	GtkWidget * prog_file_entry1;
 	GtkWidget * prog_file_entry2;
 	GtkWidget * prog_cancel_button;

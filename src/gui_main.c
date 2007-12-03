@@ -787,12 +787,14 @@ main_window_closing(void) {
 gboolean
 main_window_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
-#ifndef HAVE_SYSTRAY
 	if (event->type == GDK_DELETE) {
+#ifdef HAVE_SYSTRAY
+		hide_all_windows(NULL);
+#else
 		main_window_closing();
+#endif /* HAVE_SYSTRAY */
 		return TRUE;
 	}
-#endif /* !HAVE_SYSTRAY */
 
 	return FALSE;
 }
@@ -2578,12 +2580,6 @@ create_main_window(char * skin_path) {
 #endif /* HAVE_SYSTRAY */
 
         g_signal_connect(G_OBJECT(main_window), "event", G_CALLBACK(main_window_event), NULL);
-
-#ifdef HAVE_SYSTRAY
-        g_signal_connect(G_OBJECT(main_window), "delete_event", G_CALLBACK(hide_all_windows), NULL);
-#else
-        g_signal_connect(G_OBJECT(main_window), "delete_event", G_CALLBACK(main_window_close), NULL);
-#endif /* HAVE_SYSTRAY */
 
         g_signal_connect(G_OBJECT(main_window), "key_press_event", G_CALLBACK(main_window_key_pressed), NULL);
         g_signal_connect(G_OBJECT(main_window), "key_release_event",

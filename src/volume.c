@@ -344,11 +344,9 @@ create_volume_window() {
 void
 vol_create_gui(volume_t * vol) {
 
-	GtkWidget * table;
 	GtkWidget * label;
 	GtkWidget * vbox;
 	GtkWidget * hbox;
-	GtkWidget * hseparator;
 
 	++vol_slot_count;
 
@@ -358,48 +356,46 @@ vol_create_gui(volume_t * vol) {
 
 	vbox = gtk_bin_get_child(GTK_BIN(vol_window));
 
-	vol->slot = table = gtk_table_new(2, 5, FALSE);
-        gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
+	vol->slot = gtk_table_new(4, 3, FALSE);
+        gtk_box_pack_start(GTK_BOX(vbox), vol->slot, FALSE, FALSE, 0);
 
-        hseparator = gtk_hseparator_new();
-	gtk_table_attach(GTK_TABLE(table), hseparator, 0, 3, 0, 1,
+	gtk_table_attach(GTK_TABLE(vol->slot), gtk_hseparator_new(), 0, 3, 0, 1,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
         hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("File:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
+	gtk_table_attach(GTK_TABLE(vol->slot), hbox, 0, 1, 1, 2,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
         vol->file_entry = gtk_entry_new();
         gtk_editable_set_editable(GTK_EDITABLE(vol->file_entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table), vol->file_entry, 1, 2, 1, 2,
+	gtk_table_attach(GTK_TABLE(vol->slot), vol->file_entry, 1, 2, 1, 2,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
 
 	vol->pause_button = gtk_button_new_with_label(_("Pause"));
 	g_signal_connect(vol->pause_button, "clicked", G_CALLBACK(vol_pause_event), vol);
-	gtk_table_attach(GTK_TABLE(table), vol->pause_button, 2, 3, 1, 2,
+	gtk_table_attach(GTK_TABLE(vol->slot), vol->pause_button, 2, 3, 1, 2,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
         hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("Progress:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3,
+	gtk_table_attach(GTK_TABLE(vol->slot), hbox, 0, 1, 2, 3,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
 	vol->progress = gtk_progress_bar_new();
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(vol->progress), 0.0f);
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(vol->progress), "0.0%");
-	gtk_table_attach(GTK_TABLE(table), vol->progress, 1, 2, 2, 3,
+	gtk_table_attach(GTK_TABLE(vol->slot), vol->progress, 1, 2, 2, 3,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
 
 	vol->cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL); 
 	g_signal_connect(vol->cancel_button, "clicked", G_CALLBACK(vol_cancel_event), vol);
-	gtk_table_attach(GTK_TABLE(table), vol->cancel_button, 2, 3, 2, 3,
+	gtk_table_attach(GTK_TABLE(vol->slot), vol->cancel_button, 2, 3, 2, 3,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
-        hseparator = gtk_hseparator_new();
-	gtk_table_attach(GTK_TABLE(table), hseparator, 0, 3, 3, 4,
+	gtk_table_attach(GTK_TABLE(vol->slot), gtk_hseparator_new(), 0, 3, 3, 4,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
 	gtk_widget_show_all(vol->slot);

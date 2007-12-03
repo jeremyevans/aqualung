@@ -2163,7 +2163,7 @@ build_dialog(build_store_t * data) {
 
 
 void
-prog_window_close(GtkWidget * widget, gpointer user_data) {
+cancel_build(GtkButton * button, gpointer user_data) {
 
 	build_store_t * data = (build_store_t *)user_data;
 
@@ -2176,11 +2176,13 @@ prog_window_close(GtkWidget * widget, gpointer user_data) {
 	}
 }
 
-void
-cancel_build(GtkWidget * widget, gpointer data) {
+gboolean
+prog_window_close(GtkWidget * widget, GdkEvent * event, gpointer user_data) {
 
-	prog_window_close(widget, data);
+	cancel_build(NULL, user_data);
+	return FALSE;
 }
+
 
 gboolean
 finish_build(gpointer user_data) {

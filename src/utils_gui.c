@@ -621,7 +621,7 @@ insert_label_entry_button(GtkWidget * table, char * ltext, GtkWidget ** entry, c
 	}
 	gtk_box_pack_start(GTK_BOX(hbox), *entry, TRUE, TRUE, 0);
 
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 5);
 }
 
 void
@@ -632,6 +632,30 @@ insert_label_entry_browse(GtkWidget * table, char * ltext, GtkWidget ** entry, c
 	GtkWidget * button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
 	insert_label_entry_button(table, ltext, entry, etext, button, y1, y2);
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(browse_cb), *entry);
+}
+
+void
+insert_label_progbar_button(GtkWidget * table, char * ltext, GtkWidget ** progbar,
+			    GtkWidget * button, int y1, int y2) {
+
+	GtkWidget * label;
+	GtkWidget * hbox;
+
+	label = gtk_label_new(ltext);
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, y1, y2,
+			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
+
+	*progbar = gtk_progress_bar_new();
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(*progbar), 0.0f);
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(*progbar), "0%");
+	gtk_box_pack_start(GTK_BOX(hbox), *progbar, TRUE, TRUE, 0);
+
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 5);
 }
 
 void

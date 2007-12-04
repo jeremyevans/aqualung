@@ -49,6 +49,7 @@ struct keybinds {
 	void (*callback)(gpointer);
 	int keyval1;
 	int keyval2;
+	int state;
 };
 
 enum {

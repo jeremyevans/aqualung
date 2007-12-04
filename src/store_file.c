@@ -206,50 +206,50 @@ void track__fileinfo_cb(gpointer data);
 
 
 struct keybinds store_keybinds[] = {
-	{store__addlist_defmode, GDK_a, GDK_A},
-	{store__add_cb, GDK_n, GDK_N},
-	{store__build_cb, GDK_b, GDK_B},
-	{store__edit_cb, GDK_e, GDK_E},
-	{store__build_cb, GDK_u, GDK_U},
-	{store__save_cb, GDK_s, GDK_S},
-	{store__volume_unmeasured_cb, GDK_v, GDK_V},
-	{store__remove_cb, GDK_Delete, GDK_KP_Delete},
-	{store__export_cb, GDK_x, GDK_X},
-	{artist__add_cb, GDK_plus, GDK_KP_Add},
-	{NULL, 0}
+	{store__addlist_defmode, GDK_a, GDK_A, 0},
+	{store__add_cb, GDK_n, GDK_N, 0},
+	{store__build_cb, GDK_b, GDK_B, 0},
+	{store__edit_cb, GDK_e, GDK_E, 0},
+	{store__build_cb, GDK_u, GDK_U, 0},
+	{store__save_cb, GDK_s, GDK_S, 0},
+	{store__volume_unmeasured_cb, GDK_v, GDK_V, 0},
+	{store__remove_cb, GDK_Delete, GDK_KP_Delete, 0},
+	{store__export_cb, GDK_x, GDK_X, 0},
+	{artist__add_cb, GDK_n, GDK_N, GDK_CONTROL_MASK},
+	{NULL, 0, 0}
 };
 
 struct keybinds artist_keybinds[] = {
-	{artist__addlist_defmode, GDK_a, GDK_A},
-	{artist__add_cb, GDK_n, GDK_N},
-	{artist__edit_cb, GDK_e, GDK_E},
-	{artist__volume_unmeasured_cb, GDK_v, GDK_V},
-	{artist__remove_cb, GDK_Delete, GDK_KP_Delete},
-	{artist__export_cb, GDK_x, GDK_X},
-	{record__add_cb, GDK_plus, GDK_KP_Add},
-	{NULL, 0}
+	{artist__addlist_defmode, GDK_a, GDK_A, 0},
+	{artist__add_cb, GDK_n, GDK_N, 0},
+	{artist__edit_cb, GDK_e, GDK_E, 0},
+	{artist__volume_unmeasured_cb, GDK_v, GDK_V, 0},
+	{artist__remove_cb, GDK_Delete, GDK_KP_Delete, 0},
+	{artist__export_cb, GDK_x, GDK_X, 0},
+	{record__add_cb, GDK_n, GDK_N, GDK_CONTROL_MASK},
+	{NULL, 0, 0}
 };
 
 struct keybinds record_keybinds[] = {
-	{record__addlist_defmode, GDK_a, GDK_A},
-	{record__add_cb, GDK_n, GDK_N},
-	{record__edit_cb, GDK_e, GDK_E},
-	{record__volume_unmeasured_cb, GDK_v, GDK_V},
-	{record__remove_cb, GDK_Delete, GDK_KP_Delete},
-	{record__export_cb, GDK_x, GDK_X},
-	{track__add_cb, GDK_plus, GDK_KP_Add},
-	{NULL, 0}
+	{record__addlist_defmode, GDK_a, GDK_A, 0},
+	{record__add_cb, GDK_n, GDK_N, 0},
+	{record__edit_cb, GDK_e, GDK_E, 0},
+	{record__volume_unmeasured_cb, GDK_v, GDK_V, 0},
+	{record__remove_cb, GDK_Delete, GDK_KP_Delete, 0},
+	{record__export_cb, GDK_x, GDK_X, 0},
+	{track__add_cb, GDK_n, GDK_N, GDK_CONTROL_MASK},
+	{NULL, 0, 0}
 };
 
 struct keybinds track_keybinds[] = {
-	{track__addlist_cb, GDK_a, GDK_A},
-	{track__add_cb, GDK_n, GDK_N},
-	{track__edit_cb, GDK_e, GDK_E},
-	{track__volume_unmeasured_cb, GDK_v, GDK_V},
-	{track__remove_cb, GDK_Delete, GDK_KP_Delete},
-	{track__fileinfo_cb, GDK_i, GDK_I},
-	{track__export_cb, GDK_x, GDK_X},
-	{NULL, 0}
+	{track__addlist_cb, GDK_a, GDK_A, 0},
+	{track__add_cb, GDK_n, GDK_N, 0},
+	{track__edit_cb, GDK_e, GDK_E, 0},
+	{track__volume_unmeasured_cb, GDK_v, GDK_V, 0},
+	{track__remove_cb, GDK_Delete, GDK_KP_Delete, 0},
+	{track__fileinfo_cb, GDK_i, GDK_I, 0},
+	{track__export_cb, GDK_x, GDK_X, 0},
+	{NULL, 0, 0}
 };
 
 
@@ -4321,33 +4321,45 @@ store_file_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path) {
 		switch (gtk_tree_path_get_depth(path)) {
 		case 1: 
 			for (i = 0; store_keybinds[i].callback; ++i) {
-				if (kevent->keyval == store_keybinds[i].keyval1 ||
-				    kevent->keyval == store_keybinds[i].keyval2) {
-					(store_keybinds[i].callback)(NULL);
+				if ((store_keybinds[i].state == 0 && kevent->state == 0) ||
+				    store_keybinds[i].state & kevent->state) {
+					if (kevent->keyval == store_keybinds[i].keyval1 ||
+					    kevent->keyval == store_keybinds[i].keyval2) {
+						(store_keybinds[i].callback)(NULL);
+					}
 				}
 			}
 			break;
 		case 2:
 			for (i = 0; artist_keybinds[i].callback; ++i) {
-				if (kevent->keyval == artist_keybinds[i].keyval1 ||
-				    kevent->keyval == artist_keybinds[i].keyval2) {
-					(artist_keybinds[i].callback)(NULL);
+				if ((artist_keybinds[i].state == 0 && kevent->state == 0) ||
+				    artist_keybinds[i].state & kevent->state) {
+					if (kevent->keyval == artist_keybinds[i].keyval1 ||
+					    kevent->keyval == artist_keybinds[i].keyval2) {
+						(artist_keybinds[i].callback)(NULL);
+					}
 				}
 			}
 			break;
 		case 3:
 			for (i = 0; record_keybinds[i].callback; ++i) {
-				if (kevent->keyval == record_keybinds[i].keyval1 ||
-				    kevent->keyval == record_keybinds[i].keyval2) {
-					(record_keybinds[i].callback)(NULL);
+				if ((record_keybinds[i].state == 0 && kevent->state == 0) ||
+				    record_keybinds[i].state & kevent->state) {
+					if (kevent->keyval == record_keybinds[i].keyval1 ||
+					    kevent->keyval == record_keybinds[i].keyval2) {
+						(record_keybinds[i].callback)(NULL);
+					}
 				}
 			}
 			break;
 		case 4:
 			for (i = 0; track_keybinds[i].callback; ++i) {
-				if (kevent->keyval == track_keybinds[i].keyval1 ||
-				    kevent->keyval == track_keybinds[i].keyval2) {
-					(track_keybinds[i].callback)(NULL);
+				if ((track_keybinds[i].state == 0 && kevent->state == 0) ||
+				    track_keybinds[i].state & kevent->state) {
+					if (kevent->keyval == track_keybinds[i].keyval1 ||
+					    kevent->keyval == track_keybinds[i].keyval2) {
+						(track_keybinds[i].callback)(NULL);
+					}
 				}
 			}
 			break;

@@ -107,18 +107,18 @@ void cdda_record__addlist_defmode(gpointer data);
 void cdda_track__addlist_cb(gpointer data);
 
 struct keybinds cdda_store_keybinds[] = {
-	{cdda_store__addlist_defmode, GDK_a, GDK_A},
-	{NULL, 0}
+	{cdda_store__addlist_defmode, GDK_a, GDK_A, 0},
+	{NULL, 0, 0}
 };
 
 struct keybinds cdda_record_keybinds[] = {
-	{cdda_record__addlist_defmode, GDK_a, GDK_A},
-	{NULL, 0}
+	{cdda_record__addlist_defmode, GDK_a, GDK_A, 0},
+	{NULL, 0, 0}
 };
 
 struct keybinds cdda_track_keybinds[] = {
-	{cdda_track__addlist_cb, GDK_a, GDK_A},
-	{NULL, 0}
+	{cdda_track__addlist_cb, GDK_a, GDK_A, 0},
+	{NULL, 0, 0}
 };
 
 

@@ -102,28 +102,28 @@ void podcast_track__export_cb(gpointer data);
 
 
 struct keybinds podcast_store_keybinds[] = {
-	{podcast_store__addlist_defmode, GDK_a, GDK_A},
-	{podcast_store__update_cb, GDK_u, GDK_U},
-	{podcast_store__export_cb, GDK_x, GDK_X},
-	{podcast_feed__subscribe_cb, GDK_plus, GDK_KP_Add},
-	{NULL, 0}
+	{podcast_store__addlist_defmode, GDK_a, GDK_A, 0},
+	{podcast_store__update_cb, GDK_u, GDK_U, 0},
+	{podcast_store__export_cb, GDK_x, GDK_X, 0},
+	{podcast_feed__subscribe_cb, GDK_n, GDK_N, GDK_CONTROL_MASK},
+	{NULL, 0, 0}
 };
 
 struct keybinds podcast_feed_keybinds[] = {
-	{podcast_feed__addlist_defmode, GDK_a, GDK_A},
-	{podcast_feed__subscribe_cb, GDK_n, GDK_N},
-	{podcast_feed__edit_cb, GDK_e, GDK_E},
-	{podcast_feed__update_cb, GDK_u, GDK_U},
-	{podcast_feed__remove_cb, GDK_Delete, GDK_KP_Delete},
-	{podcast_feed__export_cb, GDK_x, GDK_X},
-	{NULL, 0}
+	{podcast_feed__addlist_defmode, GDK_a, GDK_A, 0},
+	{podcast_feed__subscribe_cb, GDK_n, GDK_N, 0},
+	{podcast_feed__edit_cb, GDK_e, GDK_E, 0},
+	{podcast_feed__update_cb, GDK_u, GDK_U, 0},
+	{podcast_feed__remove_cb, GDK_Delete, GDK_KP_Delete, 0},
+	{podcast_feed__export_cb, GDK_x, GDK_X, 0},
+	{NULL, 0, 0}
 };
 
 struct keybinds podcast_track_keybinds[] = {
-	{podcast_track__addlist_cb, GDK_a, GDK_A},
-	{podcast_track__fileinfo_cb, GDK_i, GDK_I},
-	{podcast_track__export_cb, GDK_x, GDK_X},
-	{NULL, 0}
+	{podcast_track__addlist_cb, GDK_a, GDK_A, 0},
+	{podcast_track__fileinfo_cb, GDK_i, GDK_I, 0},
+	{podcast_track__export_cb, GDK_x, GDK_X, 0},
+	{NULL, 0, 0}
 };
 
 
@@ -1527,25 +1527,34 @@ store_podcast_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path)
 		switch (gtk_tree_path_get_depth(path)) {
 		case 1: 
 			for (i = 0; podcast_store_keybinds[i].callback; ++i) {
-				if (kevent->keyval == podcast_store_keybinds[i].keyval1 ||
-				    kevent->keyval == podcast_store_keybinds[i].keyval2) {
-					(podcast_store_keybinds[i].callback)(NULL);
+				if ((podcast_store_keybinds[i].state == 0 && kevent->state == 0) ||
+				    podcast_store_keybinds[i].state & kevent->state) {
+					if (kevent->keyval == podcast_store_keybinds[i].keyval1 ||
+					    kevent->keyval == podcast_store_keybinds[i].keyval2) {
+						(podcast_store_keybinds[i].callback)(NULL);
+					}
 				}
 			}
 			break;
 		case 2:
 			for (i = 0; podcast_feed_keybinds[i].callback; ++i) {
-				if (kevent->keyval == podcast_feed_keybinds[i].keyval1 ||
-				    kevent->keyval == podcast_feed_keybinds[i].keyval2) {
-					(podcast_feed_keybinds[i].callback)(NULL);
+				if ((podcast_feed_keybinds[i].state == 0 && kevent->state == 0) ||
+				    podcast_feed_keybinds[i].state & kevent->state) {
+					if (kevent->keyval == podcast_feed_keybinds[i].keyval1 ||
+					    kevent->keyval == podcast_feed_keybinds[i].keyval2) {
+						(podcast_feed_keybinds[i].callback)(NULL);
+					}
 				}
 			}
 			break;
 		case 3:
 			for (i = 0; podcast_track_keybinds[i].callback; ++i) {
-				if (kevent->keyval == podcast_track_keybinds[i].keyval1 ||
-				    kevent->keyval == podcast_track_keybinds[i].keyval2) {
-					(podcast_track_keybinds[i].callback)(NULL);
+				if ((podcast_track_keybinds[i].state == 0 && kevent->state == 0) ||
+				    podcast_track_keybinds[i].state & kevent->state) {
+					if (kevent->keyval == podcast_track_keybinds[i].keyval1 ||
+					    kevent->keyval == podcast_track_keybinds[i].keyval2) {
+						(podcast_track_keybinds[i].callback)(NULL);
+					}
 				}
 			}
 			break;

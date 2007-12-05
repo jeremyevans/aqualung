@@ -213,11 +213,29 @@ export_new(void) {
 }
 
 void
+export_item_free(export_item_t * item) {
+
+	free(item->infile);
+	free(item->artist);
+	free(item->album);
+	free(item->title);
+	free(item);
+}
+
+void
 export_free(export_t * export) {
+
+	GSList * node;
 
 #ifdef _WIN32
 	g_mutex_free(export->mutex);
 #endif /* _WIN32 */
+
+	for (node = export->slist; node; node = node->next) {
+		export_item_free((export_item_t *)node->data);
+	}
+
+	g_slist_free(export->slist);
 
 	export_map_free(export->artist_map);
 	export_map_free(export->record_map);
@@ -246,21 +264,10 @@ export_append_item(export_t * export, char * infile,
 	export->slist = g_slist_append(export->slist, item);
 }
 
-void
-export_item_free(export_item_t * item) {
-
-	free(item->infile);
-	free(item->artist);
-	free(item->album);
-	free(item->title);
-	free(item);
-}
-
 gboolean
 export_finish(gpointer user_data) {
 
 	export_t * export = (export_t *)user_data;
-	GSList * node;
 
 	gtk_window_resize(GTK_WINDOW(export_window),
 			  export_window->allocation.width,
@@ -271,11 +278,6 @@ export_finish(gpointer user_data) {
 
 	g_source_remove(export->progbar_tag);
 
-	for (node = export->slist; node; node = node->next) {
-		export_item_free((export_item_t *)node->data);
-	}
-
-	g_slist_free(export->slist);
         export_free(export);
 
 	--export_slot_count;
@@ -1046,7 +1048,7 @@ export_start(export_t * export) {
 		return 1;
 	}
 
-	export_finish(export);
+	export_free(export);
 	return 0;
 }
 

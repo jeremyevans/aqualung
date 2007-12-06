@@ -265,40 +265,119 @@ cover_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 	return FALSE;
 }
 
+
+void
+create_zoomed_cover_window(gint * size, GtkWidget * window, GtkWidget ** image_area) {
+
+	*size = cover_widths[options.cover_width];
+	if (*size == -1) {
+		*size = cover_widths[options.cover_width-1];
+	}
+	
+	cover_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	g_signal_connect(G_OBJECT(cover_window), "button_press_event",
+			 G_CALLBACK(cover_window_close_cb), NULL);
+	g_signal_connect(G_OBJECT(cover_window), "key_press_event",
+			 G_CALLBACK(cover_window_key_pressed), NULL);
+	gtk_window_set_position(GTK_WINDOW(cover_window), GTK_WIN_POS_MOUSE);
+	gtk_widget_set_events(cover_window, GDK_BUTTON_PRESS_MASK);
+	gtk_window_set_modal(GTK_WINDOW(cover_window), TRUE);
+	gtk_window_set_transient_for(GTK_WINDOW(cover_window), GTK_WINDOW(window));
+	gtk_window_set_decorated(GTK_WINDOW(cover_window), FALSE);
+	
+	*image_area = gtk_image_new();
+	gtk_widget_show(*image_area);
+	gtk_container_add (GTK_CONTAINER (cover_window), *image_area);
+}
+
+
 void 
 display_zoomed_cover(GtkWidget *window, GtkWidget *event_area, gchar *song_filename) {
 
         GtkWidget * image_area;
         gint size;
 
-        if (g_file_test (song_filename, G_FILE_TEST_IS_REGULAR) == TRUE) {
+        if (g_file_test(song_filename, G_FILE_TEST_IS_REGULAR) != TRUE) {
+		return;
+	}
 
-                size = cover_widths[options.cover_width];
-                if (size == -1) {
-                        size = cover_widths[options.cover_width-1];
-                }
+	create_zoomed_cover_window(&size, window, &image_area);
+	display_cover(image_area, event_area, NULL, size, size, song_filename, FALSE, FALSE);
+	gtk_widget_set_size_request(cover_window, calculated_width, calculated_height);
+	gtk_widget_show(cover_window);
+}
 
-		cover_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-                g_signal_connect(G_OBJECT(cover_window), "button_press_event",
-                                 G_CALLBACK(cover_window_close_cb), NULL);
-                g_signal_connect(G_OBJECT(cover_window), "key_press_event",
-                                 G_CALLBACK(cover_window_key_pressed), NULL);
-                gtk_window_set_position(GTK_WINDOW(cover_window), GTK_WIN_POS_MOUSE);
-	        gtk_widget_set_events(cover_window, GDK_BUTTON_PRESS_MASK);
-               	gtk_window_set_modal(GTK_WINDOW(cover_window), TRUE);
-        	gtk_window_set_transient_for(GTK_WINDOW(cover_window), GTK_WINDOW(window));
-                gtk_window_set_decorated(GTK_WINDOW(cover_window), FALSE);
 
-                image_area = gtk_image_new();
-                gtk_widget_show(image_area);
-                gtk_container_add (GTK_CONTAINER (cover_window), image_area);
+void 
+display_zoomed_cover_from_binary(GtkWidget *window, GtkWidget *event_area, void * data, int length) {
 
-                display_cover(image_area, event_area, NULL, size, size, song_filename, FALSE, FALSE);
+        GtkWidget * image_area;
+        gint size;
 
-                gtk_widget_set_size_request(cover_window, calculated_width, calculated_height);
-                gtk_widget_show(cover_window);
+        if (data == NULL) {
+		return;
+	}
 
-        }
+	create_zoomed_cover_window(&size, window, &image_area);
+	display_cover_from_binary(image_area, event_area, NULL, size, size, data, length, FALSE, FALSE);
+	gtk_widget_set_size_request(cover_window, calculated_width, calculated_height);
+	gtk_widget_show(cover_window);
+}
+
+
+void 
+display_cover_from_pixbuf(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
+			  gint dest_width, gint dest_height,
+			  GdkPixbuf * cover_pixbuf, gboolean hide, gboolean bevel) {
+
+        GdkPixbuf * cover_pixbuf_scaled;
+	gint width = gdk_pixbuf_get_width(cover_pixbuf);
+	gint height = gdk_pixbuf_get_height(cover_pixbuf);
+        gint scaled_width, scaled_height;
+
+	if (cover_pixbuf == NULL) {
+		return;
+	}
+
+        calculated_width = dest_width;
+        calculated_height = dest_height;
+
+	/* don't scale when orginal size is smaller than cover defaults */
+	
+	scaled_width =  dest_width;
+	scaled_height = dest_height;
+	
+	if (width >= height) {
+		scaled_height = (height * dest_height) / width;
+	} else {
+		scaled_width = (width * dest_width) / height;
+	}
+	
+	cover_pixbuf_scaled = gdk_pixbuf_scale_simple(cover_pixbuf,
+						      scaled_width, scaled_height,
+						      GDK_INTERP_TILES);
+	if (cover_pixbuf_scaled == NULL) {
+		return;
+	}
+	
+	draw_cover_frame(cover_pixbuf_scaled, scaled_width, scaled_height, bevel);
+	
+	calculated_width = scaled_width;
+	calculated_height = scaled_height;
+	
+	gtk_image_set_from_pixbuf(GTK_IMAGE(image_area), cover_pixbuf_scaled);
+	g_object_unref(cover_pixbuf_scaled);
+	
+	if (!cover_show_flag && hide == TRUE) {
+		cover_show_flag = 1;      
+		gtk_widget_show(image_area);
+		gtk_widget_show(event_area);
+		if (align) {
+			gtk_widget_show(align);
+		}
+	}
+
+	/* don't unref cover_pixbuf that was passed in */
 }
 
 
@@ -308,81 +387,76 @@ display_cover(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
               gchar *song_filename, gboolean hide, gboolean bevel) {
 
         GdkPixbuf * cover_pixbuf = NULL;
-        GdkPixbuf * cover_pixbuf_scaled;
-        GdkPixbufFormat * format;
-        gint width, height;
-        gint scaled_width, scaled_height;
         gchar cover_filename[PATH_MAX];
 
-        calculated_width = dest_width;
-        calculated_height = dest_height;
+        if (strlen(song_filename) == 0) {
+		return;
+	}
 
-
-        if (strlen(song_filename)) {
-
-                strcpy(cover_filename, find_cover_filename(song_filename));
-
-                cover_pixbuf = gdk_pixbuf_new_from_file (cover_filename, NULL);
-
-                if (cover_pixbuf != NULL) {
-
-                        format = gdk_pixbuf_get_file_info(cover_filename, &width, &height);
-
-                        /* don't scale when orginal size is smaller than cover defaults */
-
-                        scaled_width =  dest_width;
-                        scaled_height = dest_height;
-
-                        if (width >= height) {
-
-                                scaled_height = (height * (dest_height)) / width;
-
-                        } else {
-
-                                scaled_width = (width * (dest_width)) / height;
-                        }
-
-                        cover_pixbuf_scaled = gdk_pixbuf_scale_simple (cover_pixbuf, 
-                                                                       scaled_width, scaled_height, 
-                                                                       GDK_INTERP_TILES);
-                        g_object_unref (cover_pixbuf);
-
-                        if (cover_pixbuf_scaled != NULL) {
-                                cover_pixbuf = cover_pixbuf_scaled;
-
-                                draw_cover_frame(cover_pixbuf, scaled_width, scaled_height, bevel);
-
-                                calculated_width = scaled_width;
-                                calculated_height = scaled_height;
-
-                                gtk_image_set_from_pixbuf (GTK_IMAGE(image_area), cover_pixbuf);
-                                g_object_unref (cover_pixbuf);
-
-                                if (!cover_show_flag && hide == TRUE) {
-                                        cover_show_flag = 1;      
-                                        gtk_widget_show(image_area);
-                                        gtk_widget_show(event_area);
-                                        if (align) {
-                                                gtk_widget_show(align);
-                                        }
-                                }
-                        }
-                } else {
- 
-                        if (hide == TRUE) {
-                                cover_show_flag = 0;      
-                                gtk_widget_hide(image_area);
-                                gtk_widget_hide(event_area);
-				if (align) {
-					gtk_widget_hide(align);
-				}
-                        }
-
+	strcpy(cover_filename, find_cover_filename(song_filename));
+	cover_pixbuf = gdk_pixbuf_new_from_file(cover_filename, NULL);
+	if (cover_pixbuf != NULL) {
+		display_cover_from_pixbuf(image_area, event_area, align,
+					  dest_width, dest_height,
+					  cover_pixbuf, hide, bevel);
+		g_object_unref(cover_pixbuf);
+	} else {
+		if (hide == TRUE) {
+			cover_show_flag = 0;      
+			gtk_widget_hide(image_area);
+			gtk_widget_hide(event_area);
+			if (align) {
+				gtk_widget_hide(align);
+			}
                 }
-
         }
-
 }
+
+
+void 
+display_cover_from_binary(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
+			  gint dest_width, gint dest_height,
+			  void * data, int length, gboolean hide, gboolean bevel) {
+
+        GdkPixbuf * cover_pixbuf = NULL;
+	GdkPixbufLoader * loader;
+
+        if (data == NULL) {
+		return;
+	}
+
+	loader = gdk_pixbuf_loader_new();
+	if (gdk_pixbuf_loader_write(loader, data, length, NULL) != TRUE) {
+		fprintf(stderr, "display_cover_from_binary: failed to load image #1\n");
+		g_object_unref(loader);
+		return;
+	}
+
+	if (gdk_pixbuf_loader_close(loader, NULL) != TRUE) {
+		fprintf(stderr, "display_cover_from_binary: failed to load image #2\n");
+		g_object_unref(loader);
+		return;
+	}
+
+	cover_pixbuf = gdk_pixbuf_loader_get_pixbuf(loader);
+	if (cover_pixbuf != NULL) {
+		display_cover_from_pixbuf(image_area, event_area, align,
+					  dest_width, dest_height,
+					  cover_pixbuf, hide, bevel);
+		/* cover_pixbuf is owned by loader, so don't unref that manually */
+		g_object_unref(loader);
+	} else {
+		if (hide == TRUE) {
+			cover_show_flag = 0;      
+			gtk_widget_hide(image_area);
+			gtk_widget_hide(event_area);
+			if (align) {
+				gtk_widget_hide(align);
+			}
+		}
+        }
+}
+
 
 void
 insert_cover(GtkTreeIter * tree_iter, GtkTextIter * text_iter, GtkTextBuffer * buffer) {

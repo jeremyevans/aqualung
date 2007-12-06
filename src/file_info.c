@@ -80,8 +80,6 @@ enum {
 extern options_t options;
 extern GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 
-GtkWidget * fi_event_box;
-
 #define FI_MAXPAGES 256
 
 typedef struct {
@@ -102,6 +100,9 @@ typedef struct {
 	GtkTreeModel * model;
 	GtkTreeIter track_iter;
 	GtkWidget * info_window;
+	GtkWidget * event_box;
+	GtkWidget * cover_image_area;
+	GtkWidget * cover_align;
 	GtkWidget * hbox;
 	GtkWidget * button_table;
 	GtkWidget * save_button;
@@ -654,15 +655,16 @@ save_pic_update(save_pic_t * save_pic, fi_t * fi, meta_frame_t * frame) {
 GtkWidget *
 make_image_from_binary(meta_frame_t * frame) {
 
-	char * tmpname;
-	int fd;
-	FILE * file;
 	GdkPixbuf * pixbuf;
+	GdkPixbuf * pixbuf_scaled;
 	GtkWidget * image;
 	int width, height;
+	int new_width, new_height;
 
 	void * data = frame->data;
 	int length = frame->length;
+
+	GdkPixbufLoader * loader;
 
 	if (length == 0) {
 		return gtk_label_new(_("(no image)"));
@@ -676,38 +678,28 @@ make_image_from_binary(meta_frame_t * frame) {
 		return label;
 	}
 
-	fd = g_file_open_tmp("aqualung-picture-XXXXXX", &tmpname, NULL);
-	if (fd < 0) {
-		fprintf(stderr, "make_image_from_binary: error: g_file_open_tmp() failed\n");
-		return NULL;
-	}
-	file = fdopen(fd, "wb");
-	if (file == NULL) {
-		fprintf(stderr, "make_image_from_binary: error: fdopen() failed\n");
-		g_free(tmpname);
-		return NULL;
+	loader = gdk_pixbuf_loader_new();
+	if (gdk_pixbuf_loader_write(loader, frame->data, frame->length, NULL) != TRUE) {
+		fprintf(stderr, "make_image_from_binary: failed to load image #1\n");
+		g_object_unref(loader);
+		return gtk_label_new(_("(error loading image)"));
 	}
 
-	if (fwrite(data, 1, length, file) != length) {
-		fprintf(stderr, "make_image_from_binary: error: fwrite() failed\n");
-		g_free(tmpname);
-		fclose(file);
-		return NULL;
-	}
-	fclose(file);
-
-	
-	gdk_pixbuf_get_file_info(tmpname, &width, &height);
-	width = (width > VAL_WIDGET_WIDTH) ? VAL_WIDGET_WIDTH : -1;
-	pixbuf = gdk_pixbuf_new_from_file_at_size(tmpname, width, -1, NULL);
-	image = gtk_image_new_from_pixbuf(pixbuf);
-	if (g_unlink(tmpname) < 0) {
-		fprintf(stderr, "make_image_from_binary: error: g_unlink() failed on %s\n", tmpname);
-		g_free(tmpname);
-		return NULL;
+	if (gdk_pixbuf_loader_close(loader, NULL) != TRUE) {
+		fprintf(stderr, "make_image_from_binary: failed to load image #2\n");
+		g_object_unref(loader);
+		return gtk_label_new(_("(error loading image)"));
 	}
 
-	g_free(tmpname);
+	pixbuf = gdk_pixbuf_loader_get_pixbuf(loader);
+	width = gdk_pixbuf_get_width(pixbuf);
+	height = gdk_pixbuf_get_height(pixbuf);
+	new_width = (width > VAL_WIDGET_WIDTH) ? VAL_WIDGET_WIDTH : width;
+	new_height = ((double)new_width / (double)width) * height;
+	pixbuf_scaled = gdk_pixbuf_scale_simple(pixbuf, new_width, new_height, GDK_INTERP_BILINEAR);
+	image = gtk_image_new_from_pixbuf(pixbuf_scaled);
+	g_object_unref(pixbuf_scaled);
+	g_object_unref(loader);
 	return image;
 }
 
@@ -1449,6 +1441,15 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 	}
 #endif /* HAVE_MOD_INFO */
 
+	if (frame->type == META_FIELD_APIC) {
+		/* only display first APIC found */
+		meta_frame_t * first_apic = metadata_get_frame_by_type(fi->meta, META_FIELD_APIC, NULL);
+		if (frame == first_apic) {
+			display_cover_from_binary(fi->cover_image_area, fi->event_box, fi->cover_align,
+						  48, 48, frame->data, frame->length, FALSE, TRUE);
+		}
+	}
+
 	++n_rows;
 	fi->pageidx[page].n_rows = n_rows;
 	gtk_table_resize(GTK_TABLE(table), n_rows, n_cols);
@@ -1720,7 +1721,13 @@ fi_cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer dat
 	fi_t * fi = (fi_t *)data;
 
 	if (event->type == GDK_BUTTON_PRESS && event->button == 1) {
-                display_zoomed_cover(fi->info_window, fi_event_box, (gchar *)fi->filename);
+		meta_frame_t * frame;
+		frame = metadata_get_frame_by_type(fi->meta, META_FIELD_APIC, NULL);
+		if (frame != NULL) {
+			display_zoomed_cover_from_binary(fi->info_window, fi->event_box, frame->data, frame->length);
+		} else {
+			display_zoomed_cover(fi->info_window, fi->event_box, (gchar *)fi->filename);
+		}
         }
         return TRUE;
 }
@@ -1743,8 +1750,6 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	GtkWidget * label_path;
 	GtkWidget * entry_path;
 	GtkWidget * dismiss_btn;
-	GtkWidget * fi_cover_image_area;
-	GtkWidget * fi_cover_align;
 
 	GtkWidget * vbox_file;
 	GtkWidget * label_file;
@@ -1875,24 +1880,24 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_table_attach(GTK_TABLE(table), entry_path, 1, 2, 1, 2,
 			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 2);
 
-	fi_cover_align = gtk_alignment_new(0.5f, 0.5f, 0.0f, 0.0f);
-	gtk_box_pack_start(GTK_BOX(hbox_t), fi_cover_align, FALSE, FALSE, 0);
-        fi_cover_image_area = gtk_image_new();
-        fi_event_box = gtk_event_box_new ();
-	gtk_container_add(GTK_CONTAINER(fi_cover_align), fi_event_box);
-        gtk_container_add (GTK_CONTAINER (fi_event_box), fi_cover_image_area);
-        g_signal_connect(G_OBJECT(fi_event_box), "button_press_event",
+	fi->cover_align = gtk_alignment_new(0.5f, 0.5f, 0.0f, 0.0f);
+	gtk_box_pack_start(GTK_BOX(hbox_t), fi->cover_align, FALSE, FALSE, 0);
+        fi->cover_image_area = gtk_image_new();
+        fi->event_box = gtk_event_box_new ();
+	gtk_container_add(GTK_CONTAINER(fi->cover_align), fi->event_box);
+        gtk_container_add (GTK_CONTAINER (fi->event_box), fi->cover_image_area);
+        g_signal_connect(G_OBJECT(fi->event_box), "button_press_event",
                          G_CALLBACK(fi_cover_press_button_cb), (gpointer)fi);
 
         if (options.show_cover_for_ms_tracks_only == TRUE) {
                 if (cover_flag == TRUE) {
-                        display_cover(fi_cover_image_area, fi_event_box, fi_cover_align,
+                        display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
                                       48, 48, file, FALSE, TRUE);
                 } else {
                         hide_cover_thumbnail();
                 }
         } else {
-                display_cover(fi_cover_image_area, fi_event_box, fi_cover_align,
+                display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
                               48, 48, file, FALSE, TRUE);
         }
 

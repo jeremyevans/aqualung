@@ -31,7 +31,11 @@
 void    display_cover           (GtkWidget *image_area, GtkWidget *event_area, GtkWidget *cover_align,
 				 gint dest_width, gint dest_height,
                                  gchar *song_filename, gboolean hide, gboolean bevel);
+void    display_cover_from_binary(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
+				  gint dest_width, gint dest_height,
+				  void * data, int length, gboolean hide, gboolean bevel);
 void    display_zoomed_cover    (GtkWidget *window, GtkWidget *event_area, gchar *song_filename);
+void    display_zoomed_cover_from_binary(GtkWidget *window, GtkWidget *event_area, void * data, int length);
 void    insert_cover            (GtkTreeIter * tree_iter, GtkTextIter * text_iter, GtkTextBuffer * buffer);
 
 

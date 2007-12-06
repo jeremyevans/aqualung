@@ -118,6 +118,10 @@ void init_plist_menu(GtkWidget *append_menu);
 /* the physical name of the file that is playing, or a '\0'. */
 char current_file[MAXLEN];
 
+/* embedded picture in the file that is playing */
+void * embedded_picture = NULL;
+int embedded_picture_size = 0;
+
 /* default window title */
 char win_title[MAXLEN];
 
@@ -606,22 +610,27 @@ refresh_displays(void) {
 		}
 		if (is_file_loaded) {
                         if (!options.dont_show_cover) {
-                                gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
-                                                   PL_COL_PHYSICAL_FILENAME, &phys_str,
-                                                   PL_COL_COVER_FLAG, &cover_flag,
-                                                   -1);
-                                if (options.show_cover_for_ms_tracks_only == TRUE) {
-                                        if (cover_flag == TRUE) {
-                                                display_cover(cover_image_area, c_event_box, cover_align,
-                                                              48, 48, phys_str, TRUE, TRUE);
-                                        } else {
-                                                hide_cover_thumbnail();
-                                        }
-                                } else {
-                                        display_cover(cover_image_area, c_event_box, cover_align,
-                                                      48, 48, phys_str, TRUE, TRUE);
-                                }
-			        g_free(phys_str);
+				if (embedded_picture != NULL) {
+					display_cover_from_binary(cover_image_area, c_event_box, cover_align, 48, 48,
+						      embedded_picture, embedded_picture_size, TRUE, TRUE);
+				} else {
+					gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
+							   PL_COL_PHYSICAL_FILENAME, &phys_str,
+							   PL_COL_COVER_FLAG, &cover_flag,
+							   -1);
+					if (options.show_cover_for_ms_tracks_only == TRUE) {
+						if (cover_flag == TRUE) {
+							display_cover(cover_image_area, c_event_box, cover_align,
+								      48, 48, phys_str, TRUE, TRUE);
+						} else {
+							hide_cover_thumbnail();
+						}
+					} else {
+						display_cover(cover_image_area, c_event_box, cover_align,
+							      48, 48, phys_str, TRUE, TRUE);
+					}
+					g_free(phys_str);
+				}
                         }
 		}
 	} else if (!is_file_loaded) {
@@ -2056,6 +2065,12 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
         /* hide cover */
         hide_cover_thumbnail();
+
+	if (embedded_picture != NULL) {
+		free(embedded_picture);
+		embedded_picture = NULL;
+		embedded_picture_size = 0;
+	}
 			
 	return FALSE;
 }
@@ -2513,9 +2528,13 @@ cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_d
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 			gtk_tree_path_free(p);
 			if (is_file_loaded) {
-				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_PHYSICAL_FILENAME, &title_str, -1);
-				display_zoomed_cover(main_window, c_event_box, title_str);
-				g_free(title_str);
+				if (embedded_picture != NULL) {
+					display_zoomed_cover_from_binary(main_window, c_event_box, embedded_picture, embedded_picture_size);
+				} else {
+					gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_PHYSICAL_FILENAME, &title_str, -1);
+					display_zoomed_cover(main_window, c_event_box, title_str);
+					g_free(title_str);
+				}
 			}
 		}
         }
@@ -3513,8 +3532,29 @@ process_metablock(metadata_t * meta) {
 	playlist_t * pl;
 	file_decoder_t * fdec = (file_decoder_t *)meta->fdec;
 	char * str = NULL;
+	meta_frame_t * frame;
 
 	metadata_dump(meta);
+
+	frame = metadata_get_frame_by_type(meta, META_FIELD_APIC, NULL);
+	if (frame != NULL) {
+		if (embedded_picture != NULL) {
+			free(embedded_picture);
+		}
+		embedded_picture_size = frame->length;
+		embedded_picture = malloc(embedded_picture_size);
+		if (embedded_picture == NULL) {
+			embedded_picture_size = 0;
+		} else {
+			memcpy(embedded_picture, frame->data, embedded_picture_size);
+		}
+	} else {
+		if (embedded_picture != NULL) {
+			free(embedded_picture);
+			embedded_picture = NULL;
+		}
+		embedded_picture_size = 0;
+	}
 
 	if (!httpc_is_url(fdec->filename)) {
 		return;

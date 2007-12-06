@@ -2802,8 +2802,12 @@ main(int argc, char ** argv) {
 
 	/* startup disk thread */
 	AQUALUNG_THREAD_CREATE(thread_info.disk_thread_id, NULL, disk_thread, &thread_info)
+#ifdef _WIN32
+	g_thread_set_priority(thread_info.disk_thread_id, G_THREAD_PRIORITY_URGENT);
+#else
 	set_thread_priority(thread_info.disk_thread_id, "disk",
 		disk_try_realtime, disk_priority);
+#endif /* _WIN32 */
 
 #ifdef HAVE_OSS
 	if (output == OSS_DRIVER) {

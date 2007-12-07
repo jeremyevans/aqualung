@@ -342,14 +342,11 @@ podcast_generic_download(podcast_t * podcast, char * url, char * path,
 	int percent = 0;
 	int _percent = 0;
 
-	printf("downloading '%s' => '%s'\n", url, path);
 
 	if ((out = fopen(path, "wb")) == NULL) {
 		fprintf(stderr, "podcast_generic_download: unable to open file %s\n", path);
 		return -1;
 	}
-
-	printf("output file opened successfully.\n");
 
 	while (credit > 0) {
 
@@ -357,15 +354,11 @@ podcast_generic_download(podcast_t * podcast, char * url, char * path,
 			break;
 		}
 
-		printf("download credit = %d\n", credit);
-
 		if ((session = httpc_new()) == NULL) {
 			fclose(out);
 			unlink(path);
 			return -1;
 		}
-
-		printf("start position = %lld\n", pos);
 
 		if ((ret = httpc_init(session, NULL, url,
 				      options.inet_use_proxy,
@@ -379,10 +372,7 @@ podcast_generic_download(podcast_t * podcast, char * url, char * path,
 			continue;
 		}
 
-		printf("session type = %d\n", session->type);
-
 		content_length = session->headers.content_length;
-		printf("content length = %d\n", content_length);
 
 		if (httpc_seek(session, pos, SEEK_SET) < -1) {
 			fprintf(stderr, "httpc_seek failed\n");
@@ -400,8 +390,6 @@ podcast_generic_download(podcast_t * podcast, char * url, char * path,
 			pos += n_read;
 			penalty = 0;
 			fwrite(buf, sizeof(char), n_read, out);
-			printf(".");
-			fflush(stdout);
 
 			if (callback != NULL && content_length > 0) {
 				_percent = (int)((100.0 * pos) / content_length);
@@ -420,7 +408,6 @@ podcast_generic_download(podcast_t * podcast, char * url, char * path,
 		}
 
 		if (n_read < 0) {
-			printf("\ndownload error, penalty = %d\n", penalty);
 			credit -= penalty;
 			continue;
 		}
@@ -430,18 +417,11 @@ podcast_generic_download(podcast_t * podcast, char * url, char * path,
 
 	if (podcast->state == PODCAST_STATE_ABORTED || credit == 0) {
 
-		if (podcast->state == PODCAST_STATE_ABORTED) {
-			printf("\naborted by user, unlink downloaded file\n");
-		} else {
-			printf("\nno more credit, download failed\n");
-		}
-
 		fclose(out);
 		unlink(path);
 		return -1;
 	}
 
-	printf("\ndownload finished successfully, pos = %lld\n", pos);
 	fclose(out);
 	return 0;
 }
@@ -710,10 +690,8 @@ podcast_parse(podcast_t * podcast, GSList ** list) {
 	}
 
 	if (!xmlStrcmp(node->name, (const xmlChar *)"rss")) {
-		printf("RSS detected\n");
 		parse_rss(podcast, list, doc, node);
 	} else if (!xmlStrcmp(node->name, (const xmlChar *)"feed")) {
-		printf("Atom detected\n");
 		parse_atom(podcast, list, doc, node);
 	} else {
 		fprintf(stderr, "unknown feed format: %s\n", node->name);
@@ -755,7 +733,6 @@ podcast_item_download(podcast_download_t * pd, GSList ** list, GSList * node) {
 	float duration;
 	struct stat statbuf;	
 
-	printf("podcast_item_download\n");
 
 	file = podcast_file_from_url(item->url);
 	snprintf(path, MAXLEN-1, "%s/%s", pd->podcast->dir, file);
@@ -767,7 +744,6 @@ podcast_item_download(podcast_download_t * pd, GSList ** list, GSList * node) {
 	store_podcast_update_podcast_download(pd);
 
 	if (podcast_generic_download(pd->podcast, item->url, path, store_podcast_update_podcast_download, pd) < 0) {
-		printf("aborted by user or premanent download error, could not finish download\n");
 		goto failed;
 	}
 
@@ -799,10 +775,8 @@ podcast_apply_limits(podcast_t * podcast, GSList ** list) {
 	unsigned size = 0;
 	int count = 0;
 
-	printf("podcast_apply_limits\n");
 	for (node = *list; node; node = node->next) {
 		podcast_item_t * item = (podcast_item_t *)node->data;
-		printf("item url = %s\n", item->url);
 		size += item->size;
 		++count;
 	}
@@ -830,7 +804,6 @@ podcast_download_next(podcast_download_t * pd, GSList ** list) {
 
 	GSList * node;
 
-	printf("podcast_download_next\n");
 	for (node = *list; node; node = node->next) {
 		podcast_item_t * item = (podcast_item_t *)node->data;
 
@@ -884,8 +857,6 @@ podcast_update_thread(void * arg) {
 			pd->ndownloads++;
 		}
 	}
-
-	printf("ndownloads = %d\n", pd->ndownloads);
 
 	while (podcast_download_next(pd, &list)) {
 		podcast_apply_limits(podcast, &list);

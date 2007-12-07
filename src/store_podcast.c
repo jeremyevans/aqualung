@@ -783,15 +783,14 @@ podcast_store__update_cb(gpointer data) {
 		}
 
 		if (data != NULL) {
-			printf("diff = %lu\n", tval.tv_sec - podcast->last_checked);
 
 			if (!(podcast->flags & PODCAST_AUTO_CHECK)) {
-				printf("auto check not enabled, skipping\n");
+				/* auto check not enabled */
 				continue;
 			}
 
 			if (tval.tv_sec - podcast->last_checked < podcast->check_interval) {
-				printf("too young to be updated, skipping\n");
+				/* too young to be updated */
 				continue;
 			}
 		}
@@ -1132,7 +1131,6 @@ store_podcast_add_item_cb(gpointer data) {
 	GtkTreeIter iter;
 	char sort[16];
 
-	printf("store_podcast_add_item\n");
 
 	if (store_podcast_get_pod_iter(&pod_iter, pt->podcast) != 0) {
 		return FALSE;
@@ -1167,7 +1165,6 @@ store_podcast_remove_item_cb(gpointer data) {
 	GtkTreeIter iter;
 	int i;
 
-	printf("store_podcast_remove_item\n");
 
 	if (store_podcast_get_pod_iter(&pod_iter, pt->podcast) != 0) {
 		return FALSE;
@@ -1768,11 +1765,8 @@ create_podcast_node(void) {
 gboolean
 store_podcast_updater_cb(gpointer data) {
 
-	printf("store_podcast_updater_cb\n");
 	if (options.podcasts_autocheck) {
 		podcast_store__update_cb((gpointer)1);
-	} else {
-		printf("auto-check disabled, skipping all feeds\n");
 	}
 
 	return TRUE;

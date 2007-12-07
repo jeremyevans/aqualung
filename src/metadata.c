@@ -411,7 +411,7 @@ meta_tag_from_name(char * name) {
 		}
 		i <<= 1;
 	}
-	fprintf(stderr, "meta_get_tagname: programmer error\n");
+	fprintf(stderr, "meta_tag_from_name: programmer error\n");
 	return -1;
 }
 
@@ -1094,6 +1094,7 @@ meta_write_int64(u_int64_t val, unsigned char * buf) {
 
 /* debug functions */
 
+/*
 void
 metadata_dump(metadata_t * meta) {
 
@@ -1114,3 +1115,4 @@ meta_dump_frame(meta_frame_t * frame) {
 	printf("int %d  float %f  ptr %p  len %d\n",
 	       frame->int_val, frame->float_val, frame->data, frame->length);
 }
+*/

@@ -260,8 +260,9 @@ void meta_write_int64(u_int64_t val, unsigned char * buf);
 
 
 /* debug functions */
+/*
 void metadata_dump(metadata_t * meta);
 void meta_dump_frame(meta_frame_t * frame);
-
+*/
 
 #endif /* _METADATA_H */

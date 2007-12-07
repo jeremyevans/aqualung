@@ -406,10 +406,6 @@ meta_update_basic(char * filename,
 		meta_update_frame(fdec->meta, add_tags, META_FIELD_COMMENT, comment, 0, 0.0f);
 	}
 
-	/* XXX debug */
-	printf("dump before write:\n");
-	metadata_dump(fdec->meta);
-
 	ret = fdec->meta_write(fdec, fdec->meta);
 	file_decoder_close(fdec);
 	file_decoder_delete(fdec);

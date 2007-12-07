@@ -3534,8 +3534,6 @@ process_metablock(metadata_t * meta) {
 	char * str = NULL;
 	meta_frame_t * frame;
 
-	metadata_dump(meta);
-
 	frame = metadata_get_frame_by_type(meta, META_FIELD_APIC, NULL);
 	if (frame != NULL) {
 		if (embedded_picture != NULL) {

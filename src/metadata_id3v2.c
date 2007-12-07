@@ -534,7 +534,6 @@ meta_parse_id3v2_frame(metadata_t * meta, unsigned char * buf, int len,
 			pay_len = un_unsynch(buf+10, frame_size);
 		}
 	}
-	/* XXX */printf("frame_id = %s, size = %d\n", frame_id, frame_size);
 
 	if (frame_id[0] == 'T') {
 		if ((frame_id[1] == 'X') &&
@@ -880,8 +879,6 @@ metadata_render_id3v2_frame(meta_frame_t * frame, unsigned char ** buf, int * si
 
 	meta_get_fieldname_embedded(META_TAG_ID3v2, frame->type, &frame_id);
 
-	/* XXX */printf("rendering frame %s\n", frame_id);
-
 	if (frame_id[0] == 'T') {
 		if ((frame_id[1] == 'X') &&
 		    (frame_id[2] == 'X') &&
@@ -1012,7 +1009,6 @@ meta_id3v2_pull_file(char * filename, FILE * file, int length) {
 	}
 	pos -= length;
 
-	/* XXX */printf("meta_id3v2_pull_file: truncating file at 0x%08x\n", (unsigned int)pos);
 	if (truncate(filename, pos) < 0) {
 		fprintf(stderr, "meta_id3v2_pull_file: truncate() failed on %s\n", filename);
 		free(buf);
@@ -1098,8 +1094,6 @@ meta_id3v2_rewrite(char * filename, unsigned char ** buf, int * len) {
 	u_int32_t file_size;
 	u_int32_t id3v2_length;
 	int ret;
-
-	printf("meta_id3v2_rewrite: %s\n", filename);
 
 	if ((file = fopen(filename, "r+b")) == NULL) {
 		fprintf(stderr, "meta_id3v2_rewrite: fopen() failed\n");
@@ -1191,8 +1185,6 @@ meta_id3v2_delete(char * filename) {
 	u_int32_t file_size;
 	u_int32_t id3v2_length;
 	int ret;
-
-	printf("meta_id3v2_delete: %s\n", filename);
 
 	if ((file = fopen(filename, "r+b")) == NULL) {
 		fprintf(stderr, "meta_id3v2_delete: fopen() failed\n");

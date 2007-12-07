@@ -601,12 +601,12 @@ save_pic_button_pressed(GtkWidget * widget, gpointer data) {
 
 		FILE * f = fopen(filename, "wb");
 		if (f == NULL) {
-			printf("error: fopen() failed\n");
+			fprintf(stderr, "error: fopen() failed\n");
 			gtk_widget_destroy(dialog);
 			return;
 		}
 		if (fwrite(save_pic->image_data, 1, save_pic->image_size, f) != save_pic->image_size) {
-			printf("fwrite() error\n");
+			fprintf(stderr, "fwrite() error\n");
 			gtk_widget_destroy(dialog);
 			return;
 		}
@@ -792,10 +792,6 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 	save_pic_update(save_pic, fi, frame);
 
 	fi_mark_changed(fi);
-
-	/* XXX testing only */
-	printf("\n\nDump after APIC change\n");
-	metadata_dump(fi->meta);
 
         gtk_widget_destroy(dialog);
 }
@@ -1239,10 +1235,6 @@ fi_del_button_pressed(GtkWidget * widget, gpointer data) {
 	}
 	gtk_widget_destroy(fi_del->delbtn);
 	fi_mark_changed(fi);
-
-	/* XXX testing only */
-	printf("\n\nDump after removal\n");
-	metadata_dump(meta);
 }
 
 GtkWidget *
@@ -1302,7 +1294,6 @@ fi_add_button_pressed(GtkWidget * widget, gpointer data) {
 	}
 
 	type = meta_frame_type_from_name(combo_entry);
-	/* XXX test */printf("\ncombo_entry = %s, frametype = %d\n", combo_entry, type);
 	g_free(combo_entry);
 
 	frame->tag = fi_add->tag;
@@ -1331,10 +1322,6 @@ fi_add_button_pressed(GtkWidget * widget, gpointer data) {
 
 	fi_procframe_ins(fi, frame);
 	fi_mark_changed(fi);
-
-	/* XXX testing only */
-	printf("\n\nDump after addition\n");
-	metadata_dump(meta);
 }
 
 GtkWidget *
@@ -1382,10 +1369,6 @@ fi_addtag_button_pressed(GtkWidget * widget, gpointer data) {
 		frame = metadata_get_frame_by_tag(meta, tag, frame);
 	}
 	fi_mark_changed(fi);
-
-	/* XXX testing only */
-	printf("\n\nDump after tag addition\n");
-	metadata_dump(meta);
 }
 
 GtkWidget *
@@ -1542,10 +1525,6 @@ fi_deltag_button_pressed(GtkWidget * widget, gpointer data) {
 	fi->addable_tags |= tag;
 	fi_fill_tagcombo(GTK_COMBO_BOX(fi->combo), fi->addable_tags);
 	fi_mark_changed(fi);
-
-	/* XXX testing only */
-	printf("\n\nDump after tag removal\n");
-	metadata_dump(meta);
 }
 
 GtkWidget *
@@ -1676,9 +1655,6 @@ fi_procmeta(metadata_t * meta, void * data) {
 	fi->meta = meta;
 	fi->addable_tags = meta->valid_tags;
 	frame = meta->root;
-
-	/* XXX debug only */
-	metadata_dump(meta);
 
 	while (frame != NULL) {
 		fi_procframe(fi, frame);

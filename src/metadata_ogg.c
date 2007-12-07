@@ -116,6 +116,7 @@ meta_ogg_page_free(meta_ogg_page_t * page) {
 	free(page);
 }
 
+/*
 void
 meta_ogg_page_dump(meta_ogg_page_t * page) {
 
@@ -131,7 +132,7 @@ meta_ogg_page_dump(meta_ogg_page_t * page) {
 		printf(" %02x", page->segment_table[i]);
 	printf("\n");
 }
-
+*/
 
 unsigned char *
 meta_ogg_render_page(meta_ogg_page_t * page, unsigned int * length) {
@@ -252,9 +253,6 @@ meta_ogg_read_page(FILE * file) {
 		return NULL;
 	}
 
-	/* XXX debug only */
-	//meta_ogg_page_dump(page);
-
 	return page;
 }
 
@@ -318,10 +316,6 @@ meta_ogg_render(GSList * slist, char * filename, int n_pages) {
 		++page_count;
 	}
 
-	/* XXX debug only */
-	printf("meta_ogg_render: rendered %d pages, %llu bytes OK\n",
-	       page_count, total_length);
-
 	fclose(file);
 	return 0;
 }
@@ -346,7 +340,6 @@ meta_ogg_get_page_size(GSList * slist, int nth) {
 	meta_ogg_page_t * page = (meta_ogg_page_t *)g_slist_nth_data(slist, nth);
 	int i;
 	unsigned int size = 0;
-	meta_ogg_page_dump(page);
 	for (i = 0; i < page->n_segments; i++) {
 		size += page->segment_table[i];
 	}
@@ -382,8 +375,6 @@ meta_ogg_vc_get_total_growable(GSList * slist) {
 
 	vc_packet = meta_ogg_get_vc_packet(slist, &vc_length, &n_pages);
 	free(vc_packet);
-	printf("vc_packet vc_length = %d\n", vc_length);
-	printf("          n_pages   = %d\n", n_pages);
 
 	for (i = 0; i < n_pages-1; i++) {
 		/* OXC-only pages to max size */
@@ -479,7 +470,6 @@ meta_ogg_vc_in_place_ovwr(GSList * slist, int n_pages,
 	for (i = 0; i < n_pages; i++) {
 		meta_ogg_page_t * page = (meta_ogg_page_t *)g_slist_nth_data(slist, i+1);
 		int size = page_data_size(page);
-		/* XXX */printf("meta_ogg_vc_in_place_ovwr: page_data_size = %d on page %d\n", size, i);
 		memcpy(page->data, payload + data_pos, size);
 		data_pos += size;
 	}
@@ -496,12 +486,6 @@ meta_ogg_vc_expander_encaps(GSList * slist, int n_pages,
 	int i;
 	int data_pos = 0;
 	int expansion = new_length - old_length;
-
-	/* XXX debug */
-	printf("n_pages = %d\n", n_pages);
-	printf("new_length = %d\n", new_length);
-	printf("old_length = %d\n", old_length);
-	printf("expansion  = %d\n", expansion);
 
 	for (i = 0; i < n_pages; i++) {
 		meta_ogg_page_t * page = (meta_ogg_page_t *)g_slist_nth_data(slist, i+1);
@@ -529,22 +513,11 @@ meta_ogg_vc_expander_encaps(GSList * slist, int n_pages,
 		new_size = size + growable;
 		expansion -= growable;
 
-		/* XXX debug */
-		printf("  total_size = %d\n", total_size);
-		printf("  size = %d\n", size);
-		printf("  growable = %d\n", growable);
-		printf("  new_size = %d\n", new_size);
-
 		/* move data */
 		page->data = realloc(page->data, total_size + growable);
 		memmove(page->data + new_size, page->data + size, total_size - size);
 		memcpy(page->data, payload + data_pos, new_size);
 		data_pos += new_size;
-
-		/* XXX debug */
-		printf("nsegments(%d) = %d\n", size, size/255+1);
-		printf("nsegments(%d) = %d\n", new_size, new_size/255+1);
-		printf("nsegments(%d) = %d\n", total_size-size, (total_size-size)/255+1);
 
 		/* update segment_table accordingly */
 		memmove(page->segment_table + new_size/255+1,
@@ -554,8 +527,6 @@ meta_ogg_vc_expander_encaps(GSList * slist, int n_pages,
 			page->segment_table[j] = 255;
 		page->segment_table[j] = new_size % 255;
 		page->n_segments += (new_size/255 - size/255);
-
-		meta_ogg_page_dump(page);
 	}
 
 	*n_pages_to_write = -1;
@@ -578,11 +549,6 @@ meta_ogg_vc_paginator_encaps(GSList * slist, int n_pages,
 	total_size = meta_ogg_get_page_size(slist, n_pages);
 	size = page_data_size(succ_page);
 
-	/* XXX debug */
-	printf("size = %d\n", size);
-	printf("total_size = %d\n", total_size);
-	printf("total pages = %d\n", g_slist_length(slist));
-
 	if (size == total_size) {
 		slist = g_slist_remove(slist, succ_page);
 		meta_ogg_page_free(succ_page);
@@ -596,20 +562,14 @@ meta_ogg_vc_paginator_encaps(GSList * slist, int n_pages,
 			succ_page->segment_table + size/255+1,
 			succ_page->n_segments - (size/255+1));
 		succ_page->n_segments -= size/255+1;
-
-		/* XXX debug */
-		printf("*** page after OXC removal ***\n");
-		meta_ogg_page_dump(succ_page);
 	}
 
 	/* remove pages 1..n_pages-1 */
 	for (i = n_pages-1; i >= 1; i--) {
-		/* XXX */printf("paginator_encaps: removing page\n");
 		page = (meta_ogg_page_t *)g_slist_nth_data(slist, i);
 		slist = g_slist_remove(slist, page);
 		meta_ogg_page_free(page);
 	}
-	/* XXX */printf("total pages = %d\n", g_slist_length(slist));
 
 	/* insert new pages for OXC packet */
 	i = 0;
@@ -639,14 +599,10 @@ meta_ogg_vc_paginator_encaps(GSList * slist, int n_pages,
 		memcpy(page->data, payload + data_pos, ins_len);
 
 		n_segments = ins_len/255+1;
-		/* XXX debug */
-		printf("ins_len = %d\n", ins_len);
-		printf("n_segments = %d\n", n_segments);
 		for (j = 0; j < n_segments-1; j++) {
 			page->segment_table[j] = 255;
 		}
 		page->segment_table[j] = ins_len % 255;
-		/* XXX */printf("table[%d] = %d\n", j, page->segment_table[j]);
 
 		if (length > ins_len) {
 			page->n_segments = n_segments - 1;
@@ -656,25 +612,18 @@ meta_ogg_vc_paginator_encaps(GSList * slist, int n_pages,
 
 		slist = g_slist_insert(slist, page, i+1);
 
-		/* XXX debug */
-		printf("paginator_encaps: inserted page:\n");
-		meta_ogg_page_dump(page);
-
 		data_pos += ins_len;
 		length -= ins_len;
 		++i;
 	}
 
-	/* XXX */printf("\n");
 	/* Renumber remaining Ogg pages */
 	tail = g_slist_nth(slist, i);
 	while (tail != NULL) {
 		page = (meta_ogg_page_t *)tail->data;
 		page->seqno = i++;
 		tail = g_slist_next(tail);
-		/* XXX */printf(".");
 	}
-	/* XXX */printf("\n");
 
 	return slist;
 }
@@ -703,7 +652,6 @@ meta_ogg_vc_encapsulate_payload(GSList * slist,
 	}
 	
 	total_growable = meta_ogg_vc_get_total_growable(slist);
-	/* XXX */printf("total_growable = %d\n", total_growable);
 	if (length <= vc_length + total_growable) {
 		/* Expand existing pages */
 		return meta_ogg_vc_expander_encaps(slist, n_pages,
@@ -832,7 +780,6 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 	meta_write_int32(n_comments, payload + n_comments_pos);
 
 	if (n_comments > 0) {
-		/* XXX */printf("meta_ogg_vc_render: len = %d\n", len);
 		payload = realloc(payload, len+1);
 		payload[len] = 0x01;
 		++len;

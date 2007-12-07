@@ -474,7 +474,6 @@ meta_id3v1_delete(char * filename) {
 	pos = ftell(file);
 	fclose(file);
 
-	/* XXX */printf("meta_id3v1_delete: truncating file at 0x%08x\n", (unsigned int)pos);
 	if (truncate(filename, pos) < 0) {
 		fprintf(stderr, "meta_ape_rewrite: truncate() failed on %s\n", filename);
 		return META_ERROR_INTERNAL;

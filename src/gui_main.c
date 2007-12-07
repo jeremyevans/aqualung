@@ -3820,6 +3820,12 @@ run_gui(void) {
 
 	gtk_main();
 
+	if (embedded_picture != NULL) {
+		free(embedded_picture);
+		embedded_picture = NULL;
+		embedded_picture_size = 0;
+	}
+
 	return;
 }
 

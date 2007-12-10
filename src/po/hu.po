@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-06-21 11:17+0200\n"
-"PO-Revision-Date: 2007-06-21 11:18+0200\n"
+"POT-Creation-Date: 2007-12-10 20:09+0100\n"
+"PO-Revision-Date: 2007-12-10 20:11+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -39,8 +39,11 @@ msgstr "Programozás, GUI tervezés:\n"
 msgid "Translators:"
 msgstr "Fordítók:"
 
-msgid "German, Hungarian:\n"
-msgstr "Német, Magyar:\n"
+msgid "German:\n"
+msgstr "Német:\n"
+
+msgid "Hungarian:\n"
+msgstr "Magyar:\n"
 
 msgid "Italian:\n"
 msgstr "Olasz:\n"
@@ -81,6 +84,9 @@ msgstr "Ciklikus lejátszás támogatás\n"
 msgid "Systray support\n"
 msgstr "Rendszertálca támogatás\n"
 
+msgid "Podcast support\n"
+msgstr "Podcast támogatás\n"
+
 msgid "Decoding support:"
 msgstr "Dekódolás támogatása:"
 
@@ -113,9 +119,6 @@ msgstr "WavPack\n"
 
 msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
 msgstr "LAVC (AC3, AAC, WavPack, WMA, stb.)\n"
-
-msgid "Metadata (ID3, APE, Ogg comments)\n"
-msgstr "Metaadatok (ID3, APE, Ogg kommentek)\n"
 
 msgid "Encoding support:"
 msgstr "Kódolás támogatása:"
@@ -232,9 +235,6 @@ msgstr "Kezdő, végző és többszörös szóközök eltávolítása"
 msgid "Regexp matches empty string"
 msgstr "A kifejezés fedi az üres karakterláncot"
 
-msgid "Unknown Artist"
-msgstr "Ismeretlen előadó"
-
 msgid "Please select the root directory."
 msgstr "Válaszd ki a gyökérkönyvtárat."
 
@@ -262,6 +262,9 @@ msgstr ""
 "Hangfájlok rekurzív keresése a gyökérkönyvtárból kiindulva.\n"
 "A fájlok feldolgozása külön történik, ezért csak metaadatokra\n"
 "és fájlnév transzformációra támaszkodik."
+
+msgid "Load settings from Music Store file"
+msgstr "Beállítások betöltése a Zenetár fájlból"
 
 msgid "Build/Update store"
 msgstr "Tároló felépítése/aktualizálása"
@@ -371,6 +374,9 @@ msgstr "Művelet:"
 msgid "Abort"
 msgstr "Megszakítás"
 
+msgid "Unknown Artist"
+msgstr "Ismeretlen előadó"
+
 msgid "Unknown Record"
 msgstr "Ismeretlen album"
 
@@ -398,142 +404,6 @@ msgstr "Ismeretlen lemez"
 msgid "No disc"
 msgstr "Nincs lemez"
 
-msgid "Drive info"
-msgstr "Meghajtó infó"
-
-msgid "Device path:"
-msgstr "Elérési út:"
-
-msgid "Vendor:"
-msgstr "Vendor:"
-
-msgid "Model:"
-msgstr "Modell:"
-
-msgid "Revision:"
-msgstr "Revision:"
-
-msgid ""
-"The information below is reported by the drive, and\n"
-"may not reflect the actual capabilities of the device."
-msgstr ""
-"Az alábbi információ a meghajtótól származik, ami lehet\n"
-"hogy nem felel meg a készülék valódi képességeinek."
-
-msgid "Eject"
-msgstr "Tálca kitolása"
-
-msgid "Close tray"
-msgstr "Tálca behúzása"
-
-msgid "Disable manual eject"
-msgstr "Tálca kézi kitolásának tiltása"
-
-msgid "Select juke-box disc"
-msgstr "Juke-box lemez kiválasztása"
-
-msgid "Set drive speed"
-msgstr "Meghajtó sebesség beállítása"
-
-msgid "Detect media change"
-msgstr "Lemezcsere érzékelése"
-
-msgid "Read multiple sessions"
-msgstr "Több session olvasása"
-
-msgid "Hard reset device"
-msgstr "Eszköz hard resetelése"
-
-msgid "Reading"
-msgstr "Olvasás"
-
-msgid "Play CD Audio"
-msgstr "Audio CD lejátszása"
-
-msgid "Read CD-DA"
-msgstr "CD-DA olvasása"
-
-msgid "Read CD+G"
-msgstr "CD+G olvasása"
-
-msgid "Read CD-R"
-msgstr "CD-R olvasása"
-
-msgid "Read CD-RW"
-msgstr "CD-RW olvasása"
-
-msgid "Read DVD-R"
-msgstr "DVD-R olvasása"
-
-msgid "Read DVD+R"
-msgstr "DVD+R olvasása"
-
-msgid "Read DVD-RW"
-msgstr "DVD-RW olvasása"
-
-msgid "Read DVD+RW"
-msgstr "DVD+RW olvasása"
-
-msgid "Read DVD-RAM"
-msgstr "DVD-RAM olvasása"
-
-msgid "Read DVD-ROM"
-msgstr "DVD-ROM olvasása"
-
-msgid "C2 Error Correction"
-msgstr "C2 hibajavítás"
-
-msgid "Read Mode 2 Form 1"
-msgstr "Mode 2 Form 1 olvasása"
-
-msgid "Read Mode 2 Form 2"
-msgstr "Mode 2 Form 2 olvasása"
-
-msgid "Read MCN"
-msgstr "MCN olvasása"
-
-msgid "Read ISRC"
-msgstr "ISRC olvasása"
-
-msgid "Writing"
-msgstr "Írás"
-
-msgid "Write CD-R"
-msgstr "CD-R írása"
-
-msgid "Write CD-RW"
-msgstr "CD-RW írása"
-
-msgid "Write DVD-R"
-msgstr "DVD-R írása"
-
-msgid "Write DVD+R"
-msgstr "DVD+R írása"
-
-msgid "Write DVD-RW"
-msgstr "DVD-RW írása"
-
-msgid "Write DVD+RW"
-msgstr "DVD+RW írása"
-
-msgid "Write DVD-RAM"
-msgstr "DVD-RAM írása"
-
-msgid "Mount Rainier"
-msgstr "Mount Rainier"
-
-msgid "Burn Proof"
-msgstr "Burn Proof"
-
-msgid "Disc info"
-msgstr "Lemez infó"
-
-msgid "No."
-msgstr "No."
-
-msgid "This CD does not contain CD-Text information."
-msgstr "Ez a lemez nem tartalmaz CD-Text információt."
-
 msgid "CDDB query"
 msgstr "CDDB lekérdezés"
 
@@ -543,50 +413,26 @@ msgstr "Találatok letöltése a szerverről..."
 msgid "Connecting to CDDB server..."
 msgstr "Kapcsolódás a CDDB szerverhez..."
 
-msgid "Matches:"
-msgstr "Találatok:"
+msgid "Error"
+msgstr "Hiba"
 
-msgid "Artist:"
-msgstr "Előadó:"
-
-msgid "Title:"
-msgstr "Cím:"
-
-msgid "Year:"
-msgstr "Év:"
-
-msgid "Category:"
-msgstr "Kategória:"
-
-msgid "Genre:"
-msgstr "Műfaj:"
-
-msgid "Extended data:"
-msgstr "Egyéb adat:"
-
-msgid "Import as Artist"
-msgstr "Importálás előadóként"
-
-msgid "Import as Title"
-msgstr "Importálás címként"
-
-msgid "Import as Sort Key"
-msgstr "Importálás kulcsként"
-
-msgid "Add to Comments"
-msgstr "Hozzáadás a kommentekhez"
-
-msgid "Tracks"
-msgstr "Számok"
+msgid "An error occurred while attempting to connect to the CDDB server."
+msgstr "Hiba történt a CDDB szerverhez való kapcsolódás közben."
 
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
-msgid "CDDB submission"
-msgstr "CDDB feltöltés"
+msgid "No matching record found."
+msgstr "Az album nem található az adatbázisban."
 
-msgid "(choose a category)"
-msgstr "(válassz egy kategóriát)"
+msgid "Import as Sort Key"
+msgstr "Importálás kulcsként"
+
+msgid "Import as Title"
+msgstr "Importálás címként"
+
+msgid "Import as Year"
+msgstr "Importálás évként"
 
 msgid ""
 "Artist appears to be in all lowercase.\n"
@@ -629,11 +475,47 @@ msgstr "A feltöltéshez megadott email cím érvénytelen."
 msgid "An error occurred while submitting the record to the CDDB server."
 msgstr "Hiba történt a lemez CDDB szerverhez való küldése közben."
 
-msgid "An error occurred while attempting to connect to the CDDB server."
-msgstr "Hiba történt a CDDB szerverhez való kapcsolódás közben."
+msgid "Correct existing record"
+msgstr "Meglévő album módosítása"
 
-msgid "No matching record found."
-msgstr "Az album nem található az adatbázisban."
+msgid "Submit new record"
+msgstr "Új album feltöltése"
+
+msgid "Matches:"
+msgstr "Találatok:"
+
+msgid "Artist:"
+msgstr "Előadó:"
+
+msgid "Title:"
+msgstr "Cím:"
+
+msgid "Year:"
+msgstr "Év:"
+
+msgid "Category:"
+msgstr "Kategória:"
+
+msgid "(choose a category)"
+msgstr "(válassz egy kategóriát)"
+
+msgid "Genre:"
+msgstr "Műfaj:"
+
+msgid "Extended data:"
+msgstr "Egyéb adat:"
+
+msgid "Import as Artist"
+msgstr "Importálás előadóként"
+
+msgid "Add to Comments"
+msgstr "Hozzáadás a kommentekhez"
+
+msgid "Tracks"
+msgstr "Számok"
+
+msgid "You have to provide an email address for CDDB submission."
+msgstr "Meg kell adni egy email címet a feltöltéshez."
 
 msgid "Please select the directory for ripped files."
 msgstr "Válassz ki egy könyvtárat a rippelt fájloknak."
@@ -653,6 +535,9 @@ msgstr "Tömörítés szintje:"
 msgid "Bitrate [kbps]:"
 msgstr "Bitráta [kbps]:"
 
+msgid "Artist/Album already existing, not empty"
+msgstr "Az előadó vagy album már létezik, és nem üres"
+
 msgid ""
 "\n"
 "The Music Store you selected has a matching Artist and Album, already "
@@ -668,9 +553,6 @@ msgstr ""
 "Ha inkább szeretnél visszatérni a előadó, album vagy zenetár módosításához, "
 "válaszd a Mégse gombot."
 
-msgid "Artist/Album already existing, not empty"
-msgstr "Az előadó vagy album már létezik, és nem üres"
-
 msgid "Rip CD"
 msgstr "CD rippelés"
 
@@ -679,6 +561,9 @@ msgstr "Lemez:"
 
 msgid "Rip"
 msgstr "Rippelés"
+
+msgid "No."
+msgstr "No."
 
 msgid "Title"
 msgstr "Cím"
@@ -732,8 +617,8 @@ msgid "Unlimited retry on failed reads (never skip)"
 msgstr ""
 "Meghiúsult olvasások esetén tetszőleges számú újraolvasás (soha nem ugrik)"
 
-msgid "\tMaximum number of retries:"
-msgstr "\tÚjrapróbálások maximális száma:"
+msgid "Maximum number of retries:"
+msgstr "Újrapróbálások maximális száma:"
 
 msgid ""
 "\n"
@@ -741,9 +626,6 @@ msgid ""
 msgstr ""
 "\n"
 "A célkönyvtár nem írható-olvasható!"
-
-msgid "Error"
-msgstr "Hiba"
 
 msgid "Total"
 msgstr "Összesen"
@@ -769,11 +651,240 @@ msgstr "Ablak bezárása, ha kész"
 msgid "Close"
 msgstr "Bezárás"
 
+msgid "Unknown Album"
+msgstr "Ismeretlen lemez"
+
+msgid "Unknown Track"
+msgstr "Ismeretlen szám"
+
+msgid "Please select the directory for exported files."
+msgstr "Válassz ki egy könyvtárat az exportált fájloknak."
+
+msgid "Help"
+msgstr "Súgó"
+
+#, c-format
+msgid ""
+"\n"
+"The template string you enter here will be used to\n"
+"construct the filename of the exported files. The Artist,\n"
+"Record and Track names are denoted by %%%%a, %%%%r and %%%%t.\n"
+"The track number and format-dependent file extension are\n"
+"denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives\n"
+"an identifier which is unique within an export session."
+msgstr ""
+"\n"
+"Az alábbi sablon az exportált fájlok nevét határozza meg. Az előadó,\n"
+"lemez és szám címeket %%%%a, %%%%r és %%%%t jelöli. A track számát és\n"
+"a formátumtól függő kiterjesztést %%%%n és %%%%x adja meg. A %%%%i\n"
+"kapcsoló az export folyamaton belül egyedi azonosítót eredményez."
+
+msgid "Export files"
+msgstr "Fájlok exportálása"
+
+msgid "Location and filename"
+msgstr "Hely és fájlnév"
+
+msgid "Target directory:"
+msgstr "Célkönyvtár:"
+
+msgid "Create subdirectories for artists"
+msgstr "Alkönyvtár létrehozása előadónként"
+
+msgid "Create subdirectories for albums"
+msgstr "Alkönyvtár létrehozása lemezenként"
+
+msgid ""
+"Subdirectory name\n"
+"length limit:"
+msgstr ""
+"Alkönyvtár név\n"
+"maximális hossza:"
+
+msgid "Filename template:"
+msgstr "Fájlnév sablon:"
+
+msgid "Exporting files"
+msgstr "Fájlok exportálása"
+
+msgid "Source file:"
+msgstr "Forrás fájl:"
+
+msgid "Target file:"
+msgstr "Célfájl:"
+
+msgid "Progress:"
+msgstr "Feldolgozás:"
+
+msgid "*File info"
+msgstr "*Fájl infó"
+
+msgid "File info"
+msgstr "Fájl infó"
+
+msgid "There are unsaved changes to the file metadata."
+msgstr "A fájl nem mentett metaadat változtatásokat tartalmaz."
+
+msgid "Save and close"
+msgstr "Mentés és bezárás"
+
+msgid "Discard changes"
+msgstr "Változások eldobása"
+
+msgid "Do not close"
+msgstr "Ne zárja be"
+
+#, c-format
+msgid ""
+"Conversion error in field %s:\n"
+"'%s' does not conform to format '%s'!"
+msgstr ""
+"Konverziós hiba a következő mezőben: %s\n"
+"'%s' nem felel meg a(z) '%s' formátumnak."
+
+msgid ""
+"Attached Picture frame with no image set!\n"
+"Please set an image or remove the frame."
+msgstr ""
+"Az Attached Picture keretből hiányzik a kép.\n"
+"Adj meg egyet, vagy töröld a keretet."
+
+#, c-format
+msgid ""
+"Failed to write metadata to file.\n"
+"Reason: %s"
+msgstr ""
+"A fájlban nem sikerült beállítani a metaadatokat.\n"
+"A hiba oka: %s"
+
+#, c-format
+msgid ""
+"Error converting field %s to Year:\n"
+"'%s' is not an integer number!"
+msgstr ""
+"A(z) '%s' mező nem konvertálható évre:\n"
+"'%s' nem egész szám."
+
+msgid "Please specify the file to save the image to."
+msgstr "Add meg az elmentendő képfájlt."
+
+msgid "(no image)"
+msgstr "(nincs kép)"
+
+msgid "(error loading image)"
+msgstr "(hiba a kép betöltése közben)"
+
+msgid "Please specify the file to load the image from."
+msgstr "Add meg a betöltendő képfájlt."
+
+#, c-format
+msgid ""
+"Could not load image from:\n"
+"%s"
+msgstr ""
+"Az alábbi helyről nem sikerült képet betölteni:\n"
+"\"%s\""
+
+#, c-format
+msgid "MIME type: %s"
+msgstr "MIME típus: %s"
+
+msgid "Picture type:"
+msgstr "Kép típusa:"
+
+msgid "Description:"
+msgstr "Leírás:"
+
+msgid "(no description)"
+msgstr "(nincs leírás)"
+
+msgid "Change"
+msgstr "Csere"
+
+msgid "Save"
+msgstr "Mentés"
+
+msgid "Import as Record"
+msgstr "Importálás albumként"
+
+msgid "Import as Track No."
+msgstr "Importálás track számaként"
+
+msgid "Import as RVA"
+msgstr "Importálás RVA-ként"
+
+msgid "Add"
+msgstr "Hozzáadás"
+
+msgid "field:"
+msgstr "mező:"
+
+msgid "tag:"
+msgstr "tag:"
+
+msgid "Audio CD"
+msgstr "Audio CD"
+
+msgid "Track:"
+msgstr "Szám:"
+
+msgid "Audio data"
+msgstr "Audio jellemzők"
+
+msgid "Format:"
+msgstr "Formátum:"
+
+msgid "Length:"
+msgstr "Hossz:"
+
+msgid "Samplerate:"
+msgstr "Mintavételi frekvencia:"
+
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld Hz"
+
+msgid "Channel count:"
+msgstr "Csatornák száma:"
+
 msgid "MONO"
 msgstr "MONO"
 
 msgid "STEREO"
 msgstr "STEREO"
+
+msgid "Bandwidth:"
+msgstr "Sávszélesség:"
+
+msgid "Total samples:"
+msgstr "Összes mintavétel:"
+
+msgid "Mode:"
+msgstr "Mód:"
+
+msgid "Type:"
+msgstr "Típus: "
+
+msgid "Channels:"
+msgstr "Csatornák:"
+
+msgid "Patterns:"
+msgstr "Minták:"
+
+msgid "Samples:"
+msgstr "Mintavételek:"
+
+msgid "Instruments:"
+msgstr "Hangszerek:"
+
+msgid "Samples"
+msgstr "Mintavételek:i frekvencia:"
+
+msgid "Instruments"
+msgstr "Hangszerek"
+
+msgid "Name"
+msgstr "Név"
 
 msgid "Output:"
 msgstr "Kimenet:"
@@ -790,12 +901,6 @@ msgid ""
 msgstr ""
 "Zenetárban egy vagy több tároló tartalma megváltozott.\n"
 "Szeretnéd elmenteni őket kilépés előtt?"
-
-msgid "Save"
-msgstr "Mentés"
-
-msgid "Discard changes"
-msgstr "Változások eldobása"
 
 msgid "Do not exit"
 msgstr "Ne lépjen ki"
@@ -848,6 +953,9 @@ msgstr ""
 "az Aqualungot, mert nem volt elég gyors. Újra\n"
 "kell indítani a JACK-et és az Aqualungot is.\n"
 
+msgid "Warn me if the Window Manager does not support system tray"
+msgstr "Figyelmeztetés, ha az ablakkezelő nem támogatja a rendszertálcát"
+
 msgid ""
 "Aqualung is compiled with system tray support, but the status icon could not "
 "be embedded in the notification area. Your desktop may not have support for "
@@ -865,9 +973,6 @@ msgstr "Szkin-választó"
 
 msgid "JACK port setup"
 msgstr "JACK port beállítás"
-
-msgid "File info"
-msgstr "Fájl infó"
 
 msgid "Previous song"
 msgstr "Előző szám"
@@ -914,63 +1019,6 @@ msgstr "Előző"
 msgid "Next"
 msgstr "Következő"
 
-msgid "Aqualung playlist (*.xml)"
-msgstr "Aqualung lejátszólista (*.xml)"
-
-msgid "MP3 Playlist (*.m3u)"
-msgstr "MP3 lejátszólista (*.m3u) "
-
-msgid "Multimedia Playlist (*.pls)"
-msgstr "Multimédia lejátszólista (*.pls)"
-
-msgid "All Files"
-msgstr "Minden fájl"
-
-msgid "All Playlist Files"
-msgstr "Minden lejátszólista"
-
-msgid "All Audio Files"
-msgstr "Minden hangfájl"
-
-msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
-msgstr "Hangfájlok (*.wav, *.aiff, *.au, ...)"
-
-msgid "Free Lossless Audio Codec (*.flac)"
-msgstr "Free Lossless Audio Codec (*.flac)"
-
-msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
-msgstr "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
-
-msgid "Ogg Vorbis (*.ogg)"
-msgstr "Ogg Vorbis (*.ogg)"
-
-msgid "Ogg Speex (*.spx)"
-msgstr "Ogg Speex (*.spx)"
-
-msgid "Musepack (*.mpc)"
-msgstr "Musepack (*.mpc)"
-
-msgid "Monkey's Audio Codec (*.ape)"
-msgstr "Monkey's Audio Codec (*.ape)"
-
-msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
-msgstr "Modulok (*.xm, *.mod, *.it, *.s3m, ...)"
-
-msgid "Compressed modules (*.gz, *.bz2)"
-msgstr "Tömörített modulok (*.gz, *.bz2)"
-
-msgid "Compressed modules (*.gz)"
-msgstr "Tömörített modulok (*.gz)"
-
-msgid "Compressed modules (*.bz2)"
-msgstr "Tömörített modulok (*.bz2)"
-
-msgid "WavPack (*.wv)"
-msgstr "WavPack (*.wv)"
-
-msgid "LAVC audio/video files"
-msgstr "LAVC hang/videó fájlok"
-
 #, c-format
 msgid "%.1f MB / %.1f MB"
 msgstr "%.1f MB / %.1f MB"
@@ -979,35 +1027,49 @@ msgstr "%.1f MB / %.1f MB"
 msgid "%d / %d files"
 msgstr "%d / %d fájl"
 
+#, c-format
+msgid "%d / %d directories"
+msgstr "%d / %d könyvtár"
+
+msgid "Cannot write to selected directory. Please select another directory."
+msgstr "A kiválasztott könyvtárba nem lehet írni, válassz egy másikat."
+
 msgid "Done"
 msgstr "Kész"
 
 msgid "Aborted..."
 msgstr "Megszakítva..."
 
-msgid "Please enter directory name"
-msgstr "Add meg a könyvtár nevét"
+msgid "Please enter directory name."
+msgstr "Add meg a könyvtár nevét."
 
 msgid "Create directory"
 msgstr "Könyvtár létrehozása"
 
-msgid "Please enter a new name"
-msgstr "Adj meg egy új nevet"
+msgid "Please enter a new name."
+msgstr "Adj meg egy új nevet."
 
-msgid "Rename directory"
-msgstr "Könyvtár átnevezése"
+msgid "Rename"
+msgstr "Átnevezés"
 
 #, c-format
 msgid ""
 "Directory '%s' will be removed with its entire contents.\n"
 "\n"
-"Are you sure?"
+"Do you want to proceed?"
 msgstr ""
 "Biztosan el akarod távolítani a '%s' könyvtárat\n"
 "és teljes tartalmát?"
 
-msgid "Remove directory"
-msgstr "Könyvtár eltávolítása"
+#, c-format
+msgid ""
+"File '%s' will be removed.\n"
+"\n"
+"Do you want to proceed?"
+msgstr "Biztosan el akarod távolítani a '%s' fájl?"
+
+msgid "Remove"
+msgstr "Eltávolítás"
 
 #, c-format
 msgid " (%.1f MB)"
@@ -1035,19 +1097,64 @@ msgstr ""
 "Az eszköz foglalt.\n"
 "(Nem sikerült hozzáférni az interfészhez.)"
 
-#, c-format
 msgid ""
 "Device is not responding.\n"
-"Try jiggling the handle. (error %d)"
+"Try jiggling the handle."
 msgstr ""
 "Az eszköz nem válaszol.\n"
-"Próbáld meg mozgatni a fogantyúját (hibakód: %d)"
+"Próbáld mozgatni a fogantyúját."
 
-msgid "Please select at least one song from playlist."
-msgstr "Válassz ki legalább egy számot a lejátszólistából."
+msgid "Please select a local path."
+msgstr "Válassz egy helyi elérési utat."
 
-msgid "iFP device manager"
-msgstr "iFP eszközkezelő"
+msgid "Please select at least one valid song from playlist."
+msgstr "Válassz ki legalább egy érvényes számot a lejátszólistából."
+
+#, c-format
+msgid ""
+"One song has format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"A lejátszód nem támogatja az egyik szám formátumát.\n"
+"\n"
+"Akarod folytatni?"
+
+#, c-format
+msgid ""
+"%d of %d songs have format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"A lejátszód %d szám formátumát nem támogatja a megadott %d közül.\n"
+"\n"
+"Akarod folytatni?"
+
+#, c-format
+msgid ""
+"The selected song has format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"A lejátszód nem támogatja a kiválasztott szám formátumát.\n"
+"\n"
+"Akarod folytatni?"
+
+#, c-format
+msgid ""
+"None of the selected songs has format supported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"A lejátszód egyik kiválasztott szám formátumát sem támogatja.\n"
+"\n"
+"Akarod folytatni?"
+
+msgid "iFP device manager (upload mode)"
+msgstr "iFP eszközkezelő (feltöltés mód)"
+
+msgid "iFP device manager (download mode)"
+msgstr "iFP eszközkezelő (letöltés mód)"
 
 msgid "Selected files:"
 msgstr "Kiválasztott fájlok:"
@@ -1058,6 +1165,9 @@ msgstr "label_songs"
 msgid "<b>Songs info</b>"
 msgstr "<b>Szám info</b>"
 
+msgid "Model:"
+msgstr "Modell:"
+
 msgid "Battery"
 msgstr "Elem"
 
@@ -1067,14 +1177,20 @@ msgstr "Szabad hely"
 msgid "<b>Device status</b>"
 msgstr "<b>Eszköz állapota</b>"
 
+msgid "Size"
+msgstr "Méret"
+
 msgid "Create a new directory"
 msgstr "Új könyvtár létrehozása"
 
-msgid "Remove directory with its entire contents"
-msgstr "Könyvtár eltávolítása teljes tartalmával együtt"
+msgid "<b>Remote directory</b>"
+msgstr "<b>Távoli könyvtár</b>"
 
-msgid "<b>Destination directory</b>"
-msgstr "<b>Célkönyvtár</b>"
+msgid "<b>Local directory</b>"
+msgstr "<b>Helyi könyvtár</b>"
+
+msgid "Browse"
+msgstr "Tallózás"
 
 msgid "File name: "
 msgstr "Fájlnév:"
@@ -1088,156 +1204,401 @@ msgstr "Összesen: "
 msgid "Idle"
 msgstr "Tétlen"
 
-msgid "<b>Uploading progress</b>"
-msgstr "<b>Feltöltési folyamat</b>"
+msgid "<b>Transfer progress</b>"
+msgstr "<b>Másolási folyamat</b>"
+
+msgid "Close window when transfer complete"
+msgstr "Ablak bezárása, ha kész"
 
 msgid "_Upload"
 msgstr "_Feltöltés"
 
+msgid "_Download"
+msgstr "_Letöltés"
+
 msgid "_Abort"
 msgstr "_Megszakítás"
+
+msgid "Success"
+msgstr "Siker"
+
+msgid "Memory allocation error"
+msgstr "Memória foglalási hiba"
+
+msgid "Unable to open file"
+msgstr "Sikertelen fájlmegnyitás"
+
+msgid "No metadata support for this format"
+msgstr "A formátum nem támogat metaadatot"
+
+msgid "File is not writable"
+msgstr "A fájl nem írható"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "A 'Track no.' mező értéke érvénytelen"
+
+msgid "Invalid 'Genre' field value"
+msgstr "A 'Genre' mező értéke érvénytelen"
+
+msgid "Conversion to target charset failed"
+msgstr "Nem sikerült konvertálni a megadott karakterkészletre."
+
+msgid "Internal error"
+msgstr "Internal error"
+
+msgid "Unknown error"
+msgstr "Ismeretlen hiba"
+
+msgid "Album"
+msgstr "Lemez"
+
+msgid "Date"
+msgstr "Dátum"
+
+msgid "Genre"
+msgstr "Műfaj"
+
+msgid "Track No."
+msgstr "Track száma"
+
+msgid "Comment"
+msgstr "Megjegyzés"
+
+msgid "Disc"
+msgstr "Lemez"
+
+msgid "Performer"
+msgstr "Előadó"
+
+msgid "Description"
+msgstr "Leírás"
+
+msgid "Organization"
+msgstr "Szervezet"
+
+msgid "Location"
+msgstr "Hely"
+
+msgid "Contact"
+msgstr "Kapcsolat"
+
+msgid "License"
+msgstr "Licenc"
+
+msgid "Copyright"
+msgstr "Copyright"
+
+msgid "ISRC"
+msgstr "ISRC"
+
+msgid "Version"
+msgstr "Vezrió"
+
+msgid "Subtitle"
+msgstr "Alcím"
+
+msgid "Debut Album"
+msgstr "Debütáló lemez"
+
+msgid "Publisher"
+msgstr "Kiadó"
+
+msgid "Conductor"
+msgstr "Karmester"
+
+msgid "Composer"
+msgstr "Zeneszerző"
+
+msgid "Publication Right"
+msgstr "Publikáció joga"
+
+msgid "File"
+msgstr "Fájl"
+
+msgid "EAN/UPC"
+msgstr "EAN/UPC"
+
+msgid "ISBN"
+msgstr "ISBN"
+
+msgid "Catalog Number"
+msgstr "Katalógus szám"
+
+msgid "Label Code"
+msgstr "Címke kód"
+
+msgid "Record Date"
+msgstr "Felvétel dátuma"
+
+msgid "Record Location"
+msgstr "Felvétel helye"
+
+msgid "Media"
+msgstr "Média"
+
+msgid "Index"
+msgstr "Index"
+
+msgid "Related"
+msgstr "Kapcsolódó"
+
+msgid "Abstract"
+msgstr "Absztrakt"
+
+msgid "Language"
+msgstr "Nyelv"
+
+msgid "Bibliography"
+msgstr "Irodalomjegyzék"
+
+msgid "Introplay"
+msgstr "Introplay"
+
+msgid "BPM"
+msgstr "BPM"
+
+msgid "Encoding Time"
+msgstr "Kódolás ideje"
+
+msgid "Playlist Delay"
+msgstr "Lejátszólista késleltetés"
+
+msgid "Original Release Time"
+msgstr "Eredeti kiadás ideje"
+
+msgid "Release Time"
+msgstr "Kiadás ideje"
+
+msgid "Tagging Time"
+msgstr "Taggelés ideje"
+
+msgid "Encoded by"
+msgstr "Kódoló"
+
+msgid "Lyricist/Text Writer"
+msgstr "Szövegíró"
+
+msgid "File Type"
+msgstr "Fájltípus"
+
+msgid "Involved People"
+msgstr "Résztvevő emberek"
+
+msgid "Content Group"
+msgstr "Tartalom csoport"
+
+msgid "Initial key"
+msgstr "Kezdeti előjegyzés"
+
+msgid "Musician Credits"
+msgstr "Zenészek elismerése"
+
+msgid "Mood"
+msgstr "Hangnem"
+
+msgid "Original Album"
+msgstr "Eredeti album"
+
+msgid "Original Filename"
+msgstr "Eredeti fájlnév"
+
+msgid "Original Lyricist"
+msgstr "Eredeti szövegíró"
+
+msgid "Original Artist"
+msgstr "Eredeti előadó"
+
+msgid "File Owner"
+msgstr "Fájl tulajdonosa"
+
+msgid "Band/Orchestra"
+msgstr "Zenekar/orchestra"
+
+msgid "Interpreted/Remixed"
+msgstr "Feldolgozás/remix"
+
+msgid "Part Of A Set"
+msgstr "Összetett mű része"
+
+msgid "Produced"
+msgstr "Produced"
+
+msgid "Internet Radio Station Name"
+msgstr "Internetes rádióállomás neve"
+
+msgid "Internet Radio Station Owner"
+msgstr "Internetes rádióállomás tulajdonosa"
+
+msgid "Album Sort Order"
+msgstr "Albumok sorbarendezése"
+
+msgid "Performer Sort Order"
+msgstr "Előadók sorbarendezése"
+
+msgid "Title Sort Order"
+msgstr "Címek sorbarendezése"
+
+msgid "Software"
+msgstr "Szoftver"
+
+msgid "Set Subtitle"
+msgstr "Alcím beállítása"
+
+msgid "User Defined Text"
+msgstr "Felhasználói szöveg"
+
+msgid "Commercial Information"
+msgstr "Kereskedelmi információ"
+
+msgid "Copyright/Legal Information"
+msgstr "Copyright vagy jogi információ"
+
+msgid "Official Audio File Website"
+msgstr "Audio fájl hivatalos honlapja"
+
+msgid "Official Artist Website"
+msgstr "Szerző hivatalos honlapja"
+
+msgid "Official Audio Source Website"
+msgstr "Audió forrás hivatalos honlapja"
+
+msgid "Official Radio Station Website"
+msgstr "Rádióállomás hivatalos honlapja"
+
+msgid "Payment"
+msgstr "Fizetés"
+
+msgid "Publisher's Official Website"
+msgstr "Kiadó hivatalos honlapja"
+
+msgid "User Defined URL"
+msgstr "Felhasználói URL"
 
 msgid "Vendor"
 msgstr "Vendor"
 
-msgid "Please select the xml file for this store."
-msgstr "Add meg a tárolóhoz tartozó xml fájlt."
+msgid "ReplayGain Reference Loudness"
+msgstr "ReplayGain referencia hangosság"
 
-msgid "Create empty store"
-msgstr "Üres tároló létrehozása"
+msgid "ReplayGain Track Gain"
+msgstr "ReplayGain Track Gain"
 
-msgid "Name:"
-msgstr "Név:"
+msgid "ReplayGain Track Peak"
+msgstr "ReplayGain Track Peak"
 
-msgid "Comments:"
-msgstr "Megjegyzések:"
+msgid "ReplayGain Album Gain"
+msgstr "ReplayGain Album Gain"
 
-msgid "Edit Store"
-msgstr "Tároló szerkesztése"
+msgid "ReplayGain Album Peak"
+msgstr "ReplayGain Album Peak"
 
-msgid "Add Artist"
-msgstr "Előadó hozzáadása"
+msgid "Icy-Name"
+msgstr "Icy-Név"
 
-msgid "Visible name:"
-msgstr "Látható név:"
+msgid "Icy-Description"
+msgstr "Icy-Leírás"
 
-msgid "Name to sort by:"
-msgstr "Rendezési kulcs:"
+msgid "Icy-Genre"
+msgstr "Icy-Műfaj:"
 
-msgid "Edit Artist"
-msgstr "Előadó szerkesztése"
+msgid "RVA"
+msgstr "RVA"
 
-msgid "Please select the audio files for this record."
-msgstr "Válaszd ki az albumhoz adandó hangfájlokat."
+msgid "Attached Picture"
+msgstr "Csatolt kép"
 
-msgid "Add Record"
-msgstr "Album hozzáadása"
+msgid "Binary Object"
+msgstr "Bináris objektum"
 
-msgid "Auto-create tracks from these files:"
-msgstr "Számok automatikus létrehozása a következő fájlokból:"
+msgid "NULL"
+msgstr "NULL"
 
-msgid "Clear list"
-msgstr "Lista törlése"
+msgid "ID3v1"
+msgstr "ID3v1"
 
-msgid "_Add files..."
-msgstr "Fájlok _hozzáadása..."
+msgid "ID3v2"
+msgstr "ID3v2"
 
-msgid "Edit Record"
-msgstr "Album szerkesztése"
+msgid "APE"
+msgstr "APE"
 
-msgid "Please select the audio file for this track."
-msgstr "Add meg a számhoz tartozó fájlt."
+msgid "Ogg Xiph Comments"
+msgstr "Ogg Xiph megjegyzések"
 
-msgid "Add Track"
-msgstr "Szám hozzáadása"
+msgid "FLAC Pictures"
+msgstr "FLAC kép"
 
-msgid "Edit Track"
-msgstr "Szám szerkesztése"
+msgid "Musepack ReplayGain"
+msgstr "Musepack ReplayGain"
 
-msgid "Duration:"
-msgstr "Hossz:"
+msgid "Generic StreamMeta"
+msgstr "Általános StreamMeta"
 
-msgid "Volume level:"
-msgstr "Hangerő:"
+msgid "MPEG StreamMeta"
+msgstr "MPEG StreamMeta"
 
-#, c-format
-msgid "Unmeasured"
+msgid "Module info"
+msgstr "Modul infó"
+
+msgid "Unknown"
 msgstr "Ismeretlen"
 
-msgid "Use manual RVA value [dB]"
-msgstr "Rögzített RVA használata [dB]"
+msgid "Other"
+msgstr "Egyéb"
 
-#, c-format
-msgid "Really remove \"%s\" from the Music Store?"
-msgstr "Biztosan eltávolítod a Zenetárból a következőt: \"%s\" ?"
+msgid "File icon (32x32 PNG)"
+msgstr "Fájl ikon (32x32 PNG)"
 
-msgid "Stop adding songs"
-msgstr "Hozzáadás leállítása"
+msgid "File icon (other)"
+msgstr "Fájl ikon (egyéb)"
 
-#, c-format
-msgid ""
-"The store '%s' already exists.\n"
-"Add it on the Settings/Music Store tab."
-msgstr ""
-"A '%s' táróló már létezik.\n"
-"Hozzáadása a Beállítások/Zenetár oldalon lehetséges."
+msgid "Front cover"
+msgstr "Első borító"
 
-msgid "rw"
-msgstr "rw"
+msgid "Back cover"
+msgstr "Hátsó borító"
 
-msgid "Remove Store"
-msgstr "Tároló eltávolítása"
+msgid "Leaflet page"
+msgstr "Füzetlap"
 
-msgid "Do you want to save the store before removing?"
-msgstr "El akarod menteni a tárolót eltávolítás előtt?"
+msgid "Album image"
+msgstr "Album kép"
 
-msgid "Remove Artist"
-msgstr "Előadó eltávolítása"
+msgid "Lead artist/performer"
+msgstr "Vezető művész/előadó"
 
-msgid "Remove Record"
-msgstr "Album eltávolítása"
+msgid "Artist/performer"
+msgstr "Művész/előadó"
 
-msgid "Remove Track"
-msgstr "Szám eltávolítása"
+msgid "Band/orchestra"
+msgstr "Zenekar/orchestra"
 
-msgid "Update file metadata"
-msgstr "Metaadatok frissítése"
+msgid "Lyricist/text writer"
+msgstr "Szövegíró"
 
-msgid "Track name"
-msgstr "Szám címe"
+msgid "Recording location/studio"
+msgstr "Felvétel helye/stúdió"
 
-msgid "Track comment"
-msgstr "Szám kommentje"
+msgid "During recording"
+msgstr "Felvétel közben"
 
-msgid "Track number"
-msgstr "Track száma"
+msgid "During performance"
+msgstr "Előadás közben"
 
-msgid "Failed to set metadata at the following files:"
-msgstr "A következő fájloknál nem sikerült beállítani a metaadatokat:"
+msgid "Movie/video screen capture"
+msgstr "Mozi/videó felvétel"
 
-msgid "(no comment)"
-msgstr "(nincs megjegyzés)"
+msgid "A large, coloured fish"
+msgstr "Egy nagy, színes hal"
 
-msgid "time unmeasured"
-msgstr "ismeretlen hossz"
+msgid "Illustration"
+msgstr "Illusztráció"
 
-msgid "artists"
-msgstr "előadó"
+msgid "Band/artist logotype"
+msgstr "Zenekar/előadó logótípus"
 
-msgid "artist"
-msgstr "előadó"
-
-msgid "records"
-msgstr "album"
-
-msgid "record"
-msgstr "album"
-
-msgid "tracks"
-msgstr "szám"
-
-msgid "track"
-msgstr "szám"
+msgid "Publisher/studio logotype"
+msgstr "Kiadó/stúdió logótípus"
 
 msgid "Music Store"
 msgstr "Zenetár"
@@ -1263,108 +1624,6 @@ msgstr "Összes tároló mentése"
 msgid "Create empty store..."
 msgstr "Üres tároló létrehozása..."
 
-msgid "Add to playlist"
-msgstr "Lejátszólistába"
-
-msgid "Add to playlist (Album mode)"
-msgstr "Lejátszólistába (Album mód)"
-
-msgid "Build / Update store from filesystem..."
-msgstr "Tároló felépítése / aktualizálása fájlrendszerről..."
-
-msgid "Edit store..."
-msgstr "Tároló szerkesztése..."
-
-msgid "Save store"
-msgstr "Tároló mentése"
-
-msgid "Remove store"
-msgstr "Tároló eltávolítása"
-
-msgid "Add new artist to this store..."
-msgstr "Új előadó hozzáadása ehhez a tárolóhoz..."
-
-msgid "Calculate volume (recursive)"
-msgstr "Hangosság meghatározása (rekurzív)"
-
-msgid "Unmeasured tracks only"
-msgstr "Ismeretlen hangerejű számokra"
-
-msgid "All tracks"
-msgstr "Minden számra"
-
-msgid "Batch-update file metadata..."
-msgstr "Metaadatok frissítése a háttérben..."
-
-msgid "Add new artist..."
-msgstr "Új előadó hozzáadása..."
-
-msgid "Edit artist..."
-msgstr "Előadó szerkesztése..."
-
-msgid "Remove artist"
-msgstr "Előadó eltávolítása"
-
-msgid "Add new record to this artist..."
-msgstr "Új album hozzáadása ehhez az előadóhoz..."
-
-msgid "Add new record..."
-msgstr "Új album hozzáadása..."
-
-msgid "Edit record..."
-msgstr "Album szerkesztése..."
-
-msgid "Remove record"
-msgstr "Album eltávolítása"
-
-msgid "Add new track to this record..."
-msgstr "Új szám hozzáadása ehhez az albumhoz..."
-
-msgid "CDDB query for this record..."
-msgstr "Album lekérdezése CDDB adatbázisból..."
-
-msgid "Submit record to CDDB database..."
-msgstr "Album feltöltése CDDB adatbázisba..."
-
-msgid "Add new track..."
-msgstr "Új szám hozzáadása..."
-
-msgid "Edit track..."
-msgstr "Szám szerkesztése..."
-
-msgid "Remove track"
-msgstr "Szám eltávolítása"
-
-msgid "File info..."
-msgstr "Fájl infó..."
-
-msgid "Calculate volume"
-msgstr "Hangosság meghatározása"
-
-msgid "Only if unmeasured"
-msgstr "Csak ha ismeretlen"
-
-msgid "In any case"
-msgstr "Minden esetben"
-
-msgid "Update file metadata..."
-msgstr "Metaadatok frissítése..."
-
-msgid "CDDB query for this CD..."
-msgstr "CD lekérdezése CDDB adatbázisból..."
-
-msgid "Submit CD to CDDB database..."
-msgstr "CD feltöltése CDDB adatbázisba..."
-
-msgid "Rip CD..."
-msgstr "CD rippelés..."
-
-msgid "Disc info..."
-msgstr "Lemez infó..."
-
-msgid "Drive info..."
-msgstr "Meghajtó infó..."
-
 msgid "*Music Store"
 msgstr "*Zenetár"
 
@@ -1377,6 +1636,12 @@ msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
 msgstr ""
 "A következő változtatások az Aqualung újraindítása után jutnak érvényre:"
+
+msgid "Disable skin support"
+msgstr "Szkinek tiltása"
+
+msgid "rw"
+msgstr "rw"
 
 msgid "r"
 msgstr "r"
@@ -1398,7 +1663,7 @@ msgid ""
 "\n"
 "The template string you enter here will be used to\n"
 "construct a single title line from an Artist, a Record\n"
-"and a Track name. These are denoted by %%a, %%r and %%t,\n"
+"and a Track name. These are denoted by %%%%a, %%%%r and %%%%t,\n"
 "respectively. Everything else you enter here will be\n"
 "literally copied into the resulting string.\n"
 msgstr ""
@@ -1409,15 +1674,12 @@ msgstr ""
 "szám címét jelölik. A sablonban szereplő egyéb karakterek\n"
 "változtatás nélkül jelennek meg a címsorban.\n"
 
-msgid "Help"
-msgstr "Súgó"
-
 #, c-format
 msgid ""
 "\n"
 "The template string you enter here will be used to\n"
 "construct a single title line from an Artist and a Track\n"
-"name. These are denoted by %%a and %%t, respectively.\n"
+"name. These are denoted by %%%%a and %%%%t, respectively.\n"
 "Everything else you enter here will be literally\n"
 "copied into the resulting string.\n"
 msgstr ""
@@ -1433,7 +1695,7 @@ msgid ""
 "The string you enter here will be parsed as a command\n"
 "line before parsing the actual command line parameters.\n"
 "What you enter here will act as a default setting and may\n"
-"or may not be overrided from the 'real' command line.\n"
+"or may not be overridden from the 'real' command line.\n"
 "Example: enter '-o alsa -R' below to use ALSA output\n"
 "running realtime as a default.\n"
 msgstr ""
@@ -1553,6 +1815,36 @@ msgstr "Rejtett fájlok és könyvtárak mutatása tallózáskor"
 msgid "Show tags tab first in the file info dialog"
 msgstr "Először a tagek látszódjanak a fájl infó ablakban"
 
+msgid "Don't show cover thumbnail in the main window"
+msgstr "Ne jelenjen meg a borító képe a főablakban"
+
+msgid "Cover art"
+msgstr "Lemezborító"
+
+msgid "Default cover width:"
+msgstr "Alapértelmezett borítóméret:"
+
+msgid "50 pixels"
+msgstr "50 képpont"
+
+msgid "100 pixels"
+msgstr "100 képpont"
+
+msgid "200 pixels"
+msgstr "200 képpont"
+
+msgid "300 pixels"
+msgstr "300 képpont"
+
+msgid "use browser window width"
+msgstr "ablak szélességéhez igazít"
+
+msgid "Do not magnify images with smaller width"
+msgstr "A kisebb képeket ne nagyítsa"
+
+msgid "Show cover thumbnail for Music Store tracks only"
+msgstr "Borító mutatása csak a Zenetárból hozzáadott számok esetén"
+
 msgid "Playlist"
 msgstr "Lejátszólista"
 
@@ -1641,29 +1933,8 @@ msgstr "Ikonok engedélyezése a csomópontokban"
 msgid "Enable Music Store tree node icons"
 msgstr "Ikonok engedélyezése a Zenetár csomópontjaiban"
 
-msgid "Cover art"
-msgstr "Lemezborító"
-
-msgid "Default cover width:"
-msgstr "Alapértelmezett borítóméret:"
-
-msgid "50 pixels"
-msgstr "50 képpont"
-
-msgid "100 pixels"
-msgstr "100 képpont"
-
-msgid "200 pixels"
-msgstr "200 képpont"
-
-msgid "300 pixels"
-msgstr "300 képpont"
-
-msgid "use browser window width"
-msgstr "ablak szélességéhez igazít"
-
-msgid "Do not magnify images with smaller width"
-msgstr "A kisebb képeket ne nagyítsa"
+msgid "Ask for confirmation when removing items"
+msgstr "Megerősítés elemek törlése előtt"
 
 msgid "Paths to Music Store databases"
 msgstr "A Zenetár adatbázisok elérési útja"
@@ -1674,17 +1945,8 @@ msgstr "Elérési út"
 msgid "Access"
 msgstr "Hozzáférés"
 
-msgid "Browse"
-msgstr "Tallózás"
-
 msgid "Refresh"
 msgstr "Frissítés"
-
-msgid "Remove"
-msgstr "Eltávolítás"
-
-msgid "Add"
-msgstr "Hozzáadás"
 
 msgid "DSP"
 msgstr "DSP"
@@ -1765,21 +2027,20 @@ msgstr "Max. eltérés az átlagtól [dB] :"
 msgid "% of standard deviation :"
 msgstr "Max. eltérés a szórás %-ában :"
 
-msgid ""
-"When adding to playlist, use file metadata (if available) instead of\n"
-"information from the Music Store for:"
-msgstr ""
-"Ha van a fájlban metaadat, a Lejátszólistába adáskor ezt használja a\n"
-"Zenetárból származó információ helyett a következőknél:"
+msgid "Use file metadata (if available) when adding files to the Playlist"
+msgstr "Ha van a fájlban metaadat, a Lejátszólistába adáskor ezt használja"
 
-msgid ""
-"When adding external files to playlist, use file metadata (if available) for:"
-msgstr ""
-"Külső fájlok Lejátszólistába adásakor metaadat használata (ha van)\n"
-"a következőknél:"
+msgid "from the Music Store:"
+msgstr "a Zenetárból:"
 
-msgid "Replaygain tag to extract from Ogg Xiph and APE tags: "
-msgstr "Replaygain tag használata Ogg Xiph és APE tagek esetén: "
+msgid "Track name"
+msgstr "Szám címe"
+
+msgid "from the filesystem:"
+msgstr "a fájlrendszerről:"
+
+msgid "ReplayGain tag to use (with fallback to the other): "
+msgstr "ReplayGain tag kiválasztása (a másik tartalék lesz): "
 
 msgid "Replaygain_track_gain"
 msgstr "Replaygain_track_gain"
@@ -1787,8 +2048,36 @@ msgstr "Replaygain_track_gain"
 msgid "Replaygain_album_gain"
 msgstr "Replaygain_album_gain"
 
+msgid "Metadata editor (File info dialog)"
+msgstr "Metaadat szerkesztő (Fájl infó ablak)"
+
+msgid ""
+"When adding new frames, try to set their contents\n"
+"from another tag's equivalent frame."
+msgstr ""
+"Új keret hozzáadásánál próbálja meg beállítani a\n"
+"tartalmát egy másik tag ekvivalens keretéből."
+
+msgid "Batch update & encode (mass tagger, CD ripper, file export)"
+msgstr ""
+"Frissítés a háttérben & kódolás (taggelés, CD rippelés, fájlok exportálása)"
+
+msgid "Tags to add when creating or updating MPEG audio files:"
+msgstr ""
+"MPEG audio fájlokban létrehozáskor vagy frissítéskor hozzáadandó keretek:"
+
+msgid ""
+"Note: pre-existing tags will be updated even though they\n"
+"might not be checked here."
+msgstr ""
+"Megjegyzés: a korábban meglévő tagek akkor is frissülnek,\n"
+"ha itt nincsenek bejelölve."
+
 msgid "CD drive speed:"
 msgstr "CD meghajtó sebesség:"
+
+msgid "\tMaximum number of retries:"
+msgstr "\tÚjrapróbálások maximális száma:"
 
 msgid "Force TOC re-read on every drive scan"
 msgstr "TOC újraolvasás kényszerítése minden meghajtó scannelésnél"
@@ -1883,6 +2172,9 @@ msgstr "Állapotsor: "
 msgid "Colors"
 msgstr "Színek"
 
+msgid "Song in playlist: "
+msgstr "Szám a Lejátszólistában: "
+
 msgid "Active song in playlist: "
 msgstr "Aktív szám a Lejátszólistában: "
 
@@ -1918,52 +2210,23 @@ msgstr ""
 "A lejátszáskori RVA jelenleg nem engedélyezett.\n"
 "Akarod most engedélyezni?"
 
-msgid "Unknown"
-msgstr "Ismeretlen"
-
 msgid "counting..."
 msgstr "számolás alatt..."
 
-#, c-format
-msgid "%d track [%s] (%.1f MB)"
-msgstr "%d szám [%s] (%.1f MB)"
+msgid "track"
+msgstr "szám"
 
-#, c-format
-msgid "%d track [%s] (%.1f GB)"
-msgstr "%d szám [%s] (%.1f GB)"
-
-#, c-format
-msgid "%d track "
-msgstr "%d szám "
-
-#, c-format
-msgid "%d track [%s] "
-msgstr "%d szám [%s] "
-
-#, c-format
-msgid "%d tracks [%s] (%.1f MB)"
-msgstr "%d szám [%s] (%.1f MB)"
-
-#, c-format
-msgid "%d tracks [%s] (%.1f GB)"
-msgstr "%d szám [%s] (%.1f GB)"
-
-#, c-format
-msgid "%d tracks "
-msgstr "%d szám "
-
-#, c-format
-msgid "%d tracks [%s] "
-msgstr "%d szám [%s] "
+msgid "tracks"
+msgstr "szám"
 
 msgid "Rename playlist"
 msgstr "Lejátszólista átnevezése"
 
+msgid "Name:"
+msgstr "Név:"
+
 msgid "New tab"
 msgstr "Új lap"
-
-msgid "Rename"
-msgstr "Átnevezés"
 
 msgid "Close tab"
 msgstr "Lap bezárása"
@@ -1974,7 +2237,7 @@ msgstr "Lapbezárás visszavonása"
 msgid "Close other tabs"
 msgstr "Többi lap bezárása"
 
-msgid "Selected: "
+msgid " Selected: "
 msgstr "Kijelölve: "
 
 msgid "Total: "
@@ -2058,35 +2321,36 @@ msgstr "Átlagos"
 msgid "Reread file metadata"
 msgstr "Metaadatok újraolvasása"
 
+msgid "File info..."
+msgstr "Fájl infó..."
+
 msgid "Stop adding files"
 msgstr "Hozzáadás leállítása"
 
-#, c-format
-msgid ""
-"The selected file will be deleted from the filesystem. No recovery will be "
-"possible after this operation.\n"
-"\n"
-"Are you sure?"
-msgstr ""
-"A kiválasztott fájl törlődni fog a fájlrendszerről. Végrehajtás után nem "
-"lesz lehetőség visszaállításra.\n"
-"\n"
-"Biztosan folytatni akarod?"
+msgid "Files selected for removal"
+msgstr "Törlésre kijelölt fájlok"
 
-#, c-format
+msgid "Remove files"
+msgstr "Fájlok törlése"
+
 msgid ""
-"All selected files will be deleted from the filesystem. No recovery will be "
+"The selected files will be deleted from the filesystem. No recovery will be "
 "possible after this operation.\n"
 "\n"
-"Are you sure?"
+"Do you want to proceed?"
 msgstr ""
-"Minden kiválasztott fájl törtődni fog a fájlrendszerről. Végrehajtás után "
+"A kiválasztott fájlok törlődni fognak a fájlrendszerről. Végrehajtás után "
 "nem lesz lehetőség visszaállításra.\n"
 "\n"
 "Biztosan folytatni akarod?"
 
-msgid "Remove file"
-msgstr "Fájl törlése"
+#, c-format
+msgid "Unable to remove %d file."
+msgstr "%d fájl törlése sikertelen volt."
+
+#, c-format
+msgid "Unable to remove %d files."
+msgstr "%d fájl törlése sikertelen volt."
 
 msgid "LADSPA patch builder"
 msgstr "LADSPA effekt szerkesztő"
@@ -2096,9 +2360,6 @@ msgstr "Rendelkezésre álló effektek"
 
 msgid "ID"
 msgstr "ID"
-
-msgid "Name"
-msgstr "Név"
 
 msgid "Category"
 msgstr "Kategória"
@@ -2123,6 +2384,12 @@ msgstr "Összes effekt letiltása"
 
 msgid "Invert current state"
 msgstr "Aktuális állapot invertálása"
+
+msgid "Clear list"
+msgstr "Lista törlése"
+
+msgid "Untitled"
+msgstr "Névtelen"
 
 msgid "JACK Port Setup"
 msgstr "JACK port beállítás"
@@ -2178,327 +2445,561 @@ msgstr "Keresés a Lejátszólistában"
 msgid "Available skins"
 msgstr "Elérhető szkinek"
 
+msgid "Drive info"
+msgstr "Meghajtó infó"
+
+msgid "Device path:"
+msgstr "Elérési út:"
+
+msgid "Vendor:"
+msgstr "Vendor:"
+
+msgid "Revision:"
+msgstr "Revision:"
+
+msgid ""
+"The information below is reported by the drive, and\n"
+"may not reflect the actual capabilities of the device."
+msgstr ""
+"Az alábbi információ a meghajtótól származik, ami lehet\n"
+"hogy nem felel meg a készülék valódi képességeinek."
+
+msgid "Eject"
+msgstr "Tálca kitolása"
+
+msgid "Close tray"
+msgstr "Tálca behúzása"
+
+msgid "Disable manual eject"
+msgstr "Tálca kézi kitolásának tiltása"
+
+msgid "Select juke-box disc"
+msgstr "Juke-box lemez kiválasztása"
+
+msgid "Set drive speed"
+msgstr "Meghajtó sebesség beállítása"
+
+msgid "Detect media change"
+msgstr "Lemezcsere érzékelése"
+
+msgid "Read multiple sessions"
+msgstr "Több session olvasása"
+
+msgid "Hard reset device"
+msgstr "Eszköz hard resetelése"
+
+msgid "Reading"
+msgstr "Olvasás"
+
+msgid "Play CD Audio"
+msgstr "Audio CD lejátszása"
+
+msgid "Read CD-DA"
+msgstr "CD-DA olvasása"
+
+msgid "Read CD+G"
+msgstr "CD+G olvasása"
+
+msgid "Read CD-R"
+msgstr "CD-R olvasása"
+
+msgid "Read CD-RW"
+msgstr "CD-RW olvasása"
+
+msgid "Read DVD-R"
+msgstr "DVD-R olvasása"
+
+msgid "Read DVD+R"
+msgstr "DVD+R olvasása"
+
+msgid "Read DVD-RW"
+msgstr "DVD-RW olvasása"
+
+msgid "Read DVD+RW"
+msgstr "DVD+RW olvasása"
+
+msgid "Read DVD-RAM"
+msgstr "DVD-RAM olvasása"
+
+msgid "Read DVD-ROM"
+msgstr "DVD-ROM olvasása"
+
+msgid "C2 Error Correction"
+msgstr "C2 hibajavítás"
+
+msgid "Read Mode 2 Form 1"
+msgstr "Mode 2 Form 1 olvasása"
+
+msgid "Read Mode 2 Form 2"
+msgstr "Mode 2 Form 2 olvasása"
+
+msgid "Read MCN"
+msgstr "MCN olvasása"
+
+msgid "Read ISRC"
+msgstr "ISRC olvasása"
+
+msgid "Writing"
+msgstr "Írás"
+
+msgid "Write CD-R"
+msgstr "CD-R írása"
+
+msgid "Write CD-RW"
+msgstr "CD-RW írása"
+
+msgid "Write DVD-R"
+msgstr "DVD-R írása"
+
+msgid "Write DVD+R"
+msgstr "DVD+R írása"
+
+msgid "Write DVD-RW"
+msgstr "DVD-RW írása"
+
+msgid "Write DVD+RW"
+msgstr "DVD+RW írása"
+
+msgid "Write DVD-RAM"
+msgstr "DVD-RAM írása"
+
+msgid "Mount Rainier"
+msgstr "Mount Rainier"
+
+msgid "Burn Proof"
+msgstr "Burn Proof"
+
+msgid "Disc info"
+msgstr "Lemez infó"
+
+msgid "This CD does not contain CD-Text information."
+msgstr "Ez a lemez nem tartalmaz CD-Text információt."
+
+msgid "drive"
+msgstr "meghajtó"
+
+msgid "drives"
+msgstr "meghajtó"
+
+msgid "record"
+msgstr "album"
+
+msgid "records"
+msgstr "album"
+
+msgid "Add to playlist"
+msgstr "Lejátszólistába"
+
+msgid "Add to playlist (Album mode)"
+msgstr "Lejátszólistába (Album mód)"
+
+msgid "CDDB query for this CD..."
+msgstr "CD lekérdezése CDDB adatbázisból..."
+
+msgid "Submit CD to CDDB database..."
+msgstr "CD feltöltése CDDB adatbázisba..."
+
+msgid "Rip CD..."
+msgstr "CD rippelés..."
+
+msgid "Disc info..."
+msgstr "Lemez infó..."
+
+msgid "Drive info..."
+msgstr "Meghajtó infó..."
+
+msgid "Comments:"
+msgstr "Megjegyzések:"
+
+msgid "Please select the xml file for this store."
+msgstr "Add meg a tárolóhoz tartozó xml fájlt."
+
+msgid "Create empty store"
+msgstr "Üres tároló létrehozása"
+
+msgid "Visible name:"
+msgstr "Látható név:"
+
+msgid "Edit Store"
+msgstr "Tároló szerkesztése"
+
+msgid "Add Artist"
+msgstr "Előadó hozzáadása"
+
+msgid "Name to sort by:"
+msgstr "Rendezési kulcs:"
+
+msgid "Edit Artist"
+msgstr "Előadó szerkesztése"
+
+msgid "Please select the audio files for this record."
+msgstr "Válaszd ki az albumhoz adandó hangfájlokat."
+
+msgid "Add Record"
+msgstr "Album hozzáadása"
+
+msgid "Auto-create tracks from these files:"
+msgstr "Számok automatikus létrehozása a következő fájlokból:"
+
+msgid "_Add files..."
+msgstr "Fájlok _hozzáadása..."
+
+msgid "Edit Record"
+msgstr "Album szerkesztése"
+
+msgid "Please select the audio file for this track."
+msgstr "Add meg a számhoz tartozó fájlt."
+
+msgid "Add Track"
+msgstr "Szám hozzáadása"
+
+msgid "Edit Track"
+msgstr "Szám szerkesztése"
+
+msgid "Duration:"
+msgstr "Hossz:"
+
+#, c-format
+msgid "Unmeasured"
+msgstr "Ismeretlen"
+
+msgid "Volume level:"
+msgstr "Hangerő:"
+
+msgid "Use manual RVA value [dB]"
+msgstr "Rögzített RVA használata [dB]"
+
+#, c-format
+msgid "Really remove \"%s\" from the Music Store?"
+msgstr "Biztosan eltávolítod a Zenetárból a következőt: \"%s\" ?"
+
+msgid "Stop adding songs"
+msgstr "Hozzáadás leállítása"
+
+#, c-format
+msgid ""
+"The store '%s' already exists.\n"
+"Add it on the Settings/Music Store tab."
+msgstr ""
+"A '%s' táróló már létezik.\n"
+"Hozzáadása a Beállítások/Zenetár oldalon lehetséges."
+
+#, c-format
+msgid "Really remove store \"%s\" from the Music Store?"
+msgstr "Biztosan eltávolítod a Zenetárból a  \"%s\" tárolót?"
+
+msgid "Remove Store"
+msgstr "Tároló eltávolítása"
+
+msgid "Do you want to save the store before removing?"
+msgstr "El akarod menteni a tárolót eltávolítás előtt?"
+
+msgid "Remove Artist"
+msgstr "Előadó eltávolítása"
+
+msgid "Remove Record"
+msgstr "Album eltávolítása"
+
+msgid "Remove Track"
+msgstr "Szám eltávolítása"
+
+msgid "Update file metadata"
+msgstr "Metaadatok frissítése"
+
+msgid "Track comment"
+msgstr "Szám kommentje"
+
+msgid "Track number"
+msgstr "Track száma"
+
+msgid "Failed to set metadata for the following files:"
+msgstr "A következő fájloknál nem sikerült beállítani a metaadatokat:"
+
+msgid "Filename"
+msgstr "Fájlnév"
+
+msgid "Reason"
+msgstr "Hiba oka"
+
+msgid "(no comment)"
+msgstr "(nincs megjegyzés)"
+
+msgid "artist"
+msgstr "előadó"
+
+msgid "artists"
+msgstr "előadó"
+
+msgid "Build / Update store from filesystem..."
+msgstr "Tároló felépítése / aktualizálása fájlrendszerről..."
+
+msgid "Edit store..."
+msgstr "Tároló szerkesztése..."
+
+msgid "Export store..."
+msgstr "Tároló exportálása..."
+
+msgid "Save store"
+msgstr "Tároló mentése"
+
+msgid "Remove store"
+msgstr "Tároló eltávolítása"
+
+msgid "Add new artist to this store..."
+msgstr "Új előadó hozzáadása ehhez a tárolóhoz..."
+
+msgid "Calculate volume (recursive)"
+msgstr "Hangosság meghatározása (rekurzív)"
+
+msgid "Unmeasured tracks only"
+msgstr "Ismeretlen hangerejű számokra"
+
+msgid "All tracks"
+msgstr "Minden számra"
+
+msgid "Batch-update file metadata..."
+msgstr "Metaadatok frissítése a háttérben..."
+
+msgid "Add new artist..."
+msgstr "Új előadó hozzáadása..."
+
+msgid "Edit artist..."
+msgstr "Előadó szerkesztése..."
+
+msgid "Export artist..."
+msgstr "Előadó exportálása..."
+
+msgid "Remove artist"
+msgstr "Előadó eltávolítása"
+
+msgid "Add new record to this artist..."
+msgstr "Új album hozzáadása ehhez az előadóhoz..."
+
+msgid "Add new record..."
+msgstr "Új album hozzáadása..."
+
+msgid "Edit record..."
+msgstr "Album szerkesztése..."
+
+msgid "Export record..."
+msgstr "Album exportálása..."
+
+msgid "Remove record"
+msgstr "Album eltávolítása"
+
+msgid "Add new track to this record..."
+msgstr "Új szám hozzáadása ehhez az albumhoz..."
+
+msgid "CDDB query for this record..."
+msgstr "Album lekérdezése CDDB adatbázisból..."
+
+msgid "Submit record to CDDB database..."
+msgstr "Album feltöltése CDDB adatbázisba..."
+
+msgid "Add new track..."
+msgstr "Új szám hozzáadása..."
+
+msgid "Edit track..."
+msgstr "Szám szerkesztése..."
+
+msgid "Export track..."
+msgstr "Szám exportálása..."
+
+msgid "Remove track"
+msgstr "Szám eltávolítása"
+
+msgid "Calculate volume"
+msgstr "Hangosság meghatározása"
+
+msgid "Only if unmeasured"
+msgstr "Csak ha ismeretlen"
+
+msgid "In any case"
+msgstr "Minden esetben"
+
+msgid "Update file metadata..."
+msgstr "Metaadatok frissítése..."
+
+msgid "Please select the download directory for this podcast."
+msgstr "Válassz ki egy könyvtárat a podcasthoz letöltendő fájloknak."
+
+msgid "Subscribe to new feed"
+msgstr "Új forrás felvétele"
+
+msgid "Edit feed settings"
+msgstr "Forrás beállításainak szerkesztése"
+
+msgid "Podcast URL:"
+msgstr "Podcast URL:"
+
+msgid "Download directory:"
+msgstr "Letöltési könyvtár:"
+
+msgid "Auto-check interval [hour]:"
+msgstr "Automatikus ellenőrzés ideje [óra]:"
+
+msgid ""
+"Automatic update has been disabled for all feeds\n"
+"in the Podcasts store popup menu."
+msgstr ""
+"A források automatikus frissítése ki van kapcsolva\n"
+"a Podcasts tároló menüjében."
+
+msgid "Limits"
+msgstr "Limitek"
+
+msgid "Maximum number of items:"
+msgstr "Adások maximális száma:"
+
+msgid "Remove older items [day]:"
+msgstr "Régebbi adások törlése [nap]:"
+
+msgid "Maximum space to use [MB]:"
+msgstr "Maximális helyhasználat [MB]:"
+
+msgid "Podcasts"
+msgstr "Podcasts"
+
+msgid "Updating..."
+msgstr "Frissítés..."
+
+msgid "Delete downloaded items from the filesystem"
+msgstr "Letöltött adások törlése a fájlrendszerről"
+
+msgid "Remove feed"
+msgstr "Forrás eltávolítása"
+
+#, c-format
+msgid "Really remove '%s' from the Music Store?"
+msgstr "Biztosan eltávolítod a Zenetárból a következőt: \"%s\" ?"
+
+msgid "Reorder feeds"
+msgstr "Források sorrendjének beállítása"
+
+msgid ""
+"Drag and drop entries in the list\n"
+"to set the feed order in the Music Store."
+msgstr ""
+"Az alábbi lista elemeinek átrendezésével\n"
+"állítható a Zenetárban lévő források sorrendje."
+
+#, c-format
+msgid "Downloading %d/%d (%d%%) ..."
+msgstr "Letöltés %d/%d (%d%%) ..."
+
+msgid "item"
+msgstr "adás"
+
+msgid "items"
+msgstr "adás"
+
+msgid "new item"
+msgstr "új adás"
+
+msgid "new items"
+msgstr "új adás"
+
+msgid "feed"
+msgstr "forrás"
+
+msgid "feeds"
+msgstr "forrás"
+
+msgid "Export item..."
+msgstr "Adás exportálása..."
+
+msgid "Edit feed"
+msgstr "Forrás szerkesztése"
+
+msgid "Export all items..."
+msgstr "Összes adás exportálása..."
+
+msgid "Export new items..."
+msgstr "Új adások exportálása..."
+
+msgid "Update feed"
+msgstr "Forrás frissítése"
+
+msgid "Abort ongoing update"
+msgstr "Frissítés megszakítása"
+
+msgid "Update all feeds"
+msgstr "Összes forrás frissítése"
+
+msgid "Automatically update feeds"
+msgstr "Források automatikus frissítése"
+
 msgid "day"
 msgstr "nap"
 
 msgid "days"
 msgstr "nap"
 
+msgid "All Files"
+msgstr "Minden fájl"
+
+msgid "Music Store Files (*.xml)"
+msgstr "Zenetár fájlok (*.xml)"
+
+msgid "Aqualung playlist (*.xml)"
+msgstr "Aqualung lejátszólista (*.xml)"
+
+msgid "MP3 Playlist (*.m3u)"
+msgstr "MP3 lejátszólista (*.m3u) "
+
+msgid "Multimedia Playlist (*.pls)"
+msgstr "Multimédia lejátszólista (*.pls)"
+
+msgid "All Playlist Files"
+msgstr "Minden lejátszólista"
+
+msgid "All Audio Files"
+msgstr "Minden hangfájl"
+
+msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
+msgstr "Hangfájlok (*.wav, *.aiff, *.au, ...)"
+
+msgid "Free Lossless Audio Codec (*.flac)"
+msgstr "Free Lossless Audio Codec (*.flac)"
+
+msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
+msgstr "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
+
+msgid "Ogg Vorbis (*.ogg)"
+msgstr "Ogg Vorbis (*.ogg)"
+
+msgid "Ogg Speex (*.spx)"
+msgstr "Ogg Speex (*.spx)"
+
+msgid "Musepack (*.mpc)"
+msgstr "Musepack (*.mpc)"
+
+msgid "Monkey's Audio Codec (*.ape)"
+msgstr "Monkey's Audio Codec (*.ape)"
+
+msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
+msgstr "Modulok (*.xm, *.mod, *.it, *.s3m, ...)"
+
+msgid "Compressed modules (*.gz, *.bz2)"
+msgstr "Tömörített modulok (*.gz, *.bz2)"
+
+msgid "Compressed modules (*.gz)"
+msgstr "Tömörített modulok (*.gz)"
+
+msgid "Compressed modules (*.bz2)"
+msgstr "Tömörített modulok (*.bz2)"
+
+msgid "WavPack (*.wv)"
+msgstr "WavPack (*.wv)"
+
+msgid "LAVC audio/video files"
+msgstr "LAVC hang/videó fájlok"
+
 msgid "Resume"
 msgstr "Folytatás"
 
 msgid "Calculating volume level"
 msgstr "Hangosság meghatározása"
-
-msgid "Progress:"
-msgstr "Feldolgozás:"
-
-msgid "(not set)"
-msgstr "(nincs beállítva)"
-
-msgid "Please specify the file to save the image to."
-msgstr "Add meg az elmentendő képfájlt."
-
-msgid "Type"
-msgstr "Típus"
-
-msgid "Description"
-msgstr "Leírás"
-
-msgid "No description"
-msgstr "Nincs leírás"
-
-msgid "Embedded picture"
-msgstr "Beágyazott kép"
-
-msgid "Save to file..."
-msgstr "Mentés fájlba..."
-
-msgid "Import as Record"
-msgstr "Importálás albumként"
-
-msgid "Track:"
-msgstr "Szám:"
-
-msgid "Import as Track number"
-msgstr "Importálás sorszámként"
-
-msgid "Comment:"
-msgstr "Megjegyzés:"
-
-msgid "Save basic fields"
-msgstr "Alap mezők elmentése"
-
-msgid "ID3v1"
-msgstr "ID3v1"
-
-msgid "Relative Volume Adj.:"
-msgstr "Relatív hangosság:"
-
-msgid "Import as RVA"
-msgstr "Importálás RVA-ként"
-
-msgid "Other"
-msgstr "Egyéb"
-
-msgid "File icon (32x32 PNG)"
-msgstr "Fájl ikon (32x32 PNG)"
-
-msgid "File icon (other)"
-msgstr "Fájl ikon (egyéb)"
-
-msgid "Front cover"
-msgstr "Első borító"
-
-msgid "Back cover"
-msgstr "Hátsó borító"
-
-msgid "Leaflet page"
-msgstr "Füzetlap"
-
-msgid "Album image"
-msgstr "Album kép"
-
-msgid "Lead artist/performer"
-msgstr "Vezető művész/előadó"
-
-msgid "Artist/performer"
-msgstr "Művész/előadó"
-
-msgid "Conductor"
-msgstr "Karmester"
-
-msgid "Band/orchestra"
-msgstr "Zenekar/orchestra"
-
-msgid "Composer"
-msgstr "Zeneszerző"
-
-msgid "Lyricist/text writer"
-msgstr "Szövegíró"
-
-msgid "Recording location/studio"
-msgstr "Felvétel helye/stúdió"
-
-msgid "During recording"
-msgstr "Felvétel közben"
-
-msgid "During performance"
-msgstr "Előadás közben"
-
-msgid "Movie/video screen capture"
-msgstr "Mozi/videó felvétel"
-
-msgid "A large, coloured fish"
-msgstr "Egy nagy, színes hal"
-
-msgid "Illustration"
-msgstr "Illusztráció"
-
-msgid "Band/artist logotype"
-msgstr "Zenekar/előadó logótípus"
-
-msgid "Publisher/studio logotype"
-msgstr "Kiadó/stúdió logótípus"
-
-msgid "ID3v2"
-msgstr "ID3v2"
-
-msgid "APE"
-msgstr "APE"
-
-msgid "Ogg comments"
-msgstr "Ogg megjegyzések"
-
-msgid "Remove ID3v1"
-msgstr "ID3v1 eltávolítása"
-
-msgid "Create ID3v2"
-msgstr "ID3v2 létrehozása"
-
-msgid "Remove ID3v2"
-msgstr "ID3v2 eltávolítása"
-
-msgid "Create APE"
-msgstr "APE létrehozása"
-
-msgid "Remove APE"
-msgstr "APE eltávolítása"
-
-msgid "Audio data"
-msgstr "Audio jellemzők"
-
-msgid "Format:"
-msgstr "Formátum:"
-
-msgid "Length:"
-msgstr "Hossz:"
-
-msgid "Samplerate:"
-msgstr "Mintavételi frekvencia:"
-
-#, c-format
-msgid "%ld Hz"
-msgstr "%ld Hz"
-
-msgid "Channel count:"
-msgstr "Csatornák száma:"
-
-msgid "Bandwidth:"
-msgstr "Sávszélesség:"
-
-msgid "Total samples:"
-msgstr "Összes mintavétel:"
-
-msgid "Mode:"
-msgstr "Mód:"
-
-msgid "WavPack Metadata"
-msgstr "WavPack Metaadatok"
-
-msgid "Module info"
-msgstr "Modul infó"
-
-msgid "Type:"
-msgstr "Típus: "
-
-msgid "Channels:"
-msgstr "Csatornák:"
-
-msgid "Patterns:"
-msgstr "Minták:"
-
-msgid "Samples:"
-msgstr "Mintavételek:"
-
-msgid "Instruments:"
-msgstr "Hangszerek:"
-
-msgid "Samples"
-msgstr "Mintavételek:i frekvencia:"
-
-msgid "Instruments"
-msgstr "Hangszerek"
-
-msgid "Album"
-msgstr "Lemez"
-
-msgid "Beats per minute"
-msgstr "Percenkénti ütésszám"
-
-msgid "Content type"
-msgstr "Tartalom típusa"
-
-msgid "Copyright"
-msgstr "Copyright"
-
-msgid "Encoding time"
-msgstr "Kódolás ideje"
-
-msgid "Playlist delay"
-msgstr "Lejátszólista késleltetés"
-
-msgid "Original release time"
-msgstr "Eredeti kiadás ideje"
-
-msgid "Recording time"
-msgstr "Felvétel ideje"
-
-msgid "Release time"
-msgstr "Kiadás ideje"
-
-msgid "Tagging time"
-msgstr "Taggelés ideje"
-
-msgid "Encoded by"
-msgstr "Kódoló"
-
-msgid "Lyricist"
-msgstr "Szövegíró"
-
-msgid "File type"
-msgstr "Fájltípus"
-
-msgid "Involved people"
-msgstr "Résztvevő emberek"
-
-msgid "Content group"
-msgstr "Tartalom csoport"
-
-msgid "Subtitle"
-msgstr "Alcím"
-
-msgid "Initial key"
-msgstr "Kezdeti előjegyzés"
-
-msgid "Language"
-msgstr "Nyelv"
-
-msgid "Length (ms)"
-msgstr "Hossz (ms)"
-
-msgid "Musician credits"
-msgstr "Zenészek elismerése"
-
-msgid "Media type"
-msgstr "Média típus"
-
-msgid "Mood"
-msgstr "Hangnem"
-
-msgid "Original album"
-msgstr "Eredeti album"
-
-msgid "Original filename"
-msgstr "Eredeti fájlnév"
-
-msgid "Original lyricist"
-msgstr "Eredeti szövegíró"
-
-msgid "Original artist"
-msgstr "Eredeti előadó"
-
-msgid "Owner/licensee"
-msgstr "Tulajdonos/engedélyező"
-
-msgid "Orchestra"
-msgstr "Zenekar"
-
-msgid "Interpreted/remixed"
-msgstr "Feldolgozás/remix"
-
-msgid "Part of set"
-msgstr "Összetett mű része"
-
-msgid "Produced"
-msgstr "Produced"
-
-msgid "Publisher"
-msgstr "Kiadó"
-
-msgid "Radio station name"
-msgstr "RádióÂállomás neve"
-
-msgid "Radio station owner"
-msgstr "RádióÂállomás tulajdonosa"
-
-msgid "Album sort order"
-msgstr "Albumok sorrendje"
-
-msgid "Artist sort order"
-msgstr "Előadók sorrendje"
-
-msgid "Title sort order"
-msgstr "Címek sorrendje"
-
-msgid "ISRC"
-msgstr "ISRC"
-
-msgid "Encoding settings"
-msgstr "Kódolási beállítások"
-
-msgid "Set subtitle"
-msgstr "Alcím beállítása"
 
 msgid "Profile: Telephone"
 msgstr "Profile: Telephone"

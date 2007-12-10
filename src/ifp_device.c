@@ -250,7 +250,7 @@ upload_download_songs_cb(GtkButton * button, gpointer user_data) {
         if (transfer_mode == DOWNLOAD_MODE) {
                 if (access(dest_dir, W_OK) == -1) {               
                         message_dialog(_("Error"), aifp_window, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,  NULL, 
-                                       _("Cannot write to selected directory. Please select another directory"));
+                                       _("Cannot write to selected directory. Please select another directory."));
                         return;
                 }
         }
@@ -343,7 +343,7 @@ aifp_create_directory_cb (GtkButton *button, gpointer user_data) {
 
         mkdir_dialog = gtk_message_dialog_new (GTK_WINDOW(aifp_window),
                                               GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                              GTK_MESSAGE_INFO, GTK_BUTTONS_OK_CANCEL, _("Please enter directory name"));
+                                              GTK_MESSAGE_INFO, GTK_BUTTONS_OK_CANCEL, _("Please enter directory name."));
 
         gtk_window_set_title(GTK_WINDOW(mkdir_dialog), _("Create directory"));
 
@@ -398,7 +398,7 @@ aifp_rename_item_cb (GtkButton *button, gpointer user_data) {
 
                 rename_dialog = gtk_message_dialog_new (GTK_WINDOW(aifp_window),
                                                       GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                                      GTK_MESSAGE_INFO, GTK_BUTTONS_OK_CANCEL, _("Please enter a new name"));
+                                                      GTK_MESSAGE_INFO, GTK_BUTTONS_OK_CANCEL, _("Please enter a new name."));
 
                 gtk_window_set_title(GTK_WINDOW(rename_dialog), _("Rename"));
 
@@ -449,10 +449,10 @@ aifp_remove_item_cb (GtkButton *button, gpointer user_data) {
         if (strncmp(remote_item, PARENTDIR, 2)) {
 
                 if (remote_type == TYPE_DIR) {
-                        sprintf(temp, _("Directory '%s' will be removed with its entire contents.\n\nAre you sure?"), 
+                        sprintf(temp, _("Directory '%s' will be removed with its entire contents.\n\nDo you want to proceed?"), 
                                 remote_item);
                 } else {
-                        sprintf(temp, _("File '%s' will be removed.\n\nAre you sure?"), 
+                        sprintf(temp, _("File '%s' will be removed.\n\nDo you want to proceed?"),
                                 remote_item);
                 }
 
@@ -840,7 +840,7 @@ gchar *npath;
 
 
 void
-local_path_selected_cb(GtkButton * button, gpointer data) {
+local_path_selected_cb(GtkButton * button, gpointer data) {koca
 	directory_chooser(_("Please select a local path."), aifp_window, dest_dir);
         gtk_entry_set_text(GTK_ENTRY(local_path_entry), dest_dir);
 }
@@ -882,7 +882,7 @@ aifp_transfer_files(gint mode) {
 
                 if (!number_of_songs) {
                         message_dialog(_("Warning"), options.playlist_is_embedded ? GTK_WIDGET(main_window) : GTK_WIDGET(playlist_window),
-                                       GTK_MESSAGE_WARNING, GTK_BUTTONS_CLOSE, NULL, _("Please select at least one valid song from playlist"));
+                                       GTK_MESSAGE_WARNING, GTK_BUTTONS_CLOSE, NULL, _("Please select at least one valid song from playlist."));
                         return;
                 }
         }
@@ -897,15 +897,15 @@ aifp_transfer_files(gint mode) {
                 if (k != number_of_songs) {
                         if (k) {
                                 if((number_of_songs-k) == 1) {
-                                        sprintf(temp, _("One song has format not supported by your player.\n\nContinue ?"));
+                                        sprintf(temp, _("One song has format unsupported by your player.\n\nDo you want to proceed?"));
                                 } else {
-                                        sprintf(temp, _("%d of %d songs have format not supported by your player.\n\nContinue ?"), number_of_songs-k, number_of_songs);
+                                        sprintf(temp, _("%d of %d songs have format unsupported by your player.\n\nDo you want to proceed?"), number_of_songs-k, number_of_songs);
                                 }
                         } else {
                                 if (number_of_songs == 1) {
-                                        sprintf(temp, _("Selected song have format not supported by your player.\n\nContinue ?"));
+                                        sprintf(temp, _("The selected song has format unsupported by your player.\n\nDo you want to proceed?"));
                                 } else {
-                                        sprintf(temp, _("All selected songs have format not supported by your player.\n\nContinue ?"));
+                                        sprintf(temp, _("None of the selected songs has format supported by your player.\n\nDo you want to proceed?"));
                                 }
                         }
 

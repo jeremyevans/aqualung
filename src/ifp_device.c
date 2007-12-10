@@ -840,7 +840,7 @@ gchar *npath;
 
 
 void
-local_path_selected_cb(GtkButton * button, gpointer data) {koca
+local_path_selected_cb(GtkButton * button, gpointer data) {
 	directory_chooser(_("Please select a local path."), aifp_window, dest_dir);
         gtk_entry_set_text(GTK_ENTRY(local_path_entry), dest_dir);
 }

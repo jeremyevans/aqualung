@@ -2202,8 +2202,6 @@ main(int argc, char ** argv) {
 	bindtextdomain(PACKAGE, AQUALUNG_LOCALEDIR);
 	textdomain(PACKAGE);
 	bind_textdomain_codeset(PACKAGE, "UTF-8");
-	
-	setup_app_socket();
 
 	setup_app_directories();
 
@@ -2476,23 +2474,19 @@ main(int argc, char ** argv) {
 	
 	if (show_version) {
 		print_version();
-		close_app_socket();
 		exit(1);
 	}
 
 	if (show_usage) {
 		print_usage();
-		close_app_socket();
 		exit(1);
 	}
-
 
 	if (back) {
 		if (no_session == -1)
 			no_session = 0;
 		rcmd = RCMD_BACK;
 		send_message_to_session(no_session, &rcmd, 1);
-		close_app_socket();
 		exit(0);
 	}
 	if (pause) {
@@ -2500,7 +2494,6 @@ main(int argc, char ** argv) {
 			no_session = 0;
 		rcmd = RCMD_PAUSE;
 		send_message_to_session(no_session, &rcmd, 1);
-		close_app_socket();
 		exit(0);
 	}
 	if (stop) {
@@ -2508,7 +2501,6 @@ main(int argc, char ** argv) {
 			no_session = 0;
 		rcmd = RCMD_STOP;
 		send_message_to_session(no_session, &rcmd, 1);
-		close_app_socket();
 		exit(0);
 	}
 	if (fwd) {
@@ -2516,7 +2508,6 @@ main(int argc, char ** argv) {
 			no_session = 0;
 		rcmd = RCMD_FWD;
 		send_message_to_session(no_session, &rcmd, 1);
-		close_app_socket();
 		exit(0);
 	}
 
@@ -2525,7 +2516,6 @@ main(int argc, char ** argv) {
 			no_session = 0;
 		rcmd = RCMD_QUIT;
 		send_message_to_session(no_session, &rcmd, 1);
-		close_app_socket();
 		exit(1);
 	}
 
@@ -2538,7 +2528,6 @@ main(int argc, char ** argv) {
 		buf[1] = '\0';
 		strncat(buf, voladj_arg, MAXLEN-2);
 		send_message_to_session(no_session, buf, strlen(buf));
-		close_app_socket();
 		exit(1);
 	}
 
@@ -2547,7 +2536,7 @@ main(int argc, char ** argv) {
 		char buffer[MAXLEN];
 		char fullname[MAXLEN];
 
-		if ((no_session != -1) && (no_session != aqualung_session_id)) {
+		if (no_session != -1) {
 
 			for (i = optind; argv[i] != NULL; i++) {				
 
@@ -2572,19 +2561,17 @@ main(int argc, char ** argv) {
 				}
 
 				send_message_to_session(no_session, buffer, 4 + strlen(buffer + 4));
-				close_app_socket();
 				exit(0);
 			}
 		}
 	}
 
 	if (play) {
-		if ((no_session == -1) || (no_session == aqualung_session_id)) {
+		if (no_session == -1) {
 			immediate_start = 1;
 		} else {
 			rcmd = RCMD_PLAY;
 			send_message_to_session(no_session, &rcmd, 1);
-			close_app_socket();
 			exit(0);
 		}
 	}
@@ -2709,7 +2696,6 @@ main(int argc, char ** argv) {
 		fprintf(stderr,
 			"No usable output driver was found. Please see aqualung --help\n"
 			"and the docs for more info on successfully starting the program.\n");
-		close_app_socket();
 		exit(1);
 	}
 
@@ -2722,7 +2708,6 @@ main(int argc, char ** argv) {
 			"oss and alsa outputs only.\n"
 			"In case of the JACK output, the (already running) JACK server\n"
 			"will determine the output sample rate to use.\n");
-		close_app_socket();
 		exit(1);
 	}
 #endif /* HAVE_JACK */
@@ -2758,11 +2743,9 @@ main(int argc, char ** argv) {
 			int ret = jack_init(&thread_info);
 			if (ret == -1) {
 				print_jack_failed_connection();
-				close_app_socket();
 				exit(1);
 			} else if (ret < 0) {
 				print_jack_SR_out_of_range(-ret);
-				close_app_socket();
 				exit(1);
 			} else {
 				rate = thread_info.out_SR;
@@ -2781,7 +2764,6 @@ main(int argc, char ** argv) {
 
 			ret = alsa_init(&thread_info, 1);
 			if (ret < 0) {
-				close_app_socket();
 				exit(1);
 			}
 		}
@@ -2814,7 +2796,6 @@ main(int argc, char ** argv) {
 		if (!auto_driver_found) {
 			int ret = oss_init(&thread_info, 1, try_realtime, priority);
 			if (ret < 0) {
-				close_app_socket();
 				exit(1);
 			}
 		}
@@ -2835,9 +2816,10 @@ main(int argc, char ** argv) {
 	}
 #endif /* _WIN32 */
 
-
 	create_gui(argc, argv, optind, enqueue, rate, RB_AUDIO_SIZE * rate / 44100.0);
+	setup_app_socket();
 	run_gui(); /* control stays here until user exits program */
+	close_app_socket();
 
 	AQUALUNG_THREAD_JOIN(thread_info.disk_thread_id)
 
@@ -2888,7 +2870,6 @@ main(int argc, char ** argv) {
 	rb_free(rb_gui2disk);
 	rb_free(rb_disk2out);
 
-	close_app_socket();
 	return 0;
 }
 

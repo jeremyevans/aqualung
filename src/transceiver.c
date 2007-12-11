@@ -124,83 +124,69 @@ receive_message(int fd, char * cmdarg) {
 }
 
 
-void
+int
 send_message(const char * filename, char * message, int len) {
 
 	char tempsockname[MAXLEN];
         int sock;
         struct sockaddr_un name;
-        size_t size;
         int nbytes;
+	struct timespec req_time;
+	struct timespec rem_time;
+
+	req_time.tv_sec = 0;
+	req_time.tv_nsec = 100000000;
 
 	sprintf(tempsockname, "/tmp/aqualung_%s.tmp", g_get_user_name());
 	sock = create_socket(tempsockname);
         name.sun_family = AF_LOCAL;
         strcpy(name.sun_path, filename);
-        size = strlen(name.sun_path) + sizeof(name.sun_family);
 
-        nbytes = sendto(sock, message, len+1, 0, (struct sockaddr *)&name, size);
-        if (nbytes < 0) {
-		perror("send_message(): sendto");
-        }
+	do {
+		nbytes = sendto(sock, message, len+1, 0, (struct sockaddr *)&name, sizeof(name));
+		if (nbytes == -1 && errno == ENOBUFS) {
+			nanosleep(&req_time, &rem_time);
+		}
+	} while (nbytes == -1 && errno == ENOBUFS);
 
         remove(tempsockname);
 	close(sock);
+	return nbytes;
 }
 
+int
+send_message_to_session_report_error(int session_id, char * message, int len, int report_error) {
+
+	char name[MAXLEN];
+	int nbytes = 0;
+
+	sprintf(name, "/tmp/aqualung_%s.%d", g_get_user_name(), session_id);
+	if((nbytes = send_message(name, message, len)) < 0 && report_error) {
+		perror("send_message(): sendto");
+	}
+	return nbytes;
+}
 
 void
 send_message_to_session(int session_id, char * message, int len) {
-	
-	char name[MAXLEN];
 
-	sprintf(name, "/tmp/aqualung_%s.%d", g_get_user_name(), session_id);
-	send_message(name, message, len);
+	send_message_to_session_report_error(session_id, message, len, 1);
 }
-
-
-int
-is_socket_alive(const char * filename) {
-
-	char tempsockname[MAXLEN];
-	int sock;
-	struct sockaddr_un name;
-	size_t size;
-	int nbytes;
-	char rcmd = RCMD_PING;
-
-	sprintf(tempsockname, "/tmp/aqualung_%s.tmp", g_get_user_name());
-	sock = create_socket(tempsockname);
-	name.sun_family = AF_LOCAL;
-	strcpy(name.sun_path, filename);
-	size = strlen(name.sun_path) + sizeof(name.sun_family);
-
-	nbytes = sendto(sock, &rcmd, 2, 0, (struct sockaddr *)&name, size);
-	if (nbytes < 0)	{
-		remove(tempsockname);
-		return 0;
-	}
-
-	remove(tempsockname);
-	close(sock);
-	return 1;
-}
-
 
 void
 setup_app_socket(void) {
 
 	int sock = -1;
-	int i = 0;
+	int i;
 	char name[MAXLEN];
+	char rcmd = RCMD_PING;
 
-	while (sock == -1) {
-		sprintf(name, "/tmp/aqualung_%s.%d", g_get_user_name(), i);
-		if (!is_socket_alive(name)) {
+	for (i=0; sock == -1; i++) {
+		if (send_message_to_session_report_error(i, &rcmd, 1, 0) < 0) {
+			sprintf(name, "/tmp/aqualung_%s.%d", g_get_user_name(), i);
 			unlink(name);
 			sock = create_socket(name);
 		}
-		++i;
 	}
 	
 	aqualung_socket_fd = sock;

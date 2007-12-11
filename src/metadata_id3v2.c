@@ -518,7 +518,7 @@ meta_parse_id3v2_frame(metadata_t * meta, unsigned char * buf, int len,
 	frame_id[4] = '\0';
 	
 	if (!is_frame_id(frame_id)) {
-		fprintf(stderr, "meta_parse_id3v2_frame: Frame ID expected, got 0x%x%x%x%x",
+		fprintf(stderr, "meta_parse_id3v2_frame: Frame ID expected, got 0x%x%x%x%x\n",
 			(unsigned char)frame_id[0],
 			(unsigned char)frame_id[1],
 			(unsigned char)frame_id[2],

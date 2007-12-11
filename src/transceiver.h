@@ -39,9 +39,9 @@ int create_socket(const char * filename);
 char receive_message(int fd, char * cmd_arg);
 void setup_app_socket(void);
 void close_app_socket(void);
-void send_message(const char * filename, char * message, int len);
+int send_message(const char * filename, char * message, int len);
 void send_message_to_session(int session_id, char * message, int len);
-
+int send_message_to_session_report_error(int session_id, char * message, int len, int report_error);
 
 
 #endif /* _TRANSCEIVER_H */

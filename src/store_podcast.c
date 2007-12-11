@@ -1626,8 +1626,8 @@ store_podcast_create_popup_menu(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), separator);
 	gtk_widget_show(separator);
 
-	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__export);
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__export_new);
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__export);
 
  	g_signal_connect_swapped(G_OBJECT(podcast_feed__addlist), "activate", G_CALLBACK(podcast_feed__addlist_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_feed__addlist_albummode), "activate", G_CALLBACK(podcast_feed__addlist_albummode_cb), NULL);
@@ -1675,8 +1675,8 @@ store_podcast_create_popup_menu(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), separator);
 	gtk_widget_show(separator);
 
-	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), podcast_store__export);
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), podcast_store__export_new);
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), podcast_store__export);
 
 	separator = gtk_separator_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), separator);

@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-10 20:09+0100\n"
-"PO-Revision-Date: 2007-12-10 20:11+0100\n"
+"POT-Creation-Date: 2007-12-11 21:54+0100\n"
+"PO-Revision-Date: 2007-12-11 21:57+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1430,19 +1430,19 @@ msgid "Internet Radio Station Owner"
 msgstr "Internetes rádióállomás tulajdonosa"
 
 msgid "Album Sort Order"
-msgstr "Albumok sorbarendezése"
+msgstr "Album sorrendje"
 
 msgid "Performer Sort Order"
-msgstr "Előadók sorbarendezése"
+msgstr "Előadó sorrendje"
 
 msgid "Title Sort Order"
-msgstr "Címek sorbarendezése"
+msgstr "Cím sorrendje"
 
 msgid "Software"
 msgstr "Szoftver"
 
 msgid "Set Subtitle"
-msgstr "Alcím beállítása"
+msgstr "Összetett mű alcíme"
 
 msgid "User Defined Text"
 msgstr "Felhasználói szöveg"
@@ -1451,7 +1451,7 @@ msgid "Commercial Information"
 msgstr "Kereskedelmi információ"
 
 msgid "Copyright/Legal Information"
-msgstr "Copyright vagy jogi információ"
+msgstr "Copyright/Legal információ"
 
 msgid "Official Audio File Website"
 msgstr "Audio fájl hivatalos honlapja"

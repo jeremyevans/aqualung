@@ -1862,8 +1862,8 @@ create_options_window(void) {
         gtk_container_set_border_width(GTK_CONTAINER(vbox_plistcol), 8);
         gtk_container_add(GTK_CONTAINER(frame_plistcol), vbox_plistcol);
 	
-	label_plistcol = gtk_label_new(_("Drag and drop entries in the list below \n\
-to set the column order in the Playlist."));
+	label_plistcol = gtk_label_new(_("Drag and drop entries in the list below \n"
+					 "to set the column order in the Playlist."));
         gtk_box_pack_start(GTK_BOX(vbox_plistcol), label_plistcol, FALSE, TRUE, 5);
 
 
@@ -2084,8 +2084,8 @@ to set the column order in the Playlist."));
         g_signal_connect(combo_ladspa, "changed", G_CALLBACK(changed_ladspa_prepost), NULL);
 #else
 	{
-		GtkWidget * label = gtk_label_new(_("Aqualung is compiled without LADSPA plugin support.\n\
-See the About box and the documentation for details."));
+		GtkWidget * label = gtk_label_new(_("Aqualung is compiled without LADSPA plugin support.\n"
+						    "See the About box and the documentation for details."));
 		gtk_box_pack_start(GTK_BOX(vbox_ladspa), label, FALSE, TRUE, 5);
 	}
 #endif /* HAVE_LADSPA */
@@ -2120,8 +2120,8 @@ See the About box and the documentation for details."));
 	gtk_label_set_text(GTK_LABEL(label_src), src_get_description(options.src_type));
 #else
 	gtk_label_set_text(GTK_LABEL(label_src),
-			   _("Aqualung is compiled without Sample Rate Converter support.\n\
-See the About box and the documentation for details."));
+			   _("Aqualung is compiled without Sample Rate Converter support.\n"
+			     "See the About box and the documentation for details."));
 
 #endif /* HAVE_SRC */
 

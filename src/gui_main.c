@@ -2406,10 +2406,10 @@ jack_shutdown_window(void) {
         gtk_window_set_title(GTK_WINDOW(window), _("JACK connection lost"));
         gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 
-	label = gtk_label_new(_("JACK has either been shutdown or it\n\
-disconnected Aqualung because it was\n\
-not fast enough. All you can do now\n\
-is restart both JACK and Aqualung.\n"));
+	label = gtk_label_new(_("JACK has either been shutdown or it\n"
+				"disconnected Aqualung because it was\n"
+				"not fast enough. All you can do now\n"
+				"is restart both JACK and Aqualung.\n"));
         gtk_container_add(GTK_CONTAINER(window), label);
 	gtk_widget_show_all(window);
 }

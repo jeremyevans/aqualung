@@ -184,8 +184,7 @@ meta_ape_parse(char * filename, ape_tag_t * tag) {
 			fprintf(stderr, "meta_ape_parse: corrupt tag (bad item length)\n");
 			goto meta_ape_parse_error;
 		}
-		for (value_start=key_start; value_start < key_start+256 && \
-			*value_start != '\0'; value_start++) {
+		for (value_start=key_start; value_start < key_start+256 && *value_start != '\0'; value_start++) {
 			/* Left Blank */
 		}
 		if (*value_start != '\0') {

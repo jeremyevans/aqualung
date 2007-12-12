@@ -85,7 +85,7 @@ void set_option_from_toggle(GtkWidget * widget, int * opt);
 void set_option_from_combo(GtkWidget * widget, int * opt);
 void set_option_from_spin(GtkWidget * widget, int * opt);
 void set_option_from_entry(GtkWidget * widget, char * opt, int n);
-
+void set_option_bit_from_toggle(GtkWidget * toggle, int * opt, int bit);
 
 #endif /* _UTILS_GUI_H */
 

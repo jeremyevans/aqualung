@@ -60,10 +60,8 @@ typedef struct {
 	int shuffle_on;
 	int search_pl_flags;
 	int search_ms_flags;
-#ifdef HAVE_IFP
         int ifpmanager_size_x;
         int ifpmanager_size_y;
-#endif
 	float loop_range_start;
 	float loop_range_end;
 	int wm_systray_warn;
@@ -73,6 +71,8 @@ typedef struct {
         int export_bitrate;
         int export_vbr;
         int export_metadata;
+
+	int batch_tag_flags;
 
 	/* General */
 	char title_format[MAXLEN];

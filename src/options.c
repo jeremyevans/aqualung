@@ -3253,10 +3253,8 @@ save_config(void) {
 	SAVE_INT(playlist_show_close_button_in_tab);
 	SAVE_INT(album_shuffle_mode);
 	SAVE_INT_SH(enable_playlist_statusbar);
-#ifdef HAVE_IFP
 	SAVE_INT(ifpmanager_size_x);
 	SAVE_INT(ifpmanager_size_y);
-#endif
 	SAVE_FONT(browser_font);
 	SAVE_FONT(playlist_font);
 	SAVE_FONT(bigtimer_font);
@@ -3302,6 +3300,7 @@ save_config(void) {
 	SAVE_INT(export_bitrate);
 	SAVE_INT(export_vbr);
 	SAVE_INT(export_metadata);
+	SAVE_INT(batch_tag_flags);
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
@@ -3542,6 +3541,9 @@ load_config(void) {
         options.export_vbr = 1;
         options.export_metadata = 1;
 
+	options.batch_tag_flags = BATCH_TAG_TITLE | BATCH_TAG_ARTIST | BATCH_TAG_ALBUM |
+		BATCH_TAG_YEAR | BATCH_TAG_COMMENT | BATCH_TAG_TRACKNO;
+
         strncpy(options.song_color, "#888888", MAX_COLORNAME_LEN-1);
 
 	ms_pathlist_store = gtk_list_store_new(3,
@@ -3634,10 +3636,8 @@ load_config(void) {
 		LOAD_INT(playlist_show_close_button_in_tab);
 		LOAD_INT(album_shuffle_mode);
 		LOAD_INT_SH(enable_playlist_statusbar);
-#ifdef HAVE_IFP
 		LOAD_INT(ifpmanager_size_x);
 		LOAD_INT(ifpmanager_size_y);
-#endif
 		LOAD_FONT(browser_font);
 		LOAD_FONT(playlist_font);
 		LOAD_FONT(bigtimer_font);
@@ -3683,6 +3683,7 @@ load_config(void) {
 		LOAD_INT(export_bitrate);
 		LOAD_INT(export_vbr);
 		LOAD_INT(export_metadata);
+		LOAD_INT(batch_tag_flags);
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);

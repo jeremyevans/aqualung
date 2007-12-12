@@ -242,16 +242,6 @@ insert_check_label_spin(GtkWidget * table, GtkWidget ** check, char * ltext, Gtk
 	gtk_widget_set_sensitive(*spin, active);
 }
 
-void
-set_option_bit_from_toggle(GtkWidget * toggle, int * option, int flag) {
-
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(toggle))) {
-		*option |= flag;
-	} else {
-		*option &= ~flag;
-	}
-}
-
 /* create == 1 : add new podcast; else edit existing podcast */
 int
 podcast_dialog(podcast_t ** podcast, int create) {

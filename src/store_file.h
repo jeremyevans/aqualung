@@ -24,6 +24,15 @@
 
 #include <gtk/gtk.h>
 
+enum {
+	BATCH_TAG_TITLE   = (1 << 0),
+	BATCH_TAG_ARTIST  = (1 << 1),
+	BATCH_TAG_ALBUM   = (1 << 2),
+	BATCH_TAG_COMMENT = (1 << 3),
+	BATCH_TAG_YEAR    = (1 << 4),
+	BATCH_TAG_TRACKNO = (1 << 5)
+};
+
 int store_file_iter_is_track(GtkTreeIter * iter);
 void store_file_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, int new_tab);
 void store_file_selection_changed(GtkTreeIter * iter, GtkTextBuffer * buffer, GtkLabel * statusbar);

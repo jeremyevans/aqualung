@@ -715,5 +715,15 @@ set_option_from_entry(GtkWidget * widget, char * opt, int n) {
 	strncpy(opt, gtk_entry_get_text(GTK_ENTRY(widget)), n-1);
 }
 
+void
+set_option_bit_from_toggle(GtkWidget * toggle, int * opt, int bit) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(toggle))) {
+		*opt |= bit;
+	} else {
+		*opt &= ~bit;
+	}
+}
+
 // vim: shiftwidth=8:tabstop=8:softtabstop=8:
 

@@ -2939,14 +2939,6 @@ store__export_cb(gpointer user_data) {
 AQUALUNG_THREAD_DECLARE(tag_thread_id)
 volatile int batch_tag_cancelled;
 
-#define TAG_F_TITLE   (1 << 0)
-#define TAG_F_ARTIST  (1 << 1)
-#define TAG_F_ALBUM   (1 << 2)
-#define TAG_F_COMMENT (1 << 3)
-#define TAG_F_YEAR    (1 << 5)
-#define TAG_F_TRACKNO (1 << 6)
-
-int tag_flags = TAG_F_TITLE | TAG_F_ARTIST | TAG_F_ALBUM | TAG_F_YEAR | TAG_F_COMMENT;
 
 GtkTreeIter store_tag_iter;
 GtkTreeIter artist_tag_iter;
@@ -2968,6 +2960,7 @@ int
 create_tag_dialog() {
 
 	GtkWidget * dialog;
+	GtkWidget * vbox;
 	GtkWidget * check_artist;
 	GtkWidget * check_record;
 	GtkWidget * check_track;
@@ -2983,6 +2976,10 @@ create_tag_dialog() {
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					     NULL);
 
+        vbox = gtk_vbox_new(FALSE, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), vbox, FALSE, FALSE, 0);
+
 	check_artist = gtk_check_button_new_with_label(_("Artist name"));
 	check_record = gtk_check_button_new_with_label(_("Record name"));
 	check_track = gtk_check_button_new_with_label(_("Track name"));
@@ -2997,46 +2994,41 @@ create_tag_dialog() {
 	gtk_widget_set_name(check_trackno, "check_on_window");
 	gtk_widget_set_name(check_year, "check_on_window");
 
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), check_artist, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), check_record, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), check_track, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), check_comment, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), check_trackno, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), check_year, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), check_artist, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), check_record, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), check_track, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), check_comment, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), check_trackno, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), check_year, FALSE, FALSE, 0);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_artist),
-				     tag_flags & TAG_F_ARTIST);
+				     options.batch_tag_flags & BATCH_TAG_ARTIST);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_record),
-				     tag_flags & TAG_F_ALBUM);
+				     options.batch_tag_flags & BATCH_TAG_ALBUM);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_track),
-				     tag_flags & TAG_F_TITLE);
+				     options.batch_tag_flags & BATCH_TAG_TITLE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_comment),
-				     tag_flags & TAG_F_COMMENT);
+				     options.batch_tag_flags & BATCH_TAG_COMMENT);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_trackno),
-				     tag_flags & TAG_F_TRACKNO);
+				     options.batch_tag_flags & BATCH_TAG_TRACKNO);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_year),
-				     tag_flags & TAG_F_YEAR);
+				     options.batch_tag_flags & BATCH_TAG_YEAR);
 
 	gtk_widget_show_all(dialog);
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		tag_flags =
-			(TAG_F_ARTIST *
-			 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_artist))) |
-			(TAG_F_ALBUM *
-			 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_record))) |
-			(TAG_F_TITLE *
-			 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_track))) |
-			(TAG_F_COMMENT *
-			 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_comment))) |
-			(TAG_F_TRACKNO *
-			 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_trackno))) |
-			(TAG_F_YEAR *
-			 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_year)));
+		set_option_bit_from_toggle(check_artist, &options.batch_tag_flags, BATCH_TAG_ARTIST);
+		set_option_bit_from_toggle(check_record, &options.batch_tag_flags, BATCH_TAG_ALBUM);
+		set_option_bit_from_toggle(check_track, &options.batch_tag_flags, BATCH_TAG_TITLE);
+		set_option_bit_from_toggle(check_comment, &options.batch_tag_flags, BATCH_TAG_COMMENT);
+		set_option_bit_from_toggle(check_year, &options.batch_tag_flags, BATCH_TAG_YEAR);
+		set_option_bit_from_toggle(check_trackno, &options.batch_tag_flags, BATCH_TAG_TRACKNO);
 
-		gtk_widget_destroy(dialog);
-		return 1;
+		if (options.batch_tag_flags) {
+			gtk_widget_destroy(dialog);
+			return 1;
+		}
 	}
 
         gtk_widget_destroy(dialog);
@@ -3085,7 +3077,7 @@ create_tag_prog_window(void) {
         gtk_window_resize(GTK_WINDOW(tag_prog_window), 600, 300);
         g_signal_connect(G_OBJECT(tag_prog_window), "delete_event",
                          G_CALLBACK(tag_prog_window_close), NULL);
-        gtk_container_set_border_width(GTK_CONTAINER(tag_prog_window), 5);
+        gtk_container_set_border_width(GTK_CONTAINER(tag_prog_window), 20);
 
         vbox = gtk_vbox_new(FALSE, 0);
         gtk_container_add(GTK_CONTAINER(tag_prog_window), vbox);
@@ -3232,13 +3224,13 @@ update_tag_thread(void * args) {
 		g_idle_add(set_tag_prog_file_entry, (gpointer)ptag->filename);
 
 		ret = meta_update_basic(ptag->filename,
-					(tag_flags & TAG_F_TITLE) ? ptag->title : NULL,
-					(tag_flags & TAG_F_ARTIST) ? ptag->artist : NULL,
-					(tag_flags & TAG_F_ALBUM) ? ptag->album : NULL,
-					(tag_flags & TAG_F_COMMENT) ? ptag->comment : NULL,
+					(options.batch_tag_flags & BATCH_TAG_TITLE) ? ptag->title : NULL,
+					(options.batch_tag_flags & BATCH_TAG_ARTIST) ? ptag->artist : NULL,
+					(options.batch_tag_flags & BATCH_TAG_ALBUM) ? ptag->album : NULL,
+					(options.batch_tag_flags & BATCH_TAG_COMMENT) ? ptag->comment : NULL,
 					NULL /* genre */,
-					(tag_flags & TAG_F_YEAR) ? ptag->year : NULL,
-					(tag_flags & TAG_F_TRACKNO) ? ptag->trackno : -1);
+					(options.batch_tag_flags & BATCH_TAG_YEAR) ? ptag->year : NULL,
+					(options.batch_tag_flags & BATCH_TAG_TRACKNO) ? ptag->trackno : -1);
 
 		if (ret < 0) {
 			batch_tag_error_t * err =

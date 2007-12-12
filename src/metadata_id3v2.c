@@ -501,8 +501,8 @@ meta_parse_id3v2_frame(metadata_t * meta, unsigned char * buf, int len,
 		       int version, int unsynch_all) {
 
 	char frame_id[5];
-	int frame_size;
-	int pay_len;
+	int frame_size = 0;
+	int pay_len = 0;
 
 	/* detect padding/footer, consume rest of payload */
 	if ((buf[0] == '\0') ||
@@ -570,7 +570,7 @@ int
 metadata_from_id3v2(metadata_t * meta, unsigned char * buf, int length) {
 
 	int pos = 10;
-	int payload_length;
+	int payload_length = 0;
 
 	if ((buf[3] != 0x3) && (buf[3] != 0x4)) {
 		/* ID3v2 version not 2.3 or 2.4, not supported */

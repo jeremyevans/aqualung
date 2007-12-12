@@ -1151,7 +1151,7 @@ ripper_thread(void * arg) {
 		int no;
 		char * name;
 		char * ext = "raw";
-		int tags;
+		int tags = 0;
 		char decoder_filename[256];
 		int track_sectors = 0;
 		int track_sectors_read = 0;

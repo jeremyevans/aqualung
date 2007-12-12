@@ -96,7 +96,7 @@ vorbisenc_encoder_open(encoder_t * enc, encoder_mode_t * mode) {
 		frame = metadata_get_frame_by_tag(mode->meta, META_TAG_OXC, NULL);
 		while (frame != NULL) {
 			char * str;
-			char * field_val;
+			char * field_val = NULL;
 			char fval[MAXLEN];
 			char * renderfmt = meta_get_field_renderfmt(frame->type);
 			meta_get_fieldname_embedded(META_TAG_OXC, frame->type, &str);

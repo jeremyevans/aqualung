@@ -1735,7 +1735,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	GtkWidget * entry;
 
 
-	decoder_t * dec;
+	decoder_t * dec = NULL;
 
 	int is_cdda = 0;
 	fileinfo_t fileinfo;

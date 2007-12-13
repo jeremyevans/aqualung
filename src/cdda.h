@@ -77,7 +77,6 @@ void cdda_timeout_stop(void);
 
 void cdda_shutdown(void);
 
-void create_cdda_node(void);
 void insert_cdda_drive_node(char * device_path);
 void remove_cdda_drive_node(char * device_path);
 void refresh_cdda_drive_node(char * device_path);

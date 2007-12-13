@@ -29,6 +29,7 @@
 
 #include "cdda.h"
 
+void create_cdda_node(void);
 int store_cdda_iter_is_track(GtkTreeIter * iter);
 void store_cdda_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, int new_tab);
 void store_cdda_selection_changed(GtkTreeIter * iter, GtkTextBuffer * buffer, GtkLabel * statusbar);

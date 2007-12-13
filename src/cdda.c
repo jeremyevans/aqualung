@@ -699,33 +699,6 @@ update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 }
 
 
-/* create toplevel Music Store node for CD Audio */
-void
-create_cdda_node(void) {
-
-	GtkTreeIter iter;
-	store_t * data;
-
-	if ((data = (store_t *)malloc(sizeof(store_t))) == NULL) {
-		fprintf(stderr, "create_cdda_node: malloc error\n");
-		return;
-	}
-
-	data->type = STORE_TYPE_CDDA;
-
-	gtk_tree_store_insert(music_store, &iter, NULL, 0);
-	gtk_tree_store_set(music_store, &iter,
-			   MS_COL_NAME, _("CD Audio"),
-			   MS_COL_SORT, "000",
-			   MS_COL_FONT, PANGO_WEIGHT_BOLD,
-			   MS_COL_DATA, data, -1);
-
-	if (options.enable_ms_tree_icons) {
-		gtk_tree_store_set(music_store, &iter, MS_COL_ICON, icon_cdda, -1);
-	}
-}
-
-
 void
 insert_cdda_drive_node(char * device_path) {
 

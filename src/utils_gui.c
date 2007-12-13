@@ -406,47 +406,9 @@ assign_fc_filters(GtkFileChooser * fc, int filter) {
 	}
 }
 
-void
-directory_chooser(char * title, GtkWidget * parent, char * directory) {
-
-        GtkWidget * dialog;
-	const gchar * selected_directory;
-
-        dialog = gtk_file_chooser_dialog_new(title,
-                                             GTK_WINDOW(parent),
-                                             GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                             NULL);
-
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), directory);
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-
-	if (options.show_hidden) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
-	}
-
-        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-
-                char * utf8;
-
-                selected_directory = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		utf8 = g_locale_to_utf8(selected_directory, -1, NULL, NULL, NULL);
-
-		if (utf8 == NULL) {
-			gtk_widget_destroy(dialog);
-		}
-
-                strncpy(directory, selected_directory, MAXLEN-1);
-		g_free(utf8);
-        }
-
-        gtk_widget_destroy(dialog);
-}
-
 GSList *
-file_chooser(char * title, GtkWidget * parent, GtkFileChooserAction action, int filter, gint multiple) {
+file_chooser(char * title, GtkWidget * parent, GtkFileChooserAction action, int filter,
+	     gint multiple, char * destpath) {
 
         GtkWidget * dialog;
 	GSList * files = NULL;
@@ -461,7 +423,14 @@ file_chooser(char * title, GtkWidget * parent, GtkFileChooserAction action, int 
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), multiple);
-        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), destpath);
+
+	if (action == GTK_FILE_CHOOSER_ACTION_SAVE) {
+		char * bname = g_path_get_basename(destpath);
+		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), bname);
+		g_free(bname);
+	}
+
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 	assign_fc_filters(GTK_FILE_CHOOSER(dialog), filter);
 
@@ -471,7 +440,7 @@ file_chooser(char * title, GtkWidget * parent, GtkFileChooserAction action, int 
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		strncpy(options.currdir,
+		strncpy(destpath,
 			gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
 			MAXLEN-1);
 
@@ -484,10 +453,14 @@ file_chooser(char * title, GtkWidget * parent, GtkFileChooserAction action, int 
 }
 
 void
-file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction action, int filter, GtkWidget * entry) {
+file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction action, int filter,
+			GtkWidget * entry, char * destpath) {
 
         GtkWidget * dialog;
 	const gchar * selected_filename = gtk_entry_get_text(GTK_ENTRY(entry));
+	char path[MAXLEN];
+
+	path[0] = '\0';
 
         dialog = gtk_file_chooser_dialog_new(title,
                                              GTK_WINDOW(parent),
@@ -504,19 +477,24 @@ file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction a
 
         if (strlen(selected_filename)) {
       		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
-                char tmp[MAXLEN];
-                tmp[0] = '\0';
 
 		if (locale == NULL) {
 			gtk_widget_destroy(dialog);
 			return;
 		}
 
-		normalize_filename(locale, tmp);
-		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), tmp);
+		normalize_filename(locale, path);
 		g_free(locale);
 	} else {
-                gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
+		strncpy(path, destpath, MAXLEN-1);
+	}
+
+	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), path);
+
+	if (action == GTK_FILE_CHOOSER_ACTION_SAVE) {
+		char * bname = g_path_get_basename(path);
+		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), bname);
+		g_free(bname);
 	}
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
@@ -536,7 +514,7 @@ file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction a
 
 		gtk_entry_set_text(GTK_ENTRY(entry), utf8);
 
-                strncpy(options.currdir, selected_filename, MAXLEN-1);
+                strncpy(destpath, selected_filename, MAXLEN-1);
 		g_free(utf8);
         }
 

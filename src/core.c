@@ -2093,13 +2093,20 @@ setup_app_directories(void) {
 	if (!home) {
 		char * homedir = (char *)g_get_home_dir();
 		strcpy(options.home, homedir);
-		snprintf(options.currdir, MAXLEN-1, "%s/.aqualung", homedir);
 		g_free(homedir);
 	} else {
 		strcpy(options.home, home);
-		snprintf(options.currdir, MAXLEN-1, "%s/.aqualung", home);
 	}
-	strcpy(options.confdir, options.currdir);
+
+	snprintf(options.confdir, MAXLEN-1, "%s/.aqualung", options.home);
+
+	strcpy(options.audiodir, options.home);
+	strcpy(options.currdir, options.home);
+	strcpy(options.exportdir, options.home);
+	strcpy(options.plistdir, options.home);
+	strcpy(options.podcastdir, options.home);
+	strcpy(options.ripdir, options.home);
+	strcpy(options.storedir, options.home);
 
 	if (getcwd(options.cwd, MAXLEN) == NULL) {
 		fprintf(stderr, "setup_app_directories(): warning: getcwd() returned NULL, using . as cwd\n");

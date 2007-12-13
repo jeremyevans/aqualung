@@ -1620,7 +1620,8 @@ add_files(GtkWidget * widget, gpointer data) {
 				      options.playlist_is_embedded ? main_window : playlist_window,
 				      GTK_FILE_CHOOSER_ACTION_OPEN,
 				      FILE_CHOOSER_FILTER_AUDIO,
-				      TRUE);
+				      TRUE,
+				      options.audiodir);
         if (files != NULL) {
 
 		playlist_transfer_t * pt = playlist_transfer_get(PLAYLIST_ENQUEUE, NULL, 0);
@@ -1724,7 +1725,8 @@ add_directory(GtkWidget * widget, gpointer data) {
 				     options.playlist_is_embedded ? main_window : playlist_window,
 				     GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
 				     FILE_CHOOSER_FILTER_NONE,
-				     TRUE);
+				     TRUE,
+				     options.audiodir);
         if (dirs != NULL) {
 
 		playlist_transfer_t * pt = playlist_transfer_get(PLAYLIST_ENQUEUE, NULL, 0);
@@ -1849,7 +1851,8 @@ plist__save_cb(gpointer data) {
 			    options.playlist_is_embedded ? main_window : playlist_window,
 			    GTK_FILE_CHOOSER_ACTION_SAVE,
 			    FILE_CHOOSER_FILTER_NONE,
-			    FALSE);
+			    FALSE,
+			    options.plistdir);
 
         if (file != NULL) {
 		playlist_save(pl, (char *)file->data);
@@ -1873,7 +1876,8 @@ plist__save_all_cb(gpointer data) {
 			    options.playlist_is_embedded ? main_window : playlist_window,
 			    GTK_FILE_CHOOSER_ACTION_SAVE,
 			    FILE_CHOOSER_FILTER_NONE,
-			    FALSE);
+			    FALSE,
+			    options.plistdir);
         if (file != NULL) {
 		playlist_save_all((char *)file->data);
                 g_free(file->data);
@@ -1997,7 +2001,8 @@ playlist_load_dialog(int mode) {
 			     options.playlist_is_embedded ? main_window : playlist_window, 
 			     GTK_FILE_CHOOSER_ACTION_OPEN, 
 			     FILE_CHOOSER_FILTER_PLAYLIST,
-			     FALSE);
+			     FALSE,
+			     options.plistdir);
         if (files != NULL) {
 		playlist_load(files, mode, NULL, 0);
         }

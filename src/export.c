@@ -626,7 +626,8 @@ export_browse_cb(GtkButton * button, gpointer data) {
 				browser_window,
 				GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
 				FILE_CHOOSER_FILTER_NONE,
-				(GtkWidget *)data);
+				(GtkWidget *)data,
+				options.exportdir);
 }
 
 GtkWidget *
@@ -833,7 +834,7 @@ export_dialog(export_t * export) {
 	table = gtk_table_new(5, 2, FALSE);
         gtk_container_add(GTK_CONTAINER(frame), table);
 
-	insert_label_entry_browse(table, _("Target directory:"), &outdir_entry, NULL, 0, 1, export_browse_cb);
+	insert_label_entry_browse(table, _("Target directory:"), &outdir_entry, options.exportdir, 0, 1, export_browse_cb);
 
         export->check_dir_artist = gtk_check_button_new_with_label(_("Create subdirectories for artists"));
         gtk_widget_set_name(export->check_dir_artist, "check_on_notebook");

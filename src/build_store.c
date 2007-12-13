@@ -1501,7 +1501,8 @@ browse_button_clicked(GtkButton * button, gpointer data) {
 				browser_window,
 				GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
 				FILE_CHOOSER_FILTER_NONE,
-				(GtkWidget *)data);
+				(GtkWidget *)data,
+				options.currdir);
 }
 
 

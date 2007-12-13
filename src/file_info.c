@@ -571,50 +571,40 @@ save_pic_button_pressed(GtkWidget * widget, gpointer data) {
 
 	save_pic_t * save_pic = (save_pic_t *)data;
 	fi_t * fi = save_pic->fi;
-        GtkWidget * dialog;
-        gchar * selected_filename;
+
+	GSList * lfiles = NULL;
 	char filename[MAXLEN];
+	char * dirname;
 
-        dialog = gtk_file_chooser_dialog_new(_("Please specify the file to save the image to."), 
-                                             GTK_WINDOW(fi->info_window),
-                                             GTK_FILE_CHOOSER_ACTION_SAVE, 
-                                             GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                             NULL);
+	dirname = g_path_get_dirname(options.currdir);
+	snprintf(filename, MAXLEN-1, "%s/%s", dirname, save_pic->savefile);
+	g_free(dirname);
 
-        deflicker();
-        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
-        gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), save_pic->savefile);
+	lfiles = file_chooser(_("Please specify the file to save the image to."),
+			      fi->info_window,
+			      GTK_FILE_CHOOSER_ACTION_SAVE, 
+			      FILE_CHOOSER_FILTER_NONE,
+			      FALSE,
+			      filename);
 
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
-        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-
-	if (options.show_hidden) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
-	}
-
-        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-                selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		strncpy(filename, selected_filename, MAXLEN-1);
-                g_free(selected_filename);
+	if (lfiles != NULL) {
 
 		FILE * f = fopen(filename, "wb");
+
+		g_slist_free(lfiles);
+
 		if (f == NULL) {
 			fprintf(stderr, "error: fopen() failed\n");
-			gtk_widget_destroy(dialog);
 			return;
 		}
 		if (fwrite(save_pic->image_data, 1, save_pic->image_size, f) != save_pic->image_size) {
 			fprintf(stderr, "fwrite() error\n");
-			gtk_widget_destroy(dialog);
 			return;
 		}
 		fclose(f);
 
-                strncpy(options.currdir, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)), MAXLEN-1);
-        }
-        gtk_widget_destroy(dialog);
+		strncpy(options.currdir, filename, MAXLEN-1);
+	}
 }
 
 
@@ -713,8 +703,7 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 	meta_frame_t * frame = change_pic->frame;
 	apic_source_t * source = ((apic_source_t *)(frame->source));
         GtkWidget * dialog;
-        gchar * selected_filename;
-	char filename[MAXLEN];
+	GSList * lfiles = NULL;
 
 	char str[MAXLEN];
 	GdkPixbufFormat * pformat;
@@ -722,38 +711,24 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 
 	GtkWidget * vbox; /* parent of image */
 
-        dialog = gtk_file_chooser_dialog_new(_("Please specify the file to load the image from."), 
-                                             GTK_WINDOW(fi->info_window),
-                                             GTK_FILE_CHOOSER_ACTION_SAVE, 
-                                             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                             NULL);
+	lfiles = file_chooser(_("Please specify the file to load the image from."),
+			      fi->info_window,
+			      GTK_FILE_CHOOSER_ACTION_OPEN,
+			      FILE_CHOOSER_FILTER_NONE,
+			      FALSE,
+			      options.currdir);
 
-        deflicker();
-        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), options.currdir);
-
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
-        gtk_window_set_default_size(GTK_WINDOW(dialog), 580, 390);
-        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-
-	if (options.show_hidden) {
-		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
-	}
-
-        if (aqualung_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
-		gtk_widget_destroy(dialog);
+	if (lfiles != NULL) {
+		g_slist_free(lfiles);
+	} else {
 		return;
 	}
 
-	selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-	strncpy(filename, selected_filename, MAXLEN-1);
-	g_free(selected_filename);
-	
-	pformat = gdk_pixbuf_get_file_info(filename, NULL, NULL);
+	pformat = gdk_pixbuf_get_file_info(options.currdir, NULL, NULL);
 	if (pformat == NULL) {
 		char msg[MAXLEN];
 		gtk_widget_destroy(dialog);
-		snprintf(msg, MAXLEN-1, _("Could not load image from:\n%s"), filename);
+		snprintf(msg, MAXLEN-1, _("Could not load image from:\n%s"), options.currdir);
 		message_dialog(_("Error"), fi->info_window, GTK_MESSAGE_ERROR,
 			       GTK_BUTTONS_OK, NULL, msg);
 		return;
@@ -762,9 +737,9 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 	if (frame->data != NULL) {
 		free(frame->data);
 	}
-	if (!g_file_get_contents(filename, ((gchar **)(&frame->data)),
+	if (!g_file_get_contents(options.currdir, ((gchar **)(&frame->data)),
 				 ((gsize *)(&frame->length)), NULL)) {
-		fprintf(stderr, "g_file_get_contents failed on %s\n", filename);
+		fprintf(stderr, "g_file_get_contents failed on %s\n", options.currdir);
 		return;
 	}
 
@@ -776,7 +751,7 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 		frame->field_name = strdup(mime_types[0]);
 		g_strfreev(mime_types);
 	} else {
-		fprintf(stderr, "error: no mime type for image %s\n", filename);
+		fprintf(stderr, "error: no mime type for image %s\n", options.currdir);
 		g_strfreev(mime_types);
 		return;
 	}
@@ -792,8 +767,6 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 	save_pic_update(save_pic, fi, frame);
 
 	fi_mark_changed(fi);
-
-        gtk_widget_destroy(dialog);
 }
 
 

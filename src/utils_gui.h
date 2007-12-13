@@ -53,11 +53,10 @@ GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 
 void deflicker(void);
 
-void directory_chooser(char * title, GtkWidget * parent, char * directory);
 GSList * file_chooser(char * title, GtkWidget * parent,
-		      GtkFileChooserAction action, int filter, gint multiple);
+		      GtkFileChooserAction action, int filter, gint multiple, char * destpath);
 void file_chooser_with_entry(char * title, GtkWidget * parent,
-			     GtkFileChooserAction action, int filter, GtkWidget * entry);
+			     GtkFileChooserAction action, int filter, GtkWidget * entry, char * destpath);
 
 int message_dialog(char * title, GtkWidget * parent, GtkMessageType type,
 		   GtkButtonsType buttons, GtkWidget * extra, char * text, ...);

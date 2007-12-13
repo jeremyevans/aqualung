@@ -67,6 +67,7 @@
 #include "file_info.h"
 #include "i18n.h"
 #include "cdda.h"
+#include "store_cdda.h"
 #include "loop_bar.h"
 #include "httpc.h"
 #include "metadata.h"

@@ -417,7 +417,8 @@ browse_button_store_clicked(GtkButton * button, gpointer data) {
 				browser_window,
 				GTK_FILE_CHOOSER_ACTION_SAVE,
 				FILE_CHOOSER_FILTER_STORE,
-				(GtkWidget *)data);
+				(GtkWidget *)data,
+				options.storedir);
 }
 
 int
@@ -433,7 +434,7 @@ add_store_dialog(char * name, store_data_t ** data) {
 
 	create_dialog_layout(_("Create empty store"), &dialog, &table, 2);
 	insert_label_entry(table, _("Visible name:"), &name_entry, NULL, 0, 1, TRUE);
-	insert_label_entry_browse(table, _("Filename:"), &file_entry, NULL, 1, 2,
+	insert_label_entry_browse(table, _("Filename:"), &file_entry, options.storedir, 1, 2,
 				  browse_button_store_clicked);
 	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, NULL);
 
@@ -656,7 +657,8 @@ browse_button_record_clicked(GtkButton * button, gpointer data) {
 			      browser_window,
 			      GTK_FILE_CHOOSER_ACTION_OPEN,
 			      FILE_CHOOSER_FILTER_AUDIO,
-			      TRUE);
+			      TRUE,
+			      options.audiodir);
 
 	for (node = lfiles; node; node = node->next) {
 
@@ -883,7 +885,8 @@ browse_button_track_clicked(GtkButton * button, gpointer data) {
 				browser_window,
 				GTK_FILE_CHOOSER_ACTION_OPEN,
 				FILE_CHOOSER_FILTER_AUDIO,
-				(GtkWidget *)data);
+				(GtkWidget *)data,
+				options.audiodir);
 }
 
 
@@ -902,7 +905,7 @@ add_track_dialog(char * name, char * sort, track_data_t ** data) {
 	create_dialog_layout(_("Add Track"), &dialog, &table, 3);
 	insert_label_entry(table, _("Visible name:"), &name_entry, NULL, 0, 1, TRUE);
 	insert_label_entry(table, _("Name to sort by:"), &sort_entry, NULL, 1, 2, TRUE);
-	insert_label_entry_browse(table, _("Filename:"), &file_entry, NULL, 2, 3,
+	insert_label_entry_browse(table, _("Filename:"), &file_entry, options.audiodir, 2, 3,
 				  browse_button_track_clicked);
 	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, NULL);
 

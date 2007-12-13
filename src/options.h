@@ -27,13 +27,23 @@ typedef struct {
 
 	/* home directory */
 	char home[MAXLEN];
+
 	/* normally $HOME/.aqualung */
 	char confdir[MAXLEN];
-	/* to keep track of file selector dialogs; starts with $HOME */
-	char currdir[MAXLEN];
+
 	/* current working directory when program is started */
 	char cwd[MAXLEN];
 	
+	/* to keep track of file selector dialogs; start with $HOME */
+	char audiodir[MAXLEN];
+	char currdir[MAXLEN];
+	char exportdir[MAXLEN];
+	char plistdir[MAXLEN];
+	char podcastdir[MAXLEN];
+	char ripdir[MAXLEN];
+	char storedir[MAXLEN];
+
+	/* directory of skin in use */
 	char skin[MAXLEN];
 
 	/* Misc - not accessible from the Settings dialog */

@@ -234,7 +234,8 @@ ripper_destdir_browse_cb(GtkButton * button, gpointer data) {
 				ripper_dialog,
 				GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
 				FILE_CHOOSER_FILTER_NONE,
-				(GtkWidget *)data);
+				(GtkWidget *)data,
+				options.ripdir);
 }
 
 
@@ -730,6 +731,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 
         ripper_destdir_entry = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(ripper_destdir_entry), MAXLEN-1);
+	gtk_entry_set_text(GTK_ENTRY(ripper_destdir_entry), options.ripdir);
 	gtk_box_pack_start(GTK_BOX(hbox), ripper_destdir_entry, TRUE, TRUE, 5);
 
         button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);

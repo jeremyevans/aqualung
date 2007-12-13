@@ -209,7 +209,8 @@ podcast_browse_button_clicked(GtkButton * button, gpointer data) {
 				browser_window,
 				GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
 				FILE_CHOOSER_FILTER_NONE,
-				(GtkWidget *)data);
+				(GtkWidget *)data,
+				options.podcastdir);
 }
 
 void
@@ -279,7 +280,7 @@ podcast_dialog(podcast_t ** podcast, int create) {
 			   0, 1, create);
 
 	if (create) {
-		insert_label_entry_browse(table, _("Download directory:"), &dir_entry, NULL, 1, 2,
+		insert_label_entry_browse(table, _("Download directory:"), &dir_entry, options.podcastdir, 1, 2,
 					  podcast_browse_button_clicked);
 	} else {
 		insert_label_entry(table, _("Download directory:"), &dir_entry, (*podcast)->dir, 1, 2, FALSE);

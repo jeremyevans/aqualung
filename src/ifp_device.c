@@ -840,6 +840,46 @@ gchar *npath;
 
 
 void
+directory_chooser(char * title, GtkWidget * parent, char * directory) {
+
+        GtkWidget * dialog;
+	const gchar * selected_directory;
+
+        dialog = gtk_file_chooser_dialog_new(title,
+                                             GTK_WINDOW(parent),
+                                             GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                             NULL);
+
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+        gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(dialog), directory);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+	if (options.show_hidden) {
+		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+	}
+
+        if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+
+                char * utf8;
+
+                selected_directory = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		utf8 = g_locale_to_utf8(selected_directory, -1, NULL, NULL, NULL);
+
+		if (utf8 == NULL) {
+			gtk_widget_destroy(dialog);
+		}
+
+                strncpy(directory, selected_directory, MAXLEN-1);
+		g_free(utf8);
+        }
+
+        gtk_widget_destroy(dialog);
+}
+
+
+void
 local_path_selected_cb(GtkButton * button, gpointer data) {
 	directory_chooser(_("Please select a local path."), aifp_window, dest_dir);
         gtk_entry_set_text(GTK_ENTRY(local_path_entry), dest_dir);

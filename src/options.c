@@ -1222,7 +1222,8 @@ browse_ms_pathlist_clicked(GtkButton * button, gpointer data) {
 				options_window,
 				GTK_FILE_CHOOSER_ACTION_OPEN,
 				FILE_CHOOSER_FILTER_STORE,
-				(GtkWidget *)data);
+				(GtkWidget *)data,
+				options.storedir);
 }
 
 
@@ -3167,7 +3168,13 @@ save_config(void) {
         xmlDocSetRootElement(doc, root);
 
 
+	SAVE_STR(audiodir);
 	SAVE_STR(currdir);
+	SAVE_STR(exportdir);
+	SAVE_STR(plistdir);
+	SAVE_STR(podcastdir);
+	SAVE_STR(ripdir);
+	SAVE_STR(storedir);
 	SAVE_STR(default_param);
 	SAVE_STR(title_format);
 	SAVE_STR(title_format_no_album);
@@ -3553,7 +3560,13 @@ load_config(void) {
 
         cur = cur->xmlChildrenNode;
         while (cur != NULL) {
+		LOAD_STR(audiodir);
 		LOAD_STR(currdir);
+		LOAD_STR(exportdir);
+		LOAD_STR(plistdir);
+		LOAD_STR(podcastdir);
+		LOAD_STR(ripdir);
+		LOAD_STR(storedir);
 		LOAD_STR(default_param);
 		LOAD_STR(title_format);
 		LOAD_STR(title_format_no_album);

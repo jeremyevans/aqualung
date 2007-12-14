@@ -3303,6 +3303,10 @@ save_config(void) {
 	SAVE_FLOAT(loop_range_end);
 	SAVE_INT(wm_systray_warn);
 	SAVE_INT(podcasts_autocheck);
+	SAVE_STR(export_template);
+	SAVE_INT(export_subdir_artist);
+	SAVE_INT(export_subdir_album);
+	SAVE_INT(export_subdir_limit);
 	SAVE_INT(export_file_format);
 	SAVE_INT(export_bitrate);
 	SAVE_INT(export_vbr);
@@ -3544,6 +3548,8 @@ load_config(void) {
 	options.plcol_idx[1] = 1;
 	options.plcol_idx[2] = 2;
 
+	strcpy(options.export_template, "track%i.%x");
+	options.export_subdir_limit = 16;
         options.export_bitrate = 256;
         options.export_vbr = 1;
         options.export_metadata = 1;
@@ -3692,6 +3698,10 @@ load_config(void) {
 		LOAD_FLOAT(loop_range_end);
 		LOAD_INT(wm_systray_warn);
 		LOAD_INT(podcasts_autocheck);
+		LOAD_STR(export_template);
+		LOAD_INT(export_subdir_artist);
+		LOAD_INT(export_subdir_album);
+		LOAD_INT(export_subdir_limit);
 		LOAD_INT(export_file_format);
 		LOAD_INT(export_bitrate);
 		LOAD_INT(export_vbr);

@@ -838,22 +838,24 @@ export_dialog(export_t * export) {
 
         export->check_dir_artist = gtk_check_button_new_with_label(_("Create subdirectories for artists"));
         gtk_widget_set_name(export->check_dir_artist, "check_on_notebook");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->check_dir_artist), options.export_subdir_artist);
         gtk_table_attach(GTK_TABLE(table), export->check_dir_artist, 0, 3, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
         g_signal_connect(G_OBJECT(export->check_dir_artist), "toggled",
 			 G_CALLBACK(check_dir_limit_toggled), export);
 
         export->check_dir_album = gtk_check_button_new_with_label(_("Create subdirectories for albums"));
         gtk_widget_set_name(export->check_dir_album, "check_on_notebook");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->check_dir_album), options.export_subdir_album);
         gtk_table_attach(GTK_TABLE(table), export->check_dir_album, 0, 3, 2, 3, GTK_FILL, GTK_FILL, 5, 5);
         g_signal_connect(G_OBJECT(export->check_dir_album), "toggled",
 			 G_CALLBACK(check_dir_limit_toggled), export);
 
-	insert_label_spin_with_limits(table, _("Subdirectory name\nlength limit:"), &export->dirlen_spin, 16, 4, 64, 3, 4);
-	gtk_widget_set_sensitive(export->dirlen_spin, FALSE);
+	insert_label_spin_with_limits(table, _("Subdirectory name\nlength limit:"), &export->dirlen_spin, options.export_subdir_limit, 4, 64, 3, 4);
+	gtk_widget_set_sensitive(export->dirlen_spin, options.export_subdir_artist || options.export_subdir_album);
 
         help_button = gtk_button_new_from_stock(GTK_STOCK_HELP); 
 	g_signal_connect(help_button, "clicked", G_CALLBACK(export_format_help_cb), export);
-	insert_label_entry_button(table, _("Filename template:"), &templ_entry, "track%i.%x", help_button, 4, 5);
+	insert_label_entry_button(table, _("Filename template:"), &templ_entry, options.export_template, help_button, 4, 5);
 
 	frame = gtk_frame_new(_("Format"));
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(export->dialog)->vbox), frame, FALSE, FALSE, 2);
@@ -939,10 +941,12 @@ export_dialog(export_t * export) {
 		}
 
 		set_option_from_entry(templ_entry, export->template, MAXLEN);
-		export->format = export_get_format_from_combo(export->format_combo);
-		export->bitrate = gtk_range_get_value(GTK_RANGE(export->bitrate_scale));
-                options.export_file_format = export->format;
-                options.export_bitrate = export->bitrate;
+		set_option_from_entry(templ_entry, options.export_template, MAXLEN);
+		options.export_file_format = export->format = export_get_format_from_combo(export->format_combo);
+		options.export_bitrate = export->bitrate = gtk_range_get_value(GTK_RANGE(export->bitrate_scale));
+		set_option_from_toggle(export->check_dir_artist, &options.export_subdir_artist);
+		set_option_from_toggle(export->check_dir_album, &options.export_subdir_album);
+		set_option_from_spin(export->dirlen_spin, &options.export_subdir_limit);
 		set_option_from_toggle(export->vbr_check, &export->vbr);
                 options.export_vbr = export->vbr;
 		set_option_from_toggle(export->meta_check, &export->write_meta);

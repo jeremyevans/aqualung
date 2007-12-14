@@ -77,6 +77,10 @@ typedef struct {
 	int wm_systray_warn;
 	int podcasts_autocheck;
 
+	char export_template[MAXLEN];
+	int export_subdir_artist;
+	int export_subdir_album;
+	int export_subdir_limit;
         int export_file_format;
         int export_bitrate;
         int export_vbr;

@@ -68,6 +68,7 @@ typedef struct {
 	int repeat_on;
 	int repeat_all_on;
 	int shuffle_on;
+
 	int search_pl_flags;
 	int search_ms_flags;
         int ifpmanager_size_x;
@@ -76,6 +77,12 @@ typedef struct {
 	float loop_range_end;
 	int wm_systray_warn;
 	int podcasts_autocheck;
+
+	int cdrip_deststore;
+        int cdrip_file_format;
+        int cdrip_bitrate;
+        int cdrip_vbr;
+        int cdrip_metadata;
 
 	char export_template[MAXLEN];
 	int export_subdir_artist;

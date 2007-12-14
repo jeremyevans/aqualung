@@ -48,6 +48,7 @@
 #include "export.h"
 #include "options.h"
 
+#ifdef HAVE_EXPORT
 
 #define BUFSIZE 10240
 
@@ -634,9 +635,7 @@ GtkWidget *
 export_create_format_combo(void) {
 
 	GtkWidget * combo = gtk_combo_box_new_text();
-#if defined(HAVE_SNDFILE) || defined(HAVE_FLAC)
-	int n = 0;
-#endif /* HAVE_SNDFILE || HAVE_FLAC */
+	int n = -1;
 
 #ifdef HAVE_SNDFILE
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "WAV");
@@ -644,17 +643,21 @@ export_create_format_combo(void) {
 #endif /* HAVE_SNDFILE */
 #ifdef HAVE_FLAC
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "FLAC");
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), n);
+	++n;
 #endif /* HAVE_FLAC */
 #ifdef HAVE_VORBISENC
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "Ogg Vorbis");
+	++n;
 #endif /* HAVE_VORBISENC */
 #ifdef HAVE_LAME
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "MP3");
+	++n;
 #endif /* HAVE_LAME */
 
-	if (gtk_combo_box_get_active(GTK_COMBO_BOX(combo)) == -1) {
-	    gtk_combo_box_set_active(GTK_COMBO_BOX(combo), FALSE);
+	if (n >= options.export_file_format) {
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combo), options.export_file_format);
+	} else {
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
 	}
 
 	return combo;
@@ -904,7 +907,6 @@ export_dialog(export_t * export) {
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->meta_check), options.export_metadata);
 
 	gtk_widget_show_all(export->dialog);
-        gtk_combo_box_set_active (GTK_COMBO_BOX (export->format_combo), options.export_file_format);
 	export_format_combo_changed(export->format_combo, export);
 
  display:
@@ -1056,6 +1058,8 @@ export_start(export_t * export) {
 	export_free(export);
 	return 0;
 }
+
+#endif /* HAVE_EXPORT */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

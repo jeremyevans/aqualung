@@ -24,7 +24,7 @@
 #include <config.h>
 
 #if defined(HAVE_CDDA) && (defined(HAVE_SNDFILE) || defined(HAVE_FLAC) || defined(HAVE_VORBISENC) || defined(HAVE_LAME))
-
+#define HAVE_CD_RIPPER
 
 #include <gtk/gtk.h>
 

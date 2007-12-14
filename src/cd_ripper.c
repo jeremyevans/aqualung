@@ -49,7 +49,7 @@
 #include "metadata.h"
 #include "cd_ripper.h"
 
-#if defined(HAVE_CDDA) && (defined(HAVE_SNDFILE) || defined(HAVE_FLAC) || defined(HAVE_VORBISENC) || defined(HAVE_LAME))
+#ifdef HAVE_CD_RIPPER
 
 #define BUFSIZE 588
 
@@ -244,13 +244,13 @@ create_ripper_deststore_combo(void) {
 
 	GtkWidget * combo = gtk_combo_box_new_text();
 	GtkTreeIter iter;
-	int n;
+	int n = 0;
+	int i;
 
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), _("(none)"));
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), FALSE);
 
-	n = 0;
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter, NULL, n++)) {
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter, NULL, i++)) {
 
 		char * name;
 		store_t * data;
@@ -268,9 +268,15 @@ create_ripper_deststore_combo(void) {
 
                 gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter,
 				   MS_COL_NAME, &name, -1);
-
 		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), name);
+		++n;
 		g_free(name);
+	}
+
+	if (n >= options.cdrip_deststore) {
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combo), options.cdrip_deststore);
+	} else {
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
 	}
 
 	return combo;
@@ -284,6 +290,8 @@ get_ripper_deststore_iter(GtkTreeIter * iter_store) {
 	GtkTreeIter iter;
 	int selected = gtk_combo_box_get_active(GTK_COMBO_BOX(ripper_deststore_combo));
 	int i = 1, n = 0;
+
+	options.cdrip_deststore = selected;
 
 	if (selected == 0) {
 		return 0;
@@ -319,9 +327,7 @@ GtkWidget *
 create_ripper_format_combo(void) {
 
 	GtkWidget * combo = gtk_combo_box_new_text();
-#if defined(HAVE_SNDFILE) || defined(HAVE_FLAC)
-	int n = 0;
-#endif /* HAVE_SNDFILE || HAVE_FLAC */
+	int n = -1;
 
 #ifdef HAVE_SNDFILE
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "WAV");
@@ -329,17 +335,21 @@ create_ripper_format_combo(void) {
 #endif /* HAVE_SNDFILE */
 #ifdef HAVE_FLAC
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "FLAC");
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), n);
+	++n;
 #endif /* HAVE_FLAC */
 #ifdef HAVE_VORBISENC
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "Ogg Vorbis");
+	++n;
 #endif /* HAVE_VORBISENC */
 #ifdef HAVE_LAME
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "MP3");
+	++n;
 #endif /* HAVE_LAME */
 
-	if (gtk_combo_box_get_active(GTK_COMBO_BOX(combo)) == -1) {
-	    gtk_combo_box_set_active(GTK_COMBO_BOX(combo), FALSE);
+	if (n >= options.cdrip_file_format) {
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combo), options.cdrip_file_format);
+	} else {
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
 	}
 
 	return combo;
@@ -429,7 +439,7 @@ ripper_format_combo_changed(GtkWidget * widget, gpointer data) {
 		gtk_widget_show(ripper_meta_check);
 
 		gtk_range_set_range(GTK_RANGE(ripper_bitrate_scale), 0, 8);
-		gtk_range_set_value(GTK_RANGE(ripper_bitrate_scale), 5);
+		gtk_range_set_value(GTK_RANGE(ripper_bitrate_scale), options.cdrip_bitrate);
 	}
 	if (strcmp(text, "Ogg Vorbis") == 0) {
 		gtk_widget_show(ripper_bitrate_scale);
@@ -440,7 +450,7 @@ ripper_format_combo_changed(GtkWidget * widget, gpointer data) {
 		gtk_widget_show(ripper_meta_check);
 
 		gtk_range_set_range(GTK_RANGE(ripper_bitrate_scale), 32, 320);
-		gtk_range_set_value(GTK_RANGE(ripper_bitrate_scale), 256);
+		gtk_range_set_value(GTK_RANGE(ripper_bitrate_scale), options.cdrip_bitrate);
 	}
 	if (strcmp(text, "MP3") == 0) {
 		gtk_widget_show(ripper_bitrate_scale);
@@ -451,8 +461,10 @@ ripper_format_combo_changed(GtkWidget * widget, gpointer data) {
 		gtk_widget_show(ripper_meta_check);
 
 		gtk_range_set_range(GTK_RANGE(ripper_bitrate_scale), 32, 320);
-		gtk_range_set_value(GTK_RANGE(ripper_bitrate_scale), 256);
+		gtk_range_set_value(GTK_RANGE(ripper_bitrate_scale), options.cdrip_bitrate);
 	}
+
+        options.cdrip_file_format = get_ripper_format();
 
 	g_free(text);
 }
@@ -781,13 +793,13 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
         ripper_vbr_check = gtk_check_button_new_with_label(_("VBR encoding"));
         gtk_widget_set_name(ripper_vbr_check, "check_on_notebook");
         gtk_table_attach(GTK_TABLE(table), ripper_vbr_check, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ripper_vbr_check), TRUE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ripper_vbr_check), options.cdrip_vbr);
 
         ripper_meta_check = gtk_check_button_new_with_label(_("Tag files with metadata"));
         gtk_widget_set_name(ripper_meta_check, "check_on_notebook");
         gtk_table_attach(GTK_TABLE(table), ripper_meta_check, 0, 2, 3, 4,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 4);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ripper_meta_check), TRUE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ripper_meta_check), options.cdrip_metadata);
 
         g_signal_connect(G_OBJECT(ripper_format_combo), "changed",
 			 G_CALLBACK(ripper_format_combo_changed), NULL);
@@ -860,10 +872,12 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 			goto ripper_display;
 		}
 
-		ripper_format = get_ripper_format();
-		ripper_bitrate = gtk_range_get_value(GTK_RANGE(ripper_bitrate_scale));
+		options.cdrip_file_format = ripper_format = get_ripper_format();
+		options.cdrip_bitrate = ripper_bitrate = gtk_range_get_value(GTK_RANGE(ripper_bitrate_scale));
 		set_option_from_toggle(ripper_vbr_check, &ripper_vbr);
+		options.cdrip_vbr = ripper_vbr;
 		set_option_from_toggle(ripper_meta_check, &ripper_meta);
+		options.cdrip_metadata = ripper_meta;
 		set_option_from_entry(ripper_artist_entry, ripper_artist, MAXLEN);
 		set_option_from_entry(ripper_album_entry, ripper_album, MAXLEN);
 		set_option_from_entry(ripper_genre_entry, ripper_genre, MAXLEN);
@@ -1341,7 +1355,7 @@ cd_ripper(cdda_drive_t * drive, GtkTreeIter * iter) {
 
 GtkWidget * ripper_prog_window = NULL;
 
-#endif /* HAVE_CDDA && ... */
+#endif /* HAVE_CD_RIPPER */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

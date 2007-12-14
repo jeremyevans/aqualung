@@ -21,6 +21,11 @@
 #ifndef _EXPORT_H
 #define _EXPORT_H
 
+#include <config.h>
+
+#if defined(HAVE_CDDA) && (defined(HAVE_SNDFILE) || defined(HAVE_FLAC) || defined(HAVE_VORBISENC) || defined(HAVE_LAME))
+#define HAVE_EXPORT
+
 #include "common.h"
 
 typedef struct _export_map_t {
@@ -81,6 +86,8 @@ export_t * export_new(void);
 void export_append_item(export_t * export, char * infile,
 			char * artist, char * album, char * title, int year, int no);
 int export_start(export_t * export);
+
+#endif /* HAVE_CDDA && ... */
 
 #endif /* _EXPORT_H */
 

@@ -702,7 +702,6 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 	fi_t * fi = change_pic->fi;
 	meta_frame_t * frame = change_pic->frame;
 	apic_source_t * source = ((apic_source_t *)(frame->source));
-        GtkWidget * dialog;
 	GSList * lfiles = NULL;
 
 	char str[MAXLEN];
@@ -727,7 +726,6 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 	pformat = gdk_pixbuf_get_file_info(options.currdir, NULL, NULL);
 	if (pformat == NULL) {
 		char msg[MAXLEN];
-		gtk_widget_destroy(dialog);
 		snprintf(msg, MAXLEN-1, _("Could not load image from:\n%s"), options.currdir);
 		message_dialog(_("Error"), fi->info_window, GTK_MESSAGE_ERROR,
 			       GTK_BUTTONS_OK, NULL, msg);

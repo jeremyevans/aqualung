@@ -342,8 +342,10 @@ update_progbar_ratio(gpointer user_data) {
 
 		char tmp[16];
 
+		AQUALUNG_MUTEX_LOCK(export->mutex);
 		snprintf(tmp, 15, "%d%%", (int)(export->ratio * 100));
 		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(export->progbar), export->ratio);
+		AQUALUNG_MUTEX_UNLOCK(export->mutex);
 		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(export->progbar), tmp);
 	}
 
@@ -580,7 +582,9 @@ export_item(export_t * export, export_item_t * item, int index) {
 		
 		samples_read += n_read;
 
+		AQUALUNG_MUTEX_LOCK(export->mutex);
 		export->ratio = (double)samples_read / fdec->fileinfo.total_samples;
+		AQUALUNG_MUTEX_UNLOCK(export->mutex);
 
 		if (n_read < BUFSIZE) {
 			break;
@@ -942,6 +946,7 @@ export_dialog(export_t * export) {
 			goto display;
 		}
 
+		strncpy(options.exportdir, export->outdir, MAXLEN-1);
 		set_option_from_entry(templ_entry, export->template, MAXLEN);
 		set_option_from_entry(templ_entry, options.export_template, MAXLEN);
 		options.export_file_format = export->format = export_get_format_from_combo(export->format_combo);

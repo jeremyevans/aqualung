@@ -872,6 +872,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 			goto ripper_display;
 		}
 
+		strncpy(options.ripdir, destdir, MAXLEN-1);
 		options.cdrip_file_format = ripper_format = get_ripper_format();
 		options.cdrip_bitrate = ripper_bitrate = gtk_range_get_value(GTK_RANGE(ripper_bitrate_scale));
 		set_option_from_toggle(ripper_vbr_check, &ripper_vbr);

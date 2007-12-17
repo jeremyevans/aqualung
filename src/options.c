@@ -1303,6 +1303,7 @@ add_ms_pathlist_clicked(GtkButton * button, gpointer * data) {
 	gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), "");
 
 	append_ms_pathlist(path, name);
+	strncpy(options.storedir, name, MAXLEN-1);
 
 	g_free(path);
 }

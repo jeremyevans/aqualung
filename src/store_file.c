@@ -490,6 +490,7 @@ add_store_dialog(char * name, store_data_t ** data) {
 		normalize_filename(pfile, file);
 		free_strdup(&(*data)->file, file);
 
+		strncpy(options.storedir, file, MAXLEN-1);
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
 		free_strdup(&(*data)->comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),

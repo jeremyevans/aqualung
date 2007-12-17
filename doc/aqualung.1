@@ -1,4 +1,4 @@
-.TH AQUALUNG 1 "07 July 2007"
+.TH AQUALUNG 1 "17 December 2007"
 .SH NAME
 aqualung \- Music player for GNU/Linux
 .SH SYNOPSIS
@@ -10,31 +10,39 @@ aqualung --version
 aqualung [--output (oss|alsa|jack|win32)] [options] [file1 [file2 ...]]
 .SH DESCRIPTION
 .P
-Aqualung is a music player originally designed for the
-GNU/Linux operating system, but also running on FreeBSD, Cygwin
-and NT-based versions of Microsoft Windows. It plays audio CDs,
-streams and audio files from your filesystem and has the feature
-of inserting \fBno gaps\fR between adjacent tracks. It
-also supports high quality sample rate conversion between the
-file and the output device, when necessary.
+Aqualung is an advanced music player originally targeted at
+the GNU/Linux operating system, today also running on FreeBSD,
+OpenBSD and Microsoft Windows. It plays audio CDs, internet
+radio streams and podcasts as well as soundfiles in just about
+any audio format and has the feature of inserting \fBno
+gaps\fR between adjacent tracks. It also supports high
+quality sample rate conversion between the file and the output
+device, when necessary.
 .P
 Audio CDs can be played back and ripped with on-the-fly
 conversion to WAV, FLAC, Ogg Vorbis or CBR/VBR MP3 (gapless via
 LAME). Seamless tagging of the created files is offered as part
 of the process. Internet radio stations streaming Ogg Vorbis or
-MP3 are supported. Almost all sample-based, uncompressed formats
-(e.g. WAV, AIFF, AU etc.), as well as files encoded with FLAC
-(the Free Lossless Audio Codec), Ogg Vorbis, Ogg Speex, MPEG
-Audio (including the infamous MP3 format), MOD audio formats
-(MOD, S3M, XM, IT, etc.), Musepack and Monkey's Audio Codec are
+MP3 are supported. Subscribing to RSS and Atom audio podcasts is
+supported: Aqualung can automatically download and add new files
+to the Music Store. Optional limits for the age, size and number
+of downloaded files can be set.
+.P
+Almost all sample-based, uncompressed formats (e.g. WAV,
+AIFF, AU etc.), as well as files encoded with FLAC (the Free
+Lossless Audio Codec), Ogg Vorbis, Ogg Speex, MPEG Audio
+(including the infamous MP3 format), MOD audio formats (MOD,
+S3M, XM, IT, etc.), Musepack and Monkey's Audio Codec are
 supported. Numerous formats and codecs are also supported via
 the FFmpeg project, including AC3, AAC, WMA, WavPack and the
-soundtrack of many video formats. The program can play the music
+soundtrack of many video formats. There is also a native
+(non-FFmpeg) WavPack decoder. The program can play the music
 through OSS, ALSA or the JACK Audio Connection Kit, or even
 using the Win32 Sound API (available only under Cygwin or native
 Win32). Depending on the compile-time options, not all file
-formats and output drivers may be usable. Type aqualung
--v to get a list of all the compiled-in features.
+formats and output drivers may be usable in a particular
+build. Type aqualung -v to get a list of all the
+compiled-in features.
 .P
 Aqualung supports the LADSPA 1.1 plugin standard. You can use
 any suitable plugin to enhance the music you are listening
@@ -50,16 +58,10 @@ when you closed it, including playback modes, volume and balance
 settings, currently processing LADSPA plugins, window sizes,
 positions and visibility, and other miscellaneous
 options. Aqualung has the ability to display and edit Ogg Xiph
-comments, ID3v1, ID3v2 and APE tags found in files that support
-them.
-.P
-Currently metadata editing capability is considered dangerous
-and is turned off by default, because the TagLib library which
-Aqualung uses for metadata access has some yet unfixed, serious
-bugs which may cause invalid tags to be written or may result in
-outright corrupt (unplayable) files. If you decide to build
-Aqualung with metadata editing support, make sure to have
-backups of your files and proceed with care.
+comments, ID3v1, ID3v2 and APE tags, as well as FLAC picture
+frames found in files that support them. See the section about
+metadata support for full
+reference.
 .P
 You can control any running instance of the program remotely
 from the command line (start, stop, pause etc.). Remote loading
@@ -145,7 +147,7 @@ for ALSA output thread.
 -P, --priority <int>
 .br
 When running --realtime, set scheduler
-priority to <int> (defaults to 1).
+priority to <int> (default is 1 when -R is used).
 
 .TP
 .B Options relevant to OSS output
@@ -158,6 +160,16 @@ Set the output device (defaults to
 -r, --rate <int>
 .br
 Set the output sample rate.
+.TP
+-R, --realtime
+.br
+Try to use realtime (SCHED_FIFO) scheduling
+for OSS output thread.
+.TP
+-P, --priority <int>
+.br
+When running --realtime, set scheduler
+priority to <int> (default is 1 when -R is used).
 
 .TP
 .B Options relevant to JACK output
@@ -290,7 +302,7 @@ Show/hide Playlist window.
 .TP
 -m [yes|no], --show-ms=[yes|no]
 .br
-Show/hide music store window.
+Show/hide Music Store window.
 
 .TP
 .B Examples

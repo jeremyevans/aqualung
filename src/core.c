@@ -131,6 +131,7 @@ AQUALUNG_MUTEX_DECLARE_INIT(disk_thread_lock)
 AQUALUNG_COND_DECLARE_INIT(disk_thread_wake)
 rb_t * rb; /* this is the audio stream carrier ringbuffer */
 rb_t * rb_disk2out;
+rb_t * rb_out2disk;
 
 /* Communication between gui thread and disk thread */
 rb_t * rb_gui2disk;
@@ -226,14 +227,30 @@ same_disc_next_track(char * filename, char * filename_prev) {
 
 /* roll back sample_offset samples, if possible */
 void
-rollback(rb_t * rb, file_decoder_t * fdec, double src_ratio) {
+rollback(rb_t * rb, file_decoder_t * fdec, double src_ratio, u_int32_t playback_offset) {
 
-	sample_offset = rb_read_space(rb) /
-		(2 * sample_size) * src_ratio;
-	if (sample_offset < fdec->fileinfo.total_samples - fdec->samples_left)
-		file_decoder_seek(fdec, fdec->fileinfo.total_samples - fdec->samples_left - sample_offset);
+	if (playback_offset < fdec->fileinfo.total_samples - fdec->samples_left)
+		file_decoder_seek(fdec, fdec->fileinfo.total_samples - fdec->samples_left - playback_offset);
 	else
 		file_decoder_seek(fdec, 0);
+}
+
+
+/* returns number of samples in rb and output driver buffer */
+u_int32_t
+flush_output(double src_ratio) {
+
+	u_int32_t driver_offset;
+	char send_cmd = CMD_FLUSH;
+
+	sample_offset = rb_read_space(rb) / (2 * sample_size) * src_ratio;
+
+	rb_write(rb_disk2out, &send_cmd, 1);
+	while (rb_read_space(rb_out2disk) < sizeof(u_int32_t))
+		;
+	rb_read(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
+
+	return sample_offset + driver_offset * src_ratio;
 }
 
 
@@ -251,6 +268,7 @@ disk_thread(void * arg) {
 
 	thread_info_t * info = (thread_info_t *)arg;
 	file_decoder_t * fdec = NULL;
+	u_int32_t playback_offset; /* amount of samples in the output driver buffer */
 	unsigned int n_read = 0;
 	unsigned int want_read;
 	int n_src = 0;
@@ -417,8 +435,7 @@ disk_thread(void * arg) {
 					info->is_streaming = 0;
 
 					/* send a FLUSH command to output thread to stop immediately */
-					send_cmd = CMD_FLUSH;
-					rb_write(rb_disk2out, &send_cmd, 1);
+					flush_output(src_ratio);
 					goto sleep;
 				}
 				break;
@@ -432,10 +449,8 @@ disk_thread(void * arg) {
 				info->is_streaming = 0;
 
 				/* send a FLUSH command to output thread */
-				send_cmd = CMD_FLUSH;
-				rb_write(rb_disk2out, &send_cmd, 1);
-
-				rollback(rb, fdec, src_ratio);
+				playback_offset = flush_output(src_ratio);
+				rollback(rb, fdec, src_ratio, playback_offset);
 				if (fdec->is_stream) {
 					file_decoder_pause(fdec);
 				}
@@ -459,8 +474,7 @@ disk_thread(void * arg) {
 				if (fdec->file_lib != 0) {
 					file_decoder_seek(fdec, seek.seek_to_pos);
 					/* send a FLUSH command to output thread */
-					send_cmd = CMD_FLUSH;
-					rb_write(rb_disk2out, &send_cmd, 1);
+					flush_output(src_ratio);
 
 					if (fdec->is_stream && !info->is_streaming) {
 						file_decoder_pause(fdec);
@@ -629,6 +643,7 @@ oss_thread(void * arg) {
 
         u_int32_t i;
         thread_info_t * info = (thread_info_t *)arg;
+	u_int32_t driver_offset = 0;
 	int bufsize = 1024;
         int n_avail;
 	int ioctl_status;
@@ -673,6 +688,7 @@ oss_thread(void * arg) {
 					rb_read(rb, (char *)oss_short_buf,
 							     2*bufsize * sizeof(short));
 				}
+				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
 				goto oss_wake;
 				break;
 			case CMD_FINISH:
@@ -776,6 +792,7 @@ void *
 alsa_thread(void * arg) {
 
         u_int32_t i;
+        u_int32_t driver_offset = 0;
         thread_info_t * info = (thread_info_t *)arg;
 	snd_pcm_sframes_t n_written = 0;
 	int bufsize = 1024;
@@ -841,6 +858,7 @@ alsa_thread(void * arg) {
 								     2*bufsize * sizeof(short));
 					}
 				}
+				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
 				goto alsa_wake;
 				break;
 			case CMD_FINISH:
@@ -965,6 +983,7 @@ int
 process(u_int32_t nframes, void * arg) {
 
 	u_int32_t i;
+        u_int32_t driver_offset = 0;
 	u_int32_t n_avail;
 	jack_default_audio_sample_t * out1 = jack_port_get_buffer(out_L_port, nframes);
 	jack_default_audio_sample_t * out2 = jack_port_get_buffer(out_R_port, nframes);
@@ -985,6 +1004,7 @@ process(u_int32_t nframes, void * arg) {
 			flushing = 1;
 			flushcnt = rb_read_space(rb)/nframes/
 				(2*sample_size) * 1.1f;
+			rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
 			break;
 		case CMD_FINISH:
 			return 0;
@@ -1436,6 +1456,7 @@ void *
 win32_thread(void * arg) {
 
         u_int32_t i;
+        u_int32_t driver_offset = 0;
         thread_info_t * info = (thread_info_t *)arg;
 
         WAVEFORMATEX wf;
@@ -1448,6 +1469,8 @@ win32_thread(void * arg) {
 	int j;
         int n_avail;
 	char recv_cmd;
+        MMTIME mmtime;
+        DWORD samples_sent = 0;
 	int bufsize = WIN32_BUFFER_LEN / sizeof(short) / nbufs / 2;
 
 
@@ -1533,12 +1556,21 @@ win32_thread(void * arg) {
 			waveOutClose(hwave);
 			return NULL;
 		}
+		samples_sent += bufsize;
         }
 
 	bufcnt = 0;
 
 	while (1) {
 	win32_wake:
+                mmtime.wType = TIME_SAMPLES;
+                if ((error = waveOutGetPosition(hwave, &mmtime, sizeof(MMTIME))) !=
+                    MMSYSERR_NOERROR) {
+                        printf("waveOutGetPosition failed : %08X\n", error);
+                        return NULL;
+                }
+                driver_offset = samples_sent - mmtime.u.sample;
+
 		while (rb_read_space(rb_disk2out)) {
 			rb_read(rb_disk2out, &recv_cmd, 1);
 			switch (recv_cmd) {
@@ -1552,6 +1584,7 @@ win32_thread(void * arg) {
 				for (j = 0; j < WIN32_BUFFER_LEN / sizeof(short); j++) {
 					short_buf[j] = 0;
 				}
+				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
 				goto win32_wake;
 				break;
 			case CMD_FINISH:
@@ -1649,6 +1682,7 @@ win32_thread(void * arg) {
 			waveOutClose(hwave);
 			return NULL;
 		}
+		samples_sent += bufsize;
 
 		++bufcnt;
 		if (bufcnt == nbufs)
@@ -2608,6 +2642,9 @@ main(int argc, char ** argv) {
 	rb_disk2out = rb_create(RB_CONTROL_SIZE);
 	memset(rb_disk2out->buf, 0, rb_disk2out->size);
 
+	rb_out2disk = rb_create(RB_CONTROL_SIZE);
+	memset(rb_out2disk->buf, 0, rb_out2disk->size);
+
 	thread_info.is_streaming = 0;
 	thread_info.is_mono = 0;
 	thread_info.in_SR = 0;
@@ -2876,6 +2913,7 @@ main(int argc, char ** argv) {
 	rb_free(rb_disk2gui);
 	rb_free(rb_gui2disk);
 	rb_free(rb_disk2out);
+	rb_free(rb_out2disk);
 
 	return 0;
 }

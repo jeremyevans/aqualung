@@ -3,8 +3,8 @@ Aqualung README
 
 
 Aqualung is an advanced music player primarily targeted at the
-GNU/Linux operating system, but also usable on FreeBSD, Cygwin
-and also runs natively on Microsoft Windows.
+GNU/Linux operating system, but also usable on FreeBSD, OpenBSD,
+Cygwin and also runs natively on Microsoft Windows.
 
 Homepage: http://aqualung.sf.net
 

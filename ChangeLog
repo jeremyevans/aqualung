@@ -1,3 +1,49 @@
+2007-12-19	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
+
+    * Aqualung 0.9beta9
+        http://aqualung.sf.net
+
+	This is a major release bringing significant new functionality and
+	many important fixes. All users are encouraged to upgrade.
+
+	As always, the up-to-date User Manual is available at:
+	http://aqualung.sourceforge.net/?tab=docs
+
+	Major additions:
+
+	* Fundamentally new Metadata system, using native decoders and
+	  private code instead of TagLib to provide complete support for
+	  reading and writing metadata, including ID3v1, ID3v2.3, ID3v2.4,
+	  APE, Ogg Xiph comments and FLAC picture frames, as well as
+	  read-only support for ReplayGain in Musepack stream data and
+	  various metadata received in internet radio streams. Aqualung
+	  also provides a batch tagger facility to quickly propagate Music
+	  Store metadata to file metadata.
+
+	* Support for podcasts. Aqualung can subscribe to RSS and Atom
+	  audio podcasts, and automatically download and add new files to
+	  the Music Store. Optional limits for the age, size and number of
+	  downloaded files can be set.
+	
+	* Support for exporting files from Music Store or Playlist with
+	  audio transcoding and intelligent metadata transfer. Useful for
+	  burning your favourite tracks to CD, filling your portable
+	  player, etc.
+
+	* Aqualung now compiles and runs on OpenBSD.
+	
+	* Smoother skin changing.
+
+	* Option to disable skin support (for themed environments).
+
+	* Lots of fixes, cleanups & refactoring.
+	
+	
+    DROPPED DEPENDENCIES:
+	
+	* TagLib is not used anymore.
+
+	
 2007-07-07	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
 
     * Aqualung 0.9beta8
@@ -35,7 +81,7 @@
 
 	* Added Italian translation.
 	
-
+	
 2007-02-18	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
 
     * Aqualung 0.9beta7.1

@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aqualung 0.9beta4\n"
+"Project-Id-Version: aqualung 0.9beta9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-11 00:40+0200\n"
-"PO-Revision-Date: 2007-08-11 09:44+0200\n"
+"POT-Creation-Date: 2007-12-12 17:08+0100\n"
+"PO-Revision-Date: 2007-12-19 18:34+0100\n"
 "Last-Translator: Philipp Überbacher <hollunder@gmx.at>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -30,10 +30,10 @@ msgid "Authors:"
 msgstr "Autoren:"
 
 msgid "Core design, engineering & programming:\n"
-msgstr "Kern, Technische Planung & Programmierung:\n"
+msgstr "Kernentwurf, Technische Planung & Programmierung:\n"
 
 msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr "Verkleidungs Unterstützung, Aussehen, Handhabung:\n"
+msgstr "Oberfläche, Aussehen, Handhabung:\n"
 
 msgid "Programming, GUI engineering:\n"
 msgstr "Programmierung, GUI Planung:\n"
@@ -41,8 +41,11 @@ msgstr "Programmierung, GUI Planung:\n"
 msgid "Translators:"
 msgstr "Übersetzer:"
 
-msgid "German, Hungarian:\n"
-msgstr "Deutsch, Ungarisch:\n"
+msgid "German:\n"
+msgstr "Deutsch:\n"
+
+msgid "Hungarian:\n"
+msgstr "Ungarisch:\n"
 
 msgid "Italian:\n"
 msgstr "Italienisch:\n"
@@ -51,37 +54,40 @@ msgid "Ukrainian:\n"
 msgstr "Ukrainisch:\n"
 
 msgid "Graphics:"
-msgstr "Graphik:"
+msgstr "Graphiken:"
 
 msgid "Logo, icons:\n"
 msgstr "Logo, Piktogramme\n"
 
 msgid "This Aqualung binary is compiled with:"
-msgstr "Dieser Aqualung Binärcode wurde kompiliert mit:"
+msgstr "Diese Aqualung-Binärdatei wurde kompiliert mit:"
 
 msgid "Optional features:"
 msgstr "Optionale Funktionen:"
 
 msgid "LADSPA plugin support\n"
-msgstr "LADSPA Plugin Unterstützung\n"
+msgstr "LADSPA-Plugin-Unterstützung\n"
 
 msgid "CDDA (Audio CD) support\n"
 msgstr "CDDA (Audio CD) Unterstützung\n"
 
 msgid "CDDB support\n"
-msgstr "CDDB Unterstützung\n"
+msgstr "CDDB-Unterstützung\n"
 
 msgid "Sample Rate Converter support\n"
-msgstr "Abtastraten Konverter Unterstützung\n"
+msgstr "Abtastraten Umwandler\n"
 
 msgid "iRiver iFP driver support\n"
-msgstr "iRiver iFP Treiber Unterstützung:\n"
+msgstr "iRiver iFP Treiberunterstützung:\n"
 
 msgid "Loop playback support\n"
-msgstr "Schleifenwiedergabe Unterstützung\n"
+msgstr "Schleifenwiedergabe\n"
 
 msgid "Systray support\n"
-msgstr "Kontrollleisten Unterstützung\n"
+msgstr "Kontrollleistensymbol\n"
+
+msgid "Podcast support\n"
+msgstr "Podcast\n"
 
 msgid "Decoding support:"
 msgstr "Dekodierbare Dateiformate:"
@@ -116,11 +122,8 @@ msgstr "WavPack\n"
 msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
 msgstr "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
 
-msgid "Metadata (ID3, APE, Ogg comments)\n"
-msgstr "Metadaten (ID3, APE, Ogg comments)\n"
-
 msgid "Encoding support:"
-msgstr "Kodierungs Unterstützung:"
+msgstr "Kodierbare Dateiformate:"
 
 msgid "sndfile (WAV)\n"
 msgstr ""
@@ -129,7 +132,7 @@ msgid "LAME (MP3)\n"
 msgstr ""
 
 msgid "Output driver support:"
-msgstr "Ausgabetreiber Unterstützung:"
+msgstr "Unterstützte Ausgabemethoden:"
 
 msgid "OSS Audio\n"
 msgstr ""
@@ -144,38 +147,38 @@ msgid "Win32 Sound API\n"
 msgstr ""
 
 msgid ""
-"This program is free software; you can redistribute it and/or modify\n"
-"it under the terms of the GNU General Public License as published by\n"
-"the Free Software Foundation; either version 2 of the License, or\n"
+"This program is free software; you can redistribute it and/or modify "
+"it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 2 of the License, or "
 "(at your option) any later version.\n"
 "\n"
-"This program is distributed in the hope that it will be useful,\n"
-"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"This program is distributed in the hope that it will be useful, "
+"but WITHOUT ANY WARRANTY; without even the implied warranty of "
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the "
 "GNU General Public License for more details.\n"
 "\n"
-"You should have received a copy of the GNU General Public License\n"
-"along with this program; if not, write to the Free Software\n"
+"You should have received a copy of the GNU General Public License "
+"along with this program; if not, write to the Free Software "
 "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
-"Dieses Programm ist freie Software. Sie können es unter den\n"
-"Bedingungen der GNU General Public License, wie von der Free Software\n"
-"Foundation herausgegeben, weitergeben und/oder modifizieren, entweder\n"
-"gemäß Version 2 der Lizenz oder (nach Ihrer Option) jeder späteren\n"
+"Dieses Programm ist freie Software. Sie können es unter den "
+"Bedingungen der GNU General Public License, wie von der Free Software "
+"Foundation herausgegeben, weitergeben und/oder modifizieren, entweder "
+"gemäß Version 2 der Lizenz oder (nach Ihrer Wahl) jeder späteren "
 "Version.\n"
 "\n"
-"Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es\n"
-"Ihnen von Nutzen sein wird, aber OHNE JEDE GEWÄHRLEISTUNG, sogar ohne\n"
-"die implizite Gewährleistung der MARKTREIFE oder der EIGNUNG FÜR EINEN\n"
-"BESTIMMTEN ZWECK. Details finden Sie in der GNU General Public\n"
+"Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es "
+"Ihnen von Nutzen sein wird, aber OHNE JEDE GEWÄHRLEISTUNG, sogar ohne "
+"die implizite Gewährleistung der MARKTREIFE oder der EIGNUNG FÜR EINEN "
+"BESTIMMTEN ZWECK. Details finden Sie in der GNU General Public "
 "License.\n"
 "\n"
-"Sie sollten ein Exemplar der GNU General Public License zusammen mit\n"
-"diesem Programm erhalten haben. Falls nicht, schreiben Sie an die Free\n"
+"Sie sollten ein Exemplar der GNU General Public License zusammen mit "
+"diesem Programm erhalten haben. Falls nicht, schreiben Sie an die Free "
 "Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 
 msgid "Enabled"
-msgstr "aktiv"
+msgstr "Aktiv"
 
 msgid "Source"
 msgstr "Quellkode"
@@ -196,19 +199,19 @@ msgid "Capitalization"
 msgstr "Großschreibung"
 
 msgid "Capitalize: "
-msgstr "schreibe groß:"
+msgstr "Schreibe groß:"
 
 msgid "All words"
 msgstr "Alle Wörter"
 
 msgid "First word only"
-msgstr "Nur erstes Wort"
+msgstr "Nur das erste Wort"
 
 msgid "Force case: "
 msgstr "Erzwinge Fall: "
 
 msgid "Force other letters to lowercase"
-msgstr "Zwinge andere Buchstaben zu Kleinschrift"
+msgstr "Erzwinge Kleinbuchstaben für alle anderen"
 
 msgid "Regular expression"
 msgstr "Regulärer Ausdruck"
@@ -229,10 +232,10 @@ msgid "Remove leading number"
 msgstr "Entferne Nummer vom Anfang"
 
 msgid "Convert underscore to space"
-msgstr "Wandle Unterstrich zu Leerzeichen"
+msgstr "Wandle Unterstrich zu Leerzeichen um"
 
 msgid "Trim leading, tailing and duplicate spaces"
-msgstr "Stutze erstes, letztes und doppelte Leerzeichen"
+msgstr "Entferne vorangestelltes, hintangestelltes und doppelte Leerzeichen"
 
 msgid "Regexp matches empty string"
 msgstr "Regulärer Ausdruck entspricht leerer Zeichenkette"
@@ -241,7 +244,7 @@ msgid "Please select the root directory."
 msgstr "Bitte wählen sie das Wurzelverzeichnis."
 
 msgid "Select build type"
-msgstr "Wählen sie die Bauart"
+msgstr "Wählen sie die Erstellungsmethode"
 
 msgid "Directory driven"
 msgstr "Verzeichnisorientiert"
@@ -261,15 +264,15 @@ msgid ""
 "The files are processed independently, so only metadata\n"
 "and filename transformation are available."
 msgstr ""
-"Rekursive Suche vom Wurzelverzeichnis für Audio Dateien.\n"
+"Rekursive Suche vom Wurzelverzeichnis nach Audiodateien.\n"
 "Die Dateien werden unabhängig verarbeitet, weshalb nur Metadaten-\n"
-"und Dateinamen- Umwandlung verfügbar sind."
+"und Dateinamen-Umwandlung verfügbar sind."
 
 msgid "Load settings from Music Store file"
-msgstr "Lade Einstellungen Musiklager aus der Musiklager Datei"
+msgstr "Lade Einstellungen aus einer Musiklager Datei"
 
 msgid "Build/Update store"
-msgstr "Erstelle/Aktualisiere Lager"
+msgstr "Erstelle/Aktualisiere Musiklager"
 
 msgid "General"
 msgstr "Allgemein"
@@ -287,22 +290,22 @@ msgid "Structure:"
 msgstr "Struktur:"
 
 msgid "root / record / track"
-msgstr "Wurzel / Album / Titel"
+msgstr "Wurzel / Aufnahme / Titel"
 
 msgid "root / artist / record / track"
-msgstr "Wurzel / Künstler / Album / Titel"
+msgstr "Wurzel / Künstler / Aufnahme / Titel"
 
 msgid "root / artist / artist / record / track"
-msgstr "Wurzel / Künstler / Künstler / Album / Titel"
+msgstr "Wurzel / Künstler / Künstler / Aufnahme / Titel"
 
 msgid "root / artist / artist / artist / record / track"
-msgstr "Wurzel / Künstler / Künstler/ Künstler / Album / Titel"
+msgstr "Wurzel / Künstler / Künstler/ Künstler / Aufnahme / Titel"
 
 msgid "Exclude files matching wildcard"
-msgstr "Schließe Dateien die dem Platzhalter entsprechen aus"
+msgstr "Schließe Dateien die der Maske entsprechen aus"
 
 msgid "Include only files matching wildcard"
-msgstr "Berücksichtige nur Zeichen die dem Platzhalter entsprechen"
+msgstr "Berücksichtige nur Zeichen die der Maske entsprechen"
 
 msgid "Reread data for existing tracks"
 msgstr "Lies Daten für die vorhandenen Titel nocheinmal"
@@ -317,31 +320,31 @@ msgid "Artist name"
 msgstr "Name des Künstlers"
 
 msgid "Artist name (lowercase)"
-msgstr "Name des Künstlers (Kleinschrift)"
+msgstr "Name des Künstlers (Kleinbuchstaben)"
 
 msgid "Directory name"
 msgstr "Verzeichnisname"
 
 msgid "Directory name (lowercase)"
-msgstr "Verzeichnisname (Kleinschrift)"
+msgstr "Verzeichnisname (Kleinbuchstaben)"
 
 msgid "Record"
-msgstr "Album"
+msgstr "Aufnahme"
 
 msgid "Sort records by"
-msgstr "Sortiere Alben nach"
+msgstr "Sortiere Aufnahmen nach"
 
 msgid "Record name"
-msgstr "Album Name"
+msgstr "Name der Aufnahme"
 
 msgid "Record name (lowercase)"
-msgstr "Album Name (Kleinschrift)"
+msgstr "Name der Aufnahme (Kleinbuchstaben)"
 
 msgid "Year"
 msgstr "Jahr"
 
 msgid "Add year to the comments of new records"
-msgstr "Füge das Jahr zu den Kommentaren neuer Alben hinzu"
+msgstr "Füge das Jahr zu den Kommentaren neuer Aufnahmen hinzu"
 
 msgid "Track"
 msgstr "Titel"
@@ -380,7 +383,7 @@ msgid "Unknown Artist"
 msgstr "Unbekannter Künstler"
 
 msgid "Unknown Record"
-msgstr "Unbekanntes Album"
+msgstr "Unbekannte Aufnahme"
 
 msgid "Scanning files"
 msgstr "Lese Dateien"
@@ -389,7 +392,7 @@ msgid "Processing metadata"
 msgstr "Verarbeite Metadaten"
 
 msgid "CDDB lookup"
-msgstr "schlage in CDDB nach"
+msgstr "Schlage in CDDB nach"
 
 msgid "Name transformation"
 msgstr "Namensumwandlung"
@@ -440,28 +443,28 @@ msgid ""
 "Artist appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
-"Künstler scheint in Kleinschrift zu sein.\n"
+"Der Künstlername scheint in Kleinbuchstaben zu sein.\n"
 "Möchtest du fortsetzen?"
 
 msgid ""
 "Artist appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
-"Künstler scheint in Großschrift zu sein.\n"
+"Der Künstlername scheint in Großbuchstaben zu sein.\n"
 "Möchtest du fortsetzen?"
 
 msgid ""
 "Title appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
-"Titel scheint in Kleinschrift zu sein.\n"
+"Der Titel scheint in Kleinbuchstaben zu sein.\n"
 "Möchtest du fortsetzen?"
 
 msgid ""
 "Title appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
-"Titel scheint in Großschrift zu sein.\n"
+"Der Titel scheint in Großbuchstaben zu sein.\n"
 "Möchtest du fortsetzen?"
 
 msgid ""
@@ -473,10 +476,10 @@ msgstr ""
 
 msgid "The email address provided for submission is invalid."
 msgstr ""
-"Die email-Addresse die sie für die Übertragung verwendet haben ist ungültig."
+"Die email-Addresse die sie für die Übertragung angegeben haben ist ungültig."
 
 msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "Während der Übertragung zum CDDB Server trat ein Fehler auf."
+msgstr "Während der Übertragung der Aufnahme zum CDDB Server trat ein Fehler auf."
 
 msgid "Correct existing record"
 msgstr "Korrigiere bestehenden Eintrag"
@@ -500,7 +503,7 @@ msgid "Category:"
 msgstr "Kategorie:"
 
 msgid "(choose a category)"
-msgstr "(wähle eine Kategorie)"
+msgstr "(Wähle eine Kategorie)"
 
 msgid "Genre:"
 msgstr ""
@@ -539,7 +542,7 @@ msgid "Bitrate [kbps]:"
 msgstr ""
 
 msgid "Artist/Album already existing, not empty"
-msgstr "Künstler/Album existiert bereits und ist nicht leer"
+msgstr "Künstler/Aufnahme existiert bereits und ist nicht leer"
 
 msgid ""
 "\n"
@@ -550,10 +553,10 @@ msgid ""
 "or the destination Music Store."
 msgstr ""
 "\n"
-"Das gewählte Musiklager hat bereits einen entsprechenden Künstler und ein "
-"Album das bereits Titel enthält.Wenn du OK drückst werden diese Titel "
+"Das gewählte Musiklager hat bereits einen entsprechenden Künstler und eine "
+"Aufnahme die bereits Titel enthält. Wenn du OK drückst werden diese Titel "
 "entfernt. Die Dateien bleiben intakt, aber sie werden vom Ziel-Musiklager "
-"entfernt.Drücke Abbrechen um zum Künstler/Album ändern oder zum Ziel-"
+"entfernt. Drücke Abbrechen um Künstler/Aufnahme zu ändern oder zum Ziel-"
 "Musiklager zurückzukehren."
 
 msgid "Rip CD"
@@ -637,7 +640,7 @@ msgid "(audio only)"
 msgstr "(nur Audio)"
 
 msgid "Ripping CD tracks"
-msgstr "Lese CD Titel aus"
+msgstr "Lies CD-Titel aus"
 
 msgid "Begin"
 msgstr "Anfang"
@@ -677,9 +680,9 @@ msgid ""
 "an identifier which is unique within an export session."
 msgstr ""
 "\n"
-"Diese Schablonen Zeichenkette wird für die Konstruktion eines\n"
+"Diese Vorlage-Zeichenkette wird für die Konstruktion eines\n"
 "Dateinamens für die zu exportierenden Dateien benutzt. Der\n"
-"Künstler, Album und Liedname sind mit %%%%a, %%%%r und %%%%t bezeichnet.\n"
+"Künstler, Aufnahme und Liedname sind mit %%%%a, %%%%r und %%%%t bezeichnet.\n"
 "Die Liednummer und Formatabhängige Dateiendung werden mit\n"
 "%%%%n und %%%%x bezeichnet"
 
@@ -690,23 +693,23 @@ msgid "Location and filename"
 msgstr "Ort und Dateiname"
 
 msgid "Target directory:"
-msgstr "Ziel Verzeichnis"
+msgstr "Zielverzeichnis"
 
 msgid "Create subdirectories for artists"
 msgstr "Erzeuge Unterverzeichnisse für Künstler"
 
 msgid "Create subdirectories for albums"
-msgstr "Erzeuge Unterverzeichnisse für Alben"
+msgstr "Erzeuge Unterverzeichnisse für Aufnahmen"
 
 msgid ""
 "Subdirectory name\n"
 "length limit:"
 msgstr ""
-"Unterverzeichnis Name\n"
-"längenbeschränkung:"
+"Unterverzeichnisnamen-\n"
+"Längenbeschränkung:"
 
 msgid "Filename template:"
-msgstr "Dateinamen Schablone:"
+msgstr "Dateinamen-Vorlage:"
 
 msgid "Exporting files"
 msgstr "Exportiere Dateien"
@@ -717,11 +720,178 @@ msgstr "Quelldatei:"
 msgid "Target file:"
 msgstr "Zieldatei:"
 
+msgid "Progress:"
+msgstr "Fortschritt"
+
+msgid "*File info"
+msgstr "*Datei-Info"
+
+msgid "File info"
+msgstr "Datei-Info"
+
+msgid "There are unsaved changes to the file metadata."
+msgstr "Es existieren ungespeicherte Veränderungen an den Datei-Metadaten."
+
+msgid "Save and close"
+msgstr "Speichern und schließen"
+
+msgid "Discard changes"
+msgstr "Änderungen verwerfen"
+
+msgid "Do not close"
+msgstr "Nicht schließen"
+
+#, c-format
+msgid ""
+"Conversion error in field %s:\n"
+"'%s' does not conform to format '%s'!"
+msgstr ""
+"Umwandlungsfehler im Feld %s:\n"
+"'%s' stimmt nicht mit '%s' uberein!"
+
+msgid ""
+"Attached Picture frame with no image set!\n"
+"Please set an image or remove the frame."
+msgstr ""
+"Angehängter Bilderrahmen enthält kein Bild!\n"
+"Bitte füge ein Bild ein oder entferne den Rahmen."
+
+#c-format
+msgid ""
+"Failed to write metadata to file.\n"
+"Reason: %s"
+msgstr ""
+"Das schreiben von Metadaten schlug fehl.\n"
+"Grund: %s"
+
+#, c-format
+msgid ""
+"Error converting field %s to Year:\n"
+"'%s' is not an integer number!"
+msgstr ""
+"Fehler beim umwandeln des Feldes %s zum Jahr:\n"
+"'%s' ist keine ganze Zahl!"
+
+msgid "Please specify the file to save the image to."
+msgstr "Bitte gib die Datei an in der das Bild gespeichert werden soll"
+
+msgid "(no image)"
+msgstr "(kein Bild)"
+
+msgid "(error loading image)"
+msgstr "(Fehler beim laden des Bildes)"
+
+msgid "Please specify the file to load the image from."
+msgstr "Bitte gib die Datei an aus der das Bild geladen werden soll."
+
+#, c-format
+msgid ""
+"Could not load image from:\n"
+"%s"
+msgstr ""
+"Konnte Bild von folgender Stelle nicht laden:\n"
+"%s"
+
+#, c-format
+msgid "MIME type: %s"
+msgstr "MIME Typ: %s"
+
+msgid "Picture type:"
+msgstr "Bildtyp:"
+
+msgid "Description:"
+msgstr "Beschreibung"
+
+msgid "(no description)"
+msgstr "(Keine Beschreibung)"
+
+msgid "Change"
+msgstr "Ändern"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Import as Record"
+msgstr "Als Aufnahme importieren"
+
+msgid "Import as Track No."
+msgstr "Als Liednummer importieren"
+
+msgid "Import as RVA"
+msgstr "Als RVA importieren"
+
+msgid "Add"
+msgstr "Füge hinzu"
+
+msgid "field:"
+msgstr "Feld:"
+
+msgid "tag:"
+msgstr ""
+
+msgid "Audio CD"
+msgstr ""
+
+msgid "Track:"
+msgstr "Lied:"
+
+msgid "Audio data"
+msgstr "Audio-Daten"
+
+msgid "Format:"
+msgstr ""
+
+msgid "Length:"
+msgstr "Länge:"
+
+msgid "Samplerate:"
+msgstr ""
+
+#, c-format
+msgid "%ld Hz"
+msgstr ""
+
+msgid "Channel count:"
+msgstr "Kanalanzahl:"
+
 msgid "MONO"
 msgstr ""
 
 msgid "STEREO"
 msgstr ""
+
+msgid "Bandwidth:"
+msgstr "Bandbreite:"
+
+msgid "Total samples:"
+msgstr "Samples gesamt:"
+
+msgid "Mode:"
+msgstr "Modus:"
+
+msgid "Type:"
+msgstr "Typ: "
+
+msgid "Channels:"
+msgstr "Kanalanzahl:"
+
+msgid "Patterns:"
+msgstr "Muster:"
+
+msgid "Samples:"
+msgstr ""
+
+msgid "Instruments:"
+msgstr "Instrumente:"
+
+msgid "Samples"
+msgstr ""
+
+msgid "Instruments"
+msgstr "Instrumente"
+
+msgid "Name"
+msgstr "Name"
 
 msgid "Output:"
 msgstr "Ausgabe:"
@@ -737,13 +907,7 @@ msgid ""
 "Do you want to save them before exiting?"
 msgstr ""
 "Ein oder mehrere Lager im Musiklager wurden verändert.\n"
-"Möchten sie vor dem beenden speichern?"
-
-msgid "Save"
-msgstr "Speichere"
-
-msgid "Discard changes"
-msgstr "Verwirf änderungen"
+"Möchtest du sie vor dem beenden speichern?"
 
 msgid "Do not exit"
 msgstr "Nicht beenden"
@@ -797,6 +961,9 @@ msgstr ""
 "nicht schnell genug war. Sie sollten JACK\n"
 "sowie Aqualung neu starten.\n"
 
+msgid "Warn me if the Window Manager does not support system tray"
+msgstr "Warne mich wenn die Fensterverwalter keine Kontrollleiste unterstützt"
+
 msgid ""
 "Aqualung is compiled with system tray support, but the status icon could not "
 "be embedded in the notification area. Your desktop may not have support for "
@@ -811,13 +978,10 @@ msgid "Settings"
 msgstr "Einstellungen"
 
 msgid "Skin chooser"
-msgstr "Verkleidungs-Auswahl"
+msgstr "Skin-Auswahl"
 
 msgid "JACK port setup"
-msgstr "JACK Port Einrichtung"
-
-msgid "File info"
-msgstr "Datei-Info"
+msgstr "JACK-Verbindungen Einrichten"
 
 msgid "Previous song"
 msgstr "Vorheriges Lied"
@@ -841,7 +1005,7 @@ msgid "Repeat all songs"
 msgstr "Alle Lieder wiederholen"
 
 msgid "Shuffle songs"
-msgstr "Gemischte Wiedergabe"
+msgstr "Shuffle-Wiedergabe"
 
 msgid "Toggle playlist"
 msgstr "Playliste Ein-/Ausblenden"
@@ -850,7 +1014,7 @@ msgid "Toggle music store"
 msgstr "Musiklager Ein-/Ausblenden"
 
 msgid "Toggle LADSPA patch builder"
-msgstr "LADSPA Baukasten Ein-/Ausblenden"
+msgstr "LADSPA Schaltkasten Ein-/Ausblenden"
 
 msgid "Show Aqualung"
 msgstr "Zeige Aqualung"
@@ -876,8 +1040,8 @@ msgstr "%d / %d Dateien"
 msgid "%d / %d directories"
 msgstr "%d / %d Verzeichnisse"
 
-msgid "Cannot write to selected directory. Please select another directory"
-msgstr ""
+msgid "Cannot write to selected directory. Please select another directory."
+msgstr "Kann im ausgewählten Verzeichnis nicht schreiben. Bitte wähle ein anderes."
 
 msgid "Done"
 msgstr "Fertig"
@@ -885,13 +1049,13 @@ msgstr "Fertig"
 msgid "Aborted..."
 msgstr "Abgebrochen..."
 
-msgid "Please enter directory name"
+msgid "Please enter directory name."
 msgstr "Bitte gib einen Verzeichnisnamen ein"
 
 msgid "Create directory"
 msgstr "Erzeuge Verzeichnis"
 
-msgid "Please enter a new name"
+msgid "Please enter a new name."
 msgstr "Bitte gib einen neuen Namen ein"
 
 msgid "Rename"
@@ -901,21 +1065,21 @@ msgstr "Umbenennen"
 msgid ""
 "Directory '%s' will be removed with its entire contents.\n"
 "\n"
-"Are you sure?"
+"Do you want to proceed?"
 msgstr ""
-"Verzeichnis '%s' wird mit seinen gesamten Inhalten entfernt.\n"
+"Verzeichnis '%s' wird mit seinem gesamten Inhalten entfernt.\n"
 "\n"
-"Bist du dir sicher?"
+"Möchtest du fortfahren?"
 
 #, c-format
 msgid ""
 "File '%s' will be removed.\n"
 "\n"
-"Are you sure?"
+"Do you want to proceed?"
 msgstr ""
-"Verzeichnis '%s' wird entfernt.\n"
+"Datei '%s' wird entfernt.\n"
 "\n"
-"Bist du dir sicher?"
+"Möchtest du fortfahren?"
 
 msgid "Remove"
 msgstr "Entferne"
@@ -944,7 +1108,7 @@ msgid ""
 "(Aqualung was unable to claim its interface.)"
 msgstr ""
 "Gerät ist beschäftigt.\n"
-"(Aqualung war es nicht möglich das Gerät zu Beanspruchen)"
+"(Aqualung war es nicht möglich das Gerät zu anzusprechen)"
 
 msgid ""
 "Device is not responding.\n"
@@ -956,42 +1120,52 @@ msgstr ""
 msgid "Please select a local path."
 msgstr "Bitte wähle einen lokalen Pfad."
 
-msgid "Please select at least one valid song from playlist"
+msgid "Please select at least one valid song from playlist."
 msgstr "Bitte wähle mindestens ein gültiges Lied aus der Playliste."
 
 #, c-format
 msgid ""
-"One song has format not supported by your player.\n"
+"One song has format unsupported by your player.\n"
 "\n"
-"Continue ?"
+"Do you want to proceed?"
 msgstr ""
+"Ein Lied hat ein Format das von Aqualung nicht unterstützt wird.\n"
+"Möchtest du fortfahren?"
 
 #, c-format
 msgid ""
-"%d of %d songs have format not supported by your player.\n"
+"%d of %d songs have format unsupported by your player.\n"
 "\n"
-"Continue ?"
+"Do you want to proceed?"
 msgstr ""
+"%d von %d haben ein Format das von Aqualung nicht unterstützt wird.\n"
+"\n"
+"Möchtest du fortfahren?"
 
 #, c-format
 msgid ""
-"Selected song have format not supported by your player.\n"
+"The selected song has format unsupported by your player.\n"
 "\n"
-"Continue ?"
+"Do you want to proceed?"
 msgstr ""
+"Das ausgewählte Lied hat ein Format das von Aqualung nicht unterstützt wird.\n"
+"Möchtest du fortfahren?"
 
 #, c-format
 msgid ""
-"All selected songs have format not supported by your player.\n"
+"None of the selected songs has format supported by your player.\n"
 "\n"
-"Continue ?"
+"Do you want to proceed?"
 msgstr ""
+"Keines der ausgewählten Lieder hat ein Format das von Aqualung unterstützt wird.\n"
+"\n"
+"Möchtest du fortfahren?"
 
 msgid "iFP device manager (upload mode)"
-msgstr "iFP Geräteverwaltung (Hinauflade Modus)"
+msgstr "iFP Geräteverwaltung (Hinauflade-Modus)"
 
 msgid "iFP device manager (download mode)"
-msgstr "iFP Geräteverwaltung (Herunterlade Modus)"
+msgstr "iFP Geräteverwaltung (Herunterlade-Modus)"
 
 msgid "Selected files:"
 msgstr "Ausgewählte Dateien:"
@@ -1014,9 +1188,6 @@ msgstr "Freier Speicherplatz"
 msgid "<b>Device status</b>"
 msgstr "<b>Geräte Status</b>"
 
-msgid "Name"
-msgstr "Name"
-
 msgid "Size"
 msgstr "Größe"
 
@@ -1024,7 +1195,7 @@ msgid "Create a new directory"
 msgstr "Erzeuge ein neues Verzeichnis"
 
 msgid "<b>Remote directory</b>"
-msgstr "<b>Entferntes Verzeichnis</b>"
+msgstr "<b>Entfernt liegendes Verzeichnis</b>"
 
 msgid "<b>Local directory</b>"
 msgstr "<b>Lokales Verzeichnis</b>"
@@ -1059,8 +1230,386 @@ msgstr "_Herunterladen"
 msgid "_Abort"
 msgstr "_Abbrechen"
 
+msgid "Success"
+msgstr "Erfolgreich"
+
+msgid "Memory allocation error"
+msgstr "Speicherzuordnungsfehler"
+
+msgid "Unable to open file"
+msgstr "Außerstande Datei zu öffnen."
+
+msgid "No metadata support for this format"
+msgstr "Keine Metadatenunterstützung für dieses Format"
+
+msgid "File is not writable"
+msgstr "Datei ist nicht beschreibbar"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "Ungültiger Wert im Feld 'Liednummer'"
+
+msgid "Invalid 'Genre' field value"
+msgstr "Ungültiger Wert im Feld 'Genre'"
+
+msgid "Conversion to target charset failed"
+msgstr "Konvertierung zur Ziel-Charakterkodierung fehlgeschlagen"
+
+msgid "Internal error"
+msgstr "Interner Fehler"
+
+msgid "Unknown error"
+msgstr "Unbekannter Fehler"
+
+msgid "Album"
+msgstr "Aufnahme"
+
+msgid "Date"
+msgstr "Jahr"
+
+msgid "Genre"
+msgstr ""
+
+msgid "Track No."
+msgstr "Lied Nummer"
+
+msgid "Comment"
+msgstr "Kommentar"
+
+msgid "Disc"
+msgstr "CD"
+
+msgid "Performer"
+msgstr "Künstler"
+
+msgid "Description"
+msgstr "Beschreibung"
+
+msgid "Organization"
+msgstr "Organisation"
+
+msgid "Location"
+msgstr "Ort"
+
+msgid "Contact"
+msgstr "Kontakt"
+
+msgid "License"
+msgstr "Lizens"
+
+msgid "Copyright"
+msgstr "Urheberrecht"
+
+msgid "ISRC"
+msgstr ""
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Subtitle"
+msgstr "Untertitel"
+
+msgid "Debut Album"
+msgstr "Debut Aufnahme"
+
+msgid "Publisher"
+msgstr "Herausgeber"
+
+msgid "Conductor"
+msgstr "Dirigent"
+
+msgid "Composer"
+msgstr "Komponist"
+
+msgid "Publication Right"
+msgstr "Veröffentlichungsrecht"
+
+msgid "File"
+msgstr "Datei"
+
+msgid "EAN/UPC"
+msgstr ""
+
+msgid "ISBN"
+msgstr ""
+
+msgid "Catalog Number"
+msgstr "Katalognummer"
+
+msgid "Label Code"
+msgstr ""
+
+msgid "Record Date"
+msgstr "Aufnahmedatum"
+
+msgid "Record Location"
+msgstr "Aufnahmeort/Studio"
+
+msgid "Media"
+msgstr "Medientyp"
+
+msgid "Index"
+msgstr ""
+
+msgid "Related"
+msgstr "Verwandt"
+
+msgid "Abstract"
+msgstr "Abstrakt"
+
+msgid "Language"
+msgstr "Sprache"
+
+msgid "Bibliography"
+msgstr "Bibliographie"
+
+msgid "Introplay"
+msgstr ""
+
+msgid "BPM"
+msgstr ""
+
+msgid "Encoding Time"
+msgstr "Kodierungszeit"
+
+msgid "Playlist Delay"
+msgstr "Playlisten Verzögerung"
+
+msgid "Original Release Time"
+msgstr "Original Veröffentlichungszeitpunkt"
+
+msgid "Release Time"
+msgstr "Veröffentlichungszeitpunkt"
+
+msgid "Tagging Time"
+msgstr "Tagging Zeitpunkt"
+
+msgid "Encoded by"
+msgstr "Kodiert von"
+
+msgid "Lyricist/Text Writer"
+msgstr "Lyriker/Texter"
+
+msgid "File Type"
+msgstr "Dateityp:"
+
+msgid "Involved People"
+msgstr "Beteiligte Personen"
+
+msgid "Content Group"
+msgstr "Inhaltsgruppe"
+
+msgid "Initial key"
+msgstr "Grundton"
+
+msgid "Musician Credits"
+msgstr "Beteiligte Musiker"
+
+msgid "Mood"
+msgstr "Stimmung"
+
+msgid "Original Album"
+msgstr "Originalaufnahme"
+
+msgid "Original Filename"
+msgstr "Original Dateiname"
+
+msgid "Original Lyricist"
+msgstr "Original Lyriker"
+
+msgid "Original Artist"
+msgstr "Original Künstler"
+
+msgid "File Owner"
+msgstr "Dateieigentümer"
+
+msgid "Band/Orchestra"
+msgstr "Band/Orchester"
+
+msgid "Interpreted/Remixed"
+msgstr "Interpretiert/neu gemischt"
+
+msgid "Part Of A Set"
+msgstr "Teil der Reihe"
+
+msgid "Produced"
+msgstr "Produziert"
+
+msgid "Internet Radio Station Name"
+msgstr "Internet Radiostations Name"
+
+msgid "Internet Radio Station Owner"
+msgstr "Besitzer der Internet Radiostation"
+
+msgid "Album Sort Order"
+msgstr "Sortiere nach Aufnahme"
+
+msgid "Performer Sort Order"
+msgstr "Sortiere nach Interpret"
+
+msgid "Title Sort Order"
+msgstr "Sortiere nach Lied"
+
+msgid "Software"
+msgstr ""
+
+msgid "Set Subtitle"
+msgstr "Setze Untertitel"
+
+msgid "User Defined Text"
+msgstr "Benutzerdefinierter Text"
+
+msgid "Commercial Information"
+msgstr "Kommerzielle Information"
+
+msgid "Copyright/Legal Information"
+msgstr "Urheberrechtliche/Gesetzliche Information"
+
+msgid "Official Audio File Website"
+msgstr "Offizielle Audio-Dateien Webseite"
+
+msgid "Official Artist Website"
+msgstr "Offizielle Künstler Webseite"
+
+msgid "Official Audio Source Website"
+msgstr "Offizielle Audioquellen Webseite"
+
+msgid "Official Radio Station Website"
+msgstr "Offizielle Radiostations Webseite"
+
+msgid "Payment"
+msgstr "Bezahlung"
+
+msgid "Publisher's Official Website"
+msgstr "Offizielle Herausgeber Webseite"
+
+msgid "User Defined URL"
+msgstr "Benutzerdefinierte URL"
+
 msgid "Vendor"
 msgstr "Anbieter"
+
+msgid "ReplayGain Reference Loudness"
+msgstr "ReplayGain Referenzlautstärke"
+
+msgid "ReplayGain Track Gain"
+msgstr ""
+
+msgid "ReplayGain Track Peak"
+msgstr ""
+
+msgid "ReplayGain Album Gain"
+msgstr ""
+
+msgid "ReplayGain Album Peak"
+msgstr ""
+
+msgid "Icy-Name"
+msgstr ""
+
+msgid "Icy-Description"
+msgstr "Icy-Beschreibung"
+
+msgid "Icy-Genre"
+msgstr ""
+
+msgid "RVA"
+msgstr ""
+
+msgid "Attached Picture"
+msgstr "Angefügtes Bild"
+
+msgid "Binary Object"
+msgstr ""
+
+msgid "NULL"
+msgstr ""
+
+msgid "ID3v1"
+msgstr ""
+
+msgid "ID3v2"
+msgstr ""
+
+msgid "APE"
+msgstr ""
+
+msgid "Ogg Xiph Comments"
+msgstr "Ogg Xiph Kommentare"
+
+msgid "FLAC Pictures"
+msgstr "FLAC Bilder"
+
+msgid "Musepack ReplayGain"
+msgstr ""
+
+msgid "Generic StreamMeta"
+msgstr ""
+
+msgid "MPEG StreamMeta"
+msgstr ""
+
+msgid "Module info"
+msgstr "Modul-Info"
+
+msgid "Unknown"
+msgstr "Unbekannt"
+
+msgid "Other"
+msgstr "Andere"
+
+msgid "File icon (32x32 PNG)"
+msgstr "Datei Pictogramm (32x32 PNG)"
+
+msgid "File icon (other)"
+msgstr "Datei Pictogramm (andere)"
+
+msgid "Front cover"
+msgstr "Cover Vorderseite"
+
+msgid "Back cover"
+msgstr "Cover Rückseite"
+
+msgid "Leaflet page"
+msgstr "Faltblatt"
+
+msgid "Album image"
+msgstr "Aufnahmebild"
+
+msgid "Lead artist/performer"
+msgstr "Leitender Künstler"
+
+msgid "Artist/performer"
+msgstr "Künstler"
+
+msgid "Band/orchestra"
+msgstr "Band/Orchester"
+
+msgid "Lyricist/text writer"
+msgstr "Lyriker/Texter"
+
+msgid "Recording location/studio"
+msgstr "Aufnahmeort/Studio"
+
+msgid "During recording"
+msgstr "Während der Aufnahme"
+
+msgid "During performance"
+msgstr "Während der Aufführung"
+
+msgid "Movie/video screen capture"
+msgstr "Film/Video Aufzeichnung"
+
+msgid "A large, coloured fish"
+msgstr "Ein großer, farbiger Fisch"
+
+msgid "Illustration"
+msgstr ""
+
+msgid "Band/artist logotype"
+msgstr "Band/Künstler Schriftzug"
+
+msgid "Publisher/studio logotype"
+msgstr "Herausgeber/studio Schriftzug"
 
 msgid "Music Store"
 msgstr "Musiklager"
@@ -1069,7 +1618,7 @@ msgid "Search..."
 msgstr "Suche..."
 
 msgid "Collapse all items"
-msgstr "Alle Elemente Zusammenklappen"
+msgstr "Alle Elemente Zuklappen"
 
 msgid "Edit item..."
 msgstr "Element editieren..."
@@ -1098,8 +1647,10 @@ msgstr ""
 msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
 msgstr ""
-"Aqualung muss neu gestartet werden damit die folgenden Veränderungen wirksam "
-"werden:"
+"Aqualung muss neu gestartet werden damit die folgenden Veränderungen" "wirksam werden:"
+
+msgid "Disable skin support"
+msgstr "Deaktiviere Skin-Unterstützung"
 
 msgid "rw"
 msgstr ""
@@ -1108,7 +1659,7 @@ msgid "r"
 msgstr ""
 
 msgid "unreachable"
-msgstr "unerreichtbar"
+msgstr "nicht erreichbar"
 
 msgid "Please select a Music Store database."
 msgstr "Bitte wähle eine Musiklager Datenbank."
@@ -1129,7 +1680,7 @@ msgid ""
 "literally copied into the resulting string.\n"
 msgstr ""
 "\n"
-"Diese Schablonen Zeichenkette wird für die Konstruktion einer\n"
+"Diese Zeichenketten-Maske wird für die Konstruktion einer\n"
 "Titelzeile aus einem Künstler, einem Album und einem Titel benutzt.\n"
 "Diese werden mit %%%%a, %%%%r und %%%%t bezeichnet.\n"
 "Alles andere was du hier eingibst wird wörtlich in die sich ergebende\n"
@@ -1145,26 +1696,27 @@ msgid ""
 "copied into the resulting string.\n"
 msgstr ""
 "\n"
-"Diese Schablonen Zeichenkette wird für die Konstruktion einer\n"
+"Diese Zeichenketten-Maske wird für die Konstruktion einer\n"
 "Titelzeile aus einem Künstler und einem Lied benutzt.\n"
 "Diese werden mit %%%%a und %%%%t bezeichnet.\n"
 "Alles andere was du hier eingibst wird wörtlich in die sich ergebende\n"
 "Zeichenkette kopiert.\n"
+
 
 msgid ""
 "\n"
 "The string you enter here will be parsed as a command\n"
 "line before parsing the actual command line parameters.\n"
 "What you enter here will act as a default setting and may\n"
-"or may not be overrided from the 'real' command line.\n"
+"or may not be overridden from the 'real' command line.\n"
 "Example: enter '-o alsa -R' below to use ALSA output\n"
 "running realtime as a default.\n"
 msgstr ""
 "\n"
 "Diese Zeichenkette wird als eine Kommandozeile geparst,\n"
-"bevor die Aktuellen Kommandozeilen-Parameter geparstt werden.\n"
-"Was Sie hier schreiben wird als Voreinstellung fungieren\n"
-"und kann durch die echte Kommandzeile überschrieben werden.\n"
+"bevor die eigentlichenen Kommandozeilen-Parameter geparst werden.\n"
+"Was du hier schreibst wird als Voreinstellung fungieren\n"
+"und kann durch die 'echte' Kommandzeile überschrieben werden.\n"
 "Beispiel: geben Sie '-o alsa -R' ein um die ALSA Ausgabe\n"
 "in Echtzeit als eine Voreinstellung zu benutzen.\n"
 
@@ -1244,7 +1796,7 @@ msgid "Full:"
 msgstr "Vollständig:"
 
 msgid "No album:"
-msgstr "Kein Album:"
+msgstr "Keine Aufnahme:"
 
 msgid "Implicit command line"
 msgstr "Implizite Kommandozeile"
@@ -1262,10 +1814,10 @@ msgid "Disable control buttons relief"
 msgstr "Deaktiviere Relief bei Kontrollknöpfen"
 
 msgid "Keep main window always on top"
-msgstr "Behalte das Hauptfenster immer oben"
+msgstr "Behalte das Hauptfenster immer im Vordergrund"
 
 msgid "Simple view in LADSPA patch builder"
-msgstr "Einfache Ansicht beim LADSPA Baukasten"
+msgstr "Einfache Ansicht beim LADSPA Schaltkasten"
 
 msgid "United windows minimization"
 msgstr "Fenster gemeinsam minimieren"
@@ -1279,6 +1831,36 @@ msgstr "Zeige versteckte Dateien und Verzeichnisse in der Dateiauswahl"
 msgid "Show tags tab first in the file info dialog"
 msgstr "Zeige die tag-Karteireiter als erste im Dateiinformationsdialog"
 
+msgid "Don't show cover thumbnail in the main window"
+msgstr "Verstecke das Miniatur-Coverbild im Hauptfensters"
+
+msgid "Cover art"
+msgstr "Cover Kunst"
+
+msgid "Default cover width:"
+msgstr "Standard Hüllenbreite:"
+
+msgid "50 pixels"
+msgstr "50 pixel"
+
+msgid "100 pixels"
+msgstr "100 pixel"
+
+msgid "200 pixels"
+msgstr "200 pixel"
+
+msgid "300 pixels"
+msgstr "300 pixel"
+
+msgid "use browser window width"
+msgstr "Benutze Breite des Fensters"
+
+msgid "Do not magnify images with smaller width"
+msgstr "Vergrößere Bilder mit geringerer Breite nicht"
+
+msgid "Show cover thumbnail for Music Store tracks only"
+msgstr "Zeige Miniatur-Coverbild nur für Musiklager Lieder"
+
 msgid "Playlist"
 msgstr "Playliste"
 
@@ -1289,7 +1871,7 @@ msgid "Save and restore the playlist on exit/startup"
 msgstr "Speichere und Lade die Playliste beim Beenden/Starten"
 
 msgid "Album mode is the default when adding entire records"
-msgstr "Album Modus ist die Vorgabe wenn ein gesamtes Album hinzugefügt wird"
+msgstr "Album-Modus ist die Vorgabe wenn eine gesamte Aufnahme hinzugefügt wird"
 
 msgid "Always show the tab bar"
 msgstr "Zeige die Karteireiter immer an"
@@ -1299,8 +1881,7 @@ msgstr "Zeige 'Schließen'-Knopf im Karteireiter"
 
 msgid "When shuffling, records added in Album mode are played in order"
 msgstr ""
-"Spiele Alben die im Album-Modus hinzugefügt wurden in der Reihenfolge\n"
-"wenn Vermischen aktiviert ist"
+"Spiele Alben die im Album-Modus hinzugefügt wurden in Reihe wenn Shuffle aktiviert ist"
 
 msgid "Enable statusbar"
 msgstr "Aktiviere Statusleiste"
@@ -1346,10 +1927,10 @@ msgid "Track lengths"
 msgstr "Liedlänge"
 
 msgid "Hide comment pane"
-msgstr "Verstecke Kommentar Ausschnitt"
+msgstr "Verstecke Kommentarausschnitt"
 
 msgid "Hide the Music Store comment pane"
-msgstr "Verstecke Musiklager Kommentar Ausschnitt"
+msgstr "Verstecke Musiklager Kommentarausschnitt"
 
 msgid "Enable toolbar"
 msgstr "Aktiviere Werkzeugleiste"
@@ -1364,34 +1945,13 @@ msgid "Expand Stores on startup"
 msgstr "Klappe Lager beim Start aus"
 
 msgid "Enable tree node icons"
-msgstr "Aktiviere Baumknoten Piktogramme"
+msgstr "Aktiviere Baumknoten-Piktogramme"
 
 msgid "Enable Music Store tree node icons"
-msgstr "Aktiviere Baumknoten Piktogramme im Musiklager"
+msgstr "Aktiviere Baumknoten-Piktogramme im Musiklager"
 
-msgid "Cover art"
-msgstr "Hüllen Kunst"
-
-msgid "Default cover width:"
-msgstr "Vorgabe Hüllenbreite:"
-
-msgid "50 pixels"
-msgstr "50 pixel"
-
-msgid "100 pixels"
-msgstr "100 pixel"
-
-msgid "200 pixels"
-msgstr "200 pixel"
-
-msgid "300 pixels"
-msgstr "300 pixel"
-
-msgid "use browser window width"
-msgstr "benutze breite des Fensters"
-
-msgid "Do not magnify images with smaller width"
-msgstr "Vergrößere Bilder mit geringerer Breite nicht"
+msgid "Ask for confirmation when removing items"
+msgstr "Frage nach Bestätigung beim entfernen von Elementen"
 
 msgid "Paths to Music Store databases"
 msgstr "Pfade zu den Musiklager Datenbanken"
@@ -1403,10 +1963,7 @@ msgid "Access"
 msgstr "Zugriff"
 
 msgid "Refresh"
-msgstr "Aktuallisiere"
-
-msgid "Add"
-msgstr "Füge hinzu"
+msgstr "Aktualisiere"
 
 msgid "DSP"
 msgstr ""
@@ -1415,7 +1972,7 @@ msgid "LADSPA plugin processing"
 msgstr "LADSPA Plugin Verarbeitung"
 
 msgid "Pre Fader (before Volume & Balance)"
-msgstr "Vor dem Regler (bevor Lautstärke & Balance)"
+msgstr "Vor dem Regler (vor Lautstärke & Balance)"
 
 msgid "Post Fader (after Volume & Balance)"
 msgstr "Nach dem Regler (nach Lautstärke & Balance)"
@@ -1441,7 +1998,7 @@ msgid "Playback RVA"
 msgstr "Wiedergabe RVA"
 
 msgid "Enable playback RVA"
-msgstr "Aktiviere RVA wiedergabe"
+msgstr "Aktiviere Wiedergabe RVA"
 
 msgid "Listening environment:"
 msgstr "Hörumgebung:"
@@ -1487,30 +2044,47 @@ msgstr "Linearschwelle [dB] :"
 msgid "% of standard deviation :"
 msgstr "% der Standardabweichung :"
 
-msgid ""
-"When adding to playlist, use file metadata (if available) instead of\n"
-"information from the Music Store for:"
-msgstr ""
-"Benutze Datei-Metadaten (falls vorhanden) anstelle von\n"
-"Informationen aus dem Musiklager für:"
+msgid "Use file metadata (if available) when adding files to the Playlist"
+msgstr "Benutze Datei-Metadaten (wenn verfügbar) wenn Dateien zur Playlist hinzugefügt werden"
+
+msgid "from the Music Store:"
+msgstr "Vom Musiklager:"
 
 msgid "Track name"
 msgstr "Liedname"
 
-msgid ""
-"When adding external files to playlist, use file metadata (if available) for:"
-msgstr ""
-"Benutze Datei-Metadaten (falls vorhanden) beim hinzufügen externer Dateien "
-"für:"
+msgid "from the filesystem:"
+msgstr "Vom Dateisystem:"
 
-msgid "Replaygain tag to extract from Ogg Xiph and APE tags: "
-msgstr "Replaygain tag in Ogg Xiph und APE tags benutzen: "
+msgid "ReplayGain tag to use (with fallback to the other): "
+msgstr "Folgendes ReplayGain tag benutzen (mit Rückfall zum anderen): "
 
 msgid "Replaygain_track_gain"
 msgstr ""
 
 msgid "Replaygain_album_gain"
 msgstr ""
+
+msgid "Metadata editor (File info dialog)"
+msgstr "Metadaten-Editor (Dateiinformationsdialog)"
+
+msgid ""
+"When adding new frames, try to set their contents\n"
+"from another tag's equivalent frame."
+msgstr "Wenn neue Frames hinzugefügt werden, versuche ihre Inhalte\n"
+"aus dem equivalenten Frame eines anderen tags zu setzen."
+
+msgid "Batch update & encode (mass tagger, CD ripper, file export)"
+msgstr "Stapelweise updaten und kodieren (masstagger, CDripper, Dateiexport)"
+
+msgid "Tags to add when creating or updating MPEG audio files:"
+msgstr "Tags die beim erstellen oder aktualisieren von MPEG-Audiodateien hinzugefügt werden sollen:"
+
+msgid ""
+"Note: pre-existing tags will be updated even though they\n"
+"might not be checked here."
+msgstr ""
+"Hinweis: Bereits existierende tags werden aktualisiern, auch wenn sie hier nicht ausgewählt sind."
 
 msgid "CD drive speed:"
 msgstr "CD-Laufwerksgeschwindigkeit"
@@ -1561,7 +2135,7 @@ msgid "Connect via HTTP proxy"
 msgstr "Verbinde über HTTP Proxy"
 
 msgid "Proxy settings"
-msgstr "Proxy Einstellungen"
+msgstr "Proxy-Einstellungen"
 
 msgid "Proxy host:"
 msgstr ""
@@ -1573,7 +2147,7 @@ msgid "No proxy for:"
 msgstr "Kein Proxy für:"
 
 msgid "Timeout for socket I/O:"
-msgstr "Zeitüberschreitung für Sockel E/A"
+msgstr "Zeitüberschreitung für Sockel I/O:"
 
 msgid "seconds"
 msgstr "Sekunden"
@@ -1582,7 +2156,7 @@ msgid "Appearance"
 msgstr "Aussehen"
 
 msgid "Override skin settings"
-msgstr "Überschreibe Verkleidungs Einstellungen"
+msgstr "Überschreibe Skin-Einstellungen"
 
 msgid "Fonts"
 msgstr "Schriftarten"
@@ -1611,6 +2185,9 @@ msgstr "Statusleiste: "
 msgid "Colors"
 msgstr "Farben"
 
+msgid "Song in playlist: "
+msgstr "Lied in der Playliste: "
+
 msgid "Active song in playlist: "
 msgstr "Aktives Lied in der Playliste: "
 
@@ -1634,10 +2211,10 @@ msgid "URL:"
 msgstr ""
 
 msgid "Please specify the file to save the playlist to."
-msgstr "Bitte gib die Datei an in der die Playliste gespeichert werden soll."
+msgstr "Bitte gib die Datei an in die die Playliste gespeichert werden soll."
 
 msgid "Please specify the file to load the playlist from."
-msgstr "Bitte gib die Datei an von der die Playliste geladen werden soll."
+msgstr "Bitte gib die Datei an aus der die Playliste geladen werden soll."
 
 msgid ""
 "Playback RVA is currently disabled.\n"
@@ -1645,9 +2222,6 @@ msgid ""
 msgstr ""
 "Wiedergabe RVA ist derzeit deaktiviert.\n"
 "Möchtest du es jetzt aktivieren?"
-
-msgid "Unknown"
-msgstr "Unnbekannt"
 
 msgid "counting..."
 msgstr "zähle..."
@@ -1665,7 +2239,7 @@ msgid "Name:"
 msgstr ""
 
 msgid "New tab"
-msgstr "Neuen Karteireiter"
+msgstr "Neuer Karteireiter"
 
 msgid "Close tab"
 msgstr "Karteireiter Schließen"
@@ -1674,7 +2248,7 @@ msgid "Undo close tab"
 msgstr "Karteireiter Schließen rückgängig machen"
 
 msgid "Close other tabs"
-msgstr "Schließe andere Karteireiter"
+msgstr "Schließe die anderen Karteireiter"
 
 msgid " Selected: "
 msgstr "Ausgewählt: "
@@ -1725,10 +2299,10 @@ msgid "Remove all"
 msgstr "Alle entfernen"
 
 msgid "Remove dead"
-msgstr "Tote entfernen"
+msgstr "'Tote' entfernen"
 
 msgid "Cut selected"
-msgstr "Schneide Auswahl aus"
+msgstr "Schneide Ausgewählte aus"
 
 msgid "Save playlist"
 msgstr "Playliste speichern"
@@ -1737,7 +2311,7 @@ msgid "Save all playlists"
 msgstr "Alle Playlisten speichern"
 
 msgid "Load playlist in new tab"
-msgstr "Lade Playliste mit neuem Karteireiter"
+msgstr "Lade Playliste in neuem Karteireiter"
 
 msgid "Load playlist"
 msgstr "Playliste laden"
@@ -1778,7 +2352,7 @@ msgid ""
 "\n"
 "Do you want to proceed?"
 msgstr ""
-"Die ausgewählten Dateien werden aus dem Dateisystem entfernt. "
+"Die ausgewählten Dateien werden aus dem Dateisystem entfernt."
 "Wiederherstellen wird nach dieser Operation nicht möglich sein.\n"
 "Möchtest du fortfahren?"
 
@@ -1791,7 +2365,7 @@ msgid "Unable to remove %d files."
 msgstr "Außerstande %d Dateien zu entfernen."
 
 msgid "LADSPA patch builder"
-msgstr "LADSPA Baukasten"
+msgstr "LADSPA Schaltkasten"
 
 msgid "Available plugins"
 msgstr "Verfügbare Plugins"
@@ -1826,8 +2400,11 @@ msgstr "Kehre derzeitigen Zustand um"
 msgid "Clear list"
 msgstr "Lösche Liste"
 
+msgid "Untitled"
+msgstr "Unbetitelt"
+
 msgid "JACK Port Setup"
-msgstr "JACK Port Einrichtung"
+msgstr "JACK-Verbindungen Einrichten"
 
 msgid "Rescan"
 msgstr "Erneut abfragen"
@@ -1866,7 +2443,7 @@ msgid "Artist names"
 msgstr "Künstlernamen"
 
 msgid "Record titles"
-msgstr "Album Titel"
+msgstr "Aufnahme Titel"
 
 msgid "Comments"
 msgstr "Kommentar"
@@ -1878,10 +2455,10 @@ msgid "Search the Playlist"
 msgstr "Suche in der Playliste"
 
 msgid "Available skins"
-msgstr "Verfügbare Verkleidungen"
+msgstr "Verfügbare Skins"
 
 msgid "Drive info"
-msgstr "Laufwerk-Info"
+msgstr "Laufwerks-Info"
 
 msgid "Device path:"
 msgstr "Gerätepfad:"
@@ -1915,7 +2492,7 @@ msgid "Set drive speed"
 msgstr "Setze Laufwerksgeschwindigkeit"
 
 msgid "Detect media change"
-msgstr "Erkenne Datenträger Wechsel"
+msgstr "Erkenne Datenträgerwechsel"
 
 msgid "Read multiple sessions"
 msgstr "Lies mehrere Sitzungen"
@@ -1975,7 +2552,7 @@ msgid "Read ISRC"
 msgstr "Lies ISRC"
 
 msgid "Writing"
-msgstr "Schreibe"
+msgstr "Schreiben"
 
 msgid "Write CD-R"
 msgstr "Schreibe CD-R"
@@ -2005,7 +2582,7 @@ msgid "Burn Proof"
 msgstr ""
 
 msgid "Disc info"
-msgstr "CD-Info..."
+msgstr "CD-Info"
 
 msgid "This CD does not contain CD-Text information."
 msgstr "Diese CD beinhaltet keine CD-Text Information."
@@ -2017,16 +2594,16 @@ msgid "drives"
 msgstr "Laufwerke"
 
 msgid "record"
-msgstr "Album"
+msgstr "Aufnahme"
 
 msgid "records"
-msgstr "Alben"
+msgstr "Aufnahmen"
 
 msgid "Add to playlist"
 msgstr "Zur Playliste hinzufügen"
 
 msgid "Add to playlist (Album mode)"
-msgstr "Zur Playliste hinzufügen (Album Modus)"
+msgstr "Zur Playliste hinzufügen (Album-Modus)"
 
 msgid "CDDB query for this CD..."
 msgstr "CDDB Abfrage für diese CD..."
@@ -2047,10 +2624,10 @@ msgid "Comments:"
 msgstr "Kommentare:"
 
 msgid "Please select the xml file for this store."
-msgstr "Bitte wählen Sie die xml Datei für dieses Lager aus."
+msgstr "Bitte wählen Sie die xml-Datei für dieses Lager aus."
 
 msgid "Create empty store"
-msgstr "Erzeuge leeren Lager"
+msgstr "Erzeuge leeres Lager"
 
 msgid "Visible name:"
 msgstr "Sichtbar Name:"
@@ -2062,16 +2639,16 @@ msgid "Add Artist"
 msgstr "Künstler hinzufügen"
 
 msgid "Name to sort by:"
-msgstr "Name zum Sortieren nach:"
+msgstr "Sortiere nach Name:"
 
 msgid "Edit Artist"
 msgstr "Künstler editieren"
 
 msgid "Please select the audio files for this record."
-msgstr "Bitte wählen Sie die Audio Dateien für diese Album aus."
+msgstr "Bitte wähle die Audiodateien für diese Aufnahme aus."
 
 msgid "Add Record"
-msgstr "Album hinzufügen"
+msgstr "Aufnahme hinzufügen"
 
 msgid "Auto-create tracks from these files:"
 msgstr "Lieder aus diesen Dateien automatisch erstellen:"
@@ -2080,7 +2657,7 @@ msgid "_Add files..."
 msgstr "_Dateien hinzufügen..."
 
 msgid "Edit Record"
-msgstr "Album editieren"
+msgstr "Aufnahme editieren"
 
 msgid "Please select the audio file for this track."
 msgstr "Bitte wählen Sie die Audio Datei für dieses Lied aus."
@@ -2119,6 +2696,10 @@ msgstr ""
 "Das Lager '%s' existiert bereits.\n"
 "Füge es zu einem Einstellungen/Musiklager Karteireiter hinzu."
 
+#, c-format
+msgid "Really remove store \"%s\" from the Music Store?"
+msgstr "Wirklich Lager \"%s\" aus dem Musiklager entfernen?"
+
 msgid "Remove Store"
 msgstr "Lager entfernen"
 
@@ -2129,7 +2710,7 @@ msgid "Remove Artist"
 msgstr "Künstler entfernen"
 
 msgid "Remove Record"
-msgstr "Album entfernen"
+msgstr "Aufnahme entfernen"
 
 msgid "Remove Track"
 msgstr "Lied entfernen"
@@ -2138,13 +2719,19 @@ msgid "Update file metadata"
 msgstr "Datei-Metadaten aktualisieren"
 
 msgid "Track comment"
-msgstr "Lied Kommentar"
+msgstr "Lied-Kommentar"
 
 msgid "Track number"
-msgstr "Lied Nummer"
+msgstr "Lied-Nummer"
 
-msgid "Failed to set metadata at the following files:"
+msgid "Failed to set metadata for the following files:"
 msgstr "Das schreiben von Metadaten ist bei folgenden Dateien fehlgeschlagen:"
+
+msgid "Filename"
+msgstr "Dateiname"
+
+msgid "Reason"
+msgstr "Grund"
 
 msgid "(no comment)"
 msgstr "(kein Kommentar)"
@@ -2174,7 +2761,7 @@ msgid "Add new artist to this store..."
 msgstr "Füge neuen Künstler zu diesem Lager hinzu..."
 
 msgid "Calculate volume (recursive)"
-msgstr "Lautstärke bestimmen (rekursiv)"
+msgstr "Lautstärke messen (rekursiv)"
 
 msgid "Unmeasured tracks only"
 msgstr "Nur ungemessene Lieder"
@@ -2195,47 +2782,46 @@ msgid "Export artist..."
 msgstr "Exportiere Künstler..."
 
 msgid "Remove artist"
-msgstr "Künstler entfernen"
+msgstr "Entferne Künstler"
 
 msgid "Add new record to this artist..."
-msgstr "Neues Album zu diesem Künstler hinzufügen..."
+msgstr "Neue Aufnahme zu diesem Künstler hinzufügen..."
 
 msgid "Add new record..."
-msgstr "Neues Album hinzufügen..."
+msgstr "Neue Aufnahme hinzufügen..."
 
 msgid "Edit record..."
-msgstr "Album editieren..."
-
+msgstr "Aufnahme bearbeiten..."
 
 msgid "Export record..."
-msgstr "Exportiere Album..."
+msgstr "Exportiere Aufnahme..."
 
 msgid "Remove record"
-msgstr "Album entfernen"
+msgstr "Entferne Aufnahme"
 
 msgid "Add new track to this record..."
-msgstr "Neues Lied zu diesem Album hinzufügen..."
+msgstr "Neues Lied zu diese Aufnahme hinzufügen..."
 
 msgid "CDDB query for this record..."
-msgstr "CDDB Abfrage für dieses Album..."
+msgstr "CDDB Abfrage für dieses Aufnahme..."
 
 msgid "Submit record to CDDB database..."
-msgstr "Übertrage Album zur CDDB Datenbank..."
+msgstr "Übertrage Aufnahme zur CDDB Datenbank..."
 
 msgid "Add new track..."
 msgstr "Neues Lied hinzufügen..."
 
 msgid "Edit track..."
-msgstr "Lied editieren..."
+msgstr "Lied bearbeiten..."
 
 msgid "Export track..."
 msgstr "Exportiere Lied..."
 
 msgid "Remove track"
-msgstr "Lied entfernen"
+msgstr "Entferne Lied"
 
 msgid "Calculate volume"
-msgstr "Lautstärke berechnen"
+msgstr "Lautstärke messen"
 
 msgid "Only if unmeasured"
 msgstr "Nur wenn ungemessen"
@@ -2245,6 +2831,115 @@ msgstr "In jedem Fall"
 
 msgid "Update file metadata..."
 msgstr "Datei-Metadaten aktualisieren"
+
+msgid "Please select the download directory for this podcast."
+msgstr "Bitte wählen sie ein Verzeichnis zum speichern dieses podcasts aus."
+
+msgid "Subscribe to new feed"
+msgstr "Neuen feed abonnieren"
+
+msgid "Edit feed settings"
+msgstr "feed Einstellungen bearbeiten"
+
+msgid "Podcast URL:"
+msgstr ""
+
+msgid "Download directory:"
+msgstr "Verzeichnis zum herunterladen:"
+
+msgid "Auto-check interval [hour]:"
+msgstr "Automatischer Abfrageintervall [Stunden]:"
+
+msgid ""
+"Automatic update has been disabled for all feeds\n"
+"in the Podcasts store popup menu."
+msgstr ""
+"Automatische Aktualisierung wurde für alle feeds\n"
+"im Musiklager-Podcast-Menü deaktiviert."
+
+msgid "Limits"
+msgstr "Begrenzungen"
+
+msgid "Maximum number of items:"
+msgstr "Maximale Anzahl an Elementen:"
+
+msgid "Remove older items [day]:"
+msgstr "Entferne ältere Elemente [Tage]:"
+
+msgid "Maximum space to use [MB]:"
+msgstr "Maximaler Platzverbrauch [MB]:"
+
+msgid "Podcasts"
+msgstr ""
+
+msgid "Updating..."
+msgstr "Aktualisiere..."
+
+msgid "Delete downloaded items from the filesystem"
+msgstr "Lösche Heruntergeladene Elemente aus dem Dateisystem"
+
+msgid "Remove feed"
+msgstr "Entferne feed"
+
+#, c-format
+msgid "Really remove '%s' from the Music Store?"
+msgstr "Wirklich '%s' aus dem Musiklager entfernen?"
+
+msgid "Reorder feeds"
+msgstr "Ordne feeds neu"
+
+msgid ""
+"Drag and drop entries in the list\n"
+"to set the feed order in the Music Store."
+msgstr ""
+"Ziehe die Einträge in der Liste\n"
+"um die Reihenfolge der feeds im Musiklager zu ändern."
+
+#, c-format
+msgid "Downloading %d/%d (%d%%) ..."
+msgstr "Lade herunter %d/%d (%d%%) ..."
+
+msgid "item"
+msgstr "Element"
+
+msgid "items"
+msgstr "Elemente"
+
+msgid "new item"
+msgstr "Neues Element"
+
+msgid "new items"
+msgstr "Neue Elemente"
+
+msgid "feed"
+msgstr ""
+
+msgid "feeds"
+msgstr ""
+
+msgid "Export item..."
+msgstr "Exportiere Element..."
+
+msgid "Edit feed"
+msgstr "Bearbeite feed"
+
+msgid "Export all items..."
+msgstr "Exportiere alle Elemente..."
+
+msgid "Export new items..."
+msgstr "Exportiere neue Elemente..."
+
+msgid "Update feed"
+msgstr "Aktualisiere feed"
+
+msgid "Abort ongoing update"
+msgstr "Brich laufende Aktualisierung ab"
+
+msgid "Update all feeds"
+msgstr "Aktualisiere alle feeds"
+
+msgid "Automatically update feeds"
+msgstr "aktualisiere feeds automatisch"
 
 msgid "day"
 msgstr "Tag"
@@ -2271,10 +2966,10 @@ msgid "All Playlist Files"
 msgstr "Alle Playlisten Dateien"
 
 msgid "All Audio Files"
-msgstr "Alle Audio Dateien"
+msgstr "Alle Audiodateien"
 
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
-msgstr "Audio Dateien (*.wav, *.aiff, *.au, ...)"
+msgstr "Audiodateien (*.wav, *.aiff, *.au, ...)"
 
 msgid "Free Lossless Audio Codec (*.flac)"
 msgstr ""
@@ -2316,317 +3011,7 @@ msgid "Resume"
 msgstr "Fortsetzen"
 
 msgid "Calculating volume level"
-msgstr "Berechne Lautstärke"
-
-msgid "Progress:"
-msgstr "Fortschritt"
-
-msgid "(not set)"
-msgstr "(nicht gesetzt)"
-
-msgid "Please specify the file to save the image to."
-msgstr "Bitte gib die Datei an in der das Bild gespeichert werden soll"
-
-msgid "Type"
-msgstr "Typ"
-
-msgid "Description"
-msgstr "Beschreibung"
-
-msgid "No description"
-msgstr "Keine Beschreibung"
-
-msgid "Embedded picture"
-msgstr "Eingebettetes Bild"
-
-msgid "Save to file..."
-msgstr "Speichere in Datei..."
-
-msgid "Import as Record"
-msgstr "Als Album importieren"
-
-msgid "Track:"
-msgstr "Lied:"
-
-msgid "Import as Track number"
-msgstr "Als Tracknummer importieren"
-
-msgid "Comment:"
-msgstr "Kommentar:"
-
-msgid "Save basic fields"
-msgstr "Speichere grundlegende Felder"
-
-msgid "ID3v1"
-msgstr ""
-
-msgid "Relative Volume Adj.:"
-msgstr "Relative Lautstärke Anpassung:"
-
-msgid "Import as RVA"
-msgstr "Als RVA importieren"
-
-msgid "Other"
-msgstr "Andere"
-
-msgid "File icon (32x32 PNG)"
-msgstr "Datei Pictogramm (32x32 PNG)"
-
-msgid "File icon (other)"
-msgstr "Datei Pictogramm (andere)"
-
-msgid "Front cover"
-msgstr "Hüllen Vorderseite"
-
-msgid "Back cover"
-msgstr "Hüllen Rückseite"
-
-msgid "Leaflet page"
-msgstr "Faltblatt Seite"
-
-msgid "Album image"
-msgstr "Album Bild"
-
-msgid "Lead artist/performer"
-msgstr "Führender Künstler"
-
-msgid "Artist/performer"
-msgstr "Künstler"
-
-msgid "Conductor"
-msgstr "Dirigent"
-
-msgid "Band/orchestra"
-msgstr "Band/Orchester"
-
-msgid "Composer"
-msgstr "Komponist"
-
-msgid "Lyricist/text writer"
-msgstr "Lyriker/Texter"
-
-msgid "Recording location/studio"
-msgstr "Aufnahmeort/Studio"
-
-msgid "During recording"
-msgstr "Während der Aufnahme"
-
-msgid "During performance"
-msgstr "Während der Aufführung"
-
-msgid "Movie/video screen capture"
-msgstr "Film/Video-Schirm Aufzeichnung"
-
-msgid "A large, coloured fish"
-msgstr "Ein großer, farbiger Fisch"
-
-msgid "Illustration"
-msgstr ""
-
-msgid "Band/artist logotype"
-msgstr "Band/Künstler Schriftzug"
-
-msgid "Publisher/studio logotype"
-msgstr "Herausgeber/studio Schriftzug"
-
-msgid "ID3v2"
-msgstr ""
-
-msgid "APE"
-msgstr ""
-
-msgid "Ogg comments"
-msgstr "Ogg Kommentare"
-
-msgid "Remove ID3v1"
-msgstr "Entferne ID3v1"
-
-msgid "Create ID3v2"
-msgstr "Erzeuge ID3v2"
-
-msgid "Remove ID3v2"
-msgstr "Entferne ID3v2"
-
-msgid "Create APE"
-msgstr "Erzeuge APE"
-
-msgid "Remove APE"
-msgstr "Entferne APE"
-
-msgid "Audio data"
-msgstr "Audio-Daten"
-
-msgid "Format:"
-msgstr ""
-
-msgid "Length:"
-msgstr "Länge:"
-
-msgid "Samplerate:"
-msgstr ""
-
-#, c-format
-msgid "%ld Hz"
-msgstr ""
-
-msgid "Channel count:"
-msgstr "Kanalanzahl:"
-
-msgid "Bandwidth:"
-msgstr "Bandbreite:"
-
-msgid "Total samples:"
-msgstr "Samples gesamt:"
-
-msgid "Mode:"
-msgstr "Modus:"
-
-msgid "WavPack Metadata"
-msgstr "WavPack Metadaten"
-
-msgid "Module info"
-msgstr "Modul-Info"
-
-msgid "Type:"
-msgstr "Typ: "
-
-msgid "Channels:"
-msgstr "Kanalanzahl:"
-
-msgid "Patterns:"
-msgstr "Muster:"
-
-msgid "Samples:"
-msgstr ""
-
-msgid "Instruments:"
-msgstr "Instrumente:"
-
-msgid "Samples"
-msgstr ""
-
-msgid "Instruments"
-msgstr "Instrumente"
-
-msgid "Album"
-msgstr "Album"
-
-msgid "Beats per minute"
-msgstr "Schläge pro Minute"
-
-msgid "Content type"
-msgstr "Inhaltstyp"
-
-msgid "Copyright"
-msgstr "Urheberrecht"
-
-msgid "Encoding time"
-msgstr "Kodierungszeit"
-
-msgid "Playlist delay"
-msgstr "Playlisten Verzögerung"
-
-msgid "Original release time"
-msgstr "Original Veröffentlichungszeitpunkt"
-
-msgid "Recording time"
-msgstr "Aufnahmezeitpunkt"
-
-msgid "Release time"
-msgstr "Veröffentlichungszeitpunkt"
-
-msgid "Tagging time"
-msgstr "Tagging Zeitpunkt"
-
-msgid "Encoded by"
-msgstr "Kodiert von"
-
-msgid "Lyricist"
-msgstr "Lyriker"
-
-msgid "File type"
-msgstr "Dateityp:"
-
-msgid "Involved people"
-msgstr "Beteiligte Personen"
-
-msgid "Content group"
-msgstr "Inhaltsgruppe"
-
-msgid "Subtitle"
-msgstr "Untertitel"
-
-msgid "Initial key"
-msgstr "Grundton"
-
-msgid "Language"
-msgstr "Sprache"
-
-msgid "Length (ms)"
-msgstr "Länge (ms)"
-
-msgid "Musician credits"
-msgstr "Beteiligte Musiker"
-
-msgid "Media type"
-msgstr "Medientyp"
-
-msgid "Mood"
-msgstr "Stimmung"
-
-msgid "Original album"
-msgstr "Original Album"
-
-msgid "Original filename"
-msgstr "Original Dateiname"
-
-msgid "Original lyricist"
-msgstr "Original Lyriker"
-
-msgid "Original artist"
-msgstr "Original Künstler"
-
-msgid "Owner/licensee"
-msgstr "Besitzer/Lizensnehmer"
-
-msgid "Orchestra"
-msgstr "Orchester"
-
-msgid "Interpreted/remixed"
-msgstr "Interpretiert/neu gemischt"
-
-msgid "Part of set"
-msgstr "Teil der Reihe"
-
-msgid "Produced"
-msgstr "Produziert"
-
-msgid "Publisher"
-msgstr "Herausgeber"
-
-msgid "Radio station name"
-msgstr "Name der Radiostation"
-
-msgid "Radio station owner"
-msgstr "Besitzer der Radiostation"
-
-msgid "Album sort order"
-msgstr "Sortiere nach Album"
-
-msgid "Artist sort order"
-msgstr "Sortiere nach Künstler"
-
-msgid "Title sort order"
-msgstr "Sortiere nach Lied"
-
-msgid "ISRC"
-msgstr ""
-
-msgid "Encoding settings"
-msgstr "Enkoder Einstellungen"
-
-msgid "Set subtitle"
-msgstr "Setze Untertitel"
+msgstr "Miss Lautstärke"
 
 msgid "Profile: Telephone"
 msgstr "Profil: Telephon"
@@ -2683,7 +3068,7 @@ msgid "Emphasis: reserved"
 msgstr "Betonung: reserviert"
 
 msgid "bit signed"
-msgstr "bit Vorzeichen"
+msgstr "bit Vorzeichenbehaftet"
 
 msgid "bit unsigned"
 msgstr "bit Vorzeichenlos"
@@ -2711,39 +3096,3 @@ msgstr "Kompression: Extra Hoch"
 
 msgid "Compression: Insane"
 msgstr "Kompression: Wahnsinnig"
-
-#~ msgid "Rename directory"
-#~ msgstr "Verzeichnis umbenennen"
-
-#~ msgid "Remove directory with its entire contents"
-#~ msgstr "Entferne Verzeichnis und alle Inhalte"
-
-#~ msgid "No"
-#~ msgstr "Nein"
-
-#~ msgid "Question"
-#~ msgstr "Frage"
-
-#~ msgid "time unmeasured"
-#~ msgstr "Zeit ungemessen"
-
-#~ msgid "%d track [%s] (%.1f MB)"
-#~ msgstr "%d Lied [%s] (%.1f MB)"
-
-#~ msgid "%d track [%s] (%.1f GB)"
-#~ msgstr "%d Lied [%s] (%.1f GB)"
-
-#~ msgid "%d track "
-#~ msgstr "%d Lied"
-
-#~ msgid "%d track [%s] "
-#~ msgstr "%d Lied [%s] "
-
-#~ msgid "%d tracks [%s] (%.1f MB)"
-#~ msgstr "%d Lieder [%s] (%.1f MB)"
-
-#~ msgid "%d tracks [%s] (%.1f GB)"
-#~ msgstr "%d Lieder [%s] (%.1f GB)"
-
-#~ msgid "%d tracks "
-#~ msgstr "%d Lieder "

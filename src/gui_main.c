@@ -3491,6 +3491,9 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
         if (options.playlist_is_embedded) {
                 gtk_widget_set_sensitive(plist__fileinfo, FALSE);
         }
+
+	/* re-apply skin to override possible WM theme */
+	apply_skin(options.skin);
 }
 
 

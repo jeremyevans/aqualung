@@ -2258,9 +2258,9 @@ create_options_window(void) {
         gtk_table_attach(GTK_TABLE(table_rva), combo_threshold, 1, 2, 6, 7,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 2);
 
-
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_threshold), _("% of standard deviation"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_threshold), _("Linear threshold [dB]"));
+        /* xgettext:no-c-format */
+	gtk_combo_box_append_text(GTK_COMBO_BOX(combo_threshold), _("% of standard deviation"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(combo_threshold), _("Linear threshold [dB]"));
 
 	rva_use_linear_thresh_shadow = options.rva_use_linear_thresh;
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_threshold), options.rva_use_linear_thresh);
@@ -2283,6 +2283,7 @@ create_options_window(void) {
                          GTK_FILL, GTK_FILL, 5, 2);
 
         hbox = gtk_hbox_new(FALSE, 0);
+        /* xgettext:no-c-format */
         label_stdthresh = gtk_label_new(_("% of standard deviation :"));
         gtk_box_pack_start(GTK_BOX(hbox), label_stdthresh, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 8, 9,

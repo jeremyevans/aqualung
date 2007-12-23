@@ -816,7 +816,6 @@ adjust_playlist_item_color(GtkTreeStore * store, GtkTreeIter * iter,
 			   char * active, char * inactive) {
 
 	playlist_data_t * data;
-	gchar * str;
 
 	gtk_tree_model_get(GTK_TREE_MODEL(store), iter, PL_COL_DATA, &data, -1);
 	
@@ -830,8 +829,6 @@ adjust_playlist_item_color(GtkTreeStore * store, GtkTreeIter * iter,
 				   PL_COL_COLO, inactive,
 				   PL_COL_FONT, PANGO_WEIGHT_NORMAL, -1);
 	}
-
-	g_free(str);
 }
 
 

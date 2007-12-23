@@ -135,25 +135,22 @@ update_progress (void *context, struct ifp_transfer_status *status) {
 int
 upload_songs_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
-        int i;
         int * n = (int *)data;
-        char * str;
-        char file[MAXLEN], temp[MAXLEN];
+        char * file;
+	char temp[MAXLEN];
+	playlist_data_t * pldata;
 
         if (abort_pressed) {
                 return 0;
         }
 
-        gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_PHYSICAL_FILENAME, &str, -1);
+        gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_DATA, &pldata, -1);
 
-        if (!g_file_test(str, G_FILE_TEST_EXISTS)) {
- 		g_free(str);
+        if (!g_file_test(pldata->file, G_FILE_TEST_EXISTS)) {
 		return 0;
  	}
 
-        i = strlen(str);
-        while (str[--i]!='/');
-        strncpy(file, str + i + 1, MAXLEN-1);
+	file = g_path_get_basename(pldata->file);
 
         strncpy(dest_file, remote_path, MAXLEN-1);
         if (strlen(remote_path) != 1) {
@@ -170,12 +167,12 @@ upload_songs_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar_op), temp);
         deflicker();
 
-        ifp_upload_file(&ifpdev, str, dest_file, update_progress, NULL);
+        ifp_upload_file(&ifpdev, pldata->file, dest_file, update_progress, NULL);
 
         aifp_update_info();
         deflicker();
 
-        g_free(str);
+        g_free(file);
 
         (*n)++;
 
@@ -647,17 +644,16 @@ int
 aifp_get_songs_info_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
         struct stat statbuf;
-        gchar * file;
+        playlist_data_t * pldata;
         gint * num = (int *)data;
 
-        gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_PHYSICAL_FILENAME, &file, -1);
+        gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_DATA, &pldata, -1);
 
-        if (g_stat(file, &statbuf) != -1) {
+        if (g_stat(pldata->file, &statbuf) != -1) {
                 songs_size += statbuf.st_size;
                 (*num)++;
         }
 
-        g_free(file);
         return 0;
 }
 
@@ -680,15 +676,14 @@ int
 aifp_check_files_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
         struct stat statbuf;
-        char * str;
+	playlist_data_t * pldata;
 
-        gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_PHYSICAL_FILENAME, &str, -1);
+        gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_DATA, &pldata, -1);
 
-        if (g_stat(str, &statbuf) != -1) {
-                valid_files += is_valid_extension(valid_extensions_ifp, str, 0);
+        if (g_stat(pldata->file, &statbuf) != -1) {
+                valid_files += is_valid_extension(valid_extensions_ifp, pldata->file, 0);
         }
 
-        g_free(str);
         return 0;
 }
 

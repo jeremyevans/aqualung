@@ -162,12 +162,6 @@ typedef struct {
 	float rva_no_rva_voladj;
 
 	/* Metadata */
-	int auto_use_meta_artist;
-	int auto_use_meta_record;
-	int auto_use_meta_track;
-	int auto_use_ext_meta_artist;
-	int auto_use_ext_meta_record;
-	int auto_use_ext_meta_track;
 	int replaygain_tag_to_use;
 	int batch_mpeg_add_id3v1;
 	int batch_mpeg_add_id3v2;

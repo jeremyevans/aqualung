@@ -426,7 +426,7 @@ export_meta_amend_frame(metadata_t * meta, int tag, int type, export_item_t * it
 		return;
 	}
 
-	/* if yes, check for existance */
+	/* if yes, check for existence */
 	frame = metadata_get_frame_by_tag_and_type(meta, tag, type, NULL);
 	if (frame != NULL) {
 		return;

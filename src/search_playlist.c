@@ -33,11 +33,11 @@
 #include "options.h"
 #include "i18n.h"
 
-/* search flags */
-#define SEARCH_F_CS (1 << 0)    /* case sensitive */
-#define SEARCH_F_EM (1 << 1)    /* exact matches only */
-#define SEARCH_F_SF (1 << 2)    /* select first and close */
-
+enum {
+	SEARCH_F_CS = (1 << 0),  /* case sensitive */
+	SEARCH_F_EM = (1 << 1),  /* exact matches only */
+	SEARCH_F_SF = (1 << 2)   /* select first and close */
+};
 
 extern options_t options;
 
@@ -139,20 +139,12 @@ sfac_clicked(GtkWidget * widget, gpointer data) {
 void
 search_foreach(playlist_t * pl, GPatternSpec * pattern, GtkTreeIter * list_iter, int album_node) {
 
-	char * text;
+	char text[MAXLEN];
 	char * tmp = NULL;
+	playlist_data_t * pldata;
 
-	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), list_iter, PL_COL_TRACK_NAME, &text, -1);
-
-	if (album_node) {
-		int len1, len2;
-		char * pack;
-
-		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), list_iter, PL_COL_PHYSICAL_FILENAME, &pack, -1);
-		sscanf(pack, "%04X%04X", &len1, &len2);
-		text[len1 + len2 + 2] = '\0';
-		g_free(pack);
-	}
+	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), list_iter, PL_COL_DATA, &pldata, -1);
+	snprintf(text, MAXLEN-1, "%s %s %s", pldata->artist, pldata->album, album_node ? "" : pldata->title);
 
 	if (casesens) {
 		tmp = strdup(text);

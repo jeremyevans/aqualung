@@ -403,42 +403,53 @@ podcast_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl, GtkTreeIter 
         GtkTreeIter pod_iter;
 	GtkTreeIter list_iter;
 
+	podcast_t * podcast;
 	podcast_item_t * item;
 
 	char list_str[MAXLEN];
 	char duration_str[MAXLEN];
 
+	playlist_data_t * pldata = NULL;
+
 
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, MS_COL_DATA, &item, -1);
+	gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &pod_iter, &iter_track);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &pod_iter, MS_COL_DATA, &podcast, -1);
 
 	if (parent != NULL) {
 		strcpy(list_str, item->title);
 	} else {
-		podcast_t * podcast;
-		
-		gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store),
-					   &pod_iter, &iter_track);
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store),
-				   &pod_iter, MS_COL_DATA, &podcast, -1);
-
 		make_title_string(list_str, options.title_format,
 				  podcast->author ? podcast->author : _("Podcasts"),
-				  podcast->title, item->title);
+				  podcast->title,
+				  item->title);
 	}
 
 	time2time(item->duration, duration_str);
-	
+
+	if ((pldata = playlist_data_new()) == NULL) {
+		return 0;
+	}
+
+	pldata->artist = strndup(podcast->author ? podcast->author : _("Podcasts"), MAXLEN-1);
+	pldata->album = strdup(podcast->title);
+	pldata->title = strdup(item->title);
+	pldata->file = strdup(item->file);
+
+	pldata->size = item->size;
+	pldata->duration = item->duration;
+	pldata->flags = PL_FLAG_COVER;
+
 	/* either parent or dest should be set, but not both */
 	gtk_tree_store_insert_before(pl->store, &list_iter, parent, dest);
 
 	gtk_tree_store_set(pl->store, &list_iter,
-			   PL_COL_TRACK_NAME, list_str,
-			   PL_COL_PHYSICAL_FILENAME, item->file,
-			   PL_COL_SELECTION_COLOR, pl_color_inactive,
-			   PL_COL_VOLUME_ADJUSTMENT, 0.0f,
-			   PL_COL_VOLUME_ADJUSTMENT_DISP, "",
-			   PL_COL_DURATION, item->duration,
-			   PL_COL_DURATION_DISP, duration_str, -1);
+			   PL_COL_NAME, list_str,
+			   PL_COL_VADJ, "",
+			   PL_COL_DURA, duration_str,
+			   PL_COL_COLO, pl_color_inactive,
+			   PL_COL_FONT, PANGO_WEIGHT_NORMAL,
+			   PL_COL_DATA, pldata, -1);
 
 	podcast_track_mark_read(&iter_track, item);
 
@@ -454,7 +465,7 @@ podcast_feed_addlist_iter(GtkTreeIter iter_record, playlist_t * pl, GtkTreeIter 
 	
 	int i;
 	float record_duration = 0.0f;
-
+	playlist_data_t * pldata = NULL;
 
 	if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter_record) == 0) {
 		return;
@@ -462,27 +473,31 @@ podcast_feed_addlist_iter(GtkTreeIter iter_record, playlist_t * pl, GtkTreeIter 
 
 	if (album_mode) {
 
-		char name_str[MAXLEN];
-		char packed_str[MAXLEN];
+		char list_str[MAXLEN];
 		podcast_t * podcast;
+
+		if ((pldata = playlist_data_new()) == NULL) {
+			return;
+		}
 
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, MS_COL_DATA, &podcast, -1);
 
-		snprintf(name_str, MAXLEN-1, "%s: %s",
+		snprintf(list_str, MAXLEN-1, "%s: %s",
 			 podcast->author ? podcast->author : _("Podcasts"),
 			 podcast->title);
-		pack_strings(podcast->author ? podcast->author : _("Podcasts"),
-			     podcast->title, packed_str);
+
+		pldata->artist = strndup(podcast->author ? podcast->author : _("Podcasts"), MAXLEN-1);
+		pldata->album = strdup(podcast->title);
 
 		gtk_tree_store_insert_before(pl->store, &list_iter, NULL, dest);
 		gtk_tree_store_set(pl->store, &list_iter,
-				   PL_COL_TRACK_NAME, name_str,
-				   PL_COL_PHYSICAL_FILENAME, packed_str,
-				   PL_COL_SELECTION_COLOR, pl_color_inactive,
-				   PL_COL_VOLUME_ADJUSTMENT, 0.0f,
-				   PL_COL_VOLUME_ADJUSTMENT_DISP, "",
-				   PL_COL_DURATION, 0.0f,
-				   PL_COL_DURATION_DISP, "00:00", -1);
+				   PL_COL_NAME, list_str,
+				   PL_COL_VADJ, "",
+				   PL_COL_DURA, "00:00",
+				   PL_COL_COLO, pl_color_inactive,
+				   PL_COL_FONT, PANGO_WEIGHT_NORMAL,
+				   PL_COL_DATA, pldata, -1);
+
 		plist_iter = &list_iter;
 		dest = NULL;
 	} else {
@@ -495,11 +510,10 @@ podcast_feed_addlist_iter(GtkTreeIter iter_record, playlist_t * pl, GtkTreeIter 
 	}
 
 	if (album_mode) {
-		char record_duration_str[MAXLEN];
-		time2time(record_duration, record_duration_str);
-		gtk_tree_store_set(pl->store, &list_iter,
-				   PL_COL_DURATION, record_duration,
-				   PL_COL_DURATION_DISP, record_duration_str, -1);
+		char duration_str[MAXLEN];
+		pldata->duration = record_duration;
+		time2time(record_duration, duration_str);
+		gtk_tree_store_set(pl->store, &list_iter, PL_COL_DURA, duration_str, -1);
 	}
 }
 

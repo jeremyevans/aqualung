@@ -32,9 +32,11 @@
 #include <pthread.h>
 #endif /* _WIN32 */
 
-#define PLAYLIST_LOAD     0
-#define PLAYLIST_LOAD_TAB 1
-#define PLAYLIST_ENQUEUE  2
+enum {
+	PLAYLIST_LOAD,
+	PLAYLIST_LOAD_TAB,
+	PLAYLIST_ENQUEUE
+};
 
 typedef struct {
 
@@ -84,7 +86,7 @@ typedef struct {
 	int threshold;
 
 	GSList * list;
-	GList * plfm_list;
+	GList * pldata_list;
 
 	void * xml_doc;
 	void * xml_node;
@@ -126,6 +128,7 @@ void playlist_load(GSList * list, int mode, char * tab_name, int start_playback)
 void playlist_save_all(char * filename);
 
 void playlist_set_color(void);
+void playlist_reset_display_names(void);
 void playlist_disable_bold_font(void);
 void playlist_set_font(int cond);
 
@@ -151,17 +154,51 @@ void playlist_remove_cdda(char * device_path);
 #endif /* HAVE_CDDA */
 
 enum {
-	PL_COL_TRACK_NAME = 0,
-	PL_COL_PHYSICAL_FILENAME,
-	PL_COL_SELECTION_COLOR,
-	PL_COL_VOLUME_ADJUSTMENT,
-	PL_COL_VOLUME_ADJUSTMENT_DISP,
-	PL_COL_DURATION,
-	PL_COL_DURATION_DISP,
-	PL_COL_FONT_WEIGHT,
-        PL_COL_COVER_FLAG,
+	PL_FLAG_ACTIVE      = (1 << 0),
+	PL_FLAG_COVER       = (1 << 1),
+	PL_FLAG_ALBUM_NODE  = (1 << 2),
+	PL_FLAG_ALBUM_CHILD = (1 << 3)
+};
 
-	PL_NUM_OF_COLUMNS /* it must be the last entry here */
+typedef struct {
+
+	char * artist;
+	char * album;
+	char * title;   /* NULL for album nodes */
+	char * file;    /* NULL for album nodes */
+	float voladj;   /* volume adjustment [dB] */
+	float duration; /* length in seconds */
+	unsigned size;  /* file size in bytes */
+
+	unsigned short ntracks; /* number of children nodes (for album nodes only) */
+	unsigned short actrack; /* active children node (for album nodes only) */
+	int flags;
+
+} playlist_data_t;
+
+playlist_data_t * playlist_data_new(void);
+void playlist_data_get_display_name(char * list_str, playlist_data_t * pldata);
+
+#define PL_IS_SET_FLAG(plist, flag) (plist->flags & flag)
+#define PL_SET_FLAG(plist, flag) (plist->flags |= flag)
+#define PL_UNSET_FLAG(plist, flag) (plist->flags &= ~flag)
+
+#define IS_PL_ACTIVE(plist) PL_IS_SET_FLAG(plist, PL_FLAG_ACTIVE)
+#define IS_PL_COVER(plist) PL_IS_SET_FLAG(plist, PL_FLAG_COVER)
+#define IS_PL_ALBUM_NODE(plist) PL_IS_SET_FLAG(plist, PL_FLAG_ALBUM_NODE)
+#define IS_PL_ALBUM_CHILD(plist) PL_IS_SET_FLAG(plist, PL_FLAG_ALBUM_CHILD)
+#define IS_PL_TOPLEVEL(plist) (IS_PL_ALBUM_NODE(plist) || !IS_PL_ALBUM_CHILD(plist))
+
+
+enum {
+	PL_COL_NAME = 0,
+	PL_COL_VADJ,
+	PL_COL_DURA,
+	PL_COL_COLO,
+	PL_COL_FONT,
+	PL_COL_DATA,
+
+	PL_COL_COUNT
 };
 
 #endif /* _PLAYLIST_H */

@@ -42,6 +42,7 @@
 #include "music_browser.h"
 #include "store_cdda.h"
 #include "store_file.h"
+#include "playlist.h"
 #include "cdda.h"
 #include "cddb_lookup.h"
 

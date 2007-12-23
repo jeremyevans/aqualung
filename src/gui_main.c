@@ -548,9 +548,6 @@ refresh_displays(void) {
 
 	GtkTreePath * p;
 	GtkTreeIter iter;
-	char * title_str;
-	char * phys_str;
-        gboolean cover_flag;
 	playlist_t * pl;
 
 	refresh_time_displays();
@@ -572,65 +569,36 @@ refresh_displays(void) {
 
 	p = playlist_get_playing_path(pl);
 	if (p != NULL) {
-		int n = gtk_tree_path_get_depth(p);
+		char list_str[MAXLEN];
+		playlist_data_t * pldata;
+
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
+		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &pldata, -1);
 		gtk_tree_path_free(p);
-		
-		if (n > 1) { /* track under album node */
-			GtkTreeIter iter_parent;
-			char artist[MAXLEN];
-			char record[MAXLEN];
-			char list_str[MAXLEN];
-			
-			gtk_tree_model_iter_parent(GTK_TREE_MODEL(pl->store), &iter_parent, &iter);
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter_parent,
-					   PL_COL_PHYSICAL_FILENAME, &title_str,
-					   -1);
-			unpack_strings(title_str, artist, record);
-			g_free(title_str);
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
-					   PL_COL_TRACK_NAME, &title_str,
-					   PL_COL_PHYSICAL_FILENAME, &phys_str,
-					   -1);
-			make_title_string(list_str, options.title_format, artist, record, title_str);
-			if (!is_file_loaded || !httpc_is_url(phys_str)) {
-				set_title_label(list_str);
-			}
-			g_free(title_str);
-			g_free(phys_str);
-		} else {
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
-					   PL_COL_TRACK_NAME, &title_str,
-					   PL_COL_PHYSICAL_FILENAME, &phys_str,
-					   -1);
-			if (!is_file_loaded || !httpc_is_url(phys_str)) {
-				set_title_label(title_str);
-			}
-			g_free(title_str);
-			g_free(phys_str);
+
+		playlist_data_get_display_name(list_str, pldata);
+
+		if (!is_file_loaded || !httpc_is_url(pldata->file)) {
+			set_title_label(list_str);
 		}
+
 		if (is_file_loaded) {
                         if (!options.dont_show_cover) {
 				if (embedded_picture != NULL) {
 					display_cover_from_binary(cover_image_area, c_event_box, cover_align, 48, 48,
 						      embedded_picture, embedded_picture_size, TRUE, TRUE);
 				} else {
-					gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
-							   PL_COL_PHYSICAL_FILENAME, &phys_str,
-							   PL_COL_COVER_FLAG, &cover_flag,
-							   -1);
-					if (options.show_cover_for_ms_tracks_only == TRUE) {
-						if (cover_flag == TRUE) {
+					if (options.show_cover_for_ms_tracks_only) {
+						if (IS_PL_COVER(pldata)) {
 							display_cover(cover_image_area, c_event_box, cover_align,
-								      48, 48, phys_str, TRUE, TRUE);
+								      48, 48, pldata->file, TRUE, TRUE);
 						} else {
 							hide_cover_thumbnail();
 						}
 					} else {
 						display_cover(cover_image_area, c_event_box, cover_align,
-							      48, 48, phys_str, TRUE, TRUE);
+							      48, 48, pldata->file, TRUE, TRUE);
 					}
-					g_free(phys_str);
 				}
                         }
 		}
@@ -1525,14 +1493,12 @@ toggle_noeffect(int id, int state) {
 void
 cue_track_for_playback(GtkTreeStore * store, GtkTreeIter * piter, cue_t * cue) {
 
-	char * str;
-	float voladj;
+	playlist_data_t * data;
 
-	gtk_tree_model_get(GTK_TREE_MODEL(store), piter, 1, &str, 3, &voladj, -1);
-	cue->filename = strdup(str);
-	cue->voladj = options.rva_is_enabled ? voladj : 0.0f;
-	strncpy(current_file, str, MAXLEN-1);
-	g_free(str);
+	gtk_tree_model_get(GTK_TREE_MODEL(store), piter, PL_COL_DATA, &data, -1);
+	cue->filename = strdup(data->file);
+	cue->voladj = options.rva_is_enabled ? data->voladj : 0.0f;
+	strncpy(current_file, cue->filename, MAXLEN-1);
 }
 
 
@@ -2516,7 +2482,6 @@ cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_d
 
         GtkTreePath * p;
 	GtkTreeIter iter;
-	char * title_str;
 	playlist_t * pl;
 
 	if ((pl = playlist_get_playing()) == NULL) {
@@ -2532,9 +2497,9 @@ cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_d
 				if (embedded_picture != NULL) {
 					display_zoomed_cover_from_binary(main_window, c_event_box, embedded_picture, embedded_picture_size);
 				} else {
-					gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_PHYSICAL_FILENAME, &title_str, -1);
-					display_zoomed_cover(main_window, c_event_box, title_str);
-					g_free(title_str);
+					playlist_data_t * pldata;
+					gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &pldata, -1);
+					display_zoomed_cover(main_window, c_event_box, pldata->file);
 				}
 			}
 		}
@@ -3576,12 +3541,13 @@ process_metablock(metadata_t * meta) {
 		GtkTreePath * p = playlist_get_playing_path(pl);
 		if (p != NULL) {
 			GtkTreeIter iter;
+			playlist_data_t * data;
 
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &data, -1);
 
-			gtk_tree_store_set(pl->store, &iter,
-					   PL_COL_TRACK_NAME, playlist_str,
-					   -1);
+			free_strdup(&data->title, playlist_str);
+			gtk_tree_store_set(pl->store, &iter, PL_COL_NAME, playlist_str, -1);
 
 			gtk_tree_path_free(p);
 		}

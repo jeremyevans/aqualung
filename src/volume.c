@@ -273,12 +273,12 @@ vol_store_voladj(GtkTreeStore * store, GtkTreeIter * iter, float voladj) {
 		music_store_mark_changed(iter);
 
 	} else { /* playlist */
-		
+		playlist_data_t * data;
 		char str[32];
 		voladj2str(voladj, str);
-		gtk_tree_store_set(store, iter,
-				   PL_COL_VOLUME_ADJUSTMENT, voladj,
-				   PL_COL_VOLUME_ADJUSTMENT_DISP, str, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(store), iter, PL_COL_DATA, &data, -1);
+		data->voladj = voladj;
+		gtk_tree_store_set(store, iter, PL_COL_VADJ, str, -1);
 	}
 }
 

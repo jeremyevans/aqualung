@@ -645,56 +645,56 @@ cdda_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl, GtkTreeIter * p
 	GtkTreeIter list_iter;
 
 	cdda_track_t * data;
+	cdda_drive_t * drive;
 
-	char * ptrack_name;
-
-        char artist_name[MAXLEN];
-        char record_name[MAXLEN];
-        char track_name[MAXLEN];
+        char * track_name;
 	char list_str[MAXLEN];
-
 	char duration_str[MAXLEN];
+
+	playlist_data_t * pldata = NULL;
 
 
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track,
-			   MS_COL_NAME, &ptrack_name,
+			   MS_COL_NAME, &track_name,
 			   MS_COL_DATA, &data, -1);
 
-	strncpy(track_name, ptrack_name, MAXLEN-1);
-	g_free(ptrack_name);
-
-	if (parent == NULL) {
-		cdda_drive_t * drive;
-		
-		gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store),
-					   &iter_record, &iter_track);
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store),
-				   &iter_record, MS_COL_DATA, &drive, -1);
-		
-		strncpy(artist_name, drive->disc.artist_name, MAXLEN-1);
-		strncpy(record_name, drive->disc.record_name, MAXLEN-1);
-	}
+	gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_record, &iter_track);
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, MS_COL_DATA, &drive, -1);
 
 	if (parent != NULL) {
 		strcpy(list_str, track_name);
 	} else {
 		make_title_string(list_str, options.title_format,
-				  artist_name, record_name, track_name);
+				  drive->disc.artist_name,
+				  drive->disc.record_name,
+				  track_name);
 	}
 
 	time2time(data->duration, duration_str);
-	
+
+	if ((pldata = playlist_data_new()) == NULL) {
+		return 0;
+	}
+
+	pldata->artist = strdup(drive->disc.artist_name);
+	pldata->album = strdup(drive->disc.record_name);
+	pldata->title = strdup(track_name);
+	pldata->file = strdup(data->path);
+
+	pldata->duration = data->duration;
+
 	/* either parent or dest should be set, but not both */
 	gtk_tree_store_insert_before(pl->store, &list_iter, parent, dest);
 	
 	gtk_tree_store_set(pl->store, &list_iter,
-			   PL_COL_TRACK_NAME, list_str,
-			   PL_COL_PHYSICAL_FILENAME, data->path,
-			   PL_COL_SELECTION_COLOR, pl_color_inactive,
-			   PL_COL_VOLUME_ADJUSTMENT, 0.0f,
-			   PL_COL_VOLUME_ADJUSTMENT_DISP, "",
-			   PL_COL_DURATION, data->duration,
-			   PL_COL_DURATION_DISP, duration_str, -1);
+			   PL_COL_NAME, list_str,
+			   PL_COL_VADJ, "",
+			   PL_COL_DURA, duration_str,
+			   PL_COL_COLO, pl_color_inactive,
+			   PL_COL_FONT, PANGO_WEIGHT_NORMAL,
+			   PL_COL_DATA, pldata, -1);
+
+	g_free(track_name);
 
 	return data->duration;
 }
@@ -709,7 +709,7 @@ cdda_record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl, GtkTreeIter *
 	
 	int i;
 	float record_duration = 0.0f;
-
+	playlist_data_t * pldata = NULL;
 
 	if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter_record) == 0) {
 		return;
@@ -717,24 +717,29 @@ cdda_record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl, GtkTreeIter *
 
 	if (album_mode) {
 
-		char name_str[MAXLEN];
-		char packed_str[MAXLEN];
+		char list_str[MAXLEN];
 		cdda_drive_t * drive;
+
+		if ((pldata = playlist_data_new()) == NULL) {
+			return;
+		}
 
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, MS_COL_DATA, &drive, -1);
 
-		snprintf(name_str, MAXLEN-1, "%s: %s", drive->disc.artist_name, drive->disc.record_name);
-		pack_strings(drive->disc.artist_name, drive->disc.record_name, packed_str);
+		snprintf(list_str, MAXLEN-1, "%s: %s", drive->disc.artist_name, drive->disc.record_name);
+
+		pldata->artist = strdup(drive->disc.artist_name);
+		pldata->album = strdup(drive->disc.record_name);
 
 		gtk_tree_store_insert_before(pl->store, &list_iter, NULL, dest);
 		gtk_tree_store_set(pl->store, &list_iter,
-				   PL_COL_TRACK_NAME, name_str,
-				   PL_COL_PHYSICAL_FILENAME, packed_str,
-				   PL_COL_SELECTION_COLOR, pl_color_inactive,
-				   PL_COL_VOLUME_ADJUSTMENT, 0.0f,
-				   PL_COL_VOLUME_ADJUSTMENT_DISP, "",
-				   PL_COL_DURATION, 0.0f,
-				   PL_COL_DURATION_DISP, "00:00", -1);
+				   PL_COL_NAME, list_str,
+				   PL_COL_VADJ, "",
+				   PL_COL_DURA, "00:00",
+				   PL_COL_COLO, pl_color_inactive,
+				   PL_COL_FONT, PANGO_WEIGHT_NORMAL,
+				   PL_COL_DATA, pldata, -1);
+
 		plist_iter = &list_iter;
 		dest = NULL;
 	} else {
@@ -747,11 +752,10 @@ cdda_record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl, GtkTreeIter *
 	}
 
 	if (album_mode) {
-		char record_duration_str[MAXLEN];
-		time2time(record_duration, record_duration_str);
-		gtk_tree_store_set(pl->store, &list_iter,
-				   PL_COL_DURATION, record_duration,
-				   PL_COL_DURATION_DISP, record_duration_str, -1);
+		char duration_str[MAXLEN];
+		pldata->duration = record_duration;
+		time2time(record_duration, duration_str);
+		gtk_tree_store_set(pl->store, &list_iter, PL_COL_DURA, duration_str, -1);
 	}
 }
 
@@ -858,7 +862,13 @@ cdda_add_to_playlist(GtkTreeIter * iter_drive, unsigned long hash) {
 	int target_found = 0;
 	GtkTreeIter target_iter;
 
-	playlist_t * pl = playlist_get_current();
+	playlist_t * pl = NULL;
+	playlist_data_t * pldata = NULL;
+
+	if ((pl = playlist_get_current()) == NULL) {
+		printf("NULL\n");
+		return;
+	}
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, NULL, i++)) {
 
@@ -870,20 +880,15 @@ cdda_add_to_playlist(GtkTreeIter * iter_drive, unsigned long hash) {
 
 			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &child, &iter, j++)) {
 
-				char * pfile;
-				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &child,
-						   PL_COL_PHYSICAL_FILENAME, &pfile, -1);
+				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &child, PL_COL_DATA, &pldata, -1);
 
-				if (!target_found && cdda_is_cdtrack(pfile)) {
+				if (!target_found && cdda_is_cdtrack(pldata->file)) {
 					has_cdda = 1;
 				}
 
-				if (cdda_hash_matches(pfile, hash)) {
-					g_free(pfile);
+				if (cdda_hash_matches(pldata->file, hash)) {
 					return;
 				}
-
-				g_free(pfile);
 			}
 
 			if (!target_found && !has_cdda) {
@@ -892,21 +897,16 @@ cdda_add_to_playlist(GtkTreeIter * iter_drive, unsigned long hash) {
 			}
 		} else {
 
-			char * pfile;
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
-					   PL_COL_PHYSICAL_FILENAME, &pfile, -1);
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &pldata, -1);
 
-			if (!target_found && !cdda_is_cdtrack(pfile)) {
+			if (!target_found && !cdda_is_cdtrack(pldata->file)) {
 				target_iter = iter;
 				target_found = 1;
 			}
 
-			if (cdda_hash_matches(pfile, hash)) {
-				g_free(pfile);
+			if (cdda_hash_matches(pldata->file, hash)) {
 				return;
 			}
-				
-			g_free(pfile);
 		}
 	}
 
@@ -928,7 +928,7 @@ cdda_remove_from_playlist_foreach(gpointer data, gpointer user_data) {
 
 	playlist_t * pl = (playlist_t *)data;
 	cdda_drive_t * drive = (cdda_drive_t *)user_data;
-
+	playlist_data_t * pldata = NULL;
 
 	if (drive->disc.hash == 0) {
 		hash = drive->disc.hash_prev;
@@ -945,16 +945,12 @@ cdda_remove_from_playlist_foreach(gpointer data, gpointer user_data) {
 
 			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &child, &iter, j++)) {
 
-				char * pfile;
-				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &child,
-						   PL_COL_PHYSICAL_FILENAME, &pfile, -1);
+				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &child, PL_COL_DATA, &pldata, -1);
 
-				if (cdda_hash_matches(pfile, hash)) {
+				if (cdda_hash_matches(pldata->file, hash)) {
 					gtk_tree_store_remove(pl->store, &child);
 					--j;
 				}
-				
-				g_free(pfile);
 			}
 
 			if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter) == 0) {
@@ -963,19 +959,13 @@ cdda_remove_from_playlist_foreach(gpointer data, gpointer user_data) {
 			} else {
 				recalc_album_node(pl, &iter);
 			}
-
 		} else {
-
-			char * pfile;
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
-					   PL_COL_PHYSICAL_FILENAME, &pfile, -1);
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &pldata, -1);
 			
-			if (cdda_hash_matches(pfile, hash)) {
+			if (cdda_hash_matches(pldata->file, hash)) {
 				gtk_tree_store_remove(pl->store, &iter);
 				--i;
 			}
-
-			g_free(pfile);
 		}
 	}
 

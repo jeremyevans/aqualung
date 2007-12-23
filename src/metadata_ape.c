@@ -118,7 +118,7 @@ meta_ape_parse(char * filename, ape_tag_t * tag) {
 		goto meta_ape_parse_error;
 	}
 	
-	/* Check for existance of ape tag footer */
+	/* Check for existence of ape tag footer */
 	if (fseek(file, -32-id3_length, SEEK_END) != 0) {
 		fprintf(stderr, "meta_ape_parse: fseek() failed\n");
 		goto meta_ape_parse_error;

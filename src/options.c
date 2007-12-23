@@ -184,12 +184,6 @@ GtkWidget * label_linthresh;
 GtkWidget * label_stdthresh;
 GtkWidget * label_defvol;
 
-GtkWidget * check_auto_use_meta_artist;
-GtkWidget * check_auto_use_meta_record;
-GtkWidget * check_auto_use_meta_track;
-GtkWidget * check_auto_use_ext_meta_artist;
-GtkWidget * check_auto_use_ext_meta_record;
-GtkWidget * check_auto_use_ext_meta_track;
 GtkWidget * combo_replaygain;
 GtkWidget * check_batch_mpeg_add_id3v1;
 GtkWidget * check_batch_mpeg_add_id3v2;
@@ -315,6 +309,7 @@ options_window_accept(void) {
 	int i;
 	GtkTreeIter iter;
 	GtkTreeIter iter2;
+	int title_format_changed = 0;
 
 
         if (restart_flag) {
@@ -324,9 +319,16 @@ options_window_accept(void) {
 
 	/* General */
 
-	strncpy(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)), MAXLEN - 1);
-	strncpy(options.title_format_no_album, gtk_entry_get_text(GTK_ENTRY(entry_title_no_album)), MAXLEN - 1);
-	strncpy(options.default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN - 1);
+	if (strcmp(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title))) ||
+	    strcmp(options.title_format_no_album, gtk_entry_get_text(GTK_ENTRY(entry_title_no_album)))) {
+		title_format_changed = 1;
+	}
+
+	strncpy(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)), MAXLEN-1);
+	strncpy(options.title_format_no_album, gtk_entry_get_text(GTK_ENTRY(entry_title_no_album)), MAXLEN-1);
+	strncpy(options.default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN-1);
+
+	playlist_reset_display_names();
 
 	set_option_from_toggle(check_enable_tooltips, &options.enable_tooltips);
 	if (options.enable_tooltips) {
@@ -408,15 +410,6 @@ options_window_accept(void) {
 
 
 	/* Metadata */
-
-	set_option_from_toggle(check_auto_use_meta_artist, &options.auto_use_meta_artist);
-	set_option_from_toggle(check_auto_use_meta_record, &options.auto_use_meta_record);
-	set_option_from_toggle(check_auto_use_meta_track, &options.auto_use_meta_track);
-
-
-	set_option_from_toggle(check_auto_use_ext_meta_artist, &options.auto_use_ext_meta_artist);
-	set_option_from_toggle(check_auto_use_ext_meta_record, &options.auto_use_ext_meta_record);
-	set_option_from_toggle(check_auto_use_ext_meta_track, &options.auto_use_ext_meta_track);
 
 	set_option_from_combo(combo_replaygain, &options.replaygain_tag_to_use);
 
@@ -1987,10 +1980,10 @@ create_options_window(void) {
 	gtk_box_pack_start(GTK_BOX(vbox_ms), check_ms_confirm_removal, FALSE, FALSE, 0);
 
 	frame_ms_pathlist = gtk_frame_new(_("Paths to Music Store databases"));
-	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_ms_pathlist, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_ms_pathlist, FALSE, TRUE, 5);
 	
 	vbox_ms_pathlist = gtk_vbox_new(FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox_ms_pathlist), 10);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_ms_pathlist), 8);
 	gtk_container_add(GTK_CONTAINER(frame_ms_pathlist), vbox_ms_pathlist);
 
 	ms_pathlist_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(ms_pathlist_store));
@@ -2332,81 +2325,6 @@ create_options_window(void) {
 	vbox_meta = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_meta), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_meta, create_notebook_tab(_("Metadata"), "metadata.png"));
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
-
-	label = gtk_label_new(_("Use file metadata (if available) when adding files "
-				"to the Playlist"));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
-
-	hbox_meta = gtk_hbox_new(FALSE, 5);
-        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 0);
-
-	frame_meta = gtk_frame_new(_("from the Music Store:"));
-        gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
-	vbox_meta2 = gtk_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(frame_meta), vbox_meta2);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
-	check_auto_use_meta_artist = gtk_check_button_new_with_label(_("Artist name"));
-	gtk_widget_set_name(check_auto_use_meta_artist, "check_on_notebook");
-	if (options.auto_use_meta_artist) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_artist), TRUE);
-	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_artist, FALSE, TRUE, 35);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
-	check_auto_use_meta_record = gtk_check_button_new_with_label(_("Record name"));
-	gtk_widget_set_name(check_auto_use_meta_record, "check_on_notebook");
-	if (options.auto_use_meta_record) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_record), TRUE);
-	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_record, FALSE, TRUE, 35);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
-	check_auto_use_meta_track = gtk_check_button_new_with_label(_("Track name"));
-	gtk_widget_set_name(check_auto_use_meta_track, "check_on_notebook");
-	if (options.auto_use_meta_track) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_meta_track), TRUE);
-	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_meta_track, FALSE, TRUE, 35);
-
-
-	frame_meta = gtk_frame_new(_("from the filesystem:"));
-        gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
-	vbox_meta2 = gtk_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(frame_meta), vbox_meta2);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
-	check_auto_use_ext_meta_artist = gtk_check_button_new_with_label(_("Artist name"));
-	gtk_widget_set_name(check_auto_use_ext_meta_artist, "check_on_notebook");
-	if (options.auto_use_ext_meta_artist) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_artist), TRUE);
-	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_artist, FALSE, TRUE, 35);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
-	check_auto_use_ext_meta_record = gtk_check_button_new_with_label(_("Record name"));
-	gtk_widget_set_name(check_auto_use_ext_meta_record, "check_on_notebook");
-	if (options.auto_use_ext_meta_record) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_record), TRUE);
-	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_record, FALSE, TRUE, 35);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
-	check_auto_use_ext_meta_track = gtk_check_button_new_with_label(_("Track name"));
-	gtk_widget_set_name(check_auto_use_ext_meta_track, "check_on_notebook");
-	if (options.auto_use_ext_meta_track) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_use_ext_meta_track), TRUE);
-	}
-        gtk_box_pack_start(GTK_BOX(hbox), check_auto_use_ext_meta_track, FALSE, TRUE, 35);
 
 
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -3193,12 +3111,6 @@ save_config(void) {
 	SAVE_INT(enable_ms_rules_hint);
 	SAVE_INT_SH(enable_ms_tree_icons);
 	SAVE_INT(ms_confirm_removal);
-	SAVE_INT(auto_use_meta_artist);
-	SAVE_INT(auto_use_meta_record);
-	SAVE_INT(auto_use_meta_track);
-	SAVE_INT(auto_use_ext_meta_artist);
-	SAVE_INT(auto_use_ext_meta_record);
-	SAVE_INT(auto_use_ext_meta_track);
 	SAVE_INT(batch_mpeg_add_id3v1);
 	SAVE_INT(batch_mpeg_add_id3v2);
 	SAVE_INT(batch_mpeg_add_ape);
@@ -3523,10 +3435,7 @@ load_config(void) {
 	options.rva_avg_linear_thresh = 3.0f;
 	options.rva_avg_stddev_thresh = 2.0f;
 
-	options.auto_use_ext_meta_artist = 1;
-	options.auto_use_ext_meta_record = 1;
-	options.auto_use_ext_meta_track = 1;
-	options.batch_mpeg_add_id3v1 = 0;
+	options.batch_mpeg_add_id3v1 = 1;
 	options.batch_mpeg_add_id3v2 = 1;
 	options.batch_mpeg_add_ape = 0;
 	options.metaedit_auto_clone = 0;
@@ -3595,12 +3504,6 @@ load_config(void) {
 
 		LOAD_INT(ladspa_is_postfader);
 		LOAD_INT(auto_save_playlist);
-		LOAD_INT(auto_use_meta_artist);
-		LOAD_INT(auto_use_meta_record);
-		LOAD_INT(auto_use_meta_track);
-		LOAD_INT(auto_use_ext_meta_artist);
-		LOAD_INT(auto_use_ext_meta_record);
-		LOAD_INT(auto_use_ext_meta_track);
 		LOAD_INT(batch_mpeg_add_id3v1);
 		LOAD_INT(batch_mpeg_add_id3v2);
 		LOAD_INT(batch_mpeg_add_ape);

@@ -803,11 +803,11 @@ export_format_help_cb(GtkButton * button, gpointer user_data) {
 		       GTK_MESSAGE_INFO,
 		       GTK_BUTTONS_OK,
 		       NULL,
-		       _("\nThe template string you enter here will be used to\n"
-			 "construct the filename of the exported files. The Artist,\n"
-			 "Record and Track names are denoted by %%%%a, %%%%r and %%%%t.\n"
-			 "The track number and format-dependent file extension are\n"
-			 "denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives\n"
+		       _("\nThe template string you enter here will be used to "
+			 "construct the filename of the exported files. The Artist, "
+			 "Record and Track names are denoted by %%%%a, %%%%r and %%%%t. "
+			 "The track number and format-dependent file extension are "
+			 "denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives "
 			 "an identifier which is unique within an export session."));
 }
 

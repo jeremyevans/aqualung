@@ -1332,10 +1332,10 @@ display_help(char * text) {
 void
 display_title_format_help(void) {
 
-	display_help(_("\nThe template string you enter here will be used to\n"
-		       "construct a single title line from an Artist, a Record\n"
-		       "and a Track name. These are denoted by %%%%a, %%%%r and %%%%t,\n"
-		       "respectively. Everything else you enter here will be\n"
+	display_help(_("\nThe template string you enter here will be used to "
+		       "construct a single title line from an Artist, a Record "
+		       "and a Track name. These are denoted by %%%%a, %%%%r and %%%%t, "
+		       "respectively. Everything else you enter here will be "
 		       "literally copied into the resulting string.\n"));
 }
 
@@ -1343,10 +1343,10 @@ display_title_format_help(void) {
 void
 display_title_format_no_album_help(void) {
 
-	display_help(_("\nThe template string you enter here will be used to\n"
-		       "construct a single title line from an Artist and a Track\n"
-		       "name. These are denoted by %%%%a and %%%%t, respectively.\n"
-		       "Everything else you enter here will be literally\n"
+	display_help(_("\nThe template string you enter here will be used to "
+		       "construct a single title line from an Artist and a Track "
+		       "name. These are denoted by %%%%a and %%%%t, respectively. "
+		       "Everything else you enter here will be literally "
 		       "copied into the resulting string.\n"));
 }
 
@@ -1354,11 +1354,11 @@ display_title_format_no_album_help(void) {
 void
 display_implict_command_line_help(void) {
 
-	display_help(_("\nThe string you enter here will be parsed as a command\n"
-		       "line before parsing the actual command line parameters.\n"
-		       "What you enter here will act as a default setting and may\n"
-		       "or may not be overridden from the 'real' command line.\n"
-		       "Example: enter '-o alsa -R' below to use ALSA output\n"
+	display_help(_("\nThe string you enter here will be parsed as a command "
+		       "line before parsing the actual command line parameters. "
+		       "What you enter here will act as a default setting and may "
+		       "or may not be overridden from the 'real' command line.\n\n"
+		       "Example: enter '-o alsa -R' below to use ALSA output "
 		       "running realtime as a default.\n"));
 }
 
@@ -1374,27 +1374,27 @@ display_pathlist_help(void) {
 void
 display_cdda_drive_speed_help(void) {
 
-	display_help(_("\nSet the drive speed for CD playing in CD-ROM speed units.\n"
-		       "One speed unit equals to 176 kBps raw data reading speed.\n"
+	display_help(_("\nSet the drive speed for CD playing in CD-ROM speed units. "
+		       "One speed unit equals to 176 kBps raw data reading speed. "
 		       "Warning: not all drives honor this setting.\n\n"
 
-		       "Lower speed usually means less drive noise. However,\n"
-		       "when using Paranoia error correction modes for increased\n"
-		       "accuracy, generally much larger speeds are required to\n"
+		       "Lower speed usually means less drive noise. However, "
+		       "when using Paranoia error correction modes for increased "
+		       "accuracy, generally much larger speeds are required to "
 		       "prevent buffer underruns (and thus audible drop-outs).\n\n"
 
-		       "Please note that these settings do not apply to CD Ripping,\n"
-		       "which always happens with maximum available speed and\n"
+		       "Please note that these settings do not apply to CD Ripping, "
+		       "which always happens with maximum available speed and "
 		       "with error correction modes manually set before every run."));
 }
 
 void
 display_cdda_force_drive_rescan_help(void) {
 
-	display_help(_("\nMost drives let Aqualung know when a CD has been inserted\n"
-		       "or removed by providing a 'media changed' flag. However,\n"
-		       "some drives don't set this flag properly, and thus it may\n"
-		       "happen that a newly inserted CD remains unnoticed to\n"
+	display_help(_("\nMost drives let Aqualung know when a CD has been inserted "
+		       "or removed by providing a 'media changed' flag. However, "
+		       "some drives don't set this flag properly, and thus it may "
+		       "happen that a newly inserted CD remains unnoticed to "
 		       "Aqualung. In such cases, enabling this option should help."));
 }
 

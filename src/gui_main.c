@@ -2366,19 +2366,15 @@ main_buttons_set_content(char * skin_path) {
 void
 jack_shutdown_window(void) {
 
-	GtkWidget * window;
-	GtkWidget * label;
-
-        window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(window), _("JACK connection lost"));
-        gtk_container_set_border_width(GTK_CONTAINER(window), 10);
-
-	label = gtk_label_new(_("JACK has either been shutdown or it\n"
-				"disconnected Aqualung because it was\n"
-				"not fast enough. All you can do now\n"
-				"is restart both JACK and Aqualung.\n"));
-        gtk_container_add(GTK_CONTAINER(window), label);
-	gtk_widget_show_all(window);
+	message_dialog(_("JACK connection lost"),
+		       main_window,
+		       GTK_MESSAGE_ERROR,
+		       GTK_BUTTONS_OK,
+		       NULL,
+		       _("JACK has either been shutdown or it "
+			 "disconnected Aqualung because it was "
+			 "not fast enough. All you can do now "
+			 "is restart both JACK and Aqualung."));
 }
 #endif /* HAVE_JACK */
 

@@ -144,7 +144,11 @@ search_foreach(playlist_t * pl, GPatternSpec * pattern, GtkTreeIter * list_iter,
 	playlist_data_t * pldata;
 
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), list_iter, PL_COL_DATA, &pldata, -1);
-	snprintf(text, MAXLEN-1, "%s %s %s", pldata->artist, pldata->album, album_node ? "" : pldata->title);
+	if (album_node) {
+		snprintf(text, MAXLEN-1, "%s: %s", pldata->artist, pldata->album);
+	} else {
+		playlist_data_get_display_name(text, pldata);
+	}
 
 	if (casesens) {
 		tmp = strdup(text);
@@ -164,7 +168,6 @@ search_foreach(playlist_t * pl, GPatternSpec * pattern, GtkTreeIter * list_iter,
 	}
 
 	g_free(tmp);
-	g_free(text);
 }
 
 static gint

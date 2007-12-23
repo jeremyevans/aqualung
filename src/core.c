@@ -153,9 +153,6 @@ plugin_instance * plugin_vect[MAX_PLUGINS];
 /* remote control */
 extern char * tab_name;
 extern int immediate_start;
-extern int aqualung_session_id;
-extern int aqualung_socket_fd;
-extern char aqualung_socket_filename[256];
 
 
 /* return 1 if conversion is possible, 0 if not */
@@ -2570,6 +2567,15 @@ main(int argc, char ** argv) {
 		strncat(buf, voladj_arg, MAXLEN-2);
 		send_message_to_session(no_session, buf, strlen(buf));
 		exit(1);
+	}
+
+	if (no_session != -1) {
+		char sockname[MAXLEN];
+
+		sprintf(sockname, "/tmp/aqualung_%s.%d", g_get_user_name(), no_session);
+		if (!g_file_test(sockname, G_FILE_TEST_EXISTS)) {
+			no_session = -1;
+		}
 	}
 
 	{

@@ -122,7 +122,6 @@ update_progress (void *context, struct ifp_transfer_status *status) {
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_cf), (float)status->file_bytes/status->file_total);
         sprintf(temp, _("%.1f MB / %.1f MB"), (float)status->file_bytes/(1024*1024), (float)status->file_total/(1024*1024));
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_cf), temp);
-        deflicker();
 
         if (abort_pressed) {
                 return 1;
@@ -165,12 +164,10 @@ upload_songs_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
                                       (float)(*n + 1) / number_of_songs);
         sprintf(temp, _("%d / %d files"), *n + 1, number_of_songs);
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar_op), temp);
-        deflicker();
 
         ifp_upload_file(&ifpdev, pldata->file, dest_file, update_progress, NULL);
 
         aifp_update_info();
-        deflicker();
 
         g_free(file);
 
@@ -213,17 +210,14 @@ download_songs_cb_foreach (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *
                 if (ifp_is_file (&ifpdev, remote_item) == TRUE) {
                         sprintf(temp, _("%d / %d files"), *n + 1, number_of_songs);
                         gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar_op), temp);
-                        deflicker();
                         ifp_download_file (&ifpdev, remote_item, dest_file, update_progress, NULL);
                 } else {                      
                         sprintf(temp, _("%d / %d directories"), *n + 1, number_of_songs);
                         gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar_op), temp);
-                        deflicker();
                         ifp_download_dir (&ifpdev, remote_item, dest_file, update_progress, NULL);
                 }
 
                 aifp_update_info();
-                deflicker();
                 g_free(file);
 
                 (*n)++;
@@ -264,7 +258,6 @@ upload_download_songs_cb(GtkButton * button, gpointer user_data) {
         gtk_widget_set_sensitive(list, FALSE);
         gtk_widget_set_sensitive(rndir_button, FALSE);
         gtk_widget_set_sensitive(rmdir_button, FALSE);
-        deflicker();
 
         if (transfer_mode == UPLOAD_MODE) {
                 playlist_foreach_selected(pl, (void *)upload_songs_cb_foreach, &n);
@@ -290,7 +283,6 @@ upload_download_songs_cb(GtkButton * button, gpointer user_data) {
         }
 
         aifp_update_info();
-        deflicker();
 
         gtk_widget_set_sensitive(abort_button, FALSE);
         gtk_widget_set_sensitive(upload_download_button, TRUE);
@@ -303,7 +295,6 @@ upload_download_songs_cb(GtkButton * button, gpointer user_data) {
         gtk_widget_set_sensitive(list, TRUE);
         gtk_widget_set_sensitive(rndir_button, TRUE);
         gtk_widget_set_sensitive(rmdir_button, TRUE);
-        deflicker();
         gtk_widget_grab_focus(list);
 
         gtk_entry_set_text(GTK_ENTRY(aifp_file_entry), _("None"));

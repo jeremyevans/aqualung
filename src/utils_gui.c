@@ -175,12 +175,6 @@ gui_stock_label_button(gchar *label, const gchar *stock) {
 
 
 void
-deflicker(void) {
-	while (g_main_context_iteration(NULL, FALSE));
-}
-
-
-void
 assign_store_fc_filters(GtkFileChooser *fc) {
 
         GtkFileFilter *filter_1, *filter_2;
@@ -472,8 +466,6 @@ file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction a
 	if (options.show_hidden) {
 		gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), options.show_hidden);
 	}
-
-        deflicker();
 
         if (strlen(selected_filename)) {
       		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);

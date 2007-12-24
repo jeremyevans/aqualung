@@ -658,26 +658,19 @@ void
 restore_window_position(void) {
 
 	gtk_window_move(GTK_WINDOW(main_window), options.main_pos_x, options.main_pos_y);
-	deflicker();
 	gtk_window_move(GTK_WINDOW(browser_window), options.browser_pos_x, options.browser_pos_y);
-	deflicker();
 	if (!options.playlist_is_embedded) {
 		gtk_window_move(GTK_WINDOW(playlist_window), options.playlist_pos_x, options.playlist_pos_y);
-		deflicker();
 	}
 	
 	gtk_window_resize(GTK_WINDOW(main_window), options.main_size_x, options.main_size_y);
-	deflicker();
 	gtk_window_resize(GTK_WINDOW(browser_window), options.browser_size_x, options.browser_size_y);
-	deflicker();
 	if (!options.playlist_is_embedded) {
 		gtk_window_resize(GTK_WINDOW(playlist_window), options.playlist_size_x, options.playlist_size_y);
-		deflicker();
 	}
 
 	if (!options.hide_comment_pane) {
 		gtk_paned_set_position(GTK_PANED(browser_paned), options.browser_paned_pos);
-		deflicker();
 	}
 }
 
@@ -3362,7 +3355,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	if (options.browser_on) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(musicstore_toggle), TRUE);
-		deflicker();
 	}
 
 	if (options.playlist_on) {
@@ -3370,7 +3362,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 			g_signal_handlers_block_by_func(G_OBJECT(playlist_toggle), playlist_toggled, NULL);
 		}
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle), TRUE);
-		deflicker();
 		if (options.playlist_is_embedded) {
 			g_signal_handlers_unblock_by_func(G_OBJECT(playlist_toggle), playlist_toggled, NULL);
 		}
@@ -3380,8 +3371,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	gtk_widget_show_all(main_window);
 
-	deflicker();
-
         hide_cover_thumbnail();
 
         gtk_widget_hide(vbox_sep);
@@ -3389,7 +3378,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	if (options.playlist_is_embedded) {
 		if (!options.playlist_on) {
                         hide_playlist();
-			deflicker();
 		}
 	}
 

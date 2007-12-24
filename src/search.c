@@ -391,7 +391,6 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 				g_free(record_name);
 			}
 			g_free(artist_name);
-			deflicker();
 		}
 	}
 		

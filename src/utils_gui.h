@@ -51,8 +51,6 @@ gint aqualung_dialog_run(GtkDialog * dialog);
 
 GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 
-void deflicker(void);
-
 GSList * file_chooser(char * title, GtkWidget * parent,
 		      GtkFileChooserAction action, int filter, gint multiple, char * destpath);
 void file_chooser_with_entry(char * title, GtkWidget * parent,

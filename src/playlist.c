@@ -2621,32 +2621,32 @@ playlist_filemeta_get(char * filename) {
 		data->voladj = 0.0f;
 	}
 	
-	if (metadata_get_artist(fdec->meta, &tmp)) {
+	if (metadata_get_artist(fdec->meta, &tmp) && !is_all_wspace(tmp)) {
 		free_strdup(&data->artist, tmp);
 	}
-	if (metadata_get_album(fdec->meta, &tmp)) {
+	if (metadata_get_album(fdec->meta, &tmp) && !is_all_wspace(tmp)) {
 		free_strdup(&data->album, tmp);
 	}
-	if (metadata_get_title(fdec->meta, &tmp)) {
+	if (metadata_get_title(fdec->meta, &tmp) && !is_all_wspace(tmp)) {
 		free_strdup(&data->title, tmp);
+	}
+
+	if (data->artist || data->album || data->title) {
+		if (data->artist == NULL) {
+			data->artist = strndup(_("Unknown"), MAXLEN-1);
+		}
+		if (data->album == NULL) {
+			data->album = strndup(_("Unknown"), MAXLEN-1);
+		}
+		if (data->title == NULL) {
+			data->title = strndup(_("Unknown"), MAXLEN-1);
+		}
 	}
 
 	file_decoder_close(fdec);
 	file_decoder_delete(fdec);
 
-	/*
-	if (data->artist == NULL) {
-		data->artist = strndup(_("Unknown"), MAXLEN-1);
-	}
-	if (data->album == NULL) {
-		data->album = strndup(_("Unknown"), MAXLEN-1);
-	}
-	if (data->title == NULL) {
-		data->title = strndup(_("Unknown"), MAXLEN-1);
-	}
-	*/
-
-	data->file = g_strdup(filename);
+	data->file = strdup(filename);
 
 	return data;
 }

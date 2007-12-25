@@ -2228,8 +2228,10 @@ main(int argc, char ** argv) {
 	}
 #endif /* HAVE_JACK */
 
-#ifdef _WIN32
 	g_thread_init(NULL);
+	gdk_threads_init();
+
+#ifdef _WIN32
 	disk_thread_lock = g_mutex_new();
 	disk_thread_wake = g_cond_new();
 #endif /* _WIN32 */

@@ -1301,6 +1301,7 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 		   GtkTreeIter * parent, GtkTreeIter * dest,
 		   float avg_voladj, int use_avg_voladj) {
 
+	GtkTreeIter dest_parent;
         GtkTreeIter iter_artist;
         GtkTreeIter iter_record;
 	GtkTreeIter list_iter;
@@ -1330,11 +1331,19 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 	gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_artist, &iter_record);
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist, MS_COL_NAME, &artist_name, -1);
 
-	if (parent != NULL) {
-		strcpy(list_str, track_name);
+	if (parent != NULL ||
+	    (dest != NULL && gtk_tree_model_iter_parent(GTK_TREE_MODEL(pl->store), &dest_parent, dest))) {
+		GtkTreeIter * piter = (parent != NULL) ? parent : &dest_parent;
+		playlist_data_t * pdata;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), piter, PL_COL_DATA, &pdata, -1);
+		if (!strcmp(pdata->artist, artist_name) && !strcmp(pdata->album, record_name)) {
+			strcpy(list_str, track_name);
+		} else {
+			make_title_string(list_str, options.title_format, artist_name, record_name, track_name);
+		}
 	} else {
-		make_title_string(list_str, options.title_format,
-				  artist_name, record_name, track_name);
+		make_title_string(list_str, options.title_format, artist_name, record_name, track_name);
 	}
 
 	if (options.rva_is_enabled) {

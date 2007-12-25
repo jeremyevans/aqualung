@@ -121,6 +121,8 @@ typedef struct {
 	int playlist_is_tree;
 	int album_shuffle_mode;
 	int auto_save_playlist;
+	int playlist_auto_save;
+	int playlist_auto_save_int;
 	int enable_playlist_statusbar;
 	int enable_playlist_statusbar_shadow;
 	int pl_statusbar_show_size;

@@ -125,6 +125,8 @@ GtkWidget * check_show_cover_for_ms_tracks_only;
 
 GtkWidget * check_playlist_is_embedded;
 GtkWidget * check_autoplsave;
+GtkWidget * check_playlist_auto_save;
+GtkWidget * spin_playlist_auto_save;
 GtkWidget * check_playlist_is_tree;
 GtkWidget * check_playlist_always_show_tabs;
 GtkWidget * check_show_close_button_in_tab;
@@ -357,6 +359,11 @@ options_window_accept(void) {
 
 	/* Playlist */
 	set_option_from_toggle(check_autoplsave, &options.auto_save_playlist);
+	set_option_from_toggle(check_playlist_auto_save, &options.playlist_auto_save);
+
+	playlist_auto_save_reset();
+
+	set_option_from_spin(spin_playlist_auto_save, &options.playlist_auto_save_int);
 	set_option_from_toggle(check_playlist_is_embedded, &options.playlist_is_embedded_shadow);
 	set_option_from_toggle(check_playlist_is_tree, &options.playlist_is_tree);
 	set_option_from_toggle(check_playlist_always_show_tabs, &options.playlist_always_show_tabs);
@@ -1317,6 +1324,16 @@ remove_ms_pathlist_clicked(GtkWidget * widget, gpointer data) {
 	}
 }
 
+void
+check_playlist_auto_save_cb(GtkWidget * widget, gpointer data) {
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_playlist_auto_save))) {
+		gtk_widget_set_sensitive(spin_playlist_auto_save, TRUE);
+	} else {
+		gtk_widget_set_sensitive(spin_playlist_auto_save, FALSE);
+	}
+}
+
 
 void
 display_help(char * text) {
@@ -1765,6 +1782,28 @@ create_options_window(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_autoplsave), TRUE);
 	}
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_autoplsave, FALSE, TRUE, 0);
+
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_pl), hbox, FALSE, TRUE, 0);
+
+	check_playlist_auto_save =
+		gtk_check_button_new_with_label(_("Save playlist periodically [min]:"));
+	gtk_widget_set_name(check_playlist_auto_save, "check_on_notebook");
+	g_signal_connect(G_OBJECT(check_playlist_auto_save), "toggled",
+			 G_CALLBACK(check_playlist_auto_save_cb), NULL);
+        gtk_box_pack_start(GTK_BOX(hbox), check_playlist_auto_save, FALSE, TRUE, 0);
+
+	spin_playlist_auto_save = gtk_spin_button_new_with_range(1, 60, 1);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin_playlist_auto_save), options.playlist_auto_save_int);
+        gtk_box_pack_start(GTK_BOX(hbox), spin_playlist_auto_save, FALSE, TRUE, 10);
+
+	if (options.playlist_auto_save) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_auto_save), TRUE);
+	} else {
+		gtk_widget_set_sensitive(spin_playlist_auto_save, FALSE);
+	}
+
 
         check_playlist_is_tree =
 		gtk_check_button_new_with_label(_("Album mode is the default when adding entire records"));
@@ -3102,6 +3141,8 @@ save_config(void) {
 	SAVE_INT(src_type);
 	SAVE_INT(ladspa_is_postfader);
 	SAVE_INT(auto_save_playlist);
+	SAVE_INT(playlist_auto_save);
+	SAVE_INT(playlist_auto_save_int);
 	SAVE_INT(show_rva_in_playlist);
 	SAVE_INT(pl_statusbar_show_size);
 	SAVE_INT(ms_statusbar_show_size);
@@ -3424,6 +3465,8 @@ load_config(void) {
 	options.autoexpand_stores = 1;
 
 	options.auto_save_playlist = 1;
+	options.playlist_auto_save = 0;
+	options.playlist_auto_save_int = 5;
 	options.show_length_in_playlist = 1;
 	options.enable_playlist_statusbar = options.enable_playlist_statusbar_shadow = 1;
 	options.pl_statusbar_show_size = 1;
@@ -3499,11 +3542,13 @@ load_config(void) {
 		LOAD_STR(skin);
 
 		if (!src_type_parsed) {
-			LOAD_INT(src_type)
+			LOAD_INT(src_type);
 		}
 
 		LOAD_INT(ladspa_is_postfader);
 		LOAD_INT(auto_save_playlist);
+		LOAD_INT(playlist_auto_save);
+		LOAD_INT(playlist_auto_save_int);
 		LOAD_INT(batch_mpeg_add_id3v1);
 		LOAD_INT(batch_mpeg_add_id3v2);
 		LOAD_INT(batch_mpeg_add_ape);

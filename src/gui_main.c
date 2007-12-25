@@ -3215,6 +3215,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	out_SR = rate;
 	rb_size = rb_audio_size;
 
+	gdk_threads_enter();
 	gtk_init(&argc, &argv);
 #ifdef HAVE_LADSPA
 	lrdf_init();
@@ -3771,12 +3772,7 @@ void
 run_gui(void) {
 
 	gtk_main();
-
-	if (embedded_picture != NULL) {
-		free(embedded_picture);
-		embedded_picture = NULL;
-		embedded_picture_size = 0;
-	}
+	gdk_threads_leave();
 
 	return;
 }

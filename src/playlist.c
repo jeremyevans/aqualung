@@ -1599,6 +1599,7 @@ add_file_to_playlist(gpointer data) {
 	GList * node;
 	int finish = 0;
 
+	gdk_threads_enter();
 	AQUALUNG_MUTEX_LOCK(pt->pl->wait_mutex);
 
 	if (pt->clear) {
@@ -1730,6 +1731,7 @@ add_file_to_playlist(gpointer data) {
 	AQUALUNG_MUTEX_UNLOCK(pt->pl->wait_mutex);
 	AQUALUNG_COND_SIGNAL(pt->pl->thread_wait);
 
+	gdk_threads_leave();
 	return FALSE;
 }
 

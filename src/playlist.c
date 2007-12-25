@@ -1586,7 +1586,9 @@ playlist_data_get_display_name(char * list_str, playlist_data_t * pldata) {
 	} else if (pldata->title) {
 		strncpy(list_str, pldata->title, MAXLEN-1);
 	} else {
-		strncpy(list_str, pldata->file, MAXLEN-1);
+		gchar * tmp = g_filename_display_name(pldata->file);
+		strncpy(list_str, tmp, MAXLEN-1);
+		g_free(tmp);
 	}
 }
 

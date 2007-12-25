@@ -367,15 +367,15 @@ meta_parse_id3v2_apic(metadata_t * meta, unsigned char * buf, int len) {
 	int len1;
 	int len2;
 
-	len1 = meta_id3v2_strlen(buf+11, len-1, enc);
-	if (len1 > len-11) {
-		len1 = len-11;
+	len1 = meta_id3v2_strlen(buf+11, len-1, 0x0/*ascii*/);
+	if (len1 > len-1) {
+		len1 = len-1;
 		fprintf(stderr, "warning: APIC mime-type field too large, truncating\n");
 	}
 
 	mime_type = meta_id3v2_to_utf8(0x0/*ascii*/, buf+11, len1);
 	pic_type = buf[12+len1];
-	len2 = meta_id3v2_strlen(buf+13+len1, len-13-len1, enc);
+	len2 = meta_id3v2_strlen(buf+13+len1, len-3-len1, enc);
 	descr = meta_id3v2_to_utf8(enc, buf+13+len1, len2);
 
 	if ((mime_type != NULL) && (descr != NULL)) {
@@ -386,12 +386,14 @@ meta_parse_id3v2_apic(metadata_t * meta, unsigned char * buf, int len) {
 		frame->field_val = strdup(descr);
 		frame->int_val = pic_type;
 		frame->length = len - (4+len1+len2);
-		frame->data = malloc(frame->length);
-		if (frame->data == NULL) {
-			fprintf(stderr, "meta_parse_id3v2_apic: malloc error\n");
-			return;
+		if (frame->length > 0) {
+			frame->data = malloc(frame->length);
+			if (frame->data == NULL) {
+				fprintf(stderr, "meta_parse_id3v2_apic: malloc error\n");
+				return;
+			}
+			memcpy(frame->data, buf+14+len1+len2, frame->length);
 		}
-		memcpy(frame->data, buf+14+len1+len2, frame->length);
 		metadata_add_frame(meta, frame);
 	}
 

@@ -549,6 +549,7 @@ disk_thread(void * arg) {
 				src_data.src_ratio = src_ratio;
 				src_data.data_out = framebuf + n_src_prev * 2*sample_size;
 				src_data.output_frames = n_space - n_src_prev;
+				src_data.end_of_input = 0;
 				if ((src_error = src_process(src_state, &src_data))) {
 					fprintf(stderr, "disk thread: SRC error: %s\n",
 					       src_strerror(src_error));

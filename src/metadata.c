@@ -935,26 +935,13 @@ metadata_make_title_string(metadata_t * meta, char * dest) {
 	metadata_get_title(meta, &title);
 	metadata_get_icy_name(meta, &icy_name);
 
-	if (title != NULL && artist != NULL && album != NULL) {
-		make_title_string(dest1, options.title_format, artist, album, title);
-	} else if (title != NULL && artist != NULL) {
-		make_title_string_no_album(dest1, options.title_format_no_album,
-					   artist, title);
-	} else if (title != NULL) {
-		strncpy(dest1, title, MAXLEN-1);
-	} else {
-		if (icy_name == NULL) {
-			dest[0] = '\0';
+	make_title_string(dest1, options.title_format, artist, album, title);
+	if (icy_name != NULL) {
+		if (dest1[0] != '\0') {
+			snprintf(dest, MAXLEN-strlen(dest1)-1, "%s (%s)", dest1, icy_name);
 		} else {
 			strncpy(dest, icy_name, MAXLEN-1);
 		}
-		return;
-	}
-
-	if (icy_name == NULL) {
-		strncpy(dest, dest1, MAXLEN-1);
-	} else {
-		snprintf(dest, MAXLEN-1, "%s (%s)", dest1, icy_name);
 	}
 }
 

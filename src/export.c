@@ -326,7 +326,7 @@ export_item_set_path(export_t * export, export_item_t * item, char * path, char 
 	snprintf(str_no, 15, "%02d", item->no);
 	snprintf(str_index, 15, "%04d", index);
 
-	make_string_va(track, export->template, '%', "%", 'a', item->artist, 'r', item->album,
+	make_string_va(track, export->template, 'a', item->artist, 'r', item->album,
 		       't', item->title, 'n', str_no, 'x', ext, 'i', str_index, 0);
 
 	snprintf(path, MAXLEN-1, "%s/%s", buf, track);
@@ -932,6 +932,21 @@ export_dialog(export_t * export) {
 		if (strlen(gtk_entry_get_text(GTK_ENTRY(templ_entry))) == 0) {
                         gtk_widget_grab_focus(templ_entry);
                         goto display;
+		} else {
+			int ret;
+			char buf[MAXLEN];
+			char * format = (char *)gtk_entry_get_text(GTK_ENTRY(templ_entry));
+			if ((ret = make_string_va(buf, format,
+				  'a', "a", 'r', "r", 't', "t", 'n', "n", 'x', "x", 'i', "i", 0)) != 0) {
+				make_string_strerror(format, ret, buf);
+				message_dialog(_("Error in format string"),
+					       export->dialog,
+					       GTK_MESSAGE_ERROR,
+					       GTK_BUTTONS_OK,
+					       NULL,
+					       buf);
+				goto display;
+			}
 		}
 
 		if (access(export->outdir, R_OK | W_OK) != 0) {

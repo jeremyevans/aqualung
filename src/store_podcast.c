@@ -407,7 +407,6 @@ podcast_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl, GtkTreeIter 
 	podcast_t * podcast;
 	podcast_item_t * item;
 
-	char * author;
 	char list_str[MAXLEN];
 	char duration_str[MAXLEN];
 
@@ -418,21 +417,20 @@ podcast_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl, GtkTreeIter 
 	gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &pod_iter, &iter_track);
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &pod_iter, MS_COL_DATA, &podcast, -1);
 
-	author = podcast->author ? podcast->author : _("Podcasts");
-
 	if (parent != NULL ||
 	    (dest != NULL && gtk_tree_model_iter_parent(GTK_TREE_MODEL(pl->store), &dest_parent, dest))) {
 		GtkTreeIter * piter = (parent != NULL) ? parent : &dest_parent;
 		playlist_data_t * pdata;
 
 		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), piter, PL_COL_DATA, &pdata, -1);
-		if (!strcmp(pdata->artist, author) && !strcmp(pdata->album, podcast->title)) {
+		if ((podcast->author == NULL || !strcmp(pdata->artist, podcast->author)) &&
+		    !strcmp(pdata->album, podcast->title)) {
 			strcpy(list_str, item->title);
 		} else {
-			make_title_string(list_str, options.title_format, author, podcast->title, item->title);
+			make_title_string(list_str, options.title_format, podcast->author, podcast->title, item->title);
 		}
 	} else {
-		make_title_string(list_str, options.title_format, author, podcast->title, item->title);
+		make_title_string(list_str, options.title_format, podcast->author, podcast->title, item->title);
 	}
 
 	time2time(item->duration, duration_str);
@@ -441,7 +439,9 @@ podcast_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl, GtkTreeIter 
 		return 0;
 	}
 
-	pldata->artist = strndup(author, MAXLEN-1);
+	if (podcast->author) {
+		pldata->artist = strndup(podcast->author, MAXLEN-1);
+	}
 	pldata->album = strdup(podcast->title);
 	pldata->title = strdup(item->title);
 	pldata->file = strdup(item->file);
@@ -562,9 +562,7 @@ podcast_track__fileinfo_cb(gpointer data) {
 		gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &pod_iter, &iter_track);
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &pod_iter, MS_COL_DATA, &podcast, -1);
 
-		make_title_string(list_str, options.title_format,
-				  podcast->author ? podcast->author : _("Podcasts"),
-				  podcast->title, item->title);
+		make_title_string(list_str, options.title_format, podcast->author, podcast->title, item->title);
 
 		show_file_info(list_str, item->file, 0, model, iter_track, TRUE);
 	}

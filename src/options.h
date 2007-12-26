@@ -97,7 +97,6 @@ typedef struct {
 
 	/* General */
 	char title_format[MAXLEN];
-	char title_format_no_album[MAXLEN];
 	char default_param[MAXLEN];
 	int enable_tooltips;
 	int buttons_at_the_bottom;
@@ -169,6 +168,7 @@ typedef struct {
 	int batch_mpeg_add_id3v2;
 	int batch_mpeg_add_ape;
 	int metaedit_auto_clone;
+	int meta_use_basename_only;
 
 	/* CD audio */
 	int cdda_drive_speed;

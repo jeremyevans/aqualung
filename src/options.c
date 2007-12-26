@@ -109,7 +109,6 @@ GtkWidget * options_window;
 GtkWidget * notebook;
 
 GtkWidget * entry_title;
-GtkWidget * entry_title_no_album;
 GtkWidget * entry_param;
 GtkWidget * check_enable_tooltips;
 GtkWidget * check_buttons_at_the_bottom;
@@ -190,6 +189,7 @@ GtkWidget * combo_replaygain;
 GtkWidget * check_batch_mpeg_add_id3v1;
 GtkWidget * check_batch_mpeg_add_id3v2;
 GtkWidget * check_batch_mpeg_add_ape;
+GtkWidget * check_meta_use_basename_only;
 GtkWidget * check_metaedit_auto_clone;
 
 #ifdef HAVE_CDDA
@@ -321,13 +321,11 @@ options_window_accept(void) {
 
 	/* General */
 
-	if (strcmp(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title))) ||
-	    strcmp(options.title_format_no_album, gtk_entry_get_text(GTK_ENTRY(entry_title_no_album)))) {
+	if (strcmp(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)))) {
 		title_format_changed = 1;
 	}
 
 	strncpy(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)), MAXLEN-1);
-	strncpy(options.title_format_no_album, gtk_entry_get_text(GTK_ENTRY(entry_title_no_album)), MAXLEN-1);
 	strncpy(options.default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN-1);
 
 	playlist_reset_display_names();
@@ -425,6 +423,7 @@ options_window_accept(void) {
 	set_option_from_toggle(check_batch_mpeg_add_ape, &options.batch_mpeg_add_ape);
 
 	set_option_from_toggle(check_metaedit_auto_clone, &options.metaedit_auto_clone);
+	set_option_from_toggle(check_meta_use_basename_only, &options.meta_use_basename_only);
 
 
 	/* CDDA */
@@ -1352,19 +1351,7 @@ display_title_format_help(void) {
 	display_help(_("\nThe template string you enter here will be used to "
 		       "construct a single title line from an Artist, a Record "
 		       "and a Track name. These are denoted by %%%%a, %%%%r and %%%%t, "
-		       "respectively. Everything else you enter here will be "
-		       "literally copied into the resulting string.\n"));
-}
-
-
-void
-display_title_format_no_album_help(void) {
-
-	display_help(_("\nThe template string you enter here will be used to "
-		       "construct a single title line from an Artist and a Track "
-		       "name. These are denoted by %%%%a and %%%%t, respectively. "
-		       "Everything else you enter here will be literally "
-		       "copied into the resulting string.\n"));
+		       "respectively.\n"));
 }
 
 
@@ -1452,8 +1439,6 @@ create_options_window(void) {
 	GtkWidget * frame_param;
 	GtkWidget * frame_misc;
 	GtkWidget * frame_cart;
-	GtkWidget * table_title;
-	GtkWidget * label_title;
 	GtkWidget * hbox_param;
 	GtkWidget * vbox_misc;
 	GtkWidget * vbox_cart;
@@ -1570,50 +1555,22 @@ create_options_window(void) {
 	frame_title = gtk_frame_new(_("Title format"));
 	gtk_box_pack_start(GTK_BOX(vbox_general), frame_title, FALSE, TRUE, 0);
 
-	table_title = gtk_table_new(8, 3, FALSE);
-	gtk_container_set_border_width(GTK_CONTAINER(table_title), 5);
-	gtk_container_add(GTK_CONTAINER(frame_title), table_title);
-
-
-        hbox = gtk_hbox_new(FALSE, 0);
-        label_title = gtk_label_new(_("Full:"));
-        gtk_box_pack_start(GTK_BOX(hbox), label_title, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_title), hbox, 0, 1, 0, 1,
-                         GTK_FILL, GTK_FILL, 5, 2);
+        hbox = gtk_hbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_container_add(GTK_CONTAINER(frame_title), hbox);
 
 	entry_title = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(entry_title), MAXLEN - 1);
 	gtk_entry_set_text(GTK_ENTRY(entry_title), options.title_format);
-        gtk_table_attach(GTK_TABLE(table_title), entry_title, 1, 2, 0, 1,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 2);
+	gtk_box_pack_start(GTK_BOX(hbox), entry_title, TRUE, TRUE, 0);
 
         help_btn_title = gtk_button_new_from_stock (GTK_STOCK_HELP); 
 	g_signal_connect(help_btn_title, "clicked", G_CALLBACK(display_title_format_help), NULL);
-        gtk_table_attach(GTK_TABLE(table_title), help_btn_title, 2, 3, 0, 1,
-                         GTK_FILL, GTK_FILL, 5, 2);
-
-
-        hbox = gtk_hbox_new(FALSE, 0);
-        label_title = gtk_label_new(_("No album:"));
-        gtk_box_pack_start(GTK_BOX(hbox), label_title, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table_title), hbox, 0, 1, 1, 2,
-                         GTK_FILL, GTK_FILL, 5, 2);
-
-	entry_title_no_album = gtk_entry_new();
-        gtk_entry_set_max_length(GTK_ENTRY(entry_title_no_album), MAXLEN - 1);
-	gtk_entry_set_text(GTK_ENTRY(entry_title_no_album), options.title_format_no_album);
-        gtk_table_attach(GTK_TABLE(table_title), entry_title_no_album, 1, 2, 1, 2,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 2);
-
-        help_btn_title = gtk_button_new_from_stock (GTK_STOCK_HELP); 
-	g_signal_connect(help_btn_title, "clicked", G_CALLBACK(display_title_format_no_album_help), NULL);
-        gtk_table_attach(GTK_TABLE(table_title), help_btn_title, 2, 3, 1, 2,
-                         GTK_FILL, GTK_FILL, 5, 2);
+	gtk_box_pack_start(GTK_BOX(hbox), help_btn_title, FALSE, FALSE, 5);
 
 
 	frame_param = gtk_frame_new(_("Implicit command line"));
 	gtk_box_pack_start(GTK_BOX(vbox_general), frame_param, FALSE, TRUE, 5);
-
 
         hbox_param = gtk_hbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox_param), 5);
@@ -2388,6 +2345,26 @@ create_options_window(void) {
 	hbox_meta = gtk_hbox_new(FALSE, 5);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 8);
 
+	frame_meta = gtk_frame_new(_("Adding files to Playlist"));
+        gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
+	vbox_meta2 = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(frame_meta), vbox_meta2);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 3);
+	check_meta_use_basename_only =
+		gtk_check_button_new_with_label(_("Use basename only instead of full path\n"
+						  "if no metadata is available."));
+	gtk_widget_set_name(check_meta_use_basename_only, "check_on_notebook");
+	if (options.meta_use_basename_only) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_meta_use_basename_only), TRUE);
+	}
+        gtk_box_pack_start(GTK_BOX(hbox), check_meta_use_basename_only, FALSE, TRUE, 35);
+
+	hbox_meta = gtk_hbox_new(FALSE, 5);
+        gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 8);
+
+
 	frame_meta = gtk_frame_new(_("Metadata editor (File info dialog)"));
         gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
 	vbox_meta2 = gtk_vbox_new(FALSE, 0);
@@ -2456,7 +2433,6 @@ create_options_window(void) {
 	label = gtk_label_new(_("Note: pre-existing tags will be updated even though they\n"
 				"might not be checked here."));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
-
 
 
 	/* CDDA notebook page */
@@ -3046,7 +3022,6 @@ create_options_window(void) {
 	g_signal_connect (G_OBJECT (color_picker), "color-set",
 						G_CALLBACK (color_selected), (gpointer *) ACTIVE_SONG_COLOR);
 
-
         set_sensitive_part();
 
         /* end of notebook */
@@ -3054,11 +3029,25 @@ create_options_window(void) {
 	gtk_widget_show_all(options_window);
         gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), current_notebook_page);
 
+ display:
 	ret = aqualung_dialog_run(GTK_DIALOG(options_window));
 
         current_notebook_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
 
 	if (ret == GTK_RESPONSE_ACCEPT) {
+		char buf[MAXLEN];
+		char * format = (char *)gtk_entry_get_text(GTK_ENTRY(entry_title));
+		if ((ret = make_string_va(buf, format, 'a', "a", 'r', "r", 't', "t", 0)) != 0) {
+			make_string_strerror(format, ret, buf);
+			message_dialog(_("Error in title format string"),
+				       options_window,
+				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       NULL,
+				       buf);
+			goto display;
+		}
+
 		options_window_accept();
 		gtk_widget_destroy(options_window);
 
@@ -3136,7 +3125,6 @@ save_config(void) {
 	SAVE_STR(storedir);
 	SAVE_STR(default_param);
 	SAVE_STR(title_format);
-	SAVE_STR(title_format_no_album);
 	SAVE_STR(skin);
 	SAVE_INT(src_type);
 	SAVE_INT(ladspa_is_postfader);
@@ -3156,6 +3144,7 @@ save_config(void) {
 	SAVE_INT(batch_mpeg_add_id3v2);
 	SAVE_INT(batch_mpeg_add_ape);
 	SAVE_INT(metaedit_auto_clone);
+	SAVE_INT(meta_use_basename_only);
 	SAVE_INT(enable_tooltips);
 	SAVE_INT_SH(buttons_at_the_bottom);
 	SAVE_INT(disable_buttons_relief);
@@ -3444,8 +3433,7 @@ load_config(void) {
 	options.skin[0] = '\0';
 
 	options.default_param[0] = '\0';
-	strcpy(options.title_format, "%a: %t [%r]");
-	strcpy(options.title_format_no_album, "%a: %t");
+	strcpy(options.title_format, "%a?ar|at{ :: }%r?rt{ :: }%t");
         options.enable_tooltips = 1;
         options.show_sn_title = 1;
         options.united_minimization = 1;
@@ -3538,7 +3526,6 @@ load_config(void) {
 		LOAD_STR(storedir);
 		LOAD_STR(default_param);
 		LOAD_STR(title_format);
-		LOAD_STR(title_format_no_album);
 		LOAD_STR(skin);
 
 		if (!src_type_parsed) {
@@ -3553,6 +3540,7 @@ load_config(void) {
 		LOAD_INT(batch_mpeg_add_id3v2);
 		LOAD_INT(batch_mpeg_add_ape);
 		LOAD_INT(metaedit_auto_clone);
+		LOAD_INT(meta_use_basename_only);
 		LOAD_INT(show_rva_in_playlist);
 		LOAD_INT(pl_statusbar_show_size);
 		LOAD_INT(ms_statusbar_show_size);

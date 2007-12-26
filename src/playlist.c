@@ -1577,17 +1577,18 @@ finalize_add_to_playlist(gpointer data) {
 void
 playlist_data_get_display_name(char * list_str, playlist_data_t * pldata) {
 
-	if (pldata->artist && pldata->album && pldata->title) {
+	if (pldata->artist || pldata->album || pldata->title) {
 		make_title_string(list_str, options.title_format,
 				  pldata->artist, pldata->album, pldata->title);
-	} else if (pldata->artist && pldata->title) {
-		make_title_string_no_album(list_str, options.title_format_no_album,
-					   pldata->artist, pldata->title);
-	} else if (pldata->title) {
-		strncpy(list_str, pldata->title, MAXLEN-1);
 	} else {
 		gchar * tmp = g_filename_display_name(pldata->file);
-		strncpy(list_str, tmp, MAXLEN-1);
+		if (options.meta_use_basename_only) {
+			char * bname = g_path_get_basename(tmp);
+			strncpy(list_str, bname, MAXLEN-1);
+			g_free(bname);
+		} else {
+			strncpy(list_str, tmp, MAXLEN-1);
+		}
 		g_free(tmp);
 	}
 }
@@ -2313,15 +2314,10 @@ plist__reread_file_meta_foreach(playlist_t * pl, GtkTreeIter * iter, void * user
 		return 0;
 	}
 
-	if (tmp->artist) {
-		free_strdup(&data->artist, tmp->artist);
-	}
-	if (tmp->album) {
-		free_strdup(&data->album, tmp->album);
-	}
-	if (tmp->title) {
-		free_strdup(&data->title, tmp->title);
-	}
+	free_strdup(&data->artist, tmp->artist);
+	free_strdup(&data->album, tmp->album);
+	free_strdup(&data->title, tmp->title);
+
 	data->voladj = tmp->voladj;
 	data->duration = tmp->duration;
 	data->size = tmp->size;
@@ -2633,18 +2629,6 @@ playlist_filemeta_get(char * filename) {
 	}
 	if (metadata_get_title(fdec->meta, &tmp) && !is_all_wspace(tmp)) {
 		free_strdup(&data->title, tmp);
-	}
-
-	if (data->artist || data->album || data->title) {
-		if (data->artist == NULL) {
-			data->artist = strndup(_("Unknown"), MAXLEN-1);
-		}
-		if (data->album == NULL) {
-			data->album = strndup(_("Unknown"), MAXLEN-1);
-		}
-		if (data->title == NULL) {
-			data->title = strndup(_("Unknown"), MAXLEN-1);
-		}
 	}
 
 	file_decoder_close(fdec);

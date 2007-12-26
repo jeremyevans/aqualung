@@ -112,8 +112,27 @@ escape_percents(char * in, char * out) {
 	out[j] = '\0';
 }
 
+int
+contains(int * cbuf, int num, char c) {
 
-void
+	int n;
+	for (n = 0; n < num; ++n) {
+		if (c == cbuf[n]) {
+			return n;
+		}
+	}
+
+	return -1;
+}
+
+/* returns
+     0: success
+    -1: error: expected '{' after '?'
+    -2: error: expected '}' after '{'
+    -3: error: unknown conversion type character after '%'
+    -4: error: unknown conversion type character after '?'
+ */
+int
 make_string_va(char * buf, char * format, ...) {
 
 	va_list args;
@@ -121,7 +140,7 @@ make_string_va(char * buf, char * format, ...) {
 	int * cbuf = NULL;
 	int ch;
 	int num = 0;
-	int i, j, n, found;
+	int i, j, n, conj, disj;
 
 	va_start(args, format);
 
@@ -134,63 +153,129 @@ make_string_va(char * buf, char * format, ...) {
 		cbuf[num-1] = ch;
 		strbuf = (char **)realloc(strbuf, num * sizeof(char *));
 		p = va_arg(args, char *);
-		strbuf[num-1] = strdup(p ? p : "");
+		strbuf[num-1] = (p != NULL) ? strdup(p) : NULL;
 	}
 
 	va_end(args);
+
+	cbuf = (int *)realloc(cbuf, (num + 3) * sizeof(int));
+	strbuf = (char **)realloc(strbuf, (num + 3) * sizeof(char *));
+	cbuf[num] = '%'; strbuf[num] = strdup("%"); ++num;
+	cbuf[num] = '?'; strbuf[num] = strdup("?"); ++num;
+	cbuf[num] = '}'; strbuf[num] = strdup("}"); ++num;
 
 	i = 0;
 	j = 0;
 	while (format[i]) {
 
-		found = 0;
-
-		if (format[i] == '%') {
-			for (n = 0; n < num; n++) {
-				if (format[i+1] == cbuf[n]) {
-					found = 1;
-					++i;
+		switch (format[i]) {
+		case '%':
+			if ((n = contains(cbuf, num, format[i+1])) < 0) {
+				return -3;
+			} else {
+				if (strbuf[n]) {
+					buf[j] = '\0';
+					strcat(buf, strbuf[n]);
+					j = strlen(buf);
+				}
+				i += 2;
+			}
+			break;
+		case '?':
+			disj = 0;
+			conj = 1;
+			for (++i; format[i]; ++i) {
+				if (format[i] == '|' || format[i] == '{') {
+					disj = disj || conj;
+					conj = 1;
+				} else {
+					if ((n = contains(cbuf, num, format[i])) < 0) {
+						return -4;
+					} else {
+						conj = conj && (strbuf[n] != NULL);
+					}
+				}
+				if (format[i] == '{') {
 					break;
 				}
 			}
+			if (!format[i]) {
+				return -1;
+			}
+			++i;
+			while (format[i] && format[i] != '}') {
+				if (format[i] == '%') {
+					if ((n = contains(cbuf, num, format[i+1])) < 0) {
+						return -3;
+					} else {
+						if (disj && strbuf[n]) {
+							buf[j] = '\0';
+							strcat(buf, strbuf[n]);
+							j = strlen(buf);
+						}
+						i += 2;
+					}
+				} else {
+					if (disj) {
+						buf[j++] = format[i];
+					}
+					++i;
+				}
+			}
+			if (!format[i]) {
+				return -2;
+			}
+			++i;
+			break;
+		default:
+			buf[j++] = format[i++];
+			break;
 		}
-
-		if (found) {
-			buf[j] = '\0';
-			strcat(buf, strbuf[n]);
-			j = strlen(buf);
-		} else {
-			buf[j] = format[i];
-			++j;
-		}
-
-		++i;
 	}
 
 	buf[j] = '\0';
 
 	for (n = 0; n < num; n++) {
-		free(strbuf[n]);
+		if (strbuf[n] != NULL) {
+			free(strbuf[n]);
+		}
 	}
 
 	free(cbuf);
 	free(strbuf);
+
+	return 0;
 }
 
 void
 make_title_string(char * dest, char * templ,
 		  char * artist, char * record, char * track) {
 
-	make_string_va(dest, templ, '%', "%", 'a', artist, 'r', record, 't', track, 0);
+	make_string_va(dest, templ, 'a', artist, 'r', record, 't', track, 0);
 }
 
 void
-make_title_string_no_album(char * dest, char * templ,
-			   char * artist, char * track) {
+make_string_strerror(char * format, int ret, char * buf) {
 
-	make_string_va(dest, templ, '%', "%", 'a', artist, 't', track, 0);
+	switch (ret) {
+	case -1:
+		strncpy(buf, _("Unexpected end of string after '?'."), MAXLEN-1);
+		break;
+	case -2:
+		strncpy(buf, _("Expected '}' after '{', but end of string found."), MAXLEN-1);
+		break;
+	case -3:
+		if (format[ret]) {
+			strncpy(buf, _("Unknown conversion type character found after '%%%%'."), MAXLEN-1);
+		} else {
+			strncpy(buf, _("End of string found after '%%%%'."), MAXLEN-1);
+		}
+		break;
+	case -4:
+		strncpy(buf, _("Unknown conversion type character found after '?'."), MAXLEN-1);
+		break;
+	}
 }
-
 
 /* returns (hh:mm:ss) or (mm:ss) format time string from sample position */
 void

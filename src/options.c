@@ -3433,7 +3433,7 @@ load_config(void) {
 	options.skin[0] = '\0';
 
 	options.default_param[0] = '\0';
-	strcpy(options.title_format, "%a?ar|at{ :: }%r?rt{ :: }%t");
+	options.title_format[0] = '\0';
         options.enable_tooltips = 1;
         options.show_sn_title = 1;
         options.united_minimization = 1;
@@ -3679,6 +3679,14 @@ load_config(void) {
 		}
                 cur = cur->next;
         }
+
+	{
+		char buf[MAXLEN];
+		if (!options.title_format[0] ||
+		    make_string_va(buf, options.title_format, 'a', "a", 'r', "r", 't', "t", 0) != 0) {
+			strcpy(options.title_format, "%a?ar|at{ :: }%r?rt{ :: }%t");
+		}
+	}
 
         xmlFreeDoc(doc);
         return;

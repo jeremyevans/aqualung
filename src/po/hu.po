@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-23 20:07+0100\n"
-"PO-Revision-Date: 2007-12-23 20:07+0100\n"
+"POT-Creation-Date: 2007-12-26 21:21+0100\n"
+"PO-Revision-Date: 2007-12-26 21:25+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -699,6 +699,9 @@ msgstr ""
 
 msgid "Filename template:"
 msgstr "Fájlnév sablon:"
+
+msgid "Error in format string"
+msgstr "Hiba a formátum sablonban"
 
 msgid "Exporting files"
 msgstr "Fájlok exportálása"
@@ -1656,28 +1659,12 @@ msgid ""
 "\n"
 "The template string you enter here will be used to construct a single title "
 "line from an Artist, a Record and a Track name. These are denoted by %%%%a, %"
-"%%%r and %%%%t, respectively. Everything else you enter here will be "
-"literally copied into the resulting string.\n"
+"%%%r and %%%%t, respectively.\n"
 msgstr ""
 "\n"
 "Az alábbi sablon az előadó nevéből, valamint a lemez- és számcímekből "
 "összeállított címsor formátumát adja meg. A %%%%a, %%%%r és %%%%t vezérlők "
-"rendre az előadót, a lemezt és a szám címét jelölik. A sablonban szereplő "
-"egyéb karakterek változtatás nélkül jelennek meg a címsorban.\n"
-
-#, c-format
-msgid ""
-"\n"
-"The template string you enter here will be used to construct a single title "
-"line from an Artist and a Track name. These are denoted by %%%%a and %%%%t, "
-"respectively. Everything else you enter here will be literally copied into "
-"the resulting string.\n"
-msgstr ""
-"\n"
-"Az alábbi sablon az előadó nevéből és a számcímekből összeállított címsor "
-"formátumát adja meg. A %%%%a és %%%%t vezérlők rendre az előadót és a szám "
-"címét jelölik. A sablonban szereplő egyéb karakterek változtatás nélkül "
-"jelennek meg a címsorban.\n"
+"rendre az előadót, a lemezt és a szám címét jelölik.\n"
 
 msgid ""
 "\n"
@@ -1764,12 +1751,6 @@ msgstr ""
 msgid "Title format"
 msgstr "Címformátum"
 
-msgid "Full:"
-msgstr "Teljes:"
-
-msgid "No album:"
-msgstr "Lemez nélkül:"
-
 msgid "Implicit command line"
 msgstr "Implicit parancssor"
 
@@ -1841,6 +1822,9 @@ msgstr "A Lejátszólista beágyazása a főablakba"
 
 msgid "Save and restore the playlist on exit/startup"
 msgstr "Lejátszólista mentése és visszatöltése kilépéskor/indításkor"
+
+msgid "Save playlist periodically [min]:"
+msgstr "Lejátszólista rendszeres mentési ideje [perc]:"
 
 msgid "Album mode is the default when adding entire records"
 msgstr "Lemezek alapértelmezett hozzáadása album módban"
@@ -2024,6 +2008,16 @@ msgstr "Replaygain_track_gain"
 msgid "Replaygain_album_gain"
 msgstr "Replaygain_album_gain"
 
+msgid "Adding files to Playlist"
+msgstr "Fájlok hozzáadása a Lejátszólistához"
+
+msgid ""
+"Use basename only instead of full path\n"
+"if no metadata is available."
+msgstr ""
+"Fájlnév használata teljes elérési út helyett\n"
+"ha nincs elérhető metaadat."
+
 msgid "Metadata editor (File info dialog)"
 msgstr "Metaadat szerkesztő (Fájl infó ablak)"
 
@@ -2156,6 +2150,9 @@ msgstr "Szám a Lejátszólistában: "
 
 msgid "Active song in playlist: "
 msgstr "Aktív szám a Lejátszólistában: "
+
+msgid "Error in title format string"
+msgstr "Hiba a címformátum sablonban"
 
 msgid "(Untitled)"
 msgstr "(Névtelen)"
@@ -2910,6 +2907,19 @@ msgstr "Összes forrás frissítése"
 
 msgid "Automatically update feeds"
 msgstr "Források automatikus frissítése"
+
+msgid "Unexpected end of string after '?'."
+msgstr "A '?' után vége van a sablonnak."
+
+msgid "Expected '}' after '{', but end of string found."
+msgstr "A sablonban hiányzik a '}' végzárójel."
+
+#, c-format
+msgid "Unknown conversion type character found after '%%%%'."
+msgstr "Ismeretlen konverziós karakter a '%%%%' után."
+
+msgid "Unknown conversion type character found after '?'."
+msgstr "Ismeretlen konverziós karakter a '?' után."
 
 msgid "day"
 msgstr "nap"

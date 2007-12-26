@@ -938,7 +938,7 @@ export_dialog(export_t * export) {
 			char * format = (char *)gtk_entry_get_text(GTK_ENTRY(templ_entry));
 			if ((ret = make_string_va(buf, format,
 				  'a', "a", 'r', "r", 't', "t", 'n', "n", 'x', "x", 'i', "i", 0)) != 0) {
-				make_string_strerror(format, ret, buf);
+				make_string_strerror(ret, buf);
 				message_dialog(_("Error in format string"),
 					       export->dialog,
 					       GTK_MESSAGE_ERROR,

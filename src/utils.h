@@ -40,7 +40,7 @@ void escape_percents(char * in, char * out);
 int make_string_va(char * buf, char * format, ...);
 void make_title_string(char * dest, char * templ,
 		       char * artist, char * record, char * track);
-void make_string_strerror(char * format, int ret, char * buf);
+void make_string_strerror(int ret, char * buf);
 
 void sample2time(unsigned long SR, unsigned long long sample, char * str, int sign);
 void time2time(float samples, char * str);

@@ -3038,7 +3038,7 @@ create_options_window(void) {
 		char buf[MAXLEN];
 		char * format = (char *)gtk_entry_get_text(GTK_ENTRY(entry_title));
 		if ((ret = make_string_va(buf, format, 'a', "a", 'r', "r", 't', "t", 0)) != 0) {
-			make_string_strerror(format, ret, buf);
+			make_string_strerror(ret, buf);
 			message_dialog(_("Error in title format string"),
 				       options_window,
 				       GTK_MESSAGE_ERROR,

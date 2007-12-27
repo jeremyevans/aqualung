@@ -109,12 +109,6 @@ gint playlist_state, browser_state;
 #define OSS_DEVICE "/dev/dsp"
 #endif /* OSS_DEVICE */
 
-/* ALSA driver parameters */
-#ifdef HAVE_ALSA
-int nperiods = 0;
-int period = 0;
-#endif /* HAVE_ALSA */
-
 /* The name of the output device e.g. "/dev/dsp" or "plughw:0,0" */
 char * device_name = NULL;
 
@@ -793,7 +787,7 @@ alsa_thread(void * arg) {
         u_int32_t driver_offset = 0;
         thread_info_t * info = (thread_info_t *)arg;
 	snd_pcm_sframes_t n_written = 0;
-	int bufsize = 1024;
+	int bufsize = info->n_frames;
         int n_avail;
 	char recv_cmd;
 
@@ -1247,9 +1241,7 @@ alsa_init(thread_info_t * info, int verbose) {
 	int dir = 0;
 	int ret;
 
-	info->stream = SND_PCM_STREAM_PLAYBACK;
-	snd_pcm_hw_params_alloca(&info->hwparams);
-	ret = snd_pcm_open(&info->pcm_handle, info->pcm_name, info->stream, SND_PCM_NONBLOCK);
+	ret = snd_pcm_open(&info->pcm_handle, info->pcm_name, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
 	if (ret < 0) {
 		if (verbose) {
 			fprintf(stderr, "alsa_init: error opening PCM device %s: %s\n",
@@ -1261,7 +1253,7 @@ alsa_init(thread_info_t * info, int verbose) {
 
 	/* now that we know the device is available, open it in blocking mode */
 	/* this is not deadlock safe. */
-	ret = snd_pcm_open(&info->pcm_handle, info->pcm_name, info->stream, 0);
+	ret = snd_pcm_open(&info->pcm_handle, info->pcm_name, SND_PCM_STREAM_PLAYBACK, 0);
 	if (ret < 0) {
 		if (verbose) {
 			fprintf(stderr, "alsa_init: error reopening PCM device %s: %s\n",
@@ -1270,6 +1262,7 @@ alsa_init(thread_info_t * info, int verbose) {
 		return -2;
 	}
 	
+	snd_pcm_hw_params_alloca(&info->hwparams);
 	if (snd_pcm_hw_params_any(info->pcm_handle, info->hwparams) < 0) {
 		if (verbose) {
 			fprintf(stderr, "alsa_init: cannot configure this PCM device.\n");
@@ -1278,7 +1271,7 @@ alsa_init(thread_info_t * info, int verbose) {
 	}
 
 	if (snd_pcm_hw_params_set_periods_integer(info->pcm_handle, info->hwparams) < 0) {
-		fprintf(stderr, "alsa_init warning: cannot set period size to integer value.\n");
+		fprintf(stderr, "alsa_init warning: cannot restrict period size to integer value.\n");
 	}
 
 	if (snd_pcm_hw_params_set_access(info->pcm_handle, info->hwparams,
@@ -1288,7 +1281,7 @@ alsa_init(thread_info_t * info, int verbose) {
 		}
 		return -4;
 	}
-  
+
 	info->is_output_32bit = 1;
 	if (snd_pcm_hw_params_set_format(info->pcm_handle, info->hwparams, SND_PCM_FORMAT_S32) < 0) {
 		if (verbose) {
@@ -1302,7 +1295,7 @@ alsa_init(thread_info_t * info, int verbose) {
 		}
 		info->is_output_32bit = 0;
 	}
-	
+
 	rate = info->out_SR;
 	dir = 0;
 	if (snd_pcm_hw_params_set_rate_near(info->pcm_handle, info->hwparams, &rate, &dir) < 0) {
@@ -1327,17 +1320,11 @@ alsa_init(thread_info_t * info, int verbose) {
 		return -7;
 	}
 
-	if (snd_pcm_hw_params_set_periods(info->pcm_handle, info->hwparams, nperiods, 0) < 0) {
+	info->n_frames = 512;
+	if (snd_pcm_hw_params_set_period_size_near(info->pcm_handle, info->hwparams,
+						   &info->n_frames, NULL) < 0) {
 		if (verbose) {
-			fprintf(stderr, "alsa_init warning: error setting nperiods to %d.\n", nperiods);
-		}
-	}
-  
-	if (snd_pcm_hw_params_set_buffer_size(info->pcm_handle, info->hwparams,
-					      (period * nperiods)>>2) < 0) {
-		if (verbose) {
-			fprintf(stderr, "alsa_init warning: failed setting buffersize to %d.\n", (period * nperiods)>>2);
-			fprintf(stderr, "Parameters were: nperiods = %d, period = %d\n", nperiods, period);
+			fprintf(stderr, "alsa_init warning: error setting period size\n");
 		}
 	}
 
@@ -2030,15 +2017,13 @@ print_usage(void) {
 		"-Y, --disk-priority <int>: When running -D, set scheduler priority to <int> (defaults to 1).\n"
 		
 		"\nOptions relevant to ALSA output:\n"
-		"-d, --device <name>: Set the output device (defaults to plughw:0,0).\n"
-		"-p, --period <int>: Set ALSA period size (defaults to 8192).\n"
-		"-n, --nperiods <int>: Specify the number of periods in hardware buffer (defaults to 2).\n"
+		"-d, --device <name>: Set the output device (defaults to 'default').\n"
 		"-r, --rate <int>: Set the output sample rate.\n"
 		"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for ALSA output thread.\n"
 		"-P, --priority <int>: Set scheduler priority to <int> (default is 1 when -R is used).\n"
 		
 		"\nOptions relevant to OSS output:\n"
-		"-d, --device <name>: Set the output device (defaults to " OSS_DEVICE ").\n"
+		"-d, --device <name>: Set the output device (defaults to '" OSS_DEVICE "').\n"
 		"-r, --rate <int>: Set the output sample rate.\n"
 		"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for OSS output thread.\n"
 		"-P, --priority <int>: Set scheduler priority to <int> (default is 1 when -R is used).\n"
@@ -2082,7 +2067,7 @@ print_usage(void) {
 		"-m [yes|no], --show-ms=[yes|no]: Show/hide music store window.\n"
 		
 		"\nExamples:\n"
-		"$ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2\n"
+		"$ aqualung -s3 -o alsa -R -r 48000 -d plughw:0,0\n"
 		"$ aqualung --srctype=1 --output oss --rate 96000\n"
 		"$ aqualung -o jack -a -E `find ./ledzeppelin/ -name \"*.flac\"`\n");
 	
@@ -2181,15 +2166,13 @@ main(int argc, char ** argv) {
 	int remote_quit = 0;
 	char * voladj_arg = NULL;
 
-	char * optstring = "vho:d:c:n:p:r:a::RP:DY:s::l:m:N:BLUTFEV:Qt::";
+	char * optstring = "vho:d:c:r:a::RP:DY:s::l:m:N:BLUTFEV:Qt::";
 	struct option long_options[] = {
 		{ "version", 0, 0, 'v' },
 		{ "help", 0, 0, 'h' },
 		{ "output", 1, 0, 'o' },
 		{ "device", 1, 0, 'd' },
 		{ "client", 1, 0, 'c' },
-		{ "nperiods", 1, 0, 'n'},
-		{ "period", 1, 0, 'p'},
 		{ "rate", 1, 0, 'r' },
 		{ "auto", 2, 0, 'a' },
 		{ "realtime", 0, 0, 'R' },
@@ -2354,16 +2337,6 @@ main(int argc, char ** argv) {
 #ifdef HAVE_JACK
 				client_name = strdup(optarg);
 #endif /* HAVE_JACK */
-				break;
-			case 'n':
-#ifdef HAVE_ALSA
-				nperiods = atoi(optarg);
-#endif /* HAVE_ALSA */
-				break;
-			case 'p':
-#ifdef HAVE_ALSA
-				period = atoi(optarg);
-#endif /* HAVE_ALSA */
 				break;
 			case 'r':
 				rate = atoi(optarg);
@@ -2699,10 +2672,8 @@ main(int argc, char ** argv) {
 
 		printf("Probing ALSA driver... ");
 
-		period = 8192;
-		nperiods = 2;
 		if (device_name == NULL) {
-			device_name = strdup("plughw:0,0");
+			device_name = strdup("default");
 		}
 
 		thread_info.out_SR = rate;
@@ -2773,22 +2744,10 @@ main(int argc, char ** argv) {
 #endif /* HAVE_OSS */
 #ifdef HAVE_ALSA
 		if (output == ALSA_DRIVER) {
-			device_name = strdup("plughw:0,0");
+			device_name = strdup("default");
 		}
 #endif /* HAVE_ALSA */
 	}
-
-#ifdef HAVE_ALSA
-	if (output == ALSA_DRIVER) {
-		if (period == 0) {
-			period = 8192;
-		}
-		if (nperiods == 0) {
-			nperiods = 2;
-		}
-	}
-#endif /* HAVE_ALSA */
-
 
 #ifdef HAVE_JACK
 	if (output == JACK_DRIVER) {

@@ -34,6 +34,7 @@
 #include "common.h"
 
 #ifdef HAVE_ALSA
+#define AlSA_PCM_NEW_HW_PARAMS_API
 #include <alsa/asoundlib.h>
 #endif /* HAVE_ALSA */
 
@@ -90,8 +91,8 @@ typedef struct _thread_info {
 	AQUALUNG_THREAD_DECLARE(alsa_thread_id)
 	char * pcm_name;
 	snd_pcm_t * pcm_handle;
-	snd_pcm_stream_t stream;
 	snd_pcm_hw_params_t * hwparams;
+	snd_pcm_uframes_t n_frames;
 	int is_output_32bit;
 	short * alsa_short_buf;
 	int * alsa_int_buf;

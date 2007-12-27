@@ -921,52 +921,6 @@ metadata_from_mpeg_stream_data(char * str) {
 }
 
 
-void
-metadata_make_title_string(metadata_t * meta, char * dest) {
-
-	char dest1[MAXLEN];
-	char * artist = NULL;
-	char * album = NULL;
-	char * title = NULL;
-	char * icy_name = NULL;
-
-	metadata_get_artist(meta, &artist);
-	metadata_get_album(meta, &album);
-	metadata_get_title(meta, &title);
-	metadata_get_icy_name(meta, &icy_name);
-
-	make_title_string(dest1, options.title_format, artist, album, title);
-	if (icy_name != NULL) {
-		if (dest1[0] != '\0') {
-			snprintf(dest, MAXLEN-strlen(dest1)-1, "%s (%s)", dest1, icy_name);
-		} else {
-			strncpy(dest, icy_name, MAXLEN-1);
-		}
-	}
-}
-
-
-void
-metadata_make_playlist_string(metadata_t * meta, char * dest) {
-
-	char * name = NULL;
-	char * descr = NULL;
-
-	metadata_get_icy_name(meta, &name);
-	metadata_get_icy_descr(meta, &descr);
-
-	if (name == NULL) {
-		metadata_make_title_string(meta, dest);
-	} else {
-		if (descr != NULL) {
-			snprintf(dest, MAXLEN-1, "%s (%s)", name, descr);
-		} else {
-			strncpy(dest, name, MAXLEN-1);
-		}
-	}
-}
-
-
 metadata_t *
 metadata_clone(metadata_t * meta, int tags) {
 

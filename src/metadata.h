@@ -246,9 +246,6 @@ meta_frame_t * metadata_add_frame_from_keyval(metadata_t * meta, int tag,
 
 metadata_t * metadata_from_mpeg_stream_data(char * str);
 
-void metadata_make_title_string(metadata_t * meta, char * dest);
-void metadata_make_playlist_string(metadata_t * meta, char * dest);
-
 metadata_t * metadata_clone(metadata_t * meta, int tags);
 
 

@@ -223,8 +223,11 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 	}
 
 #ifdef HAVE_MPEG
-	if (session->headers.content_type == NULL ||
-	    strcasecmp(session->headers.content_type, "audio/mpeg") == 0) {
+	if ((session->headers.content_type == NULL) ||
+	    (strcasecmp(session->headers.content_type, "audio/mp3") == 0) ||
+	    (strcasecmp(session->headers.content_type, "audio/mpeg") == 0) ||
+	    (strcasecmp(session->headers.content_type, "application/mp3") == 0) ||
+	    (strcasecmp(session->headers.content_type, "application/mpeg") == 0)) {
 		int ret;
 
 		if (session->headers.content_type == NULL) {
@@ -253,7 +256,9 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 #endif /* HAVE_MPEG */
 
 #ifdef HAVE_OGG_VORBIS
-	if (strcasecmp(session->headers.content_type, "application/ogg") == 0) {
+	if ((strcasecmp(session->headers.content_type, "application/ogg") == 0) ||
+	    (strcasecmp(session->headers.content_type, "audio/x-vorbis") == 0)) {
+
 		int ret;
 
 		dec = vorbis_decoder_init(fdec);

@@ -138,6 +138,7 @@ gchar command[RB_CONTROL_SIZE];
 
 gchar fileinfo_name[MAXLEN];
 gchar fileinfo_file[MAXLEN];
+int fileinfo_cover;
 
 int playlist_dirty;
 int playlist_auto_save_tag = -1;
@@ -1192,6 +1193,8 @@ playlist_start_playback_at_path(playlist_t * pl, GtkTreePath * path) {
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &pldata, -1);
 	cue_track_for_playback(pl->store, &iter, &cue);
 
+	is_file_loaded = 1;
+
         if (options.show_sn_title) {
 		refresh_displays();
         }
@@ -1207,8 +1210,6 @@ playlist_start_playback_at_path(playlist_t * pl, GtkTreePath * path) {
 	rb_write(rb_gui2disk, &cmd, sizeof(char));
 	rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 	try_waking_disk_thread();
-	
-	is_file_loaded = 1;
 }
 
 
@@ -1259,23 +1260,15 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		    !gtk_tree_model_iter_has_child(GTK_TREE_MODEL(pl->store), &iter)) {
 
 			GtkTreeIter dummy;
-			gchar * name;
 			playlist_data_t * data;
 			
-			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
-					   PL_COL_NAME, &name,
-					   PL_COL_DATA, &data, -1);
-
-			if (!name) {
-				free(name);
-				return TRUE;
-			}
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &data, -1);
 			
-			strncpy(fileinfo_name, name, MAXLEN-1);
+			make_title_string(fileinfo_name, options.title_format, data->artist, data->album, data->title);
 			strncpy(fileinfo_file, data->file, MAXLEN-1);
-			free(name);
+			fileinfo_cover = IS_PL_COVER(data);
 
-			show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy, IS_PL_COVER(data));
+			show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy, fileinfo_cover);
 		}
 
 		if (path) {
@@ -1513,18 +1506,16 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 			if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(pl->store), &iter)) {
 				gtk_widget_set_sensitive(plist__fileinfo, FALSE);
 			} else {
-				gchar * name;
 				playlist_data_t * data;
 
 				gtk_widget_set_sensitive(plist__fileinfo, TRUE);
 
-				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter,
-						   PL_COL_NAME, &name,
-						   PL_COL_DATA, &data, -1);
+				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &data, -1);
 
-				strncpy(fileinfo_name, name, MAXLEN-1);
+				make_title_string(fileinfo_name, options.title_format,
+						  data->artist, data->album, data->title);
 				strncpy(fileinfo_file, data->file, MAXLEN-1);
-				free(name);
+				fileinfo_cover = IS_PL_COVER(data);
 			}
 		} else {
 			gtk_widget_set_sensitive(plist__fileinfo, FALSE);
@@ -2519,24 +2510,7 @@ void
 plist__fileinfo_cb(gpointer user_data) {
 
 	GtkTreeIter dummy;
-	GtkTreePath * path;
-	GtkTreeIter iter;
-        playlist_t * pl;
-	playlist_data_t * data;
-
-	if ((pl = playlist_get_current()) == NULL) {
-		return;
-	}
-
-        gtk_tree_view_get_cursor(GTK_TREE_VIEW(pl->view), &path, NULL);
-
-        if (path &&
-            gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, path) &&
-            !gtk_tree_model_iter_has_child(GTK_TREE_MODEL(pl->store), &iter)) {
-
-                gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &data, -1);
-	        show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy, IS_PL_COVER(data));
-        }
+	show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy, fileinfo_cover);
 }
 
 void

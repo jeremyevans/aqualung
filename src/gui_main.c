@@ -322,33 +322,33 @@ set_title_label(char * str) {
 	gchar default_title[MAXLEN];
         char tmp[MAXLEN];
 
+	if (!GTK_IS_LABEL(label_title)) {
+		return;
+	}
+
 	if (is_file_loaded) {
-		if (GTK_IS_LABEL(label_title)) {
-			gtk_label_set_text(GTK_LABEL(label_title), str);
-			if (options.show_sn_title) {
-				strncpy(tmp, str, MAXLEN-1);
-				strncat(tmp, " - ", MAXLEN-1);
-				strncat(tmp, win_title, MAXLEN-1);
-				gtk_window_set_title(GTK_WINDOW(main_window), tmp);
+		gtk_label_set_text(GTK_LABEL(label_title), str);
+		if (options.show_sn_title) {
+			strncpy(tmp, str, MAXLEN-1);
+			strncat(tmp, " - ", MAXLEN-1);
+			strncat(tmp, win_title, MAXLEN-1);
+			gtk_window_set_title(GTK_WINDOW(main_window), tmp);
 #ifdef HAVE_SYSTRAY
-				gtk_status_icon_set_tooltip(systray_icon, tmp);
+			gtk_status_icon_set_tooltip(systray_icon, tmp);
 #endif /* HAVE_SYSTRAY */
-			} else {
-				gtk_window_set_title(GTK_WINDOW(main_window), win_title);
-#ifdef HAVE_SYSTRAY
-				gtk_status_icon_set_tooltip(systray_icon, win_title);
-#endif /* HAVE_SYSTRAY */
-			}
-		}
-	} else {
-		if (GTK_IS_LABEL(label_title)) {
-                        sprintf(default_title, "Aqualung %s", AQUALUNG_VERSION);
-			gtk_label_set_text(GTK_LABEL(label_title), default_title);
+		} else {
 			gtk_window_set_title(GTK_WINDOW(main_window), win_title);
 #ifdef HAVE_SYSTRAY
 			gtk_status_icon_set_tooltip(systray_icon, win_title);
 #endif /* HAVE_SYSTRAY */
-                }         
+		}
+	} else {
+		sprintf(default_title, "Aqualung %s", AQUALUNG_VERSION);
+		gtk_label_set_text(GTK_LABEL(label_title), default_title);
+		gtk_window_set_title(GTK_WINDOW(main_window), win_title);
+#ifdef HAVE_SYSTRAY
+		gtk_status_icon_set_tooltip(systray_icon, win_title);
+#endif /* HAVE_SYSTRAY */
         }
 }
 
@@ -363,14 +363,15 @@ hide_cover_thumbnail(void) {
 void
 set_format_label(char * format_str) {
 
-	if (!is_file_loaded) {
-		if (GTK_IS_LABEL(label_format))
-			gtk_label_set_text(GTK_LABEL(label_format), "");
+	if (!GTK_IS_LABEL(label_format)) {
 		return;
 	}
 
-	if (GTK_IS_LABEL(label_format))
+	if (!is_file_loaded) {
+		gtk_label_set_text(GTK_LABEL(label_format), "");
+	} else {
 		gtk_label_set_text(GTK_LABEL(label_format), format_str);
+	}
 }
 
 
@@ -398,14 +399,16 @@ set_bps_label(int bps, int format_flags) {
 	
 	char str[MAXLEN];
 
+	if (!GTK_IS_LABEL(label_bps)) {
+		return;
+	}
+
 	format_bps_label(bps, format_flags, str);
 
 	if (is_file_loaded) {
-		if (GTK_IS_LABEL(label_bps))
-			gtk_label_set_text(GTK_LABEL(label_bps), str);
+		gtk_label_set_text(GTK_LABEL(label_bps), str);
 	} else {
-		if (GTK_IS_LABEL(label_bps))
-			gtk_label_set_text(GTK_LABEL(label_bps), "");
+		gtk_label_set_text(GTK_LABEL(label_bps), "");
 	}
 }
 
@@ -415,14 +418,16 @@ set_samplerate_label(int sr) {
 	
 	char str[MAXLEN];
 
+	if (!GTK_IS_LABEL(label_samplerate)) {
+		return;
+	}
+
 	sprintf(str, "%d Hz", sr);
 
 	if (is_file_loaded) {
-		if (GTK_IS_LABEL(label_samplerate))
-			gtk_label_set_text(GTK_LABEL(label_samplerate), str);
+		gtk_label_set_text(GTK_LABEL(label_samplerate), str);
 	} else {
-		if (GTK_IS_LABEL(label_samplerate))
-			gtk_label_set_text(GTK_LABEL(label_samplerate), "");
+		gtk_label_set_text(GTK_LABEL(label_samplerate), "");
 	}
 }
 
@@ -430,17 +435,18 @@ set_samplerate_label(int sr) {
 void
 set_mono_label(int is_mono) {
 
+	if (!GTK_IS_LABEL(label_mono)) {
+		return;
+	}
+
 	if (is_file_loaded) {
 		if (is_mono) {
-			if (GTK_IS_LABEL(label_mono))
-				gtk_label_set_text(GTK_LABEL(label_mono), _("MONO"));
+			gtk_label_set_text(GTK_LABEL(label_mono), _("MONO"));
 		} else {
-			if (GTK_IS_LABEL(label_mono))
-				gtk_label_set_text(GTK_LABEL(label_mono), _("STEREO"));
+			gtk_label_set_text(GTK_LABEL(label_mono), _("STEREO"));
 		}
 	} else {
-		if (GTK_IS_LABEL(label_mono))
-			gtk_label_set_text(GTK_LABEL(label_mono), "");
+		gtk_label_set_text(GTK_LABEL(label_mono), "");
 	}
 }
 
@@ -451,6 +457,10 @@ set_output_label(int output, int out_SR) {
 
 	char str[MAXLEN];
 	
+	if (!GTK_IS_LABEL(label_output)) {
+		return;
+	}
+
 	switch (output) {
 #ifdef HAVE_OSS
 	case OSS_DRIVER:
@@ -476,10 +486,10 @@ set_output_label(int output, int out_SR) {
 		strcpy(str, _("No output"));
 		break;
 	}
-	
-	if (GTK_IS_LABEL(label_output))
-		gtk_label_set_text(GTK_LABEL(label_output), str);
+
+	gtk_label_set_text(GTK_LABEL(label_output), str);
 }
+
 
 
 void
@@ -487,15 +497,16 @@ set_src_type_label(int src_type) {
 	
 	char str[MAXLEN];
 	
+	if (!GTK_IS_LABEL(label_src_type)) {
+		return;
+	}
+
 	strcpy(str, _("SRC Type: "));
 #ifdef HAVE_SRC
 	strcat(str, src_get_name(src_type));
 #else
 	strcat(str, _("None"));
 #endif /* HAVE_SRC */
-
-	if (GTK_IS_LABEL(label_src_type))
-		gtk_label_set_text(GTK_LABEL(label_src_type), str);
 }
 
 
@@ -504,11 +515,14 @@ refresh_time_displays(void) {
 
 	char str[MAXLEN];
 
+	if (!GTK_IS_LABEL(time_labels[0]) || !GTK_IS_LABEL(time_labels[1]) || !GTK_IS_LABEL(time_labels[2])) {
+		return;
+	}
+
 	if (is_file_loaded) {
 		if (refresh_time_label || options.time_idx[0] != 0) {
 			sample2time(disp_info.sample_rate, disp_pos, str, 0);
-			if (GTK_IS_LABEL(time_labels[0])) 
-				gtk_label_set_text(GTK_LABEL(time_labels[0]), str);
+			gtk_label_set_text(GTK_LABEL(time_labels[0]), str);
                         
 		}
 
@@ -518,8 +532,7 @@ refresh_time_displays(void) {
 			} else {
 				sample2time(disp_info.sample_rate, disp_samples - disp_pos, str, 1);
 			}
-			if (GTK_IS_LABEL(time_labels[1])) 
-				gtk_label_set_text(GTK_LABEL(time_labels[1]), str);
+			gtk_label_set_text(GTK_LABEL(time_labels[1]), str);
                         
 		}
 		
@@ -529,18 +542,15 @@ refresh_time_displays(void) {
 			} else {
 				sample2time(disp_info.sample_rate, disp_samples, str, 0);
 			}
-			if (GTK_IS_LABEL(time_labels[2])) 
-				gtk_label_set_text(GTK_LABEL(time_labels[2]), str);
+			gtk_label_set_text(GTK_LABEL(time_labels[2]), str);
                         
 		}
 	} else {
 		int i;
 		for (i = 0; i < 3; i++) {
-			if (GTK_IS_LABEL(time_labels[i]))
-				gtk_label_set_text(GTK_LABEL(time_labels[i]), " 00:00 ");
+			gtk_label_set_text(GTK_LABEL(time_labels[i]), " 00:00 ");
 		}
 	}
-
 }
 
 void
@@ -569,17 +579,21 @@ refresh_displays(void) {
 
 	p = playlist_get_playing_path(pl);
 	if (p != NULL) {
-		char list_str[MAXLEN];
 		playlist_data_t * pldata;
 
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &pldata, -1);
 		gtk_tree_path_free(p);
 
-		playlist_data_get_display_name(list_str, pldata);
-
-		if (!is_file_loaded || !httpc_is_url(pldata->file)) {
+		if (!httpc_is_url(pldata->file)) {
+			char list_str[MAXLEN];
+			playlist_data_get_display_name(list_str, pldata);
 			set_title_label(list_str);
+		} else if (!is_file_loaded) {
+			char * name;
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_NAME, &name, -1);
+			set_title_label(name);
+			g_free(name);
 		}
 
 		if (is_file_loaded) {
@@ -1305,12 +1319,13 @@ changed_pos(GtkAdjustment * adj, gpointer data) {
 
         char str[16];
 
-	if (!is_file_loaded)
+	if (!is_file_loaded) {
 		gtk_adjustment_set_value(adj, 0.0f);
+	}
 
         if (options.enable_tooltips) {
-                sprintf(str, _("Position: %d%%"), (gint)gtk_adjustment_get_value(GTK_ADJUSTMENT(adj))); 
-                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), scale_pos, str, NULL);
+                sprintf(str, _("Position: %d%%"), (gint)gtk_adjustment_get_value(adj)); 
+                gtk_tooltips_set_tip(GTK_TOOLTIPS(aqualung_tooltips), scale_pos, str, NULL);
         }
 }
 
@@ -3481,11 +3496,15 @@ adjust_remote_volume(char * str) {
 void
 process_metablock(metadata_t * meta) {
 
-	char title_str[MAXLEN];
-	char playlist_str[MAXLEN];
+	char buf[MAXLEN];
+	char tmp[MAXLEN];
 	playlist_t * pl;
 	file_decoder_t * fdec = (file_decoder_t *)meta->fdec;
-	char * str = NULL;
+	char * artist = NULL;
+	char * album = NULL;
+	char * title = NULL;
+	char * icy_name = NULL;
+	char * icy_descr = NULL;
 	meta_frame_t * frame;
 
 	frame = metadata_get_frame_by_type(meta, META_FIELD_APIC, NULL);
@@ -3512,14 +3531,44 @@ process_metablock(metadata_t * meta) {
 		return;
 	}
 
-	metadata_make_title_string(meta, title_str);
-	set_title_label(title_str);
+	buf[0] = '\0';
+	tmp[0] = '\0';
 
-	if (!metadata_get_icy_name(meta, &str)) {
+	metadata_get_artist(meta, &artist);
+	metadata_get_album(meta, &album);
+	metadata_get_title(meta, &title);
+	metadata_get_icy_name(meta, &icy_name);
+
+	if ((artist && !is_all_wspace(artist)) ||
+	    (album && !is_all_wspace(album)) ||
+	    (title && !is_all_wspace(title))) {
+		make_title_string(tmp, options.title_format, artist, album, title);
+		if (icy_name != NULL) {
+			snprintf(buf, MAXLEN-1, "%s (%s)", tmp, icy_name);
+		}
+	} else if (icy_name != NULL) {
+		strncpy(buf, icy_name, MAXLEN-1);
+	}
+
+	if (buf[0] != '\0') {
+		set_title_label(buf);
+	} else {
+		set_title_label(fdec->filename);
+	}
+
+	if (icy_name == NULL) {
 		return;
 	}
 
-	metadata_make_playlist_string(meta, playlist_str);
+	buf[0] = '\0';
+
+	metadata_get_icy_descr(meta, &icy_descr);
+
+	if (icy_descr != NULL) {
+		snprintf(buf, MAXLEN-1, "%s (%s)", icy_name, icy_descr);
+	} else {
+		strncpy(buf, icy_name, MAXLEN-1);
+	}
 
 	/* set playlist_str for playlist entry */
 	if ((pl = playlist_get_playing()) != NULL) {
@@ -3531,8 +3580,8 @@ process_metablock(metadata_t * meta) {
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &data, -1);
 
-			free_strdup(&data->title, playlist_str);
-			gtk_tree_store_set(pl->store, &iter, PL_COL_NAME, playlist_str, -1);
+			free_strdup(&data->title, buf);
+			gtk_tree_store_set(pl->store, &iter, PL_COL_NAME, buf, -1);
 
 			gtk_tree_path_free(p);
 		}

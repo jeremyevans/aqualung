@@ -536,7 +536,8 @@ playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 		if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(tstore), &parent, iter)) {
 			playlist_data_t * pdata;
 			gtk_tree_model_get(GTK_TREE_MODEL(tstore), &parent, PL_COL_DATA, &pdata, -1);
-			if (!strcmp(pdata->artist, tdata->artist) && !strcmp(pdata->album, tdata->album)) {
+			if (pdata->artist && tdata->artist && pdata->album && tdata->album &&
+			    !strcmp(pdata->artist, tdata->artist) && !strcmp(pdata->album, tdata->album)) {
 				gtk_tree_store_set(tstore, iter, PL_COL_NAME, tdata->title, -1);
 				name_set = 1;
 			}
@@ -1590,6 +1591,21 @@ playlist_data_get_display_name(char * list_str, playlist_data_t * pldata) {
 			strncpy(list_str, tmp, MAXLEN-1);
 		}
 		g_free(tmp);
+
+		if (options.meta_us_to_space) {
+			int i;
+			for (i = 0; list_str[i]; i++) {
+				if (list_str[i] == '_') {
+					list_str[i] = ' ';
+				}
+			}
+		}
+		if (options.meta_rm_extension) {
+			char * c = NULL;
+			if ((c = strrchr(list_str, '.')) != NULL) {
+				*c = '\0';
+			}
+		}
 	}
 }
 

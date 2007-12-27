@@ -1337,7 +1337,8 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 		playlist_data_t * pdata;
 
 		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), piter, PL_COL_DATA, &pdata, -1);
-		if (!strcmp(pdata->artist, artist_name) && !strcmp(pdata->album, record_name)) {
+		if (pdata->artist && pdata->album && artist_name && record_name &&
+		    !strcmp(pdata->artist, artist_name) && !strcmp(pdata->album, record_name)) {
 			strcpy(list_str, track_name);
 		} else {
 			make_title_string(list_str, options.title_format, artist_name, record_name, track_name);

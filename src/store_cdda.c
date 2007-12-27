@@ -668,7 +668,8 @@ cdda_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl, GtkTreeIter * p
 		playlist_data_t * pdata;
 
 		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), piter, PL_COL_DATA, &pdata, -1);
-		if (!strcmp(pdata->artist, drive->disc.artist_name) && !strcmp(pdata->album, drive->disc.record_name)) {
+		if (pdata->artist && pdata->album &&
+		    !strcmp(pdata->artist, drive->disc.artist_name) && !strcmp(pdata->album, drive->disc.record_name)) {
 			strcpy(list_str, track_name);
 		} else {
 			make_title_string(list_str, options.title_format, drive->disc.artist_name,

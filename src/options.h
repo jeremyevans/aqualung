@@ -169,6 +169,8 @@ typedef struct {
 	int batch_mpeg_add_ape;
 	int metaedit_auto_clone;
 	int meta_use_basename_only;
+	int meta_rm_extension;
+	int meta_us_to_space;
 
 	/* CD audio */
 	int cdda_drive_speed;

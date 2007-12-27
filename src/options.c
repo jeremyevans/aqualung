@@ -190,6 +190,8 @@ GtkWidget * check_batch_mpeg_add_id3v1;
 GtkWidget * check_batch_mpeg_add_id3v2;
 GtkWidget * check_batch_mpeg_add_ape;
 GtkWidget * check_meta_use_basename_only;
+GtkWidget * check_meta_rm_extension;
+GtkWidget * check_meta_us_to_space;
 GtkWidget * check_metaedit_auto_clone;
 
 #ifdef HAVE_CDDA
@@ -305,6 +307,13 @@ open_font_desc(void) {
 	}
 }
 
+int
+diff_option_from_toggle(GtkWidget * widget, int opt) {
+
+	gboolean act = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+	return (act && !opt) || (!act && opt);
+}
+
 void
 options_window_accept(void) {
 
@@ -321,14 +330,15 @@ options_window_accept(void) {
 
 	/* General */
 
-	if (strcmp(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)))) {
+	if (diff_option_from_toggle(check_meta_use_basename_only, options.meta_use_basename_only) ||
+	    diff_option_from_toggle(check_meta_rm_extension, options.meta_rm_extension) ||
+	    diff_option_from_toggle(check_meta_us_to_space, options.meta_us_to_space) ||
+	    strcmp(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)))) {
 		title_format_changed = 1;
 	}
 
 	strncpy(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)), MAXLEN-1);
 	strncpy(options.default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN-1);
-
-	playlist_reset_display_names();
 
 	set_option_from_toggle(check_enable_tooltips, &options.enable_tooltips);
 	if (options.enable_tooltips) {
@@ -424,7 +434,12 @@ options_window_accept(void) {
 
 	set_option_from_toggle(check_metaedit_auto_clone, &options.metaedit_auto_clone);
 	set_option_from_toggle(check_meta_use_basename_only, &options.meta_use_basename_only);
+	set_option_from_toggle(check_meta_rm_extension, &options.meta_rm_extension);
+	set_option_from_toggle(check_meta_us_to_space, &options.meta_us_to_space);
 
+	if (title_format_changed) {
+		playlist_reset_display_names();
+	}
 
 	/* CDDA */
 #ifdef HAVE_CDDA
@@ -2361,9 +2376,27 @@ create_options_window(void) {
 	}
         gtk_box_pack_start(GTK_BOX(hbox), check_meta_use_basename_only, FALSE, TRUE, 35);
 
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 3);
+	check_meta_rm_extension = gtk_check_button_new_with_label(_("Remove file extension"));
+	gtk_widget_set_name(check_meta_rm_extension, "check_on_notebook");
+	if (options.meta_rm_extension) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_meta_rm_extension), TRUE);
+	}
+        gtk_box_pack_start(GTK_BOX(hbox), check_meta_rm_extension, FALSE, TRUE, 35);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 3);
+	check_meta_us_to_space = gtk_check_button_new_with_label(_("Convert underscore to space"));
+	gtk_widget_set_name(check_meta_us_to_space, "check_on_notebook");
+	if (options.meta_us_to_space) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_meta_us_to_space), TRUE);
+	}
+        gtk_box_pack_start(GTK_BOX(hbox), check_meta_us_to_space, FALSE, TRUE, 35);
+
+
 	hbox_meta = gtk_hbox_new(FALSE, 5);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 8);
-
 
 	frame_meta = gtk_frame_new(_("Metadata editor (File info dialog)"));
         gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
@@ -3145,6 +3178,8 @@ save_config(void) {
 	SAVE_INT(batch_mpeg_add_ape);
 	SAVE_INT(metaedit_auto_clone);
 	SAVE_INT(meta_use_basename_only);
+	SAVE_INT(meta_rm_extension);
+	SAVE_INT(meta_us_to_space);
 	SAVE_INT(enable_tooltips);
 	SAVE_INT_SH(buttons_at_the_bottom);
 	SAVE_INT(disable_buttons_relief);
@@ -3541,6 +3576,8 @@ load_config(void) {
 		LOAD_INT(batch_mpeg_add_ape);
 		LOAD_INT(metaedit_auto_clone);
 		LOAD_INT(meta_use_basename_only);
+		LOAD_INT(meta_rm_extension);
+		LOAD_INT(meta_us_to_space);
 		LOAD_INT(show_rva_in_playlist);
 		LOAD_INT(pl_statusbar_show_size);
 		LOAD_INT(ms_statusbar_show_size);

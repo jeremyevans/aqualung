@@ -759,8 +759,10 @@ playlist_reset_display_names(void) {
 		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, NULL, i++)) {
 			if (!gtk_tree_model_iter_has_child(GTK_TREE_MODEL(pl->store), &iter)) {
 				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &data, -1);
-				playlist_data_get_display_name(list_str, data);
-				gtk_tree_store_set(pl->store, &iter, PL_COL_NAME, list_str, -1);
+				if (!httpc_is_url(data->file)) {
+					playlist_data_get_display_name(list_str, data);
+					gtk_tree_store_set(pl->store, &iter, PL_COL_NAME, list_str, -1);
+				}
 			}
 		}
 	}
@@ -1264,7 +1266,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 			
 			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &data, -1);
 			
-			make_title_string(fileinfo_name, options.title_format, data->artist, data->album, data->title);
+			playlist_data_get_display_name(fileinfo_name, data);
 			strncpy(fileinfo_file, data->file, MAXLEN-1);
 			fileinfo_cover = IS_PL_COVER(data);
 
@@ -1512,8 +1514,7 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 
 				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &data, -1);
 
-				make_title_string(fileinfo_name, options.title_format,
-						  data->artist, data->album, data->title);
+				playlist_data_get_display_name(fileinfo_name, data);
 				strncpy(fileinfo_file, data->file, MAXLEN-1);
 				fileinfo_cover = IS_PL_COVER(data);
 			}

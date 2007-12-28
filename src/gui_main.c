@@ -322,10 +322,6 @@ set_title_label(char * str) {
 	gchar default_title[MAXLEN];
         char tmp[MAXLEN];
 
-	if (!GTK_IS_LABEL(label_title)) {
-		return;
-	}
-
 	if (is_file_loaded) {
 		gtk_label_set_text(GTK_LABEL(label_title), str);
 		if (options.show_sn_title) {
@@ -363,10 +359,6 @@ hide_cover_thumbnail(void) {
 void
 set_format_label(char * format_str) {
 
-	if (!GTK_IS_LABEL(label_format)) {
-		return;
-	}
-
 	if (!is_file_loaded) {
 		gtk_label_set_text(GTK_LABEL(label_format), "");
 	} else {
@@ -399,10 +391,6 @@ set_bps_label(int bps, int format_flags) {
 	
 	char str[MAXLEN];
 
-	if (!GTK_IS_LABEL(label_bps)) {
-		return;
-	}
-
 	format_bps_label(bps, format_flags, str);
 
 	if (is_file_loaded) {
@@ -418,10 +406,6 @@ set_samplerate_label(int sr) {
 	
 	char str[MAXLEN];
 
-	if (!GTK_IS_LABEL(label_samplerate)) {
-		return;
-	}
-
 	sprintf(str, "%d Hz", sr);
 
 	if (is_file_loaded) {
@@ -434,10 +418,6 @@ set_samplerate_label(int sr) {
 
 void
 set_mono_label(int is_mono) {
-
-	if (!GTK_IS_LABEL(label_mono)) {
-		return;
-	}
 
 	if (is_file_loaded) {
 		if (is_mono) {
@@ -457,10 +437,6 @@ set_output_label(int output, int out_SR) {
 
 	char str[MAXLEN];
 	
-	if (!GTK_IS_LABEL(label_output)) {
-		return;
-	}
-
 	switch (output) {
 #ifdef HAVE_OSS
 	case OSS_DRIVER:
@@ -497,10 +473,6 @@ set_src_type_label(int src_type) {
 	
 	char str[MAXLEN];
 	
-	if (!GTK_IS_LABEL(label_src_type)) {
-		return;
-	}
-
 	strcpy(str, _("SRC Type: "));
 #ifdef HAVE_SRC
 	strcat(str, src_get_name(src_type));
@@ -514,10 +486,6 @@ void
 refresh_time_displays(void) {
 
 	char str[MAXLEN];
-
-	if (!GTK_IS_LABEL(time_labels[0]) || !GTK_IS_LABEL(time_labels[1]) || !GTK_IS_LABEL(time_labels[2])) {
-		return;
-	}
 
 	if (is_file_loaded) {
 		if (refresh_time_label || options.time_idx[0] != 0) {
@@ -3711,7 +3679,7 @@ timeout_callback(gpointer data) {
 
 			fresh_new_file_prev = fresh_new_file;
 
-			if (refresh_scale && !refresh_scale_suppress && GTK_IS_ADJUSTMENT(adj_pos)) {
+			if (refresh_scale && !refresh_scale_suppress) {
 				if (total_samples == 0) {
 					gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
 				} else {

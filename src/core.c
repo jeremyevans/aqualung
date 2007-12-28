@@ -234,11 +234,16 @@ flush_output(double src_ratio) {
 	u_int32_t driver_offset;
 	char send_cmd = CMD_FLUSH;
 
+	struct timespec req_time;
+	struct timespec rem_time;
+	req_time.tv_sec = 0;
+	req_time.tv_nsec = 1000000;
+
 	sample_offset = rb_read_space(rb) / (2 * sample_size) * src_ratio;
 
 	rb_write(rb_disk2out, &send_cmd, 1);
 	while (rb_read_space(rb_out2disk) < sizeof(u_int32_t))
-		;
+		nanosleep(&req_time, &rem_time);
 	rb_read(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
 
 	return sample_offset + driver_offset * src_ratio;

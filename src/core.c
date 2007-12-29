@@ -106,7 +106,11 @@ const size_t sample_size = sizeof(float);
 gint playlist_state, browser_state;
 
 #ifndef OSS_DEVICE
+#ifdef __OpenBSD__
+#define OSS_DEVICE "/dev/audio"
+#else
 #define OSS_DEVICE "/dev/dsp"
+#endif /* __OpenBSD__ */
 #endif /* OSS_DEVICE */
 
 /* The name of the output device e.g. "/dev/dsp" or "plughw:0,0" */

@@ -6,10 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aqualung 0.9beta9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-23 21:22+0100\n"
-"PO-Revision-Date: 2007-12-23 21:26+0100\n"
+"POT-Creation-Date: 2007-12-27 16:04+0100\n"
+"PO-Revision-Date: 2007-12-29 20:53+0100\n"
 "Last-Translator: Philipp Überbacher <hollunder@gmx.at>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -251,8 +250,8 @@ msgid ""
 "Follows the directory structure to identify the artists and\n"
 "records. The files are added on a record basis."
 msgstr ""
-"Folgt der Verzeichnisstruktur um Künstler und Aufnahmen zu ermitteln.\n"
-"Die Dateien werden auf Basis der Aufnahmen hinzugefügt."
+"Folgt der Verzeichnisstruktur um Künstler und Alben zu ermitteln.\n"
+"Die Dateien werden auf Basis der Alben hinzugefügt."
 
 msgid "Independent"
 msgstr "Unabhängig"
@@ -267,10 +266,10 @@ msgstr ""
 "und Dateinamen-Umwandlung verfügbar sind."
 
 msgid "Load settings from Music Store file"
-msgstr "Lade Einstellungen aus einer Musiklager Datei"
+msgstr "Lade Einstellungen aus einer Musiksammlungs Datei"
 
 msgid "Build/Update store"
-msgstr "Erstelle/Aktualisiere Musiklager"
+msgstr "Erstelle/Aktualisiere Sammlung"
 
 msgid "General"
 msgstr "Allgemein"
@@ -288,16 +287,16 @@ msgid "Structure:"
 msgstr "Struktur:"
 
 msgid "root / record / track"
-msgstr "Wurzel / Aufnahme / Titel"
+msgstr "Wurzel / Album / Titel"
 
 msgid "root / artist / record / track"
-msgstr "Wurzel / Künstler / Aufnahme / Titel"
+msgstr "Wurzel / Künstler / Album / Titel"
 
 msgid "root / artist / artist / record / track"
-msgstr "Wurzel / Künstler / Künstler / Aufnahme / Titel"
+msgstr "Wurzel / Künstler / Künstler / Album / Titel"
 
 msgid "root / artist / artist / artist / record / track"
-msgstr "Wurzel / Künstler / Künstler/ Künstler / Aufnahme / Titel"
+msgstr "Wurzel / Künstler / Künstler/ Künstler / Album / Titel"
 
 msgid "Exclude files matching wildcard"
 msgstr "Schließe Dateien die der Maske entsprechen aus"
@@ -327,22 +326,22 @@ msgid "Directory name (lowercase)"
 msgstr "Verzeichnisname (Kleinbuchstaben)"
 
 msgid "Record"
-msgstr "Aufnahme"
+msgstr "Album"
 
 msgid "Sort records by"
-msgstr "Sortiere Aufnahmen nach"
+msgstr "Sortiere Alben nach"
 
 msgid "Record name"
-msgstr "Name der Aufnahme"
+msgstr "Name des Albums"
 
 msgid "Record name (lowercase)"
-msgstr "Name der Aufnahme (Kleinbuchstaben)"
+msgstr "Name des Albums (Kleinbuchstaben)"
 
 msgid "Year"
 msgstr "Jahr"
 
 msgid "Add year to the comments of new records"
-msgstr "Füge das Jahr zu den Kommentaren neuer Aufnahmen hinzu"
+msgstr "Füge das Jahr zu den Kommentaren neuer Alben hinzu"
 
 msgid "Track"
 msgstr "Titel"
@@ -363,7 +362,7 @@ msgid "Test"
 msgstr ""
 
 msgid "Building store from filesystem"
-msgstr "Erstellen des Lagers anhand der Ordnerstruktur"
+msgstr "Erstellen der Sammlung anhand der Ordnerstruktur"
 
 msgid "Directory:"
 msgstr "Verzeichnis:"
@@ -381,7 +380,7 @@ msgid "Unknown Artist"
 msgstr "Unbekannter Künstler"
 
 msgid "Unknown Record"
-msgstr "Unbekannte Aufnahme"
+msgstr "Unbekanntes Album"
 
 msgid "Scanning files"
 msgstr "Lese Dateien"
@@ -471,11 +470,11 @@ msgstr ""
 
 msgid "The email address provided for submission is invalid."
 msgstr ""
-"Die email-Addresse die sie für die Übertragung angegeben haben ist ungültig."
+"Die email-Adresse die sie für die Übertragung angegeben haben ist ungültig."
 
 msgid "An error occurred while submitting the record to the CDDB server."
 msgstr ""
-"Während der Übertragung der Aufnahme zum CDDB Server trat ein Fehler auf."
+"Während der Übertragung des Albums zum CDDB Server trat ein Fehler auf."
 
 msgid "Correct existing record"
 msgstr "Korrigiere bestehenden Eintrag"
@@ -517,7 +516,7 @@ msgid "Tracks"
 msgstr "Titel"
 
 msgid "You have to provide an email address for CDDB submission."
-msgstr "Du musst eine email-Addresse für die CDDB Übertragung angeben."
+msgstr "Du musst eine email-Adresse für die CDDB Übertragung angeben."
 
 msgid "Please select the directory for ripped files."
 msgstr "Bitte wähle ein Verzeichnis für die eingelesenen Dateien aus."
@@ -538,7 +537,7 @@ msgid "Bitrate [kbps]:"
 msgstr ""
 
 msgid "Artist/Album already existing, not empty"
-msgstr "Künstler/Aufnahme existiert bereits und ist nicht leer"
+msgstr "Künstler/Album existiert bereits und ist nicht leer"
 
 msgid ""
 "\n"
@@ -549,11 +548,11 @@ msgid ""
 "or the destination Music Store."
 msgstr ""
 "\n"
-"Das gewählte Musiklager hat bereits einen entsprechenden Künstler und eine "
-"Aufnahme die bereits Titel enthält. Wenn du OK drückst werden diese Titel "
-"entfernt. Die Dateien bleiben intakt, aber sie werden vom Ziel-Musiklager "
-"entfernt. Drücke Abbrechen um Künstler/Aufnahme zu ändern oder zum Ziel-"
-"Musiklager zurückzukehren."
+"Die gewählte Musiksammlung hat bereits einen entsprechenden Künstler und ein "
+"Album das bereits Titel enthält. Wenn du OK drückst werden diese Titel "
+"entfernt. Die Dateien bleiben intakt, aber sie werden von der Ziel-Musiksammlung "
+"entfernt. Drücke Abbrechen um Künstler/Album zu ändern oder zur Ziel-"
+"Musiksammlung zurückzukehren."
 
 msgid "Rip CD"
 msgstr "Lies CD aus"
@@ -589,7 +588,7 @@ msgid "Target directory for ripped files"
 msgstr "Zielordner für die ausgelesenen Dateien"
 
 msgid "Add to Music Store"
-msgstr "Zum Musiklager hinzufügen"
+msgstr "Zur Musiksammlung hinzufügen"
 
 msgid "Format"
 msgstr ""
@@ -627,7 +626,7 @@ msgid ""
 "Destination directory is not read-write accessible!"
 msgstr ""
 "\n"
-"Kein lese-schreibzugriff auf das Zielverzeichnis!"
+"Kein Lese-/Schreibzugriff auf das Zielverzeichnis!"
 
 msgid "Total"
 msgstr "Gesamt"
@@ -675,8 +674,12 @@ msgid ""
 "which is unique within an export session."
 msgstr ""
 "\n"
-"Diese Vorlage-Zeichenkette wird für die Konstruktion eines Dateinamens für die zu exportierenden Dateien benutzt. Der\n"
-"Künstler, Aufnahme und Liedname sind mit %%%%a, %%%%r und %%%%t bezeichnet. Die Liednummer und Formatabhängige Dateiendung werden mit %%%%n und %%%%x bezeichnet."
+"Diese Vorlage-Zeichenkette wird für die Konstruktion eines Dateinamens für "
+"die zu exportierenden Dateien benutzt. "
+"Künstler, Album und Liedname werden mit %%%%a, %%%%r und %%%%t bezeichnet. "
+"Die Liednummer und formatabhängige Dateiendung werden mit %%%%n und %%%%x "
+"bezeichnet. Das Flag %%%%i ist eine Bezeichnung, die innerhalb "
+"einer Exportsitzung einmalig ist."
 
 msgid "Export files"
 msgstr "Exportiere Dateien"
@@ -691,7 +694,7 @@ msgid "Create subdirectories for artists"
 msgstr "Erzeuge Unterverzeichnisse für Künstler"
 
 msgid "Create subdirectories for albums"
-msgstr "Erzeuge Unterverzeichnisse für Aufnahmen"
+msgstr "Erzeuge Unterverzeichnisse für Alben"
 
 msgid ""
 "Subdirectory name\n"
@@ -702,6 +705,9 @@ msgstr ""
 
 msgid "Filename template:"
 msgstr "Dateinamen-Vorlage:"
+
+msgid "Error in format string"
+msgstr "Fehler in der Formatierungs-Zeichenkette"
 
 msgid "Exporting files"
 msgstr "Exportiere Dateien"
@@ -748,7 +754,6 @@ msgstr ""
 "Angehängter Bilderrahmen enthält kein Bild!\n"
 "Bitte füge ein Bild ein oder entferne den Rahmen."
 
-# c-format
 #, c-format
 msgid ""
 "Failed to write metadata to file.\n"
@@ -805,7 +810,7 @@ msgid "Save"
 msgstr "Speichern"
 
 msgid "Import as Record"
-msgstr "Als Aufnahme importieren"
+msgstr "Als Album importieren"
 
 msgid "Import as Track No."
 msgstr "Als Liednummer importieren"
@@ -899,7 +904,7 @@ msgid ""
 "One or more stores in Music Store have been modified.\n"
 "Do you want to save them before exiting?"
 msgstr ""
-"Ein oder mehrere Lager im Musiklager wurden verändert.\n"
+"Eine oder mehrere Sammlungen in der Musiksammlung wurden verändert.\n"
 "Möchtest du sie vor dem Beenden speichern?"
 
 msgid "Do not exit"
@@ -1000,7 +1005,7 @@ msgid "Toggle playlist"
 msgstr "Playliste Ein-/Ausblenden"
 
 msgid "Toggle music store"
-msgstr "Musiklager Ein-/Ausblenden"
+msgstr "Musiksammlung Ein-/Ausblenden"
 
 msgid "Toggle LADSPA patch builder"
 msgstr "LADSPA Schaltkasten Ein-/Ausblenden"
@@ -1253,7 +1258,7 @@ msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
 msgid "Album"
-msgstr "Aufnahme"
+msgstr "Album"
 
 msgid "Date"
 msgstr "Jahr"
@@ -1301,7 +1306,7 @@ msgid "Subtitle"
 msgstr "Untertitel"
 
 msgid "Debut Album"
-msgstr "Debut Aufnahme"
+msgstr "Debut Album"
 
 msgid "Publisher"
 msgstr "Herausgeber"
@@ -1433,7 +1438,7 @@ msgid "Internet Radio Station Owner"
 msgstr "Besitzer der Internet Radiostation"
 
 msgid "Album Sort Order"
-msgstr "Sortiere nach Aufnahme"
+msgstr "Sortiere nach Album"
 
 msgid "Performer Sort Order"
 msgstr "Sortiere nach Interpret"
@@ -1565,7 +1570,7 @@ msgid "Leaflet page"
 msgstr "Faltblatt"
 
 msgid "Album image"
-msgstr "Aufnahmebild"
+msgstr "Album Bild"
 
 msgid "Lead artist/performer"
 msgstr "Leitender Künstler"
@@ -1601,10 +1606,10 @@ msgid "Band/artist logotype"
 msgstr "Band/Künstler Schriftzug"
 
 msgid "Publisher/studio logotype"
-msgstr "Herausgeber/studio Schriftzug"
+msgstr "Herausgeber/Studio Schriftzug"
 
 msgid "Music Store"
-msgstr "Musiklager"
+msgstr "Musiksammlung"
 
 msgid "Search..."
 msgstr "Suche..."
@@ -1622,18 +1627,18 @@ msgid "Remove item..."
 msgstr "Element entfernen..."
 
 msgid "Save all stores"
-msgstr "Alle Lager speichern"
+msgstr "Alle Sammlungen speichern"
 
 msgid "Create empty store..."
-msgstr "Erzeuge leeres Lager..."
+msgstr "Erzeuge leere Sammlung..."
 
 msgid "*Music Store"
-msgstr "*Musiklager"
+msgstr "*Musiksammlung"
 
 #, c-format
 msgid "Do you want to save store \"%s\" before removing from Music Store?"
 msgstr ""
-"Möchtest du das Lager \"%s\" speichern bevor du es aus dem Musiklager "
+"Möchtest du die Sammlung \"%s\" speichern bevor du sie aus der Musiksammlung "
 "entfernst?"
 
 msgid ""
@@ -1655,41 +1660,25 @@ msgid "unreachable"
 msgstr "nicht erreichbar"
 
 msgid "Please select a Music Store database."
-msgstr "Bitte wähle eine Musiklager Datenbank."
+msgstr "Bitte wähle eine Musiksammlungs Datenbank."
 
 msgid "Paths must either be absolute or starting with a tilde."
 msgstr "Pfade müssen absolut sein oder mit einer Tilde beginnen."
 
 msgid "The specified store has already been added to the list."
-msgstr "Das angegebene Lager wurde bereits zur Liste hinzugefügt."
+msgstr "Die angegebene Sammlung wurde bereits zur Liste hinzugefügt."
 
 #, c-format
 msgid ""
 "\n"
 "The template string you enter here will be used to construct a single title "
 "line from an Artist, a Record and a Track name. These are denoted by %%%%a, %"
-"%%%r and %%%%t, respectively. Everything else you enter here will be "
-"literally copied into the resulting string.\n"
+"%%%r and %%%%t, respectively.\n"
 msgstr ""
 "\n"
 "Diese Zeichenketten-Maske wird für die Konstruktion einer Titelzeile aus "
 "einem Künstler, einem Album und einem Titel benutzt. Diese werden mit %%%%a, "
-"%%%%r und %%%%t bezeichnet. Alles andere was du hier eingibst wird wörtlich "
-"in die sich ergebende Zeichenkette kopiert.\n"
-
-#, c-format
-msgid ""
-"\n"
-"The template string you enter here will be used to construct a single title "
-"line from an Artist and a Track name. These are denoted by %%%%a and %%%%t, "
-"respectively. Everything else you enter here will be literally copied into "
-"the resulting string.\n"
-msgstr ""
-"\n"
-"Diese Zeichenketten-Maske wird für die Konstruktion einer Titelzeile aus "
-"einem Künstler und einem Lied benutzt. Diese werden mit %%%%a und %%%%t "
-"bezeichnet. Alles andere was du hier eingibst wird wörtlich in die sich "
-"ergebende Zeichenkette kopiert.\n"
+"%%%%r und %%%%t bezeichnet.\n"
 
 msgid ""
 "\n"
@@ -1719,8 +1708,8 @@ msgstr ""
 "Pfade müssen entweder absolut sein oder mit einer Tilde beginnen, welche zum "
 "Heimverzeichnis des Benutzers erweitert wird.\n"
 "\n"
-"Ziehe die Einträge in der Liste um die Reihenfolge der Lager im Musiklager "
-"zu verändern."
+"Ziehe die Einträge in der Liste um die Reihenfolge der Sammlungen "
+"in der Musiksammlung zu verändern."
 
 msgid ""
 "\n"
@@ -1737,14 +1726,14 @@ msgid ""
 "manually set before every run."
 msgstr ""
 "\n"
-"Setze die Laufwerksgeschwindigkeit für das abspielen von CDs in CD-ROM "
+"Setze die Laufwerksgeschwindigkeit für das Abspielen von CDs in CD-ROM "
 "Geschwindigkeits-Einheiten. Eine Geschwindigkeitseinheit entspricht einer "
 "Rohdaten-Lesegeschwindigkeit von 176 kBps. Warnung: Nicht alle Laufwerke "
 "beachten diese Einstellung.\n"
 "\n"
 "Weniger Geschwindigkeit bedeutet üblicherweise weniger Laufwerkslärm. Wenn "
 "du jedoch den 'Paranoia' Fehlerkorrektur Modus verwendest werden "
-"üblicherweise höhere Geschwindigkeiten benötigt um leere Buffer und damit "
+"üblicherweise höhere Geschwindigkeiten benötigt um leere Puffer und damit "
 "hörbare Aussetzer zu vermeiden.\n"
 "\n"
 "Bitte nimm zur Kenntnis dass diese Einstellungen das Auslesen von CDs nicht "
@@ -1771,19 +1760,13 @@ msgid ""
 "Example: localhost, .localdomain, .my.domain.com"
 msgstr ""
 "\n"
-"Hier solltest du eine mit Beistrichen getrennte Liste von\n"
+"Hier solltest du eine mit Komma getrennte Liste von\n"
 "Domänen eingeben die ohne die Benutzung des oben eingestellten\n"
 "Proxy-Server angesprochen werden sollen.\n"
 "Beispiele: localhost, .localdomain, .my.domain.com"
 
 msgid "Title format"
 msgstr "Titelformat"
-
-msgid "Full:"
-msgstr "Vollständig:"
-
-msgid "No album:"
-msgstr "Keine Aufnahme:"
 
 msgid "Implicit command line"
 msgstr "Implizite Kommandozeile"
@@ -1795,7 +1778,7 @@ msgid "Enable tooltips"
 msgstr "Tooltips einschalten"
 
 msgid "Put control buttons at the bottom of playlist"
-msgstr "Kontrollknöpfe unten an der Playliste plazieren"
+msgstr "Kontrollknöpfe unten an der Playliste platzieren"
 
 msgid "Disable control buttons relief"
 msgstr "Deaktiviere Relief bei Kontrollknöpfen"
@@ -1828,16 +1811,16 @@ msgid "Default cover width:"
 msgstr "Standard Hüllenbreite:"
 
 msgid "50 pixels"
-msgstr "50 pixel"
+msgstr "50 Pixel"
 
 msgid "100 pixels"
-msgstr "100 pixel"
+msgstr "100 Pixel"
 
 msgid "200 pixels"
-msgstr "200 pixel"
+msgstr "200 Pixel"
 
 msgid "300 pixels"
-msgstr "300 pixel"
+msgstr "300 Pixel"
 
 msgid "use browser window width"
 msgstr "Benutze Breite des Fensters"
@@ -1846,7 +1829,7 @@ msgid "Do not magnify images with smaller width"
 msgstr "Vergrößere Bilder mit geringerer Breite nicht"
 
 msgid "Show cover thumbnail for Music Store tracks only"
-msgstr "Zeige Miniatur-Coverbild nur für Musiklager Lieder"
+msgstr "Zeige Miniatur-Coverbild nur für Musiksammlungslieder"
 
 msgid "Playlist"
 msgstr "Playliste"
@@ -1857,9 +1840,12 @@ msgstr "Playliste ins Hauptfenster einbetten"
 msgid "Save and restore the playlist on exit/startup"
 msgstr "Speichere und Lade die Playliste beim Beenden/Starten"
 
+msgid "Save playlist periodically [min]:"
+msgstr "Speichere die Playliste in periodischen Zeitabständen [min]:"
+
 msgid "Album mode is the default when adding entire records"
 msgstr ""
-"Album-Modus ist die Vorgabe wenn eine gesamte Aufnahme hinzugefügt wird"
+"Album-Modus ist die Vorgabe wenn ein gesamtes Album hinzugefügt wird"
 
 msgid "Always show the tab bar"
 msgstr "Zeige die Karteireiter immer an"
@@ -1879,7 +1865,7 @@ msgid "Enable statusbar in playlist"
 msgstr "Aktiviere Statusleiste an der Playliste"
 
 msgid "Show soundfile size in statusbar"
-msgstr "Zeige größe der Datei in der Statusleiste"
+msgstr "Zeige Größe der Datei in der Statusleiste"
 
 msgid "Show RVA values"
 msgstr "Zeige RVA-Werte"
@@ -1919,31 +1905,31 @@ msgid "Hide comment pane"
 msgstr "Verstecke Kommentarausschnitt"
 
 msgid "Hide the Music Store comment pane"
-msgstr "Verstecke Musiklager Kommentarausschnitt"
+msgstr "Verstecke den Musiksammlungs Kommentarausschnitt"
 
 msgid "Enable toolbar"
 msgstr "Aktiviere Werkzeugleiste"
 
 msgid "Enable toolbar in Music Store"
-msgstr "Aktiviere Werkzeugleiste im Musiklager"
+msgstr "Aktiviere Werkzeugleiste in der Musiksammlung"
 
 msgid "Enable statusbar in Music Store"
-msgstr "Aktiviere Statusleiste im Musiklager"
+msgstr "Aktiviere Statusleiste in der Musiksammlung"
 
 msgid "Expand Stores on startup"
-msgstr "Klappe Lager beim Start aus"
+msgstr "Klappe Sammlungen beim Start aus"
 
 msgid "Enable tree node icons"
 msgstr "Aktiviere Baumknoten-Piktogramme"
 
 msgid "Enable Music Store tree node icons"
-msgstr "Aktiviere Baumknoten-Piktogramme im Musiklager"
+msgstr "Aktiviere Baumknoten-Piktogramme in der Musiksammlung"
 
 msgid "Ask for confirmation when removing items"
 msgstr "Frage nach Bestätigung beim Entfernen von Elementen"
 
 msgid "Paths to Music Store databases"
-msgstr "Pfade zu den Musiklager Datenbanken"
+msgstr "Pfade zu den Musiksammlungs Datenbanken"
 
 msgid "Path"
 msgstr "Pfad"
@@ -2042,6 +2028,16 @@ msgstr ""
 msgid "Replaygain_album_gain"
 msgstr ""
 
+msgid "Adding files to Playlist"
+msgstr "Füge Dateien zur Playlist hinzu"
+
+msgid ""
+"Use basename only instead of full path\n"
+"if no metadata is available."
+msgstr ""
+"Benutze Basisnamen nur anstelle des gesamten Pfades\n"
+"wenn keine Metadaten verfügbar sind."
+
 msgid "Metadata editor (File info dialog)"
 msgstr "Metadaten-Editor (Dateiinformationsdialog)"
 
@@ -2092,7 +2088,7 @@ msgid "Connection timeout [sec]:"
 msgstr "Verbindungs Zeitüberschreitung [Sek.]:"
 
 msgid "Email address for submission:"
-msgstr "Email-Addresse für die Übertragung:"
+msgstr "Email-Adresse für die Übertragung:"
 
 msgid "Local CDDB directory:"
 msgstr "Lokales CDDB Verzeichnis:"
@@ -2149,7 +2145,7 @@ msgid "Playlist: "
 msgstr "Playliste: "
 
 msgid "Music Store: "
-msgstr "Musiklager: "
+msgstr "Musiksammlung: "
 
 msgid "Big timer: "
 msgstr "Große Zeitanzeige: "
@@ -2174,6 +2170,9 @@ msgstr "Lied in der Playliste: "
 
 msgid "Active song in playlist: "
 msgstr "Aktives Lied in der Playliste: "
+
+msgid "Error in title format string"
+msgstr "Fehler in der Titelformatierungs-Zeichenkette"
 
 msgid "(Untitled)"
 msgstr "(Unbetitelt)"
@@ -2235,7 +2234,7 @@ msgid "Close other tabs"
 msgstr "Schließe die anderen Karteireiter"
 
 msgid " Selected: "
-msgstr "Ausgewählt: "
+msgstr " Ausgewählt: "
 
 msgid "Total: "
 msgstr "Gesamt: "
@@ -2307,7 +2306,7 @@ msgid "Send to iFP device"
 msgstr "Sende zu einem iFP Gerät"
 
 msgid "Calculate RVA"
-msgstr "Berechne RVA"
+msgstr "Miss RVA"
 
 msgid "Separate"
 msgstr "Einzeln"
@@ -2325,7 +2324,7 @@ msgid "Stop adding files"
 msgstr "Stoppe das Hinzufügen von Dateien"
 
 msgid "Files selected for removal"
-msgstr "Dateien zum entfernen ausgewählt"
+msgstr "Dateien zum Entfernen ausgewählt"
 
 msgid "Remove files"
 msgstr "Entferne Dateien"
@@ -2406,7 +2405,7 @@ msgid " out R"
 msgstr " Ausgang R"
 
 msgid "Search the Music Store"
-msgstr "Suchen im Musiklager"
+msgstr "Suche in der Musiksammlung"
 
 msgid "Key: "
 msgstr "Schlüssel: "
@@ -2427,7 +2426,7 @@ msgid "Artist names"
 msgstr "Künstlernamen"
 
 msgid "Record titles"
-msgstr "Aufnahme Titel"
+msgstr "Alben Titel"
 
 msgid "Comments"
 msgstr "Kommentar"
@@ -2578,10 +2577,10 @@ msgid "drives"
 msgstr "Laufwerke"
 
 msgid "record"
-msgstr "Aufnahme"
+msgstr "Album"
 
 msgid "records"
-msgstr "Aufnahmen"
+msgstr "Alben"
 
 msgid "Add to playlist"
 msgstr "Zur Playliste hinzufügen"
@@ -2608,16 +2607,16 @@ msgid "Comments:"
 msgstr "Kommentare:"
 
 msgid "Please select the xml file for this store."
-msgstr "Bitte wählen Sie die xml-Datei für dieses Lager aus."
+msgstr "Bitte wählen Sie die xml-Datei für diese Sammlung aus."
 
 msgid "Create empty store"
-msgstr "Erzeuge leeres Lager"
+msgstr "Erzeuge leere Sammlung"
 
 msgid "Visible name:"
 msgstr "Sichtbar Name:"
 
 msgid "Edit Store"
-msgstr "Bearbeite Lager"
+msgstr "Bearbeite Sammlung"
 
 msgid "Add Artist"
 msgstr "Künstler hinzufügen"
@@ -2629,10 +2628,10 @@ msgid "Edit Artist"
 msgstr "Künstler editieren"
 
 msgid "Please select the audio files for this record."
-msgstr "Bitte wähle die Audiodateien für diese Aufnahme aus."
+msgstr "Bitte wähle die Audiodateien für dieses Album aus."
 
 msgid "Add Record"
-msgstr "Aufnahme hinzufügen"
+msgstr "Album hinzufügen"
 
 msgid "Auto-create tracks from these files:"
 msgstr "Lieder aus diesen Dateien automatisch erstellen:"
@@ -2641,7 +2640,7 @@ msgid "_Add files..."
 msgstr "_Dateien hinzufügen..."
 
 msgid "Edit Record"
-msgstr "Aufnahme editieren"
+msgstr "Album editieren"
 
 msgid "Please select the audio file for this track."
 msgstr "Bitte wählen Sie die Audio Datei für dieses Lied aus."
@@ -2667,7 +2666,7 @@ msgstr "Manuelles RVA Level benutzen [dB]"
 
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
-msgstr "Wirklich \"%s\" aus dem Musiklager entfernen?"
+msgstr "Wirklich \"%s\" aus der Musiksammlung entfernen?"
 
 msgid "Stop adding songs"
 msgstr "Stoppe hinzufügen von Liedern"
@@ -2677,24 +2676,24 @@ msgid ""
 "The store '%s' already exists.\n"
 "Add it on the Settings/Music Store tab."
 msgstr ""
-"Das Lager '%s' existiert bereits.\n"
-"Füge es zu einem Einstellungen/Musiklager Karteireiter hinzu."
+"Die Sammlung '%s' existiert bereits.\n"
+"Füge sie am Einstellungen/Musiksammlung Karteireiter hinzu."
 
 #, c-format
 msgid "Really remove store \"%s\" from the Music Store?"
-msgstr "Wirklich Lager \"%s\" aus dem Musiklager entfernen?"
+msgstr "Wirklich Sammlung \"%s\" aus der Musiksammlung entfernen?"
 
 msgid "Remove Store"
-msgstr "Lager entfernen"
+msgstr "Sammlung entfernen"
 
 msgid "Do you want to save the store before removing?"
-msgstr "Möchtest du das Lager vor dem Entfernen speichern?"
+msgstr "Möchtest du die Sammlung vor dem Entfernen speichern?"
 
 msgid "Remove Artist"
 msgstr "Künstler entfernen"
 
 msgid "Remove Record"
-msgstr "Aufnahme entfernen"
+msgstr "Album entfernen"
 
 msgid "Remove Track"
 msgstr "Lied entfernen"
@@ -2730,22 +2729,22 @@ msgid "artists"
 msgstr "Künstler"
 
 msgid "Build / Update store from filesystem..."
-msgstr "Erstelle / Aktualisiere Lager vom Dateisystem..."
+msgstr "Erstelle / Aktualisiere Sammlung vom Dateisystem..."
 
 msgid "Edit store..."
-msgstr "Bearbeite Lager..."
+msgstr "Bearbeite Sammlung..."
 
 msgid "Export store..."
-msgstr "Exportiere Lager..."
+msgstr "Exportiere Sammlung..."
 
 msgid "Save store"
-msgstr "Speichere Lager"
+msgstr "Speichere Sammlung"
 
 msgid "Remove store"
-msgstr "Entferne Lager"
+msgstr "Entferne Sammlung"
 
 msgid "Add new artist to this store..."
-msgstr "Füge neuen Künstler zu diesem Lager hinzu..."
+msgstr "Füge neuen Künstler zu dieser Sammlung hinzu..."
 
 msgid "Calculate volume (recursive)"
 msgstr "Lautstärke messen (rekursiv)"
@@ -2772,28 +2771,28 @@ msgid "Remove artist"
 msgstr "Entferne Künstler"
 
 msgid "Add new record to this artist..."
-msgstr "Neue Aufnahme zu diesem Künstler hinzufügen..."
+msgstr "Neues Album zu diesem Künstler hinzufügen..."
 
 msgid "Add new record..."
-msgstr "Neue Aufnahme hinzufügen..."
+msgstr "Neues Album hinzufügen..."
 
 msgid "Edit record..."
-msgstr "Aufnahme bearbeiten..."
+msgstr "Album bearbeiten..."
 
 msgid "Export record..."
-msgstr "Exportiere Aufnahme..."
+msgstr "Exportiere Album..."
 
 msgid "Remove record"
-msgstr "Entferne Aufnahme"
+msgstr "Entferne Album"
 
 msgid "Add new track to this record..."
-msgstr "Neues Lied zu diese Aufnahme hinzufügen..."
+msgstr "Neues Lied zu diesem Album hinzufügen..."
 
 msgid "CDDB query for this record..."
-msgstr "CDDB Abfrage für dieses Aufnahme..."
+msgstr "CDDB Abfrage für dieses Album..."
 
 msgid "Submit record to CDDB database..."
-msgstr "Übertrage Aufnahme zur CDDB Datenbank..."
+msgstr "Übertrage Album zur CDDB Datenbank..."
 
 msgid "Add new track..."
 msgstr "Neues Lied hinzufügen..."
@@ -2842,7 +2841,7 @@ msgid ""
 "in the Podcasts store popup menu."
 msgstr ""
 "Automatische Aktualisierung wurde für alle feeds\n"
-"im Musiklager-Podcast-Menü deaktiviert."
+"im Musiksammlungs-Podcast-Menü deaktiviert."
 
 msgid "Limits"
 msgstr "Begrenzungen"
@@ -2870,7 +2869,7 @@ msgstr "Entferne feed"
 
 #, c-format
 msgid "Really remove '%s' from the Music Store?"
-msgstr "Wirklich '%s' aus dem Musiklager entfernen?"
+msgstr "Wirklich '%s' aus der Musiksammlung entfernen?"
 
 msgid "Reorder feeds"
 msgstr "Ordne feeds neu"
@@ -2880,7 +2879,7 @@ msgid ""
 "to set the feed order in the Music Store."
 msgstr ""
 "Ziehe die Einträge in der Liste\n"
-"um die Reihenfolge der feeds im Musiklager zu ändern."
+"um die Reihenfolge der feeds in der Musiksammlung zu ändern."
 
 #, c-format
 msgid "Downloading %d/%d (%d%%) ..."
@@ -2928,6 +2927,19 @@ msgstr "Aktualisiere alle feeds"
 msgid "Automatically update feeds"
 msgstr "Aktualisiere feeds automatisch"
 
+msgid "Unexpected end of string after '?'."
+msgstr "Unerwartetes Ende der Zeichenkette nach '?'."
+
+msgid "Expected '}' after '{', but end of string found."
+msgstr "Erwartete '}' nach '{', habe aber das Ende der Zeichenkette gefunden."
+
+#, c-format
+msgid "Unknown conversion type character found after '%%%%'."
+msgstr ""
+
+msgid "Unknown conversion type character found after '?'."
+msgstr ""
+
 msgid "day"
 msgstr "Tag"
 
@@ -2938,7 +2950,7 @@ msgid "All Files"
 msgstr "Alle Dateien"
 
 msgid "Music Store Files (*.xml)"
-msgstr "Musiklager Dateien (*.xml)"
+msgstr "Musiksammlungs Dateien (*.xml)"
 
 msgid "Aqualung playlist (*.xml)"
 msgstr "Aqualung Playliste (*.xml)"
@@ -2998,7 +3010,7 @@ msgid "Resume"
 msgstr "Fortsetzen"
 
 msgid "Calculating volume level"
-msgstr "Lautstärke wird berechnet"
+msgstr "Lautstärke wird gemessen"
 
 msgid "Profile: Telephone"
 msgstr "Profil: Telephon"
@@ -3046,7 +3058,7 @@ msgid "Stereo"
 msgstr ""
 
 msgid "Emphasis: none"
-msgstr "Betonung: none"
+msgstr "Betonung: keine"
 
 msgid "Emphasis:"
 msgstr "Betonung:"
@@ -3058,13 +3070,13 @@ msgid "bit signed"
 msgstr "bit vorzeichenbehaftet"
 
 msgid "bit unsigned"
-msgstr "bit vorzeichenlos"
+msgstr "Bit vorzeichenlos"
 
 msgid "bit float"
-msgstr "bit fließkomma"
+msgstr "Bit Fließkomma"
 
 msgid "bit double"
-msgstr "bit doppelt"
+msgstr "Bit doppelt"
 
 msgid "encoding"
 msgstr "Kodierung"

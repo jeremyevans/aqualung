@@ -1798,21 +1798,28 @@ load_default_cl(int * argc, char *** argv) {
 	
         return;
 }
- 
- 
+
+
+void
+print_info(void) {
+
+	fprintf(stderr,	"Aqualung -- Music player for GNU/Linux\n");
+	fprintf(stderr, "Build version: %s\n", AQUALUNG_VERSION);
+	fprintf(stderr,
+		"(C) 2004-2008 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
+		"This is free software, and you are welcome to redistribute it\n"
+		"under certain conditions; see the file COPYING for details.\n");
+}
+
+
 #define V_YES "    [+] "
 #define V_NO  "    [ ] "
 
 void
 print_version(void) {
 
-	fprintf(stderr,	"Aqualung -- Music player for GNU/Linux\n");
-	fprintf(stderr, "Build version: %s\n", AQUALUNG_VERSION);
-	fprintf(stderr,
-		"(C) 2004-2007 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
-		"This is free software, and you are welcome to redistribute it\n"
-		"under certain conditions; see the file COPYING for details.\n");
-	
+	print_info();
+
 	fprintf(stderr, "\nThis Aqualung binary is compiled with:\n");
 
 	fprintf(stderr, "\n  Optional features:\n");
@@ -2008,12 +2015,7 @@ print_version(void) {
 void
 print_usage(void) {
 
-	fprintf(stderr,	"Aqualung -- Music player for GNU/Linux\n");
-	fprintf(stderr, "Build version: %s\n", AQUALUNG_VERSION);
-	fprintf(stderr,
-		"(C) 2004-2007 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
-		"This is free software, and you are welcome to redistribute it\n"
-		"under certain conditions; see the file COPYING for details.\n");
+	print_info();
 	
 	fprintf(stderr,
 		"\nInvocation:\n"

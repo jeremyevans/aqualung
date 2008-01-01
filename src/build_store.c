@@ -2287,7 +2287,7 @@ set_prog_file_entry(build_store_t * data, char * path) {
 	strncpy(data->path, path, MAXLEN-1);
         AQUALUNG_MUTEX_UNLOCK(data->mutex);
 
-	g_idle_add(set_prog_file_entry_idle, data);
+	aqualung_idle_add(set_prog_file_entry_idle, data);
 }
 
 gboolean
@@ -2311,7 +2311,7 @@ set_prog_action_label(build_store_t * data, char * action) {
 	strncpy(data->action, action, MAXLEN-1);
 	AQUALUNG_MUTEX_UNLOCK(data->mutex);
 
-	g_idle_add(set_prog_action_label_idle, data);
+	aqualung_idle_add(set_prog_action_label_idle, data);
 }
 
 void
@@ -3290,10 +3290,7 @@ process_record(build_store_t * data, char * dir_record, char * artist_d_name, ch
 	data->write_data_locked = 1;
 	data->disc = disc;
 
-	g_idle_add_full(G_PRIORITY_HIGH_IDLE,
-			write_record_to_store,
-			data,
-			NULL);
+	aqualung_idle_add(write_record_to_store, data);
 
 	while (data->write_data_locked) {
 		nanosleep(&req_time, &rem_time);
@@ -3381,10 +3378,7 @@ process_track(build_store_t * data, char * filename, char * d_name, float durati
 	data->write_data_locked = 1;
 	data->disc = disc;
 
-	g_idle_add_full(G_PRIORITY_HIGH_IDLE,
-			write_track_to_store,
-			data,
-			NULL);
+	aqualung_idle_add(write_track_to_store, data);
 
 	while (data->write_data_locked) {
 		nanosleep(&req_time, &rem_time);
@@ -3520,7 +3514,7 @@ build_thread_strict(void * arg) {
 
 	scan_artist_record(data, data->root, NULL, (data->artist_dir_depth == 0) ? 0 : (data->artist_dir_depth + 1));
 
-	g_idle_add(finish_build, data);
+	aqualung_idle_add(finish_build, data);
 
 	return NULL;
 }
@@ -3535,7 +3529,7 @@ build_thread_loose(void * arg) {
 
 	scan_recursively(data, data->root);
 
-	g_idle_add(finish_build, data);
+	aqualung_idle_add(finish_build, data);
 
 	return NULL;
 }

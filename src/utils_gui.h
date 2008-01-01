@@ -48,6 +48,8 @@ int get_systray_semaphore(void);
 #endif /* HAVE_SYSTRAY */
 
 gint aqualung_dialog_run(GtkDialog * dialog);
+guint aqualung_idle_add(GSourceFunc function, gpointer data);
+guint aqualung_timeout_add(guint interval, GSourceFunc function, gpointer data);
 
 GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 

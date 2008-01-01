@@ -427,7 +427,7 @@ process_volume_setup(volume_t * vol) {
 	vol->n_chunks = vol->fdec->fileinfo.total_samples / vol->chunk_size + 1;
 
 	AQUALUNG_MUTEX_LOCK(vol->wait_mutex);
-	g_idle_add(vol_set_filename_text, vol);
+	aqualung_idle_add(vol_set_filename_text, vol);
 	AQUALUNG_COND_WAIT(vol->thread_wait, vol->wait_mutex);
 	AQUALUNG_MUTEX_UNLOCK(vol->wait_mutex);
 
@@ -514,7 +514,7 @@ volume_thread(void * arg) {
 			if (vol->type == VOLUME_SEPARATE) {
 
 				AQUALUNG_MUTEX_LOCK(vol->wait_mutex);
-				g_idle_add(vol_store_result_sep, vol);
+				aqualung_idle_add(vol_store_result_sep, vol);
 				AQUALUNG_COND_WAIT(vol->thread_wait, vol->wait_mutex);
 				AQUALUNG_MUTEX_UNLOCK(vol->wait_mutex);
 
@@ -542,7 +542,7 @@ volume_thread(void * arg) {
 
 	if (!vol->cancelled && vol->type == VOLUME_AVERAGE) {
 		AQUALUNG_MUTEX_LOCK(vol->wait_mutex);
-		g_idle_add(vol_store_result_avg, vol);
+		aqualung_idle_add(vol_store_result_avg, vol);
 		AQUALUNG_COND_WAIT(vol->thread_wait, vol->wait_mutex);
 		AQUALUNG_MUTEX_UNLOCK(vol->wait_mutex);
 	}
@@ -551,7 +551,7 @@ volume_thread(void * arg) {
 		vol_item_free((vol_item_t *)node->data);
 	}
 
-	g_idle_add(volume_finalize, vol);
+	aqualung_idle_add(volume_finalize, vol);
 
 
 	return NULL;
@@ -569,7 +569,7 @@ volume_start(volume_t * vol) {
 
 	AQUALUNG_THREAD_CREATE(vol->thread_id, NULL, volume_thread, vol);
 
-	vol->update_tag = g_timeout_add(250, vol_update_progress, vol);
+	vol->update_tag = aqualung_timeout_add(250, vol_update_progress, vol);
 }
 
 float

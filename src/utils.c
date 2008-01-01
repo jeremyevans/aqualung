@@ -342,44 +342,6 @@ time2time_na(float seconds, char * str) {
 }
 
 
-/* pack 2 strings into one
- * output format: 4 hex digits -> length of 1st string (N)
- *                4 hex digits -> length of 2nd string (M)
- *                N characters of 1st string (w/o trailing zero)
- *                M characters of 2nd string (w/o trailing zero)
- *                trailing zero
- * sum: length(str1) + length(str2) + 4 + 4 + 1
- * result should point to an area with sufficient space
- */
-void
-pack_strings(char * str1, char * str2, char * result) {
-
-	sprintf(result, "%04X%04X%s%s", strlen(str1), strlen(str2), str1, str2);
-}
-
-
-/* inverse of pack_strings()
- * str1 and str2 should point to areas of sufficient space
- */
-void
-unpack_strings(char * packed, char * str1, char * str2) {
-
-	int len1, len2;
-
-	if (strlen(packed) < 8) {
-		str1[0] = '\0';
-		str2[0] = '\0';
-		return;
-	}
-
-	sscanf(packed, "%04X%04X", &len1, &len2);
-	strncpy(str1, packed + 8, len1);
-	strncpy(str2, packed + 8 + len1, len2);
-	str1[len1] = '\0';
-	str2[len2] = '\0';
-}
-
-
 /* out should be defined as char[MAXLEN] */
 void
 normalize_filename(const char * in, char * out) {

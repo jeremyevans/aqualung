@@ -1608,7 +1608,6 @@ add_file_to_playlist(gpointer data) {
 	GList * node;
 	int finish = 0;
 
-	gdk_threads_enter();
 	AQUALUNG_MUTEX_LOCK(pt->pl->wait_mutex);
 
 	if (pt->clear) {
@@ -1740,7 +1739,6 @@ add_file_to_playlist(gpointer data) {
 	AQUALUNG_MUTEX_UNLOCK(pt->pl->wait_mutex);
 	AQUALUNG_COND_SIGNAL(pt->pl->thread_wait);
 
-	gdk_threads_leave();
 	return FALSE;
 }
 
@@ -1759,7 +1757,7 @@ playlist_thread_add_to_list(playlist_transfer_t * pt, playlist_data_t * pldata) 
 			pt->threshold *= 2;
 		}
 
-		g_idle_add(add_file_to_playlist, pt);
+		aqualung_idle_add(add_file_to_playlist, pt);
 
 		while (pt->data_written > 0) {
 			AQUALUNG_COND_WAIT(pt->pl->thread_wait, pt->pl->wait_mutex);
@@ -3092,7 +3090,7 @@ playlist_rearrange_timeout_cb(gpointer data) {
 void
 delayed_playlist_rearrange(playlist_t * pl) {
 
-	g_timeout_add(100, playlist_rearrange_timeout_cb, pl);
+	aqualung_timeout_add(100, playlist_rearrange_timeout_cb, pl);
 }
 
 
@@ -3542,7 +3540,7 @@ playlist_drag_motion(GtkWidget * widget, GdkDragContext * context,
 
 	if (y < 30) {
 		if (playlist_scroll_up_tag == -1) {
-			playlist_scroll_up_tag = g_timeout_add(100, playlist_scroll_up, data);
+			playlist_scroll_up_tag = aqualung_timeout_add(100, playlist_scroll_up, data);
 		}
 	} else {
 		if (playlist_scroll_up_tag > 0) {	
@@ -3553,7 +3551,7 @@ playlist_drag_motion(GtkWidget * widget, GdkDragContext * context,
 
 	if (y > widget->allocation.height - 30) {
 		if (playlist_scroll_dn_tag == -1) {
-			playlist_scroll_dn_tag = g_timeout_add(100, playlist_scroll_dn, data);
+			playlist_scroll_dn_tag = aqualung_timeout_add(100, playlist_scroll_dn, data);
 		}
 	} else {
 		if (playlist_scroll_dn_tag > 0) {	
@@ -4650,7 +4648,7 @@ playlist_auto_save_reset(void) {
 		g_source_remove(playlist_auto_save_tag);
 	}
 	if (options.playlist_auto_save) {
-		playlist_auto_save_tag = g_timeout_add(options.playlist_auto_save_int * 60000,
+		playlist_auto_save_tag = aqualung_timeout_add(options.playlist_auto_save_int * 60000,
 						       playlist_auto_save_cb, NULL);
 	}
 }
@@ -5658,7 +5656,7 @@ playlist_progress_bar_show(playlist_t * pl) {
 
 	gtk_widget_show_all(pl->progbar_container);
 
-	g_timeout_add(200, pl_progress_bar_update, pl);
+	aqualung_timeout_add(200, pl_progress_bar_update, pl);
 }
 
 

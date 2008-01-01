@@ -46,8 +46,6 @@ void sample2time(unsigned long SR, unsigned long long sample, char * str, int si
 void time2time(float samples, char * str);
 void time2time_na(float seconds, char * str);
 
-void pack_strings(char * str1, char * str2, char * result);
-void unpack_strings(char * packed, char * str1, char * str2);
 void normalize_filename(const char * in, char * out);
 
 void free_strdup(char ** s, const char * str);

@@ -132,6 +132,20 @@ aqualung_dialog_run(GtkDialog * dialog) {
 }
 
 
+guint
+aqualung_idle_add(GSourceFunc function, gpointer data) {
+
+	return gdk_threads_add_idle_full(G_PRIORITY_DEFAULT_IDLE, function, data, NULL);
+}
+
+
+guint
+aqualung_timeout_add(guint interval, GSourceFunc function, gpointer data) {
+
+	return gdk_threads_add_timeout_full(G_PRIORITY_DEFAULT, interval, function, data, NULL);
+}
+
+
 /* create button with stock item
  *
  * in: label - label for button        (label=NULL  to disable label, label=-1 to disable button relief)

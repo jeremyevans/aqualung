@@ -1445,7 +1445,7 @@ build_plugin_window(plugin_instance * instance) {
 	}
 
 	if ((n_outctl) || (n_outlat)) {
-		instance->timeout = g_timeout_add(100, update_plugin_outputs, instance);
+		instance->timeout = aqualung_timeout_add(100, update_plugin_outputs, instance);
 	} else {
 		instance->timeout = 0;
 	}
@@ -1663,7 +1663,7 @@ running_list_row_inserted(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter 
 		added_plugin = 0;
 		return;
 	}
-	g_timeout_add(100, refresh_on_list_changed_cb, NULL);
+	aqualung_timeout_add(100, refresh_on_list_changed_cb, NULL);
 }
 
 

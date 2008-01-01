@@ -519,7 +519,7 @@ cdda_timeout_callback(gpointer data) {
 void
 cdda_timeout_start(void) {
 
-	cdda_timeout_tag = g_timeout_add(CDDA_TIMEOUT_PERIOD, cdda_timeout_callback, NULL);
+	cdda_timeout_tag = aqualung_timeout_add(CDDA_TIMEOUT_PERIOD, cdda_timeout_callback, NULL);
 }
 
 

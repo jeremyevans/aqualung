@@ -1391,7 +1391,7 @@ cddb_start_lookup_thread(GtkTreeIter * iter_record,
 	if (progress) {
 		create_query_progress_window(data);
 	}
-	g_timeout_add(100, timeout_cb, data);
+	aqualung_timeout_add(100, timeout_cb, data);
 }
 
 void

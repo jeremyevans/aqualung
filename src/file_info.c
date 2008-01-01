@@ -1608,7 +1608,7 @@ fi_procmeta(metadata_t * meta, void * data) {
 			calloc(1, sizeof(fi_procmeta_wait_data_t));
 		fi_procmeta_wait_data->meta = meta;
 		fi_procmeta_wait_data->data = data;
-		g_timeout_add(100, fi_procmeta_wait, (gpointer)fi_procmeta_wait_data);
+		aqualung_timeout_add(100, fi_procmeta_wait, (gpointer)fi_procmeta_wait_data);
 		return;
 	}
 

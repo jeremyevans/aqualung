@@ -1273,7 +1273,7 @@ ripper_thread(void * arg) {
 			prog_total = 100 * total_sectors_read / total_sectors;
 
 		        if ((track_sectors_read % 64 == 0) || (track_sectors_read == track_sectors))
-				g_idle_add(ripper_update_status,
+				aqualung_idle_add(ripper_update_status,
 					   (gpointer)(((track_cnt & 0xff) << 16) |
 						      ((prog_track & 0xff) << 8) |
 						      (prog_total & 0xff)));

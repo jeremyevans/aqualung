@@ -401,7 +401,7 @@ set_prog_src_file_entry(export_t * export, char * file) {
 	strncpy(export->file1, file, MAXLEN-1);
         AQUALUNG_MUTEX_UNLOCK(export->mutex);
 
-	g_idle_add(set_prog_src_file_entry_idle, export);
+	aqualung_idle_add(set_prog_src_file_entry_idle, export);
 }
 
 void
@@ -411,7 +411,7 @@ set_prog_trg_file_entry(export_t * export, char * file) {
 	strncpy(export->file2, file, MAXLEN-1);
         AQUALUNG_MUTEX_UNLOCK(export->mutex);
 
-	g_idle_add(set_prog_trg_file_entry_idle, export);
+	aqualung_idle_add(set_prog_trg_file_entry_idle, export);
 }
 
 
@@ -619,7 +619,7 @@ export_thread(void * arg) {
 		export_item(export, (export_item_t *)node->data, index);
 	}
 
-	g_idle_add(export_finish, export);
+	aqualung_idle_add(export_finish, export);
 
 	return NULL;
 }
@@ -1070,7 +1070,7 @@ export_start(export_t * export) {
 
 	if (export_dialog(export)) {
 		export_progress_window(export);
-		export->progbar_tag = g_timeout_add(250, update_progbar_ratio, export);
+		export->progbar_tag = aqualung_timeout_add(250, update_progbar_ratio, export);
 		AQUALUNG_THREAD_CREATE(export->thread_id, NULL, export_thread, export);
 		return 1;
 	}

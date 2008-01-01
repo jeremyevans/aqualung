@@ -1219,13 +1219,13 @@ store_podcast_remove_item_cb(gpointer data) {
 void
 store_podcast_update_podcast(podcast_download_t * pd) {
 
-	g_idle_add(store_podcast_update_podcast_cb, pd);
+	aqualung_idle_add(store_podcast_update_podcast_cb, pd);
 }
 
 void
 store_podcast_update_podcast_download(podcast_download_t * pd) {
 
-	g_idle_add(store_podcast_update_podcast_download_cb, pd);
+	aqualung_idle_add(store_podcast_update_podcast_download_cb, pd);
 }
 
 void
@@ -1234,7 +1234,7 @@ store_podcast_add_item(podcast_t * podcast, podcast_item_t * item) {
 	podcast_transfer_t * pt = podcast_transfer_new(podcast, item);
 
 	if (pt != NULL) {
-		g_idle_add(store_podcast_add_item_cb, pt);
+		aqualung_idle_add(store_podcast_add_item_cb, pt);
 	}
 }
 
@@ -1244,7 +1244,7 @@ store_podcast_remove_item(podcast_t * podcast, podcast_item_t * item) {
 	podcast_transfer_t * pt = podcast_transfer_new(podcast, item);
 
 	if (pt != NULL) {
-		g_idle_add(store_podcast_remove_item_cb, pt);
+		aqualung_idle_add(store_podcast_remove_item_cb, pt);
 	}
 }
 
@@ -1829,7 +1829,7 @@ void
 store_podcast_updater_start(void) {
 
 	store_podcast_updater_cb(NULL);
-	g_timeout_add(5*60*1000, store_podcast_updater_cb, NULL);
+	aqualung_timeout_add(5*60*1000, store_podcast_updater_cb, NULL);
 }
 
 /*************************************************/

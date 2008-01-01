@@ -1712,7 +1712,7 @@ artist_addlist_iter(GtkTreeIter iter_artist, playlist_t * pl, GtkTreeIter * dest
 
 	ms_progress_bar_show();
 	pl->ms_semaphore++;
-	g_idle_add(artist_addlist_iter_cb, (gpointer)add_iter);
+	aqualung_idle_add(artist_addlist_iter_cb, (gpointer)add_iter);
 }
 
 
@@ -1750,7 +1750,7 @@ store_addlist_iter(GtkTreeIter iter_store, playlist_t * pl, GtkTreeIter * dest, 
 
 	ms_progress_bar_show();
 	pl->ms_semaphore++;
-	g_idle_add(store_addlist_iter_cb, (gpointer)add_iter);
+	aqualung_idle_add(store_addlist_iter_cb, (gpointer)add_iter);
 }
 
 
@@ -3216,12 +3216,12 @@ update_tag_thread(void * args) {
 				_ptag = ptag;
 			}			
 
-			g_idle_add(batch_tag_finish, NULL);
+			aqualung_idle_add(batch_tag_finish, NULL);
 
 			return NULL;
 		}
 
-		g_idle_add(set_tag_prog_file_entry, (gpointer)ptag->filename);
+		aqualung_idle_add(set_tag_prog_file_entry, (gpointer)ptag->filename);
 
 		ret = meta_update_basic(ptag->filename,
 					(options.batch_tag_flags & BATCH_TAG_TITLE) ? ptag->title : NULL,
@@ -3240,7 +3240,7 @@ update_tag_thread(void * args) {
 			} else {
 				err->filename = strdup(ptag->filename);
 				err->ret = ret;
-				g_idle_add(batch_tag_append_error, (gpointer)err);
+				aqualung_idle_add(batch_tag_append_error, (gpointer)err);
 			}
 		}
 
@@ -3249,7 +3249,7 @@ update_tag_thread(void * args) {
 		_ptag = ptag;
 	}
 
-	g_idle_add(batch_tag_finish, NULL);
+	aqualung_idle_add(batch_tag_finish, NULL);
 
 	return NULL;
 }
@@ -3424,7 +3424,7 @@ track__tag_cb(gpointer data) {
 			artist_batch_tag_set_from_iter(&iter_artist);
 
 			track_tag_iter = iter;
-			g_idle_add(track_batch_tag, (gpointer)1);
+			aqualung_idle_add(track_batch_tag, (gpointer)1);
 		}
 	}
 }
@@ -3445,7 +3445,7 @@ record__tag_cb(gpointer data) {
 			artist_batch_tag_set_from_iter(&iter_artist);
 
 			record_tag_iter = iter;
-			g_idle_add(record_batch_tag, (gpointer)1);
+			aqualung_idle_add(record_batch_tag, (gpointer)1);
 		}
 	}
 }
@@ -3459,7 +3459,7 @@ artist__tag_cb(gpointer data) {
 
 		if (create_tag_dialog()) {
 			artist_tag_iter = iter;
-			g_idle_add(artist_batch_tag, (gpointer)1);
+			aqualung_idle_add(artist_batch_tag, (gpointer)1);
 		}
 	}
 }
@@ -3473,7 +3473,7 @@ store__tag_cb(gpointer data) {
 
 		if (create_tag_dialog()) {
 			store_tag_iter = iter;
-			g_idle_add(store_batch_tag, (gpointer)1);
+			aqualung_idle_add(store_batch_tag, (gpointer)1);
 		}
 	}
 }

@@ -881,7 +881,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			g_source_remove(vol_bal_timeout_tag);
 		}
 			
-		vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
+		vol_bal_timeout_tag = aqualung_timeout_add(1000, vol_bal_timeout_callback, NULL);
 
                 if (event->state & GDK_MOD1_MASK) {  /* ALT + KP_Divide */
 			g_signal_emit_by_name(G_OBJECT(scale_bal), "move-slider",
@@ -897,7 +897,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			g_source_remove(vol_bal_timeout_tag);
 		}
 		
-		vol_bal_timeout_tag = g_timeout_add(1000, vol_bal_timeout_callback, NULL);
+		vol_bal_timeout_tag = aqualung_timeout_add(1000, vol_bal_timeout_callback, NULL);
 
                 if (event->state & GDK_MOD1_MASK) {  /* ALT + KP_Multiply */
 			g_signal_emit_by_name(G_OBJECT(scale_bal),
@@ -3419,7 +3419,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 #endif /* HAVE_JACK */
 
 	/* set timeout function */
-	timeout_tag = g_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
+	timeout_tag = aqualung_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
 
         if (options.playlist_is_embedded) {
                 gtk_widget_set_sensitive(plist__fileinfo, FALSE);

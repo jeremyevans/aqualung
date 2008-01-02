@@ -131,18 +131,72 @@ aqualung_dialog_run(GtkDialog * dialog) {
 #endif /* HAVE_SYSTRAY */
 }
 
+typedef struct {
+	GSourceFunc func;
+	gpointer data;
+	GDestroyNotify destroy;
+} threads_dispatch_t;
+
+static gboolean
+threads_dispatch(gpointer data) {
+
+	threads_dispatch_t * dispatch = data;
+	gboolean ret = FALSE;
+
+	GDK_THREADS_ENTER();
+
+	if (!g_source_is_destroyed(g_main_current_source())) {
+		ret = dispatch->func(dispatch->data);
+	}
+
+	GDK_THREADS_LEAVE();
+
+	return ret;
+}
+
+static void
+threads_dispatch_free(gpointer data) {
+
+	threads_dispatch_t * dispatch = data;
+
+	if (dispatch->destroy && dispatch->data) {
+		dispatch->destroy(dispatch->data);
+	}
+
+	g_slice_free(threads_dispatch_t, data);
+}
 
 guint
 aqualung_idle_add(GSourceFunc function, gpointer data) {
 
-	return gdk_threads_add_idle_full(G_PRIORITY_DEFAULT_IDLE, function, data, NULL);
-}
+	threads_dispatch_t * dispatch;
 
+	dispatch = g_slice_new(threads_dispatch_t);
+	dispatch->func = function;
+	dispatch->data = data;
+	dispatch->destroy = NULL;
+
+	return g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,
+			       threads_dispatch,
+			       dispatch,
+			       threads_dispatch_free);
+}
 
 guint
 aqualung_timeout_add(guint interval, GSourceFunc function, gpointer data) {
 
-	return gdk_threads_add_timeout_full(G_PRIORITY_DEFAULT, interval, function, data, NULL);
+	threads_dispatch_t * dispatch;
+
+	dispatch = g_slice_new(threads_dispatch_t);
+	dispatch->func = function;
+	dispatch->data = data;
+	dispatch->destroy = NULL;
+
+	return g_timeout_add_full(G_PRIORITY_DEFAULT,
+				  interval,
+				  threads_dispatch,
+				  dispatch,
+				  threads_dispatch_free);
 }
 
 

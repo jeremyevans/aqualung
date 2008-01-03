@@ -877,10 +877,12 @@ cddb_submit_check(cddb_lookup_t * data) {
 		}
 	}
 
-	category = gtk_combo_box_get_active(GTK_COMBO_BOX(data->category_combo));
-	if (category == 0) {
-		gtk_widget_grab_focus(data->category_combo);
-		return 1;
+	if (data->type == CDDB_TYPE_SUBMIT_NEW) {
+		category = gtk_combo_box_get_active(GTK_COMBO_BOX(data->category_combo));
+		if (category == 0) {
+			gtk_widget_grab_focus(data->category_combo);
+			return 1;
+		}
 	}
 
 	genre = (char *)gtk_entry_get_text(GTK_ENTRY(data->genre_entry));
@@ -914,14 +916,13 @@ cddb_submit_check(cddb_lookup_t * data) {
 }
 
 void
-cddb_submit(cddb_lookup_t * data) {
+cddb_submit(cddb_lookup_t * data, int n) {
 
 	GtkTreeIter iter_trlist;
 	cddb_conn_t * conn = NULL;
 	cddb_disc_t * disc = NULL;
-	cddb_track_t * track = NULL;
-
 	int i;
+
 
 	if (cddb_connection_setup(&conn) == 1) {
 		return;
@@ -936,15 +937,27 @@ cddb_submit(cddb_lookup_t * data) {
 	cddb_http_enable(conn);
 	cddb_set_server_port(conn, 80);
 
-	if ((disc = cddb_disc_new()) == NULL) {
-		fprintf(stderr, "cddb_lookup(): cddb_disc_new error\n");
-		return;
-	}
+	if (n < 0) {
+		cddb_track_t * track = NULL;
 
-	for (i = 0; i < data->ntracks; i++) {
-		track = cddb_track_new();
-		cddb_track_set_frame_offset(track, data->frames[i]);
-		cddb_disc_add_track(disc, track);
+		if ((disc = cddb_disc_new()) == NULL) {
+			fprintf(stderr, "cddb_submit: cddb_disc_new error\n");
+			return;
+		}
+
+		for (i = 0; i < data->ntracks; i++) {
+			track = cddb_track_new();
+			cddb_track_set_frame_offset(track, data->frames[i]);
+			cddb_disc_add_track(disc, track);
+		}
+
+		cddb_disc_set_length(disc, data->record_length);
+		cddb_disc_set_category(disc, gtk_combo_box_get_active(GTK_COMBO_BOX(data->category_combo)) - 1);
+	} else {
+		disc = data->records[n];
+#ifdef LIBCDDB_REVISION_PATCH
+		cddb_disc_set_revision(disc, cddb_disc_get_revision(disc) + 1);
+#endif /* LIBCDDB_REVISION_PATCH */
 	}
 
 	for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(data->track_store),
@@ -957,18 +970,15 @@ cddb_submit(cddb_lookup_t * data) {
 		g_free(name);
 	}
 
-	cddb_disc_set_length(disc, data->record_length);
 	cddb_disc_set_artist(disc, gtk_entry_get_text(GTK_ENTRY(data->artist_entry)));
 	cddb_disc_set_title(disc, gtk_entry_get_text(GTK_ENTRY(data->title_entry)));
 	cddb_disc_set_year(disc, gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->year_spinner)));
-	cddb_disc_set_category(disc, gtk_combo_box_get_active(GTK_COMBO_BOX(data->category_combo)) - 1);
 	cddb_disc_set_genre(disc, gtk_entry_get_text(GTK_ENTRY(data->genre_entry)));
 	cddb_disc_set_ext_data(disc, gtk_entry_get_text(GTK_ENTRY(data->ext_entry)));
 
 	if (cddb_disc_calc_discid(disc) == 0) {
-		fprintf(stderr, "cddb_lookup.c: cddb_submit_thread(): cddb_disc_calc_discid error\n");
+		fprintf(stderr, "cddb_submit: cddb_disc_calc_discid error\n");
 		cddb_destroy(conn);
-		cddb_disc_destroy(disc);
 		return;
 	}
 
@@ -977,7 +987,10 @@ cddb_submit(cddb_lookup_t * data) {
 	}
 
 	cddb_destroy(conn);
-	cddb_disc_destroy(disc);
+
+	if (n < 0) {
+		cddb_disc_destroy(disc);
+	}
 }
 
 
@@ -1218,6 +1231,7 @@ cddb_dialog(cddb_lookup_t * data) {
 
 	if (data->type != CDDB_TYPE_SUBMIT_NEW) {
 		data->category_entry = gtk_entry_new();
+		gtk_entry_set_editable(GTK_ENTRY(data->category_entry), FALSE);
 		gtk_table_attach(GTK_TABLE(table), data->category_entry, 1, 2, 4, 5,
 				 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
 	} else {
@@ -1334,15 +1348,21 @@ cddb_dialog(cddb_lookup_t * data) {
 
 	if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		switch (data->type) {
-		case CDDB_TYPE_SUBMIT:
-		case CDDB_TYPE_SUBMIT_NEW:
+		if (data->type == CDDB_TYPE_SUBMIT || data->type == CDDB_TYPE_SUBMIT_NEW) {
 			if (cddb_submit_check(data)) {
 				goto display;
 			}
-			cddb_submit(data);
-			/* no break */
-		case CDDB_TYPE_QUERY:
+		}
+
+		if (data->type == CDDB_TYPE_SUBMIT) {
+			cddb_submit(data, gtk_combo_box_get_active(GTK_COMBO_BOX(data->combo)));
+		}
+
+		if (data->type == CDDB_TYPE_SUBMIT_NEW) {
+			cddb_submit(data, -1);
+		}
+
+		if (data->type == CDDB_TYPE_QUERY) {
 			if (iter_get_store_type(&data->iter_record) == STORE_TYPE_FILE) {
 				store_file_export(data);
 			} else {
@@ -1350,7 +1370,6 @@ cddb_dialog(cddb_lookup_t * data) {
 				store_cdda_export(data);
 #endif /* HAVE_CDDA */
 			}
-			break;
 		}
 	}
 

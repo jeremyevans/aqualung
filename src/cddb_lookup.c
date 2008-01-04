@@ -942,6 +942,7 @@ cddb_submit(cddb_lookup_t * data, int n) {
 
 		if ((disc = cddb_disc_new()) == NULL) {
 			fprintf(stderr, "cddb_submit: cddb_disc_new error\n");
+			cddb_destroy(conn);
 			return;
 		}
 
@@ -949,6 +950,13 @@ cddb_submit(cddb_lookup_t * data, int n) {
 			track = cddb_track_new();
 			cddb_track_set_frame_offset(track, data->frames[i]);
 			cddb_disc_add_track(disc, track);
+		}
+
+		if (cddb_disc_calc_discid(disc) == 0) {
+			fprintf(stderr, "cddb_submit: cddb_disc_calc_discid error\n");
+			cddb_disc_destroy(disc);
+			cddb_destroy(conn);
+			return;
 		}
 
 		cddb_disc_set_length(disc, data->record_length);
@@ -975,12 +983,6 @@ cddb_submit(cddb_lookup_t * data, int n) {
 	cddb_disc_set_year(disc, gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->year_spinner)));
 	cddb_disc_set_genre(disc, gtk_entry_get_text(GTK_ENTRY(data->genre_entry)));
 	cddb_disc_set_ext_data(disc, gtk_entry_get_text(GTK_ENTRY(data->ext_entry)));
-
-	if (cddb_disc_calc_discid(disc) == 0) {
-		fprintf(stderr, "cddb_submit: cddb_disc_calc_discid error\n");
-		cddb_destroy(conn);
-		return;
-	}
 
 	if (!cddb_write(conn, disc)) {
 		create_cddb_write_error_dialog(_("An error occurred while submitting the record to the CDDB server."));

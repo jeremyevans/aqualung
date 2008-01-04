@@ -952,15 +952,15 @@ cddb_submit(cddb_lookup_t * data, int n) {
 			cddb_disc_add_track(disc, track);
 		}
 
+		cddb_disc_set_length(disc, data->record_length);
+		cddb_disc_set_category(disc, gtk_combo_box_get_active(GTK_COMBO_BOX(data->category_combo)) - 1);
+
 		if (cddb_disc_calc_discid(disc) == 0) {
 			fprintf(stderr, "cddb_submit: cddb_disc_calc_discid error\n");
 			cddb_disc_destroy(disc);
 			cddb_destroy(conn);
 			return;
 		}
-
-		cddb_disc_set_length(disc, data->record_length);
-		cddb_disc_set_category(disc, gtk_combo_box_get_active(GTK_COMBO_BOX(data->category_combo)) - 1);
 	} else {
 		disc = data->records[n];
 #ifdef LIBCDDB_REVISION_PATCH

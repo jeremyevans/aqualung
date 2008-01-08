@@ -656,7 +656,7 @@ meta_ape_rewrite(char * filename, unsigned char * data, unsigned int length) {
 
 	tag_size = meta_read_int32(buf+12);
 	flags = meta_read_int32(buf+20);
-	pos = -tag_size + offset;
+	pos = offset -(long)tag_size;
 	if ((flags & APE_FLAG_HAS_HEADER) != 0) {
 		pos -= 32;
 	}

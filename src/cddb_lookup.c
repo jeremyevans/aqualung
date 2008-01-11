@@ -892,7 +892,7 @@ cddb_submit_check(cddb_lookup_t * data) {
 	}
 
 	ext = (char *)gtk_entry_get_text(GTK_ENTRY(data->ext_entry));
-	if (genre[0] != '\0' && is_all_wspace(ext)) {
+	if (ext[0] != '\0' && is_all_wspace(ext)) {
 		gtk_widget_grab_focus(data->ext_entry);
 		return 1;
 	}
@@ -963,9 +963,9 @@ cddb_submit(cddb_lookup_t * data, int n) {
 		}
 	} else {
 		disc = data->records[n];
-#ifdef LIBCDDB_REVISION_PATCH
+#ifdef LIBCDDB_REVISION
 		cddb_disc_set_revision(disc, cddb_disc_get_revision(disc) + 1);
-#endif /* LIBCDDB_REVISION_PATCH */
+#endif /* LIBCDDB_REVISION */
 	}
 
 	for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(data->track_store),

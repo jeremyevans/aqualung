@@ -698,6 +698,10 @@ else
 			AC_MSG_RESULT(yes)
 		        cddb_LIBS=`pkg-config --libs libcddb`
 			AC_DEFINE([HAVE_CDDB], [1], [Defined if compile with CDDB support])
+		        AC_CHECK_LIB(cddb, cddb_disc_get_revision, [libcddb_rev=yes], [libcddb_rev=no])
+			if test "$libcddb_rev" = "yes"; then
+				AC_DEFINE([LIBCDDB_REVISION], [1], [Defined if libcddb handles disc revision number])
+			fi
 		else
 			AC_MSG_RESULT(no)
 			lib="no"

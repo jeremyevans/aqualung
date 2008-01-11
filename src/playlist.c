@@ -1667,7 +1667,8 @@ add_file_to_playlist(gpointer data) {
 			playlist_data_t * pdata;
 			if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(pt->pl->store), &parent, &iter)) {
 				gtk_tree_model_get(GTK_TREE_MODEL(pt->pl->store), &parent, PL_COL_DATA, &pdata, -1);
-				if (!strcmp(pdata->artist, pldata->artist) && !strcmp(pdata->album, pldata->album)) {
+				if (pdata->artist && pdata->album && pldata->artist && pldata->album &&
+				    !strcmp(pdata->artist, pldata->artist) && !strcmp(pdata->album, pldata->album)) {
 					strncpy(list_str, pldata->title, MAXLEN-1);
 				} else {
 					playlist_data_get_display_name(list_str, pldata);
@@ -2341,7 +2342,8 @@ plist__reread_file_meta_foreach(playlist_t * pl, GtkTreeIter * iter, void * user
 	if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(pl->store), &parent, iter)) {
 		playlist_data_t * pdata;
 		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &parent, PL_COL_DATA, &pdata, -1);
-		if (!strcmp(pdata->artist, data->artist) && !strcmp(pdata->album, data->album)) {
+		if (pdata->artist && pdata->album && data->artist && data->album &&
+		    !strcmp(pdata->artist, data->artist) && !strcmp(pdata->album, data->album)) {
 			gtk_tree_store_set(pl->store, iter, PL_COL_NAME, data->title, -1);
 			name_set = 1;
 		}

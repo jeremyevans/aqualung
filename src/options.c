@@ -1067,7 +1067,7 @@ appearance_font_select(GtkWidget * widget, gpointer data) {
 	GtkWidget *font_selector;
 	gint response;
 
-	font_selector = gtk_font_selection_dialog_new ("Select a font...");
+	font_selector = gtk_font_selection_dialog_new(_("Select a font..."));
 	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
 	gtk_window_set_transient_for(GTK_WINDOW(font_selector), GTK_WINDOW(options_window));
 	gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(font_selector),

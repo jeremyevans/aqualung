@@ -155,7 +155,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Homepage:"), -1, tag, NULL);
-	gtk_text_buffer_insert_at_cursor(buffer, " http://aqualung.sf.net\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, " http://aqualung.factorial.hu\n", -1);
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\nCopyright (C) 2004-2008 Tom Szilagyi\n\n\n", -1);
 

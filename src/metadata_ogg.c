@@ -805,6 +805,7 @@ metadata_from_vorbis_comment(vorbis_comment * vc) {
 	for (i = 0; i < vc->comments; i++) {
 		char key[MAXLEN];
 		char val[MAXLEN];
+		char * end;
 		char c;
 		int k, n = 0;
 
@@ -823,7 +824,14 @@ metadata_from_vorbis_comment(vorbis_comment * vc) {
 		}
 		val[k] = '\0';
 
-		metadata_add_frame_from_keyval(meta, META_TAG_OXC, key, val);
+		if (!g_utf8_validate(val, -1, (const gchar**)&end)) {
+			fprintf(stderr, "metadata_from_vorbis_comment: invalid UTF-8 sequence in field '%s', truncating.\n", key);
+			*end = '\0';
+		}
+		
+		if (strlen(val) > 0) {
+			metadata_add_frame_from_keyval(meta, META_TAG_OXC, key, val);
+		}
 	}
 
 	/* Add Vendor string */

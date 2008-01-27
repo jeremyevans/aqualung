@@ -19,6 +19,9 @@ editor with .po syntax support to make the process easier. When
 finished with translating, send the file to the aqualung-friends
 mailing list. We will include it in the distribution.
 
+Note that you have to run `make' and `make install' before starting
+Aqualung in order to test your translation.
+
 
 Updating your translation
 -------------------------

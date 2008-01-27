@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-15 09:32+0100\n"
-"PO-Revision-Date: 2008-01-15 09:33+0100\n"
+"POT-Creation-Date: 2008-01-27 18:14+0100\n"
+"PO-Revision-Date: 2008-01-27 18:14+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,6 +50,9 @@ msgstr "Olasz:\n"
 
 msgid "Ukrainian:\n"
 msgstr "Ukrán:\n"
+
+msgid "Russian:\n"
+msgstr "Orosz:\n"
 
 msgid "Graphics:"
 msgstr "Grafika:"

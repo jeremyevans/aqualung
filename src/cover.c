@@ -396,6 +396,16 @@ display_cover_from_pixbuf(GtkWidget *image_area, GtkWidget *event_area, GtkWidge
 	/* don't unref cover_pixbuf that was passed in */
 }
 
+void
+hide_cover(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align) {
+
+	cover_show_flag = 0;
+	gtk_widget_hide(image_area);
+	gtk_widget_hide(event_area);
+	if (align) {
+		gtk_widget_hide(align);
+	}
+}
 
 void 
 display_cover(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
@@ -404,28 +414,32 @@ display_cover(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
 
         GdkPixbuf * cover_pixbuf = NULL;
         gchar cover_filename[PATH_MAX];
+	char * filename = NULL;
 
         if (strlen(song_filename) == 0) {
+		if (hide == TRUE) {
+			hide_cover(image_area, event_area, align);
+		}
 		return;
 	}
 
-	strcpy(cover_filename, find_cover_filename(song_filename));
-	cover_pixbuf = gdk_pixbuf_new_from_file(cover_filename, NULL);
-	if (cover_pixbuf != NULL) {
+	if ((filename = find_cover_filename(song_filename)) == NULL) {
+		if (hide == TRUE) {
+			hide_cover(image_area, event_area, align);
+		}
+		return;
+	}
+
+	strcpy(cover_filename, filename);
+
+	if ((cover_pixbuf = gdk_pixbuf_new_from_file(cover_filename, NULL)) != NULL) {
 		display_cover_from_pixbuf(image_area, event_area, align,
 					  dest_width, dest_height,
 					  cover_pixbuf, hide, bevel);
 		g_object_unref(cover_pixbuf);
-	} else {
-		if (hide == TRUE) {
-			cover_show_flag = 0;      
-			gtk_widget_hide(image_area);
-			gtk_widget_hide(event_area);
-			if (align) {
-				gtk_widget_hide(align);
-			}
-                }
-        }
+	} else if (hide == TRUE) {
+		hide_cover(image_area, event_area, align);
+	}
 }
 
 
@@ -454,22 +468,14 @@ display_cover_from_binary(GtkWidget *image_area, GtkWidget *event_area, GtkWidge
 		return;
 	}
 
-	cover_pixbuf = gdk_pixbuf_loader_get_pixbuf(loader);
-	if (cover_pixbuf != NULL) {
+	if ((cover_pixbuf = gdk_pixbuf_loader_get_pixbuf(loader)) != NULL) {
 		display_cover_from_pixbuf(image_area, event_area, align,
 					  dest_width, dest_height,
 					  cover_pixbuf, hide, bevel);
 		/* cover_pixbuf is owned by loader, so don't unref that manually */
 		g_object_unref(loader);
-	} else {
-		if (hide == TRUE) {
-			cover_show_flag = 0;      
-			gtk_widget_hide(image_area);
-			gtk_widget_hide(event_area);
-			if (align) {
-				gtk_widget_hide(align);
-			}
-		}
+	} else if (hide == TRUE) {
+		hide_cover(image_area, event_area, align);
         }
 }
 
@@ -481,103 +487,99 @@ insert_cover(GtkTreeIter * tree_iter, GtkTextIter * text_iter, GtkTextBuffer * b
         gchar cover_filename[PATH_MAX];
         gint depth;
 
+	track_data_t * data;
+	GdkPixbuf * pixbuf;
+	gint k;
+	gint d_cover_width, d_cover_height;
+	char * filename = NULL;
+
+	gint width, height;
+	gint scaled_width, scaled_height;
+	GdkPixbuf * scaled;
+
+
         /* get cover path */
-        
+
 	path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), tree_iter);
 	depth = gtk_tree_path_get_depth(path);
+	gtk_tree_path_free(path);
 
 	/* check if we at 3rd level (album) or 4th level (track) */
 
-	if (depth == 3 || depth == 4) {
+	if (depth < 3) {
+		return;
+	}
 
-		track_data_t * data;
-		GdkPixbuf * pixbuf;
-		gint k;
-		gint d_cover_width, d_cover_height;
-
-		if (depth == 3) { /* album selected */
-			GtkTreeIter iter;
-
-			if (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter, tree_iter, 0)) {
-				gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &data, -1);
-			} else {
-				return;
-			}
-
-		} else { /* track selected */
-
-			gtk_tree_model_get(GTK_TREE_MODEL(music_store), tree_iter, MS_COL_DATA, &data, -1);
-		}
-
-		strcpy(cover_filename, find_cover_filename(data->file));
-
-		/* load and display cover */
-
-		k = cover_widths[options.cover_width % N_COVER_WIDTHS];
-
-		if (k == -1) {
-			d_cover_width = d_cover_height = options.browser_size_x - SCROLLBAR_WIDTH;      
+	if (depth == 3) { /* album selected */
+		GtkTreeIter iter;
+		if (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter, tree_iter, 0)) {
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &data, -1);
 		} else {
-			d_cover_width = d_cover_height = k;
+			return;
+		}
+	} else { /* track selected */
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), tree_iter, MS_COL_DATA, &data, -1);
+	}
+
+	if ((filename = find_cover_filename(data->file)) == NULL) {
+		return;
+	}
+
+	strcpy(cover_filename, filename);
+
+	/* load and display cover */
+
+	k = cover_widths[options.cover_width % N_COVER_WIDTHS];
+
+	if (k == -1) {
+		d_cover_width = d_cover_height = options.browser_size_x - SCROLLBAR_WIDTH;      
+	} else {
+		d_cover_width = d_cover_height = k;
+	}
+
+	if ((pixbuf = gdk_pixbuf_new_from_file (cover_filename, NULL)) == NULL) {
+		return;
+	}
+
+	gdk_pixbuf_get_file_info(cover_filename, &width, &height);
+
+	/* don't scale when orginal size is smaller than cover defaults */
+
+	scaled_width =  d_cover_width;
+	scaled_height = d_cover_height;
+
+	if (width > d_cover_width || height > d_cover_height) {
+
+		if (width >= height) {
+			scaled_height = (height * d_cover_width) / width;
+		} else {
+			scaled_width = (width * d_cover_height) / height;
 		}
 
-		if ((pixbuf = gdk_pixbuf_new_from_file (cover_filename, NULL)) != NULL) {
+		scaled = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_TILES);
+		g_object_unref (pixbuf);
+		pixbuf = scaled;
 
-			gint width, height;
-			gint scaled_width, scaled_height;
-			GdkPixbuf * scaled;
+	} else {
+		if (options.magnify_smaller_images) {
+			scaled_height = (height * d_cover_width) / width;
+			scaled = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_TILES);
+			g_object_unref (pixbuf);
+			pixbuf = scaled;
+		} else {
+			scaled_width = width;
+			scaled_height = height;
+		}                               
+	}
 
-			gdk_pixbuf_get_file_info(cover_filename, &width, &height);
+	draw_cover_frame(pixbuf, scaled_width, scaled_height, FALSE);
 
-			/* don't scale when orginal size is smaller than cover defaults */
+	/* insert picture */
 
-			scaled_width =  d_cover_width;
-			scaled_height = d_cover_height;
+	gtk_text_buffer_insert_pixbuf (buffer, text_iter, pixbuf);
+	gtk_text_buffer_insert (buffer, text_iter, "\n\n", -1);
 
-			if (width > d_cover_width || height > d_cover_height) {
-
-				if (width >= height) {
-					scaled_height = (height * d_cover_width) / width;
-				} else {
-					scaled_width = (width * d_cover_height) / height;
-				}
-
-				scaled = gdk_pixbuf_scale_simple (pixbuf, 
-								  scaled_width, scaled_height, 
-								  GDK_INTERP_TILES);
-				g_object_unref (pixbuf);
-				pixbuf = scaled;
-
-			} else {
-				if (options.magnify_smaller_images) {
-
-					scaled_height = (height * d_cover_width) / width;
-
-					scaled = gdk_pixbuf_scale_simple (pixbuf, 
-									  scaled_width, scaled_height, 
-									  GDK_INTERP_TILES);
-					g_object_unref (pixbuf);
-					pixbuf = scaled;
-				} else {
-					scaled_width = width;
-					scaled_height = height;
-				}                               
-			}
-
-                        if (pixbuf != NULL) {
-                                draw_cover_frame(pixbuf, scaled_width, scaled_height, FALSE);
-
-                                /* insert picture */
-
-                                gtk_text_buffer_insert_pixbuf (buffer, text_iter, pixbuf);
-                                gtk_text_buffer_insert (buffer, text_iter, "\n\n", -1);
-
-                                g_object_unref (pixbuf);
-                        }
-		}
-
-                gtk_tree_path_free(path);
-        }
+	g_object_unref (pixbuf);
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

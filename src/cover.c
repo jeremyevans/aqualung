@@ -54,8 +54,8 @@ gchar *cover_extensions[] = {
 gint n_extensions = sizeof(cover_extensions) / sizeof(gchar*);
 
 GtkWidget *cover_window;
+gboolean ext_flag;
 gchar temp_filename[PATH_MAX];
-gint ext_flag;
 gint calculated_width, calculated_height;
 gint cover_widths[N_COVER_WIDTHS] = { 50, 100, 200, 300, -1 };       /* widths in pixels */
 
@@ -126,72 +126,88 @@ find_cover_filename(gchar *song_filename) {
                 "front", ".front"
         };
 
-        gint n_files, i, j, n;
+        gint n_templates, n_file_hits, i, j, n, m;
         gchar base_path[PATH_MAX], current_filename[PATH_MAX];
         static gchar cover_filename[PATH_MAX];
+        static gint cover_filename_reasonable;
 	struct dirent ** d_entry;
         gchar *str1, *str2;
 
-        n_files = sizeof(cover_filenames) / sizeof(gchar*);
+
+        n_templates = sizeof(cover_filenames) / sizeof(gchar*);
         strcpy(base_path, get_song_path(song_filename));
 
-        cover_filename[0] = temp_filename[0] = '\0';
+        if (strcmp(base_path, get_song_path(cover_filename))) {
 
-        for (i = 0; i < n_files; i++) {
+                cover_filename[0] = temp_filename[0] = '\0';
+                cover_filename_reasonable = FALSE;
 
-                for (j = 0; j < n_extensions; j++) {
+                ext_flag = FALSE;
+                n_file_hits = scandir(base_path, &d_entry, entry_filter, alphasort);
 
-			int n_files;
+                for (i = 0; i < n_templates; i++) {
 
-                        strcpy (current_filename, cover_filenames[i]);
-                        strcat (current_filename, ".");
-                        strcat (current_filename, cover_extensions[j]);
+                        for (j = 0; j < n_extensions; j++) {
 
-                        ext_flag = FALSE;
-                        str1 = g_utf8_casefold (current_filename, -1);
+                                strcpy (current_filename, cover_filenames[i]);
+                                strcat (current_filename, ".");
+                                strcat (current_filename, cover_extensions[j]);
 
-			n_files = scandir(base_path, &d_entry, entry_filter, alphasort);
-	                for (n = 0; n < n_files; n++) {
+                                str1 = g_utf8_casefold (current_filename, -1);
 
-                                str2 = g_utf8_casefold(d_entry[n]->d_name, -1);
+                                for (n = 0; n < n_file_hits; n++) {
 
-                                if (!g_utf8_collate(str1, str2)) {
+                                        str2 = g_utf8_casefold(d_entry[n]->d_name, -1);
 
-                                        strcpy (cover_filename, base_path);
-                                        strcat (cover_filename, d_entry[n]->d_name);
+                                        if (!g_utf8_collate(str1, str2)) {
 
-                                        if (g_file_test (cover_filename, G_FILE_TEST_IS_REGULAR) == TRUE) {
-                                                g_free (str1);
-                                                g_free (str2);
+                                                strcpy (cover_filename, base_path);
+                                                strcat (cover_filename, d_entry[n]->d_name);
 
-						while (n < n_files) {
-							free(d_entry[n]);
-							++n;
-						}
-						
-						free(d_entry);
+                                                if (g_file_test (cover_filename, G_FILE_TEST_IS_REGULAR) == TRUE) {
+                                                        g_free (str1);
+                                                        g_free (str2);
 
-                                                return cover_filename;
+
+                                                        for (m = 0; m < n_file_hits; m++) {
+                                                                free(d_entry[m]);
+                                                        }
+                                                        free(d_entry);
+
+                                                        cover_filename_reasonable = TRUE;
+
+                                                        return cover_filename;
+                                                }
                                         }
+
+                                        g_free (str2);
                                 }
 
-                                g_free (str2);
-				free(d_entry[n]);
+                                g_free (str1);
                         }
-
-                        g_free (str1);
-			if (n_files > 0) {
-				free(d_entry);
-			}
                 }
-        }
 
-        if (ext_flag == TRUE) {
+                if (n_file_hits > 0) {
+                        for (m = 0; m < n_file_hits; m++) {
+                                free(d_entry[m]);
+                        }
+                        free(d_entry);
+                }
+
                 strcpy (cover_filename, base_path);
-                strcat (cover_filename, temp_filename);
+ 
+                if (ext_flag == TRUE) {
+                        strcat (cover_filename, temp_filename);
+                        cover_filename_reasonable = TRUE;
+                }
+
         }
 
-        return cover_filename;
+        if (cover_filename_reasonable == TRUE) {
+                return cover_filename;
+        }
+
+        return NULL;
 }
 
 

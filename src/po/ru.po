@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta9.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-01-27 16:22+0200\n"
-"PO-Revision-Date: 2008-01-27 17:12+0300\n"
+"PO-Revision-Date: 2008-02-03 17:50+0300\n"
 "Last-Translator: Alexander Ilyashov <alexander.ilyashov@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,10 +19,10 @@ msgid "About"
 msgstr "О программе"
 
 msgid "Build version: "
-msgstr "Версия сборки:"
+msgstr "Версия сборки: "
 
 msgid "Homepage:"
-msgstr "Домашняя страница"
+msgstr "Домашняя страница:"
 
 msgid "Authors:"
 msgstr "Авторы:"
@@ -61,7 +61,7 @@ msgid "This Aqualung binary is compiled with:"
 msgstr ""
 
 msgid "Optional features:"
-msgstr ""
+msgstr "Дополнительные возможности:"
 
 msgid "LADSPA plugin support\n"
 msgstr ""
@@ -70,7 +70,7 @@ msgid "CDDA (Audio CD) support\n"
 msgstr ""
 
 msgid "CDDB support\n"
-msgstr ""
+msgstr "Поддержка CDDB\n"
 
 msgid "Sample Rate Converter support\n"
 msgstr ""
@@ -91,7 +91,7 @@ msgid "Decoding support:"
 msgstr ""
 
 msgid "sndfile (WAV, AIFF, etc.)\n"
-msgstr ""
+msgstr "sndfile (WAV, AIFF, etc.)\n"
 
 msgid "Free Lossless Audio Codec (FLAC)\n"
 msgstr ""
@@ -115,19 +115,19 @@ msgid "Monkey's Audio Codec\n"
 msgstr ""
 
 msgid "WavPack\n"
-msgstr ""
+msgstr "WavPack\n"
 
 msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
-msgstr ""
+msgstr "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
 
 msgid "Encoding support:"
 msgstr ""
 
 msgid "sndfile (WAV)\n"
-msgstr ""
+msgstr "sndfile (WAV)\n"
 
 msgid "LAME (MP3)\n"
-msgstr ""
+msgstr "LAME (MP3)\n"
 
 msgid "Output driver support:"
 msgstr ""
@@ -201,13 +201,13 @@ msgid "Predefined transformations"
 msgstr ""
 
 msgid "Remove file extension"
-msgstr ""
+msgstr "Убирать расширение файла"
 
 msgid "Remove leading number"
-msgstr ""
+msgstr "Убирать число в начале"
 
 msgid "Convert underscore to space"
-msgstr ""
+msgstr "Преобразовывать подчеркивание в пробел"
 
 msgid "Trim leading, tailing and duplicate spaces"
 msgstr ""
@@ -245,16 +245,16 @@ msgid "Build/Update store"
 msgstr ""
 
 msgid "General"
-msgstr ""
+msgstr "Общие"
 
 msgid "Directory structure"
-msgstr ""
+msgstr "Структура каталога"
 
 msgid "Root path:"
 msgstr ""
 
 msgid "_Browse..."
-msgstr ""
+msgstr "_Обзор..."
 
 msgid "Structure:"
 msgstr "Структура:"
@@ -287,10 +287,10 @@ msgid "Sort artists by"
 msgstr ""
 
 msgid "Artist name"
-msgstr ""
+msgstr "Имя исполнителя"
 
 msgid "Artist name (lowercase)"
-msgstr ""
+msgstr "Имя исполнителя (нижний регистр)"
 
 msgid "Directory name"
 msgstr "Имя каталога"
@@ -302,19 +302,19 @@ msgid "Record"
 msgstr "Запись"
 
 msgid "Sort records by"
-msgstr ""
+msgstr "Сортировать записи по"
 
 msgid "Record name"
-msgstr ""
+msgstr "Название записи"
 
 msgid "Record name (lowercase)"
-msgstr ""
+msgstr "Название записи (нижний регистр)"
 
 msgid "Year"
 msgstr "Год"
 
 msgid "Add year to the comments of new records"
-msgstr ""
+msgstr "Добавлять год в комментарии новых записей"
 
 msgid "Track"
 msgstr "Трек"
@@ -353,7 +353,7 @@ msgid "Unknown Artist"
 msgstr "Неизвестный исполнитель"
 
 msgid "Unknown Record"
-msgstr ""
+msgstr "Неизвестная запись"
 
 msgid "Scanning files"
 msgstr "Сканирование файлов"
@@ -365,7 +365,7 @@ msgid "CDDB lookup"
 msgstr ""
 
 msgid "Name transformation"
-msgstr ""
+msgstr "Преобразование имени"
 
 msgid "Reading file"
 msgstr "Чтение файла"
@@ -374,19 +374,19 @@ msgid "Please select the directory for ripped files."
 msgstr ""
 
 msgid "(none)"
-msgstr ""
+msgstr "(нет)"
 
 msgid "fast"
-msgstr ""
+msgstr "быстрее"
 
 msgid "best"
-msgstr ""
+msgstr "лучше"
 
 msgid "Compression level:"
-msgstr ""
+msgstr "Уровень сжатия:"
 
 msgid "Bitrate [kbps]:"
-msgstr ""
+msgstr "Битрейт [kbps]:"
 
 msgid "Artist/Album already existing, not empty"
 msgstr ""
@@ -418,7 +418,7 @@ msgid "No."
 msgstr ""
 
 msgid "Title"
-msgstr ""
+msgstr "Заголовок"
 
 msgid "Select"
 msgstr ""
@@ -427,7 +427,7 @@ msgid "All"
 msgstr "Все"
 
 msgid "None"
-msgstr ""
+msgstr "Нет"
 
 msgid "Output"
 msgstr ""
@@ -463,7 +463,7 @@ msgid "Perform overlapped reads"
 msgstr ""
 
 msgid "Verify data integrity"
-msgstr ""
+msgstr "Проверить целостность данных"
 
 msgid "Unlimited retry on failed reads (never skip)"
 msgstr ""
@@ -483,7 +483,7 @@ msgid "Total"
 msgstr "Всего"
 
 msgid "(audio only)"
-msgstr ""
+msgstr "(только аудио)"
 
 msgid "Ripping CD tracks"
 msgstr ""
@@ -498,34 +498,34 @@ msgid "Progress"
 msgstr ""
 
 msgid "Close window when complete"
-msgstr ""
+msgstr "Закрыть окно после завершения"
 
 msgid "Close"
 msgstr "Закрыть"
 
 msgid "Unknown disc"
-msgstr ""
+msgstr "Неизвестный диск"
 
 msgid "No disc"
-msgstr ""
+msgstr "Нет диска"
 
 msgid "CDDB query"
-msgstr ""
+msgstr "Запрос CDDB"
 
 msgid "Retrieving matches from server..."
-msgstr ""
+msgstr "Получение результатов с сервера..."
 
 msgid "Connecting to CDDB server..."
-msgstr ""
+msgstr "Подключение к серверу CDDB..."
 
 msgid "An error occurred while attempting to connect to the CDDB server."
-msgstr ""
+msgstr "Во время подключения к серверу CDDB возникла ошибка."
 
 msgid "Warning"
 msgstr "Внимание"
 
 msgid "No matching record found."
-msgstr ""
+msgstr "Совпадений не найдено."
 
 msgid "Import as Sort Key"
 msgstr ""
@@ -657,7 +657,7 @@ msgid "Progress:"
 msgstr ""
 
 msgid "*File info"
-msgstr ""
+msgstr "*Информация о файле"
 
 msgid "File info"
 msgstr "Информация о файле"
@@ -717,7 +717,7 @@ msgstr ""
 
 #, c-format
 msgid "MIME type: %s"
-msgstr ""
+msgstr "Тип MIME: %s"
 
 msgid "Picture type:"
 msgstr "Тип изображения:"
@@ -726,7 +726,7 @@ msgid "Description:"
 msgstr "Описание:"
 
 msgid "(no description)"
-msgstr ""
+msgstr "(нет описания)"
 
 msgid "Change"
 msgstr "Изменить"
@@ -735,7 +735,7 @@ msgid "Save"
 msgstr "Сохранить"
 
 msgid "Import as Record"
-msgstr ""
+msgstr "Импортировать как запись"
 
 msgid "Import as Track No."
 msgstr ""
@@ -772,7 +772,7 @@ msgstr ""
 
 #, c-format
 msgid "%ld Hz"
-msgstr ""
+msgstr "%ld Гц"
 
 msgid "Channel count:"
 msgstr ""
@@ -790,7 +790,7 @@ msgid "Total samples:"
 msgstr ""
 
 msgid "Mode:"
-msgstr ""
+msgstr "Режим:"
 
 msgid "Type:"
 msgstr "Тип:"
@@ -805,13 +805,13 @@ msgid "Samples:"
 msgstr ""
 
 msgid "Instruments:"
-msgstr ""
+msgstr "Инструменты:"
 
 msgid "Samples"
 msgstr ""
 
 msgid "Instruments"
-msgstr ""
+msgstr "Инструменты"
 
 msgid "Name"
 msgstr ""
@@ -838,7 +838,7 @@ msgstr "Выход"
 
 #, c-format
 msgid "Position: %d%%"
-msgstr ""
+msgstr "Позиция: %d%%"
 
 #, c-format
 msgid "Mute"
@@ -929,10 +929,10 @@ msgid "Hide Aqualung"
 msgstr "Скрыть Aqualung"
 
 msgid "Previous"
-msgstr ""
+msgstr "Предыдущий"
 
 msgid "Next"
-msgstr ""
+msgstr "Следующий"
 
 #, c-format
 msgid "%.1f MB / %.1f MB"
@@ -986,7 +986,7 @@ msgstr "Удалить"
 
 #, c-format
 msgid " (%.1f MB)"
-msgstr ""
+msgstr " (%.1f МБ)"
 
 #, c-format
 msgid " (capacity = %.1f MB)"
@@ -994,7 +994,7 @@ msgstr ""
 
 #, c-format
 msgid " Free space (%.1f MB)"
-msgstr ""
+msgstr " Свободное место (%.1f MB)"
 
 msgid ""
 "No suitable iRiver iFP device found.\n"
@@ -1012,7 +1012,7 @@ msgid ""
 msgstr ""
 
 msgid "Please select a local path."
-msgstr ""
+msgstr "Выберите, пожалуйста, локальный путь."
 
 msgid "Please select at least one valid song from playlist."
 msgstr ""
@@ -1058,19 +1058,19 @@ msgid "label_songs"
 msgstr ""
 
 msgid "<b>Songs info</b>"
-msgstr ""
+msgstr "<b>Информация о песнях</b>"
 
 msgid "Model:"
-msgstr ""
+msgstr "Модель:"
 
 msgid "Battery"
 msgstr ""
 
 msgid "Free space"
-msgstr ""
+msgstr "Свободное место"
 
 msgid "<b>Device status</b>"
-msgstr ""
+msgstr "<b>Состояние устройства</b>"
 
 msgid "Size"
 msgstr "Размер"
@@ -1079,10 +1079,10 @@ msgid "Create a new directory"
 msgstr "Создать новый каталог"
 
 msgid "<b>Remote directory</b>"
-msgstr ""
+msgstr "<b>Удаленный каталог</b>"
 
 msgid "<b>Local directory</b>"
-msgstr ""
+msgstr "<b>Локальный каталог</b>"
 
 msgid "Browse"
 msgstr "Обзор"
@@ -1106,13 +1106,13 @@ msgid "Close window when transfer complete"
 msgstr ""
 
 msgid "_Upload"
-msgstr ""
+msgstr "_Выгрузить"
 
 msgid "_Download"
-msgstr ""
+msgstr "_Загрузить"
 
 msgid "_Abort"
-msgstr ""
+msgstr "_Прервать"
 
 msgid "Album"
 msgstr "Альбом"
@@ -1142,19 +1142,19 @@ msgid "Organization"
 msgstr "Организация"
 
 msgid "Location"
-msgstr ""
+msgstr "Расположение"
 
 msgid "Contact"
 msgstr ""
 
 msgid "License"
-msgstr ""
+msgstr "Лицензия"
 
 msgid "Copyright"
-msgstr ""
+msgstr "Авторское право"
 
 msgid "ISRC"
-msgstr ""
+msgstr "ISRC"
 
 msgid "Version"
 msgstr "Версия"
@@ -1166,13 +1166,13 @@ msgid "Debut Album"
 msgstr "Дебютный альбом"
 
 msgid "Publisher"
-msgstr ""
+msgstr "Издатель"
 
 msgid "Conductor"
 msgstr ""
 
 msgid "Composer"
-msgstr ""
+msgstr "Композитор"
 
 msgid "Publication Right"
 msgstr ""
@@ -1181,10 +1181,10 @@ msgid "File"
 msgstr "Файл"
 
 msgid "EAN/UPC"
-msgstr ""
+msgstr "EAN/UPC"
 
 msgid "ISBN"
-msgstr ""
+msgstr "ISBN"
 
 msgid "Catalog Number"
 msgstr ""
@@ -1193,10 +1193,10 @@ msgid "Label Code"
 msgstr ""
 
 msgid "Record Date"
-msgstr ""
+msgstr "Дата записи"
 
 msgid "Record Location"
-msgstr ""
+msgstr "Расположение записи"
 
 msgid "Media"
 msgstr ""
@@ -1214,13 +1214,13 @@ msgid "Language"
 msgstr "Язык"
 
 msgid "Bibliography"
-msgstr ""
+msgstr "Библиография"
 
 msgid "Introplay"
 msgstr ""
 
 msgid "BPM"
-msgstr ""
+msgstr "BPM"
 
 msgid "Encoding Time"
 msgstr ""
@@ -1232,7 +1232,7 @@ msgid "Original Release Time"
 msgstr ""
 
 msgid "Release Time"
-msgstr ""
+msgstr "Дата релиза"
 
 msgid "Tagging Time"
 msgstr ""
@@ -1313,7 +1313,7 @@ msgid "User Defined Text"
 msgstr ""
 
 msgid "Commercial Information"
-msgstr ""
+msgstr "Коммерческая информация"
 
 msgid "Copyright/Legal Information"
 msgstr ""
@@ -1367,7 +1367,7 @@ msgid "Icy-Genre"
 msgstr ""
 
 msgid "RVA"
-msgstr ""
+msgstr "RVA"
 
 msgid "Attached Picture"
 msgstr ""
@@ -1376,16 +1376,16 @@ msgid "Binary Object"
 msgstr ""
 
 msgid "NULL"
-msgstr ""
+msgstr "NULL"
 
 msgid "ID3v1"
-msgstr ""
+msgstr "ID3v1"
 
 msgid "ID3v2"
-msgstr ""
+msgstr "ID3v2"
 
 msgid "APE"
-msgstr ""
+msgstr "APE"
 
 msgid "Ogg Xiph Comments"
 msgstr ""
@@ -1403,19 +1403,19 @@ msgid "MPEG StreamMeta"
 msgstr ""
 
 msgid "Module info"
-msgstr ""
+msgstr "Информация о модуле"
 
 msgid "Unknown"
 msgstr ""
 
 msgid "Success"
-msgstr ""
+msgstr "Успешно"
 
 msgid "Memory allocation error"
-msgstr ""
+msgstr "Ошибка выделения памяти"
 
 msgid "Unable to open file"
-msgstr ""
+msgstr "Невозможно открыть файл"
 
 msgid "No metadata support for this format"
 msgstr ""
@@ -1433,10 +1433,10 @@ msgid "Conversion to target charset failed"
 msgstr ""
 
 msgid "Internal error"
-msgstr ""
+msgstr "Внутренняя ошибка"
 
 msgid "Unknown error"
-msgstr ""
+msgstr "Неизвестная ошибка"
 
 msgid "Other"
 msgstr ""
@@ -1530,10 +1530,10 @@ msgid "You will need to restart Aqualung for the following changes to take effec
 msgstr ""
 
 msgid "Select a font..."
-msgstr ""
+msgstr "Выбрать шрифт..."
 
 msgid "Disable skin support"
-msgstr ""
+msgstr "Отключить поддержку скинов"
 
 msgid "rw"
 msgstr ""
@@ -1594,7 +1594,7 @@ msgid ""
 msgstr ""
 
 msgid "Title format"
-msgstr ""
+msgstr "Формат заголовка"
 
 msgid "Implicit command line"
 msgstr ""
@@ -1603,7 +1603,7 @@ msgid "Miscellaneous"
 msgstr ""
 
 msgid "Enable tooltips"
-msgstr ""
+msgstr "Включить подсказки"
 
 msgid "Put control buttons at the bottom of playlist"
 msgstr ""
@@ -1639,16 +1639,16 @@ msgid "Default cover width:"
 msgstr ""
 
 msgid "50 pixels"
-msgstr ""
+msgstr "50 пикселов"
 
 msgid "100 pixels"
-msgstr ""
+msgstr "100 пикселов"
 
 msgid "200 pixels"
-msgstr ""
+msgstr "200 пикселов"
 
 msgid "300 pixels"
-msgstr ""
+msgstr "300 пикселов"
 
 msgid "use browser window width"
 msgstr ""
@@ -1660,7 +1660,7 @@ msgid "Show cover thumbnail for Music Store tracks only"
 msgstr ""
 
 msgid "Playlist"
-msgstr ""
+msgstr "Плей-лист"
 
 msgid "Embed playlist into main window"
 msgstr ""
@@ -1684,13 +1684,13 @@ msgid "When shuffling, records added in Album mode are played in order"
 msgstr ""
 
 msgid "Enable statusbar"
-msgstr ""
+msgstr "Включить строку состояния"
 
 msgid "Enable statusbar in playlist"
-msgstr ""
+msgstr "Включить строку состояния в плей-листе"
 
 msgid "Show soundfile size in statusbar"
-msgstr ""
+msgstr "Отображать размер файла в строке состояния"
 
 msgid "Show RVA values"
 msgstr ""
@@ -1731,7 +1731,7 @@ msgid "Hide the Music Store comment pane"
 msgstr ""
 
 msgid "Enable toolbar"
-msgstr ""
+msgstr "Включить панель инструментов"
 
 msgid "Enable toolbar in Music Store"
 msgstr ""
@@ -1764,7 +1764,7 @@ msgid "Refresh"
 msgstr "Обновить"
 
 msgid "DSP"
-msgstr ""
+msgstr "DSP"
 
 msgid "LADSPA plugin processing"
 msgstr ""
@@ -1848,7 +1848,7 @@ msgid "Replaygain_album_gain"
 msgstr ""
 
 msgid "Adding files to Playlist"
-msgstr ""
+msgstr "Добавление файлов в плей-лист"
 
 msgid ""
 "Use basename only instead of full path\n"
@@ -1881,7 +1881,7 @@ msgid "CD drive speed:"
 msgstr ""
 
 msgid "\tMaximum number of retries:"
-msgstr ""
+msgstr "\tМаксимальное количество попыток:"
 
 msgid "Force TOC re-read on every drive scan"
 msgstr ""
@@ -1929,13 +1929,13 @@ msgid "Proxy settings"
 msgstr "Настройки прокси"
 
 msgid "Proxy host:"
-msgstr ""
+msgstr "Адрес прокси:"
 
 msgid "Port:"
 msgstr "Порт:"
 
 msgid "No proxy for:"
-msgstr ""
+msgstr "Не использовать прокси для:"
 
 msgid "Timeout for socket I/O:"
 msgstr ""
@@ -1944,7 +1944,7 @@ msgid "seconds"
 msgstr ""
 
 msgid "Appearance"
-msgstr ""
+msgstr "Внешний вид"
 
 msgid "Override skin settings"
 msgstr ""
@@ -1953,7 +1953,7 @@ msgid "Fonts"
 msgstr "Шрифты"
 
 msgid "Playlist: "
-msgstr ""
+msgstr "Плей-лист: "
 
 msgid "Music Store: "
 msgstr ""
@@ -1965,22 +1965,22 @@ msgid "Small timers: "
 msgstr ""
 
 msgid "Song title: "
-msgstr ""
+msgstr "Название песни: "
 
 msgid "Song info: "
-msgstr ""
+msgstr "Информация о песне: "
 
 msgid "Statusbar: "
-msgstr ""
+msgstr "Строка состояния: "
 
 msgid "Colors"
 msgstr "Цвета"
 
 msgid "Song in playlist: "
-msgstr ""
+msgstr "Песня в плей-листе: "
 
 msgid "Active song in playlist: "
-msgstr ""
+msgstr "Активная песня в плей-листе: "
 
 msgid "Error in title format string"
 msgstr ""
@@ -1993,13 +1993,13 @@ msgid " (%d/%d)"
 msgstr " (%d/%d)"
 
 msgid "Select files"
-msgstr ""
+msgstr "Выбрать файлы"
 
 msgid "Select directory"
-msgstr ""
+msgstr "Выбрать каталог"
 
 msgid "Add URL"
-msgstr ""
+msgstr "Добавить URL"
 
 msgid "URL:"
 msgstr "URL:"
@@ -2025,36 +2025,38 @@ msgid "tracks"
 msgstr ""
 
 msgid "Rename playlist"
-msgstr ""
+msgstr "Переименовать плей-лист"
 
 msgid "Name:"
-msgstr ""
+msgstr "Имя:"
 
 msgid "New tab"
-msgstr ""
+msgstr "Новая вкладка"
 
 msgid "Close tab"
-msgstr ""
+msgstr "Закрыть вкладку"
 
 msgid "Undo close tab"
-msgstr ""
+msgstr "Отменить закрытие вкладки"
 
 msgid "Close other tabs"
-msgstr ""
+msgstr "Закрыть другие вкладки"
 
 msgid " Selected: "
-msgstr ""
+msgstr "Выбранные: "
 
 msgid "Total: "
 msgstr "Всего:"
 
 msgid "Add files"
-msgstr ""
+msgstr "Добавить файлы"
 
 msgid ""
 "Add files to playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
+"Добавить файлы в плей-лист\n"
+"(Нажмите правой кнопкой мыши чтобы открыть меню)"
 
 msgid "Select all"
 msgstr "Выбрать все"
@@ -2063,14 +2065,18 @@ msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
+"Выбрать все песни плей-листа\n"
+"(Нажмите правой кнопкой мыши чтобы открыть меню)"
 
 msgid "Remove selected"
-msgstr ""
+msgstr "Удалить выделенные"
 
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
+"Удалить выделенные песни из плей-листа\n"
+"(Нажмите правой кнопкой мыши чтобы открыть меню)"
 
 msgid "Add directory"
 msgstr "Добавить каталог"
@@ -2079,28 +2085,28 @@ msgid "Select none"
 msgstr ""
 
 msgid "Invert selection"
-msgstr ""
+msgstr "Инвертировать выделение"
 
 msgid "Remove all"
-msgstr ""
+msgstr "Удалить все"
 
 msgid "Remove dead"
 msgstr ""
 
 msgid "Cut selected"
-msgstr ""
+msgstr "Вырезать выбранное"
 
 msgid "Save playlist"
-msgstr ""
+msgstr "Сохранить плей-лист"
 
 msgid "Save all playlists"
-msgstr ""
+msgstr "Сохранить все плей-листы"
 
 msgid "Load playlist in new tab"
-msgstr ""
+msgstr "Загрузить плей-лист в новую вкладку"
 
 msgid "Load playlist"
-msgstr ""
+msgstr "Загрузить плей-лист"
 
 msgid "Enqueue playlist"
 msgstr ""
@@ -2121,16 +2127,16 @@ msgid "Reread file metadata"
 msgstr ""
 
 msgid "File info..."
-msgstr ""
+msgstr "Информация о файле..."
 
 msgid "Stop adding files"
-msgstr ""
+msgstr "Остановить добавление файлов"
 
 msgid "Files selected for removal"
 msgstr ""
 
 msgid "Remove files"
-msgstr ""
+msgstr "Удалить файлы"
 
 msgid ""
 "The selected files will be deleted from the filesystem. No recovery will be possible after this operation.\n"
@@ -2150,7 +2156,7 @@ msgid "LADSPA patch builder"
 msgstr ""
 
 msgid "Available plugins"
-msgstr ""
+msgstr "Доступные расширения"
 
 msgid "ID"
 msgstr ""
@@ -2168,13 +2174,13 @@ msgid "Running plugins"
 msgstr ""
 
 msgid "_Configure"
-msgstr ""
+msgstr "_Настройки"
 
 msgid "Enable all plugins"
-msgstr ""
+msgstr "Включить все расширения"
 
 msgid "Disable all plugins"
-msgstr ""
+msgstr "Отключить все расширения"
 
 msgid "Invert current state"
 msgstr ""
@@ -2207,7 +2213,7 @@ msgid "Search the Music Store"
 msgstr ""
 
 msgid "Key: "
-msgstr ""
+msgstr "Ключ: "
 
 msgid "Case sensitive"
 msgstr ""
@@ -2219,7 +2225,7 @@ msgid "Select first and close window"
 msgstr ""
 
 msgid "Search in:"
-msgstr ""
+msgstr "Искать в:"
 
 msgid "Artist names"
 msgstr ""
@@ -2260,7 +2266,7 @@ msgid "Eject"
 msgstr "Извлечь"
 
 msgid "Close tray"
-msgstr ""
+msgstr "Закрыть трей"
 
 msgid "Disable manual eject"
 msgstr ""
@@ -2287,34 +2293,34 @@ msgid "Play CD Audio"
 msgstr ""
 
 msgid "Read CD-DA"
-msgstr ""
+msgstr "Читать CD-DA"
 
 msgid "Read CD+G"
-msgstr ""
+msgstr "Читать CD+G"
 
 msgid "Read CD-R"
-msgstr ""
+msgstr "Читать CD-R"
 
 msgid "Read CD-RW"
-msgstr ""
+msgstr "Читать CD-RW"
 
 msgid "Read DVD-R"
-msgstr ""
+msgstr "Читать DVD-R"
 
 msgid "Read DVD+R"
-msgstr ""
+msgstr "Читать DVD+R"
 
 msgid "Read DVD-RW"
-msgstr ""
+msgstr "Читать DVD-RW"
 
 msgid "Read DVD+RW"
-msgstr ""
+msgstr "Читать DVD+RW"
 
 msgid "Read DVD-RAM"
-msgstr ""
+msgstr "Читать DVD-RAM"
 
 msgid "Read DVD-ROM"
-msgstr ""
+msgstr "Читать DVD-ROM"
 
 msgid "C2 Error Correction"
 msgstr ""
@@ -2335,25 +2341,25 @@ msgid "Writing"
 msgstr "Запись"
 
 msgid "Write CD-R"
-msgstr ""
+msgstr "Записать CD-R"
 
 msgid "Write CD-RW"
-msgstr ""
+msgstr "Записать CD-RW"
 
 msgid "Write DVD-R"
-msgstr ""
+msgstr "Записать DVD-R"
 
 msgid "Write DVD+R"
-msgstr ""
+msgstr "Записать DVD+R"
 
 msgid "Write DVD-RW"
-msgstr ""
+msgstr "Записать DVD-RW"
 
 msgid "Write DVD+RW"
-msgstr ""
+msgstr "Записать DVD+RW"
 
 msgid "Write DVD-RAM"
-msgstr ""
+msgstr "Записать DVD-RAM"
 
 msgid "Mount Rainier"
 msgstr ""
@@ -2362,7 +2368,7 @@ msgid "Burn Proof"
 msgstr ""
 
 msgid "Disc info"
-msgstr ""
+msgstr "Информация о диске"
 
 msgid "This CD does not contain CD-Text information."
 msgstr ""
@@ -2380,7 +2386,7 @@ msgid "records"
 msgstr ""
 
 msgid "Add to playlist"
-msgstr ""
+msgstr "Добавить в плей-лист"
 
 msgid "Add to playlist (Album mode)"
 msgstr ""
@@ -2395,13 +2401,13 @@ msgid "Rip CD..."
 msgstr ""
 
 msgid "Disc info..."
-msgstr ""
+msgstr "Информация о диске..."
 
 msgid "Drive info..."
 msgstr ""
 
 msgid "Comments:"
-msgstr ""
+msgstr "Комментарии:"
 
 msgid "Please select the xml file for this store."
 msgstr ""
@@ -2410,43 +2416,43 @@ msgid "Create empty store"
 msgstr ""
 
 msgid "Visible name:"
-msgstr ""
+msgstr "Выводимое имя:"
 
 msgid "Edit Store"
 msgstr ""
 
 msgid "Add Artist"
-msgstr ""
+msgstr "Добавить исполнителя"
 
 msgid "Name to sort by:"
 msgstr ""
 
 msgid "Edit Artist"
-msgstr ""
+msgstr "Редактировать исполнителя"
 
 msgid "Please select the audio files for this record."
 msgstr ""
 
 msgid "Add Record"
-msgstr ""
+msgstr "Добавить запись"
 
 msgid "Auto-create tracks from these files:"
 msgstr ""
 
 msgid "_Add files..."
-msgstr ""
+msgstr "_Добавить файлы..."
 
 msgid "Edit Record"
-msgstr ""
+msgstr "Редактировать запись"
 
 msgid "Please select the audio file for this track."
 msgstr ""
 
 msgid "Add Track"
-msgstr ""
+msgstr "Добавить трек"
 
 msgid "Edit Track"
-msgstr ""
+msgstr "Редактировать трек"
 
 msgid "Duration:"
 msgstr ""
@@ -2456,7 +2462,7 @@ msgid "Unmeasured"
 msgstr ""
 
 msgid "Volume level:"
-msgstr ""
+msgstr "Уровень громкости:"
 
 msgid "Use manual RVA value [dB]"
 msgstr ""
@@ -2466,7 +2472,7 @@ msgid "Really remove \"%s\" from the Music Store?"
 msgstr ""
 
 msgid "Stop adding songs"
-msgstr ""
+msgstr "Остановить добавление песен"
 
 #, c-format
 msgid ""
@@ -2485,37 +2491,37 @@ msgid "Do you want to save the store before removing?"
 msgstr ""
 
 msgid "Remove Artist"
-msgstr ""
+msgstr "Удалить исполнителя"
 
 msgid "Remove Record"
-msgstr ""
+msgstr "Удалить запись"
 
 msgid "Remove Track"
-msgstr ""
+msgstr "Удалить трек"
 
 msgid "Update file metadata"
 msgstr ""
 
 msgid "Track name"
-msgstr ""
+msgstr "Имя трека"
 
 msgid "Track comment"
-msgstr ""
+msgstr "Комментарий трека"
 
 msgid "Track number"
-msgstr ""
+msgstr "Номер трека"
 
 msgid "Failed to set metadata for the following files:"
 msgstr ""
 
 msgid "Filename"
-msgstr ""
+msgstr "Имя файла"
 
 msgid "Reason"
-msgstr ""
+msgstr "Причина"
 
 msgid "(no comment)"
-msgstr ""
+msgstr "(нет комментария)"
 
 msgid "artist"
 msgstr ""
@@ -2548,28 +2554,28 @@ msgid "Unmeasured tracks only"
 msgstr ""
 
 msgid "All tracks"
-msgstr ""
+msgstr "Все треки"
 
 msgid "Batch-update file metadata..."
 msgstr ""
 
 msgid "Add new artist..."
-msgstr ""
+msgstr "Добавить нового исполнителя..."
 
 msgid "Edit artist..."
-msgstr ""
+msgstr "Редактировать исполнителя..."
 
 msgid "Export artist..."
-msgstr ""
+msgstr "Экспортировать исполнителя..."
 
 msgid "Remove artist"
-msgstr ""
+msgstr "Удалить исполнителя"
 
 msgid "Add new record to this artist..."
 msgstr ""
 
 msgid "Add new record..."
-msgstr ""
+msgstr "Добавить новую запись..."
 
 msgid "Edit record..."
 msgstr "Редактировать запись..."
@@ -2581,7 +2587,7 @@ msgid "Remove record"
 msgstr "Удалить запись"
 
 msgid "Add new track to this record..."
-msgstr ""
+msgstr "Добавить новый трек в эту запись..."
 
 msgid "CDDB query for this record..."
 msgstr ""
@@ -2590,19 +2596,19 @@ msgid "Submit record to CDDB database..."
 msgstr ""
 
 msgid "Add new track..."
-msgstr ""
+msgstr "Добавить новый трек..."
 
 msgid "Edit track..."
-msgstr ""
+msgstr "Редактировать трек..."
 
 msgid "Export track..."
-msgstr ""
+msgstr "Экспорт трека..."
 
 msgid "Remove track"
-msgstr ""
+msgstr "Удалить трек"
 
 msgid "Calculate volume"
-msgstr ""
+msgstr "Рассчитать громкость"
 
 msgid "Only if unmeasured"
 msgstr ""
@@ -2626,7 +2632,7 @@ msgid "Podcast URL:"
 msgstr ""
 
 msgid "Download directory:"
-msgstr ""
+msgstr "Каталог загрузки:"
 
 msgid "Auto-check interval [hour]:"
 msgstr ""
@@ -2637,7 +2643,7 @@ msgid ""
 msgstr ""
 
 msgid "Limits"
-msgstr ""
+msgstr "Пределы"
 
 msgid "Maximum number of items:"
 msgstr ""
@@ -2652,7 +2658,7 @@ msgid "Podcasts"
 msgstr ""
 
 msgid "Updating..."
-msgstr ""
+msgstr "Обновление..."
 
 msgid "Delete downloaded items from the filesystem"
 msgstr ""
@@ -2744,22 +2750,22 @@ msgid "Music Store Files (*.xml)"
 msgstr ""
 
 msgid "Aqualung playlist (*.xml)"
-msgstr ""
+msgstr "Плей-лист Aqualung (*.xml)"
 
 msgid "MP3 Playlist (*.m3u)"
-msgstr ""
+msgstr "Плей-лист MP3 (*.m3u)"
 
 msgid "Multimedia Playlist (*.pls)"
 msgstr ""
 
 msgid "All Playlist Files"
-msgstr ""
+msgstr "Все файлы плей-листа"
 
 msgid "All Audio Files"
 msgstr "Все аудио файлы"
 
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
-msgstr ""
+msgstr "Звуковые файлы (*.wav, *.aiff, *.au, ...)"
 
 msgid "Free Lossless Audio Codec (*.flac)"
 msgstr ""
@@ -2768,10 +2774,10 @@ msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
 msgstr ""
 
 msgid "Ogg Vorbis (*.ogg)"
-msgstr ""
+msgstr "Ogg Vorbis (*.ogg)"
 
 msgid "Ogg Speex (*.spx)"
-msgstr ""
+msgstr "Ogg Speex (*.spx)"
 
 msgid "Musepack (*.mpc)"
 msgstr ""
@@ -2780,40 +2786,40 @@ msgid "Monkey's Audio Codec (*.ape)"
 msgstr ""
 
 msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
-msgstr ""
+msgstr "Модули (*.xm, *.mod, *.it, *.s3m, ...)"
 
 msgid "Compressed modules (*.gz, *.bz2)"
-msgstr ""
+msgstr "Сжатые модули (*.gz, *.bz2)"
 
 msgid "Compressed modules (*.gz)"
-msgstr ""
+msgstr "Сжатые модули (*.gz)"
 
 msgid "Compressed modules (*.bz2)"
-msgstr ""
+msgstr "Сжатые модули (*.bz2)"
 
 msgid "WavPack (*.wv)"
-msgstr ""
+msgstr "WavPack (*.wv)"
 
 msgid "LAVC audio/video files"
 msgstr ""
 
 msgid "Resume"
-msgstr ""
+msgstr "Возобновить"
 
 msgid "Calculating volume level"
-msgstr ""
+msgstr "Расчет уровня громкости"
 
 msgid "Profile: Telephone"
-msgstr ""
+msgstr "Профиль: Телефон"
 
 msgid "Profile: Thumb"
 msgstr ""
 
 msgid "Profile: Radio"
-msgstr ""
+msgstr "Профиль: Радио"
 
 msgid "Profile: Standard"
-msgstr ""
+msgstr "Профиль: Стандарт"
 
 msgid "Profile: Xtreme"
 msgstr ""
@@ -2873,17 +2879,17 @@ msgid "encoding"
 msgstr "кодировка"
 
 msgid "Compression: Fast"
-msgstr ""
+msgstr "Сжатие: Быстрое"
 
 msgid "Compression: Normal"
-msgstr ""
+msgstr "Сжатие: Нормальное"
 
 msgid "Compression: High"
-msgstr ""
+msgstr "Сжатие: Высокое"
 
 msgid "Compression: Extra High"
-msgstr ""
+msgstr "Сжатие: Очень высокое"
 
 msgid "Compression: Insane"
-msgstr ""
+msgstr "Сжатие: Немоверное"
 

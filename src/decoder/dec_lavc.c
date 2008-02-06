@@ -46,14 +46,14 @@ decode_lavc(decoder_t * dec) {
 	AVPacket packet;
         int16_t samples[AVCODEC_MAX_AUDIO_FRAME_SIZE];
         float fsamples[AVCODEC_MAX_AUDIO_FRAME_SIZE];
-        int n_bytes;
+        int n_bytes = AVCODEC_MAX_AUDIO_FRAME_SIZE;
 
 	if (av_read_frame(pd->avFormatCtx, &packet) < 0)
 		return 1;
 
 	if (packet.stream_index == pd->audioStream) {
 
-		avcodec_decode_audio(pd->avCodecCtx, samples, &n_bytes, packet.data, packet.size);
+		avcodec_decode_audio2(pd->avCodecCtx, samples, &n_bytes, packet.data, packet.size);
 		if (n_bytes > 0) {
 			int i;
 			for (i = 0; i < n_bytes/2; i++) {

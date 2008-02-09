@@ -1,3 +1,58 @@
+2008-02-10	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
+
+    * Aqualung 0.9beta9.1
+        http://aqualung.factorial.hu
+
+	This is a bugfix, stability and performance oriented release also
+	containing a few updates to existing functionality. By using this
+	version, your Aqualung will be more stable, and in some cases
+	significantly faster. All users are encouraged to upgrade.
+
+	The project homepage has moved to http://aqualung.factorial.hu
+	Please upgrade your pointers and bookmarks.
+
+	Notable changes:
+	
+	* Playlist code refactoring for improved performance. Please note
+	that incompatible changes have been made to the playlist format:
+	this means that your old playlists won't be parsed, you'll have to
+	re-create them.
+	(NOTE: Music Store contents are unaffected. If we ever change the
+	Music Store format in a backward-incompatible way, we will provide
+	tools to migrate your precious store data.)
+
+	* Fix threading problems that caused random crashes for some users.
+
+	* Fix lurking bug that sometimes resulted in getting stuck at the
+	beginning of a track when Sinc interpolator sample rate converters
+	were used.
+
+	* Modified the way of opening ALSA output to achieve non-exclusive
+	driver access.
+	
+	* New, more versatile title string generating templates. Make sure
+	to check the documentation.
+
+	* Added option to periodically save playlist.
+
+	* Several fixes concerning command line file and playlist loading,
+	esp. with the -L flag.
+
+	* Better metadata handling for external files in playlist.
+
+	* Increment CDDB revision number on resubmitting an existing
+	disc. This is essential for correcting existing CDDB entries,
+	otherwise the CDDB server rejects the submission. The latest CVS
+	version from http://libcddb.sf.net is required for this to work
+	(Aqualung-Win32 is built with this version).
+
+	* OpenBSD-related portability fixes. Aqualung should now compile
+	cleanly and be fully functional OOTB on OpenBSD 4.2.
+	
+	* Updated German, Hungarian and Italian translations. Added
+	Russian translation.
+	
+
 2007-12-19	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
 
     * Aqualung 0.9beta9

@@ -1,4 +1,4 @@
-.TH AQUALUNG 1 "17 December 2007"
+.TH AQUALUNG 1 "09 February 2008"
 .SH NAME
 aqualung \- Music player for GNU/Linux
 .SH SYNOPSIS
@@ -125,15 +125,6 @@ When running -D, set scheduler priority to
 -d, --device <name>
 .br
 Set the output device (defaults to plughw:0,0).
-.TP
--p, --period <int>
-.br
-Set ALSA period size (defaults to 8192).
-.TP
--n, --nperiods <int>
-.br
-Specify the number of periods in hardware buffer
-(defaults to 2).
 .TP
 -r, --rate <int>
 .br
@@ -290,8 +281,8 @@ files will be added to a new (untitled) tab. If a name is
 supplied, Aqualung will check whether a tab with that name
 already exists. If so, the files will be loaded (or enqueued
 if you used -E) to that tab. If no such tab
-exists, one with that name will be created, and content goes
-there.
+exists, one with that name will be created, and the content
+goes there.
 
 .TP
 .B Options for changing state of Playlist/Music Store windows
@@ -307,9 +298,11 @@ Show/hide Music Store window.
 .TP
 .B Examples
 .TP
-$ aqualung -s3 -o alsa -R -r 48000 -d hw:0,0 -p 2048 -n 2
+$ aqualung -s3 -o alsa -R -r 48000 -d plughw:0,0
 .TP
-$ aqualung --srctype=1 -output oss -rate 96000
+$ aqualung --srctype=1 --output oss --rate 96000
+.TP
+$ aqualung -o jack -R -d hw:1,0 --auto=system:playback_17,system:playback_18
 .TP
 $ aqualung -o jack -a -E --tab="Led Zeppelin" `find ./ledzeppelin/ -name \*.flac`
 .SH FILES
@@ -371,12 +364,12 @@ Peter Szilagyi <peterszilagyi@users.sourceforge.net>
 Tomasz Maka <pasp@users.sourceforge.net>
 .SH BUGS
 .P
-Yes. Report them to our bugtracker at <http://aqualung.sf.net/mantis>
+Yes. Report them to our bugtracker at <http://aqualung.factorial.hu/mantis>
 or write to our mailing list (the subscription interface is accessible
 from the project homepage).
 .SH HOMEPAGE
 .P
-Please go to <http://aqualung.sf.net> to download the latest version,
+Please go to <http://aqualung.factorial.hu> to download the latest version,
 access the Aqualung bugtracker and subscribe to the mailing list.
 .SH USER'S MANUAL
 .P

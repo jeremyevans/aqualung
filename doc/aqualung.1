@@ -124,7 +124,7 @@ When running -D, set scheduler priority to
 .TP
 -d, --device <name>
 .br
-Set the output device (defaults to plughw:0,0).
+Set the output device (defaults to 'default').
 .TP
 -r, --rate <int>
 .br
@@ -146,7 +146,8 @@ priority to <int> (default is 1 when -R is used).
 -d, --device <name>
 .br
 Set the output device (defaults to
-/dev/dsp).
+/dev/audio on OpenBSD, /dev/dsp)
+on other Unices.
 .TP
 -r, --rate <int>
 .br
@@ -302,7 +303,7 @@ $ aqualung -s3 -o alsa -R -r 48000 -d plughw:0,0
 .TP
 $ aqualung --srctype=1 --output oss --rate 96000
 .TP
-$ aqualung -o jack -R -d hw:1,0 --auto=system:playback_17,system:playback_18
+$ aqualung -o jack --auto=system:playback_17,system:playback_18
 .TP
 $ aqualung -o jack -a -E --tab="Led Zeppelin" `find ./ledzeppelin/ -name \*.flac`
 .SH FILES

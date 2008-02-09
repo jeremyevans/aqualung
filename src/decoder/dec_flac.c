@@ -241,7 +241,6 @@ flac_meta_vc_replace_or_append(file_decoder_t * fdec, FLAC__StreamMetadata * sme
 	do {
 		switch (FLAC__metadata_simple_iterator_get_block_type(iter)) {
 		case FLAC__METADATA_TYPE_VORBIS_COMMENT:
-			/* XXX */printf("FLAC: writing Vorbis Comment block.\n");
 			ret = FLAC__metadata_simple_iterator_set_block(iter, smeta, true);
 			if (ret == false) {
 				fprintf(stderr, "error: FLAC metadata write failed!\n");
@@ -256,8 +255,6 @@ flac_meta_vc_replace_or_append(file_decoder_t * fdec, FLAC__StreamMetadata * sme
 	} while (FLAC__metadata_simple_iterator_next(iter));
 
 	if (!found) {
-		/* XXX */printf("FLAC: Vorbis Comment not found, appending.\n");
-
 		do { /* rewind to STREAMINFO and insert after that */
 			if (FLAC__metadata_simple_iterator_get_block_type(iter) ==
 			    FLAC__METADATA_TYPE_STREAMINFO) {
@@ -380,7 +377,6 @@ flac_meta_delete(file_decoder_t * fdec, int del_vc) {
 		case FLAC__METADATA_TYPE_VORBIS_COMMENT:
 			if (!del_vc)
 				break;
-			/* XXX */printf("FLAC: deleting Vorbis Comment block.\n");
 			ret = FLAC__metadata_simple_iterator_delete_block(iter, true);
 			if (ret == false) {
 				fprintf(stderr, "error: FLAC metadata delete failed!\n");

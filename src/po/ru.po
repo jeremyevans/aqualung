@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: aqualung 0.9beta9.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-01-27 16:22+0200\n"
-"PO-Revision-Date: 2008-02-12 12:36+0300\n"
+"PO-Revision-Date: 2008-02-16 12:44+0300\n"
 "Last-Translator: Alexander Ilyashov <alexander.ilyashov@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgid "Skin support, look & feel, GUI hacks:\n"
 msgstr ""
 
 msgid "Programming, GUI engineering:\n"
-msgstr ""
+msgstr "Программирование, графический интерфейс:\n"
 
 msgid "Translators:"
 msgstr "Переводчики:"
@@ -64,7 +64,7 @@ msgid "Optional features:"
 msgstr "Дополнительные возможности:"
 
 msgid "LADSPA plugin support\n"
-msgstr ""
+msgstr "Поддержка расширения LADSPA\n"
 
 msgid "CDDA (Audio CD) support\n"
 msgstr ""
@@ -82,7 +82,7 @@ msgid "Loop playback support\n"
 msgstr ""
 
 msgid "Systray support\n"
-msgstr ""
+msgstr "Поддержка системного лотка\n"
 
 msgid "Podcast support\n"
 msgstr ""
@@ -185,8 +185,9 @@ msgstr "Только первое слово"
 msgid "Force case: "
 msgstr ""
 
+#, fuzzy
 msgid "Force other letters to lowercase"
-msgstr ""
+msgstr "Преобразовать остальные буквы в нижний регистр"
 
 msgid "Regular expression"
 msgstr "Регулярное выражение"
@@ -239,10 +240,10 @@ msgid ""
 msgstr ""
 
 msgid "Load settings from Music Store file"
-msgstr ""
+msgstr "Загрузить настройки из файла Музыкальной библиотеки"
 
 msgid "Build/Update store"
-msgstr ""
+msgstr "Построить/Обновить библиотеку"
 
 msgid "General"
 msgstr "Общие"
@@ -284,7 +285,7 @@ msgid "Artist"
 msgstr "Исполнитель"
 
 msgid "Sort artists by"
-msgstr ""
+msgstr "Сортировать исполнителей по"
 
 msgid "Artist name"
 msgstr "Имя исполнителя"
@@ -358,8 +359,9 @@ msgstr "Неизвестная запись"
 msgid "Scanning files"
 msgstr "Сканирование файлов"
 
+#, fuzzy
 msgid "Processing metadata"
-msgstr ""
+msgstr "Чтение метаданных"
 
 msgid "CDDB lookup"
 msgstr ""
@@ -421,7 +423,7 @@ msgid "Title"
 msgstr "Заголовок"
 
 msgid "Select"
-msgstr ""
+msgstr "Выбрать"
 
 msgid "All"
 msgstr "Все"
@@ -466,7 +468,7 @@ msgid "Verify data integrity"
 msgstr "Проверить целостность данных"
 
 msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
+msgstr "Неограниченное число попыток при ошибках чтения (никогда не пропускать)"
 
 msgid "Maximum number of retries:"
 msgstr "Максимальное количество попыток:"
@@ -488,7 +490,7 @@ msgid "(audio only)"
 msgstr "(только аудио)"
 
 msgid "Ripping CD tracks"
-msgstr ""
+msgstr "Считывание CD-треков"
 
 msgid "Begin"
 msgstr "Начало"
@@ -497,7 +499,7 @@ msgid "Length"
 msgstr "Длина"
 
 msgid "Progress"
-msgstr ""
+msgstr "Прогресс"
 
 msgid "Close window when complete"
 msgstr "Закрыть окно после завершения"
@@ -530,10 +532,10 @@ msgid "No matching record found."
 msgstr "Совпадений не найдено."
 
 msgid "Import as Sort Key"
-msgstr ""
+msgstr "Импортировать как ключ сортировки"
 
 msgid "Import as Title"
-msgstr ""
+msgstr "Импортировать как заголовок"
 
 msgid "Import as Year"
 msgstr "Импортировать как год"
@@ -562,18 +564,20 @@ msgid ""
 "It is very likely that the year is wrong.\n"
 "Do you want to proceed?"
 msgstr ""
+"Судя по всему год указан неверно.\n"
+"Хотите продолжить?"
 
 msgid "The email address provided for submission is invalid."
 msgstr ""
 
 msgid "An error occurred while submitting the record to the CDDB server."
-msgstr ""
+msgstr "Во время отправки записи за сервер CDDB возникла ошибка."
 
 msgid "Correct existing record"
-msgstr ""
+msgstr "Исправить существующую запись"
 
 msgid "Submit new record"
-msgstr ""
+msgstr "Отправить новую запись"
 
 msgid "Matches:"
 msgstr "Совпадения:"
@@ -588,10 +592,10 @@ msgid "(choose a category)"
 msgstr "(выберите категорию)"
 
 msgid "Extended data:"
-msgstr ""
+msgstr "Расширенные данные:"
 
 msgid "Import as Artist"
-msgstr ""
+msgstr "Импортировать как исполнителя"
 
 msgid "Add to Comments"
 msgstr "Добавить в комментарии"
@@ -599,8 +603,9 @@ msgstr "Добавить в комментарии"
 msgid "Tracks"
 msgstr "Треки"
 
+#, fuzzy
 msgid "You have to provide an email address for CDDB submission."
-msgstr ""
+msgstr "Вы должны указать адрес email для отправки CDDB."
 
 msgid "Unknown Album"
 msgstr "Неизвестный альбом"
@@ -609,7 +614,7 @@ msgid "Unknown Track"
 msgstr "Неизвестный трек"
 
 msgid "Please select the directory for exported files."
-msgstr ""
+msgstr "Выберите, пожалуйста, каталог для экспортированных файлов."
 
 msgid "Help"
 msgstr "Помощь"
@@ -624,21 +629,23 @@ msgid "Export files"
 msgstr "Экспорт файлов"
 
 msgid "Location and filename"
-msgstr ""
+msgstr "Месторасположение и имя файла"
 
 msgid "Target directory:"
-msgstr ""
+msgstr "Каталог назначения:"
 
 msgid "Create subdirectories for artists"
-msgstr ""
+msgstr "Создать подкаталоги для исполнителей"
 
 msgid "Create subdirectories for albums"
-msgstr ""
+msgstr "Создать подкаталоги для альбомов"
 
 msgid ""
 "Subdirectory name\n"
 "length limit:"
 msgstr ""
+"Имя подкаталога\n"
+"максимальная длина:"
 
 msgid "Filename template:"
 msgstr "Шаблон имени файла:"
@@ -650,13 +657,14 @@ msgid "Exporting files"
 msgstr "Экспорт файлов"
 
 msgid "Source file:"
-msgstr ""
+msgstr "Исходный файл:"
 
+#, fuzzy
 msgid "Target file:"
-msgstr ""
+msgstr "Файл назначения:"
 
 msgid "Progress:"
-msgstr ""
+msgstr "Прогресс:"
 
 msgid "*File info"
 msgstr "*Информация о файле"
@@ -665,7 +673,7 @@ msgid "File info"
 msgstr "Информация о файле"
 
 msgid "There are unsaved changes to the file metadata."
-msgstr ""
+msgstr "Есть не сохраненные изменения в метаданных файла."
 
 msgid "Save and close"
 msgstr "Сохранить и закрыть"
@@ -692,15 +700,19 @@ msgid ""
 "Failed to write metadata to file.\n"
 "Reason: %s"
 msgstr ""
+"Невозможно записать метаданные в файл.\n"
+"Причина: %s"
 
 #, c-format
 msgid ""
 "Error converting field %s to Year:\n"
 "'%s' is not an integer number!"
 msgstr ""
+"Ошибка преобразования поля %s в год:\n"
+"'%s' не является целым числом!"
 
 msgid "Please specify the file to save the image to."
-msgstr ""
+msgstr "Укажите, пожалуйста, файл для сохранения изображения."
 
 msgid "(no image)"
 msgstr "(нет изображения)"
@@ -709,13 +721,15 @@ msgid "(error loading image)"
 msgstr "(ошибка загрузки изображения)"
 
 msgid "Please specify the file to load the image from."
-msgstr ""
+msgstr "Укажите, пожалуйста, файл, из которого необходимо загрузить изображение."
 
 #, c-format
 msgid ""
 "Could not load image from:\n"
 "%s"
 msgstr ""
+"Невозможно загрузить изображение из:\n"
+"%s"
 
 #, c-format
 msgid "MIME type: %s"
@@ -742,8 +756,9 @@ msgstr "Импортировать как запись"
 msgid "Import as Track No."
 msgstr ""
 
+#, fuzzy
 msgid "Import as RVA"
-msgstr ""
+msgstr "Импортировать как RVA"
 
 msgid "Add"
 msgstr "Добавить"
@@ -815,8 +830,9 @@ msgstr ""
 msgid "Instruments"
 msgstr "Инструменты"
 
+#, fuzzy
 msgid "Name"
-msgstr ""
+msgstr "Имя"
 
 msgid "Output:"
 msgstr ""
@@ -901,7 +917,7 @@ msgid "Next song"
 msgstr "Следующая песня"
 
 msgid "Play"
-msgstr ""
+msgstr "Играть"
 
 msgid "Pause"
 msgstr "Пауза"
@@ -942,11 +958,11 @@ msgstr ""
 
 #, c-format
 msgid "%d / %d files"
-msgstr ""
+msgstr "%d / %d файлы"
 
 #, c-format
 msgid "%d / %d directories"
-msgstr ""
+msgstr "%d / %d каталоги"
 
 msgid "Cannot write to selected directory. Please select another directory."
 msgstr "Невозможно записать в выбранный каталог. Выберите, пожалуйста, другой каталог."
@@ -1017,7 +1033,7 @@ msgid "Please select a local path."
 msgstr "Выберите, пожалуйста, локальный путь."
 
 msgid "Please select at least one valid song from playlist."
-msgstr ""
+msgstr "Выберите, пожалуйста, хотя бы одну допустимую песню из плей-листа."
 
 #, c-format
 msgid ""
@@ -1025,6 +1041,9 @@ msgid ""
 "\n"
 "Do you want to proceed?"
 msgstr ""
+"Одна из песен имеет формат, который ваш плеер не поддерживает.\n"
+"\n"
+"Хотите продолжить?"
 
 #, c-format
 msgid ""
@@ -1032,6 +1051,9 @@ msgid ""
 "\n"
 "Do you want to proceed?"
 msgstr ""
+"%d из %d песен в формате, который не поддерживается вашим плеером.\n"
+"\n"
+"Хотите продолжить?"
 
 #, c-format
 msgid ""
@@ -1039,6 +1061,9 @@ msgid ""
 "\n"
 "Do you want to proceed?"
 msgstr ""
+"Выбранная песня в формате, который не поддерживает ваш плеер.\n"
+"\n"
+"Хотите продолжить?"
 
 #, c-format
 msgid ""
@@ -1046,6 +1071,9 @@ msgid ""
 "\n"
 "Do you want to proceed?"
 msgstr ""
+"Среди выбранных песен не таких, которые бы не поддерживались вашим плеером.\n"
+"\n"
+"Хотите продолжить?"
 
 msgid "iFP device manager (upload mode)"
 msgstr ""
@@ -1096,7 +1124,7 @@ msgid "Current file: "
 msgstr "Текущий файл:"
 
 msgid "Overall: "
-msgstr ""
+msgstr "Всего: "
 
 msgid "Idle"
 msgstr ""
@@ -2484,13 +2512,13 @@ msgstr ""
 
 #, c-format
 msgid "Really remove store \"%s\" from the Music Store?"
-msgstr ""
+msgstr "Действительно хотите удалить библиотеку \"%s\" из Музыкальной библиотеки?"
 
 msgid "Remove Store"
 msgstr "Удалить библиотеку"
 
 msgid "Do you want to save the store before removing?"
-msgstr ""
+msgstr "Хотите сохранить библиотеку перед удалением?"
 
 msgid "Remove Artist"
 msgstr "Удалить исполнителя"
@@ -2501,8 +2529,9 @@ msgstr "Удалить запись"
 msgid "Remove Track"
 msgstr "Удалить трек"
 
+#, fuzzy
 msgid "Update file metadata"
-msgstr ""
+msgstr "Обновить метаданные файла"
 
 msgid "Track name"
 msgstr "Имя трека"
@@ -2514,7 +2543,7 @@ msgid "Track number"
 msgstr "Номер трека"
 
 msgid "Failed to set metadata for the following files:"
-msgstr ""
+msgstr "Невозможно установить метаданные для следующих файлов:"
 
 msgid "Filename"
 msgstr "Имя файла"
@@ -2526,10 +2555,10 @@ msgid "(no comment)"
 msgstr "(нет комментария)"
 
 msgid "artist"
-msgstr ""
+msgstr "исполнитель"
 
 msgid "artists"
-msgstr ""
+msgstr "исполнители"
 
 msgid "Build / Update store from filesystem..."
 msgstr "Построить / Обновить библиотеку из файловой системы..."
@@ -2559,7 +2588,7 @@ msgid "All tracks"
 msgstr "Все треки"
 
 msgid "Batch-update file metadata..."
-msgstr ""
+msgstr "Пакетное обновление метаданных файла..."
 
 msgid "Add new artist..."
 msgstr "Добавить нового исполнителя..."
@@ -2574,7 +2603,7 @@ msgid "Remove artist"
 msgstr "Удалить исполнителя"
 
 msgid "Add new record to this artist..."
-msgstr ""
+msgstr "Добавить новую запись этого исполнителя..."
 
 msgid "Add new record..."
 msgstr "Добавить новую запись..."
@@ -2592,10 +2621,10 @@ msgid "Add new track to this record..."
 msgstr "Добавить новый трек в эту запись..."
 
 msgid "CDDB query for this record..."
-msgstr ""
+msgstr "Запрос CDDB для этой записи..."
 
 msgid "Submit record to CDDB database..."
-msgstr ""
+msgstr "Отправить запись в базу данных CDDB..."
 
 msgid "Add new track..."
 msgstr "Добавить новый трек..."
@@ -2616,10 +2645,10 @@ msgid "Only if unmeasured"
 msgstr ""
 
 msgid "In any case"
-msgstr ""
+msgstr "В любом регистре"
 
 msgid "Update file metadata..."
-msgstr ""
+msgstr "Обновить метаданные файла..."
 
 msgid "Please select the download directory for this podcast."
 msgstr ""

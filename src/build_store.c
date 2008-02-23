@@ -269,6 +269,7 @@ typedef struct {
 	char root[MAXLEN];
 	int artist_dir_depth;
 	int reset_existing_data;
+	int remove_dead_files;
 
 	int artist_sort_by;
 	int record_sort_by;
@@ -963,6 +964,7 @@ build_store_save(build_store_t * data) {
 	xml_save_int(node, "incl_enabled", data->incl_enabled);
 	xml_save_str(node, "incl_pattern", data->incl_pattern);
 	xml_save_int(node, "reset_existing_data", data->reset_existing_data);
+	xml_save_int(node, "remove_dead_files", data->remove_dead_files);
 
 	xml_save_int(node, "artist_sort_by", data->artist_sort_by);
 	xml_save_int(node, "record_sort_by", data->record_sort_by);
@@ -1023,6 +1025,7 @@ build_store_load(build_store_t * data, int test_only) {
 			xml_load_int(doc, cur, "incl_enabled", &data->incl_enabled);
 			xml_load_str(doc, cur, "incl_pattern", data->incl_pattern);
 			xml_load_int(doc, cur, "reset_existing_data", &data->reset_existing_data);
+			xml_load_int(doc, cur, "remove_dead_files", &data->remove_dead_files);
 
 			xml_load_int(doc, cur, "artist_sort_by", &data->artist_sort_by);
 			xml_load_int(doc, cur, "record_sort_by", &data->record_sort_by);
@@ -1650,6 +1653,7 @@ build_dialog(build_store_t * data) {
 	GtkWidget * gen_incl_frame_hbox;
 
 	GtkWidget * gen_check_reset_data;
+	GtkWidget * gen_check_remove_dead;
 
 	/* Artist */
 
@@ -1814,6 +1818,15 @@ build_dialog(build_store_t * data) {
 
 	if (data->reset_existing_data) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_check_reset_data), TRUE);
+	}
+
+	gen_check_remove_dead =
+		gtk_check_button_new_with_label(_("Remove non-existing files from store"));
+	gtk_widget_set_name(gen_check_remove_dead, "check_on_notebook");
+        gtk_box_pack_start(GTK_BOX(gen_vbox), gen_check_remove_dead, FALSE, FALSE, 0);
+
+	if (data->remove_dead_files) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gen_check_remove_dead), TRUE);
 	}
 
 
@@ -2065,6 +2078,7 @@ build_dialog(build_store_t * data) {
 		}
 
 		set_option_from_toggle(gen_check_reset_data, &data->reset_existing_data);
+		set_option_from_toggle(gen_check_remove_dead, &data->remove_dead_files);
 		set_option_from_toggle(rec_check_add_year, &data->rec_add_year_to_comment);
 
 		set_option_from_toggle(trk_check_rva, &data->trk_rva_enabled);
@@ -3505,13 +3519,72 @@ scan_recursively(build_store_t * data, char * dir) {
 }
 
 
+void
+remove_dead_files(build_store_t * data) {
+
+	GtkTreeIter artist_iter;
+	GtkTreeIter record_iter;
+	GtkTreeIter track_iter;
+	GtkTreeModel * model = GTK_TREE_MODEL(music_store);
+	int i, j, k;
+	track_data_t * track_data = NULL;
+
+	if (!data->remove_dead_files) {
+		return;
+	}
+
+	set_prog_file_entry(data, "*");
+	set_prog_action_label(data, _("Removing non-existing files"));
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(model, &artist_iter, &data->store_iter, i++)) {
+
+		if (data->cancelled) {
+			return;
+		}
+
+		j = 0;
+		while (gtk_tree_model_iter_nth_child(model, &record_iter, &artist_iter, j++)) {
+
+			if (data->cancelled) {
+				return;
+			}
+
+			k = 0;
+			while (gtk_tree_model_iter_nth_child(model, &track_iter, &record_iter, k++)) {
+
+				gtk_tree_model_get(model, &track_iter, MS_COL_DATA, &track_data, -1);
+
+				if (!g_file_test(track_data->file, G_FILE_TEST_EXISTS)) {
+					store_file_remove_track(&track_iter);
+					music_store_mark_changed(&data->store_iter);
+					--k;
+				}
+			}
+
+			if (!gtk_tree_model_iter_has_child(model, &record_iter)) {
+				store_file_remove_record(&record_iter);
+				music_store_mark_changed(&data->store_iter);
+				--j;
+			}
+		}
+
+		if (!gtk_tree_model_iter_has_child(model, &artist_iter)) {
+			store_file_remove_artist(&artist_iter);
+			music_store_mark_changed(&data->store_iter);
+			--i;
+		}
+	}
+}
+
 void *
 build_thread_strict(void * arg) {
 
 	build_store_t * data = (build_store_t *)arg;
 
-	AQUALUNG_THREAD_DETACH()
+	AQUALUNG_THREAD_DETACH();
 
+	remove_dead_files(data);
 	scan_artist_record(data, data->root, NULL, (data->artist_dir_depth == 0) ? 0 : (data->artist_dir_depth + 1));
 
 	aqualung_idle_add(finish_build, data);
@@ -3525,8 +3598,9 @@ build_thread_loose(void * arg) {
 
 	build_store_t * data = (build_store_t *)arg;
 
-	AQUALUNG_THREAD_DETACH()
+	AQUALUNG_THREAD_DETACH();
 
+	remove_dead_files(data);
 	scan_recursively(data, data->root);
 
 	aqualung_idle_add(finish_build, data);

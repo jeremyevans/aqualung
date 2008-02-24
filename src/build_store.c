@@ -2243,8 +2243,7 @@ progress_window(build_store_t * data) {
 	table = gtk_table_new(2, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 
-	insert_label_entry(table, data->type == BUILD_TYPE_STRICT ? _("Directory:") : _("File:"),
-			   &data->prog_file_entry, NULL, 0, 1, FALSE);
+	insert_label_entry(table, _("Processing:"), &data->prog_file_entry, NULL, 0, 1, FALSE);
 
         hbox = gtk_hbox_new(FALSE, 0);
 	label = gtk_label_new(_("Action:"));
@@ -3528,26 +3527,33 @@ remove_dead_files(build_store_t * data) {
 	GtkTreeModel * model = GTK_TREE_MODEL(music_store);
 	int i, j, k;
 	track_data_t * track_data = NULL;
+	char * artist = NULL;
+	gboolean exists;
 
 	if (!data->remove_dead_files) {
 		return;
 	}
 
-	set_prog_file_entry(data, "*");
 	set_prog_action_label(data, _("Removing non-existing files"));
+
+	gdk_threads_enter();
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(model, &artist_iter, &data->store_iter, i++)) {
 
 		if (data->cancelled) {
-			return;
+			goto finish;
 		}
+
+		gtk_tree_model_get(model, &artist_iter, MS_COL_NAME, &artist, -1);
+		gtk_entry_set_text(GTK_ENTRY(data->prog_file_entry), artist);
+		gtk_widget_grab_focus(data->prog_cancel_button);
 
 		j = 0;
 		while (gtk_tree_model_iter_nth_child(model, &record_iter, &artist_iter, j++)) {
 
 			if (data->cancelled) {
-				return;
+				goto finish;
 			}
 
 			k = 0;
@@ -3555,7 +3561,11 @@ remove_dead_files(build_store_t * data) {
 
 				gtk_tree_model_get(model, &track_iter, MS_COL_DATA, &track_data, -1);
 
-				if (!g_file_test(track_data->file, G_FILE_TEST_EXISTS)) {
+				gdk_threads_leave();
+				exists = g_file_test(track_data->file, G_FILE_TEST_EXISTS);
+				gdk_threads_enter();
+
+				if (!exists) {
 					store_file_remove_track(&track_iter);
 					music_store_mark_changed(&data->store_iter);
 					--k;
@@ -3569,12 +3579,17 @@ remove_dead_files(build_store_t * data) {
 			}
 		}
 
+		g_free(artist);
+
 		if (!gtk_tree_model_iter_has_child(model, &artist_iter)) {
 			store_file_remove_artist(&artist_iter);
 			music_store_mark_changed(&data->store_iter);
 			--i;
 		}
 	}
+
+ finish:
+	gdk_threads_leave();
 }
 
 void *

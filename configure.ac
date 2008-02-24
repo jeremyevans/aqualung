@@ -442,10 +442,15 @@ AC_ARG_WITH(
 if test "$mpeg" = "no"; then
 	AC_MSG_RESULT(no)
 else
-	AC_CHECK_LIB(mad, mad_decoder_init, [lib=yes], [lib=no])
-	if test "$lib" = "yes"; then
-	        mad_LIBS="-lmad"
-		AC_DEFINE([HAVE_MPEG], [1], [Defined if compile with MPEG Audio support])
+	AC_CHECK_HEADER([mad.h], [hdr=yes], [hdr=no])
+	if test "$hdr" = "no"; then
+		lib="no"
+	else
+		AC_CHECK_LIB(mad, mad_decoder_init, [lib=yes], [lib=no])
+		if test "$lib" = "yes"; then
+		        mad_LIBS="-lmad"
+			AC_DEFINE([HAVE_MPEG], [1], [Defined if compile with MPEG Audio support])
+		fi
 	fi
 	if test "$lib" = "no" -a "$mpeg" = "yes"; then
 		AC_MSG_ERROR(You do not appear to have the MAD library installed. Grab it from http://www.underbit.com/products/mad/)

@@ -847,7 +847,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 	destdir[0] = '\0';
         if (aqualung_dialog_run(GTK_DIALOG(ripper_dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		char * pdestdir = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(ripper_destdir_entry)), -1, NULL, NULL, NULL);
+		char * pdestdir = g_filename_from_utf8(gtk_entry_get_text(GTK_ENTRY(ripper_destdir_entry)), -1, NULL, NULL, NULL);
 
                 if ((pdestdir == NULL) || (pdestdir[0] == '\0')) {
                         gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 1);

@@ -465,7 +465,7 @@ add_store_dialog(char * name, store_data_t ** data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		const char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
+		const char * pfile = g_filename_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
 		char file[MAXLEN];
 
 		strncpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), MAXLEN-1);
@@ -511,19 +511,27 @@ edit_store_dialog(char * name, store_data_t * data) {
 	GtkWidget * table;
 	GtkWidget * name_entry;
 	GtkWidget * file_entry;
+	GtkWidget * rel_check;
         GtkTextBuffer * buffer;
 	GtkTextIter iter_start;
 	GtkTextIter iter_end;
 	char * utf8;
 
-	create_dialog_layout(_("Edit Store"), &dialog, &table, 2);
+	create_dialog_layout(_("Edit Store"), &dialog, &table, 3);
 	insert_label_entry(table, _("Visible name:"), &name_entry, name, 0, 1, TRUE);
 
-	utf8 = g_locale_to_utf8(data->file, -1, NULL, NULL, NULL);
+	utf8 = g_filename_to_utf8(data->file, -1, NULL, NULL, NULL);
 	insert_label_entry(table, _("Filename:"), &file_entry, utf8, 1, 2, FALSE);
 	g_free(utf8);
 
 	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, data->comment);
+
+	rel_check = gtk_check_button_new_with_label(_("Use relative paths in store file"));
+	gtk_widget_set_name(rel_check, "check_on_window");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(rel_check), data->use_relative_paths);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), rel_check, FALSE, FALSE, 5);
+
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), gtk_hseparator_new(), FALSE, FALSE, 5);
 
 	gtk_widget_grab_focus(name_entry);
 	gtk_widget_show_all(dialog);
@@ -545,6 +553,8 @@ edit_store_dialog(char * name, store_data_t * data) {
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
 		free_strdup(&data->comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
 								&iter_start, &iter_end, TRUE));
+		set_option_from_toggle(rel_check, &data->use_relative_paths);
+
 		gtk_widget_destroy(dialog);
 		return 1;
         } else {
@@ -685,7 +695,7 @@ browse_button_record_clicked(GtkButton * button, gpointer data) {
 
 		if (filename[strlen(filename)-1] != '/') {
 
-			char * utf8 = g_locale_to_utf8(filename, -1, NULL, NULL, NULL);
+			char * utf8 = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
 			gtk_list_store_append(store, &iter);
 			gtk_list_store_set(store, &iter, 0, utf8, -1);
 			g_free(utf8);
@@ -802,21 +812,21 @@ add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** d
 			}
 			for (i = 0; i < n; i++) {
 
-				char * locale;
+				char * filename;
 
 				gtk_tree_model_get(GTK_TREE_MODEL(store), &iter, 0, &str, -1);
 				gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter);
 
-				locale = g_locale_from_utf8(str, -1, NULL, NULL, NULL);
+				filename = g_filename_from_utf8(str, -1, NULL, NULL, NULL);
 
-				if (!((*strings)[i] = calloc(strlen(locale)+1, sizeof(char)))) {
+				if (!((*strings)[i] = calloc(strlen(filename)+1, sizeof(char)))) {
 					fprintf(stderr, "add_record_dialog(): calloc error\n");
 					return 0;
 				}
 
-				strcpy((*strings)[i], locale);
+				strcpy((*strings)[i], filename);
 				g_free(str);
-				g_free(locale);
+				g_free(filename);
 			}
 			(*strings)[i] = NULL;
 		}
@@ -938,7 +948,7 @@ add_track_dialog(char * name, char * sort, track_data_t ** data) {
 		
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		const char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
+		const char * pfile = g_filename_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
 		char file[MAXLEN];
 		float duration;
 
@@ -1024,7 +1034,7 @@ edit_track_dialog(char * name, char * sort, track_data_t * data) {
 
         g_signal_connect(G_OBJECT(name_entry), "activate", G_CALLBACK(edit_track_done), dialog);
 
-	utf8 = g_locale_to_utf8(data->file, -1, NULL, NULL, NULL);
+	utf8 = g_filename_to_utf8(data->file, -1, NULL, NULL, NULL);
 	insert_label_entry_browse(table, _("Filename:"), &file_entry, utf8, 2, 3,
 				  browse_button_track_clicked);
 	g_free(utf8);
@@ -1077,7 +1087,7 @@ edit_track_dialog(char * name, char * sort, track_data_t * data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		const char * pfile = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
+		const char * pfile = g_filename_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
 		char file[MAXLEN];
 
 		strncpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), MAXLEN-1);
@@ -1820,7 +1830,7 @@ store__add_cb(gpointer user_data) {
 				       data->file);
 		} else {
 
-			char * utf8 = g_locale_to_utf8(data->file, -1, NULL, NULL, NULL);
+			char * utf8 = g_filename_to_utf8(data->file, -1, NULL, NULL, NULL);
 
 			gtk_tree_store_append(music_store, &iter, NULL);
 
@@ -2314,7 +2324,7 @@ record__add_cb(gpointer user_data) {
 					}
 					if (str) {
 						track_data_t * track;
-						char * utf8 = g_locale_to_utf8(str, -1, NULL, NULL, NULL);
+						char * utf8 = g_filename_to_utf8(str, -1, NULL, NULL, NULL);
 						float duration = get_file_duration(strings[i]);
 
 						if ((track = (track_data_t *)calloc(1, sizeof(track_data_t))) == NULL) {
@@ -3672,13 +3682,39 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
 /*********************************************************************************/
 
+/* If a non-absolute filename is in the store, interpret it as
+ * relative to the directory containing the store file. Otherwise,
+ * just return the absolute filename as found in the store file.
+ */
+char *
+track_get_absolute_path(char * store_dirname, char * filename, const GtkTreeIter * iter_track) {
+
+	char * path = NULL;
+	gchar * tmp = NULL;
+	
+	if (((tmp = g_filename_from_uri(filename, NULL, NULL)) == NULL) &&
+	    (tmp = g_filename_from_utf8(filename, -1, NULL, NULL, NULL)) == NULL) {
+		tmp = g_strdup(filename);
+	}
+
+	if (g_path_is_absolute(tmp)) {
+		path = strndup(tmp, MAXLEN-1);
+	} else {
+		gchar * tmppath = g_build_filename(store_dirname, tmp, NULL);
+		path = strndup(tmppath, MAXLEN-1);
+		g_free(tmppath);
+	}
+
+	g_free(tmp);
+
+	return path;
+}
+
 void
-parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record, int * save) {
+parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record, char * store_dirname, int * save) {
 
 	GtkTreeIter iter_track;
 	xmlChar * key;
-	gchar * tmp;
-	GError * error = NULL;
 
 	char name[MAXLEN];
 	char sort[MAXLEN];
@@ -3730,21 +3766,7 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record, int * save
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"file"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
-
-				if ((tmp = g_filename_from_uri((char *) key, NULL, NULL))) {
-					data->file = strndup(tmp, MAXLEN-1);
-					g_free(tmp);
-				} else {
-					/* try to read utf8 filename from outdated file */
-					if ((tmp = g_locale_from_utf8((char *) key, -1, NULL, NULL, &error))) {
-						data->file = strndup(tmp, MAXLEN-1);
-						g_free(tmp);
-					} else {
-						/* last try - maybe it's plain locale filename */
-						data->file = strndup((char *)key, MAXLEN-1);
-					}
-				}
-
+				data->file = track_get_absolute_path(store_dirname, (char *)key, &iter_track);
 				xmlFree(key);
 			}
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"size"))) {
@@ -3797,7 +3819,7 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record, int * save
 
 
 void
-parse_record(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_artist, int * save) {
+parse_record(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_artist, char * store_dirname, int * save) {
 
 	GtkTreeIter iter_record;
 	xmlChar * key;
@@ -3864,14 +3886,14 @@ parse_record(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_artist, int * sav
 				xmlFree(key);
 			}
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"track"))) {
-			parse_track(doc, cur, &iter_record, save);
+			parse_track(doc, cur, &iter_record, store_dirname, save);
 		}
 	}
 }
 
 
 void
-parse_artist(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_store, int * save) {
+parse_artist(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_store, char * store_dirname, int * save) {
 
 	GtkTreeIter iter_artist;
 	xmlChar * key;
@@ -3928,7 +3950,7 @@ parse_artist(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_store, int * save
 				xmlFree(key);
 			}
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"record"))) {
-			parse_record(doc, cur, &iter_artist, save);
+			parse_record(doc, cur, &iter_artist, store_dirname, save);
 		}
 	}
 }
@@ -3948,6 +3970,7 @@ store_file_load(char * store_file, char * sort) {
 	xmlDocPtr doc;
 	xmlNodePtr cur;
 	xmlChar * key;
+	char * store_dirname;
 	int save = 0;
 
 	store_data_t * data;
@@ -3984,6 +4007,8 @@ store_file_load(char * store_file, char * sort) {
 
 	data->type = STORE_TYPE_FILE;
 	data->file = strdup(store_file);
+	data->use_relative_paths = 0;
+	store_dirname = g_path_get_dirname(data->file);
 
 	if (access(store_file, W_OK) == 0) {
 		data->readonly = 0;
@@ -4022,12 +4047,15 @@ store_file_load(char * store_file, char * sort) {
 				data->comment = strndup((char *)key, MAXLEN-1);
 				xmlFree(key);
 			}
+		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"use_relative_paths"))) {
+			data->use_relative_paths = 1;	
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"artist"))) {
-			parse_artist(doc, cur, &iter_store, &save);
+			parse_artist(doc, cur, &iter_store, store_dirname, &save);
 		}
 	}
 
 	xmlFreeDoc(doc);
+	g_free(store_dirname);
 
 	if (save && !data->readonly) {
 		music_store_mark_changed(&iter_store);
@@ -4040,7 +4068,8 @@ store_file_load(char * store_file, char * sort) {
 
 
 void
-save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track) {
+save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track,
+	   char * store_dirname, int dirname_strlen, int use_relative_paths) {
 
 	xmlNodePtr node;
 	char * name;
@@ -4065,16 +4094,21 @@ save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track) {
 
 	if (data->file == NULL && data->file[0] != '\0') {
 		fprintf(stderr, "saving music_store XML: warning: track node with empty <file>\n");
-		xmlNewTextChild(node, NULL, (const xmlChar *) "file", (const xmlChar*) "");
+		xmlNewTextChild(node, NULL, (const xmlChar *) "file", (const xmlChar *) "");
 	} else {
-		gchar * tmp = g_filename_to_uri(data->file, NULL, NULL);
-		xmlNewTextChild(node, NULL, (const xmlChar *) "file", (const xmlChar*) tmp);
-		g_free(tmp);
+		if (use_relative_paths && g_str_has_prefix(data->file, store_dirname)) {
+			gchar * tmp = data->file + dirname_strlen + 1;
+			xmlNewTextChild(node, NULL, (const xmlChar *) "file", (const xmlChar *) tmp);
+		} else {
+			gchar * tmp = g_filename_to_uri(data->file, NULL, NULL);
+			xmlNewTextChild(node, NULL, (const xmlChar *) "file", (const xmlChar *) tmp);
+			g_free(tmp);
+		}
 	}
 
 	if (data->size != 0) {
 		snprintf(str, 31, "%u", data->size);
-		xmlNewTextChild(node, NULL, (const xmlChar *) "size", (const xmlChar*) str);
+		xmlNewTextChild(node, NULL, (const xmlChar *) "size", (const xmlChar *) str);
 	}
 
 	if (data->comment != NULL && data->comment[0] != '\0') {
@@ -4107,7 +4141,8 @@ save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track) {
 
 
 void
-save_record(xmlDocPtr doc, xmlNodePtr node_record, GtkTreeIter * iter_record) {
+save_record(xmlDocPtr doc, xmlNodePtr node_record, GtkTreeIter * iter_record,
+	    char * store_dirname, int dirname_strlen, int use_relative_paths) {
 
 	xmlNodePtr node;
 	char * name;
@@ -4140,7 +4175,7 @@ save_record(xmlDocPtr doc, xmlNodePtr node_record, GtkTreeIter * iter_record) {
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track, iter_record, i++)) {
-		save_track(doc, node, &iter_track);
+		save_track(doc, node, &iter_track, store_dirname, dirname_strlen, use_relative_paths);
 	}
 
 	g_free(name);
@@ -4149,7 +4184,8 @@ save_record(xmlDocPtr doc, xmlNodePtr node_record, GtkTreeIter * iter_record) {
 
 
 void
-save_artist(xmlDocPtr doc, xmlNodePtr root, GtkTreeIter * iter_artist) {
+save_artist(xmlDocPtr doc, xmlNodePtr root, GtkTreeIter * iter_artist,
+	    char * store_dirname, int dirname_strlen, int use_relative_paths) {
 
 	xmlNodePtr node;
 	char * name;
@@ -4177,7 +4213,7 @@ save_artist(xmlDocPtr doc, xmlNodePtr root, GtkTreeIter * iter_artist) {
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_record, iter_artist, i++)) {
-		save_record(doc, node, &iter_record);
+		save_record(doc, node, &iter_record, store_dirname, dirname_strlen, use_relative_paths);
 	}
 
 	g_free(name);
@@ -4191,6 +4227,8 @@ store_file_save(GtkTreeIter * iter_store) {
 	xmlDocPtr doc;
 	xmlNodePtr root;
 	xmlNodePtr build_node;
+	char * store_dirname;
+	int dirname_strlen;
 	char * name;
 	int i;
 	store_data_t * data;
@@ -4204,6 +4242,9 @@ store_file_save(GtkTreeIter * iter_store) {
 	}
 
 	music_store_mark_saved(iter_store);
+
+	store_dirname = g_path_get_dirname(data->file);
+	dirname_strlen = strlen(store_dirname);
 
 	doc = xmlNewDoc((const xmlChar *) "1.0");
 	root = xmlNewNode(NULL, (const xmlChar *) "music_store");
@@ -4220,9 +4261,13 @@ store_file_save(GtkTreeIter * iter_store) {
 		xmlNewTextChild(root, NULL, (const xmlChar *) "comment", (const xmlChar *) data->comment);
 	}
 
+	if (data->use_relative_paths) {
+		xmlNewChild(root, NULL, (const xmlChar *) "use_relative_paths", NULL);
+	}
+
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_artist, iter_store, i++)) {
-		save_artist(doc, root, &iter_artist);
+		save_artist(doc, root, &iter_artist, store_dirname, dirname_strlen, data->use_relative_paths);
 	}
 
 	if ((build_node = build_store_get_xml_node(data->file)) != NULL) {
@@ -4231,6 +4276,7 @@ store_file_save(GtkTreeIter * iter_store) {
 
 	xmlSaveFormatFile(data->file, doc, 1);
 	xmlFreeDoc(doc);
+	g_free(store_dirname);
 }
 
 

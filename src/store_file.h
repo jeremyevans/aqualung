@@ -67,6 +67,7 @@ typedef struct {
 	int type;
 	int dirty;
 	int readonly;
+	int use_relative_paths;
 	char * file;
 	char * comment;
 } store_data_t;

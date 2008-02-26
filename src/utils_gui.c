@@ -536,15 +536,15 @@ file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction a
 	}
 
         if (strlen(selected_filename)) {
-      		char * locale = g_locale_from_utf8(selected_filename, -1, NULL, NULL, NULL);
+      		char * filename = g_filename_from_utf8(selected_filename, -1, NULL, NULL, NULL);
 
-		if (locale == NULL) {
+		if (filename == NULL) {
 			gtk_widget_destroy(dialog);
 			return;
 		}
 
-		normalize_filename(locale, path);
-		g_free(locale);
+		normalize_filename(filename, path);
+		g_free(filename);
 	} else {
 		strncpy(path, destpath, MAXLEN-1);
 	}
@@ -566,7 +566,7 @@ file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction a
 		char * utf8;
 
                 selected_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		utf8 = g_locale_to_utf8(selected_filename, -1, NULL, NULL, NULL);
+		utf8 = g_filename_to_utf8(selected_filename, -1, NULL, NULL, NULL);
 
 		if (utf8 == NULL) {
 			gtk_widget_destroy(dialog);

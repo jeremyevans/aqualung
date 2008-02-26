@@ -342,7 +342,7 @@ podcast_dialog(podcast_t ** podcast, int create) {
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		if (create) {
-			const char * pdir = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(dir_entry)), -1, NULL, NULL, NULL);
+			const char * pdir = g_filename_from_utf8(gtk_entry_get_text(GTK_ENTRY(dir_entry)), -1, NULL, NULL, NULL);
 			char dir[MAXLEN];
 			char url[MAXLEN];
 

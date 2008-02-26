@@ -850,7 +850,7 @@ directory_chooser(char * title, GtkWidget * parent, char * directory) {
                 char * utf8;
 
                 selected_directory = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		utf8 = g_locale_to_utf8(selected_directory, -1, NULL, NULL, NULL);
+		utf8 = g_filename_to_utf8(selected_directory, -1, NULL, NULL, NULL);
 
 		if (utf8 == NULL) {
 			gtk_widget_destroy(dialog);

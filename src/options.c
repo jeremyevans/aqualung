@@ -1284,7 +1284,7 @@ add_ms_pathlist_clicked(GtkButton * button, gpointer * data) {
 		return;
 	}
 
-	if ((path = g_locale_from_utf8(name, -1, NULL, NULL, NULL)) == NULL) {
+	if ((path = g_filename_from_utf8(name, -1, NULL, NULL, NULL)) == NULL) {
 		return;
 	}
 
@@ -3302,7 +3302,7 @@ save_config(void) {
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
 		char * utf8;
 		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &path, -1);
-		utf8 = g_locale_to_utf8(path, -1, NULL, NULL, NULL);
+		utf8 = g_filename_to_utf8(path, -1, NULL, NULL, NULL);
 		xmlNewTextChild(root, NULL, (const xmlChar *) "music_store", (xmlChar *) utf8);
 		g_free(path);
 		g_free(utf8);
@@ -3706,7 +3706,7 @@ load_config(void) {
 				char * ppath;
 
 				snprintf(path, MAXLEN - 1, "%s", (char *)key);
-				ppath = g_locale_from_utf8(path, -1, NULL, NULL, NULL);
+				ppath = g_filename_from_utf8(path, -1, NULL, NULL, NULL);
 
 				append_ms_pathlist(ppath, path);
 

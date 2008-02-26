@@ -825,7 +825,7 @@ file_transform_gui_sync(file_transform_gui_t * gui) {
 		char * utf8;
 
 		regerror(err, &gui->model->compiled, msg, MAXLEN);
-		utf8 = g_locale_to_utf8(msg, -1, NULL, NULL, NULL);
+		utf8 = g_filename_to_utf8(msg, -1, NULL, NULL, NULL);
 		gtk_label_set_text(GTK_LABEL(gui->label_error), utf8);
 		gtk_widget_show(gui->label_error);
 		g_free(utf8);
@@ -2059,7 +2059,7 @@ build_dialog(build_store_t * data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 		
-		char * proot = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(gen_root_entry)), -1, NULL, NULL, NULL);
+		char * proot = g_filename_from_utf8(gtk_entry_get_text(GTK_ENTRY(gen_root_entry)), -1, NULL, NULL, NULL);
 
 		data->root[0] = '\0';
 

@@ -918,7 +918,7 @@ export_dialog(export_t * export) {
 	export->outdir[0] = '\0';
         if (aqualung_dialog_run(GTK_DIALOG(export->dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		char * poutdir = g_locale_from_utf8(gtk_entry_get_text(GTK_ENTRY(outdir_entry)), -1, NULL, NULL, NULL);
+		char * poutdir = g_filename_from_utf8(gtk_entry_get_text(GTK_ENTRY(outdir_entry)), -1, NULL, NULL, NULL);
 
                 if ((poutdir == NULL) || (poutdir[0] == '\0')) {
                         gtk_widget_grab_focus(outdir_entry);

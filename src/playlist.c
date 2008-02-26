@@ -3469,7 +3469,7 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 				strncpy(file, uri_list[i] + off, MAXLEN-1);
 			}
 
-			if ((str = g_locale_from_utf8(file, -1, NULL, NULL, NULL)) != NULL) {
+			if ((str = g_filename_from_utf8(file, -1, NULL, NULL, NULL)) != NULL) {
 				strncpy(file, str, MAXLEN-1);
 				g_free(str);
 			}

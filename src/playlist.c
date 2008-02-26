@@ -537,7 +537,7 @@ playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 		if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(tstore), &parent, iter)) {
 			playlist_data_t * pdata;
 			gtk_tree_model_get(GTK_TREE_MODEL(tstore), &parent, PL_COL_DATA, &pdata, -1);
-			if (pdata->artist && tdata->artist && pdata->album && tdata->album &&
+			if (pdata->artist && tdata->artist && pdata->album && tdata->album && tdata->title &&
 			    !strcmp(pdata->artist, tdata->artist) && !strcmp(pdata->album, tdata->album)) {
 				gtk_tree_store_set(tstore, iter, PL_COL_NAME, tdata->title, -1);
 				name_set = 1;
@@ -1667,7 +1667,7 @@ add_file_to_playlist(gpointer data) {
 			playlist_data_t * pdata;
 			if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(pt->pl->store), &parent, &iter)) {
 				gtk_tree_model_get(GTK_TREE_MODEL(pt->pl->store), &parent, PL_COL_DATA, &pdata, -1);
-				if (pdata->artist && pdata->album && pldata->artist && pldata->album &&
+				if (pdata->artist && pdata->album && pldata->artist && pldata->album && pldata->title &&
 				    !strcmp(pdata->artist, pldata->artist) && !strcmp(pdata->album, pldata->album)) {
 					strncpy(list_str, pldata->title, MAXLEN-1);
 				} else {
@@ -2342,7 +2342,7 @@ plist__reread_file_meta_foreach(playlist_t * pl, GtkTreeIter * iter, void * user
 	if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(pl->store), &parent, iter)) {
 		playlist_data_t * pdata;
 		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &parent, PL_COL_DATA, &pdata, -1);
-		if (pdata->artist && pdata->album && data->artist && data->album &&
+		if (pdata->artist && pdata->album && data->artist && data->album && data->title &&
 		    !strcmp(pdata->artist, data->artist) && !strcmp(pdata->album, data->album)) {
 			gtk_tree_store_set(pl->store, iter, PL_COL_NAME, data->title, -1);
 			name_set = 1;

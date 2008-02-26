@@ -1684,12 +1684,6 @@ create_options_window(void) {
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_tags_tab_first, FALSE, FALSE, 0);
 
-        check_dont_show_cover = gtk_check_button_new_with_label(_("Don't show cover thumbnail in the main window"));
-	gtk_widget_set_name(check_dont_show_cover, "check_on_notebook");
-	if (options.dont_show_cover) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_dont_show_cover), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_misc), check_dont_show_cover, FALSE, FALSE, 0);
 
 	frame_cart = gtk_frame_new(_("Cover art"));
 	gtk_box_pack_start(GTK_BOX(vbox_general), frame_cart, FALSE, TRUE, 5);
@@ -1730,6 +1724,13 @@ create_options_window(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_cover_for_ms_tracks_only), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_cart), check_show_cover_for_ms_tracks_only, FALSE, FALSE, 0);
+
+        check_dont_show_cover = gtk_check_button_new_with_label(_("Don't show cover thumbnail in the main window"));
+	gtk_widget_set_name(check_dont_show_cover, "check_on_notebook");
+	if (options.dont_show_cover) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_dont_show_cover), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_cart), check_dont_show_cover, FALSE, FALSE, 0);
 
         /* "Playlist" notebook page */
 

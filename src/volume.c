@@ -578,21 +578,21 @@ rva_from_volume(float volume) {
 	return ((volume - options.rva_refvol) * (options.rva_steepness - 1.0f));
 }
 
-/* The reference signal for so called 89 dB SPL replaygain is -14 dBFS pink noise */
-/* The actual offset value is slightly different, based on emperical findings */
-/* The conditions for calculation are probably slightly different */
-/* I tried a few samples, and it usually varied +/- 0.5 dBFS */
-/* If someone knows the exact way to match this against rva, please change it */
-/* It is possible to do replaygain with a different reference level, this was not taken into account */
-float
-volume_from_replaygain(float replaygain) {
-	return (-(replaygain)-15.7)/0.97;
-}
+/* Replaygain is almost always the "89 dB SPL" type.
+ * This means a -14 dBFS pink noise reference signal is used.
+ * A positive replaygain value means it's quiter than the reference signal.
+ * The magic values are due to different ways of calculating the levels.
+ * They're only approximations though.
+ */
+#define RG_REFERENCE_LEVEL -14.0
+#define RG_MAGIC_VAL1 -2.1 /* emperical */
+#define RG_MAGIC_VAL2 1.05 /* emperical */
+#define RG_TO_VOLUME(replaygain) ((-replaygain + RG_REFERENCE_LEVEL + RG_MAGIC_VAL1) * RG_MAGIC_VAL2)
 
 float
-rva_from_replaygain(float volume) {
+rva_from_replaygain(float rg) {
 
-	return rva_from_volume(volume_from_replaygain(volume));
+	return rva_from_volume(RG_TO_VOLUME(rg));
 }
 
 

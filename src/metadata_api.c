@@ -32,6 +32,7 @@
 #include "utils.h"
 #include "metadata.h"
 #include "metadata_api.h"
+#include "volume.h"
 
 
 extern options_t options;
@@ -241,7 +242,7 @@ metadata_get_rva(metadata_t * meta, float * fval) {
 
 	frame = metadata_pref_frame_by_type(meta, rva_type, NULL);
 	if (frame != NULL) {
-		*fval = frame->float_val;
+		*fval = rva_from_replaygain(frame->float_val);
 		return 1;
 	} else {
 		/* fallback on the other ReplayGain frame */
@@ -252,7 +253,7 @@ metadata_get_rva(metadata_t * meta, float * fval) {
 		}
 		frame = metadata_pref_frame_by_type(meta, rva_type, NULL);
 		if (frame != NULL) {
-			*fval = frame->float_val;
+			*fval = rva_from_replaygain(frame->float_val);
 			return 1;
 		} else {
 			/* fallback on RVA frame */

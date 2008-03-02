@@ -49,6 +49,7 @@
 extern options_t options;
 
 extern GtkTreeStore * music_store;
+extern GtkWidget * main_window;
 
 GtkWidget * vol_window;
 int vol_slot_count;
@@ -327,6 +328,7 @@ create_volume_window() {
 
 	vol_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	register_toplevel_window(vol_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
+	gtk_window_set_transient_for(GTK_WINDOW(vol_window), GTK_WINDOW(main_window));
         gtk_window_set_title(GTK_WINDOW(vol_window), _("Calculating volume level"));
         gtk_window_set_position(GTK_WINDOW(vol_window), GTK_WIN_POS_CENTER);
         gtk_window_resize(GTK_WINDOW(vol_window), 480, 110);

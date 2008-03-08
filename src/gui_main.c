@@ -479,6 +479,8 @@ set_src_type_label(int src_type) {
 #else
 	strcat(str, _("None"));
 #endif /* HAVE_SRC */
+
+	gtk_label_set_text(GTK_LABEL(label_src_type), str);
 }
 
 

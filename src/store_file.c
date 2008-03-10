@@ -41,6 +41,7 @@
 #include "file_info.h"
 #include "decoder/file_decoder.h"
 #include "metadata_api.h"
+#include "httpc.h"
 #include "options.h"
 #include "volume.h"
 #include "playlist.h"
@@ -3752,8 +3753,7 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record, char * sto
 				xmlFree(key);
 			}
 			if (name[0] == '\0') {
-				fprintf(stderr, "Error in XML music_store: "
-					"Track <name> is required, but NULL\n");
+				fprintf(stderr, "Error in XML music_store: track <name> is required, but NULL\n");
 			}
 			gtk_tree_store_set(music_store, &iter_track, MS_COL_NAME, name, -1);
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"sort_name"))) {
@@ -3766,7 +3766,11 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record, char * sto
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"file"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
-				data->file = track_get_absolute_path(store_dirname, (char *)key, &iter_track);
+				if (httpc_is_url((char *)key)) {
+					data->file = strndup((char *)key, MAXLEN-1);
+				} else {
+					data->file = track_get_absolute_path(store_dirname, (char *)key, &iter_track);
+				}
 				xmlFree(key);
 			}
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"size"))) {
@@ -3814,6 +3818,11 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record, char * sto
 			data->size = statbuf.st_size;
 			*save = 1;
 		}
+	}
+
+	if (data->file == NULL) {
+		fprintf(stderr, "Error in XML music_store: track <file> is required, but NULL\n");
+		store_file_remove_track(&iter_track);
 	}
 }
 
@@ -4096,7 +4105,11 @@ save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track,
 		fprintf(stderr, "saving music_store XML: warning: track node with empty <file>\n");
 		xmlNewTextChild(node, NULL, (const xmlChar *) "file", (const xmlChar *) "");
 	} else {
-		if (use_relative_paths && g_str_has_prefix(data->file, store_dirname)) {
+		if (httpc_is_url(data->file)) {
+			gchar * tmp = g_filename_to_utf8(data->file, -1, NULL, NULL, NULL);
+			xmlNewTextChild(node, NULL, (const xmlChar *) "file", (const xmlChar *) tmp);
+			g_free(tmp);
+		} else if (use_relative_paths && g_str_has_prefix(data->file, store_dirname)) {
 			gchar * tmp = data->file + dirname_strlen + 1;
 			xmlNewTextChild(node, NULL, (const xmlChar *) "file", (const xmlChar *) tmp);
 		} else {

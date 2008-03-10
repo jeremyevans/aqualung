@@ -874,7 +874,7 @@ podcast_update_thread(void * arg) {
 void
 podcast_update(podcast_t * podcast) {
 
-	if (podcast->state == PODCAST_STATE_IDLE) {
+	if (podcast->state == PODCAST_STATE_IDLE || podcast->state == PODCAST_STATE_PENDING) {
 
 		AQUALUNG_THREAD_DECLARE(thread_id);
 

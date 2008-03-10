@@ -68,6 +68,8 @@ GtkWidget * podcast_track__fileinfo;
 GtkWidget * podcast_feed_menu;
 GtkWidget * podcast_feed__addlist;
 GtkWidget * podcast_feed__addlist_albummode;
+GtkWidget * podcast_feed__addlist_new;
+GtkWidget * podcast_feed__addlist_albummode_new;
 GtkWidget * podcast_feed__subscribe;
 GtkWidget * podcast_feed__edit;
 GtkWidget * podcast_feed__update;
@@ -81,6 +83,8 @@ GtkWidget * podcast_feed__export_new;
 GtkWidget * podcast_store_menu;
 GtkWidget * podcast_store__addlist;
 GtkWidget * podcast_store__addlist_albummode;
+GtkWidget * podcast_store__addlist_new;
+GtkWidget * podcast_store__addlist_albummode_new;
 GtkWidget * podcast_store__subscribe;
 GtkWidget * podcast_store__update;
 GtkWidget * podcast_store__reorder;
@@ -398,7 +402,8 @@ podcast_track_mark_read(GtkTreeIter * iter, podcast_item_t * item) {
 
 /* returns the duration of the track */
 float
-podcast_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl, GtkTreeIter * parent, GtkTreeIter * dest) {
+podcast_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
+			   GtkTreeIter * parent, GtkTreeIter * dest, int new) {
 
 	GtkTreeIter dest_parent;
         GtkTreeIter pod_iter;
@@ -414,6 +419,11 @@ podcast_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl, GtkTreeIter 
 
 
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, MS_COL_DATA, &item, -1);
+
+	if (new && !item->new) {
+		return 0.0f;
+	}
+
 	gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &pod_iter, &iter_track);
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &pod_iter, MS_COL_DATA, &podcast, -1);
 
@@ -467,7 +477,7 @@ podcast_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl, GtkTreeIter 
 }
 
 void
-podcast_feed_addlist_iter(GtkTreeIter iter_record, playlist_t * pl, GtkTreeIter * dest, int album_mode) {
+podcast_feed_addlist_iter(GtkTreeIter iter_record, playlist_t * pl, GtkTreeIter * dest, int album_mode, int new) {
 
         GtkTreeIter iter_track;
 	GtkTreeIter list_iter;
@@ -479,6 +489,24 @@ podcast_feed_addlist_iter(GtkTreeIter iter_record, playlist_t * pl, GtkTreeIter 
 
 	if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), &iter_record) == 0) {
 		return;
+	}
+
+	if (album_mode && new) {
+		int has_new = 0;
+
+		i = 0;
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track, &iter_record, i++)) {
+			podcast_item_t * item;
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, MS_COL_DATA, &item, -1);
+			if (item->new) {
+				has_new = 1;
+				break;
+			}
+		}
+
+		if (!has_new) {
+			return;
+		}
 	}
 
 	if (album_mode) {
@@ -516,7 +544,7 @@ podcast_feed_addlist_iter(GtkTreeIter iter_record, playlist_t * pl, GtkTreeIter 
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track, &iter_record, i++)) {
-		record_duration += podcast_track_addlist_iter(iter_track, pl, plist_iter, dest);
+		record_duration += podcast_track_addlist_iter(iter_track, pl, plist_iter, dest, new);
 	}
 
 	if (album_mode) {
@@ -534,7 +562,7 @@ podcast_track__addlist_cb(gpointer data) {
 	playlist_t * pl = playlist_get_current();
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_track)) {
-		podcast_track_addlist_iter(iter_track, pl, NULL, (GtkTreeIter *)data);
+		podcast_track_addlist_iter(iter_track, pl, NULL, (GtkTreeIter *)data, 0);
 		if (pl == playlist_get_current()) {
 			playlist_content_changed(pl);
 		}
@@ -569,13 +597,13 @@ podcast_track__fileinfo_cb(gpointer data) {
 }
 
 void
-podcast_feed__addlist_with_mode(int mode, gpointer data) {
+podcast_feed__addlist_with_mode(int mode, int new, gpointer data) {
 
         GtkTreeIter iter_record;
 	playlist_t * pl = playlist_get_current();
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_record)) {
-		podcast_feed_addlist_iter(iter_record, pl, (GtkTreeIter *)data, mode);
+		podcast_feed_addlist_iter(iter_record, pl, (GtkTreeIter *)data, mode, new);
 		if (pl == playlist_get_current()) {
 			playlist_content_changed(pl);
 		}
@@ -586,41 +614,53 @@ podcast_feed__addlist_with_mode(int mode, gpointer data) {
 void
 podcast_feed__addlist_defmode(gpointer data) {
 
-	podcast_feed__addlist_with_mode(options.playlist_is_tree, data);
+	podcast_feed__addlist_with_mode(options.playlist_is_tree, 0, data);
 }
 
 void
 podcast_feed__addlist_albummode_cb(gpointer data) {
 
-	podcast_feed__addlist_with_mode(1, data);
+	podcast_feed__addlist_with_mode(1, 0, data);
 }
 
 void
 podcast_feed__addlist_cb(gpointer data) {
 
-	podcast_feed__addlist_with_mode(0, data);
+	podcast_feed__addlist_with_mode(0, 0, data);
+}
+
+void
+podcast_feed__addlist_albummode_new_cb(gpointer data) {
+
+	podcast_feed__addlist_with_mode(1, 1, data);
+}
+
+void
+podcast_feed__addlist_new_cb(gpointer data) {
+
+	podcast_feed__addlist_with_mode(0, 1, data);
 }
 
 
 void
-podcast_store_addlist_iter(GtkTreeIter iter_store, playlist_t * pl, GtkTreeIter * dest, int album_mode) {
+podcast_store_addlist_iter(GtkTreeIter iter_store, playlist_t * pl, GtkTreeIter * dest, int album_mode, int new) {
 
 	GtkTreeIter pod_iter;
 	int i = 0;
 
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &pod_iter, &iter_store, i++)) {
-		podcast_feed_addlist_iter(pod_iter, pl, dest, album_mode);
+		podcast_feed_addlist_iter(pod_iter, pl, dest, album_mode, new);
 	}
 }
 
 void
-podcast_store__addlist_with_mode(int mode, gpointer data) {
+podcast_store__addlist_with_mode(int mode, int new, gpointer data) {
 
         GtkTreeIter iter_store;
 	playlist_t * pl = playlist_get_current();
 
         if (gtk_tree_selection_get_selected(music_select, NULL, &iter_store)) {
-		podcast_store_addlist_iter(iter_store, pl, (GtkTreeIter *)data, mode);
+		podcast_store_addlist_iter(iter_store, pl, (GtkTreeIter *)data, mode, new);
 		if (pl == playlist_get_current()) {
 			playlist_content_changed(pl);
 		}
@@ -631,19 +671,31 @@ podcast_store__addlist_with_mode(int mode, gpointer data) {
 void
 podcast_store__addlist_defmode(gpointer data) {
 
-	podcast_store__addlist_with_mode(options.playlist_is_tree, data);
+	podcast_store__addlist_with_mode(options.playlist_is_tree, 0, data);
 }
 
 void
 podcast_store__addlist_albummode_cb(gpointer data) {
 
-	podcast_store__addlist_with_mode(1, data);
+	podcast_store__addlist_with_mode(1, 0, data);
 }
 
 void
 podcast_store__addlist_cb(gpointer data) {
 
-	podcast_store__addlist_with_mode(0, data);
+	podcast_store__addlist_with_mode(0, 0, data);
+}
+
+void
+podcast_store__addlist_albummode_new_cb(gpointer data) {
+
+	podcast_store__addlist_with_mode(1, 1, data);
+}
+
+void
+podcast_store__addlist_new_cb(gpointer data) {
+
+	podcast_store__addlist_with_mode(0, 1, data);
 }
 
 
@@ -679,7 +731,9 @@ podcast_feed__edit_cb(gpointer data) {
 	GtkTreeIter iter;
 
 	if (gtk_tree_selection_get_selected(music_select, NULL, &iter)) {
+
 		podcast_t * podcast;
+
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &podcast, -1);
 
 		if (podcast->state != PODCAST_STATE_IDLE) {
@@ -783,6 +837,13 @@ podcast_feed__remove_cb(gpointer data) {
 	}
 }
 
+gboolean
+podcast_delayed_update_cb(gpointer data) {
+
+	podcast_update((podcast_t *)data);
+	return FALSE;
+}
+
 /* data != NULL indicates automatic update */
 void
 podcast_store__update_cb(gpointer data) {
@@ -801,7 +862,7 @@ podcast_store__update_cb(gpointer data) {
 		g_get_current_time(&tval);
 	}
 
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter, &store_iter, i++)) {
+	for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter, &store_iter, i); ++i) {
 
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &podcast, -1);
 
@@ -822,8 +883,9 @@ podcast_store__update_cb(gpointer data) {
 			}
 		}
 
+		podcast->state = PODCAST_STATE_PENDING;
 		gtk_tree_store_set(music_store, &iter, MS_COL_NAME, _("Updating..."), -1);
-		podcast_update(podcast);
+		aqualung_timeout_add(1000 * i, podcast_delayed_update_cb, podcast);
 	}
 }
 
@@ -1636,8 +1698,10 @@ store_podcast_create_popup_menu(void) {
 	podcast_feed_menu = gtk_menu_new();
 	register_toplevel_window(podcast_feed_menu, TOP_WIN_SKIN);
 
-	podcast_feed__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
-	podcast_feed__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
+	podcast_feed__addlist = gtk_menu_item_new_with_label(_("Add all items to playlist"));
+	podcast_feed__addlist_albummode = gtk_menu_item_new_with_label(_("Add all items to playlist (Album mode)"));
+	podcast_feed__addlist_new = gtk_menu_item_new_with_label(_("Add new items to playlist"));
+	podcast_feed__addlist_albummode_new = gtk_menu_item_new_with_label(_("Add new items to playlist (Album mode)"));
 	podcast_feed__subscribe = gtk_menu_item_new_with_label(_("Subscribe to new feed"));
 	podcast_feed__edit = gtk_menu_item_new_with_label(_("Edit feed"));
 #ifdef HAVE_EXPORT
@@ -1647,6 +1711,13 @@ store_podcast_create_popup_menu(void) {
 	podcast_feed__update = gtk_menu_item_new_with_label(_("Update feed"));
 	podcast_feed__abort = gtk_menu_item_new_with_label(_("Abort ongoing update"));
 	podcast_feed__remove = gtk_menu_item_new_with_label(_("Remove feed"));
+
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__addlist_new);
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__addlist_albummode_new);
+
+	separator = gtk_separator_menu_item_new();
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), separator);
+	gtk_widget_show(separator);
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_feed_menu), podcast_feed__addlist_albummode);
@@ -1672,6 +1743,8 @@ store_podcast_create_popup_menu(void) {
 
  	g_signal_connect_swapped(G_OBJECT(podcast_feed__addlist), "activate", G_CALLBACK(podcast_feed__addlist_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_feed__addlist_albummode), "activate", G_CALLBACK(podcast_feed__addlist_albummode_cb), NULL);
+ 	g_signal_connect_swapped(G_OBJECT(podcast_feed__addlist_new), "activate", G_CALLBACK(podcast_feed__addlist_new_cb), NULL);
+ 	g_signal_connect_swapped(G_OBJECT(podcast_feed__addlist_albummode_new), "activate", G_CALLBACK(podcast_feed__addlist_albummode_new_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_feed__subscribe), "activate", G_CALLBACK(podcast_feed__subscribe_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_feed__edit), "activate", G_CALLBACK(podcast_feed__edit_cb), NULL);
 #ifdef HAVE_EXPORT
@@ -1684,6 +1757,8 @@ store_podcast_create_popup_menu(void) {
 
 	gtk_widget_show(podcast_feed__addlist);
 	gtk_widget_show(podcast_feed__addlist_albummode);
+	gtk_widget_show(podcast_feed__addlist_new);
+	gtk_widget_show(podcast_feed__addlist_albummode_new);
 	gtk_widget_show(podcast_feed__subscribe);
 	gtk_widget_show(podcast_feed__edit);
 #ifdef HAVE_EXPORT
@@ -1696,8 +1771,11 @@ store_podcast_create_popup_menu(void) {
 	/* create popup menu for podcast_store tree items */
 	podcast_store_menu = gtk_menu_new();
 	register_toplevel_window(podcast_store_menu, TOP_WIN_SKIN);
-	podcast_store__addlist = gtk_menu_item_new_with_label(_("Add to playlist"));
-	podcast_store__addlist_albummode = gtk_menu_item_new_with_label(_("Add to playlist (Album mode)"));
+	podcast_store__addlist = gtk_menu_item_new_with_label(_("Add all items to playlist"));
+	podcast_store__addlist_albummode = gtk_menu_item_new_with_label(_("Add all items to playlist (Album mode)"));
+
+	podcast_store__addlist_new = gtk_menu_item_new_with_label(_("Add new items to playlist"));
+	podcast_store__addlist_albummode_new = gtk_menu_item_new_with_label(_("Add new items to playlist (Album mode)"));
 	podcast_store__subscribe = gtk_menu_item_new_with_label(_("Subscribe to new feed"));
 	podcast_store__update = gtk_menu_item_new_with_label(_("Update all feeds"));
 	podcast_store__reorder = gtk_menu_item_new_with_label(_("Reorder feeds"));
@@ -1706,6 +1784,13 @@ store_podcast_create_popup_menu(void) {
 	podcast_store__export_new = gtk_menu_item_new_with_label(_("Export new items..."));
 #endif /* HAVE_EXPORT */
 	podcast_store__update_enabled = gtk_check_menu_item_new_with_label(_("Automatically update feeds"));
+
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), podcast_store__addlist_new);
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), podcast_store__addlist_albummode_new);
+
+	separator = gtk_separator_menu_item_new();
+	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), separator);
+	gtk_widget_show(separator);
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), podcast_store__addlist);
 	gtk_menu_shell_append(GTK_MENU_SHELL(podcast_store_menu), podcast_store__addlist_albummode);
@@ -1735,6 +1820,8 @@ store_podcast_create_popup_menu(void) {
 
  	g_signal_connect_swapped(G_OBJECT(podcast_store__addlist), "activate", G_CALLBACK(podcast_store__addlist_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_store__addlist_albummode), "activate", G_CALLBACK(podcast_store__addlist_albummode_cb), NULL);
+ 	g_signal_connect_swapped(G_OBJECT(podcast_store__addlist_new), "activate", G_CALLBACK(podcast_store__addlist_new_cb), NULL);
+ 	g_signal_connect_swapped(G_OBJECT(podcast_store__addlist_albummode_new), "activate", G_CALLBACK(podcast_store__addlist_albummode_new_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_store__subscribe), "activate", G_CALLBACK(podcast_feed__subscribe_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_store__update), "activate", G_CALLBACK(podcast_store__update_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(podcast_store__reorder), "activate", G_CALLBACK(podcast_store__reorder_cb), NULL);
@@ -1748,6 +1835,8 @@ store_podcast_create_popup_menu(void) {
 
 	gtk_widget_show(podcast_store__addlist);
 	gtk_widget_show(podcast_store__addlist_albummode);
+	gtk_widget_show(podcast_store__addlist_new);
+	gtk_widget_show(podcast_store__addlist_albummode_new);
 	gtk_widget_show(podcast_store__subscribe);
 	gtk_widget_show(podcast_store__update);
 	gtk_widget_show(podcast_store__reorder);

@@ -92,8 +92,11 @@ export_compress_str(char * buf, int limit) {
 
 	if (limit < j) {
 		str[limit] = '\0';
-	} else {
+	} else if (j > 0) {
 		str[j] = '\0';
+	} else {
+		str[0] = 'x';
+		str[1] = '\0';
 	}
 
 	return str;
@@ -126,7 +129,7 @@ export_map_new(export_map_t * _map, char * key, int limit) {
 	}
 
 	map->next = NULL;
-	map->key = strdup(key);
+	map->key = g_utf8_casefold(key, -1);
 
 	tmp = export_compress_str(key, limit);
 
@@ -161,21 +164,17 @@ export_map_put(export_map_t ** map, char * key, int limit) {
 		*map = export_map_new(NULL, key, limit);
 		return (*map)->val;
 	} else {
+		char * key1 = g_utf8_casefold(key, -1);
 
 		for (_pmap = pmap = *map; pmap; _pmap = pmap, pmap = pmap->next) {
 
-			char * key1 = g_utf8_casefold(key, -1);
-			char * key2 = g_utf8_casefold(pmap->key, -1);
-
-			if (!g_utf8_collate(key1, key2)) {
+			if (!g_utf8_collate(key1, pmap->key)) {
 				g_free(key1);
-				g_free(key2);
 				return pmap->val;
 			}
-
-			g_free(key1);
-			g_free(key2);
 		}
+
+		g_free(key1);
 
 		_pmap->next = export_map_new(*map, key, limit);
 		return _pmap->next->val;
@@ -189,7 +188,7 @@ export_map_free(export_map_t * map) {
 
 	for (pmap = map; pmap; map = pmap) {
 		pmap = map->next;
-		free(map->key);
+		g_free(map->key);
 		free(map->val);
 		free(map);
 	}

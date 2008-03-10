@@ -821,6 +821,10 @@ metadata_get_frame_by_tag_and_type(metadata_t * meta, int tag, int type,
 
 	meta_frame_t * frame;
 
+	if (meta == NULL) {
+		return NULL;
+	}
+
 	if (root == NULL) {
 		frame = meta->root;
 	} else {
@@ -926,6 +930,10 @@ metadata_clone(metadata_t * meta, int tags) {
 
 	metadata_t * out = metadata_new();
 	int tag = META_TAG_MAX;
+
+	if (meta == NULL) {
+		return NULL;
+	}
 
 	if (out == NULL) {
 		return NULL;

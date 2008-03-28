@@ -1718,10 +1718,10 @@ choose_random_track(GtkTreeStore * store, GtkTreeIter * piter) {
 
 
 void
-prepare_playback(GtkTreeStore * store, GtkTreeIter * piter, cue_t * pcue) {
+prepare_playback(playlist_t * pl, GtkTreeIter * piter, cue_t * pcue) {
 
-	mark_track(store, piter);
-	cue_track_for_playback(store, piter, pcue);
+	mark_track(pl, piter);
+	cue_track_for_playback(pl->store, piter, pcue);
 	is_file_loaded = 1;
 	toggle_noeffect(PLAY, TRUE);
 }
@@ -1765,13 +1765,13 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		if (p != NULL) {
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 			gtk_tree_path_free(p);
-			unmark_track(pl->store, &iter);
+			unmark_track(pl, &iter);
 			if (choose_prev_track(pl->store, &iter)) {
-				mark_track(pl->store, &iter);
+				mark_track(pl, &iter);
 			}
 		} else {
 			if (choose_first_track(pl->store, &iter)) {
-				mark_track(pl->store, &iter);
+				mark_track(pl, &iter);
 			}
 		}
 	} else {
@@ -1780,10 +1780,10 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		if (p != NULL) {
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 			gtk_tree_path_free(p);
-			unmark_track(pl->store, &iter);
+			unmark_track(pl, &iter);
 		}
 		if (choose_random_track(pl->store, &iter)) {
-			mark_track(pl->store, &iter);
+			mark_track(pl, &iter);
 		}
 	}
 
@@ -1844,13 +1844,13 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		if (p != NULL) {
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 			gtk_tree_path_free(p);
-			unmark_track(pl->store, &iter);
+			unmark_track(pl, &iter);
 			if (choose_next_track(pl->store, &iter)) {
-				mark_track(pl->store, &iter);
+				mark_track(pl, &iter);
 			}
 		} else {
 			if (choose_first_track(pl->store, &iter)) {
-				mark_track(pl->store, &iter);
+				mark_track(pl, &iter);
 			}
 		}
 	} else {
@@ -1859,10 +1859,10 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		if (p != NULL) {
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 			gtk_tree_path_free(p);
-			unmark_track(pl->store, &iter);
+			unmark_track(pl, &iter);
 		}
 		if (choose_random_track(pl->store, &iter)) {
-			mark_track(pl->store, &iter);
+			mark_track(pl, &iter);
 		}
 	}
 
@@ -1930,18 +1930,18 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	if (p != NULL) {
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 		gtk_tree_path_free(p);
-		prepare_playback(pl->store, &iter, &cue);
+		prepare_playback(pl, &iter, &cue);
 	} else {
 		if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
 			/* normal or repeat mode */
 			if (choose_first_track(pl->store, &iter)) {
-				prepare_playback(pl->store, &iter, &cue);
+				prepare_playback(pl, &iter, &cue);
 			} else {
 				unprepare_playback();
 			}
 		} else { /* shuffle mode */
 			if (choose_random_track(pl->store, &iter)) {
-				prepare_playback(pl->store, &iter, &cue);
+				prepare_playback(pl, &iter, &cue);
 			} else {
 				unprepare_playback();
 			}
@@ -2041,9 +2041,9 @@ decide_next_track(cue_t * pcue) {
 			/* normal or list repeat mode */
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 			gtk_tree_path_free(p);
-			unmark_track(pl->store, &iter);
+			unmark_track(pl, &iter);
 			if (choose_adjacent_track(pl->store, &iter)) {
-				prepare_playback(pl->store, &iter, pcue);
+				prepare_playback(pl, &iter, pcue);
 			} else {
 				if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(repeat_all_button))) {
 					/* normal mode */
@@ -2053,7 +2053,7 @@ decide_next_track(cue_t * pcue) {
 				} else {
 					/* list repeat mode */
 					if (choose_first_track(pl->store, &iter)) {
-						prepare_playback(pl->store, &iter, pcue);
+						prepare_playback(pl, &iter, pcue);
 					} else {
 						allow_seeks = 1;
 						changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
@@ -2065,14 +2065,14 @@ decide_next_track(cue_t * pcue) {
 			/* track repeat mode */
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 			gtk_tree_path_free(p);
-			prepare_playback(pl->store, &iter, pcue);
+			prepare_playback(pl, &iter, pcue);
 		} else {
 			/* shuffle mode */
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 			gtk_tree_path_free(p);
-			unmark_track(pl->store, &iter);
+			unmark_track(pl, &iter);
 			if (choose_random_track(pl->store, &iter)) {
-				prepare_playback(pl->store, &iter, pcue);
+				prepare_playback(pl, &iter, pcue);
 			} else {
 				unprepare_playback();
 			}
@@ -2081,7 +2081,7 @@ decide_next_track(cue_t * pcue) {
 		if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(shuffle_button))) {
 			/* normal or repeat mode */
 			if (choose_first_track(pl->store, &iter)) {
-				prepare_playback(pl->store, &iter, pcue);
+				prepare_playback(pl, &iter, pcue);
 			} else {
 				allow_seeks = 1;
 				changed_pos(GTK_ADJUSTMENT(adj_pos), NULL);
@@ -2089,7 +2089,7 @@ decide_next_track(cue_t * pcue) {
 			}
 		} else { /* shuffle mode */
 			if (choose_random_track(pl->store, &iter)) {
-				prepare_playback(pl->store, &iter, pcue);
+				prepare_playback(pl, &iter, pcue);
 			} else {
 				unprepare_playback();
 			}

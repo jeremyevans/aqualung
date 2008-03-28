@@ -500,6 +500,33 @@ playlist_is_empty(playlist_t * pl) {
 }
 
 void
+playlist_set_active(GtkTreeStore * store, GtkTreeIter * piter) {
+
+	playlist_data_t * data;
+
+	gtk_tree_model_get(GTK_TREE_MODEL(store), piter, PL_COL_DATA, &data, -1);
+	PL_SET_FLAG(data, PL_FLAG_ACTIVE);
+
+	gtk_tree_store_set(store, piter, PL_COL_COLO, pl_color_active, -1);
+	if (options.show_active_track_name_in_bold) {
+		gtk_tree_store_set(store, piter, PL_COL_FONT, PANGO_WEIGHT_BOLD, -1);
+	}
+}
+
+void
+playlist_set_inactive(GtkTreeStore * store, GtkTreeIter * piter) {
+
+	playlist_data_t * data;
+
+	gtk_tree_model_get(GTK_TREE_MODEL(store), piter, PL_COL_DATA, &data, -1);
+	PL_UNSET_FLAG(data, PL_FLAG_ACTIVE);
+
+	gtk_tree_store_set(store, piter,
+			   PL_COL_COLO, pl_color_inactive,
+			   PL_COL_FONT, PANGO_WEIGHT_NORMAL, -1);
+}
+
+void
 playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 		   GtkTreeStore * tstore, GtkTreeIter * titer,
 		   GtkTreeIter * iter, int mode) {
@@ -510,7 +537,6 @@ playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 
 	playlist_data_t * sdata;
 	playlist_data_t * tdata;
-	int unmark = 0;
 
 	gtk_tree_model_get(GTK_TREE_MODEL(sstore), siter,
 			   PL_COL_NAME, &name,
@@ -520,11 +546,6 @@ playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 
 	if ((tdata = playlist_data_copy(sdata)) == NULL) {
 		return;
-	}
-
-	if (sstore != tstore) {
-		unmark = PL_IS_SET_FLAG(sdata, PL_FLAG_ACTIVE) && !PL_IS_SET_FLAG(sdata, PL_FLAG_ALBUM_NODE);
-		PL_UNSET_FLAG(tdata, PL_FLAG_ACTIVE);
 	}
 
 	if (mode == 0) {
@@ -553,7 +574,7 @@ playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 			gtk_tree_store_set(tstore, iter, PL_COL_NAME, list_str, -1);
 		}
 	} else {
-		gtk_tree_store_set(tstore, iter,PL_COL_NAME, name, -1);
+		gtk_tree_store_set(tstore, iter, PL_COL_NAME, name, -1);
 	}
 
 	gtk_tree_store_set(tstore, iter,
@@ -565,8 +586,15 @@ playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 			                 PANGO_WEIGHT_NORMAL,
 			   PL_COL_DATA, tdata, -1);
 
-	if (unmark) {
-		unmark_track(tstore, iter);
+	if (sstore != tstore && IS_PL_ACTIVE(sdata)) {
+
+		playlist_set_inactive(tstore, iter);
+
+		if (IS_PL_ALBUM_NODE(tdata)) {
+			char name[MAXLEN];
+			snprintf(name, MAXLEN-1, "%s: %s", tdata->artist, tdata->album);
+			gtk_tree_store_set(tstore, iter, PL_COL_NAME, name, -1);
+		}
 	}
 
 	g_free(name);
@@ -1043,62 +1071,36 @@ playlist_get_playing_path(playlist_t * pl) {
 }
 
 void
-playlist_set_active(GtkTreeStore * store, GtkTreeIter * piter) {
-
-	playlist_data_t * data;
-
-	gtk_tree_model_get(GTK_TREE_MODEL(store), piter, PL_COL_DATA, &data, -1);
-	PL_SET_FLAG(data, PL_FLAG_ACTIVE);
-
-	gtk_tree_store_set(store, piter, PL_COL_COLO, pl_color_active, -1);
-	if (options.show_active_track_name_in_bold) {
-		gtk_tree_store_set(store, piter, PL_COL_FONT, PANGO_WEIGHT_BOLD, -1);
-	}
-}
-
-void
-playlist_set_inactive(GtkTreeStore * store, GtkTreeIter * piter) {
-
-	playlist_data_t * data;
-
-	gtk_tree_model_get(GTK_TREE_MODEL(store), piter, PL_COL_DATA, &data, -1);
-	PL_UNSET_FLAG(data, PL_FLAG_ACTIVE);
-
-	gtk_tree_store_set(store, piter,
-			   PL_COL_COLO, pl_color_inactive,
-			   PL_COL_FONT, PANGO_WEIGHT_NORMAL, -1);
-}
-
-void
-mark_track(GtkTreeStore * store, GtkTreeIter * piter) {
+mark_track(playlist_t * pl, GtkTreeIter * piter) {
 
         int j, n;
         char * name;
         char counter[MAXLEN];
 	char tmpname[MAXLEN];
 
+	GtkTreeModel * model = GTK_TREE_MODEL(pl->store);
 	playlist_data_t * data;
 
 
-	gtk_tree_model_get(GTK_TREE_MODEL(store), piter, PL_COL_DATA, &data, -1);
+	gtk_tree_model_get(model, piter, PL_COL_DATA, &data, -1);
 	if (IS_PL_ACTIVE(data)) {
 		return;
 	}
 
 
-        n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(store), piter);
+        n = gtk_tree_model_iter_n_children(model, piter);
 
         if (n) {
 		GtkTreeIter iter_child;
 		playlist_data_t * data_child;
 
-                gtk_tree_model_get(GTK_TREE_MODEL(store), piter,  PL_COL_NAME, &name, -1);
+                gtk_tree_model_get(model, piter,  PL_COL_NAME, &name, -1);
                 strncpy(tmpname, name, MAXLEN-1);
 
                 j = 0;
-		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(store), &iter_child, piter, j++)) {
+		while (gtk_tree_model_iter_nth_child(model, &iter_child, piter, j++)) {
 
-			gtk_tree_model_get(GTK_TREE_MODEL(store), &iter_child, PL_COL_DATA, &data_child, -1);
+			gtk_tree_model_get(model, &iter_child, PL_COL_DATA, &data_child, -1);
 			if (IS_PL_ACTIVE(data_child)) {
 				break;
 			}
@@ -1110,46 +1112,47 @@ mark_track(GtkTreeStore * store, GtkTreeIter * piter) {
 
                 sprintf(counter, _(" (%d/%d)"), j, n);
                 strncat(tmpname, counter, MAXLEN-1);
-		gtk_tree_store_set(store, piter, PL_COL_NAME, tmpname, -1);
+		gtk_tree_store_set(pl->store, piter, PL_COL_NAME, tmpname, -1);
 		data->ntracks = n;
 		data->actrack = j;
                 g_free(name);
-        }
+	}
 
-	playlist_set_active(store, piter);
+	playlist_set_active(pl->store, piter);
 
-	if (gtk_tree_store_iter_depth(store, piter)) { /* track node of album */
+	if (gtk_tree_store_iter_depth(pl->store, piter)) { /* track node of album */
 		GtkTreeIter iter_parent;
 
-		gtk_tree_model_iter_parent(GTK_TREE_MODEL(store), &iter_parent, piter);
-		mark_track(store, &iter_parent);
+		gtk_tree_model_iter_parent(model, &iter_parent, piter);
+		mark_track(pl, &iter_parent);
 	}
 }
 
 
 void
-unmark_track(GtkTreeStore * store, GtkTreeIter * piter) {
+unmark_track(playlist_t * pl, GtkTreeIter * piter) {
 
 	int n;
+	GtkTreeModel * model = GTK_TREE_MODEL(pl->store);
 
-	playlist_set_inactive(store, piter);
+	playlist_set_inactive(pl->store, piter);
 
-        n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(store), piter);
+        n = gtk_tree_model_iter_n_children(model, piter);
 
         if (n) {
 		char name[MAXLEN];
 		playlist_data_t * data;
 
-		gtk_tree_model_get(GTK_TREE_MODEL(store), piter, PL_COL_DATA, &data, -1);
+		gtk_tree_model_get(model, piter, PL_COL_DATA, &data, -1);
 		snprintf(name, MAXLEN-1, "%s: %s", data->artist, data->album);
-		gtk_tree_store_set(store, piter, PL_COL_NAME, name, -1);
+		gtk_tree_store_set(pl->store, piter, PL_COL_NAME, name, -1);
 	}
 
-	if (gtk_tree_store_iter_depth(store, piter)) { /* track node of album */
+	if (gtk_tree_store_iter_depth(pl->store, piter)) { /* track node of album */
 		GtkTreeIter iter_parent;
 
-		gtk_tree_model_iter_parent(GTK_TREE_MODEL(store), &iter_parent, piter);
-		unmark_track(store, &iter_parent);
+		gtk_tree_model_iter_parent(model, &iter_parent, piter);
+		unmark_track(pl, &iter_parent);
 	}
 }
 
@@ -1164,6 +1167,7 @@ playlist_start_playback_at_path(playlist_t * pl, GtkTreePath * path) {
 
 	playlist_t * plist = NULL;
 	playlist_data_t * pldata = NULL;
+	GtkTreeModel * model = GTK_TREE_MODEL(pl->store);
 
 
 	if (!allow_seeks) {
@@ -1177,26 +1181,26 @@ playlist_start_playback_at_path(playlist_t * pl, GtkTreePath * path) {
 	playlist_set_playing(pl, 1);
 
 	while ((p = playlist_get_playing_path(pl)) != NULL) {
- 		gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
+ 		gtk_tree_model_get_iter(model, &iter, p);
  		gtk_tree_path_free(p);
-		unmark_track(pl->store, &iter);
+		unmark_track(pl, &iter);
  	}
 
-	gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, path);
+	gtk_tree_model_get_iter(model, &iter, path);
 
-	if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter) > 0) {
+	if (gtk_tree_model_iter_n_children(model, &iter) > 0) {
 		GtkTreeIter iter_child;
-		gtk_tree_model_iter_children(GTK_TREE_MODEL(pl->store), &iter_child, &iter);
-		mark_track(pl->store, &iter_child);
+		gtk_tree_model_iter_children(model, &iter_child, &iter);
+		mark_track(pl, &iter_child);
 	} else {
-		mark_track(pl->store, &iter);
+		mark_track(pl, &iter);
 	}
 
 	p = playlist_get_playing_path(pl);
-	gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
+	gtk_tree_model_get_iter(model, &iter, p);
 	gtk_tree_path_free(p);
 
-	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &pldata, -1);
+	gtk_tree_model_get(model, &iter, PL_COL_DATA, &pldata, -1);
 	cue_track_for_playback(pl->store, &iter, &cue);
 
 	is_file_loaded = 1;
@@ -1698,7 +1702,7 @@ add_file_to_playlist(gpointer data) {
 			/* deactivate item if playing path already exists */
 			GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(pt->pl->store), &iter);
 			if (gtk_tree_path_compare(path, p) != 0) {
-				unmark_track(pt->pl->store, &iter);
+				unmark_track(pt->pl, &iter);
 			}
 			gtk_tree_path_free(path);
 			gtk_tree_path_free(p);
@@ -3233,8 +3237,8 @@ recalc_album_node(playlist_t * pl, GtkTreeIter * iter) {
 	data->duration = length;
 
 	if (IS_PL_ACTIVE(data)) {
-		unmark_track(pl->store, iter);
-		mark_track(pl->store, iter);
+		unmark_track(pl, iter);
+		mark_track(pl, iter);
 	}
 }
 
@@ -3322,8 +3326,8 @@ playlist_perform_drag(playlist_t * spl, GtkTreeIter * siter, GtkTreePath * spath
 	if (recalc_sparent) {
 		if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(spl->store), &sparent)) {
 			recalc_album_node(spl, &sparent);
-			unmark_track(spl->store, &sparent);
-			mark_track(spl->store, &sparent);
+			unmark_track(spl, &sparent);
+			mark_track(spl, &sparent);
 		} else {
 			gtk_tree_store_remove(spl->store, &sparent);
 		}
@@ -3331,8 +3335,8 @@ playlist_perform_drag(playlist_t * spl, GtkTreeIter * siter, GtkTreePath * spath
 
 	if (recalc_tparent) {
 		recalc_album_node(tpl, &tparent);
-		unmark_track(tpl->store, &tparent);
-		mark_track(tpl->store, &tparent);
+		unmark_track(tpl, &tparent);
+		mark_track(tpl, &tparent);
 	}
 
 	playlist_content_changed(tpl);
@@ -3425,8 +3429,8 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 		if (piter && gtk_tree_model_iter_parent(GTK_TREE_MODEL(tpl->store), &parent, piter) &&
 		    music_store_iter_is_track(&ms_iter)) {
 			recalc_album_node(tpl, &parent);
-			unmark_track(tpl->store, &parent);
-			mark_track(tpl->store, &parent);
+			unmark_track(tpl, &parent);
+			mark_track(tpl, &parent);
 		}
 
 		if (path) {

@@ -144,8 +144,8 @@ void playlist_foreach_selected(playlist_t * pl,
 			       void * data);
 
 void recalc_album_node(playlist_t * pl, GtkTreeIter * iter);
-void mark_track(GtkTreeStore * store, GtkTreeIter * piter);
-void unmark_track(GtkTreeStore * store, GtkTreeIter * piter);
+void mark_track(playlist_t * pl, GtkTreeIter * piter);
+void unmark_track(playlist_t * pl, GtkTreeIter * piter);
 
 void show_active_position_in_playlist(playlist_t * pl);
 

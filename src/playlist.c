@@ -248,6 +248,9 @@ playlist_data_copy_noalloc(playlist_data_t * dest, playlist_data_t * src) {
 	dest->voladj = src->voladj;
 	dest->duration = src->duration;
 	dest->size = src->size;
+
+	dest->ntracks = src->ntracks;
+	dest->actrack = src->actrack;
 	dest->flags = src->flags;
 }
 
@@ -520,6 +523,7 @@ playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 	}
 
 	if (sstore != tstore) {
+		unmark = PL_IS_SET_FLAG(sdata, PL_FLAG_ACTIVE) && !PL_IS_SET_FLAG(sdata, PL_FLAG_ALBUM_NODE);
 		PL_UNSET_FLAG(tdata, PL_FLAG_ACTIVE);
 	}
 

@@ -319,6 +319,18 @@ parse_field(char * line, char * name, char * value) {
 }
 
 int
+check_http_response(char * line, char * resp) {
+
+	char http10[16];
+	char http11[16];
+
+	snprintf(http10, 15, "HTTP/1.0 %s", resp);
+	snprintf(http11, 15, "HTTP/1.1 %s", resp);
+
+	return (strstr(line, http10) != NULL) || (strstr(line, http11) != NULL);
+}
+
+int
 parse_http_headers(http_session_t * session) {
 	
 	char line[1024];
@@ -333,16 +345,16 @@ parse_http_headers(http_session_t * session) {
 		printf("line = '%s'\n", line);
 #endif /* HTTPC_DEBUG */
 		
-		if (strstr(line, "HTTP/1.1 4") != NULL) {
+		if (check_http_response(line, "4")) {
 			header->status = strdup(line);
 			return -1;
 		}
-		if (strstr(line, "HTTP/1.1 5") != NULL) {
+		if (check_http_response(line, "5")) {
 			header->status = strdup(line);
 			return -2;
 		}
-	} while ((strstr(line, "HTTP/1.1 20") != NULL) &&
-		 (strstr(line, "HTTP/1.1 30") != NULL));
+	} while (!check_http_response(line, "20") &&
+		 !check_http_response(line, "30"));
 	
 	header->status = strdup(line);
 	
@@ -646,7 +658,7 @@ httpc_init(http_session_t * session, file_decoder_t * fdec,
 		return HTTPC_HEADER_ERROR;
 	}
 
-	if (strstr(session->headers.status, "HTTP/1.1 30") != NULL) {
+	if (check_http_response(session->headers.status, "30")) {
 		/* redirect */
 		if (session->headers.location != NULL) {
 			char * location = strdup(session->headers.location);

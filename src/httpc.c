@@ -339,23 +339,20 @@ parse_http_headers(http_session_t * session) {
 	int s = session->sock;
 	http_header_t * header = &session->headers;
 	
-	do {
-		read_sock_line(s, line, sizeof(line));
+	read_sock_line(s, line, sizeof(line));
 #ifdef HTTPC_DEBUG
-		printf("line = '%s'\n", line);
+	printf("line = '%s'\n", line);
 #endif /* HTTPC_DEBUG */
 		
-		if (check_http_response(line, "4")) {
-			header->status = strdup(line);
-			return -1;
-		}
-		if (check_http_response(line, "5")) {
-			header->status = strdup(line);
-			return -2;
-		}
-	} while (!check_http_response(line, "20") &&
-		 !check_http_response(line, "30"));
-	
+	if (check_http_response(line, "4")) {
+		header->status = strdup(line);
+		return -1;
+	}
+	if (check_http_response(line, "5")) {
+		header->status = strdup(line);
+		return -2;
+	}
+
 	header->status = strdup(line);
 	
 	while (1) {

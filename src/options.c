@@ -3296,6 +3296,9 @@ save_config(void) {
 	SAVE_INT(export_bitrate);
 	SAVE_INT(export_vbr);
 	SAVE_INT(export_metadata);
+	SAVE_INT(export_filter_same);
+	SAVE_INT(export_excl_enabled);
+	SAVE_STR(export_excl_pattern);
 	SAVE_INT(batch_tag_flags);
 
 	i = 0;
@@ -3540,6 +3543,8 @@ load_config(void) {
         options.export_bitrate = 256;
         options.export_vbr = 1;
         options.export_metadata = 1;
+	options.export_filter_same = 1;
+	options.export_excl_pattern[0] = '\0';
 
 	options.batch_tag_flags = BATCH_TAG_TITLE | BATCH_TAG_ARTIST | BATCH_TAG_ALBUM |
 		BATCH_TAG_YEAR | BATCH_TAG_COMMENT | BATCH_TAG_TRACKNO;
@@ -3696,6 +3701,9 @@ load_config(void) {
 		LOAD_INT(export_bitrate);
 		LOAD_INT(export_vbr);
 		LOAD_INT(export_metadata);
+		LOAD_INT(export_filter_same);
+		LOAD_INT(export_excl_enabled);
+		LOAD_STR(export_excl_pattern);
 		LOAD_INT(batch_tag_flags);
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {

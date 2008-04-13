@@ -35,6 +35,7 @@ extern "C" {
 #define ENC_FLAC_LIB    1
 #define ENC_VORBIS_LIB  2
 #define ENC_LAME_LIB    3
+#define ENC_COPY        4 /* does not count in N_ENCODERS */
 
 #define N_ENCODERS      4
 

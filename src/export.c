@@ -25,10 +25,12 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <fnmatch.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
 #include <gtk/gtk.h>
+#include <glib/gstdio.h>
 
 #ifdef _WIN32
 #include <glib.h>
@@ -236,6 +238,7 @@ export_free(export_t * export) {
 	}
 
 	g_slist_free(export->slist);
+	g_strfreev(export->excl_patternv);
 
 	export_map_free(export->artist_map);
 	export_map_free(export->record_map);
@@ -505,7 +508,9 @@ export_item(export_t * export, export_item_t * item, int index) {
 	file_encoder_t * fenc;
 	encoder_mode_t mode;
 	char * ext = "raw";
+	char filename[MAXLEN];
 	int tags = 0;
+	int force_copy = 0;
 
 	float buf[2*BUFSIZE];
 	int n_read;
@@ -536,19 +541,106 @@ export_item(export_t * export, export_item_t * item, int index) {
 		break;
 	}
 
+
 	fdec = file_decoder_new();
 
 	if (file_decoder_open(fdec, item->infile)) {
 		return;
 	}
 
-	if (export_item_set_path(export, item, mode.filename, ext, index) < 0) {
+	if (export->filter_same) {
+		if ((fdec->file_lib == FLAC_LIB && export->format == ENC_FLAC_LIB) ||
+		    (fdec->file_lib == VORBIS_LIB && export->format == ENC_VORBIS_LIB) ||
+		    (fdec->file_lib == MAD_LIB && export->format == ENC_LAME_LIB)) {
+			force_copy = 1;
+		}
+	}
+
+	if (export->excl_enabled) {
+		char * utf8 = g_filename_display_name(item->infile);
+		int i;
+
+		for (i = 0; export->excl_patternv[i]; i++) {
+
+			if (*(export->excl_patternv[i]) == '\0') {
+				continue;
+			}
+
+			if (fnmatch(export->excl_patternv[i], utf8, FNM_CASEFOLD) == 0) {
+				force_copy = 1;
+				break;
+			}
+		}
+
+		g_free(utf8);
+	}
+
+	if (force_copy || export->format == ENC_COPY) {
+		if ((ext = strrchr(item->infile, '.')) == NULL) {
+			ext = "";
+		} else {
+			++ext;
+		}
+	}
+
+	if (export_item_set_path(export, item, filename, ext, index) < 0) {
+		file_decoder_close(fdec);
+		file_decoder_delete(fdec);
 		return;
 	}
 
 	set_prog_src_file_entry(export, item->infile);
-	set_prog_trg_file_entry(export, mode.filename);
+	set_prog_trg_file_entry(export, filename);
 
+	if (force_copy || export->format == ENC_COPY) {
+
+		char buf[BUFSIZE];
+		size_t n_read;
+		struct stat statbuf;
+		unsigned long pos = 0;
+		int n = 0;
+		FILE * fi;
+		FILE * fo;
+
+		file_decoder_close(fdec);
+		file_decoder_delete(fdec);
+		
+		if (g_stat(item->infile, &statbuf) != -1) {
+			if (statbuf.st_size == 0) {
+				return;
+			}
+		}
+
+		if ((fi = fopen(item->infile, "rb")) == NULL) {
+			fprintf(stdout, "export_item: unable to open file %s\n", item->infile);
+			return;
+		}
+
+		if ((fo = fopen(filename, "wb")) == NULL) {
+			fclose(fi);
+			fprintf(stdout, "export_item: unable to open file %s\n", filename);
+			return;
+		}
+
+		while ((n_read = fread(buf, sizeof(char), sizeof(buf), fi)) > 0 && !export->cancelled) {
+			fwrite(buf, sizeof(char), n_read, fo);
+			pos += n_read;
+
+			if (n-- == 0) {
+				n = 100;
+				AQUALUNG_MUTEX_LOCK(export->mutex);
+				export->ratio = (double)pos / statbuf.st_size;
+				AQUALUNG_MUTEX_UNLOCK(export->mutex);
+			}
+		}
+
+		fclose(fi);
+		fclose(fo);
+		return;
+	}
+
+
+	strncpy(mode.filename, filename, MAXLEN-1);
 	mode.file_lib = export->format;
 	mode.sample_rate = fdec->fileinfo.sample_rate;
 	mode.channels = fdec->fileinfo.channels;
@@ -656,6 +748,8 @@ export_create_format_combo(void) {
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "MP3");
 	++n;
 #endif /* HAVE_LAME */
+	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), _("Copy"));
+	++n;
 
 	if (n >= options.export_file_format) {
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combo), options.export_file_format);
@@ -685,6 +779,9 @@ export_get_format_from_combo(GtkWidget * combo) {
 	if (strcmp(text, "MP3") == 0) {
 		file_lib = ENC_LAME_LIB;
 	}
+	if (strcmp(text, _("Copy")) == 0) {
+		file_lib = ENC_COPY;
+	}
 	g_free(text);
 	return file_lib;
 }
@@ -695,7 +792,7 @@ export_format_combo_changed(GtkWidget * widget, gpointer data) {
 	export_t * export = (export_t *)data;
 	gchar * text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
 
-	if (strcmp(text, "WAV") == 0) {
+	if (strcmp(text, "WAV") == 0 || strcmp(text, _("Copy")) == 0) {
 		gtk_widget_hide(export->bitrate_scale);
 		gtk_widget_hide(export->bitrate_label);
 		gtk_widget_hide(export->bitrate_value_label);
@@ -810,6 +907,13 @@ export_format_help_cb(GtkButton * button, gpointer user_data) {
 			 "an identifier which is unique within an export session."));
 }
 
+void
+export_check_excl_toggled(GtkWidget * widget, gpointer data) {
+
+	gboolean state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+	gtk_widget_set_sensitive((GtkWidget *)data, state);
+}
+
 int
 export_dialog(export_t * export) {
 
@@ -821,6 +925,9 @@ export_dialog(export_t * export) {
         GtkWidget * hbox;
         GtkWidget * frame;
 
+	GtkWidget * check_filter_same;
+	GtkWidget * check_excl_enabled;
+	GtkWidget * excl_entry;
 
         export->dialog = gtk_dialog_new_with_buttons(_("Export files"),
                                              GTK_WINDOW(browser_window),
@@ -833,6 +940,7 @@ export_dialog(export_t * export) {
         gtk_window_set_default_size(GTK_WINDOW(export->dialog), 400, -1);
         gtk_dialog_set_default_response(GTK_DIALOG(export->dialog), GTK_RESPONSE_REJECT);
 
+	/* Location and filename */
 	frame = gtk_frame_new(_("Location and filename"));
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(export->dialog)->vbox), frame, FALSE, FALSE, 2);
         gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
@@ -863,6 +971,7 @@ export_dialog(export_t * export) {
 	g_signal_connect(help_button, "clicked", G_CALLBACK(export_format_help_cb), export);
 	insert_label_entry_button(table, _("Filename template:"), &templ_entry, options.export_template, help_button, 4, 5);
 
+	/* Format */
 	frame = gtk_frame_new(_("Format"));
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(export->dialog)->vbox), frame, FALSE, FALSE, 2);
         gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
@@ -908,6 +1017,35 @@ export_dialog(export_t * export) {
         gtk_table_attach(GTK_TABLE(table), export->meta_check, 0, 2, 3, 4,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 4);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->meta_check), options.export_metadata);
+
+
+	/* Filter */
+	frame = gtk_frame_new(_("Filter"));
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(export->dialog)->vbox), frame, FALSE, FALSE, 2);
+        gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
+
+	table = gtk_table_new(1, 2, FALSE);
+        gtk_container_add(GTK_CONTAINER(frame), table);
+
+        check_filter_same = gtk_check_button_new_with_label(_("Do not reencode files already being in the target format"));
+        gtk_widget_set_name(check_filter_same, "check_on_notebook");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_filter_same), options.export_filter_same);
+        gtk_table_attach(GTK_TABLE(table), check_filter_same, 0, 2, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
+
+        check_excl_enabled = gtk_check_button_new_with_label(_("Do not reencode files\nmatching wildcard:"));
+        gtk_widget_set_name(check_excl_enabled, "check_on_notebook");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_excl_enabled), options.export_excl_enabled);
+        gtk_table_attach(GTK_TABLE(table), check_excl_enabled, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
+
+        excl_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(excl_entry), MAXLEN-1);
+	gtk_entry_set_text(GTK_ENTRY(excl_entry), options.export_excl_pattern);
+        gtk_table_attach(GTK_TABLE(table), excl_entry, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
+	gtk_widget_set_sensitive(excl_entry, options.export_excl_enabled);
+
+	g_signal_connect(G_OBJECT(check_excl_enabled), "toggled",
+			 G_CALLBACK(export_check_excl_toggled), excl_entry);
+
 
 	gtk_widget_show_all(export->dialog);
 	export_format_combo_changed(export->format_combo, export);
@@ -974,6 +1112,17 @@ export_dialog(export_t * export) {
                 options.export_metadata = export->write_meta;
 		set_option_from_toggle(export->check_dir_artist, &export->dir_for_artist);
 		set_option_from_toggle(export->check_dir_album, &export->dir_for_album);
+
+		set_option_from_toggle(check_filter_same, &export->filter_same);
+		options.export_filter_same = export->filter_same;
+		set_option_from_toggle(check_excl_enabled, &export->excl_enabled);
+		options.export_excl_enabled = export->excl_enabled;
+		
+		if (export->excl_enabled) {
+			set_option_from_entry(excl_entry, options.export_excl_pattern, MAXLEN);
+			export->excl_patternv =
+				g_strsplit(gtk_entry_get_text(GTK_ENTRY(excl_entry)), ",", 0);
+		}
 
 		if (export->dir_for_artist || export->dir_for_album) {
 			set_option_from_spin(export->dirlen_spin, &export->dir_len_limit);

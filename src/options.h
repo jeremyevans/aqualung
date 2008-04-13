@@ -92,6 +92,9 @@ typedef struct {
         int export_bitrate;
         int export_vbr;
         int export_metadata;
+	int export_filter_same;
+	int export_excl_enabled;
+	char export_excl_pattern[MAXLEN];
 
 	int batch_tag_flags;
 

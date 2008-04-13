@@ -57,6 +57,10 @@ typedef struct {
 	int vbr;
 	int write_meta;
 
+	int filter_same;
+	int excl_enabled;
+	char ** excl_patternv;
+
 	int cancelled;
 	int progbar_tag;
 	char file1[MAXLEN];

@@ -5,16 +5,16 @@
 # Michele Petrecca <michelinux@alice.it>, 2007, 2008.
 msgid ""
 msgstr ""
+"Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-02 02:06+0100\n"
-"PO-Revision-Date: 2008-01-02 22:15+0100\n"
+"POT-Creation-Date: 2008-04-18 23:07+0200\n"
+"PO-Revision-Date: 2008-04-19 21:55+0200\n"
 "Last-Translator: Michele Petrecca <michelinux@alice.it>\n"
-"Language-Team: Italiano <it@li.org>\n"
+"Language-Team: Italiano\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Project-Id-Version: it\n"
 
 msgid "About"
 msgstr "Altro"
@@ -48,6 +48,9 @@ msgstr "Ungherese:\n"
 
 msgid "Italian:\n"
 msgstr "Italiano:\n"
+
+msgid "Russian:\n"
+msgstr "Russo:\n"
 
 msgid "Ukrainian:\n"
 msgstr "Ucraino:\n"
@@ -302,6 +305,9 @@ msgstr "Include solo i file che combaciano con le parole chiavi"
 msgid "Reread data for existing tracks"
 msgstr "Leggi di nuovo i dati per le tracce esistenti"
 
+msgid "Remove non-existing files from store"
+msgstr "Rimuove i file non esistenti dallo Store"
+
 msgid "Artist"
 msgstr "Artista"
 
@@ -359,11 +365,8 @@ msgstr "Testo"
 msgid "Building store from filesystem"
 msgstr "Music store in costruzione dal filesystem"
 
-msgid "Directory:"
-msgstr "Cartella:"
-
-msgid "File:"
-msgstr "File:"
+msgid "Processing:"
+msgstr "Processamento:"
 
 msgid "Action:"
 msgstr "Azione:"
@@ -387,10 +390,13 @@ msgid "CDDB lookup"
 msgstr "Cerca in CDDB"
 
 msgid "Name transformation"
-msgstr ""
+msgstr "Trasformazione nome"
 
 msgid "Reading file"
 msgstr "Lettura in corso dei file"
+
+msgid "Removing non-existing files"
+msgstr "Rimozione di un file non esistente"
 
 msgid "Unknown disc"
 msgstr "Disco sconosciuto"
@@ -651,7 +657,10 @@ msgid "Unknown Track"
 msgstr "Traccia sconosciuta"
 
 msgid "Please select the directory for exported files."
-msgstr ""
+msgstr "Per favore seleziona la cartella da destinare ai file esportati."
+
+msgid "Copy"
+msgstr "Copia"
 
 msgid "Help"
 msgstr "Aiuto"
@@ -697,6 +706,17 @@ msgstr ""
 
 msgid "Filename template:"
 msgstr "Nome file del template:"
+
+msgid "Filter"
+msgstr "Filtro"
+
+msgid "Do not reencode files already being in the target format"
+msgstr "Non codificare di nuovo i file che gia' si trovano nel formato di destinazione"
+
+msgid ""
+"Do not reencode files\n"
+"matching wildcard:"
+msgstr ""
 
 msgid "Error in format string"
 msgstr "Errore nel formato della stringa"
@@ -822,6 +842,9 @@ msgstr "CD Audio"
 
 msgid "Track:"
 msgstr "Traccia:"
+
+msgid "File:"
+msgstr "File:"
 
 msgid "Audio data"
 msgstr "Dati audio"
@@ -1098,7 +1121,7 @@ msgstr ""
 msgid ""
 "Device is not responding.\n"
 "Try jiggling the handle."
-msgstr ""
+msgstr "Il dispositivo non sta rispondendo."
 
 msgid "Please select a local path."
 msgstr "Seleziona un percorso locale."
@@ -1202,7 +1225,7 @@ msgid "Idle"
 msgstr "Idle"
 
 msgid "<b>Transfer progress</b>"
-msgstr ""
+msgstr "<b>Progresso trasferimento</b>"
 
 msgid "Close window when transfer complete"
 msgstr "Chiudi la finestra quando il trasferimento ha termine"
@@ -1217,7 +1240,7 @@ msgid "_Abort"
 msgstr "_Annullato"
 
 msgid "Success"
-msgstr ""
+msgstr "L'operazione ha avuto successo"
 
 msgid "Memory allocation error"
 msgstr "Errore di allocazione della memoria"
@@ -1265,7 +1288,7 @@ msgid "Disc"
 msgstr "Disco"
 
 msgid "Performer"
-msgstr ""
+msgstr "Esecutore"
 
 msgid "Description"
 msgstr "Descrizione"
@@ -1298,10 +1321,10 @@ msgid "Debut Album"
 msgstr "Album di debutto"
 
 msgid "Publisher"
-msgstr ""
+msgstr "Editore - Divulgatore"
 
 msgid "Conductor"
-msgstr ""
+msgstr "Direttore d'orchestra"
 
 msgid "Composer"
 msgstr "Compositore"
@@ -1400,7 +1423,7 @@ msgid "Original Filename"
 msgstr "Nome del file originale"
 
 msgid "Original Lyricist"
-msgstr ""
+msgstr "Paroliere originale"
 
 msgid "Original Artist"
 msgstr "Artista originale"
@@ -1451,19 +1474,19 @@ msgid "Copyright/Legal Information"
 msgstr "Copyright - Informazioni Legali"
 
 msgid "Official Audio File Website"
-msgstr ""
+msgstr "Sito WEB file audio ufficiale"
 
 msgid "Official Artist Website"
 msgstr "Sito WEB ufficiale dell'artista"
 
 msgid "Official Audio Source Website"
-msgstr ""
+msgstr "Sito WEB ufficiale della sorgente audio"
 
 msgid "Official Radio Station Website"
 msgstr "Sito WEB ufficiale stazione radio"
 
 msgid "Payment"
-msgstr ""
+msgstr "Pagamento"
 
 msgid "Publisher's Official Website"
 msgstr ""
@@ -1562,10 +1585,10 @@ msgid "Album image"
 msgstr "Immagine album"
 
 msgid "Lead artist/performer"
-msgstr ""
+msgstr "Artista/Esecutore principale"
 
 msgid "Artist/performer"
-msgstr ""
+msgstr "Artista/Esecutore"
 
 msgid "Band/orchestra"
 msgstr "Band/Orchestra"
@@ -1631,6 +1654,9 @@ msgstr "Vuoi salvare lo store \"%s\" prima della rimozione dal Musci Store?"
 msgid "You will need to restart Aqualung for the following changes to take effect:"
 msgstr "Necessiti di riavviare Aqualung affinché i seguenti cambi abbiano effetto:"
 
+msgid "Select a font..."
+msgstr "Seleziona una font..."
+
 msgid "Disable skin support"
 msgstr "Disabilita il supporto alle diverse interfacce"
 
@@ -1662,7 +1688,9 @@ msgid ""
 "%%%r and %%%%t, respectively.\n"
 msgstr ""
 "\n"
-"Il modello che inserirai qui verrà utilizzato per costruire un titolo dal nome di un Artista, una Registrazione e una Traccia. Questo verrà indicato con %%%%a, %%%%r and %%%%t, rispettivamente.\n"
+"Il modello che inserirai qui verrà utilizzato per costruire un titolo dal "
+"nome di un Artista, una Registrazione e una Traccia. Questo verrà indicato "
+"con %%%%a, %%%%r and %%%%t, rispettivamente.\n"
 
 msgid ""
 "\n"
@@ -1750,9 +1778,6 @@ msgstr "Mostra file e cartelle nascoste nel percorso di scelta del file"
 msgid "Show tags tab first in the file info dialog"
 msgstr ""
 
-msgid "Don't show cover thumbnail in the main window"
-msgstr "Non mostrare la miniatura dell'album nella finestra principale"
-
 msgid "Cover art"
 msgstr "Copertina"
 
@@ -1779,6 +1804,9 @@ msgstr ""
 
 msgid "Show cover thumbnail for Music Store tracks only"
 msgstr ""
+
+msgid "Don't show cover thumbnail in the main window"
+msgstr "Non mostrare la miniatura dell'album nella finestra principale"
 
 msgid "Playlist"
 msgstr "Playlist"
@@ -2561,6 +2589,9 @@ msgstr "Nome visibile:"
 msgid "Edit Store"
 msgstr "Modifica Store"
 
+msgid "Use relative paths in store file"
+msgstr ""
+
 msgid "Add Artist"
 msgstr "Aggiungi artista"
 
@@ -2845,6 +2876,18 @@ msgstr "feed"
 msgid "Export item..."
 msgstr "Esporta voce..."
 
+msgid "Add all items to playlist"
+msgstr "Aggiungi tutte le voci alla playlist"
+
+msgid "Add all items to playlist (Album mode)"
+msgstr "Aggiungi tutte le voci alla playlist (modalità Album)"
+
+msgid "Add new items to playlist"
+msgstr "Aggiungi nuove voci alla playlist"
+
+msgid "Add new items to playlist (Album mode)"
+msgstr "Aggiungi nuove voci alla playlist (modalità Album)"
+
 msgid "Edit feed"
 msgstr "Modifica feed"
 
@@ -3034,5 +3077,6 @@ msgstr "Compressione: Molto Alta"
 
 msgid "Compression: Insane"
 msgstr "Compressione: Insana"
+
 
 

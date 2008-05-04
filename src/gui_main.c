@@ -3428,7 +3428,9 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
         }
 
 	/* re-apply skin to override possible WM theme */
-	apply_skin(options.skin);
+	if (!options.disable_skin_support_settings) {
+		apply_skin(options.skin);
+	}
 }
 
 

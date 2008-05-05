@@ -979,7 +979,7 @@ mpeg_output(void * data, struct mad_header const * header, struct mad_pcm * pcm)
 		i = 0;
 	}
 
-	pos_bytes = (pd->mpeg_stream.this_frame - pd->mpeg_stream.buffer) + 10;
+	pos_bytes = (pd->mpeg_stream.this_frame - pd->mpeg_stream.buffer) + pd->mp3info.start_byteoffset + 10;
 	if ((pad > 0) && (pd->last_frames[0] != -1) && (pos_bytes >= pd->last_frames[0])) {
 #ifdef MPEG_DEBUG
 		printf(" *** last frame len=%d ***\n", pcm->length);

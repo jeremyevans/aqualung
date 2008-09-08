@@ -2230,6 +2230,7 @@ progress_window(build_store_t * data) {
 
 	data->prog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	register_toplevel_window(data->prog_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
+	gtk_window_set_transient_for(GTK_WINDOW(data->prog_window), GTK_WINDOW(browser_window));
         gtk_window_set_title(GTK_WINDOW(data->prog_window), _("Building store from filesystem"));
         gtk_window_set_position(GTK_WINDOW(data->prog_window), GTK_WIN_POS_CENTER);
         gtk_window_resize(GTK_WINDOW(data->prog_window), 430, 110);

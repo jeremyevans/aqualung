@@ -93,6 +93,7 @@ typedef struct {
 
 typedef struct {
 	int is_called_from_browser;
+	int bail_out;
 	char * filename;
 	file_decoder_t * fdec;
 	metadata_t * meta;
@@ -1603,6 +1604,12 @@ fi_procmeta(metadata_t * meta, void * data) {
 	meta_frame_t * frame;
 	int i;
 
+	if (fi->bail_out) {
+		/* this condition signals that file_decoder_open in show_file_info has failed */
+		fi_delete(fi);
+		return;
+	}
+
 	if ((fi->nb == NULL) || !GTK_IS_NOTEBOOK(fi->nb)) {
 		fi_procmeta_wait_data_t * fi_procmeta_wait_data =
 			calloc(1, sizeof(fi_procmeta_wait_data_t));
@@ -1757,7 +1764,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		
 		file_decoder_set_meta_cb(fi->fdec, fi_procmeta, fi);
 		if (file_decoder_open(fi->fdec, file) != 0) {
-			fi_delete(fi);
+			fi->bail_out = 1;
 			return;		
 		}
 		

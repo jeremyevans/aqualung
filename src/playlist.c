@@ -5137,7 +5137,7 @@ load_pls_load(playlist_transfer_t * pt, char * file, char * title, gint * have_f
 
 	data = playlist_filemeta_get(file);
 
-	if (*have_title) {
+	if (data && *have_title) {
 		free_strdup(&data->title, title);
 	}
 

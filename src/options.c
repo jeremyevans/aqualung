@@ -113,6 +113,7 @@ GtkWidget * entry_param;
 GtkWidget * check_enable_tooltips;
 GtkWidget * check_buttons_at_the_bottom;
 GtkWidget * check_disable_buttons_relief;
+GtkWidget * check_combine_play_pause;
 GtkWidget * check_main_window_always_on_top;
 GtkWidget * check_simple_view_in_fx;
 GtkWidget * check_united_minimization;
@@ -349,6 +350,7 @@ options_window_accept(void) {
 
 	set_option_from_toggle(check_buttons_at_the_bottom, &options.buttons_at_the_bottom_shadow);
         set_option_from_toggle(check_disable_buttons_relief, &options.disable_buttons_relief);
+	set_option_from_toggle(check_combine_play_pause, &options.combine_play_pause_shadow);
 	set_option_from_toggle(check_main_window_always_on_top, &options.main_window_always_on_top);
 
 #ifdef HAVE_LADSPA
@@ -1631,6 +1633,15 @@ create_options_window(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_disable_buttons_relief), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_disable_buttons_relief, FALSE, FALSE, 0);
+
+	check_combine_play_pause = gtk_check_button_new_with_label(_("Combine play and pause buttons"));
+	gtk_widget_set_name(check_combine_play_pause, "check_on_notebook");
+	if (options.combine_play_pause_shadow) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_combine_play_pause), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_combine_play_pause, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (check_combine_play_pause), "toggled",
+			  G_CALLBACK (restart_active), _("Combine play and pause buttons"));
 
 
         check_main_window_always_on_top = gtk_check_button_new_with_label(_("Keep main window always on top"));
@@ -3184,6 +3195,7 @@ save_config(void) {
 	SAVE_INT(enable_tooltips);
 	SAVE_INT_SH(buttons_at_the_bottom);
 	SAVE_INT(disable_buttons_relief);
+	SAVE_INT_SH(combine_play_pause);
 	SAVE_INT_SH(simple_view_in_fx);
 	SAVE_INT(show_sn_title);
 	SAVE_INT(united_minimization);
@@ -3477,6 +3489,7 @@ load_config(void) {
         options.show_sn_title = 1;
         options.united_minimization = 1;
         options.buttons_at_the_bottom = options.buttons_at_the_bottom_shadow = 0;
+        options.combine_play_pause = options.combine_play_pause_shadow = 0;
 	options.playlist_is_embedded = options.playlist_is_embedded_shadow = 1;
 	options.playlist_is_tree = 1;
         options.playlist_show_close_button_in_tab = 1;
@@ -3596,6 +3609,7 @@ load_config(void) {
 		LOAD_INT(enable_tooltips);
 		LOAD_INT_SH(buttons_at_the_bottom);
 		LOAD_INT(disable_buttons_relief);
+		LOAD_INT_SH(combine_play_pause);
 		LOAD_INT_SH(simple_view_in_fx);
 		LOAD_INT(show_sn_title);
 		LOAD_INT(united_minimization);

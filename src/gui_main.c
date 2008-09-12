@@ -954,12 +954,14 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	case GDK_c:
 	case GDK_C:
 	case GDK_space:
-		if (!(event->state & GDK_CONTROL_MASK)) {
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
-						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
-			return TRUE;
+		if (!options.combine_play_pause) {
+			if (!(event->state & GDK_CONTROL_MASK)) {
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
+				        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
+				return TRUE;
+			}
+			break;
 		}
-		break;
 	case GDK_p:
 	case GDK_P:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
@@ -984,9 +986,9 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			refresh_scale_suppress = 2;
 		}
 		
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)))
+		if ((!options.combine_play_pause) && gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button))) {
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
-		
+		}		
 		return TRUE;
 	case GDK_l:
 	case GDK_L:
@@ -1906,11 +1908,16 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	if (is_paused) {
 		is_paused = 0;
-		toggle_noeffect(PAUSE, FALSE);
+		if (!options.combine_play_pause) {
+			toggle_noeffect(PAUSE, FALSE);
+		}
 		send_cmd = CMD_RESUME;
 		rb_write(rb_gui2disk, &send_cmd, 1);
 		try_waking_disk_thread();
 		return FALSE;
+	}
+	if (options.combine_play_pause && is_file_loaded) {
+		return pause_event(widget, event, data);
 	}
 
 	cmd = CMD_CUE;
@@ -1962,7 +1969,9 @@ gint
 pause_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	if ((!allow_seeks) || (!is_file_loaded)) {
-		toggle_noeffect(PAUSE, FALSE);
+		if (!options.combine_play_pause) {
+			toggle_noeffect(PAUSE, FALSE);
+		}
 		return FALSE;
 	}
 
@@ -1995,7 +2004,9 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
 	zero_displays();
 	toggle_noeffect(PLAY, FALSE);
-	toggle_noeffect(PAUSE, FALSE);
+	if (!options.combine_play_pause) {
+		toggle_noeffect(PAUSE, FALSE);
+	}
 
 	is_paused = 0;
 	allow_seeks = 1;
@@ -2319,11 +2330,15 @@ main_buttons_set_content(char * skin_path) {
 	button_set_content(stop_button, path, "stop");
 	sprintf(path, "%s/%s", skin_path, "next.png");
 	button_set_content(next_button, path, "next");
-	sprintf(path, "%s/%s", skin_path, "play.png");
-	button_set_content(play_button, path, "play");
-	sprintf(path, "%s/%s", skin_path, "pause.png");
-	button_set_content(pause_button, path, "pause");
-
+	if (options.combine_play_pause) {
+		sprintf(path, "%s/%s", skin_path, "play_pause.png");
+		button_set_content(play_button, path, "play/pause");
+	} else {
+		sprintf(path, "%s/%s", skin_path, "play.png");
+		button_set_content(play_button, path, "play");
+		sprintf(path, "%s/%s", skin_path, "pause.png");
+		button_set_content(pause_button, path, "pause");
+	}
 	sprintf(path, "%s/%s", skin_path, "repeat.png");
 	button_set_content(repeat_button, path, "repeat");
 	sprintf(path, "%s/%s", skin_path, "repeat_all.png");
@@ -2868,26 +2883,36 @@ create_main_window(char * skin_path) {
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), next_button, _("Next song"), NULL);
 
 	play_button = gtk_toggle_button_new();
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), play_button, _("Play"), NULL);
 
-	pause_button = gtk_toggle_button_new();
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), pause_button, _("Pause"), NULL);
+	if (options.combine_play_pause) {
+		gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), play_button, _("Play/Pause"), NULL);
+	} else {
+		gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), play_button, _("Play"), NULL);
+		pause_button = gtk_toggle_button_new();
+		gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), pause_button, _("Pause"), NULL);
+	}
 
 	GTK_WIDGET_UNSET_FLAGS(prev_button, GTK_CAN_FOCUS);
 	GTK_WIDGET_UNSET_FLAGS(stop_button, GTK_CAN_FOCUS);
 	GTK_WIDGET_UNSET_FLAGS(next_button, GTK_CAN_FOCUS);
 	GTK_WIDGET_UNSET_FLAGS(play_button, GTK_CAN_FOCUS);
-	GTK_WIDGET_UNSET_FLAGS(pause_button, GTK_CAN_FOCUS);
+	if (!options.combine_play_pause) {
+		GTK_WIDGET_UNSET_FLAGS(pause_button, GTK_CAN_FOCUS);
+	}
 
 	gtk_box_pack_start(GTK_BOX(btns_hbox), prev_button, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(btns_hbox), play_button, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(btns_hbox), pause_button, FALSE, FALSE, 0);
+	if (!options.combine_play_pause) {
+		gtk_box_pack_start(GTK_BOX(btns_hbox), pause_button, FALSE, FALSE, 0);
+	}
 	gtk_box_pack_start(GTK_BOX(btns_hbox), stop_button, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(btns_hbox), next_button, FALSE, FALSE, 0);
 
 	g_signal_connect(prev_button, "clicked", G_CALLBACK(prev_event), NULL);
 	play_id = g_signal_connect(play_button, "toggled", G_CALLBACK(play_event), NULL);
-	pause_id = g_signal_connect(pause_button, "toggled", G_CALLBACK(pause_event), NULL);
+	if (!options.combine_play_pause) {
+		pause_id = g_signal_connect(pause_button, "toggled", G_CALLBACK(pause_event), NULL);
+	}
 	g_signal_connect(stop_button, "clicked", G_CALLBACK(stop_event), NULL);
 	g_signal_connect(next_button, "clicked", G_CALLBACK(next_event), NULL);
 
@@ -3129,11 +3154,14 @@ setup_systray(void) {
 
         systray__play = gtk_menu_item_new();
 	gtk_container_add(GTK_CONTAINER(systray__play),
-			  create_systray_menu_item(GTK_STOCK_MEDIA_PLAY, _("Play")));
+			create_systray_menu_item(GTK_STOCK_MEDIA_PLAY,
+			options.combine_play_pause ? _("Play/Pause") : _("Play")));
 
-        systray__pause = gtk_menu_item_new();
-	gtk_container_add(GTK_CONTAINER(systray__pause),
-			  create_systray_menu_item(GTK_STOCK_MEDIA_PAUSE, _("Pause")));
+	if (!options.combine_play_pause) {
+		systray__pause = gtk_menu_item_new();
+		gtk_container_add(GTK_CONTAINER(systray__pause),
+				  create_systray_menu_item(GTK_STOCK_MEDIA_PAUSE, _("Pause")));
+	}
 
         systray__stop = gtk_menu_item_new();
 	gtk_container_add(GTK_CONTAINER(systray__stop),
@@ -3157,7 +3185,9 @@ setup_systray(void) {
         gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__hide);
         gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__separator1);
         gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__play);
-        gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__pause);
+	if (!options.combine_play_pause) {
+		gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__pause);
+	}
         gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__stop);
         gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__prev);
         gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__next);
@@ -3167,7 +3197,9 @@ setup_systray(void) {
         g_signal_connect_swapped(G_OBJECT(systray__show), "activate", G_CALLBACK(systray__show_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(systray__hide), "activate", G_CALLBACK(systray__hide_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(systray__play), "activate", G_CALLBACK(systray__play_cb), NULL);
-        g_signal_connect_swapped(G_OBJECT(systray__pause), "activate", G_CALLBACK(systray__pause_cb), NULL);
+        if (!options.combine_play_pause) {
+		g_signal_connect_swapped(G_OBJECT(systray__pause), "activate", G_CALLBACK(systray__pause_cb), NULL);
+	}
         g_signal_connect_swapped(G_OBJECT(systray__stop), "activate", G_CALLBACK(systray__stop_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(systray__prev), "activate", G_CALLBACK(systray__prev_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(systray__next), "activate", G_CALLBACK(systray__next_cb), NULL);
@@ -3177,7 +3209,9 @@ setup_systray(void) {
         gtk_widget_show(systray__hide);
         gtk_widget_show(systray__separator1);
 	gtk_widget_show(systray__play);
-	gtk_widget_show(systray__pause);
+	if (!options.combine_play_pause) {
+		gtk_widget_show(systray__pause);
+	}
 	gtk_widget_show(systray__stop);
 	gtk_widget_show(systray__prev);
 	gtk_widget_show(systray__next);
@@ -3735,13 +3769,15 @@ timeout_callback(gpointer data) {
 		case RCMD_BACK:
 			prev_event(NULL, NULL, NULL);
 			break;
+		case RCMD_PAUSE:
+			if (!options.combine_play_pause) {
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
+				        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
+				break;
+			}
 		case RCMD_PLAY:
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
 			     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
-			break;
-		case RCMD_PAUSE:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
-			        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
 			break;
 		case RCMD_STOP:
 			stop_event(NULL, NULL, NULL);
@@ -3809,17 +3845,14 @@ set_buttons_relief(void) {
 	};
 
 	gint i, n;
-
         i = sizeof(rbuttons_table)/sizeof(GtkWidget*);
 
         for (n = 0; n < i; n++) {
-	        if (options.disable_buttons_relief) {
-                        gtk_button_set_relief (GTK_BUTTON (rbuttons_table[n]), GTK_RELIEF_NONE); 
-		} else {
-                        gtk_button_set_relief (GTK_BUTTON (rbuttons_table[n]), GTK_RELIEF_NORMAL);
+		if ((rbuttons_table[n] != pause_button) || !options.combine_play_pause) {
+			gtk_button_set_relief(GTK_BUTTON(rbuttons_table[n]),
+				(options.disable_buttons_relief) ? GTK_RELIEF_NONE : GTK_RELIEF_NORMAL);
 		}
 	}
-                
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

@@ -105,6 +105,8 @@ typedef struct {
 	int buttons_at_the_bottom;
 	int buttons_at_the_bottom_shadow;
    	int disable_buttons_relief;
+	int combine_play_pause;
+	int combine_play_pause_shadow;
 	int simple_view_in_fx;
 	int simple_view_in_fx_shadow;
 	int show_sn_title;

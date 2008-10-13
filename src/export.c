@@ -656,7 +656,11 @@ export_item(export_t * export, export_item_t * item, int index) {
 
 	mode.write_meta = export->write_meta;
 	if (mode.write_meta) {
-		mode.meta = metadata_clone(fdec->meta, tags);
+		if (fdec->meta == NULL) {
+			mode.meta = metadata_new();
+		} else {
+			mode.meta = metadata_clone(fdec->meta, tags);
+		}
 		export_meta_amend_stored_fields(mode.meta, tags, item);
 	}
 	

@@ -1810,6 +1810,7 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		}
 
 		cmd = CMD_CUE;
+		flush_rb_disk2gui();
 		rb_write(rb_gui2disk, &cmd, sizeof(char));
 		rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 		try_waking_disk_thread();
@@ -1889,6 +1890,7 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		}
 
 		cmd = CMD_CUE;
+		flush_rb_disk2gui();
 		rb_write(rb_gui2disk, &cmd, sizeof(char));
 		rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 		try_waking_disk_thread();
@@ -1957,6 +1959,7 @@ play_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	if (cue.filename == NULL) {
 		stop_event(NULL, NULL, NULL);
 	} else {
+		flush_rb_disk2gui();
 		rb_write(rb_gui2disk, &cmd, sizeof(char));
 		rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 		try_waking_disk_thread();
@@ -2013,6 +2016,7 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	cmd = CMD_CUE;
 	cue.filename = NULL;
+	flush_rb_disk2gui();
         rb_write(rb_gui2disk, &cmd, sizeof(char));
         rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 	try_waking_disk_thread();
@@ -3594,6 +3598,15 @@ process_metablock(metadata_t * meta) {
 	}
 }
 
+void
+flush_rb_disk2gui(void) {
+
+	char recv_cmd;
+
+	while (rb_read_space(rb_disk2gui)) {
+		rb_read(rb_disk2gui, &recv_cmd, 1);
+	}
+}
 
 gint
 timeout_callback(gpointer data) {

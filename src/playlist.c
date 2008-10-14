@@ -1215,8 +1215,9 @@ playlist_start_playback_at_path(playlist_t * pl, GtkTreePath * path) {
 		is_paused = 0;
 		toggle_noeffect(PAUSE, FALSE);
 	}
-		
+
 	cmd = CMD_CUE;
+	flush_rb_disk2gui();
 	rb_write(rb_gui2disk, &cmd, sizeof(char));
 	rb_write(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 	try_waking_disk_thread();

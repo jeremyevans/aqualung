@@ -32,6 +32,7 @@
 #define PAUSE 2
 
 
+void flush_rb_disk2gui(void);
 void try_waking_disk_thread(void);
 void toggle_noeffect(int id, int state);
 void cue_track_for_playback(GtkTreeStore * store, GtkTreeIter * piter, cue_t * cue);

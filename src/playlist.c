@@ -127,6 +127,7 @@ GtkWidget * plist__rva_average;
 GtkWidget * plist__reread_file_meta;
 GtkWidget * plist__fileinfo;
 GtkWidget * plist__search;
+GtkWidget * plist__roll;
 #ifdef HAVE_IFP
 GtkWidget * plist__send_songs_to_iriver;
 #endif /* HAVE_IFP */
@@ -185,6 +186,7 @@ void rem__all_cb(gpointer data);
 void rem__sel_cb(gpointer data);
 void cut__sel_cb(gpointer data);
 void plist__search_cb(gpointer data);
+void plist__roll_cb(gpointer data);
 void rem_all(playlist_t * pl);
 void add_files(GtkWidget * widget, gpointer data);
 
@@ -1317,7 +1319,7 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
                                 playlist_set_current(playlist_get_playing());
                                 show_active_position_in_playlist(playlist_get_playing());
                         } else {
-        			show_active_position_in_playlist_toggle(pl);
+				plist__roll_cb(pl);
                         }
 		}
                 return TRUE;
@@ -2527,6 +2529,18 @@ void
 plist__search_cb(gpointer data) {
 	
 	search_playlist_dialog();
+}
+
+void
+plist__roll_cb(gpointer data) {
+
+	playlist_t * pl;
+
+	if ((pl = playlist_get_current()) == NULL) {
+		return;
+	}
+
+	show_active_position_in_playlist_toggle(pl);
 }
 
 
@@ -5415,6 +5429,7 @@ init_plist_menu(GtkWidget *append_menu) {
         plist__reread_file_meta = gtk_menu_item_new_with_label(_("Reread file metadata"));
         plist__fileinfo = gtk_menu_item_new_with_label(_("File info..."));
         plist__search = gtk_menu_item_new_with_label(_("Search..."));
+	plist__roll = gtk_menu_item_new_with_label(_("Roll to active song"));
 
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__tab_new);
 
@@ -5460,6 +5475,7 @@ init_plist_menu(GtkWidget *append_menu) {
 
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__fileinfo);
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__search);
+	gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__roll);
 
         g_signal_connect_swapped(G_OBJECT(plist__tab_new), "activate", G_CALLBACK(tab__new_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(plist__save), "activate", G_CALLBACK(plist__save_cb), NULL);
@@ -5480,6 +5496,7 @@ init_plist_menu(GtkWidget *append_menu) {
 
         g_signal_connect_swapped(G_OBJECT(plist__fileinfo), "activate", G_CALLBACK(plist__fileinfo_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(plist__search), "activate", G_CALLBACK(plist__search_cb), NULL);
+	g_signal_connect_swapped(G_OBJECT(plist__roll), "activate", G_CALLBACK(plist__roll_cb), NULL);
 
         gtk_widget_show(plist__tab_new);
         gtk_widget_show(plist__save);
@@ -5499,6 +5516,7 @@ init_plist_menu(GtkWidget *append_menu) {
 #endif /* HAVE_EXPORT */
         gtk_widget_show(plist__fileinfo);
         gtk_widget_show(plist__search);
+	gtk_widget_show(plist__roll);
 }
 
 

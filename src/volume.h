@@ -25,6 +25,12 @@
 #include "common.h"
 
 
+#ifdef _WIN32
+#include <glib.h>
+#else
+#include <pthread.h>
+#endif /* _WIN32 */
+
 #define RMSSIZE 100
 
 #define VOLUME_SEPARATE 0

@@ -59,6 +59,11 @@
 #define WIN32_DRIVER 4
 #endif /* _WIN32 */
 
+#ifdef HAVE_SNDIO
+#define SNDIO_DRIVER 5
+#include <sndio.h>
+#endif /* HAVE_SNDIO */
+
 
 #define MAX_SAMPLERATE 96000
 
@@ -80,6 +85,12 @@
 
 typedef struct _thread_info {
 	AQUALUNG_THREAD_DECLARE(disk_thread_id)
+
+#ifdef HAVE_SNDIO
+	AQUALUNG_THREAD_DECLARE(sndio_thread_id)
+	struct sio_hdl * sndio_hdl;
+	short * sndio_short_buf;
+#endif /* HAVE_SNDIO */
 
 #ifdef HAVE_OSS	
 	AQUALUNG_THREAD_DECLARE(oss_thread_id)

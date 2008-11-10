@@ -438,6 +438,11 @@ set_output_label(int output, int out_SR) {
 	char str[MAXLEN];
 	
 	switch (output) {
+#ifdef HAVE_SNDIO
+	case SNDIO_DRIVER:
+		sprintf(str, "%s sndio @ %d Hz", _("Output:"), out_SR);
+		break;
+#endif /* HAVE_SNDIO */
 #ifdef HAVE_OSS
 	case OSS_DRIVER:
 		sprintf(str, "%s OSS @ %d Hz", _("Output:"), out_SR);

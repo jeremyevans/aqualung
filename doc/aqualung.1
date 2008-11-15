@@ -1,4 +1,4 @@
-.TH AQUALUNG 1 "09 February 2008"
+.TH AQUALUNG 1 "15 November 2008"
 .SH NAME
 aqualung \- Music player for GNU/Linux
 .SH SYNOPSIS
@@ -7,7 +7,7 @@ aqualung --help
 .TP
 aqualung --version
 .TP
-aqualung [--output (oss|alsa|jack|win32)] [options] [file1 [file2 ...]]
+aqualung [--output (oss|alsa|jack|sndio|win32)] [options] [file1 [file2 ...]]
 .SH DESCRIPTION
 .P
 Aqualung is an advanced music player originally targeted at
@@ -37,10 +37,10 @@ supported. Numerous formats and codecs are also supported via
 the FFmpeg project, including AC3, AAC, WMA, WavPack and the
 soundtrack of many video formats. There is also a native
 (non-FFmpeg) WavPack decoder. The program can play the music
-through OSS, ALSA or the JACK Audio Connection Kit, or even
-using the Win32 Sound API (available only under Cygwin or native
-Win32). Depending on the compile-time options, not all file
-formats and output drivers may be usable in a particular
+through OSS, ALSA, sndio, or the JACK Audio Connection Kit, or
+even using the Win32 Sound API (available only under Cygwin or
+native Win32). Depending on the compile-time options, not all
+file formats and output drivers may be usable in a particular
 build. Type aqualung -v to get a list of all the
 compiled-in features.
 .P
@@ -97,7 +97,7 @@ parameters, or you want to explicitly choose a suitable output
 configuration, you have to tell the program which output
 device to use. This is possible with the -o
 (--output) option. There are specific optional
-parameters for all four output drivers. You can also specify
+parameters for all five output drivers. You can also specify
 which sample rate converter you want to use, or request a list
 of available converters. You may also control another instance
 of the program remotely, or add files to the Playlist.
@@ -180,6 +180,23 @@ instances of the program).
 Note that in the case when JACK output has been selected
 as part of the automatic output device detection, the
 -a option is implicitly applied.
+
+.TP
+.B Options relevant to sndio output
+.TP
+-r, --rate <int>
+.br
+Set the output sample rate.
+.TP
+-R, --realtime
+.br
+Try to use realtime (SCHED_FIFO) scheduling
+for sndio output thread.
+.TP
+-P, --priority <int>
+.br
+When running --realtime, set scheduler
+priority to <int> (default is 1 when -R is used).
 
 .TP
 .B Options relevant to Win32 output
@@ -363,6 +380,8 @@ Tom Szilagyi <tszilagyi@users.sourceforge.net>
 Peter Szilagyi <peterszilagyi@users.sourceforge.net>
 .br
 Tomasz Maka <pasp@users.sourceforge.net>
+.br
+Jeremy Evans <code@jeremyevans.net>
 .SH BUGS
 .P
 Yes. Report them to our bugtracker at <http://aqualung.factorial.hu/mantis>

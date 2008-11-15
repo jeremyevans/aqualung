@@ -1,0 +1,61 @@
+body {
+	font-family: "Bitstream Vera Sans", sans-serif;
+}
+
+hr {
+	color: #aaaaaa;
+	background-color: #aaaaaa;
+	border: 0px;
+	height: 1px;
+}
+
+img {
+	border: 0px;
+}
+
+table {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+tt {
+	font-family: "Bitstream Vera Sans Mono", monospace;
+}
+
+code {
+	font-family: "Bitstream Vera Sans Mono", monospace;
+	white-space: nowrap;
+}
+
+p {
+	text-align: justify;
+}
+
+a.external { 
+	background: url(external.png) center right no-repeat;
+        padding-right: 13px;
+}
+
+img.screenshot {
+	padding-left: 12px;
+	padding-bottom: 6px;
+	float: right;
+}
+
+.gui {
+	font-style: italic;
+	text-decoration: underline;
+	white-space: nowrap;
+}
+
+.toc1 {
+	margin-left: 50px;
+}
+
+.toc2 {
+	margin-left: 100px;
+}
+
+.toc3 {
+	margin-left: 150px;
+}

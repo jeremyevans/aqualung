@@ -575,6 +575,8 @@ AC_ARG_WITH(
 if test "$lavc" = "no"; then
 	AC_MSG_RESULT(no)
 else
+	AC_CHECK_HEADERS(libavcodec/avcodec.h avcodec.h ffmpeg/avcodec.h)
+	AC_CHECK_HEADERS(libavformat/avformat.h avformat.h ffmpeg/avformat.h)
 	AC_CHECK_LIB(avformat, av_open_input_file, [avf_lib=yes], [avf_lib=no], [-lavcodec -lavutil -lz])
 	AC_CHECK_LIB(avcodec, avcodec_open, [avc_lib=yes], [avc_lib=no], [-lavformat -lavutil -lz])
 

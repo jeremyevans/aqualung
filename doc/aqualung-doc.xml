@@ -936,13 +936,18 @@
 	in the Playlist area, which will bring up a popup menu with
 	these features.</p>
 
-	<p>The Playlist is saved as an XML file, so you should
+	<p>The Playlist is saved as an XML file, unless you specify a
+	filename ending in <file>.m3u</file>, in which case it is
+	saved in M3U format (one filename per line).  When saving an
+	XML playlist, you should
 	normally end your filename with <file>.xml</file> <ndash/>
 	however, this is only good practice and not necessary.  If you
 	choose <gui>Save all playlists</gui>, the XML will be a
 	multi-tabbed playlist, containing all tabs, while <gui>Save
-	playlist</gui> saves the current playlist only.  Note that the
-	playlist file format is not compatible with Winamp/XMMS
+	playlist</gui> saves the current playlist only.  When saving
+	all playlists, it will always use the XML format, as the M3U
+	file format does not support multiple playlists.  Note that the
+	XML playlist file format is not compatible with Winamp/XMMS
 	<file>.m3u</file> files. However, Aqualung will open playlists
 	in M3U and PLS formats whenever possible.</p>
 

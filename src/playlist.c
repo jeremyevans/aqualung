@@ -2065,8 +2065,13 @@ plist__save_cb(gpointer data) {
 			    options.plistdir);
 
         if (file != NULL) {
-		playlist_save(pl, (char *)file->data);
-                g_free(file->data);
+		if (g_str_has_suffix((gchar *)file->data, ".m3u")) {
+			playlist_save_m3u(pl, (char *)file->data);
+		}
+		else {
+			playlist_save(pl, (char *)file->data);
+		}
+		g_free(file->data);
 		g_slist_free(file);
         }
 }
@@ -4624,6 +4629,64 @@ playlist_save(playlist_t * pl, char * filename) {
 
         xmlSaveFormatFile(filename, doc, 1);
 	xmlFreeDoc(doc);
+}
+
+int
+playlist_save_m3u_node(playlist_t * pl, GtkTreeIter * iter, FILE * f) {
+
+	playlist_data_t * data;
+	size_t fn_len;
+
+	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_DATA, &data, -1);
+	fn_len = strlen(data->file);
+	if (fwrite(data->file, 1, fn_len, f) != fn_len) {
+		g_warning("Error writing the playlist file");
+		return -1;
+	}
+	if (fwrite("\n", 1, 1, f) != 1) {
+		g_warning("Error writing the playlist file");
+		return -1;
+	}
+	return 0;
+}
+
+void
+playlist_save_m3u(playlist_t * pl, char * filename) {
+
+	FILE * f;
+        gint i = 0;
+        GtkTreeIter iter;
+
+	if ((f = g_fopen(filename, "wb")) == NULL) {
+		g_warning("Unable to open playlist file %s for writing", filename);
+		return;
+	}
+
+        while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, NULL, i++)) {
+
+		gint n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(pl->store), &iter);
+
+		if (n) { /* album node */
+			gint j = 0;
+			GtkTreeIter iter_child;
+
+			while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store),
+							     &iter_child, &iter, j++)) {
+				if (playlist_save_m3u_node(pl, &iter_child, f) != 0) {
+					goto playlist_save_m3u_cleanup;
+				 }
+			}
+		} else { /* track node */
+			if (playlist_save_m3u_node(pl, &iter, f) != 0) {
+				goto playlist_save_m3u_cleanup;
+			}
+		}
+        }
+
+	playlist_save_m3u_cleanup:
+	if (fclose(f) != 0) {
+		g_warning("Unable to close playlist file %s", filename);
+	}
 }
 
 void

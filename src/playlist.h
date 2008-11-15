@@ -125,6 +125,8 @@ void show_hide_close_buttons(gboolean state);
 
 void playlist_ensure_tab_exists(void);
 void playlist_load(GSList * list, int mode, char * tab_name, int start_playback);
+void playlist_save(playlist_t * pl, char * filename);
+void playlist_save_m3u(playlist_t * pl, char * filename);
 void playlist_save_all(char * filename);
 void playlist_auto_save_reset(void);
 

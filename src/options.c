@@ -114,6 +114,7 @@ GtkWidget * check_enable_tooltips;
 GtkWidget * check_buttons_at_the_bottom;
 GtkWidget * check_disable_buttons_relief;
 GtkWidget * check_combine_play_pause;
+GtkWidget * check_use_systray;
 GtkWidget * check_main_window_always_on_top;
 GtkWidget * check_simple_view_in_fx;
 GtkWidget * check_united_minimization;
@@ -351,6 +352,9 @@ options_window_accept(void) {
 	set_option_from_toggle(check_buttons_at_the_bottom, &options.buttons_at_the_bottom_shadow);
         set_option_from_toggle(check_disable_buttons_relief, &options.disable_buttons_relief);
 	set_option_from_toggle(check_combine_play_pause, &options.combine_play_pause_shadow);
+#ifdef HAVE_SYSTRAY
+	set_option_from_toggle(check_use_systray, &options.use_systray);
+#endif /* HAVE_SYSTRAY */
 	set_option_from_toggle(check_main_window_always_on_top, &options.main_window_always_on_top);
 
 #ifdef HAVE_LADSPA
@@ -1616,6 +1620,17 @@ create_options_window(void) {
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_enable_tooltips, FALSE, FALSE, 0);
 
+#ifdef HAVE_SYSTRAY
+	check_use_systray = gtk_check_button_new_with_label(_("Enable systray"));
+	gtk_widget_set_name(check_use_systray, "check_on_notebook");
+	if (options.use_systray) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_use_systray), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_misc), check_use_systray, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (check_use_systray), "toggled",
+			  G_CALLBACK (restart_active), _("Enable systray"));
+#endif /* HAVE_SYSTRAY */
+
 	check_buttons_at_the_bottom =
 		gtk_check_button_new_with_label(_("Put control buttons at the bottom of playlist"));
 	gtk_widget_set_name(check_buttons_at_the_bottom, "check_on_notebook");
@@ -1642,7 +1657,6 @@ create_options_window(void) {
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_combine_play_pause, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (check_combine_play_pause), "toggled",
 			  G_CALLBACK (restart_active), _("Combine play and pause buttons"));
-
 
         check_main_window_always_on_top = gtk_check_button_new_with_label(_("Keep main window always on top"));
 	gtk_widget_set_name(check_main_window_always_on_top, "check_on_notebook");
@@ -3312,6 +3326,7 @@ save_config(void) {
 	SAVE_INT(export_excl_enabled);
 	SAVE_STR(export_excl_pattern);
 	SAVE_INT(batch_tag_flags);
+	SAVE_INT(use_systray);
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
@@ -3551,6 +3566,8 @@ load_config(void) {
         options.cdrip_vbr = 1;
         options.cdrip_metadata = 1;
 
+	options.use_systray = 1;
+
 	strcpy(options.export_template, "track%i.%x");
 	options.export_subdir_limit = 16;
         options.export_bitrate = 256;
@@ -3719,6 +3736,7 @@ load_config(void) {
 		LOAD_INT(export_excl_enabled);
 		LOAD_STR(export_excl_pattern);
 		LOAD_INT(batch_tag_flags);
+		LOAD_INT(use_systray);
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);

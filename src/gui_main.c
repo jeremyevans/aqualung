@@ -140,6 +140,9 @@ unsigned long long sample_pos;
    for current instance is specified. */
 int immediate_start = 0; 
 
+/* Whether not the systray is used in this instance */
+int systray_used = 0;
+
 /* the tab to load remote files */
 char * tab_name;
 
@@ -330,12 +333,16 @@ set_title_label(char * str) {
 			strncat(tmp, win_title, MAXLEN-1);
 			gtk_window_set_title(GTK_WINDOW(main_window), tmp);
 #ifdef HAVE_SYSTRAY
-			gtk_status_icon_set_tooltip(systray_icon, tmp);
+			if (systray_used) {
+				gtk_status_icon_set_tooltip(systray_icon, tmp);
+			}
 #endif /* HAVE_SYSTRAY */
 		} else {
 			gtk_window_set_title(GTK_WINDOW(main_window), win_title);
 #ifdef HAVE_SYSTRAY
-			gtk_status_icon_set_tooltip(systray_icon, win_title);
+			if (systray_used) {
+				gtk_status_icon_set_tooltip(systray_icon, win_title);
+			}
 #endif /* HAVE_SYSTRAY */
 		}
 	} else {
@@ -343,7 +350,9 @@ set_title_label(char * str) {
 		gtk_label_set_text(GTK_LABEL(label_title), default_title);
 		gtk_window_set_title(GTK_WINDOW(main_window), win_title);
 #ifdef HAVE_SYSTRAY
-		gtk_status_icon_set_tooltip(systray_icon, win_title);
+		if (systray_used) {
+			gtk_status_icon_set_tooltip(systray_icon, win_title);
+		}
 #endif /* HAVE_SYSTRAY */
         }
 }
@@ -687,7 +696,9 @@ main_window_close(GtkWidget * widget, GdkEvent * event, gpointer data) {
 #endif /* HAVE_LADSPA */
 
 #ifdef HAVE_SYSTRAY
-        gtk_status_icon_set_visible(GTK_STATUS_ICON(systray_icon), FALSE);
+	if (systray_used) {
+		gtk_status_icon_set_visible(GTK_STATUS_ICON(systray_icon), FALSE);
+	}
 #endif /* HAVE_SYSTRAY */
 
 	if (options.auto_save_playlist) {
@@ -749,7 +760,11 @@ main_window_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 	if (event->type == GDK_DELETE) {
 #ifdef HAVE_SYSTRAY
-		hide_all_windows(NULL);
+		if (systray_used) {
+			hide_all_windows(NULL);
+		} else {
+			main_window_closing();
+		}
 #else
 		main_window_closing();
 #endif /* HAVE_SYSTRAY */
@@ -1089,7 +1104,9 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
                 return TRUE;
 #ifdef HAVE_SYSTRAY
 	case GDK_Escape:
-		hide_all_windows(NULL);
+		if (systray_used) {
+			hide_all_windows(NULL);
+		}
 		return TRUE;
 #endif /* HAVE_SYSTRAY */
 	}
@@ -2559,7 +2576,9 @@ create_main_window(char * skin_path) {
 	register_toplevel_window(main_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
 	gtk_window_set_title(GTK_WINDOW(main_window), win_title);
 #ifdef HAVE_SYSTRAY
-	gtk_status_icon_set_tooltip(systray_icon, win_title);
+	if (systray_used) {
+		gtk_status_icon_set_tooltip(systray_icon, win_title);
+	}
 #endif /* HAVE_SYSTRAY */
 
         g_signal_connect(G_OBJECT(main_window), "event", G_CALLBACK(main_window_event), NULL);
@@ -3298,7 +3317,10 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	gtk_rc_parse(path);
 
 #ifdef HAVE_SYSTRAY
-	setup_systray();
+	if (options.use_systray) {
+		systray_used = 1;
+		setup_systray();
+	} 
 #endif /* HAVE_SYSTRAY */
 
 	create_main_window(options.skin);

@@ -116,6 +116,7 @@ typedef struct {
 	int tags_tab_first;
 	int dont_show_cover;
 	int show_cover_for_ms_tracks_only;
+	int use_systray;
 
 	/* Playlist */
 	int playlist_is_embedded;

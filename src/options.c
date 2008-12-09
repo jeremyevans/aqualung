@@ -415,6 +415,7 @@ options_window_accept(void) {
 
 	set_option_from_combo(combo_cwidth, &options.cover_width);
 	set_option_from_toggle(check_magnify_smaller_images, &options.magnify_smaller_images);
+	options.magnify_smaller_images = !options.magnify_smaller_images;
 
 
 	/* RVA */
@@ -3162,7 +3163,7 @@ save_config(void) {
         FILE * fout;
         char tmpname[MAXLEN];
         char config_file[MAXLEN];
-	char str[32];
+	char str[MAXLEN];
 
 	GtkTreeIter iter;
 	int i = 0;

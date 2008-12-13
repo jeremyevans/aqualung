@@ -3,6 +3,7 @@ AUTHORS
 Core design, engineering & programming: Tom Szilagyi <tszilagyi@users.sourceforge.net>
 Skin support, look & feel, GUI hacks:   Peter Szilagyi <peterszilagyi@users.sourceforge.net>
 Programming, GUI engineering:           Tomasz Maka <pasp@users.sourceforge.net>
+OpenBSD compatibility, metadata tweaks: Jeremy Evans <code@jeremyevans.net>
 
 
 CONTRIBUTORS

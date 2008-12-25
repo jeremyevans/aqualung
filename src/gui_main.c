@@ -898,6 +898,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
 	switch (event->keyval) {	
 	case GDK_KP_Divide:
+	case GDK_slash:
 		refresh_time_label = 0;
 		if (vol_bal_timeout_tag) {
 			g_source_remove(vol_bal_timeout_tag);
@@ -914,6 +915,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		}
 		return TRUE;
 	case GDK_KP_Multiply:
+	case GDK_asterisk:
 		refresh_time_label = 0;
 		if (vol_bal_timeout_tag) {
 			g_source_remove(vol_bal_timeout_tag);

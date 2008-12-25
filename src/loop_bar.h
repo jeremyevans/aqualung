@@ -49,10 +49,14 @@ struct _AqualungLoopBarClass {
         GtkDrawingAreaClass parent_class;
 
 	void (* range_changed) (AqualungLoopBar * bar, float start, float end);
-
 };
 
+GType aqualung_loop_bar_get_type(void) G_GNUC_CONST;
+
 GtkWidget * aqualung_loop_bar_new(float start, float end);
+
+void aqualung_loop_bar_adjust_start(AqualungLoopBar * bar, float start);
+void aqualung_loop_bar_adjust_end(AqualungLoopBar * bar, float end);
 
 G_END_DECLS
 

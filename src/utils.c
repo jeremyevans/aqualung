@@ -287,12 +287,11 @@ sample2time(unsigned long SR, unsigned long long sample, char * str, int sign) {
 	m = (sample / SR) / 60 - h * 60;
 	s = (sample / SR) - h * 3600 - m * 60;
 
-	if (h > 9)
-		sprintf(str, (sign)?("-%02d:%02d:%02d"):("%02d:%02d:%02d"), h, m, s);
-	else if (h > 0)
-		sprintf(str, (sign)?("-%1d:%02d:%02d"):("%1d:%02d:%02d"), h, m, s);
-	else
+	if (h > 0) {
+		sprintf(str, (sign)?("-%d:%02d:%02d"):("%d:%02d:%02d"), h, m, s);
+	} else {
 		sprintf(str, (sign)?("-%02d:%02d"):("%02d:%02d"), m, s);
+	}
 }
 
 

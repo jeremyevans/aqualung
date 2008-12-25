@@ -410,7 +410,6 @@ aqualung_loop_bar_init(AqualungLoopBar * bar) {
 			      GDK_LEAVE_NOTIFY_MASK);
 }
 
-
 GtkWidget *
 aqualung_loop_bar_new(float start, float end) {
 
@@ -424,6 +423,36 @@ aqualung_loop_bar_new(float start, float end) {
 	priv->end = end;
 
         return widget;
+}
+
+void
+aqualung_loop_bar_adjust_start(AqualungLoopBar * bar, float start) {
+
+	AqualungLoopBarPrivate * priv = AQUALUNG_LOOP_BAR_GET_PRIVATE(bar);
+
+	if (start < priv->end) {
+		priv->start = start;
+		aqualung_loop_bar_redraw_canvas(GTK_WIDGET(bar));
+		g_signal_emit(GTK_WIDGET(bar),
+			      aqualung_loop_bar_signals[RANGE_CHANGED],
+			      0,
+			      priv->start, priv->end);
+	}
+}
+
+void
+aqualung_loop_bar_adjust_end(AqualungLoopBar * bar, float end) {
+
+	AqualungLoopBarPrivate * priv = AQUALUNG_LOOP_BAR_GET_PRIVATE(bar);
+
+	if (end > priv->start) {
+		priv->end = end;
+		aqualung_loop_bar_redraw_canvas(GTK_WIDGET(bar));
+		g_signal_emit(GTK_WIDGET(bar),
+			      aqualung_loop_bar_signals[RANGE_CHANGED],
+			      0,
+			      priv->start, priv->end);
+	}
 }
 
 #endif /* HAVE_LOOP */

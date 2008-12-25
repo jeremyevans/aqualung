@@ -415,7 +415,7 @@ set_samplerate_label(int sr) {
 	
 	char str[MAXLEN];
 
-	sprintf(str, "%d Hz", sr);
+	snprintf(str, MAXLEN-1, "%d Hz", sr);
 
 	if (is_file_loaded) {
 		gtk_label_set_text(GTK_LABEL(label_samplerate), str);
@@ -449,31 +449,31 @@ set_output_label(int output, int out_SR) {
 	switch (output) {
 #ifdef HAVE_SNDIO
 	case SNDIO_DRIVER:
-		sprintf(str, "%s sndio @ %d Hz", _("Output:"), out_SR);
+		snprintf(str, MAXLEN-1, "%s sndio @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_SNDIO */
 #ifdef HAVE_OSS
 	case OSS_DRIVER:
-		sprintf(str, "%s OSS @ %d Hz", _("Output:"), out_SR);
+		snprintf(str, MAXLEN-1, "%s OSS @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_OSS */
 #ifdef HAVE_ALSA
 	case ALSA_DRIVER:
-		sprintf(str, "%s ALSA @ %d Hz", _("Output:"), out_SR);
+		snprintf(str, MAXLEN-1, "%s ALSA @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_ALSA */
 #ifdef HAVE_JACK
 	case JACK_DRIVER:
-		sprintf(str, "%s JACK @ %d Hz", _("Output:"), out_SR);
+		snprintf(str, MAXLEN-1, "%s JACK @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_JACK */
 #ifdef _WIN32
 	case WIN32_DRIVER:
-		sprintf(str, "%s Win32 @ %d Hz", _("Output:"), out_SR);
+		snprintf(str, MAXLEN-1, "%s Win32 @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* _WIN32 */
 	default:
-		strcpy(str, _("No output"));
+		strncpy(str, _("No output"), MAXLEN-1);
 		break;
 	}
 
@@ -537,6 +537,43 @@ refresh_time_displays(void) {
 	}
 }
 
+#ifdef HAVE_LOOP
+
+void
+loop_bar_update_tooltip(void) {
+
+        if (options.enable_tooltips) {
+		char str[MAXLEN];
+
+		if (is_file_loaded) {
+			char start[32];
+			char end[32];
+			sample2time(disp_info.sample_rate, total_samples * options.loop_range_start, start, 0);
+			sample2time(disp_info.sample_rate, total_samples * options.loop_range_end, end, 0);
+			snprintf(str, MAXLEN-1, _("Loop range: %d-%d%% [%s - %s]"),
+				 (int)(100 * options.loop_range_start),
+				 (int)(100 * options.loop_range_end),
+				 start, end);
+		} else {
+			snprintf(str, MAXLEN-1, _("Loop range: %d-%d%%"),
+				 (int)(100 * options.loop_range_start),
+				 (int)(100 * options.loop_range_end));
+		}
+
+                gtk_tooltips_set_tip(GTK_TOOLTIPS(aqualung_tooltips), loop_bar, str, NULL);
+        }
+}
+
+void
+loop_range_changed_cb(AqualungLoopBar * bar, float start, float end, gpointer data) {
+
+	options.loop_range_start = start;
+	options.loop_range_end = end;
+	loop_bar_update_tooltip();
+}
+
+#endif /* HAVE_LOOP */
+
 void
 refresh_displays(void) {
 
@@ -545,6 +582,10 @@ refresh_displays(void) {
 	playlist_t * pl;
 
 	refresh_time_displays();
+
+#ifdef HAVE_LOOP
+	loop_bar_update_tooltip();
+#endif /* HAVE_LOOP */
 
 	set_format_label(disp_info.format_str);
 	set_samplerate_label(disp_info.sample_rate);
@@ -1111,8 +1152,22 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		}
 		return TRUE;
 #endif /* HAVE_SYSTRAY */
+
+#ifdef HAVE_LOOP
+	case GDK_less:
+		if (options.repeat_on && is_file_loaded) {
+			float pos = (total_samples > 0) ? ((double)sample_pos / total_samples) : 0;
+			aqualung_loop_bar_adjust_start(AQUALUNG_LOOP_BAR(loop_bar), pos);
+		}
+		return TRUE;
+	case GDK_greater:
+		if (options.repeat_on && is_file_loaded) {
+			float pos = (total_samples > 0) ? ((double)sample_pos / total_samples) : 1;
+			aqualung_loop_bar_adjust_end(AQUALUNG_LOOP_BAR(loop_bar), pos);
+		}
+		return TRUE;
+#endif /* HAVE_LOOP */
 	}
-	
 
         if (options.playlist_is_embedded) {
 		playlist_window_key_pressed(widget, event);
@@ -1299,28 +1354,16 @@ scale_button_release_event(GtkWidget * widget, GdkEventButton * event) {
 }
 
 
-#ifdef HAVE_LOOP
-
-void
-loop_range_changed_cb(AqualungLoopBar * bar, float start, float end, gpointer data) {
-
-	options.loop_range_start = start;
-	options.loop_range_end = end;
-}
-
-#endif /* HAVE_LOOP */
-
 void
 changed_pos(GtkAdjustment * adj, gpointer data) {
-
-        char str[16];
 
 	if (!is_file_loaded) {
 		gtk_adjustment_set_value(adj, 0.0f);
 	}
 
         if (options.enable_tooltips) {
-                sprintf(str, _("Position: %d%%"), (gint)gtk_adjustment_get_value(adj)); 
+		char str[32];
+                snprintf(str, 31, _("Position: %d%%"), (gint)gtk_adjustment_get_value(adj)); 
                 gtk_tooltips_set_tip(GTK_TOOLTIPS(aqualung_tooltips), scale_pos, str, NULL);
         }
 }
@@ -1329,7 +1372,7 @@ changed_pos(GtkAdjustment * adj, gpointer data) {
 gint
 scale_vol_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 
-	char str[10];
+	char str[32];
 	options.vol = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_vol));
 
         if (event->state & GDK_SHIFT_MASK) {  /* SHIFT */
@@ -1338,9 +1381,9 @@ scale_vol_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 	}
 
 	if (options.vol < -40.5f) {
-		sprintf(str, _("Mute"));
+		snprintf(str, 31, _("Mute"));
 	} else {
-		sprintf(str, _("%d dB"), (int)options.vol);
+		snprintf(str, 31, _("%d dB"), (int)options.vol);
 	}
 
 	gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
@@ -1358,22 +1401,23 @@ scale_vol_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 void
 changed_vol(GtkAdjustment * adj, gpointer date) {
 
-	char str[10], str2[32];
+	char str[32];
+	char str2[32];
 
 	options.vol = (int)gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_vol));
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), options.vol);
 
         if (options.vol < -40.5f) {
-                sprintf(str, _("Mute"));
+                snprintf(str, 31, _("Mute"));
         } else {
-                sprintf(str, _("%d dB"), (int)options.vol);
+                snprintf(str, 31, _("%d dB"), (int)options.vol);
         }
 
         if (!refresh_time_label) {
 		gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
         }
 
-        sprintf(str2, _("Volume: %s"), str);
+        snprintf(str2, 31, _("Volume: %s"), str);
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), scale_vol, str2, NULL);
 }
 
@@ -1391,7 +1435,7 @@ scale_vol_button_release_event(GtkWidget * widget, GdkEventButton * event) {
 gint
 scale_bal_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 
-	char str[10];
+	char str[32];
 	options.bal = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_bal));
 
         if (event->state & GDK_SHIFT_MASK) {  /* SHIFT */
@@ -1401,12 +1445,12 @@ scale_bal_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 	
 	if (options.bal != 0.0f) {
 		if (options.bal > 0.0f) {
-			sprintf(str, _("%d%% R"), (int)options.bal);
+			snprintf(str, 31, _("%d%% R"), (int)options.bal);
 		} else {
-			sprintf(str, _("%d%% L"), -1*(int)options.bal);
+			snprintf(str, 31, _("%d%% L"), -1*(int)options.bal);
 		}
 	} else {
-		sprintf(str, _("C"));
+		snprintf(str, 31, _("C"));
 	}
 
 	gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
@@ -1424,26 +1468,27 @@ scale_bal_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 void
 changed_bal(GtkAdjustment * adj, gpointer date) {
 
-	char str[10], str2[32];
+	char str[32];
+	char str2[32];
 
 	options.bal = (int)gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_bal));
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), options.bal);
 
         if (options.bal != 0.0f) {
                 if (options.bal > 0.0f) {
-                        sprintf(str, _("%d%% R"), (int)options.bal);
+                        snprintf(str, 31, _("%d%% R"), (int)options.bal);
                 } else {
-                        sprintf(str, _("%d%% L"), -1*(int)options.bal);
+                        snprintf(str, 31, _("%d%% L"), -1*(int)options.bal);
                 }
         } else {
-                sprintf(str, _("C"));
+                snprintf(str, 31, _("C"));
         }
 	
         if (!refresh_time_label) {
 		gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
 	}
 
-        sprintf(str2, _("Balance: %s"), str);
+        snprintf(str2, 31, _("Balance: %s"), str);
         gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), scale_bal, str2, NULL);
 }
 
@@ -3640,7 +3685,6 @@ flush_rb_disk2gui(void) {
 gint
 timeout_callback(gpointer data) {
 
-	long pos;
 	char cmd;
 	cue_t cue;
 	static double left_gain_shadow;
@@ -3685,6 +3729,7 @@ timeout_callback(gpointer data) {
 				;
 			rb_read(rb_disk2gui, (char *)&fileinfo, sizeof(fileinfo_t));
 
+			sample_pos = 0;
 			total_samples = fileinfo.total_samples;
 			status.samples_left = fileinfo.total_samples;
 			status.sample_pos = 0;
@@ -3697,12 +3742,11 @@ timeout_callback(gpointer data) {
 				;
 			rb_read(rb_disk2gui, (char *)&status, sizeof(status_t));
 
-			pos = total_samples - status.samples_left;
-
+			sample_pos = total_samples - status.samples_left;
 #ifdef HAVE_LOOP
 			if (options.repeat_on &&
-			    (pos < total_samples * options.loop_range_start ||
-			     pos > total_samples * options.loop_range_end)) {
+			    (sample_pos < total_samples * options.loop_range_start ||
+			     sample_pos > total_samples * options.loop_range_end)) {
 
 				seek_t seek;
 
@@ -3724,25 +3768,25 @@ timeout_callback(gpointer data) {
 			/* treat files with unknown length */
 			if (total_samples == 0) {
 				allow_seeks = 1;
-				pos = status.sample_pos - status.sample_offset;
+				sample_pos = status.sample_pos - status.sample_offset;
 			}
 
-			if ((!fresh_new_file) && (pos > status.sample_offset)) {
+			if ((!fresh_new_file) && (sample_pos > status.sample_offset)) {
 				fresh_new_file = 1;
 			}
 
 			if (fresh_new_file && !fresh_new_file_prev) {
 				disp_info = fileinfo;
 				disp_samples = total_samples;
-				if (pos > status.sample_offset) {
-					disp_pos = pos - status.sample_offset;
+				if (sample_pos > status.sample_offset) {
+					disp_pos = sample_pos - status.sample_offset;
 				} else {
 					disp_pos = 0;
 				}
 				refresh_displays();
 			} else {
-				if (pos > status.sample_offset) {
-					disp_pos = pos - status.sample_offset;
+				if (sample_pos > status.sample_offset) {
+					disp_pos = sample_pos - status.sample_offset;
 				} else {
 					disp_pos = 0;
 				}
@@ -3764,7 +3808,7 @@ timeout_callback(gpointer data) {
 					gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
 				} else {
 					gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos),
-								 100.0f * (double)(pos) / total_samples);
+								 100.0 * sample_pos / total_samples);
 				}
 			}
 

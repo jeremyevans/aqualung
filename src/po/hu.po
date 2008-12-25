@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-27 18:14+0100\n"
-"PO-Revision-Date: 2008-01-27 18:14+0100\n"
+"POT-Creation-Date: 2008-12-25 22:35+0100\n"
+"PO-Revision-Date: 2008-12-25 22:42+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36,6 +36,9 @@ msgstr "Skin támogatás, kinézet, jusztírozás:\n"
 msgid "Programming, GUI engineering:\n"
 msgstr "Programozás, GUI tervezés:\n"
 
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr "OpenBSD kompatibilitás, metaadat trükkök\n"
+
 msgid "Translators:"
 msgstr "Fordítók:"
 
@@ -48,11 +51,11 @@ msgstr "Magyar:\n"
 msgid "Italian:\n"
 msgstr "Olasz:\n"
 
-msgid "Ukrainian:\n"
-msgstr "Ukrán:\n"
-
 msgid "Russian:\n"
 msgstr "Orosz:\n"
+
+msgid "Ukrainian:\n"
+msgstr "Ukrán:\n"
 
 msgid "Graphics:"
 msgstr "Grafika:"
@@ -134,6 +137,9 @@ msgstr "LAME (MP3)\n"
 
 msgid "Output driver support:"
 msgstr "Kimeneti meghajtók:"
+
+msgid "sndio Audio\n"
+msgstr "sndio Audio\n"
 
 msgid "OSS Audio\n"
 msgstr "OSS Audio\n"
@@ -308,6 +314,9 @@ msgstr "Csak a mintára illeszkedő fájlok vizsgálata"
 msgid "Reread data for existing tracks"
 msgstr "Létező számok adatainak újraolvasása"
 
+msgid "Remove non-existing files from store"
+msgstr "Nem létező fájlok eltávolítása a tárolóból"
+
 msgid "Artist"
 msgstr "Szerző"
 
@@ -365,11 +374,8 @@ msgstr "Teszt"
 msgid "Building store from filesystem"
 msgstr "Tároló felépítése fájlrendszerről"
 
-msgid "Directory:"
-msgstr "Könyvtár:"
-
-msgid "File:"
-msgstr "Fájl:"
+msgid "Processing:"
+msgstr "Feldolgozás:"
 
 msgid "Action:"
 msgstr "Művelet:"
@@ -397,6 +403,9 @@ msgstr "Név transzformáció"
 
 msgid "Reading file"
 msgstr "Fájl olvasása"
+
+msgid "Removing non-existing files"
+msgstr "Nem létező fájlok törlése"
 
 msgid "Unknown disc"
 msgstr "Ismeretlen lemez"
@@ -660,6 +669,9 @@ msgstr "Ismeretlen szám"
 msgid "Please select the directory for exported files."
 msgstr "Válassz ki egy könyvtárat az exportált fájloknak."
 
+msgid "Copy"
+msgstr "Másolás"
+
 msgid "Help"
 msgstr "Súgó"
 
@@ -702,6 +714,19 @@ msgstr ""
 
 msgid "Filename template:"
 msgstr "Fájlnév sablon:"
+
+msgid "Filter"
+msgstr "Szűrő"
+
+msgid "Do not reencode files already being in the target format"
+msgstr "A célformátumban lévő fájlokat ne kódolja újra"
+
+msgid ""
+"Do not reencode files\n"
+"matching wildcard:"
+msgstr ""
+"Mintára illeszkedő\n"
+"fájlok kihagyása"
 
 msgid "Error in format string"
 msgstr "Hiba a formátum sablonban"
@@ -830,6 +855,9 @@ msgstr "Audio CD"
 msgid "Track:"
 msgstr "Szám:"
 
+msgid "File:"
+msgstr "Fájl:"
+
 msgid "Audio data"
 msgstr "Audio jellemzők"
 
@@ -896,6 +924,14 @@ msgstr "Nincs kimenet"
 
 msgid "SRC Type: "
 msgstr "SRC Típus: "
+
+#, c-format
+msgid "Loop range: %d-%d%% [%s - %s]"
+msgstr "Ismétlési tartomány: %d-%d%% [%s - %s]"
+
+#, c-format
+msgid "Loop range: %d-%d%%"
+msgstr "Ismétlési tartomány: %d-%d%%"
 
 msgid ""
 "One or more stores in Music Store have been modified.\n"
@@ -981,6 +1017,9 @@ msgstr "Megállítás"
 
 msgid "Next song"
 msgstr "Következő szám"
+
+msgid "Play/Pause"
+msgstr "Lejátszás/Szünet"
 
 msgid "Play"
 msgstr "Lejátszás"
@@ -1766,11 +1805,17 @@ msgstr "Egyéb"
 msgid "Enable tooltips"
 msgstr "Buboréksúgók engedélyezése"
 
+msgid "Enable systray"
+msgstr "Rendszertálca engedélyezése"
+
 msgid "Put control buttons at the bottom of playlist"
 msgstr "Vezérlőgombok elhelyezése a Lejátszólista alján"
 
 msgid "Disable control buttons relief"
 msgstr "Vezérlőgombok kiemelkedésének tiltása"
+
+msgid "Combine play and pause buttons"
+msgstr "Lejátszás és szünet gombok egyesítése"
 
 msgid "Keep main window always on top"
 msgstr "A főablak legyen mindig felül"
@@ -1789,9 +1834,6 @@ msgstr "Rejtett fájlok és könyvtárak mutatása tallózáskor"
 
 msgid "Show tags tab first in the file info dialog"
 msgstr "Először a tagek látszódjanak a fájl infó ablakban"
-
-msgid "Don't show cover thumbnail in the main window"
-msgstr "Ne jelenjen meg a borító képe a főablakban"
 
 msgid "Cover art"
 msgstr "Lemezborító"
@@ -1819,6 +1861,9 @@ msgstr "A kisebb képeket ne nagyítsa"
 
 msgid "Show cover thumbnail for Music Store tracks only"
 msgstr "Borító mutatása csak a Zenetárból hozzáadott számok esetén"
+
+msgid "Don't show cover thumbnail in the main window"
+msgstr "Ne jelenjen meg a borító képe a főablakban"
 
 msgid "Playlist"
 msgstr "Lejátszólista"
@@ -2306,6 +2351,9 @@ msgstr "Metaadatok újraolvasása"
 msgid "File info..."
 msgstr "Fájl infó..."
 
+msgid "Roll to active song"
+msgstr "Aktív számra ugrás"
+
 msgid "Stop adding files"
 msgstr "Hozzáadás leállítása"
 
@@ -2605,6 +2653,9 @@ msgstr "Látható név:"
 msgid "Edit Store"
 msgstr "Tároló szerkesztése"
 
+msgid "Use relative paths in store file"
+msgstr "Relatív elérési utak használata a tároló fájlban"
+
 msgid "Add Artist"
 msgstr "Előadó hozzáadása"
 
@@ -2892,6 +2943,18 @@ msgstr "forrás"
 
 msgid "Export item..."
 msgstr "Adás exportálása..."
+
+msgid "Add all items to playlist"
+msgstr "Összes elem lejátszólistához adása"
+
+msgid "Add all items to playlist (Album mode)"
+msgstr "Összes elem lejátszólistához adása (Album mód)"
+
+msgid "Add new items to playlist"
+msgstr "Új elemek lejátszólistához adása"
+
+msgid "Add new items to playlist (Album mode)"
+msgstr "Új elemek lejátszólistához adása (Album mód)"
 
 msgid "Edit feed"
 msgstr "Forrás szerkesztése"

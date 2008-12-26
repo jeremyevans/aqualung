@@ -50,10 +50,12 @@ aqualung.1.txt: aqualung.1
 
 clean:
 	rm -f *.tex *.aux *.dvi *.log *.out *.toc
+
+clean-all:
 	rm -f *.html *.tar.bz2 aqualung.1 aqualung.1.txt *.pdf
 
-upload: all clean
+upload: clean-all aqualung-doc clean
 	@echo
 	@ls
 	@echo
-	lftp -c 'open aqualung && cd manual && mirror -R'
+	lftp -c 'set net:limit-rate 0:8000; open aqualung && cd manual && mirror -R -X .svn -X Makefile* -X *.sh'

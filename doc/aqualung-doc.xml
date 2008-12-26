@@ -2729,6 +2729,15 @@
 	  </tr>
 	  <hline/>
 	  <tr>
+	    <td>&lt;</td>
+	    <td>adjust start of loop range to current playing position</td>
+	  </tr>
+	  <tr>
+	    <td>&gt;</td>
+	    <td>adjust end of loop range to current playing position</td>
+	  </tr>
+	  <hline/>
+	  <tr>
 	    <td>i, I</td>
 	    <td>bring up the File Info dialog for currently played track</td>
 	  </tr>

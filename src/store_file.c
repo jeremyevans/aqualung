@@ -1875,6 +1875,11 @@ store__build_cb(gpointer data) {
 		store_data_t * data;
 
                 gtk_tree_model_get(model, &store_iter, MS_COL_DATA, &data, -1);
+
+		if (data->readonly) {
+			return;
+		}
+
 		build_store(&store_iter, data->file);
 	}
 }

@@ -58,4 +58,4 @@ upload: clean-all aqualung-doc clean
 	@echo
 	@ls
 	@echo
-	lftp -c 'set net:limit-rate 0:8000; open aqualung && cd manual && mirror -R -X .svn -X Makefile* -X *.sh'
+	lftp -c 'set net:limit-rate 0:8000; open aqualung && cd manual && mirror -R -X .svn/ -X Makefile* -X *.sh'

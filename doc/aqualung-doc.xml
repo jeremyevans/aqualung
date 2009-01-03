@@ -810,8 +810,12 @@
 	figure out which is which. If you select track repeat, a loop
 	bar appears above the seek bar, with two markers. The markers
 	can be dragged to select the looping range. When they are at
-	the left and right end positions, the whole song is
-	repeated.</p>
+	the left and right end positions, the whole song is repeated.
+	The looping range can also be selected using keyboard
+	shortcuts. When track repeat is enabled and the current song
+	is playing (or paused), <q>&lt;</q> will set the start of the
+	looping range to the current playing position; <q>&gt;</q> does
+	the same for the end of the looping range.</p>
 
 	<p>Volume and balance slider tricks:</p>
 

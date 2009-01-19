@@ -243,6 +243,27 @@ gui_stock_label_button(gchar *label, const gchar *stock) {
 
 
 void
+assign_etf_fc_filters(GtkFileChooser *fc) {
+
+        GtkFileFilter *filter_1, *filter_2;
+
+        /* all files filter */
+        filter_1 = gtk_file_filter_new();
+        gtk_file_filter_add_pattern(filter_1, "*");
+        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_1), _("All Files"));
+        gtk_file_chooser_add_filter(fc, filter_1);
+
+        /* music store files filter */
+        filter_2 = gtk_file_filter_new();
+        gtk_file_filter_add_pattern(filter_2, "*.[lL][uU][aA]");
+        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), _("Extended Title Format Files (*.lua)"));
+        gtk_file_chooser_add_filter(fc, filter_2);
+
+        gtk_file_chooser_set_filter(fc, filter_2);
+}
+
+
+void
 assign_store_fc_filters(GtkFileChooser *fc) {
 
         GtkFileFilter *filter_1, *filter_2;
@@ -465,6 +486,9 @@ assign_fc_filters(GtkFileChooser * fc, int filter) {
 	}
 	if (filter == FILE_CHOOSER_FILTER_STORE) {
 		assign_store_fc_filters(fc);
+	}
+	if (filter == FILE_CHOOSER_FILTER_ETF) {
+		assign_etf_fc_filters(fc);
 	}
 }
 

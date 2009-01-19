@@ -55,6 +55,9 @@
 #include "ifp_device.h"
 #include "export.h"
 
+#ifdef HAVE_LUA
+#include "ext_title_format.h"
+#endif /* HAVE_LUA */
 
 extern options_t options;
 
@@ -227,6 +230,11 @@ playlist_data_new() {
 	data->duration = 0.0f;
 	data->size = 0;
 	data->flags = 0;
+	data->artist = NULL;
+	data->album = NULL;
+	data->title = NULL;
+	data->display = NULL;
+	data->file = NULL;
 
 	return data;
 }
@@ -242,6 +250,9 @@ playlist_data_copy_noalloc(playlist_data_t * dest, playlist_data_t * src) {
 	}
 	if (src->title) {
 		free_strdup(&dest->title, src->title);
+	}
+	if (src->display) {
+		free_strdup(&dest->display, src->display);
 	}
 	if (src->file) {
 		free_strdup(&dest->file, src->file);
@@ -275,15 +286,23 @@ playlist_data_free(playlist_data_t * data) {
 
 	if (data->artist) {
 		free(data->artist);
+		data->artist = NULL;
 	}
 	if (data->album) {
 		free(data->album);
+		data->album = NULL;
 	}
 	if (data->title) {
 		free(data->title);
+		data->title = NULL;
+	}
+	if (data->display) {
+		free(data->display);
+		data->display = NULL;
 	}
 	if (data->file) {
 		free(data->file);
+		data->file = NULL;
 	}
 	free(data);
 }
@@ -1581,7 +1600,9 @@ finalize_add_to_playlist(gpointer data) {
 void
 playlist_data_get_display_name(char * list_str, playlist_data_t * pldata) {
 
-	if (pldata->artist || pldata->album || pldata->title) {
+	if (pldata->display) {
+		strncpy(list_str, pldata->display, MAXLEN-1);
+	} else if (pldata->artist || pldata->album || pldata->title) {
 		make_title_string(list_str, options.title_format,
 				  pldata->artist, pldata->album, pldata->title);
 	} else {
@@ -2340,6 +2361,7 @@ plist__reread_file_meta_foreach(playlist_t * pl, GtkTreeIter * iter, void * user
 	free_strdup(&data->artist, tmp->artist);
 	free_strdup(&data->album, tmp->album);
 	free_strdup(&data->title, tmp->title);
+	free_strdup(&data->display, tmp->display);
 
 	data->voladj = tmp->voladj;
 	data->duration = tmp->duration;
@@ -2649,6 +2671,10 @@ playlist_filemeta_get(char * filename) {
 	if (metadata_get_title(fdec->meta, &tmp) && !is_all_wspace(tmp)) {
 		free_strdup(&data->title, tmp);
 	}
+
+#ifdef HAVE_LUA
+	data->display = extended_title_format(fdec);
+#endif /* HAVE_LUA */
 
 	file_decoder_close(fdec);
 	file_decoder_delete(fdec);
@@ -4535,6 +4561,7 @@ save_track_node(playlist_t * pl, GtkTreeIter * piter, xmlNodePtr root, char * no
 		char * file = NULL;
 
 		xmlNewTextChild(node, NULL, (const xmlChar*) "title", (const xmlChar*) data->title);
+		xmlNewTextChild(node, NULL, (const xmlChar*) "display", (const xmlChar*) data->display);
 
 		if (cdda_is_cdtrack(data->file) || httpc_is_url(data->file)) {
 			file = g_strdup(data->file);
@@ -4811,6 +4838,11 @@ parse_playlist_track(playlist_transfer_t * pt, xmlDocPtr doc, xmlNodePtr _cur, i
 		} else if (!xmlStrcmp(cur->name, (const xmlChar *)"title")) {
                         if ((key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1)) != NULL) {
 				data->title = strndup((char *)key, MAXLEN-1);
+				xmlFree(key);
+			}
+		} else if (!xmlStrcmp(cur->name, (const xmlChar *)"display")) {
+                        if ((key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1)) != NULL) {
+				data->display = strndup((char *)key, MAXLEN-1);
 				xmlFree(key);
 			}
                 } else if (!xmlStrcmp(cur->name, (const xmlChar *)"file")) {

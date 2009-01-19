@@ -174,7 +174,7 @@ AC_CHECK_LIB(xml2,
 AC_MSG_CHECKING(for sndio support)
 AC_ARG_WITH(
 	sndio,
-	[  --with-sndio=no,yes       compile with sndio support (default: no)],
+	[  --with-sndio=no,yes     compile with sndio support (default: no)],
 	sndio="$withval",
 	sndio="no")
 if test "$oss" = no; then
@@ -839,6 +839,35 @@ else
 	AC_MSG_RESULT(yes)
 fi
 
+AC_MSG_CHECKING(for Lua support)
+AC_ARG_WITH(
+	lua,
+	[  --with-lua=yes,no       compile with Lua (programmable title formatting) support (default: yes)],
+	lua="$withval",
+	lua="detect")
+if test "$lua" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(lua, lua_load, [lib=yes], [lib=no])
+	if test "$lib" = "yes"; then
+		lua_LIBS="-llua"
+		AC_DEFINE([HAVE_LUA], [1], [Defined if compiled with Lua support])
+  else
+    AC_CHECK_LIB(lua5.1, lua_load, [lib=yes], [lib=no])
+	  if test "$lib" = "yes"; then
+		  lua_LIBS="-llua5.1"
+		  AC_DEFINE([HAVE_LUA], [1], [Defined if compiled with Lua support])
+		  AC_DEFINE([LUA_HEADER_lua5_1], [1], [Defined if lua headers detected in a nonstandard location])
+    fi
+	fi
+	if test "$lib" = "no" -a "$lua" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the Lua 5.1 library installed. Grab it from http://www.lua.org/.)
+	fi
+	if test "$lua" = "detect"; then
+		lua=$lib
+	fi
+fi
+
 
 # Compiler and linker variables
 AQUALUNG_SKINDIR="-DAQUALUNG_SKINDIR=\\\"$datadir/aqualung/skin\\\""
@@ -848,7 +877,7 @@ AQUALUNG_DATADIR="-DAQUALUNG_DATADIR=\\\"$datadir/aqualung\\\""
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS $AQUALUNG_SKINDIR $AQUALUNG_LOCALEDIR $AQUALUNG_DATADIR -D_GNU_SOURCE"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $cdda_CFLAGS"
-LIBS="decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS"
+LIBS="decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS $lua_LIBS"
 
 
 AC_OUTPUT([Makefile \
@@ -883,6 +912,7 @@ echo "      iRiver iFP driver support           :  $ifp"
 echo "      Loop playback support               :  $loop"
 echo "      Systray support                     :  $systray"
 echo "      Podcast support                     :  $podcast"
+echo "      Lua (prog. title format) support    :  $lua"
 echo
 echo "  Decoding support:"
 echo "      sndfile (WAV, AIFF, AU, etc.)       :  $sndfile"

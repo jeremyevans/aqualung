@@ -62,6 +62,23 @@ metadata_pref_frame_by_type(metadata_t * meta, int type, meta_frame_t * root) {
 
 
 int
+metadata_get_string_field(metadata_t * meta, int type, char ** str) {
+
+	meta_frame_t * frame;
+
+	if (meta == NULL)
+		return 0;
+	frame = metadata_pref_frame_by_type(meta, type, NULL);
+	if (frame != NULL) {
+		*str = frame->field_val;
+		return 1;
+	} else {
+		return 0;
+	}
+
+}
+
+int
 metadata_get_title(metadata_t * meta, char ** str) {
 
 	meta_frame_t * frame;
@@ -78,132 +95,49 @@ metadata_get_title(metadata_t * meta, char ** str) {
 	}
 #endif /* HAVE_MOD */
 
-	frame = metadata_pref_frame_by_type(meta, META_FIELD_TITLE, NULL);
-	if (frame != NULL) {
-		*str = frame->field_val;
-		return 1;
-	} else {
-		return 0;
-	}
+	return metadata_get_string_field(meta, META_FIELD_TITLE, str);
 }
 
 
 int
 metadata_get_artist(metadata_t * meta, char ** str) {
-
-	meta_frame_t * frame;
-
-	if (meta == NULL)
-		return 0;
-	frame = metadata_pref_frame_by_type(meta, META_FIELD_ARTIST, NULL);
-	if (frame != NULL) {
-		*str = frame->field_val;
-		return 1;
-	} else {
-		return 0;
-	}
+	return metadata_get_string_field(meta, META_FIELD_ARTIST, str);
 }
 
 
 int
 metadata_get_album(metadata_t * meta, char ** str) {
-
-	meta_frame_t * frame;
-
-	if (meta == NULL)
-		return 0;
-	frame = metadata_pref_frame_by_type(meta, META_FIELD_ALBUM, NULL);
-	if (frame != NULL) {
-		*str = frame->field_val;
-		return 1;
-	} else {
-		return 0;
-	}
+	return metadata_get_string_field(meta, META_FIELD_ALBUM, str);
 }
 
 
 int
 metadata_get_date(metadata_t * meta, char ** str) {
-
-	meta_frame_t * frame;
-
-	if (meta == NULL)
-		return 0;
-	frame = metadata_pref_frame_by_type(meta, META_FIELD_DATE, NULL);
-	if (frame != NULL) {
-		*str = frame->field_val;
-		return 1;
-	} else {
-		return 0;
-	}
+	return metadata_get_string_field(meta, META_FIELD_DATE, str);
 }
 
 
 int
 metadata_get_genre(metadata_t * meta, char ** str) {
-
-	meta_frame_t * frame;
-
-	if (meta == NULL)
-		return 0;
-	frame = metadata_pref_frame_by_type(meta, META_FIELD_GENRE, NULL);
-	if (frame != NULL) {
-		*str = frame->field_val;
-		return 1;
-	} else {
-		return 0;
-	}
+	return metadata_get_string_field(meta, META_FIELD_GENRE, str);
 }
 
 
 int
 metadata_get_comment(metadata_t * meta, char ** str) {
-
-	meta_frame_t * frame;
-
-	if (meta == NULL)
-		return 0;
-	frame = metadata_pref_frame_by_type(meta, META_FIELD_COMMENT, NULL);
-	if (frame != NULL) {
-		*str = frame->field_val;
-		return 1;
-	} else {
-		return 0;
-	}
+	return metadata_get_string_field(meta, META_FIELD_COMMENT, str);
 }
 
 
 int
 metadata_get_icy_name(metadata_t * meta, char ** str) {
-
-	meta_frame_t * frame;
-
-	if (meta == NULL)
-		return 0;
-	frame = metadata_pref_frame_by_type(meta, META_FIELD_ICY_NAME, NULL);
-	if (frame != NULL) {
-		*str = frame->field_val;
-		return 1;
-	} else {
-		return 0;
-	}
+	return metadata_get_string_field(meta, META_FIELD_ICY_NAME, str);
 }
 
 
 int
 metadata_get_icy_descr(metadata_t * meta, char ** str) {
-
-	meta_frame_t * frame;
-
-	if (meta == NULL)
-		return 0;
-	frame = metadata_pref_frame_by_type(meta, META_FIELD_ICY_DESCR, NULL);
-	if (frame != NULL) {
-		*str = frame->field_val;
-		return 1;
-	} else {
-		return 0;
-	}
+	return metadata_get_string_field(meta, META_FIELD_ICY_DESCR, str);
 }
 
 

@@ -2107,6 +2107,20 @@ print_version(void) {
 #endif /* HAVE_SYSTRAY */
 	fprintf(stderr, "Systray support\n");
 
+#ifdef HAVE_PODCAST
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_PODCAST */
+	fprintf(stderr, "Podcast support\n");
+
+#ifdef HAVE_LUA
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_LUA */
+	fprintf(stderr, "Lua (programmable title formatting) support\n");
+
 
 	fprintf(stderr, "\n  Decoding support:\n");
 	

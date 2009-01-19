@@ -291,6 +291,16 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, _("Podcast support\n"), -1);
 
 
+	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
+	gtk_text_buffer_get_end_iter(buffer, &iter);
+#ifdef HAVE_LUA
+	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
+#else
+	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
+#endif /* HAVE_LUA */
+	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("Lua (programmable title formatting) support\n"), -1);
+
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Decoding support:"), -1);

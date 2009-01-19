@@ -70,9 +70,14 @@
       positions and visibility, and other miscellaneous
       options. Aqualung has the ability to display and edit Ogg Xiph
       comments, ID3v1, ID3v2 and APE tags, as well as FLAC picture
-      frames found in files that support them. See the section about
-      <ref refkey="meta-support">metadata support</ref> for full
-      reference.</p>
+      frames found in files that support them.  See the section about
+      <ref refkey="meta-support">metadata support</ref> for full reference.</p>
+      
+      <p>The method of assembling the title string of a track is programmable
+      (via a user-provided Lua function) and can include nearly any metadata
+      item or audio file attribute.  See the documentation of the
+      <ref refkey="settings-general"><gui>Programmable title format file</gui>
+      config setting</ref> for full reference.</p>
 
       <p>You can control any running instance of the program remotely
       from the command line (start, stop, pause etc.). Remote loading
@@ -2414,6 +2419,303 @@
 	    <td>track name, if available</td>
 	  </tr>
 	</tabular>
+
+	<p>The <gui>Programmable title format file</gui> appears if
+  Aqualung is compiled with Lua support.  It allows you to
+  choose a <q>.lua</q> file containing Lua code that determines
+  the title string to use for the playlist, which takes
+  precedence over the above <gui>Title format</gui> setting.</p>
+
+  <p>You can type in the path to the file or click 
+  <gui>Browse</gui> to get a file chooser.  The <q>.lua</q> file
+  should be a valid Lua source code file, containing a function
+  named <q>playlist_title</q>, which should accept no arguments and should
+  return a string, which Aqualung will call to get the string
+  to use as the entry in the playlist.</p>
+  
+  <p>Aqualung defines 2 functions for you to use to get data
+  to use in the title format, <q>m</q> and <q>i</q>.  <q>m</q>
+  stands for metadata, and <q>i</q> stands for file info.  The
+  <q>m</q> function is used to get metadata from file tags, while
+  the <q>i</q> function is used to get information about the file
+  itself, such as the length, bitrate, and number of channels.
+  If there are multiple metadata entries (such as multiple artists),
+  <q>m</q> will return them as a single string separated with 
+  <q>, </q>.  If there is no metadata entry, <q>m</q> will return the
+  empty string.  If you ask for a metadata or file info entry that
+  Aqualung doesn't understand, Aqualung will log an error and will
+  fallback to using the standard title formatting code.
+  </p>
+
+  <p>Here are some examples:</p>
+
+	<tabular>
+	  <tr>
+	    <td>Type</td>
+	    <td>Code</td>
+	    <td>Examples</td>
+	  </tr>
+	  <tr>
+      <td>Very simple, showing basic syntax</td>
+	    <td><q><cmd>
+function playlist_title()
+  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ')'
+end
+      </cmd></q></td>
+	    <td><ul><li>Yngiew Malmsteen-Far Beyond the Sun (Rising Force)</li>
+	    <li>-Greensleeves ()</li></ul></td>
+	  </tr>
+	  <tr>
+      <td>Simple, showing use of conditional formatting</td>
+	    <td><q><cmd>
+function mi(field, format)
+  if field ~= "" then
+    field = string.format(format, field)
+  end 
+  return field
+end
+function dirname(path)
+  if string.find(path, "/") then
+    return string.sub(path, 1, string.len(path) - string.find(string.reverse(path), "/"))
+  else
+    return ""
+  end
+end
+function album()
+  local a = m('album')
+  if a ~= "" then
+    a = a .. mi('date', ' (%s)')
+  else
+    a = dirname(i('filename'))
+  end 
+  return a .. '-'
+end
+function playlist_title()
+  return album() .. mi('trackno', '%s-') .. m('title')
+end
+      </cmd></q></td>
+	    <td><ul><li>Rising Force (1984)-01-Far Beyond the Sun</li>
+	    <li>irish_music-Greensleeves</li></ul></td>
+	  </tr>
+	  <tr>
+      <td>Complex, showing quasi-columnar output via padding (requires a fixed width font for a decent appearance)</td>
+	    <td><q><cmd>
+-- Maximum length of a line in the playlist
+maxlen = 85
+
+-- Directory name for path
+function dirname(path)
+  if string.find(path, "/") then
+    return string.sub(path, 1, string.len(path) - string.find(string.reverse(path), "/"))
+  else
+    return ""
+  end
+end
+
+-- File name for path
+function basename(path)
+  if string.find(path, "/") then
+    return string.sub(path, string.len(path) - string.find(string.reverse(path), "/") + 2)
+  else
+    return path
+  end
+end
+
+-- The album name from the metadata, or the directory name of the file if not present
+function album_or_dir()
+  local album = m('album')
+  if album == "" then
+    album = basename(dirname(i("filename")))
+  end
+  return album
+end
+
+-- The title from the metadata, or the base name of the file if not present
+function title_or_file()
+  local title = m('title')
+  if title == "" then
+    local file = basename(i("filename"))
+    if not  string.match(file, "^%d+%-%....$") then
+      title = file
+    end
+  end
+  return title
+end
+
+-- If the field exists in the metadata, format it using the format_string
+function formatif(field, format_string)
+  if field ~= "" then
+    field = string.format(format_string, field)
+  end
+  return field
+end
+
+-- A string indicating the frequency in Hz, or the empty string if the frequency is 44100
+function freq()
+  local hz = string.format("%i", i('sample_rate'))
+  if hz == "44100" then
+    hz = ""
+  else
+    hz = formatif(hz, "[%sHz] ")
+  end
+  return hz
+end
+
+-- A string indicating the number of channels, unless the number of channels is 2 (stereo)
+function chan()
+  local m = string.format("%i", i('channels'))
+  if m == "2" then
+    m = ""
+  elseif m == "1" then
+    m = "[MONO] "
+  else
+    m = formatif(m, "[%s channels] ")
+  end
+  return m
+end
+
+-- Pad the string to the given length, adding spaces if it is too short and truncating it if it is too long
+function pad(s, n)
+  local l = string.len(s)
+  if l > n then
+    s = string.sub(s, 1, n)
+  else
+    s = s .. string.rep(' ', n-l)
+  end
+return s
+end
+
+-- Combine the left and right sides, with the right side having priority
+function finalize(l, r)
+  return pad(l, maxlen - string.len(r)) .. r
+end
+
+-- Build the title in two parts, a left part (channel and frequency expections, album, track number, title)
+-- and a right part (artist, genre, comment, date, and gain).  The right part is columnar, the left side is
+-- not.
+function playlist_title()
+  local l = chan() .. freq() .. formatif(album_or_dir(), "%s-") .. formatif(m('trackno'), "%s-") .. title_or_file()
+  local r = "  " .. m('artist') .. "  " .. formatif(m("genre"), "%s  ")  .. pad(m('comment'), 12) .. "  " .. pad(m("date"), 4) .. "  " .. pad(m('track_gain'), 5) .. " " .. pad(m('album_gain'), 5)
+  return finalize(l, r)
+end
+      </cmd></q></td>
+	    <td><ul><li>Rising Force-02-Far Beyond the Sun  Yngwie Malmsteen  Metal         1984  -0.89 -0.94</li>
+	            <li>irish_music-Greensleeves                             Celtic         1990  +0.83      </li></ul></td>
+	  </tr>
+	</tabular>
+
+  <p>Here is a complete list of values that the m function accepts:</p>
+
+	<tabular>
+  <tr><td>title</td></tr>
+  <tr><td>artist</td></tr>
+  <tr><td>album</td></tr>
+  <tr><td>date</td></tr>
+  <tr><td>genre</td></tr>
+  <tr><td>trackno</td></tr>
+  <tr><td>comment</td></tr>
+  <tr><td>disc</td></tr>
+  <tr><td>performer</td></tr>
+  <tr><td>description</td></tr>
+  <tr><td>organization</td></tr>
+  <tr><td>location</td></tr>
+  <tr><td>contact</td></tr>
+  <tr><td>license</td></tr>
+  <tr><td>copyright</td></tr>
+  <tr><td>isrc</td></tr>
+  <tr><td>version</td></tr>
+  <tr><td>subtitle</td></tr>
+  <tr><td>debut_album</td></tr>
+  <tr><td>publisher</td></tr>
+  <tr><td>conductor</td></tr>
+  <tr><td>composer</td></tr>
+  <tr><td>publication_right</td></tr>
+  <tr><td>file</td></tr>
+  <tr><td>ean_upc</td></tr>
+  <tr><td>isbn</td></tr>
+  <tr><td>catalog</td></tr>
+  <tr><td>label_code</td></tr>
+  <tr><td>record_date</td></tr>
+  <tr><td>record_location</td></tr>
+  <tr><td>media</td></tr>
+  <tr><td>index</td></tr>
+  <tr><td>related</td></tr>
+  <tr><td>abstract</td></tr>
+  <tr><td>language</td></tr>
+  <tr><td>bibliography</td></tr>
+  <tr><td>introplay</td></tr>
+  <tr><td>bpm</td></tr>
+  <tr><td>encoding_time</td></tr>
+  <tr><td>playlist_delay</td></tr>
+  <tr><td>original_release_time</td></tr>
+  <tr><td>release_time</td></tr>
+  <tr><td>tagging_time</td></tr>
+  <tr><td>encoded_by</td></tr>
+  <tr><td>lyricist</td></tr>
+  <tr><td>filetype</td></tr>
+  <tr><td>involved_people</td></tr>
+  <tr><td>content_group</td></tr>
+  <tr><td>initial_key</td></tr>
+  <tr><td>length</td></tr>
+  <tr><td>musician_credits</td></tr>
+  <tr><td>mood</td></tr>
+  <tr><td>original_album</td></tr>
+  <tr><td>original_filename</td></tr>
+  <tr><td>original_lyricist</td></tr>
+  <tr><td>original_artist</td></tr>
+  <tr><td>file_owner</td></tr>
+  <tr><td>band</td></tr>
+  <tr><td>remixed</td></tr>
+  <tr><td>set_part</td></tr>
+  <tr><td>produced</td></tr>
+  <tr><td>station_name</td></tr>
+  <tr><td>station_owner</td></tr>
+  <tr><td>album_order</td></tr>
+  <tr><td>performer_order</td></tr>
+  <tr><td>title_order</td></tr>
+  <tr><td>software</td></tr>
+  <tr><td>set_subtitle</td></tr>
+  <tr><td>user_text</td></tr>
+  <tr><td>commercial_info</td></tr>
+  <tr><td>legal_info</td></tr>
+  <tr><td>file_website</td></tr>
+  <tr><td>artist_website</td></tr>
+  <tr><td>source_website</td></tr>
+  <tr><td>station_website</td></tr>
+  <tr><td>payment</td></tr>
+  <tr><td>publisher_website</td></tr>
+  <tr><td>user_url</td></tr>
+  <tr><td>vendor</td></tr>
+  <tr><td>rg_loudness</td></tr>
+  <tr><td>track_gain</td></tr>
+  <tr><td>track_peak</td></tr>
+  <tr><td>album_gain</td></tr>
+  <tr><td>album_peak</td></tr>
+  <tr><td>icy_name</td></tr>
+  <tr><td>icy_descr</td></tr>
+  <tr><td>icy_genre</td></tr>
+  <tr><td>rva</td></tr>
+	</tabular>
+
+  <p>Here is a complete list of values that the i function accepts:</p>
+
+	<tabular>
+  <tr><td>filename</td></tr>
+  <tr><td>sample_rate</td></tr>
+  <tr><td>channels</td></tr>
+  <tr><td>bps</td></tr>
+  <tr><td>samples</td></tr>
+  <tr><td>voladj_db</td></tr>
+  <tr><td>voladj_lin</td></tr>
+  <tr><td>stream</td></tr>
+  <tr><td>mono</td></tr>
+	</tabular>
+
+  <p>Changing the <gui>Programmable title format file</gui>
+  does not take effect until Aqualung is restarted, and even then
+  it does not affect existing entries in the playlist, In order to
+  update existing entries in the playlist, the <gui>Reread file
+  metadata</gui> setting should be used.</p>
 
 	<p>The so-called <gui>Implicit command line</gui> is something
 	you should pay attention to. It exists mainly for those who

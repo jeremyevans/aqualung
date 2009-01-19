@@ -169,6 +169,7 @@ typedef struct {
 	char * album;
 	char * title;   /* NULL for album nodes */
 	char * file;    /* NULL for album nodes */
+	char * display; /* Already formatted title ready for display */
 	float voladj;   /* volume adjustment [dB] */
 	float duration; /* length in seconds */
 	unsigned size;  /* file size in bytes */

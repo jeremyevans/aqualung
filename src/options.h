@@ -214,6 +214,9 @@ typedef struct {
 	char song_color[MAX_COLORNAME_LEN];
 	char activesong_color[MAX_COLORNAME_LEN];
 
+	/* Lua */
+	char ext_title_format_file[MAXLEN];
+	int use_ext_title_format;
 } options_t;
 
 enum {

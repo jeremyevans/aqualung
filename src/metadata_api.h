@@ -40,6 +40,7 @@
 meta_frame_t * metadata_pref_frame_by_type(metadata_t * meta, int type, meta_frame_t * root);
 
 
+int metadata_get_string_field(metadata_t * meta, int type, char ** str);
 /* High-level accessor functions
  *
  * Return value: 1 if found, 0 if not found.

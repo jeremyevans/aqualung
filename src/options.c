@@ -46,6 +46,10 @@
 #endif /* _TMP_HAVE_CDDB */
 #endif /* HAVE_CDDA */
 
+#ifdef HAVE_LUA
+#include "ext_title_format.h"
+#endif /* HAVE_LUA */
+
 #ifdef HAVE_SRC
 #include <samplerate.h>
 #endif /* HAVE_SRC */
@@ -98,6 +102,7 @@ int rva_use_linear_thresh_shadow;
 float rva_avg_linear_thresh_shadow;
 float rva_avg_stddev_thresh_shadow;
 float rva_no_rva_voladj_shadow;
+char ext_title_format_file_shadow[MAXLEN];
 
 int appearance_changed;
 int reskin_flag;
@@ -153,6 +158,9 @@ GtkWidget * check_magnify_smaller_images;
 GtkListStore * ms_pathlist_store = NULL;
 GtkTreeSelection * ms_pathlist_select;
 GtkWidget * entry_ms_pathlist;
+#ifdef HAVE_LUA
+GtkWidget * entry_ext_title_format_file;
+#endif /* HAVE_LUA */
 
 #ifdef HAVE_LADSPA
 GtkWidget * combo_ladspa;
@@ -256,6 +264,7 @@ GtkWidget * color_picker;
 
 void draw_rva_diagram(void);
 void show_restart_info(void);
+void restart_active(GtkToggleButton *, gpointer);
 
 GtkListStore * restart_list_store = NULL;
 
@@ -323,6 +332,15 @@ options_window_accept(void) {
 	GtkTreeIter iter;
 	GtkTreeIter iter2;
 	int title_format_changed = 0;
+
+#ifdef HAVE_LUA
+	char * ext_title; 
+	ext_title = (char *)gtk_entry_get_text(GTK_ENTRY(entry_ext_title_format_file));
+	if (strcmp(options.ext_title_format_file, ext_title) != 0) {
+		restart_active(NULL, "Programmable title format file:\n  Need to reread file metadata\n  for all files after restarting.");
+	}
+	strncpy(options.ext_title_format_file, ext_title, MAXLEN-1);
+#endif /* HAVE_LUA */
 
 
         if (restart_flag) {
@@ -1235,6 +1253,18 @@ refresh_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 	}
 }
 
+#ifdef HAVE_LUA
+void
+browse_ext_title_format_file_clicked(GtkButton * button, gpointer data) {
+
+	file_chooser_with_entry(_("Please select a Programable Title Format File."),
+				options_window,
+				GTK_FILE_CHOOSER_ACTION_OPEN,
+				FILE_CHOOSER_FILTER_ETF,
+				(GtkWidget *)data,
+				ext_title_format_file_shadow);
+}
+#endif /* HAVE_LUA */
 
 void
 browse_ms_pathlist_clicked(GtkButton * button, gpointer data) {
@@ -1376,6 +1406,20 @@ display_title_format_help(void) {
 		       "respectively.\n"));
 }
 
+#ifdef HAVE_LUA
+void
+display_ext_title_format_help(void) {
+
+	display_help(_("\nThe file you enter/choose here will set the Lua program to use "
+		       "to format the title. See the Aqualung manual for details. "
+		       "Here is a quick example of what you can use in the file:\n\n"
+		       "function playlist_title()\n"
+		       "  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+		       "end"));
+}
+#endif /* HAVE_LUA */
+
+
 
 void
 display_implict_command_line_help(void) {
@@ -1457,7 +1501,7 @@ create_options_window(void) {
 	int ret;
 
 	GtkWidget * vbox_general;
-	GtkWidget * frame_title;
+	GtkWidget * nbook_title;
 	GtkWidget * frame_param;
 	GtkWidget * frame_misc;
 	GtkWidget * frame_cart;
@@ -1465,6 +1509,12 @@ create_options_window(void) {
 	GtkWidget * vbox_misc;
 	GtkWidget * vbox_cart;
 	GtkWidget * vbox_appearance;
+
+#ifdef HAVE_LUA
+	GtkWidget * hbox_ext_title_format_file;
+	GtkWidget * browse_ext_title_format_file;
+       	GtkWidget * help_btn_ext_title;
+#endif /* HAVE_LUA */
 
 	GtkWidget * vbox_pl;
 	GtkWidget * vbox_ms;
@@ -1543,6 +1593,11 @@ create_options_window(void) {
         restart_flag = 0;
 	reskin_flag = 0;
         appearance_changed = 0;
+	if (options.ext_title_format_file[0] == '\0') {
+		strncpy(ext_title_format_file_shadow, options.confdir, MAXLEN-1);
+	} else {
+		strncpy(ext_title_format_file_shadow, options.ext_title_format_file, MAXLEN-1);
+	}
 
 	if (!restart_list_store) {
 		restart_list_store = gtk_list_store_new(1, G_TYPE_STRING);
@@ -1574,12 +1629,12 @@ create_options_window(void) {
         gtk_container_set_border_width(GTK_CONTAINER(vbox_general), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_general, create_notebook_tab(_("General"), "general.png"));
 
-	frame_title = gtk_frame_new(_("Title format"));
-	gtk_box_pack_start(GTK_BOX(vbox_general), frame_title, FALSE, TRUE, 0);
+	nbook_title = gtk_notebook_new();
+	gtk_box_pack_start(GTK_BOX(vbox_general), nbook_title, FALSE, TRUE, 0);
 
         hbox = gtk_hbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
-	gtk_container_add(GTK_CONTAINER(frame_title), hbox);
+	gtk_notebook_append_page(GTK_NOTEBOOK(nbook_title), hbox, gtk_label_new(_("Title Format")));
 
 	entry_title = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(entry_title), MAXLEN - 1);
@@ -1590,6 +1645,26 @@ create_options_window(void) {
 	g_signal_connect(help_btn_title, "clicked", G_CALLBACK(display_title_format_help), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox), help_btn_title, FALSE, FALSE, 5);
 
+#ifdef HAVE_LUA
+	hbox_ext_title_format_file = gtk_hbox_new(FALSE, FALSE);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox_ext_title_format_file), 5);
+	gtk_notebook_append_page(GTK_NOTEBOOK(nbook_title), hbox_ext_title_format_file, gtk_label_new(_("Programmable title format file")));
+
+	entry_ext_title_format_file = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(entry_ext_title_format_file), MAXLEN - 1);
+	gtk_entry_set_text(GTK_ENTRY(entry_ext_title_format_file), options.ext_title_format_file);
+	gtk_box_pack_start(GTK_BOX(hbox_ext_title_format_file), entry_ext_title_format_file, TRUE, TRUE, 2);
+
+	browse_ext_title_format_file = gui_stock_label_button(_("Browse"), GTK_STOCK_OPEN);
+        gtk_container_set_border_width(GTK_CONTAINER(browse_ext_title_format_file), 2);
+	g_signal_connect (G_OBJECT(browse_ext_title_format_file), "clicked",
+			  G_CALLBACK(browse_ext_title_format_file_clicked), (gpointer)entry_ext_title_format_file);
+	gtk_box_pack_start(GTK_BOX(hbox_ext_title_format_file), browse_ext_title_format_file, FALSE, FALSE, 5);
+
+        help_btn_ext_title = gtk_button_new_from_stock(GTK_STOCK_HELP); 
+	g_signal_connect(help_btn_ext_title, "clicked", G_CALLBACK(display_ext_title_format_help), NULL);
+	gtk_box_pack_end(GTK_BOX(hbox_ext_title_format_file), help_btn_ext_title, FALSE, FALSE, 5);
+#endif /* HAVE_LUA */
 
 	frame_param = gtk_frame_new(_("Implicit command line"));
 	gtk_box_pack_start(GTK_BOX(vbox_general), frame_param, FALSE, TRUE, 5);
@@ -3328,6 +3403,7 @@ save_config(void) {
 	SAVE_STR(export_excl_pattern);
 	SAVE_INT(batch_tag_flags);
 	SAVE_INT(use_systray);
+	SAVE_STR(ext_title_format_file);
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store), &iter, NULL, i++)) {
@@ -3577,6 +3653,9 @@ load_config(void) {
 	options.export_filter_same = 1;
 	options.export_excl_pattern[0] = '\0';
 
+	options.ext_title_format_file[0] = '\0';
+	options.use_ext_title_format = 1;
+
 	options.batch_tag_flags = BATCH_TAG_TITLE | BATCH_TAG_ARTIST | BATCH_TAG_ALBUM |
 		BATCH_TAG_YEAR | BATCH_TAG_COMMENT | BATCH_TAG_TRACKNO;
 
@@ -3738,6 +3817,7 @@ load_config(void) {
 		LOAD_STR(export_excl_pattern);
 		LOAD_INT(batch_tag_flags);
 		LOAD_INT(use_systray);
+		LOAD_STR(ext_title_format_file);
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
@@ -3767,8 +3847,11 @@ load_config(void) {
 		}
 	}
 
-        xmlFreeDoc(doc);
-        return;
+#ifdef HAVE_LUA
+	setup_extended_title_formatting();
+#endif /* HAVE_LUA */
+	xmlFreeDoc(doc);
+	return;
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

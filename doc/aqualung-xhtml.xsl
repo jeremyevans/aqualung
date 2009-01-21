@@ -236,6 +236,7 @@
   <xsl:template match="q">`<xsl:apply-templates/>'</xsl:template>
   <xsl:template match="gui"><span class="gui"><xsl:apply-templates/></span></xsl:template>
   <xsl:template match="cmd"><code><xsl:apply-templates/></code></xsl:template>
+  <xsl:template match="verbatim"><pre><xsl:apply-templates/></pre></xsl:template>
   <xsl:template match="file"><tt><xsl:apply-templates/></tt></xsl:template>
   <xsl:template match="emph"><b><i><xsl:apply-templates/></i></b></xsl:template>
 

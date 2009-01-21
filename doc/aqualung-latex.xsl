@@ -8,7 +8,15 @@
   <xsl:key name="crossref" match="*[@key]" use="@key"/>
 
   <xsl:template match="text()">
-    <xsl:call-template name="replace"/>
+    <xsl:choose>
+      <xsl:when test="ancestor::verbatim[position() >= 0]">
+	<xsl:value-of select="."/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:call-template name="replace"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <!--xsl:call-template name="replace"/-->
   </xsl:template>
 
   <xsl:template name="replace">
@@ -63,7 +71,7 @@
 	<xsl:call-template name="replace">
 	  <xsl:with-param name="text" select="substring-before($text, '--')"/>
 	</xsl:call-template>
-	<xsl:text>-{}-</xsl:text>
+	<xsl:text>{-}{-}</xsl:text>
 	<xsl:call-template name="replace">
 	  <xsl:with-param name="text" select="substring-after($text, '--')"/>
 	</xsl:call-template>
@@ -351,6 +359,12 @@
     <xsl:text>\texttt{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>}</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="verbatim">
+    <xsl:text>\begin{verbatim}</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>&#x0A;\end{verbatim}</xsl:text>
   </xsl:template>
 
   <xsl:template match="file">

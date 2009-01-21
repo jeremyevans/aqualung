@@ -27,6 +27,13 @@ code {
 	white-space: nowrap;
 }
 
+pre {
+	font-family: "Bitstream Vera Sans Mono", monospace;
+	border: 1px solid #ccccff;
+	padding: 5px;
+	margin-left: 20px;
+}
+
 p {
 	text-align: justify;
 }

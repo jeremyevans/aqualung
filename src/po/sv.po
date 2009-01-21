@@ -1,0 +1,3067 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Aqualung svn version 1055\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-20 09:36+0100\n"
+"PO-Revision-Date: 2009-01-21 15:42+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+
+msgid "About"
+msgstr "Om"
+
+msgid "Build version: "
+msgstr "Byggversion:"
+
+msgid "Homepage:"
+msgstr "Webbsida:"
+
+msgid "Authors:"
+msgstr "Upphovsmän:"
+
+msgid "Core design, engineering & programming:\n"
+msgstr "Grundläggande formgivning, konstruktion & programmering:\n"
+
+msgid "Skin support, look & feel, GUI hacks:\n"
+msgstr "Skalstöd, utseende & känsla samt GUI hacks (gags-hack):\n"
+
+msgid "Programming, GUI engineering:\n"
+msgstr "Programmering & GUI engineering (gags-konstruktion):\n"
+
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr "OpenBSD-kompatibilitet & metadata-finjusteringar:\n"
+
+msgid "Translators:"
+msgstr "Översättare:"
+
+msgid "German:\n"
+msgstr "Tyska:\n"
+
+msgid "Hungarian:\n"
+msgstr "Ungerska:\n"
+
+msgid "Italian:\n"
+msgstr "Italienska:\n"
+
+msgid "Russian:\n"
+msgstr "Ryska:\n"
+
+msgid "Ukrainian:\n"
+msgstr "Ukrainska:\n"
+
+msgid "Graphics:"
+msgstr "Grafik:"
+
+msgid "Logo, icons:\n"
+msgstr "Logotyp och ikoner:\n"
+
+msgid "This Aqualung binary is compiled with:"
+msgstr "Denna Aqualung-binär är kompilerad med:"
+
+msgid "Optional features:"
+msgstr "Valbara funktioner:"
+
+msgid "LADSPA plugin support\n"
+msgstr "Stöd för LADSPA-insticksmodul\n"
+
+msgid "CDDA (Audio CD) support\n"
+msgstr "Stöd för CDDA (ljud-cd)\n"
+
+msgid "CDDB support\n"
+msgstr "CDDB-stöd\n"
+
+msgid "Sample Rate Converter support\n"
+msgstr "Stöd för samplingsfrekvenskonverterare\n"
+
+msgid "iRiver iFP driver support\n"
+msgstr "Stöd för iRiver iFP-drivrutin\n"
+
+msgid "Loop playback support\n"
+msgstr ""
+
+msgid "Systray support\n"
+msgstr "Stöd för systembricka\n"
+
+msgid "Podcast support\n"
+msgstr "Stöd för poddsändning\n"
+
+msgid "Lua (programmable title formatting) support\n"
+msgstr "Stöd för Lua (programmeringsbar titelformatering)\n"
+
+msgid "Decoding support:"
+msgstr "Avkodningsstöd:"
+
+msgid "sndfile (WAV, AIFF, etc.)\n"
+msgstr "sndfile (WAV, AIFF, etc.)\n"
+
+msgid "Free Lossless Audio Codec (FLAC)\n"
+msgstr "Free Lossless Audio Codec (FLAC)\n"
+
+msgid "Ogg Vorbis\n"
+msgstr "Ogg Vorbis\n"
+
+msgid "Ogg Speex\n"
+msgstr "Ogg Speex\n"
+
+msgid "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
+msgstr "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
+
+msgid "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
+msgstr "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
+
+msgid "Musepack\n"
+msgstr "Musepack\n"
+
+msgid "Monkey's Audio Codec\n"
+msgstr "Monkey's Audio Codec\n"
+
+msgid "WavPack\n"
+msgstr "WavPack\n"
+
+msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
+msgstr "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
+
+msgid "Encoding support:"
+msgstr "kodningsstöd:"
+
+msgid "sndfile (WAV)\n"
+msgstr "sndfile (WAV)\n"
+
+msgid "LAME (MP3)\n"
+msgstr "LAME (MP3)\n"
+
+msgid "Output driver support:"
+msgstr ""
+
+msgid "sndio Audio\n"
+msgstr "sndio Audio\n"
+
+msgid "OSS Audio\n"
+msgstr "OSS Audio\n"
+
+msgid "ALSA Audio\n"
+msgstr "ALSA Audio\n"
+
+msgid "JACK Audio Server\n"
+msgstr "JACK Audio Server\n"
+
+msgid "Win32 Sound API\n"
+msgstr "Win32 Sound API\n"
+
+msgid ""
+"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+msgstr ""
+"Följande text är en informell översättning som enbart tillhandahålls i informativt syfte. För alla juridiska tolkningar gäller den engelska originaltexten.\n"
+"\n"
+"Detta program är fri programvara. Du kan distribuera det och/eller modifiera det under villkoren i GNU General Public License, publicerad av Free Software Foundation, antingen version 2 eller (om du så vill) någon senare version.\n"
+"\n"
+"Detta program distribueras i hopp om att det ska vara användbart, men UTAN NÅGON SOM HELST GARANTI, även utan underförstådd garanti om SÄLJBARHET eller LÄMPLIGHET FÖR NÅGOT SPECIELLT ÄNDAMÅL. Se GNU General Public License för ytterligare information.\n"
+"\n"
+"Du bör ha fått en kopia av GNU General Public License tillsammans med detta program. Om inte, skriv till Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+
+msgid "Enabled"
+msgstr "Aktiverad"
+
+msgid "Source"
+msgstr "Källa"
+
+msgid "CDDB"
+msgstr "CDDB"
+
+msgid "CDDB (not available)"
+msgstr "CDDB (inte tillgänglig)"
+
+msgid "Metadata"
+msgstr "Metadata"
+
+msgid "Filesystem"
+msgstr "Filsystem"
+
+msgid "Capitalization"
+msgstr "Versalisering"
+
+msgid "Capitalize: "
+msgstr "Versalisera:"
+
+msgid "All words"
+msgstr "Alla ord"
+
+msgid "First word only"
+msgstr "Bara första ordet"
+
+msgid "Force case: "
+msgstr ""
+
+msgid "Force other letters to lowercase"
+msgstr "Tvinga andra bokstäver att skrivas i små bokstäver"
+
+msgid "Regular expression"
+msgstr "Reguljärt uttryck"
+
+msgid "Regexp:"
+msgstr ""
+
+msgid "Replace:"
+msgstr "Ersätt:"
+
+msgid "Predefined transformations"
+msgstr ""
+
+msgid "Remove file extension"
+msgstr "Ta bort filändelse"
+
+msgid "Remove leading number"
+msgstr ""
+
+msgid "Convert underscore to space"
+msgstr "Konvertera understreck till mellanslag"
+
+msgid "Trim leading, tailing and duplicate spaces"
+msgstr ""
+
+msgid "Regexp matches empty string"
+msgstr ""
+
+msgid "Please select the root directory."
+msgstr "Var god välj rootkatalogen."
+
+msgid "Select build type"
+msgstr ""
+
+msgid "Directory driven"
+msgstr ""
+
+msgid ""
+"Follows the directory structure to identify the artists and\n"
+"records. The files are added on a record basis."
+msgstr ""
+"Följer katalogstrukturen för att identifiera artisterna och\n"
+"skivorna. The files are added on a record basis."
+
+msgid "Independent"
+msgstr "Oberoende"
+
+msgid ""
+"Recursive search from the root directory for audio files.\n"
+"The files are processed independently, so only metadata\n"
+"and filename transformation are available."
+msgstr ""
+
+msgid "Load settings from Music Store file"
+msgstr "Läs in inställningar från musikbiblioteksfil"
+
+msgid "Build/Update store"
+msgstr "Bygg/uppdatera bibliotek"
+
+msgid "General"
+msgstr "Allmänt"
+
+msgid "Directory structure"
+msgstr "Katalogstruktur"
+
+msgid "Root path:"
+msgstr "Sökväg för root:"
+
+msgid "_Browse..."
+msgstr "_Bläddra..."
+
+msgid "Structure:"
+msgstr "Struktur:"
+
+msgid "root / record / track"
+msgstr "root / skiva / spår"
+
+msgid "root / artist / record / track"
+msgstr "root / artist / skiva / spår"
+
+msgid "root / artist / artist / record / track"
+msgstr "root / artist / artist / skiva / spår"
+
+msgid "root / artist / artist / artist / record / track"
+msgstr "root / artist / artist / artist / skiva / spår"
+
+msgid "Exclude files matching wildcard"
+msgstr "Exkludera filer som matchar jokertecken"
+
+msgid "Include only files matching wildcard"
+msgstr "Inkludera bara filer som matchar jokertecken"
+
+msgid "Reread data for existing tracks"
+msgstr "Läs om data för existerande spår"
+
+msgid "Remove non-existing files from store"
+msgstr "Ta bort icke-existerande filer från bibliotek"
+
+msgid "Artist"
+msgstr "Artist"
+
+msgid "Sort artists by"
+msgstr "Sortera artister efter"
+
+msgid "Artist name"
+msgstr "Artistnamn"
+
+msgid "Artist name (lowercase)"
+msgstr "Artistnamn (små bokstäver)"
+
+msgid "Directory name"
+msgstr "Katalognamn"
+
+msgid "Directory name (lowercase)"
+msgstr "Katalognamn (små bokstäver)"
+
+msgid "Record"
+msgstr "Skiva"
+
+msgid "Sort records by"
+msgstr "Sortera skivor efter"
+
+msgid "Record name"
+msgstr "Skivnamn"
+
+msgid "Record name (lowercase)"
+msgstr "Skivnamn (små bokstäver)"
+
+msgid "Year"
+msgstr "År"
+
+msgid "Add year to the comments of new records"
+msgstr "Lägg till år till kommentarer av nya skivor"
+
+msgid "Track"
+msgstr "Spår"
+
+msgid "Import Replaygain tag as manual RVA"
+msgstr "Importera tagg för uppspelningsförstärkning som manuell RVA"
+
+msgid "Import Comment tag"
+msgstr "Importera kommentartagg"
+
+msgid "Sandbox"
+msgstr ""
+
+msgid "Filename:"
+msgstr "Filnamn:"
+
+msgid "Test"
+msgstr ""
+
+msgid "Building store from filesystem"
+msgstr "Bygger musikbibliotek från filsystem"
+
+msgid "Processing:"
+msgstr "Behandlar:"
+
+msgid "Action:"
+msgstr "Åtgärd:"
+
+msgid "Abort"
+msgstr "Avbryt"
+
+msgid "Unknown Artist"
+msgstr "Okänd artist"
+
+msgid "Unknown Record"
+msgstr "Okänd skiva"
+
+msgid "Scanning files"
+msgstr "Söker av filer"
+
+msgid "Processing metadata"
+msgstr "Behandlar metadata"
+
+msgid "CDDB lookup"
+msgstr "CDDB-letar"
+
+msgid "Name transformation"
+msgstr ""
+
+msgid "Reading file"
+msgstr "Läser fil"
+
+msgid "Removing non-existing files"
+msgstr "Tar bort icke-existerande filer"
+
+msgid "Unknown disc"
+msgstr "Okänd disk"
+
+msgid "No disc"
+msgstr "Ingen disk"
+
+msgid "CDDB query"
+msgstr "CDDB-fråga"
+
+msgid "Retrieving matches from server..."
+msgstr ""
+
+msgid "Connecting to CDDB server..."
+msgstr "Ansluter till CDDB-server..."
+
+msgid "Error"
+msgstr "Fel"
+
+msgid "An error occurred while attempting to connect to the CDDB server."
+msgstr "Ett fel inträffade vid försök att ansluta till CDDB-servern."
+
+msgid "Warning"
+msgstr "Varning"
+
+msgid "No matching record found."
+msgstr "Ingen matchande skiva hittades."
+
+msgid "Import as Sort Key"
+msgstr ""
+
+msgid "Import as Title"
+msgstr "Importera som Titel"
+
+msgid "Import as Year"
+msgstr "Importera som År"
+
+msgid ""
+"Artist appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Artistnamnet ser ut att bara bestå av små bokstäver.\n"
+"Vill du fortsätta?"
+
+msgid ""
+"Artist appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Artistnamnet ser ut att bara bestå av stora bokstäver.\n"
+"Vill du fortsätta?"
+
+msgid ""
+"Title appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Titeln ser ut att bara bestå av små bokstäver.\n"
+"Vill du fortsätta?"
+
+msgid ""
+"Title appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Titeln ser ut att bara bestå av stora bokstäver.\n"
+"Vill du fortsätta?"
+
+msgid ""
+"It is very likely that the year is wrong.\n"
+"Do you want to proceed?"
+msgstr ""
+"Det är väldigt troligt att året är fel.\n"
+"Vill du fortsätta?"
+
+msgid "The email address provided for submission is invalid."
+msgstr "E-postadressen som tillhandahölls för uppladdning är ogiltig."
+
+msgid "An error occurred while submitting the record to the CDDB server."
+msgstr "Ett fel inträffade då skivan skulle skickas in till CDDB-servern."
+
+msgid "Correct existing record"
+msgstr "Rätta existerande skiva"
+
+msgid "Submit new record"
+msgstr "Skicka in ny skiva"
+
+msgid "Matches:"
+msgstr ""
+
+msgid "Artist:"
+msgstr "Artist:"
+
+msgid "Title:"
+msgstr "Titel:"
+
+msgid "Year:"
+msgstr "År"
+
+msgid "Category:"
+msgstr "Kategori:"
+
+msgid "(choose a category)"
+msgstr "(välj en kategori)"
+
+msgid "Genre:"
+msgstr "Genre:"
+
+msgid "Extended data:"
+msgstr "Utökat data:"
+
+msgid "Import as Artist"
+msgstr "Importera som Artist"
+
+msgid "Add to Comments"
+msgstr "Lägg till i kommentarer"
+
+msgid "Tracks"
+msgstr "Spår"
+
+msgid "You have to provide an email address for CDDB submission."
+msgstr "Du måste tillhandahålla en e-postadress för att ladda upp till CDDB."
+
+msgid "Please select the directory for ripped files."
+msgstr "Var god ange katalogen för extraherade filer."
+
+msgid "(none)"
+msgstr "(ingen)"
+
+msgid "fast"
+msgstr "snabb"
+
+msgid "best"
+msgstr "bäst"
+
+msgid "Compression level:"
+msgstr "Komprimeringsnivå:"
+
+msgid "Bitrate [kbps]:"
+msgstr "Bithastighet [kbps]:"
+
+msgid "Artist/Album already existing, not empty"
+msgstr "Artist/album finns redan, inte tomt"
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already containing some tracks. If you press OK, these tracks will be removed. The files themselves will be left intact, but they will be removed from the destination Music Store. Press Cancel to get back to change the Artist/Album or the destination Music Store."
+msgstr ""
+"\n"
+"Musikbiblioteket som du markerade har en matchande artist och album vilket redan innehåller några spår. Om du trycker OK kommer dessa spår att tas bort. Själva filerna kommer att lämnas intakta, men de kommer att tas bort från musikbiblioteket. Tryck Avbryt för att gå tillbaka och ändra Artist/Album eller musikbibliotek."
+
+msgid "Rip CD"
+msgstr "Extrahera cd"
+
+msgid "Album:"
+msgstr "Album:"
+
+msgid "Rip"
+msgstr "Extrahera"
+
+msgid "No."
+msgstr "Nej."
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Select"
+msgstr "Välj"
+
+msgid "All"
+msgstr "Alla"
+
+msgid "None"
+msgstr "Ingen"
+
+msgid "Output"
+msgstr "Utdata"
+
+msgid "Destination"
+msgstr ""
+
+msgid "Target directory for ripped files"
+msgstr "Målkatalog för extraherade filer"
+
+msgid "Add to Music Store"
+msgstr "Lägg till i musikbibliotek"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "File format:"
+msgstr "Filformat:"
+
+msgid "VBR encoding"
+msgstr "VBR-kodning"
+
+msgid "Tag files with metadata"
+msgstr "Tagga filer med metadata"
+
+msgid "Paranoia"
+msgstr "Paranoia"
+
+msgid "Paranoia error correction"
+msgstr "Paranoiafelkorrigering"
+
+msgid "Perform overlapped reads"
+msgstr ""
+
+msgid "Verify data integrity"
+msgstr "Bekräfta dataintegritet"
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+
+msgid "Maximum number of retries:"
+msgstr "Maximala antalet återförsök:"
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+
+msgid "Total"
+msgstr "Totalt"
+
+msgid "(audio only)"
+msgstr "(bara ljud)"
+
+msgid "Ripping CD tracks"
+msgstr "Extraherar cd-spår"
+
+msgid "Begin"
+msgstr "Börja"
+
+msgid "Length"
+msgstr "Speltid"
+
+msgid "Progress"
+msgstr "Förlopp"
+
+msgid "Close window when complete"
+msgstr "Stäng fönstret när det är klart"
+
+msgid "Close"
+msgstr "Stäng"
+
+msgid "Unknown Album"
+msgstr "Okänt album"
+
+msgid "Unknown Track"
+msgstr "Okänt spår"
+
+msgid "Please select the directory for exported files."
+msgstr "Var god ange katalogen för exporterade filer."
+
+msgid "Copy"
+msgstr "Kopia"
+
+msgid "Help"
+msgstr "Hjälp"
+
+#, c-format
+msgid ""
+"\n"
+"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%%%a, %%%%r and %%%%t. The track number and format-dependent file extension are denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives an identifier which is unique within an export session."
+msgstr ""
+"\n"
+"Strängmallen som du skriver in här kommer att användas för att konstruera filnamnet på de exporterade filerna. Artist-, skiv- och spårnamnen kommer att betecknas med %%%%a, %%%%r och %%%%t. The track number and format-dependent file extension are denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives an identifier which is unique within an export session."
+
+msgid "Export files"
+msgstr "Exportera filer"
+
+msgid "Location and filename"
+msgstr "Plats och filnamn"
+
+msgid "Target directory:"
+msgstr "Målkatalog:"
+
+msgid "Create subdirectories for artists"
+msgstr "Skapa underkataloger för artister"
+
+msgid "Create subdirectories for albums"
+msgstr "Skapa underkataloger för album"
+
+msgid ""
+"Subdirectory name\n"
+"length limit:"
+msgstr ""
+
+msgid "Filename template:"
+msgstr "Filnamnsmall:"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Do not reencode files already being in the target format"
+msgstr "Koda inte om filer som redan är i målformatet"
+
+msgid ""
+"Do not reencode files\n"
+"matching wildcard:"
+msgstr ""
+"Koda inte om filer\n"
+"som machar jokertecken:"
+
+msgid "Error in format string"
+msgstr "Fel i formatsträng"
+
+msgid "Exporting files"
+msgstr "Exporterar filer"
+
+msgid "Source file:"
+msgstr "Källfil:"
+
+msgid "Target file:"
+msgstr "Målfil:"
+
+msgid "Progress:"
+msgstr "Förlopp:"
+
+msgid "*File info"
+msgstr "*Filinformation"
+
+msgid "File info"
+msgstr "Filinformation"
+
+msgid "There are unsaved changes to the file metadata."
+msgstr "Det finns osparade ändringar till filmetadatat."
+
+msgid "Save and close"
+msgstr "Spara och stäng"
+
+msgid "Discard changes"
+msgstr "Förkasta ändringar"
+
+msgid "Do not close"
+msgstr "Stäng inte"
+
+#, c-format
+msgid ""
+"Conversion error in field %s:\n"
+"'%s' does not conform to format '%s'!"
+msgstr ""
+
+msgid ""
+"Attached Picture frame with no image set!\n"
+"Please set an image or remove the frame."
+msgstr ""
+
+#, c-format
+msgid ""
+"Failed to write metadata to file.\n"
+"Reason: %s"
+msgstr ""
+"Misslyckades med att skriva metadata till fil.\n"
+"Orsak: %s"
+
+#, c-format
+msgid ""
+"Error converting field %s to Year:\n"
+"'%s' is not an integer number!"
+msgstr ""
+
+msgid "Please specify the file to save the image to."
+msgstr "Var god ange filen som bilden ska sparas till."
+
+msgid "(no image)"
+msgstr "(ingen bild)"
+
+msgid "(error loading image)"
+msgstr "(fel uppstod vid inläsning av bild)"
+
+msgid "Please specify the file to load the image from."
+msgstr "Var god ange filen som bilden ska läsas in från."
+
+#, c-format
+msgid ""
+"Could not load image from:\n"
+"%s"
+msgstr ""
+"Kunde inte läsa in bild från:\n"
+"%s"
+
+#, c-format
+msgid "MIME type: %s"
+msgstr "MIME-typ: %s"
+
+msgid "Picture type:"
+msgstr "Bildtyp:"
+
+msgid "Description:"
+msgstr "Beskrivning:"
+
+msgid "(no description)"
+msgstr "(ingen beskrivning)"
+
+msgid "Change"
+msgstr "Byt"
+
+msgid "Save"
+msgstr "Spara"
+
+msgid "Import as Record"
+msgstr "Importera som Skiva"
+
+msgid "Import as Track No."
+msgstr "Importera som Spårnummer"
+
+msgid "Import as RVA"
+msgstr "Importera som RVA"
+
+msgid "Add"
+msgstr "Lägg till"
+
+msgid "field:"
+msgstr "fält:"
+
+msgid "tag:"
+msgstr "tagg:"
+
+msgid "Audio CD"
+msgstr "Ljud-cd"
+
+msgid "Track:"
+msgstr "Spår:"
+
+msgid "File:"
+msgstr "Fil:"
+
+msgid "Audio data"
+msgstr "Ljuddata"
+
+msgid "Format:"
+msgstr "Format:"
+
+msgid "Length:"
+msgstr "Speltid:"
+
+msgid "Samplerate:"
+msgstr "Samplingsfrekvens:"
+
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld Hz"
+
+msgid "Channel count:"
+msgstr "Antal kanaler:"
+
+msgid "MONO"
+msgstr "MONO"
+
+msgid "STEREO"
+msgstr "STEREO"
+
+msgid "Bandwidth:"
+msgstr "Bandbredd:"
+
+msgid "Total samples:"
+msgstr "Totalt antal samplingar:"
+
+msgid "Mode:"
+msgstr "Läge:"
+
+msgid "Type:"
+msgstr "Typ:"
+
+msgid "Channels:"
+msgstr "Kanaler:"
+
+msgid "Patterns:"
+msgstr "Mönster:"
+
+msgid "Samples:"
+msgstr "Samplingar:"
+
+msgid "Instruments:"
+msgstr "Instrument:"
+
+msgid "Samples"
+msgstr "Samplingar"
+
+msgid "Instruments"
+msgstr "Instrument"
+
+msgid "Name"
+msgstr "Namn"
+
+msgid "Output:"
+msgstr "Utdata:"
+
+msgid "No output"
+msgstr "Inget utdata"
+
+msgid "SRC Type: "
+msgstr "SRC-typ:"
+
+#, c-format
+msgid "Loop range: %d-%d%% [%s - %s]"
+msgstr ""
+
+#, c-format
+msgid "Loop range: %d-%d%%"
+msgstr ""
+
+msgid ""
+"One or more stores in Music Store have been modified.\n"
+"Do you want to save them before exiting?"
+msgstr ""
+"En eller flera bibliotek i musikbiblioteket har modifierats.\n"
+"Vill du spara dem innan du avslutar?"
+
+msgid "Do not exit"
+msgstr "Avsluta inte"
+
+msgid "Quit"
+msgstr "Avsluta"
+
+#, c-format
+msgid "Position: %d%%"
+msgstr "Position: %d%%"
+
+#, c-format
+msgid "Mute"
+msgstr "Tysta"
+
+#, c-format
+msgid "%d dB"
+msgstr "%d dB"
+
+#, c-format
+msgid "Volume: %s"
+msgstr "Volym: %s"
+
+#, c-format
+msgid "%d%% R"
+msgstr "%d%% H"
+
+#, c-format
+msgid "%d%% L"
+msgstr "%d%% V"
+
+#, c-format
+msgid "C"
+msgstr "M"
+
+#, c-format
+msgid "Balance: %s"
+msgstr "Balans: %s"
+
+msgid "JACK connection lost"
+msgstr "JACK-anslutning borttappad"
+
+msgid "JACK has either been shutdown or it disconnected Aqualung because it was not fast enough. All you can do now is restart both JACK and Aqualung."
+msgstr "JACK har antingen stängts av eller så kopplade det från Aqualung för att det inte var tillräckligt snabbt. Det enda du kan göra nu är att starta om både JACK och Aqualung."
+
+msgid "Warn me if the Window Manager does not support system tray"
+msgstr "Varna mig om fönsterhanteraren inte stöder visning av ikon i systembricka"
+
+msgid "Aqualung is compiled with system tray support, but the status icon could not be embedded in the notification area. Your desktop may not have support for a system tray, or it has not been configured correctly."
+msgstr "Aqualung är kompilerat med stöd för ikon i systembricka, men statusikonen kunde inte bäddas in i notifieringsytan. Ditt skrivbord har kanske inte stöd för en systembricka, eller så har den inte konfigurerats på rätt sätt."
+
+msgid "Settings"
+msgstr "Inställningar"
+
+msgid "Skin chooser"
+msgstr "Skalväljare"
+
+msgid "JACK port setup"
+msgstr "JACK-portinställning"
+
+msgid "Previous song"
+msgstr "Föregående låt"
+
+msgid "Stop"
+msgstr "Stoppa"
+
+msgid "Next song"
+msgstr "Nästa låt"
+
+msgid "Play/Pause"
+msgstr "Spela/pausa"
+
+msgid "Play"
+msgstr "Spela"
+
+msgid "Pause"
+msgstr "Pausa"
+
+msgid "Repeat current song"
+msgstr "Upprepa aktuell låt"
+
+msgid "Repeat all songs"
+msgstr "Upprepa alla låtar"
+
+msgid "Shuffle songs"
+msgstr "Blanda låtar"
+
+msgid "Toggle playlist"
+msgstr "Växla spellista"
+
+msgid "Toggle music store"
+msgstr "Växla musikbibliotek"
+
+msgid "Toggle LADSPA patch builder"
+msgstr ""
+
+msgid "Show Aqualung"
+msgstr "Visa Aqualung"
+
+msgid "Hide Aqualung"
+msgstr "Dölj Aqualung"
+
+msgid "Previous"
+msgstr "Föregående"
+
+msgid "Next"
+msgstr "Nästa"
+
+#, c-format
+msgid "%.1f MB / %.1f MB"
+msgstr "%.1f MB / %.1f MB"
+
+#, c-format
+msgid "%d / %d files"
+msgstr "%d / %d filer"
+
+#, c-format
+msgid "%d / %d directories"
+msgstr "%d / %d kataloger"
+
+msgid "Cannot write to selected directory. Please select another directory."
+msgstr "Kan inte skriva till markerad katalog. Var god välj en annan katalog."
+
+msgid "Done"
+msgstr "Klar"
+
+msgid "Aborted..."
+msgstr "Avbruten..."
+
+msgid "Please enter directory name."
+msgstr "Var god skriv in ett katalognamn."
+
+msgid "Create directory"
+msgstr "Skapa katalog"
+
+msgid "Please enter a new name."
+msgstr "Var god skriv in ett namn."
+
+msgid "Rename"
+msgstr "Byt namn"
+
+#, c-format
+msgid ""
+"Directory '%s' will be removed with its entire contents.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"Katalog '%s' kommer att tas bort med hela dess innehåll.\n"
+"\n"
+"Vill du fortsätta?"
+
+#, c-format
+msgid ""
+"File '%s' will be removed.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"Fil '%s' kommer att tas bort.\n"
+"\n"
+"Vill du fortsätta?"
+
+msgid "Remove"
+msgstr "Ta bort"
+
+#, c-format
+msgid " (%.1f MB)"
+msgstr " (%.1f MB)"
+
+#, c-format
+msgid " (capacity = %.1f MB)"
+msgstr "(kapacitet = %.1f MB)"
+
+#, c-format
+msgid " Free space (%.1f MB)"
+msgstr " Fritt utrymme (%.1f MB)"
+
+msgid ""
+"No suitable iRiver iFP device found.\n"
+"Perhaps it is unplugged or turned off."
+msgstr ""
+"Ingen lämplig iRiver iFP-enhet hittades.\n"
+"Kanske är den uttagen eller avstängd."
+
+msgid ""
+"Device is busy.\n"
+"(Aqualung was unable to claim its interface.)"
+msgstr ""
+"Enheten är upptagen.\n"
+"(Aqualung kunde inte nå dess gränssnitt.)"
+
+msgid ""
+"Device is not responding.\n"
+"Try jiggling the handle."
+msgstr ""
+"Enheten svarar inte.\n"
+"Try jiggling the handle."
+
+msgid "Please select a local path."
+msgstr "Var god välj en lokal sökväg."
+
+msgid "Please select at least one valid song from playlist."
+msgstr "Var god välj minst en giltig låt från spellista."
+
+#, c-format
+msgid ""
+"One song has format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"En låt är i ett format som inte stöds av din spelare.\n"
+"\n"
+"Vill du fortsätta?"
+
+#, c-format
+msgid ""
+"%d of %d songs have format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"%d av %d låtar är i ett format som inte stöds av din spelare.\n"
+"\n"
+"Vill du fortsätta?"
+
+#, c-format
+msgid ""
+"The selected song has format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"De markerade låtarna är i ett format som inte stöds av din spelare.\n"
+"\n"
+"Vill du fortsätta?"
+
+#, c-format
+msgid ""
+"None of the selected songs has format supported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"Ingen av de markerade låtarna är i ett format som stöds av din spelare.\n"
+"\n"
+"Vill du fortsätta?"
+
+msgid "iFP device manager (upload mode)"
+msgstr "iFP-enhetshanterare (uppladdningsläge)"
+
+msgid "iFP device manager (download mode)"
+msgstr "iFP-enhetshanterare (hämtningsläge)"
+
+msgid "Selected files:"
+msgstr "Markerade filer:"
+
+msgid "label_songs"
+msgstr ""
+
+msgid "<b>Songs info</b>"
+msgstr "<b>Information om låtar</b>"
+
+msgid "Model:"
+msgstr "Modell:"
+
+msgid "Battery"
+msgstr "Batteri"
+
+msgid "Free space"
+msgstr "Fritt utrymme"
+
+msgid "<b>Device status</b>"
+msgstr "<b>Enhetsstatus</b>"
+
+msgid "Size"
+msgstr "Storlek"
+
+msgid "Create a new directory"
+msgstr "Skapa en ny katalog"
+
+msgid "<b>Remote directory</b>"
+msgstr "<b>Fjärrkatalog</b>"
+
+msgid "<b>Local directory</b>"
+msgstr "<b>Lokal katalog</b>"
+
+msgid "Browse"
+msgstr "Bläddra"
+
+msgid "File name: "
+msgstr "Filnamn:"
+
+msgid "Current file: "
+msgstr "Aktuell fil:"
+
+msgid "Overall: "
+msgstr ""
+
+msgid "Idle"
+msgstr "Inaktiv"
+
+msgid "<b>Transfer progress</b>"
+msgstr "<b>Överföringsförlopp</b>"
+
+msgid "Close window when transfer complete"
+msgstr "Stäng fönster då överföring är klar"
+
+msgid "_Upload"
+msgstr "_Skicka"
+
+msgid "_Download"
+msgstr "_Hämta"
+
+msgid "_Abort"
+msgstr "_Avbryt"
+
+msgid "Success"
+msgstr "Succé"
+
+msgid "Memory allocation error"
+msgstr "Minnesallokeringsfel"
+
+msgid "Unable to open file"
+msgstr "Kan inte öppna fil"
+
+msgid "No metadata support for this format"
+msgstr "Inget metadata stöder detta format"
+
+msgid "File is not writable"
+msgstr "Filen är inte skrivbar"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "Fältet 'Spårnummer' har ett ogiltigt värde"
+
+msgid "Invalid 'Genre' field value"
+msgstr "Fältet 'Genre' har ett ogiltigt värde"
+
+msgid "Conversion to target charset failed"
+msgstr ""
+
+msgid "Internal error"
+msgstr "Internt fel"
+
+msgid "Unknown error"
+msgstr "Okänt fel"
+
+msgid "Album"
+msgstr "Album"
+
+msgid "Date"
+msgstr "Datum"
+
+msgid "Genre"
+msgstr "Genre"
+
+msgid "Track No."
+msgstr "Spårnummer"
+
+msgid "Comment"
+msgstr "Kommentar"
+
+msgid "Disc"
+msgstr "Disk"
+
+msgid "Performer"
+msgstr "Sångare"
+
+msgid "Description"
+msgstr "Beskrivning"
+
+msgid "Organization"
+msgstr "Organisation"
+
+msgid "Location"
+msgstr "Plats"
+
+msgid "Contact"
+msgstr "Kontakt"
+
+msgid "License"
+msgstr "Licens"
+
+msgid "Copyright"
+msgstr "Copyright"
+
+msgid "ISRC"
+msgstr "ISRC"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Subtitle"
+msgstr ""
+
+msgid "Debut Album"
+msgstr "Debutalbum"
+
+msgid "Publisher"
+msgstr "Utgivare"
+
+msgid "Conductor"
+msgstr "Dirigent"
+
+msgid "Composer"
+msgstr "Kompositör"
+
+msgid "Publication Right"
+msgstr ""
+
+msgid "File"
+msgstr "Fil"
+
+msgid "EAN/UPC"
+msgstr "EAN/UPC"
+
+msgid "ISBN"
+msgstr "ISBN"
+
+msgid "Catalog Number"
+msgstr "Katalognummer"
+
+msgid "Label Code"
+msgstr "Etikett-id"
+
+msgid "Record Date"
+msgstr "Inspelningsdatum"
+
+msgid "Record Location"
+msgstr "Inspelningsplats"
+
+msgid "Media"
+msgstr ""
+
+msgid "Index"
+msgstr ""
+
+msgid "Related"
+msgstr ""
+
+msgid "Abstract"
+msgstr ""
+
+msgid "Language"
+msgstr "Språk"
+
+msgid "Bibliography"
+msgstr "Bibliografi"
+
+msgid "Introplay"
+msgstr ""
+
+msgid "BPM"
+msgstr "BPM"
+
+msgid "Encoding Time"
+msgstr "Kodningstid"
+
+msgid "Playlist Delay"
+msgstr "Spellistefördröjning"
+
+msgid "Original Release Time"
+msgstr "Ursprungligt utgivningsdatum"
+
+msgid "Release Time"
+msgstr "Utgivningsdatum"
+
+msgid "Tagging Time"
+msgstr "Taggningstid"
+
+msgid "Encoded by"
+msgstr "Kodad av"
+
+msgid "Lyricist/Text Writer"
+msgstr "Låtskrivare/textskrivare"
+
+msgid "File Type"
+msgstr "Filtyp"
+
+msgid "Involved People"
+msgstr "Involverade personer"
+
+msgid "Content Group"
+msgstr ""
+
+msgid "Initial key"
+msgstr ""
+
+msgid "Musician Credits"
+msgstr ""
+
+msgid "Mood"
+msgstr "Stämning"
+
+msgid "Original Album"
+msgstr "Ursprungligt album"
+
+msgid "Original Filename"
+msgstr "Ursprungligt filnamn"
+
+msgid "Original Lyricist"
+msgstr "Ursprunglig låtskrivare"
+
+msgid "Original Artist"
+msgstr "Ursprunglig artist"
+
+msgid "File Owner"
+msgstr "Filägare"
+
+msgid "Band/Orchestra"
+msgstr "Band/orkester"
+
+msgid "Interpreted/Remixed"
+msgstr "Tolkad/remixad"
+
+msgid "Part Of A Set"
+msgstr ""
+
+msgid "Produced"
+msgstr "Producerad"
+
+msgid "Internet Radio Station Name"
+msgstr "Namn på internetradiostation"
+
+msgid "Internet Radio Station Owner"
+msgstr "Ägare till internetradiostation"
+
+msgid "Album Sort Order"
+msgstr ""
+
+msgid "Performer Sort Order"
+msgstr ""
+
+msgid "Title Sort Order"
+msgstr ""
+
+msgid "Software"
+msgstr "Programvara"
+
+msgid "Set Subtitle"
+msgstr ""
+
+msgid "User Defined Text"
+msgstr ""
+
+msgid "Commercial Information"
+msgstr "Kommersiell information"
+
+msgid "Copyright/Legal Information"
+msgstr "Copyright/juridisk information"
+
+msgid "Official Audio File Website"
+msgstr "Ljudfilens officiella webbsida"
+
+msgid "Official Artist Website"
+msgstr "Artistens officiella webbsida"
+
+msgid "Official Audio Source Website"
+msgstr "Ljudkällans officiella webbsida"
+
+msgid "Official Radio Station Website"
+msgstr "Radiostationens officiella webbsida"
+
+msgid "Payment"
+msgstr "Betalning"
+
+msgid "Publisher's Official Website"
+msgstr "Utgivarens officiell webbsida"
+
+msgid "User Defined URL"
+msgstr ""
+
+msgid "Vendor"
+msgstr "Tillverkare"
+
+msgid "ReplayGain Reference Loudness"
+msgstr ""
+
+msgid "ReplayGain Track Gain"
+msgstr ""
+
+msgid "ReplayGain Track Peak"
+msgstr ""
+
+msgid "ReplayGain Album Gain"
+msgstr ""
+
+msgid "ReplayGain Album Peak"
+msgstr ""
+
+msgid "Icy-Name"
+msgstr ""
+
+msgid "Icy-Description"
+msgstr ""
+
+msgid "Icy-Genre"
+msgstr ""
+
+msgid "RVA"
+msgstr "RVA"
+
+msgid "Attached Picture"
+msgstr "Bifogad bild"
+
+msgid "Binary Object"
+msgstr "Binärt objekt"
+
+msgid "NULL"
+msgstr "NULL"
+
+msgid "ID3v1"
+msgstr "ID3v1"
+
+msgid "ID3v2"
+msgstr "ID3v2"
+
+msgid "APE"
+msgstr "APE"
+
+msgid "Ogg Xiph Comments"
+msgstr "Ogg Xiph-kommentarer"
+
+msgid "FLAC Pictures"
+msgstr "FLAC-bilder"
+
+msgid "Musepack ReplayGain"
+msgstr ""
+
+msgid "Generic StreamMeta"
+msgstr ""
+
+msgid "MPEG StreamMeta"
+msgstr ""
+
+msgid "Module info"
+msgstr ""
+
+msgid "Unknown"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "File icon (32x32 PNG)"
+msgstr "Filikon (32x32 PNG)"
+
+msgid "File icon (other)"
+msgstr "Filikon (annat)"
+
+msgid "Front cover"
+msgstr "Omslagsbild framsida"
+
+msgid "Back cover"
+msgstr "Omslagsbild baksida"
+
+msgid "Leaflet page"
+msgstr ""
+
+msgid "Album image"
+msgstr "Albumbild"
+
+msgid "Lead artist/performer"
+msgstr ""
+
+msgid "Artist/performer"
+msgstr "Artist/sångare"
+
+msgid "Band/orchestra"
+msgstr "Band/orkester"
+
+msgid "Lyricist/text writer"
+msgstr "Låtskrivare/textskrivare"
+
+msgid "Recording location/studio"
+msgstr "Inspelningsplats/studio"
+
+msgid "During recording"
+msgstr "Under inspelning"
+
+msgid "During performance"
+msgstr "Under framträdande"
+
+msgid "Movie/video screen capture"
+msgstr ""
+
+msgid "A large, coloured fish"
+msgstr "En stor, färgad fisk"
+
+msgid "Illustration"
+msgstr "Illustration"
+
+msgid "Band/artist logotype"
+msgstr "Band/artistlogotyp"
+
+msgid "Publisher/studio logotype"
+msgstr "Utgivare/studiologotyp"
+
+msgid "Music Store"
+msgstr "Musikbibliotek"
+
+msgid "Search..."
+msgstr "Sök..."
+
+msgid "Collapse all items"
+msgstr "Fäll in alla objekt"
+
+msgid "Edit item..."
+msgstr "Redigera objekt..."
+
+msgid "Add item..."
+msgstr "Lägg till objekt..."
+
+msgid "Remove item..."
+msgstr "Ta bort objekt..."
+
+msgid "Save all stores"
+msgstr "Spara alla bibliotek"
+
+msgid "Create empty store..."
+msgstr "Skapa ett tomt bibliotek..."
+
+msgid "*Music Store"
+msgstr "*Musikbibliotek"
+
+#, c-format
+msgid "Do you want to save store \"%s\" before removing from Music Store?"
+msgstr "Vill du spara bibliotek \"%s\" innan det tas bort från musikbibliotek?"
+
+msgid "You will need to restart Aqualung for the following changes to take effect:"
+msgstr "Du kommer att behöva starta om Aqualung för att de följande ändringarna ska börja gälla:"
+
+msgid "Select a font..."
+msgstr "Välj ett typsnitt..."
+
+msgid "Disable skin support"
+msgstr "Inaktivera skalstöd"
+
+msgid "rw"
+msgstr "läs och skriv"
+
+msgid "r"
+msgstr "skrivskyddad"
+
+msgid "unreachable"
+msgstr ""
+
+msgid "Please select a Programable Title Format File."
+msgstr "Var god välj en programmeringsbar titelformatsfil."
+
+msgid "Please select a Music Store database."
+msgstr "Var god välj en musikbiblioteksdatabas."
+
+msgid "Paths must either be absolute or starting with a tilde."
+msgstr ""
+
+msgid "The specified store has already been added to the list."
+msgstr "Det angivna biblioteket har redan lagts till i listan."
+
+#, c-format
+msgid ""
+"\n"
+"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%%%a, %%%%r and %%%%t, respectively.\n"
+msgstr ""
+"\n"
+"Strängmallen som du skriver in här kommer att användas för att konstruera en enskild titelrad baserat på ett artist-, skiv- och spårnamn. Dessa betecknas med %%%%a respektive %%%%r och %%%%t.\n"
+
+msgid ""
+"\n"
+"The file you enter/choose here will set the Lua program to use to format the title. See the Aqualung manual for details. Here is a quick example of what you can use in the file:\n"
+"\n"
+"function playlist_title()\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"end"
+msgstr ""
+"\n"
+"Den fil som du anger/väljer här kommer att användas av Lua-programmet till att formatera titeln. Se Aqualung-manualen för fler detaljer.Här är ett litet exempel på vad du kan skriva i filen:\n"
+"\n"
+"function playlist_title()\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"end"
+
+msgid ""
+"\n"
+"The string you enter here will be parsed as a command line before parsing the actual command line parameters. What you enter here will act as a default setting and may or may not be overridden from the 'real' command line.\n"
+"\n"
+"Example: enter '-o alsa -R' below to use ALSA output running realtime as a default.\n"
+msgstr ""
+
+msgid ""
+"Paths must either be absolute or starting with a tilde, which will be expanded to the user's home directory.\n"
+"\n"
+"Drag and drop entries in the list to set the store order in the Music Store."
+msgstr ""
+
+msgid ""
+"\n"
+"Set the drive speed for CD playing in CD-ROM speed units. One speed unit equals to 176 kBps raw data reading speed. Warning: not all drives honor this setting.\n"
+"\n"
+"Lower speed usually means less drive noise. However, when using Paranoia error correction modes for increased accuracy, generally much larger speeds are required to prevent buffer underruns (and thus audible drop-outs).\n"
+"\n"
+"Please note that these settings do not apply to CD Ripping, which always happens with maximum available speed and with error correction modes manually set before every run."
+msgstr ""
+
+msgid ""
+"\n"
+"Most drives let Aqualung know when a CD has been inserted or removed by providing a 'media changed' flag. However, some drives don't set this flag properly, and thus it may happen that a newly inserted CD remains unnoticed to Aqualung. In such cases, enabling this option should help."
+msgstr ""
+
+msgid ""
+"\n"
+"Here you should enter a comma-separated list of domains\n"
+"that should be accessed without using the proxy set above.\n"
+"Example: localhost, .localdomain, .my.domain.com"
+msgstr ""
+"\n"
+"Här borde du skriva in en kommaseparerad\n"
+"lista av domäner som bör kunna kommas åt\n"
+"utan att använda proxyinställningen ovanför.\n"
+"Exempel: localhost, .localdomain, .my.domain.com"
+
+msgid "Title Format"
+msgstr "Titelformat"
+
+msgid "Programmable title format file"
+msgstr "Programmingsbar titelformatsfil"
+
+msgid "Implicit command line"
+msgstr ""
+
+msgid "Miscellaneous"
+msgstr "Diverse"
+
+msgid "Enable tooltips"
+msgstr "Aktivera verktygstips"
+
+msgid "Enable systray"
+msgstr "Aktivera ikon i systembricka"
+
+msgid "Put control buttons at the bottom of playlist"
+msgstr "Placera kontrollknappar i nederkanten av spellista"
+
+msgid "Disable control buttons relief"
+msgstr ""
+
+msgid "Combine play and pause buttons"
+msgstr "Kombinera knapparna spela och pausa"
+
+msgid "Keep main window always on top"
+msgstr "Låt alltid huvudfönstret vara överst"
+
+msgid "Simple view in LADSPA patch builder"
+msgstr ""
+
+msgid "United windows minimization"
+msgstr ""
+
+msgid "Show song name in the main window's title"
+msgstr "Visa låtnamn i huvudfönstrets titel"
+
+msgid "Show hidden files and directories in file choosers"
+msgstr ""
+
+msgid "Show tags tab first in the file info dialog"
+msgstr ""
+
+msgid "Cover art"
+msgstr "Omslagsbild"
+
+msgid "Default cover width:"
+msgstr "Standardbredd för omslagsbild:"
+
+msgid "50 pixels"
+msgstr "50 bildpunkter"
+
+msgid "100 pixels"
+msgstr "100 bildpunkter"
+
+msgid "200 pixels"
+msgstr "200 bildpunkter"
+
+msgid "300 pixels"
+msgstr "300 bildpunkter"
+
+msgid "use browser window width"
+msgstr ""
+
+msgid "Do not magnify images with smaller width"
+msgstr "Förstora inte bilder med mindre bredd"
+
+msgid "Show cover thumbnail for Music Store tracks only"
+msgstr "Visa bara omslagsbildsikon för musikbiblioteksspår"
+
+msgid "Don't show cover thumbnail in the main window"
+msgstr "Visa inte omslagsbildsikon i huvudfönstret"
+
+msgid "Playlist"
+msgstr "Spellista"
+
+msgid "Embed playlist into main window"
+msgstr "Bädda in spellista i huvudfönstret"
+
+msgid "Save and restore the playlist on exit/startup"
+msgstr "Spara och återställ spellista vid avslutning/uppstart"
+
+msgid "Save playlist periodically [min]:"
+msgstr "Spara spellista periodvis [min]:"
+
+msgid "Album mode is the default when adding entire records"
+msgstr "Albumläge är standard när hela skivor läggs till"
+
+msgid "Always show the tab bar"
+msgstr "Visa alltid flikraden"
+
+msgid "Show close button in tab"
+msgstr "Visa stäng knapp i flik"
+
+msgid "When shuffling, records added in Album mode are played in order"
+msgstr "När funktionen blanda används spelas skivor tilllagda i albumläge i ordning"
+
+msgid "Enable statusbar"
+msgstr "Aktivera statusmätare"
+
+msgid "Enable statusbar in playlist"
+msgstr "Aktivera statusmätare i spellista"
+
+msgid "Show soundfile size in statusbar"
+msgstr "Visa ljudfilstorlek i statusmätaren"
+
+msgid "Show RVA values"
+msgstr "Visa RVA-värden"
+
+msgid "Show track lengths"
+msgstr "Visa spårspeltider"
+
+msgid "Show active track name in bold"
+msgstr "Visa aktivt spårnamn i fetstil"
+
+msgid "Enable rules hint"
+msgstr ""
+
+msgid "Playlist column order"
+msgstr "Kolumnordning för spellista"
+
+msgid ""
+"Drag and drop entries in the list below \n"
+"to set the column order in the Playlist."
+msgstr ""
+"Drag och släpp poster i listan nedanför\n"
+"för att ställa in kolumnordningen i spellistan."
+
+msgid "Column"
+msgstr "Kolumn"
+
+msgid "Track titles"
+msgstr "Spårtitlar"
+
+msgid "RVA values"
+msgstr "RVA-värden"
+
+msgid "Track lengths"
+msgstr "Spårspeltider"
+
+msgid "Hide comment pane"
+msgstr "Dölj kommentarpanel"
+
+msgid "Hide the Music Store comment pane"
+msgstr "Dölj kommentatorspanelen för musikbibliotek"
+
+msgid "Enable toolbar"
+msgstr "Aktivera verktygsrad"
+
+msgid "Enable toolbar in Music Store"
+msgstr "Aktivera verktygsrad i musikbibliotek"
+
+msgid "Enable statusbar in Music Store"
+msgstr "Aktivera statusmätare i musikbibliotek"
+
+msgid "Expand Stores on startup"
+msgstr "Expandera bibliotek vid uppstart"
+
+msgid "Enable tree node icons"
+msgstr ""
+
+msgid "Enable Music Store tree node icons"
+msgstr ""
+
+msgid "Ask for confirmation when removing items"
+msgstr "Fråga efter bekräftelse när objekt tas bort"
+
+msgid "Paths to Music Store databases"
+msgstr "Sökvägar till musikbiblioteksdatabaser"
+
+msgid "Path"
+msgstr "Sökväg"
+
+msgid "Access"
+msgstr "Åtkomstskydd"
+
+msgid "Refresh"
+msgstr "Uppdatera"
+
+msgid "DSP"
+msgstr ""
+
+msgid "LADSPA plugin processing"
+msgstr "Behandlar LADSPA-insticksmodul"
+
+msgid "Pre Fader (before Volume & Balance)"
+msgstr ""
+
+msgid "Post Fader (after Volume & Balance)"
+msgstr ""
+
+msgid ""
+"Aqualung is compiled without LADSPA plugin support.\n"
+"See the About box and the documentation for details."
+msgstr ""
+"Aqualung är kompilerat utan stöd för LADSPA-insticksmodul.\n"
+"Se Om-rutan och dokumentationen för fler detaljer."
+
+msgid "Sample Rate Converter type"
+msgstr "Samplingfrekvenskonverterartyp"
+
+msgid ""
+"Aqualung is compiled without Sample Rate Converter support.\n"
+"See the About box and the documentation for details."
+msgstr ""
+"Aqualung är kompilerat utan stöd för samplingsfrekvenskonverterare.\n"
+"Se Om-rutan och dokumentationen för fler detaljer."
+
+msgid "Playback RVA"
+msgstr "RVA-uppspelning"
+
+msgid "Enable playback RVA"
+msgstr "Aktivera RVA-uppspelning"
+
+msgid "Listening environment:"
+msgstr ""
+
+msgid "Audiophile"
+msgstr "Audiofil"
+
+msgid "Living room"
+msgstr "Vardagsrum"
+
+msgid "Office"
+msgstr "Kontor"
+
+msgid "Noisy workshop"
+msgstr "Bullrig verkstad"
+
+msgid "Reference volume [dBFS] :"
+msgstr "Referensvolym [dBFS] :"
+
+msgid "Steepness [dB/dB] :"
+msgstr ""
+
+msgid "RVA for Unmeasured Files [dB] :"
+msgstr ""
+
+msgid "Apply averaged RVA to tracks of the same record"
+msgstr "Tillämpa genomsnittligt RVA till spår på samma skiva"
+
+msgid "Drop statistical aberrations based on"
+msgstr ""
+
+#, no-c-format
+msgid "% of standard deviation"
+msgstr "% av standardavvikelse"
+
+msgid "Linear threshold [dB]"
+msgstr ""
+
+msgid "Linear threshold [dB] :"
+msgstr ""
+
+#, no-c-format
+msgid "% of standard deviation :"
+msgstr "% av standardavvikelse :"
+
+msgid "ReplayGain tag to use (with fallback to the other): "
+msgstr ""
+
+msgid "Replaygain_track_gain"
+msgstr ""
+
+msgid "Replaygain_album_gain"
+msgstr ""
+
+msgid "Adding files to Playlist"
+msgstr "Lägger till filer till spellista"
+
+msgid ""
+"Use basename only instead of full path\n"
+"if no metadata is available."
+msgstr ""
+
+msgid "Metadata editor (File info dialog)"
+msgstr "Metadataredigerare (filinformationsdialog)"
+
+msgid ""
+"When adding new frames, try to set their contents\n"
+"from another tag's equivalent frame."
+msgstr ""
+
+msgid "Batch update & encode (mass tagger, CD ripper, file export)"
+msgstr ""
+
+msgid "Tags to add when creating or updating MPEG audio files:"
+msgstr "Taggar att lägga till vid skapande eller uppdatering av MPEG-ljudfiler:"
+
+msgid ""
+"Note: pre-existing tags will be updated even though they\n"
+"might not be checked here."
+msgstr ""
+"Beakta: redan existerande taggar kommer att uppdateras\n"
+"även om de kanske inte är avbockade här."
+
+msgid "CD Audio"
+msgstr "Cd-ljud"
+
+msgid "CD drive speed:"
+msgstr "Cd-romhastighet:"
+
+msgid "\tMaximum number of retries:"
+msgstr "Maximala antalet återförsök:"
+
+msgid "Force TOC re-read on every drive scan"
+msgstr ""
+
+msgid "Automatically add CDs to Playlist"
+msgstr "Lägg automatiskt till cd-skivor till spellista"
+
+msgid "Automatically remove CDs from Playlist"
+msgstr "Ta automatiskt bort cd-skivor från spellista"
+
+msgid "CDDB server:"
+msgstr "CDDB-server:"
+
+msgid "Connection timeout [sec]:"
+msgstr ""
+
+msgid "Email address for submission:"
+msgstr "E-postadress för uppladdning:"
+
+msgid "Local CDDB directory:"
+msgstr "Lokal CDDB-katalog:"
+
+msgid "Use the local database only"
+msgstr "Använd bara den lokala databasen"
+
+msgid "Protocol for querying (direct connection only):"
+msgstr "Frågeprotokoll (bara direktanslutning):"
+
+msgid "CDDBP (port 888)"
+msgstr "CDDBP (port 888)"
+
+msgid "HTTP (port 80)"
+msgstr "HTTP (port 80)"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Direct connection to the Internet"
+msgstr "Direktanslutning till internet"
+
+msgid "Connect via HTTP proxy"
+msgstr "Anslut via HTTP-proxy"
+
+msgid "Proxy settings"
+msgstr "Proxyinställningar"
+
+msgid "Proxy host:"
+msgstr "Proxyvärd:"
+
+msgid "Port:"
+msgstr "Port:"
+
+msgid "No proxy for:"
+msgstr "Ingen proxy för:"
+
+msgid "Timeout for socket I/O:"
+msgstr ""
+
+msgid "seconds"
+msgstr "sekunder"
+
+msgid "Appearance"
+msgstr "Utseende"
+
+msgid "Override skin settings"
+msgstr "Förbigå skalinställningar"
+
+msgid "Fonts"
+msgstr "Typsnitt"
+
+msgid "Playlist: "
+msgstr "Spellista:"
+
+msgid "Music Store: "
+msgstr "Musikbibliotek:"
+
+msgid "Big timer: "
+msgstr "Stort tidur:"
+
+msgid "Small timers: "
+msgstr "Små tidur:"
+
+msgid "Song title: "
+msgstr "Låttitel:"
+
+msgid "Song info: "
+msgstr "Låtinformation:"
+
+msgid "Statusbar: "
+msgstr "Statusmätare:"
+
+msgid "Colors"
+msgstr "Färger"
+
+msgid "Song in playlist: "
+msgstr "Låt i spellista:"
+
+msgid "Active song in playlist: "
+msgstr "Aktiv låt i spellista:"
+
+msgid "Error in title format string"
+msgstr ""
+
+msgid "(Untitled)"
+msgstr "(Namnlös)"
+
+#, c-format
+msgid " (%d/%d)"
+msgstr " (%d/%d)"
+
+msgid "Select files"
+msgstr "Välj filer"
+
+msgid "Select directory"
+msgstr "Välj katalog"
+
+msgid "Add URL"
+msgstr "Lägg till url"
+
+msgid "URL:"
+msgstr "URL:"
+
+msgid "Please specify the file to save the playlist to."
+msgstr "Var god ange filen som spellistan ska sparas till."
+
+msgid "Please specify the file to load the playlist from."
+msgstr "Var god ange filen som spellistan ska läsas in från."
+
+msgid ""
+"Playback RVA is currently disabled.\n"
+"Do you want to enable it now?"
+msgstr ""
+"RVA-uppspelning är för tillfället inaktiverat.\n"
+"Vill du aktivera det nu?"
+
+msgid "counting..."
+msgstr "räknar..."
+
+msgid "track"
+msgstr "spår"
+
+msgid "tracks"
+msgstr "spår"
+
+msgid "Rename playlist"
+msgstr "Byt namn på spellista"
+
+msgid "Name:"
+msgstr "Namn:"
+
+msgid "New tab"
+msgstr "Ny flik"
+
+msgid "Close tab"
+msgstr "Stäng flik"
+
+msgid "Undo close tab"
+msgstr "Ångra stäng flik"
+
+msgid "Close other tabs"
+msgstr "Stäng andra flikar"
+
+msgid " Selected: "
+msgstr " Markerade:"
+
+msgid "Total: "
+msgstr "Totalt:"
+
+msgid "Add files"
+msgstr "Lägg till filer"
+
+msgid ""
+"Add files to playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
+"Lägg till filer till spellista\n"
+"(Tryck på höger musknapp för meny)"
+
+msgid "Select all"
+msgstr "Markera alla"
+
+msgid ""
+"Select all songs in playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
+"Markera alla låtar i spellista\n"
+"(Tryck höger musknapp för meny)"
+
+msgid "Remove selected"
+msgstr "Ta bort markerade"
+
+msgid ""
+"Remove selected songs from playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
+"Ta bort markerade låtar från spellista\n"
+"(Tryck höger musknapp för meny)"
+
+msgid "Add directory"
+msgstr "Lägg till katalog"
+
+msgid "Select none"
+msgstr "Markera ingen"
+
+msgid "Invert selection"
+msgstr ""
+
+msgid "Remove all"
+msgstr "Ta bort alla"
+
+msgid "Remove dead"
+msgstr "Ta bort döda"
+
+msgid "Cut selected"
+msgstr "Klipp ut markerade"
+
+msgid "Save playlist"
+msgstr "Spara spellista"
+
+msgid "Save all playlists"
+msgstr "Spara alla spellistor"
+
+msgid "Load playlist in new tab"
+msgstr "Läs in spellista i en ny flik"
+
+msgid "Load playlist"
+msgstr "Läs in spellista"
+
+msgid "Enqueue playlist"
+msgstr "Lägg spellista i kö"
+
+msgid "Send to iFP device"
+msgstr "Skicka till iFP-enhet"
+
+msgid "Calculate RVA"
+msgstr "Beräkna RVA"
+
+msgid "Separate"
+msgstr "Separera"
+
+msgid "Average"
+msgstr "Genomsnitt"
+
+msgid "Reread file metadata"
+msgstr "Läs om filmetadata"
+
+msgid "File info..."
+msgstr "Filinformation..."
+
+msgid "Roll to active song"
+msgstr "Gå till aktiv låt"
+
+msgid "Stop adding files"
+msgstr "Sluta lägg till filer"
+
+msgid "Files selected for removal"
+msgstr "Markerade filer att ta bort"
+
+msgid "Remove files"
+msgstr "Ta bort filer"
+
+msgid ""
+"The selected files will be deleted from the filesystem. No recovery will be possible after this operation.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"De markerade filerna kommer att raderas från filsystemet. Det går inte att återställa detta efter denna åtgärd.\n"
+"\n"
+"Vill du fortsätta?"
+
+#, c-format
+msgid "Unable to remove %d file."
+msgstr "Kan inte ta bort %d fil."
+
+#, c-format
+msgid "Unable to remove %d files."
+msgstr "Kan inte ta bort %d filer."
+
+msgid "LADSPA patch builder"
+msgstr ""
+
+msgid "Available plugins"
+msgstr "Tillgängliga insticksmoduler"
+
+msgid "ID"
+msgstr ""
+
+msgid "Category"
+msgstr "Kategori"
+
+msgid "Inputs"
+msgstr "Indata"
+
+msgid "Outputs"
+msgstr "Utdata"
+
+msgid "Running plugins"
+msgstr "Kör insticksmoduler"
+
+msgid "_Configure"
+msgstr "_Konfigurera"
+
+msgid "Enable all plugins"
+msgstr "Aktivera alla insticksmoduler"
+
+msgid "Disable all plugins"
+msgstr "Inaktivera alla insticksmoduler"
+
+msgid "Invert current state"
+msgstr ""
+
+msgid "Clear list"
+msgstr "Töm lista"
+
+msgid "Untitled"
+msgstr "Namnlös"
+
+msgid "JACK Port Setup"
+msgstr "JACK-portinställning"
+
+msgid "Rescan"
+msgstr "Uppdatera"
+
+msgid "Available connections"
+msgstr "Tillgängliga anslutningar"
+
+msgid "Clear connections"
+msgstr "Töm anslutningar"
+
+msgid " out L"
+msgstr " ut V"
+
+msgid " out R"
+msgstr " ut H"
+
+msgid "Search the Music Store"
+msgstr "Sök i musikbiblioteket"
+
+msgid "Key: "
+msgstr ""
+
+msgid "Case sensitive"
+msgstr "Skiftlägeskänslig"
+
+msgid "Exact matches only"
+msgstr ""
+
+msgid "Select first and close window"
+msgstr "Välj först och stäng fönstret"
+
+msgid "Search in:"
+msgstr "Sök i:"
+
+msgid "Artist names"
+msgstr "Artistnamn"
+
+msgid "Record titles"
+msgstr "Skivtitlar"
+
+msgid "Comments"
+msgstr "Kommentarer"
+
+msgid "Search"
+msgstr "Sök"
+
+msgid "Search the Playlist"
+msgstr "Sök i spellistan"
+
+msgid "Available skins"
+msgstr "Tillgängliga skal"
+
+msgid "Drive info"
+msgstr "Cd-rominformation"
+
+msgid "Device path:"
+msgstr "Enhetssökväg:"
+
+msgid "Vendor:"
+msgstr "Tillverkare:"
+
+msgid "Revision:"
+msgstr "Version:"
+
+msgid ""
+"The information below is reported by the drive, and\n"
+"may not reflect the actual capabilities of the device."
+msgstr ""
+"Informationen nedan anges av cd-romenheten och\n"
+"kanske inte speglar dess faktiska funktioner."
+
+msgid "Eject"
+msgstr "Mata ut"
+
+msgid "Close tray"
+msgstr "Stäng lucka"
+
+msgid "Disable manual eject"
+msgstr "Inaktivera manuell utmatning"
+
+msgid "Select juke-box disc"
+msgstr "Välj jukebox-disk"
+
+msgid "Set drive speed"
+msgstr "Ställ in cd-romhastighet"
+
+msgid "Detect media change"
+msgstr "Detektera mediabyte"
+
+msgid "Read multiple sessions"
+msgstr "Läs multipla sessioner"
+
+msgid "Hard reset device"
+msgstr ""
+
+msgid "Reading"
+msgstr "Läser"
+
+msgid "Play CD Audio"
+msgstr "Spela cd-ljud"
+
+msgid "Read CD-DA"
+msgstr "Läs cd-da"
+
+msgid "Read CD+G"
+msgstr "Läs cd+g"
+
+msgid "Read CD-R"
+msgstr "Läs cd-r"
+
+msgid "Read CD-RW"
+msgstr "Läs cd-rw"
+
+msgid "Read DVD-R"
+msgstr "Läs dvd-r"
+
+msgid "Read DVD+R"
+msgstr "Läs dvd+r"
+
+msgid "Read DVD-RW"
+msgstr "Läs dvd-rw"
+
+msgid "Read DVD+RW"
+msgstr "Läs dvd+rw"
+
+msgid "Read DVD-RAM"
+msgstr "Läs dvd-ram"
+
+msgid "Read DVD-ROM"
+msgstr "Läs dvd-rom"
+
+msgid "C2 Error Correction"
+msgstr "C2-felkorrigering"
+
+msgid "Read Mode 2 Form 1"
+msgstr "Läs Mode 2 Form 1"
+
+msgid "Read Mode 2 Form 2"
+msgstr "Läs Mode 2 Form 2"
+
+msgid "Read MCN"
+msgstr "Läs MCN"
+
+msgid "Read ISRC"
+msgstr "Läs ISRC"
+
+msgid "Writing"
+msgstr "Skriver"
+
+msgid "Write CD-R"
+msgstr "Skriv cd-r"
+
+msgid "Write CD-RW"
+msgstr "Skriv cd-rw"
+
+msgid "Write DVD-R"
+msgstr "Skriv dvd-r"
+
+msgid "Write DVD+R"
+msgstr "Skriv dvd+r"
+
+msgid "Write DVD-RW"
+msgstr "Skriv dvd-rw"
+
+msgid "Write DVD+RW"
+msgstr "Skriv dvd+rw"
+
+msgid "Write DVD-RAM"
+msgstr "Skriv dvd-ram"
+
+msgid "Mount Rainier"
+msgstr "Mount Rainier"
+
+msgid "Burn Proof"
+msgstr ""
+
+msgid "Disc info"
+msgstr "Diskinformation"
+
+msgid "This CD does not contain CD-Text information."
+msgstr "Denna cd innehåller ingen cd-text-information."
+
+msgid "drive"
+msgstr "cd-rom"
+
+msgid "drives"
+msgstr "cd-romenheter"
+
+msgid "record"
+msgstr "skiva"
+
+msgid "records"
+msgstr "skivor"
+
+msgid "Add to playlist"
+msgstr "Lägg till i spellista"
+
+msgid "Add to playlist (Album mode)"
+msgstr "Lägg till i spellista (albumläge)"
+
+msgid "CDDB query for this CD..."
+msgstr "CDDB-fråga efter denna cd..."
+
+msgid "Submit CD to CDDB database..."
+msgstr "Skicka in cd till CDDB-databasen..."
+
+msgid "Rip CD..."
+msgstr "Extrahera cd..."
+
+msgid "Disc info..."
+msgstr "Diskinformation..."
+
+msgid "Drive info..."
+msgstr "Cd-rominformation..."
+
+msgid "Comments:"
+msgstr "Kommentarer:"
+
+msgid "Please select the xml file for this store."
+msgstr "Var god ange xmlfilen för detta bibliotek."
+
+msgid "Create empty store"
+msgstr "Skapa ett tomt bibliotek"
+
+msgid "Visible name:"
+msgstr "Synligt namn:"
+
+msgid "Edit Store"
+msgstr "Redigera bibliotek"
+
+msgid "Use relative paths in store file"
+msgstr ""
+
+msgid "Add Artist"
+msgstr "Lägg till artist"
+
+msgid "Name to sort by:"
+msgstr "Namn att sortera efter:"
+
+msgid "Edit Artist"
+msgstr "Redigera artist"
+
+msgid "Please select the audio files for this record."
+msgstr "Var god välj ljudfilerna för denna skiva."
+
+msgid "Add Record"
+msgstr "Lägg till skiva"
+
+msgid "Auto-create tracks from these files:"
+msgstr "Skapa automatiskt spår från dessa filer:"
+
+msgid "_Add files..."
+msgstr "_Lägg till filer..."
+
+msgid "Edit Record"
+msgstr "Redigera skiva"
+
+msgid "Please select the audio file for this track."
+msgstr "Var god välj ljudfilen för denna skiva."
+
+msgid "Add Track"
+msgstr "Lägg till spår"
+
+msgid "Edit Track"
+msgstr "Redigera spår"
+
+msgid "Duration:"
+msgstr "Varaktighet:"
+
+#, c-format
+msgid "Unmeasured"
+msgstr ""
+
+msgid "Volume level:"
+msgstr "Volymnivå:"
+
+msgid "Use manual RVA value [dB]"
+msgstr "Använd manuellt RVA-värde [dB]"
+
+#, c-format
+msgid "Really remove \"%s\" from the Music Store?"
+msgstr "Vill du verkligen ta bort \"%s\" från musikbiblioteket?"
+
+msgid "Stop adding songs"
+msgstr "Sluta lägg till låtar"
+
+#, c-format
+msgid ""
+"The store '%s' already exists.\n"
+"Add it on the Settings/Music Store tab."
+msgstr ""
+"Biblioteket '%s' finns redan.\n"
+"Lägg till det i fliken Inställningar/Musikbibliotek."
+
+#, c-format
+msgid "Really remove store \"%s\" from the Music Store?"
+msgstr "Vill du verkligen ta bort bibliotek \"%s\" från musikbiblioteket?"
+
+msgid "Remove Store"
+msgstr "Ta bort bibliotek"
+
+msgid "Do you want to save the store before removing?"
+msgstr "Vill du spara biblioteket innan det tas bort?"
+
+msgid "Remove Artist"
+msgstr "Ta bort artist"
+
+msgid "Remove Record"
+msgstr "Ta bort skiva"
+
+msgid "Remove Track"
+msgstr "Ta bort spår"
+
+msgid "Update file metadata"
+msgstr "Uppdatera filmetadata"
+
+msgid "Track name"
+msgstr "Spårnamn"
+
+msgid "Track comment"
+msgstr "Spårkommentar"
+
+msgid "Track number"
+msgstr "Spårnummer"
+
+msgid "Failed to set metadata for the following files:"
+msgstr "Misslyckades med att ställa in metadata för följande filer:"
+
+msgid "Filename"
+msgstr "Filnamn"
+
+msgid "Reason"
+msgstr "Orsak"
+
+msgid "(no comment)"
+msgstr "(ingen kommentar)"
+
+msgid "artist"
+msgstr "artist"
+
+msgid "artists"
+msgstr "artister"
+
+msgid "Build / Update store from filesystem..."
+msgstr "Bygg / uppdatera bibliotek från filsystem..."
+
+msgid "Edit store..."
+msgstr "Redigera bibliotek..."
+
+msgid "Export store..."
+msgstr "Exportera bibliotek..."
+
+msgid "Save store"
+msgstr "Spara bibliotek"
+
+msgid "Remove store"
+msgstr "Ta bort bibliotek"
+
+msgid "Add new artist to this store..."
+msgstr "Lägg till ny artist till detta bibliotek..."
+
+msgid "Calculate volume (recursive)"
+msgstr "Beräkna volym (rekursivt)"
+
+msgid "Unmeasured tracks only"
+msgstr ""
+
+msgid "All tracks"
+msgstr "Alla spår"
+
+msgid "Batch-update file metadata..."
+msgstr "Satsfilsuppdatera filmetadata..."
+
+msgid "Add new artist..."
+msgstr "Lägg till ny artist..."
+
+msgid "Edit artist..."
+msgstr "Redigera artist..."
+
+msgid "Export artist..."
+msgstr "Exportera artist..."
+
+msgid "Remove artist"
+msgstr "Ta bort artist"
+
+msgid "Add new record to this artist..."
+msgstr "Lägg till ny skiva till denna artist..."
+
+msgid "Add new record..."
+msgstr "Lägg till ny skiva..."
+
+msgid "Edit record..."
+msgstr "Redigera skiva..."
+
+msgid "Export record..."
+msgstr "Exportera skiva..."
+
+msgid "Remove record"
+msgstr "Ta bort skiva"
+
+msgid "Add new track to this record..."
+msgstr "Lägg till nytt spår till denna skiva..."
+
+msgid "CDDB query for this record..."
+msgstr "CDDB-fråga efter denna skiva..."
+
+msgid "Submit record to CDDB database..."
+msgstr "Skicka in skiva till CDDB-databasen..."
+
+msgid "Add new track..."
+msgstr "Lägg till nytt spår..."
+
+msgid "Edit track..."
+msgstr "Redigera spår..."
+
+msgid "Export track..."
+msgstr "Exportera spår..."
+
+msgid "Remove track"
+msgstr "Ta bort spår"
+
+msgid "Calculate volume"
+msgstr "Beräkna volym"
+
+msgid "Only if unmeasured"
+msgstr ""
+
+msgid "In any case"
+msgstr "Stora och/eller små bokstäver"
+
+msgid "Update file metadata..."
+msgstr "Uppdatera filmetadata..."
+
+msgid "Please select the download directory for this podcast."
+msgstr "Var god välj hämtningskatalogen för denna poddsändning."
+
+msgid "Subscribe to new feed"
+msgstr "Prenumerera på en ny webbkanal"
+
+msgid "Edit feed settings"
+msgstr "Redigera webbkanalsinställningar"
+
+msgid "Podcast URL:"
+msgstr "Poddsändningurl:"
+
+msgid "Download directory:"
+msgstr "Hämtningskatalog:"
+
+msgid "Auto-check interval [hour]:"
+msgstr ""
+
+msgid ""
+"Automatic update has been disabled for all feeds\n"
+"in the Podcasts store popup menu."
+msgstr ""
+"Automatisk uppdatering har inaktiverats för alla webbkanaler\n"
+"i poddsändningens bibliotekspopuppmeny."
+
+msgid "Limits"
+msgstr "Begränsningar"
+
+msgid "Maximum number of items:"
+msgstr "Maximalt antal objekt:"
+
+msgid "Remove older items [day]:"
+msgstr "Ta bort äldre objekt [dag]:"
+
+msgid "Maximum space to use [MB]:"
+msgstr "Maximalt utrymme att använda [MB]:"
+
+msgid "Podcasts"
+msgstr "Poddsändningar"
+
+msgid "Updating..."
+msgstr "Uppdaterar..."
+
+msgid "Delete downloaded items from the filesystem"
+msgstr "Radera hämtade objekt från filsystem"
+
+msgid "Remove feed"
+msgstr "Ta bort webbkanal"
+
+#, c-format
+msgid "Really remove '%s' from the Music Store?"
+msgstr "Vill du verkligen ta bort '%s' från musikbiblioteket?"
+
+msgid "Reorder feeds"
+msgstr "Ordna om webbkanaler"
+
+msgid ""
+"Drag and drop entries in the list\n"
+"to set the feed order in the Music Store."
+msgstr ""
+"Drag och släpp poster i listan\n"
+"för att ställa in webbkanalsordningen i musikbiblioteket."
+
+#, c-format
+msgid "Downloading %d/%d (%d%%) ..."
+msgstr "Hämtar %d/%d (%d%%) ..."
+
+msgid "item"
+msgstr "objekt"
+
+msgid "items"
+msgstr "objekt"
+
+msgid "new item"
+msgstr "nytt objekt"
+
+msgid "new items"
+msgstr "nya objekt"
+
+msgid "feed"
+msgstr "webbkanal"
+
+msgid "feeds"
+msgstr "webbkanaler"
+
+msgid "Export item..."
+msgstr "Exportera objekt..."
+
+msgid "Add all items to playlist"
+msgstr "Lägg till alla objekt till spellista"
+
+msgid "Add all items to playlist (Album mode)"
+msgstr "Lägg till alla objekt till spellista (albumläge)"
+
+msgid "Add new items to playlist"
+msgstr "Lägg till nya objekt till spellista"
+
+msgid "Add new items to playlist (Album mode)"
+msgstr "Lägg till nya objekt till spellista (albumläge)"
+
+msgid "Edit feed"
+msgstr "Redigera webbkanal"
+
+msgid "Export all items..."
+msgstr "Exportera alla objekt..."
+
+msgid "Export new items..."
+msgstr "Exportera nya objekt..."
+
+msgid "Update feed"
+msgstr "Uppdatera webbkanal"
+
+msgid "Abort ongoing update"
+msgstr "Avbryt pågående uppdatering"
+
+msgid "Update all feeds"
+msgstr "Uppdatera alla webbkanaler"
+
+msgid "Automatically update feeds"
+msgstr "Uppdatera automatiskt webbkanaler"
+
+msgid "Unexpected end of string after '?'."
+msgstr ""
+
+msgid "Expected '}' after '{', but end of string found."
+msgstr ""
+
+#, c-format
+msgid "Unknown conversion type character found after '%%%%'."
+msgstr ""
+
+msgid "Unknown conversion type character found after '?'."
+msgstr ""
+
+msgid "day"
+msgstr "dag"
+
+msgid "days"
+msgstr "dagar"
+
+msgid "All Files"
+msgstr "Alla filer"
+
+msgid "Extended Title Format Files (*.lua)"
+msgstr "Utökade titelformatsfiler (*.lua)"
+
+msgid "Music Store Files (*.xml)"
+msgstr "Musikbiblioteksfiler (*.xml)"
+
+msgid "Aqualung playlist (*.xml)"
+msgstr "Aqualung-spellista (*.xml)"
+
+msgid "MP3 Playlist (*.m3u)"
+msgstr "MP3-spellista (*.m3u)"
+
+msgid "Multimedia Playlist (*.pls)"
+msgstr "Multimedia-spellista (*.pls)"
+
+msgid "All Playlist Files"
+msgstr "Alla spellistans filer"
+
+msgid "All Audio Files"
+msgstr "Alla ljudfiler"
+
+msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
+msgstr "Ljudfiler (*.wav, *.aiff, *.au, ...)"
+
+msgid "Free Lossless Audio Codec (*.flac)"
+msgstr "Free Lossless Audio Codec (*.flac)"
+
+msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
+msgstr "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
+
+msgid "Ogg Vorbis (*.ogg)"
+msgstr "Ogg Vorbis (*.ogg)"
+
+msgid "Ogg Speex (*.spx)"
+msgstr "Ogg Speex (*.spx)"
+
+msgid "Musepack (*.mpc)"
+msgstr "Musepack (*.mpc)"
+
+msgid "Monkey's Audio Codec (*.ape)"
+msgstr "Monkey's Audio Codec (*.ape)"
+
+msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
+msgstr "Moduler (*.xm, *.mod, *.it, *.s3m, ...)"
+
+msgid "Compressed modules (*.gz, *.bz2)"
+msgstr "Komprimerade moduler (*.gz, *.bz2)"
+
+msgid "Compressed modules (*.gz)"
+msgstr "Komprimerade moduler (*.gz)"
+
+msgid "Compressed modules (*.bz2)"
+msgstr "Komprimerade moduler (*.bz2)"
+
+msgid "WavPack (*.wv)"
+msgstr "WavPack (*.wv)"
+
+msgid "LAVC audio/video files"
+msgstr ""
+
+msgid "Resume"
+msgstr "Återuppta"
+
+msgid "Calculating volume level"
+msgstr "Beräknar volymnivå"
+
+msgid "Profile: Telephone"
+msgstr "Profil: Telefon"
+
+msgid "Profile: Thumb"
+msgstr ""
+
+msgid "Profile: Radio"
+msgstr "Profil: Radio"
+
+msgid "Profile: Standard"
+msgstr "Profil: Standard"
+
+msgid "Profile: Xtreme"
+msgstr "Profil: Extrem"
+
+msgid "Profile: Insane"
+msgstr "Profil: Galen"
+
+msgid "Profile: Braindead"
+msgstr "Profil: Hjärndöd"
+
+msgid "Layer I"
+msgstr "Layer I"
+
+msgid "Layer II"
+msgstr "Layer II"
+
+msgid "Layer III"
+msgstr "Layer III"
+
+msgid "Unrecognized"
+msgstr ""
+
+msgid "Single channel"
+msgstr "En kanal"
+
+msgid "Dual channel"
+msgstr "Dubbla kanaler"
+
+msgid "Joint stereo"
+msgstr "Joint stereo"
+
+msgid "Stereo"
+msgstr "Stereo"
+
+msgid "Emphasis: none"
+msgstr ""
+
+msgid "Emphasis:"
+msgstr ""
+
+msgid "Emphasis: reserved"
+msgstr ""
+
+msgid "bit signed"
+msgstr ""
+
+msgid "bit unsigned"
+msgstr ""
+
+msgid "bit float"
+msgstr ""
+
+msgid "bit double"
+msgstr ""
+
+msgid "encoding"
+msgstr "kodning"
+
+msgid "Compression: Fast"
+msgstr "Komprimering: Snabb"
+
+msgid "Compression: Normal"
+msgstr "Komprimering: Normal"
+
+msgid "Compression: High"
+msgstr "Komprimering: Hård"
+
+msgid "Compression: Extra High"
+msgstr "Komprimering: Extra hård"
+
+msgid "Compression: Insane"
+msgstr "Komprimering: Galet"
+

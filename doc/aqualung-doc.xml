@@ -72,7 +72,7 @@
       comments, ID3v1, ID3v2 and APE tags, as well as FLAC picture
       frames found in files that support them.  See the section about
       <ref refkey="meta-support">metadata support</ref> for full reference.</p>
-      
+
       <p>The method of assembling the title string of a track is programmable
       (via a user-provided Lua function) and can include nearly any metadata
       item or audio file attribute.  See the documentation of the
@@ -1383,7 +1383,7 @@
     </section>
 
     <section title="Supplemental features">
-    
+
       <subsection title="Exporting files from the Music Store or Playlist" key="export-files">
 
 	<p>It is possible to export files from the Music Store or
@@ -1820,45 +1820,45 @@
 
       <subsection title="Manual editing">
 
-        <p>The <gui>File info</gui> dialog (<ref
-        refkey="handling-file-metadata">accessible</ref> from the
-        Music Store and the Playlist) acts as a graphical shell for
-        the metadata editing capabilities. Its usage is fairly
-        self-explanatory. For read-only tags, the dialog has no
-        editing controls, so the only available operation is viewing
-        the fields, copy-pasting them to another location, or (if the
-        dialog was opened from the Music Store) importing the field to
-        the Music Store database. Embedded images can also be saved to
-        file.</p>
+	<p>The <gui>File info</gui> dialog (<ref
+	refkey="handling-file-metadata">accessible</ref> from the
+	Music Store and the Playlist) acts as a graphical shell for
+	the metadata editing capabilities. Its usage is fairly
+	self-explanatory. For read-only tags, the dialog has no
+	editing controls, so the only available operation is viewing
+	the fields, copy-pasting them to another location, or (if the
+	dialog was opened from the Music Store) importing the field to
+	the Music Store database. Embedded images can also be saved to
+	file.</p>
 
-        <p>For writable files, the metadata is editable. Each metadata
-        tag present in the file will be displayed in a separate
-        notebook tab. On each tab the information present in a tag is
-        usually organized as a list of frames, displayed in a
-        <q>key:value</q> fashion. The values of each frame are
-        editable, mostly by means of a simple text entry, but in some
-        cases other widgets (such as a drop-down menu) may also be
-        present. The frame itself can be removed by clicking on the
-        frame's rightmost icon displaying a trash can. Some frames
-        cannot be removed, because their existence is mandated by the
-        corresponding metadata standard for the tag. In this case the
-        trash can is greyed out.</p>
+	<p>For writable files, the metadata is editable. Each metadata
+	tag present in the file will be displayed in a separate
+	notebook tab. On each tab the information present in a tag is
+	usually organized as a list of frames, displayed in a
+	<q>key:value</q> fashion. The values of each frame are
+	editable, mostly by means of a simple text entry, but in some
+	cases other widgets (such as a drop-down menu) may also be
+	present. The frame itself can be removed by clicking on the
+	frame's rightmost icon displaying a trash can. Some frames
+	cannot be removed, because their existence is mandated by the
+	corresponding metadata standard for the tag. In this case the
+	trash can is greyed out.</p>
 
-        <p>Adding new frames is possible via the drop-down box at the
-        bottom of the tab. This box contains all possible frames that
-        you can add to the present tag. Some frames can only occur
-        once in a tag; in this case after adding it once (or if a
-        frame of this type is already present in the tag) it is no
-        more present in the drop-down box.</p>
+	<p>Adding new frames is possible via the drop-down box at the
+	bottom of the tab. This box contains all possible frames that
+	you can add to the present tag. Some frames can only occur
+	once in a tag; in this case after adding it once (or if a
+	frame of this type is already present in the tag) it is no
+	more present in the drop-down box.</p>
 
-        <p>Adding and removing whole tags is also supported. Just
-        press the trash can icon at the bottom right corner of the
-        tab, and the whole tag will be removed. Adding a new tag is
-        possible via the drop-down box at the bottom of the
-        window. This box contains all possible tags you can add to
-        this file. This depends on the audio file format and what tags
-        are already present in the file (naturally, only one instance
-        of a particular tag may exist in a file).</p>
+	<p>Adding and removing whole tags is also supported. Just
+	press the trash can icon at the bottom right corner of the
+	tab, and the whole tag will be removed. Adding a new tag is
+	possible via the drop-down box at the bottom of the
+	window. This box contains all possible tags you can add to
+	this file. This depends on the audio file format and what tags
+	are already present in the file (naturally, only one instance
+	of a particular tag may exist in a file).</p>
 
       </subsection>
 
@@ -1879,7 +1879,7 @@
 
       <subsection title="Metadata-related behavior">
 
-        <subsubsection title="Configuration" key="metadata-config">
+	<subsubsection title="Configuration" key="metadata-config">
 
 	  <p>Configuring metdata-related behavior can be done in
 	  <gui>Settings / Metadata</gui>. The file metadata will
@@ -1898,39 +1898,39 @@
 	  not found, the other one is checked and if that exists, it
 	  is used instead.</p>
 
-          <p>For the metadata editor (<gui>File info</gui> dialog) you
-          can choose whether you want to set the contents of newly
-          added frames on the basis of another existing tag's
-          equivalent frame. For example, if this option is enabled,
-          adding a <q>Title</q> frame to a newly added APE tag will
-          automatically fill it in, provided that there is e.g. an
-          ID3v2 tag in the same file that already has a <q>Title</q>
-          frame. If this option is unset, newly added fields will be
-          blank.</p>
+	  <p>For the metadata editor (<gui>File info</gui> dialog) you
+	  can choose whether you want to set the contents of newly
+	  added frames on the basis of another existing tag's
+	  equivalent frame. For example, if this option is enabled,
+	  adding a <q>Title</q> frame to a newly added APE tag will
+	  automatically fill it in, provided that there is e.g. an
+	  ID3v2 tag in the same file that already has a <q>Title</q>
+	  frame. If this option is unset, newly added fields will be
+	  blank.</p>
 
-          <p>The last group of options controls the preferred set of
-          tags in MPEG audio files. Because these files can have
-          ID3v1, ID3v2 and APE tags in any combination, it is
-          essential to set this to match your policy regarding the
-          tagging of these files. These settings affect creating (via
-          CD ripping or file export) or batch tagging MPEG audio
-          files.</p>
-          
-        </subsubsection>
+	  <p>The last group of options controls the preferred set of
+	  tags in MPEG audio files. Because these files can have
+	  ID3v1, ID3v2 and APE tags in any combination, it is
+	  essential to set this to match your policy regarding the
+	  tagging of these files. These settings affect creating (via
+	  CD ripping or file export) or batch tagging MPEG audio
+	  files.</p>
 
-        <subsubsection title="Precedence of metadata information" key="meta-precedence">
+	</subsubsection>
+
+	<subsubsection title="Precedence of metadata information" key="meta-precedence">
 
 	  <p>Whenever there is a generic request for some information
-          concerning a file (e.g. <q>Who is the artist?</q>) we do not
-          want to explicitly specify which metadata tag should be used
-          to retrieve the desired piece of data. As a consequence, all
-          tags present have to be checked. However, since not all tags
-          are equally capable of storing well-formed information
-          (think of ID3v1 limitations), there should be a preference
-          order in which the different tags are queried.</p>
+	  concerning a file (e.g. <q>Who is the artist?</q>) we do not
+	  want to explicitly specify which metadata tag should be used
+	  to retrieve the desired piece of data. As a consequence, all
+	  tags present have to be checked. However, since not all tags
+	  are equally capable of storing well-formed information
+	  (think of ID3v1 limitations), there should be a preference
+	  order in which the different tags are queried.</p>
 
-          <p>The preference order:</p>
-        
+	  <p>The preference order:</p>
+
 	  <tabular>
 	    <tr>
 	      <td>1.</td>
@@ -1966,250 +1966,250 @@
 	    </tr>
 	  </tabular>
 
-        </subsubsection>
-        
-        <subsubsection title="ReplayGain and RVA" key="meta-rg-and-rva">
+	</subsubsection>
 
-          <p>Aqualung is a ReplayGain-aware music player. You have to
-          understand and use the <ref refkey="rva">RVA system</ref> in
-          order to make use of this. The RVA system relies on
-          pre-stored loudness measurements of files, which Aqualung
-          normally does by itself (by selecting the <gui>Calculate
-          volume...</gui> option from the popup menus). However, for
-          files already containing ReplayGain or RVA information, it
-          is possible to use that as the basis of volume
-          adjustment.</p>
+	<subsubsection title="ReplayGain and RVA" key="meta-rg-and-rva">
 
-          <p>One way of doing this is importing the ReplayGain or RVA
-          frame to the Music Store as <q>manual RVA</q> (using the
-          <gui>File info</gui> dialog opened from the Music Store. In
-          this case the stored value is editable via the <gui>Edit
-          track...</gui> popup menu item, where you can also specify
-          such a value manually, if needed.</p>
+	  <p>Aqualung is a ReplayGain-aware music player. You have to
+	  understand and use the <ref refkey="rva">RVA system</ref> in
+	  order to make use of this. The RVA system relies on
+	  pre-stored loudness measurements of files, which Aqualung
+	  normally does by itself (by selecting the <gui>Calculate
+	  volume...</gui> option from the popup menus). However, for
+	  files already containing ReplayGain or RVA information, it
+	  is possible to use that as the basis of volume
+	  adjustment.</p>
 
-          <p>In case there is no <q>manual RVA</q> value stored for
-          the file, the RVA system will see if there is a previously
-          calculated loudness value stored for this track. If yes,
-          this will be the basis of a volume adjustment calculation,
-          which is controlled by <gui>Settings / Playback RVA</gui>
-          options. However, if the RVA system is enabled and neither
-          <q>manual RVA</q>, nor loudness measurement is available,
-          Aqualung looks for ReplayGain or RVA information in the file
-          metadata. If such information is found, it is used in the
-          same way as <q>manual RVA</q>, so the track's playback gain
-          will be adjusted by exactly the specified amount.</p>
+	  <p>One way of doing this is importing the ReplayGain or RVA
+	  frame to the Music Store as <q>manual RVA</q> (using the
+	  <gui>File info</gui> dialog opened from the Music Store. In
+	  this case the stored value is editable via the <gui>Edit
+	  track...</gui> popup menu item, where you can also specify
+	  such a value manually, if needed.</p>
 
-          <p>There is an important difference between <q>manual
-          RVA</q> data coming from a metadata tag or specified
-          directly by the user, and loudness values calculated by
-          Aqualung. The former is a volume adjustment in itself,
-          specifying the amount of cut or boost to apply when playing
-          the track. On the other hand, Aqualung's loudness levels
-          merely serve as an indicator of the track's loudness, and
-          are converted to actual volume adjustment values when adding
-          the track to the Playlist, via <ref refkey="rva">Aqualung's
-          RVA algorithm</ref>, which is a quite sophisticated tool
-          based on listening environments, also supporting
-          statistics-based handling of Album-based volume
-          averaging.</p>
+	  <p>In case there is no <q>manual RVA</q> value stored for
+	  the file, the RVA system will see if there is a previously
+	  calculated loudness value stored for this track. If yes,
+	  this will be the basis of a volume adjustment calculation,
+	  which is controlled by <gui>Settings / Playback RVA</gui>
+	  options. However, if the RVA system is enabled and neither
+	  <q>manual RVA</q>, nor loudness measurement is available,
+	  Aqualung looks for ReplayGain or RVA information in the file
+	  metadata. If such information is found, it is used in the
+	  same way as <q>manual RVA</q>, so the track's playback gain
+	  will be adjusted by exactly the specified amount.</p>
 
-        </subsubsection>
-        
-        <subsubsection title="Metadata transfer when exporting" key="export-meta-transfer">
+	  <p>There is an important difference between <q>manual
+	  RVA</q> data coming from a metadata tag or specified
+	  directly by the user, and loudness values calculated by
+	  Aqualung. The former is a volume adjustment in itself,
+	  specifying the amount of cut or boost to apply when playing
+	  the track. On the other hand, Aqualung's loudness levels
+	  merely serve as an indicator of the track's loudness, and
+	  are converted to actual volume adjustment values when adding
+	  the track to the Playlist, via <ref refkey="rva">Aqualung's
+	  RVA algorithm</ref>, which is a quite sophisticated tool
+	  based on listening environments, also supporting
+	  statistics-based handling of Album-based volume
+	  averaging.</p>
 
-          <p>When <ref refkey="export-files">exporting files</ref>,
-          Aqualung attempts to retain the metadata of the original
-          file as much as possible by transcoding metadata into the
-          tags supported by the output format. For each frame present
-          in the input metadata, it is determined whether it is
-          possible to add an equivalent frame to one of the tags
-          supported by the output format. If yes, the frame data is
-          converted and stored. Note that for each frame type
-          (e.g. <q>Title</q>), only one source tag is chosen to be
-          copied from even if it is present in more than one tag in
-          the input metadata. In this case the tag with the highest
-          <ref refkey="meta-precedence">precedence</ref> is used as
-          input. Of course, if more instances of the same frame are
-          present in the same tag (e.g. multiple APIC frames in an
-          ID3v2 tag), they are all transferred if the output metadata
-          format supports them.</p>
+	</subsubsection>
 
-          <p>This feature essentially means that files are transcoded
-          with intelligent metadata transfer. For example, exporting a
-          FLAC containing Ogg Vorbis comments and two FLAC picture
-          frames to MP3 will result in an MP3 with an ID3v2 having the
-          respective text frames, and two APIC frames for the
-          pictures.</p>
+	<subsubsection title="Metadata transfer when exporting" key="export-meta-transfer">
+
+	  <p>When <ref refkey="export-files">exporting files</ref>,
+	  Aqualung attempts to retain the metadata of the original
+	  file as much as possible by transcoding metadata into the
+	  tags supported by the output format. For each frame present
+	  in the input metadata, it is determined whether it is
+	  possible to add an equivalent frame to one of the tags
+	  supported by the output format. If yes, the frame data is
+	  converted and stored. Note that for each frame type
+	  (e.g. <q>Title</q>), only one source tag is chosen to be
+	  copied from even if it is present in more than one tag in
+	  the input metadata. In this case the tag with the highest
+	  <ref refkey="meta-precedence">precedence</ref> is used as
+	  input. Of course, if more instances of the same frame are
+	  present in the same tag (e.g. multiple APIC frames in an
+	  ID3v2 tag), they are all transferred if the output metadata
+	  format supports them.</p>
+
+	  <p>This feature essentially means that files are transcoded
+	  with intelligent metadata transfer. For example, exporting a
+	  FLAC containing Ogg Vorbis comments and two FLAC picture
+	  frames to MP3 will result in an MP3 with an ID3v2 having the
+	  respective text frames, and two APIC frames for the
+	  pictures.</p>
 
 	  <p>When assembling the metadata written to the output file,
 	  the information from the Music Store or Playlist (Title,
 	  Artist, Album, Year, Track number) will be used in case the
 	  source metadata does not contain the appropriate frames.</p>
 
-        </subsubsection>
+	</subsubsection>
 
       </subsection>
 
       <subsection title="Overview of supported metadata formats">
 
-        <subsubsection title="Metadata support matrix">
+	<subsubsection title="Metadata support matrix">
 
-          <p>This table shows what tag types are supported for which
-          audio formats. Formats for which no metadata support is
-          present are omitted.</p>
-        
+	  <p>This table shows what tag types are supported for which
+	  audio formats. Formats for which no metadata support is
+	  present are omitted.</p>
+
 	  <matrix>
 	    <tr>
 	      <td></td>
 	      <td>ID3v1</td>
 	      <td>ID3v2</td>
 	      <td>APE</td>
-              <td>Ogg Xiph Comments</td>
-              <td>FLAC Pictures</td>
-              <td>Musepack ReplayGain</td>
-              <td>Generic StreamMeta</td>
-              <td>MPEG StreamMeta</td>
-              <td>Module info</td>
-            </tr>
+	      <td>Ogg Xiph Comments</td>
+	      <td>FLAC Pictures</td>
+	      <td>Musepack ReplayGain</td>
+	      <td>Generic StreamMeta</td>
+	      <td>MPEG StreamMeta</td>
+	      <td>Module info</td>
+	    </tr>
 
-            <tr>
-              <td>FLAC</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>R/W</td>
-              <td>R/W</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
+	    <tr>
+	      <td>FLAC</td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td>R/W</td>
+	      <td>R/W</td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	    </tr>
 
-            <tr>
-              <td>Ogg Vorbis</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>R/W</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
+	    <tr>
+	      <td>Ogg Vorbis</td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td>R/W</td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	    </tr>
 
-            <tr>
-              <td>Ogg Vorbis (stream)</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>R</td>
-              <td></td>
-              <td></td>
-              <td>R</td>
-              <td></td>
-              <td></td>
-            </tr>
+	    <tr>
+	      <td>Ogg Vorbis (stream)</td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td>R</td>
+	      <td></td>
+	      <td></td>
+	      <td>R</td>
+	      <td></td>
+	      <td></td>
+	    </tr>
 
-            <tr>
-              <td>MPEG Audio</td>
-              <td>R/W</td>
-              <td>R/W</td>
-              <td>R/W</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
+	    <tr>
+	      <td>MPEG Audio</td>
+	      <td>R/W</td>
+	      <td>R/W</td>
+	      <td>R/W</td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	    </tr>
 
-            <tr>
-              <td>MPEG Audio (stream)</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>R</td>
-              <td>R</td>
-              <td></td>
-            </tr>
+	    <tr>
+	      <td>MPEG Audio (stream)</td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td>R</td>
+	      <td>R</td>
+	      <td></td>
+	    </tr>
 
-            <tr>
-              <td>MOD Audio</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>R</td>
-            </tr>
+	    <tr>
+	      <td>MOD Audio</td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td>R</td>
+	    </tr>
 
-            <tr>
-              <td>Musepack</td>
-              <td></td>
-              <td></td>
-              <td>R/W</td>
-              <td></td>
-              <td></td>
-              <td>R</td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
+	    <tr>
+	      <td>Musepack</td>
+	      <td></td>
+	      <td></td>
+	      <td>R/W</td>
+	      <td></td>
+	      <td></td>
+	      <td>R</td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	    </tr>
 
-            <tr>
-              <td>Monkey's Audio</td>
-              <td></td>
-              <td></td>
-              <td>R/W</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
+	    <tr>
+	      <td>Monkey's Audio</td>
+	      <td></td>
+	      <td></td>
+	      <td>R/W</td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	    </tr>
 
-            <tr>
-              <td>WavPack</td>
-              <td></td>
-              <td></td>
-              <td>R/W</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
+	    <tr>
+	      <td>WavPack</td>
+	      <td></td>
+	      <td></td>
+	      <td>R/W</td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	    </tr>
 
-          </matrix>
+	  </matrix>
 
-        </subsubsection>
+	</subsubsection>
 
-        <subsubsection title="ID3v1">
+	<subsubsection title="ID3v1">
 
-          <p>ID3v1 and ID3v1.1 (<a href="http://www.id3.org/ID3v1">http://www.id3.org/ID3v1</a>)
-          are fully supported. The difference between the two is the
-          presence or absence of a separate Track Number field, which
-          was added in ID3v1.1. Aqualung automatically parses the tag
-          choosing the right version. When writing the tag, it is
-          written as ID3v1.1 if a Track Number frame is present, and
-          written as ID3v1 otherwise.</p>
+	  <p>ID3v1 and ID3v1.1 (<a href="http://www.id3.org/ID3v1">http://www.id3.org/ID3v1</a>)
+	  are fully supported. The difference between the two is the
+	  presence or absence of a separate Track Number field, which
+	  was added in ID3v1.1. Aqualung automatically parses the tag
+	  choosing the right version. When writing the tag, it is
+	  written as ID3v1.1 if a Track Number frame is present, and
+	  written as ID3v1 otherwise.</p>
 
-          <p>The Genre field has a fixed set of possible contents in
-          ID3v1 and ID3v1.1. This is enforced by a drop-down menu in
-          the metadata editor GUI.</p>
-        
-        </subsubsection>
-      
-        <subsubsection title="ID3v2">
+	  <p>The Genre field has a fixed set of possible contents in
+	  ID3v1 and ID3v1.1. This is enforced by a drop-down menu in
+	  the metadata editor GUI.</p>
+
+	</subsubsection>
+
+	<subsubsection title="ID3v2">
 
 	  <p>ID3v2 tags are supported with the restriction that the
 	  tag MUST be at the beginning of the file. Tag versions
@@ -2221,125 +2221,125 @@
 	  href="http://id3.org/id3v2.4.0-structure">http://id3.org/id3v2.4.0-structure</a>)
 	  are supported in both read and write mode.</p>
 
-          <p>ID3v2.4 tags are always written using UTF-8 as the string
-          encoding of non-ASCII text data, and unconditionally
-          employing unsynchronisation on all frames. Extended headers
-          are neither parsed nor written. Padding is added when
-          creating a new file (via CD ripping or file export) or
-          rewriting a tag that does not fit in its earlier space
-          (e.g. when adding a picture frame, which is usually larger
-          than the remaining padding, thus mandating the re-writing of
-          the whole file). In these cases the policy for determining
-          the amount of padding is that the size of the tag should be
-          an integer multiple of 2K, and the added padding should be
-          between 2K and 4K.</p>
-          
-          <p>Not every frame defined by the ID3v2 standards is
-          implemented; however, the commonly used subset of the frames
-          is available. In particular, all text information frames
-          (T***) including <q>User defined text frame</q> (TXXX), URL
-          link frames (W***) including <q>User defined URL link
-          frame</q> (WXXX), comments (COMM), relative volume
-          adjustment 2 (RVA2), and attached picture (APIC) frames are
-          supported.</p>
+	  <p>ID3v2.4 tags are always written using UTF-8 as the string
+	  encoding of non-ASCII text data, and unconditionally
+	  employing unsynchronisation on all frames. Extended headers
+	  are neither parsed nor written. Padding is added when
+	  creating a new file (via CD ripping or file export) or
+	  rewriting a tag that does not fit in its earlier space
+	  (e.g. when adding a picture frame, which is usually larger
+	  than the remaining padding, thus mandating the re-writing of
+	  the whole file). In these cases the policy for determining
+	  the amount of padding is that the size of the tag should be
+	  an integer multiple of 2K, and the added padding should be
+	  between 2K and 4K.</p>
 
-          <p>Some ID3v2.3 frames that have been discontinued in
-          ID3v2.4 are supported by reading and converting them to
-          other (functionally equivalent) frames: TDAT, TIME, TRDA and
-          TYER are treated as TDRC and TORY is treated as TDOR.</p>
+	  <p>Not every frame defined by the ID3v2 standards is
+	  implemented; however, the commonly used subset of the frames
+	  is available. In particular, all text information frames
+	  (T***) including <q>User defined text frame</q> (TXXX), URL
+	  link frames (W***) including <q>User defined URL link
+	  frame</q> (WXXX), comments (COMM), relative volume
+	  adjustment 2 (RVA2), and attached picture (APIC) frames are
+	  supported.</p>
 
-          <p>Note that the RVAD frame in ID3v2.3 is not supported.</p>
+	  <p>Some ID3v2.3 frames that have been discontinued in
+	  ID3v2.4 are supported by reading and converting them to
+	  other (functionally equivalent) frames: TDAT, TIME, TRDA and
+	  TYER are treated as TDRC and TORY is treated as TDOR.</p>
 
-        </subsubsection>
-      
-        <subsubsection title="APE">
+	  <p>Note that the RVAD frame in ID3v2.3 is not supported.</p>
 
-          <p>APEv1 and <a
-          href="http://wiki.hydrogenaudio.org/index.php?title=APEv2_specification">APEv2</a>
-          tags are supported with the restriction that the tag MUST be
-          located at the end of the file, possibly before an ID3v1
-          tag. <a
-          href="http://wiki.hydrogenaudio.org/index.php?title=APE_key">Standard
-          items</a> are supported as well as ReplayGain-related
-          frames, and picture frames which are by convention binary
-          items identified by a key starting with <q>Cover Art</q>
-          followed by the picture type definition in brackets. This is
-          compatible with most existing tagging software.</p>
-        
-        </subsubsection>
-      
-        <subsubsection title="Ogg Xiph comments">
+	</subsubsection>
 
-          <p>Ogg Xiph comments (also known as Ogg Vorbis comments) are
-          supported according to the recommended field names in the <a
-          href="http://xiph.org/vorbis/doc/v-comment.html">Vorbis
-          format spec</a>. In addition to this, COMMENT, DISC, and
-          ReplayGain-related fields are also supported.
-          </p>
-        
-        </subsubsection>
-      
-        <subsubsection title="FLAC pictures">
+	<subsubsection title="APE">
 
-          <p>In FLAC files there may be an Ogg Xiph comment block
-          along with separate picture blocks that contain one embedded
-          picture each. This tag is Aqualung's pseudo-tag for
-          referring to the set of picture blocks in a FLAC file, so
-          the only frame you can add to this tag is the
-          <q>Attached picture</q>.</p>
-        
-        </subsubsection>
-      
-        <subsubsection title="Musepack ReplayGain data">
+	  <p>APEv1 and <a
+	  href="http://wiki.hydrogenaudio.org/index.php?title=APEv2_specification">APEv2</a>
+	  tags are supported with the restriction that the tag MUST be
+	  located at the end of the file, possibly before an ID3v1
+	  tag. <a
+	  href="http://wiki.hydrogenaudio.org/index.php?title=APE_key">Standard
+	  items</a> are supported as well as ReplayGain-related
+	  frames, and picture frames which are by convention binary
+	  items identified by a key starting with <q>Cover Art</q>
+	  followed by the picture type definition in brackets. This is
+	  compatible with most existing tagging software.</p>
 
-          <p>In <a
-          href="http://trac.musepack.net/trac/wiki/SV7Specification">Musepack
-          SV7</a> streams there may be ReplayGain data in the file
-          (not in a metadata tag, but in the coded audio data
-          itself). Technically, it is always present, but is only
-          treated as existent when it is nonzero. Aqualung displays
-          (and has the capability to use) this information by
-          referring to it as a <q>Musepack ReplayGain</q> pseudo-tag
-          (which, again, is not a proper metadata tag in
-          reality). This information is read-only.
-          </p>
+	</subsubsection>
 
-        </subsubsection>
-      
-        <subsubsection title="Generic StreamMetadata">
+	<subsubsection title="Ogg Xiph comments">
 
-          <p>This is a read-only pseudo-tag carrying information that
-          was obtained when speaking to the Icecast or SHOUTcast
-          stream server. Specifically, the relevant HTTP header fields
-          received from the server are saved in this pseudo-tag and
-          made available for viewing. These currently include the
-          <q>Icy-Name</q>, <q>Icy-Description</q> and <q>Icy-Genre</q>
-          fields.</p>
-        
-        </subsubsection>
-      
-        <subsubsection title="MPEG StreamMetadata">
+	  <p>Ogg Xiph comments (also known as Ogg Vorbis comments) are
+	  supported according to the recommended field names in the <a
+	  href="http://xiph.org/vorbis/doc/v-comment.html">Vorbis
+	  format spec</a>. In addition to this, COMMENT, DISC, and
+	  ReplayGain-related fields are also supported.
+	  </p>
 
-          <p>This is a read-only pseudo-tag carrying information that
-          was received while listening to an MPEG stream on internet
-          radio via <a
-          href="http://www.smackfu.com/stuff/programming/shoutcast.html">SHOUTcast</a>.
-          This information consists of <q>key:value</q> pairs, and is
-          thus fairly similar to Ogg Xiph comments. Usually internet
-          broadcast stations include only a small number of fields,
-          but since the field name is included in the transmission,
-          there is no restriction on the supported fields.</p>
-        
-        </subsubsection>
-      
-        <subsubsection title="MOD information">
+	</subsubsection>
 
-          <p>For files handled by the MOD library, some read-only
-          information about the file (number of channels, instruments,
-          etc.) is displayed.</p>
-        
-        </subsubsection>
-      
+	<subsubsection title="FLAC pictures">
+
+	  <p>In FLAC files there may be an Ogg Xiph comment block
+	  along with separate picture blocks that contain one embedded
+	  picture each. This tag is Aqualung's pseudo-tag for
+	  referring to the set of picture blocks in a FLAC file, so
+	  the only frame you can add to this tag is the
+	  <q>Attached picture</q>.</p>
+
+	</subsubsection>
+
+	<subsubsection title="Musepack ReplayGain data">
+
+	  <p>In <a
+	  href="http://trac.musepack.net/trac/wiki/SV7Specification">Musepack
+	  SV7</a> streams there may be ReplayGain data in the file
+	  (not in a metadata tag, but in the coded audio data
+	  itself). Technically, it is always present, but is only
+	  treated as existent when it is nonzero. Aqualung displays
+	  (and has the capability to use) this information by
+	  referring to it as a <q>Musepack ReplayGain</q> pseudo-tag
+	  (which, again, is not a proper metadata tag in
+	  reality). This information is read-only.
+	  </p>
+
+	</subsubsection>
+
+	<subsubsection title="Generic StreamMetadata">
+
+	  <p>This is a read-only pseudo-tag carrying information that
+	  was obtained when speaking to the Icecast or SHOUTcast
+	  stream server. Specifically, the relevant HTTP header fields
+	  received from the server are saved in this pseudo-tag and
+	  made available for viewing. These currently include the
+	  <q>Icy-Name</q>, <q>Icy-Description</q> and <q>Icy-Genre</q>
+	  fields.</p>
+
+	</subsubsection>
+
+	<subsubsection title="MPEG StreamMetadata">
+
+	  <p>This is a read-only pseudo-tag carrying information that
+	  was received while listening to an MPEG stream on internet
+	  radio via <a
+	  href="http://www.smackfu.com/stuff/programming/shoutcast.html">SHOUTcast</a>.
+	  This information consists of <q>key:value</q> pairs, and is
+	  thus fairly similar to Ogg Xiph comments. Usually internet
+	  broadcast stations include only a small number of fields,
+	  but since the field name is included in the transmission,
+	  there is no restriction on the supported fields.</p>
+
+	</subsubsection>
+
+	<subsubsection title="MOD information">
+
+	  <p>For files handled by the MOD library, some read-only
+	  information about the file (number of channels, instruments,
+	  etc.) is displayed.</p>
+
+	</subsubsection>
+
       </subsection>
 
     </section>
@@ -2429,10 +2429,10 @@
 	<p>You can type in the path to the file or click
 	<gui>Browse</gui> to get a file chooser.  The <q>.lua</q> file
 	should be a valid Lua source code file, containing a function
-	named <q>playlist_title</q>, which should accept no arguments
-	and should return a string, which Aqualung will call to get
-	the string to use as the entry in the playlist.</p>
-	
+	named <q><cmd>playlist_title</cmd></q>, which should accept no
+	arguments and should return a string, which Aqualung will call
+	to get the string to use as the entry in the playlist.</p>
+
 	<p>Aqualung defines two functions for you to use to get data
 	to use in the title format, <q><cmd>m</cmd></q> and
 	<q><cmd>i</cmd></q>.  <q><cmd>m</cmd></q> stands for metadata,
@@ -2451,274 +2451,213 @@
 
 	<p>Here are some examples.</p>
 
-	<p>1. Very simple, showing basic syntax:</p>
+	<paragraph title="1. Very simple, showing basic syntax">
 
-	<verbatim>
-function playlist_title()
-  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ')'
-end</verbatim>
+	  <verbatim>
+	    @function playlist_title()
+	    @  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ')'
+	  @end</verbatim>
 
-        <ul>
-	  <li>Yngiew Malmsteen-Far Beyond the Sun (Rising Force)</li>
-	  <li>-Greensleeves ()</li>
-	</ul>
+	  <p>Results:</p>
 
-	<p>2. Simple, showing use of conditional formatting:</p>
+	  <ul>
+	    <li>Yngiew Malmsteen-Far Beyond the Sun (Rising Force)</li>
+	    <li>-Greensleeves ()</li>
+	  </ul>
 
-	<verbatim>
-function mi(field, format)
-  if field ~= "" then
-    field = string.format(format, field)
-  end 
-  return field
-end
+	</paragraph>
 
-function dirname(path)
-  if string.find(path, "/") then
-    return string.sub(path, 1, string.len(path) - string.find(string.reverse(path), "/"))
-  else
-    return ""
-  end
-end
+	<paragraph title="2. Simple, showing use of conditional formatting">
 
-function album()
-  local a = m('album')
-  if a ~= "" then
-    a = a .. mi('date', ' (%s)')
-  else
-    a = dirname(i('filename'))
-  end 
-  return a .. '-'
-end
+	  <verbatim>
+	    @function mi(field, format)
+	    @  if field ~= "" then
+	    @    field = string.format(format, field)
+	    @  end
+	    @  return field
+	    @end
 
-function playlist_title()
-  return album() .. mi('trackno', '%s-') .. m('title')
-end</verbatim>
+	    @function dirname(path)
+	    @  if string.find(path, "/") then
+	    @    return string.sub(path, 1, string.len(path) - string.find(string.reverse(path), "/"))
+	    @  else
+	    @    return ""
+	    @  end
+	    @end
 
-        <ul>
-	  <li>Rising Force (1984)-01-Far Beyond the Sun</li>
-	  <li>irish_music-Greensleeves</li>
-	</ul>
+	    @function album()
+	    @  local a = m('album')
+	    @  if a ~= "" then
+	    @    a = a .. mi('date', ' (%s)')
+	    @  else
+	    @    a = dirname(i('filename'))
+	    @  end
+	    @  return a .. '-'
+	    @end
 
-	<p>3. Complex, showing quasi-columnar output via padding (requires a fixed width font for a decent appearance):</p>
+	    @function playlist_title()
+	    @  return album() .. mi('trackno', '%s-') .. m('title')
+	  @end</verbatim>
 
-<verbatim>
--- Maximum length of a line in the playlist
-maxlen = 85
+	  <p>Results:</p>
 
--- Directory name for path
-function dirname(path)
-  if string.find(path, "/") then
-    return string.sub(path, 1, string.len(path) - string.find(string.reverse(path), "/"))
-  else
-    return ""
-  end
-end
+	  <ul>
+	    <li>Rising Force (1984)-01-Far Beyond the Sun</li>
+	    <li>irish_music-Greensleeves</li>
+	  </ul>
 
--- File name for path
-function basename(path)
-  if string.find(path, "/") then
-    return string.sub(path, string.len(path) - string.find(string.reverse(path), "/") + 2)
-  else
-    return path
-  end
-end
+	</paragraph>
 
--- The album name from the metadata, or the directory name of the file if not present
-function album_or_dir()
-  local album = m('album')
-  if album == "" then
-    album = basename(dirname(i("filename")))
-  end
-  return album
-end
+	<paragraph title="3. Complex, showing quasi-columnar output via padding (requires a fixed width font for a decent appearance)">
 
--- The title from the metadata, or the base name of the file if not present
-function title_or_file()
-  local title = m('title')
-  if title == "" then
-    local file = basename(i("filename"))
-    if not  string.match(file, "^%d+%-%....$") then
-      title = file
-    end
-  end
-  return title
-end
+	  <verbatim>
+	    @-- Maximum length of a line in the playlist
+	    @maxlen = 85
 
--- If the field exists in the metadata, format it using the format_string
-function formatif(field, format_string)
-  if field ~= "" then
-    field = string.format(format_string, field)
-  end
-  return field
-end
+	    @-- Directory name for path
+	    @function dirname(path)
+	    @  if string.find(path, "/") then
+	    @    return string.sub(path, 1, string.len(path) - string.find(string.reverse(path), "/"))
+	    @  else
+	    @    return ""
+	    @  end
+	    @end
 
--- A string indicating the frequency in Hz, or the empty string if the frequency is 44100
-function freq()
-  local hz = string.format("%i", i('sample_rate'))
-  if hz == "44100" then
-    hz = ""
-  else
-    hz = formatif(hz, "[%sHz] ")
-  end
-  return hz
-end
+	    @-- File name for path
+	    @function basename(path)
+	    @  if string.find(path, "/") then
+	    @    return string.sub(path, string.len(path) - string.find(string.reverse(path), "/") + 2)
+	    @  else
+	    @    return path
+	    @  end
+	    @end
 
--- A string indicating the number of channels, unless the number of channels is 2 (stereo)
-function chan()
-  local m = string.format("%i", i('channels'))
-  if m == "2" then
-    m = ""
-  elseif m == "1" then
-    m = "[MONO] "
-  else
-    m = formatif(m, "[%s channels] ")
-  end
-  return m
-end
+	    @-- The album name from the metadata, or the directory name of the file if not present
+	    @function album_or_dir()
+	    @  local album = m('album')
+	    @  if album == "" then
+	    @    album = basename(dirname(i("filename")))
+	    @  end
+	    @  return album
+	    @end
 
--- Pad the string to the given length, adding spaces if it is too short and truncating
--- it if it is too long
-function pad(s, n)
-  local l = string.len(s)
-  if l > n then
-    s = string.sub(s, 1, n)
-  else
-    s = s .. string.rep(' ', n-l)
-  end
-return s
-end
+	    @-- The title from the metadata, or the base name of the file if not present
+	    @function title_or_file()
+	    @  local title = m('title')
+	    @  if title == "" then
+	    @    local file = basename(i("filename"))
+	    @    if not  string.match(file, "^%d+%-%....$") then
+	    @      title = file
+	    @    end
+	    @  end
+	    @  return title
+	    @end
 
--- Combine the left and right sides, with the right side having priority
-function finalize(l, r)
-  return pad(l, maxlen - string.len(r)) .. r
-end
+	    @-- If the field exists in the metadata, format it using the format_string
+	    @function formatif(field, format_string)
+	    @  if field ~= "" then
+	    @    field = string.format(format_string, field)
+	    @  end
+	    @  return field
+	    @end
 
--- Build the title in two parts, a left part (channel and frequency expections, album,
--- track number, title) and a right part (artist, genre, comment, date, and gain).
--- The right part is columnar, the left side is not.
-function playlist_title()
-  local l = chan() .. freq() .. formatif(album_or_dir(), "%s-")
-            .. formatif(m('trackno'), "%s-") .. title_or_file()
-  local r = "  " .. m('artist') .. "  " .. formatif(m("genre"), "%s  ")
-            .. pad(m('comment'), 12) .. "  " .. pad(m("date"), 4) .. "  "
-            .. pad(m('track_gain'), 5) .. " " .. pad(m('album_gain'), 5)
-  return finalize(l, r)
-end</verbatim>
+	    @-- A string indicating the frequency in Hz, or the empty string if the frequency is 44100
+	    @function freq()
+	    @  local hz = string.format("%i", i('sample_rate'))
+	    @  if hz == "44100" then
+	    @    hz = ""
+	    @  else
+	    @    hz = formatif(hz, "[%sHz] ")
+	    @  end
+	    @  return hz
+	    @end
 
-        <ul>
-	  <li>Rising Force-02-Far Beyond the Sun  Yngwie Malmsteen  Metal         1984  -0.89 -0.94</li>
-	  <li>irish_music-Greensleeves                             Celtic         1990  +0.83      </li>
-	</ul>
+	    @-- A string indicating the number of channels, unless the number of channels is 2 (stereo)
+	    @function chan()
+	    @  local m = string.format("%i", i('channels'))
+	    @  if m == "2" then
+	    @    m = ""
+	    @  elseif m == "1" then
+	    @    m = "[MONO] "
+	    @  else
+	    @    m = formatif(m, "[%s channels] ")
+	    @  end
+	    @  return m
+	    @end
 
-	<p>Here is a complete list of values that the <q><cmd>m</cmd></q> function accepts:</p>
+	    @-- Pad the string to the given length, adding spaces if it is too short and truncating
+	    @-- it if it is too long
+	    @function pad(s, n)
+	    @  local l = string.len(s)
+	    @  if l > n then
+	    @    s = string.sub(s, 1, n)
+	    @  else
+	    @    s = s .. string.rep(' ', n-l)
+	    @  end
+	    @return s
+	    @end
 
-	<p>
-	  [ title
-	  | artist
-	  | album
-	  | date
-	  | genre
-	  | trackno
-	  | comment
-	  | disc
-	  | performer
-	  | description
-	  | organization
-	  | location
-	  | contact
-	  | license
-	  | copyright
-	  | isrc
-	  | version
-	  | subtitle
-	  | debut_album
-	  | publisher
-	  | conductor
-	  | composer
-	  | publication_right
-	  | file
-	  | ean_upc
-	  | isbn
-	  | catalog
-	  | label_code
-	  | record_date
-	  | record_location
-	  | media
-	  | index
-	  | related
-	  | abstract
-	  | language
-	  | bibliography
-	  | introplay
-	  | bpm
-	  | encoding_time
-	  | playlist_delay
-	  | original_release_time
-	  | release_time
-	  | tagging_time
-	  | encoded_by
-	  | lyricist
-	  | filetype
-	  | involved_people
-	  | content_group
-	  | initial_key
-	  | length
-	  | musician_credits
-	  | mood
-	  | original_album
-	  | original_filename
-	  | original_lyricist
-	  | original_artist
-	  | file_owner
-	  | band
-	  | remixed
-	  | set_part
-	  | produced
-	  | station_name
-	  | station_owner
-	  | album_order
-	  | performer_order
-	  | title_order
-	  | software
-	  | set_subtitle
-	  | user_text
-	  | commercial_info
-	  | legal_info
-	  | file_website
-	  | artist_website
-	  | source_website
-	  | station_website
-	  | payment
-	  | publisher_website
-	  | user_url
-	  | vendor
-	  | rg_loudness
-	  | track_gain
-	  | track_peak
-	  | album_gain
-	  | album_peak
-	  | icy_name
-	  | icy_descr
-	  | icy_genre
-	  | rva
-	  ]
-	</p>
+	    @-- Combine the left and right sides, with the right side having priority
+	    @function finalize(l, r)
+	    @  return pad(l, maxlen - string.len(r)) .. r
+	    @end
 
-	<p>Here is a complete list of values that the <q><cmd>i</cmd></q> function accepts:</p>
+	    @-- Build the title in two parts, a left part (channel and frequency expections, album,
+	    @-- track number, title) and a right part (artist, genre, comment, date, and gain).
+	    @-- The right part is columnar, the left side is not.
+	    @function playlist_title()
+	    @  local l = chan() .. freq() .. formatif(album_or_dir(), "%s-")
+	    @            .. formatif(m('trackno'), "%s-") .. title_or_file()
+	    @  local r = "  " .. m('artist') .. "  " .. formatif(m("genre"), "%s  ")
+	    @            .. pad(m('comment'), 12) .. "  " .. pad(m("date"), 4) .. "  "
+	    @            .. pad(m('track_gain'), 5) .. " " .. pad(m('album_gain'), 5)
+	    @  return finalize(l, r)
+	  @end</verbatim>
 
-	<p>
-	  [ filename
-	  | sample_rate
-	  | channels
-	  | bps
-	  | samples
-	  | voladj_db
-	  | voladj_lin
-	  | stream
-	  | mono
-	  ]
-	</p>
+	  <p>Results:</p>
+
+	  <ul>
+	    <li>Rising Force-02-Far Beyond the Sun  Yngwie Malmsteen  Metal         1984  -0.89 -0.94</li>
+	    <li>irish_music-Greensleeves                             Celtic         1990  +0.83      </li>
+	  </ul>
+
+	</paragraph>
+
+	<paragraph title="Complete list of values that the `m' function accepts">
+
+	  <verbatim>
+	    @[ title | artist | album | date | genre | trackno |
+	    @  comment | disc | performer | description | organization
+	    @  | location | contact | license | copyright | isrc |
+	    @  version | subtitle | debut_album | publisher | conductor
+	    @  | composer | publication_right | file | ean_upc | isbn |
+	    @  catalog | label_code | record_date | record_location |
+	    @  media | index | related | abstract | language |
+	    @  bibliography | introplay | bpm | encoding_time |
+	    @  playlist_delay | original_release_time | release_time |
+	    @  tagging_time | encoded_by | lyricist | filetype |
+	    @  involved_people | content_group | initial_key | length |
+	    @  musician_credits | mood | original_album |
+	    @  original_filename | original_lyricist | original_artist
+	    @  | file_owner | band | remixed | set_part | produced |
+	    @  station_name | station_owner | album_order |
+	    @  performer_order | title_order | software | set_subtitle
+	    @  | user_text | commercial_info | legal_info |
+	    @  file_website | artist_website | source_website |
+	    @  station_website | payment | publisher_website | user_url
+	    @  | vendor | rg_loudness | track_gain | track_peak |
+	    @  album_gain | album_peak | icy_name | icy_descr |
+	  @  icy_genre | rva ]</verbatim>
+
+	</paragraph>
+
+	<paragraph title="Here is a complete list of values that the `i' function accepts">
+
+	  <verbatim>
+	    @[ filename | sample_rate | channels | bps | samples |
+	  @  voladj_db | voladj_lin | stream | mono ]</verbatim>
+
+	</paragraph>
 
 	<p>Changing the <gui>Programmable title format file</gui> does
 	not take effect until Aqualung is restarted, and even then it

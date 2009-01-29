@@ -1340,7 +1340,8 @@ sndio_init(thread_info_t * info, int verbose, int realtime, int priority) {
 	sndio_par.rate = info->out_SR;
 	sndio_par.sig = 1;
 	sndio_par.le = 1;
-	sndio_par.bufsz = 1024;
+	sndio_par.round = sndio_par.rate/8;
+	sndio_par.appbufsz = sndio_par.round*2;
 	
 	if(sio_setpar(sndio_hdl, &sndio_par) == 0) {
 		if (verbose) {

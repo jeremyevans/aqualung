@@ -81,7 +81,9 @@ metadata_get_string_field(metadata_t * meta, int type, char ** str) {
 int
 metadata_get_title(metadata_t * meta, char ** str) {
 
+#ifdef HAVE_MOD
 	meta_frame_t * frame;
+#endif /* HAVE_MOD */
 
 	if (meta == NULL)
 		return 0;

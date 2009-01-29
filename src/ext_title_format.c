@@ -135,7 +135,7 @@ static int l_metadata_value(lua_State * L) {
 	int i;
 	file_decoder_t * fdec;
 	s = (char *)lua_tostring(L, 1);
-	if((i = metadata_type_int(s)) == NULL){
+	if((i = metadata_type_int(s)) == 0){
 		luaL_error(L, "Invalid tag field: %s", s);
 	}
 	lua_pop(L, 1);
@@ -155,7 +155,7 @@ static int l_fileinfo_value(lua_State * L) {
 	int i;
 	file_decoder_t * fdec;
 	s = (char *)lua_tostring(L, 1);
-	if((i = fileinfo_type_int(s)) == NULL){
+	if((i = fileinfo_type_int(s)) == 0){
 		luaL_error(L, "Invalid tag field: %s", s);
 	}
 	lua_pop(L, 1);

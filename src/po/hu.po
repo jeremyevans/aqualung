@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-25 22:35+0100\n"
-"PO-Revision-Date: 2008-12-25 22:42+0100\n"
+"POT-Creation-Date: 2009-01-31 17:42+0100\n"
+"PO-Revision-Date: 2009-01-31 17:51+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -54,6 +54,9 @@ msgstr "Olasz:\n"
 msgid "Russian:\n"
 msgstr "Orosz:\n"
 
+msgid "Swedish:\n"
+msgstr "Svéd:\n"
+
 msgid "Ukrainian:\n"
 msgstr "Ukrán:\n"
 
@@ -92,6 +95,9 @@ msgstr "Rendszertálca támogatás\n"
 
 msgid "Podcast support\n"
 msgstr "Podcast támogatás\n"
+
+msgid "Lua (programmable title formatting) support\n"
+msgstr "Lua támogatás (programozható címformátum)\n"
 
 msgid "Decoding support:"
 msgstr "Dekódolás támogatása:"
@@ -1690,6 +1696,9 @@ msgstr "r"
 msgid "unreachable"
 msgstr "nem elérhető"
 
+msgid "Please select a Programable Title Format File."
+msgstr "Válassz egy címformátum-leíró fájlt."
+
 msgid "Please select a Music Store database."
 msgstr "Válassz egy adatbázist."
 
@@ -1710,6 +1719,24 @@ msgstr ""
 "Az alábbi sablon az előadó nevéből, valamint a lemez- és számcímekből "
 "összeállított címsor formátumát adja meg. A %%%%a, %%%%r és %%%%t vezérlők "
 "rendre az előadót, a lemezt és a szám címét jelölik.\n"
+
+msgid ""
+"\n"
+"The file you enter/choose here will set the Lua program to use to format the "
+"title. See the Aqualung manual for details. Here is a quick example of what "
+"you can use in the file:\n"
+"\n"
+"function playlist_title()\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i"
+"('filename') .. ')'\n"
+"end"
+msgstr ""
+"\n"
+"Az alábbi fájl a címek formázását írja elő a Lua program számára. A funkció részletes leírása a manualban olvasható. Egy rövid példa a fájl tartalmára:\n"
+"\n"
+"function playlist_title()\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"end"
 
 msgid ""
 "\n"
@@ -1793,8 +1820,11 @@ msgstr ""
 "eléréséhez ne használja a fent beállított proxyt.\n"
 "Példa: localhost, .localdomain, .my.domain.com"
 
-msgid "Title format"
+msgid "Title Format"
 msgstr "Címformátum"
+
+msgid "Programmable title format file"
+msgstr "Címformátum-leíró fájl"
 
 msgid "Implicit command line"
 msgstr "Implicit parancssor"
@@ -2998,6 +3028,9 @@ msgstr "nap"
 
 msgid "All Files"
 msgstr "Minden fájl"
+
+msgid "Extended Title Format Files (*.lua)"
+msgstr "Címformátum-leíró fájlok (*.lua)"
 
 msgid "Music Store Files (*.xml)"
 msgstr "Zenetár fájlok (*.xml)"

@@ -1,3 +1,87 @@
+2009-02-08	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
+
+    * Aqualung 0.9beta10
+        http://aqualung.factorial.hu
+
+	* Add programmable title format support.
+	
+	  This commit embeds a Lua interpreter inside of Aqualung for the
+	  purpose of allowing the user full control over the title format. It
+	  allows the user to use any metadata field that Aqualung recognizes,
+	  as well as a few fields from the file info in order to compose a
+	  title field.  See the documentation update included in this release
+	  for usage information for this feature.
+	
+	* Loop playback enhancements:
+	
+	  New key bindings '<' and '>' for adjusting loop range start and end
+	  (respectively) to the current playing position. Active only when
+	  track repeat mode is on and a track is currently playing or paused.
+	
+	  Added tooltip showing loop range in percentage and time (if there is
+	  a track loaded). Tooltips must be globally enabled for this feature.
+	
+	* Allow the systray to be disabled even if support is compiled in.
+	
+	* Add support for saving single playlists in M3U format. If the
+	  playlist file name ends with .m3u, it will save in M3U format (one
+	  filename per line) instead of the Aqualung XML format. This only
+	  affects the logic around saving single playlists; if you save all
+	  playlists at once, it will always use the XML format, because the
+	  M3U format does not support multiple playlists.
+	
+	* Add support for sndio backend, bringing the total number of
+	  backends to five. libsndio was recently introduced in OpenBSD as
+	  a simple audio API that supports OpenBSD's builtin sound server,
+	  aucat.
+	
+	* Add playlist context menu option 'Roll to active song'.
+	
+	* Optionally combine Play and Pause buttons into a single button.
+	
+	* Fix gapless MPEG audio playback (correct offset calculation) when
+	  ID3v2 tag is present.
+	
+	* Export can now copy files instead of reencoding them using the new
+	  target format "Copy".
+	
+	* A subset of input files can be forced to be copied instead of being
+	  reencoded. There are two criteria for this: when the source file is
+	  already in the target format, and when the source file matches any
+	  of a comma-separated list of wildchards (similarly to the builder
+	  exclusion list). Both options can be enabled/disabled from the
+	  Export dialog.
+	
+	* Handle HTTP/1.0 responses.
+	
+	* When updating all feeds, insert 1 second delay between individual feeds.
+	
+	* Added right-click menu items for adding only new podcasts to playlist.
+	
+	* Music Stores can now use relative paths instead of absolute ones,
+	  allowing users to mount the same collection on different mount
+	  points (just one use case). Implementation is based on the patch by
+	  Russell Johnston, big thanks for both the idea and the
+	  contribution. A checkbox for toggling this feature is added to the
+	  Edit Store dialog (accessible via the right-click menu of stores).
+	
+	* All filenames use the GLib filename encoding instead of locale
+	  encoding. This is the proper and official way of doing it; if you
+	  have issues using filenames with special characters, consider
+	  setting the G_FILENAME_ENCODING or G_BROKEN_FILENAMES environment
+	  variables. If you are using an UTF-8 locale (a very wise choice),
+	  you have nothing to worry about.
+	
+	* Add extra check for mad.h presence to configure.
+	
+	* New store builder option to automatically remove non-existing files
+	  from the store. It is disabled by default.
+	
+	* Added new Swedish translation by Niklas Grahn.
+
+	* Numerous minor bugfixes.
+	
+	
 2008-02-10	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
 
     * Aqualung 0.9beta9.1

@@ -575,22 +575,48 @@ AC_ARG_WITH(
 if test "$lavc" = "no"; then
 	AC_MSG_RESULT(no)
 else
-	AC_CHECK_HEADERS(libavcodec/avcodec.h avcodec.h ffmpeg/avcodec.h)
-	AC_CHECK_HEADERS(libavformat/avformat.h avformat.h ffmpeg/avformat.h)
+	AC_CHECK_HEADER([avcodec.h], [avc_hdr=yes], [avc_hdr=no])
+	if test "$avc_hdr" = "yes"; then
+		AC_DEFINE([HAVE_AVCODEC_H], [1], [Define to 1 if you have the <avcodec.h> header file.])
+	else
+		AC_CHECK_HEADER([ffmpeg/avcodec.h], [avc_hdr=yes], [avc_hdr=no])
+		if test "$avc_hdr" = "yes"; then
+		        AC_DEFINE([HAVE_FFMPEG_AVCODEC_H], [1], [Define to 1 if you have the <ffmpeg/avcodec.h> header file.])
+		else
+			AC_CHECK_HEADER([libavcodec/avcodec.h], [avc_hdr=yes], [avc_hdr=no])
+			if test "$avc_hdr" = "yes"; then
+		                AC_DEFINE([HAVE_LIBAVCODEC_AVCODEC_H], [1], [Define to 1 if you have the <libavcodec/avcodec.h> header file.])
+			fi
+		fi
+	fi
+
+	AC_CHECK_HEADER([avformat.h], [avf_hdr=yes], [avf_hdr=no])
+	if test "$avf_hdr" = "yes"; then
+		AC_DEFINE([HAVE_AVFORMAT_H], [1], [Define to 1 if you have the <avformat.h> header file.])
+	else
+		AC_CHECK_HEADER([ffmpeg/avformat.h], [avf_hdr=yes], [avf_hdr=no])
+		if test "$avf_hdr" = "yes"; then
+		        AC_DEFINE([HAVE_FFMPEG_AVFORMAT_H], [1], [Define to 1 if you have the <ffmpeg/avformat.h> header file.])
+		else
+			AC_CHECK_HEADER([libavformat/avformat.h], [avf_hdr=yes], [avf_hdr=no])
+			if test "$avf_hdr" = "yes"; then
+		                AC_DEFINE([HAVE_LIBAVFORMAT_AVFORMAT_H], [1], [Define to 1 if you have the <libavformat/avformat.h> header file.])
+			fi
+		fi
+	fi
+
 	AC_CHECK_LIB(avformat, av_open_input_file, [avf_lib=yes], [avf_lib=no], [-lavcodec -lavutil -lz])
 	AC_CHECK_LIB(avcodec, avcodec_open, [avc_lib=yes], [avc_lib=no], [-lavformat -lavutil -lz])
 
-	if test "$avf_lib" = "yes" -a "$avc_lib" = "yes" ; then
+	if test "$avc_hdr" = "yes" -a "$avf_hdr" = "yes" -a "$avc_lib" = "yes" -a "$avf_lib" = "yes" ; then
 	        lavc_LIBS="-lavformat -lavcodec -lavutil -lz"
 		AC_DEFINE([HAVE_LAVC], [1], [Defined if compile with LAVC support])
-	fi
-	if test "$avf_lib" = "no" -o "$avc_lib" = "no" ; then
+	        lavc="yes"
+	else
 	        if test "$lavc" = "yes"; then
 		        AC_MSG_ERROR(You do not appear to have the LAVC decoder library (FFmpeg) installed. Grab it from http://ffmpeg.mplayerhq.hu/)
 		fi
-	fi
-	if test "$lavc" = "detect"; then
-		lavc=$avc_lib
+		lavc="no"
 	fi
 fi
 

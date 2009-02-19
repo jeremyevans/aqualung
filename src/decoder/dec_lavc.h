@@ -23,20 +23,27 @@
 #define _DEC_LAVC_H
 
 #ifdef HAVE_LAVC
-#ifdef HAVE_LIBAVCODEC_AVCODEC_H
+
+#ifdef HAVE_FFMPEG_LIBAVCODEC_AVCODEC_H
+#include <ffmpeg/libavcodec/avcodec.h>
+#elif defined HAVE_LIBAVCODEC_AVCODEC_H
 #include <libavcodec/avcodec.h>
 #elif defined HAVE_FFMPEG_AVCODEC_H
 #include <ffmpeg/avcodec.h>
 #elif defined HAVE_AVCODEC_H
 #include <avcodec.h>
 #endif
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+
+#ifdef HAVE_FFMPEG_LIBAVFORMAT_AVFORMAT_H
+#include <ffmpeg/libavformat/avformat.h>
+#elif defined HAVE_LIBAVFORMAT_AVFORMAT_H
 #include <libavformat/avformat.h>
 #elif defined HAVE_FFMPEG_AVFORMAT_H
 #include <ffmpeg/avformat.h>
 #elif defined AVFORMAT_H
 #include <avformat.h>
 #endif
+
 #endif /* HAVE_LAVC */
 
 #include "file_decoder.h"

@@ -11,7 +11,7 @@ AC_MSG_CHECKING(for type of build)
 AC_ARG_ENABLE(
 	debug,
 	[  --enable-debug=yes,no   compile with debugging support (default: no)],
-	debug="$enableval", 
+	debug="$enableval",
 	debug="no")
 if test "$debug" = "yes"; then
 	buildtype=debug
@@ -329,11 +329,18 @@ else
 		AC_MSG_CHECKING(whether sndfile version >= 1.0.12)
 		if pkg-config --exists 'sndfile >= 1.0.12'; then
 		        AC_MSG_RESULT(yes)
-			AC_DEFINE([HAVE_NEW_SNDFILE], [1], [Defined if version(sndfile) >= 1.0.12])
+			AC_DEFINE([HAVE_SNDFILE_1_0_12], [1], [Defined if version(sndfile) >= 1.0.12])
 		else
 			AC_MSG_RESULT(no)
 		fi
 
+		AC_MSG_CHECKING(whether sndfile version >= 1.0.18)
+		if pkg-config --exists 'sndfile >= 1.0.18'; then
+		        AC_MSG_RESULT(yes)
+			AC_DEFINE([HAVE_SNDFILE_1_0_18], [1], [Defined if version(sndfile) >= 1.0.18])
+		else
+			AC_MSG_RESULT(no)
+		fi
 	fi
 	if test "$lib" = "no" -a "$sndfile" = "yes"; then
 		AC_MSG_ERROR(You do not appear to have the sndfile library installed. Grab it from  http://www.mega-nerd.com/libsndfile/ )

@@ -84,14 +84,22 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_BADLIB;
 	}
 
-#ifdef HAVE_NEW_SNDFILE
+#ifdef HAVE_SNDFILE_1_0_12
 	/* XXX don't use the FLAC decoder in sndfile, seeking seems to be buggy */
 	/* the native FLAC decoder will catch the file instead. */
 	if ((pd->sf_info.format & SF_FORMAT_TYPEMASK) == SF_FORMAT_FLAC) {
 		sf_close(pd->sf);
 		return DECODER_OPEN_BADLIB;
 	}
-#endif
+#endif /* HAVE_SNDFILE_1_0_12 */
+
+#ifdef HAVE_SNDFILE_1_0_18
+	/* XXX don't use the Ogg decoder in sndfile. */
+	if ((pd->sf_info.format & SF_FORMAT_SUBMASK) == SF_FORMAT_VORBIS) {
+		sf_close(pd->sf);
+		return DECODER_OPEN_BADLIB;
+	}
+#endif /* HAVE_SNDFILE_1_0_18 */
 
 	if ((pd->sf_info.channels != 1) && (pd->sf_info.channels != 2)) {
 		fprintf(stderr,
@@ -104,7 +112,7 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 	fdec->fileinfo.total_samples = pd->sf_info.frames;
 
 	fdec->file_lib = SNDFILE_LIB;
-	
+
 	switch (pd->sf_info.format & SF_FORMAT_SUBMASK) {
 	case SF_FORMAT_PCM_S8:
 	case SF_FORMAT_PCM_U8:
@@ -163,7 +171,7 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 	case SF_FORMAT_MAT4:
 		strcpy(dec->format_str, "Matlab (tm) V4.2 / GNU Octave 2.0");
 		break;
-#ifdef HAVE_NEW_SNDFILE
+#ifdef HAVE_SNDFILE_1_0_12
     /* version(libsndfile) >= 1.0.12 */
 	case SF_FORMAT_PVF:
 		strcpy(dec->format_str, "Portable Voice Format");
@@ -192,9 +200,9 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 	case SF_FORMAT_CAF:
 		strcpy(dec->format_str, "Core Audio File");
 		break;
-#endif /* HAVE_NEW_SNDFILE */
+#endif /* HAVE_SNDFILE_1_0_12 */
 	}
-		
+
 	switch (pd->sf_info.format & SF_FORMAT_SUBMASK) {
 	case SF_FORMAT_PCM_S8:
 		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(8 ", _("bit signed"), ")");
@@ -291,7 +299,7 @@ sndfile_decoder_read(decoder_t * dec, float * dest, int num) {
 
 void
 sndfile_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
-	
+
 	sndfile_pdata_t * pd = (sndfile_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 
@@ -311,5 +319,5 @@ sndfile_decoder_init(file_decoder_t * fdec) {
 }
 #endif /* HAVE_SNDFILE */
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :
 

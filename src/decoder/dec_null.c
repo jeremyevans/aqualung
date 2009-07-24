@@ -47,6 +47,7 @@ null_decoder_init(file_decoder_t * fdec) {
 	dec->init = null_decoder_init;
 	dec->destroy = null_decoder_destroy;
 	dec->open = null_decoder_open;
+	dec->send_metadata = null_decoder_send_metadata;
 	dec->close = null_decoder_close;
 	dec->read = null_decoder_read;
 	dec->seek = null_decoder_seek;
@@ -95,6 +96,10 @@ null_decoder_open(decoder_t * dec, char * filename) {
 	return DECODER_OPEN_BADLIB;
 }
 
+
+void
+null_decoder_send_metadata(decoder_t * dec) {
+}
 
 void
 null_decoder_close(decoder_t * dec) {

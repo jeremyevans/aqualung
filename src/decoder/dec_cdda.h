@@ -82,6 +82,7 @@ decoder_t * cdda_decoder_init(file_decoder_t * fdec);
 #ifdef HAVE_CDDA
 void cdda_decoder_destroy(decoder_t * dec);
 int cdda_decoder_open(decoder_t * dec, char * filename);
+void cdda_decoder_send_metadata(decoder_t * dec);
 int cdda_decoder_reopen(decoder_t * dec, char * filename);
 void cdda_decoder_set_mode(decoder_t * dec, int drive_speed, int paranoia_mode, int paranoia_maxretries);
 void cdda_decoder_close(decoder_t * dec);

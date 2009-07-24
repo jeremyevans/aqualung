@@ -228,6 +228,7 @@ cdda_decoder_init(file_decoder_t * fdec) {
 	dec->init = cdda_decoder_init;
 	dec->destroy = cdda_decoder_destroy;
 	dec->open = cdda_decoder_open;
+	dec->send_metadata = cdda_decoder_send_metadata;
 	dec->close = cdda_decoder_close;
 	dec->read = cdda_decoder_read;
 	dec->seek = cdda_decoder_seek;
@@ -348,6 +349,11 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 	strcpy(dec->format_str, "Audio CD");
 
 	return DECODER_OPEN_SUCCESS;
+}
+
+
+void
+cdda_decoder_send_metadata(decoder_t * dec) {
 }
 
 

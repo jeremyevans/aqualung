@@ -54,6 +54,7 @@ decoder_t * mpc_decoder_init(file_decoder_t * fdec);
 #ifdef HAVE_MPC
 void mpc_decoder_destroy(decoder_t * dec);
 int mpc_decoder_open(decoder_t * dec, char * filename);
+void mpc_decoder_send_metadata(decoder_t * dec);
 void mpc_decoder_close(decoder_t * dec);
 unsigned int mpc_decoder_read(decoder_t * dec, float * dest, int num);
 void mpc_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);

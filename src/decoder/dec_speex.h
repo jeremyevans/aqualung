@@ -67,6 +67,7 @@ decoder_t * speex_dec_init(file_decoder_t * fdec);
 #ifdef HAVE_SPEEX
 void speex_dec_destroy(decoder_t * dec);
 int speex_dec_open(decoder_t * dec, char * filename);
+void speex_dec_send_metadata(decoder_t * dec);
 void speex_dec_close(decoder_t * dec);
 unsigned int speex_dec_read(decoder_t * dec, float * dest, int num);
 void speex_dec_seek(decoder_t * dec, unsigned long long seek_to_pos);

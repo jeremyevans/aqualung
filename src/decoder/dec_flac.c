@@ -1,6 +1,6 @@
 /*                                                     -*- linux-c -*-
     Copyright (C) 2005 Tom Szilagyi
-    
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -194,6 +194,7 @@ flac_decoder_init(file_decoder_t * fdec) {
 	dec->init = flac_decoder_init;
 	dec->destroy = flac_decoder_destroy;
 	dec->open = flac_decoder_open;
+	dec->send_metadata = flac_decoder_send_metadata;
 	dec->close = flac_decoder_close;
 	dec->read = flac_decoder_read;
 	dec->seek = flac_decoder_seek;
@@ -506,13 +507,10 @@ flac_send_metadata(decoder_t * dec) {
 	} while (FLAC__metadata_simple_iterator_next(iter));
 	FLAC__metadata_simple_iterator_delete(iter);
 
-	if (found || meta->writable) {
-		if (fdec->meta_cb != NULL) {
-			fdec->meta_cb(meta, fdec->meta_cbdata);
-		}
-	} else {
-		metadata_free(meta);
-	}
+        if (!found && !meta->writable) {
+                fdec->meta = NULL;
+                metadata_free(meta);
+        }
 }
 #endif /* HAVE_FLAC */
 
@@ -529,7 +527,7 @@ flac_decoder_open(decoder_t * dec, char * filename) {
  try_flac:
 	pd->error = 0;
 	pd->flac_decoder = FLAC__stream_decoder_new();
-	
+
 	if ((pd->state = FLAC__stream_decoder_init_file(pd->flac_decoder, filename,
 							write_callback, metadata_callback,
 							error_callback, (void *)dec))
@@ -538,9 +536,9 @@ flac_decoder_open(decoder_t * dec, char * filename) {
 		FLAC__stream_decoder_delete(pd->flac_decoder);
 		return DECODER_OPEN_FERROR;
 	}
-	
+
 	FLAC__stream_decoder_process_until_end_of_metadata(pd->flac_decoder);
-	
+
 	if ((!pd->error) && (pd->channels > 0)) {
 		if ((pd->channels != 1) && (pd->channels != 2)) {
 			fprintf(stderr,
@@ -553,21 +551,21 @@ flac_decoder_open(decoder_t * dec, char * filename) {
 				pd->probing = 1;
 				FLAC__stream_decoder_process_single(pd->flac_decoder);
 				pd->state = FLAC__stream_decoder_get_state(pd->flac_decoder);
-				
+
 				if ((pd->state != FLAC__STREAM_DECODER_SEARCH_FOR_FRAME_SYNC) &&
 				    (pd->state != FLAC__STREAM_DECODER_SEARCH_FOR_METADATA) &&
 				    (pd->state != FLAC__STREAM_DECODER_READ_METADATA) &&
 				    (pd->state != FLAC__STREAM_DECODER_READ_FRAME)) {
 					return DECODER_OPEN_BADLIB;
 				}
-				
+
 				pd->probing = 0;
 				tried_flac = 1;
 				FLAC__stream_decoder_finish(pd->flac_decoder);
 				FLAC__stream_decoder_delete(pd->flac_decoder);
 				goto try_flac;
 			}
-			
+
 			pd->rb = rb_create(pd->channels * sample_size * RB_FLAC_SIZE);
 
 			fdec->fileinfo.channels = pd->channels;
@@ -577,7 +575,7 @@ flac_decoder_open(decoder_t * dec, char * filename) {
 				* fdec->fileinfo.channels;
 
 			fdec->file_lib = FLAC_LIB;
-			strcpy(dec->format_str, "FLAC");			
+			strcpy(dec->format_str, "FLAC");
 
 			flac_send_metadata(dec);
 			return DECODER_OPEN_SUCCESS;
@@ -609,7 +607,7 @@ flac_decoder_open(decoder_t * dec, char * filename) {
 	FLAC__file_decoder_set_metadata_callback(pd->flac_decoder, metadata_callback);
 	FLAC__file_decoder_set_error_callback(pd->flac_decoder, error_callback);
 	FLAC__file_decoder_set_filename(pd->flac_decoder, filename);
-	
+
 	if (FLAC__file_decoder_init(pd->flac_decoder)) {
 		FLAC__file_decoder_delete(pd->flac_decoder);
 		return DECODER_OPEN_FERROR;
@@ -628,19 +626,19 @@ flac_decoder_open(decoder_t * dec, char * filename) {
 				pd->probing = 1;
 				FLAC__file_decoder_process_single(pd->flac_decoder);
 				pd->state = FLAC__file_decoder_get_state(pd->flac_decoder);
-				
+
 				if ((pd->state != FLAC__FILE_DECODER_OK) &&
 				    (pd->state != FLAC__FILE_DECODER_END_OF_FILE)) {
 					return DECODER_OPEN_BADLIB;
 				}
-				
+
 				pd->probing = 0;
 				tried_flac = 1;
 				FLAC__file_decoder_finish(pd->flac_decoder);
 				FLAC__file_decoder_delete(pd->flac_decoder);
 				goto try_flac;
 			}
-			
+
 			pd->rb = rb_create(pd->channels * sample_size * RB_FLAC_SIZE);
 			fdec->fileinfo.channels = pd->channels;
 			fdec->fileinfo.sample_rate = pd->SR;
@@ -649,8 +647,8 @@ flac_decoder_open(decoder_t * dec, char * filename) {
 				* fdec->fileinfo.channels;
 
 			fdec->file_lib = FLAC_LIB;
-			strcpy(dec->format_str, "FLAC");			
-			
+			strcpy(dec->format_str, "FLAC");
+
 			flac_send_metadata(dec);
 			return DECODER_OPEN_SUCCESS;
 		}
@@ -662,6 +660,17 @@ flac_decoder_open(decoder_t * dec, char * filename) {
 	}
 }
 #endif /* HAVE_FLAC_7 */
+
+
+void
+flac_decoder_send_metadata(decoder_t * dec) {
+
+        file_decoder_t * fdec = dec->fdec;
+
+        if (fdec->meta != NULL && fdec->meta_cb != NULL) {
+                fdec->meta_cb(fdec->meta, fdec->meta_cbdata);
+        }
+}
 
 
 #ifdef HAVE_FLAC_8
@@ -708,7 +717,7 @@ flac_decoder_read(decoder_t * dec, float * dest, int num) {
 		FLAC__stream_decoder_process_single(pd->flac_decoder);
 		pd->state = FLAC__stream_decoder_get_state(pd->flac_decoder);
 	}
-	
+
 	/* Have i chosen the right conditions? */
 	if ((pd->state != FLAC__STREAM_DECODER_SEARCH_FOR_FRAME_SYNC) &&
 	    (pd->state != FLAC__STREAM_DECODER_SEARCH_FOR_METADATA) &&
@@ -719,10 +728,10 @@ flac_decoder_read(decoder_t * dec, float * dest, int num) {
 			FLAC__StreamDecoderStateString[pd->state]);
 		return 0; /* this means that a new file will be opened */
 	}
-	
+
 	n_avail = rb_read_space(pd->rb) /
 		(pd->channels * sample_size);
-	
+
 	if (n_avail > num) {
 		n_avail = num;
 	}
@@ -776,7 +785,7 @@ flac_decoder_read(decoder_t * dec, float * dest, int num) {
 #ifdef HAVE_FLAC_8
 void
 flac_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
-	
+
 	flac_pdata_t * pd = (flac_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 	char flush_dest;
@@ -785,7 +794,7 @@ flac_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	if (seek_to_pos == fdec->fileinfo.total_samples) {
 		--seek_to_pos;
 	}
-	
+
 	if (FLAC__stream_decoder_seek_absolute(pd->flac_decoder, seek_to_pos)) {
 		fdec->samples_left = fdec->fileinfo.total_samples - seek_to_pos;
 
@@ -803,7 +812,7 @@ flac_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 #ifdef HAVE_FLAC_7
 void
 flac_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
-	
+
 	flac_pdata_t * pd = (flac_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 	char flush_dest;
@@ -812,7 +821,7 @@ flac_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	if (seek_to_pos == fdec->fileinfo.total_samples) {
 		--seek_to_pos;
 	}
-	
+
 	if (FLAC__file_decoder_seek_absolute(pd->flac_decoder, seek_to_pos)) {
 		fdec->samples_left = fdec->fileinfo.total_samples - seek_to_pos;
 
@@ -835,4 +844,4 @@ flac_decoder_init(file_decoder_t * fdec) {
 }
 #endif /* !HAVE_FLAC */
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :

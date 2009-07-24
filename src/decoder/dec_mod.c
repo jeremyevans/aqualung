@@ -51,7 +51,7 @@ extern size_t sample_size;
 char * valid_extensions_mod[] = {
 	"669", "amf", "ams", "dbm", "dmf", "dsm", "far", "it",
 	"j2b", "mdl", "med", "mod", "mt2", "mtm", "okt", "psm",
-	"ptm", "s3m", "stm", "ult", "umx", "xm", 
+	"ptm", "s3m", "stm", "ult", "umx", "xm",
 #ifdef HAVE_LIBZ
         "gz",
 #endif /* HAVE_LIBZ */
@@ -237,6 +237,7 @@ mod_decoder_init(file_decoder_t * fdec) {
 	dec->init = mod_decoder_init;
 	dec->destroy = mod_decoder_destroy;
 	dec->open = mod_decoder_open;
+	dec->send_metadata = mod_decoder_send_metadata;
 	dec->close = mod_decoder_close;
 	dec->read = mod_decoder_read;
 	dec->seek = mod_decoder_seek;
@@ -299,10 +300,10 @@ mod_filename_filter(char *str, char **valid_extensions) {
         strncpy(buffer, str, MAXLEN-1);
 
         if ((pos = strrchr(buffer, '/')) != NULL) {
- 
+
             pos++;
             i = 0;
- 
+
             while(pos[i]) {
                 str[i] = pos[i];
                 i++;
@@ -318,8 +319,8 @@ mod_filename_filter(char *str, char **valid_extensions) {
         }
 
         if ((pos = strrchr(str, '.')) != NULL) {
- 
-            i = 0;           
+
+            i = 0;
             while (valid_extensions[i] != NULL) {
 
                     if (strcasecmp(pos+1, valid_extensions[i]) == 0) {
@@ -334,7 +335,7 @@ mod_filename_filter(char *str, char **valid_extensions) {
         if ((pos = strchr(buffer, '.')) != NULL) {
             *pos = '\0';
 
-            i = 0;           
+            i = 0;
             while (valid_extensions[i] != NULL) {
 
                 if (strcasecmp(buffer, valid_extensions[i]) == 0) {
@@ -376,16 +377,16 @@ mod_send_metadata(decoder_t * dec) {
 	}
 
 	memset(&mi, 0x00, sizeof(mod_info));
-	
+
 	strncpy(mi.title, ModPlug_GetName(pd->mpf), MAXLEN-1);
 	mod_name_filter(mi.title);
-	
+
 	if (!strlen(mi.title)) {
 		strncpy(mi.title, fdec->filename, MAXLEN-1);
 		mod_filename_filter(mi.title, valid_extensions_mod);
 		mod_name_filter(mi.title);
 	}
-	
+
 	mi.active = 1;
 #ifdef HAVE_MOD_INFO
 	mi.type = ModPlug_GetModuleType(pd->mpf);
@@ -411,9 +412,6 @@ mod_send_metadata(decoder_t * dec) {
 
 	meta->fdec = fdec;
 	fdec->meta = meta;
-	if (fdec->meta_cb != NULL) {
-		fdec->meta_cb(meta, fdec->meta_cbdata);
-	}
 }
 
 int
@@ -424,11 +422,11 @@ char *filename = NULL;
 	mod_pdata_t * pd = (mod_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 
-#ifdef HAVE_LIBZ	
+#ifdef HAVE_LIBZ
         filename = unpack_file(mod_filename, GZ);
 #endif /* HAVE_LIBZ */
 
-#ifdef HAVE_LIBBZ2	
+#ifdef HAVE_LIBBZ2
         if (filename == NULL) {
                 filename = unpack_file(mod_filename, BZ2);
         }
@@ -471,12 +469,12 @@ char *filename = NULL;
 		close(pd->fd);
 		return DECODER_OPEN_BADLIB;
 	}
-	
+
 	if (pd->st.st_size * 8000.0f / ModPlug_GetLength(pd->mpf) >= 1000000.0f) {
 		fprintf(stderr,
 			"mod_decoder_open: MOD bitrate greater than 1 Mbit/s, "
 			"very likely not a MOD file: %s\n", filename);
-		
+
 		ModPlug_Unload(pd->mpf);
 		if (munmap(pd->fdm, pd->st.st_size) == -1)
 			fprintf(stderr,
@@ -500,20 +498,31 @@ char *filename = NULL;
 	pd->mp_settings.mLoopCount = 0;
 
 	ModPlug_SetSettings(&(pd->mp_settings));
-	
+
 	pd->is_eos = 0;
 	pd->rb = rb_create(pd->mp_settings.mChannels * sample_size * RB_MOD_SIZE);
 	fdec->fileinfo.channels = pd->mp_settings.mChannels;
 	fdec->fileinfo.sample_rate = pd->mp_settings.mFrequency;
 	fdec->file_lib = MOD_LIB;
 	strcpy(dec->format_str, "MOD Audio");
-	
+
 	fdec->fileinfo.total_samples = ModPlug_GetLength(pd->mpf)
 		/ 1000.0f * pd->mp_settings.mFrequency;
 	fdec->fileinfo.bps = pd->st.st_size * 8000.0f /	ModPlug_GetLength(pd->mpf);
 
 	mod_send_metadata(dec);
 	return DECODER_OPEN_SUCCESS;
+}
+
+
+void
+mod_decoder_send_metadata(decoder_t * dec) {
+
+        file_decoder_t* fdec = dec->fdec;
+
+	if (fdec->meta != NULL && fdec->meta_cb != NULL) {
+		fdec->meta_cb(fdec->meta, fdec->meta_cbdata);
+	}
 }
 
 
@@ -565,7 +574,7 @@ mod_decoder_read(decoder_t * dec, float * dest, int num) {
 
 void
 mod_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
-	
+
 	mod_pdata_t * pd = (mod_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 	char flush_dest;
@@ -590,5 +599,5 @@ mod_decoder_init(file_decoder_t * fdec) {
 }
 #endif /* HAVE_MOD */
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :
 

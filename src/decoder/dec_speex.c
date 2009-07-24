@@ -174,6 +174,7 @@ speex_dec_init(file_decoder_t * fdec) {
 	dec->init = speex_dec_init;
 	dec->destroy = speex_dec_destroy;
 	dec->open = speex_dec_open;
+	dec->send_metadata = speex_dec_send_metadata;
 	dec->close = speex_dec_close;
 	dec->read = speex_dec_read;
 	dec->seek = speex_dec_seek;
@@ -277,6 +278,11 @@ speex_dec_open(decoder_t * dec, char * filename) {
 	strcpy(dec->format_str, "Ogg Speex");
 
 	return DECODER_OPEN_SUCCESS;
+}
+
+
+void
+speex_dec_send_metadata(decoder_t * dec) {
 }
 
 

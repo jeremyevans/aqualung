@@ -1768,6 +1768,8 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 			return;		
 		}
 		
+		file_decoder_send_metadata(fi->fdec);
+
 		dec = (decoder_t *)fi->fdec->pdec;
 
 		fileinfo.format_str = dec->format_str;

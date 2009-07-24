@@ -108,6 +108,7 @@ wavpack_decoder_init(file_decoder_t * fdec) {
 	dec->init = wavpack_decoder_init;
 	dec->destroy = wavpack_decoder_destroy;
 	dec->open = wavpack_decoder_open;
+	dec->send_metadata = wavpack_decoder_send_metadata;
 	dec->close = wavpack_decoder_close;
 	dec->read = wavpack_decoder_read;
 	dec->seek = wavpack_decoder_seek;
@@ -176,6 +177,11 @@ wavpack_decoder_open(decoder_t * dec, char * filename) {
 	}
 
 	return DECODER_OPEN_BADLIB;
+}
+
+
+void
+wavpack_decoder_send_metadata(decoder_t * dec) {
 }
 
 

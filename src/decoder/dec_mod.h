@@ -62,6 +62,7 @@ decoder_t * mod_decoder_init(file_decoder_t * fdec);
 void mod_decoder_destroy(decoder_t * dec);
 int is_valid_mod_extension(char * filename);
 int mod_decoder_open(decoder_t * dec, char * filename);
+void mod_decoder_send_metadata(decoder_t * dec);
 void mod_decoder_close(decoder_t * dec);
 unsigned int mod_decoder_read(decoder_t * dec, float * dest, int num);
 void mod_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);

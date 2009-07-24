@@ -419,6 +419,8 @@ disk_thread(void * arg) {
 						}
 #endif /* HAVE_CDDA */
 
+						file_decoder_send_metadata(fdec);
+
 						sample_offset = 0;
 
 						send_cmd = CMD_FILEINFO;

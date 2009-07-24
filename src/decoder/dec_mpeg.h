@@ -153,6 +153,7 @@ decoder_t * mpeg_decoder_init(file_decoder_t * fdec);
 #ifdef HAVE_MPEG
 void mpeg_decoder_destroy(decoder_t * dec);
 int mpeg_decoder_open(decoder_t * dec, char * filename);
+void mpeg_decoder_send_metadata(decoder_t * dec);
 int mpeg_stream_decoder_open(decoder_t * dec, http_session_t * session);
 void mpeg_decoder_close(decoder_t * dec);
 unsigned int mpeg_decoder_read(decoder_t * dec, float * dest, int num);

@@ -46,6 +46,7 @@ typedef struct _wavpack_pdata_t {
 
 void wavpack_decoder_destroy(decoder_t * dec);
 int wavpack_decoder_open(decoder_t * dec, char * filename);
+void wavpack_decoder_send_metadata(decoder_t * dec);
 void wavpack_decoder_close(decoder_t * dec);
 unsigned int wavpack_decoder_read(decoder_t * dec, float * dest, int num);
 void wavpack_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);

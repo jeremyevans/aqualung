@@ -173,6 +173,7 @@ mac_decoder_init(file_decoder_t * fdec) {
 	dec->init = mac_decoder_init;
 	dec->destroy = mac_decoder_destroy;
 	dec->open = mac_decoder_open;
+	dec->send_metadata = mac_decoder_send_metadata;
 	dec->close = mac_decoder_close;
 	dec->read = mac_decoder_read;
 	dec->seek = mac_decoder_seek;
@@ -262,6 +263,11 @@ mac_decoder_open(decoder_t * dec, char * filename) {
 	meta = metadata_new();
 	meta_ape_send_metadata(meta, fdec);
 	return DECODER_OPEN_SUCCESS;
+}
+
+
+void
+mac_decoder_send_metadata(decoder_t * dec) {
 }
 
 

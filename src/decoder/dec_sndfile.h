@@ -42,6 +42,7 @@ decoder_t * sndfile_decoder_init(file_decoder_t * fdec);
 #ifdef HAVE_SNDFILE
 void sndfile_decoder_destroy(decoder_t * dec);
 int sndfile_decoder_open(decoder_t * dec, char * filename);
+void sndfile_decoder_send_metadata(decoder_t * dec);
 void sndfile_decoder_close(decoder_t * dec);
 unsigned int sndfile_decoder_read(decoder_t * dec, float * dest, int num);
 void sndfile_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);

@@ -58,6 +58,7 @@ decoder_t * vorbis_decoder_init(file_decoder_t * fdec);
 #ifdef HAVE_OGG_VORBIS
 void vorbis_decoder_destroy(decoder_t * dec);
 int vorbis_decoder_open(decoder_t * dec, char * filename);
+void vorbis_decoder_send_metadata(decoder_t * dec);
 int vorbis_stream_decoder_open(decoder_t * dec, http_session_t * session);
 void vorbis_decoder_close(decoder_t * dec);
 unsigned int vorbis_decoder_read(decoder_t * dec, float * dest, int num);

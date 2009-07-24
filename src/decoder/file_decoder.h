@@ -102,6 +102,7 @@ typedef struct _decoder_t {
 	struct _decoder_t * (* init)(file_decoder_t * fdec);
 	void (* destroy)(struct _decoder_t * dec);
 	int (* open)(struct _decoder_t * dec, char * filename);
+	void (* send_metadata)(struct _decoder_t * dec);
 	void (* set_rva)(struct _decoder_t * dec, float voladj);
 	void (* close)(struct _decoder_t * dec);
 	unsigned int (* read)(struct _decoder_t * dec, float * dest, int num);
@@ -130,6 +131,7 @@ file_decoder_t * file_decoder_new(void);
 void file_decoder_delete(file_decoder_t * fdec);
 
 int file_decoder_open(file_decoder_t * fdec, char * filename);
+void file_decoder_send_metadata(file_decoder_t * fdec);
 void file_decoder_set_rva(file_decoder_t * fdec, float voladj);
 void file_decoder_set_meta_cb(file_decoder_t * fdec,
 			      void (* meta_cb)(metadata_t * meta, void * data),

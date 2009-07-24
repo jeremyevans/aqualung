@@ -87,6 +87,7 @@ lavc_decoder_init(file_decoder_t * fdec) {
 	dec->init = lavc_decoder_init;
 	dec->destroy = lavc_decoder_destroy;
 	dec->open = lavc_decoder_open;
+	dec->send_metadata = lavc_decoder_send_metadata;
 	dec->close = lavc_decoder_close;
 	dec->read = lavc_decoder_read;
 	dec->seek = lavc_decoder_seek;
@@ -169,6 +170,11 @@ lavc_decoder_open(decoder_t * dec, char * filename) {
 	}
 	
 	return DECODER_OPEN_SUCCESS;
+}
+
+
+void
+lavc_decoder_send_metadata(decoder_t * dec) {
 }
 
 

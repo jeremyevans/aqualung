@@ -94,6 +94,7 @@ mpc_decoder_init(file_decoder_t * fdec) {
 	dec->init = mpc_decoder_init;
 	dec->destroy = mpc_decoder_destroy;
 	dec->open = mpc_decoder_open;
+	dec->send_metadata = mpc_decoder_send_metadata;
 	dec->close = mpc_decoder_close;
 	dec->read = mpc_decoder_read;
 	dec->seek = mpc_decoder_seek;
@@ -230,6 +231,11 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 	mpc_add_rg_meta(meta, &pd->mpc_i);
 	meta_ape_send_metadata(meta, fdec);
 	return DECODER_OPEN_SUCCESS;
+}
+
+
+void
+mpc_decoder_send_metadata(decoder_t * dec) {
 }
 
 

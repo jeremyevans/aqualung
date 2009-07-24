@@ -56,6 +56,7 @@ sndfile_decoder_init(file_decoder_t * fdec) {
 	dec->init = sndfile_decoder_init;
 	dec->destroy = sndfile_decoder_destroy;
 	dec->open = sndfile_decoder_open;
+	dec->send_metadata = sndfile_decoder_send_metadata;
 	dec->close = sndfile_decoder_close;
 	dec->read = sndfile_decoder_read;
 	dec->seek = sndfile_decoder_seek;
@@ -267,6 +268,11 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 	}
 
 	return DECODER_OPEN_SUCCESS;
+}
+
+
+void
+sndfile_decoder_send_metadata(decoder_t * dec) {
 }
 
 

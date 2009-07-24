@@ -355,6 +355,14 @@ file_decoder_open(file_decoder_t * fdec, char * filename) {
 
 
 void
+file_decoder_send_metadata(file_decoder_t * fdec) {
+
+	decoder_t * dec = (decoder_t *)(fdec->pdec);
+
+	return dec->send_metadata(dec);
+}
+
+void
 file_decoder_set_rva(file_decoder_t * fdec, float voladj) {
 
 	fdec->voladj_db = voladj;

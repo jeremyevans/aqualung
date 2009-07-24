@@ -139,7 +139,7 @@ timeout_connect(int sockfd, const struct sockaddr *addr,
 			int ret;
 			fd_set wfds;
 			struct timeval tv;
-			size_t l;
+			socklen_t l;
 
 			tv.tv_sec = timeout;
 			tv.tv_usec = 0;

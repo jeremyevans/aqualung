@@ -218,7 +218,7 @@ ripper_cell_toggled_cb(GtkCellRendererToggle * cell, gchar * path, gpointer data
 void
 ripper_set_all_cb(GtkWidget * widget, gpointer data) {
 
-	gboolean b = (gboolean)data;
+	gboolean b = (gboolean)GPOINTER_TO_INT(data);
 	GtkTreeIter iter;
 	int n = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ripper_source_store), &iter, NULL, n++)) {
@@ -1084,7 +1084,7 @@ gboolean
 ripper_update_status(gpointer pdata) {
 
 	GtkTreeIter iter;
-	int data = (int)pdata;
+	int data = GPOINTER_TO_INT(pdata);
 	int track_no = (data & 0xff0000) >> 16;
 	int prog_track = (data & 0xff00) >> 8;
 	int prog_total = data & 0xff;
@@ -1274,7 +1274,7 @@ ripper_thread(void * arg) {
 
 		        if ((track_sectors_read % 64 == 0) || (track_sectors_read == track_sectors))
 				aqualung_idle_add(ripper_update_status,
-					   (gpointer)(((track_cnt & 0xff) << 16) |
+					   GINT_TO_POINTER(((track_cnt & 0xff) << 16) |
 						      ((prog_track & 0xff) << 8) |
 						      (prog_total & 0xff)));
 

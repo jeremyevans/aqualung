@@ -1192,7 +1192,7 @@ color_selected(GtkColorButton *widget, gpointer user_data) {
         gtk_color_button_get_color(widget, &c);
         sprintf(str, "#%02X%02X%02X", c.red * 256 / 65536, c.green * 256 / 65536, c.blue * 256 / 65536);
 
-        if ((gint)user_data == SONG_COLOR) {
+        if (GPOINTER_TO_INT(user_data) == SONG_COLOR) {
                 strncpy(options.song_color, str, MAX_COLORNAME_LEN-1);
         } else {
                 strncpy(options.activesong_color, str, MAX_COLORNAME_LEN-1);

@@ -623,6 +623,7 @@ message_dialog(char * title, GtkWidget * parent, GtkMessageType type, GtkButtons
 					GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					type,
 					buttons,
+					"%s",
 					msg);
 	g_free(msg);
 

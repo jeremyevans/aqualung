@@ -86,7 +86,7 @@ receive_message(int fd, char * cmdarg) {
 		return 0;
 	
 	size = sizeof(name);
-	n_read = recvfrom(fd, buffer, MAXLEN-1, 0, (struct sockaddr *)&name, &size);
+	n_read = recvfrom(fd, buffer, MAXLEN-1, 0, (struct sockaddr *)&name, (socklen_t *)&size);
 	buffer[n_read] = '\0';
 
 	rcmd = buffer[0];

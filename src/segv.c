@@ -49,12 +49,12 @@
 
 static void
 signal_segv(int signum, siginfo_t * info, void * ptr) {
-  
+
 	static const char *si_codes[3] = {"", "SEGV_MAPERR", "SEGV_ACCERR"};
-	
-	size_t i;
+
+	unsigned i;
 	ucontext_t *ucontext = (ucontext_t*)ptr;
-	
+
 #if defined(SIGSEGV_STACK_X86) || defined(SIGSEGV_STACK_IA64)
 	int f = 0;
 	Dl_info dlinfo;
@@ -65,7 +65,7 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 	char **strings;
 	size_t sz;
 #endif
-	
+
 	fprintf(stderr, "===[ CRASH REPORT ]======\n");
 	fprintf(stderr, "Please mail this to <aqualung-friends@lists.sourceforge.net>\n");
 	fprintf(stderr, "along with a short description of what you were doing when\n");
@@ -78,14 +78,14 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 	fprintf(stderr, "  si_addr  = %p\n\n", info->si_addr);
 
 	for (i = 0; i < NGREG; i++) {
-		fprintf(stderr, "  R[%02d] = 0x" REGFORMAT,
+		fprintf(stderr, "  R[%02u] = 0x" REGFORMAT,
 			i, ucontext->UC_MCONTEXT_GREGS[i]);
 		if ((i % 4) == 3) {
 			fprintf(stderr, "\n");
 		}
 	}
 	fprintf(stderr, "\n\n");
-	
+
 #if defined(SIGSEGV_STACK_X86) || defined(SIGSEGV_STACK_IA64)
 # if defined(SIGSEGV_STACK_IA64)
 	ip = (void*)ucontext->uc_mcontext.gregs[REG_RIP];
@@ -94,11 +94,11 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 	ip = (void*)ucontext->uc_mcontext.gregs[REG_EIP];
 	bp = (void**)ucontext->uc_mcontext.gregs[REG_EBP];
 # endif
-	
+
 	while (bp && ip) {
 		if (!dladdr(ip, &dlinfo))
 			break;
-		
+
 		const char *symname = dlinfo.dli_sname;
 		fprintf(stderr, "%3d: %12p <%s + %u> (%s)\n",
 			++f,
@@ -106,10 +106,10 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 			symname,
 			(unsigned)(ip - dlinfo.dli_saddr),
 			dlinfo.dli_fname);
-		
+
 		if(dlinfo.dli_sname && !strcmp(dlinfo.dli_sname, "main"))
 			break;
-		
+
 		ip = bp[1];
 		bp = (void**)bp[0];
 	}
@@ -117,7 +117,7 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 	fprintf(stderr, "  backtrace():\n");
 	sz = backtrace(bt, 20);
 	strings = backtrace_symbols(bt, sz);
-	
+
 	for(i = 0; i < sz; ++i)
 		fprintf(stderr, "%s\n", strings[i]);
 #endif
@@ -187,5 +187,5 @@ init(void) {
 }
 #endif
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :
 

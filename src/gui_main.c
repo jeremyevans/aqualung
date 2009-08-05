@@ -140,7 +140,10 @@ unsigned long long sample_pos;
    for current instance is specified. */
 int immediate_start = 0;
 
-/* Whether not the systray is used in this instance */
+/* Whether to stop playing after currently played song ends. */
+int stop_after_current_song = 0;
+
+/* Whether the systray is used in this instance */
 int systray_used = 0;
 
 /* the tab to load remote files */
@@ -329,6 +332,11 @@ set_title_label(char * str) {
 		gtk_label_set_text(GTK_LABEL(label_title), str);
 		if (options.show_sn_title) {
 			strncpy(tmp, str, MAXLEN-1);
+			if (stop_after_current_song) {
+				strncat(tmp, " [", MAXLEN-1);
+				strncat(tmp, _("STOPPING"), MAXLEN-1);
+				strncat(tmp, "]", MAXLEN-1);
+			}
 			strncat(tmp, " - ", MAXLEN-1);
 			strncat(tmp, win_title, MAXLEN-1);
 			gtk_window_set_title(GTK_WINDOW(main_window), tmp);
@@ -931,6 +939,14 @@ plugin_toggled(GtkWidget * widget, gpointer data) {
 #endif /* HAVE_LADSPA */
 }
 
+void
+toggle_stop_after_current_song() {
+
+	if (is_file_loaded) {
+		stop_after_current_song = !stop_after_current_song;
+		refresh_displays();
+	}
+}
 
 gint
 main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
@@ -1004,7 +1020,11 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(musicstore_toggle),
 						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(musicstore_toggle)));
 		} else {
-			stop_event(NULL, NULL, NULL);
+			if (!(event->state & GDK_CONTROL_MASK)) {
+				stop_event(NULL, NULL, NULL);
+			} else {
+				toggle_stop_after_current_song();
+			}
 		}
 		return TRUE;
 	case GDK_v:
@@ -1800,6 +1820,7 @@ void
 unprepare_playback(void) {
 
 	is_file_loaded = 0;
+	stop_after_current_song = 0;
 	current_file[0] = '\0';
 	zero_displays();
 	toggle_noeffect(PLAY, FALSE);
@@ -2070,6 +2091,7 @@ stop_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	cue_t cue;
 
 	is_file_loaded = 0;
+	stop_after_current_song = 0;
 	current_file[0] = '\0';
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
 	zero_displays();
@@ -2112,6 +2134,11 @@ decide_next_track(cue_t * pcue) {
 	playlist_t * pl;
 
 	if ((pl = playlist_get_playing()) == NULL) {
+		unprepare_playback();
+		return;
+	}
+
+	if (stop_after_current_song) {
 		unprepare_playback();
 		return;
 	}

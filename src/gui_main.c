@@ -1037,9 +1037,14 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	case GDK_c:
 	case GDK_C:
 	case GDK_space:
-		if (!options.combine_play_pause && !(event->state & GDK_CONTROL_MASK)) {
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
-                !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
+		if (!(event->state & GDK_CONTROL_MASK)) {
+			if (!options.combine_play_pause) {
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
+		                !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pause_button)));
+			} else if (is_file_loaded) {
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
+		                !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
+			}
 			return TRUE;
 		}
 		break;

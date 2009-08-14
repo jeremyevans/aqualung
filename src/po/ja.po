@@ -1,0 +1,3118 @@
+# Japanese translations for aqualung package
+# Japanese messages for aqualung.
+# Copyright (C) 2004 Tom Szilagyi
+# This file is distributed under the same license as the aqualung package.
+# YoN <yon8844@gmail.com>, 2009 
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-02-08 11:59+0100\n"
+"PO-Revision-Date: 2009-08-12 14:18+0900\n"
+"Last-Translator: YoN <yon8844@gmail.com>\n"
+"Language-Team: Team Puppy Linux Japan\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Japanese\n"
+
+msgid "About"
+msgstr "バージョン情報"
+
+msgid "Build version: "
+msgstr "ビルドバージョン:"
+
+msgid "Homepage:"
+msgstr "ホームページ:"
+
+msgid "Authors:"
+msgstr "作者:"
+
+msgid "Core design, engineering & programming:\n"
+msgstr "コアデザイン、エンジニアリングとプログラミング:\n"
+
+msgid "Skin support, look & feel, GUI hacks:\n"
+msgstr "スキンサポート、ルック&フィール、GUIハック:\n"
+
+msgid "Programming, GUI engineering:\n"
+msgstr "プログラミング、GUIエンジニアリング:\n"
+
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr "OpenBSD互換、メタデータ調整:\n"
+
+msgid "Translators:"
+msgstr "翻訳者:"
+
+msgid "German:\n"
+msgstr "ドイツ語:\n"
+
+msgid "Hungarian:\n"
+msgstr "ハンガリー語:\n"
+
+msgid "Italian:\n"
+msgstr "イタリア語:\n"
+
+msgid "Russian:\n"
+msgstr "ロシア語:\n"
+
+msgid "Swedish:\n"
+msgstr "スウェーデン語:\n"
+
+msgid "Ukrainian:\n"
+msgstr "ウクライナ語:\n"
+
+msgid "Graphics:"
+msgstr "グラフィックス:"
+
+msgid "Logo, icons:\n"
+msgstr "ロゴ、アイコン:\n"
+
+msgid "This Aqualung binary is compiled with:"
+msgstr "このAqualungバイナリは次でコンパイルしています:"
+
+msgid "Optional features:"
+msgstr "オプション機能:"
+
+msgid "LADSPA plugin support\n"
+msgstr "LADSPAプラグインサポート\n"
+
+msgid "CDDA (Audio CD) support\n"
+msgstr "CDDA (Audio CD) サポート\n"
+
+msgid "CDDB support\n"
+msgstr "CDDBサポート\n"
+
+msgid "Sample Rate Converter support\n"
+msgstr "サンプルレート変換サポート\n"
+
+msgid "iRiver iFP driver support\n"
+msgstr "iRiver iFP ドライバサポート\n"
+
+msgid "Loop playback support\n"
+msgstr "ループ再生サポート\n"
+
+msgid "Systray support\n"
+msgstr "システムトレイサポート\n"
+
+msgid "Podcast support\n"
+msgstr "ポッドキャストサポート\n"
+
+msgid "Lua (programmable title formatting) support\n"
+msgstr "Luaサポート (プログラム可能なタイトルフォーマット)\n"
+
+msgid "Decoding support:"
+msgstr "デコードサポート:"
+
+msgid "sndfile (WAV, AIFF, etc.)\n"
+msgstr "音声ファイル (WAV, AIFF, など)\n"
+
+msgid "Free Lossless Audio Codec (FLAC)\n"
+msgstr "Free Lossless Audio Codec (FLAC)\n"
+
+msgid "Ogg Vorbis\n"
+msgstr "Ogg Vorbis\n"
+
+msgid "Ogg Speex\n"
+msgstr "Ogg Speex\n"
+
+msgid "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
+msgstr "MPEG オーディオ (MPEG 1-2.5 Layer I-III)\n"
+
+msgid "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
+msgstr "MOD オーディオ (MOD, S3M, XM, IT, など)\n"
+
+msgid "Musepack\n"
+msgstr "Musepack\n"
+
+msgid "Monkey's Audio Codec\n"
+msgstr "Monkey's オーディオコーデック\n"
+
+msgid "WavPack\n"
+msgstr "WavPack\n"
+
+msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
+msgstr "LAVC (AC3, AAC, WavPack, WMA, など)\n"
+
+msgid "Encoding support:"
+msgstr "エンコードサポート:"
+
+msgid "sndfile (WAV)\n"
+msgstr "音声ファイル (WAV)\n"
+
+msgid "LAME (MP3)\n"
+msgstr "LAME (MP3)\n"
+
+msgid "Output driver support:"
+msgstr "出力ドライバサポート:"
+
+msgid "sndio Audio\n"
+msgstr "sndio オーディオ\n"
+
+msgid "OSS Audio\n"
+msgstr "OSS オーディオ\n"
+
+msgid "ALSA Audio\n"
+msgstr "ALSA オーディオ\n"
+
+msgid "JACK Audio Server\n"
+msgstr "JACK オーディオサーバ\n"
+
+msgid "Win32 Sound API\n"
+msgstr "Win32 サウンド API\n"
+
+msgid ""
+"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+msgstr ""
+"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+
+msgid "Enabled"
+msgstr "有効"
+
+msgid "Source"
+msgstr "ソース"
+
+msgid "CDDB"
+msgstr "CDDB"
+
+msgid "CDDB (not available)"
+msgstr "CDDB (利用できません)"
+
+msgid "Metadata"
+msgstr "メタデータ"
+
+msgid "Filesystem"
+msgstr "ファイルシステム"
+
+msgid "Capitalization"
+msgstr "大文字にする"
+
+msgid "Capitalize: "
+msgstr "先頭文字を大文字:"
+
+msgid "All words"
+msgstr "全ての単語"
+
+msgid "First word only"
+msgstr "最初の単語だけ"
+
+msgid "Force case: "
+msgstr "大文字小文字を強制適用: "
+
+msgid "Force other letters to lowercase"
+msgstr "他の文字を小文字に強制適用"
+
+msgid "Regular expression"
+msgstr "正規表現"
+
+msgid "Regexp:"
+msgstr "正規表現:"
+
+msgid "Replace:"
+msgstr "置換:"
+
+msgid "Predefined transformations"
+msgstr "定義済み変換"
+
+msgid "Remove file extension"
+msgstr "ファイル拡張子を削除"
+
+msgid "Remove leading number"
+msgstr "先頭の数値を削除"
+
+msgid "Convert underscore to space"
+msgstr "アンダースコアを空白に変換"
+
+msgid "Trim leading, tailing and duplicate spaces"
+msgstr "先頭、末尾をトリミングして空白を複製"
+
+msgid "Regexp matches empty string"
+msgstr "正規表現に一致する空の文字列"
+
+msgid "Please select the root directory."
+msgstr "rootディレクトリを選択して下さい。"
+
+msgid "Select build type"
+msgstr "ビルドタイプを選択"
+
+msgid "Directory driven"
+msgstr "ディレクトリ優先"
+
+msgid ""
+"Follows the directory structure to identify the artists and\n"
+"records. The files are added on a record basis."
+msgstr ""
+"アーチストとレコードを識別するためにディレクトリ構造をたどる。\n"
+"ファイルはレコード基準に追加されます。"
+
+msgid "Independent"
+msgstr "独立"
+
+msgid ""
+"Recursive search from the root directory for audio files.\n"
+"The files are processed independently, so only metadata\n"
+"and filename transformation are available."
+msgstr ""
+"オーディオファイルをルートディレクトリから再帰的に検索。\n"
+"ファイルは独立して処理されるので、メタデータとファイル名の\n"
+"変換だけができます。"
+
+msgid "Load settings from Music Store file"
+msgstr "Music Store ファイルから設定を読み込み"
+
+msgid "Build/Update store"
+msgstr "ストアをビルド/更新"
+
+msgid "General"
+msgstr "一般"
+
+msgid "Directory structure"
+msgstr "ディレクトリ構造"
+
+msgid "Root path:"
+msgstr "ルートパス:"
+
+msgid "_Browse..."
+msgstr "ブラウズ(_B)…"
+
+msgid "Structure:"
+msgstr "構造:"
+
+msgid "root / record / track"
+msgstr "ルート / レコード / トラック"
+
+msgid "root / artist / record / track"
+msgstr "ルート / アーチスト / レコード / トラック"
+
+msgid "root / artist / artist / record / track"
+msgstr "ルート / アーチスト / アーチスト / レコード / トラック"
+
+msgid "root / artist / artist / artist / record / track"
+msgstr "ルート / アーチスト / アーチスト / アーチスト / レコード / トラック"
+
+msgid "Exclude files matching wildcard"
+msgstr "ワイルドカードに一致するファイルを除外"
+
+msgid "Include only files matching wildcard"
+msgstr "ワイルドカードに一致するファイルだけを含む"
+
+msgid "Reread data for existing tracks"
+msgstr "既存のトラックでデータを再読み込み"
+
+msgid "Remove non-existing files from store"
+msgstr "ストアから存在しないファイルを削除"
+
+msgid "Artist"
+msgstr "アーチスト"
+
+msgid "Sort artists by"
+msgstr "アーチストを並び替え"
+
+msgid "Artist name"
+msgstr "アーチスト名"
+
+msgid "Artist name (lowercase)"
+msgstr "アーチスト名 (小文字)"
+
+msgid "Directory name"
+msgstr "ディレクトリ名"
+
+msgid "Directory name (lowercase)"
+msgstr "ディレクトリ名 (小文字)"
+
+msgid "Record"
+msgstr "レコード"
+
+msgid "Sort records by"
+msgstr "レコードを並び替え"
+
+msgid "Record name"
+msgstr "レコード名"
+
+msgid "Record name (lowercase)"
+msgstr "レコード名 (小文字)"
+
+msgid "Year"
+msgstr "年"
+
+msgid "Add year to the comments of new records"
+msgstr "新しいレコードのコメントに年を追加"
+
+msgid "Track"
+msgstr "トラック"
+
+msgid "Import Replaygain tag as manual RVA"
+msgstr "マニュアルRVAとして再生ゲインタグをインポート"
+
+msgid "Import Comment tag"
+msgstr "コメントタグをインポート"
+
+msgid "Sandbox"
+msgstr "サンドボックス"
+
+msgid "Filename:"
+msgstr "ファイル名:"
+
+msgid "Test"
+msgstr "テスト"
+
+msgid "Building store from filesystem"
+msgstr "ファイルシステムからストアをビルド"
+
+msgid "Processing:"
+msgstr "処理:"
+
+msgid "Action:"
+msgstr "アクション:"
+
+msgid "Abort"
+msgstr "バージョン情報"
+
+msgid "Unknown Artist"
+msgstr "不明なアーチスト"
+
+msgid "Unknown Record"
+msgstr "不明なレコード"
+
+msgid "Scanning files"
+msgstr "ファイルのスキャン"
+
+msgid "Processing metadata"
+msgstr "メタデータの処理"
+
+msgid "CDDB lookup"
+msgstr "CDDB参照"
+
+msgid "Name transformation"
+msgstr "名前の変換"
+
+msgid "Reading file"
+msgstr "ファイルの読み取り"
+
+msgid "Removing non-existing files"
+msgstr "存在しないファイルの削除"
+
+msgid "Unknown disc"
+msgstr "不明な CD"
+
+msgid "No disc"
+msgstr "CDがありません"
+
+msgid "CDDB query"
+msgstr "CDDB問い合わせ"
+
+msgid "Retrieving matches from server..."
+msgstr "サーバから一致を取得しています…"
+
+msgid "Connecting to CDDB server..."
+msgstr "CDDBサーバに接続しています…"
+
+msgid "Error"
+msgstr "エラー"
+
+msgid "An error occurred while attempting to connect to the CDDB server."
+msgstr "CDDBサーバに接続しようとしてエラーが起こりました。"
+
+msgid "Warning"
+msgstr "警告"
+
+msgid "No matching record found."
+msgstr "一致するレコードは見つかりませんでした。"
+
+msgid "Import as Sort Key"
+msgstr "ソートキーとしてインポート"
+
+msgid "Import as Title"
+msgstr "タイトルとしてインポート"
+
+msgid "Import as Year"
+msgstr "年としてインポート"
+
+msgid ""
+"Artist appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"アーチストは全て小文字で表示されます。\n"
+"続けますか？"
+
+msgid ""
+"Artist appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"アーチストは全て大文字で表示されます。\n"
+"続けますか？"
+
+msgid ""
+"Title appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"タイトルは全て小文字で表示されます。\n"
+"続けますか？"
+
+msgid ""
+"Title appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"タイトルは全て大文字で表示されます。\n"
+"続けますか？"
+
+msgid ""
+"It is very likely that the year is wrong.\n"
+"Do you want to proceed?"
+msgstr ""
+"年が間違っていると思われます。\n"
+"続けますか？"
+
+msgid "The email address provided for submission is invalid."
+msgstr "送信に提供されるメールアドレスが無効です。"
+
+msgid "An error occurred while submitting the record to the CDDB server."
+msgstr "CDDBサーバにレコードを送信中にエラーが起こりました。"
+
+msgid "Correct existing record"
+msgstr "既存のレコードを修正"
+
+msgid "Submit new record"
+msgstr "新しいレコードを送信"
+
+msgid "Matches:"
+msgstr "一致:"
+
+msgid "Artist:"
+msgstr "アーチスト:"
+
+msgid "Title:"
+msgstr "タイトル:"
+
+msgid "Year:"
+msgstr "年:"
+
+msgid "Category:"
+msgstr "カテゴリ:"
+
+msgid "(choose a category)"
+msgstr "(カテゴリを選択)"
+
+msgid "Genre:"
+msgstr "ジャンル:"
+
+msgid "Extended data:"
+msgstr "拡張データ:"
+
+msgid "Import as Artist"
+msgstr "アーチストとしてインポート"
+
+msgid "Add to Comments"
+msgstr "コメントに追加"
+
+msgid "Tracks"
+msgstr "トラック"
+
+msgid "You have to provide an email address for CDDB submission."
+msgstr "CDDB送信にはメールアドレスを提供しなければなりません。"
+
+msgid "Please select the directory for ripped files."
+msgstr "リッピングしたファイルのディレクトリを選択して下さい。"
+
+msgid "(none)"
+msgstr "(なし)"
+
+msgid "fast"
+msgstr "高速"
+
+msgid "best"
+msgstr "最高"
+
+msgid "Compression level:"
+msgstr "圧縮レベル:"
+
+msgid "Bitrate [kbps]:"
+msgstr "ビットレート [kbps]:"
+
+msgid "Artist/Album already existing, not empty"
+msgstr "アーチスト/アルバムは既に存在します。空ではありません"
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already containing some tracks. If you press OK, these tracks will be removed. The files themselves will be left intact, but they will be removed from the destination Music Store. Press Cancel to get back to change the Artist/Album or the destination Music Store."
+msgstr ""
+"\n"
+"選択した Music Store には一致したアーチストとアルバムがあります。そして、すでにいくつかのトラックを含んでいます。OKを押すと、このトラックは削除されます。ファイル自体は完全なまま残ります。しかし転送先の Music Store から削除されます。アーチスト/アルバムまたは転送先の Music Store の変更に戻るにはキャンセルを押して下さい。"
+
+msgid "Rip CD"
+msgstr "CDをリッピング"
+
+msgid "Album:"
+msgstr "アルバム:"
+
+msgid "Rip"
+msgstr "リッピング"
+
+msgid "No."
+msgstr "No."
+
+msgid "Title"
+msgstr "タイトル"
+
+msgid "Select"
+msgstr "選択"
+
+msgid "All"
+msgstr "全て"
+
+msgid "None"
+msgstr "なし"
+
+msgid "Output"
+msgstr "出力"
+
+msgid "Destination"
+msgstr "行き先"
+
+msgid "Target directory for ripped files"
+msgstr "リッピングしたファイルのターゲットディレクトリ"
+
+msgid "Add to Music Store"
+msgstr "Music Store に追加"
+
+msgid "Format"
+msgstr "フォーマット"
+
+msgid "File format:"
+msgstr "ファイルフォーマット:"
+
+msgid "VBR encoding"
+msgstr "VBR エンコード"
+
+msgid "Tag files with metadata"
+msgstr "メタデータ付きタグファイル"
+
+msgid "Paranoia"
+msgstr "Paranoia"
+
+msgid "Paranoia error correction"
+msgstr "Paranoiaエラー修正"
+
+msgid "Perform overlapped reads"
+msgstr "オーバーラップした読み込みの実行"
+
+msgid "Verify data integrity"
+msgstr "データ整合性の確認"
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr "読み込みに失敗したら無制限に再試行 (スキップしない)"
+
+msgid "Maximum number of retries:"
+msgstr "再試行の最大数:"
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+"\n"
+"行き先ディレクトリは読み込み、書き込み可能ではありません！"
+
+msgid "Total"
+msgstr "合計"
+
+msgid "(audio only)"
+msgstr "(オーディオだけ)"
+
+msgid "Ripping CD tracks"
+msgstr "CDトラックをリッピング"
+
+msgid "Begin"
+msgstr "開始"
+
+msgid "Length"
+msgstr "長さ"
+
+msgid "Progress"
+msgstr "進行状況"
+
+msgid "Close window when complete"
+msgstr "完了したらウィンドウを閉じる"
+
+msgid "Close"
+msgstr "閉じる"
+
+msgid "Unknown Album"
+msgstr "不明なアルバム"
+
+msgid "Unknown Track"
+msgstr "不明なトラック"
+
+msgid "Please select the directory for exported files."
+msgstr "エクスポートファイルのディレクトリを選択して下さい。"
+
+msgid "Copy"
+msgstr "コピー"
+
+msgid "Help"
+msgstr "ヘルプ"
+
+#, c-format
+msgid ""
+"\n"
+"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%%%a, %%%%r and %%%%t. The track number and format-dependent file extension are denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives an identifier which is unique within an export session."
+msgstr ""
+"\n"
+"ここで入力するテンプレート文字列は、エクスポートされたファイルのファイル名を構築するために使われます。アーチスト、レコード、トラック名は %%%%a, %%%%r と %%%%t で表示されます。トラック番号と形式依存ファイル拡張子は %%%%n と %%%%x で表示されます。フラッグ %%%%i はエクスポートセッションで固有の識別子を与えます。"
+
+msgid "Export files"
+msgstr "ファイルをエクスポート"
+
+msgid "Location and filename"
+msgstr "場所とファイル名"
+
+msgid "Target directory:"
+msgstr "ターゲットディレクトリ:"
+
+msgid "Create subdirectories for artists"
+msgstr "アーチストのサブディレクトリを作成"
+
+msgid "Create subdirectories for albums"
+msgstr "アルバムのサブディレクトリを作成"
+
+msgid ""
+"Subdirectory name\n"
+"length limit:"
+msgstr ""
+"サブディレクトリ名の\n"
+"長さ制限:"
+
+msgid "Filename template:"
+msgstr "ファイル名テンプレート:"
+
+msgid "Filter"
+msgstr "フィルタ"
+
+msgid "Do not reencode files already being in the target format"
+msgstr "既にターゲットフォーマットにあるファイルは再エンコードしない"
+
+msgid ""
+"Do not reencode files\n"
+"matching wildcard:"
+msgstr ""
+"ワイルドカードに一致する\n"
+"ファイルはエンコードしない:"
+
+msgid "Error in format string"
+msgstr "文字列のフォーマットにエラー"
+
+msgid "Exporting files"
+msgstr "エクスポートファイル"
+
+msgid "Source file:"
+msgstr "ソースファイル:"
+
+msgid "Target file:"
+msgstr "ターゲットファイル:"
+
+msgid "Progress:"
+msgstr "進行状況:"
+
+msgid "*File info"
+msgstr "*ファイル情報"
+
+msgid "File info"
+msgstr "ファイル情報"
+
+msgid "There are unsaved changes to the file metadata."
+msgstr "ファイルメタデータに保存していない変更があります。"
+
+msgid "Save and close"
+msgstr "保存して閉じる"
+
+msgid "Discard changes"
+msgstr "変更を破棄"
+
+msgid "Do not close"
+msgstr "閉じない"
+
+#, c-format
+msgid ""
+"Conversion error in field %s:\n"
+"'%s' does not conform to format '%s'!"
+msgstr ""
+"フィールド %s で変換エラー:\n"
+"'%s' はフォーマット '%s' に準拠しません！"
+
+msgid ""
+"Attached Picture frame with no image set!\n"
+"Please set an image or remove the frame."
+msgstr ""
+"添付画像フレームは画像が設定されていません！\n"
+"画像を設定するかフレームを削除して下さい。"
+
+#, c-format
+msgid ""
+"Failed to write metadata to file.\n"
+"Reason: %s"
+msgstr ""
+"メタデータのファイルへの書き込みに失敗。\n"
+"理由: %s"
+
+#, c-format
+msgid ""
+"Error converting field %s to Year:\n"
+"'%s' is not an integer number!"
+msgstr ""
+"フィールド %s を年に変換中にエラー:\n"
+"'%s' は整数ではありません！"
+
+msgid "Please specify the file to save the image to."
+msgstr "画像を保存するファイルを指定して下さい。"
+
+msgid "(no image)"
+msgstr "(イメージなし)"
+
+msgid "(error loading image)"
+msgstr "(イメージの読み込みエラー)"
+
+msgid "Please specify the file to load the image from."
+msgstr "画像を読み込むファイルを指定して下さい。"
+
+#, c-format
+msgid ""
+"Could not load image from:\n"
+"%s"
+msgstr ""
+"ここからイメージを読み込めませんでした:\n"
+"%s"
+
+#, c-format
+msgid "MIME type: %s"
+msgstr "MIMEタイプ: %s"
+
+msgid "Picture type:"
+msgstr "画像タイプ:"
+
+msgid "Description:"
+msgstr "説明:"
+
+msgid "(no description)"
+msgstr "(説明なし)"
+
+msgid "Change"
+msgstr "変更"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Import as Record"
+msgstr "レコードとしてインポート"
+
+msgid "Import as Track No."
+msgstr "トラック番号としてインポート"
+
+msgid "Import as RVA"
+msgstr "RVA としてインポート"
+
+msgid "Add"
+msgstr "追加"
+
+msgid "field:"
+msgstr "フィールド:"
+
+msgid "tag:"
+msgstr "タグ:"
+
+msgid "Audio CD"
+msgstr "オーディオCD"
+
+msgid "Track:"
+msgstr "トラック:"
+
+msgid "File:"
+msgstr "ファイル:"
+
+msgid "Audio data"
+msgstr "オーディオデータ"
+
+msgid "Format:"
+msgstr "フォーマット:"
+
+msgid "Length:"
+msgstr "長さ:"
+
+msgid "Samplerate:"
+msgstr "サンプルレート:"
+
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld Hz"
+
+msgid "Channel count:"
+msgstr "チャンネル数:"
+
+msgid "MONO"
+msgstr "モノラル"
+
+msgid "STEREO"
+msgstr "ステレオ"
+
+msgid "Bandwidth:"
+msgstr "帯域幅:"
+
+msgid "Total samples:"
+msgstr "合計サンプル:"
+
+msgid "Mode:"
+msgstr "モード:"
+
+msgid "Type:"
+msgstr "タイプ:"
+
+msgid "Channels:"
+msgstr "チャンネル:"
+
+msgid "Patterns:"
+msgstr "パターン:"
+
+msgid "Samples:"
+msgstr "サンプル:"
+
+msgid "Instruments:"
+msgstr "楽器:"
+
+msgid "Samples"
+msgstr "サンプル"
+
+msgid "Instruments"
+msgstr "楽器"
+
+msgid "Name"
+msgstr "名前"
+
+msgid "Output:"
+msgstr "出力:"
+
+msgid "No output"
+msgstr "出力なし"
+
+msgid "SRC Type: "
+msgstr "SRCタイプ: "
+
+#, c-format
+msgid "Loop range: %d-%d%% [%s - %s]"
+msgstr "ループ範囲: %d-%d%% [%s - %s]"
+
+#, c-format
+msgid "Loop range: %d-%d%%"
+msgstr "ループ範囲: %d-%d%%"
+
+msgid ""
+"One or more stores in Music Store have been modified.\n"
+"Do you want to save them before exiting?"
+msgstr ""
+"Music Storeの1つ以上のストアが変更されました。\n"
+"終了前に保存しますか？"
+
+msgid "Do not exit"
+msgstr "終了しない"
+
+msgid "Quit"
+msgstr "終了"
+
+#, c-format
+msgid "Position: %d%%"
+msgstr "ポジション: %d%%"
+
+#, c-format
+msgid "Mute"
+msgstr "ミュート"
+
+#, c-format
+msgid "%d dB"
+msgstr "%d dB"
+
+#, c-format
+msgid "Volume: %s"
+msgstr "ボリューム: %s"
+
+#, c-format
+msgid "%d%% R"
+msgstr "%d%% R"
+
+#, c-format
+msgid "%d%% L"
+msgstr "%d%% L"
+
+#, c-format
+msgid "C"
+msgstr "C"
+
+#, c-format
+msgid "Balance: %s"
+msgstr "バランス: %s"
+
+msgid "JACK connection lost"
+msgstr "JACK接続が失われました"
+
+msgid "JACK has either been shutdown or it disconnected Aqualung because it was not fast enough. All you can do now is restart both JACK and Aqualung."
+msgstr "JACK は十分な速度がないので、シャットダウンされたか Aqualung を切断しました。今すぐ JACK と Aqualung を再起動して下さい。"
+
+msgid "Warn me if the Window Manager does not support system tray"
+msgstr "ウィンドウマネージャがシステムトレイをサポートしない時は警告する"
+
+msgid "Aqualung is compiled with system tray support, but the status icon could not be embedded in the notification area. Your desktop may not have support for a system tray, or it has not been configured correctly."
+msgstr "Aqualung はシステムトレイサポートでコンパイルされています。しかし、ステータスアイコンは、通知域に埋め込む事ができませんでした。お使いのデスクトップは、システムトレイのサポートをしないかも知れません。あるいは正しく構成されませんでした。"
+
+msgid "Settings"
+msgstr "設定"
+
+msgid "Skin chooser"
+msgstr "スキン選択"
+
+msgid "JACK port setup"
+msgstr "JACK ポート設定"
+
+msgid "Previous song"
+msgstr "前の曲"
+
+msgid "Stop"
+msgstr "停止"
+
+msgid "Next song"
+msgstr "次の曲"
+
+msgid "Play/Pause"
+msgstr "再生/一時停止"
+
+msgid "Play"
+msgstr "再生"
+
+msgid "Pause"
+msgstr "一時停止"
+
+msgid "Repeat current song"
+msgstr "現在の曲をリピート"
+
+msgid "Repeat all songs"
+msgstr "全ての曲をリピート"
+
+msgid "Shuffle songs"
+msgstr "曲をシャッフル"
+
+msgid "Toggle playlist"
+msgstr "プレイリストを切り替え"
+
+msgid "Toggle music store"
+msgstr "Music Store を切り替え"
+
+msgid "Toggle LADSPA patch builder"
+msgstr "LADSPA パッチビルダを切り替え"
+
+msgid "Show Aqualung"
+msgstr "Aqualung を表示"
+
+msgid "Hide Aqualung"
+msgstr "Aqualung を隠す"
+
+msgid "Previous"
+msgstr "前"
+
+msgid "Next"
+msgstr "次"
+
+#, c-format
+msgid "%.1f MB / %.1f MB"
+msgstr "%.1f MB / %.1f MB"
+
+#, c-format
+msgid "%d / %d files"
+msgstr "%d / %d ファイル"
+
+#, c-format
+msgid "%d / %d directories"
+msgstr "%d / %d ディレクトリ"
+
+msgid "Cannot write to selected directory. Please select another directory."
+msgstr "選択したディレクトリに書き込めません。別のディレクトリを選択して下さい。"
+
+msgid "Done"
+msgstr "完了"
+
+msgid "Aborted..."
+msgstr "中止…"
+
+msgid "Please enter directory name."
+msgstr "ディレクトリ名を入力して下さい。"
+
+msgid "Create directory"
+msgstr "ディレクトリを作成"
+
+msgid "Please enter a new name."
+msgstr "新しい名前を入力して下さい。"
+
+msgid "Rename"
+msgstr "リネーム"
+
+#, c-format
+msgid ""
+"Directory '%s' will be removed with its entire contents.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"ディレクトリ '%s' は全てのコンテンツを含めて削除されます。\n"
+"\n"
+"続けますか？"
+
+#, c-format
+msgid ""
+"File '%s' will be removed.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"ファイル '%s' は削除されます。\n"
+"\n"
+"続けますか？"
+
+msgid "Remove"
+msgstr "削除"
+
+#, c-format
+msgid " (%.1f MB)"
+msgstr " (%.1f MB)"
+
+#, c-format
+msgid " (capacity = %.1f MB)"
+msgstr " (容量 = %.1f MB)"
+
+#, c-format
+msgid " Free space (%.1f MB)"
+msgstr "空きスペース (%.1f MB)"
+
+msgid ""
+"No suitable iRiver iFP device found.\n"
+"Perhaps it is unplugged or turned off."
+msgstr ""
+"iRiver-iFP に合うデバイスが見つかりません。\n"
+"たぶん、接続されていないか電源が切れています。"
+
+msgid ""
+"Device is busy.\n"
+"(Aqualung was unable to claim its interface.)"
+msgstr ""
+"デバイスがビジーです。\n"
+"(Aqualung はインターフェースを要求できませんでした。)"
+
+msgid ""
+"Device is not responding.\n"
+"Try jiggling the handle."
+msgstr ""
+"デバイスは応答がありません。\n"
+"ハンドルを軽く動かして見て下さい。"
+
+msgid "Please select a local path."
+msgstr "ローカルパスを選択して下さい。"
+
+msgid "Please select at least one valid song from playlist."
+msgstr "プレイリストから少なくとも1つ有効な曲を選択して下さい。"
+
+#, c-format
+msgid ""
+"One song has format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"1曲はお使いのプレーヤではサポートされていない形式です。\n"
+"続けますか？"
+
+#, c-format
+msgid ""
+"%d of %d songs have format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"%d 中 %d 曲はお使いのプレーヤではサポートされていない形式です。\n"
+"\n"
+"続けますか？"
+
+#, c-format
+msgid ""
+"The selected song has format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"選択した曲はお使いのプレーヤではサポートされていない形式です。\n"
+"\n"
+"続けますか？"
+
+#, c-format
+msgid ""
+"None of the selected songs has format supported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"お使いのプレーヤでサポートされていない形式の曲は選択されていません。\n"
+"\n"
+"続けますか？"
+
+msgid "iFP device manager (upload mode)"
+msgstr "iFP デバイスマネージャ (アップロード モード)"
+
+msgid "iFP device manager (download mode)"
+msgstr "iFP　デバイスマネージャ (ダウンロード モード)"
+
+msgid "Selected files:"
+msgstr "選択したファイル:"
+
+msgid "label_songs"
+msgstr "ラベルソング(_S)"
+
+msgid "<b>Songs info</b>"
+msgstr "<b>曲情報</b>"
+
+msgid "Model:"
+msgstr "モデル:"
+
+msgid "Battery"
+msgstr "バッテリー"
+
+msgid "Free space"
+msgstr "空きスペース"
+
+msgid "<b>Device status</b>"
+msgstr "<b>デバイス状況</b>"
+
+msgid "Size"
+msgstr "サイズ"
+
+msgid "Create a new directory"
+msgstr "新しいディレクトリを作成"
+
+msgid "<b>Remote directory</b>"
+msgstr "<b>ディレクトリを削除</b>"
+
+msgid "<b>Local directory</b>"
+msgstr "<b>ローカルディレクトリ</b>"
+
+msgid "Browse"
+msgstr "ブラウズ"
+
+msgid "File name: "
+msgstr "ファイル名:"
+
+msgid "Current file: "
+msgstr "現在のファイル:"
+
+msgid "Overall: "
+msgstr "全般:"
+
+msgid "Idle"
+msgstr "アイドル"
+
+msgid "<b>Transfer progress</b>"
+msgstr "<b>転送進行状況</b>"
+
+msgid "Close window when transfer complete"
+msgstr "転送を完了するとウィンドウを閉じる"
+
+msgid "_Upload"
+msgstr "アップロード(_U)"
+
+msgid "_Download"
+msgstr "ダウンロード(_D)"
+
+msgid "_Abort"
+msgstr "中止(_A)"
+
+msgid "Success"
+msgstr "成功"
+
+msgid "Memory allocation error"
+msgstr "メモリ割り当てエラー"
+
+msgid "Unable to open file"
+msgstr "ファイルを開けません"
+
+msgid "No metadata support for this format"
+msgstr "この形式をサポートするメタデータはありません"
+
+msgid "File is not writable"
+msgstr "ファイルは書き込み可能ではありません"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "無効な 'トラック番号' フィールド値"
+
+msgid "Invalid 'Genre' field value"
+msgstr "無効な 'ジャンル' フィールド値"
+
+msgid "Conversion to target charset failed"
+msgstr "ターゲット文字セットの変換に失敗"
+
+msgid "Internal error"
+msgstr "内部エラー"
+
+msgid "Unknown error"
+msgstr "不明なエラー"
+
+msgid "Album"
+msgstr "アルバム"
+
+msgid "Date"
+msgstr "日付"
+
+msgid "Genre"
+msgstr "ジャンル"
+
+msgid "Track No."
+msgstr "トラック番号"
+
+msgid "Comment"
+msgstr "コメント"
+
+msgid "Disc"
+msgstr "ディスク"
+
+msgid "Performer"
+msgstr "演奏者"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "Organization"
+msgstr "組織"
+
+msgid "Location"
+msgstr "場所"
+
+msgid "Contact"
+msgstr "コンタクト"
+
+msgid "License"
+msgstr "ライセンス"
+
+msgid "Copyright"
+msgstr "著作権"
+
+msgid "ISRC"
+msgstr "ISRC"
+
+msgid "Version"
+msgstr "バージョン"
+
+msgid "Subtitle"
+msgstr "サブタイトル"
+
+msgid "Debut Album"
+msgstr "デビューアルバム"
+
+msgid "Publisher"
+msgstr "出版社"
+
+msgid "Conductor"
+msgstr "指揮者"
+
+msgid "Composer"
+msgstr "作曲者"
+
+msgid "Publication Right"
+msgstr "出版権"
+
+msgid "File"
+msgstr "ファイル"
+
+msgid "EAN/UPC"
+msgstr "EAN/UPC"
+
+msgid "ISBN"
+msgstr "ISBN"
+
+msgid "Catalog Number"
+msgstr "カタログ番号"
+
+msgid "Label Code"
+msgstr "ラベルコード"
+
+msgid "Record Date"
+msgstr "録音日"
+
+msgid "Record Location"
+msgstr "録音場所"
+
+msgid "Media"
+msgstr "メディア"
+
+msgid "Index"
+msgstr "インデックス"
+
+msgid "Related"
+msgstr "関連"
+
+msgid "Abstract"
+msgstr "要約"
+
+msgid "Language"
+msgstr "言語"
+
+msgid "Bibliography"
+msgstr "目録"
+
+msgid "Introplay"
+msgstr "イントロ再生"
+
+msgid "BPM"
+msgstr "BPM"
+
+msgid "Encoding Time"
+msgstr "エンコード時間"
+
+msgid "Playlist Delay"
+msgstr "プレイリスト遅延"
+
+msgid "Original Release Time"
+msgstr "オリジナル リリース時間 "
+
+msgid "Release Time"
+msgstr "リリース時間"
+
+msgid "Tagging Time"
+msgstr "タグ付け時間"
+
+msgid "Encoded by"
+msgstr "エンコード"
+
+msgid "Lyricist/Text Writer"
+msgstr "作詞者/テキストライタ"
+
+msgid "File Type"
+msgstr "ファイルタイプ"
+
+msgid "Involved People"
+msgstr "関係者"
+
+msgid "Content Group"
+msgstr "コンテンツグループ"
+
+msgid "Initial key"
+msgstr "イニシャルキー"
+
+msgid "Musician Credits"
+msgstr "ミュージシャン クレジット"
+
+msgid "Mood"
+msgstr "ムード"
+
+msgid "Original Album"
+msgstr "オリジナルアルバム"
+
+msgid "Original Filename"
+msgstr "オリジナルファイル名"
+
+msgid "Original Lyricist"
+msgstr "オリジナル作詞者"
+
+msgid "Original Artist"
+msgstr "オリジナルアーチスト"
+
+msgid "File Owner"
+msgstr "ファイルのオーナー"
+
+msgid "Band/Orchestra"
+msgstr "バンド/オーケストラ"
+
+msgid "Interpreted/Remixed"
+msgstr "変換/リミックス"
+
+msgid "Part Of A Set"
+msgstr "Part Of A Set"
+
+msgid "Produced"
+msgstr "作成日時"
+
+msgid "Internet Radio Station Name"
+msgstr "インターネットラジオステーション名"
+
+msgid "Internet Radio Station Owner"
+msgstr "インターネットラジオステーション所有者"
+
+msgid "Album Sort Order"
+msgstr "アルバムの並び替え順序"
+
+msgid "Performer Sort Order"
+msgstr "演奏者の並び替え順序"
+
+msgid "Title Sort Order"
+msgstr "タイトルの並び替え順序"
+
+msgid "Software"
+msgstr "ソフトウェア"
+
+msgid "Set Subtitle"
+msgstr "サブタイトルを設定"
+
+msgid "User Defined Text"
+msgstr "指定のテキストを使う"
+
+msgid "Commercial Information"
+msgstr "市場情報"
+
+msgid "Copyright/Legal Information"
+msgstr "著作権/法律情報"
+
+msgid "Official Audio File Website"
+msgstr "公式音声ファイルウェブサイト"
+
+msgid "Official Artist Website"
+msgstr "公式アーチストウェブサイト"
+
+msgid "Official Audio Source Website"
+msgstr "公式オーディオソースウェブサイト"
+
+msgid "Official Radio Station Website"
+msgstr "公式ラジオステーションウェブサイト"
+
+msgid "Payment"
+msgstr "支払い"
+
+msgid "Publisher's Official Website"
+msgstr "出版社公式ウェブサイト"
+
+msgid "User Defined URL"
+msgstr "ユーザ指定のURL"
+
+msgid "Vendor"
+msgstr "ベンダー"
+
+msgid "ReplayGain Reference Loudness"
+msgstr "再生ゲイン ラウドネス参照"
+
+msgid "ReplayGain Track Gain"
+msgstr "再生ゲイン トラックゲイン"
+
+msgid "ReplayGain Track Peak"
+msgstr "再生ゲイン トラックピーク"
+
+msgid "ReplayGain Album Gain"
+msgstr "再生ゲイン アルバムゲイン"
+
+msgid "ReplayGain Album Peak"
+msgstr "再生ゲイン アルバムピーク"
+
+msgid "Icy-Name"
+msgstr "Icy-名"
+
+msgid "Icy-Description"
+msgstr "Icy-説明"
+
+msgid "Icy-Genre"
+msgstr "Icy-ジャンル"
+
+msgid "RVA"
+msgstr "RVA"
+
+msgid "Attached Picture"
+msgstr "添付画像"
+
+msgid "Binary Object"
+msgstr "バイナリ オブジェクト"
+
+msgid "NULL"
+msgstr "NULL"
+
+msgid "ID3v1"
+msgstr "ID3v1"
+
+msgid "ID3v2"
+msgstr "ID3v2"
+
+msgid "APE"
+msgstr "APE"
+
+msgid "Ogg Xiph Comments"
+msgstr "Ogg-Xiphコメント"
+
+msgid "FLAC Pictures"
+msgstr "FLAC画像"
+
+msgid "Musepack ReplayGain"
+msgstr "Musepack 再生ゲイン"
+
+msgid "Generic StreamMeta"
+msgstr "汎用ストリームメタ"
+
+msgid "MPEG StreamMeta"
+msgstr "MPEGストリームメタ"
+
+msgid "Module info"
+msgstr "モジュール情報"
+
+msgid "Unknown"
+msgstr "不明"
+
+msgid "Other"
+msgstr "その他"
+
+msgid "File icon (32x32 PNG)"
+msgstr "ファイルアイコン (32x32 PNG)"
+
+msgid "File icon (other)"
+msgstr "ファイルアイコン (その他)"
+
+msgid "Front cover"
+msgstr "表紙"
+
+msgid "Back cover"
+msgstr "裏表紙"
+
+msgid "Leaflet page"
+msgstr "リーフレットページ"
+
+msgid "Album image"
+msgstr "アルバム画像"
+
+msgid "Lead artist/performer"
+msgstr "リードアーチスト/演奏者"
+
+msgid "Artist/performer"
+msgstr "アーチスト/演奏者"
+
+msgid "Band/orchestra"
+msgstr "バンド/オーケストラ"
+
+msgid "Lyricist/text writer"
+msgstr "作詞家/テキストライター"
+
+msgid "Recording location/studio"
+msgstr "録音場所/スタジオ"
+
+msgid "During recording"
+msgstr "レコーディング中"
+
+msgid "During performance"
+msgstr "演奏中"
+
+msgid "Movie/video screen capture"
+msgstr "ムービー/ビデオスクリーンキャプチャ"
+
+msgid "A large, coloured fish"
+msgstr "大きな色付きの魚"
+
+msgid "Illustration"
+msgstr "イラスト"
+
+msgid "Band/artist logotype"
+msgstr "バンド/アーチストロゴタイプ"
+
+msgid "Publisher/studio logotype"
+msgstr "出版社/スタジオロゴタイプ"
+
+msgid "Music Store"
+msgstr "Music Store"
+
+msgid "Search..."
+msgstr "検索…"
+
+msgid "Collapse all items"
+msgstr "全てのアイテムを折りたたむ"
+
+msgid "Edit item..."
+msgstr "アイテムを編集…"
+
+msgid "Add item..."
+msgstr "アイテムを追加…"
+
+msgid "Remove item..."
+msgstr "アイテムを削除…"
+
+msgid "Save all stores"
+msgstr "全てのストアを保存"
+
+msgid "Create empty store..."
+msgstr "空のストアを作成…"
+
+msgid "*Music Store"
+msgstr "*Music Store"
+
+#, c-format
+msgid "Do you want to save store \"%s\" before removing from Music Store?"
+msgstr "Music Store から削除する前に、ストア \"%s\" を保存しますか？"
+
+msgid "You will need to restart Aqualung for the following changes to take effect:"
+msgstr "次の変更を有効にするには Aqualung を再起動する必要があります:"
+
+msgid "Select a font..."
+msgstr "フォントを選択…"
+
+msgid "Disable skin support"
+msgstr "スキンサポートを無効"
+
+msgid "rw"
+msgstr "rw"
+
+msgid "r"
+msgstr "r"
+
+msgid "unreachable"
+msgstr "到達不能"
+
+msgid "Please select a Programable Title Format File."
+msgstr "プログラム可能はタイトル形式ファイルを選択して下さい。"
+
+msgid "Please select a Music Store database."
+msgstr "Music Store データベースを選択して下さい。"
+
+msgid "Paths must either be absolute or starting with a tilde."
+msgstr "パスは絶対パスかチルダ付きで始まらなければなりません。"
+
+msgid "The specified store has already been added to the list."
+msgstr "指定のストアは既にリストに追加されています。"
+
+#, c-format
+msgid ""
+"\n"
+"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%%%a, %%%%r and %%%%t, respectively.\n"
+msgstr ""
+"\n"
+"ここに入力するテンプレート文字列は、アーチスト、レコード、トラック名から1つのタイトル行を構成するために使われます。 それらは個々に %%%%a, %%%%r と %%%%t, で示されます。\n"
+
+msgid ""
+"\n"
+"The file you enter/choose here will set the Lua program to use to format the title. See the Aqualung manual for details. Here is a quick example of what you can use in the file:\n"
+"\n"
+"function playlist_title()\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"end"
+msgstr ""
+"\n"
+"ここで入力/選択をしたファイルはタイトルをフォーマットするために使う Lua プログラムを設定します。詳細は Aqualung マニュアルをご覧下さい。以下はファイルで使える簡単なサンプルです:\n"
+"\n"
+"function playlist_title()\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"end"
+
+msgid ""
+"\n"
+"The string you enter here will be parsed as a command line before parsing the actual command line parameters. What you enter here will act as a default setting and may or may not be overridden from the 'real' command line.\n"
+"\n"
+"Example: enter '-o alsa -R' below to use ALSA output running realtime as a default.\n"
+msgstr ""
+"\n"
+"ここで入力する文字列は、実際のコマンドラインパラメータを解析する前のコマンドラインとして解析されます。ここで入力したものは、初期設定として作動し、「本当の」コマンドラインから上書きされるか、されないかも知れません\n"
+"\n"
+"例: リアルタイムで実行している ALSA 出力をデフォルトで使うには、下に '-o alsa -R' と入力します。\n"
+
+msgid ""
+"Paths must either be absolute or starting with a tilde, which will be expanded to the user's home directory.\n"
+"\n"
+"Drag and drop entries in the list to set the store order in the Music Store."
+msgstr ""
+"パスは絶対パスかチルダ付きで始まらなければなりません。そしてユーザのホームディレクトリに展開されます。\n"
+"\n"
+"Music Store にストア順序を設定するにはエントリをリストにドラッグアンドドロップして下さい。"
+
+msgid ""
+"\n"
+"Set the drive speed for CD playing in CD-ROM speed units. One speed unit equals to 176 kBps raw data reading speed. Warning: not all drives honor this setting.\n"
+"\n"
+"Lower speed usually means less drive noise. However, when using Paranoia error correction modes for increased accuracy, generally much larger speeds are required to prevent buffer underruns (and thus audible drop-outs).\n"
+"\n"
+"Please note that these settings do not apply to CD Ripping, which always happens with maximum available speed and with error correction modes manually set before every run."
+msgstr ""
+"\n"
+"CDのドライブ速度は、再生しているCD-ROMの速度単位に設定して下さい。1速度単位は、速度を読んでいる176kBps生データに等しいです。警告：全てのドライブが、この設定を守るというわけではありません。\n"
+"\n"
+"低速は通常、ドライブ雑音が少ない事を意味します。しかし、精度を増すためにParanoiaエラー補正モードを使う時は、一般にバッファアンダーランを防ぐため、非常に大きな速度が要求されます (そして、このような可聴ドロップアウト)。\n"
+"\n"
+"これらの設定はCDリッピングに適用しない点に注意して下さい。利用できる最高速度や、毎回実行する前に手動でエラー補正モードを設定した時に起こります。"
+
+msgid ""
+"\n"
+"Most drives let Aqualung know when a CD has been inserted or removed by providing a 'media changed' flag. However, some drives don't set this flag properly, and thus it may happen that a newly inserted CD remains unnoticed to Aqualung. In such cases, enabling this option should help."
+msgstr ""
+"\n"
+"大部分のドライブは、CDが挿入されたり、取り外された時、 Aqualung に「メディアは交換された」というフラグで知らせます。しかし、このフラグを適切に設定しないドライブがあります。そして、このように、新しく挿入されたCDが Aqualung に気づかれずに残される事が起こるかも知れません。そのような場合、このオプションを有効にする事で助けになります。"
+
+msgid ""
+"\n"
+"Here you should enter a comma-separated list of domains\n"
+"that should be accessed without using the proxy set above.\n"
+"Example: localhost, .localdomain, .my.domain.com"
+msgstr ""
+"\n"
+"ここでは、上で設定されるプロキシを使わずにアクセスされる\n"
+"ドメインのカンマ区切りリストを入力しなければなりません。\n"
+"例：localhost, .localdomain, .my.domain.com"
+
+msgid "Title Format"
+msgstr "タイトル形式"
+
+msgid "Programmable title format file"
+msgstr "プログラム可能なタイトル形式ファイル"
+
+msgid "Implicit command line"
+msgstr "暗黙的コマンドライン"
+
+msgid "Miscellaneous"
+msgstr "その他"
+
+msgid "Enable tooltips"
+msgstr "ツールチップを有効"
+
+msgid "Enable systray"
+msgstr "システムトレイを有効"
+
+msgid "Put control buttons at the bottom of playlist"
+msgstr "コントロールボタンをプレイリストの一番下に置く"
+
+msgid "Disable control buttons relief"
+msgstr "コントロールボタンレリーフを無効"
+
+msgid "Combine play and pause buttons"
+msgstr "再生と一時停止ボタンを一体化"
+
+msgid "Keep main window always on top"
+msgstr "メインウィンドウを常に一番上にする"
+
+msgid "Simple view in LADSPA patch builder"
+msgstr "LADSPAパッチビルダでシンプル表示"
+
+msgid "United windows minimization"
+msgstr "結合したウィンドウの最小化"
+
+msgid "Show song name in the main window's title"
+msgstr "メインウィンドウのタイトルに曲名を表示"
+
+msgid "Show hidden files and directories in file choosers"
+msgstr "ファイル選択で隠しファイルとディレクトリを表示"
+
+msgid "Show tags tab first in the file info dialog"
+msgstr "ファイル情報ダイアログで最初にタグタブを表示"
+
+msgid "Cover art"
+msgstr "ジャケット画像"
+
+msgid "Default cover width:"
+msgstr "デフォルトカバー幅:"
+
+msgid "50 pixels"
+msgstr "50 ピクセル"
+
+msgid "100 pixels"
+msgstr "100 ピクセル"
+
+msgid "200 pixels"
+msgstr "200 ピクセル"
+
+msgid "300 pixels"
+msgstr "300 ピクセル"
+
+msgid "use browser window width"
+msgstr "ブラウザのウィンドウ幅を使う"
+
+msgid "Do not magnify images with smaller width"
+msgstr "より小さい幅で画像を拡大しない"
+
+msgid "Show cover thumbnail for Music Store tracks only"
+msgstr "Music Store トラックのジャケットサムネイルだけを表示"
+
+msgid "Don't show cover thumbnail in the main window"
+msgstr "メインウィンドウにジャケットのサムネイルを表示しない"
+
+msgid "Playlist"
+msgstr "プレイリスト"
+
+msgid "Embed playlist into main window"
+msgstr "メインウィンドウにプレイリストを埋め込む"
+
+msgid "Save and restore the playlist on exit/startup"
+msgstr "終了/起動時にプレイリストを保存/復元"
+
+msgid "Save playlist periodically [min]:"
+msgstr "プレイリストを定期的に保存 [分]:"
+
+msgid "Album mode is the default when adding entire records"
+msgstr "全レコードを追加する時はアルバムモードがデフォルト"
+
+msgid "Always show the tab bar"
+msgstr "常にタブバーを表示"
+
+msgid "Show close button in tab"
+msgstr "タブに閉じるボタンを表示"
+
+msgid "When shuffling, records added in Album mode are played in order"
+msgstr "シャッフルの時は、レコードはアルバムモードに追加された順に再生"
+
+msgid "Enable statusbar"
+msgstr "ステータスバーを有効"
+
+msgid "Enable statusbar in playlist"
+msgstr "プレイリストにステータスバーを有効"
+
+msgid "Show soundfile size in statusbar"
+msgstr "ステータスバーに音声ファイルのサイズを表示"
+
+msgid "Show RVA values"
+msgstr "RVA値を表示"
+
+msgid "Show track lengths"
+msgstr "トラック長を表示"
+
+msgid "Show active track name in bold"
+msgstr "アクティブなトラック名を太字で表示"
+
+msgid "Enable rules hint"
+msgstr "ルールヒントを有効"
+
+msgid "Playlist column order"
+msgstr "列順プレイリスト"
+
+msgid ""
+"Drag and drop entries in the list below \n"
+"to set the column order in the Playlist."
+msgstr ""
+"プレイリストの列順を設定するには\n"
+"エントリを下のリストにドラッグアンドドロップ。"
+
+msgid "Column"
+msgstr "列"
+
+msgid "Track titles"
+msgstr "トラックタイトル"
+
+msgid "RVA values"
+msgstr "RVA値"
+
+msgid "Track lengths"
+msgstr "トラックの長さ"
+
+msgid "Hide comment pane"
+msgstr "コメントペインを隠す"
+
+msgid "Hide the Music Store comment pane"
+msgstr "Music Store のコメントペインを隠す"
+
+msgid "Enable toolbar"
+msgstr "ツールバーを有効"
+
+msgid "Enable toolbar in Music Store"
+msgstr "Music Store でツールバーを有効"
+
+msgid "Enable statusbar in Music Store"
+msgstr "Music Store でステータスバーを有効"
+
+msgid "Expand Stores on startup"
+msgstr "起動時にストアを展開"
+
+msgid "Enable tree node icons"
+msgstr "ツリーノードアイコンを有効"
+
+msgid "Enable Music Store tree node icons"
+msgstr "Music Store ツリーノードアイコンを有効"
+
+msgid "Ask for confirmation when removing items"
+msgstr "アイテムを削除する時に確認すを要求"
+
+msgid "Paths to Music Store databases"
+msgstr "Music Store データベースへのパス"
+
+msgid "Path"
+msgstr "パス"
+
+msgid "Access"
+msgstr "アクセス"
+
+msgid "Refresh"
+msgstr "更新"
+
+msgid "DSP"
+msgstr "DSP"
+
+msgid "LADSPA plugin processing"
+msgstr "LADSPAプラグイン処理"
+
+msgid "Pre Fader (before Volume & Balance)"
+msgstr "プリフェイダ (ボリュームとバランスの前)"
+
+msgid "Post Fader (after Volume & Balance)"
+msgstr "ポストフェイダ (ボリュームとバランスの後)"
+
+msgid ""
+"Aqualung is compiled without LADSPA plugin support.\n"
+"See the About box and the documentation for details."
+msgstr ""
+"Aqualung はLADSPAプラグインサポートなしでコンパイルされています。\n"
+"詳細はバージョン情報ボックスとドキュメントをご覧下さい。"
+
+msgid "Sample Rate Converter type"
+msgstr "サンプルレート変換形式"
+
+msgid ""
+"Aqualung is compiled without Sample Rate Converter support.\n"
+"See the About box and the documentation for details."
+msgstr ""
+"Aqualung はサンプルレート変換サポートなしでコンパイルされています。\n"
+"詳細はバージョン情報ボックスとドキュメントをご覧下さい。"
+
+msgid "Playback RVA"
+msgstr "RVA再生"
+
+msgid "Enable playback RVA"
+msgstr "RVA再生を有効"
+
+msgid "Listening environment:"
+msgstr "リスニング環境:"
+
+msgid "Audiophile"
+msgstr "オーディオファン"
+
+msgid "Living room"
+msgstr "居間"
+
+msgid "Office"
+msgstr "オフィス"
+
+msgid "Noisy workshop"
+msgstr "やかましい工場"
+
+msgid "Reference volume [dBFS] :"
+msgstr "基準音量 [dBFS] :"
+
+msgid "Steepness [dB/dB] :"
+msgstr "急激度 [dB/dB] :"
+
+msgid "RVA for Unmeasured Files [dB] :"
+msgstr "無制限ファイルの RVA [dB] :"
+
+msgid "Apply averaged RVA to tracks of the same record"
+msgstr "同じレコードのトラックに平均RVAを適用"
+
+msgid "Drop statistical aberrations based on"
+msgstr "統計的収差を下げる"
+
+#, no-c-format
+msgid "% of standard deviation"
+msgstr "標準偏差の % "
+
+msgid "Linear threshold [dB]"
+msgstr "線形しきい値 [dB]"
+
+msgid "Linear threshold [dB] :"
+msgstr "線形しきい値 [dB] :"
+
+#, no-c-format
+msgid "% of standard deviation :"
+msgstr "標準偏差の % :"
+
+msgid "ReplayGain tag to use (with fallback to the other): "
+msgstr "使用する再生ゲインタグ (他にフォールバック): "
+
+msgid "Replaygain_track_gain"
+msgstr "Replaygain_track_gain"
+
+msgid "Replaygain_album_gain"
+msgstr "Replaygain_album_gain"
+
+msgid "Adding files to Playlist"
+msgstr "ファイルをプレイリストに追加"
+
+msgid ""
+"Use basename only instead of full path\n"
+"if no metadata is available."
+msgstr ""
+"メタデータが利用できなければ\n"
+"フルパスの変わりにベースネームだけを使う。"
+
+msgid "Metadata editor (File info dialog)"
+msgstr "メタデータエディタ (ファイル情報ダイアログ)"
+
+msgid ""
+"When adding new frames, try to set their contents\n"
+"from another tag's equivalent frame."
+msgstr ""
+"新しいフレームを追加するとき、別タグの同じフレームから\n"
+"コンテンツの設定を試して下さい。"
+
+msgid "Batch update & encode (mass tagger, CD ripper, file export)"
+msgstr "バッチ更新とエンコード (mass tagger, CDリッパ, ファイルエクスポート)"
+
+msgid "Tags to add when creating or updating MPEG audio files:"
+msgstr "MPEGオーディオファイルの作成、更新の時に追加するタグ:"
+
+msgid ""
+"Note: pre-existing tags will be updated even though they\n"
+"might not be checked here."
+msgstr "メモ: これまでのタグはここでチェックされなくても更新されます。"
+
+msgid "CD Audio"
+msgstr "CDオーディオ"
+
+msgid "CD drive speed:"
+msgstr "CDドライブ速度:"
+
+msgid "\tMaximum number of retries:"
+msgstr "\tリトライの最大数:"
+
+msgid "Force TOC re-read on every drive scan"
+msgstr "ドライブスキャン毎に強制的にTOCを再読み込み"
+
+msgid "Automatically add CDs to Playlist"
+msgstr "CDをプレイリストに自動的に追加"
+
+msgid "Automatically remove CDs from Playlist"
+msgstr "CDをプレイリストから自動的に削除"
+
+msgid "CDDB server:"
+msgstr "CDDBサーバ:"
+
+msgid "Connection timeout [sec]:"
+msgstr "接続タイムアウト [秒]:"
+
+msgid "Email address for submission:"
+msgstr "送信用Eメールアドレス:"
+
+msgid "Local CDDB directory:"
+msgstr "ローカルCDDBディレクトリ:"
+
+msgid "Use the local database only"
+msgstr "ローカルデータベースだけを使う"
+
+msgid "Protocol for querying (direct connection only):"
+msgstr "問い合わせを行うプロトコル (直接接続のみ):"
+
+msgid "CDDBP (port 888)"
+msgstr "CDDBP (ポート 888)"
+
+msgid "HTTP (port 80)"
+msgstr "HTTP (ポート 80)"
+
+msgid "Internet"
+msgstr "インターネット"
+
+msgid "Direct connection to the Internet"
+msgstr "インターネットに直接接続"
+
+msgid "Connect via HTTP proxy"
+msgstr "HTTPプロキシ経由で接続"
+
+msgid "Proxy settings"
+msgstr "プロキシ設定"
+
+msgid "Proxy host:"
+msgstr "プロキシホスト:"
+
+msgid "Port:"
+msgstr "ポート:"
+
+msgid "No proxy for:"
+msgstr "プロキシなし:"
+
+msgid "Timeout for socket I/O:"
+msgstr "ソケット I/O のタイムアウト:"
+
+msgid "seconds"
+msgstr "秒"
+
+msgid "Appearance"
+msgstr "外観"
+
+msgid "Override skin settings"
+msgstr "スキンの設定を無視する"
+
+msgid "Fonts"
+msgstr "フォント"
+
+msgid "Playlist: "
+msgstr "プレイリスト: "
+
+msgid "Music Store: "
+msgstr "Music Store: "
+
+msgid "Big timer: "
+msgstr "大きいタイマ: "
+
+msgid "Small timers: "
+msgstr "小さいタイマ: "
+
+msgid "Song title: "
+msgstr "曲のタイトル: "
+
+msgid "Song info: "
+msgstr "曲の情報: "
+
+msgid "Statusbar: "
+msgstr "ステータスバー: "
+
+msgid "Colors"
+msgstr "色"
+
+msgid "Song in playlist: "
+msgstr "プレイリストの曲: "
+
+msgid "Active song in playlist: "
+msgstr "プレイリストの曲をアクティブにする: "
+
+msgid "Error in title format string"
+msgstr "タイトル形式文字列にエラー"
+
+msgid "Reread file metadata"
+msgstr "ファイルメタデータを再読み込み"
+
+msgid "File info..."
+msgstr "ファイル情報…"
+
+msgid "Query CDDB..."
+msgstr "CDDBを問い合わせ..."
+
+msgid "Querying CDDA and http url is not supported."
+msgstr "CDDAの問い合わせとHTTP URLはサポートされていません。"
+
+# Ausgewählte Titel bleiben in der Wiedergabeliste, alles anderen werden entfernt.
+msgid "No track is selected."
+msgstr "トラックが選択されていません。"
+
+msgid "Can not query with more than 99 tracks"
+msgstr "99トラック以上の問い合わせはできません"
+
+msgid "(Untitled)"
+msgstr "(タイトルなし)"
+
+#, c-format
+msgid " (%d/%d)"
+msgstr " (%d/%d)"
+
+msgid "Select files"
+msgstr "ファイルを選択"
+
+msgid "Select directory"
+msgstr "ディレクトリを選択"
+
+msgid "Add URL"
+msgstr "URLを追加"
+
+msgid "URL:"
+msgstr "URL:"
+
+msgid "Please specify the file to save the playlist to."
+msgstr "プレイリストを保存するファイルを指定して下さい。"
+
+msgid "Please specify the file to load the playlist from."
+msgstr "プレイリストを読み込むファイルを指定して下さい。"
+
+msgid ""
+"Playback RVA is currently disabled.\n"
+"Do you want to enable it now?"
+msgstr ""
+"再生RVAは現在無効です。\n"
+"今すぐ有効にしますか？"
+
+msgid "counting..."
+msgstr "カウント中…"
+
+msgid "track"
+msgstr "トラック"
+
+msgid "tracks"
+msgstr "トラック"
+
+msgid "Rename playlist"
+msgstr "プレイリストをリネーム"
+
+msgid "Name:"
+msgstr "名前:"
+
+msgid "New tab"
+msgstr "新しいタブ"
+
+msgid "Close tab"
+msgstr "タブを閉じる"
+
+msgid "Undo close tab"
+msgstr "タブを閉じるを元に戻す"
+
+msgid "Close other tabs"
+msgstr "他のタブを閉じる"
+
+msgid " Selected: "
+msgstr "選択: "
+
+msgid "Total: "
+msgstr "合計: "
+
+msgid "Add files"
+msgstr "ファイルを追加"
+
+msgid ""
+"Add files to playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
+"ファイルをプレイリストに追加\n"
+"(マウスの右ボタンを押すとメニュー)"
+
+msgid "Select all"
+msgstr "全て選択"
+
+msgid ""
+"Select all songs in playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
+"プレイリストの全ての曲を選択\n"
+"(マウスの右ボタンを押すとメニュー)"
+
+msgid "Remove selected"
+msgstr "選択を削除"
+
+msgid ""
+"Remove selected songs from playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
+"プレイリストから選択した曲を削除\n"
+"(マウスの右ボタンを押すとメニュー)"
+
+msgid "Add directory"
+msgstr "ディレクトリを追加"
+
+msgid "Select none"
+msgstr "何も選択しない"
+
+msgid "Invert selection"
+msgstr "選択を反転"
+
+msgid "Remove all"
+msgstr "全て削除"
+
+msgid "Remove dead"
+msgstr "デッドを削除"
+
+# Ausgewählte Titel bleiben in der Wiedergabeliste, alles anderen werden entfernt.
+msgid "Cut selected"
+msgstr "選択範囲を切り取る"
+
+msgid "Save playlist"
+msgstr "プレイリストを保存"
+
+msgid "Save all playlists"
+msgstr "全てのプレイリストを保存"
+
+msgid "Load playlist in new tab"
+msgstr "プレイリストを新しいタブで読み込む"
+
+msgid "Load playlist"
+msgstr "プレイリストを読み込む"
+
+msgid "Enqueue playlist"
+msgstr "待ちプレイリスト"
+
+msgid "Send to iFP device"
+msgstr "iFP-デバイスに送信"
+
+msgid "Calculate RVA"
+msgstr "RVA を計算"
+
+msgid "Separate"
+msgstr "分離"
+
+msgid "Average"
+msgstr "平均"
+
+msgid "Roll to active song"
+msgstr "アクティブな曲にロール"
+
+msgid "Stop adding files"
+msgstr "ファイルの追加を中止"
+
+msgid "Files selected for removal"
+msgstr "削除選択したファイル"
+
+msgid "Remove files"
+msgstr "ファイルを削除"
+
+msgid ""
+"The selected files will be deleted from the filesystem. No recovery will be possible after this operation.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"選択したファイルはファイルシステムから削除されます。この操作後はリカバリできません。\n"
+"\n"
+"続けますか？"
+
+#, c-format
+msgid "Unable to remove %d file."
+msgstr "%d ファイルを削除する事はできません。"
+
+#, c-format
+msgid "Unable to remove %d files."
+msgstr "%d ファイルを削除する事はできません。"
+
+msgid "LADSPA patch builder"
+msgstr "LADSPAパッチビルダ"
+
+msgid "Available plugins"
+msgstr "利用できるプラグイン"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Category"
+msgstr "カテゴリ"
+
+msgid "Inputs"
+msgstr "入力"
+
+msgid "Outputs"
+msgstr "出力"
+
+msgid "Running plugins"
+msgstr "プラグインを実行"
+
+msgid "_Configure"
+msgstr "設定(_C)"
+
+msgid "Enable all plugins"
+msgstr "全てのプラグインを有効"
+
+msgid "Disable all plugins"
+msgstr "全てのプラグインを無効"
+
+msgid "Invert current state"
+msgstr "現在の状況を反転"
+
+msgid "Clear list"
+msgstr "リストをクリア"
+
+msgid "Untitled"
+msgstr "タイトルなし"
+
+msgid "JACK Port Setup"
+msgstr "JACKポート設定"
+
+msgid "Rescan"
+msgstr "再スキャン"
+
+msgid "Available connections"
+msgstr "利用できる接続"
+
+msgid "Clear connections"
+msgstr "接続をクリア"
+
+msgid " out L"
+msgstr "左外"
+
+msgid " out R"
+msgstr "右外"
+
+msgid "Search the Music Store"
+msgstr "Music Store を検索"
+
+msgid "Key: "
+msgstr "キー: "
+
+msgid "Case sensitive"
+msgstr "大文字小文字を区別"
+
+msgid "Exact matches only"
+msgstr "完全な一致だけ"
+
+msgid "Select first and close window"
+msgstr "最初に選択してからウィンドウを閉じる"
+
+msgid "Search in:"
+msgstr "検索:"
+
+msgid "Artist names"
+msgstr "アーチスト名"
+
+msgid "Record titles"
+msgstr "レコードタイトル"
+
+msgid "Comments"
+msgstr "コメント"
+
+msgid "Search"
+msgstr "検索"
+
+msgid "Search the Playlist"
+msgstr "プレイリストを検索"
+
+msgid "Available skins"
+msgstr "利用できるスキン"
+
+msgid "Drive info"
+msgstr "ドライブ情報"
+
+msgid "Device path:"
+msgstr "デバイスのパス:"
+
+msgid "Vendor:"
+msgstr "ベンダー:"
+
+msgid "Revision:"
+msgstr "リビジョン:"
+
+msgid ""
+"The information below is reported by the drive, and\n"
+"may not reflect the actual capabilities of the device."
+msgstr ""
+"下の情報はドライブによって報告されます。\n"
+"そしてデバイスの実際の性能には反映されません。"
+
+msgid "Eject"
+msgstr "イジェクト"
+
+msgid "Close tray"
+msgstr "トレイを閉じる"
+
+msgid "Disable manual eject"
+msgstr "手動イジェクトを無効"
+
+msgid "Select juke-box disc"
+msgstr "ジュークボックスディスクを選択"
+
+msgid "Set drive speed"
+msgstr "ドライブ速度を設定"
+
+msgid "Detect media change"
+msgstr "メディアの変更を検出"
+
+msgid "Read multiple sessions"
+msgstr "マルチセッションを読み込む"
+
+msgid "Hard reset device"
+msgstr "デバイスをハードリセット"
+
+msgid "Reading"
+msgstr "読み込み"
+
+msgid "Play CD Audio"
+msgstr "CDオーディオを再生"
+
+msgid "Read CD-DA"
+msgstr "CD-DA を読み込む"
+
+msgid "Read CD+G"
+msgstr "CD+G を読み込む"
+
+msgid "Read CD-R"
+msgstr "CD-R を読み込む"
+
+msgid "Read CD-RW"
+msgstr "CD-RW を読み込む"
+
+msgid "Read DVD-R"
+msgstr "DVD-R を読み込む"
+
+msgid "Read DVD+R"
+msgstr "DVD+R を読み込む"
+
+msgid "Read DVD-RW"
+msgstr "DVD-RW を読み込む"
+
+msgid "Read DVD+RW"
+msgstr "DVD+RW を読み込む"
+
+msgid "Read DVD-RAM"
+msgstr "DVD-RAM を読み込む"
+
+msgid "Read DVD-ROM"
+msgstr "DVD-ROM を読み込む"
+
+msgid "C2 Error Correction"
+msgstr "C2 Fehlerkorrektur"
+
+msgid "Read Mode 2 Form 1"
+msgstr "Mode 2 Form 1 を読み込む"
+
+msgid "Read Mode 2 Form 2"
+msgstr "Mode 2 Form 2 を読み込む"
+
+msgid "Read MCN"
+msgstr "MCN を読み込む"
+
+msgid "Read ISRC"
+msgstr "ISRC を読み込む"
+
+msgid "Writing"
+msgstr "書き込み"
+
+msgid "Write CD-R"
+msgstr "CD-R に書き込む"
+
+msgid "Write CD-RW"
+msgstr "CD-RW に書き込む"
+
+msgid "Write DVD-R"
+msgstr "DVD-R に書き込む"
+
+msgid "Write DVD+R"
+msgstr "DVD-R に書き込む"
+
+msgid "Write DVD-RW"
+msgstr "DVD-RW に書き込む"
+
+msgid "Write DVD+RW"
+msgstr "DVD+RW に書き込む"
+
+msgid "Write DVD-RAM"
+msgstr "DVD-RAM に書き込む"
+
+msgid "Mount Rainier"
+msgstr "マウント レーニア"
+
+msgid "Burn Proof"
+msgstr "バッファーアンダーラン防止"
+
+msgid "Disc info"
+msgstr "ディスク情報"
+
+msgid "This CD does not contain CD-Text information."
+msgstr "このCDはCDテキスト情報を含んでいません。"
+
+msgid "drive"
+msgstr "ドライブ"
+
+msgid "drives"
+msgstr "ドライブ"
+
+msgid "record"
+msgstr "レコード"
+
+msgid "records"
+msgstr "レコード"
+
+msgid "Add to playlist"
+msgstr "プレイリストに追加"
+
+msgid "Add to playlist (Album mode)"
+msgstr "プレイリストに追加 (アルバムモード)"
+
+msgid "CDDB query for this CD..."
+msgstr "このCDをCDDBに問い合わせ…"
+
+msgid "Submit CD to CDDB database..."
+msgstr "CDをCDDBデータベースに送信…"
+
+msgid "Rip CD..."
+msgstr "CDをリッピング…"
+
+msgid "Disc info..."
+msgstr "ディスク情報…"
+
+msgid "Drive info..."
+msgstr "ドライブ情報…"
+
+msgid "Comments:"
+msgstr "コメント:"
+
+msgid "Please select the xml file for this store."
+msgstr "ストア用にxmlファイルを選択して下さい。"
+
+msgid "Create empty store"
+msgstr "空のストアを作成"
+
+msgid "Visible name:"
+msgstr "表示名:"
+
+msgid "Edit Store"
+msgstr "ストアを編集"
+
+msgid "Use relative paths in store file"
+msgstr "ストアファイルに相対パスを使う"
+
+msgid "Add Artist"
+msgstr "アーチストを追加"
+
+msgid "Name to sort by:"
+msgstr "並び替える名前:"
+
+msgid "Edit Artist"
+msgstr "アーチストを編集"
+
+msgid "Please select the audio files for this record."
+msgstr "レコード用の音声ファイルを選択して下さい。"
+
+msgid "Add Record"
+msgstr "レコードを追加"
+
+msgid "Auto-create tracks from these files:"
+msgstr "次のファイルからトラックを自動作成:"
+
+msgid "_Add files..."
+msgstr "ファイルを追加(_A)…"
+
+msgid "Edit Record"
+msgstr "レコードを編集"
+
+msgid "Please select the audio file for this track."
+msgstr "このトラックのオーディオファイルを選択して下さい。"
+
+msgid "Add Track"
+msgstr "トラックを追加"
+
+msgid "Edit Track"
+msgstr "トラックを編集"
+
+msgid "Duration:"
+msgstr "演奏時間:"
+
+#, c-format
+msgid "Unmeasured"
+msgstr "無制限"
+
+msgid "Volume level:"
+msgstr "ボリュームレベル:"
+
+msgid "Use manual RVA value [dB]"
+msgstr "マニュアルRVA値を使う [dB]"
+
+#, c-format
+msgid "Really remove \"%s\" from the Music Store?"
+msgstr "Music Store から本当に \"%s\" を削除しますか？"
+
+msgid "Stop adding songs"
+msgstr "曲の追加を中止"
+
+#, c-format
+msgid ""
+"The store '%s' already exists.\n"
+"Add it on the Settings/Music Store tab."
+msgstr ""
+"ストア '%s' は既に存在します。\n"
+"それを設定/Music Store タブに追加。"
+
+#, c-format
+msgid "Really remove store \"%s\" from the Music Store?"
+msgstr "Music Store から本当にストア \"%s\" を削除しますか？"
+
+msgid "Remove Store"
+msgstr "ストアを削除"
+
+msgid "Do you want to save the store before removing?"
+msgstr "削除する前にストアを保存しますか？"
+
+msgid "Remove Artist"
+msgstr "アーチストを削除"
+
+msgid "Remove Record"
+msgstr "レコードを削除"
+
+msgid "Remove Track"
+msgstr "トラックを削除"
+
+msgid "Update file metadata"
+msgstr "ファイルメタデータを更新"
+
+msgid "Track name"
+msgstr "トラック名"
+
+msgid "Track comment"
+msgstr "トラックコメント"
+
+msgid "Track number"
+msgstr "トラック番号"
+
+msgid "Failed to set metadata for the following files:"
+msgstr "以下のファイルのメタデータ設定に失敗:"
+
+msgid "Filename"
+msgstr "ファイル名"
+
+msgid "Reason"
+msgstr "理由"
+
+msgid "(no comment)"
+msgstr "(コメントなし)"
+
+msgid "artist"
+msgstr "アーチスト"
+
+msgid "artists"
+msgstr "アーチスト"
+
+msgid "Build / Update store from filesystem..."
+msgstr "ファイルシステムからストアを、ビルド / 更新…"
+
+msgid "Edit store..."
+msgstr "ストアを編集…"
+
+msgid "Export store..."
+msgstr "ストアをエクスポート…"
+
+msgid "Save store"
+msgstr "ストアを保存"
+
+msgid "Remove store"
+msgstr "ストアを削除"
+
+msgid "Add new artist to this store..."
+msgstr "このストアに新しいアーチストを追加…"
+
+msgid "Calculate volume (recursive)"
+msgstr "ボリュームを計算 (rekursiv)"
+
+msgid "Unmeasured tracks only"
+msgstr "無制限トラックだけ"
+
+msgid "All tracks"
+msgstr "全てのトラック"
+
+msgid "Batch-update file metadata..."
+msgstr "ファイルメタデータをバッチ更新…"
+
+msgid "Add new artist..."
+msgstr "新しいアーチストを追加…"
+
+msgid "Edit artist..."
+msgstr "アーチストを編集…"
+
+msgid "Export artist..."
+msgstr "アーチストをエクスポート…"
+
+msgid "Remove artist"
+msgstr "アーチストを削除"
+
+msgid "Add new record to this artist..."
+msgstr "このアーチストに新しいレコードを追加…"
+
+msgid "Add new record..."
+msgstr "新しいレコードを追加…"
+
+msgid "Edit record..."
+msgstr "レコードを編集…"
+
+msgid "Export record..."
+msgstr "レコードをエクスポート…"
+
+msgid "Remove record"
+msgstr "レコードを削除"
+
+msgid "Add new track to this record..."
+msgstr "このレコードに新しいトラックを追加…"
+
+msgid "CDDB query for this record..."
+msgstr "このレコードのCDDB問い合わせ…"
+
+msgid "Submit record to CDDB database..."
+msgstr "CDDBデータベースにレコードを送信…"
+
+msgid "Add new track..."
+msgstr "新しいトラックを追加…"
+
+msgid "Edit track..."
+msgstr "トラックを編集…"
+
+msgid "Export track..."
+msgstr "トラックをエクスポート…"
+
+msgid "Remove track"
+msgstr "トラックを削除"
+
+msgid "Calculate volume"
+msgstr "ボリュームを計算"
+
+msgid "Only if unmeasured"
+msgstr "無制限の時だけ"
+
+msgid "In any case"
+msgstr "どんな場合でも"
+
+msgid "Update file metadata..."
+msgstr "ファイルメタデータを更新…"
+
+msgid "Please select the download directory for this podcast."
+msgstr "このポッドキャストのダウンロードディレクトリを選択して下さい。"
+
+msgid "Subscribe to new feed"
+msgstr "新しいフィードを購読"
+
+msgid "Edit feed settings"
+msgstr "フィード設定を編集"
+
+msgid "Podcast URL:"
+msgstr "ポッドキャストURL:"
+
+msgid "Download directory:"
+msgstr "ディレクトリをダウンロード:"
+
+msgid "Auto-check interval [hour]:"
+msgstr "自動チェックの間隔 [時間]:"
+
+msgid ""
+"Automatic update has been disabled for all feeds\n"
+"in the Podcasts store popup menu."
+msgstr ""
+"ポッドキャストストアポップアップメニューの\n"
+"全てのフィードの自動更新は無効です。"
+
+msgid "Limits"
+msgstr "限度"
+
+msgid "Maximum number of items:"
+msgstr "アイテムの最大数:"
+
+msgid "Remove older items [day]:"
+msgstr "古いアイテムを削除 [日]:"
+
+msgid "Maximum space to use [MB]:"
+msgstr "使用する最大容量 [MB]:"
+
+msgid "Podcasts"
+msgstr "ポッドキャスト"
+
+msgid "Updating..."
+msgstr "更新中…"
+
+msgid "Delete downloaded items from the filesystem"
+msgstr "ファイルシステムからダウンロードしたアイテムを削除"
+
+msgid "Remove feed"
+msgstr "フィードを削除"
+
+#, c-format
+msgid "Really remove '%s' from the Music Store?"
+msgstr "本当に Music Store から '%s'を削除しますか？"
+
+msgid "Reorder feeds"
+msgstr "フィードを並び替え"
+
+msgid ""
+"Drag and drop entries in the list\n"
+"to set the feed order in the Music Store."
+msgstr ""
+"Music Store のフィード順を設定するには\n"
+"リストにエントリをドラッグアンドドロップ。"
+
+#, c-format
+msgid "Downloading %d/%d (%d%%) ..."
+msgstr "%d/%d (%d%%) をダウンロード中…"
+
+msgid "item"
+msgstr "アイテム"
+
+msgid "items"
+msgstr "アイテム"
+
+msgid "new item"
+msgstr "新しいアイテム"
+
+msgid "new items"
+msgstr "新しいアイテム"
+
+msgid "feed"
+msgstr "フィード"
+
+msgid "feeds"
+msgstr "フィード"
+
+msgid "Export item..."
+msgstr "アイテムをエクスポート…"
+
+msgid "Add all items to playlist"
+msgstr "プレイリストに全てのアイテムを追加"
+
+msgid "Add all items to playlist (Album mode)"
+msgstr "プレイリストに全てのアイテムを追加 (アルバムモード)"
+
+msgid "Add new items to playlist"
+msgstr "プレイリストに新しいアイテムを追加"
+
+msgid "Add new items to playlist (Album mode)"
+msgstr "プレイリストに新しいアイテムを追加 (アルバムモード)"
+
+msgid "Edit feed"
+msgstr "フィードを編集"
+
+msgid "Export all items..."
+msgstr "全てのアイテムをエクスポート…"
+
+msgid "Export new items..."
+msgstr "新しいアイテムをエクスポート…"
+
+msgid "Update feed"
+msgstr "フィードを更新"
+
+msgid "Abort ongoing update"
+msgstr "進行中の更新を中止"
+
+msgid "Update all feeds"
+msgstr "全てのフードを更新"
+
+msgid "Automatically update feeds"
+msgstr "フィードを自動的に更新"
+
+msgid "Unexpected end of string after '?'."
+msgstr "'?' の後に予期しない文字列の終わりです。"
+
+msgid "Expected '}' after '{', but end of string found."
+msgstr "'{' の後に '}' が必要です。しかし文字列の終わりが見つかりました。"
+
+#, c-format
+msgid "Unknown conversion type character found after '%%%%'."
+msgstr "'%%%%' の後に不明な変換タイプ文字が見つかりました。"
+
+msgid "Unknown conversion type character found after '?'."
+msgstr "'?' の後に不明な変換タイプ文字が見つかりました。"
+
+msgid "day"
+msgstr "日"
+
+msgid "days"
+msgstr "日"
+
+msgid "All Files"
+msgstr "全てのファイル"
+
+msgid "Extended Title Format Files (*.lua)"
+msgstr "拡張タイトルフォーマットファイル (*.lua)"
+
+msgid "Music Store Files (*.xml)"
+msgstr "Music Store ファイル (*.xml)"
+
+msgid "Aqualung playlist (*.xml)"
+msgstr "Aqualungプレイリスト (*.xml)"
+
+msgid "MP3 Playlist (*.m3u)"
+msgstr "MP3プレイリスト (*.m3u)"
+
+msgid "Multimedia Playlist (*.pls)"
+msgstr "マルチメディアプレイリスト (*.pls)"
+
+msgid "All Playlist Files"
+msgstr "全てのプレイリストファイル"
+
+msgid "All Audio Files"
+msgstr "全てのオーディオファイル"
+
+msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
+msgstr "音声ファイル (*.wav, *.aiff, *.au, …)"
+
+msgid "Free Lossless Audio Codec (*.flac)"
+msgstr "Free Lossless Audio Codec (*.flac)"
+
+msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
+msgstr "MPEG オーディオ (*.mp3, *.mpa, *.mpega, …)"
+
+msgid "Ogg Vorbis (*.ogg)"
+msgstr "Ogg Vorbis (*.ogg)"
+
+msgid "Ogg Speex (*.spx)"
+msgstr "Ogg Speex (*.spx)"
+
+msgid "Musepack (*.mpc)"
+msgstr "Musepack (*.mpc)"
+
+msgid "Monkey's Audio Codec (*.ape)"
+msgstr "Monkey's Audio Codec (*.ape)"
+
+msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
+msgstr "モジュール (*.xm, *.mod, *.it, *.s3m, …)"
+
+msgid "Compressed modules (*.gz, *.bz2)"
+msgstr "圧縮モジュール (*.gz, *.bz2)"
+
+msgid "Compressed modules (*.gz)"
+msgstr "圧縮モジュール (*.gz)"
+
+msgid "Compressed modules (*.bz2)"
+msgstr "圧縮モジュール (*.bz2)"
+
+msgid "WavPack (*.wv)"
+msgstr "WavPack (*.wv)"
+
+msgid "LAVC audio/video files"
+msgstr "LAVCオーディオ/ビデオファイル"
+
+msgid "Resume"
+msgstr "レジューム"
+
+msgid "Calculating volume level"
+msgstr "ボリュームレベルの計算"
+
+msgid "Profile: Telephone"
+msgstr "プロファイル: 電話"
+
+msgid "Profile: Thumb"
+msgstr "プロファイル: Thumb"
+
+msgid "Profile: Radio"
+msgstr "プロファイル: ラジオ"
+
+msgid "Profile: Standard"
+msgstr "プロファイル: 標準"
+
+msgid "Profile: Xtreme"
+msgstr "プロファイル: 極端"
+
+msgid "Profile: Insane"
+msgstr "プロファイル: 非常識"
+
+msgid "Profile: Braindead"
+msgstr "プロファイル: 脳死"
+
+msgid "Layer I"
+msgstr "レイヤー I"
+
+msgid "Layer II"
+msgstr "レイヤー II"
+
+msgid "Layer III"
+msgstr "レイヤー III"
+
+msgid "Unrecognized"
+msgstr "不明"
+
+msgid "Single channel"
+msgstr "シングルチャンネル"
+
+msgid "Dual channel"
+msgstr "デュアルチャンネル"
+
+msgid "Joint stereo"
+msgstr "ジョイントステレオ"
+
+msgid "Stereo"
+msgstr "ステレオ"
+
+msgid "Emphasis: none"
+msgstr "重要性: なし"
+
+msgid "Emphasis:"
+msgstr "重要性:"
+
+msgid "Emphasis: reserved"
+msgstr "重要性: 予約済み"
+
+msgid "bit signed"
+msgstr "bit 署名付き"
+
+msgid "bit unsigned"
+msgstr "bit 署名なし"
+
+msgid "bit float"
+msgstr "bit フロート"
+
+msgid "bit double"
+msgstr "bit 2倍"
+
+msgid "encoding"
+msgstr "エンコード"
+
+msgid "Compression: Fast"
+msgstr "圧縮: 早い"
+
+msgid "Compression: Normal"
+msgstr "圧縮: 標準"
+
+msgid "Compression: High"
+msgstr "圧縮: 高い"
+
+msgid "Compression: Extra High"
+msgstr "圧縮: 特に高い"
+
+msgid "Compression: Insane"
+msgstr "圧縮: 正気でない"
+
+#~ msgid "Directory:"
+#~ msgstr "ディレクトリ:"
+

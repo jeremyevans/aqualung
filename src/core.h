@@ -64,6 +64,10 @@
 #include <sndio.h>
 #endif /* HAVE_SNDIO */
 
+#ifdef HAVE_PULSE
+#define PULSE_DRIVER 6
+#include <pulse/simple.h>
+#endif /* HAVE_PULSE */
 
 #define MAX_SAMPLERATE 96000
 
@@ -112,6 +116,13 @@ typedef struct _thread_info {
 #ifdef _WIN32
 	AQUALUNG_THREAD_DECLARE(win32_thread_id)
 #endif /* _WIN32 */
+
+#ifdef HAVE_PULSE
+	AQUALUNG_THREAD_DECLARE(pulse_thread_id)
+	pa_simple *pa;
+	pa_sample_spec pa_spec;
+	short * pa_short_buf;
+#endif /* HAVE_PULSE */
 
 	u_int32_t rb_size;
 	unsigned long in_SR;

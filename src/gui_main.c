@@ -455,6 +455,11 @@ set_output_label(int output, int out_SR) {
 	char str[MAXLEN];
 
 	switch (output) {
+#ifdef HAVE_PULSE
+	case PULSE_DRIVER:
+		snprintf(str, MAXLEN-1, "%s PulseAudio @ %d Hz", _("Output:"), out_SR);
+		break;
+#endif /* HAVE_PULSE */
 #ifdef HAVE_SNDIO
 	case SNDIO_DRIVER:
 		snprintf(str, MAXLEN-1, "%s sndio @ %d Hz", _("Output:"), out_SR);

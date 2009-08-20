@@ -73,6 +73,11 @@
 #include <mmsystem.h>
 #endif /* _WIN32 */
 
+#ifdef HAVE_PULSE
+#include <pulse/simple.h>
+#include <pulse/error.h>
+#endif /* HAVE_PULSE */
+
 #include "common.h"
 #include "utils.h"
 #include "version.h"
@@ -791,6 +796,153 @@ sndio_thread(void * arg) {
 }
 #endif /* HAVE_SNDIO */
 
+
+/* PulseAudio output thread */
+#ifdef HAVE_PULSE
+void *
+pulse_thread(void * arg) {
+	
+	u_int32_t i;
+	thread_info_t * info = (thread_info_t *)arg;
+	u_int32_t driver_offset = 0;
+	int bufsize = 1024;
+        int n_avail;
+	int ret, err;
+	char recv_cmd;
+	
+	pa_simple* pa = info->pa;
+	short * pa_short_buf = NULL;
+	
+	struct timespec req_time;
+	struct timespec rem_time;
+	req_time.tv_sec = 0;
+	req_time.tv_nsec = 100000000;
+	
+	if ((info->pa_short_buf = malloc(2*bufsize * sizeof(short))) == NULL) {
+		fprintf(stderr, "pulse_thread: malloc error\n");
+		exit(1);
+	}
+	pa_short_buf = info->pa_short_buf;
+
+	if ((l_buf = malloc(bufsize * sizeof(float))) == NULL) {
+		fprintf(stderr, "pulse_thread: malloc error\n");
+		exit(1);
+	}
+	if ((r_buf = malloc(bufsize * sizeof(float))) == NULL) {
+		fprintf(stderr, "pulse_thread: malloc error\n");
+		exit(1);
+	}
+#ifdef HAVE_LADSPA
+	ladspa_buflen = bufsize;
+#endif /* HAVE_LADSPA */
+
+	while (1) {
+	pulse_wake:
+		while (rb_read_space(rb_disk2out)) {
+			rb_read(rb_disk2out, &recv_cmd, 1);
+			switch (recv_cmd) {
+			case CMD_FLUSH:
+				while ((n_avail = rb_read_space(rb)) > 0) {
+					if (n_avail > 2*bufsize * sizeof(short))
+						n_avail = 2*bufsize * sizeof(short);
+					rb_read(rb, (char *)pa_short_buf,
+						2*bufsize * sizeof(short));
+				}
+				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
+				goto pulse_wake;
+				break;
+			case CMD_FINISH:
+				goto pulse_finish;
+				break;
+			default:
+				fprintf(stderr, "pulse_thread: recv'd unknown command %d\n", recv_cmd);
+				break;
+			}
+		}
+
+		if ((n_avail = rb_read_space(rb) / (2*sample_size)) == 0) {
+			nanosleep(&req_time, &rem_time);
+			goto pulse_wake;
+		}
+
+		if (n_avail > bufsize)
+			n_avail = bufsize;
+		
+		for (i = 0; i < n_avail; i++) {
+			rb_read(rb, (char *)&(l_buf[i]), sample_size);
+			rb_read(rb, (char *)&(r_buf[i]), sample_size);
+		}
+
+#ifdef HAVE_LADSPA
+		if (options.ladspa_is_postfader) {
+			for (i = 0; i < n_avail; i++) {
+				l_buf[i] *= left_gain;
+				r_buf[i] *= right_gain;
+			}
+		}
+#else
+		for (i = 0; i < n_avail; i++) {
+			l_buf[i] *= left_gain;
+			r_buf[i] *= right_gain;
+		}
+#endif /* HAVE_LADSPA */
+
+		if (n_avail < bufsize) {
+			for (i = n_avail; i < bufsize; i++) {
+				l_buf[i] = 0.0f;
+				r_buf[i] = 0.0f;
+			}
+		}
+
+		/* plugin processing */
+#ifdef HAVE_LADSPA
+		plugin_lock = 1;
+		for (i = 0; i < n_plugins; i++) {
+			if (plugin_vect[i]->is_bypassed)
+				continue;
+
+			if (plugin_vect[i]->handle) {
+				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle, ladspa_buflen);
+			}
+			if (plugin_vect[i]->handle2) {
+				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
+			}
+		}
+		plugin_lock = 0;
+
+		if (!options.ladspa_is_postfader) {
+			for (i = 0; i < bufsize; i++) {
+				l_buf[i] *= left_gain;
+				r_buf[i] *= right_gain;
+			}
+		}
+#endif /* HAVE_LADSPA */
+
+		for (i = 0; i < bufsize; i++) {
+			if (l_buf[i] > 1.0)
+				l_buf[i] = 1.0;
+			else if (l_buf[i] < -1.0)
+				l_buf[i] = -1.0;
+
+			if (r_buf[i] > 1.0)
+				r_buf[i] = 1.0;
+			else if (r_buf[i] < -1.0)
+				r_buf[i] = -1.0;
+
+			pa_short_buf[2*i] = floorf(32767.0 * l_buf[i]);
+			pa_short_buf[2*i+1] = floorf(32767.0 * r_buf[i]);
+		}
+
+		/* write data to audio device */
+		ret = pa_simple_write(pa, pa_short_buf, 2*n_avail * sizeof(short), &err);
+		if (ret != 0)
+			fprintf(stderr, "pulse_thread: Error writing to audio device\n%s", pa_strerror(err));
+		
+	}
+ pulse_finish:
+	return 0;
+}
+#endif /* HAVE_PULSE */
 
 
 /* OSS output thread */
@@ -1678,6 +1830,49 @@ jack_client_start(void) {
 #endif /* HAVE_JACK */
 
 
+#ifdef HAVE_PULSE
+/* return values:
+ *  0 : success
+ *  -1: sample rate out of range
+ *  +N: unable to initilize PulseAudio
+ *       N = error code returned by PulseAudio.
+ */
+int
+pulse_init(thread_info_t * info, int verbose, int realtime, int priority) {
+	
+	int err = 0;
+	if (info->out_SR > MAX_SAMPLERATE) {
+		if (verbose) {
+			fprintf(stderr, "\nThe sample rate you set (%ld Hz) is higher than MAX_SAMPLERATE.\n",
+				info->out_SR);
+			fprintf(stderr, "This is an arbitrary limit, which you may safely enlarge "
+				"if you really need to.\n");
+			fprintf(stderr, "Currently MAX_SAMPLERATE = %d Hz.\n", MAX_SAMPLERATE);
+		}
+		return -1;
+	}
+	
+	info->pa_spec.format = PA_SAMPLE_S16NE;
+	info->pa_spec.channels = 2;
+	info->pa_spec.rate = info->out_SR;
+	
+	info->pa = pa_simple_new(NULL, "Aqualung", PA_STREAM_PLAYBACK, NULL,
+				 "Music", &info->pa_spec, NULL, NULL, &err);
+	if (!info->pa) {
+		if (verbose) {
+			fprintf(stderr, "Unable to initilize PulseAudio: %s\n", pa_strerror(err));
+		}
+		return err;
+	}
+	
+	/* start PulseAudio output thread */
+	AQUALUNG_THREAD_CREATE(info->pulse_thread_id, NULL, pulse_thread, info)
+	set_thread_priority(info->pulse_thread_id, "PulseAudio output", realtime, priority);
+
+	return 0;
+}
+#endif /* HAVE_PULSE */
+
 
 #ifdef _WIN32
 
@@ -2259,6 +2454,13 @@ print_version(void) {
 #endif /* HAVE_JACK */
 	fprintf(stderr, "JACK Audio Server\n");
 	
+#ifdef HAVE_PULSE
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_PULSE */
+	fprintf(stderr, "PulseAudio\n");
+	
 #ifdef _WIN32
 	fprintf(stderr, V_YES);
 #else
@@ -2279,7 +2481,7 @@ print_usage(void) {
 		"\nInvocation:\n"
 		"aqualung --help\n"
 		"aqualung --version\n"
-		"aqualung [--output (oss|alsa|jack|sndio|win32)] [options] [file1 [file2 ...]]\n"
+		"aqualung [--output (oss|alsa|jack|sndio|pulse|win32)] [options] [file1 [file2 ...]]\n"
 		
 		"\nGeneral options:\n"
 		"-D, --disk-realtime: Try to use realtime (SCHED_FIFO) scheduling for disk thread.\n"
@@ -2302,9 +2504,9 @@ print_usage(void) {
 		"given JACK ports (defaults to first two hardware playback ports).\n"
 		"-c, --client <name>: Set client name (needed if you want to run multiple instances of the program).\n"
 		
-		"\nOptions relevant to sndio output:\n"
+		"\nOptions relevant to PulseAudio and sndio outputs:\n"
 		"-r, --rate <int>: Set the output sample rate.\n"
-		"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for sndio output thread.\n"
+		"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for audio output thread.\n"
 		"-P, --priority <int>: Set scheduler priority to <int> (default is 1 when -R is used).\n"
 		
 		"\nOptions relevant to WIN32 output:\n"
@@ -2471,9 +2673,9 @@ main(int argc, char ** argv) {
 		{ 0, 0, 0, 0 }
 	};
 
-#if defined(HAVE_JACK) || defined(HAVE_ALSA) || defined(HAVE_OSS) || defined(HAVE_SNDIO)
+#if defined(HAVE_JACK) || defined(HAVE_ALSA) || defined(HAVE_OSS) || defined(HAVE_SNDIO) || defined(HAVE_PULSE)
 	int auto_driver_found = 0;
-#endif /* jack || alsa || oss || sndio */
+#endif /* jack || alsa || oss || sndio || pulseaudio */
 
 	if (setenv("LC_NUMERIC", "POSIX", 1) != 0) {
 		fprintf(stderr, "aqualung main(): setenv(\"LC_NUMERIC\", \"POSIX\") failed\n");
@@ -2567,6 +2769,21 @@ main(int argc, char ** argv) {
 						"compiled-in features.\n");
 					exit(1);
 #endif /* HAVE_OSS*/
+					free(output_str);
+					break;
+				}
+				if (strcmp(output_str, "pulse") == 0) {
+#ifdef HAVE_PULSE
+					output = PULSE_DRIVER;
+#else
+					fprintf(stderr,
+						"You selected PulseAudio output, but this instance of Aqualung "
+						"is compiled\n"
+						"without PulseAudio output support. Type aqualung -v to get a "
+						"list of\n"
+						"compiled-in features.\n");
+					exit(1);
+#endif /* HAVE_PULSE*/
 					free(output_str);
 					break;
 				}
@@ -2955,6 +3172,26 @@ main(int argc, char ** argv) {
 		}
 	}
 #endif /* HAVE_JACK */
+#ifdef HAVE_PULSE
+	if (output == 0) {
+		int ret;
+
+		/* probe PulseAudio */
+		printf("Probing PulseAudio driver... ");
+		thread_info.out_SR = rate;
+
+		ret = pulse_init(&thread_info, 0, try_realtime, priority);
+		if (ret == -1) {
+			printf("sample rate out of range!\n");
+		} else if (ret > 0) {
+			printf("unable to initialize PulseAudio: %s\n", pa_strerror(ret));
+		} else {
+			output = PULSE_DRIVER;
+			auto_driver_found = 1;
+			printf("OK\n");
+		}
+	}
+#endif /* HAVE_PULSE */
 #ifdef HAVE_ALSA
 	if (output == 0) { /* probe ALSA */
 		int ret;
@@ -3100,6 +3337,12 @@ main(int argc, char ** argv) {
 	}
 #endif /* HAVE_OSS */
 
+#ifdef HAVE_PULSE
+	if (output == PULSE_DRIVER) {
+		thread_info.out_SR = rate;
+	}
+#endif /* HAVE_PULSE */
+
 #ifdef _WIN32
 	if (output == WIN32_DRIVER) {
 		thread_info.out_SR = rate;
@@ -3136,6 +3379,17 @@ main(int argc, char ** argv) {
 		}
 	}
 #endif /* HAVE_OSS */
+
+#ifdef HAVE_PULSE
+	if (output == PULSE_DRIVER) {
+		if (!auto_driver_found) {
+			int ret = pulse_init(&thread_info, 1, try_realtime, priority);
+			if (ret != 0) {
+				exit(1);
+			}
+		}
+	}
+#endif /* HAVE_PULSE */
 
 #ifdef HAVE_ALSA
 	if (output == ALSA_DRIVER) {
@@ -3174,6 +3428,14 @@ main(int argc, char ** argv) {
 		close(thread_info.fd_oss);
 	}
 #endif /* HAVE_OSS */
+
+#ifdef HAVE_PULSE
+	if (output == PULSE_DRIVER) {
+		AQUALUNG_THREAD_JOIN(thread_info.pulse_thread_id)
+		free(thread_info.pa_short_buf);
+		pa_simple_free(thread_info.pa);
+	}
+#endif /* HAVE_PULSE */
 
 #ifdef HAVE_ALSA
 	if (output == ALSA_DRIVER) {

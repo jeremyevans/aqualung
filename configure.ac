@@ -287,6 +287,29 @@ else
 	fi
 fi
 
+AC_MSG_CHECKING(for PulseAudio support)
+AC_ARG_WITH(
+	pulse,
+	[  --with-pulse=yes,no     compile with PulseAudio support (default: yes)],
+	pulse="$withval",
+	pulse="detect")
+
+if test "$pulse" = "no"; then
+	AC_MSG_RESULT(no)
+else
+	AC_CHECK_LIB(pulse-simple, pa_simple_new, [lib=yes], [lib=no])
+	if test "$lib" = "yes"; then
+	        pulse_CFLAGS=`pkg-config --cflags libpulse-simple`
+		pulse_LIBS=`pkg-config --libs libpulse-simple`
+		AC_DEFINE([HAVE_PULSE], [1], [Defined if compile with PulseAudio support])
+	fi
+	if test "$lib" = "no" -a "$pulse" = "yes"; then
+		AC_MSG_ERROR(You do not appear to have the PulseAudio installed. Grab it from http://pulseaudio.org/)
+	fi
+	if test "$pulse" = "detect"; then
+	        pulse=$lib
+	fi
+fi
 
 AC_MSG_CHECKING(for Sample Rate Converter support)
 AC_ARG_WITH(
@@ -919,8 +942,8 @@ AQUALUNG_DATADIR="-DAQUALUNG_DATADIR=\\\"$datadir/aqualung\\\""
 
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS $AQUALUNG_SKINDIR $AQUALUNG_LOCALEDIR $AQUALUNG_DATADIR -D_GNU_SOURCE"
 CXXFLAGS="$CFLAGS"
-CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $cdda_CFLAGS"
-LIBS="decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS $lua_LIBS"
+CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $cdda_CFLAGS $pulse_CFLAGS"
+LIBS="decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS $lua_LIBS $pulse_LIBS"
 
 
 AC_OUTPUT([Makefile \
@@ -980,6 +1003,7 @@ echo "      sndio Audio                         :  $sndio"
 echo "      OSS Audio                           :  $oss"
 echo "      ALSA Audio                          :  $alsa"
 echo "      JACK Audio Server                   :  $jack"
+echo "      PulseAudio                          :  $pulse"
 echo "      Win32 Sound API                     :  $win32"
 echo
 echo "----------------------------------------------------------------------"

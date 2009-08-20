@@ -9,3 +9,4 @@ OpenBSD compatibility, metadata tweaks: Jeremy Evans <code@jeremyevans.net>
 CONTRIBUTORS
 
 Maarten Maathuis <madman2003@gmail.com>: Transition to FLAC API 8.
+Hong Jen Yee (PCMan) <pcman.tw@gmail.com>: PulseAudio support

@@ -1,4 +1,4 @@
-.TH AQUALUNG 1 "22 January 2009"
+.TH AQUALUNG 1 "21 August 2009"
 .SH NAME
 aqualung \- Music player for GNU/Linux
 .SH SYNOPSIS
@@ -7,7 +7,7 @@ aqualung --help
 .TP
 aqualung --version
 .TP
-aqualung [--output (oss|alsa|jack|sndio|win32)] [options] [file1 [file2 ...]]
+aqualung [--output (jack|pulse|alsa|oss|sndio|win32)] [options] [file1 [file2 ...]]
 .SH DESCRIPTION
 .P
 Aqualung is an advanced music player originally targeted at
@@ -37,12 +37,12 @@ supported. Numerous formats and codecs are also supported via
 the FFmpeg project, including AC3, AAC, WMA, WavPack and the
 soundtrack of many video formats. There is also a native
 (non-FFmpeg) WavPack decoder. The program can play the music
-through OSS, ALSA, sndio, or the JACK Audio Connection Kit, or
-even using the Win32 Sound API (available only under Cygwin or
-native Win32). Depending on the compile-time options, not all
-file formats and output drivers may be usable in a particular
-build. Type aqualung -v to get a list of all the
-compiled-in features.
+through OSS, ALSA, sndio, PulseAudio, the JACK Audio Connection
+Kit, or even using the Win32 Sound API (available only under
+Cygwin or native Win32). Depending on the compile-time options,
+not all file formats and output drivers may be usable in a
+particular build. Type aqualung -v to get a list of
+all the compiled-in features.
 .P
 Aqualung supports the LADSPA 1.1 plugin standard. You can use
 any suitable plugin to enhance the music you are listening
@@ -95,7 +95,7 @@ reference.
 Normally you should be able to start Aqualung
 without any options. This case the output device will be
 selected by probing for a usable driver (in order of JACK,
-ALSA, OSS) with default parameters.
+PulseAudio, ALSA, OSS) with default parameters.
 .P
 If no driver could be started with default
 parameters, or you want to explicitly choose a suitable output
@@ -187,7 +187,7 @@ as part of the automatic output device detection, the
 -a option is implicitly applied.
 
 .TP
-.B Options relevant to sndio output
+.B Options relevant to PulseAudio and sndio output
 .TP
 -r, --rate <int>
 .br

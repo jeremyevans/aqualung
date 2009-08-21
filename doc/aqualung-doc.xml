@@ -48,12 +48,12 @@
       the FFmpeg project, including AC3, AAC, WMA, WavPack and the
       soundtrack of many video formats. There is also a native
       (non-FFmpeg) WavPack decoder. The program can play the music
-      through OSS, ALSA, sndio, or the JACK Audio Connection Kit, or
-      even using the Win32 Sound API (available only under Cygwin or
-      native Win32). Depending on the compile-time options, not all
-      file formats and output drivers may be usable in a particular
-      build. Type <cmd>aqualung -v</cmd> to get a list of all the
-      compiled-in features.</p>
+      through OSS, ALSA, sndio, PulseAudio, the JACK Audio Connection
+      Kit, or even using the Win32 Sound API (available only under
+      Cygwin or native Win32). Depending on the compile-time options,
+      not all file formats and output drivers may be usable in a
+      particular build. Type <cmd>aqualung -v</cmd> to get a list of
+      all the compiled-in features.</p>
 
       <p>Aqualung supports the LADSPA 1.1 plugin standard. You can use
       any suitable plugin to enhance the music you are listening
@@ -278,7 +278,7 @@
 	  compiled-in features.</dd>
 
 	  <dt>
-	    <cmd>aqualung [--output (oss|alsa|jack|sndio|win32)] [options] [file1 [file2 ...]]</cmd>
+	    <cmd>aqualung [--output (jack|pulse|alsa|oss|sndio|win32)] [options] [file1 [file2 ...]]</cmd>
 	  </dt>
 
 	</dl>
@@ -286,7 +286,7 @@
 	<p man="OPTIONS">Normally you should be able to start Aqualung
 	without any options. This case the output device will be
 	selected by probing for a usable driver (in order of JACK,
-	ALSA, OSS) with default parameters.</p>
+	PulseAudio, ALSA, OSS) with default parameters.</p>
 
 	<p man="OPTIONS">If no driver could be started with default
 	parameters, or you want to explicitly choose a suitable output
@@ -425,7 +425,7 @@
 
 	</subsubsection>
 
-	<subsubsection title="Options relevant to sndio output" man="OPTIONS">
+	<subsubsection title="Options relevant to PulseAudio and sndio output" man="OPTIONS">
 
 	  <dl>
 

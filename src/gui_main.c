@@ -3504,6 +3504,13 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	gtk_widget_show_all(main_window);
 
+#ifdef HAVE_SYSTRAY
+	if (options.use_systray && options.systray_start_minimized) {
+		toplevel_window_foreach(TOP_WIN_TRAY, gtk_widget_hide);
+		systray_main_window_on = 0;
+	}
+#endif /* HAVE_SYSTRAY */
+
         hide_cover_thumbnail();
 
         gtk_widget_hide(vbox_sep);

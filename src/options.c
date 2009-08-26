@@ -120,6 +120,7 @@ GtkWidget * check_buttons_at_the_bottom;
 GtkWidget * check_disable_buttons_relief;
 GtkWidget * check_combine_play_pause;
 GtkWidget * check_use_systray;
+GtkWidget * check_systray_start_minimized;
 GtkWidget * check_main_window_always_on_top;
 GtkWidget * check_simple_view_in_fx;
 GtkWidget * check_united_minimization;
@@ -372,6 +373,7 @@ options_window_accept(void) {
 	set_option_from_toggle(check_combine_play_pause, &options.combine_play_pause_shadow);
 #ifdef HAVE_SYSTRAY
 	set_option_from_toggle(check_use_systray, &options.use_systray);
+	set_option_from_toggle(check_systray_start_minimized, &options.systray_start_minimized);
 #endif /* HAVE_SYSTRAY */
 	set_option_from_toggle(check_main_window_always_on_top, &options.main_window_always_on_top);
 
@@ -1495,6 +1497,18 @@ display_inet_help_noproxy_domains(void) {
 		       "Example: localhost, .localdomain, .my.domain.com"));
 }
 
+#ifdef HAVE_SYSTRAY
+void
+systray_support_cb(GtkToggleButton * togglebutton, gpointer data) {
+
+	gtk_widget_set_sensitive(GTK_WIDGET(data), 
+				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(togglebutton)));
+
+	restart_active(togglebutton, _("Enable systray"));
+}
+#endif /* HAVE_SYSTRAY */
+
+
 void
 create_options_window(void) {
 
@@ -1588,7 +1602,10 @@ create_options_window(void) {
 	int status;
 #endif /* HAVE_LADSPA */
 	int i;
-
+	
+#ifdef HAVE_SYSTRAY
+	GtkWidget *alignment;
+#endif /* HAVE_SYSTRAY */
 
         restart_flag = 0;
 	reskin_flag = 0;
@@ -1703,8 +1720,28 @@ create_options_window(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_use_systray), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_use_systray, FALSE, FALSE, 0);
+
+	alignment = gtk_alignment_new (0.5, 0.5, 1, 1);
+	gtk_widget_show (alignment);
+	gtk_box_pack_start (GTK_BOX (vbox_misc), alignment, FALSE, TRUE, 0);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 16, 0);
+
+	check_systray_start_minimized = gtk_check_button_new_with_label(_("Start minimized"));
+	gtk_widget_set_name(check_systray_start_minimized, "check_on_notebook");
+	if (options.systray_start_minimized) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_systray_start_minimized), TRUE);
+	}
+
+	gtk_container_add (GTK_CONTAINER (alignment), check_systray_start_minimized);
+
 	g_signal_connect (G_OBJECT (check_use_systray), "toggled",
-			  G_CALLBACK (restart_active), _("Enable systray"));
+			  G_CALLBACK (systray_support_cb), check_systray_start_minimized);
+
+	if (options.use_systray) {
+		gtk_widget_set_sensitive(check_systray_start_minimized, TRUE);
+	} else {
+		gtk_widget_set_sensitive(check_systray_start_minimized, FALSE);
+	}
 #endif /* HAVE_SYSTRAY */
 
 	check_buttons_at_the_bottom =
@@ -3403,6 +3440,7 @@ save_config(void) {
 	SAVE_STR(export_excl_pattern);
 	SAVE_INT(batch_tag_flags);
 	SAVE_INT(use_systray);
+	SAVE_INT(systray_start_minimized);
 	SAVE_STR(ext_title_format_file);
 
 	i = 0;
@@ -3644,6 +3682,7 @@ load_config(void) {
         options.cdrip_metadata = 1;
 
 	options.use_systray = 1;
+	options.systray_start_minimized = 0;
 
 	strcpy(options.export_template, "track%i.%x");
 	options.export_subdir_limit = 16;
@@ -3817,6 +3856,7 @@ load_config(void) {
 		LOAD_STR(export_excl_pattern);
 		LOAD_INT(batch_tag_flags);
 		LOAD_INT(use_systray);
+		LOAD_INT(systray_start_minimized);
 		LOAD_STR(ext_title_format_file);
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {

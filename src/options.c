@@ -143,6 +143,7 @@ GtkWidget * check_pl_statusbar_show_size;
 GtkWidget * check_show_rva_in_playlist;
 GtkWidget * check_show_length_in_playlist;
 GtkWidget * check_show_active_track_name_in_bold;
+GtkWidget * check_auto_roll_to_active_track;
 GtkWidget * check_enable_pl_rules_hint;
 GtkListStore * plistcol_store;
 
@@ -415,6 +416,7 @@ options_window_accept(void) {
                 playlist_disable_bold_font();
 	}
 
+	set_option_from_toggle(check_auto_roll_to_active_track, &options.auto_roll_to_active_track);
 	set_option_from_toggle(check_enable_pl_rules_hint, &options.enable_pl_rules_hint);
 
 	/* Music Store */
@@ -1992,6 +1994,14 @@ create_options_window(void) {
 	}
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_active_track_name_in_bold, FALSE, TRUE, 0);
 
+	check_auto_roll_to_active_track =
+		gtk_check_button_new_with_label(_("Automatically roll to active track"));
+	gtk_widget_set_name(check_auto_roll_to_active_track, "check_on_notebook");
+	if (options.auto_roll_to_active_track) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_auto_roll_to_active_track), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_pl), check_auto_roll_to_active_track, FALSE, TRUE, 0);
+
 	check_enable_pl_rules_hint =
 		gtk_check_button_new_with_label(_("Enable rules hint"));
         gtk_widget_set_name(check_enable_pl_rules_hint, "check_on_notebook");
@@ -3308,6 +3318,7 @@ save_config(void) {
 	SAVE_INT(ms_statusbar_show_size);
 	SAVE_INT(show_length_in_playlist);
 	SAVE_INT(show_active_track_name_in_bold);
+	SAVE_INT(auto_roll_to_active_track);
 	SAVE_INT(enable_pl_rules_hint);
 	SAVE_INT(enable_ms_rules_hint);
 	SAVE_INT_SH(enable_ms_tree_icons);
@@ -3738,6 +3749,7 @@ load_config(void) {
 		LOAD_INT(ms_statusbar_show_size);
 		LOAD_INT(show_length_in_playlist);
 		LOAD_INT(show_active_track_name_in_bold);
+		LOAD_INT(auto_roll_to_active_track);
 		LOAD_INT(enable_pl_rules_hint);
 		LOAD_INT(enable_ms_rules_hint);
 		LOAD_INT_SH(enable_ms_tree_icons);

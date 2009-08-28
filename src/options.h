@@ -135,6 +135,7 @@ typedef struct {
 	int show_rva_in_playlist;
 	int show_length_in_playlist;
 	int show_active_track_name_in_bold;
+	int auto_roll_to_active_track;
 	int enable_pl_rules_hint;
 	int plcol_idx[3];
 

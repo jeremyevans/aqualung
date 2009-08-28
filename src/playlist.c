@@ -208,6 +208,7 @@ void playlist_load_xml_multi(char * filename, int start_playback);
 void playlist_load_xml_single(char * filename, playlist_transfer_t * pt);
 void * playlist_load_m3u_thread(void * arg);
 void * playlist_load_pls_thread(void * arg);
+void roll_to_active_track(playlist_t * pl, GtkTreeIter *piter);
 
 
 GtkWidget * playlist_notebook;
@@ -1150,6 +1151,10 @@ mark_track(playlist_t * pl, GtkTreeIter * piter) {
 
 		gtk_tree_model_iter_parent(model, &iter_parent, piter);
 		mark_track(pl, &iter_parent);
+
+		if (options.auto_roll_to_active_track) {
+			roll_to_active_track(pl, piter);
+		}
 	}
 }
 
@@ -4044,6 +4049,7 @@ create_playlist_gui(playlist_t * pl) {
 	if (options.enable_pl_rules_hint) {
 		gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(pl->view), TRUE);
 	}
+	gtk_tree_view_set_fixed_height_mode(GTK_TREE_VIEW(pl->view), TRUE);
 
 	for (i = 0; i < 3; i++) {
 		switch (options.plcol_idx[i]) {
@@ -5951,6 +5957,19 @@ select_active_position_in_playlist(playlist_t * pl) {
                         }
 		} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(pl->store), &iter));
         }
+}
+
+void
+roll_to_active_track(playlist_t * pl, GtkTreeIter * piter) {
+	GtkTreePath * active_path;
+
+	active_path = gtk_tree_model_get_path(GTK_TREE_MODEL(pl->store), piter);
+
+	if (active_path) {
+		gtk_tree_view_expand_to_path(GTK_TREE_VIEW(pl->view), active_path);
+		gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(pl->view), active_path, NULL, TRUE, 0.5, 0.0);
+	}
+	gtk_tree_path_free(active_path);
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :

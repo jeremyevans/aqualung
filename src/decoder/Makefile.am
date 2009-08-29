@@ -1,5 +1,7 @@
 noinst_LIBRARIES = libdecoder.a
 
+libdecoder_a_CFLAGS = $(LIBAVCODEC_CFLAGS) $(LIBAVFORMAT_CFLAGS)
+
 libdecoder_a_SOURCES = \
 dec_cdda.h dec_cdda.c \
 dec_flac.h dec_flac.c \

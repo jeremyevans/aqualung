@@ -620,6 +620,11 @@ else
 				AC_CHECK_HEADER([ffmpeg/libavcodec/avcodec.h], [avc_hdr=yes], [avc_hdr=no])
 				if test "$avc_hdr" = "yes"; then
 		                        AC_DEFINE([HAVE_FFMPEG_LIBAVCODEC_AVCODEC_H], [1], [Define to 1 if you have the <ffmpeg/libavcodec/avcodec.h> header file.])
+				else
+					PKG_CHECK_MODULES(LIBAVCODEC, libavcodec, [avc_hdr=yes], [avc_hdr=no])
+					if test "$avc_hdr" = "yes"; then
+		                AC_DEFINE([HAVE_LIBAVCODEC_AVCODEC_H], [1], [Define to 1 if you have the <libavcodec/avcodec.h> header file.])
+					fi
 				fi
 			fi
 		fi
@@ -640,6 +645,11 @@ else
 				AC_CHECK_HEADER([ffmpeg/libavformat/avformat.h], [avf_hdr=yes], [avf_hdr=no])
 				if test "$avf_hdr" = "yes"; then
 		                        AC_DEFINE([HAVE_FFMPEG_LIBAVFORMAT_AVFORMAT_H], [1], [Define to 1 if you have the <ffmpeg/libavformat/avformat.h> header file.])
+				else
+					PKG_CHECK_MODULES(LIBAVFORMAT, libavformat, [avf_hdr=yes], [avf_hdr=no])
+					if test "$avf_hdr" = "yes"; then
+		                AC_DEFINE([HAVE_LIBAVFORMAT_AVFORMAT_H], [1], [Define to 1 if you have the <libavformat/avformat.h> header file.])
+					fi
 				fi
 			fi
 		fi

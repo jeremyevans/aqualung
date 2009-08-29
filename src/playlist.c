@@ -1151,10 +1151,10 @@ mark_track(playlist_t * pl, GtkTreeIter * piter) {
 
 		gtk_tree_model_iter_parent(model, &iter_parent, piter);
 		mark_track(pl, &iter_parent);
+	}
 
-		if (options.auto_roll_to_active_track) {
-			roll_to_active_track(pl, piter);
-		}
+	if (options.auto_roll_to_active_track) {
+		roll_to_active_track(pl, piter);
 	}
 }
 

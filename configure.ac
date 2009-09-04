@@ -83,6 +83,7 @@ fi
 AC_PROG_CC
 AC_PROG_RANLIB
 AC_PROG_CXX
+AM_PROG_CC_C_O
 
 
 # Checks for header files.

@@ -23,7 +23,11 @@
 #define _DEC_MPC_H
 
 #ifdef HAVE_MPC
+#ifdef MPC_OLD_API
 #include <mpcdec/mpcdec.h>
+#else
+#include <mpc/mpcdec.h>
+#endif /* MPC_OLD_API */
 #endif /* HAVE_MPC */
 
 #include "file_decoder.h"
@@ -43,14 +47,19 @@ typedef struct _mpc_pdata_t {
         int seekable;
         int status;
         int is_eos;
+#ifdef MPC_OLD_API
         mpc_decoder mpc_d;
         mpc_reader_file mpc_r_f;
+#else
+        mpc_demux * mpc_d;
+        mpc_reader mpc_r_f;
+#endif /* MPC_OLD_API */
         mpc_streaminfo mpc_i;
 } mpc_pdata_t;
 #endif /* HAVE_MPC */
 
 
-decoder_t * mpc_decoder_init(file_decoder_t * fdec);
+decoder_t * mpc_decoder_init_func(file_decoder_t * fdec);
 #ifdef HAVE_MPC
 void mpc_decoder_destroy(decoder_t * dec);
 int mpc_decoder_open(decoder_t * dec, char * filename);

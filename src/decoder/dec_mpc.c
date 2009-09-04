@@ -47,6 +47,7 @@ decode_mpc(decoder_t * dec) {
         MPC_SAMPLE_FORMAT buffer[MPC_DECODER_BUFFER_LENGTH];
 
 
+#ifdef MPC_OLD_API
         pd->status = mpc_decoder_decode(&pd->mpc_d, buffer, NULL, NULL);
 	if (pd->status == (unsigned)(-1)) {
 		fprintf(stderr, "decode_mpc: mpc decoder reported an error\n");
@@ -54,6 +55,20 @@ decode_mpc(decoder_t * dec) {
 	} else if (pd->status == 0) {
 		return 1; /* end of stream */
 	}
+#else
+	mpc_frame_info frame;
+	mpc_status err;
+
+	frame.buffer = buffer;
+	err = mpc_demux_decode(pd->mpc_d, &frame);
+	if (err != MPC_STATUS_OK) {
+		fprintf(stderr, "decode_mpc: mpc decoder reported an error\n");
+		return 1; /* ignore the rest of the stream */
+	} else if (frame.bits == -1) {
+		return 1; /* end of stream */
+	}
+	pd->status = frame.samples;
+#endif /* MPC_OLD_API */
 	
 	for (n = 0; n < pd->status * pd->mpc_i.channels; n++) {
 #ifdef MPC_FIXED_POINT
@@ -75,7 +90,7 @@ decode_mpc(decoder_t * dec) {
 
 
 decoder_t *
-mpc_decoder_init(file_decoder_t * fdec) {
+mpc_decoder_init_func(file_decoder_t * fdec) {
 
         decoder_t * dec = NULL;
 
@@ -91,7 +106,7 @@ mpc_decoder_init(file_decoder_t * fdec) {
                 return NULL;
         }
 
-	dec->init = mpc_decoder_init;
+	dec->init = mpc_decoder_init_func;
 	dec->destroy = mpc_decoder_destroy;
 	dec->open = mpc_decoder_open;
 	dec->send_metadata = mpc_decoder_send_metadata;
@@ -178,6 +193,7 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 	pd->size = ftell(pd->mpc_file);
 	fseek(pd->mpc_file, 0, SEEK_SET);
 	
+#ifdef MPC_OLD_API
 	mpc_reader_setup_file_reader(&pd->mpc_r_f, pd->mpc_file);
 	
 	mpc_streaminfo_init(&pd->mpc_i);
@@ -191,6 +207,16 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 		fclose(pd->mpc_file);
 		return DECODER_OPEN_BADLIB;
 	}
+#else
+	mpc_reader_init_stdio_stream(&pd->mpc_r_f, pd->mpc_file);
+
+	pd->mpc_d = mpc_demux_init(&pd->mpc_r_f);
+	if (!pd->mpc_d) {
+		fclose(pd->mpc_file);
+		return DECODER_OPEN_BADLIB;
+	}
+	mpc_demux_get_info(pd->mpc_d, &pd->mpc_i);
+#endif /* MPC_OLD_API */
 	
 	pd->is_eos = 0;
 	pd->rb = rb_create(pd->mpc_i.channels * sample_size * RB_MPC_SIZE);
@@ -203,7 +229,11 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 	fdec->file_lib = MPC_LIB;
 	strcpy(dec->format_str, "Musepack");
 
+#ifdef MPC_OLD_API
 	switch (pd->mpc_i.profile) {
+#else
+	switch ((int) pd->mpc_i.profile) {
+#endif /* MPC_OLD_API */
 	case 7:
 		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Telephone"));
 		break;
@@ -285,7 +315,11 @@ mpc_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	char flush_dest;
 
 
+#ifdef MPC_OLD_API
 	if (mpc_decoder_seek_sample(&pd->mpc_d, seek_to_pos)) {
+#else
+	if (mpc_demux_seek_sample(pd->mpc_d, seek_to_pos) == MPC_STATUS_OK) {
+#endif /* MPC_OLD_API */
 		fdec->samples_left = fdec->fileinfo.total_samples - seek_to_pos;
 		/* empty musepack decoder ringbuffer */
 		while (rb_read_space(pd->rb))
@@ -299,7 +333,7 @@ mpc_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 
 #else
 decoder_t *
-mpc_decoder_init(file_decoder_t * fdec) {
+mpc_decoder_init_func(file_decoder_t * fdec) {
 
         return NULL;
 }

@@ -556,12 +556,16 @@ AC_ARG_WITH(
 if test "$mpc" = "no"; then
 	AC_MSG_RESULT(no)
 else
-	AC_CHECK_LIB(mpcdec, mpc_streaminfo_init, [lib=yes], [lib=no], [-lstdc++])
+	AC_CHECK_LIB([mpcdec], [mpc_demux_init], [lib=yes],
+	  [AC_CHECK_LIB([mpcdec], [mpc_streaminfo_init], [lib=yes
+	    AC_DEFINE([MPC_OLD_API], [1],
+            [Defined if old Musepack API is used])], [], [-lstdc++])],
+	  [-lstdc++])
 	if test "$lib" = "yes"; then
 	        mpc_LIBS="-lmpcdec -lstdc++"
 		AC_DEFINE([HAVE_MPC], [1], [Defined if compile with Musepack support])
 	fi
-	if test "$lib" = "no" -a "$mpc" = "yes"; then
+	if test "$lib" != "yes" -a "$mpc" = "yes"; then
 		AC_MSG_ERROR(You do not appear to have the Musepack decoder library (libmpcdec) installed. Grab it from http://www.musepack.net)
 	fi
 	if test "$mpc" = "detect"; then

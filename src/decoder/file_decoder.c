@@ -66,7 +66,7 @@ decoder_init_t * decoder_init_v[N_DECODERS] = {
 	flac_decoder_init,
 	vorbis_decoder_init,
 	speex_dec_init,
-	mpc_decoder_init,
+	mpc_decoder_init_func,
 	mac_decoder_init,
 	mpeg_decoder_init,
 	wavpack_decoder_init,

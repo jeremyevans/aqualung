@@ -193,7 +193,7 @@ create_about_window() {
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Graphics:"), -1, tag, NULL);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Logo, icons:\n"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tMaja Kocon <ironya@ll.pl>\n\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tMaja Kocon <ironya@pinky-bubble.org>\n\n\n", -1);
 
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);

@@ -107,10 +107,10 @@ create_about_window() {
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
-        ok_btn = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
+        ok_btn = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
 	gtk_widget_set_name(ok_btn, "");
         g_signal_connect(ok_btn, "clicked", G_CALLBACK(ok), NULL);
-  	gtk_container_add(GTK_CONTAINER(hbuttonbox), ok_btn);   
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), ok_btn);
 	gtk_widget_modify_bg(ok_btn, GTK_STATE_NORMAL, &blue1);
 	gtk_widget_modify_bg(ok_btn, GTK_STATE_PRELIGHT, &blue2);
 	gtk_widget_modify_bg(ok_btn, GTK_STATE_ACTIVE, &blue2);
@@ -188,7 +188,8 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, _("Swedish:\n"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\tNiklas 'Nixon' Grahn <terra.unknown@yahoo.com>\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Ukrainian:\n"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tSergiy Niskorodov <sgh_punk@users.sourceforge.net>\n\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tSergiy Niskorodov <sgh_punk@users.sourceforge.net>\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tVladimir Smolyar <v_2e@ukr.net>\n\n\n", -1);
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Graphics:"), -1, tag, NULL);
@@ -261,7 +262,7 @@ create_about_window() {
 #endif /* HAVE_IFP */
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("iRiver iFP driver support\n"), -1);
-	
+
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
@@ -272,7 +273,7 @@ create_about_window() {
 #endif /* HAVE_LOOP */
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Loop playback support\n"), -1);
-	
+
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
@@ -322,7 +323,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("sndfile (WAV, AIFF, etc.)\n"), -1);
 
-	
+
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 #ifdef HAVE_FLAC
@@ -343,7 +344,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Ogg Vorbis\n"), -1);
 
-	
+
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 #ifdef HAVE_SPEEX
@@ -353,7 +354,7 @@ create_about_window() {
 #endif /* HAVE_SPEEX */
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Ogg Speex\n"), -1);
-	
+
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
@@ -364,7 +365,7 @@ create_about_window() {
 #endif /* HAVE_MPEG */
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("MPEG Audio (MPEG 1-2.5 Layer I-III)\n"), -1);
-	
+
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
@@ -436,7 +437,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("sndfile (WAV)\n"), -1);
 
-	
+
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 #ifdef HAVE_FLAC
@@ -457,7 +458,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Ogg Vorbis\n"), -1);
 
-	
+
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 #ifdef HAVE_LAME
@@ -473,7 +474,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Output driver support:"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
-	
+
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
@@ -507,7 +508,7 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("ALSA Audio\n"), -1);
 
-	
+
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 #ifdef HAVE_JACK
@@ -575,5 +576,5 @@ create_about_window() {
         gtk_widget_grab_focus(ok_btn);
 }
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :
 

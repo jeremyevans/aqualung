@@ -6,11 +6,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aqualung 0.9beta3\n"
+"Project-Id-Version: aqualung 0.9beta10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-19 18:04+0300\n"
-"PO-Revision-Date: 2007-01-28 18:38+0100\n"
-"Last-Translator: Sergiy Niskorodov <sgh_punk@users.sourceforge.net>\n"
+"POT-Creation-Date: 2009-11-03 16:57+0200\n"
+"PO-Revision-Date: 2009-11-03 22:42+0300\n"
+"Last-Translator: Vladimir Smolyar <v_2e@ukr.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,11 +37,29 @@ msgstr "Підтримка жупанів, вигляд та поведінка,
 msgid "Programming, GUI engineering:\n"
 msgstr "Програмування, розробка ГІК:\n"
 
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr "Сумісність з OpenBSD, трюки з метаданими:\n"
+
 msgid "Translators:"
 msgstr "Перекладачі:"
 
-msgid "German, Hungarian:\n"
-msgstr "Німецька, Угорська:\n"
+msgid "German:\n"
+msgstr "Німецька:\n"
+
+msgid "Hungarian:\n"
+msgstr "Угорська:\n"
+
+msgid "Italian:\n"
+msgstr "Італійська:\n"
+
+msgid "Japanese:\n"
+msgstr "Японська:\n"
+
+msgid "Russian:\n"
+msgstr "Російська:\n"
+
+msgid "Swedish:\n"
+msgstr "Шведська:\n"
 
 msgid "Ukrainian:\n"
 msgstr "Українська:\n"
@@ -50,518 +68,421 @@ msgid "Graphics:"
 msgstr "Графіка:"
 
 msgid "Logo, icons:\n"
-msgstr ""
+msgstr "Логотип, іконки:\n"
 
 msgid "This Aqualung binary is compiled with:"
-msgstr "Цей Aqualung скомпільовано з:"
+msgstr "Цей файл Aqualung скомпільовано з:"
 
 msgid "Optional features:"
-msgstr ""
+msgstr "Додаткові можливості:"
 
-#, fuzzy
 msgid "LADSPA plugin support\n"
-msgstr "Обробка LADSPA втулками (Цифрова Обробка Сигналу)"
+msgstr "Підтримка розширень LADSPA\n"
 
-#, fuzzy
 msgid "CDDA (Audio CD) support\n"
-msgstr "підтримка CDDB\n"
+msgstr "Підтримка CDDA (Аудіо CD)\n"
 
 msgid "CDDB support\n"
-msgstr "підтримка CDDB\n"
+msgstr "Підтримка CDDB\n"
 
-#, fuzzy
 msgid "Sample Rate Converter support\n"
-msgstr "Вбудований перетворювач частоти семплювання\n"
+msgstr "Підтримка конвертера частоти дискретизації\n"
 
-#, fuzzy
 msgid "iRiver iFP driver support\n"
-msgstr "Драйвери виводу:"
+msgstr "Підтримка драйвера iRiver iFP\n"
 
 msgid "Loop playback support\n"
-msgstr ""
+msgstr "Підтримка зацикленого відтворення\n"
 
-#, fuzzy
 msgid "Systray support\n"
-msgstr "підтримка CDDB\n"
+msgstr "Підтримка системного лотка\n"
 
-#, fuzzy
+msgid "Podcast support\n"
+msgstr "Підтримка подкастів\n"
+
+msgid "Lua (programmable title formatting) support\n"
+msgstr "Підтримка Lua (програмоване форматування заголовка)\n"
+
 msgid "Decoding support:"
-msgstr "Підтримка форматів файлів:"
+msgstr "Підтримка декодування:"
 
 msgid "sndfile (WAV, AIFF, etc.)\n"
-msgstr ""
+msgstr "Звукові файли (WAV, AIFF, etc.)\n"
 
 msgid "Free Lossless Audio Codec (FLAC)\n"
-msgstr ""
+msgstr "Free Lossless Audio Codec (FLAC)\n"
 
 msgid "Ogg Vorbis\n"
-msgstr ""
+msgstr "Ogg Vorbis\n"
 
 msgid "Ogg Speex\n"
-msgstr ""
+msgstr "Ogg Speex\n"
 
 msgid "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
-msgstr ""
+msgstr "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
 
 msgid "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
-msgstr ""
+msgstr "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
 
 msgid "Musepack\n"
-msgstr ""
+msgstr "Musepack\n"
 
 msgid "Monkey's Audio Codec\n"
-msgstr ""
+msgstr "Monkey's Audio Codec\n"
 
 msgid "WavPack\n"
-msgstr ""
+msgstr "WavPack\n"
 
 msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
-msgstr ""
+msgstr "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
 
-msgid "Metadata (ID3, APE, Ogg comments)\n"
-msgstr ""
-
-#, fuzzy
 msgid "Encoding support:"
-msgstr "Драйвери виводу:"
+msgstr "Підтримка кодування:"
 
 msgid "sndfile (WAV)\n"
-msgstr ""
+msgstr "Звукові файли (WAV)\n"
 
 msgid "LAME (MP3)\n"
-msgstr ""
+msgstr "LAME (MP3)\n"
 
 msgid "Output driver support:"
-msgstr "Драйвери виводу:"
+msgstr "Підтримка драйверів виводу:"
+
+#, fuzzy
+msgid "sndio Audio\n"
+msgstr "OSS Audio\n"
 
 msgid "OSS Audio\n"
-msgstr ""
+msgstr "OSS Audio\n"
 
 msgid "ALSA Audio\n"
-msgstr ""
+msgstr "ALSA Audio\n"
 
 msgid "JACK Audio Server\n"
-msgstr ""
+msgstr "Аудіо сервер JACK\n"
+
+msgid "PulseAudio\n"
+msgstr "PulseAudio\n"
 
 msgid "Win32 Sound API\n"
-msgstr ""
+msgstr "Win32 Sound API\n"
 
 msgid ""
-"This program is free software; you can redistribute it and/or modify\n"
-"it under the terms of the GNU General Public License as published by\n"
-"the Free Software Foundation; either version 2 of the License, or\n"
-"(at your option) any later version.\n"
+"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
 "\n"
-"This program is distributed in the hope that it will be useful,\n"
-"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-"GNU General Public License for more details.\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n"
 "\n"
-"You should have received a copy of the GNU General Public License\n"
-"along with this program; if not, write to the Free Software\n"
-"Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+"You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
 
 msgid "Enabled"
-msgstr ""
+msgstr "Дозволений"
 
 msgid "Source"
-msgstr ""
+msgstr "Джерело"
 
 msgid "CDDB"
-msgstr ""
+msgstr "CDDB"
 
 msgid "CDDB (not available)"
-msgstr ""
+msgstr "CDDB (недосяжний)"
 
 msgid "Metadata"
 msgstr "Метадані"
 
 msgid "Filesystem"
-msgstr ""
+msgstr "Файлова система"
 
 msgid "Capitalization"
-msgstr ""
+msgstr "Перетворення до заголовних літер"
 
-#, fuzzy
 msgid "Capitalize: "
-msgstr "Всього семплів:"
+msgstr "Перетворити на заголовні:"
 
-#, fuzzy
 msgid "All words"
-msgstr "Доріжки"
+msgstr "Усі слова"
 
 msgid "First word only"
-msgstr ""
+msgstr "Тільки перше слово"
 
-#, fuzzy
 msgid "Force case: "
-msgstr "Назва файлу:"
+msgstr "Примусово:"
 
 msgid "Force other letters to lowercase"
-msgstr ""
+msgstr "Перетворити інши літери до нижнього рогістру"
 
 msgid "Regular expression"
-msgstr ""
+msgstr "Регулярний вираз"
 
 msgid "Regexp:"
-msgstr ""
+msgstr "РегВир:"
 
-#, fuzzy
 msgid "Replace:"
-msgstr "Пауза (пробіл)"
+msgstr "Заміна:"
 
 msgid "Predefined transformations"
-msgstr ""
+msgstr "Передвстановлені перетворення"
 
-#, fuzzy
 msgid "Remove file extension"
-msgstr "Прибрати вибране"
+msgstr "Прибрати розширення файлу"
 
 msgid "Remove leading number"
-msgstr ""
+msgstr "Прибрати число на початку"
 
-#, fuzzy
 msgid "Convert underscore to space"
-msgstr "Інвертувати поточний стан"
+msgstr "Перетворити підкреслювання на пробіл"
 
 msgid "Trim leading, tailing and duplicate spaces"
-msgstr ""
+msgstr "Обрізати пробіли на початку, в кінці та ті, що повторюються"
 
 msgid "Regexp matches empty string"
-msgstr ""
+msgstr "Регулярний вираз співпадає із порожньою строкою"
 
-#, fuzzy
-msgid "Unknown Artist"
-msgstr "Невідомо"
-
-#, fuzzy
 msgid "Please select the root directory."
-msgstr "Будьласка оберіть звукові файли для цього запису."
+msgstr "Будь ласка, оберіть кореневий каталог."
 
-#, fuzzy
 msgid "Select build type"
-msgstr "Вибрати файли..."
+msgstr "Оберіть тим збірка"
 
-#, fuzzy
 msgid "Directory driven"
-msgstr "Запис"
+msgstr "Відповідно до каталогів"
 
 msgid ""
 "Follows the directory structure to identify the artists and\n"
 "records. The files are added on a record basis."
 msgstr ""
+"Слідує структурою каталогів для визначення виконавців та\n"
+"записів. Файли додаються на основі записів."
 
 msgid "Independent"
-msgstr ""
+msgstr "Незалежний"
 
 msgid ""
 "Recursive search from the root directory for audio files.\n"
 "The files are processed independently, so only metadata\n"
 "and filename transformation are available."
 msgstr ""
+"Рекурсивний пошук аудіофайлів, починаючи із кореневого каталога.\n"
+"Файли обробляються незалежно, так що доступні тільки\n"
+"метадані та перетворення імен файлів."
 
-#, fuzzy
+msgid "Load settings from Music Store file"
+msgstr "Завантажити налаштування з файлу Музичного Сховища"
+
 msgid "Build/Update store"
-msgstr "Редагувати склад..."
+msgstr "Побудувати/Оновити сховище"
 
 msgid "General"
 msgstr "Головне"
 
-#, fuzzy
 msgid "Directory structure"
-msgstr "Запис"
+msgstr "Структура каталогів"
 
 msgid "Root path:"
-msgstr ""
+msgstr "Кореневий шлях:"
 
 msgid "_Browse..."
 msgstr "_Оглянути..."
 
 msgid "Structure:"
-msgstr ""
+msgstr "Структура:"
 
 msgid "root / record / track"
-msgstr ""
+msgstr "корінь / запис / доріжка"
 
 msgid "root / artist / record / track"
-msgstr ""
+msgstr "корінь / виконавець / запис / доріжка"
 
 msgid "root / artist / artist / record / track"
-msgstr ""
+msgstr "корінь / виконавець / виконавець / запис / доріжка"
 
 msgid "root / artist / artist / artist / record / track"
-msgstr ""
+msgstr "корінь / виконавець / виконавець / виконавець / запис / доріжка"
 
 msgid "Exclude files matching wildcard"
-msgstr ""
+msgstr "Виключити файли, що задовільняють маску"
 
 msgid "Include only files matching wildcard"
-msgstr ""
+msgstr "Включити тільки файли, що задовільняють маску"
 
 msgid "Reread data for existing tracks"
-msgstr ""
+msgstr "Перечитати дані для існуючих доріжок"
+
+msgid "Remove non-existing files from store"
+msgstr "Видалити неіснуючі файли зі сховища"
 
 msgid "Artist"
 msgstr "Виконавець"
 
-#, fuzzy
 msgid "Sort artists by"
-msgstr "Імпортувати як Виконавця"
+msgstr "Сортувати виконавців за"
 
 msgid "Artist name"
-msgstr "Назва виконавця"
+msgstr "Ім'ям виконавця"
 
-#, fuzzy
 msgid "Artist name (lowercase)"
-msgstr "Назвах виконавців"
+msgstr "Ім'ям виконавця (нижній регістр)"
 
-#, fuzzy
 msgid "Directory name"
-msgstr "Запис"
+msgstr "Назвою каталога"
 
-#, fuzzy
 msgid "Directory name (lowercase)"
-msgstr "Запис"
+msgstr "Назвою каталога (нижній регістр)"
 
 msgid "Record"
 msgstr "Запис"
 
-#, fuzzy
 msgid "Sort records by"
-msgstr "Імпортувати як Запис"
+msgstr "Сортувати записи за"
 
 msgid "Record name"
-msgstr "Назва запису"
+msgstr "Назвою запису"
 
-#, fuzzy
 msgid "Record name (lowercase)"
-msgstr "Запис"
+msgstr "Назвою запису (нижній регістр)"
 
 msgid "Year"
-msgstr "Рік"
+msgstr "Роком"
 
-#, fuzzy
 msgid "Add year to the comments of new records"
-msgstr "Додати до коментарів"
+msgstr "Додати рік до коментарів нових записів"
 
 msgid "Track"
 msgstr "Доріжка"
 
-#, fuzzy
 msgid "Import Replaygain tag as manual RVA"
-msgstr "Підсилення доріжки"
+msgstr "Імпортувати тег Replaygain як ручне налаштування RVA"
 
-#, fuzzy
 msgid "Import Comment tag"
-msgstr "(без коментаря)"
+msgstr "Імпортувати тег коментаря"
 
 msgid "Sandbox"
-msgstr ""
+msgstr "Пісочниця"
 
 msgid "Filename:"
 msgstr "Назва файлу:"
 
 msgid "Test"
-msgstr ""
+msgstr "Тест"
 
-#, fuzzy
 msgid "Building store from filesystem"
-msgstr "Редагувати склад..."
+msgstr "Побудова сховища з файлової системи"
 
-#, fuzzy
-msgid "Directory:"
-msgstr "Запис"
+msgid "Processing:"
+msgstr "Прогрес:"
 
-msgid "File:"
-msgstr "Файл:"
-
-#, fuzzy
 msgid "Action:"
-msgstr "Тривалість:"
+msgstr "Дія:"
 
 msgid "Abort"
 msgstr "Перервати"
 
-#, fuzzy
+msgid "Unknown Artist"
+msgstr "Невідомий виконавець"
+
 msgid "Unknown Record"
-msgstr "Невідомо"
+msgstr "Невідомий запис"
 
 msgid "Scanning files"
-msgstr ""
+msgstr "Сканування файлів"
 
-#, fuzzy
 msgid "Processing metadata"
-msgstr "Обробка..."
+msgstr "Обробка метаданих"
 
 msgid "CDDB lookup"
-msgstr ""
+msgstr "Пошук у CDDB"
 
 msgid "Name transformation"
-msgstr ""
+msgstr "Перетворення імені"
 
-#, fuzzy
 msgid "Reading file"
-msgstr "Пресканувати"
+msgstr "Читання файлу"
 
-msgid "CD Audio"
-msgstr ""
+msgid "Removing non-existing files"
+msgstr "Видалення неіснуючих файлів"
 
-#, fuzzy
 msgid "Unknown disc"
-msgstr "Невідомо"
+msgstr "Невідомий диск"
 
 msgid "No disc"
-msgstr ""
-
-#, fuzzy
-msgid "Drive info"
-msgstr "Інформація про файл"
-
-msgid "Device path:"
-msgstr ""
-
-msgid "Vendor:"
-msgstr "Постачальник:"
-
-msgid "Model:"
-msgstr ""
-
-msgid "Revision:"
-msgstr ""
-
-msgid ""
-"The information below is reported by the drive, and\n"
-"may not reflect the actual capabilities of the device."
-msgstr ""
-
-msgid "Eject"
-msgstr ""
-
-#, fuzzy
-msgid "Close tray"
-msgstr "Кольори"
-
-msgid "Disable manual eject"
-msgstr ""
-
-msgid "Select juke-box disc"
-msgstr ""
-
-msgid "Set drive speed"
-msgstr ""
-
-msgid "Detect media change"
-msgstr ""
-
-msgid "Read multiple sessions"
-msgstr ""
-
-msgid "Hard reset device"
-msgstr ""
-
-#, fuzzy
-msgid "Reading"
-msgstr "Пресканувати"
-
-msgid "Play CD Audio"
-msgstr ""
-
-msgid "Read CD-DA"
-msgstr ""
-
-msgid "Read CD+G"
-msgstr ""
-
-msgid "Read CD-R"
-msgstr ""
-
-msgid "Read CD-RW"
-msgstr ""
-
-msgid "Read DVD-R"
-msgstr ""
-
-msgid "Read DVD+R"
-msgstr ""
-
-msgid "Read DVD-RW"
-msgstr ""
-
-msgid "Read DVD+RW"
-msgstr ""
-
-msgid "Read DVD-RAM"
-msgstr ""
-
-msgid "Read DVD-ROM"
-msgstr ""
-
-msgid "C2 Error Correction"
-msgstr ""
-
-msgid "Read Mode 2 Form 1"
-msgstr ""
-
-msgid "Read Mode 2 Form 2"
-msgstr ""
-
-msgid "Read MCN"
-msgstr ""
-
-msgid "Read ISRC"
-msgstr ""
-
-#, fuzzy
-msgid "Writing"
-msgstr "Увага"
-
-msgid "Write CD-R"
-msgstr ""
-
-msgid "Write CD-RW"
-msgstr ""
-
-msgid "Write DVD-R"
-msgstr ""
-
-msgid "Write DVD+R"
-msgstr ""
-
-msgid "Write DVD-RW"
-msgstr ""
-
-msgid "Write DVD+RW"
-msgstr ""
-
-msgid "Write DVD-RAM"
-msgstr ""
-
-msgid "Mount Rainier"
-msgstr ""
-
-msgid "Burn Proof"
-msgstr ""
-
-#, fuzzy
-msgid "Disc info"
-msgstr "Інформація про файл"
-
-#, fuzzy
-msgid "No"
-msgstr "Немає"
-
-msgid "This CD does not contain CD-Text information."
-msgstr ""
+msgstr "Немає диска"
 
 msgid "CDDB query"
-msgstr "CDDB запит"
+msgstr "Запит у CDDB"
 
 msgid "Retrieving matches from server..."
 msgstr "Отримання збігів з сервера..."
 
 msgid "Connecting to CDDB server..."
-msgstr "Під'єднуюсь до сервера CDDB..."
+msgstr "Під'єднання до сервера CDDB..."
+
+msgid "Error"
+msgstr "Помилка"
+
+msgid "An error occurred while attempting to connect to the CDDB server."
+msgstr "Під час спроби під'єднання до сервера CDDB виникла помилка."
+
+msgid "Warning"
+msgstr "Попередження"
+
+msgid "No matching record found."
+msgstr "Схожих записів не знайдено."
+
+msgid "Import as Sort Key"
+msgstr "Імпортувати як ключ для сортування"
+
+msgid "Import as Title"
+msgstr "Імпортувати як Назву"
+
+msgid "Import as Year"
+msgstr "Імпортувати як Рік"
+
+msgid ""
+"Artist appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Ім'я виконавця цілком у нижньому регістрі.\n"
+"Бажаєте продовжити?"
+
+msgid ""
+"Artist appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Ім'я виконавця цілком у верхньому регістрі.\n"
+"Бажаєте продовжити?"
+
+msgid ""
+"Title appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Назва цілком у нижньому регістрі.\n"
+"Бажаєте продовжити?"
+
+msgid ""
+"Title appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Назва цілком у верхньому регістрі.\n"
+"Бажаєте продовжити?"
+
+msgid ""
+"It is very likely that the year is wrong.\n"
+"Do you want to proceed?"
+msgstr ""
+"Схоже, рік вказано невірно.\n"
+"Бажаєте продовжити?"
+
+msgid "The email address provided for submission is invalid."
+msgstr "Адреса електронної пошти, вказана для підписки, недійсна."
+
+msgid "An error occurred while submitting the record to the CDDB server."
+msgstr "Під час надсилання запису до сервера CDDB виникла помилка."
+
+msgid "Correct existing record"
+msgstr "Виправити існуючий запис"
+
+msgid "Submit new record"
+msgstr "Надіслати новий запис"
 
 msgid "Matches:"
 msgstr "Збіги:"
@@ -578,6 +499,9 @@ msgstr "Рік:"
 msgid "Category:"
 msgstr "Категорія:"
 
+msgid "(choose a category)"
+msgstr "(оберіть категорію)"
+
 msgid "Genre:"
 msgstr "Жанр:"
 
@@ -587,109 +511,54 @@ msgstr "Додаткові дані:"
 msgid "Import as Artist"
 msgstr "Імпортувати як Виконавця"
 
-msgid "Import as Title"
-msgstr "Імпортувати як Альбом"
-
-#, fuzzy
-msgid "Import as Sort Key"
-msgstr "Імпортувати як Альбом"
-
 msgid "Add to Comments"
 msgstr "Додати до коментарів"
 
 msgid "Tracks"
 msgstr "Доріжки"
 
-msgid "Warning"
-msgstr "Увага"
+msgid "You have to provide an email address for CDDB submission."
+msgstr "Ви маєте вказати адресу електроної пошти для надсилання до CDDB."
 
-msgid "CDDB submission"
-msgstr ""
-
-msgid "(choose a category)"
-msgstr ""
-
-msgid ""
-"Artist appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-
-msgid ""
-"Artist appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-
-msgid ""
-"Title appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-
-msgid ""
-"Title appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-
-msgid ""
-"It is very likely that the year is wrong.\n"
-"Do you want to proceed?"
-msgstr ""
-
-msgid "The email address provided for submission is invalid."
-msgstr ""
-
-#, fuzzy
-msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "Трапилась помилка при спробі під'єднання до сервера CDDB."
-
-msgid "An error occurred while attempting to connect to the CDDB server."
-msgstr "Трапилась помилка при спробі під'єднання до сервера CDDB."
-
-msgid "No matching record found."
-msgstr "Схожих записів не знайдено."
-
-#, fuzzy
 msgid "Please select the directory for ripped files."
-msgstr "Будьласка оберіть звукові файли для цього запису."
+msgstr "Будь ласка оберіть каталог для добутих файлів."
 
-#, fuzzy
 msgid "(none)"
-msgstr "(без коментаря)"
+msgstr "(немає)"
 
-#, fuzzy
 msgid "fast"
-msgstr "Виконавець"
+msgstr "швидко"
 
 msgid "best"
-msgstr ""
+msgstr "найкращий"
 
-#, fuzzy
 msgid "Compression level:"
-msgstr "Ступінь стиснення: Нормальна"
+msgstr "Рівень стискання: Нормальний"
 
 msgid "Bitrate [kbps]:"
-msgstr ""
+msgstr "Бітрейт [kbps]:"
+
+msgid "Artist/Album already existing, not empty"
+msgstr "Виконавець/Альбом вже існують та непорожні"
 
 msgid ""
 "\n"
-"The Music Store you selected has a matching Artist and Album, already "
-"containing some tracks. If you press OK, these tracks will be removed. The "
-"files themselves will be left intact, but they will be removed from the "
-"destination Music Store. Press Cancel to get back to change the Artist/Album "
-"or the destination Music Store."
+"The Music Store you selected has a matching Artist and Album, already containing some tracks. If you press OK, these tracks will be removed. The files themselves will be left intact, but they will be removed from the destination Music Store. Press Cancel to get back to change the Artist/Album or the destination Music Store."
 msgstr ""
-
-msgid "Artist/Album already existing, not empty"
-msgstr ""
+"\n"
+"В обраному вами Музичному Сховищі вже є виконавець та альбом, що містить доріжки. Якщо ви натиснете Если вы нажмете ОК, ці треки буде видалено. Файли самі по собі будуть залишені непошкодженими, але вони будуть видалені з даного Музичного Сховища. Нажмите Відміна для повернення до зміни виконавця/альбома або выбору іншого Музичного Сховища."
 
 msgid "Rip CD"
-msgstr ""
+msgstr "Дістати музику з CD"
 
-#, fuzzy
 msgid "Album:"
-msgstr "Альбом"
+msgstr "Альбом:"
 
 msgid "Rip"
-msgstr ""
+msgstr "Дістати музику"
+
+msgid "No."
+msgstr "№"
 
 msgid "Title"
 msgstr "Назва"
@@ -698,104 +567,294 @@ msgid "Select"
 msgstr "Вибрати"
 
 msgid "All"
-msgstr ""
+msgstr "Усе"
 
 msgid "None"
 msgstr "Немає"
 
-#, fuzzy
 msgid "Output"
-msgstr "Вивід:"
+msgstr "Вихід"
 
-#, fuzzy
 msgid "Destination"
-msgstr "Тривалість:"
+msgstr "Призначення"
 
-#, fuzzy
 msgid "Target directory for ripped files"
-msgstr "Будьласка оберіть звукові файли для цього запису."
+msgstr "Каталог призначення для добутих файлів."
 
-#, fuzzy
 msgid "Add to Music Store"
-msgstr "Музичний Склад"
+msgstr "Додати до Музичного Сховища"
 
-#, fuzzy
 msgid "Format"
-msgstr "Формат:"
+msgstr "Формат"
 
-#, fuzzy
 msgid "File format:"
-msgstr "Формат назви"
+msgstr "Формат файлу:"
 
-#, fuzzy
 msgid "VBR encoding"
-msgstr "кодування"
+msgstr "Кодування зі змінним потоком"
 
-#, fuzzy
 msgid "Tag files with metadata"
-msgstr "Перечитати інформацію про файл"
+msgstr "Увести метадані у файли"
 
 msgid "Paranoia"
-msgstr ""
+msgstr "Paranoia"
 
-#, fuzzy
 msgid "Paranoia error correction"
-msgstr "Перекривати установки жупана"
+msgstr "Корекція помилок Paranoia"
 
 msgid "Perform overlapped reads"
-msgstr ""
+msgstr "Виконувати читання із перекриванням"
 
 msgid "Verify data integrity"
-msgstr ""
+msgstr "Перевірити цілісність даних"
 
 msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
+msgstr "Необмежена кількість спроб за помилок читання (ніколи не пропускати)"
 
-msgid "\tMaximum number of retries:"
-msgstr ""
+msgid "Maximum number of retries:"
+msgstr "Максимальна кількість спроб:"
 
 msgid ""
 "\n"
 "Destination directory is not read-write accessible!"
 msgstr ""
+"\n"
+"Вказаний каталог не доступний для читання/запису!"
 
-msgid "Error"
-msgstr ""
-
-#, fuzzy
 msgid "Total"
-msgstr "Разом: "
+msgstr "Разом"
 
 msgid "(audio only)"
-msgstr ""
+msgstr "(тільки аудіо)"
 
-#, fuzzy
 msgid "Ripping CD tracks"
-msgstr "Редагувати доріжку..."
+msgstr "Діставання доріжок з CD"
 
 msgid "Begin"
-msgstr ""
+msgstr "Початок"
 
-#, fuzzy
 msgid "Length"
-msgstr "Довжина:"
+msgstr "Тривалість"
 
-#, fuzzy
 msgid "Progress"
-msgstr "Прогрес:"
+msgstr "Прогрес"
 
 msgid "Close window when complete"
-msgstr ""
+msgstr "Закрити вікно після завершення"
+
+msgid "Close"
+msgstr "Закрити"
+
+msgid "Unknown Album"
+msgstr "Невідомий Альбом"
+
+msgid "Unknown Track"
+msgstr "Невідома Доріжка"
+
+msgid "Please select the directory for exported files."
+msgstr "Будь ласка, оберіть каталог для експортованих файлів."
 
 #, fuzzy
-msgid "Close"
-msgstr "Кольори"
+msgid "Copy"
+msgstr "Авторське право"
 
-msgid "day"
-msgstr ""
+msgid "Help"
+msgstr "Допомога"
 
-msgid "days"
+#, c-format
+msgid ""
+"\n"
+"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%%%a, %%%%r and %%%%t. The track number and format-dependent file extension are denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives an identifier which is unique within an export session."
 msgstr ""
+"\n"
+"Рядки шаблону, що ви впишете сюди, буде використано для складання ім'я експортованих файлів. Ім'я Виконавця, Запису та Доріжки позначаються %%%%a, %%%%r та %%%%t. Номер доріжки та розширення файлу, що залежить віз формату, позначаються %%%%n та %%%%x, відповідно. Прапор %%%%i дає ідентифікатор, унікальний у межах сеансу експорту."
+
+msgid "Export files"
+msgstr "Експорт файлів"
+
+msgid "Location and filename"
+msgstr "Месце розташування та ім'я файлу"
+
+msgid "Target directory:"
+msgstr "Каталог призначення:"
+
+msgid "Create subdirectories for artists"
+msgstr "Створити підкаталоги для виконавців"
+
+msgid "Create subdirectories for albums"
+msgstr "Створити підкаталоги для альбомів"
+
+msgid ""
+"Subdirectory name\n"
+"length limit:"
+msgstr ""
+"Максимальна довжина\n"
+"імені підкаталога:"
+
+msgid "Filename template:"
+msgstr "Шаблон імені файлу:"
+
+msgid "Filter"
+msgstr "Фільтр"
+
+msgid "Do not reencode files already being in the target format"
+msgstr "Не перекодувати файли, що вже у форматі призначення"
+
+msgid ""
+"Do not reencode files\n"
+"matching wildcard:"
+msgstr ""
+"Не перекодувати файли,\n"
+"що задовільняють маску:"
+
+msgid "Error in format string"
+msgstr "Помилка у рядку формату"
+
+msgid "Exporting files"
+msgstr "Експорт файлів"
+
+msgid "Source file:"
+msgstr "Вихідний файл:"
+
+msgid "Target file:"
+msgstr "Файл призначення:"
+
+msgid "Progress:"
+msgstr "Прогрес:"
+
+msgid "*File info"
+msgstr "*Інформація про файл"
+
+msgid "File info"
+msgstr "Інформація про файл"
+
+msgid "There are unsaved changes to the file metadata."
+msgstr "Є незбережені зміни у метаданих файлу."
+
+msgid "Save and close"
+msgstr "Зберегти та закрити"
+
+msgid "Discard changes"
+msgstr "Скасувати зміни"
+
+msgid "Do not close"
+msgstr "Не закривати"
+
+#, c-format
+msgid ""
+"Conversion error in field %s:\n"
+"'%s' does not conform to format '%s'!"
+msgstr ""
+"Помилка перетворення у полі %s:\n"
+"'%s' не відповідає формату '%s'!"
+
+msgid ""
+"Attached Picture frame with no image set!\n"
+"Please set an image or remove the frame."
+msgstr ""
+"Прикріплена картинка без зображення!\n"
+"Будь ласка, встановіть зображення або видаліть картинку."
+
+#, c-format
+msgid ""
+"Failed to write metadata to file.\n"
+"Reason: %s"
+msgstr ""
+"Неможливо записати метадані до файлу.\n"
+"Причина: %s"
+
+#, c-format
+msgid ""
+"Error converting field %s to Year:\n"
+"'%s' is not an integer number!"
+msgstr ""
+"Помилка перетворення поля %s на Рік:\n"
+"'%s' не є цілим числом!"
+
+msgid "Please specify the file to save the image to."
+msgstr "Будь аска, вкажіть файл для збереження зображення."
+
+msgid "(no image)"
+msgstr "(немає зображення)"
+
+msgid "(error loading image)"
+msgstr "(помилка завантаження зображення)"
+
+msgid "Please specify the file to load the image from."
+msgstr "Будь ласка, вкажіть файл, з якого буде завантажено зображення."
+
+#, c-format
+msgid ""
+"Could not load image from:\n"
+"%s"
+msgstr ""
+"Неможливо завантажити зображення з:\n"
+"%s"
+
+#, c-format
+msgid "MIME type: %s"
+msgstr "Тип MIME: %s"
+
+msgid "Picture type:"
+msgstr "Тип зображення:"
+
+msgid "Description:"
+msgstr "Опис:"
+
+msgid "(no description)"
+msgstr "(немає опису)"
+
+msgid "Change"
+msgstr "Змінити"
+
+msgid "Save"
+msgstr "Зберегти"
+
+msgid "Import as Record"
+msgstr "Імпортувати як Запис"
+
+msgid "Import as Track No."
+msgstr "Імпортувати як № доріжки"
+
+msgid "Import as RVA"
+msgstr "Імпортувати як рівень RVA"
+
+msgid "Add"
+msgstr "Додати"
+
+msgid "field:"
+msgstr "поле:"
+
+msgid "tag:"
+msgstr "тег:"
+
+msgid "Audio CD"
+msgstr "Аудіо CD"
+
+msgid "Track:"
+msgstr "Доріжка:"
+
+msgid "File:"
+msgstr "Файл:"
+
+msgid "Audio data"
+msgstr "Аудіо дані"
+
+msgid "Format:"
+msgstr "Формат:"
+
+msgid "Length:"
+msgstr "Довжина:"
+
+msgid "Samplerate:"
+msgstr "Частота дискретизації:"
+
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld Гц"
+
+msgid "Channel count:"
+msgstr "Кількість каналів:"
 
 msgid "MONO"
 msgstr "МОНО"
@@ -803,31 +862,78 @@ msgstr "МОНО"
 msgid "STEREO"
 msgstr "СТЕРЕО"
 
-msgid "Output:"
-msgstr "Вивід:"
+msgid "Bandwidth:"
+msgstr "Потік:"
+
+msgid "Total samples:"
+msgstr "Всього семплів:"
+
+msgid "Mode:"
+msgstr "Режим:"
+
+msgid "Type:"
+msgstr "Тип: "
+
+msgid "Channels:"
+msgstr "Канали:"
 
 #, fuzzy
+msgid "Patterns:"
+msgstr "Шаблони:"
+
+#, fuzzy
+msgid "Samples:"
+msgstr "Вибірок:"
+
+msgid "Instruments:"
+msgstr "Інструменти:"
+
+msgid "Samples"
+msgstr "Вибірки"
+
+msgid "Instruments"
+msgstr "Інструменти"
+
+msgid "Name"
+msgstr "Ім'я"
+
+#, fuzzy
+msgid "STOPPING"
+msgstr "ЗУПИНКА"
+
+msgid "Output:"
+msgstr "Вихід:"
+
 msgid "No output"
-msgstr "Вивід:"
+msgstr "Немає виводу"
 
 msgid "SRC Type: "
-msgstr "SRC Тип: "
+msgstr "Тип SRC: "
 
-#, fuzzy
+#, fuzzy, c-format
+msgid "Loop range: %d-%d%% [%s - %s]"
+msgstr "Діапазон повтору: %d-%d%% [%s - %s]"
+
+#, fuzzy, c-format
+msgid "Loop range: %d-%d%%"
+msgstr "Діапазон повтору: %d-%d%%"
+
 msgid ""
 "One or more stores in Music Store have been modified.\n"
 "Do you want to save them before exiting?"
 msgstr ""
-"Музичний склад було змінено.\n"
-"Чи ви бажаєте зберегти зміни перед виходом?"
+"Одне або більше совище в Музичному Сховищі було змінено.\n"
+"Бажаєте зберегти їя перед виходом?"
 
-#, fuzzy
-msgid "Question"
-msgstr "Тривалість:"
+msgid "Do not exit"
+msgstr "Не виходити"
+
+msgid "Quit"
+msgstr "Вихід"
 
 #, c-format
 msgid "Position: %d%%"
-msgstr ""
+msgstr "Позиція: %d%%"
 
 #, c-format
 msgid "Mute"
@@ -837,9 +943,9 @@ msgstr "Приглушити"
 msgid "%d dB"
 msgstr "%d Дб"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Volume: %s"
-msgstr "Рівень гучності:"
+msgstr "Гучність: %s"
 
 #, c-format
 msgid "%d%% R"
@@ -849,33 +955,25 @@ msgstr "%d%% П"
 msgid "%d%% L"
 msgstr "%d%% Л"
 
-#, c-format
+#, fuzzy, c-format
 msgid "C"
-msgstr ""
+msgstr "C"
 
 #, c-format
 msgid "Balance: %s"
-msgstr ""
+msgstr "Баланс: %s"
 
 msgid "JACK connection lost"
-msgstr "JACK під'єднання втрачено"
+msgstr "З'єднання з JACK втрачено"
 
-msgid ""
-"JACK has either been shutdown or it\n"
-"disconnected Aqualung because it was\n"
-"not fast enough. All you can do now\n"
-"is restart both JACK and Aqualung.\n"
-msgstr ""
-"JACK було вимкнено, або він від'єднав\n"
-"Aqualung тому що він не достатньо\n"
-"швидкий. Все що ви можете тепер зробити\n"
-"це перезапустити обидва JACK та Aqualung.\n"
+msgid "JACK has either been shutdown or it disconnected Aqualung because it was not fast enough. All you can do now is restart both JACK and Aqualung."
+msgstr "JACK було вимкнено, або він від'єднав Aqualung, бо той був недостатньо швидкий. Все, що ви можете тепер зробити, це перезапустити обидва JACK та Aqualung."
 
-msgid ""
-"Aqualung is compiled with system tray support, but the status icon could not "
-"be embedded in the notification area. Your desktop may not have support for "
-"a system tray, or it has not been configured correctly."
-msgstr ""
+msgid "Warn me if the Window Manager does not support system tray"
+msgstr "Попередити мне, якщо менеджер вікон не підтримує системний лоток"
+
+msgid "Aqualung is compiled with system tray support, but the status icon could not be embedded in the notification area. Your desktop may not have support for a system tray, or it has not been configured correctly."
+msgstr "Aqualung скомпільовано з підтримкою системного лотка, але статусна іконка не може бути вбудована у область повідомлень. Можливо, ваш робочий стіл не підтримує системний лоток, або невірно налаштований."
 
 msgid "Settings"
 msgstr "Налаштування"
@@ -886,30 +984,23 @@ msgstr "Вибір жупанів"
 msgid "JACK port setup"
 msgstr "Налаштування порту JACK"
 
-msgid "File info"
-msgstr "Інформація про файл"
-
-msgid "Quit"
-msgstr ""
-
-#, fuzzy
 msgid "Previous song"
-msgstr "Попередня пісня (вгору)"
+msgstr "Попередня пісня"
 
-#, fuzzy
 msgid "Stop"
-msgstr "Зупинити (s)"
+msgstr "Стоп"
 
-#, fuzzy
 msgid "Next song"
-msgstr "Наступна пісня (вниз)"
+msgstr "Наступна пісня"
 
-#, fuzzy
+msgid "Play/Pause"
+msgstr "Грати/Пауза"
+
 msgid "Play"
-msgstr "Список програвання"
+msgstr "Грати"
 
 msgid "Pause"
-msgstr ""
+msgstr "Пауза"
 
 msgid "Repeat current song"
 msgstr "Повторювати поточну пісню"
@@ -924,602 +1015,734 @@ msgid "Toggle playlist"
 msgstr "Вимикач списку програвання"
 
 msgid "Toggle music store"
-msgstr "Вимикач музичного складу"
+msgstr "Вимикач Музичного Сховища"
 
 msgid "Toggle LADSPA patch builder"
-msgstr "Вимикач будівельника шляхів LADSPA"
+msgstr "Вимикач будівельника патчів LADSPA"
 
-#, fuzzy
 msgid "Show Aqualung"
-msgstr "Значення ПВР"
+msgstr "Показати Aqualung"
 
-#, fuzzy
 msgid "Hide Aqualung"
-msgstr "Значення ПВР"
+msgstr "Сховати Aqualung"
 
-#, fuzzy
 msgid "Previous"
-msgstr "Попередня пісня (вгору)"
+msgstr "Попередня пісня"
 
-#, fuzzy
 msgid "Next"
-msgstr "Наступна пісня (вниз)"
-
-msgid "Aqualung playlist (*.xml)"
-msgstr ""
-
-#, fuzzy
-msgid "MP3 Playlist (*.m3u)"
-msgstr "Список програвання: "
-
-msgid "Multimedia Playlist (*.pls)"
-msgstr ""
-
-msgid "All Files"
-msgstr ""
-
-#, fuzzy
-msgid "All Playlist Files"
-msgstr "Список програвання: "
-
-#, fuzzy
-msgid "All Audio Files"
-msgstr "Аудіофіл"
-
-msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
-msgstr ""
-
-msgid "Free Lossless Audio Codec (*.flac)"
-msgstr ""
-
-msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
-msgstr ""
-
-msgid "Ogg Vorbis (*.ogg)"
-msgstr ""
-
-msgid "Ogg Speex (*.spx)"
-msgstr ""
-
-msgid "Musepack (*.mpc)"
-msgstr ""
-
-msgid "Monkey's Audio Codec (*.ape)"
-msgstr ""
-
-msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
-msgstr ""
-
-msgid "Compressed modules (*.gz, *.bz2)"
-msgstr ""
-
-msgid "Compressed modules (*.gz)"
-msgstr ""
-
-msgid "Compressed modules (*.bz2)"
-msgstr ""
-
-msgid "WavPack (*.wv)"
-msgstr ""
-
-msgid "LAVC audio/video files"
-msgstr ""
+msgstr "Наступна пісня"
 
 #, c-format
 msgid "%.1f MB / %.1f MB"
-msgstr ""
+msgstr "%.1f МБ / %.1f МБ"
 
-#, fuzzy, c-format
+#, c-format
 msgid "%d / %d files"
-msgstr "Додати файли..."
+msgstr "%d / %d файлів"
 
-#, fuzzy
+#, c-format
+msgid "%d / %d directories"
+msgstr "%d / %d каталогів"
+
+msgid "Cannot write to selected directory. Please select another directory."
+msgstr "Неможливо записани до обраного каталога. Будь ласка, оберіть інший каталог."
+
 msgid "Done"
-msgstr "Немає"
+msgstr "Зроблено"
 
-#, fuzzy
 msgid "Aborted..."
-msgstr "Перервати"
+msgstr "Скасовано..."
 
-msgid "Please enter directory name"
-msgstr ""
+msgid "Please enter directory name."
+msgstr "Уведіть, будь ласка, назву каталога."
 
 msgid "Create directory"
-msgstr ""
+msgstr "Створити каталог"
 
-msgid "Please enter a new name"
-msgstr ""
+msgid "Please enter a new name."
+msgstr "Уведіть, будь ласка, нове ім'я."
 
-#, fuzzy
-msgid "Rename directory"
-msgstr "Прибрати запис"
+msgid "Rename"
+msgstr "Перейменувати"
 
 #, c-format
 msgid ""
 "Directory '%s' will be removed with its entire contents.\n"
 "\n"
-"Are you sure?"
+"Do you want to proceed?"
 msgstr ""
+"Кталог '%s' буде видалено разом із усім вмістом.\n"
+"Бажаєте продовжити?"
 
-#, fuzzy
-msgid "Remove directory"
-msgstr "Прибрати запис"
+#, c-format
+msgid ""
+"File '%s' will be removed.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"Файл '%s' буде видалено.\n"
+"\n"
+"Бажаєте продовжити?"
 
-#, fuzzy, c-format
+msgid "Remove"
+msgstr "Видалити"
+
+#, c-format
 msgid " (%.1f MB)"
-msgstr "%d доріжка [%s]"
+msgstr " (%.1f МБ)"
 
 #, c-format
 msgid " (capacity = %.1f MB)"
-msgstr ""
+msgstr " (місткість = %.1f МБ)"
 
-#, fuzzy, c-format
+#, c-format
 msgid " Free space (%.1f MB)"
-msgstr "Пауза (пробіл)"
+msgstr " ВІльне місце (%.1f МБ)"
 
 msgid ""
 "No suitable iRiver iFP device found.\n"
 "Perhaps it is unplugged or turned off."
 msgstr ""
+"Придатного пристрою iRiver iFP не знайдено.\n"
+"Можливо, він від'єднаний або вимкнений."
 
 msgid ""
 "Device is busy.\n"
 "(Aqualung was unable to claim its interface.)"
 msgstr ""
+"Пристрій зайнятий.\n"
+"(Aqualung не зміг встановити свій інтерфейс.)"
+
+msgid ""
+"Device is not responding.\n"
+"Try jiggling the handle."
+msgstr ""
+"Пристрій не відповідає.\n"
+"Спробуйте поворушити руків'ям."
+
+msgid "Please select a local path."
+msgstr "Будь ласка, оберіть локальний шлях."
+
+msgid "Please select at least one valid song from playlist."
+msgstr "Будь ласка, оберіть хоча б одну дійсну пісню зі списку програвання."
 
 #, c-format
 msgid ""
-"Device is not responding.\n"
-"Try jiggling the handle. (error %d)"
+"One song has format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
 msgstr ""
+"Одна з пісень має формат, що не підтримується вашим плеєром.\n"
+"\n"
+"Бажаєте продовжити?"
 
-#, fuzzy
-msgid "Please select at least one song from playlist."
-msgstr "Будьласка вкажіть файл куди буде записано список програвання."
-
-msgid "iFP device manager"
+#, c-format
+msgid ""
+"%d of %d songs have format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
 msgstr ""
+"%d з %d пісень мають формат, що не підтримується вашиим плеєром.\n"
+"\n"
+"Бажаєте продовжити?"
 
-#, fuzzy
+#, c-format
+msgid ""
+"The selected song has format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"Обрана пісня має формат, що не підтримується вашим плеєром.\n"
+"\n"
+"Бажаєте продовжити?"
+
+#, c-format
+msgid ""
+"None of the selected songs has format supported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"Жодна з обраних пісень не має формату, що підтримується вашим плеєром.\n"
+"\n"
+"Бажаєте продовжити?"
+
+msgid "iFP device manager (upload mode)"
+msgstr "Менеджер пристрою iFP (режим відвантаження)"
+
+msgid "iFP device manager (download mode)"
+msgstr "Менеджер пристрою iFP (режим завантаження)"
+
 msgid "Selected files:"
-msgstr "Вибрати файли..."
+msgstr "Обрані файли:"
 
 msgid "label_songs"
 msgstr ""
 
 msgid "<b>Songs info</b>"
-msgstr ""
+msgstr "<b>Інформація про пісні</b>"
 
-#, fuzzy
+msgid "Model:"
+msgstr "Модель:"
+
 msgid "Battery"
-msgstr "Категорія"
+msgstr "Батарея"
 
-#, fuzzy
 msgid "Free space"
-msgstr "Пауза (пробіл)"
+msgstr "Вільне місце"
 
 msgid "<b>Device status</b>"
-msgstr ""
+msgstr "<b>Стан пристрою</b>"
+
+msgid "Size"
+msgstr "Розмір"
 
 msgid "Create a new directory"
-msgstr ""
+msgstr "Створити новий каталог"
 
-msgid "Remove directory with its entire contents"
-msgstr ""
+msgid "<b>Remote directory</b>"
+msgstr "<b>Віддалений каталог</b>"
 
-msgid "<b>Destination directory</b>"
-msgstr ""
+msgid "<b>Local directory</b>"
+msgstr "<b>Локальний каталог</b>"
 
-#, fuzzy
+msgid "Browse"
+msgstr "Оглянути"
+
 msgid "File name: "
 msgstr "Назва файлу:"
 
 msgid "Current file: "
-msgstr ""
+msgstr "Поточний файл:"
 
 msgid "Overall: "
-msgstr ""
+msgstr "Разом:"
 
 msgid "Idle"
-msgstr ""
+msgstr "Бездіяння"
 
-msgid "<b>Uploading progress</b>"
-msgstr ""
+msgid "<b>Transfer progress</b>"
+msgstr "<b>Прогрес передачі</b>"
+
+msgid "Close window when transfer complete"
+msgstr "Закрити вікно після завершення передачі"
 
 msgid "_Upload"
-msgstr ""
+msgstr "_Відвантажити"
 
-#, fuzzy
+msgid "_Download"
+msgstr "_Завантажити"
+
 msgid "_Abort"
-msgstr "Перервати"
+msgstr "_Перервати"
+
+msgid "Success"
+msgstr "Успішно"
+
+msgid "Memory allocation error"
+msgstr "Помилка виділення пам'яті"
+
+msgid "Unable to open file"
+msgstr "Неможливо відкрити файл"
+
+msgid "No metadata support for this format"
+msgstr "Немає підтримки метаданих для цього формату"
+
+msgid "File is not writable"
+msgstr "Файл не доступний на запис"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "Невірне значення поля 'Номер трека'"
+
+msgid "Invalid 'Genre' field value"
+msgstr "Невірне значення поля 'Жанр'"
+
+msgid "Conversion to target charset failed"
+msgstr "Перетворення до цільового кодування не вдалося"
+
+msgid "Internal error"
+msgstr "Внутрішня помилка"
+
+msgid "Unknown error"
+msgstr "Невідома помилка"
+
+msgid "Album"
+msgstr "Альбом"
+
+msgid "Date"
+msgstr "Дата"
+
+msgid "Genre"
+msgstr "Жанр"
+
+msgid "Track No."
+msgstr "Номер доріжки"
+
+msgid "Comment"
+msgstr "Коментар"
+
+msgid "Disc"
+msgstr "Диск"
+
+msgid "Performer"
+msgstr "Виконавець"
+
+msgid "Description"
+msgstr "Опис"
+
+msgid "Organization"
+msgstr "Організація"
+
+msgid "Location"
+msgstr "Розташування"
+
+msgid "Contact"
+msgstr "Контактна інформація"
+
+msgid "License"
+msgstr "Ліцензія"
+
+msgid "Copyright"
+msgstr "Авторське право"
+
+msgid "ISRC"
+msgstr "ISRC"
+
+msgid "Version"
+msgstr "Версія"
+
+msgid "Subtitle"
+msgstr "Підзаголовок"
+
+msgid "Debut Album"
+msgstr "Дебютний альбом"
+
+msgid "Publisher"
+msgstr "Видавник"
+
+msgid "Conductor"
+msgstr "Диригент"
+
+msgid "Composer"
+msgstr "Композитор"
+
+msgid "Publication Right"
+msgstr "Права на публікацію"
+
+msgid "File"
+msgstr "Файл"
+
+msgid "EAN/UPC"
+msgstr "EAN/UPC"
+
+msgid "ISBN"
+msgstr "ISBN"
+
+msgid "Catalog Number"
+msgstr "Номер каталога"
+
+msgid "Label Code"
+msgstr ""
+
+msgid "Record Date"
+msgstr "Дата запису"
 
 #, fuzzy
+msgid "Record Location"
+msgstr "Місце запису"
+
+#, fuzzy
+msgid "Media"
+msgstr "Носій"
+
+#, fuzzy
+msgid "Index"
+msgstr "Зміст"
+
+msgid "Related"
+msgstr ""
+
+msgid "Abstract"
+msgstr "Опис"
+
+msgid "Language"
+msgstr "Мова"
+
+msgid "Bibliography"
+msgstr "Бібліографія"
+
+msgid "Introplay"
+msgstr ""
+
+msgid "BPM"
+msgstr "BPM"
+
+msgid "Encoding Time"
+msgstr "Час кодування"
+
+msgid "Playlist Delay"
+msgstr "Затримка списку програвання"
+
+msgid "Original Release Time"
+msgstr "Час випуску оригінала"
+
+msgid "Release Time"
+msgstr "Дата випуску"
+
+msgid "Tagging Time"
+msgstr "Час внесення тега"
+
+msgid "Encoded by"
+msgstr "Закодовано"
+
+msgid "Lyricist/Text Writer"
+msgstr "Поет/автор тексту"
+
+msgid "File Type"
+msgstr "Тип файлу"
+
+msgid "Involved People"
+msgstr "Учасники"
+
+msgid "Content Group"
+msgstr ""
+
+msgid "Initial key"
+msgstr ""
+
+msgid "Musician Credits"
+msgstr "Подяки музикантів"
+
+msgid "Mood"
+msgstr "Настрій"
+
+msgid "Original Album"
+msgstr "Оригінальна назва альбому"
+
+msgid "Original Filename"
+msgstr "Оригінальна назва файлу"
+
+msgid "Original Lyricist"
+msgstr "Оригінальне ім'я поета"
+
+msgid "Original Artist"
+msgstr "Оригінальне ім'я виконавця"
+
+msgid "File Owner"
+msgstr "Власник файлу"
+
+msgid "Band/Orchestra"
+msgstr "Гурт/оркестр"
+
+msgid "Interpreted/Remixed"
+msgstr "Інтерпретація/Ремікс"
+
+msgid "Part Of A Set"
+msgstr "Частина набору"
+
+msgid "Produced"
+msgstr "Продюсер"
+
+msgid "Internet Radio Station Name"
+msgstr "Назва інтернет-радіостанції"
+
+msgid "Internet Radio Station Owner"
+msgstr "Власник інтернет-раідостанції"
+
+msgid "Album Sort Order"
+msgstr "Порядок сортування альбомів"
+
+msgid "Performer Sort Order"
+msgstr "Порядок сортування виконавців"
+
+msgid "Title Sort Order"
+msgstr "Порядок сортування назв"
+
+msgid "Software"
+msgstr "Програма"
+
+msgid "Set Subtitle"
+msgstr "Встановити підзаголовок"
+
+msgid "User Defined Text"
+msgstr "Текст користувача"
+
+msgid "Commercial Information"
+msgstr "Комерційна інформація"
+
+msgid "Copyright/Legal Information"
+msgstr "Авторське право/юридична інформація"
+
+msgid "Official Audio File Website"
+msgstr "Офіційна веб-сторінка аудіофайлу"
+
+msgid "Official Artist Website"
+msgstr "Офіційна веб-сторінка виконавця"
+
+msgid "Official Audio Source Website"
+msgstr "Офіційна веб-сторінка джерела аудіо"
+
+msgid "Official Radio Station Website"
+msgstr "Офіційна веб-сторінка радіостанції"
+
+msgid "Payment"
+msgstr ""
+
+msgid "Publisher's Official Website"
+msgstr "Офіційна веб-сторінка видавця"
+
+msgid "User Defined URL"
+msgstr "URL користувача"
+
 msgid "Vendor"
-msgstr "Постачальник:"
+msgstr "Постачальник"
 
-msgid "Please select the xml file for this store."
-msgstr "Будьласка оберіть xml файл для цього складу."
+msgid "ReplayGain Reference Loudness"
+msgstr "Опорна гучність Вирівнювання Гучності (ReplayGain)"
 
-msgid "Create empty store"
+msgid "ReplayGain Track Gain"
+msgstr "Коефіцієнт підсилення доріжки для вирівнювання гучності (ReplayGain)"
+
+msgid "ReplayGain Track Peak"
+msgstr "Пік доріжки для вирівнювання гучності (ReplayGain)"
+
+msgid "ReplayGain Album Gain"
+msgstr "Коефіцієнт підсилення альбома для вирівнювання гучності (ReplayGain)"
+
+msgid "ReplayGain Album Peak"
+msgstr "Пік альбома для вирівнювання гучності (ReplayGain)"
+
+msgid "Icy-Name"
+msgstr "Назва станції (Icy-Name)"
+
+msgid "Icy-Description"
+msgstr "Опис станції (Icy-Description)"
+
+msgid "Icy-Genre"
+msgstr "Жанр станції (Icy-Genre)"
+
+msgid "RVA"
+msgstr "АВГ (RVA)"
+
+msgid "Attached Picture"
+msgstr "Прикріплена картинка"
+
+msgid "Binary Object"
+msgstr "Бінарний об'єкт"
+
+msgid "NULL"
+msgstr "NULL"
+
+msgid "ID3v1"
+msgstr "ID3v1"
+
+msgid "ID3v2"
+msgstr "ID3v2"
+
+msgid "APE"
+msgstr "APE"
+
+msgid "Ogg Xiph Comments"
+msgstr "Коментарі Ogg Xiph"
+
+msgid "FLAC Pictures"
+msgstr "Картинки FLAC"
+
+msgid "Musepack ReplayGain"
+msgstr "Вирівнювання гучності Musepack"
+
+msgid "Generic StreamMeta"
 msgstr ""
 
-msgid "Name:"
-msgstr "Ім'я:"
-
-msgid "Comments:"
-msgstr "Коментарі:"
-
-msgid "Edit Store"
-msgstr "Редагувати Склад"
-
-msgid "Add Artist"
-msgstr "Додати виконавця"
-
-msgid "Visible name:"
-msgstr "Видима назва:"
-
-msgid "Name to sort by:"
-msgstr "Сортувати назви за:"
-
-msgid "Edit Artist"
-msgstr "Редагувати виконавця"
-
-msgid "Please select the audio files for this record."
-msgstr "Будьласка оберіть звукові файли для цього запису."
-
-msgid "Add Record"
-msgstr "Додати запис"
-
-msgid "Auto-create tracks from these files:"
-msgstr "Автостворення доріжок з цих файлів:"
-
-msgid "Clear list"
-msgstr "Очистити список"
-
-msgid "_Add files..."
-msgstr "_Додати файли..."
-
-msgid "Edit Record"
-msgstr "Редагувати запис"
-
-msgid "Please select the audio file for this track."
-msgstr "Будьласка оберіть звуковий файл для цієї доріжки."
-
-msgid "Add Track"
-msgstr "Додати доріжку"
-
-msgid "Edit Track"
-msgstr "Редагувати доріжку"
-
-msgid "Duration:"
-msgstr "Тривалість:"
-
-msgid "Volume level:"
-msgstr "Рівень гучності:"
-
-#, c-format
-msgid "Unmeasured"
-msgstr "Невиміряно"
-
-msgid "Use manual RVA value [dB]"
-msgstr "Використовувати значення ПВР встановлені вручну [dB]"
-
-#, c-format
-msgid "Really remove \"%s\" from the Music Store?"
-msgstr "Справді прибрати \"%s\" з Музичного Складу?"
-
-#, fuzzy
-msgid "Stop adding songs"
-msgstr "Пресканувати"
-
-#, c-format
-msgid ""
-"The store '%s' already exists.\n"
-"Add it on the Settings/Music Store tab."
+msgid "MPEG StreamMeta"
 msgstr ""
 
-msgid "rw"
-msgstr ""
+msgid "Module info"
+msgstr "Інформація про модуль"
 
-msgid "Remove Store"
-msgstr "Прибрати Склад"
+msgid "Unknown"
+msgstr "Невідомий"
 
-msgid "Do you want to save the store before removing?"
-msgstr ""
+msgid "Other"
+msgstr "Інше"
 
-msgid "Remove Artist"
-msgstr "Прибрати виконавця"
+msgid "File icon (32x32 PNG)"
+msgstr "Іконка файлу (32x32 PNG)"
 
-msgid "Remove Record"
-msgstr "Прибрати запис"
+msgid "File icon (other)"
+msgstr "Значок файлу (інше)"
 
-msgid "Remove Track"
-msgstr "Прибрати доріжку"
+msgid "Front cover"
+msgstr "Передня обкладинка"
 
-#, fuzzy
-msgid "Update file metadata"
-msgstr "Перечитати інформацію про файл"
+msgid "Back cover"
+msgstr "Задня обкладинка"
 
-msgid "Track name"
-msgstr "Назва доріжки"
+msgid "Leaflet page"
+msgstr "Вкладиш"
 
-#, fuzzy
-msgid "Track comment"
-msgstr "Назва доріжки"
+msgid "Album image"
+msgstr "Зображення альбому"
 
-#, fuzzy
-msgid "Track number"
-msgstr "Назва доріжки"
+msgid "Lead artist/performer"
+msgstr "Ведучий співак/виконавець"
 
-msgid "Failed to set metadata at the following files:"
-msgstr ""
+msgid "Artist/performer"
+msgstr "Співак/виконавець"
 
-msgid "(no comment)"
-msgstr "(без коментаря)"
+msgid "Band/orchestra"
+msgstr "Гурт/оркестр"
 
-#, fuzzy
-msgid "time unmeasured"
-msgstr "Невиміряно"
+msgid "Lyricist/text writer"
+msgstr "Поет/автор тексту"
 
-#, fuzzy
-msgid "artists"
-msgstr "Виконавець"
+msgid "Recording location/studio"
+msgstr "Місце запису/студія"
 
-#, fuzzy
-msgid "artist"
-msgstr "Виконавець"
+msgid "During recording"
+msgstr "Під час запису"
 
-#, fuzzy
-msgid "records"
-msgstr "Запис"
+msgid "During performance"
+msgstr "Під час виконання"
 
-#, fuzzy
-msgid "record"
-msgstr "Запис"
+msgid "Movie/video screen capture"
+msgstr "Кадр з кіно/відеофільму"
 
-#, fuzzy
-msgid "tracks"
-msgstr "Доріжки"
+msgid "A large, coloured fish"
+msgstr "Велика кольорова риба"
 
-#, fuzzy
-msgid "track"
-msgstr "Доріжка"
+msgid "Illustration"
+msgstr "Ілюстрація"
+
+msgid "Band/artist logotype"
+msgstr "Логотип гурту/виконавця"
+
+msgid "Publisher/studio logotype"
+msgstr "Логотип видавця/студії"
 
 msgid "Music Store"
-msgstr "Музичний Склад"
+msgstr "Музичне Сховище"
 
 msgid "Search..."
 msgstr "Шукати..."
 
 msgid "Collapse all items"
-msgstr ""
+msgstr "Згорнути усі елементи"
 
-#, fuzzy
 msgid "Edit item..."
-msgstr "Редагувати склад..."
+msgstr "Редагувати елемент..."
 
-#, fuzzy
 msgid "Add item..."
-msgstr "_Додати файли..."
+msgstr "Додати елемент..."
 
-#, fuzzy
 msgid "Remove item..."
-msgstr "Прибрати склад"
+msgstr "Видалити елемент..."
 
-#, fuzzy
 msgid "Save all stores"
-msgstr "Зберегти Музичний Склад"
+msgstr "Зберегти всі сховища"
 
 msgid "Create empty store..."
-msgstr ""
-
-msgid "Add to playlist"
-msgstr "Додати до списку програвання"
-
-#, fuzzy
-msgid "Add to playlist (Album mode)"
-msgstr "Додати до списку програвання"
-
-#, fuzzy
-msgid "Build / Update store from filesystem..."
-msgstr "Редагувати склад..."
-
-msgid "Edit store..."
-msgstr "Редагувати склад..."
-
-#, fuzzy
-msgid "Save store"
-msgstr "Зберегти Музичний Склад"
-
-msgid "Remove store"
-msgstr "Прибрати склад"
-
-msgid "Add new artist to this store..."
-msgstr "Додати нового виконавця до цього складу..."
-
-msgid "Calculate volume (recursive)"
-msgstr "Підрахувати гучність (рекурсивно)"
-
-#, fuzzy
-msgid "Unmeasured tracks only"
-msgstr "Невиміряно"
-
-#, fuzzy
-msgid "All tracks"
-msgstr "Доріжки"
-
-#, fuzzy
-msgid "Batch-update file metadata..."
-msgstr "Перечитати інформацію про файл"
-
-msgid "Add new artist..."
-msgstr "Додати нового виконавця..."
-
-msgid "Edit artist..."
-msgstr "редагувати виконавця..."
-
-msgid "Remove artist"
-msgstr "прибрати виконавця"
-
-msgid "Add new record to this artist..."
-msgstr "Додати новий запис до цього виконавця..."
-
-msgid "Add new record..."
-msgstr "Додати новий запис..."
-
-msgid "Edit record..."
-msgstr "Редагувати запис..."
-
-msgid "Remove record"
-msgstr "Прибрати запис"
-
-msgid "Add new track to this record..."
-msgstr "Додати нову доріжку до цього запису..."
-
-msgid "CDDB query for this record..."
-msgstr "CDDB запит для цього запису..."
-
-msgid "Submit record to CDDB database..."
-msgstr ""
-
-msgid "Add new track..."
-msgstr "Додати нову доріжку..."
-
-msgid "Edit track..."
-msgstr "Редагувати доріжку..."
-
-msgid "Remove track"
-msgstr "Прибрати доріжку"
-
-msgid "File info..."
-msgstr "Інформація про файл"
-
-msgid "Calculate volume"
-msgstr "Підрахувати гучність"
-
-#, fuzzy
-msgid "Only if unmeasured"
-msgstr "Невиміряно"
-
-msgid "In any case"
-msgstr ""
-
-#, fuzzy
-msgid "Update file metadata..."
-msgstr "Перечитати інформацію про файл"
-
-#, fuzzy
-msgid "CDDB query for this CD..."
-msgstr "CDDB запит для цього запису..."
-
-msgid "Submit CD to CDDB database..."
-msgstr ""
-
-msgid "Rip CD..."
-msgstr ""
-
-#, fuzzy
-msgid "Disc info..."
-msgstr "Інформація про файл"
-
-#, fuzzy
-msgid "Drive info..."
-msgstr "Інформація про файл"
+msgstr "Створити порожнє сховище..."
 
 msgid "*Music Store"
-msgstr "*Музичний Склад"
+msgstr "*Музичне Сховище"
 
 #, c-format
 msgid "Do you want to save store \"%s\" before removing from Music Store?"
-msgstr ""
+msgstr "Бажаєте зберегти сховище \"%s\" перед видаленням з Музичного Сховища?"
 
-#, fuzzy
-msgid ""
-"You will need to restart Aqualung for the following changes to take effect:"
-msgstr "Вам знадобиться перезапустити Aqualung щоб зміни набули чинності"
+msgid "You will need to restart Aqualung for the following changes to take effect:"
+msgstr "Вам знадобиться перезапустити Aqualung, щоб набули чинності наступні зміни:"
+
+msgid "Select a font..."
+msgstr "Обрати шрифт..."
+
+msgid "Disable skin support"
+msgstr "Вимкнути підтримку жупанів"
+
+msgid "rw"
+msgstr "читання/запис"
 
 msgid "r"
-msgstr ""
+msgstr "тільки читання"
 
 msgid "unreachable"
 msgstr "недосяжний"
 
-msgid "Paths must either be absolute or starting with a tilde."
-msgstr ""
-
-msgid "The specified store has already been added to the list."
-msgstr ""
+msgid "Please select a Programable Title Format File."
+msgstr "Будь ласка, оберіть файл програмованого форматування заголовка."
 
 msgid "Please select a Music Store database."
-msgstr "Будьласка оберіть базу даних Музичного Складу."
+msgstr "Будьласка оберіть базу даних Музичного Сховища."
 
-#, fuzzy, c-format
+msgid "Paths must either be absolute or starting with a tilde."
+msgstr "Шляхи мають бути абсолютними або починатися із тильди."
+
+msgid "The specified store has already been added to the list."
+msgstr "Вказане сховище вже додано до списку."
+
+#, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to\n"
-"construct a single title line from an Artist, a Record\n"
-"and a Track name. These are denoted by %%a, %%r and %%t,\n"
-"respectively. Everything else you enter here will be\n"
-"literally copied into the resulting string.\n"
+"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%%%a, %%%%r and %%%%t, respectively.\n"
 msgstr ""
 "\n"
-"Рядки шаблону, що ви впишете сюди, буде використано\n"
-"для складання однієї назви з Виконавця, Запису\n"
-"та назви Доріжки. Це означається %a, %r та %t,\n"
-"відповідно. Все інше, що ви впишете сюди буде\n"
-"скопійовано до рядку-результату.\n"
-
-msgid "Help"
-msgstr ""
+"Рядки шаблону, що ви впишете сюди, буде використано для складання однієї назви з Виконавця, Запису та назви Доріжки. Вони позначаються %%%%a, %%%%r та %%%%t, відповідно.\n"
 
 msgid ""
 "\n"
-"The string you enter here will be parsed as a command\n"
-"line before parsing the actual command line parameters.\n"
-"What you enter here will act as a default setting and may\n"
-"or may not be overrided from the 'real' command line.\n"
-"Example: enter '-o alsa -R' below to use ALSA output\n"
-"running realtime as a default.\n"
+"The file you enter/choose here will set the Lua program to use to format the title. See the Aqualung manual for details. Here is a quick example of what you can use in the file:\n"
+"\n"
+"function playlist_title()\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"end"
 msgstr ""
 "\n"
-"Рядок, що ви введете тут буде проаналізовано як командний\n"
-"рядок перед аналізом параметрів справжнього командного рядку.\n"
-"Що ви впишете тут буде діяти як налаштування по замовчанню, та\n"
-"може бути, або не бути скасовано 'справжнім' командним рядком.\n"
-"Приклад: впишіть '-o alsa -R' нижче щоб використовувати по\n"
-"замовчанню ALSA вивід запущений з приорітетом реального часу.\n"
+"Файл, що ви уведете/оберете тут, встановить програму на Lua, що буде використана для форматування заголовка. Для додаткової інформації див. довідку з Aqualung. Ось швидкий прклад того, що ви можете використовувати у цьому файлі:\n"
+"\n"
+"function playlist_title()\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"end"
 
 msgid ""
-"Paths must either be absolute or starting with a tilde, which will be "
-"expanded to the user's home directory.\n"
+"\n"
+"The string you enter here will be parsed as a command line before parsing the actual command line parameters. What you enter here will act as a default setting and may or may not be overridden from the 'real' command line.\n"
+"\n"
+"Example: enter '-o alsa -R' below to use ALSA output running realtime as a default.\n"
+msgstr ""
+"\n"
+"Рядок, що ви введете тут буде проаналізовано як командний рядок перед аналізом параметрів справжнього командного рядку. Те, що ви впишете тут, буде діяти як налаштування за замовчуванням, та може бути або не бути скасовано 'справжнім' командним рядком.\n"
+"Приклад: впишіть '-o alsa -R' нижче для використання виводу через ALSA у реальному часі за замовчуванням.\n"
+
+msgid ""
+"Paths must either be absolute or starting with a tilde, which will be expanded to the user's home directory.\n"
 "\n"
 "Drag and drop entries in the list to set the store order in the Music Store."
 msgstr ""
+"Шляхи мають бути абсолютними або починатися із тильди, яку буде перетворено на домашній каталог користувача.\n"
+"\n"
+"Перетягніть записи у списку, щоб встановити порядок зберігання у Музичному Сховищі."
 
 msgid ""
 "\n"
-"Set the drive speed for CD playing in CD-ROM speed units.\n"
-"One speed unit equals to 176 kBps raw data reading speed.\n"
-"Warning: not all drives honor this setting.\n"
+"Set the drive speed for CD playing in CD-ROM speed units. One speed unit equals to 176 kBps raw data reading speed. Warning: not all drives honor this setting.\n"
 "\n"
-"Lower speed usually means less drive noise. However,\n"
-"when using Paranoia error correction modes for increased\n"
-"accuracy, generally much larger speeds are required to\n"
-"prevent buffer underruns (and thus audible drop-outs).\n"
+"Lower speed usually means less drive noise. However, when using Paranoia error correction modes for increased accuracy, generally much larger speeds are required to prevent buffer underruns (and thus audible drop-outs).\n"
 "\n"
-"Please note that these settings do not apply to CD Ripping,\n"
-"which always happens with maximum available speed and\n"
-"with error correction modes manually set before every run."
+"Please note that these settings do not apply to CD Ripping, which always happens with maximum available speed and with error correction modes manually set before every run."
 msgstr ""
+"\n"
+"Встановіть швидкість приводу для програвання CD в одиницях швидкості CD-ROM. Одна одиниця швидкості відповідає швидкості читання даних 176 кбіт/с. Попередження: не всі пристрої приймають це налаштування.\n"
+"\n"
+"Нижча швидкість зазвичай означає менше галасу з боку приводу. Однак, коли використовуються режими корекції помилок Paranoia для підвищення точності, звичайно потрібні набагато більші швидкості, аби запобігти спустошенню буфера (і як наслідок - чутних випадань).\n"
+"\n"
+"Будь ласка, зауважте, що ці налаштування не впливають на діставання музики з CD (Ripping), яке завжди відбувається на максимально можливій швидкості та з ручним встановленням режимів корекції помилок перед кожним сеансом."
 
 msgid ""
 "\n"
-"Most drives let Aqualung know when a CD has been inserted\n"
-"or removed by providing a 'media changed' flag. However,\n"
-"some drives don't set this flag properly, and thus it may\n"
-"happen that a newly inserted CD remains unnoticed to\n"
-"Aqualung. In such cases, enabling this option should help."
+"Most drives let Aqualung know when a CD has been inserted or removed by providing a 'media changed' flag. However, some drives don't set this flag properly, and thus it may happen that a newly inserted CD remains unnoticed to Aqualung. In such cases, enabling this option should help."
 msgstr ""
+"\n"
+"Більшість пристроїв дають Aqualung'у знати, коли вставлено або вилучено CD, встановлюючи прапор 'носій змінено'. Однак, деякі пристрої не втановлюють цей флаг належним чином, і тому щойно вставлений CD може лишитися непоміченим Aqualung'ом. В таких випадках увімкнення цієї функції має допомогти."
 
 msgid ""
 "\n"
@@ -1527,9 +1750,20 @@ msgid ""
 "that should be accessed without using the proxy set above.\n"
 "Example: localhost, .localdomain, .my.domain.com"
 msgstr ""
+"\n"
+"Тут ви маєте увести через кому список доменів,\n"
+"доступ до яких має здійсньватися без використання\n"
+"проксі, встановленого вище.\n"
+"Приклад: localhost, .localdomain, .my.domain.com"
 
-msgid "Title format"
+msgid "Enable systray"
+msgstr "Увімкнути системний лоток"
+
+msgid "Title Format"
 msgstr "Формат назви"
+
+msgid "Programmable title format file"
+msgstr "Файл програмованого форматування заголовка"
 
 msgid "Implicit command line"
 msgstr "Неявний командний рядок"
@@ -1540,133 +1774,41 @@ msgstr "Різне"
 msgid "Enable tooltips"
 msgstr "Увімкнути підказки"
 
+msgid "Start minimized"
+msgstr "Запускати мінімізованим"
+
 msgid "Put control buttons at the bottom of playlist"
 msgstr "Кнопки керування знизу списку програвання"
 
 msgid "Disable control buttons relief"
-msgstr ""
+msgstr "Вимкнути рельєф кнопок керування"
+
+msgid "Combine play and pause buttons"
+msgstr "Об'єднати кнопки паузи ті відтворення"
 
 msgid "Keep main window always on top"
-msgstr ""
+msgstr "Розміщувати головне вікно завжди зверху"
 
 msgid "Simple view in LADSPA patch builder"
-msgstr "Спрощений вигляд будівельника шляхів LADSPA"
+msgstr "Спрощений вигляд будівельника патчів LADSPA"
 
 msgid "United windows minimization"
-msgstr ""
+msgstr "Об'єднана мінімізація вікон"
 
 msgid "Show song name in the main window's title"
-msgstr ""
+msgstr "Показувати назву пісні у заголовку головного вікна"
 
 msgid "Show hidden files and directories in file choosers"
-msgstr ""
+msgstr "Показувати приховані файли та каталоги у діалогах вибору файу"
 
 msgid "Show tags tab first in the file info dialog"
-msgstr ""
-
-msgid "Playlist"
-msgstr "Список програвання"
-
-msgid "Embed playlist into main window"
-msgstr "Вбудувати список програвання у головне вікно"
-
-msgid "Save and restore the playlist on exit/startup"
-msgstr "Запис та відновлення списку програвання при виході/запуску"
-
-msgid "Album mode is the default when adding entire records"
-msgstr ""
-
-msgid "Always show the tab bar"
-msgstr ""
-
-msgid "Show close button in tab"
-msgstr ""
-
-msgid "When shuffling, records added in Album mode are played in order"
-msgstr ""
-
-#, fuzzy
-msgid "Enable statusbar"
-msgstr "Увімкнути рядок стану у списку програвання"
-
-msgid "Enable statusbar in playlist"
-msgstr "Увімкнути рядок стану у списку програвання"
-
-msgid "Show soundfile size in statusbar"
-msgstr ""
-
-#, fuzzy
-msgid "Show RVA values"
-msgstr "Значення ПВР"
-
-#, fuzzy
-msgid "Show track lengths"
-msgstr "Тривалість доріжок"
-
-msgid "Show active track name in bold"
-msgstr "Виділяти жирним активну доріжку"
-
-#, fuzzy
-msgid "Enable rules hint"
-msgstr "Задіяти усі втулки"
-
-msgid "Playlist column order"
-msgstr "Порядок стовпчиків списку пргравання"
-
-msgid ""
-"Drag and drop entries in the list below \n"
-"to set the column order in the Playlist."
-msgstr ""
-"Перетягуйте пункти у списку нижче \n"
-"для встановлення порядку стовпчиків у списку пргравання."
-
-msgid "Column"
-msgstr "Стовпчик"
-
-msgid "Track titles"
-msgstr "Назви доріжок"
-
-msgid "RVA values"
-msgstr "Значення ПВР"
-
-msgid "Track lengths"
-msgstr "Тривалість доріжок"
-
-#, fuzzy
-msgid "Hide comment pane"
-msgstr "Приховати панель коментарів Музичного Складу"
-
-msgid "Hide the Music Store comment pane"
-msgstr "Приховати панель коментарів Музичного Складу"
-
-#, fuzzy
-msgid "Enable toolbar"
-msgstr "Увімкнути підказки"
-
-#, fuzzy
-msgid "Enable toolbar in Music Store"
-msgstr "Увімкнути рядок стану у списку програвання"
-
-#, fuzzy
-msgid "Enable statusbar in Music Store"
-msgstr "Увімкнути рядок стану у списку програвання"
-
-msgid "Expand Stores on startup"
-msgstr ""
-
-#, fuzzy
-msgid "Enable tree node icons"
-msgstr "Зберегти Музичний Склад"
-
-#, fuzzy
-msgid "Enable Music Store tree node icons"
-msgstr "Зберегти Музичний Склад"
+msgstr "Показувати вкладку тегів першою у вікні інформації про файл"
 
 msgid "Cover art"
 msgstr "Обкладинка"
 
 msgid "Default cover width:"
-msgstr "Ширина обкладинки по замовчанню:"
+msgstr "Ширина обкладинки за замовчуванням:"
 
 msgid "50 pixels"
 msgstr "50 пікселів"
@@ -1683,12 +1825,114 @@ msgstr "300 пікселів"
 msgid "use browser window width"
 msgstr "використовувати ширину вікна оглядача"
 
-#, fuzzy
 msgid "Do not magnify images with smaller width"
-msgstr "Не збільшувати зображення меншого розміру"
+msgstr "Не збільшувати зображення меншої ширини"
+
+msgid "Show cover thumbnail for Music Store tracks only"
+msgstr "Показувати мініатюру обкладинки тільки для треків з Музичного Сховища"
+
+msgid "Don't show cover thumbnail in the main window"
+msgstr "Не показувати мініатюру обкладинки у головному вікні"
+
+msgid "Playlist"
+msgstr "Список програвання"
+
+msgid "Embed playlist into main window"
+msgstr "Вбудувати список програвання у головне вікно"
+
+msgid "Save and restore the playlist on exit/startup"
+msgstr "Запис та відновлення списку програвання при виході/запуску"
+
+msgid "Save playlist periodically [min]:"
+msgstr "Періодично зберігати список програвання [хвил.]:"
+
+msgid "Album mode is the default when adding entire records"
+msgstr "Режим альбому використовується за замовчуванням при додаванні цілих записів"
+
+msgid "Always show the tab bar"
+msgstr "Завжди показувати рядок вкладок"
+
+msgid "Show close button in tab"
+msgstr "Показувати кнопку закриття на вкладці"
+
+msgid "When shuffling, records added in Album mode are played in order"
+msgstr "У режимі перемішування записи, додані в режимі альбому, програються по черзі"
+
+msgid "Enable statusbar"
+msgstr "Увімкнути рядок стану"
+
+msgid "Enable statusbar in playlist"
+msgstr "Увімкнути рядок стану у списку програвання"
+
+msgid "Show soundfile size in statusbar"
+msgstr "Показувати розмір файлу у статусному рядку"
+
+msgid "Show RVA values"
+msgstr "Показати значення RVA"
+
+msgid "Show track lengths"
+msgstr "Показати тривалість доріжок"
+
+msgid "Show active track name in bold"
+msgstr "Виділяти жирним активну доріжку"
+
+msgid "Automatically roll to active track"
+msgstr "Автоматично переміщатися до активної доріжки"
+
+msgid "Enable rules hint"
+msgstr ""
+
+msgid "Playlist column order"
+msgstr "Порядок стовпчиків списку пргравання"
+
+msgid ""
+"Drag and drop entries in the list below \n"
+"to set the column order in the Playlist."
+msgstr ""
+"Перетягуйте пункти у списку нижче для \n"
+"встановлення порядку стовпчиків у списку пргравання."
+
+msgid "Column"
+msgstr "Стовпчик"
+
+msgid "Track titles"
+msgstr "Назви доріжок"
+
+msgid "RVA values"
+msgstr "Значення RVA"
+
+msgid "Track lengths"
+msgstr "Довжина доріжок"
+
+msgid "Hide comment pane"
+msgstr "Приховати панель коментарів"
+
+msgid "Hide the Music Store comment pane"
+msgstr "Приховати панель коментарів Музичного Складу"
+
+msgid "Enable toolbar"
+msgstr "Увімкнути панель інструментів"
+
+msgid "Enable toolbar in Music Store"
+msgstr "Увімкнути панель інструментів у Музичному Сховищі"
+
+msgid "Enable statusbar in Music Store"
+msgstr "Увімкнути рядок стану у Музичному Сховищі"
+
+msgid "Expand Stores on startup"
+msgstr "Розгорнути сховища після запуску"
+
+msgid "Enable tree node icons"
+msgstr "Дозволити значки вузлів дерева"
+
+msgid "Enable Music Store tree node icons"
+msgstr "Дозволити значки вузлів дерева Музичного Сховища"
+
+msgid "Ask for confirmation when removing items"
+msgstr "Запитувати підтвердження при видаленні елементів"
 
 msgid "Paths to Music Store databases"
-msgstr "Шляхи до баз даних Музичного Складу"
+msgstr "Шляхи до баз даних Музичного Сховища"
 
 msgid "Path"
 msgstr "Шлях"
@@ -1696,153 +1940,165 @@ msgstr "Шлях"
 msgid "Access"
 msgstr "Доступ"
 
-msgid "Browse"
-msgstr "Оглянути"
-
 msgid "Refresh"
 msgstr "Оновити"
 
-msgid "Remove"
-msgstr "Прибрати"
-
-msgid "Add"
-msgstr "Додати"
-
 msgid "DSP"
-msgstr "ЦОС"
+msgstr "DSP"
 
 msgid "LADSPA plugin processing"
-msgstr "Обробка LADSPA втулками (Цифрова Обробка Сигналу)"
+msgstr "Обробка додатку LADSPA"
 
 msgid "Pre Fader (before Volume & Balance)"
-msgstr "Пре-згасання (перед Гучністю та Балансом)"
+msgstr "Передпідсилювач (до Гучності та Баланса)"
 
 msgid "Post Fader (after Volume & Balance)"
-msgstr "Після-згасання (після Гучності та Баланса)"
+msgstr "Постпідсилювач (після Гучності та Баланса)"
 
-#, fuzzy
 msgid ""
 "Aqualung is compiled without LADSPA plugin support.\n"
 "See the About box and the documentation for details."
 msgstr ""
-"Aqualung скомпільовано без підтримки CDDB.\n"
+"Aqualung скомпільовано без підтримки додатків LADSPA.\n"
 "Дивись вікно 'Про програму' та документацію для подробиць."
 
 msgid "Sample Rate Converter type"
-msgstr "Тип перетворювача частоти семплювання"
+msgstr "Тип перетворювача частоти дискретизації"
 
 msgid ""
 "Aqualung is compiled without Sample Rate Converter support.\n"
 "See the About box and the documentation for details."
 msgstr ""
-"Aqualung скомпільовано без підтримки Перетворювача Частоти Семплювання.\n"
+"Aqualung скомпільовано без підтримки Перетворювача Частоти Дискретизації.\n"
 "Дивись вікно 'Про програму' та документацію для подробиць."
 
 msgid "Playback RVA"
-msgstr "ПВР програвання"
+msgstr "АВГ (RVA)"
 
 msgid "Enable playback RVA"
-msgstr "Задіяти ПВР (Поправку Відносного Рівня) програвання"
+msgstr "Задіяти Автоматичне Вирівнювання Гучності (RVA)"
 
 msgid "Listening environment:"
-msgstr "Оточення:"
+msgstr "Оточення прослуховування:"
 
 msgid "Audiophile"
 msgstr "Аудіофіл"
 
 msgid "Living room"
-msgstr "Жила кімната"
+msgstr "Вітальня"
 
 msgid "Office"
 msgstr "Офіс"
 
 msgid "Noisy workshop"
-msgstr "Шумна установа"
+msgstr "Галаслива майстерня"
 
 msgid "Reference volume [dBFS] :"
-msgstr "Бажана гучність [dbFS] :"
+msgstr "Опорний рівень [дБ повна шкала] :"
 
 msgid "Steepness [dB/dB] :"
-msgstr "Крок [dB/dB] :"
+msgstr "Крутість [дБ/дБ] :"
 
 msgid "RVA for Unmeasured Files [dB] :"
-msgstr ""
+msgstr "Рівень RVA для незміряних файлів [дБ] :"
 
 msgid "Apply averaged RVA to tracks of the same record"
-msgstr "Застосувати усереднені ПВР до доріжок одного запису"
+msgstr "Застосувати усереднений рівень RVA до доріжок одного запису"
 
 msgid "Drop statistical aberrations based on"
-msgstr "Скидання статистичного відхилення базується на"
+msgstr "Нехтувати випадковими відхиленнями, базуючись на"
 
-#, c-format
+#, no-c-format
 msgid "% of standard deviation"
 msgstr "% від стандартного відхилення"
 
 msgid "Linear threshold [dB]"
-msgstr "Лінійне обмеження [dB]"
+msgstr "Лінійному порозі [дБ]"
 
 msgid "Linear threshold [dB] :"
-msgstr "Лінійне обмеження [dB] :"
+msgstr "Лінійний поріг [дБ] :"
 
-#, c-format
+#, no-c-format
 msgid "% of standard deviation :"
 msgstr "% від стандартного відхилення :"
 
-msgid ""
-"When adding to playlist, use file metadata (if available) instead of\n"
-"information from the Music Store for:"
-msgstr ""
-"При додаванні до списку програвання, використовувати метадані файла (якщо є) "
-"замість\n"
-"Замість інформації з Музичного Складу для:"
-
-msgid ""
-"When adding external files to playlist, use file metadata (if available) for:"
-msgstr ""
-"При додаванні зовнішніх файлів до списку програвання, використовувати "
-"метадані файла (якщо є) для:"
-
-#, fuzzy
-msgid "Replaygain tag to extract from Ogg Xiph and APE tags: "
-msgstr ""
-"Тег підсилення програвання що використовується в Ogg Vorbis та FLAC файлах: "
+msgid "ReplayGain tag to use (with fallback to the other): "
+msgstr "Тег ReplayGain для використання (із відходом на інший):"
 
 msgid "Replaygain_track_gain"
-msgstr "Підсилення доріжки"
+msgstr ""
 
 msgid "Replaygain_album_gain"
-msgstr "Підсилення альбома"
+msgstr ""
+
+msgid "Adding files to Playlist"
+msgstr "Додавання файлів до списку програвання"
+
+msgid ""
+"Use basename only instead of full path\n"
+"if no metadata is available."
+msgstr ""
+"Використовувати тільки базове ім'я замість\n"
+"повного шляху,якщо не доступні метадані."
+
+msgid "Metadata editor (File info dialog)"
+msgstr "Редактор метаданих (діалог інформації про файл)"
+
+msgid ""
+"When adding new frames, try to set their contents\n"
+"from another tag's equivalent frame."
+msgstr ""
+"При додаванні нових полів намагатися встановити їх вміст\n"
+"з еквівалентних полів іншого тега."
+
+msgid "Batch update & encode (mass tagger, CD ripper, file export)"
+msgstr "Пакетне оновлення та кодування (масове заповнення тегів, діставання з CD, експорт файлів)"
+
+msgid "Tags to add when creating or updating MPEG audio files:"
+msgstr "Теги, які додавати при створенні чи зміні аудіофайлів MPEG:"
+
+msgid ""
+"Note: pre-existing tags will be updated even though they\n"
+"might not be checked here."
+msgstr ""
+"Зауваження: існуючі теги будуть оновлені навіть якщо вони\n"
+"не обрані тут."
+
+msgid "CD Audio"
+msgstr "CD Audio"
 
 msgid "CD drive speed:"
-msgstr ""
+msgstr "Швидкість приводу CD:"
+
+msgid "\tMaximum number of retries:"
+msgstr "\tМаксимальна кількість спроб:"
 
 msgid "Force TOC re-read on every drive scan"
 msgstr ""
 
 msgid "Automatically add CDs to Playlist"
-msgstr ""
+msgstr "Автоматично додавати CD до списку програвання"
 
 msgid "Automatically remove CDs from Playlist"
-msgstr ""
+msgstr "Автоматично видаляти CD зі списку програвання"
 
 msgid "CDDB server:"
-msgstr "CDDB сервер:"
+msgstr "Сервер CDDB:"
 
 msgid "Connection timeout [sec]:"
 msgstr "Таймаут з'єднання [сек]:"
 
 msgid "Email address for submission:"
-msgstr ""
+msgstr "Адреса електроної пошти для підписки:"
 
-#, fuzzy
 msgid "Local CDDB directory:"
-msgstr "Запис"
+msgstr "Локальний каталог CDDB:"
 
 msgid "Use the local database only"
-msgstr ""
+msgstr "Використовувати лише локальну базу даних"
 
 msgid "Protocol for querying (direct connection only):"
-msgstr ""
+msgstr "Протокол для запитів (лише пряме з'єднання):"
 
 msgid "CDDBP (port 888)"
 msgstr "CDDBP (порт 888)"
@@ -1851,28 +2107,31 @@ msgid "HTTP (port 80)"
 msgstr "HTTP (порт 80)"
 
 msgid "Internet"
-msgstr ""
+msgstr "Інтернет"
 
-#, fuzzy
 msgid "Direct connection to the Internet"
-msgstr "Під'єднуюсь до сервера CDDB..."
+msgstr "Пряме з'єеднання з Інтернетом"
 
 msgid "Connect via HTTP proxy"
-msgstr ""
+msgstr "З'єднання через HTTP-проксі"
 
-#, fuzzy
 msgid "Proxy settings"
-msgstr "Перекривати установки жупана"
+msgstr "Налаштування проксі"
 
 msgid "Proxy host:"
-msgstr ""
+msgstr "Адреса проксі:"
 
-#, fuzzy
 msgid "Port:"
-msgstr "Формат:"
+msgstr "Порт:"
 
 msgid "No proxy for:"
+msgstr "Не використовувати проксі для:"
+
+msgid "Timeout for socket I/O:"
 msgstr ""
+
+msgid "seconds"
+msgstr "секунд"
 
 msgid "Appearance"
 msgstr "Вигляд"
@@ -1887,7 +2146,7 @@ msgid "Playlist: "
 msgstr "Список програвання: "
 
 msgid "Music Store: "
-msgstr "Музичний Склад: "
+msgstr "Музичне Сховище: "
 
 msgid "Big timer: "
 msgstr "Великий таймер: "
@@ -1895,131 +2154,101 @@ msgstr "Великий таймер: "
 msgid "Small timers: "
 msgstr "Маленькі таймери:"
 
-#, fuzzy
 msgid "Song title: "
-msgstr "Великий таймер: "
+msgstr "Назва пісні: "
 
 msgid "Song info: "
-msgstr ""
+msgstr "Інформація про пісню:"
 
 msgid "Statusbar: "
-msgstr ""
+msgstr "Статусний рядок:"
 
 msgid "Colors"
 msgstr "Кольори"
 
+msgid "Song in playlist: "
+msgstr "Пісня у списку програвання: "
+
 msgid "Active song in playlist: "
 msgstr "Активна пісня у списку програвання: "
 
+msgid "Error in title format string"
+msgstr "Помилка у рядку формату заголовка"
+
 msgid "(Untitled)"
-msgstr ""
+msgstr "(Без назви)"
 
 #, c-format
 msgid " (%d/%d)"
-msgstr ""
+msgstr " (%d/%d)"
 
-#, fuzzy
 msgid "Select files"
-msgstr "Вибрати файли..."
+msgstr "Обрати файли"
 
-#, fuzzy
 msgid "Select directory"
-msgstr "Прибрати запис"
+msgstr "Обрати каталог"
 
-#, fuzzy
 msgid "Add URL"
-msgstr "Додати"
+msgstr "Додати URL"
 
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 msgid "Please specify the file to save the playlist to."
-msgstr "Будьласка вкажіть файл куди буде записано список програвання."
+msgstr "Будь ласка, вкажіть файл для збереження списку програвання."
 
 msgid "Please specify the file to load the playlist from."
-msgstr "Будьласка вкажіть файл звідки буде завантажено список програвання."
+msgstr "Будь ласка, вкажіть файл, з якого буде завантажено список програвання."
 
-#, fuzzy
 msgid ""
 "Playback RVA is currently disabled.\n"
 "Do you want to enable it now?"
 msgstr ""
-"ПВР програвання зараз вимкнено. Увімкніть її в Налаштування->ПВР програвання."
-
-msgid "Unknown"
-msgstr "Невідомо"
+"АВГ (RVA) зараз вимкнено.\n"
+"Бажаєте увімкнути його зараз?"
 
 msgid "counting..."
-msgstr ""
+msgstr "підрахунок..."
 
-#, fuzzy, c-format
-msgid "%d track [%s] (%.1f MB)"
-msgstr "%d доріжка [%s]"
+msgid "track"
+msgstr "доріжка"
 
-#, fuzzy, c-format
-msgid "%d track [%s] (%.1f GB)"
-msgstr "%d доріжка [%s]"
+msgid "tracks"
+msgstr "доріжки"
 
-#, fuzzy, c-format
-msgid "%d track "
-msgstr "%d доріжка [%s]"
-
-#, fuzzy, c-format
-msgid "%d track [%s] "
-msgstr "%d доріжка [%s]"
-
-#, fuzzy, c-format
-msgid "%d tracks [%s] (%.1f MB)"
-msgstr "%d доріжок [%s]"
-
-#, fuzzy, c-format
-msgid "%d tracks [%s] (%.1f GB)"
-msgstr "%d доріжок [%s]"
-
-#, fuzzy, c-format
-msgid "%d tracks "
-msgstr "%d доріжка [%s]"
-
-#, fuzzy, c-format
-msgid "%d tracks [%s] "
-msgstr "%d доріжок [%s]"
-
-#, fuzzy
 msgid "Rename playlist"
-msgstr "Зберегти список програвання"
+msgstr "Перейменувати список програвання"
+
+msgid "Name:"
+msgstr "Ім'я:"
 
 msgid "New tab"
-msgstr ""
+msgstr "Нова вкладка"
 
-#, fuzzy
-msgid "Rename"
-msgstr "Назва запису"
-
-#, fuzzy
 msgid "Close tab"
-msgstr "Кольори"
+msgstr "Закрити вкладку"
 
 msgid "Undo close tab"
-msgstr ""
+msgstr "Скасувати закриття вкладки"
 
-#, fuzzy
 msgid "Close other tabs"
-msgstr "Кольори"
+msgstr "Закрити інші вкладки"
 
-msgid "Selected: "
-msgstr "Вибрано: "
+msgid " Selected: "
+msgstr " Обрані: "
 
 msgid "Total: "
 msgstr "Разом: "
 
-#, fuzzy
 msgid "Add files"
-msgstr "Додати файли..."
+msgstr "Додати файли"
 
 msgid ""
 "Add files to playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
+"Додати файли до списку програвання\n"
+"(Натисніть праву кнопку миші для відкриття меню)"
 
 msgid "Select all"
 msgstr "Вибрати все"
@@ -2028,18 +2257,21 @@ msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
+"Обрати усі пісні у списку програвання\n"
+"(Натисніть праву кнопку миші для відкриття меню)"
 
 msgid "Remove selected"
-msgstr "Прибрати вибране"
+msgstr "Видалити обрані"
 
 msgid ""
 "Remove selected songs from playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
+"Видалити обрані пісні зі списку програвання\n"
+"(Натисніть праву кнопку миші для відкриття меню)"
 
-#, fuzzy
 msgid "Add directory"
-msgstr "Додати запис"
+msgstr "Додати каталог"
 
 msgid "Select none"
 msgstr "Зняти вибір"
@@ -2048,25 +2280,22 @@ msgid "Invert selection"
 msgstr "Перевернути вибір"
 
 msgid "Remove all"
-msgstr "Прибрати все"
+msgstr "Видалити всі"
 
-#, fuzzy
 msgid "Remove dead"
-msgstr "Прибрати все"
+msgstr "Видалити мертві"
 
 msgid "Cut selected"
-msgstr "Прибрати обране"
+msgstr "Вирізати обране"
 
 msgid "Save playlist"
 msgstr "Зберегти список програвання"
 
-#, fuzzy
 msgid "Save all playlists"
-msgstr "Зберегти список програвання"
+msgstr "Зберегти усі списки програвання"
 
-#, fuzzy
 msgid "Load playlist in new tab"
-msgstr "Завантажити список програвання"
+msgstr "Завантажити список програвання у нову вкладку"
 
 msgid "Load playlist"
 msgstr "Завантажити список програвання"
@@ -2075,55 +2304,60 @@ msgid "Enqueue playlist"
 msgstr "Поставити в чергу список програвання"
 
 msgid "Send to iFP device"
-msgstr ""
+msgstr "Надіслати до пристрою iFP"
 
 msgid "Calculate RVA"
-msgstr "Підрахувати ПВР"
+msgstr "Підрахувати рівень RVA"
 
 msgid "Separate"
-msgstr "Окремі"
+msgstr "Окремо"
 
 msgid "Average"
-msgstr "Середні"
+msgstr "Середній"
 
 msgid "Reread file metadata"
-msgstr "Перечитати інформацію про файл"
+msgstr "Перечитати матадані файлу"
 
-#, fuzzy
+msgid "File info..."
+msgstr "Інформація про файл"
+
+msgid "Roll to active song"
+msgstr "Скотитися до активної пісні"
+
 msgid "Stop adding files"
-msgstr "Пресканувати"
+msgstr "Зупинити додавання файлів"
+
+msgid "Files selected for removal"
+msgstr "Обрані для видалення файли"
+
+msgid "Remove files"
+msgstr "Видалити файли"
+
+msgid ""
+"The selected files will be deleted from the filesystem. No recovery will be possible after this operation.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"Обрані файли буде видалено з файлової системи. Відновлення буде неможливим після цієї операції.\n"
+"\n"
+"Бажаєте продовжити?"
 
 #, c-format
-msgid ""
-"The selected file will be deleted from the filesystem. No recovery will be "
-"possible after this operation.\n"
-"\n"
-"Are you sure?"
-msgstr ""
+msgid "Unable to remove %d file."
+msgstr "Неможливо видалити %d файл."
 
 #, c-format
-msgid ""
-"All selected files will be deleted from the filesystem. No recovery will be "
-"possible after this operation.\n"
-"\n"
-"Are you sure?"
-msgstr ""
-
-#, fuzzy
-msgid "Remove file"
-msgstr "Прибрати все"
+msgid "Unable to remove %d files."
+msgstr "Неможливо видалити %d файлів"
 
 msgid "LADSPA patch builder"
-msgstr "Будівельник шляхів LADSPA"
+msgstr "Будівельник патчів LADSPA"
 
 msgid "Available plugins"
-msgstr "Наявні втулки"
+msgstr "Доступні розширення"
 
 msgid "ID"
-msgstr "Ідентифікатор"
-
-msgid "Name"
-msgstr "Ім'я"
+msgstr "ID"
 
 msgid "Category"
 msgstr "Категорія"
@@ -2135,19 +2369,25 @@ msgid "Outputs"
 msgstr "Виходи"
 
 msgid "Running plugins"
-msgstr "Запущені втулки"
+msgstr "Запущені розширення"
 
 msgid "_Configure"
 msgstr "_Налаштувати"
 
 msgid "Enable all plugins"
-msgstr "Задіяти усі втулки"
+msgstr "Задіяти усі розширення"
 
 msgid "Disable all plugins"
-msgstr "Вимкнути усі втулки"
+msgstr "Вимкнути усі розширення"
 
 msgid "Invert current state"
 msgstr "Інвертувати поточний стан"
+
+msgid "Clear list"
+msgstr "Очистити список"
+
+msgid "Untitled"
+msgstr "Без назви"
 
 msgid "JACK Port Setup"
 msgstr "Налаштування порту JACK"
@@ -2168,7 +2408,7 @@ msgid " out R"
 msgstr " вихід П"
 
 msgid "Search the Music Store"
-msgstr "Шукати у Музичному Складі"
+msgstr "Пошук Музичному Сховищі"
 
 msgid "Key: "
 msgstr "Ключ: "
@@ -2180,19 +2420,19 @@ msgid "Exact matches only"
 msgstr "Тільки повний збіг"
 
 msgid "Select first and close window"
-msgstr "Обрати першу та закрити вікно"
+msgstr "Обрати перший та закрити вікно"
 
 msgid "Search in:"
 msgstr "Шукати у:"
 
 msgid "Artist names"
-msgstr "Назвах виконавців"
+msgstr "Іменах виконавців"
 
 msgid "Record titles"
 msgstr "Назвах записів"
 
 msgid "Comments"
-msgstr "Коментарі"
+msgstr "Коментарях"
 
 msgid "Search"
 msgstr "Шукати"
@@ -2203,359 +2443,598 @@ msgstr "Шукати у списку програвання"
 msgid "Available skins"
 msgstr "Наявні жупани"
 
-#, fuzzy
-msgid "Calculating volume level"
-msgstr "<b>Підраховую рівень гучності</b>"
+msgid "Drive info"
+msgstr "Інформація приводу"
 
-msgid "Progress:"
-msgstr "Прогрес:"
+msgid "Device path:"
+msgstr "Шлях до пристрою:"
 
-#, fuzzy
-msgid "(not set)"
-msgstr "(без коментаря)"
+msgid "Vendor:"
+msgstr "Постачальник:"
 
-#, fuzzy
-msgid "Please specify the file to save the image to."
-msgstr "Будьласка вкажіть файл куди буде записано список програвання."
+msgid "Revision:"
+msgstr "Перегляд:"
 
-#, fuzzy
-msgid "Type"
-msgstr "SRC Тип: "
+msgid ""
+"The information below is reported by the drive, and\n"
+"may not reflect the actual capabilities of the device."
+msgstr ""
+"Інформація нижче отримана з приладу і\n"
+"може не відображати дійсних можливостей приладу."
 
-#, fuzzy
-msgid "Description"
-msgstr "Тривалість:"
+msgid "Eject"
+msgstr "Витягти"
 
-msgid "No description"
+msgid "Close tray"
+msgstr "Зачинити лоток"
+
+msgid "Disable manual eject"
+msgstr "Заборонити ручне витягування"
+
+msgid "Select juke-box disc"
+msgstr "Обрати диск у CD-чейнджері"
+
+msgid "Set drive speed"
+msgstr "Встановити швидкість приводу"
+
+msgid "Detect media change"
+msgstr "Виявляти зміну носія"
+
+msgid "Read multiple sessions"
+msgstr "Зчитувати кілька сесій"
+
+msgid "Hard reset device"
+msgstr "Жорстко скинути пристрій"
+
+msgid "Reading"
+msgstr "Читання"
+
+msgid "Play CD Audio"
+msgstr "Грати CD Audio"
+
+msgid "Read CD-DA"
+msgstr "Читати CD-DA"
+
+msgid "Read CD+G"
+msgstr "Читати CD+G"
+
+msgid "Read CD-R"
+msgstr "Читати CD-R"
+
+msgid "Read CD-RW"
+msgstr "Читати CD-RW"
+
+msgid "Read DVD-R"
+msgstr "Читати DVD-R"
+
+msgid "Read DVD+R"
+msgstr "Читати DVD+R"
+
+msgid "Read DVD-RW"
+msgstr "Читати DVD-RW"
+
+msgid "Read DVD+RW"
+msgstr "Читати DVD+RW"
+
+msgid "Read DVD-RAM"
+msgstr "Читати DVD-RAM"
+
+msgid "Read DVD-ROM"
+msgstr "Читати DVD-ROM"
+
+msgid "C2 Error Correction"
+msgstr "Корекція помилок C2"
+
+msgid "Read Mode 2 Form 1"
 msgstr ""
 
-msgid "Embedded picture"
+msgid "Read Mode 2 Form 2"
 msgstr ""
 
 #, fuzzy
-msgid "Save to file..."
-msgstr "Зберегти Музичний Склад"
+msgid "Read MCN"
+msgstr "Зчитувати MCN"
 
-msgid "Import as Record"
-msgstr "Імпортувати як Запис"
+msgid "Read ISRC"
+msgstr "Зчитувати ISRC (Міжнародний стандартний номер запису)"
 
-msgid "Track:"
-msgstr "Доріжка:"
+msgid "Writing"
+msgstr "Запис"
 
-msgid "Import as Track number"
-msgstr "Імпортувати як Номер доріжки"
+msgid "Write CD-R"
+msgstr "Записати CD-R"
+
+msgid "Write CD-RW"
+msgstr "Записати CD-RW"
+
+msgid "Write DVD-R"
+msgstr "Записати DVD-R"
+
+msgid "Write DVD+R"
+msgstr "Записати DVD+R"
+
+msgid "Write DVD-RW"
+msgstr "Записати DVD-RW"
+
+msgid "Write DVD+RW"
+msgstr "Записати DVD+RW"
+
+msgid "Write DVD-RAM"
+msgstr "Записати DVD-RAM"
+
+msgid "Mount Rainier"
+msgstr ""
 
 #, fuzzy
-msgid "Comment:"
+msgid "Burn Proof"
+msgstr "Захист від запису"
+
+msgid "Disc info"
+msgstr "Інформація про диск"
+
+msgid "This CD does not contain CD-Text information."
+msgstr "Цей диск не містить інформації CD-Text"
+
+msgid "drive"
+msgstr "диск"
+
+msgid "drives"
+msgstr "диски"
+
+msgid "record"
+msgstr "запис"
+
+msgid "records"
+msgstr "записи"
+
+msgid "Add to playlist"
+msgstr "Додати до списку програвання"
+
+msgid "Add to playlist (Album mode)"
+msgstr "Додати до списку програвання (режим альбому)"
+
+msgid "CDDB query for this CD..."
+msgstr "Запит у CDDB для цього CD..."
+
+msgid "Submit CD to CDDB database..."
+msgstr "Надіслати дані про цей CD до бази даних CDDB..."
+
+msgid "Rip CD..."
+msgstr "Дістати музику з CD..."
+
+msgid "Disc info..."
+msgstr "Інформація про диск..."
+
+msgid "Drive info..."
+msgstr "Інформація приводу..."
+
+msgid "Comments:"
 msgstr "Коментарі:"
 
-#, fuzzy
-msgid "Save basic fields"
-msgstr "Зберегти Музичний Склад"
+msgid "Please select the xml file for this store."
+msgstr "Будьласка оберіть xml файл для цього складу."
 
-msgid "ID3v1"
-msgstr ""
+msgid "Create empty store"
+msgstr "Створити пусте сховище"
 
-#, fuzzy
-msgid "Relative Volume Adj.:"
-msgstr "Відносний Рівень"
+msgid "Visible name:"
+msgstr "Видиме ім'я:"
 
-msgid "Import as RVA"
-msgstr "Імпортувати як ПВР"
+msgid "Edit Store"
+msgstr "Редагувати Сховище"
 
-msgid "Other"
-msgstr ""
+msgid "Use relative paths in store file"
+msgstr "Використовувати відносні шляхи у файлі сховища"
 
-msgid "File icon (32x32 PNG)"
-msgstr ""
+msgid "Add Artist"
+msgstr "Додати виконавця"
 
-#, fuzzy
-msgid "File icon (other)"
-msgstr "Інформація про файл"
+msgid "Name to sort by:"
+msgstr "Ім'я для сортування:"
 
-msgid "Front cover"
-msgstr ""
+msgid "Edit Artist"
+msgstr "Редагувати виконавця"
 
-msgid "Back cover"
-msgstr ""
+msgid "Please select the audio files for this record."
+msgstr "Будь ласка, оберіть аудіофайли для цього запису."
 
-msgid "Leaflet page"
-msgstr ""
+msgid "Add Record"
+msgstr "Додати запис"
 
-#, fuzzy
-msgid "Album image"
-msgstr "Альбом"
+msgid "Auto-create tracks from these files:"
+msgstr "Автоматично створити доріжки з цих файлів:"
 
-msgid "Lead artist/performer"
-msgstr ""
+msgid "_Add files..."
+msgstr "_Додати файли..."
 
-msgid "Artist/performer"
-msgstr ""
+msgid "Edit Record"
+msgstr "Редагувати запис"
 
-msgid "Conductor"
-msgstr "Диригент"
+msgid "Please select the audio file for this track."
+msgstr "Будь ласка, оберіть аудіофайл для цієї доріжки."
 
-#, fuzzy
-msgid "Band/orchestra"
-msgstr "Оркестр"
+msgid "Add Track"
+msgstr "Додати доріжку"
 
-msgid "Composer"
-msgstr "Автор"
+msgid "Edit Track"
+msgstr "Редагувати доріжку"
 
-msgid "Lyricist/text writer"
-msgstr ""
-
-#, fuzzy
-msgid "Recording location/studio"
-msgstr "Назвах записів"
-
-msgid "During recording"
-msgstr ""
-
-msgid "During performance"
-msgstr ""
-
-msgid "Movie/video screen capture"
-msgstr ""
-
-msgid "A large, coloured fish"
-msgstr ""
-
-#, fuzzy
-msgid "Illustration"
+msgid "Duration:"
 msgstr "Тривалість:"
 
-msgid "Band/artist logotype"
-msgstr ""
+#, c-format
+msgid "Unmeasured"
+msgstr "Невиміряно"
 
-msgid "Publisher/studio logotype"
-msgstr ""
+msgid "Volume level:"
+msgstr "Рівень гучності:"
 
-#, fuzzy
-msgid "ID3v2"
-msgstr "ID3v2 теги"
-
-msgid "APE"
-msgstr ""
-
-#, fuzzy
-msgid "Ogg comments"
-msgstr "Коментарі"
-
-#, fuzzy
-msgid "Remove ID3v1"
-msgstr "Прибрати"
-
-msgid "Create ID3v2"
-msgstr ""
-
-#, fuzzy
-msgid "Remove ID3v2"
-msgstr "Прибрати"
-
-msgid "Create APE"
-msgstr ""
-
-#, fuzzy
-msgid "Remove APE"
-msgstr "Прибрати"
-
-msgid "Audio data"
-msgstr "Аудіо дані"
-
-msgid "Format:"
-msgstr "Формат:"
-
-msgid "Length:"
-msgstr "Довжина:"
-
-msgid "Samplerate:"
-msgstr "Частота семплювання:"
+msgid "Use manual RVA value [dB]"
+msgstr "Використовувати свій рівень RVA [дБ]"
 
 #, c-format
-msgid "%ld Hz"
-msgstr "%ld Гц"
+msgid "Really remove \"%s\" from the Music Store?"
+msgstr "Справді видалити \"%s\" з Музичного Сховища?"
 
-msgid "Channel count:"
-msgstr "Кількість каналів:"
+msgid "Stop adding songs"
+msgstr "Зупинити додавання пісень"
 
-msgid "Bandwidth:"
-msgstr "Швидкість потоку:"
-
-msgid "Total samples:"
-msgstr "Всього семплів:"
-
-msgid "Mode:"
+#, c-format
+msgid ""
+"The store '%s' already exists.\n"
+"Add it on the Settings/Music Store tab."
 msgstr ""
+"Сховище '%s' вже існує.\n"
+"Додайте його на вкладці Налаштування/Музичне Сховище."
+
+#, c-format
+msgid "Really remove store \"%s\" from the Music Store?"
+msgstr "Справді видалити сховище \"%s\" з Музичного Сховища?"
+
+msgid "Remove Store"
+msgstr "Видалити Сховище"
+
+msgid "Do you want to save the store before removing?"
+msgstr "Бажаєте зберегти сховище перед видаленням?"
+
+msgid "Remove Artist"
+msgstr "Вадалити виконавця"
+
+msgid "Remove Record"
+msgstr "Видалити запис"
+
+msgid "Remove Track"
+msgstr "Видалити доріжку"
+
+msgid "Update file metadata"
+msgstr "Оновити метадані файлу"
+
+msgid "Track name"
+msgstr "Назва доріжки"
+
+msgid "Track comment"
+msgstr "Коментар доріжки"
+
+msgid "Track number"
+msgstr "Номер доріжки"
+
+msgid "Failed to set metadata for the following files:"
+msgstr "Неможливо встановити метадані для наступних файлів:"
+
+msgid "Filename"
+msgstr "Назва файлу"
+
+msgid "Reason"
+msgstr "Причина"
+
+msgid "(no comment)"
+msgstr "(без коментаря)"
+
+msgid "artist"
+msgstr "виконавець"
+
+msgid "artists"
+msgstr "виконавці"
+
+msgid "Build / Update store from filesystem..."
+msgstr "Побудувати/Оновити сховище з файлової системи..."
+
+msgid "Edit store..."
+msgstr "Редагувати сховище..."
+
+msgid "Export store..."
+msgstr "Експорт сховища..."
+
+msgid "Save store"
+msgstr "Зберегти сховище"
+
+msgid "Remove store"
+msgstr "Видалити сховище"
+
+msgid "Add new artist to this store..."
+msgstr "Додати нового виконавця до цього сховища..."
+
+msgid "Calculate volume (recursive)"
+msgstr "Підрахувати гучність (рекурсивно)"
+
+msgid "Unmeasured tracks only"
+msgstr "Тільки невиміряних доріжок"
+
+msgid "All tracks"
+msgstr "Усіх доріжок"
+
+msgid "Batch-update file metadata..."
+msgstr "Пакетне оновлення метаданих файлів..."
+
+msgid "Add new artist..."
+msgstr "Додати нового виконавця..."
+
+msgid "Edit artist..."
+msgstr "Редагувати виконавця..."
+
+msgid "Export artist..."
+msgstr "Експорт виконавця..."
+
+msgid "Remove artist"
+msgstr "Видалити виконавця"
+
+msgid "Add new record to this artist..."
+msgstr "Додати новий запис до цього виконавця..."
+
+msgid "Add new record..."
+msgstr "Додати новий запис..."
+
+msgid "Edit record..."
+msgstr "Редагувати запис..."
+
+msgid "Export record..."
+msgstr "Експорт запису..."
+
+msgid "Remove record"
+msgstr "Видалити запис"
+
+msgid "Add new track to this record..."
+msgstr "Додати нову доріжку до цього запису..."
+
+msgid "CDDB query for this record..."
+msgstr "Запит у CDDB для цього запису..."
+
+msgid "Submit record to CDDB database..."
+msgstr "Надіслати запис до бази даних CDDB..."
+
+msgid "Add new track..."
+msgstr "Додати нову доріжку..."
+
+msgid "Edit track..."
+msgstr "Редагувати доріжку..."
+
+msgid "Export track..."
+msgstr "Експорт доріжки..."
+
+msgid "Remove track"
+msgstr "Видалити доріжку"
+
+msgid "Calculate volume"
+msgstr "Підрахувати гучність"
+
+msgid "Only if unmeasured"
+msgstr "Тільки якщо не виміряно"
+
+msgid "In any case"
+msgstr "У будь-якому разі"
+
+msgid "Update file metadata..."
+msgstr "Оновити метадані файлів..."
+
+msgid "Please select the download directory for this podcast."
+msgstr "Будь ласка, оберіть каталог завантаження для цього подкаста."
+
+msgid "Subscribe to new feed"
+msgstr "Підписатися на нову стрічку"
+
+msgid "Edit feed settings"
+msgstr "Редагувати властивості стрічки"
+
+msgid "Podcast URL:"
+msgstr "URL подкаста:"
+
+msgid "Download directory:"
+msgstr "Каталог завантаження:"
+
+msgid "Auto-check interval [hour]:"
+msgstr "Інтервал автомеревірки [годин]:"
+
+msgid ""
+"Automatic update has been disabled for all feeds\n"
+"in the Podcasts store popup menu."
+msgstr ""
+"Автоматичне оновлення заборонено для усіх стрічок\n"
+"у спливаючому меню сховища подкастів."
+
+msgid "Limits"
+msgstr "Межі"
+
+msgid "Maximum number of items:"
+msgstr "Максимальна кількість елементів:"
+
+msgid "Remove older items [day]:"
+msgstr "Видалити застарілі елементи [день]:"
+
+msgid "Maximum space to use [MB]:"
+msgstr "Максимальний використаний простір [Мб]:"
+
+msgid "Podcasts"
+msgstr "Подкасти"
+
+msgid "Updating..."
+msgstr "Оновлення..."
+
+msgid "Delete downloaded items from the filesystem"
+msgstr "Видалити завантажені елементи з файлової системи"
+
+msgid "Remove feed"
+msgstr "Видалити стрічку"
+
+#, c-format
+msgid "Really remove '%s' from the Music Store?"
+msgstr "Справді видалити \"%s\" з Музичного Сховища?"
 
 #, fuzzy
-msgid "WavPack Metadata"
-msgstr "Метадані"
+msgid "Reorder feeds"
+msgstr "Перевпорядкувати стрічки"
 
-#, fuzzy
-msgid "Module info"
-msgstr "Інформація про файл"
+msgid ""
+"Drag and drop entries in the list\n"
+"to set the feed order in the Music Store."
+msgstr ""
+"Перетягуйте пункти у списку для\n"
+"встановлення порядку стрічок у Музичному Сховищі."
 
-#, fuzzy
-msgid "Type:"
-msgstr "SRC Тип: "
+#, c-format
+msgid "Downloading %d/%d (%d%%) ..."
+msgstr "Завантаження %d/%d (%d%%) ..."
 
-#, fuzzy
-msgid "Channels:"
-msgstr "Кількість каналів:"
+msgid "item"
+msgstr "елемент"
 
-#, fuzzy
-msgid "Patterns:"
-msgstr "Категорія"
+msgid "items"
+msgstr "елементи"
 
-#, fuzzy
-msgid "Samples:"
-msgstr "Частота семплювання:"
+msgid "new item"
+msgstr "новий елемент"
 
-msgid "Instruments:"
+msgid "new items"
+msgstr "нові елементи"
+
+msgid "feed"
+msgstr "стрічка"
+
+msgid "feeds"
+msgstr "стрічки"
+
+msgid "Export item..."
+msgstr "Експорт елементу..."
+
+msgid "Add all items to playlist"
+msgstr "Додати усі елементи до списку програвання"
+
+msgid "Add all items to playlist (Album mode)"
+msgstr "Додати усі елементи до списку програвання (режим альбому)"
+
+msgid "Add new items to playlist"
+msgstr "Додати нові елементи до списку програвання"
+
+msgid "Add new items to playlist (Album mode)"
+msgstr "Додати нові елементи до списку програвання (режим альбому)"
+
+msgid "Edit feed"
+msgstr "Редагувати стрічку"
+
+msgid "Export all items..."
+msgstr "Експорт усіх елементів..."
+
+msgid "Export new items..."
+msgstr "Експорт нових елементів..."
+
+msgid "Update feed"
+msgstr "Оновити стрічку"
+
+msgid "Abort ongoing update"
+msgstr "Перервати поточне оновлення"
+
+msgid "Update all feeds"
+msgstr "Оновити усі стрічки"
+
+msgid "Automatically update feeds"
+msgstr "Автоматично оновлювати стрічки"
+
+msgid "Unexpected end of string after '?'."
+msgstr "Неочикуваний кінець рядку після '?'."
+
+msgid "Expected '}' after '{', but end of string found."
+msgstr "Очикувалося '}' після '{', але знайдено кінець рядку."
+
+#, c-format
+msgid "Unknown conversion type character found after '%%%%'."
 msgstr ""
 
-#, fuzzy
-msgid "Samples"
-msgstr "Частота семплювання:"
-
-msgid "Instruments"
+msgid "Unknown conversion type character found after '?'."
 msgstr ""
 
-msgid "No."
-msgstr ""
+msgid "day"
+msgstr "день"
 
-msgid "Album"
-msgstr "Альбом"
+msgid "days"
+msgstr "дні"
 
-msgid "Beats per minute"
-msgstr ""
+msgid "All Files"
+msgstr "Усі файли"
 
-msgid "Content type"
-msgstr ""
+msgid "Extended Title Format Files (*.lua)"
+msgstr "Файли розширеного форматування заголовка (*.lua)"
 
-#, fuzzy
-msgid "Copyright"
-msgstr "Авторське право (С)"
+msgid "Music Store Files (*.xml)"
+msgstr "Файли Музичного Сховища (*.xml)"
 
-#, fuzzy
-msgid "Encoding time"
-msgstr "кодування"
+msgid "Aqualung playlist (*.xml)"
+msgstr "Плей-ліст Aqualung (*.xml)"
 
-#, fuzzy
-msgid "Playlist delay"
-msgstr "Список програвання: "
+msgid "MP3 Playlist (*.m3u)"
+msgstr "Список програвання MP3 (*.m3u)"
 
-msgid "Original release time"
-msgstr ""
+msgid "Multimedia Playlist (*.pls)"
+msgstr "Мультимедіа плей-ліст (*.pls)"
 
-#, fuzzy
-msgid "Recording time"
-msgstr "Назвах записів"
+msgid "All Playlist Files"
+msgstr "Усі файли списків програвання"
 
-msgid "Release time"
-msgstr ""
+msgid "All Audio Files"
+msgstr "Усі аудіофайли"
 
-#, fuzzy
-msgid "Tagging time"
-msgstr "Великий таймер: "
+msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
+msgstr "Звукові файли (*.wav, *.aiff, *.au, ...)"
 
-#, fuzzy
-msgid "Encoded by"
-msgstr "Кодувальник"
+msgid "Free Lossless Audio Codec (*.flac)"
+msgstr "Free Lossless Audio Codec (*.flac)"
 
-msgid "Lyricist"
-msgstr "Поет"
+msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
+msgstr "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
 
-#, fuzzy
-msgid "File type"
-msgstr "Назва файлу:"
+msgid "Ogg Vorbis (*.ogg)"
+msgstr "Ogg Vorbis (*.ogg)"
 
-msgid "Involved people"
-msgstr ""
+msgid "Ogg Speex (*.spx)"
+msgstr "Ogg Speex (*.spx)"
 
-msgid "Content group"
-msgstr ""
+msgid "Musepack (*.mpc)"
+msgstr "Musepack (*.mpc)"
 
-msgid "Subtitle"
-msgstr "Підпис"
+msgid "Monkey's Audio Codec (*.ape)"
+msgstr "Monkey's Audio Codec (*.ape)"
 
-msgid "Initial key"
-msgstr ""
+msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
+msgstr "Модулі (*.xm, *.mod, *.it, *.s3m, ...)"
 
-msgid "Language"
-msgstr ""
+msgid "Compressed modules (*.gz, *.bz2)"
+msgstr "Стиснуті модулі (*.gz, *.bz2)"
 
-#, fuzzy
-msgid "Length (ms)"
-msgstr "Довжина:"
+msgid "Compressed modules (*.gz)"
+msgstr "Стиснуті модулі (*.gz)"
 
-msgid "Musician credits"
-msgstr ""
+msgid "Compressed modules (*.bz2)"
+msgstr "Стиснуті модулі (*.bz2)"
 
-msgid "Media type"
-msgstr ""
+msgid "WavPack (*.wv)"
+msgstr "WavPack (*.wv)"
 
-msgid "Mood"
-msgstr ""
+msgid "LAVC audio/video files"
+msgstr "LAVC аудіо/відео файли"
 
-msgid "Original album"
-msgstr ""
+msgid "Resume"
+msgstr "Поновити"
 
-msgid "Original filename"
-msgstr ""
-
-msgid "Original lyricist"
-msgstr ""
-
-msgid "Original artist"
-msgstr ""
-
-msgid "Owner/licensee"
-msgstr ""
-
-msgid "Orchestra"
-msgstr "Оркестр"
-
-msgid "Interpreted/remixed"
-msgstr ""
-
-msgid "Part of set"
-msgstr ""
-
-#, fuzzy
-msgid "Produced"
-msgstr "Виробник (Р)"
-
-msgid "Publisher"
-msgstr "Видавник"
-
-msgid "Radio station name"
-msgstr ""
-
-msgid "Radio station owner"
-msgstr ""
-
-msgid "Album sort order"
-msgstr ""
-
-msgid "Artist sort order"
-msgstr ""
-
-#, fuzzy
-msgid "Title sort order"
-msgstr "Формат назви"
-
-msgid "ISRC"
-msgstr ""
-
-#, fuzzy
-msgid "Encoding settings"
-msgstr "Перекривати установки жупана"
-
-#, fuzzy
-msgid "Set subtitle"
-msgstr "Підпис"
+msgid "Calculating volume level"
+msgstr "Підрахунок рівня гучності"
 
 msgid "Profile: Telephone"
 msgstr "Профіль: Телефон"
@@ -2579,13 +3058,13 @@ msgid "Profile: Braindead"
 msgstr "Профіль: Без башні"
 
 msgid "Layer I"
-msgstr ""
+msgstr "Шар I"
 
 msgid "Layer II"
-msgstr ""
+msgstr "Шар II"
 
 msgid "Layer III"
-msgstr ""
+msgstr "Шар III"
 
 msgid "Unrecognized"
 msgstr "Нерозпізнано"
@@ -2612,31 +3091,125 @@ msgid "Emphasis: reserved"
 msgstr "Наголос: резервний"
 
 msgid "bit signed"
-msgstr "знаковий біт"
+msgstr "біт знаковий"
 
 msgid "bit unsigned"
-msgstr "беззнаковий біт"
+msgstr "біт беззнаковий"
 
 msgid "bit float"
-msgstr "плаваючий біт"
+msgstr "біт з рухомою комою"
 
 msgid "bit double"
-msgstr "подвійний біт"
+msgstr "біт подвійний"
 
 msgid "encoding"
 msgstr "кодування"
 
 msgid "Compression: Fast"
-msgstr "Ступінь стиснення: Швидка"
+msgstr "Стискання: Швидке"
 
 msgid "Compression: Normal"
-msgstr "Ступінь стиснення: Нормальна"
+msgstr "Стискання: Нормальне"
 
 msgid "Compression: High"
-msgstr "Ступінь стиснення: Висока"
+msgstr "Стискання: Сильне"
 
 msgid "Compression: Extra High"
-msgstr "Ступінь стиснення: Дуже висока"
+msgstr "Стискання: Дуже сильне"
 
 msgid "Compression: Insane"
-msgstr "Ступінь стиснення: Божевільна"
+msgstr "Стискання: Божевільне"
+
+#~ msgid "Metadata (ID3, APE, Ogg comments)\n"
+#~ msgstr "Метадані (ID3, APE, Ogg comments)\n"
+
+#, fuzzy
+#~ msgid "No"
+#~ msgstr "Немає"
+#~ msgid "Rename directory"
+#~ msgstr "Перейменувати каталог"
+#~ msgid "Remove directory with its entire contents"
+#~ msgstr "Видалити каталог разом з усім вмістом"
+
+#, fuzzy
+#~ msgid "time unmeasured"
+#~ msgstr "час не виміряний"
+#~ msgid ""
+#~ "When adding to playlist, use file metadata (if available) instead of\n"
+#~ "information from the Music Store for:"
+#~ msgstr ""
+#~ "При додаванні до списку програвання, використовувати метадані\n"
+#~ "файла (якщо є) замість інформації з Музичного Сховища для:"
+#~ msgid ""
+#~ "When adding external files to playlist, use file metadata (if available) "
+#~ "for:"
+#~ msgstr ""
+#~ "При додаванні зовнішніх файлів до списку програвання, використовувати "
+#~ "метадані файла (якщо є) для:"
+#~ msgid "Replaygain tag to extract from Ogg Xiph and APE tags: "
+#~ msgstr "Тег Replaygain для діставання з Ogg Xiph та APE тегів: "
+#~ msgid "%d track [%s] (%.1f MB)"
+#~ msgstr "%d доріжок [%s] (%.1f МБ)"
+#~ msgid "%d track [%s] (%.1f GB)"
+#~ msgstr "%d доріжок [%s] (%.1f ГБ)"
+#~ msgid "%d track "
+#~ msgstr "%d доріжок"
+#~ msgid "%d track [%s] "
+#~ msgstr "%d доріжок [%s]"
+#~ msgid "%d tracks [%s] (%.1f MB)"
+#~ msgstr "%d доріжок [%s] (%.1f МБ)"
+#~ msgid "%d tracks [%s] (%.1f GB)"
+#~ msgstr "%d доріжок [%s] (%.1f ГБ)"
+#~ msgid "%d tracks "
+#~ msgstr "%d доріжок"
+#~ msgid "%d tracks [%s] "
+#~ msgstr "%d доріжок [%s]"
+#~ msgid ""
+#~ "All selected files will be deleted from the filesystem. No recovery will "
+#~ "be possible after this operation.\n"
+#~ "\n"
+#~ "Are you sure?"
+#~ msgstr ""
+#~ "Усі обрані файли буде видалено з файлової системи. Відновлення буде "
+#~ "неможливим після цієї операції.\n"
+#~ "\n"
+#~ "Ви впевнені?"
+#~ msgid "Type"
+#~ msgstr "Тип: "
+#~ msgid "Embedded picture"
+#~ msgstr "Вбудована картинка"
+#~ msgid "Save to file..."
+#~ msgstr "Зберегти до файлу"
+#~ msgid "Comment:"
+#~ msgstr "Коментар:"
+#~ msgid "Save basic fields"
+#~ msgstr "Зберегти основні поля"
+
+#, fuzzy
+#~ msgid "Relative Volume Adj.:"
+#~ msgstr "Рівень RVA:"
+#~ msgid "Remove ID3v1"
+#~ msgstr "Видалити ID3v1"
+#~ msgid "Create ID3v2"
+#~ msgstr "Створити ID3v2"
+#~ msgid "Remove ID3v2"
+#~ msgstr "Видалити ID3v2"
+#~ msgid "Create APE"
+#~ msgstr "Створити APE"
+#~ msgid "Remove APE"
+#~ msgstr "Видалити APE"
+#~ msgid "WavPack Metadata"
+#~ msgstr "Метадані WavPack"
+#~ msgid "Beats per minute"
+#~ msgstr "Ударів на хвилину"
+#~ msgid "Lyricist"
+#~ msgstr "Поет"
+#~ msgid "Length (ms)"
+#~ msgstr "Тривалість (мс):"
+#~ msgid "Owner/licensee"
+#~ msgstr "Власник/ліцензія"
+#~ msgid "Orchestra"
+#~ msgstr "Оркестр"
+#~ msgid "Artist sort order"
+#~ msgstr "Порядок сортування виконавців"
+

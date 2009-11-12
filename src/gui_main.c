@@ -1654,19 +1654,17 @@ choose_prev_track(GtkTreeStore * store, GtkTreeIter * piter) {
 
 int
 choose_next_track(GtkTreeStore * store, GtkTreeIter * piter) {
+	GtkTreeIter iter = *piter;
 
- try_again_next:
-	if (gtk_tree_model_iter_next(GTK_TREE_MODEL(store), piter)) {
-		GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(store), piter);
-		if (gtk_tree_path_get_depth(p) == 1) { /* toplevel */
-			if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(store), piter)) {
-				get_child_iter(store, piter, 1/* first */);
-			}
+	if (gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter)) {
+		*piter = iter;
+		if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(store), piter)) {
+			get_child_iter(store, piter, 1/* first */);
 		}
-		gtk_tree_path_free(p);
 		return 1;
 	} else {
 		GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(store), piter);
+
 		if (gtk_tree_path_get_depth(p) == 1) { /* toplevel */
 			int n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(store), NULL);
 			if (n) {
@@ -1684,7 +1682,7 @@ choose_next_track(GtkTreeStore * store, GtkTreeIter * piter) {
 			gtk_tree_path_up(p);
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(store), piter, p);
 			gtk_tree_path_free(p);
-			goto try_again_next;
+			return choose_next_track(store, piter);
 		}
 	}
 }
@@ -1694,16 +1692,13 @@ choose_next_track(GtkTreeStore * store, GtkTreeIter * piter) {
  * used by the timeout callback for track flow-through */
 int
 choose_adjacent_track(GtkTreeStore * store, GtkTreeIter * piter) {
+	GtkTreeIter iter = *piter;
 
- try_again_adjacent:
-	if (gtk_tree_model_iter_next(GTK_TREE_MODEL(store), piter)) {
-		GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(store), piter);
-		if (gtk_tree_path_get_depth(p) == 1) { /* toplevel */
-			if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(store), piter)) {
-				get_child_iter(store, piter, 1/* first */);
-			}
+	if (gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter)) {
+		*piter = iter;
+		if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(store), piter)) {
+			get_child_iter(store, piter, 1/* first */);
 		}
-		gtk_tree_path_free(p);
 		return 1;
 	} else {
 		GtkTreePath * p = gtk_tree_model_get_path(GTK_TREE_MODEL(store), piter);
@@ -1714,7 +1709,7 @@ choose_adjacent_track(GtkTreeStore * store, GtkTreeIter * piter) {
 			gtk_tree_path_up(p);
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(store), piter, p);
 			gtk_tree_path_free(p);
-			goto try_again_adjacent;
+			return choose_adjacent_track(store, piter);
 		}
 	}
 }

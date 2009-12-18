@@ -581,7 +581,7 @@ metadata_clone_frame(metadata_t * meta, meta_frame_t * frame) {
 	if (companion == NULL) {
 		return;
 	}
-	
+
 	if (companion->field_name != NULL) {
 		if (frame->field_name != NULL) {
 			free(frame->field_name);
@@ -592,7 +592,7 @@ metadata_clone_frame(metadata_t * meta, meta_frame_t * frame) {
 	if (companion->field_val != NULL) {
 		frame->field_val = strdup(companion->field_val);
 	}
-	
+
 	frame->int_val = companion->int_val;
 	frame->float_val = companion->float_val;
 
@@ -650,7 +650,7 @@ metadata_t *
 metadata_new(void) {
 
 	metadata_t * meta = NULL;
-	
+
 	if ((meta = calloc(1, sizeof(metadata_t))) == NULL) {
 		fprintf(stderr, "metadata.c: metadata_new() failed: calloc error\n");
 		return NULL;
@@ -665,12 +665,12 @@ metadata_free(metadata_t * meta) {
 
 	meta_frame_t * p;
 	meta_frame_t * q;
-	
+
 	if (meta->root == NULL) {
 		free(meta);
 		return;
 	}
-	
+
 	p = meta->root;
 	while (p != NULL) {
 		q = p->next;
@@ -685,7 +685,7 @@ meta_frame_t *
 meta_frame_new(void) {
 
 	meta_frame_t * meta_frame = NULL;
-	
+
 	if ((meta_frame = calloc(1, sizeof(meta_frame_t))) == NULL) {
 		fprintf(stderr, "metadata.c: meta_frame_new() failed: calloc error\n");
 		return NULL;
@@ -739,8 +739,8 @@ metadata_remove_frame(metadata_t * meta, meta_frame_t * frame) {
 	while (prev->next != frame) {
 		prev = prev->next;
 	}
-	
-	prev->next = frame->next;	
+
+	prev->next = frame->next;
 }
 
 
@@ -756,6 +756,10 @@ meta_frame_t *
 metadata_get_frame_by_type(metadata_t * meta, int type, meta_frame_t * root) {
 
 	meta_frame_t * frame;
+
+	if (meta == NULL) {
+		return NULL;
+	}
 
 	if (root == NULL) {
 		frame = meta->root;

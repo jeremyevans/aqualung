@@ -3408,7 +3408,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_bal), options.bal);
 
 	create_playlist();
-        playlist_size_allocate_all();
 	playlist_auto_save_reset();
 
 	create_music_browser();

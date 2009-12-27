@@ -108,7 +108,6 @@ playlist_t * playlist_get_playing(void);
 
 GtkTreePath * playlist_get_playing_path(playlist_t * pl);
 
-void playlist_size_allocate_all(void);
 void playlist_reorder_columns_all(int * order);
 void playlist_show_hide_close_buttons(gboolean state);
 
@@ -207,4 +206,4 @@ enum {
 
 #endif /* _PLAYLIST_H */
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :

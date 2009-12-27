@@ -179,7 +179,6 @@ void playlist_unlink_files(playlist_t * pl);
 void set_cursor_in_playlist(playlist_t * pl, GtkTreeIter *iter, gboolean scroll);
 void select_active_position_in_playlist(playlist_t * pl);
 
-void delayed_playlist_rearrange(playlist_t * pl);
 void playlist_selection_changed(playlist_t * pl);
 void playlist_selection_changed_cb(GtkTreeSelection * select, gpointer data);
 
@@ -1492,14 +1491,6 @@ playlist_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 }
 
 void
-playlist_row_expand_collapse(GtkTreeView * view, GtkTreeIter * iter, GtkTreePath * path, gpointer data) {
-
-	playlist_t * pl = (playlist_t *)data;
-
-	delayed_playlist_rearrange(pl);
-}
-
-void
 playlist_menu_set_popup_sensitivity(playlist_t * pl) {
 
 	int file_types = 0;
@@ -1533,6 +1524,7 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 			playlist_start_playback_at_path(pl, path);
 			gtk_tree_path_free(path);
 		}
+		return TRUE;
 	}
 
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
@@ -3057,8 +3049,6 @@ playlist_reorder_columns_foreach(gpointer data, gpointer user_data) {
 	gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(pl->length_column),
 					 options.show_length_in_playlist);
 	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(pl->view), options.enable_pl_rules_hint);
-
-	delayed_playlist_rearrange(NULL);
 }
 
 void
@@ -3072,99 +3062,11 @@ playlist_reorder_columns_all(int * order) {
 	}
 }
 
-
-gint
-playlist_size_allocate(GtkWidget * widget, GdkEventConfigure * event, gpointer data) {
-
-	gint avail;
-	gint track_width;
-	gint rva_width;
-	gint length_width;
-
-	playlist_t * pl = (playlist_t *)data;
-
-	if (pl == NULL || pl->closed) {
-		return TRUE;
-	}
-
-	avail = pl->view->allocation.width;
-
-	if (gtk_tree_view_column_get_visible(GTK_TREE_VIEW_COLUMN(pl->rva_column))) {
-		gtk_tree_view_column_cell_get_size(GTK_TREE_VIEW_COLUMN(pl->rva_column),
-						   NULL, NULL, NULL, &rva_width, NULL);
-		rva_width += 5;
-	} else {
-		rva_width = 1;
-	}
-
-	if (gtk_tree_view_column_get_visible(GTK_TREE_VIEW_COLUMN(pl->length_column))) {
-		gtk_tree_view_column_cell_get_size(GTK_TREE_VIEW_COLUMN(pl->length_column),
-						   NULL, NULL, NULL, &length_width, NULL);
-		length_width += 5;
-	} else {
-		length_width = 1;
-	}
-
-	track_width = avail - rva_width - length_width;
-	if (track_width < 1)
-		track_width = 1;
-
-	gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(pl->track_column), track_width);
-	gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(pl->rva_column), rva_width);
-	gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(pl->length_column), length_width);
-
-	if (options.playlist_is_embedded) {
-		if (main_window->window != NULL) {
-			gtk_widget_queue_draw(main_window);
-		}
-	} else {
-		if (playlist_window->window != NULL) {
-			gtk_widget_queue_draw(playlist_window);
-		}
-	}
-
-        return TRUE;
-}
-
-void
-playlist_size_allocate_all_foreach(gpointer data, gpointer user_data) {
-
-	playlist_size_allocate(NULL, NULL, data);
-}
-
-
-void
-playlist_size_allocate_all() {
-
-	g_list_foreach(playlists, playlist_size_allocate_all_foreach, NULL);
-}
-
-
-gint
-playlist_rearrange_timeout_cb(gpointer data) {
-
-	if (data == NULL) {
-		playlist_size_allocate_all();
-	} else {
-		playlist_size_allocate(NULL, NULL, (playlist_t *)data);
-	}
-
-	return FALSE;
-}
-
-void
-delayed_playlist_rearrange(playlist_t * pl) {
-
-	aqualung_timeout_add(100, playlist_rearrange_timeout_cb, pl);
-}
-
-
 void
 playlist_stats_set_busy() {
 
 	gtk_label_set_text(GTK_LABEL(statusbar_total), _("counting..."));
 }
-
 
 void
 playlist_child_stats(playlist_t * pl, GtkTreeIter * iter,
@@ -3310,7 +3212,6 @@ playlist_content_changed(playlist_t * pl) {
 
 	if (pl->progbar_semaphore == 0 && pl->ms_semaphore == 0) {
 		playlist_stats(pl, 0/*false*/);
-		delayed_playlist_rearrange(pl);
 		playlist_dirty = 1;
 	} else {
 		playlist_stats_set_busy();
@@ -3735,6 +3636,7 @@ playlist_tab_close_undo(void) {
 gint
 playlist_notebook_clicked(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 
+    printf( "x = %f, y = %f\n", event->x, event->y );
 	if (event->type == GDK_2BUTTON_PRESS && event->button == 1 &&
 	    event->y < 25 && event->x > 25 && event->x < widget->allocation.width - 25) {
 		playlist_tab_new(NULL);
@@ -4037,10 +3939,6 @@ create_playlist_gui(playlist_t * pl) {
 
 	g_signal_connect(G_OBJECT(pl->view), "key_press_event",
 			 G_CALLBACK(playlist_key_pressed), NULL);
-	g_signal_connect(G_OBJECT(pl->view), "row_expanded",
-			 G_CALLBACK(playlist_row_expand_collapse), pl);
-	g_signal_connect(G_OBJECT(pl->view), "row_collapsed",
-			 G_CALLBACK(playlist_row_expand_collapse), pl);
 
 	if (options.override_skin_settings) {
                 gtk_widget_modify_font(pl->view, fd_playlist);
@@ -4049,7 +3947,6 @@ create_playlist_gui(playlist_t * pl) {
 	if (options.enable_pl_rules_hint) {
 		gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(pl->view), TRUE);
 	}
-	gtk_tree_view_set_fixed_height_mode(GTK_TREE_VIEW(pl->view), TRUE);
 
 	for (i = 0; i < 3; i++) {
 		switch (options.plcol_idx[i]) {
@@ -4063,12 +3960,11 @@ create_playlist_gui(playlist_t * pl) {
                                                                                 "weight", PL_COL_FONT,
 										NULL);
 			gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(pl->track_column),
-							GTK_TREE_VIEW_COLUMN_FIXED);
+							GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 			gtk_tree_view_column_set_spacing(GTK_TREE_VIEW_COLUMN(pl->track_column), 3);
 			gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(pl->track_column), FALSE);
-			gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(pl->track_column), 10);
                         g_object_set(G_OBJECT(track_renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
-                        gtk_cell_renderer_set_fixed_size(track_renderer, 10, -1);
+			gtk_tree_view_column_set_expand(GTK_TREE_VIEW_COLUMN(pl->track_column), TRUE);
 			gtk_tree_view_append_column(GTK_TREE_VIEW(pl->view), pl->track_column);
 			break;
 
@@ -4082,14 +3978,12 @@ create_playlist_gui(playlist_t * pl) {
                                                                               "weight", PL_COL_FONT,
 									      NULL);
 			gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(pl->rva_column),
-							GTK_TREE_VIEW_COLUMN_FIXED);
+							GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 			gtk_tree_view_column_set_spacing(GTK_TREE_VIEW_COLUMN(pl->rva_column), 3);
 			if (options.show_rva_in_playlist) {
 				gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(pl->rva_column), TRUE);
-				gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(pl->rva_column), 50);
 			} else {
 				gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(pl->rva_column), FALSE);
-				gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(pl->rva_column), 1);
 			}
 			gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(pl->rva_column), FALSE);
 			gtk_tree_view_append_column(GTK_TREE_VIEW(pl->view), pl->rva_column);
@@ -4105,14 +3999,12 @@ create_playlist_gui(playlist_t * pl) {
                                                                                  "weight", PL_COL_FONT,
 										 NULL);
 			gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(pl->length_column),
-							GTK_TREE_VIEW_COLUMN_FIXED);
+							GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 			gtk_tree_view_column_set_spacing(GTK_TREE_VIEW_COLUMN(pl->length_column), 3);
 			if (options.show_length_in_playlist) {
 				gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(pl->length_column), TRUE);
-				gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(pl->length_column), 50);
 			} else {
 				gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(pl->length_column), FALSE);
-				gtk_tree_view_column_set_fixed_width(GTK_TREE_VIEW_COLUMN(pl->length_column), 1);
 			}
 			gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(pl->length_column), FALSE);
 			gtk_tree_view_append_column(GTK_TREE_VIEW(pl->view), pl->length_column);
@@ -4187,9 +4079,6 @@ create_playlist_gui(playlist_t * pl) {
 		pl->progbar_semaphore--;
 		playlist_progress_bar_show(pl);
 	}
-
-        g_signal_connect(G_OBJECT(pl->widget), "size_allocate",
-			 G_CALLBACK(playlist_size_allocate), pl);
 
 	gtk_widget_show_all(pl->widget);
 

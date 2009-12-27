@@ -946,7 +946,7 @@ add_track_dialog(char * name, char * sort, track_data_t ** data) {
 
 	name[0] = '\0';
 	sort[0] = '\0';
-		
+
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		const char * pfile = g_filename_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
@@ -1424,7 +1424,7 @@ record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl,
         GtkTreeIter iter_track;
 	GtkTreeIter list_iter;
 	GtkTreeIter * plist_iter;
-	
+
 	int i;
 	int nlevels;
 
@@ -1445,7 +1445,7 @@ record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl,
 		track_data_t * data;
 		i = 0;
 		nlevels = 0;
-		
+
 		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter_track,
 						     &iter_record, i++)) {
 			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, MS_COL_DATA, &data, -1);
@@ -1455,7 +1455,7 @@ record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl,
 			if (volume > 0.1f) { /* unmeasured */
 				volume = options.rva_refvol;
 			}
-			
+
 			nlevels++;
 			if ((volumes = realloc(volumes, nlevels * sizeof(float))) == NULL) {
 				fprintf(stderr, "record__addlist_cb: realloc error\n");
@@ -1468,7 +1468,7 @@ record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl,
 
 		free(volumes);
 	}
-	
+
 	if (album_mode) {
 
 		GtkTreeIter iter_artist;
@@ -1607,6 +1607,10 @@ finalize_addlist_iter(addlist_iter_t * add_list) {
 		if (add_list->pl == playlist_get_current()) {
 			playlist_content_changed(add_list->pl);
 		}
+
+		gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(add_list->pl->track_column), GTK_TREE_VIEW_COLUMN_AUTOSIZE);
+		gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(add_list->pl->rva_column), GTK_TREE_VIEW_COLUMN_AUTOSIZE);
+		gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(add_list->pl->length_column), GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 
 		ms_progress_bar_num = 0;
 		ms_progress_bar_den = 0;
@@ -1758,6 +1762,11 @@ store_addlist_iter(GtkTreeIter iter_store, playlist_t * pl, GtkTreeIter * dest, 
 	add_iter->i_artist = 0;
 
 	playlist_stats_set_busy();
+
+    /* set sizing to fixed for speeding up adding new stuff */
+	gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(pl->track_column), GTK_TREE_VIEW_COLUMN_FIXED);
+	gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(pl->rva_column), GTK_TREE_VIEW_COLUMN_FIXED);
+	gtk_tree_view_column_set_sizing(GTK_TREE_VIEW_COLUMN(pl->length_column), GTK_TREE_VIEW_COLUMN_FIXED);
 
 	ms_progress_bar_show();
 	pl->ms_semaphore++;
@@ -2002,7 +2011,7 @@ store__remove_cb(gpointer user_data) {
 
 		strncpy(name, pname, MAXLEN-1);
                 g_free(pname);
-		
+
 		snprintf(text, MAXLEN-1, _("Really remove store \"%s\" from the Music Store?"),
 			 (data->dirty) ? (name + 1) : (name));
 		if (confirm_dialog(_("Remove Store"), text)) {
@@ -2306,9 +2315,9 @@ record__add_cb(gpointer user_data) {
 		if (gtk_tree_path_get_depth(parent_path) == 3)
 			gtk_tree_path_up(parent_path);
 		gtk_tree_model_get_iter(model, &parent_iter, parent_path);
-		
+
 		if (add_record_dialog(name, sort, &strings, &data)) {
-			
+
 			gtk_tree_store_append(music_store, &iter, &parent_iter);
 			gtk_tree_store_set(music_store, &iter,
 					   MS_COL_NAME, name,
@@ -2377,7 +2386,7 @@ record__edit_cb(gpointer user_data) {
 
 	char name[MAXLEN];
 	char sort[MAXLEN];
-	
+
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
 		if (is_store_iter_readonly(&iter)) {
@@ -2428,17 +2437,17 @@ record_volume_calc(int unmeasured) {
 
 		i = 0;
 		while (gtk_tree_model_iter_nth_child(model, &iter_track, &iter_record, i++)) {
-		
+
 			track_data_t * data;
 
 			gtk_tree_model_get(model, &iter_track, MS_COL_DATA, &data, -1);
-		
+
 			if (!unmeasured || data->volume > 0.1f) {
 				volume_push(vol, data->file, iter_track);
 			}
 		}
 	}
-	
+
 	volume_start(vol);
 }
 
@@ -2587,9 +2596,9 @@ track__add_cb(gpointer user_data) {
 			gtk_tree_path_up(parent_path);
 		}
 		gtk_tree_model_get_iter(model, &parent_iter, parent_path);
-		
+
 		if (add_track_dialog(name, sort, &data)) {
-			
+
 			gtk_tree_store_append(music_store, &iter, &parent_iter);
 			gtk_tree_store_set(music_store, &iter,
 					   MS_COL_NAME, name,
@@ -2676,7 +2685,7 @@ track__fileinfo_cb(gpointer user_data) {
 
                 strncpy(track_name, ptrack_name, MAXLEN-1);
                 g_free(ptrack_name);
-		
+
 		gtk_tree_model_iter_parent(model, &iter_record, &iter_track);
                 gtk_tree_model_get(model, &iter_record, MS_COL_NAME, &precord_name, -1);
                 strncpy(record_name, precord_name, MAXLEN-1);
@@ -2767,7 +2776,7 @@ track_export(GtkTreeIter * iter_track, export_t * export, char * _artist, char *
 	int no = 0;
 
 
-	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter_track, 
+	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter_track,
 			   MS_COL_NAME, &title,
 			   MS_COL_SORT, &str_no,
 			   MS_COL_DATA, &track_data, -1);
@@ -2783,7 +2792,7 @@ track_export(GtkTreeIter * iter_track, export_t * export, char * _artist, char *
 		char * tmp;
 
 		gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_record, iter_track);
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, 
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record,
 				   MS_COL_NAME, &tmp,
 				   MS_COL_DATA, &record_data, -1);
 
@@ -2799,7 +2808,7 @@ track_export(GtkTreeIter * iter_track, export_t * export, char * _artist, char *
 		char * tmp;
 
 		gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_artist, &iter_record);
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist, 
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist,
 				   MS_COL_NAME, &tmp, -1);
 
 		strncpy(artist, tmp, MAXLEN-1);
@@ -2833,7 +2842,7 @@ record_export(GtkTreeIter * iter_record, export_t * export, char * _artist) {
 		char * tmp;
 
 		gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_artist, iter_record);
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist, 
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist,
 				   MS_COL_NAME, &tmp, -1);
 
 		strncpy(artist, tmp, MAXLEN-1);
@@ -3150,9 +3159,9 @@ create_tag_prog_window(void) {
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
-        tag_prog_cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL); 
+        tag_prog_cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL);
         g_signal_connect(tag_prog_cancel_button, "clicked", G_CALLBACK(cancel_batch_tag), NULL);
-  	gtk_container_add(GTK_CONTAINER(hbuttonbox), tag_prog_cancel_button);   
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), tag_prog_cancel_button);
 
         gtk_widget_grab_focus(tag_prog_cancel_button);
 
@@ -3230,7 +3239,7 @@ update_tag_thread(void * args) {
 				ptag = ptag->next;
 				free(_ptag);
 				_ptag = ptag;
-			}			
+			}
 
 			aqualung_idle_add(batch_tag_finish, NULL);
 
@@ -3697,7 +3706,7 @@ track_get_absolute_path(char * store_dirname, char * filename, const GtkTreeIter
 
 	char * path = NULL;
 	gchar * tmp = NULL;
-	
+
 	if (((tmp = g_filename_from_uri(filename, NULL, NULL)) == NULL) &&
 	    (tmp = g_filename_from_utf8(filename, -1, NULL, NULL, NULL)) == NULL) {
 		tmp = g_strdup(filename);
@@ -3998,7 +4007,7 @@ store_file_load(char * store_file, char * sort) {
 		fprintf(stderr, "An XML error occured while parsing %s\n", store_file);
 		return;
 	}
-	
+
 	cur = xmlDocGetRootElement(doc);
 	if (cur == NULL) {
 		fprintf(stderr, "store_file_load: empty XML document\n");
@@ -4062,7 +4071,7 @@ store_file_load(char * store_file, char * sort) {
 				xmlFree(key);
 			}
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"use_relative_paths"))) {
-			data->use_relative_paths = 1;	
+			data->use_relative_paths = 1;
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"artist"))) {
 			parse_artist(doc, cur, &iter_store, store_dirname, &save);
 		}
@@ -4096,7 +4105,7 @@ save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track,
 			   MS_COL_SORT, &sort,
 			   MS_COL_DATA, &data,
 			   -1);
-	
+
 	node = xmlNewTextChild(node_track, NULL, (const xmlChar *) "track", NULL);
 	if (name[0] == '\0') {
 		fprintf(stderr, "saving music_store XML: warning: track node with empty <name>\n");
@@ -4173,7 +4182,7 @@ save_record(xmlDocPtr doc, xmlNodePtr node_record, GtkTreeIter * iter_record,
 			   MS_COL_NAME, &name,
 			   MS_COL_SORT, &sort,
 			   MS_COL_DATA, &data, -1);
-	
+
 	node = xmlNewTextChild(node_record, NULL, (const xmlChar *) "record", NULL);
 	if (name[0] == '\0') {
 		fprintf(stderr, "saving music_store XML: warning: record node with empty <name>\n");
@@ -4216,7 +4225,7 @@ save_artist(xmlDocPtr doc, xmlNodePtr root, GtkTreeIter * iter_artist,
 			   MS_COL_NAME, &name,
 			   MS_COL_SORT, &sort,
 			   MS_COL_DATA, &data, -1);
-	
+
 	node = xmlNewTextChild(root, NULL, (const xmlChar *) "artist", NULL);
 	if (name[0] == '\0') {
 		fprintf(stderr, "saving music_store XML: warning: artist node with empty <name>\n");
@@ -4367,15 +4376,15 @@ store_file_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path) {
 				break;
 			}
 		}
-	} 
+	}
 
 	if (event->type == GDK_KEY_PRESS) {
 
 		GdkEventKey * kevent = (GdkEventKey *) event;
 		int i;
-			
+
 		switch (gtk_tree_path_get_depth(path)) {
-		case 1: 
+		case 1:
 			for (i = 0; store_keybinds[i].callback; ++i) {
 				if ((store_keybinds[i].state == 0 && kevent->state == 0) ||
 				    store_keybinds[i].state & kevent->state) {
@@ -4882,5 +4891,5 @@ store_file_toolbar__remove_cb(gpointer data) {
         }
 }
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :
 

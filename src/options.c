@@ -680,7 +680,6 @@ options_window_accept(void) {
 	gtk_window_set_keep_above(GTK_WINDOW(main_window), options.main_window_always_on_top);
 
 	music_store_selection_changed(STORE_TYPE_ALL);
-	playlist_size_allocate_all();
 	playlist_content_changed(playlist_get_current());
 	playlist_selection_changed(playlist_get_current());
 

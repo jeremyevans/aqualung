@@ -66,7 +66,6 @@ apply_skin(char * path) {
 	main_buttons_set_content(path);
 
 	playlist_set_color();
-        playlist_size_allocate_all();
 }
 
 static int

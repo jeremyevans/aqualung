@@ -279,6 +279,13 @@ int wm_not_systray_capable = 0;
 
 void hide_all_windows(gpointer data);
 
+#if (GTK_CHECK_VERSION(2,15,0))
+
+/* Used for not reacting too quickly to consecutive mouse wheel events */
+guint32 last_systray_scroll_event_time = 0;
+	
+#endif /* GTK_CHECK_VERSION */
+
 #endif /* HAVE_SYSTRAY */
 
 int systray_main_window_on = 1;
@@ -765,6 +772,8 @@ main_window_close(GtkWidget * widget, GdkEvent * event, gpointer data) {
         pango_font_description_free(fd_playlist);
         pango_font_description_free(fd_browser);
 
+	finalize_options();
+
 	gtk_main_quit();
 
 	return FALSE;
@@ -953,6 +962,46 @@ toggle_stop_after_current_song() {
 	}
 }
 
+void
+move_song_position_slider(GtkScrollType scroll_type) {
+
+	if (is_file_loaded && allow_seeks && total_samples != 0) {
+		refresh_scale = 0;
+		g_signal_emit_by_name(G_OBJECT(scale_pos), "move-slider",
+				      scroll_type, NULL);
+	}
+}
+
+void
+seek_song(void) {
+
+	if (is_file_loaded && allow_seeks && refresh_scale == 0 && total_samples != 0) {
+		seek_t seek;
+
+		refresh_scale = 1;
+		send_cmd = CMD_SEEKTO;
+		seek.seek_to_pos = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_pos)) / 100.0f * total_samples;
+		rb_write(rb_gui2disk, &send_cmd, 1);
+		rb_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
+		try_waking_disk_thread();
+		refresh_scale_suppress = 2;
+        }
+}
+
+void
+change_volume_or_balance(GtkWidget * slider_widget, GtkScrollType scroll_type) {
+
+	refresh_time_label = 0;
+	if (vol_bal_timeout_tag) {
+		g_source_remove(vol_bal_timeout_tag);
+	}
+
+	vol_bal_timeout_tag = aqualung_timeout_add(1000, vol_bal_timeout_callback, NULL);
+
+	g_signal_emit_by_name(G_OBJECT(slider_widget), "move-slider",
+			      scroll_type, NULL);
+}
+
 gint
 main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
@@ -961,51 +1010,25 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	switch (event->keyval) {
 	case GDK_KP_Divide:
 	case GDK_slash:
-		refresh_time_label = 0;
-		if (vol_bal_timeout_tag) {
-			g_source_remove(vol_bal_timeout_tag);
-		}
-
-		vol_bal_timeout_tag = aqualung_timeout_add(1000, vol_bal_timeout_callback, NULL);
-
                 if (event->state & GDK_MOD1_MASK) {  /* ALT + KP_Divide */
-			g_signal_emit_by_name(G_OBJECT(scale_bal), "move-slider",
-					      GTK_SCROLL_STEP_BACKWARD, NULL);
+			change_volume_or_balance(scale_bal, GTK_SCROLL_STEP_BACKWARD);
 		} else {
-			g_signal_emit_by_name(G_OBJECT(scale_vol), "move-slider",
-					      GTK_SCROLL_STEP_BACKWARD, NULL);
+			change_volume_or_balance(scale_vol, GTK_SCROLL_STEP_BACKWARD);
 		}
 		return TRUE;
 	case GDK_KP_Multiply:
 	case GDK_asterisk:
-		refresh_time_label = 0;
-		if (vol_bal_timeout_tag) {
-			g_source_remove(vol_bal_timeout_tag);
-		}
-
-		vol_bal_timeout_tag = aqualung_timeout_add(1000, vol_bal_timeout_callback, NULL);
-
                 if (event->state & GDK_MOD1_MASK) {  /* ALT + KP_Multiply */
-			g_signal_emit_by_name(G_OBJECT(scale_bal),
-					      "move-slider", GTK_SCROLL_STEP_FORWARD, NULL);
+			change_volume_or_balance(scale_bal, GTK_SCROLL_STEP_FORWARD);
 		} else {
-			g_signal_emit_by_name(G_OBJECT(scale_vol),
-					      "move-slider", GTK_SCROLL_STEP_FORWARD, NULL);
+			change_volume_or_balance(scale_vol, GTK_SCROLL_STEP_FORWARD);
 		}
 		return TRUE;
 	case GDK_Right:
-		if (is_file_loaded && allow_seeks && total_samples != 0) {
-			refresh_scale = 0;
-			g_signal_emit_by_name(G_OBJECT(scale_pos), "move-slider",
-					      GTK_SCROLL_STEP_FORWARD, NULL);
-		}
+		move_song_position_slider(GTK_SCROLL_STEP_FORWARD);
 		return TRUE;
 	case GDK_Left:
-		if (is_file_loaded && allow_seeks && total_samples != 0) {
-			refresh_scale = 0;
-			g_signal_emit_by_name(G_OBJECT(scale_pos), "move-slider",
-					      GTK_SCROLL_STEP_BACKWARD, NULL);
-		}
+		move_song_position_slider(GTK_SCROLL_STEP_BACKWARD);
 		return TRUE;
 	case GDK_b:
 	case GDK_B:
@@ -1211,18 +1234,7 @@ main_window_key_released(GtkWidget * widget, GdkEventKey * event) {
 	switch (event->keyval) {
         case GDK_Right:
         case GDK_Left:
-                if (is_file_loaded && allow_seeks && refresh_scale == 0 && total_samples != 0) {
-                        seek_t seek;
-
-                        refresh_scale = 1;
-                        send_cmd = CMD_SEEKTO;
-                        seek.seek_to_pos = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_pos))
-                                / 100.0f * total_samples;
-                        rb_write(rb_gui2disk, &send_cmd, 1);
-                        rb_write(rb_gui2disk, (char *)&seek, sizeof(seek_t));
-			try_waking_disk_thread();
-			refresh_scale_suppress = 2;
-                }
+		seek_song();
                 break;
 	}
 
@@ -3213,6 +3225,148 @@ systray_activate_cb(GtkStatusIcon * systray_icon, gpointer data) {
 	}
 }
 
+#if (GTK_CHECK_VERSION(2,15,0))
+gboolean
+systray_mouse_wheel(int mouse_wheel_option, gboolean vertical_wheel,
+       	guint32 time_since_last_event, GtkScrollType scroll_type) {
+
+	GtkScrollType reverse_direction(GtkScrollType scroll_type) {
+		switch(scroll_type) {
+		case GTK_SCROLL_STEP_BACKWARD:
+			return GTK_SCROLL_STEP_FORWARD;
+		case GTK_SCROLL_STEP_FORWARD:
+			return GTK_SCROLL_STEP_BACKWARD;
+		default:
+			return scroll_type;
+		}
+	}
+
+	switch(mouse_wheel_option) {
+	case SYSTRAY_MW_CMD_VOLUME:
+		if (time_since_last_event > 100) {
+			if (vertical_wheel)
+				scroll_type = reverse_direction(scroll_type);
+			change_volume_or_balance(scale_vol, scroll_type);
+			return TRUE;
+		}
+		break;
+	case SYSTRAY_MW_CMD_BALANCE:
+		if (time_since_last_event > 100) {
+			if (vertical_wheel)
+				scroll_type = reverse_direction(scroll_type);
+			change_volume_or_balance(scale_bal, scroll_type);
+			return TRUE;
+		}
+		break;
+	case SYSTRAY_MW_CMD_SONG_POSITION:
+		move_song_position_slider(scroll_type);
+		seek_song();
+		return TRUE;
+	case SYSTRAY_MW_CMD_NEXT_PREV_SONG:
+		// At most one per second.
+		if (time_since_last_event > 1000) {
+			if (scroll_type == GTK_SCROLL_STEP_BACKWARD) {
+				prev_event(NULL, NULL, NULL);
+				return TRUE;
+			} else if (scroll_type == GTK_SCROLL_STEP_FORWARD) {
+				next_event(NULL, NULL, NULL);
+				return TRUE;
+			}
+		}
+		break;
+	}
+
+	return FALSE;
+}
+
+gboolean
+systray_scroll_event_cb(GtkStatusIcon * systray_icon,
+			GdkEventScroll * event,
+			gpointer user_data) {
+
+	gboolean result = FALSE;
+	guint32 time_since_last_event;
+
+	if (!options.use_systray)
+		return FALSE;
+
+	time_since_last_event = event->time - last_systray_scroll_event_time;
+
+	switch(event->direction) {
+	case GDK_SCROLL_LEFT:
+		result = systray_mouse_wheel(options.systray_mouse_wheel_horizontal,
+		        FALSE, time_since_last_event, GTK_SCROLL_STEP_BACKWARD);
+		break;
+	case GDK_SCROLL_RIGHT:
+		result = systray_mouse_wheel(options.systray_mouse_wheel_horizontal,
+		        FALSE, time_since_last_event, GTK_SCROLL_STEP_FORWARD);
+		break;
+	case GDK_SCROLL_UP:
+		result = systray_mouse_wheel(options.systray_mouse_wheel_vertical,
+		        TRUE, time_since_last_event, GTK_SCROLL_STEP_BACKWARD);
+		break;
+	case GDK_SCROLL_DOWN:
+		result = systray_mouse_wheel(options.systray_mouse_wheel_vertical,
+		        TRUE, time_since_last_event, GTK_SCROLL_STEP_FORWARD);
+		break;
+	}
+
+	if (result) {
+		last_systray_scroll_event_time = event->time;
+	}
+
+	return result;
+}
+
+gboolean
+systray_mouse_button(int mouse_button_option) {
+
+	switch(mouse_button_option) {
+	case SYSTRAY_MB_CMD_PLAY_STOP_SONG:
+		if (is_file_loaded) {
+			systray__stop_cb(NULL);
+		} else {
+			systray__play_cb(NULL);
+		}
+		return TRUE;
+	case SYSTRAY_MB_CMD_PLAY_PAUSE_SONG:
+		if (is_file_loaded && !options.combine_play_pause) {
+			systray__pause_cb(NULL);
+		} else {
+			systray__play_cb(NULL);
+		}
+		return TRUE;
+	case SYSTRAY_MB_CMD_PREV_SONG:
+		systray__prev_cb(NULL);
+		return TRUE;
+	case SYSTRAY_MB_CMD_NEXT_SONG:
+		systray__next_cb(NULL);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+gboolean
+systray_button_press_event_cb(GtkStatusIcon * systray_icon,
+                              GdkEventButton * event,
+                              gpointer user_data) {
+
+	int i;
+
+	if (!options.use_systray)
+		return FALSE;
+
+	if (event->type == GDK_BUTTON_PRESS) {
+		for (i = 0; i < options.systray_mouse_buttons_count; i++) {
+			if (options.systray_mouse_buttons[i].button_nr == event->button) {
+				return systray_mouse_button(options.systray_mouse_buttons[i].command);
+			}
+		}
+	}
+
+	return FALSE;		
+}
+#endif /* GTK_CHECK_VERSION */
 
 /* returns a hbox with a stock image and label in it */
 GtkWidget *
@@ -3248,6 +3402,12 @@ setup_systray(void) {
 				 G_CALLBACK(systray_activate_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(systray_icon), "popup-menu",
 				 G_CALLBACK(systray_popup_menu_cb), (gpointer)systray_icon);
+#if (GTK_CHECK_VERSION(2,15,0))
+	g_signal_connect(G_OBJECT(systray_icon), "scroll-event",
+			 G_CALLBACK(systray_scroll_event_cb), NULL);
+	g_signal_connect(G_OBJECT(systray_icon), "button-press-event",
+			 G_CALLBACK(systray_button_press_event_cb), NULL);
+#endif
 
         systray_menu = gtk_menu_new();
 	register_toplevel_window(systray_menu, TOP_WIN_SKIN);

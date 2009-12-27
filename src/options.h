@@ -24,6 +24,11 @@
 #include "common.h"
 
 typedef struct {
+	int button_nr;
+	int command;
+} mouse_button_command_t;
+
+typedef struct {
 
 	/* home directory */
 	char home[MAXLEN];
@@ -102,8 +107,6 @@ typedef struct {
 	char title_format[MAXLEN];
 	char default_param[MAXLEN];
 	int enable_tooltips;
-	int buttons_at_the_bottom;
-	int buttons_at_the_bottom_shadow;
    	int disable_buttons_relief;
 	int combine_play_pause;
 	int combine_play_pause_shadow;
@@ -118,10 +121,16 @@ typedef struct {
 	int show_cover_for_ms_tracks_only;
 	int use_systray;
 	int systray_start_minimized;
+	int systray_mouse_wheel_horizontal;
+	int systray_mouse_wheel_vertical;
+	int systray_mouse_buttons_count;
+	mouse_button_command_t * systray_mouse_buttons;
 
 	/* Playlist */
 	int playlist_is_embedded;
 	int playlist_is_embedded_shadow;
+	int buttons_at_the_bottom;
+	int buttons_at_the_bottom_shadow;
 	int playlist_always_show_tabs;
 	int playlist_show_close_button_in_tab;
 	int playlist_is_tree;
@@ -226,11 +235,36 @@ enum {
         ACTIVE_SONG_COLOR
 };
 
+// Mouse wheel commands on systray.
+enum {
+	SYSTRAY_MW_CMD_DO_NOTHING,
+	SYSTRAY_MW_CMD_VOLUME,
+	SYSTRAY_MW_CMD_BALANCE,
+	SYSTRAY_MW_CMD_SONG_POSITION,
+	SYSTRAY_MW_CMD_NEXT_PREV_SONG
+};
+
+// Mouse buttons commands on systray.
+enum {
+	SYSTRAY_MB_CMD_PLAY_STOP_SONG,
+	SYSTRAY_MB_CMD_PLAY_PAUSE_SONG,
+	SYSTRAY_MB_CMD_PREV_SONG,
+	SYSTRAY_MB_CMD_NEXT_SONG,
+	SYSTRAY_MB_CMD_LAST
+};
+
+enum {
+	SYSTRAY_MB_COL_BUTTON,
+	SYSTRAY_MB_COL_COMMAND,
+	SYSTRAY_MB_LAST
+};
+
 void create_options_window(void);
 void append_ms_pathlist(char * path, char * name);
 
 void save_config(void);
 void load_config(void);
+void finalize_options(void);
 
 #endif /* _OPTIONS_H */
 

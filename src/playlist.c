@@ -3636,7 +3636,6 @@ playlist_tab_close_undo(void) {
 gint
 playlist_notebook_clicked(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 
-    printf( "x = %f, y = %f\n", event->x, event->y );
 	if (event->type == GDK_2BUTTON_PRESS && event->button == 1 &&
 	    event->y < 25 && event->x > 25 && event->x < widget->allocation.width - 25) {
 		playlist_tab_new(NULL);

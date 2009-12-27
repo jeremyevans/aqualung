@@ -119,16 +119,31 @@ GtkWidget * check_enable_tooltips;
 GtkWidget * check_buttons_at_the_bottom;
 GtkWidget * check_disable_buttons_relief;
 GtkWidget * check_combine_play_pause;
-GtkWidget * check_use_systray;
-GtkWidget * check_systray_start_minimized;
 GtkWidget * check_main_window_always_on_top;
 GtkWidget * check_simple_view_in_fx;
 GtkWidget * check_united_minimization;
 GtkWidget * check_show_sn_title;
 GtkWidget * check_show_hidden;
 GtkWidget * check_tags_tab_first;
+GtkWidget * combo_cwidth;
+GtkWidget * check_magnify_smaller_images;
 GtkWidget * check_dont_show_cover;
 GtkWidget * check_show_cover_for_ms_tracks_only;
+
+#ifdef HAVE_SYSTRAY
+GtkWidget * check_use_systray;
+GtkWidget * check_systray_start_minimized;
+#if (GTK_CHECK_VERSION(2,15,0))
+GtkWidget * get_mouse_button_window;
+GtkWidget * frame_systray_mouse_wheel;
+GtkWidget * frame_systray_mouse_buttons;
+GtkWidget * combo_systray_mouse_wheel_horizontal;
+GtkWidget * combo_systray_mouse_wheel_vertical;
+GtkListStore * systray_mouse_buttons_store;
+GtkListStore * systray_mouse_buttons_cmds_store;
+GtkTreeSelection * systray_mouse_buttons_selection;
+#endif /* GTK_CHECK_VERSION */
+#endif /* HAVE_SYSTRAY */
 
 GtkWidget * check_playlist_is_embedded;
 GtkWidget * check_autoplsave;
@@ -155,8 +170,6 @@ GtkWidget * check_expand_stores;
 GtkWidget * check_enable_ms_rules_hint;
 GtkWidget * check_enable_ms_tree_icons;
 GtkWidget * check_ms_confirm_removal;
-GtkWidget * combo_cwidth;
-GtkWidget * check_magnify_smaller_images;
 GtkListStore * ms_pathlist_store = NULL;
 GtkTreeSelection * ms_pathlist_select;
 GtkWidget * entry_ms_pathlist;
@@ -268,6 +281,21 @@ void draw_rva_diagram(void);
 void show_restart_info(void);
 void restart_active(GtkToggleButton *, gpointer);
 
+#ifdef HAVE_SYSTRAY
+#if (GTK_CHECK_VERSION(2,15,0))
+void systray_mouse_button_add_clicked(GtkWidget *, gpointer);
+void systray_mouse_button_remove_clicked(GtkWidget *, gpointer);
+
+gchar * systray_mb_cmd_names[SYSTRAY_MB_CMD_LAST];
+gint systray_mb_col_command_combo_cmd = -1;
+int get_mb_window_button;
+
+#endif /* GTK_CHECK_VERSION */
+#endif /* HAVE_SYSTRAY */
+
+void load_systray_options(xmlDocPtr, xmlNodePtr);
+void save_systray_options(xmlDocPtr, xmlNodePtr);
+
 GtkListStore * restart_list_store = NULL;
 
 
@@ -369,28 +397,58 @@ options_window_accept(void) {
                 gtk_tooltips_disable(aqualung_tooltips);
 	}
 
-	set_option_from_toggle(check_buttons_at_the_bottom, &options.buttons_at_the_bottom_shadow);
-        set_option_from_toggle(check_disable_buttons_relief, &options.disable_buttons_relief);
-	set_option_from_toggle(check_combine_play_pause, &options.combine_play_pause_shadow);
-#ifdef HAVE_SYSTRAY
-	set_option_from_toggle(check_use_systray, &options.use_systray);
-	set_option_from_toggle(check_systray_start_minimized, &options.systray_start_minimized);
-#endif /* HAVE_SYSTRAY */
-	set_option_from_toggle(check_main_window_always_on_top, &options.main_window_always_on_top);
-
 #ifdef HAVE_LADSPA
         set_option_from_toggle(check_simple_view_in_fx, &options.simple_view_in_fx_shadow);
 #endif /* HAVE_LADSPA */
 	set_option_from_toggle(check_united_minimization, &options.united_minimization);
-	set_option_from_toggle(check_show_sn_title, &options.show_sn_title);
 	set_option_from_toggle(check_show_hidden, &options.show_hidden);
         set_option_from_toggle(check_tags_tab_first, &options.tags_tab_first);
-        set_option_from_toggle(check_dont_show_cover, &options.dont_show_cover);
+
+	set_option_from_combo(combo_cwidth, &options.cover_width);
+	set_option_from_toggle(check_magnify_smaller_images, &options.magnify_smaller_images);
+	set_option_from_toggle(check_dont_show_cover, &options.dont_show_cover);
         set_option_from_toggle(check_show_cover_for_ms_tracks_only, &options.show_cover_for_ms_tracks_only);
 
+	options.magnify_smaller_images = !options.magnify_smaller_images;
         if(options.dont_show_cover) {
                 hide_cover_thumbnail();
         }
+
+	set_option_from_toggle(check_disable_buttons_relief, &options.disable_buttons_relief);
+	set_option_from_toggle(check_combine_play_pause, &options.combine_play_pause_shadow);
+	set_option_from_toggle(check_main_window_always_on_top, &options.main_window_always_on_top);
+	set_option_from_toggle(check_show_sn_title, &options.show_sn_title);
+
+#ifdef HAVE_SYSTRAY
+	set_option_from_toggle(check_use_systray, &options.use_systray);
+	set_option_from_toggle(check_systray_start_minimized, &options.systray_start_minimized);
+
+#if (GTK_CHECK_VERSION(2,15,0))
+	set_option_from_combo(combo_systray_mouse_wheel_horizontal, &options.systray_mouse_wheel_horizontal);
+	set_option_from_combo(combo_systray_mouse_wheel_vertical, &options.systray_mouse_wheel_vertical);
+
+	options.systray_mouse_buttons_count = 0;
+	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(systray_mouse_buttons_store), &iter)) {
+		do {
+			++options.systray_mouse_buttons_count;
+		} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(systray_mouse_buttons_store), &iter));
+	}
+
+	options.systray_mouse_buttons = realloc(options.systray_mouse_buttons,
+	        options.systray_mouse_buttons_count * sizeof(mouse_button_command_t));
+	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(systray_mouse_buttons_store), &iter)) {
+		i = 0;
+		do {
+			gtk_tree_model_get(GTK_TREE_MODEL(systray_mouse_buttons_store), &iter,
+				SYSTRAY_MB_COL_BUTTON, &options.systray_mouse_buttons[i].button_nr,
+				SYSTRAY_MB_COL_COMMAND, &options.systray_mouse_buttons[i].command, -1);
+			++i;
+		} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(systray_mouse_buttons_store), &iter));
+	}
+
+#endif /* GTK_CHECK_VERSION */
+
+#endif /* HAVE_SYSTRAY */
 
 	/* Playlist */
 	set_option_from_toggle(check_autoplsave, &options.auto_save_playlist);
@@ -400,6 +458,7 @@ options_window_accept(void) {
 
 	set_option_from_spin(spin_playlist_auto_save, &options.playlist_auto_save_int);
 	set_option_from_toggle(check_playlist_is_embedded, &options.playlist_is_embedded_shadow);
+	set_option_from_toggle(check_buttons_at_the_bottom, &options.buttons_at_the_bottom_shadow);
 	set_option_from_toggle(check_playlist_is_tree, &options.playlist_is_tree);
 	set_option_from_toggle(check_playlist_always_show_tabs, &options.playlist_always_show_tabs);
 
@@ -434,10 +493,6 @@ options_window_accept(void) {
 
 	set_option_from_toggle(check_enable_ms_tree_icons, &options.enable_ms_tree_icons_shadow);
 	set_option_from_toggle(check_ms_confirm_removal, &options.ms_confirm_removal);
-
-	set_option_from_combo(combo_cwidth, &options.cover_width);
-	set_option_from_toggle(check_magnify_smaller_images, &options.magnify_smaller_images);
-	options.magnify_smaller_images = !options.magnify_smaller_images;
 
 
 	/* RVA */
@@ -1498,15 +1553,304 @@ display_inet_help_noproxy_domains(void) {
 		       "Example: localhost, .localdomain, .my.domain.com"));
 }
 
-#ifdef HAVE_SYSTRAY
 void
-systray_support_cb(GtkToggleButton * togglebutton, gpointer data) {
+playlist_embedded_cb(GtkToggleButton * togglebutton, gpointer data) {
 
 	gtk_widget_set_sensitive(GTK_WIDGET(data), 
 				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(togglebutton)));
 
+	restart_active(togglebutton, _("Embed playlist into main window"));
+}
+
+#ifdef HAVE_SYSTRAY
+void
+systray_support_cb(GtkToggleButton * togglebutton, gpointer data) {
+
+	gboolean systray_active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(togglebutton));
+
+	gtk_widget_set_sensitive(GTK_WIDGET(check_systray_start_minimized), systray_active); 
+#if (GTK_CHECK_VERSION(2,15,0))
+	gtk_widget_set_sensitive(GTK_WIDGET(frame_systray_mouse_wheel), systray_active);
+	gtk_widget_set_sensitive(GTK_WIDGET(frame_systray_mouse_buttons), systray_active);
+#endif /* GTK_CHECK_VERSION */
+
 	restart_active(togglebutton, _("Enable systray"));
 }
+
+#if (GTK_CHECK_VERSION(2,15,0))
+GtkWidget *
+setup_combo_with_label(GtkBox * box, char * label_text) {
+
+	GtkWidget * hbox;
+	GtkWidget * hbox_s;
+	GtkWidget * label;
+	GtkWidget * combo;
+	
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(box, hbox, FALSE, TRUE, 5);
+
+	label = gtk_label_new(label_text);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+
+	hbox_s = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 3);
+
+	combo = gtk_combo_box_new_text ();
+	gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
+
+	return combo;
+}
+
+void
+fill_mouse_wheel_combo(GtkComboBox * combo) {
+
+	gtk_combo_box_append_text (combo, _("Do nothing"));
+	gtk_combo_box_append_text (combo, _("Change volume"));
+	gtk_combo_box_append_text (combo, _("Change balance"));
+	gtk_combo_box_append_text (combo, _("Change song position"));
+	gtk_combo_box_append_text (combo, _("Change current song"));
+
+}
+
+void
+get_mouse_button_text(int button_number, char * text_buffer, int buffer_size) {
+
+	switch (button_number) {
+		case 1:
+			g_snprintf(text_buffer, buffer_size, _("Left button"));
+			break;
+		case 2:
+			g_snprintf(text_buffer, buffer_size, _("Middle button"));
+			break;
+		case 3:
+			g_snprintf(text_buffer, buffer_size, _("Right button"));
+			break;
+		default:
+			g_snprintf(text_buffer, buffer_size, "%s %d", _("Button"), button_number);
+			break;			
+	}
+}
+
+gboolean
+get_mouse_button_button_press_cb(GtkWidget * widget, GdkEventButton * event, gpointer user_data) {
+
+	GtkTreeIter iter;
+	gint button_number;
+	gboolean set_button = TRUE;
+	int i = 0;
+	gchar buf[30];
+
+	// Don't allow setting Left or Right mouse buttons (they are reserved).
+	if (event->button == 1 || event->button == 3) {
+		message_dialog(_("Warning"),
+			       get_mouse_button_window,
+			       GTK_MESSAGE_WARNING,
+			       GTK_BUTTONS_OK,
+			       NULL,
+			       _("Left and right mouse buttons are reserved."));
+		set_button = FALSE;
+	} else {
+		// Don't allow duplicate buttons.
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(systray_mouse_buttons_store), &iter, NULL, i++)) {
+
+			gtk_tree_model_get(GTK_TREE_MODEL(systray_mouse_buttons_store),
+				&iter, SYSTRAY_MB_COL_BUTTON, &button_number, -1);
+
+			if (button_number == event->button) {
+				message_dialog(_("Warning"),
+					       get_mouse_button_window,
+					       GTK_MESSAGE_WARNING,
+					       GTK_BUTTONS_OK,
+					       NULL,
+					       _("This button is already assigned."));
+
+				set_button = FALSE;
+				break;
+			}
+		}
+	}
+
+	if (set_button) {
+		get_mouse_button_text(event->button, buf, sizeof(buf));
+		gtk_label_set_text(GTK_LABEL(user_data), buf);
+		get_mb_window_button = event->button;
+	}
+
+	return set_button;
+}
+
+void
+setup_get_mouse_button_window(void) {
+
+	GtkWidget * vbox_main;
+	GtkWidget * vbox;
+	GtkWidget * frame;
+	GtkWidget * eventbox;
+	GtkWidget * label;
+	GtkWidget * combo;
+	GtkWidget * alignment;
+	GtkTreeIter iter;
+	int i;
+	int ret;
+
+	get_mouse_button_window = gtk_dialog_new_with_buttons(
+	        _("Add mouse button command"),
+		GTK_WINDOW(options_window),
+		GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+		GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+		GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+		NULL);
+
+	gtk_window_set_position(GTK_WINDOW(get_mouse_button_window), GTK_WIN_POS_CENTER);
+	gtk_dialog_set_default_response(GTK_DIALOG(get_mouse_button_window), GTK_RESPONSE_ACCEPT);
+	gtk_container_set_border_width(GTK_CONTAINER(get_mouse_button_window), 5);
+
+	vbox_main = GTK_DIALOG(get_mouse_button_window)->vbox;
+	gtk_box_set_spacing(GTK_BOX(vbox_main), 8);
+
+	eventbox = gtk_event_box_new();
+	gtk_event_box_set_above_child(GTK_EVENT_BOX(eventbox), TRUE);
+	gtk_event_box_set_visible_window(GTK_EVENT_BOX(eventbox), FALSE);
+	gtk_box_pack_start(GTK_BOX(vbox_main), eventbox, FALSE, TRUE, 0);
+
+	frame = gtk_frame_new(_("Mouse button"));
+	gtk_container_add(GTK_CONTAINER(eventbox), frame);
+
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(frame), vbox);
+
+	alignment = gtk_alignment_new (0.5, 0.5, 1, 1);
+	gtk_box_pack_start (GTK_BOX (vbox), alignment, FALSE, TRUE, 0);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 30, 30, 20, 20);
+
+	label = gtk_label_new(_("Click here to set mouse button"));
+	gtk_container_add(GTK_CONTAINER(alignment), label);
+
+	g_signal_connect(G_OBJECT(eventbox), "button-press-event",
+	        G_CALLBACK(get_mouse_button_button_press_cb), label);
+
+	frame = gtk_frame_new(_("Command"));
+	gtk_box_pack_start(GTK_BOX(vbox_main), frame, FALSE, TRUE, 0);
+
+	vbox = gtk_vbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
+	gtk_container_add(GTK_CONTAINER(frame), vbox);
+
+	combo = gtk_combo_box_new_text ();
+	gtk_container_add(GTK_CONTAINER(vbox), combo);
+
+	for (i = 0; i < SYSTRAY_MB_CMD_LAST; i++) {
+		gtk_combo_box_append_text (GTK_COMBO_BOX(combo), systray_mb_cmd_names[i]);
+	}
+	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
+
+
+	gtk_widget_show_all (get_mouse_button_window);
+
+	get_mb_window_button = 0;
+
+	ret = aqualung_dialog_run(GTK_DIALOG(get_mouse_button_window));
+
+	if (ret == GTK_RESPONSE_ACCEPT) {
+
+		i = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
+
+		if (get_mb_window_button > 0 && i >= 0) {
+			gtk_list_store_append (systray_mouse_buttons_store, &iter);
+			gtk_list_store_set (systray_mouse_buttons_store, &iter,
+					    SYSTRAY_MB_COL_BUTTON, get_mb_window_button,
+					    SYSTRAY_MB_COL_COMMAND, i,
+					    -1);
+		}
+	}
+
+	gtk_widget_destroy(get_mouse_button_window);
+}
+
+void
+systray_mouse_button_add_clicked(GtkWidget * widget, gpointer data) {
+
+	setup_get_mouse_button_window();
+}
+
+void
+systray_mouse_button_remove_clicked(GtkWidget * widget, gpointer data) {
+
+	GtkTreeIter iter;
+	int i = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(systray_mouse_buttons_store), &iter, NULL, i++)) {
+
+		if (gtk_tree_selection_iter_is_selected(systray_mouse_buttons_selection, &iter)) {
+			gtk_list_store_remove(systray_mouse_buttons_store, &iter);
+			--i;
+		}
+	}
+}
+
+void
+systray_mb_col_button_datafunc(GtkTreeViewColumn *tree_column,
+			       GtkCellRenderer *cell_renderer,
+			       GtkTreeModel *tree_model,
+			       GtkTreeIter *iter,
+			       gpointer data) {
+
+	gchar buf[30];
+	int button_number;
+
+	gtk_tree_model_get(tree_model, iter, SYSTRAY_MB_COL_BUTTON, &button_number, -1);				       
+	get_mouse_button_text(button_number, buf, sizeof(buf));
+	g_object_set(cell_renderer, "text", buf, NULL);
+}
+
+void
+systray_mb_col_command_datafunc(GtkTreeViewColumn *tree_column,
+				GtkCellRenderer *cell_renderer,
+				GtkTreeModel *tree_model,
+				GtkTreeIter *iter,
+				gpointer data)
+{
+	gint command;
+
+	gtk_tree_model_get(tree_model, iter, SYSTRAY_MB_COL_COMMAND, &command, -1);				       
+
+	if (command >= 0 && command < SYSTRAY_MB_CMD_LAST) {
+		g_object_set(cell_renderer, "text", systray_mb_cmd_names[command], NULL);
+	}
+}
+
+void
+systray_mb_col_command_combo_changed_cb(GtkCellRendererCombo * combo,
+        				gchar * path_string,
+					GtkTreeIter * new_iter,
+					gpointer user_data) {
+
+	// Get integer command number from the combobox.
+	gtk_tree_model_get(GTK_TREE_MODEL(systray_mouse_buttons_cmds_store), new_iter,
+			   1, &systray_mb_col_command_combo_cmd, -1);
+}
+
+void
+systray_mb_col_command_combo_edited_cb(GtkCellRendererText * cell_renderer,
+        			       gchar * path,
+	        		       gchar * selection,
+        			       gpointer user_data) {
+	GtkTreeIter iter;
+
+	if (gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(systray_mouse_buttons_store), &iter, path)) {
+
+		if (systray_mb_col_command_combo_cmd >= 0 &&
+		    systray_mb_col_command_combo_cmd < SYSTRAY_MB_CMD_LAST) {
+			gtk_list_store_set (systray_mouse_buttons_store, &iter,
+					    SYSTRAY_MB_COL_COMMAND, systray_mb_col_command_combo_cmd, -1);
+		}
+	}
+
+	systray_mb_col_command_combo_cmd = -1;
+}
+
+#endif /* GTK_CHECK_VERSION */
+
 #endif /* HAVE_SYSTRAY */
 
 
@@ -1516,7 +1860,8 @@ create_options_window(void) {
 	int ret;
 
 	GtkWidget * vbox_general;
-	GtkWidget * nbook_title;
+	GtkWidget * nbook_general;
+	GtkWidget * frame_title;
 	GtkWidget * frame_param;
 	GtkWidget * frame_misc;
 	GtkWidget * frame_cart;
@@ -1524,9 +1869,16 @@ create_options_window(void) {
 	GtkWidget * vbox_misc;
 	GtkWidget * vbox_cart;
 	GtkWidget * vbox_appearance;
+	GtkWidget * vbox_miscellaneous_tab;
+#ifdef HAVE_SYSTRAY
+	GtkWidget * vbox_systray;
+#if (GTK_CHECK_VERSION(2,15,0))
+	GtkWidget * systray_mb_list;
+	GtkWidget * button;
+#endif /* HAVE_SYSTRAY */
+#endif /* GTK_CHECK_VERSION */
 
 #ifdef HAVE_LUA
-	GtkWidget * hbox_ext_title_format_file;
 	GtkWidget * browse_ext_title_format_file;
        	GtkWidget * help_btn_ext_title;
 #endif /* HAVE_LUA */
@@ -1594,20 +1946,19 @@ create_options_window(void) {
         GtkSizeGroup * label_size;
 
 	GtkWidget * hbox;
+	GtkWidget * vbox;
 	GtkWidget * hbox_s;
        	GtkWidget * help_btn_title;
 	GtkWidget * help_btn_param;
 	GtkWidget * help_pathlist;
+
+	GtkWidget * alignment;
 
 #ifdef HAVE_LADSPA
 	int status;
 #endif /* HAVE_LADSPA */
 	int i;
 	
-#ifdef HAVE_SYSTRAY
-	GtkWidget *alignment;
-#endif /* HAVE_SYSTRAY */
-
         restart_flag = 0;
 	reskin_flag = 0;
         appearance_changed = 0;
@@ -1647,12 +1998,59 @@ create_options_window(void) {
         gtk_container_set_border_width(GTK_CONTAINER(vbox_general), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_general, create_notebook_tab(_("General"), "general.png"));
 
-	nbook_title = gtk_notebook_new();
-	gtk_box_pack_start(GTK_BOX(vbox_general), nbook_title, FALSE, TRUE, 0);
+	nbook_general = gtk_notebook_new();
+	gtk_box_pack_start(GTK_BOX(vbox_general), nbook_general, FALSE, TRUE, 0);
 
-        hbox = gtk_hbox_new(FALSE, 3);
+	/* General/Main window page */
+
+	vbox = gtk_vbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
+	gtk_notebook_append_page(GTK_NOTEBOOK(nbook_general), vbox, gtk_label_new(_("Main window")));
+
+        check_disable_buttons_relief =
+		gtk_check_button_new_with_label(_("Disable control buttons relief"));
+	gtk_widget_set_name(check_disable_buttons_relief, "check_on_notebook");
+	if (options.disable_buttons_relief) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_disable_buttons_relief), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox), check_disable_buttons_relief, FALSE, FALSE, 0);
+
+	check_combine_play_pause = gtk_check_button_new_with_label(_("Combine play and pause buttons"));
+	gtk_widget_set_name(check_combine_play_pause, "check_on_notebook");
+	if (options.combine_play_pause_shadow) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_combine_play_pause), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox), check_combine_play_pause, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (check_combine_play_pause), "toggled",
+			  G_CALLBACK (restart_active), _("Combine play and pause buttons"));
+
+        check_main_window_always_on_top = gtk_check_button_new_with_label(_("Keep main window always on top"));
+	gtk_widget_set_name(check_main_window_always_on_top, "check_on_notebook");
+	if (options.main_window_always_on_top) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_main_window_always_on_top), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox), check_main_window_always_on_top, FALSE, FALSE, 0);
+
+	check_show_sn_title =
+		gtk_check_button_new_with_label(_("Show song name in the main window's title"));
+        gtk_widget_set_name(check_show_sn_title, "check_on_notebook");
+	if (options.show_sn_title) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_sn_title), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox), check_show_sn_title, FALSE, FALSE, 0);
+
+	/* General/Title format page */
+
+	vbox = gtk_vbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
+	gtk_notebook_append_page(GTK_NOTEBOOK(nbook_general), vbox, gtk_label_new(_("Title Format")));
+
+	frame_title = gtk_frame_new(_("Title Format"));
+	gtk_box_pack_start(GTK_BOX(vbox), frame_title, FALSE, TRUE, 5);
+
+	hbox = gtk_hbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
-	gtk_notebook_append_page(GTK_NOTEBOOK(nbook_title), hbox, gtk_label_new(_("Title Format")));
+	gtk_container_add(GTK_CONTAINER(frame_title), hbox);
 
 	entry_title = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(entry_title), MAXLEN - 1);
@@ -1664,28 +2062,183 @@ create_options_window(void) {
 	gtk_box_pack_start(GTK_BOX(hbox), help_btn_title, FALSE, FALSE, 5);
 
 #ifdef HAVE_LUA
-	hbox_ext_title_format_file = gtk_hbox_new(FALSE, FALSE);
-	gtk_container_set_border_width(GTK_CONTAINER(hbox_ext_title_format_file), 5);
-	gtk_notebook_append_page(GTK_NOTEBOOK(nbook_title), hbox_ext_title_format_file, gtk_label_new(_("Programmable title format file")));
+	frame_title = gtk_frame_new(_("Programmable title format file"));
+	gtk_box_pack_start(GTK_BOX(vbox), frame_title, FALSE, TRUE, 5);
+
+	hbox = gtk_hbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_container_add(GTK_CONTAINER(frame_title), hbox);
 
 	entry_ext_title_format_file = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(entry_ext_title_format_file), MAXLEN - 1);
 	gtk_entry_set_text(GTK_ENTRY(entry_ext_title_format_file), options.ext_title_format_file);
-	gtk_box_pack_start(GTK_BOX(hbox_ext_title_format_file), entry_ext_title_format_file, TRUE, TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(hbox), entry_ext_title_format_file, TRUE, TRUE, 2);
 
 	browse_ext_title_format_file = gui_stock_label_button(_("Browse"), GTK_STOCK_OPEN);
         gtk_container_set_border_width(GTK_CONTAINER(browse_ext_title_format_file), 2);
 	g_signal_connect (G_OBJECT(browse_ext_title_format_file), "clicked",
 			  G_CALLBACK(browse_ext_title_format_file_clicked), (gpointer)entry_ext_title_format_file);
-	gtk_box_pack_start(GTK_BOX(hbox_ext_title_format_file), browse_ext_title_format_file, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(hbox), browse_ext_title_format_file, FALSE, FALSE, 5);
 
         help_btn_ext_title = gtk_button_new_from_stock(GTK_STOCK_HELP); 
 	g_signal_connect(help_btn_ext_title, "clicked", G_CALLBACK(display_ext_title_format_help), NULL);
-	gtk_box_pack_end(GTK_BOX(hbox_ext_title_format_file), help_btn_ext_title, FALSE, FALSE, 5);
+	gtk_box_pack_end(GTK_BOX(hbox), help_btn_ext_title, FALSE, FALSE, 5);
 #endif /* HAVE_LUA */
 
+	/* General/Systray page */
+
+#ifdef HAVE_SYSTRAY
+	vbox_systray = gtk_vbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_systray), 5);
+	gtk_notebook_append_page(GTK_NOTEBOOK(nbook_general), vbox_systray, gtk_label_new(_("Systray")));
+
+	check_use_systray = gtk_check_button_new_with_label(_("Enable systray"));
+	gtk_widget_set_name(check_use_systray, "check_on_notebook");
+	if (options.use_systray) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_use_systray), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_systray), check_use_systray, FALSE, FALSE, 0);
+
+	alignment = gtk_alignment_new (0.5, 0.5, 1, 1);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 16, 0);
+	gtk_box_pack_start (GTK_BOX (vbox_systray), alignment, FALSE, TRUE, 0);
+
+	check_systray_start_minimized = gtk_check_button_new_with_label(_("Start minimized"));
+	gtk_widget_set_name(check_systray_start_minimized, "check_on_notebook");
+	if (options.systray_start_minimized) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_systray_start_minimized), TRUE);
+	}
+	gtk_container_add (GTK_CONTAINER (alignment), check_systray_start_minimized);
+
+	g_signal_connect (G_OBJECT (check_use_systray), "toggled",
+			  G_CALLBACK (systray_support_cb), NULL);
+
+#if (GTK_CHECK_VERSION(2,15,0))
+	systray_mb_cmd_names[SYSTRAY_MB_CMD_PLAY_STOP_SONG]  = _("Play/Stop song");
+	systray_mb_cmd_names[SYSTRAY_MB_CMD_PLAY_PAUSE_SONG] = _("Play/Pause song");
+	systray_mb_cmd_names[SYSTRAY_MB_CMD_PREV_SONG]       = _("Previous song");
+	systray_mb_cmd_names[SYSTRAY_MB_CMD_NEXT_SONG]       = _("Next song");
+
+	frame_systray_mouse_wheel = gtk_frame_new(_("Mouse wheel"));
+	gtk_box_pack_start(GTK_BOX(vbox_systray), frame_systray_mouse_wheel, FALSE, TRUE, 5);
+
+	vbox = gtk_vbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
+	gtk_container_add(GTK_CONTAINER(frame_systray_mouse_wheel), vbox);
+
+	combo_systray_mouse_wheel_vertical =
+		setup_combo_with_label(GTK_BOX(vbox), _("Vertical mouse wheel:"));
+	fill_mouse_wheel_combo(GTK_COMBO_BOX (combo_systray_mouse_wheel_vertical));
+	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_systray_mouse_wheel_vertical),
+	        options.systray_mouse_wheel_vertical);
+
+	combo_systray_mouse_wheel_horizontal =
+		setup_combo_with_label(GTK_BOX(vbox), _("Horizontal mouse wheel:"));
+	fill_mouse_wheel_combo(GTK_COMBO_BOX (combo_systray_mouse_wheel_horizontal));
+	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_systray_mouse_wheel_horizontal),
+	        options.systray_mouse_wheel_horizontal);
+
+	frame_systray_mouse_buttons = gtk_frame_new(_("Mouse buttons"));
+	gtk_box_pack_start(GTK_BOX(vbox_systray), frame_systray_mouse_buttons, FALSE, TRUE, 5);
+
+	vbox = gtk_vbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
+	gtk_container_add(GTK_CONTAINER(frame_systray_mouse_buttons), vbox);
+
+	scrolled_win = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
+				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request(scrolled_win, 100, 100);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolled_win, FALSE, TRUE, 5);
+
+	/* Mouse buttons table */
+	systray_mouse_buttons_store = gtk_list_store_new (SYSTRAY_MB_LAST,
+							  G_TYPE_INT,   /* Button nr */
+	        					  G_TYPE_INT);  /* Command index */
+
+	for (i = 0; i < options.systray_mouse_buttons_count; i++) {
+		gtk_list_store_append (systray_mouse_buttons_store, &iter);
+		gtk_list_store_set (systray_mouse_buttons_store, &iter,
+				    SYSTRAY_MB_COL_BUTTON, options.systray_mouse_buttons[i].button_nr,
+				    SYSTRAY_MB_COL_COMMAND, options.systray_mouse_buttons[i].command,
+				    -1);
+	}
+
+	systray_mb_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(systray_mouse_buttons_store));
+	systray_mouse_buttons_selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(systray_mb_list));
+	gtk_tree_selection_set_mode(systray_mouse_buttons_selection, GTK_SELECTION_MULTIPLE);
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(systray_mb_list), FALSE);
+	GTK_WIDGET_UNSET_FLAGS(GTK_WIDGET(systray_mb_list), GTK_CAN_FOCUS);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_win), systray_mb_list);
+
+	// First mouse buttons column.
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Button"), renderer, NULL);
+	gtk_tree_view_column_set_cell_data_func(
+	        column, renderer, systray_mb_col_button_datafunc, NULL, NULL);
+        gtk_tree_view_append_column(GTK_TREE_VIEW(systray_mb_list), column);
+
+	// Second mouse buttons column.
+	renderer = gtk_cell_renderer_combo_new();
+	systray_mouse_buttons_cmds_store = gtk_list_store_new (
+	        2,
+	        G_TYPE_STRING,  /* Command description */
+	        G_TYPE_INT);	/* Command index */
+
+	for (i = 0; i < SYSTRAY_MB_CMD_LAST; i++) {
+		gtk_list_store_append (systray_mouse_buttons_cmds_store, &iter);
+		gtk_list_store_set (systray_mouse_buttons_cmds_store, &iter,
+				    0, systray_mb_cmd_names[i], 1, i, -1);
+	}
+
+	g_object_set(G_OBJECT (renderer),
+	             "model", systray_mouse_buttons_cmds_store,
+	             "text-column", 0,
+	             "editable", TRUE,
+	             "has-entry", FALSE,
+	             NULL);
+
+	g_signal_connect(G_OBJECT(renderer), "changed",
+	        	 G_CALLBACK(systray_mb_col_command_combo_changed_cb), NULL);
+	g_signal_connect(G_OBJECT(renderer), "edited",
+	        	 G_CALLBACK(systray_mb_col_command_combo_edited_cb), NULL);
+
+	column = gtk_tree_view_column_new_with_attributes(_("Command"), renderer, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(systray_mb_list), column);
+	gtk_tree_view_column_set_cell_data_func(
+	        column, renderer, systray_mb_col_command_datafunc, NULL, NULL);
+
+
+	hbox = gtk_hbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+
+	button = gui_stock_label_button(_("Add"), GTK_STOCK_ADD);
+	g_signal_connect (G_OBJECT(button), "clicked",
+			  G_CALLBACK(systray_mouse_button_add_clicked), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+
+	button = gui_stock_label_button(_("Remove"), GTK_STOCK_REMOVE);
+	g_signal_connect (G_OBJECT(button), "clicked",
+			  G_CALLBACK(systray_mouse_button_remove_clicked), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+
+	gtk_widget_set_sensitive(check_systray_start_minimized, options.use_systray);
+	gtk_widget_set_sensitive(frame_systray_mouse_wheel, options.use_systray);
+	gtk_widget_set_sensitive(frame_systray_mouse_buttons, options.use_systray);
+
+#endif /* GTK_CHECK_VERSION */
+
+#endif /* HAVE_SYSTRAY */
+
+	/* General/Miscellaneous page */
+
+	vbox_miscellaneous_tab = gtk_vbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_miscellaneous_tab), 5);
+	gtk_notebook_append_page(GTK_NOTEBOOK(nbook_general), vbox_miscellaneous_tab, gtk_label_new(_("Miscellaneous")));
+
 	frame_param = gtk_frame_new(_("Implicit command line"));
-	gtk_box_pack_start(GTK_BOX(vbox_general), frame_param, FALSE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_miscellaneous_tab), frame_param, FALSE, TRUE, 5);
 
         hbox_param = gtk_hbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox_param), 5);
@@ -1701,7 +2254,7 @@ create_options_window(void) {
 	gtk_box_pack_start(GTK_BOX(hbox_param), help_btn_param, FALSE, FALSE, 5);
 
 	frame_misc = gtk_frame_new(_("Miscellaneous"));
-	gtk_box_pack_start(GTK_BOX(vbox_general), frame_misc, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_miscellaneous_tab), frame_misc, FALSE, TRUE, 0);
 
 	vbox_misc = gtk_vbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_misc), 8);
@@ -1713,72 +2266,6 @@ create_options_window(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_enable_tooltips), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_enable_tooltips, FALSE, FALSE, 0);
-
-#ifdef HAVE_SYSTRAY
-	check_use_systray = gtk_check_button_new_with_label(_("Enable systray"));
-	gtk_widget_set_name(check_use_systray, "check_on_notebook");
-	if (options.use_systray) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_use_systray), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_misc), check_use_systray, FALSE, FALSE, 0);
-
-	alignment = gtk_alignment_new (0.5, 0.5, 1, 1);
-	gtk_widget_show (alignment);
-	gtk_box_pack_start (GTK_BOX (vbox_misc), alignment, FALSE, TRUE, 0);
-	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 16, 0);
-
-	check_systray_start_minimized = gtk_check_button_new_with_label(_("Start minimized"));
-	gtk_widget_set_name(check_systray_start_minimized, "check_on_notebook");
-	if (options.systray_start_minimized) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_systray_start_minimized), TRUE);
-	}
-
-	gtk_container_add (GTK_CONTAINER (alignment), check_systray_start_minimized);
-
-	g_signal_connect (G_OBJECT (check_use_systray), "toggled",
-			  G_CALLBACK (systray_support_cb), check_systray_start_minimized);
-
-	if (options.use_systray) {
-		gtk_widget_set_sensitive(check_systray_start_minimized, TRUE);
-	} else {
-		gtk_widget_set_sensitive(check_systray_start_minimized, FALSE);
-	}
-#endif /* HAVE_SYSTRAY */
-
-	check_buttons_at_the_bottom =
-		gtk_check_button_new_with_label(_("Put control buttons at the bottom of playlist"));
-	gtk_widget_set_name(check_buttons_at_the_bottom, "check_on_notebook");
-	if (options.buttons_at_the_bottom_shadow) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_buttons_at_the_bottom), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_misc), check_buttons_at_the_bottom, FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (check_buttons_at_the_bottom), "toggled",
-			  G_CALLBACK (restart_active), _("Put control buttons at the bottom of playlist"));
-
-        check_disable_buttons_relief =
-		gtk_check_button_new_with_label(_("Disable control buttons relief"));
-	gtk_widget_set_name(check_disable_buttons_relief, "check_on_notebook");
-	if (options.disable_buttons_relief) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_disable_buttons_relief), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_misc), check_disable_buttons_relief, FALSE, FALSE, 0);
-
-	check_combine_play_pause = gtk_check_button_new_with_label(_("Combine play and pause buttons"));
-	gtk_widget_set_name(check_combine_play_pause, "check_on_notebook");
-	if (options.combine_play_pause_shadow) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_combine_play_pause), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_misc), check_combine_play_pause, FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (check_combine_play_pause), "toggled",
-			  G_CALLBACK (restart_active), _("Combine play and pause buttons"));
-
-        check_main_window_always_on_top = gtk_check_button_new_with_label(_("Keep main window always on top"));
-	gtk_widget_set_name(check_main_window_always_on_top, "check_on_notebook");
-	if (options.main_window_always_on_top) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_main_window_always_on_top), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_misc), check_main_window_always_on_top, FALSE, FALSE, 0);
-
 
 #ifdef HAVE_LADSPA
 	check_simple_view_in_fx =
@@ -1800,14 +2287,6 @@ create_options_window(void) {
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_united_minimization, FALSE, FALSE, 0);
 
-	check_show_sn_title =
-		gtk_check_button_new_with_label(_("Show song name in the main window's title"));
-        gtk_widget_set_name(check_show_sn_title, "check_on_notebook");
-	if (options.show_sn_title) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_sn_title), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_misc), check_show_sn_title, FALSE, FALSE, 0);
-
 
 	check_show_hidden = gtk_check_button_new_with_label(_("Show hidden files and directories in file choosers"));
 	gtk_widget_set_name(check_show_hidden, "check_on_notebook");
@@ -1825,7 +2304,7 @@ create_options_window(void) {
 
 
 	frame_cart = gtk_frame_new(_("Cover art"));
-	gtk_box_pack_start(GTK_BOX(vbox_general), frame_cart, FALSE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_miscellaneous_tab), frame_cart, FALSE, TRUE, 5);
 
 	vbox_cart = gtk_vbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_cart), 10);
@@ -1847,7 +2326,7 @@ create_options_window(void) {
         gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("300 pixels"));
         gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("use browser window width"));
 
-        gtk_combo_box_set_active (GTK_COMBO_BOX (combo_cwidth), options.cover_width);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_cwidth), options.cover_width);
 
         check_magnify_smaller_images =
 		gtk_check_button_new_with_label(_("Do not magnify images with smaller width"));
@@ -1871,7 +2350,7 @@ create_options_window(void) {
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_cart), check_dont_show_cover, FALSE, FALSE, 0);
 
-        /* "Playlist" notebook page */
+	/* "Playlist" notebook page */
 
 	vbox_pl = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_pl), 8);
@@ -1884,8 +2363,29 @@ create_options_window(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_playlist_is_embedded), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_pl), check_playlist_is_embedded, FALSE, TRUE, 0);
+
+	alignment = gtk_alignment_new (0.5, 0.5, 1, 1);
+	gtk_box_pack_start (GTK_BOX (vbox_pl), alignment, FALSE, TRUE, 0);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 16, 0);
+
+	check_buttons_at_the_bottom =
+		gtk_check_button_new_with_label(_("Put control buttons at the bottom of playlist"));
+	gtk_widget_set_name(check_buttons_at_the_bottom, "check_on_notebook");
+	if (options.buttons_at_the_bottom_shadow) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_buttons_at_the_bottom), TRUE);
+	}
+	if (options.playlist_is_embedded_shadow) {
+		gtk_widget_set_sensitive(check_buttons_at_the_bottom, TRUE);
+	} else {
+		gtk_widget_set_sensitive(check_buttons_at_the_bottom, FALSE);
+	}
+	gtk_container_add (GTK_CONTAINER (alignment), check_buttons_at_the_bottom);
+	g_signal_connect (G_OBJECT (check_buttons_at_the_bottom), "toggled",
+			  G_CALLBACK (restart_active), _("Put control buttons at the bottom of playlist"));
+
 	g_signal_connect (G_OBJECT (check_playlist_is_embedded), "toggled",
-		G_CALLBACK (restart_active), _("Embed playlist into main window"));
+		G_CALLBACK (playlist_embedded_cb), check_buttons_at_the_bottom);
+
 
 	check_autoplsave =
 	    gtk_check_button_new_with_label(_("Save and restore the playlist on exit/startup"));
@@ -3243,6 +3743,13 @@ create_options_window(void) {
 	} else {
 		gtk_widget_destroy(options_window);
 	}
+
+#ifdef HAVE_SYSTRAY
+#if (GTK_CHECK_VERSION(2,15,0))
+	gtk_list_store_clear(systray_mouse_buttons_store);
+	gtk_list_store_clear(systray_mouse_buttons_cmds_store);
+#endif /* HAVE_SYSTRAY */
+#endif /* GTK_CHECK_VERSION */
 }
 
 
@@ -3330,7 +3837,6 @@ save_config(void) {
 	SAVE_INT(meta_rm_extension);
 	SAVE_INT(meta_us_to_space);
 	SAVE_INT(enable_tooltips);
-	SAVE_INT_SH(buttons_at_the_bottom);
 	SAVE_INT(disable_buttons_relief);
 	SAVE_INT_SH(combine_play_pause);
 	SAVE_INT_SH(simple_view_in_fx);
@@ -3338,6 +3844,10 @@ save_config(void) {
 	SAVE_INT(united_minimization);
 	SAVE_INT(magnify_smaller_images);
 	SAVE_INT(cover_width);
+	SAVE_INT(dont_show_cover);
+	SAVE_INT(show_cover_for_ms_tracks_only);
+	SAVE_INT(use_systray);
+	SAVE_INT(systray_start_minimized);
 	SAVE_INT_SH(hide_comment_pane);
 	SAVE_INT_SH(enable_mstore_toolbar);
 	SAVE_INT_SH(enable_mstore_statusbar);
@@ -3345,8 +3855,6 @@ save_config(void) {
 	SAVE_INT(show_hidden);
 	SAVE_INT(main_window_always_on_top);
 	SAVE_INT(tags_tab_first);
-	SAVE_INT(dont_show_cover);
-	SAVE_INT(show_cover_for_ms_tracks_only);
 	SAVE_INT(disable_skin_support_settings);
 	SAVE_INT(override_skin_settings);
 	SAVE_INT(replaygain_tag_to_use);
@@ -3384,6 +3892,7 @@ save_config(void) {
 	SAVE_INT(playlist_size_y);
 	SAVE_INT(playlist_on);
 	SAVE_INT_SH(playlist_is_embedded);
+	SAVE_INT_SH(buttons_at_the_bottom);
 	SAVE_INT(playlist_is_tree);
 	SAVE_INT(playlist_always_show_tabs);
 	SAVE_INT(playlist_show_close_button_in_tab);
@@ -3449,8 +3958,6 @@ save_config(void) {
 	SAVE_INT(export_excl_enabled);
 	SAVE_STR(export_excl_pattern);
 	SAVE_INT(batch_tag_flags);
-	SAVE_INT(use_systray);
-	SAVE_INT(systray_start_minimized);
 	SAVE_STR(ext_title_format_file);
 
 	i = 0;
@@ -3463,6 +3970,7 @@ save_config(void) {
 		g_free(utf8);
 	}
 
+	save_systray_options(doc, root);
 	
         sprintf(tmpname, "%s/config.xml.temp", options.confdir);
         xmlSaveFormatFile(tmpname, doc, 1);
@@ -3693,6 +4201,10 @@ load_config(void) {
 
 	options.use_systray = 1;
 	options.systray_start_minimized = 0;
+	options.systray_mouse_wheel_horizontal = SYSTRAY_MW_CMD_DO_NOTHING;
+	options.systray_mouse_wheel_vertical = SYSTRAY_MW_CMD_DO_NOTHING;
+	options.systray_mouse_buttons_count = 0;
+	options.systray_mouse_buttons = NULL;
 
 	strcpy(options.export_template, "track%i.%x");
 	options.export_subdir_limit = 16;
@@ -3754,7 +4266,6 @@ load_config(void) {
 		LOAD_INT_SH(enable_ms_tree_icons);
 		LOAD_INT(ms_confirm_removal);
 		LOAD_INT(enable_tooltips);
-		LOAD_INT_SH(buttons_at_the_bottom);
 		LOAD_INT(disable_buttons_relief);
 		LOAD_INT_SH(combine_play_pause);
 		LOAD_INT_SH(simple_view_in_fx);
@@ -3762,6 +4273,10 @@ load_config(void) {
 		LOAD_INT(united_minimization);
 		LOAD_INT(magnify_smaller_images);
 		LOAD_INT(cover_width);
+		LOAD_INT(dont_show_cover);
+		LOAD_INT(show_cover_for_ms_tracks_only);
+		LOAD_INT(use_systray);
+		LOAD_INT(systray_start_minimized);
 		LOAD_INT_SH(hide_comment_pane);
 		LOAD_INT_SH(enable_mstore_toolbar);
 		LOAD_INT_SH(enable_mstore_statusbar);
@@ -3769,8 +4284,6 @@ load_config(void) {
 		LOAD_INT(show_hidden);
 		LOAD_INT(main_window_always_on_top);
 		LOAD_INT(tags_tab_first);
-		LOAD_INT(dont_show_cover);
-		LOAD_INT(show_cover_for_ms_tracks_only);
 		LOAD_INT(disable_skin_support_settings);
 		LOAD_INT(override_skin_settings);
 		LOAD_INT(replaygain_tag_to_use);
@@ -3801,6 +4314,7 @@ load_config(void) {
 		LOAD_INT(playlist_size_y);
 		LOAD_INT(playlist_on);
 		LOAD_INT_SH(playlist_is_embedded);
+		LOAD_INT_SH(buttons_at_the_bottom);
 		LOAD_INT(playlist_is_tree);
 		LOAD_INT(playlist_always_show_tabs);
 		LOAD_INT(playlist_show_close_button_in_tab);
@@ -3866,8 +4380,6 @@ load_config(void) {
 		LOAD_INT(export_excl_enabled);
 		LOAD_STR(export_excl_pattern);
 		LOAD_INT(batch_tag_flags);
-		LOAD_INT(use_systray);
-		LOAD_INT(systray_start_minimized);
 		LOAD_STR(ext_title_format_file);
 
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"music_store"))) {
@@ -3887,7 +4399,11 @@ load_config(void) {
 
                         xmlFree(key);
 		}
-                cur = cur->next;
+		else if ((!xmlStrcmp(cur->name, (const xmlChar *) "systray"))) {
+			load_systray_options(doc, cur);
+		}
+
+		cur = cur->next;
         }
 
 	{
@@ -3903,6 +4419,89 @@ load_config(void) {
 #endif /* HAVE_LUA */
 	xmlFreeDoc(doc);
 	return;
+}
+
+void
+save_systray_options(xmlDocPtr doc, xmlNodePtr root) {
+
+	xmlNodePtr cur;
+	char str[MAXLEN];
+	int i;
+
+	if (root == NULL)
+		return;
+
+	cur = xmlNewNode(NULL, (const xmlChar *) "systray");
+	xmlAddChild(root, cur);
+	root = cur;
+
+	SAVE_INT(systray_mouse_wheel_horizontal);
+	SAVE_INT(systray_mouse_wheel_vertical);
+
+	for (i = 0; i < options.systray_mouse_buttons_count; i++) {
+
+		cur = xmlNewNode(NULL, (const xmlChar *) "mouse_button");
+		xmlAddChild(root, cur);
+
+		snprintf(str, sizeof(str), "%d", options.systray_mouse_buttons[i].button_nr);
+		xmlSetProp(cur, (const xmlChar *) "number", (const xmlChar *) str);
+
+		snprintf(str, sizeof(str), "%d", options.systray_mouse_buttons[i].command);
+		xmlSetProp(cur, (const xmlChar *) "command", (const xmlChar *) str);
+	}
+}
+
+void
+load_systray_options(xmlDocPtr doc, xmlNodePtr cur) {
+
+	xmlChar * key;
+	int button_nr, command;
+
+	if (cur == NULL)
+		return;
+
+	cur = cur->xmlChildrenNode;
+	while (cur != NULL) {
+
+		LOAD_INT(systray_mouse_wheel_horizontal);
+		LOAD_INT(systray_mouse_wheel_vertical);
+
+		if ((!xmlStrcmp(cur->name, (const xmlChar *) "mouse_button"))) {
+
+			key = xmlGetProp(cur, (const xmlChar *) "number");
+			if (key != NULL) {
+				sscanf((char *) key, "%d", &button_nr);
+				xmlFree(key);
+
+				key = xmlGetProp(cur, (const xmlChar *) "command");
+				if (key != NULL) {
+					sscanf((char *) key, "%d", &command);
+					xmlFree(key);
+
+					// Disallow Left and Right mouse button (reserved).
+					if (button_nr != 1 && button_nr != 3 &&
+					    command >= 0 && command < SYSTRAY_MB_CMD_LAST) {
+
+						++options.systray_mouse_buttons_count;
+						options.systray_mouse_buttons = realloc(options.systray_mouse_buttons,
+											options.systray_mouse_buttons_count * sizeof(mouse_button_command_t));
+						options.systray_mouse_buttons[options.systray_mouse_buttons_count-1].button_nr = button_nr;
+						options.systray_mouse_buttons[options.systray_mouse_buttons_count-1].command = command;
+					}
+				}
+			}
+		}
+
+		cur = cur->next;
+	}
+}
+
+void
+finalize_options(void) {
+
+	options.systray_mouse_buttons_count = 0;
+	free(options.systray_mouse_buttons);
+	options.systray_mouse_buttons = NULL;
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

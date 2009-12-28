@@ -364,7 +364,7 @@ options_window_accept(void) {
 	int title_format_changed = 0;
 
 #ifdef HAVE_LUA
-	char * ext_title; 
+	char * ext_title;
 	ext_title = (char *)gtk_entry_get_text(GTK_ENTRY(entry_ext_title_format_file));
 	if (strcmp(options.ext_title_format_file, ext_title) != 0) {
 		restart_active(NULL, "Programmable title format file:\n  Need to reread file metadata\n  for all files after restarting.");
@@ -374,7 +374,7 @@ options_window_accept(void) {
 
 
         if (restart_flag) {
-                show_restart_info();            
+                show_restart_info();
         }
 
 
@@ -597,7 +597,7 @@ options_window_accept(void) {
 		main_window_set_font(1);
 		music_browser_set_font(1);
 		playlist_set_font(1);
-        
+
                 playlist_set_color();
 
 		reskin_flag = 1;
@@ -663,7 +663,7 @@ options_window_accept(void) {
 							 _("Do you want to save store \"%s\" before "
 							   "removing from Music Store?"),
 							 name + 1);
-		
+
 				if (ret == GTK_RESPONSE_YES) {
 					store_file_save(&iter);
 				} else {
@@ -954,7 +954,7 @@ draw_rva_diagram(void) {
 			   0, 0,
 			   rva_drawing_area->allocation.width,
 			   rva_drawing_area->allocation.height);
-	
+
 	gc = gdk_gc_new(rva_pixmap);
 	if (rva_is_enabled_shadow) {
 		fg_color.red = 10000;
@@ -1209,7 +1209,7 @@ set_sensitive_part(void) {
 
 	gboolean state;
         gint items, n;
-        
+
 	state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_override_skin));
 
         items = sizeof(sensitive_table) / sizeof(GtkWidget*);
@@ -1407,7 +1407,7 @@ add_ms_pathlist_clicked(GtkButton * button, gpointer * data) {
 
 		g_free(p);
 	}
-	
+
 
 	gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), "");
 
@@ -1556,7 +1556,7 @@ display_inet_help_noproxy_domains(void) {
 void
 playlist_embedded_cb(GtkToggleButton * togglebutton, gpointer data) {
 
-	gtk_widget_set_sensitive(GTK_WIDGET(data), 
+	gtk_widget_set_sensitive(GTK_WIDGET(data),
 				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(togglebutton)));
 
 	restart_active(togglebutton, _("Embed playlist into main window"));
@@ -1568,7 +1568,7 @@ systray_support_cb(GtkToggleButton * togglebutton, gpointer data) {
 
 	gboolean systray_active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(togglebutton));
 
-	gtk_widget_set_sensitive(GTK_WIDGET(check_systray_start_minimized), systray_active); 
+	gtk_widget_set_sensitive(GTK_WIDGET(check_systray_start_minimized), systray_active);
 #if (GTK_CHECK_VERSION(2,15,0))
 	gtk_widget_set_sensitive(GTK_WIDGET(frame_systray_mouse_wheel), systray_active);
 	gtk_widget_set_sensitive(GTK_WIDGET(frame_systray_mouse_buttons), systray_active);
@@ -1585,7 +1585,7 @@ setup_combo_with_label(GtkBox * box, char * label_text) {
 	GtkWidget * hbox_s;
 	GtkWidget * label;
 	GtkWidget * combo;
-	
+
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(box, hbox, FALSE, TRUE, 5);
 
@@ -1627,7 +1627,7 @@ get_mouse_button_text(int button_number, char * text_buffer, int buffer_size) {
 			break;
 		default:
 			g_snprintf(text_buffer, buffer_size, "%s %d", _("Button"), button_number);
-			break;			
+			break;
 	}
 }
 
@@ -1798,7 +1798,7 @@ systray_mb_col_button_datafunc(GtkTreeViewColumn *tree_column,
 	gchar buf[30];
 	int button_number;
 
-	gtk_tree_model_get(tree_model, iter, SYSTRAY_MB_COL_BUTTON, &button_number, -1);				       
+	gtk_tree_model_get(tree_model, iter, SYSTRAY_MB_COL_BUTTON, &button_number, -1);
 	get_mouse_button_text(button_number, buf, sizeof(buf));
 	g_object_set(cell_renderer, "text", buf, NULL);
 }
@@ -1812,7 +1812,7 @@ systray_mb_col_command_datafunc(GtkTreeViewColumn *tree_column,
 {
 	gint command;
 
-	gtk_tree_model_get(tree_model, iter, SYSTRAY_MB_COL_COMMAND, &command, -1);				       
+	gtk_tree_model_get(tree_model, iter, SYSTRAY_MB_COL_COMMAND, &command, -1);
 
 	if (command >= 0 && command < SYSTRAY_MB_CMD_LAST) {
 		g_object_set(cell_renderer, "text", systray_mb_cmd_names[command], NULL);
@@ -1958,7 +1958,7 @@ create_options_window(void) {
 	int status;
 #endif /* HAVE_LADSPA */
 	int i;
-	
+
         restart_flag = 0;
 	reskin_flag = 0;
         appearance_changed = 0;
@@ -2057,7 +2057,7 @@ create_options_window(void) {
 	gtk_entry_set_text(GTK_ENTRY(entry_title), options.title_format);
 	gtk_box_pack_start(GTK_BOX(hbox), entry_title, TRUE, TRUE, 0);
 
-        help_btn_title = gtk_button_new_from_stock (GTK_STOCK_HELP); 
+        help_btn_title = gtk_button_new_from_stock (GTK_STOCK_HELP);
 	g_signal_connect(help_btn_title, "clicked", G_CALLBACK(display_title_format_help), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox), help_btn_title, FALSE, FALSE, 5);
 
@@ -2080,7 +2080,7 @@ create_options_window(void) {
 			  G_CALLBACK(browse_ext_title_format_file_clicked), (gpointer)entry_ext_title_format_file);
 	gtk_box_pack_start(GTK_BOX(hbox), browse_ext_title_format_file, FALSE, FALSE, 5);
 
-        help_btn_ext_title = gtk_button_new_from_stock(GTK_STOCK_HELP); 
+        help_btn_ext_title = gtk_button_new_from_stock(GTK_STOCK_HELP);
 	g_signal_connect(help_btn_ext_title, "clicked", G_CALLBACK(display_ext_title_format_help), NULL);
 	gtk_box_pack_end(GTK_BOX(hbox), help_btn_ext_title, FALSE, FALSE, 5);
 #endif /* HAVE_LUA */
@@ -2249,9 +2249,58 @@ create_options_window(void) {
 	gtk_entry_set_text(GTK_ENTRY(entry_param), options.default_param);
 	gtk_box_pack_start(GTK_BOX(hbox_param), entry_param, TRUE, TRUE, 0);
 
-        help_btn_param = gtk_button_new_from_stock (GTK_STOCK_HELP); 
+        help_btn_param = gtk_button_new_from_stock (GTK_STOCK_HELP);
 	g_signal_connect(help_btn_param, "clicked", G_CALLBACK(display_implict_command_line_help), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_param), help_btn_param, FALSE, FALSE, 5);
+
+
+	frame_cart = gtk_frame_new(_("Cover art"));
+	gtk_box_pack_start(GTK_BOX(vbox_miscellaneous_tab), frame_cart, FALSE, TRUE, 5);
+
+	vbox_cart = gtk_vbox_new(FALSE, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_cart), 10);
+	gtk_container_add(GTK_CONTAINER(frame_cart), vbox_cart);
+
+        hbox_cwidth = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox_cart), hbox_cwidth, FALSE, FALSE, 0);
+        label_cwidth = gtk_label_new(_("Default cover width:"));
+        gtk_box_pack_start(GTK_BOX(hbox_cwidth), label_cwidth, FALSE, FALSE, 0);
+
+        hbox_s = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox_cwidth), hbox_s, TRUE, TRUE, 3);
+
+	combo_cwidth = gtk_combo_box_new_text ();
+        gtk_box_pack_start(GTK_BOX(hbox_cwidth), combo_cwidth, FALSE, FALSE, 0);
+        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("50 pixels"));
+        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("100 pixels"));
+        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("200 pixels"));
+        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("300 pixels"));
+        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("use browser window width"));
+
+	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_cwidth), options.cover_width);
+
+        check_magnify_smaller_images =
+		gtk_check_button_new_with_label(_("Do not magnify images with smaller width"));
+	gtk_widget_set_name(check_magnify_smaller_images, "check_on_notebook");
+	if (!options.magnify_smaller_images) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_magnify_smaller_images), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_cart), check_magnify_smaller_images, FALSE, FALSE, 0);
+
+        check_show_cover_for_ms_tracks_only = gtk_check_button_new_with_label(_("Show cover thumbnail for Music Store tracks only"));
+	gtk_widget_set_name(check_show_cover_for_ms_tracks_only, "check_on_notebook");
+	if (options.show_cover_for_ms_tracks_only) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_cover_for_ms_tracks_only), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_cart), check_show_cover_for_ms_tracks_only, FALSE, FALSE, 0);
+
+        check_dont_show_cover = gtk_check_button_new_with_label(_("Don't show cover thumbnail in the main window"));
+	gtk_widget_set_name(check_dont_show_cover, "check_on_notebook");
+	if (options.dont_show_cover) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_dont_show_cover), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_cart), check_dont_show_cover, FALSE, FALSE, 0);
+
 
 	frame_misc = gtk_frame_new(_("Miscellaneous"));
 	gtk_box_pack_start(GTK_BOX(vbox_miscellaneous_tab), frame_misc, FALSE, TRUE, 0);
@@ -2302,60 +2351,12 @@ create_options_window(void) {
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_misc), check_tags_tab_first, FALSE, FALSE, 0);
 
-
-	frame_cart = gtk_frame_new(_("Cover art"));
-	gtk_box_pack_start(GTK_BOX(vbox_miscellaneous_tab), frame_cart, FALSE, TRUE, 5);
-
-	vbox_cart = gtk_vbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox_cart), 10);
-	gtk_container_add(GTK_CONTAINER(frame_cart), vbox_cart);
-
-        hbox_cwidth = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox_cart), hbox_cwidth, FALSE, FALSE, 0);
-        label_cwidth = gtk_label_new(_("Default cover width:"));
-        gtk_box_pack_start(GTK_BOX(hbox_cwidth), label_cwidth, FALSE, FALSE, 0);
-
-        hbox_s = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox_cwidth), hbox_s, TRUE, TRUE, 3);
-
-	combo_cwidth = gtk_combo_box_new_text ();
-        gtk_box_pack_start(GTK_BOX(hbox_cwidth), combo_cwidth, FALSE, FALSE, 0);
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("50 pixels"));
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("100 pixels"));
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("200 pixels"));
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("300 pixels"));
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("use browser window width"));
-
-	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_cwidth), options.cover_width);
-
-        check_magnify_smaller_images =
-		gtk_check_button_new_with_label(_("Do not magnify images with smaller width"));
-	gtk_widget_set_name(check_magnify_smaller_images, "check_on_notebook");
-	if (!options.magnify_smaller_images) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_magnify_smaller_images), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_cart), check_magnify_smaller_images, FALSE, FALSE, 0);
-
-        check_show_cover_for_ms_tracks_only = gtk_check_button_new_with_label(_("Show cover thumbnail for Music Store tracks only"));
-	gtk_widget_set_name(check_show_cover_for_ms_tracks_only, "check_on_notebook");
-	if (options.show_cover_for_ms_tracks_only) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_cover_for_ms_tracks_only), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_cart), check_show_cover_for_ms_tracks_only, FALSE, FALSE, 0);
-
-        check_dont_show_cover = gtk_check_button_new_with_label(_("Don't show cover thumbnail in the main window"));
-	gtk_widget_set_name(check_dont_show_cover, "check_on_notebook");
-	if (options.dont_show_cover) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_dont_show_cover), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_cart), check_dont_show_cover, FALSE, FALSE, 0);
-
 	/* "Playlist" notebook page */
 
 	vbox_pl = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_pl), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_pl, create_notebook_tab(_("Playlist"), "playlist.png"));
-	
+
         check_playlist_is_embedded =
 		gtk_check_button_new_with_label(_("Embed playlist into main window"));
 	gtk_widget_set_name(check_playlist_is_embedded, "check_on_notebook");
@@ -2483,7 +2484,7 @@ create_options_window(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_length_in_playlist), TRUE);
 	}
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_show_length_in_playlist, FALSE, TRUE, 0);
-	
+
 	check_show_active_track_name_in_bold =
 		gtk_check_button_new_with_label(_("Show active track name in bold"));
 	gtk_widget_set_name(check_show_active_track_name_in_bold, "check_on_notebook");
@@ -2515,7 +2516,7 @@ create_options_window(void) {
         vbox_plistcol = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_plistcol), 8);
         gtk_container_add(GTK_CONTAINER(frame_plistcol), vbox_plistcol);
-	
+
 	label_plistcol = gtk_label_new(_("Drag and drop entries in the list below \n"
 					 "to set the column order in the Playlist."));
         gtk_box_pack_start(GTK_BOX(vbox_plistcol), label_plistcol, FALSE, TRUE, 5);
@@ -2640,7 +2641,7 @@ create_options_window(void) {
 
 	frame_ms_pathlist = gtk_frame_new(_("Paths to Music Store databases"));
 	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_ms_pathlist, FALSE, TRUE, 5);
-	
+
 	vbox_ms_pathlist = gtk_vbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_ms_pathlist), 8);
 	gtk_container_add(GTK_CONTAINER(frame_ms_pathlist), vbox_ms_pathlist);
@@ -2673,7 +2674,7 @@ create_options_window(void) {
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_container_add(GTK_CONTAINER(viewport), scrolled_win);
 	gtk_container_add(GTK_CONTAINER(scrolled_win), ms_pathlist_view);
-	
+
 	hbox_ms_pathlist = gtk_hbox_new(FALSE, FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist, FALSE, FALSE, 0);
 
@@ -2689,7 +2690,7 @@ create_options_window(void) {
 	hbox_ms_pathlist_2 = gtk_hbox_new(FALSE, FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist_2, FALSE, FALSE, 0);
 
-        help_pathlist = gtk_button_new_from_stock (GTK_STOCK_HELP); 
+        help_pathlist = gtk_button_new_from_stock (GTK_STOCK_HELP);
         gtk_container_set_border_width(GTK_CONTAINER(help_pathlist), 2);
 	g_signal_connect(help_pathlist, "clicked", G_CALLBACK(display_pathlist_help), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_ms_pathlist_2), help_pathlist, FALSE, FALSE, 0);
@@ -2727,7 +2728,7 @@ create_options_window(void) {
 	gtk_container_add(GTK_CONTAINER(frame_ladspa), vbox_ladspa);
 
 #ifdef HAVE_LADSPA
-        combo_ladspa = gtk_combo_box_new_text (); 
+        combo_ladspa = gtk_combo_box_new_text ();
         gtk_box_pack_start(GTK_BOX(vbox_ladspa), combo_ladspa, TRUE, TRUE, 0);
 
 	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_ladspa), _("Pre Fader (before Volume & Balance)"));
@@ -2806,16 +2807,16 @@ create_options_window(void) {
 	gtk_widget_set_size_request(rva_viewport, 244, 244);
         gtk_table_attach(GTK_TABLE(table_rva), rva_viewport, 0, 2, 0, 1,
                          GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 2);
-	
+
 	rva_drawing_area = gtk_drawing_area_new();
 	gtk_widget_set_size_request(GTK_WIDGET(rva_drawing_area), 240, 240);
 	gtk_container_add(GTK_CONTAINER(rva_viewport), rva_drawing_area);
-	
+
 	g_signal_connect(G_OBJECT(rva_drawing_area), "configure_event",
 			 G_CALLBACK(rva_configure_event), NULL);
 	g_signal_connect(G_OBJECT(rva_drawing_area), "expose_event",
 			 G_CALLBACK(rva_expose_event), NULL);
-	
+
         hbox = gtk_hbox_new(FALSE, 0);
         label_listening_env = gtk_label_new(_("Listening environment:"));
         gtk_box_pack_start(GTK_BOX(hbox), label_listening_env, FALSE, FALSE, 0);
@@ -3132,7 +3133,7 @@ create_options_window(void) {
         gtk_table_attach(GTK_TABLE(table_cdda), cdda_drive_speed_spinner, 1, 2, 0, 1,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
-        help_btn_cdda_drive_speed = gtk_button_new_from_stock(GTK_STOCK_HELP); 
+        help_btn_cdda_drive_speed = gtk_button_new_from_stock(GTK_STOCK_HELP);
 	g_signal_connect(help_btn_cdda_drive_speed, "clicked", G_CALLBACK(display_cdda_drive_speed_help), NULL);
         gtk_table_attach(GTK_TABLE(table_cdda), help_btn_cdda_drive_speed, 2, 3, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
 
@@ -3178,7 +3179,7 @@ create_options_window(void) {
         gtk_table_attach(GTK_TABLE(table_cdda), check_cdda_force_drive_rescan, 0, 2, 2, 3,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
-        help_btn_cdda_force_drive_rescan = gtk_button_new_from_stock(GTK_STOCK_HELP); 
+        help_btn_cdda_force_drive_rescan = gtk_button_new_from_stock(GTK_STOCK_HELP);
 	g_signal_connect(help_btn_cdda_force_drive_rescan, "clicked", G_CALLBACK(display_cdda_force_drive_rescan_help), NULL);
         gtk_table_attach(GTK_TABLE(table_cdda), help_btn_cdda_force_drive_rescan, 2, 3, 2, 3, GTK_FILL, GTK_FILL, 5, 3);
 
@@ -3363,7 +3364,7 @@ create_options_window(void) {
         gtk_table_attach(GTK_TABLE(table_inet), inet_entry_noproxy_domains, 1, 3, 1, 2,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
-        inet_help_noproxy_domains = gtk_button_new_from_stock(GTK_STOCK_HELP); 
+        inet_help_noproxy_domains = gtk_button_new_from_stock(GTK_STOCK_HELP);
 	g_signal_connect(inet_help_noproxy_domains, "clicked", G_CALLBACK(display_inet_help_noproxy_domains), NULL);
         gtk_table_attach(GTK_TABLE(table_inet), inet_help_noproxy_domains, 3, 4, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
 
@@ -3664,9 +3665,9 @@ create_options_window(void) {
         gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
 
         if (gdk_color_parse(options.song_color, &color) == FALSE) {
-                color.red = playlist_color_indicator->style->fg[SELECTED].red; 
-                color.green = playlist_color_indicator->style->fg[SELECTED].green; 
-                color.blue = playlist_color_indicator->style->fg[SELECTED].blue; 
+                color.red = playlist_color_indicator->style->fg[SELECTED].red;
+                color.green = playlist_color_indicator->style->fg[SELECTED].green;
+                color.blue = playlist_color_indicator->style->fg[SELECTED].blue;
                 color.pixel = (gulong)((color.red & 0xff00)*256 + (color.green & 0xff00) + (color.blue & 0xff00)/256);
         }
 
@@ -3691,9 +3692,9 @@ create_options_window(void) {
         gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
 
         if (gdk_color_parse(options.activesong_color, &color) == FALSE) {
-                color.red = playlist_color_indicator->style->fg[SELECTED].red; 
-                color.green = playlist_color_indicator->style->fg[SELECTED].green; 
-                color.blue = playlist_color_indicator->style->fg[SELECTED].blue; 
+                color.red = playlist_color_indicator->style->fg[SELECTED].red;
+                color.green = playlist_color_indicator->style->fg[SELECTED].green;
+                color.blue = playlist_color_indicator->style->fg[SELECTED].blue;
                 color.pixel = (gulong)((color.red & 0xff00)*256 + (color.green & 0xff00) + (color.blue & 0xff00)/256);
         }
 
@@ -3971,7 +3972,7 @@ save_config(void) {
 	}
 
 	save_systray_options(doc, root);
-	
+
         sprintf(tmpname, "%s/config.xml.temp", options.confdir);
         xmlSaveFormatFile(tmpname, doc, 1);
 	xmlFreeDoc(doc);
@@ -4504,5 +4505,5 @@ finalize_options(void) {
 	options.systray_mouse_buttons = NULL;
 }
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :
 

@@ -121,6 +121,11 @@
   </xsl:template>
 
   <xsl:template match="section">
+    <xsl:if test="@img">
+      <xsl:call-template name="img-float">
+	<xsl:with-param name="src" select="@img"/>
+      </xsl:call-template>
+    </xsl:if>
     <h1 id="{generate-id()}" style="padding-top: 6px">
       <xsl:call-template name="num-section"/>
       <xsl:value-of select="@title"/>

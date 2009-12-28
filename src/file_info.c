@@ -583,7 +583,7 @@ save_pic_button_pressed(GtkWidget * widget, gpointer data) {
 
 	lfiles = file_chooser(_("Please specify the file to save the image to."),
 			      fi->info_window,
-			      GTK_FILE_CHOOSER_ACTION_SAVE, 
+			      GTK_FILE_CHOOSER_ACTION_SAVE,
 			      FILE_CHOOSER_FILTER_NONE,
 			      FALSE,
 			      filename);
@@ -629,7 +629,7 @@ save_pic_update(save_pic_t * save_pic, fi_t * fi, meta_frame_t * frame) {
 		strcpy(mtype, "dat");
 	}
 	strncat(savefilename, mtype, 255);
-	
+
 	save_pic->fi = fi;
 	strncpy(save_pic->savefile, savefilename, MAXLEN-1);
 	save_pic->image_size = frame->length;
@@ -732,7 +732,7 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 			       GTK_BUTTONS_OK, NULL, msg);
 		return;
 	}
-	
+
 	if (frame->data != NULL) {
 		free(frame->data);
 	}
@@ -782,12 +782,12 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 	GtkWidget * hbox;
 	GtkWidget * label;
 	GtkWidget * button;
-	
+
 	change_pic_t * change_pic;
 
 	save_pic_t * save_pic = (save_pic_t *)malloc(sizeof(save_pic_t));
 	if (save_pic == NULL)
-		return NULL;	
+		return NULL;
 
 	trashlist_add(fi->trash, save_pic);
 
@@ -819,12 +819,12 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 	snprintf(str, MAXLEN-1, _("MIME type: %s"), frame->field_name);
 	source->mime_label = gtk_label_new(str);
 	gtk_box_pack_start(GTK_BOX(hbox), source->mime_label, FALSE, FALSE, 0);
-	
+
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 	label = gtk_label_new(_("Picture type:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	
+
 	if (meta->writable) {
 		int i = 0;
 		char * type_str;
@@ -836,7 +836,7 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 			if (type_str == NULL) {
 				break;
 			}
-			gtk_combo_box_append_text(GTK_COMBO_BOX(source->type_combo), type_str);				
+			gtk_combo_box_append_text(GTK_COMBO_BOX(source->type_combo), type_str);
 			++i;
 		}
 		gtk_combo_box_set_active(GTK_COMBO_BOX(source->type_combo), frame->int_val);
@@ -849,12 +849,12 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 		label = gtk_label_new(str);
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	}
-	
+
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 	label = gtk_label_new(_("Description:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	
+
 	if (meta->writable) {
 		hbox = gtk_hbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
@@ -868,11 +868,11 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 				      _("(no description)") : frame->field_val);
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	}
-	
+
 
 	hbox = gtk_hbox_new(TRUE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
-	
+
 	button = gui_stock_label_button(_("Change"), GTK_STOCK_OPEN);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
 	if (meta->writable) {
@@ -882,7 +882,7 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 	} else {
 		gtk_widget_set_sensitive(button, FALSE);
 	}
-	
+
 	save_pic->save_button = gui_stock_label_button(_("Save"), GTK_STOCK_SAVE);
 	gtk_box_pack_start(GTK_BOX(hbox), save_pic->save_button, TRUE, TRUE, 3);
 	g_signal_connect(G_OBJECT(save_pic->save_button), "clicked",
@@ -890,7 +890,7 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 			 (gpointer)save_pic);
 
 	save_pic_update(save_pic, fi, frame);
-	
+
 	return label_frame;
 }
 
@@ -983,7 +983,7 @@ make_apic_widget(meta_frame_t * frame, GtkWidget ** widget, GtkWidget ** entry) 
 	gtk_container_add(GTK_CONTAINER(apic_frame), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_box_pack_start(GTK_BOX(vbox), image, TRUE, TRUE, 0);
-	
+
 	*widget = apic_frame;
 	*entry = apic_frame;
 	((apic_source_t *)(frame->source))->image = image;
@@ -1045,7 +1045,7 @@ make_import_data_from_frame(fi_t * fi, meta_frame_t * frame, char * label) {
 	trashlist_add(fi->trash, data);
 	data->fi = fi;
 	data->frame = frame;
-	
+
 	switch (frame->type) {
 	case META_FIELD_TITLE:
 		data->dest_type = IMPORT_DEST_TITLE;
@@ -1123,7 +1123,7 @@ fi_fill_tagcombo(GtkComboBox * combo, int addable_tags) {
 		tag <<= 1;
 	}
 
-	gtk_combo_box_set_active(combo, 0);	
+	gtk_combo_box_set_active(combo, 0);
 }
 
 gint
@@ -1218,7 +1218,7 @@ fi_procframe_delbtn(fi_t * fi, meta_frame_t * frame,
 	gtk_button_set_image(GTK_BUTTON(button),
 			     gtk_image_new_from_stock(GTK_STOCK_DELETE,
 						      GTK_ICON_SIZE_MENU));
-	
+
 	if (frame->flags & META_FIELD_MANDATORY) {
 		gtk_widget_set_sensitive(button, FALSE);
 		return button;
@@ -1301,7 +1301,7 @@ fi_procframe_addbtn(fi_t * fi, int tag) {
 
 	fi_add_t * fi_add;
 	GtkWidget * button = gui_stock_label_button(_("Add"), GTK_STOCK_ADD);
-	
+
 	fi_add = calloc(1, sizeof(fi_add_t));
 	fi_add->fi = fi;
 	fi_add->tag = tag;
@@ -1365,7 +1365,7 @@ fi_procframe_ins_modinfo(fi_t * fi, meta_frame_t * frame) {
 	module_info_fill_page(fi, frame, vbox);
 	gtk_table_attach(GTK_TABLE(table), vbox, 0, 1, 0, 1,
 			 GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	gtk_widget_show_all(fi->nb);		
+	gtk_widget_show_all(fi->nb);
 }
 #endif /* HAVE_MOD_INFO */
 
@@ -1379,7 +1379,7 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 	int n_rows = fi->pageidx[page].n_rows;
 	int n_cols = fi->pageidx[page].n_cols;
 	int col = 0;
-	
+
 	GtkWidget * label = NULL;
 	GtkWidget * entry = NULL;
 	GtkWidget * importbtn = NULL;
@@ -1449,7 +1449,7 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 		fi_fill_combo(GTK_COMBO_BOX(combo), slist);
 	}
 
-	gtk_widget_show_all(fi->nb);		
+	gtk_widget_show_all(fi->nb);
 }
 
 typedef struct {
@@ -1507,7 +1507,7 @@ fi_procframe_deltagbtn(fi_t * fi, int tag) {
 	gtk_button_set_image(GTK_BUTTON(button),
 			     gtk_image_new_from_stock(GTK_STOCK_DELETE,
 						      GTK_ICON_SIZE_MENU));
-	
+
 	fi_deltag = calloc(1, sizeof(fi_deltag_t));
 	fi_deltag->fi = fi;
 	fi_deltag->tag = tag;
@@ -1531,7 +1531,7 @@ fi_procframe_add_tag_page(fi_t * fi, meta_frame_t * frame) {
 	GtkWidget * combo = gtk_combo_box_new_text();
 	GtkWidget * addbtn, * delbtn;
 	GSList * slist = meta_get_possible_fields(frame->tag);
-	
+
 	gtk_box_pack_start(GTK_BOX(vbox_padding), table, TRUE, TRUE, 7);
 	gtk_box_pack_start(GTK_BOX(vbox), scrwin, TRUE, TRUE, 0);
 	gtk_widget_set_size_request(scrwin, -1, 275);
@@ -1540,7 +1540,7 @@ fi_procframe_add_tag_page(fi_t * fi, meta_frame_t * frame) {
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrwin),
 					    GTK_SHADOW_NONE);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrwin), vbox_padding);
-	
+
 	gtk_notebook_append_page(GTK_NOTEBOOK(fi->nb), vbox, label);
 	fi->n_pages++;
 	fi->pageidx[fi->n_pages-1].tag = frame->tag;
@@ -1549,26 +1549,26 @@ fi_procframe_add_tag_page(fi_t * fi, meta_frame_t * frame) {
 	fi->pageidx[fi->n_pages-1].slist = slist;
 	fi->pageidx[fi->n_pages-1].n_rows = 0;
 	fi->pageidx[fi->n_pages-1].n_cols = fi_tabwidth(fi, meta);
-	
+
 	if (meta->writable) {
 		addbtn = fi_procframe_addbtn(fi, frame->tag);
 		gtk_box_pack_start(GTK_BOX(hbox), addbtn, FALSE, FALSE, 5);
-		
+
 		label = gtk_label_new(_("field:"));
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-		
+
 		fi_fill_combo(GTK_COMBO_BOX(combo), slist);
 		gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 5);
-		
+
 		delbtn = fi_procframe_deltagbtn(fi, frame->tag);
 		gtk_box_pack_end(GTK_BOX(hbox), delbtn, FALSE, FALSE, 5);
-		
+
 		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 5);
 
 		fi->addable_tags &= ~frame->tag;
 		fi_fill_tagcombo(GTK_COMBO_BOX(fi->combo), fi->addable_tags);
 	}
-	gtk_widget_show_all(fi->nb);		
+	gtk_widget_show_all(fi->nb);
 }
 
 void
@@ -1619,6 +1619,10 @@ fi_procmeta(metadata_t * meta, void * data) {
 		return;
 	}
 
+	if (fi->meta == meta) {
+		return;
+	}
+
 	/* remove possible previous metadata pages from notebook */
 	for (i = 0; i < FI_MAXPAGES; i++) {
 		if (fi->pageidx[i].tag != -1) {
@@ -1654,10 +1658,10 @@ fi_procmeta(metadata_t * meta, void * data) {
 
 		addbtn = fi_procframe_addtagbtn(fi);
 		gtk_box_pack_start(GTK_BOX(fi->hbox), addbtn, FALSE, FALSE, 5);
-		
+
 		label = gtk_label_new(_("tag:"));
 		gtk_box_pack_start(GTK_BOX(fi->hbox), label, FALSE, FALSE, 5);
-		
+
 		fi->combo = gtk_combo_box_new_text();
 		fi_fill_tagcombo(GTK_COMBO_BOX(fi->combo), fi->addable_tags);
 		gtk_box_pack_start(GTK_BOX(fi->hbox), fi->combo, FALSE, FALSE, 5);
@@ -1669,7 +1673,7 @@ fi_procmeta(metadata_t * meta, void * data) {
 }
 
 
-gboolean    
+gboolean
 fi_cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer data) {
 
 	fi_t * fi = (fi_t *)data;
@@ -1743,9 +1747,9 @@ show_file_info(char * name, char * file, int is_called_from_browser,
                 if ((drive == NULL) || (drive->disc.hash == 0L)) {
 			return;
 		}
-		
+
 		is_cdda = 1;
-		
+
 		fileinfo.format_str = _("Audio CD");
 		fileinfo.sample_rate = 44100;
 		fileinfo.is_mono = 0;
@@ -1761,13 +1765,13 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 			fi_delete(fi);
 			return;
 		}
-		
+
 		file_decoder_set_meta_cb(fi->fdec, fi_procmeta, fi);
 		if (file_decoder_open(fi->fdec, file) != 0) {
 			fi->bail_out = 1;
-			return;		
+			return;
 		}
-		
+
 		file_decoder_send_metadata(fi->fdec);
 
 		dec = (decoder_t *)fi->fdec->pdec;
@@ -1994,7 +1998,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	fi->button_table = gtk_table_new(1, 2, TRUE);
 	gtk_box_pack_end(GTK_BOX(fi->hbox), fi->button_table, FALSE, TRUE, 3);
 
-        dismiss_btn = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
+        dismiss_btn = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
 	g_signal_connect(dismiss_btn, "clicked", G_CALLBACK(dismiss), (gpointer)fi);
 	gtk_table_attach(GTK_TABLE(fi->button_table), dismiss_btn, 1, 2, 0, 1,
 			 GTK_FILL, GTK_FILL, 5, 3);
@@ -2020,7 +2024,7 @@ show_list(fi_t * fi, gint type) {
 	gchar temp[MAXLEN], number[MAXLEN];
 	decoder_t * md_dec;
 	mod_pdata_t * md_pd;
-        
+
         md_dec = (decoder_t *)(fi->fdec->pdec);
         md_pd = (mod_pdata_t *)md_dec->pdata;
 
@@ -2063,7 +2067,7 @@ set_first_row(fi_t * fi) {
         gtk_widget_grab_focus(GTK_WIDGET(fi->smp_instr_list));
 }
 
-void 
+void
 radio_buttons_cb(GtkToggleButton * toggle_button, gpointer data) {
 
 	fi_t * fi = (fi_t *)data;
@@ -2087,7 +2091,7 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
 		"OKT", "MID", "DMF", "PTM", "DBM", "MT2", "AMF0", "PSM",
 		"J2B", "UMX"
 	};
-	
+
 	gint i, n;
 	gchar temp[MAXLEN];
 	GtkWidget *table;
@@ -2104,7 +2108,7 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
 	GtkWidget *samples_radiobutton = NULL;
 	GtkWidget *instruments_radiobutton = NULL;
 	GtkWidget *scrolledwindow;
-	
+
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 
@@ -2280,7 +2284,7 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
 
         n = mdi->type;
         i = 0;
-        
+
         while (n > 0) {         /* calculate module type index */
                 n >>= 1;
                 i++;
@@ -2306,12 +2310,12 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
         gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow), 4);
         gtk_widget_show (scrolledwindow);
         gtk_widget_set_size_request (scrolledwindow, -1, 220);
-        gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), 
+        gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow),
                                         GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
         gtk_box_pack_end (GTK_BOX (vbox3), scrolledwindow, TRUE, TRUE, 0);
         gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
 
-        fi->smp_instr_list_store = gtk_list_store_new(2, 
+        fi->smp_instr_list_store = gtk_list_store_new(2,
 						      G_TYPE_STRING,
 						      G_TYPE_STRING);
         fi->smp_instr_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(fi->smp_instr_list_store));
@@ -2343,5 +2347,5 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
 #endif /* HAVE_MOD_INFO */
 
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :
 

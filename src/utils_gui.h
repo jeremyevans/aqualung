@@ -52,6 +52,8 @@ gint aqualung_dialog_run(GtkDialog * dialog);
 guint aqualung_idle_add(GSourceFunc function, gpointer data);
 guint aqualung_timeout_add(guint interval, GSourceFunc function, gpointer data);
 
+void aqualung_tooltips_set_enabled(gboolean enabled);
+
 GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 
 GSList * file_chooser(char * title, GtkWidget * parent,
@@ -66,7 +68,7 @@ void insert_label_entry(GtkWidget * table, char * ltext, GtkWidget ** entry,
 			char * etext, int y1, int y2, gboolean editable);
 
 void insert_label_entry_browse(GtkWidget * table, char * ltext, GtkWidget ** entry,
-			       char * etext, int y1, int y2, 
+			       char * etext, int y1, int y2,
 			       void (* browse_cb)(GtkButton * button, gpointer data));
 
 void insert_label_entry_button(GtkWidget * table, char * ltext, GtkWidget ** entry,

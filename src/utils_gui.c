@@ -33,6 +33,8 @@
 
 
 extern options_t options;
+extern GtkTooltips * aqualung_tooltips;
+
 
 #ifdef HAVE_SNDFILE
 extern char * valid_extensions_sndfile[];
@@ -199,6 +201,21 @@ aqualung_timeout_add(guint interval, GSourceFunc function, gpointer data) {
 				  threads_dispatch_free);
 }
 
+void
+aqualung_tooltips_set_enabled(gboolean enabled) {
+
+	GtkSettings * settings = gtk_settings_get_default();
+
+	if (settings != NULL) {
+		g_object_set(settings, "gtk-enable-tooltips", enabled, NULL);
+	}
+
+	if (enabled) {
+		gtk_tooltips_enable(aqualung_tooltips);
+	} else {
+		gtk_tooltips_disable(aqualung_tooltips);
+	}
+}
 
 /* create button with stock item
  *
@@ -287,7 +304,7 @@ assign_store_fc_filters(GtkFileChooser *fc) {
 void
 assign_playlist_fc_filters(GtkFileChooser *fc) {
 
-        gchar *file_filters[] = { 
+        gchar *file_filters[] = {
                 _("Aqualung playlist (*.xml)"),      "*.[xX][mM][lL]",
                 _("MP3 Playlist (*.m3u)"),           "*.[mM]3[uU]",
                 _("Multimedia Playlist (*.pls)"),    "*.[pP][lL][sS]",
@@ -689,7 +706,7 @@ insert_label_entry_button(GtkWidget * table, char * ltext, GtkWidget ** entry, c
 
 void
 insert_label_entry_browse(GtkWidget * table, char * ltext, GtkWidget ** entry, char * etext,
-			  int y1, int y2, 
+			  int y1, int y2,
 			  void (* browse_cb)(GtkButton * button, gpointer data)) {
 
 	GtkWidget * button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);

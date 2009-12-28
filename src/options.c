@@ -391,11 +391,7 @@ options_window_accept(void) {
 	strncpy(options.default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN-1);
 
 	set_option_from_toggle(check_enable_tooltips, &options.enable_tooltips);
-	if (options.enable_tooltips) {
-                gtk_tooltips_enable(aqualung_tooltips);
-	} else {
-                gtk_tooltips_disable(aqualung_tooltips);
-	}
+	aqualung_tooltips_set_enabled(options.enable_tooltips);
 
 #ifdef HAVE_LADSPA
         set_option_from_toggle(check_simple_view_in_fx, &options.simple_view_in_fx_shadow);

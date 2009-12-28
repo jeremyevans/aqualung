@@ -283,7 +283,7 @@ void hide_all_windows(gpointer data);
 
 /* Used for not reacting too quickly to consecutive mouse wheel events */
 guint32 last_systray_scroll_event_time = 0;
-	
+
 #endif /* GTK_CHECK_VERSION */
 
 #endif /* HAVE_SYSTRAY */
@@ -3102,11 +3102,7 @@ create_main_window(char * skin_path) {
 		gtk_box_pack_start(GTK_BOX(vbox), playlist_window, TRUE, TRUE, 3);
 	}
 
-        if (options.enable_tooltips) {
-                gtk_tooltips_enable(aqualung_tooltips);
-        } else {
-                gtk_tooltips_disable(aqualung_tooltips);
-        }
+	aqualung_tooltips_set_enabled(options.enable_tooltips);
 }
 
 
@@ -3364,7 +3360,7 @@ systray_button_press_event_cb(GtkStatusIcon * systray_icon,
 		}
 	}
 
-	return FALSE;		
+	return FALSE;
 }
 #endif /* GTK_CHECK_VERSION */
 

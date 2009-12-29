@@ -4305,19 +4305,19 @@ create_playlist(void) {
 
 	add_button = gtk_button_new_with_label(_("Add files"));
         GTK_WIDGET_UNSET_FLAGS(add_button, GTK_CAN_FOCUS);
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), add_button, _("Add files to playlist\n(Press right mouse button for menu)"), NULL);
+        aqualung_widget_set_tooltip_text(add_button, _("Add files to playlist\n(Press right mouse button for menu)"));
         gtk_box_pack_start(GTK_BOX(hbox_bottom), add_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(add_button), "clicked", G_CALLBACK(add_files), NULL);
 
 	sel_button = gtk_button_new_with_label(_("Select all"));
         GTK_WIDGET_UNSET_FLAGS(sel_button, GTK_CAN_FOCUS);
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), sel_button, _("Select all songs in playlist\n(Press right mouse button for menu)"), NULL);
+        aqualung_widget_set_tooltip_text(sel_button, _("Select all songs in playlist\n(Press right mouse button for menu)"));
         gtk_box_pack_start(GTK_BOX(hbox_bottom), sel_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(sel_button), "clicked", G_CALLBACK(select_all), NULL);
 
 	rem_button = gtk_button_new_with_label(_("Remove selected"));
         GTK_WIDGET_UNSET_FLAGS(rem_button, GTK_CAN_FOCUS);
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), rem_button, _("Remove selected songs from playlist\n(Press right mouse button for menu)"), NULL);
+        aqualung_widget_set_tooltip_text(rem_button, _("Remove selected songs from playlist\n(Press right mouse button for menu)"));
         gtk_box_pack_start(GTK_BOX(hbox_bottom), rem_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(rem_button), "clicked", G_CALLBACK(remove_sel), NULL);
 

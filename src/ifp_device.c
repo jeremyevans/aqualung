@@ -69,10 +69,10 @@ gint transfer_mode;
 GtkWidget * aifp_window = NULL;
 GtkWidget * upload_download_button;
 GtkWidget * abort_button;
-GtkWidget * close_button;   
+GtkWidget * close_button;
 GtkWidget * mkdir_button;
 GtkWidget * rndir_button;
-GtkWidget * rmdir_button; 
+GtkWidget * rmdir_button;
 GtkWidget * local_path_entry;
 GtkWidget * local_path_browse_button;
 GtkWidget * aifp_close_when_ready_check;
@@ -188,7 +188,7 @@ download_songs_cb_foreach (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *
                 return 0;
         }
 
-        gtk_tree_model_get (model, iter, COLUMN_NAME, &file, -1);  
+        gtk_tree_model_get (model, iter, COLUMN_NAME, &file, -1);
 
         if (strncmp(file, PARENTDIR, 2)) {
                 strncpy(remote_item, remote_path, MAXLEN-1);
@@ -211,7 +211,7 @@ download_songs_cb_foreach (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *
                         sprintf(temp, _("%d / %d files"), *n + 1, number_of_songs);
                         gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar_op), temp);
                         ifp_download_file (&ifpdev, remote_item, dest_file, update_progress, NULL);
-                } else {                      
+                } else {
                         sprintf(temp, _("%d / %d directories"), *n + 1, number_of_songs);
                         gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar_op), temp);
                         ifp_download_dir (&ifpdev, remote_item, dest_file, update_progress, NULL);
@@ -222,7 +222,7 @@ download_songs_cb_foreach (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *
 
                 (*n)++;
         }
- 
+
         return TRUE;
 }
 
@@ -238,8 +238,8 @@ upload_download_songs_cb(GtkButton * button, gpointer user_data) {
         }
 
         if (transfer_mode == DOWNLOAD_MODE) {
-                if (access(dest_dir, W_OK) == -1) {               
-                        message_dialog(_("Error"), aifp_window, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,  NULL, 
+                if (access(dest_dir, W_OK) == -1) {
+                        message_dialog(_("Error"), aifp_window, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,  NULL,
                                        _("Cannot write to selected directory. Please select another directory."));
                         return;
                 }
@@ -301,7 +301,7 @@ upload_download_songs_cb(GtkButton * button, gpointer user_data) {
 
         aifp_directory_listing(NULL);
         aifp_update_info();
-        
+
         if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(aifp_close_when_ready_check)) && !abort_pressed) {
                 aifp_window_close(NULL, NULL);
         }
@@ -311,12 +311,12 @@ upload_download_songs_cb(GtkButton * button, gpointer user_data) {
 }
 
 
-int 
+int
 mkdir_key_press (GtkWidget *widget, GdkEventKey *event, gpointer data) {
 
         if (event->keyval == GDK_Return) {
                 gtk_dialog_response(GTK_DIALOG (mkdir_dialog), GTK_RESPONSE_OK);
-        } 
+        }
         return FALSE;
 }
 
@@ -364,7 +364,7 @@ aifp_create_directory_cb (GtkButton *button, gpointer user_data) {
 }
 
 
-gint 
+gint
 rename_key_press (GtkWidget *widget, GdkEventKey *event, gpointer data) {
 
         if (event->keyval == GDK_Return) {
@@ -436,7 +436,7 @@ aifp_remove_item_cb (GtkButton *button, gpointer user_data) {
         if (strncmp(remote_item, PARENTDIR, 2)) {
 
                 if (remote_type == TYPE_DIR) {
-                        sprintf(temp, _("Directory '%s' will be removed with its entire contents.\n\nDo you want to proceed?"), 
+                        sprintf(temp, _("Directory '%s' will be removed with its entire contents.\n\nDo you want to proceed?"),
                                 remote_item);
                 } else {
                         sprintf(temp, _("File '%s' will be removed.\n\nDo you want to proceed?"),
@@ -446,7 +446,7 @@ aifp_remove_item_cb (GtkButton *button, gpointer user_data) {
                 response = message_dialog(_("Remove"), aifp_window, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
                                           NULL, temp);
 
-                if (response == GTK_RESPONSE_YES) {   
+                if (response == GTK_RESPONSE_YES) {
 
                         strncpy(temp, remote_path, MAXLEN-1);
                         if (strlen(remote_path) != 1) {
@@ -474,7 +474,7 @@ item_selected (GtkTreeModel *model, GtkTreeIter *iter, gpointer data) {
         gchar *text, *type;
         int * n = (int *)data;
 
-        gtk_tree_model_get (model, iter, COLUMN_NAME, &text, COLUMN_TYPE_SIZE, &type, -1);  
+        gtk_tree_model_get (model, iter, COLUMN_NAME, &text, COLUMN_TYPE_SIZE, &type, -1);
         strncpy(remote_item, text, MAXLEN-1);
 
         remote_type = TYPE_DIR;
@@ -487,7 +487,7 @@ item_selected (GtkTreeModel *model, GtkTreeIter *iter, gpointer data) {
                         (*n)++;
                 }
         }
- 
+
         g_free(text);
         g_free(type);
 }
@@ -499,11 +499,11 @@ multiple_items_selected_foreach_cb (GtkTreeModel *model, GtkTreePath *path, GtkT
         return TRUE;
 }
 
-void 
+void
 directory_selected_cb (GtkTreeSelection *selection, gpointer data) {
 
         GtkTreeIter iter;
-        GtkTreeModel *model;  
+        GtkTreeModel *model;
 
         if (transfer_mode == UPLOAD_MODE) {
                 if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
@@ -516,7 +516,7 @@ directory_selected_cb (GtkTreeSelection *selection, gpointer data) {
 }
 
 
-gint 
+gint
 aifp_dump_dir(void *context, int type, const char *name, int filesize) {
 
         GtkTreeIter iter;
@@ -526,12 +526,12 @@ aifp_dump_dir(void *context, int type, const char *name, int filesize) {
                 gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(list_store), &iter, NULL, i++);
                 gtk_list_store_append(list_store, &iter);
                 gtk_list_store_set(list_store, &iter, 0, name, 1, DIRID, -1);
-        } 
+        }
         return 0;
 }
 
 
-gint 
+gint
 aifp_dump_files(void *context, int type, const char *name, int filesize) {
 
         GtkTreeIter iter;
@@ -606,8 +606,8 @@ aifp_update_info(void) {
         gfloat space;
 
         if (transfer_mode == UPLOAD_MODE) {
-                sprintf(temp, "%d", number_of_songs); 
-                sprintf(tmp, _(" (%.1f MB)"), (float)songs_size / (1024*1024)); 
+                sprintf(temp, "%d", number_of_songs);
+                sprintf(tmp, _(" (%.1f MB)"), (float)songs_size / (1024*1024));
                 strncat (temp, tmp, MAXLEN-1);
                 gtk_label_set_text(GTK_LABEL(label_songs), temp);
         }
@@ -617,12 +617,12 @@ aifp_update_info(void) {
 
         ifp_model(&ifpdev, temp, sizeof(temp));
         capacity = ifp_capacity(&ifpdev);
-        sprintf(tmp, _(" (capacity = %.1f MB)"), (float)capacity / (1024*1024)); 
+        sprintf(tmp, _(" (capacity = %.1f MB)"), (float)capacity / (1024*1024));
         strncat (temp, tmp, MAXLEN-1);
         gtk_label_set_text(GTK_LABEL(label_model), temp);
-        
+
         freespace = ifp_freespace(&ifpdev);
-        sprintf(temp, _(" Free space (%.1f MB)"), (float)freespace / (1024*1024)); 
+        sprintf(temp, _(" Free space (%.1f MB)"), (float)freespace / (1024*1024));
 
         space = (float)freespace/capacity;
 
@@ -678,7 +678,7 @@ aifp_check_files_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
         return 0;
 }
 
-gint 
+gint
 aifp_check_files(void) {
 
         playlist_t * pl = playlist_get_current();
@@ -696,19 +696,19 @@ aifp_check_files(void) {
 void
 aifp_close_device(void) {
 
-        if (ifp_finalize(&ifpdev)) { 
-                fprintf(stderr, "ifp_device.c: aifp_window_close(): finalize failed\n");  
+        if (ifp_finalize(&ifpdev)) {
+                fprintf(stderr, "ifp_device.c: aifp_window_close(): finalize failed\n");
         }
 
         usb_release_interface(dh, dev->config->interface->altsetting->bInterfaceNumber);
 
-        if (ifp_release_device(dh)) { 
-                fprintf(stderr, "ifp_device.c: aifp_window_close(): release_device failed\n"); 
+        if (ifp_release_device(dh)) {
+                fprintf(stderr, "ifp_device.c: aifp_window_close(): release_device failed\n");
         }
 }
 
 
-gint 
+gint
 aifp_check_and_init_device(void) {
 
         usb_init();
@@ -728,7 +728,7 @@ aifp_check_and_init_device(void) {
                 message_dialog(_("Error"), options.playlist_is_embedded ? GTK_WIDGET(main_window) : GTK_WIDGET(playlist_window),
                                GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, NULL, _("Device is busy.\n(Aqualung was unable to claim its interface.)"));
 
-                if (ifp_release_device(dh)) { 
+                if (ifp_release_device(dh)) {
                         fprintf(stderr, "ifp_device.c: aifp_check_and_init_device(): release_device failed\n");
                 }
 
@@ -736,13 +736,13 @@ aifp_check_and_init_device(void) {
         }
 
         if (ifp_init(&ifpdev, dh)) {
- 
+
                 message_dialog(_("Error"), options.playlist_is_embedded ? GTK_WIDGET(main_window) : GTK_WIDGET(playlist_window),
                                GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, NULL, _("Device is not responding.\nTry jiggling the handle."));
 
                 usb_release_interface(dh, dev->config->interface->altsetting->bInterfaceNumber);
 
-                if (ifp_release_device(dh)) { 
+                if (ifp_release_device(dh)) {
                         fprintf(stderr, "ifp_device.c: aifp_check_and_init_device(): release_device failed\n");
                 }
                 return -1;
@@ -751,7 +751,7 @@ aifp_check_and_init_device(void) {
 }
 
 
-void 
+void
 aifp_check_size(void) {
         if (transfer_mode == UPLOAD_MODE) {
                 if(songs_size > freespace) {
@@ -796,11 +796,11 @@ aifp_list_dbclick_cb(GtkWidget * widget, GdkEventButton * event, gpointer func_d
 gchar *npath;
 
     if ((event->type==GDK_2BUTTON_PRESS) && (event->button == 1)) {
-        
+
         if (remote_type == TYPE_DIR) {
 
                 if (!strncmp(remote_item, PARENTDIR, 2)) {
-            
+
                         npath = strrchr (remote_path, '\\');
 
                         if (npath != NULL) {
@@ -811,7 +811,7 @@ gchar *npath;
                                 aifp_directory_listing(NULL);
                         }
                 } else {
-                        if (strlen(remote_path) != 1) { 
+                        if (strlen(remote_path) != 1) {
                                 strcat(remote_path, "\\");
                         }
                         strncat(remote_path, remote_item, MAXLEN-1);
@@ -871,13 +871,13 @@ local_path_selected_cb(GtkButton * button, gpointer data) {
 }
 
 
-void 
+void
 aifp_transfer_files(gint mode) {
 
         GtkWidget * vbox1;
         GtkWidget * vbox2;
         GtkWidget * vbox3;
-        GtkWidget * vbox4;  
+        GtkWidget * vbox4;
         GtkWidget * hbox1;
         GtkWidget * hbox2;
         GtkWidget * alignment;
@@ -888,7 +888,7 @@ aifp_transfer_files(gint mode) {
         GtkWidget * hseparator;
         GtkWidget * vseparator;
         GtkWidget * hbuttonbox;
-        GtkTreeSelection * list_selection; 
+        GtkTreeSelection * list_selection;
         GtkCellRenderer * renderer;
         GtkTreeViewColumn * column;
         gchar temp[MAXLEN];
@@ -951,7 +951,7 @@ aifp_transfer_files(gint mode) {
                 gtk_window_set_title(GTK_WINDOW(aifp_window), _("iFP device manager (download mode)"));
         }
         gtk_window_set_position(GTK_WINDOW(aifp_window), GTK_WIN_POS_CENTER_ALWAYS);
-        gtk_window_set_transient_for(GTK_WINDOW(aifp_window), 
+        gtk_window_set_transient_for(GTK_WINDOW(aifp_window),
                                      options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window));
         gtk_window_set_modal(GTK_WINDOW(aifp_window), TRUE);
         g_signal_connect(G_OBJECT(aifp_window), "delete_event",
@@ -998,7 +998,7 @@ aifp_transfer_files(gint mode) {
                 gtk_misc_set_alignment (GTK_MISC (label_songs), 0, 0.5);
                 gtk_misc_set_padding (GTK_MISC (label_songs), 5, 0);
 
-         
+
                 label = gtk_label_new (_("<b>Songs info</b>"));
                 gtk_widget_show (label);
                 gtk_frame_set_label_widget (GTK_FRAME (frame), label);
@@ -1070,22 +1070,22 @@ aifp_transfer_files(gint mode) {
 
         hbox1 = gtk_hbox_new (FALSE, 0);
         gtk_widget_show (hbox1);
-        gtk_container_add (GTK_CONTAINER (alignment), hbox1);   
+        gtk_container_add (GTK_CONTAINER (alignment), hbox1);
 
         scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
         gtk_widget_show (scrolledwindow);
-        gtk_box_pack_start (GTK_BOX (hbox1), scrolledwindow, TRUE, TRUE, 0);    
+        gtk_box_pack_start (GTK_BOX (hbox1), scrolledwindow, TRUE, TRUE, 0);
         gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
         gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
 
         list_store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
         list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(list_store));
         gtk_widget_show (list);
-	g_signal_connect(G_OBJECT(list), "button_press_event", 
-                     G_CALLBACK(aifp_list_dbclick_cb), NULL);      
+	g_signal_connect(G_OBJECT(list), "button_press_event",
+                     G_CALLBACK(aifp_list_dbclick_cb), NULL);
 
-        list_selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (list));  
-        g_signal_connect(G_OBJECT(list_selection), "changed", G_CALLBACK(directory_selected_cb), NULL);   
+        list_selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (list));
+        g_signal_connect(G_OBJECT(list_selection), "changed", G_CALLBACK(directory_selected_cb), NULL);
         gtk_container_add (GTK_CONTAINER (scrolledwindow), list);
         gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(list), TRUE);
         gtk_tree_view_set_enable_search (GTK_TREE_VIEW(list), FALSE);
@@ -1120,7 +1120,7 @@ aifp_transfer_files(gint mode) {
 
         if (transfer_mode == UPLOAD_MODE) {
                 mkdir_button = gui_stock_label_button(NULL, GTK_STOCK_NEW);
-                gtk_button_set_relief (GTK_BUTTON (mkdir_button), GTK_RELIEF_NONE); 
+                gtk_button_set_relief (GTK_BUTTON (mkdir_button), GTK_RELIEF_NONE);
                 GTK_WIDGET_UNSET_FLAGS(mkdir_button, GTK_CAN_FOCUS);
                 gtk_widget_show (mkdir_button);
                 g_signal_connect(mkdir_button, "clicked", G_CALLBACK(aifp_create_directory_cb), NULL);
@@ -1129,24 +1129,24 @@ aifp_transfer_files(gint mode) {
 
         rndir_button = gui_stock_label_button(NULL, GTK_STOCK_EDIT);
         GTK_WIDGET_UNSET_FLAGS(rndir_button, GTK_CAN_FOCUS);
-        gtk_button_set_relief (GTK_BUTTON (rndir_button), GTK_RELIEF_NONE); 
+        gtk_button_set_relief (GTK_BUTTON (rndir_button), GTK_RELIEF_NONE);
         gtk_widget_show (rndir_button);
         g_signal_connect(rndir_button, "clicked", G_CALLBACK(aifp_rename_item_cb), NULL);
         gtk_box_pack_start (GTK_BOX (vbox4), rndir_button, FALSE, FALSE, 0);
 
         rmdir_button = gui_stock_label_button(NULL, GTK_STOCK_DELETE);
         GTK_WIDGET_UNSET_FLAGS(rmdir_button, GTK_CAN_FOCUS);
-        gtk_button_set_relief (GTK_BUTTON (rmdir_button), GTK_RELIEF_NONE); 
+        gtk_button_set_relief (GTK_BUTTON (rmdir_button), GTK_RELIEF_NONE);
         gtk_widget_show (rmdir_button);
         g_signal_connect(rmdir_button, "clicked", G_CALLBACK(aifp_remove_item_cb), NULL);
         gtk_box_pack_start (GTK_BOX (vbox4), rmdir_button, FALSE, FALSE, 0);
 
         if (options.enable_tooltips) {
                 if (transfer_mode == UPLOAD_MODE) {
-                        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), mkdir_button, _("Create a new directory"), NULL);
+                        aqualung_widget_set_tooltip_text(mkdir_button, _("Create a new directory"));
                 }
-                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), rndir_button, _("Rename"), NULL);
-                gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), rmdir_button, _("Remove"), NULL);
+                aqualung_widget_set_tooltip_text(rndir_button, _("Rename"));
+                aqualung_widget_set_tooltip_text(rmdir_button, _("Remove"));
         }
 
         label = gtk_label_new (_("<b>Remote directory</b>"));
@@ -1306,7 +1306,7 @@ aifp_transfer_files(gint mode) {
         gtk_widget_show (close_button);
         g_signal_connect(close_button, "clicked", G_CALLBACK(aifp_window_close), NULL);
         gtk_container_add (GTK_CONTAINER (hbuttonbox), close_button);
-        GTK_WIDGET_SET_FLAGS (close_button, GTK_CAN_DEFAULT);     
+        GTK_WIDGET_SET_FLAGS (close_button, GTK_CAN_DEFAULT);
 
         gtk_widget_set_sensitive(abort_button, FALSE);
         gtk_widget_grab_focus(list);

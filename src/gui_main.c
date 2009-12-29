@@ -161,9 +161,6 @@ fileinfo_t disp_info;
 unsigned long disp_samples;
 unsigned long disp_pos;
 
-/* tooltips group */
-GtkTooltips * aqualung_tooltips;
-
 GtkWidget * main_window;
 
 extern GtkWidget * browser_window;
@@ -349,14 +346,14 @@ set_title_label(char * str) {
 			gtk_window_set_title(GTK_WINDOW(main_window), tmp);
 #ifdef HAVE_SYSTRAY
 			if (systray_used) {
-				gtk_status_icon_set_tooltip(systray_icon, tmp);
+				aqualung_status_icon_set_tooltip_text(systray_icon, tmp);
 			}
 #endif /* HAVE_SYSTRAY */
 		} else {
 			gtk_window_set_title(GTK_WINDOW(main_window), win_title);
 #ifdef HAVE_SYSTRAY
 			if (systray_used) {
-				gtk_status_icon_set_tooltip(systray_icon, win_title);
+				aqualung_status_icon_set_tooltip_text(systray_icon, win_title);
 			}
 #endif /* HAVE_SYSTRAY */
 		}
@@ -366,7 +363,7 @@ set_title_label(char * str) {
 		gtk_window_set_title(GTK_WINDOW(main_window), win_title);
 #ifdef HAVE_SYSTRAY
 		if (systray_used) {
-			gtk_status_icon_set_tooltip(systray_icon, win_title);
+			aqualung_status_icon_set_tooltip_text(systray_icon, win_title);
 		}
 #endif /* HAVE_SYSTRAY */
         }
@@ -580,7 +577,7 @@ loop_bar_update_tooltip(void) {
 				 (int)(100 * options.loop_range_end));
 		}
 
-                gtk_tooltips_set_tip(GTK_TOOLTIPS(aqualung_tooltips), loop_bar, str, NULL);
+                aqualung_widget_set_tooltip_text(loop_bar, str);
         }
 }
 
@@ -1396,15 +1393,20 @@ scale_button_release_event(GtkWidget * widget, GdkEventButton * event) {
 
 void
 changed_pos(GtkAdjustment * adj, gpointer data) {
+	static int pos = -1;
 
 	if (!is_file_loaded) {
 		gtk_adjustment_set_value(adj, 0.0f);
 	}
 
         if (options.enable_tooltips) {
-		char str[32];
-                snprintf(str, 31, _("Position: %d%%"), (gint)gtk_adjustment_get_value(adj));
-                gtk_tooltips_set_tip(GTK_TOOLTIPS(aqualung_tooltips), scale_pos, str, NULL);
+		int newpos = (int)gtk_adjustment_get_value(adj);
+		if (pos != newpos) {
+			char str[32];
+			snprintf(str, 31, _("Position: %d%%"), newpos);
+			aqualung_widget_set_tooltip_text(scale_pos, str);
+			pos = newpos;
+		}
         }
 }
 
@@ -1458,7 +1460,7 @@ changed_vol(GtkAdjustment * adj, gpointer date) {
         }
 
         snprintf(str2, 31, _("Volume: %s"), str);
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), scale_vol, str2, NULL);
+        aqualung_widget_set_tooltip_text(scale_vol, str2);
 }
 
 
@@ -1529,7 +1531,7 @@ changed_bal(GtkAdjustment * adj, gpointer date) {
 	}
 
         snprintf(str2, 31, _("Balance: %s"), str);
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), scale_bal, str2, NULL);
+        aqualung_widget_set_tooltip_text(scale_bal, str2);
 }
 
 
@@ -2666,7 +2668,7 @@ create_main_window(char * skin_path) {
 	gtk_window_set_title(GTK_WINDOW(main_window), win_title);
 #ifdef HAVE_SYSTRAY
 	if (systray_used) {
-		gtk_status_icon_set_tooltip(systray_icon, win_title);
+		aqualung_status_icon_set_tooltip_text(systray_icon, win_title);
 	}
 #endif /* HAVE_SYSTRAY */
 
@@ -2701,7 +2703,7 @@ create_main_window(char * skin_path) {
  	fd_songinfo = pango_font_description_from_string(options.songinfo_font);
  	fd_statusbar = pango_font_description_from_string(options.statusbar_font);
 
-        aqualung_tooltips = gtk_tooltips_new();
+	aqualung_tooltips_init();
 
         conf_menu = gtk_menu_new();
 	register_toplevel_window(conf_menu, TOP_WIN_SKIN);
@@ -2991,22 +2993,22 @@ create_main_window(char * skin_path) {
 	gtk_box_pack_start(GTK_BOX(vbox), btns_hbox, FALSE, FALSE, 0);
 
 	prev_button = gtk_button_new();
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), prev_button, _("Previous song"), NULL);
+        aqualung_widget_set_tooltip_text(prev_button, _("Previous song"));
 
 	stop_button = gtk_button_new();
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), stop_button, _("Stop"), NULL);
+        aqualung_widget_set_tooltip_text(stop_button, _("Stop"));
 
 	next_button = gtk_button_new();
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), next_button, _("Next song"), NULL);
+        aqualung_widget_set_tooltip_text(next_button, _("Next song"));
 
 	play_button = gtk_toggle_button_new();
 
 	if (options.combine_play_pause) {
-		gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), play_button, _("Play/Pause"), NULL);
+		aqualung_widget_set_tooltip_text(play_button, _("Play/Pause"));
 	} else {
-		gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), play_button, _("Play"), NULL);
+		aqualung_widget_set_tooltip_text(play_button, _("Play"));
 		pause_button = gtk_toggle_button_new();
-		gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), pause_button, _("Pause"), NULL);
+		aqualung_widget_set_tooltip_text(pause_button, _("Pause"));
 	}
 
 	GTK_WIDGET_UNSET_FLAGS(prev_button, GTK_CAN_FOCUS);
@@ -3038,21 +3040,21 @@ create_main_window(char * skin_path) {
 	sr_table = gtk_table_new(2, 2, FALSE);
 
 	repeat_button = gtk_toggle_button_new();
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), repeat_button, _("Repeat current song"), NULL);
+        aqualung_widget_set_tooltip_text(repeat_button, _("Repeat current song"));
 	gtk_widget_set_size_request(repeat_button, -1, 1);
 	gtk_table_attach(GTK_TABLE(sr_table), repeat_button, 0, 1, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 0);
 	g_signal_connect(repeat_button, "toggled", G_CALLBACK(repeat_toggled), NULL);
 
 	repeat_all_button = gtk_toggle_button_new();
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), repeat_all_button, _("Repeat all songs"), NULL);
+        aqualung_widget_set_tooltip_text(repeat_all_button, _("Repeat all songs"));
 	gtk_widget_set_size_request(repeat_all_button, -1, 1);
 	gtk_table_attach(GTK_TABLE(sr_table), repeat_all_button, 0, 1, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 0);
 	g_signal_connect(repeat_all_button, "toggled", G_CALLBACK(repeat_all_toggled), NULL);
 
 	shuffle_button = gtk_toggle_button_new();
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), shuffle_button, _("Shuffle songs"), NULL);
+        aqualung_widget_set_tooltip_text(shuffle_button, _("Shuffle songs"));
 	gtk_widget_set_size_request(shuffle_button, -1, 1);
 	gtk_table_attach(GTK_TABLE(sr_table), shuffle_button, 1, 2, 0, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 0);
@@ -3064,15 +3066,15 @@ create_main_window(char * skin_path) {
 
         /* toggle buttons for sub-windows visibility */
 	playlist_toggle = gtk_toggle_button_new();
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), playlist_toggle, _("Toggle playlist"), NULL);
+        aqualung_widget_set_tooltip_text(playlist_toggle, _("Toggle playlist"));
 	gtk_box_pack_end(GTK_BOX(btns_hbox), playlist_toggle, FALSE, FALSE, 0);
 
 	musicstore_toggle = gtk_toggle_button_new();
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), musicstore_toggle, _("Toggle music store"), NULL);
+        aqualung_widget_set_tooltip_text(musicstore_toggle, _("Toggle music store"));
 	gtk_box_pack_end(GTK_BOX(btns_hbox), musicstore_toggle, FALSE, FALSE, 3);
 
 	plugin_toggle = gtk_toggle_button_new();
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (aqualung_tooltips), plugin_toggle, _("Toggle LADSPA patch builder"), NULL);
+        aqualung_widget_set_tooltip_text(plugin_toggle, _("Toggle LADSPA patch builder"));
 #ifdef HAVE_LADSPA
 	gtk_box_pack_end(GTK_BOX(btns_hbox), plugin_toggle, FALSE, FALSE, 0);
 #endif /* HAVE_LADSPA */
@@ -3227,7 +3229,7 @@ systray_mouse_wheel(int mouse_wheel_option, gboolean vertical_wheel,
        	guint32 time_since_last_event, GtkScrollType scroll_type) {
 
 	GtkScrollType reverse_direction(GtkScrollType scroll_type) {
-		switch(scroll_type) {
+		switch (scroll_type) {
 		case GTK_SCROLL_STEP_BACKWARD:
 			return GTK_SCROLL_STEP_FORWARD;
 		case GTK_SCROLL_STEP_FORWARD:
@@ -3237,7 +3239,7 @@ systray_mouse_wheel(int mouse_wheel_option, gboolean vertical_wheel,
 		}
 	}
 
-	switch(mouse_wheel_option) {
+	switch (mouse_wheel_option) {
 	case SYSTRAY_MW_CMD_VOLUME:
 		if (time_since_last_event > 100) {
 			if (vertical_wheel)
@@ -3288,7 +3290,7 @@ systray_scroll_event_cb(GtkStatusIcon * systray_icon,
 
 	time_since_last_event = event->time - last_systray_scroll_event_time;
 
-	switch(event->direction) {
+	switch (event->direction) {
 	case GDK_SCROLL_LEFT:
 		result = systray_mouse_wheel(options.systray_mouse_wheel_horizontal,
 		        FALSE, time_since_last_event, GTK_SCROLL_STEP_BACKWARD);
@@ -3317,7 +3319,7 @@ systray_scroll_event_cb(GtkStatusIcon * systray_icon,
 gboolean
 systray_mouse_button(int mouse_button_option) {
 
-	switch(mouse_button_option) {
+	switch (mouse_button_option) {
 	case SYSTRAY_MB_CMD_PLAY_STOP_SONG:
 		if (is_file_loaded) {
 			systray__stop_cb(NULL);

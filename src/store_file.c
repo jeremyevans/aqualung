@@ -60,6 +60,7 @@ extern char pl_color_inactive[14];
 extern GtkWidget * browser_window;
 extern GtkTreeStore * music_store;
 extern GtkTreeSelection * music_select;
+extern GtkWidget * music_tree;
 
 int stop_adding_to_playlist;
 int ms_progress_bar_semaphore;
@@ -4084,6 +4085,12 @@ store_file_load(char * store_file, char * sort) {
 		music_store_mark_changed(&iter_store);
 		store_file_save(&iter_store);
 	}
+
+	if (options.autoexpand_stores) {
+		GtkTreePath * path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), &iter_store);
+		gtk_tree_view_expand_row(GTK_TREE_VIEW(music_tree), path, FALSE);
+		gtk_tree_path_free(path);
+	}
 }
 
 
@@ -4265,6 +4272,18 @@ store_file_save(GtkTreeIter * iter_store) {
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter_store, MS_COL_DATA, &data, -1);
 
 	if (!data->dirty) {
+		return;
+	}
+
+	if (access(data->file, W_OK) != 0) {
+		message_dialog(_("Warning"),
+			       browser_window,
+			       GTK_MESSAGE_WARNING,
+			       GTK_BUTTONS_CLOSE,
+			       NULL,
+			       _("File \"%s\" does not exist or your write permission has been withdrawn. "
+				 "Check if the partition containing the store file has been unmounted."),
+			       data->file);
 		return;
 	}
 

@@ -199,6 +199,15 @@ aqualung_timeout_add(guint interval, GSourceFunc function, gpointer data) {
 	dispatch->data = data;
 	dispatch->destroy = NULL;
 
+#if GLIB_CHECK_VERSION(2,14,0)
+	if (interval % 1000 == 0) {
+		return g_timeout_add_seconds_full(G_PRIORITY_DEFAULT,
+						  interval / 1000,
+						  threads_dispatch,
+						  dispatch,
+						  threads_dispatch_free);
+	}
+#endif
 	return g_timeout_add_full(G_PRIORITY_DEFAULT,
 				  interval,
 				  threads_dispatch,

@@ -356,11 +356,183 @@ diff_option_from_toggle(GtkWidget * widget, int opt) {
 }
 
 void
+music_store_remove_unset_stores(void) {
+	int i;
+	GtkTreeIter iter;
+	GtkTreeIter iter2;
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+					     &iter, NULL, i++)) {
+		int j;
+		int has;
+		store_t * data;
+		store_data_t * store_data;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &data, -1);
+
+		if (data->type != STORE_TYPE_FILE) {
+			continue;
+		}
+
+		store_data = (store_data_t *)data;
+
+		j = 0;
+		has = 0;
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store),
+						     &iter2, NULL, j++)) {
+			char * file;
+
+			gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter2, 0, &file, -1);
+			if (strcmp(store_data->file, file) == 0) {
+
+				if (access(file, R_OK) == 0) {
+					has = 1;
+				}
+
+				g_free(file);
+				break;
+			}
+
+			g_free(file);
+		}
+
+		if (!has) {
+			if (store_data->dirty) {
+				int ret;
+				char * name;
+
+				gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter,
+						   MS_COL_NAME, &name, -1);
+
+				ret = message_dialog(_("Settings"),
+						     options_window,
+						     GTK_MESSAGE_QUESTION,
+						     GTK_BUTTONS_YES_NO,
+						     NULL,
+						     _("Do you want to save store \"%s\" before "
+						       "removing from Music Store?"),
+						     name + 1);
+
+				if (ret == GTK_RESPONSE_YES) {
+					store_file_save(&iter);
+				} else {
+					music_store_mark_saved(&iter);
+				}
+
+				g_free(name);
+			}
+
+			store_file_remove_store(&iter);
+			--i;
+		}
+	}
+}
+
+void
+music_store_remove_non_existent_stores(void) {
+	int i;
+	GtkTreeIter iter;
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+					     &iter, NULL, i++)) {
+		store_t * data;
+		store_data_t * store_data;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &data, -1);
+
+		if (data->type != STORE_TYPE_FILE) {
+			continue;
+		}
+
+		store_data = (store_data_t *)data;
+
+		if (access(store_data->file, R_OK) != 0) {
+			if (!store_data->dirty) {
+				store_file_remove_store(&iter);
+				--i;
+			}
+		}
+	}
+}
+
+void
+music_store_add_new_stores() {
+	int i;
+	GtkTreeIter iter;
+	GtkTreeIter iter2;
+
+	i = 0;
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store),
+					     &iter, NULL, i++)) {
+		char * file;
+		int j;
+		int has;
+		char sort[16];
+
+		snprintf(sort, 15, "%03d", i+1);
+
+		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &file, -1);
+
+		j = 0;
+		has = 0;
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
+						     &iter2, NULL, j++)) {
+			store_t * data;
+			store_data_t * store_data;
+
+			gtk_tree_model_get(GTK_TREE_MODEL(music_store),
+					   &iter2, MS_COL_DATA, &data, -1);
+
+			if (data->type != STORE_TYPE_FILE) {
+				continue;
+			}
+
+			store_data = (store_data_t *)data;
+
+			if (strcmp(file, store_data->file) == 0) {
+
+				gtk_tree_store_set(music_store, &iter2, MS_COL_SORT, sort, -1);
+
+				if (access(store_data->file, W_OK) == 0) {
+					store_data->readonly = 0;
+				} else {
+					store_data->readonly = 1;
+				}
+
+				has = 1;
+				break;
+			}
+		}
+
+		if (!has) {
+			store_file_load(file, sort);
+		}
+
+		g_free(file);
+	}
+}
+
+gboolean
+options_store_watcher_cb(gpointer data) {
+
+	music_store_remove_non_existent_stores();
+	music_store_add_new_stores();
+	return TRUE;
+}
+
+void
+options_store_watcher_start(void) {
+
+	aqualung_timeout_add(5000, options_store_watcher_cb, NULL);
+}
+
+void
 options_window_accept(void) {
 
 	int i;
 	GtkTreeIter iter;
-	GtkTreeIter iter2;
 	int title_format_changed = 0;
 
 #ifdef HAVE_LUA
@@ -568,18 +740,13 @@ options_window_accept(void) {
 	set_option_from_entry(entry_sb_font, options.statusbar_font, MAX_FONTNAME_LEN);
 
         /* refresh GUI */
-	{
-		int i;
-		GtkTreeIter iter;
-
-		for (i = 0; i < 3; i++) {
-			gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(plistcol_store),
-						      &iter, NULL, i);
-			gtk_tree_model_get(GTK_TREE_MODEL(plistcol_store), &iter,
-					   1, options.plcol_idx + i, -1);
-		}
-		playlist_reorder_columns_all(options.plcol_idx);
+	for (i = 0; i < 3; i++) {
+		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(plistcol_store),
+					      &iter, NULL, i);
+		gtk_tree_model_get(GTK_TREE_MODEL(plistcol_store), &iter,
+				   1, options.plcol_idx + i, -1);
 	}
+	playlist_reorder_columns_all(options.plcol_idx);
 
         if (!track_name_in_bold_shadow && options.show_active_track_name_in_bold == 1) {
 		reskin_flag = 1;
@@ -604,127 +771,9 @@ options_window_accept(void) {
                 override_shadow = 0;
         }
 
-	i = 0;
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
-					     &iter, NULL, i++)) {
-		int j;
-		int has;
-		store_t * data;
-		store_data_t * store_data;
+	music_store_remove_unset_stores();
 
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &data, -1);
-
-		if (data->type != STORE_TYPE_FILE) {
-			continue;
-		}
-
-		store_data = (store_data_t *)data;
-
-		j = 0;
-		has = 0;
-		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store),
-						     &iter2, NULL, j++)) {
-			char * file;
-
-			gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter2, 0, &file, -1);
-			if (strcmp(store_data->file, file) == 0) {
-
-				if (access(file, R_OK) == 0) {
-					has = 1;
-				}
-
-				g_free(file);
-				break;
-			}
-
-			g_free(file);
-		}
-
-		if (!has) {
-
-			store_data_t * data;
-			char * name;
-
-			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter,
-					   MS_COL_NAME, &name,
-					   MS_COL_DATA, &data, -1);
-
-			if (data->dirty) {
-
-				int ret = message_dialog(_("Settings"),
-							 options_window,
-							 GTK_MESSAGE_QUESTION,
-							 GTK_BUTTONS_YES_NO,
-							 NULL,
-							 _("Do you want to save store \"%s\" before "
-							   "removing from Music Store?"),
-							 name + 1);
-
-				if (ret == GTK_RESPONSE_YES) {
-					store_file_save(&iter);
-				} else {
-					music_store_mark_saved(&iter);
-				}
-
-				g_free(name);
-			}
-
-			store_file_remove_store(&iter);
-			--i;
-		}
-	}
-
-
-	i = 0;
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ms_pathlist_store),
-					     &iter, NULL, i++)) {
-		char * file;
-		int j;
-		int has;
-		char sort[16];
-
-		snprintf(sort, 15, "%03d", i+1);
-
-		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &file, -1);
-
-		j = 0;
-		has = 0;
-		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store),
-						     &iter2, NULL, j++)) {
-			store_t * data;
-			store_data_t * store_data;
-
-			gtk_tree_model_get(GTK_TREE_MODEL(music_store),
-					   &iter2, MS_COL_DATA, &data, -1);
-
-			if (data->type != STORE_TYPE_FILE) {
-				continue;
-			}
-
-			store_data = (store_data_t *)data;
-
-			if (strcmp(file, store_data->file) == 0) {
-
-				gtk_tree_store_set(music_store, &iter2, MS_COL_SORT, sort, -1);
-
-				if (access(store_data->file, W_OK) == 0) {
-					store_data->readonly = 0;
-				} else {
-					store_data->readonly = 1;
-				}
-
-				has = 1;
-				break;
-			}
-		}
-
-		if (!has) {
-			store_file_load(file, sort);
-		}
-
-		g_free(file);
-	}
-
+	music_store_add_new_stores();
 
 	set_buttons_relief();
 	refresh_displays();

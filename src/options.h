@@ -38,7 +38,7 @@ typedef struct {
 
 	/* current working directory when program is started */
 	char cwd[MAXLEN];
-	
+
 	/* to keep track of file selector dialogs; start with $HOME */
 	char audiodir[MAXLEN];
 	char currdir[MAXLEN];
@@ -167,7 +167,7 @@ typedef struct {
 	/* DSP */
 	int ladspa_is_postfader;
 	int src_type;
-	
+
 	/* RVA */
 	int rva_is_enabled;
 	int rva_env;
@@ -262,6 +262,8 @@ enum {
 void create_options_window(void);
 void append_ms_pathlist(char * path, char * name);
 
+void options_store_watcher_start(void);
+
 void save_config(void);
 void load_config(void);
 void finalize_options(void);
@@ -269,4 +271,4 @@ void finalize_options(void);
 #endif /* _OPTIONS_H */
 
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :

@@ -1058,6 +1058,11 @@ build_store_get_xml_node(char * file) {
 	xmlNodePtr node;
 
 	doc = xmlParseFile(file);
+
+	if (doc == NULL) {
+		return NULL;
+	}
+
         node = xmlDocGetRootElement(doc);
 
 	for (node = node->xmlChildrenNode; node != NULL; node = node->next) {
@@ -1472,7 +1477,7 @@ artist_get_iter_for_tracklist(GtkTreeIter * artist_iter,
 				match = 0;
 				break;
 			}
-				
+
 			ptrack = ptrack->next;
 		}
 
@@ -1570,7 +1575,7 @@ build_type_dialog(build_store_t * build_data) {
 	radio_strict = gtk_radio_button_new_with_label(NULL, _("Directory driven"));
 	gtk_widget_set_name(radio_strict, "check_on_notebook");
  	gtk_box_pack_start(GTK_BOX(vbox), radio_strict, FALSE, FALSE, 0);
- 
+
  	label = gtk_label_new(_("Follows the directory structure to identify the artists and\n"
  				"records. The files are added on a record basis."));
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -1582,7 +1587,7 @@ build_type_dialog(build_store_t * build_data) {
 				  GTK_RADIO_BUTTON(radio_strict), _("Independent"));
  	gtk_widget_set_name(radio_loose, "check_on_notebook");
  	gtk_box_pack_start(GTK_BOX(vbox), radio_loose, FALSE, FALSE, 0);
- 
+
  	label = gtk_label_new(_("Recursive search from the root directory for audio files.\n"
  				"The files are processed independently, so only metadata\n"
  				"and filename transformation are available."));
@@ -1831,7 +1836,7 @@ build_dialog(build_store_t * data) {
 
 
 	/* Artist */
-	
+
         art_vbox = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(art_vbox), 5);
 	label = gtk_label_new(_("Artist"));
@@ -1886,7 +1891,7 @@ build_dialog(build_store_t * data) {
 
 
 	/* Record */
-	
+
         rec_vbox = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(rec_vbox), 5);
 	label = gtk_label_new(_("Record"));
@@ -1952,7 +1957,7 @@ build_dialog(build_store_t * data) {
 
 
 	/* Track */
-	
+
         trk_vbox = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(trk_vbox), 5);
 	label = gtk_label_new(_("Track"));
@@ -2058,7 +2063,7 @@ build_dialog(build_store_t * data) {
  display:
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-		
+
 		char * proot = g_filename_from_utf8(gtk_entry_get_text(GTK_ENTRY(gen_root_entry)), -1, NULL, NULL, NULL);
 
 		data->root[0] = '\0';
@@ -2264,9 +2269,9 @@ progress_window(build_store_t * data) {
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
-        data->prog_cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL); 
+        data->prog_cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL);
         g_signal_connect(data->prog_cancel_button, "clicked", G_CALLBACK(cancel_build), data);
-  	gtk_container_add(GTK_CONTAINER(hbuttonbox), data->prog_cancel_button);   
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), data->prog_cancel_button);
 
         gtk_widget_grab_focus(data->prog_cancel_button);
 
@@ -2335,7 +2340,7 @@ file_transform(char * buf, file_transform_t * model) {
 	int i;
 	char tmp[MAXLEN];
 	char * p = tmp;
-		
+
 	int offs = 0;
 	regmatch_t regmatch[10];
 
@@ -2347,7 +2352,7 @@ file_transform(char * buf, file_transform_t * model) {
 		p = buf;
 
 		while (!regexec(&model->compiled, p + offs, 10, regmatch, 0)) {
-		
+
 			int i = 0;
 			int b = strlen(model->replacement) - 1;
 
@@ -2358,12 +2363,12 @@ file_transform(char * buf, file_transform_t * model) {
 				if (model->replacement[i] == '\\' && isdigit(model->replacement[i+1])) {
 
 					int j = model->replacement[i+1] - '0';
-				
+
 					if (j == 0 || j > model->compiled.re_nsub) {
 						i++;
 						continue;
 					}
-				
+
 					strncat(tmp, p + offs + regmatch[j].rm_so,
 						regmatch[j].rm_eo - regmatch[j].rm_so);
 					i++;
@@ -2371,11 +2376,11 @@ file_transform(char * buf, file_transform_t * model) {
 					strncat(tmp, model->replacement + i, 1);
 				}
 			}
-		
+
 			strncat(tmp, model->replacement + i, 1);
 			offs += regmatch[0].rm_eo;
 		}
-	
+
 		if (!*tmp) {
 			strncpy(tmp, p + offs, MAXLEN-1);
 		} else {
@@ -2400,7 +2405,7 @@ file_transform(char * buf, file_transform_t * model) {
 
 		if (strlen(p) >= 3 && isdigit(*p) && isdigit(*(p + 1)) &&
 		    (*(p + 2) == ' ' || *(p + 2) == '_' || *(p + 2) == '-' || *(p + 2) == '.')) {
-		
+
 			p += 3;
 
 			while (*p && (*p == ' ' || *p == '_' || *p == '-' || *p == '.')) {
@@ -2729,7 +2734,7 @@ write_record_to_store(gpointer user_data) {
 		result = store_get_iter_for_tracklist(&data->store_iter,
 						      &data->artist_iter,
 						      &record_iter,
-						      data->disc, 
+						      data->disc,
 						      &data->artist_name_map);
 		data->artist_iter_is_set = 1;
 	}
@@ -2818,7 +2823,7 @@ write_track_to_store(gpointer user_data) {
                                    MS_COL_NAME, data->disc->tracks->final, -1);
 		track_data->duration = data->disc->tracks->duration;
 
-		if (data->disc->tracks->rva_found) { 
+		if (data->disc->tracks->rva_found) {
 			track_data->rva = data->disc->tracks->rva;
 			track_data->use_rva = 1;
 		}
@@ -2880,17 +2885,17 @@ filter_excl_incl(build_store_t * data, char * basename) {
 		int k;
 		int match = 0;
 		for (k = 0; data->incl_patternv[k]; k++) {
-			
+
 			if (*(data->incl_patternv[k]) == '\0') {
 				continue;
 			}
-			
+
 			if (fnmatch(data->incl_patternv[k], utf8, FNM_CASEFOLD) == 0) {
 				match = 1;
 				break;
 			}
 		}
-		
+
 		if (!match) {
 			g_free(utf8);
 			return 0;
@@ -3664,5 +3669,5 @@ int build_is_busy(void) {
 }
 
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :
 

@@ -3588,6 +3588,8 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	music_store_load_all();
 
+	options_store_watcher_start();
+
 	sprintf(path, "%s/icon_16.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));

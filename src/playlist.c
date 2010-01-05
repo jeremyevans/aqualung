@@ -5107,7 +5107,7 @@ playlist_load_m3u_thread(void * arg) {
                                         data = playlist_filemeta_get(line);
                                 }
 
-				if (have_name) {
+				if (have_name && data != NULL) {
 					free_strdup(&data->title, name);
 				}
 

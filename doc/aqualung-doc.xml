@@ -2677,11 +2677,11 @@
 
           </paragraph>
 
-          <p>Changing the <gui>Programmable title format file</gui> does
-          not take effect until Aqualung is restarted, and even then it
-          does not affect existing entries in the playlist, In order to
-          update existing entries in the playlist, the <gui>Reread file
-          metadata</gui> setting should be used.</p>
+          <p>Changing the <gui>Programmable title format file</gui> entry
+          takes effect immediately, but does not affect existing entries
+          in the playlist. In order to update existing entries in the
+          playlist, the <gui>Reread file metadata</gui> setting should
+          be used.</p>
 
         </subsubsection>
 

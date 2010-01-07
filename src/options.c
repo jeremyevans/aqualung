@@ -538,10 +538,8 @@ options_window_accept(void) {
 #ifdef HAVE_LUA
 	char * ext_title;
 	ext_title = (char *)gtk_entry_get_text(GTK_ENTRY(entry_ext_title_format_file));
-	if (strcmp(options.ext_title_format_file, ext_title) != 0) {
-		restart_active(NULL, "Programmable title format file:\n  Need to reread file metadata\n  for all files after restarting.");
-	}
 	strncpy(options.ext_title_format_file, ext_title, MAXLEN-1);
+	setup_extended_title_formatting();
 #endif /* HAVE_LUA */
 
 
@@ -4261,7 +4259,6 @@ load_config(void) {
 	options.export_excl_pattern[0] = '\0';
 
 	options.ext_title_format_file[0] = '\0';
-	options.use_ext_title_format = 1;
 
 	options.batch_tag_flags = BATCH_TAG_TITLE | BATCH_TAG_ARTIST | BATCH_TAG_ALBUM |
 		BATCH_TAG_YEAR | BATCH_TAG_COMMENT | BATCH_TAG_TRACKNO;

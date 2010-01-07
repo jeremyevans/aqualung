@@ -19,7 +19,7 @@ done
 
 echo
 
-for tool in aclocal autoheader autoconf automake
+for tool in aclocal autoheader autoconf "automake --add-missing"
 do
     echo -n "running $tool ... "
     if $tool; then

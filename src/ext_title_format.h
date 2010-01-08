@@ -23,7 +23,10 @@
 #include "decoder/file_decoder.h"
 
 void setup_extended_title_formatting(void);
+
+/* Caller responsible for freeing returned pointer for these methods: */
 char * extended_title_format(file_decoder_t * fdec);
+char * application_title_format(file_decoder_t * fdec);
 
 #endif /* _EXT_TITLE_FORMAT_H */
 

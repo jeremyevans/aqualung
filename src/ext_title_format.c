@@ -38,6 +38,7 @@
 #include "decoder/file_decoder.h"
 #include "options.h"
 
+#define AQUALUNG_LUA_APPLICATION_TITLE_FUNCTION "application_title"
 #define AQUALUNG_LUA_TITLE_FORMAT_FUNCTION "playlist_title"
 #define AQUALUNG_LUA_METADATA_FUNCTION "m"
 #define AQUALUNG_LUA_FILEINFO_FUNCTION "i"
@@ -334,7 +335,7 @@ void setup_extended_title_formatting(void) {
 	g_mutex_unlock(l_mutex);
 }
 
-char * extended_title_format(file_decoder_t * fdec) {
+char * l_title_format(const char * function_name, file_decoder_t * fdec) {
 	int error;
 	char * s = NULL; 
 	if (options.use_ext_title_format) {
@@ -342,15 +343,27 @@ char * extended_title_format(file_decoder_t * fdec) {
 		lua_pushlightuserdata(L, (void *)&l_cur_fdec);
 		lua_pushlightuserdata(L, (void *)fdec);
 		lua_settable(L, LUA_REGISTRYINDEX);
-		lua_getglobal(L, AQUALUNG_LUA_TITLE_FORMAT_FUNCTION);
+		lua_getglobal(L, function_name);
 		error = lua_pcall(L, 0, 1, 0);
 		if (error) {
-			fprintf(stderr, "Error in extended_title_format: %s", lua_tostring(L, -1));
+			fprintf(stderr, "Error in l_title_format (%s): %s\n", function_name, lua_tostring(L, -1));
 		} else {
 			s = strdup(lua_tostring(L, -1));
 		}
 		lua_pop(L, 1);
 		g_mutex_unlock(l_mutex);
+	}
+	return s;
+}
+
+char * extended_title_format(file_decoder_t * fdec) {
+	return l_title_format(AQUALUNG_LUA_TITLE_FORMAT_FUNCTION, fdec);
+}
+
+char * application_title_format(file_decoder_t * fdec) {
+	char * s = NULL;
+	if ((s = l_title_format(AQUALUNG_LUA_APPLICATION_TITLE_FUNCTION, fdec)) == NULL) {
+		s = l_title_format(AQUALUNG_LUA_TITLE_FORMAT_FUNCTION, fdec);
 	}
 	return s;
 }

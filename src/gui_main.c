@@ -47,6 +47,10 @@
 #include <samplerate.h>
 #endif /* HAVE_SRC */
 
+#ifdef HAVE_LUA
+#include "ext_title_format.h"
+#endif /* HAVE_LUA */
+
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"
@@ -627,7 +631,7 @@ refresh_displays(void) {
 		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &pldata, -1);
 		gtk_tree_path_free(p);
 
-		if (!httpc_is_url(pldata->file)) {
+		if (!httpc_is_url(pldata->file) && !options.use_ext_title_format) {
 			char list_str[MAXLEN];
 			playlist_data_get_display_name(list_str, pldata);
 			set_title_label(list_str);
@@ -3807,27 +3811,38 @@ process_metablock(metadata_t * meta) {
 		embedded_picture_size = 0;
 	}
 
-	if (!httpc_is_url(fdec->filename)) {
+	if ((!httpc_is_url(fdec->filename)) && !options.use_ext_title_format) {
 		return;
 	}
 
 	buf[0] = '\0';
 	tmp[0] = '\0';
 
-	metadata_get_artist(meta, &artist);
-	metadata_get_album(meta, &album);
-	metadata_get_title(meta, &title);
-	metadata_get_icy_name(meta, &icy_name);
+#ifdef HAVE_LUA
+	// Abuse artist variable
+	if (options.use_ext_title_format && ((artist = application_title_format(fdec)) != NULL)) {
+		strncpy(buf, artist, MAXLEN-1);
+		free(artist);
+		artist = NULL;
+	}
+#endif /* HAVE_LUA */
 
-	if ((artist && !is_all_wspace(artist)) ||
-	    (album && !is_all_wspace(album)) ||
-	    (title && !is_all_wspace(title))) {
-		make_title_string(tmp, options.title_format, artist, album, title);
-		if (icy_name != NULL) {
-			snprintf(buf, MAXLEN-1, "%s (%s)", tmp, icy_name);
+	if (buf[0] == '\0') {
+		metadata_get_artist(meta, &artist);
+		metadata_get_album(meta, &album);
+		metadata_get_title(meta, &title);
+		metadata_get_icy_name(meta, &icy_name);
+
+		if ((artist && !is_all_wspace(artist)) ||
+		    (album && !is_all_wspace(album)) ||
+		    (title && !is_all_wspace(title))) {
+			make_title_string(tmp, options.title_format, artist, album, title);
+			if (icy_name != NULL) {
+				snprintf(buf, MAXLEN-1, "%s (%s)", tmp, icy_name);
+			}
+		} else if (icy_name != NULL) {
+			strncpy(buf, icy_name, MAXLEN-1);
 		}
-	} else if (icy_name != NULL) {
-		strncpy(buf, icy_name, MAXLEN-1);
 	}
 
 	if (buf[0] != '\0') {

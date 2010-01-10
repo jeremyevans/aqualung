@@ -2445,17 +2445,19 @@
           precedence over the above <gui>Title format</gui> setting.</p>
 
           <p>You can type in the path to the file or click
-          <gui>Browse</gui> to get a file chooser. The <q>.lua</q> file
-          should be a valid Lua source code file, containing a function
-          named <q><cmd>playlist_title</cmd></q>, which should accept no
-          arguments and should return a string, which Aqualung will call
-          to get the string to use as the entry in the playlist. The
-          .lua file should also include an application_title function with
-          the same API, which will be used instead of the playlist_title
-          function for programmatically setting the window title. If you
-          would like the application title and playlist title to be
-          the same, you can have your application_title function just
-          call playlist_title.</p>
+          <gui>Browse</gui> to get a file chooser. The <q>.lua</q>
+          file should be a valid Lua source code file, containing a
+          function named <q><cmd>playlist_title</cmd></q>, which
+          should accept no arguments and should return a string, which
+          Aqualung will call to get the string to use as the entry in
+          the playlist. The <q><cmd>.lua</cmd></q> file should also
+          include an <q><cmd>application_title</cmd></q> function with
+          the same API, which will be used instead of the
+          <q><cmd>playlist_title</cmd></q> function for
+          programmatically setting the window title. If you would like
+          the application title and playlist title to be the same, you
+          can have your <q><cmd>application_title</cmd></q> function
+          just call <q><cmd>playlist_title</cmd></q>.</p>
 
           <p>Aqualung defines two functions for you to use to get data
           to use in the title format, <q><cmd>m</cmd></q> and

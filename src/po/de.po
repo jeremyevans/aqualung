@@ -3,14 +3,14 @@
 # Copyright (C) 2004 Tom Szilagyi
 # This file is distributed under the same license as the aqualung package.
 # Philipp Überbacher <hollunder@gmx.at>, 2007, 2008.
-# Wolfgang Stöggl <c72578@yahoo.de>, 2007, 2008, 2009.
+# Wolfgang Stöggl <c72578@yahoo.de>, 2007-2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-31 15:49+0100\n"
-"PO-Revision-Date: 2009-01-31 16:55+0100\n"
+"POT-Creation-Date: 2010-01-09 11:15+0100\n"
+"PO-Revision-Date: 2010-01-09 12:36+0100\n"
 "Last-Translator: Wolfgang Stoeggl <c72578@yahoo.de>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -54,6 +54,9 @@ msgstr "Ungarisch:\n"
 
 msgid "Italian:\n"
 msgstr "Italienisch:\n"
+
+msgid "Japanese:\n"
+msgstr "Japanisch:\n"
 
 msgid "Russian:\n"
 msgstr "Russisch:\n"
@@ -160,19 +163,22 @@ msgstr "ALSA Audio\n"
 msgid "JACK Audio Server\n"
 msgstr "JACK Audio Server\n"
 
+msgid "PulseAudio\n"
+msgstr "PulseAudio\n"
+
 msgid "Win32 Sound API\n"
 msgstr "Win32 Sound API\n"
 
 msgid ""
-"This program is free software; you can redistribute it and/or modify it under "
-"the terms of the GNU General Public License as published by the Free Software "
-"Foundation; either version 2 of the License, or (at your option) any later "
-"version.\n"
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-"FOR A PARTICULAR PURPOSE. See the GNU General Public License for more "
-"details.\n"
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
+"more details.\n"
 "\n"
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 675 Mass "
@@ -184,9 +190,9 @@ msgstr ""
 "der Lizenz oder (nach Ihrer Wahl) jeder späteren Version.\n"
 "\n"
 "Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, dass es Ihnen "
-"von Nutzen sein wird, aber OHNE JEDE GEWÄHRLEISTUNG, sogar ohne die implizite "
-"Gewährleistung der MARKTREIFE oder der EIGNUNG FÜR EINEN BESTIMMTEN ZWECK. "
-"Details finden Sie in der GNU General Public License.\n"
+"von Nutzen sein wird, aber OHNE JEDE GEWÄHRLEISTUNG, sogar ohne die "
+"implizite Gewährleistung der MARKTREIFE oder der EIGNUNG FÜR EINEN "
+"BESTIMMTEN ZWECK. Details finden Sie in der GNU General Public License.\n"
 "\n"
 "Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem "
 "Programm erhalten haben. Falls nicht, schreiben Sie an die Free Software "
@@ -493,7 +499,8 @@ msgid "The email address provided for submission is invalid."
 msgstr "Die für die Übertragung eingegebene E-Mail-Adresse ist ungültig."
 
 msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "Während der Übertragung des Albums zum CDDB-Server trat ein Fehler auf."
+msgstr ""
+"Während der Übertragung des Albums zum CDDB-Server trat ein Fehler auf."
 
 msgid "Correct existing record"
 msgstr "Bestehenden Eintrag korrigieren"
@@ -690,17 +697,17 @@ msgstr "Hilfe"
 msgid ""
 "\n"
 "The template string you enter here will be used to construct the filename of "
-"the exported files. The Artist, Record and Track names are denoted by %%%%a, %"
-"%%%r and %%%%t. The track number and format-dependent file extension are "
+"the exported files. The Artist, Record and Track names are denoted by %%%%a, "
+"%%%%r and %%%%t. The track number and format-dependent file extension are "
 "denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives an identifier "
 "which is unique within an export session."
 msgstr ""
 "\n"
 "Diese Vorlage-Zeichenkette wird für die Konstruktion eines Dateinamens für "
-"die zu exportierenden Dateien benutzt. Interpret, Album und Titelnamen werden "
-"mit %%%%a, %%%%r und %%%%t bezeichnet. Die Titelnummer und formatabhängige "
-"Dateiendung werden mit %%%%n und %%%%x bezeichnet. Das Flag %%%%i ist eine "
-"Bezeichnung, die innerhalb einer Exportsitzung einmalig ist."
+"die zu exportierenden Dateien benutzt. Interpret, Album und Titelnamen "
+"werden mit %%%%a, %%%%r und %%%%t bezeichnet. Die Titelnummer und "
+"formatabhängige Dateiendung werden mit %%%%n und %%%%x bezeichnet. Das Flag %"
+"%%%i ist eine Bezeichnung, die innerhalb einer Exportsitzung einmalig ist."
 
 msgid "Export files"
 msgstr "Dateien exportieren"
@@ -928,11 +935,14 @@ msgstr "Instrumente"
 msgid "Name"
 msgstr "Name"
 
+msgid "STOPPING"
+msgstr "Wird GESTOPPT"
+
 msgid "Output:"
 msgstr "Ausgabe:"
 
 msgid "No output"
-msgstr "Keine Ausgabe:"
+msgstr "Keine Ausgabe"
 
 msgid "SRC Type: "
 msgstr "SRC-Typ: "
@@ -1001,12 +1011,12 @@ msgstr ""
 "nicht schnell genug war. JACK und Aqualung sollten neu gestartet werden."
 
 msgid "Warn me if the Window Manager does not support system tray"
-msgstr "Warnen, falls der Window-Manager keine Kontrollleiste unterstützt"
+msgstr "Warnen, falls der Fenstermanager keine Kontrollleiste unterstützt"
 
 msgid ""
 "Aqualung is compiled with system tray support, but the status icon could not "
-"be embedded in the notification area. Your desktop may not have support for a "
-"system tray, or it has not been configured correctly."
+"be embedded in the notification area. Your desktop may not have support for "
+"a system tray, or it has not been configured correctly."
 msgstr ""
 "Aqualung wurde mit Kontrollleisten-Unterstützung kompiliert, aber das "
 "Statussymbol konnte nicht in die Kontrollleiste eingebettet werden. Ihre "
@@ -1017,7 +1027,7 @@ msgid "Settings"
 msgstr "Einstellungen"
 
 msgid "Skin chooser"
-msgstr "Skin-Auswahl"
+msgstr "Oberflächenauswahl"
 
 msgid "JACK port setup"
 msgstr "JACK-Verbindung einrichten"
@@ -1047,7 +1057,7 @@ msgid "Repeat all songs"
 msgstr "Alle Titel wiederholen"
 
 msgid "Shuffle songs"
-msgstr "Shuffle-Wiedergabe"
+msgstr "Zufällige Wiedergabe"
 
 msgid "Toggle playlist"
 msgstr "Playliste ein-/ausblenden"
@@ -1528,7 +1538,7 @@ msgid "Publisher's Official Website"
 msgstr "Offizielle Herausgeber-Webseite"
 
 msgid "User Defined URL"
-msgstr "Benutzerdefinierte URL"
+msgstr "Benutzerdefinierte Adresse"
 
 msgid "Vendor"
 msgstr "Anbieter"
@@ -1692,14 +1702,14 @@ msgstr ""
 msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
 msgstr ""
-"Aqualung muss neu gestartet werden, damit die folgenden Veränderungen wirksam "
-"werden:"
+"Aqualung muss neu gestartet werden, damit die folgenden Veränderungen "
+"wirksam werden:"
 
 msgid "Select a font..."
 msgstr "Schriftart wählen …"
 
 msgid "Disable skin support"
-msgstr "Skin-Unterstützung deaktivieren"
+msgstr "Oberflächen-Unterstützung deaktivieren"
 
 msgid "rw"
 msgstr "rw"
@@ -1726,8 +1736,8 @@ msgstr "Die angegebene Sammlung wurde bereits zur Liste hinzugefügt."
 msgid ""
 "\n"
 "The template string you enter here will be used to construct a single title "
-"line from an Artist, a Record and a Track name. These are denoted by %%%%a, %%"
-"%%r and %%%%t, respectively.\n"
+"line from an Artist, a Record and a Track name. These are denoted by %%%%a, %"
+"%%%r and %%%%t, respectively.\n"
 msgstr ""
 "\n"
 "Diese Zeichenketten-Maske wird für die Konstruktion einer Titelzeile aus "
@@ -1757,18 +1767,19 @@ msgstr ""
 
 msgid ""
 "\n"
-"The string you enter here will be parsed as a command line before parsing the "
-"actual command line parameters. What you enter here will act as a default "
-"setting and may or may not be overridden from the 'real' command line.\n"
+"The string you enter here will be parsed as a command line before parsing "
+"the actual command line parameters. What you enter here will act as a "
+"default setting and may or may not be overridden from the 'real' command "
+"line.\n"
 "\n"
 "Example: enter '-o alsa -R' below to use ALSA output running realtime as a "
 "default.\n"
 msgstr ""
 "\n"
-"Diese Zeichenkette wird als eine Befehlszeile geparst, bevor die eigentlichen "
-"Befehlszeilen-Parameter geparst werden. Was Sie hier schreiben wird als "
-"Voreinstellung fungieren und kann durch die »echte« Befehlszeile überschrieben "
-"werden.\n"
+"Diese Zeichenkette wird als eine Befehlszeile geparst, bevor die "
+"eigentlichen Befehlszeilen-Parameter geparst werden. Was Sie hier schreiben "
+"wird als Voreinstellung fungieren und kann durch die »echte« Befehlszeile "
+"überschrieben werden.\n"
 "\n"
 "Beispiel: Eingabe von '-o alsa -R' um die ALSA-Ausgabe in Echtzeit als eine "
 "Voreinstellung zu benutzen.\n"
@@ -1788,16 +1799,16 @@ msgstr ""
 msgid ""
 "\n"
 "Set the drive speed for CD playing in CD-ROM speed units. One speed unit "
-"equals to 176 kBps raw data reading speed. Warning: not all drives honor this "
-"setting.\n"
+"equals to 176 kBps raw data reading speed. Warning: not all drives honor "
+"this setting.\n"
 "\n"
 "Lower speed usually means less drive noise. However, when using Paranoia "
 "error correction modes for increased accuracy, generally much larger speeds "
 "are required to prevent buffer underruns (and thus audible drop-outs).\n"
 "\n"
 "Please note that these settings do not apply to CD Ripping, which always "
-"happens with maximum available speed and with error correction modes manually "
-"set before every run."
+"happens with maximum available speed and with error correction modes "
+"manually set before every run."
 msgstr ""
 "\n"
 "Einstellung der Laufwerksgeschwindigkeit für das Abspielen von CDs in CD-ROM "
@@ -1824,8 +1835,9 @@ msgstr ""
 "\n"
 "Die meisten Laufwerke benachrichtigen Aqualung, wenn eine CD eingelegt oder "
 "ausgeworfen worden ist. Jedoch trifft das nicht auf alle Laufwerke zu, "
-"weshalb eine neu eingelegte CD möglicherweise nicht von Aqualung wahrgenommen "
-"wird. In solchen Fällen sollte das Aktivieren dieser Option Abhilfe schaffen."
+"weshalb eine neu eingelegte CD möglicherweise nicht von Aqualung "
+"wahrgenommen wird. In solchen Fällen sollte das Aktivieren dieser Option "
+"Abhilfe schaffen."
 
 msgid ""
 "\n"
@@ -1839,26 +1851,59 @@ msgstr ""
 "Proxy-Servers angesprochen werden sollen.\n"
 "Beispiele: localhost, .localdomain, .my.domain.com"
 
-msgid "Title Format"
-msgstr "Titelformat"
-
-msgid "Programmable title format file"
-msgstr "Programmierbare Titelformatdatei"
-
-msgid "Implicit command line"
-msgstr "Implizite Befehlszeile"
-
-msgid "Miscellaneous"
-msgstr "Sonstiges"
-
-msgid "Enable tooltips"
-msgstr "Tooltips einschalten"
+msgid "Embed playlist into main window"
+msgstr "Playliste ins Hauptfenster einbetten"
 
 msgid "Enable systray"
 msgstr "Kontrollleistensymbol aktivieren"
 
-msgid "Put control buttons at the bottom of playlist"
-msgstr "Kontrollknöpfe unten an der Playliste platzieren"
+msgid "Do nothing"
+msgstr "Nichts unternehmen"
+
+msgid "Change volume"
+msgstr "Lautstärke regeln"
+
+msgid "Change balance"
+msgstr "Balance einstellen"
+
+msgid "Change song position"
+msgstr "Position im Titel ändern"
+
+msgid "Change current song"
+msgstr "Derzeitigen Titel ändern"
+
+msgid "Left button"
+msgstr "Linke Taste"
+
+msgid "Middle button"
+msgstr "Mittlere Taste"
+
+msgid "Right button"
+msgstr "Rechte Taste"
+
+msgid "Button"
+msgstr "Taste"
+
+msgid "Left and right mouse buttons are reserved."
+msgstr "Linke und rechte Maustaste sind reserviert."
+
+msgid "This button is already assigned."
+msgstr "Diese Taste ist bereits belegt."
+
+msgid "Add mouse button command"
+msgstr "Befehl zum Hinzufügen von Maustasten"
+
+msgid "Mouse button"
+msgstr "Maustaste"
+
+msgid "Click here to set mouse button"
+msgstr "Klicken Sie hier, um die Maustasten festzulegen"
+
+msgid "Command"
+msgstr "Befehl"
+
+msgid "Main window"
+msgstr "Hauptfenster"
 
 msgid "Disable control buttons relief"
 msgstr "Relief bei Kontrollknöpfen deaktivieren"
@@ -1869,20 +1914,44 @@ msgstr "Wiedergabe- und Pausenknopf vereinigen"
 msgid "Keep main window always on top"
 msgstr "Hauptfenster immer im Vordergrund behalten"
 
-msgid "Simple view in LADSPA patch builder"
-msgstr "Einfache Ansicht beim LADSPA-Schaltkasten"
-
-msgid "United windows minimization"
-msgstr "Fenster gemeinsam minimieren"
-
 msgid "Show song name in the main window's title"
 msgstr "Titelnamen im Titel des Hauptfensters zeigen"
 
-msgid "Show hidden files and directories in file choosers"
-msgstr "Versteckte Dateien und Ordner in der Dateiauswahl anzeigen"
+msgid "Title Format"
+msgstr "Titelformat"
 
-msgid "Show tags tab first in the file info dialog"
-msgstr "Tag-Reiter als ersten im Dateiinformationsdialog anzeigen"
+msgid "Programmable title format file"
+msgstr "Programmierbare Titelformatdatei"
+
+msgid "Systray"
+msgstr "Kontrollleiste"
+
+msgid "Start minimized"
+msgstr "Minimiert starten"
+
+msgid "Play/Stop song"
+msgstr "Titel wiedergeben/stoppen"
+
+msgid "Play/Pause song"
+msgstr "Titel wiedergeben/pausieren"
+
+msgid "Mouse wheel"
+msgstr "Mausrad"
+
+msgid "Vertical mouse wheel:"
+msgstr "Vertikales Mausrad:"
+
+msgid "Horizontal mouse wheel:"
+msgstr "Horizontales Mausrad:"
+
+msgid "Mouse buttons"
+msgstr "Maustasten"
+
+msgid "Miscellaneous"
+msgstr "Sonstiges"
+
+msgid "Implicit command line"
+msgstr "Implizite Befehlszeile"
 
 msgid "Cover art"
 msgstr "Covers"
@@ -1914,11 +1983,26 @@ msgstr "Miniatur-Coverbild nur für Titel aus der Musiksammlung zeigen"
 msgid "Don't show cover thumbnail in the main window"
 msgstr "Miniatur-Coverbild nicht im Hauptfenster anzeigen"
 
+msgid "Enable tooltips"
+msgstr "Minihilfen einschalten"
+
+msgid "Simple view in LADSPA patch builder"
+msgstr "Einfache Ansicht beim LADSPA-Schaltkasten"
+
+msgid "United windows minimization"
+msgstr "Fenster gemeinsam minimieren"
+
+msgid "Show hidden files and directories in file choosers"
+msgstr "Versteckte Dateien und Ordner in der Dateiauswahl anzeigen"
+
+msgid "Show tags tab first in the file info dialog"
+msgstr "Tag-Reiter als ersten im Dateiinformationsdialog anzeigen"
+
 msgid "Playlist"
 msgstr "Playliste"
 
-msgid "Embed playlist into main window"
-msgstr "Playliste ins Hauptfenster einbetten"
+msgid "Put control buttons at the bottom of playlist"
+msgstr "Kontrollknöpfe unten an der Playliste platzieren"
 
 msgid "Save and restore the playlist on exit/startup"
 msgstr "Playliste beim Beenden/Starten speichern und laden"
@@ -1937,7 +2021,7 @@ msgstr "Schließknopf im Reiter anzeigen"
 
 msgid "When shuffling, records added in Album mode are played in order"
 msgstr ""
-"Alben, die im Album-Modus hinzugefügt wurden, bei Shuffle-Betrieb geordnet "
+"Alben, die im Album-Modus hinzugefügt wurden, im Zufallsmodus geordnet "
 "wiedergeben"
 
 msgid "Enable statusbar"
@@ -1957,6 +2041,9 @@ msgstr "Titellängen anzeigen"
 
 msgid "Show active track name in bold"
 msgstr "Namen des aktiven Titels fett anzeigen"
+
+msgid "Automatically roll to active track"
+msgstr "Automatisch zum aktiven Titel rollen"
 
 msgid "Enable rules hint"
 msgstr "Regelhinweise anzeigen"
@@ -2132,12 +2219,13 @@ msgstr ""
 
 msgid "Batch update & encode (mass tagger, CD ripper, file export)"
 msgstr ""
-"Stapelweise aktualisieren und kodieren (masstagger, CDripper, Dateiexport)"
+"Stapelweise aktualisieren und kodieren (Mass-Tagger, CD-Ausleser, "
+"Dateiexport)"
 
 msgid "Tags to add when creating or updating MPEG audio files:"
 msgstr ""
-"Tags, die beim Erstellen oder Aktualisieren von MPEG-Audiodateien hinzugefügt "
-"werden sollen:"
+"Tags, die beim Erstellen oder Aktualisieren von MPEG-Audiodateien "
+"hinzugefügt werden sollen:"
 
 msgid ""
 "Note: pre-existing tags will be updated even though they\n"
@@ -2183,10 +2271,10 @@ msgid "Protocol for querying (direct connection only):"
 msgstr "Protokoll für die Abfrage (nur bei direkter Verbindung):"
 
 msgid "CDDBP (port 888)"
-msgstr "CDDBP (port 888)"
+msgstr "CDDBP (Port 888)"
 
 msgid "HTTP (port 80)"
-msgstr "HTTP (port 80)"
+msgstr "HTTP (Port 80)"
 
 msgid "Internet"
 msgstr "Internet"
@@ -2201,7 +2289,7 @@ msgid "Proxy settings"
 msgstr "Proxy-Einstellungen"
 
 msgid "Proxy host:"
-msgstr "Proxy-Host:"
+msgstr "Proxy-Rechner:"
 
 msgid "Port:"
 msgstr "Port:"
@@ -2219,7 +2307,7 @@ msgid "Appearance"
 msgstr "Aussehen"
 
 msgid "Override skin settings"
-msgstr "Skin-Einstellungen überschreiben"
+msgstr "Oberflächen-Einstellungen überschreiben"
 
 msgid "Fonts"
 msgstr "Schriftarten"
@@ -2271,10 +2359,10 @@ msgid "Select directory"
 msgstr "Ordner wählen"
 
 msgid "Add URL"
-msgstr "URL hinzufügen"
+msgstr "Adresse hinzufügen"
 
 msgid "URL:"
-msgstr "URL:"
+msgstr "Adresse:"
 
 msgid "Please specify the file to save the playlist to."
 msgstr ""
@@ -2528,7 +2616,7 @@ msgid "Search the Playlist"
 msgstr "Playliste durchsuchen"
 
 msgid "Available skins"
-msgstr "Verfügbare Skins"
+msgstr "Verfügbare Oberflächen"
 
 msgid "Drive info"
 msgstr "Laufwerks-Info"
@@ -2821,6 +2909,14 @@ msgstr "Interpret"
 msgid "artists"
 msgstr "Interpreten"
 
+#, c-format
+msgid ""
+"File \"%s\" does not exist or your write permission has been withdrawn. "
+"Check if the partition containing the store file has been unmounted."
+msgstr ""
+"Datei »%s« nicht vorhanden oder Sie haben keine Schreibberechtigung. Prüfen "
+"Sie, ob die Partition mit der Musiksammlungsdatei ausgehängt worden ist."
+
 msgid "Build / Update store from filesystem..."
 msgstr "Erstellen / Aktualisieren der Sammlung vom Dateisystem …"
 
@@ -2921,7 +3017,7 @@ msgid "Edit feed settings"
 msgstr "Feed-Einstellungen bearbeiten"
 
 msgid "Podcast URL:"
-msgstr "Podcast-URL:"
+msgstr "Podcast-Adresse:"
 
 msgid "Download directory:"
 msgstr "Ordner zum Herunterladen:"

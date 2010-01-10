@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-10 18:39+0100\n"
-"PO-Revision-Date: 2009-11-10 18:46+0100\n"
+"POT-Creation-Date: 2010-01-10 11:45+0100\n"
+"PO-Revision-Date: 2010-01-10 11:57+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1831,29 +1831,59 @@ msgstr ""
 "eléréséhez ne használja a fent beállított proxyt.\n"
 "Példa: localhost, .localdomain, .my.domain.com"
 
+msgid "Embed playlist into main window"
+msgstr "A Lejátszólista beágyazása a főablakba"
+
 msgid "Enable systray"
 msgstr "Rendszertálca engedélyezése"
 
-msgid "Title Format"
-msgstr "Címformátum"
+msgid "Do nothing"
+msgstr "Ne csináljon semmit"
 
-msgid "Programmable title format file"
-msgstr "Címformátum-leíró fájl"
+msgid "Change volume"
+msgstr "Hangerő változtatása"
 
-msgid "Implicit command line"
-msgstr "Implicit parancssor"
+msgid "Change balance"
+msgstr "Balansz változtatása"
 
-msgid "Miscellaneous"
-msgstr "Egyéb"
+msgid "Change song position"
+msgstr "Számon belül pozíció változtatás"
 
-msgid "Enable tooltips"
-msgstr "Buboréksúgók engedélyezése"
+msgid "Change current song"
+msgstr "Aktuális szám léptetése"
 
-msgid "Start minimized"
-msgstr "Indítás minimalizálva"
+msgid "Left button"
+msgstr "Bal gomb"
 
-msgid "Put control buttons at the bottom of playlist"
-msgstr "Vezérlőgombok elhelyezése a Lejátszólista alján"
+msgid "Middle button"
+msgstr "Középső gomb"
+
+msgid "Right button"
+msgstr "Jobb gomb"
+
+msgid "Button"
+msgstr "Gomb"
+
+msgid "Left and right mouse buttons are reserved."
+msgstr "A bal és jobb gombok funkciója nem változtatható."
+
+msgid "This button is already assigned."
+msgstr "Ez a gomb már be van állítva."
+
+msgid "Add mouse button command"
+msgstr "Egérgomb funckió hozzáadása"
+
+msgid "Mouse button"
+msgstr "Egérgomb"
+
+msgid "Click here to set mouse button"
+msgstr "Kattints ide az egérgomb beállításához"
+
+msgid "Command"
+msgstr "Parancs"
+
+msgid "Main window"
+msgstr "Főablak"
 
 msgid "Disable control buttons relief"
 msgstr "Vezérlőgombok kiemelkedésének tiltása"
@@ -1864,20 +1894,44 @@ msgstr "Lejátszás és szünet gombok egyesítése"
 msgid "Keep main window always on top"
 msgstr "A főablak legyen mindig felül"
 
-msgid "Simple view in LADSPA patch builder"
-msgstr "Egyszerű nézet a LADSPA effekt szerkesztőben"
-
-msgid "United windows minimization"
-msgstr "Ablakok együttes minimalizálása"
-
 msgid "Show song name in the main window's title"
 msgstr "Szám címének megjelenítése a főablak címsorában"
 
-msgid "Show hidden files and directories in file choosers"
-msgstr "Rejtett fájlok és könyvtárak mutatása tallózáskor"
+msgid "Title Format"
+msgstr "Címformátum"
 
-msgid "Show tags tab first in the file info dialog"
-msgstr "Először a tagek látszódjanak a fájl infó ablakban"
+msgid "Programmable title format file"
+msgstr "Címformátum-leíró fájl"
+
+msgid "Systray"
+msgstr "Rendszertálca"
+
+msgid "Start minimized"
+msgstr "Indítás minimalizálva"
+
+msgid "Play/Stop song"
+msgstr "Lejátszás indítása/megállítás"
+
+msgid "Play/Pause song"
+msgstr "Lejátszás indítása/szünet"
+
+msgid "Mouse wheel"
+msgstr "Egér görgő"
+
+msgid "Vertical mouse wheel:"
+msgstr "Függőleges egér görgő"
+
+msgid "Horizontal mouse wheel:"
+msgstr "Vízszintes egér görgő"
+
+msgid "Mouse buttons"
+msgstr "Egérgombok"
+
+msgid "Miscellaneous"
+msgstr "Egyéb"
+
+msgid "Implicit command line"
+msgstr "Implicit parancssor"
 
 msgid "Cover art"
 msgstr "Lemezborító"
@@ -1909,11 +1963,26 @@ msgstr "Borító mutatása csak a Zenetárból hozzáadott számok esetén"
 msgid "Don't show cover thumbnail in the main window"
 msgstr "Ne jelenjen meg a borító képe a főablakban"
 
+msgid "Enable tooltips"
+msgstr "Buboréksúgók engedélyezése"
+
+msgid "Simple view in LADSPA patch builder"
+msgstr "Egyszerű nézet a LADSPA effekt szerkesztőben"
+
+msgid "United windows minimization"
+msgstr "Ablakok együttes minimalizálása"
+
+msgid "Show hidden files and directories in file choosers"
+msgstr "Rejtett fájlok és könyvtárak mutatása tallózáskor"
+
+msgid "Show tags tab first in the file info dialog"
+msgstr "Először a tagek látszódjanak a fájl infó ablakban"
+
 msgid "Playlist"
 msgstr "Lejátszólista"
 
-msgid "Embed playlist into main window"
-msgstr "A Lejátszólista beágyazása a főablakba"
+msgid "Put control buttons at the bottom of playlist"
+msgstr "Vezérlőgombok elhelyezése a Lejátszólista alján"
 
 msgid "Save and restore the playlist on exit/startup"
 msgstr "Lejátszólista mentése és visszatöltése kilépéskor/indításkor"
@@ -2812,6 +2881,12 @@ msgstr "előadó"
 
 msgid "artists"
 msgstr "előadó"
+
+#, c-format
+msgid ""
+"File \"%s\" does not exist or your write permission has been withdrawn. "
+"Check if the partition containing the store file has been unmounted."
+msgstr "A megadott fájl \"%s\" nem létezik, vagy visszavonták róla az írási jogot. Lehetséges, hogy a fájlt tartalmazó partíciót lecsatolták."
 
 msgid "Build / Update store from filesystem..."
 msgstr "Tároló felépítése / aktualizálása fájlrendszerről..."

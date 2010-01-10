@@ -336,15 +336,17 @@ set_title_label(char * str) {
 	gchar default_title[MAXLEN];
         char tmp[MAXLEN];
 
+	tmp[0] = '\0';
+
 	if (is_file_loaded) {
 		gtk_label_set_text(GTK_LABEL(label_title), str);
 		if (options.show_sn_title) {
-			strncpy(tmp, str, MAXLEN-1);
 			if (stop_after_current_song) {
-				strncat(tmp, " [", MAXLEN-1);
+				strncat(tmp, "[", MAXLEN-1);
 				strncat(tmp, _("STOPPING"), MAXLEN-1);
-				strncat(tmp, "]", MAXLEN-1);
+				strncat(tmp, "] ", MAXLEN-1);
 			}
+			strncat(tmp, str, MAXLEN-1);
 			strncat(tmp, " - ", MAXLEN-1);
 			strncat(tmp, win_title, MAXLEN-1);
 			gtk_window_set_title(GTK_WINDOW(main_window), tmp);

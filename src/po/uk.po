@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-03 16:57+0200\n"
-"PO-Revision-Date: 2009-11-03 22:42+0300\n"
+"POT-Creation-Date: 2010-01-12 20:11+0200\n"
+"PO-Revision-Date: 2010-01-12 23:47+0300\n"
 "Last-Translator: Vladimir Smolyar <v_2e@ukr.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -148,9 +148,8 @@ msgstr "LAME (MP3)\n"
 msgid "Output driver support:"
 msgstr "Підтримка драйверів виводу:"
 
-#, fuzzy
 msgid "sndio Audio\n"
-msgstr "OSS Audio\n"
+msgstr "sndio Audio\n"
 
 msgid "OSS Audio\n"
 msgstr "OSS Audio\n"
@@ -174,6 +173,11 @@ msgid ""
 "\n"
 "You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 msgstr ""
+"Ця програма є вільним програмним забезпеченням; ви можете поширювати його та/або змінювати на умовах Універсальної громадської ліцензії GNU у тому вигляді, у якому її було опубліковано Фондом вільного програмного забезпечення; як версії 2, так і (за вашим розсудом) будь-якої більш пізньої версії.\n"
+"\n"
+"Ця програма поширюється у надії, що вона буде корисною, але БЕЗ ЖОДНОЇ ГАРАНТІЇ; навіть без обов'язкової гарантії ТОВАРНОЇ ПРИДАТНОСТІ або ПРИДАТНОСТІ ДО ПЕВНОГО ПРИЗНАЧЕННЯ. Для більш детальної інформації див. Універсальну громадську ліцензію GNU.\n"
+"\n"
+"Ви мали отримати копію Універсальної громадської ліцензії GNU разом з цією програмою; якщо ні, то напишіть у Фонд вільного програмного забезпечення: Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
 
 msgid "Enabled"
 msgstr "Дозволений"
@@ -654,9 +658,8 @@ msgstr "Невідома Доріжка"
 msgid "Please select the directory for exported files."
 msgstr "Будь ласка, оберіть каталог для експортованих файлів."
 
-#, fuzzy
 msgid "Copy"
-msgstr "Авторське право"
+msgstr "Копіювати"
 
 msgid "Help"
 msgstr "Допомога"
@@ -877,19 +880,17 @@ msgstr "Тип: "
 msgid "Channels:"
 msgstr "Канали:"
 
-#, fuzzy
 msgid "Patterns:"
-msgstr "Шаблони:"
+msgstr "Патернів:"
 
-#, fuzzy
 msgid "Samples:"
-msgstr "Вибірок:"
+msgstr "Фрагментів:"
 
 msgid "Instruments:"
 msgstr "Інструменти:"
 
 msgid "Samples"
-msgstr "Вибірки"
+msgstr "Фрагменти"
 
 msgid "Instruments"
 msgstr "Інструменти"
@@ -897,7 +898,6 @@ msgstr "Інструменти"
 msgid "Name"
 msgstr "Ім'я"
 
-#, fuzzy
 msgid "STOPPING"
 msgstr "ЗУПИНКА"
 
@@ -910,11 +910,11 @@ msgstr "Немає виводу"
 msgid "SRC Type: "
 msgstr "Тип SRC: "
 
-#, fuzzy, c-format
+#, c-format
 msgid "Loop range: %d-%d%% [%s - %s]"
 msgstr "Діапазон повтору: %d-%d%% [%s - %s]"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Loop range: %d-%d%%"
 msgstr "Діапазон повтору: %d-%d%%"
 
@@ -955,9 +955,9 @@ msgstr "%d%% П"
 msgid "%d%% L"
 msgstr "%d%% Л"
 
-#, fuzzy, c-format
+#, c-format
 msgid "C"
-msgstr "C"
+msgstr "Ц"
 
 #, c-format
 msgid "Balance: %s"
@@ -1341,25 +1341,22 @@ msgid "Catalog Number"
 msgstr "Номер каталога"
 
 msgid "Label Code"
-msgstr ""
+msgstr "Кол лейбла"
 
 msgid "Record Date"
 msgstr "Дата запису"
 
-#, fuzzy
 msgid "Record Location"
 msgstr "Місце запису"
 
-#, fuzzy
 msgid "Media"
 msgstr "Носій"
 
-#, fuzzy
 msgid "Index"
 msgstr "Зміст"
 
 msgid "Related"
-msgstr ""
+msgstr "Пов'язана інформація"
 
 msgid "Abstract"
 msgstr "Опис"
@@ -1371,7 +1368,7 @@ msgid "Bibliography"
 msgstr "Бібліографія"
 
 msgid "Introplay"
-msgstr ""
+msgstr "Вступ"
 
 msgid "BPM"
 msgstr "BPM"
@@ -1404,10 +1401,10 @@ msgid "Involved People"
 msgstr "Учасники"
 
 msgid "Content Group"
-msgstr ""
+msgstr "Тип вмісту"
 
 msgid "Initial key"
-msgstr ""
+msgstr "Початковй ключ"
 
 msgid "Musician Credits"
 msgstr "Подяки музикантів"
@@ -1485,7 +1482,7 @@ msgid "Official Radio Station Website"
 msgstr "Офіційна веб-сторінка радіостанції"
 
 msgid "Payment"
-msgstr ""
+msgstr "Сплата"
 
 msgid "Publisher's Official Website"
 msgstr "Офіційна веб-сторінка видавця"
@@ -1551,10 +1548,10 @@ msgid "Musepack ReplayGain"
 msgstr "Вирівнювання гучності Musepack"
 
 msgid "Generic StreamMeta"
-msgstr ""
+msgstr "Загалні метадані потоку"
 
 msgid "MPEG StreamMeta"
-msgstr ""
+msgstr "Метадані MPEG-потоку"
 
 msgid "Module info"
 msgstr "Інформація про модуль"
@@ -1756,29 +1753,59 @@ msgstr ""
 "проксі, встановленого вище.\n"
 "Приклад: localhost, .localdomain, .my.domain.com"
 
+msgid "Embed playlist into main window"
+msgstr "Вбудувати список програвання у головне вікно"
+
 msgid "Enable systray"
 msgstr "Увімкнути системний лоток"
 
-msgid "Title Format"
-msgstr "Формат назви"
+msgid "Do nothing"
+msgstr "Нічого не робити"
 
-msgid "Programmable title format file"
-msgstr "Файл програмованого форматування заголовка"
+msgid "Change volume"
+msgstr "Змінити гучність"
 
-msgid "Implicit command line"
-msgstr "Неявний командний рядок"
+msgid "Change balance"
+msgstr "Змінити баланс"
 
-msgid "Miscellaneous"
-msgstr "Різне"
+msgid "Change song position"
+msgstr "Змінити позицію пісні"
 
-msgid "Enable tooltips"
-msgstr "Увімкнути підказки"
+msgid "Change current song"
+msgstr "Змінити поточну пісню"
 
-msgid "Start minimized"
-msgstr "Запускати мінімізованим"
+msgid "Left button"
+msgstr "Ліва клавіша"
 
-msgid "Put control buttons at the bottom of playlist"
-msgstr "Кнопки керування знизу списку програвання"
+msgid "Middle button"
+msgstr "Середня клавіша"
+
+msgid "Right button"
+msgstr "Права клавіша"
+
+msgid "Button"
+msgstr "Клавіша"
+
+msgid "Left and right mouse buttons are reserved."
+msgstr "Ліву та праву клавіші миші зарезервовано."
+
+msgid "This button is already assigned."
+msgstr "Цю клавішу вже призначено."
+
+msgid "Add mouse button command"
+msgstr "Додати команду клавіші миші"
+
+msgid "Mouse button"
+msgstr "Клавіша миші"
+
+msgid "Click here to set mouse button"
+msgstr "Клацніть тут, щоб встановити клавішу миші"
+
+msgid "Command"
+msgstr "Команда"
+
+msgid "Main window"
+msgstr "Головне вікно"
 
 msgid "Disable control buttons relief"
 msgstr "Вимкнути рельєф кнопок керування"
@@ -1789,20 +1816,44 @@ msgstr "Об'єднати кнопки паузи ті відтворення"
 msgid "Keep main window always on top"
 msgstr "Розміщувати головне вікно завжди зверху"
 
-msgid "Simple view in LADSPA patch builder"
-msgstr "Спрощений вигляд будівельника патчів LADSPA"
-
-msgid "United windows minimization"
-msgstr "Об'єднана мінімізація вікон"
-
 msgid "Show song name in the main window's title"
 msgstr "Показувати назву пісні у заголовку головного вікна"
 
-msgid "Show hidden files and directories in file choosers"
-msgstr "Показувати приховані файли та каталоги у діалогах вибору файу"
+msgid "Title Format"
+msgstr "Формат назви"
 
-msgid "Show tags tab first in the file info dialog"
-msgstr "Показувати вкладку тегів першою у вікні інформації про файл"
+msgid "Programmable title format file"
+msgstr "Файл програмованого форматування заголовка"
+
+msgid "Systray"
+msgstr "Системний лоток"
+
+msgid "Start minimized"
+msgstr "Запускати мінімізованим"
+
+msgid "Play/Stop song"
+msgstr "Грати/Зупинити пісню"
+
+msgid "Play/Pause song"
+msgstr "Програвати/Зупинити пісню"
+
+msgid "Mouse wheel"
+msgstr "Колесо миші"
+
+msgid "Vertical mouse wheel:"
+msgstr "Вертикальне колесо миші:"
+
+msgid "Horizontal mouse wheel:"
+msgstr "Горизонтальне колесо миші:"
+
+msgid "Mouse buttons"
+msgstr "Клавіші миші"
+
+msgid "Miscellaneous"
+msgstr "Різне"
+
+msgid "Implicit command line"
+msgstr "Неявний командний рядок"
 
 msgid "Cover art"
 msgstr "Обкладинка"
@@ -1834,11 +1885,26 @@ msgstr "Показувати мініатюру обкладинки тільк�
 msgid "Don't show cover thumbnail in the main window"
 msgstr "Не показувати мініатюру обкладинки у головному вікні"
 
+msgid "Enable tooltips"
+msgstr "Увімкнути підказки"
+
+msgid "Simple view in LADSPA patch builder"
+msgstr "Спрощений вигляд будівельника патчів LADSPA"
+
+msgid "United windows minimization"
+msgstr "Об'єднана мінімізація вікон"
+
+msgid "Show hidden files and directories in file choosers"
+msgstr "Показувати приховані файли та каталоги у діалогах вибору файу"
+
+msgid "Show tags tab first in the file info dialog"
+msgstr "Показувати вкладку тегів першою у вікні інформації про файл"
+
 msgid "Playlist"
 msgstr "Список програвання"
 
-msgid "Embed playlist into main window"
-msgstr "Вбудувати список програвання у головне вікно"
+msgid "Put control buttons at the bottom of playlist"
+msgstr "Кнопки керування знизу списку програвання"
 
 msgid "Save and restore the playlist on exit/startup"
 msgstr "Запис та відновлення списку програвання при виході/запуску"
@@ -1880,7 +1946,7 @@ msgid "Automatically roll to active track"
 msgstr "Автоматично переміщатися до активної доріжки"
 
 msgid "Enable rules hint"
-msgstr ""
+msgstr "Переміжний колір рядків у списку"
 
 msgid "Playlist column order"
 msgstr "Порядок стовпчиків списку пргравання"
@@ -2026,10 +2092,10 @@ msgid "ReplayGain tag to use (with fallback to the other): "
 msgstr "Тег ReplayGain для використання (із відходом на інший):"
 
 msgid "Replaygain_track_gain"
-msgstr ""
+msgstr "Replaygain_track_gain"
 
 msgid "Replaygain_album_gain"
-msgstr ""
+msgstr "Replaygain_track_gain"
 
 msgid "Adding files to Playlist"
 msgstr "Додавання файлів до списку програвання"
@@ -2074,7 +2140,7 @@ msgid "\tMaximum number of retries:"
 msgstr "\tМаксимальна кількість спроб:"
 
 msgid "Force TOC re-read on every drive scan"
-msgstr ""
+msgstr "Примусово перечитувати таблицю файлів при кожному скануванні диску"
 
 msgid "Automatically add CDs to Playlist"
 msgstr "Автоматично додавати CD до списку програвання"
@@ -2128,7 +2194,7 @@ msgid "No proxy for:"
 msgstr "Не використовувати проксі для:"
 
 msgid "Timeout for socket I/O:"
-msgstr ""
+msgstr "Час очікування вводу/виводу сокета:"
 
 msgid "seconds"
 msgstr "секунд"
@@ -2526,12 +2592,11 @@ msgid "C2 Error Correction"
 msgstr "Корекція помилок C2"
 
 msgid "Read Mode 2 Form 1"
-msgstr ""
+msgstr "Читання Mode 2 Form 1"
 
 msgid "Read Mode 2 Form 2"
-msgstr ""
+msgstr "Читання Mode 2 Form 2"
 
-#, fuzzy
 msgid "Read MCN"
 msgstr "Зчитувати MCN"
 
@@ -2563,9 +2628,8 @@ msgid "Write DVD-RAM"
 msgstr "Записати DVD-RAM"
 
 msgid "Mount Rainier"
-msgstr ""
+msgstr "Пакетний запис (Mount Rainier)"
 
-#, fuzzy
 msgid "Burn Proof"
 msgstr "Захист від запису"
 
@@ -2736,6 +2800,10 @@ msgstr "виконавець"
 msgid "artists"
 msgstr "виконавці"
 
+#, c-format
+msgid "File \"%s\" does not exist or your write permission has been withdrawn. Check if the partition containing the store file has been unmounted."
+msgstr "Файл \"%s\" не існує, або вас позбавлено права на його запис. Перевірте, чи не відмонтовано розділ, що містить файл сховища."
+
 msgid "Build / Update store from filesystem..."
 msgstr "Побудувати/Оновити сховище з файлової системи..."
 
@@ -2879,7 +2947,6 @@ msgstr "Видалити стрічку"
 msgid "Really remove '%s' from the Music Store?"
 msgstr "Справді видалити \"%s\" з Музичного Сховища?"
 
-#, fuzzy
 msgid "Reorder feeds"
 msgstr "Перевпорядкувати стрічки"
 
@@ -2956,10 +3023,10 @@ msgstr "Очикувалося '}' після '{', але знайдено кі�
 
 #, c-format
 msgid "Unknown conversion type character found after '%%%%'."
-msgstr ""
+msgstr "Після '%%%%' виявлено символ невідомого типу."
 
 msgid "Unknown conversion type character found after '?'."
-msgstr ""
+msgstr "Після '?' виявлено символ невідомого типу."
 
 msgid "day"
 msgstr "день"

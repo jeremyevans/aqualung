@@ -174,6 +174,8 @@ create_about_window() {
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Translators:"), -1, tag, NULL);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("French:\n"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tJulien Lavergne <gilir@ubuntu.com>\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("German:\n"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\tWolfgang St\303\266ggl <c72578@yahoo.de>\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Hungarian:\n"), -1);
@@ -195,7 +197,7 @@ create_about_window() {
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Graphics:"), -1, tag, NULL);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Logo, icons:\n"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tMaja Kocon <ironya@pinky-bubble.org>\n\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tMaja Kocon <ironya@pinky-babble.org>\n\n\n", -1);
 
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);

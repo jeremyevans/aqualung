@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-03 16:57+0200\n"
-"PO-Revision-Date: 2009-11-03 22:34+0300\n"
+"POT-Creation-Date: 2010-01-12 14:38+0200\n"
+"PO-Revision-Date: 2010-01-12 21:24+0300\n"
 "Last-Translator: Vladimir Smolyar <v_2e@ukr.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -37,7 +37,6 @@ msgstr "Поддержка скинов, внешний вид:\n"
 msgid "Programming, GUI engineering:\n"
 msgstr "Программирование, графический интерфейс:\n"
 
-#, fuzzy
 msgid "OpenBSD compatibility, metadata tweaks:\n"
 msgstr "Совместимость с OpenBSD, трюки с метаданными:\n"
 
@@ -72,7 +71,7 @@ msgid "Logo, icons:\n"
 msgstr "Логотип, иконки:\n"
 
 msgid "This Aqualung binary is compiled with:"
-msgstr "Этот исполнимый файл Aqualung скомпилирован при помощи:"
+msgstr "Этот исполнимый файл Aqualung скомпилирован с:"
 
 msgid "Optional features:"
 msgstr "Дополнительные возможности:"
@@ -149,9 +148,8 @@ msgstr "LAME (MP3)\n"
 msgid "Output driver support:"
 msgstr "Поддержка драйверов вывода:"
 
-#, fuzzy
 msgid "sndio Audio\n"
-msgstr "OSS Audio\n"
+msgstr "sndio Audio\n"
 
 msgid "OSS Audio\n"
 msgstr "OSS Audio\n"
@@ -523,7 +521,6 @@ msgstr "Добавить в комментарии"
 msgid "Tracks"
 msgstr "Треки"
 
-#, fuzzy
 msgid "You have to provide an email address for CDDB submission."
 msgstr "Вы должны указать адрес email для отправки CDDB."
 
@@ -661,9 +658,8 @@ msgstr "Неизвестный трек"
 msgid "Please select the directory for exported files."
 msgstr "Выберите, пожалуйста, каталог для экспортированных файлов."
 
-#, fuzzy
 msgid "Copy"
-msgstr "Авторское право"
+msgstr "Копировать"
 
 msgid "Help"
 msgstr "Помощь"
@@ -884,20 +880,17 @@ msgstr "Тип:"
 msgid "Channels:"
 msgstr "Каналы:"
 
-#, fuzzy
 msgid "Patterns:"
-msgstr "Шаблоны:"
+msgstr "Паттернов:"
 
-#, fuzzy
 msgid "Samples:"
-msgstr "Выборок:"
+msgstr "Фрагментов:"
 
 msgid "Instruments:"
 msgstr "Инструменты:"
 
-#, fuzzy
 msgid "Samples"
-msgstr "Выборки"
+msgstr "Фрагменты"
 
 msgid "Instruments"
 msgstr "Инструменты"
@@ -905,7 +898,6 @@ msgstr "Инструменты"
 msgid "Name"
 msgstr "Имя"
 
-#, fuzzy
 msgid "STOPPING"
 msgstr "ОСТАНОВКА"
 
@@ -918,11 +910,11 @@ msgstr "Нет вывода"
 msgid "SRC Type: "
 msgstr "Тип SRC:"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Loop range: %d-%d%% [%s - %s]"
 msgstr "Диапазон повтора: %d-%d%% [%s - %s]"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Loop range: %d-%d%%"
 msgstr "Диапазон повтора: %d-%d%%"
 
@@ -965,7 +957,7 @@ msgstr "%d%% Л"
 
 #, c-format
 msgid "C"
-msgstr "C"
+msgstr "Ц"
 
 #, c-format
 msgid "Balance: %s"
@@ -1304,7 +1296,6 @@ msgstr "Организация"
 msgid "Location"
 msgstr "Расположение"
 
-#, fuzzy
 msgid "Contact"
 msgstr "Контактная информация"
 
@@ -1347,32 +1338,27 @@ msgstr "EAN/UPC"
 msgid "ISBN"
 msgstr "ISBN"
 
-#, fuzzy
 msgid "Catalog Number"
 msgstr "Номер каталога"
 
 msgid "Label Code"
-msgstr ""
+msgstr "Код лэйбла"
 
 msgid "Record Date"
 msgstr "Дата записи"
 
-#, fuzzy
 msgid "Record Location"
-msgstr "Расположение записи"
+msgstr "Место записи"
 
-#, fuzzy
 msgid "Media"
 msgstr "Носитель"
 
-#, fuzzy
 msgid "Index"
 msgstr "Содержание"
 
 msgid "Related"
-msgstr ""
+msgstr "Связанное содержимое"
 
-#, fuzzy
 msgid "Abstract"
 msgstr "Описание"
 
@@ -1383,10 +1369,10 @@ msgid "Bibliography"
 msgstr "Библиография"
 
 msgid "Introplay"
-msgstr ""
+msgstr "Введение"
 
 msgid "BPM"
-msgstr "BPM"
+msgstr "Ударов в секунду"
 
 msgid "Encoding Time"
 msgstr "Время кодирования"
@@ -1416,10 +1402,10 @@ msgid "Involved People"
 msgstr "Участники"
 
 msgid "Content Group"
-msgstr ""
+msgstr "Тип содержимого"
 
 msgid "Initial key"
-msgstr ""
+msgstr "Начальный ключ"
 
 msgid "Musician Credits"
 msgstr "Благодарности музыкантов"
@@ -1497,7 +1483,7 @@ msgid "Official Radio Station Website"
 msgstr "Официальная веб-страница радиостанции"
 
 msgid "Payment"
-msgstr ""
+msgstr "Оплата"
 
 msgid "Publisher's Official Website"
 msgstr "Официальная веб-страница издателя"
@@ -1524,13 +1510,13 @@ msgid "ReplayGain Album Peak"
 msgstr "Пик альбома для выравнивания громкости (ReplayGain)"
 
 msgid "Icy-Name"
-msgstr "Название станции (Icy-Name)"
+msgstr "Название станции"
 
 msgid "Icy-Description"
-msgstr "Описание станции (Icy-Description)"
+msgstr "Описание станции"
 
 msgid "Icy-Genre"
-msgstr "Жанр станции (Icy-Genre)"
+msgstr "Жанр станции"
 
 msgid "RVA"
 msgstr "АУГ (RVA)"
@@ -1563,10 +1549,10 @@ msgid "Musepack ReplayGain"
 msgstr "Уравнивание громкости Musepack"
 
 msgid "Generic StreamMeta"
-msgstr ""
+msgstr "Общие метаданные потока"
 
 msgid "MPEG StreamMeta"
-msgstr ""
+msgstr "Метаданные MPEG-потока"
 
 msgid "Module info"
 msgstr "Информация о модуле"
@@ -1769,29 +1755,59 @@ msgstr ""
 "прокси, установленного выше.\n"
 "Пример: localhost, .localdomain, .my.domain.com"
 
+msgid "Embed playlist into main window"
+msgstr "Встроить плейлист в основное окно"
+
 msgid "Enable systray"
 msgstr "Разрешить системный лоток"
 
-msgid "Title Format"
-msgstr "Формат заголовка"
+msgid "Do nothing"
+msgstr "Ничего не делать"
 
-msgid "Programmable title format file"
-msgstr "файл программируемого форматирования заголовка"
+msgid "Change volume"
+msgstr "Изменить громкость"
 
-msgid "Implicit command line"
-msgstr "подразумеваемая командная строка"
+msgid "Change balance"
+msgstr "Изменить баланс"
 
-msgid "Miscellaneous"
-msgstr "Разное"
+msgid "Change song position"
+msgstr "Изменить позицию песни"
 
-msgid "Enable tooltips"
-msgstr "Включить подсказки"
+msgid "Change current song"
+msgstr "Изменить текущую песню"
 
-msgid "Start minimized"
-msgstr "Запускать минимизированным"
+msgid "Left button"
+msgstr "Левая кнопка"
 
-msgid "Put control buttons at the bottom of playlist"
-msgstr "Разместить кнопки управления внизу плей-листа"
+msgid "Middle button"
+msgstr "Средняя кнопка"
+
+msgid "Right button"
+msgstr "Правая кнопка"
+
+msgid "Button"
+msgstr "Кнопка"
+
+msgid "Left and right mouse buttons are reserved."
+msgstr "Левая и правая кнопки мыши зарезервированы."
+
+msgid "This button is already assigned."
+msgstr "Эта клавиша уже назначена."
+
+msgid "Add mouse button command"
+msgstr "Добавить команду для кнопки мыши"
+
+msgid "Mouse button"
+msgstr "Кнопка мыши"
+
+msgid "Click here to set mouse button"
+msgstr "Щёлкните здесь, чтобы установить кнопку мыши"
+
+msgid "Command"
+msgstr "Команда"
+
+msgid "Main window"
+msgstr "Главное окно"
 
 msgid "Disable control buttons relief"
 msgstr "Отключить рельеф управляющих кнопок"
@@ -1802,20 +1818,44 @@ msgstr "Объединить кнопки паузы и воспроизведе
 msgid "Keep main window always on top"
 msgstr "Размещать главное окно всегда сверху"
 
-msgid "Simple view in LADSPA patch builder"
-msgstr "Простой вид в сборщике патчей LADSPA"
-
-msgid "United windows minimization"
-msgstr "Объединённая минимизация окон"
-
 msgid "Show song name in the main window's title"
 msgstr "Показывать название песни в заголовке главного окна"
 
-msgid "Show hidden files and directories in file choosers"
-msgstr "Показывать скрытые файлы и каталоги в диалогах выбора файла"
+msgid "Title Format"
+msgstr "Формат заголовка"
 
-msgid "Show tags tab first in the file info dialog"
-msgstr "Показывать вкладку тэгов первой в окне информации о файле"
+msgid "Programmable title format file"
+msgstr "файл программируемого форматирования заголовка"
+
+msgid "Systray"
+msgstr "Системный лоток"
+
+msgid "Start minimized"
+msgstr "Запускать минимизированным"
+
+msgid "Play/Stop song"
+msgstr "Играть/Остановить песню"
+
+msgid "Play/Pause song"
+msgstr "Играть/Остановить песню"
+
+msgid "Mouse wheel"
+msgstr "Колесо мыши"
+
+msgid "Vertical mouse wheel:"
+msgstr "Вертикальное колесо мыши:"
+
+msgid "Horizontal mouse wheel:"
+msgstr "Горизонтальное колесо мыши:"
+
+msgid "Mouse buttons"
+msgstr "Кнопки мыши"
+
+msgid "Miscellaneous"
+msgstr "Разное"
+
+msgid "Implicit command line"
+msgstr "подразумеваемая командная строка"
 
 msgid "Cover art"
 msgstr "Обложка"
@@ -1847,11 +1887,26 @@ msgstr "Показывать миниатюру обложки только дл
 msgid "Don't show cover thumbnail in the main window"
 msgstr "Не показывать миниатюру обложки в главном окне"
 
+msgid "Enable tooltips"
+msgstr "Включить подсказки"
+
+msgid "Simple view in LADSPA patch builder"
+msgstr "Простой вид в сборщике патчей LADSPA"
+
+msgid "United windows minimization"
+msgstr "Объединённая минимизация окон"
+
+msgid "Show hidden files and directories in file choosers"
+msgstr "Показывать скрытые файлы и каталоги в диалогах выбора файла"
+
+msgid "Show tags tab first in the file info dialog"
+msgstr "Показывать вкладку тэгов первой в окне информации о файле"
+
 msgid "Playlist"
 msgstr "Плей-лист"
 
-msgid "Embed playlist into main window"
-msgstr "Встроить плейлист в основное окно"
+msgid "Put control buttons at the bottom of playlist"
+msgstr "Разместить кнопки управления внизу плей-листа"
 
 msgid "Save and restore the playlist on exit/startup"
 msgstr "Сохранять и восстанавливать плей-лист при закрытии/запуске"
@@ -1893,7 +1948,7 @@ msgid "Automatically roll to active track"
 msgstr "Автоматически перемещаться к активной песне"
 
 msgid "Enable rules hint"
-msgstr ""
+msgstr "Чередующаяся окраска строк в списке"
 
 msgid "Playlist column order"
 msgstr "Порядок колонок в плей-листе"
@@ -2039,10 +2094,10 @@ msgid "ReplayGain tag to use (with fallback to the other): "
 msgstr "Используемый тэг ReplayGain (с отходом на другой):"
 
 msgid "Replaygain_track_gain"
-msgstr ""
+msgstr "Replaygain_track_gain"
 
 msgid "Replaygain_album_gain"
-msgstr ""
+msgstr "Replaygain_track_gain"
 
 msgid "Adding files to Playlist"
 msgstr "Добавление файлов в плей-лист"
@@ -2087,7 +2142,7 @@ msgid "\tMaximum number of retries:"
 msgstr "\tМаксимальное количество попыток:"
 
 msgid "Force TOC re-read on every drive scan"
-msgstr ""
+msgstr "Принудительно перечитывать таблицу файлов при каждом сканировании диска"
 
 msgid "Automatically add CDs to Playlist"
 msgstr "Автоматически добавлять CD в плей-лист"
@@ -2141,7 +2196,7 @@ msgid "No proxy for:"
 msgstr "Не использовать прокси для:"
 
 msgid "Timeout for socket I/O:"
-msgstr ""
+msgstr "Время ожидания ввода/вывода сокета:"
 
 msgid "seconds"
 msgstr "секунд"
@@ -2472,112 +2527,111 @@ msgid ""
 "The information below is reported by the drive, and\n"
 "may not reflect the actual capabilities of the device."
 msgstr ""
-"Информация ниже получена из устройства, и\n"
-"может не отображать действительных возможностей устройства."
+"Информация ниже получена из устройства, и может не\n"
+"отображать действительных возможностей устройства."
 
 msgid "Eject"
-msgstr "Извлечь"
+msgstr "Извлечение лотка"
 
 msgid "Close tray"
-msgstr "Закрыть лоток"
+msgstr "Закрытие лоток"
 
 msgid "Disable manual eject"
-msgstr "Запретить ручное извлечение"
+msgstr "Запрет ручного извлечения"
 
 msgid "Select juke-box disc"
-msgstr "Выбрать диск в CD-чейнджере"
+msgstr "Выбор диска в CD-чейнджере"
 
 msgid "Set drive speed"
-msgstr "Установить скорость привода"
+msgstr "Выбор скорости привода"
 
 msgid "Detect media change"
-msgstr "Определять смену носителя"
+msgstr "Определение смены носителя"
 
 msgid "Read multiple sessions"
-msgstr "Считывать несколько сессий"
+msgstr "Чтение многосессионных дисков"
 
 msgid "Hard reset device"
-msgstr "Жёстко сбросить устройство"
+msgstr "Жёсткий сброс устройства"
 
 msgid "Reading"
 msgstr "Чтение"
 
 msgid "Play CD Audio"
-msgstr "Играть CD Audio"
+msgstr "Проигрывание CD Audio"
 
 msgid "Read CD-DA"
-msgstr "Читать CD-DA"
+msgstr "Чтение CD-DA"
 
 msgid "Read CD+G"
-msgstr "Читать CD+G"
+msgstr "Чтение CD+G"
 
 msgid "Read CD-R"
-msgstr "Читать CD-R"
+msgstr "Чтение CD-R"
 
 msgid "Read CD-RW"
-msgstr "Читать CD-RW"
+msgstr "Чтение CD-RW"
 
 msgid "Read DVD-R"
-msgstr "Читать DVD-R"
+msgstr "Чтение DVD-R"
 
 msgid "Read DVD+R"
-msgstr "Читать DVD+R"
+msgstr "Чтение DVD+R"
 
 msgid "Read DVD-RW"
-msgstr "Читать DVD-RW"
+msgstr "Чтение DVD-RW"
 
 msgid "Read DVD+RW"
-msgstr "Читать DVD+RW"
+msgstr "Чтение DVD+RW"
 
 msgid "Read DVD-RAM"
-msgstr "Читать DVD-RAM"
+msgstr "Чтение DVD-RAM"
 
 msgid "Read DVD-ROM"
-msgstr "Читать DVD-ROM"
+msgstr "Чтение DVD-ROM"
 
 msgid "C2 Error Correction"
 msgstr "Коррекция ошибок C2"
 
 msgid "Read Mode 2 Form 1"
-msgstr ""
+msgstr "Чтение Mode 2 Form 1"
 
 msgid "Read Mode 2 Form 2"
-msgstr ""
+msgstr "Чтение Mode 2 Form 2"
 
 msgid "Read MCN"
-msgstr ""
+msgstr "Считывать MCN"
 
 msgid "Read ISRC"
-msgstr "Считывать ISRC (Международный стандартный номер записи)"
+msgstr "Считывание ISRC (Международного стандартного номера записи)"
 
 msgid "Writing"
 msgstr "Запись"
 
 msgid "Write CD-R"
-msgstr "Записать CD-R"
+msgstr "Запись CD-R"
 
 msgid "Write CD-RW"
-msgstr "Записать CD-RW"
+msgstr "Запись CD-RW"
 
 msgid "Write DVD-R"
-msgstr "Записать DVD-R"
+msgstr "Запись DVD-R"
 
 msgid "Write DVD+R"
-msgstr "Записать DVD+R"
+msgstr "Запись DVD+R"
 
 msgid "Write DVD-RW"
-msgstr "Записать DVD-RW"
+msgstr "Запись DVD-RW"
 
 msgid "Write DVD+RW"
-msgstr "Записать DVD+RW"
+msgstr "Запись DVD+RW"
 
 msgid "Write DVD-RAM"
-msgstr "Записать DVD-RAM"
+msgstr "Запись DVD-RAM"
 
 msgid "Mount Rainier"
-msgstr ""
+msgstr "Пакетная запись (Mount Rainier)"
 
-#, fuzzy
 msgid "Burn Proof"
 msgstr "Защита от записи"
 
@@ -2748,6 +2802,10 @@ msgstr "исполнитель"
 msgid "artists"
 msgstr "исполнители"
 
+#, c-format
+msgid "File \"%s\" does not exist or your write permission has been withdrawn. Check if the partition containing the store file has been unmounted."
+msgstr "Файл \"%s\" не существует или у вас нет прав записи в него. Проверьте, не отмонтирован ли раздел, на котором расположен файл библиотеки."
+
 msgid "Build / Update store from filesystem..."
 msgstr "Построить / Обновить библиотеку из файловой системы..."
 
@@ -2891,9 +2949,8 @@ msgstr "Удалить ленту"
 msgid "Really remove '%s' from the Music Store?"
 msgstr "Действительно удалить '%s' из Музыкальной Библиотеки?"
 
-#, fuzzy
 msgid "Reorder feeds"
-msgstr "Переподписаться на ленты"
+msgstr "Изменить порядок лент"
 
 msgid ""
 "Drag and drop entries in the list\n"
@@ -2968,10 +3025,10 @@ msgstr "Ожидалось '}' после '{', а найден конец стр
 
 #, c-format
 msgid "Unknown conversion type character found after '%%%%'."
-msgstr ""
+msgstr "После '%%%%' обнаружен символ неизвестного типа."
 
 msgid "Unknown conversion type character found after '?'."
-msgstr ""
+msgstr "После '?' обнаружен символ неизвестного типа."
 
 msgid "day"
 msgstr "день"
@@ -3093,16 +3150,14 @@ msgstr "объедидённое стерео"
 msgid "Stereo"
 msgstr "Стерео"
 
-#, fuzzy
 msgid "Emphasis: none"
 msgstr "Выделение: нет"
 
-#, fuzzy
 msgid "Emphasis:"
 msgstr "Выделение:"
 
 msgid "Emphasis: reserved"
-msgstr ""
+msgstr "Выделение: зарезервировано"
 
 msgid "bit signed"
 msgstr "бит знаковый"

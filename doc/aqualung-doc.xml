@@ -2985,6 +2985,10 @@
             <td>stop</td>
           </tr>
           <tr>
+            <td>CTRL+S</td>
+            <td>stop after current song (toggle)</td>
+          </tr>
+          <tr>
             <td>b, B, period</td>
             <td>jump to next track</td>
           </tr>

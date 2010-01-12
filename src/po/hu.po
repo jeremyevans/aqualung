@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-10 11:45+0100\n"
-"PO-Revision-Date: 2010-01-10 11:57+0100\n"
+"POT-Creation-Date: 2010-01-13 00:15+0100\n"
+"PO-Revision-Date: 2010-01-13 00:16+0100\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -41,6 +41,9 @@ msgstr "OpenBSD kompatibilitás, metaadat trükkök\n"
 
 msgid "Translators:"
 msgstr "Fordítók:"
+
+msgid "French:\n"
+msgstr "Francia:\n"
 
 msgid "German:\n"
 msgstr "Német:\n"
@@ -1211,9 +1214,6 @@ msgstr "iFP eszközkezelő (letöltés mód)"
 
 msgid "Selected files:"
 msgstr "Kiválasztott fájlok:"
-
-msgid "label_songs"
-msgstr "label_songs"
 
 msgid "<b>Songs info</b>"
 msgstr "<b>Szám info</b>"
@@ -2886,7 +2886,9 @@ msgstr "előadó"
 msgid ""
 "File \"%s\" does not exist or your write permission has been withdrawn. "
 "Check if the partition containing the store file has been unmounted."
-msgstr "A megadott fájl \"%s\" nem létezik, vagy visszavonták róla az írási jogot. Lehetséges, hogy a fájlt tartalmazó partíciót lecsatolták."
+msgstr ""
+"A megadott fájl \"%s\" nem létezik, vagy visszavonták róla az írási jogot. "
+"Lehetséges, hogy a fájlt tartalmazó partíciót lecsatolták."
 
 msgid "Build / Update store from filesystem..."
 msgstr "Tároló felépítése / aktualizálása fájlrendszerről..."

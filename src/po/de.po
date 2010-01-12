@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-09 11:15+0100\n"
-"PO-Revision-Date: 2010-01-09 12:36+0100\n"
+"POT-Creation-Date: 2010-01-13 00:15+0100\n"
+"PO-Revision-Date: 2010-01-13 00:16+0100\n"
 "Last-Translator: Wolfgang Stoeggl <c72578@yahoo.de>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -45,6 +45,9 @@ msgstr "OpenBSD-Kompatibilität, Metadaten-Kniffe:\n"
 
 msgid "Translators:"
 msgstr "Übersetzer:"
+
+msgid "French:\n"
+msgstr "Französisch:\n"
 
 msgid "German:\n"
 msgstr "Deutsch:\n"
@@ -1224,9 +1227,6 @@ msgstr "iFP-Geräteverwaltung (Herunterlade-Modus)"
 
 msgid "Selected files:"
 msgstr "Ausgewählte Dateien:"
-
-msgid "label_songs"
-msgstr "Beschriftung_Lieder"
 
 msgid "<b>Songs info</b>"
 msgstr "<b>Titelinformationen</b>"
@@ -3300,6 +3300,3 @@ msgstr "Kompression: Extra Hoch"
 
 msgid "Compression: Insane"
 msgstr "Kompression: Wahnsinnig"
-
-#~ msgid "Directory:"
-#~ msgstr "Verzeichnis:"

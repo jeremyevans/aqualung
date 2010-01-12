@@ -992,7 +992,7 @@ aifp_transfer_files(gint mode) {
                 gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
                 gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
-                label_songs = gtk_label_new (_("label_songs"));
+                label_songs = gtk_label_new ("label_songs");
                 gtk_widget_show (label_songs);
                 gtk_box_pack_start (GTK_BOX (hbox1), label_songs, FALSE, FALSE, 0);
                 gtk_misc_set_alignment (GTK_MISC (label_songs), 0, 0.5);

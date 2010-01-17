@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-12 14:38+0200\n"
-"PO-Revision-Date: 2010-01-12 21:24+0300\n"
+"POT-Creation-Date: 2010-01-17 16:11+0200\n"
+"PO-Revision-Date: 2010-01-17 16:13+0300\n"
 "Last-Translator: Vladimir Smolyar <v_2e@ukr.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -42,6 +42,9 @@ msgstr "Совместимость с OpenBSD, трюки с метаданны�
 
 msgid "Translators:"
 msgstr "Переводчики:"
+
+msgid "French:\n"
+msgstr "Французский:\n"
 
 msgid "German:\n"
 msgstr "Немецкий:\n"
@@ -1175,9 +1178,6 @@ msgstr "Менеджер устройства iFP (режим загрузки)"
 
 msgid "Selected files:"
 msgstr "Выбранные файлы:"
-
-msgid "label_songs"
-msgstr ""
 
 msgid "<b>Songs info</b>"
 msgstr "<b>Информация о песнях</b>"

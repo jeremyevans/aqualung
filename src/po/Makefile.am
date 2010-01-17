@@ -6,7 +6,7 @@ POTFILES = ../*.c ../decoder/*.c ../decoder/*.cpp
 
 localedir = $(datadir)/locale
 
-MSGFMT = msgfmt
+MSGFMT = msgfmt -v
 XGETTEXT = xgettext
 MSGMERGE = msgmerge
 
@@ -18,7 +18,7 @@ EXTRA_DIST = $(POFILES) $(MOFILES) README
 all: $(MOFILES)
 
 $(MOFILES): always
-	@if test $(@:.mo=.po) -nt $@; then $(MSGFMT) $(@:.mo=.po) -o $@; echo "$@ updated."; fi
+	@if test $(@:.mo=.po) -nt $@; then echo -n "updating $@: "; $(MSGFMT) $(@:.mo=.po) -o $@; fi
 
 $(POFILES): $(DOMAIN).pot
 	$(MSGMERGE) $@ $(DOMAIN).pot -o $@.in && mv $@.in $@

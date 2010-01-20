@@ -1,14 +1,14 @@
 # Japanese translations for aqualung package
 # Copyright (C) 2008 Tom Szilagyi
 # This file is distributed under the same license as the aqualung package.
-# Norihiro Yoneda <aoba@avis.ne.jp>, 2009
+# YoN <yon8844@gmail.com>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-08 11:59+0100\n"
-"PO-Revision-Date: 2010-01-19 11:30+0900\n"
+"POT-Creation-Date: 2010-01-20 07:43+0900\n"
+"PO-Revision-Date: 2010-01-20 11:25+0900\n"
 "Last-Translator: YoN <yon8844@gmail.com>\n"
 "Language-Team: Team Puppy Linux Japan\n"
 "MIME-Version: 1.0\n"
@@ -409,125 +409,6 @@ msgstr "ファイルの読み取り"
 msgid "Removing non-existing files"
 msgstr "存在しないファイルの削除"
 
-msgid "Unknown disc"
-msgstr "不明な CD"
-
-msgid "No disc"
-msgstr "CDがありません"
-
-msgid "CDDB query"
-msgstr "CDDB問い合わせ"
-
-msgid "Retrieving matches from server..."
-msgstr "サーバから一致を取得しています…"
-
-msgid "Connecting to CDDB server..."
-msgstr "CDDBサーバに接続しています…"
-
-msgid "Error"
-msgstr "エラー"
-
-msgid "An error occurred while attempting to connect to the CDDB server."
-msgstr "CDDBサーバに接続しようとしてエラーが起こりました。"
-
-msgid "Warning"
-msgstr "警告"
-
-msgid "No matching record found."
-msgstr "一致する登録は見つかりませんでした。"
-
-msgid "Import as Sort Key"
-msgstr "ソートキーとしてインポート"
-
-msgid "Import as Title"
-msgstr "タイトルとしてインポート"
-
-msgid "Import as Year"
-msgstr "年としてインポート"
-
-msgid ""
-"Artist appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"アーチストは全て小文字で表示されます。\n"
-"続けますか？"
-
-msgid ""
-"Artist appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"アーチストは全て大文字で表示されます。\n"
-"続けますか？"
-
-msgid ""
-"Title appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"タイトルは全て小文字で表示されます。\n"
-"続けますか？"
-
-msgid ""
-"Title appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"タイトルは全て大文字で表示されます。\n"
-"続けますか？"
-
-msgid ""
-"It is very likely that the year is wrong.\n"
-"Do you want to proceed?"
-msgstr ""
-"年が間違っていると思われます。\n"
-"続けますか？"
-
-msgid "The email address provided for submission is invalid."
-msgstr "送信に提供されるメールアドレスが無効です。"
-
-msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "CDDBサーバにレコードを送信中にエラーが起こりました。"
-
-msgid "Correct existing record"
-msgstr "既存の録音を修正"
-
-msgid "Submit new record"
-msgstr "新しい録音を送信"
-
-msgid "Matches:"
-msgstr "一致:"
-
-msgid "Artist:"
-msgstr "アーチスト:"
-
-msgid "Title:"
-msgstr "タイトル:"
-
-msgid "Year:"
-msgstr "年:"
-
-msgid "Category:"
-msgstr "カテゴリ:"
-
-msgid "(choose a category)"
-msgstr "(カテゴリを選択)"
-
-msgid "Genre:"
-msgstr "ジャンル:"
-
-msgid "Extended data:"
-msgstr "拡張データ:"
-
-msgid "Import as Artist"
-msgstr "アーチストとして入力"
-
-msgid "Add to Comments"
-msgstr "コメントに追加"
-
-msgid "Tracks"
-msgstr "トラック"
-
-msgid "You have to provide an email address for CDDB submission."
-msgstr "CDDB送信にはメールアドレスを提供しなければなりません。"
-
 msgid "Please select the directory for ripped files."
 msgstr "リッピングしたファイルのディレクトリを選択して下さい。"
 
@@ -559,8 +440,17 @@ msgstr ""
 msgid "Rip CD"
 msgstr "CDをリッピング"
 
+msgid "Artist:"
+msgstr "アーチスト:"
+
 msgid "Album:"
 msgstr "アルバム:"
+
+msgid "Year:"
+msgstr "年:"
+
+msgid "Genre:"
+msgstr "ジャンル:"
 
 msgid "Rip"
 msgstr "リッピング"
@@ -622,6 +512,9 @@ msgstr "読み込みに失敗したら無制限に再試行 (スキップしな�
 msgid "Maximum number of retries:"
 msgstr "再試行の最大数:"
 
+msgid "Error"
+msgstr "エラー"
+
 msgid ""
 "\n"
 "Destination directory is not read-write accessible!"
@@ -652,6 +545,113 @@ msgstr "完了したらウィンドウを閉じる"
 
 msgid "Close"
 msgstr "閉じる"
+
+msgid "Unknown disc"
+msgstr "不明な CD"
+
+msgid "No disc"
+msgstr "CDがありません"
+
+msgid "CDDB query"
+msgstr "CDDB問い合わせ"
+
+msgid "Retrieving matches from server..."
+msgstr "サーバから一致を取得しています…"
+
+msgid "Connecting to CDDB server..."
+msgstr "CDDBサーバに接続しています…"
+
+msgid "An error occurred while attempting to connect to the CDDB server."
+msgstr "CDDBサーバに接続しようとしてエラーが起こりました。"
+
+msgid "Warning"
+msgstr "警告"
+
+msgid "No matching record found."
+msgstr "一致するレコードは見つかりませんでした。"
+
+msgid "Import as Sort Key"
+msgstr "ソートキーとしてインポート"
+
+msgid "Import as Title"
+msgstr "タイトルとしてインポート"
+
+msgid "Import as Year"
+msgstr "年としてインポート"
+
+msgid ""
+"Artist appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"アーチストは全て小文字で表示されます。\n"
+"続けますか？"
+
+msgid ""
+"Artist appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"アーチストは全て大文字で表示されます。\n"
+"続けますか？"
+
+msgid ""
+"Title appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"タイトルは全て小文字で表示されます。\n"
+"続けますか？"
+
+msgid ""
+"Title appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"タイトルは全て大文字で表示されます。\n"
+"続けますか？"
+
+msgid ""
+"It is very likely that the year is wrong.\n"
+"Do you want to proceed?"
+msgstr ""
+"年が間違っていると思われます。\n"
+"続けますか？"
+
+msgid "The email address provided for submission is invalid."
+msgstr "送信に提供されるメールアドレスが無効です。"
+
+msgid "An error occurred while submitting the record to the CDDB server."
+msgstr "CDDBサーバにレコードを送信中にエラーが起こりました。"
+
+msgid "Correct existing record"
+msgstr "既存のレコードを修正"
+
+msgid "Submit new record"
+msgstr "新しいレコードを送信"
+
+msgid "Matches:"
+msgstr "一致:"
+
+msgid "Title:"
+msgstr "タイトル:"
+
+msgid "Category:"
+msgstr "カテゴリ:"
+
+msgid "(choose a category)"
+msgstr "(カテゴリを選択)"
+
+msgid "Extended data:"
+msgstr "拡張データ:"
+
+msgid "Import as Artist"
+msgstr "アーチストとしてインポート"
+
+msgid "Add to Comments"
+msgstr "コメントに追加"
+
+msgid "Tracks"
+msgstr "トラック"
+
+msgid "You have to provide an email address for CDDB submission."
+msgstr "CDDB送信にはメールアドレスを提供しなければなりません。"
 
 msgid "Unknown Album"
 msgstr "不明なアルバム"
@@ -1236,36 +1236,6 @@ msgstr "ダウンロード(_D)"
 msgid "_Abort"
 msgstr "中止(_A)"
 
-msgid "Success"
-msgstr "成功"
-
-msgid "Memory allocation error"
-msgstr "メモリ割り当てエラー"
-
-msgid "Unable to open file"
-msgstr "ファイルを開けません"
-
-msgid "No metadata support for this format"
-msgstr "この形式をサポートするメタデータはありません"
-
-msgid "File is not writable"
-msgstr "ファイルは書き込み可能ではありません"
-
-msgid "Invalid 'Track no.' field value"
-msgstr "無効な 'トラック番号' フィールド値"
-
-msgid "Invalid 'Genre' field value"
-msgstr "無効な 'ジャンル' フィールド値"
-
-msgid "Conversion to target charset failed"
-msgstr "ターゲット文字セットの変換に失敗"
-
-msgid "Internal error"
-msgstr "内部エラー"
-
-msgid "Unknown error"
-msgstr "不明なエラー"
-
 msgid "Album"
 msgstr "アルバム"
 
@@ -1504,7 +1474,7 @@ msgid "ReplayGain Track Peak"
 msgstr "再生音量 トラックピーク平均化"
 
 msgid "ReplayGain Album Gain"
-msgstr "再生音量 アルバム平均化"
+msgstr "再生音量 アルバムゲイン平均化"
 
 msgid "ReplayGain Album Peak"
 msgstr "再生音量 アルバムピーク平均化"
@@ -1559,6 +1529,36 @@ msgstr "モジュール情報"
 
 msgid "Unknown"
 msgstr "不明"
+
+msgid "Success"
+msgstr "成功"
+
+msgid "Memory allocation error"
+msgstr "メモリ割り当てエラー"
+
+msgid "Unable to open file"
+msgstr "ファイルを開けません"
+
+msgid "No metadata support for this format"
+msgstr "この形式をサポートするメタデータはありません"
+
+msgid "File is not writable"
+msgstr "ファイルは書き込み可能ではありません"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "無効な 'トラック番号' フィールド値"
+
+msgid "Invalid 'Genre' field value"
+msgstr "無効な 'ジャンル' フィールド値"
+
+msgid "Conversion to target charset failed"
+msgstr "ターゲット文字セットの変換に失敗"
+
+msgid "Internal error"
+msgstr "内部エラー"
+
+msgid "Unknown error"
+msgstr "不明なエラー"
 
 msgid "Other"
 msgstr "その他"
@@ -2235,7 +2235,7 @@ msgid "Song in playlist: "
 msgstr "プレイリストの曲: "
 
 msgid "Active song in playlist: "
-msgstr "プレイリストの曲をアクティブにする: "
+msgstr "プレイリストのアクティブな曲: "
 
 msgid "Error in title format string"
 msgstr "タイトル形式文字列にエラー"
@@ -3107,7 +3107,7 @@ msgid "Profile: Telephone"
 msgstr "プロファイル: 電話"
 
 msgid "Profile: Thumb"
-msgstr "プロファイル: ぎこちない"
+msgstr "プロファイル: 携帯"
 
 msgid "Profile: Radio"
 msgstr "プロファイル: ラジオ"
@@ -3186,3 +3186,4 @@ msgstr "圧縮: 超高圧縮"
 
 msgid "Compression: Insane"
 msgstr "圧縮: 正気でない"
+

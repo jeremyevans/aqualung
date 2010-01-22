@@ -1,14 +1,16 @@
 # Japanese translations for aqualung package
+# Japanese messages for aqualung.
 # Copyright (C) 2008 Tom Szilagyi
 # This file is distributed under the same license as the aqualung package.
-# YoN <yon8844@gmail.com>, 2008.
+# YoN <yon8844@gmail.com>, 2009
+# idak <zbe64533 at gmail.com>, 2010
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-20 07:43+0900\n"
-"PO-Revision-Date: 2010-01-20 11:25+0900\n"
+"PO-Revision-Date: 2010-01-22 15:40+0100\n"
 "Last-Translator: YoN <yon8844@gmail.com>\n"
 "Language-Team: Team Puppy Linux Japan\n"
 "MIME-Version: 1.0\n"
@@ -18,10 +20,10 @@ msgstr ""
 "X-Poedit-Language: Japanese\n"
 
 msgid "About"
-msgstr "バージョン情報"
+msgstr "このソフトについて"
 
 msgid "Build version: "
-msgstr "ビルドバージョン:"
+msgstr "ビルドバージョン: "
 
 msgid "Homepage:"
 msgstr "ホームページ:"
@@ -33,13 +35,13 @@ msgid "Core design, engineering & programming:\n"
 msgstr "コアデザイン、エンジニアリングとプログラミング:\n"
 
 msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr "スキンサポート、ルック&フィール、GUIハック:\n"
+msgstr "スキンサポート、ルック&フィール、GUI ハック:\n"
 
 msgid "Programming, GUI engineering:\n"
-msgstr "プログラミング、GUIエンジニアリング:\n"
+msgstr "プログラミング、GUI エンジニアリング:\n"
 
 msgid "OpenBSD compatibility, metadata tweaks:\n"
-msgstr "OpenBSD互換、メタデータ調整:\n"
+msgstr "OpenBSD 互換、メタデータ調整:\n"
 
 msgid "Translators:"
 msgstr "翻訳者:"
@@ -75,19 +77,19 @@ msgid "Logo, icons:\n"
 msgstr "ロゴ、アイコン:\n"
 
 msgid "This Aqualung binary is compiled with:"
-msgstr "このAqualungバイナリは次でコンパイルしています:"
+msgstr "この Aqualung バイナリは次のオプションでコンパイルしています:"
 
 msgid "Optional features:"
 msgstr "オプション機能:"
 
 msgid "LADSPA plugin support\n"
-msgstr "LADSPAプラグインサポート\n"
+msgstr "LADSPA プラグインサポート\n"
 
 msgid "CDDA (Audio CD) support\n"
 msgstr "CDDA (Audio CD) サポート\n"
 
 msgid "CDDB support\n"
-msgstr "CDDBサポート\n"
+msgstr "CDDB サポート\n"
 
 msgid "Sample Rate Converter support\n"
 msgstr "サンプルレート変換サポート\n"
@@ -105,7 +107,7 @@ msgid "Podcast support\n"
 msgstr "ポッドキャストサポート\n"
 
 msgid "Lua (programmable title formatting) support\n"
-msgstr "Luaサポート (プログラム可能なタイトルフォーマット)\n"
+msgstr "Lua サポート (プログラム可能なタイトルフォーマット)\n"
 
 msgid "Decoding support:"
 msgstr "デコードサポート:"
@@ -259,8 +261,8 @@ msgid ""
 "Follows the directory structure to identify the artists and\n"
 "records. The files are added on a record basis."
 msgstr ""
-"アーチストと録音を識別するためにディレクトリ構造をたどる。\n"
-"ファイルは録音基準に追加されます。"
+"アーティストとレコードを識別するためにディレクトリ構造をたどります。\n"
+"レコードを基準にファイルを追加します。"
 
 msgid "Independent"
 msgstr "独立"
@@ -270,7 +272,7 @@ msgid ""
 "The files are processed independently, so only metadata\n"
 "and filename transformation are available."
 msgstr ""
-"オーディオファイルをルートディレクトリから再帰的に検索。\n"
+"オーディオファイルをルートディレクトリから再帰的に検索します。\n"
 "ファイルは独立して処理されるので、メタデータとファイル名の\n"
 "変換だけができます。"
 
@@ -290,7 +292,7 @@ msgid "Root path:"
 msgstr "ルートパス:"
 
 msgid "_Browse..."
-msgstr "ブラウズ(_B)…"
+msgstr "ブラウズ(_B)..."
 
 msgid "Structure:"
 msgstr "構造:"
@@ -299,13 +301,13 @@ msgid "root / record / track"
 msgstr "ルート / レコード / トラック"
 
 msgid "root / artist / record / track"
-msgstr "ルート / アーチスト / レコード / トラック"
+msgstr "ルート / アーティスト / レコード / トラック"
 
 msgid "root / artist / artist / record / track"
-msgstr "ルート / アーチスト / アーチスト / レコード / トラック"
+msgstr "ルート / アーティスト / アーティスト / レコード / トラック"
 
 msgid "root / artist / artist / artist / record / track"
-msgstr "ルート / アーチスト / アーチスト / アーチスト / レコード / トラック"
+msgstr "ルート / アーティスト / アーティスト / アーティスト / レコード / トラック"
 
 msgid "Exclude files matching wildcard"
 msgstr "ワイルドカードに一致するファイルを除外"
@@ -320,16 +322,16 @@ msgid "Remove non-existing files from store"
 msgstr "ストアから存在しないファイルを削除"
 
 msgid "Artist"
-msgstr "アーチスト"
+msgstr "アーティスト"
 
 msgid "Sort artists by"
-msgstr "アーチストを並び替え"
+msgstr "アーティストを並び替え"
 
 msgid "Artist name"
-msgstr "アーチスト名"
+msgstr "アーティスト名"
 
 msgid "Artist name (lowercase)"
-msgstr "アーチスト名 (小文字)"
+msgstr "アーティスト名 (小文字)"
 
 msgid "Directory name"
 msgstr "ディレクトリ名"
@@ -338,31 +340,31 @@ msgid "Directory name (lowercase)"
 msgstr "ディレクトリ名 (小文字)"
 
 msgid "Record"
-msgstr "録音"
+msgstr "レコード"
 
 msgid "Sort records by"
-msgstr "録音を並び替え"
+msgstr "レコードを並び替え"
 
 msgid "Record name"
-msgstr "録音名"
+msgstr "レコード名"
 
 msgid "Record name (lowercase)"
-msgstr "録音名 (小文字)"
+msgstr "レコード名 (小文字)"
 
 msgid "Year"
 msgstr "年"
 
 msgid "Add year to the comments of new records"
-msgstr "新しい録音のコメントに年を追加"
+msgstr "新しいレコードのコメントに年を追加"
 
 msgid "Track"
 msgstr "トラック"
 
 msgid "Import Replaygain tag as manual RVA"
-msgstr "マニュアルRVAとして再生音量タグを入力"
+msgstr "マニュアル RVA として ReplayGain タグをインポート"
 
 msgid "Import Comment tag"
-msgstr "コメントタグを入力"
+msgstr "コメントタグをインポート"
 
 msgid "Sandbox"
 msgstr "サンドボックス"
@@ -374,31 +376,31 @@ msgid "Test"
 msgstr "テスト"
 
 msgid "Building store from filesystem"
-msgstr "ファイルシステムからストアを作成"
+msgstr "ファイルシステムからストアをビルド"
 
 msgid "Processing:"
-msgstr "処理:"
+msgstr "処理中:"
 
 msgid "Action:"
 msgstr "アクション:"
 
 msgid "Abort"
-msgstr "バージョン情報"
+msgstr "中止"
 
 msgid "Unknown Artist"
-msgstr "不明なアーチスト"
+msgstr "不明なアーティスト"
 
 msgid "Unknown Record"
-msgstr "不明な録音"
+msgstr "不明なレコード"
 
 msgid "Scanning files"
 msgstr "ファイルのスキャン"
 
 msgid "Processing metadata"
-msgstr "メタデータの処理"
+msgstr "メタデータの処理中"
 
 msgid "CDDB lookup"
-msgstr "CDDB参照"
+msgstr "CDDB 参照"
 
 msgid "Name transformation"
 msgstr "名前の変換"
@@ -428,20 +430,20 @@ msgid "Bitrate [kbps]:"
 msgstr "ビットレート [kbps]:"
 
 msgid "Artist/Album already existing, not empty"
-msgstr "アーチスト/アルバムは既に存在します。空ではありません"
+msgstr "アーティスト/アルバムは既に存在します。空ではありません"
 
 msgid ""
 "\n"
 "The Music Store you selected has a matching Artist and Album, already containing some tracks. If you press OK, these tracks will be removed. The files themselves will be left intact, but they will be removed from the destination Music Store. Press Cancel to get back to change the Artist/Album or the destination Music Store."
 msgstr ""
 "\n"
-"選択した Music Store には一致したアーチストとアルバムがあります。そして、すでにいくつかのトラックを含んでいます。OKを押すと、このトラックは削除されます。ファイル自体は完全なまま残ります。しかし転送先の Music Store から削除されます。アーチスト/アルバムまたは転送先の Music Store の変更に戻るにはキャンセルを押して下さい。"
+"選択した Music Store には一致したアーティストとアルバムがあります。そして、すでにいくつかのトラックを含んでいます。 OK を押すと、このトラックは削除されます。ファイル自体は完全なまま残ります。しかし転送先の Music Store から削除されます。アーティスト/アルバムまたは転送先の Music Store の変更に戻るにはキャンセルを押して下さい。"
 
 msgid "Rip CD"
-msgstr "CDをリッピング"
+msgstr "CD をリッピング"
 
 msgid "Artist:"
-msgstr "アーチスト:"
+msgstr "アーティスト:"
 
 msgid "Album:"
 msgstr "アルバム:"
@@ -495,10 +497,10 @@ msgid "Tag files with metadata"
 msgstr "メタデータ付きタグファイル"
 
 msgid "Paranoia"
-msgstr "パラノイア ライブラリ"
+msgstr "Paranoia"
 
 msgid "Paranoia error correction"
-msgstr "パラノイア ライブラリ エラー修正"
+msgstr "Paranoia エラー訂正"
 
 msgid "Perform overlapped reads"
 msgstr "オーバーラップした読み込みの実行"
@@ -529,7 +531,7 @@ msgid "(audio only)"
 msgstr "(オーディオだけ)"
 
 msgid "Ripping CD tracks"
-msgstr "CDトラックをリッピング"
+msgstr "CD トラックをリッピング"
 
 msgid "Begin"
 msgstr "開始"
@@ -550,19 +552,19 @@ msgid "Unknown disc"
 msgstr "不明な CD"
 
 msgid "No disc"
-msgstr "CDがありません"
+msgstr "CD がありません"
 
 msgid "CDDB query"
-msgstr "CDDB問い合わせ"
+msgstr "CDDB 問い合わせ"
 
 msgid "Retrieving matches from server..."
-msgstr "サーバから一致を取得しています…"
+msgstr "サーバから一致を取得しています..."
 
 msgid "Connecting to CDDB server..."
-msgstr "CDDBサーバに接続しています…"
+msgstr "CDDB サーバに接続しています..."
 
 msgid "An error occurred while attempting to connect to the CDDB server."
-msgstr "CDDBサーバに接続しようとしてエラーが起こりました。"
+msgstr "CDDB サーバに接続しようとしてエラーが起こりました。"
 
 msgid "Warning"
 msgstr "警告"
@@ -583,14 +585,14 @@ msgid ""
 "Artist appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
-"アーチストは全て小文字で表示されます。\n"
+"アーティストは全て小文字で表示されます。\n"
 "続けますか？"
 
 msgid ""
 "Artist appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
-"アーチストは全て大文字で表示されます。\n"
+"アーティストは全て大文字で表示されます。\n"
 "続けますか？"
 
 msgid ""
@@ -615,10 +617,10 @@ msgstr ""
 "続けますか？"
 
 msgid "The email address provided for submission is invalid."
-msgstr "送信に提供されるメールアドレスが無効です。"
+msgstr "送信するメールアドレスが無効です。"
 
 msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "CDDBサーバにレコードを送信中にエラーが起こりました。"
+msgstr "CDDB サーバにレコードを送信中にエラーが起こりました。"
 
 msgid "Correct existing record"
 msgstr "既存のレコードを修正"
@@ -642,7 +644,7 @@ msgid "Extended data:"
 msgstr "拡張データ:"
 
 msgid "Import as Artist"
-msgstr "アーチストとしてインポート"
+msgstr "アーティストとしてインポート"
 
 msgid "Add to Comments"
 msgstr "コメントに追加"
@@ -651,7 +653,7 @@ msgid "Tracks"
 msgstr "トラック"
 
 msgid "You have to provide an email address for CDDB submission."
-msgstr "CDDB送信にはメールアドレスを提供しなければなりません。"
+msgstr "CDDB へ送信するにはメールアドレスを提供しなければなりません。"
 
 msgid "Unknown Album"
 msgstr "不明なアルバム"
@@ -660,7 +662,7 @@ msgid "Unknown Track"
 msgstr "不明なトラック"
 
 msgid "Please select the directory for exported files."
-msgstr "ファイルの出力先ディレクトリを選択して下さい。"
+msgstr "エクスポートファイルのディレクトリを選択して下さい。"
 
 msgid "Copy"
 msgstr "コピー"
@@ -674,10 +676,10 @@ msgid ""
 "The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%%%a, %%%%r and %%%%t. The track number and format-dependent file extension are denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives an identifier which is unique within an export session."
 msgstr ""
 "\n"
-"ここで入力するテンプレート文字列は、エクスポートされたファイルのファイル名を構築するために使われます。アーチスト、レコード、トラック名は %%%%a, %%%%r と %%%%t で表示されます。トラック番号と形式依存ファイル拡張子は %%%%n と %%%%x で表示されます。フラッグ %%%%i はエクスポートセッションで固有の識別子を与えます。"
+"ここで入力するテンプレート文字列は、エクスポートされたファイルのファイル名を構築するために使われます。アーティスト、レコード、トラック名は %%%%a, %%%%r と %%%%t で表示されます。トラック番号と形式依存ファイル拡張子は %%%%n と %%%%x で表示されます。フラグ %%%%i はエクスポートセッションで固有の識別子を与えます。"
 
 msgid "Export files"
-msgstr "ファイルを出力"
+msgstr "ファイルをエクスポート"
 
 msgid "Location and filename"
 msgstr "場所とファイル名"
@@ -686,7 +688,7 @@ msgid "Target directory:"
 msgstr "ターゲットディレクトリ:"
 
 msgid "Create subdirectories for artists"
-msgstr "アーチストのサブディレクトリを作成"
+msgstr "アーティストのサブディレクトリを作成"
 
 msgid "Create subdirectories for albums"
 msgstr "アルバムのサブディレクトリを作成"
@@ -718,7 +720,7 @@ msgid "Error in format string"
 msgstr "文字列のフォーマットにエラー"
 
 msgid "Exporting files"
-msgstr "出力ファイル"
+msgstr "エクスポートファイル"
 
 msgid "Source file:"
 msgstr "ソースファイル:"
@@ -800,7 +802,7 @@ msgstr ""
 
 #, c-format
 msgid "MIME type: %s"
-msgstr "MIMEタイプ: %s"
+msgstr "MIME タイプ: %s"
 
 msgid "Picture type:"
 msgstr "画像タイプ:"
@@ -818,13 +820,13 @@ msgid "Save"
 msgstr "保存"
 
 msgid "Import as Record"
-msgstr "レコードとして入力"
+msgstr "レコードとしてインポート"
 
 msgid "Import as Track No."
-msgstr "トラック番号として入力"
+msgstr "トラック番号としてインポート"
 
 msgid "Import as RVA"
-msgstr "RVA として入力"
+msgstr "RVA としてインポート"
 
 msgid "Add"
 msgstr "追加"
@@ -836,7 +838,7 @@ msgid "tag:"
 msgstr "タグ:"
 
 msgid "Audio CD"
-msgstr "オーディオCD"
+msgstr "オーディオ CD"
 
 msgid "Track:"
 msgstr "トラック:"
@@ -903,7 +905,7 @@ msgid "Name"
 msgstr "名前"
 
 msgid "STOPPING"
-msgstr "ストッピング"
+msgstr "停止中"
 
 msgid "Output:"
 msgstr "出力:"
@@ -968,16 +970,16 @@ msgid "Balance: %s"
 msgstr "バランス: %s"
 
 msgid "JACK connection lost"
-msgstr "JACK接続が失われました"
+msgstr "JACK 接続が失われました"
 
 msgid "JACK has either been shutdown or it disconnected Aqualung because it was not fast enough. All you can do now is restart both JACK and Aqualung."
 msgstr "JACK は十分な速度がないので、シャットダウンされたか Aqualung を切断しました。今すぐ JACK と Aqualung を再起動して下さい。"
 
 msgid "Warn me if the Window Manager does not support system tray"
-msgstr "ウィンドウマネージャがシステムトレイをサポートしない時は警告する"
+msgstr "ウィンドウマネージャがシステムトレイをサポートしない時は警告します"
 
 msgid "Aqualung is compiled with system tray support, but the status icon could not be embedded in the notification area. Your desktop may not have support for a system tray, or it has not been configured correctly."
-msgstr "Aqualung はシステムトレイサポートでコンパイルされています。しかし、ステータスアイコンは、通知域に埋め込む事ができませんでした。お使いのデスクトップは、システムトレイのサポートをしないかも知れません。あるいは正しく構成されませんでした。"
+msgstr "Aqualung はシステムトレイを有効にしてコンパイルされています。しかし、ステータスアイコンを通知領域に表示できませんでした。お使いのデスクトップは、システムトレイをサポートしていないか、正しく構成されていません。"
 
 msgid "Settings"
 msgstr "設定"
@@ -1055,7 +1057,7 @@ msgid "Done"
 msgstr "完了"
 
 msgid "Aborted..."
-msgstr "中止…"
+msgstr "中止..."
 
 msgid "Please enter directory name."
 msgstr "ディレクトリ名を入力して下さい。"
@@ -1116,7 +1118,7 @@ msgid ""
 "(Aqualung was unable to claim its interface.)"
 msgstr ""
 "デバイスがビジーです。\n"
-"(Aqualung はインターフェースを要求できませんでした。)"
+"(Aqualung はそのインターフェースを取得できませんでした。)"
 
 msgid ""
 "Device is not responding.\n"
@@ -1137,7 +1139,7 @@ msgid ""
 "\n"
 "Do you want to proceed?"
 msgstr ""
-"この曲はお使いのプレーヤではサポートされていない形式です。\n"
+"1曲はお使いのプレーヤではサポートされていない形式です。\n"
 "続けますか？"
 
 #, c-format
@@ -1225,7 +1227,7 @@ msgid "<b>Transfer progress</b>"
 msgstr "<b>転送進行状況</b>"
 
 msgid "Close window when transfer complete"
-msgstr "転送完了後ウィンドウを閉じる"
+msgstr "転送完了後、ウィンドウを閉じる"
 
 msgid "_Upload"
 msgstr "アップロード(_U)"
@@ -1393,7 +1395,7 @@ msgid "Original Lyricist"
 msgstr "オリジナル作詞者"
 
 msgid "Original Artist"
-msgstr "オリジナルアーチスト"
+msgstr "オリジナルアーティスト"
 
 msgid "File Owner"
 msgstr "ファイルのオーナー"
@@ -1435,7 +1437,7 @@ msgid "User Defined Text"
 msgstr "指定のテキストを使う"
 
 msgid "Commercial Information"
-msgstr "商業的情報"
+msgstr "コマーシャル情報"
 
 msgid "Copyright/Legal Information"
 msgstr "著作権/法律情報"
@@ -1444,7 +1446,7 @@ msgid "Official Audio File Website"
 msgstr "公式音声ファイルウェブサイト"
 
 msgid "Official Artist Website"
-msgstr "公式アーチストウェブサイト"
+msgstr "公式アーティストウェブサイト"
 
 msgid "Official Audio Source Website"
 msgstr "公式オーディオソースウェブサイト"
@@ -1465,19 +1467,19 @@ msgid "Vendor"
 msgstr "ベンダー"
 
 msgid "ReplayGain Reference Loudness"
-msgstr "再生音量 ラウドネス参照"
+msgstr "ReplayGain ラウドネス参照"
 
 msgid "ReplayGain Track Gain"
-msgstr "再生音量 トラック平均化"
+msgstr "ReplayGain トラックゲイン"
 
 msgid "ReplayGain Track Peak"
-msgstr "再生音量 トラックピーク平均化"
+msgstr "ReplayGain トラックピーク"
 
 msgid "ReplayGain Album Gain"
-msgstr "再生音量 アルバムゲイン平均化"
+msgstr "ReplayGain アルバムゲイン"
 
 msgid "ReplayGain Album Peak"
-msgstr "再生音量 アルバムピーク平均化"
+msgstr "ReplayGain アルバムピーク"
 
 msgid "Icy-Name"
 msgstr "Icy-名"
@@ -1501,28 +1503,28 @@ msgid "NULL"
 msgstr "何のデータも含まれない"
 
 msgid "ID3v1"
-msgstr "ID3v1 (文字数最大半角30文字制限)"
+msgstr "ID3v1"
 
 msgid "ID3v2"
-msgstr "ID3v2 (ID3v1と共用推奨)"
+msgstr "ID3v2"
 
 msgid "APE"
-msgstr "APEファイル (可逆圧縮フォーマット)"
+msgstr "APE"
 
 msgid "Ogg Xiph Comments"
-msgstr "Ogg-Xiphコメント"
+msgstr "Ogg-Xiph コメント"
 
 msgid "FLAC Pictures"
-msgstr "FLAC画像"
+msgstr "FLAC 画像"
 
 msgid "Musepack ReplayGain"
-msgstr "ミューズパック 再生音量"
+msgstr "Musepack ReplayGain"
 
 msgid "Generic StreamMeta"
 msgstr "汎用ストリームメタ"
 
 msgid "MPEG StreamMeta"
-msgstr "MPEGストリームメタ"
+msgstr "MPEG ストリームメタ"
 
 msgid "Module info"
 msgstr "モジュール情報"
@@ -1582,10 +1584,10 @@ msgid "Album image"
 msgstr "アルバム画像"
 
 msgid "Lead artist/performer"
-msgstr "リードアーチスト/演奏者"
+msgstr "リードアーティスト/演奏者"
 
 msgid "Artist/performer"
-msgstr "アーチスト/演奏者"
+msgstr "アーティスト/演奏者"
 
 msgid "Band/orchestra"
 msgstr "バンド/オーケストラ"
@@ -1612,7 +1614,7 @@ msgid "Illustration"
 msgstr "イラスト"
 
 msgid "Band/artist logotype"
-msgstr "バンド/アーチストロゴタイプ"
+msgstr "バンド/アーティストロゴタイプ"
 
 msgid "Publisher/studio logotype"
 msgstr "出版社/スタジオロゴタイプ"
@@ -1621,25 +1623,25 @@ msgid "Music Store"
 msgstr "Music Store"
 
 msgid "Search..."
-msgstr "検索…"
+msgstr "検索..."
 
 msgid "Collapse all items"
 msgstr "全てのアイテムを折りたたむ"
 
 msgid "Edit item..."
-msgstr "アイテムを編集…"
+msgstr "アイテムを編集..."
 
 msgid "Add item..."
-msgstr "アイテムを追加…"
+msgstr "アイテムを追加..."
 
 msgid "Remove item..."
-msgstr "アイテムを削除…"
+msgstr "アイテムを削除..."
 
 msgid "Save all stores"
 msgstr "全てのストアを保存"
 
 msgid "Create empty store..."
-msgstr "空のストアを作成…"
+msgstr "空のストアを作成..."
 
 msgid "*Music Store"
 msgstr "*Music Store"
@@ -1652,7 +1654,7 @@ msgid "You will need to restart Aqualung for the following changes to take effec
 msgstr "次の変更を有効にするには Aqualung を再起動する必要があります:"
 
 msgid "Select a font..."
-msgstr "フォントを選択…"
+msgstr "フォントを選択..."
 
 msgid "Disable skin support"
 msgstr "スキンサポートを無効"
@@ -1667,7 +1669,7 @@ msgid "unreachable"
 msgstr "到達不能"
 
 msgid "Please select a Programable Title Format File."
-msgstr "プログラム可能はタイトル形式ファイルを選択して下さい。"
+msgstr "プログラム可能なタイトル形式のファイルを選択して下さい。"
 
 msgid "Please select a Music Store database."
 msgstr "Music Store データベースを選択して下さい。"
@@ -1684,7 +1686,7 @@ msgid ""
 "The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%%%a, %%%%r and %%%%t, respectively.\n"
 msgstr ""
 "\n"
-"ここに入力するテンプレート文字列は、アーチスト、レコード、トラック名から1つのタイトル行を構成するために使われます。 それらは個々に %%%%a, %%%%r と %%%%t, で示されます。\n"
+"ここに入力するテンプレート文字列は、アーティスト、レコード、トラック名から1つのタイトル行を構成するために使われます。それらは個々に %%%%a, %%%%r と %%%%t, で示されます。\n"
 
 msgid ""
 "\n"
@@ -1695,7 +1697,7 @@ msgid ""
 "end"
 msgstr ""
 "\n"
-"ここで入力/選択をしたファイルはタイトルをフォーマットするために使う Lua プログラムを設定します。詳細は Aqualung マニュアルをご覧下さい。以下はファイルで使える簡単なサンプルです:\n"
+"ここで入力/選択をしたファイルはタイトルをフォーマットするために使う Lua プログラムを設定します。詳細は Aqualung マニュアルを確認して下さい。以下はファイルで使える簡単なサンプルです:\n"
 "\n"
 "function playlist_title()\n"
 "  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
@@ -1708,7 +1710,7 @@ msgid ""
 "Example: enter '-o alsa -R' below to use ALSA output running realtime as a default.\n"
 msgstr ""
 "\n"
-"ここで入力する文字列は、実際のコマンドラインパラメータを解析する前のコマンドラインとして解析されます。ここで入力したものは、初期設定として作動し、「本当の」コマンドラインから上書きされるか、されないかも知れません\n"
+"ここで入力する文字列は、実際のコマンドラインパラメータを解析する前のコマンドラインとして解析されます。ここで入力したものは、初期設定として作動し、「本当の」コマンドラインから上書きされるか、されないかも知れません。\n"
 "\n"
 "例: リアルタイムで実行している ALSA 出力をデフォルトで使うには、下に '-o alsa -R' と入力します。\n"
 
@@ -1730,18 +1732,18 @@ msgid ""
 "Please note that these settings do not apply to CD Ripping, which always happens with maximum available speed and with error correction modes manually set before every run."
 msgstr ""
 "\n"
-"CDのドライブ速度は、再生しているCD-ROMの速度単位に設定して下さい。1速度単位は、速度を読んでいる176kBps生データに等しいです。警告：全てのドライブが、この設定を守るというわけではありません。\n"
+"CD のドライブ速度は、再生している CD-ROM の速度単位に設定して下さい。速度の1単位は、176kBps 生データの読み出し速度に等しいです。警告: 全てのドライブが、この設定を守るというわけではありません。\n"
 "\n"
-"低速は通常、ドライブ雑音が少ない事を意味します。しかし、精度を増すためにParanoiaエラー補正モードを使う時は、一般にバッファアンダーランを防ぐため、非常に大きな速度が要求されます (そして、このような可聴ドロップアウト)。\n"
+"通常、速度が低いとドライブのノイズが減ります。しかし、精度を増すために Paranoia エラー訂正モードを使う場合、一般的に、バッファアンダーランを防ぐため、より高い速度が要求されます (そして、このような可聴ドロップアウト)。\n"
 "\n"
-"これらの設定はCDリッピングに適用しない点に注意して下さい。利用できる最高速度や、毎回実行する前に手動でエラー補正モードを設定した時に起こります。"
+"これらの設定は CD リッピングに適用されない点に注意して下さい。CD リッピングでは毎回実行する前に、利用できる最高速度やエラー訂正モードを手動で設定します。"
 
 msgid ""
 "\n"
 "Most drives let Aqualung know when a CD has been inserted or removed by providing a 'media changed' flag. However, some drives don't set this flag properly, and thus it may happen that a newly inserted CD remains unnoticed to Aqualung. In such cases, enabling this option should help."
 msgstr ""
 "\n"
-"大部分のドライブは、CDが挿入されたり、取り外された時、 Aqualung に「メディアは交換された」というフラグで知らせます。しかし、このフラグを適切に設定しないドライブがあります。そして、このように、新しく挿入されたCDが Aqualung に気づかれずに残される事が起こるかも知れません。そのような場合、このオプションを有効にする事で助けになります。"
+"大部分のドライブは、 CD が挿入されたり、取り外された時、 Aqualung に「メディアが交換されたこと」を通知します。しかし、いくつかのドライブはこの通知フラグを適切に設定しないため、時々、Aqualung は新しく挿入された CD を認識しないことがあります。そのような場合、このオプションを有効にすると軽減されるでしょう。"
 
 msgid ""
 "\n"
@@ -1750,8 +1752,8 @@ msgid ""
 "Example: localhost, .localdomain, .my.domain.com"
 msgstr ""
 "\n"
-"ここでは、上で設定されるプロキシを使わずにアクセスされる\n"
-"ドメインのカンマ区切りリストを入力しなければなりません。\n"
+"ここでは、上で設定したプロキシを介さずにアクセスする\n"
+"ドメインリスト(カンマ区切り)を入力しなければなりません。\n"
 "例：localhost, .localdomain, .my.domain.com"
 
 msgid "Embed playlist into main window"
@@ -1764,16 +1766,16 @@ msgid "Do nothing"
 msgstr "何もしない"
 
 msgid "Change volume"
-msgstr "音量を変更"
+msgstr "音量の変更"
 
 msgid "Change balance"
-msgstr "バランスを変更"
+msgstr "バランスの変更"
 
 msgid "Change song position"
-msgstr "曲の位置を変更"
+msgstr "再生位置の変更"
 
 msgid "Change current song"
-msgstr "現在の曲を変更"
+msgstr "曲の変更"
 
 msgid "Left button"
 msgstr "左ボタン"
@@ -1788,13 +1790,13 @@ msgid "Button"
 msgstr "ボタン"
 
 msgid "Left and right mouse buttons are reserved."
-msgstr "左右のマウスボタンは予約済みです。"
+msgstr "右ボタンと左ボタンは予約されています。"
 
 msgid "This button is already assigned."
-msgstr "このボタンはすでに割り当て済みです。"
+msgstr "このボタンはすでに割り当てられています。"
 
 msgid "Add mouse button command"
-msgstr "マウスボタンコマンドを追加"
+msgstr "マウスボタンにコマンドを追加"
 
 msgid "Mouse button"
 msgstr "マウスボタン"
@@ -1809,7 +1811,7 @@ msgid "Main window"
 msgstr "メインウィンドウ"
 
 msgid "Disable control buttons relief"
-msgstr "コントロールボタンレリーフを無効"
+msgstr "コントロールボタンの装飾を無効"
 
 msgid "Combine play and pause buttons"
 msgstr "再生ボタンと一時停止ボタンを一体化"
@@ -1833,10 +1835,10 @@ msgid "Start minimized"
 msgstr "最小化した状態で開始する"
 
 msgid "Play/Stop song"
-msgstr "曲を再生/中止"
+msgstr "曲の再生/停止"
 
 msgid "Play/Pause song"
-msgstr "曲を再生/一時停止"
+msgstr "曲の再生/一時停止"
 
 msgid "Mouse wheel"
 msgstr "マウスホイール"
@@ -1935,7 +1937,7 @@ msgid "Show soundfile size in statusbar"
 msgstr "ステータスバーに音声ファイルのサイズを表示"
 
 msgid "Show RVA values"
-msgstr "RVA値を表示"
+msgstr "RVA 値を表示"
 
 msgid "Show track lengths"
 msgstr "トラック長を表示"
@@ -1944,7 +1946,7 @@ msgid "Show active track name in bold"
 msgstr "アクティブなトラック名を太字で表示"
 
 msgid "Automatically roll to active track"
-msgstr "アクティブなトラックへ自動的にロール"
+msgstr "自動的にアクティブなトラックへ移動"
 
 msgid "Enable rules hint"
 msgstr "ルールヒントを有効"
@@ -1957,7 +1959,7 @@ msgid ""
 "to set the column order in the Playlist."
 msgstr ""
 "プレイリストの列順を設定するには\n"
-"エントリを下のリストにドラッグアンドドロップ。"
+"エントリを下のリストにドラッグアンドドロップしてください。"
 
 msgid "Column"
 msgstr "列"
@@ -1966,7 +1968,7 @@ msgid "Track titles"
 msgstr "トラックタイトル"
 
 msgid "RVA values"
-msgstr "RVA値"
+msgstr "RVA 値"
 
 msgid "Track lengths"
 msgstr "トラックの長さ"
@@ -2014,20 +2016,20 @@ msgid "DSP"
 msgstr "DSP (デジタル信号処理)"
 
 msgid "LADSPA plugin processing"
-msgstr "LADSPAプラグイン処理"
+msgstr "LADSPA プラグイン処理"
 
 msgid "Pre Fader (before Volume & Balance)"
-msgstr "プリフェーダ (AUX出力を前から音量コントロール)"
+msgstr "プリフェーダ (AUX 出力を前から音量コントロール)"
 
 msgid "Post Fader (after Volume & Balance)"
-msgstr "ポストフェーダ (AUX出力を後ろから音量コントロール)"
+msgstr "ポストフェーダ (AUX 出力を後ろから音量コントロール)"
 
 msgid ""
 "Aqualung is compiled without LADSPA plugin support.\n"
 "See the About box and the documentation for details."
 msgstr ""
-"Aqualung はLADSPAプラグインサポートなしでコンパイルされています。\n"
-"詳細はバージョン情報ボックスとドキュメントをご覧下さい。"
+"Aqualung は LADSPA プラグインサポートなしでコンパイルされています。\n"
+"詳細は「このソフトについて」とドキュメントをご覧下さい。"
 
 msgid "Sample Rate Converter type"
 msgstr "サンプルレート変換形式"
@@ -2037,13 +2039,13 @@ msgid ""
 "See the About box and the documentation for details."
 msgstr ""
 "Aqualung はサンプルレート変換サポートなしでコンパイルされています。\n"
-"詳細はバージョン情報ボックスとドキュメントをご覧下さい。"
+"詳細は「このソフトについて」とドキュメントをご覧下さい。"
 
 msgid "Playback RVA"
-msgstr "RVA再生"
+msgstr "RVA 再生"
 
 msgid "Enable playback RVA"
-msgstr "RVA再生を有効"
+msgstr "RVA 再生を有効"
 
 msgid "Listening environment:"
 msgstr "リスニング環境:"
@@ -2070,7 +2072,7 @@ msgid "RVA for Unmeasured Files [dB] :"
 msgstr "無制限ファイルの RVA [dB] :"
 
 msgid "Apply averaged RVA to tracks of the same record"
-msgstr "同じレコードのトラックに平均RVAを適用"
+msgstr "同じレコードのトラックに平均 RVA を適用"
 
 msgid "Drop statistical aberrations based on"
 msgstr "統計的収差を下げる"
@@ -2090,13 +2092,13 @@ msgid "% of standard deviation :"
 msgstr "標準偏差の % :"
 
 msgid "ReplayGain tag to use (with fallback to the other): "
-msgstr "使用する再生音量タグ (他にフォールバック): "
+msgstr "使用する ReplayGain タグ (他にフォールバック): "
 
 msgid "Replaygain_track_gain"
-msgstr "再生音量_単曲平均化"
+msgstr "Replaygain_track_gain"
 
 msgid "Replaygain_album_gain"
-msgstr "再生音量_アルバム平均化"
+msgstr "Replaygain_album_gain"
 
 msgid "Adding files to Playlist"
 msgstr "ファイルをプレイリストに追加"
@@ -2106,7 +2108,7 @@ msgid ""
 "if no metadata is available."
 msgstr ""
 "メタデータが利用できなければ\n"
-"フルパスの変わりにベースネームだけを使う。"
+"フルパスの変わりにベースネームだけを使います。"
 
 msgid "Metadata editor (File info dialog)"
 msgstr "メタデータエディタ (ファイル情報ダイアログ)"
@@ -2119,10 +2121,10 @@ msgstr ""
 "コンテンツの設定を試して下さい。"
 
 msgid "Batch update & encode (mass tagger, CD ripper, file export)"
-msgstr "バッチ更新とエンコード (mass tagger, CDリッパ, ファイルエクスポート)"
+msgstr "バッチ更新とエンコード (mass tagger、CD リッパ、ファイルエクスポート)"
 
 msgid "Tags to add when creating or updating MPEG audio files:"
-msgstr "MPEGオーディオファイルの作成、更新の時に追加するタグ:"
+msgstr "MPEG オーディオファイルの作成、更新の時に追加するタグ:"
 
 msgid ""
 "Note: pre-existing tags will be updated even though they\n"
@@ -2130,34 +2132,34 @@ msgid ""
 msgstr "メモ: これまでのタグはここでチェックされなくても更新されます。"
 
 msgid "CD Audio"
-msgstr "CDオーディオ"
+msgstr "CD オーディオ"
 
 msgid "CD drive speed:"
-msgstr "CDドライブ速度:"
+msgstr "CD ドライブ速度:"
 
 msgid "\tMaximum number of retries:"
 msgstr "\tリトライの最大数:"
 
 msgid "Force TOC re-read on every drive scan"
-msgstr "ドライブスキャン毎に強制的にTOCを再読み込み"
+msgstr "ドライブスキャン毎に強制的に TOC を再読み込み"
 
 msgid "Automatically add CDs to Playlist"
-msgstr "CDをプレイリストに自動的に追加"
+msgstr "CD をプレイリストに自動的に追加"
 
 msgid "Automatically remove CDs from Playlist"
-msgstr "CDをプレイリストから自動的に削除"
+msgstr "CD をプレイリストから自動的に削除"
 
 msgid "CDDB server:"
-msgstr "CDDBサーバ:"
+msgstr "CDDB サーバ:"
 
 msgid "Connection timeout [sec]:"
 msgstr "接続タイムアウト [秒]:"
 
 msgid "Email address for submission:"
-msgstr "送信用Eメールアドレス:"
+msgstr "送信用メールアドレス:"
 
 msgid "Local CDDB directory:"
-msgstr "ローカルCDDBディレクトリ:"
+msgstr "ローカル CDDB ディレクトリ:"
 
 msgid "Use the local database only"
 msgstr "ローカルデータベースだけを使う"
@@ -2178,7 +2180,7 @@ msgid "Direct connection to the Internet"
 msgstr "インターネットに直接接続"
 
 msgid "Connect via HTTP proxy"
-msgstr "HTTPプロキシ経由で接続"
+msgstr "HTTP プロキシ経由で接続"
 
 msgid "Proxy settings"
 msgstr "プロキシ設定"
@@ -2254,7 +2256,7 @@ msgid "Select directory"
 msgstr "ディレクトリを選択"
 
 msgid "Add URL"
-msgstr "URLを追加"
+msgstr "URL を追加"
 
 msgid "URL:"
 msgstr "URL:"
@@ -2269,11 +2271,11 @@ msgid ""
 "Playback RVA is currently disabled.\n"
 "Do you want to enable it now?"
 msgstr ""
-"再生RVAは現在無効です。\n"
+"再生 RVA は現在無効です。\n"
 "今すぐ有効にしますか？"
 
 msgid "counting..."
-msgstr "カウント中…"
+msgstr "カウント中..."
 
 msgid "track"
 msgstr "トラック"
@@ -2348,9 +2350,8 @@ msgid "Remove all"
 msgstr "全て削除"
 
 msgid "Remove dead"
-msgstr "不要を削除"
+msgstr "存在しないものを削除"
 
-# Ausgewählte Titel bleiben in der Wiedergabeliste, alles anderen werden entfernt.
 msgid "Cut selected"
 msgstr "選択範囲を切り取る"
 
@@ -2370,7 +2371,7 @@ msgid "Enqueue playlist"
 msgstr "待ちプレイリスト"
 
 msgid "Send to iFP device"
-msgstr "iFP-デバイスに送信"
+msgstr "iFP デバイスに送信"
 
 msgid "Calculate RVA"
 msgstr "RVA を計算"
@@ -2388,7 +2389,7 @@ msgid "File info..."
 msgstr "ファイル情報..."
 
 msgid "Roll to active song"
-msgstr "アクティブな曲にロール"
+msgstr "アクティブな曲に移動"
 
 msgid "Stop adding files"
 msgstr "ファイルの追加を中止"
@@ -2417,7 +2418,7 @@ msgid "Unable to remove %d files."
 msgstr "%d ファイルを削除する事はできません。"
 
 msgid "LADSPA patch builder"
-msgstr "LADSPAパッチビルダ"
+msgstr "LADSPA パッチビルダ"
 
 msgid "Available plugins"
 msgstr "利用できるプラグイン"
@@ -2456,7 +2457,7 @@ msgid "Untitled"
 msgstr "タイトルなし"
 
 msgid "JACK Port Setup"
-msgstr "JACKポート設定"
+msgstr "JACK ポート設定"
 
 msgid "Rescan"
 msgstr "再スキャン"
@@ -2468,10 +2469,10 @@ msgid "Clear connections"
 msgstr "接続をクリア"
 
 msgid " out L"
-msgstr "左外"
+msgstr " 左外"
 
 msgid " out R"
-msgstr "右外"
+msgstr " 右外"
 
 msgid "Search the Music Store"
 msgstr "Music Store を検索"
@@ -2483,7 +2484,7 @@ msgid "Case sensitive"
 msgstr "大文字小文字を区別"
 
 msgid "Exact matches only"
-msgstr "完全な一致だけ"
+msgstr "完全一致のみ"
 
 msgid "Select first and close window"
 msgstr "最初に選択してからウィンドウを閉じる"
@@ -2492,7 +2493,7 @@ msgid "Search in:"
 msgstr "検索:"
 
 msgid "Artist names"
-msgstr "アーチスト名"
+msgstr "アーティスト名"
 
 msgid "Record titles"
 msgstr "レコードタイトル"
@@ -2525,8 +2526,8 @@ msgid ""
 "The information below is reported by the drive, and\n"
 "may not reflect the actual capabilities of the device."
 msgstr ""
-"下の情報はドライブによって報告されます。\n"
-"そしてデバイスの実際の性能には反映されません。"
+"以下の情報はドライブから報告されたものです。\n"
+"しかし実際のデバイスの機能を反映していないかもしれません。"
 
 msgid "Eject"
 msgstr "イジェクト"
@@ -2556,7 +2557,7 @@ msgid "Reading"
 msgstr "読み込み"
 
 msgid "Play CD Audio"
-msgstr "CDオーディオを再生"
+msgstr "CD オーディオを再生"
 
 msgid "Read CD-DA"
 msgstr "CD-DA を読み込む"
@@ -2589,7 +2590,7 @@ msgid "Read DVD-ROM"
 msgstr "DVD-ROM を読み込む"
 
 msgid "C2 Error Correction"
-msgstr "C2 Fehlerkorrektur"
+msgstr "C2 エラー訂正"
 
 msgid "Read Mode 2 Form 1"
 msgstr "Mode 2 Form 1 を読み込む"
@@ -2604,7 +2605,7 @@ msgid "Read ISRC"
 msgstr "ISRC を読み込む"
 
 msgid "Writing"
-msgstr "書き込み"
+msgstr "書き込み中"
 
 msgid "Write CD-R"
 msgstr "CD-R に書き込む"
@@ -2628,16 +2629,16 @@ msgid "Write DVD-RAM"
 msgstr "DVD-RAM に書き込む"
 
 msgid "Mount Rainier"
-msgstr "マウント レーニア"
+msgstr "マウント レーニア (Mount Rainier)"
 
 msgid "Burn Proof"
-msgstr "バッファーアンダーラン防止"
+msgstr "バッファーアンダーラン防止 (Burn Proof)"
 
 msgid "Disc info"
 msgstr "ディスク情報"
 
 msgid "This CD does not contain CD-Text information."
-msgstr "このCDはCDテキスト情報を含んでいません。"
+msgstr "この CD は CD テキスト情報を含んでいません。"
 
 msgid "drive"
 msgstr "ドライブ"
@@ -2658,19 +2659,19 @@ msgid "Add to playlist (Album mode)"
 msgstr "プレイリストに追加 (アルバムモード)"
 
 msgid "CDDB query for this CD..."
-msgstr "このCDをCDDBに問い合わせ…"
+msgstr "この CD を CDDB に問い合わせ..."
 
 msgid "Submit CD to CDDB database..."
-msgstr "CDをCDDBデータベースに送信…"
+msgstr "CD を CDDB データベースに送信..."
 
 msgid "Rip CD..."
-msgstr "CDをリッピング…"
+msgstr "CD をリッピング..."
 
 msgid "Disc info..."
-msgstr "ディスク情報…"
+msgstr "ディスク情報..."
 
 msgid "Drive info..."
-msgstr "ドライブ情報…"
+msgstr "ドライブ情報..."
 
 msgid "Comments:"
 msgstr "コメント:"
@@ -2691,13 +2692,13 @@ msgid "Use relative paths in store file"
 msgstr "ストアファイルに相対パスを使う"
 
 msgid "Add Artist"
-msgstr "アーチストを追加"
+msgstr "アーティストを追加"
 
 msgid "Name to sort by:"
 msgstr "並び替える名前:"
 
 msgid "Edit Artist"
-msgstr "アーチストを編集"
+msgstr "アーティストを編集"
 
 msgid "Please select the audio files for this record."
 msgstr "レコード用の音声ファイルを選択して下さい。"
@@ -2709,7 +2710,7 @@ msgid "Auto-create tracks from these files:"
 msgstr "次のファイルからトラックを自動作成:"
 
 msgid "_Add files..."
-msgstr "ファイルを追加(_A)…"
+msgstr "ファイルを追加(_A)..."
 
 msgid "Edit Record"
 msgstr "レコードを編集"
@@ -2734,7 +2735,7 @@ msgid "Volume level:"
 msgstr "ボリュームレベル:"
 
 msgid "Use manual RVA value [dB]"
-msgstr "マニュアルRVA値を使う [dB]"
+msgstr "マニュアル RVA 値を使う [dB]"
 
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
@@ -2749,7 +2750,7 @@ msgid ""
 "Add it on the Settings/Music Store tab."
 msgstr ""
 "ストア '%s' は既に存在します。\n"
-"それを設定/Music Store タブに追加。"
+"それを設定/Music Store タブに追加します。"
 
 #, c-format
 msgid "Really remove store \"%s\" from the Music Store?"
@@ -2762,7 +2763,7 @@ msgid "Do you want to save the store before removing?"
 msgstr "削除する前にストアを保存しますか？"
 
 msgid "Remove Artist"
-msgstr "アーチストを削除"
+msgstr "アーティストを削除"
 
 msgid "Remove Record"
 msgstr "レコードを削除"
@@ -2795,23 +2796,23 @@ msgid "(no comment)"
 msgstr "(コメントなし)"
 
 msgid "artist"
-msgstr "アーチスト"
+msgstr "アーティスト"
 
 msgid "artists"
-msgstr "アーチスト"
+msgstr "アーティスト"
 
 #, c-format
 msgid "File \"%s\" does not exist or your write permission has been withdrawn. Check if the partition containing the store file has been unmounted."
-msgstr "ファイル \"%s\" は存在しないか、書き込み属性が取り消されています。保存ファイルを含むパーティションがアンマウントされているかどうかチェックしてください。"
+msgstr "ファイル \"%s\" は存在していないか、書き込みができません。storeファイルを含むパーティションが既にアンマウントされてないかチェックして下さい"
 
 msgid "Build / Update store from filesystem..."
-msgstr "ファイルシステムからストアを、ビルド / 更新…"
+msgstr "ファイルシステムからストアを、ビルド / 更新..."
 
 msgid "Edit store..."
-msgstr "ストアを編集…"
+msgstr "ストアを編集..."
 
 msgid "Export store..."
-msgstr "ストアをエクスポート…"
+msgstr "ストアをエクスポート..."
 
 msgid "Save store"
 msgstr "ストアを保存"
@@ -2820,7 +2821,7 @@ msgid "Remove store"
 msgstr "ストアを削除"
 
 msgid "Add new artist to this store..."
-msgstr "このストアに新しいアーチストを追加…"
+msgstr "このストアに新しいアーティストを追加..."
 
 msgid "Calculate volume (recursive)"
 msgstr "ボリュームを計算 (rekursiv)"
@@ -2832,52 +2833,52 @@ msgid "All tracks"
 msgstr "全てのトラック"
 
 msgid "Batch-update file metadata..."
-msgstr "ファイルメタデータをバッチ更新…"
+msgstr "ファイルメタデータをバッチ更新..."
 
 msgid "Add new artist..."
-msgstr "新しいアーチストを追加…"
+msgstr "新しいアーティストを追加..."
 
 msgid "Edit artist..."
-msgstr "アーチストを編集…"
+msgstr "アーティストを編集..."
 
 msgid "Export artist..."
-msgstr "アーチストをエクスポート…"
+msgstr "アーティストをエクスポート..."
 
 msgid "Remove artist"
-msgstr "アーチストを削除"
+msgstr "アーティストを削除"
 
 msgid "Add new record to this artist..."
-msgstr "このアーチストに新しいレコードを追加…"
+msgstr "このアーティストに新しいレコードを追加..."
 
 msgid "Add new record..."
-msgstr "新しいレコードを追加…"
+msgstr "新しいレコードを追加..."
 
 msgid "Edit record..."
-msgstr "レコードを編集…"
+msgstr "レコードを編集..."
 
 msgid "Export record..."
-msgstr "レコードを出力…"
+msgstr "レコードをエクスポート..."
 
 msgid "Remove record"
 msgstr "レコードを削除"
 
 msgid "Add new track to this record..."
-msgstr "このレコードに新しいトラックを追加…"
+msgstr "このレコードに新しいトラックを追加..."
 
 msgid "CDDB query for this record..."
-msgstr "このレコードのCDDB問い合わせ…"
+msgstr "このレコードのCDDB問い合わせ..."
 
 msgid "Submit record to CDDB database..."
-msgstr "CDDBデータベースにレコードを送信…"
+msgstr "CDDBデータベースにレコードを送信..."
 
 msgid "Add new track..."
-msgstr "新しいトラックを追加…"
+msgstr "新しいトラックを追加..."
 
 msgid "Edit track..."
-msgstr "トラックを編集…"
+msgstr "トラックを編集..."
 
 msgid "Export track..."
-msgstr "トラックを出力…"
+msgstr "トラックをエクスポート..."
 
 msgid "Remove track"
 msgstr "トラックを削除"
@@ -2892,7 +2893,7 @@ msgid "In any case"
 msgstr "どんな場合でも"
 
 msgid "Update file metadata..."
-msgstr "ファイルメタデータを更新…"
+msgstr "ファイルメタデータを更新..."
 
 msgid "Please select the download directory for this podcast."
 msgstr "このポッドキャストのダウンロードディレクトリを選択して下さい。"
@@ -2935,7 +2936,7 @@ msgid "Podcasts"
 msgstr "ポッドキャスト"
 
 msgid "Updating..."
-msgstr "更新中…"
+msgstr "更新中..."
 
 msgid "Delete downloaded items from the filesystem"
 msgstr "ファイルシステムからダウンロードしたアイテムを削除"
@@ -2959,7 +2960,7 @@ msgstr ""
 
 #, c-format
 msgid "Downloading %d/%d (%d%%) ..."
-msgstr "%d/%d (%d%%) をダウンロード中…"
+msgstr "%d/%d (%d%%) をダウンロード中..."
 
 msgid "item"
 msgstr "アイテム"
@@ -2980,7 +2981,7 @@ msgid "feeds"
 msgstr "フィード"
 
 msgid "Export item..."
-msgstr "アイテムを出力…"
+msgstr "アイテムをエクスポート..."
 
 msgid "Add all items to playlist"
 msgstr "プレイリストに全てのアイテムを追加"
@@ -2998,10 +2999,10 @@ msgid "Edit feed"
 msgstr "フィードを編集"
 
 msgid "Export all items..."
-msgstr "全てのアイテムを出力…"
+msgstr "全てのアイテムをエクスポート..."
 
 msgid "Export new items..."
-msgstr "新しいアイテムを出力…"
+msgstr "新しいアイテムをエクスポート..."
 
 msgid "Update feed"
 msgstr "フィードを更新"
@@ -3044,10 +3045,10 @@ msgid "Music Store Files (*.xml)"
 msgstr "Music Store ファイル (*.xml)"
 
 msgid "Aqualung playlist (*.xml)"
-msgstr "Aqualungプレイリスト (*.xml)"
+msgstr "Aqualung プレイリスト (*.xml)"
 
 msgid "MP3 Playlist (*.m3u)"
-msgstr "MP3プレイリスト (*.m3u)"
+msgstr "MP3 プレイリスト (*.m3u)"
 
 msgid "Multimedia Playlist (*.pls)"
 msgstr "マルチメディアプレイリスト (*.pls)"
@@ -3059,13 +3060,13 @@ msgid "All Audio Files"
 msgstr "全てのオーディオファイル"
 
 msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
-msgstr "音声ファイル (*.wav, *.aiff, *.au, …)"
+msgstr "音声ファイル (*.wav, *.aiff, *.au, ...)"
 
 msgid "Free Lossless Audio Codec (*.flac)"
 msgstr "FLAC 可逆圧縮 (*.flac)"
 
 msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
-msgstr "MPEGオーディオ 非可逆圧縮 (*.mp3, *.mpa, *.mpega, …)"
+msgstr "MPEG オーディオ 非可逆圧縮 (*.mp3, *.mpa, *.mpega, ...)"
 
 msgid "Ogg Vorbis (*.ogg)"
 msgstr "Ogg Vorbis 非可逆圧縮 (*.ogg)"
@@ -3074,13 +3075,13 @@ msgid "Ogg Speex (*.spx)"
 msgstr "Ogg Speex 非可逆圧縮 (*.spx)"
 
 msgid "Musepack (*.mpc)"
-msgstr "Musepack VBR非可逆圧縮 (*.mpc)"
+msgstr "Musepack VBR 非可逆圧縮 (*.mpc)"
 
 msgid "Monkey's Audio Codec (*.ape)"
 msgstr "Monkey's Audio Codec 可逆圧縮 (*.ape)"
 
 msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
-msgstr "モジュール (*.xm, *.mod, *.it, *.s3m, …)"
+msgstr "モジュール (*.xm, *.mod, *.it, *.s3m, ...)"
 
 msgid "Compressed modules (*.gz, *.bz2)"
 msgstr "圧縮モジュール (*.gz, *.bz2)"
@@ -3095,34 +3096,34 @@ msgid "WavPack (*.wv)"
 msgstr "WavPack (*.wv)"
 
 msgid "LAVC audio/video files"
-msgstr "LAVCオーディオ/ビデオファイル"
+msgstr "LAVC オーディオ/ビデオファイル"
 
 msgid "Resume"
 msgstr "レジューム"
 
 msgid "Calculating volume level"
-msgstr "音量レベルの計算"
+msgstr "音量レベルの計算中"
 
 msgid "Profile: Telephone"
-msgstr "プロファイル: 電話"
+msgstr "プロファイル: 電話 (Telephone)"
 
 msgid "Profile: Thumb"
-msgstr "プロファイル: 携帯"
+msgstr "プロファイル: Thumb"
 
 msgid "Profile: Radio"
-msgstr "プロファイル: ラジオ"
+msgstr "プロファイル: ラジオ (Radio)"
 
 msgid "Profile: Standard"
-msgstr "プロファイル: 標準"
+msgstr "プロファイル: 標準 (Standard)"
 
 msgid "Profile: Xtreme"
-msgstr "プロファイル: 極端"
+msgstr "プロファイル: 高音質 (Xtreme)"
 
 msgid "Profile: Insane"
-msgstr "プロファイル: 非常識"
+msgstr "プロファイル: 正気でない (Insane)"
 
 msgid "Profile: Braindead"
-msgstr "プロファイル: 脳死"
+msgstr "プロファイル: 脳死 (Braindead)"
 
 msgid "Layer I"
 msgstr "レイヤー I"
@@ -3149,41 +3150,41 @@ msgid "Stereo"
 msgstr "ステレオ"
 
 msgid "Emphasis: none"
-msgstr "重要性: なし"
+msgstr "Emphasis: なし"
 
 msgid "Emphasis:"
-msgstr "重要性:"
+msgstr "Emphasis:"
 
 msgid "Emphasis: reserved"
-msgstr "重要性: 予約済み"
+msgstr "Emphasis: 予約"
 
 msgid "bit signed"
-msgstr "bit 署名付き"
+msgstr "bit signed"
 
 msgid "bit unsigned"
-msgstr "bit 署名なし"
+msgstr "bit unsigned"
 
 msgid "bit float"
-msgstr "bit float型 (低速)"
+msgstr "bit float"
 
 msgid "bit double"
-msgstr "bit double型 (高速)"
+msgstr "bit double"
 
 msgid "encoding"
 msgstr "エンコード"
 
 msgid "Compression: Fast"
-msgstr "圧縮: 低圧縮"
+msgstr "圧縮: 高速 (Fast)"
 
 msgid "Compression: Normal"
-msgstr "圧縮: 標準"
+msgstr "圧縮: 標準 (Normal)"
 
 msgid "Compression: High"
-msgstr "圧縮: 高圧縮"
+msgstr "圧縮: 高音質 (High)"
 
 msgid "Compression: Extra High"
-msgstr "圧縮: 超高圧縮"
+msgstr "圧縮: 超高音質 (Extra High)"
 
 msgid "Compression: Insane"
-msgstr "圧縮: 正気でない"
+msgstr "圧縮: 正気でない (Insane)"
 

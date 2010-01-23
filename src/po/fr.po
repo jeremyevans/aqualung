@@ -3,13 +3,12 @@
 # This file is distributed under the same license as the aqualung package.
 # Julien Lavergne <gilir@ubuntu.com>, 2010.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-12 22:03+0100\n"
-"PO-Revision-Date: 2010-01-13 00:19+0100\n"
+"PO-Revision-Date: 2010-01-23 18:50+0100\n"
 "Last-Translator: Julien Lavergne <gilir@ubuntu.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -164,7 +163,7 @@ msgid "PulseAudio\n"
 msgstr "PulseAudio\n"
 
 msgid "Win32 Sound API\n"
-msgstr ""
+msgstr "Win32 Sound API\n"
 
 msgid "Win32 Sound API\n"
 "This program is free software; you can redistribute it and/or modify it "
@@ -180,13 +179,20 @@ msgid "Win32 Sound API\n"
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 675 Mass "
 "Ave, Cambridge, MA 02139, USA."
-msgstr ""
-"Win32 Sound API\n"
-"Ce programme est un logiciel libre ; vous pouvez le redistribuer ou lemodifier suivant les termes de la “GNU General Public License” telle quepubliée par la Free Software Foundation : soit la version 2 de cettelicence, soit (à votre gré) toute version ultérieure.\n"
+msgstr "Win32 Sound API\n"
+"Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le"
+"modifier suivant les termes de la “GNU General Public License” telle que"
+"publiée par la Free Software Foundation : soit la version 2 de cette"
+"licence, soit (à votre gré) toute version ultérieure.\n"
 "\n"
-"Ce programme est distribué dans l’espoir qu’il vous sera utile, mais SANSAUCUNE GARANTIE : sans même la garantie implicite de COMMERCIALISABILITÉni d’ADÉQUATION À UN OBJECTIF PARTICULIER. Consultez la Licence GénéralePublique GNU pour plus de détails\n"
-".\n"
-"Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avecce programme ; si ce n’est pas le cas, écrivez à Free Software Foundation,Inc., 675 Mass"
+"Ce programme est distribué dans l’espoir qu’il vous sera utile, mais SANS"
+"AUCUNE GARANTIE : sans même la garantie implicite de COMMERCIALISABILITÉ"
+"ni d’ADÉQUATION À UN OBJECTIF PARTICULIER. Consultez la Licence Générale"
+"Publique GNU pour plus de détails\n."
+"\n"
+"Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec"
+"ce programme ; si ce n’est pas le cas, écrivez à Free Software Foundation,"
+"Inc., 675 Mass"
 
 msgid "Enabled"
 msgstr "Activé"
@@ -265,7 +271,8 @@ msgid ""
 "records. The files are added on a record basis."
 msgstr ""
 "Suivre la structure des dossiers pour identifier les artistes\n"
-"et les enregistrements. Les fichiers seront ajoutés sur la base des enregistrements"
+"et les enregistrements. Les fichiers seront ajoutés sur la base des enregistrements" 
+
 msgid "Independent"
 msgstr "Indépendant"
 
@@ -344,203 +351,213 @@ msgid "Record"
 msgstr "Enregistrement"
 
 msgid "Sort records by"
-msgstr ""
+msgstr "Classe les enregistrement par"
 
 msgid "Record name"
-msgstr ""
+msgstr "Nom de l'enregistrement"
 
 msgid "Record name (lowercase)"
-msgstr ""
+msgstr "Nom de l'enregistrement (minuscule)"
 
 msgid "Year"
-msgstr ""
+msgstr "Année"
 
 msgid "Add year to the comments of new records"
-msgstr ""
+msgstr "Ajouter l'année aux commentaires du nouvel enregistrement"
 
 msgid "Track"
-msgstr ""
+msgstr "Piste"
 
 msgid "Import Replaygain tag as manual RVA"
-msgstr ""
+msgstr "Importer le tag Replayagin comme des RVA manuels"
 
 msgid "Import Comment tag"
-msgstr ""
+msgstr "Importer le tag Commentaire"
 
 msgid "Sandbox"
-msgstr ""
+msgstr "Bac à sable"
 
 msgid "Filename:"
-msgstr ""
+msgstr "Nom du fichier:"
 
 msgid "Test"
-msgstr ""
+msgstr "Test"
 
 msgid "Building store from filesystem"
-msgstr ""
+msgstr "Construit la discothèque depuis un système de fichier"
 
 msgid "Processing:"
-msgstr ""
+msgstr "Traitement:"
 
 msgid "Action:"
-msgstr ""
+msgstr "Action:"
 
 msgid "Abort"
-msgstr ""
+msgstr "Abandon"
 
 msgid "Unknown Artist"
-msgstr ""
+msgstr "Artiste inconnu"
 
 msgid "Unknown Record"
-msgstr ""
+msgstr "Enregistrement inconnu"
 
 msgid "Scanning files"
-msgstr ""
+msgstr "Scan des fichiers"
 
 msgid "Processing metadata"
-msgstr ""
+msgstr "Traitement des meta-données"
 
 msgid "CDDB lookup"
-msgstr ""
+msgstr "Interogation de CDDB"
 
 msgid "Name transformation"
-msgstr ""
+msgstr "Transformation du nom"
 
 msgid "Reading file"
-msgstr ""
+msgstr "Lecture du fichier"
 
 msgid "Removing non-existing files"
-msgstr ""
+msgstr "Enlève les fichiers inexistants"
 
 msgid "Unknown disc"
-msgstr ""
+msgstr "Disque inconnu"
 
 msgid "No disc"
-msgstr ""
+msgstr "Pas de disque"
 
 msgid "CDDB query"
-msgstr ""
+msgstr "Interogation de CDDB"
 
 msgid "Retrieving matches from server..."
-msgstr ""
+msgstr "Récupération des correspondances depuis le serveur"
 
 msgid "Connecting to CDDB server..."
-msgstr ""
+msgstr "Connexion au serveur CDDB"
 
 msgid "Error"
-msgstr ""
+msgstr "Erreur"
 
 msgid "An error occurred while attempting to connect to the CDDB server."
-msgstr ""
+msgstr "Une erreur est survenue lors de la connexion au serveur CDDB"
 
 msgid "Warning"
-msgstr ""
+msgstr "Attention"
 
 msgid "No matching record found."
-msgstr ""
+msgstr "Pas de correspondance de l'enregistrement trouvé"
 
 msgid "Import as Sort Key"
-msgstr ""
+msgstr "Importer comme une clé de classement"
 
 msgid "Import as Title"
-msgstr ""
+msgstr "Importer comme un titre"
 
 msgid "Import as Year"
-msgstr ""
+msgstr "Importer comme une année"
 
 msgid ""
 "Artist appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
+"L'artiste semble être tout en minuscules.\n"
+"Voulez vous continuer?"
 
 msgid ""
 "Artist appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
+"L'artiste semble être tout en majuscules.\n"
+"Voulez vous continuer?"
 
 msgid ""
 "Title appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
+"Le titre semble être tout en minuscules.\n"
+"Voulez vous continuer?"
 
 msgid ""
 "Title appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
+"Le titre semble être tout en majuscules.\n"
+"Voulez vous continuer?"
 
 msgid ""
 "It is very likely that the year is wrong.\n"
 "Do you want to proceed?"
 msgstr ""
+"Il est très probable que l'année soit fausse.\n"
+"Voulez vous continuer?"
 
 msgid "The email address provided for submission is invalid."
-msgstr ""
+msgstr "L'adresse mail fournies pour la présentation est invalide"
 
 msgid "An error occurred while submitting the record to the CDDB server."
-msgstr ""
+msgstr "Une erreur est survenue lors de la présentation de l'enregistrement au serveur CDDB"
 
 msgid "Correct existing record"
-msgstr ""
+msgstr "Correction de l'enregistrement existant"
 
 msgid "Submit new record"
-msgstr ""
+msgstr "Soumettre un nouvel enregistrement"
 
 msgid "Matches:"
-msgstr ""
+msgstr "Concordances:"
 
 msgid "Artist:"
-msgstr ""
+msgstr "Artiste:"
 
 msgid "Title:"
-msgstr ""
+msgstr "Titre:"
 
 msgid "Year:"
-msgstr ""
+msgstr "Année:"
 
 msgid "Category:"
-msgstr ""
+msgstr "Catégorie:"
 
 msgid "(choose a category)"
-msgstr ""
+msgstr "(choisir une catégorie)"
 
 msgid "Genre:"
-msgstr ""
+msgstr "Genre:"
 
 msgid "Extended data:"
-msgstr ""
+msgstr "Données étendues"
 
 msgid "Import as Artist"
-msgstr ""
+msgstr "Importer comme Artiste"
 
 msgid "Add to Comments"
-msgstr ""
+msgstr "Ajouter au commentaires"
 
 msgid "Tracks"
-msgstr ""
+msgstr "Pistes"
 
 msgid "You have to provide an email address for CDDB submission."
-msgstr ""
+msgstr "Vous devez fournir une adresse mail pour la présentation à CDDB"
 
 msgid "Please select the directory for ripped files."
-msgstr ""
+msgstr "Selectionnez le répertoire pour les fichiers rippés"
 
 msgid "(none)"
-msgstr ""
+msgstr "(rien)"
 
 msgid "fast"
-msgstr ""
+msgstr "rapide"
 
 msgid "best"
-msgstr ""
+msgstr "meilleur"
 
 msgid "Compression level:"
-msgstr ""
+msgstr "Niveau de compression:"
 
 msgid "Bitrate [kbps]:"
-msgstr ""
+msgstr "Bitrate [kbps]:"
 
 msgid "Artist/Album already existing, not empty"
-msgstr ""
+msgstr "Artiste/Album déjà existant, non vide"
 
 msgid ""
 "\n"
@@ -550,66 +567,72 @@ msgid ""
 "destination Music Store. Press Cancel to get back to change the Artist/Album "
 "or the destination Music Store."
 msgstr ""
+"\n"
+"La Discothèque que vous avez sélectionnez a une correspondance avec un Artist et un Album, "
+"contenant déjà certaines pistes. Si vous appuyez sur OK, ces pistes seront enlevées. Les "
+"fichiers eux mêmes seront laissés intacts, mais ils seront enlever " 
+"de la Discothèque cible. Appuyez sur Annuler pour revenir en arrière pour changer les Artiste/Album"
+"ou la Discothèque cible."
 
 msgid "Rip CD"
-msgstr ""
+msgstr "Ripper un CD"
 
 msgid "Album:"
-msgstr ""
+msgstr "Album:"
 
 msgid "Rip"
-msgstr ""
+msgstr "Ripper"
 
 msgid "No."
-msgstr ""
+msgstr "No."
 
 msgid "Title"
-msgstr ""
+msgstr "Titre"
 
 msgid "Select"
-msgstr ""
+msgstr "Sélection"
 
 msgid "All"
-msgstr ""
+msgstr "Tout"
 
 msgid "None"
-msgstr ""
+msgstr "Aucun"
 
 msgid "Output"
-msgstr ""
+msgstr "Sortie"
 
 msgid "Destination"
-msgstr ""
+msgstr "Destination"
 
 msgid "Target directory for ripped files"
-msgstr ""
+msgstr "Dossier cible pour les fichiers rippés"
 
 msgid "Add to Music Store"
-msgstr ""
+msgstr "Ajouter à la Discothèque"
 
 msgid "Format"
-msgstr ""
+msgstr "Format"
 
 msgid "File format:"
-msgstr ""
+msgstr "Format du fichier:"
 
 msgid "VBR encoding"
-msgstr ""
+msgstr "Encodage VBR"
 
 msgid "Tag files with metadata"
-msgstr ""
+msgstr "Tagguer les fichiers avec des méta-données"
 
 msgid "Paranoia"
-msgstr ""
+msgstr "Paranoia"
 
 msgid "Paranoia error correction"
-msgstr ""
+msgstr "Erreur de connexion à Paranoia"
 
 msgid "Perform overlapped reads"
-msgstr ""
+msgstr "Effectue des lectures"
 
 msgid "Verify data integrity"
-msgstr ""
+msgstr "Vérifie l'intégrité des données"
 
 msgid "Unlimited retry on failed reads (never skip)"
 msgstr ""

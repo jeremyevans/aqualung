@@ -8,10 +8,10 @@
   man CDATA #IMPLIED
   img CDATA #IMPLIED
   title CDATA #REQUIRED"
-> 
+>
 
 <!ENTITY % content
- "p | img | dl | ul | table | tabular | matrix | shortcut"
+ "p | img | dl | ul | table | tabular | matrix | shortcut | verbatim"
 >
 
 <!ENTITY % format
@@ -99,6 +99,10 @@
 
 <!ELEMENT td (#PCDATA|%format;)*>
 
+<!-- verbatim text -->
+
+<!ELEMENT verbatim (#PCDATA)>
+
 <!-- horizontal line -->
 
 <!ELEMENT hline EMPTY>
@@ -110,7 +114,7 @@
 
 <!-- cross reference -->
 
-<!ELEMENT ref (#PCDATA)>
+<!ELEMENT ref (#PCDATA|%format;)*>
 <!ATTLIST ref refkey IDREF #REQUIRED>
 
 <!-- format -->

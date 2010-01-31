@@ -175,7 +175,8 @@ create_about_window() {
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Translators:"), -1, tag, NULL);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("French:\n"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tJulien Lavergne <gilir@ubuntu.com>\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tJulien Lavergne <gilir@ubuntu.com>\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tLouis Opter <kalessin@kalessin.fr>\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("German:\n"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\tWolfgang St\303\266ggl <c72578@yahoo.de>\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Hungarian:\n"), -1);

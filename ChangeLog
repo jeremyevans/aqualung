@@ -1,3 +1,80 @@
+2010-01-31	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
+
+    * Aqualung 0.9beta11
+        http://aqualung.factorial.hu
+
+	* Add PulseAudio support as contributed by PCMan plus a few minor
+          fixes.
+
+	* Added option for starting Aqualung hidden in tray. Useful when
+          running Aqualung automatically after login.
+
+	* Implement auto roll to active track functionality. Thanks to Chris
+          Craig for the excellent patch.
+
+	* Support new Musepack API (patch by Yavor Doganov)
+
+	* New keybinding: Ctrl-S to stop after currently playing song has
+          ended. Thanks to cobines for the patch.
+
+	* Add support for more versatile mouse-systray interaction. Thanks to
+          cobines for the excellent patch.
+
+	* Added support for new GtkTooltip API (since 2.12). Fixed tooltip
+          disappearing issue because of too frequent tooltip updates.
+
+	* Automatically add/remove stores when they become available or
+          disappear (most likely due to mount/unmount operations). Modified
+          stores will not be removed automatically.
+
+	* Add support for an application_title lua function separate from the
+          playlist_title lua function, so that the window title and the main
+          title label of the player is configurable from Lua.
+
+	* Don't require restart to update programmable title format file
+
+	* Don't use sndfile's Ogg decoder (always use native Ogg library)
+
+	* Fix FFmpeg headers detection in configure script
+
+	* Fix compiler warnings on 64 bit. Thanks to Zoltan Kovacs for the
+          patch.
+
+	* Fix crash on 64 bit when Aqualung is compiled without SRC support
+          and file contains metadata. Thanks to Zoltan Kovacs for tracking the
+          problem and providing the patch.
+
+	* Fixed crash when pasting into playlist without copying first (empty
+          clipboard).
+
+	* Fix a suspected regression: space toggles state of combined
+          play/pause button when a file is loaded.
+
+	* Fix lockup at end of playlist.
+
+	* Fixed a crash that occurred when clicked on a picture of a file in
+          the File Info dialog and the file format did not support metadata.
+
+	* Fix playlist column size allocation by eliminating manual/delayed
+          calculations and utilizing the built-in COLUMN_AUTOSIZE feature
+          instead.
+
+	* Fix crash when invoking the File Info dialog for an MPEG internet
+          radio.
+
+	* Fix inversion of enabled/diasbled state of tooltips.
+
+	* Fix crash when loading .m3u with invalid filename.
+
+	* Updated translations: German, Hungarian, Russian, Ukrainian
+
+	* New translations:
+		Japanese by Norihiro Yoneda
+		French by Julien Lavergne
+
+	* Up-to-date user documentation
+	
+	
 2009-02-08	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
 
     * Aqualung 0.9beta10

@@ -130,6 +130,9 @@ int embedded_picture_size = 0;
 /* default window title */
 char win_title[MAXLEN];
 
+/* current application title when a file is playing */
+char playing_app_title[MAXLEN];
+
 char send_cmd, recv_cmd;
 char command[RB_CONTROL_SIZE];
 fileinfo_t fileinfo;
@@ -339,6 +342,9 @@ set_title_label(char * str) {
 	tmp[0] = '\0';
 
 	if (is_file_loaded) {
+		/* Remember current title. */
+		strncpy(playing_app_title, str, MAXLEN-1);
+
 		gtk_label_set_text(GTK_LABEL(label_title), str);
 		if (options.show_sn_title) {
 			if (stop_after_current_song) {
@@ -961,7 +967,7 @@ toggle_stop_after_current_song() {
 
 	if (is_file_loaded) {
 		stop_after_current_song = !stop_after_current_song;
-		refresh_displays();
+		set_title_label(playing_app_title);
 	}
 }
 
@@ -1916,6 +1922,7 @@ prev_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		gtk_tree_path_free(p);
 		cue_track_for_playback(pl->store, &iter, &cue);
 
+		stop_after_current_song = 0;
 		if (is_paused) {
 			is_paused = 0;
 			toggle_noeffect(PAUSE, FALSE);
@@ -1996,6 +2003,7 @@ next_event(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		gtk_tree_path_free(p);
 		cue_track_for_playback(pl->store, &iter, &cue);
 
+		stop_after_current_song = 0;
 		if (is_paused) {
 			is_paused = 0;
 			toggle_noeffect(PAUSE, FALSE);
@@ -2668,6 +2676,8 @@ create_main_window(char * skin_path) {
         char path[MAXLEN];
 
 	set_win_title();
+	playing_app_title[0] = '\0';
+	
 	main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_name(main_window, "main_window");
 	register_toplevel_window(main_window, TOP_WIN_SKIN | TOP_WIN_TRAY);

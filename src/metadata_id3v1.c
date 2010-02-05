@@ -33,7 +33,9 @@
 #include "metadata.h"
 #include "metadata_api.h"
 #include "metadata_id3v1.h"
+#include "options.h"
 
+extern options_t options;
 
 char *
 id3v1_genre_str_from_code(int code) {
@@ -218,10 +220,15 @@ char *
 meta_id3v1_utf8_to_tagenc(char * utf8) {
 
 	char * str = NULL;
+	char * to = NULL;
 	GError * error = NULL;
 
-	/* convert to iso-8859-1 */
-	str = g_convert_with_fallback(utf8, -1, "iso-8859-1", "utf-8", "?", NULL, NULL, &error);
+	if (strlen(options.encode_set))
+		to = options.encode_set;
+	else
+		to = "iso-8859-1";
+
+	str = g_convert_with_fallback(utf8, -1, to, "utf-8", "?", NULL, NULL, &error);
 	if (str != NULL) {
 		return str;
 	} else {
@@ -244,9 +251,16 @@ meta_id3v1_utf8_from_tagenc(char * tagenc) {
 	if (g_utf8_validate(tagenc, -1, NULL)) {
 		return g_strdup(tagenc);
 	} else {
+		char * from = NULL;
+
 		g_clear_error(&error);
 
-		str = g_convert_with_fallback(tagenc, -1, "utf-8", "iso-8859-1", "?", NULL, NULL, &error);
+		if (strlen(options.encode_set))
+			from = options.encode_set;
+		else
+			from = "iso-8859-1";
+
+		str = g_convert_with_fallback(tagenc, -1, "utf-8", from, "?", NULL, NULL, &error);
 		if (str != NULL) {
 			return str;
 		} else {

@@ -2444,6 +2444,22 @@ plist__reread_file_meta_cb(gpointer data) {
 	playlist_content_changed(pl);
 }
 
+void
+playlist_update_metadata(void) {
+
+	GList * node = NULL;
+
+	for (node = playlists; node; node = node->next) {
+		playlist_t * pl = (playlist_t *)node->data;
+		GtkTreeIter iter;
+		gint i = 0;
+		while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(pl->store), &iter, NULL, i++)) {
+			plist__reread_file_meta_foreach(pl, &iter, NULL);
+		}
+		playlist_content_changed(pl);
+	}
+}
+
 #ifdef HAVE_EXPORT
 int
 plist__export_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {

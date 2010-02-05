@@ -33,7 +33,9 @@
 #include "metadata.h"
 #include "metadata_api.h"
 #include "metadata_id3v2.h"
+#include "options.h"
 
+extern options_t options;
 
 char *
 meta_id3v2_apic_type_to_string(int type) {
@@ -177,7 +179,12 @@ meta_id3v2_to_utf8(unsigned char enc, unsigned char * buf, int len) {
 	}
 
 	switch (enc) {
-	case 0x00: from = "iso-8859-1"; break;
+	case 0x00:
+		if (strlen(options.encode_set))
+			from = options.encode_set;
+		else
+			from = "iso-8859-1";
+		break;
 	case 0x01: from = "utf-16"; break;
 	case 0x02: from = "utf-16be"; break;
 	case 0x03: from = "utf-8"; break;

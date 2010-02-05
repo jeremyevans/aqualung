@@ -131,6 +131,7 @@ void playlist_auto_save_reset(void);
 
 void playlist_set_color(void);
 void playlist_reset_display_names(void);
+void playlist_update_metadata(void);
 void playlist_disable_bold_font(void);
 void playlist_set_font(int cond);
 

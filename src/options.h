@@ -184,6 +184,7 @@ typedef struct {
 	int batch_mpeg_add_id3v1;
 	int batch_mpeg_add_id3v2;
 	int batch_mpeg_add_ape;
+	char encode_set[MAXLEN];
 	int metaedit_auto_clone;
 	int meta_use_basename_only;
 	int meta_rm_extension;

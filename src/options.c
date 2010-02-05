@@ -218,6 +218,7 @@ GtkWidget * check_meta_use_basename_only;
 GtkWidget * check_meta_rm_extension;
 GtkWidget * check_meta_us_to_space;
 GtkWidget * check_metaedit_auto_clone;
+GtkWidget * encode_set_entry;
 
 #ifdef HAVE_CDDA
 GtkWidget * cdda_drive_speed_spinner;
@@ -534,6 +535,7 @@ options_window_accept(void) {
 	int i;
 	GtkTreeIter iter;
 	int title_format_changed = 0;
+	int metadata_encoding_changed = 0;
 
 #ifdef HAVE_LUA
 	char * ext_title;
@@ -554,6 +556,11 @@ options_window_accept(void) {
 	    diff_option_from_toggle(check_meta_rm_extension, options.meta_rm_extension) ||
 	    diff_option_from_toggle(check_meta_us_to_space, options.meta_us_to_space) ||
 	    strcmp(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)))) {
+		title_format_changed = 1;
+	}
+
+	if (strcmp(options.encode_set, gtk_entry_get_text(GTK_ENTRY(encode_set_entry)))) {
+		metadata_encoding_changed = 1;
 		title_format_changed = 1;
 	}
 
@@ -682,10 +689,16 @@ options_window_accept(void) {
 	set_option_from_toggle(check_batch_mpeg_add_id3v2, &options.batch_mpeg_add_id3v2);
 	set_option_from_toggle(check_batch_mpeg_add_ape, &options.batch_mpeg_add_ape);
 
+	set_option_from_entry(encode_set_entry, options.encode_set, MAXLEN);
+
 	set_option_from_toggle(check_metaedit_auto_clone, &options.metaedit_auto_clone);
 	set_option_from_toggle(check_meta_use_basename_only, &options.meta_use_basename_only);
 	set_option_from_toggle(check_meta_rm_extension, &options.meta_rm_extension);
 	set_option_from_toggle(check_meta_us_to_space, &options.meta_us_to_space);
+
+	if (metadata_encoding_changed) {
+		playlist_update_metadata();
+	}
 
 	if (title_format_changed) {
 		playlist_reset_display_names();
@@ -1507,6 +1520,29 @@ display_title_format_help(void) {
 		       "respectively.\n"));
 }
 
+void
+display_meta_encode_help(void) {
+
+	display_help(_("\nIf you have non-standard ID3v1/IDv2 character encoding MPEG audio file, "
+		       "please enter suitable character encoding in this entry (see below). "
+		       "If this entry is blank, the standard character encoding (ISO-8859-1) is used.\n\n"
+		       "For example:\n"
+		       "  Japanese: CP932 (SHIFT_JIS variant)\n"
+		       "  Korean: EUC-KR\n"
+		       "  Simp. Chinese: GB2312\n"
+		       "  Trad. Chinese: BIG5\n"
+		       "  Greek: ISO-8859-7\n"
+		       "  Hebrew: ISO-8859-8\n"
+		       "  Cyrillic: CP1251\n"
+		       "  Thai: ISO-8859-11\n"
+		       "  Arabic: CP1256\n"
+		       "  Turkish: ISO-8859-9\n"
+		       "  Latin Extended: ISO-8859-2\n"
+		       "  Central European: CP1250\n"
+		       "  Latin1 (standard): ISO-8859-1\n\n"
+		       "NOTE: There might be a more suitable character encoding for your language."));
+}
+
 #ifdef HAVE_LUA
 void
 display_ext_title_format_help(void) {
@@ -1967,6 +2003,7 @@ create_options_window(void) {
 	GtkWidget * hbox_meta;
 	GtkWidget * frame_meta;
 	GtkWidget * vbox_meta2;
+	GtkWidget * help_btn_meta_encode;
 
 #ifdef HAVE_CDDA
 	GtkWidget * table_cdda;
@@ -3106,6 +3143,25 @@ create_options_window(void) {
 	}
         gtk_box_pack_start(GTK_BOX(hbox), check_metaedit_auto_clone, FALSE, TRUE, 35);
 
+	hbox_meta = gtk_hbox_new(FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 8);
+
+	frame_meta = gtk_frame_new(_("MPEG audio ID3v1/ID3v2 character encoding"));
+	gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
+	vbox_meta2 = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(frame_meta), vbox_meta2);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 3);
+
+	encode_set_entry = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(encode_set_entry), MAXLEN - 1);
+	gtk_box_pack_start(GTK_BOX(hbox), encode_set_entry, TRUE, TRUE, 3);
+	gtk_entry_set_text(GTK_ENTRY(encode_set_entry), options.encode_set);
+
+	help_btn_meta_encode = gtk_button_new_from_stock (GTK_STOCK_HELP);
+	g_signal_connect(help_btn_meta_encode, "clicked", G_CALLBACK(display_meta_encode_help), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox), help_btn_meta_encode, FALSE, FALSE, 5);
 
 	hbox_meta = gtk_hbox_new(FALSE, 5);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 0);
@@ -3762,6 +3818,7 @@ create_options_window(void) {
 	if (ret == GTK_RESPONSE_ACCEPT) {
 		char buf[MAXLEN];
 		char * format = (char *)gtk_entry_get_text(GTK_ENTRY(entry_title));
+		char * encode = (char *)gtk_entry_get_text(GTK_ENTRY(encode_set_entry));
 		if ((ret = make_string_va(buf, format, 'a', "a", 'r', "r", 't', "t", 0)) != 0) {
 			make_string_strerror(ret, buf);
 			message_dialog(_("Error in title format string"),
@@ -3771,6 +3828,24 @@ create_options_window(void) {
 				       NULL,
 				       buf);
 			goto display;
+		}
+
+		if (strlen(encode)) {
+			GError * error = NULL;
+			gchar * str = g_convert("", -1, "utf-8", encode, NULL, NULL, &error);
+			if (str != NULL) {
+				g_free(str);
+			} else {
+				message_dialog(_("Error invalid character encoding"),
+					       options_window,
+					       GTK_MESSAGE_ERROR,
+					       GTK_BUTTONS_OK,
+					       NULL,
+					       "%s", error->message);
+				g_clear_error(&error);
+				gtk_entry_set_text(GTK_ENTRY(encode_set_entry), "");
+				goto display;
+			}
 		}
 
 		options_window_accept();
@@ -3876,6 +3951,7 @@ save_config(void) {
 	SAVE_INT(batch_mpeg_add_id3v1);
 	SAVE_INT(batch_mpeg_add_id3v2);
 	SAVE_INT(batch_mpeg_add_ape);
+	SAVE_STR(encode_set);
 	SAVE_INT(metaedit_auto_clone);
 	SAVE_INT(meta_use_basename_only);
 	SAVE_INT(meta_rm_extension);
@@ -4213,6 +4289,7 @@ load_config(void) {
 	options.batch_mpeg_add_id3v1 = 1;
 	options.batch_mpeg_add_id3v2 = 1;
 	options.batch_mpeg_add_ape = 0;
+	options.encode_set[0] = '\0';
 	options.metaedit_auto_clone = 0;
 
 	options.cdda_drive_speed = 4;
@@ -4294,6 +4371,7 @@ load_config(void) {
 		LOAD_INT(batch_mpeg_add_id3v1);
 		LOAD_INT(batch_mpeg_add_id3v2);
 		LOAD_INT(batch_mpeg_add_ape);
+		LOAD_STR(encode_set);
 		LOAD_INT(metaedit_auto_clone);
 		LOAD_INT(meta_use_basename_only);
 		LOAD_INT(meta_rm_extension);

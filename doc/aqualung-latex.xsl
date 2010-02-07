@@ -10,10 +10,10 @@
   <xsl:template match="text()">
     <xsl:choose>
       <xsl:when test="ancestor::verbatim[position() >= 0]">
-	<xsl:value-of select="."/>
+    <xsl:value-of select="."/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:call-template name="replace"/>
+    <xsl:call-template name="replace"/>
       </xsl:otherwise>
     </xsl:choose>
     <!--xsl:call-template name="replace"/-->
@@ -23,97 +23,97 @@
     <xsl:param name="text" select="."/>
     <xsl:choose>
       <xsl:when test="contains($text, '{')">
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-before($text, '{')"/>
-	</xsl:call-template>
-	<xsl:text>\{</xsl:text>
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-after($text, '{')"/>
-	</xsl:call-template>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-before($text, '{')"/>
+    </xsl:call-template>
+    <xsl:text>\{</xsl:text>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-after($text, '{')"/>
+    </xsl:call-template>
       </xsl:when>
       <xsl:when test="contains($text, '}')">
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-before($text, '}')"/>
-	</xsl:call-template>
-	<xsl:text>\}</xsl:text>
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-after($text, '}')"/>
-	</xsl:call-template>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-before($text, '}')"/>
+    </xsl:call-template>
+    <xsl:text>\}</xsl:text>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-after($text, '}')"/>
+    </xsl:call-template>
       </xsl:when>
       <xsl:when test="contains($text, '%')">
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-before($text, '%')"/>
-	</xsl:call-template>
-	<xsl:text>\%</xsl:text>
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-after($text, '%')"/>
-	</xsl:call-template>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-before($text, '%')"/>
+    </xsl:call-template>
+    <xsl:text>\%</xsl:text>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-after($text, '%')"/>
+    </xsl:call-template>
       </xsl:when>
       <xsl:when test="contains($text, '_')">
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-before($text, '_')"/>
-	</xsl:call-template>
-	<xsl:text>\_</xsl:text>
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-after($text, '_')"/>
-	</xsl:call-template>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-before($text, '_')"/>
+    </xsl:call-template>
+    <xsl:text>\_</xsl:text>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-after($text, '_')"/>
+    </xsl:call-template>
       </xsl:when>
       <xsl:when test="contains($text, '$')">
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-before($text, '$')"/>
-	</xsl:call-template>
-	<xsl:text>\$</xsl:text>
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-after($text, '$')"/>
-	</xsl:call-template>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-before($text, '$')"/>
+    </xsl:call-template>
+    <xsl:text>\$</xsl:text>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-after($text, '$')"/>
+    </xsl:call-template>
       </xsl:when>
       <xsl:when test="contains($text, '--')">
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-before($text, '--')"/>
-	</xsl:call-template>
-	<xsl:text>{-}{-}</xsl:text>
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-after($text, '--')"/>
-	</xsl:call-template>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-before($text, '--')"/>
+    </xsl:call-template>
+    <xsl:text>{-}{-}</xsl:text>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-after($text, '--')"/>
+    </xsl:call-template>
       </xsl:when>
       <xsl:when test="contains($text, '\')">
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-before($text, '\')"/>
-	</xsl:call-template>
-	<xsl:text>\textbackslash{}</xsl:text>
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-after($text, '\')"/>
-	</xsl:call-template>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-before($text, '\')"/>
+    </xsl:call-template>
+    <xsl:text>\textbackslash{}</xsl:text>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-after($text, '\')"/>
+    </xsl:call-template>
       </xsl:when>
       <xsl:when test="contains($text, '~')">
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-before($text, '~')"/>
-	</xsl:call-template>
-	<xsl:text>\textasciitilde{}</xsl:text>
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-after($text, '~')"/>
-	</xsl:call-template>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-before($text, '~')"/>
+    </xsl:call-template>
+    <xsl:text>\textasciitilde{}</xsl:text>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-after($text, '~')"/>
+    </xsl:call-template>
       </xsl:when>
       <xsl:when test="contains($text, '&amp;')">
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-before($text, '&amp;')"/>
-	</xsl:call-template>
-	<xsl:text>\&amp;</xsl:text>
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-after($text, '&amp;')"/>
-	</xsl:call-template>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-before($text, '&amp;')"/>
+    </xsl:call-template>
+    <xsl:text>\&amp;</xsl:text>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-after($text, '&amp;')"/>
+    </xsl:call-template>
       </xsl:when>
       <xsl:when test="contains($text, '...')">
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-before($text, '...')"/>
-	</xsl:call-template>
-	<xsl:text>\dots{}</xsl:text>
-	<xsl:call-template name="replace">
-	  <xsl:with-param name="text" select="substring-after($text, '...')"/>
-	</xsl:call-template>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-before($text, '...')"/>
+    </xsl:call-template>
+    <xsl:text>\dots{}</xsl:text>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="substring-after($text, '...')"/>
+    </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:value-of select="$text"/>
+    <xsl:value-of select="$text"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -183,7 +183,9 @@
 
   <xsl:template match="section">
     <xsl:text>\section{</xsl:text>
-    <xsl:value-of select="@title"/>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="@title"/>
+    </xsl:call-template>
     <xsl:text>\label{</xsl:text>
     <xsl:value-of select="generate-id()"/>
     <xsl:text>}}</xsl:text>
@@ -192,7 +194,9 @@
 
   <xsl:template match="subsection">
     <xsl:text>\subsection{</xsl:text>
-    <xsl:value-of select="@title"/>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="@title"/>
+    </xsl:call-template>
     <xsl:text>\label{</xsl:text>
     <xsl:value-of select="generate-id()"/>
     <xsl:text>}}</xsl:text>
@@ -201,7 +205,9 @@
 
   <xsl:template match="subsubsection">
     <xsl:text>\subsubsection{</xsl:text>
-    <xsl:value-of select="@title"/>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="@title"/>
+    </xsl:call-template>
     <xsl:text>\label{</xsl:text>
     <xsl:value-of select="generate-id()"/>
     <xsl:text>}}</xsl:text>
@@ -210,7 +216,9 @@
 
   <xsl:template match="paragraph">
     <xsl:text>\paragraph*{</xsl:text>
-    <xsl:value-of select="@title"/>
+    <xsl:call-template name="replace">
+      <xsl:with-param name="text" select="@title"/>
+    </xsl:call-template>
     <xsl:text>}</xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
@@ -236,7 +244,7 @@
     <xsl:text>\begin{center}\begin{tabular}{</xsl:text>
     <xsl:for-each select="tr[1]">
       <xsl:for-each select="td">
-	<xsl:text>l</xsl:text>
+    <xsl:text>l</xsl:text>
       </xsl:for-each>
     </xsl:for-each>
     <xsl:text>}</xsl:text>
@@ -248,7 +256,7 @@
     <xsl:text>\begin{center}\begin{tabular}{</xsl:text>
     <xsl:for-each select="tr[1]">
       <xsl:for-each select="td">
-	<xsl:text>|l</xsl:text>
+    <xsl:text>|l</xsl:text>
       </xsl:for-each>
     </xsl:for-each>
     <xsl:text>|}\hline </xsl:text>
@@ -260,25 +268,25 @@
     <xsl:text>\begin{center}\begin{tabular}{|l</xsl:text>
     <xsl:for-each select="tr[1]">
       <xsl:for-each select="td[position() &gt; 1]">
-	<xsl:text>|c</xsl:text>
+    <xsl:text>|c</xsl:text>
       </xsl:for-each>
     </xsl:for-each>
     <xsl:text>|}\hline </xsl:text>
     <xsl:for-each select="tr">
       <xsl:choose>
-	<xsl:when test="position() = 1">
-	  <xsl:for-each select="td">
-	    <xsl:text>\rotatebox{90}{\mbox{</xsl:text>
-	    <xsl:apply-templates/>
-	    <xsl:text>~}}</xsl:text>
-	    <xsl:if test="following-sibling::td">
-	      <xsl:text>&amp;</xsl:text>
-	    </xsl:if>
-	  </xsl:for-each>
-	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:apply-templates/>
-	</xsl:otherwise>
+    <xsl:when test="position() = 1">
+      <xsl:for-each select="td">
+        <xsl:text>\rotatebox{90}{\mbox{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>~}}</xsl:text>
+        <xsl:if test="following-sibling::td">
+          <xsl:text>&amp;</xsl:text>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates/>
+    </xsl:otherwise>
       </xsl:choose>
       <xsl:text>\\ \hline </xsl:text>
     </xsl:for-each>

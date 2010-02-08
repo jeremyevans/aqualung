@@ -358,11 +358,9 @@ void custom_playlist_menu_cb(gpointer path) {
 
 	g_mutex_lock(l_mutex);
 
-	/* Call Aqualung.raw_playlist_menu[path] with array of filename strings */
 	lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
 	lua_getfield(L, -1, "raw_playlist_menu");
 	lua_getfield(L, -1, (const char *)path);
-
 	error = lua_pcall(L, 0, 0, 0);
 	if (error) {
 		fprintf(stderr, "Error: in callback function for menu command %s: %s\n", (char *)path, lua_tostring(L, -1));
@@ -625,7 +623,6 @@ void add_custom_commands_to_playlist_menu(void) {
 	if (options.use_ext_title_format) {
 		g_mutex_lock(l_mutex);
 
-		/* Call Aqualung.process_menu with the menu pointer */
 		lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
 		lua_getfield(L, 1, "process_playlist_menu");
 		error = lua_pcall(L, 0, 1, 0);
@@ -661,7 +658,6 @@ void run_custom_remote_command(char * command) {
 	if (options.use_ext_title_format) {
 		g_mutex_lock(l_mutex);
 
-		/* Call Aqualung.process_menu with the menu pointer */
 		lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
 		lua_getfield(L, 1, "run_remote_command");
 		lua_pushstring(L, command);

@@ -568,7 +568,6 @@ void setup_extended_title_formatting(void) {
 	}
 
 	add_custom_commands_to_playlist_menu();
-
 	g_mutex_unlock(l_mutex);
 }
 
@@ -620,33 +619,27 @@ char * application_title_format(file_decoder_t * fdec) {
 
 void add_custom_commands_to_playlist_menu(void) {
 	int error;
-	if (options.use_ext_title_format) {
-		g_mutex_lock(l_mutex);
+	lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
+	lua_getfield(L, 1, "process_playlist_menu");
+	error = lua_pcall(L, 0, 1, 0);
+	if (error) {
+		fprintf(stderr, "Error: in Aqualung.process_playlist_menu: %s\n", lua_tostring(L, -1));
+		lua_pop(L, 1);
+	} else if(lua_toboolean(L, -1)) {
+		lua_pop(L, 1);
+		l_playlist_menu = gtk_menu_new();
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_playlist_menu_entry), l_playlist_menu);
 
-		lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
-		lua_getfield(L, 1, "process_playlist_menu");
-		error = lua_pcall(L, 0, 1, 0);
+		lua_getfield(L, 1, "build_playlist_menu");
+		lua_pushlightuserdata(L, (void *)l_playlist_menu);
+		error = lua_pcall(L, 1, 0, 0);
 		if (error) {
-			fprintf(stderr, "Error: in Aqualung.process_playlist_menu: %s\n", lua_tostring(L, -1));
+			fprintf(stderr, "Error: in Aqualung.build_playlist_menu: %s\n", lua_tostring(L, -1));
 			lua_pop(L, 1);
-		} else if(lua_toboolean(L, -1)) {
-			lua_pop(L, 1);
-			l_playlist_menu = gtk_menu_new();
-			gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_playlist_menu_entry), l_playlist_menu);
-
-			lua_getfield(L, 1, "build_playlist_menu");
-			lua_pushlightuserdata(L, (void *)l_playlist_menu);
-			error = lua_pcall(L, 1, 0, 0);
-			if (error) {
-				fprintf(stderr, "Error: in Aqualung.build_playlist_menu: %s\n", lua_tostring(L, -1));
-				lua_pop(L, 1);
-			} else {
-				gtk_widget_show(l_playlist_menu_entry);
-			}
-			
-		} 
-		g_mutex_unlock(l_mutex);
+		} else {
+			gtk_widget_show(l_playlist_menu_entry);
 	}
+	} 
 }
 
 void add_custom_command_menu_to_playlist_menu(GtkWidget * menu) {

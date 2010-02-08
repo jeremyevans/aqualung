@@ -57,6 +57,7 @@
 #define FILEINFO_TYPE_MONO 0x9
 
 extern options_t options;
+extern char current_file[MAXLEN];
 
 static lua_State * L = NULL;
 static GtkWidget * l_playlist_menu_entry = NULL;
@@ -331,6 +332,15 @@ int  l_selected_files(lua_State * L) {
 	return 1;
 }
 
+int  l_current_file(lua_State * L) {
+	if (current_file[0] == '\0') {
+		lua_pushnil(L);
+	} else {
+		lua_pushstring(L, current_file);
+	}
+	return 1;
+}
+
 void custom_playlist_menu_cb(gpointer path) {
 	int error = 0;
 
@@ -537,6 +547,8 @@ void setup_extended_title_formatting(void) {
 	lua_setglobal(L, AQUALUNG_LUA_FILEINFO_FUNCTION);
 	lua_pushcfunction(L, l_selected_files);
 	lua_setglobal(L, "selected_files");
+	lua_pushcfunction(L, l_current_file);
+	lua_setglobal(L, "current_file");
 
 	error = luaL_dofile(L, options.ext_title_format_file);
 	if (error) {

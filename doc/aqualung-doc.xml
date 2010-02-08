@@ -3462,6 +3462,7 @@
         from Aqualung, or change Aqualung's settings or behavior.</p>
 
         <ul>
+          <li>current_file(): Returns the filename (string) of currently playing file, or nil if no file is playing.<li>
           <li>selected_files(): Returns an array (integer-keyed table) of selected filenames (strings) for the current playlist.<li>
         </ul>
 

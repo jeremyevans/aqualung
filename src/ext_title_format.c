@@ -255,6 +255,9 @@ static int l_add_submenu(lua_State * L) {
 
 	menu = (GtkWidget *)lua_touserdata(L, 1); 
 	name = (char *)lua_tostring(L, 2);
+	if (name == NULL || menu == NULL) {
+		luaL_error(L, "Error inside Aqualung.add_submenu, first argument must be userdata, and second must be a string");
+	}
 
 	entry = gtk_menu_item_new_with_label(name);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), entry);
@@ -269,10 +272,12 @@ static int l_add_submenu(lua_State * L) {
 int lua_selected_playlist_filenames(playlist_t * pl, GtkTreeIter * iter, void * user_data) {
 	playlist_data_t * data;
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_DATA, &data, -1);
-	++(*(int *)user_data);
-	lua_pushinteger(L, *(int *)user_data);
-	lua_pushstring(L, data->file);
-	lua_settable(L, -3);
+	if (data->file != NULL) {
+	  ++(*(int *)user_data);
+	  lua_pushinteger(L, *(int *)user_data);
+	  lua_pushstring(L, data->file);
+	  lua_settable(L, -3);
+	}
 	return 0;
 }
 
@@ -309,6 +314,9 @@ static int l_add_playlist_menu_command(lua_State * L) {
 	menu = (GtkWidget *)lua_touserdata(L, 1);
 	name = (char *)lua_tostring(L, 2);
 	path = (char *)lua_tostring(L, 3);
+	if (name == NULL || menu == NULL || path == NULL) {
+		luaL_error(L, "Error inside Aqualung.add_submenu, first argument must be userdata, and second and third must be strings");
+	}
 
 	entry = gtk_menu_item_new_with_label(name);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), entry);

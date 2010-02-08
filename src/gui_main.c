@@ -1623,6 +1623,7 @@ cue_track_for_playback(GtkTreeStore * store, GtkTreeIter * piter, cue_t * cue) {
 	cue->filename = strdup(data->file);
 	cue->voladj = options.rva_is_enabled ? data->voladj : 0.0f;
 	strncpy(current_file, cue->filename, MAXLEN-1);
+	run_hooks("track_change");
 }
 
 

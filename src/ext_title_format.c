@@ -67,7 +67,9 @@ static const char l_cur_fdec = 'l';
 static const char l_cur_menu = 'm';
 static const char AQUALUNG_LUA_MAIN_TABLE[] = "Aqualung";
 static const char AQUALUNG_LUA_API[] = " \
-Aqualung = {raw_playlist_menu={}, has_playlist_menu=false, remote_commands={}, keybindings={main={}, playlist={}, store={}}} \
+Aqualung = {raw_playlist_menu={}, has_playlist_menu=false, \
+  remote_commands={}, keybindings={main={}, playlist={}, store={}}, \
+  hooks={track_change={}}} \
 \
 \
 function add_playlist_menu_command(path, fn) \
@@ -90,6 +92,16 @@ function add_store_keybinding(name, fn) \
     Aqualung.keybindings['store'][name] = fn \
 end \
 \
+function add_hook(type, fn) \
+    table.insert(Aqualung.hooks[type], fn) \
+end \
+\
+\
+function Aqualung.run_hooks(type) \
+	for i,v in ipairs(Aqualung.hooks[type]) do \
+		v() \
+	end \
+end \
 \
 function Aqualung.run_remote_command(name) \
     Aqualung.remote_commands[name]() \
@@ -676,7 +688,7 @@ void run_custom_keybinding(char * window, char * keyname, guint state) {
 		lua_pushboolean(L, state & GDK_MOD4_MASK);
 		error = lua_pcall(L, 5, 0, 0);
 		if (error) {
-			fprintf(stderr, "Error: while running keybinding for key %s with state %x: %s\n", keyname, state, lua_tostring(L, -1));
+			fprintf(stderr, "Error: while running keybinding for key %s with state 0x%x: %s\n", keyname, state, lua_tostring(L, -1));
 			lua_pop(L, 1);
 		}
 		g_mutex_unlock(l_mutex);
@@ -695,9 +707,27 @@ void run_custom_store_keybinding(char * keyname, guint state){
 	run_custom_keybinding("store", keyname, state);
 }
 
+void run_hooks(char * type) {
+	int error;
+	if (options.use_ext_title_format) {
+		g_mutex_lock(l_mutex);
+
+		lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
+		lua_getfield(L, 1, "run_hooks");
+		lua_pushstring(L, type);
+		error = lua_pcall(L, 1, 0, 0);
+		if (error) {
+			fprintf(stderr, "Error: while running %s hooks: %s\n", type, lua_tostring(L, -1));
+			lua_pop(L, 1);
+		}
+		g_mutex_unlock(l_mutex);
+	}
+}
+
 #else
 void setup_extended_title_formatting(void){}
 void add_custom_command_menu_to_playlist_menu(GtkWidget* menu){}
+void run_hooks(char * type){}
 void run_custom_remote_command(char * command){}
 void run_custom_main_keybinding(char * keyname, guint state){}
 void run_custom_playlist_keybinding(char * keyname, guint state){}

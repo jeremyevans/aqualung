@@ -3314,6 +3314,34 @@
 
       </subsection>
 
+      <subsection title="Hooking into Aqualung Events">
+
+        <p>Aqualung allows you to add hooks to certain events to
+        have extension code executed when those events occur.
+        Hooks are added by calling the<q><cmd>add_hook</cmd></q>
+        function with a string and a function.  The string is the
+        type of hook you are adding, and the function is the
+        function to call when the related event occurs.
+        You can have multiple hook functions added to the same
+        hook type, and they will be executed in order of addition.</p>
+
+        <paragraph title="Hook 1: track_change">
+
+            <p>The track_change hooks are called whenever a new track
+            starts playing.  They are not called until after the
+            current file has been changed to the new file.</p>
+
+            <verbatim>
+            @add_hook("track_change", function ()
+            @    print(current_file())
+            @end)</verbatim>
+
+            <p>Prints the filename of the new file.</p>
+
+        </paragraph>
+
+      </subsection>
+
       <subsection title="Custom Playlist Menu Commands">
 
         <p>You can add custom playlist menu commands to Aqualung by
@@ -3328,7 +3356,7 @@
 
         <paragraph title="Example 1: Exiting Aqualung immediately with an error code">
 
-          <verbatim>
+            <verbatim>
             @add_playlist_menu_command("Exit Immediately!!", function ()
             @    os.exit(1)
             @end)</verbatim>
@@ -3339,7 +3367,7 @@
 
         <paragraph title="Example 2: Printing selected files to standard output">
 
-          <verbatim>
+           <verbatim>
             @add_playlist_menu_command("Print Filenames", function ()
             @  for k, v in pairs(selected_files()) do
             @    print(v)
@@ -3350,7 +3378,7 @@
 
         <paragraph title="Example 3: Running commands on file names, under a Database submenu">
 
-          <verbatim>
+            <verbatim>
             @add_playlist_menu_command("Database/Add Favorite Tracks", function ()
             @  for k, v in pairs(selected_files()) do
             @    os.execute("add_favorite_track '" .. string.gsub(v, "'", "'\\''") .. "'")
@@ -3383,7 +3411,7 @@
 
         <paragraph title="Example 1: Exiting Aqualung immediately">
 
-          <verbatim>
+            <verbatim>
             @add_remote_command("exit", function ()
             @    os.exit()
             @end)</verbatim>

@@ -190,7 +190,7 @@ static file_decoder_t * l_get_cur_fdec(lua_State * L) {
 	lua_gettable(L, LUA_REGISTRYINDEX);
 	fdec = (file_decoder_t *)lua_touserdata(L, -1);
 	if (fdec == NULL) {
-		luaL_error(L, "Programmer error: Invalid file decoder registered with lua");
+		luaL_error(L, "m or l can only be called inside playlist_title or application_title");
 	}
 	return fdec;
 }
@@ -201,7 +201,7 @@ static int l_metadata_value(lua_State * L) {
 	file_decoder_t * fdec;
 	s = (char *)lua_tostring(L, 1);
 	if((i = metadata_type_int(s)) == 0){
-		luaL_error(L, "Invalid tag field: %s", s);
+		luaL_error(L, "invalid metadata field: %s", s);
 	}
 	lua_pop(L, 1);
 	fdec = l_get_cur_fdec(L);
@@ -221,7 +221,7 @@ static int l_fileinfo_value(lua_State * L) {
 	file_decoder_t * fdec;
 	s = (char *)lua_tostring(L, 1);
 	if((i = fileinfo_type_int(s)) == 0){
-		luaL_error(L, "Invalid tag field: %s", s);
+		luaL_error(L, "invalid fileinfo field: %s", s);
 	}
 	lua_pop(L, 1);
 	fdec = l_get_cur_fdec(L);
@@ -254,7 +254,7 @@ static int l_fileinfo_value(lua_State * L) {
 		lua_pushboolean(L, fdec->fileinfo.is_mono);
 		break;
 	default:
-		luaL_error(L, "Programmer error, fileinfo type not handled: %d", i);
+		luaL_error(L, "fileinfo type not handled: %d", i);
 		break;
 	}
 	return 1;
@@ -269,7 +269,7 @@ static int l_add_submenu(lua_State * L) {
 	menu = (GtkWidget *)lua_touserdata(L, 1); 
 	name = (char *)lua_tostring(L, 2);
 	if (name == NULL || menu == NULL) {
-		luaL_error(L, "Error inside Aqualung.add_submenu, first argument must be userdata, and second must be a string");
+		luaL_error(L, "Aqualung.add_submenu arguments: first argument must be userdata, and second must be a string");
 	}
 
 	entry = gtk_menu_item_new_with_label(name);
@@ -312,15 +312,17 @@ void custom_playlist_menu_cb(gpointer path) {
 
 	error = lua_pcall(L, 1, 0, 0);
 	if (error) {
-		fprintf(stderr, "An error occured while running the callback function for menu command %s: %s\n", (char *)path, lua_tostring(L, -1));
+		fprintf(stderr, "Error: in callback function for menu command %s: %s\n", (char *)path, lua_tostring(L, -1));
 		lua_pop(L, 1);
 	}
 	g_mutex_unlock(l_mutex);
 }
 
 static int l_add_playlist_menu_command(lua_State * L) {
+	int num_chars;
 	char * name = NULL;
 	char * path = NULL;
+	char * lua_path = NULL;
 	GtkWidget * entry;
 	GtkWidget * menu;
 
@@ -328,18 +330,13 @@ static int l_add_playlist_menu_command(lua_State * L) {
 	name = (char *)lua_tostring(L, 2);
 	path = (char *)lua_tostring(L, 3);
 	if (name == NULL || menu == NULL || path == NULL) {
-		luaL_error(L, "Error inside Aqualung.add_submenu, first argument must be userdata, and second and third must be strings");
+		luaL_error(L, "Aqualung.add_playlist_menu_command arguments: first argument must be userdata, and second and third must be strings");
 	}
 
-	/* Need to use copy of string for callback function argument.
-	*  Need to save location of copy of string in Lua registry, so
-	*  it can be freed when reloading the Lua interpreter.
-	*/
-	path = strdup(path);
-	lua_getfield(L, LUA_REGISTRYINDEX, "Aqualung");
-	lua_getfield(L, -1, "playlist_command_strings");
-	lua_pushlightuserdata(L, (void *)path);
-        lua_setfield(L, -2, path);
+	/* Copy the string to a Lua userdata for a constant valid address and automatic cleanup */
+	num_chars = strlen(path);
+	lua_path = lua_newuserdata(L, num_chars + 1);
+	strncpy(lua_path, path, num_chars);
 
 	entry = gtk_menu_item_new_with_label(name);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), entry);
@@ -351,13 +348,22 @@ static int l_add_playlist_menu_command(lua_State * L) {
 
 void setup_extended_title_formatting(void) {
 	int error;
-	if (!(options.use_ext_title_format = options.ext_title_format_file[0] != '\0')) {
-		return;
+	options.use_ext_title_format = options.ext_title_format_file[0] != '\0';
+
+	if (l_playlist_menu_entry == NULL) {
+		l_playlist_menu_entry = gtk_menu_item_new_with_label("Custom Commands");
 	}
+	gtk_widget_hide(l_playlist_menu_entry);
 
 	if (l_mutex == NULL) {
+		if (!options.use_ext_title_format) {
+			/* Save memory if extension file is never used */
+			return;
+		}
 		l_mutex = g_mutex_new();
-	}
+	} 
+
+	g_mutex_lock(l_mutex);
 
 	if (metadata_type_hash == NULL) {
 		metadata_type_hash = g_hash_table_new(g_str_hash, g_str_equal);
@@ -462,47 +468,27 @@ void setup_extended_title_formatting(void) {
 		g_hash_table_insert(fileinfo_type_hash, "mono", (gpointer)FILEINFO_TYPE_MONO);	
 	}
 
-	if (l_playlist_menu_entry == NULL) {
-		l_playlist_menu_entry = gtk_menu_item_new_with_label("Custom Commands");
-	}
-
-	g_mutex_lock(l_mutex);
-
-	gtk_widget_hide(l_playlist_menu_entry);
 	if (l_playlist_menu != NULL) {
 		gtk_widget_destroy(l_playlist_menu);
 		l_playlist_menu = NULL;
 	}
 
 	if (L != NULL) {
-		/* Free strings created in C code */
-		lua_getfield(L, LUA_REGISTRYINDEX, "Aqualung");
-		lua_getfield(L, -1, "playlist_command_strings");
-		lua_pushnil(L);  
-		while (lua_next(L, -2) != 0) {
-			free(lua_touserdata(L, -1));
-			lua_pop(L, 1);
-		}
-
 		lua_close(L);
+		L = NULL;
 	}
+
+	if(!options.use_ext_title_format) {
+		g_mutex_unlock(l_mutex);
+		return;
+	}
+
 	L = lua_open();
 	luaL_openlibs(L);
 
-	/* Add Aqualung table to Lua registry, different than the global variable Aqulaung.
-	*  This will be used for keeping track of some C memory locations that need to be
-	*  freed when we reload the Lua interpreter.
-	*/
-	lua_newtable(L);
-	lua_setfield(L, LUA_REGISTRYINDEX, "Aqualung");
-	lua_getfield(L, LUA_REGISTRYINDEX, "Aqualung");
-	lua_newtable(L);
-	lua_setfield(L, 1, "playlist_command_strings");
-	lua_pop(L, 1);
-
 	error = luaL_dostring(L, AQUALUNG_LUA_API);
 	if (error) {
-		fprintf(stderr, "Programmer error in AQUALUNG_LUA_API: %s\n", lua_tostring(L, -1));
+		fprintf(stderr, "Programmer Error: in AQUALUNG_LUA_API: %s\n", lua_tostring(L, -1));
 		exit(1);
 	}
 
@@ -521,7 +507,7 @@ void setup_extended_title_formatting(void) {
 
 	error = luaL_dofile(L, options.ext_title_format_file);
 	if (error) {
-		fprintf(stderr, "An error occured when loading your .lua extension file (%s): %s\n", options.ext_title_format_file, lua_tostring(L, -1));
+		fprintf(stderr, "Error: while loading your .lua extension file (%s): %s\n", options.ext_title_format_file, lua_tostring(L, -1));
 		options.use_ext_title_format = 0;
 		lua_pop(L, 1);
 	}
@@ -545,11 +531,21 @@ char * l_title_format(const char * function_name, file_decoder_t * fdec) {
 		lua_getglobal(L, function_name);
 		error = lua_pcall(L, 0, 1, 0);
 		if (error) {
-			fprintf(stderr, "An error occured executing a function in your .lua extension file (file: %s, function: %s): %s\n", options.ext_title_format_file, function_name, lua_tostring(L, -1));
+			fprintf(stderr, "Error: while executing function %s in your .lua extension file (%s): %s\n", function_name, options.ext_title_format_file, lua_tostring(L, -1));
 		} else {
 			s = strdup(lua_tostring(L, -1));
 		}
 		lua_pop(L, 1);
+
+		/* Remove current file decoder in Lua registry
+		 * Necessary so that future calls to m and l in
+		 * Lua don't try to use pointers that are no longer
+		 * valid.
+		 */
+		lua_pushlightuserdata(L, (void *)&l_cur_fdec);
+		lua_pushlightuserdata(L, NULL);
+		lua_settable(L, LUA_REGISTRYINDEX);
+
 		g_mutex_unlock(l_mutex);
 	}
 	return s;
@@ -577,7 +573,7 @@ void add_custom_commands_to_playlist_menu(void) {
 		lua_getfield(L, 1, "process_playlist_menu");
 		error = lua_pcall(L, 0, 1, 0);
 		if (error) {
-			fprintf(stderr, "An error occured in Aqualung.process_playlist_menu: %s\n", lua_tostring(L, -1));
+			fprintf(stderr, "Error: in Aqualung.process_playlist_menu: %s\n", lua_tostring(L, -1));
 			lua_pop(L, 1);
 		} else if(lua_toboolean(L, -1)) {
 			lua_pop(L, 1);
@@ -588,7 +584,7 @@ void add_custom_commands_to_playlist_menu(void) {
 			lua_pushlightuserdata(L, (void *)l_playlist_menu);
 			error = lua_pcall(L, 1, 0, 0);
 			if (error) {
-				fprintf(stderr, "An error occured in Aqualung.build_playlist_menu: %s\n", lua_tostring(L, -1));
+				fprintf(stderr, "Error: in Aqualung.build_playlist_menu: %s\n", lua_tostring(L, -1));
 				lua_pop(L, 1);
 			} else {
 				gtk_widget_show(l_playlist_menu_entry);
@@ -614,7 +610,7 @@ void run_custom_remote_command(char * command) {
 		lua_pushstring(L, command);
 		error = lua_pcall(L, 1, 0, 0);
 		if (error) {
-			fprintf(stderr, "An error occured in Aqualung.run_remote_command (command: %s): %s\n", command, lua_tostring(L, -1));
+			fprintf(stderr, "Error: while running remote command %s: %s\n", command, lua_tostring(L, -1));
 			lua_pop(L, 1);
 		}
 		g_mutex_unlock(l_mutex);

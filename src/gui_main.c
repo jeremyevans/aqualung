@@ -247,6 +247,8 @@ int is_file_loaded = 0;
 /* whether playback is paused */
 int is_paused = 0;
 
+/* Whether the next key binding should be for a custom key binding */
+int custom_main_keybinding_expected = 0;
 
 /* popup menu for configuration */
 GtkWidget * conf_menu;
@@ -1013,6 +1015,24 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
         int playlist_tabs = gtk_notebook_get_n_pages(GTK_NOTEBOOK(playlist_notebook));
 
+	if (custom_main_keybinding_expected) {
+		switch (event->keyval) {
+		case GDK_Shift_L:
+		case GDK_Shift_R: 
+		case GDK_Control_L:
+		case GDK_Control_R: 
+		case GDK_Alt_L:
+		case GDK_Alt_R: 
+		case GDK_Super_L:
+		case GDK_Super_R: 
+			return FALSE;
+		default:
+			run_custom_main_keybinding(gdk_keyval_name(event->keyval), event->state);
+			custom_main_keybinding_expected = 0;
+			return TRUE;
+		}
+	}
+
 	switch (event->keyval) {
 	case GDK_KP_Divide:
 	case GDK_slash:
@@ -1043,6 +1063,10 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		return TRUE;
 	case GDK_z:
 	case GDK_Z:
+		if (event->state & GDK_CONTROL_MASK) {
+			custom_main_keybinding_expected = 1;
+			return TRUE;
+		}
 	case GDK_y:
 	case GDK_Y:
 	case GDK_comma:

@@ -3395,6 +3395,67 @@
 
       </subsection>
 
+      <subsection title="Custom Keybindings">
+
+        <p>You can add custom keybindings for Aqualungs main window by
+        calling the <q><cmd>add_main_keybinding</cmd></q>
+        function with a string and a function.  The string is the
+        GDK name of the key, optionally preceded by modifiers, and the
+        function is the function to call when the keybinding is used in
+        the main window directly after a Ctrl-z or Ctrl-Z keybinding.
+        The function should accept zero arguments.</p>
+
+        <paragraph title="Here is a complete list of optional modifiers">
+
+            <verbatim>
+            @[ control- | alt- | super- | control-alt- | super-alt- |
+            @  super-control- | super-control-alt- ]</verbatim>
+
+          <p>The control- modifier is for the Ctrl key, the alt- is for
+          the Alt/Mod1 keys and the super- is for the Super/Mod4/Windows keys.</p>
+        </paragraph>
+
+        <paragraph title="Example 1: Exiting Aqualung immediately">
+
+            <verbatim>
+            @add_main_keybinding("control-q", function ()
+            @    os.exit()
+            @end)</verbatim>
+
+            <p>Using this example is not recommended, but if you want to,
+            you would focus on Aqualung's main window, hit Ctrl-z then
+            Ctrl-q.</p>
+
+        </paragraph>
+
+        <paragraph title="Example 2: Testing all modifier keys">
+
+            <verbatim>
+            @add_main_keybinding("b", function () print("b received") end)
+            @add_main_keybinding("alt-b", function () print("alt-b received") end)
+            @add_main_keybinding("control-b", function () print("control-b received") end)
+            @add_main_keybinding("super-b", function () print("super-b received") end)
+            @add_main_keybinding("control-alt-b", function () print("control-alt-b received") end)
+            @add_main_keybinding("super-alt-b", function () print("super-alt-b received") end)
+            @add_main_keybinding("super-control-b", function () print("super-control-b received") end)
+            @add_main_keybinding("super-control-alt-b", function () print("super-control-alt-b received") end)
+            @add_main_keybinding("B", function () print("B received") end)
+            @add_main_keybinding("alt-B", function () print("alt-B received") end)
+            @add_main_keybinding("control-B", function () print("control-B received") end)
+            @add_main_keybinding("super-B", function () print("super-B received") end)
+            @add_main_keybinding("control-alt-B", function () print("control-alt-B received") end)
+            @add_main_keybinding("super-alt-B", function () print("super-alt-B received") end)
+            @add_main_keybinding("super-control-B", function () print("super-control-B received") end)
+            @add_main_keybinding("super-control-alt-B", function () print("super-control-alt-B received") end)
+            </verbatim>
+
+            <p>This shows all of the possible combinations of modifier keys for
+            a custom keybinding that worked on the b key.</p>
+
+        </paragraph>
+
+      </subsection>
+
     </section>
 
   </document>

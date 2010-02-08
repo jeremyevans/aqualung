@@ -125,6 +125,8 @@ end \
 static GHashTable * metadata_type_hash = NULL;
 static GHashTable * fileinfo_type_hash = NULL;
 
+void add_custom_commands_to_playlist_menu(void);
+
 int metadata_type_int(char * type_string) {
 	return (int)(long)g_hash_table_lookup(metadata_type_hash, type_string);
 }
@@ -324,11 +326,20 @@ static int l_add_playlist_menu_command(lua_State * L) {
 
 	menu = (GtkWidget *)lua_touserdata(L, 1);
 	name = (char *)lua_tostring(L, 2);
-	/* TODO: Leaks memory, need to cleanup later */
-	path = strdup((char *)lua_tostring(L, 3));
+	path = (char *)lua_tostring(L, 3);
 	if (name == NULL || menu == NULL || path == NULL) {
 		luaL_error(L, "Error inside Aqualung.add_submenu, first argument must be userdata, and second and third must be strings");
 	}
+
+	/* Need to use copy of string for callback function argument.
+	*  Need to save location of copy of string in Lua registry, so
+	*  it can be freed when reloading the Lua interpreter.
+	*/
+	path = strdup(path);
+	lua_getfield(L, LUA_REGISTRYINDEX, "Aqualung");
+	lua_getfield(L, -1, "playlist_command_strings");
+	lua_pushlightuserdata(L, (void *)path);
+        lua_setfield(L, -2, path);
 
 	entry = gtk_menu_item_new_with_label(name);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), entry);
@@ -464,10 +475,30 @@ void setup_extended_title_formatting(void) {
 	}
 
 	if (L != NULL) {
-	  lua_close(L);
+		/* Free strings created in C code */
+		lua_getfield(L, LUA_REGISTRYINDEX, "Aqualung");
+		lua_getfield(L, -1, "playlist_command_strings");
+		lua_pushnil(L);  
+		while (lua_next(L, -2) != 0) {
+			free(lua_touserdata(L, -1));
+			lua_pop(L, 1);
+		}
+
+		lua_close(L);
 	}
 	L = lua_open();
 	luaL_openlibs(L);
+
+	/* Add Aqualung table to Lua registry, different than the global variable Aqulaung.
+	*  This will be used for keeping track of some C memory locations that need to be
+	*  freed when we reload the Lua interpreter.
+	*/
+	lua_newtable(L);
+	lua_setfield(L, LUA_REGISTRYINDEX, "Aqualung");
+	lua_getfield(L, LUA_REGISTRYINDEX, "Aqualung");
+	lua_newtable(L);
+	lua_setfield(L, 1, "playlist_command_strings");
+	lua_pop(L, 1);
 
 	error = luaL_dostring(L, AQUALUNG_LUA_API);
 	if (error) {

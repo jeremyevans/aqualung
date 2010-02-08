@@ -1,5 +1,5 @@
 /*                                                     -*- linux-c -*-
-    Copyright (C) 2008-2009 Jeremy Evans
+    Copyright (C) 2008-2010 Jeremy Evans
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,7 +18,9 @@
     $Id$
 */
 
+#include <gtk/gtk.h>
 #include "config.h"
+#include "decoder/file_decoder.h"
 
 #ifdef HAVE_LUA
 
@@ -35,8 +37,8 @@
 #include <lualib.h>
 #endif /* LUA_HEADER_DIR */
 #include "metadata.h"
-#include "decoder/file_decoder.h"
 #include "options.h"
+#include "playlist.h"
 
 #define AQUALUNG_LUA_APPLICATION_TITLE_FUNCTION "application_title"
 #define AQUALUNG_LUA_TITLE_FORMAT_FUNCTION "playlist_title"
@@ -58,6 +60,55 @@ extern options_t options;
 static lua_State * L = NULL;
 static GMutex * l_mutex = NULL;
 static const char l_cur_fdec = 'l';
+static const char l_cur_menu = 'm';
+static const char AQUALUNG_LUA_MAIN_TABLE[] = "Aqualung";
+static const char AQUALUNG_LUA_API[] = " \
+Aqualung = {raw_playlist_menu={}, has_playlist_menu=false} \
+\
+function add_playlist_menu_command(path, fn) \
+    Aqualung.raw_playlist_menu[path] = fn \
+end \
+\
+function Aqualung.process_playlist_menu(gtk_menu) \
+    for path, fn in pairs(Aqualung.raw_playlist_menu) do \
+        if type(Aqualung.playlist_menu) ~= 'table' then \
+          Aqualung.has_playlist_menu = true \
+          Aqualung.playlist_menu = {} \
+        end \
+        local t0 = Aqualung.playlist_menu \
+        local t1 = Aqualung.playlist_menu \
+        local p = nil \
+        for part in string.gmatch(path, '[^/]+') do \
+            p = part \
+            t1[p] = t1[p] or {} \
+            t0 = t1 \
+            t1 = t1[p] \
+        end \
+        t0[p] = fn \
+    end \
+    if Aqualung.has_playlist_menu then \
+        Aqualung.build_menu(gtk_menu, Aqualung.add_playlist_menu_command, nil, Aqualung.playlist_menu) \
+        return true \
+    else \
+        return false \
+    end \
+end \
+\
+function Aqualung.build_menu(gtk_menu, fn, root, menu) \
+    for name, submenu_or_fn in pairs(menu) do \
+        local path = name \
+        if root then \
+            path = root .. '/' .. path \
+        end \
+        local typ = type(submenu_or_fn) \
+        if typ == 'table' then \
+            Aqualung.build_menu(Aqualung.add_submenu(gtk_menu, name), fn, path, submenu_or_fn) \
+        elseif typ == 'function' then \
+            fn(gtk_menu, name, path) \
+        end \
+    end \
+end \
+";
 
 /* Glib hash tables are abused as we store ints instead of pointers for the values */
 static GHashTable * metadata_type_hash = NULL;
@@ -196,13 +247,82 @@ static int l_fileinfo_value(lua_State * L) {
 	return 1;
 }
 
+static int l_add_submenu(lua_State * L) {
+	char * name = NULL;
+	GtkWidget * menu;
+	GtkWidget * entry;
+	GtkWidget * submenu;
+
+	menu = (GtkWidget *)lua_touserdata(L, 1); 
+	name = (char *)lua_tostring(L, 2);
+
+	entry = gtk_menu_item_new_with_label(name);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), entry);
+	submenu = gtk_menu_new();
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(entry), submenu);
+	gtk_widget_show(entry);
+	lua_pushlightuserdata(L, (void *)submenu);
+
+	return 1;
+}
+
+int lua_selected_playlist_filenames(playlist_t * pl, GtkTreeIter * iter, void * user_data) {
+	playlist_data_t * data;
+	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_DATA, &data, -1);
+	++(*(int *)user_data);
+	lua_pushinteger(L, *(int *)user_data);
+	lua_pushstring(L, data->file);
+	lua_settable(L, -3);
+	return 0;
+}
+
+void custom_playlist_menu_cb(gpointer path) {
+	int error = 0;
+        playlist_t * pl;
+
+	g_mutex_lock(l_mutex);
+
+	/* Call Aqualung.raw_playlist_menu[path] with array of filename strings */
+	lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
+	lua_getfield(L, -1, "raw_playlist_menu");
+	lua_getfield(L, -1, (const char *)path);
+	lua_newtable(L);
+
+        if ((pl = playlist_get_current()) != NULL) {
+		playlist_foreach_selected(pl, lua_selected_playlist_filenames, &error);
+        }
+
+	error = lua_pcall(L, 1, 0, 0);
+	if (error) {
+		fprintf(stderr, "An error occured while running the callback function for menu command %s: %s\n", (char *)path, lua_tostring(L, -1));
+		lua_pop(L, 1);
+	}
+	g_mutex_unlock(l_mutex);
+}
+
+static int l_add_playlist_menu_command(lua_State * L) {
+	char * name = NULL;
+	char * path = NULL;
+	GtkWidget * entry;
+	GtkWidget * menu;
+
+	menu = (GtkWidget *)lua_touserdata(L, 1);
+	name = (char *)lua_tostring(L, 2);
+	path = (char *)lua_tostring(L, 3);
+
+	entry = gtk_menu_item_new_with_label(name);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), entry);
+	g_signal_connect_swapped(G_OBJECT(entry), "activate", G_CALLBACK(custom_playlist_menu_cb), (gpointer)path);
+	gtk_widget_show(entry);
+
+	return 0;
+}
+
 void setup_extended_title_formatting(void) {
 	int error;
-	if (options.ext_title_format_file[0] == '\0') {
-		options.use_ext_title_format = 0;
+	if (!(options.use_ext_title_format = options.ext_title_format_file[0] != '\0')) {
 		return;
 	}
-	options.use_ext_title_format = 1;
 
 	if (l_mutex == NULL) {
 		l_mutex = g_mutex_new();
@@ -316,19 +436,30 @@ void setup_extended_title_formatting(void) {
 	  lua_close(L);
 	}
 	L = lua_open();
-	luaopen_base(L);
-	luaopen_table(L);
-	luaopen_string(L);
-	luaopen_math(L);
+	luaL_openlibs(L);
+
+	error = luaL_dostring(L, AQUALUNG_LUA_API);
+	if (error) {
+		fprintf(stderr, "Programmer error in AQUALUNG_LUA_API: %s\n", lua_tostring(L, -1));
+		exit(1);
+	}
+
+	lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
+	lua_pushstring(L, "add_submenu");
+	lua_pushcfunction(L, l_add_submenu);
+	lua_settable(L, 1);
+	lua_pushstring(L, "add_playlist_menu_command");
+	lua_pushcfunction(L, l_add_playlist_menu_command);
+	lua_settable(L, 1);
 
 	lua_pushcfunction(L, l_metadata_value);
 	lua_setglobal(L, AQUALUNG_LUA_METADATA_FUNCTION);
 	lua_pushcfunction(L, l_fileinfo_value);
 	lua_setglobal(L, AQUALUNG_LUA_FILEINFO_FUNCTION);
 
-	error = luaL_loadfile(L, options.ext_title_format_file) || lua_pcall(L, 0, 0, 0);
+	error = luaL_dofile(L, options.ext_title_format_file);
 	if (error) {
-		fprintf(stderr, "Error in setup_extended_title_formatting: %s\n", lua_tostring(L, -1));
+		fprintf(stderr, "An error occured when loading your .lua extension file (%s): %s\n", options.ext_title_format_file, lua_tostring(L, -1));
 		options.use_ext_title_format = 0;
 		lua_pop(L, 1);
 	}
@@ -340,13 +471,16 @@ char * l_title_format(const char * function_name, file_decoder_t * fdec) {
 	char * s = NULL; 
 	if (options.use_ext_title_format) {
 		g_mutex_lock(l_mutex);
+
+		/* Set current file decoder in Lua registry */
 		lua_pushlightuserdata(L, (void *)&l_cur_fdec);
 		lua_pushlightuserdata(L, (void *)fdec);
 		lua_settable(L, LUA_REGISTRYINDEX);
+
 		lua_getglobal(L, function_name);
 		error = lua_pcall(L, 0, 1, 0);
 		if (error) {
-			fprintf(stderr, "Error in l_title_format (%s): %s\n", function_name, lua_tostring(L, -1));
+			fprintf(stderr, "An error occured executing a function in your .lua extension file (file: %s, function: %s): %s\n", options.ext_title_format_file, function_name, lua_tostring(L, -1));
 		} else {
 			s = strdup(lua_tostring(L, -1));
 		}
@@ -368,4 +502,33 @@ char * application_title_format(file_decoder_t * fdec) {
 	return s;
 }
 
+void add_custom_commands_to_playlist_menu(GtkWidget * menu) {
+	int error;
+	GtkWidget * separator;
+	if (options.use_ext_title_format) {
+		g_mutex_lock(l_mutex);
+
+		/* Call Aqualung.process_menu with the menu pointer */
+		lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
+		lua_getfield(L, 1, "process_playlist_menu");
+		lua_pushlightuserdata(L, (void *)menu);
+		error = lua_pcall(L, 1, 1, 0);
+		if (error) {
+			fprintf(stderr, "An error occured in Aqualung.process_playlist_menu: %s\n", lua_tostring(L, -1));
+		} else if(lua_toboolean(L, 1)) {
+			/* Add separator if there is a custom command menu */ 
+			separator = gtk_separator_menu_item_new();
+			gtk_menu_shell_append(GTK_MENU_SHELL(menu), separator);
+			gtk_widget_show(separator);
+		}
+		lua_pop(L, 1);
+		g_mutex_unlock(l_mutex);
+	}
+}
+
+#else
+void setup_extended_title_formatting(void){}
+void add_custom_commands_to_playlist_menu(GtkWidget* menu){}
+char * extended_title_format(file_decoder_t * fdec){return NULL;}
+char * application_title_format(file_decoder_t * fdec){return NULL;}
 #endif /* HAVE_LUA */

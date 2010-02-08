@@ -1,5 +1,5 @@
 /*                                                     -*- linux-c -*-
-    Copyright (C) 2008 Jeremy Evans
+    Copyright (C) 2008-2010 Jeremy Evans
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,14 +20,15 @@
 
 #ifndef _EXT_TITLE_FORMAT_H
 #define _EXT_TITLE_FORMAT_H
+#include <gtk/gtk.h>
 #include "decoder/file_decoder.h"
 
 void setup_extended_title_formatting(void);
+void add_custom_commands_to_menu(GtkWidget* menu);
 
 /* Caller responsible for freeing returned pointer for these methods: */
 char * extended_title_format(file_decoder_t * fdec);
 char * application_title_format(file_decoder_t * fdec);
-
 #endif /* _EXT_TITLE_FORMAT_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8:

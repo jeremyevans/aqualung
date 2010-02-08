@@ -2438,6 +2438,9 @@
             </tr>
           </tabular>
 
+        </subsubsection>
+
+        <subsubsection title="Programmable Title Format" key="prog_title_format">
           <p>The <gui>Programmable title format file</gui> appears if
           Aqualung is compiled with Lua support. It allows you to
           choose a <q>.lua</q> file containing Lua code that determines
@@ -3287,6 +3290,83 @@
         <p>Another trick is that middle clicking on an item in the
         Music Store adds the content to a new playlist tab, which will
         be named after the middle-clicked element by default.</p>
+
+      </subsection>
+
+    </section>
+
+    <section title="Extending Aqualung">
+
+      <subsection title="Introduction">
+
+        <p>Aqualung is written in the C programming language, but if
+        compiled with Lua support, embeds a Lua interpreter that can
+        used by the user to change Aqualung's behavior or add custom
+        functions without recompiling the program.  One of these
+        features has already been explained in the
+        <ref refkey="prog_title_format"> Programmable title format
+        section</ref>, where you can write custom functions in Lua
+        to set the title of the playlist and the application.  This
+        was the first extension feature added.  Other extension
+        features have been added and will be described in this
+        section.  All extension features rely on Lua code that
+        you include in your programmable title format .lua file.</p>
+
+      </subsection>
+
+      <subsection title="Custom Playlist Menu Commands">
+
+        <p>You can add custom playlist menu commands to Aqualung by
+        calling the <q><cmd>add_playlist_menu_command</cmd></q>
+        function with a string and a function.  The string is the
+        label of the playlist menu entry, and the function is the
+        function to call when the playlist menu entry is clicked.
+        You can include <q>/</q>'s inside the string to create
+        submenus (there is currently support for a <q>/</q> to
+        appear inside a label).  The function should accept a single
+        argument, an array/table of filenames that are currently
+        selected in the playlist.  </p>
+
+        <paragraph title="Example 1: Exiting Aqualung immediately with an error code">
+
+          <verbatim>
+            @add_playlist_menu_command("Exit Immediately!!", function (files)
+            @    os.exit(1)
+            @end)</verbatim>
+
+            <p>Using this example is not recommended.</p>
+
+        </paragraph>
+
+        <paragraph title="Example 2: Printing selected files to standard output">
+
+          <verbatim>
+            @add_playlist_menu_command("Print Filenames", function (files)
+            @  for k, v in pairs(files) do
+            @    print(v)
+            @  end
+            @end)</verbatim>
+
+        </paragraph>
+
+        <paragraph title="Example 3: Running commands on file names, under a Database submenu">
+
+          <verbatim>
+            @add_playlist_menu_command("Database/Add Favorite Tracks", function (files)
+            @  for k, v in pairs(files) do
+            @    os.execute("add_favorite_track '" .. string.gsub(v, "'", "'\\''") .. "'")
+            @  end
+            @end)
+            @add_playlist_menu_command("Database/Remove Favorite Tracks", function (files)
+            @  for k, v in pairs(files) do
+            @    os.execute("remove_favorite_track '" .. string.gsub(v, "'", "'\\''") .. "'")
+            @  end
+            @end)</verbatim>
+
+          <p>The string.gsub call is for escaping filenames, since Lua's os.execute sends the
+          string argument to the shell.</p>
+
+        </paragraph>
 
       </subsection>
 

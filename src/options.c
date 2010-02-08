@@ -46,9 +46,7 @@
 #endif /* _TMP_HAVE_CDDB */
 #endif /* HAVE_CDDA */
 
-#ifdef HAVE_LUA
 #include "ext_title_format.h"
-#endif /* HAVE_LUA */
 
 #ifdef HAVE_SRC
 #include <samplerate.h>
@@ -4535,9 +4533,7 @@ load_config(void) {
 		}
 	}
 
-#ifdef HAVE_LUA
 	setup_extended_title_formatting();
-#endif /* HAVE_LUA */
 	xmlFreeDoc(doc);
 	return;
 }

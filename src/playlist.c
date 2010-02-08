@@ -54,10 +54,7 @@
 #include "playlist.h"
 #include "ifp_device.h"
 #include "export.h"
-
-#ifdef HAVE_LUA
 #include "ext_title_format.h"
-#endif /* HAVE_LUA */
 
 extern options_t options;
 
@@ -2689,9 +2686,7 @@ playlist_filemeta_get(char * filename) {
 		free_strdup(&data->title, tmp);
 	}
 
-#ifdef HAVE_LUA
 	data->display = extended_title_format(fdec);
-#endif /* HAVE_LUA */
 
 	file_decoder_close(fdec);
 	file_decoder_delete(fdec);
@@ -5481,6 +5476,8 @@ init_plist_menu(GtkWidget *append_menu) {
 	separator = gtk_separator_menu_item_new();
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), separator);
 	gtk_widget_show(separator);
+
+        add_custom_commands_to_playlist_menu(append_menu);
 
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__fileinfo);
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__search);

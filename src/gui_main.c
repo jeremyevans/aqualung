@@ -47,10 +47,7 @@
 #include <samplerate.h>
 #endif /* HAVE_SRC */
 
-#ifdef HAVE_LUA
 #include "ext_title_format.h"
-#endif /* HAVE_LUA */
-
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"
@@ -3830,14 +3827,12 @@ process_metablock(metadata_t * meta) {
 	buf[0] = '\0';
 	tmp[0] = '\0';
 
-#ifdef HAVE_LUA
 	// Abuse artist variable
-	if (options.use_ext_title_format && ((artist = application_title_format(fdec)) != NULL)) {
+	if ((artist = application_title_format(fdec)) != NULL) {
 		strncpy(buf, artist, MAXLEN-1);
 		free(artist);
 		artist = NULL;
 	}
-#endif /* HAVE_LUA */
 
 	if (buf[0] == '\0') {
 		metadata_get_artist(meta, &artist);

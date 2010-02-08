@@ -2524,6 +2524,7 @@ print_usage(void) {
 		"-U, --pause: Pause playback, or resume if already paused.\n"
 		"-T, --stop: Stop playback.\n"
 		"-V, --volume [m|M]|[=]<val>: Set, adjust or mute volume.\n"
+		"-C, --custom <command>: Call a custom (user-defined in Lua) function.\n"
 		"-Q, --quit: Terminate remote instance.\n"
 		
 		"Note that these options default to the 0-th instance when no -N option is given,\n"
@@ -2641,8 +2642,9 @@ main(int argc, char ** argv) {
 	int enqueue = 0;
 	int remote_quit = 0;
 	char * voladj_arg = NULL;
+	char * custom_arg = NULL;
 
-	char * optstring = "vho:d:c:r:a::RP:DY:s::l:m:N:BLUTFEV:Qt::";
+	char * optstring = "vho:d:c:r:a::RP:DY:s::l:m:N:BLUTFEC:V:Qt::";
 	struct option long_options[] = {
 		{ "version", 0, 0, 'v' },
 		{ "help", 0, 0, 'h' },
@@ -2667,6 +2669,7 @@ main(int argc, char ** argv) {
 		{ "stop", 0, 0, 'T' },
 		{ "fwd", 0, 0, 'F' },
 		{ "enqueue", 0, 0, 'E' },
+		{ "custom", 1, 0, 'C' },
 		{ "volume", 1, 0, 'V' },
 		{ "quit", 0, 0, 'Q' },
 
@@ -2977,6 +2980,9 @@ main(int argc, char ** argv) {
 			case 'E':
 				enqueue++;
 				break;
+			case 'C':
+				custom_arg = strdup(optarg);
+				break;
 			case 'V':
 				voladj_arg = strdup(optarg);
 				break;
@@ -3049,6 +3055,18 @@ main(int argc, char ** argv) {
 		strncat(buf, voladj_arg, MAXLEN-2);
 		send_message_to_session(no_session, buf, strlen(buf));
 		exit(1);
+	}
+
+	if (custom_arg) {
+		char buf[MAXLEN];
+
+		if (no_session == -1)
+			no_session = 0;
+		buf[0] = RCMD_CUSTOM;
+		buf[1] = '\0';
+		strncat(buf, custom_arg, MAXLEN-2);
+		send_message_to_session(no_session, buf, strlen(buf));
+		exit(0);
 	}
 
 	if (no_session != -1) {

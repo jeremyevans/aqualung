@@ -104,6 +104,7 @@ receive_message(int fd, char * cmdarg) {
 
 	case RCMD_VOLADJ:
 	case RCMD_ADD_FILE:
+	case RCMD_CUSTOM:
 		strncpy(cmdarg, buffer + 1, MAXLEN-2);
 		return rcmd;
 

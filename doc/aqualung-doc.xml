@@ -3370,6 +3370,31 @@
 
       </subsection>
 
+      <subsection title="Custom Remote Commands">
+
+        <p>You can add custom remote commands to Aqualung by
+        calling the <q><cmd>add_remote_command</cmd></q>
+        function with a string and a function.  The string is the
+        name of the remote command, and the function is the
+        function to call when the remote command is triggered.
+        You can call a remote command using the -C argument to
+        aqualung (e.g. <q><cmd>aqualung -C function_name</cmd></q>).
+        The string argument should be fewer than 250 characters.
+        The function should accept zero arguments.</p>
+
+        <paragraph title="Example 1: Exiting Aqualung immediately">
+
+          <verbatim>
+            @add_remote_command("exit", function ()
+            @    os.exit()
+            @end)</verbatim>
+
+            <p>Call with <q><cmd>aqualung -C exit</cmd></q>.  Using this example is not recommended.</p>
+
+        </paragraph>
+
+      </subsection>
+
     </section>
 
   </document>

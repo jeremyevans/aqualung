@@ -34,6 +34,7 @@
 #define RCMD_ADD_COMMIT  8
 #define RCMD_QUIT        9
 #define RCMD_VOLADJ     10
+#define RCMD_CUSTOM     11
 
 int create_socket(const char * filename);
 char receive_message(int fd, char * cmd_arg);

@@ -63,10 +63,20 @@ static const char l_cur_fdec = 'l';
 static const char l_cur_menu = 'm';
 static const char AQUALUNG_LUA_MAIN_TABLE[] = "Aqualung";
 static const char AQUALUNG_LUA_API[] = " \
-Aqualung = {raw_playlist_menu={}, has_playlist_menu=false} \
+Aqualung = {raw_playlist_menu={}, has_playlist_menu=false, remote_commands={}} \
+\
 \
 function add_playlist_menu_command(path, fn) \
     Aqualung.raw_playlist_menu[path] = fn \
+end \
+\
+function add_remote_command(name, fn) \
+    Aqualung.remote_commands[name] = fn \
+end \
+\
+\
+function Aqualung.run_remote_command(name) \
+    Aqualung.remote_commands[name]() \
 end \
 \
 function Aqualung.process_playlist_menu(gtk_menu) \
@@ -313,7 +323,8 @@ static int l_add_playlist_menu_command(lua_State * L) {
 
 	menu = (GtkWidget *)lua_touserdata(L, 1);
 	name = (char *)lua_tostring(L, 2);
-	path = (char *)lua_tostring(L, 3);
+	/* TODO: Leaks memory, need to cleanup later */
+	path = strdup((char *)lua_tostring(L, 3));
 	if (name == NULL || menu == NULL || path == NULL) {
 		luaL_error(L, "Error inside Aqualung.add_submenu, first argument must be userdata, and second and third must be strings");
 	}
@@ -534,9 +545,28 @@ void add_custom_commands_to_playlist_menu(GtkWidget * menu) {
 	}
 }
 
+void run_custom_remote_command(char * command) {
+	int error;
+	if (options.use_ext_title_format) {
+		g_mutex_lock(l_mutex);
+
+		/* Call Aqualung.process_menu with the menu pointer */
+		lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
+		lua_getfield(L, 1, "run_remote_command");
+		lua_pushstring(L, command);
+		error = lua_pcall(L, 1, 0, 0);
+		if (error) {
+			fprintf(stderr, "An error occured in Aqualung.run_remote_command (command: %s): %s\n", command, lua_tostring(L, -1));
+			lua_pop(L, 1);
+		}
+		g_mutex_unlock(l_mutex);
+	}
+}
+
 #else
 void setup_extended_title_formatting(void){}
 void add_custom_commands_to_playlist_menu(GtkWidget* menu){}
+void run_custom_remote_command(char * command){}
 char * extended_title_format(file_decoder_t * fdec){return NULL;}
 char * application_title_format(file_decoder_t * fdec){return NULL;}
 #endif /* HAVE_LUA */

@@ -4096,12 +4096,17 @@ timeout_callback(gpointer data) {
 			process_filenames(file_list, cmdbuf[0], cmdbuf[1], cmdbuf[2], cmdbuf+3);
 			file_list = NULL;
 			break;
+		case RCMD_CUSTOM:
+			run_custom_remote_command(cmdbuf);
+			break;
 		case RCMD_VOLADJ:
 			adjust_remote_volume(cmdbuf);
 			break;
 		case RCMD_QUIT:
 			main_window_closing();
 			break;
+		default:
+			fprintf(stderr, "Unrecognized remote command received: %i\n", (int)rcmd);
 		}
 		++rcv_count;
 	}

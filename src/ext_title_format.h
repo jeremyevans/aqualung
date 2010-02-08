@@ -25,6 +25,7 @@
 
 void setup_extended_title_formatting(void);
 void add_custom_commands_to_menu(GtkWidget* menu);
+void run_custom_remote_command(char * command);
 
 /* Caller responsible for freeing returned pointer for these methods: */
 char * extended_title_format(file_decoder_t * fdec);

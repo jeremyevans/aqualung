@@ -698,8 +698,7 @@ sndio_thread(void * arg) {
 				while ((n_avail = rb_read_space(rb)) > 0) {
 					if (n_avail > 2*bufsize * sizeof(short))
 						n_avail = 2*bufsize * sizeof(short);
-					rb_read(rb, (char *)sndio_short_buf,
-							     2*bufsize * sizeof(short));
+					rb_read(rb, (char *)sndio_short_buf, n_avail);
 				}
 				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
 				goto sndio_wake;
@@ -845,8 +844,7 @@ pulse_thread(void * arg) {
 				while ((n_avail = rb_read_space(rb)) > 0) {
 					if (n_avail > 2*bufsize * sizeof(short))
 						n_avail = 2*bufsize * sizeof(short);
-					rb_read(rb, (char *)pa_short_buf,
-						2*bufsize * sizeof(short));
+					rb_read(rb, (char *)pa_short_buf, n_avail);
 				}
 				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
 				goto pulse_wake;
@@ -994,8 +992,7 @@ oss_thread(void * arg) {
 				while ((n_avail = rb_read_space(rb)) > 0) {
 					if (n_avail > 2*bufsize * sizeof(short))
 						n_avail = 2*bufsize * sizeof(short);
-					rb_read(rb, (char *)oss_short_buf,
-							     2*bufsize * sizeof(short));
+					rb_read(rb, (char *)oss_short_buf, n_avail);
 				}
 				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
 				goto oss_wake;
@@ -1156,15 +1153,13 @@ alsa_thread(void * arg) {
 					while ((n_avail = rb_read_space(rb)) > 0) {
 						if (n_avail > 2*bufsize * sizeof(int))
 							n_avail = 2*bufsize * sizeof(int);
-						rb_read(rb, (char *)alsa_int_buf,
-								     2*bufsize * sizeof(int));
+						rb_read(rb, (char *)alsa_int_buf, n_avail);
 					}
 				} else {
 					while ((n_avail = rb_read_space(rb)) > 0) {
 						if (n_avail > 2*bufsize * sizeof(short))
 							n_avail = 2*bufsize * sizeof(short);
-						rb_read(rb, (char *)alsa_short_buf,
-								     2*bufsize * sizeof(short));
+						rb_read(rb, (char *)alsa_short_buf, n_avail);
 					}
 				}
 				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
@@ -2004,8 +1999,7 @@ win32_thread(void * arg) {
 				while ((n_avail = rb_read_space(rb)) > 0) {
 					if (n_avail > 2*bufsize * sizeof(short))
 						n_avail = 2*bufsize * sizeof(short);
-					rb_read(rb, (char *)short_buf,
-							     2*bufsize * sizeof(short));
+					rb_read(rb, (char *)short_buf, n_avail);
 				}
 				for (j = 0; j < WIN32_BUFFER_LEN / sizeof(short); j++) {
 					short_buf[j] = 0;

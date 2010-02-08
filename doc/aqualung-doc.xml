@@ -3323,14 +3323,13 @@
         function to call when the playlist menu entry is clicked.
         You can include <q>/</q>'s inside the string to create
         submenus (there is currently support for a <q>/</q> to
-        appear inside a label).  The function should accept a single
-        argument, an array/table of filenames that are currently
-        selected in the playlist.</p>
+        appear inside a label).  The function should accept 0
+        arguments.</p>
 
         <paragraph title="Example 1: Exiting Aqualung immediately with an error code">
 
           <verbatim>
-            @add_playlist_menu_command("Exit Immediately!!", function (files)
+            @add_playlist_menu_command("Exit Immediately!!", function ()
             @    os.exit(1)
             @end)</verbatim>
 
@@ -3341,8 +3340,8 @@
         <paragraph title="Example 2: Printing selected files to standard output">
 
           <verbatim>
-            @add_playlist_menu_command("Print Filenames", function (files)
-            @  for k, v in pairs(files) do
+            @add_playlist_menu_command("Print Filenames", function ()
+            @  for k, v in pairs(selected_files()) do
             @    print(v)
             @  end
             @end)</verbatim>
@@ -3352,13 +3351,13 @@
         <paragraph title="Example 3: Running commands on file names, under a Database submenu">
 
           <verbatim>
-            @add_playlist_menu_command("Database/Add Favorite Tracks", function (files)
-            @  for k, v in pairs(files) do
+            @add_playlist_menu_command("Database/Add Favorite Tracks", function ()
+            @  for k, v in pairs(selected_files()) do
             @    os.execute("add_favorite_track '" .. string.gsub(v, "'", "'\\''") .. "'")
             @  end
             @end)
-            @add_playlist_menu_command("Database/Remove Favorite Tracks", function (files)
-            @  for k, v in pairs(files) do
+            @add_playlist_menu_command("Database/Remove Favorite Tracks", function ()
+            @  for k, v in pairs(selected_files()) do
             @    os.execute("remove_favorite_track '" .. string.gsub(v, "'", "'\\''") .. "'")
             @  end
             @end)</verbatim>
@@ -3453,6 +3452,18 @@
             a custom keybinding that worked on the b key.</p>
 
         </paragraph>
+
+      </subsection>
+
+      <subsection title="Lua Extension API methods">
+
+        <p>These are global methods that you can call inside
+        the methods described above in order to get information
+        from Aqualung, or change Aqualung's settings or behavior.</p>
+
+        <ul>
+          <li>selected_files(): Returns an array (integer-keyed table) of selected filenames (strings) for the current playlist.<li>
+        </ul>
 
       </subsection>
 

@@ -308,7 +308,7 @@ static int l_add_submenu(lua_State * L) {
 	return 1;
 }
 
-int lua_selected_playlist_filenames(playlist_t * pl, GtkTreeIter * iter, void * user_data) {
+int l_selected_files_foreach(playlist_t * pl, GtkTreeIter * iter, void * user_data) {
 	playlist_data_t * data;
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_DATA, &data, -1);
 	if (data->file != NULL) {
@@ -320,9 +320,19 @@ int lua_selected_playlist_filenames(playlist_t * pl, GtkTreeIter * iter, void * 
 	return 0;
 }
 
+int  l_selected_files(lua_State * L) {
+	int i = 0;
+        playlist_t * pl;
+	lua_newtable(L);
+
+        if ((pl = playlist_get_current()) != NULL) {
+		playlist_foreach_selected(pl, l_selected_files_foreach, &i);
+        }
+	return 1;
+}
+
 void custom_playlist_menu_cb(gpointer path) {
 	int error = 0;
-        playlist_t * pl;
 
 	g_mutex_lock(l_mutex);
 
@@ -330,13 +340,8 @@ void custom_playlist_menu_cb(gpointer path) {
 	lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
 	lua_getfield(L, -1, "raw_playlist_menu");
 	lua_getfield(L, -1, (const char *)path);
-	lua_newtable(L);
 
-        if ((pl = playlist_get_current()) != NULL) {
-		playlist_foreach_selected(pl, lua_selected_playlist_filenames, &error);
-        }
-
-	error = lua_pcall(L, 1, 0, 0);
+	error = lua_pcall(L, 0, 0, 0);
 	if (error) {
 		fprintf(stderr, "Error: in callback function for menu command %s: %s\n", (char *)path, lua_tostring(L, -1));
 		lua_pop(L, 1);
@@ -530,6 +535,8 @@ void setup_extended_title_formatting(void) {
 	lua_setglobal(L, AQUALUNG_LUA_METADATA_FUNCTION);
 	lua_pushcfunction(L, l_fileinfo_value);
 	lua_setglobal(L, AQUALUNG_LUA_FILEINFO_FUNCTION);
+	lua_pushcfunction(L, l_selected_files);
+	lua_setglobal(L, "selected_files");
 
 	error = luaL_dofile(L, options.ext_title_format_file);
 	if (error) {

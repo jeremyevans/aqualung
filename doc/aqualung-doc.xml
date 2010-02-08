@@ -3325,7 +3325,7 @@
         submenus (there is currently support for a <q>/</q> to
         appear inside a label).  The function should accept a single
         argument, an array/table of filenames that are currently
-        selected in the playlist.  </p>
+        selected in the playlist.</p>
 
         <paragraph title="Example 1: Exiting Aqualung immediately with an error code">
 
@@ -3379,8 +3379,8 @@
         function to call when the remote command is triggered.
         You can call a remote command using the -C argument to
         aqualung (e.g. <q><cmd>aqualung -C function_name</cmd></q>).
-        The string argument should be fewer than 250 characters.
-        The function should accept zero arguments.</p>
+        The string argument/function name should be fewer than
+        250 characters.  The function should accept zero arguments.</p>
 
         <paragraph title="Example 1: Exiting Aqualung immediately">
 

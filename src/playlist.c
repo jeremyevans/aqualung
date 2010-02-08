@@ -5477,7 +5477,7 @@ init_plist_menu(GtkWidget *append_menu) {
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), separator);
 	gtk_widget_show(separator);
 
-        add_custom_commands_to_playlist_menu(append_menu);
+        add_custom_command_menu_to_playlist_menu(append_menu);
 
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__fileinfo);
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__search);

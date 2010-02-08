@@ -58,6 +58,8 @@
 extern options_t options;
 
 static lua_State * L = NULL;
+static GtkWidget * l_playlist_menu_entry = NULL;
+static GtkWidget * l_playlist_menu = NULL;
 static GMutex * l_mutex = NULL;
 static const char l_cur_fdec = 'l';
 static const char l_cur_menu = 'm';
@@ -79,7 +81,7 @@ function Aqualung.run_remote_command(name) \
     Aqualung.remote_commands[name]() \
 end \
 \
-function Aqualung.process_playlist_menu(gtk_menu) \
+function Aqualung.process_playlist_menu() \
     for path, fn in pairs(Aqualung.raw_playlist_menu) do \
         if type(Aqualung.playlist_menu) ~= 'table' then \
           Aqualung.has_playlist_menu = true \
@@ -96,12 +98,11 @@ function Aqualung.process_playlist_menu(gtk_menu) \
         end \
         t0[p] = fn \
     end \
-    if Aqualung.has_playlist_menu then \
-        Aqualung.build_menu(gtk_menu, Aqualung.add_playlist_menu_command, nil, Aqualung.playlist_menu) \
-        return true \
-    else \
-        return false \
-    end \
+    return Aqualung.has_playlist_menu \
+end \
+\
+function Aqualung.build_playlist_menu(gtk_menu) \
+    Aqualung.build_menu(gtk_menu, Aqualung.add_playlist_menu_command, nil, Aqualung.playlist_menu) \
 end \
 \
 function Aqualung.build_menu(gtk_menu, fn, root, menu) \
@@ -450,8 +451,19 @@ void setup_extended_title_formatting(void) {
 		g_hash_table_insert(fileinfo_type_hash, "mono", (gpointer)FILEINFO_TYPE_MONO);	
 	}
 
+	if (l_playlist_menu_entry == NULL) {
+		l_playlist_menu_entry = gtk_menu_item_new_with_label("Custom Commands");
+	}
+
 	g_mutex_lock(l_mutex);
-	if(L != NULL) {
+
+	gtk_widget_hide(l_playlist_menu_entry);
+	if (l_playlist_menu != NULL) {
+		gtk_widget_destroy(l_playlist_menu);
+		l_playlist_menu = NULL;
+	}
+
+	if (L != NULL) {
 	  lua_close(L);
 	}
 	L = lua_open();
@@ -482,6 +494,9 @@ void setup_extended_title_formatting(void) {
 		options.use_ext_title_format = 0;
 		lua_pop(L, 1);
 	}
+
+	add_custom_commands_to_playlist_menu();
+
 	g_mutex_unlock(l_mutex);
 }
 
@@ -521,28 +536,40 @@ char * application_title_format(file_decoder_t * fdec) {
 	return s;
 }
 
-void add_custom_commands_to_playlist_menu(GtkWidget * menu) {
+void add_custom_commands_to_playlist_menu(void) {
 	int error;
-	GtkWidget * separator;
 	if (options.use_ext_title_format) {
 		g_mutex_lock(l_mutex);
 
 		/* Call Aqualung.process_menu with the menu pointer */
 		lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
 		lua_getfield(L, 1, "process_playlist_menu");
-		lua_pushlightuserdata(L, (void *)menu);
-		error = lua_pcall(L, 1, 1, 0);
+		error = lua_pcall(L, 0, 1, 0);
 		if (error) {
 			fprintf(stderr, "An error occured in Aqualung.process_playlist_menu: %s\n", lua_tostring(L, -1));
-		} else if(lua_toboolean(L, 1)) {
-			/* Add separator if there is a custom command menu */ 
-			separator = gtk_separator_menu_item_new();
-			gtk_menu_shell_append(GTK_MENU_SHELL(menu), separator);
-			gtk_widget_show(separator);
-		}
-		lua_pop(L, 1);
+			lua_pop(L, 1);
+		} else if(lua_toboolean(L, -1)) {
+			lua_pop(L, 1);
+			l_playlist_menu = gtk_menu_new();
+			gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_playlist_menu_entry), l_playlist_menu);
+
+			lua_getfield(L, 1, "build_playlist_menu");
+			lua_pushlightuserdata(L, (void *)l_playlist_menu);
+			error = lua_pcall(L, 1, 0, 0);
+			if (error) {
+				fprintf(stderr, "An error occured in Aqualung.build_playlist_menu: %s\n", lua_tostring(L, -1));
+				lua_pop(L, 1);
+			} else {
+				gtk_widget_show(l_playlist_menu_entry);
+			}
+			
+		} 
 		g_mutex_unlock(l_mutex);
 	}
+}
+
+void add_custom_command_menu_to_playlist_menu(GtkWidget * menu) {
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), l_playlist_menu_entry);
 }
 
 void run_custom_remote_command(char * command) {
@@ -565,7 +592,7 @@ void run_custom_remote_command(char * command) {
 
 #else
 void setup_extended_title_formatting(void){}
-void add_custom_commands_to_playlist_menu(GtkWidget* menu){}
+void add_custom_command_menu_to_playlist_menu(GtkWidget* menu){}
 void run_custom_remote_command(char * command){}
 char * extended_title_format(file_decoder_t * fdec){return NULL;}
 char * application_title_format(file_decoder_t * fdec){return NULL;}

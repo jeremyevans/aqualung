@@ -24,7 +24,7 @@
 #include "decoder/file_decoder.h"
 
 void setup_extended_title_formatting(void);
-void add_custom_commands_to_menu(GtkWidget* menu);
+void add_custom_command_menu_to_playlist_menu(GtkWidget* menu);
 void run_custom_remote_command(char * command);
 
 /* Caller responsible for freeing returned pointer for these methods: */

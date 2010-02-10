@@ -1521,7 +1521,7 @@ display_title_format_help(void) {
 void
 display_meta_encode_help(void) {
 
-	display_help(_("\nIf you have non-standard ID3v1/IDv2 character encoding MPEG audio file, "
+	display_help(_("\nIf you have non-standard ID3v1/ID3v2 character encoding MPEG audio file, "
 		       "please enter suitable character encoding in this entry (see below). "
 		       "If this entry is blank, the standard character encoding (ISO-8859-1) is used.\n\n"
 		       "For example:\n"

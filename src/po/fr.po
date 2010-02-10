@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-12 22:03+0100\n"
-"PO-Revision-Date: 2010-01-31 12:50+0100\n"
+"PO-Revision-Date: 2010-01-23 18:50+0100\n"
 "Last-Translator: Louis Opter <kalessin@kalessin.fr>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -886,7 +886,7 @@ msgid "Format:"
 msgstr "Format :"
 
 msgid "Length:"
-msgstr "Duręe :"
+msgstr "Durée :"
 
 msgid "Samplerate:"
 msgstr "Taux d'échantillonage :"
@@ -1167,7 +1167,9 @@ msgstr ""
 msgid ""
 "Device is not responding.\n"
 "Try jiggling the handle."
-msgstr "Le périphérique ne répond pas."
+msgstr ""
+"Le périphérique ne répond pas.\n"
+""
 
 msgid "Please select a local path."
 msgstr "Veuillez sélectionner un chemin local."
@@ -2039,7 +2041,7 @@ msgid "Automatically roll to active track"
 msgstr "Bouger le curseur automatiquement vers la piste active"
 
 msgid "Enable rules hint"
-msgstr "Activer les indications sur les règles"
+msgstr "Utiliser des couleurs alternatives dans les listes"
 
 msgid "Playlist column order"
 msgstr "Ordre des colonnes de la liste de lecture"
@@ -2048,20 +2050,20 @@ msgid ""
 "Drag and drop entries in the list below \n"
 "to set the column order in the Playlist."
 msgstr ""
-"Glissez et déposez les éléments de la liste en dessous\n"
+"Glissez et déposez les éléments de la liste ci-dessous\n"
 "pour régler l'ordre des colonnes dans la liste de lecture."
 
 msgid "Column"
 msgstr "Colonne"
 
 msgid "Track titles"
-msgstr "Titre de la piste"
+msgstr "Titres de la piste"
 
 msgid "RVA values"
 msgstr "Valeurs RVA"
 
 msgid "Track lengths"
-msgstr "Durée de la piste"
+msgstr "Durée des pistes"
 
 msgid "Hide comment pane"
 msgstr "Cacher le panneau de commentaire"
@@ -2109,10 +2111,10 @@ msgid "LADSPA plugin processing"
 msgstr ""
 
 msgid "Pre Fader (before Volume & Balance)"
-msgstr "Pre Fader (avant le Volume & l'Équilibrage"
+msgstr "Pre Fader (avant le Volume & l'Équilibrage)"
 
 msgid "Post Fader (after Volume & Balance)"
-msgstr "Post Fader (après le Volume & l'Équilibrage"
+msgstr "Post Fader (après le Volume & l'Équilibrage)"
 
 msgid ""
 "Aqualung is compiled without LADSPA plugin support.\n"
@@ -2211,7 +2213,7 @@ msgstr ""
 "avec le cadre d'une étiquette équivalente."
 
 msgid "Batch update & encode (mass tagger, CD ripper, file export)"
-msgstr "Mise à jour & encodage scripté (étiquettage de masse, encodage de CD, export de fichier)"
+msgstr "Mise à jour & encodage scripté (étiquettage en masse, encodage de CD, export de fichier)"
 
 msgid "Tags to add when creating or updating MPEG audio files:"
 msgstr "Étiquettes à ajouter lors de la création ou la mise à jour de fichiers MPEG audio :"
@@ -3117,7 +3119,7 @@ msgstr "Fin inattendue de la chaîne de caractères après '?'."
 
 msgid "Expected '}' after '{', but end of string found."
 msgstr "'}' était attendu après '{', mais la fin de la chaîne de caractères "
-"à été trouvée."
+"a été trouvée."
 
 #, c-format
 msgid "Unknown conversion type character found after '%%%%'."

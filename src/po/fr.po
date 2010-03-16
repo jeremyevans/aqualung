@@ -972,7 +972,7 @@ msgstr "Quitter"
 
 #, c-format
 msgid "Position: %d%%"
-msgstr "Position : %s%%"
+msgstr "Position : %d%%"
 
 #, c-format
 msgid "Mute"

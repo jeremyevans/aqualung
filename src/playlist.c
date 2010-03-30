@@ -5047,7 +5047,7 @@ playlist_load_m3u_thread(void * arg) {
 
 	i = 0;
 	while ((c = fgetc(f)) != EOF && !pt->pl->thread_stop) {
-		if ((c != '\n') && (c != '\r') && (i < MAXLEN)) {
+		if ((c != '\n') && (c != '\r') && (i < MAXLEN-1)) {
 			if ((i > 0) || ((c != ' ') && (c != '\t'))) {
 				line[i++] = c;
 			}
@@ -5207,7 +5207,7 @@ playlist_load_pls_thread(void * arg) {
 
 	i = 0;
 	while ((c = fgetc(f)) != EOF && !pt->pl->thread_stop) {
-		if ((c != '\n') && (c != '\r') && (i < MAXLEN)) {
+		if ((c != '\n') && (c != '\r') && (i < MAXLEN-1)) {
 			if ((i > 0) || ((c != ' ') && (c != '\t'))) {
 				line[i++] = c;
 			}

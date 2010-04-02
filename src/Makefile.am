@@ -12,7 +12,7 @@ cd_ripper.h cd_ripper.c \
 core.h core.c \
 cover.h cover.c \
 export.h export.c \
-ext_title_format.h ext_title_format.c \
+ext_lua.h ext_lua.c \
 file_info.h file_info.c \
 gui_main.h gui_main.c \
 httpc.h httpc.c \

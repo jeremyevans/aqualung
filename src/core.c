@@ -2311,7 +2311,7 @@ print_version(void) {
 #else
 	fprintf(stderr, V_NO);
 #endif /* HAVE_LUA */
-	fprintf(stderr, "Lua (programmable title formatting) support\n");
+	fprintf(stderr, "Lua extension support\n");
 
 
 	fprintf(stderr, "\n  Decoding support:\n");

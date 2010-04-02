@@ -46,7 +46,7 @@
 #endif /* _TMP_HAVE_CDDB */
 #endif /* HAVE_CDDA */
 
-#include "ext_title_format.h"
+#include "ext_lua.h"
 
 #ifdef HAVE_SRC
 #include <samplerate.h>
@@ -1369,7 +1369,7 @@ refresh_ms_pathlist_clicked(GtkWidget * widget, gpointer * data) {
 void
 browse_ext_title_format_file_clicked(GtkButton * button, gpointer data) {
 
-	file_chooser_with_entry(_("Please select a Programable Title Format File."),
+	file_chooser_with_entry(_("Please select a Lua Extension File."),
 				options_window,
 				GTK_FILE_CHOOSER_ACTION_OPEN,
 				FILE_CHOOSER_FILTER_ETF,
@@ -1546,7 +1546,7 @@ void
 display_ext_title_format_help(void) {
 
 	display_help(_("\nThe file you enter/choose here will set the Lua program to use "
-		       "to format the title. See the Aqualung manual for details. "
+		       "to extend Aqualung. See the Aqualung manual for details. "
 		       "Here is a quick example of what you can use in the file:\n\n"
 		       "function playlist_title()\n"
 		       "  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
@@ -2140,7 +2140,7 @@ create_options_window(void) {
 	gtk_box_pack_start(GTK_BOX(hbox), help_btn_title, FALSE, FALSE, 5);
 
 #ifdef HAVE_LUA
-	frame_title = gtk_frame_new(_("Programmable title format file"));
+	frame_title = gtk_frame_new(_("Lua extension file"));
 	gtk_box_pack_start(GTK_BOX(vbox), frame_title, FALSE, TRUE, 5);
 
 	hbox = gtk_hbox_new(FALSE, 3);

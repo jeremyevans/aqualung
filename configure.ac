@@ -923,7 +923,7 @@ fi
 AC_MSG_CHECKING(for Lua support)
 AC_ARG_WITH(
 	lua,
-	[  --with-lua=yes,no       compile with Lua (programmable title formatting) support (default: yes)],
+	[  --with-lua=yes,no       compile with Lua extension support (default: yes)],
 	lua="$withval",
 	lua="detect")
 if test "$lua" = "no"; then
@@ -993,7 +993,7 @@ echo "      iRiver iFP driver support           :  $ifp"
 echo "      Loop playback support               :  $loop"
 echo "      Systray support                     :  $systray"
 echo "      Podcast support                     :  $podcast"
-echo "      Lua (prog. title format) support    :  $lua"
+echo "      Lua extension support               :  $lua"
 echo
 echo "  Decoding support:"
 echo "      sndfile (WAV, AIFF, AU, etc.)       :  $sndfile"

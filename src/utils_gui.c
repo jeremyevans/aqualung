@@ -315,7 +315,7 @@ assign_etf_fc_filters(GtkFileChooser *fc) {
         /* music store files filter */
         filter_2 = gtk_file_filter_new();
         gtk_file_filter_add_pattern(filter_2, "*.[lL][uU][aA]");
-        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), _("Extended Title Format Files (*.lua)"));
+        gtk_file_filter_set_name(GTK_FILE_FILTER(filter_2), _("Lua Extension Files (*.lua)"));
         gtk_file_chooser_add_filter(fc, filter_2);
 
         gtk_file_chooser_set_filter(fc, filter_2);

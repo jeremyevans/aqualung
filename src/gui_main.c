@@ -47,7 +47,7 @@
 #include <samplerate.h>
 #endif /* HAVE_SRC */
 
-#include "ext_title_format.h"
+#include "ext_lua.h"
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"

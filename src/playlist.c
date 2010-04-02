@@ -54,7 +54,7 @@
 #include "playlist.h"
 #include "ifp_device.h"
 #include "export.h"
-#include "ext_title_format.h"
+#include "ext_lua.h"
 
 extern options_t options;
 

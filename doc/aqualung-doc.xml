@@ -2440,6 +2440,16 @@
 
         </subsubsection>
 
+        <subsubsection title="Lua extension file">
+
+          <p>This section is only available if Aqualung is compiled
+          with Lua extension support.  If so, it specifies the 
+          file to use for the extension support  See the Extending
+          Aqualung section for details about what's possible to
+          include in this file.</p>
+
+        </subsubsection>
+
         <subsubsection title="Systray">
 
           <p>This page is present only if Aqualung was compiled with

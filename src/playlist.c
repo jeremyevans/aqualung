@@ -5477,11 +5477,11 @@ init_plist_menu(GtkWidget *append_menu) {
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), separator);
 	gtk_widget_show(separator);
 
-        add_custom_command_menu_to_playlist_menu(append_menu);
-
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__fileinfo);
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__search);
 	gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__roll);
+
+        add_custom_command_menu_to_playlist_menu(append_menu);
 
         g_signal_connect_swapped(G_OBJECT(plist__tab_new), "activate", G_CALLBACK(tab__new_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(plist__save), "activate", G_CALLBACK(plist__save_cb), NULL);

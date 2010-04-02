@@ -62,6 +62,8 @@ extern char current_file[MAXLEN];
 static lua_State * L = NULL;
 static GtkWidget * l_playlist_menu_entry = NULL;
 static GtkWidget * l_playlist_menu = NULL;
+static GtkWidget * l_playlist_menu_sep = NULL;
+static GtkWidget * l_playlist_menu_reload = NULL;
 static GMutex * l_mutex = NULL;
 static const char l_cur_fdec = 'l';
 static const char l_cur_menu = 'm';
@@ -165,6 +167,7 @@ static GHashTable * metadata_type_hash = NULL;
 static GHashTable * fileinfo_type_hash = NULL;
 
 void add_custom_commands_to_playlist_menu(void);
+void setup_extended_title_formatting(void);
 
 int metadata_type_int(char * type_string) {
 	return (int)(long)g_hash_table_lookup(metadata_type_hash, type_string);
@@ -397,13 +400,22 @@ static int l_add_playlist_menu_command(lua_State * L) {
 	return 0;
 }
 
+void reload_lua_cb(gpointer data) {
+        setup_extended_title_formatting();
+}
+
 void setup_extended_title_formatting(void) {
 	int error;
 	options.use_ext_title_format = options.ext_title_format_file[0] != '\0';
 
 	if (l_playlist_menu_entry == NULL) {
+		l_playlist_menu_sep = gtk_separator_menu_item_new();
+		l_playlist_menu_reload = gtk_menu_item_new_with_label("Reload Lua interpreter");
 		l_playlist_menu_entry = gtk_menu_item_new_with_label("Custom Commands");
+		g_signal_connect_swapped(G_OBJECT(l_playlist_menu_reload), "activate", G_CALLBACK(reload_lua_cb), NULL);
 	}
+	gtk_widget_hide(l_playlist_menu_sep);
+	gtk_widget_hide(l_playlist_menu_reload);
 	gtk_widget_hide(l_playlist_menu_entry);
 
 	if (l_mutex == NULL) {
@@ -568,6 +580,8 @@ void setup_extended_title_formatting(void) {
 	}
 
 	add_custom_commands_to_playlist_menu();
+	gtk_widget_show(l_playlist_menu_sep);
+	gtk_widget_show(l_playlist_menu_reload);
 	g_mutex_unlock(l_mutex);
 }
 
@@ -638,11 +652,13 @@ void add_custom_commands_to_playlist_menu(void) {
 			lua_pop(L, 1);
 		} else {
 			gtk_widget_show(l_playlist_menu_entry);
-	}
+		}
 	} 
 }
 
 void add_custom_command_menu_to_playlist_menu(GtkWidget * menu) {
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), l_playlist_menu_sep);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), l_playlist_menu_reload);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), l_playlist_menu_entry);
 }
 

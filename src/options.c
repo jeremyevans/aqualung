@@ -538,8 +538,10 @@ options_window_accept(void) {
 #ifdef HAVE_LUA
 	char * ext_title;
 	ext_title = (char *)gtk_entry_get_text(GTK_ENTRY(entry_ext_title_format_file));
-	strncpy(options.ext_title_format_file, ext_title, MAXLEN-1);
-	setup_extended_title_formatting();
+	if(strncmp(ext_title, options.ext_title_format_file, MAXLEN-1)) {
+		strncpy(options.ext_title_format_file, ext_title, MAXLEN-1);
+		setup_extended_title_formatting();
+	}
 #endif /* HAVE_LUA */
 
 
@@ -2116,12 +2118,6 @@ create_options_window(void) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_show_sn_title), TRUE);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox), check_show_sn_title, FALSE, FALSE, 0);
-
-	/* General/Title format page */
-
-	vbox = gtk_vbox_new(FALSE, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
-	gtk_notebook_append_page(GTK_NOTEBOOK(nbook_general), vbox, gtk_label_new(_("Title Format")));
 
 	frame_title = gtk_frame_new(_("Title Format"));
 	gtk_box_pack_start(GTK_BOX(vbox), frame_title, FALSE, TRUE, 5);

@@ -89,7 +89,6 @@
 
 typedef struct _thread_info {
 	AQUALUNG_THREAD_DECLARE(disk_thread_id)
-	AQUALUNG_THREAD_DECLARE(disk_notify_thread_id)
 
 #ifdef HAVE_SNDIO
 	AQUALUNG_THREAD_DECLARE(sndio_thread_id)

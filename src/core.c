@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <math.h>
+#include <time.h>
 #include <getopt.h>
 #include <time.h>
 #include <sys/time.h>
@@ -135,10 +136,6 @@ int src_type_parsed = 0;
 /* Synchronization between disk thread and output thread */
 AQUALUNG_MUTEX_DECLARE_INIT(disk_thread_lock)
 AQUALUNG_COND_DECLARE_INIT(disk_thread_wake)
-
-AQUALUNG_MUTEX_DECLARE_INIT(disk_notify_thread_lock)
-AQUALUNG_COND_DECLARE_INIT(disk_notify_thread_wake)
-
 rb_t * rb; /* this is the audio stream carrier ringbuffer */
 rb_t * rb_disk2out;
 rb_t * rb_out2disk;
@@ -618,8 +615,24 @@ disk_thread(void * arg) {
 	sleep:
 		{
 			/* suspend thread, wake up after 100 ms */
-			AQUALUNG_COND_SIGNAL(disk_notify_thread_wake)
-			AQUALUNG_COND_WAIT(disk_thread_wake, disk_thread_lock)
+#ifdef _WIN32
+			GTimeVal time;
+			GTimeVal * timeout = &time;
+			g_get_current_time(timeout);
+			g_time_val_add(timeout, 100000);
+#else
+			struct timeval now;
+			struct timezone tz;
+			struct timespec timeout;
+			gettimeofday(&now, &tz);
+			timeout.tv_nsec = now.tv_usec * 1000 + 100000000;
+			timeout.tv_sec = now.tv_sec;
+			while (timeout.tv_nsec > 1000000000) {
+				timeout.tv_nsec -= 1000000000;
+				timeout.tv_sec += 1;
+			}
+#endif /* _WIN32 */
+			AQUALUNG_COND_TIMEDWAIT(disk_thread_wake, disk_thread_lock, timeout)
 		}
 	}
  done:
@@ -633,26 +646,6 @@ disk_thread(void * arg) {
 	return 0;
 }
 
-
-void *
-disk_notify_thread(void * arg) {
-
-	struct timespec t;
-
-	while (1) {
-		AQUALUNG_MUTEX_LOCK(disk_notify_thread_lock)
-		AQUALUNG_COND_WAIT(disk_notify_thread_wake, disk_notify_thread_lock)
-		AQUALUNG_MUTEX_UNLOCK(disk_notify_thread_lock)
-
-		t.tv_sec = 0;
-		t.tv_nsec = 100000000;
-		nanosleep(&t, NULL);
-
-		AQUALUNG_COND_SIGNAL(disk_thread_wake)
-	}
-
-	return NULL;
-}
 
 
 /* SNDIO output thread */
@@ -3369,16 +3362,11 @@ main(int argc, char ** argv) {
 #endif /* _WIN32 */
 
 	/* startup disk thread */
-	AQUALUNG_THREAD_CREATE(thread_info.disk_notify_thread_id, NULL, disk_notify_thread, NULL)
 	AQUALUNG_THREAD_CREATE(thread_info.disk_thread_id, NULL, disk_thread, &thread_info)
-
 #ifdef _WIN32
 	g_thread_set_priority(thread_info.disk_thread_id, G_THREAD_PRIORITY_URGENT);
-	g_thread_set_priority(thread_info.disk_notify_thread_id, G_THREAD_PRIORITY_URGENT);
 #else
 	set_thread_priority(thread_info.disk_thread_id, "disk",
-		disk_try_realtime, disk_priority);
-	set_thread_priority(thread_info.disk_notify_thread_id, "disk_notify",
 		disk_try_realtime, disk_priority);
 #endif /* _WIN32 */
 

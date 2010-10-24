@@ -43,7 +43,7 @@
 #include "plugin.h"
 
 
-#ifdef __FreeBSD__
+#if defined(__FreeBSD__) || defined(__OpenBSD__)
 #define dirent64 dirent
 #define scandir64 scandir
 #define alphasort64 alphasort

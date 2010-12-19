@@ -1059,6 +1059,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	case GDK_b:
 	case GDK_B:
 	case GDK_period:
+	case GDK_AudioNext:
 		next_event(NULL, NULL, NULL);
 		return TRUE;
 	case GDK_z:
@@ -1070,6 +1071,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	case GDK_y:
 	case GDK_Y:
 	case GDK_comma:
+	case GDK_AudioPrev:
 		prev_event(NULL, NULL, NULL);
 		return TRUE;
 	case GDK_s:
@@ -1092,6 +1094,9 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			return TRUE;
 		}
 		break;
+	case GDK_AudioStop:
+		stop_event(NULL, NULL, NULL);
+		return TRUE;
 	case GDK_c:
 	case GDK_C:
 	case GDK_space:
@@ -1108,6 +1113,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		break;
 	case GDK_p:
 	case GDK_P:
+	case GDK_AudioPlay:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
 					     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
 		return TRUE;

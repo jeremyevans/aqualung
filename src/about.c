@@ -190,6 +190,8 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, _("Russian:\n"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\tAlexander Ilyashov <alexander.ilyashov@gmail.com>\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\tVladimir Smolyar <v_2e@ukr.net>\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("Spanish:\n"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tJorge Andrés Alvarez Oré <winninglero@gmail.com>\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Swedish:\n"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\tNiklas 'Nixon' Grahn <terra.unknown@yahoo.com>\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Ukrainian:\n"), -1);

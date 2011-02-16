@@ -10,7 +10,7 @@ MSGFMT = msgfmt -v
 XGETTEXT = xgettext
 MSGMERGE = msgmerge
 
-POFILES = de.po fr.po hu.po it.po ja.po ru.po sv.po uk.po zh.po
+POFILES = de.po es.po fr.po hu.po it.po ja.po ru.po sv.po uk.po zh.po
 MOFILES = $(POFILES:.po=.mo)
 
 EXTRA_DIST = $(POFILES) $(MOFILES) README

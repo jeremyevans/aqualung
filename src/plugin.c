@@ -360,7 +360,7 @@ fxbuilder_key_pressed(GtkWidget * widget, GdkEventKey * event, gpointer * data) 
 gint
 compare_func(GtkTreeModel * model, GtkTreeIter * a, GtkTreeIter * b, gpointer user_data) {
 
-	int col = (int) user_data;
+	int col = GPOINTER_TO_INT(user_data);
 	char * sa;
 	char * sb;
 	int ret;
@@ -1849,15 +1849,15 @@ create_fxbuilder(void) {
 		gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(avail_store), 1, GTK_SORT_ASCENDING);
 
 		gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(avail_store), 0, compare_func,
-						(gpointer) 0, NULL);
+						GINT_TO_POINTER(0), NULL);
 		gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(avail_store), 1, compare_func,
-						(gpointer) 1, NULL);
+						GINT_TO_POINTER(1), NULL);
 		gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(avail_store), 2, compare_func,
-						(gpointer) 2, NULL);
+						GINT_TO_POINTER(2), NULL);
 		gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(avail_store), 3, compare_func,
-						(gpointer) 3, NULL);
+						GINT_TO_POINTER(3), NULL);
 		gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(avail_store), 4, compare_func,
-						(gpointer) 4, NULL);
+						GINT_TO_POINTER(4), NULL);
 
 		/* fill avail_store with data */
 		parse_lrdf_data();

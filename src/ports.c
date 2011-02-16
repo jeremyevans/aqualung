@@ -79,7 +79,7 @@ void setup_notebook_out(void);
 gint
 ports_timeout_callback(gpointer data) {
 
-	switch((int)data) {
+	switch(GPOINTER_TO_INT(data)) {
 	case 1:
 		gtk_list_store_clear(store_out_L);
 		scan_connections(out_L_port, store_out_L);
@@ -199,7 +199,7 @@ tree_out_nb_selection_changed(GtkObject * tree, gpointer * data) {
         if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
 
                 gtk_tree_model_get(model, &iter, 0, &str, -1);
-		label = gtk_label_get_text(GTK_LABEL(nb_out_labels[(int)data]));
+		label = gtk_label_get_text(GTK_LABEL(nb_out_labels[GPOINTER_TO_INT(data)]));
 		sprintf(fullname, "%s:%s", label, str);
 		g_free(str);
 
@@ -245,7 +245,7 @@ tree_out_L_selection_changed(GtkTreeSelection * selection, gpointer * data) {
 			fprintf(stderr, "ERROR: jack_disconnect() returned %d\n", res);
 		}
 		g_free(str);
-		timeout_tag = aqualung_timeout_add(100, ports_timeout_callback, (gpointer)1);
+		timeout_tag = aqualung_timeout_add(100, ports_timeout_callback, GINT_TO_POINTER(1));
         }
 }
 
@@ -343,7 +343,7 @@ setup_tree_out(void) {
 	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
 	g_signal_connect(G_OBJECT(tree), "cursor-changed", G_CALLBACK(tree_out_nb_selection_changed),
-			 (gpointer *)n_clients);
+			 GINT_TO_POINTER(n_clients));
 
 	scrwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrwin),

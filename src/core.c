@@ -1745,7 +1745,7 @@ jack_init(thread_info_t * info) {
 	if (client_name == NULL)
 		client_name = strdup("aqualung");
 
-	if ((jack_client = jack_client_new(client_name)) == 0) {
+	if ((jack_client = jack_client_open(client_name, 0, NULL)) == 0) {
 		return -1;
 	}
 

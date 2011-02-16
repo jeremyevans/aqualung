@@ -104,6 +104,7 @@ extern rb_t * rb_disk2gui;
 extern jack_client_t * jack_client;
 extern char * client_name;
 extern int jack_is_shutdown;
+extern char * jack_shutdown_reason;
 #endif /* HAVE_JACK */
 
 extern int aqualung_socket_fd;
@@ -2524,9 +2525,8 @@ jack_shutdown_window(void) {
 		       GTK_BUTTONS_OK,
 		       NULL,
 		       _("JACK has either been shutdown or it "
-			 "disconnected Aqualung because it was "
-			 "not fast enough. All you can do now "
-			 "is restart both JACK and Aqualung."));
+			 "disconnected Aqualung. Reason: %s"),
+		       jack_shutdown_reason);
 }
 #endif /* HAVE_JACK */
 
@@ -4154,6 +4154,7 @@ timeout_callback(gpointer data) {
 				if (ports_window) {
 					ports_clicked_close(NULL, NULL);
 				}
+				jack_client_close(jack_client);
 				gtk_widget_set_sensitive(conf__jack, FALSE);
 				jack_popup_beenthere = 1;
 			}

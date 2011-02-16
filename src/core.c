@@ -104,6 +104,7 @@ jack_port_t * out_R_port;
 char * client_name = NULL;
 u_int32_t jack_nframes;
 int jack_is_shutdown;
+char * jack_shutdown_reason = NULL;
 int auto_connect = 0;
 int default_ports = 1;
 char * user_port1 = NULL;
@@ -188,7 +189,6 @@ sample_rates_ok(int out_SR, int file_SR) {
 	return 1;
 }
 
-
 #ifdef HAVE_CDDA
 int
 same_disc_next_track(char * filename, char * filename_prev) {
@@ -251,6 +251,12 @@ flush_output(double src_ratio) {
 	struct timespec rem_time;
 	req_time.tv_sec = 0;
 	req_time.tv_nsec = 1000000;
+
+#ifdef HAVE_JACK
+	if (jack_is_shutdown) {
+		return 0;
+	}
+#endif /* HAVE_JACK */
 
 	sample_offset = rb_read_space(rb) / (2 * sample_size) * src_ratio;
 
@@ -1394,10 +1400,10 @@ process(u_int32_t nframes, void * arg) {
 	return 0;
 }
 
-
 void
-jack_shutdown(void * arg) {
+jack_info_shutdown(jack_status_t code, const char * reason, void * arg) {
 
+	jack_shutdown_reason = strdup(reason);
 	jack_is_shutdown = 1;
 }
 #endif /* HAVE_JACK */
@@ -1750,7 +1756,7 @@ jack_init(thread_info_t * info) {
 	}
 
 	jack_set_process_callback(jack_client, process, info);
-	jack_on_shutdown(jack_client, jack_shutdown, info);
+	jack_on_info_shutdown(jack_client, jack_info_shutdown, info);
 
         if ((info->out_SR = jack_get_sample_rate(jack_client)) > MAX_SAMPLERATE) {
 		jack_client_close(jack_client);
@@ -3463,7 +3469,9 @@ main(int argc, char ** argv) {
 
 #ifdef HAVE_JACK
 	if (output == JACK_DRIVER) {
-		jack_client_close(jack_client);
+		if (!jack_is_shutdown) {
+			jack_client_close(jack_client);
+		}
 		free(client_name);
 	}
 #endif /* HAVE_JACK */

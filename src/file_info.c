@@ -1399,9 +1399,12 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 	if (frame->type == META_FIELD_APIC) {
 		/* only display first APIC found */
 		meta_frame_t * first_apic = metadata_get_frame_by_type(fi->meta, META_FIELD_APIC, NULL);
-		if (frame == first_apic) {
+		if (frame == first_apic && (find_cover_filename(fi->filename) == NULL || !options.use_external_cover_first)) {
 			display_cover_from_binary(fi->cover_image_area, fi->event_box, fi->cover_align,
 						  48, 48, frame->data, frame->length, FALSE, TRUE);
+		} else {
+			display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
+				      48, 48, fi->filename, FALSE, TRUE);
 		}
 	}
 
@@ -1681,7 +1684,7 @@ fi_cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer dat
 	if (event->type == GDK_BUTTON_PRESS && event->button == 1) {
 		meta_frame_t * frame;
 		frame = metadata_get_frame_by_type(fi->meta, META_FIELD_APIC, NULL);
-		if (frame != NULL) {
+		if (frame != NULL && (find_cover_filename(fi->filename) == NULL || !options.use_external_cover_first)) {
 			display_zoomed_cover_from_binary(fi->info_window, fi->event_box, frame->data, frame->length);
 		} else {
 			display_zoomed_cover(fi->info_window, fi->event_box, (gchar *)fi->filename);

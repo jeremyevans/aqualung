@@ -126,6 +126,7 @@ GtkWidget * check_tags_tab_first;
 GtkWidget * combo_cwidth;
 GtkWidget * check_magnify_smaller_images;
 GtkWidget * check_dont_show_cover;
+GtkWidget * check_use_external_cover_first;
 GtkWidget * check_show_cover_for_ms_tracks_only;
 
 #ifdef HAVE_SYSTRAY
@@ -580,6 +581,7 @@ options_window_accept(void) {
 	set_option_from_combo(combo_cwidth, &options.cover_width);
 	set_option_from_toggle(check_magnify_smaller_images, &options.magnify_smaller_images);
 	set_option_from_toggle(check_dont_show_cover, &options.dont_show_cover);
+	set_option_from_toggle(check_use_external_cover_first, &options.use_external_cover_first);
         set_option_from_toggle(check_show_cover_for_ms_tracks_only, &options.show_cover_for_ms_tracks_only);
 
 	options.magnify_smaller_images = !options.magnify_smaller_images;
@@ -2375,6 +2377,12 @@ create_options_window(void) {
 	}
 	gtk_box_pack_start(GTK_BOX(vbox_cart), check_dont_show_cover, FALSE, FALSE, 0);
 
+        check_use_external_cover_first = gtk_check_button_new_with_label(_("Use cover from external graphics file first"));
+	gtk_widget_set_name(check_use_external_cover_first, "check_on_notebook");
+	if (options.use_external_cover_first) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_use_external_cover_first), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox_cart), check_use_external_cover_first, FALSE, FALSE, 0);
 
 	frame_misc = gtk_frame_new(_("Miscellaneous"));
 	gtk_box_pack_start(GTK_BOX(vbox_miscellaneous_tab), frame_misc, FALSE, TRUE, 0);
@@ -3959,6 +3967,7 @@ save_config(void) {
 	SAVE_INT(magnify_smaller_images);
 	SAVE_INT(cover_width);
 	SAVE_INT(dont_show_cover);
+	SAVE_INT(use_external_cover_first);
 	SAVE_INT(show_cover_for_ms_tracks_only);
 	SAVE_INT(use_systray);
 	SAVE_INT(systray_start_minimized);
@@ -4389,6 +4398,7 @@ load_config(void) {
 		LOAD_INT(magnify_smaller_images);
 		LOAD_INT(cover_width);
 		LOAD_INT(dont_show_cover);
+		LOAD_INT(use_external_cover_first);
 		LOAD_INT(show_cover_for_ms_tracks_only);
 		LOAD_INT(use_systray);
 		LOAD_INT(systray_start_minimized);

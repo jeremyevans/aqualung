@@ -652,7 +652,7 @@ refresh_displays(void) {
 
 		if (is_file_loaded) {
                         if (!options.dont_show_cover) {
-				if (embedded_picture != NULL) {
+				if (embedded_picture != NULL && (find_cover_filename(pldata->file) == NULL || !options.use_external_cover_first)) {
 					display_cover_from_binary(cover_image_area, c_event_box, cover_align, 48, 48,
 						      embedded_picture, embedded_picture_size, TRUE, TRUE);
 				} else {
@@ -2641,12 +2641,12 @@ cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_d
 		if (p != NULL) {
 			gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
 			gtk_tree_path_free(p);
+			playlist_data_t * pldata;
+			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &pldata, -1);
 			if (is_file_loaded) {
-				if (embedded_picture != NULL) {
+				if (embedded_picture != NULL && (find_cover_filename(pldata->file) == NULL || !options.use_external_cover_first)) {
 					display_zoomed_cover_from_binary(main_window, c_event_box, embedded_picture, embedded_picture_size);
 				} else {
-					playlist_data_t * pldata;
-					gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &pldata, -1);
 					display_zoomed_cover(main_window, c_event_box, pldata->file);
 				}
 			}

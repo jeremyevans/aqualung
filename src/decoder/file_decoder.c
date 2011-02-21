@@ -257,6 +257,7 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 
 #ifdef HAVE_OGG_VORBIS
 	if ((strcasecmp(session->headers.content_type, "application/ogg") == 0) ||
+	    (strcasecmp(session->headers.content_type, "audio/ogg") == 0) ||
 	    (strcasecmp(session->headers.content_type, "audio/x-vorbis") == 0)) {
 
 		int ret;

@@ -34,7 +34,8 @@ extern size_t sample_size;
 
 
 #ifdef HAVE_OGG_VORBIS
-/*
+
+# if 0
 void
 dump_vc(vorbis_comment * vc) {
 
@@ -50,7 +51,7 @@ dump_vc(vorbis_comment * vc) {
 	}
 	printf("[V] %s\n", vc->vendor);
 }
-*/
+#endif
 
 int
 vorbis_write_metadata(file_decoder_t * fdec, metadata_t * meta) {
@@ -123,6 +124,7 @@ decode_vorbis(decoder_t * dec) {
 	case OV_HOLE:
 		if (fdec->is_stream) {
 			vorbis_send_metadata(fdec, pd);
+			vorbis_decoder_send_metadata(dec);
 			break;
 		} else {
 			printf("dec_vorbis.c/decode_vorbis(): ov_read() returned OV_HOLE\n");
@@ -281,6 +283,7 @@ vorbis_decoder_finish_open(decoder_t * dec) {
 	strcpy(dec->format_str, "Ogg Vorbis");
 
 	vorbis_send_metadata(fdec, pd);
+	vorbis_decoder_send_metadata(dec);
 
 	return DECODER_OPEN_SUCCESS;
 }
@@ -335,7 +338,7 @@ vorbis_decoder_open(decoder_t * dec, char * filename) {
 
 
 void
-vorbis_decoder_send_metadata(decoder_t * dec ) {
+vorbis_decoder_send_metadata(decoder_t * dec) {
 
         file_decoder_t * fdec = dec->fdec;
 

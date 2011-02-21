@@ -296,6 +296,16 @@ int get_mb_window_button;
 void load_systray_options(xmlDocPtr, xmlNodePtr);
 void save_systray_options(xmlDocPtr, xmlNodePtr);
 
+#ifdef HAVE_JACK
+extern jack_port_t * out_L_port;
+extern jack_port_t * out_R_port;
+extern jack_client_t * jack_client;
+extern GSList * saved_pconns_L;
+extern GSList * saved_pconns_R;
+void load_jack_connections(xmlDocPtr, xmlNodePtr);
+void save_jack_connections(xmlDocPtr, xmlNodePtr);
+#endif /* HAVE_JACK */
+
 GtkListStore * restart_list_store = NULL;
 
 
@@ -4094,6 +4104,9 @@ save_config(void) {
 	}
 
 	save_systray_options(doc, root);
+#ifdef HAVE_JACK
+	save_jack_connections(doc, root);
+#endif /* HAVE_JACK */
 
         sprintf(tmpname, "%s/config.xml.temp", options.confdir);
         xmlSaveFormatFile(tmpname, doc, 1);
@@ -4523,9 +4536,12 @@ load_config(void) {
 			}
 
                         xmlFree(key);
-		}
-		else if ((!xmlStrcmp(cur->name, (const xmlChar *) "systray"))) {
+		} else if ((!xmlStrcmp(cur->name, (const xmlChar *) "systray"))) {
 			load_systray_options(doc, cur);
+#ifdef HAVE_JACK
+		} else if ((!xmlStrcmp(cur->name, (const xmlChar *) "jack_connections"))) {
+			load_jack_connections(doc, cur);
+#endif /* HAVE_JACK */
 		}
 
 		cur = cur->next;
@@ -4626,6 +4642,91 @@ finalize_options(void) {
 	free(options.systray_mouse_buttons);
 	options.systray_mouse_buttons = NULL;
 }
+
+#ifdef HAVE_JACK
+void
+save_jack_connections(xmlDocPtr doc, xmlNodePtr root) {
+
+	xmlNodePtr port_list_node;
+	xmlNodePtr cur;
+	const char ** ports;
+
+	if (root == NULL)
+		return;
+
+	cur = xmlNewNode(NULL, (const xmlChar *) "jack_connections");
+	xmlAddChild(root, cur);
+	root = cur;
+
+	port_list_node = xmlNewNode(NULL, (const xmlChar *) "out_L");
+	xmlAddChild(root, port_list_node);
+
+	ports = jack_port_get_connections(out_L_port);
+	if (ports) {
+		int i = 0;
+		while (ports[i] != NULL) {
+			cur = xmlNewNode(NULL, (const xmlChar *) "port");
+			xmlAddChild(port_list_node, cur);
+			xmlSetProp(cur, (const xmlChar *) "label", (const xmlChar *) ports[i]);
+			i++;
+		}
+		free(ports);
+	}
+	
+	port_list_node = xmlNewNode(NULL, (const xmlChar *) "out_R");
+	xmlAddChild(root, port_list_node);
+
+	ports = jack_port_get_connections(out_R_port);
+	if (ports) {
+		int i = 0;
+		while (ports[i] != NULL) {
+			cur = xmlNewNode(NULL, (const xmlChar *) "port");
+			xmlAddChild(port_list_node, cur);
+			xmlSetProp(cur, (const xmlChar *) "label", (const xmlChar *) ports[i]);
+			i++;
+		}
+		free(ports);
+	}
+}
+
+void
+load_jack_connections(xmlDocPtr doc, xmlNodePtr cur) {
+
+	xmlChar * key;
+	xmlNodePtr port_list_node;
+
+	if (cur == NULL)
+		return;
+
+	cur = cur->xmlChildrenNode;
+	while (cur != NULL) {
+		if ((!xmlStrcmp(cur->name, (const xmlChar *) "out_L"))) {
+			port_list_node = cur->xmlChildrenNode;
+			while (port_list_node != NULL) {
+				key = xmlGetProp(port_list_node, (const xmlChar *) "label");
+				if (key != NULL) {
+					saved_pconns_L = g_slist_prepend(saved_pconns_L, strdup((const char *)key));
+					xmlFree(key);
+				}
+				port_list_node = port_list_node->next;
+			}
+		} else if ((!xmlStrcmp(cur->name, (const xmlChar *) "out_R"))) {
+			port_list_node = cur->xmlChildrenNode;
+			while (port_list_node != NULL) {
+				key = xmlGetProp(port_list_node, (const xmlChar *) "label");
+				if (key != NULL) {
+					saved_pconns_R = g_slist_prepend(saved_pconns_R, strdup((const char *)key));
+					xmlFree(key);
+				}
+				port_list_node = port_list_node->next;
+			}
+		}
+		cur = cur->next;
+	}
+	saved_pconns_L = g_slist_reverse(saved_pconns_L);
+	saved_pconns_R = g_slist_reverse(saved_pconns_R);
+}
+#endif /* HAVE_JACK */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :
 

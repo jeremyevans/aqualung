@@ -109,6 +109,8 @@ int auto_connect = 0;
 int default_ports = 1;
 char * user_port1 = NULL;
 char * user_port2 = NULL;
+GSList * saved_pconns_L = NULL;
+GSList * saved_pconns_R = NULL;
 #endif /* HAVE_JACK */
 
 const size_t sample_size = sizeof(float);
@@ -1781,10 +1783,56 @@ jack_init(thread_info_t * info) {
 }
 
 
+#define jack_try_connect(port, extport) \
+if (jack_connect(jack_client, jack_port_name(port), extport)) { \
+        fprintf(stderr, "Cannot connect " #port " to %s.\n", extport); \
+} else { \
+	fprintf(stderr, "Connected " #port " to %s\n", extport); \
+}
+
 void
-jack_client_start(void) {
+connect_saved_ports(void) {
 
 	const char ** ports_out;
+
+	if (saved_pconns_L || saved_pconns_R) { /* port connections loaded from config.xml */
+		GSList * p = saved_pconns_L;
+		while (p) {
+			char * portname = p->data;
+			jack_try_connect(out_L_port, portname);
+			free(portname);
+			p = g_slist_next(p);
+		}
+		
+		p = saved_pconns_R;
+		while (p) {
+			char * portname = p->data;
+			jack_try_connect(out_R_port, portname);
+			free(portname);
+			p = g_slist_next(p);
+		}
+		
+		if (saved_pconns_L) {
+			g_slist_free(saved_pconns_L);
+		}
+		if (saved_pconns_R) {
+			g_slist_free(saved_pconns_R);
+		}
+		
+	} else { /* no saved connection -- fallback to first two physical playback ports */
+		if ((ports_out = jack_get_ports(jack_client, NULL, NULL,
+						JackPortIsPhysical|JackPortIsInput)) == NULL) {
+			fprintf(stderr, "Cannot find any physical playback ports.\n");
+		} else {
+			jack_try_connect(out_L_port, ports_out[0]);
+			jack_try_connect(out_R_port, ports_out[1]);
+			free(ports_out);
+		}
+	}
+}
+
+void
+jack_client_start(void) {
 
 	if (jack_activate(jack_client)) {
 		fprintf(stderr, "Cannot activate JACK client.\n");
@@ -1792,40 +1840,13 @@ jack_client_start(void) {
 	}
 	if (auto_connect) {
 		if (default_ports) {
-			if ((ports_out = jack_get_ports(jack_client, NULL, NULL,
-							JackPortIsPhysical|JackPortIsInput)) == NULL) {
-				fprintf(stderr, "Cannot find any physical playback ports.\n");
-			} else {
-				if (jack_connect(jack_client, jack_port_name(out_L_port),
-						 ports_out[0])) {
-					fprintf(stderr, "Cannot connect out_L port to %s.\n",
-						ports_out[0]);
-				} else {
-					fprintf(stderr, "Connected out_L to %s\n", ports_out[0]);
-				}
-				if (jack_connect(jack_client, jack_port_name(out_R_port),
-						 ports_out[1])) {
-					fprintf(stderr, "Cannot connect out_R port to %s.\n",
-						ports_out[1]);
-				} else {
-					fprintf(stderr, "Connected out_R to %s\n", ports_out[1]);
-				}
-				free(ports_out);
-			}
+			connect_saved_ports();
 		} else {
-			if (jack_connect(jack_client, jack_port_name(out_L_port),
-					 user_port1)) {
-				fprintf(stderr, "Cannot connect out_L port to %s.\n", user_port1);
-			} else {
-				fprintf(stderr, "Connected out_L to %s\n", user_port1);
-			}
-			if (jack_connect(jack_client, jack_port_name(out_R_port),
-					 user_port2)) {
-				fprintf(stderr, "Cannot connect out_R port to %s.\n", user_port2);
-			} else {
-				fprintf(stderr, "Connected out_R to %s\n", user_port2);
-			}
+			jack_try_connect(out_L_port, user_port1);
+			jack_try_connect(out_R_port, user_port2);
 		}
+	} else {
+		connect_saved_ports();
 	}
 }
 #endif /* HAVE_JACK */

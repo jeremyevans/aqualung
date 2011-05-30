@@ -68,6 +68,7 @@ create_about_window() {
 
 	GtkWidget * frame;
 	GtkWidget * scrolled_win;
+	GtkWidget * vscrollbar;
 	GtkWidget * view;
 	GtkTextBuffer * buffer;
 	GtkTextIter iter;
@@ -120,14 +121,15 @@ create_about_window() {
 
 	scrolled_win = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_set_name(scrolled_win, "");
-	gtk_widget_set_name(GTK_SCROLLED_WINDOW(scrolled_win)->vscrollbar, "");
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
-	gtk_widget_modify_bg(GTK_SCROLLED_WINDOW(scrolled_win)->vscrollbar, GTK_STATE_NORMAL, &blue1);
-	gtk_widget_modify_bg(GTK_SCROLLED_WINDOW(scrolled_win)->vscrollbar, GTK_STATE_PRELIGHT, &blue2);
-	gtk_widget_modify_bg(GTK_SCROLLED_WINDOW(scrolled_win)->vscrollbar, GTK_STATE_ACTIVE, &blue3);
-	gtk_widget_modify_bg(GTK_SCROLLED_WINDOW(scrolled_win)->vscrollbar, GTK_STATE_INSENSITIVE, &blue2);
+	vscrollbar = gtk_scrolled_window_get_vscrollbar(GTK_SCROLLED_WINDOW(scrolled_win));
+	gtk_widget_set_name(vscrollbar, "");
+	gtk_widget_modify_bg(vscrollbar, GTK_STATE_NORMAL, &blue1);
+	gtk_widget_modify_bg(vscrollbar, GTK_STATE_PRELIGHT, &blue2);
+	gtk_widget_modify_bg(vscrollbar, GTK_STATE_ACTIVE, &blue3);
+	gtk_widget_modify_bg(vscrollbar, GTK_STATE_INSENSITIVE, &blue2);
 
 
         view = gtk_text_view_new();

@@ -142,8 +142,8 @@ if test "$lib" = "yes"; then
 fi
 
 # Checks for libraries.
-AC_MSG_CHECKING(whether GTK+ version >= 2.6)
-if pkg-config --exists 'gtk+-2.0 >= 2.6'; then
+AC_MSG_CHECKING(whether GTK+ version >= 2.8)
+if pkg-config --exists 'gtk+-2.0 >= 2.8'; then
 
         gtk_CFLAGS=`pkg-config --cflags gtk+-2.0`
 	gtk_LIBS=`pkg-config --libs gtk+-2.0`
@@ -154,7 +154,7 @@ if pkg-config --exists 'gtk+-2.0 >= 2.6'; then
         AC_MSG_RESULT(yes)
 else
 	AC_MSG_RESULT(no)
-	AC_MSG_ERROR(GTK+ not found or too old (version < 2.6))
+	AC_MSG_ERROR(GTK+ not found or too old (version < 2.8))
 fi
 
 
@@ -885,26 +885,12 @@ AC_ARG_WITH(
 	loop,
 	[  --with-loop=yes,no      compile with loop playback support (default: yes)],
 	loop="$withval",
-	loop="detect")
+	loop="yes")
 if test "$loop" = "no"; then
 	AC_MSG_RESULT(no)
 else
-	AC_MSG_CHECKING(whether GTK+ version >= 2.8)
-	if pkg-config --exists 'gtk+-2.0 >= 2.8'; then
-	        AC_MSG_RESULT(yes)
-		AC_DEFINE([HAVE_LOOP], [1], [Defined if version(GTK+-2.0) >= 2.8])
-		lib="yes"
-	else
-		AC_MSG_RESULT(no)
-		lib="no"
-	fi
-
-	if test "$lib" = "no" -a "$loop" = "yes"; then
-		AC_MSG_ERROR(You need GTK+ version 2.8 or higher for loop playback support.)
-	fi
-	if test "$loop" = "detect"; then
-	        loop=$lib
-	fi
+	AC_DEFINE([HAVE_LOOP], [1], [Defined if compile with loop playback support])
+	AC_MSG_RESULT(yes)
 fi
 
 AC_MSG_CHECKING(for podcast support)

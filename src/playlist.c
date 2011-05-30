@@ -3471,15 +3471,10 @@ playlist_scroll_up(gpointer data) {
 
 	playlist_t * pl = (playlist_t *)data;
 
-#if (GTK_CHECK_VERSION(2,8,0))
 	gboolean dummy;
 	GtkRange * range = GTK_RANGE(gtk_scrolled_window_get_vscrollbar(GTK_SCROLLED_WINDOW(pl->scroll)));
 
 	g_signal_emit_by_name(G_OBJECT(range), "move-slider", GTK_SCROLL_STEP_UP, &dummy);
-#else
-        g_signal_emit_by_name(G_OBJECT(pl->scroll), "scroll-child",
-                              GTK_SCROLL_STEP_BACKWARD, FALSE/*vertical*/, NULL);
-#endif /* GTK_CHECK_VERSION */
 
 	return TRUE;
 }
@@ -3489,15 +3484,10 @@ playlist_scroll_dn(gpointer data) {
 
 	playlist_t * pl = (playlist_t *)data;
 
-#if (GTK_CHECK_VERSION(2,8,0))
 	gboolean dummy;
 	GtkRange * range = GTK_RANGE(gtk_scrolled_window_get_vscrollbar(GTK_SCROLLED_WINDOW(pl->scroll)));
 
 	g_signal_emit_by_name(G_OBJECT(range), "move-slider", GTK_SCROLL_STEP_DOWN, &dummy);
-#else
-        g_signal_emit_by_name(G_OBJECT(pl->scroll), "scroll-child",
-                              GTK_SCROLL_STEP_FORWARD, FALSE/*vertical*/, NULL);
-#endif /* GTK_CHECK_VERSION */
 
 	return TRUE;
 }

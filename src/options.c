@@ -186,7 +186,6 @@ GtkWidget * label_src;
 
 GtkWidget * check_rva_is_enabled;
 GtkWidget * rva_drawing_area;
-GdkPixmap * rva_pixmap = NULL;
 GtkWidget * rva_viewport;
 GtkWidget * combo_listening_env;
 GtkWidget * spin_refvol;
@@ -946,8 +945,6 @@ draw_rva_diagram(void) {
 	float volx, voly;
 	int px1, py1, px2, py2;
 
-#if (GTK_CHECK_VERSION(2,8,0))
-
         cairo_t *rva_cr = NULL;
 
 
@@ -1010,85 +1007,6 @@ draw_rva_diagram(void) {
 
                 cairo_destroy (rva_cr);
         }
-#else
-
-        GdkGC * gc;
-	GdkColor fg_color;
-
-
-	gdk_draw_rectangle(rva_pixmap,
-			   rva_drawing_area->style->black_gc,
-			   TRUE,
-			   0, 0,
-			   rva_drawing_area->allocation.width,
-			   rva_drawing_area->allocation.height);
-
-	gc = gdk_gc_new(rva_pixmap);
-	if (rva_is_enabled_shadow) {
-		fg_color.red = 10000;
-		fg_color.green = 10000;
-		fg_color.blue = 10000;
-	} else {
-		fg_color.red = 5000;
-		fg_color.green = 5000;
-		fg_color.blue = 5000;
-	}
-	gdk_gc_set_rgb_fg_color(gc, &fg_color);
-
-	for (i = 0; i <= 24; i++) {
-		gdk_draw_line(rva_pixmap, gc,
-			      xoffs + i * dw, yoffs,
-			      xoffs + i * dw, yoffs + 24 * dh);
-                gdk_draw_line(rva_pixmap, gc,
-			      xoffs, yoffs + i * dh,
-			      xoffs + 24 * dw, yoffs + i * dh);
-	}
-
-	if (rva_is_enabled_shadow) {
-		fg_color.red = 0;
-		fg_color.green = 0;
-		fg_color.blue = 65535;
-	} else {
-		fg_color.red = 0;
-		fg_color.green = 0;
-		fg_color.blue = 30000;
-	}
-	gdk_gc_set_rgb_fg_color(gc, &fg_color);
-	gdk_draw_line(rva_pixmap, gc, xoffs, yoffs + 24 * dh, xoffs + 24 * dw, yoffs);
-
-	if (rva_is_enabled_shadow) {
-		fg_color.red = 65535;
-		fg_color.green = 0;
-		fg_color.blue = 0;
-	} else {
-		fg_color.red = 30000;
-		fg_color.green = 0;
-		fg_color.blue = 0;
-	}
-	gdk_gc_set_rgb_fg_color(gc, &fg_color);
-
-
-	volx = -24.0f;
-	voly = volx + (volx - rva_refvol_shadow) * (rva_steepness_shadow - 1.0f);
-	px1 = xoffs;
-	py1 = yoffs - (voly * dh);
-
-	volx = 0.0f;
-	voly = volx + (volx - rva_refvol_shadow) * (rva_steepness_shadow - 1.0f);
-	px2 = xoffs + 24*dw;
-	py2 = yoffs - (voly * dh);
-
-	gdk_draw_line(rva_pixmap, gc, px1, py1, px2, py2);
-
-	gdk_draw_drawable(rva_drawing_area->window,
-			rva_drawing_area->style->fg_gc[GTK_WIDGET_STATE(rva_drawing_area)],
-			rva_pixmap,
-			0, 0, 0, 0,
-			width, height);
-
-	g_object_unref(gc);
-
-#endif /* GTK_CHECK_VERSION */
 }
 
 
@@ -1111,25 +1029,7 @@ steepness_changed(GtkWidget * widget, gpointer * data) {
 static gint
 rva_configure_event(GtkWidget * widget, GdkEventConfigure * event) {
 
-#if (!GTK_CHECK_VERSION(2,8,0))
-
-        if (rva_pixmap)
-		g_object_unref(rva_pixmap);
-
-	rva_pixmap = gdk_pixmap_new(widget->window,
-				    widget->allocation.width,
-				    widget->allocation.height,
-				    -1);
-	gdk_draw_rectangle(rva_pixmap,
-			   widget->style->black_gc,
-			   TRUE,
-			   0, 0,
-			   widget->allocation.width,
-			   widget->allocation.height);
-
-#endif /* GTK_CHECK_VERSION */
-
-        draw_rva_diagram();
+	draw_rva_diagram();
 	return TRUE;
 }
 
@@ -1137,21 +1037,7 @@ rva_configure_event(GtkWidget * widget, GdkEventConfigure * event) {
 static gint
 rva_expose_event(GtkWidget * widget, GdkEventExpose * event) {
 
-#if (GTK_CHECK_VERSION(2,8,0))
-
-        draw_rva_diagram();
-
-#else
-
-	gdk_draw_drawable(widget->window,
-			widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
-			rva_pixmap,
-			event->area.x, event->area.y,
-			event->area.x, event->area.y,
-			event->area.width, event->area.height);
-
-#endif /* GTK_CHECK_VERSION */
-
+	draw_rva_diagram();
 	return FALSE;
 }
 

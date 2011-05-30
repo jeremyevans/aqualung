@@ -526,17 +526,19 @@ flac_decoder_open(decoder_t * dec, char * filename) {
 
  try_flac:
 	pd->error = 0;
+	pd->state = FLAC__STREAM_DECODER_UNINITIALIZED;
 	pd->flac_decoder = FLAC__stream_decoder_new();
 
-	if ((pd->state = FLAC__stream_decoder_init_file(pd->flac_decoder, filename,
-							write_callback, metadata_callback,
-							error_callback, (void *)dec))
+	if (FLAC__stream_decoder_init_file(pd->flac_decoder, filename,
+					   write_callback, metadata_callback,
+					   error_callback, (void *)dec)
 	    != FLAC__STREAM_DECODER_INIT_STATUS_OK) {
 
 		FLAC__stream_decoder_delete(pd->flac_decoder);
 		return DECODER_OPEN_FERROR;
 	}
 
+	pd->state = FLAC__stream_decoder_get_state(pd->flac_decoder);
 	FLAC__stream_decoder_process_until_end_of_metadata(pd->flac_decoder);
 
 	if ((!pd->error) && (pd->channels > 0)) {

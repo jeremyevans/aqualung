@@ -548,8 +548,8 @@ port_setup_dialog(void) {
 
 	gtk_widget_show_all(ports_window);
 
-	gtk_widget_destroy(GTK_BIN(column_out_L->button)->child);
-	gtk_widget_destroy(GTK_BIN(column_out_R->button)->child);
+	gtk_widget_destroy(gtk_bin_get_child(GTK_BIN(column_out_L->button)));
+	gtk_widget_destroy(gtk_bin_get_child(GTK_BIN(column_out_R->button)));
 
 	hbox_L = gtk_hbox_new(FALSE, 0);
 	hbox_R = gtk_hbox_new(FALSE, 0);

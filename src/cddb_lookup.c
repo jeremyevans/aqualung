@@ -1233,7 +1233,7 @@ cddb_dialog(cddb_lookup_t * data) {
 
 	if (data->type != CDDB_TYPE_SUBMIT_NEW) {
 		data->category_entry = gtk_entry_new();
-		gtk_entry_set_editable(GTK_ENTRY(data->category_entry), FALSE);
+		gtk_editable_set_editable(GTK_EDITABLE(data->category_entry), FALSE);
 		gtk_table_attach(GTK_TABLE(table), data->category_entry, 1, 2, 4, 5,
 				 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
 	} else {

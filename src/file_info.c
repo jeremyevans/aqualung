@@ -956,7 +956,7 @@ make_genre_combo(meta_frame_t * frame, GtkWidget ** widget, GtkWidget ** entry) 
 	gtk_combo_box_set_wrap_width(GTK_COMBO_BOX(combo), 4);
 
 	*widget = combo;
-	*entry = GTK_WIDGET(GTK_BIN(combo)->child);
+	*entry = GTK_WIDGET(gtk_bin_get_child(GTK_BIN(combo)));
 
 	if (frame->field_val[0] == '\0') { /* set default genre if none present */
 		gtk_entry_set_text(GTK_ENTRY(*entry), id3v1_genre_str_from_code(0));

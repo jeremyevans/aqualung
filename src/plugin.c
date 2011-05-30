@@ -773,7 +773,6 @@ build_plugin_window(plugin_instance * instance) {
 	GtkWidget * hseparator;
 	GtkObject * adjustment;
 	GtkWidget * combo;
-	GList * glist;
 
 	optdata_t * optdata;
 	btnpdata_t * btnpdata;
@@ -1072,7 +1071,6 @@ build_plugin_window(plugin_instance * instance) {
 
                                 combo = gtk_combo_box_new_text (); 
 				gtk_widget_set_name(combo, "plugin_combo");
-				glist = NULL;
 				gtk_table_attach(GTK_TABLE(table), combo, 1, 3, i, i+1,
 						 GTK_FILL | GTK_EXPAND, GTK_FILL, 2, 2);
 

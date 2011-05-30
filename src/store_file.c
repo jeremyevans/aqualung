@@ -3850,13 +3850,11 @@ parse_record(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_artist, char * st
 
 	char name[MAXLEN];
 	char sort[MAXLEN];
-	char comment[MAXLEN];
 
 	record_data_t * data;
 
 	name[0] = '\0';
 	sort[0] = '\0';
-	comment[0] = '\0';
 
 	if ((data = (record_data_t *)calloc(1, sizeof(record_data_t))) == NULL) {
 		fprintf(stderr, "parse_record: calloc error\n");
@@ -3924,13 +3922,11 @@ parse_artist(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_store, char * sto
 
 	char name[MAXLEN];
 	char sort[MAXLEN];
-	char comment[MAXLEN];
 
 	artist_data_t * data;
 
 	name[0] = '\0';
 	sort[0] = '\0';
-	comment[0] = '\0';
 
 	if ((data = (artist_data_t *)calloc(1, sizeof(artist_data_t))) == NULL) {
 		fprintf(stderr, "parse_artist: calloc error\n");
@@ -3986,10 +3982,8 @@ store_file_load(char * store_file, char * sort) {
 	GtkTreeIter iter_store;
 
 	char name[MAXLEN];
-	char comment[MAXLEN];
 
 	name[0] = '\0';
-	comment[0] = '\0';
 
 	xmlDocPtr doc;
 	xmlNodePtr cur;

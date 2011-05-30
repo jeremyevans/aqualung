@@ -518,7 +518,6 @@ create_music_browser(void) {
 
 	GtkCellRenderer * renderer;
 	GtkTreeViewColumn * column;
-	GtkTextBuffer * buffer;
 
 	GdkPixbuf * pixbuf;
 	char path[MAXLEN];
@@ -711,7 +710,6 @@ create_music_browser(void) {
 	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(comment_view), 3);
 	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(comment_view), 3);
         gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(comment_view), GTK_WRAP_WORD);
-	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(comment_view));
 
 	scrolled_win2 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_set_size_request(scrolled_win2, -1, 1);

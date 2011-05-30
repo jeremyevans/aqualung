@@ -2803,7 +2803,6 @@ gboolean
 write_track_to_store(gpointer user_data) {
 
 	build_store_t * data = (build_store_t *)user_data;
-	int result;
 
 	GtkTreeIter record_iter;
 
@@ -2832,10 +2831,10 @@ write_track_to_store(gpointer user_data) {
 
 		GtkTreeIter artist_iter;
 
-		result = store_get_iter_for_artist_and_record(&data->store_iter,
-							      &artist_iter,
-							      &record_iter,
-							      data->disc);
+		store_get_iter_for_artist_and_record(&data->store_iter,
+						     &artist_iter,
+						     &record_iter,
+						     data->disc);
 
 		add_new_track(&record_iter, data->disc->tracks, 0 /* append */);
 	}

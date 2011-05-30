@@ -950,11 +950,9 @@ podcast_store__reorder_cb(gpointer data) {
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &pod_iter, &store_iter, i++)) {
 		char title[MAXLEN];
 		podcast_t * podcast;
-		GtkTreePath * path;
 
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &pod_iter, MS_COL_DATA, &podcast, -1);
 		podcast_get_display_name(podcast, title);
-		path = gtk_tree_model_get_path(GTK_TREE_MODEL(music_store), &pod_iter);
 		gtk_list_store_append(store, &list_iter);
 		gtk_list_store_set(store, &list_iter, 0, title, 1, gtk_tree_iter_copy(&pod_iter), -1);
 	}

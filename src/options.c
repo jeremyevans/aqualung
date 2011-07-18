@@ -298,7 +298,6 @@ void save_systray_options(xmlDocPtr, xmlNodePtr);
 #ifdef HAVE_JACK
 extern jack_port_t * out_L_port;
 extern jack_port_t * out_R_port;
-extern jack_client_t * jack_client;
 extern GSList * saved_pconns_L;
 extern GSList * saved_pconns_R;
 void load_jack_connections(xmlDocPtr, xmlNodePtr);
@@ -4547,8 +4546,7 @@ save_jack_connections(xmlDocPtr doc, xmlNodePtr root) {
 	port_list_node = xmlNewNode(NULL, (const xmlChar *) "out_L");
 	xmlAddChild(root, port_list_node);
 
-	ports = jack_port_get_connections(out_L_port);
-	if (ports) {
+	if (out_L_port && (ports = jack_port_get_connections(out_L_port))) {
 		int i = 0;
 		while (ports[i] != NULL) {
 			cur = xmlNewNode(NULL, (const xmlChar *) "port");
@@ -4558,12 +4556,11 @@ save_jack_connections(xmlDocPtr doc, xmlNodePtr root) {
 		}
 		free(ports);
 	}
-	
+
 	port_list_node = xmlNewNode(NULL, (const xmlChar *) "out_R");
 	xmlAddChild(root, port_list_node);
 
-	ports = jack_port_get_connections(out_R_port);
-	if (ports) {
+	if (out_R_port && (ports = jack_port_get_connections(out_R_port))) {
 		int i = 0;
 		while (ports[i] != NULL) {
 			cur = xmlNewNode(NULL, (const xmlChar *) "port");

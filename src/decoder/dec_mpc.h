@@ -27,6 +27,7 @@
 #include <mpcdec/mpcdec.h>
 #else
 #include <mpc/mpcdec.h>
+#include <math.h>
 #endif /* MPC_OLD_API */
 #endif /* HAVE_MPC */
 

@@ -149,10 +149,21 @@ mpc_add_rg_frame(metadata_t * meta, int type, float fval) {
 void
 mpc_add_rg_meta(metadata_t * meta, mpc_streaminfo * si) {
 
+#ifdef MPC_OLD_API
 	float track_gain = si->gain_title / 100.0;
 	float album_gain = si->gain_album / 100.0;
 	float track_peak = si->peak_title / 32768.0;
 	float album_peak = si->peak_album / 32768.0;
+#else
+	/* These conversions are inverted from streaminfo_read_header_sv7()
+	 * from the following file on top of what aqualung does for OLD_API:
+	 * http://svn.musepack.net/libmpc/trunk/libmpcdec/streaminfo.c
+	 */
+	float track_gain = MPC_OLD_GAIN_REF - (si->gain_title / 256.0);
+	float album_gain = MPC_OLD_GAIN_REF - (si->gain_album / 256.0);
+	float track_peak = pow(10, si->peak_title / 256.0 / 20.0) / 32768.0;
+	float album_peak = pow(10, si->peak_album / 256.0 / 20.0) / 32768.0;
+#endif
 
 	if (meta == NULL) {
 		return;

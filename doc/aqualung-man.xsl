@@ -95,6 +95,17 @@ The latest version of the User's Manual is available at the project homepage.
 <xsl:apply-templates/>
 </xsl:template>
 
+<xsl:template match="subsection[@title='Examples']">
+<xsl:text>
+.TP
+.B Examples
+.nf
+</xsl:text>
+<xsl:apply-templates/>
+<xsl:text>.fi
+</xsl:text>
+</xsl:template>
+
 <xsl:template match="p">
 <xsl:text>.P
 </xsl:text>

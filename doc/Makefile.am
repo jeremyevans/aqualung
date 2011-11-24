@@ -17,16 +17,27 @@ man: aqualung.1
 
 txt: aqualung.1.txt
 
-aqualung-doc.pdf: aqualung-latex.xsl aqualung-doc.xml
-	xsltproc aqualung-latex.xsl aqualung-doc.xml | sed -e 's/^[ \t]*@\?//' > aqualung-doc.tex
-	while test `latex aqualung-doc.tex | grep 'Rerun' | wc -l` != 0 ; do : ; done
+aqualung-doc.tex: aqualung-latex.xsl aqualung-doc.xml
+	xsltproc aqualung-latex.xsl aqualung-doc.xml > aqualung-doc.tex.tmp
+	sed 's/^[ \t]*@\?//' aqualung-doc.tex.tmp > aqualung-doc.tex
+	rm aqualung-doc.tex.tmp
+
+aqualung-doc.pdf: aqualung-doc.tex
+	while latex aqualung-doc.tex | grep Rerun; do echo '...rerunning.'; done
 	dvipdf -sPAPERSIZE=a4 aqualung-doc.dvi
+	rm aqualung-doc.dvi
 
 aqualung-doc.html: aqualung-xhtml.xsl aqualung-doc.xml
-	xsltproc --stringparam date "`LANG=C date -u`" aqualung-xhtml.xsl aqualung-doc.xml | sed -e 's/^[ \t]*@//' > aqualung-doc.html
+	xsltproc --stringparam date "`LANG=C date -u`" \
+	    aqualung-xhtml.xsl aqualung-doc.xml > aqualung-doc.html.tmp
+	sed 's/^[ \t]*@//' aqualung-doc.html.tmp > aqualung-doc.html
+	rm aqualung-doc.html.tmp
 
 index.html: aqualung-xhtml-multipage.xsl aqualung-xhtml.xsl aqualung-doc.xml
-	xsltproc --stringparam date "`LANG=C date -u`" aqualung-xhtml-multipage.xsl aqualung-doc.xml | sed -e 's/^[ \t]*@//' | ./split.sh
+	xsltproc --stringparam date "`LANG=C date -u`" \
+	    aqualung-xhtml-multipage.xsl aqualung-doc.xml > index.html.tmp
+	sed 's/^[ \t]*@//' index.html.tmp | ./split.sh
+	rm index.html.tmp
 
 aqualung-doc-html.tar.bz2: aqualung-doc.html
 	mkdir aqualung-doc-html
@@ -41,15 +52,20 @@ aqualung-doc-html-chunk.tar.bz2: index.html
 	rm -r aqualung-doc-html-chunk
 
 aqualung.1: aqualung-man.xsl aqualung-doc.xml
-	xsltproc --stringparam date "`LANG=C date -u +'%d %B %Y'`" aqualung-man.xsl aqualung-doc.xml | sed 's/^[ \t]*@\?//' > aqualung.1
+	xsltproc --stringparam date "`LANG=C date -u +'%d %B %Y'`" \
+	    aqualung-man.xsl aqualung-doc.xml > aqualung.1.tmp
+	sed 's/^[ \t]*//' aqualung.1.tmp > aqualung.1
+	rm aqualung.1.tmp
 
 aqualung.1.txt: aqualung.1
-	man ./aqualung.1 | col -bx | sed 's/\$$  \+/\$$ /' > aqualung.1.txt
+	nroff -c -man aqualung.1 > aqualung.1.txt.tmp
+	col -bx < aqualung.1.txt.tmp > aqualung.1.txt
+	rm aqualung.1.txt.tmp
 
 .PHONY: clean clean-all
 
 clean:
-	rm -f *.tex *.aux *.dvi *.log *.out *.toc
+	rm -f *.tex *.aux *.dvi *.log *.out *.toc *.tmp
 
 clean-all:
 	rm -f *.html *.tar.bz2 aqualung.1 aqualung.1.txt *.pdf

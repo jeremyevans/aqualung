@@ -557,6 +557,7 @@ AC_ARG_WITH(
 if test "$mpc" = "no"; then
 	AC_MSG_RESULT(no)
 else
+	lib=no
 	AC_CHECK_LIB([mpcdec], [mpc_demux_init], [lib=yes],
 	  [AC_CHECK_LIB([mpcdec], [mpc_streaminfo_init], [lib=yes
 	    AC_DEFINE([MPC_OLD_API], [1],

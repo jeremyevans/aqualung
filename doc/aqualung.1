@@ -1,4 +1,4 @@
-.TH AQUALUNG 1 "04 April 2010"
+.TH AQUALUNG 1 "13 November 2011"
 .SH NAME
 aqualung \- Music player for GNU/Linux
 .SH SYNOPSIS
@@ -320,6 +320,7 @@ Show/hide Music Store window.
 
 .TP
 .B Examples
+.nf
 .TP
 $ aqualung -s3 -o alsa -R -r 48000 -d plughw:0,0
 .TP
@@ -328,6 +329,7 @@ $ aqualung --srctype=1 --output oss --rate 96000
 $ aqualung -o jack --auto=system:playback_17,system:playback_18
 .TP
 $ aqualung -o jack -a -E --tab="Led Zeppelin" `find ./ledzeppelin/ -name \*.flac`
+.fi
 .SH FILES
 .P
 Here is a list of files that Aqualung creates, reads and

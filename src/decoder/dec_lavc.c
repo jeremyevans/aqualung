@@ -53,7 +53,7 @@ decode_lavc(decoder_t * dec) {
 
 	if (packet.stream_index == pd->audioStream) {
 
-		avcodec_decode_audio2(pd->avCodecCtx, samples, &n_bytes, packet.data, packet.size);
+		avcodec_decode_audio3(pd->avCodecCtx, samples, &n_bytes, &packet);
 		if (n_bytes > 0) {
 			int i;
 			for (i = 0; i < n_bytes/2; i++) {
@@ -124,7 +124,7 @@ lavc_decoder_open(decoder_t * dec, char * filename) {
 
 	pd->audioStream = -1;
 	for (i = 0; i < pd->avFormatCtx->nb_streams; i++) {
-		if (pd->avFormatCtx->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO) {
+		if (pd->avFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
 			pd->audioStream = i;
 			break;
 		}

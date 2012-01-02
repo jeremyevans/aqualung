@@ -64,7 +64,6 @@
 #endif /* HAVE_OSS */
 
 #ifdef HAVE_JACK
-#include <sys/mman.h>
 #include <jack/jack.h>
 #endif /* HAVE_JACK */
 
@@ -2704,13 +2703,6 @@ main(int argc, char ** argv) {
 	if (setenv("LC_NUMERIC", "POSIX", 1) != 0) {
 		fprintf(stderr, "aqualung main(): setenv(\"LC_NUMERIC\", \"POSIX\") failed\n");
 	}
-
-#ifdef HAVE_JACK
-	/* unlock memory (implicitly locked by libjack when Jack runs realtime) */
-	if (munlockall() < 0) {
-		fprintf(stderr, "aqualung main(): munlockall() failed\n");
-	}
-#endif /* HAVE_JACK */
 
 	g_thread_init(NULL);
 	gdk_threads_init();

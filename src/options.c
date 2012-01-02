@@ -3661,9 +3661,9 @@ create_options_window(void) {
         gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
 
         if (gdk_color_parse(options.song_color, &color) == FALSE) {
-                color.red = playlist_color_indicator->style->fg[SELECTED].red;
-                color.green = playlist_color_indicator->style->fg[SELECTED].green;
-                color.blue = playlist_color_indicator->style->fg[SELECTED].blue;
+                color.red = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].red;
+                color.green = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].green;
+                color.blue = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].blue;
                 color.pixel = (gulong)((color.red & 0xff00)*256 + (color.green & 0xff00) + (color.blue & 0xff00)/256);
         }
 
@@ -3688,9 +3688,9 @@ create_options_window(void) {
         gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
 
         if (gdk_color_parse(options.activesong_color, &color) == FALSE) {
-                color.red = playlist_color_indicator->style->fg[SELECTED].red;
-                color.green = playlist_color_indicator->style->fg[SELECTED].green;
-                color.blue = playlist_color_indicator->style->fg[SELECTED].blue;
+                color.red = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].red;
+                color.green = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].green;
+                color.blue = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].blue;
                 color.pixel = (gulong)((color.red & 0xff00)*256 + (color.green & 0xff00) + (color.blue & 0xff00)/256);
         }
 

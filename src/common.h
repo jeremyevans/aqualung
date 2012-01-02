@@ -28,9 +28,6 @@
 #define MAX_FONTNAME_LEN    256
 #define MAX_COLORNAME_LEN   32
 
-#define SELECTED    3
-#define INSENSITIVE 4
-
 
 #ifdef _WIN32
 

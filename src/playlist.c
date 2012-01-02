@@ -958,9 +958,9 @@ playlist_set_color(void) {
                         rs = 1;
 		}
         } else {
-		rs = playlist_color_indicator->style->fg[SELECTED].red;
-		gs = playlist_color_indicator->style->fg[SELECTED].green;
-		bs = playlist_color_indicator->style->fg[SELECTED].blue;
+		rs = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].red;
+		gs = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].green;
+		bs = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].blue;
 	}
 
         if (options.override_skin_settings &&
@@ -971,9 +971,9 @@ playlist_set_color(void) {
                 bi = color.blue;
 
         } else {
-        	ri = playlist_color_indicator->style->fg[INSENSITIVE].red;
-        	gi = playlist_color_indicator->style->fg[INSENSITIVE].green;
-        	bi = playlist_color_indicator->style->fg[INSENSITIVE].blue;
+        	ri = playlist_color_indicator->style->fg[GTK_STATE_INSENSITIVE].red;
+        	gi = playlist_color_indicator->style->fg[GTK_STATE_INSENSITIVE].green;
+        	bi = playlist_color_indicator->style->fg[GTK_STATE_INSENSITIVE].blue;
         }
 
         sprintf(active, "#%04X%04X%04X", rs, gs, bs);

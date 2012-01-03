@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-
+AC_PREREQ([2.60])
 AC_INIT([aqualung],[SVN],[http://aqualung.factorial.hu/mantis])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/core.c])
@@ -87,8 +87,7 @@ AM_PROG_CC_C_O
 
 
 # Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS([errno.h fcntl.h stdlib.h string.h sys/ioctl.h unistd.h dlfcn.h])
+AC_CHECK_HEADERS([dlfcn.h errno.h fcntl.h sys/ioctl.h])
 
 
 
@@ -99,9 +98,7 @@ AC_TYPE_SIZE_T
 
 
 # Checks for library functions.
-AC_PROG_GCC_TRADITIONAL
 AC_FUNC_MALLOC
-AC_FUNC_STAT
 AC_CHECK_FUNCS([floor memset mkdir strdup strrchr strstr strndup strcasestr])
 
 

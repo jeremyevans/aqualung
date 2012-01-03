@@ -1,5 +1,7 @@
 noinst_LIBRARIES = libencoder.a
 
+AM_CFLAGS = $(glib_CFLAGS)
+
 libencoder_a_SOURCES = \
 enc_flac.h enc_flac.c \
 enc_lame.h enc_lame.c \

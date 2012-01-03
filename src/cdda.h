@@ -25,8 +25,6 @@
 
 #ifdef HAVE_CDDA
 
-#include <gtk/gtk.h>
-
 #ifdef HAVE_CDDB
 #define _TMP_HAVE_CDDB 1
 #undef HAVE_CDDB

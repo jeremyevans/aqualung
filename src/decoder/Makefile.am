@@ -1,6 +1,8 @@
 noinst_LIBRARIES = libdecoder.a
 
-libdecoder_a_CFLAGS = $(LIBAVCODEC_CFLAGS) $(LIBAVFORMAT_CFLAGS)
+AM_CFLAGS = $(glib_CFLAGS) $(LIBAVCODEC_CFLAGS) $(LIBAVFORMAT_CFLAGS)
+
+AM_CXXFLAGS = $(glib_CFLAGS)
 
 libdecoder_a_SOURCES = \
 dec_cdda.h dec_cdda.c \

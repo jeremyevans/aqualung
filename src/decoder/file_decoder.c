@@ -29,7 +29,6 @@
 #include <math.h>
 #include <time.h>
 #include <sys/stat.h>
-#include <gtk/gtk.h>
 
 #ifdef _WIN32
 #include <glib.h>

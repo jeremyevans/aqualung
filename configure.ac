@@ -114,6 +114,9 @@ PKG_PROG_PKG_CONFIG
 # opportunistic
 AC_CHECK_LIB([z], [gzopen])
 AC_CHECK_LIB([bz2], [BZ2_bzopen])
+# required
+PKG_CHECK_MODULES([glib], [glib-2.0 gthread-2.0])
+PKG_CHECK_MODULES([gtk], [gtk+-2.0 > 2.8])
 
 
 # Checks for header files.
@@ -145,23 +148,6 @@ AC_CHECK_LIB(dl,
 	[],
 	[AC_MSG_ERROR(You do not appear to have a usable interface to the dynamic linking loader.)])
 fi
-
-# Checks for libraries.
-AC_MSG_CHECKING(whether GTK+ version >= 2.8)
-if pkg-config --exists 'gtk+-2.0 >= 2.8'; then
-
-        gtk_CFLAGS=`pkg-config --cflags gtk+-2.0`
-	gtk_LIBS=`pkg-config --libs gtk+-2.0`
-
-	glib_CFLAGS=`pkg-config --cflags gthread-2.0`
-	glib_LIBS=`pkg-config --libs gthread-2.0`
-
-        AC_MSG_RESULT(yes)
-else
-	AC_MSG_RESULT(no)
-	AC_MSG_ERROR(GTK+ not found or too old (version < 2.8))
-fi
-
 
 AC_CHECK_PROG([var], [xml2-config], [yes], [no])
 if test ! "$var" = "yes"; then
@@ -945,8 +931,8 @@ fi
 # Compiler and linker variables
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS"
 CXXFLAGS="$CFLAGS"
-CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $cdda_CFLAGS $pulse_CFLAGS"
-LIBS="$LIBS decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
+CPPFLAGS="$xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $cdda_CFLAGS $pulse_CFLAGS"
+LIBS="$LIBS decoder/libdecoder.a encoder/libencoder.a $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
 
 
 AC_MSG_NOTICE([summary

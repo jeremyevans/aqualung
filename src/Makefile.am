@@ -7,6 +7,10 @@ bin_PROGRAMS = aqualung
 
 aqualung_CPPFLAGS = $(AM_CPPFLAGS) -DAQUALUNG_SKINDIR=\"$(pkgdatadir)/skin\"
 
+aqualung_CFLAGS = $(gtk_CFLAGS) $(glib_CFLAGS)
+
+aqualung_LDADD = $(LDADD) $(gtk_LIBS) $(glib_LIBS)
+
 aqualung_SOURCES = \
 about.h about.c \
 build_store.h build_store.c \

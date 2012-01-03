@@ -744,39 +744,21 @@ AS_IF([test "x$with_src" != 'xno'], [
 #
 # Hardware Library Options
 #
-AC_MSG_CHECKING(for CDDA support)
-AC_ARG_WITH(
-	cdda,
-	[  --with-cdda=yes,no      compile with CDDA support (default: yes)],
-	cdda="$withval",
-	cdda="detect")
-if test "$cdda" = "no"; then
-	AC_MSG_RESULT(no)
-else
-        if test $win32 = "no" ; then
-	        AC_CHECK_LIB(cdio, cdio_open, [lib=yes], [lib=no])
-        else
-	        AC_CHECK_LIB(cdio, cdio_open, [lib=yes], [lib=no], [-lwinmm])
-        fi
-	if test "$lib" = "yes"; then
-		AC_MSG_CHECKING(whether libcdio_paranoia version >= 0.76)
-		if `pkg-config --exists 'libcdio_paranoia >= 0.76'`; then
-		        cdda_CFLAGS=`pkg-config --cflags libcdio_paranoia`
-		        cdda_LIBS=`pkg-config --libs libcdio_paranoia`
-			AC_DEFINE([HAVE_CDDA], [1], [Defined if compile with CDDA support])
-			AC_MSG_RESULT(yes)
-		else
-			AC_MSG_RESULT(no)
-			lib="no"
-		fi
-	fi
-	if test "$lib" = "no" -a "$cdda" = "yes"; then
-		AC_MSG_ERROR(libcdio and/or libcdio_paranoia library not found or too old. Grab it from http://www.gnu.org/software/libcdio/)
-	fi
-	if test "$cdda" = "detect"; then
-		cdda=$lib
-	fi
-fi
+AC_ARG_WITH([cdda],
+    [AS_HELP_STRING([--with-cdda],
+        [compile with CDDA support (default: detect)])],
+    [], [with_cdda='detect'])
+AS_IF([test "x$with_cdda" != 'xno'], [
+    AC_MSG_NOTICE([Compact Disc Digital Audio Support])
+    PKG_CHECK_MODULES([cdio], [libcdio libcdio_paranoia >= 0.76],
+        [AS_IF([test "x$with_cdda" = 'xdetect'], [with_cdda='yes (found)'])],
+        [AS_IF([test "x$with_cdda" = 'xyes'],
+            [AC_MSG_ERROR([$cdio_PKG_ERRORS])])])
+    AS_CASE([$with_cdda],
+        [detect], [with_cdda='not found'],
+        [yes*], [AC_DEFINE([HAVE_CDDA], [1],
+                    [Define to build with CDDA support])])
+])
 
 
 AC_MSG_CHECKING(for CDDB support)
@@ -875,8 +857,7 @@ fi
 # Compiler and linker variables
 CFLAGS="-Wall $CFLAGS $PLATFORM_CFLAGS"
 CXXFLAGS="-Wall $CXXFLAGS $PLATFORM_CFLAGS"
-CPPFLAGS="$cdda_CFLAGS"
-LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $lua_LIBS"
+LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cddb_LIBS $ifp_LIBS $lua_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -886,7 +867,7 @@ AC_MSG_NOTICE([summary
 
   Optional features:
       LADSPA plugin support               :  $with_ladspa
-      CDDA (Audio CD) support             :  $cdda
+      CDDA (Audio CD) support             :  $with_cdda
       CDDB support                        :  $cddb
       Sample Rate Converter support       :  $with_src
       iRiver iFP driver support           :  $ifp

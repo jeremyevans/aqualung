@@ -379,6 +379,22 @@ AS_IF([test "x$with_mpc" != 'xno'], [
                     [Define to build with Musepack support])])
 ])
 
+AC_ARG_WITH([mpeg],
+    [AS_HELP_STRING([--with-mpeg],
+        [compile with MPEG Audio support (default: detect)])],
+    [], [with_mpeg='detect'])
+AS_IF([test "x$with_mpeg" != 'xno'], [
+    AC_MSG_NOTICE([MPEG Audio Support])
+    PKG_CHECK_MODULES([mad], [mad],
+        [AS_IF([test "x$with_mpeg" = 'xdetect'], [with_mpeg='yes (found)'])],
+        [AS_IF([test "x$with_mpeg" = 'xyes'],
+            [AC_MSG_ERROR([$mad_PKG_ERRORS])])])
+    AS_CASE([$with_mpeg],
+        [detect], [with_mpeg='not found'],
+        [yes*], [AC_DEFINE([HAVE_MPEG], [1],
+                    [Define to build with MPEG Audio support])])
+])
+
 AC_MSG_CHECKING(for sndfile support)
 AC_ARG_WITH(
 	sndfile,
@@ -490,34 +506,6 @@ else
 	fi
 	if test "$speex" = "detect"; then
 		speex=$lib
-	fi
-fi
-
-
-AC_MSG_CHECKING(for MPEG audio support)
-AC_ARG_WITH(
-	mpeg,
-	[  --with-mpeg=yes,no      compile with MPEG Audio support (default: yes)],
-	mpeg="$withval",
-	mpeg="detect")
-if test "$mpeg" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_HEADER([mad.h], [hdr=yes], [hdr=no])
-	if test "$hdr" = "no"; then
-		lib="no"
-	else
-		AC_CHECK_LIB(mad, mad_decoder_init, [lib=yes], [lib=no])
-		if test "$lib" = "yes"; then
-		        mad_LIBS="-lmad"
-			AC_DEFINE([HAVE_MPEG], [1], [Defined if compile with MPEG Audio support])
-		fi
-	fi
-	if test "$lib" = "no" -a "$mpeg" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the MAD library installed. Grab it from http://www.underbit.com/products/mad/)
-	fi
-	if test "$mpeg" = "detect"; then
-		mpeg=$lib
 	fi
 fi
 
@@ -669,7 +657,7 @@ AS_IF([test "x$with_lua" != 'xno'], [
 # Compiler and linker variables
 AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
 AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
-LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $vorbisenc_LIBS"
+LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $vorbisenc_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -693,7 +681,7 @@ AC_MSG_NOTICE([summary
       Free Lossless Audio Codec (FLAC)    :  $with_flac
       Ogg Vorbis                          :  $ogg
       Ogg Speex                           :  $speex
-      MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg
+      MPEG Audio (MPEG 1-2.5 Layer I-III) :  $with_mpeg
       MOD Audio (MOD, S3M, XM, IT, etc.)  :  $with_mod
       Musepack                            :  $with_mpc
       Monkey's Audio Codec                :  $with_mac

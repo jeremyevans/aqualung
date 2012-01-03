@@ -151,6 +151,14 @@ AC_CHECK_LIB(dl,
 fi
 
 
+#
+# Feature Options
+#
+
+
+#
+# Output Driver Library Options
+#
 AC_MSG_CHECKING(for sndio support)
 AC_ARG_WITH(
 	sndio,
@@ -315,6 +323,9 @@ else
 fi
 
 
+#
+# Codec Library Options
+#
 AC_MSG_CHECKING(for sndfile support)
 AC_ARG_WITH(
 	sndfile,
@@ -708,6 +719,9 @@ else
 fi
 
 
+#
+# DSP Library Options
+#
 AC_MSG_CHECKING(for LADSPA plugin support)
 AC_ARG_WITH(
 	ladspa,
@@ -738,6 +752,9 @@ else
 fi
 
 
+#
+# Hardware Library Options
+#
 AC_MSG_CHECKING(for CDDA support)
 AC_ARG_WITH(
 	cdda,
@@ -833,6 +850,9 @@ else
 fi
 
 
+#
+# Miscellaneous Library Options
+#
 AC_MSG_CHECKING(for Systray support)
 AC_ARG_WITH(
 	systray,

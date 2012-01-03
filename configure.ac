@@ -4,7 +4,23 @@ AC_INIT([aqualung],[SVN],[http://aqualung.factorial.hu/mantis])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/core.c])
 AC_CONFIG_HEADERS([config.h])
-
+AC_CONFIG_FILES([
+    Makefile
+    doc/Makefile
+    skin/Makefile
+    skin/dark/Makefile
+    skin/default/Makefile
+    skin/metal/Makefile
+    skin/ocean/Makefile
+    skin/plain/Makefile
+    skin/woody/Makefile
+    skin/no_skin/Makefile
+    src/Makefile
+    src/decoder/Makefile
+    src/encoder/Makefile
+    src/img/Makefile
+    src/po/Makefile
+])
 
 
 AC_MSG_CHECKING(for type of build)
@@ -941,23 +957,6 @@ CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $cdda_C
 LIBS="$LIBS decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS $lua_LIBS $pulse_LIBS"
 
 
-AC_OUTPUT([Makefile \
-	   doc/Makefile \
-	   skin/Makefile \
-	   skin/dark/Makefile \
-	   skin/default/Makefile \
-	   skin/metal/Makefile \
-	   skin/ocean/Makefile \
-	   skin/plain/Makefile \
-	   skin/woody/Makefile \
-	   skin/no_skin/Makefile \
-	   src/Makefile \
-	   src/decoder/Makefile \
-	   src/encoder/Makefile \
-	   src/img/Makefile \
-	   src/po/Makefile])
-
-
 echo "----------------------------------------------------------------------"
 echo "  Configuration summary"
 echo "  ====================="
@@ -1002,3 +1001,4 @@ echo "      PulseAudio                          :  $pulse"
 echo "      Win32 Sound API                     :  $win32"
 echo
 echo "----------------------------------------------------------------------"
+AC_OUTPUT

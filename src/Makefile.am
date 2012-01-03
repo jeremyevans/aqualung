@@ -19,7 +19,7 @@ aqualung_LDADD = decoder/libdecoder.a encoder/libencoder.a \
                  $(LDADD) $(xml_LIBS) $(gtk_LIBS) $(glib_LIBS) \
                  $(alsa_LIBS) $(jack_LIBS) $(oss_LIBS) $(pulse_LIBS) \
                  $(sndio_LIBS) $(winmm_LIBS) \
-                 $(flac_LIBS) $(wavpack_LIBS) \
+                 $(flac_LIBS) $(lame_LIBS) $(wavpack_LIBS) \
                  $(lrdf_LIBS) $(src_LIBS) \
                  $(cdio_LIBS) $(ifp_LIBS) \
                  $(cddb_LIBS) $(lua_LIBS)

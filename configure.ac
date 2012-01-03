@@ -282,6 +282,25 @@ AS_IF([test "x$with_flac" != 'xno'], [
                     [Define to build with FLAC support])])
 ])
 
+AC_ARG_WITH([lame],
+    [AS_HELP_STRING([--with-lame],
+        [compile with LAME MP3 Encoding support (default: detect)])],
+    [], [with_lame='detect'])
+AS_IF([test "x$with_lame" != 'xno'], [
+    AC_MSG_NOTICE([LAME MP3 Encoding Support])
+    AC_CHECK_LIB([mp3lame], [lame_init],
+        [
+            AS_IF([test "x$with_lame" = 'xdetect'], [with_lame='yes (found)'])
+            AC_SUBST([lame_LIBS], [-lmp3lame])
+        ],
+        [AS_IF([test "x$with_lame" = 'xyes'],
+            [AC_MSG_ERROR([LAME support requires libmp3lame])])])
+    AS_CASE([$with_lame],
+        [detect], [with_lame='not found'],
+        [yes*], [AC_DEFINE([HAVE_LAME], [1],
+                    [Define to build with LAME MP3 Encoding support])])
+])
+
 AC_MSG_CHECKING(for sndfile support)
 AC_ARG_WITH(
 	sndfile,
@@ -586,29 +605,6 @@ else
 	fi
 fi
 
-
-AC_MSG_CHECKING(for LAME (MP3 encoding) support)
-AC_ARG_WITH(
-	lame,
-	[  --with-lame=yes,no      compile with LAME (MP3 encoding) support (default: yes)],
-	lame="$withval",
-	lame="detect")
-if test "$lame" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(mp3lame, lame_init, [lib=yes], [lib=no])
-	if test "$lib" = "yes"; then
-		lame_LIBS="-lmp3lame"
-		AC_DEFINE([HAVE_LAME], [1], [Defined if compile with LAME support])
-	fi
-	if test "$lib" = "no" -a "$lame" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the LAME library installed. Grab it from http://lame.sourceforge.net/)
-	fi
-	if test "$lame" = "detect"; then
-		lame=$lib
-	fi
-fi
-
 AC_ARG_WITH([wavpack],
     [AS_HELP_STRING([--with-wavpack],
         [compile with WavPack support (default: detect)])],
@@ -757,7 +753,7 @@ AS_IF([test "x$with_lua" != 'xno'], [
 # Compiler and linker variables
 AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
 AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
-LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS"
+LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -792,7 +788,7 @@ AC_MSG_NOTICE([summary
       sndfile (WAV)                       :  $sndfile
       Free Lossless Audio Codec (FLAC)    :  $with_flac
       Ogg Vorbis                          :  $vorbisenc
-      LAME (MP3)                          :  $lame
+      LAME (MP3)                          :  $with_lame
 
   Output driver support:
       sndio Audio                         :  $with_sndio

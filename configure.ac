@@ -21,46 +21,7 @@ AC_CONFIG_FILES([
     src/encoder/Makefile
     src/img/Makefile
 ])
-
-
-AC_MSG_CHECKING(for compilation platform)
-if test `uname -a | grep CYGWIN | wc -l` = "1" ; then
-   PLATFORM_CFLAGS="-mwin32 -mwindows"
-   win32="yes"
-   freebsd="no"
-   openbsd="no"
-   linux="no"
-   platform="Cygwin"
-   AC_MSG_RESULT(Cygwin)
-fi
-if test `uname -a | grep FreeBSD | wc -l` = "1"  ; then
-   PLATFORM_CFLAGS=""
-   win32="no"
-   freebsd="yes"
-   openbsd="no"
-   linux="no"
-   platform="FreeBSD"
-   AC_MSG_RESULT(FreeBSD)
-fi
-if test `uname -a | grep OpenBSD | wc -l` = "1"  ; then
-   PLATFORM_CFLAGS=""
-   win32="no"
-   freebsd="no"
-   openbsd="yes"
-   linux="no"
-   platform="OpenBSD"
-   AC_MSG_RESULT(OpenBSD)
-fi
-if test `uname -a | grep Linux | wc -l` = "1"  ; then
-   PLATFORM_CFLAGS=""
-   win32="no"
-   freebsd="no"
-   openbsd="no"
-   linux="yes"
-   platform="Linux"
-   AC_MSG_RESULT(Linux)
-fi
-
+AC_CANONICAL_HOST
 
 
 # Checks for programs.
@@ -103,13 +64,13 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS([floor memset mkdir psiginfo strcasestr strdup strndup strrchr strstr])
 
 
+# Platform-specific tweaks.
+AS_CASE([$host_os],
+    [cygwin*],
+        [AS_IF([test "x$GCC" = 'xyes'], [CPPFLAGS="-mwin32 $CPPFLAGS"])],
+    [AC_CHECK_LIB([pthread], [pthread_create], [],
+        [AC_MSG_ERROR([pthreads are required to build Aqualung])])])
 
-if test $win32 = "no" ; then
-AC_CHECK_LIB(pthread,
-	pthread_create,
-	[],
-	[AC_MSG_ERROR(You do not appear to have a usable pthread library)])
-fi
 
 
 
@@ -278,11 +239,11 @@ AC_ARG_WITH([winmm],
 AS_IF([test "x$with_winmm" != 'xno'], [
     AC_MSG_NOTICE([Windows Multimedia Extensions API Support])
     AC_MSG_CHECKING([for platform support])
-    AS_IF([test "x$win32" = 'xyes'], [AC_MSG_RESULT([yes])], [
+    AS_CASE([$host_os], [cygwin*], [AC_MSG_RESULT([yes])], [
         AC_MSG_RESULT([no])
         AS_IF([test "x$with_winmm" = 'xyes'],
             [AC_MSG_ERROR([WinMM is only supported on Microsoft Windows])])
-        with_winmm="not supported on $platform"
+        with_winmm="not supported on $host_os"
     ])
     AS_CASE([$with_winmm], [yes|detect],
         [AC_CHECK_HEADER([mmsystem.h],
@@ -825,15 +786,15 @@ AS_IF([test "x$with_lua" != 'xno'], [
 
 
 # Compiler and linker variables
-CFLAGS="-Wall $CFLAGS $PLATFORM_CFLAGS"
-CXXFLAGS="-Wall $CXXFLAGS $PLATFORM_CFLAGS"
+AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
+AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
 LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS"
 
 
 AC_MSG_NOTICE([summary
 ---------------------------------------------------------------------------
 
-  Build type / target platform            :  $buildtype / $platform
+  Build type / target platform            :  $buildtype / $host_os
 
   Optional features:
       LADSPA plugin support               :  $with_ladspa

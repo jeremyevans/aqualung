@@ -8,12 +8,13 @@ bin_PROGRAMS = aqualung
 aqualung_CPPFLAGS = $(AM_CPPFLAGS) -DAQUALUNG_SKINDIR=\"$(pkgdatadir)/skin\"
 
 aqualung_CFLAGS = $(xml_CFLAGS) $(gtk_CFLAGS) $(glib_CFLAGS) \
-                  $(alsa_CFLAGS) \
+                  $(alsa_CFLAGS) $(pulse_CFLAGS) \
                   $(lrdf_CFLAGS) $(src_CFLAGS)
 
 aqualung_LDADD = decoder/libdecoder.a encoder/libencoder.a \
                  $(LDADD) $(xml_LIBS) $(gtk_LIBS) $(glib_LIBS) \
-                 $(alsa_LIBS) $(jack_LIBS) $(oss_LIBS) $(sndio_LIBS) \
+                 $(alsa_LIBS) $(jack_LIBS) $(oss_LIBS) $(pulse_LIBS) \
+                 $(sndio_LIBS) \
                  $(lrdf_LIBS) $(src_LIBS)
 
 aqualung_SOURCES = \

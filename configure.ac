@@ -212,29 +212,21 @@ AS_IF([test "x$with_oss" != 'xno'], [
     ])
 ])
 
-AC_MSG_CHECKING(for PulseAudio support)
-AC_ARG_WITH(
-	pulse,
-	[  --with-pulse=yes,no     compile with PulseAudio support (default: yes)],
-	pulse="$withval",
-	pulse="detect")
-
-if test "$pulse" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(pulse-simple, pa_simple_new, [lib=yes], [lib=no])
-	if test "$lib" = "yes"; then
-	        pulse_CFLAGS=`pkg-config --cflags libpulse-simple`
-		pulse_LIBS=`pkg-config --libs libpulse-simple`
-		AC_DEFINE([HAVE_PULSE], [1], [Defined if compile with PulseAudio support])
-	fi
-	if test "$lib" = "no" -a "$pulse" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the PulseAudio installed. Grab it from http://pulseaudio.org/)
-	fi
-	if test "$pulse" = "detect"; then
-	        pulse=$lib
-	fi
-fi
+AC_ARG_WITH([pulse],
+    [AS_HELP_STRING([--with-pulse],
+        [compile with PulseAudio support (default: detect)])],
+    [], [with_pulse='detect'])
+AS_IF([test "x$with_pulse" != 'xno'], [
+    AC_MSG_NOTICE([PulseAudio Support])
+    PKG_CHECK_MODULES([pulse], [libpulse-simple],
+        [AS_IF([test "x$with_pulse" = 'xdetect'], [with_pulse='yes (found)'])],
+        [AS_IF([test "x$with_pulse" = 'xyes'],
+            [AC_MSG_ERROR([$pulse_PKG_ERRORS])])])
+    AS_CASE([$with_pulse],
+        [detect], [with_pulse='not found'],
+        [yes*], [AC_DEFINE([HAVE_PULSE], [1],
+                    [Define to build with PulseAudio support])])
+])
 
 AC_ARG_WITH([sndio],
     [AS_HELP_STRING([--with-sndio],
@@ -883,8 +875,8 @@ fi
 # Compiler and linker variables
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS"
 CXXFLAGS="$CFLAGS"
-CPPFLAGS="$cdda_CFLAGS $pulse_CFLAGS"
-LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
+CPPFLAGS="$cdda_CFLAGS"
+LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -926,7 +918,7 @@ AC_MSG_NOTICE([summary
       OSS Audio                           :  $with_oss
       ALSA Audio                          :  $with_alsa
       JACK Audio Server                   :  $with_jack
-      PulseAudio                          :  $pulse
+      PulseAudio                          :  $with_pulse
       Win32 Sound API                     :  $win32
 
 ---------------------------------------------------------------------------])

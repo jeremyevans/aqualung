@@ -169,29 +169,24 @@ AS_IF([test "x$with_alsa" != 'xno'], [
                     [Define to build with ALSA support])])
 ])
 
-AC_MSG_CHECKING(for JACK support)
-AC_ARG_WITH(
-	jack,
-	[  --with-jack=yes,no      compile with JACK support (default: yes)],
-	jack="$withval",
-	jack="detect")
-
-if test "$jack" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(jack, jack_client_new, [lib=yes], [lib=no])
-	if test "$lib" = "yes"; then
-	        jack_CFLAGS=`pkg-config --cflags jack`
-		jack_LIBS=`pkg-config --libs jack`
-		AC_DEFINE([HAVE_JACK], [1], [Defined if compile with JACK support])
-	fi
-	if test "$lib" = "no" -a "$jack" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the JACK library installed. Grab it from http://jackaudio.org)
-	fi
-	if test "$jack" = "detect"; then
-	        jack=$lib
-	fi
-fi
+AC_ARG_WITH([jack],
+    [AS_HELP_STRING([--with-jack],
+        [compile with JACK support (default: detect)])],
+    [], [with_jack='detect'])
+AS_IF([test "x$with_jack" != 'xno'], [
+    AC_MSG_NOTICE([JACK Support])
+    AC_CHECK_LIB([jack], [jack_on_info_shutdown],
+        [
+            AS_IF([test "x$with_jack" = 'xdetect'], [with_jack='yes (found)'])
+            AC_SUBST([jack_LIBS], [-ljack])
+        ],
+        [AS_IF([test "x$with_jack" = 'xyes'],
+            [AC_MSG_ERROR([JACK support requires libjack])])])
+    AS_CASE([$with_jack],
+        [detect], [with_jack='not found'],
+        [yes*], [AC_DEFINE([HAVE_JACK], [1],
+                    [Define to build with JACK support])])
+])
 
 AC_ARG_WITH([oss],
     [AS_HELP_STRING([--with-oss],
@@ -888,8 +883,8 @@ fi
 # Compiler and linker variables
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS"
 CXXFLAGS="$CFLAGS"
-CPPFLAGS="$jack_CFLAGS $cdda_CFLAGS $pulse_CFLAGS"
-LIBS="$LIBS $jack_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
+CPPFLAGS="$cdda_CFLAGS $pulse_CFLAGS"
+LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -930,7 +925,7 @@ AC_MSG_NOTICE([summary
       sndio Audio                         :  $with_sndio
       OSS Audio                           :  $with_oss
       ALSA Audio                          :  $with_alsa
-      JACK Audio Server                   :  $jack
+      JACK Audio Server                   :  $with_jack
       PulseAudio                          :  $pulse
       Win32 Sound API                     :  $win32
 

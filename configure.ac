@@ -293,29 +293,6 @@ else
 	fi
 fi
 
-AC_MSG_CHECKING(for Sample Rate Converter support)
-AC_ARG_WITH(
-	src,
-	[  --with-src=yes,no       compile with Sample Rate Converter support (default: yes)],
-	src="$withval",
-	src="detect")
-
-if test "$src" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(samplerate, src_new, [lib=yes], [lib=no])
-	if test "$lib" = "yes"; then
-	        src_LIBS=`pkg-config --libs samplerate`
-		AC_DEFINE([HAVE_SRC], [1], [Defined if compile with Sample Rate Converter support])
-	fi
-	if test "$lib" = "no" -a "$src" = "yes"; then
-	        AC_MSG_ERROR(You do not appear to have libsamplerate (aka. Secret Rabbit Code) installed. Grab it from  http://www.mega-nerd.com/SRC/ )
-	fi
-	if test "$src" = "detect"; then
-	        src=$lib
-	fi
-fi
-
 
 #
 # Codec Library Options
@@ -740,6 +717,22 @@ AS_IF([test "x$with_ladspa" != 'xno'], [
                     [Define to build with LADSPA Plugin support])])
 ])
 
+AC_ARG_WITH([src],
+    [AS_HELP_STRING([--with-src],
+	[compile with Sample Rate Converter support (default: detect)])],
+    [], [with_src='detect'])
+AS_IF([test "x$with_src" != 'xno'], [
+    AC_MSG_NOTICE([Sample Rate Converter Support])
+    PKG_CHECK_MODULES([src], [samplerate],
+        [AS_IF([test "x$with_src" = 'xdetect'], [with_src='yes (found)'])],
+        [AS_IF([test "x$with_src" = 'xyes'],
+            [AC_MSG_ERROR([$src_PKG_ERRORS])])])
+    AS_CASE([$with_src],
+        [detect], [with_src='not found'],
+        [yes*], [AC_DEFINE([HAVE_SRC], [1],
+                    [Define to build with Sample Rate Converter support])])
+])
+
 
 #
 # Hardware Library Options
@@ -929,7 +922,7 @@ fi
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$alsa_CFLAGS $jack_CFLAGS $cdda_CFLAGS $pulse_CFLAGS"
-LIBS="$LIBS $jack_LIBS $src_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
+LIBS="$LIBS $jack_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -941,7 +934,7 @@ AC_MSG_NOTICE([summary
       LADSPA plugin support               :  $with_ladspa
       CDDA (Audio CD) support             :  $cdda
       CDDB support                        :  $cddb
-      Sample Rate Converter support       :  $src
+      Sample Rate Converter support       :  $with_src
       iRiver iFP driver support           :  $ifp
       Loop playback support               :  $loop
       Systray support                     :  $systray

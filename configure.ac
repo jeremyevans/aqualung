@@ -1,9 +1,9 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(aqualung, SVN, http://aqualung.factorial.hu/mantis)
-AM_INIT_AUTOMAKE(aqualung, SVN)
+AC_INIT([aqualung],[SVN],[http://aqualung.factorial.hu/mantis])
+AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/core.c])
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 
 
 

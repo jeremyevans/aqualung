@@ -337,6 +337,22 @@ AS_IF([test "x$with_mac" != 'xno'], [
                     [Define to build with Monkey's Audio Codec support])])
 ])
 
+AC_ARG_WITH([mod],
+    [AS_HELP_STRING([--with-mod],
+        [compile with MOD Audio support (default: detect)])],
+    [], [with_mod='detect'])
+AS_IF([test "x$with_mod" != 'xno'], [
+    AC_MSG_NOTICE([MOD Audio Support])
+    PKG_CHECK_MODULES([mod], [libmodplug >= 0.8.4],
+        [AS_IF([test "x$with_mod" = 'xdetect'], [with_mod='yes (found)'])],
+        [AS_IF([test "x$with_mod" = 'xyes'],
+            [AC_MSG_ERROR([$mod_PKG_ERRORS])])])
+    AS_CASE([$with_mod],
+        [detect], [with_mod='not found'],
+        [yes*], [AC_DEFINE([HAVE_MOD], [1],
+                    [Define to build with MOD Audio support])])
+])
+
 AC_MSG_CHECKING(for sndfile support)
 AC_ARG_WITH(
 	sndfile,
@@ -476,40 +492,6 @@ else
 	fi
 	if test "$mpeg" = "detect"; then
 		mpeg=$lib
-	fi
-fi
-
-
-AC_MSG_CHECKING(for MOD audio support)
-AC_ARG_WITH(
-	mod,
-	[  --with-mod=yes,no       compile with MOD Audio support (default: yes)],
-	mod="$withval",
-	mod="detect")
-if test "$mod" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(modplug, ModPlug_Load, [lib=yes], [lib=no], [-lstdc++ -lm])
-	if test "$lib" = "yes"; then
-	        mod_LIBS=`pkg-config --libs libmodplug`
-		AC_DEFINE([HAVE_MOD], [1], [Defined if compile with MOD Audio support])
-	fi
-	if test "$lib" = "no" -a "$mod" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the libmodplug library installed. Grab it from http://modplug-xmms.sourceforge.net/)
-	fi
-	if test "$mod" = "detect"; then
-		mod=$lib
-	fi
-
-	if test "$mod" = "yes"; then
-	        AC_MSG_CHECKING(for Module info)
-		AC_MSG_CHECKING(whether libmodplug version >= 0.8)
-		if pkg-config --exists 'libmodplug >= 0.8'; then
-                        AC_MSG_RESULT(yes)
-			AC_DEFINE([HAVE_MOD_INFO], [1], [Defined if version(libmodplug) >= 0.8])
-		else
-			AC_MSG_RESULT(no)
-		fi
 	fi
 fi
 
@@ -688,7 +670,7 @@ AS_IF([test "x$with_lua" != 'xno'], [
 # Compiler and linker variables
 AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
 AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
-LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $vorbisenc_LIBS"
+LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mpc_LIBS $vorbisenc_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -713,7 +695,7 @@ AC_MSG_NOTICE([summary
       Ogg Vorbis                          :  $ogg
       Ogg Speex                           :  $speex
       MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg
-      MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod
+      MOD Audio (MOD, S3M, XM, IT, etc.)  :  $with_mod
       Musepack                            :  $mpc
       Monkey's Audio Codec                :  $with_mac
       WavPack                             :  $with_wavpack

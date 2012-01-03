@@ -31,11 +31,9 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#ifdef HAVE_MOD_INFO
-#include <libmodplug/modplug.h>
-#endif /* HAVE_MOD_INFO */
-
 #ifdef HAVE_MOD
+#include <libmodplug/modplug.h>
+
 #include "decoder/dec_mod.h"
 #endif /* HAVE_MOD */
 
@@ -157,9 +155,9 @@ extern GtkTreeSelection * music_select;
 extern GtkWidget * music_tree;
 
 
-#ifdef HAVE_MOD_INFO
+#ifdef HAVE_MOD
 void module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox);
-#endif /* HAVE_MOD_INFO */
+#endif /* HAVE_MOD */
 
 
 gint fi_save(GtkWidget * widget, gpointer data);
@@ -1354,7 +1352,7 @@ fi_procframe_addtagbtn(fi_t * fi) {
 }
 
 
-#ifdef HAVE_MOD_INFO
+#ifdef HAVE_MOD
 void
 fi_procframe_ins_modinfo(fi_t * fi, meta_frame_t * frame) {
 
@@ -1367,7 +1365,7 @@ fi_procframe_ins_modinfo(fi_t * fi, meta_frame_t * frame) {
 			 GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 	gtk_widget_show_all(fi->nb);
 }
-#endif /* HAVE_MOD_INFO */
+#endif /* HAVE_MOD */
 
 
 void
@@ -1389,12 +1387,12 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 		return;
 	}
 
-#ifdef HAVE_MOD_INFO
+#ifdef HAVE_MOD
 	if (frame->type == META_FIELD_MODINFO) {
 		fi_procframe_ins_modinfo(fi, frame);
 		return;
 	}
-#endif /* HAVE_MOD_INFO */
+#endif /* HAVE_MOD */
 
 	if (frame->type == META_FIELD_APIC) {
 		/* only display first APIC found */
@@ -2014,7 +2012,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 }
 
 
-#ifdef HAVE_MOD_INFO
+#ifdef HAVE_MOD
 /*
  * type = 0 for sample list
  * type != 0 for instrument list
@@ -2347,7 +2345,7 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
                 set_first_row(fi);
         }
 }
-#endif /* HAVE_MOD_INFO */
+#endif /* HAVE_MOD */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :

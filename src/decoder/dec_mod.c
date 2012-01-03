@@ -388,13 +388,11 @@ mod_send_metadata(decoder_t * dec) {
 	}
 
 	mi.active = 1;
-#ifdef HAVE_MOD_INFO
 	mi.type = ModPlug_GetModuleType(pd->mpf);
 	mi.samples = ModPlug_NumSamples(pd->mpf);
 	mi.instruments = ModPlug_NumInstruments(pd->mpf);
 	mi.patterns = ModPlug_NumPatterns(pd->mpf);
 	mi.channels = ModPlug_NumChannels(pd->mpf);
-#endif /* HAVE_MOD_INFO */
 
 	metadata_add_frame(meta, frame);
 	frame->tag = META_TAG_MODINFO;

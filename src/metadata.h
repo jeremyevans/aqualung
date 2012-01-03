@@ -195,13 +195,11 @@ typedef struct {
 typedef struct _mod_info {
 	char title[MAXLEN];
         int active;
-#ifdef HAVE_MOD_INFO
         int type;
         unsigned int samples;
         unsigned int instruments;
         unsigned int patterns;
         unsigned int channels;
-#endif /* HAVE_MOD_INFO */
 } mod_info;
 #endif /* HAVE_MOD */
 

@@ -143,12 +143,6 @@ AC_CHECK_LIB(pthread,
 	[AC_MSG_ERROR(You do not appear to have a usable pthread library)])
 fi
 
-if test $win32 = "no" -a $freebsd = "no" -a $openbsd = "no" ; then
-AC_CHECK_LIB(dl,
-	dlopen,
-	[],
-	[AC_MSG_ERROR(You do not appear to have a usable interface to the dynamic linking loader.)])
-fi
 
 
 #
@@ -722,34 +716,29 @@ fi
 #
 # DSP Library Options
 #
-AC_MSG_CHECKING(for LADSPA plugin support)
-AC_ARG_WITH(
-	ladspa,
-	[  --with-ladspa=yes,no    compile with LADSPA plugin support (default: yes)],
-	ladspa="$withval",
-	ladspa="detect")
-if test "$ladspa" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(lrdf, lrdf_init, [lib=yes], [lib=no])
-	if test "$lib" = "yes"; then
-		AC_MSG_CHECKING(whether liblrdf version >= 0.4.0)
-		if `pkg-config --exists 'lrdf >= 0.4.0'`; then
-			AC_MSG_RESULT(yes)
-		        lrdf_LIBS=`pkg-config --libs lrdf`
-			AC_DEFINE([HAVE_LADSPA], [1], [Defined if compile with LADSPA plugin support])
-		else
-			AC_MSG_RESULT(no)
-			lib="no"
-		fi
-	fi
-	if test "$lib" = "no" -a "$ladspa" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the LRDF library installed (needed for LADSPA support). Grab it from http://sourceforge.net/projects/lrdf/)
-	fi
-	if test "$ladspa" = "detect"; then
-		ladspa=$lib
-	fi
-fi
+AC_ARG_WITH([ladspa],
+    [AS_HELP_STRING([--with-ladspa],
+        [compile with LADSPA Plugin support (default: detect)])],
+    [], [with_ladspa='detect'])
+AS_IF([test "x$with_ladspa" != 'xno'], [
+    AC_MSG_NOTICE([LADSPA Plugin Support])
+    PKG_CHECK_MODULES([lrdf], [lrdf >= 0.4.0],
+        [AS_IF([test "x$with_ladspa" = 'xdetect'],
+            [with_ladspa='yes (found)'])],
+        [AS_IF([test "x$with_ladspa" = 'xyes'],
+            [AC_MSG_ERROR([LADSPA support requires liblrdf >= 0.4.0])])])
+    AS_CASE([$with_ladspa], [yes*],
+        [AC_CHECK_FUNC([dlopen], [],
+            [AC_CHECK_LIB([dl], [dlopen], [lrdf_LIBS="$lrdf_LIBS -ldl"], [
+                AS_IF([test "x$with_ladspa" = 'xyes'],
+                    [AC_MSG_ERROR([LADSPA support requires dynamic loading])])
+                with_ladspa='no (missing dlopen)'
+            ])])])
+    AS_CASE([$with_ladspa],
+        [detect], [with_ladspa='not found'],
+        [yes*], [AC_DEFINE([HAVE_LADSPA], [1],
+                    [Define to build with LADSPA Plugin support])])
+])
 
 
 #
@@ -940,7 +929,7 @@ fi
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$alsa_CFLAGS $jack_CFLAGS $cdda_CFLAGS $pulse_CFLAGS"
-LIBS="$LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
+LIBS="$LIBS $jack_LIBS $src_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -949,7 +938,7 @@ AC_MSG_NOTICE([summary
   Build type / target platform            :  $buildtype / $platform
 
   Optional features:
-      LADSPA plugin support               :  $ladspa
+      LADSPA plugin support               :  $with_ladspa
       CDDA (Audio CD) support             :  $cdda
       CDDB support                        :  $cddb
       Sample Rate Converter support       :  $src

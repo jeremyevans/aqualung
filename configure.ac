@@ -153,29 +153,6 @@ fi
 #
 # Output Driver Library Options
 #
-AC_MSG_CHECKING(for sndio support)
-AC_ARG_WITH(
-	sndio,
-	[  --with-sndio=no,yes     compile with sndio support (default: no)],
-	sndio="$withval",
-	sndio="no")
-if test "$oss" = no; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_HEADER([sndio.h], [hdr=yes], [hdr=no])
-	if test "$hdr" = "yes"; then
-		AC_DEFINE([HAVE_SNDIO], [1], [Defined if compile with sndio support])
-		if test $openbsd = "yes" ; then
-			AC_CHECK_LIB(sndio, sio_open, [sndio_LIBS="-lsndio"], [sndio_LIBS=""])
-		else
-		        sndio_LIBS=""
-		fi
-	fi
-	if test "$hdr" = "no" -a "$sndio" = "yes"; then
-			AC_MSG_ERROR(You do not appear to have sndio.h needed by sndio sound support.)
-  fi
-fi
-
 AC_MSG_CHECKING(for OSS support)
 AC_ARG_WITH(
 	oss,
@@ -292,6 +269,25 @@ else
 	        pulse=$lib
 	fi
 fi
+
+AC_ARG_WITH([sndio],
+    [AS_HELP_STRING([--with-sndio],
+        [compile with sndio support (default: detect)])],
+    [], [with_sndio='detect'])
+AS_IF([test "x$with_sndio" != 'xno'], [
+    AC_MSG_NOTICE([sndio Support])
+    AC_CHECK_LIB([sndio], [sio_open],
+        [
+            AS_IF([test "x$with_sndio" = 'xdetect'], [with_sndio='yes (found)'])
+            AC_SUBST([sndio_LIBS], [-lsndio])
+        ],
+        [AS_IF([test "x$with_sndio" = 'xyes'],
+            [AC_MSG_ERROR([sndio support requires libsndio])])])
+    AS_CASE([$with_sndio],
+        [detect], [with_sndio='not found'],
+        [yes*], [AC_DEFINE([HAVE_SNDIO], [1],
+                    [Define to build with sndio support])])
+])
 
 
 #
@@ -922,7 +918,7 @@ fi
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$alsa_CFLAGS $jack_CFLAGS $cdda_CFLAGS $pulse_CFLAGS"
-LIBS="$LIBS $jack_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
+LIBS="$LIBS $jack_LIBS $alsa_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -960,7 +956,7 @@ AC_MSG_NOTICE([summary
       LAME (MP3)                          :  $lame
 
   Output driver support:
-      sndio Audio                         :  $sndio
+      sndio Audio                         :  $with_sndio
       OSS Audio                           :  $oss
       ALSA Audio                          :  $alsa
       JACK Audio Server                   :  $jack

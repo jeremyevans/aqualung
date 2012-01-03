@@ -153,30 +153,21 @@ fi
 #
 # Output Driver Library Options
 #
-AC_MSG_CHECKING(for ALSA support)
-AC_ARG_WITH(
-	alsa,
-	[  --with-alsa=yes,no      compile with ALSA support (default: yes)],
-	alsa="$withval",
-	alsa="detect")
-
-if test "$alsa" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(asound, snd_pcm_open, [lib=yes], [lib=no])
-	if test "$lib" = "yes"; then
-	        alsa_CFLAGS=`pkg-config --cflags alsa`
-		alsa_LIBS=`pkg-config --libs alsa`
-		AC_DEFINE([HAVE_ALSA], [1], [Defined if compile with ALSA support])
-	fi
-	if test "$lib" = "no" -a "$alsa" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the ALSA library installed)
-	fi
-	if test "$alsa" = "detect"; then
-	        alsa=$lib
-	fi
-fi
-
+AC_ARG_WITH([alsa],
+    [AS_HELP_STRING([--with-alsa],
+        [compile with ALSA support (default: detect)])],
+    [], [with_alsa='detect'])
+AS_IF([test "x$with_alsa" != 'xno'], [
+    AC_MSG_NOTICE([ALSA Support])
+    PKG_CHECK_MODULES([alsa], [alsa],
+        [AS_IF([test "x$with_alsa" = 'xdetect'], [with_alsa='yes (found)'])],
+        [AS_IF([test "x$with_alsa" = 'xyes'],
+            [AC_MSG_ERROR([ALSA support requires libasound])])])
+    AS_CASE([$with_alsa],
+        [detect], [with_alsa='not found'],
+        [yes*], [AC_DEFINE([HAVE_ALSA], [1],
+                    [Define to build with ALSA support])])
+])
 
 AC_MSG_CHECKING(for JACK support)
 AC_ARG_WITH(
@@ -897,8 +888,8 @@ fi
 # Compiler and linker variables
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS"
 CXXFLAGS="$CFLAGS"
-CPPFLAGS="$alsa_CFLAGS $jack_CFLAGS $cdda_CFLAGS $pulse_CFLAGS"
-LIBS="$LIBS $jack_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
+CPPFLAGS="$jack_CFLAGS $cdda_CFLAGS $pulse_CFLAGS"
+LIBS="$LIBS $jack_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -938,7 +929,7 @@ AC_MSG_NOTICE([summary
   Output driver support:
       sndio Audio                         :  $with_sndio
       OSS Audio                           :  $with_oss
-      ALSA Audio                          :  $alsa
+      ALSA Audio                          :  $with_alsa
       JACK Audio Server                   :  $jack
       PulseAudio                          :  $pulse
       Win32 Sound API                     :  $win32

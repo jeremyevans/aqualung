@@ -525,11 +525,7 @@ export_item(export_t * export, export_item_t * item, int index) {
 		break;
 	case ENC_FLAC_LIB:
 		ext = "flac";
-#ifdef HAVE_FLAC_8
 		tags = META_TAG_OXC | META_TAG_FLAC_APIC;
-#else
-		tags = META_TAG_OXC;
-#endif /* HAVE_FLAC_8 */
 		break;
 	case ENC_VORBIS_LIB:
 		ext = "ogg";

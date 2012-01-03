@@ -22,24 +22,18 @@
 #ifndef _DEC_FLAC_H
 #define _DEC_FLAC_H
 
-#ifdef HAVE_FLAC_8
+#ifdef HAVE_FLAC
 #include <FLAC/format.h>
 #include <FLAC/metadata.h>
 #include <FLAC/stream_decoder.h>
-#endif /* HAVE_FLAC_8 */
-
-#ifdef HAVE_FLAC_7
-#include <FLAC/format.h>
-#include <FLAC/metadata.h>
-#include <FLAC/file_decoder.h>
-#endif /* HAVE_FLAC_7 */
+#endif /* HAVE_FLAC */
 
 #include "file_decoder.h"
 
 /* size of ringbuffer for decoded FLAC data (in frames) */
 #define RB_FLAC_SIZE 262144
 
-#ifdef HAVE_FLAC_8
+#ifdef HAVE_FLAC
 typedef struct _flac_pdata_t {
         FLAC__StreamDecoder * flac_decoder;
         rb_t * rb;
@@ -51,21 +45,7 @@ typedef struct _flac_pdata_t {
         int error;
         FLAC__StreamDecoderState state;
 } flac_pdata_t;
-#endif /* HAVE_FLAC_8 */
-
-#ifdef HAVE_FLAC_7
-typedef struct _flac_pdata_t {
-        FLAC__FileDecoder * flac_decoder;
-        rb_t * rb;
-        int channels;
-        int SR;
-        unsigned bits_per_sample;
-        FLAC__uint64 total_samples;
-        int probing; /* whether we are reading for probing the file, or for real */
-        int error;
-        FLAC__FileDecoderState state;
-} flac_pdata_t;
-#endif /* HAVE_FLAC_7  */
+#endif /* HAVE_FLAC */
 
 decoder_t * flac_decoder_init(file_decoder_t * fdec);
 #ifdef HAVE_FLAC

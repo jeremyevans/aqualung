@@ -266,6 +266,22 @@ AS_IF([test "x$with_winmm" != 'xno'], [
 #
 # Codec Library Options
 #
+AC_ARG_WITH([flac],
+    [AS_HELP_STRING([--with-flac],
+        [compile with FLAC support (default: detect)])],
+    [], [with_flac='detect'])
+AS_IF([test "x$with_flac" != 'xno'], [
+    AC_MSG_NOTICE([Free Lossless Audio Codec Support])
+    PKG_CHECK_MODULES([flac], [flac],
+        [AS_IF([test "x$with_flac" = 'xdetect'], [with_flac='yes (found)'])],
+        [AS_IF([test "x$with_flac" = 'xyes'],
+            [AC_MSG_ERROR([$flac_PKG_ERRORS])])])
+    AS_CASE([$with_flac],
+        [detect], [with_flac='not found'],
+        [yes*], [AC_DEFINE([HAVE_FLAC], [1],
+                    [Define to build with FLAC support])])
+])
+
 AC_MSG_CHECKING(for sndfile support)
 AC_ARG_WITH(
 	sndfile,
@@ -303,42 +319,6 @@ else
 	        sndfile=$lib
 	fi
 fi
-
-
-AC_MSG_CHECKING(for FLAC support)
-AC_ARG_WITH(
-	flac,
-	[  --with-flac=yes,no      compile with FLAC support (default: yes)],
-	flac="$withval",
-	flac="detect")
-if test "$flac" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(FLAC, FLAC__stream_decoder_init_file, [lib=yes], [lib=no], [-logg])
-	if test "$lib" = "yes"; then
-	        flac_LIBS="-lFLAC"
-		AC_DEFINE([HAVE_FLAC_8], [1], [Defined if compile with FLAC (1.1.3 and newer API)])
-		AC_DEFINE([HAVE_FLAC], [1], [Defined if compile with some kind of FLAC support])
-	fi
-	AC_CHECK_LIB(FLAC, FLAC__file_decoder_new, [lib2=yes], [lib2=no])
-	if test "$lib2" = "yes"; then
-	        flac_LIBS="-lFLAC"
-		AC_DEFINE([HAVE_FLAC_7], [1], [Defined if compile with FLAC (1.1.2 and older API)])
-		AC_DEFINE([HAVE_FLAC], [1], [Defined if compile with some kind of FLAC support])
-	fi
-	if test "$lib" = "no" -a "$lib2" = "no" -a "$flac" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the FLAC library installed. Grab it from http://flac.sourceforge.net)
-	fi
-	if test "$flac" = "detect"; then
-		if test "$lib2" = "yes" -o "$lib" = "yes"; then
-			flac="yes"
-		else
-			flac="no"
-		        AC_MSG_RESULT(no)
-		fi
-	fi
-fi
-
 
 AC_MSG_CHECKING(for Ogg Vorbis support)
 AC_ARG_WITH(
@@ -777,7 +757,7 @@ AS_IF([test "x$with_lua" != 'xno'], [
 # Compiler and linker variables
 AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
 AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
-LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS"
+LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -798,7 +778,7 @@ AC_MSG_NOTICE([summary
 
   Decoding support:
       sndfile (WAV, AIFF, AU, etc.)       :  $sndfile
-      Free Lossless Audio Codec (FLAC)    :  $flac
+      Free Lossless Audio Codec (FLAC)    :  $with_flac
       Ogg Vorbis                          :  $ogg
       Ogg Speex                           :  $speex
       MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg
@@ -810,7 +790,7 @@ AC_MSG_NOTICE([summary
 
   Encoding support:
       sndfile (WAV)                       :  $sndfile
-      Free Lossless Audio Codec (FLAC)    :  $flac
+      Free Lossless Audio Codec (FLAC)    :  $with_flac
       Ogg Vorbis                          :  $vorbisenc
       LAME (MP3)                          :  $lame
 

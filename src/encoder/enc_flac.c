@@ -33,33 +33,6 @@
 
 #ifdef HAVE_FLAC
 
-#ifdef HAVE_FLAC_7
-
-/* Compression level presets to match the interface
- * of the command-line flac 1.1.2 encoder.
- */
-typedef struct {
-	FLAC__bool ms;
-	FLAC__bool ms_loose;
-	int lpc_order;
-	int blocksize;
-	FLAC__bool exhaustive;
-	int min_res;
-	int max_res;
-} flac_preset_t;
-
-flac_preset_t flac_presets[] = {
-	{ false, false, 0,  1152, false, 2, 2 },
-	{ false, true,  0,  1152, false, 2, 2 },
-	{ true,  false, 0,  1152, false, 0, 3 },
-	{ false, false, 6,  4608, false, 3, 3 },
-	{ false, true,  8,  4608, false, 3, 3 },
-	{ true,  false, 8,  4608, false, 3, 3 },
-	{ true,  false, 8,  4608, false, 0, 4 },
-	{ true,  false, 8,  4608, true,  0, 6 },
-	{ true,  false, 12, 4608, true,  0, 6 },
-};
-#endif /* HAVE_FLAC_7 */
 
 encoder_t *
 flac_encoder_init(file_encoder_t * fenc) {
@@ -101,7 +74,6 @@ flac_encoder_open(encoder_t * enc, encoder_mode_t * mode) {
 
 	flac_pencdata_t * pd = (flac_pencdata_t *)enc->pdata;
 	int i;
-#ifdef HAVE_FLAC_8
 	FLAC__StreamEncoderInitStatus state;
 
 	pd->encoder = FLAC__stream_encoder_new();
@@ -121,36 +93,6 @@ flac_encoder_open(encoder_t * enc, encoder_mode_t * mode) {
 			FLAC__StreamEncoderInitStatusString[state]);
 		return -1;
 	}
-#endif /* HAVE_FLAC_8 */
-#ifdef HAVE_FLAC_7
-	FLAC__FileEncoderState state;
-
-	pd->encoder = FLAC__file_encoder_new();
-	if (pd->encoder == NULL)
-		return -1;
-	
-	FLAC__file_encoder_set_bits_per_sample(pd->encoder, 16);
-	FLAC__file_encoder_set_channels(pd->encoder, mode->channels);
-	FLAC__file_encoder_set_sample_rate(pd->encoder, mode->sample_rate);
-	FLAC__file_encoder_set_verify(pd->encoder, true);
-
-	if (mode->channels == 2) {
-		FLAC__file_encoder_set_do_mid_side_stereo(pd->encoder, flac_presets[mode->clevel].ms);
-		FLAC__file_encoder_set_loose_mid_side_stereo(pd->encoder, flac_presets[mode->clevel].ms_loose);
-	}
-	FLAC__file_encoder_set_max_lpc_order(pd->encoder, flac_presets[mode->clevel].lpc_order);
-	FLAC__file_encoder_set_blocksize(pd->encoder, flac_presets[mode->clevel].blocksize);
-	FLAC__file_encoder_set_do_exhaustive_model_search(pd->encoder, flac_presets[mode->clevel].exhaustive);
-	FLAC__file_encoder_set_min_residual_partition_order(pd->encoder, flac_presets[mode->clevel].min_res);
-	FLAC__file_encoder_set_max_residual_partition_order(pd->encoder, flac_presets[mode->clevel].max_res);
-
-	FLAC__file_encoder_set_filename(pd->encoder, mode->filename);
-	if ((state = FLAC__file_encoder_init(pd->encoder)) != FLAC__FILE_ENCODER_OK) {
-		fprintf(stderr, "FLAC__file_encoder_init returned error: %s\n",
-			FLAC__FileEncoderStateString[state]);
-		return -1;
-	}
-#endif /* HAVE_FLAC_7 */
 
 	pd->mode = *mode;
 
@@ -187,20 +129,11 @@ flac_encoder_write(encoder_t * enc, float * data, int num) {
 		}
 	}
 
-#ifdef HAVE_FLAC_8
 	b = FLAC__stream_encoder_process(pd->encoder, (const FLAC__int32 **)pd->buf, num);
 	if (b != true) {
 		fprintf(stderr, "FLAC__stream_encoder_process returned error: %s\n",
 			FLAC__StreamEncoderStateString[FLAC__stream_encoder_get_state(pd->encoder)]);
 	}
-#endif /* HAVE_FLAC_8 */
-#ifdef HAVE_FLAC_7
-	b = FLAC__file_encoder_process(pd->encoder, (const FLAC__int32 **)pd->buf, num);
-	if (b != true) {
-		fprintf(stderr, "FLAC__file_encoder_process returned error: %s\n",
-			FLAC__FileEncoderStateString[FLAC__file_encoder_get_state(pd->encoder)]);	
-	}
-#endif /* HAVE_FLAC_7 */
 
 	return num;
 }
@@ -235,7 +168,6 @@ flac_encoder_write_meta_vc(metadata_t * meta, FLAC__Metadata_SimpleIterator * it
 }
 
 
-#ifdef HAVE_FLAC_8
 int
 flac_encoder_write_meta_pics(metadata_t * meta, FLAC__Metadata_SimpleIterator * iter) {
 
@@ -255,7 +187,6 @@ flac_encoder_write_meta_pics(metadata_t * meta, FLAC__Metadata_SimpleIterator * 
 	}
 	return 0;
 }
-#endif /* HAVE_FLAC_8 */
 
 
 void
@@ -280,11 +211,9 @@ flac_encoder_write_meta(encoder_t * enc) {
 		}
 	}
 
-#ifdef HAVE_FLAC_8
 	if (flac_encoder_write_meta_pics(enc->mode->meta, iter) < 0) {
 		return;
 	}
-#endif /* HAVE_FLAC_8 */
 
 	FLAC__metadata_simple_iterator_delete(iter);
 }
@@ -295,14 +224,8 @@ flac_encoder_close(encoder_t * enc) {
 
 	flac_pencdata_t * pd = (flac_pencdata_t *)enc->pdata;
 
-#ifdef HAVE_FLAC_8
 	FLAC__stream_encoder_finish(pd->encoder);
 	FLAC__stream_encoder_delete(pd->encoder);
-#endif /* HAVE_FLAC_8 */
-#ifdef HAVE_FLAC_7
-	FLAC__file_encoder_finish(pd->encoder);
-	FLAC__file_encoder_delete(pd->encoder);
-#endif /* HAVE_FLAC_7 */
 
 	if (pd->bufsize > 0) {
 		int k;

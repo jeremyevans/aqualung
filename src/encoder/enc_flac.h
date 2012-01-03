@@ -24,30 +24,18 @@
 
 #include <stdio.h>
 
-#ifdef HAVE_FLAC_8
+#ifdef HAVE_FLAC
 #include <FLAC/format.h>
 #include <FLAC/stream_encoder.h>
 #include <FLAC/metadata.h>
-#endif /* HAVE_FLAC_8 */
-
-#ifdef HAVE_FLAC_7
-#include <FLAC/format.h>
-#include <FLAC/file_encoder.h>
-#include <FLAC/metadata.h>
-#endif /* HAVE_FLAC_7 */
+#endif /* HAVE_FLAC */
 
 #include "file_encoder.h"
 
 
 #ifdef HAVE_FLAC
-
 typedef struct _flac_pencdata_t {
-#ifdef HAVE_FLAC_8
 	FLAC__StreamEncoder * encoder;
-#endif /* HAVE_FLAC_8 */
-#ifdef HAVE_FLAC_7
-	FLAC__FileEncoder * encoder;
-#endif /* HAVE_FLAC_7 */
 	FLAC__int32 ** buf;
 	int bufsize;
 	int channels;

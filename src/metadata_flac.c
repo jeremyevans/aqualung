@@ -74,7 +74,6 @@ metadata_from_flac_streammeta_vc(metadata_t * meta,
 }
 
 
-#ifdef HAVE_FLAC_8
 void
 metadata_from_flac_streammeta_pic(metadata_t * meta,
 				  FLAC__StreamMetadata_Picture * pic) {
@@ -100,7 +99,6 @@ metadata_from_flac_streammeta_pic(metadata_t * meta,
 
 	metadata_add_frame(meta, frame);
 }
-#endif /* HAVE_FLAC_8 */
 
 
 void
@@ -161,7 +159,6 @@ metadata_to_flac_streammeta(metadata_t * meta) {
 }
 
 
-#ifdef HAVE_FLAC_8
 FLAC__StreamMetadata *
 metadata_apic_frame_to_smeta(meta_frame_t * frame) {
 
@@ -175,6 +172,5 @@ metadata_apic_frame_to_smeta(meta_frame_t * frame) {
 
 	return smeta;
 }
-#endif /* HAVE_FLAC_8 */
 
 #endif /* HAVE_FLAC */

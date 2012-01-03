@@ -1584,6 +1584,25 @@ finalize_add_to_playlist(gpointer data) {
 
 	if (pt->pl == playlist_get_current()) {
 		playlist_content_changed(pt->pl);
+		if (pt->start_playback) {
+			GtkTreeModel * model = GTK_TREE_MODEL(pt->pl->store);
+			GtkTreePath * path = NULL;
+			GtkTreeIter iter;
+			
+			if (gtk_tree_model_get_iter_first(model, &iter)) {
+				if (gtk_tree_model_iter_has_child(model, &iter)) {
+					GtkTreeIter iter_child;
+					gtk_tree_model_iter_children(model, &iter_child, &iter);
+					path = gtk_tree_model_get_path(model, &iter_child);
+				} else {
+					path = gtk_tree_model_get_path(model, &iter);
+				}
+			}
+			if (path != NULL) {
+				playlist_start_playback_at_path(pt->pl, path);
+				gtk_tree_path_free(path);
+			}
+		}
 	}
 
 	playlist_progress_bar_hide(pt->pl);

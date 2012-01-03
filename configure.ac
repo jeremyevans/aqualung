@@ -110,6 +110,12 @@ m4_ifndef([PKG_PROG_PKG_CONFIG],
 PKG_PROG_PKG_CONFIG
 
 
+# Checks for libraries.
+# opportunistic
+AC_CHECK_LIB([z], [gzopen])
+AC_CHECK_LIB([bz2], [BZ2_bzopen])
+
+
 # Checks for header files.
 AC_CHECK_HEADERS([dlfcn.h errno.h fcntl.h sys/ioctl.h])
 
@@ -138,20 +144,6 @@ AC_CHECK_LIB(dl,
 	dlopen,
 	[],
 	[AC_MSG_ERROR(You do not appear to have a usable interface to the dynamic linking loader.)])
-fi
-
-z_LIBS=""
-AC_CHECK_LIB(z,	gzopen, [lib=yes], [lib=no])
-if test "$lib" = "yes"; then
-    z_LIBS="-lz"
-    AC_DEFINE([HAVE_LIBZ], [1], [Defined if compile with libz])
-fi
-
-bz2_LIBS=""
-AC_CHECK_LIB(bz2, BZ2_bzopen, [lib=yes], [lib=no])
-if test "$lib" = "yes"; then
-    bz2_LIBS="-lbz2"
-    AC_DEFINE([HAVE_LIBBZ2], [1], [Defined if compile with libbz2])
 fi
 
 # Checks for libraries.
@@ -954,7 +946,7 @@ fi
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $cdda_CFLAGS $pulse_CFLAGS"
-LIBS="$LIBS decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS $lua_LIBS $pulse_LIBS"
+LIBS="$LIBS decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
 
 
 AC_MSG_NOTICE([summary

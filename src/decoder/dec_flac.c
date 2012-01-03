@@ -31,7 +31,6 @@
 
 extern size_t sample_size;
 
-#ifdef HAVE_FLAC
 
 /* FLAC write callback */
 FLAC__StreamDecoderWriteStatus
@@ -593,12 +592,5 @@ flac_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 }
 
 
-#else /* !HAVE_FLAC */
-decoder_t *
-flac_decoder_init(file_decoder_t * fdec) {
-
-        return NULL;
-}
-#endif /* !HAVE_FLAC */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :

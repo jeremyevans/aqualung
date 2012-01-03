@@ -33,8 +33,6 @@
 extern size_t sample_size;
 
 
-#ifdef HAVE_MPC
-
 /* return 1 if reached end of stream, 0 else */
 int
 decode_mpc(decoder_t * dec) {
@@ -342,13 +340,6 @@ mpc_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 }
 
 
-#else
-decoder_t *
-mpc_decoder_init_func(file_decoder_t * fdec) {
-
-        return NULL;
-}
-#endif /* HAVE_MPC */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

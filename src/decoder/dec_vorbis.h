@@ -22,7 +22,6 @@
 #ifndef _DEC_VORBIS_H
 #define _DEC_VORBIS_H
 
-#ifdef HAVE_VORBIS
 #ifdef _WIN32
 #undef _WIN32
 #include <vorbis/vorbisfile.h>
@@ -30,7 +29,6 @@
 #else
 #include <vorbis/vorbisfile.h>
 #endif /* _WIN32 */
-#endif /* HAVE_VORBIS */
 
 #include "../httpc.h"
 #include "file_decoder.h"
@@ -42,7 +40,6 @@
 #define RB_VORBIS_SIZE 262144
 
 
-#ifdef HAVE_VORBIS
 typedef struct _vorbis_pdata_t {
         rb_t * rb;
         FILE * vorbis_file;
@@ -51,11 +48,9 @@ typedef struct _vorbis_pdata_t {
         int is_eos;
 	http_session_t * session;
 } vorbis_pdata_t;
-#endif /* HAVE_VORBIS */
 
 
 decoder_t * vorbis_decoder_init(file_decoder_t * fdec);
-#ifdef HAVE_VORBIS
 void vorbis_decoder_destroy(decoder_t * dec);
 int vorbis_decoder_open(decoder_t * dec, char * filename);
 void vorbis_decoder_send_metadata(decoder_t * dec);
@@ -63,7 +58,6 @@ int vorbis_stream_decoder_open(decoder_t * dec, http_session_t * session);
 void vorbis_decoder_close(decoder_t * dec);
 unsigned int vorbis_decoder_read(decoder_t * dec, float * dest, int num);
 void vorbis_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
-#endif /* HAVE_VORBIS */
 
 
 #endif /* _DEC_VORBIS_H */

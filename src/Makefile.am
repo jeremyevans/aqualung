@@ -17,7 +17,7 @@ aqualung_CFLAGS = $(xml_CFLAGS) $(gtk_CFLAGS) $(glib_CFLAGS) \
                   $(cdio_CFLAGS) \
                   $(cddb_CFLAGS) $(lua_CFLAGS)
 
-aqualung_LDADD = decoder/libdecoder.a encoder/libencoder.a -lstdc++ \
+aqualung_LDADD = decoder/libdecoder.a encoder/libencoder.a \
                  $(LDADD) $(xml_LIBS) $(gtk_LIBS) $(glib_LIBS) \
                  $(alsa_LIBS) $(jack_LIBS) $(oss_LIBS) $(pulse_LIBS) \
                  $(sndio_LIBS) $(winmm_LIBS) \

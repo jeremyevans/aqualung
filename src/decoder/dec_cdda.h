@@ -22,8 +22,6 @@
 #ifndef _DEC_CDDA_H
 #define _DEC_CDDA_H
 
-#ifdef HAVE_CDDA
-
 #ifdef HAVE_CDDB
 #define _TMP_HAVE_CDDB 1
 #undef HAVE_CDDB
@@ -46,12 +44,8 @@
 #endif /* _WIN32*/
 
 #include "../cdda.h"
-#endif /* HAVE_CDDA */
-
 #include "file_decoder.h"
 
-
-#ifdef HAVE_CDDA
 
 /* size of ringbuffer for decoded CD Audio data (in frames) */
 #define RB_CDDA_SIZE (1<<20)
@@ -75,11 +69,9 @@ typedef struct _cdda_pdata_t {
 	int paranoia_mode;
 	int paranoia_maxretries;
 } cdda_pdata_t;
-#endif /* HAVE_CDDA */
 
 
 decoder_t * cdda_decoder_init(file_decoder_t * fdec);
-#ifdef HAVE_CDDA
 void cdda_decoder_destroy(decoder_t * dec);
 int cdda_decoder_open(decoder_t * dec, char * filename);
 void cdda_decoder_send_metadata(decoder_t * dec);
@@ -88,7 +80,6 @@ void cdda_decoder_set_mode(decoder_t * dec, int drive_speed, int paranoia_mode, 
 void cdda_decoder_close(decoder_t * dec);
 unsigned int cdda_decoder_read(decoder_t * dec, float * dest, int num);
 void cdda_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
-#endif /* HAVE_CDDA */
 
 
 #endif /* _DEC_CDDA_H */

@@ -31,7 +31,6 @@
 #include "../utils.h"
 #include "dec_cdda.h"
 
-#ifdef HAVE_CDDA
 
 extern size_t sample_size;
 
@@ -527,13 +526,6 @@ cdda_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 }
 
 
-#else
-decoder_t *
-cdda_decoder_init(file_decoder_t * fdec) {
-
-	return NULL;
-}
-#endif /* HAVE_CDDA */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

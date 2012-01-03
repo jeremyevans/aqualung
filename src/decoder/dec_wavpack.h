@@ -24,9 +24,8 @@
 
 #include "file_decoder.h"
 
-#ifdef HAVE_WAVPACK
-
 #include <wavpack/wavpack.h>
+
 
 #define RB_WAVPACK_SIZE 262144
 #define WAVPACK_BUFSIZE 4096
@@ -51,7 +50,6 @@ void wavpack_decoder_close(decoder_t * dec);
 unsigned int wavpack_decoder_read(decoder_t * dec, float * dest, int num);
 void wavpack_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
 
-#endif /* HAVE_WAVPACK */
 
 decoder_t * wavpack_decoder_init(file_decoder_t * fdec);
 

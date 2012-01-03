@@ -50,8 +50,6 @@
 extern size_t sample_size;
 
 
-#ifdef HAVE_MPEG
-
 /* Uncomment this to get debug printouts */
 /* #define MPEG_DEBUG */
 
@@ -1609,12 +1607,5 @@ mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 }
 
 
-#else
-decoder_t *
-mpeg_decoder_init(file_decoder_t * fdec) {
-
-        return NULL;
-}
-#endif /* HAVE_MPEG */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :

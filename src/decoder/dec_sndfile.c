@@ -29,8 +29,6 @@
 #include "dec_sndfile.h"
 
 
-#ifdef HAVE_SNDFILE
-
 /* list of accepted file extensions */
 char * valid_extensions_sndfile[] = {
         "wav", "aiff", "au", "w64", "voc", "xi", "htk", "svx", NULL
@@ -321,13 +319,6 @@ sndfile_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 }
 
 
-#else
-decoder_t *
-sndfile_decoder_init(file_decoder_t * fdec) {
-
-	return NULL;
-}
-#endif /* HAVE_SNDFILE */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :
 

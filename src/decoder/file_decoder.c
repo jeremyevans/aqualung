@@ -37,19 +37,42 @@
 #endif /* _WIN32 */
 
 
+#include "../httpc.h"
 #include "file_decoder.h"
 #include "dec_null.h"
+#ifdef HAVE_CDDA
 #include "dec_cdda.h"
+#endif /* HAVE_CDDA */
+#ifdef HAVE_SNDFILE
 #include "dec_sndfile.h"
+#endif /* HAVE_SNDFILE */
+#ifdef HAVE_FLAC
 #include "dec_flac.h"
+#endif /* HAVE_FLAC */
+#ifdef HAVE_VORBIS
 #include "dec_vorbis.h"
+#endif /* HAVE_VORBIS */
+#ifdef HAVE_SPEEX
 #include "dec_speex.h"
+#endif /* HAVE_SPEEX */
+#ifdef HAVE_MPC
 #include "dec_mpc.h"
+#endif /* HAVE_MPC */
+#ifdef HAVE_MPEG
 #include "dec_mpeg.h"
+#endif /* HAVE_MPEG */
+#ifdef HAVE_MOD
 #include "dec_mod.h"
+#endif /* HAVE_MOD */
+#ifdef HAVE_MAC
 #include "dec_mac.h"
+#endif /* HAVE_MAC */
+#ifdef HAVE_LAVC
 #include "dec_lavc.h"
+#endif /* HAVE_LAVC */
+#ifdef HAVE_WAVPACK
 #include "dec_wavpack.h"
+#endif /* HAVE_WAVPACK */
 
 
 extern size_t sample_size;
@@ -58,19 +81,42 @@ extern options_t options;
 typedef decoder_t * decoder_init_t(file_decoder_t * fdec);
 
 /* this controls the order in which decoders are probed for a file */
-decoder_init_t * decoder_init_v[N_DECODERS] = {
+static decoder_init_t * decoder_init_v[] = {
 	null_decoder_init,
+#ifdef HAVE_CDDA
 	cdda_decoder_init,
+#endif /* HAVE_CDDA */
+#ifdef HAVE_SNDFILE
 	sndfile_decoder_init,
+#endif /* HAVE_SNDFILE */
+#ifdef HAVE_FLAC
 	flac_decoder_init,
+#endif /* HAVE_FLAC */
+#ifdef HAVE_VORBIS
 	vorbis_decoder_init,
+#endif /* HAVE_VORBIS */
+#ifdef HAVE_SPEEX
 	speex_dec_init,
+#endif /* HAVE_SPEEX */
+#ifdef HAVE_MPC
 	mpc_decoder_init_func,
+#endif /* HAVE_MPC */
+#ifdef HAVE_MAC
 	mac_decoder_init,
+#endif /* HAVE_MAC */
+#ifdef HAVE_MPEG
 	mpeg_decoder_init,
+#endif /* HAVE_MPEG */
+#ifdef HAVE_WAVPACK
 	wavpack_decoder_init,
+#endif /* HAVE_WAVPACK */
+#ifdef HAVE_MOD
 	mod_decoder_init,
-	lavc_decoder_init
+#endif /* HAVE_MOD */
+#ifdef HAVE_LAVC
+	lavc_decoder_init,
+#endif /* HAVE_LAVC */
+	NULL
 };
 
 
@@ -300,7 +346,7 @@ file_decoder_open(file_decoder_t * fdec, char * filename) {
 	if (httpc_is_url(filename))
 		return stream_decoder_open(fdec, filename);
 
-	for (i = 0; i < N_DECODERS; i++) {
+	for (i = 0; decoder_init_v[i] != NULL; i++) {
 		dec = decoder_init_v[i](fdec);
 		if (!dec) {
 			continue;
@@ -322,7 +368,7 @@ file_decoder_open(file_decoder_t * fdec, char * filename) {
 		break;
 	}
 
-	if (i == N_DECODERS) {
+	if (decoder_init_v[i] == NULL) {
 	        goto no_open;
 	}
 

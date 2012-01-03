@@ -22,14 +22,12 @@
 #ifndef _DEC_MPC_H
 #define _DEC_MPC_H
 
-#ifdef HAVE_MPC
 #ifdef MPC_OLD_API
 #include <mpcdec/mpcdec.h>
 #else
 #include <mpc/mpcdec.h>
 #include <math.h>
 #endif /* MPC_OLD_API */
-#endif /* HAVE_MPC */
 
 #include "file_decoder.h"
 
@@ -40,7 +38,6 @@
 #define RB_MPC_SIZE 262144
 
 
-#ifdef HAVE_MPC
 typedef struct _mpc_pdata_t {
         rb_t * rb;
         FILE * mpc_file;
@@ -57,18 +54,15 @@ typedef struct _mpc_pdata_t {
 #endif /* MPC_OLD_API */
         mpc_streaminfo mpc_i;
 } mpc_pdata_t;
-#endif /* HAVE_MPC */
 
 
 decoder_t * mpc_decoder_init_func(file_decoder_t * fdec);
-#ifdef HAVE_MPC
 void mpc_decoder_destroy(decoder_t * dec);
 int mpc_decoder_open(decoder_t * dec, char * filename);
 void mpc_decoder_send_metadata(decoder_t * dec);
 void mpc_decoder_close(decoder_t * dec);
 unsigned int mpc_decoder_read(decoder_t * dec, float * dest, int num);
 void mpc_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
-#endif /* HAVE_MPC */
 
 
 #endif /* _DEC_MPC_H */

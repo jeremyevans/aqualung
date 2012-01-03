@@ -22,7 +22,6 @@
 #ifndef _DEC_MAC_H
 #define _DEC_MAC_H
 
-
 #include "file_decoder.h"
 
 
@@ -32,7 +31,6 @@
 #define RB_MAC_SIZE 262144
 
 
-#ifdef HAVE_MAC
 typedef struct _mac_pdata_t {
         rb_t * rb;
 	void * decompress; /* (IAPEDecompress *) */
@@ -46,7 +44,6 @@ typedef struct _mac_pdata_t {
 	int swap_bytes;
         int is_eos;
 } mac_pdata_t;
-#endif /* HAVE_MAC */
 
 
 #ifdef __cplusplus
@@ -54,14 +51,12 @@ extern "C"{
 #endif
 
 decoder_t * mac_decoder_init(file_decoder_t * fdec);
-#ifdef HAVE_MAC
 void mac_decoder_destroy(decoder_t * dec);
 int mac_decoder_open(decoder_t * dec, char * filename);
 void mac_decoder_send_metadata(decoder_t * dec );
 void mac_decoder_close(decoder_t * dec);
 unsigned int mac_decoder_read(decoder_t * dec, float * dest, int num);
 void mac_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
-#endif /* HAVE_MAC */
 
 #ifdef __cplusplus
 }

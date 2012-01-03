@@ -29,8 +29,6 @@
 #include "dec_lavc.h"
 
 
-#ifdef HAVE_LAVC
-
 /* uncomment this to get some debug info */
 /* #define LAVC_DEBUG */
 
@@ -237,13 +235,6 @@ lavc_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 }
 
 
-#else
-decoder_t *
-lavc_decoder_init(file_decoder_t * fdec) {
-
-	return NULL;
-}
-#endif /* HAVE_LAVC */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

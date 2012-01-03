@@ -44,7 +44,6 @@
 #include "gui_main.h"
 #include "music_browser.h"
 #include "file_info.h"
-#include "decoder/dec_mod.h"
 #include "decoder/file_decoder.h"
 #include "metadata_api.h"
 #include "volume.h"

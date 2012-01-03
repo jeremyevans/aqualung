@@ -31,7 +31,6 @@
 extern size_t sample_size;
 
 
-#ifdef HAVE_SPEEX
 static int
 read_ogg_packet(OGGZ * oggz, ogg_packet * op, long serialno, void * user_data) {
 
@@ -353,13 +352,6 @@ speex_dec_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 }
 
 
-#else
-decoder_t *
-speex_dec_init(file_decoder_t * fdec) {
-
-        return NULL;
-}
-#endif /* HAVE_SPEEX */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

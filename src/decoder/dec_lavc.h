@@ -22,18 +22,14 @@
 #ifndef _DEC_LAVC_H
 #define _DEC_LAVC_H
 
-#ifdef HAVE_LAVC
-
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 
-#endif /* HAVE_LAVC */
-
 #include "file_decoder.h"
 
-#ifdef HAVE_LAVC
 
 #define RB_LAVC_SIZE (3*AVCODEC_MAX_AUDIO_FRAME_SIZE)
+
 
 typedef struct _lavc_pdata_t {
         rb_t * rb;
@@ -44,18 +40,15 @@ typedef struct _lavc_pdata_t {
 	int audioStream;
 	int is_eos;
 } lavc_pdata_t;
-#endif /* HAVE_LAVC */
 
 
 decoder_t * lavc_decoder_init(file_decoder_t * fdec);
-#ifdef HAVE_LAVC
 void lavc_decoder_destroy(decoder_t * dec);
 int lavc_decoder_open(decoder_t * dec, char * filename);
 void lavc_decoder_send_metadata(decoder_t * dec);
 void lavc_decoder_close(decoder_t * dec);
 unsigned int lavc_decoder_read(decoder_t * dec, float * dest, int num);
 void lavc_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
-#endif /* HAVE_LAVC */
 
 
 #endif /* _DEC_LAVC_H */

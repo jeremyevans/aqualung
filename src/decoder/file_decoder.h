@@ -46,8 +46,6 @@ extern "C" {
 #define LAVC_LIB    10
 #define WAVPACK_LIB 11
 
-#define N_DECODERS  12
-
 
 /* format_flags */
 #define FORMAT_VBR 0x0001

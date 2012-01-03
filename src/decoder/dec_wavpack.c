@@ -32,7 +32,6 @@
 
 extern size_t sample_size;
 
-#ifdef HAVE_WAVPACK
 
 int
 decode_wavpack(decoder_t * dec) {
@@ -238,13 +237,6 @@ wavpack_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 	}
 }
 
-#else
 
-decoder_t *
-wavpack_decoder_init(file_decoder_t * fdec) {
-        return NULL;
-}
-
-#endif /* HAVE_WAVPACK */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

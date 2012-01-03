@@ -25,8 +25,6 @@
 #include <stdlib.h>
 
 
-#ifdef HAVE_MAC
-
 /* expand this to nothing so there's no error when including MACLib.h */
 /* -- talkin' about cross-platform libraries? */
 #define DLLEXPORT
@@ -56,7 +54,6 @@
 #undef PACKAGE_VERSION
 #undef VERSION
 
-#endif /* HAVE_MAC */
 
 extern "C" {
 #include "../i18n.h"
@@ -69,8 +66,6 @@ extern size_t sample_size;
 
 #define SAMPLES_PER_READ 2048
 
-
-#ifdef HAVE_MAC
 
 #define SWAP_16(x) ((((x)&0x00ff)<<8) | (((x)&0xff00)>>8))
 #define SWAP_32(x) ((((x)&0xff)<<24) | (((x)&0xff00)<<8) | (((x)&0xff0000)>>8) | (((x)&0xff000000)>>24))
@@ -326,13 +321,6 @@ mac_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos) {
 }
 
 
-#else
-decoder_t *
-mac_decoder_init(file_decoder_t * fdec) {
-
-        return NULL;
-}
-#endif /* HAVE_MAC */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

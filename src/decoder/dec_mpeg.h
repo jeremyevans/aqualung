@@ -22,12 +22,8 @@
 #ifndef _DEC_MPEG_H
 #define _DEC_MPEG_H
 
-
-#ifdef HAVE_MPEG
 #include <sys/mman.h>
 #include <mad.h>
-#endif /* HAVE_MPEG */
-
 
 #include "../common.h"
 #include "../httpc.h"
@@ -39,9 +35,6 @@
 
 /* for stream (non-mmap) decoding */
 #define MPEG_INBUF_SIZE (5*8192)
-
-#ifdef HAVE_MPEG
-
 
 #define MPEG_VERSION1   0
 #define MPEG_VERSION2   1
@@ -146,11 +139,9 @@ typedef struct _mpeg_pdata_t {
         struct mad_frame mpeg_frame;
         struct mad_synth mpeg_synth;
 } mpeg_pdata_t;
-#endif /* HAVE_MPEG */
 
 
 decoder_t * mpeg_decoder_init(file_decoder_t * fdec);
-#ifdef HAVE_MPEG
 void mpeg_decoder_destroy(decoder_t * dec);
 int mpeg_decoder_open(decoder_t * dec, char * filename);
 void mpeg_decoder_send_metadata(decoder_t * dec);
@@ -158,7 +149,6 @@ int mpeg_stream_decoder_open(decoder_t * dec, http_session_t * session);
 void mpeg_decoder_close(decoder_t * dec);
 unsigned int mpeg_decoder_read(decoder_t * dec, float * dest, int num);
 void mpeg_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
-#endif /* HAVE_MPEG */
 
 
 #endif /* _DEC_MPEG_H */

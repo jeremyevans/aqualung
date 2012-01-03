@@ -24,11 +24,11 @@
 
 #include "file_decoder.h"
 
+
 /* private data of the decoder */
 typedef struct _null_pdata_t {
 	int dummy;
 } null_pdata_t;
-
 
 
 decoder_t * null_decoder_init(file_decoder_t * fdec);

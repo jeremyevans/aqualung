@@ -31,6 +31,10 @@
 #include <pthread.h>
 #endif /* _WIN32 */
 
+#include "cd_ripper.h"
+
+#ifdef HAVE_CD_RIPPER
+
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"
@@ -47,9 +51,6 @@
 #include "i18n.h"
 #include "cdda.h"
 #include "metadata.h"
-#include "cd_ripper.h"
-
-#ifdef HAVE_CD_RIPPER
 
 #define BUFSIZE 588
 

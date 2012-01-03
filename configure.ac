@@ -301,6 +301,22 @@ AS_IF([test "x$with_lame" != 'xno'], [
                     [Define to build with LAME MP3 Encoding support])])
 ])
 
+AC_ARG_WITH([lavc],
+    [AS_HELP_STRING([--with-lavc],
+        [compile with Libav / FFmpeg support (default: detect)])],
+    [], [with_lavc='detect'])
+AS_IF([test "x$with_lavc" != 'xno'], [
+    AC_MSG_NOTICE([Libav / FFmpeg Support])
+    PKG_CHECK_MODULES([lavc], [libavcodec libavformat],
+        [AS_IF([test "x$with_lavc" = 'xdetect'], [with_lavc='yes (found)'])],
+        [AS_IF([test "x$with_lavc" = 'xyes'],
+            [AC_MSG_ERROR([$lavc_PKG_ERRORS])])])
+    AS_CASE([$with_lavc],
+        [detect], [with_lavc='not found'],
+        [yes*], [AC_DEFINE([HAVE_LAVC], [1],
+                    [Define to build with Libav / FFmpeg support])])
+])
+
 AC_MSG_CHECKING(for sndfile support)
 AC_ARG_WITH(
 	sndfile,
@@ -530,81 +546,6 @@ else
 	fi
 fi
 
-
-AC_MSG_CHECKING(for LAVC support)
-AC_ARG_WITH(
-	lavc,
-	[  --with-lavc=yes,no      compile with lavc (FFmpeg) support (default: yes)],
-	lavc="$withval",
-	lavc="detect")
-if test "$lavc" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_HEADER([avcodec.h], [avc_hdr=yes], [avc_hdr=no])
-	if test "$avc_hdr" = "yes"; then
-		AC_DEFINE([HAVE_AVCODEC_H], [1], [Define to 1 if you have the <avcodec.h> header file.])
-	else
-		AC_CHECK_HEADER([ffmpeg/avcodec.h], [avc_hdr=yes], [avc_hdr=no])
-		if test "$avc_hdr" = "yes"; then
-		        AC_DEFINE([HAVE_FFMPEG_AVCODEC_H], [1], [Define to 1 if you have the <ffmpeg/avcodec.h> header file.])
-		else
-			AC_CHECK_HEADER([libavcodec/avcodec.h], [avc_hdr=yes], [avc_hdr=no])
-			if test "$avc_hdr" = "yes"; then
-		                AC_DEFINE([HAVE_LIBAVCODEC_AVCODEC_H], [1], [Define to 1 if you have the <libavcodec/avcodec.h> header file.])
-			else
-				AC_CHECK_HEADER([ffmpeg/libavcodec/avcodec.h], [avc_hdr=yes], [avc_hdr=no])
-				if test "$avc_hdr" = "yes"; then
-		                        AC_DEFINE([HAVE_FFMPEG_LIBAVCODEC_AVCODEC_H], [1], [Define to 1 if you have the <ffmpeg/libavcodec/avcodec.h> header file.])
-				else
-					PKG_CHECK_MODULES(LIBAVCODEC, libavcodec, [avc_hdr=yes], [avc_hdr=no])
-					if test "$avc_hdr" = "yes"; then
-		                AC_DEFINE([HAVE_LIBAVCODEC_AVCODEC_H], [1], [Define to 1 if you have the <libavcodec/avcodec.h> header file.])
-					fi
-				fi
-			fi
-		fi
-	fi
-
-	AC_CHECK_HEADER([avformat.h], [avf_hdr=yes], [avf_hdr=no])
-	if test "$avf_hdr" = "yes"; then
-		AC_DEFINE([HAVE_AVFORMAT_H], [1], [Define to 1 if you have the <avformat.h> header file.])
-	else
-		AC_CHECK_HEADER([ffmpeg/avformat.h], [avf_hdr=yes], [avf_hdr=no])
-		if test "$avf_hdr" = "yes"; then
-		        AC_DEFINE([HAVE_FFMPEG_AVFORMAT_H], [1], [Define to 1 if you have the <ffmpeg/avformat.h> header file.])
-		else
-			AC_CHECK_HEADER([libavformat/avformat.h], [avf_hdr=yes], [avf_hdr=no])
-			if test "$avf_hdr" = "yes"; then
-		                AC_DEFINE([HAVE_LIBAVFORMAT_AVFORMAT_H], [1], [Define to 1 if you have the <libavformat/avformat.h> header file.])
-			else
-				AC_CHECK_HEADER([ffmpeg/libavformat/avformat.h], [avf_hdr=yes], [avf_hdr=no])
-				if test "$avf_hdr" = "yes"; then
-		                        AC_DEFINE([HAVE_FFMPEG_LIBAVFORMAT_AVFORMAT_H], [1], [Define to 1 if you have the <ffmpeg/libavformat/avformat.h> header file.])
-				else
-					PKG_CHECK_MODULES(LIBAVFORMAT, libavformat, [avf_hdr=yes], [avf_hdr=no])
-					if test "$avf_hdr" = "yes"; then
-		                AC_DEFINE([HAVE_LIBAVFORMAT_AVFORMAT_H], [1], [Define to 1 if you have the <libavformat/avformat.h> header file.])
-					fi
-				fi
-			fi
-		fi
-	fi
-
-	AC_CHECK_LIB(avformat, av_open_input_file, [avf_lib=yes], [avf_lib=no], [-lavcodec -lavutil -lz])
-	AC_CHECK_LIB(avcodec, avcodec_open, [avc_lib=yes], [avc_lib=no], [-lavformat -lavutil -lz])
-
-	if test "$avc_hdr" = "yes" -a "$avf_hdr" = "yes" -a "$avc_lib" = "yes" -a "$avf_lib" = "yes" ; then
-	        lavc_LIBS="-lavformat -lavcodec -lavutil -lz"
-		AC_DEFINE([HAVE_LAVC], [1], [Defined if compile with LAVC support])
-	        lavc="yes"
-	else
-	        if test "$lavc" = "yes"; then
-		        AC_MSG_ERROR(You do not appear to have the LAVC decoder library (FFmpeg) installed. Grab it from http://ffmpeg.mplayerhq.hu/)
-		fi
-		lavc="no"
-	fi
-fi
-
 AC_ARG_WITH([wavpack],
     [AS_HELP_STRING([--with-wavpack],
         [compile with WavPack support (default: detect)])],
@@ -753,7 +694,7 @@ AS_IF([test "x$with_lua" != 'xno'], [
 # Compiler and linker variables
 AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
 AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
-LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS"
+LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $vorbisenc_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -782,7 +723,7 @@ AC_MSG_NOTICE([summary
       Musepack                            :  $mpc
       Monkey's Audio Codec                :  $mac
       WavPack                             :  $with_wavpack
-      LAVC (AC3, AAC, WavPack, WMA, etc.) :  $lavc
+      LAVC (AC3, AAC, WavPack, WMA, etc.) :  $with_lavc
 
   Encoding support:
       sndfile (WAV)                       :  $sndfile

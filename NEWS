@@ -9,6 +9,7 @@
           somebody want, for example, a JACK-only Aqualung build.
         * Debug builds now work on BSD platforms with libexecinfo.
         * configure --without-loop is now configure --disable-loop
+        * configure --without-podcast is now configure --disable-podcast
     - Runtime
         * The disk IO thread is no longer high-priority by default on
           Win32 builds, pass the -D / --disk-realtime option to re-enable

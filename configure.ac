@@ -155,6 +155,14 @@ AC_MSG_RESULT([$enable_loop])
 AS_IF([test "x$enable_loop" = 'xyes'],
     [AC_DEFINE([HAVE_LOOP], [1], [Define to build with loop playback support])])
 
+AC_MSG_CHECKING([for podcast support])
+AC_ARG_ENABLE([podcast],
+    [AS_HELP_STRING([--disable-podcast], [compile without podcast support])],
+    [], [enable_podcast='yes'])
+AC_MSG_RESULT([$enable_podcast])
+AS_IF([test "x$enable_podcast" = 'xyes'],
+    [AC_DEFINE([HAVE_PODCAST], [1], [Define to build with podcast support])])
+
 
 #
 # Output Driver Library Options
@@ -851,19 +859,6 @@ else
 	fi
 fi
 
-AC_MSG_CHECKING(for podcast support)
-AC_ARG_WITH(
-	podcast,
-	[  --with-podcast=yes,no   compile with podcast support (default: yes)],
-	podcast="$withval",
-	podcast="yes")
-if test "$podcast" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_DEFINE([HAVE_PODCAST], [1], [Defined if compile with podcast support])
-	AC_MSG_RESULT(yes)
-fi
-
 AC_MSG_CHECKING(for Lua support)
 AC_ARG_WITH(
 	lua,
@@ -914,7 +909,7 @@ AC_MSG_NOTICE([summary
       iRiver iFP driver support           :  $ifp
       Loop playback support               :  $enable_loop
       Systray support                     :  $systray
-      Podcast support                     :  $podcast
+      Podcast support                     :  $enable_podcast
       Lua extension support               :  $lua
 
   Decoding support:

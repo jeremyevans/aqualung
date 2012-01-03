@@ -1,0 +1,39 @@
+Creating new translation
+------------------------
+
+If you are willing to create a new translation, first obtain the
+current message catalog by typing
+
+$ make aqualung.pot
+
+This will generate the file aqualung.pot, which contains all strings
+subject to translation.  You should rename this file to XX.po where XX
+is the two-letter ISO-639 code for your language.
+
+First fill in the header entry by replacing the uppercase words with
+sensible information.  The important thing is to set charset=UTF-8 in
+the Content-Type field, and the whole file must be encoded in UTF-8.
+
+Next step is translation itself.  You are suggested using a decent
+editor with .po syntax support to make the process easier.  When
+finished with translating, send the file to the aqualung-friends
+mailing list.  We will include it in the distribution.
+
+To test your translation, add it into the list in LINGUAS, then run
+`make' and `make install', after which your installed Aqualung should
+contain your translation.
+
+
+Updating your translation
+-------------------------
+
+As Aqualung development progresses, some text changes and new strings
+appear.  Translations therefore need to be updated from time to time.
+
+You can merge the changes to your language file by typing
+
+$ make XX.po
+
+Now you can edit the .po file and translate new strings, fix fuzzy
+entries and remove obsolete ones.  Finally, send the updated version
+of your .po file to the mailing list.

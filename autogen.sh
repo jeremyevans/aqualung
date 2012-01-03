@@ -4,7 +4,7 @@ echo "
 checking basic configuration tools ...
 "
 
-for tool in pkg-config autoconf autoreconf automake gettext msgfmt
+for tool in pkg-config autoconf autoreconf automake
 do
     echo -n "$tool ... "
     if command -v $tool >/dev/null 2>&1

@@ -1,5 +1,7 @@
-SUBDIRS = doc skin . src
-EXTRA_DIST = autogen.sh ladspa.h
+ACLOCAL_AMFLAGS = -I m4
+
+SUBDIRS = doc po skin . src
+EXTRA_DIST = autogen.sh gettext.h ladspa.h
 
 all-local:
 	cd src; \

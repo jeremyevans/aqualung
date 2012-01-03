@@ -7,6 +7,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
     Makefile
     doc/Makefile
+    po/Makefile.in
     skin/Makefile
     skin/dark/Makefile
     skin/default/Makefile
@@ -19,7 +20,6 @@ AC_CONFIG_FILES([
     src/decoder/Makefile
     src/encoder/Makefile
     src/img/Makefile
-    src/po/Makefile
 ])
 
 
@@ -45,7 +45,7 @@ fi
 AC_MSG_CHECKING(for compilation platform)
 if test `uname -a | grep CYGWIN | wc -l` = "1" ; then
    PLATFORM_CFLAGS="-mwin32 -mwindows"
-   PLATFORM_LIBS="-lintl -lwinmm"
+   PLATFORM_LIBS="-lwinmm"
    win32="yes"
    freebsd="no"
    openbsd="no"
@@ -101,6 +101,10 @@ AC_PROG_RANLIB
 AC_PROG_CXX
 AM_PROG_CC_C_O
 AC_USE_SYSTEM_EXTENSIONS
+m4_ifndef([AM_GNU_GETTEXT],
+    [m4_fatal([GNU gettext is required to prepare the Aqualung build])])
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.17])
 
 
 # Checks for header files.

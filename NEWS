@@ -1,0 +1,7 @@
+
+    - Building
+        * Updated gettext integration, configure now supports
+          --disable-nls           do not use Native Language Support
+          --disable-rpath         do not hardcode runtime library paths
+	  in addition to other options to aide in finding libiconv and
+          libintl.

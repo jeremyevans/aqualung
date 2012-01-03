@@ -65,6 +65,7 @@ AC_CHECK_FUNCS([floor memset mkdir psiginfo strcasestr strdup strndup strrchr st
 
 
 # Platform-specific tweaks.
+AC_SYS_LARGEFILE
 AS_CASE([$host_os],
     [cygwin*],
         [AS_IF([test "x$GCC" = 'xyes'], [CPPFLAGS="-mwin32 $CPPFLAGS"])],

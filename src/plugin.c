@@ -43,12 +43,6 @@
 #include "plugin.h"
 
 
-#if defined(__FreeBSD__) || defined(__OpenBSD__)
-#define dirent64 dirent
-#define scandir64 scandir
-#define alphasort64 alphasort
-#endif /* __FreeBSD__ */
-
 extern options_t options;
 
 extern volatile int plugin_lock;
@@ -111,7 +105,7 @@ set_active_state(void) {
 }
 
 static int
-rdf_filter(const struct dirent64 * de) {
+rdf_filter(const struct dirent * de) {
 
 	if (de->d_type != DT_UNKNOWN && de->d_type != DT_REG && de->d_type != DT_LNK)
 		return 0;
@@ -125,7 +119,7 @@ rdf_filter(const struct dirent64 * de) {
 }
 
 static int
-so_filter(const struct dirent64 * de) {
+so_filter(const struct dirent * de) {
 
 	if (de->d_type != DT_UNKNOWN && de->d_type != DT_REG && de->d_type != DT_LNK)
 		return 0;
@@ -144,7 +138,7 @@ parse_lrdf_data(void) {
 	char rdf_path[MAXLEN];
 	char fileuri[MAXLEN];
 	int i, j = 0;
-	struct dirent64 ** de;
+	struct dirent ** de;
 	int n;
 
 	lrdf_path[0] = '\0';
@@ -160,7 +154,7 @@ parse_lrdf_data(void) {
 			rdf_path[j] = '\0';
 			j = 0;
 
-			n = scandir64(rdf_path, &de, rdf_filter, alphasort64);
+			n = scandir(rdf_path, &de, rdf_filter, alphasort);
 			if (n >= 0) {
 				int c;
 				
@@ -227,7 +221,7 @@ find_plugins(char * path_entry) {
 	char lib_name[MAXLEN];
 	LADSPA_Descriptor_Function descriptor_fn;
 	const LADSPA_Descriptor * descriptor;
-	struct dirent64 ** de;
+	struct dirent ** de;
 	int n, k, c;
 	long int port, n_ins, n_outs;
 	GtkTreeIter iter;
@@ -237,7 +231,7 @@ find_plugins(char * path_entry) {
 	char c_str[32];
 	char category[MAXLEN];
 
-	n = scandir64(path_entry, &de, so_filter, alphasort64);
+	n = scandir(path_entry, &de, so_filter, alphasort);
 	if (n >= 0) {
 		for (c = 0; c < n; ++c) {
 			snprintf(lib_name, MAXLEN-1, "%s/%s", path_entry, de[c]->d_name);

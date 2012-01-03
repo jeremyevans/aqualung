@@ -353,6 +353,32 @@ AS_IF([test "x$with_mod" != 'xno'], [
                     [Define to build with MOD Audio support])])
 ])
 
+AC_ARG_WITH([mpc],
+    [AS_HELP_STRING([--with-mpc],
+        [compile with Musepack support (default: detect)])],
+    [], [with_mpc='detect'])
+AS_IF([test "x$with_mpc" != 'xno'], [
+    AC_MSG_NOTICE([Musepack Support])
+    AC_CHECK_LIB([mpcdec], [mpc_demux_init],
+        [
+            AS_IF([test "x$with_mpc" = 'xdetect'], [with_mpc='yes (found)'])
+            AC_SUBST([mpc_LIBS], ['-lmpcdec'])
+        ],
+        [AC_CHECK_LIB([mpcdec], [mpc_streaminfo_init],
+            [
+                AS_IF([test "x$with_mpc" = 'xdetect'], [with_mpc='yes (found)'])
+                AC_SUBST([mpc_LIBS], ['-lmpcdec'])
+                AC_DEFINE([MPC_OLD_API], [1],
+                    [Defined if old Musepack API is used])
+            ],
+            [AS_IF([test "x$with_mpc" = 'xyes'],
+                [AC_MSG_ERROR([Musepack support requires libmpcdec])])])])
+    AS_CASE([$with_mpc],
+        [detect], [with_mpc='not found'],
+        [yes*], [AC_DEFINE([HAVE_MPC], [1],
+                    [Define to build with Musepack support])])
+])
+
 AC_MSG_CHECKING(for sndfile support)
 AC_ARG_WITH(
 	sndfile,
@@ -492,33 +518,6 @@ else
 	fi
 	if test "$mpeg" = "detect"; then
 		mpeg=$lib
-	fi
-fi
-
-AC_MSG_CHECKING(for Musepack support)
-AC_ARG_WITH(
-	mpc,
-	[  --with-mpc=yes,no       compile with Musepack support (default: yes)],
-	mpc="$withval",
-	mpc="detect")
-if test "$mpc" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	lib=no
-	AC_CHECK_LIB([mpcdec], [mpc_demux_init], [lib=yes],
-	  [AC_CHECK_LIB([mpcdec], [mpc_streaminfo_init], [lib=yes
-	    AC_DEFINE([MPC_OLD_API], [1],
-            [Defined if old Musepack API is used])], [], [-lstdc++])],
-	  [-lstdc++])
-	if test "$lib" = "yes"; then
-	        mpc_LIBS="-lmpcdec -lstdc++"
-		AC_DEFINE([HAVE_MPC], [1], [Defined if compile with Musepack support])
-	fi
-	if test "$lib" != "yes" -a "$mpc" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the Musepack decoder library (libmpcdec) installed. Grab it from http://www.musepack.net)
-	fi
-	if test "$mpc" = "detect"; then
-		mpc=$lib
 	fi
 fi
 
@@ -670,7 +669,7 @@ AS_IF([test "x$with_lua" != 'xno'], [
 # Compiler and linker variables
 AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
 AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
-LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mpc_LIBS $vorbisenc_LIBS"
+LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $vorbisenc_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -696,7 +695,7 @@ AC_MSG_NOTICE([summary
       Ogg Speex                           :  $speex
       MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg
       MOD Audio (MOD, S3M, XM, IT, etc.)  :  $with_mod
-      Musepack                            :  $mpc
+      Musepack                            :  $with_mpc
       Monkey's Audio Codec                :  $with_mac
       WavPack                             :  $with_wavpack
       LAVC (AC3, AAC, WavPack, WMA, etc.) :  $with_lavc

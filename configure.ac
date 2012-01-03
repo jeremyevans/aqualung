@@ -395,43 +395,26 @@ AS_IF([test "x$with_mpeg" != 'xno'], [
                     [Define to build with MPEG Audio support])])
 ])
 
-AC_MSG_CHECKING(for sndfile support)
-AC_ARG_WITH(
-	sndfile,
-	[  --with-sndfile=yes,no   compile with sndfile (WAV, AIFF, etc.) support (default: yes)],
-	sndfile="$withval",
-	sndfile="detect")
-if test "$sndfile" = "no"; then
-	AC_MSG_RESULT(no)
-else
-        AC_CHECK_LIB(sndfile, sf_open, [lib=yes], [lib=no])
-	if test "$lib" = "yes"; then
-		sndfile_LIBS=`pkg-config --libs sndfile`
-		AC_DEFINE([HAVE_SNDFILE], [1], [Defined if compile with sndfile (WAV, AIFF, etc.) support])
-
-		AC_MSG_CHECKING(whether sndfile version >= 1.0.12)
-		if pkg-config --exists 'sndfile >= 1.0.12'; then
-		        AC_MSG_RESULT(yes)
-			AC_DEFINE([HAVE_SNDFILE_1_0_12], [1], [Defined if version(sndfile) >= 1.0.12])
-		else
-			AC_MSG_RESULT(no)
-		fi
-
-		AC_MSG_CHECKING(whether sndfile version >= 1.0.18)
-		if pkg-config --exists 'sndfile >= 1.0.18'; then
-		        AC_MSG_RESULT(yes)
-			AC_DEFINE([HAVE_SNDFILE_1_0_18], [1], [Defined if version(sndfile) >= 1.0.18])
-		else
-			AC_MSG_RESULT(no)
-		fi
-	fi
-	if test "$lib" = "no" -a "$sndfile" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the sndfile library installed. Grab it from  http://www.mega-nerd.com/libsndfile/ )
-	fi
-	if test "$sndfile" = "detect"; then
-	        sndfile=$lib
-	fi
-fi
+AC_ARG_WITH([sndfile],
+    [AS_HELP_STRING([--with-sndfile],
+        [compile with sndfile (WAV, AIFF, etc.) support (default: detect)])],
+    [], [with_sndfile='detect'])
+AS_IF([test "x$with_sndfile" != 'xno'], [
+    AC_MSG_NOTICE([sndfile (WAV, AIFF, etc.) Support])
+    PKG_CHECK_MODULES([sndfile], [sndfile],
+        [AS_IF([test "x$with_sndfile" = 'xdetect'],
+            [with_sndfile='yes (found)'])],
+        [AS_IF([test "x$with_sndfile" = 'xyes'],
+            [AC_MSG_ERROR([$sndfile_PKG_ERRORS])])])
+    PKG_CHECK_EXISTS([sndfile >= 1.0.12],
+        [AC_DEFINE([HAVE_SNDFILE_1_0_12], [1], [Defined if sndfile >= 1.0.12])])
+    PKG_CHECK_EXISTS([sndfile >= 1.0.18],
+        [AC_DEFINE([HAVE_SNDFILE_1_0_18], [1], [Defined if sndfile >= 1.0.18])])
+    AS_CASE([$with_sndfile],
+        [detect], [with_sndfile='not found'],
+        [yes*], [AC_DEFINE([HAVE_SNDFILE], [1],
+                    [Define to build with sndfile (WAV, AIFF, etc.) support])])
+])
 
 AC_MSG_CHECKING(for Ogg Vorbis support)
 AC_ARG_WITH(
@@ -657,7 +640,7 @@ AS_IF([test "x$with_lua" != 'xno'], [
 # Compiler and linker variables
 AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
 AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
-LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $vorbisenc_LIBS"
+LIBS="$LIBS $ogg_LIBS $speex_LIBS $vorbisenc_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -677,7 +660,7 @@ AC_MSG_NOTICE([summary
       Lua extension support               :  $with_lua
 
   Decoding support:
-      sndfile (WAV, AIFF, AU, etc.)       :  $sndfile
+      sndfile (WAV, AIFF, AU, etc.)       :  $with_sndfile
       Free Lossless Audio Codec (FLAC)    :  $with_flac
       Ogg Vorbis                          :  $ogg
       Ogg Speex                           :  $speex
@@ -689,7 +672,7 @@ AC_MSG_NOTICE([summary
       LAVC (AC3, AAC, WavPack, WMA, etc.) :  $with_lavc
 
   Encoding support:
-      sndfile (WAV)                       :  $sndfile
+      sndfile (WAV)                       :  $with_sndfile
       Free Lossless Audio Codec (FLAC)    :  $with_flac
       Ogg Vorbis                          :  $vorbisenc
       LAME (MP3)                          :  $with_lame

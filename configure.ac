@@ -147,6 +147,14 @@ AS_IF([test "x$buildtype" = 'xrelease'],
         AC_DEFINE([DEBUG_BUILD], [1], [Define if doing a debug build])
     ])
 
+AC_MSG_CHECKING([for loop playback support])
+AC_ARG_ENABLE([loop],
+    [AS_HELP_STRING([--disable-loop], [compile without loop playback support])],
+    [], [enable_loop='yes'])
+AC_MSG_RESULT([$enable_loop])
+AS_IF([test "x$enable_loop" = 'xyes'],
+    [AC_DEFINE([HAVE_LOOP], [1], [Define to build with loop playback support])])
+
 
 #
 # Output Driver Library Options
@@ -843,19 +851,6 @@ else
 	fi
 fi
 
-AC_MSG_CHECKING(for loop playback support)
-AC_ARG_WITH(
-	loop,
-	[  --with-loop=yes,no      compile with loop playback support (default: yes)],
-	loop="$withval",
-	loop="yes")
-if test "$loop" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_DEFINE([HAVE_LOOP], [1], [Defined if compile with loop playback support])
-	AC_MSG_RESULT(yes)
-fi
-
 AC_MSG_CHECKING(for podcast support)
 AC_ARG_WITH(
 	podcast,
@@ -917,7 +912,7 @@ AC_MSG_NOTICE([summary
       CDDB support                        :  $cddb
       Sample Rate Converter support       :  $with_src
       iRiver iFP driver support           :  $ifp
-      Loop playback support               :  $loop
+      Loop playback support               :  $enable_loop
       Systray support                     :  $systray
       Podcast support                     :  $podcast
       Lua extension support               :  $lua

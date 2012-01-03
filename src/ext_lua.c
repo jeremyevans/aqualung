@@ -28,15 +28,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gdk/gdkkeysyms.h>
-#ifdef LUA_HEADER_lua5_1
-#include <lua5.1/lua.h>
-#include <lua5.1/lauxlib.h>
-#include <lua5.1/lualib.h>
-#else
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
-#endif /* LUA_HEADER_DIR */
+
 #include "metadata.h"
 #include "options.h"
 #include "playlist.h"

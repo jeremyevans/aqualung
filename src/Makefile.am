@@ -12,7 +12,7 @@ aqualung_CFLAGS = $(xml_CFLAGS) $(gtk_CFLAGS) $(glib_CFLAGS) \
                   $(alsa_CFLAGS) $(pulse_CFLAGS) \
                   $(lrdf_CFLAGS) $(src_CFLAGS) \
                   $(cdio_CFLAGS) \
-                  $(cddb_CFLAGS)
+                  $(cddb_CFLAGS) $(lua_CFLAGS)
 
 aqualung_LDADD = decoder/libdecoder.a encoder/libencoder.a \
                  $(LDADD) $(xml_LIBS) $(gtk_LIBS) $(glib_LIBS) \
@@ -20,7 +20,7 @@ aqualung_LDADD = decoder/libdecoder.a encoder/libencoder.a \
                  $(sndio_LIBS) $(winmm_LIBS) \
                  $(lrdf_LIBS) $(src_LIBS) \
                  $(cdio_LIBS) $(ifp_LIBS) \
-                 $(cddb_LIBS)
+                 $(cddb_LIBS) $(lua_LIBS)
 
 aqualung_SOURCES = \
 about.h about.c \

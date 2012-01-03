@@ -805,40 +805,29 @@ AS_IF([test "x$with_cddb" != 'xno'], [
                     [Define to build with CDDB support])])
 ])
 
-AC_MSG_CHECKING(for Lua support)
-AC_ARG_WITH(
-	lua,
-	[  --with-lua=yes,no       compile with Lua extension support (default: yes)],
-	lua="$withval",
-	lua="detect")
-if test "$lua" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(lua, lua_load, [lib=yes], [lib=no])
-	if test "$lib" = "yes"; then
-		lua_LIBS="-llua"
-		AC_DEFINE([HAVE_LUA], [1], [Defined if compiled with Lua support])
-  else
-    AC_CHECK_LIB(lua5.1, lua_load, [lib=yes], [lib=no])
-	  if test "$lib" = "yes"; then
-		  lua_LIBS="-llua5.1"
-		  AC_DEFINE([HAVE_LUA], [1], [Defined if compiled with Lua support])
-		  AC_DEFINE([LUA_HEADER_lua5_1], [1], [Defined if lua headers detected in a nonstandard location])
-    fi
-	fi
-	if test "$lib" = "no" -a "$lua" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the Lua 5.1 library installed. Grab it from http://www.lua.org/.)
-	fi
-	if test "$lua" = "detect"; then
-		lua=$lib
-	fi
-fi
+AC_ARG_WITH([lua],
+    [AS_HELP_STRING([--with-lua],
+        [compile with Lua support (default: detect)])],
+    [], [with_lua='detect'])
+AS_IF([test "x$with_lua" != 'xno'], [
+    AC_MSG_NOTICE([Lua Extension Support])
+    PKG_CHECK_MODULES([lua], [lua5.1],
+        [AS_IF([test "x$with_lua" = 'xdetect'], [with_lua='yes (found)'])],
+        [PKG_CHECK_MODULES([lua], [lua >= 5.1],
+            [AS_IF([test "x$with_lua" = 'xdetect'], [with_lua='yes (found)'])],
+            [AS_IF([test "x$with_lua" = 'xyes'],
+                [AC_MSG_ERROR([$lua_PKG_ERRORS])])])])
+    AS_CASE([$with_lua],
+        [detect], [with_lua='not found'],
+        [yes*], [AC_DEFINE([HAVE_LUA], [1],
+                    [Define to build with Lua support])])
+])
 
 
 # Compiler and linker variables
 CFLAGS="-Wall $CFLAGS $PLATFORM_CFLAGS"
 CXXFLAGS="-Wall $CXXFLAGS $PLATFORM_CFLAGS"
-LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $lua_LIBS"
+LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -855,7 +844,7 @@ AC_MSG_NOTICE([summary
       Loop playback support               :  $enable_loop
       Systray support                     :  $enable_systray
       Podcast support                     :  $enable_podcast
-      Lua extension support               :  $lua
+      Lua extension support               :  $with_lua
 
   Decoding support:
       sndfile (WAV, AIFF, AU, etc.)       :  $sndfile

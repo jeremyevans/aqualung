@@ -3,5 +3,9 @@
         * Updated gettext integration, configure now supports
           --disable-nls           do not use Native Language Support
           --disable-rpath         do not hardcode runtime library paths
-	  in addition to other options to aide in finding libiconv and
+          in addition to other options to aide in finding libiconv and
           libintl.
+    - Runtime
+        * The disk IO thread is no longer high-priority by default on
+          Win32 builds, pass the -D / --disk-realtime option to re-enable
+          priority scheduling if you need it.

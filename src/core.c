@@ -52,15 +52,13 @@
 #ifdef HAVE_OSS
 #include <sys/ioctl.h>
 #include <sys/types.h>
-#ifdef __FreeBSD__
+#if defined(HAVE_SYS_SOUNDCARD_H)
 #include <sys/soundcard.h>
-#else
-#ifdef __OpenBSD__
+#elif defined(HAVE_SOUNDCARD_H)
 #include <soundcard.h>
-#else
+#else /* HAVE_LINUX_SOUNDARD_H */
 #include <linux/soundcard.h>
-#endif /* __OpenBSD__ */
-#endif /* __FreeBSD__ */
+#endif /* HAVE_LINUX_SOUNDARD_H */
 #endif /* HAVE_OSS */
 
 #ifdef HAVE_JACK
@@ -1409,16 +1407,24 @@ jack_info_shutdown(jack_status_t code, const char * reason, void * arg) {
 }
 #endif /* HAVE_JACK */
 
-#ifndef _WIN32
-int
+#ifdef _WIN32
+void
+set_thread_priority(GThread * thread, char * name, int realtime, int priority) {
+
+	if (realtime)
+		g_thread_set_priority(thread, G_THREAD_PRIORITY_URGENT);
+
+}
+#else
+void
 set_thread_priority(pthread_t thread, char * name, int realtime, int priority) {
 
 	struct sched_param param;
 	int policy;
 	int x;
-	
-	if ((x = pthread_getschedparam(thread, &policy, &param)) != 0) {
-		return -1;
+
+	if (pthread_getschedparam(thread, &policy, &param) != 0) {
+		return;
 	}
 
 	if (realtime) {
@@ -1454,8 +1460,7 @@ set_thread_priority(pthread_t thread, char * name, int realtime, int priority) {
 			"(%d: %s)\n", name, policy == SCHED_FIFO ? "FIFO" : "RR", param.sched_priority,
 			x, strerror(x));
 	}
-	
-	return x;
+
 }
 #endif /* _WIN32 */
 
@@ -3382,12 +3387,8 @@ main(int argc, char ** argv) {
 
 	/* startup disk thread */
 	AQUALUNG_THREAD_CREATE(thread_info.disk_thread_id, NULL, disk_thread, &thread_info)
-#ifdef _WIN32
-	g_thread_set_priority(thread_info.disk_thread_id, G_THREAD_PRIORITY_URGENT);
-#else
 	set_thread_priority(thread_info.disk_thread_id, "disk",
 		disk_try_realtime, disk_priority);
-#endif /* _WIN32 */
 
 #ifdef HAVE_SNDIO
 	if (output == SNDIO_DRIVER) {
@@ -3432,7 +3433,8 @@ main(int argc, char ** argv) {
 #ifdef _WIN32
 	if (output == WIN32_DRIVER) {
 		AQUALUNG_THREAD_CREATE(thread_info.win32_thread_id, NULL, win32_thread, &thread_info)
-		g_thread_set_priority(thread_info.win32_thread_id, G_THREAD_PRIORITY_URGENT);
+		set_thread_priority(thread_info.win32_thread_id,
+				    "WinMM output", try_realtime, priority);
 	}
 #endif /* _WIN32 */
 

@@ -153,50 +153,6 @@ fi
 #
 # Output Driver Library Options
 #
-AC_MSG_CHECKING(for OSS support)
-AC_ARG_WITH(
-	oss,
-	[  --with-oss=yes,no       compile with OSS support (default: yes)],
-	oss="$withval",
-	oss="detect")
-if test "$oss" = no; then
-	AC_MSG_RESULT(no)
-else
-	if test $freebsd = "yes" ; then
-	        AC_CHECK_HEADER([sys/soundcard.h], [hdr=yes], [hdr=no])
-	elif test $openbsd = "yes" ; then
-	        AC_CHECK_HEADER([soundcard.h], [hdr=yes], [hdr=no])
-	elif test $linux = "yes" ; then
-	        AC_CHECK_HEADER([linux/soundcard.h], [hdr=yes], [hdr=no])
-	else
-		hdr="no"
-		AC_MSG_RESULT(no)
-	fi
-	if test "$hdr" = "yes"; then
-		AC_DEFINE([HAVE_OSS], [1], [Defined if compile with OSS support])
-		if test $openbsd = "yes" ; then
-			AC_CHECK_LIB(ossaudio, _oss_ioctl, [oss_LIBS="-lossaudio"], [oss_LIBS=""])
-		else
-		        oss_LIBS=""
-		fi
-	fi
-	if test "$hdr" = "no" -a "$oss" = "yes"; then
-	        if test $freebsd = "yes" ; then
-		        AC_MSG_ERROR(You do not appear to have sys/soundcard.h needed by OSS sound support.)
-		elif test $openbsd = "yes" ; then
-			AC_MSG_ERROR(You do not appear to have soundcard.h needed by OSS sound support.)
-		elif test $linux = "yes" ; then
-		        AC_MSG_ERROR(You do not appear to have linux/soundcard.h needed by OSS sound support.)
-		else
-		        AC_MSG_ERROR(OSS output is unsupported on current build platform.)
-		fi
-	fi
-	if test "$oss" = "detect"; then
-	        oss=$hdr
-	fi
-fi
-
-
 AC_MSG_CHECKING(for ALSA support)
 AC_ARG_WITH(
 	alsa,
@@ -245,6 +201,30 @@ else
 	        jack=$lib
 	fi
 fi
+
+AC_ARG_WITH([oss],
+    [AS_HELP_STRING([--with-oss],
+        [compile with OSS support (default: detect)])],
+    [], [with_oss='detect'])
+AS_IF([test "x$with_oss" != 'xno'], [
+    AC_MSG_NOTICE([OSS Support])
+    dnl
+    dnl OSS detection is a wee bit squirrely, sorry if this hard to follow...
+    dnl
+    AC_CHECK_HEADERS([sys/soundcard.h soundcard.h linux/soundcard.h],
+        [AS_CASE([$with_oss], [*yes], [], [with_oss='yes (found)'])],
+        [with_oss="Z$with_oss"])
+    AS_CASE([$with_oss],
+        [ZZZyes], [AC_MSG_ERROR([OSS support requires soundcard.h])],
+        [*found*], [with_oss='yes (found)'],
+        [*yes*], [with_oss='yes'],
+        [with_oss='not found'])
+    AS_CASE([$with_oss], [yes*], [
+        AC_CHECK_LIB([ossaudio], [_oss_ioctl],
+            [AC_SUBST([oss_LIBS], [-lossaudio])])
+        AC_DEFINE([HAVE_OSS], [1], [Define to build with OSS support])
+    ])
+])
 
 AC_MSG_CHECKING(for PulseAudio support)
 AC_ARG_WITH(
@@ -918,7 +898,7 @@ fi
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$alsa_CFLAGS $jack_CFLAGS $cdda_CFLAGS $pulse_CFLAGS"
-LIBS="$LIBS $jack_LIBS $alsa_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
+LIBS="$LIBS $jack_LIBS $alsa_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS $pulse_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -957,7 +937,7 @@ AC_MSG_NOTICE([summary
 
   Output driver support:
       sndio Audio                         :  $with_sndio
-      OSS Audio                           :  $oss
+      OSS Audio                           :  $with_oss
       ALSA Audio                          :  $alsa
       JACK Audio Server                   :  $jack
       PulseAudio                          :  $pulse

@@ -1,7 +1,7 @@
 noinst_LIBRARIES = libencoder.a
 
 AM_CFLAGS = $(glib_CFLAGS) \
-            $(sndfile_CFLAGS)
+            $(sndfile_CFLAGS) $(vorbisenc_CFLAGS)
 
 libencoder_a_SOURCES = \
 enc_flac.h enc_flac.c \

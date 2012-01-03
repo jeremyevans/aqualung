@@ -11,7 +11,8 @@ aqualung_CPPFLAGS = $(AM_CPPFLAGS) -DAQUALUNG_SKINDIR=\"$(pkgdatadir)/skin\"
 aqualung_CFLAGS = $(xml_CFLAGS) $(gtk_CFLAGS) $(glib_CFLAGS) \
                   $(alsa_CFLAGS) $(pulse_CFLAGS) \
                   $(lavc_CFLAGS) $(mad_CFLAGS) $(sndfile_CFLAGS) \
-                  $(speex_CFLAGS) $(vorbis_CFLAGS) $(wavpack_CFLAGS) \
+                  $(speex_CFLAGS) $(vorbis_CFLAGS) $(vorbisenc_CFLAGS) \
+                  $(wavpack_CFLAGS) \
                   $(lrdf_CFLAGS) $(src_CFLAGS) \
                   $(cdio_CFLAGS) \
                   $(cddb_CFLAGS) $(lua_CFLAGS)
@@ -22,7 +23,8 @@ aqualung_LDADD = decoder/libdecoder.a encoder/libencoder.a -lstdc++ \
                  $(sndio_LIBS) $(winmm_LIBS) \
                  $(flac_LIBS) $(lame_LIBS) $(lavc_LIBS) $(mac_LIBS) \
                  $(mad_LIBS) $(mod_LIBS) $(mpc_LIBS) $(sndfile_LIBS) \
-                 $(speex_LIBS) $(vorbis_LIBS) $(wavpack_LIBS) \
+                 $(speex_LIBS) $(vorbis_LIBS) $(vorbisenc_LIBS) \
+                 $(wavpack_LIBS) \
                  $(lrdf_LIBS) $(src_LIBS) \
                  $(cdio_LIBS) $(ifp_LIBS) \
                  $(cddb_LIBS) $(lua_LIBS)

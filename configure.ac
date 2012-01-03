@@ -449,28 +449,22 @@ AS_IF([test "x$with_vorbis" != 'xno'], [
                     [Define to build with Ogg Vorbis support])])
 ])
 
-AC_MSG_CHECKING(for Ogg Vorbis encoding support)
-AC_ARG_WITH(
-	vorbisenc,
-	[  --with-vorbisenc=yes,no compile with Ogg Vorbis encoding support (default: yes)],
-	vorbisenc="$withval",
-	vorbisenc="detect")
-if test "$vorbisenc" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(vorbisenc, vorbis_encode_setup_init, [lib=yes], [lib=no], [-lvorbis -logg])
-	if test "$lib" = "yes"; then
-		vorbisenc_LIBS="-logg -lvorbis -lvorbisenc"
-		AC_DEFINE([HAVE_VORBISENC], [1], [Defined if compile with Ogg Vorbis encoding support])
-	fi
-	if test "$lib" = "no" -a "$vorbisenc" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the ogg, vorbis and vorbisenc libraries installed. Grab them from http://www.xiph.org/ogg/vorbis)
-	fi
-	if test "$vorbisenc" = "detect"; then
-		vorbisenc=$lib
-	fi
-fi
-
+AC_ARG_WITH([vorbisenc],
+    [AS_HELP_STRING([--with-vorbisenc],
+        [compile with Ogg Vorbis Encoding support (default: detect)])],
+    [], [with_vorbisenc='detect'])
+AS_IF([test "x$with_vorbisenc" != 'xno'], [
+    AC_MSG_NOTICE([Ogg Vorbis Encoding Support])
+    PKG_CHECK_MODULES([vorbisenc], [vorbisenc],
+        [AS_IF([test "x$with_vorbisenc" = 'xdetect'],
+            [with_vorbisenc='yes (found)'])],
+        [AS_IF([test "x$with_vorbisenc" = 'xyes'],
+            [AC_MSG_ERROR([$vorbisenc_PKG_ERRORS])])])
+    AS_CASE([$with_vorbisenc],
+        [detect], [with_vorbisenc='not found'],
+        [yes*], [AC_DEFINE([HAVE_VORBISENC], [1],
+                    [Define to build with Ogg Vorbis Encoding support])])
+])
 
 AC_ARG_WITH([wavpack],
     [AS_HELP_STRING([--with-wavpack],
@@ -617,10 +611,9 @@ AS_IF([test "x$with_lua" != 'xno'], [
 ])
 
 
-# Compiler and linker variables
+# Compiler and linker variables.
 AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
 AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
-LIBS="$LIBS $vorbisenc_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -654,7 +647,7 @@ AC_MSG_NOTICE([summary
   Encoding support:
       sndfile (WAV)                       :  $with_sndfile
       Free Lossless Audio Codec (FLAC)    :  $with_flac
-      Ogg Vorbis                          :  $vorbisenc
+      Ogg Vorbis                          :  $with_vorbisenc
       LAME (MP3)                          :  $with_lame
 
   Output driver support:

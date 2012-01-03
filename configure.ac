@@ -317,6 +317,26 @@ AS_IF([test "x$with_lavc" != 'xno'], [
                     [Define to build with Libav / FFmpeg support])])
 ])
 
+AC_ARG_WITH([mac],
+    [AS_HELP_STRING([--with-mac],
+        [compile with Monkey's Audio Codec support (default: detect)])],
+    [], [with_mac='detect'])
+AS_IF([test "x$with_mac" != 'xno'], [
+    AC_MSG_NOTICE([Monkey's Audio Codec Support])
+    AC_CHECK_LIB([mac], [CreateIAPEDecompress],
+        [
+            AS_IF([test "x$with_mac" = 'xdetect'], [with_mac='yes (found)'])
+            AC_SUBST([mac_LIBS], ['-lmac -lstdc++'])
+        ],
+        [AS_IF([test "x$with_mac" = 'xyes'],
+            [AC_MSG_ERROR([Monkey's Audio Codec support requires libmac])])],
+        [-lstdc++])
+    AS_CASE([$with_mac],
+        [detect], [with_mac='not found'],
+        [yes*], [AC_DEFINE([HAVE_MAC], [1],
+                    [Define to build with Monkey's Audio Codec support])])
+])
+
 AC_MSG_CHECKING(for sndfile support)
 AC_ARG_WITH(
 	sndfile,
@@ -520,32 +540,6 @@ else
 	fi
 fi
 
-
-AC_MSG_CHECKING(for Monkey's Audio Codec support)
-AC_ARG_WITH(
-	mac,
-	[  --with-mac=yes,no       compile with Monkey's Audio Codec support (default: yes)],
-	mac="$withval",
-	mac="detect")
-if test "$mac" = "no"; then
-	AC_MSG_RESULT(no)
-        mac_LIBS="-lstdc++"
-else
-	AC_CHECK_LIB(mac, CreateIAPEDecompress, [lib=yes], [lib=no], [-lstdc++])
-	if test "$lib" = "yes"; then
-	        mac_LIBS="-lmac -lstdc++"
-		AC_DEFINE([HAVE_MAC], [1], [Defined if compile with Monkey's Audio Codec support])
-	else
-	        mac_LIBS="-lstdc++"
-	fi
-	if test "$lib" = "no" -a "$mac" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the Monkey's Audio Codec decoder library installed. Grab it from http://etree.org/shnutils/shntool/support/formats/ape/unix/)
-	fi
-	if test "$mac" = "detect"; then
-		mac=$lib
-	fi
-fi
-
 AC_ARG_WITH([wavpack],
     [AS_HELP_STRING([--with-wavpack],
         [compile with WavPack support (default: detect)])],
@@ -694,7 +688,7 @@ AS_IF([test "x$with_lua" != 'xno'], [
 # Compiler and linker variables
 AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
 AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
-LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $vorbisenc_LIBS"
+LIBS="$LIBS $sndfile_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $vorbisenc_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -721,7 +715,7 @@ AC_MSG_NOTICE([summary
       MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg
       MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod
       Musepack                            :  $mpc
-      Monkey's Audio Codec                :  $mac
+      Monkey's Audio Codec                :  $with_mac
       WavPack                             :  $with_wavpack
       LAVC (AC3, AAC, WavPack, WMA, etc.) :  $with_lavc
 

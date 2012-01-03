@@ -65,10 +65,10 @@
 #include <jack/jack.h>
 #endif /* HAVE_JACK */
 
-#ifdef _WIN32
+#ifdef HAVE_WINMM
 #include <windows.h>
 #include <mmsystem.h>
-#endif /* _WIN32 */
+#endif /* HAVE_WINMM */
 
 #ifdef HAVE_PULSE
 #include <pulse/simple.h>
@@ -1900,7 +1900,7 @@ pulse_init(thread_info_t * info, int verbose, int realtime, int priority) {
 #endif /* HAVE_PULSE */
 
 
-#ifdef _WIN32
+#ifdef HAVE_WINMM
 
 #define WIN32_BUFFER_LEN (1<<16)
 
@@ -2149,7 +2149,7 @@ win32_thread(void * arg) {
         waveOutClose(hwave);
 	return 0;
 }
-#endif /* _WIN32 */
+#endif /* HAVE_WINMM */
 
 
  
@@ -2486,11 +2486,11 @@ print_version(void) {
 #endif /* HAVE_PULSE */
 	fprintf(stderr, "PulseAudio\n");
 	
-#ifdef _WIN32
+#ifdef HAVE_WINMM
 	fprintf(stderr, V_YES);
 #else
 	fprintf(stderr, V_NO);
-#endif /* _WIN32 */
+#endif /* HAVE_WINMM */
 	fprintf(stderr, "Win32 Sound API\n");
 
 	fprintf(stderr, "\n");
@@ -2839,7 +2839,7 @@ main(int argc, char ** argv) {
 					break;
 				}
 				if (strcmp(output_str, "win32") == 0) {
-#ifdef _WIN32
+#ifdef HAVE_WINMM
 					output = WIN32_DRIVER;
 #else
 					fprintf(stderr,
@@ -2849,7 +2849,7 @@ main(int argc, char ** argv) {
 						"list of\n"
 						"compiled-in features.\n");
 					exit(1);
-#endif /* _WIN32 */
+#endif /* HAVE_WINMM */
 					free(output_str);
 					break;
 				}
@@ -3141,11 +3141,11 @@ main(int argc, char ** argv) {
 		}
 	}
 
-#ifdef _WIN32
+#ifdef HAVE_WINMM
 	if (output == 0) {
 		output = WIN32_DRIVER;
 	}
-#endif /* _WIN32 */
+#endif /* HAVE_WINMM */
 
 
 	/* Initialize thread_info and create ringbuffers */
@@ -3379,11 +3379,11 @@ main(int argc, char ** argv) {
 	}
 #endif /* HAVE_PULSE */
 
-#ifdef _WIN32
+#ifdef HAVE_WINMM
 	if (output == WIN32_DRIVER) {
 		thread_info.out_SR = rate;
 	}
-#endif /* _WIN32 */
+#endif /* HAVE_WINMM */
 
 	/* startup disk thread */
 	AQUALUNG_THREAD_CREATE(thread_info.disk_thread_id, NULL, disk_thread, &thread_info)
@@ -3430,13 +3430,13 @@ main(int argc, char ** argv) {
 	}
 #endif /* HAVE_ALSA */
 
-#ifdef _WIN32
+#ifdef HAVE_WINMM
 	if (output == WIN32_DRIVER) {
 		AQUALUNG_THREAD_CREATE(thread_info.win32_thread_id, NULL, win32_thread, &thread_info)
 		set_thread_priority(thread_info.win32_thread_id,
 				    "WinMM output", try_realtime, priority);
 	}
-#endif /* _WIN32 */
+#endif /* HAVE_WINMM */
 
 	create_gui(argc, argv, optind, enqueue, rate, RB_AUDIO_SIZE * rate / 44100.0);
 	setup_app_socket();
@@ -3491,11 +3491,13 @@ main(int argc, char ** argv) {
 	}
 #endif /* HAVE_JACK */
 
-#ifdef _WIN32
+#ifdef HAVE_WINMM
 	if (output == WIN32_DRIVER) {
 		AQUALUNG_THREAD_JOIN(thread_info.win32_thread_id)
 	}
+#endif /* HAVE_WINMM */
 
+#ifdef _WIN32
 	g_mutex_free(disk_thread_lock);
 	g_cond_free(disk_thread_wake);
 #endif /* _WIN32 */

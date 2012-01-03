@@ -544,11 +544,11 @@ create_about_window() {
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef _WIN32
+#ifdef HAVE_WINMM
 	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
 #else
 	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* _WIN32 */
+#endif /* HAVE_WINMM */
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Win32 Sound API\n"), -1);
 

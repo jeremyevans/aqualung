@@ -14,7 +14,7 @@ aqualung_CFLAGS = $(xml_CFLAGS) $(gtk_CFLAGS) $(glib_CFLAGS) \
 aqualung_LDADD = decoder/libdecoder.a encoder/libencoder.a \
                  $(LDADD) $(xml_LIBS) $(gtk_LIBS) $(glib_LIBS) \
                  $(alsa_LIBS) $(jack_LIBS) $(oss_LIBS) $(pulse_LIBS) \
-                 $(sndio_LIBS) \
+                 $(sndio_LIBS) $(winmm_LIBS) \
                  $(lrdf_LIBS) $(src_LIBS)
 
 aqualung_SOURCES = \

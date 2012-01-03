@@ -496,11 +496,11 @@ set_output_label(int output, int out_SR) {
 		snprintf(str, MAXLEN-1, "%s JACK @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_JACK */
-#ifdef _WIN32
+#ifdef HAVE_WINMM
 	case WIN32_DRIVER:
 		snprintf(str, MAXLEN-1, "%s Win32 @ %d Hz", _("Output:"), out_SR);
 		break;
-#endif /* _WIN32 */
+#endif /* HAVE_WINMM */
 	default:
 		strncpy(str, _("No output"), MAXLEN-1);
 		break;

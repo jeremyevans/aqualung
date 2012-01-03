@@ -45,7 +45,6 @@ fi
 AC_MSG_CHECKING(for compilation platform)
 if test `uname -a | grep CYGWIN | wc -l` = "1" ; then
    PLATFORM_CFLAGS="-mwin32 -mwindows"
-   PLATFORM_LIBS="-lwinmm"
    win32="yes"
    freebsd="no"
    openbsd="no"
@@ -58,7 +57,6 @@ if test `uname -a | grep CYGWIN | wc -l` = "1" ; then
 fi
 if test `uname -a | grep FreeBSD | wc -l` = "1"  ; then
    PLATFORM_CFLAGS=""
-   PLATFORM_LIBS=""
    win32="no"
    freebsd="yes"
    openbsd="no"
@@ -71,7 +69,6 @@ if test `uname -a | grep FreeBSD | wc -l` = "1"  ; then
 fi
 if test `uname -a | grep OpenBSD | wc -l` = "1"  ; then
    PLATFORM_CFLAGS=""
-   PLATFORM_LIBS=""
    win32="no"
    freebsd="no"
    openbsd="yes"
@@ -84,7 +81,6 @@ if test `uname -a | grep OpenBSD | wc -l` = "1"  ; then
 fi
 if test `uname -a | grep Linux | wc -l` = "1"  ; then
    PLATFORM_CFLAGS=""
-   PLATFORM_LIBS=""
    win32="no"
    freebsd="no"
    openbsd="no"
@@ -245,6 +241,35 @@ AS_IF([test "x$with_sndio" != 'xno'], [
         [detect], [with_sndio='not found'],
         [yes*], [AC_DEFINE([HAVE_SNDIO], [1],
                     [Define to build with sndio support])])
+])
+
+AC_ARG_WITH([winmm],
+    [AS_HELP_STRING([--with-winmm],
+        [compile with WinMM support (default: detect)])],
+    [], [with_winmm='detect'])
+AS_IF([test "x$with_winmm" != 'xno'], [
+    AC_MSG_NOTICE([Windows Multimedia Extensions API Support])
+    AC_MSG_CHECKING([for platform support])
+    AS_IF([test "x$win32" = 'xyes'], [AC_MSG_RESULT([yes])], [
+        AC_MSG_RESULT([no])
+        AS_IF([test "x$with_winmm" = 'xyes'],
+            [AC_MSG_ERROR([WinMM is only supported on Microsoft Windows])])
+        with_winmm="not supported on $platform"
+    ])
+    AS_CASE([$with_winmm], [yes|detect],
+        [AC_CHECK_HEADER([mmsystem.h],
+            [
+                AS_IF([test "x$with_winmm" = 'xdetect'],
+                    [with_winmm='yes (found)'])
+                AC_SUBST([winmm_LIBS], [-lwinmm])
+            ],
+            [AS_IF([test "x$with_winmm" = 'xyes'],
+                [AC_MSG_ERROR([WinMM support requires mmsystem.h])])],
+            [[#include <windows.h>]])])
+    AS_CASE([$with_winmm],
+        [detect], [with_winmm='not found'],
+        [yes*], [AC_DEFINE([HAVE_WINMM], [1],
+                    [Define to build with WinMM support])])
 ])
 
 
@@ -876,7 +901,7 @@ fi
 CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS"
 CXXFLAGS="$CFLAGS"
 CPPFLAGS="$cdda_CFLAGS"
-LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $lua_LIBS"
+LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $lua_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -919,7 +944,7 @@ AC_MSG_NOTICE([summary
       ALSA Audio                          :  $with_alsa
       JACK Audio Server                   :  $with_jack
       PulseAudio                          :  $with_pulse
-      Win32 Sound API                     :  $win32
+      Win32 Sound API                     :  $with_winmm
 
 ---------------------------------------------------------------------------])
 AC_OUTPUT

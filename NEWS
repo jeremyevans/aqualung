@@ -5,6 +5,8 @@
           --disable-rpath         do not hardcode runtime library paths
           in addition to other options to aide in finding libiconv and
           libintl.
+        * Cygwin builds now support configure --without-winmm should
+          somebody want, for example, a JACK-only Aqualung build.
     - Runtime
         * The disk IO thread is no longer high-priority by default on
           Win32 builds, pass the -D / --disk-realtime option to re-enable

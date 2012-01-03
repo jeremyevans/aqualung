@@ -55,9 +55,9 @@
 #define JACK_DRIVER 3
 #endif /* HAVE_JACK */
 
-#ifdef _WIN32
+#ifdef HAVE_WINMM
 #define WIN32_DRIVER 4
-#endif /* _WIN32 */
+#endif /* HAVE_WINMM */
 
 #ifdef HAVE_SNDIO
 #define SNDIO_DRIVER 5
@@ -113,9 +113,9 @@ typedef struct _thread_info {
 	int * alsa_int_buf;
 #endif /* HAVE_ALSA */	
 
-#ifdef _WIN32
+#ifdef HAVE_WINMM
 	AQUALUNG_THREAD_DECLARE(win32_thread_id)
-#endif /* _WIN32 */
+#endif /* HAVE_WINMM */
 
 #ifdef HAVE_PULSE
 	AQUALUNG_THREAD_DECLARE(pulse_thread_id)

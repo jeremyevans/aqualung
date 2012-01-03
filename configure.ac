@@ -629,34 +629,22 @@ else
 	fi
 fi
 
-AC_MSG_CHECKING(for WavPack support)
-AC_ARG_WITH(
-	wavpack,
-	[  --with-wavpack=yes,no   compile with WavPack support (default: yes)],
-	wavpack="$withval",
-	wavpack="detect")
-if test "$wavpack" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(wavpack, WavpackOpenFileInput, [lib=yes], [lib=no])
-	if test "$lib" = "yes"; then
-		wavpack_LIBS=`pkg-config --libs wavpack`
-		AC_MSG_CHECKING(whether WavPack version >= 4.40.0)
-		if pkg-config --exists 'wavpack >= 4.40.0'; then
-		        AC_MSG_RESULT(yes)
-			AC_DEFINE([HAVE_WAVPACK], [1], [Defined if compile with Wavpack support])
-		else
-			lib="no"
-		        AC_MSG_RESULT(no)
-		fi
-	fi
-	if test "$lib" = "no" -a "$wavpack" = "yes"; then
-		AC_MSG_ERROR([You do not appear to have the WavPack library installed, or it is older than the required version (4.40.0). Grab it from http://www.wavpack.com])
-	fi
-	if test "$wavpack" = "detect"; then
-		wavpack=$lib
-	fi
-fi
+AC_ARG_WITH([wavpack],
+    [AS_HELP_STRING([--with-wavpack],
+        [compile with WavPack support (default: detect)])],
+    [], [with_wavpack='detect'])
+AS_IF([test "x$with_wavpack" != 'xno'], [
+    AC_MSG_NOTICE([WavPack Support])
+    PKG_CHECK_MODULES([wavpack], [wavpack >= 4.40.0],
+        [AS_IF([test "x$with_wavpack" = 'xdetect'],
+            [with_wavpack='yes (found)'])],
+        [AS_IF([test "x$with_wavpack" = 'xyes'],
+            [AC_MSG_ERROR([$wavpack_PKG_ERRORS])])])
+    AS_CASE([$with_wavpack],
+        [detect], [with_wavpack='not found'],
+        [yes*], [AC_DEFINE([HAVE_WAVPACK], [1],
+                    [Define to build with WavPack support])])
+])
 
 
 #
@@ -789,7 +777,7 @@ AS_IF([test "x$with_lua" != 'xno'], [
 # Compiler and linker variables
 AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
 AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
-LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS"
+LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -817,7 +805,7 @@ AC_MSG_NOTICE([summary
       MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod
       Musepack                            :  $mpc
       Monkey's Audio Codec                :  $mac
-      WavPack                             :  $wavpack
+      WavPack                             :  $with_wavpack
       LAVC (AC3, AAC, WavPack, WMA, etc.) :  $lavc
 
   Encoding support:

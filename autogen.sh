@@ -1,13 +1,14 @@
 #!/bin/sh
 
 echo "
-checking basic compilation tools ...
+checking basic configuration tools ...
 "
 
-for tool in pkg-config aclocal autoheader autoconf automake gettext msgfmt
+for tool in pkg-config autoconf autoreconf automake gettext msgfmt
 do
     echo -n "$tool ... "
-    if which $tool >/dev/null 2>&1 ; then
+    if command -v $tool >/dev/null 2>&1
+    then
 	echo "found."
     else
 	echo "not found.
@@ -19,21 +20,9 @@ done
 
 echo
 
-for tool in aclocal autoheader autoconf "automake --add-missing"
-do
-    echo -n "running $tool ... "
-    if $tool; then
-	echo "done."
-    else
-	echo "failed.
-
-*** $tool returned an error."
-	exit 1
-    fi
-done
-
-
-echo "
+if autoreconf -i
+then
+    echo "
 You can now run:
 
     ./configure
@@ -44,3 +33,4 @@ Please take the time to subscribe to the project mailing list at:
 http://lists.sourceforge.net/lists/listinfo/aqualung-friends
 
 "
+fi

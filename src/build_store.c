@@ -41,6 +41,7 @@
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"
+#include "utils_xml.h"
 #include "decoder/file_decoder.h"
 #include "i18n.h"
 #include "options.h"

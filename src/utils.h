@@ -21,10 +21,8 @@
 #ifndef _UTILS_H
 #define _UTILS_H
 
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
-
 #include <config.h>
+
 #include "common.h"
 
 
@@ -76,19 +74,6 @@ typedef struct _map_t {
 void map_put(map_t ** map, char * str);
 char * map_get_max(map_t * map);
 void map_free(map_t * map);
-
-void xml_save_str(xmlNodePtr node, char * varname, char * var);
-void xml_save_int(xmlNodePtr node, char * varname, int var);
-void xml_save_uint(xmlNodePtr node, char * varname, unsigned var);
-void xml_save_float(xmlNodePtr node, char * varname, float var);
-void xml_save_int_array(xmlNodePtr node, char * varname, int * var, int idx);
-
-void xml_load_str(xmlDocPtr doc, xmlNodePtr node, char * varname, char * var);
-void xml_load_str_dup(xmlDocPtr doc, xmlNodePtr node, char * varname, char ** var);
-void xml_load_int(xmlDocPtr doc, xmlNodePtr node, char * varname, int * var);
-void xml_load_uint(xmlDocPtr doc, xmlNodePtr node, char * varname, unsigned * var);
-void xml_load_float(xmlDocPtr doc, xmlNodePtr node, char * varname, float * var);
-void xml_load_int_array(xmlDocPtr doc, xmlNodePtr node, char * varname, int * var, int idx);
 
 
 #endif /* _UTILS_H */

@@ -49,5 +49,6 @@ transceiver.c transceiver.h \
 trashlist.c trashlist.h \
 utils.c utils.h \
 utils_gui.c utils_gui.h \
+utils_xml.h utils_xml.c \
 version.h \
 volume.c volume.h

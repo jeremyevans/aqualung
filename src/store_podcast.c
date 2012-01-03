@@ -43,6 +43,7 @@
 #include "i18n.h"
 #include "utils.h"
 #include "utils_gui.h"
+#include "utils_xml.h"
 #include "options.h"
 #include "file_info.h"
 #include "export.h"

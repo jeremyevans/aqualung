@@ -789,7 +789,7 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 }
 
 
-#ifdef HAVE_OGG_VORBIS
+#ifdef HAVE_VORBIS
 metadata_t *
 metadata_from_vorbis_comment(vorbis_comment * vc) {
 
@@ -839,4 +839,4 @@ metadata_from_vorbis_comment(vorbis_comment * vc) {
 				       (vc->vendor != NULL) ? vc->vendor : "");
 	return meta;
 }
-#endif /* HAVE_OGG_VORBIS */
+#endif /* HAVE_VORBIS */

@@ -432,28 +432,22 @@ AS_IF([test "x$with_speex" != 'xno'], [
                     [Define to build with Ogg Speex support])])
 ])
 
-AC_MSG_CHECKING(for Ogg Vorbis support)
-AC_ARG_WITH(
-	ogg,
-	[  --with-ogg=yes,no       compile with Ogg Vorbis support (default: yes)],
-	ogg="$withval",
-	ogg="detect")
-if test "$ogg" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(vorbis, ov_open, [lib=yes], [lib=no], [-lvorbisfile -logg])
-	if test "$lib" = "yes"; then
-		ogg_LIBS="-logg -lvorbis -lvorbisfile"
-		AC_DEFINE([HAVE_OGG_VORBIS], [1], [Defined if compile with Ogg Vorbis support])
-	fi
-	if test "$lib" = "no" -a "$ogg" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the ogg, vorbis and vorbisfile libraries installed. Grab them from http://www.xiph.org/ogg/vorbis)
-	fi
-	if test "$ogg" = "detect"; then
-		ogg=$lib
-	fi
-fi
-
+AC_ARG_WITH([vorbis],
+    [AS_HELP_STRING([--with-vorbis],
+        [compile with Ogg Vorbis support (default: detect)])],
+    [], [with_vorbis='detect'])
+AS_IF([test "x$with_vorbis" != 'xno'], [
+    AC_MSG_NOTICE([Ogg Vorbis Support])
+    PKG_CHECK_MODULES([vorbis], [vorbis vorbisfile],
+        [AS_IF([test "x$with_vorbis" = 'xdetect'],
+            [with_vorbis='yes (found)'])],
+        [AS_IF([test "x$with_vorbis" = 'xyes'],
+            [AC_MSG_ERROR([$vorbis_PKG_ERRORS])])])
+    AS_CASE([$with_vorbis],
+        [detect], [with_vorbis='not found'],
+        [yes*], [AC_DEFINE([HAVE_VORBIS], [1],
+                    [Define to build with Ogg Vorbis support])])
+])
 
 AC_MSG_CHECKING(for Ogg Vorbis encoding support)
 AC_ARG_WITH(
@@ -626,7 +620,7 @@ AS_IF([test "x$with_lua" != 'xno'], [
 # Compiler and linker variables
 AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
 AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
-LIBS="$LIBS $ogg_LIBS $vorbisenc_LIBS"
+LIBS="$LIBS $vorbisenc_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -648,7 +642,7 @@ AC_MSG_NOTICE([summary
   Decoding support:
       sndfile (WAV, AIFF, AU, etc.)       :  $with_sndfile
       Free Lossless Audio Codec (FLAC)    :  $with_flac
-      Ogg Vorbis                          :  $ogg
+      Ogg Vorbis                          :  $with_vorbis
       Ogg Speex                           :  $with_speex
       MPEG Audio (MPEG 1-2.5 Layer I-III) :  $with_mpeg
       MOD Audio (MOD, S3M, XM, IT, etc.)  :  $with_mod

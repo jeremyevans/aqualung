@@ -254,7 +254,7 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 	}
 #endif /* HAVE_MPEG */
 
-#ifdef HAVE_OGG_VORBIS
+#ifdef HAVE_VORBIS
 	if ((strcasecmp(session->headers.content_type, "application/ogg") == 0) ||
 	    (strcasecmp(session->headers.content_type, "audio/ogg") == 0) ||
 	    (strcasecmp(session->headers.content_type, "audio/x-vorbis") == 0)) {
@@ -273,7 +273,7 @@ stream_decoder_open(file_decoder_t * fdec, char * URL) {
 		fdec->pdec = (void *)dec;
 		return file_decoder_finalize_open(fdec, dec, URL);
 	}
-#endif /* HAVE_OGG_VORBIS */
+#endif /* HAVE_VORBIS */
 
 	fprintf(stderr, "Sorry, no handler for Content-Type: %s\n",
 		session->headers.content_type);

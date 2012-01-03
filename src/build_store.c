@@ -890,9 +890,9 @@ build_store_new(GtkTreeIter * store_iter, char * file) {
 	strcat(data->incl_pattern, "*.flac,");
 #endif /* HAVE_FLAC */
 
-#ifdef HAVE_OGG_VORBIS
+#ifdef HAVE_VORBIS
 	strcat(data->incl_pattern, "*.ogg,");
-#endif /* HAVE_OGG_VORBIS */
+#endif /* HAVE_VORBIS */
 
 #ifdef HAVE_MPEG
 	for (i = 0; valid_extensions_mpeg[i] != NULL; i++) {

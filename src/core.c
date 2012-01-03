@@ -2361,11 +2361,11 @@ print_version(void) {
 #endif /* HAVE_FLAC */
 	fprintf(stderr, "Free Lossless Audio Codec (FLAC)\n");
 	
-#ifdef HAVE_OGG_VORBIS
+#ifdef HAVE_VORBIS
 	fprintf(stderr, V_YES);
 #else
 	fprintf(stderr, V_NO);
-#endif /* HAVE_OGG_VORBIS */
+#endif /* HAVE_VORBIS */
 	fprintf(stderr, "Ogg Vorbis\n");
 	
 #ifdef HAVE_SPEEX

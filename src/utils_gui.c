@@ -450,13 +450,13 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
         gtk_file_chooser_add_filter(fc, filter);
 #endif /* HAME_MPEG */
 
-#ifdef HAVE_OGG_VORBIS
+#ifdef HAVE_VORBIS
         filter = gtk_file_filter_new();
         gtk_file_filter_set_name(filter, _("Ogg Vorbis (*.ogg)"));
         gtk_file_filter_add_pattern(filter, "*.[oO][gG][gG]");
         gtk_file_filter_add_pattern(filter_all, "*.[oO][gG][gG]");
         gtk_file_chooser_add_filter(fc, filter);
-#endif /* HAVE_OGG_VORBIS */
+#endif /* HAVE_VORBIS */
 
 #ifdef HAVE_SPEEX
         filter = gtk_file_filter_new();

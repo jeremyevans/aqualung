@@ -11,6 +11,7 @@
         * configure --without-loop is now configure --disable-loop
         * configure --without-podcast is now configure --disable-podcast
         * configure --without-systray is now configure --disable-systray
+        * configure's --with-ogg option was renamed to --with-vorbis
     - Runtime
         * The disk IO thread is no longer high-priority by default on
           Win32 builds, pass the -D / --disk-realtime option to re-enable

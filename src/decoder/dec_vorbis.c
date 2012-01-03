@@ -33,7 +33,7 @@
 extern size_t sample_size;
 
 
-#ifdef HAVE_OGG_VORBIS
+#ifdef HAVE_VORBIS
 
 # if 0
 void
@@ -413,7 +413,7 @@ vorbis_decoder_init(file_decoder_t * fdec) {
 
         return NULL;
 }
-#endif /* HAVE_OGG_VORBIS */
+#endif /* HAVE_VORBIS */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :
 

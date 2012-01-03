@@ -2,7 +2,7 @@ noinst_LIBRARIES = libdecoder.a
 
 AM_CFLAGS = $(glib_CFLAGS) \
             $(lavc_CFLAGS) $(mad_CFLAGS) $(sndfile_CFLAGS) $(speex_CFLAGS) \
-            $(wavpack_CFLAGS)
+            $(vorbis_CFLAGS) $(wavpack_CFLAGS)
 
 AM_CXXFLAGS = $(glib_CFLAGS)
 

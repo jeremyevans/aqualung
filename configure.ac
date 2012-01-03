@@ -416,6 +416,22 @@ AS_IF([test "x$with_sndfile" != 'xno'], [
                     [Define to build with sndfile (WAV, AIFF, etc.) support])])
 ])
 
+AC_ARG_WITH([speex],
+    [AS_HELP_STRING([--with-speex],
+        [compile with Ogg Speex support (default: detect)])],
+    [], [with_speex='detect'])
+AS_IF([test "x$with_speex" != 'xno'], [
+    AC_MSG_NOTICE([Ogg Speex Support])
+    PKG_CHECK_MODULES([speex], [oggz speex],
+        [AS_IF([test "x$with_speex" = 'xdetect'], [with_speex='yes (found)'])],
+        [AS_IF([test "x$with_speex" = 'xyes'],
+            [AC_MSG_ERROR([$speex_PKG_ERRORS])])])
+    AS_CASE([$with_speex],
+        [detect], [with_speex='not found'],
+        [yes*], [AC_DEFINE([HAVE_SPEEX], [1],
+                    [Define to build with Ogg Speex support])])
+])
+
 AC_MSG_CHECKING(for Ogg Vorbis support)
 AC_ARG_WITH(
 	ogg,
@@ -461,36 +477,6 @@ else
 	fi
 fi
 
-
-AC_MSG_CHECKING(for Ogg Speex support)
-AC_ARG_WITH(
-	speex,
-	[  --with-speex=yes,no     compile with Ogg Speex support (default: yes)],
-	speex="$withval",
-	speex="detect")
-if test "$speex" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(oggz, oggz_open, [oggzlib=yes], [oggzlib=no], [-loggz -logg])
-	AC_CHECK_LIB(speex, speex_bits_init, [speexlib=yes], [speexlib=no], [-lspeex])
-	if test "$oggzlib" = "yes"; then
-		if test "$speexlib" = "yes"; then
-			speex_LIBS="-loggz -logg -lspeex"
-			lib="yes"
-			AC_DEFINE([HAVE_SPEEX], [1], [Defined if compile with Ogg Speex support])
-		else
-			lib="no"
-		fi
-	else
-		lib="no"
-	fi
-	if test "$lib" = "no" -a "$speex" = "yes"; then
-		AC_MSG_ERROR(You do not appear to have the oggz and speex libraries installed. Grab them from http://www.annodex.net/software/liboggz and http://speex.org)
-	fi
-	if test "$speex" = "detect"; then
-		speex=$lib
-	fi
-fi
 
 AC_ARG_WITH([wavpack],
     [AS_HELP_STRING([--with-wavpack],
@@ -640,7 +626,7 @@ AS_IF([test "x$with_lua" != 'xno'], [
 # Compiler and linker variables
 AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
 AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
-LIBS="$LIBS $ogg_LIBS $speex_LIBS $vorbisenc_LIBS"
+LIBS="$LIBS $ogg_LIBS $vorbisenc_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -663,7 +649,7 @@ AC_MSG_NOTICE([summary
       sndfile (WAV, AIFF, AU, etc.)       :  $with_sndfile
       Free Lossless Audio Codec (FLAC)    :  $with_flac
       Ogg Vorbis                          :  $ogg
-      Ogg Speex                           :  $speex
+      Ogg Speex                           :  $with_speex
       MPEG Audio (MPEG 1-2.5 Layer I-III) :  $with_mpeg
       MOD Audio (MOD, S3M, XM, IT, etc.)  :  $with_mod
       Musepack                            :  $with_mpc

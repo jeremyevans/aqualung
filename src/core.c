@@ -2715,7 +2715,7 @@ main(int argc, char ** argv) {
 	file_decoder_init();
 
 	setlocale(LC_ALL, "");
-	bindtextdomain(PACKAGE, AQUALUNG_LOCALEDIR);
+	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
 	bind_textdomain_codeset(PACKAGE, "UTF-8");
 

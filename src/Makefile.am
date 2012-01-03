@@ -1,6 +1,10 @@
 SUBDIRS = decoder encoder img po
 
+AM_CPPFLAGS = -DAQUALUNG_DATADIR=\"$(pkgdatadir)\" -DLOCALEDIR=\"$(localedir)\"
+
 bin_PROGRAMS = aqualung
+
+aqualung_CPPFLAGS = $(AM_CPPFLAGS) -DAQUALUNG_SKINDIR=\"$(pkgdatadir)/skin\"
 
 aqualung_SOURCES = \
 about.h about.c \

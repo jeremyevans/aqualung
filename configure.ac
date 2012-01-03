@@ -23,25 +23,6 @@ AC_CONFIG_FILES([
 ])
 
 
-AC_MSG_CHECKING(for type of build)
-AC_ARG_ENABLE(
-	debug,
-	[  --enable-debug=yes,no   compile with debugging support (default: no)],
-	debug="$enableval",
-	debug="no")
-if test "$debug" = "yes"; then
-	buildtype=debug
-	BUILD_CFLAGS="-rdynamic -ggdb -g -O0"
-	AC_DEFINE([DEBUG_BUILD], [1], [Defined if doing a debug build])
-	AC_MSG_RESULT(debug)
-else
-	buildtype=release
-	BUILD_CFLAGS="-O2"
-	AC_DEFINE([RELEASE_BUILD], [1], [Defined if doing a release build])
-	AC_MSG_RESULT(release)
-fi
-
-
 AC_MSG_CHECKING(for compilation platform)
 if test `uname -a | grep CYGWIN | wc -l` = "1" ; then
    PLATFORM_CFLAGS="-mwin32 -mwindows"
@@ -49,9 +30,6 @@ if test `uname -a | grep CYGWIN | wc -l` = "1" ; then
    freebsd="no"
    openbsd="no"
    linux="no"
-   if test "$buildtype" = "debug"; then
-	   AC_MSG_ERROR([Sorry, debug build under Cygwin is unsupported!])
-   fi
    platform="Cygwin"
    AC_MSG_RESULT(Cygwin)
 fi
@@ -61,9 +39,6 @@ if test `uname -a | grep FreeBSD | wc -l` = "1"  ; then
    freebsd="yes"
    openbsd="no"
    linux="no"
-   if test "$buildtype" = "debug"; then
-	   AC_MSG_ERROR([Sorry, debug build under FreeBSD is unsupported!])
-   fi
    platform="FreeBSD"
    AC_MSG_RESULT(FreeBSD)
 fi
@@ -73,9 +48,6 @@ if test `uname -a | grep OpenBSD | wc -l` = "1"  ; then
    freebsd="no"
    openbsd="yes"
    linux="no"
-   if test "$buildtype" = "debug"; then
-	   AC_MSG_ERROR([Sorry, debug build under OpenBSD is unsupported!])
-   fi
    platform="OpenBSD"
    AC_MSG_RESULT(OpenBSD)
 fi
@@ -128,7 +100,7 @@ AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_FUNC_MALLOC
-AC_CHECK_FUNCS([floor memset mkdir strdup strrchr strstr strndup strcasestr])
+AC_CHECK_FUNCS([floor memset mkdir psiginfo strcasestr strdup strndup strrchr strstr])
 
 
 
@@ -144,6 +116,36 @@ fi
 #
 # Feature Options
 #
+AC_MSG_CHECKING([for type of build])
+buildtype='release'
+AC_ARG_ENABLE([debug],
+    [AS_HELP_STRING([--enable-debug], [compile with debugging support])],
+    [AS_IF([test "x$enable_debug" = 'xyes'], [buildtype='debug'])])
+AC_MSG_RESULT([$buildtype])
+AS_IF([test "x$buildtype" = 'xrelease'],
+    [AC_DEFINE([RELEASE_BUILD], [1], [Define if doing a release build])],
+    [
+        dnl
+        dnl backtracing is fairly non-standard, BSD users will likely have to
+        dnl install libexecinfo first
+        dnl
+        AC_CHECK_FUNC([backtrace_symbols], [],
+            [AC_CHECK_LIB([execinfo], [backtrace_symbols],
+                [AC_SUBST([debug_LIBS], [-lexecinfo])],
+                [AC_MSG_ERROR([debug builds need backtrace support])])])
+        dnl
+        dnl We must ensure we have frame pointers for backtrace() to work with.
+        dnl As such, we must override any previously set optimizations (such as
+        dnl those set by the AC_PROG_CC macro), so while setting user variables
+        dnl directly is normally considered bad form, it's necessary here.
+        dnl
+        AS_IF([test "x$GCC" = 'xyes'], [
+            AC_SUBST([debug_LDFLAGS], [-rdynamic])
+            CFLAGS="$CFLAGS -ggdb -g -O0"
+        ])
+        AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="$CXXFLAGS -ggdb -g -O0"])
+        AC_DEFINE([DEBUG_BUILD], [1], [Define if doing a debug build])
+    ])
 
 
 #
@@ -898,8 +900,8 @@ fi
 
 
 # Compiler and linker variables
-CFLAGS="$CFLAGS $BUILD_CFLAGS -Wall $PLATFORM_CFLAGS"
-CXXFLAGS="$CFLAGS"
+CFLAGS="-Wall $CFLAGS $PLATFORM_CFLAGS"
+CXXFLAGS="-Wall $CXXFLAGS $PLATFORM_CFLAGS"
 CPPFLAGS="$cdda_CFLAGS"
 LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $lua_LIBS"
 

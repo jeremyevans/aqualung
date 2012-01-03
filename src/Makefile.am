@@ -1,7 +1,8 @@
 SUBDIRS = decoder encoder img
 
 AM_CPPFLAGS = -DAQUALUNG_DATADIR=\"$(pkgdatadir)\" -DLOCALEDIR=\"$(localedir)\"
-LDADD = $(LIBINTL)
+AM_LDFLAGS = $(debug_LDFLAGS)
+LDADD = $(LIBINTL) $(debug_LIBS)
 
 bin_PROGRAMS = aqualung
 

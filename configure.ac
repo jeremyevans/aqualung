@@ -782,43 +782,29 @@ AS_IF([test "x$with_ifp" != 'xno'], [
                     [Define to build with iRiver iFP support])])
 ])
 
-AC_MSG_CHECKING(for CDDB support)
-AC_ARG_WITH(
-	cddb,
-	[  --with-cddb=yes,no      compile with CDDB support (default: yes)],
-	cddb="$withval",
-	cddb="detect")
-if test "$cddb" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(cddb, cddb_new, [lib=yes], [lib=no])
-	if test "$lib" = "yes"; then
-		AC_MSG_CHECKING(whether libcddb version >= 1.2.1)
-		if `pkg-config --exists 'libcddb >= 1.2.1'`; then
-			AC_MSG_RESULT(yes)
-		        cddb_LIBS=`pkg-config --libs libcddb`
-			AC_DEFINE([HAVE_CDDB], [1], [Defined if compile with CDDB support])
-		        AC_CHECK_LIB(cddb, cddb_disc_get_revision, [libcddb_rev=yes], [libcddb_rev=no])
-			if test "$libcddb_rev" = "yes"; then
-				AC_DEFINE([LIBCDDB_REVISION], [1], [Defined if libcddb handles disc revision number])
-			fi
-		else
-			AC_MSG_RESULT(no)
-			lib="no"
-		fi
-	fi
-	if test "$lib" = "no" -a "$cddb" = "yes"; then
-		AC_MSG_ERROR(CDDB library not found or too old (version < 1.2.1). Grab it from http://libcddb.sf.net/)
-	fi
-	if test "$cddb" = "detect"; then
-		cddb=$lib
-	fi
-fi
-
 
 #
 # Miscellaneous Library Options
 #
+AC_ARG_WITH([cddb],
+    [AS_HELP_STRING([--with-cddb],
+        [compile with CDDB support (default: detect)])],
+    [], [with_cddb='detect'])
+AS_IF([test "x$with_cddb" != 'xno'], [
+    AC_MSG_NOTICE([Compact Disc Database Support])
+    PKG_CHECK_MODULES([cddb], [libcddb >= 1.2.1],
+        [AS_IF([test "x$with_cddb" = 'xdetect'], [with_cddb='yes (found)'])],
+        [AS_IF([test "x$with_cddb" = 'xyes'],
+            [AC_MSG_ERROR([$cddb_PKG_ERRORS])])])
+    AC_CHECK_LIB([cddb], [cddb_disc_get_revision],
+        [AC_DEFINE([LIBCDDB_REVISION], [1],
+            [Define if libcddb has cddb_disc_get_revision function])])
+    AS_CASE([$with_cddb],
+        [detect], [with_cddb='not found'],
+        [yes*], [AC_DEFINE([HAVE_CDDB], [1],
+                    [Define to build with CDDB support])])
+])
+
 AC_MSG_CHECKING(for Lua support)
 AC_ARG_WITH(
 	lua,
@@ -852,7 +838,7 @@ fi
 # Compiler and linker variables
 CFLAGS="-Wall $CFLAGS $PLATFORM_CFLAGS"
 CXXFLAGS="-Wall $CXXFLAGS $PLATFORM_CFLAGS"
-LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cddb_LIBS $lua_LIBS"
+LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $lua_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -863,7 +849,7 @@ AC_MSG_NOTICE([summary
   Optional features:
       LADSPA plugin support               :  $with_ladspa
       CDDA (Audio CD) support             :  $with_cdda
-      CDDB support                        :  $cddb
+      CDDB support                        :  $with_cddb
       Sample Rate Converter support       :  $with_src
       iRiver iFP driver support           :  $with_ifp
       Loop playback support               :  $enable_loop

@@ -957,48 +957,47 @@ CPPFLAGS="$gtk_CFLAGS $glib_CFLAGS $xml_CFLAGS $alsa_CFLAGS $jack_CFLAGS $cdda_C
 LIBS="$LIBS decoder/libdecoder.a encoder/libencoder.a $gtk_LIBS $glib_LIBS $xml_LIBS $jack_LIBS $lrdf_LIBS $src_LIBS $alsa_LIBS $sndio_LIBS $oss_LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cdda_LIBS $cddb_LIBS $ifp_LIBS $PLATFORM_LIBS $z_LIBS $bz2_LIBS $lua_LIBS $pulse_LIBS"
 
 
-echo "----------------------------------------------------------------------"
-echo "  Configuration summary"
-echo "  ====================="
-echo
-echo "  Build type / target platform            :  $buildtype / $platform"
-echo
-echo "  Optional features:"
-echo "      LADSPA plugin support               :  $ladspa"
-echo "      CDDA (Audio CD) support             :  $cdda"
-echo "      CDDB support                        :  $cddb"
-echo "      Sample Rate Converter support       :  $src"
-echo "      iRiver iFP driver support           :  $ifp"
-echo "      Loop playback support               :  $loop"
-echo "      Systray support                     :  $systray"
-echo "      Podcast support                     :  $podcast"
-echo "      Lua extension support               :  $lua"
-echo
-echo "  Decoding support:"
-echo "      sndfile (WAV, AIFF, AU, etc.)       :  $sndfile"
-echo "      Free Lossless Audio Codec (FLAC)    :  $flac"
-echo "      Ogg Vorbis                          :  $ogg"
-echo "      Ogg Speex                           :  $speex"
-echo "      MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg"
-echo "      MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod"
-echo "      Musepack                            :  $mpc"
-echo "      Monkey's Audio Codec                :  $mac"
-echo "      WavPack                             :  $wavpack"
-echo "      LAVC (AC3, AAC, WavPack, WMA, etc.) :  $lavc"
-echo
-echo "  Encoding support:"
-echo "      sndfile (WAV)                       :  $sndfile"
-echo "      Free Lossless Audio Codec (FLAC)    :  $flac"
-echo "      Ogg Vorbis                          :  $vorbisenc"
-echo "      LAME (MP3)                          :  $lame"
-echo
-echo "  Output driver support:"
-echo "      sndio Audio                         :  $sndio"
-echo "      OSS Audio                           :  $oss"
-echo "      ALSA Audio                          :  $alsa"
-echo "      JACK Audio Server                   :  $jack"
-echo "      PulseAudio                          :  $pulse"
-echo "      Win32 Sound API                     :  $win32"
-echo
-echo "----------------------------------------------------------------------"
+AC_MSG_NOTICE([summary
+---------------------------------------------------------------------------
+
+  Build type / target platform            :  $buildtype / $platform
+
+  Optional features:
+      LADSPA plugin support               :  $ladspa
+      CDDA (Audio CD) support             :  $cdda
+      CDDB support                        :  $cddb
+      Sample Rate Converter support       :  $src
+      iRiver iFP driver support           :  $ifp
+      Loop playback support               :  $loop
+      Systray support                     :  $systray
+      Podcast support                     :  $podcast
+      Lua extension support               :  $lua
+
+  Decoding support:
+      sndfile (WAV, AIFF, AU, etc.)       :  $sndfile
+      Free Lossless Audio Codec (FLAC)    :  $flac
+      Ogg Vorbis                          :  $ogg
+      Ogg Speex                           :  $speex
+      MPEG Audio (MPEG 1-2.5 Layer I-III) :  $mpeg
+      MOD Audio (MOD, S3M, XM, IT, etc.)  :  $mod
+      Musepack                            :  $mpc
+      Monkey's Audio Codec                :  $mac
+      WavPack                             :  $wavpack
+      LAVC (AC3, AAC, WavPack, WMA, etc.) :  $lavc
+
+  Encoding support:
+      sndfile (WAV)                       :  $sndfile
+      Free Lossless Audio Codec (FLAC)    :  $flac
+      Ogg Vorbis                          :  $vorbisenc
+      LAME (MP3)                          :  $lame
+
+  Output driver support:
+      sndio Audio                         :  $sndio
+      OSS Audio                           :  $oss
+      ALSA Audio                          :  $alsa
+      JACK Audio Server                   :  $jack
+      PulseAudio                          :  $pulse
+      Win32 Sound API                     :  $win32
+
+---------------------------------------------------------------------------])
 AC_OUTPUT

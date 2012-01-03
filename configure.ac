@@ -163,6 +163,16 @@ AC_MSG_RESULT([$enable_podcast])
 AS_IF([test "x$enable_podcast" = 'xyes'],
     [AC_DEFINE([HAVE_PODCAST], [1], [Define to build with podcast support])])
 
+AC_MSG_CHECKING([for systray support])
+AC_ARG_ENABLE([systray],
+    [AS_HELP_STRING([--disable-systray], [compile without systray support])],
+    [], [enable_systray='yes'])
+AS_IF([test "x$enable_systray" = 'xyes'],
+    [PKG_CHECK_EXISTS([gtk+-2.0 >= 2.10],
+        [AC_DEFINE([HAVE_SYSTRAY], [1], [Define to build with GTK+ systray])],
+        [enable_systray='no (GTK+ too old)'])])
+AC_MSG_RESULT([$enable_systray])
+
 
 #
 # Output Driver Library Options
@@ -832,33 +842,6 @@ fi
 #
 # Miscellaneous Library Options
 #
-AC_MSG_CHECKING(for Systray support)
-AC_ARG_WITH(
-	systray,
-	[  --with-systray=yes,no   compile with Systray support (default: yes)],
-	systray="$withval",
-	systray="detect")
-if test "$systray" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_MSG_CHECKING(whether GTK+ version >= 2.10)
-	if pkg-config --exists 'gtk+-2.0 >= 2.10'; then
-	        AC_MSG_RESULT(yes)
-		AC_DEFINE([HAVE_SYSTRAY], [1], [Defined if version(GTK+-2.0) >= 2.10])
-		lib="yes"
-	else
-		AC_MSG_RESULT(no)
-		lib="no"
-	fi
-
-	if test "$lib" = "no" -a "$systray" = "yes"; then
-		AC_MSG_ERROR(You need GTK+ version 2.10 or higher for systray support.)
-	fi
-	if test "$systray" = "detect"; then
-	        systray=$lib
-	fi
-fi
-
 AC_MSG_CHECKING(for Lua support)
 AC_ARG_WITH(
 	lua,
@@ -908,7 +891,7 @@ AC_MSG_NOTICE([summary
       Sample Rate Converter support       :  $with_src
       iRiver iFP driver support           :  $ifp
       Loop playback support               :  $enable_loop
-      Systray support                     :  $systray
+      Systray support                     :  $enable_systray
       Podcast support                     :  $enable_podcast
       Lua extension support               :  $lua
 

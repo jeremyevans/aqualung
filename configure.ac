@@ -282,11 +282,9 @@ AQUALUNG_DETECT([mpeg], [MPEG Audio],
         [AQUALUNG_MISSING([mpeg], [$mad_PKG_ERRORS])])])
 
 AQUALUNG_DETECT([sndfile], [sndfile (WAV, AIFF, etc.)], [
-    PKG_CHECK_MODULES([sndfile], [sndfile],
+    PKG_CHECK_MODULES([sndfile], [sndfile >= 1.0.17],
         [AQUALUNG_FOUND([sndfile])],
         [AQUALUNG_MISSING([sndfile], [$sndfile_PKG_ERRORS])])
-    PKG_CHECK_EXISTS([sndfile >= 1.0.12],
-        [AC_DEFINE([HAVE_SNDFILE_1_0_12], [1], [Defined if sndfile >= 1.0.12])])
     PKG_CHECK_EXISTS([sndfile >= 1.0.18],
         [AC_DEFINE([HAVE_SNDFILE_1_0_18], [1], [Defined if sndfile >= 1.0.18])])
 ])

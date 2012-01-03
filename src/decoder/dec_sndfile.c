@@ -85,14 +85,12 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_BADLIB;
 	}
 
-#ifdef HAVE_SNDFILE_1_0_12
 	/* XXX don't use the FLAC decoder in sndfile, seeking seems to be buggy */
 	/* the native FLAC decoder will catch the file instead. */
 	if ((pd->sf_info.format & SF_FORMAT_TYPEMASK) == SF_FORMAT_FLAC) {
 		sf_close(pd->sf);
 		return DECODER_OPEN_BADLIB;
 	}
-#endif /* HAVE_SNDFILE_1_0_12 */
 
 #ifdef HAVE_SNDFILE_1_0_18
 	/* XXX don't use the Ogg decoder in sndfile. */
@@ -170,10 +168,9 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 		strcpy(dec->format_str, "Sonic Foundry 64 bit RIFF/WAV");
 		break;
 	case SF_FORMAT_MAT4:
-		strcpy(dec->format_str, "Matlab (tm) V4.2 / GNU Octave 2.0");
+	case SF_FORMAT_MAT5:
+		strcpy(dec->format_str, "Matlab (tm) / GNU Octave");
 		break;
-#ifdef HAVE_SNDFILE_1_0_12
-    /* version(libsndfile) >= 1.0.12 */
 	case SF_FORMAT_PVF:
 		strcpy(dec->format_str, "Portable Voice Format");
 		break;
@@ -201,7 +198,14 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 	case SF_FORMAT_CAF:
 		strcpy(dec->format_str, "Core Audio File");
 		break;
-#endif /* HAVE_SNDFILE_1_0_12 */
+#ifdef HAVE_SNDFILE_1_0_18
+	case SF_FORMAT_MPC2K:
+		strcpy(dec->format_str, "Akai MPC 2000 Sample");
+		break;
+	case SF_FORMAT_RF64:
+		strcpy(dec->format_str, "RF64 WAV");
+		break;
+#endif /* HAVE_SNDFILE_1_0_18 */
 	}
 
 	switch (pd->sf_info.format & SF_FORMAT_SUBMASK) {

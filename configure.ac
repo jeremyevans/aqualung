@@ -78,6 +78,12 @@ dnl Convenience macros for expressing common autoconf idioms used below.
 dnl (These macro definitions themselves do not directly add code to the
 dnl configure script.)
 dnl
+dnl AQUALUNG_FOUND(package, [package_LIBS-value])
+dnl -----------------------------------------------------------------------
+AC_DEFUN([AQUALUNG_FOUND], [
+    AS_VAR_IF([with_$1], [detect], [with_$1='yes (found)'])
+    m4_ifnblank([$2], [AC_SUBST([$1_LIBS], ['$2'])])
+])dnl
 dnl AQUALUNG_MISSING(package, error-description)
 dnl -----------------------------------------------------------------------
 AC_DEFUN([AQUALUNG_MISSING],
@@ -155,7 +161,7 @@ AC_ARG_WITH([alsa],
 AS_IF([test "x$with_alsa" != 'xno'], [
     AC_MSG_NOTICE([ALSA Support])
     PKG_CHECK_MODULES([alsa], [alsa],
-        [AS_IF([test "x$with_alsa" = 'xdetect'], [with_alsa='yes (found)'])],
+        [AQUALUNG_FOUND([alsa])],
         [AQUALUNG_MISSING([alsa], [ALSA support requires libasound])])
     AS_CASE([$with_alsa],
         [detect], [with_alsa='not found'],
@@ -170,10 +176,7 @@ AC_ARG_WITH([jack],
 AS_IF([test "x$with_jack" != 'xno'], [
     AC_MSG_NOTICE([JACK Support])
     AC_CHECK_LIB([jack], [jack_on_info_shutdown],
-        [
-            AS_IF([test "x$with_jack" = 'xdetect'], [with_jack='yes (found)'])
-            AC_SUBST([jack_LIBS], [-ljack])
-        ],
+        [AQUALUNG_FOUND([jack], [-ljack])],
         [AQUALUNG_MISSING([jack], [JACK support requires libjack])])
     AS_CASE([$with_jack],
         [detect], [with_jack='not found'],
@@ -212,7 +215,7 @@ AC_ARG_WITH([pulse],
 AS_IF([test "x$with_pulse" != 'xno'], [
     AC_MSG_NOTICE([PulseAudio Support])
     PKG_CHECK_MODULES([pulse], [libpulse-simple],
-        [AS_IF([test "x$with_pulse" = 'xdetect'], [with_pulse='yes (found)'])],
+        [AQUALUNG_FOUND([pulse])],
         [AQUALUNG_MISSING([pulse], [$pulse_PKG_ERRORS])])
     AS_CASE([$with_pulse],
         [detect], [with_pulse='not found'],
@@ -227,10 +230,7 @@ AC_ARG_WITH([sndio],
 AS_IF([test "x$with_sndio" != 'xno'], [
     AC_MSG_NOTICE([sndio Support])
     AC_CHECK_LIB([sndio], [sio_open],
-        [
-            AS_IF([test "x$with_sndio" = 'xdetect'], [with_sndio='yes (found)'])
-            AC_SUBST([sndio_LIBS], [-lsndio])
-        ],
+        [AQUALUNG_FOUND([sndio], [-lsndio])],
         [AQUALUNG_MISSING([sndio], [sndio support requires libsndio])])
     AS_CASE([$with_sndio],
         [detect], [with_sndio='not found'],
@@ -253,11 +253,7 @@ AS_IF([test "x$with_winmm" != 'xno'], [
     ])
     AS_CASE([$with_winmm], [yes|detect],
         [AC_CHECK_HEADER([mmsystem.h],
-            [
-                AS_IF([test "x$with_winmm" = 'xdetect'],
-                    [with_winmm='yes (found)'])
-                AC_SUBST([winmm_LIBS], [-lwinmm])
-            ],
+            [AQUALUNG_FOUND([winmm], [-lwinmm])],
             [AQUALUNG_MISSING([winmm], [WinMM support requires mmsystem.h])],
             [[#include <windows.h>]])])
     AS_CASE([$with_winmm],
@@ -277,7 +273,7 @@ AC_ARG_WITH([flac],
 AS_IF([test "x$with_flac" != 'xno'], [
     AC_MSG_NOTICE([Free Lossless Audio Codec Support])
     PKG_CHECK_MODULES([flac], [flac],
-        [AS_IF([test "x$with_flac" = 'xdetect'], [with_flac='yes (found)'])],
+        [AQUALUNG_FOUND([flac])],
         [AQUALUNG_MISSING([flac], [$flac_PKG_ERRORS])])
     AS_CASE([$with_flac],
         [detect], [with_flac='not found'],
@@ -292,10 +288,7 @@ AC_ARG_WITH([lame],
 AS_IF([test "x$with_lame" != 'xno'], [
     AC_MSG_NOTICE([LAME MP3 Encoding Support])
     AC_CHECK_LIB([mp3lame], [lame_init],
-        [
-            AS_IF([test "x$with_lame" = 'xdetect'], [with_lame='yes (found)'])
-            AC_SUBST([lame_LIBS], [-lmp3lame])
-        ],
+        [AQUALUNG_FOUND([lame], [-lmp3lame])],
         [AQUALUNG_MISSING([lame], [LAME support requires libmp3lame])])
     AS_CASE([$with_lame],
         [detect], [with_lame='not found'],
@@ -310,7 +303,7 @@ AC_ARG_WITH([lavc],
 AS_IF([test "x$with_lavc" != 'xno'], [
     AC_MSG_NOTICE([Libav / FFmpeg Support])
     PKG_CHECK_MODULES([lavc], [libavcodec libavformat],
-        [AS_IF([test "x$with_lavc" = 'xdetect'], [with_lavc='yes (found)'])],
+        [AQUALUNG_FOUND([lavc])],
         [AQUALUNG_MISSING([lavc], [$lavc_PKG_ERRORS])])
     AS_CASE([$with_lavc],
         [detect], [with_lavc='not found'],
@@ -325,10 +318,7 @@ AC_ARG_WITH([mac],
 AS_IF([test "x$with_mac" != 'xno'], [
     AC_MSG_NOTICE([Monkey's Audio Codec Support])
     AC_CHECK_LIB([mac], [CreateIAPEDecompress],
-        [
-            AS_IF([test "x$with_mac" = 'xdetect'], [with_mac='yes (found)'])
-            AC_SUBST([mac_LIBS], ['-lmac -lstdc++'])
-        ],
+        [AQUALUNG_FOUND([mac], [-lmac -lstdc++])],
         [AQUALUNG_MISSING([mac],
             [Monkey's Audio Codec support requires libmac])],
         [-lstdc++])
@@ -345,7 +335,7 @@ AC_ARG_WITH([mod],
 AS_IF([test "x$with_mod" != 'xno'], [
     AC_MSG_NOTICE([MOD Audio Support])
     PKG_CHECK_MODULES([mod], [libmodplug >= 0.8.4],
-        [AS_IF([test "x$with_mod" = 'xdetect'], [with_mod='yes (found)'])],
+        [AQUALUNG_FOUND([mod])],
         [AQUALUNG_MISSING([mod], [$mod_PKG_ERRORS])])
     AS_CASE([$with_mod],
         [detect], [with_mod='not found'],
@@ -360,14 +350,10 @@ AC_ARG_WITH([mpc],
 AS_IF([test "x$with_mpc" != 'xno'], [
     AC_MSG_NOTICE([Musepack Support])
     AC_CHECK_LIB([mpcdec], [mpc_demux_init],
-        [
-            AS_IF([test "x$with_mpc" = 'xdetect'], [with_mpc='yes (found)'])
-            AC_SUBST([mpc_LIBS], ['-lmpcdec'])
-        ],
+        [AQUALUNG_FOUND([mpc], [-lmpcdec])],
         [AC_CHECK_LIB([mpcdec], [mpc_streaminfo_init],
             [
-                AS_IF([test "x$with_mpc" = 'xdetect'], [with_mpc='yes (found)'])
-                AC_SUBST([mpc_LIBS], ['-lmpcdec'])
+                AQUALUNG_FOUND([mpc], [-lmpcdec])
                 AC_DEFINE([MPC_OLD_API], [1],
                     [Defined if old Musepack API is used])
             ],
@@ -385,7 +371,7 @@ AC_ARG_WITH([mpeg],
 AS_IF([test "x$with_mpeg" != 'xno'], [
     AC_MSG_NOTICE([MPEG Audio Support])
     PKG_CHECK_MODULES([mad], [mad],
-        [AS_IF([test "x$with_mpeg" = 'xdetect'], [with_mpeg='yes (found)'])],
+        [AQUALUNG_FOUND([mpeg])],
         [AQUALUNG_MISSING([mpeg], [$mad_PKG_ERRORS])])
     AS_CASE([$with_mpeg],
         [detect], [with_mpeg='not found'],
@@ -400,8 +386,7 @@ AC_ARG_WITH([sndfile],
 AS_IF([test "x$with_sndfile" != 'xno'], [
     AC_MSG_NOTICE([sndfile (WAV, AIFF, etc.) Support])
     PKG_CHECK_MODULES([sndfile], [sndfile],
-        [AS_IF([test "x$with_sndfile" = 'xdetect'],
-            [with_sndfile='yes (found)'])],
+        [AQUALUNG_FOUND([sndfile])],
         [AQUALUNG_MISSING([sndfile], [$sndfile_PKG_ERRORS])])
     PKG_CHECK_EXISTS([sndfile >= 1.0.12],
         [AC_DEFINE([HAVE_SNDFILE_1_0_12], [1], [Defined if sndfile >= 1.0.12])])
@@ -420,7 +405,7 @@ AC_ARG_WITH([speex],
 AS_IF([test "x$with_speex" != 'xno'], [
     AC_MSG_NOTICE([Ogg Speex Support])
     PKG_CHECK_MODULES([speex], [oggz speex],
-        [AS_IF([test "x$with_speex" = 'xdetect'], [with_speex='yes (found)'])],
+        [AQUALUNG_FOUND([speex])],
         [AQUALUNG_MISSING([speex], [$speex_PKG_ERRORS])])
     AS_CASE([$with_speex],
         [detect], [with_speex='not found'],
@@ -435,8 +420,7 @@ AC_ARG_WITH([vorbis],
 AS_IF([test "x$with_vorbis" != 'xno'], [
     AC_MSG_NOTICE([Ogg Vorbis Support])
     PKG_CHECK_MODULES([vorbis], [vorbis vorbisfile],
-        [AS_IF([test "x$with_vorbis" = 'xdetect'],
-            [with_vorbis='yes (found)'])],
+        [AQUALUNG_FOUND([vorbis])],
         [AQUALUNG_MISSING([vorbis], [$vorbis_PKG_ERRORS])])
     AS_CASE([$with_vorbis],
         [detect], [with_vorbis='not found'],
@@ -451,8 +435,7 @@ AC_ARG_WITH([vorbisenc],
 AS_IF([test "x$with_vorbisenc" != 'xno'], [
     AC_MSG_NOTICE([Ogg Vorbis Encoding Support])
     PKG_CHECK_MODULES([vorbisenc], [vorbisenc],
-        [AS_IF([test "x$with_vorbisenc" = 'xdetect'],
-            [with_vorbisenc='yes (found)'])],
+        [AQUALUNG_FOUND([vorbisenc])],
         [AQUALUNG_MISSING([vorbisenc], [$vorbisenc_PKG_ERRORS])])
     AS_CASE([$with_vorbisenc],
         [detect], [with_vorbisenc='not found'],
@@ -467,8 +450,7 @@ AC_ARG_WITH([wavpack],
 AS_IF([test "x$with_wavpack" != 'xno'], [
     AC_MSG_NOTICE([WavPack Support])
     PKG_CHECK_MODULES([wavpack], [wavpack >= 4.40.0],
-        [AS_IF([test "x$with_wavpack" = 'xdetect'],
-            [with_wavpack='yes (found)'])],
+        [AQUALUNG_FOUND([wavpack])],
         [AQUALUNG_MISSING([wavpack], [$wavpack_PKG_ERRORS])])
     AS_CASE([$with_wavpack],
         [detect], [with_wavpack='not found'],
@@ -487,8 +469,7 @@ AC_ARG_WITH([ladspa],
 AS_IF([test "x$with_ladspa" != 'xno'], [
     AC_MSG_NOTICE([LADSPA Plugin Support])
     PKG_CHECK_MODULES([lrdf], [lrdf >= 0.4.0],
-        [AS_IF([test "x$with_ladspa" = 'xdetect'],
-            [with_ladspa='yes (found)'])],
+        [AQUALUNG_FOUND([ladspa])],
         [AQUALUNG_MISSING([ladspa],
             [LADSPA support requires liblrdf >= 0.4.0])])
     AS_CASE([$with_ladspa], [yes*],
@@ -511,7 +492,7 @@ AC_ARG_WITH([src],
 AS_IF([test "x$with_src" != 'xno'], [
     AC_MSG_NOTICE([Sample Rate Converter Support])
     PKG_CHECK_MODULES([src], [samplerate],
-        [AS_IF([test "x$with_src" = 'xdetect'], [with_src='yes (found)'])],
+        [AQUALUNG_FOUND([src])],
         [AQUALUNG_MISSING([src], [$src_PKG_ERRORS])])
     AS_CASE([$with_src],
         [detect], [with_src='not found'],
@@ -530,7 +511,7 @@ AC_ARG_WITH([cdda],
 AS_IF([test "x$with_cdda" != 'xno'], [
     AC_MSG_NOTICE([Compact Disc Digital Audio Support])
     PKG_CHECK_MODULES([cdio], [libcdio libcdio_paranoia >= 0.76],
-        [AS_IF([test "x$with_cdda" = 'xdetect'], [with_cdda='yes (found)'])],
+        [AQUALUNG_FOUND([cdda])],
         [AQUALUNG_MISSING([cdda], [$cdio_PKG_ERRORS])])
     AS_CASE([$with_cdda],
         [detect], [with_cdda='not found'],
@@ -546,10 +527,7 @@ AS_IF([test "x$with_ifp" != 'xno'], [
     AC_MSG_NOTICE([iRiver iFP Support])
     AC_CHECK_LIB([usb], [usb_init],
         [AC_CHECK_LIB([ifp], [ifp_find_device],
-            [
-                AS_IF([test "x$with_ifp" = 'xdetect'], [with_ifp='yes (found)'])
-                AC_SUBST([ifp_LIBS], ['-lusb -lifp'])
-            ],
+            [AQUALUNG_FOUND([ifp], [-lusb -lifp])],
             [AQUALUNG_MISSING([ifp], [iRiver iFP support requires libifp])])],
         [AQUALUNG_MISSING([ifp], [iRiver iFP support requires libusb])])
     AS_CASE([$with_ifp],
@@ -569,7 +547,7 @@ AC_ARG_WITH([cddb],
 AS_IF([test "x$with_cddb" != 'xno'], [
     AC_MSG_NOTICE([Compact Disc Database Support])
     PKG_CHECK_MODULES([cddb], [libcddb >= 1.2.1],
-        [AS_IF([test "x$with_cddb" = 'xdetect'], [with_cddb='yes (found)'])],
+        [AQUALUNG_FOUND([cddb])],
         [AQUALUNG_MISSING([cddb], [$cddb_PKG_ERRORS])])
     AC_CHECK_LIB([cddb], [cddb_disc_get_revision],
         [AC_DEFINE([LIBCDDB_REVISION], [1],
@@ -587,9 +565,9 @@ AC_ARG_WITH([lua],
 AS_IF([test "x$with_lua" != 'xno'], [
     AC_MSG_NOTICE([Lua Extension Support])
     PKG_CHECK_MODULES([lua], [lua5.1],
-        [AS_IF([test "x$with_lua" = 'xdetect'], [with_lua='yes (found)'])],
+        [AQUALUNG_FOUND([lua])],
         [PKG_CHECK_MODULES([lua], [lua >= 5.1],
-            [AS_IF([test "x$with_lua" = 'xdetect'], [with_lua='yes (found)'])],
+            [AQUALUNG_FOUND([lua])],
             [AQUALUNG_MISSING([lua], [$lua_PKG_ERRORS])])])
     AS_CASE([$with_lua],
         [detect], [with_lua='not found'],

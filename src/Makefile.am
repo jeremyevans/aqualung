@@ -18,7 +18,7 @@ aqualung_LDADD = decoder/libdecoder.a encoder/libencoder.a \
                  $(alsa_LIBS) $(jack_LIBS) $(oss_LIBS) $(pulse_LIBS) \
                  $(sndio_LIBS) $(winmm_LIBS) \
                  $(lrdf_LIBS) $(src_LIBS) \
-                 $(cdio_LIBS)
+                 $(cdio_LIBS) $(ifp_LIBS)
 
 aqualung_SOURCES = \
 about.h about.c \

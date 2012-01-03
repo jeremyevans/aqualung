@@ -760,6 +760,27 @@ AS_IF([test "x$with_cdda" != 'xno'], [
                     [Define to build with CDDA support])])
 ])
 
+AC_ARG_WITH([ifp],
+    [AS_HELP_STRING([--with-ifp],
+        [compile with iRiver iFP support (default: detect)])],
+    [], [with_ifp='detect'])
+AS_IF([test "x$with_ifp" != 'xno'], [
+    AC_MSG_NOTICE([iRiver iFP Support])
+    AC_CHECK_LIB([usb], [usb_init],
+        [AC_CHECK_LIB([ifp], [ifp_find_device],
+            [
+                AS_IF([test "x$with_ifp" = 'xdetect'], [with_ifp='yes (found)'])
+                AC_SUBST([ifp_LIBS], ['-lusb -lifp'])
+            ],
+            [AS_IF([test "x$with_ifp" = 'xyes'],
+                [AC_MSG_ERROR([iRiver iFP support requires libifp])])])],
+        [AS_IF([test "x$with_ifp" = 'xyes'],
+            [AC_MSG_ERROR([iRiver iFP support requires libusb])])])
+    AS_CASE([$with_ifp],
+        [detect], [with_ifp='not found'],
+        [yes*], [AC_DEFINE([HAVE_IFP], [1],
+                    [Define to build with iRiver iFP support])])
+])
 
 AC_MSG_CHECKING(for CDDB support)
 AC_ARG_WITH(
@@ -792,32 +813,6 @@ else
 	if test "$cddb" = "detect"; then
 		cddb=$lib
 	fi
-fi
-
-
-AC_MSG_CHECKING(for iRiver iFP support)
-AC_ARG_WITH(
-	ifp,
-	[  --with-ifp=yes,no       compile with iRiver iFP driver support (default: yes)],
-	ifp="$withval",
-	ifp="detect")
-if test "$ifp" = "no"; then
-	AC_MSG_RESULT(no)
-else
-	AC_CHECK_LIB(usb, usb_init, [lib=yes], [lib=no])
-	if test "$lib" = "yes"; then
-        AC_CHECK_LIB(ifp, ifp_find_device, [lib=yes], [lib=no])
-        if test "$lib" = "yes"; then
-            ifp_LIBS="-lifp -lusb"
-            AC_DEFINE([HAVE_IFP], [1], [Defined if compile with iRiver iFP driver support])
-        fi
-        if test "$lib" = "no" -a "$ifp" = "yes"; then
-            AC_MSG_ERROR(You do not appear to have the iFP driver library installed. Grab it from http://ifp-driver.sourceforge.net/)
-        fi
-	fi
-    if test "$ifp" = "detect"; then
-            ifp=$lib
-    fi
 fi
 
 
@@ -857,7 +852,7 @@ fi
 # Compiler and linker variables
 CFLAGS="-Wall $CFLAGS $PLATFORM_CFLAGS"
 CXXFLAGS="-Wall $CXXFLAGS $PLATFORM_CFLAGS"
-LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cddb_LIBS $ifp_LIBS $lua_LIBS"
+LIBS="$LIBS $sndfile_LIBS $flac_LIBS $ogg_LIBS $wavpack_LIBS $speex_LIBS $mad_LIBS $mod_LIBS $mpc_LIBS $mac_LIBS $lavc_LIBS $vorbisenc_LIBS $lame_LIBS $cddb_LIBS $lua_LIBS"
 
 
 AC_MSG_NOTICE([summary
@@ -870,7 +865,7 @@ AC_MSG_NOTICE([summary
       CDDA (Audio CD) support             :  $with_cdda
       CDDB support                        :  $cddb
       Sample Rate Converter support       :  $with_src
-      iRiver iFP driver support           :  $ifp
+      iRiver iFP driver support           :  $with_ifp
       Loop playback support               :  $enable_loop
       Systray support                     :  $enable_systray
       Podcast support                     :  $enable_podcast

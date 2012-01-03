@@ -105,6 +105,9 @@ m4_ifndef([AM_GNU_GETTEXT],
     [m4_fatal([GNU gettext is required to prepare the Aqualung build])])
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.17])
+m4_ifndef([PKG_PROG_PKG_CONFIG],
+    [m4_fatal([pkg-config is required to prepare the Aqualung build])])
+PKG_PROG_PKG_CONFIG
 
 
 # Checks for header files.
@@ -120,13 +123,6 @@ AC_TYPE_SIZE_T
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([floor memset mkdir strdup strrchr strstr strndup strcasestr])
-
-
-
-AC_CHECK_PROG([var], [pkg-config], [yes], [no])
-if test ! "$var" = "yes"; then
-	AC_MSG_ERROR(You do not appear to have pkg-config installed)
-fi
 
 
 

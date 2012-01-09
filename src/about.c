@@ -171,7 +171,9 @@ create_about_window() {
 	gtk_text_buffer_insert_at_cursor(buffer, _("Programming, GUI engineering:\n"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\tTomasz Maka <pasp@users.sourceforge.net>\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("OpenBSD compatibility, metadata tweaks:\n"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tJeremy Evans <code@jeremyevans.net>\n\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tJeremy Evans <code@jeremyevans.net>\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, _("Miscellaneous, minimalism:\n"), -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tJamie Heilman <jamie@audible.transient.net>\n\n\n", -1);
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Translators:"), -1, tag, NULL);

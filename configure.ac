@@ -143,13 +143,12 @@ AS_IF([test "x$buildtype" = 'xrelease'],
         AC_DEFINE([DEBUG_BUILD], [1], [Define if doing a debug build])
     ])
 
-AC_MSG_CHECKING([for loop playback support])
 AC_ARG_ENABLE([loop],
     [AS_HELP_STRING([--disable-loop], [compile without loop playback support])],
     [], [enable_loop='yes'])
-AC_MSG_RESULT([$enable_loop])
 AS_IF([test "x$enable_loop" = 'xyes'],
     [AC_DEFINE([HAVE_LOOP], [1], [Define to build with loop playback support])])
+AM_CONDITIONAL([HAVE_LOOP], [test "x$enable_loop" = 'xyes'])
 
 AC_ARG_ENABLE([podcast],
     [AS_HELP_STRING([--disable-podcast], [compile without podcast support])],

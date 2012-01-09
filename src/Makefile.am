@@ -41,7 +41,6 @@ file_info.h file_info.c \
 gui_main.h gui_main.c \
 httpc.h httpc.c \
 i18n.h \
-loop_bar.h loop_bar.c \
 metadata.h metadata.c \
 metadata_api.h metadata_api.c \
 metadata_ape.h metadata_ape.c \
@@ -82,6 +81,10 @@ endif
 
 if HAVE_LADSPA
 aqualung_SOURCES += plugin.h plugin.c
+endif
+
+if HAVE_LOOP
+aqualung_SOURCES += loop_bar.h loop_bar.c
 endif
 
 if HAVE_PODCAST

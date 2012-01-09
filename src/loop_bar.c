@@ -20,8 +20,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_LOOP
-
 #include <gtk/gtk.h>
 
 #include "loop_bar.h"
@@ -455,7 +453,6 @@ aqualung_loop_bar_adjust_end(AqualungLoopBar * bar, float end) {
 	}
 }
 
-#endif /* HAVE_LOOP */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

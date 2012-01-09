@@ -23,8 +23,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_LOOP
-
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS
@@ -60,7 +58,6 @@ void aqualung_loop_bar_adjust_end(AqualungLoopBar * bar, float end);
 
 G_END_DECLS
 
-#endif /* HAVE_LOOP */
 
 #endif /* _LOOP_BAR_H */
 

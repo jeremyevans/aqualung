@@ -73,7 +73,9 @@
 #include "cdda.h"
 #include "store_cdda.h"
 #endif /* HAVE_CDDA */
+#ifdef HAVE_LOOP
 #include "loop_bar.h"
+#endif /* HAVE_LOOP */
 #include "httpc.h"
 #include "metadata.h"
 #include "gui_main.h"

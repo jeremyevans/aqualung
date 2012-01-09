@@ -46,7 +46,10 @@
 #include "store_cdda.h"
 #endif /* HAVE_CDDA */
 #include "store_file.h"
+#ifdef HAVE_PODCAST
 #include "store_podcast.h"
+#endif /* HAVE_PODCAST */
+
 
 extern options_t options;
 

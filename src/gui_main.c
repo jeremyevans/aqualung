@@ -63,7 +63,9 @@
 #include "ports.h"
 #include "music_browser.h"
 #include "store_file.h"
+#ifdef HAVE_PODCAST
 #include "store_podcast.h"
+#endif /* HAVE_PODCAST */
 #include "playlist.h"
 #include "file_info.h"
 #include "i18n.h"

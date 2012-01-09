@@ -23,9 +23,8 @@
 
 #include <config.h>
 
-#ifdef HAVE_PODCAST
-
 #include <glib.h>
+
 
 typedef struct {
 
@@ -86,6 +85,5 @@ void podcast_item_free(podcast_item_t * item);
 
 void podcast_update(podcast_t * podcast);
 
-#endif /* HAVE_PODCAST */
 
 #endif /* _PODCAST_H */

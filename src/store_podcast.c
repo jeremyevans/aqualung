@@ -21,8 +21,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_PODCAST
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -2149,6 +2147,5 @@ store_podcast_load(void) {
 	xmlFreeDoc(doc);
 }
 
-#endif /* HAVE_PODCAST */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

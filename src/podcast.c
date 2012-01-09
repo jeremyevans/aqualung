@@ -20,8 +20,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_PODCAST
-
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,6 +44,7 @@
 #include "httpc.h"
 #include "store_podcast.h"
 #include "podcast.h"
+
 
 #define BUFSIZE 10240
 
@@ -883,4 +882,3 @@ podcast_update(podcast_t * podcast) {
 	}
 }
 
-#endif /* HAVE_PODCAST */

@@ -151,13 +151,12 @@ AC_MSG_RESULT([$enable_loop])
 AS_IF([test "x$enable_loop" = 'xyes'],
     [AC_DEFINE([HAVE_LOOP], [1], [Define to build with loop playback support])])
 
-AC_MSG_CHECKING([for podcast support])
 AC_ARG_ENABLE([podcast],
     [AS_HELP_STRING([--disable-podcast], [compile without podcast support])],
     [], [enable_podcast='yes'])
-AC_MSG_RESULT([$enable_podcast])
 AS_IF([test "x$enable_podcast" = 'xyes'],
     [AC_DEFINE([HAVE_PODCAST], [1], [Define to build with podcast support])])
+AM_CONDITIONAL([HAVE_PODCAST], [test "x$enable_podcast" = 'xyes'])
 
 AC_MSG_CHECKING([for systray support])
 AC_ARG_ENABLE([systray],

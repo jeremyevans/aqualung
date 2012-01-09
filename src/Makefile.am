@@ -52,7 +52,6 @@ metadata_ogg.h metadata_ogg.c \
 music_browser.h music_browser.c \
 options.h options.c \
 playlist.h playlist.c \
-podcast.h podcast.c \
 ports.h ports.c \
 rb.h rb.c \
 search.h search.c \
@@ -60,7 +59,6 @@ search_playlist.h search_playlist.c \
 segv.h segv.c \
 skin.h skin.c \
 store_file.h store_file.c \
-store_podcast.h store_podcast.c \
 transceiver.c transceiver.h \
 trashlist.c trashlist.h \
 utils.c utils.h \
@@ -84,4 +82,8 @@ endif
 
 if HAVE_LADSPA
 aqualung_SOURCES += plugin.h plugin.c
+endif
+
+if HAVE_PODCAST
+aqualung_SOURCES += podcast.h podcast.c store_podcast.h store_podcast.c
 endif

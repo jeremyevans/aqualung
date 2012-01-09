@@ -24,11 +24,10 @@
 
 #include <config.h>
 
-#ifdef HAVE_PODCAST
-
 #include <gtk/gtk.h>
 
 #include "podcast.h"
+
 
 int store_podcast_iter_is_track(GtkTreeIter * iter);
 void store_podcast_iter_addlist_defmode(GtkTreeIter * ms_iter, GtkTreeIter * pl_iter, int new_tab);
@@ -64,7 +63,6 @@ void store_podcast_remove_item(podcast_t * podcast, podcast_item_t * item);
 void store_podcast_save(void);
 void store_podcast_load(void);
 
-#endif /* HAVE_PODCAST */
 
 #endif /* _STORE_PODCAST_H */
 

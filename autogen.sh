@@ -4,7 +4,7 @@ echo "
 checking basic configuration tools ...
 "
 
-for tool in autoconf autoreconf automake
+for tool in autoconf autoreconf automake autopoint
 do
     echo -n "$tool ... "
     if command -v $tool >/dev/null 2>&1

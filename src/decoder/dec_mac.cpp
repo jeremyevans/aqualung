@@ -64,7 +64,7 @@ extern "C" {
 extern size_t sample_size;
 
 
-#define SAMPLES_PER_READ 2048
+#define BLOCKS_PER_READ 2048
 
 
 #define SWAP_16(x) ((((x)&0x00ff)<<8) | (((x)&0xff00)>>8))
@@ -78,20 +78,15 @@ decode_mac(decoder_t * dec) {
 	file_decoder_t * fdec = dec->fdec;
 	IAPEDecompress * pdecompress = (IAPEDecompress *)pd->decompress;
 
-        int blocks_to_read = SAMPLES_PER_READ;
-        int bytes = blocks_to_read * pd->block_align;
-	int act_read, act_bytes;
+	int act_read = 0;
 	unsigned long scale = 1 << (pd->bits_per_sample - 1);
-	float fbuf[2 * SAMPLES_PER_READ];
+	float fbuf[2 * BLOCKS_PER_READ];
 	int n = 0;
-
-	act_read = blocks_to_read;
-	act_bytes = bytes;
 
 	switch (pd->bits_per_sample) {
 	case 8:
-		char data8[2 * SAMPLES_PER_READ];
-		pdecompress->GetData(data8, blocks_to_read, &act_read);
+		char data8[2 * BLOCKS_PER_READ];
+		pdecompress->GetData(data8, BLOCKS_PER_READ, &act_read);
 		if (!act_read) {
 			return 1;
 		}
@@ -104,8 +99,8 @@ decode_mac(decoder_t * dec) {
 		break;
 
 	case 16:
-		short data16[2 * SAMPLES_PER_READ];
-		pdecompress->GetData((char *)data16, blocks_to_read, &act_read);
+		short data16[2 * BLOCKS_PER_READ];
+		pdecompress->GetData((char *)data16, BLOCKS_PER_READ, &act_read);
 		if (!act_read) {
 			return 1;
 		}
@@ -120,8 +115,8 @@ decode_mac(decoder_t * dec) {
 		break;
 
 	case 32:
-		int data32[2 * SAMPLES_PER_READ];
-		pdecompress->GetData((char *)data32, blocks_to_read, &act_read);
+		int data32[2 * BLOCKS_PER_READ];
+		pdecompress->GetData((char *)data32, BLOCKS_PER_READ, &act_read);
 		if (!act_read) {
 			return 1;
 		}

@@ -20,8 +20,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_CDDA
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -858,6 +856,5 @@ cdda_shutdown(void) {
 	cdda_scanner_stop();
 }
 
-#endif /* HAVE_CDDA */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

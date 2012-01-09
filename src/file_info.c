@@ -45,7 +45,9 @@
 #include "utils.h"
 #include "utils_gui.h"
 #include "core.h"
+#ifdef HAVE_CDDA
 #include "cdda.h"
+#endif /* HAVE_CDDA */
 #include "cover.h"
 #include "decoder/file_decoder.h"
 #include "music_browser.h"

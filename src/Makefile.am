@@ -33,9 +33,7 @@ aqualung_SOURCES = \
 about.h about.c \
 build_store.h build_store.c \
 common.h \
-cdda.h cdda.c \
 cddb_lookup.h cddb_lookup.c \
-cd_ripper.h cd_ripper.c \
 core.h core.c \
 cover.h cover.c \
 export.h export.c \
@@ -64,7 +62,6 @@ search.h search.c \
 search_playlist.h search_playlist.c \
 segv.h segv.c \
 skin.h skin.c \
-store_cdda.h store_cdda.c \
 store_file.h store_file.c \
 store_podcast.h store_podcast.c \
 transceiver.c transceiver.h \
@@ -74,3 +71,8 @@ utils_gui.c utils_gui.h \
 utils_xml.h utils_xml.c \
 version.h \
 volume.c volume.h
+
+if HAVE_CDDA
+aqualung_SOURCES += cdda.h cdda.c store_cdda.h store_cdda.c \
+                    cd_ripper.h cd_ripper.c
+endif

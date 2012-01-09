@@ -40,10 +40,12 @@
 #include "i18n.h"
 #include "options.h"
 #include "music_browser.h"
-#include "store_cdda.h"
 #include "store_file.h"
 #include "playlist.h"
+#ifdef HAVE_CDDA
 #include "cdda.h"
+#include "store_cdda.h"
+#endif /* HAVE_CDDA */
 #include "cddb_lookup.h"
 
 extern options_t options;

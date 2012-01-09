@@ -42,7 +42,9 @@
 #include "search.h"
 #include "i18n.h"
 #include "music_browser.h"
+#ifdef HAVE_CDDA
 #include "store_cdda.h"
+#endif /* HAVE_CDDA */
 #include "store_file.h"
 #include "store_podcast.h"
 

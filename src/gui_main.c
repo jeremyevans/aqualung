@@ -67,8 +67,10 @@
 #include "plugin.h"
 #include "file_info.h"
 #include "i18n.h"
+#ifdef HAVE_CDDA
 #include "cdda.h"
 #include "store_cdda.h"
+#endif /* HAVE_CDDA */
 #include "loop_bar.h"
 #include "httpc.h"
 #include "metadata.h"

@@ -85,11 +85,12 @@
 #include "gui_main.h"
 #include "plugin.h"
 #include "i18n.h"
-#include "cdda.h"
 #ifdef HAVE_CDDA
+#include "cdda.h"
 #include "decoder/dec_cdda.h"
 #endif /* HAVE_CDDA */
 #include "core.h"
+
 
 extern options_t options;
 

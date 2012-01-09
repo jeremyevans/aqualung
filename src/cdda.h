@@ -23,8 +23,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_CDDA
-
 #ifdef HAVE_CDDB
 #define _TMP_HAVE_CDDB 1
 #undef HAVE_CDDB
@@ -90,9 +88,6 @@ cdda_drive_t * cdda_get_drive_by_device_path(char * device_path);
 cdda_drive_t * cdda_get_drive_by_spec_device_path(char * device_path);
 
 
-#endif /* HAVE_CDDA */
-
 #endif /* _CDDA_H */
-
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

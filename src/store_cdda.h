@@ -23,8 +23,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_CDDA
-
 #include <gtk/gtk.h>
 
 #include "cdda.h"
@@ -51,9 +49,6 @@ typedef struct {
 } cdda_track_t;
 
 
-#endif /* HAVE_CDDA */
-
 #endif /* _STORE_CDDA_H */
-
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

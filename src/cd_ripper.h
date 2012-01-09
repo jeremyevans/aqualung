@@ -23,7 +23,9 @@
 
 #include <config.h>
 
-#if defined(HAVE_CDDA) && (defined(HAVE_SNDFILE) || defined(HAVE_FLAC) || defined(HAVE_VORBISENC) || defined(HAVE_LAME))
+#if defined(HAVE_SNDFILE) || defined(HAVE_FLAC) || defined(HAVE_LAME) || \
+    defined(HAVE_VORBISENC)
+
 #define HAVE_CD_RIPPER
 
 #include <gtk/gtk.h>
@@ -32,7 +34,7 @@
 
 void cd_ripper(cdda_drive_t * drive, GtkTreeIter * iter);
 
-#endif /* HAVE_CDDA && ... */
+#endif /* HAVE_SNDFILE || HAVE_FLAC || HAVE_LAME || HAVE_VORBISENC */
 
 #endif /* _CD_RIPPER_H */
 

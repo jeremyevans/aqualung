@@ -35,7 +35,9 @@
 #include "utils.h"
 #include "utils_gui.h"
 #include "build_store.h"
+#ifdef HAVE_CDDB
 #include "cddb_lookup.h"
+#endif /* HAVE_CDDB */
 #include "core.h"
 #include "cover.h"
 #include "file_info.h"

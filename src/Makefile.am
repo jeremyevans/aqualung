@@ -33,7 +33,6 @@ aqualung_SOURCES = \
 about.h about.c \
 build_store.h build_store.c \
 common.h \
-cddb_lookup.h cddb_lookup.c \
 core.h core.c \
 cover.h cover.c \
 export.h export.c \
@@ -74,6 +73,10 @@ volume.c volume.h
 if HAVE_CDDA
 aqualung_SOURCES += cdda.h cdda.c store_cdda.h store_cdda.c \
                     cd_ripper.h cd_ripper.c
+endif
+
+if HAVE_CDDB
+aqualung_SOURCES += cddb_lookup.h cddb_lookup.c
 endif
 
 if HAVE_IFP

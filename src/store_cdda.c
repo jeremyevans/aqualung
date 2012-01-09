@@ -52,7 +52,9 @@
 #include "utils_gui.h"
 #include "options.h"
 #include "music_browser.h"
+#ifdef HAVE_CDDB
 #include "cddb_lookup.h"
+#endif /* HAVE_CDDB */
 #include "playlist.h"
 #include "i18n.h"
 #include "cdda.h"

@@ -49,7 +49,9 @@
 #include "store_file.h"
 #include "metadata_api.h"
 #include "build_store.h"
+#ifdef HAVE_CDDB
 #include "cddb_lookup.h"
+#endif /* HAVE_CDDB */
 
 
 extern options_t options;

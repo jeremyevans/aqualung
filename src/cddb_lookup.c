@@ -20,8 +20,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_CDDB
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1474,7 +1472,6 @@ cddb_query_batch(int ntracks, int * frames, int length,
 	cddb_lookup_free(data);
 }
 
-#endif /* HAVE_CDDB */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

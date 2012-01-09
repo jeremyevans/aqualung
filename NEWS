@@ -12,6 +12,8 @@
         * configure --without-podcast is now configure --disable-podcast
         * configure --without-systray is now configure --disable-systray
         * configure's --with-ogg option was renamed to --with-vorbis
+        * JACK enabled builds may optionally be pruned of the port management
+          UI with configure --disable-jack-mgmt
     - Runtime
         * The disk IO thread is no longer high-priority by default on
           Win32 builds, pass the -D / --disk-realtime option to re-enable

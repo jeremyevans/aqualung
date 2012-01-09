@@ -22,10 +22,8 @@
 #ifndef _ports_h
 #define _ports_h
 
-
 #include <config.h>
 
-#ifdef HAVE_JACK
 
 #define MAX_JACK_CLIENTS 128
 
@@ -33,8 +31,6 @@
 void port_setup_dialog(void);
 void ports_clicked_close(GtkWidget * widget, gpointer * data);
 
-
-#endif /* HAVE_JACK */
 
 #endif /* _ports_h */
 

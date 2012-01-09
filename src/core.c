@@ -2318,7 +2318,14 @@ print_version(void) {
 	fprintf(stderr, V_NO);
 #endif /* HAVE_IFP */
 	fprintf(stderr, "iRiver iFP driver support\n");
-	
+
+#ifdef HAVE_JACK_MGMT
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_JACK_MGMT */
+	fprintf(stderr, "JACK port management support\n");
+
 #ifdef HAVE_LOOP
 	fprintf(stderr, V_YES);
 #else

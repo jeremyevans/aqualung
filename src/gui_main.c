@@ -60,7 +60,9 @@
 #include "about.h"
 #include "options.h"
 #include "skin.h"
+#ifdef HAVE_JACK_MGMT
 #include "ports.h"
+#endif /* HAVE_JACK_MGMT */
 #include "music_browser.h"
 #include "store_file.h"
 #ifdef HAVE_PODCAST
@@ -176,7 +178,6 @@ GtkWidget * main_window;
 
 extern GtkWidget * browser_window;
 extern GtkWidget * playlist_window;
-extern GtkWidget * ports_window;
 extern GtkWidget * vol_window;
 extern GtkWidget * browser_paned;
 
@@ -263,10 +264,13 @@ int custom_main_keybinding_expected = 0;
 GtkWidget * conf_menu;
 GtkWidget * conf__options;
 GtkWidget * conf__skin;
-GtkWidget * conf__jack;
 GtkWidget * conf__fileinfo;
 GtkWidget * conf__about;
 GtkWidget * conf__quit;
+#ifdef HAVE_JACK_MGMT
+extern GtkWidget * ports_window;
+GtkWidget * conf__jack;
+#endif /* HAVE_JACK_MGMT */
 
 GtkWidget * bigtimer_label;
 GtkWidget * smalltimer_label_1;
@@ -886,13 +890,13 @@ conf__skin_cb(gpointer data) {
 }
 
 
+#ifdef HAVE_JACK_MGMT
 void
 conf__jack_cb(gpointer data) {
 
-#ifdef HAVE_JACK
 	port_setup_dialog();
-#endif /* HAVE_JACK */
 }
+#endif /* HAVE_JACK_MGMT */
 
 
 void
@@ -2762,7 +2766,6 @@ create_main_window(char * skin_path) {
 
         conf__options = gtk_menu_item_new_with_label(_("Settings"));
         conf__skin = gtk_menu_item_new_with_label(_("Skin chooser"));
-        conf__jack = gtk_menu_item_new_with_label(_("JACK port setup"));
         if (!options.playlist_is_embedded) {
                 conf__fileinfo = gtk_menu_item_new_with_label(_("File info"));
 	}
@@ -2777,11 +2780,15 @@ create_main_window(char * skin_path) {
         gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__options);
         gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__skin);
 
-#ifdef HAVE_JACK
-        if (output == JACK_DRIVER) {
-                gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__jack);
-        }
-#endif /* HAVE_JACK */
+#ifdef HAVE_JACK_MGMT
+	if (output == JACK_DRIVER) {
+		conf__jack = gtk_menu_item_new_with_label(_("JACK port setup"));
+		gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__jack);
+		g_signal_connect_swapped(G_OBJECT(conf__jack), "activate",
+					 G_CALLBACK(conf__jack_cb), NULL);
+		gtk_widget_show(conf__jack);
+	}
+#endif /* HAVE_JACK_MGMT */
 
         if (!options.playlist_is_embedded) {
                 gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__fileinfo);
@@ -2793,8 +2800,6 @@ create_main_window(char * skin_path) {
 
         g_signal_connect_swapped(G_OBJECT(conf__options), "activate", G_CALLBACK(conf__options_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(conf__skin), "activate", G_CALLBACK(conf__skin_cb), NULL);
-        g_signal_connect_swapped(G_OBJECT(conf__jack), "activate", G_CALLBACK(conf__jack_cb), NULL);
-
         g_signal_connect_swapped(G_OBJECT(conf__about), "activate", G_CALLBACK(conf__about_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(conf__quit), "activate", G_CALLBACK(conf__quit_cb), NULL);
 
@@ -2808,7 +2813,6 @@ create_main_window(char * skin_path) {
         if (!options.disable_skin_support_settings) {
                 gtk_widget_show(conf__skin);
         }
-        gtk_widget_show(conf__jack);
         gtk_widget_show(conf__separator1);
         gtk_widget_show(conf__about);
         gtk_widget_show(conf__separator2);
@@ -4154,11 +4158,13 @@ timeout_callback(gpointer data) {
 			}
 			if (!jack_popup_beenthere) {
 				jack_shutdown_window();
+#ifdef HAVE_JACK_MGMT
 				if (ports_window) {
 					ports_clicked_close(NULL, NULL);
 				}
-				jack_client_close(jack_client);
 				gtk_widget_set_sensitive(conf__jack, FALSE);
+#endif /* HAVE_JACK_MGMT */
+				jack_client_close(jack_client);
 				jack_popup_beenthere = 1;
 			}
 		}

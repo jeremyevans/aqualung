@@ -143,6 +143,12 @@ AS_IF([test "x$buildtype" = 'xrelease'],
         AC_DEFINE([DEBUG_BUILD], [1], [Define if doing a debug build])
     ])
 
+AC_ARG_ENABLE([jack_mgmt],
+    [AS_HELP_STRING([--disable-jack-mgmt],
+        [compile without JACK port management support])],
+    [], [enable_jack_mgmt='yes'])
+# see JACK output driver check below
+
 AC_ARG_ENABLE([loop],
     [AS_HELP_STRING([--disable-loop], [compile without loop playback support])],
     [], [enable_loop='yes'])
@@ -180,6 +186,11 @@ AQUALUNG_DETECT([jack], [JACK],
     [AC_CHECK_LIB([jack], [jack_on_info_shutdown],
         [AQUALUNG_FOUND([jack], [-ljack])],
         [AQUALUNG_MISSING([jack], [JACK support requires libjack])])])
+AS_CASE([$enable_jack_mgmt/$with_jack],
+    [yes/yes*], [AC_DEFINE([HAVE_JACK_MGMT], [1],
+                    [Define to build with JACK port management support])],
+    [enable_jack_mgmt='no'])
+AM_CONDITIONAL([HAVE_JACK_MGMT], [test "x$enable_jack_mgmt" = 'xyes'])
 
 AC_ARG_WITH([oss],
     [AS_HELP_STRING([--with-oss],
@@ -383,6 +394,7 @@ AC_MSG_NOTICE([summary
       CDDB support                        :  $with_cddb
       Sample Rate Converter support       :  $with_src
       iRiver iFP driver support           :  $with_ifp
+      JACK port management support        :  $enable_jack_mgmt
       Loop playback support               :  $enable_loop
       Systray support                     :  $enable_systray
       Podcast support                     :  $enable_podcast

@@ -51,7 +51,6 @@ metadata_ogg.h metadata_ogg.c \
 music_browser.h music_browser.c \
 options.h options.c \
 playlist.h playlist.c \
-ports.h ports.c \
 rb.h rb.c \
 search.h search.c \
 search_playlist.h search_playlist.c \
@@ -77,6 +76,10 @@ endif
 
 if HAVE_IFP
 aqualung_SOURCES += ifp_device.h ifp_device.c
+endif
+
+if HAVE_JACK_MGMT
+aqualung_SOURCES += ports.h ports.c
 endif
 
 if HAVE_LADSPA

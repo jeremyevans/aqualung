@@ -42,7 +42,6 @@ file_info.h file_info.c \
 gui_main.h gui_main.c \
 httpc.h httpc.c \
 i18n.h \
-ifp_device.h ifp_device.c \
 loop_bar.h loop_bar.c \
 metadata.h metadata.c \
 metadata_api.h metadata_api.c \
@@ -75,4 +74,8 @@ volume.c volume.h
 if HAVE_CDDA
 aqualung_SOURCES += cdda.h cdda.c store_cdda.h store_cdda.c \
                     cd_ripper.h cd_ripper.c
+endif
+
+if HAVE_IFP
+aqualung_SOURCES += ifp_device.h ifp_device.c
 endif

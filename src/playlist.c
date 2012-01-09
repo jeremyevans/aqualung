@@ -50,7 +50,9 @@
 #include "i18n.h"
 #include "search_playlist.h"
 #include "playlist.h"
+#ifdef HAVE_IFP
 #include "ifp_device.h"
+#endif /* HAVE_IFP */
 #include "export.h"
 #include "ext_lua.h"
 

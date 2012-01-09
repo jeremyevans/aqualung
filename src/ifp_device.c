@@ -22,8 +22,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_IFP
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1321,7 +1319,6 @@ aifp_transfer_files(gint mode) {
         gtk_widget_show(aifp_window);
 }
 
-#endif /* HAVE_IFP */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8:
 

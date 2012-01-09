@@ -21,16 +21,16 @@
 #ifndef _PLUGIN_H
 #define _PLUGIN_H
 
-
 #include <config.h>
 
-#ifdef HAVE_LADSPA
-
+#include <glib.h>
 #include <gtk/gtk.h>
 
 #include <ladspa.h>
 
+#include "common.h"
 #include "trashlist.h"
+
 
 #define MAX_PLUGINS 128
 #define MAX_KNOBS 128
@@ -61,7 +61,6 @@ void hide_fxbuilder(void);
 void save_plugin_data(void);
 void load_plugin_data(void);
 
-#endif /* HAVE_LADSPA */
 
 #endif /* _PLUGIN_H */
 

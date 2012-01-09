@@ -39,13 +39,14 @@
 #include <pthread.h>
 #endif /* _WIN32 */
 
-#ifdef HAVE_LADSPA
-#include <lrdf.h>
-#endif /* HAVE_LADSPA */
-
 #ifdef HAVE_SRC
 #include <samplerate.h>
 #endif /* HAVE_SRC */
+
+#ifdef HAVE_LADSPA
+#include <lrdf.h>
+#include "plugin.h"
+#endif /* HAVE_LADSPA */
 
 #include "ext_lua.h"
 #include "common.h"
@@ -64,7 +65,6 @@
 #include "store_file.h"
 #include "store_podcast.h"
 #include "playlist.h"
-#include "plugin.h"
 #include "file_info.h"
 #include "i18n.h"
 #ifdef HAVE_CDDA
@@ -172,14 +172,17 @@ GtkWidget * main_window;
 
 extern GtkWidget * browser_window;
 extern GtkWidget * playlist_window;
-extern GtkWidget * fxbuilder_window;
 extern GtkWidget * ports_window;
 extern GtkWidget * vol_window;
 extern GtkWidget * browser_paned;
 
 extern int music_store_changed;
 
+#ifdef HAVE_LADSPA
 extern int fxbuilder_on;
+extern GtkWidget * fxbuilder_window;
+GtkWidget * plugin_toggle;
+#endif /* HAVE_LADSPA */
 
 GtkObject * adj_pos;
 GtkObject * adj_vol;
@@ -222,7 +225,6 @@ int x_scroll_start;
 int x_scroll_pos;
 int scroll_btn;
 
-GtkWidget * plugin_toggle;
 GtkWidget * musicstore_toggle;
 GtkWidget * playlist_toggle;
 
@@ -949,20 +951,17 @@ playlist_toggled(GtkWidget * widget, gpointer data) {
 }
 
 
+#ifdef HAVE_LADSPA
 void
 plugin_toggled(GtkWidget * widget, gpointer data) {
 
-#ifdef HAVE_LADSPA
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
 		show_fxbuilder();
 	} else {
 		hide_fxbuilder();
 	}
-#else
-	/* XXX */
-	printf("Aqualung compiled without LADSPA plugin support.\n");
-#endif /* HAVE_LADSPA */
 }
+#endif /* HAVE_LADSPA */
 
 void
 toggle_stop_after_current_song() {
@@ -1156,8 +1155,10 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			break;
 		}
                 if (event->state & GDK_MOD1_MASK) {  /* ALT + x */
+#ifdef HAVE_LADSPA
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(plugin_toggle),
 						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(plugin_toggle)));
+#endif /* HAVE_LADSPA */
 		} else {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
 						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
@@ -1338,9 +1339,11 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
 		if (vol_window) {
 			gtk_window_deiconify(GTK_WINDOW(vol_window));
 		}
+#ifdef HAVE_LADSPA
 		if (fxbuilder_on) {
 			gtk_window_deiconify(GTK_WINDOW(fxbuilder_window));
 		}
+#endif /* HAVE_LADSPA */
 	}
         return FALSE;
 }
@@ -2504,8 +2507,10 @@ main_buttons_set_content(char * skin_path) {
 	button_set_content(playlist_toggle, path, "PL");
 	sprintf(path, "%s/%s", skin_path, "ms.png");
 	button_set_content(musicstore_toggle, path, "MS");
+#ifdef HAVE_LADSPA
 	sprintf(path, "%s/%s", skin_path, "fx.png");
 	button_set_content(plugin_toggle, path, "FX");
+#endif /* HAVE_LADSPA */
 }
 
 
@@ -3111,19 +3116,19 @@ create_main_window(char * skin_path) {
         aqualung_widget_set_tooltip_text(musicstore_toggle, _("Toggle music store"));
 	gtk_box_pack_end(GTK_BOX(btns_hbox), musicstore_toggle, FALSE, FALSE, 3);
 
-	plugin_toggle = gtk_toggle_button_new();
-        aqualung_widget_set_tooltip_text(plugin_toggle, _("Toggle LADSPA patch builder"));
-#ifdef HAVE_LADSPA
-	gtk_box_pack_end(GTK_BOX(btns_hbox), plugin_toggle, FALSE, FALSE, 0);
-#endif /* HAVE_LADSPA */
-
 	g_signal_connect(playlist_toggle, "toggled", G_CALLBACK(playlist_toggled), NULL);
 	g_signal_connect(musicstore_toggle, "toggled", G_CALLBACK(musicstore_toggled), NULL);
-	g_signal_connect(plugin_toggle, "toggled", G_CALLBACK(plugin_toggled), NULL);
 
 	GTK_WIDGET_UNSET_FLAGS(playlist_toggle, GTK_CAN_FOCUS);
 	GTK_WIDGET_UNSET_FLAGS(musicstore_toggle, GTK_CAN_FOCUS);
+
+#ifdef HAVE_LADSPA
+	plugin_toggle = gtk_toggle_button_new();
+	aqualung_widget_set_tooltip_text(plugin_toggle, _("Toggle LADSPA patch builder"));
+	gtk_box_pack_end(GTK_BOX(btns_hbox), plugin_toggle, FALSE, FALSE, 0);
+	g_signal_connect(plugin_toggle, "toggled", G_CALLBACK(plugin_toggled), NULL);
 	GTK_WIDGET_UNSET_FLAGS(plugin_toggle, GTK_CAN_FOCUS);
+#endif /* HAVE_LADSPA */
 
 	gtk_box_pack_end(GTK_BOX(btns_hbox), sr_table, FALSE, FALSE, 3);
 
@@ -4176,7 +4181,10 @@ set_buttons_relief(void) {
 	GtkWidget *rbuttons_table[] = {
 		prev_button, stop_button, next_button, play_button,
 		pause_button, repeat_button, repeat_all_button, shuffle_button,
-		playlist_toggle, musicstore_toggle, plugin_toggle
+#ifdef HAVE_LADSPA
+		plugin_toggle,
+#endif /* HAVE_LADSPA */
+		playlist_toggle, musicstore_toggle
 	};
 
 	gint i, n;

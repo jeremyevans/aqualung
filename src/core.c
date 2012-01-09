@@ -83,7 +83,9 @@
 #include "decoder/file_decoder.h"
 #include "transceiver.h"
 #include "gui_main.h"
+#ifdef HAVE_LADSPA
 #include "plugin.h"
+#endif /* HAVE_LADSPA */
 #include "i18n.h"
 #ifdef HAVE_CDDA
 #include "cdda.h"

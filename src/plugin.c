@@ -21,8 +21,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_LADSPA
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
@@ -2247,14 +2245,6 @@ load_plugin_data(void) {
         return;
 }
 
-
-#else
-
-#include <gtk/gtk.h>
-int fxbuilder_on = 0;
-GtkWidget * fxbuilder_window = NULL;
-
-#endif /* HAVE_LADSPA */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

@@ -52,7 +52,6 @@ metadata_ogg.h metadata_ogg.c \
 music_browser.h music_browser.c \
 options.h options.c \
 playlist.h playlist.c \
-plugin.h plugin.c \
 podcast.h podcast.c \
 ports.h ports.c \
 rb.h rb.c \
@@ -81,4 +80,8 @@ endif
 
 if HAVE_IFP
 aqualung_SOURCES += ifp_device.h ifp_device.c
+endif
+
+if HAVE_LADSPA
+aqualung_SOURCES += plugin.h plugin.c
 endif

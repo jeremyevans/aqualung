@@ -2430,18 +2430,18 @@ print_version(void) {
 
 	fprintf(stderr, "\n  Encoding support:\n");
 	
-#ifdef HAVE_SNDFILE
+#ifdef HAVE_SNDFILE_ENC
 	fprintf(stderr, V_YES);
 #else
 	fprintf(stderr, V_NO);
-#endif /* HAVE_SNDFILE */
+#endif /* HAVE_SNDFILE_ENC */
 	fprintf(stderr, "sndfile (WAV)\n");
 	
-#ifdef HAVE_FLAC
+#ifdef HAVE_FLAC_ENC
 	fprintf(stderr, V_YES);
 #else
 	fprintf(stderr, V_NO);
-#endif /* HAVE_FLAC */
+#endif /* HAVE_FLAC_ENC */
 	fprintf(stderr, "Free Lossless Audio Codec (FLAC)\n");
 	
 #ifdef HAVE_VORBISENC

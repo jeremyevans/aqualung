@@ -24,16 +24,16 @@
 
 #include <stdio.h>
 
-#ifdef HAVE_FLAC
+#ifdef HAVE_FLAC_ENC
 #include <FLAC/format.h>
 #include <FLAC/stream_encoder.h>
 #include <FLAC/metadata.h>
-#endif /* HAVE_FLAC */
+#endif /* HAVE_FLAC_ENC */
 
 #include "file_encoder.h"
 
 
-#ifdef HAVE_FLAC
+#ifdef HAVE_FLAC_ENC
 typedef struct _flac_pencdata_t {
 	FLAC__StreamEncoder * encoder;
 	FLAC__int32 ** buf;
@@ -41,16 +41,16 @@ typedef struct _flac_pencdata_t {
 	int channels;
 	encoder_mode_t mode;
 } flac_pencdata_t;
-#endif /* HAVE_FLAC */
+#endif /* HAVE_FLAC_ENC */
 
 
 encoder_t * flac_encoder_init(file_encoder_t * fenc);
-#ifdef HAVE_FLAC
+#ifdef HAVE_FLAC_ENC
 void flac_encoder_destroy(encoder_t * enc);
 int flac_encoder_open(encoder_t * enc, encoder_mode_t * mode);
 void flac_encoder_close(encoder_t * enc);
 unsigned int flac_encoder_write(encoder_t * enc, float * data, int num);
-#endif /* HAVE_FLAC */
+#endif /* HAVE_FLAC_ENC */
 
 
 #endif /* _ENC_FLAC_H */

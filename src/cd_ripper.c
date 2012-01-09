@@ -31,10 +31,6 @@
 #include <pthread.h>
 #endif /* _WIN32 */
 
-#include "cd_ripper.h"
-
-#ifdef HAVE_CD_RIPPER
-
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"
@@ -51,6 +47,7 @@
 #include "i18n.h"
 #include "cdda.h"
 #include "metadata.h"
+#include "cd_ripper.h"
 
 #define BUFSIZE 588
 
@@ -330,14 +327,14 @@ create_ripper_format_combo(void) {
 	GtkWidget * combo = gtk_combo_box_new_text();
 	int n = -1;
 
-#ifdef HAVE_SNDFILE
+#ifdef HAVE_SNDFILE_ENC
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "WAV");
 	++n;
-#endif /* HAVE_SNDFILE */
-#ifdef HAVE_FLAC
+#endif /* HAVE_SNDFILE_ENC */
+#ifdef HAVE_FLAC_ENC
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "FLAC");
 	++n;
-#endif /* HAVE_FLAC */
+#endif /* HAVE_FLAC_ENC */
 #ifdef HAVE_VORBISENC
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "Ogg Vorbis");
 	++n;
@@ -1351,13 +1348,6 @@ cd_ripper(cdda_drive_t * drive, GtkTreeIter * iter) {
                 AQUALUNG_THREAD_CREATE(ripper_thread_id, NULL, ripper_thread, drive);
 	}
 }
-
-
-#else
-
-GtkWidget * ripper_prog_window = NULL;
-
-#endif /* HAVE_CD_RIPPER */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

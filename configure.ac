@@ -173,6 +173,19 @@ AS_IF([test "x$enable_systray" = 'xyes'],
         [enable_systray='no (GTK+ too old)'])])
 AC_MSG_RESULT([$enable_systray])
 
+AC_ARG_ENABLE([transcoding],
+    [AS_HELP_STRING([--disable-transcoding],
+        [compile without transcoding support])],
+    [], [enable_transcoding='yes'])
+AS_IF([test "x$enable_transcoding" != 'xyes'], [
+    dnl
+    dnl --disable-transcoding implies --without-lame --without-vorbisenc
+    dnl setting these variables now ensures detection is forced off below
+    dnl
+    with_lame='no'
+    with_vorbisenc='no'
+])
+
 
 #
 # Output Driver Library Options
@@ -250,6 +263,11 @@ AQUALUNG_DETECT([flac], [Free Lossless Audio Codec],
     [PKG_CHECK_MODULES([flac], [flac],
         [AQUALUNG_FOUND([flac])],
         [AQUALUNG_MISSING([flac], [$flac_PKG_ERRORS])])])
+AS_IF([test "x$enable_transcoding" = 'xyes'],
+    [with_flac_enc="$with_flac"], [with_flac_enc='no'])
+AS_CASE([$with_flac_enc],
+    [yes*], [AC_DEFINE([HAVE_FLAC_ENC], [1],
+                [Define to build with flac encoding support])])
 
 AQUALUNG_DETECT([lame], [LAME MP3 Encoding],
     [AC_CHECK_LIB([mp3lame], [lame_init],
@@ -297,6 +315,11 @@ AQUALUNG_DETECT([sndfile], [sndfile (WAV, AIFF, etc.)], [
     PKG_CHECK_EXISTS([sndfile >= 1.0.18],
         [AC_DEFINE([HAVE_SNDFILE_1_0_18], [1], [Defined if sndfile >= 1.0.18])])
 ])
+AS_IF([test "x$enable_transcoding" = 'xyes'],
+    [with_sndfile_enc="$with_sndfile"], [with_sndfile_enc='no'])
+AS_CASE([$with_sndfile_enc],
+    [yes*], [AC_DEFINE([HAVE_SNDFILE_ENC], [1],
+                [Define to build with sndfile encoding support])])
 
 AQUALUNG_DETECT([speex], [Ogg Speex],
     [PKG_CHECK_MODULES([speex], [oggz speex],
@@ -312,6 +335,11 @@ AQUALUNG_DETECT([vorbisenc], [Ogg Vorbis Encoding],
     [PKG_CHECK_MODULES([vorbisenc], [vorbisenc],
         [AQUALUNG_FOUND([vorbisenc])],
         [AQUALUNG_MISSING([vorbisenc], [$vorbisenc_PKG_ERRORS])])])
+AS_CASE([$with_flac_enc/$with_lame/$with_sndfile_enc/$with_vorbisenc],
+    [*yes*], [AC_DEFINE([HAVE_TRANSCODING], [1],
+                 [Define to build with transcoding support])],
+    [enable_transcoding='no'])
+AM_CONDITIONAL([HAVE_TRANSCODING], [test "x$enable_transcoding" = 'xyes'])
 
 AQUALUNG_DETECT([wavpack], [WavPack],
     [PKG_CHECK_MODULES([wavpack], [wavpack >= 4.40.0],
@@ -413,8 +441,8 @@ AC_MSG_NOTICE([summary
       LAVC (AC3, AAC, WavPack, WMA, etc.) :  $with_lavc
 
   Encoding support:
-      sndfile (WAV)                       :  $with_sndfile
-      Free Lossless Audio Codec (FLAC)    :  $with_flac
+      sndfile (WAV)                       :  $with_sndfile_enc
+      Free Lossless Audio Codec (FLAC)    :  $with_flac_enc
       Ogg Vorbis                          :  $with_vorbisenc
       LAME (MP3)                          :  $with_lame
 

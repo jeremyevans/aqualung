@@ -58,7 +58,9 @@
 #include "playlist.h"
 #include "i18n.h"
 #include "cdda.h"
+#ifdef HAVE_TRANSCODING
 #include "cd_ripper.h"
+#endif /* HAVE_TRANSCODING */
 #include "store_cdda.h"
 
 
@@ -87,9 +89,9 @@ GtkWidget * cdda_record__separator1;
 GtkWidget * cdda_record__cddb;
 GtkWidget * cdda_record__cddb_submit;
 #endif /* HAVE_CDDB */
-#ifdef HAVE_CD_RIPPER
+#ifdef HAVE_TRANSCODING
 GtkWidget * cdda_record__rip;
-#endif /* HAVE_CD_RIPPER */
+#endif /* HAVE_TRANSCODING */
 GtkWidget * cdda_record__disc_info;
 GtkWidget * cdda_record__eject;
 GtkWidget * cdda_record__separator2;
@@ -533,7 +535,7 @@ cdda_record__eject_cb(gpointer data) {
 }
 
 
-#ifdef HAVE_CD_RIPPER
+#ifdef HAVE_TRANSCODING
 void
 cdda_record__rip_cb(gpointer data) {
 
@@ -546,7 +548,7 @@ cdda_record__rip_cb(gpointer data) {
 		cd_ripper(drive, &iter);
 	}
 }
-#endif /* HAVE_CD_RIPPER */
+#endif /* HAVE_TRANSCODING */
 
 
 #ifdef HAVE_CDDB
@@ -1112,9 +1114,9 @@ set_popup_sensitivity(GtkTreePath * path) {
 		gtk_widget_set_sensitive(cdda_record__cddb_submit, val_cdda);
 #endif /* HAVE_CDDB */
 
-#ifdef HAVE_CD_RIPPER
+#ifdef HAVE_TRANSCODING
 		gtk_widget_set_sensitive(cdda_record__rip, val_cdda && val_cdda_free);
-#endif /* HAVE_CD_RIPPER */
+#endif /* HAVE_TRANSCODING */
 		gtk_widget_set_sensitive(cdda_record__eject, val_cdda_free);
 		gtk_widget_set_sensitive(cdda_record__disc_info, val_cdda);
 	}
@@ -1300,9 +1302,9 @@ store_cdda_create_popup_menu(void) {
 	cdda_record__cddb = gtk_menu_item_new_with_label(_("CDDB query for this CD..."));
 	cdda_record__cddb_submit = gtk_menu_item_new_with_label(_("Submit CD to CDDB database..."));
 #endif /* HAVE_CDDB */
-#ifdef HAVE_CD_RIPPER
+#ifdef HAVE_TRANSCODING
 	cdda_record__rip = gtk_menu_item_new_with_label(_("Rip CD..."));
-#endif /* HAVE_CD_RIPPER */
+#endif /* HAVE_TRANSCODING */
 	cdda_record__disc_info = gtk_menu_item_new_with_label(_("Disc info..."));
 	cdda_record__separator2 = gtk_separator_menu_item_new();
 	cdda_record__drive_info = gtk_menu_item_new_with_label(_("Drive info..."));
@@ -1315,9 +1317,9 @@ store_cdda_create_popup_menu(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__cddb);
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__cddb_submit);
 #endif /* HAVE_CDDB */
-#ifdef HAVE_CD_RIPPER
+#ifdef HAVE_TRANSCODING
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__rip);
-#endif /* HAVE_CD_RIPPER */
+#endif /* HAVE_TRANSCODING */
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__disc_info);
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__separator2);
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__drive_info);
@@ -1329,9 +1331,9 @@ store_cdda_create_popup_menu(void) {
 	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb), "activate", G_CALLBACK(cdda_record__cddb_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb_submit), "activate", G_CALLBACK(cdda_record__cddb_submit_cb), NULL);
 #endif /* HAVE_CDDB */
-#ifdef HAVE_CD_RIPPER
+#ifdef HAVE_TRANSCODING
  	g_signal_connect_swapped(G_OBJECT(cdda_record__rip), "activate", G_CALLBACK(cdda_record__rip_cb), NULL);
-#endif /* HAVE_CD_RIPPER */
+#endif /* HAVE_TRANSCODING */
  	g_signal_connect_swapped(G_OBJECT(cdda_record__disc_info), "activate", G_CALLBACK(cdda_record__disc_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(cdda_record__drive_info), "activate", G_CALLBACK(cdda_record__drive_cb), NULL);
  	g_signal_connect_swapped(G_OBJECT(cdda_record__eject), "activate", G_CALLBACK(cdda_record__eject_cb), NULL);
@@ -1343,9 +1345,9 @@ store_cdda_create_popup_menu(void) {
 	gtk_widget_show(cdda_record__cddb);
 	gtk_widget_show(cdda_record__cddb_submit);
 #endif /* HAVE_CDDB */
-#ifdef HAVE_CD_RIPPER
+#ifdef HAVE_TRANSCODING
 	gtk_widget_show(cdda_record__rip);
-#endif /* HAVE_CD_RIPPER */
+#endif /* HAVE_TRANSCODING */
 	gtk_widget_show(cdda_record__disc_info);
 	gtk_widget_show(cdda_record__separator2);
 	gtk_widget_show(cdda_record__drive_info);

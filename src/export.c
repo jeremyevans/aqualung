@@ -50,7 +50,6 @@
 #include "export.h"
 #include "options.h"
 
-#ifdef HAVE_EXPORT
 
 #define BUFSIZE 10240
 
@@ -732,14 +731,14 @@ export_create_format_combo(void) {
 	GtkWidget * combo = gtk_combo_box_new_text();
 	int n = -1;
 
-#ifdef HAVE_SNDFILE
+#ifdef HAVE_SNDFILE_ENC
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "WAV");
 	++n;
-#endif /* HAVE_SNDFILE */
-#ifdef HAVE_FLAC
+#endif /* HAVE_SNDFILE_ENC */
+#ifdef HAVE_FLAC_ENC
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "FLAC");
 	++n;
-#endif /* HAVE_FLAC */
+#endif /* HAVE_FLAC_ENC */
 #ifdef HAVE_VORBISENC
 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "Ogg Vorbis");
 	++n;
@@ -1227,7 +1226,6 @@ export_start(export_t * export) {
 	return 0;
 }
 
-#endif /* HAVE_EXPORT */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

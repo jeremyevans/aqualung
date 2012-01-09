@@ -31,7 +31,7 @@
 #include "enc_flac.h"
 
 
-#ifdef HAVE_FLAC
+#ifdef HAVE_FLAC_ENC
 
 
 encoder_t *
@@ -247,7 +247,7 @@ flac_encoder_init(file_encoder_t * fenc) {
 
 	return NULL;
 }
-#endif /* HAVE_FLAC */
+#endif /* HAVE_FLAC_ENC */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

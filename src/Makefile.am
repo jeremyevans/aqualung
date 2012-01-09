@@ -35,7 +35,6 @@ build_store.h build_store.c \
 common.h \
 core.h core.c \
 cover.h cover.c \
-export.h export.c \
 ext_lua.h ext_lua.c \
 file_info.h file_info.c \
 gui_main.h gui_main.c \
@@ -66,8 +65,10 @@ version.h \
 volume.c volume.h
 
 if HAVE_CDDA
-aqualung_SOURCES += cdda.h cdda.c store_cdda.h store_cdda.c \
-                    cd_ripper.h cd_ripper.c
+aqualung_SOURCES += cdda.h cdda.c store_cdda.h store_cdda.c
+if HAVE_TRANSCODING
+aqualung_SOURCES += cd_ripper.h cd_ripper.c
+endif
 endif
 
 if HAVE_CDDB
@@ -92,4 +93,8 @@ endif
 
 if HAVE_PODCAST
 aqualung_SOURCES += podcast.h podcast.c store_podcast.h store_podcast.c
+endif
+
+if HAVE_TRANSCODING
+aqualung_SOURCES += export.h export.c
 endif

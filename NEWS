@@ -14,6 +14,9 @@
         * configure's --with-ogg option was renamed to --with-vorbis
         * JACK enabled builds may optionally be pruned of the port management
           UI with configure --disable-jack-mgmt
+        * Transcoding (via the Export and Rip CD UIs), can now be left
+          out of the build even with sndfile or flac decoding capability left
+          in by using the --disable-transcoding option.
     - Runtime
         * The disk IO thread is no longer high-priority by default on
           Win32 builds, pass the -D / --disk-realtime option to re-enable

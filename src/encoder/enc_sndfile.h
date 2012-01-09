@@ -22,28 +22,28 @@
 #ifndef _ENC_SNDFILE_H
 #define _ENC_SNDFILE_H
 
-#ifdef HAVE_SNDFILE
+#ifdef HAVE_SNDFILE_ENC
 #include <sndfile.h>
-#endif /* HAVE_SNDFILE */
+#endif /* HAVE_SNDFILE_ENC */
 
 #include "file_encoder.h"
 
 
-#ifdef HAVE_SNDFILE
+#ifdef HAVE_SNDFILE_ENC
 typedef struct _sndfile_pencdata_t {
 	SF_INFO sf_info;
 	SNDFILE * sf;
 } sndfile_pencdata_t;
-#endif /* HAVE_SNDFILE */
+#endif /* HAVE_SNDFILE_ENC */
 
 
 encoder_t * sndfile_encoder_init(file_encoder_t * fenc);
-#ifdef HAVE_SNDFILE
+#ifdef HAVE_SNDFILE_ENC
 void sndfile_encoder_destroy(encoder_t * enc);
 int sndfile_encoder_open(encoder_t * enc, encoder_mode_t * mode);
 void sndfile_encoder_close(encoder_t * enc);
 unsigned int sndfile_encoder_write(encoder_t * enc, float * data, int num);
-#endif /* HAVE_SNDFILE */
+#endif /* HAVE_SNDFILE_ENC */
 
 
 #endif /* _ENC_SNDFILE_H */

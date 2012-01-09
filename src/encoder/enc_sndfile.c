@@ -29,7 +29,7 @@
 #include "enc_sndfile.h"
 
 
-#ifdef HAVE_SNDFILE
+#ifdef HAVE_SNDFILE_ENC
 
 encoder_t *
 sndfile_encoder_init(file_encoder_t * fenc) {
@@ -109,7 +109,7 @@ sndfile_encoder_init(file_encoder_t * fenc) {
 
 	return NULL;
 }
-#endif /* HAVE_SNDFILE */
+#endif /* HAVE_SNDFILE_ENC */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

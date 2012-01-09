@@ -453,22 +453,22 @@ create_about_window() {
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_SNDFILE
+#ifdef HAVE_SNDFILE_ENC
 	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
 #else
 	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_SNDFILE */
+#endif /* HAVE_SNDFILE_ENC */
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("sndfile (WAV)\n"), -1);
 
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_FLAC
+#ifdef HAVE_FLAC_ENC
 	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
 #else
 	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_FLAC */
+#endif /* HAVE_FLAC_ENC */
 	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Free Lossless Audio Codec (FLAC)\n"), -1);
 

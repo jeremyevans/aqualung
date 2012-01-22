@@ -985,8 +985,22 @@ move_song_position_slider(GtkScrollType scroll_type) {
 
 	if (is_file_loaded && allow_seeks && total_samples != 0) {
 		refresh_scale = 0;
-		g_signal_emit_by_name(G_OBJECT(scale_pos), "move-slider",
-				      scroll_type, NULL);
+		gdouble current_pos = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_pos));
+		/* 5 seconds step */
+		gdouble step = 5 * 100.0f * disp_info.sample_rate / total_samples;
+		gdouble new_pos;
+		if (scroll_type == GTK_SCROLL_STEP_FORWARD) { 
+			new_pos = current_pos + step;
+			if (new_pos > 100.0) {
+				new_pos = 100.0;
+			}
+		} else if (scroll_type == GTK_SCROLL_STEP_BACKWARD) {
+			new_pos = current_pos - step;
+			if (new_pos < 0) {
+				new_pos = 0.0;
+			}
+		}
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), new_pos);
 	}
 }
 

@@ -32,13 +32,10 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
 
-#include "common.h"
-#include "cover.h"
-#include "gui_main.h"
 #include "music_browser.h"
 #include "store_file.h"
-#include "i18n.h"
 #include "options.h"
+#include "cover.h"
 
 
 extern options_t options;

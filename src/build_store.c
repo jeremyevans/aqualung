@@ -38,6 +38,10 @@
 #include <libxml/tree.h>
 #include <sys/stat.h>
 
+#ifdef HAVE_CDDB
+#include "cddb_lookup.h"
+#endif /* HAVE_CDDB */
+
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"
@@ -49,9 +53,6 @@
 #include "store_file.h"
 #include "metadata_api.h"
 #include "build_store.h"
-#ifdef HAVE_CDDB
-#include "cddb_lookup.h"
-#endif /* HAVE_CDDB */
 
 
 extern options_t options;

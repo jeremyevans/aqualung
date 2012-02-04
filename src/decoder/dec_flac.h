@@ -25,6 +25,7 @@
 #include <FLAC/metadata.h>
 #include <FLAC/stream_decoder.h>
 
+#include "../rb.h"
 #include "file_decoder.h"
 
 

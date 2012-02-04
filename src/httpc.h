@@ -21,6 +21,10 @@
 #ifndef AQUALUNG_HTTPC_H
 #define AQUALUNG_HTTPC_H
 
+#include "decoder/file_decoder.h"
+#include "metadata.h"
+
+
 #define HTTPC_OK                0
 #define HTTPC_URL_ERROR        -1
 #define HTTPC_CONNECTION_ERROR -2
@@ -30,8 +34,6 @@
 #define HTTPC_SESSION_NORMAL  1
 #define HTTPC_SESSION_CHUNKED 2
 #define HTTPC_SESSION_STREAM  3
-
-#include "decoder/file_decoder.h"
 
 typedef struct {
 	char * status;

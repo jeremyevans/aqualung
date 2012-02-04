@@ -23,7 +23,6 @@
 
 #include <glib.h>
 
-#include "common.h"
 #include "decoder/file_decoder.h"
 #include "metadata.h"
 

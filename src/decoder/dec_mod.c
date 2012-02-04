@@ -18,7 +18,6 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
@@ -39,8 +38,11 @@
 #include <bzlib.h>
 #endif /* HAVE_LIBBZ2 */
 
+#include "../common.h"
 #include "../metadata.h"
+#include "../rb.h"
 #include "dec_mod.h"
+
 
 extern size_t sample_size;
 

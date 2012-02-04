@@ -41,10 +41,9 @@
 #include "decoder/file_decoder.h"
 #include "encoder/file_encoder.h"
 #include "encoder/enc_lame.h"
-#include "store_file.h"
-#include "playlist.h"
-#include "export.h"
+#include "metadata.h"
 #include "options.h"
+#include "export.h"
 
 
 #define BUFSIZE 10240

@@ -44,6 +44,23 @@
 #include "plugin.h"
 #endif /* HAVE_LADSPA */
 
+#ifdef HAVE_CDDA
+#include "cdda.h"
+#include "store_cdda.h"
+#endif /* HAVE_CDDA */
+
+#ifdef HAVE_JACK_MGMT
+#include "ports.h"
+#endif /* HAVE_JACK_MGMT */
+
+#ifdef HAVE_LOOP
+#include "loop_bar.h"
+#endif /* HAVE_LOOP */
+
+#ifdef HAVE_PODCAST
+#include "store_podcast.h"
+#endif /* HAVE_PODCAST */
+
 #include "ext_lua.h"
 #include "common.h"
 #include "utils.h"
@@ -56,28 +73,15 @@
 #include "about.h"
 #include "options.h"
 #include "skin.h"
-#ifdef HAVE_JACK_MGMT
-#include "ports.h"
-#endif /* HAVE_JACK_MGMT */
-#include "music_browser.h"
-#include "store_file.h"
-#ifdef HAVE_PODCAST
-#include "store_podcast.h"
-#endif /* HAVE_PODCAST */
 #include "playlist.h"
 #include "file_info.h"
 #include "i18n.h"
-#ifdef HAVE_CDDA
-#include "cdda.h"
-#include "store_cdda.h"
-#endif /* HAVE_CDDA */
-#ifdef HAVE_LOOP
-#include "loop_bar.h"
-#endif /* HAVE_LOOP */
 #include "httpc.h"
 #include "metadata.h"
-#include "gui_main.h"
+#include "metadata_api.h"
+#include "music_browser.h"
 #include "version.h"
+#include "gui_main.h"
 
 
 /* receive at most this much remote messages in one run of timeout_callback() */

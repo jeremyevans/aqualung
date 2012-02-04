@@ -21,9 +21,10 @@
 #ifndef AQUALUNG_DEC_WAVPACK_H
 #define AQUALUNG_DEC_WAVPACK_H
 
-#include "file_decoder.h"
-
 #include <wavpack/wavpack.h>
+
+#include "../rb.h"
+#include "file_decoder.h"
 
 
 #define RB_WAVPACK_SIZE 262144

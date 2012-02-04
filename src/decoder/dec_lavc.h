@@ -24,6 +24,7 @@
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 
+#include "../rb.h"
 #include "file_decoder.h"
 
 

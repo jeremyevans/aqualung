@@ -32,6 +32,10 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#ifdef HAVE_TRANSCODING
+#include "export.h"
+#endif /* HAVE_TRANSCODING */
+
 #include "common.h"
 #include "i18n.h"
 #include "utils.h"
@@ -39,9 +43,6 @@
 #include "utils_xml.h"
 #include "options.h"
 #include "file_info.h"
-#ifdef HAVE_TRANSCODING
-#include "export.h"
-#endif /* HAVE_TRANSCODING */
 #include "playlist.h"
 #include "music_browser.h"
 #include "podcast.h"

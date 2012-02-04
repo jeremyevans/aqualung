@@ -32,9 +32,9 @@
 #include "common.h"
 #include "utils_gui.h"
 #include "playlist.h"
-#include "gui_main.h"
 #include "options.h"
 #include "i18n.h"
+#include "search_playlist.h"
 
 
 enum {

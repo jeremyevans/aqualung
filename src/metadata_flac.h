@@ -27,8 +27,8 @@
 #include <FLAC/metadata.h>
 #endif /* HAVE_FLAC */
 
-#include "common.h"
 #include "metadata.h"
+
 
 #ifdef HAVE_FLAC
 void metadata_from_flac_streammeta_vc(metadata_t * meta,

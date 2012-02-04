@@ -27,8 +27,10 @@
 #include <sys/stat.h>
 #include <glib.h>
 
-#include "i18n.h"
+#include "common.h"
 #include "httpc.h"
+#include "i18n.h"
+#include "options.h"
 #include "utils.h"
 
 

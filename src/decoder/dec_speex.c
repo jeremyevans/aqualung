@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../rb.h"
 #include "dec_speex.h"
 
 

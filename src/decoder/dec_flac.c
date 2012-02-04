@@ -18,7 +18,6 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
@@ -26,8 +25,12 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "../metadata.h"
+#include "../metadata_api.h"
 #include "../metadata_flac.h"
+#include "../rb.h"
 #include "dec_flac.h"
+
 
 extern size_t sample_size;
 

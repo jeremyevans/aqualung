@@ -26,6 +26,7 @@
 #include <lame/lame.h>
 #endif /* HAVE_LAME */
 
+#include "../rb.h"
 #include "file_encoder.h"
 
 

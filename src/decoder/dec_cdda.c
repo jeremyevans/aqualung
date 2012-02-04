@@ -18,7 +18,6 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
@@ -26,8 +25,9 @@
 #include <string.h>
 #include <time.h>
 
-#include "../i18n.h"
 #include "../cdda.h"
+#include "../common.h"
+#include "../rb.h"
 #include "../utils.h"
 #include "dec_cdda.h"
 

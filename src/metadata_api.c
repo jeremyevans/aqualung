@@ -18,21 +18,19 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "common.h"
 #include "i18n.h"
 #include "options.h"
 #include "decoder/file_decoder.h"
 #include "utils.h"
 #include "metadata.h"
-#include "metadata_api.h"
 #include "volume.h"
+#include "metadata_api.h"
 
 
 extern options_t options;

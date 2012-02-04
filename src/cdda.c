@@ -43,17 +43,14 @@
 #undef AQUALUNG_TMP_HAVE_CDDB
 #endif /* AQUALUNG_TMP_HAVE_CDDB */
 
-
 #include "common.h"
 #include "utils_gui.h"
 #include "options.h"
 #include "music_browser.h"
-#include "playlist.h"
-#include "gui_main.h"
 #include "rb.h"
 #include "i18n.h"
-#include "cdda.h"
 #include "store_cdda.h"
+#include "cdda.h"
 
 
 extern options_t options;

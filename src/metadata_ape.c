@@ -29,8 +29,8 @@
 #include <glib-object.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#include "utils.h"
-#include "options.h"
+#include "common.h"
+#include "metadata_api.h"
 #include "metadata_id3v2.h"
 #include "metadata_ape.h"
 

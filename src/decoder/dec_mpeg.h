@@ -26,6 +26,7 @@
 
 #include "../common.h"
 #include "../httpc.h"
+#include "../rb.h"
 #include "file_decoder.h"
 
 

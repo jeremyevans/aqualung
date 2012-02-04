@@ -18,14 +18,12 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "../i18n.h"
 #include "../metadata.h"
 #include "../metadata_flac.h"
 #include "enc_flac.h"

@@ -18,7 +18,6 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
@@ -26,7 +25,10 @@
 #include <unistd.h>
 
 #include "../i18n.h"
+#include "../metadata.h"
 #include "../metadata_ape.h"
+#include "../rb.h"
+#include "file_decoder.h"
 #include "dec_mpc.h"
 
 

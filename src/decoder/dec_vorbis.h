@@ -30,6 +30,7 @@
 #endif /* _WIN32 */
 
 #include "../httpc.h"
+#include "../rb.h"
 #include "file_decoder.h"
 
 

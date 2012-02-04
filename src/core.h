@@ -21,10 +21,7 @@
 #ifndef AQUALUNG_CORE_H
 #define AQUALUNG_CORE_H
 
-
 #include <sys/types.h>
-
-#include "common.h"
 
 #ifdef HAVE_ALSA
 #define AlSA_PCM_NEW_HW_PARAMS_API
@@ -61,6 +58,9 @@
 #define PULSE_DRIVER 6
 #include <pulse/simple.h>
 #endif /* HAVE_PULSE */
+
+#include "common.h"
+
 
 #define MAX_SAMPLERATE 96000
 
@@ -163,8 +163,6 @@ typedef struct _seek_t {
 
 
 void jack_client_start(void);
-
-#define db2lin(x) ((x) > -90.0f ? powf(10.0f, (x) * 0.05f) : 0.0f)
 
 
 #endif /* AQUALUNG_CORE_H */

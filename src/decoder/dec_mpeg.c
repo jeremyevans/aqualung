@@ -18,7 +18,6 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
@@ -30,14 +29,16 @@
 #include <limits.h>
 #include <string.h>
 
+#include "../common.h"
+#include "../httpc.h"
 #include "../i18n.h"
-#ifdef HAVE_MOD
-#include "dec_mod.h"
-#endif /* HAVE_MOD */
 #include "../metadata.h"
+#include "../metadata_api.h"
 #include "../metadata_ape.h"
 #include "../metadata_id3v1.h"
 #include "../metadata_id3v2.h"
+#include "../rb.h"
+#include "file_decoder.h"
 #include "dec_mpeg.h"
 
 

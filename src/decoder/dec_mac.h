@@ -21,6 +21,7 @@
 #ifndef AQUALUNG_DEC_MAC_H
 #define AQUALUNG_DEC_MAC_H
 
+#include "../rb.h"
 #include "file_decoder.h"
 
 

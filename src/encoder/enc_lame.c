@@ -18,18 +18,19 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "../i18n.h"
 #include "../metadata.h"
+#include "../metadata_api.h"
 #include "../metadata_ape.h"
 #include "../metadata_id3v1.h"
 #include "../metadata_id3v2.h"
+#include "../options.h"
+#include "../rb.h"
 #include "enc_lame.h"
 
 

@@ -25,6 +25,7 @@
 #include <speex/speex.h>
 #include <speex/speex_header.h>
 
+#include "../rb.h"
 #include "file_decoder.h"
 
 

@@ -26,7 +26,12 @@
 #include <unistd.h>
 #include <glib.h>
 
+#include "../httpc.h"
+#include "../metadata.h"
+#include "../metadata_api.h"
 #include "../metadata_ogg.h"
+#include "../rb.h"
+#include "file_decoder.h"
 #include "dec_vorbis.h"
 
 

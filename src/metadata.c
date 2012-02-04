@@ -18,7 +18,6 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
@@ -27,10 +26,9 @@
 
 #include "common.h"
 #include "i18n.h"
-#include "utils.h"
+#include "metadata_api.h"
 #include "options.h"
 #include "metadata.h"
-#include "metadata_api.h"
 
 
 extern options_t options;

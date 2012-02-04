@@ -22,7 +22,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include "decoder/file_decoder.h"
+#include "ext_lua.h"
 
 #ifdef HAVE_LUA
 
@@ -36,7 +36,9 @@
 #include <lauxlib.h>
 #include <lualib.h>
 
+#include "common.h"
 #include "metadata.h"
+#include "metadata_api.h"
 #include "options.h"
 #include "playlist.h"
 

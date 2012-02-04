@@ -77,6 +77,16 @@
 #include <pulse/error.h>
 #endif /* HAVE_PULSE */
 
+#ifdef HAVE_LADSPA
+#include <ladspa.h>
+#include "plugin.h"
+#endif /* HAVE_LADSPA */
+
+#ifdef HAVE_CDDA
+#include "cdda.h"
+#include "decoder/dec_cdda.h"
+#endif /* HAVE_CDDA */
+
 #include "common.h"
 #include "utils.h"
 #include "version.h"
@@ -85,14 +95,8 @@
 #include "decoder/file_decoder.h"
 #include "transceiver.h"
 #include "gui_main.h"
-#ifdef HAVE_LADSPA
-#include "plugin.h"
-#endif /* HAVE_LADSPA */
 #include "i18n.h"
-#ifdef HAVE_CDDA
-#include "cdda.h"
-#include "decoder/dec_cdda.h"
-#endif /* HAVE_CDDA */
+#include "metadata.h"
 #include "core.h"
 
 

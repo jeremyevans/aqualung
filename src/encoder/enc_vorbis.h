@@ -26,6 +26,7 @@
 #include <vorbis/vorbisenc.h>
 #endif /* HAVE_VORBISENC */
 
+#include "../rb.h"
 #include "file_encoder.h"
 
 

@@ -50,12 +50,11 @@
 #endif /* AQUALUNG_TMP_HAVE_CDDB */
 #endif /* HAVE_CDDA */
 
-#include "ext_lua.h"
-
 #ifdef HAVE_SRC
 #include <samplerate.h>
 #endif /* HAVE_SRC */
 
+#include "ext_lua.h"
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"
@@ -65,8 +64,8 @@
 #include "search.h"
 #include "playlist.h"
 #include "i18n.h"
-#include "options.h"
 #include "skin.h"
+#include "options.h"
 
 
 options_t options;

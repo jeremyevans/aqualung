@@ -18,7 +18,6 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
@@ -26,6 +25,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "../common.h"
+#include "../rb.h"
 #include "dec_lavc.h"
 
 

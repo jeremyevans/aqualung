@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <libmodplug/modplug.h>
 
+#include "../rb.h"
 #include "file_decoder.h"
 
 

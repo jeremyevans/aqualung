@@ -33,7 +33,6 @@
 #include "utils_gui.h"
 #include "music_browser.h"
 #include "store_file.h"
-#include "gui_main.h"
 #include "i18n.h"
 #include "options.h"
 #include "search.h"

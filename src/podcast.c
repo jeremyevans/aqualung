@@ -33,7 +33,6 @@
 
 #include "common.h"
 #include "i18n.h"
-#include "utils.h"
 #include "decoder/file_decoder.h"
 #include "options.h"
 #include "httpc.h"

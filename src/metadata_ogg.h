@@ -23,6 +23,8 @@
 
 #include <config.h>
 
+#include <glib.h>
+
 #ifdef HAVE_VORBIS
 #ifdef _WIN32
 #undef _WIN32
@@ -33,9 +35,6 @@
 #endif /* _WIN32 */
 #endif /* HAVE_VORBIS */
 
-#include <glib.h>
-
-#include "common.h"
 #include "metadata.h"
 
 

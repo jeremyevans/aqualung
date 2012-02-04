@@ -44,20 +44,22 @@
 #undef AQUALUNG_TMP_HAVE_CDDB
 #endif /* AQUALUNG_TMP_HAVE_CDDB */
 
+#ifdef HAVE_CDDB
+#include "cddb_lookup.h"
+#endif /* HAVE_CDDB */
+
+#ifdef HAVE_TRANSCODING
+#include "cd_ripper.h"
+#endif /* HAVE_TRANSCODING */
+
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"
 #include "options.h"
 #include "music_browser.h"
-#ifdef HAVE_CDDB
-#include "cddb_lookup.h"
-#endif /* HAVE_CDDB */
 #include "playlist.h"
 #include "i18n.h"
 #include "cdda.h"
-#ifdef HAVE_TRANSCODING
-#include "cd_ripper.h"
-#endif /* HAVE_TRANSCODING */
 #include "store_cdda.h"
 
 

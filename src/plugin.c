@@ -33,6 +33,7 @@
 #include <libxml/globals.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <ladspa.h>
 #include <lrdf.h>
 
 #include "common.h"

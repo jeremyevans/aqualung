@@ -27,13 +27,12 @@
 #include <ctype.h>
 #include <glib.h>
 
-#include "common.h"
 #include "utils.h"
-#include "i18n.h"
 #include "metadata.h"
 #include "metadata_api.h"
-#include "metadata_id3v1.h"
 #include "options.h"
+#include "metadata_id3v1.h"
+
 
 extern options_t options;
 

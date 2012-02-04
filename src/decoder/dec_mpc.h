@@ -28,6 +28,7 @@
 #include <math.h>
 #endif /* MPC_OLD_API */
 
+#include "../rb.h"
 #include "file_decoder.h"
 
 

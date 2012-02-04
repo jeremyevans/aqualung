@@ -22,10 +22,8 @@
 #define AQUALUNG_FILE_DECODER_H
 
 #include "../common.h"
-#include "../options.h"
 #include "../metadata.h"
-#include "../metadata_api.h"
-#include "../rb.h"
+
 
 #ifdef __cplusplus
 extern "C" {

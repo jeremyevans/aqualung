@@ -31,7 +31,6 @@
 
 #include "common.h"
 #include "utils_gui.h"
-#include "core.h"
 #include "decoder/file_decoder.h"
 #include "options.h"
 #include "music_browser.h"

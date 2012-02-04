@@ -35,7 +35,6 @@
 
 #ifdef HAVE_MOD
 #include <libmodplug/modplug.h>
-
 #include "decoder/dec_mod.h"
 #endif /* HAVE_MOD */
 
@@ -43,13 +42,13 @@
 #include "decoder/dec_wavpack.h"
 #endif /* HAVE_WAVPACK */
 
-#include "common.h"
-#include "utils.h"
-#include "utils_gui.h"
-#include "core.h"
 #ifdef HAVE_CDDA
 #include "cdda.h"
 #endif /* HAVE_CDDA */
+
+#include "common.h"
+#include "utils.h"
+#include "utils_gui.h"
 #include "cover.h"
 #include "decoder/file_decoder.h"
 #include "music_browser.h"
@@ -58,6 +57,8 @@
 #include "options.h"
 #include "trashlist.h"
 #include "i18n.h"
+#include "metadata.h"
+#include "metadata_api.h"
 #include "metadata_id3v1.h"
 #include "metadata_id3v2.h"
 #include "file_info.h"

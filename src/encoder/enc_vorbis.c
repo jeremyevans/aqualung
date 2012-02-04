@@ -18,7 +18,6 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
@@ -27,7 +26,9 @@
 #include <time.h>
 #include <math.h>
 
-#include "../i18n.h"
+#include "../common.h"
+#include "../metadata.h"
+#include "../rb.h"
 #include "enc_vorbis.h"
 
 

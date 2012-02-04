@@ -32,10 +32,11 @@
 #include <netinet/in.h>
 #include <netdb.h> 
 
-#include "version.h"
-#include "common.h"
+#include "metadata.h"
 #include "options.h"
+#include "version.h"
 #include "httpc.h"
+
 
 /* Uncomment this to get debug printouts */
 /* #define HTTPC_DEBUG */

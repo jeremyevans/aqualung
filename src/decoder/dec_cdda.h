@@ -37,6 +37,8 @@
 #endif /* AQUALUNG_TMP_HAVE_CDDB */
 
 #include "../cdda.h"
+#include "../common.h"
+#include "../rb.h"
 #include "file_decoder.h"
 
 

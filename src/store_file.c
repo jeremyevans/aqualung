@@ -34,14 +34,18 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#ifdef HAVE_CDDB
+#include "cddb_lookup.h"
+#endif /* HAVE_CDDB */
+
+#ifdef HAVE_TRANSCODING
+#include "export.h"
+#endif /* HAVE_TRANSCODING */
+
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"
 #include "build_store.h"
-#ifdef HAVE_CDDB
-#include "cddb_lookup.h"
-#endif /* HAVE_CDDB */
-#include "core.h"
 #include "cover.h"
 #include "file_info.h"
 #include "decoder/file_decoder.h"
@@ -50,13 +54,9 @@
 #include "options.h"
 #include "volume.h"
 #include "playlist.h"
-#include "search.h"
 #include "i18n.h"
 #include "music_browser.h"
 #include "store_file.h"
-#ifdef HAVE_TRANSCODING
-#include "export.h"
-#endif /* HAVE_TRANSCODING */
 
 
 extern options_t options;

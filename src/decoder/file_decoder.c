@@ -31,7 +31,8 @@
 #include <sys/stat.h>
 
 #include "../httpc.h"
-#include "file_decoder.h"
+#include "../metadata.h"
+#include "../options.h"
 #include "dec_null.h"
 #ifdef HAVE_CDDA
 #include "dec_cdda.h"
@@ -66,6 +67,7 @@
 #ifdef HAVE_WAVPACK
 #include "dec_wavpack.h"
 #endif /* HAVE_WAVPACK */
+#include "file_decoder.h"
 
 
 extern size_t sample_size;

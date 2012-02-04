@@ -24,11 +24,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "file_encoder.h"
 #include "enc_flac.h"
 #include "enc_lame.h"
 #include "enc_vorbis.h"
 #include "enc_sndfile.h"
+#include "file_encoder.h"
 
 extern size_t sample_size;
 

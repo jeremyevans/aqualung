@@ -32,26 +32,23 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
 
+#ifdef HAVE_CDDA
+#include "store_cdda.h"
+#endif /* HAVE_CDDA */
+
+#ifdef HAVE_PODCAST
+#include "store_podcast.h"
+#endif /* HAVE_PODCAST */
+
 #include "common.h"
-#include "utils.h"
 #include "utils_gui.h"
-#include "core.h"
-#include "cover.h"
-#include "file_info.h"
-#include "decoder/file_decoder.h"
 #include "gui_main.h"
 #include "options.h"
 #include "playlist.h"
 #include "search.h"
 #include "i18n.h"
-#include "music_browser.h"
-#ifdef HAVE_CDDA
-#include "store_cdda.h"
-#endif /* HAVE_CDDA */
 #include "store_file.h"
-#ifdef HAVE_PODCAST
-#include "store_podcast.h"
-#endif /* HAVE_PODCAST */
+#include "music_browser.h"
 
 
 extern options_t options;

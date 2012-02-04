@@ -39,10 +39,9 @@
 #include "utils_gui.h"
 #include "i18n.h"
 #include "options.h"
-#include "gui_main.h"
-#include "ifp_device.h"
 #include "playlist.h"
 #include "decoder/file_decoder.h"
+#include "ifp_device.h"
 
 
 extern options_t options;

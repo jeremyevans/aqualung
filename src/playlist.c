@@ -36,6 +36,15 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#ifdef HAVE_IFP
+#include "ifp_device.h"
+#endif /* HAVE_IFP */
+
+#ifdef HAVE_TRANSCODING
+#include "export.h"
+#endif /* HAVE_TRANSCODING */
+
+#include "ext_lua.h"
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"
@@ -52,13 +61,6 @@
 #include "i18n.h"
 #include "search_playlist.h"
 #include "playlist.h"
-#ifdef HAVE_IFP
-#include "ifp_device.h"
-#endif /* HAVE_IFP */
-#ifdef HAVE_TRANSCODING
-#include "export.h"
-#endif /* HAVE_TRANSCODING */
-#include "ext_lua.h"
 
 
 extern options_t options;

@@ -21,8 +21,6 @@
 #ifndef AQUALUNG_ENC_FLAC_H
 #define AQUALUNG_ENC_FLAC_H
 
-#include <stdio.h>
-
 #ifdef HAVE_FLAC_ENC
 #include <FLAC/ordinals.h>
 #include <FLAC/stream_encoder.h>

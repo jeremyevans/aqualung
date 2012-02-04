@@ -24,7 +24,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <dirent.h>
+#include <limits.h>
 #include <glib.h>
 #include <glib-object.h>
 #include <gdk/gdk.h>

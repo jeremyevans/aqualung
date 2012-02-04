@@ -20,15 +20,18 @@
 
 #include <config.h>
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <errno.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <sys/select.h>
 #include <sys/socket.h>
-#include <sys/wait.h>
+#include <sys/time.h>
 #include <netinet/in.h>
 #include <netdb.h> 
 

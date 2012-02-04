@@ -24,8 +24,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <assert.h>
-#include <sys/stat.h>
 #include <glib.h>
 #include <glib-object.h>
 #include <gdk/gdk.h>

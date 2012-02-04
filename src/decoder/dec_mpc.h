@@ -21,11 +21,12 @@
 #ifndef AQUALUNG_DEC_MPC_H
 #define AQUALUNG_DEC_MPC_H
 
+#include <stdio.h>
+
 #ifdef MPC_OLD_API
 #include <mpcdec/mpcdec.h>
 #else
 #include <mpc/mpcdec.h>
-#include <math.h>
 #endif /* MPC_OLD_API */
 
 #include "../rb.h"

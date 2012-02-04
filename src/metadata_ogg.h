@@ -23,8 +23,8 @@
 
 #include <config.h>
 
+#include <sys/types.h>
 #include <glib.h>
-
 #ifdef HAVE_VORBIS
 #include <vorbis/codec.h>
 #endif /* HAVE_VORBIS */

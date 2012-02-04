@@ -23,12 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <math.h>
-#include <time.h>
-#include <sys/stat.h>
+#include <strings.h>
 
 #include "../httpc.h"
 #include "../metadata.h"

@@ -21,6 +21,8 @@
 #ifndef AQUALUNG_FILE_DECODER_H
 #define AQUALUNG_FILE_DECODER_H
 
+#include <math.h>
+
 #include "../common.h"
 #include "../metadata.h"
 

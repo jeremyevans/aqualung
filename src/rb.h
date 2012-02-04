@@ -22,7 +22,8 @@
 #ifndef AQUALUNG_RB_H
 #define AQUALUNG_RB_H
 
-#include <sys/types.h>
+#include <stddef.h>
+
 
 #ifdef __cplusplus
 extern "C" {

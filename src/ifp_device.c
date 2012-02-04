@@ -22,8 +22,8 @@
 #include <config.h>
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -31,7 +31,6 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-#include <limits.h>
 #include <usb.h>
 #include <ifp.h>
 

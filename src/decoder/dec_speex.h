@@ -21,6 +21,7 @@
 #ifndef AQUALUNG_DEC_SPEEX_H
 #define AQUALUNG_DEC_SPEEX_H
 
+#include <stdio.h>
 #include <oggz/oggz.h>
 #include <speex/speex.h>
 

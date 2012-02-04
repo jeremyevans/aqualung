@@ -21,6 +21,7 @@
 #ifndef AQUALUNG_METADATA_APE_H
 #define AQUALUNG_METADATA_APE_H
 
+#include <sys/types.h>
 #include <glib.h>
 
 #include "decoder/file_decoder.h"

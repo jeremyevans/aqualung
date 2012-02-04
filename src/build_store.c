@@ -26,7 +26,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include <unistd.h>
 #include <fnmatch.h>
 #include <regex.h>
 #include <glib.h>
@@ -36,7 +35,6 @@
 #include <gtk/gtk.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-#include <sys/stat.h>
 
 #ifdef HAVE_CDDB
 #include "cddb_lookup.h"

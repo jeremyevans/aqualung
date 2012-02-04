@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 #include <glib.h>
 #include <glib-object.h>
 #include <gdk/gdk.h>

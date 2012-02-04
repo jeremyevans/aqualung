@@ -20,14 +20,15 @@
 
 #include <config.h>
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <locale.h>
 #include <math.h>
-#include <time.h>
 #include <getopt.h>
 #include <time.h>
 #include <sys/time.h>

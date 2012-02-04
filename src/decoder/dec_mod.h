@@ -21,10 +21,6 @@
 #ifndef AQUALUNG_DEC_MOD_H
 #define AQUALUNG_DEC_MOD_H
 
-#include <sys/mman.h>
-#ifdef __FreeBSD__
-#include <sys/types.h>
-#endif /* __FreeBSD__ */
 #include <sys/stat.h>
 #include <libmodplug/modplug.h>
 

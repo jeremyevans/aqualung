@@ -21,7 +21,8 @@
 #ifndef AQUALUNG_DEC_MPEG_H
 #define AQUALUNG_DEC_MPEG_H
 
-#include <sys/mman.h>
+#include <stdio.h>
+#include <sys/stat.h>
 #include <mad.h>
 
 #include "../common.h"

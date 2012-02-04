@@ -20,8 +20,10 @@
 
 #include <config.h>
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 /* expand this to nothing so there's no error when including MACLib.h */

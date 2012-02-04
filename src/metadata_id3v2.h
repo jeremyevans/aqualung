@@ -21,6 +21,9 @@
 #ifndef AQUALUNG_METADATA_ID3V2_H
 #define AQUALUNG_METADATA_ID3V2_H
 
+#include <stdio.h>
+#include <sys/types.h>
+
 #include "metadata.h"
 
 

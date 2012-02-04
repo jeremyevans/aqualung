@@ -21,6 +21,7 @@
 #ifndef AQUALUNG_DEC_VORBIS_H
 #define AQUALUNG_DEC_VORBIS_H
 
+#include <stdio.h>
 #include <vorbis/codec.h>
 #ifdef _WIN32
 #undef _WIN32

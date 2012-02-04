@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ogg/ogg.h>
+#include <speex/speex_header.h>
 
 #include "../rb.h"
 #include "dec_speex.h"
@@ -33,8 +35,9 @@ extern size_t sample_size;
 
 
 static int
-read_ogg_packet(OGGZ * oggz, ogg_packet * op, long serialno, void * user_data) {
+read_ogg_packet(OGGZ * oggz, oggz_packet * zp, long serialno, void * user_data) {
 
+	ogg_packet * op = &zp->op;
 	decoder_t * dec = (decoder_t *)user_data;
 	speex_pdata_t * pd = (speex_pdata_t *)dec->pdata;
 
@@ -44,7 +47,6 @@ read_ogg_packet(OGGZ * oggz, ogg_packet * op, long serialno, void * user_data) {
 		int i;
                 int ptr = 0;
                 char speex_string[9];
-                char speex_version[21];
 		int enh = 1;
 
                 SpeexHeader * header;
@@ -54,12 +56,6 @@ read_ogg_packet(OGGZ * oggz, ogg_packet * op, long serialno, void * user_data) {
                         speex_string[i] = op->packet[ptr++];
                 }
                 speex_string[i] = '\0';
-
-                for (i = 0; i < 20; i++) {
-                        speex_version[i] = op->packet[ptr++];
-                }
-                speex_version[i] = '\0';
-
 
                 if (strcmp(speex_string, "Speex   ") != 0) {
 			printf("read_ogg_packet(): Not a Speex stream\n");

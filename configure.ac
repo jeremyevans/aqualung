@@ -44,6 +44,8 @@ PKG_PROG_PKG_CONFIG
 AC_CHECK_LIB([z], [gzopen])
 AC_CHECK_LIB([bz2], [BZ2_bzopen])
 # required
+AC_SEARCH_LIBS([floor], [m], [],
+    [AC_MSG_ERROR([POSIX math.h functions are required to build Aqualung])])
 PKG_CHECK_MODULES([xml], [libxml-2.0])
 PKG_CHECK_MODULES([glib], [glib-2.0 gthread-2.0])
 PKG_CHECK_MODULES([gtk], [gtk+-2.0 > 2.8])
@@ -61,7 +63,7 @@ AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_FUNC_MALLOC
-AC_CHECK_FUNCS([floor memset mkdir psiginfo strcasestr strdup strndup strrchr strstr])
+AC_CHECK_FUNCS([memset mkdir psiginfo strcasestr strdup strndup strrchr strstr])
 
 
 # Platform-specific tweaks.

@@ -3289,20 +3289,21 @@ systray_activate_cb(GtkStatusIcon * systray_icon, gpointer data) {
 }
 
 #if (GTK_CHECK_VERSION(2,15,0))
+GtkScrollType
+reverse_direction(GtkScrollType scroll_type) {
+	switch (scroll_type) {
+	case GTK_SCROLL_STEP_BACKWARD:
+		return GTK_SCROLL_STEP_FORWARD;
+	case GTK_SCROLL_STEP_FORWARD:
+		return GTK_SCROLL_STEP_BACKWARD;
+	default:
+		return scroll_type;
+	}
+}
+
 gboolean
 systray_mouse_wheel(int mouse_wheel_option, gboolean vertical_wheel,
        	guint32 time_since_last_event, GtkScrollType scroll_type) {
-
-	GtkScrollType reverse_direction(GtkScrollType scroll_type) {
-		switch (scroll_type) {
-		case GTK_SCROLL_STEP_BACKWARD:
-			return GTK_SCROLL_STEP_FORWARD;
-		case GTK_SCROLL_STEP_FORWARD:
-			return GTK_SCROLL_STEP_BACKWARD;
-		default:
-			return scroll_type;
-		}
-	}
 
 	switch (mouse_wheel_option) {
 	case SYSTRAY_MW_CMD_VOLUME:

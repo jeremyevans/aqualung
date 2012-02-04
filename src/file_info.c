@@ -39,6 +39,7 @@
 #endif /* HAVE_MOD */
 
 #ifdef HAVE_WAVPACK
+#include <wavpack/wavpack.h>
 #include "decoder/dec_wavpack.h"
 #endif /* HAVE_WAVPACK */
 

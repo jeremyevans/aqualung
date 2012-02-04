@@ -25,6 +25,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <glib.h>
+#include <ogg/ogg.h>
 
 #include "../httpc.h"
 #include "../metadata.h"

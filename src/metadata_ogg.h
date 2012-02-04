@@ -26,13 +26,7 @@
 #include <glib.h>
 
 #ifdef HAVE_VORBIS
-#ifdef _WIN32
-#undef _WIN32
-#include <vorbis/vorbisfile.h>
-#define _WIN32
-#else
-#include <vorbis/vorbisfile.h>
-#endif /* _WIN32 */
+#include <vorbis/codec.h>
 #endif /* HAVE_VORBIS */
 
 #include "metadata.h"

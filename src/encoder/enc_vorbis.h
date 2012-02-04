@@ -22,8 +22,10 @@
 #define AQUALUNG_ENC_VORBIS_H
 
 #include <stdio.h>
+
 #ifdef HAVE_VORBISENC
-#include <vorbis/vorbisenc.h>
+#include <ogg/ogg.h>
+#include <vorbis/codec.h>
 #endif /* HAVE_VORBISENC */
 
 #include "../rb.h"

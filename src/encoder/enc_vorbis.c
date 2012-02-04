@@ -20,19 +20,21 @@
 
 #include <config.h>
 
+#include "enc_vorbis.h"
+
+#ifdef HAVE_VORBISENC
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <math.h>
+#include <vorbis/vorbisenc.h>
 
 #include "../common.h"
 #include "../metadata.h"
 #include "../rb.h"
-#include "enc_vorbis.h"
 
-
-#ifdef HAVE_VORBISENC
 
 encoder_t *
 vorbisenc_encoder_init(file_encoder_t * fenc) {

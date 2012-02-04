@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _DEC_SNDFILE_H
-#define _DEC_SNDFILE_H
+#ifndef AQUALUNG_DEC_SNDFILE_H
+#define AQUALUNG_DEC_SNDFILE_H
 
 #include <sndfile.h>
 
@@ -43,7 +42,7 @@ unsigned int sndfile_decoder_read(decoder_t * dec, float * dest, int num);
 void sndfile_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
 
 
-#endif /* _DEC_SNDFILE_H */
+#endif /* AQUALUNG_DEC_SNDFILE_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

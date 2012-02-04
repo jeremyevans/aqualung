@@ -18,8 +18,9 @@
     $Id$
 */
 
-#ifndef _EXT_TITLE_FORMAT_H
-#define _EXT_TITLE_FORMAT_H
+#ifndef AQUALUNG_EXT_LUA_H
+#define AQUALUNG_EXT_LUA_H
+
 #include <gtk/gtk.h>
 #include "decoder/file_decoder.h"
 
@@ -34,7 +35,9 @@ void run_custom_store_keybinding(char * keyname, guint state);
 /* Caller responsible for freeing returned pointer for these methods: */
 char * extended_title_format(file_decoder_t * fdec);
 char * application_title_format(file_decoder_t * fdec);
-#endif /* _EXT_TITLE_FORMAT_H */
+
+
+#endif /* AQUALUNG_EXT_LUA_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8:
 

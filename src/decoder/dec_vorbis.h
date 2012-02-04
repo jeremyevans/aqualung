@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _DEC_VORBIS_H
-#define _DEC_VORBIS_H
+#ifndef AQUALUNG_DEC_VORBIS_H
+#define AQUALUNG_DEC_VORBIS_H
 
 #ifdef _WIN32
 #undef _WIN32
@@ -60,7 +59,7 @@ unsigned int vorbis_decoder_read(decoder_t * dec, float * dest, int num);
 void vorbis_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
 
 
-#endif /* _DEC_VORBIS_H */
+#endif /* AQUALUNG_DEC_VORBIS_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

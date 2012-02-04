@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _DEC_MPC_H
-#define _DEC_MPC_H
+#ifndef AQUALUNG_DEC_MPC_H
+#define AQUALUNG_DEC_MPC_H
 
 #ifdef MPC_OLD_API
 #include <mpcdec/mpcdec.h>
@@ -65,7 +64,7 @@ unsigned int mpc_decoder_read(decoder_t * dec, float * dest, int num);
 void mpc_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
 
 
-#endif /* _DEC_MPC_H */
+#endif /* AQUALUNG_DEC_MPC_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

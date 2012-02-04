@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _GUI_MAIN_H
-#define _GUI_MAIN_H
+#ifndef AQUALUNG_GUI_MAIN_H
+#define AQUALUNG_GUI_MAIN_H
 
 
 #include <gtk/gtk.h>
@@ -60,7 +59,8 @@ gint scroll_motion_notify(GtkWidget * widget, GdkEventMotion * event, gpointer *
 void set_buttons_relief(void);
 void hide_cover_thumbnail(void);
 
-#endif /* _GUI_MAIN_H */
+
+#endif /* AQUALUNG_GUI_MAIN_H */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _EXPORT_H
-#define _EXPORT_H
+#ifndef AQUALUNG_EXPORT_H
+#define AQUALUNG_EXPORT_H
 
 #include <config.h>
 
@@ -90,6 +90,6 @@ void export_append_item(export_t * export, char * infile,
 int export_start(export_t * export);
 
 
-#endif /* _EXPORT_H */
+#endif /* AQUALUNG_EXPORT_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

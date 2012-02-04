@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _STORE_PODCAST_H
-#define _STORE_PODCAST_H
+#ifndef AQUALUNG_STORE_PODCAST_H
+#define AQUALUNG_STORE_PODCAST_H
 
 #include <config.h>
 
@@ -64,6 +63,6 @@ void store_podcast_save(void);
 void store_podcast_load(void);
 
 
-#endif /* _STORE_PODCAST_H */
+#endif /* AQUALUNG_STORE_PODCAST_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

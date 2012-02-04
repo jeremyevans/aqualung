@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _DEC_LAVC_H
-#define _DEC_LAVC_H
+#ifndef AQUALUNG_DEC_LAVC_H
+#define AQUALUNG_DEC_LAVC_H
 
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -51,7 +50,7 @@ unsigned int lavc_decoder_read(decoder_t * dec, float * dest, int num);
 void lavc_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
 
 
-#endif /* _DEC_LAVC_H */
+#endif /* AQUALUNG_DEC_LAVC_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

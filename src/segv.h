@@ -7,8 +7,8 @@
 
 /* $Id$ */
 
-#ifndef _SEGV_H
-#define _SEGV_H
+#ifndef AQUALUNG_SEGV_H
+#define AQUALUNG_SEGV_H
 
 #include <config.h>
 
@@ -16,7 +16,7 @@
 int setup_sigsegv();
 
 
-#endif /* _SEGV_H */
+#endif /* AQUALUNG_SEGV_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

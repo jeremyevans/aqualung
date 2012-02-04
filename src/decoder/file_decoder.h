@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _FILE_DECODER_H
-#define _FILE_DECODER_H
+#ifndef AQUALUNG_FILE_DECODER_H
+#define AQUALUNG_FILE_DECODER_H
 
 #include "../common.h"
 #include "../options.h"
@@ -152,7 +151,7 @@ int bigendianp(void);
 } /* extern "C" */
 #endif
 
-#endif /* _FILE_DECODER_H */
+#endif /* AQUALUNG_FILE_DECODER_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _BUILD_STORE_H
-#define _BUILD_STORE_H
+#ifndef AQUALUNG_BUILD_STORE_H
+#define AQUALUNG_BUILD_STORE_H
 
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
@@ -31,7 +30,8 @@ void build_store(GtkTreeIter * store_iter, char * file);
 
 xmlNodePtr build_store_get_xml_node(char * file);
 
-#endif /* _BUILD_STORE_H */
+
+#endif /* AQUALUNG_BUILD_STORE_H */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

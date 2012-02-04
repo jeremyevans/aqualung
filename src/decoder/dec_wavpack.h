@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _DEC_WAVPACK_H
-#define _DEC_WAVPACK_H
+#ifndef AQUALUNG_DEC_WAVPACK_H
+#define AQUALUNG_DEC_WAVPACK_H
 
 #include "file_decoder.h"
 
@@ -53,6 +52,7 @@ void wavpack_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
 
 decoder_t * wavpack_decoder_init(file_decoder_t * fdec);
 
-#endif /* _DEC_WAVPACK_H */
+
+#endif /* AQUALUNG_DEC_WAVPACK_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

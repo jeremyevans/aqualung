@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _ENC_LAME_H
-#define _ENC_LAME_H
+#ifndef AQUALUNG_ENC_LAME_H
+#define AQUALUNG_ENC_LAME_H
 
 #include <stdio.h>
 #ifdef HAVE_LAME
@@ -55,7 +54,7 @@ int lame_encoder_validate_bitrate(int requested, int idx_offset);
 #endif /* HAVE_LAME */
 
 
-#endif /* _ENC_LAME_H */
+#endif /* AQUALUNG_ENC_LAME_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

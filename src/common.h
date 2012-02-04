@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _COMMON_H
-#define _COMMON_H
+#ifndef AQUALUNG_COMMON_H
+#define AQUALUNG_COMMON_H
 
 #include <config.h>
 
@@ -72,6 +72,6 @@
 #endif /* _WIN32 */
 
 
-#endif /* _COMMON_H */
+#endif /* AQUALUNG_COMMON_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

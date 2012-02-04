@@ -18,14 +18,14 @@
     $Id$
 */
 
-#ifndef _SEARCH_PLAYLIST_H
-#define _SEARCH_PLAYLIST_H
+#ifndef AQUALUNG_SEARCH_PLAYLIST_H
+#define AQUALUNG_SEARCH_PLAYLIST_H
 
 
 void search_playlist_dialog(void);
 
 
-#endif /* _SEARCH_PLAYLIST_H */
+#endif /* AQUALUNG_SEARCH_PLAYLIST_H */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

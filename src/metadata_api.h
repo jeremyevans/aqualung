@@ -27,8 +27,8 @@
  *   - close the file_decoder.
  */
 
-#ifndef _METADATA_API_H
-#define _METADATA_API_H
+#ifndef AQUALUNG_METADATA_API_H
+#define AQUALUNG_METADATA_API_H
 
 #include <config.h>
 
@@ -93,4 +93,4 @@ meta_update_basic(char * filename,
 const char * metadata_strerror(int error);
 
 
-#endif /* _METADATA_API_H */
+#endif /* AQUALUNG_METADATA_API_H */

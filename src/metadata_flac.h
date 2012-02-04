@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _METADATA_FLAC_H
-#define _METADATA_FLAC_H
+#ifndef AQUALUNG_METADATA_FLAC_H
+#define AQUALUNG_METADATA_FLAC_H
 
 #include <config.h>
 
@@ -43,4 +42,4 @@ FLAC__StreamMetadata * metadata_apic_frame_to_smeta(meta_frame_t * frame);
 #endif /* HAVE_FLAC */
 
 
-#endif /* _METADATA_FLAC_H */
+#endif /* AQUALUNG_METADATA_FLAC_H */

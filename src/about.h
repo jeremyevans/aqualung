@@ -18,12 +18,11 @@
     $Id$
 */
 
-
-#ifndef _ABOUT_H
-#define _ABOUT_H
+#ifndef AQUALUNG_ABOUT_H
+#define AQUALUNG_ABOUT_H
 
 void create_about_window(void);
 
-#endif /* _ABOUT_H */
+#endif /* AQUALUNG_ABOUT_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

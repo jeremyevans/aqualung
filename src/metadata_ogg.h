@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _METADATA_OGG_H
-#define _METADATA_OGG_H
+#ifndef AQUALUNG_METADATA_OGG_H
+#define AQUALUNG_METADATA_OGG_H
 
 #include <config.h>
 
@@ -77,4 +76,5 @@ unsigned char * meta_ogg_vc_render(metadata_t * meta, unsigned int * length);
 metadata_t * metadata_from_vorbis_comment(vorbis_comment * vc);
 #endif /* HAVE_VORBIS */
 
-#endif /* _METADATA_OGG_H */
+
+#endif /* AQUALUNG_METADATA_OGG_H */

@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _STORE_FILE_H
-#define _STORE_FILE_H
+#ifndef AQUALUNG_STORE_FILE_H
+#define AQUALUNG_STORE_FILE_H
 
 #include <gtk/gtk.h>
 
@@ -92,6 +91,6 @@ typedef struct {
 } track_data_t;
 
 
-#endif /* _STORE_FILE_H */
+#endif /* AQUALUNG_STORE_FILE_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

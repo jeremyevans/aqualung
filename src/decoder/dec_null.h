@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _DEC_NULL_H
-#define _DEC_NULL_H
+#ifndef AQUALUNG_DEC_NULL_H
+#define AQUALUNG_DEC_NULL_H
 
 #include "file_decoder.h"
 
@@ -40,7 +39,7 @@ unsigned int null_decoder_read(decoder_t * dec, float * dest, int num);
 void null_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
 
 
-#endif /* _DEC_NULL_H */
+#endif /* AQUALUNG_DEC_NULL_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

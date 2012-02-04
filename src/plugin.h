@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _PLUGIN_H
-#define _PLUGIN_H
+#ifndef AQUALUNG_PLUGIN_H
+#define AQUALUNG_PLUGIN_H
 
 #include <config.h>
 
@@ -62,7 +62,7 @@ void save_plugin_data(void);
 void load_plugin_data(void);
 
 
-#endif /* _PLUGIN_H */
+#endif /* AQUALUNG_PLUGIN_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

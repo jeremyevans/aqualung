@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _LOOP_BAR_H
-#define _LOOP_BAR_H
+#ifndef AQUALUNG_LOOP_BAR_H
+#define AQUALUNG_LOOP_BAR_H
 
 #include <config.h>
 
@@ -59,7 +59,7 @@ void aqualung_loop_bar_adjust_end(AqualungLoopBar * bar, float end);
 G_END_DECLS
 
 
-#endif /* _LOOP_BAR_H */
+#endif /* AQUALUNG_LOOP_BAR_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

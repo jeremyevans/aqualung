@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _TRASHLIST_H
-#define _TRASHLIST_H
+#ifndef AQUALUNG_TRASHLIST_H
+#define AQUALUNG_TRASHLIST_H
 
 typedef struct _trashlist_t {
   void * ptr;
@@ -33,7 +32,7 @@ void trashlist_add(trashlist_t * root, void * ptr);
 void trashlist_free(trashlist_t * root);
 
 
-#endif /* _TRASHLIST_H */
+#endif /* AQUALUNG_TRASHLIST_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _DEC_MAC_H
-#define _DEC_MAC_H
+#ifndef AQUALUNG_DEC_MAC_H
+#define AQUALUNG_DEC_MAC_H
 
 #include "file_decoder.h"
 
@@ -62,7 +61,7 @@ void mac_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
 }
 #endif
 
-#endif /* _DEC_MAC_H */
+#endif /* AQUALUNG_DEC_MAC_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

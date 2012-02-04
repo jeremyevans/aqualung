@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _CD_RIPPER_H
-#define _CD_RIPPER_H
+#ifndef AQUALUNG_CD_RIPPER_H
+#define AQUALUNG_CD_RIPPER_H
 
 #include <config.h>
 
@@ -30,7 +30,7 @@
 void cd_ripper(cdda_drive_t * drive, GtkTreeIter * iter);
 
 
-#endif /* _CD_RIPPER_H */
+#endif /* AQUALUNG_CD_RIPPER_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

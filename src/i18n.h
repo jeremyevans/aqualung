@@ -1,5 +1,5 @@
-#ifndef _I18N_H
-#define _I18N_H
+#ifndef AQUALUNG_I18N_H
+#define AQUALUNG_I18N_H
 
 #include "gettext.h"
 #include <locale.h>
@@ -8,4 +8,5 @@
 #define N_(Text) gettext_noop(Text)
 #define X_(Text) Text
 
-#endif /* _I18N_H */
+
+#endif /* AQUALUNG_I18N_H */

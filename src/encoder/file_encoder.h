@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _FILE_ENCODER_H
-#define _FILE_ENCODER_H
+#ifndef AQUALUNG_FILE_ENCODER_H
+#define AQUALUNG_FILE_ENCODER_H
 
 #include "../common.h"
 #include "../metadata.h"
@@ -86,7 +85,7 @@ unsigned int file_encoder_write(file_encoder_t * fenc, float * data, int num);
 } /* extern "C" */
 #endif
 
-#endif /* _FILE_ENCODER_H */
+#endif /* AQUALUNG_FILE_ENCODER_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

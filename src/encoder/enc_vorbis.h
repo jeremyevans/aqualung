@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _ENC_VORBIS_H
-#define _ENC_VORBIS_H
+#ifndef AQUALUNG_ENC_VORBIS_H
+#define AQUALUNG_ENC_VORBIS_H
 
 #include <stdio.h>
 #ifdef HAVE_VORBISENC
@@ -60,7 +59,7 @@ unsigned int vorbisenc_encoder_write(encoder_t * enc, float * data, int num);
 #endif /* HAVE_VORBISENC */
 
 
-#endif /* _ENC_VORBIS_H */
+#endif /* AQUALUNG_ENC_VORBIS_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

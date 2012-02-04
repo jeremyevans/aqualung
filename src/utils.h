@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _UTILS_H
-#define _UTILS_H
+#ifndef AQUALUNG_UTILS_H
+#define AQUALUNG_UTILS_H
 
 #include <config.h>
 
@@ -76,7 +76,7 @@ char * map_get_max(map_t * map);
 void map_free(map_t * map);
 
 
-#endif /* _UTILS_H */
+#endif /* AQUALUNG_UTILS_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8:
 

@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _DEC_FLAC_H
-#define _DEC_FLAC_H
+#ifndef AQUALUNG_DEC_FLAC_H
+#define AQUALUNG_DEC_FLAC_H
 
 #include <FLAC/format.h>
 #include <FLAC/metadata.h>
@@ -55,6 +54,6 @@ unsigned int flac_decoder_read(decoder_t * dec, float * dest, int num);
 void flac_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
 
 
-#endif /* _DEC_FLAC_H */
+#endif /* AQUALUNG_DEC_FLAC_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

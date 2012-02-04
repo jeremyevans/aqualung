@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _METADATA_H
-#define _METADATA_H
+#ifndef AQUALUNG_METADATA_H
+#define AQUALUNG_METADATA_H
 
 #include <config.h>
 
@@ -261,4 +260,5 @@ void metadata_dump(metadata_t * meta);
 void meta_dump_frame(meta_frame_t * frame);
 */
 
-#endif /* _METADATA_H */
+
+#endif /* AQUALUNG_METADATA_H */

@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _FILE_INFO_H
-#define _FILE_INFO_H
+#ifndef AQUALUNG_FILE_INFO_H
+#define AQUALUNG_FILE_INFO_H
 
 #include <gtk/gtk.h>
 
@@ -28,7 +28,7 @@ void show_file_info(char * name, char * file, int is_called_from_browser,
 		    GtkTreeModel * model, GtkTreeIter iter_track, gboolean cover_flag);
 
 
-#endif /* _FILE_INFO_H */
+#endif /* AQUALUNG_FILE_INFO_H */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _MUSIC_BROWSER_H
-#define _MUSIC_BROWSER_H
+#ifndef AQUALUNG_MUSIC_BROWSER_H
+#define AQUALUNG_MUSIC_BROWSER_H
 
 #include <gtk/gtk.h>
 
@@ -75,6 +74,6 @@ typedef union {
 } store_t;
 
 
-#endif /* _MUSIC_BROWSER_H */
+#endif /* AQUALUNG_MUSIC_BROWSER_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

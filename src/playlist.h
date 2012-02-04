@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _PLAYLIST_H
-#define _PLAYLIST_H
+#ifndef AQUALUNG_PLAYLIST_H
+#define AQUALUNG_PLAYLIST_H
 
 #include <config.h>
 
@@ -205,6 +204,7 @@ enum {
 	PL_COL_COUNT
 };
 
-#endif /* _PLAYLIST_H */
+
+#endif /* AQUALUNG_PLAYLIST_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :

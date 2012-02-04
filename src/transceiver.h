@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _TRANSCEIVER_H
-#define _TRANSCEIVER_H
+#ifndef AQUALUNG_TRANSCEIVER_H
+#define AQUALUNG_TRANSCEIVER_H
 
 
 /* valid remote command codes */
@@ -45,7 +44,7 @@ void send_message_to_session(int session_id, char * message, int len);
 int send_message_to_session_report_error(int session_id, char * message, int len, int report_error);
 
 
-#endif /* _TRANSCEIVER_H */
+#endif /* AQUALUNG_TRANSCEIVER_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

@@ -19,8 +19,8 @@
     $Id$
 */
 
-#ifndef _RINGBUFFER_H
-#define _RINGBUFFER_H
+#ifndef AQUALUNG_RB_H
+#define AQUALUNG_RB_H
 
 #include <sys/types.h>
 
@@ -232,7 +232,8 @@ size_t rb_write_space(const rb_t *rb);
 } /* extern "C" */
 #endif
 
-#endif /* _RINGBUFFER_H */
+
+#endif /* AQUALUNG_RB_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

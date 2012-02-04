@@ -19,8 +19,8 @@
     $Id$
 */
 
-#ifndef _IFP_DEVICE_H
-#define _IFP_DEVICE_H
+#ifndef AQUALUNG_IFP_DEVICE_H
+#define AQUALUNG_IFP_DEVICE_H
 
 #define PARENTDIR ("..")
 #define DIRID ("<dir>")
@@ -43,7 +43,8 @@ enum {
 
 void aifp_transfer_files(gint mode);
 
-#endif /* _IFP_DEVICE_H */
+
+#endif /* AQUALUNG_IFP_DEVICE_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8:
 

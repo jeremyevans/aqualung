@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _UTILS_XML_H
-#define _UTILS_XML_H
+#ifndef AQUALUNG_UTILS_XML_H
+#define AQUALUNG_UTILS_XML_H
 
 #include <config.h>
 
@@ -40,7 +40,7 @@ void xml_load_float(xmlDocPtr doc, xmlNodePtr node, char * varname, float * var)
 void xml_load_int_array(xmlDocPtr doc, xmlNodePtr node, char * varname, int * var, int idx);
 
 
-#endif /* _UTILS_XML_H */
+#endif /* AQUALUNG_UTILS_XML_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8:
 

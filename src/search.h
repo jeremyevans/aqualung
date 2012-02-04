@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _SEARCH_H
-#define _SEARCH_H
+#ifndef AQUALUNG_SEARCH_H
+#define AQUALUNG_SEARCH_H
 
 /* search flags */
 #define SEARCH_F_CS (1 << 0)    /* case sensitive */
@@ -33,7 +33,7 @@
 void search_dialog(void);
 
 
-#endif /* _SEARCH_H */
+#endif /* AQUALUNG_SEARCH_H */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

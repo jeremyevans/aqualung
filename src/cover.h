@@ -19,8 +19,8 @@
     $Id$
 */
 
-#ifndef _COVER_H
-#define _COVER_H
+#ifndef AQUALUNG_COVER_H
+#define AQUALUNG_COVER_H
 
 
 /* FIXME  34 is space for scrollbar width, window border and it is theme dependent */
@@ -40,7 +40,7 @@ void    insert_cover            (GtkTreeIter * tree_iter, GtkTextIter * text_ite
 gchar * find_cover_filename     (gchar *song_filename);
 
 
-#endif /* _COVER_H */
+#endif /* AQUALUNG_COVER_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

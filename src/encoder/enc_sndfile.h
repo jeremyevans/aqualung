@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _ENC_SNDFILE_H
-#define _ENC_SNDFILE_H
+#ifndef AQUALUNG_ENC_SNDFILE_H
+#define AQUALUNG_ENC_SNDFILE_H
 
 #ifdef HAVE_SNDFILE_ENC
 #include <sndfile.h>
@@ -46,7 +45,7 @@ unsigned int sndfile_encoder_write(encoder_t * enc, float * data, int num);
 #endif /* HAVE_SNDFILE_ENC */
 
 
-#endif /* _ENC_SNDFILE_H */
+#endif /* AQUALUNG_ENC_SNDFILE_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

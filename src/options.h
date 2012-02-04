@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _OPTIONS_H
-#define _OPTIONS_H
+#ifndef AQUALUNG_OPTIONS_H
+#define AQUALUNG_OPTIONS_H
 
 #include "common.h"
 
@@ -270,7 +270,8 @@ void save_config(void);
 void load_config(void);
 void finalize_options(void);
 
-#endif /* _OPTIONS_H */
+
+#endif /* AQUALUNG_OPTIONS_H */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :

@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _METADATA_ID3V1_H
-#define _METADATA_ID3V1_H
+#ifndef AQUALUNG_METADATA_ID3V1_H
+#define AQUALUNG_METADATA_ID3V1_H
 
 #include <config.h>
 
@@ -43,4 +42,5 @@ int metadata_to_id3v1(metadata_t * meta, unsigned char * buf);
 int meta_id3v1_delete(char * filename);
 int meta_id3v1_rewrite(char * filename, unsigned char * id3v1);
 
-#endif /* _METADATA_ID3V1_H */
+
+#endif /* AQUALUNG_METADATA_ID3V1_H */

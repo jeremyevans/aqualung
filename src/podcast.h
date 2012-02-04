@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _PODCAST_H
-#define _PODCAST_H
+#ifndef AQUALUNG_PODCAST_H
+#define AQUALUNG_PODCAST_H
 
 #include <config.h>
 
@@ -86,4 +86,4 @@ void podcast_item_free(podcast_item_t * item);
 void podcast_update(podcast_t * podcast);
 
 
-#endif /* _PODCAST_H */
+#endif /* AQUALUNG_PODCAST_H */

@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _ports_h
-#define _ports_h
+#ifndef AQUALUNG_PORTS_H
+#define AQUALUNG_PORTS_H
 
 #include <config.h>
 
@@ -32,7 +31,7 @@ void port_setup_dialog(void);
 void ports_clicked_close(GtkWidget * widget, gpointer * data);
 
 
-#endif /* _ports_h */
+#endif /* AQUALUNG_PORTS_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

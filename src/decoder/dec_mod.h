@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _DEC_MOD_H
-#define _DEC_MOD_H
+#ifndef AQUALUNG_DEC_MOD_H
+#define AQUALUNG_DEC_MOD_H
 
 #include <sys/mman.h>
 #ifdef __FreeBSD__
@@ -64,7 +63,7 @@ unsigned int mod_decoder_read(decoder_t * dec, float * dest, int num);
 void mod_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
 
 
-#endif /* _DEC_MOD_H */
+#endif /* AQUALUNG_DEC_MOD_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

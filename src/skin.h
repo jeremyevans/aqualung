@@ -18,13 +18,13 @@
     $Id$
 */
 
-#ifndef _SKIN_H
-#define _SKIN_H
+#ifndef AQUALUNG_SKIN_H
+#define AQUALUNG_SKIN_H
 
 void create_skin_window(void);
 void apply_skin(char * path);
 
-#endif /* _SKIN_H */
+#endif /* AQUALUNG_SKIN_H */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

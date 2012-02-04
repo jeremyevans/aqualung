@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _VOLUME_H
-#define _VOLUME_H
+#ifndef AQUALUNG_VOLUME_H
+#define AQUALUNG_VOLUME_H
 
 #include <gtk/gtk.h>
 #include "common.h"
@@ -93,7 +93,7 @@ float rva_from_replaygain(float rg);
 float rva_from_multiple_volumes(int nlevels, float * volumes);
 
 
-#endif /* _VOLUME_H */
+#endif /* AQUALUNG_VOLUME_H */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

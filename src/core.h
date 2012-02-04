@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _CORE_H
-#define _CORE_H
+#ifndef AQUALUNG_CORE_H
+#define AQUALUNG_CORE_H
 
 
 #include <sys/types.h>
@@ -174,6 +173,6 @@ void jack_client_start(void);
 #define db2lin(x) ((x) > -90.0f ? powf(10.0f, (x) * 0.05f) : 0.0f)
 
 
-#endif /* _CORE_H */
+#endif /* AQUALUNG_CORE_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

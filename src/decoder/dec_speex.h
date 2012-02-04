@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _DEC_SPEEX_H
-#define _DEC_SPEEX_H
+#ifndef AQUALUNG_DEC_SPEEX_H
+#define AQUALUNG_DEC_SPEEX_H
 
 #include <oggz/oggz.h>
 #include <speex/speex.h>
@@ -68,7 +67,7 @@ unsigned int speex_dec_read(decoder_t * dec, float * dest, int num);
 void speex_dec_seek(decoder_t * dec, unsigned long long seek_to_pos);
 
 
-#endif /* _DEC_SPEEX_H */
+#endif /* AQUALUNG_DEC_SPEEX_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

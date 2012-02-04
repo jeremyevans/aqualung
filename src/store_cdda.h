@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _STORE_CDDA_H
-#define _STORE_CDDA_H
+#ifndef AQUALUNG_STORE_CDDA_H
+#define AQUALUNG_STORE_CDDA_H
 
 #include <config.h>
 
@@ -49,6 +49,6 @@ typedef struct {
 } cdda_track_t;
 
 
-#endif /* _STORE_CDDA_H */
+#endif /* AQUALUNG_STORE_CDDA_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

@@ -31,7 +31,7 @@
 #endif /* !_WIN32 */
 
 #ifdef HAVE_CDDB
-#define _TMP_HAVE_CDDB 1
+#define AQUALUNG_TMP_HAVE_CDDB 1
 #undef HAVE_CDDB
 #endif /* HAVE_CDDB */
 #include <cdio/cdio.h>
@@ -40,10 +40,10 @@
 #ifdef HAVE_CDDB
 #undef HAVE_CDDB
 #endif /* HAVE_CDDB */
-#ifdef _TMP_HAVE_CDDB
+#ifdef AQUALUNG_TMP_HAVE_CDDB
 #define HAVE_CDDB 1
-#undef _TMP_HAVE_CDDB
-#endif /* _TMP_HAVE_CDDB */
+#undef AQUALUNG_TMP_HAVE_CDDB
+#endif /* AQUALUNG_TMP_HAVE_CDDB */
 
 
 #include "common.h"

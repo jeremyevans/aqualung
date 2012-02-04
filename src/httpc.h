@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _HTTPC_H
-#define _HTTPC_H
+#ifndef AQUALUNG_HTTPC_H
+#define AQUALUNG_HTTPC_H
 
 #define HTTPC_OK                0
 #define HTTPC_URL_ERROR        -1
@@ -109,7 +108,7 @@ int httpc_reconnect(http_session_t * session);
 void httpc_add_headers_meta(http_session_t * session, metadata_t * meta);
 
 
-#endif /* _HTTPC_H */
+#endif /* AQUALUNG_HTTPC_H */
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

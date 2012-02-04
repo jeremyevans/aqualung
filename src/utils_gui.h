@@ -18,8 +18,8 @@
     $Id$
 */
 
-#ifndef _UTILS_GUI_H
-#define _UTILS_GUI_H
+#ifndef AQUALUNG_UTILS_GUI_H
+#define AQUALUNG_UTILS_GUI_H
 
 #include <config.h>
 
@@ -94,7 +94,8 @@ void set_option_from_spin(GtkWidget * widget, int * opt);
 void set_option_from_entry(GtkWidget * widget, char * opt, int n);
 void set_option_bit_from_toggle(GtkWidget * toggle, int * opt, int bit);
 
-#endif /* _UTILS_GUI_H */
+
+#endif /* AQUALUNG_UTILS_GUI_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8:
 

@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _METADATA_APE_H
-#define _METADATA_APE_H
+#ifndef AQUALUNG_METADATA_APE_H
+#define AQUALUNG_METADATA_APE_H
 
 #include <config.h>
 
@@ -81,4 +80,4 @@ int meta_ape_write_metadata(file_decoder_t * fdec, metadata_t * meta);
 void meta_ape_send_metadata(metadata_t * meta, file_decoder_t * fdec);
 
 
-#endif /* _METADATA_APE_H */
+#endif /* AQUALUNG_METADATA_APE_H */

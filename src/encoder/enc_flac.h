@@ -18,9 +18,8 @@
     $Id$
 */
 
-
-#ifndef _ENC_FLAC_H
-#define _ENC_FLAC_H
+#ifndef AQUALUNG_ENC_FLAC_H
+#define AQUALUNG_ENC_FLAC_H
 
 #include <stdio.h>
 
@@ -53,7 +52,7 @@ unsigned int flac_encoder_write(encoder_t * enc, float * data, int num);
 #endif /* HAVE_FLAC_ENC */
 
 
-#endif /* _ENC_FLAC_H */
+#endif /* AQUALUNG_ENC_FLAC_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

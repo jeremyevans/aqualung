@@ -29,6 +29,13 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
 
+#undef HAVE_CDDB
+#include "undef_ac_pkg.h"
+#include <cdio/paranoia.h>
+#undef HAVE_CDDB
+#include "undef_ac_pkg.h"
+#include <config.h>	/* re-establish undefined autoconf macros */
+
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"

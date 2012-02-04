@@ -28,30 +28,12 @@
 /* -- talkin' about cross-platform libraries? */
 #define DLLEXPORT
 
-/* undefine these to avoid clashes... */
-#undef PACKAGE
-#undef PACKAGE_BUGREPORT
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_TARNAME
-#undef PACKAGE_VERSION
-#undef VERSION
-
-/* more cross-platform compatibility... */
-#include <mac/NoWindows.h>
-
+#include "../undef_ac_pkg.h"
 #include <mac/All.h>
 #include <mac/MACLib.h>
 #include <mac/CharacterHelper.h>
-
-/* undefine these to avoid clashes... */
-#undef PACKAGE
-#undef PACKAGE_BUGREPORT
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_TARNAME
-#undef PACKAGE_VERSION
-#undef VERSION
+#include "../undef_ac_pkg.h"
+#include <config.h>	/* re-establish undefined autoconf macros */
 
 #include "../i18n.h"
 #include "../metadata.h"

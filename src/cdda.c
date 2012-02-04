@@ -28,20 +28,14 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
 
-#ifdef HAVE_CDDB
-#define AQUALUNG_TMP_HAVE_CDDB 1
 #undef HAVE_CDDB
-#endif /* HAVE_CDDB */
+#include "undef_ac_pkg.h"
 #include <cdio/cdio.h>
 #include <cdio/cdda.h>
 #include <cdio/logging.h>
-#ifdef HAVE_CDDB
 #undef HAVE_CDDB
-#endif /* HAVE_CDDB */
-#ifdef AQUALUNG_TMP_HAVE_CDDB
-#define HAVE_CDDB 1
-#undef AQUALUNG_TMP_HAVE_CDDB
-#endif /* AQUALUNG_TMP_HAVE_CDDB */
+#include "undef_ac_pkg.h"
+#include <config.h>	/* re-establish undefined autoconf macros */
 
 #include "common.h"
 #include "utils_gui.h"

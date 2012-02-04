@@ -25,6 +25,14 @@
 #include <string.h>
 #include <time.h>
 
+#undef HAVE_CDDB
+#include "../undef_ac_pkg.h"
+#include <cdio/bytesex.h>
+#include <cdio/paranoia.h>
+#undef HAVE_CDDB
+#include "../undef_ac_pkg.h"
+#include <config.h>	/* re-establish undefined autoconf macros */
+
 #include "../cdda.h"
 #include "../common.h"
 #include "../rb.h"

@@ -35,19 +35,12 @@
 #include <libxml/tree.h>
 
 #ifdef HAVE_CDDA
-#ifdef HAVE_CDDB
-#define AQUALUNG_TMP_HAVE_CDDB 1
 #undef HAVE_CDDB
-#endif /* HAVE_CDDB */
-#include <cdio/cdio.h>
+#include "undef_ac_pkg.h"
 #include <cdio/paranoia.h>
-#ifdef HAVE_CDDB
 #undef HAVE_CDDB
-#endif /* HAVE_CDDB */
-#ifdef AQUALUNG_TMP_HAVE_CDDB
-#define HAVE_CDDB 1
-#undef AQUALUNG_TMP_HAVE_CDDB
-#endif /* AQUALUNG_TMP_HAVE_CDDB */
+#include "undef_ac_pkg.h"
+#include <config.h>	/* re-establish undefined autoconf macros */
 #endif /* HAVE_CDDA */
 
 #ifdef HAVE_JACK

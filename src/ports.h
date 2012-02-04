@@ -21,8 +21,6 @@
 #ifndef AQUALUNG_PORTS_H
 #define AQUALUNG_PORTS_H
 
-#include <config.h>
-
 
 #define MAX_JACK_CLIENTS 128
 

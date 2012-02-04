@@ -18,8 +18,9 @@
     $Id$
 */
 
+#include <config.h>
+
 #include <gtk/gtk.h>
-#include "config.h"
 #include "decoder/file_decoder.h"
 
 #ifdef HAVE_LUA

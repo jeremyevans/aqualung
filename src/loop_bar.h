@@ -21,9 +21,8 @@
 #ifndef AQUALUNG_LOOP_BAR_H
 #define AQUALUNG_LOOP_BAR_H
 
-#include <config.h>
-
 #include <gtk/gtk.h>
+
 
 G_BEGIN_DECLS
 

@@ -21,8 +21,6 @@
 #ifndef AQUALUNG_PODCAST_H
 #define AQUALUNG_PODCAST_H
 
-#include <config.h>
-
 #include <glib.h>
 
 

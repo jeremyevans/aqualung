@@ -21,13 +21,12 @@
 #ifndef AQUALUNG_METADATA_APE_H
 #define AQUALUNG_METADATA_APE_H
 
-#include <config.h>
-
 #include <glib.h>
 
 #include "common.h"
 #include "decoder/file_decoder.h"
 #include "metadata.h"
+
 
 #define APE_FLAG_READONLY      1
 #define APE_FLAG_TEXT          0x00

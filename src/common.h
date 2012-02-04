@@ -21,7 +21,6 @@
 #ifndef AQUALUNG_COMMON_H
 #define AQUALUNG_COMMON_H
 
-#include <config.h>
 
 #define MAXLEN 1024
 

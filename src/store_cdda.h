@@ -21,8 +21,6 @@
 #ifndef AQUALUNG_STORE_CDDA_H
 #define AQUALUNG_STORE_CDDA_H
 
-#include <config.h>
-
 #include <gtk/gtk.h>
 
 #include "cdda.h"

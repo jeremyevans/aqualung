@@ -21,8 +21,6 @@
 #ifndef AQUALUNG_UTILS_XML_H
 #define AQUALUNG_UTILS_XML_H
 
-#include <config.h>
-
 #include <libxml/tree.h>
 
 

@@ -10,8 +10,6 @@
 #ifndef AQUALUNG_SEGV_H
 #define AQUALUNG_SEGV_H
 
-#include <config.h>
-
 
 int setup_sigsegv();
 

@@ -21,11 +21,10 @@
 #ifndef AQUALUNG_CD_RIPPER_H
 #define AQUALUNG_CD_RIPPER_H
 
-#include <config.h>
-
 #include <gtk/gtk.h>
 
 #include "cdda.h"
+
 
 void cd_ripper(cdda_drive_t * drive, GtkTreeIter * iter);
 

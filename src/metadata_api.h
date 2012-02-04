@@ -30,8 +30,6 @@
 #ifndef AQUALUNG_METADATA_API_H
 #define AQUALUNG_METADATA_API_H
 
-#include <config.h>
-
 #include "metadata.h"
 
 

@@ -21,8 +21,6 @@
 #ifndef AQUALUNG_EXPORT_H
 #define AQUALUNG_EXPORT_H
 
-#include <config.h>
-
 #include "common.h"
 
 

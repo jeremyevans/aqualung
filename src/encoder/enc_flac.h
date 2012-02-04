@@ -24,9 +24,8 @@
 #include <stdio.h>
 
 #ifdef HAVE_FLAC_ENC
-#include <FLAC/format.h>
+#include <FLAC/ordinals.h>
 #include <FLAC/stream_encoder.h>
-#include <FLAC/metadata.h>
 #endif /* HAVE_FLAC_ENC */
 
 #include "file_encoder.h"

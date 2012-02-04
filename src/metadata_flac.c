@@ -26,12 +26,13 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <glib.h>
+#include <FLAC/metadata.h>
+#include <FLAC/ordinals.h>
 
 #include "common.h"
 #include "metadata_flac.h"
 
 
-#ifdef HAVE_FLAC
 void
 metadata_from_flac_streammeta_vc(metadata_t * meta,
 				 FLAC__StreamMetadata_VorbisComment * vc) {
@@ -172,4 +173,3 @@ metadata_apic_frame_to_smeta(meta_frame_t * frame) {
 	return smeta;
 }
 
-#endif /* HAVE_FLAC */

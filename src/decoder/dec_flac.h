@@ -21,8 +21,7 @@
 #ifndef AQUALUNG_DEC_FLAC_H
 #define AQUALUNG_DEC_FLAC_H
 
-#include <FLAC/format.h>
-#include <FLAC/metadata.h>
+#include <FLAC/ordinals.h>
 #include <FLAC/stream_decoder.h>
 
 #include "../rb.h"

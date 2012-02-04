@@ -20,16 +20,18 @@
 
 #include <config.h>
 
+#include "enc_flac.h"
+
+#ifdef HAVE_FLAC_ENC
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <FLAC/format.h>
+#include <FLAC/metadata.h>
 
 #include "../metadata.h"
 #include "../metadata_flac.h"
-#include "enc_flac.h"
-
-
-#ifdef HAVE_FLAC_ENC
 
 
 encoder_t *

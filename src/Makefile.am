@@ -43,7 +43,6 @@ i18n.h \
 metadata.h metadata.c \
 metadata_api.h metadata_api.c \
 metadata_ape.h metadata_ape.c \
-metadata_flac.h metadata_flac.c \
 metadata_id3v1.h metadata_id3v1.c \
 metadata_id3v2.h metadata_id3v2.c \
 metadata_ogg.h metadata_ogg.c \
@@ -73,6 +72,10 @@ endif
 
 if HAVE_CDDB
 aqualung_SOURCES += cddb_lookup.h cddb_lookup.c
+endif
+
+if HAVE_FLAC
+aqualung_SOURCES += metadata_flac.h metadata_flac.c
 endif
 
 if HAVE_IFP

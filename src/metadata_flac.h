@@ -21,23 +21,17 @@
 #ifndef AQUALUNG_METADATA_FLAC_H
 #define AQUALUNG_METADATA_FLAC_H
 
-#include <config.h>
-
-#ifdef HAVE_FLAC
-#include <FLAC/metadata.h>
-#endif /* HAVE_FLAC */
+#include <FLAC/format.h>
 
 #include "metadata.h"
 
 
-#ifdef HAVE_FLAC
 void metadata_from_flac_streammeta_vc(metadata_t * meta,
 				      FLAC__StreamMetadata_VorbisComment * vc);
 FLAC__StreamMetadata * metadata_to_flac_streammeta(metadata_t * meta);
 void metadata_from_flac_streammeta_pic(metadata_t * meta,
 				       FLAC__StreamMetadata_Picture * pic);
 FLAC__StreamMetadata * metadata_apic_frame_to_smeta(meta_frame_t * frame);
-#endif /* HAVE_FLAC */
 
 
 #endif /* AQUALUNG_METADATA_FLAC_H */

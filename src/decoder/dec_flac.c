@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <FLAC/format.h>
+#include <FLAC/metadata.h>
 
 #include "../metadata.h"
 #include "../metadata_api.h"

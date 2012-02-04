@@ -277,7 +277,7 @@ AQUALUNG_DETECT([lame], [LAME MP3 Encoding],
         [AQUALUNG_MISSING([lame], [LAME support requires libmp3lame])])])
 
 AQUALUNG_DETECT([lavc], [Libav / FFmpeg],
-    [PKG_CHECK_MODULES([lavc], [libavcodec libavformat],
+    [PKG_CHECK_MODULES([lavc], [libavcodec libavformat libavutil],
         [AQUALUNG_FOUND([lavc])],
         [AQUALUNG_MISSING([lavc], [$lavc_PKG_ERRORS])])])
 

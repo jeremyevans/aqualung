@@ -62,6 +62,7 @@
 #include "dec_mac.h"
 #endif /* HAVE_MAC */
 #ifdef HAVE_LAVC
+#include <libavformat/avformat.h>
 #include "dec_lavc.h"
 #endif /* HAVE_LAVC */
 #ifdef HAVE_WAVPACK

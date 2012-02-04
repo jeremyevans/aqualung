@@ -23,6 +23,7 @@
 
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
+#include <libavutil/rational.h>
 
 #include "../rb.h"
 #include "file_decoder.h"

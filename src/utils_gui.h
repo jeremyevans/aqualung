@@ -23,7 +23,9 @@
 
 #include <config.h>
 
+#include <glib.h>
 #include <gtk/gtk.h>
+
 
 enum {
 	TOP_WIN_SKIN = (1 << 0),

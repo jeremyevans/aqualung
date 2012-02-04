@@ -28,16 +28,12 @@
 #include <math.h>
 #include <sys/stat.h>
 #include <errno.h>
-#include <gtk/gtk.h>
-#include <gdk/gdkkeysyms.h>
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
-
-#ifdef _WIN32
 #include <glib.h>
-#else
-#include <pthread.h>
-#endif /* _WIN32 */
+#include <glib-object.h>
+#include <gdk/gdk.h>
+#include <gdk/gdkkeysyms.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtk.h>
 
 #ifdef HAVE_SRC
 #include <samplerate.h>
@@ -82,6 +78,7 @@
 #include "metadata.h"
 #include "gui_main.h"
 #include "version.h"
+
 
 /* receive at most this much remote messages in one run of timeout_callback() */
 #define MAX_RCV_COUNT 32

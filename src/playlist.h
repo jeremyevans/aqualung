@@ -23,13 +23,12 @@
 
 #include <config.h>
 
+#include <glib.h>
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
+
 #include "common.h"
 
-#ifdef _WIN32
-#include <glib.h>
-#else
-#include <pthread.h>
-#endif /* _WIN32 */
 
 enum {
 	PLAYLIST_LOAD,

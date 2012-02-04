@@ -18,24 +18,19 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <gtk/gtk.h>
-#include <gdk/gdkkeysyms.h>
-
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
-
-#ifdef _WIN32
 #include <glib.h>
-#else
-#include <pthread.h>
-#endif /* _WIN32 */
+#include <glib-object.h>
+#include <gdk/gdkkeysyms.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtk.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 
 #include "common.h"
 #include "i18n.h"

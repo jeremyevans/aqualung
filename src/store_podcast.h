@@ -21,6 +21,8 @@
 #ifndef AQUALUNG_STORE_PODCAST_H
 #define AQUALUNG_STORE_PODCAST_H
 
+#include <glib.h>
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
 #include "podcast.h"

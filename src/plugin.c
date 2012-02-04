@@ -18,7 +18,6 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
@@ -26,12 +25,15 @@
 #include <dlfcn.h>
 #include <unistd.h>
 #include <dirent.h>
-#include <lrdf.h>
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
-#include <gtk/gtk.h>
+#include <glib.h>
+#include <glib-object.h>
+#include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
-
+#include <gtk/gtk.h>
+#include <libxml/globals.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <lrdf.h>
 
 #include "common.h"
 #include "utils_gui.h"

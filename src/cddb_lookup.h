@@ -21,6 +21,9 @@
 #ifndef AQUALUNG_CDDB_LOOKUP_H
 #define AQUALUNG_CDDB_LOOKUP_H
 
+#include <gtk/gtk.h>
+
+
 void cddb_start_query(GtkTreeIter * record_iter, int ntracks, int * frames, int length);
 void cddb_start_submit(GtkTreeIter * iter_record, int ntracks, int * frames, int length);
 void cddb_auto_query_cdda(GtkTreeIter * drive_iter, int ntracks, int * frames, int length);

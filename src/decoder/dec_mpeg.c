@@ -30,12 +30,6 @@
 #include <limits.h>
 #include <string.h>
 
-#ifdef _WIN32
-#include <glib.h>
-#else
-#include <pthread.h>
-#endif /* _WIN32 */
-
 #include "../i18n.h"
 #ifdef HAVE_MOD
 #include "dec_mod.h"

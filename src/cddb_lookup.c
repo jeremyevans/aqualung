@@ -23,14 +23,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <glib.h>
+#include <glib-object.h>
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <cddb/cddb.h>
-
-#ifdef _WIN32
-#include <glib.h>
-#else
-#include <pthread.h>
-#endif /* _WIN32 */
 
 #include "common.h"
 #include "utils.h"
@@ -45,6 +42,7 @@
 #include "store_cdda.h"
 #endif /* HAVE_CDDA */
 #include "cddb_lookup.h"
+
 
 extern options_t options;
 

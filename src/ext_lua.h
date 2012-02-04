@@ -21,6 +21,7 @@
 #ifndef AQUALUNG_EXT_LUA_H
 #define AQUALUNG_EXT_LUA_H
 
+#include <glib.h>
 #include <gtk/gtk.h>
 #include "decoder/file_decoder.h"
 

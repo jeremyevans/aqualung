@@ -24,12 +24,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
+#include <glib.h>
+#include <glib-object.h>
 #include <gdk/gdkkeysyms.h>
-
-#ifndef _WIN32
-#include <pthread.h>
-#endif /* !_WIN32 */
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #ifdef HAVE_CDDB
 #define AQUALUNG_TMP_HAVE_CDDB 1
@@ -45,7 +43,6 @@
 #define HAVE_CDDB 1
 #undef AQUALUNG_TMP_HAVE_CDDB
 #endif /* AQUALUNG_TMP_HAVE_CDDB */
-
 
 #include "common.h"
 #include "utils.h"

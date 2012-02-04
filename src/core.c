@@ -32,14 +32,16 @@
 #include <time.h>
 #include <sys/time.h>
 #include <sys/stat.h>
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
-
-#ifdef _WIN32
 #include <glib.h>
-#else
+#include <gdk/gdk.h>
+#include <libxml/globals.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+
+#ifndef _WIN32
 #include <pthread.h>
-#endif /* _WIN32 */
+#include <sched.h>
+#endif /* !_WIN32 */
 
 #ifdef HAVE_SRC
 #include <samplerate.h>

@@ -21,7 +21,9 @@
 #ifndef AQUALUNG_MUSIC_BROWSER_H
 #define AQUALUNG_MUSIC_BROWSER_H
 
+#include <glib.h>
 #include <gtk/gtk.h>
+
 
 void create_music_browser(void);
 void show_music_browser(void);

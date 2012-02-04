@@ -20,6 +20,7 @@
 
 #include <config.h>
 
+#include <glib.h>
 #include <gtk/gtk.h>
 #include "decoder/file_decoder.h"
 
@@ -28,6 +29,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <glib-object.h>
+#include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 #include <lua.h>
 #include <lauxlib.h>
@@ -36,6 +39,7 @@
 #include "metadata.h"
 #include "options.h"
 #include "playlist.h"
+
 
 #define AQUALUNG_LUA_APPLICATION_TITLE_FUNCTION "application_title"
 #define AQUALUNG_LUA_TITLE_FORMAT_FUNCTION "playlist_title"

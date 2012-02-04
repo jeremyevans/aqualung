@@ -20,14 +20,17 @@
 
 #include <config.h>
 
-#include <gtk/gtk.h>
-#include <gdk/gdkkeysyms.h>
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <glib.h>
+#include <glib-object.h>
+#include <gdk/gdk.h>
+#include <gdk/gdkkeysyms.h>
+#include <gtk/gtk.h>
 
 #include "common.h"
 #include "utils_gui.h"
@@ -36,6 +39,7 @@
 #include "options.h"
 #include "i18n.h"
 #include "skin.h"
+
 
 extern options_t options;
 

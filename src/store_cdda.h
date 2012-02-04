@@ -21,9 +21,12 @@
 #ifndef AQUALUNG_STORE_CDDA_H
 #define AQUALUNG_STORE_CDDA_H
 
+#include <glib.h>
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
 #include "cdda.h"
+
 
 void create_cdda_node(void);
 int store_cdda_iter_is_track(GtkTreeIter * iter);

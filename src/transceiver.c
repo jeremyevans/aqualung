@@ -18,7 +18,6 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
@@ -29,7 +28,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <gdk/gdkx.h>
+#include <glib.h>
 
 #include "common.h"
 #include "transceiver.h"

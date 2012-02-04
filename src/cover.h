@@ -22,6 +22,9 @@
 #ifndef AQUALUNG_COVER_H
 #define AQUALUNG_COVER_H
 
+#include <glib.h>
+#include <gtk/gtk.h>
+
 
 /* FIXME  34 is space for scrollbar width, window border and it is theme dependent */
 #define SCROLLBAR_WIDTH         34

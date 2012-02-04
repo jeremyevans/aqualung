@@ -23,13 +23,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gtk/gtk.h>
-
-#ifdef _WIN32
 #include <glib.h>
-#else
-#include <pthread.h>
-#endif /* _WIN32 */
+#include <glib-object.h>
+#include <gdk/gdk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtk.h>
 
 #include "common.h"
 #include "utils.h"
@@ -48,6 +46,7 @@
 #include "cdda.h"
 #include "metadata.h"
 #include "cd_ripper.h"
+
 
 #define BUFSIZE 588
 

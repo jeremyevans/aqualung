@@ -21,7 +21,8 @@
 #ifndef AQUALUNG_GUI_MAIN_H
 #define AQUALUNG_GUI_MAIN_H
 
-
+#include <glib.h>
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
 #include "core.h"

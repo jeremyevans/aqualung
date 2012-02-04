@@ -21,15 +21,11 @@
 #ifndef AQUALUNG_VOLUME_H
 #define AQUALUNG_VOLUME_H
 
+#include <glib.h>
 #include <gtk/gtk.h>
+
 #include "common.h"
 
-
-#ifdef _WIN32
-#include <glib.h>
-#else
-#include <pthread.h>
-#endif /* _WIN32 */
 
 #define RMSSIZE 100
 

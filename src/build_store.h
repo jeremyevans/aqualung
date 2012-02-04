@@ -21,8 +21,9 @@
 #ifndef AQUALUNG_BUILD_STORE_H
 #define AQUALUNG_BUILD_STORE_H
 
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
+#include <gtk/gtk.h>
+#include <libxml/tree.h>
+
 
 int build_is_busy(void);
 

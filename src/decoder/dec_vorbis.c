@@ -18,13 +18,13 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <glib.h>
 
 #include "../metadata_ogg.h"
 #include "dec_vorbis.h"

@@ -23,14 +23,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gtk/gtk.h>
 #include <math.h>
-
-#ifdef _WIN32
 #include <glib.h>
-#else
-#include <pthread.h>
-#endif /* _WIN32 */
+#include <glib-object.h>
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 
 #include "common.h"
 #include "utils_gui.h"

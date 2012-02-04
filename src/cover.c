@@ -19,16 +19,18 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
-#include <gtk/gtk.h>
-#include <gdk/gdkcursor.h>
+#include <glib.h>
+#include <glib-object.h>
+#include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtk.h>
 
 #include "common.h"
 #include "cover.h"
@@ -37,6 +39,7 @@
 #include "store_file.h"
 #include "i18n.h"
 #include "options.h"
+
 
 extern options_t options;
 

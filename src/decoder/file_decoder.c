@@ -30,13 +30,6 @@
 #include <time.h>
 #include <sys/stat.h>
 
-#ifdef _WIN32
-#include <glib.h>
-#else
-#include <pthread.h>
-#endif /* _WIN32 */
-
-
 #include "../httpc.h"
 #include "file_decoder.h"
 #include "dec_null.h"

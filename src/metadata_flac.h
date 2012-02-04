@@ -27,8 +27,6 @@
 #include <FLAC/metadata.h>
 #endif /* HAVE_FLAC */
 
-#include <glib.h>
-
 #include "common.h"
 #include "metadata.h"
 

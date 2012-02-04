@@ -28,15 +28,11 @@
 #include <fnmatch.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-
-#include <gtk/gtk.h>
-#include <glib/gstdio.h>
-
-#ifdef _WIN32
 #include <glib.h>
-#else
-#include <pthread.h>
-#endif /* _WIN32 */
+#include <glib/gstdio.h>
+#include <glib-object.h>
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 
 #include "common.h"
 #include "i18n.h"

@@ -26,15 +26,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
-
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
-
-#ifdef _WIN32
 #include <glib.h>
-#else
-#include <pthread.h>
-#endif /* _WIN32*/
+#include <libxml/globals.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 
 #include "common.h"
 #include "i18n.h"

@@ -25,10 +25,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <glib.h>
-#include <glib/gstdio.h>
-#ifndef _WIN32
-#include <pthread.h>
-#endif /* !_WIN32 */
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtk.h>
 
 #ifdef HAVE_CDDB
 #define AQUALUNG_TMP_HAVE_CDDB 1

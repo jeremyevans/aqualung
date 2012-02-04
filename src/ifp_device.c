@@ -19,17 +19,18 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <gtk/gtk.h>
 #include <glib.h>
 #include <glib/gstdio.h>
+#include <glib-object.h>
+#include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
+#include <gtk/gtk.h>
 #include <limits.h>
 #include <usb.h>
 #include <ifp.h>
@@ -42,6 +43,7 @@
 #include "ifp_device.h"
 #include "playlist.h"
 #include "decoder/file_decoder.h"
+
 
 extern options_t options;
 extern GtkWidget * playlist_window;

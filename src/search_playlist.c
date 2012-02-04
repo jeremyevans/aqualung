@@ -23,8 +23,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gtk/gtk.h>
+#include <glib.h>
+#include <glib-object.h>
+#include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
+#include <gtk/gtk.h>
 
 #include "common.h"
 #include "utils_gui.h"
@@ -32,6 +35,7 @@
 #include "gui_main.h"
 #include "options.h"
 #include "i18n.h"
+
 
 enum {
 	SEARCH_F_CS = (1 << 0),  /* case sensitive */

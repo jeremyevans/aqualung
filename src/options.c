@@ -20,15 +20,19 @@
 
 #include <config.h>
 
-#include <gtk/gtk.h>
-#include <gdk/gdkkeysyms.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <libxml/xmlmemory.h>
+#include <glib.h>
+#include <glib-object.h>
+#include <gdk/gdk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtk.h>
+#include <libxml/globals.h>
 #include <libxml/parser.h>
+#include <libxml/tree.h>
 
 #ifdef HAVE_CDDA
 #ifdef HAVE_CDDB

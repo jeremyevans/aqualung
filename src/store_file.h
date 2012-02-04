@@ -21,7 +21,10 @@
 #ifndef AQUALUNG_STORE_FILE_H
 #define AQUALUNG_STORE_FILE_H
 
+#include <glib.h>
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
+
 
 enum {
 	BATCH_TAG_TITLE   = (1 << 0),

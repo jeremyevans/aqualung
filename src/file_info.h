@@ -21,6 +21,7 @@
 #ifndef AQUALUNG_FILE_INFO_H
 #define AQUALUNG_FILE_INFO_H
 
+#include <glib.h>
 #include <gtk/gtk.h>
 
 

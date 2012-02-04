@@ -30,6 +30,8 @@
 
 #ifdef _WIN32
 
+#include <glib.h>
+
 #define AQUALUNG_THREAD_DECLARE(thread_id) GThread * thread_id;
 #define AQUALUNG_THREAD_CREATE(id, attr, func, args) id=g_thread_create(func, args, TRUE, NULL);
 #define AQUALUNG_THREAD_JOIN(thread_id) g_thread_join(thread_id);
@@ -49,6 +51,8 @@
 #define AQUALUNG_COND_WAIT(cond, mutex) g_cond_wait(cond, mutex);
 
 #else
+
+#include <pthread.h>
 
 #define AQUALUNG_THREAD_DECLARE(thread_id) pthread_t thread_id;
 #define AQUALUNG_THREAD_CREATE(id, attr, func, args) pthread_create(&(id), attr, func, args);

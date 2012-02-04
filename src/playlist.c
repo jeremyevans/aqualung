@@ -18,7 +18,6 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <stdio.h>
@@ -27,12 +26,15 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <math.h>
-#include <gtk/gtk.h>
-#include <gdk/gdkkeysyms.h>
 #include <glib.h>
 #include <glib/gstdio.h>
-#include <libxml/xmlmemory.h>
+#include <glib-object.h>
+#include <gdk/gdkkeysyms.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtk.h>
+#include <libxml/globals.h>
 #include <libxml/parser.h>
+#include <libxml/tree.h>
 
 #include "common.h"
 #include "utils.h"
@@ -57,6 +59,7 @@
 #include "export.h"
 #endif /* HAVE_TRANSCODING */
 #include "ext_lua.h"
+
 
 extern options_t options;
 

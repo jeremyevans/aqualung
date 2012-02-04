@@ -24,12 +24,16 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <glib.h>
+#include <glib-object.h>
+#include <gdk/gdk.h>
 
 #include "common.h"
 #include "i18n.h"
 #include "options.h"
 #include "utils.h"
 #include "utils_gui.h"
+
 
 extern options_t options;
 

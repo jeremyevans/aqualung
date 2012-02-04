@@ -36,12 +36,6 @@
 #undef AQUALUNG_TMP_HAVE_CDDB
 #endif /* AQUALUNG_TMP_HAVE_CDDB */
 
-#ifdef _WIN32
-#include <glib.h>
-#else
-#include <pthread.h>
-#endif /* _WIN32*/
-
 #include "../cdda.h"
 #include "file_decoder.h"
 

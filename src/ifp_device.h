@@ -22,6 +22,9 @@
 #ifndef AQUALUNG_IFP_DEVICE_H
 #define AQUALUNG_IFP_DEVICE_H
 
+#include <glib.h>
+
+
 #define PARENTDIR ("..")
 #define DIRID ("<dir>")
 

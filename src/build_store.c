@@ -29,14 +29,14 @@
 #include <unistd.h>
 #include <fnmatch.h>
 #include <regex.h>
-#include <gtk/gtk.h>
-#include <sys/stat.h>
-
-#ifdef _WIN32
 #include <glib.h>
-#else
-#include <pthread.h>
-#endif /* _WIN32*/
+#include <glib-object.h>
+#include <gdk/gdk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtk.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <sys/stat.h>
 
 #include "common.h"
 #include "utils.h"

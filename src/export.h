@@ -21,6 +21,9 @@
 #ifndef AQUALUNG_EXPORT_H
 #define AQUALUNG_EXPORT_H
 
+#include <glib.h>
+#include <gtk/gtk.h>
+
 #include "common.h"
 
 

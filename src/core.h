@@ -24,12 +24,6 @@
 
 #include <sys/types.h>
 
-#ifdef _WIN32
-#include <glib.h>
-#else
-#include <pthread.h>
-#endif
-
 #include "common.h"
 
 #ifdef HAVE_ALSA

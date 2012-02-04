@@ -18,7 +18,6 @@
     $Id$
 */
 
-
 #include <config.h>
 
 #include <errno.h>
@@ -27,6 +26,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <glib.h>
+#include <glib-object.h>
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <jack/jack.h>
 

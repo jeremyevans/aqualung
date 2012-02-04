@@ -50,6 +50,10 @@
 #endif /* AQUALUNG_TMP_HAVE_CDDB */
 #endif /* HAVE_CDDA */
 
+#ifdef HAVE_JACK
+#include <jack/jack.h>
+#endif /* HAVE_JACK */
+
 #ifdef HAVE_SRC
 #include <samplerate.h>
 #endif /* HAVE_SRC */

@@ -28,10 +28,6 @@
 #include <alsa/asoundlib.h>
 #endif /* HAVE_ALSA */
 
-#ifdef HAVE_JACK
-#include <jack/jack.h>
-#endif /* HAVE_JACK */
-
 /* output drivers */
 #ifdef HAVE_OSS
 #define OSS_DRIVER  1

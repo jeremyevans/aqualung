@@ -54,13 +54,13 @@
 #ifdef HAVE_OSS
 #include <sys/ioctl.h>
 #include <sys/types.h>
-#if defined(HAVE_SYS_SOUNDCARD_H)
-#include <sys/soundcard.h>
+#if defined(HAVE_LINUX_SOUNDCARD_H)
+#include <linux/soundcard.h>
 #elif defined(HAVE_SOUNDCARD_H)
 #include <soundcard.h>
-#else /* HAVE_LINUX_SOUNDARD_H */
-#include <linux/soundcard.h>
-#endif /* HAVE_LINUX_SOUNDARD_H */
+#else /* HAVE_SYS_SOUNDCARD_H */
+#include <sys/soundcard.h>
+#endif /* HAVE_SYS_SOUNDCARD_H */
 #endif /* HAVE_OSS */
 
 #ifdef HAVE_JACK

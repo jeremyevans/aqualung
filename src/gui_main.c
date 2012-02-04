@@ -35,6 +35,10 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
 
+#ifdef HAVE_JACK
+#include <jack/jack.h>
+#endif /* HAVE_JACK */
+
 #ifdef HAVE_SRC
 #include <samplerate.h>
 #endif /* HAVE_SRC */

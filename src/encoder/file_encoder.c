@@ -30,8 +30,6 @@
 #include "enc_sndfile.h"
 #include "file_encoder.h"
 
-extern size_t sample_size;
-
 
 typedef encoder_t * encoder_init_t(file_encoder_t * fenc);
 

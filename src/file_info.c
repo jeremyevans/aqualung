@@ -81,7 +81,6 @@ enum {
 
 
 extern options_t options;
-extern GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 
 #define FI_MAXPAGES 256
 
@@ -156,7 +155,6 @@ typedef struct {
 
 extern GtkWidget * main_window;
 extern GtkTreeStore * music_store;
-extern GtkTreeSelection * music_select;
 extern GtkWidget * music_tree;
 
 

@@ -48,7 +48,6 @@ extern options_t options;
 
 extern GtkWidget * browser_window;
 extern GtkTreeStore * music_store;
-extern GtkTreeSelection * music_select;
 
 
 enum {

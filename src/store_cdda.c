@@ -68,10 +68,6 @@ extern char pl_color_inactive[14];
 
 extern options_t options;
 
-extern GdkPixbuf * icon_store;
-extern GdkPixbuf * icon_record;
-extern GdkPixbuf * icon_track;
-
 extern GtkTreeStore * music_store;
 extern GtkWidget * browser_window;
 extern GList * playlists;

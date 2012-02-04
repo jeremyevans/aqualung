@@ -29,6 +29,8 @@
 #include "common.h"
 
 
+G_BEGIN_DECLS
+
 /* tag (and pseudo-tag) types */
 #define META_TAG_NULL            0x000
 #define META_TAG_ID3v1           0x001
@@ -259,6 +261,8 @@ void meta_write_int64(u_int64_t val, unsigned char * buf);
 void metadata_dump(metadata_t * meta);
 void meta_dump_frame(meta_frame_t * frame);
 */
+
+G_END_DECLS
 
 
 #endif /* AQUALUNG_METADATA_H */

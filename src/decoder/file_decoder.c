@@ -70,7 +70,6 @@
 #include "file_decoder.h"
 
 
-extern size_t sample_size;
 extern options_t options;
 
 typedef decoder_t * decoder_init_t(file_decoder_t * fdec);

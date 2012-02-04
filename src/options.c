@@ -77,7 +77,6 @@ extern int src_type_parsed;
 extern GtkWidget * main_window;
 extern GtkWidget * playlist_window;
 extern GtkWidget * playlist_color_indicator;
-extern GtkTooltips * aqualung_tooltips;
 
 extern PangoFontDescription *fd_playlist;
 extern PangoFontDescription *fd_browser;
@@ -86,8 +85,6 @@ extern PangoFontDescription *fd_smalltimer;
 extern PangoFontDescription *fd_songtitle;
 extern PangoFontDescription *fd_songinfo;
 extern PangoFontDescription *fd_statusbar;
-
-extern int music_store_changed;
 
 extern GtkWidget * music_tree;
 extern GtkTreeStore * music_store;

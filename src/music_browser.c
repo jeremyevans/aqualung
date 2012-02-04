@@ -60,10 +60,6 @@ extern GtkListStore * ms_pathlist_store;
 extern PangoFontDescription *fd_browser;
 extern PangoFontDescription *fd_statusbar;
 
-extern char pl_color_inactive[14];
-
-extern GtkTooltips * aqualung_tooltips;
-
 GtkWidget * browser_window;
 
 int music_store_changed = 0;

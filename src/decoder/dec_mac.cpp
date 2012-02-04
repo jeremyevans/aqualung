@@ -53,14 +53,13 @@
 #undef PACKAGE_VERSION
 #undef VERSION
 
-extern "C" {
 #include "../i18n.h"
 #include "../metadata.h"
 #include "../metadata_ape.h"
 #include "../rb.h"
 #include "file_decoder.h"
 #include "dec_mac.h"
-}
+
 
 extern size_t sample_size;
 

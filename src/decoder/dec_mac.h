@@ -47,7 +47,7 @@ typedef struct _mac_pdata_t {
 
 
 #ifdef __cplusplus
-extern "C"{
+extern "C" {
 #endif
 
 decoder_t * mac_decoder_init(file_decoder_t * fdec);
@@ -59,8 +59,9 @@ unsigned int mac_decoder_read(decoder_t * dec, float * dest, int num);
 void mac_decoder_seek(decoder_t * dec, unsigned long long seek_to_pos);
 
 #ifdef __cplusplus
-}
+} /* extern "C" */
 #endif
+
 
 #endif /* AQUALUNG_DEC_MAC_H */
 

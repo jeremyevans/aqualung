@@ -54,14 +54,10 @@
 
 
 extern options_t options;
-extern GdkPixbuf * icon_store;
-extern GdkPixbuf * icon_record;
 extern GdkPixbuf * icon_track;
-extern GdkPixbuf * icon_cdda;
 extern GdkPixbuf * icon_cdda_disc;
 extern GdkPixbuf * icon_cdda_nodisc;
 extern GtkTreeStore * music_store;
-extern GtkWidget * browser_window;
 
 
 typedef struct {

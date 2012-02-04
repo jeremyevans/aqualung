@@ -47,7 +47,6 @@
 extern options_t options;
 extern GtkWidget * playlist_window;
 extern GtkWidget * main_window;
-extern GtkTooltips * aqualung_tooltips;
 
 void aifp_close_device(void);
 gint aifp_directory_listing(gchar *name);

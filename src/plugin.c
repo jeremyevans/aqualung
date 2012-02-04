@@ -51,7 +51,6 @@ extern volatile int plugin_lock;
 extern int n_plugins;
 extern plugin_instance * plugin_vect[MAX_PLUGINS];
 
-extern unsigned long ladspa_buflen;
 extern LADSPA_Data * l_buf;
 extern LADSPA_Data * r_buf;
 

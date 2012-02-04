@@ -119,7 +119,6 @@ extern char * jack_shutdown_reason;
 extern int aqualung_socket_fd;
 extern int aqualung_session_id;
 
-extern GtkTreeStore * music_store;
 extern GtkListStore * running_store;
 
 extern GtkWidget * plist_menu;
@@ -330,7 +329,6 @@ extern char fileinfo_name[MAXLEN];
 extern char fileinfo_file[MAXLEN];
 
 extern GtkWidget * plist__fileinfo;
-extern GtkWidget * plist__rva;
 
 extern gint playlist_state;
 extern gint browser_state;

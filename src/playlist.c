@@ -68,26 +68,16 @@ extern options_t options;
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
 
-extern GtkTooltips * aqualung_tooltips;
-
 extern PangoFontDescription *fd_playlist;
 extern PangoFontDescription *fd_statusbar;
 
 extern GtkWidget * main_window;
-extern GtkWidget * info_window;
 
 extern GtkTreeSelection * music_select;
-
-extern gulong play_id;
-extern gulong pause_id;
-extern GtkWidget * play_button;
-extern GtkWidget * pause_button;
 
 extern int is_file_loaded;
 extern int is_paused;
 extern int allow_seeks;
-
-extern char current_file[MAXLEN];
 
 extern rb_t * rb_gui2disk;
 

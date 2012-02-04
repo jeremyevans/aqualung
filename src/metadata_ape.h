@@ -27,6 +27,8 @@
 #include "metadata.h"
 
 
+G_BEGIN_DECLS
+
 #define APE_FLAG_READONLY      1
 #define APE_FLAG_TEXT          0x00
 #define APE_FLAG_BINARY        0x02
@@ -76,6 +78,8 @@ int meta_ape_replace_or_append(char * filename, ape_tag_t * tag);
 /* for direct use by decoders */
 int meta_ape_write_metadata(file_decoder_t * fdec, metadata_t * meta);
 void meta_ape_send_metadata(metadata_t * meta, file_decoder_t * fdec);
+
+G_END_DECLS
 
 
 #endif /* AQUALUNG_METADATA_APE_H */

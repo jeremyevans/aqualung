@@ -42,7 +42,6 @@ extern options_t options;
 
 extern gint cover_show_flag;
 
-extern GtkWidget * main_window;
 extern GtkTreeStore * music_store;
 
 /* maximum 4 chars per extension */

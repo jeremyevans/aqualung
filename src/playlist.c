@@ -5032,6 +5032,7 @@ playlist_load_m3u_thread(void * arg) {
 	gchar tmp[MAXLEN];
 	gchar pl_dir[MAXLEN];
 	gint have_name = 0;
+	gint end_of_file_reached = 0;
 
 	playlist_transfer_t * pt = (playlist_transfer_t *)arg;
 	playlist_data_t * data = NULL;
@@ -5053,12 +5054,14 @@ playlist_load_m3u_thread(void * arg) {
  	pl_dir[i] = '\0';
 
 	i = 0;
-	while ((c = fgetc(f)) != EOF && !pt->pl->thread_stop) {
-		if ((c != '\n') && (c != '\r') && (i < MAXLEN-1)) {
+	while (!end_of_file_reached && !pt->pl->thread_stop) {
+		c = fgetc(f);
+		if ((c != EOF) && (c != '\n') && (c != '\r') && (i < MAXLEN-1)) {
 			if ((i > 0) || ((c != ' ') && (c != '\t'))) {
 				line[i++] = c;
 			}
 		} else {
+			end_of_file_reached = (c == EOF);
 			line[i] = '\0';
 			if (i == 0) {
 				continue;
@@ -5193,6 +5196,7 @@ playlist_load_pls_thread(void * arg) {
 	gint have_title = 0;
 	gchar numstr_file[10];
 	gchar numstr_title[10];
+	gint end_of_file_reached = 0;
 
 	playlist_transfer_t * pt = (playlist_transfer_t *)arg;
 
@@ -5213,12 +5217,14 @@ playlist_load_pls_thread(void * arg) {
  	pl_dir[i] = '\0';
 
 	i = 0;
-	while ((c = fgetc(f)) != EOF && !pt->pl->thread_stop) {
-		if ((c != '\n') && (c != '\r') && (i < MAXLEN-1)) {
+	while (!end_of_file_reached && !pt->pl->thread_stop) {
+		c = fgetc(f);
+		if ((c != EOF) && (c != '\n') && (c != '\r') && (i < MAXLEN-1)) {
 			if ((i > 0) || ((c != ' ') && (c != '\t'))) {
 				line[i++] = c;
 			}
 		} else {
+			end_of_file_reached = (c == EOF);
 			line[i] = '\0';
 			if (i == 0)
 				continue;

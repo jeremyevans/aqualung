@@ -1,0 +1,3259 @@
+# Dutch translation for aqualung
+# Copyright (C) 2012 Tom Szilagyi
+# This file is distributed under the same license as the aqualung package.
+# Ivo van Poorten <ivop@free.fr>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: aqualung SVN\n"
+"Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
+"POT-Creation-Date: 2012-02-26 13:55+0100\n"
+"PO-Revision-Date: 2012-02-28 12:28+0100\n"
+"Last-Translator: Ivo van Poorten <ivop@free.fr>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "About"
+msgstr "Info"
+
+msgid "Build version: "
+msgstr "Versie:"
+
+msgid "Homepage:"
+msgstr "Homepage:"
+
+msgid "Authors:"
+msgstr "Auteurs:"
+
+msgid "Core design, engineering & programming:\n"
+msgstr "Ontwerp en programmering:\n"
+
+msgid "Skin support, look & feel, GUI hacks:\n"
+msgstr "Skin-ondersteuning, uiterlijk, GUI hacks:\n"
+
+msgid "Programming, GUI engineering:\n"
+msgstr "Programmering en grafisch ontwerp:\n"
+
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr "OpenBSD compatibiliteit, metadata aanpassingen:\n"
+
+msgid "Miscellaneous, minimalism:\n"
+msgstr "Diversen, minimalisme:\n"
+
+msgid "Translators:"
+msgstr "Vertalers:"
+
+msgid "Chinese (simplified):\n"
+msgstr "Chinees (vereenvoudigd):\n"
+
+msgid "French:\n"
+msgstr "Frans:\n"
+
+msgid "German:\n"
+msgstr "Duits:\n"
+
+msgid "Hungarian:\n"
+msgstr "Hongaars:\n"
+
+msgid "Italian:\n"
+msgstr "Italiaans:\n"
+
+msgid "Japanese:\n"
+msgstr "Japans:\n"
+
+msgid "Polish:\n"
+msgstr "Pools:\n"
+
+msgid "Russian:\n"
+msgstr "Russisch:\n"
+
+msgid "Spanish:\n"
+msgstr "Spaans:\n"
+
+msgid "Swedish:\n"
+msgstr "Zweeds:\n"
+
+msgid "Ukrainian:\n"
+msgstr "Oekraïens:\n"
+
+msgid "Graphics:"
+msgstr "Afbeeldingen:"
+
+msgid "Logo, icons:\n"
+msgstr "Logo, iconen:\n"
+
+msgid "This Aqualung binary is compiled with:"
+msgstr "Dit programma is gecompileerd met:"
+
+msgid "Optional features:"
+msgstr "Optionele mogelijkheden:"
+
+msgid "LADSPA plugin support\n"
+msgstr "Ondersteuning voor LADSPA plug-ins\n"
+
+msgid "CDDA (Audio CD) support\n"
+msgstr "Ondersteuning voor Audio CD's\n"
+
+msgid "CDDB support\n"
+msgstr "Ondersteuning voor CDDB\n"
+
+msgid "Sample Rate Converter support\n"
+msgstr "Ondersteuning voor samplerate omzetting\n"
+
+msgid "iRiver iFP driver support\n"
+msgstr "Ondersteuning voor iRiver iFP\n"
+
+msgid "JACK port management support\n"
+msgstr "Ondersteuning voor JACK poortbeheer\n"
+
+msgid "Loop playback support\n"
+msgstr "Ondersteuning voor herhaling\n"
+
+msgid "Systray support\n"
+msgstr "Ondersteuning voor Systeemvak\n"
+
+msgid "Podcast support\n"
+msgstr "Ondersteuning voor Podcast\n"
+
+msgid "Lua extension support\n"
+msgstr "Ondersteuning voor Lua extensies\n"
+
+msgid "Decoding support:"
+msgstr "Decodeer ondersteuning:"
+
+msgid "sndfile (WAV, AIFF, etc.)\n"
+msgstr "sndfile (WAV, AIFF, etc.)\n"
+
+msgid "Free Lossless Audio Codec (FLAC)\n"
+msgstr "Free Lossless Audio Codec (FLAC)\n"
+
+msgid "Ogg Vorbis\n"
+msgstr "Ogg Vorbis\n"
+
+msgid "Ogg Speex\n"
+msgstr "Ogg Speex\n"
+
+msgid "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
+msgstr "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
+
+msgid "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
+msgstr "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
+
+msgid "Musepack\n"
+msgstr "Musepack\n"
+
+msgid "Monkey's Audio Codec\n"
+msgstr "Monkey's Audio Codec\n"
+
+msgid "WavPack\n"
+msgstr "WavPack\n"
+
+msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
+msgstr "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
+
+msgid "Encoding support:"
+msgstr "Encodeer ondersteuning:"
+
+msgid "sndfile (WAV)\n"
+msgstr "sndfile (WAV)\n"
+
+msgid "LAME (MP3)\n"
+msgstr "LAME (MP3)\n"
+
+msgid "Output driver support:"
+msgstr "Afspeelapparaten ondersteuning:"
+
+msgid "sndio Audio\n"
+msgstr "sndio Audio\n"
+
+msgid "OSS Audio\n"
+msgstr "OSS Audio\n"
+
+msgid "ALSA Audio\n"
+msgstr "ALSA Audio\n"
+
+msgid "JACK Audio Server\n"
+msgstr "JACK Audio Server\n"
+
+msgid "PulseAudio\n"
+msgstr "PulseAudio\n"
+
+msgid "Win32 Sound API\n"
+msgstr "Win32 Sound API\n"
+
+msgid ""
+"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+msgstr ""
+"Dit programma is vrije software: je mag het herdistribueren en/of wijzigen onder de voorwaarden van de GNU Algemene Publieke Licentie zoals gepubliceerd door de Free Software Foundation, onder versie 2 van de Licentie of (naar jouw keuze) elke latere versie.\n"
+"\n"
+"Dit programma is gedistribueerd in de hoop dat het nuttig zal zijn maar ZONDER ENIGE GARANTIE; zelfs zonder de impliciete garanties die GEBRUIKELIJK ZIJN IN DE HANDEL of voor BRUIKBAARHEID VOOR EEN SPECIFIEK DOEL.Zie de GNU Algemene Publieke Licentie voor meer details.\n"
+"\n"
+"Je hoort een kopie van de GNU Algemene Publieke Licentie te hebben ontvangen samen met dit programma. Als dat niet het geval is, zie<http://www.gnu.org/licenses/>."
+
+msgid "Enabled"
+msgstr "Ingeschakeld"
+
+msgid "Source"
+msgstr "Bron"
+
+msgid "CDDB"
+msgstr "CDDB"
+
+msgid "CDDB (not available)"
+msgstr "CDDB (niet beschikbaar)"
+
+msgid "Metadata"
+msgstr "Metadata"
+
+msgid "Filesystem"
+msgstr "Bestandssysteem"
+
+msgid "Capitalization"
+msgstr "Kapitalisatie"
+
+msgid "Capitalize: "
+msgstr "Kapitaliseer:"
+
+msgid "All words"
+msgstr "Alle woorden"
+
+msgid "First word only"
+msgstr "Alleen het eerste woord"
+
+msgid "Force case: "
+msgstr "Altijd hoofdletters aan het begin:"
+
+msgid "Force other letters to lowercase"
+msgstr "Altijd de rest in kleine letters"
+
+msgid "Regular expression"
+msgstr "Reguliere expressie"
+
+msgid "Regexp:"
+msgstr "Regexp:"
+
+msgid "Replace:"
+msgstr "Vervang:"
+
+msgid "Predefined transformations"
+msgstr "Voorgedefinieerde transformaties"
+
+msgid "Remove file extension"
+msgstr "Verwijder bestandsextensie"
+
+msgid "Remove leading number"
+msgstr "Verwijder voorafgaand nummer"
+
+msgid "Convert underscore to space"
+msgstr "Converteer onderstreepje naar spatie"
+
+msgid "Trim leading, tailing and duplicate spaces"
+msgstr "Verwijder spaties aan het begin, eind en dubbele spaties"
+
+msgid "Regexp matches empty string"
+msgstr "Regexp is gelijk aan een niet ingevuld veld"
+
+msgid "Please select the root directory."
+msgstr "Selecteer de basismap."
+
+msgid "Select build type"
+msgstr "Selecteer opbouwmethode"
+
+msgid "Directory driven"
+msgstr "Mapgestuurd"
+
+msgid ""
+"Follows the directory structure to identify the artists and\n"
+"records. The files are added on a record basis."
+msgstr ""
+"Identificeert artiesten en albums aan de hand van de\n"
+"mappenstructuur. De bestanden worden per album\n"
+"toegevoegd."
+
+msgid "Independent"
+msgstr "Onafhankelijk"
+
+msgid ""
+"Recursive search from the root directory for audio files.\n"
+"The files are processed independently, so only metadata\n"
+"and filename transformation are available."
+msgstr ""
+"De basismap wordt recursief doorzocht naar geluidsbestanden.\n"
+"De bestanden worden onafhankelijk verwerkt, dus er kan alleen\n"
+"aan de hand van de metadata en de bestandsnaam een bewerking\n"
+"plaatsvinden."
+
+msgid "Load settings from Music Store file"
+msgstr "Gebruik de instellingen van het Muziek Archief"
+
+msgid "Build/Update store"
+msgstr "Bouw/Bijwerken Archief"
+
+msgid "General"
+msgstr "Algemeen"
+
+msgid "Directory structure"
+msgstr "Mappenstructuur"
+
+msgid "Root path:"
+msgstr "Basismap:"
+
+msgid "_Browse..."
+msgstr "_Bladeren..."
+
+msgid "Structure:"
+msgstr "Strcutuur:"
+
+msgid "root / record / track"
+msgstr "basis / album / nummer"
+
+msgid "root / artist / record / track"
+msgstr "basis / artiest / album / nummer"
+
+msgid "root / artist / artist / record / track"
+msgstr "basis / artiest/ artiest / album / nummer"
+
+msgid "root / artist / artist / artist / record / track"
+msgstr "basis / artiest / artiest / artiest / album / nummer"
+
+msgid "Exclude files matching wildcard"
+msgstr "Exclusief bestanden die overeenkomen met jokerteken"
+
+msgid "Include only files matching wildcard"
+msgstr "Alleen bestanden die overeenkomen met jokerteken"
+
+msgid "Reread data for existing tracks"
+msgstr "Gegevens voor bestaande nummers opnieuw inlezen"
+
+msgid "Remove non-existing files from store"
+msgstr "Verwijder bestanden die niet (meer) bestaan uit het Archief"
+
+msgid "Artist"
+msgstr "Artiest"
+
+msgid "Sort artists by"
+msgstr "Sorteer op artiest"
+
+msgid "Artist name"
+msgstr "Artiestnaam"
+
+msgid "Artist name (lowercase)"
+msgstr "Artiestnaam (kleine letters)"
+
+msgid "Directory name"
+msgstr "Mapnaam"
+
+msgid "Directory name (lowercase)"
+msgstr "Mapnaam (kleine letters)"
+
+msgid "Record"
+msgstr "Album"
+
+msgid "Sort records by"
+msgstr "Sorteer op album"
+
+msgid "Record name"
+msgstr "Albumnaam"
+
+msgid "Record name (lowercase)"
+msgstr "Albumnaam (kleine letters)"
+
+msgid "Year"
+msgstr "Jaar"
+
+msgid "Add year to the comments of new records"
+msgstr "Voeg jaar toe aan commentaarveld van nieuwe albums"
+
+msgid "Track"
+msgstr "Nummer"
+
+msgid "Import Replaygain tag as manual RVA"
+msgstr "Importeer afspeelvolume indien beschikbaar"
+
+msgid "Import Comment tag"
+msgstr "Importeer commentaarveld"
+
+msgid "Sandbox"
+msgstr "Zandbak"
+
+msgid "Filename:"
+msgstr "Bestandsnaam:"
+
+msgid "Test"
+msgstr "Test"
+
+msgid "Building store from filesystem"
+msgstr "Archief aan het opbouwen aan de hand van het bestandssysteem"
+
+msgid "Processing:"
+msgstr "Verwerken:"
+
+msgid "Action:"
+msgstr "Actie:"
+
+msgid "Abort"
+msgstr "Afbreken"
+
+msgid "Unknown Artist"
+msgstr "Onbekende Artiest"
+
+msgid "Unknown Record"
+msgstr "Onbekend Album"
+
+msgid "Scanning files"
+msgstr "Bestanden doorzoeken"
+
+msgid "Processing metadata"
+msgstr "Verwerken van metadata"
+
+msgid "CDDB lookup"
+msgstr "Opzoeken in CDDB"
+
+msgid "Name transformation"
+msgstr "Naam transformatie"
+
+msgid "Reading file"
+msgstr "Bestand aan het lezen"
+
+msgid "Removing non-existing files"
+msgstr "Niet bestaand bestanden verwijderen"
+
+msgid "Please select the directory for ripped files."
+msgstr "Selecteer de map waar de geripte bestanden worden opgeslagen."
+
+msgid "(none)"
+msgstr "(niets)"
+
+msgid "fast"
+msgstr "snel"
+
+msgid "best"
+msgstr "beste"
+
+msgid "Compression level:"
+msgstr "Compressieniveau:"
+
+msgid "Bitrate [kbps]:"
+msgstr "Bitrate [kbps]:"
+
+msgid "Artist/Album already existing, not empty"
+msgstr "Arties/Album bestaat al, is niet leeg"
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already containing some tracks. If you press OK, these tracks will be removed. The files themselves will be left intact, but they will be removed from the destination Music Store. Press Cancel to get back to change the Artist/Album or the destination Music Store."
+msgstr ""
+"\n"
+"Het Muziek Archief dat u geselecteerd heeft heeft een overeenkomende Artiest en Album en bevat reeds een aantal nummers. Als u OK aanklikt, worden deze nummers verwijderd. De geluidsbestanden zelf blijven behouden, maar worden verwijderd uit het Muziek Archief. Klik op Annuleren om Artiest/Album aan te passen of om een ander Muziek Archief te kiezen."
+
+msgid "Rip CD"
+msgstr "Rip CD"
+
+msgid "Artist:"
+msgstr "Artiest:"
+
+msgid "Album:"
+msgstr "Album:"
+
+msgid "Year:"
+msgstr "Jaar:"
+
+msgid "Genre:"
+msgstr "Genre:"
+
+msgid "Rip"
+msgstr "Rip"
+
+msgid "No."
+msgstr "Nr."
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Select"
+msgstr "Selecteer"
+
+msgid "All"
+msgstr "Alles"
+
+msgid "None"
+msgstr "Niets"
+
+msgid "Output"
+msgstr "Uitvoer"
+
+msgid "Destination"
+msgstr "Doel"
+
+msgid "Target directory for ripped files"
+msgstr "Doelmap voor geripte bestanden"
+
+msgid "Add to Music Store"
+msgstr "Voeg toe aan Muziek Archief"
+
+msgid "Format"
+msgstr "Formaat"
+
+msgid "File format:"
+msgstr "Bestandsformaat:"
+
+msgid "VBR encoding"
+msgstr "VBR encodering"
+
+msgid "Tag files with metadata"
+msgstr "Markeer bestanden met metadata"
+
+msgid "Paranoia"
+msgstr "Paranoïde"
+
+msgid "Paranoia error correction"
+msgstr "Paranoïde foutcorrectie"
+
+msgid "Perform overlapped reads"
+msgstr "Voer overlappende leesacties uit"
+
+msgid "Verify data integrity"
+msgstr "Verifieer data-integriteit"
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr "Probeer telkens opnieuw als het lezen mislukt (sla nooit over)"
+
+msgid "Maximum number of retries:"
+msgstr "Maximaal aantal keren opnieuw proberren:"
+
+msgid "Error"
+msgstr "Fout"
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+"\n"
+"Doelmap kan niet beschreven worden!"
+
+msgid "Total"
+msgstr "Totaal"
+
+msgid "(audio only)"
+msgstr "(alleen geluid)"
+
+msgid "Ripping CD tracks"
+msgstr "Rippen van CD tracks"
+
+msgid "Begin"
+msgstr "Begin"
+
+msgid "Length"
+msgstr "Lengte"
+
+msgid "Progress"
+msgstr "Voortgang"
+
+msgid "Close window when complete"
+msgstr "Sluit venster als alles gedaan is"
+
+msgid "Close"
+msgstr "Sluiten"
+
+msgid "Unknown disc"
+msgstr "Onbekende schijf"
+
+msgid "No disc"
+msgstr "Geen schijf aanwezig"
+
+msgid "CDDB query"
+msgstr "CDDB aanvraag"
+
+msgid "Retrieving matches from server..."
+msgstr "Gegevens van de server aan het ontvangen..."
+
+msgid "Connecting to CDDB server..."
+msgstr "Verbinden met CDDB server..."
+
+msgid "An error occurred while attempting to connect to the CDDB server."
+msgstr "Er is een fout opgetreden bij het verbinden met de CDDB server."
+
+msgid "Warning"
+msgstr "Waarschuwing"
+
+msgid "No matching record found."
+msgstr "Geen match gevonden."
+
+msgid "Import as Sort Key"
+msgstr "Importeer als Sorteersleutel"
+
+msgid "Import as Title"
+msgstr "Importeer als Titel"
+
+msgid "Import as Year"
+msgstr "Importeer als Jaar"
+
+msgid ""
+"Artist appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Artiestnaam lijkt volledig in kleine letters.\n"
+"Wilt u doorgaan?"
+
+msgid ""
+"Artist appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Artiestnaam lijkt volledig in hoofdletters.\n"
+"Wilt u doorgaan?"
+
+msgid ""
+"Title appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Titel lijkt volledig in kleine letters.\n"
+"Wilt u doorgaan?"
+
+msgid ""
+"Title appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Titel lijk volledig in hoofdletters.\n"
+"Wilt u doorgaan?"
+
+msgid ""
+"It is very likely that the year is wrong.\n"
+"Do you want to proceed?"
+msgstr ""
+"Het is aannemelijk dat het jaartal foutief is.\n"
+"Wilt u doorgaan?"
+
+msgid "The email address provided for submission is invalid."
+msgstr "Het e-mail adres dat u opgegeven heeft niet de juiste opmaak."
+
+msgid "An error occurred while submitting the record to the CDDB server."
+msgstr "Er is een fout opgetreden bij het toevoegen van het album aan de CDDB server."
+
+msgid "Correct existing record"
+msgstr "Corrigeer bestaand album"
+
+msgid "Submit new record"
+msgstr "Voeg nieuw album toe"
+
+msgid "Matches:"
+msgstr "Matches:"
+
+msgid "Title:"
+msgstr "Titel:"
+
+msgid "Category:"
+msgstr "Categorie;"
+
+msgid "(choose a category)"
+msgstr "(kies een categorie)"
+
+msgid "Extended data:"
+msgstr "Uitgebreide gegevens:"
+
+msgid "Import as Artist"
+msgstr "Importeer als Artiest"
+
+msgid "Add to Comments"
+msgstr "Voeg toe aan Commentaarveld"
+
+msgid "Tracks"
+msgstr "Nummers"
+
+msgid "You have to provide an email address for CDDB submission."
+msgstr "U moet een e-mail adres opgeven om gegeven naar de CDDB server te sturen."
+
+msgid "Unknown Album"
+msgstr "Onbekend Album"
+
+msgid "Unknown Track"
+msgstr "Onbekend Nummer"
+
+msgid "Please select the directory for exported files."
+msgstr "Selecteer de map om de bestanden naar te exporteren."
+
+msgid "Copy"
+msgstr "Kopieer"
+
+msgid "Help"
+msgstr "Hulp"
+
+#, c-format
+msgid ""
+"\n"
+"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%%%a, %%%%r and %%%%t. The track number and format-dependent file extension are denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives an identifier which is unique within an export session."
+msgstr ""
+"\n"
+"Het sjabloon dat u hier invult zal worden gebruikt om de bestandsnaam te construeren. De artiest, album en nummernamen worden gespecificeerd als %%%%a, %%%%r, %%%%t. Het volgnummer en de bestandsextensie worden gespecificeerd als %%%%n en %%%%x. Een unieke code per exporteersessie kan worden gespecificeerd als %%%%i."
+
+msgid "Export files"
+msgstr "Exporteer bestanden"
+
+msgid "Location and filename"
+msgstr "Locatie en bestandsnaam"
+
+msgid "Target directory:"
+msgstr "Doelmap:"
+
+msgid "Create subdirectories for artists"
+msgstr "Maak submappen voor artiesten"
+
+msgid "Create subdirectories for albums"
+msgstr "Maak submappen voor albums"
+
+msgid ""
+"Subdirectory name\n"
+"length limit:"
+msgstr ""
+"Submapnaam\n"
+"maximale lengte:"
+
+msgid "Filename template:"
+msgstr "Bestandsnaamsjabloon"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Do not reencode files already being in the target format"
+msgstr "Encodeer bestanden niet opnieuw als het doelformaat hetzelfde is"
+
+msgid ""
+"Do not reencode files\n"
+"matching wildcard:"
+msgstr ""
+"Encodeer bestanden niet opnieuw\n"
+"als ze overeenkomen met:"
+
+msgid "Error in format string"
+msgstr "Fout in opgegeven formateertekens"
+
+msgid "Exporting files"
+msgstr "Bestanden aan het exporteren"
+
+msgid "Source file:"
+msgstr "Bronbestand:"
+
+msgid "Target file:"
+msgstr "Doelbestand:"
+
+msgid "Progress:"
+msgstr "Voortgang:"
+
+msgid "*File info"
+msgstr "*Bestandsinformatie"
+
+msgid "File info"
+msgstr "Bestandsinformatie"
+
+msgid "There are unsaved changes to the file metadata."
+msgstr "De wijzigingen van de metadata zijn nog niet opgeslagen."
+
+msgid "Save and close"
+msgstr "Opslaan en sluiten"
+
+msgid "Discard changes"
+msgstr "Verwerp wijzigingen"
+
+msgid "Do not close"
+msgstr "Niet sluiten"
+
+#, c-format
+msgid ""
+"Conversion error in field %s:\n"
+"'%s' does not conform to format '%s'!"
+msgstr ""
+"Conversiefout in het %s veld:\n"
+"'%s' conformeert zich niet aan het formaat '%s'!"
+
+msgid ""
+"Attached Picture frame with no image set!\n"
+"Please set an image or remove the frame."
+msgstr ""
+"Fotolijst bijgevoegd zonder dat er een afbeelding is ingesteld!\n"
+"Stel een afbeelding in of verwijder de fotolijst."
+
+#, c-format
+msgid ""
+"Failed to write metadata to file.\n"
+"Reason: %s"
+msgstr ""
+"Wegschrijven van metadata naar bestand is mislukt.\n"
+"Reden: %s"
+
+#, c-format
+msgid ""
+"Error converting field %s to Year:\n"
+"'%s' is not an integer number!"
+msgstr ""
+"Conversie van %s naar Jaar is mislukt:\n"
+"'%s' is niet een (heel) getal!"
+
+msgid "Please specify the file to save the image to."
+msgstr "Specificeer het bestand waarnaar de afbeelding moet worden weggeschreven."
+
+msgid "(no image)"
+msgstr "(geen afbeelding)"
+
+msgid "(error loading image)"
+msgstr "(fout bij laden van afbeelding)"
+
+msgid "Please specify the file to load the image from."
+msgstr "Specificeer het bestand van waaruit de afbeelding gelezen moet worden."
+
+#, c-format
+msgid ""
+"Could not load image from:\n"
+"%s"
+msgstr ""
+"Kon het bestand niet lezen:\n"
+"%s"
+
+#, c-format
+msgid "MIME type: %s"
+msgstr "MIME type: %s"
+
+msgid "Picture type:"
+msgstr "Afbeeldingstype:"
+
+msgid "Description:"
+msgstr "Beschrijving"
+
+msgid "(no description)"
+msgstr "(geen beschrijving)"
+
+msgid "Change"
+msgstr "Verander"
+
+msgid "Save"
+msgstr "Opslaan"
+
+msgid "Import as Record"
+msgstr "Importeer als Album"
+
+msgid "Import as Track No."
+msgstr "Importeer als Volgnummer"
+
+msgid "Import as RVA"
+msgstr "Importeer als RVA"
+
+msgid "Add"
+msgstr "Voeg toe"
+
+msgid "field:"
+msgstr "veld:"
+
+msgid "tag:"
+msgstr "tag:"
+
+msgid "Audio CD"
+msgstr "Audio CD"
+
+msgid "Track:"
+msgstr "Nummer:"
+
+msgid "File:"
+msgstr "Bestand:"
+
+msgid "Audio data"
+msgstr "Geluidsdata"
+
+msgid "Format:"
+msgstr "Formaat:"
+
+msgid "Length:"
+msgstr "Lengte:"
+
+msgid "Samplerate:"
+msgstr "Samplerate:"
+
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld Hz"
+
+msgid "Channel count:"
+msgstr "Aantal kanalen:"
+
+msgid "MONO"
+msgstr "MONO"
+
+msgid "STEREO"
+msgstr "STEREO"
+
+msgid "Bandwidth:"
+msgstr "Bandbreedte:"
+
+msgid "Total samples:"
+msgstr "Totaal samples:"
+
+msgid "Mode:"
+msgstr "Mode:"
+
+msgid "Type:"
+msgstr "Type:"
+
+msgid "Channels:"
+msgstr "Kanalen:"
+
+msgid "Patterns:"
+msgstr "Patronen:"
+
+msgid "Samples:"
+msgstr "Samples:"
+
+msgid "Instruments:"
+msgstr "Instrumenten:"
+
+msgid "Samples"
+msgstr "Samples"
+
+msgid "Instruments"
+msgstr "Instrumenten"
+
+msgid "Name"
+msgstr "Naam"
+
+msgid "STOPPING"
+msgstr "STOPPEND"
+
+msgid "Output:"
+msgstr "Uitvoer:"
+
+msgid "No output"
+msgstr "Geen uitvoer"
+
+msgid "SRC Type: "
+msgstr "BRON Type: "
+
+#, c-format
+msgid "Loop range: %d-%d%% [%s - %s]"
+msgstr "Herhaal bereik: %d-%d%% [%s - %s]"
+
+#, c-format
+msgid "Loop range: %d-%d%%"
+msgstr "Herhaal bereik: %d-%d%%"
+
+msgid ""
+"One or more stores in Music Store have been modified.\n"
+"Do you want to save them before exiting?"
+msgstr ""
+"Eén of meerdere archieven in het Muziek Archief zijn gewijzigd.\n"
+"Wilt u deze opslaan voor het sluiten?"
+
+msgid "Do not exit"
+msgstr "Niet sluiten"
+
+msgid "Quit"
+msgstr "Afsluiten"
+
+#, c-format
+msgid "Position: %d%%"
+msgstr "Positie: %d%%"
+
+#, c-format
+msgid "Mute"
+msgstr "Dempen"
+
+#, c-format
+msgid "%d dB"
+msgstr "%d dB"
+
+#, c-format
+msgid "Volume: %s"
+msgstr "Volume: %s"
+
+#, c-format
+msgid "%d%% R"
+msgstr "%d%% R"
+
+#, c-format
+msgid "%d%% L"
+msgstr "%d%% L"
+
+#, c-format
+msgid "C"
+msgstr "C"
+
+#, c-format
+msgid "Balance: %s"
+msgstr "Balans: %s"
+
+msgid "JACK connection lost"
+msgstr "JACK connectie verbroken"
+
+#, c-format
+msgid "JACK has either been shutdown or it disconnected Aqualung. Reason: %s"
+msgstr "JACK is afgesloten of heeft zijn verbinding met Aqualung verbroken. Reden: %s"
+
+msgid "Warn me if the Window Manager does not support system tray"
+msgstr "Waarschuw me als ik geen systeemvak heb"
+
+msgid "Aqualung is compiled with system tray support, but the status icon could not be embedded in the notification area. Your desktop may not have support for a system tray, or it has not been configured correctly."
+msgstr "Aqualung ondersteunt een systeemvak maar het statusicoon kon daar niet aan worden toegevoegd. Het kan zijn dat uw systeem geen systeemvak ondersteunt of dat het niet juist is ingesteld."
+
+msgid "Settings"
+msgstr "Instellingen"
+
+msgid "Skin chooser"
+msgstr "Kies uiterlijk"
+
+msgid "JACK port setup"
+msgstr "JACK poortinstellingen"
+
+msgid "Previous song"
+msgstr "Vorige nummer"
+
+msgid "Stop"
+msgstr "Stop"
+
+msgid "Next song"
+msgstr "Volgende nummer"
+
+msgid "Play/Pause"
+msgstr "Afspelen/Pauzeren"
+
+msgid "Play"
+msgstr "Afspelen"
+
+msgid "Pause"
+msgstr "Pauzeren"
+
+msgid "Repeat current song"
+msgstr "Herhaal huidig nummer"
+
+msgid "Repeat all songs"
+msgstr "Herhaal alle nummers"
+
+msgid "Shuffle songs"
+msgstr "Willekeurige nummers"
+
+msgid "Toggle playlist"
+msgstr "Aan/uit Afspeellijst"
+
+msgid "Toggle music store"
+msgstr "Aan/uit Muziek Archief"
+
+msgid "Toggle LADSPA patch builder"
+msgstr "Aan/uit LADSPA effectenbeheer"
+
+msgid "Show Aqualung"
+msgstr "Toon Aqualung"
+
+msgid "Hide Aqualung"
+msgstr "Verberg Aqualung"
+
+msgid "Previous"
+msgstr "Vorige"
+
+msgid "Next"
+msgstr "Volgende"
+
+#, c-format
+msgid "%.1f MB / %.1f MB"
+msgstr "%.1f MB / %.1f MB"
+
+#, c-format
+msgid "%d / %d files"
+msgstr "%d / %d bestanden"
+
+#, c-format
+msgid "%d / %d directories"
+msgstr "%d / %d mappen"
+
+msgid "Cannot write to selected directory. Please select another directory."
+msgstr "Kan niet schrijven in de geselecteerde map. Selecteer een andere map."
+
+msgid "Done"
+msgstr "Klaar"
+
+msgid "Aborted..."
+msgstr "Afgebroken..."
+
+msgid "Please enter directory name."
+msgstr "Vul een mapnaam in."
+
+msgid "Create directory"
+msgstr "Maak een nieuwe map"
+
+msgid "Please enter a new name."
+msgstr "Vul een naam in."
+
+msgid "Rename"
+msgstr "Hernoemen"
+
+#, c-format
+msgid ""
+"Directory '%s' will be removed with its entire contents.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"Map '%s', inclusief de inhoud, zal worden verwijderd.\n"
+"\n"
+"Wilt u doorgaan?"
+
+#, c-format
+msgid ""
+"File '%s' will be removed.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"Bestand '%s' zal worden verwijderd.\n"
+"\n"
+"Wilt u doorgaan?"
+
+msgid "Remove"
+msgstr "Verwijderen"
+
+#, c-format
+msgid " (%.1f MB)"
+msgstr " (%.1f MB)"
+
+#, c-format
+msgid " (capacity = %.1f MB)"
+msgstr " (capaciteit = %.1f MB)"
+
+#, c-format
+msgid " Free space (%.1f MB)"
+msgstr " Vrije ruimte (%.1f MB)"
+
+msgid ""
+"No suitable iRiver iFP device found.\n"
+"Perhaps it is unplugged or turned off."
+msgstr ""
+"Geen geschikt iRiver iFP apparaat gevonden.\n"
+"Misschien is het niet aangesloten of staat het uit."
+
+msgid ""
+"Device is busy.\n"
+"(Aqualung was unable to claim its interface.)"
+msgstr ""
+"Apparaat is bezig.\n"
+"(Aqualung was niet in staat een verbinding te maken.)"
+
+msgid ""
+"Device is not responding.\n"
+"Try jiggling the handle."
+msgstr ""
+"Apparaat reageert niet.\n"
+"Probeer de hendel op en neer te bewegen."
+
+msgid "Please select a local path."
+msgstr "Selecteer een lokaal pad."
+
+msgid "Please select at least one valid song from playlist."
+msgstr "Selecteer op zijn minst één nummer uit de afspeellijst."
+
+#, c-format
+msgid ""
+"One song has format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"Eén nummer is in een formaat dat niet ondersteund wordt door uw speler.\n"
+"\n"
+"Wilt u doorgaan?"
+
+#, c-format
+msgid ""
+"%d of %d songs have format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"%d van de %d nummers is in een formaat dat niet ondersteund wordt door uw speler.\n"
+"\n"
+"Wilt u doorgaan?"
+
+#, c-format
+msgid ""
+"The selected song has format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"Het geselecteerde nummer is in een formaat dat niet ondersteund wordt door uw speler.\n"
+"\n"
+"Wilt u doorgaan?"
+
+#, c-format
+msgid ""
+"None of the selected songs has format supported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"Geen van de geselecteerde nummers is in een formaat dat ondersteund wordt door uw speler.\n"
+"\n"
+"Wilt u doorgaan?"
+
+msgid "iFP device manager (upload mode)"
+msgstr "iFP apparaatbeheer (upload mode)"
+
+msgid "iFP device manager (download mode)"
+msgstr "iFP apparaatbeheer (download mode)"
+
+msgid "Selected files:"
+msgstr "Geselecteerde nummers:"
+
+msgid "<b>Songs info</b>"
+msgstr "<b>Nummerinformatie</b>"
+
+msgid "Model:"
+msgstr "Model:"
+
+msgid "Battery"
+msgstr "Batterij"
+
+msgid "Free space"
+msgstr "Vrije ruimte"
+
+msgid "<b>Device status</b>"
+msgstr "<b>Apparaatstatus</b>"
+
+msgid "Size"
+msgstr "Omvang"
+
+msgid "Create a new directory"
+msgstr "Maak een nieuwe map"
+
+msgid "<b>Remote directory</b>"
+msgstr "<b>Map op apparaat</b>"
+
+msgid "<b>Local directory</b>"
+msgstr "<b>Lokale map</b>"
+
+msgid "Browse"
+msgstr "Bladeren"
+
+msgid "File name: "
+msgstr "Bestandsnaam:"
+
+msgid "Current file: "
+msgstr "Huidig bestand:"
+
+msgid "Overall: "
+msgstr "Compleet:"
+
+msgid "Idle"
+msgstr "Doet niets"
+
+msgid "<b>Transfer progress</b>"
+msgstr "<b>Voortgang</b>"
+
+msgid "Close window when transfer complete"
+msgstr "Sluit venster als we klaar zijn"
+
+msgid "_Upload"
+msgstr "_Upload"
+
+msgid "_Download"
+msgstr "_Download"
+
+msgid "_Abort"
+msgstr "_Afbreken"
+
+msgid "Album"
+msgstr "Album"
+
+msgid "Date"
+msgstr "Datum"
+
+msgid "Genre"
+msgstr "Genre"
+
+msgid "Track No."
+msgstr "Volgnummer"
+
+msgid "Comment"
+msgstr "Commentaar"
+
+msgid "Disc"
+msgstr "Schijf"
+
+msgid "Performer"
+msgstr "Uitvoerende"
+
+msgid "Description"
+msgstr "Beschrijving"
+
+msgid "Organization"
+msgstr "Organisatie"
+
+msgid "Location"
+msgstr "Locatie"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "License"
+msgstr "Licentie"
+
+msgid "Copyright"
+msgstr "Copyright"
+
+msgid "ISRC"
+msgstr "ISRC"
+
+msgid "Version"
+msgstr "Versie"
+
+msgid "Subtitle"
+msgstr "Ondertitel"
+
+msgid "Debut Album"
+msgstr "Debuut Album"
+
+msgid "Publisher"
+msgstr "Uitgeverij"
+
+msgid "Conductor"
+msgstr "Dirigent"
+
+msgid "Composer"
+msgstr "Componist"
+
+msgid "Publication Right"
+msgstr "Recht tot Publiceren"
+
+msgid "File"
+msgstr "Bestand"
+
+msgid "EAN/UPC"
+msgstr "EAN/UPC"
+
+msgid "ISBN"
+msgstr "ISBN"
+
+msgid "Catalog Number"
+msgstr "Catalogus Nummer"
+
+msgid "Label Code"
+msgstr "Label Code"
+
+msgid "Record Date"
+msgstr "Opname Datum"
+
+msgid "Record Location"
+msgstr "Opname Locatie"
+
+msgid "Media"
+msgstr "Media"
+
+msgid "Index"
+msgstr "Index"
+
+msgid "Related"
+msgstr "Aanverwant"
+
+msgid "Abstract"
+msgstr "Korte Inhoud"
+
+msgid "Language"
+msgstr "Taal"
+
+msgid "Bibliography"
+msgstr "Bibliografie"
+
+msgid "Introplay"
+msgstr "Introspelen"
+
+msgid "BPM"
+msgstr "VPM"
+
+msgid "Encoding Time"
+msgstr "Encodeer Tijd"
+
+msgid "Playlist Delay"
+msgstr "Afspeellijstvertraging"
+
+msgid "Original Release Time"
+msgstr "Originele Releasedatum"
+
+msgid "Release Time"
+msgstr "Release Datum"
+
+msgid "Tagging Time"
+msgstr "Markeertijd"
+
+msgid "Encoded by"
+msgstr "Geëncodeerd door"
+
+msgid "Lyricist/Text Writer"
+msgstr "Tekstschrijver"
+
+msgid "File Type"
+msgstr "Bestandstype"
+
+msgid "Involved People"
+msgstr "Betrokkenen"
+
+msgid "Content Group"
+msgstr "Inhoudsgroep"
+
+msgid "Initial key"
+msgstr "Oorspronkelijke sleutel"
+
+msgid "Musician Credits"
+msgstr "Muziekanten"
+
+msgid "Mood"
+msgstr "Stemming"
+
+msgid "Original Album"
+msgstr "Oorspronkelijk Album"
+
+msgid "Original Filename"
+msgstr "Oorspronkelijke Bestandsnaam"
+
+msgid "Original Lyricist"
+msgstr "Oorspronkelijke Tekstschrijver"
+
+msgid "Original Artist"
+msgstr "Oorspronkelijke Artiest"
+
+msgid "File Owner"
+msgstr "Bestandseigenaar"
+
+msgid "Band/Orchestra"
+msgstr "Band/Orkest"
+
+msgid "Interpreted/Remixed"
+msgstr "Interpretatie/Remix"
+
+msgid "Part Of A Set"
+msgstr "Deel van een verzameling"
+
+msgid "Produced"
+msgstr "Productie"
+
+msgid "Internet Radio Station Name"
+msgstr "Internet Radiostation, Naam"
+
+msgid "Internet Radio Station Owner"
+msgstr "Internet Radiostation, Eigenaar"
+
+msgid "Album Sort Order"
+msgstr "Album Sorteervolgorde"
+
+msgid "Performer Sort Order"
+msgstr "Uitvoerende Sorteervolgorde"
+
+msgid "Title Sort Order"
+msgstr "Titel Sorteervolgorde"
+
+msgid "Software"
+msgstr "Software"
+
+msgid "Set Subtitle"
+msgstr "Verzameling Subtitel"
+
+msgid "User Defined Text"
+msgstr "Door de gebruiker geschreven tekst"
+
+msgid "Commercial Information"
+msgstr "Commerciële Informatie"
+
+msgid "Copyright/Legal Information"
+msgstr "Copyright/Wettelijke Informatie"
+
+msgid "Official Audio File Website"
+msgstr "Website Oorspronkelijk Geluidsbestand"
+
+msgid "Official Artist Website"
+msgstr "Website Artiest"
+
+msgid "Official Audio Source Website"
+msgstr "Website Oorspronkelijke Geluidsbron"
+
+msgid "Official Radio Station Website"
+msgstr "Website Radiostation"
+
+msgid "Payment"
+msgstr "Betaling"
+
+msgid "Publisher's Official Website"
+msgstr "Website Uitgeverij"
+
+msgid "User Defined URL"
+msgstr "Door de gebruiker opgegeven URL"
+
+msgid "Vendor"
+msgstr "Fabrikant"
+
+msgid "ReplayGain Reference Loudness"
+msgstr "ReplayGain Hardheidsreferentie"
+
+msgid "ReplayGain Track Gain"
+msgstr "ReplayGain Nummervolume"
+
+msgid "ReplayGain Track Peak"
+msgstr "ReplayGain Nummerpiek"
+
+msgid "ReplayGain Album Gain"
+msgstr "ReplayGain Albumvolume"
+
+msgid "ReplayGain Album Peak"
+msgstr "ReplayGain Albumpiek"
+
+msgid "Icy-Name"
+msgstr "Icy-Name"
+
+msgid "Icy-Description"
+msgstr "Icy-Description"
+
+msgid "Icy-Genre"
+msgstr "Icy-Genre"
+
+msgid "RVA"
+msgstr "RVA"
+
+msgid "Attached Picture"
+msgstr "Bijgevoegde Afbeelding"
+
+msgid "Binary Object"
+msgstr "Binair Object"
+
+msgid "NULL"
+msgstr "NULL"
+
+msgid "ID3v1"
+msgstr "ID3v1"
+
+msgid "ID3v2"
+msgstr "ID3v2"
+
+msgid "APE"
+msgstr "APE"
+
+msgid "Ogg Xiph Comments"
+msgstr "Ogg Xiph Commentaar"
+
+msgid "FLAC Pictures"
+msgstr "FLAC Afbeeldingen"
+
+msgid "Musepack ReplayGain"
+msgstr "Musepack ReplayGain"
+
+msgid "Generic StreamMeta"
+msgstr "Generiek StreamMeta"
+
+msgid "MPEG StreamMeta"
+msgstr "MPEG StreamMeta"
+
+msgid "Module info"
+msgstr "Module-info"
+
+msgid "Unknown"
+msgstr "Onbekend"
+
+msgid "Success"
+msgstr "Succes"
+
+msgid "Memory allocation error"
+msgstr "Fout bij het verkrijgen van geheugen van het systeem"
+
+msgid "Unable to open file"
+msgstr "Kan bestand niet openen"
+
+msgid "No metadata support for this format"
+msgstr "Dit formaat ondersteunt geen metadata"
+
+msgid "File is not writable"
+msgstr "Bestand is niet beschrijfbaar"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "Volgnummer is niet juist ingevuld"
+
+msgid "Invalid 'Genre' field value"
+msgstr "Genre is niet juist ingevuld"
+
+msgid "Conversion to target charset failed"
+msgstr "Conversie naar doeltekenset is mislukt"
+
+msgid "Internal error"
+msgstr "Interne Fout"
+
+msgid "Unknown error"
+msgstr "Onbekende fout"
+
+msgid "Other"
+msgstr "Anders"
+
+msgid "File icon (32x32 PNG)"
+msgstr "Bestandsicoon (32x32 PNG)"
+
+msgid "File icon (other)"
+msgstr "Bestandsicoon (anders)"
+
+msgid "Front cover"
+msgstr "Voorkant"
+
+msgid "Back cover"
+msgstr "Achterkant"
+
+msgid "Leaflet page"
+msgstr "Bladzijde van het boekje"
+
+msgid "Album image"
+msgstr "Afbeelding van Album"
+
+msgid "Lead artist/performer"
+msgstr "Belangrijkste artiest/uitvoerende"
+
+msgid "Artist/performer"
+msgstr "Artiest/uitvoerende"
+
+msgid "Band/orchestra"
+msgstr "Band/orkest"
+
+msgid "Lyricist/text writer"
+msgstr "Tekstschrijver"
+
+msgid "Recording location/studio"
+msgstr "Opname locatie/studio"
+
+msgid "During recording"
+msgstr "Tijdens opname"
+
+msgid "During performance"
+msgstr "Tijdens uitvoering"
+
+msgid "Movie/video screen capture"
+msgstr "Film/video stilstaand beeld"
+
+msgid "A large, coloured fish"
+msgstr "Een grote, gekleurde vis"
+
+msgid "Illustration"
+msgstr "Illustratie"
+
+msgid "Band/artist logotype"
+msgstr "Band/artiest logotype"
+
+msgid "Publisher/studio logotype"
+msgstr "Uitgeverij/studio logotype"
+
+msgid "Music Store"
+msgstr "Muziek Archief"
+
+msgid "Search..."
+msgstr "Zoeken..."
+
+msgid "Collapse all items"
+msgstr "Inklappen van alle items"
+
+msgid "Edit item..."
+msgstr "Bewerk item..."
+
+msgid "Add item..."
+msgstr "Voeg item toe..."
+
+msgid "Remove item..."
+msgstr "Verwijder item..."
+
+msgid "Save all stores"
+msgstr "Opslaan van alle archieven"
+
+msgid "Create empty store..."
+msgstr "Maak leeg archief aan..."
+
+msgid "*Music Store"
+msgstr "*Muziek Archief"
+
+#, c-format
+msgid "Do you want to save store \"%s\" before removing from Music Store?"
+msgstr "Wilt u het archief \"%s\" opslaan voordat u het verwijdert uit het Muziek Archief?"
+
+msgid "You will need to restart Aqualung for the following changes to take effect:"
+msgstr "U dient Aqualung af te sluiten en opnieuw op te starten om de volgende veranderingen effect te laten hebben:"
+
+msgid "Select a font..."
+msgstr "Selecteer een lettertype..."
+
+msgid "Disable skin support"
+msgstr "Schakel verschillende uiterlijken uit"
+
+msgid "rw"
+msgstr "rw"
+
+msgid "r"
+msgstr "r"
+
+msgid "unreachable"
+msgstr "onbereikbaar"
+
+msgid "Please select a Lua Extension File."
+msgstr "Selecteer een Lua extensie bestand."
+
+msgid "Please select a Music Store database."
+msgstr "Selecteer een Muziek Archief database."
+
+msgid "Paths must either be absolute or starting with a tilde."
+msgstr "Paden moeten absoluut zijn of met een tilde (~) beginnen."
+
+msgid "The specified store has already been added to the list."
+msgstr "Het gespecificeerde archief is reeds aan de lijst toegevoegd."
+
+#, c-format
+msgid ""
+"\n"
+"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%%%a, %%%%r and %%%%t, respectively.\n"
+msgstr ""
+"\n"
+"Het sjabloon wordt gebruikt om een titelregel te construeren aan de hand van de artiest, het album en het nummer. Hiernaar verwijst u d.m.v. respectievelijk %%%%a, %%%%r en %%%%t.\n"
+
+msgid ""
+"\n"
+"If you have non-standard ID3v1/ID3v2 character encoding MPEG audio file, please enter suitable character encoding in this entry (see below). If this entry is blank, the standard character encoding (ISO-8859-1) is used.\n"
+"\n"
+"For example:\n"
+"  Japanese: CP932 (SHIFT_JIS variant)\n"
+"  Korean: EUC-KR\n"
+"  Simp. Chinese: GB2312\n"
+"  Trad. Chinese: BIG5\n"
+"  Greek: ISO-8859-7\n"
+"  Hebrew: ISO-8859-8\n"
+"  Cyrillic: CP1251\n"
+"  Thai: ISO-8859-11\n"
+"  Arabic: CP1256\n"
+"  Turkish: ISO-8859-9\n"
+"  Latin Extended: ISO-8859-2\n"
+"  Central European: CP1250\n"
+"  Latin1 (standard): ISO-8859-1\n"
+"\n"
+"NOTE: There might be a more suitable character encoding for your language."
+msgstr ""
+"\n"
+"Indien dit bestand een non-standaard karakterencodering gebruikt, kunt u dit hier instellen (zie hieronder). Als u niets invult, wordt de standaard encodering gebruikt (ISO-8859-1).\n"
+"\n"
+"Bijvoorbeeld:\n"
+"  Japanese: CP932 (SHIFT_JIS variant)\n"
+"  Korean: EUC-KR\n"
+"  Simp. Chinees: GB2312\n"
+"  Trad. Chinees: BIG5\n"
+"  Grieks: ISO-8859-7\n"
+"  Hebreews: ISO-8859-8\n"
+"  Cyrillisch: CP1251\n"
+"  Thais: ISO-8859-11\n"
+"  Arabisch: CP1256\n"
+"  Turks: ISO-8859-9\n"
+"  Latin Extended: ISO-8859-2\n"
+"  Centraal Europa: CP1250\n"
+"  Latin1 (standaard): ISO-8859-1\n"
+"\n"
+"Het is mogelijk dat er een betere encodering is voor uw taal."
+
+msgid ""
+"\n"
+"The file you enter/choose here will set the Lua program to use to extend Aqualung. See the Aqualung manual for details. Here is a quick example of what you can use in the file:\n"
+"\n"
+"function playlist_title()\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"end"
+msgstr ""
+"\n"
+"Hier kunt u een Lua extensie instellen waarmee u Aqualun kunt uitbreiden. In de Aqualung-handleiding staan de details. Hier is een kort voorbeeld van wat u zoal kunt doen:\n"
+"\n"
+"function playlist_title()\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"end"
+
+msgid ""
+"\n"
+"The string you enter here will be parsed as a command line before parsing the actual command line parameters. What you enter here will act as a default setting and may or may not be overridden from the 'real' command line.\n"
+"\n"
+"Example: enter '-o alsa -R' below to use ALSA output running realtime as a default.\n"
+msgstr ""
+"\n"
+"Hieronder kunt u standaard commandoregelopties opgeven. Deze worden toegepast voor de opties die op de werkelijke commandoregel worden opgegeven. Deze standaardinstelling kan vanaf de 'echte' commandoregel worden aangepast.\n"
+"\n"
+"Voorbeeld: vul '-o alsa -R' in om standaard realtime ALSA-uitvoer te gebruiken.\n"
+
+msgid ""
+"Paths must either be absolute or starting with a tilde, which will be expanded to the user's home directory.\n"
+"\n"
+"Drag and drop entries in the list to set the store order in the Music Store."
+msgstr ""
+"Paden dienen absoluut te zijn of met een tilde (~) te beginnen, wat duidt op de Thuismap van de gebruiker.\n"
+"\n"
+"Versleep de regels in de lijst om de volgorde in het Muziek Archief te bepalen."
+
+msgid ""
+"\n"
+"Set the drive speed for CD playing in CD-ROM speed units. One speed unit equals to 176 kBps raw data reading speed. Warning: not all drives honor this setting.\n"
+"\n"
+"Lower speed usually means less drive noise. However, when using Paranoia error correction modes for increased accuracy, generally much larger speeds are required to prevent buffer underruns (and thus audible drop-outs).\n"
+"\n"
+"Please note that these settings do not apply to CD Ripping, which always happens with maximum available speed and with error correction modes manually set before every run."
+msgstr ""
+"\n"
+"Stel de snelheid in voor het afspelen van Audio CD's in een CD-ROM speler. Eén eenheid is equivalent aan 176 kBps. Let op: niet alle drives geven gehoor aan deze instelling.\n"
+"\n"
+"Een lagere snelheid betekent meestal dat de drive minder geluid maakt. Echter, als u Paranoïde foutcorrectie gebuikt, geldt in het algemeen dat er een hogere snelheid nodig is om het leeglopen van buffers te vermijden (waardoor anders onderbrekingen in het geluid optreden).\n"
+"\n"
+"Deze instelling heeft geen effect op het rippen van CD's. Dat gebeurt altijd op de hoogste snelheid en met een handmatig ingestelde foutcorrectiemode."
+
+msgid ""
+"\n"
+"Most drives let Aqualung know when a CD has been inserted or removed by providing a 'media changed' flag. However, some drives don't set this flag properly, and thus it may happen that a newly inserted CD remains unnoticed to Aqualung. In such cases, enabling this option should help."
+msgstr ""
+"\n"
+"De meeste drives geven Aqualung een sein als er een CD wordt gewisseld. Sommige drives doen dit echter niet goed. In dat geval zou het kunnen helpen om deze optie in te schakelen."
+
+msgid ""
+"\n"
+"Here you should enter a comma-separated list of domains\n"
+"that should be accessed without using the proxy set above.\n"
+"Example: localhost, .localdomain, .my.domain.com"
+msgstr ""
+"\n"
+"Hieronder kunt u een door komma's gescheiden lijst van domeinnamen\n"
+"opgeven die buiten de proxy om benaderd dienen te worden.\n"
+"Voorbeeld: localhost, .localdomain, my.domain.com"
+
+msgid "Embed playlist into main window"
+msgstr "Maak de afspeellijst onderdeel van het hoofdvenster"
+
+msgid "Enable systray"
+msgstr "Systeemvak-ondersteuning inschakelen"
+
+msgid "Do nothing"
+msgstr "Doe niets"
+
+msgid "Change volume"
+msgstr "Verander het volume"
+
+msgid "Change balance"
+msgstr "Verander de balans"
+
+msgid "Change song position"
+msgstr "Verander de afspeelpositie"
+
+msgid "Change current song"
+msgstr "Verander het huidige nummer"
+
+msgid "Left button"
+msgstr "Linker muisknop"
+
+msgid "Middle button"
+msgstr "Middelste muisknop"
+
+msgid "Right button"
+msgstr "Rechter muisknop"
+
+msgid "Button"
+msgstr "Knop"
+
+msgid "Left and right mouse buttons are reserved."
+msgstr "De linker en rechter muisknop zijn gereserveerd."
+
+msgid "This button is already assigned."
+msgstr "Deze knop is reeds toegewezen."
+
+msgid "Add mouse button command"
+msgstr "Voeg muisknopactie toe"
+
+msgid "Mouse button"
+msgstr "Muisknop"
+
+msgid "Click here to set mouse button"
+msgstr "Klik hier om de muisknop in te stellen"
+
+msgid "Command"
+msgstr "Commando"
+
+msgid "Main window"
+msgstr "Hoofdvenster"
+
+msgid "Disable control buttons relief"
+msgstr "Reliëf van knoppen uitschakelen"
+
+msgid "Combine play and pause buttons"
+msgstr "Combineer Afspelen en Pauzeren in één knop"
+
+msgid "Keep main window always on top"
+msgstr "Houdt het hoofdvenster altijd bovenop"
+
+msgid "Show song name in the main window's title"
+msgstr "Toon de naam van het nummer in de titelbalk van het hoofdvenster"
+
+msgid "Title Format"
+msgstr "Titelformaat"
+
+msgid "Lua extension file"
+msgstr "Lua extensie bestand"
+
+msgid "Systray"
+msgstr "Systeemvak"
+
+msgid "Start minimized"
+msgstr "Start geminimaliseerd"
+
+msgid "Play/Stop song"
+msgstr "Speel/Stop nummer"
+
+msgid "Play/Pause song"
+msgstr "Speel/Pauzeer nummer"
+
+msgid "Mouse wheel"
+msgstr "Muiswiel"
+
+msgid "Vertical mouse wheel:"
+msgstr "Verticaal muiswiel:"
+
+msgid "Horizontal mouse wheel:"
+msgstr "Horizontaal muiswiel:"
+
+msgid "Mouse buttons"
+msgstr "Muisknoppen"
+
+msgid "Miscellaneous"
+msgstr "Diversen"
+
+msgid "Implicit command line"
+msgstr "Impliciete commandoregel"
+
+msgid "Cover art"
+msgstr "Hoesafbeelding"
+
+msgid "Default cover width:"
+msgstr "Standaard breedte van hoesafbeelding:"
+
+msgid "50 pixels"
+msgstr "50 beeldpunten"
+
+msgid "100 pixels"
+msgstr "100 beeldpunten"
+
+msgid "200 pixels"
+msgstr "200 beeldpunten"
+
+msgid "300 pixels"
+msgstr "300 beeldpunten"
+
+msgid "use browser window width"
+msgstr "gebruik de breedte van het browser-venster"
+
+msgid "Do not magnify images with smaller width"
+msgstr "Afbeeldingen met een kleinere breedte niet vergroten"
+
+msgid "Show cover thumbnail for Music Store tracks only"
+msgstr "Toon hoesafbeelding alleen voor nummers uit het Muziek Archief"
+
+msgid "Don't show cover thumbnail in the main window"
+msgstr "Toon hoesafbeelding niet in het hoofdvenster"
+
+msgid "Use cover from external graphics file first"
+msgstr "Geef voorkeur aan een hoesafbeelding uit een extern bestand"
+
+msgid "Enable tooltips"
+msgstr "Schakel tekstballonen in"
+
+msgid "Simple view in LADSPA patch builder"
+msgstr "Eenvoudige weergave van LADSPA effectenbeheer"
+
+msgid "United windows minimization"
+msgstr "Minimaliseer alle vensters gelijktijdig"
+
+msgid "Show hidden files and directories in file choosers"
+msgstr "Toon verborgen bestanden en mappen in bestandkiezers"
+
+msgid "Show tags tab first in the file info dialog"
+msgstr "Toon het markeringen tabblad als eerste in het bestandsinfo dialoogvenster"
+
+msgid "Playlist"
+msgstr "Afspeellijst"
+
+msgid "Put control buttons at the bottom of playlist"
+msgstr "Toon knoppen onderaan de afspellijst"
+
+msgid "Save and restore the playlist on exit/startup"
+msgstr "Bewaar en herstel de afspeellijst bij het afsluiten/opstarten"
+
+msgid "Save playlist periodically [min]:"
+msgstr "Bewaar afspeellijst periodiek [min]:"
+
+msgid "Album mode is the default when adding entire records"
+msgstr "Gebruik standaard Albummode als u een heel album toevoegd"
+
+msgid "Always show the tab bar"
+msgstr "Altijd de tabbladenbalk tonen"
+
+msgid "Show close button in tab"
+msgstr "Toon afsluitknop op tabblad"
+
+msgid "When shuffling, records added in Album mode are played in order"
+msgstr "Albums worden in volgorde afgespeeld, ook indien willekeurige volgorde is ingeschakeld"
+
+msgid "Enable statusbar"
+msgstr "Schakel statusbalk in"
+
+msgid "Enable statusbar in playlist"
+msgstr "Schakel statusbalk in afspeellijst in"
+
+msgid "Show soundfile size in statusbar"
+msgstr "Toon de omvang van het geluidsbestand in de statusbalk"
+
+msgid "Show RVA values"
+msgstr "Toon RVA waarden"
+
+msgid "Show track lengths"
+msgstr "Toon de lengte van de nummers"
+
+msgid "Show active track name in bold"
+msgstr "Toon de naam van het huidige nummer in vette letters"
+
+msgid "Automatically roll to active track"
+msgstr "Selecteer automatisch het huidige nummer"
+
+msgid "Enable rules hint"
+msgstr "Schakel regelhints in"
+
+msgid "Playlist column order"
+msgstr "Volgorde van kolommen in Afspeellijst"
+
+msgid ""
+"Drag and drop entries in the list below \n"
+"to set the column order in the Playlist."
+msgstr ""
+"Versleep de regels hieronder om de volgorde\n"
+"van de kolommen in de Afspeellijst te bepalen."
+
+msgid "Column"
+msgstr "Kolom"
+
+msgid "Track titles"
+msgstr "Titels van de nummers"
+
+msgid "RVA values"
+msgstr "RVA waarden"
+
+msgid "Track lengths"
+msgstr "Lengte van de nummers"
+
+msgid "Hide comment pane"
+msgstr "Verberg commentaren"
+
+msgid "Hide the Music Store comment pane"
+msgstr "Verberg het commentaar van het Muziek Archief"
+
+msgid "Enable toolbar"
+msgstr "Schakel werkbalk in"
+
+msgid "Enable toolbar in Music Store"
+msgstr "Schakel werkbalk van het Muziek Archief in"
+
+msgid "Enable statusbar in Music Store"
+msgstr "Schakel statusbalk van het Muziek Archief i"
+
+msgid "Expand Stores on startup"
+msgstr "Klap Archieven open bij het opstarten"
+
+msgid "Enable tree node icons"
+msgstr "Iconen zichtbaar in boomstructuurmode"
+
+msgid "Enable Music Store tree node icons"
+msgstr "Iconen zichtbaar in boomstructuurmode van het Muziek Archief"
+
+msgid "Ask for confirmation when removing items"
+msgstr "Vraag om bevestiging bij het verwijderen van items"
+
+msgid "Paths to Music Store databases"
+msgstr "Paden van de databases van het Muziek Archief"
+
+msgid "Path"
+msgstr "Pad"
+
+msgid "Access"
+msgstr "Toegang"
+
+msgid "Refresh"
+msgstr "Verversen"
+
+msgid "DSP"
+msgstr "DSP"
+
+msgid "LADSPA plugin processing"
+msgstr "LADSPA plug-in verwerking"
+
+msgid "Pre Fader (before Volume & Balance)"
+msgstr "Harder worden en wegsterven voor toepassing van volumeknop en balans"
+
+msgid "Post Fader (after Volume & Balance)"
+msgstr "Harder worden en wegsterven na toepassing van volumeknop en balans"
+
+msgid ""
+"Aqualung is compiled without LADSPA plugin support.\n"
+"See the About box and the documentation for details."
+msgstr ""
+"Aqualung is zonder LADSPA ondersteuning gecompileerd.\n"
+"Bekijk de programma informatie en documentatie voor details."
+
+msgid "Sample Rate Converter type"
+msgstr "Samplerateomzetter type"
+
+msgid ""
+"Aqualung is compiled without Sample Rate Converter support.\n"
+"See the About box and the documentation for details."
+msgstr ""
+"Aqualung is zonder ondersteuning voor Samplerateomzetters gecompileerd.\n"
+"Bekijk de programmainformatie en documentatie voor details."
+
+msgid "Playback RVA"
+msgstr "Afspelen RVA"
+
+msgid "Enable playback RVA"
+msgstr "Schakel RVA voor afspelen in"
+
+msgid "Listening environment:"
+msgstr "Luisteromgeving:"
+
+msgid "Audiophile"
+msgstr "Audiofiel"
+
+msgid "Living room"
+msgstr "Huiskamer"
+
+msgid "Office"
+msgstr "Kantoor"
+
+msgid "Noisy workshop"
+msgstr "Rumoerige werkplaats"
+
+msgid "Reference volume [dBFS] :"
+msgstr "Referentievolume [dBFS] :"
+
+msgid "Steepness [dB/dB] :"
+msgstr "Steilheid  [dB/dB] :"
+
+msgid "RVA for Unmeasured Files [dB] :"
+msgstr "RVA voor ongemeten bestanden [dB] :"
+
+msgid "Apply averaged RVA to tracks of the same record"
+msgstr "Pas een gemiddeld RVA toe op nummers van hetzelfde album"
+
+msgid "Drop statistical aberrations based on"
+msgstr "Negeer statistische afwijkingen gebaseerd op"
+
+#, no-c-format
+msgid "% of standard deviation"
+msgstr "% van de standaardafwijking"
+
+msgid "Linear threshold [dB]"
+msgstr "Lineaire drempelwaarde [dB]"
+
+msgid "Linear threshold [dB] :"
+msgstr "Lineaire drempelwaarde [dB] :"
+
+#, no-c-format
+msgid "% of standard deviation :"
+msgstr "% van de standaardafwijking :"
+
+msgid "ReplayGain tag to use (with fallback to the other): "
+msgstr "Gebruik deze ReplayGain markering:"
+
+msgid "Replaygain_track_gain"
+msgstr "Replaygain_track_gain"
+
+msgid "Replaygain_album_gain"
+msgstr "Replaygain_album_gain"
+
+msgid "Adding files to Playlist"
+msgstr "Nummers aan de afspeellijst aan het toevoegen"
+
+msgid ""
+"Use basename only instead of full path\n"
+"if no metadata is available."
+msgstr ""
+"Gebruik alleen de bestandsnaam in plaats van de hele\n"
+"padnaam als er geen metadata beschikbaar is."
+
+msgid "Metadata editor (File info dialog)"
+msgstr "Aanpassen van metadata (bestandsinformatie dialoogvenster)"
+
+msgid ""
+"When adding new frames, try to set their contents\n"
+"from another tag's equivalent frame."
+msgstr ""
+"Wanneer er nieuwe frames worden toegevoegd, probeer\n"
+"die dan in te vullen aan de hand van een equivalent frame."
+
+msgid "MPEG audio ID3v1/ID3v2 character encoding"
+msgstr "MPEG audio ID3v1/ID3v2 character encoding"
+
+msgid "Batch update & encode (mass tagger, CD ripper, file export)"
+msgstr "Bulk bijwerken & encoderen (markeer, rip, exporteer)"
+
+msgid "Tags to add when creating or updating MPEG audio files:"
+msgstr "Markeringen die dienen te worden toegevoegd bij het aanmaken of bijwerken van MPEG geluidsbestanden:"
+
+msgid ""
+"Note: pre-existing tags will be updated even though they\n"
+"might not be checked here."
+msgstr ""
+"Let op: reeds bestaande markeringen worden bijgewerkt,\n"
+"ook als ze mogelijk niet gecontroleerd worden."
+
+msgid "CD Audio"
+msgstr "CD Audio"
+
+msgid "CD drive speed:"
+msgstr "CD drive snelheid:"
+
+msgid "\tMaximum number of retries:"
+msgstr "\tMaximaal aantal keer opnieuw proberen:"
+
+msgid "Force TOC re-read on every drive scan"
+msgstr "Lees telkens de inhoudsopgave opnieuw"
+
+msgid "Automatically add CDs to Playlist"
+msgstr "Voeg CD's automatisch toe aan de afspeellijst"
+
+msgid "Automatically remove CDs from Playlist"
+msgstr "Verwijder CDs automatisch van de afspeellijst"
+
+msgid "CDDB server:"
+msgstr "CDDB server:"
+
+msgid "Connection timeout [sec]:"
+msgstr "Neem maximaal deze tijd om een verbinding te maken [sec]:"
+
+msgid "Email address for submission:"
+msgstr "E-mail adres voor het toevoegen van gegevens"
+
+msgid "Local CDDB directory:"
+msgstr "Lokale CDDB-map"
+
+msgid "Use the local database only"
+msgstr "Gebruik alleen de lokale database"
+
+msgid "Protocol for querying (direct connection only):"
+msgstr "Protocol voor opvragen van informatie (alleen via een directe verbinding):"
+
+msgid "CDDBP (port 888)"
+msgstr "CDDBP (port 888)"
+
+msgid "HTTP (port 80)"
+msgstr "HTTP (port 80)"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Direct connection to the Internet"
+msgstr "Directe verbinding met Internet"
+
+msgid "Connect via HTTP proxy"
+msgstr "Verbinding via een HTTP-proxy"
+
+msgid "Proxy settings"
+msgstr "Proxy instellingen"
+
+msgid "Proxy host:"
+msgstr "Proxy host:"
+
+msgid "Port:"
+msgstr "Poort:"
+
+msgid "No proxy for:"
+msgstr "Gebruik geen proxy voor:"
+
+msgid "Timeout for socket I/O:"
+msgstr "Stop netwerk verkeer na:"
+
+msgid "seconds"
+msgstr "seconden"
+
+msgid "Appearance"
+msgstr "Uiterlijk"
+
+msgid "Override skin settings"
+msgstr "Gebruik de instellingen hieronder i.p.v. die van het ingestelde uiterlijk"
+
+msgid "Fonts"
+msgstr "Lettertypen"
+
+msgid "Playlist: "
+msgstr "Afspeellijst:"
+
+msgid "Music Store: "
+msgstr "Muziek Archief:"
+
+msgid "Big timer: "
+msgstr "Grote klok:"
+
+msgid "Small timers: "
+msgstr "Kleine klokjes:"
+
+msgid "Song title: "
+msgstr "Titel van het nummer:"
+
+msgid "Song info: "
+msgstr "Informatie over het nummer:"
+
+msgid "Statusbar: "
+msgstr "Statusbalk:"
+
+msgid "Colors"
+msgstr "Kleuren"
+
+msgid "Song in playlist: "
+msgstr "Nummer in de afspeellijst"
+
+msgid "Active song in playlist: "
+msgstr "Het actieve nummer in de afspeellijst:"
+
+msgid "Error in title format string"
+msgstr "Foutief formaat voor titel"
+
+msgid "Error invalid character encoding"
+msgstr "Foutieve karakterencodering"
+
+msgid "(Untitled)"
+msgstr "(geen titel)"
+
+#, c-format
+msgid " (%d/%d)"
+msgstr " (%d/%d)"
+
+msgid "Select files"
+msgstr "Selecteer bestanden"
+
+msgid "Select directory"
+msgstr "Selecteer een map"
+
+msgid "Add URL"
+msgstr "Voeg URL toe"
+
+msgid "URL:"
+msgstr "URL:"
+
+msgid "Please specify the file to save the playlist to."
+msgstr "Specificeer het bestand waar de afspeellijst naar weggeschreven dient te worden"
+
+msgid "Please specify the file to load the playlist from."
+msgstr "Specificeer het bestand waaruit de afspeellijst gelezen dient te worden."
+
+msgid ""
+"Playback RVA is currently disabled.\n"
+"Do you want to enable it now?"
+msgstr ""
+"Afspelen met RVA is uitgeschakeld.\n"
+"Wilt u dit nu inschakelen?"
+
+msgid "counting..."
+msgstr "aan het tellen..."
+
+msgid "track"
+msgstr "nummer"
+
+msgid "tracks"
+msgstr "nummers"
+
+msgid "Rename playlist"
+msgstr "Hernoem afspeellijst"
+
+msgid "Name:"
+msgstr "Naam:"
+
+msgid "New tab"
+msgstr "Nieuw tabblad"
+
+msgid "Close tab"
+msgstr "Sluit tabblad"
+
+msgid "Undo close tab"
+msgstr "Sluiten van tabblad ongedaan maken"
+
+msgid "Close other tabs"
+msgstr "Sluit de andere tabbladen"
+
+msgid " Selected: "
+msgstr " Geselecteerd:"
+
+msgid "Total: "
+msgstr "Totaal:"
+
+msgid "Add files"
+msgstr "Voeg bestanden toe"
+
+msgid ""
+"Add files to playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
+"Voeg bestanden toe aan de afspeellijst\n"
+"(klik de rechter muisknop voor een menu)"
+
+msgid "Select all"
+msgstr "Selecteer alles"
+
+msgid ""
+"Select all songs in playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
+"Selecteer alle nummers in de afspeellijst\n"
+"(klik de rechter muisknop voor een menu)"
+
+msgid "Remove selected"
+msgstr "Verwijder selectie"
+
+msgid ""
+"Remove selected songs from playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
+"Verwijder de geselecteerde nummers uit de afspeellijst\n"
+"(klik de rechter muisknop voor een menu)"
+
+msgid "Add directory"
+msgstr "Voeg map toe"
+
+msgid "Select none"
+msgstr "Selecteer niets"
+
+msgid "Invert selection"
+msgstr "Inverteer de selectie"
+
+msgid "Remove all"
+msgstr "Verwijder alles"
+
+msgid "Remove dead"
+msgstr "Verwijder niet bestaanden"
+
+msgid "Cut selected"
+msgstr "Knip selectie"
+
+msgid "Save playlist"
+msgstr "Bewaar afspeellijst"
+
+msgid "Save all playlists"
+msgstr "Bewaar alle afspeellijsten"
+
+msgid "Load playlist in new tab"
+msgstr "Laad afspeellijst in een nieuwe tabblad"
+
+msgid "Load playlist"
+msgstr "Laad afspeellijst"
+
+msgid "Enqueue playlist"
+msgstr "Zet afspeellijst in wachtrij"
+
+msgid "Send to iFP device"
+msgstr "Stuur naar iFP apparaat"
+
+msgid "Calculate RVA"
+msgstr "Bereken RVA"
+
+msgid "Separate"
+msgstr "Gescheiden"
+
+msgid "Average"
+msgstr "Gemiddeld"
+
+msgid "Reread file metadata"
+msgstr "Lees metadata opnieuw"
+
+msgid "File info..."
+msgstr "Bestandsinformatie..."
+
+msgid "Roll to active song"
+msgstr "Selecteer het huidige nummer"
+
+msgid "Stop adding files"
+msgstr "Stop met het toevoegen van bestanden"
+
+msgid "Files selected for removal"
+msgstr "Bestanden geselecteerd voor verwijdering"
+
+msgid "Remove files"
+msgstr "Verwijder bestanden"
+
+msgid ""
+"The selected files will be deleted from the filesystem. No recovery will be possible after this operation.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"De geselecteerde bestanden zullen worden verwijderd. Deze operatie is onomkeerbaar.\n"
+"\n"
+"Wilt u doorgaan?"
+
+#, c-format
+msgid "Unable to remove %d file."
+msgstr "Niet in staat om %d bestand te verwijderen."
+
+#, c-format
+msgid "Unable to remove %d files."
+msgstr "Niet in staat om %d bestanden te verwijderen."
+
+msgid "LADSPA patch builder"
+msgstr "LADSPA plug-in beheer"
+
+msgid "Available plugins"
+msgstr "Beschikbare plug-ins"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Category"
+msgstr "Categorie"
+
+msgid "Inputs"
+msgstr "Ingangen"
+
+msgid "Outputs"
+msgstr "Uitgangen"
+
+msgid "Running plugins"
+msgstr "Draaiende plug-ins"
+
+msgid "_Configure"
+msgstr "_Instellen"
+
+msgid "Enable all plugins"
+msgstr "Schakel alle plug-ins in"
+
+msgid "Disable all plugins"
+msgstr "Schakel alle plug-ins uit"
+
+msgid "Invert current state"
+msgstr "Inverteer huidige toestand"
+
+msgid "Clear list"
+msgstr "Maak de lijst leeg"
+
+msgid "Untitled"
+msgstr "Geen naam"
+
+msgid "JACK Port Setup"
+msgstr "JACK Poortbeheer"
+
+msgid "Rescan"
+msgstr "Opnieuw scannen"
+
+msgid "Available connections"
+msgstr "Beschikbare connecties"
+
+msgid "Clear connections"
+msgstr "Verbreek verbindingen"
+
+msgid " out L"
+msgstr " uit L"
+
+msgid " out R"
+msgstr " uit R"
+
+msgid "Search the Music Store"
+msgstr "Doorzoek het Muziek Archief"
+
+msgid "Key: "
+msgstr "Sleutel:"
+
+msgid "Case sensitive"
+msgstr "Maak verschil tussen hoofd- en kleine letters"
+
+msgid "Exact matches only"
+msgstr "Alleen exacte overeenkomsten"
+
+msgid "Select first and close window"
+msgstr "Maak eerst een selectie en sluit dan het venster"
+
+msgid "Search in:"
+msgstr "Zoek in:"
+
+msgid "Artist names"
+msgstr "Namen van artiesten"
+
+msgid "Record titles"
+msgstr "Namen van albums"
+
+msgid "Comments"
+msgstr "Commentaren"
+
+msgid "Search"
+msgstr "Zoek"
+
+msgid "Search the Playlist"
+msgstr "Doorzoek de afspeellijst"
+
+msgid "Available skins"
+msgstr "Beschikbare uiterlijken"
+
+msgid "Drive info"
+msgstr "Drive info"
+
+msgid "Device path:"
+msgstr "Apparaatpad:"
+
+msgid "Vendor:"
+msgstr "Fabrikant:"
+
+msgid "Revision:"
+msgstr "Revisie:"
+
+msgid ""
+"The information below is reported by the drive, and\n"
+"may not reflect the actual capabilities of the device."
+msgstr ""
+"De informatie hieronder is wat de drive aangeeft en\n"
+"hoeft niet noodzakelijkerwijs overeen te komen met\n"
+"de werkelijkheid."
+
+msgid "Eject"
+msgstr "Uitwerpen"
+
+msgid "Close tray"
+msgstr "Sluit lade"
+
+msgid "Disable manual eject"
+msgstr "Schakel handmatig uitwerpen uit"
+
+msgid "Select juke-box disc"
+msgstr "Selecteer een jukebox schijf"
+
+msgid "Set drive speed"
+msgstr "Stel de drive-snelheid in"
+
+msgid "Detect media change"
+msgstr "Detecteer het wisselen van CD"
+
+msgid "Read multiple sessions"
+msgstr "Lees meervoudige sessies"
+
+msgid "Hard reset device"
+msgstr "Reset het apparaat"
+
+msgid "Reading"
+msgstr "Aan het lezen"
+
+msgid "Play CD Audio"
+msgstr "Speel Audio CD"
+
+msgid "Read CD-DA"
+msgstr "Lees CD-DA"
+
+msgid "Read CD+G"
+msgstr "Lees CD+G"
+
+msgid "Read CD-R"
+msgstr "Lees CD-R"
+
+msgid "Read CD-RW"
+msgstr "Lees CD-RW"
+
+msgid "Read DVD-R"
+msgstr "Lees DVD-R"
+
+msgid "Read DVD+R"
+msgstr "Lees DVD+R"
+
+msgid "Read DVD-RW"
+msgstr "Lees DVD-RW"
+
+msgid "Read DVD+RW"
+msgstr "Lees DVD+RW"
+
+msgid "Read DVD-RAM"
+msgstr "Lees DVD-RAM"
+
+msgid "Read DVD-ROM"
+msgstr "Lees DVD-ROM"
+
+msgid "C2 Error Correction"
+msgstr "C2 Foutcorrectie"
+
+msgid "Read Mode 2 Form 1"
+msgstr "Lees Mode 2 Form 1"
+
+msgid "Read Mode 2 Form 2"
+msgstr "Lees Mode 2 Form 2"
+
+msgid "Read MCN"
+msgstr "Lees MCN"
+
+msgid "Read ISRC"
+msgstr "Lees ISRC"
+
+msgid "Writing"
+msgstr "Aan het schrijven"
+
+msgid "Write CD-R"
+msgstr "Beschrijf CD-R"
+
+msgid "Write CD-RW"
+msgstr "Beschrijf CD-RW"
+
+msgid "Write DVD-R"
+msgstr "Beschrijf DVD-R"
+
+msgid "Write DVD+R"
+msgstr "Beschrijf DVD+R"
+
+msgid "Write DVD-RW"
+msgstr "Beschrijf DVD-RW"
+
+msgid "Write DVD+RW"
+msgstr "Beschrijf DVD+RW"
+
+msgid "Write DVD-RAM"
+msgstr "Beschrijf DVD-RAM"
+
+msgid "Mount Rainier"
+msgstr "Mount Rainier"
+
+msgid "Burn Proof"
+msgstr "Burn Proof"
+
+msgid "Disc info"
+msgstr "Schijfinformatie"
+
+msgid "This CD does not contain CD-Text information."
+msgstr "Deze CD bevat geen CD-Text gegevens."
+
+msgid "drive"
+msgstr "drive"
+
+msgid "drives"
+msgstr "drives"
+
+msgid "record"
+msgstr "record"
+
+msgid "records"
+msgstr "records"
+
+msgid "Add to playlist"
+msgstr "Voeg aan afspeellijst toe"
+
+msgid "Add to playlist (Album mode)"
+msgstr "Voeg aan afspeellijst toe (Albummode)"
+
+msgid "CDDB query for this CD..."
+msgstr "CDDB aanvraag voor deze CD..."
+
+msgid "Submit CD to CDDB database..."
+msgstr "Stuur de gegevens van deze CD naar de CDDB database..."
+
+msgid "Rip CD..."
+msgstr "Rip CD..."
+
+msgid "Disc info..."
+msgstr "Schijfinformatie..."
+
+msgid "Drive info..."
+msgstr "Drive-informatie..."
+
+msgid "Comments:"
+msgstr "Commentaar:"
+
+msgid "Please select the xml file for this store."
+msgstr "Selecteer het xml-bestand voor dit archief."
+
+msgid "Create empty store"
+msgstr "Maak een leeg archief aan"
+
+msgid "Visible name:"
+msgstr "Zichtbare naam:"
+
+msgid "Edit Store"
+msgstr "Bewerk Archief"
+
+msgid "Use relative paths in store file"
+msgstr "Gebruik relatieve paden in het archiefbestand"
+
+msgid "Add Artist"
+msgstr "Voeg artiest toe"
+
+msgid "Name to sort by:"
+msgstr "Sorteer op deze naam:"
+
+msgid "Edit Artist"
+msgstr "Bewerk Artiest"
+
+msgid "Please select the audio files for this record."
+msgstr "Selecteer de geluidsbestanden voor dit album."
+
+msgid "Add Record"
+msgstr "Voeg album toe"
+
+msgid "Auto-create tracks from these files:"
+msgstr "Maak automatisch nummers aan van de volgende bestanden:"
+
+msgid "_Add files..."
+msgstr "_Voeg bestanden toe..."
+
+msgid "Edit Record"
+msgstr "Bewerk Album"
+
+msgid "Please select the audio file for this track."
+msgstr "Selecteer het geluidsbestand voor dit nummer."
+
+msgid "Add Track"
+msgstr "Voeg nummer toe"
+
+msgid "Edit Track"
+msgstr "Bewerk Nummer"
+
+msgid "Duration:"
+msgstr "Lengte:"
+
+#, c-format
+msgid "Unmeasured"
+msgstr "Niet gemeten"
+
+msgid "Volume level:"
+msgstr "Volumeniveau:"
+
+msgid "Use manual RVA value [dB]"
+msgstr "Gebruik handmatige RVA waarde [dB]"
+
+#, c-format
+msgid "Really remove \"%s\" from the Music Store?"
+msgstr "Wilt u \"%s\" echt uit het Muziek Archief verwijderen?"
+
+msgid "Stop adding songs"
+msgstr "Stop met toevoegen van nummers"
+
+#, c-format
+msgid ""
+"The store '%s' already exists.\n"
+"Add it on the Settings/Music Store tab."
+msgstr ""
+"Het archief '%s' bestaat al.\n"
+"Voeg het toe opt het Instellingen/Muziekarchief tabblad."
+
+#, c-format
+msgid "Really remove store \"%s\" from the Music Store?"
+msgstr "Wilt u \"%s\" echt uit het Muziek Archief verwijderen?"
+
+msgid "Remove Store"
+msgstr "Verwijder Archief"
+
+msgid "Do you want to save the store before removing?"
+msgstr "Wilt u het archief opslaan voordat het verwijderd wordt?"
+
+msgid "Remove Artist"
+msgstr "Verwijder Artiest"
+
+msgid "Remove Record"
+msgstr "Verwijder Album"
+
+msgid "Remove Track"
+msgstr "Verwijder Nummer"
+
+msgid "Update file metadata"
+msgstr "Metadata bijwerken"
+
+msgid "Track name"
+msgstr "Naam van het nummer"
+
+msgid "Track comment"
+msgstr "Commentaar"
+
+msgid "Track number"
+msgstr "Volgnummer"
+
+msgid "Failed to set metadata for the following files:"
+msgstr "Het instellen van metadata voor de volgende bestanden is mislukt:"
+
+msgid "Filename"
+msgstr "Bestandsnaam"
+
+msgid "Reason"
+msgstr "Reden"
+
+msgid "(no comment)"
+msgstr "(geen commentaar)"
+
+msgid "artist"
+msgstr "artiest"
+
+msgid "artists"
+msgstr "artiesten"
+
+#, c-format
+msgid "File \"%s\" does not exist or your write permission has been withdrawn. Check if the partition containing the store file has been unmounted."
+msgstr "Het bestand \"%s\" bestaat niet of het is onbeschrijfbaar. Controleer of het Muziek Archief bestand nog beschikbaar is."
+
+msgid "Build / Update store from filesystem..."
+msgstr "Opbouwen / Bijwerken van het archief..."
+
+msgid "Edit store..."
+msgstr "Bewerk archief..."
+
+msgid "Export store..."
+msgstr "Exporteer archief..."
+
+msgid "Save store"
+msgstr "Archief opslaan"
+
+msgid "Remove store"
+msgstr "Verwijder archief"
+
+msgid "Add new artist to this store..."
+msgstr "Voeg nieuwe artiest aan dit archief toe..."
+
+msgid "Calculate volume (recursive)"
+msgstr "Bereken het volume (recursief)"
+
+msgid "Unmeasured tracks only"
+msgstr "Alleen nog niet gemeten nummers"
+
+msgid "All tracks"
+msgstr "Alle nummers"
+
+msgid "Batch-update file metadata..."
+msgstr "Bulk bijwerken van bestandsmetadata..."
+
+msgid "Add new artist..."
+msgstr "Voeg nieuwe artiest toe..."
+
+msgid "Edit artist..."
+msgstr "Bewerk artiest..."
+
+msgid "Export artist..."
+msgstr "Exporteer artiest..."
+
+msgid "Remove artist"
+msgstr "Verwijder artiest..."
+
+msgid "Add new record to this artist..."
+msgstr "Voeg nieuw album aan deze artiest toe..."
+
+msgid "Add new record..."
+msgstr "Voeg nieuw album toe..."
+
+msgid "Edit record..."
+msgstr "Bewerk album..."
+
+msgid "Export record..."
+msgstr "Exporteer album..."
+
+msgid "Remove record"
+msgstr "Verwijder album"
+
+msgid "Add new track to this record..."
+msgstr "Voeg nieuw nummer aan dit album toe..."
+
+msgid "CDDB query for this record..."
+msgstr "CDDB-aanvraag voor dit album..."
+
+msgid "Submit record to CDDB database..."
+msgstr "Stuur gegevens van dit album naar de CDDB database..."
+
+msgid "Add new track..."
+msgstr "Voeg nieuw nummer toe..."
+
+msgid "Edit track..."
+msgstr "Bewerk nummer..."
+
+msgid "Export track..."
+msgstr "Exporteer nummer..."
+
+msgid "Remove track"
+msgstr "Verwijder nummer"
+
+msgid "Calculate volume"
+msgstr "Bereken het volume"
+
+msgid "Only if unmeasured"
+msgstr "Alleen als het nog niet gemeten is"
+
+msgid "In any case"
+msgstr "Altijd"
+
+msgid "Update file metadata..."
+msgstr "Werk metadata van het bestand bij..."
+
+msgid "Please select the download directory for this podcast."
+msgstr "Selecteer de downloadmap voor deze podcast."
+
+msgid "Subscribe to new feed"
+msgstr "Abonneer op nieuwe feed"
+
+msgid "Edit feed settings"
+msgstr "Bewerk feed instellingen"
+
+msgid "Podcast URL:"
+msgstr "Podcast URL:"
+
+msgid "Download directory:"
+msgstr "Downloadmap:"
+
+msgid "Auto-check interval [hour]:"
+msgstr "Na hoeveel uur opnieuw bijwerken:"
+
+msgid ""
+"Automatic update has been disabled for all feeds\n"
+"in the Podcasts store popup menu."
+msgstr ""
+"Automatisch bijwerken is voor alle feeds\n"
+"uitgeschakeld in het Podcasts-archief"
+
+msgid "Limits"
+msgstr "Limieten"
+
+msgid "Maximum number of items:"
+msgstr "Maximaal aantal items:"
+
+msgid "Remove older items [day]:"
+msgstr "Verwijder oudere items [dagen]:"
+
+msgid "Maximum space to use [MB]:"
+msgstr "Maximale opslagruimte [MB]:"
+
+msgid "Podcasts"
+msgstr "Podcasts"
+
+msgid "Updating..."
+msgstr "Aan het bijwerken..."
+
+msgid "Delete downloaded items from the filesystem"
+msgstr "Verwijder gedownloade items"
+
+msgid "Remove feed"
+msgstr "Verwijder feed"
+
+#, c-format
+msgid "Really remove '%s' from the Music Store?"
+msgstr "Wilt u '%s' echt uit het Muziek Archief verwijderen?"
+
+msgid "Reorder feeds"
+msgstr "Feeds herschikken"
+
+msgid ""
+"Drag and drop entries in the list\n"
+"to set the feed order in the Music Store."
+msgstr ""
+"Versleep de regels van de lijst om de\n"
+"volgorde in het Muziek Archief te bepalen."
+
+#, c-format
+msgid "Downloading %d/%d (%d%%) ..."
+msgstr "Aan het downloaden %d/%d (%d%%) ..."
+
+msgid "item"
+msgstr "item"
+
+msgid "items"
+msgstr "items"
+
+msgid "new item"
+msgstr "nieuw item"
+
+msgid "new items"
+msgstr "nieuwe items"
+
+msgid "feed"
+msgstr "feed"
+
+msgid "feeds"
+msgstr "feeds"
+
+msgid "Export item..."
+msgstr "Exporteer item..."
+
+msgid "Add all items to playlist"
+msgstr "Voeg alle items toe aan de afspeellijst"
+
+msgid "Add all items to playlist (Album mode)"
+msgstr "Voeg alle items toe aan de afspeellijst (Albummode)"
+
+msgid "Add new items to playlist"
+msgstr "Voeg alle nieuwe items toe aan de afspeellijst"
+
+msgid "Add new items to playlist (Album mode)"
+msgstr "Voeg alle nieuwe items toe aan de afspeellijst (Albummode)"
+
+msgid "Edit feed"
+msgstr "Bewerk feed"
+
+msgid "Export all items..."
+msgstr "Exporteer alle items..."
+
+msgid "Export new items..."
+msgstr "Exporteer alle nieuwe items"
+
+msgid "Update feed"
+msgstr "Werk feed bij"
+
+msgid "Abort ongoing update"
+msgstr "Breek bijwerken af"
+
+msgid "Update all feeds"
+msgstr "Werk alle feeds bij"
+
+msgid "Automatically update feeds"
+msgstr "Werk feeds automatisch bij"
+
+msgid "Unexpected end of string after '?'."
+msgstr "Onverwacht einde na '?'."
+
+msgid "Expected '}' after '{', but end of string found."
+msgstr "'}' verwacht na '{', maar niet gevonden"
+
+#, c-format
+msgid "Unknown conversion type character found after '%%%%'."
+msgstr "Onbekend conversietype gevonden na '%%%%'."
+
+msgid "Unknown conversion type character found after '?'."
+msgstr "Onbekend conversietype gevonden na '?'."
+
+msgid "day"
+msgstr "dag"
+
+msgid "days"
+msgstr "dagen"
+
+msgid "All Files"
+msgstr "Alle bestanden"
+
+msgid "Lua Extension Files (*.lua)"
+msgstr "Lua extensie bestanden (*.lua)"
+
+msgid "Music Store Files (*.xml)"
+msgstr "Muziek Archief bestanden (*.xml)"
+
+msgid "Aqualung playlist (*.xml)"
+msgstr "Aqualung Afspeellijst (*.xml)"
+
+msgid "MP3 Playlist (*.m3u)"
+msgstr "MP3 Afspeellijst (*.m3u)"
+
+msgid "Multimedia Playlist (*.pls)"
+msgstr "Multimedia Afspeellijst (*.pls)"
+
+msgid "All Playlist Files"
+msgstr "Alle afspeellijsten"
+
+msgid "All Audio Files"
+msgstr "Alle geluidsbestanden"
+
+msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
+msgstr "Geluidsbestanden (*.wav, *.aiff, *.au, ...)"
+
+msgid "Free Lossless Audio Codec (*.flac)"
+msgstr "Free Lossless Audio Codec (*.flac)"
+
+msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
+msgstr "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
+
+msgid "Ogg Vorbis (*.ogg)"
+msgstr "Ogg Vorbis (*.ogg)"
+
+msgid "Ogg Speex (*.spx)"
+msgstr "Ogg Speex (*.spx)"
+
+msgid "Musepack (*.mpc)"
+msgstr "Musepack (*.mpc)"
+
+msgid "Monkey's Audio Codec (*.ape)"
+msgstr "Monkey's Audio Codec (*.ape)"
+
+msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
+msgstr "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
+
+msgid "Compressed modules (*.gz, *.bz2)"
+msgstr "Gecomprimeerde modules (*.gz, *.bz2)"
+
+msgid "Compressed modules (*.gz)"
+msgstr "Gecomprimeerde modules (*.gz)"
+
+msgid "Compressed modules (*.bz2)"
+msgstr "Gecomprimeerde modules (*.bz2)"
+
+msgid "WavPack (*.wv)"
+msgstr "WavPack (*.wv)"
+
+msgid "LAVC audio/video files"
+msgstr "LAVC audio/video bestanden"
+
+msgid "Resume"
+msgstr "Hervatten"
+
+msgid "Calculating volume level"
+msgstr "Volumeniveau aan het berekenen"
+
+msgid "Compression: Fast"
+msgstr "Compressie: Snel"
+
+msgid "Compression: Normal"
+msgstr "Compressie: Normaal"
+
+msgid "Compression: High"
+msgstr "Compressie: Hoog"
+
+msgid "Compression: Extra High"
+msgstr "Compressie: Extra Hoog"
+
+msgid "Compression: Insane"
+msgstr "Compressie: Te gek voor woorden"
+
+msgid "Profile: Telephone"
+msgstr "Profiel: Telefonie"
+
+msgid "Profile: Thumb"
+msgstr "Profiel: Duim"
+
+msgid "Profile: Radio"
+msgstr "Profiel: Radio"
+
+msgid "Profile: Standard"
+msgstr "Profiel: Standaard"
+
+msgid "Profile: Xtreme"
+msgstr "Profiel: Extreem"
+
+msgid "Profile: Insane"
+msgstr "Profiel: Te gek voor woorden"
+
+msgid "Profile: Braindead"
+msgstr "Profiel: Rijp voor opname"
+
+msgid "Layer I"
+msgstr "Layer I"
+
+msgid "Layer II"
+msgstr "Layer II"
+
+msgid "Layer III"
+msgstr "Layer III"
+
+msgid "Unrecognized"
+msgstr "Niet herkend"
+
+msgid "Single channel"
+msgstr "Enkel kanaal"
+
+msgid "Dual channel"
+msgstr "Twee kanalen"
+
+msgid "Joint stereo"
+msgstr "Gekoppeld stereo"
+
+msgid "Stereo"
+msgstr "Stereo"
+
+msgid "Emphasis: none"
+msgstr "Benadrukking: geen"
+
+msgid "Emphasis:"
+msgstr "Benadrukking:"
+
+msgid "Emphasis: reserved"
+msgstr "Benadrukken: gereserveerd"
+
+msgid "bit signed"
+msgstr "bit hele getallen met teken"
+
+msgid "bit unsigned"
+msgstr "bit hele getallen zonder teken"
+
+msgid "bit float"
+msgstr "bit drijvende komma"
+
+msgid "bit double"
+msgstr "bit drijvende komma, dubbele precisie"
+
+msgid "encoding"
+msgstr "encodering"
+

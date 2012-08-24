@@ -6,11 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta10\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-17 16:11+0200\n"
-"PO-Revision-Date: 2010-01-17 16:13+0300\n"
+"Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
+"POT-Creation-Date: 2012-08-23 15:40+0300\n"
+"PO-Revision-Date: 2012-08-23 16:16+0300\n"
 "Last-Translator: Vladimir Smolyar <v_2e@ukr.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -40,8 +41,17 @@ msgstr "Программирование, графический интерфе�
 msgid "OpenBSD compatibility, metadata tweaks:\n"
 msgstr "Совместимость с OpenBSD, трюки с метаданными:\n"
 
+msgid "Miscellaneous, minimalism:\n"
+msgstr "Разное, минимализм:\n"
+
 msgid "Translators:"
 msgstr "Переводчики:"
+
+msgid "Chinese (simplified):\n"
+msgstr "Китайский (упрощённый):\n"
+
+msgid "Dutch:\n"
+msgstr "Датский:\n"
 
 msgid "French:\n"
 msgstr "Французский:\n"
@@ -58,8 +68,14 @@ msgstr "Итальянский:\n"
 msgid "Japanese:\n"
 msgstr "Японский:\n"
 
+msgid "Polish:\n"
+msgstr "Польский:\n"
+
 msgid "Russian:\n"
 msgstr "Русский:\n"
+
+msgid "Spanish:\n"
+msgstr "Испанский:\n"
 
 msgid "Swedish:\n"
 msgstr "Шведский:\n"
@@ -94,6 +110,9 @@ msgstr "Поддержка конвертера частоты дискрети�
 msgid "iRiver iFP driver support\n"
 msgstr "Поддержка драйвера iRiver iFP\n"
 
+msgid "JACK port management support\n"
+msgstr "Поддержка управления портом JACK\n"
+
 msgid "Loop playback support\n"
 msgstr "Поддержка зацикленного воспроизведения\n"
 
@@ -103,8 +122,8 @@ msgstr "Поддержка системного лотка\n"
 msgid "Podcast support\n"
 msgstr "Поддержка подкастов\n"
 
-msgid "Lua (programmable title formatting) support\n"
-msgstr "Поддержка Lua (программируемое форматирование заголовка)\n"
+msgid "Lua extension support\n"
+msgstr "Поддержка расширений на языке Lua\n"
 
 msgid "Decoding support:"
 msgstr "Поддержка декодирования:"
@@ -408,6 +427,143 @@ msgstr "Чтение файла"
 msgid "Removing non-existing files"
 msgstr "Удаление несуществующих файлов"
 
+msgid "Please select the directory for ripped files."
+msgstr "Выберите, пожалуйста, каталог для извлеченных файлов."
+
+msgid "(none)"
+msgstr "(нет)"
+
+msgid "fast"
+msgstr "быстрее"
+
+msgid "best"
+msgstr "лучше"
+
+msgid "Compression level:"
+msgstr "Уровень сжатия:"
+
+msgid "Bitrate [kbps]:"
+msgstr "Битрейт [kbps]:"
+
+msgid "Artist/Album already existing, not empty"
+msgstr "Исполнитель/Альбом уже существуют и непусты"
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already containing some tracks. If you press OK, these tracks will be removed. The files themselves will be left intact, but they will be removed from the destination Music Store. Press Cancel to get back to change the Artist/Album or the destination Music Store."
+msgstr ""
+"\n"
+"В выбранной вами Музыкальной библиотеке уже имеется исполнитель и альбом, содержащий треки. Если вы нажмете ОК, эти треки будут удалены. Файлы сами по себе тронуты не будут, но они будут удалены из данной Музыкальной библиотеки. Нажмите Отмена для возврата к изменению исполнителя/альбома или выбору другой Музыкальной библиотеки."
+
+msgid "Rip CD"
+msgstr "Извлечь музыку из CD"
+
+msgid "Artist:"
+msgstr "Исполнитель:"
+
+msgid "Album:"
+msgstr "Альбом:"
+
+msgid "Year:"
+msgstr "Год:"
+
+msgid "Genre:"
+msgstr "Жанр:"
+
+msgid "Rip"
+msgstr "Извлечь музыку"
+
+msgid "No."
+msgstr "№"
+
+msgid "Title"
+msgstr "Заголовок"
+
+msgid "Select"
+msgstr "Выбрать"
+
+msgid "All"
+msgstr "Все"
+
+msgid "None"
+msgstr "Нет"
+
+msgid "Output"
+msgstr "Выход"
+
+msgid "Destination"
+msgstr "Цель"
+
+msgid "Target directory for ripped files"
+msgstr "Каталог назначения для извлеченных файлов"
+
+msgid "Add to Music Store"
+msgstr "Добавить в Музыкальную Библиотеку"
+
+msgid "Format"
+msgstr "Формат"
+
+msgid "File format:"
+msgstr "Формат файла:"
+
+msgid "VBR encoding"
+msgstr "Кодирование с переменным потоком"
+
+msgid "Tag files with metadata"
+msgstr "Ввести метаданные в файлы"
+
+msgid "Paranoia"
+msgstr "Paranoia"
+
+msgid "Paranoia error correction"
+msgstr "Корректирование ошибок Paranoia"
+
+msgid "Perform overlapped reads"
+msgstr "Производить чтения с перекрытием"
+
+msgid "Verify data integrity"
+msgstr "Проверить целостность данных"
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr "Неограниченное число попыток при ошибках чтения (никогда не пропускать)"
+
+msgid "Maximum number of retries:"
+msgstr "Максимальное количество попыток:"
+
+msgid "Error"
+msgstr "Ошибка"
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+"\n"
+"Указанный каталог не доступен для чтения/записи!"
+
+msgid "Total"
+msgstr "Всего"
+
+msgid "(audio only)"
+msgstr "(только аудио)"
+
+msgid "Ripping CD tracks"
+msgstr "Считывание CD-треков"
+
+msgid "Begin"
+msgstr "Начало"
+
+msgid "Length"
+msgstr "Длина"
+
+msgid "Progress"
+msgstr "Прогресс"
+
+msgid "Close window when complete"
+msgstr "Закрыть окно после завершения"
+
+msgid "Close"
+msgstr "Закрыть"
+
 msgid "Unknown disc"
 msgstr "Неизвестный диск"
 
@@ -422,9 +578,6 @@ msgstr "Получение результатов с сервера..."
 
 msgid "Connecting to CDDB server..."
 msgstr "Подключение к серверу CDDB..."
-
-msgid "Error"
-msgstr "Ошибка"
 
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr "Во время подключения к серверу CDDB возникла ошибка."
@@ -494,23 +647,14 @@ msgstr "Отправить новую запись"
 msgid "Matches:"
 msgstr "Совпадения:"
 
-msgid "Artist:"
-msgstr "Исполнитель:"
-
 msgid "Title:"
 msgstr "Название:"
-
-msgid "Year:"
-msgstr "Год:"
 
 msgid "Category:"
 msgstr "Категория."
 
 msgid "(choose a category)"
 msgstr "(выберите категорию)"
-
-msgid "Genre:"
-msgstr "Жанр:"
 
 msgid "Extended data:"
 msgstr "Расширенные данные:"
@@ -526,131 +670,6 @@ msgstr "Треки"
 
 msgid "You have to provide an email address for CDDB submission."
 msgstr "Вы должны указать адрес email для отправки CDDB."
-
-msgid "Please select the directory for ripped files."
-msgstr "Выберите, пожалуйста, каталог для извлеченных файлов."
-
-msgid "(none)"
-msgstr "(нет)"
-
-msgid "fast"
-msgstr "быстрее"
-
-msgid "best"
-msgstr "лучше"
-
-msgid "Compression level:"
-msgstr "Уровень сжатия:"
-
-msgid "Bitrate [kbps]:"
-msgstr "Битрейт [kbps]:"
-
-msgid "Artist/Album already existing, not empty"
-msgstr "Исполнитель/Альбом уже существуют и непусты"
-
-msgid ""
-"\n"
-"The Music Store you selected has a matching Artist and Album, already containing some tracks. If you press OK, these tracks will be removed. The files themselves will be left intact, but they will be removed from the destination Music Store. Press Cancel to get back to change the Artist/Album or the destination Music Store."
-msgstr ""
-"\n"
-"В выбранной вами Музыкальной библиотеке уже имеется исполнитель и альбом, содержащий треки. Если вы нажмете ОК, эти треки будут удалены. Файлы сами по себе тронуты не будут, но они будут удалены из данной Музыкальной библиотеки. Нажмите Отмена для возврата к изменению исполнителя/альбома или выбору другой Музыкальной библиотеки."
-
-msgid "Rip CD"
-msgstr "Извлечь музыку из CD"
-
-msgid "Album:"
-msgstr "Альбом:"
-
-msgid "Rip"
-msgstr "Извлечь музыку"
-
-msgid "No."
-msgstr "№"
-
-msgid "Title"
-msgstr "Заголовок"
-
-msgid "Select"
-msgstr "Выбрать"
-
-msgid "All"
-msgstr "Все"
-
-msgid "None"
-msgstr "Нет"
-
-msgid "Output"
-msgstr "Выход"
-
-msgid "Destination"
-msgstr "Цель"
-
-msgid "Target directory for ripped files"
-msgstr "Каталог назначения для извлеченных файлов"
-
-msgid "Add to Music Store"
-msgstr "Добавить в Музыкальную Библиотеку"
-
-msgid "Format"
-msgstr "Формат"
-
-msgid "File format:"
-msgstr "Формат файла:"
-
-msgid "VBR encoding"
-msgstr "Кодирование с переменным потоком"
-
-msgid "Tag files with metadata"
-msgstr "Ввести метаданные в файлы"
-
-msgid "Paranoia"
-msgstr "Paranoia"
-
-msgid "Paranoia error correction"
-msgstr "Корректирование ошибок Paranoia"
-
-msgid "Perform overlapped reads"
-msgstr "Производить чтения с перекрытием"
-
-msgid "Verify data integrity"
-msgstr "Проверить целостность данных"
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr "Неограниченное число попыток при ошибках чтения (никогда не пропускать)"
-
-msgid "Maximum number of retries:"
-msgstr "Максимальное количество попыток:"
-
-msgid ""
-"\n"
-"Destination directory is not read-write accessible!"
-msgstr ""
-"\n"
-"Указанный каталог не доступен для чтения/записи!"
-
-msgid "Total"
-msgstr "Всего"
-
-msgid "(audio only)"
-msgstr "(только аудио)"
-
-msgid "Ripping CD tracks"
-msgstr "Считывание CD-треков"
-
-msgid "Begin"
-msgstr "Начало"
-
-msgid "Length"
-msgstr "Длина"
-
-msgid "Progress"
-msgstr "Прогресс"
-
-msgid "Close window when complete"
-msgstr "Закрыть окно после завершения"
-
-msgid "Close"
-msgstr "Закрыть"
 
 msgid "Unknown Album"
 msgstr "Неизвестный альбом"
@@ -969,8 +988,9 @@ msgstr "Баланс: %s"
 msgid "JACK connection lost"
 msgstr "Потеряно соединение JACK"
 
-msgid "JACK has either been shutdown or it disconnected Aqualung because it was not fast enough. All you can do now is restart both JACK and Aqualung."
-msgstr "JACK или выключился, или отсоединил Aqualung из-за того, что он был недостаточно быстр. Всё, что вы можете сейчас сделать, это перезапустить и JACK, и Aqualung"
+#, c-format
+msgid "JACK has either been shutdown or it disconnected Aqualung. Reason: %s"
+msgstr "JACK или выключился, или отсоединил Aqualung. Причина: %s"
 
 msgid "Warn me if the Window Manager does not support system tray"
 msgstr "Предупредить меня, если оконный менеджер не поддерживает системный лоток"
@@ -1236,36 +1256,6 @@ msgstr "_Загрузить"
 msgid "_Abort"
 msgstr "_Прервать"
 
-msgid "Success"
-msgstr "Успешно"
-
-msgid "Memory allocation error"
-msgstr "Ошибка выделения памяти"
-
-msgid "Unable to open file"
-msgstr "Невозможно открыть файл"
-
-msgid "No metadata support for this format"
-msgstr "Нет поддержки метаданных для этого формата"
-
-msgid "File is not writable"
-msgstr "Файл не доступен для записи"
-
-msgid "Invalid 'Track no.' field value"
-msgstr "Неверное значение поля 'Номер трека'"
-
-msgid "Invalid 'Genre' field value"
-msgstr "Неверное значение поля 'Жанр'"
-
-msgid "Conversion to target charset failed"
-msgstr "Преобразование в целевую кодировку не удалось"
-
-msgid "Internal error"
-msgstr "Внутренняя ошибка"
-
-msgid "Unknown error"
-msgstr "Неизвестная ошибка"
-
 msgid "Album"
 msgstr "Альбом"
 
@@ -1495,19 +1485,19 @@ msgid "Vendor"
 msgstr "Производитель"
 
 msgid "ReplayGain Reference Loudness"
-msgstr "Опорная громкость Выравнивания громкости (ReplayGain)"
+msgstr "Опорная громкость"
 
 msgid "ReplayGain Track Gain"
-msgstr "Коэффициент усиления трека для выравнивания громкости (ReplayGain)"
+msgstr "Коэффициент усиления дорожки"
 
 msgid "ReplayGain Track Peak"
-msgstr "Пик трека для выравнивания громкости (ReplayGain)"
+msgstr "Пиковая громкость дорожки"
 
 msgid "ReplayGain Album Gain"
-msgstr "Коэффициент усиления альбома для выравнивания громкости (ReplayGain)"
+msgstr "Коэффициент усиления альбома"
 
 msgid "ReplayGain Album Peak"
-msgstr "Пик альбома для выравнивания громкости (ReplayGain)"
+msgstr "Пиковая громкость альбома"
 
 msgid "Icy-Name"
 msgstr "Название станции"
@@ -1559,6 +1549,36 @@ msgstr "Информация о модуле"
 
 msgid "Unknown"
 msgstr "Неизвестный"
+
+msgid "Success"
+msgstr "Успешно"
+
+msgid "Memory allocation error"
+msgstr "Ошибка выделения памяти"
+
+msgid "Unable to open file"
+msgstr "Невозможно открыть файл"
+
+msgid "No metadata support for this format"
+msgstr "Нет поддержки метаданных для этого формата"
+
+msgid "File is not writable"
+msgstr "Файл не доступен для записи"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "Неверное значение поля 'Номер трека'"
+
+msgid "Invalid 'Genre' field value"
+msgstr "Неверное значение поля 'Жанр'"
+
+msgid "Conversion to target charset failed"
+msgstr "Преобразование в целевую кодировку не удалось"
+
+msgid "Internal error"
+msgstr "Внутренняя ошибка"
+
+msgid "Unknown error"
+msgstr "Неизвестная ошибка"
 
 msgid "Other"
 msgstr "Другое"
@@ -1666,8 +1686,8 @@ msgstr "только чтение"
 msgid "unreachable"
 msgstr "Недосягаем"
 
-msgid "Please select a Programable Title Format File."
-msgstr "Выберите, пожалуйста файл программируемого форматирования заголовка."
+msgid "Please select a Lua Extension File."
+msgstr "Выберите файл расширения Lua."
 
 msgid "Please select a Music Store database."
 msgstr "Выберите, пожалуйста, базу данных музыкальной библиотеки."
@@ -1688,14 +1708,55 @@ msgstr ""
 
 msgid ""
 "\n"
-"The file you enter/choose here will set the Lua program to use to format the title. See the Aqualung manual for details. Here is a quick example of what you can use in the file:\n"
+"If you have non-standard ID3v1/ID3v2 character encoding MPEG audio file, please enter suitable character encoding in this entry (see below). If this entry is blank, the standard character encoding (ISO-8859-1) is used.\n"
+"\n"
+"For example:\n"
+"  Japanese: CP932 (SHIFT_JIS variant)\n"
+"  Korean: EUC-KR\n"
+"  Simp. Chinese: GB2312\n"
+"  Trad. Chinese: BIG5\n"
+"  Greek: ISO-8859-7\n"
+"  Hebrew: ISO-8859-8\n"
+"  Cyrillic: CP1251\n"
+"  Thai: ISO-8859-11\n"
+"  Arabic: CP1256\n"
+"  Turkish: ISO-8859-9\n"
+"  Latin Extended: ISO-8859-2\n"
+"  Central European: CP1250\n"
+"  Latin1 (standard): ISO-8859-1\n"
+"\n"
+"NOTE: There might be a more suitable character encoding for your language."
+msgstr ""
+"\n"
+"Если в ваших MPEG audio-файлах нестандартная кодировка символов в тегах ID3v1/ID3v2, укажите соответствующую кодировку здесь (внизу). Если оставить пустым, будет использована кодировка (ISO-8859-1).\n"
+"\n"
+"Например:\n"
+"  Японская: CP932 (SHIFT_JIS variant)\n"
+"  Корейская: EUC-KR\n"
+"  Упрощ. китайская: GB2312\n"
+"  Трад. китайская: BIG5\n"
+"  Греческая: ISO-8859-7\n"
+"  Иврит: ISO-8859-8\n"
+"  Кириллица: CP1251\n"
+"  Тайская: ISO-8859-11\n"
+"  Арабская: CP1256\n"
+"  Турецкая: ISO-8859-9\n"
+"  Расшир. латиница: ISO-8859-2\n"
+"  Центральноевропейская: CP1250\n"
+"  Latin1 (стандарт): ISO-8859-1\n"
+"\n"
+"ПРИМЕЧАНИЕ: Для вашего языка может быть другая, более подходящая кодировка символов."
+
+msgid ""
+"\n"
+"The file you enter/choose here will set the Lua program to use to extend Aqualung. See the Aqualung manual for details. Here is a quick example of what you can use in the file:\n"
 "\n"
 "function playlist_title()\n"
 "  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
 "end"
 msgstr ""
 "\n"
-"Файл, который вы введёте/выберете здесь, установит программу на Lua, используемуюдля форматирования заголовка. Для доп. информации см. справку по Aqualung. Вот быстрый пример того, что вы можете использовать в этом файле:\n"
+"Файл, который вы введёте/выберете здесь, установит программу на Lua в качестве расширения Aqualung. Для доп. информации см. справку по Aqualung. Вот быстрый пример того, что вы можете использовать в этом файле:\n"
 "\n"
 "function playlist_title()\n"
 "  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
@@ -1824,8 +1885,8 @@ msgstr "Показывать название песни в заголовке �
 msgid "Title Format"
 msgstr "Формат заголовка"
 
-msgid "Programmable title format file"
-msgstr "файл программируемого форматирования заголовка"
+msgid "Lua extension file"
+msgstr "Файл расширений Lua"
 
 msgid "Systray"
 msgstr "Системный лоток"
@@ -1886,6 +1947,9 @@ msgstr "Показывать миниатюру обложки только дл
 
 msgid "Don't show cover thumbnail in the main window"
 msgstr "Не показывать миниатюру обложки в главном окне"
+
+msgid "Use cover from external graphics file first"
+msgstr "Сначала искать обложку во внешнем файле"
 
 msgid "Enable tooltips"
 msgstr "Включить подсказки"
@@ -2119,6 +2183,9 @@ msgstr ""
 "При добавлении новых полей пытаться установить их содержимое\n"
 "из эквивалентных полей другого тэга."
 
+msgid "MPEG audio ID3v1/ID3v2 character encoding"
+msgstr "Кодировка символов MPEG audio ID3v1/ID3v2"
+
 msgid "Batch update & encode (mass tagger, CD ripper, file export)"
 msgstr "Пакетное обновление и кодирование (массовое заполнение тэгов, извлечение из CD, экспорт файлов)"
 
@@ -2242,6 +2309,9 @@ msgstr "Активная песня в плей-листе: "
 
 msgid "Error in title format string"
 msgstr "Ошибка в строке формата заголовка"
+
+msgid "Error invalid character encoding"
+msgstr "Ошибка недействительная кодировка символов"
 
 msgid "(Untitled)"
 msgstr "(без названия)"
@@ -3039,8 +3109,8 @@ msgstr "дни"
 msgid "All Files"
 msgstr "Все файлы"
 
-msgid "Extended Title Format Files (*.lua)"
-msgstr "Файлы расширенного форматирования заголовка (*.lua)"
+msgid "Lua Extension Files (*.lua)"
+msgstr "Файлы расширений Lua (*.lua)"
 
 msgid "Music Store Files (*.xml)"
 msgstr "Файлы музыкальной библиотеки (*.xml)"
@@ -3104,6 +3174,21 @@ msgstr "Возобновить"
 
 msgid "Calculating volume level"
 msgstr "Расчет уровня громкости"
+
+msgid "Compression: Fast"
+msgstr "Сжатие: Быстрое"
+
+msgid "Compression: Normal"
+msgstr "Сжатие: Нормальное"
+
+msgid "Compression: High"
+msgstr "Сжатие: Сильное"
+
+msgid "Compression: Extra High"
+msgstr "Сжатие: Очень сильное"
+
+msgid "Compression: Insane"
+msgstr "Сжатие: Неимоверное"
 
 msgid "Profile: Telephone"
 msgstr "Профиль: Телефон"
@@ -3174,21 +3259,11 @@ msgstr "бит двойной"
 msgid "encoding"
 msgstr "кодирование"
 
-msgid "Compression: Fast"
-msgstr "Сжатие: Быстрое"
+#~ msgid "Lua (programmable title formatting) support\n"
+#~ msgstr "Поддержка Lua (программируемое форматирование заголовка)\n"
 
-msgid "Compression: Normal"
-msgstr "Сжатие: Нормальное"
-
-msgid "Compression: High"
-msgstr "Сжатие: Сильное"
-
-msgid "Compression: Extra High"
-msgstr "Сжатие: Очень сильное"
-
-msgid "Compression: Insane"
-msgstr "Сжатие: Неимоверное"
+#~ msgid "Programmable title format file"
+#~ msgstr "файл программируемого форматирования заголовка"
 
 #~ msgid "Directory:"
 #~ msgstr "Каталог."
-

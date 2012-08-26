@@ -1123,6 +1123,8 @@ alsa_thread(void * arg) {
 	int is_output_32bit = info->is_output_32bit;
 	short * alsa_short_buf = NULL;
 	int * alsa_int_buf = NULL;
+	void * alsa_buf = NULL;
+	size_t alsa_sample_size = 0; /* For both channels */
 
 	snd_pcm_t * pcm_handle = info->pcm_handle;
 
@@ -1263,10 +1265,8 @@ alsa_thread(void * arg) {
 				alsa_int_buf[2*i+1] = floorf(2147483647.0 * r_buf[i]);
 			}
 
-			/* write data to audio device */
-			if ((n_written = snd_pcm_writei(pcm_handle, alsa_int_buf, n_avail)) != n_avail) {
-				snd_pcm_prepare(pcm_handle);
-			}
+			alsa_buf = alsa_int_buf;
+			alsa_sample_size = sizeof(*alsa_int_buf)*2;
 		} else {
 			for (i = 0; i < bufsize; i++) {
 				if (l_buf[i] > 1.0)
@@ -1283,9 +1283,46 @@ alsa_thread(void * arg) {
 				alsa_short_buf[2*i+1] = floorf(32767.0 * r_buf[i]);
 			}
 
+			alsa_buf = alsa_short_buf;
+			alsa_sample_size = sizeof(*alsa_short_buf)*2;
+		}
+
+		while (n_avail > 0) {
 			/* write data to audio device */
-			if ((n_written = snd_pcm_writei(pcm_handle, alsa_short_buf, n_avail)) != n_avail) {
-				snd_pcm_prepare(pcm_handle);
+			n_written = snd_pcm_writei(pcm_handle, alsa_buf, n_avail);
+			/* Alsa is not in right state. */
+			if (n_written == -EBADFD) {
+				int r = snd_pcm_prepare(pcm_handle);
+				if (r != 0) {
+					fprintf(stderr, "alsa_thread: snd_pcm_prepare returned %d after snd_pcm_writei returned %d\n", r, (int)n_written);
+					exit(1);
+				}
+			}
+			/* An underrun occured. */
+			if (n_written == -EPIPE) {/* This is naive, see aplay sourcecode for more info. */
+				int r = snd_pcm_prepare(pcm_handle);
+				if (r != 0) {
+					fprintf(stderr, "alsa_thread: snd_pcm_prepare returned %d after snd_pcm_writei returned %d\n", r, (int)n_written);
+					exit(1);
+				}
+			}
+			/* Alsa stream is suspended, we have to resume it. */
+			if (n_written == -ESTRPIPE) {
+				int r = 0;
+				do {
+					if (r == -EAGAIN)
+						sleep(1);
+					r = snd_pcm_resume(pcm_handle);
+				} while (r == -EAGAIN);
+
+				if (r != 0) {
+					fprintf(stderr, "alsa_thread: snd_pcm_resume returned %d after snd_pcm_writei returned %d\n", r, (int)n_written);
+					exit(1);
+				}
+			}
+			if (n_written > 0) {
+				n_avail -= n_written;
+				alsa_buf += alsa_sample_size*n_written;
 			}
 		}
 	}

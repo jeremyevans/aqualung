@@ -668,7 +668,7 @@
           </dt>
 
           <dt>
-            <cmd>$ aqualung -o jack -a -E --tab="Led Zeppelin" `find ./ledzeppelin/ -name \*.flac`</cmd>
+            <cmd>$ aqualung -o jack -a -E --tab="Led Zeppelin" `find ./ledzeppelin/ -name '*.flac'`</cmd>
           </dt>
 
         </dl>

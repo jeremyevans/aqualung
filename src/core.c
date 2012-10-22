@@ -132,6 +132,10 @@ gint playlist_state, browser_state;
 #endif /* __OpenBSD__ */
 #endif /* OSS_DEVICE */
 
+#ifdef HAVE_ALSA
+snd_pcm_uframes_t alsa_buffer_size = 0;
+#endif /* HAVE_ALSA */
+
 /* The name of the output device e.g. "/dev/dsp" or "plughw:0,0" */
 char * device_name = NULL;
 
@@ -1692,6 +1696,7 @@ alsa_init(thread_info_t * info, int verbose) {
 	unsigned rate;
 	int dir = 0;
 	int ret;
+	unsigned long alsa_buffer_size_orig = alsa_buffer_size;
 
 	ret = snd_pcm_open(&info->pcm_handle, info->pcm_name, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
 	if (ret < 0) {
@@ -1726,6 +1731,11 @@ alsa_init(thread_info_t * info, int verbose) {
 		fprintf(stderr, "alsa_init warning: cannot restrict period size to integer value.\n");
 	}
 
+	if (alsa_buffer_size != 0) {
+		if (snd_pcm_hw_params_set_buffer_size_max(info->pcm_handle, info->hwparams, &alsa_buffer_size) < 0) {
+		fprintf(stderr, "alsa_init warning: cannot restrict buffer size to %lu frames.\n", alsa_buffer_size_orig);
+		}
+	}
 	if (snd_pcm_hw_params_set_access(info->pcm_handle, info->hwparams,
 					 SND_PCM_ACCESS_RW_INTERLEAVED) < 0) {
 		if (verbose) {
@@ -2569,6 +2579,7 @@ print_usage(void) {
 		"\nOptions relevant to ALSA output:\n"
 		"-d, --device <name>: Set the output device (defaults to 'default').\n"
 		"-r, --rate <int>: Set the output sample rate.\n"
+		"-b, --buffer-size <int>: Set the output buffer size (in frames).\n"
 		"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for ALSA output thread.\n"
 		"-P, --priority <int>: Set scheduler priority to <int> (default is 1 when -R is used).\n"
 		
@@ -2723,7 +2734,7 @@ main(int argc, char ** argv) {
 	char * voladj_arg = NULL;
 	char * custom_arg = NULL;
 
-	char * optstring = "vho:d:c:r:a::RP:DY:s::l:m:N:BLUTFEC:V:Qt::";
+	char * optstring = "vho:d:c:r:b:a::RP:DY:s::l:m:N:BLUTFEC:V:Qt::";
 	struct option long_options[] = {
 		{ "version", 0, 0, 'v' },
 		{ "help", 0, 0, 'h' },
@@ -2731,6 +2742,7 @@ main(int argc, char ** argv) {
 		{ "device", 1, 0, 'd' },
 		{ "client", 1, 0, 'c' },
 		{ "rate", 1, 0, 'r' },
+		{ "buffer-size", 1, 0, 'b' },
 		{ "auto", 2, 0, 'a' },
 		{ "realtime", 0, 0, 'R' },
 		{ "priority", 1, 0, 'P' },
@@ -2922,6 +2934,11 @@ main(int argc, char ** argv) {
 			case 'r':
 				rate = atoi(optarg);
 				break;
+#ifdef HAVE_ALSA
+			case 'b':
+				alsa_buffer_size = atoi(optarg);
+				break;
+#endif /* HAVE_ALSA */
 			case 'a':
 #ifdef HAVE_JACK
 				auto_connect = 1;

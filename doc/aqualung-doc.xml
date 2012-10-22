@@ -345,6 +345,12 @@
             <dd>Set the output sample rate.</dd>
 
             <dt>
+              <cmd>-b, --buffer-size &lt;int&gt;</cmd>
+            </dt>
+
+            <dd>Set the ALSA output buffer size (in frames).</dd>
+
+            <dt>
               <cmd>-R, --realtime</cmd>
             </dt>
 

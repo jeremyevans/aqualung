@@ -47,8 +47,8 @@ AC_CHECK_LIB([bz2], [BZ2_bzopen])
 AC_SEARCH_LIBS([floor], [m], [],
     [AC_MSG_ERROR([POSIX math.h functions are required to build Aqualung])])
 PKG_CHECK_MODULES([xml], [libxml-2.0])
-PKG_CHECK_MODULES([glib], [glib-2.0 gthread-2.0])
-PKG_CHECK_MODULES([gtk], [gtk+-2.0 > 2.8])
+PKG_CHECK_MODULES([glib], [glib-2.0 >= 2.14 gthread-2.0])
+PKG_CHECK_MODULES([gtk], [gtk+-2.0 >= 2.14])
 
 
 # Checks for header files.
@@ -165,15 +165,11 @@ AS_IF([test "x$enable_podcast" = 'xyes'],
     [AC_DEFINE([HAVE_PODCAST], [1], [Define to build with podcast support])])
 AM_CONDITIONAL([HAVE_PODCAST], [test "x$enable_podcast" = 'xyes'])
 
-AC_MSG_CHECKING([for systray support])
 AC_ARG_ENABLE([systray],
     [AS_HELP_STRING([--disable-systray], [compile without systray support])],
     [], [enable_systray='yes'])
 AS_IF([test "x$enable_systray" = 'xyes'],
-    [PKG_CHECK_EXISTS([gtk+-2.0 >= 2.10],
-        [AC_DEFINE([HAVE_SYSTRAY], [1], [Define to build with GTK+ systray])],
-        [enable_systray='no (GTK+ too old)'])])
-AC_MSG_RESULT([$enable_systray])
+    [AC_DEFINE([HAVE_SYSTRAY], [1], [Define to build with GTK+ systray])])
 
 AC_ARG_ENABLE([transcoding],
     [AS_HELP_STRING([--disable-transcoding],

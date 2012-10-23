@@ -911,6 +911,8 @@ export_check_excl_toggled(GtkWidget * widget, gpointer data) {
 int
 export_dialog(export_t * export) {
 
+	GtkWidget * content_area;
+
 	GtkWidget * help_button;
 	GtkWidget * outdir_entry;
 	GtkWidget * templ_entry;
@@ -934,9 +936,11 @@ export_dialog(export_t * export) {
         gtk_window_set_default_size(GTK_WINDOW(export->dialog), 400, -1);
         gtk_dialog_set_default_response(GTK_DIALOG(export->dialog), GTK_RESPONSE_REJECT);
 
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(export->dialog));
+
 	/* Location and filename */
 	frame = gtk_frame_new(_("Location and filename"));
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(export->dialog)->vbox), frame, FALSE, FALSE, 2);
+	gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, FALSE, 2);
         gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
 
 	table = gtk_table_new(5, 2, FALSE);
@@ -967,7 +971,7 @@ export_dialog(export_t * export) {
 
 	/* Format */
 	frame = gtk_frame_new(_("Format"));
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(export->dialog)->vbox), frame, FALSE, FALSE, 2);
+	gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, FALSE, 2);
         gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
 
         table = gtk_table_new(4, 2, TRUE);
@@ -1015,7 +1019,7 @@ export_dialog(export_t * export) {
 
 	/* Filter */
 	frame = gtk_frame_new(_("Filter"));
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(export->dialog)->vbox), frame, FALSE, FALSE, 2);
+	gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, FALSE, 2);
         gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
 
 	table = gtk_table_new(1, 2, FALSE);

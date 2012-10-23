@@ -309,9 +309,7 @@ parse_atom_date(char * str) {
 
 	GTimeVal tval;
 
-#if GLIB_CHECK_VERSION(2,12,0)
 	if (!g_time_val_from_iso8601(str, &tval))
-#endif /* GLIB_CHECK_VERSION */
 	{
 		g_get_current_time(&tval);
 	}

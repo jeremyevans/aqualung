@@ -2019,7 +2019,8 @@ add_url(GtkWidget * widget, gpointer data) {
                         G_CALLBACK (add_url_key_press_cb), NULL);
 
 	table = gtk_table_new(2, 2, FALSE);
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
+			   table, FALSE, TRUE, 2);
 
 	url_label = gtk_label_new(_("URL:"));
         hbox = gtk_hbox_new(FALSE, 0);
@@ -3264,7 +3265,8 @@ playlist_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
 
 	char tmp[32];
 	sprintf(tmp, "%p", user_data);
-	gtk_selection_data_set(data, data->target, 8, (guchar *)tmp, strlen(tmp));
+	gtk_selection_data_set(data, gtk_selection_data_get_target(data), 8,
+			       (guchar *)tmp, strlen(tmp));
 }
 
 void
@@ -3357,7 +3359,7 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 		playlist_t * spl = NULL;
 
 
-		sscanf((char *)data->data, "%p", &spl);
+		sscanf((char *)gtk_selection_data_get_data(data), "%p", &spl);
 		gtk_tree_selection_set_mode(spl->select, GTK_SELECTION_SINGLE);
 
 		if (gtk_tree_selection_get_selected(spl->select, NULL, &siter)) {
@@ -3431,13 +3433,8 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 		int i;
 		char file[MAXLEN];
 
-		for (i = 0; *((gchar *)data->data + i); i++) {
-			if (*((gchar *)data->data + i) == '\r') {
-				*((gchar *)data->data + i) = '\n';
-			}
-		}
-
-		uri_list = g_strsplit((gchar *)data->data, "\n", 0);
+		uri_list = g_strsplit_set((gchar *)gtk_selection_data_get_data(data),
+					  "\r\n", 0);
 
 		for (i = 0; uri_list[i]; i++) {
 
@@ -3747,7 +3744,8 @@ tab__rename_cb(gpointer data) {
                         G_CALLBACK (tab__rename_key_press_cb), NULL);
 
 	table = gtk_table_new(2, 2, FALSE);
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
+			   table, FALSE, TRUE, 2);
 
 	label = gtk_label_new(_("Name:"));
         hbox = gtk_hbox_new(FALSE, 0);
@@ -4114,9 +4112,7 @@ create_playlist_gui(playlist_t * pl) {
 		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(playlist_notebook), TRUE);
 	}
 
-#if (GTK_CHECK_VERSION(2,10,0))
 	gtk_notebook_set_tab_reorderable(GTK_NOTEBOOK(playlist_notebook), pl->widget, TRUE);
-#endif /* GTK_CHECK_VERSION */
 
 	gtk_widget_grab_focus(pl->view);
 }
@@ -4159,7 +4155,6 @@ notebook_switch_page(GtkNotebook * notebook, GtkNotebookPage * page,
 	playlist_selection_changed(pl);
 }
 
-#if (GTK_CHECK_VERSION(2,10,0))
 void
 notebook_page_reordered(GtkNotebook * notebook, GtkWidget * child,
 			guint page_num, gpointer user_data) {
@@ -4173,8 +4168,6 @@ notebook_page_reordered(GtkNotebook * notebook, GtkWidget * child,
 
 	playlists = g_list_sort(playlists, playlist_compare_index);
 }
-#endif /* GTK_CHECK_VERSION */
-
 
 void
 create_playlist(void) {
@@ -4252,10 +4245,8 @@ create_playlist(void) {
 	g_signal_connect(G_OBJECT(playlist_notebook), "switch_page",
 			 G_CALLBACK(notebook_switch_page), NULL);
 
-#if (GTK_CHECK_VERSION(2,10,0))
 	g_signal_connect(G_OBJECT(playlist_notebook), "page_reordered",
 			 G_CALLBACK(notebook_page_reordered), NULL);
-#endif /* GTK_CHECK_VERSION */
 
 	if (playlists != NULL) {
 		GList * list;

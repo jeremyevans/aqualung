@@ -395,28 +395,31 @@ create_dialog_layout(char * title, GtkWidget ** dialog, GtkWidget ** table, int 
         gtk_dialog_set_default_response(GTK_DIALOG(*dialog), GTK_RESPONSE_ACCEPT);
 
 	*table = gtk_table_new(rows, 2, FALSE);
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(*dialog)->vbox), *table, FALSE, TRUE, 2);
-
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(*dialog))),
+			   *table, FALSE, TRUE, 2);
 
 }
 
 void
-insert_comment_text_view(GtkWidget * vbox, GtkTextBuffer ** buffer, char * text) {
+insert_comment_text_view(GtkWidget * dialog, GtkTextBuffer ** buffer, char * text) {
 
+	GtkWidget * content_area;
 	GtkWidget * hbox;
 	GtkWidget * viewport;
         GtkWidget * scrwin;
 	GtkWidget * label;
 	GtkWidget * view;
 
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+
         hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(content_area), hbox, FALSE, TRUE, 2);
 
 	label = gtk_label_new(_("Comments:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
 
 	viewport = gtk_viewport_new(NULL, NULL);
-        gtk_box_pack_start(GTK_BOX(vbox), viewport, TRUE, TRUE, 2);
+        gtk_box_pack_start(GTK_BOX(content_area), viewport, TRUE, TRUE, 2);
 
         scrwin = gtk_scrolled_window_new(NULL, NULL);
         gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrwin),
@@ -463,7 +466,7 @@ add_store_dialog(char * name, store_data_t ** data) {
 	insert_label_entry(table, _("Visible name:"), &name_entry, NULL, 0, 1, TRUE);
 	insert_label_entry_browse(table, _("Filename:"), &file_entry, options.storedir, 1, 2,
 				  browse_button_store_clicked);
-	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, NULL);
+	insert_comment_text_view(dialog, &buffer, NULL);
 
 	gtk_widget_grab_focus(name_entry);
 	gtk_widget_show_all(dialog);
@@ -517,6 +520,7 @@ int
 edit_store_dialog(char * name, store_data_t * data) {
 
 	GtkWidget * dialog;
+	GtkWidget * content_area;
 	GtkWidget * table;
 	GtkWidget * name_entry;
 	GtkWidget * file_entry;
@@ -533,14 +537,17 @@ edit_store_dialog(char * name, store_data_t * data) {
 	insert_label_entry(table, _("Filename:"), &file_entry, utf8, 1, 2, FALSE);
 	g_free(utf8);
 
-	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, data->comment);
+	insert_comment_text_view(dialog, &buffer, data->comment);
+
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 
 	rel_check = gtk_check_button_new_with_label(_("Use relative paths in store file"));
 	gtk_widget_set_name(rel_check, "check_on_window");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(rel_check), data->use_relative_paths);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), rel_check, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(content_area), rel_check, FALSE, FALSE, 5);
 
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), gtk_hseparator_new(), FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(content_area), gtk_hseparator_new(), FALSE,
+			   FALSE, 5);
 
 	gtk_widget_grab_focus(name_entry);
 	gtk_widget_show_all(dialog);
@@ -593,7 +600,7 @@ add_artist_dialog(char * name, char * sort, artist_data_t ** data) {
 	create_dialog_layout(_("Add Artist"), &dialog, &table, 2);
 	insert_label_entry(table, _("Visible name:"), &name_entry, name, 0, 1, TRUE);
 	insert_label_entry(table, _("Name to sort by:"), &sort_entry, sort, 1, 2, TRUE);
-	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, NULL);
+	insert_comment_text_view(dialog, &buffer, NULL);
 
         g_signal_connect(G_OBJECT(name_entry), "activate", G_CALLBACK(entry_copy_text), sort_entry);
 
@@ -648,7 +655,7 @@ edit_artist_dialog(char * name, char * sort, artist_data_t * data) {
 	create_dialog_layout(_("Edit Artist"), &dialog, &table, 2);
 	insert_label_entry(table, _("Visible name:"), &name_entry, name, 0, 1, TRUE);
 	insert_label_entry(table, _("Name to sort by:"), &sort_entry, sort, 1, 2, TRUE);
-	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, data->comment);
+	insert_comment_text_view(dialog, &buffer, data->comment);
 
         g_signal_connect(G_OBJECT(name_entry), "activate", G_CALLBACK(entry_copy_text), sort_entry);
 
@@ -730,6 +737,7 @@ int
 add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** data) {
 
 	GtkWidget * dialog;
+	GtkWidget * content_area;
 	GtkWidget * table;
 	GtkWidget * hbox;
 	GtkWidget * name_entry;
@@ -761,14 +769,16 @@ add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** d
         g_signal_connect(G_OBJECT(name_entry), "activate", G_CALLBACK(entry_copy_text), sort_entry);
         g_signal_connect(G_OBJECT(year_spin), "activate", G_CALLBACK(entry_copy_text), sort_entry);
 
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+
 	list_label = gtk_label_new(_("Auto-create tracks from these files:"));
         hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), list_label, FALSE, FALSE, 5);
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, TRUE, 2);
+        gtk_box_pack_start(GTK_BOX(content_area), hbox, FALSE, TRUE, 2);
 
 	viewport = gtk_viewport_new(NULL, NULL);
         gtk_widget_set_size_request(viewport, -1, 150);
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), viewport, TRUE, TRUE, 2);
+        gtk_box_pack_start(GTK_BOX(content_area), viewport, TRUE, TRUE, 2);
 
 	scrolled_win = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
@@ -789,10 +799,10 @@ add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** d
         gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), 0, GTK_SORT_ASCENDING);
 
 	browse_button = gui_stock_label_button(_("_Add files..."), GTK_STOCK_ADD);
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), browse_button, FALSE, TRUE, 2);
+        gtk_box_pack_start(GTK_BOX(content_area), browse_button, FALSE, TRUE, 2);
         g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_record_clicked), store);
 
-	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, NULL);
+	insert_comment_text_view(dialog, &buffer, NULL);
 
 	gtk_widget_grab_focus(name_entry);
 	gtk_widget_show_all(dialog);
@@ -877,7 +887,7 @@ edit_record_dialog(char * name, char * sort, record_data_t * data) {
 	insert_label_entry(table, _("Visible name:"), &name_entry, name, 0, 1, TRUE);
 	insert_label_spin(table, _("Year:"), &year_spin, data->year, 1, 2);
 	insert_label_entry(table, _("Name to sort by:"), &sort_entry, sort, 2, 3, TRUE);
-	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, data->comment);
+	insert_comment_text_view(dialog, &buffer, data->comment);
 
         g_signal_connect(G_OBJECT(name_entry), "activate", G_CALLBACK(entry_copy_text), sort_entry);
         g_signal_connect(G_OBJECT(year_spin), "activate", G_CALLBACK(entry_copy_text), sort_entry);
@@ -945,7 +955,7 @@ add_track_dialog(char * name, char * sort, track_data_t ** data) {
 	insert_label_entry(table, _("Name to sort by:"), &sort_entry, NULL, 1, 2, TRUE);
 	insert_label_entry_browse(table, _("Filename:"), &file_entry, options.audiodir, 2, 3,
 				  browse_button_track_clicked);
-	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, NULL);
+	insert_comment_text_view(dialog, &buffer, NULL);
 
 	gtk_widget_grab_focus(name_entry);
 	gtk_widget_show_all(dialog);
@@ -1084,7 +1094,7 @@ edit_track_dialog(char * name, char * sort, track_data_t * data) {
 		gtk_widget_set_sensitive(spin_button, FALSE);
 	}
 
-	insert_comment_text_view(GTK_DIALOG(dialog)->vbox, &buffer, data->comment);
+	insert_comment_text_view(dialog, &buffer, data->comment);
 
 	gtk_widget_grab_focus(name_entry);
 	gtk_widget_show_all(dialog);
@@ -3011,7 +3021,8 @@ create_tag_dialog() {
 
         vbox = gtk_vbox_new(FALSE, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), vbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
+			   vbox, FALSE, FALSE, 0);
 
 	check_artist = gtk_check_button_new_with_label(_("Artist name"));
 	check_record = gtk_check_button_new_with_label(_("Record name"));

@@ -147,7 +147,7 @@ aqualung_loop_bar_expose(GtkWidget * widget, GdkEventExpose * event) {
 	x_end = (widget->allocation.width - 2 * priv->margin) * priv->end + priv->margin;
 	height = widget->allocation.height;
 
-        cr = gdk_cairo_create(widget->window);
+	cr = gdk_cairo_create(gtk_widget_get_window(widget));
 
         cairo_rectangle(cr,
                         event->area.x, event->area.y,
@@ -191,14 +191,16 @@ void
 aqualung_loop_bar_redraw_canvas(GtkWidget * widget) {
 
         GdkRegion *region;
+	GdkWindow * window = gtk_widget_get_window(widget);
         
-        if (!widget->window) {
+	if (!window) {
+		/* loop bar isn't realized */
 		return;
 	}
 
-        region = gdk_drawable_get_clip_region(widget->window);
-        gdk_window_invalidate_region(widget->window, region, TRUE);
-        gdk_window_process_updates(widget->window, TRUE);
+	region = gdk_drawable_get_clip_region(window);
+	gdk_window_invalidate_region(window, region, TRUE);
+	gdk_window_process_updates(window, TRUE);
         gdk_region_destroy(region);
 }
 

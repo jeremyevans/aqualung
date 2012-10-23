@@ -171,6 +171,7 @@ cdda_drive_info(cdda_drive_t * drive) {
 	cdio_drive_misc_cap_t misc_cap;
 
         GtkWidget * dialog;
+	GtkWidget * content_area;
 	GtkWidget * label;
 	GtkWidget * hbox;
 	GtkWidget * vbox;
@@ -198,9 +199,11 @@ cdda_drive_info(cdda_drive_t * drive) {
 
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), vbox, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(content_area), vbox, FALSE, FALSE, 4);
 
 	table = gtk_table_new(4, 2, FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 2);
@@ -255,7 +258,7 @@ cdda_drive_info(cdda_drive_t * drive) {
 	}
 
 	notebook = gtk_notebook_new();
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), notebook, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(content_area), notebook, TRUE, TRUE, 0);
 
 	if (misc_cap != CDIO_DRIVE_CAP_ERROR) {
 		int cnt = 0;
@@ -361,7 +364,8 @@ cdda_disc_info(cdda_drive_t * drive) {
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), vbox, TRUE, TRUE, 4);
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
+			   vbox, TRUE, TRUE, 4);
 
 
 	cdio = cdio_open(drive->device_path, DRIVER_UNKNOWN);

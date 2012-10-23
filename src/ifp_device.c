@@ -336,7 +336,8 @@ aifp_create_directory_cb (GtkButton *button, gpointer user_data) {
         gtk_entry_set_max_length(GTK_ENTRY(name_entry), 64);
         gtk_widget_set_size_request(GTK_WIDGET(name_entry), 300, -1);
 
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(mkdir_dialog)->vbox), name_entry, FALSE, FALSE, 6);
+        gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(mkdir_dialog))),
+                           name_entry, FALSE, FALSE, 6);
         gtk_widget_show_all (mkdir_dialog);
 
         response = aqualung_dialog_run(GTK_DIALOG(mkdir_dialog));
@@ -392,7 +393,8 @@ aifp_rename_item_cb (GtkButton *button, gpointer user_data) {
                 gtk_widget_set_size_request(GTK_WIDGET(name_entry), 300, -1);
                 gtk_entry_set_text(GTK_ENTRY(name_entry), remote_item);
 
-                gtk_box_pack_start(GTK_BOX(GTK_DIALOG(rename_dialog)->vbox), name_entry, FALSE, FALSE, 6);
+                gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(rename_dialog))),
+                                   name_entry, FALSE, FALSE, 6);
                 gtk_widget_show_all (rename_dialog);
 
                 response = aqualung_dialog_run(GTK_DIALOG(rename_dialog));

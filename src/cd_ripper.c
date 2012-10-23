@@ -657,7 +657,8 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 
         notebook = gtk_notebook_new();
         gtk_notebook_set_tab_pos(GTK_NOTEBOOK(notebook), GTK_POS_TOP);
-        gtk_container_add(GTK_CONTAINER(GTK_DIALOG(ripper_dialog)->vbox), notebook);
+        gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(ripper_dialog))),
+                          notebook);
 
 
         /* Source selection */

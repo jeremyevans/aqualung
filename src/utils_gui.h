@@ -54,7 +54,6 @@ gint aqualung_dialog_run(GtkDialog * dialog);
 guint aqualung_idle_add(GSourceFunc function, gpointer data);
 guint aqualung_timeout_add(guint interval, GSourceFunc function, gpointer data);
 
-void aqualung_tooltips_init(void);
 void aqualung_tooltips_set_enabled(gboolean enabled);
 #ifdef HAVE_SYSTRAY
 void aqualung_status_icon_set_tooltip_text(GtkStatusIcon * icon, const gchar * text);

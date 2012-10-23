@@ -50,15 +50,6 @@ extern char * valid_extensions_mpeg[];
 extern char * valid_extensions_mod[];
 #endif /* HAVE_MOD */
 
-#if GTK_CHECK_VERSION(2,12,0)
-#define NEW_TOOLTIP_API
-#endif /* GTK_CHECK_VERSION */
-
-#ifndef NEW_TOOLTIP_API
-/* tooltips group */
-GtkTooltips * aqualung_tooltips;
-#endif /* !NEW_TOOLTIP_API */
-
 GSList * toplevel_windows;
 
 typedef struct {
@@ -204,7 +195,6 @@ aqualung_timeout_add(guint interval, GSourceFunc function, gpointer data) {
 	dispatch->data = data;
 	dispatch->destroy = NULL;
 
-#if GLIB_CHECK_VERSION(2,14,0)
 	if (interval % 1000 == 0) {
 		return g_timeout_add_seconds_full(G_PRIORITY_DEFAULT,
 						  interval / 1000,
@@ -212,7 +202,6 @@ aqualung_timeout_add(guint interval, GSourceFunc function, gpointer data) {
 						  dispatch,
 						  threads_dispatch_free);
 	}
-#endif
 	return g_timeout_add_full(G_PRIORITY_DEFAULT,
 				  interval,
 				  threads_dispatch,
@@ -221,27 +210,14 @@ aqualung_timeout_add(guint interval, GSourceFunc function, gpointer data) {
 }
 
 void
-aqualung_tooltips_init(void) {
-#ifndef NEW_TOOLTIP_API
-        aqualung_tooltips = gtk_tooltips_new();
-#endif /* !NEW_TOOLTIP_API */
-}
-
-void
 aqualung_tooltips_set_enabled(gboolean enabled) {
-#ifdef NEW_TOOLTIP_API
+
 	GtkSettings * settings = gtk_settings_get_default();
 
 	if (settings != NULL) {
 		g_object_set(settings, "gtk-enable-tooltips", enabled, NULL);
 	}
-#else
-	if (enabled) {
-		gtk_tooltips_enable(aqualung_tooltips);
-	} else {
-		gtk_tooltips_disable(aqualung_tooltips);
-	}
-#endif
+
 }
 
 #ifdef HAVE_SYSTRAY
@@ -257,11 +233,9 @@ aqualung_status_icon_set_tooltip_text(GtkStatusIcon * icon, const gchar * text) 
 
 void
 aqualung_widget_set_tooltip_text(GtkWidget * widget, const gchar * text) {
-#ifdef NEW_TOOLTIP_API
+
 	gtk_widget_set_tooltip_text(widget, text);
-#else
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(aqualung_tooltips), widget, text, NULL);
-#endif
+
 }
 
 /* create button with stock item
@@ -692,7 +666,8 @@ message_dialog(char * title, GtkWidget * parent, GtkMessageType type, GtkButtons
 	g_free(msg);
 
 	if (extra != NULL) {
-		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), extra, FALSE, FALSE, 5);
+		gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
+				   extra, FALSE, FALSE, 5);
 		gtk_widget_show_all(extra);
 	}
 

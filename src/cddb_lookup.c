@@ -1172,7 +1172,8 @@ cddb_dialog(cddb_lookup_t * data) {
 	}
 
 	table = gtk_table_new(8, 3, FALSE);
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, FALSE, 2);
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
+			   table, FALSE, FALSE, 2);
 
 	if (data->type != CDDB_TYPE_SUBMIT_NEW) {
 		hbox = gtk_hbox_new(FALSE, 0);

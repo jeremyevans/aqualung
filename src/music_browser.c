@@ -462,7 +462,8 @@ void
 browser_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
 		      GtkSelectionData * data, guint info, guint time, gpointer user_data) {
 
-	gtk_selection_data_set(data, data->target, 8, (const guchar *) "store\0", 6);
+	gtk_selection_data_set(data, gtk_selection_data_get_target(data), 8,
+			       (const guchar *) "store\0", 6);
 }
 
 

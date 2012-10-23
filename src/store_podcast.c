@@ -268,6 +268,7 @@ int
 podcast_dialog(podcast_t ** podcast, int create) {
 
 	GtkWidget * dialog;
+	GtkWidget * content_area;
 	GtkWidget * table;
 
 	GtkWidget * url_entry;
@@ -292,8 +293,10 @@ podcast_dialog(podcast_t ** podcast, int create) {
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+
 	table = gtk_table_new(3, 2, FALSE);
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, FALSE, TRUE, 2);
+        gtk_box_pack_start(GTK_BOX(content_area), table, FALSE, TRUE, 2);
 
 	insert_label_entry(table, _("Podcast URL:"), &url_entry,
 			   create ? NULL : (*podcast)->url,
@@ -325,7 +328,7 @@ podcast_dialog(podcast_t ** podcast, int create) {
 	}
 
 	frame = gtk_frame_new(_("Limits"));
-        gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), frame, FALSE, TRUE, 5);
+        gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, TRUE, 5);
 	table = gtk_table_new(3, 2, FALSE);
         gtk_container_add(GTK_CONTAINER(frame), table);
 
@@ -896,6 +899,7 @@ void
 podcast_store__reorder_cb(gpointer data) {
 
 	GtkWidget * dialog;
+	GtkWidget * content_area;
 	GtkWidget * label;
 	GtkWidget * list;
 	GtkWidget * viewport;
@@ -922,9 +926,11 @@ podcast_store__reorder_cb(gpointer data) {
 				   G_TYPE_STRING,    /* title */
 				   G_TYPE_POINTER);  /* GtkTreeIter */
 
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+
 	label = gtk_label_new(_("Drag and drop entries in the list\n"
 				"to set the feed order in the Music Store."));
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(content_area), label, FALSE, FALSE, 5);
 
         list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	renderer = gtk_cell_renderer_text_new();
@@ -939,7 +945,7 @@ podcast_store__reorder_cb(gpointer data) {
 	viewport = gtk_viewport_new(NULL, NULL);
 	gtk_container_add(GTK_CONTAINER(viewport), list);
 
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), viewport, TRUE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(content_area), viewport, TRUE, TRUE, 5);
 
 	i = 0;
 	store_podcast_get_store_iter(&store_iter);

@@ -1566,7 +1566,8 @@ build_type_dialog(build_store_t * build_data) {
 
 	notebook = gtk_notebook_new();
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(notebook), FALSE);
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), notebook);
+	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
+			  notebook);
 
         vbox = gtk_vbox_new(FALSE, 5);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
@@ -1708,7 +1709,8 @@ build_dialog(build_store_t * data) {
 
 	notebook = gtk_notebook_new();
 	gtk_notebook_set_tab_pos(GTK_NOTEBOOK(notebook), GTK_POS_TOP);
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), notebook);
+	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
+			  notebook);
 
 
 	/* General */

@@ -944,7 +944,7 @@ draw_rva_diagram(void) {
         cairo_t *rva_cr = NULL;
 
 
-        rva_cr = gdk_cairo_create (rva_drawing_area->window);
+	rva_cr = gdk_cairo_create(gtk_widget_get_window(rva_drawing_area));
 
         if (rva_cr != NULL) {
 
@@ -1678,7 +1678,7 @@ setup_get_mouse_button_window(void) {
 	gtk_dialog_set_default_response(GTK_DIALOG(get_mouse_button_window), GTK_RESPONSE_ACCEPT);
 	gtk_container_set_border_width(GTK_CONTAINER(get_mouse_button_window), 5);
 
-	vbox_main = GTK_DIALOG(get_mouse_button_window)->vbox;
+	vbox_main = gtk_dialog_get_content_area(GTK_DIALOG(get_mouse_button_window));
 	gtk_box_set_spacing(GTK_BOX(vbox_main), 8);
 
 	eventbox = gtk_event_box_new();
@@ -1962,7 +1962,8 @@ create_options_window(void) {
 
 	notebook = gtk_notebook_new();
 	gtk_notebook_set_tab_pos(GTK_NOTEBOOK(notebook), GTK_POS_LEFT);
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(options_window)->vbox), notebook);
+	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(options_window))),
+			  notebook);
 
         label_size = gtk_size_group_new(GTK_SIZE_GROUP_BOTH);
 

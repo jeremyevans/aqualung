@@ -2771,8 +2771,6 @@ create_main_window(char * skin_path) {
  	fd_songinfo = pango_font_description_from_string(options.songinfo_font);
  	fd_statusbar = pango_font_description_from_string(options.statusbar_font);
 
-	aqualung_tooltips_init();
-
         conf_menu = gtk_menu_new();
 	register_toplevel_window(conf_menu, TOP_WIN_SKIN);
 
@@ -2981,10 +2979,10 @@ create_main_window(char * skin_path) {
 	g_signal_connect(G_OBJECT(adj_vol), "value_changed", G_CALLBACK(changed_vol), NULL);
 	scale_vol = gtk_hscale_new(GTK_ADJUSTMENT(adj_vol));
 	gtk_widget_set_name(scale_vol, "scale_vol");
-	g_signal_connect(GTK_OBJECT(scale_vol), "button_press_event",
-			   (GtkSignalFunc)scale_vol_button_press_event, NULL);
-	g_signal_connect(GTK_OBJECT(scale_vol), "button_release_event",
-			   (GtkSignalFunc)scale_vol_button_release_event, NULL);
+	g_signal_connect(G_OBJECT(scale_vol), "button_press_event",
+			 G_CALLBACK(scale_vol_button_press_event), NULL);
+	g_signal_connect(G_OBJECT(scale_vol), "button_release_event",
+			 G_CALLBACK(scale_vol_button_release_event), NULL);
 	gtk_widget_set_size_request(scale_vol, -1, 8);
 	gtk_scale_set_digits(GTK_SCALE(scale_vol), 0);
 	gtk_scale_set_draw_value(GTK_SCALE(scale_vol), FALSE);
@@ -2997,10 +2995,10 @@ create_main_window(char * skin_path) {
 	gtk_scale_set_digits(GTK_SCALE(scale_bal), 0);
 	gtk_widget_set_size_request(scale_bal, -1, 8);
 	gtk_widget_set_name(scale_bal, "scale_bal");
-	g_signal_connect(GTK_OBJECT(scale_bal), "button_press_event",
-			   (GtkSignalFunc)scale_bal_button_press_event, NULL);
-	g_signal_connect(GTK_OBJECT(scale_bal), "button_release_event",
-			   (GtkSignalFunc)scale_bal_button_release_event, NULL);
+	g_signal_connect(G_OBJECT(scale_bal), "button_press_event",
+			 G_CALLBACK(scale_bal_button_press_event), NULL);
+	g_signal_connect(G_OBJECT(scale_bal), "button_release_event",
+			 G_CALLBACK(scale_bal_button_release_event), NULL);
         gtk_scale_set_draw_value(GTK_SCALE(scale_bal), FALSE);
 	gtk_table_attach(GTK_TABLE(vb_table), scale_bal, 2, 3, 0, 1,
 			 GTK_FILL | GTK_EXPAND, 0, 0, 0);
@@ -3020,10 +3018,10 @@ create_main_window(char * skin_path) {
         g_signal_connect(G_OBJECT(adj_pos), "value_changed", G_CALLBACK(changed_pos), NULL);
         scale_pos = gtk_hscale_new(GTK_ADJUSTMENT(adj_pos));
 	gtk_widget_set_name(scale_pos, "scale_pos");
-	g_signal_connect(GTK_OBJECT(scale_pos), "button_press_event",
-			   (GtkSignalFunc)scale_button_press_event, NULL);
-	g_signal_connect(GTK_OBJECT(scale_pos), "button_release_event",
-			   (GtkSignalFunc)scale_button_release_event, NULL);
+	g_signal_connect(G_OBJECT(scale_pos), "button_press_event",
+			 G_CALLBACK(scale_button_press_event), NULL);
+	g_signal_connect(G_OBJECT(scale_pos), "button_release_event",
+			 G_CALLBACK(scale_button_release_event), NULL);
 	gtk_scale_set_digits(GTK_SCALE(scale_pos), 0);
         gtk_scale_set_draw_value(GTK_SCALE(scale_pos), FALSE);
 	gtk_range_set_update_policy(GTK_RANGE(scale_pos), GTK_UPDATE_DISCONTINUOUS);

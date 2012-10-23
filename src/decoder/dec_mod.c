@@ -74,7 +74,7 @@ unpack_file (char *filename, int type) {
 	int i, len = 0;
 	char buffer[16384];
 #ifdef HAVE_LIBZ
-	gzFile *gz_input_file = NULL;
+	gzFile gz_input_file;
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
 	BZFILE *bz2_input_file = NULL;

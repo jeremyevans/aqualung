@@ -652,10 +652,10 @@ msgstr "Hjälp"
 #, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%%%a, %%%%r and %%%%t. The track number and format-dependent file extension are denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives an identifier which is unique within an export session."
+"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%a, %%r and %%t. The track number and format-dependent file extension are denoted by %%n and %%x, respectively. The flag %%i gives an identifier which is unique within an export session."
 msgstr ""
 "\n"
-"Strängmallen som du skriver in här kommer att användas för att konstruera filnamnet på de exporterade filerna. Artist-, skiv- och spårnamnen kommer att betecknas med %%%%a, %%%%r och %%%%t. The track number and format-dependent file extension are denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives an identifier which is unique within an export session."
+"Strängmallen som du skriver in här kommer att användas för att konstruera filnamnet på de exporterade filerna. Artist-, skiv- och spårnamnen kommer att betecknas med %%a, %%r och %%t. The track number and format-dependent file extension are denoted by %%n and %%x, respectively. The flag %%i gives an identifier which is unique within an export session."
 
 msgid "Export files"
 msgstr "Exportera filer"
@@ -1655,10 +1655,10 @@ msgstr "Det angivna biblioteket har redan lagts till i listan."
 #, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%%%a, %%%%r and %%%%t, respectively.\n"
+"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%a, %%r and %%t, respectively.\n"
 msgstr ""
 "\n"
-"Strängmallen som du skriver in här kommer att användas för att konstruera en enskild titelrad baserat på ett artist-, skiv- och spårnamn. Dessa betecknas med %%%%a respektive %%%%r och %%%%t.\n"
+"Strängmallen som du skriver in här kommer att användas för att konstruera en enskild titelrad baserat på ett artist-, skiv- och spårnamn. Dessa betecknas med %%a respektive %%r och %%t.\n"
 
 msgid ""
 "\n"
@@ -2900,7 +2900,7 @@ msgid "Expected '}' after '{', but end of string found."
 msgstr ""
 
 #, c-format
-msgid "Unknown conversion type character found after '%%%%'."
+msgid "Unknown conversion type character found after '%%'."
 msgstr ""
 
 msgid "Unknown conversion type character found after '?'."

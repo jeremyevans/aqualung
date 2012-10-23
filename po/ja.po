@@ -673,10 +673,10 @@ msgstr "ヘルプ"
 #, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%%%a, %%%%r and %%%%t. The track number and format-dependent file extension are denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives an identifier which is unique within an export session."
+"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%a, %%r and %%t. The track number and format-dependent file extension are denoted by %%n and %%x, respectively. The flag %%i gives an identifier which is unique within an export session."
 msgstr ""
 "\n"
-"ここで入力するテンプレート文字列は、エクスポートされたファイルのファイル名を構築するために使われます。アーティスト、レコード、トラック名は %%%%a, %%%%r と %%%%t で表示されます。トラック番号と形式依存ファイル拡張子は %%%%n と %%%%x で表示されます。フラグ %%%%i はエクスポートセッションで固有の識別子を与えます。"
+"ここで入力するテンプレート文字列は、エクスポートされたファイルのファイル名を構築するために使われます。アーティスト、レコード、トラック名は %%a, %%r と %%t で表示されます。トラック番号と形式依存ファイル拡張子は %%n と %%x で表示されます。フラグ %%i はエクスポートセッションで固有の識別子を与えます。"
 
 msgid "Export files"
 msgstr "ファイルをエクスポート"
@@ -1683,10 +1683,10 @@ msgstr "指定のストアは既にリストに追加されています。"
 #, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%%%a, %%%%r and %%%%t, respectively.\n"
+"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%a, %%r and %%t, respectively.\n"
 msgstr ""
 "\n"
-"ここに入力するテンプレート文字列は、アーティスト、レコード、トラック名から1つのタイトル行を構成するために使われます。それらは個々に %%%%a, %%%%r と %%%%t, で示されます。\n"
+"ここに入力するテンプレート文字列は、アーティスト、レコード、トラック名から1つのタイトル行を構成するために使われます。それらは個々に %%a, %%r と %%t, で示されます。\n"
 
 msgid ""
 "\n"
@@ -3023,8 +3023,8 @@ msgid "Expected '}' after '{', but end of string found."
 msgstr "'{' の後に '}' が必要です。しかし文字列の終わりが見つかりました。"
 
 #, c-format
-msgid "Unknown conversion type character found after '%%%%'."
-msgstr "'%%%%' の後に不明な変換タイプ文字が見つかりました。"
+msgid "Unknown conversion type character found after '%%'."
+msgstr "'%%' の後に不明な変換タイプ文字が見つかりました。"
 
 msgid "Unknown conversion type character found after '?'."
 msgstr "'?' の後に不明な変換タイプ文字が見つかりました。"

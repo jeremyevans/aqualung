@@ -1403,7 +1403,7 @@ display_title_format_help(void) {
 
 	display_help(_("\nThe template string you enter here will be used to "
 		       "construct a single title line from an Artist, a Record "
-		       "and a Track name. These are denoted by %%%%a, %%%%r and %%%%t, "
+		       "and a Track name. These are denoted by %%a, %%r and %%t, "
 		       "respectively.\n"));
 }
 

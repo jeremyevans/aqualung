@@ -689,10 +689,10 @@ msgstr "Помощь"
 #, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%%%a, %%%%r and %%%%t. The track number and format-dependent file extension are denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives an identifier which is unique within an export session."
+"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%a, %%r and %%t. The track number and format-dependent file extension are denoted by %%n and %%x, respectively. The flag %%i gives an identifier which is unique within an export session."
 msgstr ""
 "\n"
-"Строка-шаблон, которую вы введёте сюда, будет использована для формирования имён экспортируемых файлов. Имена Исполнителя, Записи и Трека обозначаются %%%%a, %%%%r и %%%%t. Номер трека и расширение файла, зависящее от формата, обозначаются %%%%n и %%%%x, соответственно. Флаг %%%%i даёт идентификатор, уникальный для данной сеанса экспорта."
+"Строка-шаблон, которую вы введёте сюда, будет использована для формирования имён экспортируемых файлов. Имена Исполнителя, Записи и Трека обозначаются %%a, %%r и %%t. Номер трека и расширение файла, зависящее от формата, обозначаются %%n и %%x, соответственно. Флаг %%i даёт идентификатор, уникальный для данной сеанса экспорта."
 
 msgid "Export files"
 msgstr "Экспорт файлов"
@@ -1701,10 +1701,10 @@ msgstr "Указанная библиотека уже добавлена в с�
 #, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%%%a, %%%%r and %%%%t, respectively.\n"
+"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%a, %%r and %%t, respectively.\n"
 msgstr ""
 "\n"
-"Строка-шаблон, которую вы введёте здесь, будет использоваться для формирования строки заголовка из имён Исполнителя, Записи и Трека. Они обозначены %%%%a, %%%%r и %%%%t соответственно.\n"
+"Строка-шаблон, которую вы введёте здесь, будет использоваться для формирования строки заголовка из имён Исполнителя, Записи и Трека. Они обозначены %%a, %%r и %%t соответственно.\n"
 
 msgid ""
 "\n"
@@ -3094,8 +3094,8 @@ msgid "Expected '}' after '{', but end of string found."
 msgstr "Ожидалось '}' после '{', а найден конец строки."
 
 #, c-format
-msgid "Unknown conversion type character found after '%%%%'."
-msgstr "После '%%%%' обнаружен символ неизвестного типа."
+msgid "Unknown conversion type character found after '%%'."
+msgstr "После '%%' обнаружен символ неизвестного типа."
 
 msgid "Unknown conversion type character found after '?'."
 msgstr "После '?' обнаружен символ неизвестного типа."

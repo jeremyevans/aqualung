@@ -687,10 +687,10 @@ msgstr "Hulp"
 #, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%%%a, %%%%r and %%%%t. The track number and format-dependent file extension are denoted by %%%%n and %%%%x, respectively. The flag %%%%i gives an identifier which is unique within an export session."
+"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%a, %%r and %%t. The track number and format-dependent file extension are denoted by %%n and %%x, respectively. The flag %%i gives an identifier which is unique within an export session."
 msgstr ""
 "\n"
-"Het sjabloon dat u hier invult zal worden gebruikt om de bestandsnaam te construeren. De artiest, album en nummernamen worden gespecificeerd als %%%%a, %%%%r, %%%%t. Het volgnummer en de bestandsextensie worden gespecificeerd als %%%%n en %%%%x. Een unieke code per exporteersessie kan worden gespecificeerd als %%%%i."
+"Het sjabloon dat u hier invult zal worden gebruikt om de bestandsnaam te construeren. De artiest, album en nummernamen worden gespecificeerd als %%a, %%r, %%t. Het volgnummer en de bestandsextensie worden gespecificeerd als %%n en %%x. Een unieke code per exporteersessie kan worden gespecificeerd als %%i."
 
 msgid "Export files"
 msgstr "Exporteer bestanden"
@@ -1699,10 +1699,10 @@ msgstr "Het gespecificeerde archief is reeds aan de lijst toegevoegd."
 #, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%%%a, %%%%r and %%%%t, respectively.\n"
+"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%a, %%r and %%t, respectively.\n"
 msgstr ""
 "\n"
-"Het sjabloon wordt gebruikt om een titelregel te construeren aan de hand van de artiest, het album en het nummer. Hiernaar verwijst u d.m.v. respectievelijk %%%%a, %%%%r en %%%%t.\n"
+"Het sjabloon wordt gebruikt om een titelregel te construeren aan de hand van de artiest, het album en het nummer. Hiernaar verwijst u d.m.v. respectievelijk %%a, %%r en %%t.\n"
 
 msgid ""
 "\n"
@@ -3092,8 +3092,8 @@ msgid "Expected '}' after '{', but end of string found."
 msgstr "'}' verwacht na '{', maar niet gevonden"
 
 #, c-format
-msgid "Unknown conversion type character found after '%%%%'."
-msgstr "Onbekend conversietype gevonden na '%%%%'."
+msgid "Unknown conversion type character found after '%%'."
+msgstr "Onbekend conversietype gevonden na '%%'."
 
 msgid "Unknown conversion type character found after '?'."
 msgstr "Onbekend conversietype gevonden na '?'."

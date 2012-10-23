@@ -267,7 +267,7 @@ make_string_strerror(int ret, char * buf) {
 		strncpy(buf, _("Expected '}' after '{', but end of string found."), MAXLEN-1);
 		break;
 	case -3:
-		strncpy(buf, _("Unknown conversion type character found after '%%%%'."), MAXLEN-1);
+		strncpy(buf, _("Unknown conversion type character found after '%%'."), MAXLEN-1);
 		break;
 	case -4:
 		strncpy(buf, _("Unknown conversion type character found after '?'."), MAXLEN-1);

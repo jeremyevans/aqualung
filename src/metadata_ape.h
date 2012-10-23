@@ -21,7 +21,6 @@
 #ifndef AQUALUNG_METADATA_APE_H
 #define AQUALUNG_METADATA_APE_H
 
-#include <sys/types.h>
 #include <glib.h>
 
 #include "decoder/file_decoder.h"
@@ -46,17 +45,17 @@ G_BEGIN_DECLS
 #define APE_PREAMBLE "APETAGEX"
 
 typedef struct {
-	u_int32_t flags;
+	guint32 flags;
 	unsigned char key[256];
-	u_int32_t value_size;
+	guint32 value_size;
 	unsigned char * value;
 } ape_item_t;
 
 typedef struct {
-	u_int32_t version;
-	u_int32_t tag_size;
-	u_int32_t item_count;
-	u_int32_t flags;
+	guint32 version;
+	guint32 tag_size;
+	guint32 item_count;
+	guint32 flags;
 } ape_header_t;
 
 typedef struct {

@@ -30,7 +30,7 @@
 #include "metadata_ogg.h"
 
 
-static const u_int32_t crc_table[256] = {
+static const guint32 crc_table[256] = {
 
 	0x00000000, 0x04c11db7, 0x09823b6e, 0x0d4326d9, 0x130476dc, 0x17c56b6b,
 	0x1a864db2, 0x1e475005, 0x2608edb8, 0x22c9f00f, 0x2f8ad6d6, 0x2b4bcb61,
@@ -80,10 +80,10 @@ static const u_int32_t crc_table[256] = {
 /* CRC for computing Ogg page checksums.
  * initial value and final XOR = 0, generator polynomial=0x04c11db7.
  */
-u_int32_t
+guint32
 meta_ogg_crc(unsigned char * data, int length) {
 
-	u_int32_t sum = 0;
+	guint32 sum = 0;
 	int i;
 	for (i = 0; i < length; ++i) {
 		sum = (sum << 8) ^ crc_table[((sum >> 24) & 0xff) ^ data[i]];
@@ -138,7 +138,7 @@ meta_ogg_render_page(meta_ogg_page_t * page, unsigned int * length) {
 	int i;
 	unsigned int total_length = 27;
 	unsigned int data_length = 0;
-	u_int32_t crc;
+	guint32 crc;
 	unsigned char * data;
 
 	total_length += page->n_segments;
@@ -288,7 +288,7 @@ meta_ogg_render(GSList * slist, char * filename, int n_pages) {
 	meta_ogg_page_t * page;
 	unsigned char * data;
 	unsigned int length;
-	u_int64_t total_length = 0L;
+	guint64 total_length = 0L;
 	int page_count = 0;
 	
 	if ((file = fopen(filename, (n_pages == -1) ? "wb" : "r+b")) == NULL) {

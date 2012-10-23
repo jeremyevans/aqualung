@@ -54,7 +54,6 @@
 
 #ifdef HAVE_OSS
 #include <sys/ioctl.h>
-#include <sys/types.h>
 #if defined(HAVE_LINUX_SOUNDCARD_H)
 #include <linux/soundcard.h>
 #elif defined(HAVE_SOUNDCARD_H)
@@ -109,7 +108,7 @@ jack_client_t * jack_client;
 jack_port_t * out_L_port;
 jack_port_t * out_R_port;
 char * client_name = NULL;
-u_int32_t jack_nframes;
+guint32 jack_nframes;
 int jack_is_shutdown;
 char * jack_shutdown_reason = NULL;
 int auto_connect = 0;
@@ -234,7 +233,7 @@ same_disc_next_track(char * filename, char * filename_prev) {
 
 /* roll back sample_offset samples, if possible */
 void
-rollback(rb_t * rb, file_decoder_t * fdec, double src_ratio, u_int32_t playback_offset) {
+rollback(rb_t * rb, file_decoder_t * fdec, double src_ratio, guint32 playback_offset) {
 
 	if (playback_offset < fdec->fileinfo.total_samples - fdec->samples_left)
 		file_decoder_seek(fdec, fdec->fileinfo.total_samples - fdec->samples_left - playback_offset);
@@ -244,10 +243,10 @@ rollback(rb_t * rb, file_decoder_t * fdec, double src_ratio, u_int32_t playback_
 
 
 /* returns number of samples in rb and output driver buffer */
-u_int32_t
+guint32
 flush_output(double src_ratio) {
 
-	u_int32_t driver_offset;
+	guint32 driver_offset;
 	char send_cmd = CMD_FLUSH;
 
 	struct timespec req_time;
@@ -264,9 +263,9 @@ flush_output(double src_ratio) {
 	sample_offset = rb_read_space(rb) / (2 * sample_size) * src_ratio;
 
 	rb_write(rb_disk2out, &send_cmd, 1);
-	while (rb_read_space(rb_out2disk) < sizeof(u_int32_t))
+	while (rb_read_space(rb_out2disk) < sizeof(guint32))
 		nanosleep(&req_time, &rem_time);
-	rb_read(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
+	rb_read(rb_out2disk, (char *)&driver_offset, sizeof(guint32));
 
 	return sample_offset + driver_offset * src_ratio;
 }
@@ -286,7 +285,7 @@ disk_thread(void * arg) {
 
 	thread_info_t * info = (thread_info_t *)arg;
 	file_decoder_t * fdec = NULL;
-	u_int32_t playback_offset; /* amount of samples in the output driver buffer */
+	guint32 playback_offset; /* amount of samples in the output driver buffer */
 	unsigned int n_read = 0;
 	unsigned int want_read;
 	int n_src = 0;
@@ -662,9 +661,9 @@ disk_thread(void * arg) {
 void *
 sndio_thread(void * arg) {
 
-        u_int32_t i;
+	guint32 i;
         thread_info_t * info = (thread_info_t *)arg;
-	u_int32_t driver_offset = 0;
+	guint32 driver_offset = 0;
 	int bufsize = 1024;
         int n_avail;
 	size_t bytes_written;
@@ -709,7 +708,7 @@ sndio_thread(void * arg) {
 						n_avail = 2*bufsize * sizeof(short);
 					rb_read(rb, (char *)sndio_short_buf, n_avail);
 				}
-				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
+				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(guint32));
 				goto sndio_wake;
 				break;
 			case CMD_FINISH:
@@ -810,9 +809,9 @@ sndio_thread(void * arg) {
 void *
 pulse_thread(void * arg) {
 	
-	u_int32_t i;
+	guint32 i;
 	thread_info_t * info = (thread_info_t *)arg;
-	u_int32_t driver_offset = 0;
+	guint32 driver_offset = 0;
 	int bufsize = 1024;
         int n_avail;
 	int ret, err;
@@ -855,7 +854,7 @@ pulse_thread(void * arg) {
 						n_avail = 2*bufsize * sizeof(short);
 					rb_read(rb, (char *)pa_short_buf, n_avail);
 				}
-				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
+				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(guint32));
 				goto pulse_wake;
 				break;
 			case CMD_FINISH:
@@ -957,9 +956,9 @@ pulse_thread(void * arg) {
 void *
 oss_thread(void * arg) {
 
-        u_int32_t i;
+	guint32 i;
         thread_info_t * info = (thread_info_t *)arg;
-	u_int32_t driver_offset = 0;
+	guint32 driver_offset = 0;
 	int bufsize = 1024;
         int n_avail;
 	int ioctl_status;
@@ -1003,7 +1002,7 @@ oss_thread(void * arg) {
 						n_avail = 2*bufsize * sizeof(short);
 					rb_read(rb, (char *)oss_short_buf, n_avail);
 				}
-				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
+				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(guint32));
 				goto oss_wake;
 				break;
 			case CMD_FINISH:
@@ -1106,8 +1105,8 @@ oss_thread(void * arg) {
 void *
 alsa_thread(void * arg) {
 
-        u_int32_t i;
-        u_int32_t driver_offset = 0;
+	guint32 i;
+	guint32 driver_offset = 0;
         thread_info_t * info = (thread_info_t *)arg;
 	snd_pcm_sframes_t n_written = 0;
 	int bufsize = info->n_frames;
@@ -1173,7 +1172,7 @@ alsa_thread(void * arg) {
 						rb_read(rb, (char *)alsa_short_buf, n_avail);
 					}
 				}
-				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
+				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(guint32));
 				goto alsa_wake;
 				break;
 			case CMD_FINISH:
@@ -1330,11 +1329,11 @@ alsa_thread(void * arg) {
 /* JACK output function */
 #ifdef HAVE_JACK
 int
-process(u_int32_t nframes, void * arg) {
+process(guint32 nframes, void * arg) {
 
-	u_int32_t i;
-        u_int32_t driver_offset = 0;
-	u_int32_t n_avail;
+	guint32 i;
+	guint32 driver_offset = 0;
+	guint32 n_avail;
 	jack_default_audio_sample_t * out1 = jack_port_get_buffer(out_L_port, nframes);
 	jack_default_audio_sample_t * out2 = jack_port_get_buffer(out_R_port, nframes);
 
@@ -1354,7 +1353,7 @@ process(u_int32_t nframes, void * arg) {
 			flushing = 1;
 			flushcnt = rb_read_space(rb)/nframes/
 				(2*sample_size) * 1.1f;
-			rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
+			rb_write(rb_out2disk, (char *)&driver_offset, sizeof(guint32));
 			break;
 		case CMD_FINISH:
 			return 0;
@@ -1954,8 +1953,8 @@ pulse_init(thread_info_t * info, int verbose, int realtime, int priority) {
 void *
 win32_thread(void * arg) {
 
-        u_int32_t i;
-        u_int32_t driver_offset = 0;
+	guint32 i;
+	guint32 driver_offset = 0;
         thread_info_t * info = (thread_info_t *)arg;
 
         WAVEFORMATEX wf;
@@ -2082,7 +2081,7 @@ win32_thread(void * arg) {
 				for (j = 0; j < WIN32_BUFFER_LEN / sizeof(short); j++) {
 					short_buf[j] = 0;
 				}
-				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(u_int32_t));
+				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(guint32));
 				goto win32_wake;
 				break;
 			case CMD_FINISH:

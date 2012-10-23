@@ -20,6 +20,7 @@
 
 #include <config.h>
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -411,7 +412,7 @@ meta_ape_render_apic(meta_frame_t * frame, ape_item_t * item) {
 
 void
 meta_ape_render_bin_frames(metadata_t * meta, ape_tag_t * tag, int type,
-			   u_int32_t * item_count, u_int32_t * total_size) {
+			   guint32 * item_count, guint32 * total_size) {
 
 	meta_frame_t * frame;
 
@@ -456,8 +457,8 @@ metadata_to_ape_tag(metadata_t * meta, ape_tag_t * tag) {
 
 	GSList * pfields = meta_get_possible_fields(META_TAG_APE);
 	GSList * _pfields = pfields;
-	u_int32_t item_count = 0;
-	u_int32_t total_size = 0;
+	guint32 item_count = 0;
+	guint32 total_size = 0;
 
 	while (pfields != NULL) {
 		int type = GPOINTER_TO_INT(pfields->data);
@@ -548,7 +549,7 @@ meta_ape_render_header(ape_header_t * header, unsigned char * data) {
 int
 meta_ape_render_item(ape_item_t * item, unsigned char * data) {
 
-	u_int32_t slen = strlen((char *)item->key);
+	size_t slen = strlen((char *)item->key);
 	meta_write_int32(item->value_size, data);
 	meta_write_int32(item->flags, data+4);
 	memcpy(data+8, item->key, slen);
@@ -560,7 +561,7 @@ meta_ape_render_item(ape_item_t * item, unsigned char * data) {
 void
 meta_ape_render(ape_tag_t * tag, unsigned char * data) {
 
-	u_int32_t pos = 0;
+	guint32 pos = 0;
 	GSList * items = tag->items;
 	pos += meta_ape_render_header(&tag->header, data);
 	while (items != NULL) {
@@ -577,7 +578,7 @@ meta_ape_rewrite(char * filename, unsigned char * data, unsigned int length) {
 
 	FILE * file;
 	unsigned char buf[32];
-	u_int32_t tag_size, flags;
+	guint32 tag_size, flags;
 	long pos;
 
 	long offset = 0L;

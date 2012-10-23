@@ -25,11 +25,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/mman.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <limits.h>
 #include <string.h>
+#include <glib.h>
 
 #include "../common.h"
 #include "../httpc.h"
@@ -349,7 +349,7 @@ mpeg_send_metadata(file_decoder_t * fdec, int fd) {
 	unsigned long file_size;
 
 	unsigned char buffer[12];
-	u_int32_t id3v2_length = 0;
+	guint32 id3v2_length = 0;
 
 	ape_tag_t tag;
 

@@ -20,6 +20,7 @@
 
 #include <config.h>
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -91,28 +92,28 @@ meta_id3v2_strlen(unsigned char * buf, int maxlen, int enc) {
 }
 
 
-u_int32_t
+guint32
 meta_id3v2_read_int(unsigned char * buf) {
 
-	return ((((u_int32_t)buf[0]) << 24) |
-		(((u_int32_t)buf[1]) << 16) |
-		(((u_int32_t)buf[2]) << 8) |
-		  (u_int32_t)buf[3]);
+	return ((((guint32)buf[0]) << 24) |
+		(((guint32)buf[1]) << 16) |
+		(((guint32)buf[2]) << 8) |
+		  (guint32)buf[3]);
 }
 
 
-u_int32_t
+guint32
 meta_id3v2_read_synchsafe_int(unsigned char * buf) {
 
-	return (((u_int32_t)(buf[0] & 0x7f) << 21) |
-		((u_int32_t)(buf[1] & 0x7f) << 14) |
-		((u_int32_t)(buf[2] & 0x7f) << 7) |
-		 (u_int32_t)(buf[3] & 0x7f));
+	return (((guint32)(buf[0] & 0x7f) << 21) |
+		((guint32)(buf[1] & 0x7f) << 14) |
+		((guint32)(buf[2] & 0x7f) << 7) |
+		 (guint32)(buf[3] & 0x7f));
 }
 
 
 void
-meta_id3v2_write_synchsafe_int(unsigned char * buf, u_int32_t val) {
+meta_id3v2_write_synchsafe_int(unsigned char * buf, guint32 val) {
 
 	buf[0] = ((val >> 21) & 0x7f);
 	buf[1] = ((val >> 14) & 0x7f);
@@ -979,8 +980,8 @@ meta_id3v2_pad(unsigned char ** buf, int * size, int padded_size) {
 int
 meta_id3v2_pull_file(char * filename, FILE * file, int length) {
 
-	u_int32_t pos;
-	u_int32_t len;
+	long pos;
+	size_t len;
 	int bufsize = 1024*1024;
 	unsigned char * buf;
 	int eof = 0;
@@ -1034,8 +1035,8 @@ meta_id3v2_pull_file(char * filename, FILE * file, int length) {
 int
 meta_id3v2_push_file(FILE * file, int length) {
 
-	u_int32_t pos;
-	u_int32_t len;
+	long pos;
+	size_t len;
 	int bufsize = 1024*1024;
 	unsigned char * buf;
 
@@ -1099,8 +1100,8 @@ meta_id3v2_rewrite(char * filename, unsigned char ** buf, int * len) {
 
 	FILE * file;
 	unsigned char buffer[12];
-	u_int32_t file_size;
-	u_int32_t id3v2_length;
+	long file_size;
+	guint32 id3v2_length;
 	int ret;
 
 	if ((file = fopen(filename, "r+b")) == NULL) {
@@ -1190,8 +1191,8 @@ meta_id3v2_delete(char * filename) {
 
 	FILE * file;
 	unsigned char buffer[12];
-	u_int32_t file_size;
-	u_int32_t id3v2_length;
+	long file_size;
+	guint32 id3v2_length;
 	int ret;
 
 	if ((file = fopen(filename, "r+b")) == NULL) {

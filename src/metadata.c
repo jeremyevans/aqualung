@@ -999,30 +999,30 @@ metadata_clone(metadata_t * meta, int tags) {
 
 /* low-level utils */
 
-u_int32_t
+guint32
 meta_read_int32(unsigned char * buf) {
 
-	return ((((u_int32_t)buf[0]))       |
-		(((u_int32_t)buf[1]) << 8)  |
-		(((u_int32_t)buf[2]) << 16) |
-		(((u_int32_t)buf[3]) << 24));
+	return ((((guint32)buf[0]))       |
+		(((guint32)buf[1]) << 8)  |
+		(((guint32)buf[2]) << 16) |
+		(((guint32)buf[3]) << 24));
 }
 
-u_int64_t
+guint64
 meta_read_int64(unsigned char * buf) {
 
-	return ((((u_int64_t)buf[0]))       |
-		(((u_int64_t)buf[1]) << 8)  |
-		(((u_int64_t)buf[2]) << 16) |
-		(((u_int64_t)buf[3]) << 24) |
-		(((u_int64_t)buf[4]) << 32) |
-		(((u_int64_t)buf[5]) << 40) |
-		(((u_int64_t)buf[6]) << 48) |
-		(((u_int64_t)buf[7]) << 56));
+	return ((((guint64)buf[0]))       |
+		(((guint64)buf[1]) << 8)  |
+		(((guint64)buf[2]) << 16) |
+		(((guint64)buf[3]) << 24) |
+		(((guint64)buf[4]) << 32) |
+		(((guint64)buf[5]) << 40) |
+		(((guint64)buf[6]) << 48) |
+		(((guint64)buf[7]) << 56));
 }
 
 void
-meta_write_int32(u_int32_t val, unsigned char * buf) {
+meta_write_int32(guint32 val, unsigned char * buf) {
 
 	buf[0] = ((val & 0xff));
 	buf[1] = ((val >> 8)  & 0xff);
@@ -1031,7 +1031,7 @@ meta_write_int32(u_int32_t val, unsigned char * buf) {
 }
 
 void
-meta_write_int64(u_int64_t val, unsigned char * buf) {
+meta_write_int64(guint64 val, unsigned char * buf) {
 
 	buf[0] = ((val & 0xff));
 	buf[1] = ((val >> 8)  & 0xff);

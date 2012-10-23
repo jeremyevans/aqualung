@@ -21,7 +21,7 @@
 #ifndef AQUALUNG_CORE_H
 #define AQUALUNG_CORE_H
 
-#include <sys/types.h>
+#include <glib.h>
 
 #ifdef HAVE_ALSA
 #define AlSA_PCM_NEW_HW_PARAMS_API
@@ -113,7 +113,7 @@ typedef struct _thread_info {
 	short * pa_short_buf;
 #endif /* HAVE_PULSE */
 
-	u_int32_t rb_size;
+	guint32 rb_size;
 	unsigned long in_SR;
 	unsigned long in_SR_prev;
 	unsigned long out_SR;

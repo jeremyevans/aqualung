@@ -23,8 +23,8 @@
 
 #include <config.h>
 
-#include <sys/types.h>
 #include <glib.h>
+
 #ifdef HAVE_VORBIS
 #include <vorbis/codec.h>
 #endif /* HAVE_VORBIS */
@@ -39,10 +39,10 @@
 typedef struct {
 	unsigned char version;
 	char flags;
-	u_int64_t granulepos;
-	u_int32_t serialno;
-	u_int32_t seqno;
-	u_int32_t checksum;
+	guint64 granulepos;
+	guint32 serialno;
+	guint32 seqno;
+	guint32 checksum;
 	unsigned char n_segments;
 	unsigned char segment_table[256];
 	unsigned char * data;

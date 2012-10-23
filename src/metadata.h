@@ -23,7 +23,6 @@
 
 #include <config.h>
 
-#include <sys/types.h>
 #include <glib.h>
 
 #include "common.h"
@@ -250,10 +249,10 @@ metadata_t * metadata_clone(metadata_t * meta, int tags);
 
 
 /* low-level utils */
-u_int32_t meta_read_int32(unsigned char * buf);
-u_int64_t meta_read_int64(unsigned char * buf);
-void meta_write_int32(u_int32_t val, unsigned char * buf);
-void meta_write_int64(u_int64_t val, unsigned char * buf);
+guint32 meta_read_int32(unsigned char * buf);
+guint64 meta_read_int64(unsigned char * buf);
+void meta_write_int32(guint32 val, unsigned char * buf);
+void meta_write_int64(guint64 val, unsigned char * buf);
 
 
 /* debug functions */

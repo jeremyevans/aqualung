@@ -22,15 +22,15 @@
 #define AQUALUNG_METADATA_ID3V2_H
 
 #include <stdio.h>
-#include <sys/types.h>
+#include <glib.h>
 
 #include "metadata.h"
 
 
 char * meta_id3v2_apic_type_to_string(int type);
 
-u_int32_t meta_id3v2_read_int(unsigned char * buf);
-u_int32_t meta_id3v2_read_synchsafe_int(unsigned char * buf);
+guint32 meta_id3v2_read_int(unsigned char * buf);
+guint32 meta_id3v2_read_synchsafe_int(unsigned char * buf);
 
 int metadata_from_id3v2(metadata_t * meta, unsigned char * buf, int length);
 int metadata_to_id3v2(metadata_t * meta, unsigned char ** data, int * length);

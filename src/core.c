@@ -30,8 +30,6 @@
 #include <locale.h>
 #include <math.h>
 #include <getopt.h>
-#include <time.h>
-#include <sys/time.h>
 #include <sys/stat.h>
 #include <glib.h>
 #include <gdk/gdk.h>
@@ -42,6 +40,8 @@
 #ifndef _WIN32
 #include <pthread.h>
 #include <sched.h>
+#include <time.h>
+#include <sys/time.h>
 #endif /* !_WIN32 */
 
 #ifdef HAVE_SRC
@@ -249,11 +249,6 @@ flush_output(double src_ratio) {
 	guint32 driver_offset;
 	char send_cmd = CMD_FLUSH;
 
-	struct timespec req_time;
-	struct timespec rem_time;
-	req_time.tv_sec = 0;
-	req_time.tv_nsec = 1000000;
-
 #ifdef HAVE_JACK
 	if (jack_is_shutdown) {
 		return 0;
@@ -264,7 +259,7 @@ flush_output(double src_ratio) {
 
 	rb_write(rb_disk2out, &send_cmd, 1);
 	while (rb_read_space(rb_out2disk) < sizeof(guint32))
-		nanosleep(&req_time, &rem_time);
+		g_usleep(1000);
 	rb_read(rb_out2disk, (char *)&driver_offset, sizeof(guint32));
 
 	return sample_offset + driver_offset * src_ratio;
@@ -672,10 +667,6 @@ sndio_thread(void * arg) {
 	short * sndio_short_buf;
 
 	struct sio_hdl * sndio_hdl;
-	struct timespec req_time;
-	struct timespec rem_time;
-	req_time.tv_sec = 0;
-        req_time.tv_nsec = 100000000;
 
 	sndio_hdl = info->sndio_hdl;
 	if ((info->sndio_short_buf = malloc(2*bufsize * sizeof(short))) == NULL) {
@@ -721,7 +712,7 @@ sndio_thread(void * arg) {
 		}
 
 		if ((n_avail = rb_read_space(rb) / (2*sample_size)) == 0) {
-			nanosleep(&req_time, &rem_time);
+			g_usleep(100000);
 			goto sndio_wake;
 		}
 
@@ -819,12 +810,7 @@ pulse_thread(void * arg) {
 	
 	pa_simple* pa = info->pa;
 	short * pa_short_buf = NULL;
-	
-	struct timespec req_time;
-	struct timespec rem_time;
-	req_time.tv_sec = 0;
-	req_time.tv_nsec = 100000000;
-	
+
 	if ((info->pa_short_buf = malloc(2*bufsize * sizeof(short))) == NULL) {
 		fprintf(stderr, "pulse_thread: malloc error\n");
 		exit(1);
@@ -867,7 +853,7 @@ pulse_thread(void * arg) {
 		}
 
 		if ((n_avail = rb_read_space(rb) / (2*sample_size)) == 0) {
-			nanosleep(&req_time, &rem_time);
+			g_usleep(100000);
 			goto pulse_wake;
 		}
 
@@ -967,11 +953,6 @@ oss_thread(void * arg) {
 	int fd_oss = info->fd_oss;
 	short * oss_short_buf;
 
-	struct timespec req_time;
-	struct timespec rem_time;
-	req_time.tv_sec = 0;
-        req_time.tv_nsec = 100000000;
-
 	if ((info->oss_short_buf = malloc(2*bufsize * sizeof(short))) == NULL) {
 		fprintf(stderr, "oss_thread: malloc error\n");
 		exit(1);
@@ -1015,7 +996,7 @@ oss_thread(void * arg) {
 		}
 
 		if ((n_avail = rb_read_space(rb) / (2*sample_size)) == 0) {
-			nanosleep(&req_time, &rem_time);
+			g_usleep(100000);
 			goto oss_wake;
 		}
 
@@ -1121,11 +1102,6 @@ alsa_thread(void * arg) {
 
 	snd_pcm_t * pcm_handle = info->pcm_handle;
 
-	struct timespec req_time;
-	struct timespec rem_time;
-	req_time.tv_sec = 0;
-        req_time.tv_nsec = 100000000;
-
 	if (is_output_32bit) {
 		if ((info->alsa_int_buf = malloc(2*bufsize * sizeof(int))) == NULL) {
 			fprintf(stderr, "alsa_thread: malloc error\n");
@@ -1185,7 +1161,7 @@ alsa_thread(void * arg) {
 		}
 
 		if ((n_avail = rb_read_space(rb) / (2*sample_size)) == 0) {
-			nanosleep(&req_time, &rem_time);
+			g_usleep(100000);
 			goto alsa_wake;
 		}
 

@@ -29,7 +29,6 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/un.h>
-#include <time.h>
 #include <glib.h>
 
 #include "common.h"
@@ -133,11 +132,6 @@ send_message(const char * filename, char * message, int len) {
         int sock;
         struct sockaddr_un name;
         int nbytes;
-	struct timespec req_time;
-	struct timespec rem_time;
-
-	req_time.tv_sec = 0;
-	req_time.tv_nsec = 100000000;
 
 	sprintf(tempsockname, "/tmp/aqualung_%s.tmp", g_get_user_name());
 	sock = create_socket(tempsockname);
@@ -147,7 +141,7 @@ send_message(const char * filename, char * message, int len) {
 	do {
 		nbytes = sendto(sock, message, len+1, 0, (struct sockaddr *)&name, sizeof(name));
 		if (nbytes == -1 && errno == ENOBUFS) {
-			nanosleep(&req_time, &rem_time);
+			g_usleep(100000);
 		}
 	} while (nbytes == -1 && errno == ENOBUFS);
 

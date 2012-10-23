@@ -24,7 +24,6 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <string.h>
 #include <fnmatch.h>
 #include <regex.h>
@@ -3177,17 +3176,10 @@ cddb_init_query_data(build_disc_t * disc, int * ntracks, int ** frames, int * le
 void
 process_record(build_store_t * data, char * dir_record, char * artist_d_name, char * record_d_name) {
 
-	struct timespec req_time;
-	struct timespec rem_time;
-
 	build_disc_t * disc = NULL;
 	build_track_t * ptrack = NULL;
 
 	char * utf8;
-
-
-	req_time.tv_sec = 0;
-        req_time.tv_nsec = 10000000;
 
 
 	if ((disc = (build_disc_t *)calloc(1, sizeof(build_disc_t))) == NULL) {
@@ -3313,7 +3305,7 @@ process_record(build_store_t * data, char * dir_record, char * artist_d_name, ch
 	aqualung_idle_add(write_record_to_store, data);
 
 	while (data->write_data_locked) {
-		nanosleep(&req_time, &rem_time);
+		g_usleep(10000);
 	}
 
  finish:
@@ -3332,14 +3324,8 @@ process_record(build_store_t * data, char * dir_record, char * artist_d_name, ch
 void
 process_track(build_store_t * data, char * filename, char * d_name, float duration) {
 
-	struct timespec req_time;
-	struct timespec rem_time;
-
 	GtkTreeIter iter_track;
         build_disc_t * disc;
-
-	req_time.tv_sec = 0;
-        req_time.tv_nsec = 10000000;
 
 
 	if ((disc = (build_disc_t *)calloc(1, sizeof(build_disc_t))) == NULL) {
@@ -3401,7 +3387,7 @@ process_track(build_store_t * data, char * filename, char * d_name, float durati
 	aqualung_idle_add(write_track_to_store, data);
 
 	while (data->write_data_locked) {
-		nanosleep(&req_time, &rem_time);
+		g_usleep(10000);
 	}
 
  finish:

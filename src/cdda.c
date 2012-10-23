@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <unistd.h>
 #include <glib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -437,13 +436,7 @@ cdda_scanner(void * arg) {
 	AQUALUNG_MUTEX_UNLOCK(cdda_mutex)
 
 	while (cdda_scanner_working) {
-
-		struct timespec req_time;
-		struct timespec rem_time;
-		req_time.tv_sec = 0;
-		req_time.tv_nsec = 100000000;
-
-		nanosleep(&req_time, &rem_time);
+		g_usleep(100000);
 
 		if (i == 50) { /* scan every 5 seconds */
 			AQUALUNG_MUTEX_LOCK(cdda_mutex)

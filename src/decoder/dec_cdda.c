@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#include <time.h>
+#include <glib.h>
 
 #undef HAVE_CDDB
 #include "../undef_ac_pkg.h"
@@ -481,11 +481,7 @@ cdda_decoder_read(decoder_t * dec, float * dest, int num) {
 
         while ((rb_read_space(pd->rb) - (pd->overread_sectors * CDIO_CD_FRAMESIZE_RAW * 2) <
 		num * 2 * sample_size) && (!pd->is_eos)) {
-		struct timespec req;
-		struct timespec rem;
-		req.tv_sec = 0;
-		req.tv_nsec = 100000000; /* 100 ms */
-		nanosleep(&req, &rem);
+		g_usleep(100000);
 	}
 
         n_avail = (rb_read_space(pd->rb) - pd->overread_sectors * CDIO_CD_FRAMESIZE_RAW * 2)

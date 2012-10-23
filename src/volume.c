@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <time.h>
 #include <glib.h>
 #include <glib-object.h>
 #include <gdk/gdk.h>
@@ -449,12 +448,6 @@ volume_thread(void * arg) {
 	float rms;
 	unsigned long i;
 
-	struct timespec req_time;
-	struct timespec rem_time;
-
-	req_time.tv_sec = 0;
-        req_time.tv_nsec = 500000000;
-
 
 	AQUALUNG_THREAD_DETACH();
 
@@ -494,7 +487,7 @@ volume_thread(void * arg) {
 			}
 			
 			while (vol->paused && !vol->cancelled) {
-				nanosleep(&req_time, &rem_time);
+				g_usleep(500000);
 			}
 
 		} while (numread == vol->chunk_size && !vol->cancelled);

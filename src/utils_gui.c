@@ -223,11 +223,7 @@ aqualung_tooltips_set_enabled(gboolean enabled) {
 #ifdef HAVE_SYSTRAY
 void
 aqualung_status_icon_set_tooltip_text(GtkStatusIcon * icon, const gchar * text) {
-#if GTK_CHECK_VERSION(2,16,0)
 	gtk_status_icon_set_tooltip_text(icon, text);
-#else
-	gtk_status_icon_set_tooltip(icon, text);
-#endif /* GTK_CHECK_VERSION */
 }
 #endif /* HAVE_SYSTRAY */
 

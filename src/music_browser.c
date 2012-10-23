@@ -544,37 +544,37 @@ create_music_browser(void) {
                 gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 3);
 
                 toolbar_search_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_FIND);
-                GTK_WIDGET_UNSET_FLAGS(toolbar_search_button, GTK_CAN_FOCUS);
+		gtk_widget_set_can_focus(toolbar_search_button, FALSE);
                 g_signal_connect(G_OBJECT(toolbar_search_button), "clicked", G_CALLBACK(toolbar__search_cb), NULL);
                 gtk_box_pack_start(GTK_BOX(hbox), toolbar_search_button, FALSE, TRUE, 3);
                 aqualung_widget_set_tooltip_text(toolbar_search_button, _("Search..."));
 
                 toolbar_collapse_all_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_REFRESH);
-                GTK_WIDGET_UNSET_FLAGS(toolbar_collapse_all_button, GTK_CAN_FOCUS);
+		gtk_widget_set_can_focus(toolbar_collapse_all_button, FALSE);
                 gtk_box_pack_start(GTK_BOX(hbox), toolbar_collapse_all_button, FALSE, TRUE, 3);
                 g_signal_connect(G_OBJECT(toolbar_collapse_all_button), "pressed", G_CALLBACK(toolbar__collapse_cb), NULL);
                 aqualung_widget_set_tooltip_text(toolbar_collapse_all_button, _("Collapse all items"));
 
 		toolbar_edit_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_EDIT);
-		GTK_WIDGET_UNSET_FLAGS(toolbar_edit_button, GTK_CAN_FOCUS);
+		gtk_widget_set_can_focus(toolbar_edit_button, FALSE);
 		gtk_box_pack_start(GTK_BOX(hbox), toolbar_edit_button, FALSE, TRUE, 3);
 		g_signal_connect(G_OBJECT(toolbar_edit_button), "pressed", G_CALLBACK(toolbar__edit_cb), NULL);
 		aqualung_widget_set_tooltip_text(toolbar_edit_button, _("Edit item..."));
 
 		toolbar_add_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_ADD);
-		GTK_WIDGET_UNSET_FLAGS(toolbar_add_button, GTK_CAN_FOCUS);
+		gtk_widget_set_can_focus(toolbar_add_button, FALSE);
 		gtk_box_pack_start(GTK_BOX(hbox), toolbar_add_button, FALSE, TRUE, 3);
 		g_signal_connect(G_OBJECT(toolbar_add_button), "pressed", G_CALLBACK(toolbar__add_cb), NULL);
 		aqualung_widget_set_tooltip_text(toolbar_add_button, _("Add item..."));
 
 		toolbar_remove_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_REMOVE);
-		GTK_WIDGET_UNSET_FLAGS(toolbar_remove_button, GTK_CAN_FOCUS);
+		gtk_widget_set_can_focus(toolbar_remove_button, FALSE);
 		gtk_box_pack_start(GTK_BOX(hbox), toolbar_remove_button, FALSE, TRUE, 3);
 		g_signal_connect(G_OBJECT(toolbar_remove_button), "pressed", G_CALLBACK(toolbar__remove_cb), NULL);
 		aqualung_widget_set_tooltip_text(toolbar_remove_button, _("Remove item..."));
 
 		toolbar_save_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_SAVE);
-		GTK_WIDGET_UNSET_FLAGS(toolbar_save_button, GTK_CAN_FOCUS);
+		gtk_widget_set_can_focus(toolbar_save_button, FALSE);
 		gtk_box_pack_start(GTK_BOX(hbox), toolbar_save_button, FALSE, TRUE, 3);
 		g_signal_connect(G_OBJECT(toolbar_save_button), "pressed", G_CALLBACK(toolbar__save_cb), NULL);
 		gtk_widget_set_sensitive(toolbar_save_button, FALSE);

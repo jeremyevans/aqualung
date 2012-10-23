@@ -966,7 +966,7 @@ make_genre_combo(meta_frame_t * frame, GtkWidget ** widget, GtkWidget ** entry) 
 
 	/* for ID3v1, only predefined genres can be selected, no editing allowed */
 	if (frame->tag == META_TAG_ID3v1) {
-		GTK_WIDGET_UNSET_FLAGS(*entry, GTK_CAN_FOCUS);
+		gtk_widget_set_can_focus(*entry, FALSE);
 		gtk_editable_set_editable(GTK_EDITABLE(*entry), FALSE);
 	}
 }
@@ -1026,7 +1026,7 @@ fi_procframe_entry(fi_t * fi, meta_frame_t * frame) {
 	    (META_FIELD_INT(frame->type)) ||
 	    (META_FIELD_FLOAT(frame->type))) {
 		if (!meta->writable) {
-			GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
+			gtk_widget_set_can_focus(entry, FALSE);
 			gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 		} else {
 			g_signal_connect(G_OBJECT(widget), "changed",
@@ -1818,7 +1818,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 			 GTK_FILL, GTK_FILL, 5, 2);
 
 	entry_name = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry_name, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(entry_name, FALSE);
 	gtk_entry_set_text(GTK_ENTRY(entry_name), name);
 	gtk_editable_set_editable(GTK_EDITABLE(entry_name), FALSE);
 	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, 0, 1,
@@ -1832,7 +1832,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
 	file_display = g_filename_display_name(file);
 	entry_path = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry_path, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(entry_path, FALSE);
 	gtk_entry_set_text(GTK_ENTRY(entry_path), file_display);
 	g_free(file_display);
 	gtk_editable_set_editable(GTK_EDITABLE(entry_path), FALSE);
@@ -1881,7 +1881,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
 	entry = gtk_entry_new();
 	gtk_widget_set_size_request(entry, 350, -1);
-        GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(entry, FALSE);
 	gtk_entry_set_text(GTK_ENTRY(entry), fileinfo.format_str);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
 	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 0, 1,
@@ -1892,7 +1892,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
 	entry = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(entry, FALSE);
 	if (fileinfo.total_samples == 0) {
 		strcpy(str, "N/A");
 	} else {
@@ -1908,7 +1908,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 3);
 	entry = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(entry, FALSE);
 	sprintf(str, _("%ld Hz"), fileinfo.sample_rate);
 	gtk_entry_set_text(GTK_ENTRY(entry), str);
 	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
@@ -1920,7 +1920,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 5, 3);
 	entry = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(entry, FALSE);
 	if (fileinfo.is_mono)
 		strcpy(str, _("MONO"));
 	else
@@ -1935,7 +1935,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 4, 5, GTK_FILL, GTK_FILL, 5, 3);
 	entry = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(entry, FALSE);
 	if (fileinfo.bps == 0) {
 		strcpy(str, "N/A kbit/s");
 	} else {
@@ -1951,7 +1951,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 5, 6, GTK_FILL, GTK_FILL, 5, 3);
 	entry = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(entry, FALSE);
 	if (fileinfo.total_samples == 0) {
 		strcpy(str, "N/A");
 	} else {
@@ -1972,7 +1972,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 		gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 7, 8, GTK_FILL, GTK_FILL, 5, 3);
 		entry = gtk_entry_new();
-		GTK_WIDGET_UNSET_FLAGS(entry, GTK_CAN_FOCUS);
+		gtk_widget_set_can_focus(entry, FALSE);
 
 		if ((mode & MODE_LOSSLESS) && (mode & MODE_WVC)) {
 			strncpy(str, "Hybrid Lossless", MAXLEN-1);

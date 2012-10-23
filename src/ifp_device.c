@@ -1120,21 +1120,21 @@ aifp_transfer_files(gint mode) {
         if (transfer_mode == UPLOAD_MODE) {
                 mkdir_button = gui_stock_label_button(NULL, GTK_STOCK_NEW);
                 gtk_button_set_relief (GTK_BUTTON (mkdir_button), GTK_RELIEF_NONE);
-                GTK_WIDGET_UNSET_FLAGS(mkdir_button, GTK_CAN_FOCUS);
+                gtk_widget_set_can_focus(mkdir_button, FALSE);
                 gtk_widget_show (mkdir_button);
                 g_signal_connect(mkdir_button, "clicked", G_CALLBACK(aifp_create_directory_cb), NULL);
                 gtk_box_pack_start (GTK_BOX (vbox4), mkdir_button, FALSE, FALSE, 0);
         }
 
         rndir_button = gui_stock_label_button(NULL, GTK_STOCK_EDIT);
-        GTK_WIDGET_UNSET_FLAGS(rndir_button, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(rndir_button, FALSE);
         gtk_button_set_relief (GTK_BUTTON (rndir_button), GTK_RELIEF_NONE);
         gtk_widget_show (rndir_button);
         g_signal_connect(rndir_button, "clicked", G_CALLBACK(aifp_rename_item_cb), NULL);
         gtk_box_pack_start (GTK_BOX (vbox4), rndir_button, FALSE, FALSE, 0);
 
         rmdir_button = gui_stock_label_button(NULL, GTK_STOCK_DELETE);
-        GTK_WIDGET_UNSET_FLAGS(rmdir_button, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(rmdir_button, FALSE);
         gtk_button_set_relief (GTK_BUTTON (rmdir_button), GTK_RELIEF_NONE);
         gtk_widget_show (rmdir_button);
         g_signal_connect(rmdir_button, "clicked", G_CALLBACK(aifp_remove_item_cb), NULL);
@@ -1183,14 +1183,14 @@ aifp_transfer_files(gint mode) {
 
                 local_path_entry = gtk_entry_new();
                 gtk_widget_show (local_path_entry);
-                GTK_WIDGET_UNSET_FLAGS(local_path_entry, GTK_CAN_FOCUS);
+                gtk_widget_set_can_focus(local_path_entry, FALSE);
                 gtk_box_pack_start(GTK_BOX(hbox2), local_path_entry, TRUE, TRUE, 2);
                 gtk_editable_set_editable (GTK_EDITABLE(local_path_entry), FALSE);
                 strncpy(dest_dir, options.home, MAXLEN-1);
                 gtk_entry_set_text(GTK_ENTRY(local_path_entry), dest_dir);
 
                 local_path_browse_button = gui_stock_label_button(_("Browse"), GTK_STOCK_OPEN);
-                GTK_WIDGET_UNSET_FLAGS(local_path_browse_button, GTK_CAN_FOCUS);
+                gtk_widget_set_can_focus(local_path_browse_button, FALSE);
                 gtk_widget_show (local_path_browse_button);
                 gtk_container_set_border_width(GTK_CONTAINER(local_path_browse_button), 2);
                 g_signal_connect (G_OBJECT(local_path_browse_button), "clicked",
@@ -1238,7 +1238,7 @@ aifp_transfer_files(gint mode) {
         gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
         aifp_file_entry = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(aifp_file_entry, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(aifp_file_entry, FALSE);
         gtk_widget_show (aifp_file_entry);
         gtk_editable_set_editable(GTK_EDITABLE(aifp_file_entry), FALSE);
         gtk_table_attach (GTK_TABLE (table), aifp_file_entry, 1, 2, 0, 1,
@@ -1266,7 +1266,7 @@ aifp_transfer_files(gint mode) {
         gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 
         aifp_close_when_ready_check = gtk_check_button_new_with_label(_("Close window when transfer complete"));
-        GTK_WIDGET_UNSET_FLAGS(aifp_close_when_ready_check, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(aifp_close_when_ready_check, FALSE);
         gtk_widget_set_name(aifp_close_when_ready_check, "check_on_window");
         gtk_widget_show(aifp_close_when_ready_check);
         gtk_box_pack_start(GTK_BOX(vbox2), aifp_close_when_ready_check, FALSE, TRUE, 0);
@@ -1287,25 +1287,25 @@ aifp_transfer_files(gint mode) {
         } else {
                 upload_download_button = gui_stock_label_button (_("_Download"), GTK_STOCK_GO_DOWN);
         }
-        GTK_WIDGET_UNSET_FLAGS(upload_download_button, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(upload_download_button, FALSE);
         gtk_widget_show (upload_download_button);
         g_signal_connect(upload_download_button, "clicked", G_CALLBACK(upload_download_songs_cb), NULL);
         gtk_container_add (GTK_CONTAINER (hbuttonbox), upload_download_button);
-        GTK_WIDGET_SET_FLAGS (upload_download_button, GTK_CAN_DEFAULT);
+        gtk_widget_set_can_default(upload_download_button, TRUE);
 
         abort_button = gui_stock_label_button (_("_Abort"), GTK_STOCK_CANCEL);
-        GTK_WIDGET_UNSET_FLAGS(abort_button, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(abort_button, FALSE);
         gtk_widget_show (abort_button);
         g_signal_connect(abort_button, "clicked", G_CALLBACK(abort_transfer_cb), NULL);
         gtk_container_add (GTK_CONTAINER (hbuttonbox), abort_button);
-        GTK_WIDGET_SET_FLAGS (abort_button, GTK_CAN_DEFAULT);
+        gtk_widget_set_can_default(abort_button, TRUE);
 
         close_button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
-        GTK_WIDGET_UNSET_FLAGS(close_button, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(close_button, FALSE);
         gtk_widget_show (close_button);
         g_signal_connect(close_button, "clicked", G_CALLBACK(aifp_window_close), NULL);
         gtk_container_add (GTK_CONTAINER (hbuttonbox), close_button);
-        GTK_WIDGET_SET_FLAGS (close_button, GTK_CAN_DEFAULT);
+        gtk_widget_set_can_default(close_button, TRUE);
 
         gtk_widget_set_sensitive(abort_button, FALSE);
         gtk_widget_grab_focus(list);

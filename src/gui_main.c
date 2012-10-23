@@ -298,12 +298,8 @@ int wm_not_systray_capable = 0;
 
 void hide_all_windows(gpointer data);
 
-#if (GTK_CHECK_VERSION(2,15,0))
-
 /* Used for not reacting too quickly to consecutive mouse wheel events */
 guint32 last_systray_scroll_event_time = 0;
-
-#endif /* GTK_CHECK_VERSION */
 
 #endif /* HAVE_SYSTRAY */
 
@@ -3030,9 +3026,9 @@ create_main_window(char * skin_path) {
         vbox_sep = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox_sep, FALSE, FALSE, 2);
 
-        GTK_WIDGET_UNSET_FLAGS(scale_vol, GTK_CAN_FOCUS);
-        GTK_WIDGET_UNSET_FLAGS(scale_bal, GTK_CAN_FOCUS);
-        GTK_WIDGET_UNSET_FLAGS(scale_pos, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(scale_vol, FALSE);
+	gtk_widget_set_can_focus(scale_bal, FALSE);
+	gtk_widget_set_can_focus(scale_pos, FALSE);
 
         /* cover display widget */
 
@@ -3077,12 +3073,12 @@ create_main_window(char * skin_path) {
 		aqualung_widget_set_tooltip_text(pause_button, _("Pause"));
 	}
 
-	GTK_WIDGET_UNSET_FLAGS(prev_button, GTK_CAN_FOCUS);
-	GTK_WIDGET_UNSET_FLAGS(stop_button, GTK_CAN_FOCUS);
-	GTK_WIDGET_UNSET_FLAGS(next_button, GTK_CAN_FOCUS);
-	GTK_WIDGET_UNSET_FLAGS(play_button, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(prev_button, FALSE);
+	gtk_widget_set_can_focus(stop_button, FALSE);
+	gtk_widget_set_can_focus(next_button, FALSE);
+	gtk_widget_set_can_focus(play_button, FALSE);
 	if (!options.combine_play_pause) {
-		GTK_WIDGET_UNSET_FLAGS(pause_button, GTK_CAN_FOCUS);
+		gtk_widget_set_can_focus(pause_button, FALSE);
 	}
 
 	gtk_box_pack_start(GTK_BOX(btns_hbox), prev_button, FALSE, FALSE, 0);
@@ -3126,9 +3122,9 @@ create_main_window(char * skin_path) {
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 0);
 	g_signal_connect(shuffle_button, "toggled", G_CALLBACK(shuffle_toggled), NULL);
 
-	GTK_WIDGET_UNSET_FLAGS(repeat_button, GTK_CAN_FOCUS);
-	GTK_WIDGET_UNSET_FLAGS(repeat_all_button, GTK_CAN_FOCUS);
-	GTK_WIDGET_UNSET_FLAGS(shuffle_button, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(repeat_button, FALSE);
+	gtk_widget_set_can_focus(repeat_all_button, FALSE);
+	gtk_widget_set_can_focus(shuffle_button, FALSE);
 
         /* toggle buttons for sub-windows visibility */
 	playlist_toggle = gtk_toggle_button_new();
@@ -3142,15 +3138,15 @@ create_main_window(char * skin_path) {
 	g_signal_connect(playlist_toggle, "toggled", G_CALLBACK(playlist_toggled), NULL);
 	g_signal_connect(musicstore_toggle, "toggled", G_CALLBACK(musicstore_toggled), NULL);
 
-	GTK_WIDGET_UNSET_FLAGS(playlist_toggle, GTK_CAN_FOCUS);
-	GTK_WIDGET_UNSET_FLAGS(musicstore_toggle, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(playlist_toggle, FALSE);
+	gtk_widget_set_can_focus(musicstore_toggle, FALSE);
 
 #ifdef HAVE_LADSPA
 	plugin_toggle = gtk_toggle_button_new();
 	aqualung_widget_set_tooltip_text(plugin_toggle, _("Toggle LADSPA patch builder"));
 	gtk_box_pack_end(GTK_BOX(btns_hbox), plugin_toggle, FALSE, FALSE, 0);
 	g_signal_connect(plugin_toggle, "toggled", G_CALLBACK(plugin_toggled), NULL);
-	GTK_WIDGET_UNSET_FLAGS(plugin_toggle, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(plugin_toggle, FALSE);
 #endif /* HAVE_LADSPA */
 
 	gtk_box_pack_end(GTK_BOX(btns_hbox), sr_table, FALSE, FALSE, 3);
@@ -3289,7 +3285,6 @@ systray_activate_cb(GtkStatusIcon * systray_icon, gpointer data) {
 	}
 }
 
-#if (GTK_CHECK_VERSION(2,15,0))
 GtkScrollType
 reverse_direction(GtkScrollType scroll_type) {
 	switch (scroll_type) {
@@ -3431,7 +3426,6 @@ systray_button_press_event_cb(GtkStatusIcon * systray_icon,
 
 	return FALSE;
 }
-#endif /* GTK_CHECK_VERSION */
 
 /* returns a hbox with a stock image and label in it */
 GtkWidget *
@@ -3467,12 +3461,10 @@ setup_systray(void) {
 				 G_CALLBACK(systray_activate_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(systray_icon), "popup-menu",
 				 G_CALLBACK(systray_popup_menu_cb), (gpointer)systray_icon);
-#if (GTK_CHECK_VERSION(2,15,0))
 	g_signal_connect(G_OBJECT(systray_icon), "scroll-event",
 			 G_CALLBACK(systray_scroll_event_cb), NULL);
 	g_signal_connect(G_OBJECT(systray_icon), "button-press-event",
 			 G_CALLBACK(systray_button_press_event_cb), NULL);
-#endif
 
         systray_menu = gtk_menu_new();
 	register_toplevel_window(systray_menu, TOP_WIN_SKIN);

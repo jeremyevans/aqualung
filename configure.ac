@@ -48,7 +48,7 @@ AC_SEARCH_LIBS([floor], [m], [],
     [AC_MSG_ERROR([POSIX math.h functions are required to build Aqualung])])
 PKG_CHECK_MODULES([xml], [libxml-2.0])
 PKG_CHECK_MODULES([glib], [glib-2.0 >= 2.14 gthread-2.0])
-PKG_CHECK_MODULES([gtk], [gtk+-2.0 >= 2.14])
+PKG_CHECK_MODULES([gtk], [gtk+-2.0 >= 2.18])
 
 
 # Checks for header files.

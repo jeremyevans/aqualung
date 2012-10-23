@@ -3851,7 +3851,7 @@ create_playlist_tab_label(playlist_t * pl) {
 
 
 	hbox = gtk_hbox_new(FALSE, 4);
-        GTK_WIDGET_UNSET_FLAGS(hbox, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(hbox, FALSE);
 
 	event_box = gtk_event_box_new();
 	pl->label = gtk_label_new(pl->name);
@@ -3867,7 +3867,7 @@ create_playlist_tab_label(playlist_t * pl) {
 	}
 
 	gtk_button_set_relief(GTK_BUTTON(pl->tab_close_button), GTK_RELIEF_NONE);
-        GTK_WIDGET_UNSET_FLAGS(pl->tab_close_button, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(pl->tab_close_button, FALSE);
 	gtk_widget_set_size_request(pl->tab_close_button, 16, 16);
 
         gtk_box_pack_start(GTK_BOX(hbox), pl->label, TRUE, TRUE, 0);
@@ -4263,7 +4263,7 @@ create_playlist(void) {
 	if (options.enable_playlist_statusbar) {
 
 		statusbar_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-                GTK_WIDGET_UNSET_FLAGS(statusbar_scrolledwin, GTK_CAN_FOCUS);
+		gtk_widget_set_can_focus(statusbar_scrolledwin, FALSE);
 		gtk_widget_set_size_request(statusbar_scrolledwin, 1, -1);    /* MAGIC */
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(statusbar_scrolledwin),
 					       GTK_POLICY_NEVER, GTK_POLICY_NEVER);
@@ -4315,19 +4315,19 @@ create_playlist(void) {
         gtk_box_pack_start(GTK_BOX(vbox), hbox_bottom, FALSE, TRUE, 0);
 
 	add_button = gtk_button_new_with_label(_("Add files"));
-        GTK_WIDGET_UNSET_FLAGS(add_button, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(add_button, FALSE);
         aqualung_widget_set_tooltip_text(add_button, _("Add files to playlist\n(Press right mouse button for menu)"));
         gtk_box_pack_start(GTK_BOX(hbox_bottom), add_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(add_button), "clicked", G_CALLBACK(add_files), NULL);
 
 	sel_button = gtk_button_new_with_label(_("Select all"));
-        GTK_WIDGET_UNSET_FLAGS(sel_button, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(sel_button, FALSE);
         aqualung_widget_set_tooltip_text(sel_button, _("Select all songs in playlist\n(Press right mouse button for menu)"));
         gtk_box_pack_start(GTK_BOX(hbox_bottom), sel_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(sel_button), "clicked", G_CALLBACK(select_all), NULL);
 
 	rem_button = gtk_button_new_with_label(_("Remove selected"));
-        GTK_WIDGET_UNSET_FLAGS(rem_button, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(rem_button, FALSE);
         aqualung_widget_set_tooltip_text(rem_button, _("Remove selected songs from playlist\n(Press right mouse button for menu)"));
         gtk_box_pack_start(GTK_BOX(hbox_bottom), rem_button, TRUE, TRUE, 0);
         g_signal_connect(G_OBJECT(rem_button), "clicked", G_CALLBACK(remove_sel), NULL);

@@ -129,7 +129,6 @@ GtkWidget * check_show_cover_for_ms_tracks_only;
 #ifdef HAVE_SYSTRAY
 GtkWidget * check_use_systray;
 GtkWidget * check_systray_start_minimized;
-#if (GTK_CHECK_VERSION(2,15,0))
 GtkWidget * get_mouse_button_window;
 GtkWidget * frame_systray_mouse_wheel;
 GtkWidget * frame_systray_mouse_buttons;
@@ -138,7 +137,6 @@ GtkWidget * combo_systray_mouse_wheel_vertical;
 GtkListStore * systray_mouse_buttons_store;
 GtkListStore * systray_mouse_buttons_cmds_store;
 GtkTreeSelection * systray_mouse_buttons_selection;
-#endif /* GTK_CHECK_VERSION */
 #endif /* HAVE_SYSTRAY */
 
 GtkWidget * check_playlist_is_embedded;
@@ -278,7 +276,6 @@ void show_restart_info(void);
 void restart_active(GtkToggleButton *, gpointer);
 
 #ifdef HAVE_SYSTRAY
-#if (GTK_CHECK_VERSION(2,15,0))
 void systray_mouse_button_add_clicked(GtkWidget *, gpointer);
 void systray_mouse_button_remove_clicked(GtkWidget *, gpointer);
 
@@ -286,7 +283,6 @@ gchar * systray_mb_cmd_names[SYSTRAY_MB_CMD_LAST];
 gint systray_mb_col_command_combo_cmd = -1;
 int get_mb_window_button;
 
-#endif /* GTK_CHECK_VERSION */
 #endif /* HAVE_SYSTRAY */
 
 void load_systray_options(xmlDocPtr, xmlNodePtr);
@@ -603,7 +599,6 @@ options_window_accept(void) {
 	set_option_from_toggle(check_use_systray, &options.use_systray);
 	set_option_from_toggle(check_systray_start_minimized, &options.systray_start_minimized);
 
-#if (GTK_CHECK_VERSION(2,15,0))
 	set_option_from_combo(combo_systray_mouse_wheel_horizontal, &options.systray_mouse_wheel_horizontal);
 	set_option_from_combo(combo_systray_mouse_wheel_vertical, &options.systray_mouse_wheel_vertical);
 
@@ -625,8 +620,6 @@ options_window_accept(void) {
 			++i;
 		} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(systray_mouse_buttons_store), &iter));
 	}
-
-#endif /* GTK_CHECK_VERSION */
 
 #endif /* HAVE_SYSTRAY */
 
@@ -1542,15 +1535,12 @@ systray_support_cb(GtkToggleButton * togglebutton, gpointer data) {
 	gboolean systray_active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(togglebutton));
 
 	gtk_widget_set_sensitive(GTK_WIDGET(check_systray_start_minimized), systray_active);
-#if (GTK_CHECK_VERSION(2,15,0))
 	gtk_widget_set_sensitive(GTK_WIDGET(frame_systray_mouse_wheel), systray_active);
 	gtk_widget_set_sensitive(GTK_WIDGET(frame_systray_mouse_buttons), systray_active);
-#endif /* GTK_CHECK_VERSION */
 
 	restart_active(togglebutton, _("Enable systray"));
 }
 
-#if (GTK_CHECK_VERSION(2,15,0))
 GtkWidget *
 setup_combo_with_label(GtkBox * box, char * label_text) {
 
@@ -1822,8 +1812,6 @@ systray_mb_col_command_combo_edited_cb(GtkCellRendererText * cell_renderer,
 	systray_mb_col_command_combo_cmd = -1;
 }
 
-#endif /* GTK_CHECK_VERSION */
-
 #endif /* HAVE_SYSTRAY */
 
 
@@ -1845,11 +1833,9 @@ create_options_window(void) {
 	GtkWidget * vbox_miscellaneous_tab;
 #ifdef HAVE_SYSTRAY
 	GtkWidget * vbox_systray;
-#if (GTK_CHECK_VERSION(2,15,0))
 	GtkWidget * systray_mb_list;
 	GtkWidget * button;
 #endif /* HAVE_SYSTRAY */
-#endif /* GTK_CHECK_VERSION */
 
 #ifdef HAVE_LUA
 	GtkWidget * browse_ext_title_format_file;
@@ -2082,7 +2068,6 @@ create_options_window(void) {
 	g_signal_connect (G_OBJECT (check_use_systray), "toggled",
 			  G_CALLBACK (systray_support_cb), NULL);
 
-#if (GTK_CHECK_VERSION(2,15,0))
 	systray_mb_cmd_names[SYSTRAY_MB_CMD_PLAY_STOP_SONG]  = _("Play/Stop song");
 	systray_mb_cmd_names[SYSTRAY_MB_CMD_PLAY_PAUSE_SONG] = _("Play/Pause song");
 	systray_mb_cmd_names[SYSTRAY_MB_CMD_PREV_SONG]       = _("Previous song");
@@ -2137,7 +2122,7 @@ create_options_window(void) {
 	systray_mouse_buttons_selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(systray_mb_list));
 	gtk_tree_selection_set_mode(systray_mouse_buttons_selection, GTK_SELECTION_MULTIPLE);
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(systray_mb_list), FALSE);
-	GTK_WIDGET_UNSET_FLAGS(GTK_WIDGET(systray_mb_list), GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(GTK_WIDGET(systray_mb_list), FALSE);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_win), systray_mb_list);
 
 	// First mouse buttons column.
@@ -2195,8 +2180,6 @@ create_options_window(void) {
 	gtk_widget_set_sensitive(check_systray_start_minimized, options.use_systray);
 	gtk_widget_set_sensitive(frame_systray_mouse_wheel, options.use_systray);
 	gtk_widget_set_sensitive(frame_systray_mouse_buttons, options.use_systray);
-
-#endif /* GTK_CHECK_VERSION */
 
 #endif /* HAVE_SYSTRAY */
 
@@ -3442,7 +3425,7 @@ create_options_window(void) {
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_pl_font = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry_pl_font, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(entry_pl_font, FALSE);
         gtk_editable_set_editable(GTK_EDITABLE(entry_pl_font), FALSE);
         gtk_table_attach (GTK_TABLE (table_fonts), entry_pl_font, 1, 2, 0, 1,
                          (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3471,7 +3454,7 @@ create_options_window(void) {
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_ms_font = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry_ms_font, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(entry_ms_font, FALSE);
         gtk_editable_set_editable(GTK_EDITABLE(entry_ms_font), FALSE);
         gtk_table_attach (GTK_TABLE (table_fonts), entry_ms_font, 1, 2, 1, 2,
                          (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3500,7 +3483,7 @@ create_options_window(void) {
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_bt_font = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry_bt_font, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(entry_bt_font, FALSE);
         gtk_editable_set_editable(GTK_EDITABLE(entry_bt_font), FALSE);
         gtk_table_attach (GTK_TABLE (table_fonts), entry_bt_font, 1, 2, 2, 3,
                          (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3529,7 +3512,7 @@ create_options_window(void) {
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_st_font = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry_st_font, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(entry_st_font, FALSE);
         gtk_editable_set_editable(GTK_EDITABLE(entry_st_font), FALSE);
         gtk_table_attach (GTK_TABLE (table_fonts), entry_st_font, 1, 2, 3, 4,
                          (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3558,7 +3541,7 @@ create_options_window(void) {
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_songt_font = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry_songt_font, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(entry_songt_font, FALSE);
         gtk_editable_set_editable(GTK_EDITABLE(entry_songt_font), FALSE);
         gtk_table_attach (GTK_TABLE (table_fonts), entry_songt_font, 1, 2, 4, 5,
                          (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3587,7 +3570,7 @@ create_options_window(void) {
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_si_font = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry_si_font, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(entry_si_font, FALSE);
         gtk_editable_set_editable(GTK_EDITABLE(entry_si_font), FALSE);
         gtk_table_attach (GTK_TABLE (table_fonts), entry_si_font, 1, 2, 5, 6,
                          (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3616,7 +3599,7 @@ create_options_window(void) {
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
         entry_sb_font = gtk_entry_new();
-        GTK_WIDGET_UNSET_FLAGS(entry_sb_font, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus(entry_sb_font, FALSE);
         gtk_editable_set_editable(GTK_EDITABLE(entry_sb_font), FALSE);
         gtk_table_attach (GTK_TABLE (table_fonts), entry_sb_font, 1, 2, 6, 7,
                          (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3759,11 +3742,9 @@ create_options_window(void) {
 	}
 
 #ifdef HAVE_SYSTRAY
-#if (GTK_CHECK_VERSION(2,15,0))
 	gtk_list_store_clear(systray_mouse_buttons_store);
 	gtk_list_store_clear(systray_mouse_buttons_cmds_store);
 #endif /* HAVE_SYSTRAY */
-#endif /* GTK_CHECK_VERSION */
 }
 
 

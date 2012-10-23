@@ -430,38 +430,17 @@ get_mp3file_info(decoder_t * dec) {
 	int fd = pd->fd;
 	mp3info_t * info = &pd->mp3info;
 
-	int vsn_counters[4];
-	int layer_counters[3];
-	int freq_counters[7];
-	int chmode_counters[4];
 	long offset;
-
 	unsigned long header = 0;
 	unsigned char frame[1800];
 	unsigned char *vbrheader;
 	int is_ubr_allowed = 1;
 	long bytecount = 0;
 	int num_offsets;
-	int frames_per_entry;
-	int i;
-	int j;
 	long tmp;
 	int ret;
 
  begin_info:
-	for (i = 0; i < 3; i++) {
-		vsn_counters[i] = 0;
-		layer_counters[i] = 0;
-		freq_counters[i] = 0;
-		chmode_counters[i] = 0;
-	}
-	vsn_counters[3] = 0;
-	freq_counters[3] = 0;
-	chmode_counters[3] = 0;
-	for (i = 4; i < 7; i++) {
-		freq_counters[i] = 0;
-	}
-
 	/* skip ID3v2 header, if present */
 	mpeg_send_metadata(fdec, fd);
 
@@ -635,6 +614,7 @@ get_mp3file_info(decoder_t * dec) {
 #ifdef MPEG_DEBUG
 		printf("VBRI header\n");
 #endif /* MPEG_DEBUG */
+		int i, j;
 
 		/* We want to skip the VBRI frame when playing the stream */
 		bytecount += info->frame_size;
@@ -682,14 +662,14 @@ get_mp3file_info(decoder_t * dec) {
 
 		/* We don't parse the TOC, since we don't yet know how to (FIXME) */
 		num_offsets = BYTES2INT(0, 0, vbrheader[18], vbrheader[19]);
-		frames_per_entry = BYTES2INT(0, 0, vbrheader[24], vbrheader[25]);
 #ifdef MPEG_DEBUG
 		printf("Frame size (%dkpbs): %d bytes (0x%x)\n",
 		       info->bitrate, info->frame_size, info->frame_size);
 		printf("Frame count: %x\n", info->frame_count);
 		printf("Byte count: %x\n", info->byte_count);
 		printf("Offsets: %d\n", num_offsets);
-		printf("Frames/entry: %d\n", frames_per_entry);
+		printf("Frames/entry: %d\n",
+		       BYTES2INT(0, 0, vbrheader[24], vbrheader[25]));
 #endif /* MPEG_DEBUG */
 
 		offset = 0;

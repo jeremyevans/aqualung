@@ -6,12 +6,11 @@ checking basic configuration tools ...
 
 for tool in autoconf autoreconf automake autopoint
 do
-    echo -n "$tool ... "
     if command -v $tool >/dev/null 2>&1
     then
-	echo "found."
+	echo "$tool ... found."
     else
-	echo "not found.
+	echo "$tool ... not found.
 
 *** You do not have $tool correctly installed. You cannot build aqualung without this tool."
 	exit 1
@@ -20,7 +19,7 @@ done
 
 echo
 
-if autoreconf -i
+if autoreconf -i "$@"
 then
     echo "
 You can now run:

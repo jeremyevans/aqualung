@@ -880,7 +880,8 @@ cdda_add_to_playlist(GtkTreeIter * iter_drive, unsigned long hash) {
 
 				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &child, PL_COL_DATA, &pldata, -1);
 
-				if (!target_found && cdda_is_cdtrack(pldata->file)) {
+				if (!target_found &&
+				    g_str_has_prefix(pldata->file, "CDDA ")) {
 					has_cdda = 1;
 				}
 
@@ -897,7 +898,8 @@ cdda_add_to_playlist(GtkTreeIter * iter_drive, unsigned long hash) {
 
 			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &pldata, -1);
 
-			if (!target_found && !cdda_is_cdtrack(pldata->file)) {
+			if (!target_found &&
+			    !g_str_has_prefix(pldata->file, "CDDA ")) {
 				target_iter = iter;
 				target_found = 1;
 			}

@@ -386,12 +386,6 @@ is_valid_year(int y) {
 }
 
 int
-cdda_is_cdtrack(char * file) {
-
-	return (strstr(file, "CDDA ") == file);
-}
-
-int
 is_dir(char * path) {
 
 	struct stat st_file;

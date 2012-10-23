@@ -50,8 +50,6 @@ void free_strdup(char ** s, const char * str);
 int is_valid_year(int y);
 int is_all_wspace(char * str);
 
-int cdda_is_cdtrack(char * file);
-
 int is_dir(char * path);
 
 #ifndef HAVE_STRNDUP

@@ -1033,7 +1033,7 @@ playlist_selection_file_types_foreach(playlist_t * pl, GtkTreeIter * iter, void 
 
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_DATA, &pldata, -1);
 
-	if (cdda_is_cdtrack(pldata->file)) {
+	if (g_str_has_prefix(pldata->file, "CDDA ")) {
 		*i = 1;
 	} else if (!httpc_is_url(pldata->file)) {
 		*i = 0;
@@ -2923,7 +2923,9 @@ rem__sel_cb(gpointer data) {
 int
 rem__dead_skip(char * filename) {
 
-	return (filename != NULL && !cdda_is_cdtrack(filename) && !httpc_is_url(filename) &&
+	return (filename != NULL &&
+		!g_str_has_prefix(filename, "CDDA ") &&
+		!httpc_is_url(filename) &&
 		(g_file_test(filename, G_FILE_TEST_IS_REGULAR) == FALSE));
 }
 
@@ -4479,7 +4481,8 @@ save_track_node(playlist_t * pl, GtkTreeIter * piter, xmlNodePtr root, char * no
 		xmlNewTextChild(node, NULL, (const xmlChar*) "title", (const xmlChar*) data->title);
 		xmlNewTextChild(node, NULL, (const xmlChar*) "display", (const xmlChar*) data->display);
 
-		if (cdda_is_cdtrack(data->file) || httpc_is_url(data->file)) {
+		if (g_str_has_prefix(data->file, "CDDA ") ||
+		    httpc_is_url(data->file)) {
 			file = g_strdup(data->file);
 		} else {
 			file = g_filename_to_uri(data->file, NULL, NULL);

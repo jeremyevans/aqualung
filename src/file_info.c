@@ -1731,11 +1731,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	}
 
 #ifdef HAVE_CDDA
-        if ((strlen(file) > 4) &&
-            (file[0] == 'C') &&
-            (file[1] == 'D') &&
-            (file[2] == 'D') &&
-            (file[3] == 'A')) {
+        if (g_str_has_prefix(file, "CDDA ")) {
 
                 char device_path[CDDA_MAXLEN];
                 long hash;

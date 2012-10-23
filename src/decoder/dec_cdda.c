@@ -38,7 +38,6 @@
 #include "../cdda.h"
 #include "../common.h"
 #include "../rb.h"
-#include "../utils.h"
 #include "dec_cdda.h"
 
 
@@ -274,7 +273,7 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 	unsigned long hash;
 	cdda_drive_t * drive;
 
-	if (!cdda_is_cdtrack(filename)) {
+	if (!g_str_has_prefix(filename, "CDDA ")) {
 		return DECODER_OPEN_BADLIB;
 	}
 
@@ -376,7 +375,7 @@ cdda_decoder_reopen(decoder_t * dec, char * filename) {
 	unsigned long hash;
 	cdda_drive_t * drive;
 
-	if (!cdda_is_cdtrack(filename)) {
+	if (!g_str_has_prefix(filename, "CDDA ")) {
 		return DECODER_OPEN_BADLIB;
 	}
 

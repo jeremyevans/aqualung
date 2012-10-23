@@ -211,18 +211,8 @@ same_disc_next_track(char * filename, char * filename_prev) {
 	int track, track_prev;
 	long hash, hash_prev;
 
-	if ((strlen(filename) < 4) ||
-	    (filename[0] != 'C') ||
-	    (filename[1] != 'D') ||
-	    (filename[2] != 'D') ||
-	    (filename[3] != 'A'))
-		return 0;
-
-	if ((strlen(filename_prev) < 4) ||
-	    (filename_prev[0] != 'C') ||
-	    (filename_prev[1] != 'D') ||
-	    (filename_prev[2] != 'D') ||
-	    (filename_prev[3] != 'A'))
+	if (!g_str_has_prefix(filename, "CDDA ") ||
+	    !g_str_has_prefix(filename_prev, "CDDA "))
 		return 0;
 
         if (sscanf(filename, "CDDA %s %lX %u", device, &hash, &track) < 3)

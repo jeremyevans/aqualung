@@ -169,19 +169,19 @@ end \
 static GHashTable * metadata_type_hash = NULL;
 static GHashTable * fileinfo_type_hash = NULL;
 
-void add_custom_commands_to_playlist_menu(void);
+static void add_custom_commands_to_playlist_menu(void);
 void setup_extended_title_formatting(void);
 
-int metadata_type_int(char * type_string) {
+static int metadata_type_int(char * type_string) {
 	return (int)(long)g_hash_table_lookup(metadata_type_hash, type_string);
 }
 
-int fileinfo_type_int(char * type_string) {
+static int fileinfo_type_int(char * type_string) {
 	return (int)(long)g_hash_table_lookup(fileinfo_type_hash, type_string);
 }
 
 /* Caller is responsible for freeing returned string */
-char * metadata_value_all(metadata_t * meta, int type) {
+static char * metadata_value_all(metadata_t * meta, int type) {
 	int l = 0;
 	int t = 0;
 	char * news;
@@ -327,7 +327,7 @@ static int l_add_submenu(lua_State * L) {
 	return 1;
 }
 
-int l_selected_files_foreach(playlist_t * pl, GtkTreeIter * iter, void * user_data) {
+static int l_selected_files_foreach(playlist_t * pl, GtkTreeIter * iter, void * user_data) {
 	playlist_data_t * data;
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), iter, PL_COL_DATA, &data, -1);
 	if (data->file != NULL) {
@@ -339,7 +339,7 @@ int l_selected_files_foreach(playlist_t * pl, GtkTreeIter * iter, void * user_da
 	return 0;
 }
 
-int  l_selected_files(lua_State * L) {
+static int  l_selected_files(lua_State * L) {
 	int i = 0;
         playlist_t * pl;
 	lua_newtable(L);
@@ -350,7 +350,7 @@ int  l_selected_files(lua_State * L) {
 	return 1;
 }
 
-int  l_current_file(lua_State * L) {
+static int  l_current_file(lua_State * L) {
 	if (current_file[0] == '\0') {
 		lua_pushnil(L);
 	} else {
@@ -364,7 +364,7 @@ static int  l_current_file_percent_complete(lua_State * L) {
 	return 1;
 }
 
-void custom_playlist_menu_cb(gpointer path) {
+static void custom_playlist_menu_cb(gpointer path) {
 	int error = 0;
 
 	g_mutex_lock(l_mutex);
@@ -408,7 +408,7 @@ static int l_add_playlist_menu_command(lua_State * L) {
 	return 0;
 }
 
-void reload_lua_cb(gpointer data) {
+static void reload_lua_cb(gpointer data) {
         setup_extended_title_formatting();
 }
 
@@ -601,7 +601,7 @@ static void l_set_fdec(file_decoder_t * fdec) {
 	lua_settable(L, LUA_REGISTRYINDEX);
 }
 
-char * l_title_format(const char * function_name, file_decoder_t * fdec) {
+static char * l_title_format(const char * function_name, file_decoder_t * fdec) {
 	int error;
 	char * s = NULL; 
 	if (options.use_ext_title_format) {
@@ -642,7 +642,7 @@ char * application_title_format(file_decoder_t * fdec) {
 	return s;
 }
 
-void add_custom_commands_to_playlist_menu(void) {
+static void add_custom_commands_to_playlist_menu(void) {
 	int error;
 	lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
 	lua_getfield(L, 1, "process_playlist_menu");
@@ -690,7 +690,7 @@ void run_custom_remote_command(char * command) {
 	}
 }
 
-void run_custom_keybinding(char * window, char * keyname, guint state) {
+static void run_custom_keybinding(char * window, char * keyname, guint state) {
 	int error;
 	if (options.use_ext_title_format) {
 		g_mutex_lock(l_mutex);

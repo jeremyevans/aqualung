@@ -584,7 +584,7 @@ void setup_extended_title_formatting(void) {
 
 	error = luaL_dofile(L, options.ext_title_format_file);
 	if (error) {
-		fprintf(stderr, "Error: while loading your .lua extension file (%s): %s\n", options.ext_title_format_file, lua_tostring(L, -1));
+		fprintf(stderr, "Error: while loading your .lua extension file: %s\n", lua_tostring(L, -1));
 		options.use_ext_title_format = 0;
 		lua_pop(L, 1);
 	}
@@ -612,7 +612,7 @@ static char * l_title_format(const char * function_name, file_decoder_t * fdec) 
 		lua_getglobal(L, function_name);
 		error = lua_pcall(L, 0, 1, 0);
 		if (error) {
-			fprintf(stderr, "Error: while executing function %s in your .lua extension file (%s): %s\n", function_name, options.ext_title_format_file, lua_tostring(L, -1));
+			fprintf(stderr, "Error: while executing function %s in your .lua extension file: %s\n", function_name, lua_tostring(L, -1));
 		} else {
 			s = strdup(lua_tostring(L, -1));
 		}

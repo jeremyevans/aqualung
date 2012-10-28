@@ -4073,6 +4073,7 @@ timeout_callback(gpointer data) {
 				} else {
 					gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos),
 								 100.0 * sample_pos / total_samples);
+					run_hooks("track_position_change");
 				}
 			}
 

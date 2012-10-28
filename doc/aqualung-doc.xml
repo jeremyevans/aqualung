@@ -3362,6 +3362,27 @@
 
         </paragraph>
 
+        <paragraph title="Hook 2: track_position_change">
+
+            <p>The track_position_change hooks are called whenever the
+            scale/position of the current track changes.  Generally,
+            it is called a few times a second.  This can be used to
+            keep track of aqualung's current position in the file,
+            and is passed a floating point argument of the percent
+            complete.  Note that tracks that do not have a set
+            number of samples (such as internet radio streams) will
+            not have this hook called when they are playing.</p>
+
+            <verbatim>
+            @add_hook("track_position_change", function ()
+            @    print(current_file() .. " " .. string.format("%0.2f%%", current_file_percent_complete()))
+            @end)</verbatim>
+
+            <p>Prints the filename and percent complete of the currently
+            playing file.</p>
+
+        </paragraph>
+
       </subsection>
 
       <subsection title="Custom Playlist Menu Commands">
@@ -3513,6 +3534,8 @@
 
         <ul>
           <li>current_file(): Returns the filename (string) of currently playing file, or nil if no file is playing.</li>
+          <li>current_file_percent_complete(): Returns number between 0 and 100 with the percent complete of the current
+              playing file, or nil if no file is playing.</li>
           <li>selected_files(): Returns an array (integer-keyed table) of selected filenames (strings) for the current playlist.</li>
         </ul>
 

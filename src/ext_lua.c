@@ -1,5 +1,5 @@
 /*                                                     -*- linux-c -*-
-    Copyright (C) 2008-2010 Jeremy Evans
+    Copyright (C) 2008-2010,2012 Jeremy Evans
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -60,6 +60,7 @@
 
 extern options_t options;
 extern char current_file[MAXLEN];
+extern GtkObject * adj_pos;
 
 static lua_State * L = NULL;
 static GtkWidget * l_playlist_menu_entry = NULL;
@@ -73,7 +74,7 @@ static const char AQUALUNG_LUA_MAIN_TABLE[] = "Aqualung";
 static const char AQUALUNG_LUA_API[] = " \
 Aqualung = {raw_playlist_menu={}, has_playlist_menu=false, \
   remote_commands={}, keybindings={main={}, playlist={}, store={}}, \
-  hooks={track_change={}}} \
+  hooks={track_change={}, track_position_change={}}} \
 \
 \
 function add_playlist_menu_command(path, fn) \
@@ -358,6 +359,11 @@ int  l_current_file(lua_State * L) {
 	return 1;
 }
 
+static int  l_current_file_percent_complete(lua_State * L) {
+	lua_pushnumber(L, gtk_adjustment_get_value(GTK_ADJUSTMENT(adj_pos)));
+	return 1;
+}
+
 void custom_playlist_menu_cb(gpointer path) {
 	int error = 0;
 
@@ -573,6 +579,8 @@ void setup_extended_title_formatting(void) {
 	lua_setglobal(L, "selected_files");
 	lua_pushcfunction(L, l_current_file);
 	lua_setglobal(L, "current_file");
+	lua_pushcfunction(L, l_current_file_percent_complete);
+	lua_setglobal(L, "current_file_percent_complete");
 
 	error = luaL_dofile(L, options.ext_title_format_file);
 	if (error) {

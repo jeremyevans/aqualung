@@ -3351,14 +3351,17 @@
 
             <p>The track_change hooks are called whenever a new track
             starts playing.  They are not called until after the
-            current file has been changed to the new file.</p>
+            current file has been changed to the new file. Inside
+            this hook, you can call the <q><cmd>m</cmd></q> and
+            <q><cmd>i</cmd></q> playlist formatting functions to
+            access the metadata of the newly loaded file.</p>
 
             <verbatim>
             @add_hook("track_change", function ()
-            @    print(current_file())
+            @    print("File: " current_file() .. " Artist: " .. m("artist"))
             @end)</verbatim>
 
-            <p>Prints the filename of the new file.</p>
+            <p>Prints the filename and artist of the new file.</p>
 
         </paragraph>
 

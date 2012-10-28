@@ -1,5 +1,5 @@
 /*                                                     -*- linux-c -*-
-    Copyright (C) 2008-2010 Jeremy Evans
+    Copyright (C) 2008-2010,2012 Jeremy Evans
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 void setup_extended_title_formatting(void);
 void add_custom_command_menu_to_playlist_menu(GtkWidget* menu);
 void run_hooks(char * type);
+void run_hooks_fdec(char * type, file_decoder_t * fdec);
 void run_custom_remote_command(char * command);
 void run_custom_main_keybinding(char * keyname, guint state);
 void run_custom_playlist_keybinding(char * keyname, guint state);

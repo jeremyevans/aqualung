@@ -1656,7 +1656,6 @@ cue_track_for_playback(GtkTreeStore * store, GtkTreeIter * piter, cue_t * cue) {
 	cue->filename = strdup(data->file);
 	cue->voladj = options.rva_is_enabled ? data->voladj : 0.0f;
 	strncpy(current_file, cue->filename, MAXLEN-1);
-	run_hooks("track_change");
 }
 
 
@@ -3845,6 +3844,8 @@ process_metablock(metadata_t * meta) {
 	char * icy_name = NULL;
 	char * icy_descr = NULL;
 	meta_frame_t * frame;
+
+	run_hooks_fdec("track_change", fdec);
 
 	frame = metadata_get_frame_by_type(meta, META_FIELD_APIC, NULL);
 	if (frame != NULL) {

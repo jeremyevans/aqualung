@@ -595,16 +595,19 @@ void setup_extended_title_formatting(void) {
 	g_mutex_unlock(l_mutex);
 }
 
+static void l_set_fdec(file_decoder_t * fdec) {
+	lua_pushlightuserdata(L, (void *)&l_cur_fdec);
+	lua_pushlightuserdata(L, (void *)fdec);
+	lua_settable(L, LUA_REGISTRYINDEX);
+}
+
 char * l_title_format(const char * function_name, file_decoder_t * fdec) {
 	int error;
 	char * s = NULL; 
 	if (options.use_ext_title_format) {
 		g_mutex_lock(l_mutex);
 
-		/* Set current file decoder in Lua registry */
-		lua_pushlightuserdata(L, (void *)&l_cur_fdec);
-		lua_pushlightuserdata(L, (void *)fdec);
-		lua_settable(L, LUA_REGISTRYINDEX);
+		l_set_fdec(fdec);
 
 		lua_getglobal(L, function_name);
 		error = lua_pcall(L, 0, 1, 0);
@@ -620,9 +623,7 @@ char * l_title_format(const char * function_name, file_decoder_t * fdec) {
 		 * Lua don't try to use pointers that are no longer
 		 * valid.
 		 */
-		lua_pushlightuserdata(L, (void *)&l_cur_fdec);
-		lua_pushlightuserdata(L, NULL);
-		lua_settable(L, LUA_REGISTRYINDEX);
+		l_set_fdec(NULL);
 
 		g_mutex_unlock(l_mutex);
 	}
@@ -722,10 +723,12 @@ void run_custom_store_keybinding(char * keyname, guint state){
 	run_custom_keybinding("store", keyname, state);
 }
 
-void run_hooks(char * type) {
+void run_hooks_fdec(char * type, file_decoder_t * fdec) {
 	int error;
 	if (options.use_ext_title_format) {
 		g_mutex_lock(l_mutex);
+
+		l_set_fdec(fdec);
 
 		lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
 		lua_getfield(L, 1, "run_hooks");
@@ -735,14 +738,22 @@ void run_hooks(char * type) {
 			fprintf(stderr, "Error: while running %s hooks: %s\n", type, lua_tostring(L, -1));
 			lua_pop(L, 1);
 		}
+
+		l_set_fdec(NULL);
+
 		g_mutex_unlock(l_mutex);
 	}
+}
+
+void run_hooks(char * type) {
+	run_hooks_fdec(type, NULL);
 }
 
 #else
 void setup_extended_title_formatting(void){}
 void add_custom_command_menu_to_playlist_menu(GtkWidget* menu){}
 void run_hooks(char * type){}
+void run_hooks_fdec(char * type, file_decoder_t * fdec){}
 void run_custom_remote_command(char * command){}
 void run_custom_main_keybinding(char * keyname, guint state){}
 void run_custom_playlist_keybinding(char * keyname, guint state){}

@@ -71,98 +71,102 @@ static GMutex * l_mutex = NULL;
 static const char l_cur_fdec = 'l';
 static const char l_cur_menu = 'm';
 static const char AQUALUNG_LUA_MAIN_TABLE[] = "Aqualung";
-static const char AQUALUNG_LUA_API[] = " \
-Aqualung = {raw_playlist_menu={}, has_playlist_menu=false, \
-  remote_commands={}, keybindings={main={}, playlist={}, store={}}, \
-  hooks={track_change={}, track_position_change={}}} \
-\
-\
-function add_playlist_menu_command(path, fn) \
-    Aqualung.raw_playlist_menu[path] = fn \
-end \
-\
-function add_remote_command(name, fn) \
-    Aqualung.remote_commands[name] = fn \
-end \
-\
-function add_main_keybinding(name, fn) \
-    Aqualung.keybindings['main'][name] = fn \
-end \
-\
-function add_playlist_keybinding(name, fn) \
-    Aqualung.keybindings['playlist'][name] = fn \
-end \
-\
-function add_store_keybinding(name, fn) \
-    Aqualung.keybindings['store'][name] = fn \
-end \
-\
-function add_hook(type, fn) \
-    table.insert(Aqualung.hooks[type], fn) \
-end \
-\
-\
-function Aqualung.run_hooks(type) \
-	for i,v in ipairs(Aqualung.hooks[type]) do \
-		v() \
-	end \
-end \
-\
-function Aqualung.run_remote_command(name) \
-    Aqualung.remote_commands[name]() \
-end \
-\
-function Aqualung.run_keybinding(window, name, control, alt, super) \
-    if alt then \
-      name = 'alt-' .. name \
-    end \
-    if control then \
-      name = 'control-' .. name \
-    end \
-    if super then \
-      name = 'super-' .. name \
-    end \
-    Aqualung.keybindings[window][name]() \
-end \
-\
-function Aqualung.process_playlist_menu() \
-    for path, fn in pairs(Aqualung.raw_playlist_menu) do \
-        if type(Aqualung.playlist_menu) ~= 'table' then \
-          Aqualung.has_playlist_menu = true \
-          Aqualung.playlist_menu = {} \
-        end \
-        local t0 = Aqualung.playlist_menu \
-        local t1 = Aqualung.playlist_menu \
-        local p = nil \
-        for part in string.gmatch(path, '[^/]+') do \
-            p = part \
-            t1[p] = t1[p] or {} \
-            t0 = t1 \
-            t1 = t1[p] \
-        end \
-        t0[p] = fn \
-    end \
-    return Aqualung.has_playlist_menu \
-end \
-\
-function Aqualung.build_playlist_menu(gtk_menu) \
-    Aqualung.build_menu(gtk_menu, Aqualung.add_playlist_menu_command, nil, Aqualung.playlist_menu) \
-end \
-\
-function Aqualung.build_menu(gtk_menu, fn, root, menu) \
-    for name, submenu_or_fn in pairs(menu) do \
-        local path = name \
-        if root then \
-            path = root .. '/' .. path \
-        end \
-        local typ = type(submenu_or_fn) \
-        if typ == 'table' then \
-            Aqualung.build_menu(Aqualung.add_submenu(gtk_menu, name), fn, path, submenu_or_fn) \
-        elseif typ == 'function' then \
-            fn(gtk_menu, name, path) \
-        end \
-    end \
-end \
+static const char AQUALUNG_LUA_API[] = "-- AQUALUNG_LUA_API \n\
+Aqualung = {raw_playlist_menu={}, has_playlist_menu=false, \n\
+  remote_commands={}, keybindings={main={}, playlist={}, store={}}, \n\
+  hooks={track_change={}, track_position_change={}}} \n\
+\n\
+\n\
+function add_playlist_menu_command(path, fn) \n\
+    Aqualung.raw_playlist_menu[path] = fn \n\
+end \n\
+\n\
+function add_remote_command(name, fn) \n\
+    Aqualung.remote_commands[name] = fn \n\
+end \n\
+\n\
+function add_main_keybinding(name, fn) \n\
+    Aqualung.keybindings['main'][name] = fn \n\
+end \n\
+\n\
+function add_playlist_keybinding(name, fn) \n\
+    Aqualung.keybindings['playlist'][name] = fn \n\
+end \n\
+\n\
+function add_store_keybinding(name, fn) \n\
+    Aqualung.keybindings['store'][name] = fn \n\
+end \n\
+\n\
+function add_hook(type, fn) \n\
+    local t = Aqualung.hooks[type] \n\
+    if t then \n\
+        table.insert(t, fn) \n\
+    else \n\
+        error(\"Hook type \" .. type .. \" not valid\", 2) \n\
+    end \n\
+end \n\
+\n\
+function Aqualung.run_hooks(type) \n\
+	for i,v in ipairs(Aqualung.hooks[type]) do \n\
+		v() \n\
+	end \n\
+end \n\
+\n\
+function Aqualung.run_remote_command(name) \n\
+    Aqualung.remote_commands[name]() \n\
+end \n\
+\n\
+function Aqualung.run_keybinding(window, name, control, alt, super) \n\
+    if alt then \n\
+      name = 'alt-' .. name \n\
+    end \n\
+    if control then \n\
+      name = 'control-' .. name \n\
+    end \n\
+    if super then \n\
+      name = 'super-' .. name \n\
+    end \n\
+    Aqualung.keybindings[window][name]() \n\
+end \n\
+\n\
+function Aqualung.process_playlist_menu() \n\
+    for path, fn in pairs(Aqualung.raw_playlist_menu) do \n\
+        if type(Aqualung.playlist_menu) ~= 'table' then \n\
+          Aqualung.has_playlist_menu = true \n\
+          Aqualung.playlist_menu = {} \n\
+        end \n\
+        local t0 = Aqualung.playlist_menu \n\
+        local t1 = Aqualung.playlist_menu \n\
+        local p = nil \n\
+        for part in string.gmatch(path, '[^/]+') do \n\
+            p = part \n\
+            t1[p] = t1[p] or {} \n\
+            t0 = t1 \n\
+            t1 = t1[p] \n\
+        end \n\
+        t0[p] = fn \n\
+    end \n\
+    return Aqualung.has_playlist_menu \n\
+end \n\
+\n\
+function Aqualung.build_playlist_menu(gtk_menu) \n\
+    Aqualung.build_menu(gtk_menu, Aqualung.add_playlist_menu_command, nil, Aqualung.playlist_menu) \n\
+end \n\
+\n\
+function Aqualung.build_menu(gtk_menu, fn, root, menu) \n\
+    for name, submenu_or_fn in pairs(menu) do \n\
+        local path = name \n\
+        if root then \n\
+            path = root .. '/' .. path \n\
+        end \n\
+        local typ = type(submenu_or_fn) \n\
+        if typ == 'table' then \n\
+            Aqualung.build_menu(Aqualung.add_submenu(gtk_menu, name), fn, path, submenu_or_fn) \n\
+        elseif typ == 'function' then \n\
+            fn(gtk_menu, name, path) \n\
+        end \n\
+    end \n\
+end \n\
 ";
 
 /* Glib hash tables are abused as we store ints instead of pointers for the values */

@@ -1,6 +1,5 @@
 man_MANS = aqualung.1
 
-docdir = $(pkgdatadir)/doc
 doc_DATA = README split.sh aqualung-doc.css aqualung-doc.dtd aqualung-doc.xml *.xsl *.eps *.png
 
 EXTRA_DIST = $(man_MANS) $(doc_DATA)

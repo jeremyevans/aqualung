@@ -486,7 +486,7 @@ meta_id3v1_delete(char * filename) {
 	fclose(file);
 
 	if (truncate(filename, pos) < 0) {
-		fprintf(stderr, "meta_ape_rewrite: truncate() failed on %s\n", filename);
+		fprintf(stderr, "meta_id3v1_delete: truncate() failed on %s\n", filename);
 		return META_ERROR_INTERNAL;
 	}
 

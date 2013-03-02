@@ -32,7 +32,12 @@
 
 #undef HAVE_CDDB
 #include "undef_ac_pkg.h"
+#include <cdio/cdio.h>
+#ifdef HAVE_CDIO_PARANOIA_PARANOIA_H
+#include <cdio/paranoia/paranoia.h>
+#else /* !HAVE_CDIO_PARANOIA_PARANOIA_H (assume older, bundled, layout) */
 #include <cdio/paranoia.h>
+#endif /* !HAVE_CDIO_PARANOIA_PARANOIA_H */
 #undef HAVE_CDDB
 #include "undef_ac_pkg.h"
 #include <config.h>	/* re-establish undefined autoconf macros */

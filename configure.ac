@@ -372,8 +372,11 @@ AQUALUNG_DETECT([src], [Sample Rate Converter],
 # Hardware Library Options
 #
 AQUALUNG_DETECT([cdda], [Compact Disc Digital Audio],
-    [PKG_CHECK_MODULES([cdio], [libcdio libcdio_paranoia >= 0.76],
-        [AQUALUNG_FOUND([cdda])],
+    [PKG_CHECK_MODULES([cdio], [libcdio >= 0.76 libcdio_paranoia],
+        [
+            AQUALUNG_FOUND([cdda])
+            AC_CHECK_HEADERS([cdio/paranoia/cdda.h cdio/paranoia/paranoia.h])
+        ],
         [AQUALUNG_MISSING([cdda], [$cdio_PKG_ERRORS])])])
 
 AQUALUNG_DETECT([ifp], [iRiver iFP],

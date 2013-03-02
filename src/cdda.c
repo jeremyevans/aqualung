@@ -31,8 +31,12 @@
 #undef HAVE_CDDB
 #include "undef_ac_pkg.h"
 #include <cdio/cdio.h>
-#include <cdio/cdda.h>
 #include <cdio/logging.h>
+#ifdef HAVE_CDIO_PARANOIA_CDDA_H
+#include <cdio/paranoia/cdda.h>
+#else /* !HAVE_CDIO_PARANOIA_CDDA_H (assume older, bundled, layout) */
+#include <cdio/cdda.h>
+#endif /* !HAVE_CDIO_PARANOIA_CDDA_H */
 #undef HAVE_CDDB
 #include "undef_ac_pkg.h"
 #include <config.h>	/* re-establish undefined autoconf macros */
@@ -45,6 +49,12 @@
 #include "i18n.h"
 #include "store_cdda.h"
 #include "cdda.h"
+
+
+#if CDIO_API_VERSION < 6
+#define CDTEXT_FIELD_PERFORMER CDTEXT_PERFORMER
+#define CDTEXT_FIELD_TITLE     CDTEXT_TITLE
+#endif /* CDIO_API_VERSION < 6 */
 
 
 extern options_t options;
@@ -85,6 +95,36 @@ cdda_log_handler(cdio_log_level_t level, const char message[]) {
 	default:
 		printf("cdio %d: %s\n", level, message);
 	}
+}
+
+
+gchar *
+cdda_get_cdtext(CdIo_t * cdio, cdtext_field_t field, track_t track) {
+
+	const gchar * value;
+	cdtext_t * cdtext;
+
+	if (cdio == NULL)
+		return NULL;
+
+#if CDIO_API_VERSION >= 6
+	if (NULL == (cdtext = cdio_get_cdtext(cdio)))
+		return NULL;
+
+	value = cdtext_get_const(cdtext, field, track);
+#else /* CDIO_API_VERSION < 6 */
+	if (NULL == (cdtext = cdio_get_cdtext(cdio, track)))
+		return NULL;
+
+	value = cdtext_get_const(field, cdtext);
+#endif /* CDIO_API_VERSION < 6 */
+	if (value && !g_utf8_validate(value, -1, NULL)) {
+		g_debug("cdda_get_cdtext: invalid UTF-8 in %s field, track %d",
+			cdtext_field2str(field), track);
+		return NULL;
+	}
+
+	return g_strdup(value);
 }
 
 
@@ -566,58 +606,52 @@ int
 update_track_data_from_cdtext(cdda_drive_t * drive, GtkTreeIter * iter_drive) {
 
 	CdIo_t * cdio;
-	cdtext_t * cdtext;
+	gchar * title;
 	GtkTreeIter iter;
-	int i;
+	track_t i = 0;
 	int ret = 0;
 
 	cdio = cdio_open(drive->device_path, DRIVER_UNKNOWN);
-	cdtext = cdio_get_cdtext(cdio, 0);
-
-	if (cdtext == NULL) {
-		ret = 1;
+	if (cdio == NULL) {
+		return 1;
 	} else {
-		char tmp[MAXLEN];
+		gchar * performer, * disc_name;
 
-		tmp[0] = '\0';
-
-		if (cdtext->field[CDTEXT_PERFORMER] != NULL && *(cdtext->field[CDTEXT_PERFORMER]) != '\0') {
-			strncat(tmp, cdtext->field[CDTEXT_PERFORMER], MAXLEN-1);
-			strncpy(drive->disc.artist_name, cdtext->field[CDTEXT_PERFORMER], MAXLEN-1);
+		performer = cdda_get_cdtext(cdio, CDTEXT_FIELD_PERFORMER, i);
+		if (performer && *performer != '\0') {
+			g_strlcpy(drive->disc.artist_name, performer, MAXLEN);
 		} else {
 			ret = 1;
 		}
 
-		strncat(tmp, ": ", MAXLEN - strlen(tmp) - 1);
-
-		if (cdtext->field[CDTEXT_TITLE] != NULL && *(cdtext->field[CDTEXT_TITLE]) != '\0') {
-			strncat(tmp, cdtext->field[CDTEXT_TITLE], MAXLEN - strlen(tmp) - 1);
-			strncpy(drive->disc.record_name, cdtext->field[CDTEXT_TITLE], MAXLEN-1);
+		title = cdda_get_cdtext(cdio, CDTEXT_FIELD_TITLE, i);
+		if (title && *title != '\0') {
+			g_strlcpy(drive->disc.record_name, title, MAXLEN);
 		} else {
 			ret = 1;
 		}
 
 		if (ret == 0) {
-			gtk_tree_store_set(music_store, iter_drive, MS_COL_NAME, tmp, -1);
+			disc_name = g_strconcat(performer, ": ", title, NULL);
+			gtk_tree_store_set(music_store, iter_drive,
+					   MS_COL_NAME, disc_name, -1);
+			g_free(disc_name);
 		}
+		g_free(performer);
+		g_free(title);
 	}
 
-
-	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter, iter_drive, i++)) {
 
-		cdtext = cdio_get_cdtext(cdio, i);
+		title = cdda_get_cdtext(cdio, CDTEXT_FIELD_TITLE, i);
 
-		if (cdtext == NULL) {
-			ret = 1;
-			continue;
-		}
-
-		if (cdtext->field[CDTEXT_TITLE] != NULL && *(cdtext->field[CDTEXT_TITLE]) != '\0') {
-			gtk_tree_store_set(music_store, &iter, MS_COL_NAME, cdtext->field[CDTEXT_TITLE], -1);
+		if (title && *title != '\0') {
+			gtk_tree_store_set(music_store, &iter,
+					   MS_COL_NAME, title, -1);
 		} else {
 			ret = 1;
 		}
+		g_free(title);
 	}
 
 	cdio_destroy(cdio);

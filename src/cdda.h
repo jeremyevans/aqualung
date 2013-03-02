@@ -21,6 +21,8 @@
 #ifndef AQUALUNG_CDDA_H
 #define AQUALUNG_CDDA_H
 
+#include <glib.h>
+
 #undef HAVE_CDDB
 #include "undef_ac_pkg.h"
 #include <cdio/cdio.h>
@@ -29,6 +31,7 @@
 #include <config.h>	/* re-establish undefined autoconf macros */
 
 #include "common.h"
+
 
 #define CDDA_DRIVES_MAX 16
 #define CDDA_MAXLEN 256
@@ -73,6 +76,8 @@ void cdda_disc_info(cdda_drive_t * drive);
 
 unsigned long calc_cdda_hash(cdda_disc_t * disc);
 int cdda_hash_matches(char * filename, unsigned long hash);
+
+gchar * cdda_get_cdtext(CdIo_t * cdio, cdtext_field_t field, track_t track);
 
 int cdda_get_n(char * device_path);
 cdda_drive_t * cdda_get_drive_by_device_path(char * device_path);

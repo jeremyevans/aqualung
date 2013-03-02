@@ -328,11 +328,11 @@ void
 cdda_disc_info(cdda_drive_t * drive) {
 
 	CdIo_t * cdio;
-	cdtext_t * cdtext;
 	track_t itrack;
 	track_t ntracks;
 	track_t track_last;
-	int i;
+	cdtext_field_t i;
+	gchar * text;
 
         GtkWidget * dialog;
 	GtkWidget * table;
@@ -369,19 +369,12 @@ cdda_disc_info(cdda_drive_t * drive) {
 
 
 	cdio = cdio_open(drive->device_path, DRIVER_UNKNOWN);
-	cdtext = cdio_get_cdtext(cdio, 0);
 
-	if (cdtext != NULL) {
-		table = gtk_table_new(MAX_CDTEXT_FIELDS, 2, FALSE);
-		gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 2);
-
-
-		for (i = 0; i < MAX_CDTEXT_FIELDS; i++) {
-
-			if (cdtext->field[i] == NULL || *(cdtext->field[i]) == '\0') {
-				continue;
-			}
-
+	table = gtk_table_new(MAX_CDTEXT_FIELDS, 2, FALSE);
+	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 2);
+	for (i = 0; i < MAX_CDTEXT_FIELDS; i++) {
+		text = cdda_get_cdtext(cdio, i, 0);
+		if (text && *text != '\0') {
 			has_some_cdtext = 1;
 
 			hbox = gtk_hbox_new(FALSE, 0);
@@ -390,10 +383,11 @@ cdda_disc_info(cdda_drive_t * drive) {
 			gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, i, i + 1, GTK_FILL, GTK_FILL, 4, 1);
 
 			hbox = gtk_hbox_new(FALSE, 0);
-			label = gtk_label_new(cdtext->field[i]);
+			label = gtk_label_new(text);
 			gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 			gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, i, i + 1, GTK_FILL, GTK_FILL, 4, 1);
 		}
+		g_free(text);
 	}
 
 
@@ -439,19 +433,14 @@ cdda_disc_info(cdda_drive_t * drive) {
 		gtk_list_store_append(list, &iter);
 		gtk_list_store_set(list, &iter, 0, itrack, -1);
 
-		cdtext = cdio_get_cdtext(cdio, itrack);
-
-		if (cdtext == NULL) {
-			continue;
-		}
-
 		for (i = 0; i < MAX_CDTEXT_FIELDS; i++) {
-
-			if (cdtext->field[i] != NULL && *(cdtext->field[i]) != '\0') {
-				gtk_list_store_set(list, &iter, i + 1, cdtext->field[i], -1);
+			text = cdda_get_cdtext(cdio, i, itrack);
+			if (text && *text != '\0') {
+				gtk_list_store_set(list, &iter, i + 1, text, -1);
 				visible[i + 1] = 1;
 				has_some_cdtext = 1;
 			}
+			g_free(text);
 		}
 	}
 

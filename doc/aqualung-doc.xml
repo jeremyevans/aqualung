@@ -1410,12 +1410,13 @@
         generated using the filename template. This template is very
         similar to the well-known <gui>Title format</gui> in <ref
         refkey="settings-general">Settings / General</ref>, only it
-        accepts three more special sequences: <q>%n</q> for the track
-        number (two digit, zero padded), <q>%i</q> for an identifier
-        which is unique within an export session, and <q>%x</q> for
-        the file extension. The latter is determined by the output
-        file format, and will be one of <q>flac</q>, <q>ogg</q>,
-        <q>mp3</q> or <q>wav</q>.</p>
+        accepts a few more special sequences: <q>%o</q> for the
+        original audio filename (without extension), <q>%n</q> for the
+        track number (two digit, zero padded), <q>%i</q> for an
+        identifier which is unique within an export session, and
+        <q>%x</q> for the file extension. The latter is determined by
+        the output file format, and will be one of <q>flac</q>,
+        <q>ogg</q>, <q>mp3</q> or <q>wav</q>.</p>
 
         <p>The file format setting is exactly the same as with CD
         ripping, refer to <ref refkey="cd">this section</ref> for

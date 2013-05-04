@@ -61,6 +61,7 @@ typedef struct {
 	char * artist;
 	char * album;
 	char * title;
+	char * original;
 	int year;
 	int no;       
 
@@ -215,6 +216,7 @@ export_item_free(export_item_t * item) {
 	free(item->artist);
 	free(item->album);
 	free(item->title);
+	free(item->original);
 	free(item);
 }
 
@@ -244,6 +246,8 @@ export_append_item(export_t * export, char * infile,
 		   char * artist, char * album, char * title, int year, int no) {
 
 	export_item_t * item;
+	char * basename;
+	char * ext;
 
 	if ((item = (export_item_t *)calloc(1, sizeof(export_item_t))) == NULL) {
 		fprintf(stderr, "export_append_item: calloc error\n");
@@ -251,10 +255,15 @@ export_append_item(export_t * export, char * infile,
 	}
 
 	item->infile = strdup(infile);
+	basename = g_path_get_basename(infile);
+	if ((ext = g_strrstr(basename, ".")) != NULL) {
+		*ext = '\0';
+	}
 
 	item->artist = (artist && artist[0] != '\0') ? strdup(artist) : strdup(_("Unknown Artist"));
 	item->album = (album && album[0] != '\0') ? strdup(album) : strdup(_("Unknown Album"));
 	item->title = (title && title[0] != '\0') ? strdup(title) : strdup(_("Unknown Track"));
+	item->original = basename;
 	item->year = year;
 	item->no = no;
 
@@ -322,8 +331,8 @@ export_item_set_path(export_t * export, export_item_t * item, char * path, char 
 	snprintf(str_no, 15, "%02d", item->no);
 	snprintf(str_index, 15, "%04d", index);
 
-	make_string_va(track, export->template, 'a', item->artist, 'r', item->album,
-		       't', item->title, 'n', str_no, 'x', ext, 'i', str_index, 0);
+	make_string_va(track, export->template, 'o', item->original, 'a', item->artist,
+		       'r', item->album, 't', item->title, 'n', str_no, 'x', ext, 'i', str_index, 0);
 
 	snprintf(path, MAXLEN-1, "%s/%s", buf, track);
 	return 0;
@@ -894,11 +903,12 @@ export_format_help_cb(GtkButton * button, gpointer user_data) {
 		       GTK_BUTTONS_OK,
 		       NULL,
 		       _("\nThe template string you enter here will be used to "
-			 "construct the filename of the exported files. The Artist, "
-			 "Record and Track names are denoted by %%a, %%r and %%t. "
-			 "The track number and format-dependent file extension are "
-			 "denoted by %%n and %%x, respectively. The flag %%i gives "
-			 "an identifier which is unique within an export session."));
+			 "construct the filename of the exported files. The Original "
+			 "filename, Artist, Record and Track names are denoted by %%o, "
+			 "%%a, %%r and %%t. The track number and format-dependent "
+			 "file extension are denoted by %%n and %%x, respectively. "
+			 "%%i gives an identifier which is unique within an export "
+			 "session."));
 }
 
 void
@@ -1072,7 +1082,7 @@ export_dialog(export_t * export) {
 			char buf[MAXLEN];
 			char * format = (char *)gtk_entry_get_text(GTK_ENTRY(templ_entry));
 			if ((ret = make_string_va(buf, format,
-				  'a', "a", 'r', "r", 't', "t", 'n', "n", 'x', "x", 'i', "i", 0)) != 0) {
+						  'o', "o", 'a', "a", 'r', "r", 't', "t", 'n', "n", 'x', "x", 'i', "i", 0)) != 0) {
 				make_string_strerror(ret, buf);
 				message_dialog(_("Error in format string"),
 					       export->dialog,

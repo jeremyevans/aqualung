@@ -29,7 +29,8 @@
 #include "file_decoder.h"
 
 
-#define RB_LAVC_SIZE (3*AVCODEC_MAX_AUDIO_FRAME_SIZE)
+#define MAX_AUDIO_FRAME_SIZE 192000 // 1 second of 48khz 32bit audio
+#define RB_LAVC_SIZE (3*MAX_AUDIO_FRAME_SIZE)
 
 
 typedef struct _lavc_pdata_t {

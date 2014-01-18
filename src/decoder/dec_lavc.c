@@ -84,9 +84,9 @@ decode_lavc(decoder_t * dec) {
         file_decoder_t * fdec = dec->fdec;
 
 	AVPacket packet;
-        int16_t samples[AVCODEC_MAX_AUDIO_FRAME_SIZE];
-        float fsamples[AVCODEC_MAX_AUDIO_FRAME_SIZE];
-        int n_bytes = AVCODEC_MAX_AUDIO_FRAME_SIZE;
+        int16_t samples[MAX_AUDIO_FRAME_SIZE];
+        float fsamples[MAX_AUDIO_FRAME_SIZE];
+        int n_bytes = MAX_AUDIO_FRAME_SIZE;
 
 	if (av_read_frame(pd->avFormatCtx, &packet) < 0)
 		return 1;

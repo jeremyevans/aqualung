@@ -232,12 +232,10 @@ meta_id3v2_latin1_from_utf8(char * buf, int len) {
 void
 meta_parse_id3v2_txxx(metadata_t * meta, unsigned char * buf, int len) {
 
-	int type;
 	int len1;
 	char * val1;
 	char * val2;
 
-	type = meta_frame_type_from_embedded_name(META_TAG_ID3v2, "TXXX");
 	len1 = meta_id3v2_strlen(buf+11, len-1, buf[10]);
 	val1 = meta_id3v2_to_utf8(buf[10], buf+11, len1);
 	val2 = meta_id3v2_to_utf8(buf[10], buf+12+len1, len-len1-2);
@@ -260,7 +258,6 @@ void
 meta_parse_id3v2_t___(metadata_t * meta, unsigned char * buf, int len) {
 
 	char frame_id[5];
-	int type;
 	char * val;
 
 	memcpy(frame_id, buf, 4);
@@ -277,7 +274,6 @@ meta_parse_id3v2_t___(metadata_t * meta, unsigned char * buf, int len) {
 		strcpy(frame_id, "TDOR");
 	}
 
-	type = meta_frame_type_from_embedded_name(META_TAG_ID3v2, frame_id);
 	val = meta_id3v2_to_utf8(buf[10], buf+11, len-1);
 	if (val != NULL) {
 		metadata_add_frame_from_keyval(meta, META_TAG_ID3v2, frame_id, val);
@@ -289,12 +285,10 @@ meta_parse_id3v2_t___(metadata_t * meta, unsigned char * buf, int len) {
 void
 meta_parse_id3v2_wxxx(metadata_t * meta, unsigned char * buf, int len) {
 
-	int type;
 	int len1;
 	char * val1;
 	char * val2;
 
-	type = meta_frame_type_from_embedded_name(META_TAG_ID3v2, "WXXX");
 	len1 = meta_id3v2_strlen(buf+11, len-1, buf[10]);
 	val1 = meta_id3v2_to_utf8(buf[10], buf+11, len1);
 	val2 = meta_id3v2_to_utf8(0x0 /* iso-8859-1 */, buf+12+len1, len-len1-2);
@@ -317,13 +311,11 @@ void
 meta_parse_id3v2_w___(metadata_t * meta, unsigned char * buf, int len) {
 
 	char frame_id[5];
-	int type;
 	char * val;
 
 	memcpy(frame_id, buf, 4);
 	frame_id[4] = '\0';
 
-	type = meta_frame_type_from_embedded_name(META_TAG_ID3v2, frame_id);
 	val = meta_id3v2_to_utf8(0x0 /* iso-8859-1 */, buf+10, len);
 	if (val != NULL) {
 		metadata_add_frame_from_keyval(meta, META_TAG_ID3v2, frame_id, val);

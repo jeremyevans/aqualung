@@ -5067,20 +5067,12 @@ playlist_load_m3u_thread(void * arg) {
 			}
 
 			if (strstr(line, "#EXTINF:") == line) {
-
-				char str_duration[64];
 				int cnt = 0;
-
-				/* We parse the timing, but throw it away.
-				   This may change in the future. */
 				while ((line[cnt+8] >= '0') && (line[cnt+8] <= '9') && cnt < 63) {
-					str_duration[cnt] = line[cnt+8];
 					++cnt;
 				}
-				str_duration[cnt] = '\0';
 				snprintf(name, MAXLEN-1, "%s", line+cnt+9);
 				have_name = 1;
-
 			} else {
                                 if (!httpc_is_url(line)) {
                                         /* safeguard against C:\ stuff */

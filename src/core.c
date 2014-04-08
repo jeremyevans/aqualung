@@ -2740,7 +2740,6 @@ main(int argc, char ** argv) {
 		fprintf(stderr, "aqualung main(): setenv(\"LC_NUMERIC\", \"POSIX\") failed\n");
 	}
 
-	g_thread_init(NULL);
 	gdk_threads_init();
 
 #ifdef _WIN32

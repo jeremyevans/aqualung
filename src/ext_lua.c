@@ -435,7 +435,7 @@ void setup_extended_title_formatting(void) {
 			/* Save memory if extension file is never used */
 			return;
 		}
-		l_mutex = g_mutex_new();
+		g_mutex_init(l_mutex);
 	} 
 
 	g_mutex_lock(l_mutex);

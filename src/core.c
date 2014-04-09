@@ -233,7 +233,7 @@ same_disc_next_track(char * filename, char * filename_prev) {
 
 /* roll back sample_offset samples, if possible */
 void
-rollback(rb_t * rb, file_decoder_t * fdec, double src_ratio, guint32 playback_offset) {
+rollback(file_decoder_t * fdec, double src_ratio, guint32 playback_offset) {
 
 	if (playback_offset < fdec->fileinfo.total_samples - fdec->samples_left)
 		file_decoder_seek(fdec, fdec->fileinfo.total_samples - fdec->samples_left - playback_offset);
@@ -464,7 +464,7 @@ disk_thread(void * arg) {
 
 				/* send a FLUSH command to output thread */
 				playback_offset = flush_output(src_ratio);
-				rollback(rb, fdec, src_ratio, playback_offset);
+				rollback(fdec, src_ratio, playback_offset);
 				if (fdec->is_stream) {
 					file_decoder_pause(fdec);
 				}
@@ -650,6 +650,68 @@ disk_thread(void * arg) {
 }
 
 
+void
+read_and_process_output(int bufsize, int * n_avail, int flushing) {
+
+	guint32 i;
+	if (*n_avail > bufsize)
+		*n_avail = bufsize;
+	
+	for (i = 0; i < *n_avail; i++) {
+		rb_read(rb, (char *)&(l_buf[i]), sample_size);
+		rb_read(rb, (char *)&(r_buf[i]), sample_size);
+	}
+	for (i = *n_avail; i < bufsize; i++) {
+		l_buf[i] = 0.0f;
+		r_buf[i] = 0.0f;
+	}
+
+	if (flushing) {
+		for (i = 0; i < *n_avail; i++) {
+			l_buf[i] = 0.0f;
+			r_buf[i] = 0.0f;
+		}
+		return;
+	}
+
+#ifdef HAVE_LADSPA
+	if (options.ladspa_is_postfader) {
+		for (i = 0; i < *n_avail; i++) {
+			l_buf[i] *= left_gain;
+			r_buf[i] *= right_gain;
+		}
+	}
+#else
+	for (i = 0; i < *n_avail; i++) {
+		l_buf[i] *= left_gain;
+		r_buf[i] *= right_gain;
+	}
+#endif /* HAVE_LADSPA */
+
+	/* plugin processing */
+#ifdef HAVE_LADSPA
+	plugin_lock = 1;
+	for (i = 0; i < n_plugins; i++) {
+		if (plugin_vect[i]->is_bypassed)
+			continue;
+		
+		if (plugin_vect[i]->handle) {
+			plugin_vect[i]->descriptor->run(plugin_vect[i]->handle, ladspa_buflen);
+		}
+		if (plugin_vect[i]->handle2) {
+			plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
+		}
+	}
+	plugin_lock = 0;
+	
+	if (!options.ladspa_is_postfader) {
+		for (i = 0; i < bufsize; i++) {
+			l_buf[i] *= left_gain;
+			r_buf[i] *= right_gain;
+		}
+	}
+#endif /* HAVE_LADSPA */
+}
 
 /* SNDIO output thread */
 #ifdef HAVE_SNDIO
@@ -716,58 +778,7 @@ sndio_thread(void * arg) {
 			goto sndio_wake;
 		}
 
-		if (n_avail > bufsize)
-			n_avail = bufsize;
-		
-		for (i = 0; i < n_avail; i++) {
-			rb_read(rb, (char *)&(l_buf[i]), sample_size);
-			rb_read(rb, (char *)&(r_buf[i]), sample_size);
-		}
-
-#ifdef HAVE_LADSPA
-		if (options.ladspa_is_postfader) {
-			for (i = 0; i < n_avail; i++) {
-				l_buf[i] *= left_gain;
-				r_buf[i] *= right_gain;
-			}
-		}
-#else
-		for (i = 0; i < n_avail; i++) {
-			l_buf[i] *= left_gain;
-			r_buf[i] *= right_gain;
-		}
-#endif /* HAVE_LADSPA */
-
-		if (n_avail < bufsize) {
-			for (i = n_avail; i < bufsize; i++) {
-				l_buf[i] = 0.0f;
-				r_buf[i] = 0.0f;
-			}
-		}
-
-		/* plugin processing */
-#ifdef HAVE_LADSPA
-		plugin_lock = 1;
-		for (i = 0; i < n_plugins; i++) {
-			if (plugin_vect[i]->is_bypassed)
-				continue;
-
-			if (plugin_vect[i]->handle) {
-				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle, ladspa_buflen);
-			}
-			if (plugin_vect[i]->handle2) {
-				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
-			}
-		}
-		plugin_lock = 0;
-
-		if (!options.ladspa_is_postfader) {
-			for (i = 0; i < bufsize; i++) {
-				l_buf[i] *= left_gain;
-				r_buf[i] *= right_gain;
-			}
-		}
-#endif /* HAVE_LADSPA */
+		read_and_process_output(bufsize, &n_avail, 0);
 
 		for (i = 0; i < bufsize; i++) {
 			if (l_buf[i] > 1.0)
@@ -857,58 +868,7 @@ pulse_thread(void * arg) {
 			goto pulse_wake;
 		}
 
-		if (n_avail > bufsize)
-			n_avail = bufsize;
-		
-		for (i = 0; i < n_avail; i++) {
-			rb_read(rb, (char *)&(l_buf[i]), sample_size);
-			rb_read(rb, (char *)&(r_buf[i]), sample_size);
-		}
-
-#ifdef HAVE_LADSPA
-		if (options.ladspa_is_postfader) {
-			for (i = 0; i < n_avail; i++) {
-				l_buf[i] *= left_gain;
-				r_buf[i] *= right_gain;
-			}
-		}
-#else
-		for (i = 0; i < n_avail; i++) {
-			l_buf[i] *= left_gain;
-			r_buf[i] *= right_gain;
-		}
-#endif /* HAVE_LADSPA */
-
-		if (n_avail < bufsize) {
-			for (i = n_avail; i < bufsize; i++) {
-				l_buf[i] = 0.0f;
-				r_buf[i] = 0.0f;
-			}
-		}
-
-		/* plugin processing */
-#ifdef HAVE_LADSPA
-		plugin_lock = 1;
-		for (i = 0; i < n_plugins; i++) {
-			if (plugin_vect[i]->is_bypassed)
-				continue;
-
-			if (plugin_vect[i]->handle) {
-				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle, ladspa_buflen);
-			}
-			if (plugin_vect[i]->handle2) {
-				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
-			}
-		}
-		plugin_lock = 0;
-
-		if (!options.ladspa_is_postfader) {
-			for (i = 0; i < bufsize; i++) {
-				l_buf[i] *= left_gain;
-				r_buf[i] *= right_gain;
-			}
-		}
-#endif /* HAVE_LADSPA */
+		read_and_process_output(bufsize, &n_avail, 0);
 
 		for (i = 0; i < bufsize; i++) {
 			if (l_buf[i] > 1.0)
@@ -1000,58 +960,7 @@ oss_thread(void * arg) {
 			goto oss_wake;
 		}
 
-		if (n_avail > bufsize)
-			n_avail = bufsize;
-		
-		for (i = 0; i < n_avail; i++) {
-			rb_read(rb, (char *)&(l_buf[i]), sample_size);
-			rb_read(rb, (char *)&(r_buf[i]), sample_size);
-		}
-
-#ifdef HAVE_LADSPA
-		if (options.ladspa_is_postfader) {
-			for (i = 0; i < n_avail; i++) {
-				l_buf[i] *= left_gain;
-				r_buf[i] *= right_gain;
-			}
-		}
-#else
-		for (i = 0; i < n_avail; i++) {
-			l_buf[i] *= left_gain;
-			r_buf[i] *= right_gain;
-		}
-#endif /* HAVE_LADSPA */
-
-		if (n_avail < bufsize) {
-			for (i = n_avail; i < bufsize; i++) {
-				l_buf[i] = 0.0f;
-				r_buf[i] = 0.0f;
-			}
-		}
-
-		/* plugin processing */
-#ifdef HAVE_LADSPA
-		plugin_lock = 1;
-		for (i = 0; i < n_plugins; i++) {
-			if (plugin_vect[i]->is_bypassed)
-				continue;
-
-			if (plugin_vect[i]->handle) {
-				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle, ladspa_buflen);
-			}
-			if (plugin_vect[i]->handle2) {
-				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
-			}
-		}
-		plugin_lock = 0;
-
-		if (!options.ladspa_is_postfader) {
-			for (i = 0; i < bufsize; i++) {
-				l_buf[i] *= left_gain;
-				r_buf[i] *= right_gain;
-			}
-		}
-#endif /* HAVE_LADSPA */
+		read_and_process_output(bufsize, &n_avail, 0);
 
 		for (i = 0; i < bufsize; i++) {
 			if (l_buf[i] > 1.0)
@@ -1165,58 +1074,7 @@ alsa_thread(void * arg) {
 			goto alsa_wake;
 		}
 
-		if (n_avail > bufsize)
-			n_avail = bufsize;
-
-		for (i = 0; i < n_avail; i++) {
-			rb_read(rb, (char *)&(l_buf[i]), sample_size);
-			rb_read(rb, (char *)&(r_buf[i]), sample_size);
-		}
-
-#ifdef HAVE_LADSPA
-		if (options.ladspa_is_postfader) {
-			for (i = 0; i < n_avail; i++) {
-				l_buf[i] *= left_gain;
-				r_buf[i] *= right_gain;
-			}
-		}
-#else
-		for (i = 0; i < n_avail; i++) {
-			l_buf[i] *= left_gain;
-			r_buf[i] *= right_gain;
-		}
-#endif /* HAVE_LADSPA */
-
-		if (n_avail < bufsize) {
-			for (i = n_avail; i < bufsize; i++) {
-				l_buf[i] = 0.0f;
-				r_buf[i] = 0.0f;
-			}
-		}
-		
-		/* plugin processing */
-#ifdef HAVE_LADSPA
-		plugin_lock = 1;
-		for (i = 0; i < n_plugins; i++) {
-			if (plugin_vect[i]->is_bypassed)
-				continue;
-			
-			if (plugin_vect[i]->handle) {
-				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle, ladspa_buflen);
-			}
-			if (plugin_vect[i]->handle2) {
-				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
-			}
-		}
-		plugin_lock = 0;
-		
-		if (!options.ladspa_is_postfader) {
-			for (i = 0; i < bufsize; i++) {
-				l_buf[i] *= left_gain;
-				r_buf[i] *= right_gain;
-			}
-		}
-#endif /* HAVE_LADSPA */
+		read_and_process_output(bufsize, &n_avail, 0);
 
 		if (is_output_32bit) {
 			for (i = 0; i < bufsize; i++) {
@@ -1309,7 +1167,7 @@ process(guint32 nframes, void * arg) {
 
 	guint32 i;
 	guint32 driver_offset = 0;
-	guint32 n_avail;
+	int n_avail;
 	jack_default_audio_sample_t * out1 = jack_port_get_buffer(out_L_port, nframes);
 	jack_default_audio_sample_t * out2 = jack_port_get_buffer(out_R_port, nframes);
 
@@ -1341,68 +1199,9 @@ process(guint32 nframes, void * arg) {
 	}
 	
 	n_avail = rb_read_space(rb) / (2*sample_size);
-	if (n_avail > nframes)
-		n_avail = nframes;
-	
-	for (i = 0; i < n_avail; i++) {
-		rb_read(rb, (char *)&(l_buf[i]), sample_size);
-		rb_read(rb, (char *)&(r_buf[i]), sample_size);
-	}
-	
-	if (n_avail < nframes) {
-		for (i = n_avail; i < nframes; i++) {
-			l_buf[i] = 0.0f;
-			r_buf[i] = 0.0f;
-		}
-	}
-	
-	if (flushing) {
-		for (i = 0; i < n_avail; i++) {
-			l_buf[i] = 0.0f;
-			r_buf[i] = 0.0f;
-		}
-	} else {
-#ifdef HAVE_LADSPA
-		if (options.ladspa_is_postfader) {
-			for (i = 0; i < n_avail; i++) {
-				l_buf[i] *= left_gain;
-				r_buf[i] *= right_gain;
-			}
-		}
-#else
-		for (i = 0; i < n_avail; i++) {
-			l_buf[i] *= left_gain;
-			r_buf[i] *= right_gain;
-		}
-#endif /* HAVE_LADSPA */
-		
-		/* plugin processing */
-#ifdef HAVE_LADSPA
-		if (n_avail > 0) {
-			plugin_lock = 1;
-			for (i = 0; i < n_plugins; i++) {
-				if (plugin_vect[i]->is_bypassed)
-					continue;
-				
-				if (plugin_vect[i]->handle) {
-					plugin_vect[i]->descriptor->run(plugin_vect[i]->handle, ladspa_buflen);
-				}
-				if (plugin_vect[i]->handle2) {
-					plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
-				}
-			}
-			plugin_lock = 0;
-		}
-		
-		if (!options.ladspa_is_postfader) {
-			for (i = 0; i < nframes; i++) {
-				l_buf[i] *= left_gain;
-				r_buf[i] *= right_gain;
-			}
-		}
-#endif /* HAVE_LADSPA */
-	}
-	
+
+	read_and_process_output(nframes, &n_avail, flushing);
+
 	for (i = 0; i < nframes; i++) {
 		out1[i] = l_buf[i];
 		out2[i] = r_buf[i];
@@ -2075,59 +1874,7 @@ win32_thread(void * arg) {
 			goto win32_wake;
 		}
 
-		if (n_avail > bufsize)
-			n_avail = bufsize;
-		
-		for (i = 0; i < n_avail; i++) {
-			rb_read(rb, (char *)&(l_buf[i]), sample_size);
-			rb_read(rb, (char *)&(r_buf[i]), sample_size);
-		}
-
-#ifdef HAVE_LADSPA
-		if (options.ladspa_is_postfader) {
-			for (i = 0; i < n_avail; i++) {
-				l_buf[i] *= left_gain;
-				r_buf[i] *= right_gain;
-			}
-		}
-#else
-		for (i = 0; i < n_avail; i++) {
-			l_buf[i] *= left_gain;
-			r_buf[i] *= right_gain;
-		}
-#endif /* HAVE_LADSPA */
-
-		if (n_avail < bufsize) {
-			for (i = n_avail; i < bufsize; i++) {
-				l_buf[i] = 0.0f;
-				r_buf[i] = 0.0f;
-			}
-		}
-
-		/* plugin processing */
-#ifdef HAVE_LADSPA
-		plugin_lock = 1;
-		for (i = 0; i < n_plugins; i++) {
-			if (plugin_vect[i]->is_bypassed)
-				continue;
-			
-			if (plugin_vect[i]->handle) {
-				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle, ladspa_buflen);
-			}
-			if (plugin_vect[i]->handle2) {
-				plugin_vect[i]->descriptor->run(plugin_vect[i]->handle2, ladspa_buflen);
-			}
-		}
-		plugin_lock = 0;
-		
-		if (!options.ladspa_is_postfader) {
-			for (i = 0; i < bufsize; i++) {
-				l_buf[i] *= left_gain;
-				r_buf[i] *= right_gain;
-			}
-		}
-#endif /* HAVE_LADSPA */
-
+		read_and_process_output(bufsize, &n_avail, 0);
 		
 		while (!(whdr[bufcnt].dwFlags & WHDR_DONE))
 			Sleep(1);
@@ -2663,6 +2410,13 @@ setup_app_directories(void) {
 	}
 }
 
+void die_no_such_output_driver(char * outstr) {
+	fprintf(stderr,
+		"You selected %s output, but this instance of Aqualung is compiled\n"
+		"without %s output support. Type aqualung -v to get a list of\n"
+		"compiled-in features.\n", outstr, outstr);
+	exit(1);
+}
 
 int
 main(int argc, char ** argv) {
@@ -2797,13 +2551,7 @@ main(int argc, char ** argv) {
 #ifdef HAVE_SNDIO
 					output = SNDIO_DRIVER;
 #else
-					fprintf(stderr,
-						"You selected sndio output, but this instance of Aqualung "
-						"is compiled\n"
-						"without sndio output support. Type aqualung -v to get a "
-						"list of\n"
-						"compiled-in features.\n");
-					exit(1);
+					die_no_such_output_driver(output_str);
 #endif /* HAVE_SNDIO*/
 					free(output_str);
 					break;
@@ -2812,13 +2560,7 @@ main(int argc, char ** argv) {
 #ifdef HAVE_OSS
 					output = OSS_DRIVER;
 #else
-					fprintf(stderr,
-						"You selected OSS output, but this instance of Aqualung "
-						"is compiled\n"
-						"without OSS output support. Type aqualung -v to get a "
-						"list of\n"
-						"compiled-in features.\n");
-					exit(1);
+					die_no_such_output_driver(output_str);
 #endif /* HAVE_OSS*/
 					free(output_str);
 					break;
@@ -2827,13 +2569,7 @@ main(int argc, char ** argv) {
 #ifdef HAVE_PULSE
 					output = PULSE_DRIVER;
 #else
-					fprintf(stderr,
-						"You selected PulseAudio output, but this instance of Aqualung "
-						"is compiled\n"
-						"without PulseAudio output support. Type aqualung -v to get a "
-						"list of\n"
-						"compiled-in features.\n");
-					exit(1);
+					die_no_such_output_driver(output_str);
 #endif /* HAVE_PULSE*/
 					free(output_str);
 					break;
@@ -2842,13 +2578,7 @@ main(int argc, char ** argv) {
 #ifdef HAVE_ALSA
 					output = ALSA_DRIVER;
 #else
-					fprintf(stderr,
-						"You selected ALSA output, but this instance of Aqualung "
-						"is compiled\n"
-						"without ALSA output support. Type aqualung -v to get a "
-						"list of\n"
-						"compiled-in features.\n");
-					exit(1);
+					die_no_such_output_driver(output_str);
 #endif /* HAVE_ALSA */
 					free(output_str);
 					break;
@@ -2857,13 +2587,7 @@ main(int argc, char ** argv) {
 #ifdef HAVE_JACK
 					output = JACK_DRIVER;
 #else
-					fprintf(stderr,
-						"You selected JACK output, but this instance of Aqualung "
-						"is compiled\n"
-						"without JACK output support. Type aqualung -v to get a "
-						"list of\n"
-						"compiled-in features.\n");
-					exit(1);
+					die_no_such_output_driver(output_str);
 #endif /* HAVE_JACK */
 					free(output_str);
 					break;
@@ -2872,13 +2596,7 @@ main(int argc, char ** argv) {
 #ifdef HAVE_WINMM
 					output = WIN32_DRIVER;
 #else
-					fprintf(stderr,
-						"You selected WIN32 output, but this instance of Aqualung "
-						"is compiled\n"
-						"without WIN32 output support. Type aqualung -v to get a "
-						"list of\n"
-						"compiled-in features.\n");
-					exit(1);
+					die_no_such_output_driver(output_str);
 #endif /* HAVE_WINMM */
 					free(output_str);
 					break;

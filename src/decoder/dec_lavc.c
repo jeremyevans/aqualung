@@ -37,42 +37,124 @@
 
 extern size_t sample_size;
 
-/* Adapted from avcodec_decode_audio3() implementation found at:
+/* interleaved: */
+void conv_fmt_u8(int n_samples, int sample_size, float * fsamples, AVFrame * frame) {
+	int i;
+	for (i = 0; i < n_samples; i++) {
+		*fsamples++ = (*((uint8_t*)(frame->extended_data[0] + i*sample_size)) - 128) / 256.f;
+	}
+}
+void conv_fmt_s16(int n_samples, int sample_size, float * fsamples, AVFrame * frame) {
+	int i;
+	for (i = 0; i < n_samples; i++) {
+		*fsamples++ = *((int16_t*)(frame->extended_data[0] + i*sample_size)) / 32768.f;
+	}
+}
+void conv_fmt_s32(int n_samples, int sample_size, float * fsamples, AVFrame * frame) {
+	int i;
+	for (i = 0; i < n_samples; i++) {
+		*fsamples++ = *((int32_t*)(frame->extended_data[0] + i*sample_size)) / 2147483648.f;
+	}
+}
+void conv_fmt_flt(int n_samples, int sample_size, float * fsamples, AVFrame * frame) {
+	int i;
+	for (i = 0; i < n_samples; i++) {
+		*fsamples++ = *((float*)(frame->extended_data[0] + i*sample_size));
+	}
+}
+void conv_fmt_dbl(int n_samples, int sample_size, float * fsamples, AVFrame * frame) {
+	int i;
+	for (i = 0; i < n_samples; i++) {
+		*fsamples++ = *((double*)(frame->extended_data[0] + i*sample_size));
+	}
+}
+
+/* planar: */
+void conv_fmt_u8p(int n_samples, int channels, int sample_size, float * fsamples, AVFrame * frame) {
+	int i, ch;
+	for (i = 0; i < n_samples; i++) {
+		for (ch = 0; ch < channels; ch++) {
+			*fsamples++ = (*((uint8_t*)(frame->extended_data[ch] + i*sample_size)) - 128) / 256.f;
+		}
+	}
+}
+void conv_fmt_s16p(int n_samples, int channels, int sample_size, float * fsamples, AVFrame * frame) {
+	int i, ch;
+	for (i = 0; i < n_samples; i++) {
+		for (ch = 0; ch < channels; ch++) {
+			*fsamples++ = *((int16_t*)(frame->extended_data[ch] + i*sample_size)) / 32768.f;
+		}
+	}
+}
+void conv_fmt_s32p(int n_samples, int channels, int sample_size, float * fsamples, AVFrame * frame) {
+	int i, ch;
+	for (i = 0; i < n_samples; i++) {
+		for (ch = 0; ch < channels; ch++) {
+			*fsamples++ = *((int32_t*)(frame->extended_data[ch] + i*sample_size)) / 2147483648.f;
+		}
+	}
+}
+void conv_fmt_fltp(int n_samples, int channels, int sample_size, float * fsamples, AVFrame * frame) {
+	int i, ch;
+	for (i = 0; i < n_samples; i++) {
+		for (ch = 0; ch < channels; ch++) {
+			*fsamples++ = *((float*)(frame->extended_data[ch] + i*sample_size));
+		}
+	}
+}
+void conv_fmt_dblp(int n_samples, int channels, int sample_size, float * fsamples, AVFrame * frame) {
+	int i, ch;
+	for (i = 0; i < n_samples; i++) {
+		for (ch = 0; ch < channels; ch++) {
+			*fsamples++ = *((double*)(frame->extended_data[ch] + i*sample_size));
+		}
+	}
+}
+
+/* Loosely based on avcodec_decode_audio3() implementation found at:
  * https://raw.github.com/FFmpeg/FFmpeg/master/libavcodec/utils.c
  */
-int decode_audio3(AVCodecContext *avctx, int16_t *samples, int *frame_size_ptr, AVPacket *avpkt) {
+int decode_audio(AVCodecContext *avctx, float *fsamples, int *frame_size_ptr, AVPacket *avpkt) {
 	int ret;
-#if LIBAVCODEC_VERSION_MAJOR < 53
-	ret = avcodec_decode_audio3(avctx, samples, frame_size_ptr, avpkt);
-#else /* LIBAVCODEC_VERSION_MAJOR >= 53 */
 	AVFrame frame = { { 0 } };
 	int got_frame = 0;
 	
 	ret = avcodec_decode_audio4(avctx, &frame, &got_frame, avpkt);
 	if (ret >= 0 && got_frame) {
-		int ch, plane_size;
+		int plane_size;
 		int planar = av_sample_fmt_is_planar(avctx->sample_fmt);
+		int sample_size = av_get_bytes_per_sample(avctx->sample_fmt);
 		int data_size = av_samples_get_buffer_size(&plane_size, avctx->channels,
 							   frame.nb_samples, avctx->sample_fmt, 1);
+		int n_samples = plane_size / sample_size;
 		if (*frame_size_ptr < data_size) {
 			av_log(avctx, AV_LOG_ERROR, "output buffer size is too small for "
 			       "the current frame (%d < %d)\n", *frame_size_ptr, data_size);
 			return AVERROR(EINVAL);
 		}
-		memcpy(samples, frame.extended_data[0], plane_size);
-		
-		if (planar && avctx->channels > 1) {
-			uint8_t *out = ((uint8_t *)samples) + plane_size;
-			for (ch = 1; ch < avctx->channels; ch++) {
-				memcpy(out, frame.extended_data[ch], plane_size);
-				out += plane_size;
-			}
+
+		switch (avctx->sample_fmt) {
+		/* interleaved: */
+		case AV_SAMPLE_FMT_U8: conv_fmt_u8(n_samples, sample_size, fsamples, &frame); break;
+		case AV_SAMPLE_FMT_S16: conv_fmt_s16(n_samples, sample_size, fsamples, &frame); break;
+		case AV_SAMPLE_FMT_S32: conv_fmt_s32(n_samples, sample_size, fsamples, &frame); break;
+		case AV_SAMPLE_FMT_FLT: conv_fmt_flt(n_samples, sample_size, fsamples, &frame); break;
+		case AV_SAMPLE_FMT_DBL: conv_fmt_dbl(n_samples, sample_size, fsamples, &frame); break;
+		/* planar: */
+		case AV_SAMPLE_FMT_U8P: conv_fmt_u8p(n_samples, avctx->channels, sample_size, fsamples, &frame); break;
+		case AV_SAMPLE_FMT_S16P: conv_fmt_s16p(n_samples, avctx->channels, sample_size, fsamples, &frame); break;
+		case AV_SAMPLE_FMT_S32P: conv_fmt_s32p(n_samples, avctx->channels, sample_size, fsamples, &frame); break;
+		case AV_SAMPLE_FMT_FLTP: conv_fmt_fltp(n_samples, avctx->channels, sample_size, fsamples, &frame); break;
+		case AV_SAMPLE_FMT_DBLP: conv_fmt_dblp(n_samples, avctx->channels, sample_size, fsamples, &frame); break;
+		default:
+			fprintf(stderr, "Fatal error: dec_lavc.c: decode_audio #1: invalid sample format %s\n",
+				av_get_sample_fmt_name(avctx->sample_fmt));
+			exit(1); // no, we really don't want to handle this gracefully
 		}
-		*frame_size_ptr = data_size;
+		*frame_size_ptr = planar ? n_samples * avctx->channels : n_samples;
 	} else {
 		*frame_size_ptr = 0;
 	}
-#endif /* LIBAVCODEC_VERSION_MAJOR >= 53 */
 	return ret;
 }
 
@@ -84,24 +166,37 @@ decode_lavc(decoder_t * dec) {
         file_decoder_t * fdec = dec->fdec;
 
 	AVPacket packet;
+#if LIBAVCODEC_VERSION_MAJOR < 53
         int16_t samples[MAX_AUDIO_FRAME_SIZE];
-        float fsamples[MAX_AUDIO_FRAME_SIZE];
         int n_bytes = MAX_AUDIO_FRAME_SIZE;
+#endif /* LIBAVCODEC_VERSION_MAJOR >= 53 */
+        float fsamples[MAX_AUDIO_FRAME_SIZE];
+	int n_samples = MAX_AUDIO_FRAME_SIZE;
+	int i;
 
 	if (av_read_frame(pd->avFormatCtx, &packet) < 0)
 		return 1;
 
-	if (packet.stream_index == pd->audioStream) {
+	if (!(packet.stream_index == pd->audioStream))
+		goto end;
 
-		decode_audio3(pd->avCodecCtx, samples, &n_bytes, &packet);
-		if (n_bytes > 0) {
-			int i;
-			for (i = 0; i < n_bytes/2; i++) {
-				fsamples[i] = samples[i] * fdec->voladj_lin / 32768.f;
-			}
-			rb_write(pd->rb, (char *)fsamples, n_bytes/2 * sample_size);
-		}
+#if LIBAVCODEC_VERSION_MAJOR < 53
+	avcodec_decode_audio3(pd->avCodecCtx, samples, &n_bytes, &packet);
+	if (n_bytes <= 0) goto end;
+	n_samples = n_bytes / 2;
+	for (i = 0; i < n_samples; i++) {
+		fsamples[i] = samples[i] * fdec->voladj_lin / 32768.f;
 	}
+#else /* LIBAVCODEC_VERSION_MAJOR >= 53 */
+	decode_audio(pd->avCodecCtx, fsamples, &n_samples, &packet);
+	if (n_samples <= 0) goto end;
+	for (i = 0; i < n_samples; i++) {
+		fsamples[i] *= fdec->voladj_lin;
+	}
+#endif /* LIBAVCODEC_VERSION_MAJOR >= 53 */
+
+	rb_write(pd->rb, (char *)fsamples, n_samples * sample_size);
+end:
 	av_free_packet(&packet);
         return 0;
 }

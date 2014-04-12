@@ -67,7 +67,7 @@ static GtkWidget * l_playlist_menu_entry = NULL;
 static GtkWidget * l_playlist_menu = NULL;
 static GtkWidget * l_playlist_menu_sep = NULL;
 static GtkWidget * l_playlist_menu_reload = NULL;
-static GMutex * l_mutex = NULL;
+static GMutex l_mutex;
 static const char l_cur_fdec = 'l';
 static const char l_cur_menu = 'm';
 static const char AQUALUNG_LUA_MAIN_TABLE[] = "Aqualung";
@@ -371,7 +371,7 @@ static int  l_current_file_percent_complete(lua_State * L) {
 static void custom_playlist_menu_cb(gpointer path) {
 	int error = 0;
 
-	g_mutex_lock(l_mutex);
+	g_mutex_lock(&l_mutex);
 
 	lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
 	lua_getfield(L, -1, "raw_playlist_menu");
@@ -381,7 +381,7 @@ static void custom_playlist_menu_cb(gpointer path) {
 		fprintf(stderr, "Error: in callback function for menu command %s: %s\n", (char *)path, lua_tostring(L, -1));
 		lua_pop(L, 1);
 	}
-	g_mutex_unlock(l_mutex);
+	g_mutex_unlock(&l_mutex);
 }
 
 static int l_add_playlist_menu_command(lua_State * L) {
@@ -430,15 +430,12 @@ void setup_extended_title_formatting(void) {
 	gtk_widget_hide(l_playlist_menu_reload);
 	gtk_widget_hide(l_playlist_menu_entry);
 
-	if (l_mutex == NULL) {
-		if (!options.use_ext_title_format) {
-			/* Save memory if extension file is never used */
-			return;
-		}
-		g_mutex_init(l_mutex);
-	} 
+	if (!options.use_ext_title_format) {
+		/* Save memory if extension file is never used */
+		return;
+	}
 
-	g_mutex_lock(l_mutex);
+	g_mutex_lock(&l_mutex);
 
 	if (metadata_type_hash == NULL) {
 		metadata_type_hash = g_hash_table_new(g_str_hash, g_str_equal);
@@ -553,11 +550,6 @@ void setup_extended_title_formatting(void) {
 		L = NULL;
 	}
 
-	if(!options.use_ext_title_format) {
-		g_mutex_unlock(l_mutex);
-		return;
-	}
-
 	L = lua_open();
 	luaL_openlibs(L);
 
@@ -596,7 +588,7 @@ void setup_extended_title_formatting(void) {
 	add_custom_commands_to_playlist_menu();
 	gtk_widget_show(l_playlist_menu_sep);
 	gtk_widget_show(l_playlist_menu_reload);
-	g_mutex_unlock(l_mutex);
+	g_mutex_unlock(&l_mutex);
 }
 
 static void l_set_fdec(file_decoder_t * fdec) {
@@ -609,7 +601,7 @@ static char * l_title_format(const char * function_name, file_decoder_t * fdec) 
 	int error;
 	char * s = NULL; 
 	if (options.use_ext_title_format) {
-		g_mutex_lock(l_mutex);
+		g_mutex_lock(&l_mutex);
 
 		l_set_fdec(fdec);
 
@@ -629,7 +621,7 @@ static char * l_title_format(const char * function_name, file_decoder_t * fdec) 
 		 */
 		l_set_fdec(NULL);
 
-		g_mutex_unlock(l_mutex);
+		g_mutex_unlock(&l_mutex);
 	}
 	return s;
 }
@@ -680,7 +672,7 @@ void add_custom_command_menu_to_playlist_menu(GtkWidget * menu) {
 void run_custom_remote_command(char * command) {
 	int error;
 	if (options.use_ext_title_format) {
-		g_mutex_lock(l_mutex);
+		g_mutex_lock(&l_mutex);
 
 		lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
 		lua_getfield(L, 1, "run_remote_command");
@@ -690,14 +682,14 @@ void run_custom_remote_command(char * command) {
 			fprintf(stderr, "Error: while running remote command %s: %s\n", command, lua_tostring(L, -1));
 			lua_pop(L, 1);
 		}
-		g_mutex_unlock(l_mutex);
+		g_mutex_unlock(&l_mutex);
 	}
 }
 
 static void run_custom_keybinding(char * window, char * keyname, guint state) {
 	int error;
 	if (options.use_ext_title_format) {
-		g_mutex_lock(l_mutex);
+		g_mutex_lock(&l_mutex);
 
 		lua_getglobal(L, AQUALUNG_LUA_MAIN_TABLE);
 		lua_getfield(L, 1, "run_keybinding");
@@ -711,7 +703,7 @@ static void run_custom_keybinding(char * window, char * keyname, guint state) {
 			fprintf(stderr, "Error: while running keybinding for key %s with state 0x%x: %s\n", keyname, state, lua_tostring(L, -1));
 			lua_pop(L, 1);
 		}
-		g_mutex_unlock(l_mutex);
+		g_mutex_unlock(&l_mutex);
 	}
 }
 
@@ -730,7 +722,7 @@ void run_custom_store_keybinding(char * keyname, guint state){
 void run_hooks_fdec(char * type, file_decoder_t * fdec) {
 	int error;
 	if (options.use_ext_title_format) {
-		g_mutex_lock(l_mutex);
+		g_mutex_lock(&l_mutex);
 
 		l_set_fdec(fdec);
 
@@ -745,7 +737,7 @@ void run_hooks_fdec(char * type, file_decoder_t * fdec) {
 
 		l_set_fdec(NULL);
 
-		g_mutex_unlock(l_mutex);
+		g_mutex_unlock(&l_mutex);
 	}
 }
 

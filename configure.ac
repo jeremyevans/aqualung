@@ -70,7 +70,7 @@ AC_CHECK_FUNCS([memset mkdir psiginfo strcasestr strdup strndup strrchr strstr])
 AC_SYS_LARGEFILE
 AS_CASE([$host_os],
     [cygwin*],
-        [AS_IF([test "x$GCC" = 'xyes'], [CPPFLAGS="-mwin32 $CPPFLAGS"])],
+        [AS_VAR_IF([GCC], [yes], [CPPFLAGS="-mwin32 $CPPFLAGS"])],
     [AC_CHECK_LIB([pthread], [pthread_create], [],
         [AC_MSG_ERROR([pthreads are required to build Aqualung])])])
 
@@ -118,9 +118,9 @@ AC_MSG_CHECKING([for type of build])
 buildtype='release'
 AC_ARG_ENABLE([debug],
     [AS_HELP_STRING([--enable-debug], [compile with debugging support])],
-    [AS_IF([test "x$enable_debug" = 'xyes'], [buildtype='debug'])])
+    [AS_VAR_IF([enable_debug], [yes], [buildtype='debug'])])
 AC_MSG_RESULT([$buildtype])
-AS_IF([test "x$buildtype" = 'xrelease'],
+AS_VAR_IF([buildtype], [release],
     [AC_DEFINE([RELEASE_BUILD], [1], [Define if doing a release build])],
     [
         dnl
@@ -137,11 +137,11 @@ AS_IF([test "x$buildtype" = 'xrelease'],
         dnl those set by the AC_PROG_CC macro), so while setting user variables
         dnl directly is normally considered bad form, it's necessary here.
         dnl
-        AS_IF([test "x$GCC" = 'xyes'], [
+        AS_VAR_IF([GCC], [yes], [
             AC_SUBST([debug_LDFLAGS], [-rdynamic])
             CFLAGS="$CFLAGS -ggdb -g -O0"
         ])
-        AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="$CXXFLAGS -ggdb -g -O0"])
+        AS_VAR_IF([GXX], [yes], [CXXFLAGS="$CXXFLAGS -ggdb -g -O0"])
         AC_DEFINE([DEBUG_BUILD], [1], [Define if doing a debug build])
     ])
 
@@ -154,28 +154,28 @@ AC_ARG_ENABLE([jack_mgmt],
 AC_ARG_ENABLE([loop],
     [AS_HELP_STRING([--disable-loop], [compile without loop playback support])],
     [], [enable_loop='yes'])
-AS_IF([test "x$enable_loop" = 'xyes'],
+AS_VAR_IF([enable_loop], [yes],
     [AC_DEFINE([HAVE_LOOP], [1], [Define to build with loop playback support])])
 AM_CONDITIONAL([HAVE_LOOP], [test "x$enable_loop" = 'xyes'])
 
 AC_ARG_ENABLE([podcast],
     [AS_HELP_STRING([--disable-podcast], [compile without podcast support])],
     [], [enable_podcast='yes'])
-AS_IF([test "x$enable_podcast" = 'xyes'],
+AS_VAR_IF([enable_podcast], [yes],
     [AC_DEFINE([HAVE_PODCAST], [1], [Define to build with podcast support])])
 AM_CONDITIONAL([HAVE_PODCAST], [test "x$enable_podcast" = 'xyes'])
 
 AC_ARG_ENABLE([systray],
     [AS_HELP_STRING([--disable-systray], [compile without systray support])],
     [], [enable_systray='yes'])
-AS_IF([test "x$enable_systray" = 'xyes'],
+AS_VAR_IF([enable_systray], [yes],
     [AC_DEFINE([HAVE_SYSTRAY], [1], [Define to build with GTK+ systray])])
 
 AC_ARG_ENABLE([transcoding],
     [AS_HELP_STRING([--disable-transcoding],
         [compile without transcoding support])],
     [], [enable_transcoding='yes'])
-AS_IF([test "x$enable_transcoding" != 'xyes'], [
+AS_VAR_IF([enable_transcoding], [yes], [], [
     dnl
     dnl --disable-transcoding implies --without-lame --without-vorbisenc
     dnl setting these variables now ensures detection is forced off below
@@ -207,7 +207,7 @@ AC_ARG_WITH([oss],
     [AS_HELP_STRING([--with-oss],
         [compile with OSS support (default: detect)])],
     [], [with_oss='detect'])
-AS_IF([test "x$with_oss" != 'xno'], [
+AS_VAR_IF([with_oss], [no], [], [
     AC_MSG_NOTICE([OSS Support])
     dnl
     dnl OSS detection is a wee bit squirrely, sorry if this hard to follow...
@@ -261,7 +261,7 @@ AQUALUNG_DETECT([flac], [Free Lossless Audio Codec],
     [PKG_CHECK_MODULES([flac], [flac],
         [AQUALUNG_FOUND([flac])],
         [AQUALUNG_MISSING([flac], [$flac_PKG_ERRORS])])])
-AS_IF([test "x$enable_transcoding" = 'xyes'],
+AS_VAR_IF([enable_transcoding], [yes],
     [with_flac_enc="$with_flac"], [with_flac_enc='no'])
 AS_CASE([$with_flac_enc],
     [yes*], [AC_DEFINE([HAVE_FLAC_ENC], [1],
@@ -313,7 +313,7 @@ AQUALUNG_DETECT([sndfile], [sndfile (WAV, AIFF, etc.)], [
     PKG_CHECK_EXISTS([sndfile >= 1.0.18],
         [AC_DEFINE([HAVE_SNDFILE_1_0_18], [1], [Defined if sndfile >= 1.0.18])])
 ])
-AS_IF([test "x$enable_transcoding" = 'xyes'],
+AS_VAR_IF([enable_transcoding], [yes],
     [with_sndfile_enc="$with_sndfile"], [with_sndfile_enc='no'])
 AS_CASE([$with_sndfile_enc],
     [yes*], [AC_DEFINE([HAVE_SNDFILE_ENC], [1],
@@ -410,8 +410,8 @@ AQUALUNG_DETECT([lua], [Lua Extension],
 
 
 # Compiler and linker variables.
-AS_IF([test "x$GCC" = 'xyes'], [CFLAGS="-Wall $CFLAGS"])
-AS_IF([test "x$GXX" = 'xyes'], [CXXFLAGS="-Wall $CXXFLAGS"])
+AS_VAR_IF([GCC], [yes], [CFLAGS="-Wall $CFLAGS"])
+AS_VAR_IF([GXX], [yes], [CXXFLAGS="-Wall $CXXFLAGS"])
 
 
 AC_MSG_NOTICE([summary

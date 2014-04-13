@@ -320,17 +320,17 @@ AS_CASE([$with_sndfile_enc],
                 [Define to build with sndfile encoding support])])
 
 AQUALUNG_DETECT([speex], [Ogg Speex],
-    [PKG_CHECK_MODULES([speex], [oggz speex],
+    [PKG_CHECK_MODULES([speex], [oggz speex ogg],
         [AQUALUNG_FOUND([speex])],
         [AQUALUNG_MISSING([speex], [$speex_PKG_ERRORS])])])
 
 AQUALUNG_DETECT([vorbis], [Ogg Vorbis],
-    [PKG_CHECK_MODULES([vorbis], [vorbis vorbisfile],
+    [PKG_CHECK_MODULES([vorbis], [vorbis vorbisfile ogg],
         [AQUALUNG_FOUND([vorbis])],
         [AQUALUNG_MISSING([vorbis], [$vorbis_PKG_ERRORS])])])
 
 AQUALUNG_DETECT([vorbisenc], [Ogg Vorbis Encoding],
-    [PKG_CHECK_MODULES([vorbisenc], [vorbisenc],
+    [PKG_CHECK_MODULES([vorbisenc], [vorbisenc ogg],
         [AQUALUNG_FOUND([vorbisenc])],
         [AQUALUNG_MISSING([vorbisenc], [$vorbisenc_PKG_ERRORS])])])
 AS_CASE([$with_flac_enc/$with_lame/$with_sndfile_enc/$with_vorbisenc],

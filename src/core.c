@@ -140,6 +140,7 @@ char * device_name = NULL;
 
 
 /***** disk thread stuff *****/
+file_decoder_t * fdec = NULL;
 unsigned long long sample_offset;
 status_t disk_thread_status;
 int output = 0; /* oss/alsa/jack */
@@ -279,7 +280,6 @@ void *
 disk_thread(void * arg) {
 
 	thread_info_t * info = (thread_info_t *)arg;
-	file_decoder_t * fdec = NULL;
 	guint32 playback_offset; /* amount of samples in the output driver buffer */
 	unsigned int n_read = 0;
 	unsigned int want_read;
@@ -385,9 +385,8 @@ disk_thread(void * arg) {
 						send_cmd = CMD_FILEINFO;
 						rb_write(rb_disk2gui, &send_cmd,
 								      sizeof(send_cmd));
-						rb_write(rb_disk2gui,
-								      (char *)&(fdec->fileinfo),
-								      sizeof(fileinfo_t));
+						rb_write(rb_disk2gui, (char *)&(fdec->fileinfo),
+							              sizeof(fileinfo_t));
 
 						info->is_streaming = 1;
 						end_of_file = 0;
@@ -434,8 +433,7 @@ disk_thread(void * arg) {
 						send_cmd = CMD_FILEINFO;
 						rb_write(rb_disk2gui, &send_cmd,
 								      sizeof(send_cmd));
-						rb_write(rb_disk2gui,
-								      (char *)&(fdec->fileinfo),
+						rb_write(rb_disk2gui, (char *)&(fdec->fileinfo),
 								      sizeof(fileinfo_t));
 
 						info->is_streaming = 1;

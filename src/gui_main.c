@@ -129,6 +129,9 @@ extern GtkWidget * playlist_notebook;
 
 void init_plist_menu(GtkWidget *append_menu);
 
+/* file decoder instance used by the disk thread - use with caution! */
+extern file_decoder_t * fdec;
+
 /* the physical name of the file that is playing, or a '\0'. */
 char current_file[MAXLEN];
 
@@ -3845,8 +3848,6 @@ process_metablock(metadata_t * meta) {
 	char * icy_descr = NULL;
 	meta_frame_t * frame;
 
-	run_hooks_fdec("track_change", fdec);
-
 	frame = metadata_get_frame_by_type(meta, META_FIELD_APIC, NULL);
 	if (frame != NULL) {
 		if (embedded_picture != NULL) {
@@ -4000,6 +4001,7 @@ timeout_callback(gpointer data) {
 			status.sample_pos = 0;
 			status.sample_offset = 0;
 			fresh_new_file = fresh_new_file_prev = 0;
+			run_hooks_fdec("track_change", fdec);
 			break;
 
 		case CMD_STATUS:

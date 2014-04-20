@@ -3091,7 +3091,7 @@
 
       </subsection>
 
-      <subsubsection title="Programmable Title Format" key="prog_title_format">
+      <subsection title="Programmable Title Format" key="prog_title_format">
         <p>By specifying a function named <q><cmd>playlist_title</cmd></q>
         in your Lua extension file, which should accept no arguments and
         should return a string, you can override the default title formatting
@@ -3335,7 +3335,7 @@
         playlist, the <gui>Reread file metadata</gui> setting should
         be used.</p>
 
-      </subsubsection>
+      </subsection>
 
       <subsection title="Hooking into Aqualung Events">
 
@@ -3359,7 +3359,7 @@
 
             <verbatim>
             @add_hook("track_change", function ()
-            @    print("File: " current_file() .. " Artist: " .. m("artist"))
+            @    print("File: " .. current_file() .. " Artist: " .. m("artist"))
             @end)</verbatim>
 
             <p>Prints the filename and artist of the new file.</p>

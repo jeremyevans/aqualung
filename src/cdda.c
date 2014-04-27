@@ -41,6 +41,7 @@
 #include "undef_ac_pkg.h"
 #include <config.h>	/* re-establish undefined autoconf macros */
 
+#include "athread.h"
 #include "common.h"
 #include "utils_gui.h"
 #include "options.h"

@@ -42,6 +42,7 @@
 #include "export.h"
 #endif /* HAVE_TRANSCODING */
 
+#include "athread.h"
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"

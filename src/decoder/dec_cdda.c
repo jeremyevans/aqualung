@@ -39,8 +39,8 @@
 #include "../undef_ac_pkg.h"
 #include <config.h>	/* re-establish undefined autoconf macros */
 
+#include "../athread.h"
 #include "../cdda.h"
-#include "../common.h"
 #include "../rb.h"
 #include "dec_cdda.h"
 

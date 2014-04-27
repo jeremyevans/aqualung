@@ -31,6 +31,7 @@ aqualung_LDADD = decoder/libdecoder.a encoder/libencoder.a \
 
 aqualung_SOURCES = \
 about.h about.c \
+athread.h \
 build_store.h build_store.c \
 common.h \
 core.h core.c \

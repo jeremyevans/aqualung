@@ -25,7 +25,7 @@
 #include <sys/stat.h>
 #include <mad.h>
 
-#include "../common.h"
+#include "../athread.h"
 #include "../httpc.h"
 #include "../rb.h"
 #include "file_decoder.h"

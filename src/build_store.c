@@ -39,6 +39,7 @@
 #include "cddb_lookup.h"
 #endif /* HAVE_CDDB */
 
+#include "athread.h"
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"

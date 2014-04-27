@@ -24,7 +24,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "common.h"
+#include "athread.h"
 #include "decoder/file_decoder.h"
 
 

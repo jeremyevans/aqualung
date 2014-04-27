@@ -55,7 +55,7 @@
 #include <pulse/simple.h>
 #endif /* HAVE_PULSE */
 
-#include "common.h"
+#include "athread.h"
 
 
 #define MAX_SAMPLERATE 96000

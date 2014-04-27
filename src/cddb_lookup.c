@@ -34,6 +34,7 @@
 #include "store_cdda.h"
 #endif /* HAVE_CDDA */
 
+#include "athread.h"
 #include "common.h"
 #include "utils.h"
 #include "utils_gui.h"

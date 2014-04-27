@@ -24,6 +24,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#include "athread.h"
 #include "common.h"
 
 

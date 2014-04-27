@@ -64,6 +64,7 @@
 #include "store_podcast.h"
 #endif /* HAVE_PODCAST */
 
+#include "athread.h"
 #include "ext_lua.h"
 #include "common.h"
 #include "utils.h"

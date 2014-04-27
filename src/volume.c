@@ -29,7 +29,7 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
-#include "common.h"
+#include "athread.h"
 #include "utils_gui.h"
 #include "decoder/file_decoder.h"
 #include "options.h"

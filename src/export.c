@@ -34,6 +34,7 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
+#include "athread.h"
 #include "common.h"
 #include "i18n.h"
 #include "utils.h"

@@ -30,6 +30,7 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#include "athread.h"
 #include "common.h"
 #include "i18n.h"
 #include "decoder/file_decoder.h"

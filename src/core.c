@@ -87,6 +87,7 @@
 #include "decoder/dec_cdda.h"
 #endif /* HAVE_CDDA */
 
+#include "athread.h"
 #include "common.h"
 #include "utils.h"
 #include "version.h"

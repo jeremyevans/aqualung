@@ -45,6 +45,7 @@
 #include "export.h"
 #endif /* HAVE_TRANSCODING */
 
+#include "athread.h"
 #include "ext_lua.h"
 #include "common.h"
 #include "utils.h"

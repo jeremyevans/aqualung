@@ -24,6 +24,7 @@
 #include <config.h>
 
 #include <stddef.h>
+#include <glib.h>
 
 
 #ifdef HAVE_LIBPTHREAD
@@ -52,11 +53,10 @@
 	pthread_cond_timedwait(&(cond), &(mutex), &(timeout));
 #define AQUALUNG_COND_WAIT(cond, mutex) pthread_cond_wait(&(cond), &(mutex));
 
-void set_thread_priority(pthread_t thread, char * name, int realtime, int priority);
+void set_thread_priority(pthread_t thread, const gchar * name,
+			 gboolean realtime, gint priority);
 
 #else /* !HAVE_LIBPTHREAD */
-
-#include <glib.h>
 
 #define AQUALUNG_THREAD_DECLARE(thread_id) GThread * thread_id;
 #define AQUALUNG_THREAD_CREATE(id, attr, func, args) \
@@ -78,7 +78,8 @@ void set_thread_priority(pthread_t thread, char * name, int realtime, int priori
 	g_cond_timed_wait(cond, mutex, timeout);
 #define AQUALUNG_COND_WAIT(cond, mutex) g_cond_wait(cond, mutex);
 
-void set_thread_priority(GThread * thread, char * name, int realtime, int priority);
+void set_thread_priority(GThread * thread, const gchar * name,
+			 gboolean realtime, gint priority);
 
 #endif /* !HAVE_LIBPTHREAD */
 

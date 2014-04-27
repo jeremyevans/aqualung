@@ -1227,7 +1227,7 @@ jack_info_shutdown(jack_status_t code, const char * reason, void * arg) {
  * -N : unable to start with given params
  */
 int
-sndio_init(thread_info_t * info, int verbose, int realtime, int priority) {
+sndio_init(thread_info_t * info, int verbose, gboolean realtime, int priority) {
 
 	struct sio_hdl * sndio_hdl;
 	struct sio_par sndio_par;
@@ -1308,7 +1308,7 @@ sndio_init(thread_info_t * info, int verbose, int realtime, int priority) {
  * -N : unable to start with given params
  */
 int
-oss_init(thread_info_t * info, int verbose, int realtime, int priority) {
+oss_init(thread_info_t * info, int verbose, gboolean realtime, int priority) {
 
 	int ioctl_arg;
 	int ioctl_status;
@@ -1626,7 +1626,7 @@ jack_client_start(void) {
  *       N = error code returned by PulseAudio.
  */
 int
-pulse_init(thread_info_t * info, int verbose, int realtime, int priority) {
+pulse_init(thread_info_t * info, int verbose, gboolean realtime, int priority) {
 	
 	int err = 0;
 	if (info->out_SR > MAX_SAMPLERATE) {
@@ -2377,9 +2377,9 @@ main(int argc, char ** argv) {
 	int show_usage = 0;
 	char * output_str = NULL;
 	int rate = 0;
-	int try_realtime = 0;
+	gboolean try_realtime = FALSE;
 	int priority = -1;
-	int disk_try_realtime = 0;
+	gboolean disk_try_realtime = FALSE;
 	int disk_priority = -1;
 
 	char rcmd;
@@ -2596,13 +2596,13 @@ main(int argc, char ** argv) {
 #endif /* HAVE_JACK */
 				break;
 			case 'R':
-				try_realtime = 1;
+				try_realtime = TRUE;
 				break;
 			case 'P':
 				priority = atoi(optarg);
 				break;
 			case 'D':
-				disk_try_realtime = 1;
+				disk_try_realtime = TRUE;
 				break;
 			case 'Y':
 				disk_priority = atoi(optarg);

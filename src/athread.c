@@ -20,69 +20,67 @@
 
 #include <config.h>
 
+#include <glib.h>
+
 #include "athread.h"
 
 #ifdef HAVE_LIBPTHREAD
-#include <stdio.h>
-#include <string.h>
 #include <pthread.h>
 #include <sched.h>
 
 
 void
-set_thread_priority(pthread_t thread, char * name, int realtime, int priority) {
+set_thread_priority(pthread_t thread, const gchar * name, gboolean realtime,
+		    gint priority) {
 
 	struct sched_param param;
-	int policy;
-	int x;
+	int policy, priority_min, priority_max;
+	int err;
 
-	if (pthread_getschedparam(thread, &policy, &param) != 0) {
+	if ((err = pthread_getschedparam(thread, &policy, &param)) != 0) {
+		g_debug("cannot get scheduling policy for %s thread: %s",
+			name, g_strerror(err));
 		return;
 	}
 
 	if (realtime) {
 		policy = SCHED_FIFO;
-#ifndef __OpenBSD__
-		if (priority == -1) {
-			priority = 1;
-		}
-#endif /* !__OpenBSD__ */
 	}
+	priority_min = sched_get_priority_min(policy);
+	priority_max = sched_get_priority_max(policy);
 	if (priority != -1) {
-#ifdef PTHREAD_MIN_PRIORITY
-#ifdef PTHREAD_MAX_PRIORITY
-		if (priority < PTHREAD_MIN_PRIORITY) {
-			param.sched_priority = PTHREAD_MIN_PRIORITY;
-			fprintf(stderr, "Warning: %s thread priority (%d) too low, set to %d",
-				name, priority, PTHREAD_MIN_PRIORITY);
-		} else if (priority > PTHREAD_MAX_PRIORITY) {
-			param.sched_priority = PTHREAD_MAX_PRIORITY;
-			fprintf(stderr, "Warning: %s thread priority (%d) too high, set to %d",
-				name, priority, PTHREAD_MAX_PRIORITY);
-		} else
-#endif /* PTHREAD_MAX_PRIORITY */
-#endif /* PTHREAD_MIN_PRIORITY */
-		{
-			param.sched_priority = priority;
+		if (priority < priority_min) {
+			g_warning("%s thread priority (%d) too low, set to %d",
+				  name, priority, priority_min);
+			priority = priority_min;
+		} else if (priority > priority_max) {
+			g_warning("%s thread priority (%d) too high, set to %d",
+				  name, priority, priority_max);
+			priority = priority_max;
+		}
+		param.sched_priority = priority;
+	} else {
+		if (param.sched_priority < priority_min) {
+			param.sched_priority = priority_min;
+		} else if (param.sched_priority > priority_max) {
+			param.sched_priority = priority_max;
 		}
 	}
 
-	if ((x = pthread_setschedparam(thread, policy, &param)) != 0) {
-		fprintf(stderr,
-			"Warning: cannot use real-time scheduling for %s thread (%s/%d) "
-			"(%d: %s)\n", name, policy == SCHED_FIFO ? "FIFO" : "RR", param.sched_priority,
-			x, strerror(x));
+	if ((err = pthread_setschedparam(thread, policy, &param)) != 0) {
+		g_warning("cannot set scheduling policy for %s thread: %s",
+			  name, g_strerror(err));
 	}
 
 }
 
 
 #else /* !HAVE_LIBPTHREAD */
-#include <glib.h>
 
 
 void
-set_thread_priority(GThread * thread, char * name, int realtime, int priority) {
+set_thread_priority(GThread * thread, const gchar * name, gboolean realtime,
+		    gint priority) {
 
 	if (realtime)
 		g_thread_set_priority(thread, G_THREAD_PRIORITY_URGENT);

@@ -21,10 +21,12 @@
 #ifndef AQUALUNG_ATHREAD_H
 #define AQUALUNG_ATHREAD_H
 
+#include <config.h>
+
 #include <stddef.h>
 
 
-#ifndef _WIN32
+#ifdef HAVE_LIBPTHREAD
 
 #include <pthread.h>
 
@@ -50,7 +52,7 @@
 	pthread_cond_timedwait(&(cond), &(mutex), &(timeout));
 #define AQUALUNG_COND_WAIT(cond, mutex) pthread_cond_wait(&(cond), &(mutex));
 
-#else /* _WIN32 */
+#else /* !HAVE_LIBPTHREAD */
 
 #include <glib.h>
 
@@ -74,7 +76,7 @@
 	g_cond_timed_wait(cond, mutex, timeout);
 #define AQUALUNG_COND_WAIT(cond, mutex) g_cond_wait(cond, mutex);
 
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 
 
 #endif /* AQUALUNG_ATHREAD_H */

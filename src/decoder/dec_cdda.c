@@ -221,9 +221,9 @@ decoder_t *
 cdda_decoder_init(file_decoder_t * fdec) {
 
         decoder_t * dec = NULL;
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	cdda_pdata_t * pd = NULL;
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 
         if ((dec = calloc(1, sizeof(decoder_t))) == NULL) {
                 fprintf(stderr, "dec_cdda.c: cdda_decoder_new() failed: calloc error\n");
@@ -244,10 +244,10 @@ cdda_decoder_init(file_decoder_t * fdec) {
 	dec->close = cdda_decoder_close;
 	dec->read = cdda_decoder_read;
 	dec->seek = cdda_decoder_seek;
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	pd = (cdda_pdata_t *)dec->pdata;
 	pd->cdda_reader_mutex = g_mutex_new();
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 
 	return dec;
 }
@@ -256,10 +256,10 @@ cdda_decoder_init(file_decoder_t * fdec) {
 void
 cdda_decoder_destroy(decoder_t * dec) {
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	cdda_pdata_t * pd = (cdda_pdata_t *)dec->pdata;
 	g_mutex_free(pd->cdda_reader_mutex);
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 	free(dec->pdata);
 	free(dec);
 }

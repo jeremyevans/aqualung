@@ -77,11 +77,11 @@ volume_new(GtkTreeStore * store, int type) {
 
 	AQUALUNG_COND_INIT(vol->thread_wait);
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	vol->thread_mutex = g_mutex_new();
 	vol->wait_mutex = g_mutex_new();
 	vol->thread_wait = g_cond_new();
-#endif
+#endif /* !HAVE_LIBPTHREAD */
 
 	return vol;
 }
@@ -112,11 +112,11 @@ vol_item_free(vol_item_t * item) {
 void
 volume_free(volume_t * vol) {
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	g_mutex_free(vol->thread_mutex);
 	g_mutex_free(vol->wait_mutex);
 	g_cond_free(vol->thread_wait);
-#endif
+#endif /* !HAVE_LIBPTHREAD */
 
 	if (vol->volumes != NULL) {
 		free(vol->volumes);

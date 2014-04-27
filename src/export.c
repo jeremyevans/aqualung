@@ -203,9 +203,9 @@ export_new(void) {
 		return NULL;
 	}
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
         export->mutex = g_mutex_new();
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 
 	return export;
 }
@@ -226,9 +226,9 @@ export_free(export_t * export) {
 
 	GSList * node;
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	g_mutex_free(export->mutex);
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 
 	for (node = export->slist; node; node = node->next) {
 		export_item_free((export_item_t *)node->data);

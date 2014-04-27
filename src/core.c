@@ -37,12 +37,12 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
-#ifndef _WIN32
+#ifdef HAVE_LIBPTHREAD
 #include <pthread.h>
 #include <sched.h>
 #include <time.h>
 #include <sys/time.h>
-#endif /* !_WIN32 */
+#endif /* HAVE_LIBPTHREAD */
 
 #ifdef HAVE_SRC
 #include <samplerate.h>
@@ -617,12 +617,12 @@ disk_thread(void * arg) {
 	sleep:
 		{
 			/* suspend thread, wake up after 100 ms */
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 			GTimeVal time;
 			GTimeVal * timeout = &time;
 			g_get_current_time(timeout);
 			g_time_val_add(timeout, 100000);
-#else
+#else /* HAVE_LIBPTHREAD */
 			struct timeval now;
 			struct timezone tz;
 			struct timespec timeout;
@@ -633,7 +633,7 @@ disk_thread(void * arg) {
 				timeout.tv_nsec -= 1000000000;
 				timeout.tv_sec += 1;
 			}
-#endif /* _WIN32 */
+#endif /* HAVE_LIBPTHREAD */
 			AQUALUNG_COND_TIMEDWAIT(disk_thread_wake, disk_thread_lock, timeout)
 		}
 	}
@@ -1221,7 +1221,7 @@ jack_info_shutdown(jack_status_t code, const char * reason, void * arg) {
 }
 #endif /* HAVE_JACK */
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 void
 set_thread_priority(GThread * thread, char * name, int realtime, int priority) {
 
@@ -1229,7 +1229,7 @@ set_thread_priority(GThread * thread, char * name, int realtime, int priority) {
 		g_thread_set_priority(thread, G_THREAD_PRIORITY_URGENT);
 
 }
-#else
+#else /* HAVE_LIBPTHREAD */
 void
 set_thread_priority(pthread_t thread, char * name, int realtime, int priority) {
 
@@ -1276,7 +1276,7 @@ set_thread_priority(pthread_t thread, char * name, int realtime, int priority) {
 	}
 
 }
-#endif /* _WIN32 */
+#endif /* HAVE_LIBPTHREAD */
 
 #ifdef HAVE_SNDIO
 /* return values:
@@ -2495,10 +2495,10 @@ main(int argc, char ** argv) {
 
 	gdk_threads_init();
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	disk_thread_lock = g_mutex_new();
 	disk_thread_wake = g_cond_new();
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 
 	file_decoder_init();
 
@@ -3249,10 +3249,10 @@ main(int argc, char ** argv) {
 	}
 #endif /* HAVE_WINMM */
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	g_mutex_free(disk_thread_lock);
 	g_cond_free(disk_thread_wake);
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 
 	if (device_name != NULL)
 		free(device_name);

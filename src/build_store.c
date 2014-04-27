@@ -865,9 +865,9 @@ build_store_new(GtkTreeIter * store_iter, char * file) {
 		return NULL;
 	}
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
         data->mutex = g_mutex_new();
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 
         data->store_iter = *store_iter;
 	data->file = strdup(file);
@@ -1083,9 +1083,9 @@ build_store_get_xml_node(char * file) {
 void
 build_store_free(build_store_t * data) {
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	g_mutex_free(data->mutex);
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 
 	free(data->file);
 

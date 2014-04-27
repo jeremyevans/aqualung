@@ -136,9 +136,9 @@ cddb_lookup_new () {
 		return NULL;
 	}
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	data->mutex = g_mutex_new();
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 
 	data->state = CDDB_INIT;
 
@@ -182,9 +182,9 @@ cddb_lookup_free(cddb_lookup_t * data) {
 		free(data->frames);
 	}
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	g_mutex_free(data->mutex);
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 
 	free(data);
 }

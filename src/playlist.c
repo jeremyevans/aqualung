@@ -363,11 +363,11 @@ playlist_new(char * name) {
 
 	AQUALUNG_COND_INIT(pl->thread_wait);
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	pl->thread_mutex = g_mutex_new();
 	pl->wait_mutex = g_mutex_new();
 	pl->thread_wait = g_cond_new();
-#endif
+#endif /* !HAVE_LIBPTHREAD */
 
 	if (name != NULL) {
 		strncpy(pl->name, name, MAXLEN-1);
@@ -388,11 +388,11 @@ playlist_free(playlist_t * pl) {
 
 	playlists = g_list_remove(playlists, pl);
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	g_mutex_free(pl->thread_mutex);
 	g_mutex_free(pl->wait_mutex);
 	g_cond_free(pl->thread_wait);
-#endif
+#endif /* !HAVE_LIBPTHREAD */
 
 	free(pl);
 }

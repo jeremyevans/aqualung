@@ -556,9 +556,9 @@ cdda_scanner_start(void) {
 	}
 
 	cdda_notify_rb = rb_create(CDDA_NOTIFY_RB_SIZE);
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	cdda_mutex = g_mutex_new();
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 
 	cdda_timeout_start();
 
@@ -576,9 +576,9 @@ cdda_scanner_stop(void) {
 	cdda_timeout_callback(NULL); /* cleanup any leftover messages */
 	cdda_timeout_stop();
 
-#ifdef _WIN32
+#ifndef HAVE_LIBPTHREAD
 	g_mutex_free(cdda_mutex);
-#endif /* _WIN32 */
+#endif /* !HAVE_LIBPTHREAD */
 
 	rb_free(cdda_notify_rb);
 }

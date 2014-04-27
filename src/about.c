@@ -34,6 +34,160 @@
 #include "about.h"
 
 
+#define BUILT_IN "    [+] "
+#define LEFT_OUT "    [ ] "
+#ifndef HAVE_LADSPA
+#define BUILT_W_LADSPA LEFT_OUT
+#else /* HAVE_LADSPA */
+#define BUILT_W_LADSPA BUILT_IN
+#endif /* HAVE_LADSPA */
+#ifndef HAVE_CDDA
+#define BUILT_W_CDDA LEFT_OUT
+#else /* HAVE_CDDA */
+#define BUILT_W_CDDA BUILT_IN
+#endif /* HAVE_CDDA */
+#ifndef HAVE_CDDB
+#define BUILT_W_CDDB LEFT_OUT
+#else /* HAVE_CDDB */
+#define BUILT_W_CDDB BUILT_IN
+#endif /* HAVE_CDDB */
+#ifndef HAVE_SRC
+#define BUILT_W_SRC LEFT_OUT
+#else /* HAVE_SRC */
+#define BUILT_W_SRC BUILT_IN
+#endif /* HAVE_SRC */
+#ifndef HAVE_IFP
+#define BUILT_W_IFP LEFT_OUT
+#else /* HAVE_IFP */
+#define BUILT_W_IFP BUILT_IN
+#endif /* HAVE_IFP */
+#ifndef HAVE_JACK_MGMT
+#define BUILT_W_JACK_MGMT LEFT_OUT
+#else /* HAVE_JACK_MGMT */
+#define BUILT_W_JACK_MGMT BUILT_IN
+#endif /* HAVE_JACK_MGMT */
+#ifndef HAVE_LOOP
+#define BUILT_W_LOOP LEFT_OUT
+#else /* HAVE_LOOP */
+#define BUILT_W_LOOP BUILT_IN
+#endif /* HAVE_LOOP */
+#ifndef HAVE_SYSTRAY
+#define BUILT_W_SYSTRAY LEFT_OUT
+#else /* HAVE_SYSTRAY */
+#define BUILT_W_SYSTRAY BUILT_IN
+#endif /* HAVE_SYSTRAY */
+#ifndef HAVE_PODCAST
+#define BUILT_W_PODCAST LEFT_OUT
+#else /* HAVE_PODCAST */
+#define BUILT_W_PODCAST BUILT_IN
+#endif /* HAVE_PODCAST */
+#ifndef HAVE_LUA
+#define BUILT_W_LUA LEFT_OUT
+#else /* HAVE_LUA */
+#define BUILT_W_LUA BUILT_IN
+#endif /* HAVE_LUA */
+#ifndef HAVE_SNDFILE
+#define BUILT_W_SNDFILE LEFT_OUT
+#else /* HAVE_SNDFILE */
+#define BUILT_W_SNDFILE BUILT_IN
+#endif /* HAVE_SNDFILE */
+#ifndef HAVE_FLAC
+#define BUILT_W_FLAC LEFT_OUT
+#else /* HAVE_FLAC */
+#define BUILT_W_FLAC BUILT_IN
+#endif /* HAVE_FLAC */
+#ifndef HAVE_VORBIS
+#define BUILT_W_VORBIS LEFT_OUT
+#else /* HAVE_VORBIS */
+#define BUILT_W_VORBIS BUILT_IN
+#endif /* HAVE_VORBIS */
+#ifndef HAVE_SPEEX
+#define BUILT_W_SPEEX LEFT_OUT
+#else /* HAVE_SPEEX */
+#define BUILT_W_SPEEX BUILT_IN
+#endif /* HAVE_SPEEX */
+#ifndef HAVE_MPEG
+#define BUILT_W_MPEG LEFT_OUT
+#else /* HAVE_MPEG */
+#define BUILT_W_MPEG BUILT_IN
+#endif /* HAVE_MPEG */
+#ifndef HAVE_MOD
+#define BUILT_W_MOD LEFT_OUT
+#else /* HAVE_MOD */
+#define BUILT_W_MOD BUILT_IN
+#endif /* HAVE_MOD */
+#ifndef HAVE_MPC
+#define BUILT_W_MPC LEFT_OUT
+#else /* HAVE_MPC */
+#define BUILT_W_MPC BUILT_IN
+#endif /* HAVE_MPC */
+#ifndef HAVE_MAC
+#define BUILT_W_MAC LEFT_OUT
+#else /* HAVE_MAC */
+#define BUILT_W_MAC BUILT_IN
+#endif /* HAVE_MAC */
+#ifndef HAVE_WAVPACK
+#define BUILT_W_WAVPACK LEFT_OUT
+#else /* HAVE_WAVPACK */
+#define BUILT_W_WAVPACK BUILT_IN
+#endif /* HAVE_WAVPACK */
+#ifndef HAVE_LAVC
+#define BUILT_W_LAVC LEFT_OUT
+#else /* HAVE_LAVC */
+#define BUILT_W_LAVC BUILT_IN
+#endif /* HAVE_LAVC */
+#ifndef HAVE_SNDFILE_ENC
+#define BUILT_W_SNDFILE_ENC LEFT_OUT
+#else /* HAVE_SNDFILE_ENC */
+#define BUILT_W_SNDFILE_ENC BUILT_IN
+#endif /* HAVE_SNDFILE_ENC */
+#ifndef HAVE_FLAC_ENC
+#define BUILT_W_FLAC_ENC LEFT_OUT
+#else /* HAVE_FLAC_ENC */
+#define BUILT_W_FLAC_ENC BUILT_IN
+#endif /* HAVE_FLAC_ENC */
+#ifndef HAVE_VORBISENC
+#define BUILT_W_VORBISENC LEFT_OUT
+#else /* HAVE_VORBISENC */
+#define BUILT_W_VORBISENC BUILT_IN
+#endif /* HAVE_VORBISENC */
+#ifndef HAVE_LAME
+#define BUILT_W_LAME LEFT_OUT
+#else /* HAVE_LAME */
+#define BUILT_W_LAME BUILT_IN
+#endif /* HAVE_LAME */
+#ifndef HAVE_SNDIO
+#define BUILT_W_SNDIO LEFT_OUT
+#else /* HAVE_SNDIO */
+#define BUILT_W_SNDIO BUILT_IN
+#endif /* HAVE_SNDIO */
+#ifndef HAVE_OSS
+#define BUILT_W_OSS LEFT_OUT
+#else /* HAVE_OSS */
+#define BUILT_W_OSS BUILT_IN
+#endif /* HAVE_OSS */
+#ifndef HAVE_ALSA
+#define BUILT_W_ALSA LEFT_OUT
+#else /* HAVE_ALSA */
+#define BUILT_W_ALSA BUILT_IN
+#endif /* HAVE_ALSA */
+#ifndef HAVE_JACK
+#define BUILT_W_JACK LEFT_OUT
+#else /* HAVE_JACK */
+#define BUILT_W_JACK BUILT_IN
+#endif /* HAVE_JACK */
+#ifndef HAVE_PULSE
+#define BUILT_W_PULSE LEFT_OUT
+#else /* HAVE_PULSE */
+#define BUILT_W_PULSE BUILT_IN
+#endif /* HAVE_PULSE */
+#ifndef HAVE_WINMM
+#define BUILT_W_WINMM LEFT_OUT
+#else /* HAVE_WINMM */
+#define BUILT_W_WINMM BUILT_IN
+#endif /* HAVE_WINMM */
+
+
 GtkWidget * about_window;
 extern GtkWidget * main_window;
 
@@ -60,6 +214,46 @@ about_key_pressed(GtkWidget * widget, GdkEventKey * event, gpointer * data) {
 	return FALSE;
 }
 
+gchar *
+about_build(void) {
+
+	return g_strconcat(
+		"\n  ", _("Optional features:"), "\n",
+		BUILT_W_LADSPA, _("LADSPA plugin support\n"),
+		BUILT_W_CDDA, _("CDDA (Audio CD) support\n"),
+		BUILT_W_CDDB, _("CDDB support\n"),
+		BUILT_W_SRC, _("Sample Rate Converter support\n"),
+		BUILT_W_IFP, _("iRiver iFP driver support\n"),
+		BUILT_W_JACK_MGMT, _("JACK port management support\n"),
+		BUILT_W_LOOP, _("Loop playback support\n"),
+		BUILT_W_SYSTRAY, _("Systray support\n"),
+		BUILT_W_PODCAST, _("Podcast support\n"),
+		BUILT_W_LUA, _("Lua extension support\n"),
+		"\n  ", _("Decoding support:"), "\n",
+		BUILT_W_SNDFILE, _("sndfile (WAV, AIFF, etc.)\n"),
+		BUILT_W_FLAC, _("Free Lossless Audio Codec (FLAC)\n"),
+		BUILT_W_VORBIS, _("Ogg Vorbis\n"),
+		BUILT_W_SPEEX, _("Ogg Speex\n"),
+		BUILT_W_MPEG, _("MPEG Audio (MPEG 1-2.5 Layer I-III)\n"),
+		BUILT_W_MOD, _("MOD Audio (MOD, S3M, XM, IT, etc.)\n"),
+		BUILT_W_MPC, _("Musepack\n"),
+		BUILT_W_MAC, _("Monkey's Audio Codec\n"),
+		BUILT_W_WAVPACK, _("WavPack\n"),
+		BUILT_W_LAVC, _("LAVC (AC3, AAC, WavPack, WMA, etc.)\n"),
+		"\n  ", _("Encoding support:"), "\n",
+		BUILT_W_SNDFILE_ENC, _("sndfile (WAV)\n"),
+		BUILT_W_FLAC_ENC, _("Free Lossless Audio Codec (FLAC)\n"),
+		BUILT_W_VORBISENC, _("Ogg Vorbis\n"),
+		BUILT_W_LAME, _("LAME (MP3)\n"),
+		"\n  ", _("Output driver support:"), "\n",
+		BUILT_W_SNDIO, _("sndio Audio\n"),
+		BUILT_W_OSS, _("OSS Audio\n"),
+		BUILT_W_ALSA, _("ALSA Audio\n"),
+		BUILT_W_JACK, _("JACK Audio Server\n"),
+		BUILT_W_PULSE, _("PulseAudio\n"),
+		BUILT_W_WINMM, _("Win32 Sound API\n"),
+		NULL);
+}
 
 void
 create_about_window() {
@@ -89,6 +283,7 @@ create_about_window() {
 	GtkTextTag * tag2;
 
 	char path[MAXLEN];
+	gchar * build_info = about_build();
 
 	about_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_transient_for(GTK_WINDOW(about_window), GTK_WINDOW(main_window));
@@ -220,357 +415,11 @@ create_about_window() {
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter,
 					 _("This Aqualung binary is compiled with:"), -1, tag, NULL);
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\n\n\t", -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, _("Optional features:"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_LADSPA
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_LADSPA */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("LADSPA plugin support\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_CDDA
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_CDDA */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("CDDA (Audio CD) support\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_CDDB
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_CDDB */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("CDDB support\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_SRC
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_SRC */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Sample Rate Converter support\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_IFP
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_IFP */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("iRiver iFP driver support\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_JACK_MGMT
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_JACK_MGMT */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("JACK port management support\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_LOOP
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_LOOP */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Loop playback support\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_SYSTRAY
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_SYSTRAY */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Systray support\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_PODCAST
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_PODCAST */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Podcast support\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_LUA
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_LUA */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Lua extension support\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Decoding support:"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_SNDFILE
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_SNDFILE */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("sndfile (WAV, AIFF, etc.)\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_FLAC
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_FLAC */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Free Lossless Audio Codec (FLAC)\n"), -1);
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_VORBIS
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_VORBIS */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Ogg Vorbis\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_SPEEX
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_SPEEX */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Ogg Speex\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_MPEG
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_MPEG */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("MPEG Audio (MPEG 1-2.5 Layer I-III)\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_MOD
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_MOD */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-        gtk_text_buffer_insert_at_cursor(buffer, _("MOD Audio (MOD, S3M, XM, IT, etc.)\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_MPC
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_MPC */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-        gtk_text_buffer_insert_at_cursor(buffer, _("Musepack\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_MAC
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_MAC */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-        gtk_text_buffer_insert_at_cursor(buffer, _("Monkey's Audio Codec\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_WAVPACK
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_WAVPACK */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("WavPack\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_LAVC
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_LAVC */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-        gtk_text_buffer_insert_at_cursor(buffer, _("LAVC (AC3, AAC, WavPack, WMA, etc.)\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Encoding support:"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_SNDFILE_ENC
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_SNDFILE_ENC */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("sndfile (WAV)\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_FLAC_ENC
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_FLAC_ENC */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Free Lossless Audio Codec (FLAC)\n"), -1);
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_VORBISENC
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_VORBISENC */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Ogg Vorbis\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_LAME
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_LAME */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("LAME (MP3)\n"), -1);
-
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\n\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Output driver support:"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_SNDIO
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_SNDIO */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("sndio Audio\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_OSS
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_OSS */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("OSS Audio\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_ALSA
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_ALSA */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("ALSA Audio\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_JACK
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_JACK */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("JACK Audio Server\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_PULSE
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_PULSE */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("PulseAudio\n"), -1);
-
-
-	gtk_text_buffer_insert_at_cursor(buffer, "\t\t[", -1);
-	gtk_text_buffer_get_end_iter(buffer, &iter);
-#ifdef HAVE_WINMM
-	gtk_text_buffer_insert_with_tags(buffer, &iter, "+", -1, tag2, NULL);
-#else
-	gtk_text_buffer_insert_with_tags(buffer, &iter, " ", -1, tag2, NULL);
-#endif /* HAVE_WINMM */
-	gtk_text_buffer_insert_at_cursor(buffer, "]\t", -1);
-	gtk_text_buffer_insert_at_cursor(buffer, _("Win32 Sound API\n"), -1);
-
+	gtk_text_buffer_insert_with_tags(buffer, &iter, build_info, -1,
+					 tag2, NULL);
+	g_free(build_info);
 
 
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);

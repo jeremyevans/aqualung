@@ -21,6 +21,10 @@
 #ifndef AQUALUNG_ABOUT_H
 #define AQUALUNG_ABOUT_H
 
+#include <glib.h>
+
+
+gchar * about_build(void);
 void create_about_window(void);
 
 #endif /* AQUALUNG_ABOUT_H */

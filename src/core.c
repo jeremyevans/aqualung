@@ -38,8 +38,6 @@
 #include <libxml/tree.h>
 
 #ifdef HAVE_LIBPTHREAD
-#include <pthread.h>
-#include <sched.h>
 #include <time.h>
 #include <sys/time.h>
 #endif /* HAVE_LIBPTHREAD */
@@ -1221,62 +1219,6 @@ jack_info_shutdown(jack_status_t code, const char * reason, void * arg) {
 }
 #endif /* HAVE_JACK */
 
-#ifndef HAVE_LIBPTHREAD
-void
-set_thread_priority(GThread * thread, char * name, int realtime, int priority) {
-
-	if (realtime)
-		g_thread_set_priority(thread, G_THREAD_PRIORITY_URGENT);
-
-}
-#else /* HAVE_LIBPTHREAD */
-void
-set_thread_priority(pthread_t thread, char * name, int realtime, int priority) {
-
-	struct sched_param param;
-	int policy;
-	int x;
-
-	if (pthread_getschedparam(thread, &policy, &param) != 0) {
-		return;
-	}
-
-	if (realtime) {
-		policy = SCHED_FIFO;
-#ifndef __OpenBSD__
-		if (priority == -1) {
-			priority = 1;
-		}
-#endif /* !__OpenBSD__ */
-	}
-	if (priority != -1) {
-#ifdef PTHREAD_MIN_PRIORITY
-#ifdef PTHREAD_MAX_PRIORITY
-		if (priority < PTHREAD_MIN_PRIORITY) {
-			param.sched_priority = PTHREAD_MIN_PRIORITY;
-			fprintf(stderr, "Warning: %s thread priority (%d) too low, set to %d",
-				name, priority, PTHREAD_MIN_PRIORITY);
-		} else if (priority > PTHREAD_MAX_PRIORITY) {
-			param.sched_priority = PTHREAD_MAX_PRIORITY;
-			fprintf(stderr, "Warning: %s thread priority (%d) too high, set to %d",
-				name, priority, PTHREAD_MAX_PRIORITY);
-		} else
-#endif /* PTHREAD_MAX_PRIORITY */
-#endif /* PTHREAD_MIN_PRIORITY */
-		{
-			param.sched_priority = priority;
-		}
-	}
-	
-	if ((x = pthread_setschedparam(thread, policy, &param)) != 0) {
-		fprintf(stderr,
-			"Warning: cannot use real-time scheduling for %s thread (%s/%d) "
-			"(%d: %s)\n", name, policy == SCHED_FIFO ? "FIFO" : "RR", param.sched_priority,
-			x, strerror(x));
-	}
-
-}
-#endif /* HAVE_LIBPTHREAD */
 
 #ifdef HAVE_SNDIO
 /* return values:

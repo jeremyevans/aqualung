@@ -52,6 +52,8 @@
 	pthread_cond_timedwait(&(cond), &(mutex), &(timeout));
 #define AQUALUNG_COND_WAIT(cond, mutex) pthread_cond_wait(&(cond), &(mutex));
 
+void set_thread_priority(pthread_t thread, char * name, int realtime, int priority);
+
 #else /* !HAVE_LIBPTHREAD */
 
 #include <glib.h>
@@ -75,6 +77,8 @@
 #define AQUALUNG_COND_TIMEDWAIT(cond, mutex, timeout) \
 	g_cond_timed_wait(cond, mutex, timeout);
 #define AQUALUNG_COND_WAIT(cond, mutex) g_cond_wait(cond, mutex);
+
+void set_thread_priority(GThread * thread, char * name, int realtime, int priority);
 
 #endif /* !HAVE_LIBPTHREAD */
 

@@ -298,7 +298,6 @@ create_zoomed_cover_window(gint * size, GtkWidget * window, GtkWidget ** image_a
 			 G_CALLBACK(cover_window_key_pressed), NULL);
 	gtk_window_set_position(GTK_WINDOW(cover_window), GTK_WIN_POS_MOUSE);
 	gtk_widget_set_events(cover_window, GDK_BUTTON_PRESS_MASK);
-	gtk_window_set_modal(GTK_WINDOW(cover_window), TRUE);
 	gtk_window_set_transient_for(GTK_WINDOW(cover_window), GTK_WINDOW(window));
 	gtk_window_set_decorated(GTK_WINDOW(cover_window), FALSE);
 	

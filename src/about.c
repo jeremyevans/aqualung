@@ -287,7 +287,6 @@ create_about_window() {
 
 	about_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_transient_for(GTK_WINDOW(about_window), GTK_WINDOW(main_window));
-	gtk_window_set_modal(GTK_WINDOW(about_window), TRUE);
 	gtk_widget_set_name(about_window, "");
         gtk_window_set_title(GTK_WINDOW(about_window), _("About"));
         gtk_widget_set_size_request(about_window, 483, 430);

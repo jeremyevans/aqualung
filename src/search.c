@@ -479,7 +479,6 @@ search_dialog(void) {
         gtk_window_set_title(GTK_WINDOW(search_window), _("Search the Music Store"));
         gtk_window_set_position(GTK_WINDOW(search_window), GTK_WIN_POS_CENTER_ON_PARENT);
 	gtk_window_set_transient_for(GTK_WINDOW(search_window), GTK_WINDOW(browser_window));
-	gtk_window_set_modal(GTK_WINDOW(search_window), TRUE);
         g_signal_connect(G_OBJECT(search_window), "delete_event",
                          G_CALLBACK(search_window_close), NULL);
         g_signal_connect(G_OBJECT(search_window), "key_press_event",

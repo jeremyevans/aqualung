@@ -654,7 +654,7 @@ message_dialog(char * title, GtkWidget * parent, GtkMessageType type, GtkButtons
 	va_end(args);
 
 	dialog = gtk_message_dialog_new(GTK_WINDOW(parent),
-					GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					GTK_DIALOG_DESTROY_WITH_PARENT,
 					type,
 					buttons,
 					"%s",

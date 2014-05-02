@@ -49,7 +49,7 @@
 
 #define BUFSIZE 10240
 
-extern GtkWidget * browser_window;
+extern GtkWidget * main_window;
 extern options_t options;
 
 GtkWidget * export_window;
@@ -723,7 +723,7 @@ void
 export_browse_cb(GtkButton * button, gpointer data) {
 
 	file_chooser_with_entry(_("Please select the directory for exported files."),
-				browser_window,
+				main_window,
 				GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
 				FILE_CHOOSER_FILTER_NONE,
 				(GtkWidget *)data,
@@ -919,234 +919,6 @@ export_check_excl_toggled(GtkWidget * widget, gpointer data) {
 	gtk_widget_set_sensitive((GtkWidget *)data, state);
 }
 
-int
-export_dialog(export_t * export) {
-
-	GtkWidget * content_area;
-
-	GtkWidget * help_button;
-	GtkWidget * outdir_entry;
-	GtkWidget * templ_entry;
-
-        GtkWidget * table;
-        GtkWidget * hbox;
-        GtkWidget * frame;
-
-	GtkWidget * check_filter_same;
-	GtkWidget * check_excl_enabled;
-	GtkWidget * excl_entry;
-
-        export->dialog = gtk_dialog_new_with_buttons(_("Export files"),
-                                             GTK_WINDOW(browser_window),
-                                             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
-                                             GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-                                             NULL);
-
-        gtk_window_set_position(GTK_WINDOW(export->dialog), GTK_WIN_POS_CENTER);
-        gtk_window_set_default_size(GTK_WINDOW(export->dialog), 400, -1);
-        gtk_dialog_set_default_response(GTK_DIALOG(export->dialog), GTK_RESPONSE_REJECT);
-
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(export->dialog));
-
-	/* Location and filename */
-	frame = gtk_frame_new(_("Location and filename"));
-	gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, FALSE, 2);
-        gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
-
-	table = gtk_table_new(5, 2, FALSE);
-        gtk_container_add(GTK_CONTAINER(frame), table);
-
-	insert_label_entry_browse(table, _("Target directory:"), &outdir_entry, options.exportdir, 0, 1, export_browse_cb);
-
-        export->check_dir_artist = gtk_check_button_new_with_label(_("Create subdirectories for artists"));
-        gtk_widget_set_name(export->check_dir_artist, "check_on_notebook");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->check_dir_artist), options.export_subdir_artist);
-        gtk_table_attach(GTK_TABLE(table), export->check_dir_artist, 0, 3, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
-        g_signal_connect(G_OBJECT(export->check_dir_artist), "toggled",
-			 G_CALLBACK(check_dir_limit_toggled), export);
-
-        export->check_dir_album = gtk_check_button_new_with_label(_("Create subdirectories for albums"));
-        gtk_widget_set_name(export->check_dir_album, "check_on_notebook");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->check_dir_album), options.export_subdir_album);
-        gtk_table_attach(GTK_TABLE(table), export->check_dir_album, 0, 3, 2, 3, GTK_FILL, GTK_FILL, 5, 5);
-        g_signal_connect(G_OBJECT(export->check_dir_album), "toggled",
-			 G_CALLBACK(check_dir_limit_toggled), export);
-
-	insert_label_spin_with_limits(table, _("Subdirectory name\nlength limit:"), &export->dirlen_spin, options.export_subdir_limit, 4, 64, 3, 4);
-	gtk_widget_set_sensitive(export->dirlen_spin, options.export_subdir_artist || options.export_subdir_album);
-
-        help_button = gtk_button_new_from_stock(GTK_STOCK_HELP); 
-	g_signal_connect(help_button, "clicked", G_CALLBACK(export_format_help_cb), export);
-	insert_label_entry_button(table, _("Filename template:"), &templ_entry, options.export_template, help_button, 4, 5);
-
-	/* Format */
-	frame = gtk_frame_new(_("Format"));
-	gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, FALSE, 2);
-        gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
-
-        table = gtk_table_new(4, 2, TRUE);
-        gtk_container_add(GTK_CONTAINER(frame), table);
-
-        hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(_("File format:")), FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 4);
-
-	export->format_combo = export_create_format_combo();
-        g_signal_connect(G_OBJECT(export->format_combo), "changed",
-			 G_CALLBACK(export_format_combo_changed), export);
-        gtk_table_attach(GTK_TABLE(table), export->format_combo, 1, 2, 0, 1,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 2);
-
-        hbox = gtk_hbox_new(FALSE, 0);
-	export->bitrate_label = gtk_label_new(_("Compression level:"));
-        gtk_box_pack_start(GTK_BOX(hbox), export->bitrate_label, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 0);
-
-	export->bitrate_scale = gtk_hscale_new_with_range(0, 8, 1);
-        g_signal_connect(G_OBJECT(export->bitrate_scale), "value-changed",
-			 G_CALLBACK(export_bitrate_changed), export);
-	gtk_scale_set_draw_value(GTK_SCALE(export->bitrate_scale), FALSE);
-	gtk_scale_set_digits(GTK_SCALE(export->bitrate_scale), 0);
-        gtk_widget_set_size_request(export->bitrate_scale, 180, -1);
-        gtk_table_attach(GTK_TABLE(table), export->bitrate_scale, 1, 2, 1, 2,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 0);
-
-	export->bitrate_value_label = gtk_label_new("0 (fast)");
-        gtk_table_attach(GTK_TABLE(table), export->bitrate_value_label, 1, 2, 2, 3,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 0);
-
-        export->vbr_check = gtk_check_button_new_with_label(_("VBR encoding"));
-        gtk_widget_set_name(export->vbr_check, "check_on_notebook");
-        gtk_table_attach(GTK_TABLE(table), export->vbr_check, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->vbr_check), options.export_vbr);
-
-        export->meta_check = gtk_check_button_new_with_label(_("Tag files with metadata"));
-        gtk_widget_set_name(export->meta_check, "check_on_notebook");
-        gtk_table_attach(GTK_TABLE(table), export->meta_check, 0, 2, 3, 4,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 4);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->meta_check), options.export_metadata);
-
-
-	/* Filter */
-	frame = gtk_frame_new(_("Filter"));
-	gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, FALSE, 2);
-        gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
-
-	table = gtk_table_new(1, 2, FALSE);
-        gtk_container_add(GTK_CONTAINER(frame), table);
-
-        check_filter_same = gtk_check_button_new_with_label(_("Do not reencode files already being in the target format"));
-        gtk_widget_set_name(check_filter_same, "check_on_notebook");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_filter_same), options.export_filter_same);
-        gtk_table_attach(GTK_TABLE(table), check_filter_same, 0, 2, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
-
-        check_excl_enabled = gtk_check_button_new_with_label(_("Do not reencode files\nmatching wildcard:"));
-        gtk_widget_set_name(check_excl_enabled, "check_on_notebook");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_excl_enabled), options.export_excl_enabled);
-        gtk_table_attach(GTK_TABLE(table), check_excl_enabled, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
-
-        excl_entry = gtk_entry_new();
-        gtk_entry_set_max_length(GTK_ENTRY(excl_entry), MAXLEN-1);
-	gtk_entry_set_text(GTK_ENTRY(excl_entry), options.export_excl_pattern);
-        gtk_table_attach(GTK_TABLE(table), excl_entry, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
-	gtk_widget_set_sensitive(excl_entry, options.export_excl_enabled);
-
-	g_signal_connect(G_OBJECT(check_excl_enabled), "toggled",
-			 G_CALLBACK(export_check_excl_toggled), excl_entry);
-
-
-	gtk_widget_show_all(export->dialog);
-	export_format_combo_changed(export->format_combo, export);
-
- display:
-
-	export->outdir[0] = '\0';
-        if (aqualung_dialog_run(GTK_DIALOG(export->dialog)) == GTK_RESPONSE_ACCEPT) {
-
-		char * poutdir = g_filename_from_utf8(gtk_entry_get_text(GTK_ENTRY(outdir_entry)), -1, NULL, NULL, NULL);
-
-                if ((poutdir == NULL) || (poutdir[0] == '\0')) {
-                        gtk_widget_grab_focus(outdir_entry);
-			g_free(poutdir);
-                        goto display;
-                }
-
-		normalize_filename(poutdir, export->outdir);
-		g_free(poutdir);
-
-		if (strlen(gtk_entry_get_text(GTK_ENTRY(templ_entry))) == 0) {
-                        gtk_widget_grab_focus(templ_entry);
-                        goto display;
-		} else {
-			int ret;
-			char buf[MAXLEN];
-			char * format = (char *)gtk_entry_get_text(GTK_ENTRY(templ_entry));
-			if ((ret = make_string_va(buf, format,
-						  'o', "o", 'a', "a", 'r', "r", 't', "t", 'n', "n", 'x', "x", 'i', "i", 0)) != 0) {
-				make_string_strerror(ret, buf);
-				message_dialog(_("Error in format string"),
-					       export->dialog,
-					       GTK_MESSAGE_ERROR,
-					       GTK_BUTTONS_OK,
-					       NULL,
-					       buf);
-				goto display;
-			}
-		}
-
-		if (access(export->outdir, R_OK | W_OK) != 0) {
-			message_dialog(_("Error"),
-				       export->dialog,
-				       GTK_MESSAGE_ERROR,
-				       GTK_BUTTONS_OK,
-				       NULL,
-				       _("\nDestination directory is not read-write accessible!"));
-			
-                        gtk_widget_grab_focus(outdir_entry);
-			goto display;
-		}
-
-		strncpy(options.exportdir, export->outdir, MAXLEN-1);
-		set_option_from_entry(templ_entry, export->template, MAXLEN);
-		set_option_from_entry(templ_entry, options.export_template, MAXLEN);
-		options.export_file_format = export->format = export_get_format_from_combo(export->format_combo);
-		options.export_bitrate = export->bitrate = gtk_range_get_value(GTK_RANGE(export->bitrate_scale));
-		set_option_from_toggle(export->check_dir_artist, &options.export_subdir_artist);
-		set_option_from_toggle(export->check_dir_album, &options.export_subdir_album);
-		set_option_from_spin(export->dirlen_spin, &options.export_subdir_limit);
-		set_option_from_toggle(export->vbr_check, &export->vbr);
-                options.export_vbr = export->vbr;
-		set_option_from_toggle(export->meta_check, &export->write_meta);
-                options.export_metadata = export->write_meta;
-		set_option_from_toggle(export->check_dir_artist, &export->dir_for_artist);
-		set_option_from_toggle(export->check_dir_album, &export->dir_for_album);
-
-		set_option_from_toggle(check_filter_same, &export->filter_same);
-		options.export_filter_same = export->filter_same;
-		set_option_from_toggle(check_excl_enabled, &export->excl_enabled);
-		options.export_excl_enabled = export->excl_enabled;
-		
-		if (export->excl_enabled) {
-			set_option_from_entry(excl_entry, options.export_excl_pattern, MAXLEN);
-			export->excl_patternv =
-				g_strsplit(gtk_entry_get_text(GTK_ENTRY(excl_entry)), ",", 0);
-		}
-
-		if (export->dir_for_artist || export->dir_for_album) {
-			set_option_from_spin(export->dirlen_spin, &export->dir_len_limit);
-		} else {
-			export->dir_len_limit = MAXLEN-1;
-		}
-
-		gtk_widget_destroy(export->dialog);
-		return 1;
-	} else {
-		gtk_widget_destroy(export->dialog);
-		return 0;
-	}
-}
-
 gboolean
 export_window_event(GtkWidget * widget, GdkEvent * event, gpointer * data) {
 
@@ -1175,6 +947,9 @@ create_export_window() {
 	register_toplevel_window(export_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
         gtk_window_set_title(GTK_WINDOW(export_window), _("Exporting files"));
         gtk_window_set_position(GTK_WINDOW(export_window), GTK_WIN_POS_CENTER);
+	gtk_window_set_transient_for(GTK_WINDOW(export_window), GTK_WINDOW(main_window));
+	gtk_window_set_type_hint(GTK_WINDOW(export_window), GDK_WINDOW_TYPE_HINT_DIALOG);
+
         gtk_window_resize(GTK_WINDOW(export_window), 480, 110);
         g_signal_connect(G_OBJECT(export_window), "event",
                          G_CALLBACK(export_window_event), NULL);
@@ -1221,21 +996,247 @@ export_progress_window(export_t * export) {
         gtk_widget_show_all(export->slot);
 }
 
-
-int
-export_start(export_t * export) {
-
-	if (export_dialog(export)) {
-		export_progress_window(export);
-		export->progbar_tag = aqualung_timeout_add(250, update_progbar_ratio, export);
-		AQUALUNG_THREAD_CREATE(export->thread_id, NULL, export_thread, export);
-		return 1;
-	}
-
-	export_free(export);
-	return 0;
+gboolean
+export_dialog_close(GtkWidget * widget, GdkEvent * event, gpointer ex) {
+	export_t * export = ex;
+	gtk_widget_destroy(export->dialog);
+	return TRUE;
 }
 
+gboolean
+export_dialog_response(GtkDialog * dialog, gint response_id, gpointer ex) {
+	export_t * export = ex;
+	char * poutdir = g_filename_from_utf8(gtk_entry_get_text(GTK_ENTRY(export->outdir_entry)), -1, NULL, NULL, NULL);
+
+	if (response_id != GTK_RESPONSE_ACCEPT) {
+		gtk_widget_destroy(export->dialog);
+		return TRUE;
+	}
+
+	if ((poutdir == NULL) || (poutdir[0] == '\0')) {
+		gtk_widget_grab_focus(export->outdir_entry);
+		g_free(poutdir);
+		return FALSE;
+	}
+	
+	normalize_filename(poutdir, export->outdir);
+	g_free(poutdir);
+	
+	if (strlen(gtk_entry_get_text(GTK_ENTRY(export->templ_entry))) == 0) {
+		gtk_widget_grab_focus(export->templ_entry);
+		return FALSE;
+	} else {
+		int ret;
+		char buf[MAXLEN];
+		char * format = (char *)gtk_entry_get_text(GTK_ENTRY(export->templ_entry));
+		if ((ret = make_string_va(buf, format,
+					  'o', "o", 'a', "a", 'r', "r", 't', "t", 'n', "n", 'x', "x", 'i', "i", 0)) != 0) {
+			make_string_strerror(ret, buf);
+			message_dialog(_("Error in format string"),
+				       export->dialog,
+				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       NULL,
+				       buf);
+			return FALSE;
+		}
+	}
+	
+	if (access(export->outdir, R_OK | W_OK) != 0) {
+		message_dialog(_("Error"),
+			       export->dialog,
+			       GTK_MESSAGE_ERROR,
+			       GTK_BUTTONS_OK,
+			       NULL,
+			       _("\nDestination directory is not read-write accessible!"));
+		
+		gtk_widget_grab_focus(export->outdir_entry);
+		return FALSE;
+	}
+	
+	strncpy(options.exportdir, export->outdir, MAXLEN-1);
+	set_option_from_entry(export->templ_entry, export->template, MAXLEN);
+	set_option_from_entry(export->templ_entry, options.export_template, MAXLEN);
+	options.export_file_format = export->format = export_get_format_from_combo(export->format_combo);
+	options.export_bitrate = export->bitrate = gtk_range_get_value(GTK_RANGE(export->bitrate_scale));
+	set_option_from_toggle(export->check_dir_artist, &options.export_subdir_artist);
+	set_option_from_toggle(export->check_dir_album, &options.export_subdir_album);
+	set_option_from_spin(export->dirlen_spin, &options.export_subdir_limit);
+	set_option_from_toggle(export->vbr_check, &export->vbr);
+	options.export_vbr = export->vbr;
+	set_option_from_toggle(export->meta_check, &export->write_meta);
+	options.export_metadata = export->write_meta;
+	set_option_from_toggle(export->check_dir_artist, &export->dir_for_artist);
+	set_option_from_toggle(export->check_dir_album, &export->dir_for_album);
+	
+	set_option_from_toggle(export->check_filter_same, &export->filter_same);
+	options.export_filter_same = export->filter_same;
+	set_option_from_toggle(export->check_excl_enabled, &export->excl_enabled);
+	options.export_excl_enabled = export->excl_enabled;
+	
+	if (export->excl_enabled) {
+		set_option_from_entry(export->excl_entry, options.export_excl_pattern, MAXLEN);
+		export->excl_patternv =
+			g_strsplit(gtk_entry_get_text(GTK_ENTRY(export->excl_entry)), ",", 0);
+	}
+	
+	if (export->dir_for_artist || export->dir_for_album) {
+		set_option_from_spin(export->dirlen_spin, &export->dir_len_limit);
+	} else {
+		export->dir_len_limit = MAXLEN-1;
+	}
+	
+	gtk_widget_destroy(export->dialog);
+
+	export_progress_window(export);
+	export->progbar_tag = aqualung_timeout_add(250, update_progbar_ratio, export);
+	AQUALUNG_THREAD_CREATE(export->thread_id, NULL, export_thread, export);
+
+	return TRUE;
+}
+
+void
+export_start(export_t * export) {
+
+	GtkWidget * content_area;
+
+	GtkWidget * help_button;
+
+        GtkWidget * table;
+        GtkWidget * hbox;
+        GtkWidget * frame;
+
+        export->dialog = gtk_dialog_new_with_buttons(_("Export files"),
+						     GTK_WINDOW(main_window),
+						     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+						     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+						     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+						     NULL);
+
+        gtk_window_set_position(GTK_WINDOW(export->dialog), GTK_WIN_POS_CENTER);
+        gtk_window_set_default_size(GTK_WINDOW(export->dialog), 400, -1);
+        gtk_dialog_set_default_response(GTK_DIALOG(export->dialog), GTK_RESPONSE_REJECT);
+	
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(export->dialog));
+
+	g_signal_connect(G_OBJECT(export->dialog), "response",
+			 G_CALLBACK(export_dialog_response), (gpointer)export);
+	g_signal_connect(G_OBJECT(export->dialog), "delete_event",
+			 G_CALLBACK(export_dialog_close), (gpointer)export);
+
+	/* Location and filename */
+	frame = gtk_frame_new(_("Location and filename"));
+	gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, FALSE, 2);
+        gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
+
+	table = gtk_table_new(5, 2, FALSE);
+        gtk_container_add(GTK_CONTAINER(frame), table);
+
+	insert_label_entry_browse(table, _("Target directory:"), &export->outdir_entry, options.exportdir, 0, 1, export_browse_cb);
+
+        export->check_dir_artist = gtk_check_button_new_with_label(_("Create subdirectories for artists"));
+        gtk_widget_set_name(export->check_dir_artist, "check_on_notebook");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->check_dir_artist), options.export_subdir_artist);
+        gtk_table_attach(GTK_TABLE(table), export->check_dir_artist, 0, 3, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
+        g_signal_connect(G_OBJECT(export->check_dir_artist), "toggled",
+			 G_CALLBACK(check_dir_limit_toggled), export);
+
+        export->check_dir_album = gtk_check_button_new_with_label(_("Create subdirectories for albums"));
+        gtk_widget_set_name(export->check_dir_album, "check_on_notebook");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->check_dir_album), options.export_subdir_album);
+        gtk_table_attach(GTK_TABLE(table), export->check_dir_album, 0, 3, 2, 3, GTK_FILL, GTK_FILL, 5, 5);
+        g_signal_connect(G_OBJECT(export->check_dir_album), "toggled",
+			 G_CALLBACK(check_dir_limit_toggled), export);
+
+	insert_label_spin_with_limits(table, _("Subdirectory name\nlength limit:"), &export->dirlen_spin, options.export_subdir_limit, 4, 64, 3, 4);
+	gtk_widget_set_sensitive(export->dirlen_spin, options.export_subdir_artist || options.export_subdir_album);
+
+        help_button = gtk_button_new_from_stock(GTK_STOCK_HELP); 
+	g_signal_connect(help_button, "clicked", G_CALLBACK(export_format_help_cb), export);
+	insert_label_entry_button(table, _("Filename template:"), &export->templ_entry, options.export_template, help_button, 4, 5);
+
+	/* Format */
+	frame = gtk_frame_new(_("Format"));
+	gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, FALSE, 2);
+        gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
+
+        table = gtk_table_new(4, 2, FALSE);
+        gtk_container_add(GTK_CONTAINER(frame), table);
+
+        hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(_("File format:")), FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
+
+	export->format_combo = export_create_format_combo();
+        g_signal_connect(G_OBJECT(export->format_combo), "changed",
+			 G_CALLBACK(export_format_combo_changed), export);
+        gtk_table_attach(GTK_TABLE(table), export->format_combo, 1, 2, 0, 1,
+			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
+
+        hbox = gtk_hbox_new(FALSE, 0);
+	export->bitrate_label = gtk_label_new(_("Compression level:"));
+        gtk_box_pack_start(GTK_BOX(hbox), export->bitrate_label, FALSE, FALSE, 0);
+        gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
+
+	export->bitrate_scale = gtk_hscale_new_with_range(0, 8, 1);
+        g_signal_connect(G_OBJECT(export->bitrate_scale), "value-changed",
+			 G_CALLBACK(export_bitrate_changed), export);
+	gtk_scale_set_draw_value(GTK_SCALE(export->bitrate_scale), FALSE);
+	gtk_scale_set_digits(GTK_SCALE(export->bitrate_scale), 0);
+        gtk_widget_set_size_request(export->bitrate_scale, 180, -1);
+        gtk_table_attach(GTK_TABLE(table), export->bitrate_scale, 1, 2, 1, 2,
+			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
+
+	export->bitrate_value_label = gtk_label_new("0 (fast)");
+        gtk_table_attach(GTK_TABLE(table), export->bitrate_value_label, 1, 2, 2, 3,
+			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
+
+        export->vbr_check = gtk_check_button_new_with_label(_("VBR encoding"));
+        gtk_widget_set_name(export->vbr_check, "check_on_notebook");
+        gtk_table_attach(GTK_TABLE(table), export->vbr_check, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 5);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->vbr_check), options.export_vbr);
+
+        export->meta_check = gtk_check_button_new_with_label(_("Tag files with metadata"));
+        gtk_widget_set_name(export->meta_check, "check_on_notebook");
+        gtk_table_attach(GTK_TABLE(table), export->meta_check, 0, 2, 3, 4,
+			 GTK_FILL, GTK_FILL, 5, 5);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->meta_check), options.export_metadata);
+
+
+	/* Filter */
+	frame = gtk_frame_new(_("Filter"));
+	gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, FALSE, 2);
+        gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
+
+	table = gtk_table_new(1, 2, FALSE);
+        gtk_container_add(GTK_CONTAINER(frame), table);
+
+        export->check_filter_same = gtk_check_button_new_with_label(_("Do not reencode files already being in the target format"));
+        gtk_widget_set_name(export->check_filter_same, "check_on_notebook");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->check_filter_same), options.export_filter_same);
+        gtk_table_attach(GTK_TABLE(table), export->check_filter_same, 0, 2, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
+
+        export->check_excl_enabled = gtk_check_button_new_with_label(_("Do not reencode files\nmatching wildcard:"));
+        gtk_widget_set_name(export->check_excl_enabled, "check_on_notebook");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->check_excl_enabled), options.export_excl_enabled);
+        gtk_table_attach(GTK_TABLE(table), export->check_excl_enabled, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
+
+        export->excl_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(export->excl_entry), MAXLEN-1);
+	gtk_entry_set_text(GTK_ENTRY(export->excl_entry), options.export_excl_pattern);
+        gtk_table_attach(GTK_TABLE(table), export->excl_entry, 1, 2, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+	gtk_widget_set_sensitive(export->excl_entry, options.export_excl_enabled);
+
+	g_signal_connect(G_OBJECT(export->check_excl_enabled), "toggled",
+			 G_CALLBACK(export_check_excl_toggled), export->excl_entry);
+
+
+	gtk_widget_show_all(export->dialog);
+	export_format_combo_changed(export->format_combo, export);
+
+	export->outdir[0] = '\0';
+	return;
+}
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
 

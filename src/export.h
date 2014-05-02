@@ -77,6 +77,11 @@ typedef struct {
 	GtkWidget * bitrate_value_label;
 	GtkWidget * vbr_check;
 	GtkWidget * meta_check;
+	GtkWidget * outdir_entry;
+	GtkWidget * templ_entry;
+	GtkWidget * check_filter_same;
+	GtkWidget * check_excl_enabled;
+	GtkWidget * excl_entry;
 
 	GtkWidget * slot;
 	GtkWidget * prog_file_entry1;
@@ -89,7 +94,7 @@ typedef struct {
 export_t * export_new(void);
 void export_append_item(export_t * export, char * infile,
 			char * artist, char * album, char * title, int year, int no);
-int export_start(export_t * export);
+void export_start(export_t * export);
 
 
 #endif /* AQUALUNG_EXPORT_H */

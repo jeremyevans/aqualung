@@ -1792,7 +1792,6 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	fi->info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	register_toplevel_window(fi->info_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
         gtk_window_set_title(GTK_WINDOW(fi->info_window), _("File info"));
-	gtk_window_set_modal(GTK_WINDOW(fi->info_window), TRUE);
 	gtk_window_set_transient_for(GTK_WINDOW(fi->info_window), GTK_WINDOW(main_window));
 	gtk_window_set_position(GTK_WINDOW(fi->info_window), GTK_WIN_POS_CENTER);
         gtk_window_set_resizable(GTK_WINDOW(fi->info_window), TRUE);

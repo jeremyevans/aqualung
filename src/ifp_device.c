@@ -382,7 +382,7 @@ aifp_rename_item_cb (GtkButton *button, gpointer user_data) {
         if (strncmp(remote_item, PARENTDIR, 2)) {
 
                 rename_dialog = gtk_message_dialog_new (GTK_WINDOW(aifp_window),
-                                                      GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                                      GTK_DIALOG_DESTROY_WITH_PARENT,
                                                       GTK_MESSAGE_INFO, GTK_BUTTONS_OK_CANCEL, _("Please enter a new name."));
 
                 gtk_window_set_title(GTK_WINDOW(rename_dialog), _("Rename"));
@@ -952,7 +952,6 @@ aifp_transfer_files(gint mode) {
         gtk_window_set_position(GTK_WINDOW(aifp_window), GTK_WIN_POS_CENTER_ALWAYS);
         gtk_window_set_transient_for(GTK_WINDOW(aifp_window),
                                      options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window));
-        gtk_window_set_modal(GTK_WINDOW(aifp_window), TRUE);
         g_signal_connect(G_OBJECT(aifp_window), "delete_event",
                          G_CALLBACK(aifp_window_close), NULL);
         g_signal_connect(G_OBJECT(aifp_window), "key_press_event",

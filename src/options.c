@@ -1819,10 +1819,90 @@ systray_mb_col_command_combo_edited_cb(GtkCellRendererText * cell_renderer,
 #endif /* HAVE_SYSTRAY */
 
 
-void
-create_options_window(void) {
+gboolean
+options_dialog_close(GtkWidget * widget, GdkEvent * event, gpointer data) {
+
+        current_notebook_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
+
+	gtk_widget_destroy(options_window);
+	options_window = NULL;
+
+#ifdef HAVE_SYSTRAY
+	gtk_list_store_clear(systray_mouse_buttons_store);
+	gtk_list_store_clear(systray_mouse_buttons_cmds_store);
+#endif /* HAVE_SYSTRAY */
+
+	return TRUE;
+}
+
+gboolean
+options_dialog_response(GtkDialog * dialog, gint response_id, gpointer data) {
 
 	int ret;
+	char buf[MAXLEN];
+	char * format = (char *)gtk_entry_get_text(GTK_ENTRY(entry_title));
+	char * encode = (char *)gtk_entry_get_text(GTK_ENTRY(encode_set_entry));
+
+	if (response_id != GTK_RESPONSE_ACCEPT) {
+		gtk_widget_destroy(options_window);
+		options_window = NULL;
+		return TRUE;
+	}
+
+        current_notebook_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
+
+	if ((ret = make_string_va(buf, format, 'a', "a", 'r', "r", 't', "t", 0)) != 0) {
+		make_string_strerror(ret, buf);
+		message_dialog(_("Error in title format string"),
+			       options_window,
+			       GTK_MESSAGE_ERROR,
+			       GTK_BUTTONS_OK,
+			       NULL,
+			       buf);
+		return FALSE;
+	}
+	
+	if (strlen(encode)) {
+		GError * error = NULL;
+		gchar * str = g_convert("", -1, "utf-8", encode, NULL, NULL, &error);
+		if (str != NULL) {
+			g_free(str);
+		} else {
+			message_dialog(_("Error invalid character encoding"),
+				       options_window,
+				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       NULL,
+				       "%s", error->message);
+			g_clear_error(&error);
+			gtk_entry_set_text(GTK_ENTRY(encode_set_entry), "");
+			return FALSE;
+		}
+	}
+
+	options_window_accept();
+	gtk_widget_destroy(options_window);
+	options_window = NULL;
+
+	if (reskin_flag) {
+		if (!options.disable_skin_support_settings) {
+			apply_skin(options.skin);
+			gtk_widget_show(conf__skin);
+		} else {
+			gtk_widget_hide(conf__skin);
+		}
+	}
+
+#ifdef HAVE_SYSTRAY
+	gtk_list_store_clear(systray_mouse_buttons_store);
+	gtk_list_store_clear(systray_mouse_buttons_cmds_store);
+#endif /* HAVE_SYSTRAY */
+
+	return TRUE;
+}
+
+void
+create_options_window(void) {
 
 	GtkWidget * vbox_general;
 	GtkWidget * nbook_general;
@@ -1923,6 +2003,10 @@ create_options_window(void) {
 #endif /* HAVE_LADSPA */
 	int i;
 
+	if (options_window != NULL) {
+		return;
+	}
+
         restart_flag = 0;
 	reskin_flag = 0;
         appearance_changed = 0;
@@ -1941,11 +2025,12 @@ create_options_window(void) {
 	refresh_ms_pathlist_clicked(NULL, NULL);
 
         options_window = gtk_dialog_new_with_buttons(_("Settings"),
-					     GTK_WINDOW(main_window),
-					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-					     NULL);
+                                            GTK_WINDOW(main_window),
+                                            GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+                                            GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+                                            GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+                                            NULL);
+
 	gtk_window_set_position(GTK_WINDOW(options_window), GTK_WIN_POS_CENTER);
         gtk_dialog_set_default_response(GTK_DIALOG(options_window), GTK_RESPONSE_ACCEPT);
         gtk_container_set_border_width(GTK_CONTAINER(options_window), 5);
@@ -1954,6 +2039,11 @@ create_options_window(void) {
 	gtk_notebook_set_tab_pos(GTK_NOTEBOOK(notebook), GTK_POS_LEFT);
 	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(options_window))),
 			  notebook);
+
+	g_signal_connect(G_OBJECT(options_window), "response",
+			 G_CALLBACK(options_dialog_response), NULL);
+	g_signal_connect(G_OBJECT(options_window), "delete_event",
+			 G_CALLBACK(options_dialog_close), NULL);
 
         label_size = gtk_size_group_new(GTK_SIZE_GROUP_BOTH);
 
@@ -3692,63 +3782,7 @@ create_options_window(void) {
 	gtk_widget_show_all(options_window);
         gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), current_notebook_page);
 
- display:
-	ret = aqualung_dialog_run(GTK_DIALOG(options_window));
-
-        current_notebook_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
-
-	if (ret == GTK_RESPONSE_ACCEPT) {
-		char buf[MAXLEN];
-		char * format = (char *)gtk_entry_get_text(GTK_ENTRY(entry_title));
-		char * encode = (char *)gtk_entry_get_text(GTK_ENTRY(encode_set_entry));
-		if ((ret = make_string_va(buf, format, 'a', "a", 'r', "r", 't', "t", 0)) != 0) {
-			make_string_strerror(ret, buf);
-			message_dialog(_("Error in title format string"),
-				       options_window,
-				       GTK_MESSAGE_ERROR,
-				       GTK_BUTTONS_OK,
-				       NULL,
-				       buf);
-			goto display;
-		}
-
-		if (strlen(encode)) {
-			GError * error = NULL;
-			gchar * str = g_convert("", -1, "utf-8", encode, NULL, NULL, &error);
-			if (str != NULL) {
-				g_free(str);
-			} else {
-				message_dialog(_("Error invalid character encoding"),
-					       options_window,
-					       GTK_MESSAGE_ERROR,
-					       GTK_BUTTONS_OK,
-					       NULL,
-					       "%s", error->message);
-				g_clear_error(&error);
-				gtk_entry_set_text(GTK_ENTRY(encode_set_entry), "");
-				goto display;
-			}
-		}
-
-		options_window_accept();
-		gtk_widget_destroy(options_window);
-
-		if (reskin_flag) {
-                        if (!options.disable_skin_support_settings) {
-        			apply_skin(options.skin);
-                                gtk_widget_show(conf__skin);
-                        } else {
-                                gtk_widget_hide(conf__skin);
-                        }
-		}
-	} else {
-		gtk_widget_destroy(options_window);
-	}
-
-#ifdef HAVE_SYSTRAY
-	gtk_list_store_clear(systray_mouse_buttons_store);
-	gtk_list_store_clear(systray_mouse_buttons_cmds_store);
-#endif /* HAVE_SYSTRAY */
+	return;
 }
 
 

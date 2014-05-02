@@ -286,7 +286,7 @@ podcast_dialog(podcast_t ** podcast, int create) {
 
         dialog = gtk_dialog_new_with_buttons(create ? _("Subscribe to new feed") : _("Edit feed settings"),
 					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+					     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					     NULL);
@@ -915,7 +915,7 @@ podcast_store__reorder_cb(gpointer data) {
 
         dialog = gtk_dialog_new_with_buttons(_("Reorder feeds"),
 					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+					     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					     NULL);
@@ -1079,10 +1079,9 @@ podcast_track__export_cb(gpointer user_data) {
 
 		podcast_track_export(&iter_track, export, NULL, NULL, 0);
 
-		if (export_start(export)) {
-			podcast_tree_mark_read(&iter_track, 3);
-			store_podcast_save();
-		}
+		export_start(export);
+		podcast_tree_mark_read(&iter_track, 3);
+		store_podcast_save();
 	}
 }
 
@@ -1100,10 +1099,9 @@ podcast_feed__export_cb(gpointer user_data) {
 
 		podcast_feed_export(&iter_podcast, export, (user_data == (gpointer)1) ? 1 : 0);
 
-		if (export_start(export)) {
-			podcast_tree_mark_read(&iter_podcast, 2);
-			store_podcast_save();
-		}
+		export_start(export);
+		podcast_tree_mark_read(&iter_podcast, 2);
+		store_podcast_save();
 	}
 }
 
@@ -1127,10 +1125,9 @@ podcast_store__export_cb(gpointer user_data) {
 			podcast_feed_export(&iter_podcast, export, (user_data == (gpointer)1) ? 1 : 0);
 		}
 
-		if (export_start(export)) {
-			podcast_tree_mark_read(&iter_store, 1);
-			store_podcast_save();
-		}
+		export_start(export);
+		podcast_tree_mark_read(&iter_store, 1);
+		store_podcast_save();
 	}
 }
 #endif /* HAVE_TRANSCODING */

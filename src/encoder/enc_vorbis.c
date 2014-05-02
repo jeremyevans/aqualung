@@ -88,8 +88,11 @@ vorbisenc_encoder_open(encoder_t * enc, encoder_mode_t * mode) {
 	       vorbis_encode_ctl(&pd->vi, OV_ECTL_RATEMANAGE2_SET, NULL) ||
 	       vorbis_encode_setup_init(&pd->vi));
 
-	if (ret)
+	if (ret) {
+		fprintf(stdout, "vorbisenc_encoder_open(): cannot setup encoding with set params (bps=%d)\n",
+			mode->bps);
 		return -1;
+	}
 
 	vorbis_comment_init(&pd->vc);
         if (mode->write_meta) {

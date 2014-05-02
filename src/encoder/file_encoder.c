@@ -76,18 +76,18 @@ file_encoder_open(file_encoder_t * fenc, encoder_mode_t * mode) {
 	encoder_t * enc;
 
 	if (mode->filename == NULL) {
-		fprintf(stderr, "Warning: filename == NULL passed to file_encoder_open()\n");
+		fprintf(stderr, "error: filename == NULL passed to file_encoder_open()\n");
 		return 1;
 	}
 
 	enc = encoder_init_v[mode->file_lib](fenc);
 	if (!enc) {
-		fprintf(stderr, "Warning: error initializing encoder %d.\n", mode->file_lib);
+		fprintf(stderr, "error initializing encoder %d.\n", mode->file_lib);
 		return 1;
 	}
 
 	if (enc->open(enc, mode) != 0) {
-		fprintf(stderr, "Warning: error opening encoder %d.\n", mode->file_lib);
+		fprintf(stderr, "error opening encoder %d.\n", mode->file_lib);
 		return 1;
 	}
 	

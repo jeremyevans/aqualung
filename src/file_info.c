@@ -66,6 +66,8 @@
 /* requested width of value display/edit widgets */
 #define VAL_WIDGET_WIDTH 250
 
+/* dimensions of cover thumbnail */
+#define THUMB_SIZE 48
 
 /* import destination codes */
 enum {
@@ -114,6 +116,7 @@ typedef struct {
 	GtkWidget * entry_mode;
 
 	/* work data */
+	gboolean media_ok;
 	char * name;
 	char * filename;
 	decoder_t * dec;
@@ -128,6 +131,7 @@ typedef struct {
 	GtkWidget * event_box;
 	GtkWidget * cover_align;
 	GtkWidget * hbox;
+	GtkWidget * add_tag_table;
 	GtkWidget * button_table;
 	GtkWidget * prev_button;
 	GtkWidget * next_button;
@@ -137,7 +141,9 @@ typedef struct {
 	int addable_tags; /* META_TAG_*, bitwise or-ed */
 	gint n_pages; /* number of notebook pages */
 	pageidx_t pageidx[FI_MAXPAGES];
+	int selected_tag;
 	int dirty; /* whether the dialog has unsaved changes */
+	gboolean cover_set_from_apic;
 
 	/* for MOD info */
 	GtkWidget * smp_instr_list;
@@ -205,8 +211,34 @@ fi_new(void) {
 	for (i = 0; i < FI_MAXPAGES; i++) {
 		fi->pageidx[i].tag = -1;
 	}
+	fi->selected_tag = -1;
 
 	return fi;
+}
+
+void
+fi_unload(fi_t * fi) {
+	fi->media_ok = FALSE;
+	if (fi->save_button) {
+		if (GTK_IS_WIDGET(fi->save_button)) gtk_widget_destroy(fi->save_button);
+		fi->save_button = NULL;
+	}
+	if (fi->add_tag_table) {
+		if (GTK_IS_WIDGET(fi->add_tag_table)) gtk_widget_destroy(fi->add_tag_table);
+		fi->add_tag_table = NULL;
+	}
+
+	if (fi->fdec != NULL) {
+		file_decoder_delete(fi->fdec);
+		fi->fdec = NULL;
+		fi->meta = NULL;
+	}
+	free(fi->name);
+	free(fi->filename);
+
+	trashlist_free(fi->trash);
+	fi->trash = NULL;
+	fi->cover_set_from_apic = FALSE;
 }
 
 void
@@ -214,14 +246,9 @@ fi_delete(fi_t * fi) {
 
 	int i;
 
-	if (fi == NULL)
-		return;
+	if (fi == NULL)	return;
 
-	if (fi->fdec != NULL) {
-		file_decoder_delete(fi->fdec);
-	}
-	free(fi->name);
-	free(fi->filename);
+	fi_unload(fi);
 
 	for (i = 0; i < FI_MAXPAGES; i++) {
 		g_slist_free(fi->pageidx[i].slist);
@@ -296,8 +323,14 @@ fi_can_close(fi_t * fi) {
 	if (fi->dirty != 0) {
 		switch (fi_close_dialog(fi)) {
 		case 1: /* Save and close */
-			return fi_save(NULL, fi);
+			if (fi_save(NULL, fi)) {
+				fi_mark_unchanged(fi);
+				return TRUE;
+			} else {
+				return FALSE;
+			}
 		case 2: /* Discard changes */
+			fi_mark_unchanged(fi);
 			return TRUE;
 		default: /* Do not close */
 			return FALSE;
@@ -318,7 +351,6 @@ dismiss(GtkWidget * widget, gpointer data) {
 
 	unregister_toplevel_window(fi->info_window);
 	gtk_widget_destroy(fi->info_window);
-	trashlist_free(fi->trash);
 
 	fi_delete(fi);
 	return TRUE;
@@ -559,26 +591,32 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 	}
 }
 
-
-void
-fi_set_page(fi_t * fi) {
-
-	fi->n_pages = gtk_notebook_get_n_pages(GTK_NOTEBOOK(fi->nb));
-        if (fi->n_pages > 1) {
-                gtk_notebook_set_current_page(GTK_NOTEBOOK(fi->nb), options.tags_tab_first ? 1 : 0);
-        }
-}
-
-
 int
 lookup_page(fi_t * fi, int tag) {
 
 	int i;
 	for (i = 0; i < FI_MAXPAGES; i++) {
-		if (fi->pageidx[i].tag == tag)
+		if (fi->pageidx[i].tag == tag) {
 			return i;
+		}
 	}
 	return -1;
+}
+
+void
+fi_set_page(fi_t * fi) {
+	if (fi->selected_tag > -1) { /* try to select first page with the same tag */
+		int idx = lookup_page(fi, fi->selected_tag);
+		if (idx > -1) {
+			gtk_notebook_set_current_page(GTK_NOTEBOOK(fi->nb), idx);
+			return;
+		}
+	}
+	/* fallback to default behaviour */
+	fi->n_pages = gtk_notebook_get_n_pages(GTK_NOTEBOOK(fi->nb));
+	if (fi->n_pages > 1) {
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(fi->nb), options.tags_tab_first ? 1 : 0);
+	}
 }
 
 int
@@ -1424,12 +1462,14 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 	if (frame->type == META_FIELD_APIC) {
 		/* only display first APIC found */
 		meta_frame_t * first_apic = metadata_get_frame_by_type(fi->meta, META_FIELD_APIC, NULL);
-		if (frame == first_apic && (find_cover_filename(fi->filename) == NULL || !options.use_external_cover_first)) {
+		if (frame == first_apic &&
+		    (find_cover_filename(fi->filename) == NULL || !options.use_external_cover_first)) {
 			display_cover_from_binary(fi->cover_image_area, fi->event_box, fi->cover_align,
-						  48, 48, frame->data, frame->length, FALSE, TRUE);
+						  THUMB_SIZE, THUMB_SIZE, frame->data, frame->length, FALSE, TRUE);
+			fi->cover_set_from_apic = TRUE;
 		} else {
 			display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
-				      48, 48, fi->filename, FALSE, TRUE);
+				      THUMB_SIZE, THUMB_SIZE, fi->filename, FALSE, TRUE);
 		}
 	}
 
@@ -1509,7 +1549,7 @@ fi_deltag_button_pressed(GtkWidget * widget, gpointer data) {
 	}
 
 	/* Remove notebook page and update fi->pageidx */
-	for (i = 0; i < FI_MAXPAGES; i++) {
+	for (i = FI_MAXPAGES-1; i >= 0; i--) {
 		if (fi->pageidx[i].tag == tag) {
 			int k;
 			for (k = i; k < FI_MAXPAGES-1; k++) {
@@ -1517,7 +1557,7 @@ fi_deltag_button_pressed(GtkWidget * widget, gpointer data) {
 			}
 			fi->pageidx[FI_MAXPAGES-1].tag = -1;
 			gtk_notebook_remove_page(GTK_NOTEBOOK(fi->nb), i);
-			--fi->n_pages;
+			fi->n_pages--;
 			break;
 		}
 	}
@@ -1565,8 +1605,7 @@ fi_procframe_add_tag_page(fi_t * fi, meta_frame_t * frame) {
 	gtk_widget_set_size_request(scrwin, -1, 275);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrwin),
-					    GTK_SHADOW_NONE);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrwin), GTK_SHADOW_NONE);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrwin), vbox_padding);
 
 	gtk_notebook_append_page(GTK_NOTEBOOK(fi->nb), vbox, label);
@@ -1639,8 +1678,7 @@ fi_procmeta(metadata_t * meta, void * data) {
 	}
 
 	if ((fi->nb == NULL) || !GTK_IS_NOTEBOOK(fi->nb)) {
-		fi_procmeta_wait_data_t * fi_procmeta_wait_data =
-			calloc(1, sizeof(fi_procmeta_wait_data_t));
+		fi_procmeta_wait_data_t * fi_procmeta_wait_data = calloc(1, sizeof(fi_procmeta_wait_data_t));
 		fi_procmeta_wait_data->meta = meta;
 		fi_procmeta_wait_data->data = data;
 		aqualung_timeout_add(100, fi_procmeta_wait, (gpointer)fi_procmeta_wait_data);
@@ -1652,12 +1690,13 @@ fi_procmeta(metadata_t * meta, void * data) {
 	}
 
 	/* remove possible previous metadata pages from notebook */
-	for (i = 0; i < FI_MAXPAGES; i++) {
+	for (i = FI_MAXPAGES-1; i > 0; i--) {
 		if (fi->pageidx[i].tag != -1) {
 			gtk_notebook_remove_page(GTK_NOTEBOOK(fi->nb), i);
 			fi->pageidx[i].tag = -1;
 		}
 	}
+	fi->n_pages = gtk_notebook_get_n_pages(GTK_NOTEBOOK(fi->nb));
 
 	if (fi->meta != NULL) {
 		metadata_free(fi->meta);
@@ -1665,11 +1704,6 @@ fi_procmeta(metadata_t * meta, void * data) {
 	fi->meta = meta;
 	fi->addable_tags = meta->valid_tags;
 	frame = meta->root;
-
-	while (frame != NULL) {
-		fi_procframe(fi, frame);
-		frame = frame->next;
-	}
 
 	if (fi->meta->writable && (fi->save_button == NULL)) {
 		fi->save_button = gtk_button_new_from_stock(GTK_STOCK_SAVE);
@@ -1680,21 +1714,30 @@ fi_procmeta(metadata_t * meta, void * data) {
 		gtk_widget_show_all(fi->info_window);
 	}
 
-	if (fi->meta->writable && (fi->combo == NULL)) {
+	if (fi->meta->writable && (fi->add_tag_table == NULL)) {
+		GtkWidget * addbtn;
 
-		GtkWidget * addbtn, * label;
+		fi->add_tag_table = gtk_table_new(1, 3, FALSE);
+		gtk_box_pack_start(GTK_BOX(fi->hbox), fi->add_tag_table, FALSE, TRUE, 2);
 
 		addbtn = fi_procframe_addtagbtn(fi);
-		gtk_box_pack_start(GTK_BOX(fi->hbox), addbtn, FALSE, FALSE, 5);
+		gtk_table_attach(GTK_TABLE(fi->add_tag_table), addbtn,
+				 0, 1, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
 
-		label = gtk_label_new(_("tag:"));
-		gtk_box_pack_start(GTK_BOX(fi->hbox), label, FALSE, FALSE, 5);
+		gtk_table_attach(GTK_TABLE(fi->add_tag_table), gtk_label_new(_("tag:")),
+				 1, 2, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
 
 		fi->combo = gtk_combo_box_new_text();
 		fi_fill_tagcombo(GTK_COMBO_BOX(fi->combo), fi->addable_tags);
-		gtk_box_pack_start(GTK_BOX(fi->hbox), fi->combo, FALSE, FALSE, 5);
+		gtk_table_attach(GTK_TABLE(fi->add_tag_table), fi->combo,
+				 2, 3, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
 
 		gtk_widget_show_all(fi->info_window);
+	}
+
+	while (frame != NULL) {
+		fi_procframe(fi, frame);
+		frame = frame->next;
 	}
 
 	fi_set_page(fi);
@@ -1718,127 +1761,6 @@ fi_cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer dat
         return TRUE;
 }
 
-
-gboolean
-leaf_iter(GtkTreeModel * model, GtkTreeIter * iter, gboolean last, GtkTreeIter * out) {
-	if (gtk_tree_model_iter_has_child(model, iter)) {
-		GtkTreeIter child_iter;
-		printf("down\n");
-		gint nth = 0;
-		if (last) {
-			nth = gtk_tree_model_iter_n_children(model, iter) - 1;
-		}
-		if (!gtk_tree_model_iter_nth_child(model, &child_iter, iter, nth)) {
-			printf("fail nth_child\n");
-			return FALSE;
-		} else {
-			return leaf_iter(model, &child_iter, last, out);
-		}
-	} else {
-		printf("ready\n");
-		*out = *iter;
-		return TRUE;
-	}
-}
-
-gboolean
-next_iter(GtkTreeModel * model, GtkTreeIter * iter, GtkTreeIter * next, int mindepth) {
-	GtkTreeIter copy = *iter;
-	if (gtk_tree_model_iter_next(model, &copy)) {
-		printf("next\n");
-		*iter = copy;
-		return leaf_iter(model, iter, FALSE, next);
-	} else {
-		GtkTreeIter parent_iter;
-		printf("up\n");
-		if (!gtk_tree_model_iter_parent(model, &parent_iter, iter)) {
-			printf("fail\n");
-			return FALSE;
-		} else {
-			GtkTreePath * path = gtk_tree_model_get_path(model, &parent_iter);
-			if (gtk_tree_path_get_depth(path) <= mindepth) {
-				gtk_tree_path_free(path);
-				printf("limit by mindepth\n");
-				return FALSE;
-			}
-			gtk_tree_path_free(path);
-			return next_iter(model, &parent_iter, next, mindepth);
-		}
-	}
-}
-
-gboolean
-prev_iter(GtkTreeModel * model, GtkTreeIter * iter, GtkTreeIter * prev, int mindepth) {
-	GtkTreePath * path = gtk_tree_model_get_path(model, iter);
-	if (gtk_tree_path_prev(path)) {
-		printf("prev\n");
-		if (!gtk_tree_model_get_iter(model, iter, path)) {
-			printf("fail\n");
-			gtk_tree_path_free(path);
-			return FALSE;
-		} else {
-			gtk_tree_path_free(path);
-			return leaf_iter(model, iter, TRUE, prev);
-		}
-	} else {
-		GtkTreeIter parent_iter;
-		printf("up\n");
-		gtk_tree_path_free(path);
-		if (!gtk_tree_model_iter_parent(model, &parent_iter, iter)) {
-			printf("fail\n");
-			return FALSE;
-		} else {
-			path = gtk_tree_model_get_path(model, &parent_iter);
-			printf("depth = %d\n", gtk_tree_path_get_depth(path));
-			if (gtk_tree_path_get_depth(path) <= mindepth) {
-				gtk_tree_path_free(path);
-				printf("limit by mindepth\n");
-				return FALSE;
-			}
-			gtk_tree_path_free(path);
-			return prev_iter(model, &parent_iter, prev, mindepth);
-		}
-	}
-}
-
-gint
-fi_prev(GtkWidget * widget, gpointer data) {
-	fi_t * fi = data;
-	GtkTreeModel * model = fi->model;
-	GtkTreeIter iter = fi->iter_track;
-	GtkTreeIter prev;
-
-	if (!prev_iter(model, &iter, &prev, fi->mindepth)) {
-		return TRUE;
-	}
-	free(fi->name);
-	free(fi->filename);
-	fi->iter_track = prev;
-	fi->mfun(fi->model, fi->iter_track, &fi->name, &fi->filename);
-	
-	printf("now at: %s '%s'\n", gtk_tree_model_get_string_from_iter(model, &prev), fi->name); // leak
-	return TRUE;
-}
-
-gint
-fi_next(GtkWidget * widget, gpointer data) {
-	fi_t * fi = data;
-	GtkTreeModel * model = fi->model;
-	GtkTreeIter iter = fi->iter_track;
-	GtkTreeIter next;
-
-	if (!next_iter(model, &iter, &next, fi->mindepth)) {
-		return TRUE;
-	}
-	free(fi->name);
-	free(fi->filename);
-	fi->iter_track = next;
-	fi->mfun(fi->model, fi->iter_track, &fi->name, &fi->filename);
-	
-	printf("now at: %s '%s'\n", gtk_tree_model_get_string_from_iter(model, &next), fi->name); // leak
-	return TRUE;
-}
-
 void
 fi_add_file_table_row(char * caption, GtkWidget ** entry, GtkWidget * table, int row) {
 	GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
@@ -1858,6 +1780,19 @@ fi_set_common_entries(fi_t * fi) {
         char str[MAXLEN];
 	gchar * file_display;
 
+	if (!fi->media_ok) {
+		if (GTK_IS_ENTRY(fi->entry_name)) gtk_entry_set_text(GTK_ENTRY(fi->entry_name), fi->name);
+		if (GTK_IS_ENTRY(fi->entry_path)) gtk_entry_set_text(GTK_ENTRY(fi->entry_path), "(unable to open)");
+		if (GTK_IS_ENTRY(fi->entry_format)) gtk_entry_set_text(GTK_ENTRY(fi->entry_format), "");
+		if (GTK_IS_ENTRY(fi->entry_length)) gtk_entry_set_text(GTK_ENTRY(fi->entry_length), "");
+		if (GTK_IS_ENTRY(fi->entry_sr)) gtk_entry_set_text(GTK_ENTRY(fi->entry_sr), "");
+		if (GTK_IS_ENTRY(fi->entry_ch)) gtk_entry_set_text(GTK_ENTRY(fi->entry_ch), "");
+		if (GTK_IS_ENTRY(fi->entry_bw)) gtk_entry_set_text(GTK_ENTRY(fi->entry_bw), "");
+		if (GTK_IS_ENTRY(fi->entry_nsamples)) gtk_entry_set_text(GTK_ENTRY(fi->entry_nsamples), "");
+		if (GTK_IS_ENTRY(fi->entry_mode)) gtk_entry_set_text(GTK_ENTRY(fi->entry_mode), "");
+		return;
+	}
+
 	/* Heading */
 
 	gtk_entry_set_text(GTK_ENTRY(fi->entry_name), fi->name);
@@ -1866,17 +1801,19 @@ fi_set_common_entries(fi_t * fi) {
 	gtk_entry_set_text(GTK_ENTRY(fi->entry_path), file_display);
 	g_free(file_display);
 
-        if (options.show_cover_for_ms_tracks_only == TRUE) {
-                if (fi->display_cover == TRUE) {
-                        display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
-                                      48, 48, fi->filename, FALSE, TRUE);
-                } else {
-                        hide_cover_thumbnail();
-                }
-        } else {
-                display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
-                              48, 48, fi->filename, FALSE, TRUE);
-        }
+	if (!fi->cover_set_from_apic) {
+		if (options.show_cover_for_ms_tracks_only == TRUE) {
+			if (fi->display_cover == TRUE) {
+				display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
+					      THUMB_SIZE, THUMB_SIZE, fi->filename, TRUE, TRUE);
+			} else {
+				hide_cover_thumbnail();
+			}
+		} else {
+			display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
+				      THUMB_SIZE, THUMB_SIZE, fi->filename, TRUE, TRUE);
+		}
+	}
 
 	/* Audio data */
 
@@ -1932,9 +1869,13 @@ fi_set_common_entries(fi_t * fi) {
 }
 
 /* Fill up internal data with values from referenced file.
- * Return 0 if successful, <0 on error.
+ * Return TRUE if successful, FALSE on error.
  */
-int fi_init(fi_t * fi) {
+gboolean
+fi_media_init(fi_t * fi) {
+
+	fi->bail_out = 0;
+	fi->trash = trashlist_new();
 
 #ifdef HAVE_CDDA
         if (g_str_has_prefix(fi->filename, "CDDA ")) {
@@ -1945,12 +1886,12 @@ int fi_init(fi_t * fi) {
                 cdda_drive_t * drive;
 
                 if (sscanf(fi->filename, "CDDA %s %lX %u", device_path, &hash, &track) < 3) {
-                        return -1;
+                        return FALSE;
                 }
 
                 drive = cdda_get_drive_by_device_path(device_path);
                 if ((drive == NULL) || (drive->disc.hash == 0L)) {
-			return -1;
+			return FALSE;
 		}
 
 		fi->is_cdda = 1;
@@ -1967,13 +1908,13 @@ int fi_init(fi_t * fi) {
 	if (!fi->is_cdda) {
 		fi->fdec = file_decoder_new();
 		if (fi->fdec == NULL) {
-			return -1;
+			return FALSE;
 		}
 
 		file_decoder_set_meta_cb(fi->fdec, fi_procmeta, fi);
 		if (file_decoder_open(fi->fdec, fi->filename) != 0) {
 			fi->bail_out = 1;
-			return -1;
+			return FALSE;
 		}
 
 		file_decoder_send_metadata(fi->fdec);
@@ -1986,7 +1927,64 @@ int fi_init(fi_t * fi) {
 		fi->fileinfo.bps = fi->fdec->fileinfo.bps;
 		fi->fileinfo.total_samples = fi->fdec->fileinfo.total_samples;
 	}
-	return 0;
+	return TRUE;
+}
+
+void
+fi_reload(fi_t * fi, GtkTreeIter iter) {
+	int i;
+
+	fi->selected_tag = fi->pageidx[gtk_notebook_get_current_page(GTK_NOTEBOOK(fi->nb))].tag;
+
+	fi_unload(fi);
+	fi->iter_track = iter;
+	fi->mfun(fi->model, fi->iter_track, &fi->name, &fi->filename);
+
+	/* remove any metadata pages from notebook */
+	while (gtk_notebook_get_n_pages(GTK_NOTEBOOK(fi->nb)) > 1) {
+		gtk_notebook_remove_page(GTK_NOTEBOOK(fi->nb), 1);
+	}
+	fi->n_pages = 1;
+	for (i = 1; i < FI_MAXPAGES; i++) {
+		fi->pageidx[i].tag = FALSE; //XXX
+	}
+
+	fi->media_ok = fi_media_init(fi);
+	fi_set_common_entries(fi);
+}
+
+gint
+fi_prev(GtkWidget * widget, gpointer data) {
+	fi_t * fi = data;
+	GtkTreeModel * model = fi->model;
+	GtkTreeIter iter = fi->iter_track;
+	GtkTreeIter prev;
+
+	if (fi_can_close(fi) != TRUE) {
+		return TRUE;
+	}
+	if (!tree_model_prev_iter(model, &iter, &prev, fi->mindepth)) {
+		return TRUE;
+	}
+	fi_reload(fi, prev);
+	return TRUE;
+}
+
+gint
+fi_next(GtkWidget * widget, gpointer data) {
+	fi_t * fi = data;
+	GtkTreeModel * model = fi->model;
+	GtkTreeIter iter = fi->iter_track;
+	GtkTreeIter next;
+
+	if (fi_can_close(fi) != TRUE) {
+		return TRUE;
+	}
+	if (!tree_model_next_iter(model, &iter, &next, fi->mindepth)) {
+		return TRUE;
+	}
+	fi_reload(fi, next);
+	return TRUE;
 }
 
 void
@@ -2016,14 +2014,6 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
 	fi->allow_ms_import = allow_ms_import;
 	fi->display_cover = display_cover;
 	mfun(fi->model, fi->iter_track, &fi->name, &fi->filename);
-
-	if (fi_init(fi) < 0) {
-		fprintf(stderr, "error: fi_init() failed (file: '%s')\n", fi->filename);
-		fi_delete(fi);
-		return;
-	}
-
-	fi->trash = trashlist_new();
 
 	fi->info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	register_toplevel_window(fi->info_window, TOP_WIN_SKIN | TOP_WIN_TRAY);
@@ -2071,6 +2061,7 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
 	label_file = gtk_label_new(_("Audio data"));
 	fi->pageidx[0].tag = -1;
 	gtk_notebook_append_page(GTK_NOTEBOOK(fi->nb), vbox_file, label_file);
+	fi->n_pages = 1;
 
 	fi_add_file_table_row(_("Format:"), &fi->entry_format, table_file, 0);
 	fi_add_file_table_row(_("Length:"), &fi->entry_length, table_file, 1);
@@ -2107,6 +2098,7 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
 
 	gtk_widget_show_all(fi->info_window);
 
+	fi->media_ok = fi_media_init(fi);
 	fi_set_common_entries(fi);
 	fi_set_page(fi);
 

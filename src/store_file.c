@@ -2685,7 +2685,7 @@ track__fileinfo_cb(gpointer user_data) {
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
 		show_file_info(model, iter_track, store_model_func, 1,
-			       is_store_iter_readonly(&iter_track), TRUE);
+			       is_store_iter_readonly(&iter_track) ? FALSE : TRUE, TRUE);
         }
 }
 

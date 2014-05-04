@@ -28,6 +28,7 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gdk/gdk.h>
+#include <gtk/gtk.h>
 
 #include "common.h"
 #include "i18n.h"
@@ -820,6 +821,78 @@ set_option_bit_from_toggle(GtkWidget * toggle, int * opt, int bit) {
 		*opt |= bit;
 	} else {
 		*opt &= ~bit;
+	}
+}
+
+/* Functions to traverse leafs of a generic GtkTreeModel
+ * (used by file info dialog's prev/next file feature)
+ */
+gboolean
+tree_model_leaf_iter(GtkTreeModel * model, GtkTreeIter * iter, gboolean last, GtkTreeIter * out) {
+	if (gtk_tree_model_iter_has_child(model, iter)) {
+		GtkTreeIter child_iter;
+		gint nth = 0;
+		if (last) {
+			nth = gtk_tree_model_iter_n_children(model, iter) - 1;
+		}
+		if (!gtk_tree_model_iter_nth_child(model, &child_iter, iter, nth)) {
+			return FALSE;
+		} else {
+			return tree_model_leaf_iter(model, &child_iter, last, out);
+		}
+	} else {
+		*out = *iter;
+		return TRUE;
+	}
+}
+
+gboolean
+tree_model_next_iter(GtkTreeModel * model, GtkTreeIter * iter, GtkTreeIter * next, int mindepth) {
+	GtkTreeIter copy = *iter;
+	if (gtk_tree_model_iter_next(model, &copy)) {
+		*iter = copy;
+		return tree_model_leaf_iter(model, iter, FALSE, next);
+	} else {
+		GtkTreeIter parent_iter;
+		if (!gtk_tree_model_iter_parent(model, &parent_iter, iter)) {
+			return FALSE;
+		} else {
+			GtkTreePath * path = gtk_tree_model_get_path(model, &parent_iter);
+			if (gtk_tree_path_get_depth(path) <= mindepth) {
+				gtk_tree_path_free(path);
+				return FALSE;
+			}
+			gtk_tree_path_free(path);
+			return tree_model_next_iter(model, &parent_iter, next, mindepth);
+		}
+	}
+}
+
+gboolean
+tree_model_prev_iter(GtkTreeModel * model, GtkTreeIter * iter, GtkTreeIter * prev, int mindepth) {
+	GtkTreePath * path = gtk_tree_model_get_path(model, iter);
+	if (gtk_tree_path_prev(path)) {
+		if (!gtk_tree_model_get_iter(model, iter, path)) {
+			gtk_tree_path_free(path);
+			return FALSE;
+		} else {
+			gtk_tree_path_free(path);
+			return tree_model_leaf_iter(model, iter, TRUE, prev);
+		}
+	} else {
+		GtkTreeIter parent_iter;
+		gtk_tree_path_free(path);
+		if (!gtk_tree_model_iter_parent(model, &parent_iter, iter)) {
+			return FALSE;
+		} else {
+			path = gtk_tree_model_get_path(model, &parent_iter);
+			if (gtk_tree_path_get_depth(path) <= mindepth) {
+				gtk_tree_path_free(path);
+				return FALSE;
+			}
+			gtk_tree_path_free(path);
+			return tree_model_prev_iter(model, &parent_iter, prev, mindepth);
+		}
 	}
 }
 

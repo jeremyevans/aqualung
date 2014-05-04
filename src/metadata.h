@@ -256,10 +256,8 @@ void meta_write_int64(guint64 val, unsigned char * buf);
 
 
 /* debug functions */
-/*
 void metadata_dump(metadata_t * meta);
 void meta_dump_frame(meta_frame_t * frame);
-*/
 
 G_END_DECLS
 

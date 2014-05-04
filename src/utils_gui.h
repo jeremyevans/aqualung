@@ -95,6 +95,9 @@ void set_option_from_spin(GtkWidget * widget, int * opt);
 void set_option_from_entry(GtkWidget * widget, char * opt, int n);
 void set_option_bit_from_toggle(GtkWidget * toggle, int * opt, int bit);
 
+gboolean tree_model_leaf_iter(GtkTreeModel * model, GtkTreeIter * iter, gboolean last, GtkTreeIter * out);
+gboolean tree_model_next_iter(GtkTreeModel * model, GtkTreeIter * iter, GtkTreeIter * next, int mindepth);
+gboolean tree_model_prev_iter(GtkTreeModel * model, GtkTreeIter * iter, GtkTreeIter * prev, int mindepth);
 
 #endif /* AQUALUNG_UTILS_GUI_H */
 

@@ -155,6 +155,9 @@ void playlist_add_cdda(GtkTreeIter * iter_drive, unsigned long hash);
 void playlist_remove_cdda(char * device_path);
 #endif /* HAVE_CDDA */
 
+gint playlist_window_button_pressed(GtkWidget * widget, GdkEventButton * event, gpointer data);
+gboolean playlist_model_func(GtkTreeModel * model, GtkTreeIter iter, char**name, char**file);
+
 enum {
 	PL_FLAG_ACTIVE      = (1 << 0),
 	PL_FLAG_COVER       = (1 << 1),

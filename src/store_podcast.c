@@ -115,6 +115,8 @@ void podcast_feed__export_cb(gpointer data);
 void podcast_track__export_cb(gpointer data);
 #endif /* HAVE_TRANSCODING */
 
+static gboolean store_model_func(GtkTreeModel * model, GtkTreeIter iter, char**name, char**file);
+
 struct keybinds podcast_store_keybinds[] = {
 	{podcast_store__addlist_defmode, GDK_a, GDK_A, 0},
 	{podcast_store__update_cb, GDK_u, GDK_U, 0},
@@ -581,24 +583,10 @@ void
 podcast_track__fileinfo_cb(gpointer data) {
 
 	GtkTreeIter iter_track;
-	GtkTreeIter pod_iter;
 	GtkTreeModel * model;
 
-	char list_str[MAXLEN];
-
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
-
-		podcast_item_t * item;
-		podcast_t * podcast;
-
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_track, MS_COL_DATA, &item, -1);
-
-		gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &pod_iter, &iter_track);
-		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &pod_iter, MS_COL_DATA, &podcast, -1);
-
-		make_title_string(list_str, options.title_format, podcast->author, podcast->title, item->title);
-
-		show_file_info(list_str, item->file, 0, model, iter_track, TRUE);
+		show_file_info(model, iter_track, store_model_func, 1, FALSE, TRUE);
 	}
 }
 
@@ -2148,5 +2136,24 @@ store_podcast_load(void) {
 	xmlFreeDoc(doc);
 }
 
+/* passed as fileinfo_model_func_t argument to show_file_info */
+static gboolean
+store_model_func(GtkTreeModel * model, GtkTreeIter iter, char**name, char**file) {
+
+	podcast_item_t * item;
+	podcast_t * podcast;
+	GtkTreeIter pod_iter;
+	char buf[MAXLEN];
+
+	gtk_tree_model_get(model, &iter, MS_COL_DATA, &item, -1);
+	gtk_tree_model_iter_parent(model, &pod_iter, &iter);
+	gtk_tree_model_get(model, &pod_iter, MS_COL_DATA, &podcast, -1);
+	make_title_string(buf, options.title_format, podcast->author, podcast->title, item->title);
+
+	*name = strndup(buf, MAXLEN-1);
+	*file = strdup(item->file);
+
+	return TRUE;
+}
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

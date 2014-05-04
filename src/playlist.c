@@ -136,9 +136,7 @@ GtkWidget * plist__export;
 
 gchar command[RB_CONTROL_SIZE];
 
-gchar fileinfo_name[MAXLEN];
-gchar fileinfo_file[MAXLEN];
-int fileinfo_cover;
+GtkTreeIter * fileinfo_iter = NULL;
 
 int playlist_dirty;
 int playlist_auto_save_tag = -1;
@@ -1294,17 +1292,10 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 		if (path &&
 		    gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, path) &&
 		    !gtk_tree_model_iter_has_child(GTK_TREE_MODEL(pl->store), &iter)) {
-
-			GtkTreeIter dummy;
 			playlist_data_t * data;
-
 			gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &data, -1);
-
-			playlist_data_get_display_name(fileinfo_name, data);
-			strncpy(fileinfo_file, data->file, MAXLEN-1);
-			fileinfo_cover = IS_PL_COVER(data);
-
-			show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy, fileinfo_cover);
+			show_file_info(GTK_TREE_MODEL(pl->store), iter, playlist_model_func,
+				       0, FALSE, IS_PL_COVER(data));
 		}
 
 		if (path) {
@@ -1507,7 +1498,7 @@ playlist_menu_set_popup_sensitivity(playlist_t * pl) {
 }
 
 gint
-doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
+playlist_window_button_pressed(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 
 	GtkTreePath * path;
 	GtkTreeIter iter;
@@ -1527,26 +1518,17 @@ doubleclick_handler(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(pl->view), event->x, event->y,
 						  &path, NULL, NULL, NULL) &&
 		    gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, path)) {
-
 			if (gtk_tree_selection_count_selected_rows(pl->select) == 0) {
 				gtk_tree_view_set_cursor(GTK_TREE_VIEW(pl->view), path, NULL, FALSE);
 			}
-
 			if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(pl->store), &iter)) {
 				gtk_widget_set_sensitive(plist__fileinfo, FALSE);
 			} else {
-				playlist_data_t * data;
-
 				gtk_widget_set_sensitive(plist__fileinfo, TRUE);
-
-				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &data, -1);
-
-				playlist_data_get_display_name(fileinfo_name, data);
-				strncpy(fileinfo_file, data->file, MAXLEN-1);
-				fileinfo_cover = IS_PL_COVER(data);
+				fileinfo_iter = gtk_tree_iter_copy(&iter);
 			}
 		} else {
-			gtk_widget_set_sensitive(plist__fileinfo, FALSE);
+			gtk_widget_set_sensitive(plist__fileinfo, TRUE);
 		}
 
 		playlist_menu_set_popup_sensitivity(pl);
@@ -2581,8 +2563,24 @@ plist__send_songs_to_iriver_cb(gpointer data) {
 void
 plist__fileinfo_cb(gpointer user_data) {
 
-	GtkTreeIter dummy;
-	show_file_info(fileinfo_name, fileinfo_file, 0, NULL, dummy, fileinfo_cover);
+	playlist_t * pl = playlist_get_current();
+	playlist_data_t * pldata;
+	GtkTreeIter iter;
+
+	if (!pl) return;
+	if (fileinfo_iter) {
+		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), fileinfo_iter, PL_COL_DATA, &pldata, -1);
+		iter = *fileinfo_iter;
+		gtk_tree_iter_free(fileinfo_iter);
+		fileinfo_iter = NULL; // mark it as consumed
+	} else {
+		GtkTreePath * p = playlist_get_playing_path(pl);
+		if (p == NULL) return;
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
+		gtk_tree_path_free(p);
+	}
+	show_file_info(GTK_TREE_MODEL(pl->store), iter, playlist_model_func, 0,
+		       FALSE, IS_PL_COVER(pldata));
 }
 
 void
@@ -4032,7 +4030,7 @@ create_playlist_gui(playlist_t * pl) {
         gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(pl->view), FALSE);
 
 	g_signal_connect(G_OBJECT(pl->view), "button_press_event",
-			 G_CALLBACK(doubleclick_handler), pl);
+			 G_CALLBACK(playlist_window_button_pressed), pl);
 
 
 	/* setup drag and drop */
@@ -5871,6 +5869,16 @@ roll_to_active_track(playlist_t * pl, GtkTreeIter * piter) {
 		gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(pl->view), active_path, NULL, TRUE, 0.5, 0.0);
 	}
 	gtk_tree_path_free(active_path);
+}
+
+/* passed as fileinfo_model_func_t argument to show_file_info */
+gboolean
+playlist_model_func(GtkTreeModel * model, GtkTreeIter iter, char**name, char**file) {
+	playlist_data_t * data;
+	gtk_tree_model_get(model, &iter, PL_COL_NAME, name, -1);
+	gtk_tree_model_get(model, &iter, PL_COL_DATA, &data, -1);
+	*file = strdup(data->file);
+	return TRUE;
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :

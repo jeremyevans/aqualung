@@ -904,13 +904,21 @@ conf__jack_cb(gpointer data) {
 void
 conf__fileinfo_cb(gpointer data) {
 
+	playlist_t * pl;
+	GtkTreePath * p;
+	GtkTreeIter iter;
+
 	if (is_file_loaded) {
-
-		GtkTreeIter dummy;
-		const char * name = gtk_label_get_text(GTK_LABEL(label_title));
-
-		show_file_info((char *)name, current_file, 0, NULL, dummy, TRUE);
+		pl = playlist_get_playing();
+	} else {
+		pl = playlist_get_current();
 	}
+	if (pl == NULL) return;
+	p = playlist_get_playing_path(pl);
+	if (p == NULL) return;
+	gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, p);
+	gtk_tree_path_free(p);
+	show_file_info(GTK_TREE_MODEL(pl->store), iter, playlist_model_func, 0, FALSE, TRUE);
 }
 
 
@@ -1146,11 +1154,12 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		return TRUE;
 	case GDK_i:
 	case GDK_I:
-		if (!options.playlist_is_embedded) {
-                        conf__fileinfo_cb(NULL);
-        		return TRUE;
-                }
-                break;
+		if (options.playlist_is_embedded) {
+			return playlist_window_key_pressed(widget, event);
+		} else {
+			conf__fileinfo_cb(NULL);
+		}
+		break;
 	case GDK_BackSpace:
 		if (allow_seeks && total_samples != 0) {
 			seek_t seek;
@@ -1375,34 +1384,21 @@ main_window_state_changed(GtkWidget * widget, GdkEventWindowState * event, gpoin
 
 
 gint
-main_window_button_pressed(GtkWidget * widget, GdkEventButton * event) {
+main_window_button_pressed(GtkWidget * widget, GdkEventButton * event, gpointer data) {
 
 	if (event->button == 3) {
-
-		GtkWidget * fileinfo;
-
 		if (options.playlist_is_embedded) {
-			fileinfo = plist__fileinfo;
-		} else {
-			fileinfo = conf__fileinfo;
-		}
-
-		if (is_file_loaded && (current_file[0] != '\0')) {
-
-			const char * name = gtk_label_get_text(GTK_LABEL(label_title));
-
-			strncpy(fileinfo_name, name, MAXLEN-1);
-			strncpy(fileinfo_file, current_file, MAXLEN-1);
-
-			gtk_widget_set_sensitive(fileinfo, TRUE);
-		} else {
-			gtk_widget_set_sensitive(fileinfo, FALSE);
-		}
-
-		if (options.playlist_is_embedded) {
-			playlist_menu_set_popup_sensitivity(playlist_get_current());
+			/* translate and crop event coordinates over playlist widget */
+			event->x -= playlist_window->allocation.x;
+			if (event->x > playlist_window->allocation.width) {
+				event->x = -1;
+			}
+			event->y -= playlist_window->allocation.y;
+			if (event->y > playlist_window->allocation.height) {
+				event->y = -1;
+			}
+			return playlist_window_button_pressed(widget, event, playlist_get_current());
                 }
-
                 gtk_menu_popup(GTK_MENU(conf_menu), NULL, NULL, NULL, NULL,
 			       event->button, event->time);
 	}
@@ -2807,7 +2803,7 @@ create_main_window(char * skin_path) {
         if (!options.playlist_is_embedded) {
                 gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__fileinfo);
                 gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__separator1);
-        }
+	}
         gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__about);
 	gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__separator2);
         gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__quit);
@@ -2819,9 +2815,8 @@ create_main_window(char * skin_path) {
 
         if (!options.playlist_is_embedded) {
                 g_signal_connect_swapped(G_OBJECT(conf__fileinfo), "activate", G_CALLBACK(conf__fileinfo_cb), NULL);
-                gtk_widget_set_sensitive(conf__fileinfo, FALSE);
                 gtk_widget_show(conf__fileinfo);
-        }
+	}
 
         gtk_widget_show(conf__options);
         if (!options.disable_skin_support_settings) {
@@ -3792,10 +3787,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	/* set timeout function */
 	timeout_tag = aqualung_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
-
-        if (options.playlist_is_embedded) {
-                gtk_widget_set_sensitive(plist__fileinfo, FALSE);
-        }
 
 	/* re-apply skin to override possible WM theme */
 	if (!options.disable_skin_support_settings) {

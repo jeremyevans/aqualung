@@ -24,9 +24,16 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
+/* Since we want to use the fileinfo dialog over different models, the
+ * caller must provide us a function to access relevant fields of its
+ * tree model.
+ * Returns TRUE if successful (name and file points to valid data).
+ */
+typedef gboolean (*fileinfo_model_func_t)(GtkTreeModel * model, GtkTreeIter iter, char**name, char**file);
 
-void show_file_info(char * name, char * file, int is_called_from_browser,
-		    GtkTreeModel * model, GtkTreeIter iter_track, gboolean cover_flag);
+void show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
+		    fileinfo_model_func_t fi_mfun, int mindepth,
+		    gboolean allow_ms_import, gboolean cover_flag);
 
 
 #endif /* AQUALUNG_FILE_INFO_H */

@@ -93,8 +93,11 @@ typedef struct {
 } pageidx_t;
 
 typedef struct {
-	int is_called_from_browser;
+	gboolean allow_ms_import;
 	int bail_out;
+	fileinfo_model_func_t mfun;
+	int mindepth;
+	char * name;
 	char * filename;
 	file_decoder_t * fdec;
 	metadata_t * meta;
@@ -107,6 +110,8 @@ typedef struct {
 	GtkWidget * cover_align;
 	GtkWidget * hbox;
 	GtkWidget * button_table;
+	GtkWidget * prev_button;
+	GtkWidget * next_button;
 	GtkWidget * save_button;
 	GtkWidget * nb;
 	GtkWidget * combo;
@@ -196,6 +201,7 @@ fi_delete(fi_t * fi) {
 	if (fi->fdec != NULL) {
 		file_decoder_delete(fi->fdec);
 	}
+	free(fi->name);
 	free(fi->filename);
 
 	for (i = 0; i < FI_MAXPAGES; i++) {
@@ -561,7 +567,7 @@ fi_tabwidth(fi_t * fi, metadata_t * meta) {
 
 	/* tabwidth is 2, +1 if called from Music Store, +1 if editable */
 	int tabwidth = 2;
-	tabwidth += fi->is_called_from_browser? 1 : 0;
+	tabwidth += fi->allow_ms_import? 1 : 0;
 	tabwidth += meta->writable ? 1 : 0;
 	return tabwidth;
 }
@@ -1428,7 +1434,7 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 	++col;
 
 	/* Import button */
-	if (fi->is_called_from_browser) {
+	if (fi->allow_ms_import) {
 		importbtn = fi_procframe_importbtn(fi, frame);
 		gtk_table_attach(GTK_TABLE(table), importbtn, col, col+1, n_rows-1, n_rows,
 				 GTK_FILL, GTK_FILL, 5, 3);
@@ -1651,7 +1657,7 @@ fi_procmeta(metadata_t * meta, void * data) {
 		g_signal_connect(fi->save_button, "clicked",
 				 G_CALLBACK(fi_save), (gpointer)fi);
 		gtk_table_attach(GTK_TABLE(fi->button_table), fi->save_button,
-				 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
+				 0, 1, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
 		gtk_widget_show_all(fi->info_window);
 	}
 
@@ -1694,9 +1700,130 @@ fi_cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer dat
 }
 
 
+gboolean
+leaf_iter(GtkTreeModel * model, GtkTreeIter * iter, gboolean last, GtkTreeIter * out) {
+	if (gtk_tree_model_iter_has_child(model, iter)) {
+		GtkTreeIter child_iter;
+		printf("down\n");
+		gint nth = 0;
+		if (last) {
+			nth = gtk_tree_model_iter_n_children(model, iter) - 1;
+		}
+		if (!gtk_tree_model_iter_nth_child(model, &child_iter, iter, nth)) {
+			printf("fail nth_child\n");
+			return FALSE;
+		} else {
+			return leaf_iter(model, &child_iter, last, out);
+		}
+	} else {
+		printf("ready\n");
+		*out = *iter;
+		return TRUE;
+	}
+}
+
+gboolean
+next_iter(GtkTreeModel * model, GtkTreeIter * iter, GtkTreeIter * next, int mindepth) {
+	GtkTreeIter copy = *iter;
+	if (gtk_tree_model_iter_next(model, &copy)) {
+		printf("next\n");
+		*iter = copy;
+		return leaf_iter(model, iter, FALSE, next);
+	} else {
+		GtkTreeIter parent_iter;
+		printf("up\n");
+		if (!gtk_tree_model_iter_parent(model, &parent_iter, iter)) {
+			printf("fail\n");
+			return FALSE;
+		} else {
+			GtkTreePath * path = gtk_tree_model_get_path(model, &parent_iter);
+			if (gtk_tree_path_get_depth(path) <= mindepth) {
+				gtk_tree_path_free(path);
+				printf("limit by mindepth\n");
+				return FALSE;
+			}
+			gtk_tree_path_free(path);
+			return next_iter(model, &parent_iter, next, mindepth);
+		}
+	}
+}
+
+gboolean
+prev_iter(GtkTreeModel * model, GtkTreeIter * iter, GtkTreeIter * prev, int mindepth) {
+	GtkTreePath * path = gtk_tree_model_get_path(model, iter);
+	if (gtk_tree_path_prev(path)) {
+		printf("prev\n");
+		if (!gtk_tree_model_get_iter(model, iter, path)) {
+			printf("fail\n");
+			gtk_tree_path_free(path);
+			return FALSE;
+		} else {
+			gtk_tree_path_free(path);
+			return leaf_iter(model, iter, TRUE, prev);
+		}
+	} else {
+		GtkTreeIter parent_iter;
+		printf("up\n");
+		gtk_tree_path_free(path);
+		if (!gtk_tree_model_iter_parent(model, &parent_iter, iter)) {
+			printf("fail\n");
+			return FALSE;
+		} else {
+			path = gtk_tree_model_get_path(model, &parent_iter);
+			printf("depth = %d\n", gtk_tree_path_get_depth(path));
+			if (gtk_tree_path_get_depth(path) <= mindepth) {
+				gtk_tree_path_free(path);
+				printf("limit by mindepth\n");
+				return FALSE;
+			}
+			gtk_tree_path_free(path);
+			return prev_iter(model, &parent_iter, prev, mindepth);
+		}
+	}
+}
+
+gint
+fi_prev(GtkWidget * widget, gpointer data) {
+	fi_t * fi = data;
+	GtkTreeModel * model = fi->model;
+	GtkTreeIter iter = fi->track_iter;
+	GtkTreeIter prev;
+
+	if (!prev_iter(model, &iter, &prev, fi->mindepth)) {
+		return TRUE;
+	}
+	free(fi->name);
+	free(fi->filename);
+	fi->track_iter = prev;
+	fi->mfun(fi->model, fi->track_iter, &fi->name, &fi->filename);
+	
+	printf("now at: %s '%s'\n", gtk_tree_model_get_string_from_iter(model, &prev), fi->name); // leak
+	return TRUE;
+}
+
+gint
+fi_next(GtkWidget * widget, gpointer data) {
+	fi_t * fi = data;
+	GtkTreeModel * model = fi->model;
+	GtkTreeIter iter = fi->track_iter;
+	GtkTreeIter next;
+
+	if (!next_iter(model, &iter, &next, fi->mindepth)) {
+		return TRUE;
+	}
+	free(fi->name);
+	free(fi->filename);
+	fi->track_iter = next;
+	fi->mfun(fi->model, fi->track_iter, &fi->name, &fi->filename);
+	
+	printf("now at: %s '%s'\n", gtk_tree_model_get_string_from_iter(model, &next), fi->name); // leak
+	return TRUE;
+}
+
 void
-show_file_info(char * name, char * file, int is_called_from_browser,
-	       GtkTreeModel * model, GtkTreeIter track_iter, gboolean cover_flag) {
+show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
+	       fileinfo_model_func_t mfun, int mindepth,
+	       gboolean allow_ms_import, gboolean cover_flag) {
 
         char str[MAXLEN];
 	gchar * file_display;
@@ -1719,9 +1846,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	GtkWidget * label;
 	GtkWidget * entry;
 
-
 	decoder_t * dec = NULL;
-
 	int is_cdda = 0;
 	fileinfo_t fileinfo;
 
@@ -1730,20 +1855,28 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		return;
 	}
 
+	fi->mfun = mfun;
+	fi->mindepth = mindepth;
+	fi->model = model;
+	fi->track_iter = iter_track;
+	mfun(fi->model, fi->track_iter, &fi->name, &fi->filename);
+
 #ifdef HAVE_CDDA
-        if (g_str_has_prefix(file, "CDDA ")) {
+        if (g_str_has_prefix(fi->filename, "CDDA ")) {
 
                 char device_path[CDDA_MAXLEN];
                 long hash;
                 int track;
                 cdda_drive_t * drive;
 
-                if (sscanf(file, "CDDA %s %lX %u", device_path, &hash, &track) < 3) {
+                if (sscanf(fi->filename, "CDDA %s %lX %u", device_path, &hash, &track) < 3) {
+			fi_delete(fi);
                         return;
                 }
 
                 drive = cdda_get_drive_by_device_path(device_path);
                 if ((drive == NULL) || (drive->disc.hash == 0L)) {
+			fi_delete(fi);
 			return;
 		}
 
@@ -1766,8 +1899,9 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		}
 
 		file_decoder_set_meta_cb(fi->fdec, fi_procmeta, fi);
-		if (file_decoder_open(fi->fdec, file) != 0) {
+		if (file_decoder_open(fi->fdec, fi->filename) != 0) {
 			fi->bail_out = 1;
+			fi_delete(fi);
 			return;
 		}
 
@@ -1783,10 +1917,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 		fileinfo.total_samples = fi->fdec->fileinfo.total_samples;
 	}
 
-	fi->is_called_from_browser = is_called_from_browser;
-	fi->model = model;
-	fi->track_iter = track_iter;
-	fi->filename = strdup(file);
+	fi->allow_ms_import = allow_ms_import;
 	fi->trash = trashlist_new();
 
 	fi->info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -1818,7 +1949,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
 	entry_name = gtk_entry_new();
 	gtk_widget_set_can_focus(entry_name, FALSE);
-	gtk_entry_set_text(GTK_ENTRY(entry_name), name);
+	gtk_entry_set_text(GTK_ENTRY(entry_name), fi->name);
 	gtk_editable_set_editable(GTK_EDITABLE(entry_name), FALSE);
 	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, 0, 1,
 			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 2);
@@ -1829,7 +1960,7 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 	gtk_table_attach(GTK_TABLE(table), hbox_path, 0, 1, 1, 2,
 			 GTK_FILL, GTK_FILL, 5, 2);
 
-	file_display = g_filename_display_name(file);
+	file_display = g_filename_display_name(fi->filename);
 	entry_path = gtk_entry_new();
 	gtk_widget_set_can_focus(entry_path, FALSE);
 	gtk_entry_set_text(GTK_ENTRY(entry_path), file_display);
@@ -1850,13 +1981,13 @@ show_file_info(char * name, char * file, int is_called_from_browser,
         if (options.show_cover_for_ms_tracks_only == TRUE) {
                 if (cover_flag == TRUE) {
                         display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
-                                      48, 48, file, FALSE, TRUE);
+                                      48, 48, fi->filename, FALSE, TRUE);
                 } else {
                         hide_cover_thumbnail();
                 }
         } else {
                 display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
-                              48, 48, file, FALSE, TRUE);
+                              48, 48, fi->filename, FALSE, TRUE);
         }
 
 	fi->hbox = gtk_hbox_new(FALSE, 0);
@@ -1993,13 +2124,25 @@ show_file_info(char * name, char * file, int is_called_from_browser,
 
 	gtk_widget_grab_focus(fi->nb);
 
-	fi->button_table = gtk_table_new(1, 2, TRUE);
-	gtk_box_pack_end(GTK_BOX(fi->hbox), fi->button_table, FALSE, TRUE, 3);
+	fi->button_table = gtk_table_new(1, 2, FALSE);
+	gtk_box_pack_end(GTK_BOX(fi->hbox), fi->button_table, FALSE, TRUE, 2);
 
-        dismiss_btn = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
+	fi->prev_button = gui_stock_label_button(NULL, GTK_STOCK_GO_BACK);
+	g_signal_connect(fi->prev_button, "clicked",
+			 G_CALLBACK(fi_prev), (gpointer)fi);
+	gtk_table_attach(GTK_TABLE(fi->button_table), fi->prev_button,
+			 1, 2, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
+
+	fi->next_button = gui_stock_label_button(NULL, GTK_STOCK_GO_FORWARD);
+	g_signal_connect(fi->next_button, "clicked",
+			 G_CALLBACK(fi_next), (gpointer)fi);
+	gtk_table_attach(GTK_TABLE(fi->button_table), fi->next_button,
+			 2, 3, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
+
+        dismiss_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
 	g_signal_connect(dismiss_btn, "clicked", G_CALLBACK(dismiss), (gpointer)fi);
-	gtk_table_attach(GTK_TABLE(fi->button_table), dismiss_btn, 1, 2, 0, 1,
-			 GTK_FILL, GTK_FILL, 5, 3);
+	gtk_table_attach(GTK_TABLE(fi->button_table), dismiss_btn, 3, 4, 0, 1,
+			 GTK_FILL, GTK_FILL, 3, 0);
 
 	gtk_widget_show_all(fi->info_window);
 

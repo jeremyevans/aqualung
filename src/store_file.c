@@ -224,6 +224,7 @@ void track__volume_all_cb(gpointer data);
 
 void track__fileinfo_cb(gpointer data);
 
+static gboolean store_model_func(GtkTreeModel * model, GtkTreeIter iter, char**name, char**file);
 
 struct keybinds store_keybinds[] = {
 	{store__addlist_defmode, GDK_a, GDK_A, 0},
@@ -2679,50 +2680,12 @@ track__edit_cb(gpointer user_data) {
 void
 track__fileinfo_cb(gpointer user_data) {
 
-        GtkTreeIter iter_track;
-        GtkTreeIter iter_record;
-        GtkTreeIter iter_artist;
         GtkTreeModel * model;
-
-	track_data_t * data;
-
-        char * ptrack_name;
-        char * precord_name;
-        char * partist_name;
-
-        char track_name[MAXLEN];
-        char record_name[MAXLEN];
-        char artist_name[MAXLEN];
-
-	char list_str[MAXLEN];
+        GtkTreeIter iter_track;
 
         if (gtk_tree_selection_get_selected(music_select, &model, &iter_track)) {
-
-                gtk_tree_model_get(model, &iter_track,
-				   MS_COL_NAME, &ptrack_name,
-				   MS_COL_DATA, &data, -1);
-
-                strncpy(track_name, ptrack_name, MAXLEN-1);
-                g_free(ptrack_name);
-
-		gtk_tree_model_iter_parent(model, &iter_record, &iter_track);
-                gtk_tree_model_get(model, &iter_record, MS_COL_NAME, &precord_name, -1);
-                strncpy(record_name, precord_name, MAXLEN-1);
-                g_free(precord_name);
-
-		gtk_tree_model_iter_parent(model, &iter_artist, &iter_record);
-                gtk_tree_model_get(model, &iter_artist, MS_COL_NAME, &partist_name, -1);
-                strncpy(artist_name, partist_name, MAXLEN-1);
-                g_free(partist_name);
-
-		make_title_string(list_str, options.title_format,
-				  artist_name, record_name, track_name);
-
-		if (is_store_iter_readonly(&iter_track)) {
-			show_file_info(list_str, data->file, 0, model, iter_track, TRUE);
-		} else {
-			show_file_info(list_str, data->file, 1, model, iter_track, TRUE);
-		}
+		show_file_info(model, iter_track, store_model_func, 1,
+			       is_store_iter_readonly(&iter_track), TRUE);
         }
 }
 
@@ -4921,6 +4884,30 @@ store_file_toolbar__remove_cb(gpointer data) {
                                 break;
                 }
         }
+}
+
+/* passed as fileinfo_model_func_t argument to show_file_info */
+static gboolean
+store_model_func(GtkTreeModel * model, GtkTreeIter iter, char**name, char**file) {
+	char * artist_name;
+	char * record_name;
+	char * track_name;
+	track_data_t * data;
+	GtkTreeIter iter_record;
+	GtkTreeIter iter_artist;
+	char buf[MAXLEN];
+
+	gtk_tree_model_get(model, &iter, MS_COL_NAME, &track_name, MS_COL_DATA, &data, -1);
+	gtk_tree_model_iter_parent(model, &iter_record, &iter);
+	gtk_tree_model_get(model, &iter_record, MS_COL_NAME, &record_name, -1);
+	gtk_tree_model_iter_parent(model, &iter_artist, &iter_record);
+	gtk_tree_model_get(model, &iter_artist, MS_COL_NAME, &artist_name, -1);
+
+	make_title_string(buf, options.title_format, artist_name, record_name, track_name);
+
+	*name = strndup(buf, MAXLEN-1);
+	*file = strdup(data->file);
+	return TRUE;
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :

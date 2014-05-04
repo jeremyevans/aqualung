@@ -33,7 +33,7 @@ typedef gboolean (*fileinfo_model_func_t)(GtkTreeModel * model, GtkTreeIter iter
 
 void show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
 		    fileinfo_model_func_t fi_mfun, int mindepth,
-		    gboolean allow_ms_import, gboolean cover_flag);
+		    gboolean allow_ms_import, gboolean display_cover);
 
 
 #endif /* AQUALUNG_FILE_INFO_H */

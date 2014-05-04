@@ -93,20 +93,39 @@ typedef struct {
 } pageidx_t;
 
 typedef struct {
-	gboolean allow_ms_import;
-	int bail_out;
+	/* arguments to show_file_info */
+	GtkTreeModel * model;
+	GtkTreeIter iter_track;
 	fileinfo_model_func_t mfun;
 	int mindepth;
+	gboolean allow_ms_import;
+	gboolean display_cover;
+
+	/* entries containing displayed data */
+	GtkWidget * entry_name;
+	GtkWidget * entry_path;
+	GtkWidget * cover_image_area;
+	GtkWidget * entry_format;
+	GtkWidget * entry_length;
+	GtkWidget * entry_sr;
+	GtkWidget * entry_ch;
+	GtkWidget * entry_bw;
+	GtkWidget * entry_nsamples;
+	GtkWidget * entry_mode;
+
+	/* work data */
 	char * name;
 	char * filename;
+	decoder_t * dec;
+	int is_cdda;
+	fileinfo_t fileinfo;
+
+	int bail_out;
 	file_decoder_t * fdec;
 	metadata_t * meta;
 	trashlist_t * trash;
-	GtkTreeModel * model;
-	GtkTreeIter track_iter;
 	GtkWidget * info_window;
 	GtkWidget * event_box;
-	GtkWidget * cover_image_area;
 	GtkWidget * cover_align;
 	GtkWidget * hbox;
 	GtkWidget * button_table;
@@ -464,7 +483,7 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 	fi_t * fi = data->fi;
 	meta_frame_t * frame = data->frame;
 	GtkTreeModel * model = fi->model;
-	GtkTreeIter track_iter = fi->track_iter;
+	GtkTreeIter iter_track = fi->iter_track;
 	GtkTreeIter record_iter;
 	GtkTreeIter artist_iter;
 	GtkTreePath * path;
@@ -479,25 +498,25 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 
 	switch (data->dest_type) {
 	case IMPORT_DEST_TITLE:
-		gtk_tree_store_set(music_store, &track_iter, MS_COL_NAME, frame->field_val, -1);
-		music_store_mark_changed(&track_iter);
+		gtk_tree_store_set(music_store, &iter_track, MS_COL_NAME, frame->field_val, -1);
+		music_store_mark_changed(&iter_track);
 		break;
 	case IMPORT_DEST_RECORD:
-		gtk_tree_model_iter_parent(model, &record_iter, &track_iter);
+		gtk_tree_model_iter_parent(model, &record_iter, &iter_track);
 		gtk_tree_store_set(music_store, &record_iter, MS_COL_NAME, frame->field_val, -1);
 		music_store_mark_changed(&record_iter);
 		break;
 	case IMPORT_DEST_ARTIST:
-		gtk_tree_model_iter_parent(model, &record_iter, &track_iter);
+		gtk_tree_model_iter_parent(model, &record_iter, &iter_track);
 		gtk_tree_model_iter_parent(model, &artist_iter, &record_iter);
 		gtk_tree_store_set(music_store, &artist_iter, MS_COL_NAME, frame->field_val, -1);
 		gtk_tree_store_set(music_store, &artist_iter, MS_COL_SORT, frame->field_val, -1);
-		path = gtk_tree_model_get_path(model, &track_iter);
+		path = gtk_tree_model_get_path(model, &iter_track);
 		gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(music_tree), path, NULL, TRUE, 0.5f, 0.0f);
 		music_store_mark_changed(&artist_iter);
 		break;
 	case IMPORT_DEST_YEAR:
-		gtk_tree_model_iter_parent(model, &record_iter, &track_iter);
+		gtk_tree_model_iter_parent(model, &record_iter, &iter_track);
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &record_iter, MS_COL_DATA, &record_data, -1);
 		if (sscanf(frame->field_val, "%d", &record_data->year) < 1) {
 			char msg[MAXLEN];
@@ -515,11 +534,11 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 		break;
 	case IMPORT_DEST_NUMBER:
 		snprintf(tmp, MAXLEN-1, "%02d", frame->int_val);
-		gtk_tree_store_set(music_store, &track_iter, MS_COL_SORT, tmp, -1);
-		music_store_mark_changed(&track_iter);
+		gtk_tree_store_set(music_store, &iter_track, MS_COL_SORT, tmp, -1);
+		music_store_mark_changed(&iter_track);
 		break;
 	case IMPORT_DEST_COMMENT:
-		gtk_tree_model_get(model, &track_iter, MS_COL_DATA, &track_data, -1);
+		gtk_tree_model_get(model, &iter_track, MS_COL_DATA, &track_data, -1);
 		tmp[0] = '\0';
 		if (track_data->comment != NULL) {
 			strncat(tmp, track_data->comment, MAXLEN-1);
@@ -529,13 +548,13 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 		}
 		strncat(tmp, frame->field_val, MAXLEN-1);
 		free_strdup(&track_data->comment, tmp);
-		music_store_mark_changed(&track_iter);
+		music_store_mark_changed(&iter_track);
 		break;
 	case IMPORT_DEST_RVA:
-		gtk_tree_model_get(model, &track_iter, MS_COL_DATA, &track_data, -1);
+		gtk_tree_model_get(model, &iter_track, MS_COL_DATA, &track_data, -1);
 		track_data->rva = frame->float_val;
 		track_data->use_rva = 1;
-		music_store_mark_changed(&track_iter);
+		music_store_mark_changed(&iter_track);
 		break;
 	}
 }
@@ -1786,7 +1805,7 @@ gint
 fi_prev(GtkWidget * widget, gpointer data) {
 	fi_t * fi = data;
 	GtkTreeModel * model = fi->model;
-	GtkTreeIter iter = fi->track_iter;
+	GtkTreeIter iter = fi->iter_track;
 	GtkTreeIter prev;
 
 	if (!prev_iter(model, &iter, &prev, fi->mindepth)) {
@@ -1794,8 +1813,8 @@ fi_prev(GtkWidget * widget, gpointer data) {
 	}
 	free(fi->name);
 	free(fi->filename);
-	fi->track_iter = prev;
-	fi->mfun(fi->model, fi->track_iter, &fi->name, &fi->filename);
+	fi->iter_track = prev;
+	fi->mfun(fi->model, fi->iter_track, &fi->name, &fi->filename);
 	
 	printf("now at: %s '%s'\n", gtk_tree_model_get_string_from_iter(model, &prev), fi->name); // leak
 	return TRUE;
@@ -1805,7 +1824,7 @@ gint
 fi_next(GtkWidget * widget, gpointer data) {
 	fi_t * fi = data;
 	GtkTreeModel * model = fi->model;
-	GtkTreeIter iter = fi->track_iter;
+	GtkTreeIter iter = fi->iter_track;
 	GtkTreeIter next;
 
 	if (!next_iter(model, &iter, &next, fi->mindepth)) {
@@ -1813,53 +1832,109 @@ fi_next(GtkWidget * widget, gpointer data) {
 	}
 	free(fi->name);
 	free(fi->filename);
-	fi->track_iter = next;
-	fi->mfun(fi->model, fi->track_iter, &fi->name, &fi->filename);
+	fi->iter_track = next;
+	fi->mfun(fi->model, fi->iter_track, &fi->name, &fi->filename);
 	
 	printf("now at: %s '%s'\n", gtk_tree_model_get_string_from_iter(model, &next), fi->name); // leak
 	return TRUE;
 }
 
 void
-show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
-	       fileinfo_model_func_t mfun, int mindepth,
-	       gboolean allow_ms_import, gboolean cover_flag) {
+fi_add_file_table_row(char * caption, GtkWidget ** entry, GtkWidget * table, int row) {
+	GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+	GtkWidget * label = gtk_label_new(caption);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, row, row+1, GTK_FILL, GTK_FILL, 5, 3);
+	*entry = gtk_entry_new();
+	gtk_widget_set_size_request(*entry, 350, -1);
+	gtk_widget_set_can_focus(*entry, FALSE);
+	gtk_editable_set_editable(GTK_EDITABLE(*entry), FALSE);
+	gtk_table_attach(GTK_TABLE(table), *entry, 1, 2, row, row+1,
+			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
+}
 
+void
+fi_set_common_entries(fi_t * fi) {
         char str[MAXLEN];
 	gchar * file_display;
 
-	GtkWidget * vbox;
-	GtkWidget * hbox_t;
-	GtkWidget * table;
-	GtkWidget * hbox_name;
-	GtkWidget * label_name;
-	GtkWidget * entry_name;
-	GtkWidget * hbox_path;
-	GtkWidget * label_path;
-	GtkWidget * entry_path;
-	GtkWidget * dismiss_btn;
+	/* Heading */
 
-	GtkWidget * vbox_file;
-	GtkWidget * label_file;
-	GtkWidget * table_file;
-	GtkWidget * hbox;
-	GtkWidget * label;
-	GtkWidget * entry;
+	gtk_entry_set_text(GTK_ENTRY(fi->entry_name), fi->name);
 
-	decoder_t * dec = NULL;
-	int is_cdda = 0;
-	fileinfo_t fileinfo;
+	file_display = g_filename_display_name(fi->filename);
+	gtk_entry_set_text(GTK_ENTRY(fi->entry_path), file_display);
+	g_free(file_display);
 
-	fi_t * fi = fi_new();
-	if (fi == NULL) {
-		return;
+        if (options.show_cover_for_ms_tracks_only == TRUE) {
+                if (fi->display_cover == TRUE) {
+                        display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
+                                      48, 48, fi->filename, FALSE, TRUE);
+                } else {
+                        hide_cover_thumbnail();
+                }
+        } else {
+                display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
+                              48, 48, fi->filename, FALSE, TRUE);
+        }
+
+	/* Audio data */
+
+	gtk_entry_set_text(GTK_ENTRY(fi->entry_format), fi->fileinfo.format_str);
+
+	if (fi->fileinfo.total_samples == 0) {
+		strcpy(str, "N/A");
+	} else {
+		sample2time(fi->fileinfo.sample_rate, fi->fileinfo.total_samples, str, 0);
 	}
+	gtk_entry_set_text(GTK_ENTRY(fi->entry_length), str);
 
-	fi->mfun = mfun;
-	fi->mindepth = mindepth;
-	fi->model = model;
-	fi->track_iter = iter_track;
-	mfun(fi->model, fi->track_iter, &fi->name, &fi->filename);
+	sprintf(str, _("%ld Hz"), fi->fileinfo.sample_rate);
+	gtk_entry_set_text(GTK_ENTRY(fi->entry_sr), str);
+
+	if (fi->fileinfo.is_mono) {
+		strcpy(str, _("MONO"));
+	} else {
+		strcpy(str, _("STEREO"));
+	}
+	gtk_entry_set_text(GTK_ENTRY(fi->entry_ch), str);
+
+	if (fi->fileinfo.bps == 0) {
+		strcpy(str, "N/A kbit/s");
+	} else {
+		format_bps_label(fi->fileinfo.bps, fi->fileinfo.format_flags, str);
+	}
+	gtk_entry_set_text(GTK_ENTRY(fi->entry_bw), str);
+
+	if (fi->fileinfo.total_samples == 0) {
+		strcpy(str, "N/A");
+	} else {
+		sprintf(str, "%lld", fi->fileinfo.total_samples);
+	}
+	gtk_entry_set_text(GTK_ENTRY(fi->entry_nsamples), str);
+
+#ifdef HAVE_WAVPACK
+	if (!is_cdda && fi->fdec->file_lib == WAVPACK_LIB) {
+		wavpack_pdata_t * pd = (wavpack_pdata_t *)dec->pdata;
+		int mode = WavpackGetMode(pd->wpc);
+
+		if ((mode & MODE_LOSSLESS) && (mode & MODE_WVC)) {
+			strncpy(str, "Hybrid Lossless", MAXLEN-1);
+		} else if (mode & MODE_LOSSLESS) {
+			strncpy(str, "Lossless", MAXLEN-1);
+		} else {
+			strncpy(str, "Hybrid Lossy", MAXLEN-1);
+		}
+		cut_trailing_whitespace(str);
+		gtk_entry_set_text(GTK_ENTRY(fi->entry_mode), str);
+	}
+#endif /* HAVE_WAVPACK */
+}
+
+/* Fill up internal data with values from referenced file.
+ * Return 0 if successful, <0 on error.
+ */
+int fi_init(fi_t * fi) {
 
 #ifdef HAVE_CDDA
         if (g_str_has_prefix(fi->filename, "CDDA ")) {
@@ -1870,54 +1945,84 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
                 cdda_drive_t * drive;
 
                 if (sscanf(fi->filename, "CDDA %s %lX %u", device_path, &hash, &track) < 3) {
-			fi_delete(fi);
-                        return;
+                        return -1;
                 }
 
                 drive = cdda_get_drive_by_device_path(device_path);
                 if ((drive == NULL) || (drive->disc.hash == 0L)) {
-			fi_delete(fi);
-			return;
+			return -1;
 		}
 
-		is_cdda = 1;
+		fi->is_cdda = 1;
 
-		fileinfo.format_str = _("Audio CD");
-		fileinfo.sample_rate = 44100;
-		fileinfo.is_mono = 0;
-		fileinfo.format_flags = 0;
-		fileinfo.bps = 2*16*44100;
-		fileinfo.total_samples = (drive->disc.toc[track] - drive->disc.toc[track-1]) * 588;
+		fi->fileinfo.format_str = _("Audio CD");
+		fi->fileinfo.sample_rate = 44100;
+		fi->fileinfo.is_mono = 0;
+		fi->fileinfo.format_flags = 0;
+		fi->fileinfo.bps = 2*16*44100;
+		fi->fileinfo.total_samples = (drive->disc.toc[track] - drive->disc.toc[track-1]) * 588;
         }
 #endif /* HAVE_CDDA */
 
-	if (!is_cdda) {
+	if (!fi->is_cdda) {
 		fi->fdec = file_decoder_new();
 		if (fi->fdec == NULL) {
-			fi_delete(fi);
-			return;
+			return -1;
 		}
 
 		file_decoder_set_meta_cb(fi->fdec, fi_procmeta, fi);
 		if (file_decoder_open(fi->fdec, fi->filename) != 0) {
 			fi->bail_out = 1;
-			fi_delete(fi);
-			return;
+			return -1;
 		}
 
 		file_decoder_send_metadata(fi->fdec);
+		fi->dec = (decoder_t *)fi->fdec->pdec;
 
-		dec = (decoder_t *)fi->fdec->pdec;
+		fi->fileinfo.format_str = fi->dec->format_str;
+		fi->fileinfo.sample_rate = fi->fdec->fileinfo.sample_rate;
+		fi->fileinfo.is_mono = fi->fdec->fileinfo.is_mono;
+		fi->fileinfo.format_flags = fi->fdec->fileinfo.format_flags;
+		fi->fileinfo.bps = fi->fdec->fileinfo.bps;
+		fi->fileinfo.total_samples = fi->fdec->fileinfo.total_samples;
+	}
+	return 0;
+}
 
-		fileinfo.format_str = dec->format_str;
-		fileinfo.sample_rate = fi->fdec->fileinfo.sample_rate;
-		fileinfo.is_mono = fi->fdec->fileinfo.is_mono;
-		fileinfo.format_flags = fi->fdec->fileinfo.format_flags;
-		fileinfo.bps = fi->fdec->fileinfo.bps;
-		fileinfo.total_samples = fi->fdec->fileinfo.total_samples;
+void
+show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
+	       fileinfo_model_func_t mfun, int mindepth,
+	       gboolean allow_ms_import, gboolean display_cover) {
+
+	GtkWidget * vbox;
+	GtkWidget * hbox_t;
+	GtkWidget * table;
+	GtkWidget * dismiss_btn;
+
+	GtkWidget * vbox_file;
+	GtkWidget * label_file;
+	GtkWidget * table_file;
+
+	fi_t * fi = fi_new();
+	if (fi == NULL) {
+		return;
 	}
 
+	/* save arguments */
+	fi->model = model;
+	fi->iter_track = iter_track;
+	fi->mfun = mfun;
+	fi->mindepth = mindepth;
 	fi->allow_ms_import = allow_ms_import;
+	fi->display_cover = display_cover;
+	mfun(fi->model, fi->iter_track, &fi->name, &fi->filename);
+
+	if (fi_init(fi) < 0) {
+		fprintf(stderr, "error: fi_init() failed (file: '%s')\n", fi->filename);
+		fi_delete(fi);
+		return;
+	}
+
 	fi->trash = trashlist_new();
 
 	fi->info_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -1941,33 +2046,8 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
 	table = gtk_table_new(2, 2, FALSE);
 	gtk_box_pack_start(GTK_BOX(hbox_t), table, TRUE, TRUE, 4);
 
-        hbox_name = gtk_hbox_new(FALSE, 0);
-	label_name = gtk_label_new(_("Track:"));
-	gtk_box_pack_start(GTK_BOX(hbox_name), label_name, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox_name, 0, 1, 0, 1,
-			 GTK_FILL, GTK_FILL, 5, 2);
-
-	entry_name = gtk_entry_new();
-	gtk_widget_set_can_focus(entry_name, FALSE);
-	gtk_entry_set_text(GTK_ENTRY(entry_name), fi->name);
-	gtk_editable_set_editable(GTK_EDITABLE(entry_name), FALSE);
-	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, 0, 1,
-			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 2);
-
-	hbox_path = gtk_hbox_new(FALSE, 0);
-	label_path = gtk_label_new(_("File:"));
-	gtk_box_pack_start(GTK_BOX(hbox_path), label_path, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox_path, 0, 1, 1, 2,
-			 GTK_FILL, GTK_FILL, 5, 2);
-
-	file_display = g_filename_display_name(fi->filename);
-	entry_path = gtk_entry_new();
-	gtk_widget_set_can_focus(entry_path, FALSE);
-	gtk_entry_set_text(GTK_ENTRY(entry_path), file_display);
-	g_free(file_display);
-	gtk_editable_set_editable(GTK_EDITABLE(entry_path), FALSE);
-	gtk_table_attach(GTK_TABLE(table), entry_path, 1, 2, 1, 2,
-			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 2);
+	fi_add_file_table_row(_("Track:"), &fi->entry_name, table, 0);
+	fi_add_file_table_row(_("File:"), &fi->entry_path, table, 1);
 
 	fi->cover_align = gtk_alignment_new(0.5f, 0.5f, 0.0f, 0.0f);
 	gtk_box_pack_start(GTK_BOX(hbox_t), fi->cover_align, FALSE, FALSE, 0);
@@ -1977,19 +2057,6 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
         gtk_container_add (GTK_CONTAINER (fi->event_box), fi->cover_image_area);
         g_signal_connect(G_OBJECT(fi->event_box), "button_press_event",
                          G_CALLBACK(fi_cover_press_button_cb), (gpointer)fi);
-
-        if (options.show_cover_for_ms_tracks_only == TRUE) {
-                if (cover_flag == TRUE) {
-                        display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
-                                      48, 48, fi->filename, FALSE, TRUE);
-                } else {
-                        hide_cover_thumbnail();
-                }
-        } else {
-                display_cover(fi->cover_image_area, fi->event_box, fi->cover_align,
-                              48, 48, fi->filename, FALSE, TRUE);
-        }
-
 	fi->hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), fi->hbox, FALSE, FALSE, 5);
 
@@ -2005,137 +2072,31 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
 	fi->pageidx[0].tag = -1;
 	gtk_notebook_append_page(GTK_NOTEBOOK(fi->nb), vbox_file, label_file);
 
-	hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(_("Format:"));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
-	entry = gtk_entry_new();
-	gtk_widget_set_size_request(entry, 350, -1);
-	gtk_widget_set_can_focus(entry, FALSE);
-	gtk_entry_set_text(GTK_ENTRY(entry), fileinfo.format_str);
-	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 0, 1,
-			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(_("Length:"));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
-	entry = gtk_entry_new();
-	gtk_widget_set_can_focus(entry, FALSE);
-	if (fileinfo.total_samples == 0) {
-		strcpy(str, "N/A");
-	} else {
-		sample2time(fileinfo.sample_rate, fileinfo.total_samples, str, 0);
-	}
-	gtk_entry_set_text(GTK_ENTRY(entry), str);
-	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 1, 2,
-			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(_("Samplerate:"));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 3);
-	entry = gtk_entry_new();
-	gtk_widget_set_can_focus(entry, FALSE);
-	sprintf(str, _("%ld Hz"), fileinfo.sample_rate);
-	gtk_entry_set_text(GTK_ENTRY(entry), str);
-	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 2, 3,
-			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(_("Channel count:"));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 5, 3);
-	entry = gtk_entry_new();
-	gtk_widget_set_can_focus(entry, FALSE);
-	if (fileinfo.is_mono)
-		strcpy(str, _("MONO"));
-	else
-		strcpy(str, _("STEREO"));
-	gtk_entry_set_text(GTK_ENTRY(entry), str);
-	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 3, 4,
-			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(_("Bandwidth:"));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 4, 5, GTK_FILL, GTK_FILL, 5, 3);
-	entry = gtk_entry_new();
-	gtk_widget_set_can_focus(entry, FALSE);
-	if (fileinfo.bps == 0) {
-		strcpy(str, "N/A kbit/s");
-	} else {
-		format_bps_label(fileinfo.bps, fileinfo.format_flags, str);
-	}
-	gtk_entry_set_text(GTK_ENTRY(entry), str);
-	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 4, 5,
-			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new(_("Total samples:"));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 5, 6, GTK_FILL, GTK_FILL, 5, 3);
-	entry = gtk_entry_new();
-	gtk_widget_set_can_focus(entry, FALSE);
-	if (fileinfo.total_samples == 0) {
-		strcpy(str, "N/A");
-	} else {
-		sprintf(str, "%lld", fileinfo.total_samples);
-	}
-	gtk_entry_set_text(GTK_ENTRY(entry), str);
-	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 5, 6,
-			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
-
+	fi_add_file_table_row(_("Format:"), &fi->entry_format, table_file, 0);
+	fi_add_file_table_row(_("Length:"), &fi->entry_length, table_file, 1);
+	fi_add_file_table_row(_("Samplerate:"), &fi->entry_sr, table_file, 2);
+	fi_add_file_table_row(_("Channel count:"), &fi->entry_ch, table_file, 3);
+	fi_add_file_table_row(_("Bandwidth:"), &fi->entry_bw, table_file, 4);
+	fi_add_file_table_row(_("Total samples:"), &fi->entry_nsamples, table_file, 5);
 #ifdef HAVE_WAVPACK
 	if (!is_cdda && fi->fdec->file_lib == WAVPACK_LIB) {
-		wavpack_pdata_t * pd = (wavpack_pdata_t *)dec->pdata;
-		int mode = WavpackGetMode(pd->wpc);
-
-		hbox = gtk_hbox_new(FALSE, 0);
-		label = gtk_label_new(_("Mode:"));
-		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-		gtk_table_attach(GTK_TABLE(table_file), hbox, 0, 1, 7, 8, GTK_FILL, GTK_FILL, 5, 3);
-		entry = gtk_entry_new();
-		gtk_widget_set_can_focus(entry, FALSE);
-
-		if ((mode & MODE_LOSSLESS) && (mode & MODE_WVC)) {
-			strncpy(str, "Hybrid Lossless", MAXLEN-1);
-		} else if (mode & MODE_LOSSLESS) {
-			strncpy(str, "Lossless", MAXLEN-1);
-		} else {
-			strncpy(str, "Hybrid Lossy", MAXLEN-1);
-		}
-		cut_trailing_whitespace(str);
-		gtk_entry_set_text(GTK_ENTRY(entry), str);
-		gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
-		gtk_table_attach(GTK_TABLE(table_file), entry, 1, 2, 7, 8,
-				(GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
+		fi_add_file_table_row(_("Mode:"), &fi->entry_mode, table_file, 6);
 	}
 #endif /* HAVE_WAVPACK */
 
-
 	/* end of notebook stuff */
-
 	gtk_widget_grab_focus(fi->nb);
 
 	fi->button_table = gtk_table_new(1, 2, FALSE);
 	gtk_box_pack_end(GTK_BOX(fi->hbox), fi->button_table, FALSE, TRUE, 2);
 
 	fi->prev_button = gui_stock_label_button(NULL, GTK_STOCK_GO_BACK);
-	g_signal_connect(fi->prev_button, "clicked",
-			 G_CALLBACK(fi_prev), (gpointer)fi);
+	g_signal_connect(fi->prev_button, "clicked", G_CALLBACK(fi_prev), (gpointer)fi);
 	gtk_table_attach(GTK_TABLE(fi->button_table), fi->prev_button,
 			 1, 2, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
 
 	fi->next_button = gui_stock_label_button(NULL, GTK_STOCK_GO_FORWARD);
-	g_signal_connect(fi->next_button, "clicked",
-			 G_CALLBACK(fi_next), (gpointer)fi);
+	g_signal_connect(fi->next_button, "clicked", G_CALLBACK(fi_next), (gpointer)fi);
 	gtk_table_attach(GTK_TABLE(fi->button_table), fi->next_button,
 			 2, 3, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
 
@@ -2146,6 +2107,7 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
 
 	gtk_widget_show_all(fi->info_window);
 
+	fi_set_common_entries(fi);
 	fi_set_page(fi);
 
 	/* fi_t object is freed in info_window destroy handlers */
@@ -2221,6 +2183,20 @@ radio_buttons_cb(GtkToggleButton * toggle_button, gpointer data) {
         set_first_row(fi);
 }
 
+static void
+module_info_add_row(char * caption, GtkWidget ** mod_label, GtkWidget * table, int row) {
+	GtkWidget * label = gtk_label_new(caption);
+	gtk_widget_show(label);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, row, row+1,
+			 (GtkAttachOptions)(GTK_FILL), (GtkAttachOptions)(0), 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	
+	*mod_label = gtk_label_new("");
+	gtk_widget_show(*mod_label);
+	gtk_table_attach(GTK_TABLE(table), *mod_label, 1, 2, row, row+1,
+			 (GtkAttachOptions)(GTK_FILL), (GtkAttachOptions)(0), 0, 0);
+}
+
 void
 module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
 
@@ -2253,7 +2229,6 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 
-
         hbox2 = gtk_hbox_new (FALSE, 0);
         gtk_widget_show (hbox2);
         gtk_box_pack_start (GTK_BOX (vbox), hbox2, TRUE, TRUE, 0);
@@ -2263,7 +2238,6 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
         gtk_box_pack_start (GTK_BOX (hbox2), vbox2, FALSE, FALSE, 0);
 
         if (mdi->instruments) {
-
                 table = gtk_table_new (5, 2, FALSE);
                 gtk_widget_show (table);
                 gtk_box_pack_start (GTK_BOX (vbox2), table, FALSE, FALSE, 0);
@@ -2271,74 +2245,14 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
                 gtk_table_set_row_spacings (GTK_TABLE (table), 6);
                 gtk_table_set_col_spacings (GTK_TABLE (table), 4);
 
-                label = gtk_label_new (_("Type:"));
-                gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-                gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-
-                mod_type_label = gtk_label_new ("");
-                gtk_widget_show (mod_type_label);
-                gtk_table_attach (GTK_TABLE (table), mod_type_label, 1, 2, 0, 1,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-
-                label = gtk_label_new (_("Channels:"));
-                gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-                gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-
-                mod_channels_label = gtk_label_new ("");
-                gtk_widget_show (mod_channels_label);
-                gtk_table_attach (GTK_TABLE (table), mod_channels_label, 1, 2, 1, 2,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-
-                label = gtk_label_new (_("Patterns:"));
-                gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 2, 3,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-                gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-
-                mod_patterns_label = gtk_label_new ("");
-                gtk_widget_show (mod_patterns_label);
-                gtk_table_attach (GTK_TABLE (table), mod_patterns_label, 1, 2, 2, 3,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-
-                label = gtk_label_new (_("Samples:"));
-                gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 3, 4,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-                gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-
-                mod_samples_label = gtk_label_new ("");
-                gtk_widget_show (mod_samples_label);
-                gtk_table_attach (GTK_TABLE (table), mod_samples_label, 1, 2, 3, 4,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-
-                label = gtk_label_new (_("Instruments:"));
-                gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 4, 5,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-                gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-
-                mod_instruments_label = gtk_label_new ("");
-                gtk_widget_show (mod_instruments_label);
-                gtk_table_attach (GTK_TABLE (table), mod_instruments_label, 1, 2, 4, 5,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
+		module_info_add_row(_("Type:"), &mod_type_label, table, 0);
+		module_info_add_row(_("Channels:"), &mod_channels_label, table, 1);
+		module_info_add_row(_("Patterns:"), &mod_patterns_label, table, 2);
+		module_info_add_row(_("Samples:"), &mod_samples_label, table, 3);
+		module_info_add_row(_("Instruments:"), &mod_instruments_label, table, 4);
 
                 sprintf(temp, "%d", mdi->instruments);
                 gtk_label_set_text (GTK_LABEL(mod_instruments_label), temp);
-
 
                 table = gtk_table_new (2, 1, FALSE);
                 gtk_widget_show (table);
@@ -2359,10 +2273,7 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
                 gtk_table_attach (GTK_TABLE (table), instruments_radiobutton, 0, 1, 1, 2,
                                   (GtkAttachOptions) (GTK_FILL),
                                   (GtkAttachOptions) (0), 0, 0);
-
-
         } else {
-
                 table = gtk_table_new (4, 2, FALSE);
                 gtk_widget_show (table);
                 gtk_box_pack_start (GTK_BOX (vbox2), table, FALSE, FALSE, 0);
@@ -2370,57 +2281,11 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
                 gtk_table_set_row_spacings (GTK_TABLE (table), 4);
                 gtk_table_set_col_spacings (GTK_TABLE (table), 4);
 
-                label = gtk_label_new (_("Type:"));
-                gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-                gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-
-                mod_type_label = gtk_label_new ("");
-                gtk_widget_show (mod_type_label);
-                gtk_table_attach (GTK_TABLE (table), mod_type_label, 1, 2, 0, 1,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-
-                label = gtk_label_new (_("Channels:"));
-                gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-                gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-
-                mod_channels_label = gtk_label_new ("");
-                gtk_widget_show (mod_channels_label);
-                gtk_table_attach (GTK_TABLE (table), mod_channels_label, 1, 2, 1, 2,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-
-                label = gtk_label_new (_("Patterns:"));
-                gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 2, 3,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-                gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-
-                mod_patterns_label = gtk_label_new ("");
-                gtk_widget_show (mod_patterns_label);
-                gtk_table_attach (GTK_TABLE (table), mod_patterns_label, 1, 2, 2, 3,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-
-                label = gtk_label_new (_("Samples:"));
-                gtk_widget_show (label);
-                gtk_table_attach (GTK_TABLE (table), label, 0, 1, 3, 4,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
-                gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-
-                mod_samples_label = gtk_label_new ("");
-                gtk_widget_show (mod_samples_label);
-                gtk_table_attach (GTK_TABLE (table), mod_samples_label, 1, 2, 3, 4,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
+		module_info_add_row(_("Type:"), &mod_type_label, table, 0);
+		module_info_add_row(_("Channels:"), &mod_channels_label, table, 1);
+		module_info_add_row(_("Patterns:"), &mod_patterns_label, table, 2);
+		module_info_add_row(_("Samples:"), &mod_samples_label, table, 3);
+		module_info_add_row(_("Instruments:"), &mod_instruments_label, table, 4);
         }
 
         n = mdi->type;

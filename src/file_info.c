@@ -1874,6 +1874,7 @@ fi_set_common_entries(fi_t * fi) {
 gboolean
 fi_media_init(fi_t * fi) {
 
+	fi->is_cdda = 0;
 	fi->bail_out = 0;
 	fi->trash = trashlist_new();
 
@@ -1946,7 +1947,7 @@ fi_reload(fi_t * fi, GtkTreeIter iter) {
 	}
 	fi->n_pages = 1;
 	for (i = 1; i < FI_MAXPAGES; i++) {
-		fi->pageidx[i].tag = FALSE; //XXX
+		fi->pageidx[i].tag = FALSE;
 	}
 
 	fi->media_ok = fi_media_init(fi);

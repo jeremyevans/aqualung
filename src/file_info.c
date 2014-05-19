@@ -1851,7 +1851,7 @@ fi_set_common_entries(fi_t * fi) {
 	gtk_entry_set_text(GTK_ENTRY(fi->entry_nsamples), str);
 
 #ifdef HAVE_WAVPACK
-	if (!fi->is_cdda && fi->fdec->file_lib == WAVPACK_LIB) {
+	if (!fi->is_cdda && fi->fdec && fi->fdec->file_lib == WAVPACK_LIB) {
 		wavpack_pdata_t * pd = (wavpack_pdata_t *)fi->dec->pdata;
 		int mode = WavpackGetMode(pd->wpc);
 
@@ -2071,7 +2071,7 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
 	fi_add_file_table_row(_("Bandwidth:"), &fi->entry_bw, table_file, 4);
 	fi_add_file_table_row(_("Total samples:"), &fi->entry_nsamples, table_file, 5);
 #ifdef HAVE_WAVPACK
-	if (!fi->is_cdda && fi->fdec->file_lib == WAVPACK_LIB) {
+	if (!fi->is_cdda && fi->fdec && fi->fdec->file_lib == WAVPACK_LIB) {
 		fi_add_file_table_row(_("Mode:"), &fi->entry_mode, table_file, 6);
 	}
 #endif /* HAVE_WAVPACK */

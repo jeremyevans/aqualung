@@ -1,3 +1,74 @@
+2014-06-03	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
+
+    * Aqualung 1.0-rc1
+        http://aqualung.factorial.hu
+
+	* Add support for custom playlist menu commands (via Lua extension)
+
+	* Add ability to define custom remote commands in Lua
+
+	* Add support for custom keybindings in the main window
+
+	* Add a current_file() Lua extension method for the currently playing file
+
+	* Add support for hooks for executing extension code when certain events occur
+
+	* Add track_position_change hook
+
+	* Add option to use cover art from external graphics file instead of image
+	  embedded in audio file
+
+	* Add export track template flag %x for including original audio filename
+	  (without extension) in exported filename
+
+	* Dialog boxes made non-modal for improved user experience and workflow:
+	  About, Export, File info, Search, Settings
+
+	* File info dialog now has buttons to jump to prev/next track without closing
+	  dialog, makes editing multiple tracks' metadata much easier
+
+	* Allow the ladspa plugin code to work on OpenBSD
+
+	* Support multimedia keys
+
+	* Support custom character encodings in metadata
+
+	* Handle JACK disconnect more gracefully
+
+	* Automatic save/restore of JACK connections to/from config.xml
+
+	* Ogg stream metadata changes are really sent upstream. Track changes in Ogg
+	  internet radios are picked up by the GUI
+
+	* Recognize audio/ogg as Ogg Vorbis streaming format
+
+	* Seeking via arrow keys is +- 5 seconds regardless of track length
+
+	* Resume alsa stream after suspend to ram
+
+	* Add -b (--buffer-size) option to set ALSA output buffer size
+
+	* Fix musepack replaygain values when using a recent libmpcdec
+
+	* Build with current versions of ffmpeg/libav*
+
+	* CDDA: add support for libcdio 0.90 API changes
+
+	* Require GTK+2 >= 2.18
+	  The Linux distribution cutoff era becomes something like:
+	  Debian 6.0 "squeeze" / Fedora 12 "constantine" / RHEL 6 / Ubuntu 9.10 "karmic"
+
+	* Big overhaul of configure system (still using autotools, but much improved)
+
+	* Fixes: memory leaks, regressions, crashes, etc.
+
+	* Code cleanup: includes, macros, library functions, threading, portability
+
+	* Documentation updates and fixes to the doc build system
+
+	* Translation additions/updates: Chinese (simplified), Dutch, French, Polish,
+	  Russian, Spanish, Ukrainian
+
 2010-01-31	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
 
     * Aqualung 0.9beta11

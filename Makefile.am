@@ -1,7 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = doc po skin . src
-EXTRA_DIST = autogen.sh gettext.h ladspa.h
+EXTRA_DIST = autogen.sh gettext.h ladspa.h src/version.h src/undef_ac_pkg.h
 
 all-local:
 	cd src; \

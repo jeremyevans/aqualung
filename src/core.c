@@ -1877,20 +1877,21 @@ load_default_cl(int * argc, char *** argv) {
 	char cl[MAXLEN];
 	int ret;
 
-
         if ((ret = chdir(options.confdir)) != 0) {
                 if (errno == ENOENT) {
                         fprintf(stderr, "Creating directory %s\n", options.confdir);
                         if (mkdir(options.confdir, S_IRUSR | S_IWUSR | S_IXUSR) < 0) {
-				fprintf(stderr, "fatal error: cannot create config directory.\n");
-				fprintf(stderr, "mkdir: %s\n", strerror(errno));
+				perror("cannot create config directory: mkdir");
 				exit(1);
-			} else {
-				chdir(options.confdir);
+			}
+			if (chdir(options.confdir) != 0) {
+				perror("cannot cd to new config directory: chdir");
+				exit(1);
 			}
                 } else {
-                        fprintf(stderr, "An error occured while attempting chdir(\"%s\"). errno = %d\n",
-                                options.confdir, errno);
+                        perror("cd to confdir: chdir");
+			fprintf(stderr, "options.confdir: %s\n", options.confdir);
+			exit(1);
                 }
         }
 
@@ -1973,7 +1974,7 @@ print_info(void) {
 	fprintf(stderr,	"Aqualung -- Music player for GNU/Linux\n");
 	fprintf(stderr, "Build version: %s\n", AQUALUNG_VERSION);
 	fprintf(stderr,
-		"(C) 2004-2010 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
+		"(C) 2004-2014 Tom Szilagyi <tszilagyi@users.sourceforge.net>\n"
 		"This is free software, and you are welcome to redistribute it\n"
 		"under certain conditions; see the file COPYING for details.\n");
 }

@@ -3560,17 +3560,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	lrdf_init();
 #endif /* HAVE_LADSPA */
 
-	if (chdir(options.confdir) != 0) {
-		if (errno == ENOENT) {
-			fprintf(stderr, "Creating directory %s\n", options.confdir);
-			mkdir(options.confdir, S_IRUSR | S_IWUSR | S_IXUSR);
-			chdir(options.confdir);
-		} else {
-			fprintf(stderr, "An error occured while attempting chdir(\"%s\"). errno = %d\n",
-				options.confdir, errno);
-		}
-	}
-
 	load_config();
 
 	if (options.title_format[0] == '\0')

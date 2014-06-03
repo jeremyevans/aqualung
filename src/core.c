@@ -1875,9 +1875,8 @@ load_default_cl(int * argc, char *** argv) {
         char config_file[MAXLEN];
 	char default_param[MAXLEN];
 	char cl[MAXLEN];
-	int ret;
 
-        if ((ret = chdir(options.confdir)) != 0) {
+        if (chdir(options.confdir) != 0) {
                 if (errno == ENOENT) {
                         fprintf(stderr, "Creating directory %s\n", options.confdir);
                         if (mkdir(options.confdir, S_IRUSR | S_IWUSR | S_IXUSR) < 0) {

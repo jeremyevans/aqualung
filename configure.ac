@@ -400,13 +400,21 @@ AQUALUNG_DETECT([cddb], [Compact Disc Database], [
 ])
 
 AQUALUNG_DETECT([lua], [Lua Extension],
-    [PKG_CHECK_MODULES([lua], [lua5.1],
+    [PKG_CHECK_MODULES([lua], [lua5.2],
         [AQUALUNG_FOUND([lua])],
-        [PKG_CHECK_MODULES([lua], [lua-5.1],
+        [PKG_CHECK_MODULES([lua], [lua-5.2],
             [AQUALUNG_FOUND([lua])],
-            [PKG_CHECK_MODULES([lua], [lua >= 5.1],
+            [PKG_CHECK_MODULES([lua], [lua52],
                 [AQUALUNG_FOUND([lua])],
-                [AQUALUNG_MISSING([lua], [$lua_PKG_ERRORS])])])])])
+                [PKG_CHECK_MODULES([lua], [lua5.1],
+                    [AQUALUNG_FOUND([lua])],
+                    [PKG_CHECK_MODULES([lua], [lua-5.1],
+                        [AQUALUNG_FOUND([lua])],
+                        [PKG_CHECK_MODULES([lua], [lua51],
+                            [AQUALUNG_FOUND([lua])],
+                            [PKG_CHECK_MODULES([lua], [lua >= 5.2],
+                                [AQUALUNG_FOUND([lua])],
+                                [AQUALUNG_MISSING([lua], [$lua_PKG_ERRORS])])])])])])])])])
 
 
 # Compiler and linker variables.

@@ -550,7 +550,7 @@ void setup_extended_title_formatting(void) {
 		L = NULL;
 	}
 
-	L = lua_open();
+	L = luaL_newstate();
 	luaL_openlibs(L);
 
 	error = luaL_dostring(L, AQUALUNG_LUA_API);

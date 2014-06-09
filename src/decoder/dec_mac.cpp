@@ -174,7 +174,7 @@ mac_decoder_open(decoder_t * dec, char * filename) {
 
 
 	int ret = 0;
-        wchar_t * pUTF16 = GetUTF16FromANSI(filename);
+        wchar_t * pUTF16 = CAPECharacterHelper::GetUTF16FromANSI(filename);
         pdecompress = CreateIAPEDecompress(pUTF16, &ret);
         free(pUTF16);
 

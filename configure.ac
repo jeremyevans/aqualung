@@ -414,7 +414,9 @@ AQUALUNG_DETECT([lua], [Lua Extension],
                             [AQUALUNG_FOUND([lua])],
                             [PKG_CHECK_MODULES([lua], [lua >= 5.2],
                                 [AQUALUNG_FOUND([lua])],
-                                [AQUALUNG_MISSING([lua], [$lua_PKG_ERRORS])])])])])])])])])
+                                    [PKG_CHECK_MODULES([lua], [lua >= 5.1],
+                                    [AQUALUNG_FOUND([lua])],
+                                [AQUALUNG_MISSING([lua], [$lua_PKG_ERRORS])])])])])])])])])])
 
 
 # Compiler and linker variables.

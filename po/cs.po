@@ -7,9 +7,9 @@ msgstr ""
 "Project-Id-Version: aqualung SVN\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
 "POT-Creation-Date: 2014-08-14 20:42+0200\n"
-"PO-Revision-Date: 2014-08-14 23:54+0200\n"
+"PO-Revision-Date: 2014-08-16 15:40+0200\n"
 "Last-Translator: Pavel Fric <pavelfric@seznam.cz>\n"
-"Language-Team: Czech <kde-i18n-doc@kde.org>\n"
+"Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,103 +21,103 @@ msgid "Optional features:"
 msgstr "Volitelné funkce:"
 
 msgid "LADSPA plugin support\n"
-msgstr ""
+msgstr "Podpora pro přídavný modul LADSPA\n"
 
 msgid "CDDA (Audio CD) support\n"
-msgstr ""
+msgstr "Podpora pro CDDA (zvukové CD)\n"
 
 msgid "CDDB support\n"
-msgstr ""
+msgstr "Podpora pro CDDB\n"
 
 msgid "Sample Rate Converter support\n"
-msgstr ""
+msgstr "Podpora pro převodník vzorkovacího kmitočtu\n"
 
 msgid "iRiver iFP driver support\n"
-msgstr ""
+msgstr "Podpora pro iFP iRiver\n"
 
 msgid "JACK port management support\n"
-msgstr ""
+msgstr "Podpora pro správu přípojky JACK\n"
 
 msgid "Loop playback support\n"
-msgstr ""
+msgstr "Podpora pro přehrávání ve smyčce\n"
 
 msgid "Systray support\n"
-msgstr ""
+msgstr "Podpora pro oznamovací oblast panelu\n"
 
 msgid "Podcast support\n"
-msgstr ""
+msgstr "Podpora pro zvukové záznamy\n"
 
 msgid "Lua extension support\n"
-msgstr ""
+msgstr "Podpora pro rozšíření Lua\n"
 
 msgid "Decoding support:"
-msgstr ""
+msgstr "Podpora pro dekódování:"
 
 msgid "sndfile (WAV, AIFF, etc.)\n"
-msgstr ""
+msgstr "sndfile (WAV, AIFF atd.)\n"
 
 msgid "Free Lossless Audio Codec (FLAC)\n"
-msgstr ""
+msgstr "Free Lossless Audio Codec (FLAC)\n"
 
 msgid "Ogg Vorbis\n"
-msgstr ""
+msgstr "Ogg Vorbis\n"
 
 msgid "Ogg Speex\n"
-msgstr ""
+msgstr "Ogg Speex\n"
 
 msgid "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
-msgstr ""
+msgstr "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
 
 msgid "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
-msgstr ""
+msgstr "MOD Audio (MOD, S3M, XM, IT atd.)\n"
 
 msgid "Musepack\n"
-msgstr ""
+msgstr "Musepack\n"
 
 msgid "Monkey's Audio Codec\n"
-msgstr ""
+msgstr "Monkey's Audio Codec\n"
 
 msgid "WavPack\n"
-msgstr ""
+msgstr "WavPack\n"
 
 msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
-msgstr ""
+msgstr "LAVC (AC3, AAC, WavPack, WMA atd.)\n"
 
 msgid "Encoding support:"
-msgstr ""
+msgstr "Podpora pro zakódování:"
 
 msgid "sndfile (WAV)\n"
 msgstr "sndfile (WAV)\n"
 
 msgid "LAME (MP3)\n"
-msgstr ""
+msgstr "LAME (MP3)\n"
 
 msgid "Output driver support:"
-msgstr ""
+msgstr "Podporované výstupní metody:"
 
 msgid "sndio Audio\n"
-msgstr ""
+msgstr "Zvuk sndio\n"
 
 msgid "OSS Audio\n"
-msgstr ""
+msgstr "Zvuk OSS\n"
 
 msgid "ALSA Audio\n"
-msgstr ""
+msgstr "Zvuk ALSA\n"
 
 msgid "JACK Audio Server\n"
-msgstr ""
+msgstr "Zvukový server JACK\n"
 
 msgid "PulseAudio\n"
-msgstr ""
+msgstr "PulseAudio\n"
 
 msgid "Win32 Sound API\n"
-msgstr ""
+msgstr "Win32 Sound API\n"
 
 msgid "About"
 msgstr "O programu"
 
 msgid "Build version: "
-msgstr ""
+msgstr "Verze sestavení: "
 
 msgid "Homepage:"
 msgstr "Stránky projektu:"
@@ -126,26 +126,25 @@ msgid "Authors:"
 msgstr "Autoři:"
 
 msgid "Core design, engineering & programming:\n"
-msgstr ""
+msgstr "Hlavní návrh, řízení a programování:\n"
 
 msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr ""
+msgstr "Podpora vzhledů, výraz a dojem, zásahy do rozhraní:\n"
 
 msgid "Programming, GUI engineering:\n"
-msgstr ""
+msgstr "Programování, práce na rozhraní:\n"
 
 msgid "OpenBSD compatibility, metadata tweaks:\n"
-msgstr ""
+msgstr "Slučitelnost s OpenBSD, doladění popisných dat:\n"
 
 msgid "Miscellaneous, minimalism:\n"
 msgstr "Různé, minimalismus:\n"
 
-#, fuzzy
 msgid "Translators:"
-msgstr "Přeložili"
+msgstr "Překladatelé:"
 
 msgid "Chinese (simplified):\n"
-msgstr ""
+msgstr "Čínština (zjednodušená):\n"
 
 msgid "Dutch:\n"
 msgstr "Holandština:\n"
@@ -251,7 +250,6 @@ msgstr "Vynutit velikost písmen: "
 msgid "Force other letters to lowercase"
 msgstr "Vynutit malá písmena"
 
-#, fuzzy
 msgid "Regular expression"
 msgstr "Regulární výraz"
 
@@ -277,45 +275,51 @@ msgid "Trim leading, tailing and duplicate spaces"
 msgstr "Oříznout mezery na začátku, na konci a zdvojené mezery"
 
 msgid "Regexp matches empty string"
-msgstr ""
+msgstr "Regulární výraz odpovídá prázdnému řetězci"
 
 msgid "Please select the root directory."
-msgstr ""
+msgstr "Vyberte, prosím, kořenový adresář."
 
 msgid "Select build type"
-msgstr ""
+msgstr "Vyberte typ sestavení"
 
 msgid "Directory driven"
-msgstr ""
+msgstr "Uspořádáno adresářově"
 
 msgid ""
 "Follows the directory structure to identify the artists and\n"
 "records. The files are added on a record basis."
 msgstr ""
+"Sleduje stavbu složek, aby vypátral umělce a alba.\n"
+"Soubory jsou přidávány na základě alb."
 
 msgid "Independent"
-msgstr ""
+msgstr "Nezávislé"
 
 msgid ""
 "Recursive search from the root directory for audio files.\n"
 "The files are processed independently, so only metadata\n"
 "and filename transformation are available."
 msgstr ""
+"Hledání zvukových souborů ve složkách včetně podsložek od kořenového "
+"adresáře.\n"
+"Soubory jsou zpracovány nezávisle, takže jsou dostupná jen popisná data a "
+"proměny souborového názvu."
 
 msgid "Load settings from Music Store file"
-msgstr ""
+msgstr "Nahrát nastavení ze souboru s hudební sbírkou"
 
 msgid "Build/Update store"
-msgstr ""
+msgstr "Vytvořit/Aktualizovat sbírku"
 
 msgid "General"
 msgstr "Obecné"
 
 msgid "Directory structure"
-msgstr ""
+msgstr "Adresářová stavba"
 
 msgid "Root path:"
-msgstr ""
+msgstr "Kořenový adresář:"
 
 msgid "_Browse..."
 msgstr "_Procházet..."
@@ -324,40 +328,40 @@ msgid "Structure:"
 msgstr "Stavba:"
 
 msgid "root / record / track"
-msgstr ""
+msgstr "Kořen / Album / Název"
 
 msgid "root / artist / record / track"
-msgstr ""
+msgstr "Kořen / Umělec / Umělec / Album / Název"
 
 msgid "root / artist / artist / record / track"
-msgstr ""
+msgstr "Kořen / Umělec / Umělec / Album / Název"
 
 msgid "root / artist / artist / artist / record / track"
-msgstr ""
+msgstr "Kořen / Umělec / Umělec / Umělec / Album / Název"
 
 msgid "Exclude files matching wildcard"
-msgstr ""
+msgstr "Vyloučit soubory, které odpovídají masce"
 
 msgid "Include only files matching wildcard"
-msgstr ""
+msgstr "Zahrnout pouze soubory, které odpovídají masce"
 
 msgid "Reread data for existing tracks"
-msgstr ""
+msgstr "Načíst znovu data pro existující skladby"
 
 msgid "Remove non-existing files from store"
-msgstr ""
+msgstr "Odstranit neexistující soubory ze sbírky desek"
 
 msgid "Artist"
 msgstr "Umělec"
 
 msgid "Sort artists by"
-msgstr ""
+msgstr "Třídit umělce dle"
 
 msgid "Artist name"
 msgstr "Jméno umělce"
 
 msgid "Artist name (lowercase)"
-msgstr ""
+msgstr "Jméno umělce (malá písmena)"
 
 msgid "Directory name"
 msgstr "Název adresáře"
@@ -366,7 +370,7 @@ msgid "Directory name (lowercase)"
 msgstr "Název adresáře (malá písmena)"
 
 msgid "Record"
-msgstr "Nahrávat"
+msgstr "Nahrávka"
 
 msgid "Sort records by"
 msgstr "Řadit nahrávky dle"
@@ -381,7 +385,7 @@ msgid "Year"
 msgstr "Rok"
 
 msgid "Add year to the comments of new records"
-msgstr ""
+msgstr "Přidat rok do poznámek k novým nahrávkám"
 
 msgid "Track"
 msgstr "Skladba"
@@ -395,7 +399,6 @@ msgstr "Zavést značku poznámky"
 msgid "Sandbox"
 msgstr "Pískoviště"
 
-#, fuzzy
 msgid "Filename:"
 msgstr "Název souboru:"
 
@@ -403,7 +406,7 @@ msgid "Test"
 msgstr "Zkouška"
 
 msgid "Building store from filesystem"
-msgstr ""
+msgstr "Sestavení sbírky desek na základě souborového systému"
 
 msgid "Processing:"
 msgstr "Zpracování:"
@@ -457,7 +460,7 @@ msgid "Bitrate [kbps]:"
 msgstr "Datový tok (kb/s):"
 
 msgid "Artist/Album already existing, not empty"
-msgstr ""
+msgstr "Umělec/Album již existuje a není prázdný"
 
 msgid ""
 "\n"
@@ -467,9 +470,15 @@ msgid ""
 "destination Music Store. Press Cancel to get back to change the Artist/Album "
 "or the destination Music Store."
 msgstr ""
+"\n"
+"Vybraná sbírka desek má již odpovídajícího umělce a album, které již obsahuje "
+"skladby. Pokud stisknete OK, tyto skladby budou odstraněny. Samotné soubory "
+"budou ponechány nedotčeny, ale budou odstraněny z cílové sbírky desek. "
+"Stiskněte Zrušit pro návrat zpět pro změnu umělce/alba, nebo pro návrat zpět "
+"do cílové sbírky desek"
 
 msgid "Rip CD"
-msgstr ""
+msgstr "Vytáhnout skladby z CD"
 
 msgid "Artist:"
 msgstr "Umělec:"
@@ -511,7 +520,7 @@ msgid "Target directory for ripped files"
 msgstr "Cílový adresář pro vytažené soubory"
 
 msgid "Add to Music Store"
-msgstr "Přidat do hudebního obchodu"
+msgstr "Přidat do sbírky desek"
 
 msgid "Format"
 msgstr "Formát"
@@ -538,7 +547,7 @@ msgid "Verify data integrity"
 msgstr "Ověřit celistvost dat"
 
 msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
+msgstr "Neomezený počet pokusů o přečtení (nikdy nepřeskakovat)"
 
 msgid "Maximum number of retries:"
 msgstr "Nejvyšší počet opakovaných pokusů:"
@@ -550,6 +559,8 @@ msgid ""
 "\n"
 "Destination directory is not read-write accessible!"
 msgstr ""
+"\n"
+"Cílový adresář není přístupný pro čtení a zápis!"
 
 msgid "Total"
 msgstr "Celkem"
@@ -585,13 +596,13 @@ msgid "CDDB query"
 msgstr "Dotaz na CDDB"
 
 msgid "Retrieving matches from server..."
-msgstr ""
+msgstr "Přijímají se nálezy od serveru..."
 
 msgid "Connecting to CDDB server..."
 msgstr "Spojuje se se serverem CDDB..."
 
 msgid "An error occurred while attempting to connect to the CDDB server."
-msgstr ""
+msgstr "Při pokusu o spojení se se serverem CDDB se stala chyba."
 
 msgid "Warning"
 msgstr "Varování"
@@ -612,38 +623,48 @@ msgid ""
 "Artist appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
+"Jméno umělce se zdá být celé napsáno malými písmeny.\n"
+"Chcete pokračovat?"
 
 msgid ""
 "Artist appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
+"Jméno umělce se zdá býti celé napsáno velkými písmeny.\n"
+"Chcete pokračovat?"
 
 msgid ""
 "Title appears to be in all lowercase.\n"
 "Do you want to proceed?"
 msgstr ""
+"Název se zdá být celý napsán malými písmeny.\n"
+"Chcete pokračovat?"
 
 msgid ""
 "Title appears to be in all uppercase.\n"
 "Do you want to proceed?"
 msgstr ""
+"Název se zdá být celý napsán velkými písmeny.\n"
+"Chcete pokračovat?"
 
 msgid ""
 "It is very likely that the year is wrong.\n"
 "Do you want to proceed?"
 msgstr ""
+"Je velice pravděpodobné, že rok je uveden špatně.\n"
+"Chcete pokračovat?"
 
 msgid "The email address provided for submission is invalid."
-msgstr ""
+msgstr "E-mailová adresa poskytnutá pro odeslání je neplatná."
 
 msgid "An error occurred while submitting the record to the CDDB server."
-msgstr ""
+msgstr "Při odesílání záznamu serveru CDDB se stala chyba."
 
 msgid "Correct existing record"
-msgstr ""
+msgstr "Opravit stávající záznam"
 
 msgid "Submit new record"
-msgstr ""
+msgstr "Odeslat nový záznam"
 
 msgid "Matches:"
 msgstr "Shody:"
@@ -670,7 +691,7 @@ msgid "Tracks"
 msgstr "Skladby"
 
 msgid "You have to provide an email address for CDDB submission."
-msgstr ""
+msgstr "Musíte poskytnout e-mailovou adresu pro odeslání CDDB."
 
 msgid "Unknown Album"
 msgstr "Neznámé album"
@@ -679,7 +700,7 @@ msgid "Unknown Track"
 msgstr "Neznámá skladba"
 
 msgid "Please select the directory for exported files."
-msgstr ""
+msgstr "Vyberte, prosím, adresář pro vyvedené soubory."
 
 msgid "Copy"
 msgstr "Kopírovat"
@@ -696,9 +717,16 @@ msgid ""
 "file extension are denoted by %%n and %%x, respectively. %%i gives an "
 "identifier which is unique within an export session."
 msgstr ""
+"\n"
+"Tento řetězec předlohy, jejž zde zadáte, se použije k sestavení názvu souboru "
+"pro "
+"soubory k vyvedení. Umělec, album a názvy skladeb jsou označeny "
+"%%a, %%r a %%t. Číslo skladby a na formátu závislá přípona souboru "
+"jsou označeny %%n a %%x. Příznak %%i je označení, které je jedinečné "
+"během vyváděcího sezení."
 
 msgid "Exporting files"
-msgstr ""
+msgstr "Vyvádí se soubory"
 
 msgid "Source file:"
 msgstr "Zdrojový soubor:"
@@ -710,13 +738,13 @@ msgid "Progress:"
 msgstr "Postup:"
 
 msgid "Error in format string"
-msgstr ""
+msgstr "Chyba v řetězci formátování"
 
 msgid "Export files"
 msgstr "Vyvést soubory"
 
 msgid "Location and filename"
-msgstr ""
+msgstr "Umístění a název souboru"
 
 msgid "Target directory:"
 msgstr "Cílový adresář:"
@@ -731,20 +759,25 @@ msgid ""
 "Subdirectory name\n"
 "length limit:"
 msgstr ""
+"Omezení délky\n"
+"názvu podadresáře"
 
 msgid "Filename template:"
-msgstr ""
+msgstr "Předloha pro název souboru:"
 
 msgid "Filter"
 msgstr "Filtr"
 
 msgid "Do not reencode files already being in the target format"
-msgstr ""
+msgstr "Soubory, které již jsou v cílovém formátu, nekódovat znovu"
 
 msgid ""
 "Do not reencode files\n"
 "matching wildcard:"
 msgstr ""
+"Nekódovat znovu soubory,\n"
+"které odpovídají masce:"
+":"
 
 msgid "*File info"
 msgstr "*Informace o souboru"
@@ -753,7 +786,7 @@ msgid "File info"
 msgstr "Informace o souboru"
 
 msgid "There are unsaved changes to the file metadata."
-msgstr ""
+msgstr "Jsou tu neuložené změny v popisných datech souboru."
 
 msgid "Save and close"
 msgstr "Uložit a zavřít"
@@ -769,41 +802,51 @@ msgid ""
 "Conversion error in field %s:\n"
 "'%s' does not conform to format '%s'!"
 msgstr ""
+"Chyba převodu v poli %s:\n"
+"'%s' neodpovídá formátu '%s'!"
 
 msgid ""
 "Attached Picture frame with no image set!\n"
 "Please set an image or remove the frame."
 msgstr ""
+"Připojený rámeček obrázku neobsahuje žádný obrázek!\n"
+"Vložte, prosím, obrázek, nebo odstraňte rámeček."
 
 #, c-format
 msgid ""
 "Failed to write metadata to file.\n"
 "Reason: %s"
 msgstr ""
+"Nepodařilo se zapsat popisná data do souboru.\n"
+"Důvod: %s"
 
 #, c-format
 msgid ""
 "Error converting field %s to Year:\n"
 "'%s' is not an integer number!"
 msgstr ""
+"Chyba při změně pole %s na Rok:\n"
+"'%s' není celé číslo!"
 
 msgid "Please specify the file to save the image to."
-msgstr ""
+msgstr "Zadejte, prosím, soubor, do něhož se má uložit obrázek."
 
 msgid "(no image)"
-msgstr ""
+msgstr "(žádný obrázek)"
 
 msgid "(error loading image)"
 msgstr "(chyba při nahrávání obrázku)"
 
 msgid "Please specify the file to load the image from."
-msgstr ""
+msgstr "Zadejte, prosím, soubor, z něhož se má nahrát obrázek."
 
 #, c-format
 msgid ""
 "Could not load image from:\n"
 "%s"
 msgstr ""
+"Nepodařilo se nahrát obrázek z:\n"
+"%s"
 
 #, c-format
 msgid "MIME type: %s"
@@ -933,6 +976,8 @@ msgid ""
 "One or more stores in Music Store have been modified.\n"
 "Do you want to save them before exiting?"
 msgstr ""
+"Jedna nebo více sbírek v hudební sbírce bylo změněno.\n"
+"Chcete je uložit před ukončením?"
 
 msgid "Do not exit"
 msgstr "Neukončovat"
@@ -977,16 +1022,20 @@ msgstr "Spojení s JACKem ztraceno"
 
 #, c-format
 msgid "JACK has either been shutdown or it disconnected Aqualung. Reason: %s"
-msgstr ""
+msgstr "JACK byl buď vypnut, nebo odpojil Aqualung. Důvod: %s"
 
 msgid "Warn me if the Window Manager does not support system tray"
-msgstr ""
+msgstr "Varovat, pokud správce oken nepodporuje oznamovací oblast panelu"
 
 msgid ""
 "Aqualung is compiled with system tray support, but the status icon could not "
 "be embedded in the notification area. Your desktop may not have support for "
 "a system tray, or it has not been configured correctly."
 msgstr ""
+"Aqualung je sestaven s podporou pro oznamovací oblast panelu, ale stavovou "
+"ikonu "
+"se nepodařilo vložit do oznamovací oblasti. Vaše pracovní prostředí buď nemá "
+"podporou pro systémový panel, nebo to nebylo nastaveno správně."
 
 msgid "Settings"
 msgstr "Nastavení"
@@ -1025,13 +1074,13 @@ msgid "Shuffle songs"
 msgstr "Zamíchat písně"
 
 msgid "Toggle playlist"
-msgstr "Přepnout seznam skladeb"
+msgstr "Zobrazit seznam skladeb"
 
 msgid "Toggle music store"
-msgstr "Přepnout hudební obchod"
+msgstr "Zobrazit sbírku desek"
 
 msgid "Toggle LADSPA patch builder"
-msgstr "Přepnout stavitele záplaty LADSPA"
+msgstr "Zobrazit filtry LADSPA"
 
 msgid "Show Aqualung"
 msgstr "Ukázat Aqualung"
@@ -1084,6 +1133,9 @@ msgid ""
 "\n"
 "Do you want to proceed?"
 msgstr ""
+"Adresář '%s' bude odstraněn s celým svým obsahem.\n"
+"\n"
+"Chcete pokračovat?"
 
 #, c-format
 msgid ""
@@ -1091,6 +1143,9 @@ msgid ""
 "\n"
 "Do you want to proceed?"
 msgstr ""
+"Soubor '%s' bude odstraněn.\n"
+"\n"
+"Chcete pokračovat?"
 
 msgid "Remove"
 msgstr "Odstranit"
@@ -1111,22 +1166,28 @@ msgid ""
 "No suitable iRiver iFP device found.\n"
 "Perhaps it is unplugged or turned off."
 msgstr ""
+"Nebylo nalezeno žádné vhodné zařízení iFP iRiver.\n"
+"Snad není zastrčeno, nebo je vypnuto."
 
 msgid ""
 "Device is busy.\n"
 "(Aqualung was unable to claim its interface.)"
 msgstr ""
+"Zařízení je zaneprázdněno.\n\n"
+"Aqualung nebyl schopen domoci se jeho používání.)"
 
 msgid ""
 "Device is not responding.\n"
 "Try jiggling the handle."
 msgstr ""
+"Zařízení neodpovídá.\n"
+"Přezkoušejte, prosím, připojení zařízení."
 
 msgid "Please select a local path."
-msgstr ""
+msgstr "Vyberte, prosím, místní cestu."
 
 msgid "Please select at least one valid song from playlist."
-msgstr ""
+msgstr "Vyberte, prosím, ze seznamu skladeb alespoň jednu platnou píseň."
 
 #, c-format
 msgid ""
@@ -1134,6 +1195,9 @@ msgid ""
 "\n"
 "Do you want to proceed?"
 msgstr ""
+"Jedna z písní je ve formátu nepodporovaném vaším přehrávačem.\n"
+"\n"
+"Chcete pokračovat?"
 
 #, c-format
 msgid ""
@@ -1141,6 +1205,9 @@ msgid ""
 "\n"
 "Do you want to proceed?"
 msgstr ""
+"%d z %d písní je ve formátu nepodporovaném vaším přehrávačem.\n"
+"\n"
+"Chcete pokračovat?"
 
 #, c-format
 msgid ""
@@ -1148,6 +1215,9 @@ msgid ""
 "\n"
 "Do you want to proceed?"
 msgstr ""
+"Vybraná píseň je ve formátu nepodporovaném vaším přehrávačem.\n"
+"\n"
+"Chcete pokračovat?"
 
 #, c-format
 msgid ""
@@ -1155,12 +1225,15 @@ msgid ""
 "\n"
 "Do you want to proceed?"
 msgstr ""
+"Žádná z vybraných písní není ve formátu podporovaném vaším přehrávačem.\n"
+"\n"
+"Chcete pokračovat?"
 
 msgid "iFP device manager (upload mode)"
-msgstr ""
+msgstr "Správce zařízení iFP (režim nahrávání)"
 
 msgid "iFP device manager (download mode)"
-msgstr ""
+msgstr "Správce zařízení iFP (režim stahování)"
 
 msgid "Selected files:"
 msgstr "Vybrané soubory:"
@@ -1306,18 +1379,17 @@ msgstr "Datum nahrávání"
 msgid "Record Location"
 msgstr "Místo nahrávání"
 
-#, fuzzy
 msgid "Media"
-msgstr "Hudební soubory"
+msgstr "Typ média"
 
 msgid "Index"
 msgstr "Index"
 
 msgid "Related"
-msgstr ""
+msgstr "Spojeno s"
 
 msgid "Abstract"
-msgstr ""
+msgstr "Shrnutí"
 
 msgid "Language"
 msgstr "Jazyk"
@@ -1467,13 +1539,13 @@ msgid "ReplayGain Album Peak"
 msgstr "Vrchol alba při vyrovnání hlasitosti"
 
 msgid "Icy-Name"
-msgstr ""
+msgstr "Icy-Název"
 
 msgid "Icy-Description"
-msgstr ""
+msgstr "Icy-Popis"
 
 msgid "Icy-Genre"
-msgstr ""
+msgstr "Icy-Žánr"
 
 msgid "RVA"
 msgstr "RVA"
@@ -1484,9 +1556,8 @@ msgstr "Připojený obrázek"
 msgid "Binary Object"
 msgstr "Binární objekt"
 
-#, fuzzy
 msgid "NULL"
-msgstr "Plná"
+msgstr "NULL"
 
 msgid "ID3v1"
 msgstr "ID3v1"
@@ -1606,7 +1677,7 @@ msgid "Publisher/studio logotype"
 msgstr "Značka vydavatele/nahrávacího studia"
 
 msgid "Music Store"
-msgstr "Hudební obchod"
+msgstr "Sbírka desek"
 
 msgid "Search..."
 msgstr "Hledat..."
@@ -1630,18 +1701,18 @@ msgid "Create empty store..."
 msgstr "Vytvořit prázdný obchod..."
 
 msgid "*Music Store"
-msgstr "*Hudební obchod"
+msgstr "*Sbírka desek"
 
 #, c-format
 msgid "Do you want to save store \"%s\" before removing from Music Store?"
-msgstr ""
+msgstr "Chcete uložit sbírku \"%s\" před jejím odstraněním ze sbírky desek?"
 
 msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
-msgstr ""
+msgstr "Aby se projevily následující změny, musí se Aqualung spustit znovu:"
 
 msgid "Select a font..."
-msgstr ""
+msgstr "Vybrat písmo..."
 
 msgid "Disable skin support"
 msgstr "Zakázat podporu vzhledu"
@@ -1659,13 +1730,13 @@ msgid "Please select a Lua Extension File."
 msgstr "Vyberte, prosím, soubor s příponou Lua"
 
 msgid "Please select a Music Store database."
-msgstr "Vyberte, prosím, databázi Hudební obchod."
+msgstr "Vyberte, prosím, databázi s hudební sbírkou."
 
 msgid "Paths must either be absolute or starting with a tilde."
-msgstr ""
+msgstr "Cesty musí být buď absolutní, anebo začínat vlnovkou."
 
 msgid "The specified store has already been added to the list."
-msgstr ""
+msgstr "Zadaná sbírka již byla přidána do seznamu."
 
 #, c-format
 msgid ""
@@ -1674,6 +1745,10 @@ msgid ""
 "line from an Artist, a Record and a Track name. These are denoted by %%a, "
 "%%r and %%t, respectively.\n"
 msgstr ""
+"\n"
+"Řetězec předlohy, jejž zde zadáte, se použije k sestavení názvového řádku "
+"složeného z umělce, alba a názvu skladby. Tyto jsou označeny "
+"%%a, %%r a %%t.\n"
 
 msgid ""
 "\n"
@@ -1698,6 +1773,27 @@ msgid ""
 "\n"
 "NOTE: There might be a more suitable character encoding for your language."
 msgstr ""
+"\n"
+"Pokud máte zvukový soubor MPEG s nestandardním kódováním znaků ID3v1/ID3v2, "
+"zadejte, prosím, vhodné kódování znaků zde (viz níže). Pokud je toto pole "
+"ponecháno prázdné, použije se standardní kódování znaků (ISO-8859-1).\n"
+"\n"
+"Například:\n"
+"  Japonština: CP932 (SHIFT_JIS variant)\n"
+"  Korejština: EUC-KR\n"
+"  Zjednodušená čínština: GB2312\n"
+"  Tradiční čínština: BIG5\n"
+"  Řečtina: ISO-8859-7\n"
+"  Hebrejština: ISO-8859-8\n"
+"  Azbuka: CP1251\n"
+"  Thajština: ISO-8859-11\n"
+"  Arabština: CP1256\n"
+"  Turečtina: ISO-8859-9\n"
+"  Rozšířená latinka: ISO-8859-2\n"
+"  Středoevropské jazyky: CP1250\n"
+"  Latin1 (standardní): ISO-8859-1\n"
+"\n"
+"POZNÁMKA: Pro váš jazyk může být vhodnější kódování znaků."
 
 msgid ""
 "\n"
@@ -1710,6 +1806,17 @@ msgid ""
 "('filename') .. ')'\n"
 "end"
 msgstr ""
+"\n"
+"Soubor, který zde zadáte/vyberete nastaví používání programu Lua pro "
+"rozšíření "
+"Aqualungu. Na podrobnosti se podívejte do příručky k Aqualungu. Zde je rychlý "
+"příklad toho, co "
+"můžete použít v souboru:\n"
+"\n"
+"function playlist_title()\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i"
+"('filename') .. ')'\n"
+"end"
 
 msgid ""
 "\n"
@@ -1721,6 +1828,16 @@ msgid ""
 "Example: enter '-o alsa -R' below to use ALSA output running realtime as a "
 "default.\n"
 msgstr ""
+"\n"
+"Řetězec, který zde zadáte, bude zpracován jako příkazový řádek, předtím než "
+"bude "
+"zpracován vlastní parameter příkazového řádku. Co zde napíšete, bude sloužit "
+"jako přednastavení a může být nebo nemusí být přepsáno skutečným příkazovým "
+"řádkem.\n"
+"\n"
+"Příklad: Zadejte '-o alsa -R', aby se používal výstup ALSA ve skutečném čase "
+"jako "
+"výchozí přednastavení.\n"
 
 msgid ""
 "Paths must either be absolute or starting with a tilde, which will be "
@@ -1728,6 +1845,11 @@ msgid ""
 "\n"
 "Drag and drop entries in the list to set the store order in the Music Store."
 msgstr ""
+"Cesty musí být buď absolutní, anebo začínat vlnovkou, která bude "
+"rozšířena do domovského adresáře uživatele.\n"
+"\n"
+"Táhněte a pusťte záznamy v seznamu pro nastavení pořadí hudebních sbírek "
+"ve sbírce desek."
 
 msgid ""
 "\n"
@@ -1743,6 +1865,23 @@ msgid ""
 "happens with maximum available speed and with error correction modes "
 "manually set before every run."
 msgstr ""
+"\n"
+"Nastavte rychlost mechaniky pro přehrávání CD v jednotkách rychlosti CD-ROM. "
+"Jedna "
+"jednotka rychlosti se rovná 176 kB/s rychlosti čtení nezpracovaných dat. "
+"Varování: Ne "
+"všechny mechaniky ctí toto nastavení.\n"
+"\n"
+"Nižší rychlost obvykle znamená menší hlučnost mechaniky. Nicméně, když se "
+"k opravě chyb používají režimy Paranoia pro zvýšenou přesnost, jsou kvůli "
+"zabránění "
+"podtečení vyrovnávací paměti vyžadovány obecně mnohem vyšší rychlosti "
+"(a tudíž dochází ke slyšitelným výpadkům záznamu na nosiči).\n"
+"\n"
+"Všimněte si, prosím, že tato nastavení se nepoužívají na vytahování skladeb z "
+"CD, což "
+"se vždy děje s nejvyšší dostupnou rychlostí a s režimy pro opravu chyb "
+"nastavenými ručně před každým spuštěním."
 
 msgid ""
 "\n"
@@ -1751,6 +1890,13 @@ msgid ""
 "properly, and thus it may happen that a newly inserted CD remains unnoticed "
 "to Aqualung. In such cases, enabling this option should help."
 msgstr ""
+"\n"
+"Většina mechanik dá Aqualungu vědět, když bylo CD vloženo nebo odstraněno "
+"poskytnutím příznaku 'media changed'. Nicméně některé mechaniky tento příznak "
+"nevidí "
+"správně, a tak se může stát, že nově vložené CD zůstane Aqualungem "
+"nepovšimnuto. "
+"V takových případech by mělo pomoci povolení této volby."
 
 msgid ""
 "\n"
@@ -1758,6 +1904,10 @@ msgid ""
 "that should be accessed without using the proxy set above.\n"
 "Example: localhost, .localdomain, .my.domain.com"
 msgstr ""
+"\n"
+"Zde zadejte čárkou oddělený seznam domén,\n"
+"ke kterým se má přistupovat bez použití nastavení proxy výše.\n"
+"Příklad: localhost, .localdomain, .my.domain.com"
 
 msgid "Embed playlist into main window"
 msgstr "Vložit seznam skladeb do hlavního okna"
@@ -1820,7 +1970,7 @@ msgid "Main window"
 msgstr "Hlavní okno"
 
 msgid "Disable control buttons relief"
-msgstr ""
+msgstr "Vypnout u ovládacích tlačítek plastičnost"
 
 msgid "Combine play and pause buttons"
 msgstr "Sloučit tlačítko pro přehrávání a pozastavení"
@@ -1841,7 +1991,7 @@ msgid "Systray"
 msgstr "Oznamovací oblast panelu"
 
 msgid "Start minimized"
-msgstr "Spustit zmenšeno v panelu"
+msgstr "Spustit přehrávač zmenšený v panelu"
 
 msgid "Play/Stop song"
 msgstr "Přehrát/Zastavit píseň"
@@ -1865,7 +2015,7 @@ msgid "Miscellaneous"
 msgstr "Různé"
 
 msgid "Implicit command line"
-msgstr "Obsažený příkazový řádek"
+msgstr "Zahrnutý příkazový řádek"
 
 msgid "Cover art"
 msgstr "Obal"
@@ -1892,7 +2042,7 @@ msgid "Do not magnify images with smaller width"
 msgstr "Nezvětšovat obrázky s menší šířkou"
 
 msgid "Show cover thumbnail for Music Store tracks only"
-msgstr "Ukázat náhled obalu pouze pro skladby hudebního obchodu"
+msgstr "Ukázat náhled na obrázek obalu jen pro skladby v hudební sbírce"
 
 msgid "Don't show cover thumbnail in the main window"
 msgstr "Neukazovat náhled obalu v hlavním okně"
@@ -1904,13 +2054,13 @@ msgid "Enable tooltips"
 msgstr "Povolit nástrojové rady"
 
 msgid "Simple view in LADSPA patch builder"
-msgstr "Jednoduchý pohled ve staviteli záplaty LADSPA"
+msgstr "Jednoduchý pohled v nastavení filtrů LADSPA"
 
 msgid "United windows minimization"
-msgstr "Jednotné zmenšení oken"
+msgstr "Zmenšení všech oken ve stejnou dobu"
 
 msgid "Show hidden files and directories in file choosers"
-msgstr "Ukazovat ve voličích souborů skryté soubory a adresáře"
+msgstr "Ukazovat skryté soubory a adresáře ve voličích souborů"
 
 msgid "Show tags tab first in the file info dialog"
 msgstr "Ukázat v dialogu s informacemi o souboru nejprve kartu se značkami"
@@ -1919,7 +2069,7 @@ msgid "Playlist"
 msgstr "Seznam skladeb"
 
 msgid "Put control buttons at the bottom of playlist"
-msgstr ""
+msgstr "Umístit ovládací tlačítka v seznamu skladeb dolů"
 
 msgid "Save and restore the playlist on exit/startup"
 msgstr "Uložit a obnovit seznam skladeb při ukončení/při spuštění"
@@ -1928,7 +2078,7 @@ msgid "Save playlist periodically [min]:"
 msgstr "Ukládat pravidelně seznam skladeb [min]:"
 
 msgid "Album mode is the default when adding entire records"
-msgstr ""
+msgstr "Režim alba je výchozí, když je přidáno celé album"
 
 msgid "Always show the tab bar"
 msgstr "Vždy ukazovat pruh s kartami"
@@ -1937,7 +2087,7 @@ msgid "Show close button in tab"
 msgstr "Ukázat tlačítko pro zavírání v kartě"
 
 msgid "When shuffling, records added in Album mode are played in order"
-msgstr ""
+msgstr "Alba přidaná v režimu alba jsou přehrávána v náhodném režimu popořadě"
 
 msgid "Enable statusbar"
 msgstr "Povolit stavový řádek"
@@ -1961,7 +2111,7 @@ msgid "Automatically roll to active track"
 msgstr "Automaticky posunout na činnou skladbu"
 
 msgid "Enable rules hint"
-msgstr "Povolit radu s pravidly"
+msgstr "Použít v seznamech náhradní barvy"
 
 msgid "Playlist column order"
 msgstr "Pořadí sloupců v seznamu skladeb"
@@ -1970,8 +2120,8 @@ msgid ""
 "Drag and drop entries in the list below \n"
 "to set the column order in the Playlist."
 msgstr ""
-"Táhněte a pusťte záznamy do seznamu níže\n"
-"pro nastavení pořadí sloupců v seznamu skladeb."
+"Táhněte a pusťte záznamy do seznamu níže pro\n"
+"nastavení pořadí sloupců v seznamu skladeb."
 
 msgid "Column"
 msgstr "Sloup"
@@ -1989,7 +2139,7 @@ msgid "Hide comment pane"
 msgstr "Skrýt okno s poznámkou"
 
 msgid "Hide the Music Store comment pane"
-msgstr "Skrýt v hudebním obchodu okno s poznámkou"
+msgstr "Skrýt sbírku desek v okně s poznámkou"
 
 msgid "Enable toolbar"
 msgstr "Povolit nástrojový pruh"
@@ -2025,7 +2175,7 @@ msgid "Refresh"
 msgstr "Obnovit"
 
 msgid "DSP"
-msgstr "Digitální zpracování signálu (DSP)"
+msgstr "Digitální zpracování signálu"
 
 msgid "LADSPA plugin processing"
 msgstr "Zpracování přídavného modulu LADSPA"
@@ -2081,44 +2231,48 @@ msgid "Steepness [dB/dB] :"
 msgstr "Strmost [dB/dB]:"
 
 msgid "RVA for Unmeasured Files [dB] :"
-msgstr "RVA pro nezměřené soubory[dB]:"
+msgstr "RVA pro nezměřené soubory [dB]:"
 
 msgid "Apply averaged RVA to tracks of the same record"
-msgstr ""
+msgstr "Použít průměrné RVA na všechny skladby alba"
 
 msgid "Drop statistical aberrations based on"
-msgstr ""
+msgstr "Zmenšení statistické odchylky založené na"
 
 #, no-c-format
 msgid "% of standard deviation"
-msgstr ""
+msgstr "% směrodatné odchylky"
 
 msgid "Linear threshold [dB]"
-msgstr ""
+msgstr "Lineární práh [dB]"
 
 msgid "Linear threshold [dB] :"
-msgstr ""
+msgstr "Lineární práh [dB]:"
 
 #, no-c-format
 msgid "% of standard deviation :"
-msgstr ""
+msgstr "% směrodatné odchylky:"
 
 msgid "ReplayGain tag to use (with fallback to the other): "
 msgstr ""
+"Použít následující značku pro vyrovnání hlasitosti (s návratem k jiné v "
+"případě potřeby): "
 
 msgid "Replaygain_track_gain"
-msgstr "Zesílení skladby při vyrovnání hlasitosti"
+msgstr "Zesílit skladbu"
 
 msgid "Replaygain_album_gain"
-msgstr "Zesílení alba při vyrovnání hlasitosti"
+msgstr "Zesílit album"
 
 msgid "Adding files to Playlist"
-msgstr ""
+msgstr "Soubory jsou přidávány do seznamu skladeb"
 
 msgid ""
 "Use basename only instead of full path\n"
 "if no metadata is available."
 msgstr ""
+"Použít základní název namísto celé cesty,\n"
+"pokud nejsou dostupná žádná popisná data."
 
 msgid "Metadata editor (File info dialog)"
 msgstr "Editor popisných dat (dialog s informacemi o souboru)"
@@ -2127,20 +2281,28 @@ msgid ""
 "When adding new frames, try to set their contents\n"
 "from another tag's equivalent frame."
 msgstr ""
+"Při přidávání nových oken se pokuste o nastavení jejich obsahu\n"
+"z okna značky se stejným obsahem."
 
 msgid "MPEG audio ID3v1/ID3v2 character encoding"
-msgstr ""
+msgstr "Kódování znaků ID3v1/ID3v2 MPEG audio"
 
 msgid "Batch update & encode (mass tagger, CD ripper, file export)"
 msgstr ""
+"Hromadná aktualizace a zakódování (hromadné značkování, vytažení skladeb z "
+"CD, "
+"vyvedení souborů)"
 
 msgid "Tags to add when creating or updating MPEG audio files:"
 msgstr ""
+"Značky k přidání při vytváření nebo aktualizaci zvukových souborů MPEG:"
 
 msgid ""
 "Note: pre-existing tags will be updated even though they\n"
 "might not be checked here."
 msgstr ""
+"Poznámka: Již existující značky budou aktualizovány, i když zde nejsou "
+"vybrány."
 
 msgid "CD Audio"
 msgstr "Zvukové CD"
@@ -2193,13 +2355,13 @@ msgid "Direct connection to the Internet"
 msgstr "Přímé připojení k internetu"
 
 msgid "Connect via HTTP proxy"
-msgstr "Připojit se přes proxy HTTP"
+msgstr "Připojit se přes HTTP proxy"
 
 msgid "Proxy settings"
 msgstr "Nastavení proxy"
 
 msgid "Proxy host:"
-msgstr "Server proxy:"
+msgstr "Proxy server:"
 
 msgid "Port:"
 msgstr "Přípojka:"
@@ -2208,7 +2370,7 @@ msgid "No proxy for:"
 msgstr "Žádná proxy pro:"
 
 msgid "Timeout for socket I/O:"
-msgstr "Překročení času pro socket I/O:"
+msgstr "Lhůta před považováním spojení za ztracené:"
 
 msgid "seconds"
 msgstr "sekund"
@@ -2360,7 +2522,7 @@ msgid "Remove all"
 msgstr "Odstranit vše"
 
 msgid "Remove dead"
-msgstr "Odstranit zaniklé"
+msgstr "Odstranit zaniklé záznamy"
 
 msgid "Cut selected"
 msgstr "Vyjmout vybrané"
@@ -2384,13 +2546,13 @@ msgid "Send to iFP device"
 msgstr "Odeslat do zařízení iFP"
 
 msgid "Calculate RVA"
-msgstr "Spočítat RVA"
+msgstr "Změřit RVA"
 
 msgid "Separate"
-msgstr "Rozdělit"
+msgstr "Jednotlivý"
 
 msgid "Average"
-msgstr "Průměrný"
+msgstr "Průměr"
 
 msgid "Reread file metadata"
 msgstr "Přečíst popisná data znovu"
@@ -2430,7 +2592,7 @@ msgid "Unable to remove %d files."
 msgstr "Nelze odstranit %d souborů."
 
 msgid "LADSPA patch builder"
-msgstr "Stavitel záplaty LADSPA"
+msgstr "Nastavení LADSPA"
 
 msgid "Available plugins"
 msgstr "Dostupné přídavné moduly"
@@ -2538,6 +2700,8 @@ msgid ""
 "The information below is reported by the drive, and\n"
 "may not reflect the actual capabilities of the device."
 msgstr ""
+"Informace níže je hlášena mechanikou a nemusí\n"
+"odrážet skutečné schopnosti zařízení."
 
 msgid "Eject"
 msgstr "Vysunout"
@@ -2778,9 +2942,8 @@ msgstr "Odstranit umělce"
 msgid "Remove Record"
 msgstr "Odstranit nahrávku"
 
-#, fuzzy
 msgid "Remove Track"
-msgstr "Odstranit stopu"
+msgstr "Odstranit skladbu"
 
 msgid "Update file metadata"
 msgstr "Aktualizovat popisná data k souboru"
@@ -2817,6 +2980,9 @@ msgid ""
 "File \"%s\" does not exist or your write permission has been withdrawn. "
 "Check if the partition containing the store file has been unmounted."
 msgstr ""
+"Soubor \"%s\" neexistuje nebo vám byla oprávnění pro zápis odňata. "
+"Prověřte, zda byl diskový oddíl obsahující soubor s hudební sbírkou "
+"odpojen."
 
 msgid "Build / Update store from filesystem..."
 msgstr "Postavit/Obnovit obchod ze souborového systému..."
@@ -3187,17 +3353,18 @@ msgid "Emphasis: reserved"
 msgstr "Zdůraznění: Zdrženlivé"
 
 msgid "bit signed"
-msgstr "bit se znaménkem"
+msgstr "Bit se znaménkem"
 
 msgid "bit unsigned"
-msgstr "bit bez znaménka"
+msgstr "Bit bez znaménka"
 
 msgid "bit float"
-msgstr "bit float"
+msgstr "Bit plovoucí"
 
 msgid "bit double"
-msgstr ""
+msgstr "Bit dvojitý"
 
 msgid "encoding"
 msgstr "Kódování"
+
 

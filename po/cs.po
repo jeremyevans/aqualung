@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: aqualung SVN\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
 "POT-Creation-Date: 2014-08-14 20:42+0200\n"
-"PO-Revision-Date: 2014-08-16 15:40+0200\n"
+"PO-Revision-Date: 2014-08-21 22:51+0200\n"
 "Last-Translator: Pavel Fric <pavelfric@seznam.cz>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
 "Language: cs\n"
@@ -1695,10 +1695,10 @@ msgid "Remove item..."
 msgstr "Odstranit položku..."
 
 msgid "Save all stores"
-msgstr "Uložit všechny obchody"
+msgstr "Uložit všechny sbírky"
 
 msgid "Create empty store..."
-msgstr "Vytvořit prázdný obchod..."
+msgstr "Vytvořit prázdnou sbírku..."
 
 msgid "*Music Store"
 msgstr "*Sbírka desek"
@@ -1970,7 +1970,7 @@ msgid "Main window"
 msgstr "Hlavní okno"
 
 msgid "Disable control buttons relief"
-msgstr "Vypnout u ovládacích tlačítek plastičnost"
+msgstr "Vypnout u ovládacích tlačítek vypouklost (plastičnost)"
 
 msgid "Combine play and pause buttons"
 msgstr "Sloučit tlačítko pro přehrávání a pozastavení"
@@ -2145,25 +2145,25 @@ msgid "Enable toolbar"
 msgstr "Povolit nástrojový pruh"
 
 msgid "Enable toolbar in Music Store"
-msgstr "Povolit v hudebním obchodu nástrojový pruh"
+msgstr "Povolit v hudební sbírce nástrojový pruh"
 
 msgid "Enable statusbar in Music Store"
-msgstr "Povolit v hudebním obchodu stavový řádek"
+msgstr "Povolit v hudební sbírce stavový řádek"
 
 msgid "Expand Stores on startup"
-msgstr "Rozbalit obchody při spuštění"
+msgstr "Rozbalit sbírky při spuštění"
 
 msgid "Enable tree node icons"
 msgstr "Povolit ikony uzlů ve stromu"
 
 msgid "Enable Music Store tree node icons"
-msgstr "Povolit ikony uzlů ve stromu hudebního obchodu"
+msgstr "Povolit symboly uzlů ve stromu hudební sbírky"
 
 msgid "Ask for confirmation when removing items"
 msgstr "Dotazovat se na potvrzení při odstraňování položek"
 
 msgid "Paths to Music Store databases"
-msgstr "Cesty do databází hudebního obchodu"
+msgstr "Cesty do databází hudební sbírky"
 
 msgid "Path"
 msgstr "Cesta"
@@ -2191,7 +2191,7 @@ msgid ""
 "See the About box and the documentation for details."
 msgstr ""
 "Aqualung je sestaven bez podpory pro přídavný modul LADSPA.\n"
-"Podívejte se do okna O programu a do dokumentace na podrobnosti."
+"Podívejte se do okna s údaji programu a do dokumentace na podrobnosti."
 
 msgid "Sample Rate Converter type"
 msgstr "Typ převodníku vzorkovacího kmitočtu"
@@ -2271,8 +2271,8 @@ msgid ""
 "Use basename only instead of full path\n"
 "if no metadata is available."
 msgstr ""
-"Použít základní název namísto celé cesty,\n"
-"pokud nejsou dostupná žádná popisná data."
+"Použít základní název namísto celé cesty, pokud nejsou dostupná žádná popisná "
+"data."
 
 msgid "Metadata editor (File info dialog)"
 msgstr "Editor popisných dat (dialog s informacemi o souboru)"
@@ -2281,8 +2281,8 @@ msgid ""
 "When adding new frames, try to set their contents\n"
 "from another tag's equivalent frame."
 msgstr ""
-"Při přidávání nových oken se pokuste o nastavení jejich obsahu\n"
-"z okna značky se stejným obsahem."
+"Při přidávání nových oken se pokuste o nastavení jejich obsahu z okna značky\n"
+"se stejným obsahem."
 
 msgid "MPEG audio ID3v1/ID3v2 character encoding"
 msgstr "Kódování znaků ID3v1/ID3v2 MPEG audio"
@@ -2388,7 +2388,7 @@ msgid "Playlist: "
 msgstr "Seznam skladeb:"
 
 msgid "Music Store: "
-msgstr "Hudební obchod: "
+msgstr "Hudební sbírka: "
 
 msgid "Big timer: "
 msgstr "Velké hodiny: "
@@ -2450,10 +2450,10 @@ msgid "counting..."
 msgstr "Počítá se..."
 
 msgid "track"
-msgstr "Skladba"
+msgstr "skladba"
 
 msgid "tracks"
-msgstr "Skladby"
+msgstr "skladeb"
 
 msgid "Rename playlist"
 msgstr "Přejmenovat seznam skladeb"
@@ -2561,7 +2561,7 @@ msgid "File info..."
 msgstr "Informace o souboru..."
 
 msgid "Roll to active song"
-msgstr "Skutálet se k činné písni"
+msgstr "Skutálet se k nynější písni"
 
 msgid "Stop adding files"
 msgstr "Zastavit přidávání souborů"
@@ -2649,7 +2649,7 @@ msgid " out R"
 msgstr " výstup P"
 
 msgid "Search the Music Store"
-msgstr "Hledat v hudebním obchodu"
+msgstr "Prohledat hudební sbírku"
 
 msgid "Key: "
 msgstr "Klíč: "
@@ -2851,19 +2851,19 @@ msgid "Comments:"
 msgstr "Poznámky:"
 
 msgid "Please select the xml file for this store."
-msgstr "Vyberte, prosím, soubor XML pro tento obchod."
+msgstr "Vyberte, prosím, soubor XML pro tuto sbírku."
 
 msgid "Create empty store"
-msgstr "Vytvořit prázdný obchod"
+msgstr "Vytvořit prázdnou sbírku"
 
 msgid "Visible name:"
 msgstr "Viditelný název:"
 
 msgid "Edit Store"
-msgstr "Upravit obchod"
+msgstr "Upravit sbírku"
 
 msgid "Use relative paths in store file"
-msgstr "Použít relativních cest v souboru s obchodem"
+msgstr "Použít relativních cest v souboru se sbírkou"
 
 msgid "Add Artist"
 msgstr "Přidat umělce"
@@ -2913,7 +2913,7 @@ msgstr "Použít ruční hodnotu RVA [dB]"
 
 #, c-format
 msgid "Really remove \"%s\" from the Music Store?"
-msgstr "Opravdu odstranit \"%s\" z hudebního obchodu?"
+msgstr "Opravdu odstranit \"%s\" z hudební sbírky?"
 
 msgid "Stop adding songs"
 msgstr "Zastavit přidávání písní"
@@ -2923,18 +2923,18 @@ msgid ""
 "The store '%s' already exists.\n"
 "Add it on the Settings/Music Store tab."
 msgstr ""
-"Obchod '%s' již existuje.\n"
-"Přidejte jej na kartě Nastavení/Hudební obchod."
+"Sbírka '%s' již existuje.\n"
+"Přidejte jej na kartě Nastavení/Sbírka desek."
 
 #, c-format
 msgid "Really remove store \"%s\" from the Music Store?"
-msgstr "Opravdu odstranit obchod \"%s\" z hudebního obchodu?"
+msgstr "Opravdu odstranit sbírku \"%s\" z hudební sbírky?"
 
 msgid "Remove Store"
-msgstr "Odstranit obchod"
+msgstr "Odstranit sbírku"
 
 msgid "Do you want to save the store before removing?"
-msgstr "Chcete před odstraněním obchod uložit?"
+msgstr "Chcete před odstraněním sbírku uložit?"
 
 msgid "Remove Artist"
 msgstr "Odstranit umělce"
@@ -2985,22 +2985,22 @@ msgstr ""
 "odpojen."
 
 msgid "Build / Update store from filesystem..."
-msgstr "Postavit/Obnovit obchod ze souborového systému..."
+msgstr "Vytvořit/Obnovit sbírku ze souborového systému..."
 
 msgid "Edit store..."
-msgstr "Upravit obchod..."
+msgstr "Upravit sbírku..."
 
 msgid "Export store..."
-msgstr "Vyvést obchod..."
+msgstr "Vyvést sbírku..."
 
 msgid "Save store"
-msgstr "Uložit obchod"
+msgstr "Uložit sbírku"
 
 msgid "Remove store"
-msgstr "Odstranit obchod"
+msgstr "Odstranit sbírku"
 
 msgid "Add new artist to this store..."
-msgstr "Přidat nového umělce do tohoto obchodu..."
+msgstr "Přidat nového umělce do této sbírky..."
 
 msgid "Calculate volume (recursive)"
 msgstr "Spočítat hlasitost (včetně podsložek)"
@@ -3097,7 +3097,7 @@ msgid ""
 "in the Podcasts store popup menu."
 msgstr ""
 "Automatická aktualizace byla zakázána pro všechny kanály\n"
-"ve vyskakovací nabídce obchodu se zvukovými záznamy."
+"ve vyskakovací nabídce sbírky se zvukovými záznamy."
 
 msgid "Limits"
 msgstr "Omezení"
@@ -3109,7 +3109,7 @@ msgid "Remove older items [day]:"
 msgstr "Odstranit starší položky [den]:"
 
 msgid "Maximum space to use [MB]:"
-msgstr "Největší velikost místa k použití (MiB]:"
+msgstr "Největší velikost místa k použití [MB]:"
 
 msgid "Podcasts"
 msgstr "Zvukové záznamy"
@@ -3125,7 +3125,7 @@ msgstr "Odstranit kanál"
 
 #, c-format
 msgid "Really remove '%s' from the Music Store?"
-msgstr "Opravdu odstranit \"'%s\" z hudebního obchodu?"
+msgstr "Opravdu odstranit \"'%s\" z hudební sbírky?"
 
 msgid "Reorder feeds"
 msgstr "Přeuspořádat kanály"
@@ -3135,7 +3135,7 @@ msgid ""
 "to set the feed order in the Music Store."
 msgstr ""
 "Táhněte a pusťte záznamy do seznamu níže\n"
-"pro nastavení pořadí kanálů v hudebním obchodu."
+"pro nastavení pořadí kanálů v hudební sbírce."
 
 #, c-format
 msgid "Downloading %d/%d (%d%%) ..."
@@ -3221,7 +3221,7 @@ msgid "Lua Extension Files (*.lua)"
 msgstr "Soubory s příponou Lua (*.lua)"
 
 msgid "Music Store Files (*.xml)"
-msgstr "Soubory hudebního obchodu (*.xml)"
+msgstr "Soubory s hudební sbírkou (*.xml)"
 
 msgid "Aqualung playlist (*.xml)"
 msgstr "Seznam skladeb Aqualung (*.xml)"

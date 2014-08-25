@@ -32,6 +32,7 @@
 #include <getopt.h>
 #include <sys/stat.h>
 #include <glib.h>
+#include <glib/gstdio.h>
 #include <gdk/gdk.h>
 #include <libxml/globals.h>
 #include <libxml/parser.h>
@@ -2327,6 +2328,7 @@ void
 setup_app_directories(void) {
 
 	char * home = getenv("HOME");
+        char * xdgconfdir;
 	if (!home) {
 		char * homedir = (char *)g_get_home_dir();
 		strcpy(options.home, homedir);
@@ -2336,6 +2338,20 @@ setup_app_directories(void) {
 	}
 
 	snprintf(options.confdir, MAXLEN-1, "%s/.aqualung", options.home);
+        xdgconfdir = g_build_filename(g_get_user_config_dir(), "aqualung", NULL);
+	if (!g_file_test(xdgconfdir, G_FILE_TEST_IS_DIR) &&
+	    g_file_test(options.confdir, G_FILE_TEST_IS_DIR)) {
+		printf("Moving configuration directory\n"
+		       "     from legacy path: %s\n"
+		       "  to XDG-conform path: %s\n",
+		       options.confdir, xdgconfdir);
+		if (g_rename(options.confdir, xdgconfdir) != 0) {
+			perror("Error: rename");
+			exit(1);
+		}
+	}
+	strncpy(options.confdir, xdgconfdir, MAXLEN-1);
+	g_free(xdgconfdir);
 
 	strcpy(options.audiodir, options.home);
 	strcpy(options.currdir, options.home);

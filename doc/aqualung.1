@@ -1,4 +1,4 @@
-.TH AQUALUNG 1 "22 October 2012"
+.TH AQUALUNG 1 "25 August 2014"
 .SH NAME
 aqualung \- Music player for GNU/Linux
 .SH SYNOPSIS
@@ -339,25 +339,36 @@ $ aqualung -o jack -a -E --tab="Led Zeppelin" `find ./ledzeppelin/ -name '*.flac
 Here is a list of files that Aqualung creates, reads and
 relies on.
 .TP
-~/.aqualung
+$XDG_CONFIG_HOME/aqualung/
 .br
-Directory containing user settings.
+Directory containing user settings. $XDG_CONFIG_HOME is
+the user-specific directory for application configuration
+information according to the XDG Base Directory Specification.
+It is most likely equivalent to ~/.config, so the following
+config files (except the last one, which resides in a
+system-wide location) are usually found under
+$HOME/.config/aqualung/
+.br
+Note: earlier versions of Aqualung kept these per-user
+configuration files in ~/.aqualung. This legacy setup is
+recognized and silently migrated to the XDG-conformant
+layout.
 .TP
-~/.aqualung/config.xml
+config.xml
 .br
 GUI (skin, window size/position, etc.) and other
 settings.
 .TP
-~/.aqualung/plugin.xml
+plugin.xml
 .br
 List of running plugins and all their settings.
 .TP
-~/.aqualung/playlist.xml
+playlist.xml
 .br
 Automatically saved and restored playlist (if you enable
 this feature).
 .TP
-~/.aqualung/<skin-name>
+<skin-name>
 .br
 Locally available skin <skin-name> (useful for
 skin development).

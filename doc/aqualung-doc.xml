@@ -719,33 +719,44 @@
         <dl man="FILES">
 
           <dt>
-            <file>~/.aqualung</file>
+            <file>$XDG_CONFIG_HOME/aqualung/</file>
           </dt>
 
-          <dd>Directory containing user settings.</dd>
+          <dd>Directory containing user settings. $XDG_CONFIG_HOME is
+          the user-specific directory for application configuration
+          information according to the XDG Base Directory Specification.
+	  It is most likely equivalent to ~/.config, so the following
+	  config files (except the last one, which resides in a
+	  system-wide location) are usually found under
+	  $HOME/.config/aqualung/</dd>
+
+	  <dd>Note: earlier versions of Aqualung kept these per-user
+	  configuration files in ~/.aqualung. This legacy setup is
+	  recognized and silently migrated to the XDG-conformant
+	  layout.</dd>
 
           <dt>
-            <file>~/.aqualung/config.xml</file>
+            <file>config.xml</file>
           </dt>
 
           <dd>GUI (skin, window size/position, etc.) and other
           settings.</dd>
 
           <dt>
-            <file>~/.aqualung/plugin.xml</file>
+            <file>plugin.xml</file>
           </dt>
 
           <dd>List of running plugins and all their settings.</dd>
 
           <dt>
-            <file>~/.aqualung/playlist.xml</file>
+            <file>playlist.xml</file>
           </dt>
 
           <dd>Automatically saved and restored playlist (if you enable
           this feature).</dd>
 
           <dt>
-            <file>~/.aqualung/&lt;skin-name&gt;</file>
+            <file>&lt;skin-name&gt;</file>
           </dt>
 
           <dd>Locally available skin &lt;skin-name&gt; (useful for
@@ -2505,8 +2516,9 @@
           and there is no way to override that from the command line. If
           you get into trouble, all you have to (or can) do is grab a
           text editor and hack it out of
-          <file>~/.aqualung/config.xml</file> where it is stored. You
-          will find it between <q>&lt;default_param&gt;</q> and
+          <file>$XDG_CONFIG_HOME/aqualung/config.xml</file> where it is
+	  stored (note that $XDG_CONFIG_HOME is most likely ~/.config).
+          You will find it between <q>&lt;default_param&gt;</q> and
           <q>&lt;/default_param&gt;</q>.</p>
 
           <p>There are also some options to handle the display of album

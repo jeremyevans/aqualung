@@ -3,81 +3,22 @@
 # Copyright (C) 2004 Tom Szilagyi
 # This file is distributed under the same license as the aqualung package.
 # Philipp Überbacher <hollunder@gmx.at>, 2007, 2008.
-# Wolfgang Stöggl <c72578@yahoo.de>, 2007-2010.
+# Wolfgang Stöggl <c72578@yahoo.de>, 2007-2010, 2014.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-13 00:15+0100\n"
-"PO-Revision-Date: 2010-01-13 00:16+0100\n"
+"Project-Id-Version: aqualung SVN\n"
+"Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
+"POT-Creation-Date: 2014-08-31 13:49+0200\n"
+"PO-Revision-Date: 2014-08-31 21:13+0100\n"
 "Last-Translator: Wolfgang Stoeggl <c72578@yahoo.de>\n"
 "Language-Team: German <de@li.org>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Language: German\n"
-
-msgid "About"
-msgstr "Über Aqualung"
-
-msgid "Build version: "
-msgstr "Version: "
-
-msgid "Homepage:"
-msgstr "Webseite:"
-
-msgid "Authors:"
-msgstr "Autoren:"
-
-msgid "Core design, engineering & programming:\n"
-msgstr "Kernentwurf, technische Planung & Programmierung:\n"
-
-msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr "Oberfläche, Aussehen, Handhabung:\n"
-
-msgid "Programming, GUI engineering:\n"
-msgstr "Programmierung, GUI-Planung:\n"
-
-msgid "OpenBSD compatibility, metadata tweaks:\n"
-msgstr "OpenBSD-Kompatibilität, Metadaten-Kniffe:\n"
-
-msgid "Translators:"
-msgstr "Übersetzer:"
-
-msgid "French:\n"
-msgstr "Französisch:\n"
-
-msgid "German:\n"
-msgstr "Deutsch:\n"
-
-msgid "Hungarian:\n"
-msgstr "Ungarisch:\n"
-
-msgid "Italian:\n"
-msgstr "Italienisch:\n"
-
-msgid "Japanese:\n"
-msgstr "Japanisch:\n"
-
-msgid "Russian:\n"
-msgstr "Russisch:\n"
-
-msgid "Swedish:\n"
-msgstr "Schwedisch:\n"
-
-msgid "Ukrainian:\n"
-msgstr "Ukrainisch:\n"
-
-msgid "Graphics:"
-msgstr "Graphiken:"
-
-msgid "Logo, icons:\n"
-msgstr "Logo, Symbole:\n"
-
-msgid "This Aqualung binary is compiled with:"
-msgstr "Diese Aqualung-Binärdatei wurde kompiliert mit:"
+"X-Generator: Poedit 1.6.9\n"
 
 msgid "Optional features:"
 msgstr "Optionale Funktionen:"
@@ -97,6 +38,9 @@ msgstr "Abtastraten-Umwandler\n"
 msgid "iRiver iFP driver support\n"
 msgstr "iRiver iFP Treiberunterstützung\n"
 
+msgid "JACK port management support\n"
+msgstr "Unterstützung für JACK Port-Verwaltung\n"
+
 msgid "Loop playback support\n"
 msgstr "Schleifenwiedergabe\n"
 
@@ -106,8 +50,8 @@ msgstr "Kontrollleistensymbol\n"
 msgid "Podcast support\n"
 msgstr "Podcast\n"
 
-msgid "Lua (programmable title formatting) support\n"
-msgstr "Lua-Unterstützung (programmierbare Titelformatierung)\n"
+msgid "Lua extension support\n"
+msgstr "Unterstützung für Lua-Erweiterungen\n"
 
 msgid "Decoding support:"
 msgstr "Dekodierbare Dateiformate:"
@@ -171,6 +115,84 @@ msgstr "PulseAudio\n"
 
 msgid "Win32 Sound API\n"
 msgstr "Win32 Sound API\n"
+
+msgid "About"
+msgstr "Über Aqualung"
+
+msgid "Build version: "
+msgstr "Version: "
+
+msgid "Homepage:"
+msgstr "Webseite:"
+
+msgid "Authors:"
+msgstr "Autoren:"
+
+msgid "Core design, engineering & programming:\n"
+msgstr "Kernentwurf, technische Planung & Programmierung:\n"
+
+msgid "Skin support, look & feel, GUI hacks:\n"
+msgstr "Oberfläche, Aussehen, Handhabung:\n"
+
+msgid "Programming, GUI engineering:\n"
+msgstr "Programmierung, GUI-Planung:\n"
+
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr "OpenBSD-Kompatibilität, Metadaten-Kniffe:\n"
+
+msgid "Miscellaneous, minimalism:\n"
+msgstr "Verschiedenes, Minimalismus:\n"
+
+msgid "Translators:"
+msgstr "Übersetzer:"
+
+msgid "Chinese (simplified):\n"
+msgstr "Chinesisch, vereinfacht:\n"
+
+msgid "Czech:\n"
+msgstr "Tschechisch:\n"
+
+msgid "Dutch:\n"
+msgstr "Niederländisch:\n"
+
+msgid "French:\n"
+msgstr "Französisch:\n"
+
+msgid "German:\n"
+msgstr "Deutsch:\n"
+
+msgid "Hungarian:\n"
+msgstr "Ungarisch:\n"
+
+msgid "Italian:\n"
+msgstr "Italienisch:\n"
+
+msgid "Japanese:\n"
+msgstr "Japanisch:\n"
+
+msgid "Polish:\n"
+msgstr "Polnisch:\n"
+
+msgid "Russian:\n"
+msgstr "Russisch:\n"
+
+msgid "Spanish:\n"
+msgstr "Spanisch:\n"
+
+msgid "Swedish:\n"
+msgstr "Schwedisch:\n"
+
+msgid "Ukrainian:\n"
+msgstr "Ukrainisch:\n"
+
+msgid "Graphics:"
+msgstr "Graphiken:"
+
+msgid "Logo, icons:\n"
+msgstr "Logo, Symbole:\n"
+
+msgid "This Aqualung binary is compiled with:"
+msgstr "Diese Aqualung-Binärdatei wurde kompiliert mit:"
 
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
@@ -427,6 +449,152 @@ msgstr "Datei wird gelesen"
 msgid "Removing non-existing files"
 msgstr "Entferne nicht vorhandene Dateien"
 
+msgid "Please select the directory for ripped files."
+msgstr "Bitte wählen Sie einen Order für die eingelesenen Dateien aus."
+
+msgid "(none)"
+msgstr "(keine)"
+
+msgid "fast"
+msgstr "schnell"
+
+msgid "best"
+msgstr "am besten"
+
+msgid "Compression level:"
+msgstr "Kompressionsgrad:"
+
+msgid "Bitrate [kbps]:"
+msgstr "Bitrate [kbps]:"
+
+msgid "Artist/Album already existing, not empty"
+msgstr "Interpret/Album existiert bereits und ist nicht leer"
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+"\n"
+"Die gewählte Musiksammlung hat bereits einen entsprechenden Interpreten und "
+"ein Album, das bereits Titel enthält. Wenn Sie OK drücken werden diese Titel "
+"entfernt. Die Dateien bleiben intakt, aber sie werden von der Ziel-"
+"Musiksammlung entfernt. Drücken Sie Abbrechen, um Interpret/Album zu ändern "
+"oder zur Ziel-Musiksammlung zurückzukehren."
+
+msgid "Rip CD"
+msgstr "CD auslesen"
+
+msgid "Artist:"
+msgstr "Interpret:"
+
+msgid "Album:"
+msgstr "Album:"
+
+msgid "Year:"
+msgstr "Jahr:"
+
+msgid "Genre:"
+msgstr "Genre:"
+
+msgid "Rip"
+msgstr "Auslesen"
+
+msgid "No."
+msgstr "Nr."
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Select"
+msgstr "Wählen"
+
+msgid "All"
+msgstr "Alle"
+
+msgid "None"
+msgstr "Keine"
+
+msgid "Output"
+msgstr "Ausgabe"
+
+msgid "Destination"
+msgstr "Ziel"
+
+msgid "Target directory for ripped files"
+msgstr "Zielordner für die ausgelesenen Dateien"
+
+msgid "Add to Music Store"
+msgstr "Zur Musiksammlung hinzufügen"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "File format:"
+msgstr "Dateiformat:"
+
+msgid "VBR encoding"
+msgstr "VBR-Kodierung"
+
+msgid "Tag files with metadata"
+msgstr "Dateien mit Metadaten taggen"
+
+msgid "Paranoia"
+msgstr "Paranoia"
+
+msgid "Paranoia error correction"
+msgstr "Paranoia-Fehlerkorrektur"
+
+msgid "Perform overlapped reads"
+msgstr "Überlappend auslesen"
+
+msgid "Verify data integrity"
+msgstr "Unversehrtheit der Daten überprüfen"
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+"Fehlgeschlagene Leseversuche unbegrenzt oft wiederholen (nie überspringen)"
+
+msgid "Maximum number of retries:"
+msgstr "Maximale Anzahl der Wiederholungen:"
+
+msgid "Error"
+msgstr "Fehler"
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+"\n"
+"Kein Lese-/Schreibzugriff auf den Zielordner!"
+
+msgid "Total"
+msgstr "Gesamt"
+
+msgid "(audio only)"
+msgstr "(nur Audio)"
+
+msgid "Ripping CD tracks"
+msgstr "CD-Titel auslesen"
+
+msgid "Begin"
+msgstr "Anfang"
+
+msgid "Length"
+msgstr "Länge"
+
+msgid "Progress"
+msgstr "Fortschritt"
+
+msgid "Close window when complete"
+msgstr "Fenster nach Beendigung schließen"
+
+msgid "Close"
+msgstr "Schließen"
+
 msgid "Unknown disc"
 msgstr "Unbekannte CD"
 
@@ -441,9 +609,6 @@ msgstr "Empfange Treffer vom Server …"
 
 msgid "Connecting to CDDB server..."
 msgstr "Verbinde zum CDDB-Server …"
-
-msgid "Error"
-msgstr "Fehler"
 
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr "Während des Versuchs zum CDDB-Server zu verbinden trat ein Fehler auf."
@@ -514,23 +679,14 @@ msgstr "Neuen Eintrag hinzufügen"
 msgid "Matches:"
 msgstr "Treffer:"
 
-msgid "Artist:"
-msgstr "Interpret:"
-
 msgid "Title:"
 msgstr "Titel:"
-
-msgid "Year:"
-msgstr "Jahr:"
 
 msgid "Category:"
 msgstr "Kategorie:"
 
 msgid "(choose a category)"
 msgstr "(Wählen Sie eine Kategorie)"
-
-msgid "Genre:"
-msgstr "Genre:"
 
 msgid "Extended data:"
 msgstr "Erweiterte Daten:"
@@ -546,140 +702,6 @@ msgstr "Titel"
 
 msgid "You have to provide an email address for CDDB submission."
 msgstr "Für die CDDB-Übertragung müssen Sie eine E-Mail-Adresse angeben."
-
-msgid "Please select the directory for ripped files."
-msgstr "Bitte wählen Sie einen Order für die eingelesenen Dateien aus."
-
-msgid "(none)"
-msgstr "(keine)"
-
-msgid "fast"
-msgstr "schnell"
-
-msgid "best"
-msgstr "am besten"
-
-msgid "Compression level:"
-msgstr "Kompressionsgrad:"
-
-msgid "Bitrate [kbps]:"
-msgstr "Bitrate [kbps]:"
-
-msgid "Artist/Album already existing, not empty"
-msgstr "Interpret/Album existiert bereits und ist nicht leer"
-
-msgid ""
-"\n"
-"The Music Store you selected has a matching Artist and Album, already "
-"containing some tracks. If you press OK, these tracks will be removed. The "
-"files themselves will be left intact, but they will be removed from the "
-"destination Music Store. Press Cancel to get back to change the Artist/Album "
-"or the destination Music Store."
-msgstr ""
-"\n"
-"Die gewählte Musiksammlung hat bereits einen entsprechenden Interpreten und "
-"ein Album, das bereits Titel enthält. Wenn Sie OK drücken werden diese Titel "
-"entfernt. Die Dateien bleiben intakt, aber sie werden von der Ziel-"
-"Musiksammlung entfernt. Drücken Sie Abbrechen, um Interpret/Album zu ändern "
-"oder zur Ziel-Musiksammlung zurückzukehren."
-
-msgid "Rip CD"
-msgstr "CD auslesen"
-
-msgid "Album:"
-msgstr "Album:"
-
-msgid "Rip"
-msgstr "Auslesen"
-
-msgid "No."
-msgstr "Nr."
-
-msgid "Title"
-msgstr "Titel"
-
-msgid "Select"
-msgstr "Wählen"
-
-msgid "All"
-msgstr "Alle"
-
-msgid "None"
-msgstr "Keine"
-
-msgid "Output"
-msgstr "Ausgabe"
-
-msgid "Destination"
-msgstr "Ziel"
-
-msgid "Target directory for ripped files"
-msgstr "Zielordner für die ausgelesenen Dateien"
-
-msgid "Add to Music Store"
-msgstr "Zur Musiksammlung hinzufügen"
-
-msgid "Format"
-msgstr "Format"
-
-msgid "File format:"
-msgstr "Dateiformat:"
-
-msgid "VBR encoding"
-msgstr "VBR-Kodierung"
-
-msgid "Tag files with metadata"
-msgstr "Dateien mit Metadaten taggen"
-
-msgid "Paranoia"
-msgstr "Paranoia"
-
-msgid "Paranoia error correction"
-msgstr "Paranoia-Fehlerkorrektur"
-
-msgid "Perform overlapped reads"
-msgstr "Überlappend auslesen"
-
-msgid "Verify data integrity"
-msgstr "Unversehrtheit der Daten überprüfen"
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
-"Fehlgeschlagene Leseversuche unbegrenzt oft wiederholen (nie überspringen)"
-
-msgid "Maximum number of retries:"
-msgstr "Maximale Anzahl der Wiederholungen:"
-
-msgid ""
-"\n"
-"Destination directory is not read-write accessible!"
-msgstr ""
-"\n"
-"Kein Lese-/Schreibzugriff auf den Zielordner!"
-
-msgid "Total"
-msgstr "Gesamt"
-
-msgid "(audio only)"
-msgstr "(nur Audio)"
-
-msgid "Ripping CD tracks"
-msgstr "CD-Titel auslesen"
-
-msgid "Begin"
-msgstr "Anfang"
-
-msgid "Length"
-msgstr "Länge"
-
-msgid "Progress"
-msgstr "Fortschritt"
-
-msgid "Close window when complete"
-msgstr "Fenster nach Beendigung schließen"
-
-msgid "Close"
-msgstr "Schließen"
 
 msgid "Unknown Album"
 msgstr "Unbekanntes Album"
@@ -700,17 +722,33 @@ msgstr "Hilfe"
 msgid ""
 "\n"
 "The template string you enter here will be used to construct the filename of "
-"the exported files. The Artist, Record and Track names are denoted by %%a, "
-"%%r and %%t. The track number and format-dependent file extension are "
-"denoted by %%n and %%x, respectively. The flag %%i gives an identifier "
-"which is unique within an export session."
+"the exported files. The Original filename, Artist, Record and Track names "
+"are denoted by %%o, %%a, %%r and %%t. The track number and format-dependent "
+"file extension are denoted by %%n and %%x, respectively. %%i gives an "
+"identifier which is unique within an export session."
 msgstr ""
 "\n"
 "Diese Vorlage-Zeichenkette wird für die Konstruktion eines Dateinamens für "
-"die zu exportierenden Dateien benutzt. Interpret, Album und Titelnamen "
-"werden mit %%a, %%r und %%t bezeichnet. Die Titelnummer und "
-"formatabhängige Dateiendung werden mit %%n und %%x bezeichnet. Das Flag "
-"%%i ist eine Bezeichnung, die innerhalb einer Exportsitzung einmalig ist."
+"die zu exportierenden Dateien benutzt. Ursprünglicher Dateiname, Interpret, "
+"Album und Titelnamen werden mit %%o, %%a, %%r und %%t bezeichnet. Die "
+"Titelnummer und formatabhängige Dateiendung werden mit %%n und %%x "
+"bezeichnet. Das Flag %%i ist eine Bezeichnung, die innerhalb einer "
+"Exportsitzung einmalig ist."
+
+msgid "Exporting files"
+msgstr "Dateien werden exportiert"
+
+msgid "Source file:"
+msgstr "Quelldatei:"
+
+msgid "Target file:"
+msgstr "Zieldatei:"
+
+msgid "Progress:"
+msgstr "Fortschritt:"
+
+msgid "Error in format string"
+msgstr "Fehler in der Formatierungs-Zeichenkette"
 
 msgid "Export files"
 msgstr "Dateien exportieren"
@@ -749,21 +787,6 @@ msgid ""
 msgstr ""
 "Dateien nicht neu kodieren,\n"
 "die der Maske entsprechen:"
-
-msgid "Error in format string"
-msgstr "Fehler in der Formatierungs-Zeichenkette"
-
-msgid "Exporting files"
-msgstr "Dateien werden exportiert"
-
-msgid "Source file:"
-msgstr "Quelldatei:"
-
-msgid "Target file:"
-msgstr "Zieldatei:"
-
-msgid "Progress:"
-msgstr "Fortschritt:"
 
 msgid "*File info"
 msgstr "*Datei-Info"
@@ -871,6 +894,16 @@ msgstr "Feld:"
 msgid "tag:"
 msgstr "Tag:"
 
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld Hz"
+
+msgid "MONO"
+msgstr "MONO"
+
+msgid "STEREO"
+msgstr "STEREO"
+
 msgid "Audio CD"
 msgstr "Audio-CD"
 
@@ -892,18 +925,8 @@ msgstr "Länge:"
 msgid "Samplerate:"
 msgstr "Samplerate:"
 
-#, c-format
-msgid "%ld Hz"
-msgstr "%ld Hz"
-
 msgid "Channel count:"
 msgstr "Kanalanzahl:"
-
-msgid "MONO"
-msgstr "MONO"
-
-msgid "STEREO"
-msgstr "STEREO"
 
 msgid "Bandwidth:"
 msgstr "Bandbreite:"
@@ -1006,12 +1029,10 @@ msgstr "Balance: %s"
 msgid "JACK connection lost"
 msgstr "JACK-Verbindung verloren"
 
-msgid ""
-"JACK has either been shutdown or it disconnected Aqualung because it was not "
-"fast enough. All you can do now is restart both JACK and Aqualung."
+#, c-format
+msgid "JACK has either been shutdown or it disconnected Aqualung. Reason: %s"
 msgstr ""
-"JACK wurde entweder beendet oder es hat Aqualung abgekoppelt weil Aqualung "
-"nicht schnell genug war. JACK und Aqualung sollten neu gestartet werden."
+"JACK wurde entweder beendet oder es hat Aqualung abgekoppelt. Ursache: %s"
 
 msgid "Warn me if the Window Manager does not support system tray"
 msgstr "Warnen, falls der Fenstermanager keine Kontrollleiste unterstützt"
@@ -1284,36 +1305,6 @@ msgstr "_Herunterladen"
 
 msgid "_Abort"
 msgstr "_Abbrechen"
-
-msgid "Success"
-msgstr "Erfolgreich"
-
-msgid "Memory allocation error"
-msgstr "Speicherzuordnungsfehler"
-
-msgid "Unable to open file"
-msgstr "Außerstande Datei zu öffnen"
-
-msgid "No metadata support for this format"
-msgstr "Keine Metadatenunterstützung für dieses Format"
-
-msgid "File is not writable"
-msgstr "Datei ist nicht beschreibbar"
-
-msgid "Invalid 'Track no.' field value"
-msgstr "Ungültiger Wert im Feld »Titelnummer«"
-
-msgid "Invalid 'Genre' field value"
-msgstr "Ungültiger Wert im Feld »Genre«"
-
-msgid "Conversion to target charset failed"
-msgstr "Konvertierung zur Ziel-Charakterkodierung fehlgeschlagen"
-
-msgid "Internal error"
-msgstr "Interner Fehler"
-
-msgid "Unknown error"
-msgstr "Unbekannter Fehler"
 
 msgid "Album"
 msgstr "Album"
@@ -1609,6 +1600,36 @@ msgstr "Modul-Info"
 msgid "Unknown"
 msgstr "Unbekannt"
 
+msgid "Success"
+msgstr "Erfolgreich"
+
+msgid "Memory allocation error"
+msgstr "Speicherzuordnungsfehler"
+
+msgid "Unable to open file"
+msgstr "Außerstande Datei zu öffnen"
+
+msgid "No metadata support for this format"
+msgstr "Keine Metadatenunterstützung für dieses Format"
+
+msgid "File is not writable"
+msgstr "Datei ist nicht beschreibbar"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "Ungültiger Wert im Feld »Titelnummer«"
+
+msgid "Invalid 'Genre' field value"
+msgstr "Ungültiger Wert im Feld »Genre«"
+
+msgid "Conversion to target charset failed"
+msgstr "Konvertierung zur Ziel-Charakterkodierung fehlgeschlagen"
+
+msgid "Internal error"
+msgstr "Interner Fehler"
+
+msgid "Unknown error"
+msgstr "Unbekannter Fehler"
+
 msgid "Other"
 msgstr "Andere"
 
@@ -1720,8 +1741,8 @@ msgstr "r"
 msgid "unreachable"
 msgstr "nicht erreichbar"
 
-msgid "Please select a Programable Title Format File."
-msgstr "Bitte wählen Sie eine programmierbare Titelformatdatei."
+msgid "Please select a Lua Extension File."
+msgstr "Bitte wählen Sie eine Lua-Erweiterungsdatei."
 
 msgid "Please select a Music Store database."
 msgstr "Bitte wähle Sie eine Musiksammlungsdatenbank."
@@ -1746,23 +1767,70 @@ msgstr ""
 
 msgid ""
 "\n"
-"The file you enter/choose here will set the Lua program to use to format the "
-"title. See the Aqualung manual for details. Here is a quick example of what "
-"you can use in the file:\n"
+"If you have non-standard ID3v1/ID3v2 character encoding MPEG audio file, "
+"please enter suitable character encoding in this entry (see below). If this "
+"entry is blank, the standard character encoding (ISO-8859-1) is used.\n"
+"\n"
+"For example:\n"
+"  Japanese: CP932 (SHIFT_JIS variant)\n"
+"  Korean: EUC-KR\n"
+"  Simp. Chinese: GB2312\n"
+"  Trad. Chinese: BIG5\n"
+"  Greek: ISO-8859-7\n"
+"  Hebrew: ISO-8859-8\n"
+"  Cyrillic: CP1251\n"
+"  Thai: ISO-8859-11\n"
+"  Arabic: CP1256\n"
+"  Turkish: ISO-8859-9\n"
+"  Latin Extended: ISO-8859-2\n"
+"  Central European: CP1250\n"
+"  Latin1 (standard): ISO-8859-1\n"
+"\n"
+"NOTE: There might be a more suitable character encoding for your language."
+msgstr ""
+"\n"
+"Falls Sie eine MPEG-Audiodatei mit nicht Standard ID3v1/ID3v2 "
+"Zeichenkodierung haben, so wählen Sie bitte eine passende Zeichenkodierung "
+"in diesem Eintrag (siehe unten). Falls dieser Eintrag leer ist, wird die "
+"Standard-Zeichenkodierung (ISO-8859-1) verwendet.\n"
+"\n"
+"Zum Beispiel:\n"
+"  Japanisch: CP932 (SHIFT_JIS variant)\n"
+"  Koreanisch: EUC-KR\n"
+"  Chinesisch, vereinfacht: GB2312\n"
+"  Chinesisch, trad.: BIG5\n"
+"  Griechisch: ISO-8859-7\n"
+"  Hebräisch: ISO-8859-8\n"
+"  Kyrillisch: CP1251\n"
+"  Thai: ISO-8859-11\n"
+"  Arabisch: CP1256\n"
+"  Türkisch: ISO-8859-9\n"
+"  Latin-2 (erweitert): ISO-8859-2\n"
+"  Mitteleuropäisch: CP1250\n"
+"  Latin-1 (Standard): ISO-8859-1\n"
+"\n"
+"Beachten Sie: Für Ihre Sprache könnte es eine besser passende Kodierung "
+"geben."
+
+msgid ""
+"\n"
+"The file you enter/choose here will set the Lua program to use to extend "
+"Aqualung. See the Aqualung manual for details. Here is a quick example of "
+"what you can use in the file:\n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i"
-"('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 msgstr ""
 "\n"
 "Die Datei, die Sie hier eingeben oder auswählen, wird von Lua verwendet, um "
-"den Titel zu formatieren. Weitere Details findet man im Aqualung-Handbuch. "
-"Hier ist ein kurzes Beispiel dafür, was in der Datei verwendet werden kann:\n"
+"Aqualung zu erweitern. Weitere Details findet man im Aqualung-Handbuch. Hier "
+"ist ein kurzes Beispiel dafür, was in der Datei verwendet werden kann:\n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i"
-"('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 
 msgid ""
@@ -1902,6 +1970,12 @@ msgstr "Klicken Sie hier, um die Maustasten festzulegen"
 msgid "Command"
 msgstr "Befehl"
 
+msgid "Error in title format string"
+msgstr "Fehler in der Titelformat-Zeichenkette"
+
+msgid "Error invalid character encoding"
+msgstr "Fehler, ungültige Zeichenkodierung"
+
 msgid "Main window"
 msgstr "Hauptfenster"
 
@@ -1920,8 +1994,8 @@ msgstr "Titelnamen im Titel des Hauptfensters zeigen"
 msgid "Title Format"
 msgstr "Titelformat"
 
-msgid "Programmable title format file"
-msgstr "Programmierbare Titelformatdatei"
+msgid "Lua extension file"
+msgstr "Lua-Erweiterungsdatei"
 
 msgid "Systray"
 msgstr "Kontrollleiste"
@@ -1982,6 +2056,9 @@ msgstr "Miniatur-Coverbild nur für Titel aus der Musiksammlung zeigen"
 
 msgid "Don't show cover thumbnail in the main window"
 msgstr "Miniatur-Coverbild nicht im Hauptfenster anzeigen"
+
+msgid "Use cover from external graphics file first"
+msgstr "Cover aus externer Grafikdatei zuerst verwenden"
 
 msgid "Enable tooltips"
 msgstr "Minihilfen einschalten"
@@ -2217,6 +2294,9 @@ msgstr ""
 "Wenn neue Frames hinzugefügt werden, versuchen ihre Inhalte\n"
 "aus dem äquivalenten Frame eines anderen Tags zu setzen."
 
+msgid "MPEG audio ID3v1/ID3v2 character encoding"
+msgstr "MPEG-Audio ID3v1/ID3v2 Zeichenkodierung"
+
 msgid "Batch update & encode (mass tagger, CD ripper, file export)"
 msgstr ""
 "Stapelweise aktualisieren und kodieren (Mass-Tagger, CD-Ausleser, "
@@ -2341,9 +2421,6 @@ msgstr "Titel in der Playliste: "
 
 msgid "Active song in playlist: "
 msgstr "Aktiver Titel in der Playliste: "
-
-msgid "Error in title format string"
-msgstr "Fehler in der Titelformat-Zeichenkette"
 
 msgid "(Untitled)"
 msgstr "(Unbetitelt)"
@@ -3151,8 +3228,8 @@ msgstr "Tage"
 msgid "All Files"
 msgstr "Alle Dateien"
 
-msgid "Extended Title Format Files (*.lua)"
-msgstr "Erweiterte Titelformatdateien (*.lua)"
+msgid "Lua Extension Files (*.lua)"
+msgstr "Lua-Erweiterungsdateien (*.lua)"
 
 msgid "Music Store Files (*.xml)"
 msgstr "Musiksammlungsdateien (*.xml)"
@@ -3217,8 +3294,23 @@ msgstr "Fortsetzen"
 msgid "Calculating volume level"
 msgstr "Lautstärke wird gemessen"
 
+msgid "Compression: Fast"
+msgstr "Kompression: Schnell"
+
+msgid "Compression: Normal"
+msgstr "Kompression: Normal"
+
+msgid "Compression: High"
+msgstr "Kompression: Hoch"
+
+msgid "Compression: Extra High"
+msgstr "Kompression: Extra Hoch"
+
+msgid "Compression: Insane"
+msgstr "Kompression: Wahnsinnig"
+
 msgid "Profile: Telephone"
-msgstr "Profil: Telephon"
+msgstr "Profil: Telefon"
 
 msgid "Profile: Thumb"
 msgstr "Profil: Daumen"
@@ -3286,17 +3378,8 @@ msgstr "Bit doppelt"
 msgid "encoding"
 msgstr "Kodierung"
 
-msgid "Compression: Fast"
-msgstr "Kompression: Schnell"
+#~ msgid "Lua (programmable title formatting) support\n"
+#~ msgstr "Lua-Unterstützung (programmierbare Titelformatierung)\n"
 
-msgid "Compression: Normal"
-msgstr "Kompression: Normal"
-
-msgid "Compression: High"
-msgstr "Kompression: Hoch"
-
-msgid "Compression: Extra High"
-msgstr "Kompression: Extra Hoch"
-
-msgid "Compression: Insane"
-msgstr "Kompression: Wahnsinnig"
+#~ msgid "Programmable title format file"
+#~ msgstr "Programmierbare Titelformatdatei"

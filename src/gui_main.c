@@ -3974,6 +3974,10 @@ timeout_callback(gpointer data) {
 		case CMD_FILEINFO:
 			while (rb_read_space(rb_disk2gui) < sizeof(fileinfo_t))
 				;
+			if (fileinfo.format_str != NULL) { /* free previous format_str, if there is one */
+				free(fileinfo.format_str);
+				fileinfo.format_str = NULL;
+			}
 			rb_read(rb_disk2gui, (char *)&fileinfo, sizeof(fileinfo_t));
 
 			sample_pos = 0;

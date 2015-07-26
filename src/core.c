@@ -373,7 +373,8 @@ disk_thread(void * arg) {
 					    (fdec->pdec != NULL)) {
 
 						decoder_t * dec = (decoder_t *)fdec->pdec;
-						
+						fileinfo_t fileinfo_sent;
+
 						cdda_decoder_reopen(dec, filename);
 						fdec->samples_left = fdec->fileinfo.total_samples;
 
@@ -383,9 +384,11 @@ disk_thread(void * arg) {
 						sample_offset = 0;
 
 						send_cmd = CMD_FILEINFO;
+						fileinfo_sent = fdec->fileinfo;
+						fileinfo_sent.format_str = strdup(fdec->fileinfo.format_str);
 						rb_write(rb_disk2gui, &send_cmd,
 								      sizeof(send_cmd));
-						rb_write(rb_disk2gui, (char *)&(fdec->fileinfo),
+						rb_write(rb_disk2gui, (char *)&fileinfo_sent,
 							              sizeof(fileinfo_t));
 
 						info->is_streaming = 1;
@@ -412,6 +415,8 @@ disk_thread(void * arg) {
 						rb_write(rb_disk2gui, &send_cmd, 1);
 						goto sleep;
 					} else {
+						fileinfo_t fileinfo_sent;
+
 						file_decoder_set_rva(fdec, cue.voladj);
 						info->in_SR_prev = info->in_SR;
 						info->in_SR = fdec->fileinfo.sample_rate;
@@ -431,9 +436,11 @@ disk_thread(void * arg) {
 						sample_offset = 0;
 
 						send_cmd = CMD_FILEINFO;
+						fileinfo_sent = fdec->fileinfo;
+						fileinfo_sent.format_str = strdup(fdec->fileinfo.format_str);
 						rb_write(rb_disk2gui, &send_cmd,
 								      sizeof(send_cmd));
-						rb_write(rb_disk2gui, (char *)&(fdec->fileinfo),
+						rb_write(rb_disk2gui, (char *)&fileinfo_sent,
 								      sizeof(fileinfo_t));
 
 						info->is_streaming = 1;

@@ -6,77 +6,14 @@
 #
 msgid ""
 msgstr ""
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-16 21:42+0200\n"
+"Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
+"POT-Creation-Date: 2015-07-26 21:08+0200\n"
 "PO-Revision-Date: 2010-10-16 21:46+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-
-msgid "About"
-msgstr "Névjegy"
-
-msgid "Build version: "
-msgstr "Fordítási verzió: "
-
-msgid "Homepage:"
-msgstr "Honlap:"
-
-msgid "Authors:"
-msgstr "Szerzők:"
-
-msgid "Core design, engineering & programming:\n"
-msgstr "Architektúra, tervezés & programozás:\n"
-
-msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr "Skin támogatás, kinézet, jusztírozás:\n"
-
-msgid "Programming, GUI engineering:\n"
-msgstr "Programozás, GUI tervezés:\n"
-
-msgid "OpenBSD compatibility, metadata tweaks:\n"
-msgstr "OpenBSD kompatibilitás, metaadat trükkök\n"
-
-msgid "Translators:"
-msgstr "Fordítók:"
-
-msgid "Chinese (simplified):\n"
-msgstr "Kínai (egyszerűsített)\n"
-
-msgid "French:\n"
-msgstr "Francia:\n"
-
-msgid "German:\n"
-msgstr "Német:\n"
-
-msgid "Hungarian:\n"
-msgstr "Magyar:\n"
-
-msgid "Italian:\n"
-msgstr "Olasz:\n"
-
-msgid "Japanese:\n"
-msgstr "Japán:\n"
-
-msgid "Russian:\n"
-msgstr "Orosz:\n"
-
-msgid "Swedish:\n"
-msgstr "Svéd:\n"
-
-msgid "Ukrainian:\n"
-msgstr "Ukrán:\n"
-
-msgid "Graphics:"
-msgstr "Grafika:"
-
-msgid "Logo, icons:\n"
-msgstr "Logo, ikonok:\n"
-
-msgid "This Aqualung binary is compiled with:"
-msgstr "Ez az Aqualung bináris a következő opciókat támogatja:"
 
 msgid "Optional features:"
 msgstr "Opcionális funkciók:"
@@ -95,6 +32,10 @@ msgstr "Mintavételi frekvencia konverter támogatás\n"
 
 msgid "iRiver iFP driver support\n"
 msgstr "iRiver iFP meghajtó támogatás\n"
+
+#, fuzzy
+msgid "JACK port management support\n"
+msgstr "JACK port beállítás"
 
 msgid "Loop playback support\n"
 msgstr "Ciklikus lejátszás támogatás\n"
@@ -171,6 +112,87 @@ msgstr "PulseAudio\n"
 
 msgid "Win32 Sound API\n"
 msgstr "Win32 Sound API\n"
+
+msgid "About"
+msgstr "Névjegy"
+
+msgid "Build version: "
+msgstr "Fordítási verzió: "
+
+msgid "Homepage:"
+msgstr "Honlap:"
+
+msgid "Authors:"
+msgstr "Szerzők:"
+
+msgid "Core design, engineering & programming:\n"
+msgstr "Architektúra, tervezés & programozás:\n"
+
+msgid "Skin support, look & feel, GUI hacks:\n"
+msgstr "Skin támogatás, kinézet, jusztírozás:\n"
+
+msgid "Programming, GUI engineering:\n"
+msgstr "Programozás, GUI tervezés:\n"
+
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr "OpenBSD kompatibilitás, metaadat trükkök\n"
+
+#, fuzzy
+msgid "Miscellaneous, minimalism:\n"
+msgstr "Egyéb"
+
+msgid "Translators:"
+msgstr "Fordítók:"
+
+msgid "Chinese (simplified):\n"
+msgstr "Kínai (egyszerűsített)\n"
+
+#, fuzzy
+msgid "Czech:\n"
+msgstr "Francia:\n"
+
+msgid "Dutch:\n"
+msgstr ""
+
+msgid "French:\n"
+msgstr "Francia:\n"
+
+msgid "German:\n"
+msgstr "Német:\n"
+
+msgid "Hungarian:\n"
+msgstr "Magyar:\n"
+
+msgid "Italian:\n"
+msgstr "Olasz:\n"
+
+msgid "Japanese:\n"
+msgstr "Japán:\n"
+
+msgid "Polish:\n"
+msgstr ""
+
+msgid "Russian:\n"
+msgstr "Orosz:\n"
+
+#, fuzzy
+msgid "Spanish:\n"
+msgstr "Svéd:\n"
+
+msgid "Swedish:\n"
+msgstr "Svéd:\n"
+
+msgid "Ukrainian:\n"
+msgstr "Ukrán:\n"
+
+msgid "Graphics:"
+msgstr "Grafika:"
+
+msgid "Logo, icons:\n"
+msgstr "Logo, ikonok:\n"
+
+msgid "This Aqualung binary is compiled with:"
+msgstr "Ez az Aqualung bináris a következő opciókat támogatja:"
 
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
@@ -426,6 +448,152 @@ msgstr "Fájl olvasása"
 msgid "Removing non-existing files"
 msgstr "Nem létező fájlok törlése"
 
+msgid "Please select the directory for ripped files."
+msgstr "Válassz ki egy könyvtárat a rippelt fájloknak."
+
+msgid "(none)"
+msgstr "(nincs)"
+
+msgid "fast"
+msgstr "gyors"
+
+msgid "best"
+msgstr "legjobb"
+
+msgid "Compression level:"
+msgstr "Tömörítés szintje:"
+
+msgid "Bitrate [kbps]:"
+msgstr "Bitráta [kbps]:"
+
+msgid "Artist/Album already existing, not empty"
+msgstr "Az előadó vagy album már létezik, és nem üres"
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+"\n"
+"A kiválasztott tárolóban már van ilyen előadó és album, amely néhány számot "
+"is tartalmaz. Az OK gombot megnyomva ezek a számok eltűnnek a tárolóból. Ez "
+"maguk a fájlokat nem érinti, csak a célként megjelölt tárolóból törlődnek. "
+"Ha inkább szeretnél visszatérni a előadó, album vagy zenetár módosításához, "
+"válaszd a Mégse gombot."
+
+msgid "Rip CD"
+msgstr "CD rippelés"
+
+msgid "Artist:"
+msgstr "Előadó:"
+
+msgid "Album:"
+msgstr "Lemez:"
+
+msgid "Year:"
+msgstr "Év:"
+
+msgid "Genre:"
+msgstr "Műfaj:"
+
+msgid "Rip"
+msgstr "Rippelés"
+
+msgid "No."
+msgstr "No."
+
+msgid "Title"
+msgstr "Cím"
+
+msgid "Select"
+msgstr "Kiválasztás"
+
+msgid "All"
+msgstr "Mind"
+
+msgid "None"
+msgstr "Egyik sem"
+
+msgid "Output"
+msgstr "Kimenet"
+
+msgid "Destination"
+msgstr "Cél"
+
+msgid "Target directory for ripped files"
+msgstr "Válassz egy könyvtárat a rippelt fájloknak"
+
+msgid "Add to Music Store"
+msgstr "Hozzáadás a Zenetárhoz"
+
+msgid "Format"
+msgstr "Formátum"
+
+msgid "File format:"
+msgstr "Fájl formátum:"
+
+msgid "VBR encoding"
+msgstr "VBR kódolás"
+
+msgid "Tag files with metadata"
+msgstr "Fájlok taggelése metaadatokkal"
+
+msgid "Paranoia"
+msgstr "Paranoia"
+
+msgid "Paranoia error correction"
+msgstr "Paranoia hibajavítás"
+
+msgid "Perform overlapped reads"
+msgstr "Átlapolt olvasások végzése"
+
+msgid "Verify data integrity"
+msgstr "Adat integritás ellenőrzése"
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+"Meghiúsult olvasások esetén tetszőleges számú újraolvasás (soha nem ugrik)"
+
+msgid "Maximum number of retries:"
+msgstr "Újrapróbálások maximális száma:"
+
+msgid "Error"
+msgstr "Hiba"
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+"\n"
+"A célkönyvtár nem írható-olvasható!"
+
+msgid "Total"
+msgstr "Összesen"
+
+msgid "(audio only)"
+msgstr "(csak audio)"
+
+msgid "Ripping CD tracks"
+msgstr "Számok rippelése"
+
+msgid "Begin"
+msgstr "Kezdet"
+
+msgid "Length"
+msgstr "Hossz"
+
+msgid "Progress"
+msgstr "Feldolgozás"
+
+msgid "Close window when complete"
+msgstr "Ablak bezárása, ha kész"
+
+msgid "Close"
+msgstr "Bezárás"
+
 msgid "Unknown disc"
 msgstr "Ismeretlen lemez"
 
@@ -440,9 +608,6 @@ msgstr "Találatok letöltése a szerverről..."
 
 msgid "Connecting to CDDB server..."
 msgstr "Kapcsolódás a CDDB szerverhez..."
-
-msgid "Error"
-msgstr "Hiba"
 
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr "Hiba történt a CDDB szerverhez való kapcsolódás közben."
@@ -512,23 +677,14 @@ msgstr "Új album feltöltése"
 msgid "Matches:"
 msgstr "Találatok:"
 
-msgid "Artist:"
-msgstr "Előadó:"
-
 msgid "Title:"
 msgstr "Cím:"
-
-msgid "Year:"
-msgstr "Év:"
 
 msgid "Category:"
 msgstr "Kategória:"
 
 msgid "(choose a category)"
 msgstr "(válassz egy kategóriát)"
-
-msgid "Genre:"
-msgstr "Műfaj:"
 
 msgid "Extended data:"
 msgstr "Egyéb adat:"
@@ -545,140 +701,6 @@ msgstr "Számok"
 msgid "You have to provide an email address for CDDB submission."
 msgstr "Meg kell adni egy email címet a feltöltéshez."
 
-msgid "Please select the directory for ripped files."
-msgstr "Válassz ki egy könyvtárat a rippelt fájloknak."
-
-msgid "(none)"
-msgstr "(nincs)"
-
-msgid "fast"
-msgstr "gyors"
-
-msgid "best"
-msgstr "legjobb"
-
-msgid "Compression level:"
-msgstr "Tömörítés szintje:"
-
-msgid "Bitrate [kbps]:"
-msgstr "Bitráta [kbps]:"
-
-msgid "Artist/Album already existing, not empty"
-msgstr "Az előadó vagy album már létezik, és nem üres"
-
-msgid ""
-"\n"
-"The Music Store you selected has a matching Artist and Album, already "
-"containing some tracks. If you press OK, these tracks will be removed. The "
-"files themselves will be left intact, but they will be removed from the "
-"destination Music Store. Press Cancel to get back to change the Artist/Album "
-"or the destination Music Store."
-msgstr ""
-"\n"
-"A kiválasztott tárolóban már van ilyen előadó és album, amely néhány számot "
-"is tartalmaz. Az OK gombot megnyomva ezek a számok eltűnnek a tárolóból. Ez "
-"maguk a fájlokat nem érinti, csak a célként megjelölt tárolóból törlődnek. "
-"Ha inkább szeretnél visszatérni a előadó, album vagy zenetár módosításához, "
-"válaszd a Mégse gombot."
-
-msgid "Rip CD"
-msgstr "CD rippelés"
-
-msgid "Album:"
-msgstr "Lemez:"
-
-msgid "Rip"
-msgstr "Rippelés"
-
-msgid "No."
-msgstr "No."
-
-msgid "Title"
-msgstr "Cím"
-
-msgid "Select"
-msgstr "Kiválasztás"
-
-msgid "All"
-msgstr "Mind"
-
-msgid "None"
-msgstr "Egyik sem"
-
-msgid "Output"
-msgstr "Kimenet"
-
-msgid "Destination"
-msgstr "Cél"
-
-msgid "Target directory for ripped files"
-msgstr "Válassz egy könyvtárat a rippelt fájloknak"
-
-msgid "Add to Music Store"
-msgstr "Hozzáadás a Zenetárhoz"
-
-msgid "Format"
-msgstr "Formátum"
-
-msgid "File format:"
-msgstr "Fájl formátum:"
-
-msgid "VBR encoding"
-msgstr "VBR kódolás"
-
-msgid "Tag files with metadata"
-msgstr "Fájlok taggelése metaadatokkal"
-
-msgid "Paranoia"
-msgstr "Paranoia"
-
-msgid "Paranoia error correction"
-msgstr "Paranoia hibajavítás"
-
-msgid "Perform overlapped reads"
-msgstr "Átlapolt olvasások végzése"
-
-msgid "Verify data integrity"
-msgstr "Adat integritás ellenőrzése"
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
-"Meghiúsult olvasások esetén tetszőleges számú újraolvasás (soha nem ugrik)"
-
-msgid "Maximum number of retries:"
-msgstr "Újrapróbálások maximális száma:"
-
-msgid ""
-"\n"
-"Destination directory is not read-write accessible!"
-msgstr ""
-"\n"
-"A célkönyvtár nem írható-olvasható!"
-
-msgid "Total"
-msgstr "Összesen"
-
-msgid "(audio only)"
-msgstr "(csak audio)"
-
-msgid "Ripping CD tracks"
-msgstr "Számok rippelése"
-
-msgid "Begin"
-msgstr "Kezdet"
-
-msgid "Length"
-msgstr "Hossz"
-
-msgid "Progress"
-msgstr "Feldolgozás"
-
-msgid "Close window when complete"
-msgstr "Ablak bezárása, ha kész"
-
-msgid "Close"
-msgstr "Bezárás"
-
 msgid "Unknown Album"
 msgstr "Ismeretlen lemez"
 
@@ -694,20 +716,35 @@ msgstr "Másolás"
 msgid "Help"
 msgstr "Súgó"
 
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "\n"
 "The template string you enter here will be used to construct the filename of "
-"the exported files. The Artist, Record and Track names are denoted by %%a, "
-"%%r and %%t. The track number and format-dependent file extension are "
-"denoted by %%n and %%x, respectively. The flag %%i gives an identifier "
-"which is unique within an export session."
+"the exported files. The Original filename, Artist, Record and Track names "
+"are denoted by %%o, %%a, %%r and %%t. The track number and format-dependent "
+"file extension are denoted by %%n and %%x, respectively. %%i gives an "
+"identifier which is unique within an export session."
 msgstr ""
 "\n"
 "Az alábbi sablon az exportált fájlok nevét határozza meg. Az előadó, lemez "
-"és szám címeket %%a, %%r és %%t jelöli. A track számát és a "
-"formátumtól függő kiterjesztést %%n és %%x adja meg. Az %%i kapcsoló "
-"az export folyamaton belül egyedi azonosítót eredményez."
+"és szám címeket %%a, %%r és %%t jelöli. A track számát és a formátumtól "
+"függő kiterjesztést %%n és %%x adja meg. Az %%i kapcsoló az export "
+"folyamaton belül egyedi azonosítót eredményez."
+
+msgid "Exporting files"
+msgstr "Fájlok exportálása"
+
+msgid "Source file:"
+msgstr "Forrás fájl:"
+
+msgid "Target file:"
+msgstr "Célfájl:"
+
+msgid "Progress:"
+msgstr "Feldolgozás:"
+
+msgid "Error in format string"
+msgstr "Hiba a formátum sablonban"
 
 msgid "Export files"
 msgstr "Fájlok exportálása"
@@ -746,21 +783,6 @@ msgid ""
 msgstr ""
 "Mintára illeszkedő\n"
 "fájlok kihagyása"
-
-msgid "Error in format string"
-msgstr "Hiba a formátum sablonban"
-
-msgid "Exporting files"
-msgstr "Fájlok exportálása"
-
-msgid "Source file:"
-msgstr "Forrás fájl:"
-
-msgid "Target file:"
-msgstr "Célfájl:"
-
-msgid "Progress:"
-msgstr "Feldolgozás:"
 
 msgid "*File info"
 msgstr "*Fájl infó"
@@ -868,6 +890,16 @@ msgstr "mező:"
 msgid "tag:"
 msgstr "tag:"
 
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld Hz"
+
+msgid "MONO"
+msgstr "MONO"
+
+msgid "STEREO"
+msgstr "STEREO"
+
 msgid "Audio CD"
 msgstr "Audio CD"
 
@@ -889,18 +921,8 @@ msgstr "Hossz:"
 msgid "Samplerate:"
 msgstr "Mintavételi frekvencia:"
 
-#, c-format
-msgid "%ld Hz"
-msgstr "%ld Hz"
-
 msgid "Channel count:"
 msgstr "Csatornák száma:"
-
-msgid "MONO"
-msgstr "MONO"
-
-msgid "STEREO"
-msgstr "STEREO"
 
 msgid "Bandwidth:"
 msgstr "Sávszélesség:"
@@ -1003,9 +1025,8 @@ msgstr "Balansz: %s"
 msgid "JACK connection lost"
 msgstr "Megszakadt a JACK összeköttetés"
 
-msgid ""
-"JACK has either been shutdown or it disconnected Aqualung because it was not "
-"fast enough. All you can do now is restart both JACK and Aqualung."
+#, fuzzy, c-format
+msgid "JACK has either been shutdown or it disconnected Aqualung. Reason: %s"
 msgstr ""
 "A JACK szervert leállították, vagy lekapcsolta az Aqualungot, mert nem volt "
 "elég gyors. Újra kell indítani a JACK-et és az Aqualungot is."
@@ -1275,36 +1296,6 @@ msgstr "_Letöltés"
 
 msgid "_Abort"
 msgstr "_Megszakítás"
-
-msgid "Success"
-msgstr "Siker"
-
-msgid "Memory allocation error"
-msgstr "Memória foglalási hiba"
-
-msgid "Unable to open file"
-msgstr "Sikertelen fájlmegnyitás"
-
-msgid "No metadata support for this format"
-msgstr "A formátum nem támogat metaadatot"
-
-msgid "File is not writable"
-msgstr "A fájl nem írható"
-
-msgid "Invalid 'Track no.' field value"
-msgstr "A 'Track no.' mező értéke érvénytelen"
-
-msgid "Invalid 'Genre' field value"
-msgstr "A 'Genre' mező értéke érvénytelen"
-
-msgid "Conversion to target charset failed"
-msgstr "Nem sikerült konvertálni a megadott karakterkészletre."
-
-msgid "Internal error"
-msgstr "Internal error"
-
-msgid "Unknown error"
-msgstr "Ismeretlen hiba"
 
 msgid "Album"
 msgstr "Lemez"
@@ -1600,6 +1591,36 @@ msgstr "Modul infó"
 msgid "Unknown"
 msgstr "Ismeretlen"
 
+msgid "Success"
+msgstr "Siker"
+
+msgid "Memory allocation error"
+msgstr "Memória foglalási hiba"
+
+msgid "Unable to open file"
+msgstr "Sikertelen fájlmegnyitás"
+
+msgid "No metadata support for this format"
+msgstr "A formátum nem támogat metaadatot"
+
+msgid "File is not writable"
+msgstr "A fájl nem írható"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "A 'Track no.' mező értéke érvénytelen"
+
+msgid "Invalid 'Genre' field value"
+msgstr "A 'Genre' mező értéke érvénytelen"
+
+msgid "Conversion to target charset failed"
+msgstr "Nem sikerült konvertálni a megadott karakterkészletre."
+
+msgid "Internal error"
+msgstr "Internal error"
+
+msgid "Unknown error"
+msgstr "Ismeretlen hiba"
+
 msgid "Other"
 msgstr "Egyéb"
 
@@ -1731,8 +1752,8 @@ msgid ""
 msgstr ""
 "\n"
 "Az alábbi sablon az előadó nevéből, valamint a lemez- és számcímekből "
-"összeállított címsor formátumát adja meg. A %%a, %%r és %%t vezérlők "
-"rendre az előadót, a lemezt és a szám címét jelölik.\n"
+"összeállított címsor formátumát adja meg. A %%a, %%r és %%t vezérlők rendre "
+"az előadót, a lemezt és a szám címét jelölik.\n"
 
 msgid ""
 "\n"
@@ -1766,8 +1787,8 @@ msgid ""
 "what you can use in the file:\n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i"
-"('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 msgstr ""
 "\n"
@@ -1775,8 +1796,8 @@ msgstr ""
 "részletes leírása a manualban olvasható. Egy rövid példa a fájl tartalmára:\n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i"
-"('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 
 msgid ""
@@ -1912,6 +1933,12 @@ msgstr "Kattints ide az egérgomb beállításához"
 msgid "Command"
 msgstr "Parancs"
 
+msgid "Error in title format string"
+msgstr "Hiba a címformátum sablonban"
+
+msgid "Error invalid character encoding"
+msgstr "Hiba: érvénytelen karakter kódolás"
+
 msgid "Main window"
 msgstr "Főablak"
 
@@ -1992,6 +2019,9 @@ msgstr "Borító mutatása csak a Zenetárból hozzáadott számok esetén"
 
 msgid "Don't show cover thumbnail in the main window"
 msgstr "Ne jelenjen meg a borító képe a főablakban"
+
+msgid "Use cover from external graphics file first"
+msgstr ""
 
 msgid "Enable tooltips"
 msgstr "Buboréksúgók engedélyezése"
@@ -2350,12 +2380,6 @@ msgstr "Szám a Lejátszólistában: "
 
 msgid "Active song in playlist: "
 msgstr "Aktív szám a Lejátszólistában: "
-
-msgid "Error in title format string"
-msgstr "Hiba a címformátum sablonban"
-
-msgid "Error invalid character encoding"
-msgstr "Hiba: érvénytelen karakter kódolás"
 
 msgid "(Untitled)"
 msgstr "(Névtelen)"
@@ -3226,6 +3250,21 @@ msgstr "Folytatás"
 msgid "Calculating volume level"
 msgstr "Hangosság meghatározása"
 
+msgid "Compression: Fast"
+msgstr "Tömörítés: Gyors"
+
+msgid "Compression: Normal"
+msgstr "Tömörítés: Normál"
+
+msgid "Compression: High"
+msgstr "Tömörítés: Magas"
+
+msgid "Compression: Extra High"
+msgstr "Tömörítés: Extra magas"
+
+msgid "Compression: Insane"
+msgstr "Tömörítés: Elmebeteg"
+
 msgid "Profile: Telephone"
 msgstr "Profile: Telephone"
 
@@ -3294,18 +3333,3 @@ msgstr "bites dupla pontosságú lebegőpontos"
 
 msgid "encoding"
 msgstr "kódolású"
-
-msgid "Compression: Fast"
-msgstr "Tömörítés: Gyors"
-
-msgid "Compression: Normal"
-msgstr "Tömörítés: Normál"
-
-msgid "Compression: High"
-msgstr "Tömörítés: Magas"
-
-msgid "Compression: Extra High"
-msgstr "Tömörítés: Extra magas"
-
-msgid "Compression: Insane"
-msgstr "Tömörítés: Elmebeteg"

@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Spanish translation 1.0 RC1\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-16 17:15+0100\n"
+"Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
+"POT-Creation-Date: 2015-07-26 21:08+0200\n"
 "PO-Revision-Date: 2011-02-15 02:10-0500\n"
 "Last-Translator: Jorge Andrés <winninglero@gmail.com>\n"
 "Language-Team: Jorge Andrés <winninglero@gmail.com>\n"
@@ -20,69 +20,6 @@ msgstr ""
 "X-Poedit-KeywordsList: \\n\n"
 "X-Poedit-Language: Spanish\n"
 "X-Poedit-Country: PERU\n"
-
-msgid "About"
-msgstr "Acerca"
-
-msgid "Build version: "
-msgstr "Compilación:"
-
-msgid "Homepage:"
-msgstr "Web del proyecto:"
-
-msgid "Authors:"
-msgstr "Autores:"
-
-msgid "Core design, engineering & programming:\n"
-msgstr "Diseño, ingeniería y programación:\n"
-
-msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr "Soporte del tema, visualización y comportamiento, parches del GUI:\n"
-
-msgid "Programming, GUI engineering:\n"
-msgstr "Programación, ingeniería del GUI:\n"
-
-msgid "OpenBSD compatibility, metadata tweaks:\n"
-msgstr "Compatibilidad OpenBSD, ajustes de metadatos:\n"
-
-msgid "Translators:"
-msgstr "Traductores:"
-
-msgid "Chinese (simplified):\n"
-msgstr "Chino (simplificado):\n"
-
-msgid "French:\n"
-msgstr "Francés:\n"
-
-msgid "German:\n"
-msgstr "Alemán:\n"
-
-msgid "Hungarian:\n"
-msgstr "Húngaro:\n"
-
-msgid "Italian:\n"
-msgstr "Italiano:\n"
-
-msgid "Japanese:\n"
-msgstr "Japones:\n"
-
-msgid "Russian:\n"
-msgstr "Ruso:\n"
-
-msgid "Swedish:\n"
-msgstr "Sueco:\n"
-
-msgid "Ukrainian:\n"
-msgstr "Ucraniano:\n"
-
-msgid "Graphics:"
-msgstr "Gráficos:"
-
-msgid "Logo, icons:\n"
-msgstr "Logotipo, iconos:\n"
-
-msgid "This Aqualung binary is compiled with:"
-msgstr "Este binario de Aqualung es compilado con:"
 
 msgid "Optional features:"
 msgstr "características opcionales:"
@@ -101,6 +38,10 @@ msgstr "Soporte de Convertidor de frecuencia de muestreo\n"
 
 msgid "iRiver iFP driver support\n"
 msgstr "Soporte de controlador iRiver iFP\n"
+
+#, fuzzy
+msgid "JACK port management support\n"
+msgstr "Configuración de puerto JACK"
 
 msgid "Loop playback support\n"
 msgstr "Soporte de bucle de reproducción\n"
@@ -176,6 +117,87 @@ msgstr "PulseAudio\n"
 
 msgid "Win32 Sound API\n"
 msgstr "API de sonido para WIN32\n"
+
+msgid "About"
+msgstr "Acerca"
+
+msgid "Build version: "
+msgstr "Compilación:"
+
+msgid "Homepage:"
+msgstr "Web del proyecto:"
+
+msgid "Authors:"
+msgstr "Autores:"
+
+msgid "Core design, engineering & programming:\n"
+msgstr "Diseño, ingeniería y programación:\n"
+
+msgid "Skin support, look & feel, GUI hacks:\n"
+msgstr "Soporte del tema, visualización y comportamiento, parches del GUI:\n"
+
+msgid "Programming, GUI engineering:\n"
+msgstr "Programación, ingeniería del GUI:\n"
+
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr "Compatibilidad OpenBSD, ajustes de metadatos:\n"
+
+#, fuzzy
+msgid "Miscellaneous, minimalism:\n"
+msgstr "Misceláneo."
+
+msgid "Translators:"
+msgstr "Traductores:"
+
+msgid "Chinese (simplified):\n"
+msgstr "Chino (simplificado):\n"
+
+#, fuzzy
+msgid "Czech:\n"
+msgstr "Francés:\n"
+
+msgid "Dutch:\n"
+msgstr ""
+
+msgid "French:\n"
+msgstr "Francés:\n"
+
+msgid "German:\n"
+msgstr "Alemán:\n"
+
+msgid "Hungarian:\n"
+msgstr "Húngaro:\n"
+
+msgid "Italian:\n"
+msgstr "Italiano:\n"
+
+msgid "Japanese:\n"
+msgstr "Japones:\n"
+
+msgid "Polish:\n"
+msgstr ""
+
+msgid "Russian:\n"
+msgstr "Ruso:\n"
+
+#, fuzzy
+msgid "Spanish:\n"
+msgstr "Sueco:\n"
+
+msgid "Swedish:\n"
+msgstr "Sueco:\n"
+
+msgid "Ukrainian:\n"
+msgstr "Ucraniano:\n"
+
+msgid "Graphics:"
+msgstr "Gráficos:"
+
+msgid "Logo, icons:\n"
+msgstr "Logotipo, iconos:\n"
+
+msgid "This Aqualung binary is compiled with:"
+msgstr "Este binario de Aqualung es compilado con:"
 
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
@@ -433,6 +455,151 @@ msgstr "Leyendo archivo"
 msgid "Removing non-existing files"
 msgstr "Quitando archivos no-existentes"
 
+msgid "Please select the directory for ripped files."
+msgstr "Por favor seleccione el directorio para archivos extraídos."
+
+msgid "(none)"
+msgstr "(ninguno)"
+
+msgid "fast"
+msgstr "rápido"
+
+msgid "best"
+msgstr "lo mejor"
+
+msgid "Compression level:"
+msgstr "Nivel de compresión:"
+
+msgid "Bitrate [kbps]:"
+msgstr "Bitrate [kbps]:"
+
+msgid "Artist/Album already existing, not empty"
+msgstr "Artista/Álbum ya existente, no está vacío"
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+"\n"
+"La Tienda Musical que seleccionaste tiene una coincidencia de Artista y "
+"Álbum, esta ya contiene algunas pistas. Si presiona Aceptar, estas pistas "
+"serán quitadas. Los archivos por si mismo serán dejados intactos, pero ellos "
+"serán quitados del destino de la Tienda Musical. Presione Cancelar para "
+"regresar al cambio del Artista/Álbum o el destino de la Tienda Musical."
+
+msgid "Rip CD"
+msgstr "Extraer audio del CD"
+
+msgid "Artist:"
+msgstr "Artista:"
+
+msgid "Album:"
+msgstr "Álbum:"
+
+msgid "Year:"
+msgstr "Año:"
+
+msgid "Genre:"
+msgstr "Género:"
+
+msgid "Rip"
+msgstr "Extraer audio"
+
+msgid "No."
+msgstr "No."
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Select"
+msgstr "Seleccionar"
+
+msgid "All"
+msgstr "Todo"
+
+msgid "None"
+msgstr "Ninguno"
+
+msgid "Output"
+msgstr "Salida"
+
+msgid "Destination"
+msgstr "Destino"
+
+msgid "Target directory for ripped files"
+msgstr "Directorio de destino para los archivos de la extracción."
+
+msgid "Add to Music Store"
+msgstr "Agregar a la Tienda Musical"
+
+msgid "Format"
+msgstr "Formato"
+
+msgid "File format:"
+msgstr "Formato de archivo:"
+
+msgid "VBR encoding"
+msgstr "Codificación VBR"
+
+msgid "Tag files with metadata"
+msgstr "Archivos de etiqueta con metadatos"
+
+msgid "Paranoia"
+msgstr "Paranoia"
+
+msgid "Paranoia error correction"
+msgstr "Error de corrección de Paranoia"
+
+msgid "Perform overlapped reads"
+msgstr "Realizar lecturas sobrepuestas"
+
+msgid "Verify data integrity"
+msgstr "Verificando integridad de datos"
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr "Reintentos ilimitados en lecturas fallidas (nunca omitir)"
+
+msgid "Maximum number of retries:"
+msgstr "Máximo número de reintentos:"
+
+msgid "Error"
+msgstr "Error"
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+"\n"
+"¡Directorio de destino no tiene acceso de lectura-escritura!"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "(audio only)"
+msgstr "(solo audio)"
+
+msgid "Ripping CD tracks"
+msgstr "Extrayendo audio de las pistas del CD"
+
+msgid "Begin"
+msgstr "Comienzo"
+
+msgid "Length"
+msgstr "Longitud"
+
+msgid "Progress"
+msgstr "Progreso"
+
+msgid "Close window when complete"
+msgstr "Cerrar ventana cuando esté completo"
+
+msgid "Close"
+msgstr "Cerrar"
+
 msgid "Unknown disc"
 msgstr "Disco desconocido"
 
@@ -447,9 +614,6 @@ msgstr "Obteniendo coincidencias desde servidor..."
 
 msgid "Connecting to CDDB server..."
 msgstr "Conectando al servidor CDDB..."
-
-msgid "Error"
-msgstr "Error"
 
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr "Un error ocurrió mientras se intentaba conectar al servidor CDDB."
@@ -520,23 +684,14 @@ msgstr "Enviar nueva grabación"
 msgid "Matches:"
 msgstr "Coincidencias:"
 
-msgid "Artist:"
-msgstr "Artista:"
-
 msgid "Title:"
 msgstr "Título:"
-
-msgid "Year:"
-msgstr "Año:"
 
 msgid "Category:"
 msgstr "Categoría:"
 
 msgid "(choose a category)"
 msgstr "(Escoge una categoría)"
-
-msgid "Genre:"
-msgstr "Género:"
 
 msgid "Extended data:"
 msgstr "Datos extendido:"
@@ -555,139 +710,6 @@ msgstr ""
 "Tiene que proporcionar una dirección de correo electrónico para el envío "
 "CDDB."
 
-msgid "Please select the directory for ripped files."
-msgstr "Por favor seleccione el directorio para archivos extraídos."
-
-msgid "(none)"
-msgstr "(ninguno)"
-
-msgid "fast"
-msgstr "rápido"
-
-msgid "best"
-msgstr "lo mejor"
-
-msgid "Compression level:"
-msgstr "Nivel de compresión:"
-
-msgid "Bitrate [kbps]:"
-msgstr "Bitrate [kbps]:"
-
-msgid "Artist/Album already existing, not empty"
-msgstr "Artista/Álbum ya existente, no está vacío"
-
-msgid ""
-"\n"
-"The Music Store you selected has a matching Artist and Album, already "
-"containing some tracks. If you press OK, these tracks will be removed. The "
-"files themselves will be left intact, but they will be removed from the "
-"destination Music Store. Press Cancel to get back to change the Artist/Album "
-"or the destination Music Store."
-msgstr ""
-"\n"
-"La Tienda Musical que seleccionaste tiene una coincidencia de Artista y "
-"Álbum, esta ya contiene algunas pistas. Si presiona Aceptar, estas pistas "
-"serán quitadas. Los archivos por si mismo serán dejados intactos, pero ellos "
-"serán quitados del destino de la Tienda Musical. Presione Cancelar para "
-"regresar al cambio del Artista/Álbum o el destino de la Tienda Musical."
-
-msgid "Rip CD"
-msgstr "Extraer audio del CD"
-
-msgid "Album:"
-msgstr "Álbum:"
-
-msgid "Rip"
-msgstr "Extraer audio"
-
-msgid "No."
-msgstr "No."
-
-msgid "Title"
-msgstr "Título"
-
-msgid "Select"
-msgstr "Seleccionar"
-
-msgid "All"
-msgstr "Todo"
-
-msgid "None"
-msgstr "Ninguno"
-
-msgid "Output"
-msgstr "Salida"
-
-msgid "Destination"
-msgstr "Destino"
-
-msgid "Target directory for ripped files"
-msgstr "Directorio de destino para los archivos de la extracción."
-
-msgid "Add to Music Store"
-msgstr "Agregar a la Tienda Musical"
-
-msgid "Format"
-msgstr "Formato"
-
-msgid "File format:"
-msgstr "Formato de archivo:"
-
-msgid "VBR encoding"
-msgstr "Codificación VBR"
-
-msgid "Tag files with metadata"
-msgstr "Archivos de etiqueta con metadatos"
-
-msgid "Paranoia"
-msgstr "Paranoia"
-
-msgid "Paranoia error correction"
-msgstr "Error de corrección de Paranoia"
-
-msgid "Perform overlapped reads"
-msgstr "Realizar lecturas sobrepuestas"
-
-msgid "Verify data integrity"
-msgstr "Verificando integridad de datos"
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr "Reintentos ilimitados en lecturas fallidas (nunca omitir)"
-
-msgid "Maximum number of retries:"
-msgstr "Máximo número de reintentos:"
-
-msgid ""
-"\n"
-"Destination directory is not read-write accessible!"
-msgstr ""
-"\n"
-"¡Directorio de destino no tiene acceso de lectura-escritura!"
-
-msgid "Total"
-msgstr "Total"
-
-msgid "(audio only)"
-msgstr "(solo audio)"
-
-msgid "Ripping CD tracks"
-msgstr "Extrayendo audio de las pistas del CD"
-
-msgid "Begin"
-msgstr "Comienzo"
-
-msgid "Length"
-msgstr "Longitud"
-
-msgid "Progress"
-msgstr "Progreso"
-
-msgid "Close window when complete"
-msgstr "Cerrar ventana cuando esté completo"
-
-msgid "Close"
-msgstr "Cerrar"
-
 msgid "Unknown Album"
 msgstr "Álbum desconocido"
 
@@ -703,22 +725,37 @@ msgstr "Copiar"
 msgid "Help"
 msgstr "Ayuda"
 
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "\n"
 "The template string you enter here will be used to construct the filename of "
-"the exported files. The Artist, Record and Track names are denoted by %%a, "
-"%%r and %%t. The track number and format-dependent file extension are "
-"denoted by %%n and %%x, respectively. The flag %%i gives an identifier "
-"which is unique within an export session."
+"the exported files. The Original filename, Artist, Record and Track names "
+"are denoted by %%o, %%a, %%r and %%t. The track number and format-dependent "
+"file extension are denoted by %%n and %%x, respectively. %%i gives an "
+"identifier which is unique within an export session."
 msgstr ""
 "\n"
 "La plantilla de cadena de texto entrado aquí será usado para construir el "
 "nombre del archivo exportado. Los nombres de Artista, Grabación y Pista "
-"serán denotados por %%a, %%r y %%t. El número de pista y la extensión "
-"de archivo formato-dependiente son denotados por %%n y %%x, "
-"respectivamente.  El indicador %%i da un identificador que es único dentro "
-"de un exportación de sesión."
+"serán denotados por %%a, %%r y %%t. El número de pista y la extensión de "
+"archivo formato-dependiente son denotados por %%n y %%x, respectivamente.  "
+"El indicador %%i da un identificador que es único dentro de un exportación "
+"de sesión."
+
+msgid "Exporting files"
+msgstr "Exportando archivos"
+
+msgid "Source file:"
+msgstr "Archivo fuente:"
+
+msgid "Target file:"
+msgstr "Archivo destino:"
+
+msgid "Progress:"
+msgstr "Progreso:"
+
+msgid "Error in format string"
+msgstr "Error en formato de la cadena de texto"
 
 msgid "Export files"
 msgstr "Exportar archivos"
@@ -757,21 +794,6 @@ msgid ""
 msgstr ""
 "No recodificar archivos\n"
 "Comodines coincidentes:"
-
-msgid "Error in format string"
-msgstr "Error en formato de la cadena de texto"
-
-msgid "Exporting files"
-msgstr "Exportando archivos"
-
-msgid "Source file:"
-msgstr "Archivo fuente:"
-
-msgid "Target file:"
-msgstr "Archivo destino:"
-
-msgid "Progress:"
-msgstr "Progreso:"
 
 msgid "*File info"
 msgstr "Información de *Archivo"
@@ -879,6 +901,16 @@ msgstr "campo:"
 msgid "tag:"
 msgstr "Etiqueta:"
 
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld Hz"
+
+msgid "MONO"
+msgstr "MONO"
+
+msgid "STEREO"
+msgstr "ESTÉREO"
+
 msgid "Audio CD"
 msgstr "CD de audio"
 
@@ -900,18 +932,8 @@ msgstr "Longitud:"
 msgid "Samplerate:"
 msgstr "Tasa de muestreo:"
 
-#, c-format
-msgid "%ld Hz"
-msgstr "%ld Hz"
-
 msgid "Channel count:"
 msgstr "Contador de canales:"
-
-msgid "MONO"
-msgstr "MONO"
-
-msgid "STEREO"
-msgstr "ESTÉREO"
 
 msgid "Bandwidth:"
 msgstr "Ancho de banda:"
@@ -1014,9 +1036,8 @@ msgstr "Balance: %s"
 msgid "JACK connection lost"
 msgstr "Conexión JACK perdida"
 
-msgid ""
-"JACK has either been shutdown or it disconnected Aqualung because it was not "
-"fast enough. All you can do now is restart both JACK and Aqualung."
+#, fuzzy, c-format
+msgid "JACK has either been shutdown or it disconnected Aqualung. Reason: %s"
 msgstr ""
 "JACK también ha sido apagado o desconectado de Aqualung porque no fue lo "
 "suficientemente rápido. Todo lo que puede hacer ahora es reiniciar JACK y "
@@ -1298,36 +1319,6 @@ msgstr "_Descargar"
 
 msgid "_Abort"
 msgstr "_Abortar"
-
-msgid "Success"
-msgstr "Éxito"
-
-msgid "Memory allocation error"
-msgstr "Error en la asignación de memoria"
-
-msgid "Unable to open file"
-msgstr "Incapaz de abrir archivo"
-
-msgid "No metadata support for this format"
-msgstr "Sin soporte para metadatos para este formato."
-
-msgid "File is not writable"
-msgstr "Archivo no es escribible."
-
-msgid "Invalid 'Track no.' field value"
-msgstr "Valor del campo 'No de pista' invalido "
-
-msgid "Invalid 'Genre' field value"
-msgstr "Valor del campo 'Genero' invalido"
-
-msgid "Conversion to target charset failed"
-msgstr "Conversión de destino a juego de caracteres fallido"
-
-msgid "Internal error"
-msgstr "Error interno"
-
-msgid "Unknown error"
-msgstr "Error desconocido"
 
 msgid "Album"
 msgstr "Álbum"
@@ -1623,6 +1614,36 @@ msgstr "Información de módulo"
 msgid "Unknown"
 msgstr "Desconocido"
 
+msgid "Success"
+msgstr "Éxito"
+
+msgid "Memory allocation error"
+msgstr "Error en la asignación de memoria"
+
+msgid "Unable to open file"
+msgstr "Incapaz de abrir archivo"
+
+msgid "No metadata support for this format"
+msgstr "Sin soporte para metadatos para este formato."
+
+msgid "File is not writable"
+msgstr "Archivo no es escribible."
+
+msgid "Invalid 'Track no.' field value"
+msgstr "Valor del campo 'No de pista' invalido "
+
+msgid "Invalid 'Genre' field value"
+msgstr "Valor del campo 'Genero' invalido"
+
+msgid "Conversion to target charset failed"
+msgstr "Conversión de destino a juego de caracteres fallido"
+
+msgid "Internal error"
+msgstr "Error interno"
+
+msgid "Unknown error"
+msgstr "Error desconocido"
+
 msgid "Other"
 msgstr "Otro"
 
@@ -1810,8 +1831,8 @@ msgid ""
 "what you can use in the file:\n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i"
-"('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 msgstr ""
 "\n"
@@ -1820,8 +1841,8 @@ msgstr ""
 "rápido de que puede usar en el archivo:\n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i"
-"('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 
 msgid ""
@@ -1960,6 +1981,12 @@ msgstr "Click aquí para establecer botón del mouse"
 msgid "Command"
 msgstr "Comando"
 
+msgid "Error in title format string"
+msgstr "Error en el formato de la cadena de texto del título"
+
+msgid "Error invalid character encoding"
+msgstr "Error codificación de caracteres inválido"
+
 msgid "Main window"
 msgstr "Ventana principal"
 
@@ -2041,6 +2068,9 @@ msgstr ""
 
 msgid "Don't show cover thumbnail in the main window"
 msgstr "No mostrar miniatura de cobertura en al ventana principal"
+
+msgid "Use cover from external graphics file first"
+msgstr ""
 
 msgid "Enable tooltips"
 msgstr "Habilitar sugerencias"
@@ -2405,12 +2435,6 @@ msgstr "Canción en lista de reproducción:"
 
 msgid "Active song in playlist: "
 msgstr "Canción activa en lista de reproducción:"
-
-msgid "Error in title format string"
-msgstr "Error en el formato de la cadena de texto del título"
-
-msgid "Error invalid character encoding"
-msgstr "Error codificación de caracteres inválido"
 
 msgid "(Untitled)"
 msgstr "(Sin Título)"
@@ -3284,6 +3308,21 @@ msgstr "Continuar"
 msgid "Calculating volume level"
 msgstr "Calculando nivel de volumen"
 
+msgid "Compression: Fast"
+msgstr "Compresión: Rápido"
+
+msgid "Compression: Normal"
+msgstr "Compresión: Normal"
+
+msgid "Compression: High"
+msgstr "Compresión: Alto"
+
+msgid "Compression: Extra High"
+msgstr "Compresión: Extra Alto"
+
+msgid "Compression: Insane"
+msgstr "Compresión: Insensato"
+
 msgid "Profile: Telephone"
 msgstr "Perfil: Teléfono"
 
@@ -3352,18 +3391,3 @@ msgstr "bits doble"
 
 msgid "encoding"
 msgstr "Codificando"
-
-msgid "Compression: Fast"
-msgstr "Compresión: Rápido"
-
-msgid "Compression: Normal"
-msgstr "Compresión: Normal"
-
-msgid "Compression: High"
-msgstr "Compresión: Alto"
-
-msgid "Compression: Extra High"
-msgstr "Compresión: Extra Alto"
-
-msgid "Compression: Insane"
-msgstr "Compresión: Insensato"

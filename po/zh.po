@@ -7,77 +7,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-20 07:43+0900\n"
+"Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
+"POT-Creation-Date: 2015-07-26 21:08+0200\n"
 "PO-Revision-Date: 2010-09-20 21:38+0800\n"
 "Last-Translator: Yinghua Wang <wantinghard@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com> \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=0;\n"
 "X-Poedit-Language: Chinese\n"
-
-msgid "About"
-msgstr "关于"
-
-msgid "Build version: "
-msgstr "编译版本："
-
-msgid "Homepage:"
-msgstr "主页："
-
-msgid "Authors:"
-msgstr "作者："
-
-msgid "Core design, engineering & programming:\n"
-msgstr "核心设计、工程及程序编写：\n"
-
-msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr "皮肤支持、外观及感觉、图形用户界面制作：\n"
-
-msgid "Programming, GUI engineering:\n"
-msgstr "程序编写、图形用户界面工程：\n"
-
-msgid "OpenBSD compatibility, metadata tweaks:\n"
-msgstr "OpenBSD 兼容性、元数据优化：\n"
-
-msgid "Translators:"
-msgstr "翻译者："
-
-msgid "French:\n"
-msgstr "法语：\n"
-
-msgid "German:\n"
-msgstr "德语：\n"
-
-msgid "Hungarian:\n"
-msgstr "匈牙利语：\n"
-
-msgid "Italian:\n"
-msgstr "意大利语：\n"
-
-msgid "Japanese:\n"
-msgstr "日语：\n"
-
-msgid "Russian:\n"
-msgstr "俄语：\n"
-
-msgid "Swedish:\n"
-msgstr "瑞典语：\n"
-
-msgid "Ukrainian:\n"
-msgstr "乌克兰语：\n"
-
-msgid "Graphics:"
-msgstr "图形："
-
-msgid "Logo, icons:\n"
-msgstr "徽标、图标：\n"
-
-#, fuzzy
-msgid "This Aqualung binary is compiled with:"
-msgstr "Aqualung 二进制文件的编译条件："
 
 msgid "Optional features:"
 msgstr "可选特性："
@@ -97,6 +37,10 @@ msgstr "采样率转换支持\n"
 msgid "iRiver iFP driver support\n"
 msgstr "iRiver iFP 驱动支持\n"
 
+#, fuzzy
+msgid "JACK port management support\n"
+msgstr "JACK 端口设置"
+
 msgid "Loop playback support\n"
 msgstr "循环播放支持\n"
 
@@ -106,8 +50,9 @@ msgstr "系统托盘支持\n"
 msgid "Podcast support\n"
 msgstr "播客支持\n"
 
-msgid "Lua (programmable title formatting) support\n"
-msgstr "Lua(可编程的标题格式定义) 支持\n"
+#, fuzzy
+msgid "Lua extension support\n"
+msgstr "禁用皮肤支持"
 
 msgid "Decoding support:"
 msgstr "解码支持："
@@ -172,18 +117,116 @@ msgstr "PulseAudio\n"
 msgid "Win32 Sound API\n"
 msgstr "Win32 声音 API\n"
 
-msgid ""
-"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
-"\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+msgid "About"
+msgstr "关于"
+
+msgid "Build version: "
+msgstr "编译版本："
+
+msgid "Homepage:"
+msgstr "主页："
+
+msgid "Authors:"
+msgstr "作者："
+
+msgid "Core design, engineering & programming:\n"
+msgstr "核心设计、工程及程序编写：\n"
+
+msgid "Skin support, look & feel, GUI hacks:\n"
+msgstr "皮肤支持、外观及感觉、图形用户界面制作：\n"
+
+msgid "Programming, GUI engineering:\n"
+msgstr "程序编写、图形用户界面工程：\n"
+
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr "OpenBSD 兼容性、元数据优化：\n"
+
+#, fuzzy
+msgid "Miscellaneous, minimalism:\n"
+msgstr "杂项"
+
+msgid "Translators:"
+msgstr "翻译者："
+
+msgid "Chinese (simplified):\n"
 msgstr ""
-"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
+
+#, fuzzy
+msgid "Czech:\n"
+msgstr "法语：\n"
+
+msgid "Dutch:\n"
+msgstr ""
+
+msgid "French:\n"
+msgstr "法语：\n"
+
+msgid "German:\n"
+msgstr "德语：\n"
+
+msgid "Hungarian:\n"
+msgstr "匈牙利语：\n"
+
+msgid "Italian:\n"
+msgstr "意大利语：\n"
+
+msgid "Japanese:\n"
+msgstr "日语：\n"
+
+msgid "Polish:\n"
+msgstr ""
+
+msgid "Russian:\n"
+msgstr "俄语：\n"
+
+#, fuzzy
+msgid "Spanish:\n"
+msgstr "瑞典语：\n"
+
+msgid "Swedish:\n"
+msgstr "瑞典语：\n"
+
+msgid "Ukrainian:\n"
+msgstr "乌克兰语：\n"
+
+msgid "Graphics:"
+msgstr "图形："
+
+msgid "Logo, icons:\n"
+msgstr "徽标、图标：\n"
+
+#, fuzzy
+msgid "This Aqualung binary is compiled with:"
+msgstr "Aqualung 二进制文件的编译条件："
+
+msgid ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
 "\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
+"more details.\n"
 "\n"
-"You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 675 Mass "
+"Ave, Cambridge, MA 02139, USA."
+msgstr ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 675 Mass "
+"Ave, Cambridge, MA 02139, USA."
 
 msgid "Enabled"
 msgstr "已启用"
@@ -261,7 +304,8 @@ msgstr "目录驱动"
 msgid ""
 "Follows the directory structure to identify the artists and\n"
 "records. The files are added on a record basis."
-msgstr "根据目录结构识别艺人和记录。\n"
+msgstr ""
+"根据目录结构识别艺人和记录。\n"
 "文件基于记录添加。"
 
 msgid "Independent"
@@ -271,7 +315,8 @@ msgid ""
 "Recursive search from the root directory for audio files.\n"
 "The files are processed independently, so only metadata\n"
 "and filename transformation are available."
-msgstr "从根目录递归搜索音频文件。\n"
+msgstr ""
+"从根目录递归搜索音频文件。\n"
 "文件是独立处理的，因此只能使用元数据和文件名转换。"
 
 #, fuzzy
@@ -435,10 +480,16 @@ msgstr "艺人/专辑 已经存在，不为空"
 
 msgid ""
 "\n"
-"The Music Store you selected has a matching Artist and Album, already containing some tracks. If you press OK, these tracks will be removed. The files themselves will be left intact, but they will be removed from the destination Music Store. Press Cancel to get back to change the Artist/Album or the destination Music Store."
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
 msgstr ""
 "\n"
-"您选择的音乐库中有一顶匹配的艺人和专辑且已经有一些内容。如果您点击 确定，将移除这些音轨。文件本身不受影响，但会从目标音乐库中移除。点击 取消 返回并修改 艺人/专辑 或目标音乐库。"
+"您选择的音乐库中有一顶匹配的艺人和专辑且已经有一些内容。如果您点击 确定，将移"
+"除这些音轨。文件本身不受影响，但会从目标音乐库中移除。点击 取消 返回并修改 艺"
+"人/专辑 或目标音乐库。"
 
 msgid "Rip CD"
 msgstr "提取 CD"
@@ -671,14 +722,34 @@ msgstr "复制"
 msgid "Help"
 msgstr "帮助"
 
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%a, %%r and %%t. The track number and format-dependent file extension are denoted by %%n and %%x, respectively. The flag %%i gives an identifier which is unique within an export session."
+"The template string you enter here will be used to construct the filename of "
+"the exported files. The Original filename, Artist, Record and Track names "
+"are denoted by %%o, %%a, %%r and %%t. The track number and format-dependent "
+"file extension are denoted by %%n and %%x, respectively. %%i gives an "
+"identifier which is unique within an export session."
 msgstr ""
 "\n"
-"您在此输入的模板字符串将用于创建导出文件的文件名。艺人、记录和音轨名分别用 %%a、%%r 和 %%t 表示。"
-"音轨号和依赖于格式的文件扩展名分别用 %%n 和 %%x 表示。%%i 标志会在一次导出会话中指定一个惟一的标识。"
+"您在此输入的模板字符串将用于创建导出文件的文件名。艺人、记录和音轨名分别用 "
+"%%a、%%r 和 %%t 表示。音轨号和依赖于格式的文件扩展名分别用 %%n 和 %%x 表"
+"示。%%i 标志会在一次导出会话中指定一个惟一的标识。"
+
+msgid "Exporting files"
+msgstr "导出文件"
+
+msgid "Source file:"
+msgstr "源文件："
+
+msgid "Target file:"
+msgstr "目标文件："
+
+msgid "Progress:"
+msgstr "进度："
+
+msgid "Error in format string"
+msgstr "格式字符串有误"
 
 msgid "Export files"
 msgstr "导出文件"
@@ -717,21 +788,6 @@ msgid ""
 msgstr ""
 "不重新编码\n"
 "匹配以下通配符的文件："
-
-msgid "Error in format string"
-msgstr "格式字符串有误"
-
-msgid "Exporting files"
-msgstr "导出文件"
-
-msgid "Source file:"
-msgstr "源文件："
-
-msgid "Target file:"
-msgstr "目标文件："
-
-msgid "Progress:"
-msgstr "进度："
 
 msgid "*File info"
 msgstr "文件信息"
@@ -780,7 +836,7 @@ msgid ""
 "'%s' is not an integer number!"
 msgstr ""
 "在将 %s 字段转换为年份时出错：\n"
-"'%s' 不是一个整数！" 
+"'%s' 不是一个整数！"
 
 msgid "Please specify the file to save the image to."
 msgstr "请指定要保存该图像的文件。"
@@ -839,6 +895,16 @@ msgstr "字段："
 msgid "tag:"
 msgstr "标签："
 
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld Hz"
+
+msgid "MONO"
+msgstr "单声道"
+
+msgid "STEREO"
+msgstr "立体声"
+
 msgid "Audio CD"
 msgstr "音频 CD"
 
@@ -860,18 +926,8 @@ msgstr "长度："
 msgid "Samplerate:"
 msgstr "采样率："
 
-#, c-format
-msgid "%ld Hz"
-msgstr "%ld Hz"
-
 msgid "Channel count:"
 msgstr "声道数："
-
-msgid "MONO"
-msgstr "单声道"
-
-msgid "STEREO"
-msgstr "立体声"
 
 msgid "Bandwidth:"
 msgstr "带宽："
@@ -929,7 +985,8 @@ msgstr "循环范围：%d-%d%%"
 msgid ""
 "One or more stores in Music Store have been modified.\n"
 "Do you want to save them before exiting?"
-msgstr "一个或多个音乐库进行了修改。\n"
+msgstr ""
+"一个或多个音乐库进行了修改。\n"
 "您想在退出前保存这些修改吗？"
 
 msgid "Do not exit"
@@ -973,14 +1030,22 @@ msgstr "平衡：%s"
 msgid "JACK connection lost"
 msgstr "JACK 连接丢失"
 
-msgid "JACK has either been shutdown or it disconnected Aqualung because it was not fast enough. All you can do now is restart both JACK and Aqualung."
-msgstr "JACK 被关闭了，或者它因为速度不够而断开了 Aqualung。您现在只能重新启动 JACK 和 Aqualung。"
+#, fuzzy, c-format
+msgid "JACK has either been shutdown or it disconnected Aqualung. Reason: %s"
+msgstr ""
+"JACK 被关闭了，或者它因为速度不够而断开了 Aqualung。您现在只能重新启动 JACK "
+"和 Aqualung。"
 
 msgid "Warn me if the Window Manager does not support system tray"
 msgstr "若窗口管理器不支持系统托盘，警告我"
 
-msgid "Aqualung is compiled with system tray support, but the status icon could not be embedded in the notification area. Your desktop may not have support for a system tray, or it has not been configured correctly."
-msgstr "Aqualung 编译时带有系统托盘支持，但无法将状态图标置入通知区域。可能您的桌面不支持系统托盘，或者系统托盘配置不正确。"
+msgid ""
+"Aqualung is compiled with system tray support, but the status icon could not "
+"be embedded in the notification area. Your desktop may not have support for "
+"a system tray, or it has not been configured correctly."
+msgstr ""
+"Aqualung 编译时带有系统托盘支持，但无法将状态图标置入通知区域。可能您的桌面不"
+"支持系统托盘，或者系统托盘配置不正确。"
 
 msgid "Settings"
 msgstr "设置"
@@ -1110,7 +1175,8 @@ msgstr "可用空间 (%.1f MB)"
 msgid ""
 "No suitable iRiver iFP device found.\n"
 "Perhaps it is unplugged or turned off."
-msgstr "未找到适合的 iRiver iFP 设备。\n"
+msgstr ""
+"未找到适合的 iRiver iFP 设备。\n"
 "可能它已经被拔出或关闭了。"
 
 msgid ""
@@ -1657,7 +1723,8 @@ msgstr "音乐库"
 msgid "Do you want to save store \"%s\" before removing from Music Store?"
 msgstr "在从 音乐库 移除前，您想保存“%s”这个库吗？"
 
-msgid "You will need to restart Aqualung for the following changes to take effect:"
+msgid ""
+"You will need to restart Aqualung for the following changes to take effect:"
 msgstr "您需要重新启动 Aqualung 来使以下更改生效："
 
 msgid "Select a font..."
@@ -1675,7 +1742,8 @@ msgstr "r"
 msgid "unreachable"
 msgstr "无法访问"
 
-msgid "Please select a Programable Title Format File."
+#, fuzzy
+msgid "Please select a Lua Extension File."
 msgstr "请选择一个 可编程标题格式文件。"
 
 msgid "Please select a Music Store database."
@@ -1690,7 +1758,9 @@ msgstr "指定的库已经添加到了列表。"
 #, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%a, %%r and %%t, respectively.\n"
+"The template string you enter here will be used to construct a single title "
+"line from an Artist, a Record and a Track name. These are denoted by %%a, "
+"%%r and %%t, respectively.\n"
 msgstr ""
 "\n"
 "您在此输入的模板字符串将用来根据一位艺人、一项记录和一条音轨名生成一行标题。"
@@ -1698,32 +1768,68 @@ msgstr ""
 
 msgid ""
 "\n"
-"The file you enter/choose here will set the Lua program to use to format the title. See the Aqualung manual for details. Here is a quick example of what you can use in the file:\n"
+"If you have non-standard ID3v1/ID3v2 character encoding MPEG audio file, "
+"please enter suitable character encoding in this entry (see below). If this "
+"entry is blank, the standard character encoding (ISO-8859-1) is used.\n"
+"\n"
+"For example:\n"
+"  Japanese: CP932 (SHIFT_JIS variant)\n"
+"  Korean: EUC-KR\n"
+"  Simp. Chinese: GB2312\n"
+"  Trad. Chinese: BIG5\n"
+"  Greek: ISO-8859-7\n"
+"  Hebrew: ISO-8859-8\n"
+"  Cyrillic: CP1251\n"
+"  Thai: ISO-8859-11\n"
+"  Arabic: CP1256\n"
+"  Turkish: ISO-8859-9\n"
+"  Latin Extended: ISO-8859-2\n"
+"  Central European: CP1250\n"
+"  Latin1 (standard): ISO-8859-1\n"
+"\n"
+"NOTE: There might be a more suitable character encoding for your language."
+msgstr ""
+
+#, fuzzy
+msgid ""
+"\n"
+"The file you enter/choose here will set the Lua program to use to extend "
+"Aqualung. See the Aqualung manual for details. Here is a quick example of "
+"what you can use in the file:\n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 msgstr ""
 "\n"
-"您在此处输入/选择的文件将用于设置 Lua 程序如何格式化标题。细节参见 Aqualung 手册。这里是一个如何使用该文件的简单例子： \n"
+"您在此处输入/选择的文件将用于设置 Lua 程序如何格式化标题。细节参见 Aqualung "
+"手册。这里是一个如何使用该文件的简单例子： \n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 
 msgid ""
 "\n"
-"The string you enter here will be parsed as a command line before parsing the actual command line parameters. What you enter here will act as a default setting and may or may not be overridden from the 'real' command line.\n"
+"The string you enter here will be parsed as a command line before parsing "
+"the actual command line parameters. What you enter here will act as a "
+"default setting and may or may not be overridden from the 'real' command "
+"line.\n"
 "\n"
-"Example: enter '-o alsa -R' below to use ALSA output running realtime as a default.\n"
+"Example: enter '-o alsa -R' below to use ALSA output running realtime as a "
+"default.\n"
 msgstr ""
 "\n"
-"您在此输入的字符串将作为命令行，在解析实际的命令行参数前解析。您在此输入的内容将作为默认设置，有的会、有的不会被‘实际’的命令行覆盖。\n"
+"您在此输入的字符串将作为命令行，在解析实际的命令行参数前解析。您在此输入的内"
+"容将作为默认设置，有的会、有的不会被‘实际’的命令行覆盖。\n"
 "\n"
 "例如：在下方输入 '-o alsa -R' 来默认使用 ALSA 实时输出。\n"
 
 msgid ""
-"Paths must either be absolute or starting with a tilde, which will be expanded to the user's home directory.\n"
+"Paths must either be absolute or starting with a tilde, which will be "
+"expanded to the user's home directory.\n"
 "\n"
 "Drag and drop entries in the list to set the store order in the Music Store."
 msgstr ""
@@ -1733,26 +1839,39 @@ msgstr ""
 
 msgid ""
 "\n"
-"Set the drive speed for CD playing in CD-ROM speed units. One speed unit equals to 176 kBps raw data reading speed. Warning: not all drives honor this setting.\n"
+"Set the drive speed for CD playing in CD-ROM speed units. One speed unit "
+"equals to 176 kBps raw data reading speed. Warning: not all drives honor "
+"this setting.\n"
 "\n"
-"Lower speed usually means less drive noise. However, when using Paranoia error correction modes for increased accuracy, generally much larger speeds are required to prevent buffer underruns (and thus audible drop-outs).\n"
+"Lower speed usually means less drive noise. However, when using Paranoia "
+"error correction modes for increased accuracy, generally much larger speeds "
+"are required to prevent buffer underruns (and thus audible drop-outs).\n"
 "\n"
-"Please note that these settings do not apply to CD Ripping, which always happens with maximum available speed and with error correction modes manually set before every run."
+"Please note that these settings do not apply to CD Ripping, which always "
+"happens with maximum available speed and with error correction modes "
+"manually set before every run."
 msgstr ""
 "\n"
-"以 CD-ROM 的速度单位设置播放 CD 的驱动器速度。一个速度单元为 176 kBps 的原始数据读取速度。警告：不是所有驱动器都接受这种设置。\n"
+"以 CD-ROM 的速度单位设置播放 CD 的驱动器速度。一个速度单元为 176 kBps 的原始"
+"数据读取速度。警告：不是所有驱动器都接受这种设置。\n"
 "\n"
-"较低的速度通常意味着较少的驱动器噪音。不过，在使用 Paranoia 错误修正方式来增强准确性时，通常要求使用较快的速度来防止缓冲区负荷不足(及声音中断)\n"
+"较低的速度通常意味着较少的驱动器噪音。不过，在使用 Paranoia 错误修正方式来增"
+"强准确性时，通常要求使用较快的速度来防止缓冲区负荷不足(及声音中断)\n"
 "\n"
-"请注意，这些设置不会用于 CD 提取，CD 提取总会使用可能的最大速度进行，并且在每次运行前进行手动错误修正方式设置。"
+"请注意，这些设置不会用于 CD 提取，CD 提取总会使用可能的最大速度进行，并且在每"
+"次运行前进行手动错误修正方式设置。"
 
 msgid ""
 "\n"
-"Most drives let Aqualung know when a CD has been inserted or removed by providing a 'media changed' flag. However, some drives don't set this flag properly, and thus it may happen that a newly inserted CD remains unnoticed to Aqualung. In such cases, enabling this option should help."
+"Most drives let Aqualung know when a CD has been inserted or removed by "
+"providing a 'media changed' flag. However, some drives don't set this flag "
+"properly, and thus it may happen that a newly inserted CD remains unnoticed "
+"to Aqualung. In such cases, enabling this option should help."
 msgstr ""
 "\n"
-"绝大多数的驱动器会在插入或移除 CD 时通过提供一个‘media changed’标记通知 Aqualung。然而，一些驱动器不能正确设置此标记，"
-"因此有可能出现新插入了 CD，而 Aqualung 没有反应的情况。这时，启用这一选项可能有所帮助。"
+"绝大多数的驱动器会在插入或移除 CD 时通过提供一个‘media changed’标记通知 "
+"Aqualung。然而，一些驱动器不能正确设置此标记，因此有可能出现新插入了 CD，而 "
+"Aqualung 没有反应的情况。这时，启用这一选项可能有所帮助。"
 
 msgid ""
 "\n"
@@ -1816,6 +1935,12 @@ msgstr "点击此处设置鼠标键"
 msgid "Command"
 msgstr "命令"
 
+msgid "Error in title format string"
+msgstr "标题格式字符串有错误"
+
+msgid "Error invalid character encoding"
+msgstr ""
+
 msgid "Main window"
 msgstr "主窗口"
 
@@ -1834,8 +1959,8 @@ msgstr "在主窗口标题中显示歌曲名称"
 msgid "Title Format"
 msgstr "标题格式"
 
-msgid "Programmable title format file"
-msgstr "可编程的标题格式文件"
+msgid "Lua extension file"
+msgstr ""
 
 msgid "Systray"
 msgstr "系统托盘"
@@ -1896,6 +2021,9 @@ msgstr "只显示音乐库音轨的封面缩略图"
 
 msgid "Don't show cover thumbnail in the main window"
 msgstr "主窗口中不显示封面缩略图"
+
+msgid "Use cover from external graphics file first"
+msgstr ""
 
 msgid "Enable tooltips"
 msgstr "启用提示"
@@ -2037,7 +2165,8 @@ msgstr "后衰减器(音量和平衡后)"
 msgid ""
 "Aqualung is compiled without LADSPA plugin support.\n"
 "See the About box and the documentation for details."
-msgstr "Aqualung 编译时不带 LADSPA 插件支持。\n"
+msgstr ""
+"Aqualung 编译时不带 LADSPA 插件支持。\n"
 "细节请参见 关于 对话框和文档。"
 
 msgid "Sample Rate Converter type"
@@ -2046,7 +2175,8 @@ msgstr "采样率转换器类型"
 msgid ""
 "Aqualung is compiled without Sample Rate Converter support.\n"
 "See the About box and the documentation for details."
-msgstr "Aqualung 编译时不带采样率转换器支持。\n"
+msgstr ""
+"Aqualung 编译时不带采样率转换器支持。\n"
 "细节请参见 关于 对话框和文档。"
 
 msgid "Playback RVA"
@@ -2117,7 +2247,8 @@ msgstr "向播放列表添加文件"
 msgid ""
 "Use basename only instead of full path\n"
 "if no metadata is available."
-msgstr "若元数据不可用\n"
+msgstr ""
+"若元数据不可用\n"
 "请只使用基名称而不要用完整路径。"
 
 msgid "Metadata editor (File info dialog)"
@@ -2127,6 +2258,9 @@ msgid ""
 "When adding new frames, try to set their contents\n"
 "from another tag's equivalent frame."
 msgstr "在添加新帧时，尝试依据其他标签中对应的帧设置其内容。"
+
+msgid "MPEG audio ID3v1/ID3v2 character encoding"
+msgstr ""
 
 msgid "Batch update & encode (mass tagger, CD ripper, file export)"
 msgstr "批量更新和编码(批量标签编辑、CD 提取、文件导出’)"
@@ -2247,9 +2381,6 @@ msgstr "播放列表中的歌曲："
 msgid "Active song in playlist: "
 msgstr "播放列表中活动的歌曲："
 
-msgid "Error in title format string"
-msgstr "标题格式字符串有错误"
-
 msgid "(Untitled)"
 msgstr "(无标题)"
 
@@ -2278,7 +2409,8 @@ msgstr "请指定要载入播放列表的文件。"
 msgid ""
 "Playback RVA is currently disabled.\n"
 "Do you want to enable it now?"
-msgstr "RVA 回放当前已禁用。\n"
+msgstr ""
+"RVA 回放当前已禁用。\n"
 "您要立刻启用它吗？"
 
 msgid "counting..."
@@ -2408,7 +2540,8 @@ msgid "Remove files"
 msgstr "移除文件"
 
 msgid ""
-"The selected files will be deleted from the filesystem. No recovery will be possible after this operation.\n"
+"The selected files will be deleted from the filesystem. No recovery will be "
+"possible after this operation.\n"
 "\n"
 "Do you want to proceed?"
 msgstr ""
@@ -2532,7 +2665,8 @@ msgstr "修订："
 msgid ""
 "The information below is reported by the drive, and\n"
 "may not reflect the actual capabilities of the device."
-msgstr "以下信息由驱动器给出，可能无法反映驱动器的\n"
+msgstr ""
+"以下信息由驱动器给出，可能无法反映驱动器的\n"
 "实际能力。"
 
 msgid "Eject"
@@ -2809,8 +2943,11 @@ msgid "artists"
 msgstr "艺人"
 
 #, c-format
-msgid "File \"%s\" does not exist or your write permission has been withdrawn. Check if the partition containing the store file has been unmounted."
-msgstr "“%s”文件不存在，或者您的写权限被撤销。检查包含该库文件的分区是否已经卸载。"
+msgid ""
+"File \"%s\" does not exist or your write permission has been withdrawn. "
+"Check if the partition containing the store file has been unmounted."
+msgstr ""
+"“%s”文件不存在，或者您的写权限被撤销。检查包含该库文件的分区是否已经卸载。"
 
 msgid "Build / Update store from filesystem..."
 msgstr "从文件系统中构建/更新库..."
@@ -3034,7 +3171,7 @@ msgid "Unknown conversion type character found after '%%'."
 msgstr "'%%'后出现了未知的转换类型字符。"
 
 msgid "Unknown conversion type character found after '?'."
-msgstr "'?'后出现了未知的转换类型字符。" 
+msgstr "'?'后出现了未知的转换类型字符。"
 
 msgid "day"
 msgstr "天"
@@ -3045,7 +3182,8 @@ msgstr "天"
 msgid "All Files"
 msgstr "所有文件"
 
-msgid "Extended Title Format Files (*.lua)"
+#, fuzzy
+msgid "Lua Extension Files (*.lua)"
 msgstr "扩展的标题格式文件(*.lua)"
 
 msgid "Music Store Files (*.xml)"
@@ -3103,13 +3241,28 @@ msgid "WavPack (*.wv)"
 msgstr "WavPack (*.wv)"
 
 msgid "LAVC audio/video files"
-msgstr "LAVC 音频/视频文件" 
+msgstr "LAVC 音频/视频文件"
 
 msgid "Resume"
 msgstr "恢复"
 
 msgid "Calculating volume level"
 msgstr "正在计算音量级别"
+
+msgid "Compression: Fast"
+msgstr "压缩：快速"
+
+msgid "Compression: Normal"
+msgstr "压缩：标准"
+
+msgid "Compression: High"
+msgstr "压缩：高"
+
+msgid "Compression: Extra High"
+msgstr "压缩：超高"
+
+msgid "Compression: Insane"
+msgstr "压缩：极限"
 
 msgid "Profile: Telephone"
 msgstr "配置：电话"
@@ -3181,18 +3334,8 @@ msgstr "bit double"
 msgid "encoding"
 msgstr "编码"
 
-msgid "Compression: Fast"
-msgstr "压缩：快速"
+#~ msgid "Lua (programmable title formatting) support\n"
+#~ msgstr "Lua(可编程的标题格式定义) 支持\n"
 
-msgid "Compression: Normal"
-msgstr "压缩：标准"
-
-msgid "Compression: High"
-msgstr "压缩：高"
-
-msgid "Compression: Extra High"
-msgstr "压缩：超高"
-
-msgid "Compression: Insane"
-msgstr "压缩：极限"
-
+#~ msgid "Programmable title format file"
+#~ msgstr "可编程的标题格式文件"

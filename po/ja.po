@@ -8,76 +8,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-20 07:43+0900\n"
+"Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
+"POT-Creation-Date: 2015-07-26 21:08+0200\n"
 "PO-Revision-Date: 2010-01-22 15:40+0100\n"
 "Last-Translator: YoN <yon8844@gmail.com>\n"
 "Language-Team: Team Puppy Linux Japan\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Language: Japanese\n"
-
-msgid "About"
-msgstr "このソフトについて"
-
-msgid "Build version: "
-msgstr "ビルドバージョン: "
-
-msgid "Homepage:"
-msgstr "ホームページ:"
-
-msgid "Authors:"
-msgstr "作者:"
-
-msgid "Core design, engineering & programming:\n"
-msgstr "コアデザイン、エンジニアリングとプログラミング:\n"
-
-msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr "スキンサポート、ルック&フィール、GUI ハック:\n"
-
-msgid "Programming, GUI engineering:\n"
-msgstr "プログラミング、GUI エンジニアリング:\n"
-
-msgid "OpenBSD compatibility, metadata tweaks:\n"
-msgstr "OpenBSD 互換、メタデータ調整:\n"
-
-msgid "Translators:"
-msgstr "翻訳者:"
-
-msgid "French:\n"
-msgstr "フランス語:\n"
-
-msgid "German:\n"
-msgstr "ドイツ語:\n"
-
-msgid "Hungarian:\n"
-msgstr "ハンガリー語:\n"
-
-msgid "Italian:\n"
-msgstr "イタリア語:\n"
-
-msgid "Japanese:\n"
-msgstr "日本語:\n"
-
-msgid "Russian:\n"
-msgstr "ロシア語:\n"
-
-msgid "Swedish:\n"
-msgstr "スウェーデン語:\n"
-
-msgid "Ukrainian:\n"
-msgstr "ウクライナ語:\n"
-
-msgid "Graphics:"
-msgstr "グラフィックス:"
-
-msgid "Logo, icons:\n"
-msgstr "ロゴ、アイコン:\n"
-
-msgid "This Aqualung binary is compiled with:"
-msgstr "この Aqualung バイナリは次のオプションでコンパイルしています:"
 
 msgid "Optional features:"
 msgstr "オプション機能:"
@@ -97,6 +38,10 @@ msgstr "サンプルレート変換サポート\n"
 msgid "iRiver iFP driver support\n"
 msgstr "iRiver iFP ドライバサポート\n"
 
+#, fuzzy
+msgid "JACK port management support\n"
+msgstr "JACK ポート設定"
+
 msgid "Loop playback support\n"
 msgstr "ループ再生サポート\n"
 
@@ -106,8 +51,9 @@ msgstr "システムトレイサポート\n"
 msgid "Podcast support\n"
 msgstr "ポッドキャストサポート\n"
 
-msgid "Lua (programmable title formatting) support\n"
-msgstr "Lua サポート (プログラム可能なタイトルフォーマット)\n"
+#, fuzzy
+msgid "Lua extension support\n"
+msgstr "スキンサポートを無効"
 
 msgid "Decoding support:"
 msgstr "デコードサポート:"
@@ -172,18 +118,115 @@ msgstr "PulseAudio\n"
 msgid "Win32 Sound API\n"
 msgstr "Win32 サウンド API\n"
 
-msgid ""
-"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
-"\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+msgid "About"
+msgstr "このソフトについて"
+
+msgid "Build version: "
+msgstr "ビルドバージョン: "
+
+msgid "Homepage:"
+msgstr "ホームページ:"
+
+msgid "Authors:"
+msgstr "作者:"
+
+msgid "Core design, engineering & programming:\n"
+msgstr "コアデザイン、エンジニアリングとプログラミング:\n"
+
+msgid "Skin support, look & feel, GUI hacks:\n"
+msgstr "スキンサポート、ルック&フィール、GUI ハック:\n"
+
+msgid "Programming, GUI engineering:\n"
+msgstr "プログラミング、GUI エンジニアリング:\n"
+
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr "OpenBSD 互換、メタデータ調整:\n"
+
+#, fuzzy
+msgid "Miscellaneous, minimalism:\n"
+msgstr "その他"
+
+msgid "Translators:"
+msgstr "翻訳者:"
+
+msgid "Chinese (simplified):\n"
 msgstr ""
-"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
+
+#, fuzzy
+msgid "Czech:\n"
+msgstr "フランス語:\n"
+
+msgid "Dutch:\n"
+msgstr ""
+
+msgid "French:\n"
+msgstr "フランス語:\n"
+
+msgid "German:\n"
+msgstr "ドイツ語:\n"
+
+msgid "Hungarian:\n"
+msgstr "ハンガリー語:\n"
+
+msgid "Italian:\n"
+msgstr "イタリア語:\n"
+
+msgid "Japanese:\n"
+msgstr "日本語:\n"
+
+msgid "Polish:\n"
+msgstr ""
+
+msgid "Russian:\n"
+msgstr "ロシア語:\n"
+
+#, fuzzy
+msgid "Spanish:\n"
+msgstr "スウェーデン語:\n"
+
+msgid "Swedish:\n"
+msgstr "スウェーデン語:\n"
+
+msgid "Ukrainian:\n"
+msgstr "ウクライナ語:\n"
+
+msgid "Graphics:"
+msgstr "グラフィックス:"
+
+msgid "Logo, icons:\n"
+msgstr "ロゴ、アイコン:\n"
+
+msgid "This Aqualung binary is compiled with:"
+msgstr "この Aqualung バイナリは次のオプションでコンパイルしています:"
+
+msgid ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
 "\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
+"more details.\n"
 "\n"
-"You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 675 Mass "
+"Ave, Cambridge, MA 02139, USA."
+msgstr ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 675 Mass "
+"Ave, Cambridge, MA 02139, USA."
 
 msgid "Enabled"
 msgstr "有効"
@@ -307,7 +350,8 @@ msgid "root / artist / artist / record / track"
 msgstr "ルート / アーティスト / アーティスト / レコード / トラック"
 
 msgid "root / artist / artist / artist / record / track"
-msgstr "ルート / アーティスト / アーティスト / アーティスト / レコード / トラック"
+msgstr ""
+"ルート / アーティスト / アーティスト / アーティスト / レコード / トラック"
 
 msgid "Exclude files matching wildcard"
 msgstr "ワイルドカードに一致するファイルを除外"
@@ -434,10 +478,18 @@ msgstr "アーティスト/アルバムは既に存在します。空ではあ�
 
 msgid ""
 "\n"
-"The Music Store you selected has a matching Artist and Album, already containing some tracks. If you press OK, these tracks will be removed. The files themselves will be left intact, but they will be removed from the destination Music Store. Press Cancel to get back to change the Artist/Album or the destination Music Store."
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
 msgstr ""
 "\n"
-"選択した Music Store には一致したアーティストとアルバムがあります。そして、すでにいくつかのトラックを含んでいます。 OK を押すと、このトラックは削除されます。ファイル自体は完全なまま残ります。しかし転送先の Music Store から削除されます。アーティスト/アルバムまたは転送先の Music Store の変更に戻るにはキャンセルを押して下さい。"
+"選択した Music Store には一致したアーティストとアルバムがあります。そして、す"
+"でにいくつかのトラックを含んでいます。 OK を押すと、このトラックは削除されま"
+"す。ファイル自体は完全なまま残ります。しかし転送先の Music Store から削除され"
+"ます。アーティスト/アルバムまたは転送先の Music Store の変更に戻るにはキャン"
+"セルを押して下さい。"
 
 msgid "Rip CD"
 msgstr "CD をリッピング"
@@ -670,13 +722,35 @@ msgstr "コピー"
 msgid "Help"
 msgstr "ヘルプ"
 
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%a, %%r and %%t. The track number and format-dependent file extension are denoted by %%n and %%x, respectively. The flag %%i gives an identifier which is unique within an export session."
+"The template string you enter here will be used to construct the filename of "
+"the exported files. The Original filename, Artist, Record and Track names "
+"are denoted by %%o, %%a, %%r and %%t. The track number and format-dependent "
+"file extension are denoted by %%n and %%x, respectively. %%i gives an "
+"identifier which is unique within an export session."
 msgstr ""
 "\n"
-"ここで入力するテンプレート文字列は、エクスポートされたファイルのファイル名を構築するために使われます。アーティスト、レコード、トラック名は %%a, %%r と %%t で表示されます。トラック番号と形式依存ファイル拡張子は %%n と %%x で表示されます。フラグ %%i はエクスポートセッションで固有の識別子を与えます。"
+"ここで入力するテンプレート文字列は、エクスポートされたファイルのファイル名を"
+"構築するために使われます。アーティスト、レコード、トラック名は %%a, %%r と "
+"%%t で表示されます。トラック番号と形式依存ファイル拡張子は %%n と %%x で表示"
+"されます。フラグ %%i はエクスポートセッションで固有の識別子を与えます。"
+
+msgid "Exporting files"
+msgstr "エクスポートファイル"
+
+msgid "Source file:"
+msgstr "ソースファイル:"
+
+msgid "Target file:"
+msgstr "ターゲットファイル:"
+
+msgid "Progress:"
+msgstr "進行状況:"
+
+msgid "Error in format string"
+msgstr "文字列のフォーマットにエラー"
 
 msgid "Export files"
 msgstr "ファイルをエクスポート"
@@ -715,21 +789,6 @@ msgid ""
 msgstr ""
 "ワイルドカードに一致する\n"
 "ファイルはエンコードしない:"
-
-msgid "Error in format string"
-msgstr "文字列のフォーマットにエラー"
-
-msgid "Exporting files"
-msgstr "エクスポートファイル"
-
-msgid "Source file:"
-msgstr "ソースファイル:"
-
-msgid "Target file:"
-msgstr "ターゲットファイル:"
-
-msgid "Progress:"
-msgstr "進行状況:"
 
 msgid "*File info"
 msgstr "*ファイル情報"
@@ -837,6 +896,16 @@ msgstr "フィールド:"
 msgid "tag:"
 msgstr "タグ:"
 
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld Hz"
+
+msgid "MONO"
+msgstr "モノラル"
+
+msgid "STEREO"
+msgstr "ステレオ"
+
 msgid "Audio CD"
 msgstr "オーディオ CD"
 
@@ -858,18 +927,8 @@ msgstr "長さ:"
 msgid "Samplerate:"
 msgstr "サンプルレート:"
 
-#, c-format
-msgid "%ld Hz"
-msgstr "%ld Hz"
-
 msgid "Channel count:"
 msgstr "チャンネル数:"
-
-msgid "MONO"
-msgstr "モノラル"
-
-msgid "STEREO"
-msgstr "ステレオ"
 
 msgid "Bandwidth:"
 msgstr "帯域幅:"
@@ -972,14 +1031,23 @@ msgstr "バランス: %s"
 msgid "JACK connection lost"
 msgstr "JACK 接続が失われました"
 
-msgid "JACK has either been shutdown or it disconnected Aqualung because it was not fast enough. All you can do now is restart both JACK and Aqualung."
-msgstr "JACK は十分な速度がないので、シャットダウンされたか Aqualung を切断しました。今すぐ JACK と Aqualung を再起動して下さい。"
+#, fuzzy, c-format
+msgid "JACK has either been shutdown or it disconnected Aqualung. Reason: %s"
+msgstr ""
+"JACK は十分な速度がないので、シャットダウンされたか Aqualung を切断しました。"
+"今すぐ JACK と Aqualung を再起動して下さい。"
 
 msgid "Warn me if the Window Manager does not support system tray"
 msgstr "ウィンドウマネージャがシステムトレイをサポートしない時は警告します"
 
-msgid "Aqualung is compiled with system tray support, but the status icon could not be embedded in the notification area. Your desktop may not have support for a system tray, or it has not been configured correctly."
-msgstr "Aqualung はシステムトレイを有効にしてコンパイルされています。しかし、ステータスアイコンを通知領域に表示できませんでした。お使いのデスクトップは、システムトレイをサポートしていないか、正しく構成されていません。"
+msgid ""
+"Aqualung is compiled with system tray support, but the status icon could not "
+"be embedded in the notification area. Your desktop may not have support for "
+"a system tray, or it has not been configured correctly."
+msgstr ""
+"Aqualung はシステムトレイを有効にしてコンパイルされています。しかし、ステータ"
+"スアイコンを通知領域に表示できませんでした。お使いのデスクトップは、システム"
+"トレイをサポートしていないか、正しく構成されていません。"
 
 msgid "Settings"
 msgstr "設定"
@@ -1051,7 +1119,8 @@ msgid "%d / %d directories"
 msgstr "%d / %d ディレクトリ"
 
 msgid "Cannot write to selected directory. Please select another directory."
-msgstr "選択したディレクトリに書き込めません。別のディレクトリを選択して下さい。"
+msgstr ""
+"選択したディレクトリに書き込めません。別のディレクトリを選択して下さい。"
 
 msgid "Done"
 msgstr "完了"
@@ -1650,7 +1719,8 @@ msgstr "*Music Store"
 msgid "Do you want to save store \"%s\" before removing from Music Store?"
 msgstr "Music Store から削除する前に、ストア \"%s\" を保存しますか？"
 
-msgid "You will need to restart Aqualung for the following changes to take effect:"
+msgid ""
+"You will need to restart Aqualung for the following changes to take effect:"
 msgstr "次の変更を有効にするには Aqualung を再起動する必要があります:"
 
 msgid "Select a font..."
@@ -1668,7 +1738,8 @@ msgstr "r"
 msgid "unreachable"
 msgstr "到達不能"
 
-msgid "Please select a Programable Title Format File."
+#, fuzzy
+msgid "Please select a Lua Extension File."
 msgstr "プログラム可能なタイトル形式のファイルを選択して下さい。"
 
 msgid "Please select a Music Store database."
@@ -1683,67 +1754,129 @@ msgstr "指定のストアは既にリストに追加されています。"
 #, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%a, %%r and %%t, respectively.\n"
+"The template string you enter here will be used to construct a single title "
+"line from an Artist, a Record and a Track name. These are denoted by %%a, "
+"%%r and %%t, respectively.\n"
 msgstr ""
 "\n"
-"ここに入力するテンプレート文字列は、アーティスト、レコード、トラック名から1つのタイトル行を構成するために使われます。それらは個々に %%a, %%r と %%t, で示されます。\n"
+"ここに入力するテンプレート文字列は、アーティスト、レコード、トラック名から1つ"
+"のタイトル行を構成するために使われます。それらは個々に %%a, %%r と %%t, で示"
+"されます。\n"
 
 msgid ""
 "\n"
-"The file you enter/choose here will set the Lua program to use to format the title. See the Aqualung manual for details. Here is a quick example of what you can use in the file:\n"
+"If you have non-standard ID3v1/ID3v2 character encoding MPEG audio file, "
+"please enter suitable character encoding in this entry (see below). If this "
+"entry is blank, the standard character encoding (ISO-8859-1) is used.\n"
+"\n"
+"For example:\n"
+"  Japanese: CP932 (SHIFT_JIS variant)\n"
+"  Korean: EUC-KR\n"
+"  Simp. Chinese: GB2312\n"
+"  Trad. Chinese: BIG5\n"
+"  Greek: ISO-8859-7\n"
+"  Hebrew: ISO-8859-8\n"
+"  Cyrillic: CP1251\n"
+"  Thai: ISO-8859-11\n"
+"  Arabic: CP1256\n"
+"  Turkish: ISO-8859-9\n"
+"  Latin Extended: ISO-8859-2\n"
+"  Central European: CP1250\n"
+"  Latin1 (standard): ISO-8859-1\n"
+"\n"
+"NOTE: There might be a more suitable character encoding for your language."
+msgstr ""
+
+#, fuzzy
+msgid ""
+"\n"
+"The file you enter/choose here will set the Lua program to use to extend "
+"Aqualung. See the Aqualung manual for details. Here is a quick example of "
+"what you can use in the file:\n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 msgstr ""
 "\n"
-"ここで入力/選択をしたファイルはタイトルをフォーマットするために使う Lua プログラムを設定します。詳細は Aqualung マニュアルを確認して下さい。以下はファイルで使える簡単なサンプルです:\n"
+"ここで入力/選択をしたファイルはタイトルをフォーマットするために使う Lua プロ"
+"グラムを設定します。詳細は Aqualung マニュアルを確認して下さい。以下はファイ"
+"ルで使える簡単なサンプルです:\n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 
 msgid ""
 "\n"
-"The string you enter here will be parsed as a command line before parsing the actual command line parameters. What you enter here will act as a default setting and may or may not be overridden from the 'real' command line.\n"
+"The string you enter here will be parsed as a command line before parsing "
+"the actual command line parameters. What you enter here will act as a "
+"default setting and may or may not be overridden from the 'real' command "
+"line.\n"
 "\n"
-"Example: enter '-o alsa -R' below to use ALSA output running realtime as a default.\n"
+"Example: enter '-o alsa -R' below to use ALSA output running realtime as a "
+"default.\n"
 msgstr ""
 "\n"
-"ここで入力する文字列は、実際のコマンドラインパラメータを解析する前のコマンドラインとして解析されます。ここで入力したものは、初期設定として作動し、「本当の」コマンドラインから上書きされるか、されないかも知れません。\n"
+"ここで入力する文字列は、実際のコマンドラインパラメータを解析する前のコマンド"
+"ラインとして解析されます。ここで入力したものは、初期設定として作動し、「本当"
+"の」コマンドラインから上書きされるか、されないかも知れません。\n"
 "\n"
-"例: リアルタイムで実行している ALSA 出力をデフォルトで使うには、下に '-o alsa -R' と入力します。\n"
+"例: リアルタイムで実行している ALSA 出力をデフォルトで使うには、下に '-o "
+"alsa -R' と入力します。\n"
 
 msgid ""
-"Paths must either be absolute or starting with a tilde, which will be expanded to the user's home directory.\n"
+"Paths must either be absolute or starting with a tilde, which will be "
+"expanded to the user's home directory.\n"
 "\n"
 "Drag and drop entries in the list to set the store order in the Music Store."
 msgstr ""
-"パスは絶対パスかチルダ付きで始まらなければなりません。そしてユーザのホームディレクトリに展開されます。\n"
+"パスは絶対パスかチルダ付きで始まらなければなりません。そしてユーザのホーム"
+"ディレクトリに展開されます。\n"
 "\n"
-"Music Store にストア順序を設定するにはエントリをリストにドラッグアンドドロップして下さい。"
+"Music Store にストア順序を設定するにはエントリをリストにドラッグアンドドロッ"
+"プして下さい。"
 
 msgid ""
 "\n"
-"Set the drive speed for CD playing in CD-ROM speed units. One speed unit equals to 176 kBps raw data reading speed. Warning: not all drives honor this setting.\n"
+"Set the drive speed for CD playing in CD-ROM speed units. One speed unit "
+"equals to 176 kBps raw data reading speed. Warning: not all drives honor "
+"this setting.\n"
 "\n"
-"Lower speed usually means less drive noise. However, when using Paranoia error correction modes for increased accuracy, generally much larger speeds are required to prevent buffer underruns (and thus audible drop-outs).\n"
+"Lower speed usually means less drive noise. However, when using Paranoia "
+"error correction modes for increased accuracy, generally much larger speeds "
+"are required to prevent buffer underruns (and thus audible drop-outs).\n"
 "\n"
-"Please note that these settings do not apply to CD Ripping, which always happens with maximum available speed and with error correction modes manually set before every run."
+"Please note that these settings do not apply to CD Ripping, which always "
+"happens with maximum available speed and with error correction modes "
+"manually set before every run."
 msgstr ""
 "\n"
-"CD のドライブ速度は、再生している CD-ROM の速度単位に設定して下さい。速度の1単位は、176kBps 生データの読み出し速度に等しいです。警告: 全てのドライブが、この設定を守るというわけではありません。\n"
+"CD のドライブ速度は、再生している CD-ROM の速度単位に設定して下さい。速度の1"
+"単位は、176kBps 生データの読み出し速度に等しいです。警告: 全てのドライブが、"
+"この設定を守るというわけではありません。\n"
 "\n"
-"通常、速度が低いとドライブのノイズが減ります。しかし、精度を増すために Paranoia エラー訂正モードを使う場合、一般的に、バッファアンダーランを防ぐため、より高い速度が要求されます (そして、このような可聴ドロップアウト)。\n"
+"通常、速度が低いとドライブのノイズが減ります。しかし、精度を増すために "
+"Paranoia エラー訂正モードを使う場合、一般的に、バッファアンダーランを防ぐた"
+"め、より高い速度が要求されます (そして、このような可聴ドロップアウト)。\n"
 "\n"
-"これらの設定は CD リッピングに適用されない点に注意して下さい。CD リッピングでは毎回実行する前に、利用できる最高速度やエラー訂正モードを手動で設定します。"
+"これらの設定は CD リッピングに適用されない点に注意して下さい。CD リッピングで"
+"は毎回実行する前に、利用できる最高速度やエラー訂正モードを手動で設定します。"
 
 msgid ""
 "\n"
-"Most drives let Aqualung know when a CD has been inserted or removed by providing a 'media changed' flag. However, some drives don't set this flag properly, and thus it may happen that a newly inserted CD remains unnoticed to Aqualung. In such cases, enabling this option should help."
+"Most drives let Aqualung know when a CD has been inserted or removed by "
+"providing a 'media changed' flag. However, some drives don't set this flag "
+"properly, and thus it may happen that a newly inserted CD remains unnoticed "
+"to Aqualung. In such cases, enabling this option should help."
 msgstr ""
 "\n"
-"大部分のドライブは、 CD が挿入されたり、取り外された時、 Aqualung に「メディアが交換されたこと」を通知します。しかし、いくつかのドライブはこの通知フラグを適切に設定しないため、時々、Aqualung は新しく挿入された CD を認識しないことがあります。そのような場合、このオプションを有効にすると軽減されるでしょう。"
+"大部分のドライブは、 CD が挿入されたり、取り外された時、 Aqualung に「メディ"
+"アが交換されたこと」を通知します。しかし、いくつかのドライブはこの通知フラグ"
+"を適切に設定しないため、時々、Aqualung は新しく挿入された CD を認識しないこと"
+"があります。そのような場合、このオプションを有効にすると軽減されるでしょう。"
 
 msgid ""
 "\n"
@@ -1807,6 +1940,12 @@ msgstr "マウスボタンを設定するにはここをクリック"
 msgid "Command"
 msgstr "コマンド"
 
+msgid "Error in title format string"
+msgstr "タイトル形式文字列にエラー"
+
+msgid "Error invalid character encoding"
+msgstr ""
+
 msgid "Main window"
 msgstr "メインウィンドウ"
 
@@ -1825,8 +1964,8 @@ msgstr "メインウィンドウのタイトルに曲名を表示する"
 msgid "Title Format"
 msgstr "タイトル形式"
 
-msgid "Programmable title format file"
-msgstr "プログラム可能なタイトル形式ファイル"
+msgid "Lua extension file"
+msgstr ""
 
 msgid "Systray"
 msgstr "システムトレイ"
@@ -1887,6 +2026,9 @@ msgstr "Music Store トラックのジャケットサムネイルだけを表示
 
 msgid "Don't show cover thumbnail in the main window"
 msgstr "メインウィンドウにジャケットのサムネイルを表示しない"
+
+msgid "Use cover from external graphics file first"
+msgstr ""
 
 msgid "Enable tooltips"
 msgstr "ツールチップを有効"
@@ -2120,6 +2262,9 @@ msgstr ""
 "新しいフレームを追加するとき、別タグの同じフレームから\n"
 "コンテンツの設定を試して下さい。"
 
+msgid "MPEG audio ID3v1/ID3v2 character encoding"
+msgstr ""
+
 msgid "Batch update & encode (mass tagger, CD ripper, file export)"
 msgstr "バッチ更新とエンコード (mass tagger、CD リッパ、ファイルエクスポート)"
 
@@ -2238,9 +2383,6 @@ msgstr "プレイリストの曲: "
 
 msgid "Active song in playlist: "
 msgstr "プレイリストのアクティブな曲: "
-
-msgid "Error in title format string"
-msgstr "タイトル形式文字列にエラー"
 
 msgid "(Untitled)"
 msgstr "(タイトルなし)"
@@ -2401,11 +2543,13 @@ msgid "Remove files"
 msgstr "ファイルを削除"
 
 msgid ""
-"The selected files will be deleted from the filesystem. No recovery will be possible after this operation.\n"
+"The selected files will be deleted from the filesystem. No recovery will be "
+"possible after this operation.\n"
 "\n"
 "Do you want to proceed?"
 msgstr ""
-"選択したファイルはファイルシステムから削除されます。この操作後はリカバリできません。\n"
+"選択したファイルはファイルシステムから削除されます。この操作後はリカバリでき"
+"ません。\n"
 "\n"
 "続けますか？"
 
@@ -2802,8 +2946,12 @@ msgid "artists"
 msgstr "アーティスト"
 
 #, c-format
-msgid "File \"%s\" does not exist or your write permission has been withdrawn. Check if the partition containing the store file has been unmounted."
-msgstr "ファイル \"%s\" は存在していないか、書き込みができません。storeファイルを含むパーティションが既にアンマウントされてないかチェックして下さい"
+msgid ""
+"File \"%s\" does not exist or your write permission has been withdrawn. "
+"Check if the partition containing the store file has been unmounted."
+msgstr ""
+"ファイル \"%s\" は存在していないか、書き込みができません。storeファイルを含む"
+"パーティションが既にアンマウントされてないかチェックして下さい"
 
 msgid "Build / Update store from filesystem..."
 msgstr "ファイルシステムからストアを、ビルド / 更新..."
@@ -3038,7 +3186,8 @@ msgstr "日"
 msgid "All Files"
 msgstr "全てのファイル"
 
-msgid "Extended Title Format Files (*.lua)"
+#, fuzzy
+msgid "Lua Extension Files (*.lua)"
 msgstr "拡張タイトルフォーマットファイル (*.lua)"
 
 msgid "Music Store Files (*.xml)"
@@ -3103,6 +3252,21 @@ msgstr "レジューム"
 
 msgid "Calculating volume level"
 msgstr "音量レベルの計算中"
+
+msgid "Compression: Fast"
+msgstr "圧縮: 高速 (Fast)"
+
+msgid "Compression: Normal"
+msgstr "圧縮: 標準 (Normal)"
+
+msgid "Compression: High"
+msgstr "圧縮: 高音質 (High)"
+
+msgid "Compression: Extra High"
+msgstr "圧縮: 超高音質 (Extra High)"
+
+msgid "Compression: Insane"
+msgstr "圧縮: 正気でない (Insane)"
 
 msgid "Profile: Telephone"
 msgstr "プロファイル: 電話 (Telephone)"
@@ -3173,18 +3337,8 @@ msgstr "bit double"
 msgid "encoding"
 msgstr "エンコード"
 
-msgid "Compression: Fast"
-msgstr "圧縮: 高速 (Fast)"
+#~ msgid "Lua (programmable title formatting) support\n"
+#~ msgstr "Lua サポート (プログラム可能なタイトルフォーマット)\n"
 
-msgid "Compression: Normal"
-msgstr "圧縮: 標準 (Normal)"
-
-msgid "Compression: High"
-msgstr "圧縮: 高音質 (High)"
-
-msgid "Compression: Extra High"
-msgstr "圧縮: 超高音質 (Extra High)"
-
-msgid "Compression: Insane"
-msgstr "圧縮: 正気でない (Insane)"
-
+#~ msgid "Programmable title format file"
+#~ msgstr "プログラム可能なタイトル形式ファイル"

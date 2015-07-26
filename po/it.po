@@ -6,63 +6,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: it\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-18 23:07+0200\n"
+"Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
+"POT-Creation-Date: 2015-07-26 21:08+0200\n"
 "PO-Revision-Date: 2008-04-19 21:55+0200\n"
 "Last-Translator: Michele Petrecca <michelinux@alice.it>\n"
 "Language-Team: Italiano\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-
-msgid "About"
-msgstr "Altro"
-
-msgid "Build version: "
-msgstr "Versione:"
-
-msgid "Homepage:"
-msgstr "Homepage:"
-
-msgid "Authors:"
-msgstr "Autori"
-
-msgid "Core design, engineering & programming:\n"
-msgstr "Core design, engineering & programming:\n"
-
-msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr "Supporto interfaccia, look & feel, GUI hacks:\n"
-
-msgid "Programming, GUI engineering:\n"
-msgstr "Programming, GUI engineering:\n"
-
-msgid "Translators:"
-msgstr "Traduttori:"
-
-msgid "German:\n"
-msgstr "Tedesco:\n"
-
-msgid "Hungarian:\n"
-msgstr "Ungherese:\n"
-
-msgid "Italian:\n"
-msgstr "Italiano:\n"
-
-msgid "Russian:\n"
-msgstr "Russo:\n"
-
-msgid "Ukrainian:\n"
-msgstr "Ucraino:\n"
-
-msgid "Graphics:"
-msgstr "Grafici:"
-
-msgid "Logo, icons:\n"
-msgstr "Icone, logo:\n"
-
-msgid "This Aqualung binary is compiled with:"
-msgstr "Questo binario Aqualung è compilato con:"
 
 msgid "Optional features:"
 msgstr "Caratteristiche opzionali:"
@@ -82,6 +35,10 @@ msgstr "Supporto Conversione Frequenza di Campionamento\n"
 msgid "iRiver iFP driver support\n"
 msgstr "Driver supporto iRiver iFP\n"
 
+#, fuzzy
+msgid "JACK port management support\n"
+msgstr "Impostazioni JACK"
+
 msgid "Loop playback support\n"
 msgstr ""
 
@@ -90,6 +47,10 @@ msgstr "Supporto Systray\n"
 
 msgid "Podcast support\n"
 msgstr "Supporto Podcast\n"
+
+#, fuzzy
+msgid "Lua extension support\n"
+msgstr "Disabilita il supporto alle diverse interfacce"
 
 msgid "Decoding support:"
 msgstr "Supporto decoding:"
@@ -136,6 +97,10 @@ msgstr "LAME (MP3)\n"
 msgid "Output driver support:"
 msgstr "Driver di uscita supportato:"
 
+#, fuzzy
+msgid "sndio Audio\n"
+msgstr "Audio OSS\n"
+
 msgid "OSS Audio\n"
 msgstr "Audio OSS\n"
 
@@ -145,8 +110,90 @@ msgstr "Audio ALSA\n"
 msgid "JACK Audio Server\n"
 msgstr "Server audio JACK\n"
 
+msgid "PulseAudio\n"
+msgstr ""
+
 msgid "Win32 Sound API\n"
 msgstr "API Sound Win32\n"
+
+msgid "About"
+msgstr "Altro"
+
+msgid "Build version: "
+msgstr "Versione:"
+
+msgid "Homepage:"
+msgstr "Homepage:"
+
+msgid "Authors:"
+msgstr "Autori"
+
+msgid "Core design, engineering & programming:\n"
+msgstr "Core design, engineering & programming:\n"
+
+msgid "Skin support, look & feel, GUI hacks:\n"
+msgstr "Supporto interfaccia, look & feel, GUI hacks:\n"
+
+msgid "Programming, GUI engineering:\n"
+msgstr "Programming, GUI engineering:\n"
+
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr ""
+
+#, fuzzy
+msgid "Miscellaneous, minimalism:\n"
+msgstr "Varie"
+
+msgid "Translators:"
+msgstr "Traduttori:"
+
+msgid "Chinese (simplified):\n"
+msgstr ""
+
+msgid "Czech:\n"
+msgstr ""
+
+msgid "Dutch:\n"
+msgstr ""
+
+msgid "French:\n"
+msgstr ""
+
+msgid "German:\n"
+msgstr "Tedesco:\n"
+
+msgid "Hungarian:\n"
+msgstr "Ungherese:\n"
+
+msgid "Italian:\n"
+msgstr "Italiano:\n"
+
+msgid "Japanese:\n"
+msgstr ""
+
+msgid "Polish:\n"
+msgstr ""
+
+msgid "Russian:\n"
+msgstr "Russo:\n"
+
+msgid "Spanish:\n"
+msgstr ""
+
+msgid "Swedish:\n"
+msgstr ""
+
+msgid "Ukrainian:\n"
+msgstr "Ucraino:\n"
+
+msgid "Graphics:"
+msgstr "Grafici:"
+
+msgid "Logo, icons:\n"
+msgstr "Icone, logo:\n"
+
+msgid "This Aqualung binary is compiled with:"
+msgstr "Questo binario Aqualung è compilato con:"
 
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
@@ -398,125 +445,6 @@ msgstr "Lettura in corso dei file"
 msgid "Removing non-existing files"
 msgstr "Rimozione di un file non esistente"
 
-msgid "Unknown disc"
-msgstr "Disco sconosciuto"
-
-msgid "No disc"
-msgstr "Nessun disco"
-
-msgid "CDDB query"
-msgstr "Interrogazione CDDB"
-
-msgid "Retrieving matches from server..."
-msgstr "Recupero informazioni in corso dal server..."
-
-msgid "Connecting to CDDB server..."
-msgstr "Connessione in corso al server CDDB..."
-
-msgid "Error"
-msgstr "Errore"
-
-msgid "An error occurred while attempting to connect to the CDDB server."
-msgstr "Si è verificato un errore durante il tentativo di connessione al server CDDB."
-
-msgid "Warning"
-msgstr "Attenzione"
-
-msgid "No matching record found."
-msgstr "Nessuna registrazione coincidente con le parole della ricerca è stata trovata"
-
-msgid "Import as Sort Key"
-msgstr ""
-
-msgid "Import as Title"
-msgstr "Importa come titolo"
-
-msgid "Import as Year"
-msgstr "Importa in funzione dell'anno"
-
-msgid ""
-"Artist appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Il nome dell'artista sembra essere scritto tutto a lettere minuscole.\n"
-"Vuoi continuare?"
-
-msgid ""
-"Artist appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Il nome dell'artista sembra essere scritto tutto in lettere maiuscole.\n"
-"Vuoi continuare?"
-
-msgid ""
-"Title appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Il tittolo sembra essere scritto tutto a lettere minuscole.\n"
-"Vuoi continuare?"
-
-msgid ""
-"Title appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Il titolo sembra essere scritto tutto a lettere minuscole.\n"
-"Vuoi continuare?"
-
-msgid ""
-"It is very likely that the year is wrong.\n"
-"Do you want to proceed?"
-msgstr ""
-"Potrebbe darsi che l'anno non risulta corretto.\n"
-"Vuoi continuare?"
-
-msgid "The email address provided for submission is invalid."
-msgstr "L'indirizzo e-mail indicato non è valido."
-
-msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "E' avvenuto in errore durante l'interrogazione della voce al server CDDB."
-
-msgid "Correct existing record"
-msgstr "Correggi le voci esistenti"
-
-msgid "Submit new record"
-msgstr "Inserisci una nuova voce"
-
-msgid "Matches:"
-msgstr ""
-
-msgid "Artist:"
-msgstr "Artista:"
-
-msgid "Title:"
-msgstr "Titolo:"
-
-msgid "Year:"
-msgstr "Anno:"
-
-msgid "Category:"
-msgstr "Categoria:"
-
-msgid "(choose a category)"
-msgstr "(scegli una categoria)"
-
-msgid "Genre:"
-msgstr "Genere:"
-
-msgid "Extended data:"
-msgstr "Dati estesi:"
-
-msgid "Import as Artist"
-msgstr "Importa come artista"
-
-msgid "Add to Comments"
-msgstr "Aggiungi ai commenti"
-
-msgid "Tracks"
-msgstr "Tracce"
-
-msgid "You have to provide an email address for CDDB submission."
-msgstr "Devi indicare un indirizzo e-mail per il server CDDB."
-
 msgid "Please select the directory for ripped files."
 msgstr "Seleziona la cartella per i file convertiti"
 
@@ -556,8 +484,17 @@ msgstr ""
 msgid "Rip CD"
 msgstr "Rip CD"
 
+msgid "Artist:"
+msgstr "Artista:"
+
 msgid "Album:"
 msgstr "Album:"
+
+msgid "Year:"
+msgstr "Anno:"
+
+msgid "Genre:"
+msgstr "Genere:"
 
 msgid "Rip"
 msgstr "Rip"
@@ -619,6 +556,9 @@ msgstr "Numero di tentativi illimitati su letture fallite"
 msgid "Maximum number of retries:"
 msgstr "Numero massimo di tentativi:"
 
+msgid "Error"
+msgstr "Errore"
+
 msgid ""
 "\n"
 "Destination directory is not read-write accessible!"
@@ -650,6 +590,116 @@ msgstr "Chiudi la finestra quando ha terminato"
 msgid "Close"
 msgstr "Chiudi"
 
+msgid "Unknown disc"
+msgstr "Disco sconosciuto"
+
+msgid "No disc"
+msgstr "Nessun disco"
+
+msgid "CDDB query"
+msgstr "Interrogazione CDDB"
+
+msgid "Retrieving matches from server..."
+msgstr "Recupero informazioni in corso dal server..."
+
+msgid "Connecting to CDDB server..."
+msgstr "Connessione in corso al server CDDB..."
+
+msgid "An error occurred while attempting to connect to the CDDB server."
+msgstr ""
+"Si è verificato un errore durante il tentativo di connessione al server CDDB."
+
+msgid "Warning"
+msgstr "Attenzione"
+
+msgid "No matching record found."
+msgstr ""
+"Nessuna registrazione coincidente con le parole della ricerca è stata trovata"
+
+msgid "Import as Sort Key"
+msgstr ""
+
+msgid "Import as Title"
+msgstr "Importa come titolo"
+
+msgid "Import as Year"
+msgstr "Importa in funzione dell'anno"
+
+msgid ""
+"Artist appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Il nome dell'artista sembra essere scritto tutto a lettere minuscole.\n"
+"Vuoi continuare?"
+
+msgid ""
+"Artist appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Il nome dell'artista sembra essere scritto tutto in lettere maiuscole.\n"
+"Vuoi continuare?"
+
+msgid ""
+"Title appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Il tittolo sembra essere scritto tutto a lettere minuscole.\n"
+"Vuoi continuare?"
+
+msgid ""
+"Title appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Il titolo sembra essere scritto tutto a lettere minuscole.\n"
+"Vuoi continuare?"
+
+msgid ""
+"It is very likely that the year is wrong.\n"
+"Do you want to proceed?"
+msgstr ""
+"Potrebbe darsi che l'anno non risulta corretto.\n"
+"Vuoi continuare?"
+
+msgid "The email address provided for submission is invalid."
+msgstr "L'indirizzo e-mail indicato non è valido."
+
+msgid "An error occurred while submitting the record to the CDDB server."
+msgstr ""
+"E' avvenuto in errore durante l'interrogazione della voce al server CDDB."
+
+msgid "Correct existing record"
+msgstr "Correggi le voci esistenti"
+
+msgid "Submit new record"
+msgstr "Inserisci una nuova voce"
+
+msgid "Matches:"
+msgstr ""
+
+msgid "Title:"
+msgstr "Titolo:"
+
+msgid "Category:"
+msgstr "Categoria:"
+
+msgid "(choose a category)"
+msgstr "(scegli una categoria)"
+
+msgid "Extended data:"
+msgstr "Dati estesi:"
+
+msgid "Import as Artist"
+msgstr "Importa come artista"
+
+msgid "Add to Comments"
+msgstr "Aggiungi ai commenti"
+
+msgid "Tracks"
+msgstr "Tracce"
+
+msgid "You have to provide an email address for CDDB submission."
+msgstr "Devi indicare un indirizzo e-mail per il server CDDB."
+
 msgid "Unknown Album"
 msgstr "Album sconosciuto"
 
@@ -665,22 +715,37 @@ msgstr "Copia"
 msgid "Help"
 msgstr "Aiuto"
 
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "\n"
 "The template string you enter here will be used to construct the filename of "
-"the exported files. The Artist, Record and Track names are denoted by %%a, "
-"%%r and %%t. The track number and format-dependent file extension are "
-"denoted by %%n and %%x, respectively. The flag %%i gives an identifier "
-"which is unique within an export session."
+"the exported files. The Original filename, Artist, Record and Track names "
+"are denoted by %%o, %%a, %%r and %%t. The track number and format-dependent "
+"file extension are denoted by %%n and %%x, respectively. %%i gives an "
+"identifier which is unique within an export session."
 msgstr ""
 "\n"
 "La stringa che inserisci qui, verrà utilizzata per costruire il nome del "
 "file del file esportato. L'Artista, la Registrazione e il nome della Traccia "
-"verranno indicate con  %%a, %%r e %%t. Il numero della traccia e il "
-"formato del file (estensione) verranno riportate come segue  %%n e %%x, "
+"verranno indicate con  %%a, %%r e %%t. Il numero della traccia e il formato "
+"del file (estensione) verranno riportate come segue  %%n e %%x, "
 "rispettivamente. La variabile %%i fornisce un identificatore unico "
 "all'interno di ogni sessione esportata."
+
+msgid "Exporting files"
+msgstr "Esportazione file in corso"
+
+msgid "Source file:"
+msgstr "File sorgente:"
+
+msgid "Target file:"
+msgstr "File \"obiettivo\":"
+
+msgid "Progress:"
+msgstr "Progresso:"
+
+msgid "Error in format string"
+msgstr "Errore nel formato della stringa"
 
 msgid "Export files"
 msgstr "Esporta file"
@@ -711,27 +776,14 @@ msgid "Filter"
 msgstr "Filtro"
 
 msgid "Do not reencode files already being in the target format"
-msgstr "Non codificare di nuovo i file che gia' si trovano nel formato di destinazione"
+msgstr ""
+"Non codificare di nuovo i file che gia' si trovano nel formato di "
+"destinazione"
 
 msgid ""
 "Do not reencode files\n"
 "matching wildcard:"
 msgstr ""
-
-msgid "Error in format string"
-msgstr "Errore nel formato della stringa"
-
-msgid "Exporting files"
-msgstr "Esportazione file in corso"
-
-msgid "Source file:"
-msgstr "File sorgente:"
-
-msgid "Target file:"
-msgstr "File \"obiettivo\":"
-
-msgid "Progress:"
-msgstr "Progresso:"
 
 msgid "*File info"
 msgstr "*Info file"
@@ -837,6 +889,16 @@ msgstr "campo:"
 msgid "tag:"
 msgstr "tag:"
 
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld Hz"
+
+msgid "MONO"
+msgstr "MONO"
+
+msgid "STEREO"
+msgstr "STEREO"
+
 msgid "Audio CD"
 msgstr "CD Audio"
 
@@ -858,18 +920,8 @@ msgstr "Lunghezza:"
 msgid "Samplerate:"
 msgstr "Campionamento:"
 
-#, c-format
-msgid "%ld Hz"
-msgstr "%ld Hz"
-
 msgid "Channel count:"
 msgstr "Modalita' canali:"
-
-msgid "MONO"
-msgstr "MONO"
-
-msgid "STEREO"
-msgstr "STEREO"
 
 msgid "Bandwidth:"
 msgstr "Banda passante:"
@@ -904,6 +956,9 @@ msgstr "Strumenti"
 msgid "Name"
 msgstr "Nome"
 
+msgid "STOPPING"
+msgstr ""
+
 msgid "Output:"
 msgstr "Uscita:"
 
@@ -912,6 +967,14 @@ msgstr "Nessuna uscita"
 
 msgid "SRC Type: "
 msgstr "Tipo SRC: "
+
+#, c-format
+msgid "Loop range: %d-%d%% [%s - %s]"
+msgstr ""
+
+#, c-format
+msgid "Loop range: %d-%d%%"
+msgstr ""
 
 msgid ""
 "One or more stores in Music Store have been modified.\n"
@@ -961,13 +1024,12 @@ msgstr "Bilanciamento: %s"
 msgid "JACK connection lost"
 msgstr "Connessione a JACK persa"
 
-msgid ""
-"JACK has either been shutdown or it disconnected Aqualung because it was not "
-"fast enough. All you can do now is restart both JACK and Aqualung."
+#, fuzzy, c-format
+msgid "JACK has either been shutdown or it disconnected Aqualung. Reason: %s"
 msgstr ""
 "JACK è stato chiuso oppure ha disconnesso Aqualung perché il player non era "
-"sufficientemente veloce. Per continuare a sentire le playlist devi (ri)"
-"avviare entrambe."
+"sufficientemente veloce. Per continuare a sentire le playlist devi "
+"(ri)avviare entrambe."
 
 msgid "Warn me if the Window Manager does not support system tray"
 msgstr "Avvisami se il Window Manager non supporta la system tray"
@@ -999,6 +1061,10 @@ msgstr "Ferma"
 
 msgid "Next song"
 msgstr "Canzone successiva"
+
+#, fuzzy
+msgid "Play/Pause"
+msgstr "Pausa"
 
 msgid "Play"
 msgstr "Riproduci"
@@ -1049,7 +1115,8 @@ msgid "%d / %d directories"
 msgstr "%d / %d cartelle"
 
 msgid "Cannot write to selected directory. Please select another directory."
-msgstr "Non è possibile scrivere nella cartella indicata; indica un altro percorso."
+msgstr ""
+"Non è possibile scrivere nella cartella indicata; indica un altro percorso."
 
 msgid "Done"
 msgstr "Fatto"
@@ -1179,9 +1246,6 @@ msgstr "Gestore dispositivo iFP (modalità download)"
 msgid "Selected files:"
 msgstr "File selezionato:"
 
-msgid "label_songs"
-msgstr "etichetta canzoni"
-
 msgid "<b>Songs info</b>"
 msgstr "<b>Info canzoni</b>"
 
@@ -1238,36 +1302,6 @@ msgstr "_Download"
 
 msgid "_Abort"
 msgstr "_Annullato"
-
-msgid "Success"
-msgstr "L'operazione ha avuto successo"
-
-msgid "Memory allocation error"
-msgstr "Errore di allocazione della memoria"
-
-msgid "Unable to open file"
-msgstr "Impossibile aprire il file"
-
-msgid "No metadata support for this format"
-msgstr "Nessun metadato supportato per questo formato di file "
-
-msgid "File is not writable"
-msgstr "Il file non è scrivibile"
-
-msgid "Invalid 'Track no.' field value"
-msgstr "Il campo 'Numero traccia' presenta un valore non corretto"
-
-msgid "Invalid 'Genre' field value"
-msgstr "Il campo 'Genere' presenta un valore non corretto"
-
-msgid "Conversion to target charset failed"
-msgstr ""
-
-msgid "Internal error"
-msgstr "Errore interno"
-
-msgid "Unknown error"
-msgstr "Errore sconosciuto"
 
 msgid "Album"
 msgstr "Album"
@@ -1563,6 +1597,36 @@ msgstr "Informazioni modulo"
 msgid "Unknown"
 msgstr "Sconosciuto"
 
+msgid "Success"
+msgstr "L'operazione ha avuto successo"
+
+msgid "Memory allocation error"
+msgstr "Errore di allocazione della memoria"
+
+msgid "Unable to open file"
+msgstr "Impossibile aprire il file"
+
+msgid "No metadata support for this format"
+msgstr "Nessun metadato supportato per questo formato di file "
+
+msgid "File is not writable"
+msgstr "Il file non è scrivibile"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "Il campo 'Numero traccia' presenta un valore non corretto"
+
+msgid "Invalid 'Genre' field value"
+msgstr "Il campo 'Genere' presenta un valore non corretto"
+
+msgid "Conversion to target charset failed"
+msgstr ""
+
+msgid "Internal error"
+msgstr "Errore interno"
+
+msgid "Unknown error"
+msgstr "Errore sconosciuto"
+
 msgid "Other"
 msgstr "Altro"
 
@@ -1651,8 +1715,10 @@ msgstr "*Music Store"
 msgid "Do you want to save store \"%s\" before removing from Music Store?"
 msgstr "Vuoi salvare lo store \"%s\" prima della rimozione dal Musci Store?"
 
-msgid "You will need to restart Aqualung for the following changes to take effect:"
-msgstr "Necessiti di riavviare Aqualung affinché i seguenti cambi abbiano effetto:"
+msgid ""
+"You will need to restart Aqualung for the following changes to take effect:"
+msgstr ""
+"Necessiti di riavviare Aqualung affinché i seguenti cambi abbiano effetto:"
 
 msgid "Select a font..."
 msgstr "Seleziona una font..."
@@ -1668,6 +1734,10 @@ msgstr "r"
 
 msgid "unreachable"
 msgstr "non raggiungibile"
+
+#, fuzzy
+msgid "Please select a Lua Extension File."
+msgstr "Seleziona un percorso locale."
 
 msgid "Please select a Music Store database."
 msgstr "Seleziona un database del Music Store."
@@ -1691,6 +1761,42 @@ msgstr ""
 "Il modello che inserirai qui verrà utilizzato per costruire un titolo dal "
 "nome di un Artista, una Registrazione e una Traccia. Questo verrà indicato "
 "con %%a, %%r and %%t, rispettivamente.\n"
+
+msgid ""
+"\n"
+"If you have non-standard ID3v1/ID3v2 character encoding MPEG audio file, "
+"please enter suitable character encoding in this entry (see below). If this "
+"entry is blank, the standard character encoding (ISO-8859-1) is used.\n"
+"\n"
+"For example:\n"
+"  Japanese: CP932 (SHIFT_JIS variant)\n"
+"  Korean: EUC-KR\n"
+"  Simp. Chinese: GB2312\n"
+"  Trad. Chinese: BIG5\n"
+"  Greek: ISO-8859-7\n"
+"  Hebrew: ISO-8859-8\n"
+"  Cyrillic: CP1251\n"
+"  Thai: ISO-8859-11\n"
+"  Arabic: CP1256\n"
+"  Turkish: ISO-8859-9\n"
+"  Latin Extended: ISO-8859-2\n"
+"  Central European: CP1250\n"
+"  Latin1 (standard): ISO-8859-1\n"
+"\n"
+"NOTE: There might be a more suitable character encoding for your language."
+msgstr ""
+
+msgid ""
+"\n"
+"The file you enter/choose here will set the Lua program to use to extend "
+"Aqualung. See the Aqualung manual for details. Here is a quick example of "
+"what you can use in the file:\n"
+"\n"
+"function playlist_title()\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
+"end"
+msgstr ""
 
 msgid ""
 "\n"
@@ -1740,43 +1846,123 @@ msgid ""
 "Example: localhost, .localdomain, .my.domain.com"
 msgstr ""
 
-msgid "Title format"
-msgstr "Formato del titolo"
+msgid "Embed playlist into main window"
+msgstr "Integra la playlist all'interno dell'area principale"
 
-msgid "Implicit command line"
-msgstr "Comandi impliciti ad una shell"
+#, fuzzy
+msgid "Enable systray"
+msgstr "Abilita la barra di stato"
 
-msgid "Miscellaneous"
-msgstr "Varie"
+#, fuzzy
+msgid "Do nothing"
+msgstr "Non uscire"
 
-msgid "Enable tooltips"
-msgstr "Abilita suggerimenti"
+#, fuzzy
+msgid "Change volume"
+msgstr "Calcola volume"
 
-msgid "Put control buttons at the bottom of playlist"
-msgstr "Sposta i pulsanti di controllo sotto la playlist"
+#, fuzzy
+msgid "Change balance"
+msgstr "Cambio"
+
+msgid "Change song position"
+msgstr ""
+
+#, fuzzy
+msgid "Change current song"
+msgstr "Ripeti la canzone corrente"
+
+msgid "Left button"
+msgstr ""
+
+msgid "Middle button"
+msgstr ""
+
+msgid "Right button"
+msgstr ""
+
+msgid "Button"
+msgstr ""
+
+msgid "Left and right mouse buttons are reserved."
+msgstr ""
+
+msgid "This button is already assigned."
+msgstr ""
+
+msgid "Add mouse button command"
+msgstr ""
+
+msgid "Mouse button"
+msgstr ""
+
+msgid "Click here to set mouse button"
+msgstr ""
+
+#, fuzzy
+msgid "Command"
+msgstr "Commento"
+
+msgid "Error in title format string"
+msgstr "Errore nel titolo (formato stringa)"
+
+msgid "Error invalid character encoding"
+msgstr ""
+
+msgid "Main window"
+msgstr ""
 
 msgid "Disable control buttons relief"
 msgstr "Disabilita il rilievo per i pulsanti non attivi"
 
-msgid "Keep main window always on top"
-msgstr "Mantieni la finestra sopra le altre"
-
-msgid "Simple view in LADSPA patch builder"
+msgid "Combine play and pause buttons"
 msgstr ""
 
-msgid "United windows minimization"
-msgstr "Minimizza in contemporanea la finestra principale e il Music Store"
+msgid "Keep main window always on top"
+msgstr "Mantieni la finestra sopra le altre"
 
 msgid "Show song name in the main window's title"
 msgstr ""
 "Mostra il titolo della canzone nella barra del titolo della finestra "
 "principale"
 
-msgid "Show hidden files and directories in file choosers"
-msgstr "Mostra file e cartelle nascoste nel percorso di scelta del file"
+#, fuzzy
+msgid "Title Format"
+msgstr "Formato del titolo"
 
-msgid "Show tags tab first in the file info dialog"
+msgid "Lua extension file"
 msgstr ""
+
+#, fuzzy
+msgid "Systray"
+msgstr "Supporto Systray\n"
+
+msgid "Start minimized"
+msgstr ""
+
+msgid "Play/Stop song"
+msgstr ""
+
+msgid "Play/Pause song"
+msgstr ""
+
+msgid "Mouse wheel"
+msgstr ""
+
+msgid "Vertical mouse wheel:"
+msgstr ""
+
+msgid "Horizontal mouse wheel:"
+msgstr ""
+
+msgid "Mouse buttons"
+msgstr ""
+
+msgid "Miscellaneous"
+msgstr "Varie"
+
+msgid "Implicit command line"
+msgstr "Comandi impliciti ad una shell"
 
 msgid "Cover art"
 msgstr "Copertina"
@@ -1808,11 +1994,29 @@ msgstr ""
 msgid "Don't show cover thumbnail in the main window"
 msgstr "Non mostrare la miniatura dell'album nella finestra principale"
 
+msgid "Use cover from external graphics file first"
+msgstr ""
+
+msgid "Enable tooltips"
+msgstr "Abilita suggerimenti"
+
+msgid "Simple view in LADSPA patch builder"
+msgstr ""
+
+msgid "United windows minimization"
+msgstr "Minimizza in contemporanea la finestra principale e il Music Store"
+
+msgid "Show hidden files and directories in file choosers"
+msgstr "Mostra file e cartelle nascoste nel percorso di scelta del file"
+
+msgid "Show tags tab first in the file info dialog"
+msgstr ""
+
 msgid "Playlist"
 msgstr "Playlist"
 
-msgid "Embed playlist into main window"
-msgstr "Integra la playlist all'interno dell'area principale"
+msgid "Put control buttons at the bottom of playlist"
+msgstr "Sposta i pulsanti di controllo sotto la playlist"
 
 msgid "Save and restore the playlist on exit/startup"
 msgstr "Salva la playlist all'uscita e ripristinala all'avvio"
@@ -1849,6 +2053,10 @@ msgstr "Mostra lunghezza della traccia"
 
 msgid "Show active track name in bold"
 msgstr "Mostra la traccia attiva in grassetto"
+
+#, fuzzy
+msgid "Automatically roll to active track"
+msgstr "Aggiungi automaticamente i CD alla playlist"
 
 msgid "Enable rules hint"
 msgstr "Abilita suggerimenti"
@@ -2022,6 +2230,9 @@ msgid ""
 "from another tag's equivalent frame."
 msgstr ""
 
+msgid "MPEG audio ID3v1/ID3v2 character encoding"
+msgstr ""
+
 msgid "Batch update & encode (mass tagger, CD ripper, file export)"
 msgstr ""
 
@@ -2140,9 +2351,6 @@ msgstr "Canzone nella playlist: "
 
 msgid "Active song in playlist: "
 msgstr "Traccia in esecuzione nella playlist: "
-
-msgid "Error in title format string"
-msgstr "Errore nel titolo (formato stringa)"
 
 msgid "(Untitled)"
 msgstr "(Senza titolo)"
@@ -2289,6 +2497,9 @@ msgstr "Leggi di nuovo i metadati del file"
 
 msgid "File info..."
 msgstr "Informazioni sul file..."
+
+msgid "Roll to active song"
+msgstr ""
 
 msgid "Stop adding files"
 msgstr ""
@@ -2700,6 +2911,12 @@ msgstr "artista"
 msgid "artists"
 msgstr "artisti"
 
+#, c-format
+msgid ""
+"File \"%s\" does not exist or your write permission has been withdrawn. "
+"Check if the partition containing the store file has been unmounted."
+msgstr ""
+
 msgid "Build / Update store from filesystem..."
 msgstr "Costruisci / Aggiorna Music Store dal filesystem..."
 
@@ -2931,6 +3148,10 @@ msgstr "giorni"
 msgid "All Files"
 msgstr "Tutti i file"
 
+#, fuzzy
+msgid "Lua Extension Files (*.lua)"
+msgstr "Music Store Files (*.xml)"
+
 msgid "Music Store Files (*.xml)"
 msgstr "Music Store Files (*.xml)"
 
@@ -2993,6 +3214,21 @@ msgstr "Recupera"
 
 msgid "Calculating volume level"
 msgstr "Calcolo volume livello in corso"
+
+msgid "Compression: Fast"
+msgstr "Compressione: Veloce"
+
+msgid "Compression: Normal"
+msgstr "Compressione: Normale"
+
+msgid "Compression: High"
+msgstr "Compressione: Alta"
+
+msgid "Compression: Extra High"
+msgstr "Compressione: Molto Alta"
+
+msgid "Compression: Insane"
+msgstr "Compressione: Insana"
 
 msgid "Profile: Telephone"
 msgstr "Profilo: Telefono"
@@ -3063,20 +3299,5 @@ msgstr "bit double"
 msgid "encoding"
 msgstr "Codifica"
 
-msgid "Compression: Fast"
-msgstr "Compressione: Veloce"
-
-msgid "Compression: Normal"
-msgstr "Compressione: Normale"
-
-msgid "Compression: High"
-msgstr "Compressione: Alta"
-
-msgid "Compression: Extra High"
-msgstr "Compressione: Molto Alta"
-
-msgid "Compression: Insane"
-msgstr "Compressione: Insana"
-
-
-
+#~ msgid "label_songs"
+#~ msgstr "etichetta canzoni"

@@ -1,68 +1,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Aqualung svn version 1055\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-20 09:36+0100\n"
+"Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
+"POT-Creation-Date: 2015-07-26 21:08+0200\n"
 "PO-Revision-Date: 2009-01-21 15:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Poedit-Language: Swedish\n"
 "X-Poedit-Country: SWEDEN\n"
-
-msgid "About"
-msgstr "Om"
-
-msgid "Build version: "
-msgstr "Byggversion:"
-
-msgid "Homepage:"
-msgstr "Webbsida:"
-
-msgid "Authors:"
-msgstr "Upphovsmän:"
-
-msgid "Core design, engineering & programming:\n"
-msgstr "Grundläggande formgivning, konstruktion & programmering:\n"
-
-msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr "Skalstöd, utseende & känsla samt GUI hacks (gags-hack):\n"
-
-msgid "Programming, GUI engineering:\n"
-msgstr "Programmering & GUI engineering (gags-konstruktion):\n"
-
-msgid "OpenBSD compatibility, metadata tweaks:\n"
-msgstr "OpenBSD-kompatibilitet & metadata-finjusteringar:\n"
-
-msgid "Translators:"
-msgstr "Översättare:"
-
-msgid "German:\n"
-msgstr "Tyska:\n"
-
-msgid "Hungarian:\n"
-msgstr "Ungerska:\n"
-
-msgid "Italian:\n"
-msgstr "Italienska:\n"
-
-msgid "Russian:\n"
-msgstr "Ryska:\n"
-
-msgid "Ukrainian:\n"
-msgstr "Ukrainska:\n"
-
-msgid "Graphics:"
-msgstr "Grafik:"
-
-msgid "Logo, icons:\n"
-msgstr "Logotyp och ikoner:\n"
-
-msgid "This Aqualung binary is compiled with:"
-msgstr "Denna Aqualung-binär är kompilerad med:"
 
 msgid "Optional features:"
 msgstr "Valbara funktioner:"
@@ -82,6 +32,10 @@ msgstr "Stöd för samplingsfrekvenskonverterare\n"
 msgid "iRiver iFP driver support\n"
 msgstr "Stöd för iRiver iFP-drivrutin\n"
 
+#, fuzzy
+msgid "JACK port management support\n"
+msgstr "JACK-portinställning"
+
 msgid "Loop playback support\n"
 msgstr ""
 
@@ -91,8 +45,9 @@ msgstr "Stöd för systembricka\n"
 msgid "Podcast support\n"
 msgstr "Stöd för poddsändning\n"
 
-msgid "Lua (programmable title formatting) support\n"
-msgstr "Stöd för Lua (programmeringsbar titelformatering)\n"
+#, fuzzy
+msgid "Lua extension support\n"
+msgstr "Inaktivera skalstöd"
 
 msgid "Decoding support:"
 msgstr "Avkodningsstöd:"
@@ -151,23 +106,124 @@ msgstr "ALSA Audio\n"
 msgid "JACK Audio Server\n"
 msgstr "JACK Audio Server\n"
 
+#, fuzzy
+msgid "PulseAudio\n"
+msgstr "sndio Audio\n"
+
 msgid "Win32 Sound API\n"
 msgstr "Win32 Sound API\n"
 
-msgid ""
-"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
-"\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+msgid "About"
+msgstr "Om"
+
+msgid "Build version: "
+msgstr "Byggversion:"
+
+msgid "Homepage:"
+msgstr "Webbsida:"
+
+msgid "Authors:"
+msgstr "Upphovsmän:"
+
+msgid "Core design, engineering & programming:\n"
+msgstr "Grundläggande formgivning, konstruktion & programmering:\n"
+
+msgid "Skin support, look & feel, GUI hacks:\n"
+msgstr "Skalstöd, utseende & känsla samt GUI hacks (gags-hack):\n"
+
+msgid "Programming, GUI engineering:\n"
+msgstr "Programmering & GUI engineering (gags-konstruktion):\n"
+
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr "OpenBSD-kompatibilitet & metadata-finjusteringar:\n"
+
+#, fuzzy
+msgid "Miscellaneous, minimalism:\n"
+msgstr "Diverse"
+
+msgid "Translators:"
+msgstr "Översättare:"
+
+msgid "Chinese (simplified):\n"
 msgstr ""
-"Följande text är en informell översättning som enbart tillhandahålls i informativt syfte. För alla juridiska tolkningar gäller den engelska originaltexten.\n"
+
+msgid "Czech:\n"
+msgstr ""
+
+msgid "Dutch:\n"
+msgstr ""
+
+msgid "French:\n"
+msgstr ""
+
+msgid "German:\n"
+msgstr "Tyska:\n"
+
+msgid "Hungarian:\n"
+msgstr "Ungerska:\n"
+
+msgid "Italian:\n"
+msgstr "Italienska:\n"
+
+msgid "Japanese:\n"
+msgstr ""
+
+msgid "Polish:\n"
+msgstr ""
+
+msgid "Russian:\n"
+msgstr "Ryska:\n"
+
+msgid "Spanish:\n"
+msgstr ""
+
+msgid "Swedish:\n"
+msgstr ""
+
+msgid "Ukrainian:\n"
+msgstr "Ukrainska:\n"
+
+msgid "Graphics:"
+msgstr "Grafik:"
+
+msgid "Logo, icons:\n"
+msgstr "Logotyp och ikoner:\n"
+
+msgid "This Aqualung binary is compiled with:"
+msgstr "Denna Aqualung-binär är kompilerad med:"
+
+msgid ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
 "\n"
-"Detta program är fri programvara. Du kan distribuera det och/eller modifiera det under villkoren i GNU General Public License, publicerad av Free Software Foundation, antingen version 2 eller (om du så vill) någon senare version.\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
+"more details.\n"
 "\n"
-"Detta program distribueras i hopp om att det ska vara användbart, men UTAN NÅGON SOM HELST GARANTI, även utan underförstådd garanti om SÄLJBARHET eller LÄMPLIGHET FÖR NÅGOT SPECIELLT ÄNDAMÅL. Se GNU General Public License för ytterligare information.\n"
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 675 Mass "
+"Ave, Cambridge, MA 02139, USA."
+msgstr ""
+"Följande text är en informell översättning som enbart tillhandahålls i "
+"informativt syfte. För alla juridiska tolkningar gäller den engelska "
+"originaltexten.\n"
 "\n"
-"Du bör ha fått en kopia av GNU General Public License tillsammans med detta program. Om inte, skriv till Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+"Detta program är fri programvara. Du kan distribuera det och/eller modifiera "
+"det under villkoren i GNU General Public License, publicerad av Free "
+"Software Foundation, antingen version 2 eller (om du så vill) någon senare "
+"version.\n"
+"\n"
+"Detta program distribueras i hopp om att det ska vara användbart, men UTAN "
+"NÅGON SOM HELST GARANTI, även utan underförstådd garanti om SÄLJBARHET eller "
+"LÄMPLIGHET FÖR NÅGOT SPECIELLT ÄNDAMÅL. Se GNU General Public License för "
+"ytterligare information.\n"
+"\n"
+"Du bör ha fått en kopia av GNU General Public License tillsammans med detta "
+"program. Om inte, skriv till Free Software Foundation, Inc., 675 Mass Ave, "
+"Cambridge, MA 02139, USA."
 
 msgid "Enabled"
 msgstr "Aktiverad"
@@ -392,6 +448,149 @@ msgstr "Läser fil"
 msgid "Removing non-existing files"
 msgstr "Tar bort icke-existerande filer"
 
+msgid "Please select the directory for ripped files."
+msgstr "Var god ange katalogen för extraherade filer."
+
+msgid "(none)"
+msgstr "(ingen)"
+
+msgid "fast"
+msgstr "snabb"
+
+msgid "best"
+msgstr "bäst"
+
+msgid "Compression level:"
+msgstr "Komprimeringsnivå:"
+
+msgid "Bitrate [kbps]:"
+msgstr "Bithastighet [kbps]:"
+
+msgid "Artist/Album already existing, not empty"
+msgstr "Artist/album finns redan, inte tomt"
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+"\n"
+"Musikbiblioteket som du markerade har en matchande artist och album vilket "
+"redan innehåller några spår. Om du trycker OK kommer dessa spår att tas "
+"bort. Själva filerna kommer att lämnas intakta, men de kommer att tas bort "
+"från musikbiblioteket. Tryck Avbryt för att gå tillbaka och ändra Artist/"
+"Album eller musikbibliotek."
+
+msgid "Rip CD"
+msgstr "Extrahera cd"
+
+msgid "Artist:"
+msgstr "Artist:"
+
+msgid "Album:"
+msgstr "Album:"
+
+msgid "Year:"
+msgstr "År"
+
+msgid "Genre:"
+msgstr "Genre:"
+
+msgid "Rip"
+msgstr "Extrahera"
+
+msgid "No."
+msgstr "Nej."
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Select"
+msgstr "Välj"
+
+msgid "All"
+msgstr "Alla"
+
+msgid "None"
+msgstr "Ingen"
+
+msgid "Output"
+msgstr "Utdata"
+
+msgid "Destination"
+msgstr ""
+
+msgid "Target directory for ripped files"
+msgstr "Målkatalog för extraherade filer"
+
+msgid "Add to Music Store"
+msgstr "Lägg till i musikbibliotek"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "File format:"
+msgstr "Filformat:"
+
+msgid "VBR encoding"
+msgstr "VBR-kodning"
+
+msgid "Tag files with metadata"
+msgstr "Tagga filer med metadata"
+
+msgid "Paranoia"
+msgstr "Paranoia"
+
+msgid "Paranoia error correction"
+msgstr "Paranoiafelkorrigering"
+
+msgid "Perform overlapped reads"
+msgstr ""
+
+msgid "Verify data integrity"
+msgstr "Bekräfta dataintegritet"
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr ""
+
+msgid "Maximum number of retries:"
+msgstr "Maximala antalet återförsök:"
+
+msgid "Error"
+msgstr "Fel"
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+
+msgid "Total"
+msgstr "Totalt"
+
+msgid "(audio only)"
+msgstr "(bara ljud)"
+
+msgid "Ripping CD tracks"
+msgstr "Extraherar cd-spår"
+
+msgid "Begin"
+msgstr "Börja"
+
+msgid "Length"
+msgstr "Speltid"
+
+msgid "Progress"
+msgstr "Förlopp"
+
+msgid "Close window when complete"
+msgstr "Stäng fönstret när det är klart"
+
+msgid "Close"
+msgstr "Stäng"
+
 msgid "Unknown disc"
 msgstr "Okänd disk"
 
@@ -406,9 +605,6 @@ msgstr ""
 
 msgid "Connecting to CDDB server..."
 msgstr "Ansluter till CDDB-server..."
-
-msgid "Error"
-msgstr "Fel"
 
 msgid "An error occurred while attempting to connect to the CDDB server."
 msgstr "Ett fel inträffade vid försök att ansluta till CDDB-servern."
@@ -478,23 +674,14 @@ msgstr "Skicka in ny skiva"
 msgid "Matches:"
 msgstr ""
 
-msgid "Artist:"
-msgstr "Artist:"
-
 msgid "Title:"
 msgstr "Titel:"
-
-msgid "Year:"
-msgstr "År"
 
 msgid "Category:"
 msgstr "Kategori:"
 
 msgid "(choose a category)"
 msgstr "(välj en kategori)"
-
-msgid "Genre:"
-msgstr "Genre:"
 
 msgid "Extended data:"
 msgstr "Utökat data:"
@@ -511,129 +698,6 @@ msgstr "Spår"
 msgid "You have to provide an email address for CDDB submission."
 msgstr "Du måste tillhandahålla en e-postadress för att ladda upp till CDDB."
 
-msgid "Please select the directory for ripped files."
-msgstr "Var god ange katalogen för extraherade filer."
-
-msgid "(none)"
-msgstr "(ingen)"
-
-msgid "fast"
-msgstr "snabb"
-
-msgid "best"
-msgstr "bäst"
-
-msgid "Compression level:"
-msgstr "Komprimeringsnivå:"
-
-msgid "Bitrate [kbps]:"
-msgstr "Bithastighet [kbps]:"
-
-msgid "Artist/Album already existing, not empty"
-msgstr "Artist/album finns redan, inte tomt"
-
-msgid ""
-"\n"
-"The Music Store you selected has a matching Artist and Album, already containing some tracks. If you press OK, these tracks will be removed. The files themselves will be left intact, but they will be removed from the destination Music Store. Press Cancel to get back to change the Artist/Album or the destination Music Store."
-msgstr ""
-"\n"
-"Musikbiblioteket som du markerade har en matchande artist och album vilket redan innehåller några spår. Om du trycker OK kommer dessa spår att tas bort. Själva filerna kommer att lämnas intakta, men de kommer att tas bort från musikbiblioteket. Tryck Avbryt för att gå tillbaka och ändra Artist/Album eller musikbibliotek."
-
-msgid "Rip CD"
-msgstr "Extrahera cd"
-
-msgid "Album:"
-msgstr "Album:"
-
-msgid "Rip"
-msgstr "Extrahera"
-
-msgid "No."
-msgstr "Nej."
-
-msgid "Title"
-msgstr "Titel"
-
-msgid "Select"
-msgstr "Välj"
-
-msgid "All"
-msgstr "Alla"
-
-msgid "None"
-msgstr "Ingen"
-
-msgid "Output"
-msgstr "Utdata"
-
-msgid "Destination"
-msgstr ""
-
-msgid "Target directory for ripped files"
-msgstr "Målkatalog för extraherade filer"
-
-msgid "Add to Music Store"
-msgstr "Lägg till i musikbibliotek"
-
-msgid "Format"
-msgstr "Format"
-
-msgid "File format:"
-msgstr "Filformat:"
-
-msgid "VBR encoding"
-msgstr "VBR-kodning"
-
-msgid "Tag files with metadata"
-msgstr "Tagga filer med metadata"
-
-msgid "Paranoia"
-msgstr "Paranoia"
-
-msgid "Paranoia error correction"
-msgstr "Paranoiafelkorrigering"
-
-msgid "Perform overlapped reads"
-msgstr ""
-
-msgid "Verify data integrity"
-msgstr "Bekräfta dataintegritet"
-
-msgid "Unlimited retry on failed reads (never skip)"
-msgstr ""
-
-msgid "Maximum number of retries:"
-msgstr "Maximala antalet återförsök:"
-
-msgid ""
-"\n"
-"Destination directory is not read-write accessible!"
-msgstr ""
-
-msgid "Total"
-msgstr "Totalt"
-
-msgid "(audio only)"
-msgstr "(bara ljud)"
-
-msgid "Ripping CD tracks"
-msgstr "Extraherar cd-spår"
-
-msgid "Begin"
-msgstr "Börja"
-
-msgid "Length"
-msgstr "Speltid"
-
-msgid "Progress"
-msgstr "Förlopp"
-
-msgid "Close window when complete"
-msgstr "Stäng fönstret när det är klart"
-
-msgid "Close"
-msgstr "Stäng"
-
 msgid "Unknown Album"
 msgstr "Okänt album"
 
@@ -649,13 +713,36 @@ msgstr "Kopia"
 msgid "Help"
 msgstr "Hjälp"
 
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct the filename of the exported files. The Artist, Record and Track names are denoted by %%a, %%r and %%t. The track number and format-dependent file extension are denoted by %%n and %%x, respectively. The flag %%i gives an identifier which is unique within an export session."
+"The template string you enter here will be used to construct the filename of "
+"the exported files. The Original filename, Artist, Record and Track names "
+"are denoted by %%o, %%a, %%r and %%t. The track number and format-dependent "
+"file extension are denoted by %%n and %%x, respectively. %%i gives an "
+"identifier which is unique within an export session."
 msgstr ""
 "\n"
-"Strängmallen som du skriver in här kommer att användas för att konstruera filnamnet på de exporterade filerna. Artist-, skiv- och spårnamnen kommer att betecknas med %%a, %%r och %%t. The track number and format-dependent file extension are denoted by %%n and %%x, respectively. The flag %%i gives an identifier which is unique within an export session."
+"Strängmallen som du skriver in här kommer att användas för att konstruera "
+"filnamnet på de exporterade filerna. Artist-, skiv- och spårnamnen kommer "
+"att betecknas med %%a, %%r och %%t. The track number and format-dependent "
+"file extension are denoted by %%n and %%x, respectively. The flag %%i gives "
+"an identifier which is unique within an export session."
+
+msgid "Exporting files"
+msgstr "Exporterar filer"
+
+msgid "Source file:"
+msgstr "Källfil:"
+
+msgid "Target file:"
+msgstr "Målfil:"
+
+msgid "Progress:"
+msgstr "Förlopp:"
+
+msgid "Error in format string"
+msgstr "Fel i formatsträng"
 
 msgid "Export files"
 msgstr "Exportera filer"
@@ -692,21 +779,6 @@ msgid ""
 msgstr ""
 "Koda inte om filer\n"
 "som machar jokertecken:"
-
-msgid "Error in format string"
-msgstr "Fel i formatsträng"
-
-msgid "Exporting files"
-msgstr "Exporterar filer"
-
-msgid "Source file:"
-msgstr "Källfil:"
-
-msgid "Target file:"
-msgstr "Målfil:"
-
-msgid "Progress:"
-msgstr "Förlopp:"
 
 msgid "*File info"
 msgstr "*Filinformation"
@@ -808,6 +880,16 @@ msgstr "fält:"
 msgid "tag:"
 msgstr "tagg:"
 
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld Hz"
+
+msgid "MONO"
+msgstr "MONO"
+
+msgid "STEREO"
+msgstr "STEREO"
+
 msgid "Audio CD"
 msgstr "Ljud-cd"
 
@@ -829,18 +911,8 @@ msgstr "Speltid:"
 msgid "Samplerate:"
 msgstr "Samplingsfrekvens:"
 
-#, c-format
-msgid "%ld Hz"
-msgstr "%ld Hz"
-
 msgid "Channel count:"
 msgstr "Antal kanaler:"
-
-msgid "MONO"
-msgstr "MONO"
-
-msgid "STEREO"
-msgstr "STEREO"
 
 msgid "Bandwidth:"
 msgstr "Bandbredd:"
@@ -874,6 +946,9 @@ msgstr "Instrument"
 
 msgid "Name"
 msgstr "Namn"
+
+msgid "STOPPING"
+msgstr ""
 
 msgid "Output:"
 msgstr "Utdata:"
@@ -940,14 +1015,25 @@ msgstr "Balans: %s"
 msgid "JACK connection lost"
 msgstr "JACK-anslutning borttappad"
 
-msgid "JACK has either been shutdown or it disconnected Aqualung because it was not fast enough. All you can do now is restart both JACK and Aqualung."
-msgstr "JACK har antingen stängts av eller så kopplade det från Aqualung för att det inte var tillräckligt snabbt. Det enda du kan göra nu är att starta om både JACK och Aqualung."
+#, fuzzy, c-format
+msgid "JACK has either been shutdown or it disconnected Aqualung. Reason: %s"
+msgstr ""
+"JACK har antingen stängts av eller så kopplade det från Aqualung för att det "
+"inte var tillräckligt snabbt. Det enda du kan göra nu är att starta om både "
+"JACK och Aqualung."
 
 msgid "Warn me if the Window Manager does not support system tray"
-msgstr "Varna mig om fönsterhanteraren inte stöder visning av ikon i systembricka"
+msgstr ""
+"Varna mig om fönsterhanteraren inte stöder visning av ikon i systembricka"
 
-msgid "Aqualung is compiled with system tray support, but the status icon could not be embedded in the notification area. Your desktop may not have support for a system tray, or it has not been configured correctly."
-msgstr "Aqualung är kompilerat med stöd för ikon i systembricka, men statusikonen kunde inte bäddas in i notifieringsytan. Ditt skrivbord har kanske inte stöd för en systembricka, eller så har den inte konfigurerats på rätt sätt."
+msgid ""
+"Aqualung is compiled with system tray support, but the status icon could not "
+"be embedded in the notification area. Your desktop may not have support for "
+"a system tray, or it has not been configured correctly."
+msgstr ""
+"Aqualung är kompilerat med stöd för ikon i systembricka, men statusikonen "
+"kunde inte bäddas in i notifieringsytan. Ditt skrivbord har kanske inte stöd "
+"för en systembricka, eller så har den inte konfigurerats på rätt sätt."
 
 msgid "Settings"
 msgstr "Inställningar"
@@ -1150,9 +1236,6 @@ msgstr "iFP-enhetshanterare (hämtningsläge)"
 msgid "Selected files:"
 msgstr "Markerade filer:"
 
-msgid "label_songs"
-msgstr ""
-
 msgid "<b>Songs info</b>"
 msgstr "<b>Information om låtar</b>"
 
@@ -1209,36 +1292,6 @@ msgstr "_Hämta"
 
 msgid "_Abort"
 msgstr "_Avbryt"
-
-msgid "Success"
-msgstr "Succé"
-
-msgid "Memory allocation error"
-msgstr "Minnesallokeringsfel"
-
-msgid "Unable to open file"
-msgstr "Kan inte öppna fil"
-
-msgid "No metadata support for this format"
-msgstr "Inget metadata stöder detta format"
-
-msgid "File is not writable"
-msgstr "Filen är inte skrivbar"
-
-msgid "Invalid 'Track no.' field value"
-msgstr "Fältet 'Spårnummer' har ett ogiltigt värde"
-
-msgid "Invalid 'Genre' field value"
-msgstr "Fältet 'Genre' har ett ogiltigt värde"
-
-msgid "Conversion to target charset failed"
-msgstr ""
-
-msgid "Internal error"
-msgstr "Internt fel"
-
-msgid "Unknown error"
-msgstr "Okänt fel"
 
 msgid "Album"
 msgstr "Album"
@@ -1534,6 +1587,36 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+msgid "Success"
+msgstr "Succé"
+
+msgid "Memory allocation error"
+msgstr "Minnesallokeringsfel"
+
+msgid "Unable to open file"
+msgstr "Kan inte öppna fil"
+
+msgid "No metadata support for this format"
+msgstr "Inget metadata stöder detta format"
+
+msgid "File is not writable"
+msgstr "Filen är inte skrivbar"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "Fältet 'Spårnummer' har ett ogiltigt värde"
+
+msgid "Invalid 'Genre' field value"
+msgstr "Fältet 'Genre' har ett ogiltigt värde"
+
+msgid "Conversion to target charset failed"
+msgstr ""
+
+msgid "Internal error"
+msgstr "Internt fel"
+
+msgid "Unknown error"
+msgstr "Okänt fel"
+
 msgid "Other"
 msgstr ""
 
@@ -1622,8 +1705,11 @@ msgstr "*Musikbibliotek"
 msgid "Do you want to save store \"%s\" before removing from Music Store?"
 msgstr "Vill du spara bibliotek \"%s\" innan det tas bort från musikbibliotek?"
 
-msgid "You will need to restart Aqualung for the following changes to take effect:"
-msgstr "Du kommer att behöva starta om Aqualung för att de följande ändringarna ska börja gälla:"
+msgid ""
+"You will need to restart Aqualung for the following changes to take effect:"
+msgstr ""
+"Du kommer att behöva starta om Aqualung för att de följande ändringarna ska "
+"börja gälla:"
 
 msgid "Select a font..."
 msgstr "Välj ett typsnitt..."
@@ -1640,7 +1726,8 @@ msgstr "skrivskyddad"
 msgid "unreachable"
 msgstr ""
 
-msgid "Please select a Programable Title Format File."
+#, fuzzy
+msgid "Please select a Lua Extension File."
 msgstr "Var god välj en programmeringsbar titelformatsfil."
 
 msgid "Please select a Music Store database."
@@ -1655,51 +1742,100 @@ msgstr "Det angivna biblioteket har redan lagts till i listan."
 #, c-format
 msgid ""
 "\n"
-"The template string you enter here will be used to construct a single title line from an Artist, a Record and a Track name. These are denoted by %%a, %%r and %%t, respectively.\n"
+"The template string you enter here will be used to construct a single title "
+"line from an Artist, a Record and a Track name. These are denoted by %%a, "
+"%%r and %%t, respectively.\n"
 msgstr ""
 "\n"
-"Strängmallen som du skriver in här kommer att användas för att konstruera en enskild titelrad baserat på ett artist-, skiv- och spårnamn. Dessa betecknas med %%a respektive %%r och %%t.\n"
+"Strängmallen som du skriver in här kommer att användas för att konstruera en "
+"enskild titelrad baserat på ett artist-, skiv- och spårnamn. Dessa betecknas "
+"med %%a respektive %%r och %%t.\n"
 
 msgid ""
 "\n"
-"The file you enter/choose here will set the Lua program to use to format the title. See the Aqualung manual for details. Here is a quick example of what you can use in the file:\n"
+"If you have non-standard ID3v1/ID3v2 character encoding MPEG audio file, "
+"please enter suitable character encoding in this entry (see below). If this "
+"entry is blank, the standard character encoding (ISO-8859-1) is used.\n"
+"\n"
+"For example:\n"
+"  Japanese: CP932 (SHIFT_JIS variant)\n"
+"  Korean: EUC-KR\n"
+"  Simp. Chinese: GB2312\n"
+"  Trad. Chinese: BIG5\n"
+"  Greek: ISO-8859-7\n"
+"  Hebrew: ISO-8859-8\n"
+"  Cyrillic: CP1251\n"
+"  Thai: ISO-8859-11\n"
+"  Arabic: CP1256\n"
+"  Turkish: ISO-8859-9\n"
+"  Latin Extended: ISO-8859-2\n"
+"  Central European: CP1250\n"
+"  Latin1 (standard): ISO-8859-1\n"
+"\n"
+"NOTE: There might be a more suitable character encoding for your language."
+msgstr ""
+
+#, fuzzy
+msgid ""
+"\n"
+"The file you enter/choose here will set the Lua program to use to extend "
+"Aqualung. See the Aqualung manual for details. Here is a quick example of "
+"what you can use in the file:\n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 msgstr ""
 "\n"
-"Den fil som du anger/väljer här kommer att användas av Lua-programmet till att formatera titeln. Se Aqualung-manualen för fler detaljer.Här är ett litet exempel på vad du kan skriva i filen:\n"
+"Den fil som du anger/väljer här kommer att användas av Lua-programmet till "
+"att formatera titeln. Se Aqualung-manualen för fler detaljer.Här är ett "
+"litet exempel på vad du kan skriva i filen:\n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 
 msgid ""
 "\n"
-"The string you enter here will be parsed as a command line before parsing the actual command line parameters. What you enter here will act as a default setting and may or may not be overridden from the 'real' command line.\n"
+"The string you enter here will be parsed as a command line before parsing "
+"the actual command line parameters. What you enter here will act as a "
+"default setting and may or may not be overridden from the 'real' command "
+"line.\n"
 "\n"
-"Example: enter '-o alsa -R' below to use ALSA output running realtime as a default.\n"
+"Example: enter '-o alsa -R' below to use ALSA output running realtime as a "
+"default.\n"
 msgstr ""
 
 msgid ""
-"Paths must either be absolute or starting with a tilde, which will be expanded to the user's home directory.\n"
+"Paths must either be absolute or starting with a tilde, which will be "
+"expanded to the user's home directory.\n"
 "\n"
 "Drag and drop entries in the list to set the store order in the Music Store."
 msgstr ""
 
 msgid ""
 "\n"
-"Set the drive speed for CD playing in CD-ROM speed units. One speed unit equals to 176 kBps raw data reading speed. Warning: not all drives honor this setting.\n"
+"Set the drive speed for CD playing in CD-ROM speed units. One speed unit "
+"equals to 176 kBps raw data reading speed. Warning: not all drives honor "
+"this setting.\n"
 "\n"
-"Lower speed usually means less drive noise. However, when using Paranoia error correction modes for increased accuracy, generally much larger speeds are required to prevent buffer underruns (and thus audible drop-outs).\n"
+"Lower speed usually means less drive noise. However, when using Paranoia "
+"error correction modes for increased accuracy, generally much larger speeds "
+"are required to prevent buffer underruns (and thus audible drop-outs).\n"
 "\n"
-"Please note that these settings do not apply to CD Ripping, which always happens with maximum available speed and with error correction modes manually set before every run."
+"Please note that these settings do not apply to CD Ripping, which always "
+"happens with maximum available speed and with error correction modes "
+"manually set before every run."
 msgstr ""
 
 msgid ""
 "\n"
-"Most drives let Aqualung know when a CD has been inserted or removed by providing a 'media changed' flag. However, some drives don't set this flag properly, and thus it may happen that a newly inserted CD remains unnoticed to Aqualung. In such cases, enabling this option should help."
+"Most drives let Aqualung know when a CD has been inserted or removed by "
+"providing a 'media changed' flag. However, some drives don't set this flag "
+"properly, and thus it may happen that a newly inserted CD remains unnoticed "
+"to Aqualung. In such cases, enabling this option should help."
 msgstr ""
 
 msgid ""
@@ -1714,26 +1850,70 @@ msgstr ""
 "utan att använda proxyinställningen ovanför.\n"
 "Exempel: localhost, .localdomain, .my.domain.com"
 
-msgid "Title Format"
-msgstr "Titelformat"
-
-msgid "Programmable title format file"
-msgstr "Programmingsbar titelformatsfil"
-
-msgid "Implicit command line"
-msgstr ""
-
-msgid "Miscellaneous"
-msgstr "Diverse"
-
-msgid "Enable tooltips"
-msgstr "Aktivera verktygstips"
+msgid "Embed playlist into main window"
+msgstr "Bädda in spellista i huvudfönstret"
 
 msgid "Enable systray"
 msgstr "Aktivera ikon i systembricka"
 
-msgid "Put control buttons at the bottom of playlist"
-msgstr "Placera kontrollknappar i nederkanten av spellista"
+#, fuzzy
+msgid "Do nothing"
+msgstr "Avsluta inte"
+
+#, fuzzy
+msgid "Change volume"
+msgstr "Beräkna volym"
+
+#, fuzzy
+msgid "Change balance"
+msgstr "Byt"
+
+msgid "Change song position"
+msgstr ""
+
+#, fuzzy
+msgid "Change current song"
+msgstr "Upprepa aktuell låt"
+
+msgid "Left button"
+msgstr ""
+
+msgid "Middle button"
+msgstr ""
+
+msgid "Right button"
+msgstr ""
+
+msgid "Button"
+msgstr ""
+
+msgid "Left and right mouse buttons are reserved."
+msgstr ""
+
+msgid "This button is already assigned."
+msgstr ""
+
+msgid "Add mouse button command"
+msgstr ""
+
+msgid "Mouse button"
+msgstr ""
+
+msgid "Click here to set mouse button"
+msgstr ""
+
+#, fuzzy
+msgid "Command"
+msgstr "Kommentar"
+
+msgid "Error in title format string"
+msgstr ""
+
+msgid "Error invalid character encoding"
+msgstr ""
+
+msgid "Main window"
+msgstr ""
 
 msgid "Disable control buttons relief"
 msgstr ""
@@ -1744,19 +1924,45 @@ msgstr "Kombinera knapparna spela och pausa"
 msgid "Keep main window always on top"
 msgstr "Låt alltid huvudfönstret vara överst"
 
-msgid "Simple view in LADSPA patch builder"
-msgstr ""
-
-msgid "United windows minimization"
-msgstr ""
-
 msgid "Show song name in the main window's title"
 msgstr "Visa låtnamn i huvudfönstrets titel"
 
-msgid "Show hidden files and directories in file choosers"
+msgid "Title Format"
+msgstr "Titelformat"
+
+msgid "Lua extension file"
 msgstr ""
 
-msgid "Show tags tab first in the file info dialog"
+#, fuzzy
+msgid "Systray"
+msgstr "Stöd för systembricka\n"
+
+msgid "Start minimized"
+msgstr ""
+
+msgid "Play/Stop song"
+msgstr ""
+
+#, fuzzy
+msgid "Play/Pause song"
+msgstr "Spela/pausa"
+
+msgid "Mouse wheel"
+msgstr ""
+
+msgid "Vertical mouse wheel:"
+msgstr ""
+
+msgid "Horizontal mouse wheel:"
+msgstr ""
+
+msgid "Mouse buttons"
+msgstr ""
+
+msgid "Miscellaneous"
+msgstr "Diverse"
+
+msgid "Implicit command line"
 msgstr ""
 
 msgid "Cover art"
@@ -1789,11 +1995,29 @@ msgstr "Visa bara omslagsbildsikon för musikbiblioteksspår"
 msgid "Don't show cover thumbnail in the main window"
 msgstr "Visa inte omslagsbildsikon i huvudfönstret"
 
+msgid "Use cover from external graphics file first"
+msgstr ""
+
+msgid "Enable tooltips"
+msgstr "Aktivera verktygstips"
+
+msgid "Simple view in LADSPA patch builder"
+msgstr ""
+
+msgid "United windows minimization"
+msgstr ""
+
+msgid "Show hidden files and directories in file choosers"
+msgstr ""
+
+msgid "Show tags tab first in the file info dialog"
+msgstr ""
+
 msgid "Playlist"
 msgstr "Spellista"
 
-msgid "Embed playlist into main window"
-msgstr "Bädda in spellista i huvudfönstret"
+msgid "Put control buttons at the bottom of playlist"
+msgstr "Placera kontrollknappar i nederkanten av spellista"
 
 msgid "Save and restore the playlist on exit/startup"
 msgstr "Spara och återställ spellista vid avslutning/uppstart"
@@ -1811,7 +2035,8 @@ msgid "Show close button in tab"
 msgstr "Visa stäng knapp i flik"
 
 msgid "When shuffling, records added in Album mode are played in order"
-msgstr "När funktionen blanda används spelas skivor tilllagda i albumläge i ordning"
+msgstr ""
+"När funktionen blanda används spelas skivor tilllagda i albumläge i ordning"
 
 msgid "Enable statusbar"
 msgstr "Aktivera statusmätare"
@@ -1830,6 +2055,10 @@ msgstr "Visa spårspeltider"
 
 msgid "Show active track name in bold"
 msgstr "Visa aktivt spårnamn i fetstil"
+
+#, fuzzy
+msgid "Automatically roll to active track"
+msgstr "Lägg automatiskt till cd-skivor till spellista"
 
 msgid "Enable rules hint"
 msgstr ""
@@ -1999,11 +2228,15 @@ msgid ""
 "from another tag's equivalent frame."
 msgstr ""
 
+msgid "MPEG audio ID3v1/ID3v2 character encoding"
+msgstr ""
+
 msgid "Batch update & encode (mass tagger, CD ripper, file export)"
 msgstr ""
 
 msgid "Tags to add when creating or updating MPEG audio files:"
-msgstr "Taggar att lägga till vid skapande eller uppdatering av MPEG-ljudfiler:"
+msgstr ""
+"Taggar att lägga till vid skapande eller uppdatering av MPEG-ljudfiler:"
 
 msgid ""
 "Note: pre-existing tags will be updated even though they\n"
@@ -2119,9 +2352,6 @@ msgstr "Låt i spellista:"
 
 msgid "Active song in playlist: "
 msgstr "Aktiv låt i spellista:"
-
-msgid "Error in title format string"
-msgstr ""
 
 msgid "(Untitled)"
 msgstr "(Namnlös)"
@@ -2282,11 +2512,13 @@ msgid "Remove files"
 msgstr "Ta bort filer"
 
 msgid ""
-"The selected files will be deleted from the filesystem. No recovery will be possible after this operation.\n"
+"The selected files will be deleted from the filesystem. No recovery will be "
+"possible after this operation.\n"
 "\n"
 "Do you want to proceed?"
 msgstr ""
-"De markerade filerna kommer att raderas från filsystemet. Det går inte att återställa detta efter denna åtgärd.\n"
+"De markerade filerna kommer att raderas från filsystemet. Det går inte att "
+"återställa detta efter denna åtgärd.\n"
 "\n"
 "Vill du fortsätta?"
 
@@ -2682,6 +2914,12 @@ msgstr "artist"
 msgid "artists"
 msgstr "artister"
 
+#, c-format
+msgid ""
+"File \"%s\" does not exist or your write permission has been withdrawn. "
+"Check if the partition containing the store file has been unmounted."
+msgstr ""
+
 msgid "Build / Update store from filesystem..."
 msgstr "Bygg / uppdatera bibliotek från filsystem..."
 
@@ -2915,7 +3153,8 @@ msgstr "dagar"
 msgid "All Files"
 msgstr "Alla filer"
 
-msgid "Extended Title Format Files (*.lua)"
+#, fuzzy
+msgid "Lua Extension Files (*.lua)"
 msgstr "Utökade titelformatsfiler (*.lua)"
 
 msgid "Music Store Files (*.xml)"
@@ -2980,6 +3219,21 @@ msgstr "Återuppta"
 
 msgid "Calculating volume level"
 msgstr "Beräknar volymnivå"
+
+msgid "Compression: Fast"
+msgstr "Komprimering: Snabb"
+
+msgid "Compression: Normal"
+msgstr "Komprimering: Normal"
+
+msgid "Compression: High"
+msgstr "Komprimering: Hård"
+
+msgid "Compression: Extra High"
+msgstr "Komprimering: Extra hård"
+
+msgid "Compression: Insane"
+msgstr "Komprimering: Galet"
 
 msgid "Profile: Telephone"
 msgstr "Profil: Telefon"
@@ -3050,18 +3304,8 @@ msgstr ""
 msgid "encoding"
 msgstr "kodning"
 
-msgid "Compression: Fast"
-msgstr "Komprimering: Snabb"
+#~ msgid "Lua (programmable title formatting) support\n"
+#~ msgstr "Stöd för Lua (programmeringsbar titelformatering)\n"
 
-msgid "Compression: Normal"
-msgstr "Komprimering: Normal"
-
-msgid "Compression: High"
-msgstr "Komprimering: Hård"
-
-msgid "Compression: Extra High"
-msgstr "Komprimering: Extra hård"
-
-msgid "Compression: Insane"
-msgstr "Komprimering: Galet"
-
+#~ msgid "Programmable title format file"
+#~ msgstr "Programmingsbar titelformatsfil"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta10\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-08-23 15:40+0300\n"
+"POT-Creation-Date: 2015-07-26 21:08+0200\n"
 "PO-Revision-Date: 2012-08-23 15:59+0300\n"
 "Last-Translator: Vladimir Smolyar <v_2e@ukr.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -16,81 +16,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "About"
-msgstr "Про програму"
-
-msgid "Build version: "
-msgstr "Версія збірки: "
-
-msgid "Homepage:"
-msgstr "Домашня сторінка:"
-
-msgid "Authors:"
-msgstr "Автори:"
-
-msgid "Core design, engineering & programming:\n"
-msgstr "Головний дизайн, розробка та програмування:\n"
-
-msgid "Skin support, look & feel, GUI hacks:\n"
-msgstr "Підтримка жупанів, вигляд та поведінка, програмування ГІК:\n"
-
-msgid "Programming, GUI engineering:\n"
-msgstr "Програмування, розробка ГІК:\n"
-
-msgid "OpenBSD compatibility, metadata tweaks:\n"
-msgstr "Сумісність з OpenBSD, трюки з метаданими:\n"
-
-msgid "Miscellaneous, minimalism:\n"
-msgstr "Різне, мінімалізм:\n"
-
-msgid "Translators:"
-msgstr "Перекладачі:"
-
-msgid "Chinese (simplified):\n"
-msgstr "Китайська (спрощена):\n"
-
-msgid "Dutch:\n"
-msgstr "Датська:\n"
-
-msgid "French:\n"
-msgstr "Французька:\n"
-
-msgid "German:\n"
-msgstr "Німецька:\n"
-
-msgid "Hungarian:\n"
-msgstr "Угорська:\n"
-
-msgid "Italian:\n"
-msgstr "Італійська:\n"
-
-msgid "Japanese:\n"
-msgstr "Японська:\n"
-
-msgid "Polish:\n"
-msgstr "Польська:\n"
-
-msgid "Russian:\n"
-msgstr "Російська:\n"
-
-msgid "Spanish:\n"
-msgstr "Іспанська:\n"
-
-msgid "Swedish:\n"
-msgstr "Шведська:\n"
-
-msgid "Ukrainian:\n"
-msgstr "Українська:\n"
-
-msgid "Graphics:"
-msgstr "Графіка:"
-
-msgid "Logo, icons:\n"
-msgstr "Логотип, іконки:\n"
-
-msgid "This Aqualung binary is compiled with:"
-msgstr "Цей файл Aqualung скомпільовано з:"
 
 msgid "Optional features:"
 msgstr "Додаткові можливості:"
@@ -187,6 +112,85 @@ msgstr "PulseAudio\n"
 
 msgid "Win32 Sound API\n"
 msgstr "Win32 Sound API\n"
+
+msgid "About"
+msgstr "Про програму"
+
+msgid "Build version: "
+msgstr "Версія збірки: "
+
+msgid "Homepage:"
+msgstr "Домашня сторінка:"
+
+msgid "Authors:"
+msgstr "Автори:"
+
+msgid "Core design, engineering & programming:\n"
+msgstr "Головний дизайн, розробка та програмування:\n"
+
+msgid "Skin support, look & feel, GUI hacks:\n"
+msgstr "Підтримка жупанів, вигляд та поведінка, програмування ГІК:\n"
+
+msgid "Programming, GUI engineering:\n"
+msgstr "Програмування, розробка ГІК:\n"
+
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr "Сумісність з OpenBSD, трюки з метаданими:\n"
+
+msgid "Miscellaneous, minimalism:\n"
+msgstr "Різне, мінімалізм:\n"
+
+msgid "Translators:"
+msgstr "Перекладачі:"
+
+msgid "Chinese (simplified):\n"
+msgstr "Китайська (спрощена):\n"
+
+#, fuzzy
+msgid "Czech:\n"
+msgstr "Французька:\n"
+
+msgid "Dutch:\n"
+msgstr "Датська:\n"
+
+msgid "French:\n"
+msgstr "Французька:\n"
+
+msgid "German:\n"
+msgstr "Німецька:\n"
+
+msgid "Hungarian:\n"
+msgstr "Угорська:\n"
+
+msgid "Italian:\n"
+msgstr "Італійська:\n"
+
+msgid "Japanese:\n"
+msgstr "Японська:\n"
+
+msgid "Polish:\n"
+msgstr "Польська:\n"
+
+msgid "Russian:\n"
+msgstr "Російська:\n"
+
+msgid "Spanish:\n"
+msgstr "Іспанська:\n"
+
+msgid "Swedish:\n"
+msgstr "Шведська:\n"
+
+msgid "Ukrainian:\n"
+msgstr "Українська:\n"
+
+msgid "Graphics:"
+msgstr "Графіка:"
+
+msgid "Logo, icons:\n"
+msgstr "Логотип, іконки:\n"
+
+msgid "This Aqualung binary is compiled with:"
+msgstr "Цей файл Aqualung скомпільовано з:"
 
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
@@ -711,14 +715,14 @@ msgstr "Копіювати"
 msgid "Help"
 msgstr "Допомога"
 
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "\n"
 "The template string you enter here will be used to construct the filename of "
-"the exported files. The Artist, Record and Track names are denoted by %%a, "
-"%%r and %%t. The track number and format-dependent file extension are "
-"denoted by %%n and %%x, respectively. The flag %%i gives an identifier "
-"which is unique within an export session."
+"the exported files. The Original filename, Artist, Record and Track names "
+"are denoted by %%o, %%a, %%r and %%t. The track number and format-dependent "
+"file extension are denoted by %%n and %%x, respectively. %%i gives an "
+"identifier which is unique within an export session."
 msgstr ""
 "\n"
 "Рядки шаблону, що ви впишете сюди, буде використано для складання ім'я "
@@ -726,6 +730,21 @@ msgstr ""
 "%%r та %%t. Номер доріжки та розширення файлу, що залежить віз формату, "
 "позначаються %%n та %%x, відповідно. Прапор %%i дає ідентифікатор, "
 "унікальний у межах сеансу експорту."
+
+msgid "Exporting files"
+msgstr "Експорт файлів"
+
+msgid "Source file:"
+msgstr "Вихідний файл:"
+
+msgid "Target file:"
+msgstr "Файл призначення:"
+
+msgid "Progress:"
+msgstr "Прогрес:"
+
+msgid "Error in format string"
+msgstr "Помилка у рядку формату"
 
 msgid "Export files"
 msgstr "Експорт файлів"
@@ -764,21 +783,6 @@ msgid ""
 msgstr ""
 "Не перекодувати файли,\n"
 "що задовільняють маску:"
-
-msgid "Error in format string"
-msgstr "Помилка у рядку формату"
-
-msgid "Exporting files"
-msgstr "Експорт файлів"
-
-msgid "Source file:"
-msgstr "Вихідний файл:"
-
-msgid "Target file:"
-msgstr "Файл призначення:"
-
-msgid "Progress:"
-msgstr "Прогрес:"
 
 msgid "*File info"
 msgstr "*Інформація про файл"
@@ -886,6 +890,16 @@ msgstr "поле:"
 msgid "tag:"
 msgstr "тег:"
 
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld Гц"
+
+msgid "MONO"
+msgstr "МОНО"
+
+msgid "STEREO"
+msgstr "СТЕРЕО"
+
 msgid "Audio CD"
 msgstr "Аудіо CD"
 
@@ -907,18 +921,8 @@ msgstr "Довжина:"
 msgid "Samplerate:"
 msgstr "Частота дискретизації:"
 
-#, c-format
-msgid "%ld Hz"
-msgstr "%ld Гц"
-
 msgid "Channel count:"
 msgstr "Кількість каналів:"
-
-msgid "MONO"
-msgstr "МОНО"
-
-msgid "STEREO"
-msgstr "СТЕРЕО"
 
 msgid "Bandwidth:"
 msgstr "Потік:"
@@ -1748,8 +1752,8 @@ msgid ""
 msgstr ""
 "\n"
 "Рядки шаблону, що ви впишете сюди, буде використано для складання однієї "
-"назви з Виконавця, Запису та назви Доріжки. Вони позначаються %%a, %%r "
-"та %%t, відповідно.\n"
+"назви з Виконавця, Запису та назви Доріжки. Вони позначаються %%a, %%r та "
+"%%t, відповідно.\n"
 
 msgid ""
 "\n"
@@ -1803,8 +1807,8 @@ msgid ""
 "what you can use in the file:\n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i"
-"('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 msgstr ""
 "\n"
@@ -1813,8 +1817,8 @@ msgstr ""
 "швидкий прклад того, що ви можете використовувати у цьому файлі:\n"
 "\n"
 "function playlist_title()\n"
-"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. i"
-"('filename') .. ')'\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
 "end"
 
 msgid ""
@@ -1951,6 +1955,12 @@ msgstr "Клацніть тут, щоб встановити клавішу ми
 
 msgid "Command"
 msgstr "Команда"
+
+msgid "Error in title format string"
+msgstr "Помилка у рядку формату заголовка"
+
+msgid "Error invalid character encoding"
+msgstr "Помилка недійсне кодування символів"
 
 msgid "Main window"
 msgstr "Головне вікно"
@@ -2395,12 +2405,6 @@ msgstr "Пісня у списку програвання: "
 
 msgid "Active song in playlist: "
 msgstr "Активна пісня у списку програвання: "
-
-msgid "Error in title format string"
-msgstr "Помилка у рядку формату заголовка"
-
-msgid "Error invalid character encoding"
-msgstr "Помилка недійсне кодування символів"
 
 msgid "(Untitled)"
 msgstr "(Без назви)"

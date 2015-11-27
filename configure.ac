@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.60])
-AC_INIT([aqualung],[SVN],[http://aqualung.factorial.hu/mantis])
+AC_INIT([aqualung],[git],[https://github.com/jeremyevans/aqualung])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/core.c])
 AC_CONFIG_HEADERS([config.h])

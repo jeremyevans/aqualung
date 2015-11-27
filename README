@@ -6,7 +6,7 @@ Aqualung is an advanced music player primarily targeted at the
 GNU/Linux operating system, but also usable on FreeBSD, OpenBSD,
 Cygwin and also runs natively on Microsoft Windows.
 
-Homepage: http://aqualung.factorial.hu
+Homepage: http://aqualung.jeremyevans.net
 
 Please see the homepage for a general introduction to the program,
 including compilation instructions.
@@ -21,8 +21,8 @@ General questions about compiling, usage etc. should go to this list
 rather than the developer's private address. This is also the place
 for development discussions.
 
-The primary place for bugreports is the project's web-based
-bugtracker at: http://aqualung.factorial.hu/mantis
+The primary way for participating in development is sending GitHub
+pull requests.
 
 
 Enjoy,

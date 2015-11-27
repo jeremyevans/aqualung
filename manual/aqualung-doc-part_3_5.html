@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 3.4. <a href="aqualung-doc-part_3_4.html">Options relevant to the Sample Rate Converter</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 3.6. <a href="aqualung-doc-part_3_6.html">Options for file loading</a></td></tr></table><hr /><h2>3.5. Options for remote cue control</h2>
+
+<p>Note that remote controlling of instances is only possible
+if the instance you want to send a command to is running as
+the same user as you are when you issue the remote command.</p>
+
+<dl>
+
+<dt><b>
+<code>-N, --session &lt;int&gt;</code>
+</b></dt>
+
+<dd>Specify the instance number to send the remote command
+to. Instances are numbered on a per user basis, starting
+with 0. Except for the zero-th instance (started first), the
+instance number is displayed in the title bar of the main
+window (e.g.: `Aqualung.3'). If you don't use this
+option, the following options will control the zero-th
+instance by default, except for <code>-L</code> which defaults
+to the present instance (so as to be able to start playback
+immediately from the command line).</dd>
+
+<dt><b>
+<code>-B, --back</code>
+</b></dt>
+
+<dd>Jump to previous track.</dd>
+
+<dt><b>
+<code>-F, --fwd</code>
+</b></dt>
+
+<dd>Jump to next track.</dd>
+
+<dt><b>
+<code>-L, --play</code>
+</b></dt>
+
+<dd>Start playing.</dd>
+
+<dt><b>
+<code>-U, --pause</code>
+</b></dt>
+
+<dd>Pause playback, or resume if already paused.</dd>
+
+<dt><b>
+<code>-T, --stop</code>
+</b></dt>
+
+<dd>Stop playback.</dd>
+
+<dt><b>
+<code>-V, --volume [m|M]|[=]&lt;val&gt;</code>
+</b></dt>
+
+<dd>Adjust the volume. <code>m/M</code> means
+mute; if <code>=</code> is present, the remote instance's
+volume control will be set to the value specified,
+otherwise, the volume will be adjusted by the supplied
+(signed) value. The values are in dB units.</dd>
+
+<dt><b>
+<code>-Q, --quit</code>
+</b></dt>
+
+<dd>Terminate remote instance.</dd>
+
+</dl>
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 3.4. <a href="aqualung-doc-part_3_4.html">Options relevant to the Sample Rate Converter</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 3.6. <a href="aqualung-doc-part_3_6.html">Options for file loading</a></td></tr></table></body>
+</html>
+

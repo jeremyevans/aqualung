@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 3.1. <a href="aqualung-doc-part_3_1.html">Invocation</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 3.3. <a href="aqualung-doc-part_3_3.html">Output specific options</a></td></tr></table><hr /><h2>3.2. General options</h2>
+
+<dl>
+
+<dt><b>
+<code>-D, --disk-realtime</code>
+</b></dt>
+
+<dd>Try to use realtime (<code>SCHED_FIFO</code>) scheduling
+for disk thread, a background worker thread doing file
+decoding and sample rate conversion. Try this (and
+optionally <code>-Y</code>) if you experience short audio
+dropouts caused by other programs (e.g. web browser loading
+a complex page).</dd>
+
+<dt><b>
+<code>-Y, --disk-priority &lt;int&gt;</code>
+</b></dt>
+
+<dd>When running <code>-D</code>, set scheduler priority to
+&lt;int&gt; (defaults to 1).</dd>
+
+</dl>
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 3.1. <a href="aqualung-doc-part_3_1.html">Invocation</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 3.3. <a href="aqualung-doc-part_3_3.html">Output specific options</a></td></tr></table></body>
+</html>
+

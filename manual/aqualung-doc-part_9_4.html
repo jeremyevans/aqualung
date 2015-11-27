@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 9.3. <a href="aqualung-doc-part_9_3.html">Hooking into Aqualung Events</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 9.5. <a href="aqualung-doc-part_9_5.html">Custom Remote Commands</a></td></tr></table><hr /><h2>9.4. Custom Playlist Menu Commands</h2>
+
+<p>You can add custom playlist menu commands to Aqualung by
+calling the `<code>add_playlist_menu_command</code>'
+function with a string and a function.  The string is the
+label of the playlist menu entry, and the function is the
+function to call when the playlist menu entry is clicked.
+You can include `/''s inside the string to create
+submenus (there is currently no support for a `/' to
+appear inside a label).  The function should accept 0
+arguments.</p>
+
+<h4>Example 1: Exiting Aqualung immediately with an error code</h4>
+
+<pre>
+add_playlist_menu_command("Exit Immediately!!", function ()
+os.exit(1)
+end)</pre>
+
+<p>Using this example is not recommended.</p>
+
+
+
+<h4>Example 2: Printing selected files to standard output</h4>
+
+<pre>
+add_playlist_menu_command("Print Filenames", function ()
+for k, v in pairs(selected_files()) do
+print(v)
+end
+end)</pre>
+
+
+
+<h4>Example 3: Running commands on file names, under a Database submenu</h4>
+
+<pre>
+add_playlist_menu_command("Database/Add Favorite Tracks", function ()
+for k, v in pairs(selected_files()) do
+os.execute("add_favorite_track '" .. string.gsub(v, "'", "'\''") .. "'")
+end
+end)
+add_playlist_menu_command("Database/Remove Favorite Tracks", function ()
+for k, v in pairs(selected_files()) do
+os.execute("remove_favorite_track '" .. string.gsub(v, "'", "'\''") .. "'")
+end
+end)</pre>
+
+<p>The string.gsub call is for escaping filenames, since Lua's os.execute sends the
+string argument to the shell.</p>
+
+
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 9.3. <a href="aqualung-doc-part_9_3.html">Hooking into Aqualung Events</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 9.5. <a href="aqualung-doc-part_9_5.html">Custom Remote Commands</a></td></tr></table></body>
+</html>
+

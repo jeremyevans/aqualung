@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 3.2. <a href="aqualung-doc-part_3_2.html">General options</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 3.4. <a href="aqualung-doc-part_3_4.html">Options relevant to the Sample Rate Converter</a></td></tr></table><hr /><h2>3.3. Output specific options</h2><div class="toc1">3.3.1. <a href="#idp538528">Options relevant to ALSA output</a></div>
+<div class="toc1">3.3.2. <a href="#idp564912">Options relevant to OSS output</a></div>
+<div class="toc1">3.3.3. <a href="#idp572400">Options relevant to JACK output</a></div>
+<div class="toc1">3.3.4. <a href="#idp577360">Options relevant to PulseAudio and sndio output</a></div>
+<div class="toc1">3.3.5. <a href="#idp583328">Options relevant to Win32 output</a></div>
+
+
+<h3 id="idp538528">3.3.1. Options relevant to ALSA output</h3>
+
+<dl>
+
+<dt><b>
+<code>-d, --device &lt;name&gt;</code>
+</b></dt>
+
+<dd>Set the output device (defaults to 'default').</dd>
+
+<dt><b>
+<code>-r, --rate &lt;int&gt;</code>
+</b></dt>
+
+<dd>Set the output sample rate.</dd>
+
+<dt><b>
+<code>-b, --buffer-size &lt;int&gt;</code>
+</b></dt>
+
+<dd>Set the ALSA output buffer size (in frames).</dd>
+
+<dt><b>
+<code>-R, --realtime</code>
+</b></dt>
+
+<dd>Try to use realtime (<code>SCHED_FIFO</code>) scheduling
+for ALSA output thread.</dd>
+
+<dt><b>
+<code>-P, --priority &lt;int&gt;</code>
+</b></dt>
+
+<dd>When running <code>--realtime</code>, set scheduler
+priority to &lt;int&gt; (default is 1 when -R is used).</dd>
+
+</dl>
+
+
+
+<h3 id="idp564912">3.3.2. Options relevant to OSS output</h3>
+
+<dl>
+
+<dt><b>
+<code>-d, --device &lt;name&gt;</code>
+</b></dt>
+
+<dd>Set the output device (defaults to
+<tt>/dev/audio</tt> on OpenBSD, <tt>/dev/dsp</tt>
+on other Unices).</dd>
+
+<dt><b>
+<code>-r, --rate &lt;int&gt;</code>
+</b></dt>
+
+<dd>Set the output sample rate.</dd>
+
+<dt><b>
+<code>-R, --realtime</code>
+</b></dt>
+
+<dd>Try to use realtime (<code>SCHED_FIFO</code>) scheduling
+for OSS output thread.</dd>
+
+<dt><b>
+<code>-P, --priority &lt;int&gt;</code>
+</b></dt>
+
+<dd>When running <code>--realtime</code>, set scheduler
+priority to &lt;int&gt; (default is 1 when -R is used).</dd>
+
+</dl>
+
+
+
+<h3 id="idp572400">3.3.3. Options relevant to JACK output</h3>
+
+<dl>
+
+<dt><b>
+<code>-a[&lt;port_L&gt;,&lt;port_R&gt;],
+--auto[=&lt;port_L&gt;,&lt;port_R&gt;]</code>
+</b></dt>
+
+<dd>Auto-connect output ports to given JACK ports
+(defaults to first two hardware playback ports).</dd>
+
+<dt><b>
+<code>-c, --client &lt;name&gt;</code>
+</b></dt>
+
+<dd>Set client name (needed if you want to run multiple
+instances of the program).</dd>
+
+</dl>
+
+<p>Note that in the case when JACK output has been selected
+as part of the automatic output device detection, the
+<code>-a</code> option is implicitly applied.</p>
+
+
+
+<h3 id="idp577360">3.3.4. Options relevant to PulseAudio and sndio output</h3>
+
+<dl>
+
+<dt><b>
+<code>-r, --rate &lt;int&gt;</code>
+</b></dt>
+
+<dd>Set the output sample rate.</dd>
+
+<dt><b>
+<code>-R, --realtime</code>
+</b></dt>
+
+<dd>Try to use realtime (<code>SCHED_FIFO</code>) scheduling
+for sndio output thread.</dd>
+
+<dt><b>
+<code>-P, --priority &lt;int&gt;</code>
+</b></dt>
+
+<dd>When running <code>--realtime</code>, set scheduler
+priority to &lt;int&gt; (default is 1 when -R is used).</dd>
+
+</dl>
+
+
+
+<h3 id="idp583328">3.3.5. Options relevant to Win32 output</h3>
+
+<dl>
+
+<dt><b>
+<code>-r, --rate &lt;int&gt;</code>
+</b></dt>
+
+<dd>Set the output sample rate.</dd>
+
+</dl>
+
+
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 3.2. <a href="aqualung-doc-part_3_2.html">General options</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 3.4. <a href="aqualung-doc-part_3_4.html">Options relevant to the Sample Rate Converter</a></td></tr></table></body>
+</html>
+

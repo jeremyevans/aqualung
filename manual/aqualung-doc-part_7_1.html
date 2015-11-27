@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 7. <a href="aqualung-doc-part_7.html">Settings</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 7.2. <a href="aqualung-doc-part_7_2.html">Playlist</a></td></tr></table><hr /><h2>7.1. General</h2><div class="toc1">7.1.1. <a href="#idp1968752">Main Window</a></div>
+<div class="toc1">7.1.2. <a href="#idp1970848">Title Format</a></div>
+<div class="toc1">7.1.3. <a href="#idp1993456">Lua extension file</a></div>
+<div class="toc1">7.1.4. <a href="#idp1995072">Systray</a></div>
+<div class="toc1">7.1.5. <a href="#idp1998592">Miscellaneous</a></div>
+
+
+<p>The <span class="gui">General</span> tab itself is further divided into
+tabs, which are explained below.</p>
+
+<h3 id="idp1968752">7.1.1. Main Window</h3>
+
+<p>The options controlling the behavior of the Main Window
+speak for themselves. One advantage of combining the Play
+and Pause buttons is that it allows for starting playback
+and later toggling between play and pause with the same
+remote command, `<code>aqualung -N0 --play</code>'. It is
+useful if your keyboard has a combined Play/Pause multimedia
+button and you want to utilize its functionality to control
+Aqualung via remote commands.</p>
+
+
+
+<h3 id="idp1970848">7.1.2. Title Format</h3>
+
+<p>The <span class="gui">Title format</span> string will be used to
+construct a single title line from an Artist, a Record and a
+Track name when adding songs to the Playlist. The Artist,
+Record and Track names should appear as `%a', `%r'
+and `%t' flags in the template, respectively.</p>
+
+<p>Conditional string elements can be inserted using a
+`<code>?A1|A2|...|An{CONTENT}</code>' expression, where
+each <code>Ai</code> should be a subset of the available flag
+characters (that is, the set {a,r,t}). The value of the
+conditional expression is the logical OR of the individual
+<code>Ai</code> expressions. The value of an <code>Ai</code>
+expression is true if all strings are available whose flag
+character appears in the expression in question (logical
+AND).</p>
+
+<p>If the conditional is true, the content of the following
+pair of braces will be inserted, otherwise it will be
+skipped. The <code>CONTENT</code> string may contain the flags
+`%a', `%r' or `%t' as well.</p>
+
+<p>If you want to insert a literal `%', `?' or
+`}' you should write `%%', `%?' or `%}',
+respectively, except for a `?' inside <code>CONTENT</code>,
+and a `}' outside <code>CONTENT</code>, where they can
+appear unquoted. Of course it is good practice to always
+escape these characters for the sake of clarity if one needs
+them literally.</p>
+
+<p>Everything that is neither a conditional expression nor a
+flag will be copied verbatim into the result.</p>
+
+<p>Note that the expression `?a{%a}' is equivalent to
+`%a' since the flags will only be substituted if the
+corresponding string is available, so there's no need for the
+extra check.</p>
+
+<p>An example title format is `%a?ar|at{ - }%r?rt{ -
+}%t'. Using this format string, one would get the following
+components, in order:</p>
+
+<table border="0" cellpadding="3" cellspacing="0">
+<tr>
+<td>%a</td>
+<td>artist name if available</td>
+</tr>
+<tr>
+<td>?ar|at{ - }</td>
+<td>if (artist AND record) OR (artist AND track) available, the string ` - '</td>
+</tr>
+<tr>
+<td>%r</td>
+<td>record name if available</td>
+</tr>
+<tr>
+<td>?rt{ - }</td>
+<td>if (record AND track) available, the string ` - '</td>
+</tr>
+<tr>
+<td>%t</td>
+<td>track name, if available</td>
+</tr>
+</table>
+
+
+
+<h3 id="idp1993456">7.1.3. Lua extension file</h3>
+
+<p>This section is only available if Aqualung is compiled
+with Lua extension support.  If so, it specifies the 
+file to use for the extension support  See the Extending
+Aqualung section for details about what's possible to
+include in this file.</p>
+
+
+
+<h3 id="idp1995072">7.1.4. Systray</h3>
+
+<p>This page is present only if Aqualung was compiled with
+systray support. Even if it is supported, it can be turned
+off here, which naturally makes further configuration
+useless. If systray is enabled, Aqualung can start in
+minimized state &ndash; a useful feature if the program is
+launched automatically from the startup script of the window
+manager.</p>
+
+<p>Mouse button and wheel events on the tray icon are
+supported and can be assigned configurable commands. You can
+assign separate commands to the vertical and horizontal
+mouse wheels. Choose the desired command from the list
+displayed by the corresponding combo box.</p>
+
+<p>The left and right mouse buttons are reserved for
+hiding/showing the windows and popping up the context menu,
+respectively. Any other buttons can be bound to a custom
+command by adding a new button to the list. In the presented
+dialog, move the cursor over the test panel and press the
+button you want to configure. Below the test panel, choose
+the appropriate action to be taken when you click on the
+tray icon with the selected mouse button. One button can be
+assigned only one command at a time. To change an already
+configured button, remove it from the list first and add it
+again.</p>
+
+
+
+<h3 id="idp1998592">7.1.5. Miscellaneous</h3>
+
+<p>The so-called <span class="gui">Implicit command line</span> is something
+you should pay attention to. It exists mainly for those who
+have a stable sound setup and always use the program with the
+same output device, e.g. they have only OSS and don't plan to
+upgrade. For such users it may be cumbersome to always specify
+the desired output device on the command line, along with its
+optional parameters if needed. So here you may enter something
+that you would otherwise enter on the command line every
+time.</p>
+
+<p>But beware: you cannot override or turn off every option,
+so for example if you enter `--help' here, the program
+will always display the standard message and exit immediately;
+and there is no way to override that from the command line. If
+you get into trouble, all you have to (or can) do is grab a
+text editor and hack it out of
+<tt>~/.aqualung/config.xml</tt> where it is stored. You
+will find it between `&lt;default_param&gt;' and
+`&lt;/default_param&gt;'.</p>
+
+<p>There are also some options to handle the display of album
+cover art. This feature is automatically triggered when an
+image file is found in the same directory as the track being
+played. The filenames that will at first be looked for are
+`cover.ext', `.cover.ext', `front.ext',
+`.front.ext', `folder.ext', `.folder.ext',
+where `ext' is one of `jpg', `jpeg',
+`png', `gif', `bmp', `tif',
+`tiff'. If none of them exists, the first image file
+having an appropriate extension will be used. If you select a
+record (or one of its tracks) in the Music Store, the image
+will be displayed in the comment pane. It is also shown in the
+File Info dialog as well as the main window during the
+playback of a track from this album. Clicking the image will
+show a zoomed version of the cover.</p>
+
+<p>When playing files or viewing them in the <span class="gui">File
+info</span> dialog, embedded pictures are also used for cover
+display. If an embedded picture frame is found in file
+metadata, it is displayed instead of any separate image
+file. If there is more than one embedded picture in the file,
+the first one is used. In these cases no separate image file
+is used, so the embedded image found in file metadata is
+displayed regardless of any separate image in the audio file's
+directory.</p>
+
+<p>There are some global options to set here as well, which
+should be quite obvious to use.</p>
+
+
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 7. <a href="aqualung-doc-part_7.html">Settings</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 7.2. <a href="aqualung-doc-part_7_2.html">Playlist</a></td></tr></table></body>
+</html>
+

@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 9.1. <a href="aqualung-doc-part_9_1.html">Introduction</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 9.3. <a href="aqualung-doc-part_9_3.html">Hooking into Aqualung Events</a></td></tr></table><hr /><h2>9.2. Programmable Title Format</h2>
+<p>By specifying a function named `<code>playlist_title</code>'
+in your Lua extension file, which should accept no arguments and
+should return a string, you can override the default title formatting
+specified by the <span class="gui">Title format</span> setting. Similarly,
+by specifying a function named `<code>application_title</code>' with
+the same API, you have the application window's title set separately
+from the playlist title.  If you would like
+the application title and playlist title to be the same, you
+can have your `<code>application_title</code>' function
+just call `<code>playlist_title</code>'.</p>
+
+<p>Aqualung defines two functions for you to use to get data
+to use in the title format, `<code>m</code>' and
+`<code>i</code>'. `<code>m</code>' stands for metadata,
+and `<code>i</code>' stands for file info. The
+`<code>m</code>' function is used to get metadata from file
+tags, while the `<code>i</code>' function is used to get
+information about the file itself, such as the length,
+bitrate, and number of channels. If there are multiple
+metadata entries (such as multiple artists),
+`<code>m</code>' will return them as a single string
+separated with comma (`<code>,</code>'). If there is no
+metadata entry, `<code>m</code>' will return the empty
+string. If you ask for a metadata or file info entry that
+Aqualung doesn't understand, Aqualung will log an error and
+will fallback to using the standard title formatting code.</p>
+
+<p>Here are some examples.</p>
+
+<h4>1. Very simple, showing basic syntax</h4>
+
+<pre>
+function playlist_title()
+return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ')'
+end</pre>
+
+<p>Results:</p>
+
+<ul>
+<li>Yngiew Malmsteen-Far Beyond the Sun (Rising Force)</li>
+<li>-Greensleeves ()</li>
+</ul>
+
+
+
+<h4>2. Simple, showing use of conditional formatting</h4>
+
+<pre>
+function mi(field, format)
+if field ~= "" then
+field = string.format(format, field)
+end
+return field
+end
+
+function dirname(path)
+if string.find(path, "/") then
+return string.sub(path, 1, string.len(path) - string.find(string.reverse(path), "/"))
+else
+return ""
+end
+end
+
+function album()
+local a = m('album')
+if a ~= "" then
+a = a .. mi('date', ' (%s)')
+else
+a = dirname(i('filename'))
+end
+return a .. '-'
+end
+
+function playlist_title()
+return album() .. mi('trackno', '%s-') .. m('title')
+end</pre>
+
+<p>Results:</p>
+
+<ul>
+<li>Rising Force (1984)-01-Far Beyond the Sun</li>
+<li>irish_music-Greensleeves</li>
+</ul>
+
+
+
+<h4>3. Complex, showing quasi-columnar output via padding (requires a fixed width font for a decent appearance)</h4>
+
+<pre>
+-- Maximum length of a line in the playlist
+maxlen = 85
+
+-- Directory name for path
+function dirname(path)
+if string.find(path, "/") then
+return string.sub(path, 1, string.len(path) - string.find(string.reverse(path), "/"))
+else
+return ""
+end
+end
+
+-- File name for path
+function basename(path)
+if string.find(path, "/") then
+return string.sub(path, string.len(path) - string.find(string.reverse(path), "/") + 2)
+else
+return path
+end
+end
+
+-- The album name from the metadata, or the directory name of the file if not present
+function album_or_dir()
+local album = m('album')
+if album == "" then
+album = basename(dirname(i("filename")))
+end
+return album
+end
+
+-- The title from the metadata, or the base name of the file if not present
+function title_or_file()
+local title = m('title')
+if title == "" then
+local file = basename(i("filename"))
+if not  string.match(file, "^%d+%-%....$") then
+title = file
+end
+end
+return title
+end
+
+-- If the field exists in the metadata, format it using the format_string
+function formatif(field, format_string)
+if field ~= "" then
+field = string.format(format_string, field)
+end
+return field
+end
+
+-- A string indicating the frequency in Hz, or the empty string if the frequency is 44100
+function freq()
+local hz = string.format("%i", i('sample_rate'))
+if hz == "44100" then
+hz = ""
+else
+hz = formatif(hz, "[%sHz] ")
+end
+return hz
+end
+
+-- A string indicating the number of channels, unless the number of channels is 2 (stereo)
+function chan()
+local m = string.format("%i", i('channels'))
+if m == "2" then
+m = ""
+elseif m == "1" then
+m = "[MONO] "
+else
+m = formatif(m, "[%s channels] ")
+end
+return m
+end
+
+-- Pad the string to the given length, adding spaces if it is too short and truncating
+-- it if it is too long
+function pad(s, n)
+local l = string.len(s)
+if l &gt; n then
+s = string.sub(s, 1, n)
+else
+s = s .. string.rep(' ', n-l)
+end
+return s
+end
+
+-- Combine the left and right sides, with the right side having priority
+function finalize(l, r)
+return pad(l, maxlen - string.len(r)) .. r
+end
+
+-- Build the title in two parts, a left part (channel and frequency expections, album,
+-- track number, title) and a right part (artist, genre, comment, date, and gain).
+-- The right part is columnar, the left side is not.
+function playlist_title()
+local l = chan() .. freq() .. formatif(album_or_dir(), "%s-")
+.. formatif(m('trackno'), "%s-") .. title_or_file()
+local r = "  " .. m('artist') .. "  " .. formatif(m("genre"), "%s  ")
+.. pad(m('comment'), 12) .. "  " .. pad(m("date"), 4) .. "  "
+.. pad(m('track_gain'), 5) .. " " .. pad(m('album_gain'), 5)
+return finalize(l, r)
+end</pre>
+
+<p>Results:</p>
+
+<ul>
+<li>Rising Force-02-Far Beyond the Sun  Yngwie Malmsteen  Metal         1984  -0.89 -0.94</li>
+<li>irish_music-Greensleeves                             Celtic         1990  +0.83      </li>
+</ul>
+
+
+
+<h4>Complete list of values that the `m' function accepts</h4>
+
+<pre>
+[ title | artist | album | date | genre | trackno |
+comment | disc | performer | description | organization
+| location | contact | license | copyright | isrc |
+version | subtitle | debut_album | publisher | conductor
+| composer | publication_right | file | ean_upc | isbn |
+catalog | label_code | record_date | record_location |
+media | index | related | abstract | language |
+bibliography | introplay | bpm | encoding_time |
+playlist_delay | original_release_time | release_time |
+tagging_time | encoded_by | lyricist | filetype |
+involved_people | content_group | initial_key | length |
+musician_credits | mood | original_album |
+original_filename | original_lyricist | original_artist
+| file_owner | band | remixed | set_part | produced |
+station_name | station_owner | album_order |
+performer_order | title_order | software | set_subtitle
+| user_text | commercial_info | legal_info |
+file_website | artist_website | source_website |
+station_website | payment | publisher_website | user_url
+| vendor | rg_loudness | track_gain | track_peak |
+album_gain | album_peak | icy_name | icy_descr |
+icy_genre | rva ]</pre>
+
+
+
+<h4>Here is a complete list of values that the `i' function accepts</h4>
+
+<pre>
+[ filename | sample_rate | channels | bps | samples |
+voladj_db | voladj_lin | stream | mono ]</pre>
+
+
+
+<p>Changing the <span class="gui">Lua extension file</span> entry
+takes effect immediately, but does not affect existing titles
+in the playlist. In order to update existing titles in the
+playlist, the <span class="gui">Reread file metadata</span> setting should
+be used.</p>
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 9.1. <a href="aqualung-doc-part_9_1.html">Introduction</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 9.3. <a href="aqualung-doc-part_9_3.html">Hooking into Aqualung Events</a></td></tr></table></body>
+</html>
+

@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 5.3. <a href="aqualung-doc-part_5_3.html">The RVA system</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 6. <a href="aqualung-doc-part_6.html">Metadata support</a></td></tr></table><hr /><h2>5.4. Music Store Builder</h2><div class="toc1">5.4.1. <a href="#idp1840016">Data sources</a></div>
+<div class="toc1">5.4.2. <a href="#idp1844720">Regular expressions</a></div>
+<div class="toc1">5.4.3. <a href="#idp1849216">Predefined transformations</a></div>
+<div class="toc1">5.4.4. <a href="#idp1850624">Capitalization</a></div>
+
+
+<p>Aqualung's Music Store Builder allows you to easily create
+a store from your existing audio files. This is essential if
+you already have a large music collection on your
+harddrive.</p>
+
+<p>The Builder supports two approaches for automatically
+adding audio files to the Music Store. The directory driven
+mode requires the collection to be organized in a strict
+filesystem structure, where the directory structure itself
+specifies which files belong to a record, and which records
+belong to an artist. The structure should conform to one of
+the following patterns:</p>
+
+<table border="0" cellpadding="3" cellspacing="0">
+<tr>
+<td>a)</td>
+<td>root / record / track</td>
+</tr>
+<tr>
+<td>b)</td>
+<td>root / artist / record / track</td>
+</tr>
+<tr>
+<td>c)</td>
+<td>root / artist / artist / record / track</td>
+</tr>
+<tr>
+<td>d)</td>
+<td>root / artist / artist / artist / record / track</td>
+</tr>
+</table>
+
+<p>Pattern a) is useful when you do not have separate
+subdirectories for artists, only for records. The b) means
+that each artist and record has its own subdirectory. It
+corresponds to the structure introduced above along with the
+Music Store. The patterns c) and d) are for those who have too
+many artists to keep them at the same level; you may thus have
+a subdirectory for every artist starting with letter a, b,
+etc., or you can even dedicate two levels to them, perhaps as
+<tt>b/be/beatles</tt>, <tt>c/cr/crimson</tt>, etc.</p>
+
+<p>The independent mode does not follow any directory
+structure, only searches for audio files recursively starting
+from root. This doesn't allow the Builder to perform CDDB
+lookups, so only metadata and filename transformations are
+available with this mode. If your audio files are basically
+organized in a directory structure that allows a directory
+driven build to be performed, but you also happen to have
+audio files on higher (record or artist) levels, run the
+Builder in directory driven mode first, then use the
+independent mode on the same root directory to add the
+outstanding files too.</p>
+
+<p>The Builder can gain information about your music from
+three sources: metadata (if your audio files are correctly
+tagged), CDDB lookups, and the filesystem names of the audio
+files and directories themselves.</p>
+
+<p>If you are up to building a new store, first create an
+empty store (right-click in Music Store, then choose the
+<span class="gui">Create empty store</span> item), then right-click on the
+new store and choose <span class="gui">Build / Update store from
+filesystem</span>. After selecting the desired building mode,
+the builder dialog appears with several options broken down
+into five notebook pages. Later, if you only want to update
+the content of a store, you can start a build process on a
+non-empty store as well.</p>
+
+<p>On the <span class="gui">General</span> page you have to select the root
+directory of your music collection. With the directory driven
+mode, the appropriate structure should also be selected.</p>
+
+<p>You can exclude files from the build process that match a
+wildcard pattern (or more precisely, at least one element in a
+list of wildcard patterns). The list is comma-separated,
+e.g. `*.jpg,*.png,*.gif' will cause all files having jpg,
+png, or gif extension to be left out. Note that hidden files
+(whose name starts with a period) are always excluded. Also
+note that no spaces should be used around the commas, because
+they would be counted in the wildcard patterns, causing a lot
+of headache.</p>
+
+<p>Similarly, you may include only those files that match a
+wildcard pattern. The syntax is the same as with the
+exclusion. This easily allows you to build a store containing
+music e.g. encoded with FLAC, and another store for Ogg, while
+the audio files can be placed together even in the same
+directory. Exclude and include patterns are
+case-insensitive.</p>
+
+<p>If you choose to reset existing data, only track name,
+length, manual RVA and empty comment fields will be
+overwritten, and the latter two are only if you have enabled
+importing the Replaygain and Comment tags on the Track
+tab. Removing non-existing files will remove all tracks from
+the store that no longer exist on the filesystem. Empty
+artists and records will also be removed.</p>
+
+<p>The builder dialog has separate notebook pages for artists,
+records and tracks. The settings made on a page only concern
+the appropriate category (either artist, record or track). The
+operations and transformations are performed in the same order
+as they are placed on the page, from top to bottom.</p>
+
+<h3 id="idp1840016">5.4.1. Data sources</h3>
+
+<p>With each mode you can set the priority of data sources
+for artist names, record titles and tracks independently
+(highest comes first). Simply drag &amp; drop the lines of
+the list to achieve the desired order. For example, if you
+have proper tags in you audio files for track names only,
+but none for artists and records, you may use metadata for
+tracks at first place, and use CDDB for artists and records
+instead. The data sources can also be disabled by clicking
+on the check boxes.</p>
+
+<p>The Builder looks for usable data in the given priority,
+and will use the first suitable one.</p>
+
+<p>A short note on the Filesystem source: when using the
+directory driven mode with structure a), the artists and
+records will have the same filesystem name, which is the
+name of the record directory. Using pattern b), c) or d)
+will result in all artists, records and tracks having the
+name of their respective directory (or file, for tracks) as
+the filesystem name. With c) and d), the name of the
+rightmost artist directory is used. When using the
+independent mode, artists, records and tracks will have the
+same filesystem name, which is the filename of the audio
+file being imported.</p>
+
+<p>Regardless of the data source that won the contest for
+being the source of your artist, record or track name, you
+can perform several transformations on this string before
+accepting it as final.</p>
+
+
+
+<h3 id="idp1844720">5.4.2. Regular expressions</h3>
+
+<p>The main goal of the regexp module is to perform
+<code>sed</code>-like substitutions, allowing you to extract
+the artist, record or track name from the string. It has the
+effect of a <code>sed s/regexp/replacement/g</code>
+command. The regexp must not match the empty string (the
+only exception is leaving the regexp entry empty, which
+disables the whole regexp module). The replacement is
+allowed to be empty in which case the matched parts are
+deleted. The replacement may also contain the special
+escapes <code>1</code> through <code>9</code> to refer to the
+corresponding matching sub-expressions in the regexp. See
+<code>sed(1)</code> and <code>grep(1)</code> for more
+information on sed substitution and regexp syntax. There is
+a sandbox where you can enter a string and see how it would
+be transformed, providing a safe environment for
+experiments.</p>
+
+
+
+<h3 id="idp1849216">5.4.3. Predefined transformations</h3>
+
+<p>These provide some basic fixes, such as removing the
+extension or leading numbers, converting underscores to
+spaces, and trimming leading, tailing or multiple
+spaces. You can use them together with the regexp module as
+well, in which case only the replacement will be
+transformed, as expected.</p>
+
+
+
+<h3 id="idp1850624">5.4.4. Capitalization</h3>
+
+<p>Finally, with this module you can force a capitalization
+pattern on the string. The force case entry is a
+comma-separated list of words or expressions that will be
+left in the form you entered them. An obvious example is the
+case of Roman numbers.</p>
+
+<p>After the standard modules present for artist, record and
+track names, there are some category dependent settings. For
+artists and records you can set the source of the sort name
+field, for tracks you can decide whether to import the
+Replaygain and Comment tags, if available.</p>
+
+<p>Once you are satisfied with the settings click
+<span class="gui">OK</span>. A new window showing the progress is
+displayed, and the store is filled up. You can abort the
+process if you encounter some error or weirdness, or just
+want to refine some settings.</p>
+
+
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 5.3. <a href="aqualung-doc-part_5_3.html">The RVA system</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 6. <a href="aqualung-doc-part_6.html">Metadata support</a></td></tr></table></body>
+</html>
+

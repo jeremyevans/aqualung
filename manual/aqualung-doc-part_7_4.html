@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 7.3. <a href="aqualung-doc-part_7_3.html">Music Store</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 7.5. <a href="aqualung-doc-part_7_5.html">Playback RVA</a></td></tr></table><hr /><h2>7.4. DSP</h2>
+
+<p>Changing the two options on the <span class="gui">DSP</span> page takes
+effect immediately, and stays that way regardless of whether
+you leave the dialog with the <span class="gui">OK</span> or
+<span class="gui">Cancel</span> button.</p>
+
+<p>The sample rate converter type should be chosen to fit the
+resources of your computer, and provide the best affordable
+quality at the same time. So fire up top or something similar
+on a spare terminal, and start with the best converter. If
+your machine is not very new, this will consume huge amounts
+of CPU, and the playback will very likely be choppy. If this
+is the case, you will have to pick another
+converter. <span class="gui">Fastest Sinc Interpolator</span> is usable on
+today's most machines. If not, use <span class="gui">Linear
+Interpolator</span> instead of <span class="gui">ZOH</span> since both are
+blindingly fast, but linear is naturally much better than
+zero-order (constant hold). It should also be noted that the
+CPU usage of sample rate conversion is greatly affected by the
+difference between the two sample rates: upsampling 32k to 96k
+will be much more expensive than, say, upsampling from 44.1k
+to 48k.</p>
+
+<p>Of course, sample rate conversion springs into action only
+when the output sample rate (the sample rate you specified in
+case of OSS or ALSA, or the sample rate the JACK server
+specified in case of JACK) does not match the sample rate of
+the track you are playing. A typical situation is when you
+have 44.1k files grabbed from CD and play back at 48k.</p>
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 7.3. <a href="aqualung-doc-part_7_3.html">Music Store</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 7.5. <a href="aqualung-doc-part_7_5.html">Playback RVA</a></td></tr></table></body>
+</html>
+

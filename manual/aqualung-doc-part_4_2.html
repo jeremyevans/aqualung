@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 4.1. <a href="aqualung-doc-part_4_1.html">Main Window</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 4.3. <a href="aqualung-doc-part_4_3.html">Music Store</a></td></tr></table><hr /><p><img class="screenshot" src="playlist.png" alt="[screenshot]" /></p><h2>4.2. Playlist</h2>
+
+<p>The Playlist normally receives its contents from the Music
+Store. However, you can put any file in the Playlist
+regardless of the contents of your Music Store, using the
+<span class="gui">Add files</span> button at the bottom of the
+window. Adding a directory or a URL are also supported, by
+right-clicking on the button and selecting the appropriate
+menu item, <span class="gui">Add directory</span> or <span class="gui">Add URL</span>.</p>
+
+<p>The <span class="gui">Add URL</span> menu item can be used to listen to
+Internet radio stations streaming Ogg Vorbis or MP3. You will
+be shown a dialog with an entry, in which you should enter the
+URL of the stream. Pressing <span class="gui">OK</span> will add it to the
+Playlist. After you start playing the stream, the Playlist
+entry changes to the name of the radio station, with the
+description provided by the station in brackets.</p>
+
+<p>The other two buttons (<span class="gui">Select all</span>, <span class="gui">Remove
+selected</span>) function as you would expect them when clicked
+with the left mouse button. Clicking with the right mouse
+button brings up popup menus that contain further options as
+seen with the <span class="gui">Add files</span> button.</p>
+
+<p>There is a statusbar under the list showing the total time
+of the Playlist and the duration of the selected tracks, as
+well as the size of the songs (if enabled).</p>
+
+<p>The Playlist can not only maintain a linear list of songs,
+but is also capable of keeping the tracks of albums
+together. This is done when a Store, Artist or Record has been
+added to the Playlist using the so-called Album mode,
+available from the popup menu in Music Store. If you tend to
+use it extensively, there is an option on the
+<span class="gui">Settings / Playlist</span> page to make it default, so drag
+&amp; drop and adding via keyboard shortcut will use this mode
+automatically.</p>
+
+<p>Aqualung supports playlist tabs, which allow you to have
+multiple playlists for your music at the same time, very
+similarly to multiple tabbed browsing in Firefox. Creating new
+tabs is possible via CTRL+T in the Playlist window,
+double-clicking on the tab bar, or using the right-click
+context menu of the tab labels. This context menu can also be
+used to rename tabs, close other tabs, or undo
+closing. Another trick is that middle clicking on an item in
+the Music Store adds the content to a new playlist tab, which
+will be named after the middle-clicked element by default.
+Closing a tab has several ways: clicking the close button
+located on each tab, middle-clicking on a tab, using the tab
+context menu, or by pressing CTRL+W in the Playlist
+window. Undo close tab is possible until you quit
+Aqualung. Tabs can be reordered via drag &amp; drop.</p>
+
+<p>The contents of the Playlist can be saved and restored
+automatically when the program exits and starts up, and/or
+periodically with adjustable interval. (Whether this should be
+done is a configuration option, covered later.) In addition
+to this, you can save the Playlist manually at any time, or
+load a previously saved playlist file. To do this, right-click
+in the Playlist area, which will bring up a popup menu with
+these features.</p>
+
+<p>The Playlist is saved as an XML file, unless you specify a
+filename ending in <tt>.m3u</tt>, in which case it is
+saved in M3U format (one filename per line). When saving an
+XML playlist, you should
+normally end your filename with <tt>.xml</tt> &ndash;
+however, this is only good practice and not necessary. If you
+choose <span class="gui">Save all playlists</span>, the XML will be a
+multi-tabbed playlist, containing all tabs, while <span class="gui">Save
+playlist</span> saves the current playlist only. When saving
+all playlists, it will always use the XML format, as the M3U
+file format does not support multiple playlists. Note that the
+XML playlist file format is not compatible with Winamp/XMMS
+<tt>.m3u</tt> files. However, Aqualung will open playlists
+in M3U and PLS formats whenever possible.</p>
+
+<p>When opening a multi-tabbed playlist, all opened tabs will
+be appended after the present ones, and the existing tabs will
+be remained intact, regardless of whether you chose loading
+(which normally clears the current playlist before adding) or
+enqueueing (which appends songs to the playlist). Opening any
+other playlist type (single XML playlist created by <span class="gui">Save
+playlist</span>, M3U or PLS playlists) will behave according to
+the option you chose (`Load in new tab', `Load' or
+`Enqueue').</p>
+
+<p>The usual cut, copy and paste functions are accessible via
+keyboard shortcuts, and work across playlist tabs as
+well. Rearranging tracks by drag &amp; dropping items is also
+supported. You can even drag a track from a playlist into
+another, by dragging on the tab first in order to switch to
+the target playlist. The only restriction is that album nodes
+cannot be pasted or dropped inside another album node.</p>
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 4.1. <a href="aqualung-doc-part_4_1.html">Main Window</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 4.3. <a href="aqualung-doc-part_4_3.html">Music Store</a></td></tr></table></body>
+</html>
+

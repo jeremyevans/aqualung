@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 3.5. <a href="aqualung-doc-part_3_5.html">Options for remote cue control</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 3.7. <a href="aqualung-doc-part_3_7.html">Options for changing state of Playlist/Music Store windows</a></td></tr></table><hr /><h2>3.6. Options for file loading</h2><div class="toc1">3.6.1. <a href="#idp611968">Setting up programs to use Aqualung as a soundfile handler</a></div>
+
+
+<p>You may specify filenames on the command line. These may be
+ordinary soundfiles playable by Aqualung, directories, or
+playlist files you saved earlier. The program will decide if a
+file is a playlist, and add its contents accordingly. In
+addition to Aqualung's native (XML) playlist format, the
+program will load M3U and PLS playlists whenever possible.</p>
+
+<p>If you used the <code>--session</code> option (see above),
+the files will be sent to the Aqualung instance you
+specified. Otherwise a new instance will start up with the
+files you specified. Note that if you enabled the <span class="gui">Save
+and restore the Playlist on exit/startup</span> option in the
+<span class="gui">Settings</span> dialog, the files you specify will be
+loaded <b><i>after</i></b> the automatically loaded ones.</p>
+
+<dl>
+
+<dt><b>
+<code>-E, --enqueue</code>
+</b></dt>
+
+<dd>Enqueue added files to the Playlist instead of loading
+them (which removes the previous contents of the
+Playlist). Use this if you want to keep the existing items
+in the Playlist.</dd>
+
+<dt><b>
+<code>-t[&lt;name&gt;], --tab[=&lt;name&gt;]</code>
+</b></dt>
+
+<dd>Specify target tab for file loading (either remotely
+using the <code>--session</code> option, or at startup). If
+<code>--tab</code> is used without the name parameter, the
+files will be added to a new (untitled) tab. If a name is
+supplied, Aqualung will check whether a tab with that name
+already exists. If so, the files will be loaded (or enqueued
+if you used <code>-E</code>) to that tab. If no such tab
+exists, one with that name will be created, and the content
+goes there.</dd>
+
+</dl>
+
+<h3 id="idp611968">3.6.1. Setting up programs to use Aqualung as a soundfile handler</h3>
+
+<p>It is possible to set up a host program such as a
+browser, file manager etc. to use Aqualung for opening
+soundfiles. To do this, a command line with the following
+properties should be used:</p>
+
+<ul>
+<li>if an Aqualung instance is already running, send the file(s) to that instance;</li>
+<li>if no instance is running, start up a new instance;</li>
+<li>either case, start playing the file(s) immediately after loading them.</li>
+</ul>
+
+<p>One solution to this is to use</p>
+
+<dl>
+<dd></dd>
+<dt><b><code>aqualung -N0 -E -L -t'File Manager' %s</code></b></dt>
+</dl>
+
+<p>where <code>%s</code> is one or more filenames. It should be noted
+that the file associations (the mechanism of knowing which
+files to open via Aqualung) is completely within the scope
+of the host program.</p>
+
+
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 3.5. <a href="aqualung-doc-part_3_5.html">Options for remote cue control</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 3.7. <a href="aqualung-doc-part_3_7.html">Options for changing state of Playlist/Music Store windows</a></td></tr></table></body>
+</html>
+

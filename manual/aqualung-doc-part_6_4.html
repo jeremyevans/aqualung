@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 6.3. <a href="aqualung-doc-part_6_3.html">Metadata-related behavior</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 7. <a href="aqualung-doc-part_7.html">Settings</a></td></tr></table><hr /><h2>6.4. Overview of supported metadata formats</h2><div class="toc1">6.4.1. <a href="#idp1903072">Metadata support matrix</a></div>
+<div class="toc1">6.4.2. <a href="#idp1938880">ID3v1</a></div>
+<div class="toc1">6.4.3. <a href="#idp1941632">ID3v2</a></div>
+<div class="toc1">6.4.4. <a href="#idp1948496">APE</a></div>
+<div class="toc1">6.4.5. <a href="#idp1951920">Ogg Xiph comments</a></div>
+<div class="toc1">6.4.6. <a href="#idp1953968">FLAC pictures</a></div>
+<div class="toc1">6.4.7. <a href="#idp1955760">Musepack ReplayGain data</a></div>
+<div class="toc1">6.4.8. <a href="#idp1958448">Generic StreamMetadata</a></div>
+<div class="toc1">6.4.9. <a href="#idp1961152">MPEG StreamMetadata</a></div>
+<div class="toc1">6.4.10. <a href="#idp1963840">MOD information</a></div>
+
+
+<h3 id="idp1903072">6.4.1. Metadata support matrix</h3>
+
+<p>This table shows what tag types are supported for which
+audio formats. Formats for which no metadata support is
+present are omitted.</p>
+
+<table rules="all" border="1" cellpadding="5" cellspacing="0">
+<tr>
+<td></td>
+<td>ID3v1</td>
+<td>ID3v2</td>
+<td>APE</td>
+<td>Ogg Xiph Comments</td>
+<td>FLAC Pictures</td>
+<td>Musepack ReplayGain</td>
+<td>Generic StreamMeta</td>
+<td>MPEG StreamMeta</td>
+<td>Module info</td>
+</tr>
+
+<tr>
+<td>FLAC</td>
+<td></td>
+<td></td>
+<td></td>
+<td>R/W</td>
+<td>R/W</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td>Ogg Vorbis</td>
+<td></td>
+<td></td>
+<td></td>
+<td>R/W</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td>Ogg Vorbis (stream)</td>
+<td></td>
+<td></td>
+<td></td>
+<td>R</td>
+<td></td>
+<td></td>
+<td>R</td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td>MPEG Audio</td>
+<td>R/W</td>
+<td>R/W</td>
+<td>R/W</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td>MPEG Audio (stream)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>R</td>
+<td>R</td>
+<td></td>
+</tr>
+
+<tr>
+<td>MOD Audio</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>R</td>
+</tr>
+
+<tr>
+<td>Musepack</td>
+<td></td>
+<td></td>
+<td>R/W</td>
+<td></td>
+<td></td>
+<td>R</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td>Monkey's Audio</td>
+<td></td>
+<td></td>
+<td>R/W</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td>WavPack</td>
+<td></td>
+<td></td>
+<td>R/W</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+</table>
+
+
+
+<h3 id="idp1938880">6.4.2. ID3v1</h3>
+
+<p>ID3v1 and ID3v1.1 (<a class="external" href="http://www.id3.org/ID3v1">http://www.id3.org/ID3v1</a>)
+are fully supported. The difference between the two is the
+presence or absence of a separate Track Number field, which
+was added in ID3v1.1. Aqualung automatically parses the tag
+choosing the right version. When writing the tag, it is
+written as ID3v1.1 if a Track Number frame is present, and
+written as ID3v1 otherwise.</p>
+
+<p>The Genre field has a fixed set of possible contents in
+ID3v1 and ID3v1.1. This is enforced by a drop-down menu in
+the metadata editor GUI.</p>
+
+
+
+<h3 id="idp1941632">6.4.3. ID3v2</h3>
+
+<p>ID3v2 tags are supported with the restriction that the
+tag MUST be at the beginning of the file. Tag versions
+before ID3v2.3 are considered obsolete and not
+supported. Support for ID3v2.3 tags (<a class="external" href="http://id3.org/id3v2.3.0">http://id3.org/id3v2.3.0</a>)
+is read-only, meaning that they are parsed, but converted to
+ID3v2.4 whenever saved back to file. ID3v2.4 tags (<a class="external" href="http://id3.org/id3v2.4.0-structure">http://id3.org/id3v2.4.0-structure</a>)
+are supported in both read and write mode.</p>
+
+<p>ID3v2.4 tags are always written using UTF-8 as the string
+encoding of non-ASCII text data, and unconditionally
+employing unsynchronisation on all frames. Extended headers
+are neither parsed nor written. Padding is added when
+creating a new file (via CD ripping or file export) or
+rewriting a tag that does not fit in its earlier space
+(e.g. when adding a picture frame, which is usually larger
+than the remaining padding, thus mandating the re-writing of
+the whole file). In these cases the policy for determining
+the amount of padding is that the size of the tag should be
+an integer multiple of 2K, and the added padding should be
+between 2K and 4K.</p>
+
+<p>Not every frame defined by the ID3v2 standards is
+implemented; however, the commonly used subset of the frames
+is available. In particular, all text information frames
+(T***) including `User defined text frame' (TXXX), URL
+link frames (W***) including `User defined URL link
+frame' (WXXX), comments (COMM), relative volume
+adjustment 2 (RVA2), and attached picture (APIC) frames are
+supported.</p>
+
+<p>Some ID3v2.3 frames that have been discontinued in
+ID3v2.4 are supported by reading and converting them to
+other (functionally equivalent) frames: TDAT, TIME, TRDA and
+TYER are treated as TDRC and TORY is treated as TDOR.</p>
+
+<p>Note that the RVAD frame in ID3v2.3 is not supported.</p>
+
+
+
+<h3 id="idp1948496">6.4.4. APE</h3>
+
+<p>APEv1 and <a class="external" href="http://wiki.hydrogenaudio.org/index.php?title=APEv2_specification">APEv2</a>
+tags are supported with the restriction that the tag MUST be
+located at the end of the file, possibly before an ID3v1
+tag. <a class="external" href="http://wiki.hydrogenaudio.org/index.php?title=APE_key">Standard
+items</a> are supported as well as ReplayGain-related
+frames, and picture frames which are by convention binary
+items identified by a key starting with `Cover Art'
+followed by the picture type definition in brackets. This is
+compatible with most existing tagging software.</p>
+
+
+
+<h3 id="idp1951920">6.4.5. Ogg Xiph comments</h3>
+
+<p>Ogg Xiph comments (also known as Ogg Vorbis comments) are
+supported according to the recommended field names in the <a class="external" href="http://xiph.org/vorbis/doc/v-comment.html">Vorbis
+format spec</a>. In addition to this, COMMENT, DISC, and
+ReplayGain-related fields are also supported.
+</p>
+
+
+
+<h3 id="idp1953968">6.4.6. FLAC pictures</h3>
+
+<p>In FLAC files there may be an Ogg Xiph comment block
+along with separate picture blocks that contain one embedded
+picture each. This tag is Aqualung's pseudo-tag for
+referring to the set of picture blocks in a FLAC file, so
+the only frame you can add to this tag is the
+`Attached picture'.</p>
+
+
+
+<h3 id="idp1955760">6.4.7. Musepack ReplayGain data</h3>
+
+<p>In <a class="external" href="http://trac.musepack.net/trac/wiki/SV7Specification">Musepack
+SV7</a> streams there may be ReplayGain data in the file
+(not in a metadata tag, but in the coded audio data
+itself). Technically, it is always present, but is only
+treated as existent when it is nonzero. Aqualung displays
+(and has the capability to use) this information by
+referring to it as a `Musepack ReplayGain' pseudo-tag
+(which, again, is not a proper metadata tag in
+reality). This information is read-only.
+</p>
+
+
+
+<h3 id="idp1958448">6.4.8. Generic StreamMetadata</h3>
+
+<p>This is a read-only pseudo-tag carrying information that
+was obtained when speaking to the Icecast or SHOUTcast
+stream server. Specifically, the relevant HTTP header fields
+received from the server are saved in this pseudo-tag and
+made available for viewing. These currently include the
+`Icy-Name', `Icy-Description' and `Icy-Genre'
+fields.</p>
+
+
+
+<h3 id="idp1961152">6.4.9. MPEG StreamMetadata</h3>
+
+<p>This is a read-only pseudo-tag carrying information that
+was received while listening to an MPEG stream on internet
+radio via <a class="external" href="http://www.smackfu.com/stuff/programming/shoutcast.html">SHOUTcast</a>.
+This information consists of `key:value' pairs, and is
+thus fairly similar to Ogg Xiph comments. Usually internet
+broadcast stations include only a small number of fields,
+but since the field name is included in the transmission,
+there is no restriction on the supported fields.</p>
+
+
+
+<h3 id="idp1963840">6.4.10. MOD information</h3>
+
+<p>For files handled by the MOD library, some read-only
+information about the file (number of channels, instruments,
+etc.) is displayed.</p>
+
+
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 6.3. <a href="aqualung-doc-part_6_3.html">Metadata-related behavior</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 7. <a href="aqualung-doc-part_7.html">Settings</a></td></tr></table></body>
+</html>
+

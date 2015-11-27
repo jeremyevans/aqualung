@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 4. <a href="aqualung-doc-part_4.html">Graphical Interface</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 4.2. <a href="aqualung-doc-part_4_2.html">Playlist</a></td></tr></table><hr /><p><img class="screenshot" src="main.png" alt="[screenshot]" /></p><h2>4.1. Main Window</h2>
+
+<p>You can control most of the program from this window. The
+cue controls in the bottom-left corner are fairly obvious. You
+can drag the large slider in the middle for seeking. There are
+two smaller sliders above that, the left one is for adjusting
+the volume and the right one for adjusting the balance. Above
+these, there are two horizontal text areas showing information
+about the currently playing track, and input/output parameters
+such as sample rate, mono/stereo, bitrate, output driver
+(e.g. OSS, ALSA, JACK) etc. The first trick to learn is that
+these lines are horizontally draggable with the mouse if the
+text does not fit in the available visible space. However,
+they don't scroll automatically, and for a very good reason.</p>
+
+<p>In the upper left corner, you find one bigger and two
+smaller displays that show track times: elapsed time,
+remaining time and total track time. The big display also
+shows the current volume and balance setting when
+appropriate. By clicking in these displays, you can rearrange
+the displays as you want them. The following figure shows how
+the displays switch their contents after clicking into them
+with the left (L) or right (R) mouse button.</p>
+
+<p style="text-align: center"><img src="timer.png" alt="time displays reacting to mouse clicks" /></p>
+
+<p>In the bottom right corner there are additional
+buttons. The buttons with the letters display or hide
+additional windows of the program:</p>
+
+<table rules="all" border="1" cellpadding="5" cellspacing="0">
+<tr>
+<td>FX</td>
+<td>Ladspa Patch Builder</td>
+</tr>
+<tr>
+<td>MS</td>
+<td>Music Store</td>
+</tr>
+<tr>
+<td>PL</td>
+<td>Playlist</td>
+</tr>
+</table>
+
+<p>Note that depending on the skin, these buttons may come
+with images instead of the letters above. However, their
+functionality does not change.</p>
+
+<p>The remaining three buttons are to select the playback
+mode. When none of these buttons is depressed, playback goes
+the normal way. The buttons are mutually exclusive, and select
+track repeat, list repeat or shuffle mode. I'm sure you can
+figure out which is which. If you select track repeat, a loop
+bar appears above the seek bar, with two markers. The markers
+can be dragged to select the looping range. When they are at
+the left and right end positions, the whole song is repeated.
+The looping range can also be selected using keyboard
+shortcuts. When track repeat is enabled and the current song
+is playing (or paused), `&lt;' will set the start of the
+looping range to the current playing position; `&gt;' does
+the same for the end of the looping range.</p>
+
+<p>Volume and balance slider tricks:</p>
+
+<ul>
+<li>Shift + any mouse button sets the volume and balance
+sliders back to 0 dB and Center position, respectively. This
+combination also works for the loop bar, in which case the
+looping range is set to the whole song.</li>
+
+<li>Clicking and holding the right mouse button on these
+sliders shows their position in the big time display without
+altering the value.</li>
+</ul>
+
+<p>An additional thing to know about the volume control is
+that it ranges up to +6 dB. This means you can send a bigger
+signal to the audio device than in the original file. With 0
+dB corresponding to 100% signal level, +6 dB is almost exactly
+200% signal level (and 4 times signal power as well). This
+means you can overdrive your output device, and since clipping
+will occur at 100% anyway, it will cause nasty digital
+distortion much worse than simple analog overdrive. If you
+have a track with a reasonably low level, you can go above 0
+dB with the volume control. But today most CDs are mastered to
+keep the average volume level very close to the 0 dB (or 100%)
+top, and so they will likely distort with as little as +1 dB
+additional gain. The moral is: if you want it loud, turn up
+your external amp. You can also consider using RVA if the
+volume level of your tracks tends to vary in a wide range
+&ndash; see <a href="aqualung-doc-part_5_3.html#idp821408">this section</a> for
+details.</p>
+
+<p>On a related note, another thing to watch out for is LADSPA
+plugins (in case you use them). It is very common that the
+signal level leaving a plugin is greater than the signal level
+the plugin gets on its input. So it is best to leave a few dB
+of headroom if you do that. A very typical case is boosting
+some frequency bands a few dB with an EQ plugin. You should
+decrease the overall volume level with as much dB as the
+largest boost (or even more), or you are risking that the
+signal will get chopped causing bad distortion. Alternatively,
+apply <a class="external" href="http://tap-plugins.sourceforge.net/ladspa/limiter.html">this
+limiter plugin</a> as the last one in the processing chain,
+but only if you know what you are doing.</p>
+
+<p>Right-clicking almost anywhere in the window will bring up
+a menu that allows access to the <span class="gui">Settings</span> dialog,
+the <span class="gui">Skin Chooser</span>, the <span class="gui">JACK Port Setup</span>
+dialog (present only when running the program with JACK
+output), and the <span class="gui">About</span> box. The latter may be
+useful to see which features have been compiled into the
+program. (If you haven't read the <a class="external" href="http://aqualung.factorial.hu/compiling.html">page about
+compiling</a> yet: the configuration of the program can be
+adapted so as not to require certain libraries when compiling,
+and not provide certain features accordingly.)</p>
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 4. <a href="aqualung-doc-part_4.html">Graphical Interface</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 4.2. <a href="aqualung-doc-part_4_2.html">Playlist</a></td></tr></table></body>
+</html>
+

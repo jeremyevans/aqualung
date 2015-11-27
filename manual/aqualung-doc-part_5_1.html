@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 5. <a href="aqualung-doc-part_5.html">Supplemental features</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 5.2. <a href="aqualung-doc-part_5_2.html">LADSPA plugins</a></td></tr></table><hr /><h2>5.1. Exporting files from the Music Store or Playlist</h2>
+
+<p>It is possible to export files from the Music Store or
+Playlist to external formats. This is especially handy if you
+own a portable music player, since it can be easily filled
+with music you already have on your computer, transcoding and
+tagging the files so they can be readily used by the
+device. The feature is available from the right-click popup
+menus (both in Music Store and Playlist), and via the shortcut
+`x' or `X' (in Music Store only). It operates on the
+selected Music Store node, or the selected tracks in the
+Playlist.</p>
+
+<p>The export dialog handles the settings of output directory,
+filename and file format. Subdirectories can be created for
+artists and/or records, with adjustable limit for the length
+of the created directory names. The actual filename is
+generated using the filename template. This template is very
+similar to the well-known <span class="gui">Title format</span> in <a href="aqualung-doc-part_7_1.html#idp1966928">Settings / General</a>, only it
+accepts a few more special sequences: `%o' for the
+original audio filename (without extension), `%n' for the
+track number (two digit, zero padded), `%i' for an
+identifier which is unique within an export session, and
+`%x' for the file extension. The latter is determined by
+the output file format, and will be one of `flac',
+`ogg', `mp3' or `wav'.</p>
+
+<p>The file format setting is exactly the same as with CD
+ripping, refer to <a href="aqualung-doc-part_4_3.html#idp765008">this section</a> for
+details.</p>
+
+<p>The metadata of the exported files is transcoded to the new
+format as well as the audio data; read more about this <a href="aqualung-doc-part_6_3.html#idp1895968">here</a>.</p>
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 5. <a href="aqualung-doc-part_5.html">Supplemental features</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 5.2. <a href="aqualung-doc-part_5_2.html">LADSPA plugins</a></td></tr></table></body>
+</html>
+

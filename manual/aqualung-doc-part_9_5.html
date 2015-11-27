@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 9.4. <a href="aqualung-doc-part_9_4.html">Custom Playlist Menu Commands</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 9.6. <a href="aqualung-doc-part_9_6.html">Custom Keybindings</a></td></tr></table><hr /><h2>9.5. Custom Remote Commands</h2>
+
+<p>You can add custom remote commands to Aqualung by
+calling the `<code>add_remote_command</code>'
+function with a string and a function.  The string is the
+name of the remote command, and the function is the
+function to call when the remote command is triggered.
+You can call a custom remote command using the -C argument to
+aqualung (e.g. `<code>aqualung -C function_name</code>').
+The string argument/function name should be fewer than
+250 characters.  The function should accept zero arguments.</p>
+
+<h4>Example 1: Exiting Aqualung immediately</h4>
+
+<pre>
+add_remote_command("exit", function ()
+os.exit()
+end)</pre>
+
+<p>Call with `<code>aqualung -C exit</code>'.  Using this example is not recommended.</p>
+
+
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 9.4. <a href="aqualung-doc-part_9_4.html">Custom Playlist Menu Commands</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 9.6. <a href="aqualung-doc-part_9_6.html">Custom Keybindings</a></td></tr></table></body>
+</html>
+

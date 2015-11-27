@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 3. <a href="aqualung-doc-part_3.html">Command Line Interface</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 3.2. <a href="aqualung-doc-part_3_2.html">General options</a></td></tr></table><hr /><h2>3.1. Invocation</h2>
+
+<dl>
+
+<dt><b>
+<code>aqualung --help</code>
+</b></dt>
+
+<dd>Print help message with valid parameters and
+example invocations.</dd>
+
+<dt><b>
+<code>aqualung --version</code>
+</b></dt>
+
+<dd>Print version information and list of
+compiled-in features.</dd>
+
+<dt><b>
+<code>aqualung [--output (jack|pulse|alsa|oss|sndio|win32)] [options] [file1 [file2 ...]]</code>
+</b></dt>
+
+</dl>
+
+<p>Normally you should be able to start Aqualung
+without any options. This case the output device will be
+selected by probing for a usable driver (in order of JACK,
+PulseAudio, ALSA, OSS) with default parameters.</p>
+
+<p>If no driver could be started with default
+parameters, or you want to explicitly choose a suitable output
+configuration, you have to tell the program which output
+device to use. This is possible with the <code>-o</code>
+(<code>--output</code>) option. There are specific optional
+parameters for all five output drivers. You can also specify
+which sample rate converter you want to use, or request a list
+of available converters. You may also control another instance
+of the program remotely, or add files to the Playlist.</p>
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 3. <a href="aqualung-doc-part_3.html">Command Line Interface</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 3.2. <a href="aqualung-doc-part_3_2.html">General options</a></td></tr></table></body>
+</html>
+

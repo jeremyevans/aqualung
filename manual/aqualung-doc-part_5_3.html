@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 5.2. <a href="aqualung-doc-part_5_2.html">LADSPA plugins</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 5.4. <a href="aqualung-doc-part_5_4.html">Music Store Builder</a></td></tr></table><hr /><h2>5.3. The RVA system</h2>
+
+<p>RVA stands for Relative Volume Adjustment, and refers to a
+system that is supposed to compensate for the fact that the
+perceived volume levels of tracks from different records are
+sometimes quite different. With usual players, you are left
+with the possibility to adjust the volume manually, when
+necessary; but not with Aqualung.</p>
+
+<p>Besides having a fully-fledged system for RVA, Aqualung
+also supports using already existing ReplayGain or RVA
+information present in your audio files' metadata. If you are
+interested in this, read on, but make sure to also check out
+<a href="aqualung-doc-part_6_3.html#idp1885664">this section</a>.</p>
+
+<p>You have to do two things prior to using RVA in
+Aqualung. First, you have to calculate the volume of the
+tracks you want affected by the RVA system. To do this, use
+the <span class="gui">Calculate volume</span> option in the Music Store
+found in the right-click popup menus of Stores, Artists,
+Records and Tracks. When you activate this option, a small
+window will pop up with a progress bar. You can move this
+window out of your way, and proceed with using
+Aqualung. Processing will be carried out in the background,
+and should not affect your ability to play music at
+all. Calculated volume levels will be saved and restored with
+the rest of the Music Store. The values are shown in the
+<span class="gui">Edit track</span> dialog.</p>
+
+<p>When you are done with this, open the <span class="gui">Settings</span>
+dialog (right-click almost anywhere in the main window), and
+select the <span class="gui">Playback RVA</span> notebook page.</p>
+
+<p>If <span class="gui">Enable playback RVA</span> is unchecked, the whole
+RVA system is turned off. No tracks receive adjustment. If
+playback RVA is enabled, you can select a listening
+environment that matches your setup. The idea is that the
+better your environment, the smaller adjustment you need to
+enjoy the music. If you work in a noisy workshop (and listen
+to Aqualung-played music) then it is best to minimize the
+volume differences between tracks so all tracks will be
+uniformly audible at a particular volume setting. If you can
+afford to listen to music in a silent room with high quality
+headphones or good near-field monitors, you should choose
+<span class="gui">Audiophile</span> which will yield no change to
+volumes.</p>
+
+<p>The diagram shows the input/output transfer function
+applied to the previously measured track loudness to obtain
+the adjustment needed for a particular track. The diagram is
+24 dB large in both directions, with the (0, 0) point being in
+the upper right corner. The blue line shows the identity
+function (no change), while the red line shows the output
+volume (the actual transfer function). The adjustment applied
+at a particular track volume is the vertical distance between
+the two lines at that position. The transfer function is
+linear. You can use the <span class="gui">Reference volume</span> and
+<span class="gui">Steepness</span> controls to change its position.</p>
+
+<p>In most cases, it is desirable that tracks of the same
+record receive the same adjustment, so as to preserve the
+volume differences internal to the record. This can be enabled
+by checking <span class="gui">Apply averaged RVA to tracks of the same
+record</span>. When enabled, volume levels of the same record
+will be averaged and all tracks will be adjusted by an average
+value. Please note that measured volume levels are converted
+to RVA values when you add something from the Music Store to
+the Playlist. Therefore, this feature works only when you add
+an Artist or a Record. If you add a record by adding all the
+Tracks manually one after another, they will all receive
+independent RVA values. Also, changing RVA settings will not
+affect entries already in the Playlist.</p>
+
+<p>There are many records having one or two tracks that really
+stand out of the average volume level. (For example, there is
+one very silent track on an otherwise loud record.)  In this
+case, these tracks would pull down the average volume. To get
+around this, you can adjust a threshold that will be used to
+sort out tracks that stand out too much and will be
+disregarded when computing the average volume.</p>
+
+<p>You can select whether you want to specify a threshold in
+linear volume units [dBFS] or you want to specify a percentage
+of the standard deviation of the set of individual track
+volumes to use as a threshold. The default values should work
+well for the vast majority of records. If you always want
+every track's volume to count in the average adjustment of the
+record, choose the linear threshold and set it to a really big
+value (say, 30 dB) so all tracks will be within this
+range.</p>
+
+<p>For external tracks added to the Playlist and having no
+volume information, you can specify a fixed RVA value using
+<span class="gui">RVA for Unmeasured Files</span>. This applies to all
+tracks coming from outside the Music Store or a native XML
+playlist file, and to URLs.</p>
+
+<p>You also have the possibility to always use a manually
+specified, fixed value as RVA for a particular track. In the
+<span class="gui">Edit track</span> dialog for that track, check the
+<span class="gui">Use manual RVA value</span> checkbox and set the value
+with the spinbutton on its right. If you e.g. import an
+ID3v2.4 RVA tag from an MP3 file, it will also set this field
+thereby circumventing Aqualung's own RVA calculation.</p>
+
+<p>It is possible to have more volume calculations in progress
+at a time. If you need to measure a few records, you don't
+have to wait for the previous one to finish. RVA calculations
+can also be paused, so should you suddenly need the whole CPU
+capacity, you don't have to abort the process &ndash; just
+pause it, and resume when things go down.</p>
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 5.2. <a href="aqualung-doc-part_5_2.html">LADSPA plugins</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 5.4. <a href="aqualung-doc-part_5_4.html">Music Store Builder</a></td></tr></table></body>
+</html>
+

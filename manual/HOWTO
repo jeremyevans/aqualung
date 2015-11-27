@@ -1,0 +1,5 @@
+* timer.eps -> timer.png
+	open timer.eps with Gimp:
+	resolution: 80 dpi
+	width: 192 pixel
+	antialiasing: strong

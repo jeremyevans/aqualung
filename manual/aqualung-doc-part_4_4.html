@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 4.3. <a href="aqualung-doc-part_4_3.html">Music Store</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 4.5. <a href="aqualung-doc-part_4_5.html">Skin Chooser</a></td></tr></table><hr /><p><img class="screenshot" src="jack.png" alt="[screenshot]" /></p><h2>4.4. JACK Port Setup</h2>
+
+<p>If you use JACK output, you need this dialog to route the
+outputs of the program somewhere (most likely to the playback
+ports representing the soundcard driver). If you want the
+outputs to be connected automatically to the first two
+hardware playback devices, use the <code>-a</code> (or
+<code>--auto</code>) command line option.</p>
+
+<p>On the left, each output port has a list of its current
+connections. By clicking on any list item, that connection
+will be removed. The <span class="gui">Clear connections</span> button
+removes all connections from the output ports.</p>
+
+<p>The notebook on the right has a page for all client
+programs and hardware devices available to the JACK
+server. Naturally only those are shown which are data sinks
+(hardware playback devices or inputs of JACK clients), thus
+connectable to outputs which are data sources. By selecting a
+notebook page, you will see a list of that client's input
+ports. Clicking on a list item connects the port to the
+currently selected Aqualung output port (which has a blue
+header). You can change the selected output port by clicking
+on the unselected (grey) list header. When you add connections
+to the output ports, the selection alters between the two
+outputs so connecting both outputs is very fast and easy.</p>
+
+<p>If you start up another JACK client while the dialog is
+open, you may press the <span class="gui">Rescan</span> button to make it
+appear in the notebook. Closing and re-opening the dialog has
+the same effect, since JACK ports are re-read and a new dialog
+instance is built every time.</p>
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 4.3. <a href="aqualung-doc-part_4_3.html">Music Store</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 4.5. <a href="aqualung-doc-part_4_5.html">Skin Chooser</a></td></tr></table></body>
+</html>
+

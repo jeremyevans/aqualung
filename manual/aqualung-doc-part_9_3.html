@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 9.2. <a href="aqualung-doc-part_9_2.html">Programmable Title Format</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 9.4. <a href="aqualung-doc-part_9_4.html">Custom Playlist Menu Commands</a></td></tr></table><hr /><h2>9.3. Hooking into Aqualung Events</h2>
+
+<p>Aqualung allows you to add hooks to certain events to
+have extension code executed when those events occur.
+Hooks are added by calling the `<code>add_hook</code>'
+function with a string and a function.  The string is the
+type of hook you are adding, and the function is the
+function to call when the related event occurs.
+You can have multiple hook functions added to the same
+hook type, and they will be executed in order of addition.</p>
+
+<h4>Hook 1: track_change</h4>
+
+<p>The track_change hooks are called whenever a new track
+starts playing.  They are not called until after the
+current file has been changed to the new file. Inside
+this hook, you can call the `<code>m</code>' and
+`<code>i</code>' playlist formatting functions to
+access the metadata of the newly loaded file.</p>
+
+<pre>
+add_hook("track_change", function ()
+print("File: " .. current_file() .. " Artist: " .. m("artist"))
+end)</pre>
+
+<p>Prints the filename and artist of the new file.</p>
+
+
+
+<h4>Hook 2: track_position_change</h4>
+
+<p>The track_position_change hooks are called whenever the
+scale/position of the current track changes.  Generally,
+it is called a few times a second.  This can be used to
+keep track of aqualung's current position in the file,
+and is passed a floating point argument of the percent
+complete.  Note that tracks that do not have a set
+number of samples (such as internet radio streams) will
+not have this hook called when they are playing.</p>
+
+<pre>
+add_hook("track_position_change", function ()
+print(current_file() .. " " .. string.format("%0.2f%%", current_file_percent_complete()))
+end)</pre>
+
+<p>Prints the filename and percent complete of the currently
+playing file.</p>
+
+
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 9.2. <a href="aqualung-doc-part_9_2.html">Programmable Title Format</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 9.4. <a href="aqualung-doc-part_9_4.html">Custom Playlist Menu Commands</a></td></tr></table></body>
+</html>
+

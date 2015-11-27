@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 9. <a href="aqualung-doc-part_9.html">Extending Aqualung</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 9.2. <a href="aqualung-doc-part_9_2.html">Programmable Title Format</a></td></tr></table><hr /><h2>9.1. Introduction</h2>
+
+<p>Aqualung is written in the C programming language, but if
+compiled with Lua support, embeds a Lua interpreter that can
+used by the user to change Aqualung's behavior or add custom
+functions without recompiling the program. Aqualung supports
+the following 5 types of extensions:</p>
+
+<ul>
+<li>Title Format</li>
+<li>Hooks</li>
+<li>Playlist Menu Commands</li>
+<li>Remote Commands</li>
+<li>Keybindings</li>
+</ul>
+
+<p>The <span class="gui">Lua extension file</span> setting appears if
+Aqualung is compiled with Lua support. It allows you to
+choose a `.lua' file containing Lua code that implements
+any of the above extensions.  You can type in the path to the file or click
+<span class="gui">Browse</span> to get a file chooser. The `.lua'
+file should be a valid Lua source code file.</p>
+
+<p>If you change the <span class="gui">Lua extension file</span> setting in
+the options page, and accept the changes, Aqualung will close
+the existing Lua interpreter and create a new Lua intepreter.
+To close the existing Lua interpreter and immediately reopen
+it with the same extension file, use the <span class="gui">Reload Lua interpreter</span>
+setting.  Note that whenever the Lua interpreter is closed,
+all Lua-internal state is lost.</p>
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 9. <a href="aqualung-doc-part_9.html">Extending Aqualung</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 9.2. <a href="aqualung-doc-part_9_2.html">Programmable Title Format</a></td></tr></table></body>
+</html>
+

@@ -1,0 +1,130 @@
+<!ENTITY % attrs
+ "key ID #IMPLIED
+  man CDATA #IMPLIED"
+>
+
+<!ENTITY % heading
+ "key ID #IMPLIED
+  man CDATA #IMPLIED
+  img CDATA #IMPLIED
+  title CDATA #REQUIRED"
+>
+
+<!ENTITY % content
+ "p | img | dl | ul | table | tabular | matrix | shortcut | verbatim"
+>
+
+<!ENTITY % format
+ "a | ref | ndash | q | cmd | file | gui | emph"
+>
+
+<!-- root element -->
+
+<!ELEMENT aqualung-doc (titlepage,document)>
+
+<!-- titlepage -->
+
+<!ELEMENT titlepage (title,copyright,license)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT copyright (#PCDATA)>
+<!ELEMENT license (#PCDATA | br)* >
+
+<!-- document parts -->
+
+<!ELEMENT document (section)+>
+
+<!ELEMENT section (subsection|%content;)+>
+<!ATTLIST section %heading;>
+
+<!ELEMENT subsection (subsubsection|%content;)+>
+<!ATTLIST subsection %heading;>
+
+<!ELEMENT subsubsection (paragraph|%content;)+>
+<!ATTLIST subsubsection %heading;>
+
+<!ELEMENT paragraph (%content;)+>
+<!ATTLIST paragraph %heading;>
+
+<!-- paragraph -->
+
+<!ELEMENT p (#PCDATA|%format;)*>
+<!ATTLIST p %attrs;>
+
+<!-- line break -->
+
+<!ELEMENT br EMPTY>
+
+<!-- unnumbered list -->
+
+<!ELEMENT ul (li)+>
+<!ATTLIST ul %attrs;>
+
+<!ELEMENT li (#PCDATA|%format;)*>
+<!ATTLIST li %attrs;>
+
+<!-- definition list -->
+
+<!ELEMENT dl (dt|dd)+>
+<!ATTLIST dl %attrs;>
+
+<!ELEMENT dt (#PCDATA|%format;)*>
+<!ATTLIST dt %attrs;>
+
+<!ELEMENT dd (#PCDATA|%format;)*>
+<!ATTLIST dd %attrs;>
+
+<!-- image -->
+
+<!ELEMENT img EMPTY>
+<!ATTLIST img
+ src CDATA #REQUIRED
+ alt CDATA #REQUIRED
+>
+
+<!-- table -->
+
+<!ELEMENT table (tr)+>
+<!ATTLIST table %attrs;>
+
+<!ELEMENT tabular (tr)+>
+<!ATTLIST tabular %attrs;>
+
+<!ELEMENT matrix (tr)+>
+<!ATTLIST matrix %attrs;>
+
+<!ELEMENT shortcut (tr|hline)+>
+<!ATTLIST shortcut %attrs;>
+
+<!ELEMENT tr (td)+>
+
+<!ELEMENT td (#PCDATA|%format;)*>
+
+<!-- verbatim text -->
+
+<!ELEMENT verbatim (#PCDATA)>
+
+<!-- horizontal line -->
+
+<!ELEMENT hline EMPTY>
+
+<!-- link -->
+
+<!ELEMENT a (#PCDATA)>
+<!ATTLIST a href CDATA #REQUIRED>
+
+<!-- cross reference -->
+
+<!ELEMENT ref (#PCDATA|%format;)*>
+<!ATTLIST ref refkey IDREF #REQUIRED>
+
+<!-- format -->
+
+<!ELEMENT q (#PCDATA|%format;)*>
+<!ELEMENT cmd (#PCDATA|%format;)*>
+<!ELEMENT emph (#PCDATA|%format;)*>
+<!ELEMENT file (#PCDATA)>
+<!ELEMENT gui (#PCDATA)>
+
+<!-- entity -->
+
+<!ELEMENT ndash EMPTY>

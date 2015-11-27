@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Aqualung User's Manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
+</head>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 6.2. <a href="aqualung-doc-part_6_2.html">Mass tagging</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 6.4. <a href="aqualung-doc-part_6_4.html">Overview of supported metadata formats</a></td></tr></table><hr /><h2>6.3. Metadata-related behavior</h2><div class="toc1">6.3.1. <a href="#idp1865968">Configuration</a></div>
+<div class="toc1">6.3.2. <a href="#idp1872560">Precedence of metadata information</a></div>
+<div class="toc1">6.3.3. <a href="#idp1885664">ReplayGain and RVA</a></div>
+<div class="toc1">6.3.4. <a href="#idp1895968">Metadata transfer when exporting</a></div>
+
+
+<h3 id="idp1865968">6.3.1. Configuration</h3>
+
+<p>Configuring metdata-related behavior can be done in
+<span class="gui">Settings / Metadata</span>. The file metadata will
+always be used if available when adding external files
+(i.e. not from the Music Store) to Playlist. If no metadata
+is found, the filename will be used as a title string. In
+such cases the <span class="gui">Adding files to Playlist</span> option
+controls whether to use the basename only instead of the
+full pathname. You can utilize filename extension removal
+and substitution of underscores to space as well.</p>
+
+<p>It is possible to select which ReplayGain tag should be
+used in case ReplayGain information is found in a file. This
+should be set according to your preference for Album-based
+or Track-based volume averaging. If the requested field is
+not found, the other one is checked and if that exists, it
+is used instead.</p>
+
+<p>For the metadata editor (<span class="gui">File info</span> dialog) you
+can choose whether you want to set the contents of newly
+added frames on the basis of another existing tag's
+equivalent frame. For example, if this option is enabled,
+adding a `Title' frame to a newly added APE tag will
+automatically fill it in, provided that there is e.g. an
+ID3v2 tag in the same file that already has a `Title'
+frame. If this option is unset, newly added fields will be
+blank.</p>
+
+<p>The last group of options controls the preferred set of
+tags in MPEG audio files. Because these files can have
+ID3v1, ID3v2 and APE tags in any combination, it is
+essential to set this to match your policy regarding the
+tagging of these files. These settings affect creating (via
+CD ripping or file export) or batch tagging MPEG audio
+files.</p>
+
+
+
+<h3 id="idp1872560">6.3.2. Precedence of metadata information</h3>
+
+<p>Whenever there is a generic request for some information
+concerning a file (e.g. `Who is the artist?') we do not
+want to explicitly specify which metadata tag should be used
+to retrieve the desired piece of data. As a consequence, all
+tags present have to be checked. However, since not all tags
+are equally capable of storing well-formed information
+(think of ID3v1 limitations), there should be a preference
+order in which the different tags are queried.</p>
+
+<p>The preference order:</p>
+
+<table border="0" cellpadding="3" cellspacing="0">
+<tr>
+<td>1.</td>
+<td>MPEG StreamMeta</td>
+</tr>
+<tr>
+<td>2.</td>
+<td>Generic StreamMeta</td>
+</tr>
+<tr>
+<td>3.</td>
+<td>Musepack ReplayGain data</td>
+</tr>
+<tr>
+<td>4.</td>
+<td>FLAC pictures</td>
+</tr>
+<tr>
+<td>5.</td>
+<td>Ogg Xiph comments</td>
+</tr>
+<tr>
+<td>6.</td>
+<td>APE</td>
+</tr>
+<tr>
+<td>7.</td>
+<td>ID3v2</td>
+</tr>
+<tr>
+<td>8.</td>
+<td>ID3v1</td>
+</tr>
+</table>
+
+
+
+<h3 id="idp1885664">6.3.3. ReplayGain and RVA</h3>
+
+<p>Aqualung is a ReplayGain-aware music player. You have to
+understand and use the <a href="aqualung-doc-part_5_3.html#idp821408">RVA system</a> in
+order to make use of this. The RVA system relies on
+pre-stored loudness measurements of files, which Aqualung
+normally does by itself (by selecting the <span class="gui">Calculate
+volume...</span> option from the popup menus). However, for
+files already containing ReplayGain or RVA information, it
+is possible to use that as the basis of volume
+adjustment.</p>
+
+<p>One way of doing this is importing the ReplayGain or RVA
+frame to the Music Store as `manual RVA' (using the
+<span class="gui">File info</span> dialog opened from the Music Store. In
+this case the stored value is editable via the <span class="gui">Edit
+track...</span> popup menu item, where you can also specify
+such a value manually, if needed.</p>
+
+<p>In case there is no `manual RVA' value stored for
+the file, the RVA system will see if there is a previously
+calculated loudness value stored for this track. If yes,
+this will be the basis of a volume adjustment calculation,
+which is controlled by <span class="gui">Settings / Playback RVA</span>
+options. However, if the RVA system is enabled and neither
+`manual RVA', nor loudness measurement is available,
+Aqualung looks for ReplayGain or RVA information in the file
+metadata. If such information is found, it is used in the
+same way as `manual RVA', so the track's playback gain
+will be adjusted by exactly the specified amount.</p>
+
+<p>There is an important difference between `manual
+RVA' data coming from a metadata tag or specified
+directly by the user, and loudness values calculated by
+Aqualung. The former is a volume adjustment in itself,
+specifying the amount of cut or boost to apply when playing
+the track. On the other hand, Aqualung's loudness levels
+merely serve as an indicator of the track's loudness, and
+are converted to actual volume adjustment values when adding
+the track to the Playlist, via <a href="aqualung-doc-part_5_3.html#idp821408">Aqualung's
+RVA algorithm</a>, which is a quite sophisticated tool
+based on listening environments, also supporting
+statistics-based handling of Album-based volume
+averaging.</p>
+
+
+
+<h3 id="idp1895968">6.3.4. Metadata transfer when exporting</h3>
+
+<p>When <a href="aqualung-doc-part_5_1.html#idp799440">exporting files</a>,
+Aqualung attempts to retain the metadata of the original
+file as much as possible by transcoding metadata into the
+tags supported by the output format. For each frame present
+in the input metadata, it is determined whether it is
+possible to add an equivalent frame to one of the tags
+supported by the output format. If yes, the frame data is
+converted and stored. Note that for each frame type
+(e.g. `Title'), only one source tag is chosen to be
+copied from even if it is present in more than one tag in
+the input metadata. In this case the tag with the highest
+<a href="aqualung-doc-part_6_3.html#idp1872560">precedence</a> is used as
+input. Of course, if more instances of the same frame are
+present in the same tag (e.g. multiple APIC frames in an
+ID3v2 tag), they are all transferred if the output metadata
+format supports them.</p>
+
+<p>This feature essentially means that files are transcoded
+with intelligent metadata transfer. For example, exporting a
+FLAC containing Ogg Vorbis comments and two FLAC picture
+frames to MP3 will result in an MP3 with an ID3v2 having the
+respective text frames, and two APIC frames for the
+pictures.</p>
+
+<p>When assembling the metadata written to the output file,
+the information from the Music Store or Playlist (Title,
+Artist, Album, Year, Track number) will be used in case the
+source metadata does not contain the appropriate frames.</p>
+
+
+
+<hr /><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 6.2. <a href="aqualung-doc-part_6_2.html">Mass tagging</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 6.4. <a href="aqualung-doc-part_6_4.html">Overview of supported metadata formats</a></td></tr></table></body>
+</html>
+

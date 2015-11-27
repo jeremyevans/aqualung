@@ -8,8 +8,8 @@
 # Site settings
 title: Aqualung
 description: Music Player for GNU/Linux
-baseurl: "/aqualung" # the subpath of your site, e.g. /blog
-url: "http://code.jeremyevans.net" # the base hostname & protocol for your site
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "http://aqualung.jeremyevans.net" # the base hostname & protocol for your site
 
 # Build settings
 markdown: kramdown

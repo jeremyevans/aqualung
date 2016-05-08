@@ -1,0 +1,16 @@
+*.[ao]
+.deps/
+Makefile
+Makefile.in
+stamp-*
+/ABOUT-NLS
+/INSTALL
+/aclocal.m4
+/autom4te.cache/
+/compile
+/config.*
+/configure
+/depcomp
+/install-sh
+/m4/
+/missing

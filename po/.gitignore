@@ -1,0 +1,9 @@
+*.gmo
+*.header
+*.sed
+*.sin
+/Makefile.in.in
+/Makevars.template
+/POTFILES
+/Rules-quot
+/aqualung.pot

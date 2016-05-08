@@ -280,10 +280,12 @@ lavc_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_BADLIB;
 
 	pd->avCodecCtx = pd->avFormatCtx->streams[pd->audioStream]->codec;
+#if LIBAVCODEC_VERSION_MAJOR < 55
 #if LIBAVCODEC_VERSION_MAJOR >= 53
 	pd->avCodecCtx->get_buffer = avcodec_default_get_buffer;
 	pd->avCodecCtx->release_buffer = avcodec_default_release_buffer;
 #endif /* LIBAVCODEC_VERSION_MAJOR >= 53 */
+#endif /* LIBAVCODEC_VERSION_MAJOR < 55 */
 
 	pd->time_base = pd->avFormatCtx->streams[pd->audioStream]->time_base;
 

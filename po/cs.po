@@ -1,13 +1,13 @@
 # Copyright (C) YEAR Tom Szilagyi
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Pavel Fric <pavelfric@seznam.cz>, 2014.
+# Pavel Fric <pavelfric@seznam.cz>, 2014, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: aqualung SVN\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
 "POT-Creation-Date: 2015-07-26 21:08+0200\n"
-"PO-Revision-Date: 2014-08-21 22:51+0200\n"
+"PO-Revision-Date: 2017-09-21 21:15+0200\n"
 "Last-Translator: Pavel Fric <pavelfric@seznam.cz>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
 "Language: cs\n"
@@ -146,9 +146,8 @@ msgstr "Překladatelé:"
 msgid "Chinese (simplified):\n"
 msgstr "Čínština (zjednodušená):\n"
 
-#, fuzzy
 msgid "Czech:\n"
-msgstr "Francouzština:\n"
+msgstr "Moravština/Čeština:\n"
 
 msgid "Dutch:\n"
 msgstr "Holandština:\n"

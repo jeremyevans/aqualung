@@ -76,6 +76,9 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 
 	sndfile_pdata_t * pd = (sndfile_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
+	const char * format_type = "?";
+	const char * format_sub1 = NULL;
+	const char * format_sub2 = NULL;
 
 
 	pd->sf_info.format = 0;
@@ -139,135 +142,157 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 
 	switch (pd->sf_info.format & SF_FORMAT_TYPEMASK) {
 	case SF_FORMAT_WAV:
-		strcpy(dec->format_str, "Microsoft WAV");
+		format_type = "Microsoft WAV";
 		break;
 	case SF_FORMAT_AIFF:
-		strcpy(dec->format_str, "Apple/SGI AIFF");
+		format_type = "Apple/SGI AIFF";
 		break;
 	case SF_FORMAT_AU:
-		strcpy(dec->format_str, "Sun/NeXT AU");
+		format_type = "Sun/NeXT AU";
 		break;
 	case SF_FORMAT_PAF:
-		strcpy(dec->format_str, "Ensoniq PARIS");
+		format_type = "Ensoniq PARIS";
 		break;
 	case SF_FORMAT_SVX:
-		strcpy(dec->format_str, "Amiga IFF / SVX8 / SV16");
+		format_type = "Amiga IFF / SVX8 / SV16";
 		break;
 	case SF_FORMAT_NIST:
-		strcpy(dec->format_str, "Sphere NIST");
+		format_type = "Sphere NIST";
 		break;
 	case SF_FORMAT_VOC:
-		strcpy(dec->format_str, "VOC");
+		format_type = "VOC";
 		break;
 	case SF_FORMAT_IRCAM:
-		strcpy(dec->format_str, "Berkeley/IRCAM/CARL");
+		format_type = "Berkeley/IRCAM/CARL";
 		break;
 	case SF_FORMAT_W64:
-		strcpy(dec->format_str, "Sonic Foundry 64 bit RIFF/WAV");
+		format_type = "Sonic Foundry 64 bit RIFF/WAV";
 		break;
 	case SF_FORMAT_MAT4:
 	case SF_FORMAT_MAT5:
-		strcpy(dec->format_str, "Matlab (tm) / GNU Octave");
+		format_type = "Matlab (tm) / GNU Octave";
 		break;
 	case SF_FORMAT_PVF:
-		strcpy(dec->format_str, "Portable Voice Format");
+		format_type = "Portable Voice Format";
 		break;
 	case SF_FORMAT_XI:
-		strcpy(dec->format_str, "Fasttracker 2 Extended Instrument");
+		format_type = "Fasttracker 2 Extended Instrument";
 		break;
 	case SF_FORMAT_HTK:
-		strcpy(dec->format_str, "HMM Tool Kit");
+		format_type = "HMM Tool Kit";
 		break;
 	case SF_FORMAT_SDS:
-		strcpy(dec->format_str, "Midi Sample Dump Standard");
+		format_type = "Midi Sample Dump Standard";
 		break;
 	case SF_FORMAT_AVR:
-		strcpy(dec->format_str, "Audio Visual Research");
+		format_type = "Audio Visual Research";
 		break;
 	case SF_FORMAT_WAVEX:
-		strcpy(dec->format_str, "MS WAVE with WAVEFORMATEX");
+		format_type = "MS WAVE with WAVEFORMATEX";
 		break;
 	case SF_FORMAT_SD2:
-		strcpy(dec->format_str, "Sound Designer 2");
+		format_type = "Sound Designer 2";
 		break;
 	case SF_FORMAT_FLAC:
-		strcpy(dec->format_str, "FLAC");
+		format_type = "FLAC";
 		break;
 	case SF_FORMAT_CAF:
-		strcpy(dec->format_str, "Core Audio File");
+		format_type = "Core Audio File";
 		break;
 #ifdef HAVE_SNDFILE_1_0_18
 	case SF_FORMAT_MPC2K:
-		strcpy(dec->format_str, "Akai MPC 2000 Sample");
+		format_type = "Akai MPC 2000 Sample";
 		break;
 	case SF_FORMAT_RF64:
-		strcpy(dec->format_str, "RF64 WAV");
+		format_type = "RF64 WAV";
 		break;
 #endif /* HAVE_SNDFILE_1_0_18 */
 	}
 
 	switch (pd->sf_info.format & SF_FORMAT_SUBMASK) {
 	case SF_FORMAT_PCM_S8:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(8 ", _("bit signed"), ")");
+		format_sub1 = "8 ";
+		format_sub2 = _("bit signed");
 		break;
 	case SF_FORMAT_PCM_U8:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(16 ", _("bit unsigned"), ")");
+		format_sub1 = "16 ";
+		format_sub2 = _("bit unsigned");
 		break;
 	case SF_FORMAT_PCM_16:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(16 ", _("bit signed"), ")");
+		format_sub1 = "16 ";
+		format_sub2 = _("bit signed");
 		break;
 	case SF_FORMAT_PCM_24:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(24 ", _("bit signed"), ")");
+		format_sub1 = "24 ";
+		format_sub2 = _("bit signed");
 		break;
 	case SF_FORMAT_PCM_32:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(32 ", _("bit signed"), ")");
+		format_sub1 = "32 ";
+		format_sub2 = _("bit signed");
 		break;
 	case SF_FORMAT_FLOAT:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(32 ", _("bit float"), ")");
+		format_sub1 = "32 ";
+		format_sub2 = _("bit float");
 		break;
 	case SF_FORMAT_DOUBLE:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(64 ", _("bit double"), ")");
+		format_sub1 = "64 ";
+		format_sub2 = _("bit double");
 		break;
 	case SF_FORMAT_ULAW:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(u-Law ", _("encoding"), ")");
+		format_sub1 = "u-Law ";
+		format_sub2 = _("encoding");
 		break;
 	case SF_FORMAT_ALAW:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(A-Law ", _("encoding"), ")");
+		format_sub1 = "A-Law ";
+		format_sub2 = _("encoding");
 		break;
 	case SF_FORMAT_IMA_ADPCM:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(IMA ADPCM ", _("encoding"), ")");
+		format_sub1 = "IMA ADPCM ";
+		format_sub2 = _("encoding");
 		break;
 	case SF_FORMAT_MS_ADPCM:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(Microsoft ADPCM ", _("encoding"), ")");
+		format_sub1 = "Microsoft ADPCM ";
+		format_sub2 = _("encoding");
 		break;
 	case SF_FORMAT_GSM610:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(GSM 6.10 ", _("encoding"), ")");
+		format_sub1 = "GSM 6.10 ";
+		format_sub2 = _("encoding");
 		break;
 	case SF_FORMAT_VOX_ADPCM:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(Oki Dialogic ADPCM ", _("encoding"), ")");
+		format_sub1 = "Oki Dialogic ADPCM ";
+		format_sub2 = _("encoding");
 		break;
 	case SF_FORMAT_G721_32:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(32kbps G721 ADPCM ", _("encoding"), ")");
+		format_sub1 = "32kbps G721 ADPCM ";
+		format_sub2 = _("encoding");
 		break;
 	case SF_FORMAT_G723_24:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(24kbps G723 ADPCM ", _("encoding"), ")");
+		format_sub1 = "24kbps G723 ADPCM ";
+		format_sub2 = _("encoding");
 		break;
 	case SF_FORMAT_G723_40:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(40kbps G723 ADPCM ", _("encoding"), ")");
+		format_sub1 = "40kbps G723 ADPCM ";
+		format_sub2 = _("encoding");
 		break;
 	case SF_FORMAT_DWVW_12:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(12 bit DWVW ", _("encoding"), ")");
+		format_sub1 = "12 bit DWVW ";
+		format_sub2 = _("encoding");
 		break;
 	case SF_FORMAT_DWVW_16:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(16 bit DWVW ", _("encoding"), ")");
+		format_sub1 = "16 bit DWVW ";
+		format_sub2 = _("encoding");
 		break;
 	case SF_FORMAT_DWVW_24:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(24 bit DWVW ", _("encoding"), ")");
+		format_sub1 = "24 bit DWVW ";
+		format_sub2 = _("encoding");
 		break;
 	case SF_FORMAT_DWVW_N:
-		sprintf(dec->format_str, "%s %s%s%s", dec->format_str, "(N bit DWVW ", _("encoding"), ")");
+		format_sub1 = "N bit DWVW ";
+		format_sub2 = _("encoding");
 		break;
 	}
+
+	sprintf(dec->format_str, "%s%s%s%s%s", format_type, (format_sub1 != NULL) ? " (" : "", format_sub1, format_sub2, (format_sub1 != NULL) ? ")" : "");
 
 	return DECODER_OPEN_SUCCESS;
 }

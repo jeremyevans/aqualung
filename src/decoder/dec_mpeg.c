@@ -1193,10 +1193,12 @@ mpeg_decoder_finish_open(decoder_t * dec) {
 		strcat(dec->format_str, _("Emphasis: none"));
 		break;
 	case MPEG_EMPH_5015:
-		sprintf(dec->format_str, "%s%s 50/15 us", dec->format_str, _("Emphasis:"));
+		strcat(dec->format_str, _("Emphasis:"));
+		strcat(dec->format_str, " 50/15 us");
 		break;
 	case MPEG_EMPH_J_17:
-		sprintf(dec->format_str, "%s%s CCITT J.17", dec->format_str, _("Emphasis:"));
+		strcat(dec->format_str, _("Emphasis:"));
+		strcat(dec->format_str, " CCITT J.17");
 		break;
 	case MPEG_EMPH_RES:
 		strcat(dec->format_str, _("Emphasis: reserved"));

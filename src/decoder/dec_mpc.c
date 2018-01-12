@@ -195,6 +195,7 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 	mpc_pdata_t * pd = (mpc_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 	metadata_t * meta;
+	const char * profile = NULL;
 	
 	
 	if ((pd->mpc_file = fopen(filename, "rb")) == NULL) {
@@ -240,7 +241,6 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 	fdec->fileinfo.bps = pd->mpc_i.average_bitrate;
 
 	fdec->file_lib = MPC_LIB;
-	strcpy(dec->format_str, "Musepack");
 
 #ifdef MPC_OLD_API
 	switch (pd->mpc_i.profile) {
@@ -248,27 +248,29 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 	switch ((int) pd->mpc_i.profile) {
 #endif /* MPC_OLD_API */
 	case 7:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Telephone"));
+		profile = _("Profile: Telephone");
 		break;
 	case 8:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Thumb"));
+		profile = _("Profile: Thumb");
 		break;
 	case 9:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Radio"));
+		profile = _("Profile: Radio");
 		break;
 	case 10:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Standard"));
+		profile = _("Profile: Standard");
 		break;
 	case 11:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Xtreme"));
+		profile = _("Profile: Xtreme");
 		break;
 	case 12:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Insane"));
+		profile = _("Profile: Insane");
 		break;
 	case 13:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Profile: Braindead"));
+		profile = _("Profile: Braindead");
 		break;
 	}
+
+	sprintf(dec->format_str, "Musepack%s%s%s", (profile != NULL) ? " (" : "", profile, (profile != NULL) ? ")" : "");
 
 	meta = metadata_new();
 	mpc_add_rg_meta(meta, &pd->mpc_i);

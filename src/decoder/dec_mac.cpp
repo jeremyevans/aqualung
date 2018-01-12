@@ -171,6 +171,7 @@ mac_decoder_open(decoder_t * dec, char * filename) {
 	file_decoder_t * fdec = dec->fdec;
 	metadata_t * meta;
 	IAPEDecompress * pdecompress = (IAPEDecompress *)pd->decompress;
+	const char * comp_level = NULL;
 
 
 	int ret = 0;
@@ -215,28 +216,29 @@ mac_decoder_open(decoder_t * dec, char * filename) {
 	fdec->fileinfo.bps = pd->bitrate * 1000;
 
 	fdec->file_lib = MAC_LIB;
-	strcpy(dec->format_str, "Monkey's Audio");
 
 	switch (pd->compression_level) {
 	case COMPRESSION_LEVEL_FAST:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Fast"));
+		comp_level = _("Compression: Fast");
 		break;
 	case COMPRESSION_LEVEL_NORMAL:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Normal"));
+		comp_level = _("Compression: Normal");
 		break;
 	case COMPRESSION_LEVEL_HIGH:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: High"));
+		comp_level = _("Compression: High");
 		break;
 	case COMPRESSION_LEVEL_EXTRA_HIGH:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Extra High"));
+		comp_level = _("Compression: Extra High");
 		break;
 	case COMPRESSION_LEVEL_INSANE:
-		sprintf(dec->format_str, "%s (%s)", dec->format_str, _("Compression: Insane"));
+		comp_level = _("Compression: Insane");
 		break;
 	default:
 		printf("Unknown MAC compression level %d\n", pd->compression_level);
 		break;
 	}
+
+	sprintf(dec->format_str, "Monkey's Audio%s%s%s", (comp_level != NULL) ? " (" : "", comp_level, (comp_level != NULL) ? ")" : "");
 
 	meta = metadata_new();
 	meta_ape_send_metadata(meta, fdec);

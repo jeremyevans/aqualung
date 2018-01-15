@@ -38,8 +38,8 @@ typedef struct _export_map_t {
 
 typedef struct {
 
-	AQUALUNG_THREAD_DECLARE(thread_id);
-	AQUALUNG_MUTEX_DECLARE(mutex);
+	AQUALUNG_THREAD_DECLARE(thread_id)
+	AQUALUNG_MUTEX_DECLARE(mutex)
 
 	GSList * slist;
 

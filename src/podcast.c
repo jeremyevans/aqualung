@@ -867,7 +867,7 @@ podcast_update(podcast_t * podcast) {
 
 	if (podcast->state == PODCAST_STATE_IDLE || podcast->state == PODCAST_STATE_PENDING) {
 
-		AQUALUNG_THREAD_DECLARE(thread_id);
+		AQUALUNG_THREAD_DECLARE(thread_id)
 
 		podcast->state = PODCAST_STATE_UPDATE;
 		AQUALUNG_THREAD_CREATE(thread_id, NULL, podcast_update_thread, podcast);

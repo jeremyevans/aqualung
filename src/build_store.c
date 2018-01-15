@@ -237,8 +237,8 @@ typedef struct {
 
 typedef struct {
 
-	AQUALUNG_THREAD_DECLARE(thread_id);
-	AQUALUNG_MUTEX_DECLARE(mutex);
+	AQUALUNG_THREAD_DECLARE(thread_id)
+	AQUALUNG_MUTEX_DECLARE(mutex)
 
 	int type;
 

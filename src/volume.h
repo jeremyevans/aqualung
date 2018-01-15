@@ -55,10 +55,10 @@ typedef struct {
 	int window_visible;
 	int type;
 
-	AQUALUNG_THREAD_DECLARE(thread_id);
-	AQUALUNG_MUTEX_DECLARE(thread_mutex);
-	AQUALUNG_MUTEX_DECLARE(wait_mutex);
-	AQUALUNG_COND_DECLARE(thread_wait);
+	AQUALUNG_THREAD_DECLARE(thread_id)
+	AQUALUNG_MUTEX_DECLARE(thread_mutex)
+	AQUALUNG_MUTEX_DECLARE(wait_mutex)
+	AQUALUNG_COND_DECLARE(thread_wait)
 
 	GtkWidget * slot;
 	GtkWidget * progress;

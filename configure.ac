@@ -25,12 +25,12 @@ AC_CANONICAL_HOST
 
 
 # Checks for programs.
+AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_CC
 AC_PROG_RANLIB
 AC_PROG_CXX
 AM_PROG_CC_C_O
 AM_PROG_AR
-AC_USE_SYSTEM_EXTENSIONS
 m4_ifndef([AM_GNU_GETTEXT],
     [m4_fatal([GNU gettext is required to prepare the Aqualung build])])
 AM_GNU_GETTEXT([external])

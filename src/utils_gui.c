@@ -499,7 +499,7 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
         gtk_file_filter_set_name(filter, _("LAVC audio/video files"));
 	{
 		char * valid_ext_lavc[] = {
-			"aac", "ac3", "asf", "avi", "mpeg", "mpg", "mp3", "ra",
+			"aac", "ac3", "asf", "avi", "m4a", "mpeg", "mpg", "mp3", "ra",
 			"wav", "wma", "wv", NULL };
 		build_filter_from_extensions(filter, filter_all, valid_ext_lavc);
 	}

@@ -6,6 +6,7 @@ stamp-*
 /ABOUT-NLS
 /INSTALL
 /aclocal.m4
+/ar-lib
 /autom4te.cache/
 /compile
 /config.*

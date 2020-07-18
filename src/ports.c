@@ -63,7 +63,7 @@ GtkTreeViewColumn * column_out_R;
 int n_clients;
 GtkListStore * store_out_nb[MAX_JACK_CLIENTS];
 
-gint timeout_tag;
+guint ports_timeout_tag;
 
 int out_selector = 0;
 
@@ -242,7 +242,7 @@ tree_out_L_selection_changed(GtkTreeSelection * selection, gpointer * data) {
 			fprintf(stderr, "ERROR: jack_disconnect() returned %d\n", res);
 		}
 		g_free(str);
-		timeout_tag = aqualung_timeout_add(100, ports_timeout_callback, GINT_TO_POINTER(1));
+		ports_timeout_tag = aqualung_timeout_add(100, ports_timeout_callback, GINT_TO_POINTER(1));
         }
 }
 
@@ -262,7 +262,7 @@ tree_out_R_selection_changed(GtkTreeSelection *selection, gpointer * data) {
 			fprintf(stderr, "ERROR: jack_disconnect() returned %d\n", res);
 		}
 		g_free(str);
-		timeout_tag = aqualung_timeout_add(100, ports_timeout_callback, (gpointer)2);
+		ports_timeout_tag = aqualung_timeout_add(100, ports_timeout_callback, (gpointer)2);
         }
 }
 

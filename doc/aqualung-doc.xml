@@ -2673,12 +2673,11 @@
       <subsection title="CDDB">
 
         <p>You can set some parameters of the CDDB lookups here. As
-        for the query protocol, standard CDDBP (port 888) and CDDB
-        over HTTP (port 80) are supported. The standard CDDBP port is
-        the recommended choice unless some unavoidable firewall
-        settings prevent you from using it.</p>
+        for the query protocol, CDDBP (on port 8880) and CDDB
+        over HTTP (port 80) are supported. The CDDBP protocol is
+        the recommended choice if using the default CDDB server.</p>
 
-        <p>The default CDDB database server address is freedb.org, but
+        <p>The default CDDB database server address is gnudb.org, but
         you may specify another server (maybe a close mirror). The
         connection timeout can also be set here.</p>
 

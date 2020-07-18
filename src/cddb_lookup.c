@@ -216,7 +216,7 @@ cddb_connection_setup(cddb_conn_t ** conn) {
 			cddb_set_server_port(*conn, 80);
 		} else {
 			cddb_http_disable(*conn);
-			cddb_set_server_port(*conn, 888);
+			cddb_set_server_port(*conn, 8880);
 		}
 	}
 

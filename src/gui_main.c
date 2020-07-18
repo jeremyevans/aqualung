@@ -3583,7 +3583,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	}
 
 	if (options.cddb_server[0] == '\0') {
-		sprintf(options.cddb_server, "freedb.org");
+		sprintf(options.cddb_server, "gnudb.org");
 	}
 
 	if (options.src_type == -1) {

@@ -3358,7 +3358,7 @@ create_options_window(void) {
                          GTK_FILL, GTK_FILL, 5, 3);
 
 	cddb_proto_combo = gtk_combo_box_new_text();
-	gtk_combo_box_append_text(GTK_COMBO_BOX(cddb_proto_combo), _("CDDBP (port 888)"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(cddb_proto_combo), _("CDDBP (port 8880)"));
 	gtk_combo_box_append_text(GTK_COMBO_BOX(cddb_proto_combo), _("HTTP (port 80)"));
 	if (options.cddb_use_http) {
 		gtk_combo_box_set_active(GTK_COMBO_BOX(cddb_proto_combo), 1);

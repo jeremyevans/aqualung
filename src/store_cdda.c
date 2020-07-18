@@ -73,7 +73,6 @@ GtkWidget * cdda_record__addlist_albummode;
 GtkWidget * cdda_record__separator1;
 #ifdef HAVE_CDDB
 GtkWidget * cdda_record__cddb;
-GtkWidget * cdda_record__cddb_submit;
 #endif /* HAVE_CDDB */
 #ifdef HAVE_TRANSCODING
 GtkWidget * cdda_record__rip;
@@ -586,23 +585,6 @@ cdda_record__cddb_cb(gpointer data) {
 }
 
 void
-cdda_record__cddb_submit_cb(gpointer data) {
-
-	GtkTreeIter iter;
-
-	if (gtk_tree_selection_get_selected(music_select, NULL, &iter)) {
-
-		int ntracks;
-		int * frames;
-		int length;
-
-		if (cddb_init_query_data(&iter, &ntracks, &frames, &length) == 0) {
-			cddb_start_submit(&iter, ntracks, frames, length);
-		}
-	}
-}
-
-void
 cdda_record_auto_query_cddb(GtkTreeIter * drive_iter) {
 
 	int ntracks;
@@ -1092,7 +1074,6 @@ set_popup_sensitivity(GtkTreePath * path) {
 
 #ifdef HAVE_CDDB
 		gtk_widget_set_sensitive(cdda_record__cddb, val_cdda);
-		gtk_widget_set_sensitive(cdda_record__cddb_submit, val_cdda);
 #endif /* HAVE_CDDB */
 
 #ifdef HAVE_TRANSCODING
@@ -1281,7 +1262,6 @@ store_cdda_create_popup_menu(void) {
 	cdda_record__separator1 = gtk_separator_menu_item_new();
 #ifdef HAVE_CDDB
 	cdda_record__cddb = gtk_menu_item_new_with_label(_("CDDB query for this CD..."));
-	cdda_record__cddb_submit = gtk_menu_item_new_with_label(_("Submit CD to CDDB database..."));
 #endif /* HAVE_CDDB */
 #ifdef HAVE_TRANSCODING
 	cdda_record__rip = gtk_menu_item_new_with_label(_("Rip CD..."));
@@ -1296,7 +1276,6 @@ store_cdda_create_popup_menu(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__separator1);
 #ifdef HAVE_CDDB
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__cddb);
-	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__cddb_submit);
 #endif /* HAVE_CDDB */
 #ifdef HAVE_TRANSCODING
 	gtk_menu_shell_append(GTK_MENU_SHELL(cdda_record_menu), cdda_record__rip);
@@ -1310,7 +1289,6 @@ store_cdda_create_popup_menu(void) {
  	g_signal_connect_swapped(G_OBJECT(cdda_record__addlist_albummode), "activate", G_CALLBACK(cdda_record__addlist_albummode_cb), NULL);
 #ifdef HAVE_CDDB
 	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb), "activate", G_CALLBACK(cdda_record__cddb_cb), NULL);
- 	g_signal_connect_swapped(G_OBJECT(cdda_record__cddb_submit), "activate", G_CALLBACK(cdda_record__cddb_submit_cb), NULL);
 #endif /* HAVE_CDDB */
 #ifdef HAVE_TRANSCODING
  	g_signal_connect_swapped(G_OBJECT(cdda_record__rip), "activate", G_CALLBACK(cdda_record__rip_cb), NULL);
@@ -1324,7 +1302,6 @@ store_cdda_create_popup_menu(void) {
 	gtk_widget_show(cdda_record__separator1);
 #ifdef HAVE_CDDB
 	gtk_widget_show(cdda_record__cddb);
-	gtk_widget_show(cdda_record__cddb_submit);
 #endif /* HAVE_CDDB */
 #ifdef HAVE_TRANSCODING
 	gtk_widget_show(cdda_record__rip);

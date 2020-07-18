@@ -232,7 +232,6 @@ GtkWidget * cdda_paranoia_maxretries_spinner;
 #ifdef HAVE_CDDB
 GtkWidget * cddb_server_entry;
 GtkWidget * cddb_tout_spinner;
-GtkWidget * cddb_email_entry;
 GtkWidget * cddb_local_entry;
 GtkWidget * cddb_local_check;
 GtkWidget * cddb_proto_combo;
@@ -726,7 +725,6 @@ options_window_accept(void) {
 #ifdef HAVE_CDDB
 	set_option_from_entry(cddb_server_entry, options.cddb_server, MAXLEN);
 	set_option_from_spin(cddb_tout_spinner, &options.cddb_timeout);
-	set_option_from_entry(cddb_email_entry, options.cddb_email, MAXLEN);
 	set_option_from_entry(cddb_local_entry, options.cddb_local, MAXLEN);
         set_option_from_toggle(cddb_local_check, &options.cddb_cache_only);
 	set_option_from_combo(cddb_proto_combo, &options.cddb_use_http);
@@ -3330,11 +3328,6 @@ create_options_window(void) {
         gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 2, 3,
                          GTK_FILL, GTK_FILL, 5, 3);
 
-	cddb_email_entry = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(cddb_email_entry), options.cddb_email);
-        gtk_table_attach(GTK_TABLE(table_cddb), cddb_email_entry, 1, 2, 2, 3,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
-
 	label = gtk_label_new(_("Local CDDB directory:"));
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
@@ -3963,7 +3956,6 @@ save_config(void) {
 	SAVE_INT(cdda_remove_from_playlist);
 	SAVE_STR(cddb_server);
 	SAVE_INT(cddb_timeout);
-	SAVE_STR(cddb_email);
 	SAVE_STR(cddb_local);
 	SAVE_INT(cddb_cache_only);
 	SAVE_INT(cddb_use_http);
@@ -4216,7 +4208,6 @@ load_config(void) {
 	options.cdda_force_drive_rescan = 0;
 
 	options.cddb_server[0] = '\0';
-	options.cddb_email[0] = '\0';
 	options.cddb_local[0] = '\0';
 	options.cddb_timeout = 10;
 
@@ -4390,7 +4381,6 @@ load_config(void) {
 		LOAD_INT(cdda_remove_from_playlist);
 		LOAD_STR(cddb_server);
 		LOAD_INT(cddb_timeout);
-		LOAD_STR(cddb_email);
 		LOAD_STR(cddb_local);
 		LOAD_INT(cddb_cache_only);
 		LOAD_INT(cddb_use_http);

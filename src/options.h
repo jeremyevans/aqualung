@@ -202,7 +202,6 @@ typedef struct {
 	/* CDDB */
 	char cddb_server[MAXLEN];
 	int cddb_timeout;
-	char cddb_email[MAXLEN];
 	char cddb_local[MAXLEN];
 	int cddb_cache_only;
 	int cddb_use_http;

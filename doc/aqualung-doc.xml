@@ -1151,8 +1151,7 @@
         <subsubsection title="CDDB Support">
 
           <p>Aqualung supports retrieving matches from a CDDB
-          database, as well as submitting new records or updating
-          existing ones. The features are available by right-clicking
+          database.  The feature is available by right-clicking
           on a record in the Music Store and choosing the appropriate
           menu item.</p>
 
@@ -1182,16 +1181,6 @@
           to Comments</gui> button next to the appropriate text
           entry.</p>
 
-          <p>The CDDB submission option brings up a dialog which
-          contains the artist, title, year, category, genre and
-          extended data fields, and the track list. All fields
-          (including track names) are editable. The artist, title,
-          year and category fields are mandatory, the genre and
-          extended data are optional. Track names should be all set as
-          well. You are also recommended to comply with the <a
-          href="http://www.freedb.org/en/faq.3.html#22">naming
-          rules</a> when submitting new records.</p>
-
         </subsubsection>
 
         <subsubsection title="Audio CD" key="cd">
@@ -1211,8 +1200,8 @@
           information if found on the CD, or a CDDB lookup.</p>
 
           <p>The drive nodes have options available from the popup
-          menu for adding content to the Playlist, manual CDDB lookup
-          and submission just like normal album nodes do. They have
+          menu for adding content to the Playlist, and manual CDDB
+          lookup just like normal album nodes do. They have
           some further CD specific options as well.</p>
 
           <p>The most important feature is ripping the CD. Choosing
@@ -2687,17 +2676,11 @@
         for the query protocol, standard CDDBP (port 888) and CDDB
         over HTTP (port 80) are supported. The standard CDDBP port is
         the recommended choice unless some unavoidable firewall
-        settings prevent you from using it. For submission HTTP is
-        always used.</p>
+        settings prevent you from using it.</p>
 
         <p>The default CDDB database server address is freedb.org, but
         you may specify another server (maybe a close mirror). The
         connection timeout can also be set here.</p>
-
-        <p>If you want to submit records to the CDDB server, you will
-        have to give a valid email address. Should your submission be
-        rejected for some reason, you will receive a note about the
-        failure to this address.</p>
 
         <p>Retrieved matches are cached in the
         <file>~/.cddbslave</file> directory by default. If you prefer

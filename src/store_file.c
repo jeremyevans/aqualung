@@ -134,7 +134,6 @@ GtkWidget * record__separator2;
 GtkWidget * record__addtrk;
 #ifdef HAVE_CDDB
 GtkWidget * record__cddb;
-GtkWidget * record__cddb_submit;
 #endif /* HAVE_CDDB */
 GtkWidget * record__separator3;
 GtkWidget * record__volume;
@@ -2549,24 +2548,6 @@ record__cddb_cb(gpointer data) {
 	}
 }
 
-void
-record__cddb_submit_cb(gpointer data) {
-
-	GtkTreeIter iter;
-
-	if (gtk_tree_selection_get_selected(music_select, NULL, &iter) &&
-	    !is_store_iter_readonly(&iter)) {
-
-		int ntracks;
-		int * frames;
-		int length;
-
-		if (cddb_init_query_data(&iter, &ntracks, &frames, &length) == 0) {
-			cddb_start_submit(&iter, ntracks, frames, length);
-		}
-	}
-}
-
 #endif /* HAVE_CDDB */
 
 
@@ -4620,7 +4601,6 @@ store_file_create_popup_menu(void) {
 	record__addtrk = gtk_menu_item_new_with_label(_("Add new track to this record..."));
 #ifdef HAVE_CDDB
 	record__cddb = gtk_menu_item_new_with_label(_("CDDB query for this record..."));
-	record__cddb_submit = gtk_menu_item_new_with_label(_("Submit record to CDDB database..."));
 #endif /* HAVE_CDDB */
 	record__separator3 = gtk_separator_menu_item_new();
 	record__volume = gtk_menu_item_new_with_label(_("Calculate volume (recursive)"));
@@ -4643,7 +4623,6 @@ store_file_create_popup_menu(void) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__addtrk);
 #ifdef HAVE_CDDB
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__cddb);
-	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__cddb_submit);
 #endif /* HAVE_CDDB */
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__separator3);
 	gtk_menu_shell_append(GTK_MENU_SHELL(record_menu), record__volume);
@@ -4664,7 +4643,6 @@ store_file_create_popup_menu(void) {
 	g_signal_connect_swapped(G_OBJECT(record__addtrk), "activate", G_CALLBACK(track__add_cb), NULL);
 #ifdef HAVE_CDDB
 	g_signal_connect_swapped(G_OBJECT(record__cddb), "activate", G_CALLBACK(record__cddb_cb), NULL);
-	g_signal_connect_swapped(G_OBJECT(record__cddb_submit), "activate", G_CALLBACK(record__cddb_submit_cb), NULL);
 #endif /* HAVE_CDDB */
 	g_signal_connect_swapped(G_OBJECT(record__volume_unmeasured), "activate", G_CALLBACK(record__volume_unmeasured_cb), NULL);
 	g_signal_connect_swapped(G_OBJECT(record__volume_all), "activate", G_CALLBACK(record__volume_all_cb), NULL);
@@ -4684,7 +4662,6 @@ store_file_create_popup_menu(void) {
 	gtk_widget_show(record__addtrk);
 #ifdef HAVE_CDDB
 	gtk_widget_show(record__cddb);
-	gtk_widget_show(record__cddb_submit);
 #endif /* HAVE_CDDB */
 	gtk_widget_show(record__separator3);
 	gtk_widget_show(record__volume);

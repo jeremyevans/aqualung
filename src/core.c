@@ -20,6 +20,7 @@
 
 #include <config.h>
 
+#include <libgen.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1907,6 +1908,8 @@ load_default_cl(int * argc, char *** argv) {
         if (chdir(options.confdir) != 0) {
                 if (errno == ENOENT) {
                         fprintf(stderr, "Creating directory %s\n", options.confdir);
+                        /* Try creating .config before .config/aqualung */
+                        mkdir(dirname(options.confdir), S_IRUSR | S_IWUSR | S_IXUSR);
                         if (mkdir(options.confdir, S_IRUSR | S_IWUSR | S_IXUSR) < 0) {
 				perror("cannot create config directory: mkdir");
 				exit(1);

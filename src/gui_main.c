@@ -3565,7 +3565,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	if (options.title_format[0] == '\0')
 		sprintf(options.title_format, "%%a: %%t [%%r]");
 	if (options.skin[0] == '\0') {
-		sprintf(options.skin, "%s/plain", AQUALUNG_SKINDIR);
+		sprintf(options.skin, "%s/default", AQUALUNG_SKINDIR);
 		options.main_pos_x = 280;
 		options.main_pos_y = 30;
 		options.main_size_x = 380;

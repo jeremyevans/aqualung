@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-07-26 21:08+0200\n"
+"POT-Creation-Date: 2020-07-18 18:01+0200\n"
 "PO-Revision-Date: 2010-02-11 19:23+0100\n"
 "Last-Translator: Louis Opter <kalessin@kalessin.fr>\n"
 "Language-Team: \n"
@@ -28,7 +28,7 @@ msgid "Optional features:"
 msgstr "Fonctionnalités optionnelles"
 
 msgid "LADSPA plugin support\n"
-msgstr "Support du plugin LADSPA\n"
+msgstr "Support du module LADSPA\n"
 
 msgid "CDDA (Audio CD) support\n"
 msgstr "Support CDDA (CD Audio)\n"
@@ -246,7 +246,7 @@ msgid "CDDB (not available)"
 msgstr "CDDB (non disponible)"
 
 msgid "Metadata"
-msgstr "Meta-données"
+msgstr "Méta-données"
 
 msgid "Filesystem"
 msgstr "Système de fichiers"
@@ -364,7 +364,7 @@ msgid "Include only files matching wildcard"
 msgstr "Inclure seulement les fichiers qui correspondent aux jokers"
 
 msgid "Reread data for existing tracks"
-msgstr "Re-lit les données des pistes existantes"
+msgstr "Relit les données des pistes existantes"
 
 msgid "Remove non-existing files from store"
 msgstr "Retirer les fichiers qui n'existent plus dans la discothèque"
@@ -489,11 +489,11 @@ msgid ""
 "or the destination Music Store."
 msgstr ""
 "\n"
-"La Discothèque que vous avez sélectionné a une correspondance avec un "
+"La Discothèque que vous avez sélectionnée a une correspondance avec un "
 "Artiste et un Album contenant déjà certaines pistes. Si vous appuyez sur OK, "
 "ces pistes seront enlevées. Les fichiers eux mêmes seront laissés intacts, "
-"mais ils seront enlevé de la Discothèque cible. Appuyez sur Annuler pour "
-"revenir en arrière pour changer les Artistes/Albumsou la Discothèque cible."
+"mais ils seront enlevés de la Discothèque cible. Appuyez sur Annuler pour "
+"revenir en arrière pour changer les Artistes/Albums ou la Discothèque cible."
 
 msgid "Rip CD"
 msgstr "Copier un CD"
@@ -520,7 +520,7 @@ msgid "Title"
 msgstr "Titre"
 
 msgid "Select"
-msgstr "Sélectioner"
+msgstr "Sélectionner"
 
 msgid "All"
 msgstr "Tout"
@@ -550,7 +550,7 @@ msgid "VBR encoding"
 msgstr "Encodage VBR"
 
 msgid "Tag files with metadata"
-msgstr "Étiquetter les fichiers avec les méta-données"
+msgstr "Étiqueter les fichiers avec les méta-données"
 
 msgid "Paranoia"
 msgstr "Paranoia"
@@ -632,58 +632,10 @@ msgid "Import as Sort Key"
 msgstr "Importer comme clé de tri"
 
 msgid "Import as Title"
-msgstr "Importer comme un titre"
+msgstr "Importer comme titre"
 
 msgid "Import as Year"
-msgstr "Importer comme une année"
-
-msgid ""
-"Artist appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"L'artiste est entièrement en minuscules.\n"
-"Voulez vous continuer ?"
-
-msgid ""
-"Artist appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"L'artiste est entièrement en majuscules.\n"
-"Voulez vous continuer ?"
-
-msgid ""
-"Title appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Le titre est entièrement en minuscules.\n"
-"Voulez vous continuer ?"
-
-msgid ""
-"Title appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Le titre est entièrement en majuscules.\n"
-"Voulez vous continuer ?"
-
-msgid ""
-"It is very likely that the year is wrong.\n"
-"Do you want to proceed?"
-msgstr ""
-"Il est très probable que l'année soit fausse.\n"
-"Voulez vous continuer ?"
-
-msgid "The email address provided for submission is invalid."
-msgstr "L'adresse de courriel fournie pour la proposition est invalide."
-
-msgid "An error occurred while submitting the record to the CDDB server."
-msgstr ""
-"Une erreur est survenue lors de la proposition de l'album au serveur CDDB"
-
-msgid "Correct existing record"
-msgstr "Correction de l'album existant"
-
-msgid "Submit new record"
-msgstr "Soumettre un nouvel album"
+msgstr "Importer comme année"
 
 msgid "Matches:"
 msgstr "Concordances :"
@@ -693,9 +645,6 @@ msgstr "Titre :"
 
 msgid "Category:"
 msgstr "Catégorie :"
-
-msgid "(choose a category)"
-msgstr "(choisir une catégorie)"
 
 msgid "Extended data:"
 msgstr "Données étendues :"
@@ -708,11 +657,6 @@ msgstr "Ajouter aux commentaires"
 
 msgid "Tracks"
 msgstr "Pistes"
-
-msgid "You have to provide an email address for CDDB submission."
-msgstr ""
-"Vous devez fournir une adresse de courriels pour faire une proposition sur "
-"CDDB"
 
 msgid "Unknown Album"
 msgstr "Album inconnu"
@@ -796,7 +740,7 @@ msgid ""
 "Do not reencode files\n"
 "matching wildcard:"
 msgstr ""
-"Ne pas encoder de nouveaux les fichiers\n"
+"Ne pas encoder de nouveau les fichiers\n"
 "qui correspondent à ce joker:"
 
 msgid "*File info"
@@ -806,7 +750,7 @@ msgid "File info"
 msgstr "Informations sur le fichier"
 
 msgid "There are unsaved changes to the file metadata."
-msgstr "Il y a des changements en cours sur les meta-données du fichier."
+msgstr "Il y a des changements en cours sur les méta-données du fichier."
 
 msgid "Save and close"
 msgstr "Sauvegarder et quitter"
@@ -900,7 +844,7 @@ msgid "Add"
 msgstr "Ajouter"
 
 msgid "field:"
-msgstr "champs :"
+msgstr "champ :"
 
 msgid "tag:"
 msgstr "étiquette :"
@@ -913,7 +857,7 @@ msgid "MONO"
 msgstr "MONO"
 
 msgid "STEREO"
-msgstr "STEREO"
+msgstr "STÉRÉO"
 
 msgid "Audio CD"
 msgstr "CD Audio"
@@ -1043,7 +987,7 @@ msgstr "Connexion avec JACK perdue"
 #, fuzzy, c-format
 msgid "JACK has either been shutdown or it disconnected Aqualung. Reason: %s"
 msgstr ""
-"Soit JACK a été éteint soit il a déconnecté Aqualung car il n'était pas "
+"Soit JACK a été éteint, soit il a déconnecté Aqualung car il n'était pas "
 "assez rapide. Vous n'avez pas d'autres choix que de relancer JACK et "
 "Aqualung."
 
@@ -1136,10 +1080,10 @@ msgstr ""
 "autre."
 
 msgid "Done"
-msgstr "Fini"
+msgstr "Fin"
 
 msgid "Aborted..."
-msgstr "Abandonné..."
+msgstr "Abandon..."
 
 msgid "Please enter directory name."
 msgstr "Veuillez entrer le nom d'un dossier."
@@ -1200,7 +1144,7 @@ msgid ""
 "(Aqualung was unable to claim its interface.)"
 msgstr ""
 "Le périphérique est déjà utilisé.\n"
-"(Aqualung n'a pas pus réclamer son utilisation.)"
+"(Aqualung n'a pas pu réclamer son utilisation.)"
 
 msgid ""
 "Device is not responding.\n"
@@ -1261,7 +1205,7 @@ msgid "iFP device manager (upload mode)"
 msgstr "Gestionnaire de périphérique iFP (mode d'envoi)"
 
 msgid "iFP device manager (download mode)"
-msgstr "Gestionnaire de périphérique iFP (mode de téléchargement)"
+msgstr "Gestionnaire de périphérique iFP (mode téléchargement)"
 
 msgid "Selected files:"
 msgstr "Fichiers sélectionnés :"
@@ -1315,7 +1259,7 @@ msgid "Close window when transfer complete"
 msgstr "Fermer la fenêtre quand le transfert est terminé"
 
 msgid "_Upload"
-msgstr "_Envois"
+msgstr "_Envoi"
 
 msgid "_Download"
 msgstr "_Téléchargement"
@@ -1435,7 +1379,7 @@ msgid "Encoding Time"
 msgstr "Date d'encodage"
 
 msgid "Playlist Delay"
-msgstr "Duré du Silence Entre les Pistes (ms)"
+msgstr "Durée du Silence Entre les Pistes (ms)"
 
 msgid "Original Release Time"
 msgstr "Date de Sortie Originale"
@@ -1444,7 +1388,7 @@ msgid "Release Time"
 msgstr "Date de Sortie"
 
 msgid "Tagging Time"
-msgstr "Date de l'Étiquettage"
+msgstr "Date de l'Étiquetage"
 
 msgid "Encoded by"
 msgstr "Encodé avec"
@@ -1760,7 +1704,7 @@ msgstr "injoignable"
 
 #, fuzzy
 msgid "Please select a Lua Extension File."
-msgstr "Veuillez sélectionner un Fichier de Format de Titres Programmables."
+msgstr "Veuillez sélectionner un Fichier d'extension Lua."
 
 msgid "Please select a Music Store database."
 msgstr "Veuillez sélectionner une discothèque."
@@ -1897,7 +1841,7 @@ msgid ""
 msgstr ""
 "\n"
 "La plupart des lecteurs notifient Aqualung quand un CD-ROM a été inséré ou "
-"retiŕe. Cependant, certains lecteurs ne le font pas correctement et parfois "
+"retiŕé. Cependant, certains lecteurs ne le font pas correctement et parfois "
 "Aqualung ne réagit pas quand un CD-ROM a été inséré. Dans ce cas activer "
 "cette option peut aider."
 
@@ -1928,7 +1872,7 @@ msgid "Change balance"
 msgstr "Changer l'équilibrage"
 
 msgid "Change song position"
-msgstr "Changer la chanson de position"
+msgstr "Changer la position de la chanson"
 
 msgid "Change current song"
 msgstr "Changer la chanson courante"
@@ -1967,7 +1911,7 @@ msgid "Error in title format string"
 msgstr "Erreur dans la chaîne de caractères de formatage du titre"
 
 msgid "Error invalid character encoding"
-msgstr ""
+msgstr "Erreur codage de caractère invalide"
 
 msgid "Main window"
 msgstr "Fenêtre Principale"
@@ -1988,13 +1932,13 @@ msgid "Title Format"
 msgstr "Format du Titre"
 
 msgid "Lua extension file"
-msgstr ""
+msgstr "Fichier d'extension Lua"
 
 msgid "Systray"
 msgstr "Zone de notification"
 
 msgid "Start minimized"
-msgstr "Démarrer minimisé"
+msgstr "Démarrer en mode minimisé"
 
 msgid "Play/Stop song"
 msgstr "Lecture/Stop"
@@ -2054,7 +1998,7 @@ msgstr ""
 "Ne pas montrer la miniature de la couverture dans la fenêtre principale"
 
 msgid "Use cover from external graphics file first"
-msgstr ""
+msgstr "Utiliser d'abord la couverture du fichier graphique externe"
 
 msgid "Enable tooltips"
 msgstr "Activer les info-bulles"
@@ -2097,17 +2041,17 @@ msgstr "Afficher un bouton de fermeture dans les onglets"
 # Trop merci quoi !
 msgid "When shuffling, records added in Album mode are played in order"
 msgstr ""
-"Lorsque l'ordre de lecture est 'au hasard' les albums ajouté en mode 'Album' "
-"sont joués dans l'ordre"
+"Lorsque l'ordre de lecture est 'au hasard' les albums ajoutés en mode "
+"'Album' sont joués dans l'ordre"
 
 msgid "Enable statusbar"
-msgstr "Activer la barre de status"
+msgstr "Activer la barre d'état"
 
 msgid "Enable statusbar in playlist"
-msgstr "Activer la barre de status dans la liste de lecture"
+msgstr "Activer la barre d'état dans la liste de lecture"
 
 msgid "Show soundfile size in statusbar"
-msgstr "Afficher la taille du fichier dans la barre de status"
+msgstr "Afficher la taille du fichier dans la barre d'état"
 
 msgid "Show RVA values"
 msgstr "Afficher les valeurs RVA"
@@ -2159,16 +2103,16 @@ msgid "Enable toolbar in Music Store"
 msgstr "Activer la barre d'outils dans la discothèque"
 
 msgid "Enable statusbar in Music Store"
-msgstr "Activer la barre de status dans la discothèque"
+msgstr "Activer la barre d'état dans la discothèque"
 
 msgid "Expand Stores on startup"
 msgstr "Dérouler les discothèques au démarrage"
 
 msgid "Enable tree node icons"
-msgstr "Afficher les icônes des noeuds des arbres"
+msgstr "Afficher les icônes des nœuds des arbres"
 
 msgid "Enable Music Store tree node icons"
-msgstr "Afficher les icônes des noeuds dans l'arbre de la discothèque"
+msgstr "Afficher les icônes des nœuds dans l'arbre de la discothèque"
 
 msgid "Ask for confirmation when removing items"
 msgstr "Demander confirmation lors de la suppression d'éléments"
@@ -2189,10 +2133,10 @@ msgid "DSP"
 msgstr "DSP"
 
 msgid "LADSPA plugin processing"
-msgstr ""
+msgstr "Traitement du module LADSPA"
 
 msgid "Pre Fader (before Volume & Balance)"
-msgstr "Pre Fader (avant le Volume & l'Équilibrage)"
+msgstr "Pré Fader (avant le Volume & l'Équilibrage)"
 
 msgid "Post Fader (after Volume & Balance)"
 msgstr "Post Fader (après le Volume & l'Équilibrage)"
@@ -2211,7 +2155,7 @@ msgid ""
 "Aqualung is compiled without Sample Rate Converter support.\n"
 "See the About box and the documentation for details."
 msgstr ""
-"Cet Aqualung a été généré sans le support de la Conversion du Taux "
+"Aqualung a été généré sans le support de la Conversion du Taux "
 "d'Échantillonage.\n"
 "Consultez la fenêtre 'A propos' et la documentation pour plus de détails."
 
@@ -2296,7 +2240,7 @@ msgstr ""
 "avec le cadre d'une étiquette équivalente."
 
 msgid "MPEG audio ID3v1/ID3v2 character encoding"
-msgstr ""
+msgstr "Encodage de caractères MPEG audio ID3v1/ID3v2"
 
 msgid "Batch update & encode (mass tagger, CD ripper, file export)"
 msgstr ""
@@ -2312,6 +2256,8 @@ msgid ""
 "Note: pre-existing tags will be updated even though they\n"
 "might not be checked here."
 msgstr ""
+"Note : les étiquettes préexistantes seront mises à jour même si\n"
+"elle ne sont peut-être pas vérifiées ici."
 
 msgid "CD Audio"
 msgstr ""
@@ -2349,8 +2295,9 @@ msgstr "Uniquement utiliser la base de données locale"
 msgid "Protocol for querying (direct connection only):"
 msgstr "Protocole pour les requêtes (connexion directe seulement) :"
 
-msgid "CDDBP (port 888)"
-msgstr ""
+#, fuzzy
+msgid "CDDBP (port 8880)"
+msgstr "Support CDDB\n"
 
 msgid "HTTP (port 80)"
 msgstr ""
@@ -2410,7 +2357,7 @@ msgid "Song info: "
 msgstr "Informations sur la chanson : "
 
 msgid "Statusbar: "
-msgstr "Barre de status : "
+msgstr "Barre d'état : "
 
 msgid "Colors"
 msgstr "Couleurs"
@@ -2429,10 +2376,10 @@ msgid " (%d/%d)"
 msgstr ""
 
 msgid "Select files"
-msgstr "Sélectioner des fichiers"
+msgstr "Sélectionner des fichiers"
 
 msgid "Select directory"
-msgstr "Sélectioner des dossiers"
+msgstr "Sélectionner des dossiers"
 
 msgid "Add URL"
 msgstr "Ajouter une URL"
@@ -2454,7 +2401,7 @@ msgstr ""
 "Souhaitez vous l'activer maintenant ?"
 
 msgid "counting..."
-msgstr "en train de compter..."
+msgstr "comptage en cours..."
 
 msgid "track"
 msgstr "piste"
@@ -2481,7 +2428,7 @@ msgid "Close other tabs"
 msgstr "Fermer les autres onglets"
 
 msgid " Selected: "
-msgstr " Sélectioné: "
+msgstr " Sélectionnée(s): "
 
 msgid "Total: "
 msgstr "Total : "
@@ -2503,7 +2450,7 @@ msgid ""
 "Select all songs in playlist\n"
 "(Press right mouse button for menu)"
 msgstr ""
-"Sélectioner toutes les chansons de la liste de lecture\n"
+"Sélectionner toutes les chansons de la liste de lecture\n"
 "(Faites un clic droit pour le menu)"
 
 msgid "Remove selected"
@@ -2668,7 +2615,7 @@ msgid "Exact matches only"
 msgstr "Correspondances exactes seulement"
 
 msgid "Select first and close window"
-msgstr "Sélectioner le premier et fermer la fenêtre"
+msgstr "Sélectionner le premier et fermer la fenêtre"
 
 msgid "Search in:"
 msgstr "Rechercher dans : "
@@ -2842,9 +2789,6 @@ msgstr "Ajouter dans la liste de lecture (mode Album)"
 msgid "CDDB query for this CD..."
 msgstr "Requête CDDB pour ce CD..."
 
-msgid "Submit CD to CDDB database..."
-msgstr "Soumettre le CD à la base de données CDDB.."
-
 msgid "Rip CD..."
 msgstr "Encoder le CD..."
 
@@ -2906,7 +2850,7 @@ msgid "Edit Track"
 msgstr "Éditer la Piste"
 
 msgid "Duration:"
-msgstr "Duré :"
+msgstr "Durée :"
 
 #, c-format
 msgid "Unmeasured"
@@ -3053,9 +2997,6 @@ msgstr "Ajouter de nouvelles pistes à cet album..."
 msgid "CDDB query for this record..."
 msgstr "Requête CDDB pour cet album..."
 
-msgid "Submit record to CDDB database..."
-msgstr "Soumettre cet album à la base de données CDDB..."
-
 msgid "Add new track..."
 msgstr "Ajouter une nouvelle piste..."
 
@@ -3096,7 +3037,7 @@ msgid "Download directory:"
 msgstr "Dossier de téléchargement :"
 
 msgid "Auto-check interval [hour]:"
-msgstr "Interval de vérification automatique [heures] :"
+msgstr "Intervalle de vérification automatique [heures] :"
 
 msgid ""
 "Automatic update has been disabled for all feeds\n"
@@ -3134,7 +3075,7 @@ msgid "Really remove '%s' from the Music Store?"
 msgstr "Retirer vraiment '%s' de la Discothèque ?"
 
 msgid "Reorder feeds"
-msgstr "Réordonner les fluxs"
+msgstr "Réordonner les flux"
 
 msgid ""
 "Drag and drop entries in the list\n"
@@ -3163,7 +3104,7 @@ msgid "feed"
 msgstr "flux"
 
 msgid "feeds"
-msgstr "fluxs"
+msgstr "flux"
 
 msgid "Export item..."
 msgstr "Exporter un élément..."
@@ -3196,10 +3137,10 @@ msgid "Abort ongoing update"
 msgstr "Abandonner la mise à jour en cours"
 
 msgid "Update all feeds"
-msgstr "Mettre à jours tous les fluxs"
+msgstr "Mettre à jours tous les flux"
 
 msgid "Automatically update feeds"
-msgstr "Automatiquement mettre à jour les fluxs"
+msgstr "Automatiquement mettre à jour les flux"
 
 msgid "Unexpected end of string after '?'."
 msgstr "Fin inattendue de la chaîne de caractères après '?'."
@@ -3341,7 +3282,7 @@ msgid "Unrecognized"
 msgstr "Inconnue"
 
 msgid "Single channel"
-msgstr "Simple canal"
+msgstr "Canal simple"
 
 msgid "Dual channel"
 msgstr "Double canal"
@@ -3375,6 +3316,68 @@ msgstr "bit double"
 
 msgid "encoding"
 msgstr "encodage"
+
+#~ msgid ""
+#~ "Artist appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "L'artiste est entièrement en minuscules.\n"
+#~ "Voulez vous continuer ?"
+
+#~ msgid ""
+#~ "Artist appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "L'artiste est entièrement en majuscules.\n"
+#~ "Voulez vous continuer ?"
+
+#~ msgid ""
+#~ "Title appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Le titre est entièrement en minuscules.\n"
+#~ "Voulez vous continuer ?"
+
+#~ msgid ""
+#~ "Title appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Le titre est entièrement en majuscules.\n"
+#~ "Voulez vous continuer ?"
+
+#~ msgid ""
+#~ "It is very likely that the year is wrong.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Il est très probable que l'année soit fausse.\n"
+#~ "Voulez vous continuer ?"
+
+#~ msgid "The email address provided for submission is invalid."
+#~ msgstr "L'adresse de courriel fournie pour la proposition est invalide."
+
+#~ msgid "An error occurred while submitting the record to the CDDB server."
+#~ msgstr ""
+#~ "Une erreur est survenue lors de la proposition de l'album au serveur CDDB"
+
+#~ msgid "Correct existing record"
+#~ msgstr "Correction de l'album existant"
+
+#~ msgid "Submit new record"
+#~ msgstr "Soumettre un nouvel album"
+
+#~ msgid "(choose a category)"
+#~ msgstr "(choisir une catégorie)"
+
+#~ msgid "You have to provide an email address for CDDB submission."
+#~ msgstr ""
+#~ "Vous devez fournir une adresse de courriels pour faire une proposition "
+#~ "sur CDDB"
+
+#~ msgid "Submit CD to CDDB database..."
+#~ msgstr "Soumettre le CD à la base de données CDDB.."
+
+#~ msgid "Submit record to CDDB database..."
+#~ msgstr "Soumettre cet album à la base de données CDDB..."
 
 #~ msgid "Lua (programmable title formatting) support\n"
 #~ msgstr "Support de Lua (formatage programmable des titres)\n"

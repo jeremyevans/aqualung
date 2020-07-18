@@ -134,8 +134,6 @@ GtkWidget * plist__send_songs_to_iriver;
 GtkWidget * plist__export;
 #endif /* HAVE_TRANSCODING */
 
-gchar command[RB_CONTROL_SIZE];
-
 GtkTreeIter * fileinfo_iter = NULL;
 
 int playlist_dirty;

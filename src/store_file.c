@@ -1059,7 +1059,7 @@ edit_track_dialog(char * name, char * sort, track_data_t * data) {
 				  browse_button_track_clicked);
 	g_free(utf8);
 
-	time2time(data->duration, str);
+	time2time(data->duration, str, CHAR_ARRAY_SIZE(str));
 	insert_label_entry(table, _("Duration:"), &duration_entry, str, 3, 4, FALSE);
 
 	if (data->volume <= 0.1f) {
@@ -1395,7 +1395,7 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 		}
 	}
 
-	time2time(data->duration, duration_str);
+	time2time(data->duration, duration_str, CHAR_ARRAY_SIZE(duration_str));
 	voladj2str(voladj, voladj_str, CHAR_ARRAY_SIZE(voladj_str));
 
 	if ((pldata = playlist_data_new()) == NULL) {
@@ -1535,7 +1535,7 @@ record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl,
 	if (album_mode) {
 		char duration_str[MAXLEN];
 		pldata->duration = record_duration;
-		time2time(record_duration, duration_str);
+		time2time(record_duration, duration_str, CHAR_ARRAY_SIZE(duration_str));
 		gtk_tree_store_set(pl->store, &list_iter, PL_COL_DURA, duration_str, -1);
 	}
 }
@@ -3633,7 +3633,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 	g_free(name);
 
 	if (length > 0.0f || ntrack == 0) {
-		time2time(length, length_str);
+		time2time(length, length_str, CHAR_ARRAY_SIZE(length_str));
 		sprintf(tmp, " [%s] ", length_str);
 	} else {
 		strcpy(tmp, " [N/A] ");

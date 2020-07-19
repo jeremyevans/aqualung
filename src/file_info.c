@@ -1822,7 +1822,7 @@ fi_set_common_entries(fi_t * fi) {
 	if (fi->fileinfo.total_samples == 0) {
 		strcpy(str, "N/A");
 	} else {
-		sample2time(fi->fileinfo.sample_rate, fi->fileinfo.total_samples, str, 0);
+		sample2time(fi->fileinfo.sample_rate, fi->fileinfo.total_samples, str, CHAR_ARRAY_SIZE(str), 0);
 	}
 	gtk_entry_set_text(GTK_ENTRY(fi->entry_length), str);
 

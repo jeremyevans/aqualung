@@ -40,9 +40,9 @@ void make_title_string(char * dest, char * templ,
 		       char * artist, char * record, char * track);
 void make_string_strerror(int ret, char * buf);
 
-void sample2time(unsigned long SR, unsigned long long sample, char * str, int sign);
-void time2time(float samples, char * str);
-void time2time_na(float seconds, char * str);
+void sample2time(unsigned long SR, unsigned long long sample, char * str, size_t str_size, int sign);
+void time2time(float samples, char * str, size_t str_size);
+void time2time_na(float seconds, char * str, size_t str_size);
 
 void normalize_filename(const char * in, char * out, size_t out_size);
 

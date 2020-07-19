@@ -1662,7 +1662,7 @@ add_file_to_playlist(gpointer data) {
 		}
 
 		voladj2str(pldata->voladj, voladj_str, CHAR_ARRAY_SIZE(voladj_str));
-		time2time_na(pldata->duration, duration_str);
+		time2time_na(pldata->duration, duration_str, CHAR_ARRAY_SIZE(duration_str));
 
 		if (IS_PL_TOPLEVEL(pldata)) {
 			gtk_tree_store_append(pt->pl->store, &iter, NULL);
@@ -2049,7 +2049,7 @@ add_url(GtkWidget * widget, gpointer data) {
 		data->voladj = options.rva_no_rva_voladj;
 
 		voladj2str(data->voladj, voladj_str, CHAR_ARRAY_SIZE(voladj_str));
-		time2time_na(data->duration, duration_str);
+		time2time_na(data->duration, duration_str, CHAR_ARRAY_SIZE(duration_str));
 
 		gtk_tree_store_append(pl->store, &iter, NULL);
 		gtk_tree_store_set(pl->store, &iter,
@@ -2369,7 +2369,7 @@ plist__reread_file_meta_foreach(playlist_t * pl, GtkTreeIter * iter, void * user
 	playlist_data_free(tmp);
 
 	voladj2str(data->voladj, voladj_str, CHAR_ARRAY_SIZE(voladj_str));
-	time2time_na(data->duration, duration_str);
+	time2time_na(data->duration, duration_str, CHAR_ARRAY_SIZE(duration_str));
 
 	gtk_tree_store_set(pl->store, iter,
 			   PL_COL_VADJ, voladj_str,
@@ -3180,7 +3180,7 @@ playlist_stats(playlist_t * pl, int selected) {
 	sprintf(str, " %d %s ", ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 
 	if (length > 0.0f || ntrack == 0) {
-		time2time(length, length_str);
+		time2time(length, length_str, CHAR_ARRAY_SIZE(length_str));
 		sprintf(tmp, " [%s] ", length_str);
 		strcat(str, tmp);
 	}
@@ -3219,7 +3219,7 @@ recalc_album_node(playlist_t * pl, GtkTreeIter * iter) {
 
 	playlist_child_stats(pl, iter, &ntrack, &length, &size, 0/*false*/);
 
-	time2time(length, time);
+	time2time(length, time, CHAR_ARRAY_SIZE(time));
 	gtk_tree_store_set(pl->store, iter, PL_COL_DURA, time, -1);
 	data->duration = length;
 

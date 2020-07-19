@@ -548,7 +548,7 @@ refresh_time_displays(void) {
 
 	if (is_file_loaded) {
 		if (refresh_time_label || options.time_idx[0] != 0) {
-			sample2time(disp_info.sample_rate, disp_pos, str, 0);
+			sample2time(disp_info.sample_rate, disp_pos, str, CHAR_ARRAY_SIZE(str), 0);
 			gtk_label_set_text(GTK_LABEL(time_labels[0]), str);
 
 		}
@@ -557,7 +557,7 @@ refresh_time_displays(void) {
 			if (disp_samples == 0) {
 				strcpy(str, " N/A ");
 			} else {
-				sample2time(disp_info.sample_rate, disp_samples - disp_pos, str, 1);
+				sample2time(disp_info.sample_rate, disp_samples - disp_pos, str, CHAR_ARRAY_SIZE(str), 1);
 			}
 			gtk_label_set_text(GTK_LABEL(time_labels[1]), str);
 
@@ -567,7 +567,7 @@ refresh_time_displays(void) {
 			if (disp_samples == 0) {
 				strcpy(str, " N/A ");
 			} else {
-				sample2time(disp_info.sample_rate, disp_samples, str, 0);
+				sample2time(disp_info.sample_rate, disp_samples, str, CHAR_ARRAY_SIZE(str), 0);
 			}
 			gtk_label_set_text(GTK_LABEL(time_labels[2]), str);
 
@@ -591,8 +591,8 @@ loop_bar_update_tooltip(void) {
 		if (is_file_loaded) {
 			char start[32];
 			char end[32];
-			sample2time(disp_info.sample_rate, total_samples * options.loop_range_start, start, 0);
-			sample2time(disp_info.sample_rate, total_samples * options.loop_range_end, end, 0);
+			sample2time(disp_info.sample_rate, total_samples * options.loop_range_start, start, CHAR_ARRAY_SIZE(start), 0);
+			sample2time(disp_info.sample_rate, total_samples * options.loop_range_end, end, CHAR_ARRAY_SIZE(end), 0);
 			arr_snprintf(str, _("Loop range: %d-%d%% [%s - %s]"),
 				     (int)(100 * options.loop_range_start),
 				     (int)(100 * options.loop_range_end),

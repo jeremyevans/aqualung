@@ -277,7 +277,7 @@ make_string_strerror(int ret, char * buf) {
 
 /* returns (hh:mm:ss) or (mm:ss) format time string from sample position */
 void
-sample2time(unsigned long SR, unsigned long long sample, char * str, int sign) {
+sample2time(unsigned long SR, unsigned long long sample, char * str, size_t str_size, int sign) {
 
 	int h;
 	char m, s;
@@ -290,16 +290,16 @@ sample2time(unsigned long SR, unsigned long long sample, char * str, int sign) {
 	s = (sample / SR) - h * 3600 - m * 60;
 
 	if (h > 0) {
-		sprintf(str, (sign)?("-%d:%02d:%02d"):("%d:%02d:%02d"), h, m, s);
+		snprintf(str, str_size, (sign)?("-%d:%02d:%02d"):("%d:%02d:%02d"), h, m, s);
 	} else {
-		sprintf(str, (sign)?("-%02d:%02d"):("%02d:%02d"), m, s);
+		snprintf(str, str_size, (sign)?("-%02d:%02d"):("%02d:%02d"), m, s);
 	}
 }
 
 
 /* converts a length measured in seconds to the appropriate string */
 void
-time2time(float seconds, char * str) {
+time2time(float seconds, char * str, size_t str_size) {
 
 	int d, h;
 	char m, s;
@@ -312,33 +312,33 @@ time2time(float seconds, char * str) {
 
         if (d > 0) {
                 if (d == 1 && h > 9) {
-                        sprintf(str, "%d %s, %2d:%02d:%02d", d, _("day"), h, m, s);
+                        snprintf(str, str_size, "%d %s, %2d:%02d:%02d", d, _("day"), h, m, s);
                 } else if (d == 1 && h < 9) {
-                        sprintf(str, "%d %s, %1d:%02d:%02d", d, _("day"), h, m, s);
+                        snprintf(str, str_size, "%d %s, %1d:%02d:%02d", d, _("day"), h, m, s);
                 } else if (d != 1 && h > 9) {
-                        sprintf(str, "%d %s, %2d:%02d:%02d", d, _("days"), h, m, s);
+                        snprintf(str, str_size, "%d %s, %2d:%02d:%02d", d, _("days"), h, m, s);
                 } else {
-                        sprintf(str, "%d %s, %1d:%02d:%02d", d, _("days"), h, m, s);
+                        snprintf(str, str_size, "%d %s, %1d:%02d:%02d", d, _("days"), h, m, s);
                 }
         } else if (h > 0) {
 		if (h > 9) {
-			sprintf(str, "%02d:%02d:%02d", h, m, s);
+			snprintf(str, str_size, "%02d:%02d:%02d", h, m, s);
 		} else {
-			sprintf(str, "%1d:%02d:%02d", h, m, s);
+			snprintf(str, str_size, "%1d:%02d:%02d", h, m, s);
 		}
 	} else {
-		sprintf(str, "%02d:%02d", m, s);
+		snprintf(str, str_size, "%02d:%02d", m, s);
 	}
 }
 
 
 void
-time2time_na(float seconds, char * str) {
+time2time_na(float seconds, char * str, size_t str_size) {
 
 	if (seconds == 0.0) {
-		strcpy(str, "N/A");
+		g_strlcpy(str, "N/A", str_size);
 	} else {
-		time2time(seconds, str);
+		time2time(seconds, str, str_size);
 	}
 }
 

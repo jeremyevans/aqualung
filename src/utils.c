@@ -254,10 +254,10 @@ make_string_va(char * buf, size_t buf_size, char * format, ...) {
 }
 
 void
-make_title_string(char * dest, char * templ,
+make_title_string(char * dest, size_t dest_size, char * templ,
 		  char * artist, char * record, char * track) {
 
-	make_string_va(dest, MAXLEN, templ, 'a', artist, 'r', record, 't', track, 0);
+	make_string_va(dest, dest_size, templ, 'a', artist, 'r', record, 't', track, 0);
 }
 
 void

@@ -3872,7 +3872,8 @@ process_metablock(metadata_t * meta) {
 		if ((artist && !is_all_wspace(artist)) ||
 		    (album && !is_all_wspace(album)) ||
 		    (title && !is_all_wspace(title))) {
-			make_title_string(tmp, options.title_format, artist, album, title);
+			make_title_string(tmp, CHAR_ARRAY_SIZE(tmp), options.title_format,
+					  artist, album, title);
 			if (icy_name != NULL) {
 				arr_snprintf(buf, "%s (%s)", tmp, icy_name);
 			}

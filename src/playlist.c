@@ -1599,7 +1599,7 @@ playlist_data_get_display_name(char * list_str, playlist_data_t * pldata) {
 	if (pldata->display) {
 		strncpy(list_str, pldata->display, MAXLEN-1);
 	} else if (pldata->artist || pldata->album || pldata->title) {
-		make_title_string(list_str, options.title_format,
+		make_title_string(list_str, MAXLEN, options.title_format,
 				  pldata->artist, pldata->album, pldata->title);
 	} else {
 		gchar * tmp = g_filename_display_name(pldata->file);

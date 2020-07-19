@@ -635,12 +635,12 @@ cdda_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl, GtkTreeIter * p
 		    !strcmp(pdata->artist, drive->disc.artist_name) && !strcmp(pdata->album, drive->disc.record_name)) {
 			strcpy(list_str, track_name);
 		} else {
-			make_title_string(list_str, options.title_format, drive->disc.artist_name,
-					  drive->disc.record_name, track_name);
+			make_title_string(list_str, CHAR_ARRAY_SIZE(list_str), options.title_format,
+					  drive->disc.artist_name, drive->disc.record_name, track_name);
 		}
 	} else {
-		make_title_string(list_str, options.title_format, drive->disc.artist_name,
-				  drive->disc.record_name, track_name);
+		make_title_string(list_str, CHAR_ARRAY_SIZE(list_str), options.title_format,
+				  drive->disc.artist_name, drive->disc.record_name, track_name);
 	}
 
 	time2time(data->duration, duration_str, CHAR_ARRAY_SIZE(duration_str));

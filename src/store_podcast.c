@@ -445,10 +445,12 @@ podcast_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 		    !strcmp(pdata->artist, podcast->author) && !strcmp(pdata->album, podcast->title)) {
 			strcpy(list_str, item->title);
 		} else {
-			make_title_string(list_str, options.title_format, podcast->author, podcast->title, item->title);
+			make_title_string(list_str, CHAR_ARRAY_SIZE(list_str), options.title_format,
+					  podcast->author, podcast->title, item->title);
 		}
 	} else {
-		make_title_string(list_str, options.title_format, podcast->author, podcast->title, item->title);
+		make_title_string(list_str, CHAR_ARRAY_SIZE(list_str), options.title_format,
+				  podcast->author, podcast->title, item->title);
 	}
 
 	time2time(item->duration, duration_str, CHAR_ARRAY_SIZE(duration_str));
@@ -2148,7 +2150,8 @@ store_model_func(GtkTreeModel * model, GtkTreeIter iter, char**name, char**file)
 	gtk_tree_model_get(model, &iter, MS_COL_DATA, &item, -1);
 	gtk_tree_model_iter_parent(model, &pod_iter, &iter);
 	gtk_tree_model_get(model, &pod_iter, MS_COL_DATA, &podcast, -1);
-	make_title_string(buf, options.title_format, podcast->author, podcast->title, item->title);
+	make_title_string(buf, CHAR_ARRAY_SIZE(buf), options.title_format,
+			  podcast->author, podcast->title, item->title);
 
 	*name = strndup(buf, MAXLEN-1);
 	*file = strdup(item->file);

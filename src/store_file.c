@@ -1371,10 +1371,12 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 		    !strcmp(pdata->artist, artist_name) && !strcmp(pdata->album, record_name)) {
 			strcpy(list_str, track_name);
 		} else {
-			make_title_string(list_str, options.title_format, artist_name, record_name, track_name);
+			make_title_string(list_str, CHAR_ARRAY_SIZE(list_str), options.title_format,
+					  artist_name, record_name, track_name);
 		}
 	} else {
-		make_title_string(list_str, options.title_format, artist_name, record_name, track_name);
+		make_title_string(list_str, CHAR_ARRAY_SIZE(list_str), options.title_format,
+				  artist_name, record_name, track_name);
 	}
 
 	if (options.rva_is_enabled) {
@@ -4880,7 +4882,8 @@ store_model_func(GtkTreeModel * model, GtkTreeIter iter, char**name, char**file)
 	gtk_tree_model_iter_parent(model, &iter_artist, &iter_record);
 	gtk_tree_model_get(model, &iter_artist, MS_COL_NAME, &artist_name, -1);
 
-	make_title_string(buf, options.title_format, artist_name, record_name, track_name);
+	make_title_string(buf, CHAR_ARRAY_SIZE(buf), options.title_format,
+			  artist_name, record_name, track_name);
 
 	*name = strndup(buf, MAXLEN-1);
 	*file = strdup(data->file);

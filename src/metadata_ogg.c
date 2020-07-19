@@ -716,6 +716,7 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 	/* all else */
 	frame = metadata_get_frame_by_tag(meta, META_TAG_OXC, NULL);
 	while (frame != NULL) {
+		size_t vc_entry_size;
 		char * vc_entry;
 		int vc_len;
 		int field_len;
@@ -734,12 +735,13 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 			str = frame->field_name;
 		}
 
-		vc_entry = calloc(strlen(str) + 2, 1);
-		strcpy(vc_entry, str);
+		vc_entry_size = strlen(str) + 2;
+		vc_entry = calloc(vc_entry_size, 1);
+		g_strlcpy(vc_entry, str, vc_entry_size);
 		for (i = 0; vc_entry[i] != '\0'; i++) {
 			vc_entry[i] = tolower(vc_entry[i]);
 		}
-		strcat(vc_entry, "=");
+		g_strlcat(vc_entry, "=", vc_entry_size);
 		vc_len = strlen(vc_entry);
 
 		if (META_FIELD_TEXT(frame->type)) {

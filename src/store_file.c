@@ -838,15 +838,15 @@ add_record_dialog(char * name, size_t name_size, char * sort, size_t sort_size, 
 				gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter);
 
 				filename = g_filename_from_utf8(str, -1, NULL, NULL, NULL);
+				(*strings)[i] = strdup(filename);
 
-				if (!((*strings)[i] = calloc(strlen(filename)+1, sizeof(char)))) {
-					fprintf(stderr, "add_record_dialog(): calloc error\n");
-					return 0;
-				}
-
-				strcpy((*strings)[i], filename);
 				g_free(str);
 				g_free(filename);
+
+				if (!(*strings)[i]) {
+					fprintf(stderr, "add_record_dialog(): strdup error\n");
+					return 0;
+				}
 			}
 			(*strings)[i] = NULL;
 		}
@@ -1369,7 +1369,7 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), piter, PL_COL_DATA, &pdata, -1);
 		if (pdata->artist && pdata->album && artist_name && record_name &&
 		    !strcmp(pdata->artist, artist_name) && !strcmp(pdata->album, record_name)) {
-			strcpy(list_str, track_name);
+			arr_strlcpy(list_str, track_name);
 		} else {
 			make_title_string(list_str, CHAR_ARRAY_SIZE(list_str), options.title_format,
 					  artist_name, record_name, track_name);
@@ -3641,7 +3641,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 		time2time(length, length_str, CHAR_ARRAY_SIZE(length_str));
 		arr_snprintf(tmp, " [%s] ", length_str);
 	} else {
-		strcpy(tmp, " [N/A] ");
+		arr_strlcpy(tmp, " [N/A] ");
 	}
 
 	arr_strlcat(str, tmp);

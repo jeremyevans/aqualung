@@ -374,7 +374,7 @@ podcast_dialog(podcast_t ** podcast, int create) {
 				return 0;
 			}
 
-			normalize_filename(pdir, dir);
+			normalize_filename(pdir, dir, CHAR_ARRAY_SIZE(dir));
 			(*podcast)->dir = strdup(dir);
 			(*podcast)->url = strdup(url);
 			strncpy(options.podcastdir, dir, MAXLEN-1);

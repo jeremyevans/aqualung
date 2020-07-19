@@ -2161,7 +2161,7 @@ playlist_load(GSList * list, int mode, char * tab_name, int start_playback) {
 
 	for (node = list; node; node = node->next) {
 
-		normalize_filename((char *)node->data, fullname);
+		normalize_filename((char *)node->data, fullname, CHAR_ARRAY_SIZE(fullname));
 		type = playlist_get_type(fullname);
 
 		if (type != PLAYLIST_XML_MULTI) {

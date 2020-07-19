@@ -602,7 +602,7 @@ file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction a
 			return;
 		}
 
-		normalize_filename(filename, path);
+		normalize_filename(filename, path, CHAR_ARRAY_SIZE(path));
 		g_free(filename);
 	} else {
 		strncpy(path, destpath, MAXLEN-1);

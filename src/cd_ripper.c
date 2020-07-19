@@ -865,7 +865,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
                         goto ripper_display;
                 }
 
-		normalize_filename(pdestdir, destdir);
+		normalize_filename(pdestdir, destdir, CHAR_ARRAY_SIZE(destdir));
 		g_free(pdestdir);
 
 		if (access(destdir, R_OK | W_OK) != 0) {

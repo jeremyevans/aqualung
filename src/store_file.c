@@ -500,7 +500,7 @@ add_store_dialog(char * name, store_data_t ** data) {
 
 		(*data)->type = STORE_TYPE_FILE;
 
-		normalize_filename(pfile, file);
+		normalize_filename(pfile, file, CHAR_ARRAY_SIZE(file));
 		free_strdup(&(*data)->file, file);
 
 		strncpy(options.storedir, file, MAXLEN-1);
@@ -991,7 +991,7 @@ add_track_dialog(char * name, char * sort, track_data_t ** data) {
 
                 strcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)));
 
-		normalize_filename(pfile, file);
+		normalize_filename(pfile, file, CHAR_ARRAY_SIZE(file));
 		free_strdup(&(*data)->file, file);
 
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);
@@ -1124,7 +1124,7 @@ edit_track_dialog(char * name, char * sort, track_data_t * data) {
 
                 strcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)));
 
-		normalize_filename(pfile, file);
+		normalize_filename(pfile, file, CHAR_ARRAY_SIZE(file));
 		free_strdup(&data->file, file);
 
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);

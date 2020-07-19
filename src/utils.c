@@ -343,24 +343,23 @@ time2time_na(float seconds, char * str) {
 }
 
 
-/* out should be defined as char[MAXLEN] */
 void
-normalize_filename(const char * in, char * out) {
+normalize_filename(const char * in, char * out, size_t out_size) {
 
 	if (httpc_is_url(in)) {
-		strncpy(out, in, MAXLEN-1);
+		g_strlcpy(out, in, out_size);
 		return;
 	}
 
 	switch (in[0]) {
 	case '/':
-		strncpy(out, in, MAXLEN-1);
+		g_strlcpy(out, in, out_size);
 		break;
 	case '~':
-		snprintf(out, MAXLEN-1, "%s%s", options.home, in + 1);
+		snprintf(out, out_size, "%s%s", options.home, in + 1);
 		break;
 	default:
-		snprintf(out, MAXLEN-1, "%s/%s", options.cwd, in);
+		snprintf(out, out_size, "%s/%s", options.cwd, in);
 		break;
 	}
 }

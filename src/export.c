@@ -1019,7 +1019,7 @@ export_dialog_response(GtkDialog * dialog, gint response_id, gpointer ex) {
 		return FALSE;
 	}
 	
-	normalize_filename(poutdir, export->outdir);
+	normalize_filename(poutdir, export->outdir, CHAR_ARRAY_SIZE(export->outdir));
 	g_free(poutdir);
 	
 	if (strlen(gtk_entry_get_text(GTK_ENTRY(export->templ_entry))) == 0) {

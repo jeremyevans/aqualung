@@ -44,7 +44,7 @@ void sample2time(unsigned long SR, unsigned long long sample, char * str, int si
 void time2time(float samples, char * str);
 void time2time_na(float seconds, char * str);
 
-void normalize_filename(const char * in, char * out);
+void normalize_filename(const char * in, char * out, size_t out_size);
 
 void free_strdup(char ** s, const char * str);
 int is_valid_year(int y);

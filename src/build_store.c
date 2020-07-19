@@ -2078,7 +2078,7 @@ build_dialog(build_store_t * data) {
 			goto display;
 		}
 
-		normalize_filename(proot, data->root);
+		normalize_filename(proot, data->root, CHAR_ARRAY_SIZE(data->root));
 		g_free(proot);
 
 

@@ -2845,7 +2845,7 @@ main(int argc, char ** argv) {
 
 			for (i = optind; argv[i] != NULL; i++) {				
 
-				normalize_filename(argv[i], fullname);
+				normalize_filename(argv[i], fullname, CHAR_ARRAY_SIZE(fullname));
 
 				buffer[0] = RCMD_ADD_FILE;
 				buffer[1] = '\0';

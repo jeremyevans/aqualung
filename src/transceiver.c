@@ -54,7 +54,7 @@ create_socket(const char * filename) {
 	}
 	
 	name.sun_family = AF_LOCAL;
-	strncpy(name.sun_path, filename, sizeof(name.sun_path));
+	arr_strlcpy(name.sun_path, filename);
 	size = SUN_LEN(&name);
 	if (bind(sock, (struct sockaddr *)&name, size) < 0) {
 		perror("create_socket(): bind");
@@ -136,7 +136,7 @@ send_message(const char * filename, char * message, int len) {
 	arr_snprintf(tempsockname, "/tmp/aqualung_%s.tmp", g_get_user_name());
 	sock = create_socket(tempsockname);
         name.sun_family = AF_LOCAL;
-        strcpy(name.sun_path, filename);
+        arr_strlcpy(name.sun_path, filename);
 
 	do {
 		nbytes = sendto(sock, message, len+1, 0, (struct sockaddr *)&name, sizeof(name));

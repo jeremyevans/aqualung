@@ -453,7 +453,7 @@ browse_button_store_clicked(GtkButton * button, gpointer data) {
 }
 
 int
-add_store_dialog(char * name, store_data_t ** data) {
+add_store_dialog(char * name, size_t name_size, store_data_t ** data) {
 
 	GtkWidget * dialog;
 	GtkWidget * table;
@@ -481,7 +481,7 @@ add_store_dialog(char * name, store_data_t ** data) {
 		const char * pfile = g_filename_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
 		char file[MAXLEN];
 
-		strncpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), MAXLEN-1);
+		g_strlcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), name_size);
 		if (name[0] == '\0') {
 			gtk_widget_grab_focus(name_entry);
 			goto display;
@@ -518,7 +518,7 @@ add_store_dialog(char * name, store_data_t ** data) {
 
 
 int
-edit_store_dialog(char * name, store_data_t * data) {
+edit_store_dialog(char * name, size_t name_size, store_data_t * data) {
 
 	GtkWidget * dialog;
 	GtkWidget * content_area;
@@ -559,7 +559,7 @@ edit_store_dialog(char * name, store_data_t * data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
+		g_strlcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), name_size);
 
 		if (name[0] == '\0') {
 			gtk_widget_grab_focus(name_entry);
@@ -588,7 +588,7 @@ entry_copy_text(GtkEntry * entry, gpointer data) {
 }
 
 int
-add_artist_dialog(char * name, char * sort, artist_data_t ** data) {
+add_artist_dialog(char * name, size_t name_size, char * sort, size_t sort_size, artist_data_t ** data) {
 
 	GtkWidget * dialog;
 	GtkWidget * table;
@@ -615,14 +615,14 @@ add_artist_dialog(char * name, char * sort, artist_data_t ** data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
+		g_strlcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), name_size);
 
 		if (name[0] == '\0') {
 			gtk_widget_grab_focus(name_entry);
 			goto display;
 		}
 
-                strcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)));
+		g_strlcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)), sort_size);
 
 		if ((*data = (artist_data_t *)calloc(1, sizeof(artist_data_t))) == NULL) {
 			fprintf(stderr, "add_artist_dialog: calloc error\n");
@@ -643,7 +643,7 @@ add_artist_dialog(char * name, char * sort, artist_data_t ** data) {
 
 
 int
-edit_artist_dialog(char * name, char * sort, artist_data_t * data) {
+edit_artist_dialog(char * name, size_t name_size, char * sort, size_t sort_size, artist_data_t * data) {
 
 	GtkWidget * dialog;
 	GtkWidget * table;
@@ -670,14 +670,14 @@ edit_artist_dialog(char * name, char * sort, artist_data_t * data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
+		g_strlcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), name_size);
 
 		if (name[0] == '\0') {
 			gtk_widget_grab_focus(name_entry);
 			goto display;
 		}
 
-                strcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)));
+		g_strlcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)), sort_size);
 
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
@@ -735,7 +735,7 @@ clicked_tracklist_header(GtkWidget * widget, gpointer data) {
 
 
 int
-add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** data) {
+add_record_dialog(char * name, size_t name_size, char * sort, size_t sort_size, char *** strings, record_data_t ** data) {
 
 	GtkWidget * dialog;
 	GtkWidget * content_area;
@@ -814,14 +814,14 @@ add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** d
 	sort[0] = '\0';
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-                strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
+		g_strlcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), name_size);
 
 		if (name[0] == '\0') {
 			gtk_widget_grab_focus(name_entry);
 			goto display;
 		}
 
-                strcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)));
+		g_strlcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)), sort_size);
 
 		if ((n = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(store), NULL)) > 0) {
 
@@ -873,7 +873,7 @@ add_record_dialog(char * name, char * sort, char *** strings, record_data_t ** d
 
 
 int
-edit_record_dialog(char * name, char * sort, record_data_t * data) {
+edit_record_dialog(char * name, size_t name_size, char * sort, size_t sort_size, record_data_t * data) {
 
 	GtkWidget * dialog;
 	GtkWidget * table;
@@ -903,14 +903,14 @@ edit_record_dialog(char * name, char * sort, record_data_t * data) {
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                strcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)));
+		g_strlcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), name_size);
 
 		if (name[0] == '\0') {
 			gtk_widget_grab_focus(name_entry);
 			goto display;
 		}
 
-                strcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)));
+		g_strlcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)), sort_size);
 
 		data->year = gtk_spin_button_get_value(GTK_SPIN_BUTTON(year_spin));
 
@@ -940,7 +940,7 @@ browse_button_track_clicked(GtkButton * button, gpointer data) {
 
 
 int
-add_track_dialog(char * name, char * sort, track_data_t ** data) {
+add_track_dialog(char * name, size_t name_size, char * sort, size_t sort_size, track_data_t ** data) {
 
 	GtkWidget * dialog;
 	GtkWidget * table;
@@ -972,7 +972,7 @@ add_track_dialog(char * name, char * sort, track_data_t ** data) {
 		char file[MAXLEN];
 		float duration;
 
-		strncpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), MAXLEN-1);
+		g_strlcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), name_size);
 		if (name[0] == '\0') {
 			gtk_widget_grab_focus(name_entry);
 			goto display;
@@ -989,7 +989,7 @@ add_track_dialog(char * name, char * sort, track_data_t ** data) {
 			return 0;
 		}
 
-                strcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)));
+		g_strlcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)), sort_size);
 
 		normalize_filename(pfile, file, CHAR_ARRAY_SIZE(file));
 		free_strdup(&(*data)->file, file);
@@ -1028,7 +1028,7 @@ edit_track_done(GtkEntry * entry, gpointer data) {
 }
 
 int
-edit_track_dialog(char * name, char * sort, track_data_t * data) {
+edit_track_dialog(char * name, size_t name_size, char * sort, size_t sort_size, track_data_t * data) {
 
 	GtkWidget * dialog;
 	GtkWidget * table;
@@ -1110,7 +1110,7 @@ edit_track_dialog(char * name, char * sort, track_data_t * data) {
 		const char * pfile = g_filename_from_utf8(gtk_entry_get_text(GTK_ENTRY(file_entry)), -1, NULL, NULL, NULL);
 		char file[MAXLEN];
 
-		strncpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), MAXLEN-1);
+		g_strlcpy(name, gtk_entry_get_text(GTK_ENTRY(name_entry)), name_size);
 		if (name[0] == '\0') {
 			gtk_widget_grab_focus(name_entry);
 			goto display;
@@ -1122,7 +1122,7 @@ edit_track_dialog(char * name, char * sort, track_data_t * data) {
 			goto display;
 		}
 
-                strcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)));
+		g_strlcpy(sort, gtk_entry_get_text(GTK_ENTRY(sort_entry)), sort_size);
 
 		normalize_filename(pfile, file, CHAR_ARRAY_SIZE(file));
 		free_strdup(&data->file, file);
@@ -1849,7 +1849,7 @@ store__add_cb(gpointer user_data) {
 
 	name[0] = '\0';
 
-	if (add_store_dialog(name, &data)) {
+	if (add_store_dialog(name, CHAR_ARRAY_SIZE(name), &data)) {
 
 		if (access(data->file, F_OK) == 0) {
 			message_dialog(_("Create empty store"),
@@ -1925,6 +1925,7 @@ store__edit_cb(gpointer user_data) {
 
 	char * pname;
 	char name[MAXLEN+1];
+	int offset;
 
 	if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
@@ -1940,7 +1941,8 @@ store__edit_cb(gpointer user_data) {
 		strncpy(name, pname, MAXLEN-1);
 		g_free(pname);
 
-		if (edit_store_dialog(name + ((data->dirty) ? 1 : 0), data)) {
+		offset = ((data->dirty) ? 1 : 0);
+		if (edit_store_dialog(name + offset, CHAR_ARRAY_SIZE(name) - offset, data)) {
 			gtk_tree_store_set(music_store, &iter,
 					   MS_COL_NAME, name, -1);
 
@@ -2149,7 +2151,7 @@ artist__add_cb(gpointer user_data) {
 		gtk_tree_model_get_iter(model, &parent_iter, parent_path);
 		gtk_tree_path_free(parent_path);
 
-		if (add_artist_dialog(name, sort, &data)) {
+		if (add_artist_dialog(name, CHAR_ARRAY_SIZE(name), sort, CHAR_ARRAY_SIZE(sort), &data)) {
 			gtk_tree_store_append(music_store, &iter, &parent_iter);
 			gtk_tree_store_set(music_store, &iter,
 					   MS_COL_NAME, name,
@@ -2192,7 +2194,7 @@ artist__edit_cb(gpointer user_data) {
                 g_free(pname);
                 g_free(psort);
 
-		if (edit_artist_dialog(name, sort, data)) {
+		if (edit_artist_dialog(name, CHAR_ARRAY_SIZE(name), sort, CHAR_ARRAY_SIZE(sort), data)) {
 
 			gtk_tree_store_set(music_store, &iter,
 					   MS_COL_NAME, name,
@@ -2337,7 +2339,7 @@ record__add_cb(gpointer user_data) {
 			gtk_tree_path_up(parent_path);
 		gtk_tree_model_get_iter(model, &parent_iter, parent_path);
 
-		if (add_record_dialog(name, sort, &strings, &data)) {
+		if (add_record_dialog(name, CHAR_ARRAY_SIZE(name), sort, CHAR_ARRAY_SIZE(sort), &strings, &data)) {
 
 			gtk_tree_store_append(music_store, &iter, &parent_iter);
 			gtk_tree_store_set(music_store, &iter,
@@ -2424,7 +2426,7 @@ record__edit_cb(gpointer user_data) {
                 g_free(pname);
                 g_free(psort);
 
-		if (edit_record_dialog(name, sort, data)) {
+		if (edit_record_dialog(name, CHAR_ARRAY_SIZE(name), sort, CHAR_ARRAY_SIZE(sort), data)) {
 
 			gtk_tree_store_set(music_store, &iter,
 					   MS_COL_NAME, name,
@@ -2600,7 +2602,7 @@ track__add_cb(gpointer user_data) {
 		}
 		gtk_tree_model_get_iter(model, &parent_iter, parent_path);
 
-		if (add_track_dialog(name, sort, &data)) {
+		if (add_track_dialog(name, CHAR_ARRAY_SIZE(name), sort, CHAR_ARRAY_SIZE(sort), &data)) {
 
 			gtk_tree_store_append(music_store, &iter, &parent_iter);
 			gtk_tree_store_set(music_store, &iter,
@@ -2648,7 +2650,8 @@ track__edit_cb(gpointer user_data) {
                 g_free(pname);
                 g_free(psort);
 
-                if (edit_track_dialog(name, sort, data)) {
+		if (edit_track_dialog(name, CHAR_ARRAY_SIZE(name),
+				      sort, CHAR_ARRAY_SIZE(sort), data)) {
 
                         gtk_tree_store_set(music_store, &iter,
 					   MS_COL_NAME, name,

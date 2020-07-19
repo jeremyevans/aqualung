@@ -921,7 +921,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 
 
 void
-sector_to_str(int sector, char * str) {
+sector_to_str(int sector, char * str, size_t str_len) {
 
 	int m, s, f;
 
@@ -929,7 +929,7 @@ sector_to_str(int sector, char * str) {
 	s = sector / 75 - m * 60;
 	f = sector % 75;
 
-	snprintf(str, MAXLEN-1, "%d [%02d:%02d.%02d]", sector, m, s, f);
+	snprintf(str, str_len, "%d [%02d:%02d.%02d]", sector, m, s, f);
 }
 
 
@@ -956,8 +956,8 @@ ripper_prog_store_make(cdda_drive_t * drive) {
 
 		len = drive->disc.toc[n] - drive->disc.toc[n-1];
 		total_sectors += len;
-		sector_to_str(drive->disc.toc[n-1], begin);
-		sector_to_str(len, length);
+		sector_to_str(drive->disc.toc[n-1], begin, CHAR_ARRAY_SIZE(begin));
+		sector_to_str(len, length, CHAR_ARRAY_SIZE(length));
 		sprintf(num, "%d.", n);
 
 		gtk_list_store_append(ripper_prog_store, &iter);
@@ -969,7 +969,7 @@ ripper_prog_store_make(cdda_drive_t * drive) {
 				   -1);
 	}
 
-	sector_to_str(total_sectors, length);
+	sector_to_str(total_sectors, length, CHAR_ARRAY_SIZE(length));
 	
 	gtk_list_store_append(ripper_prog_store, &iter);
 	gtk_list_store_set(ripper_prog_store, &iter,

@@ -521,12 +521,12 @@ activate(plugin_instance * instance) {
 
 
 void
-get_bypassed_name(plugin_instance * instance, char * str) {
+get_bypassed_name(plugin_instance * instance, char * str, size_t str_size) {
 
 	if (instance->is_bypassed) {
-		snprintf(str, MAXLEN-1, "(%s)", instance->descriptor->Name);
+		snprintf(str, str_size, "(%s)", instance->descriptor->Name);
 	} else {
-		strncpy(str, instance->descriptor->Name, MAXLEN-1);
+		g_strlcpy(str, instance->descriptor->Name, str_size);
 	}
 }
 
@@ -594,7 +594,7 @@ plugin_bypassed(GtkWidget * widget, gpointer data) {
 
                 gtk_tree_model_get(GTK_TREE_MODEL(running_store), &iter, 0, &name, 1, &gp_instance, -1);
 		if (instance == (plugin_instance *)gp_instance) {
-			get_bypassed_name(instance, bypassed_name);
+			get_bypassed_name(instance, bypassed_name, CHAR_ARRAY_SIZE(bypassed_name));
 			gtk_list_store_set(running_store, &iter, 0, bypassed_name, -1);
 			return;
 		}
@@ -1488,7 +1488,7 @@ foreach_plugin_to_add(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter * it
 			activate(instance);
 			build_plugin_window(instance);
 			
-			get_bypassed_name(instance, bypassed_name);
+			get_bypassed_name(instance, bypassed_name, CHAR_ARRAY_SIZE(bypassed_name));
 			added_plugin = 1; /* so resort handler will not do any harm */
 			gtk_list_store_append(running_store, &running_iter);
 			gtk_list_store_set(running_store, &running_iter,
@@ -2180,7 +2180,7 @@ parse_plugin(xmlDocPtr doc, xmlNodePtr cur) {
 			instance->is_bypassed = is_bypassed;
 			build_plugin_window(instance);
 			
-			get_bypassed_name(instance, bypassed_name);
+			get_bypassed_name(instance, bypassed_name, CHAR_ARRAY_SIZE(bypassed_name));
 			added_plugin = 1; /* so resort handler will not do any harm */
 			gtk_list_store_append(running_store, &running_iter);
 			gtk_list_store_set(running_store, &running_iter,

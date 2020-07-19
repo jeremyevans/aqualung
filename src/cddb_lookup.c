@@ -377,7 +377,8 @@ store_cdda_export_merged(cddb_lookup_t * data, char * artist, char * record, cha
 
 
 void
-cddb_lookup_merge(cddb_lookup_t * data, char * artist, char * record, char * genre, int * year, char ** tracks) {
+cddb_lookup_merge(cddb_lookup_t * data, char * artist, size_t artist_size, char * record, size_t record_size,
+		  char * genre, size_t genre_size, int * year, char ** tracks, size_t track_size) {
 
 	int i, j, y;
 
@@ -431,15 +432,15 @@ cddb_lookup_merge(cddb_lookup_t * data, char * artist, char * record, char * gen
 	}
 
 	if (map_artist) {
-		strncpy(artist, map_get_max(map_artist), MAXLEN-1);
+		g_strlcpy(artist, map_get_max(map_artist), artist_size);
 	}
 
 	if (map_record) {
-		strncpy(record, map_get_max(map_record), MAXLEN-1);
+		g_strlcpy(record, map_get_max(map_record), record_size);
 	}
 
 	if (map_genre) {
-		strncpy(genre, map_get_max(map_genre), MAXLEN-1);
+		g_strlcpy(genre, map_get_max(map_genre), genre_size);
 	}
 
 	if (map_year) {
@@ -449,7 +450,7 @@ cddb_lookup_merge(cddb_lookup_t * data, char * artist, char * record, char * gen
 	for (j = 0; j < data->ntracks; j++) {
 
 		if (map_tracks[j]) {
-			strncpy(tracks[j], map_get_max(map_tracks[j]), MAXLEN-1);
+			g_strlcpy(tracks[j], map_get_max(map_tracks[j]), track_size);
 			map_free(map_tracks[j]);
 		}
 	}
@@ -546,7 +547,8 @@ cdda_auto_query_timeout_cb(gpointer user_data) {
 			}
 		}
 
-		cddb_lookup_merge(data, artist, record, genre, &year, tracks);
+		cddb_lookup_merge(data, artist, CHAR_ARRAY_SIZE(artist), record, CHAR_ARRAY_SIZE(record),
+				  genre, CHAR_ARRAY_SIZE(genre), &year, tracks, MAXLEN);
 		store_cdda_export_merged(data, artist, record, genre, year, tracks);
 
 		for (i = 0; i < data->ntracks; i++) {
@@ -1172,7 +1174,8 @@ cddb_auto_query_cdda(GtkTreeIter * drive_iter, int ntracks, int * frames, int le
 
 void
 cddb_query_batch(int ntracks, int * frames, int length,
-		 char * artist, char * record, int * year, char ** tracks) {
+		 char * artist, size_t artist_size, char * record, size_t record_size,
+		 int * year, char ** tracks, size_t tracks_size) {
 
 	cddb_lookup_t * data;
 
@@ -1186,7 +1189,8 @@ cddb_query_batch(int ntracks, int * frames, int length,
 	data->record_length = length;
 
 	cddb_lookup(data);
-	cddb_lookup_merge(data, artist, record, NULL/*genre*/, year, tracks);
+	cddb_lookup_merge(data, artist, artist_size, record, record_size,
+			  NULL/*genre*/, 0, year, tracks, tracks_size);
 	cddb_lookup_free(data);
 }
 

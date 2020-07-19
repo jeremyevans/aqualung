@@ -29,7 +29,8 @@ void cddb_start_submit(GtkTreeIter * iter_record, int ntracks, int * frames, int
 void cddb_auto_query_cdda(GtkTreeIter * drive_iter, int ntracks, int * frames, int length);
 
 void cddb_query_batch(int ntracks, int * frames, int length,
-		      char * artist, char * record, int * year, char ** tracks);
+		      char * artist, size_t artist_size, char * record, size_t record_size,
+		      int * year, char ** tracks, size_t track_size);
 
 
 #endif /* AQUALUNG_CDDB_LOOKUP_H */

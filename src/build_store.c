@@ -3267,7 +3267,9 @@ process_record(build_store_t * data, char * dir_record, char * artist_d_name, ch
 			}
 		}
 
-		cddb_query_batch(ntracks, frames, length, artist, record, &year, tracks);
+		cddb_query_batch(ntracks, frames, length,
+				 artist, CHAR_ARRAY_SIZE(artist), record, CHAR_ARRAY_SIZE(record),
+				 &year, tracks, MAXLEN);
 
 		if (artist[0] != '\0') {
 			strncpy(disc->artist.name[DATA_SRC_CDDB], artist, MAXLEN-1);

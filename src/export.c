@@ -309,11 +309,11 @@ export_item_set_path(export_t * export, export_item_t * item, char * path, size_
 	track[0] = '\0';
 	buf[0] = '\0';
 
-	strcat(buf, export->outdir);
+	arr_strlcat(buf, export->outdir);
 
 	if (export->dir_for_artist) {
-		strcat(buf, "/");
-		strcat(buf, export_map_put(&export->artist_map, item->artist, export->dir_len_limit));
+		arr_strlcat(buf, "/");
+		arr_strlcat(buf, export_map_put(&export->artist_map, item->artist, export->dir_len_limit));
 		if (!is_dir(buf) && mkdir(buf, S_IRUSR | S_IWUSR | S_IXUSR) < 0) {
 			fprintf(stderr, "mkdir: %s: %s\n", buf, strerror(errno));
 			return -1;
@@ -321,8 +321,8 @@ export_item_set_path(export_t * export, export_item_t * item, char * path, size_
 	}
 
 	if (export->dir_for_album) {
-		strcat(buf, "/");
-		strcat(buf, export_map_put(&export->record_map, item->album, export->dir_len_limit));
+		arr_strlcat(buf, "/");
+		arr_strlcat(buf, export_map_put(&export->record_map, item->album, export->dir_len_limit));
 		if (!is_dir(buf) && mkdir(buf, S_IRUSR | S_IWUSR | S_IXUSR) < 0) {
 			fprintf(stderr, "mkdir: %s: %s\n", buf, strerror(errno));
 			return -1;

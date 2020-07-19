@@ -881,50 +881,50 @@ build_store_new(GtkTreeIter * store_iter, char * file) {
 
 #ifdef HAVE_SNDFILE
 	for (i = 0; valid_extensions_sndfile[i] != NULL; i++) {
-		strcat(data->incl_pattern, "*.");
-		strcat(data->incl_pattern, valid_extensions_sndfile[i]);
-		strcat(data->incl_pattern, ",");
+		arr_strlcat(data->incl_pattern, "*.");
+		arr_strlcat(data->incl_pattern, valid_extensions_sndfile[i]);
+		arr_strlcat(data->incl_pattern, ",");
 	}
 #endif /* HAVE_SNDFILE */
 
 #ifdef HAVE_FLAC
-	strcat(data->incl_pattern, "*.flac,");
+	arr_strlcat(data->incl_pattern, "*.flac,");
 #endif /* HAVE_FLAC */
 
 #ifdef HAVE_VORBIS
-	strcat(data->incl_pattern, "*.ogg,");
+	arr_strlcat(data->incl_pattern, "*.ogg,");
 #endif /* HAVE_VORBIS */
 
 #ifdef HAVE_MPEG
 	for (i = 0; valid_extensions_mpeg[i] != NULL; i++) {
-		strcat(data->incl_pattern, "*.");
-		strcat(data->incl_pattern, valid_extensions_mpeg[i]);
-		strcat(data->incl_pattern, ",");
+		arr_strlcat(data->incl_pattern, "*.");
+		arr_strlcat(data->incl_pattern, valid_extensions_mpeg[i]);
+		arr_strlcat(data->incl_pattern, ",");
 	}
 #endif /* HAVE_MPEG */
 
 #ifdef HAVE_SPEEX
-	strcat(data->incl_pattern, "*.spx,");
+	arr_strlcat(data->incl_pattern, "*.spx,");
 #endif /* HAVE_SPEEX */
 
 #ifdef HAVE_MPC
-	strcat(data->incl_pattern, "*.mpc,");
+	arr_strlcat(data->incl_pattern, "*.mpc,");
 #endif /* HAVE_MPC */
 
 #ifdef HAVE_MAC
-	strcat(data->incl_pattern, "*.ape,");
+	arr_strlcat(data->incl_pattern, "*.ape,");
 #endif /* HAVE_MAC */
 
 #ifdef HAVE_MOD
 	for (i = 0; valid_extensions_mod[i] != NULL; i++) {
-		strcat(data->incl_pattern, "*.");
-		strcat(data->incl_pattern, valid_extensions_mod[i]);
-		strcat(data->incl_pattern, ",");
+		arr_strlcat(data->incl_pattern, "*.");
+		arr_strlcat(data->incl_pattern, valid_extensions_mod[i]);
+		arr_strlcat(data->incl_pattern, ",");
 	}
 #endif /* HAVE_MOD */
 
 #ifdef HAVE_WAVPACK
-	strcat(data->incl_pattern, "*.wv,");
+	arr_strlcat(data->incl_pattern, "*.wv,");
 #endif /* HAVE_WAVPACK */
 
 	if ((pfilter = strrchr(data->incl_pattern, ',')) != NULL) {
@@ -2388,7 +2388,7 @@ file_transform(char * buf, file_transform_t * model) {
 		if (!*tmp) {
 			arr_strlcpy(tmp, p + offs);
 		} else {
-			strcat(tmp, p + offs);
+			arr_strlcat(tmp, p + offs);
 		}
 
 	} else {

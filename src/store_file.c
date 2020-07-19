@@ -3644,7 +3644,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 		strcpy(tmp, " [N/A] ");
 	}
 
-	strcat(str, tmp);
+	arr_strlcat(str, tmp);
 
 	if (options.ms_statusbar_show_size) {
 		if (size > 1024 * 1024) {
@@ -3656,7 +3656,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 		} else {
 			strcpy(tmp, " (N/A) ");
 		}
-		strcat(str, tmp);
+		arr_strlcat(str, tmp);
 	}
 
 	gtk_label_set_text(statusbar, str);

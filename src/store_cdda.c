@@ -1046,7 +1046,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 	if (length > 0.0f) {
 		time2time(length, length_str, CHAR_ARRAY_SIZE(length_str));
 		arr_snprintf(tmp, " [%s] ", length_str);
-		strcat(str, tmp);
+		arr_strlcat(str, tmp);
 	}
 
 

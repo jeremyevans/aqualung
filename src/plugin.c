@@ -829,19 +829,19 @@ build_plugin_window(plugin_instance * instance) {
 
 	strcpy(str_inout, "[ ");
 	if (n_ins == 1) {
-		strcat(str_inout, "1 in");
+		arr_strlcat(str_inout, "1 in");
 	} else {
 		arr_snprintf(str_n, "%d ins", n_ins);
-		strcat(str_inout, str_n);
+		arr_strlcat(str_inout, str_n);
 	}
-	strcat(str_inout, " | ");
+	arr_strlcat(str_inout, " | ");
 	if (n_outs == 1) {
-		strcat(str_inout, "1 out");
+		arr_strlcat(str_inout, "1 out");
 	} else {
 		arr_snprintf(str_n, "%d outs", n_outs);
-		strcat(str_inout, str_n);
+		arr_strlcat(str_inout, str_n);
 	}
-	strcat(str_inout, " ]");
+	arr_strlcat(str_inout, " ]");
  
 	widget = gtk_label_new(str_inout);
 	hbox = gtk_hbox_new(FALSE, 0);

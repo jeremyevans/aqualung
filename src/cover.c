@@ -151,8 +151,8 @@ find_cover_filename(gchar *song_filename) {
                         for (j = 0; j < n_extensions; j++) {
 
                                 strcpy (current_filename, cover_filenames[i]);
-                                strcat (current_filename, ".");
-                                strcat (current_filename, cover_extensions[j]);
+                                arr_strlcat(current_filename, ".");
+                                arr_strlcat(current_filename, cover_extensions[j]);
 
                                 str1 = g_utf8_casefold (current_filename, -1);
 
@@ -163,7 +163,7 @@ find_cover_filename(gchar *song_filename) {
                                         if (!g_utf8_collate(str1, str2)) {
 
                                                 strcpy (cover_filename, base_path);
-                                                strcat (cover_filename, d_entry[n]->d_name);
+                                                arr_strlcat(cover_filename, d_entry[n]->d_name);
 
                                                 if (g_file_test (cover_filename, G_FILE_TEST_IS_REGULAR) == TRUE) {
                                                         g_free (str1);
@@ -198,7 +198,7 @@ find_cover_filename(gchar *song_filename) {
                 strcpy (cover_filename, base_path);
  
                 if (ext_flag == TRUE) {
-                        strcat (cover_filename, temp_filename);
+                        arr_strlcat(cover_filename, temp_filename);
                         cover_filename_reasonable = TRUE;
                 }
 

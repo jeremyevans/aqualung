@@ -532,9 +532,9 @@ set_src_type_label(int src_type) {
 
 	strcpy(str, _("SRC Type: "));
 #ifdef HAVE_SRC
-	strcat(str, src_get_name(src_type));
+	arr_strlcat(str, src_get_name(src_type));
 #else
-	strcat(str, _("None"));
+	arr_strlcat(str, _("None"));
 #endif /* HAVE_SRC */
 
 	gtk_label_set_text(GTK_LABEL(label_src_type), str);
@@ -2558,13 +2558,13 @@ set_win_title(void) {
 	strcpy(win_title, "Aqualung");
 	if (aqualung_session_id > 0) {
 		arr_snprintf(str_session_id, ".%d", aqualung_session_id);
-		strcat(win_title, str_session_id);
+		arr_strlcat(win_title, str_session_id);
 	}
 #ifdef HAVE_JACK
 	if ((output == JACK_DRIVER) && (strcmp(client_name, "aqualung") != 0)) {
-		strcat(win_title, " [");
-		strcat(win_title, client_name);
-		strcat(win_title, "]");
+		arr_strlcat(win_title, " [");
+		arr_strlcat(win_title, client_name);
+		arr_strlcat(win_title, "]");
 	}
 #endif /* HAVE_JACK */
 }

@@ -1152,59 +1152,59 @@ mpeg_decoder_finish_open(decoder_t * dec) {
 	strcpy(dec->format_str, "MPEG Audio");
 
 	if (pd->mpeg_subformat & 0xff7) {
-		strcat(dec->format_str, " (");
+		arr_strlcat(dec->format_str, " (");
 		switch (pd->mpeg_subformat & MPEG_LAYER_MASK) {
 		case MPEG_LAYER_I:
-			strcat(dec->format_str, _("Layer I"));
+			arr_strlcat(dec->format_str, _("Layer I"));
 			break;
 		case MPEG_LAYER_II:
-			strcat(dec->format_str, _("Layer II"));
+			arr_strlcat(dec->format_str, _("Layer II"));
 			break;
 		case MPEG_LAYER_III:
-			strcat(dec->format_str, _("Layer III"));
+			arr_strlcat(dec->format_str, _("Layer III"));
 			break;
 		default:
-			strcat(dec->format_str, _("Unrecognized"));
+			arr_strlcat(dec->format_str, _("Unrecognized"));
 			break;
 		}
 	}
 
 	if ((pd->mpeg_subformat & MPEG_LAYER_MASK) && (pd->mpeg_subformat & (MPEG_MODE_MASK | MPEG_EMPH_MASK)))
-		strcat(dec->format_str, ", ");
+		arr_strlcat(dec->format_str, ", ");
 	switch (pd->mpeg_subformat & MPEG_MODE_MASK) {
 	case MPEG_MODE_SINGLE:
-		strcat(dec->format_str, _("Single channel"));
+		arr_strlcat(dec->format_str, _("Single channel"));
 		break;
 	case MPEG_MODE_DUAL:
-		strcat(dec->format_str, _("Dual channel"));
+		arr_strlcat(dec->format_str, _("Dual channel"));
 		break;
 	case MPEG_MODE_JOINT:
-		strcat(dec->format_str, _("Joint stereo"));
+		arr_strlcat(dec->format_str, _("Joint stereo"));
 		break;
 	case MPEG_MODE_STEREO:
-		strcat(dec->format_str, _("Stereo"));
+		arr_strlcat(dec->format_str, _("Stereo"));
 		break;
 	}
 
 	if ((pd->mpeg_subformat & MPEG_MODE_MASK) && (pd->mpeg_subformat & MPEG_EMPH_MASK))
-		strcat(dec->format_str, ", ");
+		arr_strlcat(dec->format_str, ", ");
 	switch (pd->mpeg_subformat & MPEG_EMPH_MASK) {
 	case MPEG_EMPH_NONE:
-		strcat(dec->format_str, _("Emphasis: none"));
+		arr_strlcat(dec->format_str, _("Emphasis: none"));
 		break;
 	case MPEG_EMPH_5015:
-		strcat(dec->format_str, _("Emphasis:"));
-		strcat(dec->format_str, " 50/15 us");
+		arr_strlcat(dec->format_str, _("Emphasis:"));
+		arr_strlcat(dec->format_str, " 50/15 us");
 		break;
 	case MPEG_EMPH_J_17:
-		strcat(dec->format_str, _("Emphasis:"));
-		strcat(dec->format_str, " CCITT J.17");
+		arr_strlcat(dec->format_str, _("Emphasis:"));
+		arr_strlcat(dec->format_str, " CCITT J.17");
 		break;
 	case MPEG_EMPH_RES:
-		strcat(dec->format_str, _("Emphasis: reserved"));
+		arr_strlcat(dec->format_str, _("Emphasis: reserved"));
 		break;
 	}
-	strcat(dec->format_str, ")");
+	arr_strlcat(dec->format_str, ")");
 
 	fdec->fileinfo.total_samples = pd->total_samples_est;
 	fdec->fileinfo.bps = pd->bitrate;

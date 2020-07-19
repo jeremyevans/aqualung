@@ -3182,19 +3182,19 @@ playlist_stats(playlist_t * pl, int selected) {
 	if (length > 0.0f || ntrack == 0) {
 		time2time(length, length_str, CHAR_ARRAY_SIZE(length_str));
 		arr_snprintf(tmp, " [%s] ", length_str);
-		strcat(str, tmp);
+		arr_strlcat(str, tmp);
 	}
 
 	if (options.pl_statusbar_show_size) {
 		if (size > 1024 * 1024) {
 			arr_snprintf(tmp, " (%.1f GB) ", size / (1024 * 1024));
-	        	strcat(str, tmp);
+			arr_strlcat(str, tmp);
 		} else if (size > (1 << 10)){
 			arr_snprintf(tmp, " (%.1f MB) ", size / 1024);
-        		strcat(str, tmp);
+			arr_strlcat(str, tmp);
 		} else if (size > 0 || ntrack == 0) {
 			arr_snprintf(tmp, " (%.1f KB) ", size);
-		        strcat(str, tmp);
+			arr_strlcat(str, tmp);
 		}
 	}
 

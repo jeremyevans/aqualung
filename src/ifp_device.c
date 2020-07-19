@@ -811,7 +811,7 @@ gchar *npath;
                         }
                 } else {
                         if (strlen(remote_path) != 1) {
-                                strcat(remote_path, "\\");
+                                arr_strlcat(remote_path, "\\");
                         }
                         arr_strlcat(remote_path, remote_item);
                         aifp_directory_listing(NULL);

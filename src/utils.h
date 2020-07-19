@@ -35,7 +35,7 @@ float convf(char * s);
 int cut_trailing_whitespace(char * str);
 void escape_percents(char * in, char * out);
 
-int make_string_va(char * buf, char * format, ...);
+int make_string_va(char * buf, size_t buf_size, char * format, ...);
 void make_title_string(char * dest, char * templ,
 		       char * artist, char * record, char * track);
 void make_string_strerror(int ret, char * buf, size_t buf_size);

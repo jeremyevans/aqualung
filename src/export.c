@@ -332,8 +332,9 @@ export_item_set_path(export_t * export, export_item_t * item, char * path, size_
 	arr_snprintf(str_no, "%02d", item->no);
 	arr_snprintf(str_index, "%04d", index);
 
-	make_string_va(track, export->template, 'o', item->original, 'a', item->artist,
-		       'r', item->album, 't', item->title, 'n', str_no, 'x', ext, 'i', str_index, 0);
+	make_string_va(track, CHAR_ARRAY_SIZE(track), export->template,
+		       'o', item->original, 'a', item->artist, 'r', item->album,
+		       't', item->title, 'n', str_no, 'x', ext, 'i', str_index, 0);
 
 	snprintf(path, path_len, "%s/%s", buf, track);
 	return 0;
@@ -1029,7 +1030,7 @@ export_dialog_response(GtkDialog * dialog, gint response_id, gpointer ex) {
 		int ret;
 		char buf[MAXLEN];
 		char * format = (char *)gtk_entry_get_text(GTK_ENTRY(export->templ_entry));
-		if ((ret = make_string_va(buf, format,
+		if ((ret = make_string_va(buf, CHAR_ARRAY_SIZE(buf), format,
 					  'o', "o", 'a', "a", 'r', "r", 't', "t", 'n', "n", 'x', "x", 'i', "i", 0)) != 0) {
 			make_string_strerror(ret, buf, CHAR_ARRAY_SIZE(buf));
 			message_dialog(_("Error in format string"),

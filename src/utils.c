@@ -135,7 +135,7 @@ contains(int * cbuf, int num, char c) {
     -4: error: unknown conversion type character after '?'
  */
 int
-make_string_va(char * buf, char * format, ...) {
+make_string_va(char * buf, size_t buf_size, char * format, ...) {
 
 	va_list args;
 	char ** strbuf = NULL;
@@ -177,7 +177,7 @@ make_string_va(char * buf, char * format, ...) {
 			} else {
 				if (strbuf[n]) {
 					buf[j] = '\0';
-					strcat(buf, strbuf[n]);
+					g_strlcat(buf, strbuf[n], buf_size);
 					j = strlen(buf);
 				}
 				i += 2;
@@ -212,14 +212,16 @@ make_string_va(char * buf, char * format, ...) {
 					} else {
 						if (disj && strbuf[n]) {
 							buf[j] = '\0';
-							strcat(buf, strbuf[n]);
+							g_strlcat(buf, strbuf[n], buf_size);
 							j = strlen(buf);
 						}
 						i += 2;
 					}
 				} else {
 					if (disj) {
-						buf[j++] = format[i];
+						if (j + 1 < buf_size) {
+							buf[j++] = format[i];
+						}
 					}
 					++i;
 				}
@@ -230,7 +232,9 @@ make_string_va(char * buf, char * format, ...) {
 			++i;
 			break;
 		default:
-			buf[j++] = format[i++];
+			if (j + 1 < buf_size) {
+				buf[j++] = format[i++];
+			}
 			break;
 		}
 	}
@@ -253,7 +257,7 @@ void
 make_title_string(char * dest, char * templ,
 		  char * artist, char * record, char * track) {
 
-	make_string_va(dest, templ, 'a', artist, 'r', record, 't', track, 0);
+	make_string_va(dest, MAXLEN, templ, 'a', artist, 'r', record, 't', track, 0);
 }
 
 void

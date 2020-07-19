@@ -1846,7 +1846,8 @@ options_dialog_response(GtkDialog * dialog, gint response_id, gpointer data) {
 
         current_notebook_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
 
-	if ((ret = make_string_va(buf, format, 'a', "a", 'r', "r", 't', "t", 0)) != 0) {
+	if ((ret = make_string_va(buf, CHAR_ARRAY_SIZE(buf), format,
+				  'a', "a", 'r', "r", 't', "t", 0)) != 0) {
 		make_string_strerror(ret, buf, CHAR_ARRAY_SIZE(buf));
 		message_dialog(_("Error in title format string"),
 			       options_window,
@@ -4390,7 +4391,8 @@ load_config(void) {
 	{
 		char buf[MAXLEN];
 		if (!options.title_format[0] ||
-		    make_string_va(buf, options.title_format, 'a', "a", 'r', "r", 't', "t", 0) != 0) {
+		    make_string_va(buf, CHAR_ARRAY_SIZE(buf), options.title_format,
+				   'a', "a", 'r', "r", 't', "t", 0) != 0) {
 			strcpy(options.title_format, "%a?ar|at{ :: }%r?rt{ :: }%t");
 		}
 	}

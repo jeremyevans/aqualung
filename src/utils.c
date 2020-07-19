@@ -257,20 +257,20 @@ make_title_string(char * dest, char * templ,
 }
 
 void
-make_string_strerror(int ret, char * buf) {
+make_string_strerror(int ret, char * buf, size_t buf_size) {
 
 	switch (ret) {
 	case -1:
-		strncpy(buf, _("Unexpected end of string after '?'."), MAXLEN-1);
+		g_strlcpy(buf, _("Unexpected end of string after '?'."), buf_size);
 		break;
 	case -2:
-		strncpy(buf, _("Expected '}' after '{', but end of string found."), MAXLEN-1);
+		g_strlcpy(buf, _("Expected '}' after '{', but end of string found."), buf_size);
 		break;
 	case -3:
-		strncpy(buf, _("Unknown conversion type character found after '%%'."), MAXLEN-1);
+		g_strlcpy(buf, _("Unknown conversion type character found after '%%'."), buf_size);
 		break;
 	case -4:
-		strncpy(buf, _("Unknown conversion type character found after '?'."), MAXLEN-1);
+		g_strlcpy(buf, _("Unknown conversion type character found after '?'."), buf_size);
 		break;
 	}
 }

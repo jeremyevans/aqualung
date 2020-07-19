@@ -1031,7 +1031,7 @@ export_dialog_response(GtkDialog * dialog, gint response_id, gpointer ex) {
 		char * format = (char *)gtk_entry_get_text(GTK_ENTRY(export->templ_entry));
 		if ((ret = make_string_va(buf, format,
 					  'o', "o", 'a', "a", 'r', "r", 't', "t", 'n', "n", 'x', "x", 'i', "i", 0)) != 0) {
-			make_string_strerror(ret, buf);
+			make_string_strerror(ret, buf, CHAR_ARRAY_SIZE(buf));
 			message_dialog(_("Error in format string"),
 				       export->dialog,
 				       GTK_MESSAGE_ERROR,

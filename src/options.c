@@ -1847,7 +1847,7 @@ options_dialog_response(GtkDialog * dialog, gint response_id, gpointer data) {
         current_notebook_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
 
 	if ((ret = make_string_va(buf, format, 'a', "a", 'r', "r", 't', "t", 0)) != 0) {
-		make_string_strerror(ret, buf);
+		make_string_strerror(ret, buf, CHAR_ARRAY_SIZE(buf));
 		message_dialog(_("Error in title format string"),
 			       options_window,
 			       GTK_MESSAGE_ERROR,

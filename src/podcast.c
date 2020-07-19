@@ -62,14 +62,14 @@ podcast_new(void) {
 }
 
 void
-podcast_get_display_name(podcast_t * podcast, char * buf) {
+podcast_get_display_name(podcast_t * podcast, char * buf, size_t buf_size) {
 
 	if (podcast->author != NULL && podcast->title != NULL) {
-		snprintf(buf, MAXLEN-1, "%s: %s", podcast->author, podcast->title);
+		snprintf(buf, buf_size, "%s: %s", podcast->author, podcast->title);
 	} else if (podcast->title != NULL) {
-		strncpy(buf, podcast->title, MAXLEN-1);
+		g_strlcpy(buf, podcast->title, buf_size);
 	} else {
-		strncpy(buf, _("Untitled"), MAXLEN-1);
+		g_strlcpy(buf, _("Untitled"), buf_size);
 	}
 }
 

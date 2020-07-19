@@ -943,7 +943,7 @@ podcast_store__reorder_cb(gpointer data) {
 		podcast_t * podcast;
 
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &pod_iter, MS_COL_DATA, &podcast, -1);
-		podcast_get_display_name(podcast, title);
+		podcast_get_display_name(podcast, title, CHAR_ARRAY_SIZE(title));
 		gtk_list_store_append(store, &list_iter);
 		gtk_list_store_set(store, &list_iter, 0, title, 1, gtk_tree_iter_copy(&pod_iter), -1);
 	}
@@ -1166,7 +1166,7 @@ podcast_iter_set_display_name(podcast_t * podcast, GtkTreeIter * pod_iter) {
 
 	char name_str[MAXLEN];
 
-	podcast_get_display_name(podcast, name_str);
+	podcast_get_display_name(podcast, name_str, CHAR_ARRAY_SIZE(name_str));
 	gtk_tree_store_set(music_store, pod_iter, MS_COL_NAME, name_str, -1);
 }
 
@@ -1406,7 +1406,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 		break;
 	case 2:
 		gtk_tree_model_get(model, tree_iter, MS_COL_DATA, &podcast, -1);
-		podcast_get_display_name(podcast, tmp);
+		podcast_get_display_name(podcast, tmp, CHAR_ARRAY_SIZE(tmp));
 		feed_status_bar_info(model, tree_iter, &size, &length, &nnewitem, &nitem);
 		if (nnewitem > 0) {
 			sprintf(str, "%s:  %d %s, %d %s ", tmp,
@@ -1512,7 +1512,7 @@ add_path_to_playlist(GtkTreePath * path, GtkTreeIter * piter, int new_tab) {
 			podcast_t * podcast;
 
 			gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter, MS_COL_DATA, &podcast, -1);
-			podcast_get_display_name(podcast, name);
+			podcast_get_display_name(podcast, name, CHAR_ARRAY_SIZE(name));
 			playlist_tab_new_if_nonempty(name);
 		} else {
 			char * name;

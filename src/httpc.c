@@ -303,19 +303,18 @@ strip_whitespace(char * str) {
 }
 
 int
-parse_field(char * line, char * name, char * value) {
+parse_field(char * line, char * name, size_t name_size, char * value, size_t value_size) {
 	
 	if (line[0] == ' ' || line[0] == '\t') {
 		name[0] = '\0';
-		strcpy(value, strip_whitespace(line));
+		g_strlcpy(value, strip_whitespace(line), value_size);
 	} else {
 		char * c = strstr(line, ":");
 		if (c == NULL)
 			return -1;
-		strncpy(name, line, c-line);
-		name[c-line] = '\0';
-		strncpy(value, c+1, strlen(c)-1);
-		value[strlen(c)-1] = '\0';
+		*c = '\0';
+		g_strlcpy(name, line, name_size);
+		g_strlcpy(value, c + 1, value_size);
 		strip_whitespace(name);
 		strip_whitespace(value);
 	}
@@ -366,7 +365,8 @@ parse_http_headers(http_session_t * session) {
 		if (line[0] == '\0')
 			break;
 		
-		if (parse_field(line, new_name, new_value) == -1)
+		if (parse_field(line, new_name, CHAR_ARRAY_SIZE(new_name),
+				new_value, CHAR_ARRAY_SIZE(new_value)) == -1)
 			return -3;
 		
 		if (new_name[0] == '\0') {

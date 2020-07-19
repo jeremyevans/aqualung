@@ -370,7 +370,8 @@ parse_http_headers(http_session_t * session) {
 			return -3;
 		
 		if (new_name[0] == '\0') {
-			arr_snprintf(value, "%s %s", value, new_value);
+			arr_strlcat(value, " ");
+			arr_strlcat(value, new_value);
 		} else {
 			arr_strlcpy(name, new_name);
 			arr_strlcpy(value, new_value);

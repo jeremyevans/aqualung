@@ -2564,7 +2564,7 @@ void
 plist__fileinfo_cb(gpointer user_data) {
 
 	playlist_t * pl = playlist_get_current();
-	playlist_data_t * pldata;
+	playlist_data_t * pldata = NULL;
 	GtkTreeIter iter;
 
 	if (!pl) return;
@@ -2580,7 +2580,7 @@ plist__fileinfo_cb(gpointer user_data) {
 		gtk_tree_path_free(p);
 	}
 	show_file_info(GTK_TREE_MODEL(pl->store), iter, playlist_model_func, 0,
-		       FALSE, IS_PL_COVER(pldata));
+		       FALSE, (pldata != NULL && IS_PL_COVER(pldata)));
 }
 
 void

@@ -24,6 +24,7 @@
 #include <string.h>
 #include <libxml/globals.h>
 #include <libxml/tree.h>
+#include <glib.h>
 
 #include "common.h"
 #include "utils_xml.h"
@@ -72,12 +73,12 @@ xml_save_int_array(xmlNodePtr node, char * varname, int * var, int idx) {
 }
 
 void
-xml_load_str(xmlDocPtr doc, xmlNodePtr node, char * varname, char * var) {
+xml_load_str(xmlDocPtr doc, xmlNodePtr node, char * varname, char * var, size_t var_size) {
 
 	if (!xmlStrcmp(node->name, (const xmlChar *)varname)) {
 		xmlChar * key = xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
 		if (key != NULL) {
-			strncpy(var, (char *)key, MAXLEN-1);
+			g_strlcpy(var, (char *)key, var_size);
 			xmlFree(key);
 		}
 	}

@@ -2031,7 +2031,7 @@ parse_podcast_item(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * pod_iter, podcas
 		xml_load_str_dup(doc, cur, "title", &item->title);
 		xml_load_str_dup(doc, cur, "desc", &item->desc);
 		xml_load_str_dup(doc, cur, "url", &item->url);
-		xml_load_str(doc, cur, "sort", sort);
+		xml_load_str(doc, cur, "sort", sort, CHAR_ARRAY_SIZE(sort));
 
 		xml_load_int(doc, cur, "new", &item->new);
 		xml_load_float(doc, cur, "duration", &item->duration);

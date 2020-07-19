@@ -519,7 +519,7 @@ capitalize_load(xmlDocPtr doc, xmlNodePtr node, char * nodeID, capitalize_t ** m
 			xml_load_int(doc, cur, "pre_enabled", &(*model)->pre_enabled);
 			xml_load_int(doc, cur, "low_enabled", &(*model)->low_enabled);
 			xml_load_int(doc, cur, "mode", &(*model)->mode);
-			xml_load_str(doc, cur, "pattern", (*model)->pattern);
+			xml_load_str(doc, cur, "pattern", (*model)->pattern, CHAR_ARRAY_SIZE((*model)->pattern));
 		}
 	}
 }
@@ -703,8 +703,8 @@ file_transform_load(xmlDocPtr doc, xmlNodePtr node, char * nodeID, file_transfor
 
 		for (cur = node->xmlChildrenNode; cur != NULL; cur = cur->next) {
 
-			xml_load_str(doc, cur, "regexp", (*model)->regexp);
-			xml_load_str(doc, cur, "replacement", (*model)->replacement);
+			xml_load_str(doc, cur, "regexp", (*model)->regexp, CHAR_ARRAY_SIZE((*model)->regexp));
+			xml_load_str(doc, cur, "replacement", (*model)->replacement, CHAR_ARRAY_SIZE((*model)->replacement));
 
 			xml_load_int(doc, cur, "rm_number", &(*model)->rm_number);
 			xml_load_int(doc, cur, "rm_extension", &(*model)->rm_extension);
@@ -1020,12 +1020,12 @@ build_store_load(build_store_t * data, int test_only) {
 		for (cur = node->xmlChildrenNode; cur != NULL; cur = cur->next) {
 
 			xml_load_int(doc, cur, "type", &data->type);
-			xml_load_str(doc, cur, "root", data->root);
+			xml_load_str(doc, cur, "root", data->root, CHAR_ARRAY_SIZE(data->root));
 			xml_load_int(doc, cur, "artist_dir_depth", &data->artist_dir_depth);
 			xml_load_int(doc, cur, "excl_enabled", &data->excl_enabled);
-			xml_load_str(doc, cur, "excl_pattern", data->excl_pattern);
+			xml_load_str(doc, cur, "excl_pattern", data->excl_pattern, CHAR_ARRAY_SIZE(data->excl_pattern));
 			xml_load_int(doc, cur, "incl_enabled", &data->incl_enabled);
-			xml_load_str(doc, cur, "incl_pattern", data->incl_pattern);
+			xml_load_str(doc, cur, "incl_pattern", data->incl_pattern, CHAR_ARRAY_SIZE(data->incl_pattern));
 			xml_load_int(doc, cur, "reset_existing_data", &data->reset_existing_data);
 			xml_load_int(doc, cur, "remove_dead_files", &data->remove_dead_files);
 

@@ -30,7 +30,7 @@ void xml_save_uint(xmlNodePtr node, char * varname, unsigned var);
 void xml_save_float(xmlNodePtr node, char * varname, float var);
 void xml_save_int_array(xmlNodePtr node, char * varname, int * var, int idx);
 
-void xml_load_str(xmlDocPtr doc, xmlNodePtr node, char * varname, char * var);
+void xml_load_str(xmlDocPtr doc, xmlNodePtr node, char * varname, char * var, size_t var_size);
 void xml_load_str_dup(xmlDocPtr doc, xmlNodePtr node, char * varname, char ** var);
 void xml_load_int(xmlDocPtr doc, xmlNodePtr node, char * varname, int * var);
 void xml_load_uint(xmlDocPtr doc, xmlNodePtr node, char * varname, unsigned * var);

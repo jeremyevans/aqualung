@@ -4002,23 +4002,7 @@ save_config(void) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *) #Var))) { \
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
                         if (key != NULL) \
-                                strncpy(options.Var, (char *) key, MAXLEN-1); \
-                        xmlFree(key); \
-                }
-
-#define LOAD_FONT(Font) \
-                if ((!xmlStrcmp(cur->name, (const xmlChar *)#Font))) { \
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
-                        if (key != NULL) \
-                                strncpy(options.Font, (char *) key, MAX_FONTNAME_LEN-1); \
-                        xmlFree(key); \
-                }
-
-#define LOAD_COLOR(Color) \
-                if ((!xmlStrcmp(cur->name, (const xmlChar *) #Color))) { \
-			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); \
-                        if (key != NULL) \
-                                strncpy(options.Color, (char *) key, MAX_COLORNAME_LEN-1); \
+                                arr_strlcpy(options.Var, (char *) key); \
                         xmlFree(key); \
                 }
 
@@ -4319,15 +4303,15 @@ load_config(void) {
 		LOAD_INT_SH(enable_playlist_statusbar);
 		LOAD_INT(ifpmanager_size_x);
 		LOAD_INT(ifpmanager_size_y);
-		LOAD_FONT(browser_font);
-		LOAD_FONT(playlist_font);
-		LOAD_FONT(bigtimer_font);
-		LOAD_FONT(smalltimer_font);
-		LOAD_FONT(songtitle_font);
-		LOAD_FONT(songinfo_font);
-		LOAD_FONT(statusbar_font);
-		LOAD_COLOR(song_color);
-		LOAD_COLOR(activesong_color);
+		LOAD_STR(browser_font);
+		LOAD_STR(playlist_font);
+		LOAD_STR(bigtimer_font);
+		LOAD_STR(smalltimer_font);
+		LOAD_STR(songtitle_font);
+		LOAD_STR(songinfo_font);
+		LOAD_STR(statusbar_font);
+		LOAD_STR(song_color);
+		LOAD_STR(activesong_color);
 		LOAD_INT(repeat_on);
 		LOAD_INT(repeat_all_on);
 		LOAD_INT(shuffle_on);

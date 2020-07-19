@@ -2096,8 +2096,8 @@ build_dialog(build_store_t * data) {
 		set_option_from_combo(art_sort_combo, &data->artist_sort_by);
 		set_option_from_combo(rec_sort_combo, &data->record_sort_by);
 
-		set_option_from_entry(gen_entry_excl, data->excl_pattern, MAXLEN);
-		set_option_from_entry(gen_entry_incl, data->incl_pattern, MAXLEN);
+		set_option_from_entry(gen_entry_excl, data->excl_pattern, CHAR_ARRAY_SIZE(data->excl_pattern));
+		set_option_from_entry(gen_entry_incl, data->incl_pattern, CHAR_ARRAY_SIZE(data->incl_pattern));
 
 		set_option_from_toggle(gen_check_excl, &data->excl_enabled);
 		set_option_from_toggle(gen_check_incl, &data->incl_enabled);

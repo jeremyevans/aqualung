@@ -92,7 +92,7 @@ void insert_label_spin_with_limits(GtkWidget * table, char * ltext, GtkWidget **
 void set_option_from_toggle(GtkWidget * widget, int * opt);
 void set_option_from_combo(GtkWidget * widget, int * opt);
 void set_option_from_spin(GtkWidget * widget, int * opt);
-void set_option_from_entry(GtkWidget * widget, char * opt, int n);
+void set_option_from_entry(GtkWidget * widget, char * opt, size_t opt_size);
 void set_option_bit_from_toggle(GtkWidget * toggle, int * opt, int bit);
 
 gboolean tree_model_leaf_iter(GtkTreeModel * model, GtkTreeIter * iter, gboolean last, GtkTreeIter * out);

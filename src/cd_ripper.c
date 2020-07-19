@@ -888,9 +888,9 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 		options.cdrip_vbr = ripper_vbr;
 		set_option_from_toggle(ripper_meta_check, &ripper_meta);
 		options.cdrip_metadata = ripper_meta;
-		set_option_from_entry(ripper_artist_entry, ripper_artist, MAXLEN);
-		set_option_from_entry(ripper_album_entry, ripper_album, MAXLEN);
-		set_option_from_entry(ripper_genre_entry, ripper_genre, MAXLEN);
+		set_option_from_entry(ripper_artist_entry, ripper_artist, CHAR_ARRAY_SIZE(ripper_artist));
+		set_option_from_entry(ripper_album_entry, ripper_album, CHAR_ARRAY_SIZE(ripper_album));
+		set_option_from_entry(ripper_genre_entry, ripper_genre, CHAR_ARRAY_SIZE(ripper_genre));
 		set_option_from_spin(ripper_year_spinner, &ripper_year);
 		ripper_write_to_store = get_ripper_deststore_iter(&ripper_dest_store);
 

@@ -690,7 +690,7 @@ options_window_accept(void) {
 	set_option_from_toggle(check_batch_mpeg_add_id3v2, &options.batch_mpeg_add_id3v2);
 	set_option_from_toggle(check_batch_mpeg_add_ape, &options.batch_mpeg_add_ape);
 
-	set_option_from_entry(encode_set_entry, options.encode_set, MAXLEN);
+	set_option_from_entry(encode_set_entry, options.encode_set, CHAR_ARRAY_SIZE(options.encode_set));
 
 	set_option_from_toggle(check_metaedit_auto_clone, &options.metaedit_auto_clone);
 	set_option_from_toggle(check_meta_use_basename_only, &options.meta_use_basename_only);
@@ -721,7 +721,7 @@ options_window_accept(void) {
 
 	/* CDDB */
 #ifdef HAVE_CDDB
-	set_option_from_entry(cddb_server_entry, options.cddb_server, MAXLEN);
+	set_option_from_entry(cddb_server_entry, options.cddb_server, CHAR_ARRAY_SIZE(options.cddb_server));
 	set_option_from_spin(cddb_tout_spinner, &options.cddb_timeout);
 	set_option_from_combo(cddb_proto_combo, &options.cddb_use_http);
 #endif /* HAVE_CDDB */
@@ -730,9 +730,9 @@ options_window_accept(void) {
 	/* Internet */
 
         set_option_from_toggle(inet_radio_proxy, &options.inet_use_proxy);
-	set_option_from_entry(inet_entry_proxy, options.inet_proxy, MAXLEN);
+	set_option_from_entry(inet_entry_proxy, options.inet_proxy, CHAR_ARRAY_SIZE(options.inet_proxy));
 	set_option_from_spin(inet_spinner_proxy_port, &options.inet_proxy_port);
-	set_option_from_entry(inet_entry_noproxy_domains, options.inet_noproxy_domains, MAXLEN);
+	set_option_from_entry(inet_entry_noproxy_domains, options.inet_noproxy_domains, CHAR_ARRAY_SIZE(options.inet_noproxy_domains));
 	set_option_from_spin(inet_spinner_timeout, &options.inet_timeout);
 
 
@@ -740,13 +740,13 @@ options_window_accept(void) {
 
         set_option_from_toggle(check_disable_skin_support, &options.disable_skin_support_settings);
         set_option_from_toggle(check_override_skin, &options.override_skin_settings);
-	set_option_from_entry(entry_pl_font, options.playlist_font, MAX_FONTNAME_LEN);
-	set_option_from_entry(entry_ms_font, options.browser_font, MAX_FONTNAME_LEN);
-	set_option_from_entry(entry_bt_font, options.bigtimer_font, MAX_FONTNAME_LEN);
-	set_option_from_entry(entry_st_font, options.smalltimer_font, MAX_FONTNAME_LEN);
-	set_option_from_entry(entry_songt_font, options.songtitle_font, MAX_FONTNAME_LEN);
-	set_option_from_entry(entry_si_font, options.songinfo_font, MAX_FONTNAME_LEN);
-	set_option_from_entry(entry_sb_font, options.statusbar_font, MAX_FONTNAME_LEN);
+	set_option_from_entry(entry_pl_font, options.playlist_font, CHAR_ARRAY_SIZE(options.playlist_font));
+	set_option_from_entry(entry_ms_font, options.browser_font, CHAR_ARRAY_SIZE(options.browser_font));
+	set_option_from_entry(entry_bt_font, options.bigtimer_font, CHAR_ARRAY_SIZE(options.bigtimer_font));
+	set_option_from_entry(entry_st_font, options.smalltimer_font, CHAR_ARRAY_SIZE(options.smalltimer_font));
+	set_option_from_entry(entry_songt_font, options.songtitle_font, CHAR_ARRAY_SIZE(options.songtitle_font));
+	set_option_from_entry(entry_si_font, options.songinfo_font, CHAR_ARRAY_SIZE(options.songinfo_font));
+	set_option_from_entry(entry_sb_font, options.statusbar_font, CHAR_ARRAY_SIZE(options.statusbar_font));
 
         /* refresh GUI */
 	for (i = 0; i < 3; i++) {

@@ -1055,8 +1055,8 @@ export_dialog_response(GtkDialog * dialog, gint response_id, gpointer ex) {
 	}
 	
 	strncpy(options.exportdir, export->outdir, MAXLEN-1);
-	set_option_from_entry(export->templ_entry, export->template, MAXLEN);
-	set_option_from_entry(export->templ_entry, options.export_template, MAXLEN);
+	set_option_from_entry(export->templ_entry, export->template, CHAR_ARRAY_SIZE(export->template));
+	set_option_from_entry(export->templ_entry, options.export_template, CHAR_ARRAY_SIZE(options.export_template));
 	options.export_file_format = export->format = export_get_format_from_combo(export->format_combo);
 	options.export_bitrate = export->bitrate = gtk_range_get_value(GTK_RANGE(export->bitrate_scale));
 	set_option_from_toggle(export->check_dir_artist, &options.export_subdir_artist);
@@ -1075,7 +1075,7 @@ export_dialog_response(GtkDialog * dialog, gint response_id, gpointer ex) {
 	options.export_excl_enabled = export->excl_enabled;
 	
 	if (export->excl_enabled) {
-		set_option_from_entry(export->excl_entry, options.export_excl_pattern, MAXLEN);
+		set_option_from_entry(export->excl_entry, options.export_excl_pattern, CHAR_ARRAY_SIZE(options.export_excl_pattern));
 		export->excl_patternv =
 			g_strsplit(gtk_entry_get_text(GTK_ENTRY(export->excl_entry)), ",", 0);
 	}

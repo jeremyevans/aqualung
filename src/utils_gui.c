@@ -809,9 +809,9 @@ set_option_from_spin(GtkWidget * widget, int * opt) {
 }
 
 void
-set_option_from_entry(GtkWidget * widget, char * opt, int n) {
+set_option_from_entry(GtkWidget * widget, char * opt, size_t opt_size) {
 
-	strncpy(opt, gtk_entry_get_text(GTK_ENTRY(widget)), n-1);
+	g_strlcpy(opt, gtk_entry_get_text(GTK_ENTRY(widget)), opt_size);
 }
 
 void

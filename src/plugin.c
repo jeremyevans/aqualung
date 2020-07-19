@@ -177,7 +177,7 @@ parse_lrdf_data(void) {
 
 
 void
-get_ladspa_category(unsigned long plugin_id, char * str) {
+get_ladspa_category(unsigned long plugin_id, char * str, size_t str_size) {
 
         char buf[256];
         lrdf_statement pattern;
@@ -193,7 +193,7 @@ get_ladspa_category(unsigned long plugin_id, char * str) {
         matches1 = lrdf_matches(&pattern);
 
         if (!matches1) {
-                strncpy(str, "Unknown", MAXLEN-1);
+                g_strlcpy(str, "Unknown", str_size);
 		return;
         }
 
@@ -206,11 +206,11 @@ get_ladspa_category(unsigned long plugin_id, char * str) {
         lrdf_free_statements(matches1);
 
         if (!matches2) {
-                strncpy(str, "Unknown", MAXLEN-1);
+                g_strlcpy(str, "Unknown", str_size);
                 return;
         }
 
-        strncpy(str, matches2->object, MAXLEN-1);
+        g_strlcpy(str, matches2->object, str_size);
         lrdf_free_statements(matches2);
 }
 
@@ -265,7 +265,7 @@ find_plugins(char * path_entry) {
 
 				if ((n_ins == 1 && n_outs == 1) || (n_ins == 2 && n_outs == 2)) {
 					
-					get_ladspa_category(descriptor->UniqueID, category);
+					get_ladspa_category(descriptor->UniqueID, category, CHAR_ARRAY_SIZE(category));
 					arr_snprintf(id_str, "%ld", descriptor->UniqueID);
 					arr_snprintf(n_ins_str, "%ld", n_ins);
 					arr_snprintf(n_outs_str, "%ld", n_outs);

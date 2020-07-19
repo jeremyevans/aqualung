@@ -270,7 +270,7 @@ mpc_decoder_open(decoder_t * dec, char * filename) {
 		break;
 	}
 
-	sprintf(dec->format_str, "Musepack%s%s%s", (profile != NULL) ? " (" : "", profile, (profile != NULL) ? ")" : "");
+	arr_snprintf(dec->format_str, "Musepack%s%s%s", (profile != NULL) ? " (" : "", profile, (profile != NULL) ? ")" : "");
 
 	meta = metadata_new();
 	mpc_add_rg_meta(meta, &pd->mpc_i);

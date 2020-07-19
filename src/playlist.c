@@ -971,8 +971,8 @@ playlist_set_color(void) {
         	bi = playlist_color_indicator->style->fg[GTK_STATE_INSENSITIVE].blue;
         }
 
-        sprintf(active, "#%04X%04X%04X", rs, gs, bs);
-	sprintf(inactive, "#%04X%04X%04X", ri, gi, bi);
+	arr_snprintf(active, "#%04X%04X%04X", rs, gs, bs);
+	arr_snprintf(inactive, "#%04X%04X%04X", ri, gi, bi);
 
 	for (node = playlists; node; node = node->next) {
 		playlist_t * pl = (playlist_t *)node->data;
@@ -1127,7 +1127,7 @@ mark_track(playlist_t * pl, GtkTreeIter * piter) {
 			return;
 		}
 
-                sprintf(counter, _(" (%d/%d)"), j, n);
+                arr_snprintf(counter, _(" (%d/%d)"), j, n);
                 arr_strlcat(tmpname, counter);
 		gtk_tree_store_set(pl->store, piter, PL_COL_NAME, tmpname, -1);
 		data->ntracks = n;
@@ -3177,23 +3177,23 @@ playlist_stats(playlist_t * pl, int selected) {
                 }
 	}
 
-	sprintf(str, " %d %s ", ntrack, (ntrack == 1) ? _("track") : _("tracks"));
+	arr_snprintf(str, " %d %s ", ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 
 	if (length > 0.0f || ntrack == 0) {
 		time2time(length, length_str, CHAR_ARRAY_SIZE(length_str));
-		sprintf(tmp, " [%s] ", length_str);
+		arr_snprintf(tmp, " [%s] ", length_str);
 		strcat(str, tmp);
 	}
 
 	if (options.pl_statusbar_show_size) {
 		if (size > 1024 * 1024) {
-			sprintf(tmp, " (%.1f GB) ", size / (1024 * 1024));
+			arr_snprintf(tmp, " (%.1f GB) ", size / (1024 * 1024));
 	        	strcat(str, tmp);
 		} else if (size > (1 << 10)){
-			sprintf(tmp, " (%.1f MB) ", size / 1024);
+			arr_snprintf(tmp, " (%.1f MB) ", size / 1024);
         		strcat(str, tmp);
 		} else if (size > 0 || ntrack == 0) {
-			sprintf(tmp, " (%.1f KB) ", size);
+			arr_snprintf(tmp, " (%.1f KB) ", size);
 		        strcat(str, tmp);
 		}
 	}
@@ -3263,7 +3263,7 @@ playlist_drag_data_get(GtkWidget * widget, GdkDragContext * drag_context,
 		      GtkSelectionData * data, guint info, guint time, gpointer user_data) {
 
 	char tmp[32];
-	sprintf(tmp, "%p", user_data);
+	arr_snprintf(tmp, "%p", user_data);
 	gtk_selection_data_set(data, gtk_selection_data_get_target(data), 8,
 			       (guchar *)tmp, strlen(tmp));
 }
@@ -3859,7 +3859,7 @@ create_playlist_tab_label(playlist_t * pl) {
 
 	pl->tab_close_button = gtk_button_new();
 	gtk_widget_set_name(pl->tab_close_button, "playlist_tab_close_button");
-	sprintf(path, "%s/tab-close.png", AQUALUNG_DATADIR);
+	arr_snprintf(path, "%s/tab-close.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		image = gtk_image_new_from_pixbuf(pixbuf);
 		gtk_container_add(GTK_CONTAINER(pl->tab_close_button), image);

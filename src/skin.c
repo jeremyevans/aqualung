@@ -64,7 +64,7 @@ apply_skin(char * path) {
 
 	char rcpath[MAXLEN];
 	
-	sprintf(rcpath, "%s/rc", path);
+	arr_snprintf(rcpath, "%s/rc", path);
 	gtk_rc_parse(rcpath);
 
 	toplevel_window_foreach(TOP_WIN_SKIN, apply_skin_foreach);

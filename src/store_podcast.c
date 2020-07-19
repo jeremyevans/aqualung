@@ -1402,32 +1402,32 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 	switch (depth) {
 	case 3:
 		item_status_bar_info(model, tree_iter, &size, &length, &nnewitem);
-		sprintf(str, "%s ", name);
+		arr_snprintf(str, "%s ", name);
 		break;
 	case 2:
 		gtk_tree_model_get(model, tree_iter, MS_COL_DATA, &podcast, -1);
 		podcast_get_display_name(podcast, tmp, CHAR_ARRAY_SIZE(tmp));
 		feed_status_bar_info(model, tree_iter, &size, &length, &nnewitem, &nitem);
 		if (nnewitem > 0) {
-			sprintf(str, "%s:  %d %s, %d %s ", tmp,
-				nitem, (nitem == 1) ? _("item") : _("items"),
-				nnewitem, (nnewitem == 1) ? _("new item") : _("new items"));
+			arr_snprintf(str, "%s:  %d %s, %d %s ", tmp,
+				     nitem, (nitem == 1) ? _("item") : _("items"),
+				     nnewitem, (nnewitem == 1) ? _("new item") : _("new items"));
 		} else {
-			sprintf(str, "%s:  %d %s ", tmp,
-				nitem, (nitem == 1) ? _("item") : _("items"));
+			arr_snprintf(str, "%s:  %d %s ", tmp,
+				     nitem, (nitem == 1) ? _("item") : _("items"));
 		}
 		break;
 	case 1:
 		store_status_bar_info(model, tree_iter, &size, &length, &nnewitem, &nitem, &nfeed);
 		if (nnewitem > 0) {
-			sprintf(str, "%s:  %d %s, %d %s, %d %s ", name,
-				nfeed, (nfeed == 1) ? _("feed") : _("feeds"),
-				nitem, (nitem == 1) ? _("item") : _("items"),
-				nnewitem, (nnewitem == 1) ? _("new item") : _("new items"));
+			arr_snprintf(str, "%s:  %d %s, %d %s, %d %s ", name,
+				     nfeed, (nfeed == 1) ? _("feed") : _("feeds"),
+				     nitem, (nitem == 1) ? _("item") : _("items"),
+				     nnewitem, (nnewitem == 1) ? _("new item") : _("new items"));
 		} else {
-			sprintf(str, "%s:  %d %s, %d %s ", name,
-				nfeed, (nfeed == 1) ? _("feed") : _("feeds"),
-				nitem, (nitem == 1) ? _("item") : _("items"));
+			arr_snprintf(str, "%s:  %d %s, %d %s ", name,
+				     nfeed, (nfeed == 1) ? _("feed") : _("feeds"),
+				     nitem, (nitem == 1) ? _("item") : _("items"));
 		}
 		break;
 	}
@@ -1436,7 +1436,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
 	if (length > 0.0f || nitem == 0) {
 		time2time(length, length_str, CHAR_ARRAY_SIZE(length_str));
-		sprintf(tmp, " [%s] ", length_str);
+		arr_snprintf(tmp, " [%s] ", length_str);
 	} else {
 		strcpy(tmp, " [N/A] ");
 	}
@@ -1445,11 +1445,11 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
 	if (options.ms_statusbar_show_size) {
 		if (size > 1024 * 1024) {
-			sprintf(tmp, " (%.1f GB) ", size / (1024 * 1024));
+			arr_snprintf(tmp, " (%.1f GB) ", size / (1024 * 1024));
 		} else if (size > 1024) {
-			sprintf(tmp, " (%.1f MB) ", size / 1024);
+			arr_snprintf(tmp, " (%.1f MB) ", size / 1024);
 		} else if (size > 0 || nitem == 0) {
-			sprintf(tmp, " (%.1f KB) ", size);
+			arr_snprintf(tmp, " (%.1f KB) ", size);
 		} else {
 			strcpy(tmp, " (N/A) ");
 		}
@@ -1650,9 +1650,9 @@ store_podcast_load_icons(void) {
 
 	char path[MAXLEN];
 
-	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-podcast.png");
+	arr_snprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-podcast.png");
 	icon_podcasts = gdk_pixbuf_new_from_file (path, NULL);
-	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-feed.png");
+	arr_snprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-feed.png");
 	icon_feed = gdk_pixbuf_new_from_file (path, NULL);
 }
 

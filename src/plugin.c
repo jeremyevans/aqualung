@@ -2024,7 +2024,7 @@ save_plugin_data(void) {
         char str[32];
 
 
-        sprintf(plugin_file, "%s/plugin.xml", options.confdir);
+        arr_snprintf(plugin_file, "%s/plugin.xml", options.confdir);
 
         doc = xmlNewDoc((const xmlChar*) "1.0");
         root = xmlNewNode(NULL, (const xmlChar*) "aqualung_plugin");
@@ -2063,7 +2063,7 @@ save_plugin_data(void) {
                 ++i;
         }
 
-        sprintf(tmpname, "%s/plugin.xml.temp", options.confdir);
+        arr_snprintf(tmpname, "%s/plugin.xml.temp", options.confdir);
         xmlSaveFormatFile(tmpname, doc, 1);
 	xmlFreeDoc(doc);
 
@@ -2202,7 +2202,7 @@ load_plugin_data(void) {
         char plugin_file[MAXLEN];
         FILE * f;
 
-        sprintf(plugin_file, "%s/plugin.xml", options.confdir);
+        arr_snprintf(plugin_file, "%s/plugin.xml", options.confdir);
 
         if ((f = fopen(plugin_file, "rt")) == NULL) {
                 fprintf(stderr, "No plugin.xml -- creating empty one: %s\n", plugin_file);

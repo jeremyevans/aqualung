@@ -292,7 +292,7 @@ sndfile_decoder_open(decoder_t * dec, char * filename) {
 		break;
 	}
 
-	sprintf(dec->format_str, "%s%s%s%s%s", format_type, (format_sub1 != NULL) ? " (" : "", format_sub1, format_sub2, (format_sub1 != NULL) ? ")" : "");
+	arr_snprintf(dec->format_str, "%s%s%s%s%s", format_type, (format_sub1 != NULL) ? " (" : "", format_sub1, format_sub2, (format_sub1 != NULL) ? ")" : "");
 
 	return DECODER_OPEN_SUCCESS;
 }

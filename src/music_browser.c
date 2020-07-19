@@ -589,7 +589,7 @@ create_music_browser(void) {
 
 	/* load tree icons */
         if (options.enable_ms_tree_icons) {
-		sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-store.png");
+		arr_snprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-store.png");
 		icon_store = gdk_pixbuf_new_from_file (path, NULL);
 		store_file_load_icons();
 #ifdef HAVE_CDDA

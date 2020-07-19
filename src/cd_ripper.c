@@ -958,7 +958,7 @@ ripper_prog_store_make(cdda_drive_t * drive) {
 		total_sectors += len;
 		sector_to_str(drive->disc.toc[n-1], begin, CHAR_ARRAY_SIZE(begin));
 		sector_to_str(len, length, CHAR_ARRAY_SIZE(length));
-		sprintf(num, "%d.", n);
+		arr_snprintf(num, "%d.", n);
 
 		gtk_list_store_append(ripper_prog_store, &iter);
 		gtk_list_store_set(ripper_prog_store, &iter,

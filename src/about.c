@@ -444,7 +444,7 @@ create_about_window() {
 	gtk_container_add(GTK_CONTAINER(frame), scrolled_win);
 	gtk_container_add(GTK_CONTAINER(scrolled_win), view);
 
-	sprintf(path, "%s/logo.png", AQUALUNG_DATADIR);
+	arr_snprintf(path, "%s/logo.png", AQUALUNG_DATADIR);
         if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		xpm = gtk_image_new_from_pixbuf (pixbuf);
 		gtk_box_pack_start(GTK_BOX(vbox0), xpm, FALSE, FALSE, 0);

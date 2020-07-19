@@ -1189,7 +1189,7 @@ color_selected(GtkColorButton *widget, gpointer user_data) {
 
         appearance_changed = 1;
         gtk_color_button_get_color(widget, &c);
-        sprintf(str, "#%02X%02X%02X", c.red * 256 / 65536, c.green * 256 / 65536, c.blue * 256 / 65536);
+        arr_snprintf(str, "#%02X%02X%02X", c.red * 256 / 65536, c.green * 256 / 65536, c.blue * 256 / 65536);
 
         if (GPOINTER_TO_INT(user_data) == SONG_COLOR) {
                 strncpy(options.song_color, str, MAX_COLORNAME_LEN-1);
@@ -1213,7 +1213,7 @@ create_notebook_tab(char * text, char * imgfile) {
 	label = gtk_label_new(text);
 	gtk_box_pack_end(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-	sprintf(path, "%s/%s", AQUALUNG_DATADIR, imgfile);
+	arr_snprintf(path, "%s/%s", AQUALUNG_DATADIR, imgfile);
 
         pixbuf = gdk_pixbuf_new_from_file(path, NULL);
 
@@ -3791,7 +3791,7 @@ save_config(void) {
 	int i = 0;
 	char * path;
 
-        sprintf(config_file, "%s/config.xml", options.confdir);
+        arr_snprintf(config_file, "%s/config.xml", options.confdir);
 
         doc = xmlNewDoc((const xmlChar *) "1.0");
         root = xmlNewNode(NULL, (const xmlChar *) "aqualung_config");
@@ -3968,7 +3968,7 @@ save_config(void) {
 	save_jack_connections(doc, root);
 #endif /* HAVE_JACK */
 
-        sprintf(tmpname, "%s/config.xml.temp", options.confdir);
+        arr_snprintf(tmpname, "%s/config.xml.temp", options.confdir);
         xmlSaveFormatFile(tmpname, doc, 1);
 	xmlFreeDoc(doc);
 
@@ -4069,7 +4069,7 @@ load_config(void) {
         FILE * f;
 
 
-        sprintf(config_file, "%s/config.xml", options.confdir);
+        arr_snprintf(config_file, "%s/config.xml", options.confdir);
 
         if ((f = fopen(config_file, "rt")) == NULL) {
 		/* no warning -- done that in core.c::load_default_cl() */

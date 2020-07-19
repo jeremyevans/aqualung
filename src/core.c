@@ -1925,7 +1925,7 @@ load_default_cl(int * argc, char *** argv) {
                 }
         }
 
-        sprintf(config_file, "%s/config.xml", options.confdir);
+        arr_snprintf(config_file, "%s/config.xml", options.confdir);
         if ((f = fopen(config_file, "rt")) == NULL) {
                 fprintf(stderr, "No config.xml -- creating empty one: %s\n", config_file);
                 fprintf(stderr, "Wired-in defaults will be used.\n");
@@ -2830,7 +2830,7 @@ main(int argc, char ** argv) {
 	if (no_session != -1) {
 		char sockname[MAXLEN];
 
-		sprintf(sockname, "/tmp/aqualung_%s.%d", g_get_user_name(), no_session);
+		arr_snprintf(sockname, "/tmp/aqualung_%s.%d", g_get_user_name(), no_session);
 		if (!g_file_test(sockname, G_FILE_TEST_EXISTS)) {
 			no_session = -1;
 		}

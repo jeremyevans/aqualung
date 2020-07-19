@@ -1826,7 +1826,7 @@ fi_set_common_entries(fi_t * fi) {
 	}
 	gtk_entry_set_text(GTK_ENTRY(fi->entry_length), str);
 
-	sprintf(str, _("%ld Hz"), fi->fileinfo.sample_rate);
+	arr_snprintf(str, _("%ld Hz"), fi->fileinfo.sample_rate);
 	gtk_entry_set_text(GTK_ENTRY(fi->entry_sr), str);
 
 	if (fi->fileinfo.is_mono) {
@@ -1846,7 +1846,7 @@ fi_set_common_entries(fi_t * fi) {
 	if (fi->fileinfo.total_samples == 0) {
 		strcpy(str, "N/A");
 	} else {
-		sprintf(str, "%lld", fi->fileinfo.total_samples);
+		arr_snprintf(str, "%lld", fi->fileinfo.total_samples);
 	}
 	gtk_entry_set_text(GTK_ENTRY(fi->entry_nsamples), str);
 
@@ -2141,7 +2141,7 @@ show_list(fi_t * fi, gint type) {
                                 ModPlug_SampleName(md_pd->mpf, i, temp);
                         }
 
-                        sprintf(number, "%2d", i);
+                        arr_snprintf(number, "%2d", i);
                         gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(fi->smp_instr_list_store), &iter, NULL, i);
                         gtk_list_store_append(fi->smp_instr_list_store, &iter);
                         gtk_list_store_set(fi->smp_instr_list_store, &iter, 0, number, 1, temp, -1);
@@ -2244,7 +2244,7 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
 		module_info_add_row(_("Samples:"), &mod_samples_label, table, 3);
 		module_info_add_row(_("Instruments:"), &mod_instruments_label, table, 4);
 
-                sprintf(temp, "%d", mdi->instruments);
+                arr_snprintf(temp, "%d", mdi->instruments);
                 gtk_label_set_text (GTK_LABEL(mod_instruments_label), temp);
 
                 table = gtk_table_new (2, 1, FALSE);
@@ -2290,11 +2290,11 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
         }
 
         gtk_label_set_text (GTK_LABEL(mod_type_label), a_type[i]);
-        sprintf(temp, "%d", mdi->channels);
+        arr_snprintf(temp, "%d", mdi->channels);
         gtk_label_set_text (GTK_LABEL(mod_channels_label), temp);
-        sprintf(temp, "%d", mdi->patterns);
+        arr_snprintf(temp, "%d", mdi->patterns);
         gtk_label_set_text (GTK_LABEL(mod_patterns_label), temp);
-        sprintf(temp, "%d", mdi->samples);
+        arr_snprintf(temp, "%d", mdi->samples);
         gtk_label_set_text (GTK_LABEL(mod_samples_label), temp);
 
         vseparator = gtk_vseparator_new ();

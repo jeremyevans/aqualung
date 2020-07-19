@@ -238,7 +238,7 @@ mac_decoder_open(decoder_t * dec, char * filename) {
 		break;
 	}
 
-	sprintf(dec->format_str, "Monkey's Audio%s%s%s", (comp_level != NULL) ? " (" : "", comp_level, (comp_level != NULL) ? ")" : "");
+	arr_snprintf(dec->format_str, "Monkey's Audio%s%s%s", (comp_level != NULL) ? " (" : "", comp_level, (comp_level != NULL) ? ")" : "");
 
 	meta = metadata_new();
 	meta_ape_send_metadata(meta, fdec);

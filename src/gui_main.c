@@ -384,7 +384,7 @@ set_title_label(char * str) {
 #endif /* HAVE_SYSTRAY */
 		}
 	} else {
-		sprintf(default_title, "Aqualung %s", AQUALUNG_VERSION);
+		arr_snprintf(default_title, "Aqualung %s", AQUALUNG_VERSION);
 		gtk_label_set_text(GTK_LABEL(label_title), default_title);
 		gtk_window_set_title(GTK_WINDOW(main_window), win_title);
 #ifdef HAVE_SYSTRAY
@@ -2501,34 +2501,34 @@ main_buttons_set_content(char * skin_path) {
 
 	char path[MAXLEN];
 
-	sprintf(path, "%s/%s", skin_path, "prev.png");
+	arr_snprintf(path, "%s/%s", skin_path, "prev.png");
 	button_set_content(prev_button, path, "prev");
-	sprintf(path, "%s/%s", skin_path, "stop.png");
+	arr_snprintf(path, "%s/%s", skin_path, "stop.png");
 	button_set_content(stop_button, path, "stop");
-	sprintf(path, "%s/%s", skin_path, "next.png");
+	arr_snprintf(path, "%s/%s", skin_path, "next.png");
 	button_set_content(next_button, path, "next");
 	if (options.combine_play_pause) {
-		sprintf(path, "%s/%s", skin_path, "play_pause.png");
+		arr_snprintf(path, "%s/%s", skin_path, "play_pause.png");
 		button_set_content(play_button, path, "play/pause");
 	} else {
-		sprintf(path, "%s/%s", skin_path, "play.png");
+		arr_snprintf(path, "%s/%s", skin_path, "play.png");
 		button_set_content(play_button, path, "play");
-		sprintf(path, "%s/%s", skin_path, "pause.png");
+		arr_snprintf(path, "%s/%s", skin_path, "pause.png");
 		button_set_content(pause_button, path, "pause");
 	}
-	sprintf(path, "%s/%s", skin_path, "repeat.png");
+	arr_snprintf(path, "%s/%s", skin_path, "repeat.png");
 	button_set_content(repeat_button, path, "repeat");
-	sprintf(path, "%s/%s", skin_path, "repeat_all.png");
+	arr_snprintf(path, "%s/%s", skin_path, "repeat_all.png");
 	button_set_content(repeat_all_button, path, "rep_all");
-	sprintf(path, "%s/%s", skin_path, "shuffle.png");
+	arr_snprintf(path, "%s/%s", skin_path, "shuffle.png");
 	button_set_content(shuffle_button, path, "shuffle");
 
-	sprintf(path, "%s/%s", skin_path, "pl.png");
+	arr_snprintf(path, "%s/%s", skin_path, "pl.png");
 	button_set_content(playlist_toggle, path, "PL");
-	sprintf(path, "%s/%s", skin_path, "ms.png");
+	arr_snprintf(path, "%s/%s", skin_path, "ms.png");
 	button_set_content(musicstore_toggle, path, "MS");
 #ifdef HAVE_LADSPA
-	sprintf(path, "%s/%s", skin_path, "fx.png");
+	arr_snprintf(path, "%s/%s", skin_path, "fx.png");
 	button_set_content(plugin_toggle, path, "FX");
 #endif /* HAVE_LADSPA */
 }
@@ -2557,7 +2557,7 @@ set_win_title(void) {
 
 	strcpy(win_title, "Aqualung");
 	if (aqualung_session_id > 0) {
-		sprintf(str_session_id, ".%d", aqualung_session_id);
+		arr_snprintf(str_session_id, ".%d", aqualung_session_id);
 		strcat(win_title, str_session_id);
 	}
 #ifdef HAVE_JACK
@@ -3150,7 +3150,7 @@ create_main_window(char * skin_path) {
 	gtk_box_pack_end(GTK_BOX(btns_hbox), sr_table, FALSE, FALSE, 3);
 
         if (options.disable_skin_support_settings) {
-	        sprintf(path, "%s/no_skin", AQUALUNG_SKINDIR);
+	        arr_snprintf(path, "%s/no_skin", AQUALUNG_SKINDIR);
 	        main_buttons_set_content(path);
         } else {
 	        main_buttons_set_content(skin_path);
@@ -3452,7 +3452,7 @@ setup_systray(void) {
 	GtkWidget * systray__separator1;
 	GtkWidget * systray__separator2;
 
-	sprintf(path, "%s/icon_64.png", AQUALUNG_DATADIR);
+	arr_snprintf(path, "%s/icon_64.png", AQUALUNG_DATADIR);
 	systray_icon = gtk_status_icon_new_from_file(path);
 
         g_signal_connect_swapped(G_OBJECT(systray_icon), "activate",
@@ -3563,9 +3563,9 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	load_config();
 
 	if (options.title_format[0] == '\0')
-		sprintf(options.title_format, "%%a: %%t [%%r]");
+		arr_snprintf(options.title_format, "%%a: %%t [%%r]");
 	if (options.skin[0] == '\0') {
-		sprintf(options.skin, "%s/default", AQUALUNG_SKINDIR);
+		arr_snprintf(options.skin, "%s/default", AQUALUNG_SKINDIR);
 		options.main_pos_x = 280;
 		options.main_pos_y = 30;
 		options.main_size_x = 380;
@@ -3583,7 +3583,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	}
 
 	if (options.cddb_server[0] == '\0') {
-		sprintf(options.cddb_server, "gnudb.org");
+		arr_snprintf(options.cddb_server, "gnudb.org");
 	}
 
 	if (options.src_type == -1) {
@@ -3591,9 +3591,9 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	}
 
         if (options.disable_skin_support_settings) {
-	        sprintf(path, "%s/no_skin/rc", AQUALUNG_SKINDIR);
+	        arr_snprintf(path, "%s/no_skin/rc", AQUALUNG_SKINDIR);
         } else {
-	        sprintf(path, "%s/rc", options.skin);
+	        arr_snprintf(path, "%s/rc", options.skin);
         }
 	gtk_rc_parse(path);
 
@@ -3636,27 +3636,27 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	options_store_watcher_start();
 
-	sprintf(path, "%s/icon_16.png", AQUALUNG_DATADIR);
+	arr_snprintf(path, "%s/icon_16.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
 	}
 
-	sprintf(path, "%s/icon_24.png", AQUALUNG_DATADIR);
+	arr_snprintf(path, "%s/icon_24.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
 	}
 
-	sprintf(path, "%s/icon_32.png", AQUALUNG_DATADIR);
+	arr_snprintf(path, "%s/icon_32.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
 	}
 
-	sprintf(path, "%s/icon_48.png", AQUALUNG_DATADIR);
+	arr_snprintf(path, "%s/icon_48.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
 	}
 
-	sprintf(path, "%s/icon_64.png", AQUALUNG_DATADIR);
+	arr_snprintf(path, "%s/icon_64.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		glist = g_list_append(glist, gdk_pixbuf_new_from_file(path, NULL));
 	}

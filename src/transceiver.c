@@ -133,7 +133,7 @@ send_message(const char * filename, char * message, int len) {
         struct sockaddr_un name;
         int nbytes;
 
-	sprintf(tempsockname, "/tmp/aqualung_%s.tmp", g_get_user_name());
+	arr_snprintf(tempsockname, "/tmp/aqualung_%s.tmp", g_get_user_name());
 	sock = create_socket(tempsockname);
         name.sun_family = AF_LOCAL;
         strcpy(name.sun_path, filename);
@@ -156,7 +156,7 @@ send_message_to_session_report_error(int session_id, char * message, int len, in
 	char name[MAXLEN];
 	int nbytes = 0;
 
-	sprintf(name, "/tmp/aqualung_%s.%d", g_get_user_name(), session_id);
+	arr_snprintf(name, "/tmp/aqualung_%s.%d", g_get_user_name(), session_id);
 	if((nbytes = send_message(name, message, len)) < 0 && report_error) {
 		perror("send_message(): sendto");
 	}
@@ -179,7 +179,7 @@ setup_app_socket(void) {
 
 	for (i=0; sock == -1; i++) {
 		if (send_message_to_session_report_error(i, &rcmd, 1, 0) < 0) {
-			sprintf(name, "/tmp/aqualung_%s.%d", g_get_user_name(), i);
+			arr_snprintf(name, "/tmp/aqualung_%s.%d", g_get_user_name(), i);
 			unlink(name);
 			sock = create_socket(name);
 		}

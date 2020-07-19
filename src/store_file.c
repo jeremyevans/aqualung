@@ -2351,7 +2351,7 @@ record__add_cb(gpointer user_data) {
 
 			if (strings) {
 				for (i = 0; strings[i] != NULL; i++) {
-					sprintf(str_n, "%02d", i+1);
+					arr_snprintf(str_n, "%02d", i+1);
 					str = strings[i];
 					while (strstr(str, "/")) {
 						str = strstr(str, "/") + 1;
@@ -3600,33 +3600,33 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 	case 4:
 		track_status_bar_info(model, tree_iter, &size, &length);
 		ntrack = 1;
-		sprintf(str, "%s ", name);
+		arr_snprintf(str, "%s ", name);
 		break;
 	case 3:
 		gtk_tree_model_get(model, tree_iter, MS_COL_DATA, &record_data, -1);
 		record_status_bar_info(model, tree_iter, &size, &length, &ntrack);
 		if (is_valid_year(record_data->year)) {
-			sprintf(str, "%s (%d):  %d %s ", name, record_data->year,
-				ntrack, (ntrack == 1) ? _("track") : _("tracks"));
+			arr_snprintf(str, "%s (%d):  %d %s ", name, record_data->year,
+				     ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 		} else {
-			sprintf(str, "%s:  %d %s ", name,
-				ntrack, (ntrack == 1) ? _("track") : _("tracks"));
+			arr_snprintf(str, "%s:  %d %s ", name,
+				     ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 		}
 
 		break;
 	case 2:
 		artist_status_bar_info(model, tree_iter, &size, &length, &ntrack, &nrecord);
-		sprintf(str, "%s:  %d %s, %d %s ", name,
-			nrecord, (nrecord == 1) ? _("record") : _("records"),
-			ntrack, (ntrack == 1) ? _("track") : _("tracks"));
+		arr_snprintf(str, "%s:  %d %s, %d %s ", name,
+			     nrecord, (nrecord == 1) ? _("record") : _("records"),
+			     ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 		break;
 	case 1:
 		gtk_tree_model_get(model, tree_iter, MS_COL_DATA, &store_data, -1);
 		store_status_bar_info(model, tree_iter, &size, &length, &ntrack, &nrecord, &nartist);
-		sprintf(str, "%s:  %d %s, %d %s, %d %s ", store_data->dirty ? name+1 : name,
-			nartist, (nartist == 1) ? _("artist") : _("artists"),
-			nrecord, (nrecord == 1) ? _("record") : _("records"),
-			ntrack, (ntrack == 1) ? _("track") : _("tracks"));
+		arr_snprintf(str, "%s:  %d %s, %d %s, %d %s ", store_data->dirty ? name+1 : name,
+			     nartist, (nartist == 1) ? _("artist") : _("artists"),
+			     nrecord, (nrecord == 1) ? _("record") : _("records"),
+			     ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 		break;
 	}
 
@@ -3634,7 +3634,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
 	if (length > 0.0f || ntrack == 0) {
 		time2time(length, length_str, CHAR_ARRAY_SIZE(length_str));
-		sprintf(tmp, " [%s] ", length_str);
+		arr_snprintf(tmp, " [%s] ", length_str);
 	} else {
 		strcpy(tmp, " [N/A] ");
 	}
@@ -3643,11 +3643,11 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
 	if (options.ms_statusbar_show_size) {
 		if (size > 1024 * 1024) {
-			sprintf(tmp, " (%.1f GB) ", size / (1024 * 1024));
+			arr_snprintf(tmp, " (%.1f GB) ", size / (1024 * 1024));
 		} else if (size > 1024) {
-			sprintf(tmp, " (%.1f MB) ", size / 1024);
+			arr_snprintf(tmp, " (%.1f MB) ", size / 1024);
 		} else if (size > 0 || ntrack == 0) {
-			sprintf(tmp, " (%.1f KB) ", size);
+			arr_snprintf(tmp, " (%.1f KB) ", size);
 		} else {
 			strcpy(tmp, " (N/A) ");
 		}
@@ -4416,11 +4416,11 @@ store_file_load_icons(void) {
 
 	char path[MAXLEN];
 
-	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-artist.png");
+	arr_snprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-artist.png");
 	icon_artist = gdk_pixbuf_new_from_file (path, NULL);
-	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-record.png");
+	arr_snprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-record.png");
 	icon_record = gdk_pixbuf_new_from_file (path, NULL);
-	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-track.png");
+	arr_snprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-track.png");
 	icon_track = gdk_pixbuf_new_from_file (path, NULL);
 }
 

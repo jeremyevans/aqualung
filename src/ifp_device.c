@@ -117,7 +117,7 @@ update_progress (void *context, struct ifp_transfer_status *status) {
         gchar temp[MAXLEN];
 
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_cf), (float)status->file_bytes/status->file_total);
-        sprintf(temp, _("%.1f MB / %.1f MB"), (float)status->file_bytes/(1024*1024), (float)status->file_total/(1024*1024));
+        arr_snprintf(temp, _("%.1f MB / %.1f MB"), (float)status->file_bytes/(1024*1024), (float)status->file_total/(1024*1024));
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar_cf), temp);
 
         if (abort_pressed) {
@@ -159,7 +159,7 @@ upload_songs_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbar_op),
                                       (float)(*n + 1) / number_of_songs);
-        sprintf(temp, _("%d / %d files"), *n + 1, number_of_songs);
+        arr_snprintf(temp, _("%d / %d files"), *n + 1, number_of_songs);
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar_op), temp);
 
         ifp_upload_file(&ifpdev, pldata->file, dest_file, update_progress, NULL);
@@ -205,11 +205,11 @@ download_songs_cb_foreach (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *
                                               (float)(*n + 1) / number_of_songs);
 
                 if (ifp_is_file (&ifpdev, remote_item) == TRUE) {
-                        sprintf(temp, _("%d / %d files"), *n + 1, number_of_songs);
+                        arr_snprintf(temp, _("%d / %d files"), *n + 1, number_of_songs);
                         gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar_op), temp);
                         ifp_download_file (&ifpdev, remote_item, dest_file, update_progress, NULL);
                 } else {
-                        sprintf(temp, _("%d / %d directories"), *n + 1, number_of_songs);
+                        arr_snprintf(temp, _("%d / %d directories"), *n + 1, number_of_songs);
                         gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar_op), temp);
                         ifp_download_dir (&ifpdev, remote_item, dest_file, update_progress, NULL);
                 }
@@ -435,11 +435,11 @@ aifp_remove_item_cb (GtkButton *button, gpointer user_data) {
         if (strncmp(remote_item, PARENTDIR, 2)) {
 
                 if (remote_type == TYPE_DIR) {
-                        sprintf(temp, _("Directory '%s' will be removed with its entire contents.\n\nDo you want to proceed?"),
-                                remote_item);
+                        arr_snprintf(temp, _("Directory '%s' will be removed with its entire contents.\n\nDo you want to proceed?"),
+                                     remote_item);
                 } else {
-                        sprintf(temp, _("File '%s' will be removed.\n\nDo you want to proceed?"),
-                                remote_item);
+                        arr_snprintf(temp, _("File '%s' will be removed.\n\nDo you want to proceed?"),
+                                     remote_item);
                 }
 
                 response = message_dialog(_("Remove"), aifp_window, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
@@ -538,7 +538,7 @@ aifp_dump_files(void *context, int type, const char *name, int filesize) {
 
         if (type == IFP_FILE) {
                 gtk_list_store_append(list_store, &iter);
-                sprintf(temp, "%.1f MB", (double)filesize/(1024*1024));
+                arr_snprintf(temp, "%.1f MB", (double)filesize/(1024*1024));
                 gtk_list_store_set(list_store, &iter, 0, name, 1, temp, -1);
         }
 
@@ -605,8 +605,8 @@ aifp_update_info(void) {
         gfloat space;
 
         if (transfer_mode == UPLOAD_MODE) {
-                sprintf(temp, "%d", number_of_songs);
-                sprintf(tmp, _(" (%.1f MB)"), (float)songs_size / (1024*1024));
+                arr_snprintf(temp, "%d", number_of_songs);
+                arr_snprintf(tmp, _(" (%.1f MB)"), (float)songs_size / (1024*1024));
                 arr_strlcat(temp, tmp);
                 gtk_label_set_text(GTK_LABEL(label_songs), temp);
         }
@@ -616,12 +616,12 @@ aifp_update_info(void) {
 
         ifp_model(&ifpdev, temp, sizeof(temp));
         capacity = ifp_capacity(&ifpdev);
-        sprintf(tmp, _(" (capacity = %.1f MB)"), (float)capacity / (1024*1024));
+        arr_snprintf(tmp, _(" (capacity = %.1f MB)"), (float)capacity / (1024*1024));
         arr_strlcat(temp, tmp);
         gtk_label_set_text(GTK_LABEL(label_model), temp);
 
         freespace = ifp_freespace(&ifpdev);
-        sprintf(temp, _(" Free space (%.1f MB)"), (float)freespace / (1024*1024));
+        arr_snprintf(temp, _(" Free space (%.1f MB)"), (float)freespace / (1024*1024));
 
         space = (float)freespace/capacity;
 
@@ -921,15 +921,15 @@ aifp_transfer_files(gint mode) {
                 if (k != number_of_songs) {
                         if (k) {
                                 if((number_of_songs-k) == 1) {
-                                        sprintf(temp, _("One song has format unsupported by your player.\n\nDo you want to proceed?"));
+                                        arr_snprintf(temp, _("One song has format unsupported by your player.\n\nDo you want to proceed?"));
                                 } else {
-                                        sprintf(temp, _("%d of %d songs have format unsupported by your player.\n\nDo you want to proceed?"), number_of_songs-k, number_of_songs);
+                                        arr_snprintf(temp, _("%d of %d songs have format unsupported by your player.\n\nDo you want to proceed?"), number_of_songs-k, number_of_songs);
                                 }
                         } else {
                                 if (number_of_songs == 1) {
-                                        sprintf(temp, _("The selected song has format unsupported by your player.\n\nDo you want to proceed?"));
+                                        arr_snprintf(temp, _("The selected song has format unsupported by your player.\n\nDo you want to proceed?"));
                                 } else {
-                                        sprintf(temp, _("None of the selected songs has format supported by your player.\n\nDo you want to proceed?"));
+                                        arr_snprintf(temp, _("None of the selected songs has format supported by your player.\n\nDo you want to proceed?"));
                                 }
                         }
 

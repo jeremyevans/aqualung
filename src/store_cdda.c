@@ -1021,23 +1021,23 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 	switch (depth) {
 	case 3:
 		track_status_bar_info(model, tree_iter, &length);
-		sprintf(str, "%s ", name);
+		arr_snprintf(str, "%s ", name);
 		break;
 	case 2:
 		record_status_bar_info(model, tree_iter, &length, &ntrack, &nrecord);
 		if (nrecord == 0) {
-			sprintf(str, "%s:  %s ", _("CD Audio"), name);
+			arr_snprintf(str, "%s:  %s ", _("CD Audio"), name);
 		} else {
-			sprintf(str, "%s:  %d %s ", name,
-				ntrack, (ntrack == 1) ? _("track") : _("tracks"));
+			arr_snprintf(str, "%s:  %d %s ", name,
+				     ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 		}
 		break;
 	case 1:
 		store_status_bar_info(model, tree_iter, &length, &ntrack, &nrecord, &ndrive);
-		sprintf(str, "%s:  %d %s, %d %s, %d %s ", name,
-			ndrive, (ndrive == 1) ? _("drive") : _("drives"),
-			nrecord, (nrecord == 1) ? _("record") : _("records"),
-			ntrack, (ntrack == 1) ? _("track") : _("tracks"));
+		arr_snprintf(str, "%s:  %d %s, %d %s, %d %s ", name,
+			     ndrive, (ndrive == 1) ? _("drive") : _("drives"),
+			     nrecord, (nrecord == 1) ? _("record") : _("records"),
+			     ntrack, (ntrack == 1) ? _("track") : _("tracks"));
 		break;
 	}
 
@@ -1045,7 +1045,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 
 	if (length > 0.0f) {
 		time2time(length, length_str, CHAR_ARRAY_SIZE(length_str));
-		sprintf(tmp, " [%s] ", length_str);
+		arr_snprintf(tmp, " [%s] ", length_str);
 		strcat(str, tmp);
 	}
 
@@ -1241,11 +1241,11 @@ store_cdda_load_icons(void) {
 
 	char path[MAXLEN];
 
-	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda.png");
+	arr_snprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda.png");
 	icon_cdda = gdk_pixbuf_new_from_file (path, NULL);
-	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda-disk.png");
+	arr_snprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda-disk.png");
 	icon_cdda_disc = gdk_pixbuf_new_from_file (path, NULL);
-	sprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda-nodisk.png");
+	arr_snprintf(path, "%s/%s", AQUALUNG_DATADIR, "ms-cdda-nodisk.png");
 	icon_cdda_nodisc = gdk_pixbuf_new_from_file (path, NULL);
 }
 

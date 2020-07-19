@@ -197,7 +197,7 @@ tree_out_nb_selection_changed(GtkObject * tree, gpointer * data) {
 
                 gtk_tree_model_get(model, &iter, 0, &str, -1);
 		label = gtk_label_get_text(GTK_LABEL(nb_out_labels[GPOINTER_TO_INT(data)]));
-		sprintf(fullname, "%s:%s", label, str);
+		arr_snprintf(fullname, "%s:%s", label, str);
 		g_free(str);
 
 		if (out_selector == 0) {

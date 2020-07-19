@@ -655,7 +655,7 @@ refresh_displays(void) {
 
 		if (!httpc_is_url(pldata->file) && !options.use_ext_title_format) {
 			char list_str[MAXLEN];
-			playlist_data_get_display_name(list_str, pldata);
+			playlist_data_get_display_name(list_str, CHAR_ARRAY_SIZE(list_str), pldata);
 			set_title_label(list_str);
 		} else if (!is_file_loaded) {
 			char * name;

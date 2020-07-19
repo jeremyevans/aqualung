@@ -583,7 +583,7 @@ playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 		}
 		if (!name_set) {
 			char list_str[MAXLEN];
-			playlist_data_get_display_name(list_str, tdata);
+			playlist_data_get_display_name(list_str, CHAR_ARRAY_SIZE(list_str), tdata);
 			gtk_tree_store_set(tstore, iter, PL_COL_NAME, list_str, -1);
 		}
 	} else {
@@ -809,7 +809,7 @@ playlist_reset_display_names(void) {
 			if (!gtk_tree_model_iter_has_child(GTK_TREE_MODEL(pl->store), &iter)) {
 				gtk_tree_model_get(GTK_TREE_MODEL(pl->store), &iter, PL_COL_DATA, &data, -1);
 				if (!httpc_is_url(data->file)) {
-					playlist_data_get_display_name(list_str, data);
+					playlist_data_get_display_name(list_str, CHAR_ARRAY_SIZE(list_str), data);
 					gtk_tree_store_set(pl->store, &iter, PL_COL_NAME, list_str, -1);
 				}
 			}
@@ -1594,21 +1594,21 @@ finalize_add_to_playlist(gpointer data) {
 }
 
 void
-playlist_data_get_display_name(char * list_str, playlist_data_t * pldata) {
+playlist_data_get_display_name(char * list_str, size_t list_str_size, playlist_data_t * pldata) {
 
 	if (pldata->display) {
-		strncpy(list_str, pldata->display, MAXLEN-1);
+		g_strlcpy(list_str, pldata->display, list_str_size);
 	} else if (pldata->artist || pldata->album || pldata->title) {
-		make_title_string(list_str, MAXLEN, options.title_format,
+		make_title_string(list_str, list_str_size, options.title_format,
 				  pldata->artist, pldata->album, pldata->title);
 	} else {
 		gchar * tmp = g_filename_display_name(pldata->file);
 		if (options.meta_use_basename_only) {
 			char * bname = g_path_get_basename(tmp);
-			strncpy(list_str, bname, MAXLEN-1);
+			g_strlcpy(list_str, bname, list_str_size);
 			g_free(bname);
 		} else {
-			strncpy(list_str, tmp, MAXLEN-1);
+			g_strlcpy(list_str, tmp, list_str_size);
 		}
 		g_free(tmp);
 
@@ -1699,11 +1699,11 @@ add_file_to_playlist(gpointer data) {
 				    !strcmp(pdata->artist, pldata->artist) && !strcmp(pdata->album, pldata->album)) {
 					strncpy(list_str, pldata->title, MAXLEN-1);
 				} else {
-					playlist_data_get_display_name(list_str, pldata);
+					playlist_data_get_display_name(list_str, CHAR_ARRAY_SIZE(list_str), pldata);
 				}
 			}
 		} else {
-			playlist_data_get_display_name(list_str, pldata);
+			playlist_data_get_display_name(list_str, CHAR_ARRAY_SIZE(list_str), pldata);
 		}
 
 		gtk_tree_store_set(pt->pl->store, &iter,
@@ -2388,7 +2388,7 @@ plist__reread_file_meta_foreach(playlist_t * pl, GtkTreeIter * iter, void * user
 
 	if (!name_set) {
 		char list_str[MAXLEN];
-		playlist_data_get_display_name(list_str, data);
+		playlist_data_get_display_name(list_str, CHAR_ARRAY_SIZE(list_str), data);
 		gtk_tree_store_set(pl->store, iter, PL_COL_NAME, list_str, -1);
 	}
 

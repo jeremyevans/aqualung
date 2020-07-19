@@ -150,7 +150,7 @@ search_foreach(playlist_t * pl, GPatternSpec * pattern, GtkTreeIter * list_iter,
 	if (album_node) {
 		arr_snprintf(text, "%s: %s", pldata->artist, pldata->album);
 	} else {
-		playlist_data_get_display_name(text, pldata);
+		playlist_data_get_display_name(text, CHAR_ARRAY_SIZE(text), pldata);
 	}
 
 	if (casesens) {

@@ -183,7 +183,7 @@ typedef struct {
 } playlist_data_t;
 
 playlist_data_t * playlist_data_new(void);
-void playlist_data_get_display_name(char * list_str, playlist_data_t * pldata);
+void playlist_data_get_display_name(char * list_str, size_t list_str_size, playlist_data_t * pldata);
 
 #define PL_IS_SET_FLAG(plist, flag) (plist->flags & flag)
 #define PL_SET_FLAG(plist, flag) (plist->flags |= flag)

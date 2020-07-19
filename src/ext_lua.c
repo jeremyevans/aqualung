@@ -184,53 +184,27 @@ static int fileinfo_type_int(char * type_string) {
 	return (int)(long)g_hash_table_lookup(fileinfo_type_hash, type_string);
 }
 
-/* Caller is responsible for freeing returned string */
-static char * metadata_value_all(metadata_t * meta, int type) {
-	int l = 0;
-	int t = 0;
-	char * news;
-	char * s = NULL;
-	char * tmp_str;
+/* Caller is responsible for freeing returned GString */
+static GString * metadata_value_all(metadata_t * meta, int type) {
+	GString * out = g_string_new(NULL);
+	gboolean first = TRUE;
 	meta_frame_t * mframe = NULL;
-	while ((mframe = metadata_pref_frame_by_type(meta, type, mframe)) != NULL) {
-		if (mframe->field_val != NULL) {
-			tmp_str = mframe->field_val;
-			l = strlen(tmp_str);
-		} else {
-			if ((l = asprintf(&tmp_str, "%f", mframe->float_val)) == -1) {
-				tmp_str = NULL;
-				goto metadata_value_all_cleanup;
-			} 
-			l += 1;
-		}
-		if (s == NULL) {
-			t = l + 1;
-			if ((s = (char *)malloc(t)) == NULL) {
-				goto metadata_value_all_cleanup;
-			}
-			s[0] = '\0';
-		}
-		else {
-			t += l + 3;
-			if ((news = (char *)realloc(s, t)) == NULL) {
-				goto metadata_value_all_cleanup;
-			}
-			s = news;
-			strncat(s, ", ", 2);
-		}
-		strncat(s, tmp_str, l);
-		if (mframe->field_val == NULL) {
-			free(tmp_str);
-		}
-	}
-	return s;
 
-	metadata_value_all_cleanup:
-	free(s);
-	if (mframe->field_val == NULL) {
-		free(tmp_str);
+	while ((mframe = metadata_pref_frame_by_type(meta, type, mframe)) != NULL) {
+		if (first) {
+			first = FALSE;
+		} else {
+			g_string_append(out, ", ");
+		}
+
+		if (mframe->field_val != NULL) {
+			g_string_append(out, mframe->field_val);
+		} else {
+			g_string_append_printf(out, "%f", mframe->float_val);
+		}
 	}
-	return NULL;
+
+	return out;
 }
 
 static file_decoder_t * l_get_cur_fdec(lua_State * L) {
@@ -254,10 +228,10 @@ static int l_metadata_value(lua_State * L) {
 	}
 	lua_pop(L, 1);
 	fdec = l_get_cur_fdec(L);
-	if ((fdec->meta != NULL) && \
-	    ((s = metadata_value_all(fdec->meta, i)) != NULL)) {
-		lua_pushstring(L, s);
-		free(s);
+	if (fdec->meta != NULL) {
+		GString * mds = metadata_value_all(fdec->meta, i);
+		lua_pushstring(L, mds->str);
+		g_string_free(mds, TRUE);
 	} else {
 		lua_pushstring(L, "");
 	}

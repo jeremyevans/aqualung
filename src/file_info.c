@@ -1102,7 +1102,7 @@ fi_procframe_entry(fi_t * fi, meta_frame_t * frame) {
 
 
 import_data_t *
-make_import_data_from_frame(fi_t * fi, meta_frame_t * frame, char * label) {
+make_import_data_from_frame(fi_t * fi, meta_frame_t * frame, char * label, size_t label_size) {
 
 	import_data_t * data = import_data_new();
 	trashlist_add(fi->trash, data);
@@ -1112,33 +1112,33 @@ make_import_data_from_frame(fi_t * fi, meta_frame_t * frame, char * label) {
 	switch (frame->type) {
 	case META_FIELD_TITLE:
 		data->dest_type = IMPORT_DEST_TITLE;
-		strcpy(label, _("Import as Title"));
+		g_strlcpy(label, _("Import as Title"), label_size);
 		break;
 	case META_FIELD_ARTIST:
 		data->dest_type = IMPORT_DEST_ARTIST;
-		strcpy(label, _("Import as Artist"));
+		g_strlcpy(label, _("Import as Artist"), label_size);
 		break;
 	case META_FIELD_ALBUM:
 		data->dest_type = IMPORT_DEST_RECORD;
-		strcpy(label, _("Import as Record"));
+		g_strlcpy(label, _("Import as Record"), label_size);
 		break;
 	case META_FIELD_DATE:
 		data->dest_type = IMPORT_DEST_YEAR;
-		strcpy(label, _("Import as Year"));
+		g_strlcpy(label, _("Import as Year"), label_size);
 		break;
 	case META_FIELD_TRACKNO:
 		data->dest_type = IMPORT_DEST_NUMBER;
-		strcpy(label, _("Import as Track No."));
+		g_strlcpy(label, _("Import as Track No."), label_size);
 		break;
 	case META_FIELD_RG_TRACK_GAIN:
 	case META_FIELD_RG_ALBUM_GAIN:
 	case META_FIELD_RVA2:
 		data->dest_type = IMPORT_DEST_RVA;
-		strcpy(label, _("Import as RVA"));
+		g_strlcpy(label, _("Import as RVA"), label_size);
 		break;
 	default:
 		data->dest_type = IMPORT_DEST_COMMENT;
-		strcpy(label, _("Add to Comments"));
+		g_strlcpy(label, _("Add to Comments"), label_size);
 		break;
 	}
 
@@ -1153,7 +1153,7 @@ fi_procframe_importbtn(fi_t * fi, meta_frame_t * frame) {
 	GtkWidget * button = gtk_button_new();
 	g_signal_connect(G_OBJECT(button), "clicked",
 			 G_CALLBACK(import_button_pressed),
-			 (gpointer)make_import_data_from_frame(fi, frame, label));
+			 (gpointer)make_import_data_from_frame(fi, frame, label, CHAR_ARRAY_SIZE(label)));
 	gtk_button_set_label(GTK_BUTTON(button), label);
 	return button;
 }

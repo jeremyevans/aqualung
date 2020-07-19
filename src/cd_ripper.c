@@ -177,9 +177,9 @@ ripper_source_write_back(GtkTreeIter * record_iter, char * artist, char * record
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), record_iter, MS_COL_DATA, &drive, -1);
 	disc = &drive->disc;
 
-	strncpy(disc->artist_name, artist, MAXLEN-1);
-	strncpy(disc->record_name, record, MAXLEN-1);
-	strncpy(disc->genre, genre, MAXLEN-1);
+	arr_strlcpy(disc->artist_name, artist);
+	arr_strlcpy(disc->record_name, record);
+	arr_strlcpy(disc->genre, genre);
 	disc->year = year;
 
 	arr_snprintf(tmp, "%s: %s", artist, record);
@@ -881,7 +881,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 			goto ripper_display;
 		}
 
-		strncpy(options.ripdir, destdir, MAXLEN-1);
+		arr_strlcpy(options.ripdir, destdir);
 		options.cdrip_file_format = ripper_format = get_ripper_format();
 		options.cdrip_bitrate = ripper_bitrate = gtk_range_get_value(GTK_RANGE(ripper_bitrate_scale));
 		set_option_from_toggle(ripper_vbr_check, &ripper_vbr);

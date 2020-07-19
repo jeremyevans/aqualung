@@ -105,7 +105,7 @@ entry_filter(const struct dirent *entry) {
                                 g_free(str1);
                                 g_free(str2);
                                 ext_flag = TRUE;
-                                strncpy(temp_filename, entry->d_name, PATH_MAX-1);
+                                arr_strlcpy(temp_filename, entry->d_name);
                                 return TRUE;
                         }
                 

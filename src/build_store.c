@@ -488,7 +488,7 @@ capitalize_new() {
 	model->low_enabled = TRUE;
 	model->mode = CAP_ALL_WORDS;
 
-	strncpy(model->pattern, "CD,a),b),c),d),I,II,III,IV,V,VI,VII,VIII,IX,X", MAXLEN-1);
+	arr_strlcpy(model->pattern, "CD,a),b),c),d),I,II,III,IV,V,VI,VII,VIII,IX,X");
 
 	return model;
 }
@@ -650,7 +650,7 @@ capitalize_gui_sync(capitalize_gui_t * gui) {
 	gui->model->low_enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gui->check_low));
 
 	gui->model->mode = gtk_combo_box_get_active(GTK_COMBO_BOX(gui->combo));
-	strncpy(gui->model->pattern, gtk_entry_get_text(GTK_ENTRY(gui->entry_pre)), MAXLEN-1);
+	arr_strlcpy(gui->model->pattern, gtk_entry_get_text(GTK_ENTRY(gui->entry_pre)));
 
 	gui->model->pre_stringv =
 		g_strsplit(gtk_entry_get_text(GTK_ENTRY(gui->entry_pre)), ",", 0);
@@ -816,8 +816,8 @@ file_transform_gui_sync(file_transform_gui_t * gui) {
 	gui->model->us_to_space = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gui->check_us_to_space));
 	gui->model->rm_multi_spaces = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gui->check_rm_multi_spaces));
 
-	strncpy(gui->model->regexp, gtk_entry_get_text(GTK_ENTRY(gui->entry_regexp)), MAXLEN-1);
-	strncpy(gui->model->replacement, gtk_entry_get_text(GTK_ENTRY(gui->entry_replacement)), MAXLEN-1);
+	arr_strlcpy(gui->model->regexp, gtk_entry_get_text(GTK_ENTRY(gui->entry_regexp)));
+	arr_strlcpy(gui->model->replacement, gtk_entry_get_text(GTK_ENTRY(gui->entry_replacement)));
 
 	gtk_widget_hide(gui->label_error);
 
@@ -1531,7 +1531,7 @@ snd_button_test_clicked(GtkWidget * widget, gpointer user_data) {
 	}
 
 	buf[0] = '\0';
-	strncpy(buf, (char *)gtk_entry_get_text(GTK_ENTRY(data->snd_entry_input)), MAXLEN-1);
+	arr_strlcpy(buf, gtk_entry_get_text(GTK_ENTRY(data->snd_entry_input)));
 	file_transform(buf, data->snd_file_trans_gui->model);
 
 	regfree(&data->snd_file_trans_gui->model->compiled);
@@ -2307,7 +2307,7 @@ void
 set_prog_file_entry(build_store_t * data, char * path) {
 
 	AQUALUNG_MUTEX_LOCK(data->mutex);
-	strncpy(data->path, path, MAXLEN-1);
+	arr_strlcpy(data->path, path);
         AQUALUNG_MUTEX_UNLOCK(data->mutex);
 
 	aqualung_idle_add(set_prog_file_entry_idle, data);
@@ -2331,7 +2331,7 @@ void
 set_prog_action_label(build_store_t * data, char * action) {
 
 	AQUALUNG_MUTEX_LOCK(data->mutex);
-	strncpy(data->action, action, MAXLEN-1);
+	arr_strlcpy(data->action, action);
 	AQUALUNG_MUTEX_UNLOCK(data->mutex);
 
 	aqualung_idle_add(set_prog_action_label_idle, data);
@@ -2386,13 +2386,13 @@ file_transform(char * buf, file_transform_t * model) {
 		}
 
 		if (!*tmp) {
-			strncpy(tmp, p + offs, MAXLEN-1);
+			arr_strlcpy(tmp, p + offs);
 		} else {
 			strcat(tmp, p + offs);
 		}
 
 	} else {
-		strncpy(tmp, buf, MAXLEN-1);
+		arr_strlcpy(tmp, buf);
 	}
 
 
@@ -2633,7 +2633,7 @@ process_meta(build_store_t * data, build_disc_t * disc) {
 			}
 
 			if (metadata_get_title(fdec->meta, &tmp) && !is_all_wspace(tmp)) {
-				strncpy(ptrack->name[DATA_SRC_META], tmp, MAXLEN-1);
+				arr_strlcpy(ptrack->name[DATA_SRC_META], tmp);
 			}
 
 			if (disc->record.year[0] == '\0' &&
@@ -2655,7 +2655,7 @@ process_meta(build_store_t * data, build_disc_t * disc) {
 			    metadata_get_comment(fdec->meta, &tmp) &&
 			    !is_all_wspace(tmp)) {
 
-				strncpy(ptrack->comment, tmp, MAXLEN-1);
+				arr_strlcpy(ptrack->comment, tmp);
 			}
 			file_decoder_close(fdec);
 		}
@@ -2663,15 +2663,15 @@ process_meta(build_store_t * data, build_disc_t * disc) {
 	}
 
 	if (map_artist) {
-		strncpy(disc->artist.name[DATA_SRC_META], map_get_max(map_artist), MAXLEN-1);
+		arr_strlcpy(disc->artist.name[DATA_SRC_META], map_get_max(map_artist));
 	}
 
 	if (map_record) {
-		strncpy(disc->record.name[DATA_SRC_META], map_get_max(map_record), MAXLEN-1);
+		arr_strlcpy(disc->record.name[DATA_SRC_META], map_get_max(map_record));
 	}
 
 	if (map_year) {
-		strncpy(disc->record.year, map_get_max(map_year), MAXLEN-1);
+		arr_strlcpy(disc->record.year, map_get_max(map_year));
 	}
 
 	map_free(map_artist);
@@ -2927,7 +2927,7 @@ get_file_list(build_store_t * data, char * dir_record, build_disc_t * disc, int 
 	n = scandir(dir_record, &ent_track, filter, alphasort);
 	for (i = 0; i < n; i++) {
 
-		strncpy(basename, ent_track[i]->d_name, MAXLEN-1);
+		arr_strlcpy(basename, ent_track[i]->d_name);
 		arr_snprintf(filename, "%s/%s", dir_record, ent_track[i]->d_name);
 
 		if (is_dir(filename) || !filter_excl_incl(data, basename)) {
@@ -2943,10 +2943,10 @@ get_file_list(build_store_t * data, char * dir_record, build_disc_t * disc, int 
 				fprintf(stderr, "build_store.c: get_file_list(): calloc error\n");
 				return;
 			} else {
-				strncpy(track->filename, filename, MAXLEN-1);
+				arr_strlcpy(track->filename, filename);
 
 				utf8 = g_filename_display_name(ent_track[i]->d_name);
-				strncpy(track->d_name, utf8, MAXLEN-1);
+				arr_strlcpy(track->d_name, utf8);
 				g_free(utf8);
 
 				track->duration = duration;
@@ -2986,13 +2986,12 @@ process_filename(build_store_t * data, build_disc_t * disc) {
 		if (data->data_src_artist->enabled[i]) {
 
 			if (data->data_src_artist->type[i] == DATA_SRC_FILE) {
-				strncpy(disc->artist.name[DATA_SRC_FILE],
-					disc->artist.d_name, MAXLEN-1);
+				arr_strlcpy(disc->artist.name[DATA_SRC_FILE], disc->artist.d_name);
 			}
 
 			if (disc->artist.name[data->data_src_artist->type[i]][0] != '\0') {
-				strncpy(disc->artist.final,
-					disc->artist.name[data->data_src_artist->type[i]], MAXLEN-1);
+				arr_strlcpy(disc->artist.final,
+					    disc->artist.name[data->data_src_artist->type[i]]);
 				break;
 			}
 		}
@@ -3002,9 +3001,9 @@ process_filename(build_store_t * data, build_disc_t * disc) {
 		if (data->type == BUILD_TYPE_STRICT) {
 			char tmp[MAXLEN];
 			arr_snprintf(tmp, "%s (%s)", _("Unknown Artist"), disc->artist.d_name);
-			strncpy(disc->artist.final, tmp, MAXLEN-1);
+			arr_strlcpy(disc->artist.final, tmp);
 		} else {
-			strncpy(disc->artist.final, _("Unknown Artist"), MAXLEN-1);
+			arr_strlcpy(disc->artist.final, _("Unknown Artist"));
 		}
 		disc->artist.unknown = 1;
 	} else {
@@ -3023,13 +3022,12 @@ process_filename(build_store_t * data, build_disc_t * disc) {
 		if (data->data_src_record->enabled[i]) {
 
 			if (data->data_src_record->type[i] == DATA_SRC_FILE) {
-				strncpy(disc->record.name[DATA_SRC_FILE],
-					disc->record.d_name, MAXLEN-1);
+				arr_strlcpy(disc->record.name[DATA_SRC_FILE], disc->record.d_name);
 			}
 
 			if(disc->record.name[data->data_src_record->type[i]][0] != '\0') {
-				strncpy(disc->record.final,
-					disc->record.name[data->data_src_record->type[i]], MAXLEN-1);
+				arr_strlcpy(disc->record.final,
+					    disc->record.name[data->data_src_record->type[i]]);
 				break;
 			}
 		}
@@ -3039,9 +3037,9 @@ process_filename(build_store_t * data, build_disc_t * disc) {
 		if (data->type == BUILD_TYPE_STRICT) {
 			char tmp[MAXLEN];
 			arr_snprintf(tmp, "%s (%s)", _("Unknown Record"), disc->record.d_name);
-			strncpy(disc->record.final, tmp, MAXLEN-1);
+			arr_strlcpy(disc->record.final, tmp);
 		} else {
-			strncpy(disc->record.final, disc->record.dirname, MAXLEN-1);
+			arr_strlcpy(disc->record.final, disc->record.dirname);
 		}
 		disc->record.unknown = 1;
 	} else {
@@ -3057,27 +3055,26 @@ process_filename(build_store_t * data, build_disc_t * disc) {
 
 	for (i = 0, ptrack = disc->tracks; ptrack; i++, ptrack = ptrack->next) {
 
-		strncpy(ptrack->name[DATA_SRC_FILE], ptrack->d_name, MAXLEN-1);
+		arr_strlcpy(ptrack->name[DATA_SRC_FILE], ptrack->d_name);
 
 		for (j = 0; j < 3; j++) {
 
 			if (data->data_src_track->enabled[j]) {
 
 				if (data->data_src_track->type[i] == DATA_SRC_FILE) {
-					strncpy(ptrack->name[DATA_SRC_FILE],
-						ptrack->d_name, MAXLEN-1);
+					arr_strlcpy(ptrack->name[DATA_SRC_FILE], ptrack->d_name);
 				}
 
 				if (ptrack->name[data->data_src_track->type[j]][0] != '\0') {
-					strncpy(ptrack->final,
-						ptrack->name[data->data_src_track->type[j]], MAXLEN-1);
+					arr_strlcpy(ptrack->final,
+						    ptrack->name[data->data_src_track->type[j]]);
 					break;
 				}
 			}
 		}
 
 		if (j == 3) {
-			strncpy(ptrack->final, ptrack->d_name, MAXLEN-1);
+			arr_strlcpy(ptrack->final, ptrack->d_name);
 		} else {
 			file_transform(ptrack->final, data->file_transform_track);
 
@@ -3092,19 +3089,19 @@ process_filename(build_store_t * data, build_disc_t * disc) {
 
 	switch (data->artist_sort_by) {
 	case SORT_NAME:
-		strncpy(disc->artist.sort, disc->artist.final, MAXLEN-1);
+		arr_strlcpy(disc->artist.sort, disc->artist.final);
 		break;
 	case SORT_NAME_LOW:
 		utf8 = g_utf8_strdown(disc->artist.final, -1);
-		strncpy(disc->artist.sort, utf8, MAXLEN-1);
+		arr_strlcpy(disc->artist.sort, utf8);
 		g_free(utf8);
 		break;
 	case SORT_DIR:
-		strncpy(disc->artist.sort, disc->artist.d_name, MAXLEN-1);
+		arr_strlcpy(disc->artist.sort, disc->artist.d_name);
 		break;
 	case SORT_DIR_LOW:
 		utf8 = g_utf8_strdown(disc->artist.d_name, -1);
-		strncpy(disc->artist.sort, utf8, MAXLEN-1);
+		arr_strlcpy(disc->artist.sort, utf8);
 		g_free(utf8);
 		break;
 	}
@@ -3112,27 +3109,27 @@ process_filename(build_store_t * data, build_disc_t * disc) {
 	if (disc->artist.unknown) {
 		char tmp[MAXLEN];
 		arr_snprintf(tmp, "0 %s", disc->artist.sort);
-		strncpy(disc->artist.sort, tmp, MAXLEN-1);
+		arr_strlcpy(disc->artist.sort, tmp);
 	}
 
 	switch (data->record_sort_by) {
 	case SORT_YEAR:
-		strncpy(disc->record.sort, disc->record.year, MAXLEN-1);
+		arr_strlcpy(disc->record.sort, disc->record.year);
 		break;
 	case SORT_NAME:
-		strncpy(disc->record.sort, disc->record.final, MAXLEN-1);
+		arr_strlcpy(disc->record.sort, disc->record.final);
 		break;
 	case SORT_NAME_LOW:
 		utf8 = g_utf8_strdown(disc->record.final, -1);
-		strncpy(disc->record.sort, utf8, MAXLEN-1);
+		arr_strlcpy(disc->record.sort, utf8);
 		g_free(utf8);
 		break;
 	case SORT_DIR:
-		strncpy(disc->record.sort, disc->record.d_name, MAXLEN-1);
+		arr_strlcpy(disc->record.sort, disc->record.d_name);
 		break;
 	case SORT_DIR_LOW:
 		utf8 = g_utf8_strdown(disc->record.d_name, -1);
-		strncpy(disc->record.sort, utf8, MAXLEN-1);
+		arr_strlcpy(disc->record.sort, utf8);
 		g_free(utf8);
 		break;
 	}
@@ -3140,7 +3137,7 @@ process_filename(build_store_t * data, build_disc_t * disc) {
 	if (disc->record.unknown) {
 		char tmp[MAXLEN];
 		arr_snprintf(tmp, "0 %s", disc->record.sort);
-		strncpy(disc->record.sort, tmp, MAXLEN-1);
+		arr_strlcpy(disc->record.sort, tmp);
 	}
 }
 
@@ -3191,11 +3188,11 @@ process_record(build_store_t * data, char * dir_record, char * artist_d_name, ch
 	}
 
 	utf8 = g_filename_display_name(artist_d_name);
-	strncpy(disc->artist.d_name, utf8, MAXLEN-1);
+	arr_strlcpy(disc->artist.d_name, utf8);
 	g_free(utf8);
 
 	utf8 = g_filename_display_name(record_d_name);
-	strncpy(disc->record.d_name, utf8, MAXLEN-1);
+	arr_strlcpy(disc->record.d_name, utf8);
 	g_free(utf8);
 
 
@@ -3272,11 +3269,11 @@ process_record(build_store_t * data, char * dir_record, char * artist_d_name, ch
 				 &year, tracks, MAXLEN);
 
 		if (artist[0] != '\0') {
-			strncpy(disc->artist.name[DATA_SRC_CDDB], artist, MAXLEN-1);
+			arr_strlcpy(disc->artist.name[DATA_SRC_CDDB], artist);
 		}
 
 		if (record[0] != '\0') {
-			strncpy(disc->record.name[DATA_SRC_CDDB], record, MAXLEN-1);
+			arr_strlcpy(disc->record.name[DATA_SRC_CDDB], record);
 		}
 
 		if (year > 0) {
@@ -3284,7 +3281,7 @@ process_record(build_store_t * data, char * dir_record, char * artist_d_name, ch
 		}
 
 		for (i = 0, ptrack = disc->tracks; ptrack && i < ntracks; i++, ptrack = ptrack->next) {
-			strncpy(ptrack->name[DATA_SRC_CDDB], tracks[i], MAXLEN-1);
+			arr_strlcpy(ptrack->name[DATA_SRC_CDDB], tracks[i]);
 			free(tracks[i]);
 		}
 
@@ -3298,7 +3295,7 @@ process_record(build_store_t * data, char * dir_record, char * artist_d_name, ch
 
 
 	if (data->rec_add_year_to_comment) {
-		strncpy(disc->record.comment, disc->record.year, MAXLEN-1);
+		arr_strlcpy(disc->record.comment, disc->record.year);
 	}
 
 
@@ -3345,16 +3342,16 @@ process_track(build_store_t * data, char * filename, char * d_name, float durati
 		char * utf8;
 
 		utf8 = g_filename_display_name(d_name);
-		strncpy(disc->tracks->d_name, utf8, MAXLEN-1);
-		strncpy(disc->record.d_name, utf8, MAXLEN-1);
-		strncpy(disc->artist.d_name, utf8, MAXLEN-1);
+		arr_strlcpy(disc->tracks->d_name, utf8);
+		arr_strlcpy(disc->record.d_name, utf8);
+		arr_strlcpy(disc->artist.d_name, utf8);
 		g_free(utf8);
 
 		utf8 = g_filename_display_name(filename);
-		strncpy(disc->record.dirname, g_path_get_dirname(utf8), MAXLEN-1);
+		arr_strlcpy(disc->record.dirname, g_path_get_dirname(utf8));
 		g_free(utf8);
 
-		strncpy(disc->tracks->filename, filename, MAXLEN-1);
+		arr_strlcpy(disc->tracks->filename, filename);
 		disc->tracks->duration = duration;
 		disc->tracks->rva = 1.0f;
 		disc->tracks->rva_found = 0;
@@ -3380,7 +3377,7 @@ process_track(build_store_t * data, char * filename, char * d_name, float durati
 
 
 	if (data->rec_add_year_to_comment) {
-		strncpy(disc->record.comment, disc->record.year, MAXLEN-1);
+		arr_strlcpy(disc->record.comment, disc->record.year);
 	}
 
 

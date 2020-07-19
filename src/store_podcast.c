@@ -358,7 +358,7 @@ podcast_dialog(podcast_t ** podcast, int create) {
 			char dir[MAXLEN];
 			char url[MAXLEN];
 
-			strncpy(url, gtk_entry_get_text(GTK_ENTRY(url_entry)), MAXLEN-1);
+			arr_strlcpy(url, gtk_entry_get_text(GTK_ENTRY(url_entry)));
 			if (url[0] == '\0') {
 				gtk_widget_grab_focus(url_entry);
 				goto display;
@@ -377,7 +377,7 @@ podcast_dialog(podcast_t ** podcast, int create) {
 			normalize_filename(pdir, dir, CHAR_ARRAY_SIZE(dir));
 			(*podcast)->dir = strdup(dir);
 			(*podcast)->url = strdup(url);
-			strncpy(options.podcastdir, dir, MAXLEN-1);
+			arr_strlcpy(options.podcastdir, dir);
 		}
 
 		if (options.podcasts_autocheck || create) {
@@ -1032,8 +1032,8 @@ podcast_track_export(GtkTreeIter * iter_track, export_t * export, char * author,
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_podcast, MS_COL_DATA, &podcast, -1);
 	}
 
-	strncpy(artist, (author == NULL) ? podcast->author : author, MAXLEN-1);
-	strncpy(album, (feed == NULL) ? podcast->title : feed, MAXLEN-1);
+	arr_strlcpy(artist, (author == NULL) ? podcast->author : author);
+	arr_strlcpy(album, (feed == NULL) ? podcast->title : feed);
 
 	export_append_item(export, item->file, artist, album, title, 0, 0);
 

@@ -503,7 +503,7 @@ add_store_dialog(char * name, size_t name_size, store_data_t ** data) {
 		normalize_filename(pfile, file, CHAR_ARRAY_SIZE(file));
 		free_strdup(&(*data)->file, file);
 
-		strncpy(options.storedir, file, MAXLEN-1);
+		arr_strlcpy(options.storedir, file);
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_start, 0);
 		gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(buffer), &iter_end, -1);
 		free_strdup(&(*data)->comment, gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer),
@@ -1938,7 +1938,7 @@ store__edit_cb(gpointer user_data) {
 			return;
 		}
 
-		strncpy(name, pname, MAXLEN-1);
+		arr_strlcpy(name, pname);
 		g_free(pname);
 
 		offset = ((data->dirty) ? 1 : 0);
@@ -2032,7 +2032,7 @@ store__remove_cb(gpointer user_data) {
 				   MS_COL_NAME, &pname,
 				   MS_COL_DATA, &data, -1);
 
-		strncpy(name, pname, MAXLEN-1);
+		arr_strlcpy(name, pname);
                 g_free(pname);
 
 		arr_snprintf(text, _("Really remove store \"%s\" from the Music Store?"),
@@ -2189,8 +2189,8 @@ artist__edit_cb(gpointer user_data) {
 				   MS_COL_SORT, &psort,
 				   MS_COL_DATA, &data, -1);
 
-		strncpy(name, pname, MAXLEN-1);
-		strncpy(sort, psort, MAXLEN-1);
+		arr_strlcpy(name, pname);
+		arr_strlcpy(sort, psort);
                 g_free(pname);
                 g_free(psort);
 
@@ -2421,8 +2421,8 @@ record__edit_cb(gpointer user_data) {
 				   MS_COL_SORT, &psort,
 				   MS_COL_DATA, &data, -1);
 
-		strncpy(name, pname, MAXLEN-1);
-		strncpy(sort, psort, MAXLEN-1);
+		arr_strlcpy(name, pname);
+		arr_strlcpy(sort, psort);
                 g_free(pname);
                 g_free(psort);
 
@@ -2645,8 +2645,8 @@ track__edit_cb(gpointer user_data) {
 				   MS_COL_SORT, &psort,
 				   MS_COL_DATA, &data, -1);
 
-                strncpy(name, pname, MAXLEN-1);
-                strncpy(sort, psort, MAXLEN-1);
+                arr_strlcpy(name, pname);
+                arr_strlcpy(sort, psort);
                 g_free(pname);
                 g_free(psort);
 
@@ -2764,12 +2764,12 @@ track_export(GtkTreeIter * iter_track, export_t * export, char * _artist, char *
 				   MS_COL_NAME, &tmp,
 				   MS_COL_DATA, &record_data, -1);
 
-		strncpy(album, tmp, MAXLEN-1);
+		arr_strlcpy(album, tmp);
 		g_free(tmp);
 
 		year = record_data->year;
 	} else {
-		strncpy(album, _album, MAXLEN-1);
+		arr_strlcpy(album, _album);
 	}
 
 	if (_artist == NULL) {
@@ -2779,10 +2779,10 @@ track_export(GtkTreeIter * iter_track, export_t * export, char * _artist, char *
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist,
 				   MS_COL_NAME, &tmp, -1);
 
-		strncpy(artist, tmp, MAXLEN-1);
+		arr_strlcpy(artist, tmp);
 		g_free(tmp);
 	} else {
-		strncpy(artist, _artist, MAXLEN-1);
+		arr_strlcpy(artist, _artist);
 	}
 
 	export_append_item(export, track_data->file, artist, album, title, year, no);
@@ -2813,10 +2813,10 @@ record_export(GtkTreeIter * iter_record, export_t * export, char * _artist) {
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist,
 				   MS_COL_NAME, &tmp, -1);
 
-		strncpy(artist, tmp, MAXLEN-1);
+		arr_strlcpy(artist, tmp);
 		g_free(tmp);
 	} else {
-		strncpy(artist, _artist, MAXLEN-1);
+		arr_strlcpy(artist, _artist);
 	}
 
 	i = 0;
@@ -3275,22 +3275,22 @@ track_batch_tag(gpointer data) {
 			   MS_COL_SORT, &track,
 			   MS_COL_DATA, &track_data, -1);
 
-	strncpy(ptag->artist, artist_tag, MAXLEN-1);
-	strncpy(ptag->album, album_tag, MAXLEN-1);
-	strncpy(ptag->year, year_tag, MAXLEN-1);
-	strncpy(ptag->title, title, MAXLEN-1);
+	arr_strlcpy(ptag->artist, artist_tag);
+	arr_strlcpy(ptag->album, album_tag);
+	arr_strlcpy(ptag->year, year_tag);
+	arr_strlcpy(ptag->title, title);
 	if (sscanf(track, "%d", &ptag->trackno) < 1) {
 		ptag->trackno = -1;
 	}
 
 	if (track_data->file != NULL) {
-		strncpy(ptag->filename, track_data->file, MAXLEN-1);
+		arr_strlcpy(ptag->filename, track_data->file);
 	} else {
 		ptag->filename[0] = '\0';
 	}
 
 	if (track_data->comment != NULL) {
-		strncpy(ptag->comment, track_data->comment, MAXLEN-1);
+		arr_strlcpy(ptag->comment, track_data->comment);
 	} else {
 		ptag->comment[0] = '\0';
 	}
@@ -3314,7 +3314,7 @@ record_batch_tag_set_from_iter(GtkTreeIter * iter) {
 	record_data_t * data;
 
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_NAME, &str, -1);
-	strncpy(album_tag, str, MAXLEN-1);
+	arr_strlcpy(album_tag, str);
 	g_free(str);
 
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_DATA, &data, -1);
@@ -3349,7 +3349,7 @@ artist_batch_tag_set_from_iter(GtkTreeIter * iter) {
 
 	char * str;
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_NAME, &str, -1);
-	strncpy(artist_tag, str, MAXLEN-1);
+	arr_strlcpy(artist_tag, str);
 	g_free(str);
 }
 
@@ -3732,7 +3732,7 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record, char * sto
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
-				strncpy(name, (char *) key, MAXLEN-1);
+				arr_strlcpy(name, (char *) key);
 				xmlFree(key);
 			}
 			if (name[0] == '\0') {
@@ -3742,7 +3742,7 @@ parse_track(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_record, char * sto
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"sort_name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
-				strncpy(sort, (char *) key, MAXLEN-1);
+				arr_strlcpy(sort, (char *) key);
 				xmlFree(key);
 			}
 			gtk_tree_store_set(music_store, &iter_track, MS_COL_SORT, sort, -1);
@@ -3844,7 +3844,7 @@ parse_record(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_artist, char * st
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
-				strncpy(name, (char *) key, MAXLEN-1);
+				arr_strlcpy(name, (char *) key);
 				xmlFree(key);
 			}
 			if (name[0] == '\0') {
@@ -3855,7 +3855,7 @@ parse_record(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_artist, char * st
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"sort_name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
-				strncpy(sort, (char *) key, MAXLEN-1);
+				arr_strlcpy(sort, (char *) key);
 				/* parse year from sort key if otherwise not set */
 				if (is_valid_year(atoi(sort)) && !is_valid_year(data->year)) {
 					data->year = atoi(sort);
@@ -3916,7 +3916,7 @@ parse_artist(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_store, char * sto
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
-				strncpy(name, (char *) key, MAXLEN-1);
+				arr_strlcpy(name, (char *) key);
 				xmlFree(key);
 			}
 			if (name[0] == '\0') {
@@ -3927,7 +3927,7 @@ parse_artist(xmlDocPtr doc, xmlNodePtr cur, GtkTreeIter * iter_store, char * sto
 		} else if ((!xmlStrcmp(cur->name, (const xmlChar *)"sort_name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
-				strncpy(sort, (char *) key, MAXLEN-1);
+				arr_strlcpy(sort, (char *) key);
 				xmlFree(key);
 			}
 			gtk_tree_store_set(music_store, &iter_artist, MS_COL_SORT, sort, -1);
@@ -4019,7 +4019,7 @@ store_file_load(char * store_file, char * sort) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"name"))) {
 			key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (key != NULL) {
-				strncpy(name, (char *) key, MAXLEN-1);
+				arr_strlcpy(name, (char *) key);
 				xmlFree(key);
 			}
 			if (name[0] == '\0') {

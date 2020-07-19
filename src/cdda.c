@@ -313,7 +313,7 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 		if (!cdda_drive->cdio) {
 			return -1;
 		}		
-		strncpy(cdda_drive->device_path, device_path, CDDA_MAXLEN-1);
+		arr_strlcpy(cdda_drive->device_path, device_path);
 	}
 	
 	cdda_drive->disc.n_tracks = 0;
@@ -368,8 +368,8 @@ cdda_scan_drive(char * device_path, cdda_drive_t * cdda_drive) {
 	cdda_drive->disc.hash = calc_cdda_hash(&cdda_drive->disc);
 
 	if (cdda_drive->disc.hash != cdda_drive->disc.hash_prev) {
-		strncpy(cdda_drive->disc.artist_name, _("Unknown Artist"), MAXLEN-1);
-		strncpy(cdda_drive->disc.record_name, _("Unknown Record"), MAXLEN-1);
+		arr_strlcpy(cdda_drive->disc.artist_name, _("Unknown Artist"));
+		arr_strlcpy(cdda_drive->disc.record_name, _("Unknown Record"));
 
 		cdda_drive->swap_bytes = -1; /* unknown */
 	}
@@ -620,14 +620,14 @@ update_track_data_from_cdtext(cdda_drive_t * drive, GtkTreeIter * iter_drive) {
 
 		performer = cdda_get_cdtext(cdio, CDTEXT_FIELD_PERFORMER, i);
 		if (performer && *performer != '\0') {
-			g_strlcpy(drive->disc.artist_name, performer, MAXLEN);
+			arr_strlcpy(drive->disc.artist_name, performer);
 		} else {
 			ret = 1;
 		}
 
 		title = cdda_get_cdtext(cdio, CDTEXT_FIELD_TITLE, i);
 		if (title && *title != '\0') {
-			g_strlcpy(drive->disc.record_name, title, MAXLEN);
+			arr_strlcpy(drive->disc.record_name, title);
 		} else {
 			ret = 1;
 		}

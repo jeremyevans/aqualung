@@ -667,7 +667,7 @@ save_pic_button_pressed(GtkWidget * widget, gpointer data) {
 		}
 		fclose(f);
 
-		strncpy(options.currdir, filename, MAXLEN-1);
+		arr_strlcpy(options.currdir, filename);
 	}
 }
 
@@ -680,21 +680,21 @@ save_pic_update(save_pic_t * save_pic, fi_t * fi, meta_frame_t * frame) {
 	char savefilename[256];
 
 	mtype[0] = '\0';
-	strcpy(savefilename, "picture.");
+	arr_strlcpy(savefilename, "picture.");
 	r = sscanf(frame->field_name, "image/%s", mtype);
 	if (r == 0) {
-		strncpy(mtype, frame->field_name, 19);
+		arr_strlcpy(mtype, frame->field_name);
 	}
 	for (i = 0; mtype[i] != '\0'; i++) {
 		mtype[i] = tolower(mtype[i]);
 	}
 	if (mtype[0] == '\0') {
-		strcpy(mtype, "dat");
+		arr_strlcpy(mtype, "dat");
 	}
 	arr_strlcat(savefilename, mtype);
 
 	save_pic->fi = fi;
-	strncpy(save_pic->savefile, savefilename, MAXLEN-1);
+	arr_strlcpy(save_pic->savefile, savefilename);
 	save_pic->image_size = frame->length;
 	save_pic->image_data = frame->data;
 
@@ -1856,11 +1856,11 @@ fi_set_common_entries(fi_t * fi) {
 		int mode = WavpackGetMode(pd->wpc);
 
 		if ((mode & MODE_LOSSLESS) && (mode & MODE_WVC)) {
-			strncpy(str, "Hybrid Lossless", MAXLEN-1);
+			arr_strlcpy(str, "Hybrid Lossless");
 		} else if (mode & MODE_LOSSLESS) {
-			strncpy(str, "Lossless", MAXLEN-1);
+			arr_strlcpy(str, "Lossless");
 		} else {
-			strncpy(str, "Hybrid Lossy", MAXLEN-1);
+			arr_strlcpy(str, "Hybrid Lossy");
 		}
 		cut_trailing_whitespace(str);
 		gtk_entry_set_text(GTK_ENTRY(fi->entry_mode), str);

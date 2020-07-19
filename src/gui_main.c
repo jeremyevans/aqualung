@@ -357,7 +357,7 @@ set_title_label(char * str) {
 
 	if (is_file_loaded) {
 		/* Remember current title. */
-		strncpy(playing_app_title, str, MAXLEN-1);
+		arr_strlcpy(playing_app_title, str);
 
 		gtk_label_set_text(GTK_LABEL(label_title), str);
 		if (options.show_sn_title) {
@@ -516,7 +516,7 @@ set_output_label(int output, int out_SR) {
 		break;
 #endif /* HAVE_WINMM */
 	default:
-		strncpy(str, _("No output"), MAXLEN-1);
+		arr_strlcpy(str, _("No output"));
 		break;
 	}
 
@@ -1655,7 +1655,7 @@ cue_track_for_playback(GtkTreeStore * store, GtkTreeIter * piter, cue_t * cue) {
 	gtk_tree_model_get(GTK_TREE_MODEL(store), piter, PL_COL_DATA, &data, -1);
 	cue->filename = strdup(data->file);
 	cue->voladj = options.rva_is_enabled ? data->voladj : 0.0f;
-	strncpy(current_file, cue->filename, MAXLEN-1);
+	arr_strlcpy(current_file, cue->filename);
 }
 
 
@@ -3858,7 +3858,7 @@ process_metablock(metadata_t * meta) {
 
 	// Abuse artist variable
 	if ((artist = application_title_format(fdec)) != NULL) {
-		strncpy(buf, artist, MAXLEN-1);
+		arr_strlcpy(buf, artist);
 		free(artist);
 		artist = NULL;
 	}
@@ -3878,7 +3878,7 @@ process_metablock(metadata_t * meta) {
 				arr_snprintf(buf, "%s (%s)", tmp, icy_name);
 			}
 		} else if (icy_name != NULL) {
-			strncpy(buf, icy_name, MAXLEN-1);
+			arr_strlcpy(buf, icy_name);
 		}
 	}
 
@@ -3899,7 +3899,7 @@ process_metablock(metadata_t * meta) {
 	if (icy_descr != NULL) {
 		arr_snprintf(buf, "%s (%s)", icy_name, icy_descr);
 	} else {
-		strncpy(buf, icy_name, MAXLEN-1);
+		arr_strlcpy(buf, icy_name);
 	}
 
 	/* set playlist_str for playlist entry */

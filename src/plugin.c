@@ -384,7 +384,7 @@ instantiate(char * filename, int index) {
 		return NULL;
 	}
 
-	strncpy(instance->filename, filename, MAXLEN-1);
+	arr_strlcpy(instance->filename, filename);
 	instance->index = index;
 
 	instance->library = dlopen(filename, RTLD_NOW);
@@ -807,7 +807,7 @@ build_plugin_window(plugin_instance * instance) {
         gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(upper_vbox), hbox, FALSE, FALSE, 2);
 
-	strncpy(maker, plugin->Maker, MAXLEN-1);
+	arr_strlcpy(maker, plugin->Maker);
 	if ((c = strchr(maker, '<')) != NULL)
 		*c = '\0';
 	widget = gtk_label_new(maker);
@@ -1470,7 +1470,7 @@ foreach_plugin_to_add(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter * it
 	
 	sscanf(str_n_ins, "%d", &n_ins);
 	sscanf(str_n_outs, "%d", &n_outs);
-	strncpy(filename, str_filename, MAXLEN-1);
+	arr_strlcpy(filename, str_filename);
 	sscanf(str_index, "%d", &index);
 	
 	if (((n_ins == 1) && (n_outs == 1)) ||
@@ -2113,7 +2113,7 @@ parse_plugin(xmlDocPtr doc, xmlNodePtr cur) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"filename"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(filename, (char *) key, MAXLEN-1);
+                                arr_strlcpy(filename, (char *) key);
                         xmlFree(key);
                         if (filename[0] == '\0') {
                                 fprintf(stderr, "Error in XML aqualung_plugin: "

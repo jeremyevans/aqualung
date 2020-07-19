@@ -402,7 +402,7 @@ static int l_add_playlist_menu_command(lua_State * L) {
 	/* Copy the string to a Lua userdata for a constant valid address and automatic cleanup */
 	num_chars = strlen(path);
 	lua_path = lua_newuserdata(L, num_chars + 1);
-	strncpy(lua_path, path, num_chars);
+	g_strlcpy(lua_path, path, num_chars + 1);
 
 	entry = gtk_menu_item_new_with_label(name);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), entry);

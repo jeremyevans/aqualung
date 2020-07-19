@@ -366,10 +366,10 @@ playlist_new(char * name) {
 #endif /* !HAVE_LIBPTHREAD */
 
 	if (name != NULL) {
-		strncpy(pl->name, name, MAXLEN-1);
+		arr_strlcpy(pl->name, name);
 		pl->name_set = 1;
 	} else {
-		strncpy(pl->name, _("(Untitled)"), MAXLEN-1);
+		arr_strlcpy(pl->name, _("(Untitled)"));
 	}
 
 	pl->index = -1;
@@ -1112,7 +1112,7 @@ mark_track(playlist_t * pl, GtkTreeIter * piter) {
 		playlist_data_t * data_child;
 
                 gtk_tree_model_get(model, piter,  PL_COL_NAME, &name, -1);
-                strncpy(tmpname, name, MAXLEN-1);
+                arr_strlcpy(tmpname, name);
 
                 j = 0;
 		while (gtk_tree_model_iter_nth_child(model, &iter_child, piter, j++)) {
@@ -1697,7 +1697,7 @@ add_file_to_playlist(gpointer data) {
 				gtk_tree_model_get(GTK_TREE_MODEL(pt->pl->store), &parent, PL_COL_DATA, &pdata, -1);
 				if (pdata->artist && pdata->album && pldata->artist && pldata->album && pldata->title &&
 				    !strcmp(pdata->artist, pldata->artist) && !strcmp(pdata->album, pldata->album)) {
-					strncpy(list_str, pldata->title, MAXLEN-1);
+					arr_strlcpy(list_str, pldata->title);
 				} else {
 					playlist_data_get_display_name(list_str, CHAR_ARRAY_SIZE(list_str), pldata);
 				}
@@ -2033,7 +2033,7 @@ add_url(GtkWidget * widget, gpointer data) {
 		playlist_t * pl = playlist_get_current();
 		playlist_data_t * data;
 
-                strncpy(url, gtk_entry_get_text(GTK_ENTRY(url_entry)), MAXLEN-1);
+                arr_strlcpy(url, gtk_entry_get_text(GTK_ENTRY(url_entry)));
 
 		if (url[0] == '\0' || strstr(url, "http://") != url || strlen(url) <= strlen("http://")) {
 			gtk_widget_grab_focus(url_entry);
@@ -2495,19 +2495,19 @@ plist__export_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 		if (pldata->artist) {
 			strcpy(artist, pldata->artist);
 		} else if (metadata_get_artist(fdec->meta, &tmp)) {
-			strncpy(artist, tmp, MAXLEN-1);
+			arr_strlcpy(artist, tmp);
 		}
 
 		if (pldata->album) {
 			strcpy(album, pldata->album);
 		} else if (metadata_get_album(fdec->meta, &tmp)) {
-			strncpy(album, tmp, MAXLEN-1);
+			arr_strlcpy(album, tmp);
 		}
 
 		if (pldata->title) {
 			strcpy(title, pldata->title);
 		} else if (metadata_get_title(fdec->meta, &tmp)) {
-			strncpy(title, tmp, MAXLEN-1);
+			arr_strlcpy(title, tmp);
 		}
 
 		if (metadata_get_date(fdec->meta, &tmp)) {
@@ -3442,7 +3442,7 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 			}
 
 			if ((str = g_filename_from_uri(uri_list[i], NULL, NULL)) != NULL) {
-				strncpy(file, str, MAXLEN-1);
+				arr_strlcpy(file, str);
 				g_free(str);
 			} else {
 				int off = 0;
@@ -3456,11 +3456,11 @@ playlist_drag_data_received(GtkWidget * widget, GdkDragContext * drag_context, g
 					off++;
 				}
 
-				strncpy(file, uri_list[i] + off, MAXLEN-1);
+				arr_strlcpy(file, uri_list[i] + off);
 			}
 
 			if ((str = g_filename_from_utf8(file, -1, NULL, NULL, NULL)) != NULL) {
-				strncpy(file, str, MAXLEN-1);
+				arr_strlcpy(file, str);
 				g_free(str);
 			}
 
@@ -3556,7 +3556,7 @@ void
 playlist_rename(playlist_t * pl, char * name) {
 
 	if (name != NULL) {
-		strncpy(pl->name, name, MAXLEN-1);
+		arr_strlcpy(pl->name, name);
 		pl->name_set = 1;
 		playlist_set_markup(pl);
 	}
@@ -3768,7 +3768,7 @@ tab__rename_cb(gpointer data) {
 	name[0] = '\0';
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-                strncpy(name, gtk_entry_get_text(GTK_ENTRY(entry)), MAXLEN-1);
+                arr_strlcpy(name, gtk_entry_get_text(GTK_ENTRY(entry)));
 
 		if (name[0] == '\0') {
 			gtk_widget_grab_focus(entry);
@@ -5091,7 +5091,7 @@ playlist_load_m3u_thread(void * arg) {
                                         }
 
                                         if (path[0] != '/') {
-                                                strncpy(tmp, path, MAXLEN-1);
+                                                arr_strlcpy(tmp, path);
                                                 arr_snprintf(path, "%s/%s", pl_dir, tmp);
                                         }
 
@@ -5252,7 +5252,7 @@ playlist_load_pls_thread(void * arg) {
                                                         numstr[m++] = line[n+4];
                                         }
                                         numstr[m] = '\0';
-                                        strncpy(numstr_file, numstr, sizeof(numstr_file));
+                                        arr_strlcpy(numstr_file, numstr);
 
                                         /* safeguard against C:\ stuff */
                                         if ((ch[1] == ':') && (ch[2] == '\\')) {
@@ -5272,7 +5272,7 @@ playlist_load_pls_thread(void * arg) {
                                         }
 
                                         if (file[0] != '/') {
-                                                strncpy(tmp, file, MAXLEN-1);
+                                                arr_strlcpy(tmp, file);
                                                 arr_snprintf(file, "%s/%s", pl_dir, tmp);
                                         }
 
@@ -5303,7 +5303,7 @@ playlist_load_pls_thread(void * arg) {
 						numstr[m++] = line[n+5];
 				}
 				numstr[m] = '\0';
-				strncpy(numstr_title, numstr, sizeof(numstr_title));
+				arr_strlcpy(numstr_title, numstr);
 
 				arr_snprintf(title, "%s", ch);
 				have_title = 1;

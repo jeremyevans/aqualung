@@ -355,7 +355,7 @@ disk_thread(void * arg) {
 				strcpy(filename_prev, filename);
 #endif /* HAVE_CDDA */
 				if (cue.filename != NULL) {
-					strncpy(filename, cue.filename, MAXLEN-1);
+					arr_strlcpy(filename, cue.filename);
 					free(cue.filename);
 				} else {
 					filename[0] = '\0';
@@ -1965,7 +1965,7 @@ load_default_cl(int * argc, char *** argv) {
                 if ((!xmlStrcmp(cur->name, (const xmlChar *)"default_param"))) {
                         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                         if (key != NULL)
-                                strncpy(default_param, (char *) key, MAXLEN-1);
+                                arr_strlcpy(default_param, (char *) key);
                         xmlFree(key);
                 }
                 cur = cur->next;
@@ -2380,7 +2380,7 @@ setup_app_directories(void) {
 			exit(1);
 		}
 	}
-	strncpy(options.confdir, xdgconfdir, MAXLEN-1);
+	arr_strlcpy(options.confdir, xdgconfdir);
 	g_free(xdgconfdir);
 
 	strcpy(options.audiodir, options.home);

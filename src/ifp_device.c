@@ -148,7 +148,7 @@ upload_songs_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
 	file = g_path_get_basename(pldata->file);
 
-        strncpy(dest_file, remote_path, MAXLEN-1);
+        arr_strlcpy(dest_file, remote_path);
         if (strlen(remote_path) != 1) {
                 arr_strlcat(dest_file, "\\");
         }
@@ -188,13 +188,13 @@ download_songs_cb_foreach (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *
         gtk_tree_model_get (model, iter, COLUMN_NAME, &file, -1);
 
         if (strncmp(file, PARENTDIR, 2)) {
-                strncpy(remote_item, remote_path, MAXLEN-1);
+                arr_strlcpy(remote_item, remote_path);
                 if (strlen(remote_path) != 1) {
                         arr_strlcat(remote_item, "\\");
                 }
                 arr_strlcat(remote_item, file);
 
-                strncpy(dest_file, dest_dir, MAXLEN-1);
+                arr_strlcpy(dest_file, dest_dir);
                 arr_strlcat(dest_file, "/");
                 arr_strlcat(dest_file, file);
 
@@ -344,7 +344,7 @@ aifp_create_directory_cb (GtkButton *button, gpointer user_data) {
 
         if (response == GTK_RESPONSE_OK) {
 
-                strncpy(temp, remote_path, MAXLEN-1);
+                arr_strlcpy(temp, remote_path);
                 if (strlen(remote_path) != 1) {
                         arr_strlcat(temp, "\\");
                 }
@@ -403,14 +403,14 @@ aifp_rename_item_cb (GtkButton *button, gpointer user_data) {
 
                         text = gtk_entry_get_text(GTK_ENTRY(name_entry));
 
-                        strncpy(temp, remote_path, MAXLEN-1);
+                        arr_strlcpy(temp, remote_path);
                         if (strlen(remote_path) != 1) {
                                 arr_strlcat(temp, "\\");
                         }
                         arr_strlcat(temp, text);
 
                         if (strlen(text)) {
-                                strncpy(dest_file, remote_path, MAXLEN-1);
+                                arr_strlcpy(dest_file, remote_path);
                                 if (strlen(remote_path) != 1) {
                                         arr_strlcat(dest_file, "\\");
                                 }
@@ -447,7 +447,7 @@ aifp_remove_item_cb (GtkButton *button, gpointer user_data) {
 
                 if (response == GTK_RESPONSE_YES) {
 
-                        strncpy(temp, remote_path, MAXLEN-1);
+                        arr_strlcpy(temp, remote_path);
                         if (strlen(remote_path) != 1) {
                                 arr_strlcat(temp, "\\");
                         }
@@ -474,7 +474,7 @@ item_selected (GtkTreeModel *model, GtkTreeIter *iter, gpointer data) {
         int * n = (int *)data;
 
         gtk_tree_model_get (model, iter, COLUMN_NAME, &text, COLUMN_TYPE_SIZE, &type, -1);
-        strncpy(remote_item, text, MAXLEN-1);
+        arr_strlcpy(remote_item, text);
 
         remote_type = TYPE_DIR;
 
@@ -855,7 +855,7 @@ directory_chooser(char * title, GtkWidget * parent, char * directory) {
 			gtk_widget_destroy(dialog);
 		}
 
-                strncpy(directory, selected_directory, MAXLEN-1);
+                arr_strlcpy(directory, selected_directory);
 		g_free(utf8);
         }
 
@@ -1185,7 +1185,7 @@ aifp_transfer_files(gint mode) {
                 gtk_widget_set_can_focus(local_path_entry, FALSE);
                 gtk_box_pack_start(GTK_BOX(hbox2), local_path_entry, TRUE, TRUE, 2);
                 gtk_editable_set_editable (GTK_EDITABLE(local_path_entry), FALSE);
-                strncpy(dest_dir, options.home, MAXLEN-1);
+                arr_strlcpy(dest_dir, options.home);
                 gtk_entry_set_text(GTK_ENTRY(local_path_entry), dest_dir);
 
                 local_path_browse_button = gui_stock_label_button(_("Browse"), GTK_STOCK_OPEN);

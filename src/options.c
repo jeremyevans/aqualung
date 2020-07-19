@@ -542,7 +542,7 @@ options_window_accept(void) {
 	char * ext_title;
 	ext_title = (char *)gtk_entry_get_text(GTK_ENTRY(entry_ext_title_format_file));
 	if(strncmp(ext_title, options.ext_title_format_file, MAXLEN-1)) {
-		strncpy(options.ext_title_format_file, ext_title, MAXLEN-1);
+		arr_strlcpy(options.ext_title_format_file, ext_title);
 		setup_extended_title_formatting();
 	}
 #endif /* HAVE_LUA */
@@ -567,8 +567,8 @@ options_window_accept(void) {
 		title_format_changed = 1;
 	}
 
-	strncpy(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)), MAXLEN-1);
-	strncpy(options.default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)), MAXLEN-1);
+	arr_strlcpy(options.title_format, gtk_entry_get_text(GTK_ENTRY(entry_title)));
+	arr_strlcpy(options.default_param, gtk_entry_get_text(GTK_ENTRY(entry_param)));
 
 	set_option_from_toggle(check_enable_tooltips, &options.enable_tooltips);
 	aqualung_tooltips_set_enabled(options.enable_tooltips);
@@ -1192,9 +1192,9 @@ color_selected(GtkColorButton *widget, gpointer user_data) {
         arr_snprintf(str, "#%02X%02X%02X", c.red * 256 / 65536, c.green * 256 / 65536, c.blue * 256 / 65536);
 
         if (GPOINTER_TO_INT(user_data) == SONG_COLOR) {
-                strncpy(options.song_color, str, MAX_COLORNAME_LEN-1);
+                arr_strlcpy(options.song_color, str);
         } else {
-                strncpy(options.activesong_color, str, MAX_COLORNAME_LEN-1);
+                arr_strlcpy(options.activesong_color, str);
         }
 }
 
@@ -1310,7 +1310,7 @@ add_ms_pathlist_clicked(GtkButton * button, gpointer * data) {
 	if (pname[0] == '~') {
 		arr_snprintf(name, "%s%s", options.home, pname + 1);
 	} else if (pname[0] == '/') {
-		strncpy(name, pname, MAXLEN - 1);
+		arr_strlcpy(name, pname);
 	} else {
 		message_dialog(_("Warning"),
 			       options_window,
@@ -1354,7 +1354,7 @@ add_ms_pathlist_clicked(GtkButton * button, gpointer * data) {
 	gtk_entry_set_text(GTK_ENTRY(entry_ms_pathlist), "");
 
 	append_ms_pathlist(path, name);
-	strncpy(options.storedir, name, MAXLEN-1);
+	arr_strlcpy(options.storedir, name);
 
 	g_free(path);
 }
@@ -2007,9 +2007,9 @@ create_options_window(void) {
 	reskin_flag = 0;
         appearance_changed = 0;
 	if (options.ext_title_format_file[0] == '\0') {
-		strncpy(ext_title_format_file_shadow, options.confdir, MAXLEN-1);
+		arr_strlcpy(ext_title_format_file_shadow, options.confdir);
 	} else {
-		strncpy(ext_title_format_file_shadow, options.ext_title_format_file, MAXLEN-1);
+		arr_strlcpy(ext_title_format_file_shadow, options.ext_title_format_file);
 	}
 
 	if (!restart_list_store) {
@@ -4200,7 +4200,7 @@ load_config(void) {
 	options.batch_tag_flags = BATCH_TAG_TITLE | BATCH_TAG_ARTIST | BATCH_TAG_ALBUM |
 		BATCH_TAG_YEAR | BATCH_TAG_COMMENT | BATCH_TAG_TRACKNO;
 
-        strncpy(options.song_color, "#888888", MAX_COLORNAME_LEN-1);
+        arr_strlcpy(options.song_color, "#888888");
 
 	ms_pathlist_store = gtk_list_store_new(3,
 					       G_TYPE_STRING,   /* path */

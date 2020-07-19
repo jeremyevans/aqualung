@@ -405,7 +405,7 @@ void
 set_prog_src_file_entry(export_t * export, char * file) {
 
 	AQUALUNG_MUTEX_LOCK(export->mutex);
-	strncpy(export->file1, file, MAXLEN-1);
+	arr_strlcpy(export->file1, file);
         AQUALUNG_MUTEX_UNLOCK(export->mutex);
 
 	aqualung_idle_add(set_prog_src_file_entry_idle, export);
@@ -415,7 +415,7 @@ void
 set_prog_trg_file_entry(export_t * export, char * file) {
 
 	AQUALUNG_MUTEX_LOCK(export->mutex);
-	strncpy(export->file2, file, MAXLEN-1);
+	arr_strlcpy(export->file2, file);
         AQUALUNG_MUTEX_UNLOCK(export->mutex);
 
 	aqualung_idle_add(set_prog_trg_file_entry_idle, export);
@@ -641,7 +641,7 @@ export_item(export_t * export, export_item_t * item, int index) {
 	}
 
 
-	strncpy(mode.filename, filename, MAXLEN-1);
+	arr_strlcpy(mode.filename, filename);
 	mode.file_lib = export->format;
 	mode.sample_rate = fdec->fileinfo.sample_rate;
 	mode.channels = fdec->fileinfo.channels;
@@ -1055,7 +1055,7 @@ export_dialog_response(GtkDialog * dialog, gint response_id, gpointer ex) {
 		return FALSE;
 	}
 	
-	strncpy(options.exportdir, export->outdir, MAXLEN-1);
+	arr_strlcpy(options.exportdir, export->outdir);
 	set_option_from_entry(export->templ_entry, export->template, CHAR_ARRAY_SIZE(export->template));
 	set_option_from_entry(export->templ_entry, options.export_template, CHAR_ARRAY_SIZE(options.export_template));
 	options.export_file_format = export->format = export_get_format_from_combo(export->format_combo);

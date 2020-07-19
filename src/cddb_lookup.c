@@ -360,9 +360,9 @@ store_cdda_export_merged(cddb_lookup_t * data, char * artist, char * record, cha
 
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &data->iter_record, MS_COL_DATA, &drive, -1);
 
-	strncpy(drive->disc.artist_name, artist, MAXLEN-1);
-	strncpy(drive->disc.record_name, record, MAXLEN-1);
-	strncpy(drive->disc.genre, genre, MAXLEN-1);
+	arr_strlcpy(drive->disc.artist_name, artist);
+	arr_strlcpy(drive->disc.record_name, record);
+	arr_strlcpy(drive->disc.genre, genre);
 	drive->disc.year = year;
 
 	arr_snprintf(name, "%s: %s",
@@ -398,18 +398,18 @@ cddb_lookup_merge(cddb_lookup_t * data, char * artist, size_t artist_size, char 
 
 	for (i = 0; i < data->nrecords; i++) {
 
-		strncpy(tmp, notnull(cddb_disc_get_artist(data->records[i])), MAXLEN-1);
+		arr_strlcpy(tmp, notnull(cddb_disc_get_artist(data->records[i])));
 		if (!is_all_wspace(tmp)) {
 			map_put(&map_artist, tmp);
 		}
 
-		strncpy(tmp, notnull(cddb_disc_get_title(data->records[i])), MAXLEN-1);
+		arr_strlcpy(tmp, notnull(cddb_disc_get_title(data->records[i])));
 		if (!is_all_wspace(tmp)) {
 			map_put(&map_record, tmp);
 		}
 
 		if (genre != NULL) {
-			strncpy(tmp, notnull(cddb_disc_get_genre(data->records[i])), MAXLEN-1);
+			arr_strlcpy(tmp, notnull(cddb_disc_get_genre(data->records[i])));
 			if (!is_all_wspace(tmp)) {
 				map_put(&map_genre, tmp);
 			}
@@ -422,9 +422,7 @@ cddb_lookup_merge(cddb_lookup_t * data, char * artist, size_t artist_size, char 
 		}
 
 		for (j = 0; j < data->ntracks; j++) {
-			strncpy(tmp,
-				notnull(cddb_track_get_title(cddb_disc_get_track(data->records[i], j))),
-				MAXLEN-1);
+			arr_strlcpy(tmp, notnull(cddb_track_get_title(cddb_disc_get_track(data->records[i], j))));
 			if (!is_all_wspace(tmp)) {
 				map_put(map_tracks + j, tmp);
 			}
@@ -913,9 +911,9 @@ store_cdda_export(cddb_lookup_t * data) {
 
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), &data->iter_record, MS_COL_DATA, &drive, -1);
 
-	strncpy(drive->disc.artist_name, gtk_entry_get_text(GTK_ENTRY(data->artist_entry)), MAXLEN-1);
-	strncpy(drive->disc.record_name, gtk_entry_get_text(GTK_ENTRY(data->title_entry)), MAXLEN-1);
-	strncpy(drive->disc.genre, gtk_entry_get_text(GTK_ENTRY(data->genre_entry)), MAXLEN-1);
+	arr_strlcpy(drive->disc.artist_name, gtk_entry_get_text(GTK_ENTRY(data->artist_entry)));
+	arr_strlcpy(drive->disc.record_name, gtk_entry_get_text(GTK_ENTRY(data->title_entry)));
+	arr_strlcpy(drive->disc.genre, gtk_entry_get_text(GTK_ENTRY(data->genre_entry)));
 	drive->disc.year = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->year_spinner));
 
 	arr_snprintf(name, "%s: %s",

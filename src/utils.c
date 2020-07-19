@@ -463,7 +463,7 @@ map_new(char * str) {
 		return NULL;
 	}
 
-	strncpy(map->str, str, MAXLEN-1);
+	arr_strlcpy(map->str, str);
 	map->count = 1;
 	map->next = NULL;
 

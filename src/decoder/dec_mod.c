@@ -267,7 +267,7 @@ mod_name_filter(char *str) {
         char buffer[MAXLEN];
         int n, k, f, len;
 
-        strncpy(buffer, str, MAXLEN-1);
+        arr_strlcpy(buffer, str);
 
         k = f = n = 0;
         len = strlen(buffer);
@@ -300,7 +300,7 @@ mod_filename_filter(char *str, char **valid_extensions) {
         char *pos;
         int i;
 
-        strncpy(buffer, str, MAXLEN-1);
+        arr_strlcpy(buffer, str);
 
         if ((pos = strrchr(buffer, '/')) != NULL) {
 
@@ -333,7 +333,7 @@ mod_filename_filter(char *str, char **valid_extensions) {
             }
         }
 
-        strncpy(buffer, str, MAXLEN-1);
+        arr_strlcpy(buffer, str);
 
         if ((pos = strchr(buffer, '.')) != NULL) {
             *pos = '\0';
@@ -381,11 +381,11 @@ mod_send_metadata(decoder_t * dec) {
 
 	memset(&mi, 0x00, sizeof(mod_info));
 
-	strncpy(mi.title, ModPlug_GetName(pd->mpf), MAXLEN-1);
+	arr_strlcpy(mi.title, ModPlug_GetName(pd->mpf));
 	mod_name_filter(mi.title);
 
 	if (!strlen(mi.title)) {
-		strncpy(mi.title, fdec->filename, MAXLEN-1);
+		arr_strlcpy(mi.title, fdec->filename);
 		mod_filename_filter(mi.title, valid_extensions_mod);
 		mod_name_filter(mi.title);
 	}

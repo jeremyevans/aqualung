@@ -1098,8 +1098,6 @@ cddb_dialog(cddb_lookup_t * data) {
 
 	cddb_dialog_load_disc(data, data->records[0]);
 
- display:
-
 	if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
 		if (iter_get_store_type(&data->iter_record) == STORE_TYPE_FILE) {

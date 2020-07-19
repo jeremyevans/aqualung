@@ -1839,7 +1839,7 @@ fi_set_common_entries(fi_t * fi) {
 	if (fi->fileinfo.bps == 0) {
 		strcpy(str, "N/A kbit/s");
 	} else {
-		format_bps_label(fi->fileinfo.bps, fi->fileinfo.format_flags, str);
+		format_bps_label(fi->fileinfo.bps, fi->fileinfo.format_flags, str, CHAR_ARRAY_SIZE(str));
 	}
 	gtk_entry_set_text(GTK_ENTRY(fi->entry_bw), str);
 

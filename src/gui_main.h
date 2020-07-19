@@ -42,7 +42,7 @@ void create_gui(int argc, char ** argv, int optind, int enqueue,
 
 void run_gui(void);
 
-void format_bps_label(int bps, int format_flags, char * str);
+void format_bps_label(int bps, int format_flags, char * str, size_t str_size);
 
 void refresh_displays(void);
 void main_window_set_font(int cond);

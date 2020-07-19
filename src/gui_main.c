@@ -415,20 +415,20 @@ set_format_label(char * format_str) {
 
 
 void
-format_bps_label(int bps, int format_flags, char * str) {
+format_bps_label(int bps, int format_flags, char * str, size_t str_size) {
 
 	if (bps == 0) {
-		strcpy(str, "N/A kbit/s");
+		g_strlcpy(str, "N/A kbit/s", str_size);
 		return;
 	}
 
 	if (format_flags & FORMAT_VBR) {
-		sprintf(str, "%.1f kbit/s VBR", bps/1000.0);
+		snprintf(str, str_size, "%.1f kbit/s VBR", bps/1000.0);
 	} else {
 		if (format_flags & FORMAT_UBR) {
-			sprintf(str, "%.1f kbit/s UBR", bps/1000.0);
+			snprintf(str, str_size, "%.1f kbit/s UBR", bps/1000.0);
 		} else {
-			sprintf(str, "%.1f kbit/s", bps/1000.0);
+			snprintf(str, str_size, "%.1f kbit/s", bps/1000.0);
 		}
 	}
 }
@@ -438,7 +438,7 @@ set_bps_label(int bps, int format_flags) {
 
 	char str[MAXLEN];
 
-	format_bps_label(bps, format_flags, str);
+	format_bps_label(bps, format_flags, str, CHAR_ARRAY_SIZE(str));
 
 	if (is_file_loaded) {
 		gtk_label_set_text(GTK_LABEL(label_bps), str);

@@ -323,7 +323,7 @@ lavc_decoder_open(decoder_t * dec, char * filename) {
 	}
 
 	fdec->file_lib = LAVC_LIB;
-	snprintf(dec->format_str, MAXLEN-1, "%s/%s", pd->avFormatCtx->iformat->name, pd->avCodec->name);
+	arr_snprintf(dec->format_str, "%s/%s", pd->avFormatCtx->iformat->name, pd->avCodec->name);
 	for (i = 0; dec->format_str[i] != '\0'; i++) {
 		dec->format_str[i] = toupper(dec->format_str[i]);
 	}

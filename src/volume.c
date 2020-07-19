@@ -249,7 +249,7 @@ vol_update_progress(gpointer data) {
 		}
 
 		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(vol->progress), fraction);
-		snprintf(str_progress, 10, "%.0f%%", fraction * 100.0f);
+		arr_snprintf(str_progress, "%.0f%%", fraction * 100.0f);
 		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(vol->progress), str_progress);
 	}
 

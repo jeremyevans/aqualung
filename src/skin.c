@@ -85,7 +85,7 @@ filter(const struct dirent * de) {
 		return 0;
 	}
 
-	snprintf(dirname, MAXLEN-1, "%s/%s", pdir, de->d_name);
+	arr_snprintf(dirname, "%s/%s", pdir, de->d_name);
 	if (stat(dirname, &st_file) == -1) {
 		fprintf(stderr,
 			"error %s: skin.c/filter(): stat() failed on %s [likely cause: nonexistent file]\n",
@@ -227,7 +227,7 @@ create_skin_window() {
 
 		for (c = 0; c < n; ++c) {
                         gtk_list_store_append(skin_store, &iter);
-                        snprintf(path, MAXLEN - 1, "%s/%s", options.confdir, ent[c]->d_name);
+                        arr_snprintf(path, "%s/%s", options.confdir, ent[c]->d_name);
                         gtk_list_store_set(skin_store, &iter, 0, ent[c]->d_name, 1, path, -1);
 			free(ent[c]);
 		}
@@ -261,7 +261,7 @@ create_skin_window() {
 			if (!found) {
                                 if (strncmp(ent[c]->d_name, "no_skin", MAXLEN-1)) {
                                         gtk_list_store_append(skin_store, &iter);
-                                        snprintf(path, MAXLEN - 1, "%s/%s", AQUALUNG_SKINDIR, ent[c]->d_name);
+                                        arr_snprintf(path, "%s/%s", AQUALUNG_SKINDIR, ent[c]->d_name);
                                         gtk_list_store_set(skin_store, &iter, 0, ent[c]->d_name, 1, path, -1);
                                 }
 			}

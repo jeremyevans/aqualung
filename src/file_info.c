@@ -416,10 +416,10 @@ fi_set_frame_from_source(fi_t * fi, meta_frame_t * frame) {
 		const char * str = gtk_entry_get_text(GTK_ENTRY(frame->source));
 		if (sscanf(str, parsefmt, &val) < 1) {
 			char msg[MAXLEN];
-			snprintf(msg, MAXLEN-1,
-				 _("Conversion error in field %s:\n"
-				   "'%s' does not conform to format '%s'!"),
-				 frame->field_name, str, "%s");
+			arr_snprintf(msg,
+				     _("Conversion error in field %s:\n"
+				       "'%s' does not conform to format '%s'!"),
+				     frame->field_name, str, "%s");
 			message_dialog(_("Error"),
 				       fi->info_window, GTK_MESSAGE_ERROR,
 				       GTK_BUTTONS_OK, NULL, msg, parsefmt_esc);
@@ -432,10 +432,10 @@ fi_set_frame_from_source(fi_t * fi, meta_frame_t * frame) {
 		const char * str = gtk_entry_get_text(GTK_ENTRY(frame->source));
 		if (sscanf(str, parsefmt, &val) < 1) {
 			char msg[MAXLEN];
-			snprintf(msg, MAXLEN-1,
-				 _("Conversion error in field %s:\n"
-				   "'%s' does not conform to format '%s'!"),
-				 frame->field_name, str, "%s");
+			arr_snprintf(msg,
+				     _("Conversion error in field %s:\n"
+				       "'%s' does not conform to format '%s'!"),
+				     frame->field_name, str, "%s");
 			message_dialog(_("Error"),
 				       fi->info_window, GTK_MESSAGE_ERROR,
 				       GTK_BUTTONS_OK, NULL, msg, parsefmt_esc);
@@ -552,10 +552,10 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &record_iter, MS_COL_DATA, &record_data, -1);
 		if (sscanf(frame->field_val, "%d", &record_data->year) < 1) {
 			char msg[MAXLEN];
-			snprintf(msg, MAXLEN-1,
-				 _("Error converting field %s to Year:\n"
-				   "'%s' is not an integer number!"),
-				 frame->field_name, frame->field_val);
+			arr_snprintf(msg,
+				     _("Error converting field %s to Year:\n"
+				       "'%s' is not an integer number!"),
+				     frame->field_name, frame->field_val);
 			message_dialog(_("Error"),
 				       fi->info_window, GTK_MESSAGE_ERROR,
 				       GTK_BUTTONS_OK, NULL, msg);
@@ -565,7 +565,7 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 		}
 		break;
 	case IMPORT_DEST_NUMBER:
-		snprintf(tmp, MAXLEN-1, "%02d", frame->int_val);
+		arr_snprintf(tmp, "%02d", frame->int_val);
 		gtk_tree_store_set(music_store, &iter_track, MS_COL_SORT, tmp, -1);
 		music_store_mark_changed(&iter_track);
 		break;
@@ -641,7 +641,7 @@ save_pic_button_pressed(GtkWidget * widget, gpointer data) {
 	char * dirname;
 
 	dirname = g_path_get_dirname(options.currdir);
-	snprintf(filename, MAXLEN-1, "%s/%s", dirname, save_pic->savefile);
+	arr_snprintf(filename, "%s/%s", dirname, save_pic->savefile);
 	g_free(dirname);
 
 	lfiles = file_chooser(_("Please specify the file to save the image to."),
@@ -790,7 +790,7 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 	pformat = gdk_pixbuf_get_file_info(options.currdir, NULL, NULL);
 	if (pformat == NULL) {
 		char msg[MAXLEN];
-		snprintf(msg, MAXLEN-1, _("Could not load image from:\n%s"), options.currdir);
+		arr_snprintf(msg, _("Could not load image from:\n%s"), options.currdir);
 		message_dialog(_("Error"), fi->info_window, GTK_MESSAGE_ERROR,
 			       GTK_BUTTONS_OK, NULL, msg);
 		return;
@@ -823,7 +823,7 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 	source->image = make_image_from_binary(frame);
 	gtk_widget_show(source->image);
 	gtk_container_add(GTK_CONTAINER(vbox), source->image);
-	snprintf(str, MAXLEN-1, _("MIME type: %s"), frame->field_name);
+	arr_snprintf(str, _("MIME type: %s"), frame->field_name);
 	gtk_label_set_text(GTK_LABEL(source->mime_label), str);
 	/* update callback data for 'Save picture' */
 	save_pic_update(save_pic, fi, frame);
@@ -870,7 +870,7 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 	source = ((apic_source_t *)(frame->source));
 
 	meta_get_fieldname(META_FIELD_APIC, &pic_caption);
-	snprintf(str, MAXLEN-1, "%s:", pic_caption);
+	arr_snprintf(str, "%s:", pic_caption);
 
 	label_frame = gtk_frame_new(pic_caption);
 	gtk_container_add(GTK_CONTAINER(label_frame), vbox);
@@ -879,7 +879,7 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
-	snprintf(str, MAXLEN-1, _("MIME type: %s"), frame->field_name);
+	arr_snprintf(str, _("MIME type: %s"), frame->field_name);
 	source->mime_label = gtk_label_new(str);
 	gtk_box_pack_start(GTK_BOX(hbox), source->mime_label, FALSE, FALSE, 0);
 
@@ -907,8 +907,8 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 	} else {
 		hbox = gtk_hbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
-		snprintf(str, MAXLEN-1, "%s",
-			 meta_id3v2_apic_type_to_string(frame->int_val));
+		arr_snprintf(str, "%s",
+			     meta_id3v2_apic_type_to_string(frame->int_val));
 		label = gtk_label_new(str);
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	}
@@ -967,7 +967,7 @@ fi_procframe_label(fi_t * fi, meta_frame_t * frame) {
 		char str[MAXLEN];
 		GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
 		GtkWidget * label;
-		snprintf(str, MAXLEN-1, "%s:", frame->field_name);
+		arr_snprintf(str, "%s:", frame->field_name);
 		label = gtk_label_new(str);
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 		return hbox;
@@ -1068,13 +1068,13 @@ fi_procframe_entry(fi_t * fi, meta_frame_t * frame) {
 		char str[MAXLEN];
 		char * format = meta_get_field_renderfmt(frame->type);
 		widget = entry = gtk_entry_new();
-		snprintf(str, MAXLEN-1, format, frame->int_val);
+		arr_snprintf(str, format, frame->int_val);
 		gtk_entry_set_text(GTK_ENTRY(entry), str);
 	} else if (META_FIELD_FLOAT(frame->type)) {
 		char str[MAXLEN];
 		char * format = meta_get_field_renderfmt(frame->type);
 		widget = entry = gtk_entry_new();
-		snprintf(str, MAXLEN-1, format, frame->float_val);
+		arr_snprintf(str, format, frame->float_val);
 		gtk_entry_set_text(GTK_ENTRY(entry), str);
 	} else {
 		if (meta->writable && (frame->type == META_FIELD_GENRE)) {

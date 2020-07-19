@@ -605,7 +605,7 @@ playlist_node_copy(GtkTreeStore * sstore, GtkTreeIter * siter,
 
 		if (IS_PL_ALBUM_NODE(tdata)) {
 			char name[MAXLEN];
-			snprintf(name, MAXLEN-1, "%s: %s", tdata->artist, tdata->album);
+			arr_snprintf(name, "%s: %s", tdata->artist, tdata->album);
 			gtk_tree_store_set(tstore, iter, PL_COL_NAME, name, -1);
 		}
 	}
@@ -1165,7 +1165,7 @@ unmark_track(playlist_t * pl, GtkTreeIter * piter) {
 		playlist_data_t * data;
 
 		gtk_tree_model_get(model, piter, PL_COL_DATA, &data, -1);
-		snprintf(name, MAXLEN-1, "%s: %s", data->artist, data->album);
+		arr_snprintf(name, "%s: %s", data->artist, data->album);
 		gtk_tree_store_set(pl->store, piter, PL_COL_NAME, name, -1);
 	}
 
@@ -1683,12 +1683,12 @@ add_file_to_playlist(gpointer data) {
 
 		if (IS_PL_ALBUM_NODE(pldata)) {
 			if (IS_PL_ACTIVE(pldata)) {
-				snprintf(list_str, MAXLEN-1, "%s: %s (%d/%d)",
-					 pldata->artist, pldata->album,
-					 pldata->actrack, pldata->ntracks);
+				arr_snprintf(list_str, "%s: %s (%d/%d)",
+					     pldata->artist, pldata->album,
+					     pldata->actrack, pldata->ntracks);
 			} else {
-				snprintf(list_str, MAXLEN-1, "%s: %s",
-					 pldata->artist, pldata->album);
+				arr_snprintf(list_str, "%s: %s",
+					     pldata->artist, pldata->album);
 			}
 		} else if (IS_PL_ALBUM_CHILD(pldata)) {
 			GtkTreeIter parent;
@@ -1878,7 +1878,7 @@ add_dir_to_playlist(playlist_transfer_t * pt, char * dirname) {
 			break;
 		}
 
-		snprintf(path, MAXLEN-1, "%s/%s", dirname, ent[i]->d_name);
+		arr_snprintf(path, "%s/%s", dirname, ent[i]->d_name);
 
 		if (!g_file_test(path, G_FILE_TEST_EXISTS)) {
 			free(ent[i]);
@@ -4045,7 +4045,7 @@ create_playlist_gui(playlist_t * pl) {
 			  sizeof(target_table) / sizeof(GtkTargetEntry),
 			  GDK_ACTION_MOVE | GDK_ACTION_COPY);
 
-	snprintf(path, MAXLEN-1, "%s/drag.png", AQUALUNG_DATADIR);
+	arr_snprintf(path, "%s/drag.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		gtk_drag_source_set_icon_pixbuf(pl->view, pixbuf);
 	}
@@ -4478,22 +4478,22 @@ save_track_node(playlist_t * pl, GtkTreeIter * piter, xmlNodePtr root, char * no
 		xmlNewTextChild(node, NULL, (const xmlChar*) "file", (const xmlChar*) file);
 		g_free(file);
 
-		snprintf(str, 31, "%f", data->voladj);
+		arr_snprintf(str, "%f", data->voladj);
 		xmlNewTextChild(node, NULL, (const xmlChar*) "voladj", (const xmlChar*) str);
 
-		snprintf(str, 31, "%u", data->size);
+		arr_snprintf(str, "%u", data->size);
 		xmlNewTextChild(node, NULL, (const xmlChar*) "size", (const xmlChar*) str);
 
 	} else if (IS_PL_ACTIVE(data)){
 
-		snprintf(str, 31, "%u", data->ntracks);
+		arr_snprintf(str, "%u", data->ntracks);
 		xmlNewTextChild(node, NULL, (const xmlChar*) "ntracks", (const xmlChar*) str);
 
-		snprintf(str, 31, "%u", data->actrack);
+		arr_snprintf(str, "%u", data->actrack);
 		xmlNewTextChild(node, NULL, (const xmlChar*) "actrack", (const xmlChar*) str);
 	}
 
-	snprintf(str, 31, "%f", data->duration);
+	arr_snprintf(str, "%f", data->duration);
 	xmlNewTextChild(node, NULL, (const xmlChar*) "duration", (const xmlChar*) str);
 
 	if (IS_PL_ACTIVE(data)) {
@@ -4655,7 +4655,7 @@ playlist_auto_save_cb(gpointer data) {
 
 	if (playlist_dirty) {
 		char playlist_name[MAXLEN];
-		snprintf(playlist_name, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
+		arr_snprintf(playlist_name, "%s/%s", options.confdir, "playlist.xml");
 		playlist_save_all(playlist_name);
 		playlist_dirty = 0;
 	}
@@ -5068,7 +5068,7 @@ playlist_load_m3u_thread(void * arg) {
 				while ((line[cnt+8] >= '0') && (line[cnt+8] <= '9') && cnt < 63) {
 					++cnt;
 				}
-				snprintf(name, MAXLEN-1, "%s", line+cnt+9);
+				arr_snprintf(name, "%s", line+cnt+9);
 				have_name = 1;
 			} else {
                                 if (!httpc_is_url(line)) {
@@ -5080,7 +5080,7 @@ playlist_load_m3u_thread(void * arg) {
                                                 continue;
                                         }
 
-                                        snprintf(path, MAXLEN-1, "%s", line);
+                                        arr_snprintf(path, "%s", line);
 
                                         /* path curing: turn \-s into /-s */
                                         for (n = 0; n < strlen(path); n++) {
@@ -5090,18 +5090,18 @@ playlist_load_m3u_thread(void * arg) {
 
                                         if (path[0] != '/') {
                                                 strncpy(tmp, path, MAXLEN-1);
-                                                snprintf(path, MAXLEN-1, "%s/%s", pl_dir, tmp);
+                                                arr_snprintf(path, "%s/%s", pl_dir, tmp);
                                         }
 
                                         if (!have_name) {
                                                 gchar * ch;
                                                 if ((ch = strrchr(path, '/')) != NULL) {
                                                         ++ch;
-                                                        snprintf(name, MAXLEN-1, "%s", ch);
+                                                        arr_snprintf(name, "%s", ch);
                                                 } else {
                                                         fprintf(stderr,
                                                                 "warning: ain't this a directory? : %s\n", path);
-                                                        snprintf(name, MAXLEN-1, "%s", path);
+                                                        arr_snprintf(name, "%s", path);
                                                 }
                                         }
 
@@ -5260,7 +5260,7 @@ playlist_load_pls_thread(void * arg) {
                                                 continue;
                                         }
 
-                                        snprintf(file, MAXLEN-1, "%s", ch);
+                                        arr_snprintf(file, "%s", ch);
 
                                         /* path curing: turn \-s into /-s */
 
@@ -5271,11 +5271,11 @@ playlist_load_pls_thread(void * arg) {
 
                                         if (file[0] != '/') {
                                                 strncpy(tmp, file, MAXLEN-1);
-                                                snprintf(file, MAXLEN-1, "%s/%s", pl_dir, tmp);
+                                                arr_snprintf(file, "%s/%s", pl_dir, tmp);
                                         }
 
                                 } else {
-                                        snprintf(file, MAXLEN-1, "%s", ch);
+                                        arr_snprintf(file, "%s", ch);
                                 }
 
 				have_file = 1;
@@ -5303,7 +5303,7 @@ playlist_load_pls_thread(void * arg) {
 				numstr[m] = '\0';
 				strncpy(numstr_title, numstr, sizeof(numstr_title));
 
-				snprintf(title, MAXLEN-1, "%s", ch);
+				arr_snprintf(title, "%s", ch);
 				have_title = 1;
 
 

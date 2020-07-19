@@ -2697,7 +2697,7 @@ add_new_track(GtkTreeIter * record_iter, build_track_t * ptrack, int i) {
 		i = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(music_store), record_iter) + 1;
 	}
 
-	snprintf(sort_name, 15, "%02d", i);
+	arr_snprintf(sort_name, "%02d", i);
 
 	gtk_tree_store_append(music_store, &track_iter, record_iter);
 	gtk_tree_store_set(music_store, &track_iter,
@@ -2928,7 +2928,7 @@ get_file_list(build_store_t * data, char * dir_record, build_disc_t * disc, int 
 	for (i = 0; i < n; i++) {
 
 		strncpy(basename, ent_track[i]->d_name, MAXLEN-1);
-		snprintf(filename, MAXLEN-1, "%s/%s", dir_record, ent_track[i]->d_name);
+		arr_snprintf(filename, "%s/%s", dir_record, ent_track[i]->d_name);
 
 		if (is_dir(filename) || !filter_excl_incl(data, basename)) {
 			free(ent_track[i]);
@@ -3001,7 +3001,7 @@ process_filename(build_store_t * data, build_disc_t * disc) {
 	if (i == 3) {
 		if (data->type == BUILD_TYPE_STRICT) {
 			char tmp[MAXLEN];
-			snprintf(tmp, MAXLEN-1, "%s (%s)", _("Unknown Artist"), disc->artist.d_name);
+			arr_snprintf(tmp, "%s (%s)", _("Unknown Artist"), disc->artist.d_name);
 			strncpy(disc->artist.final, tmp, MAXLEN-1);
 		} else {
 			strncpy(disc->artist.final, _("Unknown Artist"), MAXLEN-1);
@@ -3038,7 +3038,7 @@ process_filename(build_store_t * data, build_disc_t * disc) {
 	if (i == 3) {
 		if (data->type == BUILD_TYPE_STRICT) {
 			char tmp[MAXLEN];
-			snprintf(tmp, MAXLEN-1, "%s (%s)", _("Unknown Record"), disc->record.d_name);
+			arr_snprintf(tmp, "%s (%s)", _("Unknown Record"), disc->record.d_name);
 			strncpy(disc->record.final, tmp, MAXLEN-1);
 		} else {
 			strncpy(disc->record.final, disc->record.dirname, MAXLEN-1);
@@ -3111,7 +3111,7 @@ process_filename(build_store_t * data, build_disc_t * disc) {
 
 	if (disc->artist.unknown) {
 		char tmp[MAXLEN];
-		snprintf(tmp, MAXLEN-1, "0 %s", disc->artist.sort);
+		arr_snprintf(tmp, "0 %s", disc->artist.sort);
 		strncpy(disc->artist.sort, tmp, MAXLEN-1);
 	}
 
@@ -3139,7 +3139,7 @@ process_filename(build_store_t * data, build_disc_t * disc) {
 
 	if (disc->record.unknown) {
 		char tmp[MAXLEN];
-		snprintf(tmp, MAXLEN-1, "0 %s", disc->record.sort);
+		arr_snprintf(tmp, "0 %s", disc->record.sort);
 		strncpy(disc->record.sort, tmp, MAXLEN-1);
 	}
 }
@@ -3278,7 +3278,7 @@ process_record(build_store_t * data, char * dir_record, char * artist_d_name, ch
 		}
 
 		if (year > 0) {
-			snprintf(disc->record.year, MAXLEN-1, "%d", year);
+			arr_snprintf(disc->record.year, "%d", year);
 		}
 
 		for (i = 0, ptrack = disc->tracks; ptrack && i < ntracks; i++, ptrack = ptrack->next) {
@@ -3418,7 +3418,7 @@ scan_artist_record(build_store_t * data, char * dir_artist, char * name_artist, 
 			break;
 		}
 
-		snprintf(dir_record, MAXLEN-1, "%s/%s", dir_artist, ent_record[i]->d_name);
+		arr_snprintf(dir_record, "%s/%s", dir_artist, ent_record[i]->d_name);
 
 		if (!is_dir(dir_record)) {
 			free(ent_record[i]);
@@ -3485,7 +3485,7 @@ scan_recursively(build_store_t * data, char * dir) {
 			break;
 		}
 
-		snprintf(path, MAXLEN-1, "%s/%s", dir, ent[i]->d_name);
+		arr_snprintf(path, "%s/%s", dir, ent[i]->d_name);
 
 		if (is_dir(path)) {
 			scan_recursively(data, path);

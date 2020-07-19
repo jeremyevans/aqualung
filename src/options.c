@@ -473,7 +473,7 @@ music_store_add_new_stores() {
 		int has;
 		char sort[16];
 
-		snprintf(sort, 15, "%03d", i+1);
+		arr_snprintf(sort, "%03d", i+1);
 
 		gtk_tree_model_get(GTK_TREE_MODEL(ms_pathlist_store), &iter, 0, &file, -1);
 
@@ -1307,7 +1307,7 @@ add_ms_pathlist_clicked(GtkButton * button, gpointer * data) {
 	}
 
 	if (pname[0] == '~') {
-		snprintf(name, MAXLEN - 1, "%s%s", options.home, pname + 1);
+		arr_snprintf(name, "%s%s", options.home, pname + 1);
 	} else if (pname[0] == '/') {
 		strncpy(name, pname, MAXLEN - 1);
 	} else {
@@ -3750,27 +3750,27 @@ create_options_window(void) {
         xmlNewTextChild(root, NULL, (const xmlChar *) #Var, (xmlChar *) options.Var);
 
 #define SAVE_FONT(Font) \
-	snprintf(str, MAX_FONTNAME_LEN, "%s", options.Font); \
+	arr_snprintf(str, "%s", options.Font); \
         xmlNewTextChild(root, NULL, (const xmlChar *) #Font, (xmlChar *) str);
 
 #define SAVE_COLOR(Color) \
-	snprintf(str, MAX_COLORNAME_LEN, "%s", options.Color); \
+	arr_snprintf(str, "%s", options.Color); \
         xmlNewTextChild(root, NULL, (const xmlChar *) #Color, (xmlChar *) str);
 
 #define SAVE_INT(Var) \
-	snprintf(str, 31, "%d", options.Var); \
+	arr_snprintf(str, "%d", options.Var); \
         xmlNewTextChild(root, NULL, (const xmlChar *) #Var, (xmlChar *) str);
 
 #define SAVE_INT_ARRAY(Var, Idx) \
-        snprintf(str, 31, "%d", options.Var[Idx]); \
+        arr_snprintf(str, "%d", options.Var[Idx]); \
         xmlNewTextChild(root, NULL, (const xmlChar *) #Var "_" #Idx, (xmlChar *) str);
 
 #define SAVE_INT_SH(Var) \
-	snprintf(str, 31, "%d", options.Var##_shadow); \
+	arr_snprintf(str, "%d", options.Var##_shadow); \
         xmlNewTextChild(root, NULL, (const xmlChar *) #Var, (xmlChar *) str);
 
 #define SAVE_FLOAT(Var) \
-        snprintf(str, 31, "%f", options.Var); \
+        arr_snprintf(str, "%f", options.Var); \
         xmlNewTextChild(root, NULL, (const xmlChar *) #Var, (xmlChar *) str);
 
 
@@ -3869,9 +3869,9 @@ save_config(void) {
 	SAVE_INT(main_size_x);
 
 	if (options.playlist_is_embedded && !options.playlist_is_embedded_shadow && options.playlist_on) {
-		snprintf(str, 31, "%d", options.main_size_y - playlist_window->allocation.height - 6);
+		arr_snprintf(str, "%d", options.main_size_y - playlist_window->allocation.height - 6);
 	} else {
-		snprintf(str, 31, "%d", options.main_size_y);
+		arr_snprintf(str, "%d", options.main_size_y);
 	}
         xmlNewTextChild(root, NULL, (const xmlChar *) "main_size_y", (xmlChar *) str);
 
@@ -4382,7 +4382,7 @@ load_config(void) {
 				char path[MAXLEN];
 				char * ppath;
 
-				snprintf(path, MAXLEN - 1, "%s", (char *)key);
+				arr_snprintf(path, "%s", (char *)key);
 				ppath = g_filename_from_utf8(path, -1, NULL, NULL, NULL);
 
 				append_ms_pathlist(ppath, path);
@@ -4437,10 +4437,10 @@ save_systray_options(xmlDocPtr doc, xmlNodePtr root) {
 		cur = xmlNewNode(NULL, (const xmlChar *) "mouse_button");
 		xmlAddChild(root, cur);
 
-		snprintf(str, sizeof(str), "%d", options.systray_mouse_buttons[i].button_nr);
+		arr_snprintf(str, "%d", options.systray_mouse_buttons[i].button_nr);
 		xmlSetProp(cur, (const xmlChar *) "number", (const xmlChar *) str);
 
-		snprintf(str, sizeof(str), "%d", options.systray_mouse_buttons[i].command);
+		arr_snprintf(str, "%d", options.systray_mouse_buttons[i].command);
 		xmlSetProp(cur, (const xmlChar *) "command", (const xmlChar *) str);
 	}
 }

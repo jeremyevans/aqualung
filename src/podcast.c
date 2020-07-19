@@ -661,7 +661,7 @@ podcast_parse(podcast_t * podcast, GSList ** list) {
 	char * file;
 
 	file = podcast_file_from_url(podcast->url);
-	snprintf(filename, MAXLEN-1, "%s/.%s", podcast->dir, file);
+	arr_snprintf(filename, "%s/.%s", podcast->dir, file);
 	free(file);
 
 	if (podcast_generic_download(podcast, podcast->url, filename, NULL, NULL) < 0) {
@@ -727,7 +727,7 @@ podcast_item_download(podcast_download_t * pd, GSList ** list, GSList * node) {
 
 
 	file = podcast_file_from_url(item->url);
-	snprintf(path, MAXLEN-1, "%s/%s", pd->podcast->dir, file);
+	arr_snprintf(path, "%s/%s", pd->podcast->dir, file);
 	free(file);
 
 	pd->ncurrent++;

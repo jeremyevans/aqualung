@@ -182,7 +182,7 @@ ripper_source_write_back(GtkTreeIter * record_iter, char * artist, char * record
 	strncpy(disc->genre, genre, MAXLEN-1);
 	disc->year = year;
 
-	snprintf(tmp, MAXLEN-1, "%s: %s", artist, record);
+	arr_snprintf(tmp, "%s: %s", artist, record);
 	gtk_tree_store_set(music_store, record_iter, MS_COL_NAME, tmp, -1);
 	
 
@@ -398,11 +398,11 @@ ripper_bitrate_changed(GtkRange * range, gpointer data) {
 		switch (i) {
 		case 0:
 		case 8:
-			snprintf(str, 255, "%d (%s)", i, (i == 0) ? _("fast") : _("best"));
+			arr_snprintf(str, "%d (%s)", i, (i == 0) ? _("fast") : _("best"));
 			gtk_label_set_text(GTK_LABEL(ripper_bitrate_value_label), str);
 			break;
 		default:
-			snprintf(str, 255, "%d", i);
+			arr_snprintf(str, "%d", i);
 			gtk_label_set_text(GTK_LABEL(ripper_bitrate_value_label), str);
 			break;
 		}
@@ -410,7 +410,7 @@ ripper_bitrate_changed(GtkRange * range, gpointer data) {
 	if (strcmp(text, "Ogg Vorbis") == 0) {
 		int i = (int)val;
 		char str[256];
-		snprintf(str, 255, "%d", i);
+		arr_snprintf(str, "%d", i);
 		gtk_label_set_text(GTK_LABEL(ripper_bitrate_value_label), str);
 	}
 	if (strcmp(text, "MP3") == 0) {
@@ -419,7 +419,7 @@ ripper_bitrate_changed(GtkRange * range, gpointer data) {
 #ifdef HAVE_LAME
 		i = lame_encoder_validate_bitrate(i, 0);
 #endif /* HAVE_LAME */
-		snprintf(str, 255, "%d", i);
+		arr_snprintf(str, "%d", i);
 		gtk_label_set_text(GTK_LABEL(ripper_bitrate_value_label), str);
 	}
 	g_free(text);
@@ -570,7 +570,7 @@ ripper_make_dest_iters(GtkTreeIter * store_iter,
 		}
 
 		record_data->year = ripper_year;
-		snprintf(str_year, 15, "%d", ripper_year);
+		arr_snprintf(str_year, "%d", ripper_year);
 
                 gtk_tree_store_append(music_store, record_iter, artist_iter);
                 gtk_tree_store_set(music_store, record_iter,
@@ -609,7 +609,7 @@ ripper_make_dest_iters(GtkTreeIter * store_iter,
         }
 
 	record_data->year = ripper_year;
-	snprintf(str_year, 15, "%d", ripper_year);
+	arr_snprintf(str_year, "%d", ripper_year);
 
         gtk_tree_store_append(music_store, record_iter, artist_iter);
         gtk_tree_store_set(music_store, record_iter,
@@ -1117,7 +1117,7 @@ ripper_update_status(gpointer pdata) {
 	if (!ripper_prog_window_visible) {
 		char title[MAXLEN];
 
-		snprintf(title, MAXLEN, "%d%% - %s", prog_total, _("Ripping CD tracks"));
+		arr_snprintf(title, "%d%% - %s", prog_total, _("Ripping CD tracks"));
 		gtk_window_set_title(GTK_WINDOW(ripper_prog_window), title);
 	}
 
@@ -1227,8 +1227,8 @@ ripper_thread(void * arg) {
 			break;
 		}
 
-		snprintf(decoder_filename, 255, "CDDA %s %lX %d", drive->device_path, hash, no);
-		snprintf(mode.filename, MAXLEN-1, "%s/track%02d.%s", destdir, no, ext);
+		arr_snprintf(decoder_filename, "CDDA %s %lX %d", drive->device_path, hash, no);
+		arr_snprintf(mode.filename, "%s/track%02d.%s", destdir, no, ext);
 		mode.file_lib = ripper_format;
 		mode.sample_rate = 44100;
 		mode.channels = 2;
@@ -1244,7 +1244,7 @@ ripper_thread(void * arg) {
 		if (mode.write_meta) {
 			mode.meta = metadata_new();
 			char date[8];
-			snprintf(date, 7, "%d", ripper_year);
+			arr_snprintf(date, "%d", ripper_year);
 
 			ripper_meta_add(mode.meta, tags, META_FIELD_ARTIST, ripper_artist, 0);
 			ripper_meta_add(mode.meta, tags, META_FIELD_ALBUM, ripper_album, 0);
@@ -1307,7 +1307,7 @@ ripper_thread(void * arg) {
 			track_data->duration = track_sectors_read / 75.0;
 			track_data->volume = 1.0f;
 
-			snprintf(sort_name, 3, "%02d", no);
+			arr_snprintf(sort_name, "%02d", no);
 
 			gtk_tree_store_append(music_store, &iter, &ripper_dest_record);
 			gtk_tree_store_set(music_store, &iter,

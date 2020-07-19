@@ -108,10 +108,10 @@ vorbisenc_encoder_open(encoder_t * enc, encoder_mode_t * mode) {
 			if (META_FIELD_TEXT(frame->type)) {
 				field_val = frame->field_val;
 			} else if (META_FIELD_INT(frame->type)) {
-				snprintf(fval, MAXLEN-1, renderfmt, frame->int_val);
+				arr_snprintf(fval, renderfmt, frame->int_val);
 				field_val = fval;
 			} else if (META_FIELD_FLOAT(frame->type)) {
-				snprintf(fval, MAXLEN-1, renderfmt, frame->float_val);
+				arr_snprintf(fval, renderfmt, frame->float_val);
 				field_val = fval;
 			}
 

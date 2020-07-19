@@ -200,7 +200,7 @@ symlink_deref_absolute(char * symlink, char * path) {
 	if (!g_path_is_absolute(path)) {
 		char tmp[CDDA_MAXLEN];
 		char * dir = g_path_get_dirname(symlink);
-		snprintf(tmp, CDDA_MAXLEN-1, "%s/%s", dir, path);
+		arr_snprintf(tmp, "%s/%s", dir, path);
 		strcpy(path, tmp);
 		g_free(dir);
 	}
@@ -674,9 +674,9 @@ update_track_data(cdda_drive_t * drive, GtkTreeIter iter_drive) {
 
 		cdda_track_t * data;
 
-		snprintf(title, MAXLEN-1, "Track %d", i+1);
-		snprintf(path, CDDA_MAXLEN-1, "CDDA %s %lX %d", drive->device_path, drive->disc.hash, i+1);
-		snprintf(sort, 15, "%02d", i+1);
+		arr_snprintf(title, "Track %d", i+1);
+		arr_snprintf(path, "CDDA %s %lX %d", drive->device_path, drive->disc.hash, i+1);
+		arr_snprintf(sort, "%02d", i+1);
 
 		if ((data = (cdda_track_t *)malloc(sizeof(cdda_track_t))) == NULL) {
 			fprintf(stderr, "update_track_data: malloc error\n");
@@ -725,14 +725,14 @@ insert_cdda_drive_node(char * device_path) {
 	}
 
 	if (drive->disc.n_tracks > 0) {
-		snprintf(str_title, MAXLEN-1, "%s [%s]",
-			 _("Unknown disc"), cdda_displayed_device_path(device_path));
+		arr_snprintf(str_title, "%s [%s]",
+			     _("Unknown disc"), cdda_displayed_device_path(device_path));
 	} else {
-		snprintf(str_title, MAXLEN-1, "%s [%s]",
-			 _("No disc"), cdda_displayed_device_path(device_path));
+		arr_snprintf(str_title, "%s [%s]",
+			     _("No disc"), cdda_displayed_device_path(device_path));
 	}
 
-	snprintf(str_sort, 15, "%d", cdda_get_n(device_path));
+	arr_snprintf(str_sort, "%d", cdda_get_n(device_path));
 
 	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(music_store), &iter_cdda);
 
@@ -810,11 +810,11 @@ refresh_cdda_drive_node(char * device_path) {
 	}
 
 	if (drive->disc.n_tracks > 0) {
-		snprintf(str_title, MAXLEN-1, "%s [%s]", _("Unknown disc"),
-			 cdda_displayed_device_path(device_path));
+		arr_snprintf(str_title, "%s [%s]", _("Unknown disc"),
+			     cdda_displayed_device_path(device_path));
 	} else {
-		snprintf(str_title, MAXLEN-1, "%s [%s]", _("No disc"),
-			 cdda_displayed_device_path(device_path));
+		arr_snprintf(str_title, "%s [%s]", _("No disc"),
+			     cdda_displayed_device_path(device_path));
 	}
 
 	gtk_tree_store_set(music_store, &iter_drive, MS_COL_NAME, str_title, -1);

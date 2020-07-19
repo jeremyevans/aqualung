@@ -118,10 +118,10 @@ meta_entry_from_frame(FLAC__StreamMetadata_VorbisComment_Entry * entry,
 	if (META_FIELD_TEXT(frame->type)) {
 		val = frame->field_val;
 	} else if (META_FIELD_INT(frame->type)) {
-		snprintf(str, MAXLEN-1, renderfmt, frame->int_val);
+		arr_snprintf(str, renderfmt, frame->int_val);
 		val = str;
 	} else if (META_FIELD_FLOAT(frame->type)) {
-		snprintf(str, MAXLEN-1, renderfmt, frame->float_val);
+		arr_snprintf(str, renderfmt, frame->float_val);
 		val = str;
 	} else {
 		fprintf(stderr, "meta_entry_from_frame: frame type 0x%x is unsupported\n", frame->type);

@@ -1973,7 +1973,7 @@ load_default_cl(int * argc, char *** argv) {
 
         xmlFreeDoc(doc);
 
-	snprintf(cl, MAXLEN-1, "aqualung %s", default_param);
+	arr_snprintf(cl, "aqualung %s", default_param);
 	while (cl[i] != '\0') {
 		++(*argc);
 		if ((*argv = realloc(*argv, *argc * sizeof(char *))) == NULL) {
@@ -2367,7 +2367,7 @@ setup_app_directories(void) {
 		strcpy(options.home, home);
 	}
 
-	snprintf(options.confdir, MAXLEN-1, "%s/.aqualung", options.home);
+	arr_snprintf(options.confdir, "%s/.aqualung", options.home);
         xdgconfdir = g_build_filename(g_get_user_config_dir(), "aqualung", NULL);
 	if (!g_file_test(xdgconfdir, G_FILE_TEST_IS_DIR) &&
 	    g_file_test(options.confdir, G_FILE_TEST_IS_DIR)) {

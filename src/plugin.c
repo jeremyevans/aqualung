@@ -145,7 +145,7 @@ parse_lrdf_data(void) {
 	lrdf_path[0] = '\0';
 
 	if ((str = getenv("LADSPA_RDF_PATH"))) {
-		snprintf(lrdf_path, MAXLEN-1, "%s:", str);
+		arr_snprintf(lrdf_path, "%s:", str);
 	} else {
                 strncat(lrdf_path, "/usr/local/share/ladspa/rdf:/usr/share/ladspa/rdf:", MAXLEN-1);
 	}
@@ -160,7 +160,7 @@ parse_lrdf_data(void) {
 				int c;
 				
 				for (c = 0; c < n; ++c) {
-					snprintf(fileuri, MAXLEN-1, "file://%s/%s", rdf_path, de[c]->d_name);
+					arr_snprintf(fileuri, "file://%s/%s", rdf_path, de[c]->d_name);
 					if (lrdf_read_file(fileuri)) {
 						fprintf(stderr,
 							"warning: could not parse RDF file: %s\n", fileuri);
@@ -184,7 +184,7 @@ get_ladspa_category(unsigned long plugin_id, char * str) {
 	lrdf_statement * matches1;
 	lrdf_statement * matches2;
 
-        snprintf(buf, 255, "%s%lu", LADSPA_BASE, plugin_id);
+        arr_snprintf(buf, "%s%lu", LADSPA_BASE, plugin_id);
         pattern.subject = buf;
         pattern.predicate = RDF_TYPE;
         pattern.object = 0;
@@ -235,7 +235,7 @@ find_plugins(char * path_entry) {
 	n = scandir(path_entry, &de, so_filter, alphasort);
 	if (n >= 0) {
 		for (c = 0; c < n; ++c) {
-			snprintf(lib_name, MAXLEN-1, "%s/%s", path_entry, de[c]->d_name);
+			arr_snprintf(lib_name, "%s/%s", path_entry, de[c]->d_name);
 			library = dlopen(lib_name, RTLD_LAZY);
 			if (library == NULL) {
 				free(de[c]);
@@ -266,10 +266,10 @@ find_plugins(char * path_entry) {
 				if ((n_ins == 1 && n_outs == 1) || (n_ins == 2 && n_outs == 2)) {
 					
 					get_ladspa_category(descriptor->UniqueID, category);
-					snprintf(id_str, 31, "%ld", descriptor->UniqueID);
-					snprintf(n_ins_str, 31, "%ld", n_ins);
-					snprintf(n_outs_str, 31, "%ld", n_outs);
-					snprintf(c_str, 31, "%d", k);
+					arr_snprintf(id_str, "%ld", descriptor->UniqueID);
+					arr_snprintf(n_ins_str, "%ld", n_ins);
+					arr_snprintf(n_outs_str, "%ld", n_outs);
+					arr_snprintf(c_str, "%d", k);
 					
 					gtk_list_store_append(avail_store, &iter);
 					gtk_list_store_set(avail_store, &iter, 0, id_str,
@@ -831,14 +831,14 @@ build_plugin_window(plugin_instance * instance) {
 	if (n_ins == 1) {
 		strcat(str_inout, "1 in");
 	} else {
-		snprintf(str_n, 15, "%d ins", n_ins);
+		arr_snprintf(str_n, "%d ins", n_ins);
 		strcat(str_inout, str_n);
 	}
 	strcat(str_inout, " | ");
 	if (n_outs == 1) {
 		strcat(str_inout, "1 out");
 	} else {
-		snprintf(str_n, 15, "%d outs", n_outs);
+		arr_snprintf(str_n, "%d outs", n_outs);
 		strcat(str_inout, str_n);
 	}
 	strcat(str_inout, " ]");
@@ -2039,10 +2039,10 @@ save_plugin_data(void) {
 
 		xmlNewTextChild(plugin_node, NULL, (const xmlChar*) "filename", (xmlChar*) instance->filename);
 
-		snprintf(str, 31, "%d", instance->index);
+		arr_snprintf(str, "%d", instance->index);
 		xmlNewTextChild(plugin_node, NULL, (const xmlChar*) "index", (xmlChar*) str);
 
-		snprintf(str, 31, "%d", instance->is_bypassed);
+		arr_snprintf(str, "%d", instance->is_bypassed);
 		xmlNewTextChild(plugin_node, NULL, (const xmlChar*) "is_bypassed", (xmlChar*) str);
 
                 for (k = 0; k < MAX_KNOBS && k < instance->descriptor->PortCount; ++k) {
@@ -2054,10 +2054,10 @@ save_plugin_data(void) {
 
 			port_node = xmlNewTextChild(plugin_node, NULL, (const xmlChar*) "port", NULL);
 
-			snprintf(str, 31, "%d", k);
+			arr_snprintf(str, "%d", k);
 			xmlNewTextChild(port_node, NULL, (const xmlChar*) "index", (xmlChar*) str);
 
-			snprintf(str, 31, "%f", instance->knobs[k]);
+			arr_snprintf(str, "%f", instance->knobs[k]);
 			xmlNewTextChild(port_node, NULL, (const xmlChar*) "value", (xmlChar*) str);
 		}
                 ++i;

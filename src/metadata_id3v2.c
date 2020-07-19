@@ -442,7 +442,7 @@ meta_parse_id3v2_rva2(metadata_t * meta, unsigned char * buf, int len) {
 			frame->tag = META_TAG_ID3v2;
 			frame->type = META_FIELD_RVA2;
 			meta_get_fieldname(META_FIELD_RVA2, &field_name);
-			snprintf(str, MAXLEN-1, "%s (%s)", field_name, id);
+			arr_snprintf(str, "%s (%s)", field_name, id);
 			frame->field_name = strdup(str);
 			frame->field_val = strdup(id);
  			frame->float_val = voladj_float;
@@ -673,11 +673,11 @@ meta_render_id3v2_t___(meta_frame_t * frame, unsigned char ** buf, int * size) {
 		field_val = frame->field_val;
 		field_len = strlen(field_val);
 	} else if (META_FIELD_INT(frame->type)) {
-		snprintf(fval, MAXLEN-1, renderfmt, frame->int_val);
+		arr_snprintf(fval, renderfmt, frame->int_val);
 		field_val = fval;
 		field_len = strlen(field_val);
 	} else if (META_FIELD_FLOAT(frame->type)) {
-		snprintf(fval, MAXLEN-1, renderfmt, frame->float_val);
+		arr_snprintf(fval, renderfmt, frame->float_val);
 		field_val = fval;
 		field_len = strlen(field_val);
 	}

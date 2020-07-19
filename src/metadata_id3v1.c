@@ -324,7 +324,7 @@ metadata_from_id3v1(metadata_t * meta, unsigned char * buf) {
 	memcpy(raw, buf+97, 30);
 	if ((raw[28] == '\0') && (raw[29] != '\0')) { /* ID3v1.1 */
 		char track[4];
-		snprintf(track, 4, "%u", (unsigned char)raw[29]);
+		arr_snprintf(track, "%u", (unsigned char)raw[29]);
 		meta_add_id3v1_frame(meta, "Track", track);
 	}
 

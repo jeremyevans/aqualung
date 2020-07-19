@@ -1063,9 +1063,9 @@ edit_track_dialog(char * name, char * sort, track_data_t * data) {
 	insert_label_entry(table, _("Duration:"), &duration_entry, str, 3, 4, FALSE);
 
 	if (data->volume <= 0.1f) {
-		snprintf(str, MAXLEN-1, "%.1f dBFS", data->volume);
+		arr_snprintf(str, "%.1f dBFS", data->volume);
 	} else {
-		snprintf(str, MAXLEN-1, _("Unmeasured"));
+		arr_snprintf(str, _("Unmeasured"));
 	}
 	insert_label_entry(table, _("Volume level:"), &volume_entry, str, 4, 5, FALSE);
 
@@ -1295,7 +1295,7 @@ generic_remove_cb(char * title, int (* remove_cb)(GtkTreeIter *)) {
 			char text[MAXLEN];
 
 			gtk_tree_model_get(model, &iter, MS_COL_NAME, &name, -1);
-			snprintf(text, MAXLEN-1, _("Really remove \"%s\" from the Music Store?"), name);
+			arr_snprintf(text, _("Really remove \"%s\" from the Music Store?"), name);
 			g_free(name);
 
 			ok = confirm_dialog(title, text);
@@ -1503,7 +1503,7 @@ record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl,
 		gtk_tree_model_iter_parent(GTK_TREE_MODEL(music_store), &iter_artist, &iter_record);
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_artist, MS_COL_NAME, &artist_name, -1);
 
-		snprintf(list_str, MAXLEN-1, "%s: %s", artist_name, record_name);
+		arr_snprintf(list_str, "%s: %s", artist_name, record_name);
 
 		pldata->artist = strdup(artist_name);
 		pldata->album = strdup(record_name);
@@ -2031,8 +2031,8 @@ store__remove_cb(gpointer user_data) {
 		strncpy(name, pname, MAXLEN-1);
                 g_free(pname);
 
-		snprintf(text, MAXLEN-1, _("Really remove store \"%s\" from the Music Store?"),
-			 (data->dirty) ? (name + 1) : (name));
+		arr_snprintf(text, _("Really remove store \"%s\" from the Music Store?"),
+			     (data->dirty) ? (name + 1) : (name));
 		if (confirm_dialog(_("Remove Store"), text)) {
 
 			char * file = strdup(data->file);
@@ -3313,7 +3313,7 @@ record_batch_tag_set_from_iter(GtkTreeIter * iter) {
 	g_free(str);
 
 	gtk_tree_model_get(GTK_TREE_MODEL(music_store), iter, MS_COL_DATA, &data, -1);
-	snprintf(year_tag, MAXLEN-1, "%d", data->year);
+	arr_snprintf(year_tag, "%d", data->year);
 }
 
 gboolean
@@ -4098,7 +4098,7 @@ save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track,
 	}
 
 	if (data->size != 0) {
-		snprintf(str, 31, "%u", data->size);
+		arr_snprintf(str, "%u", data->size);
 		xmlNewTextChild(node, NULL, (const xmlChar *) "size", (const xmlChar *) str);
 	}
 
@@ -4107,22 +4107,22 @@ save_track(xmlDocPtr doc, xmlNodePtr node_track, GtkTreeIter * iter_track,
 	}
 
 	if (data->duration != 0.0f) {
-		snprintf(str, 31, "%.1f", data->duration);
+		arr_snprintf(str, "%.1f", data->duration);
 		xmlNewTextChild(node, NULL, (const xmlChar *) "duration", (const xmlChar *) str);
 	}
 
 	if (data->volume <= 0.1f) {
-		snprintf(str, 31, "%.1f", data->volume);
+		arr_snprintf(str, "%.1f", data->volume);
 		xmlNewTextChild(node, NULL, (const xmlChar *) "volume", (const xmlChar *) str);
 	}
 
 	if (data->rva != 0.0f) {
-		snprintf(str, 31, "%.1f", data->rva);
+		arr_snprintf(str, "%.1f", data->rva);
 		xmlNewTextChild(node, NULL, (const xmlChar *) "rva", (const xmlChar *) str);
 	}
 
 	if (data->use_rva) {
-		snprintf(str, 31, "%d", data->use_rva);
+		arr_snprintf(str, "%d", data->use_rva);
 		xmlNewTextChild(node, NULL, (const xmlChar *) "use_rva", (const xmlChar *) str);
 	}
 
@@ -4160,7 +4160,7 @@ save_record(xmlDocPtr doc, xmlNodePtr node_record, GtkTreeIter * iter_record,
 	}
 	if (data->year != 0) {
 		char str[32];
-		snprintf(str, 31, "%d", data->year);
+		arr_snprintf(str, "%d", data->year);
 		xmlNewTextChild(node, NULL, (const xmlChar *) "year", (const xmlChar *) str);
 	}
 

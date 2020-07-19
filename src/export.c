@@ -349,7 +349,7 @@ update_progbar_ratio(gpointer user_data) {
 		char tmp[16];
 
 		AQUALUNG_MUTEX_LOCK(export->mutex);
-		snprintf(tmp, 15, "%d%%", (int)(export->ratio * 100));
+		arr_snprintf(tmp, "%d%%", (int)(export->ratio * 100));
 		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(export->progbar), export->ratio);
 		AQUALUNG_MUTEX_UNLOCK(export->mutex);
 		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(export->progbar), tmp);
@@ -455,7 +455,7 @@ export_meta_amend_frame(metadata_t * meta, int tag, int type, export_item_t * it
 	case META_FIELD_DATE:
 		{
 			char str_year[6];
-			snprintf(str_year, 5, "%d", item->year);
+			arr_snprintf(str_year, "%d", item->year);
 			frame->field_val = strdup(str_year);
 		}
 		break;
@@ -855,11 +855,11 @@ export_bitrate_changed(GtkRange * range, gpointer data) {
 		switch (i) {
 		case 0:
 		case 8:
-			snprintf(str, 255, "%d (%s)", i, (i == 0) ? _("fast") : _("best"));
+			arr_snprintf(str, "%d (%s)", i, (i == 0) ? _("fast") : _("best"));
 			gtk_label_set_text(GTK_LABEL(export->bitrate_value_label), str);
 			break;
 		default:
-			snprintf(str, 255, "%d", i);
+			arr_snprintf(str, "%d", i);
 			gtk_label_set_text(GTK_LABEL(export->bitrate_value_label), str);
 			break;
 		}
@@ -867,7 +867,7 @@ export_bitrate_changed(GtkRange * range, gpointer data) {
 	if (strcmp(text, "Ogg Vorbis") == 0) {
 		int i = (int)val;
 		char str[256];
-		snprintf(str, 255, "%d", i);
+		arr_snprintf(str, "%d", i);
 		gtk_label_set_text(GTK_LABEL(export->bitrate_value_label), str);
 	}
 	if (strcmp(text, "MP3") == 0) {
@@ -876,7 +876,7 @@ export_bitrate_changed(GtkRange * range, gpointer data) {
 #ifdef HAVE_LAME
 		i = lame_encoder_validate_bitrate(i, 0);
 #endif /* HAVE_LAME */
-		snprintf(str, 255, "%d", i);
+		arr_snprintf(str, "%d", i);
 		gtk_label_set_text(GTK_LABEL(export->bitrate_value_label), str);
 	}
 	g_free(text);

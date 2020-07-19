@@ -746,11 +746,11 @@ meta_ogg_vc_render(metadata_t * meta, unsigned int * length) {
 			field_val = frame->field_val;
 			field_len = strlen(frame->field_val);
 		} else if (META_FIELD_INT(frame->type)) {
-			snprintf(fval, MAXLEN-1, renderfmt, frame->int_val);
+			arr_snprintf(fval, renderfmt, frame->int_val);
 			field_val = fval;
 			field_len = strlen(field_val);
 		} else if (META_FIELD_FLOAT(frame->type)) {
-			snprintf(fval, MAXLEN-1, renderfmt, frame->float_val);
+			arr_snprintf(fval, renderfmt, frame->float_val);
 			field_val = fval;
 			field_len = strlen(field_val);
 		} else {

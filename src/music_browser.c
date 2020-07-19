@@ -665,7 +665,7 @@ create_music_browser(void) {
 			    sizeof(target_table) / sizeof(GtkTargetEntry),
 			    GDK_ACTION_COPY);
 
-	snprintf(path, MAXLEN-1, "%s/drag.png", AQUALUNG_DATADIR);
+	arr_snprintf(path, "%s/drag.png", AQUALUNG_DATADIR);
 	if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) != NULL) {
 		gtk_drag_source_set_icon_pixbuf(music_tree, pixbuf);
 	}
@@ -926,7 +926,7 @@ music_store_load_all(void) {
 
 		switch (music_store_get_type(store_file)) {
 		case STORE_TYPE_FILE:
-			snprintf(sort, 15, "%03d", i+1);
+			arr_snprintf(sort, "%03d", i+1);
 			store_file_load(store_file, sort);
 			break;
 		}

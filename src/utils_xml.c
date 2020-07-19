@@ -40,7 +40,7 @@ xml_save_int(xmlNodePtr node, char * varname, int var) {
 
 	char str[32];
 
-        snprintf(str, 31, "%d", var);
+        arr_snprintf(str, "%d", var);
         xmlNewTextChild(node, NULL, (const xmlChar *)varname, (xmlChar *)str);
 }
 
@@ -49,7 +49,7 @@ xml_save_uint(xmlNodePtr node, char * varname, unsigned var) {
 
 	char str[32];
 
-        snprintf(str, 31, "%u", var);
+        arr_snprintf(str, "%u", var);
         xmlNewTextChild(node, NULL, (const xmlChar *)varname, (xmlChar *)str);
 }
 
@@ -58,7 +58,7 @@ xml_save_float(xmlNodePtr node, char * varname, float var) {
 
 	char str[32];
 
-        snprintf(str, 31, "%.1f", var);
+        arr_snprintf(str, "%.1f", var);
         xmlNewTextChild(node, NULL, (const xmlChar *)varname, (xmlChar *)str);
 }
 
@@ -67,7 +67,7 @@ xml_save_int_array(xmlNodePtr node, char * varname, int * var, int idx) {
 
 	char name[MAXLEN];
 
-	snprintf(name, MAXLEN-1, "%s_%d", varname, idx);
+	arr_snprintf(name, "%s_%d", varname, idx);
 	xml_save_int(node, name, var[idx]);
 }
 
@@ -136,7 +136,7 @@ xml_load_int_array(xmlDocPtr doc, xmlNodePtr node, char * varname, int * var, in
 
 	char name[MAXLEN];
 
-	snprintf(name, MAXLEN-1, "%s_%d", varname, idx);
+	arr_snprintf(name, "%s_%d", varname, idx);
 	xml_load_int(doc, node, name, var + idx);
 }
 

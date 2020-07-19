@@ -427,8 +427,8 @@ meta_ape_render_bin_frames(metadata_t * meta, ape_tag_t * tag, int type,
 
 		switch (type) {
 		case META_FIELD_APIC:
-			snprintf(key, 254, "Cover Art (%s)",
-				 meta_id3v2_apic_type_to_string(frame->int_val));
+			arr_snprintf(key, "Cover Art (%s)",
+				     meta_id3v2_apic_type_to_string(frame->int_val));
 			strncpy((char *)item->key, key, 255);
 			meta_ape_render_apic(frame, item);
 			break;
@@ -498,11 +498,11 @@ metadata_to_ape_tag(metadata_t * meta, ape_tag_t * tag) {
 				field_val = frame->field_val;
 				field_len = strlen(frame->field_val);
 			} else if (META_FIELD_INT(type)) {
-				snprintf(fval, MAXLEN-1, renderfmt, frame->int_val);
+				arr_snprintf(fval, renderfmt, frame->int_val);
 				field_val = fval;
 				field_len = strlen(field_val);
 			} else if (META_FIELD_FLOAT(type)) {
-				snprintf(fval, MAXLEN-1, renderfmt, frame->float_val);
+				arr_snprintf(fval, renderfmt, frame->float_val);
 				field_val = fval;
 				field_len = strlen(field_val);
 			}

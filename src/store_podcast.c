@@ -528,9 +528,9 @@ podcast_feed_addlist_iter(GtkTreeIter iter_record, playlist_t * pl, GtkTreeIter 
 
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, MS_COL_DATA, &podcast, -1);
 
-		snprintf(list_str, MAXLEN-1, "%s: %s",
-			 podcast->author ? podcast->author : _("Podcasts"),
-			 podcast->title);
+		arr_snprintf(list_str, "%s: %s",
+			     podcast->author ? podcast->author : _("Podcasts"),
+			     podcast->title);
 
 		pldata->artist = strndup(podcast->author ? podcast->author : _("Podcasts"), MAXLEN-1);
 		pldata->album = strdup(podcast->title);
@@ -961,7 +961,7 @@ podcast_store__reorder_cb(gpointer data) {
 		if (res == GTK_RESPONSE_ACCEPT) {
 			char sort[16];
 
-			snprintf(sort, 15, "%03d", i);
+			arr_snprintf(sort, "%03d", i);
 			gtk_tree_store_set(music_store, iter, MS_COL_SORT, sort, -1);
 		}
 
@@ -1200,7 +1200,7 @@ store_podcast_update_podcast_download_cb(gpointer data) {
 		return FALSE;
 	}
 
-	snprintf(name_str, MAXLEN-1, _("Downloading %d/%d (%d%%) ..."), pd->ncurrent, pd->ndownloads, pd->percent);
+	arr_snprintf(name_str, _("Downloading %d/%d (%d%%) ..."), pd->ncurrent, pd->ndownloads, pd->percent);
 	gtk_tree_store_set(music_store, &pod_iter, MS_COL_NAME, name_str, -1);
 
 	return FALSE;
@@ -1219,7 +1219,7 @@ store_podcast_add_item_cb(gpointer data) {
 		return FALSE;
 	}
 
-	snprintf(sort, 15, "%014lld", 10000000000LL - pt->item->date);
+	arr_snprintf(sort, "%014lld", 10000000000LL - pt->item->date);
 
 	gtk_tree_store_append(music_store, &iter, &pod_iter);
 	gtk_tree_store_set(music_store, &iter,
@@ -1995,7 +1995,7 @@ store_podcast_save(void) {
 		save_podcast(doc, root, &pod_iter);
 	}
 
-	snprintf(file, MAXLEN-1, "%s/podcast.xml", options.confdir);
+	arr_snprintf(file, "%s/podcast.xml", options.confdir);
 	xmlSaveFormatFile(file, doc, 1);
 	xmlFreeDoc(doc);
 
@@ -2098,7 +2098,7 @@ store_podcast_load(void) {
 	xmlNodePtr cur;
 	char file[MAXLEN];
 	
-	snprintf(file, MAXLEN-1, "%s/podcast.xml", options.confdir);
+	arr_snprintf(file, "%s/podcast.xml", options.confdir);
 	if (!g_file_test(file, G_FILE_TEST_EXISTS)) {
 		return;
 	}

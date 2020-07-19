@@ -453,7 +453,7 @@ set_samplerate_label(int sr) {
 
 	char str[MAXLEN];
 
-	snprintf(str, MAXLEN-1, "%d Hz", sr);
+	arr_snprintf(str, "%d Hz", sr);
 
 	if (is_file_loaded) {
 		gtk_label_set_text(GTK_LABEL(label_samplerate), str);
@@ -487,32 +487,32 @@ set_output_label(int output, int out_SR) {
 	switch (output) {
 #ifdef HAVE_PULSE
 	case PULSE_DRIVER:
-		snprintf(str, MAXLEN-1, "%s PulseAudio @ %d Hz", _("Output:"), out_SR);
+		arr_snprintf(str, "%s PulseAudio @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_PULSE */
 #ifdef HAVE_SNDIO
 	case SNDIO_DRIVER:
-		snprintf(str, MAXLEN-1, "%s sndio @ %d Hz", _("Output:"), out_SR);
+		arr_snprintf(str, "%s sndio @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_SNDIO */
 #ifdef HAVE_OSS
 	case OSS_DRIVER:
-		snprintf(str, MAXLEN-1, "%s OSS @ %d Hz", _("Output:"), out_SR);
+		arr_snprintf(str, "%s OSS @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_OSS */
 #ifdef HAVE_ALSA
 	case ALSA_DRIVER:
-		snprintf(str, MAXLEN-1, "%s ALSA @ %d Hz", _("Output:"), out_SR);
+		arr_snprintf(str, "%s ALSA @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_ALSA */
 #ifdef HAVE_JACK
 	case JACK_DRIVER:
-		snprintf(str, MAXLEN-1, "%s JACK @ %d Hz", _("Output:"), out_SR);
+		arr_snprintf(str, "%s JACK @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_JACK */
 #ifdef HAVE_WINMM
 	case WIN32_DRIVER:
-		snprintf(str, MAXLEN-1, "%s Win32 @ %d Hz", _("Output:"), out_SR);
+		arr_snprintf(str, "%s Win32 @ %d Hz", _("Output:"), out_SR);
 		break;
 #endif /* HAVE_WINMM */
 	default:
@@ -593,14 +593,14 @@ loop_bar_update_tooltip(void) {
 			char end[32];
 			sample2time(disp_info.sample_rate, total_samples * options.loop_range_start, start, 0);
 			sample2time(disp_info.sample_rate, total_samples * options.loop_range_end, end, 0);
-			snprintf(str, MAXLEN-1, _("Loop range: %d-%d%% [%s - %s]"),
-				 (int)(100 * options.loop_range_start),
-				 (int)(100 * options.loop_range_end),
-				 start, end);
+			arr_snprintf(str, _("Loop range: %d-%d%% [%s - %s]"),
+				     (int)(100 * options.loop_range_start),
+				     (int)(100 * options.loop_range_end),
+				     start, end);
 		} else {
-			snprintf(str, MAXLEN-1, _("Loop range: %d-%d%%"),
-				 (int)(100 * options.loop_range_start),
-				 (int)(100 * options.loop_range_end));
+			arr_snprintf(str, _("Loop range: %d-%d%%"),
+				     (int)(100 * options.loop_range_start),
+				     (int)(100 * options.loop_range_end));
 		}
 
                 aqualung_widget_set_tooltip_text(loop_bar, str);
@@ -788,7 +788,7 @@ main_window_close(GtkWidget * widget, GdkEvent * event, gpointer data) {
 	if (options.auto_save_playlist) {
 		char playlist_name[MAXLEN];
 
-		snprintf(playlist_name, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
+		arr_snprintf(playlist_name, "%s/%s", options.confdir, "playlist.xml");
 		playlist_save_all(playlist_name);
 	}
 
@@ -1469,7 +1469,7 @@ changed_pos(GtkAdjustment * adj, gpointer data) {
 		int newpos = (int)gtk_adjustment_get_value(adj);
 		if (pos != newpos) {
 			char str[32];
-			snprintf(str, 31, _("Position: %d%%"), newpos);
+			arr_snprintf(str, _("Position: %d%%"), newpos);
 			aqualung_widget_set_tooltip_text(scale_pos, str);
 			pos = newpos;
 		}
@@ -1489,9 +1489,9 @@ scale_vol_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 	}
 
 	if (options.vol < -40.5f) {
-		snprintf(str, 31, _("Mute"));
+		arr_snprintf(str, _("Mute"));
 	} else {
-		snprintf(str, 31, _("%d dB"), (int)options.vol);
+		arr_snprintf(str, _("%d dB"), (int)options.vol);
 	}
 
 	gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
@@ -1516,16 +1516,16 @@ changed_vol(GtkAdjustment * adj, gpointer date) {
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), options.vol);
 
         if (options.vol < -40.5f) {
-                snprintf(str, 31, _("Mute"));
+                arr_snprintf(str, _("Mute"));
         } else {
-                snprintf(str, 31, _("%d dB"), (int)options.vol);
+                arr_snprintf(str, _("%d dB"), (int)options.vol);
         }
 
         if (!refresh_time_label) {
 		gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
         }
 
-        snprintf(str2, 31, _("Volume: %s"), str);
+        arr_snprintf(str2, _("Volume: %s"), str);
         aqualung_widget_set_tooltip_text(scale_vol, str2);
 }
 
@@ -1553,12 +1553,12 @@ scale_bal_button_press_event(GtkWidget * widget, GdkEventButton * event) {
 
 	if (options.bal != 0.0f) {
 		if (options.bal > 0.0f) {
-			snprintf(str, 31, _("%d%% R"), (int)options.bal);
+			arr_snprintf(str, _("%d%% R"), (int)options.bal);
 		} else {
-			snprintf(str, 31, _("%d%% L"), -1*(int)options.bal);
+			arr_snprintf(str, _("%d%% L"), -1*(int)options.bal);
 		}
 	} else {
-		snprintf(str, 31, _("C"));
+		arr_snprintf(str, _("C"));
 	}
 
 	gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
@@ -1584,19 +1584,19 @@ changed_bal(GtkAdjustment * adj, gpointer date) {
 
         if (options.bal != 0.0f) {
                 if (options.bal > 0.0f) {
-                        snprintf(str, 31, _("%d%% R"), (int)options.bal);
+                        arr_snprintf(str, _("%d%% R"), (int)options.bal);
                 } else {
-                        snprintf(str, 31, _("%d%% L"), -1*(int)options.bal);
+                        arr_snprintf(str, _("%d%% L"), -1*(int)options.bal);
                 }
         } else {
-                snprintf(str, 31, _("C"));
+                arr_snprintf(str, _("C"));
         }
 
         if (!refresh_time_label) {
 		gtk_label_set_text(GTK_LABEL(time_labels[options.time_idx[0]]), str);
 	}
 
-        snprintf(str2, 31, _("Balance: %s"), str);
+        arr_snprintf(str2, _("Balance: %s"), str);
         aqualung_widget_set_tooltip_text(scale_bal, str2);
 }
 
@@ -3741,7 +3741,7 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		int start_playback = (argv[optind] == NULL) && immediate_start;
 		char file[MAXLEN];
 
-		snprintf(file, MAXLEN-1, "%s/%s", options.confdir, "playlist.xml");
+		arr_snprintf(file, "%s/%s", options.confdir, "playlist.xml");
 		if (g_file_test(file, G_FILE_TEST_EXISTS) == TRUE) {
 			GSList * list = g_slist_append(NULL, strdup(file));
 			playlist_load(list, PLAYLIST_LOAD_TAB, NULL, start_playback);
@@ -3874,7 +3874,7 @@ process_metablock(metadata_t * meta) {
 		    (title && !is_all_wspace(title))) {
 			make_title_string(tmp, options.title_format, artist, album, title);
 			if (icy_name != NULL) {
-				snprintf(buf, MAXLEN-1, "%s (%s)", tmp, icy_name);
+				arr_snprintf(buf, "%s (%s)", tmp, icy_name);
 			}
 		} else if (icy_name != NULL) {
 			strncpy(buf, icy_name, MAXLEN-1);
@@ -3896,7 +3896,7 @@ process_metablock(metadata_t * meta) {
 	metadata_get_icy_descr(meta, &icy_descr);
 
 	if (icy_descr != NULL) {
-		snprintf(buf, MAXLEN-1, "%s (%s)", icy_name, icy_descr);
+		arr_snprintf(buf, "%s (%s)", icy_name, icy_descr);
 	} else {
 		strncpy(buf, icy_name, MAXLEN-1);
 	}

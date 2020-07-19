@@ -191,7 +191,7 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 	if (exactonly) {
 		strcpy(key, key_string);
 	} else {
-		snprintf(key, MAXLEN-1, "*%s*", key_string);
+		arr_snprintf(key, "*%s*", key_string);
 	}
 
 	pattern = g_pattern_spec_new(key);

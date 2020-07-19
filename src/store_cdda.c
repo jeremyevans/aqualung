@@ -187,7 +187,7 @@ cdda_drive_info(cdda_drive_t * drive) {
 	cdio_get_drive_cap(cdio, &read_cap, &write_cap, &misc_cap);
 	cdio_destroy(cdio);
 
-	snprintf(str, MAXLEN-1, "%s [%s]", _("Drive info"), cdda_displayed_device_path(drive->device_path));
+	arr_snprintf(str, "%s [%s]", _("Drive info"), cdda_displayed_device_path(drive->device_path));
 
         dialog = gtk_dialog_new_with_buttons(str,
 					     GTK_WINDOW(browser_window),
@@ -699,7 +699,7 @@ cdda_record_addlist_iter(GtkTreeIter iter_record, playlist_t * pl, GtkTreeIter *
 
 		gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter_record, MS_COL_DATA, &drive, -1);
 
-		snprintf(list_str, MAXLEN-1, "%s: %s", drive->disc.artist_name, drive->disc.record_name);
+		arr_snprintf(list_str, "%s: %s", drive->disc.artist_name, drive->disc.record_name);
 
 		pldata->artist = strdup(drive->disc.artist_name);
 		pldata->album = strdup(drive->disc.record_name);

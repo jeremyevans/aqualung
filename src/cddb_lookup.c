@@ -365,9 +365,9 @@ store_cdda_export_merged(cddb_lookup_t * data, char * artist, char * record, cha
 	strncpy(drive->disc.genre, genre, MAXLEN-1);
 	drive->disc.year = year;
 
-	snprintf(name, MAXLEN-1, "%s: %s",
-		 drive->disc.artist_name,
-		 drive->disc.record_name);
+	arr_snprintf(name, "%s: %s",
+		     drive->disc.artist_name,
+		     drive->disc.record_name);
 
 	gtk_tree_store_set(music_store, &data->iter_record, MS_COL_NAME, name, -1);
 
@@ -416,7 +416,7 @@ cddb_lookup_merge(cddb_lookup_t * data, char * artist, char * record, char * gen
 
 		y = cddb_disc_get_year(data->records[i]);
 		if (is_valid_year(y)) {
-			snprintf(tmp, MAXLEN-1, "%d", y);
+			arr_snprintf(tmp, "%d", y);
 			map_put(&map_year, tmp);
 		}
 
@@ -472,7 +472,7 @@ query_timeout_cb(gpointer user_data) {
 	case CDDB_INIT:
 		return TRUE;
 	case CDDB_BUSY:
-		snprintf(text, MAXLEN, "%d / %d", data->counter, data->nrecords);
+		arr_snprintf(text, "%d / %d", data->counter, data->nrecords);
 		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(data->progbar),
 					      (double)data->counter / data->nrecords);
 		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(data->progbar), text);
@@ -578,9 +578,9 @@ add_to_comments(cddb_lookup_t * data, GtkWidget * entry) {
 
 	if (record_data->comment != NULL && record_data->comment[0] != '\0') {
 		char comment[MAXLEN];
-		snprintf(comment, MAXLEN-1, "%s\n%s",
-			 record_data->comment,
-			 gtk_entry_get_text(GTK_ENTRY(entry)));
+		arr_snprintf(comment, "%s\n%s",
+			     record_data->comment,
+			     gtk_entry_get_text(GTK_ENTRY(entry)));
 		free_strdup(&record_data->comment, comment);
 	} else {
 		free_strdup(&record_data->comment, gtk_entry_get_text(GTK_ENTRY(entry)));
@@ -655,7 +655,7 @@ import_as_year(GtkWidget * widget, gpointer user_data) {
 
 	if (data->year_imported) {
 		char buf[16];
-		snprintf(buf, 15, "%d", year);
+		arr_snprintf(buf, "%d", year);
 		gtk_tree_store_set(music_store, &data->iter_record, MS_COL_SORT, buf, -1);
 	} else {
 		record_data_t * record_data;
@@ -916,9 +916,9 @@ store_cdda_export(cddb_lookup_t * data) {
 	strncpy(drive->disc.genre, gtk_entry_get_text(GTK_ENTRY(data->genre_entry)), MAXLEN-1);
 	drive->disc.year = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->year_spinner));
 
-	snprintf(name, MAXLEN-1, "%s: %s",
-		 drive->disc.artist_name,
-		 drive->disc.record_name);
+	arr_snprintf(name, "%s: %s",
+		     drive->disc.artist_name,
+		     drive->disc.record_name);
 
 	gtk_tree_store_set(music_store, &data->iter_record, MS_COL_NAME, name, -1);
 }
@@ -967,11 +967,11 @@ cddb_dialog(cddb_lookup_t * data) {
 
         data->combo = gtk_combo_box_new_text();
         for (i = 0; i < data->nrecords; i++) {
-                snprintf(text, MAXLEN, "%d. %s: %s [%x] ",
-                         i + 1,
-                         notnull(cddb_disc_get_artist(data->records[i])),
-                         notnull(cddb_disc_get_title(data->records[i])),
-                         cddb_disc_get_discid(data->records[i]));
+                arr_snprintf(text, "%d. %s: %s [%x] ",
+                             i + 1,
+                             notnull(cddb_disc_get_artist(data->records[i])),
+                             notnull(cddb_disc_get_title(data->records[i])),
+                             cddb_disc_get_discid(data->records[i]));
                 gtk_combo_box_append_text(GTK_COMBO_BOX(data->combo), text);
         }
 

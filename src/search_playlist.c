@@ -148,7 +148,7 @@ search_foreach(playlist_t * pl, GPatternSpec * pattern, GtkTreeIter * list_iter,
 
 	gtk_tree_model_get(GTK_TREE_MODEL(pl->store), list_iter, PL_COL_DATA, &pldata, -1);
 	if (album_node) {
-		snprintf(text, MAXLEN-1, "%s: %s", pldata->artist, pldata->album);
+		arr_snprintf(text, "%s: %s", pldata->artist, pldata->album);
 	} else {
 		playlist_data_get_display_name(text, pldata);
 	}
@@ -210,7 +210,7 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 	if (exactonly) {
 		strcpy(key, key_string);
 	} else {
-		snprintf(key, MAXLEN-1, "*%s*", key_string);
+		arr_snprintf(key, "*%s*", key_string);
 	}
 
 	pattern = g_pattern_spec_new(key);

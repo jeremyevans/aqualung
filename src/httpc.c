@@ -328,8 +328,8 @@ check_http_response(char * line, char * resp) {
 	char http10[16];
 	char http11[16];
 
-	snprintf(http10, 15, "HTTP/1.0 %s", resp);
-	snprintf(http11, 15, "HTTP/1.1 %s", resp);
+	arr_snprintf(http10, "HTTP/1.0 %s", resp);
+	arr_snprintf(http11, "HTTP/1.1 %s", resp);
 
 	return (strstr(line, http10) != NULL) || (strstr(line, http11) != NULL);
 }
@@ -370,7 +370,7 @@ parse_http_headers(http_session_t * session) {
 			return -3;
 		
 		if (new_name[0] == '\0') {
-			snprintf(value, sizeof(value), "%s %s", value, new_value);
+			arr_snprintf(value, "%s %s", value, new_value);
 		} else {
 			strcpy(name, new_name);
 			strcpy(value, new_value);
@@ -452,7 +452,7 @@ make_http_request_text(char * host, int port, char * path,
 	char extra_header[1024];
 	
 	if (start_byte != 0) {
-		snprintf(extra_header, sizeof(extra_header), "Range: bytes=%lld-\r\n", start_byte);
+		arr_snprintf(extra_header, "Range: bytes=%lld-\r\n", start_byte);
 	} else {
 		extra_header[0] = '\0';
 	}

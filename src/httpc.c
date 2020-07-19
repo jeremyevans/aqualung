@@ -595,22 +595,20 @@ httpc_init(http_session_t * session, file_decoder_t * fdec,
 	
 	if ((p = strstr(URL, ":")) != NULL) {
 		unsigned int l = p - URL;
-		if (l > sizeof(host)) {
+		if (l + 1 > sizeof(host)) {
 			return HTTPC_URL_ERROR;
 		}
-		strncpy(host, URL, l);
-		host[l] = '\0';
+		g_strlcpy(host, URL, l + 1);
 		URL += l+1;
 		if ((p = strstr(URL, "/")) != NULL) {
 			unsigned int m = p - URL;
-			if (m > sizeof(port_str)) {
+			if (m + 1 > sizeof(port_str)) {
 				return HTTPC_URL_ERROR;
 			}
-			strncpy(port_str, URL, m);
-			port_str[m] = '\0';
+			g_strlcpy(port_str, URL, m + 1);
 			URL += m;
 		} else {
-			strncpy(port_str, URL, sizeof(port_str));
+			arr_strlcpy(port_str, URL);
 			URL = "/";
 		}
 		if (sscanf(port_str, "%d", &port) != 1) {
@@ -619,15 +617,14 @@ httpc_init(http_session_t * session, file_decoder_t * fdec,
 	} else {
 		if ((p = strstr(URL, "/")) != NULL) {
 			unsigned int l = p - URL;
-			if (l > sizeof(host)) {
+			if (l + 1 > sizeof(host)) {
 				return HTTPC_URL_ERROR;
 			}
-			strncpy(host, URL, l);
-			host[l] = '\0';
+			g_strlcpy(host, URL, l + 1);
 			URL += l;
 			port = 80;      
 		} else {
-			strncpy(host, URL, sizeof(host));
+			arr_strlcpy(host, URL);
 			port = 80;
 			URL = "/";
 		}

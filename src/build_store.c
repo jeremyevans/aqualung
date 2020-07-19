@@ -2337,6 +2337,7 @@ set_prog_action_label(build_store_t * data, char * action) {
 	aqualung_idle_add(set_prog_action_label_idle, data);
 }
 
+/* XXX This function needs reviewing for string bounds checking */
 void
 file_transform(char * buf, file_transform_t * model) {
 

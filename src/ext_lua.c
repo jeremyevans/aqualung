@@ -69,7 +69,6 @@ static GtkWidget * l_playlist_menu_sep = NULL;
 static GtkWidget * l_playlist_menu_reload = NULL;
 static GMutex l_mutex;
 static const char l_cur_fdec = 'l';
-static const char l_cur_menu = 'm';
 static const char AQUALUNG_LUA_MAIN_TABLE[] = "Aqualung";
 static const char AQUALUNG_LUA_API[] = "-- AQUALUNG_LUA_API \n\
 Aqualung = {raw_playlist_menu={}, has_playlist_menu=false, \n\

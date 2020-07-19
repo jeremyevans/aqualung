@@ -2205,7 +2205,6 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
 	gint i, n;
 	gchar temp[MAXLEN];
 	GtkWidget *table;
-	GtkWidget *label;
 	GtkWidget *mod_type_label;
 	GtkWidget *mod_channels_label;
 	GtkWidget *mod_patterns_label;

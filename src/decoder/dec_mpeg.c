@@ -1149,7 +1149,7 @@ mpeg_decoder_finish_open(decoder_t * dec) {
 	fdec->fileinfo.channels = pd->channels;
 	fdec->fileinfo.sample_rate = pd->SR;
 	fdec->file_lib = MAD_LIB;
-	strcpy(dec->format_str, "MPEG Audio");
+	arr_strlcpy(dec->format_str, "MPEG Audio");
 
 	if (pd->mpeg_subformat & 0xff7) {
 		arr_strlcat(dec->format_str, " (");

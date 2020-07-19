@@ -189,7 +189,7 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 	}
 
 	if (exactonly) {
-		strcpy(key, key_string);
+		arr_strlcpy(key, key_string);
 	} else {
 		arr_snprintf(key, "*%s*", key_string);
 	}

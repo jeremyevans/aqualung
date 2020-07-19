@@ -372,8 +372,8 @@ parse_http_headers(http_session_t * session) {
 		if (new_name[0] == '\0') {
 			arr_snprintf(value, "%s %s", value, new_value);
 		} else {
-			strcpy(name, new_name);
-			strcpy(value, new_value);
+			arr_strlcpy(name, new_name);
+			arr_strlcpy(value, new_value);
 		}
 		
 		if (strcasecmp(name, "location") == 0) {

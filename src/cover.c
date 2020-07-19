@@ -136,7 +136,7 @@ find_cover_filename(gchar *song_filename) {
 
 
         n_templates = sizeof(cover_filenames) / sizeof(gchar*);
-        strcpy(base_path, get_song_path(song_filename));
+        arr_strlcpy(base_path, get_song_path(song_filename));
 
         if (strcmp(base_path, get_song_path(cover_filename))) {
 
@@ -150,7 +150,7 @@ find_cover_filename(gchar *song_filename) {
 
                         for (j = 0; j < n_extensions; j++) {
 
-                                strcpy (current_filename, cover_filenames[i]);
+                                arr_strlcpy(current_filename, cover_filenames[i]);
                                 arr_strlcat(current_filename, ".");
                                 arr_strlcat(current_filename, cover_extensions[j]);
 
@@ -162,7 +162,7 @@ find_cover_filename(gchar *song_filename) {
 
                                         if (!g_utf8_collate(str1, str2)) {
 
-                                                strcpy (cover_filename, base_path);
+                                                arr_strlcpy(cover_filename, base_path);
                                                 arr_strlcat(cover_filename, d_entry[n]->d_name);
 
                                                 if (g_file_test (cover_filename, G_FILE_TEST_IS_REGULAR) == TRUE) {
@@ -195,7 +195,7 @@ find_cover_filename(gchar *song_filename) {
                         free(d_entry);
                 }
 
-                strcpy (cover_filename, base_path);
+                arr_strlcpy(cover_filename, base_path);
  
                 if (ext_flag == TRUE) {
                         arr_strlcat(cover_filename, temp_filename);
@@ -430,7 +430,7 @@ display_cover(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
 		return;
 	}
 
-	strcpy(cover_filename, filename);
+	arr_strlcpy(cover_filename, filename);
 
 	if ((cover_pixbuf = gdk_pixbuf_new_from_file(cover_filename, NULL)) != NULL) {
 		display_cover_from_pixbuf(image_area, event_area, align,
@@ -525,7 +525,7 @@ insert_cover(GtkTreeIter * tree_iter, GtkTextIter * text_iter, GtkTextBuffer * b
 		return;
 	}
 
-	strcpy(cover_filename, filename);
+	arr_strlcpy(cover_filename, filename);
 
 	/* load and display cover */
 

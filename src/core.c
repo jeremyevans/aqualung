@@ -352,7 +352,7 @@ disk_thread(void * arg) {
 				rb_read(rb_gui2disk, (void *)&cue, sizeof(cue_t));
 				
 #ifdef HAVE_CDDA
-				strcpy(filename_prev, filename);
+				arr_strlcpy(filename_prev, filename);
 #endif /* HAVE_CDDA */
 				if (cue.filename != NULL) {
 					arr_strlcpy(filename, cue.filename);
@@ -2361,10 +2361,10 @@ setup_app_directories(void) {
         char * xdgconfdir;
 	if (!home) {
 		char * homedir = (char *)g_get_home_dir();
-		strcpy(options.home, homedir);
+		arr_strlcpy(options.home, homedir);
 		g_free(homedir);
 	} else {
-		strcpy(options.home, home);
+		arr_strlcpy(options.home, home);
 	}
 
 	arr_snprintf(options.confdir, "%s/.aqualung", options.home);
@@ -2383,17 +2383,17 @@ setup_app_directories(void) {
 	arr_strlcpy(options.confdir, xdgconfdir);
 	g_free(xdgconfdir);
 
-	strcpy(options.audiodir, options.home);
-	strcpy(options.currdir, options.home);
-	strcpy(options.exportdir, options.home);
-	strcpy(options.plistdir, options.home);
-	strcpy(options.podcastdir, options.home);
-	strcpy(options.ripdir, options.home);
-	strcpy(options.storedir, options.home);
+	arr_strlcpy(options.audiodir, options.home);
+	arr_strlcpy(options.currdir, options.home);
+	arr_strlcpy(options.exportdir, options.home);
+	arr_strlcpy(options.plistdir, options.home);
+	arr_strlcpy(options.podcastdir, options.home);
+	arr_strlcpy(options.ripdir, options.home);
+	arr_strlcpy(options.storedir, options.home);
 
 	if (getcwd(options.cwd, MAXLEN) == NULL) {
 		fprintf(stderr, "setup_app_directories(): warning: getcwd() returned NULL, using . as cwd\n");
-		strcpy(options.cwd, ".");
+		arr_strlcpy(options.cwd, ".");
 	}
 }
 

@@ -272,7 +272,7 @@ speex_dec_open(decoder_t * dec, char * filename) {
 	fdec->fileinfo.bps = 8 * length_in_bytes / (length_in_samples / pd->sample_rate);
 
 	fdec->file_lib = SPEEX_LIB;
-	strcpy(dec->format_str, "Ogg Speex");
+	arr_strlcpy(dec->format_str, "Ogg Speex");
 
 	return DECODER_OPEN_SUCCESS;
 }

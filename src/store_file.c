@@ -3654,7 +3654,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 		} else if (size > 0 || ntrack == 0) {
 			arr_snprintf(tmp, " (%.1f KB) ", size);
 		} else {
-			strcpy(tmp, " (N/A) ");
+			arr_strlcpy(tmp, " (N/A) ");
 		}
 		arr_strlcat(str, tmp);
 	}

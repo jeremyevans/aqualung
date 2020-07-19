@@ -530,7 +530,7 @@ set_src_type_label(int src_type) {
 
 	char str[MAXLEN];
 
-	strcpy(str, _("SRC Type: "));
+	arr_strlcpy(str, _("SRC Type: "));
 #ifdef HAVE_SRC
 	arr_strlcat(str, src_get_name(src_type));
 #else
@@ -555,7 +555,7 @@ refresh_time_displays(void) {
 
 		if (refresh_time_label || options.time_idx[0] != 1) {
 			if (disp_samples == 0) {
-				strcpy(str, " N/A ");
+				arr_strlcpy(str, " N/A ");
 			} else {
 				sample2time(disp_info.sample_rate, disp_samples - disp_pos, str, CHAR_ARRAY_SIZE(str), 1);
 			}
@@ -565,7 +565,7 @@ refresh_time_displays(void) {
 
 		if (refresh_time_label || options.time_idx[0] != 2) {
 			if (disp_samples == 0) {
-				strcpy(str, " N/A ");
+				arr_strlcpy(str, " N/A ");
 			} else {
 				sample2time(disp_info.sample_rate, disp_samples, str, CHAR_ARRAY_SIZE(str), 0);
 			}
@@ -2555,7 +2555,7 @@ set_win_title(void) {
 
 	char str_session_id[32];
 
-	strcpy(win_title, "Aqualung");
+	arr_strlcpy(win_title, "Aqualung");
 	if (aqualung_session_id > 0) {
 		arr_snprintf(str_session_id, ".%d", aqualung_session_id);
 		arr_strlcat(win_title, str_session_id);

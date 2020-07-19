@@ -1820,7 +1820,7 @@ fi_set_common_entries(fi_t * fi) {
 	gtk_entry_set_text(GTK_ENTRY(fi->entry_format), fi->fileinfo.format_str);
 
 	if (fi->fileinfo.total_samples == 0) {
-		strcpy(str, "N/A");
+		arr_strlcpy(str, "N/A");
 	} else {
 		sample2time(fi->fileinfo.sample_rate, fi->fileinfo.total_samples, str, CHAR_ARRAY_SIZE(str), 0);
 	}
@@ -1830,21 +1830,21 @@ fi_set_common_entries(fi_t * fi) {
 	gtk_entry_set_text(GTK_ENTRY(fi->entry_sr), str);
 
 	if (fi->fileinfo.is_mono) {
-		strcpy(str, _("MONO"));
+		arr_strlcpy(str, _("MONO"));
 	} else {
-		strcpy(str, _("STEREO"));
+		arr_strlcpy(str, _("STEREO"));
 	}
 	gtk_entry_set_text(GTK_ENTRY(fi->entry_ch), str);
 
 	if (fi->fileinfo.bps == 0) {
-		strcpy(str, "N/A kbit/s");
+		arr_strlcpy(str, "N/A kbit/s");
 	} else {
 		format_bps_label(fi->fileinfo.bps, fi->fileinfo.format_flags, str, CHAR_ARRAY_SIZE(str));
 	}
 	gtk_entry_set_text(GTK_ENTRY(fi->entry_bw), str);
 
 	if (fi->fileinfo.total_samples == 0) {
-		strcpy(str, "N/A");
+		arr_strlcpy(str, "N/A");
 	} else {
 		arr_snprintf(str, "%lld", fi->fileinfo.total_samples);
 	}

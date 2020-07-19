@@ -358,7 +358,7 @@ cdda_decoder_open(decoder_t * dec, char * filename) {
 
 	fdec->file_lib = CDDA_LIB;
 	fdec->fileinfo.bps = 2 * 16 * 44100;
-	strcpy(dec->format_str, "Audio CD");
+	arr_strlcpy(dec->format_str, "Audio CD");
 
 	return DECODER_OPEN_SUCCESS;
 }

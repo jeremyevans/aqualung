@@ -985,8 +985,8 @@ playlist_set_color(void) {
 		adjust_playlist_color(pl, active, inactive);
 	}
 
-        strcpy(pl_color_active, active);
-	strcpy(pl_color_inactive, inactive);
+	arr_strlcpy(pl_color_active, active);
+	arr_strlcpy(pl_color_inactive, inactive);
 }
 
 void
@@ -2493,19 +2493,19 @@ plist__export_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 		char * tmp;
 
 		if (pldata->artist) {
-			strcpy(artist, pldata->artist);
+			arr_strlcpy(artist, pldata->artist);
 		} else if (metadata_get_artist(fdec->meta, &tmp)) {
 			arr_strlcpy(artist, tmp);
 		}
 
 		if (pldata->album) {
-			strcpy(album, pldata->album);
+			arr_strlcpy(album, pldata->album);
 		} else if (metadata_get_album(fdec->meta, &tmp)) {
 			arr_strlcpy(album, tmp);
 		}
 
 		if (pldata->title) {
-			strcpy(title, pldata->title);
+			arr_strlcpy(title, pldata->title);
 		} else if (metadata_get_title(fdec->meta, &tmp)) {
 			arr_strlcpy(title, tmp);
 		}
@@ -4184,11 +4184,11 @@ create_playlist(void) {
 
 
 	if (pl_color_active[0] == '\0') {
-		strcpy(pl_color_active, "#000080");
+		arr_strlcpy(pl_color_active, "#000080");
 	}
 
 	if (pl_color_inactive[0] == '\0') {
-		strcpy(pl_color_inactive, "#010101");
+		arr_strlcpy(pl_color_inactive, "#010101");
 	}
 
 

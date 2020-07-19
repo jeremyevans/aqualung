@@ -408,7 +408,7 @@ setup_notebook_out(void) {
 				gtk_list_store_append(store_out_nb[n_clients], &iter);
 				gtk_list_store_set(store_out_nb[n_clients], &iter, 0, port_name, -1);
 			}
-			strcpy(client_name_prev, client_name);
+			arr_strlcpy(client_name_prev, client_name);
 			i++;
 		}
 		free(ports_out);

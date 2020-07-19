@@ -931,7 +931,7 @@ build_store_new(GtkTreeIter * store_iter, char * file) {
 		*pfilter = '\0';
 	}
 
-	strcpy(data->excl_pattern, "*.jpg,*.jpeg,*.png,*.gif,*.pls,*.m3u,*.cue,*.xml,*.html,*.htm,*.txt,*.ini,*.nfo");
+	arr_strlcpy(data->excl_pattern, "*.jpg,*.jpeg,*.png,*.gif,*.pls,*.m3u,*.cue,*.xml,*.html,*.htm,*.txt,*.ini,*.nfo");
 
 	return data;
 }

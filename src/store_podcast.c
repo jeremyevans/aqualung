@@ -443,7 +443,7 @@ podcast_track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 		gtk_tree_model_get(GTK_TREE_MODEL(pl->store), piter, PL_COL_DATA, &pdata, -1);
 		if (pdata->artist && pdata->album && podcast->author && podcast->title &&
 		    !strcmp(pdata->artist, podcast->author) && !strcmp(pdata->album, podcast->title)) {
-			strcpy(list_str, item->title);
+			arr_strlcpy(list_str, item->title);
 		} else {
 			make_title_string(list_str, CHAR_ARRAY_SIZE(list_str), options.title_format,
 					  podcast->author, podcast->title, item->title);
@@ -1440,7 +1440,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 		time2time(length, length_str, CHAR_ARRAY_SIZE(length_str));
 		arr_snprintf(tmp, " [%s] ", length_str);
 	} else {
-		strcpy(tmp, " [N/A] ");
+		arr_strlcpy(tmp, " [N/A] ");
 	}
 
 	arr_strlcat(str, tmp);
@@ -1453,7 +1453,7 @@ set_status_bar_info(GtkTreeIter * tree_iter, GtkLabel * statusbar) {
 		} else if (size > 0 || nitem == 0) {
 			arr_snprintf(tmp, " (%.1f KB) ", size);
 		} else {
-			strcpy(tmp, " (N/A) ");
+			arr_strlcpy(tmp, " (N/A) ");
 		}
 		arr_strlcat(str, tmp);
 	}

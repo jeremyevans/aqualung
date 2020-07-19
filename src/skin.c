@@ -114,7 +114,7 @@ apply(GtkWidget * widget, gpointer data) {
 	if (gtk_tree_selection_get_selected(skin_select, &model, &iter)) {
 	
 		gtk_tree_model_get(model, &iter, 1, &str, -1);
-		strcpy(options.skin, str);
+		arr_strlcpy(options.skin, str);
 		g_free(str);
 
 		gtk_widget_destroy(skin_window);

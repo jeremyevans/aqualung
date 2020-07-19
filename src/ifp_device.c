@@ -805,7 +805,7 @@ gchar *npath;
                         if (npath != NULL) {
                                 *npath = '\0';
                                 if (!strlen(remote_path)) {
-                                        strcpy(remote_path, "\\");
+                                        arr_strlcpy(remote_path, "\\");
                                 }
                                 aifp_directory_listing(NULL);
                         }
@@ -899,7 +899,7 @@ aifp_transfer_files(gint mode) {
         transfer_mode = mode;
         songs_size = 0;
         transfer_active = 0;
-        strcpy(remote_path, "\\");
+        arr_strlcpy(remote_path, "\\");
 
         if (transfer_mode == UPLOAD_MODE) {
                 number_of_songs = aifp_get_number_of_songs();

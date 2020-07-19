@@ -285,7 +285,7 @@ vorbis_decoder_finish_open(decoder_t * dec) {
 	fdec->fileinfo.bps = ov_bitrate(&(pd->vf), -1);
 
 	fdec->file_lib = VORBIS_LIB;
-	strcpy(dec->format_str, "Ogg Vorbis");
+	arr_strlcpy(dec->format_str, "Ogg Vorbis");
 
 	vorbis_send_metadata(fdec, pd);
 	vorbis_decoder_send_metadata(dec);

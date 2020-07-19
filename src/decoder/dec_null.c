@@ -90,7 +90,7 @@ null_decoder_open(decoder_t * dec, char * filename) {
 	   If opening was successful, put a string describing the
 	   format/decoder in format_str[]:
 
-	   strcpy(dec->format_str, "NULL Audio");
+	   arr_strlcpy(dec->format_str, "NULL Audio");
 	*/
 
 	return DECODER_OPEN_BADLIB;

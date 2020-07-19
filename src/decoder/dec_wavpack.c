@@ -142,7 +142,7 @@ wavpack_decoder_open(decoder_t * dec, char * filename) {
 	/* Opening hybrid correction file if possible */
 	pd->flags = OPEN_2CH_MAX | OPEN_TAGS | OPEN_NORMALIZE | OPEN_WVC;
 
-	strcpy(pd->error, "No Error");
+	arr_strlcpy(pd->error, "No Error");
 	pd->wpc = WavpackOpenFileInput(filename, pd->error, pd->flags, 0);
 
 	/* The decoder can actually do something with the file */
@@ -171,7 +171,7 @@ wavpack_decoder_open(decoder_t * dec, char * filename) {
 			pd->scale_factor_float *= 2;
 		}
 
-		strcpy(dec->format_str, "WavPack");
+		arr_strlcpy(dec->format_str, "WavPack");
 		fdec->file_lib = WAVPACK_LIB;
 
 		meta = metadata_new();

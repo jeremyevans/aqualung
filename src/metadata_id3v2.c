@@ -269,9 +269,9 @@ meta_parse_id3v2_t___(metadata_t * meta, unsigned char * buf, int len) {
 	    (strcmp(frame_id, "TIME") == 0) ||
 	    (strcmp(frame_id, "TRDA") == 0) ||
 	    (strcmp(frame_id, "TYER") == 0)) {
-		strcpy(frame_id, "TDRC");
+		arr_strlcpy(frame_id, "TDRC");
 	} else if (strcmp(frame_id, "TORY") == 0) {
-		strcpy(frame_id, "TDOR");
+		arr_strlcpy(frame_id, "TDOR");
 	}
 
 	val = meta_id3v2_to_utf8(buf[10], buf+11, len-1);

@@ -505,7 +505,7 @@ char *filename = NULL;
 	fdec->fileinfo.channels = pd->mp_settings.mChannels;
 	fdec->fileinfo.sample_rate = pd->mp_settings.mFrequency;
 	fdec->file_lib = MOD_LIB;
-	strcpy(dec->format_str, "MOD Audio");
+	arr_strlcpy(dec->format_str, "MOD Audio");
 
 	fdec->fileinfo.total_samples = ModPlug_GetLength(pd->mpf)
 		/ 1000.0f * pd->mp_settings.mFrequency;

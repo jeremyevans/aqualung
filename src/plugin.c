@@ -827,7 +827,7 @@ build_plugin_window(plugin_instance * instance) {
 		}
 	}
 
-	strcpy(str_inout, "[ ");
+	arr_strlcpy(str_inout, "[ ");
 	if (n_ins == 1) {
 		arr_strlcat(str_inout, "1 in");
 	} else {

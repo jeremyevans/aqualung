@@ -3491,7 +3491,7 @@ create_options_window(void) {
 		gtk_entry_set_text(GTK_ENTRY(entry_pl_font), options.playlist_font);
         } else {
                 gtk_entry_set_text(GTK_ENTRY(entry_pl_font), DEFAULT_FONT_NAME);
-                strcpy(options.playlist_font, DEFAULT_FONT_NAME);
+                arr_strlcpy(options.playlist_font, DEFAULT_FONT_NAME);
         }
 
         button_pl_font =  gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
@@ -3520,7 +3520,7 @@ create_options_window(void) {
 	        gtk_entry_set_text(GTK_ENTRY(entry_ms_font), options.browser_font);
         } else {
                 gtk_entry_set_text(GTK_ENTRY(entry_ms_font), DEFAULT_FONT_NAME);
-                strcpy(options.browser_font, DEFAULT_FONT_NAME);
+                arr_strlcpy(options.browser_font, DEFAULT_FONT_NAME);
         }
 
         button_ms_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
@@ -3549,7 +3549,7 @@ create_options_window(void) {
 	        gtk_entry_set_text(GTK_ENTRY(entry_bt_font), options.bigtimer_font);
         } else {
                 gtk_entry_set_text(GTK_ENTRY(entry_bt_font), DEFAULT_FONT_NAME);
-                strcpy(options.bigtimer_font, DEFAULT_FONT_NAME);
+                arr_strlcpy(options.bigtimer_font, DEFAULT_FONT_NAME);
         }
 
         button_bt_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
@@ -3578,7 +3578,7 @@ create_options_window(void) {
 	        gtk_entry_set_text(GTK_ENTRY(entry_st_font), options.smalltimer_font);
         } else {
                 gtk_entry_set_text(GTK_ENTRY(entry_st_font), DEFAULT_FONT_NAME);
-                strcpy(options.smalltimer_font, DEFAULT_FONT_NAME);
+                arr_strlcpy(options.smalltimer_font, DEFAULT_FONT_NAME);
         }
 
         button_st_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
@@ -3607,7 +3607,7 @@ create_options_window(void) {
 	        gtk_entry_set_text(GTK_ENTRY(entry_songt_font), options.songtitle_font);
         } else {
                 gtk_entry_set_text(GTK_ENTRY(entry_songt_font), DEFAULT_FONT_NAME);
-                strcpy(options.songtitle_font, DEFAULT_FONT_NAME);
+                arr_strlcpy(options.songtitle_font, DEFAULT_FONT_NAME);
         }
 
         button_songt_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
@@ -3636,7 +3636,7 @@ create_options_window(void) {
 	        gtk_entry_set_text(GTK_ENTRY(entry_si_font), options.songinfo_font);
         } else {
                 gtk_entry_set_text(GTK_ENTRY(entry_si_font), DEFAULT_FONT_NAME);
-                strcpy(options.songinfo_font, DEFAULT_FONT_NAME);
+                arr_strlcpy(options.songinfo_font, DEFAULT_FONT_NAME);
         }
 
         button_si_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
@@ -3665,7 +3665,7 @@ create_options_window(void) {
 	        gtk_entry_set_text(GTK_ENTRY(entry_sb_font), options.statusbar_font);
         } else {
                 gtk_entry_set_text(GTK_ENTRY(entry_sb_font), DEFAULT_FONT_NAME);
-                strcpy(options.statusbar_font, DEFAULT_FONT_NAME);
+                arr_strlcpy(options.statusbar_font, DEFAULT_FONT_NAME);
         }
 
         button_sb_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
@@ -4187,7 +4187,7 @@ load_config(void) {
 	options.systray_mouse_buttons_count = 0;
 	options.systray_mouse_buttons = NULL;
 
-	strcpy(options.export_template, "track%i.%x");
+	arr_strlcpy(options.export_template, "track%i.%x");
 	options.export_subdir_limit = 16;
         options.export_bitrate = 256;
         options.export_vbr = 1;
@@ -4393,7 +4393,7 @@ load_config(void) {
 		if (!options.title_format[0] ||
 		    make_string_va(buf, CHAR_ARRAY_SIZE(buf), options.title_format,
 				   'a', "a", 'r', "r", 't', "t", 0) != 0) {
-			strcpy(options.title_format, "%a?ar|at{ :: }%r?rt{ :: }%t");
+			arr_strlcpy(options.title_format, "%a?ar|at{ :: }%r?rt{ :: }%t");
 		}
 	}
 

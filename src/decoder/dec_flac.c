@@ -495,7 +495,7 @@ flac_decoder_open(decoder_t * dec, char * filename) {
 				* fdec->fileinfo.channels;
 
 			fdec->file_lib = FLAC_LIB;
-			strcpy(dec->format_str, "FLAC");
+			arr_strlcpy(dec->format_str, "FLAC");
 
 			flac_send_metadata(dec);
 			return DECODER_OPEN_SUCCESS;

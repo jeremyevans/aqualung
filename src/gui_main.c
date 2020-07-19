@@ -4103,7 +4103,7 @@ timeout_callback(gpointer data) {
 
 	/* receive and execute remote commands, if any */
 	rcv_count = 0;
-	while (((rcmd = receive_message(aqualung_socket_fd, cmdbuf)) != 0) && (rcv_count < MAX_RCV_COUNT)) {
+	while (((rcmd = receive_message(aqualung_socket_fd, cmdbuf, CHAR_ARRAY_SIZE(cmdbuf))) != 0) && (rcv_count < MAX_RCV_COUNT)) {
 		switch (rcmd) {
 		case RCMD_BACK:
 			prev_event(NULL, NULL, NULL);

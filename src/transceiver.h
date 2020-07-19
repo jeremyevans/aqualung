@@ -36,7 +36,7 @@
 #define RCMD_CUSTOM     11
 
 int create_socket(const char * filename);
-char receive_message(int fd, char * cmd_arg);
+char receive_message(int fd, char * cmdarg, size_t cmdarg_size);
 void setup_app_socket(void);
 void close_app_socket(void);
 int send_message(const char * filename, char * message, int len);

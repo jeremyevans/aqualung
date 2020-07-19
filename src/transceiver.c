@@ -66,7 +66,7 @@ create_socket(const char * filename) {
 
 
 char
-receive_message(int fd, char * cmdarg) {
+receive_message(int fd, char * cmdarg, size_t cmdarg_size) {
 	
 	fd_set set;
 	struct timeval tv;
@@ -105,15 +105,15 @@ receive_message(int fd, char * cmdarg) {
 	case RCMD_VOLADJ:
 	case RCMD_ADD_FILE:
 	case RCMD_CUSTOM:
-		strncpy(cmdarg, buffer + 1, MAXLEN-2);
+		g_strlcpy(cmdarg, buffer + 1, cmdarg_size);
 		return rcmd;
 
 	case RCMD_ADD_COMMIT:
+		g_assert(cmdarg_size >= 4);
 		for (i = 1; i <= 3; i++) {
 			cmdarg[i-1] = buffer[i];
 		}
-		cmdarg[3] = '\0';
-		strncpy(cmdarg + 3, buffer + 4, MAXLEN-5);
+		g_strlcpy(cmdarg + 3, buffer + 4, cmdarg_size - 3);
 		return rcmd;
 
 	default:
@@ -187,7 +187,7 @@ setup_app_socket(void) {
 	
 	aqualung_socket_fd = sock;
 	aqualung_session_id = --i;
-	strncpy(aqualung_socket_filename, name, 255);
+	arr_strlcpy(aqualung_socket_filename, name);
 }
 
 

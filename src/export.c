@@ -299,7 +299,7 @@ export_finish(gpointer user_data) {
 }
 
 int
-export_item_set_path(export_t * export, export_item_t * item, char * path, char * ext, int index) {
+export_item_set_path(export_t * export, export_item_t * item, char * path, size_t path_len, char * ext, int index) {
 
 	char track[MAXLEN];
 	char buf[3*MAXLEN];
@@ -329,13 +329,13 @@ export_item_set_path(export_t * export, export_item_t * item, char * path, char 
 		}
 	}
 
-	snprintf(str_no, 15, "%02d", item->no);
-	snprintf(str_index, 15, "%04d", index);
+	arr_snprintf(str_no, "%02d", item->no);
+	arr_snprintf(str_index, "%04d", index);
 
 	make_string_va(track, export->template, 'o', item->original, 'a', item->artist,
 		       'r', item->album, 't', item->title, 'n', str_no, 'x', ext, 'i', str_index, 0);
 
-	snprintf(path, MAXLEN-1, "%s/%s", buf, track);
+	snprintf(path, path_len, "%s/%s", buf, track);
 	return 0;
 }
 
@@ -583,7 +583,7 @@ export_item(export_t * export, export_item_t * item, int index) {
 		}
 	}
 
-	if (export_item_set_path(export, item, filename, ext, index) < 0) {
+	if (export_item_set_path(export, item, filename, CHAR_ARRAY_SIZE(filename), ext, index) < 0) {
 		file_decoder_close(fdec);
 		file_decoder_delete(fdec);
 		return;

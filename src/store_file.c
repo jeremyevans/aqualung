@@ -1396,7 +1396,7 @@ track_addlist_iter(GtkTreeIter iter_track, playlist_t * pl,
 	}
 
 	time2time(data->duration, duration_str);
-	voladj2str(voladj, voladj_str);
+	voladj2str(voladj, voladj_str, CHAR_ARRAY_SIZE(voladj_str));
 
 	if ((pldata = playlist_data_new()) == NULL) {
 		return 0;

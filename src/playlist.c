@@ -1661,7 +1661,7 @@ add_file_to_playlist(gpointer data) {
 			break;
 		}
 
-		voladj2str(pldata->voladj, voladj_str);
+		voladj2str(pldata->voladj, voladj_str, CHAR_ARRAY_SIZE(voladj_str));
 		time2time_na(pldata->duration, duration_str);
 
 		if (IS_PL_TOPLEVEL(pldata)) {
@@ -2048,7 +2048,7 @@ add_url(GtkWidget * widget, gpointer data) {
 		data->duration = 0.0f;
 		data->voladj = options.rva_no_rva_voladj;
 
-		voladj2str(data->voladj, voladj_str);
+		voladj2str(data->voladj, voladj_str, CHAR_ARRAY_SIZE(voladj_str));
 		time2time_na(data->duration, duration_str);
 
 		gtk_tree_store_append(pl->store, &iter, NULL);
@@ -2368,7 +2368,7 @@ plist__reread_file_meta_foreach(playlist_t * pl, GtkTreeIter * iter, void * user
 
 	playlist_data_free(tmp);
 
-	voladj2str(data->voladj, voladj_str);
+	voladj2str(data->voladj, voladj_str, CHAR_ARRAY_SIZE(voladj_str));
 	time2time_na(data->duration, duration_str);
 
 	gtk_tree_store_set(pl->store, iter,

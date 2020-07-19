@@ -52,12 +52,12 @@ int vol_slot_count;
 
 
 void
-voladj2str(float voladj, char * str) {
+voladj2str(float voladj, char * str, size_t str_size) {
 
 	if (fabs(voladj) < 0.05f) {
-		sprintf(str, " %.1f dB", 0.0f);
+		snprintf(str, str_size, " %.1f dB", 0.0f);
 	} else {
-		sprintf(str, "% .1f dB", voladj);
+		snprintf(str, str_size, "% .1f dB", voladj);
 	}
 }
 
@@ -272,7 +272,7 @@ vol_store_voladj(GtkTreeStore * store, GtkTreeIter * iter, float voladj) {
 	} else { /* playlist */
 		playlist_data_t * data;
 		char str[32];
-		voladj2str(voladj, str);
+		voladj2str(voladj, str, CHAR_ARRAY_SIZE(str));
 		gtk_tree_model_get(GTK_TREE_MODEL(store), iter, PL_COL_DATA, &data, -1);
 		data->voladj = voladj;
 		gtk_tree_store_set(store, iter, PL_COL_VADJ, str, -1);

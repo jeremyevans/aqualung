@@ -83,7 +83,7 @@ volume_t * volume_new(GtkTreeStore * store, int type);
 void volume_push(volume_t * vol, char * file, GtkTreeIter iter);
 void volume_start(volume_t * vol);
 
-void voladj2str(float voladj, char * str);
+void voladj2str(float voladj, char * str, size_t str_size);
 
 float rva_from_volume(float volume);
 float rva_from_replaygain(float rg);

@@ -749,44 +749,6 @@ create_cddb_write_warn_dialog(char * text) {
 	return (ret != GTK_RESPONSE_YES);
 }
 
-static int
-check_case(char * text, int _case) {
-
-	char * str;
-	char * p;
-	int has = 0;
-	int ret = 0;
-
-	for (p = text; *p; p = g_utf8_next_char(p)) {
-
-		gunichar ch = g_utf8_get_char(p);
-
-		if (g_unichar_islower(ch) || g_unichar_isupper(ch)) {
-			has = 1;
-			break;
-		}
-	}
-
-	if (!has) {
-		return 1;
-	}
-
-	switch (_case) {
-	case CASE_UP:
-		str = g_utf8_strup(text, -1);
-		ret = strcmp(str, text);
-		g_free(str);
-		break;
-	case CASE_DOWN:
-		str = g_utf8_strdown(text, -1);
-		ret = strcmp(str, text);
-		g_free(str);
-		break;
-	}
-
-	return ret;
-}
-
 
 void
 cddb_dialog_load_disc(cddb_lookup_t * data, cddb_disc_t * disc) {

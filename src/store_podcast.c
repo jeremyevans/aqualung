@@ -232,7 +232,7 @@ podcast_browse_button_clicked(GtkButton * button, gpointer data) {
 				GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
 				FILE_CHOOSER_FILTER_NONE,
 				(GtkWidget *)data,
-				options.podcastdir);
+				options.podcastdir, CHAR_ARRAY_SIZE(options.podcastdir));
 }
 
 void

@@ -449,7 +449,7 @@ browse_button_store_clicked(GtkButton * button, gpointer data) {
 				GTK_FILE_CHOOSER_ACTION_SAVE,
 				FILE_CHOOSER_FILTER_STORE,
 				(GtkWidget *)data,
-				options.storedir);
+				options.storedir, CHAR_ARRAY_SIZE(options.storedir));
 }
 
 int
@@ -704,7 +704,7 @@ browse_button_record_clicked(GtkButton * button, gpointer data) {
 			      GTK_FILE_CHOOSER_ACTION_OPEN,
 			      FILE_CHOOSER_FILTER_AUDIO,
 			      TRUE,
-			      options.audiodir);
+			      options.audiodir, CHAR_ARRAY_SIZE(options.audiodir));
 
 	for (node = lfiles; node; node = node->next) {
 
@@ -935,7 +935,7 @@ browse_button_track_clicked(GtkButton * button, gpointer data) {
 				GTK_FILE_CHOOSER_ACTION_OPEN,
 				FILE_CHOOSER_FILTER_AUDIO,
 				(GtkWidget *)data,
-				options.audiodir);
+				options.audiodir, CHAR_ARRAY_SIZE(options.audiodir));
 }
 
 

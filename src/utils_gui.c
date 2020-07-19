@@ -529,7 +529,7 @@ assign_fc_filters(GtkFileChooser * fc, int filter) {
 
 GSList *
 file_chooser(char * title, GtkWidget * parent, GtkFileChooserAction action, int filter,
-	     gint multiple, char * destpath) {
+	     gint multiple, char * destpath, size_t destpath_size) {
 
         GtkWidget * dialog;
 	GSList * files = NULL;
@@ -561,9 +561,9 @@ file_chooser(char * title, GtkWidget * parent, GtkFileChooserAction action, int 
 
         if (aqualung_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 
-		strncpy(destpath,
-			gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
-			MAXLEN-1);
+		g_strlcpy(destpath,
+			  gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)),
+			  destpath_size);
 
 		files = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
         }
@@ -575,7 +575,7 @@ file_chooser(char * title, GtkWidget * parent, GtkFileChooserAction action, int 
 
 void
 file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction action, int filter,
-			GtkWidget * entry, char * destpath) {
+			GtkWidget * entry, char * destpath, size_t destpath_size) {
 
         GtkWidget * dialog;
 	const gchar * selected_filename = gtk_entry_get_text(GTK_ENTRY(entry));
@@ -605,7 +605,7 @@ file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction a
 		normalize_filename(filename, path, CHAR_ARRAY_SIZE(path));
 		g_free(filename);
 	} else {
-		strncpy(path, destpath, MAXLEN-1);
+		arr_strlcpy(path, destpath);
 	}
 
 	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), path);
@@ -633,7 +633,7 @@ file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction a
 
 		gtk_entry_set_text(GTK_ENTRY(entry), utf8);
 
-                strncpy(destpath, selected_filename, MAXLEN-1);
+		g_strlcpy(destpath, selected_filename, destpath_size);
 		g_free(utf8);
         }
 

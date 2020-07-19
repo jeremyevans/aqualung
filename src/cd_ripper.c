@@ -243,7 +243,7 @@ ripper_destdir_browse_cb(GtkButton * button, gpointer data) {
 				GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
 				FILE_CHOOSER_FILTER_NONE,
 				(GtkWidget *)data,
-				options.ripdir);
+				options.ripdir, CHAR_ARRAY_SIZE(options.ripdir));
 }
 
 

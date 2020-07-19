@@ -1842,7 +1842,8 @@ add_files(GtkWidget * widget, gpointer data) {
 				      GTK_FILE_CHOOSER_ACTION_OPEN,
 				      FILE_CHOOSER_FILTER_AUDIO,
 				      TRUE,
-				      options.audiodir);
+				      options.audiodir,
+				      CHAR_ARRAY_SIZE(options.audiodir));
         if (files != NULL) {
 
 		playlist_transfer_t * pt = playlist_transfer_get(PLAYLIST_ENQUEUE, NULL, 0);
@@ -1949,7 +1950,8 @@ add_directory(GtkWidget * widget, gpointer data) {
 				     GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
 				     FILE_CHOOSER_FILTER_NONE,
 				     TRUE,
-				     options.audiodir);
+				     options.audiodir,
+				     CHAR_ARRAY_SIZE(options.audiodir));
         if (dirs != NULL) {
 
 		playlist_transfer_t * pt = playlist_transfer_get(PLAYLIST_ENQUEUE, NULL, 0);
@@ -2080,7 +2082,7 @@ plist__save_cb(gpointer data) {
 			    GTK_FILE_CHOOSER_ACTION_SAVE,
 			    FILE_CHOOSER_FILTER_NONE,
 			    FALSE,
-			    options.plistdir);
+			    options.plistdir, CHAR_ARRAY_SIZE(options.plistdir));
 
         if (file != NULL) {
 		if (g_str_has_suffix((gchar *)file->data, ".m3u")) {
@@ -2110,7 +2112,7 @@ plist__save_all_cb(gpointer data) {
 			    GTK_FILE_CHOOSER_ACTION_SAVE,
 			    FILE_CHOOSER_FILTER_NONE,
 			    FALSE,
-			    options.plistdir);
+			    options.plistdir, CHAR_ARRAY_SIZE(options.plistdir));
         if (file != NULL) {
 		playlist_save_all((char *)file->data);
                 g_free(file->data);
@@ -2237,7 +2239,7 @@ playlist_load_dialog(int mode) {
 			     GTK_FILE_CHOOSER_ACTION_OPEN,
 			     FILE_CHOOSER_FILTER_PLAYLIST,
 			     FALSE,
-			     options.plistdir);
+			     options.plistdir, CHAR_ARRAY_SIZE(options.plistdir));
         if (files != NULL) {
 		playlist_load(files, mode, NULL, 0);
         }

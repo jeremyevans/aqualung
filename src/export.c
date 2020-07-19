@@ -727,7 +727,7 @@ export_browse_cb(GtkButton * button, gpointer data) {
 				GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
 				FILE_CHOOSER_FILTER_NONE,
 				(GtkWidget *)data,
-				options.exportdir);
+				options.exportdir, CHAR_ARRAY_SIZE(options.exportdir));
 }
 
 GtkWidget *

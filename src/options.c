@@ -1261,7 +1261,8 @@ browse_ext_title_format_file_clicked(GtkButton * button, gpointer data) {
 				GTK_FILE_CHOOSER_ACTION_OPEN,
 				FILE_CHOOSER_FILTER_ETF,
 				(GtkWidget *)data,
-				ext_title_format_file_shadow);
+				ext_title_format_file_shadow,
+				CHAR_ARRAY_SIZE(ext_title_format_file_shadow));
 }
 #endif /* HAVE_LUA */
 
@@ -1273,7 +1274,7 @@ browse_ms_pathlist_clicked(GtkButton * button, gpointer data) {
 				GTK_FILE_CHOOSER_ACTION_OPEN,
 				FILE_CHOOSER_FILTER_STORE,
 				(GtkWidget *)data,
-				options.storedir);
+				options.storedir, CHAR_ARRAY_SIZE(options.storedir));
 }
 
 

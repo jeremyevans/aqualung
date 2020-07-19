@@ -649,7 +649,7 @@ save_pic_button_pressed(GtkWidget * widget, gpointer data) {
 			      GTK_FILE_CHOOSER_ACTION_SAVE,
 			      FILE_CHOOSER_FILTER_NONE,
 			      FALSE,
-			      filename);
+			      filename, CHAR_ARRAY_SIZE(filename));
 
 	if (lfiles != NULL) {
 
@@ -779,7 +779,7 @@ change_pic_button_pressed(GtkWidget * widget, gpointer data) {
 			      GTK_FILE_CHOOSER_ACTION_OPEN,
 			      FILE_CHOOSER_FILTER_NONE,
 			      FALSE,
-			      options.currdir);
+			      options.currdir, CHAR_ARRAY_SIZE(options.currdir));
 
 	if (lfiles != NULL) {
 		g_slist_free(lfiles);

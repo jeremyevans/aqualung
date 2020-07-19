@@ -1512,7 +1512,7 @@ browse_button_clicked(GtkButton * button, gpointer data) {
 				GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
 				FILE_CHOOSER_FILTER_NONE,
 				(GtkWidget *)data,
-				options.currdir);
+				options.currdir, CHAR_ARRAY_SIZE(options.currdir));
 }
 
 

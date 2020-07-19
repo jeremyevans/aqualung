@@ -63,9 +63,9 @@ void aqualung_widget_set_tooltip_text(GtkWidget * widget, const gchar * text);
 GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
 
 GSList * file_chooser(char * title, GtkWidget * parent,
-		      GtkFileChooserAction action, int filter, gint multiple, char * destpath);
+		      GtkFileChooserAction action, int filter, gint multiple, char * destpath, size_t destpath_size);
 void file_chooser_with_entry(char * title, GtkWidget * parent,
-			     GtkFileChooserAction action, int filter, GtkWidget * entry, char * destpath);
+			     GtkFileChooserAction action, int filter, GtkWidget * entry, char * destpath, size_t destpath_size);
 
 int message_dialog(char * title, GtkWidget * parent, GtkMessageType type,
 		   GtkButtonsType buttons, GtkWidget * extra, char * text, ...);

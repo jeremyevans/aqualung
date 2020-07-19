@@ -573,12 +573,12 @@ import_button_pressed(GtkWidget * widget, gpointer gptr_data) {
 		gtk_tree_model_get(model, &iter_track, MS_COL_DATA, &track_data, -1);
 		tmp[0] = '\0';
 		if (track_data->comment != NULL) {
-			strncat(tmp, track_data->comment, MAXLEN-1);
+			arr_strlcat(tmp, track_data->comment);
 		}
 		if ((tmp[strlen(tmp)-1] != '\n') && (tmp[0] != '\0')) {
-			strncat(tmp, "\n", MAXLEN-1);
+			arr_strlcat(tmp, "\n");
 		}
-		strncat(tmp, frame->field_val, MAXLEN-1);
+		arr_strlcat(tmp, frame->field_val);
 		free_strdup(&track_data->comment, tmp);
 		music_store_mark_changed(&iter_track);
 		break;
@@ -691,7 +691,7 @@ save_pic_update(save_pic_t * save_pic, fi_t * fi, meta_frame_t * frame) {
 	if (mtype[0] == '\0') {
 		strcpy(mtype, "dat");
 	}
-	strncat(savefilename, mtype, 255);
+	arr_strlcat(savefilename, mtype);
 
 	save_pic->fi = fi;
 	strncpy(save_pic->savefile, savefilename, MAXLEN-1);

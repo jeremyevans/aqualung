@@ -150,9 +150,9 @@ upload_songs_cb_foreach(playlist_t * pl, GtkTreeIter * iter, void * data) {
 
         strncpy(dest_file, remote_path, MAXLEN-1);
         if (strlen(remote_path) != 1) {
-                strncat(dest_file, "\\", MAXLEN-1);
+                arr_strlcat(dest_file, "\\");
         }
-        strncat(dest_file, file, MAXLEN-1);
+        arr_strlcat(dest_file, file);
 
         gtk_entry_set_text(GTK_ENTRY(aifp_file_entry), file);
         gtk_editable_set_position(GTK_EDITABLE(aifp_file_entry), -1);
@@ -190,13 +190,13 @@ download_songs_cb_foreach (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *
         if (strncmp(file, PARENTDIR, 2)) {
                 strncpy(remote_item, remote_path, MAXLEN-1);
                 if (strlen(remote_path) != 1) {
-                        strncat(remote_item, "\\", MAXLEN-1);
+                        arr_strlcat(remote_item, "\\");
                 }
-                strncat(remote_item, file, MAXLEN-1);
+                arr_strlcat(remote_item, file);
 
                 strncpy(dest_file, dest_dir, MAXLEN-1);
-                strncat(dest_file, "/", MAXLEN-1);
-                strncat(dest_file, file, MAXLEN-1);
+                arr_strlcat(dest_file, "/");
+                arr_strlcat(dest_file, file);
 
                 gtk_entry_set_text(GTK_ENTRY(aifp_file_entry), file);
                 gtk_editable_set_position(GTK_EDITABLE(aifp_file_entry), -1);
@@ -346,9 +346,9 @@ aifp_create_directory_cb (GtkButton *button, gpointer user_data) {
 
                 strncpy(temp, remote_path, MAXLEN-1);
                 if (strlen(remote_path) != 1) {
-                        strncat(temp, "\\", MAXLEN-1);
+                        arr_strlcat(temp, "\\");
                 }
-                strncat(temp, gtk_entry_get_text(GTK_ENTRY(name_entry)), MAXLEN-1);
+                arr_strlcat(temp, gtk_entry_get_text(GTK_ENTRY(name_entry)));
 
                 if (strlen(temp)) {
 
@@ -405,16 +405,16 @@ aifp_rename_item_cb (GtkButton *button, gpointer user_data) {
 
                         strncpy(temp, remote_path, MAXLEN-1);
                         if (strlen(remote_path) != 1) {
-                                strncat(temp, "\\", MAXLEN-1);
+                                arr_strlcat(temp, "\\");
                         }
-                        strncat(temp, text, MAXLEN-1);
+                        arr_strlcat(temp, text);
 
                         if (strlen(text)) {
                                 strncpy(dest_file, remote_path, MAXLEN-1);
                                 if (strlen(remote_path) != 1) {
-                                        strncat(dest_file, "\\", MAXLEN-1);
+                                        arr_strlcat(dest_file, "\\");
                                 }
-                                strncat(dest_file, remote_item, MAXLEN-1);
+                                arr_strlcat(dest_file, remote_item);
 
                                 ifp_rename(&ifpdev, dest_file, temp);
                                 aifp_update_info();
@@ -449,9 +449,9 @@ aifp_remove_item_cb (GtkButton *button, gpointer user_data) {
 
                         strncpy(temp, remote_path, MAXLEN-1);
                         if (strlen(remote_path) != 1) {
-                                strncat(temp, "\\", MAXLEN-1);
+                                arr_strlcat(temp, "\\");
                         }
-                        strncat(temp, remote_item, MAXLEN-1);
+                        arr_strlcat(temp, remote_item);
 
                         if (ifp_is_file (&ifpdev, temp) == TRUE) {
                                 ifp_delete (&ifpdev, temp);
@@ -607,7 +607,7 @@ aifp_update_info(void) {
         if (transfer_mode == UPLOAD_MODE) {
                 sprintf(temp, "%d", number_of_songs);
                 sprintf(tmp, _(" (%.1f MB)"), (float)songs_size / (1024*1024));
-                strncat (temp, tmp, MAXLEN-1);
+                arr_strlcat(temp, tmp);
                 gtk_label_set_text(GTK_LABEL(label_songs), temp);
         }
 
@@ -617,7 +617,7 @@ aifp_update_info(void) {
         ifp_model(&ifpdev, temp, sizeof(temp));
         capacity = ifp_capacity(&ifpdev);
         sprintf(tmp, _(" (capacity = %.1f MB)"), (float)capacity / (1024*1024));
-        strncat (temp, tmp, MAXLEN-1);
+        arr_strlcat(temp, tmp);
         gtk_label_set_text(GTK_LABEL(label_model), temp);
 
         freespace = ifp_freespace(&ifpdev);
@@ -813,7 +813,7 @@ gchar *npath;
                         if (strlen(remote_path) != 1) {
                                 strcat(remote_path, "\\");
                         }
-                        strncat(remote_path, remote_item, MAXLEN-1);
+                        arr_strlcat(remote_path, remote_item);
                         aifp_directory_listing(NULL);
                 }
         }

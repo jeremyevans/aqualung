@@ -31,6 +31,7 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <glib.h>
 
 #ifdef HAVE_LIBZ
 #include <zlib.h>
@@ -99,7 +100,7 @@ unpack_file (char *filename, int type) {
 			}
 		}
 
-		strncat(unpacked_filename, "/tmp/", PATH_MAX-1);
+		arr_strlcat(unpacked_filename, "/tmp/");
 
 		i = 5;      /* strlen("/tmp/") */
 

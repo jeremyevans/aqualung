@@ -1128,7 +1128,7 @@ mark_track(playlist_t * pl, GtkTreeIter * piter) {
 		}
 
                 sprintf(counter, _(" (%d/%d)"), j, n);
-                strncat(tmpname, counter, MAXLEN-1);
+                arr_strlcat(tmpname, counter);
 		gtk_tree_store_set(pl->store, piter, PL_COL_NAME, tmpname, -1);
 		data->ntracks = n;
 		data->actrack = j;

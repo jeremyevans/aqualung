@@ -147,7 +147,7 @@ parse_lrdf_data(void) {
 	if ((str = getenv("LADSPA_RDF_PATH"))) {
 		arr_snprintf(lrdf_path, "%s:", str);
 	} else {
-                strncat(lrdf_path, "/usr/local/share/ladspa/rdf:/usr/share/ladspa/rdf:", MAXLEN-1);
+                arr_strlcat(lrdf_path, "/usr/local/share/ladspa/rdf:/usr/share/ladspa/rdf:");
 	}
 
 	for (i = 0; lrdf_path[i] != '\0'; i++) {

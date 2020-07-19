@@ -2810,7 +2810,7 @@ main(int argc, char ** argv) {
 			no_session = 0;
 		buf[0] = RCMD_VOLADJ;
 		buf[1] = '\0';
-		strncat(buf, voladj_arg, MAXLEN-2);
+		arr_strlcat(buf, voladj_arg);
 		send_message_to_session(no_session, buf, strlen(buf));
 		exit(1);
 	}
@@ -2822,7 +2822,7 @@ main(int argc, char ** argv) {
 			no_session = 0;
 		buf[0] = RCMD_CUSTOM;
 		buf[1] = '\0';
-		strncat(buf, custom_arg, MAXLEN-2);
+		arr_strlcat(buf, custom_arg);
 		send_message_to_session(no_session, buf, strlen(buf));
 		exit(0);
 	}
@@ -2849,7 +2849,7 @@ main(int argc, char ** argv) {
 
 				buffer[0] = RCMD_ADD_FILE;
 				buffer[1] = '\0';
-				strncat(buffer, fullname, MAXLEN-2);
+				arr_strlcat(buffer, fullname);
 				send_message_to_session(no_session, buffer, strlen(buffer));
 			}
 
@@ -2862,7 +2862,7 @@ main(int argc, char ** argv) {
 				buffer[4] = '\0';
 
 				if (tab_name != NULL) {
-					strncat(buffer + 4, tab_name, MAXLEN-5);
+					g_strlcat(buffer + 4, tab_name, CHAR_ARRAY_SIZE(buffer) - 4);
 				}
 
 				send_message_to_session(no_session, buffer, 4 + strlen(buffer + 4));

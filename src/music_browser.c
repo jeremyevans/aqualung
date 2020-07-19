@@ -832,7 +832,7 @@ music_store_mark_changed(GtkTreeIter * iter) {
 
 	name[0] = '*';
 	name[1] = '\0';
-	strncat(name, pname, MAXLEN-2);
+	arr_strlcat(name, pname);
 	g_free(pname);
 
 	gtk_tree_store_set(music_store, &iter_store, MS_COL_NAME, name, -1);

@@ -362,13 +362,13 @@ set_title_label(char * str) {
 		gtk_label_set_text(GTK_LABEL(label_title), str);
 		if (options.show_sn_title) {
 			if (stop_after_current_song) {
-				strncat(tmp, "[", MAXLEN-1);
-				strncat(tmp, _("STOPPING"), MAXLEN-1);
-				strncat(tmp, "] ", MAXLEN-1);
+				arr_strlcat(tmp, "[");
+				arr_strlcat(tmp, _("STOPPING"));
+				arr_strlcat(tmp, "] ");
 			}
-			strncat(tmp, str, MAXLEN-1);
-			strncat(tmp, " - ", MAXLEN-1);
-			strncat(tmp, win_title, MAXLEN-1);
+			arr_strlcat(tmp, str);
+			arr_strlcat(tmp, " - ");
+			arr_strlcat(tmp, win_title);
 			gtk_window_set_title(GTK_WINDOW(main_window), tmp);
 #ifdef HAVE_SYSTRAY
 			if (systray_used) {

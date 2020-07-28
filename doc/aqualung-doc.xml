@@ -2681,12 +2681,6 @@
         you may specify another server (maybe a close mirror). The
         connection timeout can also be set here.</p>
 
-        <p>Retrieved matches are cached in the
-        <file>~/.cddbslave</file> directory by default. If you prefer
-        an other location instead, specify a local CDDB directory. If
-        you do not intend to download from a CDDB server at all, you
-        can set to use the local database only.</p>
-
       </subsection>
 
       <subsection title="Internet">

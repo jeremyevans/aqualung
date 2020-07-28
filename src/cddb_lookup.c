@@ -195,14 +195,6 @@ cddb_connection_setup(cddb_conn_t ** conn) {
 	cddb_set_timeout(*conn, options.cddb_timeout);
 	cddb_set_charset(*conn, "UTF-8");
 
-	if (options.cddb_local[0] != '\0') {
-		cddb_cache_set_dir(*conn, options.cddb_local);
-	}
-
-	if (options.cddb_cache_only) {
-		cddb_cache_only(*conn);
-	}
-
 	if (options.inet_use_proxy) {
 		cddb_http_enable(*conn);
 		cddb_set_server_port(*conn, 80);

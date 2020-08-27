@@ -28,8 +28,5 @@ You can now run:
     make
     make install
 
-Please take the time to subscribe to the project mailing list at:
-http://lists.sourceforge.net/lists/listinfo/aqualung-friends
-
 "
 fi

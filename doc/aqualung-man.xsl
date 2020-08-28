@@ -49,13 +49,11 @@ Tomasz Maka &lt;pasp@users.sourceforge.net&gt;
 Jeremy Evans &lt;code@jeremyevans.net&gt;
 .SH BUGS
 .P
-Yes. Report them to our bugtracker at &lt;http://aqualung.factorial.hu/mantis&gt;
-or write to our mailing list (the subscription interface is accessible
-from the project homepage).
+Yes. Report them to our bugtracker at &lt;https://github.com/jeremyevans/aqualung/issues&gt;
 .SH HOMEPAGE
 .P
-Please go to &lt;http://aqualung.factorial.hu&gt; to download the latest version,
-access the Aqualung bugtracker and subscribe to the mailing list.
+Please go to &lt;http://aqualung.jeremyevans.net/&gt; to download the latest version,
+and access the Aqualung bugtracker.
 .SH USER'S MANUAL
 .P
 The latest version of the User's Manual is available at the project homepage.

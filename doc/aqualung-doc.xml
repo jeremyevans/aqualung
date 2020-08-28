@@ -105,9 +105,9 @@
       is the absolute minimum you need to know to successfully use the
       program. So make sure to read this (deliberately short) chapter,
       and come back for the rest when you have questions while using
-      the program. Ultimately, you may ask questions on the
-      <a href="https://lists.sourceforge.net/lists/listinfo/aqualung-friends">
-      aqualung-friends</a> mailing list.</p>
+      the program. Ultimately, you may ask questions using
+      <a href="https://github.com/jeremyevans/aqualung/issues">GitHub
+      Issues</a>.</p>
 
       <subsection title="Getting Aqualung">
 
@@ -116,7 +116,7 @@
         options might be intimidating at first. The steps you need to
         take depend on the platform and operating system you use. For
         detailed information please look at the <a
-        href="http://aqualung.factorial.hu/compiling.html">relevant
+        href="http://aqualung.jeremyevans.net/compiling/">relevant
         page</a> of the Aqualung website.</p>
 
         <p>In case you are not used to compiling software yourself,
@@ -136,13 +136,6 @@
         <cmd>configure</cmd> script tries to adapt Aqualung to your
         system as much as possible without breaking the program. See
         the above website for more information.</p>
-
-        <p>On Microsoft Windows, all you have to do is download and
-        run the self-extracting installer utility, which guides you
-        through a few easy to follow steps and installs the program on
-        your machine. Make sure to visit <a
-        href="http://aqualung.factorial.hu/win32">this page</a> for
-        more information about the Windows version of Aqualung.</p>
 
       </subsection>
 
@@ -891,7 +884,7 @@
         output), and the <gui>About</gui> box. The latter may be
         useful to see which features have been compiled into the
         program. (If you haven't read the <a
-        href="http://aqualung.factorial.hu/compiling.html">page about
+        href="http://aqualung.jeremyevans.net/compiling/">page about
         compiling</a> yet: the configuration of the program can be
         adapted so as not to require certain libraries when compiling,
         and not provide certain features accordingly.)</p>
@@ -1822,7 +1815,7 @@
       having poor experience with metadata libraries. This means
       metadata support is inherently present in Aqualung for all
       soundfile formats that are <a
-      href="http://aqualung.factorial.hu/compiling.html">compiled
+      href="http://aqualung.jeremyevans.net/compiling/">compiled
       in</a>.</p>
 
       <subsection title="Manual editing">

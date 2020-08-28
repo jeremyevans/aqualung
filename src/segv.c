@@ -41,8 +41,9 @@ signal_segv(int signum, siginfo_t * info, void * ptr) {
 #else
 	psignal(signum, "Caught");
 #endif
-	fprintf(stderr, "Please mail this to <aqualung-friends@lists.sourceforge.net>\n");
-	fprintf(stderr, "along with a short description of what you were doing when\n");
+	fprintf(stderr, "If you would like to report this as a bug, please file an issue\n");
+	fprintf(stderr, "at https://github.com/jeremyevans/aqualung/issues/new\n");
+	fprintf(stderr, "with a short description of what you were doing when\n");
 	fprintf(stderr, "the program crashed. Please also send the output of `aqualung -v'.\n");
 	fprintf(stderr, "Thank you in advance!\n");
 

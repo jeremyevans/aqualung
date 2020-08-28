@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2020-07-18 18:01+0200\n"
+"POT-Creation-Date: 2018-12-14 07:26-0800\n"
 "PO-Revision-Date: 2010-02-11 19:23+0100\n"
 "Last-Translator: Louis Opter <kalessin@kalessin.fr>\n"
 "Language-Team: \n"
@@ -637,6 +637,54 @@ msgstr "Importer comme titre"
 msgid "Import as Year"
 msgstr "Importer comme année"
 
+msgid ""
+"Artist appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"L'artiste est entièrement en minuscules.\n"
+"Voulez vous continuer ?"
+
+msgid ""
+"Artist appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"L'artiste est entièrement en majuscules.\n"
+"Voulez vous continuer ?"
+
+msgid ""
+"Title appears to be in all lowercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Le titre est entièrement en minuscules.\n"
+"Voulez vous continuer ?"
+
+msgid ""
+"Title appears to be in all uppercase.\n"
+"Do you want to proceed?"
+msgstr ""
+"Le titre est entièrement en majuscules.\n"
+"Voulez vous continuer ?"
+
+msgid ""
+"It is very likely that the year is wrong.\n"
+"Do you want to proceed?"
+msgstr ""
+"Il est très probable que l'année soit fausse.\n"
+"Voulez vous continuer ?"
+
+msgid "The email address provided for submission is invalid."
+msgstr "L'adresse de courriel fournie pour la proposition est invalide."
+
+msgid "An error occurred while submitting the record to the CDDB server."
+msgstr ""
+"Une erreur est survenue lors de la proposition de l'album au serveur CDDB"
+
+msgid "Correct existing record"
+msgstr "Correction de l'album existant"
+
+msgid "Submit new record"
+msgstr "Soumettre un nouvel album"
+
 msgid "Matches:"
 msgstr "Concordances :"
 
@@ -645,6 +693,9 @@ msgstr "Titre :"
 
 msgid "Category:"
 msgstr "Catégorie :"
+
+msgid "(choose a category)"
+msgstr "(choisir une catégorie)"
 
 msgid "Extended data:"
 msgstr "Données étendues :"
@@ -657,6 +708,11 @@ msgstr "Ajouter aux commentaires"
 
 msgid "Tracks"
 msgstr "Pistes"
+
+msgid "You have to provide an email address for CDDB submission."
+msgstr ""
+"Vous devez fournir une adresse de courriels pour faire une proposition sur "
+"CDDB"
 
 msgid "Unknown Album"
 msgstr "Album inconnu"
@@ -2296,7 +2352,7 @@ msgid "Protocol for querying (direct connection only):"
 msgstr "Protocole pour les requêtes (connexion directe seulement) :"
 
 #, fuzzy
-msgid "CDDBP (port 8880)"
+msgid "CDDBP (port 888)"
 msgstr "Support CDDB\n"
 
 msgid "HTTP (port 80)"
@@ -2789,6 +2845,9 @@ msgstr "Ajouter dans la liste de lecture (mode Album)"
 msgid "CDDB query for this CD..."
 msgstr "Requête CDDB pour ce CD..."
 
+msgid "Submit CD to CDDB database..."
+msgstr "Soumettre le CD à la base de données CDDB.."
+
 msgid "Rip CD..."
 msgstr "Encoder le CD..."
 
@@ -2996,6 +3055,9 @@ msgstr "Ajouter de nouvelles pistes à cet album..."
 
 msgid "CDDB query for this record..."
 msgstr "Requête CDDB pour cet album..."
+
+msgid "Submit record to CDDB database..."
+msgstr "Soumettre cet album à la base de données CDDB..."
 
 msgid "Add new track..."
 msgstr "Ajouter une nouvelle piste..."
@@ -3316,68 +3378,6 @@ msgstr "bit double"
 
 msgid "encoding"
 msgstr "encodage"
-
-#~ msgid ""
-#~ "Artist appears to be in all lowercase.\n"
-#~ "Do you want to proceed?"
-#~ msgstr ""
-#~ "L'artiste est entièrement en minuscules.\n"
-#~ "Voulez vous continuer ?"
-
-#~ msgid ""
-#~ "Artist appears to be in all uppercase.\n"
-#~ "Do you want to proceed?"
-#~ msgstr ""
-#~ "L'artiste est entièrement en majuscules.\n"
-#~ "Voulez vous continuer ?"
-
-#~ msgid ""
-#~ "Title appears to be in all lowercase.\n"
-#~ "Do you want to proceed?"
-#~ msgstr ""
-#~ "Le titre est entièrement en minuscules.\n"
-#~ "Voulez vous continuer ?"
-
-#~ msgid ""
-#~ "Title appears to be in all uppercase.\n"
-#~ "Do you want to proceed?"
-#~ msgstr ""
-#~ "Le titre est entièrement en majuscules.\n"
-#~ "Voulez vous continuer ?"
-
-#~ msgid ""
-#~ "It is very likely that the year is wrong.\n"
-#~ "Do you want to proceed?"
-#~ msgstr ""
-#~ "Il est très probable que l'année soit fausse.\n"
-#~ "Voulez vous continuer ?"
-
-#~ msgid "The email address provided for submission is invalid."
-#~ msgstr "L'adresse de courriel fournie pour la proposition est invalide."
-
-#~ msgid "An error occurred while submitting the record to the CDDB server."
-#~ msgstr ""
-#~ "Une erreur est survenue lors de la proposition de l'album au serveur CDDB"
-
-#~ msgid "Correct existing record"
-#~ msgstr "Correction de l'album existant"
-
-#~ msgid "Submit new record"
-#~ msgstr "Soumettre un nouvel album"
-
-#~ msgid "(choose a category)"
-#~ msgstr "(choisir une catégorie)"
-
-#~ msgid "You have to provide an email address for CDDB submission."
-#~ msgstr ""
-#~ "Vous devez fournir une adresse de courriels pour faire une proposition "
-#~ "sur CDDB"
-
-#~ msgid "Submit CD to CDDB database..."
-#~ msgstr "Soumettre le CD à la base de données CDDB.."
-
-#~ msgid "Submit record to CDDB database..."
-#~ msgstr "Soumettre cet album à la base de données CDDB..."
 
 #~ msgid "Lua (programmable title formatting) support\n"
 #~ msgstr "Support de Lua (formatage programmable des titres)\n"

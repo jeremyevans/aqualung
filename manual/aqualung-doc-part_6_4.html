@@ -5,19 +5,19 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
 </head>
-<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 6.3. <a href="aqualung-doc-part_6_3.html">Metadata-related behavior</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 7. <a href="aqualung-doc-part_7.html">Settings</a></td></tr></table><hr /><h2>6.4. Overview of supported metadata formats</h2><div class="toc1">6.4.1. <a href="#idp1903072">Metadata support matrix</a></div>
-<div class="toc1">6.4.2. <a href="#idp1938880">ID3v1</a></div>
-<div class="toc1">6.4.3. <a href="#idp1941632">ID3v2</a></div>
-<div class="toc1">6.4.4. <a href="#idp1948496">APE</a></div>
-<div class="toc1">6.4.5. <a href="#idp1951920">Ogg Xiph comments</a></div>
-<div class="toc1">6.4.6. <a href="#idp1953968">FLAC pictures</a></div>
-<div class="toc1">6.4.7. <a href="#idp1955760">Musepack ReplayGain data</a></div>
-<div class="toc1">6.4.8. <a href="#idp1958448">Generic StreamMetadata</a></div>
-<div class="toc1">6.4.9. <a href="#idp1961152">MPEG StreamMetadata</a></div>
-<div class="toc1">6.4.10. <a href="#idp1963840">MOD information</a></div>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 6.3. <a href="aqualung-doc-part_6_3.html">Metadata-related behavior</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 7. <a href="aqualung-doc-part_7.html">Settings</a></td></tr></table><hr /><h2>6.4. Overview of supported metadata formats</h2><div class="toc1">6.4.1. <a href="#idp675725568">Metadata support matrix</a></div>
+<div class="toc1">6.4.2. <a href="#idp931088128">ID3v1</a></div>
+<div class="toc1">6.4.3. <a href="#idp931087232">ID3v2</a></div>
+<div class="toc1">6.4.4. <a href="#idm164892800">APE</a></div>
+<div class="toc1">6.4.5. <a href="#idp3377474560">Ogg Xiph comments</a></div>
+<div class="toc1">6.4.6. <a href="#idp96960000">FLAC pictures</a></div>
+<div class="toc1">6.4.7. <a href="#idp1023229952">Musepack ReplayGain data</a></div>
+<div class="toc1">6.4.8. <a href="#idp1023231488">Generic StreamMetadata</a></div>
+<div class="toc1">6.4.9. <a href="#idp3547630336">MPEG StreamMetadata</a></div>
+<div class="toc1">6.4.10. <a href="#idp1023229184">MOD information</a></div>
 
 
-<h3 id="idp1903072">6.4.1. Metadata support matrix</h3>
+<h3 id="idp675725568">6.4.1. Metadata support matrix</h3>
 
 <p>This table shows what tag types are supported for which
 audio formats. Formats for which no metadata support is
@@ -158,7 +158,7 @@ present are omitted.</p>
 
 
 
-<h3 id="idp1938880">6.4.2. ID3v1</h3>
+<h3 id="idp931088128">6.4.2. ID3v1</h3>
 
 <p>ID3v1 and ID3v1.1 (<a class="external" href="http://www.id3.org/ID3v1">http://www.id3.org/ID3v1</a>)
 are fully supported. The difference between the two is the
@@ -174,7 +174,7 @@ the metadata editor GUI.</p>
 
 
 
-<h3 id="idp1941632">6.4.3. ID3v2</h3>
+<h3 id="idp931087232">6.4.3. ID3v2</h3>
 
 <p>ID3v2 tags are supported with the restriction that the
 tag MUST be at the beginning of the file. Tag versions
@@ -215,7 +215,7 @@ TYER are treated as TDRC and TORY is treated as TDOR.</p>
 
 
 
-<h3 id="idp1948496">6.4.4. APE</h3>
+<h3 id="idm164892800">6.4.4. APE</h3>
 
 <p>APEv1 and <a class="external" href="http://wiki.hydrogenaudio.org/index.php?title=APEv2_specification">APEv2</a>
 tags are supported with the restriction that the tag MUST be
@@ -229,7 +229,7 @@ compatible with most existing tagging software.</p>
 
 
 
-<h3 id="idp1951920">6.4.5. Ogg Xiph comments</h3>
+<h3 id="idp3377474560">6.4.5. Ogg Xiph comments</h3>
 
 <p>Ogg Xiph comments (also known as Ogg Vorbis comments) are
 supported according to the recommended field names in the <a class="external" href="http://xiph.org/vorbis/doc/v-comment.html">Vorbis
@@ -239,7 +239,7 @@ ReplayGain-related fields are also supported.
 
 
 
-<h3 id="idp1953968">6.4.6. FLAC pictures</h3>
+<h3 id="idp96960000">6.4.6. FLAC pictures</h3>
 
 <p>In FLAC files there may be an Ogg Xiph comment block
 along with separate picture blocks that contain one embedded
@@ -250,7 +250,7 @@ the only frame you can add to this tag is the
 
 
 
-<h3 id="idp1955760">6.4.7. Musepack ReplayGain data</h3>
+<h3 id="idp1023229952">6.4.7. Musepack ReplayGain data</h3>
 
 <p>In <a class="external" href="http://trac.musepack.net/trac/wiki/SV7Specification">Musepack
 SV7</a> streams there may be ReplayGain data in the file
@@ -265,7 +265,7 @@ reality). This information is read-only.
 
 
 
-<h3 id="idp1958448">6.4.8. Generic StreamMetadata</h3>
+<h3 id="idp1023231488">6.4.8. Generic StreamMetadata</h3>
 
 <p>This is a read-only pseudo-tag carrying information that
 was obtained when speaking to the Icecast or SHOUTcast
@@ -277,7 +277,7 @@ fields.</p>
 
 
 
-<h3 id="idp1961152">6.4.9. MPEG StreamMetadata</h3>
+<h3 id="idp3547630336">6.4.9. MPEG StreamMetadata</h3>
 
 <p>This is a read-only pseudo-tag carrying information that
 was received while listening to an MPEG stream on internet
@@ -290,7 +290,7 @@ there is no restriction on the supported fields.</p>
 
 
 
-<h3 id="idp1963840">6.4.10. MOD information</h3>
+<h3 id="idp1023229184">6.4.10. MOD information</h3>
 
 <p>For files handled by the MOD library, some read-only
 information about the file (number of channels, instruments,

@@ -13,33 +13,44 @@ relies on.</p>
 <dl>
 
 <dt><b>
-<tt>~/.aqualung</tt>
+<tt>$XDG_CONFIG_HOME/aqualung/</tt>
 </b></dt>
 
-<dd>Directory containing user settings.</dd>
+<dd>Directory containing user settings. $XDG_CONFIG_HOME is
+the user-specific directory for application configuration
+information according to the XDG Base Directory Specification.
+It is most likely equivalent to ~/.config, so the following
+config files (except the last one, which resides in a
+system-wide location) are usually found under
+$HOME/.config/aqualung/</dd>
+
+<dd>Note: earlier versions of Aqualung kept these per-user
+configuration files in ~/.aqualung. This legacy setup is
+recognized and silently migrated to the XDG-conformant
+layout.</dd>
 
 <dt><b>
-<tt>~/.aqualung/config.xml</tt>
+<tt>config.xml</tt>
 </b></dt>
 
 <dd>GUI (skin, window size/position, etc.) and other
 settings.</dd>
 
 <dt><b>
-<tt>~/.aqualung/plugin.xml</tt>
+<tt>plugin.xml</tt>
 </b></dt>
 
 <dd>List of running plugins and all their settings.</dd>
 
 <dt><b>
-<tt>~/.aqualung/playlist.xml</tt>
+<tt>playlist.xml</tt>
 </b></dt>
 
 <dd>Automatically saved and restored playlist (if you enable
 this feature).</dd>
 
 <dt><b>
-<tt>~/.aqualung/&lt;skin-name&gt;</tt>
+<tt>&lt;skin-name&gt;</tt>
 </b></dt>
 
 <dd>Locally available skin &lt;skin-name&gt; (useful for

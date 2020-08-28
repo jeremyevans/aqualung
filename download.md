@@ -7,11 +7,11 @@ weight: 20
 
 Aqualung is officially released only as a source code tarball
 archive. Download [release tarball
-1.0](http://downloads.sourceforge.net/aqualung/aqualung-1.0.tar.gz)
+1.1](https://github.com/jeremyevans/aqualung/releases/download/1.1/aqualung-1.1.tar.gz).
 
 The program is included in most major Linux distributions.
 
-Post-1.0 development happens in git, hosted on GitHub:
+Development happens in git, hosted on GitHub:
 [jeremyevans/aqualung](https://github.com/jeremyevans/aqualung)
 
 To clone the source repository, type:  

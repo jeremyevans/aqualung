@@ -7,19 +7,13 @@ weight: 50
 
 <h1>Project policies</h1>
 
-<p>Post-1.0 development of Aqualung happens via our official Git
+<p>Development of Aqualung happens via our official Git
   repository.  Please use the facilities supported by GitHub if you
   would like to get involved with development.</p>
 
-<p>Our mailing list <a
-href="http://lists.sourceforge.net/lists/listinfo/aqualung-friends">aqualung-friends</a>
-serves as a low-key forum of discussions concerning Aqualung. Please
-check the <a href="/documentation/">User's Manual</a> before posting.</p>
-
 <p>Please note that we have no resources to deal with out-of-band
 support requests. This means that we will most likely not respond to
-private mail.  Also, mail sent by non-subscribers to the list is
-discarded unconditionally.</p>
+private mail.</p>
 
 
 <h1>Legal stuff</h1>
@@ -39,8 +33,8 @@ General Public License for more details.</p>
 
 <h1>Developers</h1>
 
-<p>Starting from the 1.0 release, the primary maintainer of Aqualung
-is Jeremy Evans. His Git repository of Aqualung, which started as a
+<p>The primary maintainer of Aqualung is Jeremy Evans. His Git
+repository of Aqualung, which started as a
 mirror of the SVN repository used pre-1.0, is now the official
 repository.</p>
 
@@ -60,7 +54,7 @@ repository.</p>
     <td>Tomasz Maka &lt;pasp at users dot sourceforge dot net&gt;</td>
   </tr>
   <tr>
-    <td>OpenBSD compatibility, metadata tweaks:</td>
+    <td>Current maintainer, OpenBSD compatibility, Lua support:</td>
     <td>Jeremy Evans &lt;code at jeremyevans dot net&gt;</td>
   </tr>
   <tr>
@@ -82,6 +76,10 @@ repository.</p>
   <tr>
     <td>PulseAudio support</td>
     <td>Hong Jen Yee (PCMan) &lt;pcman.tw at gmail dot com&gt;</td>
+  </tr>
+  <tr>
+    <td>Numerous bugfixes and string handling refactoring</td>
+    <td>Adam Sampson &lt;ats at offog dot org&gt;</td>
   </tr>
 </tbody></table>
 

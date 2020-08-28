@@ -19,106 +19,106 @@
     under the terms of the GNU Free Documentation License, Version 1.2<br />
     or any later version published by the Free Software Foundation.</p>
 
-  <p><i>Generated on Tue Jun  3 16:07:18 UTC 2014</i></p><hr />
+  <p><i>Generated on Fri Aug 28 02:48:38 UTC 2020</i></p><hr />
 
   <h1>Table of Contents</h1>
-    <div class="toc1">1. <a href="#idp10448">Introduction</a></div>
-      <div class="toc1">2. <a href="#idp99056">Quick Start Guide</a></div>
-      <div class="toc2">2.1. <a href="#idp101168">Getting Aqualung</a></div>
-	<div class="toc2">2.2. <a href="#idp108032">Starting the program for the first time</a></div>
-	<div class="toc2">2.3. <a href="#idp114032">Setting up a Music Store</a></div>
-	<div class="toc2">2.4. <a href="#idp121712">Playing and ripping an Audio CD</a></div>
-	<div class="toc1">3. <a href="#idp126144">Command Line Interface</a></div>
-      <div class="toc2">3.1. <a href="#idp126672">Invocation</a></div>
-	<div class="toc2">3.2. <a href="#idp134928">General options</a></div>
-	<div class="toc2">3.3. <a href="#idp140384">Output specific options</a></div>
-	<div class="toc3">3.3.1. <a href="#idp140912">Options relevant to ALSA output</a></div>
-	  <div class="toc3">3.3.2. <a href="#idp167888">Options relevant to OSS output</a></div>
-	  <div class="toc3">3.3.3. <a href="#idp175408">Options relevant to JACK output</a></div>
-	  <div class="toc3">3.3.4. <a href="#idp180416">Options relevant to PulseAudio and sndio output</a></div>
-	  <div class="toc3">3.3.5. <a href="#idp186448">Options relevant to Win32 output</a></div>
-	  <div class="toc2">3.4. <a href="#idp189152">Options relevant to the Sample Rate Converter</a></div>
-	<div class="toc2">3.5. <a href="#idp191872">Options for remote cue control</a></div>
-	<div class="toc2">3.6. <a href="#idp206160">Options for file loading</a></div>
-	<div class="toc3">3.6.1. <a href="#idp215088">Setting up programs to use Aqualung as a soundfile handler</a></div>
-	  <div class="toc2">3.7. <a href="#idp221216">Options for changing state of Playlist/Music Store windows</a></div>
-	<div class="toc2">3.8. <a href="#idp225072">Examples</a></div>
-	<div class="toc2">3.9. <a href="#idp229760">Environment</a></div>
-	<div class="toc2">3.10. <a href="#idp235584">Files</a></div>
-	<div class="toc1">4. <a href="#idp245456">Graphical Interface</a></div>
-      <div class="toc2">4.1. <a href="#idp245984">Main Window</a></div>
-	<div class="toc2">4.2. <a href="#idp267952">Playlist</a></div>
-	<div class="toc2">4.3. <a href="#idm41328">Music Store</a></div>
-	<div class="toc3">4.3.1. <a href="#idm40256">Overview</a></div>
-	  <div class="toc3">4.3.2. <a href="#idm34368">Building or Updating a store from filesystem</a></div>
-	  <div class="toc3">4.3.3. <a href="#idp337936">Arranging your collection</a></div>
-	  <div class="toc3">4.3.4. <a href="#idp350640">Dealing with multiple stores</a></div>
-	  <div class="toc3">4.3.5. <a href="#idp354160">Handling file metadata</a></div>
-	  <div class="toc3">4.3.6. <a href="#idp360768">CDDB Support</a></div>
-	  <div class="toc3">4.3.7. <a href="#idp368304">Audio CD</a></div>
-	  <div class="toc3">4.3.8. <a href="#idp377904">Podcast support</a></div>
-	  <div class="toc2">4.4. <a href="#idp391280">JACK Port Setup</a></div>
-	<div class="toc2">4.5. <a href="#idp397136">Skin Chooser</a></div>
-	<div class="toc2">4.6. <a href="#idp399152">System Tray Support</a></div>
-	<div class="toc1">5. <a href="#idp402208">Supplemental features</a></div>
-      <div class="toc2">5.1. <a href="#idp402736">Exporting files from the Music Store or Playlist</a></div>
-	<div class="toc2">5.2. <a href="#idp413968">LADSPA plugins</a></div>
-	<div class="toc2">5.3. <a href="#idp424656">The RVA system</a></div>
-	<div class="toc2">5.4. <a href="#idp442560">Music Store Builder</a></div>
-	<div class="toc3">5.4.1. <a href="#idp460128">Data sources</a></div>
-	  <div class="toc3">5.4.2. <a href="#idp464864">Regular expressions</a></div>
-	  <div class="toc3">5.4.3. <a href="#idp469344">Predefined transformations</a></div>
-	  <div class="toc3">5.4.4. <a href="#idp470752">Capitalization</a></div>
-	  <div class="toc1">6. <a href="#idp474144">Metadata support</a></div>
-      <div class="toc2">6.1. <a href="#idp477264">Manual editing</a></div>
-	<div class="toc2">6.2. <a href="#idp483424">Mass tagging</a></div>
-	<div class="toc2">6.3. <a href="#idp485552">Metadata-related behavior</a></div>
-	<div class="toc3">6.3.1. <a href="#idp486096">Configuration</a></div>
-	  <div class="toc3">6.3.2. <a href="#idp492688">Precedence of metadata information</a></div>
-	  <div class="toc3">6.3.3. <a href="#idp505936">ReplayGain and RVA</a></div>
-	  <div class="toc3">6.3.4. <a href="#idp516240">Metadata transfer when exporting</a></div>
-	  <div class="toc2">6.4. <a href="#idp522800">Overview of supported metadata formats</a></div>
-	<div class="toc3">6.4.1. <a href="#idp523344">Metadata support matrix</a></div>
-	  <div class="toc3">6.4.2. <a href="#idp559152">ID3v1</a></div>
-	  <div class="toc3">6.4.3. <a href="#idp561904">ID3v2</a></div>
-	  <div class="toc3">6.4.4. <a href="#idp568768">APE</a></div>
-	  <div class="toc3">6.4.5. <a href="#idp572192">Ogg Xiph comments</a></div>
-	  <div class="toc3">6.4.6. <a href="#idp574240">FLAC pictures</a></div>
-	  <div class="toc3">6.4.7. <a href="#idp576032">Musepack ReplayGain data</a></div>
-	  <div class="toc3">6.4.8. <a href="#idp578768">Generic StreamMetadata</a></div>
-	  <div class="toc3">6.4.9. <a href="#idp581472">MPEG StreamMetadata</a></div>
-	  <div class="toc3">6.4.10. <a href="#idp584160">MOD information</a></div>
-	  <div class="toc1">7. <a href="#idp585632">Settings</a></div>
-      <div class="toc2">7.1. <a href="#idp587248">General</a></div>
-	<div class="toc3">7.1.1. <a href="#idp589072">Main Window</a></div>
-	  <div class="toc3">7.1.2. <a href="#idp591168">Title Format</a></div>
-	  <div class="toc3">7.1.3. <a href="#idp613728">Lua extension file</a></div>
-	  <div class="toc3">7.1.4. <a href="#idp615344">Systray</a></div>
-	  <div class="toc3">7.1.5. <a href="#idp618864">Miscellaneous</a></div>
-	  <div class="toc2">7.2. <a href="#idp632464">Playlist</a></div>
-	<div class="toc2">7.3. <a href="#idp637904">Music Store</a></div>
-	<div class="toc2">7.4. <a href="#idp641280">DSP</a></div>
-	<div class="toc2">7.5. <a href="#idp647504">Playback RVA</a></div>
-	<div class="toc2">7.6. <a href="#idp649424">Metadata</a></div>
-	<div class="toc2">7.7. <a href="#idp651536">CD Audio</a></div>
-	<div class="toc2">7.8. <a href="#idp655072">CDDB</a></div>
-	<div class="toc2">7.9. <a href="#idp658784">Internet</a></div>
-	<div class="toc2">7.10. <a href="#idp660736">Appearance</a></div>
-	<div class="toc1">8. <a href="#idp663280">Keyboard shortcuts</a></div>
-      <div class="toc2">8.1. <a href="#idp663808">Main window</a></div>
-	<div class="toc2">8.2. <a href="#idp698064">Playlist</a></div>
-	<div class="toc2">8.3. <a href="#idp1717584">Music Store</a></div>
-	<div class="toc1">9. <a href="#idp1741392">Extending Aqualung</a></div>
-      <div class="toc2">9.1. <a href="#idp1741920">Introduction</a></div>
-	<div class="toc2">9.2. <a href="#idp1749856">Programmable Title Format</a></div>
-	<div class="toc2">9.3. <a href="#idp1784960">Hooking into Aqualung Events</a></div>
-	<div class="toc2">9.4. <a href="#idp1793168">Custom Playlist Menu Commands</a></div>
-	<div class="toc2">9.5. <a href="#idp1801184">Custom Remote Commands</a></div>
-	<div class="toc2">9.6. <a href="#idp1806048">Custom Keybindings</a></div>
-	<div class="toc2">9.7. <a href="#idp1814656">Lua Extension API methods</a></div>
+    <div class="toc1">1. <a href="#idm753140736">Introduction</a></div>
+      <div class="toc1">2. <a href="#idm782693504">Quick Start Guide</a></div>
+      <div class="toc2">2.1. <a href="#idp489118848">Getting Aqualung</a></div>
+	<div class="toc2">2.2. <a href="#idp1278048000">Starting the program for the first time</a></div>
+	<div class="toc2">2.3. <a href="#idp489115392">Setting up a Music Store</a></div>
+	<div class="toc2">2.4. <a href="#idp489118080">Playing and ripping an Audio CD</a></div>
+	<div class="toc1">3. <a href="#idp1278056320">Command Line Interface</a></div>
+      <div class="toc2">3.1. <a href="#idp1278072832">Invocation</a></div>
+	<div class="toc2">3.2. <a href="#idp1278071168">General options</a></div>
+	<div class="toc2">3.3. <a href="#idp1278072192">Output specific options</a></div>
+	<div class="toc3">3.3.1. <a href="#idp1278079232">Options relevant to ALSA output</a></div>
+	  <div class="toc3">3.3.2. <a href="#idp1278092032">Options relevant to OSS output</a></div>
+	  <div class="toc3">3.3.3. <a href="#idp1278100992">Options relevant to JACK output</a></div>
+	  <div class="toc3">3.3.4. <a href="#idp1278096896">Options relevant to PulseAudio and sndio output</a></div>
+	  <div class="toc3">3.3.5. <a href="#idm565882368">Options relevant to Win32 output</a></div>
+	  <div class="toc2">3.4. <a href="#idm565880576">Options relevant to the Sample Rate Converter</a></div>
+	<div class="toc2">3.5. <a href="#idm565881216">Options for remote cue control</a></div>
+	<div class="toc2">3.6. <a href="#idm1941686144">Options for file loading</a></div>
+	<div class="toc3">3.6.1. <a href="#idp1189651328">Setting up programs to use Aqualung as a soundfile handler</a></div>
+	  <div class="toc2">3.7. <a href="#idp1189649536">Options for changing state of Playlist/Music Store windows</a></div>
+	<div class="toc2">3.8. <a href="#idp346531456">Examples</a></div>
+	<div class="toc2">3.9. <a href="#idp62790400">Environment</a></div>
+	<div class="toc2">3.10. <a href="#idm2155827712">Files</a></div>
+	<div class="toc1">4. <a href="#idm1850197888">Graphical Interface</a></div>
+      <div class="toc2">4.1. <a href="#idp245803648">Main Window</a></div>
+	<div class="toc2">4.2. <a href="#idp663450112">Playlist</a></div>
+	<div class="toc2">4.3. <a href="#idm719271040">Music Store</a></div>
+	<div class="toc3">4.3.1. <a href="#idm719270272">Overview</a></div>
+	  <div class="toc3">4.3.2. <a href="#idm719269504">Building or Updating a store from filesystem</a></div>
+	  <div class="toc3">4.3.3. <a href="#idm698795776">Arranging your collection</a></div>
+	  <div class="toc3">4.3.4. <a href="#idm2186248192">Dealing with multiple stores</a></div>
+	  <div class="toc3">4.3.5. <a href="#idm2186246272">Handling file metadata</a></div>
+	  <div class="toc3">4.3.6. <a href="#idp477918336">CDDB Support</a></div>
+	  <div class="toc3">4.3.7. <a href="#idm1907324928">Audio CD</a></div>
+	  <div class="toc3">4.3.8. <a href="#idp544469632">Podcast support</a></div>
+	  <div class="toc2">4.4. <a href="#idp1247119744">JACK Port Setup</a></div>
+	<div class="toc2">4.5. <a href="#idm2784069248">Skin Chooser</a></div>
+	<div class="toc2">4.6. <a href="#idm763110656">System Tray Support</a></div>
+	<div class="toc1">5. <a href="#idm2784071936">Supplemental features</a></div>
+      <div class="toc2">5.1. <a href="#idp1247119104">Exporting files from the Music Store or Playlist</a></div>
+	<div class="toc2">5.2. <a href="#idm337761408">LADSPA plugins</a></div>
+	<div class="toc2">5.3. <a href="#idm568166528">The RVA system</a></div>
+	<div class="toc2">5.4. <a href="#idm2372418944">Music Store Builder</a></div>
+	<div class="toc3">5.4.1. <a href="#idm380038272">Data sources</a></div>
+	  <div class="toc3">5.4.2. <a href="#idm1163530624">Regular expressions</a></div>
+	  <div class="toc3">5.4.3. <a href="#idm732843392">Predefined transformations</a></div>
+	  <div class="toc3">5.4.4. <a href="#idm732843264">Capitalization</a></div>
+	  <div class="toc1">6. <a href="#idm515815296">Metadata support</a></div>
+      <div class="toc2">6.1. <a href="#idm74958976">Manual editing</a></div>
+	<div class="toc2">6.2. <a href="#idm74959104">Mass tagging</a></div>
+	<div class="toc2">6.3. <a href="#idm74959488">Metadata-related behavior</a></div>
+	<div class="toc3">6.3.1. <a href="#idp761068416">Configuration</a></div>
+	  <div class="toc3">6.3.2. <a href="#idm74958208">Precedence of metadata information</a></div>
+	  <div class="toc3">6.3.3. <a href="#idp879561984">ReplayGain and RVA</a></div>
+	  <div class="toc3">6.3.4. <a href="#idm1081603328">Metadata transfer when exporting</a></div>
+	  <div class="toc2">6.4. <a href="#idp774393984">Overview of supported metadata formats</a></div>
+	<div class="toc3">6.4.1. <a href="#idm515904384">Metadata support matrix</a></div>
+	  <div class="toc3">6.4.2. <a href="#idp915131776">ID3v1</a></div>
+	  <div class="toc3">6.4.3. <a href="#idp963021568">ID3v2</a></div>
+	  <div class="toc3">6.4.4. <a href="#idp1060663424">APE</a></div>
+	  <div class="toc3">6.4.5. <a href="#idp1060664704">Ogg Xiph comments</a></div>
+	  <div class="toc3">6.4.6. <a href="#idp963017984">FLAC pictures</a></div>
+	  <div class="toc3">6.4.7. <a href="#idm1617453184">Musepack ReplayGain data</a></div>
+	  <div class="toc3">6.4.8. <a href="#idp842172672">Generic StreamMetadata</a></div>
+	  <div class="toc3">6.4.9. <a href="#idp842170496">MPEG StreamMetadata</a></div>
+	  <div class="toc3">6.4.10. <a href="#idm2339170048">MOD information</a></div>
+	  <div class="toc1">7. <a href="#idm1617452544">Settings</a></div>
+      <div class="toc2">7.1. <a href="#idm738994432">General</a></div>
+	<div class="toc3">7.1.1. <a href="#idm738996736">Main Window</a></div>
+	  <div class="toc3">7.1.2. <a href="#idm1617451136">Title Format</a></div>
+	  <div class="toc3">7.1.3. <a href="#idp311836288">Lua extension file</a></div>
+	  <div class="toc3">7.1.4. <a href="#idp733934848">Systray</a></div>
+	  <div class="toc3">7.1.5. <a href="#idm1877623424">Miscellaneous</a></div>
+	  <div class="toc2">7.2. <a href="#idm1929999616">Playlist</a></div>
+	<div class="toc2">7.3. <a href="#idm405713408">Music Store</a></div>
+	<div class="toc2">7.4. <a href="#idm1930000768">DSP</a></div>
+	<div class="toc2">7.5. <a href="#idm1867510272">Playback RVA</a></div>
+	<div class="toc2">7.6. <a href="#idp369975680">Metadata</a></div>
+	<div class="toc2">7.7. <a href="#idp694864896">CD Audio</a></div>
+	<div class="toc2">7.8. <a href="#idp694868608">CDDB</a></div>
+	<div class="toc2">7.9. <a href="#idp369976576">Internet</a></div>
+	<div class="toc2">7.10. <a href="#idp745212800">Appearance</a></div>
+	<div class="toc1">8. <a href="#idp369977344">Keyboard shortcuts</a></div>
+      <div class="toc2">8.1. <a href="#idp694865024">Main window</a></div>
+	<div class="toc2">8.2. <a href="#idm834792448">Playlist</a></div>
+	<div class="toc2">8.3. <a href="#idp492289664">Music Store</a></div>
+	<div class="toc1">9. <a href="#idm844537856">Extending Aqualung</a></div>
+      <div class="toc2">9.1. <a href="#idm2935168128">Introduction</a></div>
+	<div class="toc2">9.2. <a href="#idp691560704">Programmable Title Format</a></div>
+	<div class="toc2">9.3. <a href="#idp875951104">Hooking into Aqualung Events</a></div>
+	<div class="toc2">9.4. <a href="#idp875949056">Custom Playlist Menu Commands</a></div>
+	<div class="toc2">9.5. <a href="#idp875949568">Custom Remote Commands</a></div>
+	<div class="toc2">9.6. <a href="#idm446142080">Custom Keybindings</a></div>
+	<div class="toc2">9.7. <a href="#idm446142336">Lua Extension API methods</a></div>
 	
 
-    <h1 id="idp10448" style="padding-top: 6px">1. Introduction</h1>
+    <h1 id="idm753140736" style="padding-top: 6px">1. Introduction</h1>
 
       <p>Aqualung is an advanced music player originally targeted at
       the GNU/Linux operating system, today also running on FreeBSD,
@@ -170,12 +170,12 @@
       options. Aqualung has the ability to display and edit Ogg Xiph
       comments, ID3v1, ID3v2 and APE tags, as well as FLAC picture
       frames found in files that support them. See the section about
-      <a href="#idp474144">metadata support</a> for full reference.</p>
+      <a href="#idm515815296">metadata support</a> for full reference.</p>
 
       <p>The method of assembling the title string of a track is programmable
       (via a user-provided Lua function) and can include nearly any metadata
       item or audio file attribute. See the documentation of the
-      <a href="#idp587248"><span class="gui">Lua extension file</span>
+      <a href="#idm738994432"><span class="gui">Lua extension file</span>
       config setting</a> for full reference.</p>
 
       <p>You can control any running instance of the program remotely
@@ -197,24 +197,24 @@
 
     
 
-    <h1 id="idp99056" style="padding-top: 6px">2. Quick Start Guide</h1>
+    <h1 id="idm782693504" style="padding-top: 6px">2. Quick Start Guide</h1>
 
       <p>If you'd like to get your hands on the program quickly rather
       than to spend your evening reading the rest of the manual, here
       is the absolute minimum you need to know to successfully use the
       program. So make sure to read this (deliberately short) chapter,
       and come back for the rest when you have questions while using
-      the program. Ultimately, you may ask questions on the
-      <a class="external" href="https://lists.sourceforge.net/lists/listinfo/aqualung-friends">
-      aqualung-friends</a> mailing list.</p>
+      the program. Ultimately, you may ask questions using
+      <a class="external" href="https://github.com/jeremyevans/aqualung/issues">GitHub
+      Issues</a>.</p>
 
-      <h2 id="idp101168" style="padding-top: 6px">2.1. Getting Aqualung</h2>
+      <h2 id="idp489118848" style="padding-top: 6px">2.1. Getting Aqualung</h2>
 
         <p>It is not hard to get Aqualung up and running on your
         machine, although for beginners the number of compile-time
         options might be intimidating at first. The steps you need to
         take depend on the platform and operating system you use. For
-        detailed information please look at the <a class="external" href="http://aqualung.factorial.hu/compiling.html">relevant
+        detailed information please look at the <a class="external" href="http://aqualung.jeremyevans.net/compiling/">relevant
         page</a> of the Aqualung website.</p>
 
         <p>In case you are not used to compiling software yourself,
@@ -233,15 +233,9 @@
         system as much as possible without breaking the program. See
         the above website for more information.</p>
 
-        <p>On Microsoft Windows, all you have to do is download and
-        run the self-extracting installer utility, which guides you
-        through a few easy to follow steps and installs the program on
-        your machine. Make sure to visit <a class="external" href="http://aqualung.factorial.hu/win32">this page</a> for
-        more information about the Windows version of Aqualung.</p>
-
       
 
-      <h2 id="idp108032" style="padding-top: 6px">2.2. Starting the program for the first time</h2>
+      <h2 id="idp1278048000" style="padding-top: 6px">2.2. Starting the program for the first time</h2>
 
         <p>Aqualung has a large number of configuration settings,
         which are adjustable through the user interface at run-time
@@ -277,7 +271,7 @@
 
       
 
-      <h2 id="idp114032" style="padding-top: 6px">2.3. Setting up a Music Store</h2>
+      <h2 id="idp489115392" style="padding-top: 6px">2.3. Setting up a Music Store</h2>
 
         <p>Now that you have some music playing, let's get more
         organized. In the Music Store window click in the empty area
@@ -319,12 +313,12 @@
         traversed. The artist/record/track names are determined from
         potentially multiple data sources (CDDB, metadata e.g. ID3v2
         tags or Ogg Xiph comments, and filesystem names). The logic
-        involved is fairly elaborate. You are strongly advised to <a href="#idp442560">read</a> the detailed usage instructions
+        involved is fairly elaborate. You are strongly advised to <a href="#idm2372418944">read</a> the detailed usage instructions
         for the Music Store Builder.</p>
 
       
 
-      <h2 id="idp121712" style="padding-top: 6px">2.4. Playing and ripping an Audio CD</h2>
+      <h2 id="idp489118080" style="padding-top: 6px">2.4. Playing and ripping an Audio CD</h2>
 
         <p>You can play CDs with Aqualung easily. Just put the CD in
         one of your CD drives, and if everything goes well, Aqualung
@@ -341,7 +335,7 @@
         records in one of your music stores, too. In this case all you
         have to do is choose <span class="gui">Rip CD...</span> from the disc's
         popup menu, and supply some information. We won't go into
-        details here (please refer to <a href="#idp368304">this
+        details here (please refer to <a href="#idm1907324928">this
         section</a> in case the interface is not obvious). However,
         it is worth stating that you should have a separate directory
         for the files of each record. Ripping multiple CDs into the
@@ -351,9 +345,9 @@
 
     
 
-    <h1 id="idp126144" style="padding-top: 6px">3. Command Line Interface</h1>
+    <h1 id="idp1278056320" style="padding-top: 6px">3. Command Line Interface</h1>
 
-      <h2 id="idp126672" style="padding-top: 6px">3.1. Invocation</h2>
+      <h2 id="idp1278072832" style="padding-top: 6px">3.1. Invocation</h2>
 
         <dl>
 
@@ -394,7 +388,7 @@
 
       
 
-      <h2 id="idp134928" style="padding-top: 6px">3.2. General options</h2>
+      <h2 id="idp1278071168" style="padding-top: 6px">3.2. General options</h2>
 
         <dl>
 
@@ -420,9 +414,9 @@
 
       
 
-      <h2 id="idp140384" style="padding-top: 6px">3.3. Output specific options</h2>
+      <h2 id="idp1278072192" style="padding-top: 6px">3.3. Output specific options</h2>
 
-        <h3 id="idp140912">3.3.1. Options relevant to ALSA output</h3>
+        <h3 id="idp1278079232">3.3.1. Options relevant to ALSA output</h3>
 
           <dl>
 
@@ -462,7 +456,7 @@
 
         
 
-        <h3 id="idp167888">3.3.2. Options relevant to OSS output</h3>
+        <h3 id="idp1278092032">3.3.2. Options relevant to OSS output</h3>
 
           <dl>
 
@@ -498,7 +492,7 @@
 
         
 
-        <h3 id="idp175408">3.3.3. Options relevant to JACK output</h3>
+        <h3 id="idp1278100992">3.3.3. Options relevant to JACK output</h3>
 
           <dl>
 
@@ -525,7 +519,7 @@
 
         
 
-        <h3 id="idp180416">3.3.4. Options relevant to PulseAudio and sndio output</h3>
+        <h3 id="idp1278096896">3.3.4. Options relevant to PulseAudio and sndio output</h3>
 
           <dl>
 
@@ -553,7 +547,7 @@
 
         
 
-        <h3 id="idp186448">3.3.5. Options relevant to Win32 output</h3>
+        <h3 id="idm565882368">3.3.5. Options relevant to Win32 output</h3>
 
           <dl>
 
@@ -569,7 +563,7 @@
 
       
 
-      <h2 id="idp189152" style="padding-top: 6px">3.4. Options relevant to the Sample Rate Converter</h2>
+      <h2 id="idm565880576" style="padding-top: 6px">3.4. Options relevant to the Sample Rate Converter</h2>
 
         <dl>
 
@@ -585,7 +579,7 @@
 
       
 
-      <h2 id="idp191872" style="padding-top: 6px">3.5. Options for remote cue control</h2>
+      <h2 id="idm565881216" style="padding-top: 6px">3.5. Options for remote cue control</h2>
 
         <p>Note that remote controlling of instances is only possible
         if the instance you want to send a command to is running as
@@ -658,7 +652,7 @@
       
 
 
-      <h2 id="idp206160" style="padding-top: 6px">3.6. Options for file loading</h2>
+      <h2 id="idm1941686144" style="padding-top: 6px">3.6. Options for file loading</h2>
 
         <p>You may specify filenames on the command line. These may be
         ordinary soundfiles playable by Aqualung, directories, or
@@ -702,7 +696,7 @@
 
         </dl>
 
-        <h3 id="idp215088">3.6.1. Setting up programs to use Aqualung as a soundfile handler</h3>
+        <h3 id="idp1189651328">3.6.1. Setting up programs to use Aqualung as a soundfile handler</h3>
 
           <p>It is possible to set up a host program such as a
           browser, file manager etc. to use Aqualung for opening
@@ -731,7 +725,7 @@
 
       
 
-      <h2 id="idp221216" style="padding-top: 6px">3.7. Options for changing state of Playlist/Music Store windows</h2>
+      <h2 id="idp1189649536" style="padding-top: 6px">3.7. Options for changing state of Playlist/Music Store windows</h2>
 
         <dl>
 
@@ -751,7 +745,7 @@
 
       
 
-      <h2 id="idp225072" style="padding-top: 6px">3.8. Examples</h2>
+      <h2 id="idp346531456" style="padding-top: 6px">3.8. Examples</h2>
 
         <dl>
 
@@ -776,7 +770,7 @@
       
 
 
-      <h2 id="idp229760" style="padding-top: 6px">3.9. Environment</h2>
+      <h2 id="idp62790400" style="padding-top: 6px">3.9. Environment</h2>
 
         <p>Aqualung obeys two environment variables
         concerning LADSPA plugins.</p>
@@ -805,7 +799,7 @@
 
       
 
-      <h2 id="idp235584" style="padding-top: 6px">3.10. Files</h2>
+      <h2 id="idm2155827712" style="padding-top: 6px">3.10. Files</h2>
 
         <p>Here is a list of files that Aqualung creates, reads and
         relies on.</p>
@@ -813,33 +807,44 @@
         <dl>
 
           <dt><b>
-            <tt>~/.aqualung</tt>
+            <tt>$XDG_CONFIG_HOME/aqualung/</tt>
           </b></dt>
 
-          <dd>Directory containing user settings.</dd>
+          <dd>Directory containing user settings. $XDG_CONFIG_HOME is
+          the user-specific directory for application configuration
+          information according to the XDG Base Directory Specification.
+	  It is most likely equivalent to ~/.config, so the following
+	  config files (except the last one, which resides in a
+	  system-wide location) are usually found under
+	  $HOME/.config/aqualung/</dd>
+
+	  <dd>Note: earlier versions of Aqualung kept these per-user
+	  configuration files in ~/.aqualung. This legacy setup is
+	  recognized and silently migrated to the XDG-conformant
+	  layout.</dd>
 
           <dt><b>
-            <tt>~/.aqualung/config.xml</tt>
+            <tt>config.xml</tt>
           </b></dt>
 
           <dd>GUI (skin, window size/position, etc.) and other
           settings.</dd>
 
           <dt><b>
-            <tt>~/.aqualung/plugin.xml</tt>
+            <tt>plugin.xml</tt>
           </b></dt>
 
           <dd>List of running plugins and all their settings.</dd>
 
           <dt><b>
-            <tt>~/.aqualung/playlist.xml</tt>
+            <tt>playlist.xml</tt>
           </b></dt>
 
           <dd>Automatically saved and restored playlist (if you enable
           this feature).</dd>
 
           <dt><b>
-            <tt>~/.aqualung/&lt;skin-name&gt;</tt>
+            <tt>&lt;skin-name&gt;</tt>
           </b></dt>
 
           <dd>Locally available skin &lt;skin-name&gt; (useful for
@@ -857,9 +862,9 @@
 
     
 
-    <h1 id="idp245456" style="padding-top: 6px">4. Graphical Interface</h1>
+    <h1 id="idm1850197888" style="padding-top: 6px">4. Graphical Interface</h1>
 
-      <p><img class="screenshot" src="main.png" alt="[screenshot]" /></p><h2 id="idp245984" style="padding-top: 6px">4.1. Main Window</h2>
+      <p><img class="screenshot" src="main.png" alt="[screenshot]" /></p><h2 id="idp245803648" style="padding-top: 6px">4.1. Main Window</h2>
 
         <p>You can control most of the program from this window. The
         cue controls in the bottom-left corner are fairly obvious. You
@@ -950,7 +955,7 @@
         additional gain. The moral is: if you want it loud, turn up
         your external amp. You can also consider using RVA if the
         volume level of your tracks tends to vary in a wide range
-        &ndash; see <a href="#idp424656">this section</a> for
+        &ndash; see <a href="#idm568166528">this section</a> for
         details.</p>
 
         <p>On a related note, another thing to watch out for is LADSPA
@@ -972,7 +977,7 @@
         dialog (present only when running the program with JACK
         output), and the <span class="gui">About</span> box. The latter may be
         useful to see which features have been compiled into the
-        program. (If you haven't read the <a class="external" href="http://aqualung.factorial.hu/compiling.html">page about
+        program. (If you haven't read the <a class="external" href="http://aqualung.jeremyevans.net/compiling/">page about
         compiling</a> yet: the configuration of the program can be
         adapted so as not to require certain libraries when compiling,
         and not provide certain features accordingly.)</p>
@@ -980,7 +985,7 @@
       
 
 
-      <p><img class="screenshot" src="playlist.png" alt="[screenshot]" /></p><h2 id="idp267952" style="padding-top: 6px">4.2. Playlist</h2>
+      <p><img class="screenshot" src="playlist.png" alt="[screenshot]" /></p><h2 id="idp663450112" style="padding-top: 6px">4.2. Playlist</h2>
 
         <p>The Playlist normally receives its contents from the Music
         Store. However, you can put any file in the Playlist
@@ -1079,9 +1084,9 @@
       
 
 
-      <p><img class="screenshot" src="store.png" alt="[screenshot]" /></p><h2 id="idm41328" style="padding-top: 6px">4.3. Music Store</h2>
+      <p><img class="screenshot" src="store.png" alt="[screenshot]" /></p><h2 id="idm719271040" style="padding-top: 6px">4.3. Music Store</h2>
 
-        <h3 id="idm40256">4.3.1. Overview</h3>
+        <h3 id="idm719270272">4.3.1. Overview</h3>
 
           <p>The Music Store is a simple database of all your
           music. The central philosophy of this program is that you
@@ -1112,22 +1117,22 @@
           <p>Into the directories of records, you should rip the CD
           using the built-in ripper of Aqualung, tagging the files and
           adding the record to the Music Store as part of the
-          process. See <a href="#idp368304">this section</a> for
+          process. See <a href="#idm1907324928">this section</a> for
           details.</p>
 
         
 
-        <h3 id="idm34368">4.3.2. Building or Updating a store from filesystem</h3>
+        <h3 id="idm719269504">4.3.2. Building or Updating a store from filesystem</h3>
 
           <p>Aqualung comes with a Music Store Builder facility, which
           allows you to easily create a store from your existing audio
           files. This is essential if you already have a large music
-          collection on your harddrive. Please make sure to read <a href="#idp442560">this section</a> to understand the
+          collection on your harddrive. Please make sure to read <a href="#idm2372418944">this section</a> to understand the
           concepts and usage of this feature.</p>
 
         
 
-        <h3 id="idp337936">4.3.3. Arranging your collection</h3>
+        <h3 id="idm698795776">4.3.3. Arranging your collection</h3>
 
           <p>Each store, artist, record and track has fields you can
           fill in via bringing up the <span class="gui">Edit</span> dialog for that
@@ -1178,7 +1183,7 @@
 
         
 
-        <h3 id="idp350640">4.3.4. Dealing with multiple stores</h3>
+        <h3 id="idm2186248192">4.3.4. Dealing with multiple stores</h3>
 
           <p>As mentioned before, you may maintain several collections
           of audio files on several machines. Each collection is
@@ -1202,7 +1207,7 @@
 
         
 
-        <h3 id="idp354160">4.3.5. Handling file metadata</h3>
+        <h3 id="idm2186246272">4.3.5. Handling file metadata</h3>
 
           <p>The program can read and write all sorts of metadata
           (normally referred to as `tags' in everyday speech)
@@ -1223,16 +1228,15 @@
           solution.</p>
 
           <p>Please make sure to check out the comprehensive guide to
-          Aqualung's <a href="#idp474144">metadata
+          Aqualung's <a href="#idm515815296">metadata
           capabilities</a>.</p>
 
         
 
-        <h3 id="idp360768">4.3.6. CDDB Support</h3>
+        <h3 id="idp477918336">4.3.6. CDDB Support</h3>
 
           <p>Aqualung supports retrieving matches from a CDDB
-          database, as well as submitting new records or updating
-          existing ones. The features are available by right-clicking
+          database.  The feature is available by right-clicking
           on a record in the Music Store and choosing the appropriate
           menu item.</p>
 
@@ -1262,18 +1266,9 @@
           to Comments</span> button next to the appropriate text
           entry.</p>
 
-          <p>The CDDB submission option brings up a dialog which
-          contains the artist, title, year, category, genre and
-          extended data fields, and the track list. All fields
-          (including track names) are editable. The artist, title,
-          year and category fields are mandatory, the genre and
-          extended data are optional. Track names should be all set as
-          well. You are also recommended to comply with the <a class="external" href="http://www.freedb.org/en/faq.3.html#22">naming
-          rules</a> when submitting new records.</p>
-
         
 
-        <h3 id="idp368304">4.3.7. Audio CD</h3>
+        <h3 id="idm1907324928">4.3.7. Audio CD</h3>
 
           <p>If Aqualung was compiled with Audio CD support, a store
           called `CD Audio' appears as the first store in Music
@@ -1290,8 +1285,8 @@
           information if found on the CD, or a CDDB lookup.</p>
 
           <p>The drive nodes have options available from the popup
-          menu for adding content to the Playlist, manual CDDB lookup
-          and submission just like normal album nodes do. They have
+          menu for adding content to the Playlist, and manual CDDB
+          lookup just like normal album nodes do. They have
           some further CD specific options as well.</p>
 
           <p>The most important feature is ripping the CD. Choosing
@@ -1335,7 +1330,7 @@
 
         
 
-        <h3 id="idp377904">4.3.8. Podcast support</h3>
+        <h3 id="idp544469632">4.3.8. Podcast support</h3>
 
           <p>If Aqualung is compiled with podcast support, you will have a
           store called `Podcasts' in your Music Store. All feeds you
@@ -1406,7 +1401,7 @@
 
       
 
-      <p><img class="screenshot" src="jack.png" alt="[screenshot]" /></p><h2 id="idp391280" style="padding-top: 6px">4.4. JACK Port Setup</h2>
+      <p><img class="screenshot" src="jack.png" alt="[screenshot]" /></p><h2 id="idp1247119744" style="padding-top: 6px">4.4. JACK Port Setup</h2>
 
         <p>If you use JACK output, you need this dialog to route the
         outputs of the program somewhere (most likely to the playback
@@ -1441,7 +1436,7 @@
 
       
 
-      <h2 id="idp397136" style="padding-top: 6px">4.5. Skin Chooser</h2>
+      <h2 id="idm2784069248" style="padding-top: 6px">4.5. Skin Chooser</h2>
 
         <p>This dialog lets you choose from the available skins at any
         time. All officially supported skins are shipped with
@@ -1455,7 +1450,7 @@
 
       
 
-      <p><img class="screenshot" src="systray.png" alt="[screenshot]" /></p><h2 id="idp399152" style="padding-top: 6px">4.6. System Tray Support</h2>
+      <p><img class="screenshot" src="systray.png" alt="[screenshot]" /></p><h2 id="idm763110656" style="padding-top: 6px">4.6. System Tray Support</h2>
 
         <p>When compiled with Systray support, Aqualung will place its
         icon in the system tray (notification area), and lets all of
@@ -1478,9 +1473,9 @@
 
     
 
-    <h1 id="idp402208" style="padding-top: 6px">5. Supplemental features</h1>
+    <h1 id="idm2784071936" style="padding-top: 6px">5. Supplemental features</h1>
 
-      <h2 id="idp402736" style="padding-top: 6px">5.1. Exporting files from the Music Store or Playlist</h2>
+      <h2 id="idp1247119104" style="padding-top: 6px">5.1. Exporting files from the Music Store or Playlist</h2>
 
         <p>It is possible to export files from the Music Store or
         Playlist to external formats. This is especially handy if you
@@ -1498,7 +1493,7 @@
         artists and/or records, with adjustable limit for the length
         of the created directory names. The actual filename is
         generated using the filename template. This template is very
-        similar to the well-known <span class="gui">Title format</span> in <a href="#idp587248">Settings / General</a>, only it
+        similar to the well-known <span class="gui">Title format</span> in <a href="#idm738994432">Settings / General</a>, only it
         accepts a few more special sequences: `%o' for the
         original audio filename (without extension), `%n' for the
         track number (two digit, zero padded), `%i' for an
@@ -1508,15 +1503,15 @@
         `ogg', `mp3' or `wav'.</p>
 
         <p>The file format setting is exactly the same as with CD
-        ripping, refer to <a href="#idp368304">this section</a> for
+        ripping, refer to <a href="#idm1907324928">this section</a> for
         details.</p>
 
         <p>The metadata of the exported files is transcoded to the new
-        format as well as the audio data; read more about this <a href="#idp516240">here</a>.</p>
+        format as well as the audio data; read more about this <a href="#idm1081603328">here</a>.</p>
 
       
 
-      <h2 id="idp413968" style="padding-top: 6px">5.2. LADSPA plugins</h2>
+      <h2 id="idm337761408" style="padding-top: 6px">5.2. LADSPA plugins</h2>
 
         <p>One great feature of the program is that you can apply
         LADSPA plugins to the music. You can use the equalizer of your
@@ -1582,7 +1577,7 @@
 
       
 
-      <h2 id="idp424656" style="padding-top: 6px">5.3. The RVA system</h2>
+      <h2 id="idm568166528" style="padding-top: 6px">5.3. The RVA system</h2>
 
         <p>RVA stands for Relative Volume Adjustment, and refers to a
         system that is supposed to compensate for the fact that the
@@ -1595,7 +1590,7 @@
         also supports using already existing ReplayGain or RVA
         information present in your audio files' metadata. If you are
         interested in this, read on, but make sure to also check out
-        <a href="#idp505936">this section</a>.</p>
+        <a href="#idp879561984">this section</a>.</p>
 
         <p>You have to do two things prior to using RVA in
         Aqualung. First, you have to calculate the volume of the
@@ -1696,7 +1691,7 @@
 
       
 
-      <h2 id="idp442560" style="padding-top: 6px">5.4. Music Store Builder</h2>
+      <h2 id="idm2372418944" style="padding-top: 6px">5.4. Music Store Builder</h2>
 
         <p>Aqualung's Music Store Builder allows you to easily create
         a store from your existing audio files. This is essential if
@@ -1803,7 +1798,7 @@
         operations and transformations are performed in the same order
         as they are placed on the page, from top to bottom.</p>
 
-        <h3 id="idp460128">5.4.1. Data sources</h3>
+        <h3 id="idm380038272">5.4.1. Data sources</h3>
 
           <p>With each mode you can set the priority of data sources
           for artist names, record titles and tracks independently
@@ -1837,7 +1832,7 @@
 
         
 
-        <h3 id="idp464864">5.4.2. Regular expressions</h3>
+        <h3 id="idm1163530624">5.4.2. Regular expressions</h3>
 
           <p>The main goal of the regexp module is to perform
           <code>sed</code>-like substitutions, allowing you to extract
@@ -1858,7 +1853,7 @@
 
         
 
-        <h3 id="idp469344">5.4.3. Predefined transformations</h3>
+        <h3 id="idm732843392">5.4.3. Predefined transformations</h3>
 
           <p>These provide some basic fixes, such as removing the
           extension or leading numbers, converting underscores to
@@ -1869,7 +1864,7 @@
 
         
 
-        <h3 id="idp470752">5.4.4. Capitalization</h3>
+        <h3 id="idm732843264">5.4.4. Capitalization</h3>
 
           <p>Finally, with this module you can force a capitalization
           pattern on the string. The force case entry is a
@@ -1895,7 +1890,7 @@
 
     
 
-    <h1 id="idp474144" style="padding-top: 6px">6. Metadata support</h1>
+    <h1 id="idm515815296" style="padding-top: 6px">6. Metadata support</h1>
 
       <p>Aqualung has extensive support for viewing and editing
       most metadata formats in use today. This section acts as a
@@ -1909,12 +1904,12 @@
       the case, and is a result of major refactoring carried out after
       having poor experience with metadata libraries. This means
       metadata support is inherently present in Aqualung for all
-      soundfile formats that are <a class="external" href="http://aqualung.factorial.hu/compiling.html">compiled
+      soundfile formats that are <a class="external" href="http://aqualung.jeremyevans.net/compiling/">compiled
       in</a>.</p>
 
-      <h2 id="idp477264" style="padding-top: 6px">6.1. Manual editing</h2>
+      <h2 id="idm74958976" style="padding-top: 6px">6.1. Manual editing</h2>
 
-        <p>The <span class="gui">File info</span> dialog (<a href="#idp354160">accessible</a> from the
+        <p>The <span class="gui">File info</span> dialog (<a href="#idm2186246272">accessible</a> from the
         Music Store and the Playlist) acts as a graphical shell for
         the metadata editing capabilities. Its usage is fairly
         self-explanatory. For read-only tags, the dialog has no
@@ -1955,7 +1950,7 @@
 
       
 
-      <h2 id="idp483424" style="padding-top: 6px">6.2. Mass tagging</h2>
+      <h2 id="idm74959104" style="padding-top: 6px">6.2. Mass tagging</h2>
 
         <p>Aqualung supports mass tagging, that is, writing data from
         the Music Store into file metadata. The feature can be invoked
@@ -1970,9 +1965,9 @@
 
       
 
-      <h2 id="idp485552" style="padding-top: 6px">6.3. Metadata-related behavior</h2>
+      <h2 id="idm74959488" style="padding-top: 6px">6.3. Metadata-related behavior</h2>
 
-        <h3 id="idp486096">6.3.1. Configuration</h3>
+        <h3 id="idp761068416">6.3.1. Configuration</h3>
 
           <p>Configuring metdata-related behavior can be done in
           <span class="gui">Settings / Metadata</span>. The file metadata will
@@ -2011,7 +2006,7 @@
 
         
 
-        <h3 id="idp492688">6.3.2. Precedence of metadata information</h3>
+        <h3 id="idm74958208">6.3.2. Precedence of metadata information</h3>
 
           <p>Whenever there is a generic request for some information
           concerning a file (e.g. `Who is the artist?') we do not
@@ -2061,10 +2056,10 @@
 
         
 
-        <h3 id="idp505936">6.3.3. ReplayGain and RVA</h3>
+        <h3 id="idp879561984">6.3.3. ReplayGain and RVA</h3>
 
           <p>Aqualung is a ReplayGain-aware music player. You have to
-          understand and use the <a href="#idp424656">RVA system</a> in
+          understand and use the <a href="#idm568166528">RVA system</a> in
           order to make use of this. The RVA system relies on
           pre-stored loudness measurements of files, which Aqualung
           normally does by itself (by selecting the <span class="gui">Calculate
@@ -2100,7 +2095,7 @@
           the track. On the other hand, Aqualung's loudness levels
           merely serve as an indicator of the track's loudness, and
           are converted to actual volume adjustment values when adding
-          the track to the Playlist, via <a href="#idp424656">Aqualung's
+          the track to the Playlist, via <a href="#idm568166528">Aqualung's
           RVA algorithm</a>, which is a quite sophisticated tool
           based on listening environments, also supporting
           statistics-based handling of Album-based volume
@@ -2108,9 +2103,9 @@
 
         
 
-        <h3 id="idp516240">6.3.4. Metadata transfer when exporting</h3>
+        <h3 id="idm1081603328">6.3.4. Metadata transfer when exporting</h3>
 
-          <p>When <a href="#idp402736">exporting files</a>,
+          <p>When <a href="#idp1247119104">exporting files</a>,
           Aqualung attempts to retain the metadata of the original
           file as much as possible by transcoding metadata into the
           tags supported by the output format. For each frame present
@@ -2121,7 +2116,7 @@
           (e.g. `Title'), only one source tag is chosen to be
           copied from even if it is present in more than one tag in
           the input metadata. In this case the tag with the highest
-          <a href="#idp492688">precedence</a> is used as
+          <a href="#idm74958208">precedence</a> is used as
           input. Of course, if more instances of the same frame are
           present in the same tag (e.g. multiple APIC frames in an
           ID3v2 tag), they are all transferred if the output metadata
@@ -2143,9 +2138,9 @@
 
       
 
-      <h2 id="idp522800" style="padding-top: 6px">6.4. Overview of supported metadata formats</h2>
+      <h2 id="idp774393984" style="padding-top: 6px">6.4. Overview of supported metadata formats</h2>
 
-        <h3 id="idp523344">6.4.1. Metadata support matrix</h3>
+        <h3 id="idm515904384">6.4.1. Metadata support matrix</h3>
 
           <p>This table shows what tag types are supported for which
           audio formats. Formats for which no metadata support is
@@ -2286,7 +2281,7 @@
 
         
 
-        <h3 id="idp559152">6.4.2. ID3v1</h3>
+        <h3 id="idp915131776">6.4.2. ID3v1</h3>
 
           <p>ID3v1 and ID3v1.1 (<a class="external" href="http://www.id3.org/ID3v1">http://www.id3.org/ID3v1</a>)
           are fully supported. The difference between the two is the
@@ -2302,7 +2297,7 @@
 
         
 
-        <h3 id="idp561904">6.4.3. ID3v2</h3>
+        <h3 id="idp963021568">6.4.3. ID3v2</h3>
 
           <p>ID3v2 tags are supported with the restriction that the
           tag MUST be at the beginning of the file. Tag versions
@@ -2343,7 +2338,7 @@
 
         
 
-        <h3 id="idp568768">6.4.4. APE</h3>
+        <h3 id="idp1060663424">6.4.4. APE</h3>
 
           <p>APEv1 and <a class="external" href="http://wiki.hydrogenaudio.org/index.php?title=APEv2_specification">APEv2</a>
           tags are supported with the restriction that the tag MUST be
@@ -2357,7 +2352,7 @@
 
         
 
-        <h3 id="idp572192">6.4.5. Ogg Xiph comments</h3>
+        <h3 id="idp1060664704">6.4.5. Ogg Xiph comments</h3>
 
           <p>Ogg Xiph comments (also known as Ogg Vorbis comments) are
           supported according to the recommended field names in the <a class="external" href="http://xiph.org/vorbis/doc/v-comment.html">Vorbis
@@ -2367,7 +2362,7 @@
 
         
 
-        <h3 id="idp574240">6.4.6. FLAC pictures</h3>
+        <h3 id="idp963017984">6.4.6. FLAC pictures</h3>
 
           <p>In FLAC files there may be an Ogg Xiph comment block
           along with separate picture blocks that contain one embedded
@@ -2378,7 +2373,7 @@
 
         
 
-        <h3 id="idp576032">6.4.7. Musepack ReplayGain data</h3>
+        <h3 id="idm1617453184">6.4.7. Musepack ReplayGain data</h3>
 
           <p>In <a class="external" href="http://trac.musepack.net/trac/wiki/SV7Specification">Musepack
           SV7</a> streams there may be ReplayGain data in the file
@@ -2393,7 +2388,7 @@
 
         
 
-        <h3 id="idp578768">6.4.8. Generic StreamMetadata</h3>
+        <h3 id="idp842172672">6.4.8. Generic StreamMetadata</h3>
 
           <p>This is a read-only pseudo-tag carrying information that
           was obtained when speaking to the Icecast or SHOUTcast
@@ -2405,7 +2400,7 @@
 
         
 
-        <h3 id="idp581472">6.4.9. MPEG StreamMetadata</h3>
+        <h3 id="idp842170496">6.4.9. MPEG StreamMetadata</h3>
 
           <p>This is a read-only pseudo-tag carrying information that
           was received while listening to an MPEG stream on internet
@@ -2418,7 +2413,7 @@
 
         
 
-        <h3 id="idp584160">6.4.10. MOD information</h3>
+        <h3 id="idm2339170048">6.4.10. MOD information</h3>
 
           <p>For files handled by the MOD library, some read-only
           information about the file (number of channels, instruments,
@@ -2430,7 +2425,7 @@
 
     
 
-    <p><img class="screenshot" src="settings.png" alt="[screenshot]" /></p><h1 id="idp585632" style="padding-top: 6px">7. Settings</h1>
+    <p><img class="screenshot" src="settings.png" alt="[screenshot]" /></p><h1 id="idm1617452544" style="padding-top: 6px">7. Settings</h1>
 
       <p>This dialog is the control center of the program, and is a
       central place to set user-accessible options affecting the
@@ -2440,12 +2435,12 @@
       subsections describe the individual notebook pages of the
       dialog.</p>
 
-      <h2 id="idp587248" style="padding-top: 6px">7.1. General</h2>
+      <h2 id="idm738994432" style="padding-top: 6px">7.1. General</h2>
 
         <p>The <span class="gui">General</span> tab itself is further divided into
         tabs, which are explained below.</p>
 
-        <h3 id="idp589072">7.1.1. Main Window</h3>
+        <h3 id="idm738996736">7.1.1. Main Window</h3>
 
           <p>The options controlling the behavior of the Main Window
           speak for themselves. One advantage of combining the Play
@@ -2458,7 +2453,7 @@
 
         
 
-        <h3 id="idp591168">7.1.2. Title Format</h3>
+        <h3 id="idm1617451136">7.1.2. Title Format</h3>
 
           <p>The <span class="gui">Title format</span> string will be used to
           construct a single title line from an Artist, a Record and a
@@ -2526,7 +2521,7 @@
 
         
 
-        <h3 id="idp613728">7.1.3. Lua extension file</h3>
+        <h3 id="idp311836288">7.1.3. Lua extension file</h3>
 
           <p>This section is only available if Aqualung is compiled
           with Lua extension support.  If so, it specifies the 
@@ -2536,7 +2531,7 @@
 
         
 
-        <h3 id="idp615344">7.1.4. Systray</h3>
+        <h3 id="idp733934848">7.1.4. Systray</h3>
 
           <p>This page is present only if Aqualung was compiled with
           systray support. Even if it is supported, it can be turned
@@ -2566,7 +2561,7 @@
 
         
 
-        <h3 id="idp618864">7.1.5. Miscellaneous</h3>
+        <h3 id="idm1877623424">7.1.5. Miscellaneous</h3>
 
           <p>The so-called <span class="gui">Implicit command line</span> is something
           you should pay attention to. It exists mainly for those who
@@ -2584,8 +2579,9 @@
           and there is no way to override that from the command line. If
           you get into trouble, all you have to (or can) do is grab a
           text editor and hack it out of
-          <tt>~/.aqualung/config.xml</tt> where it is stored. You
-          will find it between `&lt;default_param&gt;' and
+          <tt>$XDG_CONFIG_HOME/aqualung/config.xml</tt> where it is
+	  stored (note that $XDG_CONFIG_HOME is most likely ~/.config).
+          You will find it between `&lt;default_param&gt;' and
           `&lt;/default_param&gt;'.</p>
 
           <p>There are also some options to handle the display of album
@@ -2621,7 +2617,7 @@
 
       
 
-      <h2 id="idp632464" style="padding-top: 6px">7.2. Playlist</h2>
+      <h2 id="idm1929999616" style="padding-top: 6px">7.2. Playlist</h2>
 
         <p>The Playlist is embedded in the Main window by default to
         achieve a more compact look. Turn it off to put the Playlist
@@ -2653,10 +2649,10 @@
 
       
 
-      <h2 id="idp637904" style="padding-top: 6px">7.3. Music Store</h2>
+      <h2 id="idm405713408" style="padding-top: 6px">7.3. Music Store</h2>
 
         <p>The purpose and usage of Music Store and database files
-        have been <a href="#idm41328">covered</a>. On this page you
+        have been <a href="#idm719271040">covered</a>. On this page you
         can somewhat customize the Music Store, decide whether to hide
         the comment pane or the status bar, or to enable rules
         hint. If you choose to expand stores on startup, all toplevel
@@ -2670,7 +2666,7 @@
 
       
 
-      <h2 id="idp641280" style="padding-top: 6px">7.4. DSP</h2>
+      <h2 id="idm1930000768" style="padding-top: 6px">7.4. DSP</h2>
 
         <p>Changing the two options on the <span class="gui">DSP</span> page takes
         effect immediately, and stays that way regardless of whether
@@ -2703,22 +2699,22 @@
 
       
 
-      <h2 id="idp647504" style="padding-top: 6px">7.5. Playback RVA</h2>
+      <h2 id="idm1867510272" style="padding-top: 6px">7.5. Playback RVA</h2>
 
         <p>This page is for setting the RVA options. RVA itself has
-        already been discussed <a href="#idp424656">above</a>.</p>
+        already been discussed <a href="#idm568166528">above</a>.</p>
 
       
 
-      <h2 id="idp649424" style="padding-top: 6px">7.6. Metadata</h2>
+      <h2 id="idp369975680" style="padding-top: 6px">7.6. Metadata</h2>
 
         <p>On this page you can configure how the Aqualung metadata
-        subsystem works. See <a href="#idp486096">this
+        subsystem works. See <a href="#idp761068416">this
         section</a> for a detailed description.</p>
 
       
 
-      <h2 id="idp651536" style="padding-top: 6px">7.7. CD Audio</h2>
+      <h2 id="idp694864896" style="padding-top: 6px">7.7. CD Audio</h2>
 
         <p>You can set the drive speed for CD playing in CD-ROM speed
         units. Lower speed usually means less drive noise. However,
@@ -2748,33 +2744,20 @@
 
       
 
-      <h2 id="idp655072" style="padding-top: 6px">7.8. CDDB</h2>
+      <h2 id="idp694868608" style="padding-top: 6px">7.8. CDDB</h2>
 
         <p>You can set some parameters of the CDDB lookups here. As
-        for the query protocol, standard CDDBP (port 888) and CDDB
-        over HTTP (port 80) are supported. The standard CDDBP port is
-        the recommended choice unless some unavoidable firewall
-        settings prevent you from using it. For submission HTTP is
-        always used.</p>
+        for the query protocol, CDDBP (on port 8880) and CDDB
+        over HTTP (port 80) are supported. The CDDBP protocol is
+        the recommended choice if using the default CDDB server.</p>
 
-        <p>The default CDDB database server address is freedb.org, but
+        <p>The default CDDB database server address is gnudb.org, but
         you may specify another server (maybe a close mirror). The
         connection timeout can also be set here.</p>
 
-        <p>If you want to submit records to the CDDB server, you will
-        have to give a valid email address. Should your submission be
-        rejected for some reason, you will receive a note about the
-        failure to this address.</p>
-
-        <p>Retrieved matches are cached in the
-        <tt>~/.cddbslave</tt> directory by default. If you prefer
-        an other location instead, specify a local CDDB directory. If
-        you do not intend to download from a CDDB server at all, you
-        can set to use the local database only.</p>
-
       
 
-      <h2 id="idp658784" style="padding-top: 6px">7.9. Internet</h2>
+      <h2 id="idp369976576" style="padding-top: 6px">7.9. Internet</h2>
 
         <p>Instead of connecting directly to the Internet you can use
         an HTTP proxy. In this case you have to specify the proxy
@@ -2789,7 +2772,7 @@
 
       
 
-      <h2 id="idp660736" style="padding-top: 6px">7.10. Appearance</h2>
+      <h2 id="idp745212800" style="padding-top: 6px">7.10. Appearance</h2>
 
         <p>On this page you can decide whether to override some fonts
         and colors provided by the skins. You can change the font of
@@ -2806,9 +2789,9 @@
 
     
 
-    <h1 id="idp663280" style="padding-top: 6px">8. Keyboard shortcuts</h1>
+    <h1 id="idp369977344" style="padding-top: 6px">8. Keyboard shortcuts</h1>
 
-      <h2 id="idp663808" style="padding-top: 6px">8.1. Main window</h2>
+      <h2 id="idp694865024" style="padding-top: 6px">8.1. Main window</h2>
 
         <table rules="all" border="1" cellpadding="5" cellspacing="0"><tr><th>key</th><th>action</th></tr><tr><td colspan="2" style="height: 5px; border-left: hidden; border-right: hidden"></td></tr>
           <tr>
@@ -2925,7 +2908,7 @@
 
       
 
-      <h2 id="idp698064" style="padding-top: 6px">8.2. Playlist</h2>
+      <h2 id="idm834792448" style="padding-top: 6px">8.2. Playlist</h2>
 
         <table rules="all" border="1" cellpadding="5" cellspacing="0"><tr><th>key</th><th>action</th></tr><tr><td colspan="2" style="height: 5px; border-left: hidden; border-right: hidden"></td></tr>
           <tr>
@@ -3047,7 +3030,7 @@
 
       
 
-      <h2 id="idp1717584" style="padding-top: 6px">8.3. Music Store</h2>
+      <h2 id="idp492289664" style="padding-top: 6px">8.3. Music Store</h2>
 
         <table rules="all" border="1" cellpadding="5" cellspacing="0"><tr><th>key</th><th>action</th></tr><tr><td colspan="2" style="height: 5px; border-left: hidden; border-right: hidden"></td></tr>
           <tr>
@@ -3135,9 +3118,9 @@
 
     
 
-    <h1 id="idp1741392" style="padding-top: 6px">9. Extending Aqualung</h1>
+    <h1 id="idm844537856" style="padding-top: 6px">9. Extending Aqualung</h1>
 
-      <h2 id="idp1741920" style="padding-top: 6px">9.1. Introduction</h2>
+      <h2 id="idm2935168128" style="padding-top: 6px">9.1. Introduction</h2>
 
         <p>Aqualung is written in the C programming language, but if
         compiled with Lua support, embeds a Lua interpreter that can
@@ -3170,7 +3153,7 @@
 
       
 
-      <h2 id="idp1749856" style="padding-top: 6px">9.2. Programmable Title Format</h2>
+      <h2 id="idp691560704" style="padding-top: 6px">9.2. Programmable Title Format</h2>
         <p>By specifying a function named `<code>playlist_title</code>'
         in your Lua extension file, which should accept no arguments and
         should return a string, you can override the default title formatting
@@ -3416,7 +3399,7 @@ end</pre>
 
       
 
-      <h2 id="idp1784960" style="padding-top: 6px">9.3. Hooking into Aqualung Events</h2>
+      <h2 id="idp875951104" style="padding-top: 6px">9.3. Hooking into Aqualung Events</h2>
 
         <p>Aqualung allows you to add hooks to certain events to
         have extension code executed when those events occur.
@@ -3468,7 +3451,7 @@ end)</pre>
 
       
 
-      <h2 id="idp1793168" style="padding-top: 6px">9.4. Custom Playlist Menu Commands</h2>
+      <h2 id="idp875949056" style="padding-top: 6px">9.4. Custom Playlist Menu Commands</h2>
 
         <p>You can add custom playlist menu commands to Aqualung by
         calling the `<code>add_playlist_menu_command</code>'
@@ -3523,7 +3506,7 @@ end)</pre>
 
       
 
-      <h2 id="idp1801184" style="padding-top: 6px">9.5. Custom Remote Commands</h2>
+      <h2 id="idp875949568" style="padding-top: 6px">9.5. Custom Remote Commands</h2>
 
         <p>You can add custom remote commands to Aqualung by
         calling the `<code>add_remote_command</code>'
@@ -3548,7 +3531,7 @@ end)</pre>
 
       
 
-      <h2 id="idp1806048" style="padding-top: 6px">9.6. Custom Keybindings</h2>
+      <h2 id="idm446142080" style="padding-top: 6px">9.6. Custom Keybindings</h2>
 
         <p>You can add custom keybindings for Aqualungs main window by
         calling the `<code>add_main_keybinding</code>'
@@ -3609,7 +3592,7 @@ add_main_keybinding("super-control-alt-B", function () print("super-control-alt-
 
       
 
-      <h2 id="idp1814656" style="padding-top: 6px">9.7. Lua Extension API methods</h2>
+      <h2 id="idm446142336" style="padding-top: 6px">9.7. Lua Extension API methods</h2>
 
         <p>These are global methods that you can call inside
         the methods described above in order to get information

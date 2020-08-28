@@ -1,3 +1,40 @@
+2020-08-29	Jeremy Evans <code at jeremyevans dot net>
+
+    * Aqualung 1.1
+        http://aqualung.jeremyevans.net
+
+	* Use the default skin by default, instead of the plain skin
+
+	* Work correctly when ~/.config does not exist
+
+	* Update CDDB query feature to use gnudb.org and port 8880
+
+	* Remove CDDB local lookup featuer as it was broken
+
+	* Remove CDDB submission feature as it was broken
+
+	* Consider m4a as a LAVC file extension
+
+	* Reinitialize sndio backend if there is a low-level audio error
+
+	* Support libavcodec API 55 and later	
+
+	* Translation additions/updates: Czech, French
+
+2015-07-26	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
+
+    * Aqualung 1.0
+        http://aqualung.jeremyevans.net
+
+	The project homepage has moved to http://aqualung.jeremyevans.net
+	Please upgrade your pointers and bookmarks.
+
+	* Work with and prefer Lua 5.2, but remaining compatible with Lua 5.1
+
+	* Work with libmac-dev 4.11
+
+	* Translation additions/updates: Chinese (simplified), German, Czech
+
 2014-06-03	Tom Szilagyi <tszilagyi at users dot sourceforge dot net>
 
     * Aqualung 1.0-rc1

@@ -1,0 +1,1 @@
+#define AQUALUNG_VERSION "1.1"

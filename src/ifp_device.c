@@ -824,7 +824,7 @@ gchar *npath;
 
 
 void
-directory_chooser(char * title, GtkWidget * parent, char * directory) {
+directory_chooser(char * title, GtkWidget * parent, char * directory, size_t directory_len) {
 
         GtkWidget * dialog;
 	const gchar * selected_directory;
@@ -855,7 +855,7 @@ directory_chooser(char * title, GtkWidget * parent, char * directory) {
 			gtk_widget_destroy(dialog);
 		}
 
-                arr_strlcpy(directory, selected_directory);
+                g_strlcpy(directory, selected_directory, directory_len);
 		g_free(utf8);
         }
 
@@ -865,7 +865,7 @@ directory_chooser(char * title, GtkWidget * parent, char * directory) {
 
 void
 local_path_selected_cb(GtkButton * button, gpointer data) {
-	directory_chooser(_("Please select a local path."), aifp_window, dest_dir);
+	directory_chooser(_("Please select a local path."), aifp_window, dest_dir, sizeof dest_dir);
         gtk_entry_set_text(GTK_ENTRY(local_path_entry), dest_dir);
 }
 

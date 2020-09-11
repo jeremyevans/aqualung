@@ -1249,7 +1249,9 @@
           <p>When you subscribe to a feed, you need to enter the URL
           of the feed and a directory where to put the downloaded
           files. Supported feed formats are all versions of RSS and
-          Atom.</p>
+          Atom.  The podcast support only works with http URLs, not https
+          URLs.</p>
+
 
           <p>Aqualung can automatically check for updates and download
           new files. The check interval can be specified in hours,

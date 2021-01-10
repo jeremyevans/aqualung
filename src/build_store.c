@@ -382,12 +382,12 @@ data_src_cell_toggled(GtkCellRendererToggle * cell, gchar * path, gpointer data)
 	data_src_gui_t * gui = (data_src_gui_t *)data;
 
 	if (gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(gui->list), &iter, path)) {
-		gboolean bool;
+		gboolean value;
 		int type;
 
-		gtk_tree_model_get(GTK_TREE_MODEL(gui->list), &iter, 0, &bool, 1, &type, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(gui->list), &iter, 0, &value, 1, &type, -1);
 		gtk_list_store_set(GTK_LIST_STORE(gui->list), &iter,
-				   0, !bool && (type != DATA_SRC_CDDB || gui->model->cddb_mask), -1);
+				   0, !value && (type != DATA_SRC_CDDB || gui->model->cddb_mask), -1);
 	}
 }
 

@@ -1904,12 +1904,19 @@ load_default_cl(int * argc, char *** argv) {
         char config_file[MAXLEN];
 	char default_param[MAXLEN];
 	char cl[MAXLEN];
+	char *config_dir;
 
         if (chdir(options.confdir) != 0) {
                 if (errno == ENOENT) {
                         fprintf(stderr, "Creating directory %s\n", options.confdir);
                         /* Try creating .config before .config/aqualung */
-                        mkdir(dirname(options.confdir), S_IRUSR | S_IWUSR | S_IXUSR);
+			config_dir = strdup(options.confdir);
+			if (!config_dir) {
+				perror("strdup failed");
+				exit(1);
+			}
+                        mkdir(dirname(config_dir), S_IRUSR | S_IWUSR | S_IXUSR);
+			free(config_dir);
                         if (mkdir(options.confdir, S_IRUSR | S_IWUSR | S_IXUSR) < 0) {
 				perror("cannot create config directory: mkdir");
 				exit(1);

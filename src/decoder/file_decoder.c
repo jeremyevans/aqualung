@@ -73,6 +73,9 @@ typedef decoder_t * decoder_init_t(file_decoder_t * fdec);
 /* this controls the order in which decoders are probed for a file */
 static decoder_init_t * decoder_init_v[] = {
 	null_decoder_init,
+#ifdef HAVE_MPEG
+	mpeg_decoder_init,
+#endif /* HAVE_MPEG */
 #ifdef HAVE_CDDA
 	cdda_decoder_init,
 #endif /* HAVE_CDDA */
@@ -94,9 +97,6 @@ static decoder_init_t * decoder_init_v[] = {
 #ifdef HAVE_MAC
 	mac_decoder_init,
 #endif /* HAVE_MAC */
-#ifdef HAVE_MPEG
-	mpeg_decoder_init,
-#endif /* HAVE_MPEG */
 #ifdef HAVE_WAVPACK
 	wavpack_decoder_init,
 #endif /* HAVE_WAVPACK */

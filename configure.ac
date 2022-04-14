@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.60])
 AC_INIT([aqualung],[git],[https://github.com/jeremyevans/aqualung])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE(subdir-objects)
 AC_CONFIG_SRCDIR([src/core.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
@@ -17,9 +17,6 @@ AC_CONFIG_FILES([
     skin/woody/Makefile
     skin/no_skin/Makefile
     src/Makefile
-    src/decoder/Makefile
-    src/encoder/Makefile
-    src/img/Makefile
 ])
 AC_CANONICAL_HOST
 

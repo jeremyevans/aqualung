@@ -1,8 +1,13 @@
-SUBDIRS = decoder encoder img
-
-AM_CPPFLAGS = -DAQUALUNG_DATADIR=\"$(pkgdatadir)\" -DLOCALEDIR=\"$(localedir)\"
+AM_CPPFLAGS = -DAQUALUNG_DATADIR=\"$(pkgdatadir)\" -DLOCALEDIR=\"$(localedir)\" \
+            $(glib_CFLAGS) $(lavc_CFLAGS) $(mad_CFLAGS) $(sndfile_CFLAGS) \
+            $(speex_CFLAGS) $(vorbis_CFLAGS) $(vorbisenc_CFLAGS) $(wavpack_CFLAGS)
+AM_CXXFLAGS = $(glib_CFLAGS)
 AM_LDFLAGS = $(debug_LDFLAGS)
 LDADD = $(LIBINTL) $(debug_LIBS)
+
+imagedir = $(pkgdatadir)
+image_DATA = img/*.png
+EXTRA_DIST = $(image_DATA)
 
 bin_PROGRAMS = aqualung
 
@@ -17,8 +22,7 @@ aqualung_CFLAGS = $(xml_CFLAGS) $(gtk_CFLAGS) $(glib_CFLAGS) \
                   $(cdio_CFLAGS) \
                   $(cddb_CFLAGS) $(lua_CFLAGS)
 
-aqualung_LDADD = decoder/libdecoder.a encoder/libencoder.a \
-                 $(LDADD) $(xml_LIBS) $(gtk_LIBS) $(glib_LIBS) \
+aqualung_LDADD = $(LDADD) $(xml_LIBS) $(gtk_LIBS) $(glib_LIBS) \
                  $(alsa_LIBS) $(jack_LIBS) $(oss_LIBS) $(pulse_LIBS) \
                  $(sndio_LIBS) $(winmm_LIBS) \
                  $(flac_LIBS) $(lame_LIBS) $(lavc_LIBS) $(mac_LIBS) \
@@ -62,10 +66,16 @@ utils.c utils.h \
 utils_gui.c utils_gui.h \
 utils_xml.h utils_xml.c \
 version.h \
-volume.c volume.h
+volume.c volume.h \
+decoder/dec_null.h decoder/dec_null.c decoder/file_decoder.h decoder/file_decoder.c \
+encoder/enc_flac.h encoder/enc_flac.c \
+encoder/enc_lame.h encoder/enc_lame.c \
+encoder/enc_sndfile.h encoder/enc_sndfile.c \
+encoder/enc_vorbis.h encoder/enc_vorbis.c \
+encoder/file_encoder.h encoder/file_encoder.c
 
 if HAVE_CDDA
-aqualung_SOURCES += cdda.h cdda.c store_cdda.h store_cdda.c
+aqualung_SOURCES += cdda.h cdda.c store_cdda.h store_cdda.c decoder/dec_cdda.h decoder/dec_cdda.c
 if HAVE_TRANSCODING
 aqualung_SOURCES += cd_ripper.h cd_ripper.c
 endif
@@ -76,7 +86,7 @@ aqualung_SOURCES += cddb_lookup.h cddb_lookup.c
 endif
 
 if HAVE_FLAC
-aqualung_SOURCES += metadata_flac.h metadata_flac.c
+aqualung_SOURCES += metadata_flac.h metadata_flac.c decoder/dec_flac.h decoder/dec_flac.c
 endif
 
 if HAVE_IFP
@@ -101,4 +111,40 @@ endif
 
 if HAVE_TRANSCODING
 aqualung_SOURCES += export.h export.c
+endif
+
+if HAVE_LAVC
+aqualung_SOURCES += decoder/dec_lavc.h decoder/dec_lavc.c
+endif
+
+if HAVE_MAC
+aqualung_SOURCES += decoder/dec_mac.h decoder/dec_mac.cpp
+endif
+
+if HAVE_MOD
+aqualung_SOURCES += decoder/dec_mod.h decoder/dec_mod.c
+endif
+
+if HAVE_MPC
+aqualung_SOURCES += decoder/dec_mpc.h decoder/dec_mpc.c
+endif
+
+if HAVE_MPEG
+aqualung_SOURCES += decoder/dec_mpeg.h decoder/dec_mpeg.c
+endif
+
+if HAVE_SNDFILE
+aqualung_SOURCES += decoder/dec_sndfile.h decoder/dec_sndfile.c
+endif
+
+if HAVE_SPEEX
+aqualung_SOURCES += decoder/dec_speex.h decoder/dec_speex.c
+endif
+
+if HAVE_VORBIS
+aqualung_SOURCES += decoder/dec_vorbis.h decoder/dec_vorbis.c
+endif
+
+if HAVE_WAVPACK
+aqualung_SOURCES += decoder/dec_wavpack.h decoder/dec_wavpack.c
 endif

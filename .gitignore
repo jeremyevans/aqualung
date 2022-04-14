@@ -3,6 +3,7 @@
 Makefile
 Makefile.in
 stamp-*
+.dirstamp
 /ABOUT-NLS
 /INSTALL
 /aclocal.m4

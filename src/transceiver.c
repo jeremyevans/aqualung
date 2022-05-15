@@ -139,7 +139,7 @@ send_message(const char * filename, char * message, int len) {
         arr_strlcpy(name.sun_path, filename);
 
 	do {
-		nbytes = sendto(sock, message, len+1, 0, (struct sockaddr *)&name, sizeof(name));
+		nbytes = sendto(sock, message, len, 0, (struct sockaddr *)&name, sizeof(name));
 		if (nbytes == -1 && errno == ENOBUFS) {
 			g_usleep(100000);
 		}

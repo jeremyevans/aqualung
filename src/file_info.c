@@ -376,7 +376,6 @@ info_window_close(GtkWidget * widget, GdkEventAny * event, gpointer data) {
 
 	unregister_toplevel_window(fi->info_window);
 	gtk_widget_destroy(fi->info_window);
-	trashlist_free(fi->trash);
 
 	fi_delete(fi);
 	return TRUE;

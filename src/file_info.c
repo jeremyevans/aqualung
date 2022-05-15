@@ -219,6 +219,9 @@ fi_new(void) {
 void
 fi_unload(fi_t * fi) {
 	fi->media_ok = FALSE;
+
+	/* We don't need to destroy these widgets if the window is being
+	   closed; see info_window_close. */
 	if (fi->save_button) {
 		if (GTK_IS_WIDGET(fi->save_button)) gtk_widget_destroy(fi->save_button);
 		fi->save_button = NULL;
@@ -365,6 +368,11 @@ info_window_close(GtkWidget * widget, GdkEventAny * event, gpointer data) {
 	if (fi_can_close(fi) != TRUE) {
 		return TRUE;
 	}
+
+	/* These widgets will be destroyed along with info_window;
+	   stop fi_unload from trying to delete them too. */
+	fi->save_button = NULL;
+	fi->add_tag_table = NULL;
 
 	unregister_toplevel_window(fi->info_window);
 	gtk_widget_destroy(fi->info_window);

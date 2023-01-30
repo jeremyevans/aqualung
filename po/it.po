@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the aqualung package.
 #
 # Michele Petrecca <michelinux@alice.it>, 2007, 2008.
+# Albano Battistella <albano_battistella@hotmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
 "POT-Creation-Date: 2018-12-14 07:26-0800\n"
-"PO-Revision-Date: 2008-04-19 21:55+0200\n"
-"Last-Translator: Michele Petrecca <michelinux@alice.it>\n"
+"PO-Revision-Date: 2023-01-30 19:55+0200\n"
+"Last-Translator: Albano Battistella <albano_battistellaòhotmail.com>\n"
 "Language-Team: Italiano\n"
-"Language: \n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -35,12 +36,11 @@ msgstr "Supporto Conversione Frequenza di Campionamento\n"
 msgid "iRiver iFP driver support\n"
 msgstr "Driver supporto iRiver iFP\n"
 
-#, fuzzy
 msgid "JACK port management support\n"
-msgstr "Impostazioni JACK"
+msgstr "Supporto per la gestione delle porte JACK\n"
 
 msgid "Loop playback support\n"
-msgstr ""
+msgstr "Supporto per la riproduzione in loop\n"
 
 msgid "Systray support\n"
 msgstr "Supporto Systray\n"
@@ -48,9 +48,8 @@ msgstr "Supporto Systray\n"
 msgid "Podcast support\n"
 msgstr "Supporto Podcast\n"
 
-#, fuzzy
 msgid "Lua extension support\n"
-msgstr "Disabilita il supporto alle diverse interfacce"
+msgstr "Supporto estensione Lua\n"
 
 msgid "Decoding support:"
 msgstr "Supporto decoding:"
@@ -97,9 +96,8 @@ msgstr "LAME (MP3)\n"
 msgid "Output driver support:"
 msgstr "Driver di uscita supportato:"
 
-#, fuzzy
 msgid "sndio Audio\n"
-msgstr "Audio OSS\n"
+msgstr "sndio Audio\n"
 
 msgid "OSS Audio\n"
 msgstr "Audio OSS\n"
@@ -111,7 +109,7 @@ msgid "JACK Audio Server\n"
 msgstr "Server audio JACK\n"
 
 msgid "PulseAudio\n"
-msgstr ""
+msgstr "PulseAudio\n"
 
 msgid "Win32 Sound API\n"
 msgstr "API Sound Win32\n"
@@ -138,26 +136,25 @@ msgid "Programming, GUI engineering:\n"
 msgstr "Programming, GUI engineering:\n"
 
 msgid "OpenBSD compatibility, metadata tweaks:\n"
-msgstr ""
+msgstr "Compatibilità con OpenBSD, modifiche ai metadati:\n"
 
-#, fuzzy
 msgid "Miscellaneous, minimalism:\n"
-msgstr "Varie"
+msgstr "Varie, minimalismo:\n"
 
 msgid "Translators:"
 msgstr "Traduttori:"
 
 msgid "Chinese (simplified):\n"
-msgstr ""
+msgstr "Cinese (semplificato):\n"
 
 msgid "Czech:\n"
-msgstr ""
+msgstr "Ceco:\n"
 
 msgid "Dutch:\n"
-msgstr ""
+msgstr "Olandese:\n"
 
 msgid "French:\n"
-msgstr ""
+msgstr "Francese:\n"
 
 msgid "German:\n"
 msgstr "Tedesco:\n"
@@ -169,19 +166,19 @@ msgid "Italian:\n"
 msgstr "Italiano:\n"
 
 msgid "Japanese:\n"
-msgstr ""
+msgstr "Giapponese:\n"
 
 msgid "Polish:\n"
-msgstr ""
+msgstr "Polacco:\n"
 
 msgid "Russian:\n"
 msgstr "Russo:\n"
 
 msgid "Spanish:\n"
-msgstr ""
+msgstr "Spagnolo:\n"
 
 msgid "Swedish:\n"
-msgstr ""
+msgstr "Svedese:\n"
 
 msgid "Ukrainian:\n"
 msgstr "Ucraino:\n"
@@ -255,7 +252,7 @@ msgid "First word only"
 msgstr "Solo la prima parola"
 
 msgid "Force case: "
-msgstr ""
+msgstr "Forza caso: "
 
 msgid "Force other letters to lowercase"
 msgstr "Forze le altre lettere in minuscolo"
@@ -267,7 +264,7 @@ msgid "Regexp:"
 msgstr "Espr. regolare:"
 
 msgid "Replace:"
-msgstr ""
+msgstr "Sostituisci:"
 
 msgid "Predefined transformations"
 msgstr "Trasformazioni predefinite"
@@ -276,13 +273,13 @@ msgid "Remove file extension"
 msgstr "Rimuovi estensione file"
 
 msgid "Remove leading number"
-msgstr ""
+msgstr "Rimuovi numero iniziale"
 
 msgid "Convert underscore to space"
 msgstr "Converti l'underscore (_) in uno spazio"
 
 msgid "Trim leading, tailing and duplicate spaces"
-msgstr ""
+msgstr "Taglia gli spazi iniziali, finali e duplicati"
 
 msgid "Regexp matches empty string"
 msgstr "Espressione regolare coincide con la stringa vuota"
@@ -291,7 +288,7 @@ msgid "Please select the root directory."
 msgstr "Per favore seleziona la cartella principale."
 
 msgid "Select build type"
-msgstr ""
+msgstr "Seleziona il tipo di build"
 
 msgid "Directory driven"
 msgstr ""
@@ -300,6 +297,8 @@ msgid ""
 "Follows the directory structure to identify the artists and\n"
 "records. The files are added on a record basis."
 msgstr ""
+"Segue la struttura della directory per identificare gli artisti e i\n"
+"record. I file vengono aggiunti sulla base dei record."
 
 msgid "Independent"
 msgstr "Indipendente"
@@ -309,6 +308,9 @@ msgid ""
 "The files are processed independently, so only metadata\n"
 "and filename transformation are available."
 msgstr ""
+"Ricerca ricorsiva dalla directory principale per i file audio.\n"
+"I file vengono elaborati in modo indipendente, quindi solo i metadati\n"
+"e la trasformazione del nome file è disponibile."
 
 msgid "Load settings from Music Store file"
 msgstr "Carica le impostazioni dal Music Store File"
@@ -344,7 +346,7 @@ msgid "root / artist / artist / artist / record / track"
 msgstr "root / artista / artista / artista / registrazione / traccia"
 
 msgid "Exclude files matching wildcard"
-msgstr ""
+msgstr "Escludi i file che corrispondono al carattere jolly"
 
 msgid "Include only files matching wildcard"
 msgstr "Include solo i file che combaciano con le parole chiavi"
@@ -395,13 +397,13 @@ msgid "Track"
 msgstr "Traccia"
 
 msgid "Import Replaygain tag as manual RVA"
-msgstr ""
+msgstr "Importa tag Replaygain come RVA manuale"
 
 msgid "Import Comment tag"
 msgstr "Importa commenti dai tag"
 
 msgid "Sandbox"
-msgstr ""
+msgstr "Sandbox"
 
 msgid "Filename:"
 msgstr "Nome file:"
@@ -545,7 +547,7 @@ msgid "Paranoia error correction"
 msgstr "Correzione d'errore con Paranoia"
 
 msgid "Perform overlapped reads"
-msgstr ""
+msgstr "Esegue letture sovrapposte"
 
 msgid "Verify data integrity"
 msgstr "Verifica integrità dei dati"
@@ -674,7 +676,7 @@ msgid "Submit new record"
 msgstr "Inserisci una nuova voce"
 
 msgid "Matches:"
-msgstr ""
+msgstr "Corrispondenze:"
 
 msgid "Title:"
 msgstr "Titolo:"
@@ -715,7 +717,6 @@ msgstr "Copia"
 msgid "Help"
 msgstr "Aiuto"
 
-#, fuzzy, c-format
 msgid ""
 "\n"
 "The template string you enter here will be used to construct the filename of "
@@ -725,12 +726,11 @@ msgid ""
 "identifier which is unique within an export session."
 msgstr ""
 "\n"
-"La stringa che inserisci qui, verrà utilizzata per costruire il nome del "
-"file del file esportato. L'Artista, la Registrazione e il nome della Traccia "
-"verranno indicate con  %%a, %%r e %%t. Il numero della traccia e il formato "
-"del file (estensione) verranno riportate come segue  %%n e %%x, "
-"rispettivamente. La variabile %%i fornisce un identificatore unico "
-"all'interno di ogni sessione esportata."
+"La stringa del modello che inserisci qui verrà utilizzata per costruire il nome file dei "
+"file esportati. Il nome del file originale, l'artista, il record e i nomi delle tracce "
+"sono indicati con %%o, %%a, %%r e %%t. Il numero della traccia e il formato dipendono "
+"dall'estensione del file èd è indicata rispettivamente da %%n e %%x. %%i restituisce un "
+"identificativo univoco all'interno di una sessione di esportazione."
 
 msgid "Exporting files"
 msgstr "Esportazione file in corso"
@@ -784,6 +784,8 @@ msgid ""
 "Do not reencode files\n"
 "matching wildcard:"
 msgstr ""
+"Non ricodificare i file\n"
+"carattere jolly corrispondente:"
 
 msgid "*File info"
 msgstr "*Info file"
@@ -815,6 +817,8 @@ msgid ""
 "Attached Picture frame with no image set!\n"
 "Please set an image or remove the frame."
 msgstr ""
+"Cornice immagine allegata senza immagine impostata!\n"
+"Imposta un'immagine o rimuovi la cornice."
 
 #, c-format
 msgid ""
@@ -1062,9 +1066,8 @@ msgstr "Ferma"
 msgid "Next song"
 msgstr "Canzone successiva"
 
-#, fuzzy
 msgid "Play/Pause"
-msgstr "Pausa"
+msgstr "Riproduci/Pausa"
 
 msgid "Play"
 msgstr "Riproduci"
@@ -1394,7 +1397,7 @@ msgid "Index"
 msgstr "Indice"
 
 msgid "Related"
-msgstr ""
+msgstr "Relativo"
 
 msgid "Abstract"
 msgstr "Abstract"
@@ -1415,13 +1418,13 @@ msgid "Encoding Time"
 msgstr "Tempo di codifica"
 
 msgid "Playlist Delay"
-msgstr ""
+msgstr "Ritardo della playlist"
 
 msgid "Original Release Time"
-msgstr ""
+msgstr "Tempo di rilascio originale"
 
 msgid "Release Time"
-msgstr ""
+msgstr "Tempo di rilascio"
 
 msgid "Tagging Time"
 msgstr ""
@@ -1430,7 +1433,7 @@ msgid "Encoded by"
 msgstr "Codificato da"
 
 msgid "Lyricist/Text Writer"
-msgstr ""
+msgstr "Paroliere/Scrittore di testi"
 
 msgid "File Type"
 msgstr "Tipo di file"
@@ -1439,13 +1442,13 @@ msgid "Involved People"
 msgstr "Persone coinvolte"
 
 msgid "Content Group"
-msgstr ""
+msgstr "Gruppo di contenuti"
 
 msgid "Initial key"
 msgstr ""
 
 msgid "Musician Credits"
-msgstr ""
+msgstr "Crediti del musicista"
 
 msgid "Mood"
 msgstr ""
@@ -1472,7 +1475,7 @@ msgid "Interpreted/Remixed"
 msgstr "Interpretato/Remixato"
 
 msgid "Part Of A Set"
-msgstr ""
+msgstr "Parte di un set"
 
 msgid "Produced"
 msgstr "Prodotto"
@@ -1481,16 +1484,16 @@ msgid "Internet Radio Station Name"
 msgstr "Nome Stazione Radio Internet "
 
 msgid "Internet Radio Station Owner"
-msgstr ""
+msgstr "Proprietario della stazione Internet radio"
 
 msgid "Album Sort Order"
-msgstr ""
+msgstr "Ordinamento dell'album"
 
 msgid "Performer Sort Order"
 msgstr ""
 
 msgid "Title Sort Order"
-msgstr ""
+msgstr "Ordinamento del titolo"
 
 msgid "Software"
 msgstr "Software"
@@ -1499,7 +1502,7 @@ msgid "Set Subtitle"
 msgstr "Imposta sottotitolo"
 
 msgid "User Defined Text"
-msgstr ""
+msgstr "Testo definito dall'utente"
 
 msgid "Commercial Information"
 msgstr "Informazione commerciale"
@@ -1523,10 +1526,10 @@ msgid "Payment"
 msgstr "Pagamento"
 
 msgid "Publisher's Official Website"
-msgstr ""
+msgstr "Sito ufficiale dell'editore"
 
 msgid "User Defined URL"
-msgstr ""
+msgstr "URL definito dall'utente"
 
 msgid "Vendor"
 msgstr "Vendor"
@@ -1619,7 +1622,7 @@ msgid "Invalid 'Genre' field value"
 msgstr "Il campo 'Genere' presenta un valore non corretto"
 
 msgid "Conversion to target charset failed"
-msgstr ""
+msgstr "Conversione nel set di caratteri di destinazione non riuscita"
 
 msgid "Internal error"
 msgstr "Errore interno"
@@ -1667,13 +1670,13 @@ msgid "During recording"
 msgstr "Durata della registrazione"
 
 msgid "During performance"
-msgstr ""
+msgstr "Durata della performance"
 
 msgid "Movie/video screen capture"
-msgstr ""
+msgstr "Cattura schermo film/video"
 
 msgid "A large, coloured fish"
-msgstr ""
+msgstr "Un pesce grande e colorato"
 
 msgid "Illustration"
 msgstr "Illustrazione"
@@ -1682,7 +1685,7 @@ msgid "Band/artist logotype"
 msgstr "Logo Band/Artista"
 
 msgid "Publisher/studio logotype"
-msgstr ""
+msgstr "Editore/logo dello studio"
 
 msgid "Music Store"
 msgstr "Music Store"
@@ -1866,42 +1869,40 @@ msgid "Change balance"
 msgstr "Cambio"
 
 msgid "Change song position"
-msgstr ""
+msgstr "Cambia posizione canzone"
 
-#, fuzzy
 msgid "Change current song"
-msgstr "Ripeti la canzone corrente"
+msgstr "Cambia canzone corrente"
 
 msgid "Left button"
-msgstr ""
+msgstr "Pulsante sinistro"
 
 msgid "Middle button"
-msgstr ""
+msgstr "Pulsante centrale"
 
 msgid "Right button"
-msgstr ""
+msgstr "Pulsante destro"
 
 msgid "Button"
-msgstr ""
+msgstr "Pulsante"
 
 msgid "Left and right mouse buttons are reserved."
-msgstr ""
+msgstr "I pulsanti sinistro e destro del mouse sono riservati."
 
 msgid "This button is already assigned."
-msgstr ""
+msgstr "Questo pulsante è già assegnato."
 
 msgid "Add mouse button command"
-msgstr ""
+msgstr "Aggiungi il comando del pulsante del mouse"
 
 msgid "Mouse button"
-msgstr ""
+msgstr "Pulsante del mouse"
 
 msgid "Click here to set mouse button"
-msgstr ""
+msgstr "Fare clic qui per impostare il pulsante del mouse"
 
-#, fuzzy
 msgid "Command"
-msgstr "Commento"
+msgstr "Comando"
 
 msgid "Error in title format string"
 msgstr "Errore nel titolo (formato stringa)"
@@ -1910,13 +1911,13 @@ msgid "Error invalid character encoding"
 msgstr ""
 
 msgid "Main window"
-msgstr ""
+msgstr "Finestra principale"
 
 msgid "Disable control buttons relief"
 msgstr "Disabilita il rilievo per i pulsanti non attivi"
 
 msgid "Combine play and pause buttons"
-msgstr ""
+msgstr "Associa i pulsanti di riproduzione e pausa"
 
 msgid "Keep main window always on top"
 msgstr "Mantieni la finestra sopra le altre"
@@ -1931,32 +1932,31 @@ msgid "Title Format"
 msgstr "Formato del titolo"
 
 msgid "Lua extension file"
-msgstr ""
+msgstr "File di estensione Lua"
 
-#, fuzzy
 msgid "Systray"
-msgstr "Supporto Systray\n"
+msgstr "Systray"
 
 msgid "Start minimized"
-msgstr ""
+msgstr "Avvia minimizzato"
 
 msgid "Play/Stop song"
-msgstr ""
+msgstr "Riproduci/Ferma brano"
 
 msgid "Play/Pause song"
-msgstr ""
+msgstr "Riproduci/metti in pausa il brano"
 
 msgid "Mouse wheel"
-msgstr ""
+msgstr "Rotellina del mouse"
 
 msgid "Vertical mouse wheel:"
-msgstr ""
+msgstr "Rotella verticale del mouse:"
 
 msgid "Horizontal mouse wheel:"
-msgstr ""
+msgstr "Rotella orizzontale del mouse:"
 
 msgid "Mouse buttons"
-msgstr ""
+msgstr "Pulsanti del mouse"
 
 msgid "Miscellaneous"
 msgstr "Varie"
@@ -1983,10 +1983,10 @@ msgid "300 pixels"
 msgstr "300 pixel"
 
 msgid "use browser window width"
-msgstr ""
+msgstr "usa la larghezza della finestra del browser"
 
 msgid "Do not magnify images with smaller width"
-msgstr ""
+msgstr "Non ingrandire le immagini con una larghezza inferiore"
 
 msgid "Show cover thumbnail for Music Store tracks only"
 msgstr ""
@@ -1995,7 +1995,7 @@ msgid "Don't show cover thumbnail in the main window"
 msgstr "Non mostrare la miniatura dell'album nella finestra principale"
 
 msgid "Use cover from external graphics file first"
-msgstr ""
+msgstr "Usa prima la copertina del file grafico esterno"
 
 msgid "Enable tooltips"
 msgstr "Abilita suggerimenti"
@@ -2143,7 +2143,7 @@ msgstr ""
 "dettagli."
 
 msgid "Sample Rate Converter type"
-msgstr ""
+msgstr "Tipo di convertitore di frequenza di campionamento"
 
 msgid ""
 "Aqualung is compiled without Sample Rate Converter support.\n"
@@ -2243,6 +2243,8 @@ msgid ""
 "Note: pre-existing tags will be updated even though they\n"
 "might not be checked here."
 msgstr ""
+"Nota: i tag preesistenti verranno aggiornati anche se\n"
+"potrebbe non essere controllati qui."
 
 msgid "CD Audio"
 msgstr "CD Audio"
@@ -2502,7 +2504,7 @@ msgid "Roll to active song"
 msgstr ""
 
 msgid "Stop adding files"
-msgstr ""
+msgstr "Smetti di aggiungere file"
 
 msgid "Files selected for removal"
 msgstr "File selezionati per la rimozione"

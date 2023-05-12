@@ -166,10 +166,6 @@ decode_lavc(decoder_t * dec) {
         file_decoder_t * fdec = dec->fdec;
 
 	AVPacket packet;
-#if LIBAVCODEC_VERSION_MAJOR < 53
-        int16_t samples[MAX_AUDIO_FRAME_SIZE];
-        int n_bytes = MAX_AUDIO_FRAME_SIZE;
-#endif /* LIBAVCODEC_VERSION_MAJOR >= 53 */
         float fsamples[MAX_AUDIO_FRAME_SIZE];
 	int n_samples = MAX_AUDIO_FRAME_SIZE;
 	int i;
@@ -180,20 +176,11 @@ decode_lavc(decoder_t * dec) {
 	if (!(packet.stream_index == pd->audioStream))
 		goto end;
 
-#if LIBAVCODEC_VERSION_MAJOR < 53
-	avcodec_decode_audio3(pd->avCodecCtx, samples, &n_bytes, &packet);
-	if (n_bytes <= 0) goto end;
-	n_samples = n_bytes / 2;
-	for (i = 0; i < n_samples; i++) {
-		fsamples[i] = samples[i] * fdec->voladj_lin / 32768.f;
-	}
-#else /* LIBAVCODEC_VERSION_MAJOR >= 53 */
 	decode_audio(pd->avCodecCtx, fsamples, &n_samples, &packet);
 	if (n_samples <= 0) goto end;
 	for (i = 0; i < n_samples; i++) {
 		fsamples[i] *= fdec->voladj_lin;
 	}
-#endif /* LIBAVCODEC_VERSION_MAJOR >= 53 */
 
 	rb_write(pd->rb, (char *)fsamples, n_samples * sample_size);
 end:
@@ -246,20 +233,12 @@ lavc_decoder_open(decoder_t * dec, char * filename) {
 	file_decoder_t * fdec = dec->fdec;
 	int i;
 
-#if LIBAVFORMAT_VERSION_MAJOR < 53
-	if (av_open_input_file(&pd->avFormatCtx, filename, NULL, 0, NULL) != 0)
-#else /* LIBAVFORMAT_VERSION_MAJOR >= 53 */
 	if (avformat_open_input(&pd->avFormatCtx, filename, NULL, NULL) != 0)
-#endif /* LIBAVFORMAT_VERSION_MAJOR >= 53 */
 	{
 		return DECODER_OPEN_BADLIB;
 	}
 
-#if LIBAVFORMAT_VERSION_MAJOR < 53
-	if (av_find_stream_info(pd->avFormatCtx) < 0)
-#else /* LIBAVFORMAT_VERSION_MAJOR >= 53 */
 	if (avformat_find_stream_info(pd->avFormatCtx, NULL) < 0)
-#endif /* LIBAVFORMAT_VERSION_MAJOR >= 53 */
 	{
 		return DECODER_OPEN_BADLIB;
 	}
@@ -280,12 +259,6 @@ lavc_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_BADLIB;
 
 	pd->avCodecCtx = pd->avFormatCtx->streams[pd->audioStream]->codec;
-#if LIBAVCODEC_VERSION_MAJOR < 55
-#if LIBAVCODEC_VERSION_MAJOR >= 53
-	pd->avCodecCtx->get_buffer = avcodec_default_get_buffer;
-	pd->avCodecCtx->release_buffer = avcodec_default_release_buffer;
-#endif /* LIBAVCODEC_VERSION_MAJOR >= 53 */
-#endif /* LIBAVCODEC_VERSION_MAJOR < 55 */
 
 	pd->time_base = pd->avFormatCtx->streams[pd->audioStream]->time_base;
 
@@ -293,11 +266,7 @@ lavc_decoder_open(decoder_t * dec, char * filename) {
 	if (pd->avCodec == NULL)
 		return DECODER_OPEN_BADLIB;
 
-#if LIBAVCODEC_VERSION_MAJOR < 53
-	if (avcodec_open(pd->avCodecCtx, pd->avCodec) < 0)
-#else /* LIBAVCODEC_VERSION_MAJOR >= 53 */
 	if (avcodec_open2(pd->avCodecCtx, pd->avCodec, NULL) < 0)
-#endif /* LIBAVCODEC_VERSION_MAJOR >= 53 */
 	{
 		return DECODER_OPEN_BADLIB;
 	}
@@ -344,11 +313,7 @@ lavc_decoder_close(decoder_t * dec) {
 
 	avcodec_close(pd->avCodecCtx);
 
-#if LIBAVFORMAT_VERSION_MAJOR < 53
-	av_close_input_file(pd->avFormatCtx);
-#else /* LIBAVFORMAT_VERSION_MAJOR >= 53 */
 	avformat_close_input(&pd->avFormatCtx);
-#endif /* LIBAVFORMAT_VERSION_MAJOR >= 53 */
 
 	rb_free(pd->rb);
 }

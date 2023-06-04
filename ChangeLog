@@ -1,3 +1,23 @@
+2023-06-08	Jeremy Evans <code at jeremyevans dot net>
+
+    * Aqualung 1.2
+        http://aqualung.jeremyevans.net
+
+	* Support libavcodec API 59 and later	
+
+	* Drop support for libavcodec API < 53
+
+	* Avoid MAP_STACK errors in the lavc decoder on OpenBSD
+
+	* Move mpeg decoder above sndfile decoder to fix issues when using
+	  sndfile 1.1+
+
+	* Avoid a few double free errors
+
+	* Fix possible error when creating the ~/.config/aqualung directory
+
+	* Translation updates: Italian
+
 2020-08-29	Jeremy Evans <code at jeremyevans dot net>
 
     * Aqualung 1.1
@@ -9,7 +29,7 @@
 
 	* Update CDDB query feature to use gnudb.org and port 8880
 
-	* Remove CDDB local lookup featuer as it was broken
+	* Remove CDDB local lookup feature as it was broken
 
 	* Remove CDDB submission feature as it was broken
 

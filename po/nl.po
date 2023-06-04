@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung SVN\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2018-12-14 07:26-0800\n"
+"POT-Creation-Date: 2023-06-04 10:45-0700\n"
 "PO-Revision-Date: 2012-02-28 12:28+0100\n"
 "Last-Translator: Ivo van Poorten <ivop@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -626,54 +626,6 @@ msgstr "Importeer als Titel"
 msgid "Import as Year"
 msgstr "Importeer als Jaar"
 
-msgid ""
-"Artist appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Artiestnaam lijkt volledig in kleine letters.\n"
-"Wilt u doorgaan?"
-
-msgid ""
-"Artist appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Artiestnaam lijkt volledig in hoofdletters.\n"
-"Wilt u doorgaan?"
-
-msgid ""
-"Title appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Titel lijkt volledig in kleine letters.\n"
-"Wilt u doorgaan?"
-
-msgid ""
-"Title appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Titel lijk volledig in hoofdletters.\n"
-"Wilt u doorgaan?"
-
-msgid ""
-"It is very likely that the year is wrong.\n"
-"Do you want to proceed?"
-msgstr ""
-"Het is aannemelijk dat het jaartal foutief is.\n"
-"Wilt u doorgaan?"
-
-msgid "The email address provided for submission is invalid."
-msgstr "Het e-mail adres dat u opgegeven heeft niet de juiste opmaak."
-
-msgid "An error occurred while submitting the record to the CDDB server."
-msgstr ""
-"Er is een fout opgetreden bij het toevoegen van het album aan de CDDB server."
-
-msgid "Correct existing record"
-msgstr "Corrigeer bestaand album"
-
-msgid "Submit new record"
-msgstr "Voeg nieuw album toe"
-
 msgid "Matches:"
 msgstr "Matches:"
 
@@ -682,9 +634,6 @@ msgstr "Titel:"
 
 msgid "Category:"
 msgstr "Categorie;"
-
-msgid "(choose a category)"
-msgstr "(kies een categorie)"
 
 msgid "Extended data:"
 msgstr "Uitgebreide gegevens:"
@@ -697,10 +646,6 @@ msgstr "Voeg toe aan Commentaarveld"
 
 msgid "Tracks"
 msgstr "Nummers"
-
-msgid "You have to provide an email address for CDDB submission."
-msgstr ""
-"U moet een e-mail adres opgeven om gegeven naar de CDDB server te sturen."
 
 msgid "Unknown Album"
 msgstr "Onbekend Album"
@@ -997,7 +942,6 @@ msgstr "Afsluiten"
 msgid "Position: %d%%"
 msgstr "Positie: %d%%"
 
-#, c-format
 msgid "Mute"
 msgstr "Dempen"
 
@@ -1017,7 +961,6 @@ msgstr "%d%% R"
 msgid "%d%% L"
 msgstr "%d%% L"
 
-#, c-format
 msgid "C"
 msgstr "C"
 
@@ -1197,7 +1140,6 @@ msgstr "Selecteer een lokaal pad."
 msgid "Please select at least one valid song from playlist."
 msgstr "Selecteer op zijn minst één nummer uit de afspeellijst."
 
-#, c-format
 msgid ""
 "One song has format unsupported by your player.\n"
 "\n"
@@ -1218,7 +1160,6 @@ msgstr ""
 "\n"
 "Wilt u doorgaan?"
 
-#, c-format
 msgid ""
 "The selected song has format unsupported by your player.\n"
 "\n"
@@ -1229,7 +1170,6 @@ msgstr ""
 "\n"
 "Wilt u doorgaan?"
 
-#, c-format
 msgid ""
 "None of the selected songs has format supported by your player.\n"
 "\n"
@@ -2330,15 +2270,6 @@ msgstr "CDDB server:"
 msgid "Connection timeout [sec]:"
 msgstr "Neem maximaal deze tijd om een verbinding te maken [sec]:"
 
-msgid "Email address for submission:"
-msgstr "E-mail adres voor het toevoegen van gegevens"
-
-msgid "Local CDDB directory:"
-msgstr "Lokale CDDB-map"
-
-msgid "Use the local database only"
-msgstr "Gebruik alleen de lokale database"
-
 msgid "Protocol for querying (direct connection only):"
 msgstr ""
 "Protocol voor opvragen van informatie (alleen via een directe verbinding):"
@@ -2841,9 +2772,6 @@ msgstr "Voeg aan afspeellijst toe (Albummode)"
 msgid "CDDB query for this CD..."
 msgstr "CDDB aanvraag voor deze CD..."
 
-msgid "Submit CD to CDDB database..."
-msgstr "Stuur de gegevens van deze CD naar de CDDB database..."
-
 msgid "Rip CD..."
 msgstr "Rip CD..."
 
@@ -2907,7 +2835,6 @@ msgstr "Bewerk Nummer"
 msgid "Duration:"
 msgstr "Lengte:"
 
-#, c-format
 msgid "Unmeasured"
 msgstr "Niet gemeten"
 
@@ -3051,9 +2978,6 @@ msgstr "Voeg nieuw nummer aan dit album toe..."
 
 msgid "CDDB query for this record..."
 msgstr "CDDB-aanvraag voor dit album..."
-
-msgid "Submit record to CDDB database..."
-msgstr "Stuur gegevens van dit album naar de CDDB database..."
 
 msgid "Add new track..."
 msgstr "Voeg nieuw nummer toe..."
@@ -3371,3 +3295,74 @@ msgstr "bit drijvende komma, dubbele precisie"
 
 msgid "encoding"
 msgstr "encodering"
+
+#~ msgid ""
+#~ "Artist appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Artiestnaam lijkt volledig in kleine letters.\n"
+#~ "Wilt u doorgaan?"
+
+#~ msgid ""
+#~ "Artist appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Artiestnaam lijkt volledig in hoofdletters.\n"
+#~ "Wilt u doorgaan?"
+
+#~ msgid ""
+#~ "Title appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Titel lijkt volledig in kleine letters.\n"
+#~ "Wilt u doorgaan?"
+
+#~ msgid ""
+#~ "Title appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Titel lijk volledig in hoofdletters.\n"
+#~ "Wilt u doorgaan?"
+
+#~ msgid ""
+#~ "It is very likely that the year is wrong.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Het is aannemelijk dat het jaartal foutief is.\n"
+#~ "Wilt u doorgaan?"
+
+#~ msgid "The email address provided for submission is invalid."
+#~ msgstr "Het e-mail adres dat u opgegeven heeft niet de juiste opmaak."
+
+#~ msgid "An error occurred while submitting the record to the CDDB server."
+#~ msgstr ""
+#~ "Er is een fout opgetreden bij het toevoegen van het album aan de CDDB "
+#~ "server."
+
+#~ msgid "Correct existing record"
+#~ msgstr "Corrigeer bestaand album"
+
+#~ msgid "Submit new record"
+#~ msgstr "Voeg nieuw album toe"
+
+#~ msgid "(choose a category)"
+#~ msgstr "(kies een categorie)"
+
+#~ msgid "You have to provide an email address for CDDB submission."
+#~ msgstr ""
+#~ "U moet een e-mail adres opgeven om gegeven naar de CDDB server te sturen."
+
+#~ msgid "Email address for submission:"
+#~ msgstr "E-mail adres voor het toevoegen van gegevens"
+
+#~ msgid "Local CDDB directory:"
+#~ msgstr "Lokale CDDB-map"
+
+#~ msgid "Use the local database only"
+#~ msgstr "Gebruik alleen de lokale database"
+
+#~ msgid "Submit CD to CDDB database..."
+#~ msgstr "Stuur de gegevens van deze CD naar de CDDB database..."
+
+#~ msgid "Submit record to CDDB database..."
+#~ msgstr "Stuur gegevens van dit album naar de CDDB database..."

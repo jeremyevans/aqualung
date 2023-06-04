@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung SVN\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2018-12-14 07:26-0800\n"
+"POT-Creation-Date: 2023-06-04 10:45-0700\n"
 "PO-Revision-Date: 2017-09-21 21:15+0200\n"
 "Last-Translator: Pavel Fric <pavelfric@seznam.cz>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
@@ -624,53 +624,6 @@ msgstr "Zavést jako Název"
 msgid "Import as Year"
 msgstr "Zavést jako Rok"
 
-msgid ""
-"Artist appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Jméno umělce se zdá být celé napsáno malými písmeny.\n"
-"Chcete pokračovat?"
-
-msgid ""
-"Artist appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Jméno umělce se zdá býti celé napsáno velkými písmeny.\n"
-"Chcete pokračovat?"
-
-msgid ""
-"Title appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Název se zdá být celý napsán malými písmeny.\n"
-"Chcete pokračovat?"
-
-msgid ""
-"Title appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Název se zdá být celý napsán velkými písmeny.\n"
-"Chcete pokračovat?"
-
-msgid ""
-"It is very likely that the year is wrong.\n"
-"Do you want to proceed?"
-msgstr ""
-"Je velice pravděpodobné, že rok je uveden špatně.\n"
-"Chcete pokračovat?"
-
-msgid "The email address provided for submission is invalid."
-msgstr "E-mailová adresa poskytnutá pro odeslání je neplatná."
-
-msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "Při odesílání záznamu serveru CDDB se stala chyba."
-
-msgid "Correct existing record"
-msgstr "Opravit stávající záznam"
-
-msgid "Submit new record"
-msgstr "Odeslat nový záznam"
-
 msgid "Matches:"
 msgstr "Shody:"
 
@@ -679,9 +632,6 @@ msgstr "Název:"
 
 msgid "Category:"
 msgstr "Skupina:"
-
-msgid "(choose a category)"
-msgstr "(vybrat skupinu)"
 
 msgid "Extended data:"
 msgstr "Rozšířená data:"
@@ -694,9 +644,6 @@ msgstr "Přidat do poznámek"
 
 msgid "Tracks"
 msgstr "Skladby"
-
-msgid "You have to provide an email address for CDDB submission."
-msgstr "Musíte poskytnout e-mailovou adresu pro odeslání CDDB."
 
 msgid "Unknown Album"
 msgstr "Neznámé album"
@@ -992,7 +939,6 @@ msgstr "Ukončit"
 msgid "Position: %d%%"
 msgstr "Poloha: %d%%"
 
-#, c-format
 msgid "Mute"
 msgstr "Ztlumit"
 
@@ -1012,7 +958,6 @@ msgstr "%d%% P"
 msgid "%d%% L"
 msgstr "%d%% L"
 
-#, c-format
 msgid "C"
 msgstr "C"
 
@@ -1192,7 +1137,6 @@ msgstr "Vyberte, prosím, místní cestu."
 msgid "Please select at least one valid song from playlist."
 msgstr "Vyberte, prosím, ze seznamu skladeb alespoň jednu platnou píseň."
 
-#, c-format
 msgid ""
 "One song has format unsupported by your player.\n"
 "\n"
@@ -1212,7 +1156,6 @@ msgstr ""
 "\n"
 "Chcete pokračovat?"
 
-#, c-format
 msgid ""
 "The selected song has format unsupported by your player.\n"
 "\n"
@@ -1222,7 +1165,6 @@ msgstr ""
 "\n"
 "Chcete pokračovat?"
 
-#, c-format
 msgid ""
 "None of the selected songs has format supported by your player.\n"
 "\n"
@@ -2324,15 +2266,6 @@ msgstr "Server CDDB:"
 msgid "Connection timeout [sec]:"
 msgstr "Překročení času připojení [s]:"
 
-msgid "Email address for submission:"
-msgstr "E-mailová adresa pro odesílání:"
-
-msgid "Local CDDB directory:"
-msgstr "Místní adresář CDDB:"
-
-msgid "Use the local database only"
-msgstr "Použít pouze místní databázi"
-
 msgid "Protocol for querying (direct connection only):"
 msgstr "Protokol pro dotazování (pouze přímé připojení):"
 
@@ -2829,9 +2762,6 @@ msgstr "Přidat do seznamu skladeb (režim alba)"
 msgid "CDDB query for this CD..."
 msgstr "Dotaz v CDDB pro toto CD..."
 
-msgid "Submit CD to CDDB database..."
-msgstr "Odeslat CD do databáze CDDB..."
-
 msgid "Rip CD..."
 msgstr "Vytáhnout skladby z CD"
 
@@ -2895,7 +2825,6 @@ msgstr "Upravit skladbu"
 msgid "Duration:"
 msgstr "Doba trvání:"
 
-#, c-format
 msgid "Unmeasured"
 msgstr "Nezměřeno"
 
@@ -3039,9 +2968,6 @@ msgstr "Přidat novou skladbu do této nahrávky..."
 
 msgid "CDDB query for this record..."
 msgstr "Dotaz v CDDB pro tuto nahrávku..."
-
-msgid "Submit record to CDDB database..."
-msgstr "Odeslat nahrávku do databáze CDDB..."
 
 msgid "Add new track..."
 msgstr "Přidat novou skladbu..."
@@ -3359,3 +3285,71 @@ msgstr "Bit dvojitý"
 
 msgid "encoding"
 msgstr "Kódování"
+
+#~ msgid ""
+#~ "Artist appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Jméno umělce se zdá být celé napsáno malými písmeny.\n"
+#~ "Chcete pokračovat?"
+
+#~ msgid ""
+#~ "Artist appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Jméno umělce se zdá býti celé napsáno velkými písmeny.\n"
+#~ "Chcete pokračovat?"
+
+#~ msgid ""
+#~ "Title appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Název se zdá být celý napsán malými písmeny.\n"
+#~ "Chcete pokračovat?"
+
+#~ msgid ""
+#~ "Title appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Název se zdá být celý napsán velkými písmeny.\n"
+#~ "Chcete pokračovat?"
+
+#~ msgid ""
+#~ "It is very likely that the year is wrong.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Je velice pravděpodobné, že rok je uveden špatně.\n"
+#~ "Chcete pokračovat?"
+
+#~ msgid "The email address provided for submission is invalid."
+#~ msgstr "E-mailová adresa poskytnutá pro odeslání je neplatná."
+
+#~ msgid "An error occurred while submitting the record to the CDDB server."
+#~ msgstr "Při odesílání záznamu serveru CDDB se stala chyba."
+
+#~ msgid "Correct existing record"
+#~ msgstr "Opravit stávající záznam"
+
+#~ msgid "Submit new record"
+#~ msgstr "Odeslat nový záznam"
+
+#~ msgid "(choose a category)"
+#~ msgstr "(vybrat skupinu)"
+
+#~ msgid "You have to provide an email address for CDDB submission."
+#~ msgstr "Musíte poskytnout e-mailovou adresu pro odeslání CDDB."
+
+#~ msgid "Email address for submission:"
+#~ msgstr "E-mailová adresa pro odesílání:"
+
+#~ msgid "Local CDDB directory:"
+#~ msgstr "Místní adresář CDDB:"
+
+#~ msgid "Use the local database only"
+#~ msgstr "Použít pouze místní databázi"
+
+#~ msgid "Submit CD to CDDB database..."
+#~ msgstr "Odeslat CD do databáze CDDB..."
+
+#~ msgid "Submit record to CDDB database..."
+#~ msgstr "Odeslat nahrávku do databáze CDDB..."

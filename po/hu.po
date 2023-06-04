@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2018-12-14 07:26-0800\n"
+"POT-Creation-Date: 2023-06-04 10:45-0700\n"
 "PO-Revision-Date: 2010-10-16 21:46+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -627,53 +627,6 @@ msgstr "Importálás címként"
 msgid "Import as Year"
 msgstr "Importálás évként"
 
-msgid ""
-"Artist appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Az előadó csupa kisbetűvel szerepel.\n"
-"Akarod folytatni?"
-
-msgid ""
-"Artist appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Az előadó csupa nagybetűvel szerepel.\n"
-"Akarod folytatni?"
-
-msgid ""
-"Title appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"A cím csupa kisbetűvel szerepel.\n"
-"Akarod folytatni?"
-
-msgid ""
-"Title appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"A cím csupa nagybetűvel szerepel.\n"
-"Akarod folytatni?"
-
-msgid ""
-"It is very likely that the year is wrong.\n"
-"Do you want to proceed?"
-msgstr ""
-"Nagyon valószínű, hogy az év hibás.\n"
-"Akarod folytatni?"
-
-msgid "The email address provided for submission is invalid."
-msgstr "A feltöltéshez megadott email cím érvénytelen."
-
-msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "Hiba történt a lemez CDDB szerverhez való küldése közben."
-
-msgid "Correct existing record"
-msgstr "Meglévő album módosítása"
-
-msgid "Submit new record"
-msgstr "Új album feltöltése"
-
 msgid "Matches:"
 msgstr "Találatok:"
 
@@ -682,9 +635,6 @@ msgstr "Cím:"
 
 msgid "Category:"
 msgstr "Kategória:"
-
-msgid "(choose a category)"
-msgstr "(válassz egy kategóriát)"
 
 msgid "Extended data:"
 msgstr "Egyéb adat:"
@@ -697,9 +647,6 @@ msgstr "Hozzáadás a kommentekhez"
 
 msgid "Tracks"
 msgstr "Számok"
-
-msgid "You have to provide an email address for CDDB submission."
-msgstr "Meg kell adni egy email címet a feltöltéshez."
 
 msgid "Unknown Album"
 msgstr "Ismeretlen lemez"
@@ -994,7 +941,6 @@ msgstr "Kilépés"
 msgid "Position: %d%%"
 msgstr "Pozíció: %d%%"
 
-#, c-format
 msgid "Mute"
 msgstr "Néma"
 
@@ -1014,7 +960,6 @@ msgstr "%d%% R"
 msgid "%d%% L"
 msgstr "%d%% L"
 
-#, c-format
 msgid "C"
 msgstr "C"
 
@@ -1191,7 +1136,6 @@ msgstr "Válassz egy helyi elérési utat."
 msgid "Please select at least one valid song from playlist."
 msgstr "Válassz ki legalább egy érvényes számot a lejátszólistából."
 
-#, c-format
 msgid ""
 "One song has format unsupported by your player.\n"
 "\n"
@@ -1211,7 +1155,6 @@ msgstr ""
 "\n"
 "Akarod folytatni?"
 
-#, c-format
 msgid ""
 "The selected song has format unsupported by your player.\n"
 "\n"
@@ -1221,7 +1164,6 @@ msgstr ""
 "\n"
 "Akarod folytatni?"
 
-#, c-format
 msgid ""
 "None of the selected songs has format supported by your player.\n"
 "\n"
@@ -2297,15 +2239,6 @@ msgstr "CDDB szerver:"
 msgid "Connection timeout [sec]:"
 msgstr "Kapcsolódás időkorlátja [sec]:"
 
-msgid "Email address for submission:"
-msgstr "Email cím feltöltéshez:"
-
-msgid "Local CDDB directory:"
-msgstr "Helyi CDDB könyvtár:"
-
-msgid "Use the local database only"
-msgstr "Kizárólag a helyi adatbázis használata"
-
 msgid "Protocol for querying (direct connection only):"
 msgstr "Lekérdezési protokoll (közvetlen kapcsolódás esetén):"
 
@@ -2802,9 +2735,6 @@ msgstr "Lejátszólistába (Album mód)"
 msgid "CDDB query for this CD..."
 msgstr "CD lekérdezése CDDB adatbázisból..."
 
-msgid "Submit CD to CDDB database..."
-msgstr "CD feltöltése CDDB adatbázisba..."
-
 msgid "Rip CD..."
 msgstr "CD rippelés..."
 
@@ -2868,7 +2798,6 @@ msgstr "Szám szerkesztése"
 msgid "Duration:"
 msgstr "Hossz:"
 
-#, c-format
 msgid "Unmeasured"
 msgstr "Ismeretlen"
 
@@ -3012,9 +2941,6 @@ msgstr "Új szám hozzáadása ehhez az albumhoz..."
 
 msgid "CDDB query for this record..."
 msgstr "Album lekérdezése CDDB adatbázisból..."
-
-msgid "Submit record to CDDB database..."
-msgstr "Album feltöltése CDDB adatbázisba..."
 
 msgid "Add new track..."
 msgstr "Új szám hozzáadása..."
@@ -3333,3 +3259,71 @@ msgstr "bites dupla pontosságú lebegőpontos"
 
 msgid "encoding"
 msgstr "kódolású"
+
+#~ msgid ""
+#~ "Artist appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Az előadó csupa kisbetűvel szerepel.\n"
+#~ "Akarod folytatni?"
+
+#~ msgid ""
+#~ "Artist appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Az előadó csupa nagybetűvel szerepel.\n"
+#~ "Akarod folytatni?"
+
+#~ msgid ""
+#~ "Title appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "A cím csupa kisbetűvel szerepel.\n"
+#~ "Akarod folytatni?"
+
+#~ msgid ""
+#~ "Title appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "A cím csupa nagybetűvel szerepel.\n"
+#~ "Akarod folytatni?"
+
+#~ msgid ""
+#~ "It is very likely that the year is wrong.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Nagyon valószínű, hogy az év hibás.\n"
+#~ "Akarod folytatni?"
+
+#~ msgid "The email address provided for submission is invalid."
+#~ msgstr "A feltöltéshez megadott email cím érvénytelen."
+
+#~ msgid "An error occurred while submitting the record to the CDDB server."
+#~ msgstr "Hiba történt a lemez CDDB szerverhez való küldése közben."
+
+#~ msgid "Correct existing record"
+#~ msgstr "Meglévő album módosítása"
+
+#~ msgid "Submit new record"
+#~ msgstr "Új album feltöltése"
+
+#~ msgid "(choose a category)"
+#~ msgstr "(válassz egy kategóriát)"
+
+#~ msgid "You have to provide an email address for CDDB submission."
+#~ msgstr "Meg kell adni egy email címet a feltöltéshez."
+
+#~ msgid "Email address for submission:"
+#~ msgstr "Email cím feltöltéshez:"
+
+#~ msgid "Local CDDB directory:"
+#~ msgstr "Helyi CDDB könyvtár:"
+
+#~ msgid "Use the local database only"
+#~ msgstr "Kizárólag a helyi adatbázis használata"
+
+#~ msgid "Submit CD to CDDB database..."
+#~ msgstr "CD feltöltése CDDB adatbázisba..."
+
+#~ msgid "Submit record to CDDB database..."
+#~ msgstr "Album feltöltése CDDB adatbázisba..."

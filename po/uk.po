@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta10\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2018-12-14 07:26-0800\n"
+"POT-Creation-Date: 2023-06-04 10:45-0700\n"
 "PO-Revision-Date: 2012-08-23 15:59+0300\n"
 "Last-Translator: Vladimir Smolyar <v_2e@ukr.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -626,53 +626,6 @@ msgstr "Імпортувати як Назву"
 msgid "Import as Year"
 msgstr "Імпортувати як Рік"
 
-msgid ""
-"Artist appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Ім'я виконавця цілком у нижньому регістрі.\n"
-"Бажаєте продовжити?"
-
-msgid ""
-"Artist appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Ім'я виконавця цілком у верхньому регістрі.\n"
-"Бажаєте продовжити?"
-
-msgid ""
-"Title appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Назва цілком у нижньому регістрі.\n"
-"Бажаєте продовжити?"
-
-msgid ""
-"Title appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Назва цілком у верхньому регістрі.\n"
-"Бажаєте продовжити?"
-
-msgid ""
-"It is very likely that the year is wrong.\n"
-"Do you want to proceed?"
-msgstr ""
-"Схоже, рік вказано невірно.\n"
-"Бажаєте продовжити?"
-
-msgid "The email address provided for submission is invalid."
-msgstr "Адреса електронної пошти, вказана для підписки, недійсна."
-
-msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "Під час надсилання запису до сервера CDDB виникла помилка."
-
-msgid "Correct existing record"
-msgstr "Виправити існуючий запис"
-
-msgid "Submit new record"
-msgstr "Надіслати новий запис"
-
 msgid "Matches:"
 msgstr "Збіги:"
 
@@ -681,9 +634,6 @@ msgstr "Назва:"
 
 msgid "Category:"
 msgstr "Категорія:"
-
-msgid "(choose a category)"
-msgstr "(оберіть категорію)"
 
 msgid "Extended data:"
 msgstr "Додаткові дані:"
@@ -696,9 +646,6 @@ msgstr "Додати до коментарів"
 
 msgid "Tracks"
 msgstr "Доріжки"
-
-msgid "You have to provide an email address for CDDB submission."
-msgstr "Ви маєте вказати адресу електроної пошти для надсилання до CDDB."
 
 msgid "Unknown Album"
 msgstr "Невідомий Альбом"
@@ -994,7 +941,6 @@ msgstr "Вихід"
 msgid "Position: %d%%"
 msgstr "Позиція: %d%%"
 
-#, c-format
 msgid "Mute"
 msgstr "Приглушити"
 
@@ -1014,7 +960,6 @@ msgstr "%d%% П"
 msgid "%d%% L"
 msgstr "%d%% Л"
 
-#, c-format
 msgid "C"
 msgstr "Ц"
 
@@ -1193,7 +1138,6 @@ msgstr "Будь ласка, оберіть локальний шлях."
 msgid "Please select at least one valid song from playlist."
 msgstr "Будь ласка, оберіть хоча б одну дійсну пісню зі списку програвання."
 
-#, c-format
 msgid ""
 "One song has format unsupported by your player.\n"
 "\n"
@@ -1213,7 +1157,6 @@ msgstr ""
 "\n"
 "Бажаєте продовжити?"
 
-#, c-format
 msgid ""
 "The selected song has format unsupported by your player.\n"
 "\n"
@@ -1223,7 +1166,6 @@ msgstr ""
 "\n"
 "Бажаєте продовжити?"
 
-#, c-format
 msgid ""
 "None of the selected songs has format supported by your player.\n"
 "\n"
@@ -2322,15 +2264,6 @@ msgstr "Сервер CDDB:"
 msgid "Connection timeout [sec]:"
 msgstr "Таймаут з'єднання [сек]:"
 
-msgid "Email address for submission:"
-msgstr "Адреса електроної пошти для підписки:"
-
-msgid "Local CDDB directory:"
-msgstr "Локальний каталог CDDB:"
-
-msgid "Use the local database only"
-msgstr "Використовувати лише локальну базу даних"
-
 msgid "Protocol for querying (direct connection only):"
 msgstr "Протокол для запитів (лише пряме з'єднання):"
 
@@ -2827,9 +2760,6 @@ msgstr "Додати до списку програвання (режим аль
 msgid "CDDB query for this CD..."
 msgstr "Запит у CDDB для цього CD..."
 
-msgid "Submit CD to CDDB database..."
-msgstr "Надіслати дані про цей CD до бази даних CDDB..."
-
 msgid "Rip CD..."
 msgstr "Дістати музику з CD..."
 
@@ -2893,7 +2823,6 @@ msgstr "Редагувати доріжку"
 msgid "Duration:"
 msgstr "Тривалість:"
 
-#, c-format
 msgid "Unmeasured"
 msgstr "Невиміряно"
 
@@ -3037,9 +2966,6 @@ msgstr "Додати нову доріжку до цього запису..."
 
 msgid "CDDB query for this record..."
 msgstr "Запит у CDDB для цього запису..."
-
-msgid "Submit record to CDDB database..."
-msgstr "Надіслати запис до бази даних CDDB..."
 
 msgid "Add new track..."
 msgstr "Додати нову доріжку..."
@@ -3357,6 +3283,74 @@ msgstr "біт подвійний"
 
 msgid "encoding"
 msgstr "кодування"
+
+#~ msgid ""
+#~ "Artist appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Ім'я виконавця цілком у нижньому регістрі.\n"
+#~ "Бажаєте продовжити?"
+
+#~ msgid ""
+#~ "Artist appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Ім'я виконавця цілком у верхньому регістрі.\n"
+#~ "Бажаєте продовжити?"
+
+#~ msgid ""
+#~ "Title appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Назва цілком у нижньому регістрі.\n"
+#~ "Бажаєте продовжити?"
+
+#~ msgid ""
+#~ "Title appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Назва цілком у верхньому регістрі.\n"
+#~ "Бажаєте продовжити?"
+
+#~ msgid ""
+#~ "It is very likely that the year is wrong.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Схоже, рік вказано невірно.\n"
+#~ "Бажаєте продовжити?"
+
+#~ msgid "The email address provided for submission is invalid."
+#~ msgstr "Адреса електронної пошти, вказана для підписки, недійсна."
+
+#~ msgid "An error occurred while submitting the record to the CDDB server."
+#~ msgstr "Під час надсилання запису до сервера CDDB виникла помилка."
+
+#~ msgid "Correct existing record"
+#~ msgstr "Виправити існуючий запис"
+
+#~ msgid "Submit new record"
+#~ msgstr "Надіслати новий запис"
+
+#~ msgid "(choose a category)"
+#~ msgstr "(оберіть категорію)"
+
+#~ msgid "You have to provide an email address for CDDB submission."
+#~ msgstr "Ви маєте вказати адресу електроної пошти для надсилання до CDDB."
+
+#~ msgid "Email address for submission:"
+#~ msgstr "Адреса електроної пошти для підписки:"
+
+#~ msgid "Local CDDB directory:"
+#~ msgstr "Локальний каталог CDDB:"
+
+#~ msgid "Use the local database only"
+#~ msgstr "Використовувати лише локальну базу даних"
+
+#~ msgid "Submit CD to CDDB database..."
+#~ msgstr "Надіслати дані про цей CD до бази даних CDDB..."
+
+#~ msgid "Submit record to CDDB database..."
+#~ msgstr "Надіслати запис до бази даних CDDB..."
 
 #~ msgid "Lua (programmable title formatting) support\n"
 #~ msgstr "Підтримка Lua (програмоване форматування заголовка)\n"

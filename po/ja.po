@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2018-12-14 07:26-0800\n"
+"POT-Creation-Date: 2023-06-04 10:45-0700\n"
 "PO-Revision-Date: 2010-01-22 15:40+0100\n"
 "Last-Translator: YoN <yon8844@gmail.com>\n"
 "Language-Team: Team Puppy Linux Japan\n"
@@ -633,53 +633,6 @@ msgstr "タイトルとしてインポート"
 msgid "Import as Year"
 msgstr "年としてインポート"
 
-msgid ""
-"Artist appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"アーティストは全て小文字で表示されます。\n"
-"続けますか？"
-
-msgid ""
-"Artist appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"アーティストは全て大文字で表示されます。\n"
-"続けますか？"
-
-msgid ""
-"Title appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"タイトルは全て小文字で表示されます。\n"
-"続けますか？"
-
-msgid ""
-"Title appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"タイトルは全て大文字で表示されます。\n"
-"続けますか？"
-
-msgid ""
-"It is very likely that the year is wrong.\n"
-"Do you want to proceed?"
-msgstr ""
-"年が間違っていると思われます。\n"
-"続けますか？"
-
-msgid "The email address provided for submission is invalid."
-msgstr "送信するメールアドレスが無効です。"
-
-msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "CDDB サーバにレコードを送信中にエラーが起こりました。"
-
-msgid "Correct existing record"
-msgstr "既存のレコードを修正"
-
-msgid "Submit new record"
-msgstr "新しいレコードを送信"
-
 msgid "Matches:"
 msgstr "一致:"
 
@@ -688,9 +641,6 @@ msgstr "タイトル:"
 
 msgid "Category:"
 msgstr "カテゴリ:"
-
-msgid "(choose a category)"
-msgstr "(カテゴリを選択)"
 
 msgid "Extended data:"
 msgstr "拡張データ:"
@@ -703,9 +653,6 @@ msgstr "コメントに追加"
 
 msgid "Tracks"
 msgstr "トラック"
-
-msgid "You have to provide an email address for CDDB submission."
-msgstr "CDDB へ送信するにはメールアドレスを提供しなければなりません。"
 
 msgid "Unknown Album"
 msgstr "不明なアルバム"
@@ -1000,7 +947,6 @@ msgstr "終了"
 msgid "Position: %d%%"
 msgstr "ポジション: %d%%"
 
-#, c-format
 msgid "Mute"
 msgstr "ミュート"
 
@@ -1020,7 +966,6 @@ msgstr "%d%% R"
 msgid "%d%% L"
 msgstr "%d%% L"
 
-#, c-format
 msgid "C"
 msgstr "C"
 
@@ -1202,7 +1147,6 @@ msgstr "ローカルパスを選択して下さい。"
 msgid "Please select at least one valid song from playlist."
 msgstr "プレイリストから少なくとも1つ有効な曲を選択して下さい。"
 
-#, c-format
 msgid ""
 "One song has format unsupported by your player.\n"
 "\n"
@@ -1221,7 +1165,6 @@ msgstr ""
 "\n"
 "続けますか？"
 
-#, c-format
 msgid ""
 "The selected song has format unsupported by your player.\n"
 "\n"
@@ -1231,7 +1174,6 @@ msgstr ""
 "\n"
 "続けますか？"
 
-#, c-format
 msgid ""
 "None of the selected songs has format supported by your player.\n"
 "\n"
@@ -2300,15 +2242,6 @@ msgstr "CDDB サーバ:"
 msgid "Connection timeout [sec]:"
 msgstr "接続タイムアウト [秒]:"
 
-msgid "Email address for submission:"
-msgstr "送信用メールアドレス:"
-
-msgid "Local CDDB directory:"
-msgstr "ローカル CDDB ディレクトリ:"
-
-msgid "Use the local database only"
-msgstr "ローカルデータベースだけを使う"
-
 msgid "Protocol for querying (direct connection only):"
 msgstr "問い合わせを行うプロトコル (直接接続のみ):"
 
@@ -2805,9 +2738,6 @@ msgstr "プレイリストに追加 (アルバムモード)"
 msgid "CDDB query for this CD..."
 msgstr "この CD を CDDB に問い合わせ..."
 
-msgid "Submit CD to CDDB database..."
-msgstr "CD を CDDB データベースに送信..."
-
 msgid "Rip CD..."
 msgstr "CD をリッピング..."
 
@@ -2871,7 +2801,6 @@ msgstr "トラックを編集"
 msgid "Duration:"
 msgstr "演奏時間:"
 
-#, c-format
 msgid "Unmeasured"
 msgstr "無制限"
 
@@ -3015,9 +2944,6 @@ msgstr "このレコードに新しいトラックを追加..."
 
 msgid "CDDB query for this record..."
 msgstr "このレコードのCDDB問い合わせ..."
-
-msgid "Submit record to CDDB database..."
-msgstr "CDDBデータベースにレコードを送信..."
 
 msgid "Add new track..."
 msgstr "新しいトラックを追加..."
@@ -3336,6 +3262,74 @@ msgstr "bit double"
 
 msgid "encoding"
 msgstr "エンコード"
+
+#~ msgid ""
+#~ "Artist appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "アーティストは全て小文字で表示されます。\n"
+#~ "続けますか？"
+
+#~ msgid ""
+#~ "Artist appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "アーティストは全て大文字で表示されます。\n"
+#~ "続けますか？"
+
+#~ msgid ""
+#~ "Title appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "タイトルは全て小文字で表示されます。\n"
+#~ "続けますか？"
+
+#~ msgid ""
+#~ "Title appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "タイトルは全て大文字で表示されます。\n"
+#~ "続けますか？"
+
+#~ msgid ""
+#~ "It is very likely that the year is wrong.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "年が間違っていると思われます。\n"
+#~ "続けますか？"
+
+#~ msgid "The email address provided for submission is invalid."
+#~ msgstr "送信するメールアドレスが無効です。"
+
+#~ msgid "An error occurred while submitting the record to the CDDB server."
+#~ msgstr "CDDB サーバにレコードを送信中にエラーが起こりました。"
+
+#~ msgid "Correct existing record"
+#~ msgstr "既存のレコードを修正"
+
+#~ msgid "Submit new record"
+#~ msgstr "新しいレコードを送信"
+
+#~ msgid "(choose a category)"
+#~ msgstr "(カテゴリを選択)"
+
+#~ msgid "You have to provide an email address for CDDB submission."
+#~ msgstr "CDDB へ送信するにはメールアドレスを提供しなければなりません。"
+
+#~ msgid "Email address for submission:"
+#~ msgstr "送信用メールアドレス:"
+
+#~ msgid "Local CDDB directory:"
+#~ msgstr "ローカル CDDB ディレクトリ:"
+
+#~ msgid "Use the local database only"
+#~ msgstr "ローカルデータベースだけを使う"
+
+#~ msgid "Submit CD to CDDB database..."
+#~ msgstr "CD を CDDB データベースに送信..."
+
+#~ msgid "Submit record to CDDB database..."
+#~ msgstr "CDDBデータベースにレコードを送信..."
 
 #~ msgid "Lua (programmable title formatting) support\n"
 #~ msgstr "Lua サポート (プログラム可能なタイトルフォーマット)\n"

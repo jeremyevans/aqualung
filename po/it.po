@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2018-12-14 07:26-0800\n"
+"POT-Creation-Date: 2023-06-04 10:45-0700\n"
 "PO-Revision-Date: 2023-01-30 19:55+0200\n"
 "Last-Translator: Albano Battistella <albano_battistellaòhotmail.com>\n"
 "Language-Team: Italiano\n"
@@ -627,54 +627,6 @@ msgstr "Importa come titolo"
 msgid "Import as Year"
 msgstr "Importa in funzione dell'anno"
 
-msgid ""
-"Artist appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Il nome dell'artista sembra essere scritto tutto a lettere minuscole.\n"
-"Vuoi continuare?"
-
-msgid ""
-"Artist appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Il nome dell'artista sembra essere scritto tutto in lettere maiuscole.\n"
-"Vuoi continuare?"
-
-msgid ""
-"Title appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Il tittolo sembra essere scritto tutto a lettere minuscole.\n"
-"Vuoi continuare?"
-
-msgid ""
-"Title appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Il titolo sembra essere scritto tutto a lettere minuscole.\n"
-"Vuoi continuare?"
-
-msgid ""
-"It is very likely that the year is wrong.\n"
-"Do you want to proceed?"
-msgstr ""
-"Potrebbe darsi che l'anno non risulta corretto.\n"
-"Vuoi continuare?"
-
-msgid "The email address provided for submission is invalid."
-msgstr "L'indirizzo e-mail indicato non è valido."
-
-msgid "An error occurred while submitting the record to the CDDB server."
-msgstr ""
-"E' avvenuto in errore durante l'interrogazione della voce al server CDDB."
-
-msgid "Correct existing record"
-msgstr "Correggi le voci esistenti"
-
-msgid "Submit new record"
-msgstr "Inserisci una nuova voce"
-
 msgid "Matches:"
 msgstr "Corrispondenze:"
 
@@ -683,9 +635,6 @@ msgstr "Titolo:"
 
 msgid "Category:"
 msgstr "Categoria:"
-
-msgid "(choose a category)"
-msgstr "(scegli una categoria)"
 
 msgid "Extended data:"
 msgstr "Dati estesi:"
@@ -698,9 +647,6 @@ msgstr "Aggiungi ai commenti"
 
 msgid "Tracks"
 msgstr "Tracce"
-
-msgid "You have to provide an email address for CDDB submission."
-msgstr "Devi indicare un indirizzo e-mail per il server CDDB."
 
 msgid "Unknown Album"
 msgstr "Album sconosciuto"
@@ -717,6 +663,7 @@ msgstr "Copia"
 msgid "Help"
 msgstr "Aiuto"
 
+#, c-format
 msgid ""
 "\n"
 "The template string you enter here will be used to construct the filename of "
@@ -726,11 +673,12 @@ msgid ""
 "identifier which is unique within an export session."
 msgstr ""
 "\n"
-"La stringa del modello che inserisci qui verrà utilizzata per costruire il nome file dei "
-"file esportati. Il nome del file originale, l'artista, il record e i nomi delle tracce "
-"sono indicati con %%o, %%a, %%r e %%t. Il numero della traccia e il formato dipendono "
-"dall'estensione del file èd è indicata rispettivamente da %%n e %%x. %%i restituisce un "
-"identificativo univoco all'interno di una sessione di esportazione."
+"La stringa del modello che inserisci qui verrà utilizzata per costruire il "
+"nome file dei file esportati. Il nome del file originale, l'artista, il "
+"record e i nomi delle tracce sono indicati con %%o, %%a, %%r e %%t. Il "
+"numero della traccia e il formato dipendono dall'estensione del file èd è "
+"indicata rispettivamente da %%n e %%x. %%i restituisce un identificativo "
+"univoco all'interno di una sessione di esportazione."
 
 msgid "Exporting files"
 msgstr "Esportazione file in corso"
@@ -997,7 +945,6 @@ msgstr "Esci"
 msgid "Position: %d%%"
 msgstr "Posizione: %d%%"
 
-#, c-format
 msgid "Mute"
 msgstr "Mute"
 
@@ -1017,7 +964,6 @@ msgstr "%d%% R"
 msgid "%d%% L"
 msgstr "%d%% L"
 
-#, c-format
 msgid "C"
 msgstr "C"
 
@@ -1199,7 +1145,6 @@ msgstr "Seleziona un percorso locale."
 msgid "Please select at least one valid song from playlist."
 msgstr "Seleziona almeno una canzone dalla playlist"
 
-#, c-format
 msgid ""
 "One song has format unsupported by your player.\n"
 "\n"
@@ -1219,7 +1164,6 @@ msgstr ""
 "\n"
 "Vuoi continuare?"
 
-#, c-format
 msgid ""
 "The selected song has format unsupported by your player.\n"
 "\n"
@@ -1229,7 +1173,6 @@ msgstr ""
 "\n"
 "Vuoi continuare?"
 
-#, c-format
 msgid ""
 "None of the selected songs has format supported by your player.\n"
 "\n"
@@ -2270,15 +2213,6 @@ msgstr "Server CDDB:"
 msgid "Connection timeout [sec]:"
 msgstr "Timeout connessione [sec]:"
 
-msgid "Email address for submission:"
-msgstr "Indirizzo e-mail per le richieste:"
-
-msgid "Local CDDB directory:"
-msgstr "Cartella locale CDDB:"
-
-msgid "Use the local database only"
-msgstr "Usa solo il database locale"
-
 msgid "Protocol for querying (direct connection only):"
 msgstr "Protocollo interrogazione (solo connessione diretta):"
 
@@ -2775,9 +2709,6 @@ msgstr "Aggiungi alla playlist (modalità album)"
 msgid "CDDB query for this CD..."
 msgstr "Interrogazione CDDB per questo CD..."
 
-msgid "Submit CD to CDDB database..."
-msgstr "Sottoponi una interogazione del CD al database CDDB..."
-
 msgid "Rip CD..."
 msgstr "Rip CD..."
 
@@ -2841,7 +2772,6 @@ msgstr "Edita la traccia"
 msgid "Duration:"
 msgstr "Durata:"
 
-#, c-format
 msgid "Unmeasured"
 msgstr "Non misurato"
 
@@ -2981,9 +2911,6 @@ msgstr "Aggiungi una nuova traccia all'attuale registrazione..."
 
 msgid "CDDB query for this record..."
 msgstr "Richiesta CDDB per il documento indicato..."
-
-msgid "Submit record to CDDB database..."
-msgstr "Demanda la ricerca del documento al database CDDB..."
 
 msgid "Add new track..."
 msgstr "Aggiungi nuova traccia..."
@@ -3300,6 +3227,75 @@ msgstr "bit double"
 
 msgid "encoding"
 msgstr "Codifica"
+
+#~ msgid ""
+#~ "Artist appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Il nome dell'artista sembra essere scritto tutto a lettere minuscole.\n"
+#~ "Vuoi continuare?"
+
+#~ msgid ""
+#~ "Artist appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Il nome dell'artista sembra essere scritto tutto in lettere maiuscole.\n"
+#~ "Vuoi continuare?"
+
+#~ msgid ""
+#~ "Title appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Il tittolo sembra essere scritto tutto a lettere minuscole.\n"
+#~ "Vuoi continuare?"
+
+#~ msgid ""
+#~ "Title appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Il titolo sembra essere scritto tutto a lettere minuscole.\n"
+#~ "Vuoi continuare?"
+
+#~ msgid ""
+#~ "It is very likely that the year is wrong.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Potrebbe darsi che l'anno non risulta corretto.\n"
+#~ "Vuoi continuare?"
+
+#~ msgid "The email address provided for submission is invalid."
+#~ msgstr "L'indirizzo e-mail indicato non è valido."
+
+#~ msgid "An error occurred while submitting the record to the CDDB server."
+#~ msgstr ""
+#~ "E' avvenuto in errore durante l'interrogazione della voce al server CDDB."
+
+#~ msgid "Correct existing record"
+#~ msgstr "Correggi le voci esistenti"
+
+#~ msgid "Submit new record"
+#~ msgstr "Inserisci una nuova voce"
+
+#~ msgid "(choose a category)"
+#~ msgstr "(scegli una categoria)"
+
+#~ msgid "You have to provide an email address for CDDB submission."
+#~ msgstr "Devi indicare un indirizzo e-mail per il server CDDB."
+
+#~ msgid "Email address for submission:"
+#~ msgstr "Indirizzo e-mail per le richieste:"
+
+#~ msgid "Local CDDB directory:"
+#~ msgstr "Cartella locale CDDB:"
+
+#~ msgid "Use the local database only"
+#~ msgstr "Usa solo il database locale"
+
+#~ msgid "Submit CD to CDDB database..."
+#~ msgstr "Sottoponi una interogazione del CD al database CDDB..."
+
+#~ msgid "Submit record to CDDB database..."
+#~ msgstr "Demanda la ricerca del documento al database CDDB..."
 
 #~ msgid "label_songs"
 #~ msgstr "etichetta canzoni"

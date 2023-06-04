@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2018-12-14 07:26-0800\n"
+"POT-Creation-Date: 2023-06-04 10:45-0700\n"
 "PO-Revision-Date: 2010-09-20 21:38+0800\n"
 "Last-Translator: Yinghua Wang <wantinghard@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com> \n"
@@ -633,53 +633,6 @@ msgstr "导入为标题"
 msgid "Import as Year"
 msgstr "导入为年份"
 
-msgid ""
-"Artist appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"艺人似乎全是小写字母的。\n"
-"继续进行吗？"
-
-msgid ""
-"Artist appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"艺人似乎全是大写字母的。\n"
-"继续进行吗？"
-
-msgid ""
-"Title appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"标题似乎全是小写字母的。\n"
-"继续进行吗？"
-
-msgid ""
-"Title appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"标题似乎全是大写字母的。\n"
-"继续进行吗？"
-
-msgid ""
-"It is very likely that the year is wrong.\n"
-"Do you want to proceed?"
-msgstr ""
-"年份很可能有错误。\n"
-"继续进行吗？"
-
-msgid "The email address provided for submission is invalid."
-msgstr "提供的提交电子邮件地址无效。"
-
-msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "在将记录提交给 CDDB 服务器时出现了一个错误。"
-
-msgid "Correct existing record"
-msgstr "修正现有记录"
-
-msgid "Submit new record"
-msgstr "提交新记录"
-
 msgid "Matches:"
 msgstr "匹配："
 
@@ -688,9 +641,6 @@ msgstr "标题："
 
 msgid "Category:"
 msgstr "分类："
-
-msgid "(choose a category)"
-msgstr "(选择一个分类)"
 
 msgid "Extended data:"
 msgstr "扩展数据："
@@ -703,9 +653,6 @@ msgstr "添加到备注"
 
 msgid "Tracks"
 msgstr "音轨"
-
-msgid "You have to provide an email address for CDDB submission."
-msgstr "您必须提供一个用于 CDDB 提交的电子邮件地址。"
 
 msgid "Unknown Album"
 msgstr "未知专辑"
@@ -999,7 +946,6 @@ msgstr "退出"
 msgid "Position: %d%%"
 msgstr "位置：%d%%"
 
-#, c-format
 msgid "Mute"
 msgstr "静音"
 
@@ -1019,7 +965,6 @@ msgstr "%d%% 右"
 msgid "%d%% L"
 msgstr "%d%% 左"
 
-#, c-format
 msgid "C"
 msgstr "中"
 
@@ -1199,7 +1144,6 @@ msgstr "请选择一个本地路径。"
 msgid "Please select at least one valid song from playlist."
 msgstr "请至少从列表中选择一首有效歌曲。"
 
-#, c-format
 msgid ""
 "One song has format unsupported by your player.\n"
 "\n"
@@ -1219,7 +1163,6 @@ msgstr ""
 "\n"
 "继续进行吗？"
 
-#, c-format
 msgid ""
 "The selected song has format unsupported by your player.\n"
 "\n"
@@ -1229,7 +1172,6 @@ msgstr ""
 "\n"
 "继续进行吗？"
 
-#, c-format
 msgid ""
 "None of the selected songs has format supported by your player.\n"
 "\n"
@@ -2297,15 +2239,6 @@ msgstr "CDDB 服务器："
 msgid "Connection timeout [sec]:"
 msgstr "连接超时 [秒]："
 
-msgid "Email address for submission:"
-msgstr "订阅用的电子邮件地址："
-
-msgid "Local CDDB directory:"
-msgstr "本地 CDDB 目录："
-
-msgid "Use the local database only"
-msgstr "只使用本地数据库"
-
 msgid "Protocol for querying (direct connection only):"
 msgstr "查询使用的协议(仅用于直接连接)："
 
@@ -2802,9 +2735,6 @@ msgstr "添加到播放列表(专辑模式)"
 msgid "CDDB query for this CD..."
 msgstr "进行这张 CD 的 CDDB 查询..."
 
-msgid "Submit CD to CDDB database..."
-msgstr "将 CD 提交到 CDDB 数据库..."
-
 msgid "Rip CD..."
 msgstr "提取 CD..."
 
@@ -2868,7 +2798,6 @@ msgstr "编辑音轨"
 msgid "Duration:"
 msgstr "持续时间："
 
-#, c-format
 msgid "Unmeasured"
 msgstr "未测量的"
 
@@ -3011,9 +2940,6 @@ msgstr "向记录中添加新的音轨..."
 
 msgid "CDDB query for this record..."
 msgstr "进行此记录的 CDDB 查询..."
-
-msgid "Submit record to CDDB database..."
-msgstr "将记录提交到 CDDB 数据库..."
 
 msgid "Add new track..."
 msgstr "添加新音轨..."
@@ -3333,6 +3259,74 @@ msgstr "bit double"
 
 msgid "encoding"
 msgstr "编码"
+
+#~ msgid ""
+#~ "Artist appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "艺人似乎全是小写字母的。\n"
+#~ "继续进行吗？"
+
+#~ msgid ""
+#~ "Artist appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "艺人似乎全是大写字母的。\n"
+#~ "继续进行吗？"
+
+#~ msgid ""
+#~ "Title appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "标题似乎全是小写字母的。\n"
+#~ "继续进行吗？"
+
+#~ msgid ""
+#~ "Title appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "标题似乎全是大写字母的。\n"
+#~ "继续进行吗？"
+
+#~ msgid ""
+#~ "It is very likely that the year is wrong.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "年份很可能有错误。\n"
+#~ "继续进行吗？"
+
+#~ msgid "The email address provided for submission is invalid."
+#~ msgstr "提供的提交电子邮件地址无效。"
+
+#~ msgid "An error occurred while submitting the record to the CDDB server."
+#~ msgstr "在将记录提交给 CDDB 服务器时出现了一个错误。"
+
+#~ msgid "Correct existing record"
+#~ msgstr "修正现有记录"
+
+#~ msgid "Submit new record"
+#~ msgstr "提交新记录"
+
+#~ msgid "(choose a category)"
+#~ msgstr "(选择一个分类)"
+
+#~ msgid "You have to provide an email address for CDDB submission."
+#~ msgstr "您必须提供一个用于 CDDB 提交的电子邮件地址。"
+
+#~ msgid "Email address for submission:"
+#~ msgstr "订阅用的电子邮件地址："
+
+#~ msgid "Local CDDB directory:"
+#~ msgstr "本地 CDDB 目录："
+
+#~ msgid "Use the local database only"
+#~ msgstr "只使用本地数据库"
+
+#~ msgid "Submit CD to CDDB database..."
+#~ msgstr "将 CD 提交到 CDDB 数据库..."
+
+#~ msgid "Submit record to CDDB database..."
+#~ msgstr "将记录提交到 CDDB 数据库..."
 
 #~ msgid "Lua (programmable title formatting) support\n"
 #~ msgstr "Lua(可编程的标题格式定义) 支持\n"

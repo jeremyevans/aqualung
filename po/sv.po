@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aqualung svn version 1055\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2018-12-14 07:26-0800\n"
+"POT-Creation-Date: 2023-06-04 10:45-0700\n"
 "PO-Revision-Date: 2009-01-21 15:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -624,53 +624,6 @@ msgstr "Importera som Titel"
 msgid "Import as Year"
 msgstr "Importera som År"
 
-msgid ""
-"Artist appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Artistnamnet ser ut att bara bestå av små bokstäver.\n"
-"Vill du fortsätta?"
-
-msgid ""
-"Artist appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Artistnamnet ser ut att bara bestå av stora bokstäver.\n"
-"Vill du fortsätta?"
-
-msgid ""
-"Title appears to be in all lowercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Titeln ser ut att bara bestå av små bokstäver.\n"
-"Vill du fortsätta?"
-
-msgid ""
-"Title appears to be in all uppercase.\n"
-"Do you want to proceed?"
-msgstr ""
-"Titeln ser ut att bara bestå av stora bokstäver.\n"
-"Vill du fortsätta?"
-
-msgid ""
-"It is very likely that the year is wrong.\n"
-"Do you want to proceed?"
-msgstr ""
-"Det är väldigt troligt att året är fel.\n"
-"Vill du fortsätta?"
-
-msgid "The email address provided for submission is invalid."
-msgstr "E-postadressen som tillhandahölls för uppladdning är ogiltig."
-
-msgid "An error occurred while submitting the record to the CDDB server."
-msgstr "Ett fel inträffade då skivan skulle skickas in till CDDB-servern."
-
-msgid "Correct existing record"
-msgstr "Rätta existerande skiva"
-
-msgid "Submit new record"
-msgstr "Skicka in ny skiva"
-
 msgid "Matches:"
 msgstr ""
 
@@ -679,9 +632,6 @@ msgstr "Titel:"
 
 msgid "Category:"
 msgstr "Kategori:"
-
-msgid "(choose a category)"
-msgstr "(välj en kategori)"
 
 msgid "Extended data:"
 msgstr "Utökat data:"
@@ -694,9 +644,6 @@ msgstr "Lägg till i kommentarer"
 
 msgid "Tracks"
 msgstr "Spår"
-
-msgid "You have to provide an email address for CDDB submission."
-msgstr "Du måste tillhandahålla en e-postadress för att ladda upp till CDDB."
 
 msgid "Unknown Album"
 msgstr "Okänt album"
@@ -984,7 +931,6 @@ msgstr "Avsluta"
 msgid "Position: %d%%"
 msgstr "Position: %d%%"
 
-#, c-format
 msgid "Mute"
 msgstr "Tysta"
 
@@ -1004,7 +950,6 @@ msgstr "%d%% H"
 msgid "%d%% L"
 msgstr "%d%% V"
 
-#, c-format
 msgid "C"
 msgstr "M"
 
@@ -1187,7 +1132,6 @@ msgstr "Var god välj en lokal sökväg."
 msgid "Please select at least one valid song from playlist."
 msgstr "Var god välj minst en giltig låt från spellista."
 
-#, c-format
 msgid ""
 "One song has format unsupported by your player.\n"
 "\n"
@@ -1207,7 +1151,6 @@ msgstr ""
 "\n"
 "Vill du fortsätta?"
 
-#, c-format
 msgid ""
 "The selected song has format unsupported by your player.\n"
 "\n"
@@ -1217,7 +1160,6 @@ msgstr ""
 "\n"
 "Vill du fortsätta?"
 
-#, c-format
 msgid ""
 "None of the selected songs has format supported by your player.\n"
 "\n"
@@ -2269,15 +2211,6 @@ msgstr "CDDB-server:"
 msgid "Connection timeout [sec]:"
 msgstr ""
 
-msgid "Email address for submission:"
-msgstr "E-postadress för uppladdning:"
-
-msgid "Local CDDB directory:"
-msgstr "Lokal CDDB-katalog:"
-
-msgid "Use the local database only"
-msgstr "Använd bara den lokala databasen"
-
 msgid "Protocol for querying (direct connection only):"
 msgstr "Frågeprotokoll (bara direktanslutning):"
 
@@ -2774,9 +2707,6 @@ msgstr "Lägg till i spellista (albumläge)"
 msgid "CDDB query for this CD..."
 msgstr "CDDB-fråga efter denna cd..."
 
-msgid "Submit CD to CDDB database..."
-msgstr "Skicka in cd till CDDB-databasen..."
-
 msgid "Rip CD..."
 msgstr "Extrahera cd..."
 
@@ -2840,7 +2770,6 @@ msgstr "Redigera spår"
 msgid "Duration:"
 msgstr "Varaktighet:"
 
-#, c-format
 msgid "Unmeasured"
 msgstr ""
 
@@ -2982,9 +2911,6 @@ msgstr "Lägg till nytt spår till denna skiva..."
 
 msgid "CDDB query for this record..."
 msgstr "CDDB-fråga efter denna skiva..."
-
-msgid "Submit record to CDDB database..."
-msgstr "Skicka in skiva till CDDB-databasen..."
 
 msgid "Add new track..."
 msgstr "Lägg till nytt spår..."
@@ -3303,6 +3229,75 @@ msgstr ""
 
 msgid "encoding"
 msgstr "kodning"
+
+#~ msgid ""
+#~ "Artist appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Artistnamnet ser ut att bara bestå av små bokstäver.\n"
+#~ "Vill du fortsätta?"
+
+#~ msgid ""
+#~ "Artist appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Artistnamnet ser ut att bara bestå av stora bokstäver.\n"
+#~ "Vill du fortsätta?"
+
+#~ msgid ""
+#~ "Title appears to be in all lowercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Titeln ser ut att bara bestå av små bokstäver.\n"
+#~ "Vill du fortsätta?"
+
+#~ msgid ""
+#~ "Title appears to be in all uppercase.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Titeln ser ut att bara bestå av stora bokstäver.\n"
+#~ "Vill du fortsätta?"
+
+#~ msgid ""
+#~ "It is very likely that the year is wrong.\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Det är väldigt troligt att året är fel.\n"
+#~ "Vill du fortsätta?"
+
+#~ msgid "The email address provided for submission is invalid."
+#~ msgstr "E-postadressen som tillhandahölls för uppladdning är ogiltig."
+
+#~ msgid "An error occurred while submitting the record to the CDDB server."
+#~ msgstr "Ett fel inträffade då skivan skulle skickas in till CDDB-servern."
+
+#~ msgid "Correct existing record"
+#~ msgstr "Rätta existerande skiva"
+
+#~ msgid "Submit new record"
+#~ msgstr "Skicka in ny skiva"
+
+#~ msgid "(choose a category)"
+#~ msgstr "(välj en kategori)"
+
+#~ msgid "You have to provide an email address for CDDB submission."
+#~ msgstr ""
+#~ "Du måste tillhandahålla en e-postadress för att ladda upp till CDDB."
+
+#~ msgid "Email address for submission:"
+#~ msgstr "E-postadress för uppladdning:"
+
+#~ msgid "Local CDDB directory:"
+#~ msgstr "Lokal CDDB-katalog:"
+
+#~ msgid "Use the local database only"
+#~ msgstr "Använd bara den lokala databasen"
+
+#~ msgid "Submit CD to CDDB database..."
+#~ msgstr "Skicka in cd till CDDB-databasen..."
+
+#~ msgid "Submit record to CDDB database..."
+#~ msgstr "Skicka in skiva till CDDB-databasen..."
 
 #~ msgid "Lua (programmable title formatting) support\n"
 #~ msgstr "Stöd för Lua (programmeringsbar titelformatering)\n"

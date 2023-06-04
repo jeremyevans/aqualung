@@ -171,7 +171,7 @@ is_valid_extension(char ** valid_extensions, char * filename, int module) {
 void
 file_decoder_init(void) {
 
-#ifdef HAVE_LAVC
+#if defined(HAVE_LAVC) && !defined(LIBAVCODEC_VERSION_MAJOR) && LIBAVCODEC_VERSION_MAJOR < 58
 	av_register_all();
 #endif /* HAVE_LAVC */
 }

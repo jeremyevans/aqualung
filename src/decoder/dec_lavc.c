@@ -112,10 +112,14 @@ void conv_fmt_dblp(int n_samples, int channels, int sample_size, float * fsample
 	}
 }
 
-#if defined(LIBAVCODEC_VERSION_MAJOR) && LIBAVCODEC_VERSION_MAJOR >= 58
+#if defined(LIBAVCODEC_VERSION_MAJOR) && LIBAVCODEC_VERSION_MAJOR >= 59
+#define FFMPEG5
+#endif
+
+#ifdef FFMPEG5
 #define codec_channels(ctx) (ctx)->ch_layout.nb_channels
 #define stream_codec(stream) (stream)->codecpar
-#elif
+#else
 #define codec_channels(ctx) (ctx)->channels
 #define stream_codec(stream) (stream)->codec
 #endif
@@ -127,7 +131,7 @@ int decode_audio(AVCodecContext *avctx, float *fsamples, int *frame_size_ptr, AV
 	int ret;
 	AVFrame frame = { { 0 } };
 
-#if defined(LIBAVCODEC_VERSION_MAJOR) && LIBAVCODEC_VERSION_MAJOR >= 58
+#ifdef FFMPEG5
 	ret = avcodec_send_packet(avctx, avpkt);
 	if (ret < 0) {
 		*frame_size_ptr = 0;
@@ -143,7 +147,7 @@ int decode_audio(AVCodecContext *avctx, float *fsamples, int *frame_size_ptr, AV
 			*frame_size_ptr = 0;
 			return ret;
 		}
-#elif
+#else
 	int got_frame = 0;
 
 	ret = avcodec_decode_audio4(avctx, &frame, &got_frame, avpkt);
@@ -211,9 +215,9 @@ decode_lavc(decoder_t * dec) {
 
 	rb_write(pd->rb, (char *)fsamples, n_samples * sample_size);
 end:
-#if defined(LIBAVCODEC_VERSION_MAJOR) && LIBAVCODEC_VERSION_MAJOR >= 58
+#ifdef FFMPEG5
 	av_packet_unref(&packet);
-#elif
+#else
 	av_free_packet(&packet);
 #endif
         return 0;
@@ -276,9 +280,9 @@ lavc_decoder_open(decoder_t * dec, char * filename) {
 
 	/* debug */
 #ifdef LAVC_DEBUG
-#if defined(LIBAVCODEC_VERSION_MAJOR) && LIBAVCODEC_VERSION_MAJOR >= 58
+#ifdef FFMPEG5
 	av_dump_format(pd->avFormatCtx, 0, filename, 0);
-#elif
+#else
 	dump_format(pd->avFormatCtx, 0, filename, 0);
 #endif
 #endif /* LAVC_DEBUG */
@@ -294,10 +298,10 @@ lavc_decoder_open(decoder_t * dec, char * filename) {
 		return DECODER_OPEN_BADLIB;
 
 
-#if defined(LIBAVCODEC_VERSION_MAJOR) && LIBAVCODEC_VERSION_MAJOR >= 58
+#ifdef FFMPEG5
 	pd->avCodec = (AVCodec *)avcodec_find_decoder(pd->avFormatCtx->streams[pd->audioStream]->codecpar->codec_id);
 	pd->avCodecCtx = avcodec_alloc_context3(pd->avCodec);
-#elif
+#else
 	pd->avCodecCtx = pd->avFormatCtx->streams[pd->audioStream]->codec;
 	pd->avCodec = avcodec_find_decoder(pd->avCodecCtx->codec_id);
 #endif
@@ -307,7 +311,7 @@ lavc_decoder_open(decoder_t * dec, char * filename) {
 	if (pd->avCodec == NULL)
 		return DECODER_OPEN_BADLIB;
 
-#if defined(LIBAVCODEC_VERSION_MAJOR) && LIBAVCODEC_VERSION_MAJOR >= 58
+#ifdef FFMPEG5
 	avcodec_parameters_to_context(pd->avCodecCtx, pd->avFormatCtx->streams[pd->audioStream]->codecpar);
 #endif
 	if (avcodec_open2(pd->avCodecCtx, pd->avCodec, NULL) < 0)

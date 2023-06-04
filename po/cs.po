@@ -2336,8 +2336,8 @@ msgstr "Použít pouze místní databázi"
 msgid "Protocol for querying (direct connection only):"
 msgstr "Protokol pro dotazování (pouze přímé připojení):"
 
-msgid "CDDBP (port 888)"
-msgstr "CDDBP (přípojka 888)"
+msgid "CDDBP (port 8880)"
+msgstr "CDDBP (přípojka 8880)"
 
 msgid "HTTP (port 80)"
 msgstr "HTTP (přípojka 80)"

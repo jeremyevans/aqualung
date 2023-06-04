@@ -2352,7 +2352,7 @@ msgid "Protocol for querying (direct connection only):"
 msgstr "Protocole pour les requêtes (connexion directe seulement) :"
 
 #, fuzzy
-msgid "CDDBP (port 888)"
+msgid "CDDBP (port 8880)"
 msgstr "Support CDDB\n"
 
 msgid "HTTP (port 80)"

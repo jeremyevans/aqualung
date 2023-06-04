@@ -2343,8 +2343,8 @@ msgid "Protocol for querying (direct connection only):"
 msgstr ""
 "Protocol voor opvragen van informatie (alleen via een directe verbinding):"
 
-msgid "CDDBP (port 888)"
-msgstr "CDDBP (port 888)"
+msgid "CDDBP (port 8880)"
+msgstr "CDDBP (port 8880)"
 
 msgid "HTTP (port 80)"
 msgstr "HTTP (port 80)"

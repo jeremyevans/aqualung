@@ -2364,8 +2364,8 @@ msgstr "Usar solo la base de datos local"
 msgid "Protocol for querying (direct connection only):"
 msgstr "Protocolo para consulta (solo conexión directa):"
 
-msgid "CDDBP (port 888)"
-msgstr "CDDBP (puerto 888)"
+msgid "CDDBP (port 8880)"
+msgstr "CDDBP (puerto 8880)"
 
 msgid "HTTP (port 80)"
 msgstr "HTTP (puerto 80)"

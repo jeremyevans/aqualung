@@ -2309,8 +2309,8 @@ msgstr "只使用本地数据库"
 msgid "Protocol for querying (direct connection only):"
 msgstr "查询使用的协议(仅用于直接连接)："
 
-msgid "CDDBP (port 888)"
-msgstr "CDDBP (端口 888)"
+msgid "CDDBP (port 8880)"
+msgstr "CDDBP (端口 8880)"
 
 msgid "HTTP (port 80)"
 msgstr "HTTP (端口 80)"

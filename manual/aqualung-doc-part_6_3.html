@@ -5,13 +5,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="aqualung-doc.css" />
 </head>
-<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 6.2. <a href="aqualung-doc-part_6_2.html">Mass tagging</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 6.4. <a href="aqualung-doc-part_6_4.html">Overview of supported metadata formats</a></td></tr></table><hr /><h2>6.3. Metadata-related behavior</h2><div class="toc1">6.3.1. <a href="#idp978720384">Configuration</a></div>
-<div class="toc1">6.3.2. <a href="#idp3720097792">Precedence of metadata information</a></div>
-<div class="toc1">6.3.3. <a href="#idp670685952">ReplayGain and RVA</a></div>
-<div class="toc1">6.3.4. <a href="#idp2777869312">Metadata transfer when exporting</a></div>
+<body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 6.2. <a href="aqualung-doc-part_6_2.html">Mass tagging</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 6.4. <a href="aqualung-doc-part_6_4.html">Overview of supported metadata formats</a></td></tr></table><hr /><h2>6.3. Metadata-related behavior</h2><div class="toc1">6.3.1. <a href="#id19">Configuration</a></div>
+<div class="toc1">6.3.2. <a href="#id20">Precedence of metadata information</a></div>
+<div class="toc1">6.3.3. <a href="#id21">ReplayGain and RVA</a></div>
+<div class="toc1">6.3.4. <a href="#id22">Metadata transfer when exporting</a></div>
 
 
-<h3 id="idp978720384">6.3.1. Configuration</h3>
+<h3 id="id19">6.3.1. Configuration</h3>
 
 <p>Configuring metdata-related behavior can be done in
 <span class="gui">Settings / Metadata</span>. The file metadata will
@@ -50,7 +50,7 @@ files.</p>
 
 
 
-<h3 id="idp3720097792">6.3.2. Precedence of metadata information</h3>
+<h3 id="id20">6.3.2. Precedence of metadata information</h3>
 
 <p>Whenever there is a generic request for some information
 concerning a file (e.g. `Who is the artist?') we do not
@@ -100,10 +100,10 @@ order in which the different tags are queried.</p>
 
 
 
-<h3 id="idp670685952">6.3.3. ReplayGain and RVA</h3>
+<h3 id="id21">6.3.3. ReplayGain and RVA</h3>
 
 <p>Aqualung is a ReplayGain-aware music player. You have to
-understand and use the <a href="aqualung-doc-part_5_3.html#idp3465702784">RVA system</a> in
+understand and use the <a href="aqualung-doc-part_5_3.html#id477">RVA system</a> in
 order to make use of this. The RVA system relies on
 pre-stored loudness measurements of files, which Aqualung
 normally does by itself (by selecting the <span class="gui">Calculate
@@ -139,7 +139,7 @@ specifying the amount of cut or boost to apply when playing
 the track. On the other hand, Aqualung's loudness levels
 merely serve as an indicator of the track's loudness, and
 are converted to actual volume adjustment values when adding
-the track to the Playlist, via <a href="aqualung-doc-part_5_3.html#idp3465702784">Aqualung's
+the track to the Playlist, via <a href="aqualung-doc-part_5_3.html#id477">Aqualung's
 RVA algorithm</a>, which is a quite sophisticated tool
 based on listening environments, also supporting
 statistics-based handling of Album-based volume
@@ -147,9 +147,9 @@ averaging.</p>
 
 
 
-<h3 id="idp2777869312">6.3.4. Metadata transfer when exporting</h3>
+<h3 id="id22">6.3.4. Metadata transfer when exporting</h3>
 
-<p>When <a href="aqualung-doc-part_5_1.html#idp486846848">exporting files</a>,
+<p>When <a href="aqualung-doc-part_5_1.html#id475">exporting files</a>,
 Aqualung attempts to retain the metadata of the original
 file as much as possible by transcoding metadata into the
 tags supported by the output format. For each frame present
@@ -160,7 +160,7 @@ converted and stored. Note that for each frame type
 (e.g. `Title'), only one source tag is chosen to be
 copied from even if it is present in more than one tag in
 the input metadata. In this case the tag with the highest
-<a href="aqualung-doc-part_6_3.html#idp3720097792">precedence</a> is used as
+<a href="aqualung-doc-part_6_3.html#id20">precedence</a> is used as
 input. Of course, if more instances of the same frame are
 present in the same tag (e.g. multiple APIC frames in an
 ID3v2 tag), they are all transferred if the output metadata

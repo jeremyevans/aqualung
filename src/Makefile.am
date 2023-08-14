@@ -25,7 +25,7 @@ aqualung_CFLAGS = $(xml_CFLAGS) $(gtk_CFLAGS) $(glib_CFLAGS) \
 aqualung_LDADD = $(LDADD) $(xml_LIBS) $(gtk_LIBS) $(glib_LIBS) \
                  $(alsa_LIBS) $(jack_LIBS) $(oss_LIBS) $(pulse_LIBS) \
                  $(sndio_LIBS) $(winmm_LIBS) \
-                 $(flac_LIBS) $(lame_LIBS) $(lavc_LIBS) $(mac_LIBS) \
+                 $(flac_LIBS) $(lame_LIBS) $(lavc_LIBS) $(MAC_LIBS) \
                  $(mad_LIBS) $(mod_LIBS) $(mpc_LIBS) $(sndfile_LIBS) \
                  $(speex_LIBS) $(vorbis_LIBS) $(vorbisenc_LIBS) \
                  $(wavpack_LIBS) \

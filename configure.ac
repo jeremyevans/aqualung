@@ -275,11 +275,11 @@ AQUALUNG_DETECT([lavc], [Libav / FFmpeg],
         [AQUALUNG_FOUND([lavc])],
         [AQUALUNG_MISSING([lavc], [$lavc_PKG_ERRORS])])])
 
-AQUALUNG_DETECT([mac], [Monkey's Audio Codec],
-    [AC_CHECK_LIB([mac], [CreateIAPEDecompress],
-        [AQUALUNG_FOUND([mac], [-lmac -lstdc++])],
-        [AQUALUNG_MISSING([mac],
-            [Monkey's Audio Codec support requires libmac])],
+AQUALUNG_DETECT([MAC], [Monkey's Audio Codec],
+    [AC_CHECK_LIB([MAC], [CreateIAPEDecompress],
+        [AQUALUNG_FOUND([MAC], [-lMAC -lstdc++])],
+        [AQUALUNG_MISSING([MAC],
+            [Monkey's Audio Codec support requires libMAC])],
         [-lstdc++])])
 
 AQUALUNG_DETECT([mod], [MOD Audio],

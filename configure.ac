@@ -282,7 +282,7 @@ AQUALUNG_DETECT([MAC], [Monkey's Audio Codec],
           AS_CASE([$host_os],
             [cygwin*|mingw*], [AC_DEFINE([PLATFORM_WINDOWS], [1], [Defined if Windows])],
             [darwin*], [AC_DEFINE([PLATFORM_DARWIN], [1], [Defined if Darwin])],
-            [linux*], [AC_DEFINE([PLATFORM_LINUX], [1], [Defined if Linux])])
+            [linux*|*bsd*], [AC_DEFINE([PLATFORM_LINUX], [1], [Defined if Linux/BSD])])
         ],
         [AQUALUNG_MISSING([MAC],
             [Monkey's Audio Codec support requires libMAC])],

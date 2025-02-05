@@ -196,9 +196,9 @@ extern GtkWidget * fxbuilder_window;
 GtkWidget * plugin_toggle;
 #endif /* HAVE_LADSPA */
 
-GtkObject * adj_pos;
-GtkObject * adj_vol;
-GtkObject * adj_bal;
+GObject * adj_pos;
+GObject * adj_vol;
+GObject * adj_bal;
 GtkWidget * scale_pos;
 GtkWidget * scale_vol;
 GtkWidget * scale_bal;

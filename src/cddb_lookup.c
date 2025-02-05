@@ -908,7 +908,7 @@ cddb_dialog(cddb_lookup_t * data) {
 
         dialog = gtk_dialog_new_with_buttons(NULL,
 					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+					     GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					     NULL);
@@ -927,14 +927,14 @@ cddb_dialog(cddb_lookup_t * data) {
         label = gtk_label_new(_("Matches:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
 
-        data->combo = gtk_combo_box_new_text();
+        data->combo = gtk_combo_box_text_new();
         for (i = 0; i < data->nrecords; i++) {
                 arr_snprintf(text, "%d. %s: %s [%x] ",
                              i + 1,
                              notnull(cddb_disc_get_artist(data->records[i])),
                              notnull(cddb_disc_get_title(data->records[i])),
                              cddb_disc_get_discid(data->records[i]));
-                gtk_combo_box_append_text(GTK_COMBO_BOX(data->combo), text);
+                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(data->combo), text);
         }
 
         gtk_combo_box_set_active(GTK_COMBO_BOX(data->combo), 0);

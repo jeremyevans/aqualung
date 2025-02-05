@@ -387,7 +387,7 @@ create_dialog_layout(char * title, GtkWidget ** dialog, GtkWidget ** table, int 
 
         *dialog = gtk_dialog_new_with_buttons(title,
 					      GTK_WINDOW(browser_window),
-					      GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					      NULL);
@@ -796,7 +796,7 @@ add_record_dialog(char * name, size_t name_size, char * sort, size_t sort_size, 
 	column = gtk_tree_view_column_new_with_attributes(_("Clear list"), cell, "text", 0, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tracklist_tree), GTK_TREE_VIEW_COLUMN(column));
 	gtk_tree_view_set_headers_clickable(GTK_TREE_VIEW(tracklist_tree), TRUE);
-	g_signal_connect(G_OBJECT(TVCOL_BUTTON(column)),
+	g_signal_connect(G_OBJECT(gtk_tree_view_column_get_button(column)),
                          "clicked", G_CALLBACK(clicked_tracklist_header), store);
         gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), 0, GTK_SORT_ASCENDING);
 
@@ -1043,7 +1043,7 @@ edit_track_dialog(char * name, size_t name_size, char * sort, size_t sort_size, 
 	GtkWidget * duration_entry;
 	GtkWidget * volume_entry;
 	GtkWidget * check_button;
-	GtkObject * adj_manual_rva;
+	GObject * adj_manual_rva;
 	GtkWidget * spin_button;
 
 	char str[MAXLEN];

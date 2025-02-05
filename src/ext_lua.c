@@ -60,7 +60,7 @@
 
 extern options_t options;
 extern char current_file[MAXLEN];
-extern GtkObject * adj_pos;
+extern GObject * adj_pos;
 
 static lua_State * L = NULL;
 static GtkWidget * l_playlist_menu_entry = NULL;

@@ -288,7 +288,7 @@ podcast_dialog(podcast_t ** podcast, int create) {
 
         dialog = gtk_dialog_new_with_buttons(create ? _("Subscribe to new feed") : _("Edit feed settings"),
 					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+					     GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					     NULL);
@@ -905,7 +905,7 @@ podcast_store__reorder_cb(gpointer data) {
 
         dialog = gtk_dialog_new_with_buttons(_("Reorder feeds"),
 					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+					     GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					     NULL);

@@ -122,9 +122,8 @@ aqualung_loop_bar_draw_marker(GtkWidget * widget, cairo_t * cr, int x, int heigh
 
 
 gboolean
-aqualung_loop_bar_expose(GtkWidget * widget, GdkEventExpose * event) {
+aqualung_loop_bar_draw(GtkWidget * widget, cairo_t * cr) {
 
-        cairo_t * cr;
 	int x_start;
 	int x_end;
 	int height;
@@ -147,13 +146,6 @@ aqualung_loop_bar_expose(GtkWidget * widget, GdkEventExpose * event) {
 	x_start = (allocation.width - 2 * priv->margin) * priv->start + priv->margin;
 	x_end = (allocation.width - 2 * priv->margin) * priv->end + priv->margin;
 	height = allocation.height;
-
-	cr = gdk_cairo_create(gtk_widget_get_window(widget));
-
-        cairo_rectangle(cr,
-                        event->area.x, event->area.y,
-                        event->area.width, event->area.height);
-        cairo_clip(cr);
 
 	cairo_set_line_width(cr, 1.0);
 
@@ -182,8 +174,6 @@ aqualung_loop_bar_expose(GtkWidget * widget, GdkEventExpose * event) {
 			     bg2_b * 2);
 	cairo_stroke(cr);
 
-        cairo_destroy(cr);
-
 	return FALSE;
 }
 
@@ -191,18 +181,18 @@ aqualung_loop_bar_expose(GtkWidget * widget, GdkEventExpose * event) {
 void
 aqualung_loop_bar_redraw_canvas(GtkWidget * widget) {
 
-        GdkRegion *region;
+        cairo_region_t *region;
 	GdkWindow * window = gtk_widget_get_window(widget);
-        
+
 	if (!window) {
 		/* loop bar isn't realized */
 		return;
 	}
 
-	region = gdk_drawable_get_clip_region(window);
+	region = gdk_window_get_clip_region(window);
 	gdk_window_invalidate_region(window, region, TRUE);
 	gdk_window_process_updates(window, TRUE);
-        gdk_region_destroy(region);
+        cairo_region_destroy(region);
 }
 
 
@@ -387,7 +377,7 @@ aqualung_loop_bar_class_init(AqualungLoopBarClass * class) {
                         G_TYPE_FLOAT,
                         G_TYPE_FLOAT);
 
-        widget_class->expose_event = aqualung_loop_bar_expose;
+        widget_class->draw = aqualung_loop_bar_draw;
 	widget_class->button_press_event = aqualung_loop_bar_button_press;
 	widget_class->button_release_event = aqualung_loop_bar_button_release;
 	widget_class->motion_notify_event = aqualung_loop_bar_motion_notify;

@@ -250,12 +250,12 @@ ripper_destdir_browse_cb(GtkButton * button, gpointer data) {
 GtkWidget *
 create_ripper_deststore_combo(void) {
 
-	GtkWidget * combo = gtk_combo_box_new_text();
+	GtkWidget * combo = gtk_combo_box_text_new();
 	GtkTreeIter iter;
 	int n = 0;
 	int i;
 
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), _("(none)"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), _("(none)"));
 
 	i = 0;
 	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter, NULL, i++)) {
@@ -276,7 +276,7 @@ create_ripper_deststore_combo(void) {
 
                 gtk_tree_model_get(GTK_TREE_MODEL(music_store), &iter,
 				   MS_COL_NAME, &name, -1);
-		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), name);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), name);
 		++n;
 		g_free(name);
 	}
@@ -334,23 +334,23 @@ get_ripper_deststore_iter(GtkTreeIter * iter_store) {
 GtkWidget *
 create_ripper_format_combo(void) {
 
-	GtkWidget * combo = gtk_combo_box_new_text();
+	GtkWidget * combo = gtk_combo_box_text_new();
 	int n = -1;
 
 #ifdef HAVE_SNDFILE_ENC
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "WAV");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), "WAV");
 	++n;
 #endif /* HAVE_SNDFILE_ENC */
 #ifdef HAVE_FLAC_ENC
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "FLAC");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), "FLAC");
 	++n;
 #endif /* HAVE_FLAC_ENC */
 #ifdef HAVE_VORBISENC
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "Ogg Vorbis");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), "Ogg Vorbis");
 	++n;
 #endif /* HAVE_VORBISENC */
 #ifdef HAVE_LAME
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "MP3");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), "MP3");
 	++n;
 #endif /* HAVE_LAME */
 
@@ -369,7 +369,7 @@ int
 get_ripper_format(void) {
 
 	int file_lib = -1;
-	gchar * text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(ripper_format_combo));
+	gchar * text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(ripper_format_combo));
 	if (strcmp(text, "WAV") == 0) {
 		file_lib = ENC_SNDFILE_LIB;
 	}
@@ -391,7 +391,7 @@ void
 ripper_bitrate_changed(GtkRange * range, gpointer data) {
 
 	float val = gtk_range_get_value(range);
-	gchar * text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(ripper_format_combo));
+	gchar * text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(ripper_format_combo));
 	if (strcmp(text, "FLAC") == 0) {
 		int i = (int)val;
 		char str[256];
@@ -429,7 +429,7 @@ ripper_bitrate_changed(GtkRange * range, gpointer data) {
 void
 ripper_format_combo_changed(GtkWidget * widget, gpointer data) {
 
-	gchar * text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
+	gchar * text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
 
 	if (strcmp(text, "WAV") == 0) {
 		gtk_widget_hide(ripper_bitrate_scale);
@@ -652,7 +652,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 
         ripper_dialog = gtk_dialog_new_with_buttons(_("Rip CD"),
                                              GTK_WINDOW(browser_window),
-                                             GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+                                             GTK_DIALOG_DESTROY_WITH_PARENT,
                                              GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
                                              GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
                                              NULL);

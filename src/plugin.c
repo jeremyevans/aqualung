@@ -766,7 +766,7 @@ build_plugin_window(plugin_instance * instance) {
 	GtkWidget * inner_vbox;
 	GtkWidget * table = NULL;
 	GtkWidget * hseparator;
-	GtkObject * adjustment;
+	GObject * adjustment;
 	GtkWidget * combo;
 
 	optdata_t * optdata;

@@ -1556,7 +1556,7 @@ build_type_dialog(build_store_t * build_data) {
 
         dialog = gtk_dialog_new_with_buttons(_("Select build type"),
 					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+					     GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					     NULL);
@@ -1699,7 +1699,7 @@ build_dialog(build_store_t * data) {
 
         dialog = gtk_dialog_new_with_buttons(_("Build/Update store"),
 					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+					     GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					     NULL);

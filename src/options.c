@@ -194,11 +194,11 @@ GtkWidget * combo_threshold;
 GtkWidget * spin_linthresh;
 GtkWidget * spin_stdthresh;
 GtkWidget * spin_defvol;
-GtkObject * adj_refvol;
-GtkObject * adj_steepness;
-GtkObject * adj_linthresh;
-GtkObject * adj_stdthresh;
-GtkObject * adj_defvol;
+GObject * adj_refvol;
+GObject * adj_steepness;
+GObject * adj_linthresh;
+GObject * adj_stdthresh;
+GObject * adj_defvol;
 GtkWidget * label_listening_env;
 GtkWidget * label_refvol;
 GtkWidget * label_steepness;
@@ -1659,7 +1659,7 @@ setup_get_mouse_button_window(void) {
 	get_mouse_button_window = gtk_dialog_new_with_buttons(
 	        _("Add mouse button command"),
 		GTK_WINDOW(options_window),
-		GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+		GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 		GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
 		GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 		NULL);
@@ -2023,7 +2023,7 @@ create_options_window(void) {
 
         options_window = gtk_dialog_new_with_buttons(_("Settings"),
                                             GTK_WINDOW(main_window),
-                                            GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_NO_SEPARATOR,
+                                            GTK_DIALOG_DESTROY_WITH_PARENT,
                                             GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
                                             GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
                                             NULL);
@@ -3327,9 +3327,9 @@ create_options_window(void) {
         gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 5, 6,
                          GTK_FILL, GTK_FILL, 5, 3);
 
-	cddb_proto_combo = gtk_combo_box_new_text();
-	gtk_combo_box_append_text(GTK_COMBO_BOX(cddb_proto_combo), _("CDDBP (port 8880)"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(cddb_proto_combo), _("HTTP (port 80)"));
+	cddb_proto_combo = gtk_combo_box_text_new();
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(cddb_proto_combo), _("CDDBP (port 8880)"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(cddb_proto_combo), _("HTTP (port 80)"));
 	if (options.cddb_use_http) {
 		gtk_combo_box_set_active(GTK_COMBO_BOX(cddb_proto_combo), 1);
 	} else {

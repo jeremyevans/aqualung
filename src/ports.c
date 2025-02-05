@@ -38,6 +38,7 @@
 #define LIST_WIDTH 200
 #define LIST_HEIGHT 100
 
+#define TVCOL_BUTTON(tvcol) gtk_tree_view_column_get_button(tvcol)
 
 extern GtkWidget * main_window;
 
@@ -183,7 +184,7 @@ clicked_out_R_header(GtkWidget * widget, gpointer * data) {
 
 
 void
-tree_out_nb_selection_changed(GtkObject * tree, gpointer * data) {
+tree_out_nb_selection_changed(GObject * tree, gpointer * data) {
 
 	GtkTreeIter iter;
         GtkTreeModel * model;

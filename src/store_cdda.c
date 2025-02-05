@@ -191,8 +191,7 @@ cdda_drive_info(cdda_drive_t * drive) {
 
         dialog = gtk_dialog_new_with_buttons(str,
 					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_DESTROY_WITH_PARENT |
-					     GTK_DIALOG_NO_SEPARATOR,
+					     GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_CLOSE, GTK_RESPONSE_OK,
 					     NULL);
 
@@ -353,8 +352,7 @@ cdda_disc_info(cdda_drive_t * drive) {
 
         dialog = gtk_dialog_new_with_buttons(_("Disc info"),
 					     GTK_WINDOW(browser_window),
-					     GTK_DIALOG_DESTROY_WITH_PARENT |
-					     GTK_DIALOG_NO_SEPARATOR,
+					     GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_CLOSE, GTK_RESPONSE_OK,
 					     NULL);
 
